@@ -35,7 +35,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
     setWindowTitle(tr("Power Tab Editor"));
 
-    resize(800, 600);
+	setWindowState(Qt::WindowMaximized);
 }
 
 // Redraws the *entire* document upon undo/redo

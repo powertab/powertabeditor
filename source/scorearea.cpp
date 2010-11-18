@@ -25,7 +25,7 @@ ScoreArea::ScoreArea(QWidget *parent) :
     setCacheMode(QGraphicsView::CacheBackground);
 
     setScene(&scene);
-    setRenderHints(QPainter::Antialiasing);
+	setRenderHints(QPainter::HighQualityAntialiasing);
 }
 
 void ScoreArea::RenderDocument()
