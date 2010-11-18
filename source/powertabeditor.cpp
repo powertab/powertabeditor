@@ -35,6 +35,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
     setWindowTitle(tr("Power Tab Editor"));
 
+	// TODO - check with cam, maximized or resize(800, 600);
 	setWindowState(Qt::WindowMaximized);
 }
 
