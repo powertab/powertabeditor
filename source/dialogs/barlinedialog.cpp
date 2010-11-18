@@ -39,6 +39,7 @@ BarlineDialog::BarlineDialog(Barline* bar, QWidget *parent) :
     buttonsLayout->addLayout(formLayout);
     buttonsLayout->addWidget(buttonBox);
 
+	buttonsLayout->setSizeConstraint(QLayout::SetFixedSize);
     setLayout(buttonsLayout);
 
     init();
