@@ -31,6 +31,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     CreateMenus();
     CreateTabArea();
 
+	preferencesDialog = new PreferencesDialog();
+
     setCentralWidget(tabWidget);
 
     setWindowTitle(tr("Power Tab Editor"));
@@ -56,6 +58,10 @@ void PowerTabEditor::CreateActions()
     openFileAct->setShortcuts(QKeySequence::Open);
     openFileAct->setStatusTip(tr("Open an existing document"));
     connect(openFileAct, SIGNAL(triggered()), this, SLOT(OpenFile()));
+
+	preferencesAct = new QAction(tr("&Preferences..."), this);
+	preferencesAct->setShortcuts(QKeySequence::Preferences);
+	connect(preferencesAct, SIGNAL(triggered()), this, SLOT(OpenPreferences()));
 
     // Exit the application
     exitAppAct = new QAction(tr("&Quit"), this);
@@ -119,6 +125,8 @@ void PowerTabEditor::CreateMenus()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openFileAct);
     fileMenu->addSeparator();
+	fileMenu->addAction(preferencesAct);
+	fileMenu->addSeparator();
     fileMenu->addAction(exitAppAct);
 
     // Edit Menu
@@ -190,7 +198,7 @@ void PowerTabEditor::OpenFile()
             ScoreArea* score = new ScoreArea;
             score->RenderDocument(documentManager.getCurrentDocument());
             QFileInfo fileInfo(fileName);
-            tabWidget->addTab(score, fileInfo.fileName());
+			tabWidget->addTab(score, fileInfo.fileName());
         }
 
         // switch to the new document
@@ -198,6 +206,12 @@ void PowerTabEditor::OpenFile()
     }
 
 
+}
+
+// Opens the preferences dialog
+void PowerTabEditor::OpenPreferences()
+{
+	preferencesDialog->exec();
 }
 
 // Redraws the whole score of the current document

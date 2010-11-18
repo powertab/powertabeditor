@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "documentmanager.h"
+#include "dialogs/preferencesdialog.h"
 
 class QTabWidget;
 class QUndoStack;
@@ -27,6 +28,7 @@ private:
 
 private slots:
     void OpenFile();
+	void OpenPreferences();
     void RefreshOnUndoRedo(int);
     void closeTab(int index);
     void switchTab(int index);
@@ -46,6 +48,7 @@ private:
     DocumentManager documentManager;
     QMenu* fileMenu;
     QAction* openFileAct;
+	QAction* preferencesAct;
     QAction* exitAppAct;
 
     QMenu* editMenu;
@@ -67,6 +70,8 @@ private:
     QAction* lastPositionAct; // navigate to the last position in the staff
     QAction* nextStringAct; // navigate to the next string in the staff
     QAction* prevStringAct; // navigate to the previous string in the staff
+
+	PreferencesDialog* preferencesDialog;
 };
 
 #endif // POWERTABEDITOR_H

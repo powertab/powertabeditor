@@ -55,7 +55,8 @@ SOURCES += main.cpp\
     actions/changebarlinetype.cpp \
     dialogs/barlinedialog.cpp \
     painters/tabnotepainter.cpp \
-    painters/caret.cpp
+    painters/caret.cpp \
+    dialogs/preferencesdialog.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -102,7 +103,8 @@ HEADERS  += powertabeditor.h \
     actions/changebarlinetype.h \
     dialogs/barlinedialog.h \
     painters/tabnotepainter.h \
-    painters/caret.h
+    painters/caret.h \
+    dialogs/preferencesdialog.h
 
 RESOURCES += \
     resources.qrc
