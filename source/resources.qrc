@@ -6,4 +6,7 @@
     <qresource prefix="/stylesheets">
         <file alias="tab.txt">stylesheets/tab.txt</file>
     </qresource>
+    <qresource prefix="/images">
+        <file alias="tab_close_button.png">images/tab_close_button.png</file>
+    </qresource>
 </RCC>

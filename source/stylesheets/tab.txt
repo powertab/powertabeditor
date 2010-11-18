@@ -58,3 +58,7 @@ QTabWidget::pane { /* The tab widget frame */
      margin: 0;
      margin-top: 3px;
  }
+
+ QTabBar::close-button {
+     image: url(:images/tab_close_button.png);
+ }
