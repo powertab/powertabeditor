@@ -36,6 +36,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     setWindowTitle(tr("Power Tab Editor"));
 
 	// TODO - check with cam, maximized or resize(800, 600);
+	setMinimumSize(800, 600);
 	setWindowState(Qt::WindowMaximized);
 }
 
@@ -147,6 +148,20 @@ void PowerTabEditor::CreateTabArea()
 {
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
+
+	QFile data(":stylesheets/tab.txt");
+	QString style;
+
+	if(data.open(QFile::ReadOnly))
+	{
+		QTextStream styleIn(&data);
+		style = styleIn.readAll();
+		data.close();
+		tabWidget->setStyleSheet(style);
+		qDebug()<<"YES!! TODO - remove";
+	}
+	else
+		qDebug()<<"NOOooO TODO - remove";
 
     // creates a new document by default
     /*ScoreArea* score = new ScoreArea;
