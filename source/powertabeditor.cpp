@@ -158,10 +158,7 @@ void PowerTabEditor::CreateTabArea()
 		style = styleIn.readAll();
 		data.close();
 		tabWidget->setStyleSheet(style);
-		qDebug()<<"YES!! TODO - remove";
 	}
-	else
-		qDebug()<<"NOOooO TODO - remove";
 
     // creates a new document by default
     /*ScoreArea* score = new ScoreArea;
