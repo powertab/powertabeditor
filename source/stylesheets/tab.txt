@@ -30,10 +30,12 @@ QTabWidget::pane { /* The tab widget frame */
      border-color: #9B9B9B;
      border-bottom-color: #C2C7CB; /* same as pane color */
      margin-top: 3px;
+     font-weight: bold
  }
 
  QTabBar::tab:!selected {
      margin-top: 5px;
+     font-weight: normal
  }
 
  /* make use of negative margins for overlapping tabs */
