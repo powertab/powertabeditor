@@ -216,7 +216,22 @@ void PowerTabEditor::OpenFile()
             ScoreArea* score = new ScoreArea;
             score->RenderDocument(documentManager.getCurrentDocument());
             QFileInfo fileInfo(fileName);
-			tabWidget->addTab(score, fileInfo.fileName());
+			QString title = fileInfo.fileName();
+			QFontMetrics fm (tabWidget->font());
+
+			bool chopped = false;
+
+			// each tab is 200px wide, so we want to shorten the name if it's wider than 140px
+			while(fm.width(title)>140)
+			{
+				title.chop(1);
+				chopped = true;
+			}
+
+			if (chopped)
+				title.append("...");
+
+			tabWidget->addTab(score, title);
         }
 
         // switch to the new document
