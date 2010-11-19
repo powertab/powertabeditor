@@ -3,6 +3,7 @@
 #include <QAction>
 #include <QMenuBar>
 #include <QMenu>
+#include <QListView> // TODO - remove
 
 #include <QTabWidget>
 #include <QUndoStack>
@@ -16,6 +17,8 @@
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 QUndoStack* PowerTabEditor::undoStack = NULL;
+QSplitter* PowerTabEditor::vertSplitter = NULL;
+QSplitter* PowerTabEditor::horSplitter = NULL;
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
         QMainWindow(parent)
@@ -33,13 +36,28 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 	preferencesDialog = new PreferencesDialog();
 
-    setCentralWidget(tabWidget);
-
-    setWindowTitle(tr("Power Tab Editor"));
-
-	// TODO - check with cam, maximized or resize(800, 600);
 	setMinimumSize(800, 600);
 	setWindowState(Qt::WindowMaximized);
+	setWindowTitle(tr("Power Tab Editor"));
+
+	horSplitter = new QSplitter();
+	horSplitter->setOrientation(Qt::Horizontal);
+
+	QTabWidget *tmp1 = new QTabWidget;
+	tmp1->setMaximumWidth(300);
+	horSplitter->addWidget(tmp1);
+	horSplitter->addWidget(tabWidget);
+
+	vertSplitter = new QSplitter();
+	vertSplitter->setOrientation(Qt::Vertical);
+
+	vertSplitter->addWidget(horSplitter);
+
+	QListView *tmp2 = new QListView;
+	tmp2->setMaximumHeight(200);
+	vertSplitter->addWidget(tmp2);
+
+	setCentralWidget(vertSplitter);
 }
 
 // Redraws the *entire* document upon undo/redo

@@ -2,6 +2,7 @@
 #define POWERTABEDITOR_H
 
 #include <QMainWindow>
+#include <QSplitter>
 
 #include "documentmanager.h"
 #include "dialogs/preferencesdialog.h"
@@ -19,6 +20,8 @@ public:
     static void RefreshCurrentDocument();
     static QTabWidget* tabWidget;
     static QUndoStack* undoStack;
+	static QSplitter* vertSplitter;
+	static QSplitter* horSplitter;
     ScoreArea* getCurrentScoreArea();
 
 private:
