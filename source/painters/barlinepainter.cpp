@@ -31,12 +31,18 @@ void BarlinePainter::init()
     {
         width = DOUBLE_BAR_WIDTH;
     }
+
     x = CenterItem(x, x + staffInfo.positionWidth, width);
 
     // adjust alignment for repeat barlines
     if (barLine->IsRepeatEnd() || barLine->IsRepeatStart())
     {
         x += width;
+    }
+    // adjust for double barlines
+    if (barLine->IsDoubleBar() || barLine->IsDoubleBarFine())
+    {
+        x -= 2;
     }
 }
 
@@ -80,10 +86,10 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     QVector<QLine> lines(4);
 
     // draw a single bar line
-    lines[0] = QLine(x, 0,
+    lines[0] = QLine(x, 1,
                      x, staffInfo.getStdNotationStaffSize());
     // we are drawing relative to the top of the standard notation staff
-    lines[1] = QLine(x, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine(),
+    lines[1] = QLine(x, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine() + 1,
                      x, staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
 
     if (barLine->IsDoubleBar() || barLine->IsDoubleBarFine() || barLine->IsRepeatEnd() || barLine->IsRepeatStart())
@@ -93,10 +99,10 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
             painter->setPen(QPen(Qt::black, 2));
         }
 
-        lines[2] = QLine (x + width, 0,
+        lines[2] = QLine (x + width, 1,
                           x + width, staffInfo.getStdNotationStaffSize());
         // we are drawing relative to the top of the standard notation staff
-        lines[3] = QLine (x + width, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine(),
+        lines[3] = QLine (x + width, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine() + 1,
                           x + width, staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
     }
 

@@ -24,7 +24,7 @@ protected:
 
     double CenterItem(double xmin, double xmax, double width)
     {
-        return (xmin + ((xmax - (xmin + width)) / 2));
+        return (xmin + ((xmax - (xmin + width)) / 2) + 1);
     }
 };
 
