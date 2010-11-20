@@ -9,4 +9,9 @@
     <qresource prefix="/images">
         <file alias="tab_close_button.png">images/tab_close_button.png</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file alias="toolbox_embellishment.png">icons/toolbox_embellishment.png</file>
+        <file alias="toolbox_note.png">icons/toolbox_note.png</file>
+        <file alias="toolbox_score.png">icons/toolbox_score.png</file>
+    </qresource>
 </RCC>
