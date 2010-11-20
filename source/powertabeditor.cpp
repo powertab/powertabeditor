@@ -3,7 +3,8 @@
 #include <QAction>
 #include <QMenuBar>
 #include <QMenu>
-#include <QListView> // TODO - remove
+#include <QToolBox>
+#include <QListView>
 
 #include <QTabWidget>
 #include <QUndoStack>
@@ -47,11 +48,11 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 	tmp1->setMaximumWidth(350);
 	tmp1->setIconSize(QSize(48,48));
 	tmp1->setTabPosition(QTabWidget::West);
-	QMainWindow *del_me = new QMainWindow;
+	QToolBox *del_me = new QToolBox;
 	tmp1->addTab(del_me,QIcon(":/icons/toolbox_note.png"),"");
-	QMainWindow *del_me2 = new QMainWindow;
+	QToolBox *del_me2 = new QToolBox;
 	tmp1->addTab(del_me2,QIcon(":/icons/toolbox_embellishment.png"),"");
-	QMainWindow *del_me3 = new QMainWindow;
+	QToolBox *del_me3 = new QToolBox;
 	tmp1->addTab(del_me3,QIcon(":/icons/toolbox_score.png"),"");
 	horSplitter->addWidget(tmp1);
 	horSplitter->addWidget(tabWidget);
