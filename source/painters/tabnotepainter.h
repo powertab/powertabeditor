@@ -23,9 +23,7 @@ protected:
 
 private:
     Note* note;
-    static QFontDatabase fontDatabase;
-    static QFont tabFont;
-    static QFontMetricsF fontMetrics;
+    QFont tabFont;
 };
 
 #endif // TABNOTEPAINTER_H

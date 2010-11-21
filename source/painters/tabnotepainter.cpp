@@ -5,14 +5,11 @@
 
 #include "../powertabdocument/note.h"
 
-QFontDatabase TabNotePainter::fontDatabase;
-QFont TabNotePainter::tabFont = TabNotePainter::fontDatabase.font("Liberation Sans", "", 7.5);
-QFontMetricsF TabNotePainter::fontMetrics = QFontMetricsF(tabFont);
-
 TabNotePainter::TabNotePainter(Note* notePtr)
 {
     tabFont.setStyleStrategy(QFont::PreferAntialias);
     note = notePtr;
+    tabFont = QFontDatabase().font("Liberation Sans", "", 7.5);
 }
 
 void TabNotePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -32,7 +29,7 @@ void TabNotePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 
 QRectF TabNotePainter::boundingRect() const
 {
-    return fontMetrics.boundingRect(QString().setNum(note->GetFretNumber()));
+    return QFontMetricsF(tabFont).boundingRect(QString().setNum(note->GetFretNumber()));
 }
 
 void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
