@@ -75,7 +75,7 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     init();
 
-    painter->setPen(QPen(Qt::black, 0.75));
+    painter->setPen(QPen(Qt::black, 0.75)); // thin line
     painter->setBrush(Qt::black);
 
     if (barLine->IsFreeTimeBar())
@@ -83,7 +83,7 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setPen(Qt::DashLine);
     }
 
-    QVector<QLine> lines(4);
+    QVector<QLine> lines(2);
 
     // draw a single bar line
     lines[0] = QLine(x, 1,
@@ -92,33 +92,42 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     lines[1] = QLine(x, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine() + 1,
                      x, staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
 
+    painter->drawLines(lines);
+
+    // draw a second line depending on the bar type
     if (barLine->IsDoubleBar() || barLine->IsDoubleBarFine() || barLine->IsRepeatEnd() || barLine->IsRepeatStart())
     {
         if (barLine->IsDoubleBarFine() || barLine->IsRepeatEnd() || barLine->IsRepeatStart())
         {
-            painter->setPen(QPen(Qt::black, 2));
+            painter->setPen(QPen(Qt::black, 2)); // make the line thicker for certain bar types
         }
 
-        lines[2] = QLine (x + width, 1,
+        // draw the second barline with an offset of the specified width
+        lines[0] = QLine (x + width, 1,
                           x + width, staffInfo.getStdNotationStaffSize());
         // we are drawing relative to the top of the standard notation staff
-        lines[3] = QLine (x + width, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine() + 1,
+        lines[1] = QLine (x + width, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine() + 1,
                           x + width, staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
+
+        painter->drawLines(lines);
     }
 
-    painter->drawLines(lines);
-
+    // draw the dots for repeats
     if (barLine->IsRepeatEnd() || barLine->IsRepeatStart())
     {
+        painter->setPen(QPen(Qt::black, 0.75));
+        const double radius = 1.2;
+
         double height = 0, centre = 0;
+
         if (staffInfo.numOfStdNotationLines % 2 != 0)
         {
             centre = (int)(staffInfo.numOfStdNotationLines / 2) + 1;
         }
         height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre + 1)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), 1.2, 1.2);
+        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
         height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre - 1)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), 1.2, 1.2);
+        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
 
         centre = height = 0;
         if (staffInfo.numOfStrings % 2 != 0)
@@ -131,9 +140,9 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         }
 
         height = (staffInfo.getTabLineHeight(centre + 1) + staffInfo.getTabLineHeight(centre + 2)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), 1.2, 1.2);
+        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
         height = (staffInfo.getTabLineHeight(centre) + staffInfo.getTabLineHeight(centre - 1)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), 1.2, 1.2);
+        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
     }
 
 }

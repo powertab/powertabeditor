@@ -136,7 +136,7 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
     BarlinePainter *firstBarLine = new BarlinePainter(currentStaffInfo, &system->GetStartBarRef());
     if (system->GetStartBarConstRef().IsBar()) // for normal bars, display a line at the far left edge
     {
-        firstBarLine->setPos(system->GetRect().GetLeft() - firstBarLine->boundingRect().width() / 2,
+        firstBarLine->setPos(system->GetRect().GetLeft() - firstBarLine->boundingRect().width() / 2 - 0.5,
                              currentStaffInfo.getStdNotationLineHeight(1));
     }
     else // otherwise, display the bar after the clef, etc, and to the left of the first note
@@ -159,6 +159,10 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
     if (system->GetEndBarRef().IsRepeatEnd())
     {// bit of a positioning hack
         lastBarLine->setPos(lastBarLine->pos().x() - 6, lastBarLine->pos().y());
+    }
+    else if (system->GetEndBarRef().IsBar())
+    {
+        lastBarLine->setPos(lastBarLine->pos().x() + 0.5, lastBarLine->pos().y());
     }
     scene.addItem(lastBarLine);
 
