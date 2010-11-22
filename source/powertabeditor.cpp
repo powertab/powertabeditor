@@ -20,6 +20,7 @@ QTabWidget* PowerTabEditor::tabWidget = NULL;
 QUndoStack* PowerTabEditor::undoStack = NULL;
 QSplitter* PowerTabEditor::vertSplitter = NULL;
 QSplitter* PowerTabEditor::horSplitter = NULL;
+Toolbox* PowerTabEditor::toolBox = NULL;
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
         QMainWindow(parent)
@@ -44,17 +45,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 	horSplitter = new QSplitter();
 	horSplitter->setOrientation(Qt::Horizontal);
 
-	QTabWidget *tmp1 = new QTabWidget;
-	tmp1->setMaximumWidth(350);
-	tmp1->setIconSize(QSize(48,48));
-	tmp1->setTabPosition(QTabWidget::West);
-	QToolBox *del_me = new QToolBox;
-	tmp1->addTab(del_me,QIcon(":/icons/toolbox_note.png"),"");
-	QToolBox *del_me2 = new QToolBox;
-	tmp1->addTab(del_me2,QIcon(":/icons/toolbox_embellishment.png"),"");
-	QToolBox *del_me3 = new QToolBox;
-	tmp1->addTab(del_me3,QIcon(":/icons/toolbox_score.png"),"");
-	horSplitter->addWidget(tmp1);
+	toolBox = new Toolbox();
+	horSplitter->addWidget(toolBox);
 	horSplitter->addWidget(tabWidget);
 
 	vertSplitter = new QSplitter();

@@ -6,6 +6,7 @@
 
 #include "documentmanager.h"
 #include "dialogs/preferencesdialog.h"
+#include "toolbox.h"
 
 class QTabWidget;
 class QUndoStack;
@@ -22,6 +23,7 @@ public:
     static QUndoStack* undoStack;
 	static QSplitter* vertSplitter;
 	static QSplitter* horSplitter;
+	static Toolbox* toolBox;
     ScoreArea* getCurrentScoreArea();
 
 private:
