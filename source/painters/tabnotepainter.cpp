@@ -7,9 +7,10 @@
 
 TabNotePainter::TabNotePainter(Note* notePtr)
 {
-    tabFont.setStyleStrategy(QFont::PreferAntialias);
     note = notePtr;
-    tabFont = QFontDatabase().font("Liberation Sans", "", 7.5);
+    tabFont = QFont("Liberation Sans");
+    tabFont.setPixelSize(10); // needed for cross-platform consistency in font size
+    tabFont.setStyleStrategy(QFont::PreferAntialias);
 }
 
 void TabNotePainter::mousePressEvent(QGraphicsSceneMouseEvent *)

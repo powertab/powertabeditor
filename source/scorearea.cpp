@@ -217,7 +217,7 @@ void ScoreArea::DrawTabClef(int x, StaffData& staffInfo)
     // Draw the tab clef
     QGraphicsSimpleTextItem* tabClef = new QGraphicsSimpleTextItem;
     tabClef->setPos(x, staffInfo.getTopTabLine() - 12);
-    musicFont.setSymbol(tabClef, MusicFont::TabClef, staffInfo.numOfStrings * 3);
+    musicFont.setSymbol(tabClef, MusicFont::TabClef, staffInfo.numOfStrings * 4.25);
     scene.addItem(tabClef);
 }
 

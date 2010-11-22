@@ -2,7 +2,6 @@
 #define MUSICFONT_H
 
 #include <QFont>
-#include <QHash>
 class QGraphicsSimpleTextItem;
 
 /*
@@ -35,8 +34,7 @@ public:
 
 private:
     QFont musicNotationFont;
-    QHash<MusicSymbol, QChar> symbolIndex; // maps the MusicSymbol indentifiers to the appropriate characters
-    static const int DEFAULT_FONT_SIZE = 16;
+    static const int DEFAULT_FONT_SIZE = 22;
 };
 
 #endif // MUSICFONT_H

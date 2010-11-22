@@ -6,8 +6,10 @@
 
 MusicFont::MusicFont()
 {
-    QFontDatabase fontDatabase;
-    musicNotationFont = fontDatabase.font("Emmentaler", "", 16);
+    //QFontDatabase fontDatabase;
+    musicNotationFont = QFont("Emmentaler");
+    musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
+    //musicNotationFont = fontDatabase.font("Emmentaler", "", 16);
 }
 
 QChar MusicFont::getSymbol(MusicSymbol identifier)
@@ -19,16 +21,16 @@ QChar MusicFont::getSymbol(MusicSymbol identifier)
 void MusicFont::setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size)
 {
     text->setText(getSymbol(identifier));
-    musicNotationFont.setPointSize(size);
+    musicNotationFont.setPixelSize(size);
     text->setFont(musicNotationFont);
-    musicNotationFont.setPointSize(DEFAULT_FONT_SIZE);
+    musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
 }
 
 // Sets numeric text using the Emmentaler font (this is useful for time signatures)
 void MusicFont::setNumericText(QGraphicsSimpleTextItem* text, QString number, int size)
 {
     text->setText(number);
-    musicNotationFont.setPointSize(size);
+    musicNotationFont.setPixelSize(size);
     text->setFont(musicNotationFont);
-    musicNotationFont.setPointSize(DEFAULT_FONT_SIZE);
+    musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
 }
