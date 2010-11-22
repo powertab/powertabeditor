@@ -8,6 +8,12 @@
     </qresource>
     <qresource prefix="/images">
         <file alias="tab_close_button.png">images/tab_close_button.png</file>
+        <file alias="8th_note.gif">images/8th_note.gif</file>
+        <file alias="16th_note.gif">images/16th_note.gif</file>
+        <file alias="32th_note.gif">images/32th_note.gif</file>
+        <file alias="half_note.gif">images/half_note.gif</file>
+        <file alias="quarter_note.gif">images/quarter_note.gif</file>
+        <file alias="whole_note.gif">images/whole_note.gif</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="toolbox_embellishment.png">icons/toolbox_embellishment.png</file>
