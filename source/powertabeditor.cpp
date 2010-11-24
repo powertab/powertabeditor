@@ -60,6 +60,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 	vertSplitter->addWidget(tmp2);
 
 	setCentralWidget(vertSplitter);
+
+    previousDirectory = QDir::homePath();
 }
 
 // Redraws the *entire* document upon undo/redo
@@ -201,7 +203,7 @@ void PowerTabEditor::CreateTabArea()
 void PowerTabEditor::OpenFile()
 {
     QString fileFilter;
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), QDir::homePath(), fileFilter);
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), previousDirectory, fileFilter);
 
     if (fileName.isEmpty())
     {
@@ -218,6 +220,7 @@ void PowerTabEditor::OpenFile()
             ScoreArea* score = new ScoreArea;
             score->RenderDocument(documentManager.getCurrentDocument());
             QFileInfo fileInfo(fileName);
+            previousDirectory = fileInfo.absolutePath();
 			QString title = fileInfo.fileName();
 			QFontMetrics fm (tabWidget->font());
 

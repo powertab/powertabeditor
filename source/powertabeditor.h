@@ -76,7 +76,8 @@ private:
     QAction* nextStringAct; // navigate to the next string in the staff
     QAction* prevStringAct; // navigate to the previous string in the staff
 
-	PreferencesDialog* preferencesDialog;
+    PreferencesDialog* preferencesDialog;
+    QString previousDirectory; // previous directory that a file was opened in
 };
 
 #endif // POWERTABEDITOR_H
