@@ -10,13 +10,23 @@
         <file alias="tab_close_button.png">images/tab_close_button.png</file>
         <file alias="8th_note.gif">images/8th_note.gif</file>
         <file alias="16th_note.gif">images/16th_note.gif</file>
-        <file alias="32th_note.gif">images/32th_note.gif</file>
+        <file alias="64th_note.gif">images/64th_note.gif</file>
         <file alias="half_note.gif">images/half_note.gif</file>
         <file alias="quarter_note.gif">images/quarter_note.gif</file>
         <file alias="whole_note.gif">images/whole_note.gif</file>
+        <file alias="32th_note.gif">images/32th_note.gif</file>
+        <file alias="8th_rest.gif">images/8th_rest.gif</file>
+        <file alias="16th_rest.gif">images/16th_rest.gif</file>
+        <file alias="32nd_rest.gif">images/32nd_rest.gif</file>
+        <file alias="64th_rest.gif">images/64th_rest.gif</file>
+        <file alias="half_rest.gif">images/half_rest.gif</file>
+        <file alias="quarter_rest.gif">images/quarter_rest.gif</file>
+        <file alias="whole_rest.gif">images/whole_rest.gif</file>
+        <file alias="dotted_note.gif">images/dotted_note.gif</file>
+        <file alias="doubledotted_note.gif">images/doubledotted_note.gif</file>
+        <file alias="tie_note.gif">images/tie_note.gif</file>
     </qresource>
     <qresource prefix="/icons">
-        <file alias="toolbox_embellishment.png">icons/toolbox_embellishment.png</file>
         <file alias="toolbox_note.png">icons/toolbox_note.png</file>
         <file alias="toolbox_score.png">icons/toolbox_score.png</file>
     </qresource>

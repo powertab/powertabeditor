@@ -54,6 +54,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 	vertSplitter->addWidget(horSplitter);
 
+	// TODO - replace tmp2 with the mixer/tracklist widget
 	QListView *tmp2 = new QListView;
 	tmp2->setMaximumHeight(200);
 	vertSplitter->addWidget(tmp2);

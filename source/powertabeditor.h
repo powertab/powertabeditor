@@ -6,7 +6,7 @@
 
 #include "documentmanager.h"
 #include "dialogs/preferencesdialog.h"
-#include "toolbox.h"
+#include "widgets/toolbox/toolbox.h"
 
 class QTabWidget;
 class QUndoStack;

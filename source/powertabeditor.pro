@@ -57,7 +57,9 @@ SOURCES += main.cpp\
     painters/tabnotepainter.cpp \
     painters/caret.cpp \
     dialogs/preferencesdialog.cpp \
-    toolbox.cpp
+	widgets/toolbox/toolbox.cpp \
+    widgets/toolbox/scorepage.cpp \
+    widgets/toolbox/notepage.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -106,7 +108,11 @@ HEADERS  += powertabeditor.h \
     painters/tabnotepainter.h \
     painters/caret.h \
     dialogs/preferencesdialog.h \
-    toolbox.h
+    widgets/toolbox/toolbox.h \
+    widgets/toolbox/scorepage.h \
+    widgets/toolbox/notepage.h
 
 RESOURCES += \
     resources.qrc
+
+OTHER_FILES +=
