@@ -20,25 +20,49 @@ private:
 	QHBoxLayout *noteLayout;
 	QHBoxLayout *restLayout;
 	QHBoxLayout *rhythmLayout;
+	QHBoxLayout *slideLegatoLayout;
+	QHBoxLayout *vibratoTremoloLayout;
 
 	QGroupBox *noteGroup;
 	QGroupBox *restGroup;
 	QGroupBox *rhythmGroup;
+	QGroupBox *slideLegatoGroup;
+	QGroupBox *vibratoTremoloGroup;
 
 	QPushButton *noteButton[7];
+
 	QPushButton *restButton[7];
 
 	QPushButton *dottedButton;
-	QPushButton *doubledottedButton;
+	QPushButton *doubleDottedButton;
 	QPushButton *tieButton;
+	QPushButton *groupingButton;
+	QPushButton *fermataButton;
+
+	QPushButton *slideInBelowButton;
+	QPushButton *slideInAboveButton;
+	QPushButton *slideOutBelowButton;
+	QPushButton *slideOutAboveButton;
+	QPushButton *shiftSlideButton;
+	QPushButton *legatoSlideButton;
+	QPushButton *legatoButton;
+
+	QPushButton *slightVibratoButton;
+	QPushButton *wideVibratoButton;
+	QPushButton *bendButton;
+	QPushButton *trillButton;
+	QPushButton *tremoloButton;
 
 	void createNoteButtons();
 	void createRestButtons();
-	void createOtherButtons();
+	void createRhythmButtons();
+	void createSlideLegatoButtons();
+	void createVibratoTremoloButtons();
 
 private slots:
 	void resetNoteAndRestButtons();
 	void resetDottedButtons();
+	void resetSlideLegatoButtons();
 };
 
 #endif // NOTEPAGE_H

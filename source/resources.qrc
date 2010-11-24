@@ -25,6 +25,20 @@
         <file alias="dotted_note.gif">images/dotted_note.gif</file>
         <file alias="doubledotted_note.gif">images/doubledotted_note.gif</file>
         <file alias="tie_note.gif">images/tie_note.gif</file>
+        <file alias="bend.gif">images/bend.gif</file>
+        <file alias="fermata.gif">images/fermata.gif</file>
+        <file alias="grouping.gif">images/grouping.gif</file>
+        <file alias="legato.gif">images/legato.gif</file>
+        <file alias="legatoslide.gif">images/legatoslide.gif</file>
+        <file alias="shiftslide.gif">images/shiftslide.gif</file>
+        <file alias="slideinabove.gif">images/slideinabove.gif</file>
+        <file alias="slideinbelow.gif">images/slideinbelow.gif</file>
+        <file alias="slideoutdown.gif">images/slideoutdown.gif</file>
+        <file alias="slideoutup.gif">images/slideoutup.gif</file>
+        <file alias="slightvibrato.gif">images/slightvibrato.gif</file>
+        <file alias="tremolo.gif">images/tremolo.gif</file>
+        <file alias="trill.gif">images/trill.gif</file>
+        <file alias="widevibrato.gif">images/widevibrato.gif</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="toolbox_note.png">icons/toolbox_note.png</file>
