@@ -11,6 +11,8 @@
 class QTabWidget;
 class QUndoStack;
 class ScoreArea;
+class Mixer;
+class QStackedWidget;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -21,9 +23,9 @@ public:
     static void RefreshCurrentDocument();
     static QTabWidget* tabWidget;
     static QUndoStack* undoStack;
-	static QSplitter* vertSplitter;
-	static QSplitter* horSplitter;
-	static Toolbox* toolBox;
+    static QSplitter* vertSplitter;
+    static QSplitter* horSplitter;
+    static Toolbox* toolBox;
     ScoreArea* getCurrentScoreArea();
 
 private:
@@ -33,7 +35,7 @@ private:
 
 private slots:
     void OpenFile();
-	void OpenPreferences();
+    void OpenPreferences();
     void RefreshOnUndoRedo(int);
     void closeTab(int index);
     void switchTab(int index);
@@ -53,7 +55,7 @@ private:
     DocumentManager documentManager;
     QMenu* fileMenu;
     QAction* openFileAct;
-	QAction* preferencesAct;
+    QAction* preferencesAct;
     QAction* exitAppAct;
 
     QMenu* editMenu;
@@ -78,6 +80,7 @@ private:
 
     PreferencesDialog* preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in
+    QStackedWidget* mixerList;
 };
 
 #endif // POWERTABEDITOR_H

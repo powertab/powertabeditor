@@ -7,10 +7,11 @@
 
 DocumentManager::DocumentManager()
 {
-    currentDocumentIndex = 0;
-    PowerTabDocument* newDocument = new PowerTabDocument();
+    currentDocumentIndex = -1;
+    //currentDocumentIndex = 0;
+    /*PowerTabDocument* newDocument = new PowerTabDocument();
     newDocument->SetFileName("Untitled");
-    documentList.insert(currentDocumentIndex, newDocument);
+    documentList.insert(currentDocumentIndex, newDocument);*/
 }
 
 DocumentManager::~DocumentManager()

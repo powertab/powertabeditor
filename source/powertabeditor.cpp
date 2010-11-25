@@ -14,9 +14,15 @@
 #include <QFileInfo>
 #include <QFontDatabase>
 
+#include <QScrollArea>
+#include <QStackedWidget>
+
 #include "powertabeditor.h"
 #include "scorearea.h"
 #include "painters/caret.h"
+
+#include "powertabdocument/powertabdocument.h"
+#include "widgets/mixer/mixer.h"
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 QUndoStack* PowerTabEditor::undoStack = NULL;
@@ -63,10 +69,9 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 	vertSplitter->addWidget(horSplitter);
 
-	// TODO - replace tmp2 with the mixer/tracklist widget
-	QListView *tmp2 = new QListView;
-	tmp2->setMaximumHeight(200);
-	vertSplitter->addWidget(tmp2);
+    mixerList = new QStackedWidget;
+    mixerList->setMinimumHeight(150);
+    vertSplitter->addWidget(mixerList);
 
 	setCentralWidget(vertSplitter);
 }
@@ -250,6 +255,17 @@ void PowerTabEditor::OpenFile()
 			tabWidget->addTab(score, title);
         }
 
+        // add the guitars to a new mixer
+        Mixer* mixer = new Mixer;
+        QScrollArea* scrollArea = new QScrollArea;
+        PowerTabDocument* doc = documentManager.getCurrentDocument();
+        for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
+        {
+            mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
+        }
+        scrollArea->setWidget(mixer);
+        mixerList->addWidget(scrollArea);
+
         // switch to the new document
         tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
     }
@@ -277,6 +293,9 @@ void PowerTabEditor::closeTab(int index)
     delete tabWidget->widget(index);
     tabWidget->removeTab(index);
 
+    mixerList->removeWidget(mixerList->widget(index));
+    mixerList->setCurrentIndex(tabWidget->currentIndex());
+
     documentManager.setCurrentDocumentIndex(tabWidget->currentIndex());
 }
 
@@ -284,6 +303,7 @@ void PowerTabEditor::closeTab(int index)
 void PowerTabEditor::switchTab(int index)
 {
     documentManager.setCurrentDocumentIndex(index);
+    mixerList->setCurrentIndex(index);
 }
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()
