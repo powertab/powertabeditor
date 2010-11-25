@@ -8,6 +8,8 @@
 
 #include <QTabWidget>
 #include <QUndoStack>
+#include <QSettings>
+#include <QCoreApplication>
 
 #include <QFileInfo>
 #include <QFontDatabase>
@@ -28,6 +30,13 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     // load fonts from the resource file
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf"); // used for music notation
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf"); // used for tab notes
+
+    // load application settings
+    QCoreApplication::setOrganizationName("Power Tab");
+    QCoreApplication::setApplicationName("Power Tab Editor");
+    QSettings settings;
+    // retrieve the previous directory that a file was opened/saved to (default value is home directory)
+    previousDirectory = settings.value("app/previousDirectory", QDir::homePath()).toString();
 
     undoStack = new QUndoStack();
     connect(undoStack, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
@@ -60,8 +69,6 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 	vertSplitter->addWidget(tmp2);
 
 	setCentralWidget(vertSplitter);
-
-    previousDirectory = QDir::homePath();
 }
 
 // Redraws the *entire* document upon undo/redo
@@ -220,7 +227,11 @@ void PowerTabEditor::OpenFile()
             ScoreArea* score = new ScoreArea;
             score->RenderDocument(documentManager.getCurrentDocument());
             QFileInfo fileInfo(fileName);
+            // save this as the previous directory
             previousDirectory = fileInfo.absolutePath();
+            QSettings settings;
+            settings.setValue("app/previousDirectory", previousDirectory);
+
 			QString title = fileInfo.fileName();
 			QFontMetrics fm (tabWidget->font());
 
