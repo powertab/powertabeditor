@@ -47,20 +47,26 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     undoStack = new QUndoStack();
     connect(undoStack, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
 
-    CreateActions();
-    CreateMenus();
-    CreateTabArea();
+	skinManager = new SkinManager();
+
+	QString skin("default");
+	if (!skinManager->openSkin(skin))
+		qDebug() << "Failed to load skin: " << skin;
+
+	CreateActions();
+	CreateMenus();
+	CreateTabArea();
 
 	preferencesDialog = new PreferencesDialog();
 
 	setMinimumSize(800, 600);
 	setWindowState(Qt::WindowMaximized);
-	setWindowTitle(tr("Power Tab Editor"));
+	setWindowTitle(tr("Power Tab Editor 2.0"));
 
 	horSplitter = new QSplitter();
 	horSplitter->setOrientation(Qt::Horizontal);
 
-	toolBox = new Toolbox();
+	toolBox = new Toolbox(0,skinManager);
 	horSplitter->addWidget(toolBox);
 	horSplitter->addWidget(tabWidget);
 
@@ -191,16 +197,7 @@ void PowerTabEditor::CreateTabArea()
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
 
-	QFile data(":stylesheets/tab.txt");
-	QString style;
-
-	if(data.open(QFile::ReadOnly))
-	{
-		QTextStream styleIn(&data);
-		style = styleIn.readAll();
-		data.close();
-		tabWidget->setStyleSheet(style);
-	}
+	tabWidget->setStyleSheet(skinManager->getTopTabStyle());
 
     // creates a new document by default
     /*ScoreArea* score = new ScoreArea;
@@ -304,6 +301,15 @@ void PowerTabEditor::switchTab(int index)
 {
     documentManager.setCurrentDocumentIndex(index);
     mixerList->setCurrentIndex(index);
+
+	if(documentManager.getCurrentDocument())
+	{
+		QString title(documentManager.getCurrentDocument()->GetFileName().c_str());
+		title.remove(0,title.lastIndexOf("/")+1);
+		setWindowTitle(title+tr(" - Power Tab Editor 2.0"));
+	}
+	else
+		setWindowTitle(tr("Power Tab Editor 2.0"));
 }
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()

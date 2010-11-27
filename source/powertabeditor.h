@@ -5,6 +5,7 @@
 #include <QSplitter>
 
 #include "documentmanager.h"
+#include "skinmanager.h"
 #include "dialogs/preferencesdialog.h"
 #include "widgets/toolbox/toolbox.h"
 
@@ -81,6 +82,9 @@ private:
     PreferencesDialog* preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in
     QStackedWidget* mixerList;
+
+private:
+	SkinManager* skinManager;
 };
 
 #endif // POWERTABEDITOR_H

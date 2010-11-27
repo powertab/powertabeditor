@@ -21,7 +21,10 @@ DocumentManager::~DocumentManager()
 
 PowerTabDocument* DocumentManager::getCurrentDocument()
 {
-    return documentList[currentDocumentIndex];
+	if (currentDocumentIndex < 0 || currentDocumentIndex >= documentList.size())
+		return NULL;
+	else
+		return documentList[currentDocumentIndex];
 }
 
 void DocumentManager::Remove(uint32_t index)

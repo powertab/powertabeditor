@@ -62,6 +62,7 @@ SOURCES += main.cpp\
     widgets/toolbox/notepage.cpp \
     widgets/mixer/mixerinstrument.cpp \
     widgets/mixer/mixer.cpp \
+    skinmanager.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -114,7 +115,8 @@ HEADERS  += powertabeditor.h \
     widgets/mixer/mixerinstrument.h \
     widgets/toolbox/toolbox.h \
     widgets/toolbox/scorepage.h \
-    widgets/toolbox/notepage.h
+    widgets/toolbox/notepage.h \
+    skinmanager.h
 
 RESOURCES += \
     resources.qrc
