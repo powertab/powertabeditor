@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QPen>
+#include <QStringBuilder>
 
 #include "../dialogs/barlinedialog.h"
 #include "../powertabdocument/barline.h"
@@ -81,6 +82,17 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     if (barLine->IsFreeTimeBar())
     {
         painter->setPen(Qt::DashLine);
+    }
+
+    // print the repeat count for repeat end bars
+    if (barLine->IsRepeatEnd())
+    {
+        QFont repeatFont("Liberation Sans");
+        repeatFont.setPixelSize(8.5);
+        painter->setFont(repeatFont);
+
+        const QString message = QString().setNum(barLine->GetRepeatCount()) % "x";
+        painter->drawText(3, -3, message);
     }
 
     QVector<QLine> lines(2);
