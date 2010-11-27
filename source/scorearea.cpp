@@ -14,6 +14,7 @@
 #include "powertabdocument/system.h"
 #include "powertabdocument/staff.h"
 #include "painters/caret.h"
+#include "painters/keysignaturepainter.h"
 
 
 #include <QtOpenGL/QGLWidget>
@@ -25,7 +26,7 @@ ScoreArea::ScoreArea(QWidget *parent) :
     setCacheMode(QGraphicsView::CacheBackground);
 
     setScene(&scene);
-	setRenderHints(QPainter::HighQualityAntialiasing);
+    setRenderHints(QPainter::HighQualityAntialiasing);
 }
 
 void ScoreArea::RenderDocument()
@@ -144,6 +145,11 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
         firstBarLine->setPos(system->GetFirstPositionX() - currentStaffInfo.positionWidth, currentStaffInfo.getStdNotationLineHeight(1));
     }
     scene.addItem(firstBarLine);
+
+    // draw key signature
+    KeySignaturePainter *firstKeySig = new KeySignaturePainter(currentStaffInfo, system->GetStartBarRef().GetKeySignatureConstRef());
+    firstKeySig->setPos(system->GetRect().GetLeft() + system->GetClefWidth(), currentStaffInfo.getStdNotationLineHeight(1));
+    scene.addItem(firstKeySig);
 
     for (uint32_t i=0; i < system->GetBarlineCount(); i++)
     {

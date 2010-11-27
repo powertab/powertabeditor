@@ -2,9 +2,9 @@
 // Name:            keysignature.h
 // Purpose:         Stores and renders a key signature
 // Author:          Brad Larsen
-// Modified by:     
+// Modified by:
 // Created:         Dec 10, 2004
-// RCS-ID:          
+// RCS-ID:
 // Copyright:       (c) Brad Larsen
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ public:
         majorKey                = (uint8_t)0,        ///< Key signature is a major key type (i.e. C major)
         minorKey                = (uint8_t)1         ///< Key signature is a minor key type (i.e. A minor)
     };
-    
+
     enum keyAccidentals
     {
         noAccidentals           = (uint8_t)0,        ///< Key signature uses no accidentals
@@ -55,7 +55,7 @@ public:
         sixFlats                = (uint8_t)13,       ///< Key signature uses 6 flats
         sevenFlats              = (uint8_t)14        ///< Key signature uses 7 flats
     };
-        
+
 // Member Variables
 protected:
     uint8_t m_data;      ///< Stores all data required by the key signature (see the flags enum for the meaning of the individual bits)
@@ -75,13 +75,13 @@ public:
 // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                            
+    string GetMFCClassName() const
         {return "CKeySignature";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
-    uint16_t GetMFCClassSchema() const                            
+    uint16_t GetMFCClassSchema() const
         {return ((uint16_t)1);}
-    
+
 // Serialization Functions
     bool Serialize(PowerTabOutputStream& stream);
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
@@ -94,126 +94,157 @@ public:
     /// another KeySignature object
     /// @param keySignature KeySignature object to compare with
     /// @return True if the key signatures have the same key, false if not
-    bool IsSameKey(const KeySignature& keySignature) const              
+    bool IsSameKey(const KeySignature& keySignature) const
     {
         return ((GetKeyType() == keySignature.GetKeyType()) &&
             (GetKeyAccidentals() == keySignature.GetKeyAccidentals()));
     }
     bool GetDrawKey(uint8_t& keyType, uint8_t& keyAccidentals) const;
-    
+
 // Type Functions
     /// Deteremines if a key type is valid
     /// @param keyType The key type to validate
     /// @return True if the key type is valid, false if not
-    static bool IsValidKeyType(uint8_t keyType)                          
+    static bool IsValidKeyType(uint8_t keyType)
         {return ((keyType == majorKey) || (keyType == minorKey));}
     bool SetKeyType(uint8_t keyType);
     /// Gets the key type for the key signature (majorKey vs minorKey)
     /// @return majorKey (see enum) if the key signature is a majorKey key,
     /// minorKey (see enum) if the key signature is a minorKey key
-    uint8_t GetKeyType() const                                           
+    uint8_t GetKeyType() const
         {return (uint8_t)((m_data & keyTypeMask) >> 6);}
     /// Determines if the key signature is a majorKey key
     /// @return True if the key signature is a majorKey key, false if not
-    bool IsMajorKey() const                                             
+    bool IsMajorKey() const
         {return (GetKeyType() == majorKey);}
     /// Determines if the key signature is a minorKey key
     /// @return True if the key signature is a minorKey key, false if not
-    bool IsMinorKey() const                                             
+    bool IsMinorKey() const
         {return (GetKeyType() == minorKey);}
-    
+
 // Accidentals Functions
     /// Determines if a key accidentals value is valid
     /// @param keyAccidentals Key accidentals value to validate
     /// @return True if the key accidentals value is validate, false if not
-    static bool IsValidKeyAccidentals(uint8_t keyAccidentals)            
+    static bool IsValidKeyAccidentals(uint8_t keyAccidentals)
         {return (keyAccidentals <= sevenFlats);}
     bool SetKeyAccidentals(uint8_t keyAccidentals);
     uint8_t GetKeyAccidentals() const;
     /// Determines if the key signature uses no accidentals
     /// @return True if the key signature uses no accidentals, false if not
-    bool HasNoKeyAccidentals() const                                    
+    bool HasNoKeyAccidentals() const
         {return (GetKeyAccidentals() == noAccidentals);}
     /// Determines if the key signature has one sharp
     /// @return True if the key signature has one sharp, false if not
-    bool HasOneSharp() const                                            
+    bool HasOneSharp() const
         {return (GetKeyAccidentals() == oneSharp);}
     /// Determines if the key signature has two sharps
     /// @return True if the key signature has two sharps, false if not
-    bool HasTwoSharps() const                                           
+    bool HasTwoSharps() const
         {return (GetKeyAccidentals() == twoSharps);}
     /// Determines if the key signature has three sharps
     /// @return True if the key signature has three sharps, false if not
-    bool HasThreeSharps() const                                         
+    bool HasThreeSharps() const
         {return (GetKeyAccidentals() == threeSharps);}
     /// Determines if the key signature has four sharps
     /// @return True if the key signature has four sharps, false if not
-    bool HasFourSharps() const                                          
+    bool HasFourSharps() const
         {return (GetKeyAccidentals() == fourSharps);}
     /// Determines if the key signature has five sharps
     /// @return True if the key signature has five sharps, false if not
-    bool HasFiveSharps() const                                          
+    bool HasFiveSharps() const
         {return (GetKeyAccidentals() == fiveSharps);}
     /// Determines if the key signature has six sharps
     /// @return True if the key signature has six sharps, false if not
-    bool HasSixSharps() const                                           
+    bool HasSixSharps() const
         {return (GetKeyAccidentals() == sixSharps);}
     /// Determines if the key signature has seven sharps
     /// @return True if the key signature has seven sharps, false if not
-    bool HasSevenSharps() const                                         
+    bool HasSevenSharps() const
         {return (GetKeyAccidentals() == sevenSharps);}
     /// Determines if the key signature has one flat
     /// @return True if the key signature has one flat, false if not
-    bool HasOneFlat() const                                             
+    bool HasOneFlat() const
         {return (GetKeyAccidentals() == oneFlat);}
     /// Determines if the key signature has two flats
     /// @return True if the key signature has two flats, false if not
-    bool HasTwoFlats() const                                            
+    bool HasTwoFlats() const
         {return (GetKeyAccidentals() == twoFlats);}
     /// Determines if the key signature has three flats
     /// @return True if the key signature has three flats, false if not
-    bool HasThreeFlats() const                                          
+    bool HasThreeFlats() const
         {return (GetKeyAccidentals() == threeFlats);}
     /// Determines if the key signature has four flats
     /// @return True if the key signature has four flats, false if not
-    bool HasFourFlats() const                                           
+    bool HasFourFlats() const
         {return (GetKeyAccidentals() == fourFlats);}
     /// Determines if the key signature has five flats
     /// @return True if the key signature has five flats, false if not
-    bool HasFiveFlats() const                                           
+    bool HasFiveFlats() const
         {return (GetKeyAccidentals() == fiveFlats);}
     /// Determines if the key signature has six flats
     /// @return True if the key signature has six flats, false if not
-    bool HasSixFlats() const                                            
+    bool HasSixFlats() const
         {return (GetKeyAccidentals() == sixFlats);}
     /// Determines if the key signature has seven flats
     /// @return True if the key signature has seven flats, false if not
-    bool HasSevenFlats() const                                          
+    bool HasSevenFlats() const
         {return (GetKeyAccidentals() == sevenFlats);}
-    
+
+    /// Determines if the key signature uses flats
+    /// @return True if the key signature uses flats, false if not
+    bool UsesFlats() const
+    {
+        return (GetKeyAccidentals() >= oneFlat && GetKeyAccidentals() <= sevenFlats);
+    }
+    /// Determines if the key signature uses sharps
+    /// @return True if the key signature uses sharps, false if not
+    bool UsesSharps() const
+    {
+        return (GetKeyAccidentals() >= oneSharp && GetKeyAccidentals() <= sevenSharps);
+    }
+
+    /// Determines the number of accidentals in the key signature
+    /// @return The number of accidentals in the key signature
+    int NumberOfAccidentals() const
+    {
+        if (UsesFlats())
+        {
+            return GetKeyAccidentals() - oneFlat + 1;
+        }
+        else if (UsesSharps())
+        {
+            return GetKeyAccidentals() - oneSharp + 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
 // Show/Hide Functions
     /// Makes the key signature visible
-    void Show()                                                         
+    void Show()
         {SetFlag(show);}
     /// Makes the key signature invisible
-    void Hide()                                                         
+    void Hide()
         {ClearFlag(show);}
     /// Determines if the key signature is shown
     /// @return True if the key signature is shown, false if not
-    bool IsShown() const                                                
+    bool IsShown() const
         {return (IsFlagSet(show));}
 
 // Cancellation Functions
     /// Sets or clears the cancellation on a key signature
     /// @param set If true, makes the key signature a cancellation, otherwise
     /// clears the cancellation
-    void SetCancellation(bool set = true)                               
+    void SetCancellation(bool set = true)
         {if (set) SetFlag(cancellation); else ClearFlag(cancellation);}
     /// Determines if the key signature is a cancellation
     /// @return True if the key signature is a cancellation, false if not
-    bool IsCancellation() const                                         
+    bool IsCancellation() const
         {return (IsFlagSet(cancellation));}
-        
+
 // Operations
     string GetText() const;
     int GetWidth() const;
@@ -223,20 +254,20 @@ protected:
     /// Determines if a flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not
-    static bool IsValidFlag(uint8_t flag)                                
+    static bool IsValidFlag(uint8_t flag)
         {return ((flag == show) || (flag == cancellation));}
     /// Sets a flag used by the KeySignature object
     /// @param flag The flag to set
-    bool SetFlag(uint8_t flag)                                           
+    bool SetFlag(uint8_t flag)
         {CHECK_THAT(IsValidFlag(flag), false); m_data |= flag; return (true);}
     /// Clears a flag used by the KeySignature object
     /// @param flag The flag to clear
-    bool ClearFlag(uint8_t flag)                                         
+    bool ClearFlag(uint8_t flag)
         {CHECK_THAT(IsValidFlag(flag), false); m_data &= ~flag; return (true);}
     /// Determines if a flag used by the KeySignature object is set
     /// @param flag The flag to test
     /// @return True if the flag is set, false if not
-    bool IsFlagSet(uint8_t flag) const                                   
+    bool IsFlagSet(uint8_t flag) const
         {CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
 };
 

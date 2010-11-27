@@ -6,10 +6,8 @@
 
 MusicFont::MusicFont()
 {
-    //QFontDatabase fontDatabase;
     musicNotationFont = QFont("Emmentaler");
     musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
-    //musicNotationFont = fontDatabase.font("Emmentaler", "", 16);
 }
 
 QChar MusicFont::getSymbol(MusicSymbol identifier)

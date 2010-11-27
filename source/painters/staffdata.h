@@ -47,6 +47,11 @@ public:
         return (topEdge + stdNotationStaffAboveSpacing + (lineNumber - 1) * stdNotationLineSpacing);
     }
 
+    double getStdNotationSpaceHeight(int spaceNumber) const
+    {
+        return (getStdNotationLineHeight(spaceNumber) + getStdNotationLineHeight(spaceNumber + 1)) / 2;
+    }
+
     int getTopStdNotationLine() const
     {
         return getStdNotationLineHeight(1);

@@ -24,6 +24,9 @@ public:
         TabClef = 0xe1ad,
         CommonTime = 0xe1af,
         CutTime = 0xe1b0,
+        WholeNote = 0xe134,
+        HalfNote = 0xe135,
+        QuarterNoteOrLess = 0xe136,
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol
@@ -31,6 +34,7 @@ public:
 
     void setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size = DEFAULT_FONT_SIZE);
     void setNumericText(QGraphicsSimpleTextItem* text, QString number, int size = DEFAULT_FONT_SIZE);
+    QFont& getFont() { return musicNotationFont; }
 
 private:
     QFont musicNotationFont;
