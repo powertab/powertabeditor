@@ -6,7 +6,7 @@
 #include <QSlider>
 #include <QDial>
 
-#include "powertabdocument/guitar.h"
+#include "../../powertabdocument/guitar.h"
 
 MixerInstrument::MixerInstrument(Guitar* guitar, QWidget *parent) :
     QWidget(parent)

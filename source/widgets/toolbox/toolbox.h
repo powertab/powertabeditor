@@ -3,9 +3,9 @@
 
 #include <QTabWidget>
 
-#include "skinmanager.h"
-#include "widgets/toolbox/notepage.h"
-#include "widgets/toolbox/scorepage.h"
+#include "../../skinmanager.h"
+#include "notepage.h"
+#include "scorepage.h"
 
 class Toolbox : public QTabWidget
 {
