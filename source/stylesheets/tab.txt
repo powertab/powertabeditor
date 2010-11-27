@@ -10,8 +10,8 @@ QTabWidget::pane { /* The tab widget frame */
      it reads QTabBar _not_ QTabWidget */
  QTabBar::tab {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 #D1D1D1, stop: 0.4 #CCCCCC,
-                                 stop: 0.5 #C8C8C8, stop: 1.0 #C3C3C3);
+                                 stop: 0 #CACACA, stop: 0.49 #CFCFCF,
+                                 stop: 0.5 #B8B8B8, stop: 1.0 #838383);
      border: 1px solid #C4C4C3;
      border-bottom-color: #C2C7CB; /* same as the pane color */
      border-top-left-radius: 4px;
@@ -23,10 +23,10 @@ QTabWidget::pane { /* The tab widget frame */
 
  QTabBar::tab:hover {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 #F1F1F1, stop: 0.4 #EEEEEE,
-                                 stop: 0.5 #E8E8E8, stop: 1.0 #E3E3E3);
+                                 stop: 0 #CACACA, stop: 0.49 #CFCFCF,
+                                 stop: 0.5 #B8B8B8, stop: 1.0 #AFAB96);
 
-     border-color: #9B9B9B;
+     border-color: #C4C4C3;
      border-bottom-color: #C2C7CB; /* same as pane color */
      margin-top: 3px;
      font-weight: normal;
@@ -35,8 +35,8 @@ QTabWidget::pane { /* The tab widget frame */
 
  QTabBar::tab:selected {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 #F1F1F1, stop: 0.4 #EEEEEE,
-                                 stop: 0.5 #E8E8E8, stop: 1.0 #E3E3E3);
+                                 stop: 0 #F1F1F1, stop: 0.49 #EEEEEE,
+                                 stop: 0.5 #DFDFDF, stop: 1.0 #CCCCCC);
 
      border-color: #9B9B9B;
      border-bottom-color: #C2C7CB; /* same as pane color */

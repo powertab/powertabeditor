@@ -7,7 +7,6 @@
         <file alias="tab.txt">stylesheets/tab.txt</file>
     </qresource>
     <qresource prefix="/images">
-        <file alias="tab_close_button.png">images/tab_close_button.png</file>
         <file alias="8th_note.gif">images/8th_note.gif</file>
         <file alias="16th_note.gif">images/16th_note.gif</file>
         <file alias="64th_note.gif">images/64th_note.gif</file>
@@ -39,6 +38,7 @@
         <file alias="tremolo.gif">images/tremolo.gif</file>
         <file alias="trill.gif">images/trill.gif</file>
         <file alias="widevibrato.gif">images/widevibrato.gif</file>
+        <file alias="tab_close_button.png">images/tab_close_button.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="toolbox_note.png">icons/toolbox_note.png</file>
