@@ -24,7 +24,7 @@ QTabWidget::pane { /* The tab widget frame */
  QTabBar::tab:hover {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                  stop: 0 #CACACA, stop: 0.49 #CFCFCF,
-                                 stop: 0.5 #B8B8B8, stop: 1.0 #AFAB96);
+                                 stop: 0.5 #B8B8B8, stop: 1.0 #9396AF);
 
      border-color: #C4C4C3;
      border-bottom-color: #C2C7CB; /* same as pane color */

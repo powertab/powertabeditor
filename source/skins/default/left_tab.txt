@@ -3,14 +3,15 @@ QTabWidget::pane { /* The tab widget frame */
  }
 
  QTabWidget::tab-bar {
-     left: 5px; /* move to the right by 5px */
+     top: 3px;
+     /*left: 5px;*/ /* move to the right by 5px */
  }
 
  /* Style the tab using the tab sub-control. Note that
      it reads QTabBar _not_ QTabWidget */
  QTabBar::tab {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 #CACACA, stop: 0.49 #CFCFCF,
+                                 stop: 0 #CACACA, stop: 0.499 #CFCFCF,
                                  stop: 0.5 #B8B8B8, stop: 1.0 #838383);
      border: 1px solid #C4C4C3;
      /* border-bottom-color: #C2C7CB; */ /* same as the pane color */
@@ -18,56 +19,39 @@ QTabWidget::pane { /* The tab widget frame */
      border-bottom-left-radius: 4px;
      /* min-width: 8ex; */
      /* width: 200px; */
-     padding: 4px;
+     /* padding: 4px; */
  }
 
  QTabBar::tab:hover {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 #CACACA, stop: 0.49 #CFCFCF,
-                                 stop: 0.5 #B8B8B8, stop: 1.0 #AFAB96);
+                                 stop: 0 #CACACA, stop: 0.499 #CFCFCF,
+                                 stop: 0.5 #B8B8B8, stop: 1.0 #9396AF);
 
      border-color: #C4C4C3;
      /* border-bottom-color: #C2C7CB; */ /* same as pane color */
-     margin-top: 3px;
+     /* margin-top: 3px; */
      /* font-weight: normal; */
     
  }
 
  QTabBar::tab:selected {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 #F1F1F1, stop: 0.49 #EEEEEE,
+                                 stop: 0 #F1F1F1, stop: 0.499 #EEEEEE,
                                  stop: 0.5 #DFDFDF, stop: 1.0 #CCCCCC);
 
      border-color: #9B9B9B;
      /* border-bottom-color: #C2C7CB; */ /* same as pane color */
-     margin-top: 3px;
+     /* margin-top: 3px; */
+     margin-left: 2px;
      /* font-weight: bold; */
+     /* margin-left: 0; */
+     /* margin-top: 3px; */
+     margin-left: 2px;
+     /* margin-top: 3px; */
  }
 
  QTabBar::tab:!selected {
-     margin-top: 5px;
+     /* margin-top: 5px; */
+     margin-left: 2px;
      /* font-weight: normal; */
- }
-
- /* make use of negative margins for overlapping tabs */
- QTabBar::tab:selected {
-     /* expand/overlap to the left and right by 2px */
-     margin-left: -3px;
-     margin-right: -3px;
-     margin-top: 3px;
- }
-
- QTabBar::tab:first:selected {
-     margin-left: 0;
-     margin-top: 3px;
- }
-
- QTabBar::tab:last:selected {
-     margin-right: 0;
-     margin-top: 3px;
- }
-
- QTabBar::tab:only-one {
-     margin: 0;
-     margin-top: 3px;
  }
