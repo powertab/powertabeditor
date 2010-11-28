@@ -58,6 +58,7 @@ private slots:
 	void playbackSong();
 
 private:
+	QList<unsigned int> oldNotes;
 	bool isPlaying;
 	QTimer* songTimer;
 

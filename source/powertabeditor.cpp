@@ -343,13 +343,16 @@ void PowerTabEditor::startStopPlayback()
 
 	if (isPlaying)
 	{
-		playPauseAct->setText("Pause");
+		playPauseAct->setText(tr("Pause"));
 
 		playNotesAtCurrentPosition();
 	}
 	else
 	{
-		playPauseAct->setText("Play");
+		playPauseAct->setText(tr("Play"));
+
+		for (int i = 0; i < oldNotes.size(); ++i)
+			rtMidiWrapper->stopNote(0,oldNotes.at(i));
 
 		songTimer->stop();
 	}
@@ -420,7 +423,10 @@ void PowerTabEditor::playNotesAtCurrentPosition()
 		rtMidiWrapper->setPatch(0,guitar->GetPreset());
 
 		if (!position->GetNote(i)->IsTied())
+		{
 			rtMidiWrapper->playNote(0,pitch+position->GetNote(i)->GetFretNumber(),127);
+			oldNotes.push_back(pitch+position->GetNote(i)->GetFretNumber());
+		}
 	}
 
 	TempoMarker* tempo_marker=getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
@@ -430,6 +436,9 @@ void PowerTabEditor::playNotesAtCurrentPosition()
 
 void PowerTabEditor::playbackSong()
 {
+	for (int i = 0; i < oldNotes.size(); ++i)
+		rtMidiWrapper->stopNote(0,oldNotes.at(i));
+
 	if (!moveCaretRight())
 	{
 		if(!moveCaretToNextSection())
@@ -438,6 +447,8 @@ void PowerTabEditor::playbackSong()
 			return;
 		}
 	}
+
+	oldNotes.clear();
 
 	playNotesAtCurrentPosition();
 }
