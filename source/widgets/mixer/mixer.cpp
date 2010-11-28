@@ -20,3 +20,8 @@ void Mixer::AddInstrument(Guitar *guitar)
 
     channelList.push_back(channel);
 }
+
+Guitar* Mixer::getInstrument(int index)
+{
+    return channelList.at(index)->getInstrument();
+}

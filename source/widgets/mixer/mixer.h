@@ -14,6 +14,7 @@ public:
     Mixer(QWidget *parent = 0);
 
     void AddInstrument(Guitar* guitar);
+    Guitar* getInstrument(int index);
 
 protected:
     QList<MixerInstrument *> channelList;

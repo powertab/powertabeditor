@@ -14,7 +14,8 @@ class MixerInstrument : public QWidget
 {
     Q_OBJECT
 public:
-    MixerInstrument(Guitar* guitar, QWidget *parent = 0);
+    MixerInstrument(Guitar* instrument, QWidget *parent = 0);
+    Guitar* getInstrument() { return guitar; }
 
 protected:
     QHBoxLayout* layout;
@@ -28,11 +29,14 @@ protected:
     QSlider* trackVolume;
     QDial* trackPan;
 
-
+    Guitar* guitar;
 
 signals:
 
 public slots:
+
+    void changePan(int value);
+    void changeVolume(int value);
 
 };
 
