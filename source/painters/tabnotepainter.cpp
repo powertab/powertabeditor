@@ -39,5 +39,6 @@ void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(widget);
 
     painter->setFont(tabFont);
-    painter->drawText(0, 0, QString().setNum(note->GetFretNumber()));
+    // offset height by 1 pixel for clarity
+    painter->drawText(0, -1, QString().setNum(note->GetFretNumber()));
 }
