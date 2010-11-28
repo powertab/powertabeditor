@@ -415,21 +415,11 @@ void PowerTabEditor::playNotesAtCurrentPosition()
 	{
 		Note* note=position->GetNote(i);
 
-		int pitch;
+		unsigned int pitch;
 
-		// standard tuning for now
-		if (note->GetString() == 0)
-			pitch = 64;
-		else if (note->GetString() == 1)
-			pitch = 59;
-		else if (note->GetString() == 2)
-			pitch = 55;
-		else if (note->GetString() == 3)
-			pitch = 50;
-		else if (note->GetString() == 4)
-			pitch = 45;
-		else if (note->GetString() == 5)
-			pitch = 40;
+		Guitar* guitar=getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(0);
+
+		pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
 
 		rtMidiWrapper->playNote(0,pitch+note->GetFretNumber(),127);
 	}
