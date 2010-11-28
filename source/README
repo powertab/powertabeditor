@@ -1,6 +1,7 @@
 BUILDING:
 - Download and install the Qt SDK for your platform (http://qt.nokia.com/downloads, choose the LGPL-licensed version)
 	- this includes the QtCreator IDE and the Qt libraries and tools
+- for Linux systems, ensure that ALSA libraries and headers (i.e. libasound2 and libasound2-dev) are installed
 - Open the powertabeditor.pro file in QtCreator, and choose Build / Build All
 - Then, either use Debug / Start Debugging, or Build / Run to run the program
 

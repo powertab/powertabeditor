@@ -12,8 +12,11 @@ TEMPLATE = app
 QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__
 QMAKE_CXXFLAGS_RELEASE+=-O2
 
-DEFINES+=__WINDOWS_MM__
+# RtMidi configuration
+win32:DEFINES +=__WINDOWS_MM__
 win32:LIBS += -lwinmm
+unix:DEFINES += __LINUX_ALSASEQ__
+unix:LIBS += -lasound -lpthread
 
 SOURCES += main.cpp\
         powertabeditor.cpp \
@@ -140,12 +143,16 @@ RESOURCES += \
     OR = else
     MAKE_DIR = mkdir
     COPY = xcopy /E /Y
+    THEN = (
+    DONE_IF = )
     }
     unix {
     CHECK_DIR_EXIST = test -d
     OR = ||
     MAKE_DIR = mkdir
     COPY = cp -r -u
+    THEN = &&
+    DONE_IF = ''
     }
 
 
@@ -158,7 +165,8 @@ RESOURCES += \
 
     # specify files for copying
     SOURCE_SKINS = $${PWD}/skins
-    DEST_SKINS = $${OUT_PWD}/$${BUILD_TYPE}/skins
+    win32:DEST_SKINS = $${OUT_PWD}/$${BUILD_TYPE}/skins
+    unix:DEST_SKINS = $${OUT_PWD}/
 
     # replace '/' with '\' in Windows paths
     win32 {
@@ -171,6 +179,6 @@ RESOURCES += \
     COPY_COMPILED_TRANSLATIONS = $$COPY $$SOURCE_SKINS $$DEST_SKINS
 
     QMAKE_POST_LINK += $$CHECK_DEST_SKINS_DIR_EXIST \
-    ($$COPY_COMPILED_TRANSLATIONS) $${OR} \
-    ($$MAKE_DEST_SKINS_DIR && $$COPY_COMPILED_TRANSLATIONS)
+    $${THEN} $$COPY_COMPILED_TRANSLATIONS $${DONE_IF} $${OR} \
+    $$MAKE_DEST_SKINS_DIR && $$COPY_COMPILED_TRANSLATIONS
 }
