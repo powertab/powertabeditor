@@ -261,21 +261,21 @@ void PowerTabEditor::OpenFile()
 				title.append("...");
 
 			tabWidget->addTab(score, title);
-        }
 
-        // add the guitars to a new mixer
-        Mixer* mixer = new Mixer;
-        QScrollArea* scrollArea = new QScrollArea;
-        PowerTabDocument* doc = documentManager.getCurrentDocument();
-        for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
-        {
-            mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
-        }
-        scrollArea->setWidget(mixer);
-        mixerList->addWidget(scrollArea);
+			// add the guitars to a new mixer
+			Mixer* mixer = new Mixer;
+			QScrollArea* scrollArea = new QScrollArea;
+			PowerTabDocument* doc = documentManager.getCurrentDocument();
+			for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
+			{
+				mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
+			}
+			scrollArea->setWidget(mixer);
+			mixerList->addWidget(scrollArea);
 
-        // switch to the new document
-        tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
+			// switch to the new document
+			tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
+        }
     }
 }
 
