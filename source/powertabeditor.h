@@ -40,6 +40,7 @@ private slots:
     void RefreshOnUndoRedo(int);
     void closeTab(int index);
     void switchTab(int index);
+	void startStopPlayback();
     void moveCaretRight();
     void moveCaretLeft();
     void moveCaretDown();
@@ -53,6 +54,8 @@ private slots:
     void moveCaretToLastSection();
 
 private:
+	bool isPlaying;
+
     DocumentManager documentManager;
     QMenu* fileMenu;
     QAction* openFileAct;
@@ -62,6 +65,9 @@ private:
     QMenu* editMenu;
     QAction* undoAct;
     QAction* redoAct;
+
+	QMenu* playbackMenu;
+	QAction* playPauseAct;
 
     QMenu* positionMenu;
     QMenu* positionSectionMenu; // menu options for navigating between sections
@@ -83,7 +89,6 @@ private:
     QString previousDirectory; // previous directory that a file was opened in
     QStackedWidget* mixerList;
 
-private:
 	SkinManager* skinManager;
 };
 

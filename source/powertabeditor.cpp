@@ -57,6 +57,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 	CreateMenus();
 	CreateTabArea();
 
+	isPlaying = false;
+
 	preferencesDialog = new PreferencesDialog();
 
 	setMinimumSize(800, 600);
@@ -116,6 +118,11 @@ void PowerTabEditor::CreateActions()
     redoAct = undoStack->createRedoAction(this, tr("&Redo"));
     redoAct->setShortcuts(QKeySequence::Redo);
 
+	// Playback-related actions
+	playPauseAct = new QAction(tr("Play"), this);
+	playPauseAct->setShortcut(QKeySequence(Qt::Key_Space));
+	connect(playPauseAct, SIGNAL(triggered()), this, SLOT(startStopPlayback()));
+
     // Section navigation actions
     firstSectionAct = new QAction(tr("First Section"), this);
     firstSectionAct->setShortcuts(QKeySequence::MoveToStartOfDocument);
@@ -155,7 +162,7 @@ void PowerTabEditor::CreateActions()
     connect(prevStringAct, SIGNAL(triggered()), this, SLOT(moveCaretUp()));
 
     lastPositionAct = new QAction(tr("Move to &End"), this);
-    lastPositionAct->setShortcuts(QKeySequence::MoveToEndOfLine);
+	lastPositionAct->setShortcuts(QKeySequence::MoveToEndOfLine);
     connect(lastPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToEnd()));
 }
 
@@ -173,6 +180,10 @@ void PowerTabEditor::CreateMenus()
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
+
+	// Playback Menu
+	playbackMenu = menuBar()->addMenu(tr("Play&back"));
+	playbackMenu->addAction(playPauseAct);
 
     // Position Menu
     positionMenu = menuBar()->addMenu(tr("&Position"));
@@ -266,8 +277,6 @@ void PowerTabEditor::OpenFile()
         // switch to the new document
         tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
     }
-
-
 }
 
 // Opens the preferences dialog
@@ -317,6 +326,24 @@ void PowerTabEditor::switchTab(int index)
 ScoreArea* PowerTabEditor::getCurrentScoreArea()
 {
     return reinterpret_cast<ScoreArea*>(tabWidget->currentWidget());
+}
+
+void PowerTabEditor::startStopPlayback()
+{
+	isPlaying = !isPlaying;
+
+	// TODO - implement actual playback
+
+	if (isPlaying)
+	{
+		qDebug() << "Playback started";
+		playPauseAct->setText("Pause");
+	}
+	else
+	{
+		qDebug() << "Playback stopped";
+		playPauseAct->setText("Play");
+	}
 }
 
 void PowerTabEditor::moveCaretRight()
