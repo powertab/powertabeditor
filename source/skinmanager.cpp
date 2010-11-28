@@ -19,7 +19,9 @@ bool SkinManager::openSkin(QString filename)
 		data.close();
 	}
 	else
+	{
 		return false;
+	}
 
 	data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+filename+"/left_tab.txt");
 
@@ -30,7 +32,9 @@ bool SkinManager::openSkin(QString filename)
 		data.close();
 	}
 	else
+	{
 		return false;
+	}
 
 	return true;
 }
