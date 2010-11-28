@@ -17,6 +17,8 @@
 #include <QScrollArea>
 #include <QStackedWidget>
 
+#include <QTimer>
+
 #include "powertabeditor.h"
 #include "scorearea.h"
 #include "painters/caret.h"
@@ -59,8 +61,12 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 	rtMidiWrapper = new RtMidiWrapper();
 	rtMidiWrapper->initialize();
+	rtMidiWrapper->setPatch(0,24);
 
 	isPlaying = false;
+
+	songTimer = new QTimer;
+	connect(songTimer,SIGNAL(timeout()),this,SLOT(playbackSong()));
 
 	preferencesDialog = new PreferencesDialog();
 
@@ -335,17 +341,19 @@ void PowerTabEditor::startStopPlayback()
 {
 	isPlaying = !isPlaying;
 
-	// TODO - implement actual playback
-
 	if (isPlaying)
 	{
-		rtMidiWrapper->playNote(0,60,100);
 		playPauseAct->setText("Pause");
+
+		songTimer->start(250);
+
+		playNotesAtCurrentPosition();
 	}
 	else
 	{
-		rtMidiWrapper->stopNote(0,60);
 		playPauseAct->setText("Play");
+
+		songTimer->stop();
 	}
 }
 
@@ -397,4 +405,42 @@ void PowerTabEditor::moveCaretToPrevSection()
 void PowerTabEditor::moveCaretToLastSection()
 {
     getCurrentScoreArea()->getCaret()->moveCaretToLastSection();
+}
+
+void PowerTabEditor::playNotesAtCurrentPosition()
+{
+	Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
+
+	for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
+	{
+		Note* note=position->GetNote(i);
+
+		int pitch;
+
+		// standard tuning for now
+		if (note->GetString() == 0)
+			pitch = 64;
+		else if (note->GetString() == 1)
+			pitch = 59;
+		else if (note->GetString() == 2)
+			pitch = 55;
+		else if (note->GetString() == 3)
+			pitch = 50;
+		else if (note->GetString() == 4)
+			pitch = 45;
+		else if (note->GetString() == 5)
+			pitch = 40;
+
+		rtMidiWrapper->playNote(0,pitch+note->GetFretNumber(),127);
+	}
+}
+
+void PowerTabEditor::playbackSong()
+{
+	if (getCurrentScoreArea()->getCaret()->getCurrentStaff()->IsValidPositionIndex(0, getCurrentScoreArea()->getCaret()->getCurrentPositionIndex()+1))
+		moveCaretRight();
+	else
+		moveCaretToNextSection();
+
+	playNotesAtCurrentPosition();
 }

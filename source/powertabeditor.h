@@ -54,8 +54,12 @@ private slots:
     void moveCaretToPrevSection();
     void moveCaretToLastSection();
 
+	void playNotesAtCurrentPosition();
+	void playbackSong();
+
 private:
 	bool isPlaying;
+	QTimer* songTimer;
 
     DocumentManager documentManager;
     QMenu* fileMenu;

@@ -20,7 +20,7 @@ void TabNotePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 void TabNotePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     QMessageBox message;
-    message.setText("Fret: " + QString().setNum(note->GetFretNumber()) + " String: " + QString().setNum(note->GetString()));
+	message.setText("Fret: " + QString().setNum(note->GetFretNumber()) + " String: " + QString().setNum(note->GetString()));
     message.exec();
 }
 

@@ -57,6 +57,11 @@ public:
         return selectedPosition;
     }
 
+	quint32 getCurrentPositionIndex()
+	{
+		return currentPositionIndex;
+	}
+
     Note* getCurrentNote()
     {
         return selectedNote;
