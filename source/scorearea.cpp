@@ -15,7 +15,7 @@
 #include "powertabdocument/staff.h"
 #include "painters/caret.h"
 #include "painters/keysignaturepainter.h"
-
+#include "painters/timesignaturepainter.h"
 
 #include <QtOpenGL/QGLWidget>
 
@@ -147,9 +147,23 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
     scene.addItem(firstBarLine);
 
     // draw key signature
-    KeySignaturePainter *firstKeySig = new KeySignaturePainter(currentStaffInfo, system->GetStartBarRef().GetKeySignatureConstRef());
-    firstKeySig->setPos(system->GetRect().GetLeft() + system->GetClefWidth(), currentStaffInfo.getStdNotationLineHeight(1));
-    scene.addItem(firstKeySig);
+    const KeySignature& firstKeySig = system->GetStartBarConstRef().GetKeySignatureConstRef();
+    if (firstKeySig.IsShown())
+    {
+        KeySignaturePainter *firstKeySigPainter = new KeySignaturePainter(currentStaffInfo, firstKeySig);
+        firstKeySigPainter->setPos(system->GetRect().GetLeft() + system->GetClefWidth(), currentStaffInfo.getStdNotationLineHeight(1));
+        scene.addItem(firstKeySigPainter);
+    }
+
+    // draw time signature
+    const TimeSignature& firstTimeSig = system->GetStartBarConstRef().GetTimeSignatureConstRef();
+    if (firstTimeSig.IsShown())
+    {
+        TimeSignaturePainter *firstTimeSigPainter = new TimeSignaturePainter(currentStaffInfo, firstTimeSig);
+        firstTimeSigPainter->setPos(system->GetRect().GetLeft() + system->GetClefWidth() + firstKeySig.GetWidth() + 7,
+                             currentStaffInfo.getStdNotationLineHeight(1));
+        scene.addItem(firstTimeSigPainter);
+    }
 
     for (uint32_t i=0; i < system->GetBarlineCount(); i++)
     {
@@ -165,6 +179,14 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig);
             keySigPainter->setPos(x + barLinePainter->boundingRect().width() - 1, currentStaffInfo.getStdNotationLineHeight(1));
             scene.addItem(keySigPainter);
+        }
+
+        const TimeSignature& timeSig = barLine->GetTimeSignatureConstRef();
+        if (timeSig.IsShown())
+        {
+            TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig);
+            timeSigPainter->setPos(x + barLinePainter->boundingRect().width() + keySig.GetWidth() + 2, currentStaffInfo.getStdNotationLineHeight(1));
+            scene.addItem(timeSigPainter);
         }
     }
 
@@ -233,39 +255,6 @@ void ScoreArea::DrawTabClef(int x, StaffData& staffInfo)
     tabClef->setPos(x, staffInfo.getTopTabLine() - 12);
     musicFont.setSymbol(tabClef, MusicFont::TabClef, staffInfo.numOfStrings * 4.25);
     scene.addItem(tabClef);
-}
-
-void ScoreArea::DrawTimeSignature(TimeSignature* timeSignature, int x, int y)
-{
-    // TODO - move this into a painter class
-    QGraphicsSimpleTextItem* time = new QGraphicsSimpleTextItem;
-
-    if (timeSignature->IsCommonTime())
-    {
-        time->setPos(x, y - 15);
-        musicFont.setSymbol(time, MusicFont::CommonTime);
-    }
-    else if (timeSignature->IsCutTime())
-    {
-        time->setPos(x, y - 15);
-        musicFont.setSymbol(time, MusicFont::CutTime);
-    }
-    else
-    {
-        uint8_t beatsPerMeasure = 0;
-        uint8_t beatAmount = 0;
-        timeSignature->GetMeter(beatsPerMeasure, beatAmount);
-
-        time->setPos(x, y - 6);
-        musicFont.setNumericText(time, QString().setNum(beatAmount), 18);
-
-        QGraphicsSimpleTextItem* beats = new QGraphicsSimpleTextItem;
-        beats->setPos(x, y - 20);
-        musicFont.setNumericText(beats, QString().setNum(beatsPerMeasure), 18);
-        scene.addItem(beats);
-    }
-
-    scene.addItem(time);
 }
 
 void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
