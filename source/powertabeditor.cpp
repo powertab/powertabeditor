@@ -309,7 +309,9 @@ void PowerTabEditor::switchTab(int index)
 		setWindowTitle(title+tr(" - Power Tab Editor 2.0"));
 	}
 	else
+	{
 		setWindowTitle(tr("Power Tab Editor 2.0"));
+	}
 }
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()

@@ -12,6 +12,9 @@ TEMPLATE = app
 QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__
 QMAKE_CXXFLAGS_RELEASE+=-O2
 
+DEFINES+=__WINDOWS_MM__
+win32:LIBS += -lwinmm
+
 SOURCES += main.cpp\
         powertabeditor.cpp \
     documentmanager.cpp \
@@ -63,7 +66,9 @@ SOURCES += main.cpp\
     widgets/mixer/mixerinstrument.cpp \
     widgets/mixer/mixer.cpp \
     skinmanager.cpp \
-    painters/keysignaturepainter.cpp
+    painters/keysignaturepainter.cpp \
+    rtmidiwrapper.cpp \
+    rtmidi/rtmidi.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -118,7 +123,10 @@ HEADERS  += powertabeditor.h \
     widgets/toolbox/scorepage.h \
     widgets/toolbox/notepage.h \
     skinmanager.h \
-    painters/keysignaturepainter.h
+    painters/keysignaturepainter.h \
+    rtmidiwrapper.h \
+    rtmidi/rtmidi.h \
+    rtmidi/rterror.h
 
 RESOURCES += \
     resources.qrc
