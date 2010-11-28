@@ -158,6 +158,14 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
         BarlinePainter *barLinePainter = new BarlinePainter(currentStaffInfo, barLine);
         barLinePainter->setPos(x, currentStaffInfo.getStdNotationLineHeight(1));
         scene.addItem(barLinePainter);
+
+        const KeySignature& keySig = barLine->GetKeySignatureConstRef();
+        if (keySig.IsShown())
+        {
+            KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig);
+            keySigPainter->setPos(x + barLinePainter->boundingRect().width() - 1, currentStaffInfo.getStdNotationLineHeight(1));
+            scene.addItem(keySigPainter);
+        }
     }
 
     BarlinePainter *lastBarLine = new BarlinePainter(currentStaffInfo, &system->GetEndBarRef());

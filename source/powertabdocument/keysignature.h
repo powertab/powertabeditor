@@ -22,6 +22,7 @@ class KeySignature : public PowerTabObject
 public:
     // Default constants
     static const uint8_t         DEFAULT_DATA;       ///< Default value for the data member variable
+    static const uint8_t         ACCIDENTAL_WIDTH;   ///< Display width of an accidental
 
     enum flags
     {
@@ -130,6 +131,7 @@ public:
         {return (keyAccidentals <= sevenFlats);}
     bool SetKeyAccidentals(uint8_t keyAccidentals);
     uint8_t GetKeyAccidentals() const;
+    uint8_t GetKeyAccidentalsIncludingCancel() const;
     /// Determines if the key signature uses no accidentals
     /// @return True if the key signature uses no accidentals, false if not
     bool HasNoKeyAccidentals() const

@@ -33,7 +33,7 @@ void KeySignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 
 QRectF KeySignaturePainter::boundingRect() const
 {
-    return QRectF(0, 0, keySignature.GetWidth(), staffInfo.getStdNotationStaffSize());
+    return QRectF(0, -10, keySignature.GetWidth(), staffInfo.getStdNotationStaffSize());
 }
 
 void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -65,9 +65,14 @@ void KeySignaturePainter::adjustHeightOffset(QVector<double>& lst)
 
 void KeySignaturePainter::drawAccidentals(QVector<double>& positions, QChar accidental, QPainter* painter)
 {
-    for(int i = 0; i < keySignature.NumberOfAccidentals(); i++)
+    if (keySignature.IsCancellation()) // display natural if a cancellation occurs
     {
-        painter->drawText(i * 6, positions.at(i), accidental);
+        accidental = MusicFont::Natural; // draw using naturals
+    }
+
+    for(int i = 0; i < keySignature.GetKeyAccidentalsIncludingCancel(); i++)
+    {
+        painter->drawText(i * KeySignature::ACCIDENTAL_WIDTH, positions.at(i), accidental);
     }
 }
 

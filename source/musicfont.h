@@ -18,6 +18,7 @@ public:
         // TODO - add the rest of the symbols
         AccidentalSharp = 0xe10e,
         AccidentalFlat = 0xe11a,
+        Natural = 0xe116,
         Dot = 0xe130,
         TrebleClef = 0xe1a9,
         BassClef = 0xe1a7,
