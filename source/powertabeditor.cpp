@@ -345,8 +345,6 @@ void PowerTabEditor::startStopPlayback()
 	{
 		playPauseAct->setText("Pause");
 
-		songTimer->start(250);
-
 		playNotesAtCurrentPosition();
 	}
 	else
@@ -357,14 +355,14 @@ void PowerTabEditor::startStopPlayback()
 	}
 }
 
-void PowerTabEditor::moveCaretRight()
+bool PowerTabEditor::moveCaretRight()
 {
-    getCurrentScoreArea()->getCaret()->moveCaretHorizontal(1);
+	return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(1);
 }
 
-void PowerTabEditor::moveCaretLeft()
+bool PowerTabEditor::moveCaretLeft()
 {
-    getCurrentScoreArea()->getCaret()->moveCaretHorizontal(-1);
+	return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(-1);
 }
 
 void PowerTabEditor::moveCaretDown()
@@ -392,14 +390,14 @@ void PowerTabEditor::moveCaretToFirstSection()
     getCurrentScoreArea()->getCaret()->moveCaretToFirstSection();
 }
 
-void PowerTabEditor::moveCaretToNextSection()
+bool PowerTabEditor::moveCaretToNextSection()
 {
-    getCurrentScoreArea()->getCaret()->moveCaretSection(1);;
+	return getCurrentScoreArea()->getCaret()->moveCaretSection(1);;
 }
 
-void PowerTabEditor::moveCaretToPrevSection()
+bool PowerTabEditor::moveCaretToPrevSection()
 {
-    getCurrentScoreArea()->getCaret()->moveCaretSection(-1);
+	return getCurrentScoreArea()->getCaret()->moveCaretSection(-1);
 }
 
 void PowerTabEditor::moveCaretToLastSection()
@@ -413,24 +411,33 @@ void PowerTabEditor::playNotesAtCurrentPosition()
 
 	for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
 	{
-		Note* note=position->GetNote(i);
-
-		unsigned int pitch;
-
 		Guitar* guitar=getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(0);
 
-		pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
+		unsigned int pitch = guitar->GetTuning().GetNote(position->GetNote(i)->GetString()) + guitar->GetCapo();
 
-		rtMidiWrapper->playNote(0,pitch+note->GetFretNumber(),127);
+		rtMidiWrapper->setVolume(0,guitar->GetInitialVolume());
+		rtMidiWrapper->setPan(0,guitar->GetPan());
+		rtMidiWrapper->setPatch(0,guitar->GetPreset());
+
+		if (!position->GetNote(i)->IsTied())
+			rtMidiWrapper->playNote(0,pitch+position->GetNote(i)->GetFretNumber(),127);
 	}
+
+	TempoMarker* tempo_marker=getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
+	unsigned int tempo=(unsigned int)((60.0/(float)tempo_marker->GetBeatsPerMinute())*1000.0*4.0);
+	songTimer->start(tempo/getCurrentScoreArea()->getCaret()->getCurrentPosition()->GetDurationType());
 }
 
 void PowerTabEditor::playbackSong()
 {
-	if (getCurrentScoreArea()->getCaret()->getCurrentStaff()->IsValidPositionIndex(0, getCurrentScoreArea()->getCaret()->getCurrentPositionIndex()+1))
-		moveCaretRight();
-	else
-		moveCaretToNextSection();
+	if (!moveCaretRight())
+	{
+		if(!moveCaretToNextSection())
+		{
+			this->startStopPlayback();
+			return;
+		}
+	}
 
 	playNotesAtCurrentPosition();
 }

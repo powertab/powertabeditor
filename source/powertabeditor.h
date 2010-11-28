@@ -42,16 +42,16 @@ private slots:
     void closeTab(int index);
     void switchTab(int index);
 	void startStopPlayback();
-    void moveCaretRight();
-    void moveCaretLeft();
+	bool moveCaretRight();
+	bool moveCaretLeft();
     void moveCaretDown();
     void moveCaretUp();
     void moveCaretToStart();
     void moveCaretToEnd();
 
     void moveCaretToFirstSection();
-    void moveCaretToNextSection();
-    void moveCaretToPrevSection();
+	bool moveCaretToNextSection();
+	bool moveCaretToPrevSection();
     void moveCaretToLastSection();
 
 	void playNotesAtCurrentPosition();

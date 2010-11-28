@@ -19,12 +19,12 @@ public:
 
     void updatePosition();
 
-    void moveCaretHorizontal(int offset);
+	bool moveCaretHorizontal(int offset);
     void moveCaretVertical(int offset);
     void moveCaretToStart();
     void moveCaretToEnd();
 
-    void moveCaretSection(int offset);
+	bool moveCaretSection(int offset);
     void moveCaretToFirstSection();
     void moveCaretToLastSection();
 

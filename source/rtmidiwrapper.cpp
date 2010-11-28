@@ -95,11 +95,8 @@ bool RtMidiWrapper::setVolume (int channel, int volume)
 {
 	if (volume<0)
 		volume=0;
-	else if (volume>100)
-		volume=100;
-
-	// convert volume from range 0-100 into range 0-127 for MIDI
-	volume = (int)((float)volume*1.27f);
+	else if (volume>127)
+		volume=127;
 
 	// MIDI control change
 	// first parameter is 0xB0-0xBF with B being the id and 0-F being the channel (0-15)
@@ -111,13 +108,10 @@ bool RtMidiWrapper::setVolume (int channel, int volume)
 
 bool RtMidiWrapper::setPan (int channel, int pan)
 {
-	if (pan<-100)
-		pan=-100;
-	else if (pan>100)
-		pan=100;
-
-	// convert pan from range -100-100 into range 0-127 for MIDI
-	pan = (int)(((float)(pan+100)/200.0f)*127.0f);
+	if (pan<0)
+		pan=0;
+	else if (pan>127)
+		pan=127;
 
 	// MIDI control change
 	// first parameter is 0xB0-0xBF with B being the id and 0-F being the channel (0-15)
@@ -129,13 +123,10 @@ bool RtMidiWrapper::setPan (int channel, int pan)
 
 bool RtMidiWrapper::setPitchBend (int channel, int bend)
 {
-	if (bend<-200)
-		bend=-200;
-	else if (bend>200)
-		bend=200;
-
-	// convert bend from range -200-200 into range 0-127 for MIDI
-	bend = (int)(((float)(bend+200)/400.0f)*127.0f);
+	if (bend<0)
+		bend=0;
+	else if (bend>127)
+		bend=127;
 
 	// MIDI pitch bend
 	// first parameter is 0xE0-0xEF with E being the id and 0-F being the channel (0-15)

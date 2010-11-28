@@ -128,7 +128,7 @@ void Caret::updatePosition()
 }
 
 // Moves the caret either left or right
-void Caret::moveCaretHorizontal(int offset)
+bool Caret::moveCaretHorizontal(int offset)
 {
     quint32 nextPosition = currentPositionIndex + offset;
     if (currentStaff->IsValidPositionIndex(0, nextPosition)) // check that the next position is valid
@@ -136,7 +136,9 @@ void Caret::moveCaretHorizontal(int offset)
         selectedPosition = currentStaff->GetPosition(0, nextPosition);
         updatePosition(); // redraw the caret
         currentPositionIndex = nextPosition;
+		return true;
     }
+	return false;
 }
 
 // Moves the caret up or down
@@ -159,7 +161,7 @@ void Caret::moveCaretToEnd()
     moveCaretHorizontal( currentStaff->GetPositionCount(0) - currentPositionIndex - 1 );
 }
 
-void Caret::moveCaretSection(int offset)
+bool Caret::moveCaretSection(int offset)
 {
     quint32 nextSection = currentSectionIndex + offset;
     if (currentScore->IsValidSystemIndex(nextSection))
@@ -174,7 +176,9 @@ void Caret::moveCaretSection(int offset)
         currentSectionIndex = nextSection;
 
         updatePosition();
+		return true;
     }
+	return false;
 }
 
 void Caret::moveCaretToFirstSection()
