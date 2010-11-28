@@ -57,6 +57,9 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 	CreateMenus();
 	CreateTabArea();
 
+	rtMidiWrapper = new RtMidiWrapper();
+	rtMidiWrapper->initialize();
+
 	isPlaying = false;
 
 	preferencesDialog = new PreferencesDialog();
@@ -336,12 +339,12 @@ void PowerTabEditor::startStopPlayback()
 
 	if (isPlaying)
 	{
-		qDebug() << "Playback started";
+		rtMidiWrapper->playNote(0,60,100);
 		playPauseAct->setText("Pause");
 	}
 	else
 	{
-		qDebug() << "Playback stopped";
+		rtMidiWrapper->stopNote(0,60);
 		playPauseAct->setText("Play");
 	}
 }

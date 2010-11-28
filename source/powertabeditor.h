@@ -6,6 +6,7 @@
 
 #include "documentmanager.h"
 #include "skinmanager.h"
+#include "rtmidiwrapper.h"
 #include "dialogs/preferencesdialog.h"
 #include "widgets/toolbox/toolbox.h"
 
@@ -90,6 +91,8 @@ private:
     QStackedWidget* mixerList;
 
 	SkinManager* skinManager;
+
+	RtMidiWrapper* rtMidiWrapper;
 };
 
 #endif // POWERTABEDITOR_H
