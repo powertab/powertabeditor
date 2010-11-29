@@ -12,19 +12,21 @@ class Score;
 
 // Highlights the current position within the score
 
-class Caret : public PainterBase
+class Caret : public QObject, public PainterBase // inheritance from QObject needed for signals/slots
 {
+    Q_OBJECT
+
 public:
     Caret(int tabLineSpacing);
 
     void updatePosition();
 
-	bool moveCaretHorizontal(int offset);
+    bool moveCaretHorizontal(int offset);
     void moveCaretVertical(int offset);
     void moveCaretToStart();
     void moveCaretToEnd();
 
-	bool moveCaretSection(int offset);
+    bool moveCaretSection(int offset);
     void moveCaretToFirstSection();
     void moveCaretToLastSection();
 
@@ -57,15 +59,19 @@ public:
         return selectedPosition;
     }
 
-	quint32 getCurrentPositionIndex()
-	{
-		return currentPositionIndex;
-	}
+    quint32 getCurrentPositionIndex()
+    {
+        return currentPositionIndex;
+    }
 
     Note* getCurrentNote()
     {
         return selectedNote;
     }
+
+
+signals:
+    void moved();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -87,6 +93,8 @@ private:
     StaffData currentStaffInfo;
 
     static const int CARET_NOTE_SPACING = 6; // spacing around a highlighted note
+
+
 };
 
 #endif // CARET_H

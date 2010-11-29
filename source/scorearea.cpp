@@ -27,6 +27,7 @@ ScoreArea::ScoreArea(QWidget *parent) :
 
     setScene(&scene);
     setRenderHints(QPainter::HighQualityAntialiasing);
+
 }
 
 void ScoreArea::RenderDocument()
@@ -46,6 +47,7 @@ void ScoreArea::RenderDocument(PowerTabDocument *doc)
 
     // Set up the caret
     caret = new Caret(doc->GetTablatureStaffLineSpacing());
+    connect(caret, SIGNAL(moved()), this, SLOT(adjustScroll()));
     caret->setScore(doc->GetGuitarScore());
     caret->setSystem(doc->GetGuitarScore()->GetSystem(0));
     caret->setStaff(caret->getCurrentSystem()->GetStaff(0));
@@ -53,6 +55,7 @@ void ScoreArea::RenderDocument(PowerTabDocument *doc)
     caret->setNote(caret->getCurrentPosition()->GetNote(0));
 
     caret->updatePosition();
+
     scene.addItem(caret);
 }
 
@@ -282,4 +285,10 @@ void ScoreArea::CenterItem(QGraphicsItem* item, float xmin, float xmax, float y)
     float itemWidth = item->boundingRect().width();
     float centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
     item->setPos(centredX, y);
+}
+
+// ensures that the caret is visible when it changes sections
+void ScoreArea::adjustScroll()
+{
+    centerOn(caret);
 }

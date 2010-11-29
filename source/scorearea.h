@@ -49,6 +49,9 @@ private:
     void CenterItem(QGraphicsItem* item, float xmin, float xmax, float y);
     Caret* caret;
 
+public slots:
+    void adjustScroll();
+
 };
 
 #endif // SCOREAREA_H

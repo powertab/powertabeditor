@@ -125,6 +125,7 @@ void Caret::updatePosition()
     updateStaffInfo();
     setPos(currentSystem->GetPositionX(selectedPosition->GetPosition()),
            currentStaffInfo.getTopTabLine());
+    emit moved();
 }
 
 // Moves the caret either left or right
@@ -136,9 +137,9 @@ bool Caret::moveCaretHorizontal(int offset)
         selectedPosition = currentStaff->GetPosition(0, nextPosition);
         updatePosition(); // redraw the caret
         currentPositionIndex = nextPosition;
-		return true;
+        return true;
     }
-	return false;
+    return false;
 }
 
 // Moves the caret up or down
@@ -176,9 +177,9 @@ bool Caret::moveCaretSection(int offset)
         currentSectionIndex = nextSection;
 
         updatePosition();
-		return true;
+        return true;
     }
-	return false;
+    return false;
 }
 
 void Caret::moveCaretToFirstSection()
