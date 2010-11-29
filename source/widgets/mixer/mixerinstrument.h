@@ -9,6 +9,7 @@ class QLabel;
 class QRadioButton;
 class QSlider;
 class QDial;
+class QComboBox;
 
 class MixerInstrument : public QWidget
 {
@@ -29,6 +30,8 @@ protected:
     QSlider* trackVolume;
     QDial* trackPan;
 
+	QComboBox* trackPatch;
+
     Guitar* guitar;
 
 signals:
@@ -37,6 +40,7 @@ public slots:
 
     void changePan(int value);
     void changeVolume(int value);
+	void changePatch(int value);
 
 };
 

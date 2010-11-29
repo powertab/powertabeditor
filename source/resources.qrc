@@ -40,6 +40,6 @@
     <qresource prefix="/icons">
         <file alias="toolbox_note.png">icons/toolbox_note.png</file>
         <file alias="toolbox_score.png">icons/toolbox_score.png</file>
-        <file alias="app_icon.png">icons/app_icon.png</file>
+        <file alias="app_icon.png">icons/app_icon2.png</file>
     </qresource>
 </RCC>
