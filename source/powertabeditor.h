@@ -2,6 +2,7 @@
 #define POWERTABEDITOR_H
 
 #include <QMainWindow>
+#include <QSignalMapper>
 #include <QSplitter>
 
 #include "documentmanager.h"
@@ -54,13 +55,14 @@ private slots:
 	bool moveCaretToPrevSection();
     void moveCaretToLastSection();
 
-	void playNotesAtCurrentPosition();
-	void playbackSong();
+	void playNotesAtCurrentPosition(int system);
+	void playbackSong(int system);
 
 private:
-	QList<unsigned int> oldNotes;
+	QSignalMapper* signalMapper;
 	bool isPlaying;
-	QTimer* songTimer;
+	QList<unsigned int> oldNotes[8];
+	QTimer* songTimer[8];
 
     DocumentManager documentManager;
     QMenu* fileMenu;

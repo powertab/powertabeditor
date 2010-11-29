@@ -35,6 +35,10 @@ Toolbox* PowerTabEditor::toolBox = NULL;
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
         QMainWindow(parent)
 {
+	signalMapper = new QSignalMapper();
+
+	this->setWindowIcon(QIcon(":icons/app_icon.png"));
+
     // load fonts from the resource file
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf"); // used for music notation
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf"); // used for tab notes
@@ -65,8 +69,14 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 	isPlaying = false;
 
-	songTimer = new QTimer;
-	connect(songTimer,SIGNAL(timeout()),this,SLOT(playbackSong()));
+	for (int i=0; i<8; ++i)
+	{
+		songTimer[i] = new QTimer;
+		connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
+		signalMapper->setMapping(songTimer[i], i);
+	}
+
+	connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)));
 
 	preferencesDialog = new PreferencesDialog();
 
@@ -345,16 +355,20 @@ void PowerTabEditor::startStopPlayback()
 	{
 		playPauseAct->setText(tr("Pause"));
 
-		playNotesAtCurrentPosition();
+		for (int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
+			playNotesAtCurrentPosition(j);
 	}
 	else
 	{
 		playPauseAct->setText(tr("Play"));
 
-		for (int i = 0; i < oldNotes.size(); ++i)
-			rtMidiWrapper->stopNote(0,oldNotes.at(i));
+		for (int j = 0; j < 8; ++j)
+		{
+			for (int i = 0; i < oldNotes[j].size(); ++i)
+				rtMidiWrapper->stopNote(j,oldNotes[j].at(i));
 
-		songTimer->stop();
+			songTimer[j]->stop();
+		}
 	}
 }
 
@@ -408,47 +422,52 @@ void PowerTabEditor::moveCaretToLastSection()
     getCurrentScoreArea()->getCaret()->moveCaretToLastSection();
 }
 
-void PowerTabEditor::playNotesAtCurrentPosition()
+void PowerTabEditor::playNotesAtCurrentPosition(int system)
 {
+	// retrieve the current position
 	Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
 
 	for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
+	// loop through all notes in the current position on the current system
 	{
-		Guitar* guitar=getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(0);
+		Guitar* guitar=getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(system);
 
 		unsigned int pitch = guitar->GetTuning().GetNote(position->GetNote(i)->GetString()) + guitar->GetCapo();
 
-		rtMidiWrapper->setVolume(0,guitar->GetInitialVolume());
-		rtMidiWrapper->setPan(0,guitar->GetPan());
-		rtMidiWrapper->setPatch(0,guitar->GetPreset());
+		rtMidiWrapper->setVolume(system,guitar->GetInitialVolume());
+		rtMidiWrapper->setPan(system,guitar->GetPan());
+		rtMidiWrapper->setPatch(system,guitar->GetPreset());
 
 		if (!position->GetNote(i)->IsTied())
 		{
-			rtMidiWrapper->playNote(0,pitch+position->GetNote(i)->GetFretNumber(),127);
-			oldNotes.push_back(pitch+position->GetNote(i)->GetFretNumber());
+			rtMidiWrapper->playNote(system,pitch+position->GetNote(i)->GetFretNumber(),127);
+			oldNotes[system].push_back(pitch+position->GetNote(i)->GetFretNumber());
 		}
 	}
 
 	TempoMarker* tempo_marker=getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
 	unsigned int tempo=(unsigned int)((60.0/(float)tempo_marker->GetBeatsPerMinute())*1000.0*4.0);
-	songTimer->start(tempo/getCurrentScoreArea()->getCaret()->getCurrentPosition()->GetDurationType());
+	songTimer[system]->start(tempo/getCurrentScoreArea()->getCaret()->getCurrentPosition()->GetDurationType());
 }
 
-void PowerTabEditor::playbackSong()
+void PowerTabEditor::playbackSong(int system)
 {
-	for (int i = 0; i < oldNotes.size(); ++i)
-		rtMidiWrapper->stopNote(0,oldNotes.at(i));
+	//for (int i = 0; i < oldNotes[system].size(); ++i)
+	//	rtMidiWrapper->stopNote(system,oldNotes[system].at(i));
 
-	if (!moveCaretRight())
+	if(system==0)
 	{
-		if(!moveCaretToNextSection())
+		if (!moveCaretRight())
 		{
-			this->startStopPlayback();
-			return;
+			if(!moveCaretToNextSection())
+			{
+				this->startStopPlayback();
+				return;
+			}
 		}
 	}
 
-	oldNotes.clear();
+	//oldNotes[system].clear();
 
-	playNotesAtCurrentPosition();
+	playNotesAtCurrentPosition(system);
 }
