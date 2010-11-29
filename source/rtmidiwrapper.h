@@ -11,7 +11,7 @@ private:
 
 public:
     RtMidiWrapper();
-	bool initialize();
+    bool initialize(unsigned int preferredPort = 0);
 	int getPortCount();
 	std::string getPortName(int port);
 	bool usePort(int port);

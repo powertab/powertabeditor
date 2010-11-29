@@ -33,8 +33,10 @@ bool RtMidiWrapper::sendMidiMessage(int a, int b, int c)
 	return true;
 }
 
-bool RtMidiWrapper::initialize()
+bool RtMidiWrapper::initialize(unsigned int preferredPort)
 {
+    midiout->closePort(); // close any open ports
+
 	unsigned int num_ports = midiout->getPortCount();
 
 	if (num_ports<=0)
@@ -42,7 +44,7 @@ bool RtMidiWrapper::initialize()
 
 	try
 	{
-		midiout->openPort();
+        midiout->openPort(preferredPort);
 	}
 	catch (...)
 	{

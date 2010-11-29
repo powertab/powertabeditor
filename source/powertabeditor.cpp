@@ -35,9 +35,9 @@ Toolbox* PowerTabEditor::toolBox = NULL;
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
         QMainWindow(parent)
 {
-	signalMapper = new QSignalMapper();
+    signalMapper = new QSignalMapper();
 
-	this->setWindowIcon(QIcon(":icons/app_icon.png"));
+    this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
     // load fonts from the resource file
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf"); // used for music notation
@@ -53,54 +53,62 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     undoStack = new QUndoStack();
     connect(undoStack, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
 
-	skinManager = new SkinManager();
+    skinManager = new SkinManager();
 
-	QString skin("default");
-	if (!skinManager->openSkin(skin))
-		qDebug() << "Failed to load skin: " << skin;
+    QString skin("default");
+    if (!skinManager->openSkin(skin))
+        qDebug() << "Failed to load skin: " << skin;
 
-	CreateActions();
-	CreateMenus();
-	CreateTabArea();
+    CreateActions();
+    CreateMenus();
+    CreateTabArea();
 
-	rtMidiWrapper = new RtMidiWrapper();
-	rtMidiWrapper->initialize();
-	rtMidiWrapper->setPatch(0,24);
+    rtMidiWrapper = new RtMidiWrapper();
+    rtMidiWrapper->initialize(settings.value("midi/preferredPort", 0).toInt());
+    rtMidiWrapper->setPatch(0,24);
 
-	isPlaying = false;
+    isPlaying = false;
 
-	for (int i=0; i<8; ++i)
-	{
-		songTimer[i] = new QTimer;
-		connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
-		signalMapper->setMapping(songTimer[i], i);
-	}
+    for (int i=0; i<8; ++i)
+    {
+        songTimer[i] = new QTimer;
+        connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
+        signalMapper->setMapping(songTimer[i], i);
+    }
 
-	connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)));
+    connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)));
 
-	preferencesDialog = new PreferencesDialog();
+    preferencesDialog = new PreferencesDialog();
 
-	setMinimumSize(800, 600);
-	setWindowState(Qt::WindowMaximized);
-	setWindowTitle(tr("Power Tab Editor 2.0"));
+    setMinimumSize(800, 600);
+    setWindowState(Qt::WindowMaximized);
+    setWindowTitle(tr("Power Tab Editor 2.0"));
 
-	horSplitter = new QSplitter();
-	horSplitter->setOrientation(Qt::Horizontal);
+    horSplitter = new QSplitter();
+    horSplitter->setOrientation(Qt::Horizontal);
 
-	toolBox = new Toolbox(0,skinManager);
-	horSplitter->addWidget(toolBox);
-	horSplitter->addWidget(tabWidget);
+    toolBox = new Toolbox(0,skinManager);
+    horSplitter->addWidget(toolBox);
+    horSplitter->addWidget(tabWidget);
 
-	vertSplitter = new QSplitter();
-	vertSplitter->setOrientation(Qt::Vertical);
+    vertSplitter = new QSplitter();
+    vertSplitter->setOrientation(Qt::Vertical);
 
-	vertSplitter->addWidget(horSplitter);
+    vertSplitter->addWidget(horSplitter);
 
     mixerList = new QStackedWidget;
     mixerList->setMinimumHeight(150);
     vertSplitter->addWidget(mixerList);
 
-	setCentralWidget(vertSplitter);
+    setCentralWidget(vertSplitter);
+}
+
+PowerTabEditor::~PowerTabEditor()
+{
+    for (int i=0; i<8; i++)
+    {
+        delete songTimer[i];
+    }
 }
 
 // Redraws the *entire* document upon undo/redo
@@ -120,9 +128,9 @@ void PowerTabEditor::CreateActions()
     openFileAct->setStatusTip(tr("Open an existing document"));
     connect(openFileAct, SIGNAL(triggered()), this, SLOT(OpenFile()));
 
-	preferencesAct = new QAction(tr("&Preferences..."), this);
-	preferencesAct->setShortcuts(QKeySequence::Preferences);
-	connect(preferencesAct, SIGNAL(triggered()), this, SLOT(OpenPreferences()));
+    preferencesAct = new QAction(tr("&Preferences..."), this);
+    preferencesAct->setShortcuts(QKeySequence::Preferences);
+    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(OpenPreferences()));
 
     // Exit the application
     exitAppAct = new QAction(tr("&Quit"), this);
@@ -137,10 +145,10 @@ void PowerTabEditor::CreateActions()
     redoAct = undoStack->createRedoAction(this, tr("&Redo"));
     redoAct->setShortcuts(QKeySequence::Redo);
 
-	// Playback-related actions
-	playPauseAct = new QAction(tr("Play"), this);
-	playPauseAct->setShortcut(QKeySequence(Qt::Key_Space));
-	connect(playPauseAct, SIGNAL(triggered()), this, SLOT(startStopPlayback()));
+    // Playback-related actions
+    playPauseAct = new QAction(tr("Play"), this);
+    playPauseAct->setShortcut(QKeySequence(Qt::Key_Space));
+    connect(playPauseAct, SIGNAL(triggered()), this, SLOT(startStopPlayback()));
 
     // Section navigation actions
     firstSectionAct = new QAction(tr("First Section"), this);
@@ -181,7 +189,7 @@ void PowerTabEditor::CreateActions()
     connect(prevStringAct, SIGNAL(triggered()), this, SLOT(moveCaretUp()));
 
     lastPositionAct = new QAction(tr("Move to &End"), this);
-	lastPositionAct->setShortcuts(QKeySequence::MoveToEndOfLine);
+    lastPositionAct->setShortcuts(QKeySequence::MoveToEndOfLine);
     connect(lastPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToEnd()));
 }
 
@@ -191,8 +199,8 @@ void PowerTabEditor::CreateMenus()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openFileAct);
     fileMenu->addSeparator();
-	fileMenu->addAction(preferencesAct);
-	fileMenu->addSeparator();
+    fileMenu->addAction(preferencesAct);
+    fileMenu->addSeparator();
     fileMenu->addAction(exitAppAct);
 
     // Edit Menu
@@ -200,9 +208,9 @@ void PowerTabEditor::CreateMenus()
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
 
-	// Playback Menu
-	playbackMenu = menuBar()->addMenu(tr("Play&back"));
-	playbackMenu->addAction(playPauseAct);
+    // Playback Menu
+    playbackMenu = menuBar()->addMenu(tr("Play&back"));
+    playbackMenu->addAction(playPauseAct);
 
     // Position Menu
     positionMenu = menuBar()->addMenu(tr("&Position"));
@@ -227,7 +235,7 @@ void PowerTabEditor::CreateTabArea()
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
 
-	tabWidget->setStyleSheet(skinManager->getTopTabStyle());
+    tabWidget->setStyleSheet(skinManager->getTopTabStyle());
 
     // creates a new document by default
     /*ScoreArea* score = new ScoreArea;
@@ -264,36 +272,36 @@ void PowerTabEditor::OpenFile()
             QSettings settings;
             settings.setValue("app/previousDirectory", previousDirectory);
 
-			QString title = fileInfo.fileName();
-			QFontMetrics fm (tabWidget->font());
+            QString title = fileInfo.fileName();
+            QFontMetrics fm (tabWidget->font());
 
-			bool chopped = false;
+            bool chopped = false;
 
-			// each tab is 200px wide, so we want to shorten the name if it's wider than 140px
-			while(fm.width(title)>140)
-			{
-				title.chop(1);
-				chopped = true;
-			}
+            // each tab is 200px wide, so we want to shorten the name if it's wider than 140px
+            while(fm.width(title)>140)
+            {
+                title.chop(1);
+                chopped = true;
+            }
 
-			if (chopped)
-				title.append("...");
+            if (chopped)
+                title.append("...");
 
-			tabWidget->addTab(score, title);
+            tabWidget->addTab(score, title);
 
-			// add the guitars to a new mixer
-			Mixer* mixer = new Mixer;
-			QScrollArea* scrollArea = new QScrollArea;
-			PowerTabDocument* doc = documentManager.getCurrentDocument();
-			for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
-			{
-				mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
-			}
-			scrollArea->setWidget(mixer);
-			mixerList->addWidget(scrollArea);
+            // add the guitars to a new mixer
+            Mixer* mixer = new Mixer;
+            QScrollArea* scrollArea = new QScrollArea;
+            PowerTabDocument* doc = documentManager.getCurrentDocument();
+            for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
+            {
+                mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
+            }
+            scrollArea->setWidget(mixer);
+            mixerList->addWidget(scrollArea);
 
-			// switch to the new document
-			tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
+            // switch to the new document
+            tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
         }
     }
 }
@@ -301,7 +309,7 @@ void PowerTabEditor::OpenFile()
 // Opens the preferences dialog
 void PowerTabEditor::OpenPreferences()
 {
-	preferencesDialog->exec();
+    preferencesDialog->exec();
 }
 
 // Redraws the whole score of the current document
@@ -330,16 +338,16 @@ void PowerTabEditor::switchTab(int index)
     documentManager.setCurrentDocumentIndex(index);
     mixerList->setCurrentIndex(index);
 
-	if(documentManager.getCurrentDocument())
-	{
-		QString title(documentManager.getCurrentDocument()->GetFileName().c_str());
-		title.remove(0,title.lastIndexOf("/")+1);
-		setWindowTitle(title+tr(" - Power Tab Editor 2.0"));
-	}
-	else
-	{
-		setWindowTitle(tr("Power Tab Editor 2.0"));
-	}
+    if(documentManager.getCurrentDocument())
+    {
+        QString title(documentManager.getCurrentDocument()->GetFileName().c_str());
+        title.remove(0,title.lastIndexOf("/")+1);
+        setWindowTitle(title+tr(" - Power Tab Editor 2.0"));
+    }
+    else
+    {
+        setWindowTitle(tr("Power Tab Editor 2.0"));
+    }
 }
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()
@@ -349,37 +357,46 @@ ScoreArea* PowerTabEditor::getCurrentScoreArea()
 
 void PowerTabEditor::startStopPlayback()
 {
-	isPlaying = !isPlaying;
+    isPlaying = !isPlaying;
 
-	if (isPlaying)
-	{
-		playPauseAct->setText(tr("Pause"));
+    if (isPlaying)
+    {
+        QSettings settings;
+        rtMidiWrapper->initialize(settings.value("midi/preferredPort", 0).toInt());
 
-		for (int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
-			playNotesAtCurrentPosition(j);
-	}
-	else
-	{
-		playPauseAct->setText(tr("Play"));
+        playPauseAct->setText(tr("Pause"));
 
-		for (int j = 0; j < 8; ++j)
-		{
-			for (int i = 0; i < oldNotes[j].size(); ++i)
-				rtMidiWrapper->stopNote(j,oldNotes[j].at(i));
+        for (unsigned int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
+        {
+            playNotesAtCurrentPosition(j);
+        }
+    }
+    else
+    {
+        playPauseAct->setText(tr("Play"));
 
-			songTimer[j]->stop();
-		}
-	}
+        for (int j = 0; j < 8; ++j)
+        {
+            songTimer[j]->stop();
+        }
+
+        QMultiMap<unsigned int, NoteHistory>::iterator i = oldNotes.begin();
+        for (; i != oldNotes.end(); ++i)
+        {
+            rtMidiWrapper->stopNote(i.key(), i.value().pitch);
+        }
+        oldNotes.clear();
+    }
 }
 
 bool PowerTabEditor::moveCaretRight()
 {
-	return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(1);
+    return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(1);
 }
 
 bool PowerTabEditor::moveCaretLeft()
 {
-	return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(-1);
+    return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(-1);
 }
 
 void PowerTabEditor::moveCaretDown()
@@ -409,12 +426,12 @@ void PowerTabEditor::moveCaretToFirstSection()
 
 bool PowerTabEditor::moveCaretToNextSection()
 {
-	return getCurrentScoreArea()->getCaret()->moveCaretSection(1);;
+    return getCurrentScoreArea()->getCaret()->moveCaretSection(1);;
 }
 
 bool PowerTabEditor::moveCaretToPrevSection()
 {
-	return getCurrentScoreArea()->getCaret()->moveCaretSection(-1);
+    return getCurrentScoreArea()->getCaret()->moveCaretSection(-1);
 }
 
 void PowerTabEditor::moveCaretToLastSection()
@@ -424,50 +441,70 @@ void PowerTabEditor::moveCaretToLastSection()
 
 void PowerTabEditor::playNotesAtCurrentPosition(int system)
 {
-	// retrieve the current position
-	Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
+    // retrieve the current position
+    Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
 
-	for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
-	// loop through all notes in the current position on the current system
-	{
-		Guitar* guitar=getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(system);
+    // stop all previous notes except for notes that are to be tied
+    {
+        QList<unsigned int> notesToBeKept;
+        for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
+        {
+            if (position->GetNote(i)->IsTied())
+            {
+                notesToBeKept.push_back(position->GetNote(i)->GetString());
+            }
+        }
+        QMutableMapIterator<unsigned int, NoteHistory> i(oldNotes);
+        while(i.hasNext())
+        {
+            i.next();
+            if (i.key() == system && !notesToBeKept.contains(i.value().stringNum))
+            {
+                qDebug() << i.value().pitch ;
+                rtMidiWrapper->stopNote(system, i.value().pitch);
+                i.remove();
+            }
+        }
+    }
 
-		unsigned int pitch = guitar->GetTuning().GetNote(position->GetNote(i)->GetString()) + guitar->GetCapo();
+    for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
+    // loop through all notes in the current position on the current system
+    {
+        Guitar* guitar = getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(system);
+        Note* note = position->GetNote(i);
 
-		rtMidiWrapper->setVolume(system,guitar->GetInitialVolume());
-		rtMidiWrapper->setPan(system,guitar->GetPan());
-		rtMidiWrapper->setPatch(system,guitar->GetPreset());
+        unsigned int pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
+        pitch += note->GetFretNumber();
 
-		if (!position->GetNote(i)->IsTied())
-		{
-			rtMidiWrapper->playNote(system,pitch+position->GetNote(i)->GetFretNumber(),127);
-			oldNotes[system].push_back(pitch+position->GetNote(i)->GetFretNumber());
-		}
-	}
+        rtMidiWrapper->setVolume(system,guitar->GetInitialVolume());
+        rtMidiWrapper->setPan(system,guitar->GetPan());
+        rtMidiWrapper->setPatch(system,guitar->GetPreset());
 
-	TempoMarker* tempo_marker=getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
-	unsigned int tempo=(unsigned int)((60.0/(float)tempo_marker->GetBeatsPerMinute())*1000.0*4.0);
-	songTimer[system]->start(tempo/getCurrentScoreArea()->getCaret()->getCurrentPosition()->GetDurationType());
+        if (!position->GetNote(i)->IsTied())
+        {
+            rtMidiWrapper->playNote(system, pitch ,127);
+            oldNotes.insertMulti(system, (NoteHistory){pitch, note->GetString()} );
+        }
+    }
+
+    TempoMarker* tempo_marker = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
+    unsigned int tempo=(unsigned int)((60.0/(float)tempo_marker->GetBeatsPerMinute())*1000.0*4.0);
+    songTimer[system]->start(tempo / position->GetDurationType());
 }
 
 void PowerTabEditor::playbackSong(int system)
 {
-	//for (int i = 0; i < oldNotes[system].size(); ++i)
-	//	rtMidiWrapper->stopNote(system,oldNotes[system].at(i));
+    if(system==0)
+    {
+        if (!moveCaretRight())
+        {
+            if(!moveCaretToNextSection())
+            {
+                this->startStopPlayback();
+                return;
+            }
+        }
+    }
 
-	if(system==0)
-	{
-		if (!moveCaretRight())
-		{
-			if(!moveCaretToNextSection())
-			{
-				this->startStopPlayback();
-				return;
-			}
-		}
-	}
-
-	//oldNotes[system].clear();
-
-	playNotesAtCurrentPosition(system);
+    playNotesAtCurrentPosition(system);
 }

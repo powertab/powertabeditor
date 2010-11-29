@@ -1,10 +1,12 @@
 #include "preferencesdialog.h"
+#include "../rtmidiwrapper.h"
 
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QSettings>
 
 MIDITab::MIDITab(QWidget *parent) :
 	QWidget(parent)
@@ -24,13 +26,12 @@ MIDITab::MIDITab(QWidget *parent) :
 
 	box = new QComboBox();
 
-	/*
-	for(int i=0;i<rtmidiwrapper->getPortCount();i++)
-		box->addItem(QString(rtmidiwrapper->getPortName(i).c_str()));
-	*/
-	box->addItem("General MIDI 1.0");
-	box->addItem("SuperPhonic 3 MIDI");
-	box->addItem("WaveBlaster GM2000");
+
+    RtMidiWrapper rtMidiWrapper;
+    for(int i=0;i<rtMidiWrapper.getPortCount();i++)
+    {
+        box->addItem(QString(rtMidiWrapper.getPortName(i).c_str()));
+    }
 
 	root_layout->addWidget(box);
 
@@ -87,6 +88,11 @@ void PreferencesDialog::disableRepeatCount(int newBarlineType)
 
 void PreferencesDialog::accept()
 {
+    QSettings settings;
+    // save the preferred midi port
+    settings.setValue("midi/preferredPort", midiTab->box->currentIndex());
+    settings.sync();
+
 	done(1);
 }
 

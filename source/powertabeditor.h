@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSignalMapper>
 #include <QSplitter>
+#include <QMultiMap>
 
 #include "documentmanager.h"
 #include "skinmanager.h"
@@ -23,6 +24,7 @@ class PowerTabEditor : public QMainWindow
 
 public:
     PowerTabEditor(QWidget *parent = 0);
+    ~PowerTabEditor();
     static void RefreshCurrentDocument();
     static QTabWidget* tabWidget;
     static QUndoStack* undoStack;
@@ -42,27 +44,32 @@ private slots:
     void RefreshOnUndoRedo(int);
     void closeTab(int index);
     void switchTab(int index);
-	void startStopPlayback();
-	bool moveCaretRight();
-	bool moveCaretLeft();
+    void startStopPlayback();
+    bool moveCaretRight();
+    bool moveCaretLeft();
     void moveCaretDown();
     void moveCaretUp();
     void moveCaretToStart();
     void moveCaretToEnd();
 
     void moveCaretToFirstSection();
-	bool moveCaretToNextSection();
-	bool moveCaretToPrevSection();
+    bool moveCaretToNextSection();
+    bool moveCaretToPrevSection();
     void moveCaretToLastSection();
 
-	void playNotesAtCurrentPosition(int system);
-	void playbackSong(int system);
+    void playNotesAtCurrentPosition(int system);
+    void playbackSong(int system);
 
 private:
-	QSignalMapper* signalMapper;
-	bool isPlaying;
-	QList<unsigned int> oldNotes[8];
-	QTimer* songTimer[8];
+    QSignalMapper* signalMapper;
+    bool isPlaying;
+    struct NoteHistory
+    {
+        unsigned int pitch; unsigned int stringNum;
+        bool operator==(const NoteHistory& history) { return (pitch == history.pitch) && (stringNum == history.stringNum); }
+    };
+    QMultiMap<unsigned int, NoteHistory> oldNotes; // map channels to pitches
+    QTimer* songTimer[8];
 
     DocumentManager documentManager;
     QMenu* fileMenu;
@@ -74,8 +81,8 @@ private:
     QAction* undoAct;
     QAction* redoAct;
 
-	QMenu* playbackMenu;
-	QAction* playPauseAct;
+    QMenu* playbackMenu;
+    QAction* playPauseAct;
 
     QMenu* positionMenu;
     QMenu* positionSectionMenu; // menu options for navigating between sections
@@ -97,9 +104,9 @@ private:
     QString previousDirectory; // previous directory that a file was opened in
     QStackedWidget* mixerList;
 
-	SkinManager* skinManager;
+    SkinManager* skinManager;
 
-	RtMidiWrapper* rtMidiWrapper;
+    RtMidiWrapper* rtMidiWrapper;
 };
 
 #endif // POWERTABEDITOR_H
