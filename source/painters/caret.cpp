@@ -20,6 +20,7 @@ Caret::Caret(int tabLineSpacing)
     currentPositionIndex = 0;
     currentStringIndex = 0;
     currentSectionIndex = 0;
+    inPlaybackMode = false;
 }
 
 void Caret::setPlaybackMode(bool playBack)
