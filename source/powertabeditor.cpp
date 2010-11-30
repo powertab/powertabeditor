@@ -53,11 +53,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     undoStack = new QUndoStack();
     connect(undoStack, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
 
-    skinManager = new SkinManager();
-
-    QString skin("default");
-    if (!skinManager->openSkin(skin))
-        qDebug() << "Failed to load skin: " << skin;
+	skinManager = new SkinManager("default");
 
     CreateActions();
     CreateMenus();
@@ -235,7 +231,7 @@ void PowerTabEditor::CreateTabArea()
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
 
-    tabWidget->setStyleSheet(skinManager->getTopTabStyle());
+	tabWidget->setStyleSheet(skinManager->getDocumentTabStyle());
 
     // creates a new document by default
     /*ScoreArea* score = new ScoreArea;
@@ -275,7 +271,7 @@ void PowerTabEditor::OpenFile()
             QString title = fileInfo.fileName();
             QFontMetrics fm (tabWidget->font());
 
-            bool chopped = false;
+			bool chopped = false;
 
             // each tab is 200px wide, so we want to shorten the name if it's wider than 140px
             while(fm.width(title)>140)
@@ -290,7 +286,7 @@ void PowerTabEditor::OpenFile()
             tabWidget->addTab(score, title);
 
             // add the guitars to a new mixer
-            Mixer* mixer = new Mixer;
+			Mixer* mixer = new Mixer(0,skinManager);
             QScrollArea* scrollArea = new QScrollArea;
             PowerTabDocument* doc = documentManager.getCurrentDocument();
             for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)

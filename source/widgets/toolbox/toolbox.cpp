@@ -13,7 +13,7 @@ Toolbox::Toolbox(QWidget *parent, SkinManager *skinManager) :
 	setIconSize(QSize(48,48));
 	setTabPosition(QTabWidget::West);
 
-	setStyleSheet(skinManager->getLeftTabStyle());
+	setStyleSheet(skinManager->getToolboxTabStyle());
 
 	scorePage = new ScorePage(0,skinManager);
 	addTab(scorePage, QIcon(":/icons/toolbox_score.png"),"");

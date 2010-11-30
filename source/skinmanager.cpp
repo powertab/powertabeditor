@@ -2,67 +2,49 @@
 
 #include <QCoreApplication>
 
-SkinManager::SkinManager()
+SkinManager::SkinManager(QString filename)
 {
+	documentTabStyle = readSegment(filename,"document_tab.txt");
+
+	toolboxTabStyle = readSegment(filename,"toolbox_tab.txt");
+	toolboxPageStyle = readSegment(filename,"toolbox_page.txt");
+
+	mixerStyle = readSegment(filename,"mixer.txt");
 }
 
-bool SkinManager::openSkin(QString filename)
+QString SkinManager::getDocumentTabStyle()
 {
-	QFile data;
-
-	data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+filename+"/top_tab.txt");
-
-	if(data.open(QFile::ReadOnly))
-	{
-		QTextStream styleIn(&data);
-		topTabStyle = styleIn.readAll();
-		data.close();
-	}
-	else
-	{
-		return false;
-	}
-
-	data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+filename+"/left_tab.txt");
-
-	if(data.open(QFile::ReadOnly))
-	{
-		QTextStream styleIn(&data);
-		leftTabStyle = styleIn.readAll();
-		data.close();
-	}
-	else
-	{
-		return false;
-	}
-
-	data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+filename+"/toolbox_page.txt");
-
-	if(data.open(QFile::ReadOnly))
-	{
-		QTextStream styleIn(&data);
-		toolboxPageStyle = styleIn.readAll();
-		data.close();
-	}
-	else
-	{
-		return false;
-	}
-
-	return true;
+	return documentTabStyle;
 }
 
-QString SkinManager::getTopTabStyle()
+QString SkinManager::getToolboxTabStyle()
 {
-	return topTabStyle;
-}
-
-QString SkinManager::getLeftTabStyle()
-{
-	return leftTabStyle;
+	return toolboxTabStyle;
 }
 
 QString SkinManager::getToolboxPageStyle()
 {
 	return toolboxPageStyle;
+}
+
+QString SkinManager::getMixerStyle()
+{
+	return mixerStyle;
+}
+
+QString SkinManager::readSegment(QString skinname, QString filename)
+{
+	QString out;
+	QFile data;
+
+	data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+skinname+"/"+filename);
+
+	if(data.open(QFile::ReadOnly))
+	{
+		QTextStream styleIn(&data);
+		out = styleIn.readAll();
+		data.close();
+	}
+
+	return out;
 }

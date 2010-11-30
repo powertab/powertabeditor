@@ -1,17 +1,19 @@
 #ifndef MIXER_H
 #define MIXER_H
 
-#include <QWidget>
+#include <QFrame>
+
+#include "../../skinmanager.h"
 
 class MixerInstrument;
 class Guitar;
 class QVBoxLayout;
 
-class Mixer : public QWidget
+class Mixer : public QFrame
 {
     Q_OBJECT
 public:
-    Mixer(QWidget *parent = 0);
+	Mixer(QFrame *parent = 0, SkinManager *skinManager = 0);
 
     void AddInstrument(Guitar* guitar);
     Guitar* getInstrument(int index);

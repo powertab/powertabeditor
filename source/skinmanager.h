@@ -8,15 +8,19 @@
 class SkinManager
 {
 public:
-    SkinManager();
+	SkinManager(QString filename);
 
-	bool openSkin(QString filename);
-	QString getTopTabStyle();
-	QString getLeftTabStyle();
+	QString getDocumentTabStyle();
+	QString getToolboxTabStyle();
 	QString getToolboxPageStyle();
+	QString getMixerStyle();
 
 private:
-	QString topTabStyle, leftTabStyle, toolboxPageStyle;
+	QString documentTabStyle;
+	QString toolboxTabStyle, toolboxPageStyle;
+	QString mixerStyle;
+
+	QString readSegment(QString skinname, QString filename);
 };
 
 #endif // SKINMANAGER_H

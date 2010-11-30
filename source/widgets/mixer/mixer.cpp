@@ -5,9 +5,13 @@
 
 #include "mixerinstrument.h"
 
-Mixer::Mixer(QWidget *parent) :
-    QWidget(parent)
+Mixer::Mixer(QFrame *parent, SkinManager *skinManager) :
+	QFrame(parent)
 {
+	setFrameStyle(QFrame::StyledPanel);
+
+	setStyleSheet(skinManager->getMixerStyle());
+
     layout = new QVBoxLayout;
     layout->setSpacing(0);
     setLayout(layout);
