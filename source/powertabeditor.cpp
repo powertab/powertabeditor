@@ -460,7 +460,6 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
             i.next();
             if (i.key() == system && !notesToBeKept.contains(i.value().stringNum))
             {
-                qDebug() << i.value().pitch ;
                 rtMidiWrapper->stopNote(system, i.value().pitch);
                 i.remove();
             }

@@ -169,5 +169,5 @@ bool RtMidiWrapper::stopNote(int channel, int pitch)
 	// first parameter 0x80-9x8F with 8 being the id and 0-F being the channel (0-15)
 	// second parameter is the pitch of the note (0-127), 60 would be a 'middle C'
 	int command=128+channel;
-	return sendMidiMessage(command, pitch, -1);
+    return sendMidiMessage(command, pitch, 127);
 }
