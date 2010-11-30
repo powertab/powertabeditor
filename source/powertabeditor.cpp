@@ -366,6 +366,8 @@ void PowerTabEditor::startStopPlayback()
 
         playPauseAct->setText(tr("Pause"));
 
+        getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
+
         for (unsigned int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
         {
             playNotesAtCurrentPosition(j);
@@ -379,6 +381,8 @@ void PowerTabEditor::startStopPlayback()
         {
             songTimer[j]->stop();
         }
+
+        getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
 
         QMultiMap<unsigned int, NoteHistory>::iterator i = oldNotes.begin();
         for (; i != oldNotes.end(); ++i)

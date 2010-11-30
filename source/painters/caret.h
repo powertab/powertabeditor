@@ -20,6 +20,7 @@ public:
     Caret(int tabLineSpacing);
 
     void updatePosition();
+    void setPlaybackMode(bool playBack);
 
     bool moveCaretHorizontal(int offset);
     void moveCaretVertical(int offset);
@@ -81,6 +82,7 @@ protected:
     void updateStaffInfo();
 
 private:
+    bool inPlaybackMode;
     quint32 currentSectionIndex;
     quint32 currentStringIndex;
     quint32 currentPositionIndex;

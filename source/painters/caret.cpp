@@ -22,6 +22,12 @@ Caret::Caret(int tabLineSpacing)
     currentSectionIndex = 0;
 }
 
+void Caret::setPlaybackMode(bool playBack)
+{
+    inPlaybackMode = playBack;
+    update(boundingRect()); // redraw the caret
+}
+
 void Caret::setScore(Score* newScore)
 {
     currentScore = newScore;
@@ -89,8 +95,16 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
     updateStaffInfo();
 
+    const double PEN_WIDTH = 0.75;
     // set color
-    painter->setPen(QPen(Qt::blue, 0.75));
+    if (inPlaybackMode)
+    {
+        painter->setPen(QPen(Qt::red, PEN_WIDTH));
+    }
+    else
+    {
+        painter->setPen(QPen(Qt::blue, PEN_WIDTH));
+    }
 
     // get top
     int y1 = 0;
@@ -99,24 +113,32 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     // get x-coordinate
     int x = CenterItem(0, currentStaffInfo.positionWidth, 1);
 
-    int stringHeight = currentStaffInfo.getTabLineHeight(currentStringIndex + 1) - currentStaffInfo.getTopTabLine();
-    int boundary1 = stringHeight - CARET_NOTE_SPACING;
-    int boundary2 = stringHeight + CARET_NOTE_SPACING;
-
-    // draw a line down to the highlighted string, if necessary
-    if (y1 < boundary1)
+    if (inPlaybackMode) // if in playback mode, just draw a vertical line and don't highlight selected note
     {
-        painter->drawLine(x, y1, x, boundary1);
+        painter->drawLine(x, y1, x, y2);
     }
-
-    // draw horizontal lines around note
-    painter->drawLine(0, boundary1, currentStaffInfo.positionWidth, boundary1);
-    painter->drawLine(0, boundary2, currentStaffInfo.positionWidth, boundary2);
-
-    // draw to bottom of staff, if necessary
-    if (y2 > boundary2)
+    else
     {
-        painter->drawLine(x, boundary2, x, y2);
+        // calculations for the box around the selected note
+        int stringHeight = currentStaffInfo.getTabLineHeight(currentStringIndex + 1) - currentStaffInfo.getTopTabLine();
+        int boundary1 = stringHeight - CARET_NOTE_SPACING;
+        int boundary2 = stringHeight + CARET_NOTE_SPACING;
+
+        // draw a line down to the highlighted string, if necessary
+        if (y1 < boundary1)
+        {
+            painter->drawLine(x, y1, x, boundary1);
+        }
+
+        // draw horizontal lines around note
+        painter->drawLine(0, boundary1, currentStaffInfo.positionWidth, boundary1);
+        painter->drawLine(0, boundary2, currentStaffInfo.positionWidth, boundary2);
+
+        // draw to bottom of staff, if necessary
+        if (y2 > boundary2)
+        {
+            painter->drawLine(x, boundary2, x, y2);
+        }
     }
 }
 
