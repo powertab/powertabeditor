@@ -15,9 +15,9 @@ Toolbox::Toolbox(QWidget *parent, SkinManager *skinManager) :
 
 	setStyleSheet(skinManager->getLeftTabStyle());
 
-	scorePage = new ScorePage;
+	scorePage = new ScorePage(0,skinManager);
 	addTab(scorePage, QIcon(":/icons/toolbox_score.png"),"");
 
-	notePage = new NotePage;
+	notePage = new NotePage(0,skinManager);
 	addTab(notePage, QIcon(":/icons/toolbox_note.png"),"");
 }

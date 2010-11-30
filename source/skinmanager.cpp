@@ -36,6 +36,19 @@ bool SkinManager::openSkin(QString filename)
 		return false;
 	}
 
+	data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+filename+"/toolbox_page.txt");
+
+	if(data.open(QFile::ReadOnly))
+	{
+		QTextStream styleIn(&data);
+		toolboxPageStyle = styleIn.readAll();
+		data.close();
+	}
+	else
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -47,4 +60,9 @@ QString SkinManager::getTopTabStyle()
 QString SkinManager::getLeftTabStyle()
 {
 	return leftTabStyle;
+}
+
+QString SkinManager::getToolboxPageStyle()
+{
+	return toolboxPageStyle;
 }

@@ -1,18 +1,20 @@
 #ifndef NOTEPAGE_H
 #define NOTEPAGE_H
 
-#include <QWidget>
+#include <QFrame>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-class NotePage : public QWidget
+#include "../../skinmanager.h"
+
+class NotePage : public QFrame
 {
 	Q_OBJECT
 
 public:
-	NotePage(QWidget *parent = 0);
+	NotePage(QFrame *parent = 0, SkinManager *skinManager = 0);
 
 private:
 	QVBoxLayout *layout;

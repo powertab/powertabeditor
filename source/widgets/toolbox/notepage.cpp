@@ -238,8 +238,12 @@ void NotePage::resetSlideLegatoButtons()
 	shiftSlideButton->setChecked(false);
 }
 
-NotePage::NotePage(QWidget *parent) : QWidget(parent)
+NotePage::NotePage(QFrame *parent, SkinManager *skinManager) : QFrame(parent)
 {
+	setFrameStyle(QFrame::StyledPanel);
+
+	setStyleSheet(skinManager->getToolboxPageStyle());
+
 	layout = new QVBoxLayout;
 
 	createNoteButtons();

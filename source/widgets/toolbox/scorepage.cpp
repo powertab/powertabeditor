@@ -1,6 +1,8 @@
 #include "scorepage.h"
 
-ScorePage::ScorePage(QWidget *parent) : QWidget(parent)
+ScorePage::ScorePage(QFrame *parent, SkinManager *skinManager) : QFrame(parent)
 {
+	setFrameStyle(QFrame::StyledPanel);
 
+	setStyleSheet(skinManager->getToolboxPageStyle());
 }

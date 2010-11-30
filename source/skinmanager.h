@@ -13,9 +13,10 @@ public:
 	bool openSkin(QString filename);
 	QString getTopTabStyle();
 	QString getLeftTabStyle();
+	QString getToolboxPageStyle();
 
 private:
-	QString topTabStyle, leftTabStyle;
+	QString topTabStyle, leftTabStyle, toolboxPageStyle;
 };
 
 #endif // SKINMANAGER_H

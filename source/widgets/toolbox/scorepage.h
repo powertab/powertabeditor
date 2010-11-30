@@ -1,14 +1,16 @@
 #ifndef SCOREPAGE_H
 #define SCOREPAGE_H
 
-#include <QWidget>
+#include <QFrame>
 
-class ScorePage : public QWidget
+#include "../../skinmanager.h"
+
+class ScorePage : public QFrame
 {
 	Q_OBJECT
 
 public:
-	ScorePage(QWidget *parent = 0);
+	ScorePage(QFrame *parent = 0, SkinManager *skinManager = 0);
 };
 
 #endif // SCOREPAGE_H
