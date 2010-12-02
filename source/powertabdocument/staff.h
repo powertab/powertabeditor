@@ -2,9 +2,9 @@
 // Name:            staff.h
 // Purpose:         Stores and renders a staff
 // Author:          Brad Larsen
-// Modified by:     
+// Modified by:
 // Created:         Dec 16, 2004
-// RCS-ID:          
+// RCS-ID:
 // Copyright:       (c) Brad Larsen
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,8 @@ public:
     static const uint8_t DEFAULT_STANDARD_NOTATION_STAFF_BELOW_SPACING;  ///< Default value for the standard notation staff below spacing member variable
     static const uint8_t DEFAULT_SYMBOL_SPACING;                         ///< Default value for the symbol spacing member variable
     static const uint8_t DEFAULT_TABLATURE_STAFF_BELOW_SPACING;          ///< Default value for the tablature staff below spacing member variable
+    static const uint8_t STD_NOTATION_LINE_SPACING;
+    static const uint8_t STD_NOTATION_STAFF_TYPE;
 
     // Clef Constants
     static const uint8_t TREBLE_CLEF;                                ///< Treble clef
@@ -42,7 +44,7 @@ public:
     {
         clefMask                    = (uint8_t)0xf0,                 ///< Mask used to retrieve the clef type
         tablatureStaffTypeMask      = (uint8_t)0xf                   ///< Mask used to retrieve the tablature type (3 - 7 string)
-                                  };
+    };
 
     // Member Variables
 protected:
@@ -200,6 +202,13 @@ public:
         {
             return lowMelodyPositionArray[index];
         }
+    }
+
+    int GetHeight() const
+    {
+        return GetStandardNotationStaffAboveSpacing() + GetStandardNotationStaffBelowSpacing() + GetSymbolSpacing() +
+                GetTablatureStaffBelowSpacing() + STD_NOTATION_LINE_SPACING * STD_NOTATION_STAFF_TYPE +
+                GetTablatureStaffType() * 9; // TODO - pass in the tab line separation as a parameter
     }
 };
 

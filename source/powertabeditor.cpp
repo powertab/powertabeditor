@@ -105,6 +105,10 @@ PowerTabEditor::~PowerTabEditor()
     {
         delete songTimer[i];
     }
+
+    delete rtMidiWrapper;
+    delete preferencesDialog;
+    delete skinManager;
 }
 
 // Redraws the *entire* document upon undo/redo
@@ -458,7 +462,7 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
         while(i.hasNext())
         {
             i.next();
-            if (i.key() == system && !notesToBeKept.contains(i.value().stringNum))
+            if (i.key() == (unsigned int)system && !notesToBeKept.contains(i.value().stringNum))
             {
                 rtMidiWrapper->stopNote(system, i.value().pitch);
                 i.remove();
@@ -482,7 +486,8 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
         if (!position->GetNote(i)->IsTied())
         {
             rtMidiWrapper->playNote(system, pitch ,127);
-            oldNotes.insertMulti(system, (NoteHistory){pitch, note->GetString()} );
+            NoteHistory noteHistory = {pitch, note->GetString()};
+            oldNotes.insertMulti(system, noteHistory );
         }
     }
 

@@ -2,9 +2,9 @@
 // Name:            system.h
 // Purpose:         Stores and renders a system
 // Author:          Brad Larsen
-// Modified by:     
+// Modified by:
 // Created:         Dec 16, 2004
-// RCS-ID:          
+// RCS-ID:
 // Copyright:       (c) Brad Larsen
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -81,6 +81,10 @@ public:
     /// @return The bounding rect for the system
     Rect GetRect() const
     {return (m_rect);}
+    void SetRect(const Rect& rect)
+    {
+        m_rect = rect;
+    }
 
     // Position Spacing Functions
     /// Determines if a position spacing is valid
@@ -255,6 +259,17 @@ public:
 
     // Operations
     int GetCumulativeInternalKeyAndTimeSignatureWidth(int position = -1) const;
+
+    void CalculateHeight()
+    {
+        int sum = 0;
+        for (uint32_t i=0; i < m_staffArray.size(); i++)
+        {
+            sum += m_staffArray.at(i)->GetHeight();
+        }
+
+        m_rect.SetHeight(sum);
+    }
 };
 
 #endif
