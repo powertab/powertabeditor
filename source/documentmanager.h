@@ -16,17 +16,17 @@ public:
     ~DocumentManager();
 
     bool Add(QString& fileName);
-    void Remove(uint32_t index);
+    void Remove(quint32 index);
     PowerTabDocument* getCurrentDocument();
-    void setCurrentDocumentIndex(uint32_t index);
-    uint32_t getCurrentDocumentIndex() const
+    void setCurrentDocumentIndex(quint32 index);
+    quint32 getCurrentDocumentIndex() const
     {
         return currentDocumentIndex;
     }
 
 private:
     QList<PowerTabDocument*> documentList;
-    uint32_t currentDocumentIndex;
+    quint32 currentDocumentIndex;
 };
 
 #endif // DOCUMENTMANAGER_H

@@ -10,16 +10,16 @@ class Barline;
 class ChangeBarLineType : public QUndoCommand
 {
 public:
-    ChangeBarLineType(Barline* bar, uint8_t barType, uint8_t repeats);
+    ChangeBarLineType(Barline* bar, quint8 barType, quint8 repeats);
     virtual void undo();
     virtual void redo();
 
 private:
     Barline* barLine;
-    uint8_t type;
-    uint8_t repeatCount;
-    uint8_t originalType;
-    uint8_t originalRepeatCount;
+    quint8 type;
+    quint8 repeatCount;
+    quint8 originalType;
+    quint8 originalRepeatCount;
 };
 
 #endif // CHANGEBARLINETYPE_H

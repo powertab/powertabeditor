@@ -27,7 +27,7 @@ PowerTabDocument* DocumentManager::getCurrentDocument()
         return documentList[currentDocumentIndex];
 }
 
-void DocumentManager::Remove(uint32_t index)
+void DocumentManager::Remove(quint32 index)
 {
     delete documentList[index];
     documentList.removeAt(index);
@@ -67,7 +67,7 @@ bool DocumentManager::Add(QString& fileName)
     return true;
 }
 
-void DocumentManager::setCurrentDocumentIndex(uint32_t index)
+void DocumentManager::setCurrentDocumentIndex(quint32 index)
 {
     currentDocumentIndex = index;
 }
