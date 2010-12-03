@@ -118,6 +118,29 @@ const Position& Position::operator=(const Position& position)
     return (*this);
 }
 
+Position* Position::CloneObject() const
+{
+    Position* newPosition = new Position;
+    newPosition->m_position = m_position;
+    newPosition->m_beaming = m_beaming;
+    newPosition->m_data = m_data;
+
+    size_t i = 0;
+    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
+    {
+        newPosition->m_complexSymbolArray[i] = m_complexSymbolArray[i];
+    }
+
+    newPosition->m_noteArray.clear();
+
+    for (uint32_t i=0; i < m_noteArray.size(); i++)
+    {
+        newPosition->m_noteArray.push_back(m_noteArray.at(i)->CloneObject());
+    }
+
+    return newPosition;
+}
+
 /// Equality Operator
 bool Position::operator==(const Position& position) const
 {

@@ -115,6 +115,28 @@ const Staff& Staff::operator=(const Staff& staff)
     return (*this);
 }
 
+Staff* Staff::CloneObject() const
+{
+    Staff* newStaff = new Staff;
+
+    newStaff->m_data = m_data;
+    newStaff->m_standardNotationStaffAboveSpacing = m_standardNotationStaffAboveSpacing;
+    newStaff->m_standardNotationStaffBelowSpacing = m_standardNotationStaffBelowSpacing;
+    newStaff->m_symbolSpacing = m_symbolSpacing;
+    newStaff->m_tablatureStaffBelowSpacing = m_tablatureStaffBelowSpacing;
+
+    for (uint32_t i=0; i < highMelodyPositionArray.size(); i++)
+    {
+        newStaff->highMelodyPositionArray.push_back(highMelodyPositionArray.at(i)->CloneObject());
+    }
+    for (uint32_t i=0; i < lowMelodyPositionArray.size(); i++)
+    {
+        newStaff->lowMelodyPositionArray.push_back(lowMelodyPositionArray.at(i)->CloneObject());
+    }
+
+    return newStaff;
+}
+
 /// Equality Operator
 bool Staff::operator==(const Staff& staff) const
 {

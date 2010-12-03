@@ -2,9 +2,9 @@
 // Name:            position.h
 // Purpose:         Stores and renders a position (a group of notes, or a rest)
 // Author:          Brad Larsen
-// Modified by:     
+// Modified by:
 // Created:         Dec 17, 2004
-// RCS-ID:          
+// RCS-ID:
 // Copyright:       (c) Brad Larsen
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -165,6 +165,8 @@ public:
     bool Serialize(PowerTabOutputStream& stream);
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
+    Position* CloneObject() const;
+
     // MFC Class Functions
 public:
     /// Gets the MFC Class Name for the object
@@ -238,7 +240,7 @@ public:
     static bool IsValidPreviousBeamDurationType(uint8_t durationType)
     {
         return ((durationType == 0) || (durationType == 8) ||
-		(durationType == 16) || (durationType == 32) || (durationType == 64));
+        (durationType == 16) || (durationType == 32) || (durationType == 64));
     }
     bool SetPreviousBeamDurationType(uint8_t durationType);
     uint8_t GetPreviousBeamDurationType() const;

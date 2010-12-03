@@ -240,7 +240,8 @@ void Score::UpdateToVer2Structure()
             pair<guitarToStaffIt, guitarToStaffIt> range = guitarToStaffMap.equal_range(j); // find guitars for this staff
             for (auto k = range.first; k != range.second; ++k)
             {
-                newStaves[k->second] = currentStaff; // TODO - need a deep copy here
+                newStaves[k->second] = currentStaff;//->CloneObject();
+                std::cerr << newStaves[k->second] << std::endl;
             }
         }
 
@@ -262,7 +263,12 @@ void Score::UpdateToVer2Structure()
             }
         }
 
-        currentSystem->m_staffArray.swap(newStaves); // TODO - possible memory leak??
+        // clear out the old staves, and swap in the new ones
+        for (uint32_t n=0; n < currentSystem->m_staffArray.size(); n++)
+        {
+            delete currentSystem->m_staffArray.at(n);
+        }
+        currentSystem->m_staffArray.swap(newStaves);
 
         // readjust locations / heights
         currentSystem->CalculateHeight();

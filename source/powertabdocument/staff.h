@@ -74,6 +74,8 @@ public:
     bool Serialize(PowerTabOutputStream& stream);
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
+    Staff* CloneObject() const;
+
     // MFC Class Functions
 public:
     /// Gets the MFC Class Name for the object
