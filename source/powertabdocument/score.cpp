@@ -240,7 +240,7 @@ void Score::UpdateToVer2Structure()
             pair<guitarToStaffIt, guitarToStaffIt> range = guitarToStaffMap.equal_range(j); // find guitars for this staff
             for (auto k = range.first; k != range.second; ++k)
             {
-                newStaves[k->second] = currentStaff;//->CloneObject();
+                newStaves[k->second] = currentStaff->CloneObject();
                 std::cerr << newStaves[k->second] << std::endl;
             }
         }
