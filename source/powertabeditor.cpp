@@ -65,12 +65,12 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
     isPlaying = false;
 
-    for (int i=0; i<8; ++i)
+	for (int i=0; i<2; ++i)
     {
-        songTimer[i] = new QTimer;
-        connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
-        signalMapper->setMapping(songTimer[i], i);
-    }
+		songTimer[i] = new QTimer;
+		connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
+		signalMapper->setMapping(songTimer[i], i);
+	}
 
     connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)));
 
@@ -101,10 +101,10 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 PowerTabEditor::~PowerTabEditor()
 {
-    for (int i=0; i<8; i++)
-    {
-        delete songTimer[i];
-    }
+	for (int i=0; i<2; i++)
+	{
+		delete songTimer[i];
+	}
 
     delete rtMidiWrapper;
     delete preferencesDialog;
@@ -445,8 +445,28 @@ void PowerTabEditor::moveCaretToLastSection()
 
 void PowerTabEditor::playNotesAtCurrentPosition(int system)
 {
-    // retrieve the current position
-    Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
+	qDebug() << "Starting system: " << system << "...";
+
+	// TODO - remove
+	if (system>=2)
+		return;
+
+	Caret* caret = getCurrentScoreArea()->getCaret();
+
+	Staff* staff = caret->getCurrentSystem()->GetStaff(system);
+
+	Position* position;
+	// crashes in the line below TODO - resolve
+	if (staff->IsValidPositionIndex(0,staff->GetPosition(0,caret->getCurrentPosition()->GetPosition())->GetPosition()))
+	{
+		qDebug() << "a";
+		position = staff->GetPosition(0,caret->getCurrentPosition()->GetPosition());
+		qDebug() << "b";
+	}
+	else
+		return;
+
+	qDebug() << "Position: " << position->GetPosition();
 
     // stop all previous notes except for notes that are to be tied
     {
@@ -491,15 +511,17 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
         }
     }
 
-    TempoMarker* tempo_marker = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
-    unsigned int tempo=(unsigned int)((60.0/(float)tempo_marker->GetBeatsPerMinute())*1000.0*4.0);
-    songTimer[system]->start(tempo / position->GetDurationType());
+	TempoMarker* tempo_marker = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
+	unsigned int tempo=(unsigned int)((60.0/(float)tempo_marker->GetBeatsPerMinute())*1000.0*4.0);
+	songTimer[system]->start(tempo / position->GetDurationType());
+
+	qDebug() << "Done...";
 }
 
 void PowerTabEditor::playbackSong(int system)
 {
-    if(system==0)
-    {
+	if(system==0)
+	{
         if (!moveCaretRight())
         {
             if(!moveCaretToNextSection())
@@ -508,7 +530,7 @@ void PowerTabEditor::playbackSong(int system)
                 return;
             }
         }
-    }
+	}
 
     playNotesAtCurrentPosition(system);
 }

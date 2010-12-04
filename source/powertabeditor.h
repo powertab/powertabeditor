@@ -69,7 +69,7 @@ private:
         bool operator==(const NoteHistory& history) { return (pitch == history.pitch) && (stringNum == history.stringNum); }
     };
     QMultiMap<unsigned int, NoteHistory> oldNotes; // map channels to pitches
-    QTimer* songTimer[8];
+	QTimer* songTimer[2];
 
     DocumentManager documentManager;
     QMenu* fileMenu;
