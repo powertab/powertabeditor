@@ -53,7 +53,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     undoStack = new QUndoStack();
     connect(undoStack, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
 
-	skinManager = new SkinManager("default");
+    skinManager = new SkinManager("default");
 
     CreateActions();
     CreateMenus();
@@ -65,12 +65,12 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
     isPlaying = false;
 
-	for (int i=0; i<2; ++i)
+    for (int i=0; i<8; ++i)
     {
-		songTimer[i] = new QTimer;
-		connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
-		signalMapper->setMapping(songTimer[i], i);
-	}
+        songTimer[i] = new QTimer;
+        connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
+        signalMapper->setMapping(songTimer[i], i);
+    }
 
     connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)));
 
@@ -101,10 +101,10 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 PowerTabEditor::~PowerTabEditor()
 {
-	for (int i=0; i<2; i++)
-	{
-		delete songTimer[i];
-	}
+    for (int i=0; i<8; i++)
+    {
+        delete songTimer[i];
+    }
 
     delete rtMidiWrapper;
     delete preferencesDialog;
@@ -235,7 +235,7 @@ void PowerTabEditor::CreateTabArea()
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
 
-	tabWidget->setStyleSheet(skinManager->getDocumentTabStyle());
+    tabWidget->setStyleSheet(skinManager->getDocumentTabStyle());
 
     // creates a new document by default
     /*ScoreArea* score = new ScoreArea;
@@ -275,7 +275,7 @@ void PowerTabEditor::OpenFile()
             QString title = fileInfo.fileName();
             QFontMetrics fm (tabWidget->font());
 
-			bool chopped = false;
+            bool chopped = false;
 
             // each tab is 200px wide, so we want to shorten the name if it's wider than 140px
             while(fm.width(title)>140)
@@ -290,7 +290,7 @@ void PowerTabEditor::OpenFile()
             tabWidget->addTab(score, title);
 
             // add the guitars to a new mixer
-			Mixer* mixer = new Mixer(0,skinManager);
+            Mixer* mixer = new Mixer(0,skinManager);
             QScrollArea* scrollArea = new QScrollArea;
             PowerTabDocument* doc = documentManager.getCurrentDocument();
             for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
@@ -367,6 +367,7 @@ void PowerTabEditor::startStopPlayback()
         playPauseAct->setText(tr("Pause"));
 
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
+        previousPositionInStaff.clear();
 
         for (unsigned int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
         {
@@ -445,32 +446,21 @@ void PowerTabEditor::moveCaretToLastSection()
 
 void PowerTabEditor::playNotesAtCurrentPosition(int system)
 {
-	qDebug() << "Starting system: " << system << "...";
+    quint32 position_index = previousPositionInStaff.value(system, 0); // get position
+    previousPositionInStaff.insert(system, position_index + 1); // update
 
-	// TODO - remove
-	if (system>=2)
-		return;
+    // retrieve the current position
+    //qDebug() << "System: " << system << " Position " << position_index;
+    Position* position = getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaff(system)->GetPosition(0,position_index);
 
-	Caret* caret = getCurrentScoreArea()->getCaret();
-
-	Staff* staff = caret->getCurrentSystem()->GetStaff(system);
-
-	Position* position;
-	// crashes in the line below TODO - resolve
-	if (staff->IsValidPositionIndex(0,staff->GetPosition(0,caret->getCurrentPosition()->GetPosition())->GetPosition()))
-	{
-		qDebug() << "a";
-		position = staff->GetPosition(0,caret->getCurrentPosition()->GetPosition());
-		qDebug() << "b";
-	}
-	else
-		return;
-
-	qDebug() << "Position: " << position->GetPosition();
-
+    if (!position) // check for invalid position (caused by invalid position index)
+    {
+        return;
+    }
     // stop all previous notes except for notes that are to be tied
     {
         QList<unsigned int> notesToBeKept;
+        notesToBeKept.reserve(position->GetNoteCount());
         for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
         {
             if (position->GetNote(i)->IsTied())
@@ -490,47 +480,79 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
         }
     }
 
-    for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
-    // loop through all notes in the current position on the current system
+    if (!position->IsRest())
     {
-        Guitar* guitar = getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(system);
-        Note* note = position->GetNote(i);
-
-        unsigned int pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
-        pitch += note->GetFretNumber();
-
-        rtMidiWrapper->setVolume(system,guitar->GetInitialVolume());
-        rtMidiWrapper->setPan(system,guitar->GetPan());
-        rtMidiWrapper->setPatch(system,guitar->GetPreset());
-
-        if (!position->GetNote(i)->IsTied())
+        for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
+        // loop through all notes in the current position on the current system
         {
-            rtMidiWrapper->playNote(system, pitch ,127);
-            NoteHistory noteHistory = {pitch, note->GetString()};
-            oldNotes.insertMulti(system, noteHistory );
+            if (!position->GetNote(i)->IsTied())
+            {
+                Guitar* guitar = getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(system);
+                Note* note = position->GetNote(i);
+
+                unsigned int pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
+                pitch += note->GetFretNumber();
+
+                rtMidiWrapper->setVolume(system,guitar->GetInitialVolume());
+                rtMidiWrapper->setPan(system,guitar->GetPan());
+                rtMidiWrapper->setPatch(system,guitar->GetPreset());
+
+
+                rtMidiWrapper->playNote(system, pitch ,127);
+                NoteHistory noteHistory = {pitch, note->GetString()};
+                oldNotes.insertMulti(system, noteHistory );
+            }
         }
     }
 
-	TempoMarker* tempo_marker = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
-	unsigned int tempo=(unsigned int)((60.0/(float)tempo_marker->GetBeatsPerMinute())*1000.0*4.0);
-	songTimer[system]->start(tempo / position->GetDurationType());
+    TempoMarker* tempo_marker = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
+    quint32 tempo = 60.0 / (double)tempo_marker->GetBeatsPerMinute() * 1000.0;
+    //qDebug() << tempo;
 
-	qDebug() << "Done...";
+    double duration = position->GetDurationType();
+    duration = tempo * 4.0 / duration;
+    duration += position->IsDotted() * 0.5 * duration;
+    //qDebug() << duration;
+    songTimer[system]->start(duration);
 }
 
 void PowerTabEditor::playbackSong(int system)
 {
-	if(system==0)
-	{
+    // make sure all staves are finished before switching to the next system
+    bool okayToSwitchStaves = true;
+    // the caret should move along with the staff that is furthest along in playback
+    quint32 systemWithMaxPosition = 0;
+
+    QMap<quint32, quint32>::const_iterator i = previousPositionInStaff.constBegin();
+    while (i != previousPositionInStaff.constEnd())
+    {
+        Staff* staff = getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaff(i.key());
+        if (i.value() < staff->GetPositionCount(0)) // check if a staff is not finished
+        {
+            okayToSwitchStaves = false;
+        }
+        if (previousPositionInStaff.value(systemWithMaxPosition) < i.value())
+        {
+            systemWithMaxPosition = i.key();
+        }
+        ++i;
+    }
+
+    if(system == systemWithMaxPosition) // only advance the caret if we are in the staff that is furthest along
+    {
         if (!moveCaretRight())
         {
-            if(!moveCaretToNextSection())
+            if(!moveCaretToNextSection() && okayToSwitchStaves)
             {
                 this->startStopPlayback();
                 return;
             }
+            else
+            {
+                previousPositionInStaff.clear();
+            }
         }
-	}
+    }
 
     playNotesAtCurrentPosition(system);
 }

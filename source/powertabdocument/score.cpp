@@ -217,6 +217,7 @@ void Score::UpdateToVer2Structure()
             pair<guitarInIt, guitarInIt> range = guitarInMap.equal_range(i);
             for (auto i = range.first; i != range.second; ++i)
             {
+                std::cerr << "At Position: " << i->second->GetPosition() << std::endl;
                 std::bitset<8> guitarBitmap(i->second->GetStaffGuitars());
                 for (uint8_t gtr = 0; gtr < 8; gtr++)
                 {
@@ -241,7 +242,6 @@ void Score::UpdateToVer2Structure()
             for (auto k = range.first; k != range.second; ++k)
             {
                 newStaves[k->second] = currentStaff->CloneObject();
-                std::cerr << newStaves[k->second] << std::endl;
             }
         }
 
@@ -250,14 +250,20 @@ void Score::UpdateToVer2Structure()
             if (newStaves.at(m) == NULL)
             {
                 Staff* newStaff = new Staff;
-                newStaff->SetStandardNotationStaffAboveSpacing(15);
-                Position* newPosition = new Position;
-                Position* oldPosition = currentSystem->m_staffArray.at(0)->highMelodyPositionArray.at(0);
-
-                newPosition->SetPosition(oldPosition->GetPosition());
-                newPosition->SetDurationType(oldPosition->GetDurationType());
-                newPosition->SetRest();
-                newStaff->highMelodyPositionArray.push_back(newPosition);
+                Staff* exampleStaff = currentSystem->m_staffArray.at(0);
+                // copy old staff but with rests instead
+                for (int n=0; n < exampleStaff->highMelodyPositionArray.size(); n++)
+                {
+                    newStaff->SetStandardNotationStaffAboveSpacing(15);
+                    Position* newPosition = exampleStaff->highMelodyPositionArray.at(n)->CloneObject();
+                    newPosition->SetRest();
+                    for(int q=0; q < newPosition->m_noteArray.size(); q++)
+                    {
+                        delete newPosition->m_noteArray.at(q);
+                    }
+                    newPosition->m_noteArray.clear();
+                    newStaff->highMelodyPositionArray.push_back(newPosition);
+                }
 
                 newStaves[m] = newStaff;
             }

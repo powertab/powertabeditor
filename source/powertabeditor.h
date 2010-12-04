@@ -69,7 +69,7 @@ private:
         bool operator==(const NoteHistory& history) { return (pitch == history.pitch) && (stringNum == history.stringNum); }
     };
     QMultiMap<unsigned int, NoteHistory> oldNotes; // map channels to pitches
-	QTimer* songTimer[2];
+    QTimer* songTimer[8];
 
     DocumentManager documentManager;
     QMenu* fileMenu;
@@ -107,6 +107,7 @@ private:
     SkinManager* skinManager;
 
     RtMidiWrapper* rtMidiWrapper;
+    QMap<quint32, quint32> previousPositionInStaff;
 };
 
 #endif // POWERTABEDITOR_H
