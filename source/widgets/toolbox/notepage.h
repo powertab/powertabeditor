@@ -31,16 +31,20 @@ private:
 	QGroupBox *slideLegatoGroup;
 	QGroupBox *vibratoTremoloGroup;
 
+	// note group
 	QPushButton *noteButton[7];
 
+	// rest group
 	QPushButton *restButton[7];
 
+	// rhythm group
 	QPushButton *dottedButton;
 	QPushButton *doubleDottedButton;
 	QPushButton *tieButton;
 	QPushButton *groupingButton;
 	QPushButton *fermataButton;
 
+	// slide and legato group
 	QPushButton *slideInBelowButton;
 	QPushButton *slideInAboveButton;
 	QPushButton *slideOutBelowButton;
@@ -49,6 +53,7 @@ private:
 	QPushButton *legatoSlideButton;
 	QPushButton *legatoButton;
 
+	// vibrato and tremolo group
 	QPushButton *slightVibratoButton;
 	QPushButton *wideVibratoButton;
 	QPushButton *bendButton;
