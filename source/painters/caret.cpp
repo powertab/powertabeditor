@@ -1,6 +1,7 @@
 #include "caret.h"
 
 #include <QPainter>
+#include <QVector>
 
 #include "../powertabdocument/score.h"
 #include "../powertabdocument/system.h"
@@ -120,6 +121,7 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
     else
     {
+        QVector<QLine> lines(0);
         // calculations for the box around the selected note
         int stringHeight = currentStaffInfo.getTabLineHeight(currentStringIndex + 1) - currentStaffInfo.getTopTabLine();
         int boundary1 = stringHeight - CARET_NOTE_SPACING;
@@ -128,18 +130,19 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         // draw a line down to the highlighted string, if necessary
         if (y1 < boundary1)
         {
-            painter->drawLine(x, y1, x, boundary1);
+            lines.append(QLine(x, y1, x, boundary1));
         }
 
         // draw horizontal lines around note
-        painter->drawLine(0, boundary1, currentStaffInfo.positionWidth, boundary1);
-        painter->drawLine(0, boundary2, currentStaffInfo.positionWidth, boundary2);
+        lines.append(QLine(0, boundary1, currentStaffInfo.positionWidth, boundary1));
+        lines.append(QLine(0, boundary2, currentStaffInfo.positionWidth, boundary2));
 
         // draw to bottom of staff, if necessary
         if (y2 > boundary2)
         {
-            painter->drawLine(x, boundary2, x, y2);
+            lines.append(QLine(x, boundary2, x, y2));
         }
+        painter->drawLines(lines);
     }
 }
 

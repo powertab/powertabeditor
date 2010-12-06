@@ -213,7 +213,7 @@ void Score::UpdateToVer2Structure()
         if ((guitarInMap.count(i)) >= 1)
         {
             guitarToStaffMap.clear();
-            std::cerr << "In System " << i << std::endl;
+            //std::cerr << "In System " << i << std::endl;
             pair<guitarInIt, guitarInIt> range = guitarInMap.equal_range(i);
             for (auto i = range.first; i != range.second; ++i)
             {
@@ -224,7 +224,7 @@ void Score::UpdateToVer2Structure()
                     if (guitarBitmap.test(gtr) == true)
                     {
                         guitarToStaffMap.insert(pair<uint32_t, uint32_t>(i->second->GetStaff(), gtr));
-                        std::cerr << "Guitar In: " << (int)gtr + 1 << std::endl;
+                        //std::cerr << "Guitar In: " << (int)gtr + 1 << std::endl;
                     }
                 }
             }

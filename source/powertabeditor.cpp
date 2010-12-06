@@ -72,7 +72,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
         signalMapper->setMapping(songTimer[i], i);
     }
 
-    connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)));
+    connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)), Qt::DirectConnection);
 
     preferencesDialog = new PreferencesDialog();
 
@@ -369,6 +369,8 @@ void PowerTabEditor::startStopPlayback()
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
         previousPositionInStaff.clear();
 
+        moveCaretToStart();
+
         for (unsigned int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
         {
             playNotesAtCurrentPosition(j);
@@ -474,6 +476,7 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
             i.next();
             if (i.key() == (unsigned int)system && !notesToBeKept.contains(i.value().stringNum))
             {
+                songTimer[system]->stop();
                 rtMidiWrapper->stopNote(system, i.value().pitch);
                 i.remove();
             }
@@ -512,6 +515,7 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
     double duration = position->GetDurationType();
     duration = tempo * 4.0 / duration;
     duration += position->IsDotted() * 0.5 * duration;
+    duration += position->IsDoubleDotted() * 0.75 * duration;
     //qDebug() << duration;
     songTimer[system]->start(duration);
 }
@@ -527,7 +531,7 @@ void PowerTabEditor::playbackSong(int system)
     while (i != previousPositionInStaff.constEnd())
     {
         Staff* staff = getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaff(i.key());
-        if (i.value() < staff->GetPositionCount(0)) // check if a staff is not finished
+        if (i.value() <= staff->GetPositionCount(0)) // check if a staff is not finished
         {
             okayToSwitchStaves = false;
         }

@@ -17,8 +17,6 @@
 #include "painters/keysignaturepainter.h"
 #include "painters/timesignaturepainter.h"
 
-#include <QtOpenGL/QGLWidget>
-
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
 {
@@ -290,5 +288,5 @@ void ScoreArea::CenterItem(QGraphicsItem* item, float xmin, float xmax, float y)
 // ensures that the caret is visible when it changes sections
 void ScoreArea::adjustScroll()
 {
-    centerOn(caret);
+    ensureVisible(caret, 50, 100);
 }
