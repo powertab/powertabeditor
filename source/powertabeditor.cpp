@@ -448,8 +448,8 @@ void PowerTabEditor::moveCaretToLastSection()
 
 void PowerTabEditor::playNotesAtCurrentPosition(int system)
 {
-    quint32 position_index = previousPositionInStaff.value(system, 0); // get position
-    previousPositionInStaff.insert(system, position_index + 1); // update
+    quint32 position_index = previousPositionInStaff.value(system, -1) + 1; // get position
+    previousPositionInStaff.insert(system, position_index); // update
 
     // retrieve the current position
     //qDebug() << "System: " << system << " Position " << position_index;
@@ -509,44 +509,43 @@ void PowerTabEditor::playNotesAtCurrentPosition(int system)
     }
 
     TempoMarker* tempo_marker = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
-    quint32 tempo = 60.0 / (double)tempo_marker->GetBeatsPerMinute() * 1000.0;
-    //qDebug() << tempo;
+    double tempo = 60.0 / (double)tempo_marker->GetBeatsPerMinute() * 1000.0;
 
     double duration = position->GetDurationType();
     duration = tempo * 4.0 / duration;
     duration += position->IsDotted() * 0.5 * duration;
     duration += position->IsDoubleDotted() * 0.75 * duration;
-    //qDebug() << duration;
     songTimer[system]->start(duration);
 }
 
-void PowerTabEditor::playbackSong(int system)
+void PowerTabEditor::playbackSong(int staff)
 {
     // make sure all staves are finished before switching to the next system
     bool okayToSwitchStaves = true;
     // the caret should move along with the staff that is furthest along in playback
-    quint32 systemWithMaxPosition = 0;
+    quint32 staffWithMaxPosition = 0;
 
     QMap<quint32, quint32>::const_iterator i = previousPositionInStaff.constBegin();
     while (i != previousPositionInStaff.constEnd())
     {
         Staff* staff = getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaff(i.key());
-        if (i.value() <= staff->GetPositionCount(0)) // check if a staff is not finished
+        if (i.value() < staff->GetPositionCount(0)) // check if a staff is not finished
         {
             okayToSwitchStaves = false;
         }
-        if (previousPositionInStaff.value(systemWithMaxPosition) < i.value())
+        if (previousPositionInStaff.value(staffWithMaxPosition) <= i.value())
         {
-            systemWithMaxPosition = i.key();
+            staffWithMaxPosition = i.key();
         }
         ++i;
     }
 
-    if(system == systemWithMaxPosition) // only advance the caret if we are in the staff that is furthest along
+    // only advance the caret if we are in the staff that is furthest along
+    if(previousPositionInStaff.value(staff) == previousPositionInStaff.value(staffWithMaxPosition))
     {
         if (!moveCaretRight())
         {
-            if(!moveCaretToNextSection() && okayToSwitchStaves)
+            if (!moveCaretToNextSection() && okayToSwitchStaves)
             {
                 this->startStopPlayback();
                 return;
@@ -554,9 +553,16 @@ void PowerTabEditor::playbackSong(int system)
             else
             {
                 previousPositionInStaff.clear();
+                // once we move to a new system, start playing all each of the staves for that system
+                for (unsigned int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
+                {
+                    playNotesAtCurrentPosition(j);
+                }
+                return;
             }
         }
     }
 
-    playNotesAtCurrentPosition(system);
+    // play next note for this staff
+    playNotesAtCurrentPosition(staff);
 }

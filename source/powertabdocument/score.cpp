@@ -252,12 +252,12 @@ void Score::UpdateToVer2Structure()
                 Staff* newStaff = new Staff;
                 Staff* exampleStaff = currentSystem->m_staffArray.at(0);
                 // copy old staff but with rests instead
-                for (int n=0; n < exampleStaff->highMelodyPositionArray.size(); n++)
+                for (uint32_t n=0; n < exampleStaff->highMelodyPositionArray.size(); n++)
                 {
                     newStaff->SetStandardNotationStaffAboveSpacing(15);
                     Position* newPosition = exampleStaff->highMelodyPositionArray.at(n)->CloneObject();
                     newPosition->SetRest();
-                    for(int q=0; q < newPosition->m_noteArray.size(); q++)
+                    for(uint32_t q=0; q < newPosition->m_noteArray.size(); q++)
                     {
                         delete newPosition->m_noteArray.at(q);
                     }
