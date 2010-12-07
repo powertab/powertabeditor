@@ -5,26 +5,27 @@
 #include <QMenu>
 #include <QToolBox>
 #include <QListView>
-
 #include <QTabWidget>
 #include <QUndoStack>
 #include <QSettings>
 #include <QCoreApplication>
-
 #include <QFileInfo>
 #include <QFontDatabase>
-
+#include <QSignalMapper>
+#include <QSplitter>
 #include <QScrollArea>
 #include <QStackedWidget>
-
 #include <QTimer>
 
 #include "powertabeditor.h"
 #include "scorearea.h"
 #include "painters/caret.h"
-
+#include "skinmanager.h"
+#include "rtmidiwrapper.h"
+#include "dialogs/preferencesdialog.h"
 #include "powertabdocument/powertabdocument.h"
 #include "widgets/mixer/mixer.h"
+#include "widgets/toolbox/toolbox.h"
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 QUndoStack* PowerTabEditor::undoStack = NULL;

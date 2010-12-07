@@ -3,8 +3,7 @@
 
 #include "painterbase.h"
 
-#include <QFontDatabase>
-#include <QFontMetricsF>
+#include <QFont>
 
 class Note;
 

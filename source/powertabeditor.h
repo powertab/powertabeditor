@@ -2,21 +2,21 @@
 #define POWERTABEDITOR_H
 
 #include <QMainWindow>
-#include <QSignalMapper>
-#include <QSplitter>
 #include <QMultiMap>
 
 #include "documentmanager.h"
-#include "skinmanager.h"
-#include "rtmidiwrapper.h"
-#include "dialogs/preferencesdialog.h"
-#include "widgets/toolbox/toolbox.h"
 
 class QTabWidget;
 class QUndoStack;
 class ScoreArea;
 class Mixer;
 class QStackedWidget;
+class SkinManager;
+class RtMidiWrapper;
+class PreferencesDialog;
+class Toolbox;
+class QSignalMapper;
+class QSplitter;
 
 class PowerTabEditor : public QMainWindow
 {

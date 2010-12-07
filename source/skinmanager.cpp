@@ -1,50 +1,52 @@
 #include "skinmanager.h"
 
 #include <QCoreApplication>
+#include <QFile>
+#include <QTextStream>
 
 SkinManager::SkinManager(QString filename)
 {
-	documentTabStyle = readSegment(filename,"document_tab.txt");
+    documentTabStyle = readSegment(filename,"document_tab.txt");
 
-	toolboxTabStyle = readSegment(filename,"toolbox_tab.txt");
-	toolboxPageStyle = readSegment(filename,"toolbox_page.txt");
+    toolboxTabStyle = readSegment(filename,"toolbox_tab.txt");
+    toolboxPageStyle = readSegment(filename,"toolbox_page.txt");
 
-	mixerStyle = readSegment(filename,"mixer.txt");
+    mixerStyle = readSegment(filename,"mixer.txt");
 }
 
 QString SkinManager::getDocumentTabStyle()
 {
-	return documentTabStyle;
+    return documentTabStyle;
 }
 
 QString SkinManager::getToolboxTabStyle()
 {
-	return toolboxTabStyle;
+    return toolboxTabStyle;
 }
 
 QString SkinManager::getToolboxPageStyle()
 {
-	return toolboxPageStyle;
+    return toolboxPageStyle;
 }
 
 QString SkinManager::getMixerStyle()
 {
-	return mixerStyle;
+    return mixerStyle;
 }
 
 QString SkinManager::readSegment(QString skinname, QString filename)
 {
-	QString out;
-	QFile data;
+    QString out;
+    QFile data;
 
-	data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+skinname+"/"+filename);
+    data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+skinname+"/"+filename);
 
-	if(data.open(QFile::ReadOnly))
-	{
-		QTextStream styleIn(&data);
-		out = styleIn.readAll();
-		data.close();
-	}
+    if(data.open(QFile::ReadOnly))
+    {
+        QTextStream styleIn(&data);
+        out = styleIn.readAll();
+        data.close();
+    }
 
-	return out;
+    return out;
 }

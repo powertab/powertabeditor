@@ -71,3 +71,9 @@ void DocumentManager::setCurrentDocumentIndex(quint32 index)
 {
     currentDocumentIndex = index;
 }
+
+quint32 DocumentManager::getCurrentDocumentIndex() const
+{
+    return currentDocumentIndex;
+}
+

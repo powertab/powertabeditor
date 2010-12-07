@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QMessageBox>
+#include <QFontMetricsF>
 
 #include "../powertabdocument/note.h"
 
@@ -20,7 +21,7 @@ void TabNotePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 void TabNotePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     QMessageBox message;
-	message.setText("Fret: " + QString().setNum(note->GetFretNumber()) + " String: " + QString().setNum(note->GetString()));
+    message.setText("Fret: " + QString().setNum(note->GetFretNumber()) + " String: " + QString().setNum(note->GetString()));
     message.exec();
 }
 
@@ -40,11 +41,11 @@ void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     painter->setFont(tabFont);
 
-	if(note->IsTied())
-		painter->setPen(Qt::lightGray);
-	else
-		painter->setPen(Qt::black);
+    if(note->IsTied())
+        painter->setPen(Qt::lightGray);
+    else
+        painter->setPen(Qt::black);
 
-	// offset height by 1 pixel for clarity
-	painter->drawText(0, -1, QString().setNum(note->GetFretNumber()));
+    // offset height by 1 pixel for clarity
+    painter->drawText(0, -1, QString().setNum(note->GetFretNumber()));
 }

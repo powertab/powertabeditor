@@ -19,10 +19,7 @@ public:
     void Remove(quint32 index);
     PowerTabDocument* getCurrentDocument();
     void setCurrentDocumentIndex(quint32 index);
-    quint32 getCurrentDocumentIndex() const
-    {
-        return currentDocumentIndex;
-    }
+    quint32 getCurrentDocumentIndex() const;
 
 private:
     QList<PowerTabDocument*> documentList;

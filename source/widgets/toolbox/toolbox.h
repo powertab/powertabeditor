@@ -3,19 +3,19 @@
 
 #include <QTabWidget>
 
-#include "../../skinmanager.h"
-#include "notepage.h"
-#include "scorepage.h"
+class NotePage;
+class ScorePage;
+class SkinManager;
 
 class Toolbox : public QTabWidget
 {
     Q_OBJECT
 public:
-	explicit Toolbox(QWidget *parent = 0, SkinManager *skinManager = 0);
+    explicit Toolbox(QWidget *parent = 0, SkinManager *skinManager = 0);
 
 private:
-	static ScorePage *scorePage;
-	static NotePage *notePage;
+    static ScorePage *scorePage;
+    static NotePage *notePage;
 
 signals:
 

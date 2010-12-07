@@ -1,16 +1,16 @@
 #include "mixer.h"
 
 #include <QVBoxLayout>
-#include <QLabel> // temp
 
+#include "../../skinmanager.h"
 #include "mixerinstrument.h"
 
 Mixer::Mixer(QFrame *parent, SkinManager *skinManager) :
-	QFrame(parent)
+    QFrame(parent)
 {
-	setFrameStyle(QFrame::StyledPanel);
+    setFrameStyle(QFrame::StyledPanel);
 
-	setStyleSheet(skinManager->getMixerStyle());
+    setStyleSheet(skinManager->getMixerStyle());
 
     layout = new QVBoxLayout;
     layout->setSpacing(0);

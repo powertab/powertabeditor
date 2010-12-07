@@ -32,3 +32,8 @@ void MusicFont::setNumericText(QGraphicsSimpleTextItem* text, QString number, in
     text->setFont(musicNotationFont);
     musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
 }
+
+QFont MusicFont::getFont()
+{
+    return musicNotationFont;
+}

@@ -1,18 +1,12 @@
 #include "scorearea.h"
 
-#include <QGraphicsEllipseItem>
 #include <QGraphicsPathItem>
 #include <QDebug>
-#include <QFontDatabase>
 
 #include "painters/staffdata.h"
 #include "painters/barlinepainter.h"
 #include "painters/tabnotepainter.h"
-#include "powertabdocument/timesignature.h"
 #include "powertabdocument/powertabdocument.h"
-#include "powertabdocument/score.h"
-#include "powertabdocument/system.h"
-#include "powertabdocument/staff.h"
 #include "painters/caret.h"
 #include "painters/keysignaturepainter.h"
 #include "painters/timesignaturepainter.h"
