@@ -212,11 +212,11 @@ void Score::UpdateToVer2Structure()
         // if there are guitar ins, readjust the Guitar->Staff mapping
         if ((guitarInMap.count(i)) >= 1)
         {
-            guitarToStaffMap.clear();
             //std::cerr << "In System " << i << std::endl;
             pair<guitarInIt, guitarInIt> range = guitarInMap.equal_range(i);
             for (auto i = range.first; i != range.second; ++i)
             {
+                guitarToStaffMap.erase(i->second->GetStaff());
                 std::cerr << "At Position: " << i->second->GetPosition() << std::endl;
                 std::bitset<8> guitarBitmap(i->second->GetStaffGuitars());
                 for (uint8_t gtr = 0; gtr < 8; gtr++)
