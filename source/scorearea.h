@@ -38,7 +38,6 @@ protected:
     void RenderSystem(System* system, int lineSpacing);
     void DrawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines);
     void DrawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo);
-    void DrawClef(int x, int y, Staff* staff);
     void RenderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position);
     void RenderBars(const StaffData& currentStaffInfo, System* system);
     void DrawTabClef(int x, StaffData& staffInfo);

@@ -10,6 +10,7 @@
 #include "painters/caret.h"
 #include "painters/keysignaturepainter.h"
 #include "painters/timesignaturepainter.h"
+#include "painters/clefpainter.h"
 
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
@@ -90,7 +91,10 @@ void ScoreArea::RenderSystem(System* system, int lineSpacing)
         position.setY(currentStaffInfo.topEdge + currentStaffInfo.height);
 
         // Draw the clefs
-        DrawClef(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo.getStdNotationLineHeight(1), currentStaff);
+        ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, currentStaff);
+        clefPainter->setPos(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo.getTopStdNotationLine());
+        scene.addItem(clefPainter);
+
         DrawTabClef(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo);
 
         RenderBars(currentStaffInfo, system);
@@ -221,26 +225,6 @@ void ScoreArea::DrawStaff(int leftEdge, int currentHeight, int lineSpacing, int 
             currentHeight += lineSpacing;
         }
     }
-}
-
-void ScoreArea::DrawClef(int x, int y, Staff* staff)
-{
-    QGraphicsSimpleTextItem* clef = new QGraphicsSimpleTextItem;
-
-    if (staff->GetClef() == staff->TREBLE_CLEF)
-    {
-        clef->setPos(x, y - 7.5);
-        musicFont.setSymbol(clef, MusicFont::TrebleClef);
-
-    }
-    // Draw a bass clef otherwise
-    else
-    {
-        clef->setPos(x, y - 23);
-        musicFont.setSymbol(clef, MusicFont::BassClef);
-    }
-
-    scene.addItem(clef);
 }
 
 void ScoreArea::DrawTabClef(int x, StaffData& staffInfo)

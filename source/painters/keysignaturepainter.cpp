@@ -4,7 +4,7 @@
 #include "../powertabdocument/keysignature.h"
 #include "../musicfont.h"
 
-#include <QMessageBox>
+#include <QMessageBox> // temporary
 #include <QFont>
 #include <QPainter>
 #include <QVector>
