@@ -50,6 +50,11 @@ public:
         return currentSystem;
     }
 
+    quint32 getSystemIndex()
+    {
+        return currentSystemIndex;
+    }
+
     Staff* getCurrentStaff()
     {
         return currentStaff;
@@ -83,7 +88,7 @@ protected:
 
 private:
     bool inPlaybackMode;
-    quint32 currentSectionIndex;
+    quint32 currentSystemIndex;
     quint32 currentStringIndex;
     quint32 currentPositionIndex;
     int lineSpacing;

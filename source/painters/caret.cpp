@@ -20,7 +20,7 @@ Caret::Caret(int tabLineSpacing)
 
     currentPositionIndex = 0;
     currentStringIndex = 0;
-    currentSectionIndex = 0;
+    currentSystemIndex = 0;
     inPlaybackMode = false;
 }
 
@@ -190,17 +190,17 @@ void Caret::moveCaretToEnd()
 
 bool Caret::moveCaretSection(int offset)
 {
-    quint32 nextSection = currentSectionIndex + offset;
-    if (currentScore->IsValidSystemIndex(nextSection))
+    quint32 nextSystem = currentSystemIndex + offset;
+    if (currentScore->IsValidSystemIndex(nextSystem))
     {
-        currentSystem = currentScore->GetSystem(nextSection);
+        currentSystem = currentScore->GetSystem(nextSystem);
         currentStaff = currentSystem->GetStaff(0);
         selectedPosition = currentStaff->GetPosition(0, 0);
         selectedNote = 0;
 
         currentStringIndex = 0;
         currentPositionIndex = 0;
-        currentSectionIndex = nextSection;
+        currentSystemIndex = nextSystem;
 
         updatePosition();
         return true;
@@ -210,10 +210,10 @@ bool Caret::moveCaretSection(int offset)
 
 void Caret::moveCaretToFirstSection()
 {
-    moveCaretSection( -((int)currentSectionIndex) );
+    moveCaretSection( -((int)currentSystemIndex) );
 }
 
 void Caret::moveCaretToLastSection()
 {
-    moveCaretSection( currentScore->GetSystemCount() - currentSectionIndex - 1 );
+    moveCaretSection( currentScore->GetSystemCount() - currentSystemIndex - 1 );
 }
