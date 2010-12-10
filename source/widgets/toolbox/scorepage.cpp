@@ -33,6 +33,8 @@ void ScorePage::createSongButtons()
     songLayout->addWidget(increaseHeightButton);
     songLayout->addWidget(decreaseHeightButton);
 
+	songLayout->addStretch(1);
+
     songGroup->setLayout(songLayout);
     layout->addWidget(songGroup);
 }
@@ -78,6 +80,8 @@ void ScorePage::createSectionButtons()
     sectionLayout->addWidget(decreaseWidthButton);
     sectionLayout->addWidget(justifyButton);
 
+	sectionLayout->addStretch(1);
+
     sectionGroup->setLayout(sectionLayout);
     layout->addWidget(sectionGroup);
 }
@@ -109,6 +113,8 @@ void ScorePage::createFlowDynamicsButtons()
     flowDynamicsLayout->addWidget(addDirectionButton);
     flowDynamicsLayout->addWidget(addTempoMarkerButton);
     flowDynamicsLayout->addWidget(addVolumeMarkerButton);
+
+	flowDynamicsLayout->addStretch(1);
 
     flowDynamicsGroup->setLayout(flowDynamicsLayout);
     layout->addWidget(flowDynamicsGroup);

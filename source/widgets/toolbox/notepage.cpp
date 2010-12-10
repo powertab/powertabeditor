@@ -37,6 +37,8 @@ void NotePage::createNoteButtons()
         noteLayout->addWidget(noteButton[i]);
     }
 
+	noteLayout->addStretch(1);
+
     noteButton[0]->setChecked(true);
 
     noteGroup->setLayout(noteLayout);
@@ -72,6 +74,8 @@ void NotePage::createRestButtons()
 
         restLayout->addWidget(restButton[i]);
     }
+
+	restLayout->addStretch(1);
 
     restGroup->setLayout(restLayout);
     layout->addWidget(restGroup);
@@ -115,6 +119,8 @@ void NotePage::createRhythmButtons()
     rhythmLayout->addWidget(tieButton);
     rhythmLayout->addWidget(groupingButton);
     rhythmLayout->addWidget(fermataButton);
+
+	rhythmLayout->addStretch(1);
 
     rhythmGroup->setLayout(rhythmLayout);
     layout->addWidget(rhythmGroup);
@@ -174,6 +180,8 @@ void NotePage::createSlideLegatoButtons()
     slideLegatoLayout->addWidget(slideOutBelowButton);
     slideLegatoLayout->addWidget(slideOutAboveButton);
 
+	slideLegatoLayout->addStretch(1);
+
     slideLegatoGroup->setLayout(slideLegatoLayout);
     layout->addWidget(slideLegatoGroup);
 }
@@ -218,6 +226,8 @@ void NotePage::createVibratoTremoloButtons()
     vibratoTremoloLayout->addWidget(bendButton);
     vibratoTremoloLayout->addWidget(trillButton);
     vibratoTremoloLayout->addWidget(tremoloButton);
+
+	vibratoTremoloLayout->addStretch(1);
 
     vibratoTremoloGroup->setLayout(vibratoTremoloLayout);
     layout->addWidget(vibratoTremoloGroup);
