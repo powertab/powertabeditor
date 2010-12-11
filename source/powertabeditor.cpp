@@ -11,21 +11,19 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QFontDatabase>
-#include <QSignalMapper>
 #include <QSplitter>
 #include <QScrollArea>
 #include <QStackedWidget>
-#include <QTimer>
 
 #include "powertabeditor.h"
 #include "scorearea.h"
 #include "painters/caret.h"
 #include "skinmanager.h"
-#include "rtmidiwrapper.h"
 #include "dialogs/preferencesdialog.h"
 #include "powertabdocument/powertabdocument.h"
 #include "widgets/mixer/mixer.h"
 #include "widgets/toolbox/toolbox.h"
+#include "midiplayer.h"
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 QUndoStack* PowerTabEditor::undoStack = NULL;
@@ -36,8 +34,6 @@ Toolbox* PowerTabEditor::toolBox = NULL;
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
         QMainWindow(parent)
 {
-    signalMapper = new QSignalMapper();
-
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
     // load fonts from the resource file
@@ -60,20 +56,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     CreateMenus();
     CreateTabArea();
 
-    rtMidiWrapper = new RtMidiWrapper();
-    rtMidiWrapper->initialize(settings.value("midi/preferredPort", 0).toInt());
-    rtMidiWrapper->setPatch(0,24);
-
     isPlaying = false;
-
-    for (int i=0; i<8; ++i)
-    {
-        songTimer[i] = new QTimer;
-        connect(songTimer[i],SIGNAL(timeout()),signalMapper,SLOT(map()));
-        signalMapper->setMapping(songTimer[i], i);
-    }
-
-    connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)), Qt::DirectConnection);
 
     preferencesDialog = new PreferencesDialog();
 
@@ -102,14 +85,9 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
 PowerTabEditor::~PowerTabEditor()
 {
-    for (int i=0; i<8; i++)
-    {
-        delete songTimer[i];
-    }
-
-    delete rtMidiWrapper;
     delete preferencesDialog;
     delete skinManager;
+    delete midiPlayer;
 }
 
 // Redraws the *entire* document upon undo/redo
@@ -362,38 +340,23 @@ void PowerTabEditor::startStopPlayback()
 
     if (isPlaying)
     {
-        QSettings settings;
-        rtMidiWrapper->initialize(settings.value("midi/preferredPort", 0).toInt());
-
         playPauseAct->setText(tr("Pause"));
 
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
-        previousPositionInStaff.clear();
 
         moveCaretToStart();
 
-        for (unsigned int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
-        {
-            playNotesAtCurrentPosition(j);
-        }
+        midiPlayer = new MidiPlayer(getCurrentScoreArea()->getCaret());
+        midiPlayer->play();
     }
     else
     {
         playPauseAct->setText(tr("Play"));
 
-        for (int j = 0; j < 8; ++j)
-        {
-            songTimer[j]->stop();
-        }
-
         getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
-
-        QMultiMap<unsigned int, NoteHistory>::iterator i = oldNotes.begin();
-        for (; i != oldNotes.end(); ++i)
-        {
-            rtMidiWrapper->stopNote(i.key(), i.value().pitch);
-        }
-        oldNotes.clear();
+        midiPlayer->stop();
+        delete midiPlayer;
+        midiPlayer = NULL;
     }
 }
 
@@ -445,125 +408,4 @@ bool PowerTabEditor::moveCaretToPrevSection()
 void PowerTabEditor::moveCaretToLastSection()
 {
     getCurrentScoreArea()->getCaret()->moveCaretToLastSection();
-}
-
-void PowerTabEditor::playNotesAtCurrentPosition(int system)
-{
-    quint32 position_index = previousPositionInStaff.value(system, -1) + 1; // get position
-    previousPositionInStaff.insert(system, position_index); // update
-
-    // retrieve the current position
-    //qDebug() << "System: " << system << " Position " << position_index;
-    Position* position = getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaff(system)->GetPosition(0,position_index);
-
-    if (!position) // check for invalid position (caused by invalid position index)
-    {
-        return;
-    }
-    // stop all previous notes except for notes that are to be tied
-    {
-        QList<unsigned int> notesToBeKept;
-        notesToBeKept.reserve(position->GetNoteCount());
-        for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
-        {
-            if (position->GetNote(i)->IsTied())
-            {
-                notesToBeKept.push_back(position->GetNote(i)->GetString());
-            }
-        }
-        QMutableMapIterator<unsigned int, NoteHistory> i(oldNotes);
-        while(i.hasNext())
-        {
-            i.next();
-            if (i.key() == (unsigned int)system && !notesToBeKept.contains(i.value().stringNum))
-            {
-                songTimer[system]->stop();
-                rtMidiWrapper->stopNote(system, i.value().pitch);
-                i.remove();
-            }
-        }
-    }
-
-    if (!position->IsRest())
-    {
-        for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
-        // loop through all notes in the current position on the current system
-        {
-            if (!position->GetNote(i)->IsTied())
-            {
-                Guitar* guitar = getCurrentScoreArea()->document->GetGuitarScore()->GetGuitar(system);
-                Note* note = position->GetNote(i);
-
-                unsigned int pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
-                pitch += note->GetFretNumber();
-
-                rtMidiWrapper->setVolume(system,guitar->GetInitialVolume());
-                rtMidiWrapper->setPan(system,guitar->GetPan());
-                rtMidiWrapper->setPatch(system,guitar->GetPreset());
-
-
-                rtMidiWrapper->playNote(system, pitch ,127);
-                NoteHistory noteHistory = {pitch, note->GetString()};
-                oldNotes.insertMulti(system, noteHistory );
-            }
-        }
-    }
-
-    TempoMarker* tempo_marker = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetTempoMarker(0);
-    double tempo = 60.0 / (double)tempo_marker->GetBeatsPerMinute() * 1000.0;
-
-    double duration = position->GetDurationType();
-    duration = tempo * 4.0 / duration;
-    duration += position->IsDotted() * 0.5 * duration;
-    duration += position->IsDoubleDotted() * 0.75 * duration;
-    songTimer[system]->start(duration);
-}
-
-void PowerTabEditor::playbackSong(int staff)
-{
-    // make sure all staves are finished before switching to the next system
-    bool okayToSwitchStaves = true;
-    // the caret should move along with the staff that is furthest along in playback
-    quint32 staffWithMaxPosition = 0;
-
-    QMap<quint32, quint32>::const_iterator i = previousPositionInStaff.constBegin();
-    while (i != previousPositionInStaff.constEnd())
-    {
-        Staff* staff = getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaff(i.key());
-        if (i.value() < staff->GetPositionCount(0)) // check if a staff is not finished
-        {
-            okayToSwitchStaves = false;
-        }
-        if (previousPositionInStaff.value(staffWithMaxPosition) <= i.value())
-        {
-            staffWithMaxPosition = i.key();
-        }
-        ++i;
-    }
-
-    // only advance the caret if we are in the staff that is furthest along
-    if(previousPositionInStaff.value(staff) == previousPositionInStaff.value(staffWithMaxPosition))
-    {
-        if (!moveCaretRight())
-        {
-            if (!moveCaretToNextSection() && okayToSwitchStaves)
-            {
-                this->startStopPlayback();
-                return;
-            }
-            else
-            {
-                previousPositionInStaff.clear();
-                // once we move to a new system, start playing all each of the staves for that system
-                for (unsigned int j = 0; j < getCurrentScoreArea()->getCaret()->getCurrentSystem()->GetStaffCount(); ++j)
-                {
-                    playNotesAtCurrentPosition(j);
-                }
-                return;
-            }
-        }
-    }
-
-    // play next note for this staff
-    playNotesAtCurrentPosition(staff);
 }

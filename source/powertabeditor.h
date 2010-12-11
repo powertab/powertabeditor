@@ -2,7 +2,6 @@
 #define POWERTABEDITOR_H
 
 #include <QMainWindow>
-#include <QMultiMap>
 
 #include "documentmanager.h"
 
@@ -12,11 +11,10 @@ class ScoreArea;
 class Mixer;
 class QStackedWidget;
 class SkinManager;
-class RtMidiWrapper;
 class PreferencesDialog;
 class Toolbox;
-class QSignalMapper;
 class QSplitter;
+class MidiPlayer;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -57,19 +55,8 @@ private slots:
     bool moveCaretToPrevSection();
     void moveCaretToLastSection();
 
-    void playNotesAtCurrentPosition(int system);
-    void playbackSong(int system);
-
 private:
-    QSignalMapper* signalMapper;
     bool isPlaying;
-    struct NoteHistory
-    {
-        unsigned int pitch; unsigned int stringNum;
-        bool operator==(const NoteHistory& history) { return (pitch == history.pitch) && (stringNum == history.stringNum); }
-    };
-    QMultiMap<unsigned int, NoteHistory> oldNotes; // map channels to pitches
-    QTimer* songTimer[8];
 
     DocumentManager documentManager;
     QMenu* fileMenu;
@@ -105,9 +92,7 @@ private:
     QStackedWidget* mixerList;
 
     SkinManager* skinManager;
-
-    RtMidiWrapper* rtMidiWrapper;
-    QMap<quint32, quint32> previousPositionInStaff;
+    MidiPlayer* midiPlayer;
 };
 
 #endif // POWERTABEDITOR_H
