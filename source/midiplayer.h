@@ -26,6 +26,8 @@ private slots:
     void playbackSong(int staff);
 
 private:
+    double getCurrentTempo();
+
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;
     QMap<quint32, quint32> previousPositionInStaff;

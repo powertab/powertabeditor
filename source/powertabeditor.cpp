@@ -52,6 +52,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
     skinManager = new SkinManager("default");
 
+    midiPlayer = NULL;
+
     CreateActions();
     CreateMenus();
     CreateTabArea();

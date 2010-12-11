@@ -125,9 +125,7 @@ void MidiPlayer::playNotesAtCurrentPosition(int staff)
         }
     }
 
-    TempoMarker* tempo_marker = caret->getCurrentScore()->GetTempoMarker(0);
-
-    double tempo = 60.0 / (double)tempo_marker->GetBeatsPerMinute() * 1000.0;
+    double tempo = getCurrentTempo();
 
     double duration = position->GetDurationType();
     duration = tempo * 4.0 / duration;
@@ -183,4 +181,23 @@ void MidiPlayer::playbackSong(int staff)
 
     // play next note for this staff
     playNotesAtCurrentPosition(staff);
+}
+
+double MidiPlayer::getCurrentTempo()
+{
+    quint32 currentSystemIndex = caret->getSystemIndex();
+    Score* currentScore = caret->getCurrentScore();
+    double bpm = 0;
+
+    for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
+    {
+        TempoMarker* tempoMarker = currentScore->GetTempoMarker(i);
+        if (tempoMarker->GetSystem() <= currentSystemIndex)
+        {
+            bpm = tempoMarker->GetBeatsPerMinute();
+        }
+    }
+
+    // convert bpm to millisecond duration
+    return (60.0 / bpm * 1000.0);
 }
