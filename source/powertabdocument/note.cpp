@@ -984,14 +984,22 @@ std::string Note::GetText() const
     std::stringstream output;
     uint8_t noteValue = GetFretNumber();
 
-    if (HasTappedHarmonic()) // for tapped harmonics, display original note first, and tapped note after
+    // for tapped harmonics and trills, display original note first, and tapped/trilled note after
+    if (HasTappedHarmonic() || HasTrill())
     {
         output << static_cast<int>(noteValue);
-        GetTappedHarmonic(noteValue);
+        if (HasTappedHarmonic())
+        {
+            GetTappedHarmonic(noteValue);
+        }
+        if (HasTrill())
+        {
+            GetTrill(noteValue);
+        }
     }
 
     std::string brackets = "";
-    if (HasTappedHarmonic() || IsGhostNote())
+    if (HasTappedHarmonic() || IsGhostNote() || HasTrill())
     {
         brackets = "()";
     }
