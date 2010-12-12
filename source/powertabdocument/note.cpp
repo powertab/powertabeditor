@@ -2,14 +2,15 @@
 // Name:            note.cpp
 // Purpose:         Stores and renders a note
 // Author:          Brad Larsen
-// Modified by:     
+// Modified by:
 // Created:         Dec 17, 2004
-// RCS-ID:          
+// RCS-ID:
 // Copyright:       (c) Brad Larsen
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <sstream>
 #include "note.h"
 
 #include "powertabfileheader.h"             // Needed for file version constants
@@ -21,7 +22,7 @@ const uint16_t Note::DEFAULT_SIMPLE_DATA      = 0;
 // String Constants
 const uint8_t Note::MIN_STRING               = 0;
 const uint8_t Note::MAX_STRING               = 6;
-	
+
 // Fret Number Constants
 const uint8_t Note::MIN_FRET_NUMBER          = 0;
 const uint8_t Note::MAX_FRET_NUMBER          = 29;
@@ -33,105 +34,105 @@ const uint8_t Note::MAX_BEND_DURATION        = 9;
 // Constructor/Destructor
 /// Default Constructor
 Note::Note() :
-	m_stringData(DEFAULT_STRING_DATA), m_simpleData(DEFAULT_SIMPLE_DATA)
+        m_stringData(DEFAULT_STRING_DATA), m_simpleData(DEFAULT_SIMPLE_DATA)
 {
-	//------Last Checked------//
-	// - Jan 17, 2005
-	ClearComplexSymbolArrayContents();
+    //------Last Checked------//
+    // - Jan 17, 2005
+    ClearComplexSymbolArrayContents();
 }
 
 /// Primary Constructor
 /// @param string Zero-based number of the string the note is played on
 /// @param fretNumber Fret number used to play the note
 Note::Note(uint32_t string, uint8_t fretNumber) :
-	m_stringData(DEFAULT_STRING_DATA), m_simpleData(DEFAULT_SIMPLE_DATA)
+        m_stringData(DEFAULT_STRING_DATA), m_simpleData(DEFAULT_SIMPLE_DATA)
 {
-	//------Last Checked------//
-	// - Jan 17, 2005
-	assert(IsValidString(string));
-	assert(IsValidFretNumber(fretNumber));
-	
-	SetString(string);
-	SetFretNumber(fretNumber);
-	ClearComplexSymbolArrayContents();
+    //------Last Checked------//
+    // - Jan 17, 2005
+    assert(IsValidString(string));
+    assert(IsValidFretNumber(fretNumber));
+
+    SetString(string);
+    SetFretNumber(fretNumber);
+    ClearComplexSymbolArrayContents();
 }
 
 /// Copy Constructor
 Note::Note(const Note& note) :
-	m_stringData(DEFAULT_STRING_DATA), m_simpleData(DEFAULT_SIMPLE_DATA)
+        m_stringData(DEFAULT_STRING_DATA), m_simpleData(DEFAULT_SIMPLE_DATA)
 {
-	//------Last Checked------//
-	// - Dec 17, 2004
-	*this = note;
+    //------Last Checked------//
+    // - Dec 17, 2004
+    *this = note;
 }
 
 /// Destructor
 Note::~Note()
 {
-	//------Last Checked------//
-	// - Jan 17, 2005
+    //------Last Checked------//
+    // - Jan 17, 2005
 }
 
 /// Assignment Operator
 const Note& Note::operator=(const Note& note)
-{
-	//------Last Checked------//
-	// - Dec 17, 2004
-	
-	// Check for assignment to self
-	if (this != &note)
-	{
-		m_stringData = note.m_stringData;
-		m_simpleData = note.m_simpleData;
+                           {
+    //------Last Checked------//
+    // - Dec 17, 2004
 
-		ClearComplexSymbolArrayContents();
-		size_t count = note.GetComplexSymbolCount();
-		size_t i = 0;
-		for (; i < count; i++)
-			m_complexSymbolArray[i] = note.m_complexSymbolArray[i];
-	}
-	return (*this);
+    // Check for assignment to self
+    if (this != &note)
+    {
+        m_stringData = note.m_stringData;
+        m_simpleData = note.m_simpleData;
+
+        ClearComplexSymbolArrayContents();
+        size_t count = note.GetComplexSymbolCount();
+        size_t i = 0;
+        for (; i < count; i++)
+            m_complexSymbolArray[i] = note.m_complexSymbolArray[i];
+    }
+    return (*this);
 }
 
 /// Equality Operator
 bool Note::operator==(const Note& note) const
 {
-	//------Last Checked------//
-	// - Jan 24, 2005
-	
-	// Note: Complex symbols aren't necessarily in the same slot in the array
-	vector<uint32_t> thisComplexSymbolArray;
-	vector<uint32_t> thatComplexSymbolArray;
-	
-	uint32_t i = 0;
-	for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
-	{
-		thisComplexSymbolArray.push_back(m_complexSymbolArray[i]);
-		thatComplexSymbolArray.push_back(note.m_complexSymbolArray[i]);
-	}
-	
-	std::sort(thisComplexSymbolArray.begin(), thisComplexSymbolArray.end());
-	std::sort(thatComplexSymbolArray.begin(), thatComplexSymbolArray.end());
+    //------Last Checked------//
+    // - Jan 24, 2005
 
-	i = 0;
-	for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
-	{
-		if (thisComplexSymbolArray[i] != thatComplexSymbolArray[i])
-			return (false);
-	}
+    // Note: Complex symbols aren't necessarily in the same slot in the array
+    vector<uint32_t> thisComplexSymbolArray;
+    vector<uint32_t> thatComplexSymbolArray;
 
-	return (
-		(m_stringData == note.m_stringData) &&
-		(m_simpleData == note.m_simpleData)
-	);	
+    uint32_t i = 0;
+    for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
+    {
+        thisComplexSymbolArray.push_back(m_complexSymbolArray[i]);
+        thatComplexSymbolArray.push_back(note.m_complexSymbolArray[i]);
+    }
+
+    std::sort(thisComplexSymbolArray.begin(), thisComplexSymbolArray.end());
+    std::sort(thatComplexSymbolArray.begin(), thatComplexSymbolArray.end());
+
+    i = 0;
+    for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
+    {
+        if (thisComplexSymbolArray[i] != thatComplexSymbolArray[i])
+            return (false);
+    }
+
+    return (
+            (m_stringData == note.m_stringData) &&
+            (m_simpleData == note.m_simpleData)
+            );
 }
 
 /// Inequality Operator
 bool Note::operator!=(const Note& note) const
 {
-	//------Last Checked------//
-	// - Dec 17, 2004
-	return (!operator==(note));
+    //------Last Checked------//
+    // - Dec 17, 2004
+    return (!operator==(note));
 }
 
 // Serialization Functions
@@ -140,23 +141,23 @@ bool Note::operator!=(const Note& note) const
 /// @return True if the object was serialized, false if not
 bool Note::Serialize(PowerTabOutputStream& stream)
 {
-	//------Last Checked------//
-	// - Dec 17, 2004
-   
-	stream << m_stringData << m_simpleData;
-	CHECK_THAT(stream.CheckState(), false);
-	
-	uint8_t symbolCount = (uint8_t)GetComplexSymbolCount();
-	stream << symbolCount;
-	CHECK_THAT(stream.CheckState(), false);
+    //------Last Checked------//
+    // - Dec 17, 2004
 
-	size_t i = 0;
-	for (; i < symbolCount; i++)
-	{
-		stream << m_complexSymbolArray[i];
-		CHECK_THAT(stream.CheckState(), false);
-	}
-	return (stream.CheckState());
+    stream << m_stringData << m_simpleData;
+    CHECK_THAT(stream.CheckState(), false);
+
+    uint8_t symbolCount = (uint8_t)GetComplexSymbolCount();
+    stream << symbolCount;
+    CHECK_THAT(stream.CheckState(), false);
+
+    size_t i = 0;
+    for (; i < symbolCount; i++)
+    {
+        stream << m_complexSymbolArray[i];
+        CHECK_THAT(stream.CheckState(), false);
+    }
+    return (stream.CheckState());
 }
 
 /// Performs deserialization for the class
@@ -165,87 +166,87 @@ bool Note::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool Note::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Dec 17, 2004
-	
-	// Version 1.0/1.0.2 artificial harm updated
-	if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-		version == PowerTabFileHeader::FILEVERSION_1_0_2)
-	{
-		uint8_t simple;
-		stream >> m_stringData >> simple;
-		CHECK_THAT(stream.CheckState(), false);
+    //------Last Checked------//
+    // - Dec 17, 2004
 
-		// Simple is now stored as uint16_t
-		m_simpleData = simple;
-		
-		ClearComplexSymbolArrayContents();
-		uint8_t symbolCount;
-		stream >> symbolCount;
-		CHECK_THAT(stream.CheckState(), false);
+    // Version 1.0/1.0.2 artificial harm updated
+    if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
+        version == PowerTabFileHeader::FILEVERSION_1_0_2)
+    {
+        uint8_t simple;
+        stream >> m_stringData >> simple;
+        CHECK_THAT(stream.CheckState(), false);
 
-		size_t i = 0;
-		for (; i < symbolCount; i++)
-		{
-			stream >> m_complexSymbolArray[i];
-			CHECK_THAT(stream.CheckState(), false);
+        // Simple is now stored as uint16_t
+        m_simpleData = simple;
 
-			uint8_t symbolType = HIBYTE(HIWORD(m_complexSymbolArray[i]));
+        ClearComplexSymbolArrayContents();
+        uint8_t symbolCount;
+        stream >> symbolCount;
+        CHECK_THAT(stream.CheckState(), false);
 
-			if (symbolType == artificialHarmonic)
-			{
-				uint8_t keyVariation = 1;
-				uint8_t usesFlats = HIBYTE(LOWORD(m_complexSymbolArray[i]));
-				uint8_t key = LOBYTE(LOWORD(m_complexSymbolArray[i]));
+        size_t i = 0;
+        for (; i < symbolCount; i++)
+        {
+            stream >> m_complexSymbolArray[i];
+            CHECK_THAT(stream.CheckState(), false);
 
-				// CASE: Using flats
-				if (usesFlats == 1 && (key == 1 || key == 6))
-					keyVariation = 2;
-				// CASE: Using sharps 
-				else if (usesFlats == 0 && (key == 3 || key == 8 || key == 10))
-					keyVariation = 0;
+            uint8_t symbolType = HIBYTE(HIWORD(m_complexSymbolArray[i]));
 
-				uint32_t symbolData = artificialHarmonic;
-				symbolData = (symbolData << 8) + 1;
-				symbolData = (symbolData << 8) + keyVariation;
-				symbolData = (symbolData << 8) + key;
+            if (symbolType == artificialHarmonic)
+            {
+                uint8_t keyVariation = 1;
+                uint8_t usesFlats = HIBYTE(LOWORD(m_complexSymbolArray[i]));
+                uint8_t key = LOBYTE(LOWORD(m_complexSymbolArray[i]));
 
-				m_complexSymbolArray[i] = symbolData;
-			}
-			else if (symbolType == bend)
-			{
-				uint8_t type = LOBYTE(HIWORD(m_complexSymbolArray[i]));
-				uint8_t bentPitch = LOBYTE(LOWORD(m_complexSymbolArray[i]));
-				uint8_t releasePitch = 0;
-				uint8_t duration = HIBYTE(LOWORD(m_complexSymbolArray[i]));
-				
-				uint8_t drawStart = (uint8_t)((type < 6) ? 0 : 1);
-				uint8_t drawEnd = (uint8_t)((type == 0 || type == 2 ||
-					type == 3 || type == 5 || type == 7) ? 1 : 0);
-		
-				SetBend(type, bentPitch, releasePitch, duration, drawStart,
-					drawEnd);
-			}
-		}
-	}
-	// CASE: Latest version
-	else
-	{
-		stream >> m_stringData >> m_simpleData;
-		CHECK_THAT(stream.CheckState(), false);
-		
-		uint8_t symbolCount = 0;
-		stream >> symbolCount;
-		CHECK_THAT(stream.CheckState(), false);
+                // CASE: Using flats
+                if (usesFlats == 1 && (key == 1 || key == 6))
+                    keyVariation = 2;
+                // CASE: Using sharps
+                else if (usesFlats == 0 && (key == 3 || key == 8 || key == 10))
+                    keyVariation = 0;
 
-		size_t i = 0;
-		for (; i < symbolCount; i++)
-		{
-			stream >> m_complexSymbolArray[i];
-			CHECK_THAT(stream.CheckState(), false);
-		}
-	}
-	return (stream.CheckState());
+                uint32_t symbolData = artificialHarmonic;
+                symbolData = (symbolData << 8) + 1;
+                symbolData = (symbolData << 8) + keyVariation;
+                symbolData = (symbolData << 8) + key;
+
+                m_complexSymbolArray[i] = symbolData;
+            }
+            else if (symbolType == bend)
+            {
+                uint8_t type = LOBYTE(HIWORD(m_complexSymbolArray[i]));
+                uint8_t bentPitch = LOBYTE(LOWORD(m_complexSymbolArray[i]));
+                uint8_t releasePitch = 0;
+                uint8_t duration = HIBYTE(LOWORD(m_complexSymbolArray[i]));
+
+                uint8_t drawStart = (uint8_t)((type < 6) ? 0 : 1);
+                uint8_t drawEnd = (uint8_t)((type == 0 || type == 2 ||
+                                             type == 3 || type == 5 || type == 7) ? 1 : 0);
+
+                SetBend(type, bentPitch, releasePitch, duration, drawStart,
+                        drawEnd);
+            }
+        }
+    }
+    // CASE: Latest version
+    else
+    {
+        stream >> m_stringData >> m_simpleData;
+        CHECK_THAT(stream.CheckState(), false);
+
+        uint8_t symbolCount = 0;
+        stream >> symbolCount;
+        CHECK_THAT(stream.CheckState(), false);
+
+        size_t i = 0;
+        for (; i < symbolCount; i++)
+        {
+            stream >> m_complexSymbolArray[i];
+            CHECK_THAT(stream.CheckState(), false);
+        }
+    }
+    return (stream.CheckState());
 }
 
 // String Functions
@@ -254,23 +255,23 @@ bool Note::Deserialize(PowerTabInputStream& stream, uint16_t version)
 /// @return True if the string was set, false if not
 bool Note::SetString(uint32_t string)
 {
-	//------Last Checked------//
-	// - Jan 17, 2005
-	CHECK_THAT(IsValidString(string), false);
-	
-	m_stringData &= ~stringMask;
-	m_stringData |= (uint8_t)(string << 5);
-	
-	return (true);
+    //------Last Checked------//
+    // - Jan 17, 2005
+    CHECK_THAT(IsValidString(string), false);
+
+    m_stringData &= ~stringMask;
+    m_stringData |= (uint8_t)(string << 5);
+
+    return (true);
 }
 
 /// Gets the string for the note
 /// @return The string for the note
 uint32_t Note::GetString() const
 {
-	//------Last Checked------//
-	// - Jan 17, 2005
-	return (uint8_t)((m_stringData & stringMask) >> 5);
+    //------Last Checked------//
+    // - Jan 17, 2005
+    return (uint8_t)((m_stringData & stringMask) >> 5);
 }
 
 // Fret Number Functions
@@ -279,73 +280,73 @@ uint32_t Note::GetString() const
 /// @return True if the fret number was set, false if not
 bool Note::SetFretNumber(uint8_t fretNumber)
 {
-	//------Last Checked------//
-	// - Jan 17, 2005
-	CHECK_THAT(IsValidFretNumber(fretNumber), false);
-	
-	m_stringData &= ~fretNumberMask;
-	m_stringData |= fretNumber;
-	
-	return (true);
+    //------Last Checked------//
+    // - Jan 17, 2005
+    CHECK_THAT(IsValidFretNumber(fretNumber), false);
+
+    m_stringData &= ~fretNumberMask;
+    m_stringData |= fretNumber;
+
+    return (true);
 }
 
 /// Gets the fret number on a given string
 /// @return The fret number on the string
 uint8_t Note::GetFretNumber() const
 {
-	//------Last Checked------//
-	// - Jan 17, 2005
-	return ((uint8_t)(m_stringData & fretNumberMask));
+    //------Last Checked------//
+    // - Jan 17, 2005
+    return ((uint8_t)(m_stringData & fretNumberMask));
 }
 
 // Simple Flag Functions
 /// Sets a simple flag
 /// @param flag Flag to set
-/// @return True if the flag was set, false if not 
+/// @return True if the flag was set, false if not
 bool Note::SetSimpleFlag(uint16_t flag)
 {
-	//------Last Checked------//
-	// - Jan 24, 2005
-	CHECK_THAT(IsValidSimpleFlag(flag), false); 
-	
-	// Mutually exclusive operations
-	if ((flag & hammerPullMask) != 0)
-		ClearSimpleFlag(hammerPullMask);
-		
-	if ((flag & octaveMask) != 0)
-		ClearSimpleFlag(octaveMask);
-		
-	m_simpleData |= flag;
-	return (true);
+    //------Last Checked------//
+    // - Jan 24, 2005
+    CHECK_THAT(IsValidSimpleFlag(flag), false);
+
+    // Mutually exclusive operations
+    if ((flag & hammerPullMask) != 0)
+        ClearSimpleFlag(hammerPullMask);
+
+    if ((flag & octaveMask) != 0)
+        ClearSimpleFlag(octaveMask);
+
+    m_simpleData |= flag;
+    return (true);
 }
-		
+
 // Slide Into Functions
 /// Sets (adds or updates) a slide into marker
 /// @param type Slide into type to set (see slideIntoTypes enum for values)
 /// @return True if the slide into marker was added or updated
 bool Note::SetSlideInto(uint8_t type)
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
-	CHECK_THAT(IsValidSlideInto(type), false);
-	
-	if (type == slideIntoNone)
-		return (ClearSlideInto());
-		
-	// Look for an existing slide first
-	uint32_t index = FindComplexSymbol(slide);
-	
-	// Slide exists; update its slide into data
-	if (index != (uint32_t)-1)
-	{
-		m_complexSymbolArray[index] &= ~slideIntoTypeMask;
-		m_complexSymbolArray[index] |= (uint32_t)(type << 16);
-		return (true);
-	}
+    //------Last Checked------//
+    // - Jan 21, 2005
+    CHECK_THAT(IsValidSlideInto(type), false);
 
-	// Construct the symbol data, then add it to the array
-	uint32_t symbolData = MAKELONG(MAKEWORD(0, 0), MAKEWORD(type, slide));
-	return (AddComplexSymbol(symbolData));
+    if (type == slideIntoNone)
+        return (ClearSlideInto());
+
+    // Look for an existing slide first
+    uint32_t index = FindComplexSymbol(slide);
+
+    // Slide exists; update its slide into data
+    if (index != (uint32_t)-1)
+    {
+        m_complexSymbolArray[index] &= ~slideIntoTypeMask;
+        m_complexSymbolArray[index] |= (uint32_t)(type << 16);
+        return (true);
+    }
+
+    // Construct the symbol data, then add it to the array
+    uint32_t symbolData = MAKELONG(MAKEWORD(0, 0), MAKEWORD(type, slide));
+    return (AddComplexSymbol(symbolData));
 }
 
 /// Gets the slide into data (if any)
@@ -353,55 +354,55 @@ bool Note::SetSlideInto(uint8_t type)
 /// @return True if the data was returned, false if not
 bool Note::GetSlideInto(uint8_t& type) const
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
+    //------Last Checked------//
+    // - Jan 21, 2005
 
-	type = slideIntoNone;
-	
-	// Get the index of the slide
-	uint32_t index = FindComplexSymbol(slide);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	// Get the individual pieces that make up the slide into
-	uint32_t symbolData = m_complexSymbolArray[index];
-	type = LOBYTE(HIWORD(symbolData));
-	
-	return (true);
+    type = slideIntoNone;
+
+    // Get the index of the slide
+    uint32_t index = FindComplexSymbol(slide);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    // Get the individual pieces that make up the slide into
+    uint32_t symbolData = m_complexSymbolArray[index];
+    type = LOBYTE(HIWORD(symbolData));
+
+    return (true);
 }
 
 /// Determines if the note has a slide into
 /// @return True if the note has a slide into, false if not
 bool Note::HasSlideInto() const
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
-	
-	uint8_t type = slideIntoNone;
-	if (!GetSlideInto(type))
-		return (false);
-	return (type != slideIntoNone);
+    //------Last Checked------//
+    // - Jan 21, 2005
+
+    uint8_t type = slideIntoNone;
+    if (!GetSlideInto(type))
+        return (false);
+    return (type != slideIntoNone);
 }
 
 /// Removes a slide into from the note
 /// @return True if the slide into was removed, false if not
 bool Note::ClearSlideInto()
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
-	
-	// Get the index of the slide
-	uint32_t index = FindComplexSymbol(slide);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	m_complexSymbolArray[index] &= ~slideIntoTypeMask;
-	
-	// Return if there is a slide out, otherwise remove the slide symbol
-	if (HasSlideOutOf())
-		return (true);
-		
-	return (RemoveComplexSymbol(slide));
+    //------Last Checked------//
+    // - Jan 21, 2005
+
+    // Get the index of the slide
+    uint32_t index = FindComplexSymbol(slide);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    m_complexSymbolArray[index] &= ~slideIntoTypeMask;
+
+    // Return if there is a slide out, otherwise remove the slide symbol
+    if (HasSlideOutOf())
+        return (true);
+
+    return (RemoveComplexSymbol(slide));
 }
 
 // Slide Out Of Functions
@@ -411,29 +412,29 @@ bool Note::ClearSlideInto()
 /// @return True if the slide out of marker was added or updated
 bool Note::SetSlideOutOf(uint8_t type, int8_t steps)
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
-	CHECK_THAT(IsValidSlideOutOf(type), false);
-	
-	if (type == slideOutOfNone)
-		return (ClearSlideOutOf());
-		
-	// Look for an existing slide first
-	uint32_t index = FindComplexSymbol(slide);
-	
-	// Slide exists; update its slide out of data
-	if (index != (uint32_t)-1)
-	{
-		m_complexSymbolArray[index] &= ~(slideOutOfTypeMask |
-			slideOutOfStepsMask);
-		m_complexSymbolArray[index] |= (uint32_t)(type << 8);
-		m_complexSymbolArray[index] |= (uint32_t)(steps);
-		return (true);
-	}
+    //------Last Checked------//
+    // - Jan 21, 2005
+    CHECK_THAT(IsValidSlideOutOf(type), false);
 
-	// Construct the symbol data, then add it to the array
-	uint32_t symbolData = MAKELONG(MAKEWORD(steps, type), MAKEWORD(0, slide));
-	return (AddComplexSymbol(symbolData));
+    if (type == slideOutOfNone)
+        return (ClearSlideOutOf());
+
+    // Look for an existing slide first
+    uint32_t index = FindComplexSymbol(slide);
+
+    // Slide exists; update its slide out of data
+    if (index != (uint32_t)-1)
+    {
+        m_complexSymbolArray[index] &= ~(slideOutOfTypeMask |
+                                         slideOutOfStepsMask);
+        m_complexSymbolArray[index] |= (uint32_t)(type << 8);
+        m_complexSymbolArray[index] |= (uint32_t)(steps);
+        return (true);
+    }
+
+    // Construct the symbol data, then add it to the array
+    uint32_t symbolData = MAKELONG(MAKEWORD(steps, type), MAKEWORD(0, slide));
+    return (AddComplexSymbol(symbolData));
 }
 
 /// Gets the slide out of data (if any)
@@ -442,58 +443,58 @@ bool Note::SetSlideOutOf(uint8_t type, int8_t steps)
 /// @return True if the data was returned, false if not
 bool Note::GetSlideOutOf(uint8_t& type, int8_t& steps) const
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
+    //------Last Checked------//
+    // - Jan 21, 2005
 
-	type = slideIntoNone;
-	steps = 0;
-	
-	// Get the index of the slide
-	uint32_t index = FindComplexSymbol(slide);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	// Get the individual pieces that make up the slide out of
-	uint32_t symbolData = m_complexSymbolArray[index];
-	type = HIBYTE(LOWORD(symbolData));
-	steps = LOBYTE(LOWORD(symbolData));
-	
-	return (true);
+    type = slideIntoNone;
+    steps = 0;
+
+    // Get the index of the slide
+    uint32_t index = FindComplexSymbol(slide);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    // Get the individual pieces that make up the slide out of
+    uint32_t symbolData = m_complexSymbolArray[index];
+    type = HIBYTE(LOWORD(symbolData));
+    steps = LOBYTE(LOWORD(symbolData));
+
+    return (true);
 }
 
 /// Determines if the note has a slide out of
 /// @return True if the note has a slide out of, false if not
 bool Note::HasSlideOutOf() const
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
-	
-	uint8_t type = slideOutOfNone;
-	int8_t steps = 0;
-	if (!GetSlideOutOf(type, steps))
-		return (false);
-	return (type != slideOutOfNone);
+    //------Last Checked------//
+    // - Jan 21, 2005
+
+    uint8_t type = slideOutOfNone;
+    int8_t steps = 0;
+    if (!GetSlideOutOf(type, steps))
+        return (false);
+    return (type != slideOutOfNone);
 }
 
 /// Removes a slide out of from the note
 /// @return True if the slide out of was removed, false if not
 bool Note::ClearSlideOutOf()
 {
-	//------Last Checked------//
-	// - Jan 21, 2005
-	
-	// Get the index of the slide
-	uint32_t index = FindComplexSymbol(slide);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	m_complexSymbolArray[index] &= ~(slideOutOfTypeMask | slideOutOfStepsMask);
-	
-	// Return if there is a slide in, otherwise remove the slide symbol
-	if (HasSlideInto())
-		return (true);
-		
-	return (RemoveComplexSymbol(slide));
+    //------Last Checked------//
+    // - Jan 21, 2005
+
+    // Get the index of the slide
+    uint32_t index = FindComplexSymbol(slide);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    m_complexSymbolArray[index] &= ~(slideOutOfTypeMask | slideOutOfStepsMask);
+
+    // Return if there is a slide in, otherwise remove the slide symbol
+    if (HasSlideInto())
+        return (true);
+
+    return (RemoveComplexSymbol(slide));
 }
 
 // Bend Functions
@@ -506,83 +507,83 @@ bool Note::ClearSlideOutOf()
 /// @param drawEndPoint Draw end point to validate
 /// @return True if the bend data is valid, false if not
 bool Note::IsValidBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
-	uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint)
+                       uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint)
 {
-	//------Last Checked------//
-	// - Jan 24, 2005
-	
-	// 1st validate the individual pieces
-	if (!IsValidBendType(type) || !IsValidBentPitch(bentPitch) ||
-		!IsValidReleasePitch(releasePitch) || !IsValidBendDuration(duration) ||
-		!IsValidDrawStartPoint(drawStartPoint) ||
-		!IsValidDrawEndPoint(drawEndPoint))
-	{
-		return (false);
-	}
- 
-	bool returnValue = false;
-						
-	if ((type == normalBend) || (type == bendAndHold))
-	{
-		// a) Bent pitch must be greater than zero
-		// b) Release pitch must be zero
-		// c) Duration may be any value
-		// d) Draw start must be low or mid and end must be higher
-		returnValue = ((bentPitch > 0) && (releasePitch == 0) &&
-			(drawStartPoint <= midPoint) && (drawEndPoint > drawStartPoint));
-	}
-	else if (type == bendAndRelease)
-	{
-		// a) Bent pitch must be greater than zero
-		// b) Release pitch must be less than bent pitch
-		// c) Duration must be zero
-		// d) Draw start must be low or mid and drawEndPoint must be low or mid
-		returnValue = ((bentPitch > 0) && (releasePitch < bentPitch) &&
-			(duration == 0) && (drawStartPoint <= midPoint) &&
-			(drawEndPoint <= midPoint));
-	}
-	else if ((type == preBend) || (type == preBendAndHold))
-	{
-		// a) Bent pitch must be greater than zero
-		// b) Release pitch must be zero
-		// c) Duration must be zero
-		// d) Draw start must be low, and end must be higher
-		returnValue = ((bentPitch > 0) && (releasePitch == 0) &&
-			(duration == 0) && (drawStartPoint == lowPoint) &&
-			(drawEndPoint > drawStartPoint));
-	}
-	else if (type == preBendAndRelease)
-	{
-		// a) Bent pitch must be greater than zero
-		// b) Release pitch must be less than bent pitch
-		// c) Duration must be zero
-		// d) Draw start and end must be low
-		returnValue = ((bentPitch > 0) && (releasePitch < bentPitch) &&
-			(duration == 0) && (drawStartPoint == lowPoint) &&
-			(drawEndPoint == lowPoint));
-	}
-	else if (type == gradualRelease)
-	{
-		// a) Bent pitch must be zero
-		// b) Release pitch must be standard to 2 3/4
-		// c) Duration must be > 0
-		// d) Draw start must be high or mid point, draw end must be lower
-		returnValue = ((bentPitch == 0) && (releasePitch <= 11) &&
-			(duration > 0) && (drawStartPoint >= midPoint) &&
-			(drawEndPoint < drawStartPoint));
-	}
-	else if (type == immediateRelease)
-	{
-		// a) Bent pitch must be zero
-		// b) Release pitch must be zero
-		// c) Duration must be zero
-		// d) Draw start must be high or mid, and match draw end
-		returnValue = ((bentPitch == 0) && (releasePitch == 0) &&
-			(duration == 0) && (drawStartPoint >= midPoint) &&
-			(drawStartPoint == drawEndPoint));
-	}
-		
-	return (returnValue);
+    //------Last Checked------//
+    // - Jan 24, 2005
+
+    // 1st validate the individual pieces
+    if (!IsValidBendType(type) || !IsValidBentPitch(bentPitch) ||
+        !IsValidReleasePitch(releasePitch) || !IsValidBendDuration(duration) ||
+        !IsValidDrawStartPoint(drawStartPoint) ||
+        !IsValidDrawEndPoint(drawEndPoint))
+    {
+        return (false);
+    }
+
+    bool returnValue = false;
+
+    if ((type == normalBend) || (type == bendAndHold))
+    {
+        // a) Bent pitch must be greater than zero
+        // b) Release pitch must be zero
+        // c) Duration may be any value
+        // d) Draw start must be low or mid and end must be higher
+        returnValue = ((bentPitch > 0) && (releasePitch == 0) &&
+                       (drawStartPoint <= midPoint) && (drawEndPoint > drawStartPoint));
+    }
+    else if (type == bendAndRelease)
+    {
+        // a) Bent pitch must be greater than zero
+        // b) Release pitch must be less than bent pitch
+        // c) Duration must be zero
+        // d) Draw start must be low or mid and drawEndPoint must be low or mid
+        returnValue = ((bentPitch > 0) && (releasePitch < bentPitch) &&
+                       (duration == 0) && (drawStartPoint <= midPoint) &&
+                       (drawEndPoint <= midPoint));
+    }
+    else if ((type == preBend) || (type == preBendAndHold))
+    {
+        // a) Bent pitch must be greater than zero
+        // b) Release pitch must be zero
+        // c) Duration must be zero
+        // d) Draw start must be low, and end must be higher
+        returnValue = ((bentPitch > 0) && (releasePitch == 0) &&
+                       (duration == 0) && (drawStartPoint == lowPoint) &&
+                       (drawEndPoint > drawStartPoint));
+    }
+    else if (type == preBendAndRelease)
+    {
+        // a) Bent pitch must be greater than zero
+        // b) Release pitch must be less than bent pitch
+        // c) Duration must be zero
+        // d) Draw start and end must be low
+        returnValue = ((bentPitch > 0) && (releasePitch < bentPitch) &&
+                       (duration == 0) && (drawStartPoint == lowPoint) &&
+                       (drawEndPoint == lowPoint));
+    }
+    else if (type == gradualRelease)
+    {
+        // a) Bent pitch must be zero
+        // b) Release pitch must be standard to 2 3/4
+        // c) Duration must be > 0
+        // d) Draw start must be high or mid point, draw end must be lower
+        returnValue = ((bentPitch == 0) && (releasePitch <= 11) &&
+                       (duration > 0) && (drawStartPoint >= midPoint) &&
+                       (drawEndPoint < drawStartPoint));
+    }
+    else if (type == immediateRelease)
+    {
+        // a) Bent pitch must be zero
+        // b) Release pitch must be zero
+        // c) Duration must be zero
+        // d) Draw start must be high or mid, and match draw end
+        returnValue = ((bentPitch == 0) && (releasePitch == 0) &&
+                       (duration == 0) && (drawStartPoint >= midPoint) &&
+                       (drawStartPoint == drawEndPoint));
+    }
+
+    return (returnValue);
 }
 
 /// Sets (adds or updates) a bend
@@ -598,23 +599,23 @@ bool Note::IsValidBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
 /// bendDrawingPoints enum for values)
 /// @return True if the bend was added or updated
 bool Note::SetBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
-	uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint)
+                   uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint)
 {
-	//------Last Checked------//
-	// - Jan 23, 2005
-	CHECK_THAT(IsValidBend(type, bentPitch, releasePitch, duration, drawStartPoint,
-		drawEndPoint), false);
+    //------Last Checked------//
+    // - Jan 23, 2005
+    CHECK_THAT(IsValidBend(type, bentPitch, releasePitch, duration, drawStartPoint,
+                           drawEndPoint), false);
 
-	// Construct the symbol data, then add it to the array    
-	uint32_t symbolData = MAKELONG(0, MAKEWORD(0, bend));
-	symbolData |= (uint32_t)(type << 20);
-	symbolData |= (uint32_t)(drawStartPoint << 18);
-	symbolData |= (uint32_t)(drawEndPoint << 16);
-	symbolData |= (uint32_t)(duration << 8);
-	symbolData |= (uint32_t)(bentPitch << 4);
-	symbolData |= (uint32_t)(releasePitch);
-   
-	return (AddComplexSymbol(symbolData));
+    // Construct the symbol data, then add it to the array
+    uint32_t symbolData = MAKELONG(0, MAKEWORD(0, bend));
+    symbolData |= (uint32_t)(type << 20);
+    symbolData |= (uint32_t)(drawStartPoint << 18);
+    symbolData |= (uint32_t)(drawEndPoint << 16);
+    symbolData |= (uint32_t)(duration << 8);
+    symbolData |= (uint32_t)(bentPitch << 4);
+    symbolData |= (uint32_t)(releasePitch);
+
+    return (AddComplexSymbol(symbolData));
 }
 
 /// Gets the bend data (if any)
@@ -626,67 +627,67 @@ bool Note::SetBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
 /// @param drawEndPoint Holds the draw end point return value
 /// @return True if the data was returned, false if not
 bool Note::GetBend(uint8_t& type, uint8_t& bentPitch, uint8_t& releasePitch,
-	uint8_t& duration, uint8_t& drawStartPoint, uint8_t& drawEndPoint) const
+                   uint8_t& duration, uint8_t& drawStartPoint, uint8_t& drawEndPoint) const
 {
-	//------Last Checked------//
-	// - Jan 24, 2005
-	type = 0;
-	duration = 0;
-	bentPitch = 0;
-	releasePitch = 0;
-	drawStartPoint = 0;
-	drawEndPoint = 0;
-		
-	// Get the index of the bend
-	uint32_t index = FindComplexSymbol(bend);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	// Get the individual pieces that make up the bend
-	uint32_t symbolData = m_complexSymbolArray[index];
-	
-	type = (uint8_t)((symbolData & bendTypeMask) >> 20);
-	duration = HIBYTE(LOWORD(symbolData));
-	bentPitch = (uint8_t)((symbolData & bentPitchMask) >> 4);
-	releasePitch = (uint8_t)(symbolData & releasePitchMask);
-	drawStartPoint = (uint8_t)((symbolData & drawStartMask) >> 18);
-	drawEndPoint = (uint8_t)((symbolData & drawEndMask) >> 16);
-	
-	return (true);
+    //------Last Checked------//
+    // - Jan 24, 2005
+    type = 0;
+    duration = 0;
+    bentPitch = 0;
+    releasePitch = 0;
+    drawStartPoint = 0;
+    drawEndPoint = 0;
+
+    // Get the index of the bend
+    uint32_t index = FindComplexSymbol(bend);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    // Get the individual pieces that make up the bend
+    uint32_t symbolData = m_complexSymbolArray[index];
+
+    type = (uint8_t)((symbolData & bendTypeMask) >> 20);
+    duration = HIBYTE(LOWORD(symbolData));
+    bentPitch = (uint8_t)((symbolData & bentPitchMask) >> 4);
+    releasePitch = (uint8_t)(symbolData & releasePitchMask);
+    drawStartPoint = (uint8_t)((symbolData & drawStartMask) >> 18);
+    drawEndPoint = (uint8_t)((symbolData & drawEndMask) >> 16);
+
+    return (true);
 }
 
 /// Determines if the note has a bend
 /// @return True if the note has a bend, false if not
 bool Note::HasBend() const
 {
-	//------Last Checked------//
-	// - Jan 23, 2005
-	return (FindComplexSymbol(bend) != (uint32_t)-1);
+    //------Last Checked------//
+    // - Jan 23, 2005
+    return (FindComplexSymbol(bend) != (uint32_t)-1);
 }
 
 /// Removes a bend from the note
 /// @return True if the bend was removed, false if not
 bool Note::ClearBend()
 {
-	//------Last Checked------//
-	// - Jan 23, 2005
-	return (RemoveComplexSymbol(bend));
+    //------Last Checked------//
+    // - Jan 23, 2005
+    return (RemoveComplexSymbol(bend));
 }
-	
+
 // Tapped Harmonic Functions
 /// Sets (adds or updates) a tapped harmonic
 /// @param tappedFretNumber Tapped fret number
 /// @return True if the tapped harmonic was added or updated
 bool Note::SetTappedHarmonic(uint8_t tappedFretNumber)
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	CHECK_THAT(IsValidTappedHarmonic(tappedFretNumber), false);
-	
-	// Construct the symbol data, then add it to the array
-	uint32_t symbolData = MAKELONG(MAKEWORD(tappedFretNumber, 0),
-		MAKEWORD(0, tappedHarmonic));
-	return (AddComplexSymbol(symbolData));
+    //------Last Checked------//
+    // - Jan 19, 2005
+    CHECK_THAT(IsValidTappedHarmonic(tappedFretNumber), false);
+
+    // Construct the symbol data, then add it to the array
+    uint32_t symbolData = MAKELONG(MAKEWORD(tappedFretNumber, 0),
+                                   MAKEWORD(0, tappedHarmonic));
+    return (AddComplexSymbol(symbolData));
 }
 
 /// Gets the tapped harmonic data (if any)
@@ -694,39 +695,39 @@ bool Note::SetTappedHarmonic(uint8_t tappedFretNumber)
 /// @return True if the data was returned, false if not
 bool Note::GetTappedHarmonic(uint8_t& tappedFretNumber) const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
+    //------Last Checked------//
+    // - Jan 19, 2005
 
-	tappedFretNumber = 0;
-	
-	// Get the index of the tapped harmonic
-	uint32_t index = FindComplexSymbol(tappedHarmonic);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	// Get the individual pieces that make up the tapped harmonic
-	uint32_t symbolData = m_complexSymbolArray[index];
-	tappedFretNumber = LOBYTE(LOWORD(symbolData));
-	
-	return (true);
+    tappedFretNumber = 0;
+
+    // Get the index of the tapped harmonic
+    uint32_t index = FindComplexSymbol(tappedHarmonic);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    // Get the individual pieces that make up the tapped harmonic
+    uint32_t symbolData = m_complexSymbolArray[index];
+    tappedFretNumber = LOBYTE(LOWORD(symbolData));
+
+    return (true);
 }
 
 /// Determines if the note has a tapped harmonic
 /// @return True if the note has a tapped harmonic, false if not
 bool Note::HasTappedHarmonic() const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	return (FindComplexSymbol(tappedHarmonic) != (uint32_t)-1);
+    //------Last Checked------//
+    // - Jan 19, 2005
+    return (FindComplexSymbol(tappedHarmonic) != (uint32_t)-1);
 }
 
 /// Removes a tapped harmonic from the note
 /// @return True if the tapped harmonic was removed, false if not
 bool Note::ClearTappedHarmonic()
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	return (RemoveComplexSymbol(tappedHarmonic));
+    //------Last Checked------//
+    // - Jan 19, 2005
+    return (RemoveComplexSymbol(tappedHarmonic));
 }
 
 // Trill Functions
@@ -735,13 +736,13 @@ bool Note::ClearTappedHarmonic()
 /// @return True if the trill was added or updated
 bool Note::SetTrill(uint8_t trilledFretNumber)
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	CHECK_THAT(IsValidTrill(trilledFretNumber), false);
-	
-	// Construct the symbol data, then add it to the array
-	uint32_t symbolData = MAKELONG(0, MAKEWORD(trilledFretNumber, trill));
-	return (AddComplexSymbol(symbolData));	
+    //------Last Checked------//
+    // - Jan 19, 2005
+    CHECK_THAT(IsValidTrill(trilledFretNumber), false);
+
+    // Construct the symbol data, then add it to the array
+    uint32_t symbolData = MAKELONG(0, MAKEWORD(trilledFretNumber, trill));
+    return (AddComplexSymbol(symbolData));
 }
 
 /// Gets the trill data (if any)
@@ -749,39 +750,39 @@ bool Note::SetTrill(uint8_t trilledFretNumber)
 /// @return True if the data was returned, false if not
 bool Note::GetTrill(uint8_t& trilledFretNumber) const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
+    //------Last Checked------//
+    // - Jan 19, 2005
 
-	trilledFretNumber = 0;
-	
-	// Get the index of the trill
-	uint32_t index = FindComplexSymbol(trill);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	// Get the individual pieces that make up the trill
-	uint32_t symbolData = m_complexSymbolArray[index];
-	trilledFretNumber = LOBYTE(HIWORD(symbolData));
-	
-	return (true);
+    trilledFretNumber = 0;
+
+    // Get the index of the trill
+    uint32_t index = FindComplexSymbol(trill);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    // Get the individual pieces that make up the trill
+    uint32_t symbolData = m_complexSymbolArray[index];
+    trilledFretNumber = LOBYTE(HIWORD(symbolData));
+
+    return (true);
 }
 
 /// Determines if the note has a trill
 /// @return True if the note has a trill, false if not
 bool Note::HasTrill() const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	return (FindComplexSymbol(trill) != (uint32_t)-1);
+    //------Last Checked------//
+    // - Jan 19, 2005
+    return (FindComplexSymbol(trill) != (uint32_t)-1);
 }
 
 /// Removes a trill from the note
 /// @return True if the trill was removed, false if not
 bool Note::ClearTrill()
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	return (RemoveComplexSymbol(trill));
+    //------Last Checked------//
+    // - Jan 19, 2005
+    return (RemoveComplexSymbol(trill));
 }
 
 // Artificial Harmonic Functions
@@ -793,14 +794,14 @@ bool Note::ClearTrill()
 /// @return True if the artificial harmonic was added or updated
 bool Note::SetArtificialHarmonic(uint8_t key, uint8_t keyVariation, uint8_t octave)
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	CHECK_THAT(IsValidArtificialHarmonic(key, keyVariation, octave), false);
+    //------Last Checked------//
+    // - Jan 19, 2005
+    CHECK_THAT(IsValidArtificialHarmonic(key, keyVariation, octave), false);
 
-	// Construct the symbol data, then add it to the array
-	uint32_t symbolData = MAKELONG(MAKEWORD(key, keyVariation),
-		MAKEWORD(octave, artificialHarmonic));
-	return (AddComplexSymbol(symbolData));
+    // Construct the symbol data, then add it to the array
+    uint32_t symbolData = MAKELONG(MAKEWORD(key, keyVariation),
+                                   MAKEWORD(octave, artificialHarmonic));
+    return (AddComplexSymbol(symbolData));
 }
 
 /// Gets the artificial harmonic data (if any)
@@ -809,106 +810,106 @@ bool Note::SetArtificialHarmonic(uint8_t key, uint8_t keyVariation, uint8_t octa
 /// @param octave Holds the octave return value
 /// @return True if the data was returned, false if not
 bool Note::GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
-	uint8_t& octave) const
+                                 uint8_t& octave) const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
+    //------Last Checked------//
+    // - Jan 19, 2005
 
-	key = 0;
-	keyVariation = 0;
-	octave = 0;
-	
-	// Get the index of the artificial harmonic
-	uint32_t index = FindComplexSymbol(artificialHarmonic);
-	if (index == (uint32_t)-1)
-		return (false);
-	
-	// Get the individual pieces that make up the artificial harmonic
-	uint32_t symbolData = m_complexSymbolArray[index];
-	key = LOBYTE(LOWORD(symbolData));
-	keyVariation = HIBYTE(LOWORD(symbolData));
-	octave = LOBYTE(HIWORD(symbolData));
-	
-	return (true);
+    key = 0;
+    keyVariation = 0;
+    octave = 0;
+
+    // Get the index of the artificial harmonic
+    uint32_t index = FindComplexSymbol(artificialHarmonic);
+    if (index == (uint32_t)-1)
+        return (false);
+
+    // Get the individual pieces that make up the artificial harmonic
+    uint32_t symbolData = m_complexSymbolArray[index];
+    key = LOBYTE(LOWORD(symbolData));
+    keyVariation = HIBYTE(LOWORD(symbolData));
+    octave = LOBYTE(HIWORD(symbolData));
+
+    return (true);
 }
 
 /// Determines if the note has a artificial harmonic
 /// @return True if the note has a artificial harmonic, false if not
 bool Note::HasArtificialHarmonic() const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	return (FindComplexSymbol(artificialHarmonic) != (uint32_t)-1);
+    //------Last Checked------//
+    // - Jan 19, 2005
+    return (FindComplexSymbol(artificialHarmonic) != (uint32_t)-1);
 }
 
 /// Removes a artificial harmonic from the note
 /// @return True if the artificial harmonic was removed, false if not
 bool Note::ClearArtificialHarmonic()
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	return (RemoveComplexSymbol(artificialHarmonic));
+    //------Last Checked------//
+    // - Jan 19, 2005
+    return (RemoveComplexSymbol(artificialHarmonic));
 }
-   
+
 // Complex Symbol Array Functions
 /// Adds a complex symbol to the complex symbol array
 /// @param symbolData Data that makes up the symbol
 /// @return True if the symbol was added or updated, false if not
 bool Note::AddComplexSymbol(uint32_t symbolData)
-{   
-	//------Last Checked------//
-	// - Jan 19, 2005
-	
-	// Get and validate the symbol type
-	uint8_t type = HIBYTE(HIWORD(symbolData));
-	CHECK_THAT(IsValidComplexSymbolType(type), false);
+{
+    //------Last Checked------//
+    // - Jan 19, 2005
 
-	bool returnValue = false;
-	
-	// Get the index in the complex array where the symbol is stored
-	uint32_t index = FindComplexSymbol(type);
+    // Get and validate the symbol type
+    uint8_t type = HIBYTE(HIWORD(symbolData));
+    CHECK_THAT(IsValidComplexSymbolType(type), false);
 
-	// Found symbol in the array, update the symbol data
-	if (index != (uint32_t)-1)
-	{
-		m_complexSymbolArray[index] = symbolData;
-		returnValue = true;
-	}
-	// Symbol was not found in the array, find the first free array slot and
-	// insert there
-	else
-	{
-		uint32_t i = 0;
-		for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
-		{
-			if (m_complexSymbolArray[i] == notUsed)
-			{
-				m_complexSymbolArray[i] = symbolData;
-				returnValue = true;
-				break;
-			}
-		}
-	}
-	
-	return (returnValue);
+    bool returnValue = false;
+
+    // Get the index in the complex array where the symbol is stored
+    uint32_t index = FindComplexSymbol(type);
+
+    // Found symbol in the array, update the symbol data
+    if (index != (uint32_t)-1)
+    {
+        m_complexSymbolArray[index] = symbolData;
+        returnValue = true;
+    }
+    // Symbol was not found in the array, find the first free array slot and
+    // insert there
+    else
+    {
+        uint32_t i = 0;
+        for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
+        {
+            if (m_complexSymbolArray[i] == notUsed)
+            {
+                m_complexSymbolArray[i] = symbolData;
+                returnValue = true;
+                break;
+            }
+        }
+    }
+
+    return (returnValue);
 }
 
 /// Gets the number of complex symbols used by the note
 /// @return The number of complex symbols used by the note
 size_t Note::GetComplexSymbolCount() const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	size_t returnValue = 0;
-	size_t i = 0;
-	for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
-	{
-		// Slot is not used; break out
-		if (m_complexSymbolArray[i] == notUsed)
-			break;
-		returnValue++;
-	}
-	return (returnValue);
+    //------Last Checked------//
+    // - Jan 19, 2005
+    size_t returnValue = 0;
+    size_t i = 0;
+    for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
+    {
+        // Slot is not used; break out
+        if (m_complexSymbolArray[i] == notUsed)
+            break;
+        returnValue++;
+    }
+    return (returnValue);
 }
 
 /// Gets the index of a given complex symbol type in the complex symbol array
@@ -917,22 +918,22 @@ size_t Note::GetComplexSymbolCount() const
 /// found
 uint32_t Note::FindComplexSymbol(uint8_t type) const
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	uint32_t returnValue = (uint32_t)-1;
+    //------Last Checked------//
+    // - Jan 19, 2005
+    uint32_t returnValue = (uint32_t)-1;
 
-	uint32_t i = 0;
-	for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
-	{
-		// Found the symbol type; break out
-		if (HIBYTE(HIWORD(m_complexSymbolArray[i])) == type)
-		{
-			returnValue = i;
-			break;
-		}
-	}
+    uint32_t i = 0;
+    for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
+    {
+        // Found the symbol type; break out
+        if (HIBYTE(HIWORD(m_complexSymbolArray[i])) == type)
+        {
+            returnValue = i;
+            break;
+        }
+    }
 
-	return (returnValue);
+    return (returnValue);
 }
 
 /// Removes a complex symbol from the complex symbol array
@@ -940,30 +941,74 @@ uint32_t Note::FindComplexSymbol(uint8_t type) const
 /// @return True if the symbol was removed, false if not
 bool Note::RemoveComplexSymbol(uint8_t type)
 {
-	//------Last Checked------//
-	// - Jan 19, 2005
-	bool returnValue = false;
-	
-	uint32_t i = 0;
-	for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
-	{
-		if (HIBYTE(HIWORD(m_complexSymbolArray[i])) == type)
-		{
-			m_complexSymbolArray[i] = notUsed;
-			returnValue = true;
-			break;
-		}
-	}
-	
-	return (returnValue);
+    //------Last Checked------//
+    // - Jan 19, 2005
+    bool returnValue = false;
+
+    uint32_t i = 0;
+    for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
+    {
+        if (HIBYTE(HIWORD(m_complexSymbolArray[i])) == type)
+        {
+            m_complexSymbolArray[i] = notUsed;
+            returnValue = true;
+            break;
+        }
+    }
+
+    return (returnValue);
 }
 
 /// Clears the contents of the symbol array (sets all elements to "not used")
 void Note::ClearComplexSymbolArrayContents()
 {
-	//------Last Checked------//
-	// - Jan 19, 2005   
-	uint32_t i = 0;
-	for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
-		m_complexSymbolArray[i] = notUsed;
+    //------Last Checked------//
+    // - Jan 19, 2005
+    uint32_t i = 0;
+    for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)
+        m_complexSymbolArray[i] = notUsed;
+}
+
+// For muted notes, display 'x'
+// For tapped harmonics, display '7(14)', where 14 is the tapped note
+// For natural harmonics, display '[12]'
+// For ghost notes, display '(12)'
+// Otherwise, just display the fret number
+std::string Note::GetText() const
+{
+    if (IsMuted())
+    {
+        return "x";
+    }
+
+    std::stringstream output;
+    uint8_t noteValue = GetFretNumber();
+
+    if (HasTappedHarmonic()) // for tapped harmonics, display original note first, and tapped note after
+    {
+        output << static_cast<int>(noteValue);
+        GetTappedHarmonic(noteValue);
+    }
+
+    std::string brackets = "";
+    if (HasTappedHarmonic() || IsGhostNote())
+    {
+        brackets = "()";
+    }
+    else if (IsNaturalHarmonic())
+    {
+        brackets = "[]";
+    }
+
+    if (!brackets.empty())
+    {
+        output << brackets.at(0);
+    }
+    output << static_cast<int>(noteValue);
+    if (!brackets.empty())
+    {
+        output << brackets.at(1);
+    }
+
+    return output.str();
 }

@@ -562,6 +562,9 @@ public:
     bool HasArtificialHarmonic() const;
     bool ClearArtificialHarmonic();
 
+    /// Returns a text representation of the note, including brackets for ghost notes, harmonics, etc
+    std::string GetText() const;
+
 // Complex Symbol Array Functions
 protected:
     /// Determines if a complex symbol type is valid

@@ -42,10 +42,16 @@ void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->setFont(tabFont);
 
     if(note->IsTied())
+    {
         painter->setPen(Qt::lightGray);
+    }
     else
+    {
         painter->setPen(Qt::black);
+    }
+
+    std::string text = note->GetText();
 
     // offset height by 1 pixel for clarity
-    painter->drawText(0, -1, QString().setNum(note->GetFretNumber()));
+    painter->drawText(0, -1, QString().fromStdString(note->GetText()));
 }
