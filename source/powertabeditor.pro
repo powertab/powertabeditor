@@ -17,6 +17,8 @@ win32:DEFINES +=__WINDOWS_MM__
 win32:LIBS += -lwinmm
 unix:DEFINES += __LINUX_ALSASEQ__
 unix:LIBS += -lasound -lpthread
+macx:DEFINES += __MACOSX_CORE__
+macx:LIBS += -framework CoreMidi -framework CoreAudio -framework CoreFoundation
 
 SOURCES += main.cpp\
         powertabeditor.cpp \
@@ -154,7 +156,7 @@ RESOURCES += \
     THEN = (
     DONE_IF = )
     }
-    unix {
+    unix|macx {
     CHECK_DIR_EXIST = test -d
     OR = ||
     MAKE_DIR = mkdir
@@ -174,7 +176,7 @@ RESOURCES += \
     # specify files for copying
     SOURCE_SKINS = $${PWD}/skins
     win32:DEST_SKINS = $${OUT_PWD}/$${BUILD_TYPE}/skins
-    unix:DEST_SKINS = $${OUT_PWD}/
+    unix|macx:DEST_SKINS = $${OUT_PWD}/
 
     # replace '/' with '\' in Windows paths
     win32 {
