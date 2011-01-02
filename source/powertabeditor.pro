@@ -74,7 +74,8 @@ SOURCES += main.cpp\
     rtmidi/rtmidi.cpp \
     painters/timesignaturepainter.cpp \
     painters/clefpainter.cpp \
-    midiplayer.cpp
+    midiplayer.cpp \
+    painters/stdnotationpainter.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -135,7 +136,8 @@ HEADERS  += powertabeditor.h \
     rtmidi/rterror.h \
     painters/timesignaturepainter.h \
     painters/clefpainter.h \
-    midiplayer.h
+    midiplayer.h \
+    painters/stdnotationpainter.h
 
 RESOURCES += \
     resources.qrc

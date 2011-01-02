@@ -11,6 +11,7 @@
 #include "painters/keysignaturepainter.h"
 #include "painters/timesignaturepainter.h"
 #include "painters/clefpainter.h"
+#include "painters/stdnotationpainter.h"
 
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
@@ -242,6 +243,21 @@ void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& curr
     {
         Position* currentPosition = staff->GetPosition(0, i);
         uint32_t location = system->GetPositionX(currentPosition->GetPosition());
+
+        // Find the guitar corresponding to the current staff
+        Guitar* currentGuitar = NULL;
+        for (uint32_t j = 0; j < system->GetStaffCount(); j++)
+        {
+            if (system->GetStaff(j) == staff)
+            {
+                currentGuitar = document->GetGuitarScore()->GetGuitar(j);
+            }
+        }
+
+        StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, currentGuitar);
+        CenterItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
+                   currentStaffInfo.getTopStdNotationLine());
+        scene.addItem(stdNotePainter);
 
         for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
         {

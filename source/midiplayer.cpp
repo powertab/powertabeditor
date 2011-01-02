@@ -157,7 +157,7 @@ void MidiPlayer::playbackSong(int staff)
     }
 
     // only advance the caret if we are in the staff that is furthest along
-    if(previousPositionInStaff.value(staff) == previousPositionInStaff.value(staffWithMaxPosition))
+    if(staff == 0)
     {
         if (!caret->moveCaretHorizontal(1))
         {

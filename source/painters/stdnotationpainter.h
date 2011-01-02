@@ -1,0 +1,33 @@
+#ifndef STDNOTATIONPAINTER_H
+#define STDNOTATIONPAINTER_H
+
+#include "painterbase.h"
+#include "staffdata.h"
+
+class Position;
+class Guitar;
+class QPainter;
+
+class StdNotationPainter : public PainterBase
+{
+public:
+    StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar);
+
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+    int getDisplayPosition(const QString& noteName);
+    void drawRest(QPainter* painter);
+
+private:
+    StaffData staffInfo;
+    Position* position;
+    Guitar* guitar;
+};
+
+#endif // STDNOTATIONPAINTER_H

@@ -16,6 +16,13 @@ public:
     enum MusicSymbol // All of the available music symbols
     {
         // TODO - add the rest of the symbols
+        WholeRest = 0xe102,
+        HalfRest = 0xe103,
+        QuarterRest = 0xe107,
+        EighthRest = 0xe109,
+        SixteenthRest = 0xe10a,
+        ThirtySecondRest = 0xe10b,
+        SixtyFourthRest = 0xe10c,
         AccidentalSharp = 0xe10e,
         AccidentalFlat = 0xe11a,
         Natural = 0xe116,

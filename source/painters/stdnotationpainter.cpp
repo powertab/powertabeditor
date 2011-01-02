@@ -1,0 +1,147 @@
+#include "stdnotationpainter.h"
+
+#include <QPainter>
+#include <cmath>
+
+#include "../powertabdocument/position.h"
+#include "../powertabdocument/guitar.h"
+#include "../powertabdocument/generalmidi.h"
+#include "../musicfont.h"
+#include "staffdata.h"
+
+StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar):
+        staffInfo(staffInfo),
+        position(position),
+        guitar(guitar)
+{
+}
+
+void StdNotationPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+{
+}
+
+void StdNotationPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+{
+}
+
+void StdNotationPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+{
+}
+
+QRectF StdNotationPainter::boundingRect() const
+{
+    const int height = staffInfo.getTopTabLine() - staffInfo.topEdge;
+    return QRectF(0, 0, 10,
+                  height);
+}
+
+void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    MusicFont musicFont;
+    painter->setFont(musicFont.getFont());
+
+    if (position->IsRest())
+    {
+        drawRest(painter);
+        return;
+    }
+
+    // Choose the correct symbol to use for the note head
+    QChar noteHead;
+    if (position->GetDurationType() == 1)
+    {
+        noteHead = MusicFont::WholeNote;
+    }
+    else if (position->GetDurationType() == 2)
+    {
+        noteHead = MusicFont::HalfNote;
+    }
+    else
+    {
+        noteHead = MusicFont::QuarterNoteOrLess;
+    }
+
+    for (quint32 i=0; i < position->GetNoteCount(); i++)
+    {
+        Note* currentNote = position->GetNote(i);
+        quint8 pitch = guitar->GetTuning().GetNote(currentNote->GetString()) + currentNote->GetFretNumber();
+
+         // assumes flats only for now, TODO - should check against key signature eventually
+        const QString noteText = QString::fromStdString(GetMidiNoteText(pitch, false));
+
+        const int octaveDiff = floor((MIDI_NOTE_F4 - pitch) / 12.0);
+        const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
+        const int displayOffset = getDisplayPosition(noteText);
+
+        painter->drawText(0, displayOffset * 0.5 * staffInfo.stdNotationLineSpacing + 1 + octaveShift, noteHead);
+    }
+}
+
+void StdNotationPainter::drawRest(QPainter *painter)
+{
+    QChar restSymbol;
+    int height = 2 * staffInfo.stdNotationLineSpacing - 1; // position is in middle of staff by default
+
+    switch(position->GetDurationType()) // find the correct symbol to display, and adjust the height if necessary
+    {
+    case 1:
+        restSymbol = MusicFont::WholeRest;
+        height = staffInfo.stdNotationLineSpacing + 1;
+        break;
+    case 2:
+        restSymbol = MusicFont::HalfRest;
+        height += 1;
+        break;
+    case 4:
+        restSymbol = MusicFont::QuarterRest;
+        break;
+    case 8:
+        restSymbol = MusicFont::EighthRest;
+        break;
+    case 16:
+        restSymbol = MusicFont::SixteenthRest;
+        break;
+    case 32:
+        restSymbol = MusicFont::ThirtySecondRest;
+        break;
+    case 64:
+        restSymbol = MusicFont::SixtyFourthRest;
+        height -= 3;
+        break;
+    }
+
+    QString textToDraw = restSymbol;
+
+    // add dots if necessary
+    if (position->IsDotted())
+    {
+        textToDraw.append(QChar(MusicFont::Dot));
+    }
+    if (position->IsDoubleDotted())
+    {
+        textToDraw += QString(2, (QChar(MusicFont::Dot)));
+        textToDraw.insert(2, " ");
+    }
+
+    painter->drawText(0, height, textToDraw);
+
+    return;
+}
+
+int StdNotationPainter::getDisplayPosition(const QString& noteName)
+{
+    char note = noteName.at(0).toAscii();
+
+    switch(note)
+    {
+    case 'E': return 1;
+    case 'F': return 0;
+    case 'G': return 6;
+    case 'A': return 5;
+    case 'B': return 4;
+    case 'C': return 3;
+    case 'D': return 2;
+    default:
+        return 0;
+    }
+}

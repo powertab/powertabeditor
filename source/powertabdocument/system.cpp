@@ -469,21 +469,16 @@ int System::GetPositionX(int position) const
     // Validate the position
     CHECK_THAT(IsValidPosition(position), returnValue);
 
-    // Since we already have the first position, we only need to perform more
-    // calculations if we need to return the 2nd to 'n' position
-    if (position > 0)
-    {
-        // Get the width of all key and time signatures up to, but not
-        // including, the position
-        int keyAndTimeSignatureWidth =
+    // Get the width of all key and time signatures up to, but not
+    // including, the position
+    int keyAndTimeSignatureWidth =
             GetCumulativeInternalKeyAndTimeSignatureWidth(position);
 
-        // Move "n" positions across using the position spacing, adding the
-        // cumulative key and time signature widths. Add 1 since the position
-        // value is zero-based
-        returnValue += (((position + 1) * GetPositionSpacing()) +
-            keyAndTimeSignatureWidth);
-    }
+    // Move "n" positions across using the position spacing, adding the
+    // cumulative key and time signature widths. Add 1 since the position
+    // value is zero-based
+    returnValue += (((position + 1) * GetPositionSpacing()) +
+                    keyAndTimeSignatureWidth);
 
     return (returnValue);
 }
