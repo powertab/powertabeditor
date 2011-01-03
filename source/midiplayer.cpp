@@ -125,12 +125,7 @@ void MidiPlayer::playNotesAtCurrentPosition(int staff)
         }
     }
 
-    double tempo = getCurrentTempo();
-
-    double duration = position->GetDurationType();
-    duration = tempo * 4.0 / duration;
-    duration += position->IsDotted() * 0.5 * duration;
-    duration += position->IsDoubleDotted() * 0.75 * duration;
+    const double duration = calculateNoteDuration(position);
     songTimers.at(staff)->start(duration);
 }
 
@@ -183,7 +178,7 @@ void MidiPlayer::playbackSong(int staff)
     playNotesAtCurrentPosition(staff);
 }
 
-double MidiPlayer::getCurrentTempo()
+double MidiPlayer::getCurrentTempo() const
 {
     quint32 currentSystemIndex = caret->getSystemIndex();
     Score* currentScore = caret->getCurrentScore();
@@ -200,4 +195,28 @@ double MidiPlayer::getCurrentTempo()
 
     // convert bpm to millisecond duration
     return (60.0 / bpm * 1000.0);
+}
+
+double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
+{
+    double tempo = getCurrentTempo();
+
+    double duration = currentPosition->GetDurationType();
+    duration = tempo * 4.0 / duration;
+    duration += currentPosition->IsDotted() * 0.5 * duration;
+    duration += currentPosition->IsDoubleDotted() * 0.75 * duration;
+
+    // adjust for irregular groupings (triplets, etc)
+    if (currentPosition->HasIrregularGroupingTiming())
+    {
+        quint8 notesPlayed = 0;
+        quint8 notesPlayedOver = 0;
+        currentPosition->GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
+
+        // for example, with triplets we have 3 notes played in the time of 2,
+        // so each note is 2/3 of its normal duration
+        duration *= (double)notesPlayedOver / (double)notesPlayed;
+    }
+
+    return duration;
 }

@@ -10,6 +10,7 @@
 class Caret;
 class QTimer;
 class QSignalMapper;
+class Position;
 
 class MidiPlayer : public QObject
 {
@@ -26,7 +27,8 @@ private slots:
     void playbackSong(int staff);
 
 private:
-    double getCurrentTempo();
+    double getCurrentTempo() const;
+    double calculateNoteDuration(Position* currentPosition) const;
 
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;
