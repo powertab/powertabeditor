@@ -31,7 +31,9 @@ void StdNotationPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 QRectF StdNotationPainter::boundingRect() const
 {
     const int height = staffInfo.getTopTabLine() - staffInfo.topEdge;
-    return QRectF(0, 0, 10,
+    return QRectF(0,
+                  -(staffInfo.getTopStdNotationLine() - staffInfo.topEdge),
+                  10,
                   height);
 }
 
@@ -69,12 +71,38 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
          // assumes flats only for now, TODO - should check against key signature eventually
         const QString noteText = QString::fromStdString(GetMidiNoteText(pitch, false));
 
-        const int octaveDiff = floor((MIDI_NOTE_F4 - pitch) / 12.0);
+        const int octaveDiff = getOctaveDiff(currentNote, pitch);
         const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
         const int displayOffset = getDisplayPosition(noteText);
 
         painter->drawText(0, displayOffset * 0.5 * staffInfo.stdNotationLineSpacing + 1 + octaveShift, noteHead);
     }
+}
+
+int StdNotationPainter::getOctaveDiff(const Note* currentNote, const int pitch) const
+{
+    // get octave difference
+    int octaveDiff = floor((MIDI_NOTE_F4 - pitch) / 12.0);
+
+    // apply any octave-related notation instructions, like 8va or 8vb
+    if (currentNote->IsOctave8va())
+    {
+        octaveDiff += 1;
+    }
+    if (currentNote->IsOctave15ma())
+    {
+        octaveDiff += 2;
+    }
+    if (currentNote->IsOctave8vb())
+    {
+        octaveDiff -= 1;
+    }
+    if (currentNote->IsOctave15mb())
+    {
+        octaveDiff -= 2;
+    }
+
+    return octaveDiff;
 }
 
 void StdNotationPainter::drawRest(QPainter *painter)

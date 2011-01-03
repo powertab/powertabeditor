@@ -7,6 +7,7 @@
 class Position;
 class Guitar;
 class QPainter;
+class Note;
 
 class StdNotationPainter : public PainterBase
 {
@@ -23,8 +24,8 @@ protected:
 
     int getDisplayPosition(const QString& noteName);
     void drawRest(QPainter* painter);
+    int getOctaveDiff(const Note* currentNote, const int pitch) const;
 
-private:
     StaffData staffInfo;
     Position* position;
     Guitar* guitar;
