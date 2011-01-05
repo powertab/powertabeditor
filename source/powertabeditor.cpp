@@ -24,9 +24,10 @@
 #include "widgets/mixer/mixer.h"
 #include "widgets/toolbox/toolbox.h"
 #include "midiplayer.h"
+#include "actions/undomanager.h"
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
-QUndoStack* PowerTabEditor::undoStack = NULL;
+UndoManager* PowerTabEditor::undoManager = NULL;
 QSplitter* PowerTabEditor::vertSplitter = NULL;
 QSplitter* PowerTabEditor::horSplitter = NULL;
 Toolbox* PowerTabEditor::toolBox = NULL;
@@ -47,8 +48,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     // retrieve the previous directory that a file was opened/saved to (default value is home directory)
     previousDirectory = settings.value("app/previousDirectory", QDir::homePath()).toString();
 
-    undoStack = new QUndoStack();
-    connect(undoStack, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
+    undoManager = new UndoManager();
+    connect(undoManager, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
 
     skinManager = new SkinManager("default");
 
@@ -90,6 +91,7 @@ PowerTabEditor::~PowerTabEditor()
     delete preferencesDialog;
     delete skinManager;
     delete midiPlayer;
+    delete undoManager;
 }
 
 // Redraws the *entire* document upon undo/redo
@@ -120,10 +122,10 @@ void PowerTabEditor::CreateActions()
     connect(exitAppAct, SIGNAL(triggered()), this, SLOT(close()));
 
     // Redo / Undo actions
-    undoAct = undoStack->createUndoAction(this, tr("&Undo"));
+    undoAct = undoManager->createUndoAction(this, tr("&Undo"));
     undoAct->setShortcuts(QKeySequence::Undo);
 
-    redoAct = undoStack->createRedoAction(this, tr("&Redo"));
+    redoAct = undoManager->createRedoAction(this, tr("&Redo"));
     redoAct->setShortcuts(QKeySequence::Redo);
 
     // Playback-related actions
@@ -268,6 +270,8 @@ void PowerTabEditor::OpenFile()
             if (chopped)
                 title.append("...");
 
+            undoManager->addNewUndoStack();
+
             tabWidget->addTab(score, title);
 
             // add the guitars to a new mixer
@@ -303,14 +307,19 @@ void PowerTabEditor::RefreshCurrentDocument()
 // Close a document and clean up
 void PowerTabEditor::closeTab(int index)
 {
+    undoManager->removeStack(index);
     documentManager.Remove(index);
     delete tabWidget->widget(index);
     tabWidget->removeTab(index);
 
     mixerList->removeWidget(mixerList->widget(index));
-    mixerList->setCurrentIndex(tabWidget->currentIndex());
 
-    documentManager.setCurrentDocumentIndex(tabWidget->currentIndex());
+    // get the index of the tab that we will now switch to
+    const int currentIndex = tabWidget->currentIndex();
+
+    undoManager->setActiveStackIndex(currentIndex);
+    mixerList->setCurrentIndex(currentIndex);
+    documentManager.setCurrentDocumentIndex(currentIndex);
 }
 
 // When the tab is switched, switch the current document in the document manager
@@ -318,6 +327,7 @@ void PowerTabEditor::switchTab(int index)
 {
     documentManager.setCurrentDocumentIndex(index);
     mixerList->setCurrentIndex(index);
+    undoManager->setActiveStackIndex(index);
 
     if(documentManager.getCurrentDocument())
     {

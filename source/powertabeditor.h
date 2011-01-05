@@ -4,9 +4,9 @@
 #include <QMainWindow>
 
 #include "documentmanager.h"
+#include "actions/undomanager.h"
 
 class QTabWidget;
-class QUndoStack;
 class ScoreArea;
 class Mixer;
 class QStackedWidget;
@@ -25,7 +25,7 @@ public:
     ~PowerTabEditor();
     static void RefreshCurrentDocument();
     static QTabWidget* tabWidget;
-    static QUndoStack* undoStack;
+    static UndoManager* undoManager;
     static QSplitter* vertSplitter;
     static QSplitter* horSplitter;
     static Toolbox* toolBox;

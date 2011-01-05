@@ -77,7 +77,8 @@ SOURCES += main.cpp\
     painters/timesignaturepainter.cpp \
     painters/clefpainter.cpp \
     midiplayer.cpp \
-    painters/stdnotationpainter.cpp
+    painters/stdnotationpainter.cpp \
+    actions/undomanager.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -139,7 +140,8 @@ HEADERS  += powertabeditor.h \
     painters/timesignaturepainter.h \
     painters/clefpainter.h \
     midiplayer.h \
-    painters/stdnotationpainter.h
+    painters/stdnotationpainter.h \
+    actions/undomanager.h
 
 RESOURCES += \
     resources.qrc

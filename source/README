@@ -16,7 +16,6 @@ the entire score)
 
 TODO: 
 Short Term:
-- make the undo stack to work on a per-tab basis
 - redraw only the required areas upon an undo/redo action
 - fix up exporting of files (PowerTabOutputStream), due to some difficulties in porting the original code
 

@@ -83,7 +83,7 @@ void BarlineDialog::accept()
     }
     else
     {
-        PowerTabEditor::undoStack->push(new ChangeBarLineType(barLine, barLineType->currentIndex(), repeatCount->value()));
+        PowerTabEditor::undoManager->push(new ChangeBarLineType(barLine, barLineType->currentIndex(), repeatCount->value()));
         done(barLineType->currentIndex());
     }
 }
