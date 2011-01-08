@@ -206,12 +206,7 @@ public:
         }
     }
 
-    int GetHeight() const
-    {
-        return GetStandardNotationStaffAboveSpacing() + GetStandardNotationStaffBelowSpacing() + GetSymbolSpacing() +
-                GetTablatureStaffBelowSpacing() + STD_NOTATION_LINE_SPACING * STD_NOTATION_STAFF_TYPE +
-                GetTablatureStaffType() * 9; // TODO - pass in the tab line separation as a parameter
-    }
+    int GetHeight() const;
 };
 
 #endif

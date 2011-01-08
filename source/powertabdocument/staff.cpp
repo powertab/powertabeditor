@@ -20,8 +20,8 @@ const uint8_t Staff::DEFAULT_CLEF                                        = TREBL
 const uint8_t Staff::DEFAULT_TABLATURE_STAFF_TYPE                        = 6;
 const uint8_t Staff::DEFAULT_STANDARD_NOTATION_STAFF_ABOVE_SPACING       = 9;
 const uint8_t Staff::DEFAULT_STANDARD_NOTATION_STAFF_BELOW_SPACING       = 9;
-const uint8_t Staff::DEFAULT_SYMBOL_SPACING                              = 0;
-const uint8_t Staff::DEFAULT_TABLATURE_STAFF_BELOW_SPACING               = 0;
+const uint8_t Staff::DEFAULT_SYMBOL_SPACING                              = 7;
+const uint8_t Staff::DEFAULT_TABLATURE_STAFF_BELOW_SPACING               = 10;
 const uint8_t Staff::STD_NOTATION_LINE_SPACING = 7;
 const uint8_t Staff::STD_NOTATION_STAFF_TYPE = 5;
 
@@ -260,4 +260,12 @@ bool Staff::SetTablatureStaffType(uint8_t type)
     m_data |= type;
 
     return (true);
+}
+
+// Calculates the height of the staff
+int Staff::GetHeight() const
+{
+    return GetStandardNotationStaffAboveSpacing() + GetStandardNotationStaffBelowSpacing() + GetSymbolSpacing() +
+            GetTablatureStaffBelowSpacing() + STD_NOTATION_LINE_SPACING * (STD_NOTATION_STAFF_TYPE - 1) +
+            (GetTablatureStaffType() - 1) * 9; // TODO - pass in the tab line separation as a parameter
 }

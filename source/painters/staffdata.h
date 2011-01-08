@@ -1,7 +1,7 @@
 #ifndef STAFFDATA_H
 #define STAFFDATA_H
 
-// Structure to hold data about a score, and provide common layout-related calculations
+// Structure to hold data about a staff, and provide common layout-related calculations
 
 class StaffData
 {
@@ -22,56 +22,19 @@ public:
 
     StaffData();
 
-    int getTabLineHeight(int stringNum) const
-    {
-        return (topEdge + height - tabStaffBelowSpacing - (numOfStrings - stringNum) * tabLineSpacing);
-    }
+    int getTabLineHeight(int stringNum, bool absolutePos = true) const;
+    int getTopTabLine(bool absolutePos = true) const;
+    int getBottomTabLine(bool absolutePos = true) const;
+    int getTabStaffSize() const;
 
-    int getTopTabLine() const
-    {
-        return getTabLineHeight(1);
-    }
+    int getStdNotationLineHeight(int lineNumber, bool absolutePos = true) const;
+    double getStdNotationSpaceHeight(int spaceNumber, bool absolutePos = true) const;
+    int getTopStdNotationLine(bool absolutePos = true) const;
+    int getBottomStdNotationLine(bool absolutePos = true) const;
 
-    int getBottomTabLine() const
-    {
-        return getTabLineHeight(numOfStrings);
-    }
+    int getStdNotationStaffSize() const;
 
-    int getTabStaffSize() const
-    {
-        return getBottomTabLine() - getTopTabLine();
-    }
-
-    int getStdNotationLineHeight(int lineNumber) const
-    {
-        return (topEdge + stdNotationStaffAboveSpacing + (lineNumber - 1) * stdNotationLineSpacing);
-    }
-
-    double getStdNotationSpaceHeight(int spaceNumber) const
-    {
-        return (getStdNotationLineHeight(spaceNumber) + getStdNotationLineHeight(spaceNumber + 1)) / 2;
-    }
-
-    int getTopStdNotationLine() const
-    {
-        return getStdNotationLineHeight(1);
-    }
-
-    int getBottomStdNotationLine() const
-    {
-        return getStdNotationLineHeight(numOfStdNotationLines);
-    }
-
-    int getStdNotationStaffSize() const
-    {
-        return getBottomStdNotationLine() - getTopStdNotationLine();
-    }
-
-    void calculateHeight()
-    {
-        height = stdNotationStaffAboveSpacing + stdNotationStaffBelowSpacing + tabStaffBelowSpacing + symbolSpacing +
-                 numOfStrings * tabLineSpacing + numOfStdNotationLines * stdNotationLineSpacing;
-    }
+    void calculateHeight();
 
     int getTabStaffOffset() const;
 };
