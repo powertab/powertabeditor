@@ -72,6 +72,8 @@ public:
         height = stdNotationStaffAboveSpacing + stdNotationStaffBelowSpacing + tabStaffBelowSpacing + symbolSpacing +
                  numOfStrings * tabLineSpacing + numOfStdNotationLines * stdNotationLineSpacing;
     }
+
+    int getTabStaffOffset() const;
 };
 
 #endif // STAFFDATA_H

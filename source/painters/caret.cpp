@@ -21,6 +21,8 @@ Caret::Caret(int tabLineSpacing)
     currentPositionIndex = 0;
     currentStringIndex = 0;
     currentSystemIndex = 0;
+    currentStaffIndex = 0;
+    currentStaffTopEdge = 0;
     inPlaybackMode = false;
 }
 
@@ -150,19 +152,20 @@ void Caret::updatePosition()
 {
     updateStaffInfo();
     setPos(currentSystem->GetPositionX(selectedPosition->GetPosition()),
-           currentStaffInfo.getTopTabLine());
+           currentSystem->GetStaffHeightOffset(currentStaffIndex, true) + currentStaffInfo.getTabStaffOffset()
+           );
     emit moved();
 }
 
 // Moves the caret either left or right
 bool Caret::moveCaretHorizontal(int offset)
 {
-    quint32 nextPosition = currentPositionIndex + offset;
+    const quint32 nextPosition = currentPositionIndex + offset;
     if (currentStaff->IsValidPositionIndex(0, nextPosition)) // check that the next position is valid
     {
-        selectedPosition = currentStaff->GetPosition(0, nextPosition);
-        updatePosition(); // redraw the caret
         currentPositionIndex = nextPosition;
+        moveToNewPosition();
+        updatePosition(); // redraw the caret
         return true;
     }
     return false;
@@ -188,19 +191,44 @@ void Caret::moveCaretToEnd()
     moveCaretHorizontal( currentStaff->GetPositionCount(0) - currentPositionIndex - 1 );
 }
 
-bool Caret::moveCaretSection(int offset)
+bool Caret::moveCaretStaff(int offset)
 {
-    quint32 nextSystem = currentSystemIndex + offset;
-    if (currentScore->IsValidSystemIndex(nextSystem))
-    {
-        currentSystem = currentScore->GetSystem(nextSystem);
-        currentStaff = currentSystem->GetStaff(0);
-        selectedPosition = currentStaff->GetPosition(0, 0);
-        selectedNote = 0;
+    const quint32 nextStaff = currentStaffIndex + offset;
 
+    if (currentSystem->IsValidStaffIndex(nextStaff))
+    {
+        currentStaffIndex = nextStaff;
         currentStringIndex = 0;
         currentPositionIndex = 0;
+
+        moveToNewPosition();
+        updatePosition();
+
+        return true;
+    }
+
+    return false;
+}
+
+void Caret::moveToNewPosition()
+{
+    currentSystem = currentScore->GetSystem(currentSystemIndex);
+    currentStaff = currentSystem->GetStaff(currentStaffIndex);
+    selectedPosition = currentStaff->GetPosition(0, currentPositionIndex);
+    selectedNote = 0;
+}
+
+bool Caret::moveCaretSection(int offset)
+{
+    const quint32 nextSystem = currentSystemIndex + offset;
+    if (currentScore->IsValidSystemIndex(nextSystem))
+    {
+        currentStringIndex = 0;
+        currentPositionIndex = 0;
+        currentStaffIndex = 0;
         currentSystemIndex = nextSystem;
+
+        moveToNewPosition();
 
         updatePosition();
         return true;

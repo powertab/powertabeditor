@@ -174,6 +174,14 @@ void PowerTabEditor::CreateActions()
     lastPositionAct = new QAction(tr("Move to &End"), this);
     lastPositionAct->setShortcuts(QKeySequence::MoveToEndOfLine);
     connect(lastPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToEnd()));
+
+    nextStaffAct = new QAction(tr("Next Staff"), this);
+    nextStaffAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Down));
+    connect(nextStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextStaff()));
+
+    prevStaffAct = new QAction(tr("Previous Staff"), this);
+    prevStaffAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
+    connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -211,6 +219,8 @@ void PowerTabEditor::CreateMenus()
     positionStaffMenu->addAction(nextStringAct);
     positionStaffMenu->addAction(prevStringAct);
     positionStaffMenu->addAction(lastPositionAct);
+    positionStaffMenu->addAction(nextStaffAct);
+    positionStaffMenu->addAction(prevStaffAct);
 }
 
 void PowerTabEditor::CreateTabArea()
@@ -420,4 +430,14 @@ bool PowerTabEditor::moveCaretToPrevSection()
 void PowerTabEditor::moveCaretToLastSection()
 {
     getCurrentScoreArea()->getCaret()->moveCaretToLastSection();
+}
+
+bool PowerTabEditor::moveCaretToNextStaff()
+{
+    return getCurrentScoreArea()->getCaret()->moveCaretStaff(1);;
+}
+
+bool PowerTabEditor::moveCaretToPrevStaff()
+{
+    return getCurrentScoreArea()->getCaret()->moveCaretStaff(-1);
 }

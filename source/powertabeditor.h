@@ -50,6 +50,9 @@ private slots:
     void moveCaretToStart();
     void moveCaretToEnd();
 
+    bool moveCaretToNextStaff();
+    bool moveCaretToPrevStaff();
+
     void moveCaretToFirstSection();
     bool moveCaretToNextSection();
     bool moveCaretToPrevSection();
@@ -86,6 +89,8 @@ private:
     QAction* lastPositionAct; // navigate to the last position in the staff
     QAction* nextStringAct; // navigate to the next string in the staff
     QAction* prevStringAct; // navigate to the previous string in the staff
+    QAction* nextStaffAct; // navigate to the next staff in the system
+    QAction* prevStaffAct; // navigate to the previous staff in the system
 
     PreferencesDialog* preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in

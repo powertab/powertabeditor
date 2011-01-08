@@ -260,16 +260,8 @@ public:
     // Operations
     int GetCumulativeInternalKeyAndTimeSignatureWidth(int position = -1) const;
 
-    void CalculateHeight()
-    {
-        int sum = 0;
-        for (uint32_t i=0; i < m_staffArray.size(); i++)
-        {
-            sum += m_staffArray.at(i)->GetHeight();
-        }
-
-        m_rect.SetHeight(sum);
-    }
+    void CalculateHeight();
+    uint32_t GetStaffHeightOffset(uint32_t staff, bool absolutePos = false);
 };
 
 #endif

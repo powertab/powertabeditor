@@ -14,3 +14,9 @@ StaffData::StaffData()
     positionWidth = 0;
     tabStaffBelowSpacing = 0;
 }
+
+// Calculates the offset of the tab staff from the top of the staff
+int StaffData::getTabStaffOffset() const
+{
+    return height - tabStaffBelowSpacing - getTabStaffSize();
+}

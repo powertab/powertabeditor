@@ -522,3 +522,36 @@ int System::GetCumulativeInternalKeyAndTimeSignatureWidth(int position) const
 
     return (returnValue);
 }
+
+// Calculate the height of the entire system
+void System::CalculateHeight()
+{
+    // get height offset to the top of the last staff
+    int sum = GetStaffHeightOffset(m_staffArray.size() - 1);
+
+    // add the height of the last staff
+    sum += m_staffArray.at(m_staffArray.size() - 1)->GetHeight();
+
+    m_rect.SetHeight(sum);
+}
+
+// Get the height offset of a staff from the top of the system
+// Optionally, can return the absolute position of the top of the staff
+uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos)
+{
+    CHECK_THAT(IsValidStaffIndex(staff), 0);
+
+    uint32_t offset = 0;
+
+    for (uint32_t i = 0; i < staff; i++)
+    {
+        offset += m_staffArray.at(i)->GetHeight();
+    }
+
+    if (absolutePos)
+    {
+        offset += GetRect().GetTop();
+    }
+
+    return offset;
+}
