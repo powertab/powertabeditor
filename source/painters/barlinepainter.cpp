@@ -66,7 +66,7 @@ QRectF BarlinePainter::boundingRect() const
     return QRectF(0,
                   0,
                   staffInfo.positionWidth,
-                  staffInfo.getTabLineHeight(staffInfo.numOfStrings) - staffInfo.getStdNotationLineHeight(1) );
+                  staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
 }
 
 void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
