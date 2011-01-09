@@ -41,6 +41,7 @@ protected:
     void RenderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position);
     void RenderBars(const StaffData& currentStaffInfo, System* system);
     void DrawTabClef(int x, StaffData& staffInfo);
+    void DrawChordText(System* system, const StaffData& currentStaffInfo);
 
 private:
     QGraphicsScene scene;

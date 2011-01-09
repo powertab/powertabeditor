@@ -12,6 +12,7 @@
 #include "painters/timesignaturepainter.h"
 #include "painters/clefpainter.h"
 #include "painters/stdnotationpainter.h"
+#include "painters/chordtextpainter.h"
 
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
@@ -101,6 +102,11 @@ void ScoreArea::RenderSystem(System* system, int lineSpacing)
         RenderBars(currentStaffInfo, system);
 
         DrawTabNotes(system, currentStaff, currentStaffInfo);
+
+        if (i == 0)
+        {
+            DrawChordText(system, currentStaffInfo);
+        }
 
         staffInformationList.insert(i, currentStaffInfo);
     }
@@ -237,12 +243,28 @@ void ScoreArea::DrawTabClef(int x, StaffData& staffInfo)
     scene.addItem(tabClef);
 }
 
+void ScoreArea::DrawChordText(System* system, const StaffData& currentStaffInfo)
+{
+    for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
+    {
+        ChordText* chordText = system->GetChordText(i);
+        Q_ASSERT(chordText != NULL);
+
+        const quint32 location = system->GetPositionX(chordText->GetPosition());
+
+        ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
+        CenterItem(chordTextPainter, location, location + currentStaffInfo.positionWidth,
+                   currentStaffInfo.topEdge + 12); // TODO - create an appropriate constant for the height offset
+        scene.addItem(chordTextPainter);
+    }
+}
+
 void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
     for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
     {
         Position* currentPosition = staff->GetPosition(0, i);
-        uint32_t location = system->GetPositionX(currentPosition->GetPosition());
+        const quint32 location = system->GetPositionX(currentPosition->GetPosition());
 
         // Find the guitar corresponding to the current staff
         Guitar* currentGuitar = NULL;
@@ -253,6 +275,8 @@ void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& curr
                 currentGuitar = document->GetGuitarScore()->GetGuitar(j);
             }
         }
+
+        Q_ASSERT(currentGuitar != NULL);
 
         StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, currentGuitar);
         CenterItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,

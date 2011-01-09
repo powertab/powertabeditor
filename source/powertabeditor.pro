@@ -78,7 +78,8 @@ SOURCES += main.cpp\
     painters/clefpainter.cpp \
     midiplayer.cpp \
     painters/stdnotationpainter.cpp \
-    actions/undomanager.cpp
+    actions/undomanager.cpp \
+    painters/chordtextpainter.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -141,7 +142,8 @@ HEADERS  += powertabeditor.h \
     painters/clefpainter.h \
     midiplayer.h \
     painters/stdnotationpainter.h \
-    actions/undomanager.h
+    actions/undomanager.h \
+    painters/chordtextpainter.h
 
 RESOURCES += \
     resources.qrc
