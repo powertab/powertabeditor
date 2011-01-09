@@ -29,6 +29,7 @@ protected:
     StaffData staffInfo;
     Position* position;
     Guitar* guitar;
+    static QFont musicFont;
 };
 
 #endif // STDNOTATIONPAINTER_H

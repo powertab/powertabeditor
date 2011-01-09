@@ -7,6 +7,8 @@
 #include <QPainter>
 #include <QFontMetricsF>
 
+QFont ClefPainter::font = MusicFont().getFont();
+
 ClefPainter::ClefPainter(const StaffData& staffData, Staff* staff) :
         staffInfo(staffData)
 {
@@ -39,8 +41,7 @@ void ClefPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 
 QRectF ClefPainter::boundingRect() const
 {
-    MusicFont musicFont;
-    QFontMetricsF fm(musicFont.getFont());
+    QFontMetricsF fm(font);
     return QRectF(0,
                   -10, // adjust for the extra height of treble clef above the staff
                   fm.width(MusicFont::TrebleClef),
@@ -53,7 +54,7 @@ void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(widget);
 
     MusicFont musicFont;
-    painter->setFont(musicFont.getFont());
+    painter->setFont(font);
 
     // draw the correct staff type
     if (staff->GetClef() == Staff::TREBLE_CLEF)

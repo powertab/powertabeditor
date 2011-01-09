@@ -23,6 +23,7 @@ protected:
 private:
     const StaffData& staffInfo;
     const KeySignature& keySignature;
+    static QFont musicFont;
     void adjustHeightOffset(QVector<double>& lst);
     void drawAccidentals(QVector<double>& positions, QChar accidental, QPainter* painter);
     void init();

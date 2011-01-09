@@ -43,6 +43,7 @@ public:
     void setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size = DEFAULT_FONT_SIZE);
     void setNumericText(QGraphicsSimpleTextItem* text, QString number, int size = DEFAULT_FONT_SIZE);
     QFont getFont();
+    const QFont& getFontRef();
 
 private:
     QFont musicNotationFont;

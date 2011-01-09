@@ -9,6 +9,8 @@
 #include <QPainter>
 #include <QVector>
 
+QFont KeySignaturePainter::musicFont = MusicFont().getFont();
+
 KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature) :
         staffInfo(staffInformation),
         keySignature(signature)
@@ -41,8 +43,7 @@ void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIte
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    MusicFont musicFont;
-    painter->setFont(musicFont.getFont());
+    painter->setFont(musicFont);
 
     // draw the appropriate accidentals
     if (keySignature.UsesFlats())

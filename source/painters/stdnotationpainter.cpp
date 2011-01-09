@@ -9,6 +9,8 @@
 #include "../musicfont.h"
 #include "staffdata.h"
 
+QFont StdNotationPainter::musicFont = MusicFont().getFont();
+
 StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar):
         staffInfo(staffInfo),
         position(position),
@@ -39,8 +41,7 @@ QRectF StdNotationPainter::boundingRect() const
 
 void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    MusicFont musicFont;
-    painter->setFont(musicFont.getFont());
+    painter->setFont(musicFont);
 
     if (position->IsRest())
     {

@@ -6,10 +6,11 @@
 
 #include "../powertabdocument/note.h"
 
+QFont TabNotePainter::tabFont = QFont("Liberation Sans");
+
 TabNotePainter::TabNotePainter(Note* notePtr)
 {
     note = notePtr;
-    tabFont = QFont("Liberation Sans");
     tabFont.setPixelSize(10); // needed for cross-platform consistency in font size
     tabFont.setStyleStrategy(QFont::PreferAntialias);
 }

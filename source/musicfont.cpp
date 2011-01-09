@@ -37,3 +37,8 @@ QFont MusicFont::getFont()
 {
     return musicNotationFont;
 }
+
+const QFont& MusicFont::getFontRef()
+{
+    return musicNotationFont;
+}

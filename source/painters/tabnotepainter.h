@@ -22,7 +22,7 @@ protected:
 
 private:
     Note* note;
-    QFont tabFont;
+    static QFont tabFont;
 };
 
 #endif // TABNOTEPAINTER_H

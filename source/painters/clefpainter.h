@@ -22,6 +22,7 @@ protected:
 private:
     const StaffData& staffInfo;
     Staff* staff;
+    static QFont font;
 };
 
 #endif // CLEFPAINTER_H
