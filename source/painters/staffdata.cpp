@@ -1,5 +1,9 @@
 #include "staffdata.h"
 
+#include "../powertabdocument/staff.h"
+
+const int StaffData::staffBorderSpacing = Staff::STAFF_BORDER_SPACING; // extra space around top and bottom of staves
+
 StaffData::StaffData()
 {
     height = 0;
@@ -18,14 +22,14 @@ StaffData::StaffData()
 // Calculates the offset of the tab staff from the top of the staff
 int StaffData::getTabStaffOffset() const
 {
-    return height - tabStaffBelowSpacing - getTabStaffSize();
+    return height - tabStaffBelowSpacing - staffBorderSpacing - getTabStaffSize();
 }
 
 // Updates the height of the staff
 void StaffData::calculateHeight()
 {
     height = stdNotationStaffAboveSpacing + stdNotationStaffBelowSpacing + tabStaffBelowSpacing + symbolSpacing +
-             getTabStaffSize() + getStdNotationStaffSize();
+             getTabStaffSize() + getStdNotationStaffSize() + 4 * staffBorderSpacing;
 }
 
 // Calculates the size of the standard notation staff
@@ -44,7 +48,7 @@ int StaffData::getTabStaffSize() const
 // Optionally can calculate absolute/relative position
 int StaffData::getTabLineHeight(int stringNum, bool absolutePos) const
 {
-    int offset = height - tabStaffBelowSpacing - (numOfStrings - stringNum) * tabLineSpacing;
+    int offset = height - tabStaffBelowSpacing - staffBorderSpacing - (numOfStrings - stringNum) * tabLineSpacing;
 
     if (absolutePos)
     {
@@ -70,7 +74,7 @@ int StaffData::getBottomTabLine(bool absolutePos) const
 // Optionally can calculate absolute/relative position
 int StaffData::getStdNotationLineHeight(int lineNumber, bool absolutePos) const
 {
-    int offset = stdNotationStaffAboveSpacing + (lineNumber - 1) * stdNotationLineSpacing;
+    int offset = stdNotationStaffAboveSpacing + staffBorderSpacing + (lineNumber - 1) * stdNotationLineSpacing;
 
     if (absolutePos)
     {

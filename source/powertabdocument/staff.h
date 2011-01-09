@@ -31,6 +31,7 @@ public:
     static const uint8_t DEFAULT_TABLATURE_STAFF_BELOW_SPACING;          ///< Default value for the tablature staff below spacing member variable
     static const uint8_t STD_NOTATION_LINE_SPACING;
     static const uint8_t STD_NOTATION_STAFF_TYPE;
+    static const uint8_t STAFF_BORDER_SPACING; // padding around top and bottom of staves
 
     // Clef Constants
     static const uint8_t TREBLE_CLEF;                                ///< Treble clef

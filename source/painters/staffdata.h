@@ -19,6 +19,7 @@ public:
     int symbolSpacing;
     int positionWidth;
     int tabStaffBelowSpacing;
+    static const int staffBorderSpacing;
 
     StaffData();
 
