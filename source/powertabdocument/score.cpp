@@ -217,7 +217,7 @@ void Score::UpdateToVer2Structure()
             for (auto i = range.first; i != range.second; ++i)
             {
                 guitarToStaffMap.erase(i->second->GetStaff());
-                std::cerr << "At Position: " << i->second->GetPosition() << std::endl;
+                //std::cerr << "At Position: " << i->second->GetPosition() << std::endl;
                 std::bitset<8> guitarBitmap(i->second->GetStaffGuitars());
                 for (uint8_t gtr = 0; gtr < 8; gtr++)
                 {

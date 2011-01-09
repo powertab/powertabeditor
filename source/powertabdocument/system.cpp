@@ -372,7 +372,7 @@ bool System::IsValidPosition(int position) const
 {
     //------Last Checked------//
     // - Aug 30, 2007
-    return ((position >= 0) && (position < GetPositionCount()));
+    return ((position >= 0) && (position <= GetPositionCount()));
 }
 
 /// Calculates the number of positions that will fit across the system based on
