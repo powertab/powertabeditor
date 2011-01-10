@@ -12,7 +12,8 @@ ChordTextPainter::ChordTextPainter(ChordText* chordText) :
 {
     displayFont.setPixelSize(10); // needed for cross-platform consistency in font size
     displayFont.setStyleStrategy(QFont::PreferAntialias);
-    displayText = "";
+
+    setDisplayText();
 }
 
 void ChordTextPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -36,7 +37,7 @@ void ChordTextPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 {
     painter->setFont(displayFont);
 
-    displayText = QString().fromStdString(chordText->GetText());
+    setDisplayText();
 
     painter->drawText(0, 0, displayText);
 }
