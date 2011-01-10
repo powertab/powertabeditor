@@ -169,6 +169,10 @@ public:
         return (m_chordTextArray[index]);
     }
 
+    int FindChordText(uint32_t position) const;
+    bool InsertChordText(ChordText* chordText, uint32_t index);
+    bool RemoveChordText(uint32_t index);
+
     // Rhythm Slash Functions
     /// Determines if a rhythm slash index is valid
     /// @param index rhythm slash index to validate

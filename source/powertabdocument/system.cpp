@@ -555,3 +555,40 @@ uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos)
 
     return offset;
 }
+
+// Searches for a ChordText object with the specified position
+// Returns the index of that object if found, and returns -1 otherwise
+int System::FindChordText(uint32_t position) const
+{
+    for (uint32_t i = 0; i < m_chordTextArray.size(); i++)
+    {
+        if (m_chordTextArray.at(i)->GetPosition() == position)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+// Inserts a ChordText object at the specified index
+// Returns true if the insertion succeeded
+bool System::InsertChordText(ChordText* chordText, uint32_t index)
+{
+    CHECK_THAT(index <= GetChordTextCount(), false);
+
+    m_chordTextArray.insert(m_chordTextArray.begin() + index, chordText);
+
+    return true;
+}
+
+// Removes a ChordText object at the specified index
+// Returns true if the removal succeeded
+// NOTE: this only removes the chord text pointer from the array, and does not call 'delete'
+bool System::RemoveChordText(uint32_t index)
+{
+    CHECK_THAT(IsValidChordTextIndex(index), false);
+
+    m_chordTextArray.erase(m_chordTextArray.begin() + index);
+    return true;
+}
