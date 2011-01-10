@@ -103,6 +103,7 @@ void PowerTabEditor::RefreshOnUndoRedo(int index)
 {
     Q_UNUSED(index);
     RefreshCurrentDocument();
+    connect(getCurrentScoreArea()->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
 }
 
 void PowerTabEditor::CreateActions()
@@ -188,6 +189,7 @@ void PowerTabEditor::CreateActions()
     // Text-related actions
     chordNameAct = new QAction(tr("Chord Name..."), this);
     chordNameAct->setShortcut(QKeySequence(Qt::Key_C));
+    chordNameAct->setCheckable(true);
     connect(chordNameAct, SIGNAL(triggered()), this, SLOT(editChordName()));
 }
 
@@ -293,6 +295,8 @@ void PowerTabEditor::OpenFile()
 
             undoManager->addNewUndoStack();
 
+            connect(score->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
+
             tabWidget->addTab(score, title);
 
             // add the guitars to a new mixer
@@ -308,6 +312,8 @@ void PowerTabEditor::OpenFile()
 
             // switch to the new document
             tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
+
+            updateActions();
         }
     }
 }
@@ -472,4 +478,23 @@ void PowerTabEditor::editChordName()
         undoManager->push(new RemoveChordText(caret->getCurrentSystem(), index));
     }
 
+}
+
+// Updates whether menu items are checked, etc, whenever the caret moves
+void PowerTabEditor::updateActions()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    const quint32 caretPosition = caret->getCurrentPositionIndex();
+
+    // Check for chord text
+    const int index = caret->getCurrentSystem()->FindChordText(caretPosition);
+
+    if (index == -1) // if not found
+    {
+        chordNameAct->setChecked(false);
+    }
+    else
+    {
+        chordNameAct->setChecked(true);
+    }
 }

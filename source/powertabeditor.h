@@ -37,6 +37,7 @@ private:
     void CreateTabArea();
 
 private slots:
+    void updateActions();
     void OpenFile();
     void OpenPreferences();
     void RefreshOnUndoRedo(int);
