@@ -58,6 +58,8 @@ private slots:
     bool moveCaretToPrevSection();
     void moveCaretToLastSection();
 
+    void editChordName();
+
 private:
     bool isPlaying;
 
@@ -91,6 +93,9 @@ private:
     QAction* prevStringAct; // navigate to the previous string in the staff
     QAction* nextStaffAct; // navigate to the next staff in the system
     QAction* prevStaffAct; // navigate to the previous staff in the system
+
+    QMenu* textMenu;
+    QAction* chordNameAct; // add/remove a chord name
 
     PreferencesDialog* preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in

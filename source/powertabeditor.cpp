@@ -26,6 +26,8 @@
 #include "midiplayer.h"
 #include "actions/undomanager.h"
 
+#include <actions/removechordtext.h>
+
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 UndoManager* PowerTabEditor::undoManager = NULL;
 QSplitter* PowerTabEditor::vertSplitter = NULL;
@@ -182,6 +184,11 @@ void PowerTabEditor::CreateActions()
     prevStaffAct = new QAction(tr("Previous Staff"), this);
     prevStaffAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
     connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
+
+    // Text-related actions
+    chordNameAct = new QAction(tr("Chord Name..."), this);
+    chordNameAct->setShortcut(QKeySequence(Qt::Key_C));
+    connect(chordNameAct, SIGNAL(triggered()), this, SLOT(editChordName()));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -221,6 +228,10 @@ void PowerTabEditor::CreateMenus()
     positionStaffMenu->addAction(lastPositionAct);
     positionStaffMenu->addAction(nextStaffAct);
     positionStaffMenu->addAction(prevStaffAct);
+
+    // Text Menu
+    textMenu = menuBar()->addMenu(tr("&Text"));
+    textMenu->addAction(chordNameAct);
 }
 
 void PowerTabEditor::CreateTabArea()
@@ -440,4 +451,25 @@ bool PowerTabEditor::moveCaretToNextStaff()
 bool PowerTabEditor::moveCaretToPrevStaff()
 {
     return getCurrentScoreArea()->getCaret()->moveCaretStaff(-1);
+}
+
+// If there is a chord name at the current position, remove it
+// If there is no chord name, show the dialog to add a chord name
+// Existing chord names are edited by clicking on the chord name
+void PowerTabEditor::editChordName()
+{
+    // Find if there is a chord name at the current position
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    const quint32 caretPosition = caret->getCurrentPositionIndex();
+    const int index = caret->getCurrentSystem()->FindChordText(caretPosition);
+
+    if (index == -1) // if not found, add a new chord name
+    {
+        // TODO - create dialog for adding chord names
+    }
+    else // if found, remove the chord name
+    {
+        undoManager->push(new RemoveChordText(caret->getCurrentSystem(), index));
+    }
+
 }

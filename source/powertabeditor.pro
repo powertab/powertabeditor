@@ -79,7 +79,8 @@ SOURCES += main.cpp\
     midiplayer.cpp \
     painters/stdnotationpainter.cpp \
     actions/undomanager.cpp \
-    painters/chordtextpainter.cpp
+    painters/chordtextpainter.cpp \
+    actions/removechordtext.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -143,7 +144,8 @@ HEADERS  += powertabeditor.h \
     midiplayer.h \
     painters/stdnotationpainter.h \
     actions/undomanager.h \
-    painters/chordtextpainter.h
+    painters/chordtextpainter.h \
+    actions/removechordtext.h
 
 RESOURCES += \
     resources.qrc
