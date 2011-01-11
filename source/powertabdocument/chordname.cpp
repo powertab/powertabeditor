@@ -11,6 +11,7 @@
 
 #include "chordname.h"
 
+#include <sstream>
 #include <math.h>                       // Needed for pow()
 #include "powertabfileheader.h"         // Needed for FILEVERSION constants
 
@@ -534,4 +535,44 @@ string ChordName::GetKeyText(bool getBassNote) const
         assert(variation == variationUp);
         return variationUpText[key];
     }
+}
+
+string ChordName::GetText() const
+{
+    std::stringstream text;
+
+    const bool hasBrackets = HasBrackets();
+
+    if (IsNoChord())
+    {
+        text << "N.C.";
+
+        // unless the chord name has brackets, we are done
+        if (!hasBrackets)
+        {
+            return text.str();
+        }
+    }
+
+    if (hasBrackets)
+    {
+        text << "(";
+    }
+
+    text << GetKeyText(false);
+
+    // if the tonic key and bass note are different, display the bass note
+    if (!TonicMatchesBassNote())
+    {
+        text << "/" << GetKeyText(true);
+    }
+
+    text << GetFormulaText();
+
+    if (hasBrackets)
+    {
+        text << ")";
+    }
+
+    return text.str();
 }

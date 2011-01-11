@@ -10,7 +10,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "chordtext.h"
-#include <sstream>
 
 // Default Constants
 const uint8_t ChordText::DEFAULT_POSITION = 0;
@@ -119,44 +118,4 @@ bool ChordText::Deserialize(PowerTabInputStream& stream, uint16_t version)
     CHECK_THAT(stream.CheckState(), false);
 
     return (stream.CheckState());
-}
-
-string ChordText::GetText() const
-{
-    std::stringstream text;
-
-    const bool hasBrackets = m_chordName.HasBrackets();
-
-    if (m_chordName.IsNoChord())
-    {
-        text << "N.C.";
-
-        // unless the chord name has brackets, we are done
-        if (!hasBrackets)
-        {
-            return text.str();
-        }
-    }
-
-    if (hasBrackets)
-    {
-        text << "(";
-    }
-
-    text << m_chordName.GetKeyText(false);
-
-    // if the tonic key and bass note are different, display the bass note
-    if (!m_chordName.TonicMatchesBassNote())
-    {
-        text << "/" << m_chordName.GetKeyText(true);
-    }
-
-    text << m_chordName.GetFormulaText();
-
-    if (hasBrackets)
-    {
-        text << ")";
-    }
-
-    return text.str();
 }

@@ -98,7 +98,7 @@ public:
     ChordName* GetChordNamePtr()
         {return (&m_chordName);}
 
-    string GetText() const;
+    inline string GetText() const { return m_chordName.GetText(); }
 };
 
 #endif

@@ -324,6 +324,8 @@ public:
     /// @return True if the type is being used, false if not
     bool IsTypeUsed() const
         {return (GetType() != typeNotUsed);}
+
+    string GetText() const;
 };
 
 #endif
