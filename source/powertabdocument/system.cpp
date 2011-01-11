@@ -560,6 +560,8 @@ uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos)
 // Returns the index of that object if found, and returns -1 otherwise
 int System::FindChordText(uint32_t position) const
 {
+    CHECK_THAT(IsValidPosition(position), -1);
+
     for (uint32_t i = 0; i < m_chordTextArray.size(); i++)
     {
         if (m_chordTextArray.at(i)->GetPosition() == position)

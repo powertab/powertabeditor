@@ -104,6 +104,7 @@ void PowerTabEditor::RefreshOnUndoRedo(int index)
     Q_UNUSED(index);
     RefreshCurrentDocument();
     connect(getCurrentScoreArea()->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
+    updateActions();
 }
 
 void PowerTabEditor::CreateActions()
@@ -467,15 +468,16 @@ void PowerTabEditor::editChordName()
     // Find if there is a chord name at the current position
     Caret* caret = getCurrentScoreArea()->getCaret();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
-    const int index = caret->getCurrentSystem()->FindChordText(caretPosition);
+    System* currentSystem = caret->getCurrentSystem();
 
-    if (index == -1) // if not found, add a new chord name
+    const int chordTextIndex = caret->getCurrentSystem()->FindChordText(caretPosition);
+    if (chordTextIndex == -1) // if not found, add a new chord name
     {
         // TODO - create dialog for adding chord names
     }
     else // if found, remove the chord name
     {
-        undoManager->push(new RemoveChordText(caret->getCurrentSystem(), index));
+        undoManager->push(new RemoveChordText(currentSystem, chordTextIndex));
     }
 
 }
@@ -485,16 +487,15 @@ void PowerTabEditor::updateActions()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
+    System* currentSystem = caret->getCurrentSystem();
 
     // Check for chord text
-    const int index = caret->getCurrentSystem()->FindChordText(caretPosition);
-
-    if (index == -1) // if not found
+    if (currentSystem->HasChordText(caretPosition))
     {
-        chordNameAct->setChecked(false);
+        chordNameAct->setChecked(true);
     }
     else
     {
-        chordNameAct->setChecked(true);
+        chordNameAct->setChecked(false);
     }
 }

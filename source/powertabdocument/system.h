@@ -169,6 +169,12 @@ public:
         return (m_chordTextArray[index]);
     }
 
+    // Returns true if a ChordText item exists at the given position
+    inline bool HasChordText(uint32_t position) const
+    {
+        return FindChordText(position) != -1;
+    }
+
     int FindChordText(uint32_t position) const;
     bool InsertChordText(ChordText* chordText, uint32_t index);
     bool RemoveChordText(uint32_t index);
