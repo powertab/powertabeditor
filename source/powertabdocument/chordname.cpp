@@ -326,7 +326,7 @@ string ChordName::GetFormulaText() const
         "maj",
         "m",
         "+",
-        "o",
+        string(1, 176), // degree symbol
         "5",
         "add",
         "sus2",
@@ -397,9 +397,9 @@ string ChordName::GetFormulaText() const
         chordAbbreviations[5] + "2", chordAbbreviations[5] + "4",
         chordAbbreviations[5] + "6", chordAbbreviations[5] + "9",
         chordAbbreviations[5] + "11", chordAbbreviations[9] + "13",
-        chordAbbreviations[8] + "11", chordAbbreviations[9] + "9",
-        chordAbbreviations[8] + "9", chordAbbreviations[9] + "5",
-        chordAbbreviations[8] + "5"
+        chordAbbreviations[2] + "11", chordAbbreviations[9] + "9",
+        chordAbbreviations[2] + "9", chordAbbreviations[9] + "5",
+        chordAbbreviations[2] + "5"
     };
 
     for (int j = 0; j < 13; j++)

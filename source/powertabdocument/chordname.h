@@ -281,7 +281,7 @@ public:
     /// @return True if the formula modification flag is set, false if not
     bool IsFormulaModificationFlagSet(uint16_t flag) const
         {return ((m_formulaModifications & flag) == flag);}
-protected:
+
     /// Sets a formula modifications flag
     /// @param flag Flag to set
     void SetFormulaModificationFlag(uint16_t flag)
