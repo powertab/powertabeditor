@@ -27,6 +27,9 @@
 #include "actions/undomanager.h"
 
 #include <actions/removechordtext.h>
+#include <actions/addchordtext.h>
+
+#include <dialogs/chordnamedialog.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 UndoManager* PowerTabEditor::undoManager = NULL;
@@ -473,7 +476,13 @@ void PowerTabEditor::editChordName()
     const int chordTextIndex = caret->getCurrentSystem()->FindChordText(caretPosition);
     if (chordTextIndex == -1) // if not found, add a new chord name
     {
-        // TODO - create dialog for adding chord names
+        ChordName chordName;
+        ChordNameDialog chordNameDialog(&chordName);
+        if (chordNameDialog.exec() == QDialog::Accepted)
+        {
+            ChordText* chordText = new ChordText(caretPosition, chordName);
+            undoManager->push(new AddChordText(currentSystem, chordText, chordTextIndex));
+        }
     }
     else // if found, remove the chord name
     {

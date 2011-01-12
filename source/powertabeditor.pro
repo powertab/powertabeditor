@@ -80,7 +80,9 @@ SOURCES += main.cpp\
     painters/stdnotationpainter.cpp \
     actions/undomanager.cpp \
     painters/chordtextpainter.cpp \
-    actions/removechordtext.cpp
+    actions/removechordtext.cpp \
+    dialogs/chordnamedialog.cpp \
+    actions/addchordtext.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -145,7 +147,9 @@ HEADERS  += powertabeditor.h \
     painters/stdnotationpainter.h \
     actions/undomanager.h \
     painters/chordtextpainter.h \
-    actions/removechordtext.h
+    actions/removechordtext.h \
+    dialogs/chordnamedialog.h \
+    actions/addchordtext.h
 
 RESOURCES += \
     resources.qrc
