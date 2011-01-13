@@ -473,9 +473,10 @@ void PowerTabEditor::editChordName()
     const quint32 caretPosition = caret->getCurrentPositionIndex();
     System* currentSystem = caret->getCurrentSystem();
 
-    const int chordTextIndex = caret->getCurrentSystem()->FindChordText(caretPosition);
+    int chordTextIndex = caret->getCurrentSystem()->FindChordText(caretPosition);
     if (chordTextIndex == -1) // if not found, add a new chord name
     {
+        chordTextIndex = 0;
         ChordName chordName;
         ChordNameDialog chordNameDialog(&chordName);
         if (chordNameDialog.exec() == QDialog::Accepted)
