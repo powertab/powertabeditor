@@ -254,7 +254,7 @@ void ScoreArea::DrawChordText(System* system, const StaffData& currentStaffInfo)
 
         ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
         CenterItem(chordTextPainter, location, location + currentStaffInfo.positionWidth,
-                   currentStaffInfo.topEdge + 12); // TODO - create an appropriate constant for the height offset
+                   currentStaffInfo.topEdge + System::CHORD_TEXT_SPACING); // TODO - create an appropriate constant for the height offset
         scene.addItem(chordTextPainter);
     }
 }

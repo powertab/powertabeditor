@@ -29,6 +29,7 @@ public:
     static const uint8_t DEFAULT_RHYTHM_SLASH_SPACING_ABOVE;
     static const uint8_t DEFAULT_RHYTHM_SLASH_SPACING_BELOW;
     static const uint8_t DEFAULT_EXTRA_SPACING;
+    static const uint8_t CHORD_TEXT_SPACING;
 
     // Position Spacing Constants
     static const uint8_t MIN_POSITION_SPACING;

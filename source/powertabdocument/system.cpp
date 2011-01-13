@@ -20,6 +20,7 @@ const uint8_t System::DEFAULT_POSITION_SPACING                       = 20;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_ABOVE             = 0;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_BELOW             = 0;
 const uint8_t System::DEFAULT_EXTRA_SPACING                          = 0;
+const uint8_t System::CHORD_TEXT_SPACING                             = 12;
 
 // Position Spacing Constants
 const uint8_t System::MIN_POSITION_SPACING                           = 3;
