@@ -1,8 +1,8 @@
 #include "keysignaturepainter.h"
 
 #include "staffdata.h"
-#include "../powertabdocument/keysignature.h"
-#include "../musicfont.h"
+#include <powertabdocument/keysignature.h>
+#include <musicfont.h>
 
 #include <QMessageBox> // temporary
 #include <QFont>

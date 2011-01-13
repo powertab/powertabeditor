@@ -15,21 +15,24 @@
 #include <QScrollArea>
 #include <QStackedWidget>
 
-#include "powertabeditor.h"
-#include "scorearea.h"
-#include "painters/caret.h"
-#include "skinmanager.h"
-#include "dialogs/preferencesdialog.h"
-#include "powertabdocument/powertabdocument.h"
-#include "widgets/mixer/mixer.h"
-#include "widgets/toolbox/toolbox.h"
-#include "midiplayer.h"
-#include "actions/undomanager.h"
+#include <powertabeditor.h>
+#include <scorearea.h>
+#include <skinmanager.h>
+#include <midiplayer.h>
 
+#include <dialogs/preferencesdialog.h>
+#include <dialogs/chordnamedialog.h>
+
+#include <powertabdocument/powertabdocument.h>
+
+#include <widgets/mixer/mixer.h>
+#include <widgets/toolbox/toolbox.h>
+
+#include <painters/caret.h>
+
+#include <actions/undomanager.h>
 #include <actions/removechordtext.h>
 #include <actions/addchordtext.h>
-
-#include <dialogs/chordnamedialog.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 UndoManager* PowerTabEditor::undoManager = NULL;

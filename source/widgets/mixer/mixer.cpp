@@ -2,7 +2,7 @@
 
 #include <QVBoxLayout>
 
-#include "../../skinmanager.h"
+#include <skinmanager.h>
 #include "mixerinstrument.h"
 
 Mixer::Mixer(QFrame *parent, SkinManager *skinManager) :

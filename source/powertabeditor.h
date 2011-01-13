@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 
-#include "documentmanager.h"
-#include "actions/undomanager.h"
+#include <documentmanager.h>
+#include <actions/undomanager.h>
 
 class QTabWidget;
 class ScoreArea;

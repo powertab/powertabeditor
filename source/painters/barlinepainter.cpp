@@ -4,8 +4,8 @@
 #include <QPen>
 #include <QStringBuilder>
 
-#include "../dialogs/barlinedialog.h"
-#include "../powertabdocument/barline.h"
+#include <dialogs/barlinedialog.h>
+#include <powertabdocument/barline.h>
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 

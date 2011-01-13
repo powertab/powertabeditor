@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QFontMetricsF>
 
-#include "../powertabdocument/chordtext.h"
+#include <powertabdocument/chordtext.h>
 
 QFont ChordTextPainter::displayFont = QFont("Liberation Sans");
 

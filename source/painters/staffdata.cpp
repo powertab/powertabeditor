@@ -1,6 +1,6 @@
 #include "staffdata.h"
 
-#include "../powertabdocument/staff.h"
+#include <powertabdocument/staff.h>
 
 const int StaffData::staffBorderSpacing = Staff::STAFF_BORDER_SPACING; // extra space around top and bottom of staves
 

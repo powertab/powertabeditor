@@ -4,9 +4,9 @@
 #include <QTimer>
 #include <QSignalMapper>
 
-#include "painters/caret.h"
-#include "powertabdocument/score.h"
-#include "powertabdocument/guitar.h"
+#include <painters/caret.h>
+#include <powertabdocument/score.h>
+#include <powertabdocument/guitar.h>
 
 MidiPlayer::MidiPlayer(Caret* caret)
 {

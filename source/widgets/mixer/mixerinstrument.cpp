@@ -7,8 +7,8 @@
 #include <QDial>
 #include <QComboBox>
 
-#include "../../powertabdocument/guitar.h"
-#include "../../powertabdocument/generalmidi.h"
+#include <powertabdocument/guitar.h>
+#include <powertabdocument/generalmidi.h>
 
 MixerInstrument::MixerInstrument(Guitar* instrument, QWidget *parent) :
     QWidget(parent),

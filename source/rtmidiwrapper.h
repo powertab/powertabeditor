@@ -1,7 +1,7 @@
 #ifndef RTMIDIWRAPPER_H
 #define RTMIDIWRAPPER_H
 
-#include "rtmidi/rtmidi.h"
+#include <rtmidi/rtmidi.h>
 
 class RtMidiWrapper
 {

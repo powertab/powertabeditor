@@ -3,10 +3,10 @@
 #include <QPainter>
 #include <cmath>
 
-#include "../powertabdocument/position.h"
-#include "../powertabdocument/guitar.h"
-#include "../powertabdocument/generalmidi.h"
-#include "../musicfont.h"
+#include <powertabdocument/position.h>
+#include <powertabdocument/guitar.h>
+#include <powertabdocument/generalmidi.h>
+#include <musicfont.h>
 #include "staffdata.h"
 
 QFont StdNotationPainter::musicFont = MusicFont().getFont();

@@ -3,11 +3,11 @@
 #include <QPainter>
 #include <QVector>
 
-#include "../powertabdocument/score.h"
-#include "../powertabdocument/system.h"
-#include "../powertabdocument/staff.h"
-#include "../powertabdocument/note.h"
-#include "../powertabdocument/position.h"
+#include <powertabdocument/score.h>
+#include <powertabdocument/system.h>
+#include <powertabdocument/staff.h>
+#include <powertabdocument/note.h>
+#include <powertabdocument/position.h>
 
 Caret::Caret(int tabLineSpacing)
 {

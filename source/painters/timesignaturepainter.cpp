@@ -1,8 +1,8 @@
 #include "timesignaturepainter.h"
 
 #include "staffdata.h"
-#include "../powertabdocument/timesignature.h"
-#include "../musicfont.h"
+#include <powertabdocument/timesignature.h>
+#include <musicfont.h>
 
 #include <QMessageBox>
 #include <QFont>

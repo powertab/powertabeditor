@@ -1,7 +1,7 @@
 #include "barlinedialog.h"
-#include "../powertabeditor.h"
-#include "../actions/changebarlinetype.h"
-#include "../powertabdocument/barline.h"
+#include <powertabeditor.h>
+#include <actions/changebarlinetype.h>
+#include <powertabdocument/barline.h>
 
 #include <QDialogButtonBox>
 #include <QVBoxLayout>

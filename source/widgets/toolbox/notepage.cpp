@@ -5,7 +5,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include "../../skinmanager.h"
+#include <skinmanager.h>
 
 void NotePage::createNoteButtons()
 {

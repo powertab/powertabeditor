@@ -4,7 +4,7 @@
 #include <QMessageBox>
 #include <QFontMetricsF>
 
-#include "../powertabdocument/note.h"
+#include <powertabdocument/note.h>
 
 QFont TabNotePainter::tabFont = QFont("Liberation Sans");
 

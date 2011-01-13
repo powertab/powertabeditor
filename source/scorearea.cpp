@@ -3,16 +3,16 @@
 #include <QGraphicsPathItem>
 #include <QDebug>
 
-#include "painters/staffdata.h"
-#include "painters/barlinepainter.h"
-#include "painters/tabnotepainter.h"
-#include "powertabdocument/powertabdocument.h"
-#include "painters/caret.h"
-#include "painters/keysignaturepainter.h"
-#include "painters/timesignaturepainter.h"
-#include "painters/clefpainter.h"
-#include "painters/stdnotationpainter.h"
-#include "painters/chordtextpainter.h"
+#include <powertabdocument/powertabdocument.h>
+#include <painters/staffdata.h>
+#include <painters/barlinepainter.h>
+#include <painters/tabnotepainter.h>
+#include <painters/caret.h>
+#include <painters/keysignaturepainter.h>
+#include <painters/timesignaturepainter.h>
+#include <painters/clefpainter.h>
+#include <painters/stdnotationpainter.h>
+#include <painters/chordtextpainter.h>
 
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)

@@ -1,7 +1,7 @@
 #ifndef MIDIPLAYER_H
 #define MIDIPLAYER_H
 
-#include "rtmidiwrapper.h"
+#include <rtmidiwrapper.h>
 
 #include <QObject>
 #include <QMap>

@@ -1,6 +1,6 @@
 #include "changebarlinetype.h"
 
-#include "../powertabdocument/barline.h"
+#include <powertabdocument/barline.h>
 
 ChangeBarLineType::ChangeBarLineType(Barline* bar, quint8 barType, quint8 repeats)
 {

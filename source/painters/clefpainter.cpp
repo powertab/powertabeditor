@@ -1,8 +1,8 @@
 #include "clefpainter.h"
 
 #include "staffdata.h"
-#include "../powertabdocument/staff.h"
-#include "../musicfont.h"
+#include <powertabdocument/staff.h>
+#include <musicfont.h>
 
 #include <QPainter>
 #include <QFontMetricsF>

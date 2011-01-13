@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <QString>
 
-#include "powertabdocument/powertabdocument.h"
+#include <powertabdocument/powertabdocument.h>
 
 DocumentManager::DocumentManager()
 {
