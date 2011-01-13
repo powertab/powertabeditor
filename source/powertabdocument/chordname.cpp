@@ -561,13 +561,13 @@ string ChordName::GetText() const
 
     text << GetKeyText(false);
 
+    text << GetFormulaText();
+
     // if the tonic key and bass note are different, display the bass note
     if (!TonicMatchesBassNote())
     {
         text << "/" << GetKeyText(true);
     }
-
-    text << GetFormulaText();
 
     if (hasBrackets)
     {
