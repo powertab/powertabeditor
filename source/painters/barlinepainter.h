@@ -20,6 +20,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     void init();
+    void drawVerticalLines(QPainter* painter, double x);
 
 private:
     StaffData staffInfo;

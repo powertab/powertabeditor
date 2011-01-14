@@ -144,11 +144,11 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
     if (system->GetStartBarConstRef().IsBar()) // for normal bars, display a line at the far left edge
     {
         firstBarLine->setPos(system->GetRect().GetLeft() - firstBarLine->boundingRect().width() / 2 - 0.5,
-                             currentStaffInfo.getTopStdNotationLine());
+                             currentStaffInfo.topEdge);
     }
     else // otherwise, display the bar after the clef, etc, and to the left of the first note
     {
-        firstBarLine->setPos(system->GetFirstPositionX() - currentStaffInfo.positionWidth, currentStaffInfo.getTopStdNotationLine());
+        firstBarLine->setPos(system->GetFirstPositionX() - currentStaffInfo.positionWidth, currentStaffInfo.topEdge);
     }
     scene.addItem(firstBarLine);
 
@@ -176,7 +176,7 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
         Barline *barLine = system->GetBarline(i);
         double x = system->GetPositionX(barLine->GetPosition());
         BarlinePainter *barLinePainter = new BarlinePainter(currentStaffInfo, barLine);
-        barLinePainter->setPos(x, currentStaffInfo.getTopStdNotationLine());
+        barLinePainter->setPos(x, currentStaffInfo.topEdge);
         scene.addItem(barLinePainter);
 
         const KeySignature& keySig = barLine->GetKeySignatureConstRef();
@@ -197,7 +197,7 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
     }
 
     BarlinePainter *lastBarLine = new BarlinePainter(currentStaffInfo, &system->GetEndBarRef());
-    lastBarLine->setPos(system->GetRect().GetRight() - lastBarLine->boundingRect().width() / 2, currentStaffInfo.getTopStdNotationLine());
+    lastBarLine->setPos(system->GetRect().GetRight() - lastBarLine->boundingRect().width() / 2, currentStaffInfo.topEdge);
     if (system->GetEndBarRef().IsRepeatEnd())
     {// bit of a positioning hack
         lastBarLine->setPos(lastBarLine->pos().x() - 6, lastBarLine->pos().y());

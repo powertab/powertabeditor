@@ -66,7 +66,7 @@ QRectF BarlinePainter::boundingRect() const
     return QRectF(0,
                   0,
                   staffInfo.positionWidth,
-                  staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
+                  staffInfo.height);
 }
 
 void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -92,19 +92,11 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setFont(repeatFont);
 
         const QString message = QString().setNum(barLine->GetRepeatCount()) % "x";
-        painter->drawText(3, -3, message);
+        painter->drawText(3, staffInfo.getTopStdNotationLine(false) - 3, message);
     }
 
-    QVector<QLine> lines(2);
-
     // draw a single bar line
-    lines[0] = QLine(x, 1,
-                     x, staffInfo.getStdNotationStaffSize());
-    // we are drawing relative to the top of the standard notation staff
-    lines[1] = QLine(x, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine() + 1,
-                     x, staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
-
-    painter->drawLines(lines);
+    drawVerticalLines(painter, x);
 
     // draw a second line depending on the bar type
     if (barLine->IsDoubleBar() || barLine->IsDoubleBarFine() || barLine->IsRepeatEnd() || barLine->IsRepeatStart())
@@ -115,20 +107,14 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         }
 
         // draw the second barline with an offset of the specified width
-        lines[0] = QLine (x + width, 1,
-                          x + width, staffInfo.getStdNotationStaffSize());
-        // we are drawing relative to the top of the standard notation staff
-        lines[1] = QLine (x + width, staffInfo.getTopTabLine() - staffInfo.getTopStdNotationLine() + 1,
-                          x + width, staffInfo.getBottomTabLine() - staffInfo.getTopStdNotationLine());
-
-        painter->drawLines(lines);
+        drawVerticalLines(painter, x + width);
     }
 
     // draw the dots for repeats
     if (barLine->IsRepeatEnd() || barLine->IsRepeatStart())
     {
         painter->setPen(QPen(Qt::black, 0.75));
-        const double radius = 1.2;
+        const double radius = 1.0;
 
         double height = 0, centre = 0;
 
@@ -136,10 +122,11 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         {
             centre = (int)(staffInfo.numOfStdNotationLines / 2) + 1;
         }
-        height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre + 1)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
-        height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre - 1)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
+
+        height = (staffInfo.getStdNotationLineHeight(centre, false) + staffInfo.getStdNotationLineHeight(centre + 1, false)) / 2 + 0.5;
+        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
+        height = (staffInfo.getStdNotationLineHeight(centre, false) + staffInfo.getStdNotationLineHeight(centre - 1, false)) / 2 + 0.5;
+        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
 
         centre = height = 0;
         if (staffInfo.numOfStrings % 2 != 0)
@@ -151,11 +138,23 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
             centre = staffInfo.numOfStrings / 2;
         }
 
-        height = (staffInfo.getTabLineHeight(centre + 1) + staffInfo.getTabLineHeight(centre + 2)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
-        height = (staffInfo.getTabLineHeight(centre) + staffInfo.getTabLineHeight(centre - 1)) / 2 + 0.5;
-        painter->drawEllipse(QPointF((double)(x - 1.5*width), (double)(height - (staffInfo.getTopStdNotationLine()))), radius, radius);
+        height = (staffInfo.getTabLineHeight(centre + 1, false) + staffInfo.getTabLineHeight(centre + 2, false)) / 2 + 0.5;
+        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
+        height = (staffInfo.getTabLineHeight(centre, false) + staffInfo.getTabLineHeight(centre - 1, false)) / 2 + 0.5;
+        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
     }
 
 }
 
+void BarlinePainter::drawVerticalLines(QPainter* painter, double x)
+{
+    QVector<QLine> lines(2);
+
+    // draw a single bar line
+    lines[0] = QLine(x, staffInfo.getTopStdNotationLine(false) + 1,
+                     x, staffInfo.getBottomStdNotationLine(false));
+    lines[1] = QLine(x, staffInfo.getTopTabLine(false) + 1,
+                     x, staffInfo.getBottomTabLine(false));
+
+    painter->drawLines(lines);
+}
