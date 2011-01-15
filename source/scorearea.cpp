@@ -109,6 +109,7 @@ void ScoreArea::RenderSystem(System* system, int lineSpacing)
         }
 
         drawLegato(system, currentStaff, currentStaffInfo);
+        drawSlides(system, currentStaff, currentStaffInfo);
 
         staffInformationList.insert(i, currentStaffInfo);
     }
@@ -212,6 +213,50 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
 
 }
 
+void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo)
+{
+    const int voice = 0;
+    for (int string = 0; string < staff->GetTablatureStaffType(); string++)
+    {
+        for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
+        {
+            Position* position = staff->GetPosition(voice, j);
+            Note* note = position->GetNoteByString(string);
+
+            if (note == NULL)
+            {
+                continue;
+            }
+
+            if (note->HasShiftSlide() || note->HasLegatoSlide())
+            {
+                Position* nextPosition = staff->GetPosition(voice, j + 1);
+                Note* nextNote = nextPosition->GetNoteByString(string);
+
+                const double leftPos = system->GetPositionX(position->GetPosition());
+                const double width = system->GetPositionX(nextPosition->GetPosition()) - leftPos;
+                double height = 5;
+                double y = (currentStaffInfo.getTabLineHeight(string + 1, true) + currentStaffInfo.getTabLineHeight(string, true)) / 2;
+
+                if (nextNote->GetFretNumber() > note->GetFretNumber())
+                {
+                    height = -height;
+                    y += currentStaffInfo.tabLineSpacing + 1;
+                }
+
+                QPainterPath path;
+                path.lineTo(width - currentStaffInfo.positionWidth / 2, height);
+
+                QGraphicsPathItem *line = new QGraphicsPathItem(path);
+                line->setPos(leftPos + system->GetPositionSpacing() / 1.5 + 1, y + height / 2);
+                scene.addItem(line);
+
+                drawComplexSymbolText(staff, currentStaffInfo, note, leftPos);
+            }
+        }
+    }
+}
+
 void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
     const int voice = 0;
@@ -236,7 +281,10 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
                     startPos = currentPosition;
                 }
 
-                drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
+                if (!note->HasLegatoSlide()) // this is done during the drawSlides() function
+                {
+                    drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
+                }
             }
             else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
             {

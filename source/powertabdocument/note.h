@@ -429,7 +429,12 @@ public:
     bool HasSlide() const
         {return (HasSlideInto() || HasSlideOutOf());}
 
-    bool HasLegatoSlide() const;
+protected:
+    bool HasSlideOutType(uint8_t slideType) const;
+
+public:
+    inline bool HasLegatoSlide() const { return HasSlideOutType(slideOutOfLegatoSlide); };
+    inline bool HasShiftSlide() const { return HasSlideOutType(slideOutOfShiftSlide); };
 
 // Slide Into Functions
     /// Determines if a slide into type is valid

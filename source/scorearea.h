@@ -45,6 +45,7 @@ protected:
     void DrawChordText(System* system, const StaffData& currentStaffInfo);
     void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x);
+    void drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo);
 
 private:
     QGraphicsScene scene;
