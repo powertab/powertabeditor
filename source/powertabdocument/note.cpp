@@ -371,6 +371,20 @@ bool Note::GetSlideInto(uint8_t& type) const
     return (true);
 }
 
+/// Determines if the note has a legato slide (in or out)
+/// @return True if the note has a legato slide, false if not
+bool Note::HasLegatoSlide() const
+{
+    uint8_t type = 0;
+    int8_t steps = 0;
+
+    if (!GetSlideOutOf(type, steps))
+    {
+        return false;
+    }
+    return type == slideOutOfLegatoSlide;
+}
+
 /// Determines if the note has a slide into
 /// @return True if the note has a slide into, false if not
 bool Note::HasSlideInto() const

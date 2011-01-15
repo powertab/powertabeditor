@@ -429,6 +429,8 @@ public:
     bool HasSlide() const
         {return (HasSlideInto() || HasSlideOutOf());}
 
+    bool HasLegatoSlide() const;
+
 // Slide Into Functions
     /// Determines if a slide into type is valid
     /// @param type Type to validate

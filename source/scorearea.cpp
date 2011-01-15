@@ -228,7 +228,7 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
                 startPos = -1;
                 continue;
             }
-            if (note->HasHammerOn() || note->HasPullOff())
+            if (note->HasHammerOn() || note->HasPullOff() || note->HasLegatoSlide())
             {
                 const int currentPosition = position->GetPosition();
                 if (startPos == -1) // set the start position of an arc
@@ -369,6 +369,9 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
 {
     QString text;
 
+    QFont displayFont("Liberation Sans");
+    displayFont.setPixelSize(10);
+
     int y = currentStaffInfo.getBottomTabLine() + 2;
 
     // for hammerons and pulloffs, we need to push the text further down to avoid overlap with the arc
@@ -386,9 +389,11 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
     {
         text = "P";
     }
-
-    QFont displayFont("Liberation Sans");
-    displayFont.setPixelSize(10);
+    else if (note->HasSlide())
+    {
+        text = "sl.";
+        displayFont.setItalic(true);
+    }
 
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(displayFont);
