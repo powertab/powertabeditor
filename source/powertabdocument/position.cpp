@@ -784,3 +784,31 @@ void Position::ClearComplexSymbolArrayContents()
     for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
         m_complexSymbolArray[i] = notUsed;
 }
+
+// functor for the GetNoteByString function
+// using c++0x lambdas would be nice, but mingw doesn't seem to like them ...
+struct NoteComparison
+{
+    uint8_t string;
+
+    bool operator()(Note* note)
+    {
+        return note->GetString() == string;
+    }
+};
+
+Note* Position::GetNoteByString(uint8_t string) const
+{
+    NoteComparison compare;
+    compare.string = string;
+
+    auto note = std::find_if(m_noteArray.begin(), m_noteArray.end(), compare);
+    if (note == m_noteArray.end())
+    {
+        return NULL;
+    }
+    else
+    {
+        return *note;
+    }
+}

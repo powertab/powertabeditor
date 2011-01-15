@@ -40,8 +40,9 @@ protected:
     void DrawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void RenderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position);
     void RenderBars(const StaffData& currentStaffInfo, System* system);
-    void DrawTabClef(int x, StaffData& staffInfo);
+    void DrawTabClef(int x, const StaffData& staffInfo);
     void DrawChordText(System* system, const StaffData& currentStaffInfo);
+    void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
 
 private:
     QGraphicsScene scene;

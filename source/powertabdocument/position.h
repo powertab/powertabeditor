@@ -813,6 +813,8 @@ public:
         CHECK_THAT(IsValidNoteIndex(index), NULL);
         return (m_noteArray[index]);
     }
+
+    Note* GetNoteByString(uint8_t string) const;
 };
 
 #endif

@@ -108,6 +108,8 @@ void ScoreArea::RenderSystem(System* system, int lineSpacing)
             DrawChordText(system, currentStaffInfo);
         }
 
+        drawLegato(system, currentStaff, currentStaffInfo);
+
         staffInformationList.insert(i, currentStaffInfo);
     }
 }
@@ -210,6 +212,57 @@ void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
 
 }
 
+void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo)
+{
+    const int voice = 0;
+    for (int string = 0; string < staff->GetTablatureStaffType(); string++)
+    {
+        int startPos = -1;
+        for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
+        {
+            Position* position = staff->GetPosition(voice, j);
+            Note* note = position->GetNoteByString(string);
+
+            if (note == NULL)
+            {
+                startPos = -1;
+                continue;
+            }
+            if (note->HasHammerOn() || note->HasPullOff())
+            {
+                if (startPos == -1) // set the start position of an arc
+                {
+                    startPos = position->GetPosition();
+                }
+            }
+            else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
+            {
+                const double leftPos = system->GetPositionX(startPos);
+                const double width = system->GetPositionX(position->GetPosition()) - leftPos;
+                double height = 7.5;
+                double y = currentStaffInfo.getTabLineHeight(string, true) - 2;
+
+                if (string >= currentStaffInfo.numOfStrings / 2)
+                {
+                    // for notes on the bottom half of the staff, flip the arc and place it below the notes
+                    y += 2 * currentStaffInfo.tabLineSpacing + height / 2.5;
+                    height = -height;
+                }
+
+                QPainterPath path;
+                path.moveTo(width, height / 2);
+                path.arcTo(0, 0, width, height, 0, 180);
+
+                QGraphicsPathItem *arc = new QGraphicsPathItem(path);
+                arc->setPos(leftPos + system->GetPositionSpacing() / 2, y);
+                scene.addItem(arc);
+
+                startPos = -1;
+            }
+        }
+    }
+}
+
 void ScoreArea::DrawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines)
 {
     /*// Draw lines on each side of staff
@@ -234,7 +287,7 @@ void ScoreArea::DrawStaff(int leftEdge, int currentHeight, int lineSpacing, int 
     }
 }
 
-void ScoreArea::DrawTabClef(int x, StaffData& staffInfo)
+void ScoreArea::DrawTabClef(int x, const StaffData& staffInfo)
 {
     // Draw the tab clef
     QGraphicsSimpleTextItem* tabClef = new QGraphicsSimpleTextItem;
