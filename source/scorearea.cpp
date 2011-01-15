@@ -230,10 +230,13 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
             }
             if (note->HasHammerOn() || note->HasPullOff())
             {
+                const int currentPosition = position->GetPosition();
                 if (startPos == -1) // set the start position of an arc
                 {
-                    startPos = position->GetPosition();
+                    startPos = currentPosition;
                 }
+
+                drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
             }
             else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
             {
@@ -360,4 +363,35 @@ void ScoreArea::CenterItem(QGraphicsItem* item, float xmin, float xmax, float y)
 void ScoreArea::adjustScroll()
 {
     ensureVisible(caret, 50, 100);
+}
+
+void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x)
+{
+    QString text;
+
+    int y = currentStaffInfo.getBottomTabLine() + 2;
+
+    // for hammerons and pulloffs, we need to push the text further down to avoid overlap with the arc
+    if (note->GetString() == staff->GetTablatureStaffType() - 1)
+    {
+        y += 8;
+    }
+
+    // draw the appropriate text below the staff (i.e. 'H', 'P', etc)
+    if (note->HasHammerOn())
+    {
+        text = "H";
+    }
+    else if (note->HasPullOff())
+    {
+        text = "P";
+    }
+
+    QFont displayFont("Liberation Sans");
+    displayFont.setPixelSize(10);
+
+    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
+    textItem->setFont(displayFont);
+    CenterItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y); 
+    scene.addItem(textItem);
 }

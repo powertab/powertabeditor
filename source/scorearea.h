@@ -13,6 +13,7 @@ class Score;
 class PowerTabDocument;
 class TimeSignature;
 class Caret;
+class Note;
 
 // The visual display of the score
 
@@ -43,6 +44,7 @@ protected:
     void DrawTabClef(int x, const StaffData& staffInfo);
     void DrawChordText(System* system, const StaffData& currentStaffInfo);
     void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
+    void drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x);
 
 private:
     QGraphicsScene scene;
