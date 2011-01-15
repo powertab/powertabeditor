@@ -268,6 +268,8 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
             Position* position = staff->GetPosition(voice, j);
             Note* note = position->GetNoteByString(string);
 
+            const int currentPosition = position->GetPosition();
+
             if (note == NULL)
             {
                 startPos = -1;
@@ -275,7 +277,6 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
             }
             if (note->HasHammerOn() || note->HasPullOff() || note->HasLegatoSlide())
             {
-                const int currentPosition = position->GetPosition();
                 if (startPos == -1) // set the start position of an arc
                 {
                     startPos = currentPosition;
@@ -286,10 +287,11 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
                     drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
                 }
             }
+            
             else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
             {
                 const double leftPos = system->GetPositionX(startPos);
-                const double width = system->GetPositionX(position->GetPosition()) - leftPos;
+                const double width = system->GetPositionX(currentPosition) - leftPos;
                 double height = 7.5;
                 double y = currentStaffInfo.getTabLineHeight(string, true) - 2;
 
@@ -306,6 +308,22 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
 
                 QGraphicsPathItem *arc = new QGraphicsPathItem(path);
                 arc->setPos(leftPos + system->GetPositionSpacing() / 2, y);
+                scene.addItem(arc);
+
+                startPos = -1;
+            }
+
+            if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
+            {
+                drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
+
+                const double height = 10;
+                const double width = 6;
+                QPainterPath path;
+                path.moveTo(width, height / 2);
+                path.arcTo(0, 0, width, height, 0, 180);
+                QGraphicsPathItem *arc = new QGraphicsPathItem(path);
+                arc->setPos(system->GetPositionX(currentPosition) + 2, currentStaffInfo.getTabLineHeight(string, true) - 2);
                 scene.addItem(arc);
 
                 startPos = -1;
@@ -429,11 +447,11 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
     }
 
     // draw the appropriate text below the staff (i.e. 'H', 'P', etc)
-    if (note->HasHammerOn())
+    if (note->HasHammerOn() || note->HasHammerOnFromNowhere())
     {
         text = "H";
     }
-    else if (note->HasPullOff())
+    else if (note->HasPullOff() || note->HasPullOffToNowhere())
     {
         text = "P";
     }
@@ -445,6 +463,16 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
 
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(displayFont);
-    CenterItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y); 
+
+    // for these items, put the text directly under the note
+    if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
+    {
+        CenterItem(textItem, x, x + currentStaffInfo.positionWidth, y); 
+    }
+    // for these, put the text between this note and the next one
+    else
+    {
+        CenterItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y); 
+    }
     scene.addItem(textItem);
 }
