@@ -35,6 +35,8 @@ QRectF ChordTextPainter::boundingRect() const
 
 void ChordTextPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(widget);
+    Q_UNUSED(option);
     painter->setFont(displayFont);
 
     setDisplayText();

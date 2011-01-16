@@ -119,8 +119,8 @@ bool TimeSignature::Serialize(PowerTabOutputStream& stream)
 bool TimeSignature::Deserialize(PowerTabInputStream& stream,
 	uint16_t version)
 {
-	//------Last Checked------//
-	// - Apr 22, 2007
+	UNUSED(version);
+
 	stream >> m_data >> m_pulses;
 	return (stream.CheckState());
 }

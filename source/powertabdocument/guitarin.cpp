@@ -140,8 +140,8 @@ bool GuitarIn::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool GuitarIn::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Apr 22, 2007
+    UNUSED(version);
+
 	stream >> m_system >> m_staff >> m_position >> m_data;
 	CHECK_THAT(stream.CheckState(), false);
 	

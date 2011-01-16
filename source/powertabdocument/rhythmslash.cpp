@@ -133,8 +133,8 @@ bool RhythmSlash::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool RhythmSlash::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Apr 22, 2007
+	UNUSED(version);
+
 	stream >> m_position >> m_beaming >> m_data;
 	CHECK_THAT(stream.CheckState(), false);
 	return (stream.CheckState());

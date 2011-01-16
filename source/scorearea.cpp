@@ -287,7 +287,7 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
                     drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
                 }
             }
-            
+
             else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
             {
                 const double leftPos = system->GetPositionX(startPos);
@@ -443,7 +443,7 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
     int y = currentStaffInfo.getBottomTabLine() + 2;
 
     // for hammerons and pulloffs, we need to push the text further down to avoid overlap with the arc
-    if (note->GetString() == staff->GetTablatureStaffType() - 1)
+    if ((int)note->GetString() == (int)staff->GetTablatureStaffType() - 1)
     {
         y += 8;
     }
@@ -469,12 +469,12 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
     // for these items, put the text directly under the note
     if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
     {
-        centerItem(textItem, x, x + currentStaffInfo.positionWidth, y); 
+        centerItem(textItem, x, x + currentStaffInfo.positionWidth, y);
     }
     // for these, put the text between this note and the next one
     else
     {
-        centerItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y); 
+        centerItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y);
     }
     scene.addItem(textItem);
 }

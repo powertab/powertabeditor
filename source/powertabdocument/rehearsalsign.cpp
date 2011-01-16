@@ -107,8 +107,8 @@ bool RehearsalSign::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool RehearsalSign::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Apr 22, 2007
+	UNUSED(version);
+
 	stream >> m_letter;
 	CHECK_THAT(stream.CheckState(), false);
 	

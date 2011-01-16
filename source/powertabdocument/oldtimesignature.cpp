@@ -116,8 +116,8 @@ bool OldTimeSignature::operator!=(
 /// @return True if the object was deserialized, false if not
 bool OldTimeSignature::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Apr 22, 2007
+	UNUSED(version);
+
 	stream >> m_system >> m_position >> m_data;
 	CHECK_THAT(stream.CheckState(), false);
 	

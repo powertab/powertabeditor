@@ -3,7 +3,7 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/chordtext.h>
 
-AddChordText::AddChordText(System* system, ChordText* chordText, quint32 index, QObject *parent) :
+AddChordText::AddChordText(System* system, ChordText* chordText, quint32 index) :
     chordText(chordText),
     system(system),
     index(index)

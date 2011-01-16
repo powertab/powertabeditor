@@ -143,8 +143,8 @@ bool FontSetting::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool FontSetting::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Dec 5, 2004
+    UNUSED(version);
+
     stream.ReadMFCString(m_faceName);
     CHECK_THAT(stream.CheckState(), false);
     

@@ -165,8 +165,8 @@ bool Tuning::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool Tuning::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Apr 22, 2007
+	UNUSED(version);
+
 	stream.ReadMFCString(m_name);
 	CHECK_THAT(stream.CheckState(), false);
 	

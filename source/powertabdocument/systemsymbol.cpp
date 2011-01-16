@@ -122,8 +122,8 @@ bool SystemSymbol::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool SystemSymbol::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Apr 22, 2007
+    UNUSED(version);
+
     stream >> m_system >> m_position >> m_data;
     CHECK_THAT(stream.CheckState(), false);
     return (stream.CheckState());

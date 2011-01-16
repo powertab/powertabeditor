@@ -9,7 +9,7 @@ class System;
 class AddChordText : public QUndoCommand
 {
 public:
-    explicit AddChordText(System* system, ChordText* chordText, quint32 index, QObject *parent = 0);
+    AddChordText(System* system, ChordText* chordText, quint32 index);
     ~AddChordText();
     virtual void undo();
     virtual void redo();

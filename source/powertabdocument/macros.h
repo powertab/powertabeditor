@@ -55,6 +55,10 @@ using std::string;
 
 #endif
 
+// Useful macro for hiding "unused parameter" warnings
+#define UNUSED(x) (void)x;
+
+
 extern string ArabicToRoman(uint32_t number, bool upperCase);
 
 #endif
