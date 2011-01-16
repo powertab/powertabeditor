@@ -383,10 +383,12 @@ void ScoreArea::drawChordText(System* system, const StaffData& currentStaffInfo)
 
 void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
+    Barline* currentBarline = NULL;
     for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
     {
         Position* currentPosition = staff->GetPosition(0, i);
         const quint32 location = system->GetPositionX(currentPosition->GetPosition());
+        currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
 
         // Find the guitar corresponding to the current staff
         Guitar* currentGuitar = NULL;
@@ -400,7 +402,7 @@ void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& curr
 
         Q_ASSERT(currentGuitar != NULL);
 
-        StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, currentGuitar);
+        StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, currentGuitar, currentBarline->GetKeySignaturePtr());
         centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
                    currentStaffInfo.getTopStdNotationLine());
         scene.addItem(stdNotePainter);

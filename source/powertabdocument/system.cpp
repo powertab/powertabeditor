@@ -11,6 +11,7 @@
 
 #include "system.h"
 #include <cassert>
+#include <algorithm>
 
 #include "powertabfileheader.h"                     // Needed for file version constants
 
@@ -345,6 +346,34 @@ Barline* System::GetBarlineAtPosition(uint32_t position) const
 
     // Barline not found at position
     return (NULL);
+}
+
+// Comparison functor for barline positions
+struct CompareBarlineToPosition
+{
+    uint32_t position;
+    bool operator()(Barline* barline)
+    {
+        return barline->GetPosition() < position;
+    }
+};
+
+// Barline Array Functions
+/// Gets the barline preceding a given position
+/// @param position Position to get the preceding barline for
+/// @return A pointer to the barline preceding the position
+Barline* System::GetPrecedingBarline(uint32_t position) const
+{
+    if (m_barlineArray.empty() || position < m_barlineArray.at(0)->GetPosition())
+    {
+        return (Barline*)&m_startBar;
+    }
+
+    CompareBarlineToPosition compareToPosition;
+    compareToPosition.position = position;
+    auto barline = std::find_if(m_barlineArray.begin(), m_barlineArray.end(), compareToPosition);
+
+    return *barline;
 }
 
 /// Gets a list of barlines in the system

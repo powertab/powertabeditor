@@ -8,11 +8,12 @@ class Position;
 class Guitar;
 class QPainter;
 class Note;
+class KeySignature;
 
 class StdNotationPainter : public PainterBase
 {
 public:
-    StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar);
+    StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar, KeySignature* keySignature);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -29,6 +30,7 @@ protected:
     StaffData staffInfo;
     Position* position;
     Guitar* guitar;
+    KeySignature* keySignature;
     static QFont musicFont;
 };
 

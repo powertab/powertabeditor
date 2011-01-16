@@ -6,15 +6,17 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/generalmidi.h>
+#include <powertabdocument/keysignature.h>
 #include <musicfont.h>
 #include "staffdata.h"
 
 QFont StdNotationPainter::musicFont = MusicFont().getFont();
 
-StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar):
+StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar, KeySignature* keySignature):
         staffInfo(staffInfo),
         position(position),
-        guitar(guitar)
+        guitar(guitar),
+        keySignature(keySignature)
 {
 }
 
@@ -32,15 +34,14 @@ void StdNotationPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 
 QRectF StdNotationPainter::boundingRect() const
 {
-    const int height = staffInfo.getTopTabLine() - staffInfo.topEdge;
-    return QRectF(0,
-                  -(staffInfo.getTopStdNotationLine() - staffInfo.topEdge),
-                  10,
-                  height);
+    return QRectF(0, -staffInfo.getTopStdNotationLine(false), 10, staffInfo.getTopTabLine(false));
 }
 
 void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setFont(musicFont);
 
     if (position->IsRest())
@@ -69,8 +70,8 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
         Note* currentNote = position->GetNote(i);
         quint8 pitch = guitar->GetTuning().GetNote(currentNote->GetString()) + currentNote->GetFretNumber();
 
-         // assumes flats only for now, TODO - should check against key signature eventually
-        const QString noteText = QString::fromStdString(GetMidiNoteText(pitch, false));
+        const bool usesSharps = keySignature->UsesSharps() || keySignature->HasNoKeyAccidentals();
+        const QString noteText = QString::fromStdString(GetMidiNoteText(pitch, usesSharps));
 
         const int octaveDiff = getOctaveDiff(currentNote, pitch);
         const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
@@ -164,7 +165,7 @@ int StdNotationPainter::getDisplayPosition(const QString& noteName)
     switch(note)
     {
     case 'E': return 1;
-    case 'F': return 0;
+    case 'F': return noteName.length() == 1 ? 0 : 7; // special case, so that F# and Fb are not treated the same as F natural
     case 'G': return 6;
     case 'A': return 5;
     case 'B': return 4;

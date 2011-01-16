@@ -234,6 +234,7 @@ public:
         return (m_barlineArray[index]);
     }
     Barline* GetBarlineAtPosition(uint32_t position) const;
+    Barline* GetPrecedingBarline(uint32_t position) const;
     void GetBarlines(vector<Barline*>& barlineArray);
 
     // End Bar Functions
