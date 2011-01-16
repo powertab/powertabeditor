@@ -29,7 +29,7 @@ public:
 
     PowerTabDocument* document;
 
-    Caret* getCaret()
+    inline Caret* getCaret()
     {
         return caret;
     }

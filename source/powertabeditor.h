@@ -31,10 +31,11 @@ public:
     static Toolbox* toolBox;
     ScoreArea* getCurrentScoreArea();
 
-private:
+protected:
     void CreateActions();
     void CreateMenus();
     void CreateTabArea();
+    void updateScoreAreaActions(bool disable);
 
 private slots:
     void updateActions();

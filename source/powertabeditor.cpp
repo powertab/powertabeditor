@@ -257,6 +257,8 @@ void PowerTabEditor::CreateTabArea()
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
     connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(switchTab(int)));
+
+    updateScoreAreaActions(false);
 }
 
 // Open a new file
@@ -321,6 +323,12 @@ void PowerTabEditor::OpenFile()
             tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
 
             updateActions();
+
+             // if this is the first open document, enable score area actions
+            if (documentManager.getCurrentDocumentIndex() == 0)
+            {
+                updateScoreAreaActions(true);
+            }
         }
     }
 }
@@ -354,6 +362,11 @@ void PowerTabEditor::closeTab(int index)
     undoManager->setActiveStackIndex(currentIndex);
     mixerList->setCurrentIndex(currentIndex);
     documentManager.setCurrentDocumentIndex(currentIndex);
+
+    if (currentIndex == -1) // disable score-related actions if no documents are open
+    {
+        updateScoreAreaActions(false);
+    }
 }
 
 // When the tab is switched, switch the current document in the document manager
@@ -510,5 +523,23 @@ void PowerTabEditor::updateActions()
     else
     {
         chordNameAct->setChecked(false);
+    }
+}
+
+// Enables/disables actions that should only be available when a score is opened
+void PowerTabEditor::updateScoreAreaActions(bool enable)
+{
+    QList<QMenu*> menuList;
+    menuList << playbackMenu << positionMenu << textMenu;
+
+    QAction* action;
+    QMenu* menu;
+
+    foreach(menu, menuList)
+    {
+        foreach(action, menu->actions())
+        {
+            action->setEnabled(enable);
+        }
     }
 }
