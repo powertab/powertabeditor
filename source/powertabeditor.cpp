@@ -252,7 +252,7 @@ void PowerTabEditor::CreateTabArea()
 
     // creates a new document by default
     /*ScoreArea* score = new ScoreArea;
-    score->RenderDocument(documentManager.getCurrentDocument());
+    score->renderDocument(documentManager.getCurrentDocument());
     tabWidget->addTab(score, tr("Untitled"));*/
 
     connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
@@ -278,7 +278,7 @@ void PowerTabEditor::OpenFile()
         if (success)
         {
             ScoreArea* score = new ScoreArea;
-            score->RenderDocument(documentManager.getCurrentDocument());
+            score->renderDocument(documentManager.getCurrentDocument());
             QFileInfo fileInfo(fileName);
             // save this as the previous directory
             previousDirectory = fileInfo.absolutePath();
@@ -335,7 +335,7 @@ void PowerTabEditor::OpenPreferences()
 void PowerTabEditor::RefreshCurrentDocument()
 {
     ScoreArea* currentDoc = reinterpret_cast<ScoreArea *>(tabWidget->currentWidget());
-    currentDoc->RenderDocument();
+    currentDoc->renderDocument();
 }
 
 // Close a document and clean up

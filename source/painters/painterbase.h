@@ -22,7 +22,7 @@ protected:
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) = 0;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) = 0;
 
-    double CenterItem(double xmin, double xmax, double width)
+    double centerItem(double xmin, double xmax, double width)
     {
         return (xmin + ((xmax - (xmin + width)) / 2) + 1);
     }

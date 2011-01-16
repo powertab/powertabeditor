@@ -24,8 +24,8 @@ class ScoreArea : public QGraphicsView
 public:
     explicit ScoreArea(QWidget *parent = 0);
 
-    void RenderDocument(PowerTabDocument* doc);
-    void RenderDocument();
+    void renderDocument(PowerTabDocument* doc);
+    void renderDocument();
 
     PowerTabDocument* document;
 
@@ -35,22 +35,21 @@ public:
     }
 
 protected:
-    void RenderScore(Score* score, int lineSpacing);
-    void RenderSystem(System* system, int lineSpacing);
-    void DrawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines);
-    void DrawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo);
-    void RenderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position);
-    void RenderBars(const StaffData& currentStaffInfo, System* system);
-    void DrawTabClef(int x, const StaffData& staffInfo);
-    void DrawChordText(System* system, const StaffData& currentStaffInfo);
+    void renderScore(Score* score, int lineSpacing);
+    void renderSystem(System* system, int lineSpacing);
+    void drawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines);
+    void drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo);
+    void renderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position);
+    void renderBars(const StaffData& currentStaffInfo, System* system);
+    void drawTabClef(int x, const StaffData& staffInfo);
+    void drawChordText(System* system, const StaffData& currentStaffInfo);
     void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x);
     void drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo);
 
-private:
     QGraphicsScene scene;
     MusicFont musicFont;
-    void CenterItem(QGraphicsItem* item, float xmin, float xmax, float y);
+    void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
     Caret* caret;
 
 public slots:

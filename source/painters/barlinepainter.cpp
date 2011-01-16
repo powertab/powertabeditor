@@ -33,7 +33,7 @@ void BarlinePainter::init()
         width = DOUBLE_BAR_WIDTH;
     }
 
-    x = CenterItem(x, x + staffInfo.positionWidth, width);
+    x = centerItem(x, x + staffInfo.positionWidth, width);
 
     // adjust alignment for repeat barlines
     if (barLine->IsRepeatEnd() || barLine->IsRepeatStart())

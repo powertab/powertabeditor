@@ -25,12 +25,12 @@ ScoreArea::ScoreArea(QWidget *parent) :
 
 }
 
-void ScoreArea::RenderDocument()
+void ScoreArea::renderDocument()
 {
-    RenderDocument(document);
+    renderDocument(document);
 }
 
-void ScoreArea::RenderDocument(PowerTabDocument *doc)
+void ScoreArea::renderDocument(PowerTabDocument *doc)
 {
     scene.clear();
     document = doc;
@@ -38,7 +38,7 @@ void ScoreArea::RenderDocument(PowerTabDocument *doc)
 
     // Render each score
     // Only worry about the guitar score so far
-    RenderScore(document->GetGuitarScore(), lineSpacing);
+    renderScore(document->GetGuitarScore(), lineSpacing);
 
     // Set up the caret
     caret = new Caret(doc->GetTablatureStaffLineSpacing());
@@ -54,16 +54,16 @@ void ScoreArea::RenderDocument(PowerTabDocument *doc)
     scene.addItem(caret);
 }
 
-void ScoreArea::RenderScore(Score* score, int lineSpacing)
+void ScoreArea::renderScore(Score* score, int lineSpacing)
 {
     // Render each system (group of staves) in the entire score
     for (uint32_t i=0; i < score->GetSystemCount(); i++)
     {
-        RenderSystem(score->GetSystem(i), lineSpacing);
+        renderSystem(score->GetSystem(i), lineSpacing);
     }
 }
 
-void ScoreArea::RenderSystem(System* system, int lineSpacing)
+void ScoreArea::renderSystem(System* system, int lineSpacing)
 {
     QList<StaffData> staffInformationList;
     QPointF position;
@@ -89,7 +89,7 @@ void ScoreArea::RenderSystem(System* system, int lineSpacing)
         Staff* currentStaff = system->GetStaff(i);
 
         // Draw the staff lines
-        RenderStaffLines(currentStaff, currentStaffInfo, lineSpacing, system->GetRect().GetWidth(), position);
+        renderStaffLines(currentStaff, currentStaffInfo, lineSpacing, system->GetRect().GetWidth(), position);
         position.setY(currentStaffInfo.topEdge + currentStaffInfo.height);
 
         // Draw the clefs
@@ -97,15 +97,15 @@ void ScoreArea::RenderSystem(System* system, int lineSpacing)
         clefPainter->setPos(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo.getTopStdNotationLine());
         scene.addItem(clefPainter);
 
-        DrawTabClef(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo);
+        drawTabClef(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo);
 
-        RenderBars(currentStaffInfo, system);
+        renderBars(currentStaffInfo, system);
 
-        DrawTabNotes(system, currentStaff, currentStaffInfo);
+        drawTabNotes(system, currentStaff, currentStaffInfo);
 
         if (i == 0)
         {
-            DrawChordText(system, currentStaffInfo);
+            drawChordText(system, currentStaffInfo);
         }
 
         drawLegato(system, currentStaff, currentStaffInfo);
@@ -116,7 +116,7 @@ void ScoreArea::RenderSystem(System* system, int lineSpacing)
 }
 
 // Draws the lines for a single staff
-void ScoreArea::RenderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position)
+void ScoreArea::renderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position)
 {
     // Populate the staff info structure with information from the given staff
     currentStaffInfo.leftEdge = position.x();
@@ -132,16 +132,16 @@ void ScoreArea::RenderStaffLines(Staff* staff, StaffData& currentStaffInfo, int 
     currentStaffInfo.calculateHeight();
 
     // Draw music staff lines
-    DrawStaff(currentStaffInfo.leftEdge, currentStaffInfo.getTopStdNotationLine(),
+    drawStaff(currentStaffInfo.leftEdge, currentStaffInfo.getTopStdNotationLine(),
               currentStaffInfo.stdNotationLineSpacing, currentStaffInfo.width, currentStaffInfo.numOfStdNotationLines);
 
     // Draw tab staff lines
-    DrawStaff(currentStaffInfo.leftEdge, currentStaffInfo.getTopTabLine(),
+    drawStaff(currentStaffInfo.leftEdge, currentStaffInfo.getTopTabLine(),
               currentStaffInfo.tabLineSpacing, currentStaffInfo.width, currentStaffInfo.numOfStrings);
 }
 
 // Draw all of the barlines for the staff.
-void ScoreArea::RenderBars(const StaffData& currentStaffInfo, System* system)
+void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
 {
     BarlinePainter *firstBarLine = new BarlinePainter(currentStaffInfo, &system->GetStartBarRef());
     if (system->GetStartBarConstRef().IsBar()) // for normal bars, display a line at the far left edge
@@ -332,7 +332,7 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
     }
 }
 
-void ScoreArea::DrawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines)
+void ScoreArea::drawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines)
 {
     /*// Draw lines on each side of staff
     DrawBarLine(leftEdge, currentHeight, (numberOfLines - 1) * lineSpacing);
@@ -356,7 +356,7 @@ void ScoreArea::DrawStaff(int leftEdge, int currentHeight, int lineSpacing, int 
     }
 }
 
-void ScoreArea::DrawTabClef(int x, const StaffData& staffInfo)
+void ScoreArea::drawTabClef(int x, const StaffData& staffInfo)
 {
     // Draw the tab clef
     QGraphicsSimpleTextItem* tabClef = new QGraphicsSimpleTextItem;
@@ -365,7 +365,7 @@ void ScoreArea::DrawTabClef(int x, const StaffData& staffInfo)
     scene.addItem(tabClef);
 }
 
-void ScoreArea::DrawChordText(System* system, const StaffData& currentStaffInfo)
+void ScoreArea::drawChordText(System* system, const StaffData& currentStaffInfo)
 {
     for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
     {
@@ -375,13 +375,13 @@ void ScoreArea::DrawChordText(System* system, const StaffData& currentStaffInfo)
         const quint32 location = system->GetPositionX(chordText->GetPosition());
 
         ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
-        CenterItem(chordTextPainter, location, location + currentStaffInfo.positionWidth,
+        centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth,
                    currentStaffInfo.topEdge + System::CHORD_TEXT_SPACING); // TODO - create an appropriate constant for the height offset
         scene.addItem(chordTextPainter);
     }
 }
 
-void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
+void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
     for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
     {
@@ -401,7 +401,7 @@ void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& curr
         Q_ASSERT(currentGuitar != NULL);
 
         StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, currentGuitar);
-        CenterItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
+        centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
                    currentStaffInfo.getTopStdNotationLine());
         scene.addItem(stdNotePainter);
 
@@ -410,7 +410,7 @@ void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& curr
             Note* note = currentPosition->GetNote(j);
 
             TabNotePainter* tabNote = new TabNotePainter(note);
-            CenterItem(tabNote, location, location + currentStaffInfo.positionWidth,
+            centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
                        currentStaffInfo.getTabLineHeight(note->GetString()) + 13);
             scene.addItem(tabNote);
         }
@@ -418,7 +418,7 @@ void ScoreArea::DrawTabNotes(System* system, Staff* staff, const StaffData& curr
 }
 
 // Centers an item, by using it's width to calculate the necessary offset from xmin
-void ScoreArea::CenterItem(QGraphicsItem* item, float xmin, float xmax, float y)
+void ScoreArea::centerItem(QGraphicsItem* item, float xmin, float xmax, float y)
 {
     float itemWidth = item->boundingRect().width();
     float centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
@@ -467,12 +467,12 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
     // for these items, put the text directly under the note
     if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
     {
-        CenterItem(textItem, x, x + currentStaffInfo.positionWidth, y); 
+        centerItem(textItem, x, x + currentStaffInfo.positionWidth, y); 
     }
     // for these, put the text between this note and the next one
     else
     {
-        CenterItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y); 
+        centerItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y); 
     }
     scene.addItem(textItem);
 }

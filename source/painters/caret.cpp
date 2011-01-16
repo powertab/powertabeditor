@@ -115,7 +115,7 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     // get bottom
     int y2 = currentStaffInfo.getTabStaffSize();
     // get x-coordinate
-    int x = CenterItem(0, currentStaffInfo.positionWidth, 1);
+    int x = centerItem(0, currentStaffInfo.positionWidth, 1);
 
     if (inPlaybackMode) // if in playback mode, just draw a vertical line and don't highlight selected note
     {
