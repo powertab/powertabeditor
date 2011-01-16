@@ -32,7 +32,7 @@ class PowerTabInputStream
 
     // Member Variables
 protected:
-    ifstream					m_stream;
+    ifstream    m_stream;
 
     // Constructor/Destructor
 public:
@@ -53,18 +53,20 @@ protected:
 public:
     /// Checks the current state of the stream
     /// @return True if the stream is OK, false if an error has occurred
-    bool CheckState()
-    {return !fail();}
+    inline bool CheckState()
+    {
+        return !m_stream.fail();
+    }
 
 public:    
 
-    bool fail()
+    inline bool fail()
     {
         return m_stream.fail();
     }
 
     template <class T>
-            bool ReadVector(vector<T*>& vect, uint16_t version)
+    bool ReadVector(vector<T*>& vect, uint16_t version)
     {
         uint32_t count = ReadCount();
         CHECK_THAT(CheckState(), false);
@@ -87,9 +89,9 @@ public:
     }
 
     template<class T>
-    PowerTabInputStream& operator>>(const T& data)
+    inline PowerTabInputStream& operator>>(T& data)
     {
-        m_stream.read((char *)(&data), sizeof(data));
+        m_stream.read(reinterpret_cast<char *>(&data), sizeof(data));
         return *this;
     }
 };
