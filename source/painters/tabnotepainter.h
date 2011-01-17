@@ -20,9 +20,11 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-private:
+    inline void setText();
+
     Note* note;
     static QFont tabFont;
+    QString noteText;
 };
 
 #endif // TABNOTEPAINTER_H

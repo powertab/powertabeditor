@@ -41,28 +41,30 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
     MusicFont musicFont;
     QFont displayFont = musicFont.getFont();
+
     if (timeSignature.IsCommonTime() || timeSignature.IsCutTime())
     {
         displayFont.setPixelSize(25);
+        painter->setFont(displayFont);
+
+        QChar symbol;
+        if (timeSignature.IsCommonTime())
+        {
+            symbol = musicFont.getSymbol(MusicFont::CommonTime);
+        }
+        else
+        {
+            symbol = musicFont.getSymbol(MusicFont::CutTime);
+        }
+
+        painter->drawText(0, staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(), symbol);
     }
+
     else
     {
         displayFont.setPixelSize(27);
-    }
-    painter->setFont(displayFont);
-
-    if (timeSignature.IsCommonTime())
-    {
-        painter->drawText(0, staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(),
-                          musicFont.getSymbol(MusicFont::CommonTime));
-    }
-    else if (timeSignature.IsCutTime())
-    {
-        painter->drawText(0, staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(),
-                          musicFont.getSymbol(MusicFont::CutTime));
-    }
-    else
-    {
+        painter->setFont(displayFont);
+        
         const int offset = -5;
         uint8_t beatsPerMeasure = timeSignature.GetBeatsPerMeasure();
         uint8_t beatAmount = timeSignature.GetBeatAmount();

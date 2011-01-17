@@ -13,6 +13,8 @@ TabNotePainter::TabNotePainter(Note* notePtr)
     note = notePtr;
     tabFont.setPixelSize(10); // needed for cross-platform consistency in font size
     tabFont.setStyleStrategy(QFont::PreferAntialias);
+
+    setText();
 }
 
 void TabNotePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -32,7 +34,7 @@ void TabNotePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 
 QRectF TabNotePainter::boundingRect() const
 {
-    return QFontMetricsF(tabFont).boundingRect(QString().setNum(note->GetFretNumber()));
+    return QFontMetricsF(tabFont).boundingRect(noteText);
 }
 
 void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -51,8 +53,13 @@ void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setPen(Qt::black);
     }
 
-    std::string text = note->GetText();
+    setText();
 
     // offset height by 1 pixel for clarity
-    painter->drawText(0, -1, QString().fromStdString(note->GetText()));
+    painter->drawText(0, -1, noteText);
+}
+
+inline void TabNotePainter::setText()
+{
+    noteText = QString().fromStdString(note->GetText());
 }
