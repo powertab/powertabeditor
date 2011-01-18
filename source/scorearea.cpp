@@ -13,6 +13,7 @@
 #include <painters/clefpainter.h>
 #include <painters/stdnotationpainter.h>
 #include <painters/chordtextpainter.h>
+#include <painters/staffpainter.h>
 
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
@@ -65,7 +66,6 @@ void ScoreArea::renderScore(Score* score, int lineSpacing)
 
 void ScoreArea::renderSystem(System* system, int lineSpacing)
 {
-    QList<StaffData> staffInformationList;
     QPointF position;
 
     // save the top-left position of the system
@@ -73,12 +73,11 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
     position.setY(system->GetRect().GetTop());
 
     // draw system rectangle
-    QPainterPath path;
-    path.addRect(position.x(), position.y(), system->GetRect().GetWidth(), system->GetRect().GetHeight());
-    QGraphicsPathItem *rect = new QGraphicsPathItem(path);
-    rect->setOpacity(0.5);
-    rect->setPen(QPen(QBrush(QColor(0,0,0)), 0.5));
-    scene.addItem(rect);
+    QGraphicsRectItem* systemRect = new QGraphicsRectItem;
+    systemRect->setRect(position.x(), position.y(), system->GetRect().GetWidth(), system->GetRect().GetHeight());
+    systemRect->setOpacity(0.5);
+    systemRect->setPen(QPen(QBrush(QColor(0,0,0)), 0.5));
+    scene.addItem(systemRect);
 
     // Draw each staff
     for (uint32_t i=0; i < system->GetStaffCount(); i++)
@@ -88,9 +87,23 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
 
         Staff* currentStaff = system->GetStaff(i);
 
-        // Draw the staff lines
-        renderStaffLines(currentStaff, currentStaffInfo, lineSpacing, system->GetRect().GetWidth(), position);
+        // Populate the staff info structure with information from the given staff
+        currentStaffInfo.leftEdge = position.x();
+        currentStaffInfo.numOfStrings = currentStaff->GetTablatureStaffType();
+        currentStaffInfo.stdNotationStaffAboveSpacing = currentStaff->GetStandardNotationStaffAboveSpacing();
+        currentStaffInfo.stdNotationStaffBelowSpacing = currentStaff->GetStandardNotationStaffBelowSpacing();
+        currentStaffInfo.symbolSpacing = currentStaff->GetSymbolSpacing();
+        currentStaffInfo.tabLineSpacing = lineSpacing;
+        currentStaffInfo.tabStaffBelowSpacing = currentStaff->GetTablatureStaffBelowSpacing();
+        currentStaffInfo.topEdge = position.y();
+        currentStaffInfo.width = system->GetRect().GetWidth();
+        currentStaffInfo.calculateHeight();
         position.setY(currentStaffInfo.topEdge + currentStaffInfo.height);
+
+        // Draw the staff lines
+        StaffPainter* staffPainter = new StaffPainter(system, currentStaff, lineSpacing);
+        staffPainter->setPos(currentStaffInfo.leftEdge, system->GetStaffHeightOffset(i, true));
+        scene.addItem(staffPainter);
 
         // Draw the clefs
         ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, currentStaff);
@@ -110,34 +123,7 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
 
         drawLegato(system, currentStaff, currentStaffInfo);
         drawSlides(system, currentStaff, currentStaffInfo);
-
-        staffInformationList.insert(i, currentStaffInfo);
     }
-}
-
-// Draws the lines for a single staff
-void ScoreArea::renderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position)
-{
-    // Populate the staff info structure with information from the given staff
-    currentStaffInfo.leftEdge = position.x();
-    currentStaffInfo.numOfStrings = staff->GetTablatureStaffType();
-    currentStaffInfo.stdNotationStaffAboveSpacing = staff->GetStandardNotationStaffAboveSpacing();
-    currentStaffInfo.stdNotationStaffBelowSpacing = staff->GetStandardNotationStaffBelowSpacing();
-    currentStaffInfo.symbolSpacing = staff->GetSymbolSpacing();
-    currentStaffInfo.tabLineSpacing = lineSpacing;
-    currentStaffInfo.tabStaffBelowSpacing = staff->GetTablatureStaffBelowSpacing();
-    currentStaffInfo.topEdge = position.y();
-    currentStaffInfo.width = width;
-
-    currentStaffInfo.calculateHeight();
-
-    // Draw music staff lines
-    drawStaff(currentStaffInfo.leftEdge, currentStaffInfo.getTopStdNotationLine(),
-              currentStaffInfo.stdNotationLineSpacing, currentStaffInfo.width, currentStaffInfo.numOfStdNotationLines);
-
-    // Draw tab staff lines
-    drawStaff(currentStaffInfo.leftEdge, currentStaffInfo.getTopTabLine(),
-              currentStaffInfo.tabLineSpacing, currentStaffInfo.width, currentStaffInfo.numOfStrings);
 }
 
 // Draw all of the barlines for the staff.
@@ -328,30 +314,6 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
 
                 startPos = -1;
             }
-        }
-    }
-}
-
-void ScoreArea::drawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines)
-{
-    /*// Draw lines on each side of staff
-    DrawBarLine(leftEdge, currentHeight, (numberOfLines - 1) * lineSpacing);
-    DrawBarLine(leftEdge + width, currentHeight, (numberOfLines - 1) * lineSpacing);*/
-
-    // Draw staff lines
-    for (int i=0; i < numberOfLines; i++)
-    {
-        QPainterPath path;
-        path.moveTo(leftEdge, currentHeight);
-        path.lineTo(leftEdge + width, currentHeight);
-
-        QGraphicsPathItem *line = new QGraphicsPathItem(path);
-        line->setPen(QPen(QBrush(QColor(0,0,0)), 0.75));
-        scene.addItem(line);
-
-        if (i < numberOfLines - 1)
-        {
-            currentHeight += lineSpacing;
         }
     }
 }

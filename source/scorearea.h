@@ -37,9 +37,7 @@ public:
 protected:
     void renderScore(Score* score, int lineSpacing);
     void renderSystem(System* system, int lineSpacing);
-    void drawStaff(int leftEdge, int currentHeight, int lineSpacing, int width, int numberOfLines);
     void drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo);
-    void renderStaffLines(Staff* staff, StaffData& currentStaffInfo, int lineSpacing, int width, QPointF& position);
     void renderBars(const StaffData& currentStaffInfo, System* system);
     void drawTabClef(int x, const StaffData& staffInfo);
     void drawChordText(System* system, const StaffData& currentStaffInfo);
