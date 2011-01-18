@@ -66,15 +66,16 @@ void ScoreArea::renderScore(Score* score, int lineSpacing)
 
 void ScoreArea::renderSystem(System* system, int lineSpacing)
 {
-    QPointF position;
+    const Rect systemRectangle = system->GetRect();
 
     // save the top-left position of the system
-    position.setX(system->GetRect().GetLeft());
-    position.setY(system->GetRect().GetTop());
+    const int leftEdge = systemRectangle.GetLeft();
+    const int topEdge = systemRectangle.GetTop();
+    const int width = systemRectangle.GetWidth();
 
     // draw system rectangle
     QGraphicsRectItem* systemRect = new QGraphicsRectItem;
-    systemRect->setRect(position.x(), position.y(), system->GetRect().GetWidth(), system->GetRect().GetHeight());
+    systemRect->setRect(leftEdge, topEdge, width, system->GetRect().GetHeight());
     systemRect->setOpacity(0.5);
     systemRect->setPen(QPen(QBrush(QColor(0,0,0)), 0.5));
     scene.addItem(systemRect);
@@ -88,17 +89,16 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
         Staff* currentStaff = system->GetStaff(i);
 
         // Populate the staff info structure with information from the given staff
-        currentStaffInfo.leftEdge = position.x();
+        currentStaffInfo.leftEdge = leftEdge;
         currentStaffInfo.numOfStrings = currentStaff->GetTablatureStaffType();
         currentStaffInfo.stdNotationStaffAboveSpacing = currentStaff->GetStandardNotationStaffAboveSpacing();
         currentStaffInfo.stdNotationStaffBelowSpacing = currentStaff->GetStandardNotationStaffBelowSpacing();
         currentStaffInfo.symbolSpacing = currentStaff->GetSymbolSpacing();
         currentStaffInfo.tabLineSpacing = lineSpacing;
         currentStaffInfo.tabStaffBelowSpacing = currentStaff->GetTablatureStaffBelowSpacing();
-        currentStaffInfo.topEdge = position.y();
-        currentStaffInfo.width = system->GetRect().GetWidth();
+        currentStaffInfo.topEdge = system->GetStaffHeightOffset(i, true);
+        currentStaffInfo.width = width;
         currentStaffInfo.calculateHeight();
-        position.setY(currentStaffInfo.topEdge + currentStaffInfo.height);
 
         // Draw the staff lines
         StaffPainter* staffPainter = new StaffPainter(system, currentStaff, lineSpacing);
