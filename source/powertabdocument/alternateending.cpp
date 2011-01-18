@@ -40,7 +40,8 @@ AlternateEnding::AlternateEnding(uint32_t system, uint32_t position,
 }
 
 /// Copy Constructor
-AlternateEnding::AlternateEnding(const AlternateEnding& alternateEnding)
+AlternateEnding::AlternateEnding(const AlternateEnding& alternateEnding) :
+    SystemSymbol()
 {
 	//------Last Checked------//
 	// - Dec 3, 2004

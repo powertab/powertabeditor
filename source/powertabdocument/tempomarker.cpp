@@ -105,6 +105,7 @@ TempoMarker::TempoMarker(uint32_t system, uint32_t position, bool accelerando) :
 
 /// Copy Constructor
 TempoMarker::TempoMarker(const TempoMarker& tempoMarker) :
+    SystemSymbol(),
     m_description(DEFAULT_DESCRIPTION)
 {
     //------Last Checked------//
