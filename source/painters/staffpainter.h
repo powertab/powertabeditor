@@ -2,6 +2,7 @@
 #define STAFFPAINTER_H
 
 #include "painterbase.h"
+#include "staffdata.h"
 
 #include <QPen>
 
@@ -11,7 +12,7 @@ class System;
 class StaffPainter : public PainterBase
 {
 public:
-    StaffPainter(System* system, Staff* staff, int tabLineSpacing);
+    StaffPainter(System* system, Staff* staff, const StaffData& staffInfo);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -25,8 +26,8 @@ protected:
 
     System* system;
     Staff* staff;
+    StaffData staffInfo;
     QPen pen;
-    int tabLineSpacing;
 };
 
 #endif // STAFFPAINTER_H

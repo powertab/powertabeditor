@@ -4,11 +4,13 @@
 #include <powertabdocument/system.h>
 
 #include <QPainter>
+#include <QGraphicsSceneMouseEvent>
+#include <QDebug>
 
-StaffPainter::StaffPainter(System* system, Staff* staff, int tabLineSpacing) :
+StaffPainter::StaffPainter(System* system, Staff* staff, const StaffData& staffInfo) :
         system(system),
         staff(staff),
-        tabLineSpacing(tabLineSpacing)
+        staffInfo(staffInfo)
 {
     pen = QPen(QBrush(QColor(0,0,0)), 0.75);
 }
@@ -17,8 +19,10 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 {
 }
 
-void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
+    qreal y = mouseEvent->pos().y();
+    qDebug() << "Mouse click on staff at height: " << y;
 }
 
 void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
@@ -27,7 +31,7 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 
 QRectF StaffPainter::boundingRect() const
 {
-    return QRectF(0, 0, system->GetRect().GetWidth(), staff->GetHeight());
+    return QRectF(0, 0, staffInfo.width, staffInfo.height);
 }
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -38,21 +42,20 @@ void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     painter->setPen(pen);
 
     // Standard notation staff
-    int height = drawStaffLines(painter, 5, staff->STD_NOTATION_LINE_SPACING, staff->GetStandardNotationStaffAboveSpacing() + staff->STAFF_BORDER_SPACING);
+    drawStaffLines(painter, 5, staffInfo.stdNotationLineSpacing, staffInfo.getTopStdNotationLine(false));
     // Tab staff
-    drawStaffLines(painter, staff->GetTablatureStaffType(), tabLineSpacing, height + staff->GetSymbolSpacing() + 2 * staff->STAFF_BORDER_SPACING + staff->GetStandardNotationStaffBelowSpacing());
+    drawStaffLines(painter, staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine(false));
 
 }
 
 int StaffPainter::drawStaffLines(QPainter* painter, int lineCount, int lineSpacing, int startHeight)
 {
-    const int width = system->GetRect().GetWidth();
     int height;
 
     for (int i=0; i < lineCount; i++)
     {
         height = i * lineSpacing + startHeight;
-        painter->drawLine(0, height, width, height);
+        painter->drawLine(0, height, staffInfo.width, height);
     }
 
     return height;

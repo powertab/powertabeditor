@@ -101,7 +101,7 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
         currentStaffInfo.calculateHeight();
 
         // Draw the staff lines
-        StaffPainter* staffPainter = new StaffPainter(system, currentStaff, lineSpacing);
+        StaffPainter* staffPainter = new StaffPainter(system, currentStaff, currentStaffInfo);
         staffPainter->setPos(currentStaffInfo.leftEdge, system->GetStaffHeightOffset(i, true));
         scene.addItem(staffPainter);
 
