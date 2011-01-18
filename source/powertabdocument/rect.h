@@ -4,88 +4,86 @@
 class Rect
 {
 public:
-	Rect(void);
-	Rect(int x, int y, int width, int height);
-	~Rect(void);
+    Rect(void);
+    Rect(int x, int y, int width, int height);
 
-	bool operator==(const Rect& rhs) const 
-	{
-		return (
-			_x == rhs._x &&
-			_y == rhs._y &&
-			_width == rhs._width &&
-			_height == rhs._height);
-	}
+    inline bool operator==(const Rect& rhs) const
+    {
+        return (
+            _x == rhs._x &&
+            _y == rhs._y &&
+            _width == rhs._width &&
+            _height == rhs._height);
+    }
 
-	int GetLeft() const { return GetX(); }
-	void SetLeft(int x) { SetX(x); }
+    inline int GetLeft() const { return GetX(); }
+    inline void SetLeft(int x) { SetX(x); }
 
-	int GetX() const
-	{
-		return _x;
-	}
+    inline int GetX() const
+    {
+        return _x;
+    }
 
-	void SetX(int x)
-	{
-		_x = x;
-	}
+    inline void SetX(int x)
+    {
+        _x = x;
+    }
 
-	int GetTop() const { return GetY(); }
-	void SetTop(int top) { SetY(top); }
+    inline int GetTop() const { return GetY(); }
+    inline void SetTop(int top) { SetY(top); }
 
-	int GetY() const
-	{
-		return _y;
-	}
+    inline int GetY() const
+    {
+        return _y;
+    }
 
-	void SetY(int y)
-	{
-		_y = y;
-	}
+    inline void SetY(int y)
+    {
+        _y = y;
+    }
 
-	int GetBottom() const
-	{
-		return _y + _height - 1;
-	}
+    inline int GetBottom() const
+    {
+        return _y + _height - 1;
+    }
 
-	void SetBottom(int bottom)
-	{
-		_height = bottom - _y - 1;
-	}
+    inline void SetBottom(int bottom)
+    {
+        _height = bottom - _y - 1;
+    }
 
-	int GetWidth() const
-	{
-		return _width;
-	}
+    inline int GetWidth() const
+    {
+        return _width;
+    }
 
-	void SetWidth(int width)
-	{
-		_width = width;
-	}
+    inline void SetWidth(int width)
+    {
+        _width = width;
+    }
 
-	int GetHeight() const
-	{
-		return _height;
-	}
+    inline int GetHeight() const
+    {
+        return _height;
+    }
 
-	void SetHeight(int height)
-	{
-		_height = height;
-	}
+    inline void SetHeight(int height)
+    {
+        _height = height;
+    }
 
-	int GetRight() const
-	{
-		return _x + _width - 1;
-	}
+    inline int GetRight() const
+    {
+        return _x + _width - 1;
+    }
 
-	void SetRight(int right)
-	{
-		_width = right - _x - 1;
-	}
+    inline void SetRight(int right)
+    {
+        _width = right - _x - 1;
+    }
 
-
-private:
-	int _x, _y, _width, _height;
+protected:
+    int _x, _y, _width, _height;
 };
 
 #endif
