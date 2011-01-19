@@ -8,8 +8,7 @@
 //
 // This base class is used to provide any common functionality to be shared between all painters
 //
-// All derived classes must implement the functions paint, boundingRect, mousePressEvent,
-// mouseMoveEvent, and mouseReleaseEvent, as they derive from QGraphicsItem.
+// All derived classes must implement the functions paint and boundingRect.
 
 class PainterBase : public QGraphicsItem
 {
@@ -18,9 +17,6 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
 
 protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) = 0;
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) = 0;
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) = 0;
 
     double centerItem(double xmin, double xmax, double width)
     {

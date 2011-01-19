@@ -215,6 +215,8 @@ public:
     Staff* GetStaff(uint32_t index) const
     {CHECK_THAT(IsValidStaffIndex(index), NULL); return (m_staffArray[index]);}
 
+    int FindStaffIndex(Staff* staff) const;
+
     // Barline Functions
     /// Determines if a barline index is valid
     /// @param index barline index to validate

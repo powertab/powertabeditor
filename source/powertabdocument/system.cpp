@@ -624,3 +624,10 @@ bool System::RemoveChordText(uint32_t index)
     m_chordTextArray.erase(m_chordTextArray.begin() + index);
     return true;
 }
+
+// Returns the index of a staff within the system
+int System::FindStaffIndex(Staff *staff) const
+{
+    auto result = std::find(m_staffArray.begin(), m_staffArray.end(), staff);
+    return std::distance(m_staffArray.begin(), result);
+}

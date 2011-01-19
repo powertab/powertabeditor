@@ -64,18 +64,6 @@ QRectF Caret::boundingRect() const
                   currentStaffInfo.getTabStaffSize() + 2 * CARET_NOTE_SPACING);
 }
 
-void Caret::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
-void Caret::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
-void Caret::mouseMoveEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
 void Caret::updateStaffInfo()
 {
     currentStaffInfo.numOfStrings = currentStaff->GetTablatureStaffType();
@@ -151,7 +139,7 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 void Caret::updatePosition()
 {
     updateStaffInfo();
-    setPos(currentSystem->GetPositionX(selectedPosition->GetPosition()),
+    setPos(currentSystem->GetPositionX(currentPositionIndex),
            currentSystem->GetStaffHeightOffset(currentStaffIndex, true) + currentStaffInfo.getTabStaffOffset()
            );
     emit moved();
@@ -161,7 +149,7 @@ void Caret::updatePosition()
 bool Caret::moveCaretHorizontal(int offset)
 {
     const quint32 nextPosition = currentPositionIndex + offset;
-    if (currentStaff->IsValidPositionIndex(0, nextPosition)) // check that the next position is valid
+    if (currentSystem->IsValidPosition(nextPosition)) // check that the next position is valid
     {
         currentPositionIndex = nextPosition;
         moveToNewPosition();
@@ -169,6 +157,68 @@ bool Caret::moveCaretHorizontal(int offset)
         return true;
     }
     return false;
+}
+
+bool Caret::setCurrentStringIndex(uint8_t stringIndex)
+{
+    if (stringIndex < currentStaffInfo.numOfStrings)
+    {
+        currentStringIndex = stringIndex;
+        update(boundingRect());
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Caret::setCurrentSystemIndex(uint32_t systemIndex)
+{
+    if (systemIndex < currentScore->GetSystemCount())
+    {
+        currentSystemIndex = systemIndex;
+        moveToNewPosition();
+        updatePosition();
+        update(boundingRect());
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Caret::setCurrentStaffIndex(uint32_t staffIndex)
+{
+    if (staffIndex < currentSystem->GetStaffCount())
+    {
+        currentStaffIndex = staffIndex;
+        moveToNewPosition();
+        updatePosition();
+        update(boundingRect());
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Caret::setCurrentPositionIndex(uint8_t positionIndex)
+{
+    if (positionIndex < currentSystem->GetPositionCount())
+    {
+        currentPositionIndex = positionIndex;
+        moveToNewPosition();
+        updatePosition();
+        update(boundingRect());
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 // Moves the caret up or down
@@ -188,7 +238,7 @@ void Caret::moveCaretToStart()
 // Moves the caret to the last position in the staff
 void Caret::moveCaretToEnd()
 {
-    moveCaretHorizontal( currentStaff->GetPositionCount(0) - currentPositionIndex - 1 );
+    moveCaretHorizontal( currentSystem->GetPositionCount() - currentPositionIndex - 1 );
 }
 
 bool Caret::moveCaretStaff(int offset)
@@ -214,7 +264,7 @@ void Caret::moveToNewPosition()
 {
     currentSystem = currentScore->GetSystem(currentSystemIndex);
     currentStaff = currentSystem->GetStaff(currentStaffIndex);
-    selectedPosition = currentStaff->GetPosition(0, currentPositionIndex);
+    selectedPosition = currentStaff->GetPositionByPosition(currentPositionIndex);
     selectedNote = 0;
 }
 

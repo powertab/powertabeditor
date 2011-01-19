@@ -42,6 +42,11 @@ public:
     void setPosition(Position* newPosition);
     void setNote(Note* newNote);
 
+    bool setCurrentStringIndex(uint8_t stringIndex);
+    bool setCurrentPositionIndex(uint8_t positionIndex);
+    bool setCurrentStaffIndex(uint32_t staffIndex);
+    bool setCurrentSystemIndex(uint32_t systemIndex);
+
     Score* getCurrentScore()
     {
         return currentScore;
@@ -82,10 +87,6 @@ signals:
     void moved();
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
     void updateStaffInfo();
     void moveToNewPosition();
 

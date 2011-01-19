@@ -1,7 +1,6 @@
 #include "tabnotepainter.h"
 
 #include <QPainter>
-#include <QMessageBox>
 #include <QFontMetricsF>
 
 #include <powertabdocument/note.h>
@@ -15,21 +14,6 @@ TabNotePainter::TabNotePainter(Note* notePtr)
     tabFont.setStyleStrategy(QFont::PreferAntialias);
 
     setText();
-}
-
-void TabNotePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
-void TabNotePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-    QMessageBox message;
-    message.setText("Fret: " + QString().setNum(note->GetFretNumber()) + " String: " + QString().setNum(note->GetString()));
-    message.exec();
-}
-
-void TabNotePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
-{
 }
 
 QRectF TabNotePainter::boundingRect() const

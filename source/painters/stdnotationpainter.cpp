@@ -20,18 +20,6 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* pos
 {
 }
 
-void StdNotationPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
-void StdNotationPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
-void StdNotationPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
 QRectF StdNotationPainter::boundingRect() const
 {
     return QRectF(0, -staffInfo.getTopStdNotationLine(false), 10, staffInfo.getTopTabLine(false));

@@ -16,10 +16,6 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
     inline void setText();
 
     Note* note;

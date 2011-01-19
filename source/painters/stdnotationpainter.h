@@ -19,10 +19,6 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
     int getDisplayPosition(const QString& noteName);
     void drawRest(QPainter* painter);
     int getOctaveDiff(const Note* currentNote, const int pitch) const;

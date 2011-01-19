@@ -23,6 +23,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     int drawStaffLines(QPainter* painter, int lineCount, int lineSpacing, int startHeight);
+    inline int findClosestPosition(qreal click, qreal relativePos, qreal spacing);
 
     System* system;
     Staff* staff;

@@ -270,3 +270,17 @@ int Staff::GetHeight() const
             GetTablatureStaffBelowSpacing() + STD_NOTATION_LINE_SPACING * (STD_NOTATION_STAFF_TYPE - 1) +
             (GetTablatureStaffType() - 1) * 9 + 4 * STAFF_BORDER_SPACING; // TODO - pass in the tab line separation as a parameter
 }
+
+// Finds the Position object at the given position index in the staff
+Position* Staff::GetPositionByPosition(uint32_t index) const
+{
+    for (uint32_t i = 0; i < lowMelodyPositionArray.size(); i++)
+    {
+        if (lowMelodyPositionArray.at(i)->GetPosition() == index)
+        {
+            return lowMelodyPositionArray.at(i);
+        }
+    }
+
+    return NULL;
+}

@@ -207,6 +207,8 @@ public:
         }
     }
 
+    Position* GetPositionByPosition(uint32_t index) const;
+
     int GetHeight() const;
 };
 

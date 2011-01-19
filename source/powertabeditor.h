@@ -29,7 +29,7 @@ public:
     static QSplitter* vertSplitter;
     static QSplitter* horSplitter;
     static Toolbox* toolBox;
-    ScoreArea* getCurrentScoreArea();
+    static ScoreArea* getCurrentScoreArea();
 
 protected:
     void CreateActions();

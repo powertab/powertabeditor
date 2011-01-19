@@ -291,3 +291,9 @@ void Score::UpdateToVer2Structure()
 
     }
 }
+
+int Score::FindSystemIndex(System* system) const
+{
+    auto result = std::find(m_systemArray.begin(), m_systemArray.end(), system);
+    return std::distance(m_systemArray.begin(), result);
+}
