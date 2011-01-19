@@ -9,19 +9,16 @@
 #include <powertabdocument/note.h>
 #include <powertabdocument/position.h>
 
-Caret::Caret(int tabLineSpacing)
+Caret::Caret(int tabLineSpacing) :
+    lineSpacing(tabLineSpacing)
 {
-    lineSpacing = tabLineSpacing;
     currentScore = NULL;
-    currentSystem = NULL;
-    currentStaff = NULL;
-    selectedNote = NULL;
-    selectedPosition = NULL;
 
     currentPositionIndex = 0;
     currentStringIndex = 0;
     currentSystemIndex = 0;
     currentStaffIndex = 0;
+
     currentStaffTopEdge = 0;
     inPlaybackMode = false;
 }
@@ -37,35 +34,22 @@ void Caret::setScore(Score* newScore)
     currentScore = newScore;
 }
 
-
-void Caret::setSystem(System* newSystem)
+Score* Caret::getCurrentScore() const
 {
-    currentSystem = newSystem;
-}
-
-void Caret::setStaff(Staff* newStaff)
-{
-    currentStaff = newStaff;
-}
-
-void Caret::setPosition(Position* newPosition)
-{
-    selectedPosition = newPosition;
-}
-
-void Caret::setNote(Note* newNote)
-{
-    selectedNote = newNote;
+    return currentScore;
 }
 
 QRectF Caret::boundingRect() const
 {
-    return QRectF(0, -CARET_NOTE_SPACING, currentSystem->GetPositionSpacing(),
+    return QRectF(0, -CARET_NOTE_SPACING, getCurrentSystem()->GetPositionSpacing(),
                   currentStaffInfo.getTabStaffSize() + 2 * CARET_NOTE_SPACING);
 }
 
 void Caret::updateStaffInfo()
 {
+    Staff* currentStaff = getCurrentStaff();
+    System* currentSystem = getCurrentSystem();
+
     currentStaffInfo.numOfStrings = currentStaff->GetTablatureStaffType();
     currentStaffInfo.stdNotationStaffAboveSpacing = currentStaff->GetStandardNotationStaffAboveSpacing();
     currentStaffInfo.stdNotationStaffBelowSpacing = currentStaff->GetStandardNotationStaffBelowSpacing();
@@ -138,6 +122,8 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 void Caret::updatePosition()
 {
+    System* currentSystem = getCurrentSystem();
+
     updateStaffInfo();
     setPos(currentSystem->GetPositionX(currentPositionIndex),
            currentSystem->GetStaffHeightOffset(currentStaffIndex, true) + currentStaffInfo.getTabStaffOffset()
@@ -149,7 +135,7 @@ void Caret::updatePosition()
 bool Caret::moveCaretHorizontal(int offset)
 {
     const quint32 nextPosition = currentPositionIndex + offset;
-    if (currentSystem->IsValidPosition(nextPosition)) // check that the next position is valid
+    if (getCurrentSystem()->IsValidPosition(nextPosition)) // check that the next position is valid
     {
         currentPositionIndex = nextPosition;
         moveToNewPosition();
@@ -191,7 +177,7 @@ bool Caret::setCurrentSystemIndex(uint32_t systemIndex)
 
 bool Caret::setCurrentStaffIndex(uint32_t staffIndex)
 {
-    if (staffIndex < currentSystem->GetStaffCount())
+    if (staffIndex < getCurrentSystem()->GetStaffCount())
     {
         currentStaffIndex = staffIndex;
         moveToNewPosition();
@@ -207,7 +193,7 @@ bool Caret::setCurrentStaffIndex(uint32_t staffIndex)
 
 bool Caret::setCurrentPositionIndex(uint8_t positionIndex)
 {
-    if (positionIndex < currentSystem->GetPositionCount())
+    if (positionIndex < getCurrentSystem()->GetPositionCount())
     {
         currentPositionIndex = positionIndex;
         moveToNewPosition();
@@ -238,14 +224,14 @@ void Caret::moveCaretToStart()
 // Moves the caret to the last position in the staff
 void Caret::moveCaretToEnd()
 {
-    moveCaretHorizontal( currentSystem->GetPositionCount() - currentPositionIndex - 1 );
+    moveCaretHorizontal( getCurrentSystem()->GetPositionCount() - currentPositionIndex - 1 );
 }
 
 bool Caret::moveCaretStaff(int offset)
 {
     const quint32 nextStaff = currentStaffIndex + offset;
 
-    if (currentSystem->IsValidStaffIndex(nextStaff))
+    if (getCurrentSystem()->IsValidStaffIndex(nextStaff))
     {
         currentStaffIndex = nextStaff;
         currentStringIndex = 0;
@@ -262,10 +248,10 @@ bool Caret::moveCaretStaff(int offset)
 
 void Caret::moveToNewPosition()
 {
-    currentSystem = currentScore->GetSystem(currentSystemIndex);
+    /*currentSystem = currentScore->GetSystem(currentSystemIndex);
     currentStaff = currentSystem->GetStaff(currentStaffIndex);
     selectedPosition = currentStaff->GetPositionByPosition(currentPositionIndex);
-    selectedNote = 0;
+    selectedNote = 0;*/
 }
 
 bool Caret::moveCaretSection(int offset)
@@ -294,4 +280,33 @@ void Caret::moveCaretToFirstSection()
 void Caret::moveCaretToLastSection()
 {
     moveCaretSection( currentScore->GetSystemCount() - currentSystemIndex - 1 );
+}
+
+System* Caret::getCurrentSystem() const
+{
+    return currentScore->GetSystem(currentSystemIndex);
+}
+
+Staff* Caret::getCurrentStaff() const
+{
+    return getCurrentSystem()->GetStaff(currentStaffIndex);
+}
+
+Position* Caret::getCurrentPosition() const
+{
+    // may return NULL if the current position does not have a Position object
+    return getCurrentStaff()->GetPositionByPosition(currentPositionIndex);
+}
+
+Note* Caret::getCurrentNote() const
+{
+    Position* currentPosition = getCurrentPosition();
+    if (currentPosition != NULL)
+    {
+        return currentPosition->GetNoteByString(currentStringIndex);
+    }
+    else
+    {
+        return NULL;
+    }
 }

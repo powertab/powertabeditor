@@ -37,51 +37,37 @@ public:
     QRectF boundingRect() const;
 
     void setScore(Score* newScore);
-    void setSystem(System* newSystem);
-    void setStaff(Staff* newStaff);
-    void setPosition(Position* newPosition);
-    void setNote(Note* newNote);
 
     bool setCurrentStringIndex(uint8_t stringIndex);
     bool setCurrentPositionIndex(uint8_t positionIndex);
     bool setCurrentStaffIndex(uint32_t staffIndex);
     bool setCurrentSystemIndex(uint32_t systemIndex);
 
-    Score* getCurrentScore()
-    {
-        return currentScore;
-    }
+    Score* getCurrentScore() const;
+    System* getCurrentSystem() const;
+    Staff* getCurrentStaff() const;
+    Position* getCurrentPosition() const;
+    Note* getCurrentNote() const;
 
-    System* getCurrentSystem()
-    {
-        return currentSystem;
-    }
-
-    quint32 getSystemIndex()
+    inline quint32 getCurrentSystemIndex() const
     {
         return currentSystemIndex;
     }
 
-    Staff* getCurrentStaff()
+    inline quint32 getCurrentStaffIndex() const
     {
-        return currentStaff;
+        return currentStaffIndex;
     }
 
-    Position* getCurrentPosition()
-    {
-        return selectedPosition;
-    }
-
-    quint32 getCurrentPositionIndex()
+    inline quint32 getCurrentPositionIndex() const
     {
         return currentPositionIndex;
     }
 
-    Note* getCurrentNote()
+    inline quint32 getCurrentStringIndex() const
     {
-        return selectedNote;
+        return currentStringIndex;
     }
-
 
 signals:
     void moved();
@@ -91,17 +77,15 @@ protected:
     void moveToNewPosition();
 
     bool inPlaybackMode;
+
+    Score* currentScore;
     quint32 currentSystemIndex;
+    quint32 currentStaffIndex;
     quint32 currentStringIndex;
     quint32 currentPositionIndex;
-    quint32 currentStaffIndex;
+
     quint32 currentStaffTopEdge;
     int lineSpacing;
-    Score* currentScore;
-    System* currentSystem;
-    Staff* currentStaff;
-    Note* selectedNote;
-    Position* selectedPosition;
     StaffData currentStaffInfo;
 
     static const int CARET_NOTE_SPACING = 6; // spacing around a highlighted note

@@ -180,7 +180,7 @@ void MidiPlayer::playbackSong(int staff)
 
 double MidiPlayer::getCurrentTempo() const
 {
-    quint32 currentSystemIndex = caret->getSystemIndex();
+    quint32 currentSystemIndex = caret->getCurrentSystemIndex();
     Score* currentScore = caret->getCurrentScore();
     double bpm = 0;
 

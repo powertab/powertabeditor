@@ -44,12 +44,8 @@ void ScoreArea::renderDocument(PowerTabDocument *doc)
     // Set up the caret
     caret = new Caret(doc->GetTablatureStaffLineSpacing());
     connect(caret, SIGNAL(moved()), this, SLOT(adjustScroll()));
-    caret->setScore(doc->GetGuitarScore());
-    caret->setSystem(doc->GetGuitarScore()->GetSystem(0));
-    caret->setStaff(caret->getCurrentSystem()->GetStaff(0));
-    caret->setPosition(caret->getCurrentStaff()->GetPosition(0, 0));
-    caret->setNote(caret->getCurrentPosition()->GetNote(0));
 
+    caret->setScore(doc->GetGuitarScore());
     caret->updatePosition();
 
     scene.addItem(caret);
