@@ -4,8 +4,10 @@
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QAction>
 
 #include <skinmanager.h>
+#include <powertabeditor.h>
 
 void NotePage::createNoteButtons()
 {
@@ -15,29 +17,63 @@ void NotePage::createNoteButtons()
     for (int i=0; i<7; i++)
     {
         QString icon, tip;
+        QAction* action = NULL;
+
+        noteButton[i] = new QPushButton;
 
         switch(i)
         {
-            case 0:	icon=":/images/whole_note.gif";		tip="Whole Note"; break;
-            case 1: icon=":/images/half_note.gif";		tip="Half Note"; break;
-            case 2: icon=":/images/quarter_note.gif";	tip="Quarter Note"; break;
-            case 3: icon=":/images/8th_note.gif";		tip="8th Note"; break;
-            case 4: icon=":/images/16th_note.gif";		tip="16th Note"; break;
-            case 5: icon=":/images/32th_note.gif";		tip="32nd Note"; break;
-            case 6: icon=":/images/64th_note.gif";		tip="64th Note"; break;
+            case 0:
+                icon=":/images/whole_note.gif";
+                tip="Whole Note";
+                action = mainWindow->wholeNoteAct;
+                break;
+            case 1:
+                icon=":/images/half_note.gif";
+                tip="Half Note";
+                action = mainWindow->halfNoteAct;
+                break;
+            case 2:
+                icon=":/images/quarter_note.gif";
+                tip="Quarter Note";
+                action = mainWindow->quarterNoteAct;
+                break;
+            case 3:
+                icon=":/images/8th_note.gif";
+                tip="8th Note";
+                action = mainWindow->eighthNoteAct;
+                break;
+            case 4:
+                icon=":/images/16th_note.gif";
+                tip="16th Note";
+                action = mainWindow->sixteenthNoteAct;
+                break;
+            case 5:
+                icon=":/images/32th_note.gif";
+                tip="32nd Note";
+                action = mainWindow->thirtySecondNoteAct;
+                break;
+            case 6:
+                icon=":/images/64th_note.gif";
+                tip="64th Note";
+                action = mainWindow->sixtyFourthNoteAct;
+                break;
         }
 
-        noteButton[i] = new QPushButton(QIcon(icon),"");
+        noteButton[i]->setIcon(QIcon(icon));
         noteButton[i]->setToolTip(tip);
         noteButton[i]->setCheckable(true);
         noteButton[i]->setFlat(true);
 
         connect(noteButton[i],SIGNAL(pressed()),this,SLOT(resetNoteAndRestButtons()));
 
+        connect(noteButton[i], SIGNAL(toggled(bool)), action, SLOT(setChecked(bool)));
+        connect(action, SIGNAL(toggled(bool)), noteButton[i], SLOT(setChecked(bool)));
+
         noteLayout->addWidget(noteButton[i]);
     }
 
-	noteLayout->addStretch(1);
+    noteLayout->addStretch(1);
 
     noteButton[0]->setChecked(true);
 
@@ -75,7 +111,7 @@ void NotePage::createRestButtons()
         restLayout->addWidget(restButton[i]);
     }
 
-	restLayout->addStretch(1);
+    restLayout->addStretch(1);
 
     restGroup->setLayout(restLayout);
     layout->addWidget(restGroup);
@@ -120,7 +156,7 @@ void NotePage::createRhythmButtons()
     rhythmLayout->addWidget(groupingButton);
     rhythmLayout->addWidget(fermataButton);
 
-	rhythmLayout->addStretch(1);
+    rhythmLayout->addStretch(1);
 
     rhythmGroup->setLayout(rhythmLayout);
     layout->addWidget(rhythmGroup);
@@ -180,7 +216,7 @@ void NotePage::createSlideLegatoButtons()
     slideLegatoLayout->addWidget(slideOutBelowButton);
     slideLegatoLayout->addWidget(slideOutAboveButton);
 
-	slideLegatoLayout->addStretch(1);
+    slideLegatoLayout->addStretch(1);
 
     slideLegatoGroup->setLayout(slideLegatoLayout);
     layout->addWidget(slideLegatoGroup);
@@ -227,7 +263,7 @@ void NotePage::createVibratoTremoloButtons()
     vibratoTremoloLayout->addWidget(trillButton);
     vibratoTremoloLayout->addWidget(tremoloButton);
 
-	vibratoTremoloLayout->addStretch(1);
+    vibratoTremoloLayout->addStretch(1);
 
     vibratoTremoloGroup->setLayout(vibratoTremoloLayout);
     layout->addWidget(vibratoTremoloGroup);
@@ -255,7 +291,9 @@ void NotePage::resetSlideLegatoButtons()
     shiftSlideButton->setChecked(false);
 }
 
-NotePage::NotePage(QFrame *parent, SkinManager *skinManager) : QFrame(parent)
+NotePage::NotePage(PowerTabEditor* mainWindow, SkinManager *skinManager, QFrame *parent) :
+    QFrame(parent),
+    mainWindow(mainWindow)
 {
     setFrameStyle(QFrame::StyledPanel);
 

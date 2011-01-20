@@ -274,11 +274,11 @@ int Staff::GetHeight() const
 // Finds the Position object at the given position index in the staff
 Position* Staff::GetPositionByPosition(uint32_t index) const
 {
-    for (uint32_t i = 0; i < lowMelodyPositionArray.size(); i++)
+    for (uint32_t i = 0; i < highMelodyPositionArray.size(); i++)
     {
-        if (lowMelodyPositionArray.at(i)->GetPosition() == index)
+        if (highMelodyPositionArray.at(i)->GetPosition() == index)
         {
-            return lowMelodyPositionArray.at(i);
+            return highMelodyPositionArray.at(i);
         }
     }
 

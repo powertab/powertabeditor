@@ -14,6 +14,8 @@
 #include <QSplitter>
 #include <QScrollArea>
 #include <QStackedWidget>
+#include <QSignalMapper>
+#include <QActionGroup>
 
 #include <powertabeditor.h>
 #include <scorearea.h>
@@ -78,7 +80,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     horSplitter = new QSplitter();
     horSplitter->setOrientation(Qt::Horizontal);
 
-    toolBox = new Toolbox(0,skinManager);
+    toolBox = new Toolbox(this, skinManager, 0);
     horSplitter->addWidget(toolBox);
     horSplitter->addWidget(tabWidget);
 
@@ -198,6 +200,54 @@ void PowerTabEditor::CreateActions()
     chordNameAct->setShortcut(QKeySequence(Qt::Key_C));
     chordNameAct->setCheckable(true);
     connect(chordNameAct, SIGNAL(triggered()), this, SLOT(editChordName()));
+
+    // Note-related actions
+    noteDurationMapper = new QSignalMapper(this);
+    noteDurationActGroup = new QActionGroup(this);
+
+    wholeNoteAct = new QAction(tr("Whole"), this);
+    wholeNoteAct->setCheckable(true);
+    connect(wholeNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
+    noteDurationMapper->setMapping(wholeNoteAct, 1);
+    noteDurationActGroup->addAction(wholeNoteAct);
+
+    halfNoteAct = new QAction(tr("Half"), this);
+    halfNoteAct->setCheckable(true);
+    connect(halfNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
+    noteDurationMapper->setMapping(halfNoteAct, 2);
+    noteDurationActGroup->addAction(halfNoteAct);
+
+    quarterNoteAct = new QAction(tr("Quarter"), this);
+    quarterNoteAct->setCheckable(true);
+    connect(quarterNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
+    noteDurationMapper->setMapping(quarterNoteAct, 4);
+    noteDurationActGroup->addAction(quarterNoteAct);
+
+    eighthNoteAct = new QAction(tr("8th"), this);
+    eighthNoteAct->setCheckable(true);
+    connect(eighthNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
+    noteDurationMapper->setMapping(eighthNoteAct, 8);
+    noteDurationActGroup->addAction(eighthNoteAct);
+
+    sixteenthNoteAct = new QAction(tr("16th"), this);
+    sixteenthNoteAct->setCheckable(true);
+    connect(sixteenthNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
+    noteDurationMapper->setMapping(sixteenthNoteAct, 16);
+    noteDurationActGroup->addAction(sixteenthNoteAct);
+
+    thirtySecondNoteAct = new QAction(tr("32nd"), this);
+    thirtySecondNoteAct->setCheckable(true);
+    connect(thirtySecondNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
+    noteDurationMapper->setMapping(thirtySecondNoteAct, 32);
+    noteDurationActGroup->addAction(thirtySecondNoteAct);
+
+    sixtyFourthNoteAct = new QAction(tr("64th"), this);
+    sixtyFourthNoteAct->setCheckable(true);
+    connect(sixtyFourthNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
+    noteDurationMapper->setMapping(sixtyFourthNoteAct, 64);
+    noteDurationActGroup->addAction(sixtyFourthNoteAct);
+
+    connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(editNoteDuration(int)));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -241,6 +291,16 @@ void PowerTabEditor::CreateMenus()
     // Text Menu
     textMenu = menuBar()->addMenu(tr("&Text"));
     textMenu->addAction(chordNameAct);
+
+    // Note Menu
+    notesMenu = menuBar()->addMenu(tr("&Notes"));
+    notesMenu->addAction(wholeNoteAct);
+    notesMenu->addAction(halfNoteAct);
+    notesMenu->addAction(quarterNoteAct);
+    notesMenu->addAction(eighthNoteAct);
+    notesMenu->addAction(sixteenthNoteAct);
+    notesMenu->addAction(thirtySecondNoteAct);
+    notesMenu->addAction(sixtyFourthNoteAct);
 }
 
 void PowerTabEditor::CreateTabArea()
@@ -514,6 +574,7 @@ void PowerTabEditor::updateActions()
     Caret* caret = getCurrentScoreArea()->getCaret();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
     System* currentSystem = caret->getCurrentSystem();
+    Position* currentPosition = caret->getCurrentPosition();
 
     // Check for chord text
     if (currentSystem->HasChordText(caretPosition))
@@ -524,13 +585,29 @@ void PowerTabEditor::updateActions()
     {
         chordNameAct->setChecked(false);
     }
+
+    // note duration
+    if (currentPosition != NULL)
+    {
+        quint8 duration = currentPosition->GetDurationType();
+        switch(duration)
+        {
+        case 1: wholeNoteAct->setChecked(true); break;
+        case 2: halfNoteAct->setChecked(true); break;
+        case 4: quarterNoteAct->setChecked(true); break;
+        case 8: eighthNoteAct->setChecked(true); break;
+        case 16: sixteenthNoteAct->setChecked(true); break;
+        case 32: thirtySecondNoteAct->setChecked(true); break;
+        case 64: sixtyFourthNoteAct->setChecked(true); break;
+        }
+    }
 }
 
 // Enables/disables actions that should only be available when a score is opened
 void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
-    menuList << playbackMenu << positionMenu << textMenu;
+    menuList << playbackMenu << positionMenu << textMenu << notesMenu;
 
     QAction* action;
     QMenu* menu;
@@ -542,4 +619,9 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
             action->setEnabled(enable);
         }
     }
+}
+
+void PowerTabEditor::editNoteDuration(int duration)
+{
+    qDebug() << duration;
 }

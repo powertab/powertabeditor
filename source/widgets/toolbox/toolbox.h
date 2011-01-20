@@ -6,12 +6,13 @@
 class NotePage;
 class ScorePage;
 class SkinManager;
+class PowerTabEditor;
 
 class Toolbox : public QTabWidget
 {
     Q_OBJECT
 public:
-    explicit Toolbox(QWidget *parent = 0, SkinManager *skinManager = 0);
+    explicit Toolbox(PowerTabEditor* mainWindow, SkinManager *skinManager = 0, QWidget *parent = 0);
 
 private:
     static ScorePage *scorePage;

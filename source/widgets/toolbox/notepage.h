@@ -8,15 +8,17 @@ class QPushButton;
 class QGroupBox;
 class QHBoxLayout;
 class QVBoxLayout;
+class PowerTabEditor;
 
 class NotePage : public QFrame
 {
     Q_OBJECT
 
 public:
-    NotePage(QFrame *parent = 0, SkinManager *skinManager = 0);
+    NotePage(PowerTabEditor* mainWindow,SkinManager *skinManager = 0, QFrame *parent = 0);
 
 private:
+    PowerTabEditor* mainWindow;
     QVBoxLayout *layout;
 
     QHBoxLayout *noteLayout;

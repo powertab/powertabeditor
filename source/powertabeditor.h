@@ -15,10 +15,14 @@ class PreferencesDialog;
 class Toolbox;
 class QSplitter;
 class MidiPlayer;
+class QSignalMapper;
+class QActionGroup;
 
 class PowerTabEditor : public QMainWindow
 {
     Q_OBJECT
+
+    friend class NotePage;
 
 public:
     PowerTabEditor(QWidget *parent = 0);
@@ -62,6 +66,8 @@ private slots:
 
     void editChordName();
 
+    void editNoteDuration(int duration);
+
 private:
     bool isPlaying;
 
@@ -98,6 +104,17 @@ private:
 
     QMenu* textMenu;
     QAction* chordNameAct; // add/remove a chord name
+
+    QMenu* notesMenu;
+    QSignalMapper* noteDurationMapper; // map note duration signals to a slot
+    QActionGroup* noteDurationActGroup; // only one duration can be checked at a time
+    QAction* wholeNoteAct; // actions for modifying the duration of a note/rest
+    QAction* halfNoteAct;
+    QAction* quarterNoteAct;
+    QAction* eighthNoteAct;
+    QAction* sixteenthNoteAct;
+    QAction* thirtySecondNoteAct;
+    QAction* sixtyFourthNoteAct;
 
     PreferencesDialog* preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in

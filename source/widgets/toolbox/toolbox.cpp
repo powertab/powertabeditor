@@ -7,7 +7,7 @@
 ScorePage *Toolbox::scorePage = NULL;
 NotePage *Toolbox::notePage = NULL;
 
-Toolbox::Toolbox(QWidget *parent, SkinManager *skinManager) :
+Toolbox::Toolbox(PowerTabEditor* mainWindow, SkinManager *skinManager, QWidget *parent) :
     QTabWidget(parent)
 {
     setMaximumWidth(350);
@@ -19,6 +19,6 @@ Toolbox::Toolbox(QWidget *parent, SkinManager *skinManager) :
     scorePage = new ScorePage(0,skinManager);
     addTab(scorePage, QIcon(":/icons/toolbox_score.png"),"");
 
-    notePage = new NotePage(0,skinManager);
+    notePage = new NotePage(mainWindow, skinManager, 0);
     addTab(notePage, QIcon(":/icons/toolbox_note.png"),"");
 }
