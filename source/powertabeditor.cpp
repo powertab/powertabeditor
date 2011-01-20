@@ -35,6 +35,7 @@
 #include <actions/undomanager.h>
 #include <actions/removechordtext.h>
 #include <actions/addchordtext.h>
+#include <actions/updatenoteduration.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 UndoManager* PowerTabEditor::undoManager = NULL;
@@ -247,7 +248,7 @@ void PowerTabEditor::CreateActions()
     noteDurationMapper->setMapping(sixtyFourthNoteAct, 64);
     noteDurationActGroup->addAction(sixtyFourthNoteAct);
 
-    connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(editNoteDuration(int)));
+    connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(updateNoteDuration(int)));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -621,7 +622,8 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
     }
 }
 
-void PowerTabEditor::editNoteDuration(int duration)
+void PowerTabEditor::updateNoteDuration(int duration)
 {
-    qDebug() << duration;
+    Position* currentPosition = getCurrentScoreArea()->getCaret()->getCurrentPosition();
+    undoManager->push(new UpdateNoteDuration(currentPosition, duration));
 }

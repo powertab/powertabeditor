@@ -66,7 +66,7 @@ private slots:
 
     void editChordName();
 
-    void editNoteDuration(int duration);
+    void updateNoteDuration(int duration);
 
 private:
     bool isPlaying;

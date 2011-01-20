@@ -65,17 +65,13 @@ void NotePage::createNoteButtons()
         noteButton[i]->setCheckable(true);
         noteButton[i]->setFlat(true);
 
-        connect(noteButton[i],SIGNAL(pressed()),this,SLOT(resetNoteAndRestButtons()));
-
-        connect(noteButton[i], SIGNAL(toggled(bool)), action, SLOT(setChecked(bool)));
+        connect(noteButton[i], SIGNAL(clicked()), action, SLOT(trigger()));
         connect(action, SIGNAL(toggled(bool)), noteButton[i], SLOT(setChecked(bool)));
 
         noteLayout->addWidget(noteButton[i]);
     }
 
     noteLayout->addStretch(1);
-
-    noteButton[0]->setChecked(true);
 
     noteGroup->setLayout(noteLayout);
     layout->addWidget(noteGroup);

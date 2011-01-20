@@ -83,7 +83,8 @@ SOURCES += main.cpp\
     actions/removechordtext.cpp \
     dialogs/chordnamedialog.cpp \
     actions/addchordtext.cpp \
-    painters/staffpainter.cpp
+    painters/staffpainter.cpp \
+    actions/updatenoteduration.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -151,7 +152,8 @@ HEADERS  += powertabeditor.h \
     actions/removechordtext.h \
     dialogs/chordnamedialog.h \
     actions/addchordtext.h \
-    painters/staffpainter.h
+    painters/staffpainter.h \
+    actions/updatenoteduration.h
 
 RESOURCES += \
     resources.qrc
