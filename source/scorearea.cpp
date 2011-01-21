@@ -71,7 +71,7 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
 
     // draw system rectangle
     QGraphicsRectItem* systemRect = new QGraphicsRectItem;
-    systemRect->setRect(leftEdge, topEdge, width, system->GetRect().GetHeight());
+    systemRect->setRect(leftEdge, topEdge, width, systemRectangle.GetHeight());
     systemRect->setOpacity(0.5);
     systemRect->setPen(QPen(QBrush(QColor(0,0,0)), 0.5));
     scene.addItem(systemRect);

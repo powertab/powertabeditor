@@ -6,6 +6,7 @@ UpdateNoteDuration::UpdateNoteDuration(Position* position, quint8 duration) :
     position(position),
     newDuration(duration)
 {
+    setText(QObject::tr("Update Note Duration"));
     originalDuration = position->GetDurationType();
 
     Q_ASSERT(position != NULL);

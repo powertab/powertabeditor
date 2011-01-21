@@ -86,7 +86,7 @@ void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 int StaffPainter::drawStaffLines(QPainter* painter, int lineCount, int lineSpacing, int startHeight)
 {
-    int height;
+    int height = 0;
 
     for (int i=0; i < lineCount; i++)
     {
