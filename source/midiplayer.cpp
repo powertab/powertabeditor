@@ -108,11 +108,14 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                     noteList.push_back(noteInfo);
                 }
 
-                // now, add the note-off event, scheduled for after the note's duration has ended
-                noteInfo.startTime += duration;
-                noteInfo.duration = 0;
-                noteInfo.messageType = STOP_NOTE;
-                noteList.push_back(noteInfo);
+                if (!note->HasTieWrap())
+                {
+                    // now, add the note-off event, scheduled for after the note's duration has ended
+                    noteInfo.startTime += duration;
+                    noteInfo.duration = 0;
+                    noteInfo.messageType = STOP_NOTE;
+                    noteList.push_back(noteInfo);
+                }
             }
 
             if (position->IsRest())
@@ -122,10 +125,21 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 noteInfo.duration = duration;
                 noteInfo.position = positionIndex;
                 noteInfo.startTime = startTime;
-                noteList.push_back(noteInfo);
-            }
 
-            startTime += duration;
+                // for whole rests, they must last for the entire bar, regardless of time signature
+                if (position->GetDurationType() == 1)
+                {
+                    noteInfo.duration = getWholeRestDuration(system, staff, position, noteInfo.duration);
+                }
+
+                noteList.push_back(noteInfo);
+
+                startTime += noteInfo.duration;
+            }
+            else
+            {
+                startTime += duration;
+            }
         }
     }
 }
@@ -234,6 +248,27 @@ double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
         // so each note is 2/3 of its normal duration
         duration *= (double)notesPlayedOver / (double)notesPlayed;
     }
+
+    return duration;
+}
+
+double MidiPlayer::getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const
+{
+    Barline* prevBarline = system->GetPrecedingBarline(position->GetPosition());
+
+    // if the whole rest is not the only item in the bar, treat it like a regular rest
+    if (!staff->IsOnlyPositionInBar(position, system))
+    {
+        return originalDuration;
+    }
+
+    const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignatureConstRef();
+
+    double tempo = getCurrentTempo();
+    double beatDuration = currentTimeSignature.GetBeatAmount();
+    double duration = tempo * 4.0 / beatDuration;
+    int numBeats = currentTimeSignature.GetBeatsPerMeasure();
+    duration *= numBeats;
 
     return duration;
 }

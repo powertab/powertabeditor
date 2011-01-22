@@ -10,6 +10,8 @@ class Caret;
 class Position;
 class TempoMarker;
 class Guitar;
+class System;
+class Staff;
 
 class MidiPlayer : public QThread
 {
@@ -64,6 +66,7 @@ private:
     double calculateNoteDuration(Position* currentPosition) const;
     void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
     void playNotesInSystem(std::list<NoteInfo>& noteList);
+    double getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const;
 
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;

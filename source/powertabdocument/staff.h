@@ -14,6 +14,8 @@
 
 #include "position.h"
 
+class System;
+
 #define NUM_STAFF_VOICES 2    ///< Number of voices in a staff
 
 /// Stores and renders a staff
@@ -208,6 +210,8 @@ public:
     }
 
     Position* GetPositionByPosition(uint32_t index) const;
+
+    bool IsOnlyPositionInBar(Position* position, System* system) const;
 
     int GetHeight() const;
 };

@@ -354,7 +354,7 @@ struct CompareBarlineToPosition
     uint32_t position;
     bool operator()(Barline* barline)
     {
-        return barline->GetPosition() < position;
+        return barline->GetPosition() <= position;
     }
 };
 
@@ -371,7 +371,7 @@ Barline* System::GetPrecedingBarline(uint32_t position) const
 
     CompareBarlineToPosition compareToPosition;
     compareToPosition.position = position;
-    auto barline = std::find_if(m_barlineArray.begin(), m_barlineArray.end(), compareToPosition);
+    auto barline = std::find_if(m_barlineArray.rbegin(), m_barlineArray.rend(), compareToPosition);
 
     return *barline;
 }

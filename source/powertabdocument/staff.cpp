@@ -11,6 +11,7 @@
 
 #include "staff.h"
 
+#include "system.h"
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "tuning.h"                         // Needed for IsValidStringCount
 
@@ -283,4 +284,27 @@ Position* Staff::GetPositionByPosition(uint32_t index) const
     }
 
     return NULL;
+}
+
+// Returns true if the given position is the only Position object in its bar
+bool Staff::IsOnlyPositionInBar(Position *position, System *system) const
+{
+    std::vector<Barline*> barlines;
+    system->GetBarlines(barlines);
+
+    Barline* prevBarline = system->GetPrecedingBarline(position->GetPosition());
+
+    auto startBar = std::find(barlines.begin(), barlines.end(), prevBarline);
+    auto endBar = startBar + 1;
+
+    for (uint32_t i = (*startBar)->GetPosition() + 1; i < (*endBar)->GetPosition(); i++)
+    {
+        Position* pos = GetPositionByPosition(i);
+        if (pos != NULL && pos != position)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
