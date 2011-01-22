@@ -8,6 +8,7 @@
 
 class Caret;
 class Position;
+class TempoMarker;
 
 class MidiPlayer : public QThread
 {
@@ -60,6 +61,7 @@ private:
     };
 
     double getCurrentTempo() const;
+    TempoMarker* getCurrentTempoMarker() const;
     double calculateNoteDuration(Position* currentPosition) const;
     void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
     void playNotesInSystem(std::list<NoteInfo>& noteList);

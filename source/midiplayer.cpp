@@ -42,11 +42,6 @@ void MidiPlayer::run()
 
         playNotesInSystem(noteList);
 
-        if (!isPlaying)
-        {
-            return;
-        }
-
         emit playbackSystemChanged();
     }
 }
@@ -136,6 +131,11 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList)
 
     while (!noteList.empty())
     {
+        if (!isPlaying)
+        {
+            return;
+        }
+
         NoteInfo noteInfo = noteList.front();
         noteList.pop_front();
 
@@ -170,19 +170,34 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList)
     }
 }
 
-double MidiPlayer::getCurrentTempo() const
+TempoMarker* MidiPlayer::getCurrentTempoMarker() const
 {
     quint32 currentSystemIndex = caret->getCurrentSystemIndex();
     Score* currentScore = caret->getCurrentScore();
-    double bpm = 0;
 
+    TempoMarker* currentTempoMarker = NULL;
+
+    // find the active tempo marker
     for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
     {
-        TempoMarker* tempoMarker = currentScore->GetTempoMarker(i);
-        if (tempoMarker->GetSystem() <= currentSystemIndex)
+        TempoMarker* temp = currentScore->GetTempoMarker(i);
+        if (temp->GetSystem() <= currentSystemIndex)
         {
-            bpm = tempoMarker->GetBeatsPerMinute();
+            currentTempoMarker = temp;
         }
+    }
+
+    return currentTempoMarker;
+}
+
+double MidiPlayer::getCurrentTempo() const
+{
+    TempoMarker* tempoMarker = getCurrentTempoMarker();
+
+    double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
+    if (tempoMarker != NULL)
+    {
+        bpm = tempoMarker->GetBeatsPerMinute();
     }
 
     // convert bpm to millisecond duration

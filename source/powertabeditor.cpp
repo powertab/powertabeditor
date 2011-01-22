@@ -469,16 +469,22 @@ void PowerTabEditor::startStopPlayback()
         midiPlayer = new MidiPlayer(getCurrentScoreArea()->getCaret());
         connect(midiPlayer, SIGNAL(playbackSystemChanged()), this, SLOT(moveCaretToNextSection()));
         connect(midiPlayer, SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));
+        connect(midiPlayer, SIGNAL(finished()), this, SLOT(startStopPlayback()));
         midiPlayer->start();
     }
     else
     {
-        playPauseAct->setText(tr("Play"));
+        // if we manually stop playback, let the midi thread finish, and the finished() signal will trigger this function again
+        if (midiPlayer != NULL && midiPlayer->isRunning())
+        {
+            isPlaying = true;
+            delete midiPlayer;
+            midiPlayer = NULL;
+            return;
+        }
 
+        playPauseAct->setText(tr("Play"));
         getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
-        midiPlayer->terminate();
-        delete midiPlayer;
-        midiPlayer = NULL;
     }
 }
 
