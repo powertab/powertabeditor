@@ -467,17 +467,24 @@ void PowerTabEditor::startStopPlayback()
         moveCaretToStart();
 
         midiPlayer = new MidiPlayer(getCurrentScoreArea()->getCaret());
-        midiPlayer->play();
+        connect(midiPlayer, SIGNAL(playbackSystemChanged()), this, SLOT(moveCaretToNextSection()));
+        connect(midiPlayer, SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));
+        midiPlayer->start();
     }
     else
     {
         playPauseAct->setText(tr("Play"));
 
         getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
-        midiPlayer->stop();
+        midiPlayer->terminate();
         delete midiPlayer;
         midiPlayer = NULL;
     }
+}
+
+bool PowerTabEditor::moveCaretToPosition(quint8 position)
+{
+    return getCurrentScoreArea()->getCaret()->setCurrentPositionIndex(position);
 }
 
 bool PowerTabEditor::moveCaretRight()

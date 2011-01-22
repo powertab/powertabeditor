@@ -3,48 +3,72 @@
 
 #include <rtmidiwrapper.h>
 
-#include <QObject>
-#include <QMap>
-#include <QVector>
+#include <QThread>
+#include <QMutex>
 
 class Caret;
-class QTimer;
-class QSignalMapper;
 class Position;
 
-class MidiPlayer : public QObject
+class MidiPlayer : public QThread
 {
     Q_OBJECT
 
 public:
     MidiPlayer(Caret* caret);
     ~MidiPlayer();
-    void play();
-    void stop();
 
-private slots:
-    void playNotesAtCurrentPosition(int staff);
-    void playbackSong(int staff);
+signals:
+    // these signals are used to notify the caret when a position change is necessary
+    void playbackSystemChanged();
+    void playbackPositionChanged(quint8 positionIndex);
+
+protected:
+    void run();
 
 private:
+
+    enum MessageType
+    {
+        PLAY_NOTE,
+        STOP_NOTE,
+        REST,
+    };
+
+    // Holds information about a MIDI event
+    struct NoteInfo
+    {
+        MessageType messageType;
+        int channel;
+        int pitch;
+        int velocity;
+        int pan;
+        int patch;
+        double duration;
+        double startTime;
+        quint8 position; // position of the note within the staff, used for moving the caret accordingly
+
+        // used for sorting NoteInfo objects by their start time
+        inline bool operator<(const NoteInfo& note)
+        {
+            return startTime < note.startTime;
+        }
+
+        inline bool operator==(const NoteInfo& note)
+        {
+            return messageType == note.messageType && channel == note.channel && pitch == note.pitch;
+        }
+    };
+
     double getCurrentTempo() const;
     double calculateNoteDuration(Position* currentPosition) const;
+    void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
+    void playNotesInSystem(std::list<NoteInfo>& noteList);
 
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;
-    QMap<quint32, quint32> previousPositionInStaff;
-    QVector<QTimer*> songTimers;
 
-    struct NoteHistory
-    {
-        unsigned int pitch; unsigned int stringNum;
-        bool operator==(const NoteHistory& history) { return (pitch == history.pitch) && (stringNum == history.stringNum); }
-    };
-
-    QSignalMapper* signalMapper;
     bool isPlaying;
-    QMultiMap<unsigned int, NoteHistory> oldNotes; // map channels to pitches
-
+    QMutex mutex;
 };
 
 #endif // MIDIPLAYER_H

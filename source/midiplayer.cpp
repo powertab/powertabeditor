@@ -1,181 +1,167 @@
 #include "midiplayer.h"
 
 #include <QSettings>
-#include <QTimer>
-#include <QSignalMapper>
+
+#include <list>
+#include <algorithm>
 
 #include <painters/caret.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/guitar.h>
 
-MidiPlayer::MidiPlayer(Caret* caret)
+MidiPlayer::MidiPlayer(Caret* caret) :
+    caret(caret)
 {
-    this->caret = caret;
-
     QSettings settings;
     rtMidiWrapper.initialize(settings.value("midi/preferredPort", 0).toInt());
 
-    signalMapper = new QSignalMapper();
-
     isPlaying = false;
-
-    songTimers.resize(8);
-    for (int i = 0; i < songTimers.size(); ++i)
-    {
-        songTimers[i] = new QTimer;
-        connect(songTimers.at(i),SIGNAL(timeout()),signalMapper,SLOT(map()));
-        signalMapper->setMapping(songTimers.at(i), i);
-    }
-    connect(signalMapper, SIGNAL(mapped(const int)), this, SLOT(playbackSong(int)), Qt::DirectConnection);
 }
 
 MidiPlayer::~MidiPlayer()
 {
-    delete signalMapper;
-    for (int i = 0; i < songTimers.size(); i++)
-    {
-        delete songTimers.at(i);
-    }
+    mutex.lock();
+    isPlaying = false;
+    mutex.unlock();
+
+    wait();
 }
 
-void MidiPlayer::play()
+void MidiPlayer::run()
 {
-    previousPositionInStaff.clear();
+    isPlaying = true;
 
-    for (quint32 i = 0; i < caret->getCurrentSystem()->GetStaffCount(); ++i)
+    // go through each system, generate a list of the notes (midi events) from each staff
+    // then, sort notes by their start time, and play them in order
+    for (quint32 i = caret->getCurrentSystemIndex(); i < caret->getCurrentScore()->GetSystemCount(); ++i)
     {
-        playNotesAtCurrentPosition(i);
-    }
-}
+        std::list<NoteInfo> noteList;
+        generateNotesInSystem(i, noteList);
 
-void MidiPlayer::stop()
-{
-    for (int i = 0; i < songTimers.size(); i++)
-    {
-        songTimers.at(i)->stop();
-    }
+        noteList.sort();
 
-    QMultiMap<unsigned int, NoteHistory>::iterator i = oldNotes.begin();
-    for (; i != oldNotes.end(); ++i)
-    {
-        rtMidiWrapper.stopNote(i.key(), i.value().pitch);
-    }
-    oldNotes.clear();
-}
+        playNotesInSystem(noteList);
 
-void MidiPlayer::playNotesAtCurrentPosition(int staff)
-{
-    quint32 position_index = previousPositionInStaff.value(staff, -1) + 1; // get position
-    previousPositionInStaff.insert(staff, position_index); // update
-
-    // retrieve the current position
-    //qDebug() << "Staff: " << staff << " Position " << position_index;
-    Position* position = caret->getCurrentSystem()->GetStaff(staff)->GetPosition(0,position_index);
-
-    if (!position) // check for invalid position (caused by invalid position index)
-    {
-        return;
-    }
-    // stop all previous notes except for notes that are to be tied
-    {
-        QList<unsigned int> notesToBeKept;
-        notesToBeKept.reserve(position->GetNoteCount());
-        for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
+        if (!isPlaying)
         {
-            if (position->GetNote(i)->IsTied())
-            {
-                notesToBeKept.push_back(position->GetNote(i)->GetString());
-            }
+            return;
         }
-        QMutableMapIterator<unsigned int, NoteHistory> i(oldNotes);
-        while(i.hasNext())
-        {
-            i.next();
-            if (i.key() == (unsigned int)staff && !notesToBeKept.contains(i.value().stringNum))
-            {
-                songTimers.at(staff)->stop();
-                rtMidiWrapper.stopNote(staff, i.value().pitch);
-                i.remove();
-            }
-        }
+
+        emit playbackSystemChanged();
     }
+}
 
-    if (!position->IsRest())
+// Generates a list of all notes in the given system, by iterating through each position in each staff of the system
+void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const
+{
+    System* system = caret->getCurrentScore()->GetSystem(systemIndex);
+
+    for (quint32 i = 0; i < system->GetStaffCount(); i++)
     {
-        for (unsigned int i = 0; i < position->GetNoteCount(); ++i)
-        // loop through all notes in the current position on the current staff
-        {
-            if (!position->GetNote(i)->IsTied())
-            {
-                Guitar* guitar = caret->getCurrentScore()->GetGuitar(staff);
-                Note* note = position->GetNote(i);
+        Staff* staff = system->GetStaff(i);
+        Guitar* guitar = caret->getCurrentScore()->GetGuitar(i);
 
-                unsigned int pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
+        double startTime = 0; // each note in the staff is given a start time relative to the first note of the staff
+
+        for (quint32 j = 0; j < staff->GetPositionCount(0); j++)
+        {
+            Position* position = staff->GetPosition(0, j);
+
+            const double duration = calculateNoteDuration(position); // each note at a position has the same duration
+
+            for (quint32 k = 0; k < position->GetNoteCount(); k++)
+            {
+                Note* note = position->GetNote(k);
+
+                // find the pitch of the note
+                quint32 pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
                 pitch += note->GetFretNumber();
 
-                rtMidiWrapper.setVolume(staff,guitar->GetInitialVolume());
-                rtMidiWrapper.setPan(staff,guitar->GetPan());
-                rtMidiWrapper.setPatch(staff,guitar->GetPreset());
+                // fill in the note info structure
+                NoteInfo noteInfo;
+                noteInfo.channel = i;
+                noteInfo.messageType = position->IsRest() ? REST : PLAY_NOTE;
+                noteInfo.pitch = pitch;
+                noteInfo.velocity = guitar->GetInitialVolume();
+                noteInfo.pan = guitar->GetPan();
+                noteInfo.patch = guitar->GetPreset();
+                noteInfo.duration = duration;
+                noteInfo.startTime = startTime;
 
+                // only keep track of position for the first staff
+                noteInfo.position = i == 0 ? position->GetPosition() : 0;
 
-                rtMidiWrapper.playNote(staff, pitch ,127);
-                NoteHistory noteHistory = {pitch, note->GetString()};
-                oldNotes.insertMulti(staff, noteHistory );
+                if (note->IsTied()) // if the note is tied, delete the previous note-off event
+                {
+                    NoteInfo temp;
+                    temp.channel = i;
+                    temp.messageType = STOP_NOTE;
+                    temp.pitch = pitch;
+                    auto prevNoteEnd = std::find(noteList.rbegin(), noteList.rend(), temp);
+                    if (prevNoteEnd != noteList.rend())
+                    {
+                        noteList.erase(--prevNoteEnd.base());
+                    }
+                }
+                else // otherwise, if the note is not tied, add a new note
+                {
+                    noteList.push_back(noteInfo);
+                }
+
+                if (!position->IsRest())
+                {
+                    // now, add the note-off event, scheduled for after the note's duration has ended
+                    noteInfo.startTime += duration;
+                    noteInfo.duration = 0;
+                    noteInfo.messageType = STOP_NOTE;
+                    noteList.push_back(noteInfo);
+                }
             }
+
+            startTime += duration;
         }
     }
-
-    const double duration = calculateNoteDuration(position);
-    songTimers.at(staff)->start(duration);
 }
 
-void MidiPlayer::playbackSong(int staff)
+// The notes are already in order of occurrence, so just play them one by one
+void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList)
 {
-    // make sure all staves are finished before switching to the next system
-    bool okayToSwitchStaves = true;
-    // the caret should move along with the staff that is furthest along in playback
-    quint32 staffWithMaxPosition = 0;
+    quint8 currentPosition = 0;
 
-    QMap<quint32, quint32>::const_iterator i = previousPositionInStaff.constBegin();
-    while (i != previousPositionInStaff.constEnd())
+    while (!noteList.empty())
     {
-        Staff* staff = caret->getCurrentSystem()->GetStaff(i.key());
-        if (i.value() < staff->GetPositionCount(0)) // check if a staff is not finished
-        {
-            okayToSwitchStaves = false;
-        }
-        if (previousPositionInStaff.value(staffWithMaxPosition) <= i.value())
-        {
-            staffWithMaxPosition = i.key();
-        }
-        ++i;
-    }
+        NoteInfo noteInfo = noteList.front();
+        noteList.pop_front();
 
-    // only advance the caret if we are in the staff that is furthest along
-    if(staff == 0)
-    {
-        if (!caret->moveCaretHorizontal(1))
+        if (noteInfo.messageType == PLAY_NOTE)
         {
-            if (!caret->moveCaretSection(1) && okayToSwitchStaves)
-            {
-                stop();
-                return;
-            }
-            else
-            {
-                previousPositionInStaff.clear();
-                // once we move to a new system, start playing all each of the staves for that system
-                for (unsigned int j = 0; j < caret->getCurrentSystem()->GetStaffCount(); ++j)
-                {
-                    playNotesAtCurrentPosition(j);
-                }
-                return;
-            }
+            rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.patch);
+            rtMidiWrapper.setPan(noteInfo.channel, noteInfo.pan);
+            rtMidiWrapper.setVolume(noteInfo.channel, noteInfo.velocity);
+            rtMidiWrapper.playNote(noteInfo.channel, noteInfo.pitch, noteInfo.velocity);
+        }
+        else if (noteInfo.messageType == STOP_NOTE)
+        {
+            rtMidiWrapper.stopNote(noteInfo.channel, noteInfo.pitch);
+        }
+
+        // if we've moved to a new position, move the caret
+        if (noteInfo.position > currentPosition)
+        {
+            currentPosition = noteInfo.position;
+            emit playbackPositionChanged(currentPosition);
+        }
+
+        // pause for the required time between notes
+        if (!noteList.empty())
+        {
+            usleep(1000 * (noteList.front().startTime - noteInfo.startTime));
+        }
+        else
+        {
+            usleep(1000 * noteInfo.duration);
         }
     }
-
-    // play next note for this staff
-    playNotesAtCurrentPosition(staff);
 }
 
 double MidiPlayer::getCurrentTempo() const

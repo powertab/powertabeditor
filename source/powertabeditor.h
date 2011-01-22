@@ -55,6 +55,7 @@ private slots:
     void moveCaretUp();
     void moveCaretToStart();
     void moveCaretToEnd();
+    bool moveCaretToPosition(quint8 position);
 
     bool moveCaretToNextStaff();
     bool moveCaretToPrevStaff();
