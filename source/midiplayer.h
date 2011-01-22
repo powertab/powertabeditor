@@ -9,6 +9,7 @@
 class Caret;
 class Position;
 class TempoMarker;
+class Guitar;
 
 class MidiPlayer : public QThread
 {
@@ -41,9 +42,7 @@ private:
         MessageType messageType;
         int channel;
         int pitch;
-        int velocity;
-        int pan;
-        int patch;
+        Guitar* guitar;
         double duration;
         double startTime;
         quint8 position; // position of the note within the staff, used for moving the caret accordingly

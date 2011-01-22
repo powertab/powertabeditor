@@ -78,9 +78,7 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 noteInfo.channel = i;
                 noteInfo.messageType = position->IsRest() ? REST : PLAY_NOTE;
                 noteInfo.pitch = pitch;
-                noteInfo.velocity = guitar->GetInitialVolume();
-                noteInfo.pan = guitar->GetPan();
-                noteInfo.patch = guitar->GetPreset();
+                noteInfo.guitar = guitar;
                 noteInfo.duration = duration;
                 noteInfo.startTime = startTime;
                 noteInfo.position = positionIndex;
@@ -141,10 +139,12 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList)
 
         if (noteInfo.messageType == PLAY_NOTE)
         {
-            rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.patch);
-            rtMidiWrapper.setPan(noteInfo.channel, noteInfo.pan);
-            rtMidiWrapper.setVolume(noteInfo.channel, noteInfo.velocity);
-            rtMidiWrapper.playNote(noteInfo.channel, noteInfo.pitch, noteInfo.velocity);
+            // grab the patch/pan/volume immediately before playback to allow for real-time mixing
+            rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.guitar->GetPreset());
+            rtMidiWrapper.setPan(noteInfo.channel, noteInfo.guitar->GetPan());
+            rtMidiWrapper.setVolume(noteInfo.channel, noteInfo.guitar->GetInitialVolume());
+
+            rtMidiWrapper.playNote(noteInfo.channel, noteInfo.pitch, 127);
         }
         else if (noteInfo.messageType == STOP_NOTE)
         {
