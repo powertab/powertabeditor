@@ -70,6 +70,7 @@ private:
 
     bool isPlaying;
     QMutex mutex;
+    quint32 currentSystemIndex;
 };
 
 #endif // MIDIPLAYER_H

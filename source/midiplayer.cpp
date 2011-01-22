@@ -16,6 +16,7 @@ MidiPlayer::MidiPlayer(Caret* caret) :
     rtMidiWrapper.initialize(settings.value("midi/preferredPort", 0).toInt());
 
     isPlaying = false;
+    currentSystemIndex = 0;
 }
 
 MidiPlayer::~MidiPlayer()
@@ -31,12 +32,14 @@ void MidiPlayer::run()
 {
     isPlaying = true;
 
+    currentSystemIndex = caret->getCurrentSystemIndex();
+
     // go through each system, generate a list of the notes (midi events) from each staff
     // then, sort notes by their start time, and play them in order
-    for (quint32 i = caret->getCurrentSystemIndex(); i < caret->getCurrentScore()->GetSystemCount(); ++i)
+    for (; currentSystemIndex < caret->getCurrentScore()->GetSystemCount(); ++currentSystemIndex)
     {
         std::list<NoteInfo> noteList;
-        generateNotesInSystem(i, noteList);
+        generateNotesInSystem(currentSystemIndex, noteList);
 
         noteList.sort();
 
@@ -172,7 +175,6 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList)
 
 TempoMarker* MidiPlayer::getCurrentTempoMarker() const
 {
-    quint32 currentSystemIndex = caret->getCurrentSystemIndex();
     Score* currentScore = caret->getCurrentScore();
 
     TempoMarker* currentTempoMarker = NULL;
@@ -195,13 +197,16 @@ double MidiPlayer::getCurrentTempo() const
     TempoMarker* tempoMarker = getCurrentTempoMarker();
 
     double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
+    double beatType = TempoMarker::DEFAULT_BEAT_TYPE;
+
     if (tempoMarker != NULL)
     {
         bpm = tempoMarker->GetBeatsPerMinute();
+        beatType = tempoMarker->GetBeatType();
     }
 
     // convert bpm to millisecond duration
-    return (60.0 / bpm * 1000.0);
+    return (60.0 / bpm * 1000.0 * (TempoMarker::quarter / beatType));
 }
 
 double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
