@@ -59,7 +59,7 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
         quint8 pitch = guitar->GetTuning().GetNote(currentNote->GetString()) + currentNote->GetFretNumber();
 
         const bool usesSharps = keySignature->UsesSharps() || keySignature->HasNoKeyAccidentals();
-        const QString noteText = QString::fromStdString(GetMidiNoteText(pitch, usesSharps));
+        const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps));
 
         const int octaveDiff = getOctaveDiff(currentNote, pitch);
         const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
@@ -72,7 +72,7 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
 int StdNotationPainter::getOctaveDiff(const Note* currentNote, const int pitch) const
 {
     // get octave difference
-    int octaveDiff = floor((MIDI_NOTE_F4 - pitch) / 12.0);
+    int octaveDiff = floor((midi::MIDI_NOTE_F4 - pitch) / 12.0);
 
     // apply any octave-related notation instructions, like 8va or 8vb
     if (currentNote->IsOctave8va())
