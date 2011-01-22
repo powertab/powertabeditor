@@ -2,7 +2,12 @@
 
 RtMidiWrapper::RtMidiWrapper()
 {
-    midiout=new RtMidiOut();
+    midiout = new RtMidiOut();
+}
+
+RtMidiWrapper::~RtMidiWrapper()
+{
+    delete midiout;
 }
 
 bool RtMidiWrapper::sendMidiMessage(int a, int b, int c)
