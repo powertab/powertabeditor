@@ -68,6 +68,7 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
             Position* position = staff->GetPosition(0, j);
 
             const double duration = calculateNoteDuration(position); // each note at a position has the same duration
+            const quint32 positionIndex = i == 0 ? position->GetPosition() : 0; // only keep track of position for the first staff
 
             for (quint32 k = 0; k < position->GetNoteCount(); k++)
             {
@@ -87,9 +88,7 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 noteInfo.patch = guitar->GetPreset();
                 noteInfo.duration = duration;
                 noteInfo.startTime = startTime;
-
-                // only keep track of position for the first staff
-                noteInfo.position = i == 0 ? position->GetPosition() : 0;
+                noteInfo.position = positionIndex;
 
                 if (note->IsTied()) // if the note is tied, delete the previous note-off event
                 {
@@ -108,14 +107,21 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                     noteList.push_back(noteInfo);
                 }
 
-                if (!position->IsRest())
-                {
-                    // now, add the note-off event, scheduled for after the note's duration has ended
-                    noteInfo.startTime += duration;
-                    noteInfo.duration = 0;
-                    noteInfo.messageType = STOP_NOTE;
-                    noteList.push_back(noteInfo);
-                }
+                // now, add the note-off event, scheduled for after the note's duration has ended
+                noteInfo.startTime += duration;
+                noteInfo.duration = 0;
+                noteInfo.messageType = STOP_NOTE;
+                noteList.push_back(noteInfo);
+            }
+
+            if (position->IsRest())
+            {
+                NoteInfo noteInfo;
+                noteInfo.messageType = REST;
+                noteInfo.duration = duration;
+                noteInfo.position = positionIndex;
+                noteInfo.startTime = startTime;
+                noteList.push_back(noteInfo);
             }
 
             startTime += duration;
