@@ -45,6 +45,11 @@ void MidiPlayer::run()
 
         playNotesInSystem(noteList);
 
+        if (!isPlaying)
+        {
+            return;
+        }
+
         emit playbackSystemChanged();
     }
 }
