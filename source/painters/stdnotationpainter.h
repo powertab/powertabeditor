@@ -29,6 +29,8 @@ public:
     };
 
     inline double getYLocation() const { return yLocation; }
+    inline Position* getPositionObject() const { return position; }
+
     int accidental;
 
 protected:
@@ -46,6 +48,7 @@ protected:
     KeySignature* keySignature;
     static QFont musicFont;
     double yLocation;
+    double width;
 };
 
 #endif // STDNOTATIONPAINTER_H

@@ -408,9 +408,8 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
         {
             Note* note = currentPosition->GetNote(j);
 
-            StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, note, currentGuitar->GetTuningPtr(), currentKeySig);
-            centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
-                       currentStaffInfo.getTopStdNotationLine());
+            StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition,
+                                                                        note, currentGuitar->GetTuningPtr(), currentKeySig);
             notePainters << stdNotePainter;
 
             // map all of the notes for each position on the staff, so that we can adjust accidentals later
@@ -421,6 +420,9 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
     // after adjusting accidentals, etc, we can add the painters to the scene
     foreach(StdNotationPainter* painter, notePainters)
     {
+        const quint32 location = system->GetPositionX(painter->getPositionObject()->GetPosition());
+        centerItem(painter, location, location + system->GetPositionSpacing(),
+                   currentStaffInfo.getTopStdNotationLine());
         scene.addItem(painter);
     }
 }

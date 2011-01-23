@@ -23,6 +23,7 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* pos
     {
         init();
     }
+    width = 10;
 }
 
 void StdNotationPainter::init()
@@ -47,7 +48,7 @@ void StdNotationPainter::init()
 
 QRectF StdNotationPainter::boundingRect() const
 {
-    return QRectF(0, -staffInfo.getTopStdNotationLine(false), 10, staffInfo.getTopTabLine(false));
+    return QRectF(0, -staffInfo.getTopStdNotationLine(false), width, staffInfo.getTopTabLine(false));
 }
 
 void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -78,7 +79,10 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
         noteHead = MusicFont::QuarterNoteOrLess;
     }
 
-    painter->drawText(0, yLocation, getAccidentalText() + noteHead);
+    QString displayText = getAccidentalText() + noteHead;
+    width = QFontMetricsF(musicFont).width(displayText);
+
+    painter->drawText(0, yLocation, displayText);
 }
 
 int StdNotationPainter::getOctaveDiff(const Note* currentNote, const int pitch) const
