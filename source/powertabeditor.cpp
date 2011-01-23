@@ -464,8 +464,6 @@ void PowerTabEditor::startStopPlayback()
 
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
 
-        moveCaretToStart();
-
         midiPlayer = new MidiPlayer(getCurrentScoreArea()->getCaret());
         connect(midiPlayer, SIGNAL(playbackSystemChanged()), this, SLOT(moveCaretToNextSection()));
         connect(midiPlayer, SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));

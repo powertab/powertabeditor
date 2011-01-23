@@ -33,6 +33,7 @@ void MidiPlayer::run()
     isPlaying = true;
 
     currentSystemIndex = caret->getCurrentSystemIndex();
+    int startPos = caret->getCurrentPositionIndex();
 
     // go through each system, generate a list of the notes (midi events) from each staff
     // then, sort notes by their start time, and play them in order
@@ -43,7 +44,12 @@ void MidiPlayer::run()
 
         noteList.sort();
 
-        playNotesInSystem(noteList);
+        playNotesInSystem(noteList, startPos);
+
+        if (startPos > 0)
+        {
+            startPos = -1;
+        }
 
         if (!isPlaying)
         {
@@ -71,7 +77,7 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
             Position* position = staff->GetPosition(0, j);
 
             const double duration = calculateNoteDuration(position); // each note at a position has the same duration
-            const quint32 positionIndex = i == 0 ? position->GetPosition() : 0; // only keep track of position for the first staff
+            const quint32 positionIndex = position->GetPosition(); // only keep track of position for the first staff
 
             for (quint32 k = 0; k < position->GetNoteCount(); k++)
             {
@@ -145,7 +151,8 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
 }
 
 // The notes are already in order of occurrence, so just play them one by one
-void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList)
+// startPos is used to identify the starting position to begin playback from
+void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
 {
     quint8 currentPosition = 0;
 
@@ -158,6 +165,11 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList)
 
         NoteInfo noteInfo = noteList.front();
         noteList.pop_front();
+
+        if (noteInfo.position < startPos)
+        {
+            continue;
+        }
 
         if (noteInfo.messageType == PLAY_NOTE)
         {

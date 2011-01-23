@@ -1,12 +1,14 @@
 #ifndef RTMIDIWRAPPER_H
 #define RTMIDIWRAPPER_H
 
-#include <rtmidi/rtmidi.h>
+#include <string>
+
+class RtMidiOut;
 
 class RtMidiWrapper
 {
 private:
-    RtMidiOut *midiout;
+    RtMidiOut* midiout;
     bool sendMidiMessage(int a, int b, int c);
 
 public:

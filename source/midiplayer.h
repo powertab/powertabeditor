@@ -65,7 +65,7 @@ private:
     TempoMarker* getCurrentTempoMarker() const;
     double calculateNoteDuration(Position* currentPosition) const;
     void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
-    void playNotesInSystem(std::list<NoteInfo>& noteList);
+    void playNotesInSystem(std::list<NoteInfo>& noteList, int startPos);
     double getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const;
 
     Caret* caret;

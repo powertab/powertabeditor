@@ -1,5 +1,7 @@
 #include "rtmidiwrapper.h"
 
+#include <rtmidi/rtmidi.h>
+
 RtMidiWrapper::RtMidiWrapper()
 {
     midiout = new RtMidiOut();
