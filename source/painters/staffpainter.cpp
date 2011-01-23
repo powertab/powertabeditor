@@ -40,7 +40,7 @@ void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
     {
         Caret* caret = PowerTabEditor::getCurrentScoreArea()->getCaret();
 
-        int position = findClosestPosition(x, system->GetFirstPositionX() - staffInfo.leftEdge, staffInfo.positionWidth);
+        int position = findClosestPosition(x, system->GetFirstPositionX() - staffInfo.leftEdge + 0.5 * staffInfo.positionWidth, staffInfo.positionWidth);
         int staffIndex = system->FindStaffIndex(staff);
 
         Score* currentScore = caret->getCurrentScore();
