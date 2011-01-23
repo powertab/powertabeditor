@@ -4,7 +4,7 @@
 #include <cmath>
 
 #include <powertabdocument/position.h>
-#include <powertabdocument/guitar.h>
+#include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
 #include <powertabdocument/keysignature.h>
 #include <musicfont.h>
@@ -12,12 +12,32 @@
 
 QFont StdNotationPainter::musicFont = MusicFont().getFont();
 
-StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* position, Guitar* guitar, KeySignature* keySignature):
+StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* position, Note* note, Tuning* tuning, KeySignature* keySignature):
         staffInfo(staffInfo),
         position(position),
-        guitar(guitar),
+        note(note),
+        tuning(tuning),
         keySignature(keySignature)
 {
+    if (!position->IsRest())
+    {
+        init();
+    }
+}
+
+void StdNotationPainter::init()
+{
+    quint8 pitch = note->GetPitch(tuning);
+
+    const bool usesSharps = keySignature->UsesSharps() || keySignature->HasNoKeyAccidentals();
+    const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps, keySignature->NumberOfAccidentals()));
+
+    const int octaveDiff = getOctaveDiff(note, pitch);
+    const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
+    const int displayOffset = getDisplayPosition(noteText);
+
+    yLocation = displayOffset * 0.5 * staffInfo.stdNotationLineSpacing + 1 + octaveShift;
+    accidental = findAccidentalType(noteText);
 }
 
 QRectF StdNotationPainter::boundingRect() const
@@ -53,20 +73,7 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
         noteHead = MusicFont::QuarterNoteOrLess;
     }
 
-    for (quint32 i=0; i < position->GetNoteCount(); i++)
-    {
-        Note* currentNote = position->GetNote(i);
-        quint8 pitch = guitar->GetTuning().GetNote(currentNote->GetString()) + currentNote->GetFretNumber();
-
-        const bool usesSharps = keySignature->UsesSharps() || keySignature->HasNoKeyAccidentals();
-        const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps, keySignature->NumberOfAccidentals()));
-
-        const int octaveDiff = getOctaveDiff(currentNote, pitch);
-        const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
-        const int displayOffset = getDisplayPosition(noteText);
-
-        painter->drawText(0, displayOffset * 0.5 * staffInfo.stdNotationLineSpacing + 1 + octaveShift, noteHead);
-    }
+    painter->drawText(0, yLocation, getAccidentalText() + noteHead);
 }
 
 int StdNotationPainter::getOctaveDiff(const Note* currentNote, const int pitch) const
@@ -162,4 +169,52 @@ int StdNotationPainter::getDisplayPosition(const QString& noteName)
     default:
         return 0;
     }
+}
+
+int StdNotationPainter::findAccidentalType(const QString& noteText) const
+{
+    if (noteText.endsWith("##"))
+    {
+        return DOUBLE_SHARP;
+    }
+    if (noteText.endsWith("#"))
+    {
+        return SHARP;
+    }
+    if (noteText.endsWith("bb"))
+    {
+        return DOUBLE_FLAT;
+    }
+    if (noteText.endsWith("b"))
+    {
+        return FLAT;
+    }
+
+    return NO_ACCIDENTAL;
+}
+
+QString StdNotationPainter::getAccidentalText() const
+{
+    QString text;
+
+    switch(accidental)
+    {
+    case FLAT:
+        text += QChar(MusicFont::AccidentalFlat);
+        break;
+    case SHARP:
+        text += QChar(MusicFont::AccidentalSharp);
+        break;
+    case DOUBLE_FLAT:
+        text += QString(2, QChar(MusicFont::AccidentalFlat));
+        break;
+    case DOUBLE_SHARP:
+        text += QString(2, QChar(MusicFont::AccidentalSharp));
+        break;
+    case NATURAL:
+        text += QChar(MusicFont::Natural);
+        break;
+    }
+
+    return text;
 }

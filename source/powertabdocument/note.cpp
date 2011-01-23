@@ -13,6 +13,7 @@
 #include <sstream>
 #include "note.h"
 
+#include "tuning.h"
 #include "powertabfileheader.h"             // Needed for file version constants
 
 // Default Constants
@@ -1033,4 +1034,10 @@ std::string Note::GetText() const
     }
 
     return output.str();
+}
+
+// Returns the pitch of the note, for the given guitar tuning
+uint8_t Note::GetPitch(Tuning* tuning) const
+{
+    return tuning->GetNote(GetString()) + GetFretNumber();
 }

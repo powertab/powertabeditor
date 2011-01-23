@@ -111,6 +111,7 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
         renderBars(currentStaffInfo, system);
 
         drawTabNotes(system, currentStaff, currentStaffInfo);
+        drawStdNotation(system, currentStaff, currentStaffInfo);
 
         if (i == 0)
         {
@@ -341,12 +342,46 @@ void ScoreArea::drawChordText(System* system, const StaffData& currentStaffInfo)
 
 void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
+    for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
+    {
+        Position* currentPosition = staff->GetPosition(0, i);
+        const quint32 location = system->GetPositionX(currentPosition->GetPosition());
+
+        for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
+        {
+            Note* note = currentPosition->GetNote(j);
+
+            TabNotePainter* tabNote = new TabNotePainter(note);
+            centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
+                       currentStaffInfo.getTabLineHeight(note->GetString()) + 13);
+            scene.addItem(tabNote);
+        }
+    }
+}
+
+void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo)
+{
     Barline* currentBarline = NULL;
+    Barline* prevBarline = system->GetStartBarPtr();
+
+    QList<StdNotationPainter*> notePainters;
+    QMultiMap<double, StdNotationPainter*> accidentalsMap;
+
     for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
     {
         Position* currentPosition = staff->GetPosition(0, i);
         const quint32 location = system->GetPositionX(currentPosition->GetPosition());
         currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
+
+        // if we reach a new bar, we can adjust all of the accidentals for the previous bar
+        if (currentBarline != prevBarline)
+        {
+            adjustAccidentals(accidentalsMap);
+            accidentalsMap.clear();
+            prevBarline = currentBarline;
+        }
+
+        KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
 
         // Find the guitar corresponding to the current staff
         Guitar* currentGuitar = NULL;
@@ -360,20 +395,33 @@ void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& curr
 
         Q_ASSERT(currentGuitar != NULL);
 
-        StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, currentGuitar, currentBarline->GetKeySignaturePtr());
-        centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
-                   currentStaffInfo.getTopStdNotationLine());
-        scene.addItem(stdNotePainter);
+        if (currentPosition->IsRest())
+        {
+            StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, NULL, currentGuitar->GetTuningPtr(), currentKeySig);
+            centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
+                       currentStaffInfo.getTopStdNotationLine());
+            notePainters << stdNotePainter;
+        }
+
 
         for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
         {
             Note* note = currentPosition->GetNote(j);
 
-            TabNotePainter* tabNote = new TabNotePainter(note);
-            centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
-                       currentStaffInfo.getTabLineHeight(note->GetString()) + 13);
-            scene.addItem(tabNote);
+            StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, note, currentGuitar->GetTuningPtr(), currentKeySig);
+            centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
+                       currentStaffInfo.getTopStdNotationLine());
+            notePainters << stdNotePainter;
+
+            // map all of the notes for each position on the staff, so that we can adjust accidentals later
+            accidentalsMap.insert(stdNotePainter->getYLocation(), stdNotePainter);
         }
+    }
+
+    // after adjusting accidentals, etc, we can add the painters to the scene
+    foreach(StdNotationPainter* painter, notePainters)
+    {
+        scene.addItem(painter);
     }
 }
 
@@ -435,4 +483,36 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
         centerItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y);
     }
     scene.addItem(textItem);
+}
+
+void ScoreArea::adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap)
+{
+    QList<double> keys = accidentalsMap.uniqueKeys();
+    auto i = keys.begin();
+
+    while(i != keys.end())
+    {
+        QList<StdNotationPainter*> notes = accidentalsMap.values(*i);
+        int currentAccidental = StdNotationPainter::NO_ACCIDENTAL;
+
+        for (int j = notes.size() - 1; j >= 0; j--)
+        {
+            StdNotationPainter* note = notes.at(j);
+
+            if (note->accidental == currentAccidental)
+            {
+                note->accidental = StdNotationPainter::NO_ACCIDENTAL;
+            }
+            else
+            {
+                currentAccidental = note->accidental;
+                if (currentAccidental == StdNotationPainter::NO_ACCIDENTAL)
+                {
+                    note->accidental = StdNotationPainter::NATURAL;
+                }
+            }
+        }
+
+        ++i;
+    }
 }

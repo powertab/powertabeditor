@@ -17,6 +17,8 @@
 
 #include "chordname.h"      // Needed for IsValidKeyAndVariation (Artificial Harmonics)
 
+class Tuning;
+
 /// Stores and renders a note
 class Note : public PowerTabObject
 {
@@ -571,6 +573,8 @@ public:
 
     /// Returns a text representation of the note, including brackets for ghost notes, harmonics, etc
     std::string GetText() const;
+
+    uint8_t GetPitch(Tuning* tuning) const;
 
 // Complex Symbol Array Functions
 protected:

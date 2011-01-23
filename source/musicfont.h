@@ -38,7 +38,7 @@ public:
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol
-    QChar getSymbol(MusicSymbol identifier);
+    static QChar getSymbol(MusicSymbol identifier);
 
     void setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size = DEFAULT_FONT_SIZE);
     void setNumericText(QGraphicsSimpleTextItem* text, QString number, int size = DEFAULT_FONT_SIZE);

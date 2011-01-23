@@ -132,6 +132,13 @@ public:
     const Barline& GetStartBarConstRef() const
     {return (m_startBar);}
 
+    /// Gets a pointer to the bar at the start of the system
+    /// @return A pointer to the bar at the start of the system
+    Barline* GetStartBarPtr()
+    {
+        return &m_startBar;
+    }
+
     // Direction Functions
     /// Determines if a staff index is valid
     /// @param index staff index to validate

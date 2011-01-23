@@ -3,6 +3,7 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QMultiMap>
 
 #include <musicfont.h>
 
@@ -14,6 +15,7 @@ class PowerTabDocument;
 class TimeSignature;
 class Caret;
 class Note;
+class StdNotationPainter;
 
 // The visual display of the score
 
@@ -44,6 +46,8 @@ protected:
     void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x);
     void drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo);
+    void drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo);
+    void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
 
     QGraphicsScene scene;
     MusicFont musicFont;
