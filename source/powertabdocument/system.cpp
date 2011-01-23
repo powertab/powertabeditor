@@ -571,7 +571,7 @@ uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos)
 {
     CHECK_THAT(IsValidStaffIndex(staff), 0);
 
-    uint32_t offset = 0;
+    uint32_t offset = GetExtraSpacing() + GetRhythmSlashSpacingAbove() + GetRhythmSlashSpacingBelow();
 
     for (uint32_t i = 0; i < staff; i++)
     {
