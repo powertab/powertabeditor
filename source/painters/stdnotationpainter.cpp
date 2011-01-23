@@ -34,7 +34,12 @@ void StdNotationPainter::init()
 
     const int octaveDiff = getOctaveDiff(note, pitch);
     const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
-    const int displayOffset = getDisplayPosition(noteText);
+    int displayOffset = getDisplayPosition(noteText);
+
+    if (midi::GetMidiNotePitch(pitch) == 5)
+    {
+        displayOffset = 0; // special case, so that F# and Fb are not treated the same as F natural
+    }
 
     yLocation = displayOffset * 0.5 * staffInfo.stdNotationLineSpacing + 1 + octaveShift;
     accidental = findAccidentalType(noteText);
@@ -160,7 +165,7 @@ int StdNotationPainter::getDisplayPosition(const QString& noteName)
     switch(note)
     {
     case 'E': return 1;
-    case 'F': return noteName.length() == 1 ? 0 : 7; // special case, so that F# and Fb are not treated the same as F natural
+    case 'F': return 7;
     case 'G': return 6;
     case 'A': return 5;
     case 'B': return 4;

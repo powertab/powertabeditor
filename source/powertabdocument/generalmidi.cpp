@@ -108,7 +108,16 @@ namespace midi
             }
         }
 
-        return keyText.at(bestMatch);
+        string text = keyText.at(bestMatch);
+        // remove accidentals depending on key signature
+        if (key - 1 <= bestMatch && key + 5 >= bestMatch)
+        {
+            if (text.length() > 1)
+            {
+                text.erase(text.begin() + 1);
+            }
+        }
+        return text;
     }
 
     /// Gets the text representation of a MIDI note
