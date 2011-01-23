@@ -12,8 +12,29 @@
 #include "generalmidi.h"
 #include "macros.h"
 
+#include <vector>
+using std::vector;
+#include <string>
+using std::string;
+
 namespace midi
 {
+    // Pitches (relative to C = 0) corresponding to the keys in the keyText vector
+    static const vector<uint8_t> pitchClasses = {
+        3, 10, 5, 0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5,
+        0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5, 0, 7, 2,
+        9, 4, 11, 6, 1
+    };
+
+    // All of the possible keys, arranged in order of the circle of fifths
+    static const vector<string> keyText = {
+        "Fbb", "Cbb", "Gbb", "Dbb", "Abb", "Ebb", "Bbb",
+        "Fb", "Cb", "Gb", "Db", "Ab", "Eb", "Bb",
+        "F", "C", "G", "D", "A", "E", "B",
+        "F#", "C#", "G#", "D#", "A#", "E#", "B#",
+        "F##", "C##", "G##", "D##", "A##", "E##", "B##",
+    };
+
     // MIDI Channel Functions
     /// Determines if a MIDI channel is valid
     /// @param MIDI channel to validate
@@ -53,19 +74,55 @@ namespace midi
         return (note <= MAX_MIDI_NOTE);
     }
 
+    // Gets an accurate text representation of a MIDI note, given the key signature (number of accidentals)
+    string GetMidiNoteText(uint8_t note, bool usesSharps, uint8_t numAccidentals)
+    {
+        CHECK_THAT(IsValidMidiNote(note), "");
+        uint8_t pitch = GetMidiNotePitch(note);
+
+        // find the index of the key, for use with the pitchClasses and keyText vectors
+        const int keyC = 15;
+        int keyOffset = numAccidentals;
+        if (!usesSharps)
+        {
+            keyOffset *= -1;
+        }
+
+        const int key = keyC + keyOffset;
+
+        uint8_t minDistance = 100; // needs to be larger than any possible distance
+        uint8_t bestMatch = 0; // index of the text representation that is the best match
+
+        // find the correct text representation of the pitch, by finding the representation that is the
+        // shortest number of steps away from the tonic on the circle of fifths
+        for (uint8_t i = 0; i < pitchClasses.size(); i++)
+        {
+            if (pitchClasses.at(i) == pitch)
+            {
+                uint8_t dist = abs(key - i);
+                if (std::min(dist, minDistance) == dist)
+                {
+                    minDistance = dist;
+                    bestMatch = i;
+                }
+            }
+        }
+
+        return keyText.at(bestMatch);
+    }
+
     /// Gets the text representation of a MIDI note
+    /// - this is less accurate than the other version (which takes the key signature into account)
     /// @param note MIDI note to get the text representation for
     /// @param sharps True to get the sharp representation of the note, false to get
     /// the flat representation of the note
     /// @return A text representation of the MIDI note
-    std::string GetMidiNoteText(uint8_t note, bool sharps)
+    string GetMidiNoteText(uint8_t note, bool sharps)
     {
-        //------Last Checked------//
-        // - Dec 14, 2004
         CHECK_THAT(IsValidMidiNote(note), "");
         uint8_t pitch = GetMidiNotePitch(note);
 
-        std::string notes[12];
+        string notes[12];
 
         if (sharps)
         {
