@@ -425,6 +425,9 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
         beamingInfo.topNotePos += currentStaffInfo.getTopStdNotationLine();
         beamingInfo.bottomNotePos += currentStaffInfo.getTopStdNotationLine();
+        beamingInfo.beamUp = currentStaffInfo.getStdNotationLineHeight(3) < beamingInfo.bottomNotePos;
+        beamingInfo.location = location;
+
         beamings << beamingInfo;
     }
 
@@ -436,29 +439,81 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
         scene.addItem(painter);
     }
 
+    QList<BeamingInfo> beamingGroup;
+    const double beamLength = currentStaffInfo.stdNotationLineSpacing * 3.5;
+
     // draw beams
     for (int i = 0; i < beamings.size(); i++)
     {
-        BeamingInfo beaming = beamings.at(i);
+        BeamingInfo beaming = beamings[i];
 
-        quint32 location = system->GetPositionX(beaming.position->GetPosition());
-        const quint32 beamLength = currentStaffInfo.stdNotationLineSpacing * 3.5;
+        beamingGroup << beaming;
 
-        // beam faces upwards
-        if (beaming.bottomNotePos >= currentStaffInfo.getBottomStdNotationLine())
+        if (beaming.position->IsBeamEnd())
         {
-            beaming.topNotePos -= beamLength;
-            location += currentStaffInfo.getNoteHeadRightEdge() - 1;
-        }
-        else
-        {
-            beaming.bottomNotePos += beamLength;
-            location += currentStaffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth();
-        }
+            // figure out which direction all of the beams in the group should point, based on how many point upwards/downwards
+            uint8_t notesAboveMiddle = 0, notesBelowMiddle = 0;
+            foreach(BeamingInfo beam, beamingGroup)
+            {
+                if (beam.beamUp)
+                {
+                    notesBelowMiddle++;
+                }
+                else
+                {
+                    notesAboveMiddle++;
+                }
+            }
 
-        QGraphicsLineItem* line = new QGraphicsLineItem;
-        line->setLine(location, beaming.topNotePos, location, beaming.bottomNotePos);
-        scene.addItem(line);
+            bool beamDirectionUp = notesBelowMiddle >= notesAboveMiddle;
+
+            // find the highest/lowest position of a beam within the group - all other beams will stretch to this position
+            double highestPos = 10000000, lowestPos = -10000000;
+            if (beamDirectionUp)
+            {
+                foreach(BeamingInfo beam, beamingGroup)
+                {
+                    highestPos = std::min(highestPos, beam.topNotePos);
+                }
+            }
+            else
+            {
+                foreach(BeamingInfo beam, beamingGroup)
+                {
+                    lowestPos = std::max(lowestPos, beam.bottomNotePos);
+                }
+            }
+
+            // set the position of each beam, and draw them
+            for (int j = 0; j < beamingGroup.size(); j++)
+            {
+                beamingGroup[j].beamUp = beamDirectionUp;
+                if (beamDirectionUp)
+                {
+                    beamingGroup[j].location += currentStaffInfo.getNoteHeadRightEdge() - 1;
+                    beamingGroup[j].topNotePos = highestPos - beamLength;
+                }
+                else
+                {
+                    beamingGroup[j].bottomNotePos = lowestPos + beamLength;
+                    beamingGroup[j].location += currentStaffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth();
+                }
+
+                QGraphicsLineItem* line = new QGraphicsLineItem;
+                line->setLine(beamingGroup[j].location, beamingGroup[j].topNotePos, beamingGroup[j].location, beamingGroup[j].bottomNotePos);
+                scene.addItem(line);
+            }
+
+            // draw the line that connects all of the beams
+            QGraphicsLineItem* connector = new QGraphicsLineItem;
+
+            double height = beamDirectionUp ? beamingGroup.first().topNotePos : beamingGroup.first().bottomNotePos;
+            connector->setLine(beamingGroup.first().location, height, beamingGroup.last().location, height);
+            scene.addItem(connector);
+
+            // calculations
+            beamingGroup.clear();
+        }
     }
 }
 

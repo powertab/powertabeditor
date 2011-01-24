@@ -60,10 +60,13 @@ protected:
         Position* position;
         double topNotePos;
         double bottomNotePos;
+        bool beamUp;
+        double location;
 
         BeamingInfo()
         {
             position = NULL;
+            beamUp = false;
             bottomNotePos = -100000;
             topNotePos = 100000; // needs to be larger than any possible position, for using std::min
         }
