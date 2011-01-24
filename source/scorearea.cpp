@@ -366,6 +366,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
     QList<StdNotationPainter*> notePainters;
     QMultiMap<double, StdNotationPainter*> accidentalsMap;
+    QList<BeamingInfo> beamings;
 
     for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
     {
@@ -401,8 +402,11 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
             centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
                        currentStaffInfo.getTopStdNotationLine());
             notePainters << stdNotePainter;
+            continue;
         }
 
+        BeamingInfo beamingInfo;
+        beamingInfo.position = currentPosition;
 
         for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
         {
@@ -414,16 +418,47 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
             // map all of the notes for each position on the staff, so that we can adjust accidentals later
             accidentalsMap.insert(stdNotePainter->getYLocation(), stdNotePainter);
+
+            beamingInfo.bottomNotePos = std::max(beamingInfo.bottomNotePos, stdNotePainter->getYLocation());
+            beamingInfo.topNotePos = std::min(beamingInfo.topNotePos, stdNotePainter->getYLocation());
         }
+
+        beamingInfo.topNotePos += currentStaffInfo.getTopStdNotationLine();
+        beamingInfo.bottomNotePos += currentStaffInfo.getTopStdNotationLine();
+        beamings << beamingInfo;
     }
 
     // after adjusting accidentals, etc, we can add the painters to the scene
     foreach(StdNotationPainter* painter, notePainters)
     {
         const quint32 location = system->GetPositionX(painter->getPositionObject()->GetPosition());
-        centerItem(painter, location, location + system->GetPositionSpacing(),
-                   currentStaffInfo.getTopStdNotationLine());
+        painter->setPos(location, currentStaffInfo.getTopStdNotationLine());
         scene.addItem(painter);
+    }
+
+    // draw beams
+    for (int i = 0; i < beamings.size(); i++)
+    {
+        BeamingInfo beaming = beamings.at(i);
+
+        quint32 location = system->GetPositionX(beaming.position->GetPosition());
+        const quint32 beamLength = currentStaffInfo.stdNotationLineSpacing * 3.5;
+
+        // beam faces upwards
+        if (beaming.bottomNotePos >= currentStaffInfo.getBottomStdNotationLine())
+        {
+            beaming.topNotePos -= beamLength;
+            location += currentStaffInfo.getNoteHeadRightEdge() - 1;
+        }
+        else
+        {
+            beaming.bottomNotePos += beamLength;
+            location += currentStaffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth();
+        }
+
+        QGraphicsLineItem* line = new QGraphicsLineItem;
+        line->setLine(location, beaming.topNotePos, location, beaming.bottomNotePos);
+        scene.addItem(line);
     }
 }
 

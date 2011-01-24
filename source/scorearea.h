@@ -16,6 +16,7 @@ class TimeSignature;
 class Caret;
 class Note;
 class StdNotationPainter;
+class Position;
 
 // The visual display of the score
 
@@ -53,6 +54,20 @@ protected:
     MusicFont musicFont;
     void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
     Caret* caret;
+
+    struct BeamingInfo
+    {
+        Position* position;
+        double topNotePos;
+        double bottomNotePos;
+
+        BeamingInfo()
+        {
+            position = NULL;
+            bottomNotePos = -100000;
+            topNotePos = 100000; // needs to be larger than any possible position, for using std::min
+        }
+    };
 
 public slots:
     void adjustScroll();

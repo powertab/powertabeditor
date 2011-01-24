@@ -31,6 +31,8 @@ public:
     inline double getYLocation() const { return yLocation; }
     inline Position* getPositionObject() const { return position; }
 
+    static double getNoteHeadWidth();
+
     int accidental;
 
 protected:

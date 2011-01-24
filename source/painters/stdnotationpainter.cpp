@@ -82,7 +82,12 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
     QString displayText = getAccidentalText() + noteHead;
     width = QFontMetricsF(musicFont).width(displayText);
 
-    painter->drawText(0, yLocation, displayText);
+    painter->drawText(staffInfo.getNoteHeadRightEdge() - width, yLocation, displayText);
+}
+
+double StdNotationPainter::getNoteHeadWidth()
+{
+    return QFontMetricsF(musicFont).width(QChar(MusicFont::QuarterNoteOrLess));
 }
 
 int StdNotationPainter::getOctaveDiff(const Note* currentNote, const int pitch) const
