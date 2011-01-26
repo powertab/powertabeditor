@@ -449,7 +449,8 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
         beamingGroup << beaming;
 
-        if (beaming.position->IsBeamEnd())
+        // if we're at the end of a beam group, or have a note by itself (not part of a group), draw the beams
+        if (beaming.position->IsBeamEnd() || (!beaming.position->IsBeamStart() && beamingGroup.size() == 1))
         {
             // figure out which direction all of the beams in the group should point, based on how many point upwards/downwards
             uint8_t notesAboveMiddle = 0, notesBelowMiddle = 0;
