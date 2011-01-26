@@ -396,12 +396,13 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
         Q_ASSERT(currentGuitar != NULL);
 
+        // just draw rests right away, since we don't have to worry about beaming or accidentals
         if (currentPosition->IsRest())
         {
             StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, NULL, currentGuitar->GetTuningPtr(), currentKeySig);
-            centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth,
+            centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
                        currentStaffInfo.getTopStdNotationLine());
-            notePainters << stdNotePainter;
+            scene.addItem(stdNotePainter);
             continue;
         }
 
@@ -428,7 +429,10 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
         beamingInfo.beamUp = currentStaffInfo.getStdNotationLineHeight(3) < beamingInfo.bottomNotePos;
         beamingInfo.location = location;
 
-        beamings << beamingInfo;
+        if (currentPosition->GetDurationType() != 1)
+        {
+            beamings << beamingInfo;
+        }
     }
 
     // after adjusting accidentals, etc, we can add the painters to the scene
@@ -498,6 +502,10 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 {
                     beamingGroup[j].bottomNotePos = lowestPos + beamLength;
                     beamingGroup[j].location += currentStaffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth();
+                    if (beamingGroup[j].position->GetDurationType() == 2) // visual adjustment for half notes
+                    {
+                        beamingGroup[j].location -= 2;
+                    }
                 }
 
                 QGraphicsLineItem* line = new QGraphicsLineItem;
