@@ -2,13 +2,14 @@
 #define RTMIDIWRAPPER_H
 
 #include <string>
+#include <memory>
 
 class RtMidiOut;
 
 class RtMidiWrapper
 {
 private:
-    RtMidiOut* midiout;
+    std::unique_ptr<RtMidiOut> midiout;
     bool sendMidiMessage(int a, int b, int c);
 
 public:

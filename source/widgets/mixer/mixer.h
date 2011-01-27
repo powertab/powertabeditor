@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+#include <memory>
+
 class SkinManager;
 class MixerInstrument;
 class Guitar;
@@ -12,7 +14,7 @@ class Mixer : public QFrame
 {
     Q_OBJECT
 public:
-    Mixer(QFrame *parent = 0, SkinManager *skinManager = 0);
+    Mixer(std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
 
     void AddInstrument(Guitar* guitar);
     Guitar* getInstrument(int index);

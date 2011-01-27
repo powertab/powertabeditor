@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+#include <memory>
+
 class SkinManager;
 class QPushButton;
 class QGroupBox;
@@ -14,7 +16,7 @@ class ScorePage : public QFrame
     Q_OBJECT
 
 public:
-    ScorePage(QFrame *parent = 0, SkinManager *skinManager = 0);
+    ScorePage(std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
 
     QVBoxLayout *layout;
 

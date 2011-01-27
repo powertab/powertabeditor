@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+#include <memory>
+
 class SkinManager;
 class QPushButton;
 class QGroupBox;
@@ -15,7 +17,7 @@ class NotePage : public QFrame
     Q_OBJECT
 
 public:
-    NotePage(PowerTabEditor* mainWindow,SkinManager *skinManager = 0, QFrame *parent = 0);
+    NotePage(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
 
 private:
     PowerTabEditor* mainWindow;

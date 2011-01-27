@@ -38,13 +38,15 @@
 #include <actions/updatenoteduration.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
-UndoManager* PowerTabEditor::undoManager = NULL;
+std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 QSplitter* PowerTabEditor::vertSplitter = NULL;
 QSplitter* PowerTabEditor::horSplitter = NULL;
-Toolbox* PowerTabEditor::toolBox = NULL;
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
-        QMainWindow(parent)
+    QMainWindow(parent),
+    preferencesDialog(new PreferencesDialog),
+    mixerList(new QStackedWidget),
+    skinManager(new SkinManager("default"))
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
@@ -59,20 +61,13 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     // retrieve the previous directory that a file was opened/saved to (default value is home directory)
     previousDirectory = settings.value("app/previousDirectory", QDir::homePath()).toString();
 
-    undoManager = new UndoManager();
-    connect(undoManager, SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
-
-    skinManager = new SkinManager("default");
-
-    midiPlayer = NULL;
+    connect(undoManager.get(), SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
 
     CreateActions();
     CreateMenus();
     CreateTabArea();
 
     isPlaying = false;
-
-    preferencesDialog = new PreferencesDialog();
 
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
@@ -81,7 +76,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     horSplitter = new QSplitter();
     horSplitter->setOrientation(Qt::Horizontal);
 
-    toolBox = new Toolbox(this, skinManager, 0);
+    toolBox = new Toolbox(this, skinManager);
     horSplitter->addWidget(toolBox);
     horSplitter->addWidget(tabWidget);
 
@@ -90,19 +85,14 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
     vertSplitter->addWidget(horSplitter);
 
-    mixerList = new QStackedWidget;
     mixerList->setMinimumHeight(150);
-    vertSplitter->addWidget(mixerList);
+    vertSplitter->addWidget(mixerList.get());
 
     setCentralWidget(vertSplitter);
 }
 
 PowerTabEditor::~PowerTabEditor()
 {
-    delete preferencesDialog;
-    delete skinManager;
-    delete midiPlayer;
-    delete undoManager;
 }
 
 // Redraws the *entire* document upon undo/redo
@@ -370,7 +360,7 @@ void PowerTabEditor::OpenFile()
             tabWidget->addTab(score, title);
 
             // add the guitars to a new mixer
-            Mixer* mixer = new Mixer(0,skinManager);
+            Mixer* mixer = new Mixer(skinManager);
             QScrollArea* scrollArea = new QScrollArea;
             PowerTabDocument* doc = documentManager.getCurrentDocument();
             for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
@@ -464,20 +454,19 @@ void PowerTabEditor::startStopPlayback()
 
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
 
-        midiPlayer = new MidiPlayer(getCurrentScoreArea()->getCaret());
-        connect(midiPlayer, SIGNAL(playbackSystemChanged()), this, SLOT(moveCaretToNextSection()));
-        connect(midiPlayer, SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));
-        connect(midiPlayer, SIGNAL(finished()), this, SLOT(startStopPlayback()));
+        midiPlayer.reset(new MidiPlayer(getCurrentScoreArea()->getCaret()));
+        connect(midiPlayer.get(), SIGNAL(playbackSystemChanged()), this, SLOT(moveCaretToNextSection()));
+        connect(midiPlayer.get(), SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));
+        connect(midiPlayer.get(), SIGNAL(finished()), this, SLOT(startStopPlayback()));
         midiPlayer->start();
     }
     else
     {
         // if we manually stop playback, let the midi thread finish, and the finished() signal will trigger this function again
-        if (midiPlayer != NULL && midiPlayer->isRunning())
+        if (midiPlayer.get() != NULL && midiPlayer->isRunning())
         {
             isPlaying = true;
-            delete midiPlayer;
-            midiPlayer = NULL;
+            midiPlayer.reset();
             return;
         }
 

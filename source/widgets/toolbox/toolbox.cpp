@@ -7,8 +7,7 @@
 ScorePage *Toolbox::scorePage = NULL;
 NotePage *Toolbox::notePage = NULL;
 
-Toolbox::Toolbox(PowerTabEditor* mainWindow, SkinManager *skinManager, QWidget *parent) :
-    QTabWidget(parent)
+Toolbox::Toolbox(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager)
 {
     setMaximumWidth(350);
     setIconSize(QSize(48,48));
@@ -16,7 +15,7 @@ Toolbox::Toolbox(PowerTabEditor* mainWindow, SkinManager *skinManager, QWidget *
 
     setStyleSheet(skinManager->getToolboxTabStyle());
 
-    scorePage = new ScorePage(0,skinManager);
+    scorePage = new ScorePage(skinManager, 0);
     addTab(scorePage, QIcon(":/icons/toolbox_score.png"),"");
 
     notePage = new NotePage(mainWindow, skinManager, 0);

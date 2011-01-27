@@ -5,7 +5,7 @@
 #include <skinmanager.h>
 #include "mixerinstrument.h"
 
-Mixer::Mixer(QFrame *parent, SkinManager *skinManager) :
+Mixer::Mixer(std::shared_ptr<SkinManager> skinManager, QFrame *parent) :
     QFrame(parent)
 {
     setFrameStyle(QFrame::StyledPanel);

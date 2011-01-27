@@ -3,6 +3,8 @@
 
 #include <QTabWidget>
 
+#include <memory>
+
 class NotePage;
 class ScorePage;
 class SkinManager;
@@ -12,7 +14,7 @@ class Toolbox : public QTabWidget
 {
     Q_OBJECT
 public:
-    explicit Toolbox(PowerTabEditor* mainWindow, SkinManager *skinManager = 0, QWidget *parent = 0);
+    Toolbox(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager);
 
 private:
     static ScorePage *scorePage;

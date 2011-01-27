@@ -287,7 +287,7 @@ void NotePage::resetSlideLegatoButtons()
     shiftSlideButton->setChecked(false);
 }
 
-NotePage::NotePage(PowerTabEditor* mainWindow, SkinManager *skinManager, QFrame *parent) :
+NotePage::NotePage(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager, QFrame *parent) :
     QFrame(parent),
     mainWindow(mainWindow)
 {

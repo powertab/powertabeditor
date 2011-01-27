@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <memory>
+
 #include <documentmanager.h>
 #include <actions/undomanager.h>
 
@@ -29,10 +31,9 @@ public:
     ~PowerTabEditor();
     static void RefreshCurrentDocument();
     static QTabWidget* tabWidget;
-    static UndoManager* undoManager;
+    static std::unique_ptr<UndoManager> undoManager;
     static QSplitter* vertSplitter;
     static QSplitter* horSplitter;
-    static Toolbox* toolBox;
     static ScoreArea* getCurrentScoreArea();
 
 protected:
@@ -71,6 +72,8 @@ private slots:
 
 private:
     bool isPlaying;
+
+    Toolbox* toolBox;
 
     DocumentManager documentManager;
     QMenu* fileMenu;
@@ -117,12 +120,12 @@ private:
     QAction* thirtySecondNoteAct;
     QAction* sixtyFourthNoteAct;
 
-    PreferencesDialog* preferencesDialog;
+    std::unique_ptr<PreferencesDialog> preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in
-    QStackedWidget* mixerList;
+    std::unique_ptr<QStackedWidget> mixerList;
 
-    SkinManager* skinManager;
-    MidiPlayer* midiPlayer;
+    std::shared_ptr<SkinManager> skinManager;
+    std::unique_ptr<MidiPlayer> midiPlayer;
 };
 
 #endif // POWERTABEDITOR_H
