@@ -14,6 +14,7 @@
 #include <painters/stdnotationpainter.h>
 #include <painters/chordtextpainter.h>
 #include <painters/staffpainter.h>
+#include <painters/systempainter.h>
 
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
@@ -70,11 +71,9 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
     const int width = systemRectangle.GetWidth();
 
     // draw system rectangle
-    QGraphicsRectItem* systemRect = new QGraphicsRectItem;
-    systemRect->setRect(leftEdge, topEdge, width, systemRectangle.GetHeight());
-    systemRect->setOpacity(0.5);
-    systemRect->setPen(QPen(QBrush(QColor(0,0,0)), 0.5));
-    scene.addItem(systemRect);
+    SystemPainter* sysPainter = new SystemPainter(system);
+    sysPainter->setPos(leftEdge, topEdge);
+    scene.addItem(sysPainter);
 
     // Draw each staff
     for (uint32_t i=0; i < system->GetStaffCount(); i++)
