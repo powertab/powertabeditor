@@ -125,74 +125,66 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
 // Draw all of the barlines for the staff.
 void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
 {
-    BarlinePainter *firstBarLine = new BarlinePainter(currentStaffInfo, &system->GetStartBarRef());
-    if (system->GetStartBarConstRef().IsBar()) // for normal bars, display a line at the far left edge
-    {
-        firstBarLine->setPos(system->GetRect().GetLeft() - firstBarLine->boundingRect().width() / 2 - 0.5,
-                             currentStaffInfo.topEdge);
-    }
-    else // otherwise, display the bar after the clef, etc, and to the left of the first note
-    {
-        firstBarLine->setPos(system->GetFirstPositionX() - currentStaffInfo.positionWidth, currentStaffInfo.topEdge);
-    }
-    scene.addItem(firstBarLine);
+    std::vector<Barline*> barlines;
+    system->GetBarlines(barlines);
 
-    // draw key signature
-    const KeySignature& firstKeySig = system->GetStartBarConstRef().GetKeySignatureConstRef();
-    if (firstKeySig.IsShown())
+    for (size_t i = 0; i < barlines.size(); i++)
     {
-        KeySignaturePainter *firstKeySigPainter = new KeySignaturePainter(currentStaffInfo, firstKeySig);
-        firstKeySigPainter->setPos(system->GetRect().GetLeft() + system->GetClefWidth(), currentStaffInfo.getTopStdNotationLine());
-        scene.addItem(firstKeySigPainter);
-    }
+        Barline* currentBarline = barlines.at(i);
+        const KeySignature& keySig = currentBarline->GetKeySignatureConstRef();
+        const TimeSignature& timeSig = currentBarline->GetTimeSignatureConstRef();
 
-    // draw time signature
-    const TimeSignature& firstTimeSig = system->GetStartBarConstRef().GetTimeSignatureConstRef();
-    if (firstTimeSig.IsShown())
-    {
-        TimeSignaturePainter *firstTimeSigPainter = new TimeSignaturePainter(currentStaffInfo, firstTimeSig);
-        firstTimeSigPainter->setPos(system->GetRect().GetLeft() + system->GetClefWidth() + firstKeySig.GetWidth() + 7,
-                             currentStaffInfo.getTopStdNotationLine());
-        scene.addItem(firstTimeSigPainter);
-    }
+        BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo, currentBarline);
 
-    for (uint32_t i=0; i < system->GetBarlineCount(); i++)
-    {
-        Barline *barLine = system->GetBarline(i);
-        double x = system->GetPositionX(barLine->GetPosition());
-        BarlinePainter *barLinePainter = new BarlinePainter(currentStaffInfo, barLine);
-        barLinePainter->setPos(x, currentStaffInfo.topEdge);
-        scene.addItem(barLinePainter);
+        double x = system->GetPositionX(currentBarline->GetPosition());
+        double keySigX = x + barlinePainter->boundingRect().width() - 1;
+        double timeSigX = x + barlinePainter->boundingRect().width() + keySig.GetWidth() + 2;
 
-        const KeySignature& keySig = barLine->GetKeySignatureConstRef();
+        if (i == 0) // start bar of system
+        {
+            if (currentBarline->IsBar()) // for normal bars, display a line at the far left edge
+            {
+                x = currentStaffInfo.leftEdge - barlinePainter->boundingRect().width() / 2 - 0.5;
+            }
+            else // otherwise, display the bar after the clef, etc, and to the left of the first note
+            {
+                x = system->GetFirstPositionX() - currentStaffInfo.positionWidth;
+            }
+
+            keySigX = currentStaffInfo.leftEdge + system->GetClefWidth();
+            timeSigX = currentStaffInfo.leftEdge + system->GetClefWidth() + keySig.GetWidth() + 7;
+        }
+        else if (i == barlines.size() - 1) // last barline of system
+        {
+            x = system->GetRect().GetRight() - barlinePainter->boundingRect().width() / 2;
+
+            if (currentBarline->IsRepeatEnd())
+            {
+                x -= 6;     // bit of a positioning hack
+            }
+            else if (currentBarline->IsBar())
+            {
+                x += 0.5;
+            }
+        }
+
+        barlinePainter->setPos(x, currentStaffInfo.topEdge);
+        scene.addItem(barlinePainter);
+
         if (keySig.IsShown())
         {
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig);
-            keySigPainter->setPos(x + barLinePainter->boundingRect().width() - 1, currentStaffInfo.getTopStdNotationLine());
+            keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
             scene.addItem(keySigPainter);
         }
 
-        const TimeSignature& timeSig = barLine->GetTimeSignatureConstRef();
         if (timeSig.IsShown())
         {
             TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig);
-            timeSigPainter->setPos(x + barLinePainter->boundingRect().width() + keySig.GetWidth() + 2, currentStaffInfo.getTopStdNotationLine());
+            timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
             scene.addItem(timeSigPainter);
         }
     }
-
-    BarlinePainter *lastBarLine = new BarlinePainter(currentStaffInfo, &system->GetEndBarRef());
-    lastBarLine->setPos(system->GetRect().GetRight() - lastBarLine->boundingRect().width() / 2, currentStaffInfo.topEdge);
-    if (system->GetEndBarRef().IsRepeatEnd())
-    {// bit of a positioning hack
-        lastBarLine->setPos(lastBarLine->pos().x() - 6, lastBarLine->pos().y());
-    }
-    else if (system->GetEndBarRef().IsBar())
-    {
-        lastBarLine->setPos(lastBarLine->pos().x() + 0.5, lastBarLine->pos().y());
-    }
-    scene.addItem(lastBarLine);
-
 }
 
 void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo)
