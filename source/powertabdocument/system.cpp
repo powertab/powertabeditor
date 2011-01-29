@@ -22,6 +22,7 @@ const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_ABOVE             = 0;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_BELOW             = 0;
 const uint8_t System::DEFAULT_EXTRA_SPACING                          = 0;
 const uint8_t System::CHORD_TEXT_SPACING                             = 12;
+const uint8_t System::SYSTEM_SYMBOL_SPACING = 18; // spacing given to a system symbol (i.e. rehearsal sign)
 
 // Position Spacing Constants
 const uint8_t System::MIN_POSITION_SPACING                           = 3;
@@ -630,4 +631,22 @@ int System::FindStaffIndex(Staff *staff) const
 {
     auto result = std::find(m_staffArray.begin(), m_staffArray.end(), staff);
     return std::distance(m_staffArray.begin(), result);
+}
+
+// Checks if a rehearsal sign occurs in the system
+bool System::HasRehearsalSign() const
+{
+    if (m_startBar.GetRehearsalSignConstRef().IsSet() || m_endBar.GetRehearsalSignConstRef().IsSet())
+    {
+        return true;
+    }
+
+    for (auto i = m_barlineArray.begin(); i != m_barlineArray.end(); ++i)
+    {
+        if ((*i)->GetRehearsalSignConstRef().IsSet())
+        {
+            return true;
+        }
+    }
+    return false;
 }

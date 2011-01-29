@@ -1,8 +1,11 @@
 #include "editrehearsalsign.h"
 
 #include <powertabdocument/rehearsalsign.h>
+#include <powertabdocument/score.h>
 
-EditRehearsalSign::EditRehearsalSign(RehearsalSign* rehearsalSign, bool isShown, quint8 letter, std::string description) :
+EditRehearsalSign::EditRehearsalSign(Score* score, System* system, RehearsalSign* rehearsalSign, bool isShown, quint8 letter, std::string description) :
+    score(score),
+    system(system),
     rehearsalSign(rehearsalSign),
     isShown(isShown),
     letter(letter),
@@ -41,4 +44,6 @@ void EditRehearsalSign::showHide(bool show)
     {
         rehearsalSign->Clear();
     }
+
+    score->UpdateSystemHeight(system);
 }

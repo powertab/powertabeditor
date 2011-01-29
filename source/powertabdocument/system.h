@@ -30,6 +30,7 @@ public:
     static const uint8_t DEFAULT_RHYTHM_SLASH_SPACING_BELOW;
     static const uint8_t DEFAULT_EXTRA_SPACING;
     static const uint8_t CHORD_TEXT_SPACING;
+    static const uint8_t SYSTEM_SYMBOL_SPACING;
 
     // Position Spacing Constants
     static const uint8_t MIN_POSITION_SPACING;
@@ -117,6 +118,12 @@ public:
     /// @return The amount of extra spacing
     uint32_t GetExtraSpacing() const
     {return (m_extraSpacing);}
+
+    void SetExtraSpacing(uint32_t spacing)
+    {
+        m_extraSpacing = spacing;
+        CalculateHeight();
+    }
 
     // Start Bar Functions
     /// Gets the bar at the start of the system
@@ -245,6 +252,8 @@ public:
     Barline* GetBarlineAtPosition(uint32_t position) const;
     Barline* GetPrecedingBarline(uint32_t position) const;
     void GetBarlines(vector<Barline*>& barlineArray);
+
+    bool HasRehearsalSign() const;
 
     // End Bar Functions
     /// Gets the bar at the end of the system

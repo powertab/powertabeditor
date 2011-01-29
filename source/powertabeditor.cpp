@@ -588,6 +588,8 @@ void PowerTabEditor::editRehearsalSign()
     // Find if there is a rehearsal sign at the current position
     Caret* caret = getCurrentScoreArea()->getCaret();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
+    System* currentSystem = caret->getCurrentSystem();
+    Score* currentScore = caret->getCurrentScore();
     Barline* currentBarline = caret->getCurrentSystem()->GetBarlineAtPosition(caretPosition);
 
     // the rehearsal sign action should not be available unless there is a barline at the current position
@@ -597,11 +599,11 @@ void PowerTabEditor::editRehearsalSign()
 
     if (rehearsalSign->IsSet())
     {
-        undoManager->push(new EditRehearsalSign(rehearsalSign, false));
+        undoManager->push(new EditRehearsalSign(currentScore, currentSystem, rehearsalSign, false));
     }
     else
     {
-        RehearsalSignDialog rehearsalSignDialog(caret->getCurrentScore(), rehearsalSign);
+        RehearsalSignDialog rehearsalSignDialog(currentScore, currentSystem, rehearsalSign);
         rehearsalSignDialog.exec();
     }
 

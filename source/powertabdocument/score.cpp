@@ -292,8 +292,40 @@ void Score::UpdateToVer2Structure()
     }
 }
 
+// Finds the index of a system within the score
 int Score::FindSystemIndex(System* system) const
 {
     auto result = std::find(m_systemArray.begin(), m_systemArray.end(), system);
     return std::distance(m_systemArray.begin(), result);
+}
+
+void Score::UpdateSystemHeight(System* system)
+{
+    uint32_t systemIndex = FindSystemIndex(system);
+
+    const uint32_t originalExtraSpacing = system->GetExtraSpacing();
+    uint32_t newSpacing = 0;
+
+    if (system->HasRehearsalSign())
+    {
+        newSpacing += System::SYSTEM_SYMBOL_SPACING;
+    }
+    if (system->GetChordTextCount() > 0)
+    {
+        newSpacing += System::SYSTEM_SYMBOL_SPACING;
+    }
+
+    system->SetExtraSpacing(newSpacing);
+
+    int spacingDifference = newSpacing - originalExtraSpacing;
+
+    // adjust position of subsequent systems
+    systemIndex++;
+    for (; systemIndex < GetSystemCount(); systemIndex++)
+    {
+        System* currentSystem = m_systemArray.at(systemIndex);
+        Rect rect = currentSystem->GetRect();
+        rect.SetTop(rect.GetTop() + spacingDifference);
+        currentSystem->SetRect(rect);
+    }
 }

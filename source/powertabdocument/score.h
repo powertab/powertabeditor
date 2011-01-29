@@ -215,6 +215,8 @@ public:
         return (m_systemArray[index]);
     }
 
+    void UpdateSystemHeight(System* system);
+
     int FindSystemIndex(System* system) const;
 
     void UpdateToVer2Structure();

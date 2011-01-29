@@ -12,10 +12,11 @@
 #include <QCompleter>
 #include <QDialogButtonBox>
 
-RehearsalSignDialog::RehearsalSignDialog(Score* score, RehearsalSign* rehearsalSign, QWidget *parent) :
+RehearsalSignDialog::RehearsalSignDialog(Score* score, System* system, RehearsalSign* rehearsalSign, QWidget *parent) :
     QDialog(parent),
     rehearsalSign(rehearsalSign),
-    score(score)
+    score(score),
+    system(system)
 {
     setWindowTitle(tr("Rehearsal Sign"));
     setModal(true);
@@ -99,7 +100,7 @@ void RehearsalSignDialog::accept()
     QChar letter = letterChoice->currentText().at(0); // should only be one letter
     std::string description = descriptionChoice->currentText().toStdString();
 
-    PowerTabEditor::undoManager->push(new EditRehearsalSign(rehearsalSign, true, letter.toAscii(), description));
+    PowerTabEditor::undoManager->push(new EditRehearsalSign(score, system, rehearsalSign, true, letter.toAscii(), description));
     done(QDialog::Accepted);
 }
 
