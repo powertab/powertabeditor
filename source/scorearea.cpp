@@ -114,7 +114,7 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
 
         if (i == 0)
         {
-            drawChordText(system, currentStaffInfo);
+            drawSystemSymbols(system, currentStaffInfo);
         }
 
         drawLegato(system, currentStaff, currentStaffInfo);
@@ -191,7 +191,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
         {
             const int y = system->GetRect().GetTop() + 1;
             QFont displayFont("Helvetica");
-            displayFont.setPixelSize(14);
+            displayFont.setPixelSize(12);
 
             QGraphicsSimpleTextItem* signLetter = new QGraphicsSimpleTextItem;
             signLetter->setText(QString(QChar(rehearsalSign.GetLetter())));
@@ -345,7 +345,29 @@ void ScoreArea::drawTabClef(int x, const StaffData& staffInfo)
     scene.addItem(tabClef);
 }
 
-void ScoreArea::drawChordText(System* system, const StaffData& currentStaffInfo)
+void ScoreArea::drawSystemSymbols(System* system, const StaffData& currentStaffInfo)
+{
+    quint32 height = system->GetRect().GetTop();
+
+    if (system->HasRehearsalSign()) // rehearsal signs are drawn at the same time as barlines
+    {
+        height += System::SYSTEM_SYMBOL_SPACING;
+    }
+
+    QGraphicsLineItem* line = new QGraphicsLineItem;
+    line->setLine(currentStaffInfo.leftEdge, height, currentStaffInfo.leftEdge + currentStaffInfo.width, height);
+    line->setOpacity(0.5);
+    line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
+    scene.addItem(line);
+
+    if (system->GetChordTextCount() > 0)
+    {
+        drawChordText(system, height, currentStaffInfo);
+        height += System::SYSTEM_SYMBOL_SPACING;
+    }
+}
+
+void ScoreArea::drawChordText(System* system, quint32 height, const StaffData& currentStaffInfo)
 {
     for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
     {
@@ -355,8 +377,7 @@ void ScoreArea::drawChordText(System* system, const StaffData& currentStaffInfo)
         const quint32 location = system->GetPositionX(chordText->GetPosition());
 
         ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
-        centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth,
-                   currentStaffInfo.topEdge + System::CHORD_TEXT_SPACING); // TODO - create an appropriate constant for the height offset
+        centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth, height + 2);
         scene.addItem(chordTextPainter);
     }
 }

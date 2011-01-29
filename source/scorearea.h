@@ -43,12 +43,13 @@ protected:
     void drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void renderBars(const StaffData& currentStaffInfo, System* system);
     void drawTabClef(int x, const StaffData& staffInfo);
-    void drawChordText(System* system, const StaffData& currentStaffInfo);
+    void drawChordText(System* system, quint32 height, const StaffData& currentStaffInfo);
     void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x);
     void drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
+    void drawSystemSymbols(System* system, const StaffData& currentStaffInfo);
 
     QGraphicsScene scene;
     MusicFont musicFont;
