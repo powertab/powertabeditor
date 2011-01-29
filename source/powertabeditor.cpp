@@ -103,6 +103,10 @@ PowerTabEditor::~PowerTabEditor()
 void PowerTabEditor::RefreshOnUndoRedo(int index)
 {
     Q_UNUSED(index);
+
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    caret->getCurrentScore()->UpdateSystemHeight(caret->getCurrentSystem());
+
     RefreshCurrentDocument();
     connect(getCurrentScoreArea()->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
     updateActions();
@@ -588,7 +592,6 @@ void PowerTabEditor::editRehearsalSign()
     // Find if there is a rehearsal sign at the current position
     Caret* caret = getCurrentScoreArea()->getCaret();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
-    System* currentSystem = caret->getCurrentSystem();
     Score* currentScore = caret->getCurrentScore();
     Barline* currentBarline = caret->getCurrentSystem()->GetBarlineAtPosition(caretPosition);
 
@@ -599,11 +602,11 @@ void PowerTabEditor::editRehearsalSign()
 
     if (rehearsalSign->IsSet())
     {
-        undoManager->push(new EditRehearsalSign(currentScore, currentSystem, rehearsalSign, false));
+        undoManager->push(new EditRehearsalSign(rehearsalSign, false));
     }
     else
     {
-        RehearsalSignDialog rehearsalSignDialog(currentScore, currentSystem, rehearsalSign);
+        RehearsalSignDialog rehearsalSignDialog(currentScore, rehearsalSign);
         rehearsalSignDialog.exec();
     }
 
