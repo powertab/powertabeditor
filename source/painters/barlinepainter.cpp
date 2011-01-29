@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QStringBuilder>
+#include <QGraphicsSceneMouseEvent>
 
 #include <dialogs/barlinedialog.h>
 #include <powertabdocument/barline.h>
@@ -47,17 +48,24 @@ void BarlinePainter::init()
     }
 }
 
-void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
+    qreal y = event->pos().y();
+
+    // only handle clicks that occur in the standard notation staff
+    if (y > staffInfo.getBottomStdNotationLine(false) || y < staffInfo.getTopStdNotationLine(false))
+    {
+        event->ignore();
+    }
 }
 
-void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
 {
     BarlineDialog dialog(barLine);
     dialog.exec();
 }
 
-void BarlinePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+void BarlinePainter::mouseMoveEvent(QGraphicsSceneMouseEvent*)
 {
 }
 

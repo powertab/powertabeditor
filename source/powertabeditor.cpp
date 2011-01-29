@@ -24,6 +24,7 @@
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
+#include <dialogs/rehearsalsigndialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 
@@ -36,6 +37,7 @@
 #include <actions/removechordtext.h>
 #include <actions/addchordtext.h>
 #include <actions/updatenoteduration.h>
+#include <actions/editrehearsalsign.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -239,6 +241,12 @@ void PowerTabEditor::CreateActions()
     noteDurationActGroup->addAction(sixtyFourthNoteAct);
 
     connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(updateNoteDuration(int)));
+
+    // Music Symbol Actions
+    rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
+    rehearsalSignAct->setCheckable(true);
+    rehearsalSignAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_R));
+    connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -292,6 +300,10 @@ void PowerTabEditor::CreateMenus()
     notesMenu->addAction(sixteenthNoteAct);
     notesMenu->addAction(thirtySecondNoteAct);
     notesMenu->addAction(sixtyFourthNoteAct);
+
+    // Music Symbols Menu
+    musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
+    musicSymbolsMenu->addAction(rehearsalSignAct);
 }
 
 void PowerTabEditor::CreateTabArea()
@@ -569,6 +581,32 @@ void PowerTabEditor::editChordName()
 
 }
 
+// If there is a rehearsal sign at the barline, remove it
+// If there is no rehearsal sign, show the dialog to add one
+void PowerTabEditor::editRehearsalSign()
+{
+    // Find if there is a rehearsal sign at the current position
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    const quint32 caretPosition = caret->getCurrentPositionIndex();
+    Barline* currentBarline = caret->getCurrentSystem()->GetBarlineAtPosition(caretPosition);
+
+    // the rehearsal sign action should not be available unless there is a barline at the current position
+    Q_ASSERT(currentBarline != NULL);
+
+    RehearsalSign* rehearsalSign = currentBarline->GetRehearsalSignPtr();
+
+    if (rehearsalSign->IsSet())
+    {
+        undoManager->push(new EditRehearsalSign(rehearsalSign, false));
+    }
+    else
+    {
+        RehearsalSignDialog rehearsalSignDialog(caret->getCurrentScore(), rehearsalSign);
+        rehearsalSignDialog.exec();
+    }
+
+}
+
 // Updates whether menu items are checked, etc, whenever the caret moves
 void PowerTabEditor::updateActions()
 {
@@ -576,6 +614,7 @@ void PowerTabEditor::updateActions()
     const quint32 caretPosition = caret->getCurrentPositionIndex();
     System* currentSystem = caret->getCurrentSystem();
     Position* currentPosition = caret->getCurrentPosition();
+    Barline* currentBarline = currentSystem->GetBarlineAtPosition(caretPosition);
 
     // Check for chord text
     if (currentSystem->HasChordText(caretPosition))
@@ -602,13 +641,32 @@ void PowerTabEditor::updateActions()
         case 64: sixtyFourthNoteAct->setChecked(true); break;
         }
     }
+
+    // rehearsal sign
+    if (currentBarline != NULL)
+    {
+        rehearsalSignAct->setEnabled(true);
+        if (currentBarline->GetRehearsalSignRef().IsSet())
+        {
+            rehearsalSignAct->setChecked(true);
+        }
+        else
+        {
+            rehearsalSignAct->setChecked(false);
+        }
+    }
+    else
+    {
+        rehearsalSignAct->setDisabled(true);
+        rehearsalSignAct->setChecked(false);
+    }
 }
 
 // Enables/disables actions that should only be available when a score is opened
 void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
-    menuList << playbackMenu << positionMenu << textMenu << notesMenu;
+    menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu;
 
     QAction* action;
     QMenu* menu;

@@ -85,7 +85,9 @@ SOURCES += main.cpp\
     actions/addchordtext.cpp \
     painters/staffpainter.cpp \
     actions/updatenoteduration.cpp \
-    painters/systempainter.cpp
+    painters/systempainter.cpp \
+    actions/editrehearsalsign.cpp \
+    dialogs/rehearsalsigndialog.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -155,7 +157,9 @@ HEADERS  += powertabeditor.h \
     actions/addchordtext.h \
     painters/staffpainter.h \
     actions/updatenoteduration.h \
-    painters/systempainter.h
+    painters/systempainter.h \
+    actions/editrehearsalsign.h \
+    dialogs/rehearsalsigndialog.h
 
 RESOURCES += \
     resources.qrc

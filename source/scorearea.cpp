@@ -203,6 +203,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
             signText->setFont(displayFont);
             signText->setPos(rehearsalSignX + signLetter->boundingRect().width() + 7, y);
 
+            // draw rectangle around rehearsal sign letter
             QRectF boundingRect = signLetter->boundingRect();
             boundingRect.setWidth(boundingRect.width() + 7);
             boundingRect.translate(-4, 0);
