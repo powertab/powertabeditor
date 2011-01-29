@@ -139,6 +139,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
         double x = system->GetPositionX(currentBarline->GetPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
         double timeSigX = x + barlinePainter->boundingRect().width() + keySig.GetWidth() + 2;
+        double rehearsalSignX = x;
 
         if (i == 0) // start bar of system
         {
@@ -183,6 +184,34 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
             TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig);
             timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
             scene.addItem(timeSigPainter);
+        }
+
+        const RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSignConstRef();
+        if (rehearsalSign.IsSet())
+        {
+            const int y = system->GetRect().GetTop() + 1;
+            QFont displayFont("Helvetica");
+            displayFont.setPixelSize(14);
+
+            QGraphicsSimpleTextItem* signLetter = new QGraphicsSimpleTextItem;
+            signLetter->setText(QString(QChar(rehearsalSign.GetLetter())));
+            signLetter->setPos(rehearsalSignX, y);
+            signLetter->setFont(displayFont);
+
+            QGraphicsSimpleTextItem* signText = new QGraphicsSimpleTextItem;
+            signText->setText(QString().fromStdString(rehearsalSign.GetDescription()));
+            signText->setFont(displayFont);
+            signText->setPos(rehearsalSignX + signLetter->boundingRect().width() + 7, y);
+
+            QRectF boundingRect = signLetter->boundingRect();
+            boundingRect.setWidth(boundingRect.width() + 7);
+            boundingRect.translate(-4, 0);
+            QGraphicsRectItem* rect = new QGraphicsRectItem(boundingRect);
+            rect->setPos(rehearsalSignX, y);
+            scene.addItem(rect);
+
+            scene.addItem(signText);
+            scene.addItem(signLetter);
         }
     }
 }
