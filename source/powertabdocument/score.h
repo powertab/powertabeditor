@@ -158,7 +158,7 @@ public:
         return (m_tempoMarkerArray[index]);
     }
 
-    void GetTempoMarkersForSystem(std::vector<TempoMarker*>& tempoMarkers, System* system) const;
+    void GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, System* system) const;
 
 // Dynamic Functions
     /// Determines if a dynamic index is valid
@@ -197,6 +197,8 @@ public:
         CHECK_THAT(IsValidAlternateEndingIndex(index), NULL);
         return (m_alternateEndingArray[index]);
     }
+
+    void GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, System *system) const;
 
 // System Functions
     /// Determines if a system index is valid

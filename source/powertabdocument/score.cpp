@@ -299,20 +299,31 @@ int Score::FindSystemIndex(System* system) const
     return std::distance(m_systemArray.begin(), result);
 }
 
-void Score::GetTempoMarkersForSystem(std::vector<TempoMarker*>& tempoMarkers, System *system) const
+// Helper function for GetAlternateEndingsInSystem and GetTempoMarkersInSystem
+template<class Symbol>
+void GetSymbolsInSystem(vector<Symbol*> output, const vector<Symbol*> symbolList, const uint32_t systemIndex)
 {
-    uint32_t systemIndex = FindSystemIndex(system);
+    output.clear();
 
-    tempoMarkers.clear();
-
-    for (size_t i = 0; i < m_tempoMarkerArray.size(); i++)
+    for (size_t i = 0; i < symbolList.size(); i++)
     {
-        TempoMarker* marker = m_tempoMarkerArray.at(i);
-        if (marker->GetSystem() == systemIndex)
+        Symbol* symbol = symbolList.at(i);
+        if (symbol->GetSystem() == systemIndex)
         {
-            tempoMarkers.push_back(marker);
+            output.push_back(symbol);
         }
     }
+}
+
+// Finds all of the tempo markers that are in the given system
+inline void Score::GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, System *system) const
+{
+    GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
+}
+
+inline void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, System *system) const
+{
+    GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
 }
 
 void Score::UpdateSystemHeight(System* system)
@@ -333,8 +344,22 @@ void Score::UpdateSystemHeight(System* system)
 
     // check for tempo markers
     std::vector<TempoMarker*> markers;
-    GetTempoMarkersForSystem(markers, system);
+    GetTempoMarkersInSystem(markers, system);
     if (markers.size() > 0)
+    {
+        newSpacing += System::SYSTEM_SYMBOL_SPACING;
+    }
+
+    // check for musical directions
+    if (system->GetDirectionCount() > 0)
+    {
+        newSpacing += System::SYSTEM_SYMBOL_SPACING;
+    }
+
+    // check for alternate endings
+    std::vector<AlternateEnding*> endings;
+    GetAlternateEndingsInSystem(endings, system);
+    if (endings.size() > 0)
     {
         newSpacing += System::SYSTEM_SYMBOL_SPACING;
     }

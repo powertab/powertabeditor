@@ -366,7 +366,7 @@ void ScoreArea::drawSystemSymbols(Score* score, System* system, const StaffData&
     }
 
     std::vector<TempoMarker*> tempoMarkers;
-    score->GetTempoMarkersForSystem(tempoMarkers, system);
+    score->GetTempoMarkersInSystem(tempoMarkers, system);
 
     if (tempoMarkers.size() > 0)
     {
