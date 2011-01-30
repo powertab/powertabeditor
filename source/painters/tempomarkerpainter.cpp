@@ -19,7 +19,7 @@ void TempoMarkerPainter::setDisplayText()
     displayText.clear();
 
     displayText += QString::fromStdString(tempoMarker->GetDescription());
-    displayText += " - ";
+    displayText += " ";
     displayText += QString().setNum(tempoMarker->GetBeatsPerMinute());
 
     boundingRectangle = QFontMetricsF(displayFont).boundingRect(displayText);
