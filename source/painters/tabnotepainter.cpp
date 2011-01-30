@@ -7,18 +7,24 @@
 
 QFont TabNotePainter::tabFont = QFont("Liberation Sans");
 
-TabNotePainter::TabNotePainter(Note* notePtr)
+TabNotePainter::TabNotePainter(Note* note) :
+    note(note)
 {
-    note = notePtr;
     tabFont.setPixelSize(10); // needed for cross-platform consistency in font size
     tabFont.setStyleStrategy(QFont::PreferAntialias);
 
-    setText();
+    init();
 }
 
-QRectF TabNotePainter::boundingRect() const
+void TabNotePainter::init()
 {
-    return QFontMetricsF(tabFont).boundingRect(noteText);
+    QString noteText = QString().fromStdString(note->GetText());
+
+    displayText.setText(noteText);
+    displayText.prepare(QTransform(), tabFont);
+
+    QFontMetricsF fm(tabFont);
+    bounds = QRectF(0, 0, fm.width(noteText), fm.height());
 }
 
 void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -37,13 +43,6 @@ void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setPen(Qt::black);
     }
 
-    setText();
-
     // offset height by 1 pixel for clarity
-    painter->drawText(0, -1, noteText);
-}
-
-inline void TabNotePainter::setText()
-{
-    noteText = QString().fromStdString(note->GetText());
+    painter->drawStaticText(0, 0, displayText);
 }

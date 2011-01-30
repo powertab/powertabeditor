@@ -13,7 +13,11 @@
 class PainterBase : public QGraphicsItem
 {
 public:
-    virtual QRectF boundingRect() const = 0;
+    virtual QRectF boundingRect() const
+    {
+        return bounds;
+    }
+
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
 
 protected:
@@ -22,6 +26,9 @@ protected:
     {
         return (xmin + ((xmax - (xmin + width)) / 2) + 1);
     }
+
+    QRectF bounds;
+    QPainterPath path;
 };
 
 #endif // PAINTERBASE_H

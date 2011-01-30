@@ -7,13 +7,16 @@
 SystemPainter::SystemPainter(System* system) :
     system(system)
 {
+    init();
 }
 
-QRectF SystemPainter::boundingRect() const
+void SystemPainter::init()
 {
     Rect rect = system->GetRect();
 
-    return QRectF(0, 0, rect.GetWidth(), rect.GetHeight());
+    bounds = QRectF(0, 0, rect.GetWidth(), rect.GetHeight());
+
+    path.addRect(bounds);
 }
 
 void SystemPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -24,5 +27,5 @@ void SystemPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
     painter->setOpacity(0.5);
     painter->setPen(QPen(QBrush(QColor(0,0,0)), 0.5));
 
-    painter->drawRect(boundingRect());
+    painter->drawPath(path);
 }

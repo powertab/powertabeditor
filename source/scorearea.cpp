@@ -391,7 +391,7 @@ void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System*
         const quint32 location = system->GetPositionX(tempoMarker->GetPosition());
 
         TempoMarkerPainter* tempoMarkerPainter = new TempoMarkerPainter(tempoMarker);
-        tempoMarkerPainter->setPos(location, height + 2);
+        tempoMarkerPainter->setPos(location, height + 4);
         scene.addItem(tempoMarkerPainter);
     }
 }
@@ -406,7 +406,7 @@ void ScoreArea::drawChordText(System* system, quint32 height, const StaffData& c
         const quint32 location = system->GetPositionX(chordText->GetPosition());
 
         ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
-        centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth, height + 2);
+        centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth, height + 4);
         scene.addItem(chordTextPainter);
     }
 }
@@ -424,7 +424,7 @@ void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& curr
 
             TabNotePainter* tabNote = new TabNotePainter(note);
             centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
-                       currentStaffInfo.getTabLineHeight(note->GetString()) + 13);
+                       currentStaffInfo.getTabLineHeight(note->GetString()) + currentStaffInfo.tabLineSpacing / 2 - 1);
             scene.addItem(tabNote);
         }
     }

@@ -5,6 +5,7 @@
 #include <powertabdocument/chordtext.h>
 
 #include <QFont>
+#include <QStaticText>
 
 class ChordText;
 
@@ -13,22 +14,14 @@ class ChordTextPainter : public PainterBase
 public:
     ChordTextPainter(ChordText* chordText);
 
-    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
-    inline void setDisplayText()
-    {
-        displayText = QString().fromStdString(chordText->GetText());
-    }
+    void init();
 
     ChordText* chordText;
-    QString displayText; // holds the display text so that we don't have to recalculate it for boundingRect()
     static QFont displayFont;
+    QStaticText displayText;
 };
 
 #endif // CHORDTEXTPAINTER_H

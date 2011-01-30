@@ -21,6 +21,17 @@ StaffPainter::StaffPainter(System* system, Staff* staff, const StaffData& staffI
         staffInfo(staffInfo)
 {
     pen = QPen(QBrush(QColor(0,0,0)), 0.75);
+    init();
+}
+
+void StaffPainter::init()
+{
+    bounds = QRectF(0, 0, staffInfo.width, staffInfo.height);
+
+    // Standard notation staff
+    drawStaffLines(staffInfo.numOfStdNotationLines, staffInfo.stdNotationLineSpacing, staffInfo.getTopStdNotationLine(false));
+    // Tab staff
+    drawStaffLines(staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine(false));
 }
 
 void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -65,11 +76,6 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
 }
 
-QRectF StaffPainter::boundingRect() const
-{
-    return QRectF(0, 0, staffInfo.width, staffInfo.height);
-}
-
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
@@ -77,20 +83,18 @@ void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
     painter->setPen(pen);
 
-    // Standard notation staff
-    drawStaffLines(painter, 5, staffInfo.stdNotationLineSpacing, staffInfo.getTopStdNotationLine(false));
-    // Tab staff
-    drawStaffLines(painter, staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine(false));
+    painter->drawPath(path);
 }
 
-int StaffPainter::drawStaffLines(QPainter* painter, int lineCount, int lineSpacing, int startHeight)
+int StaffPainter::drawStaffLines(int lineCount, int lineSpacing, int startHeight)
 {
     int height = 0;
 
     for (int i=0; i < lineCount; i++)
     {
         height = i * lineSpacing + startHeight;
-        painter->drawLine(0, height, staffInfo.width, height);
+        path.moveTo(0, height);
+        path.lineTo(staffInfo.width, height);
     }
 
     return height;

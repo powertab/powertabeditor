@@ -301,7 +301,7 @@ int Score::FindSystemIndex(System* system) const
 
 // Helper function for GetAlternateEndingsInSystem and GetTempoMarkersInSystem
 template<class Symbol>
-void GetSymbolsInSystem(vector<Symbol*> output, const vector<Symbol*> symbolList, const uint32_t systemIndex)
+void GetSymbolsInSystem(vector<Symbol*>& output, const vector<Symbol*>& symbolList, const uint32_t systemIndex)
 {
     output.clear();
 
@@ -316,12 +316,12 @@ void GetSymbolsInSystem(vector<Symbol*> output, const vector<Symbol*> symbolList
 }
 
 // Finds all of the tempo markers that are in the given system
-inline void Score::GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, System *system) const
+void Score::GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, System *system) const
 {
     GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
 }
 
-inline void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, System *system) const
+void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, System *system) const
 {
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
 }

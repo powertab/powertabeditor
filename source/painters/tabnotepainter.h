@@ -4,23 +4,23 @@
 #include "painterbase.h"
 
 #include <QFont>
+#include <QStaticText>
 
 class Note;
 
 class TabNotePainter : public PainterBase
 {
 public:
-    TabNotePainter(Note* notePtr);
+    TabNotePainter(Note* note);
 
-    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
-    inline void setText();
+    void init();
 
     Note* note;
     static QFont tabFont;
-    QString noteText;
+    QStaticText displayText;
 };
 
 #endif // TABNOTEPAINTER_H

@@ -14,7 +14,6 @@ class StaffPainter : public PainterBase
 public:
     StaffPainter(System* system, Staff* staff, const StaffData& staffInfo);
 
-    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
@@ -22,13 +21,15 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-    int drawStaffLines(QPainter* painter, int lineCount, int lineSpacing, int startHeight);
+    int drawStaffLines(int lineCount, int lineSpacing, int startHeight);
     inline int findClosestPosition(qreal click, qreal relativePos, qreal spacing);
 
     System* system;
     Staff* staff;
     StaffData staffInfo;
     QPen pen;
+
+    void init();
 };
 
 #endif // STAFFPAINTER_H

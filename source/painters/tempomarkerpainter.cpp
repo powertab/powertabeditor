@@ -11,23 +11,21 @@ TempoMarkerPainter::TempoMarkerPainter(TempoMarker* tempoMarker):
 {
     displayFont.setPixelSize(10);
 
-    setDisplayText();
+    init();
 }
 
-void TempoMarkerPainter::setDisplayText()
+void TempoMarkerPainter::init()
 {
-    displayText.clear();
+    QString text;
+    text += QString::fromStdString(tempoMarker->GetDescription());
+    text += " ";
+    text += QString().setNum(tempoMarker->GetBeatsPerMinute());
 
-    displayText += QString::fromStdString(tempoMarker->GetDescription());
-    displayText += " ";
-    displayText += QString().setNum(tempoMarker->GetBeatsPerMinute());
+    displayText.setText(text);
+    displayText.prepare(QTransform(), displayFont);
 
-    boundingRectangle = QFontMetricsF(displayFont).boundingRect(displayText);
-}
-
-QRectF TempoMarkerPainter::boundingRect() const
-{
-    return boundingRectangle;
+    QFontMetricsF fm(displayFont);
+    bounds = QRectF(0, 0, fm.width(text), fm.height());
 }
 
 void TempoMarkerPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -37,5 +35,5 @@ void TempoMarkerPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     painter->setFont(displayFont);
 
-    painter->drawText(0, boundingRectangle.height(), displayText);
+    painter->drawStaticText(0, 0, displayText);
 }

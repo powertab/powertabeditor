@@ -3,6 +3,8 @@
 
 #include "painterbase.h"
 
+#include <QStaticText>
+
 class StaffData;
 class Staff;
 
@@ -11,7 +13,6 @@ class ClefPainter : public PainterBase
 public:
     ClefPainter(const StaffData& staffData, Staff* staff);
 
-    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
@@ -20,9 +21,12 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
+    void init();
+
     const StaffData& staffInfo;
     Staff* staff;
     static QFont font;
+    QStaticText displayText;
 };
 
 #endif // CLEFPAINTER_H

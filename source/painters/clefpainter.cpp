@@ -13,6 +13,26 @@ ClefPainter::ClefPainter(const StaffData& staffData, Staff* staff) :
         staffInfo(staffData)
 {
     this->staff = staff;
+    init();
+}
+
+void ClefPainter::init()
+{
+    // draw the correct staff type
+    if (staff->GetClef() == Staff::TREBLE_CLEF)
+    {
+        displayText.setText(MusicFont::getSymbol(MusicFont::TrebleClef));
+    }
+    // Draw a bass clef otherwise
+    else
+    {
+        displayText.setText(MusicFont::getSymbol(MusicFont::BassClef));
+    }
+
+    displayText.prepare(QTransform(), font);
+
+    QFontMetricsF fm(font);
+    bounds = QRectF(0, -5, fm.width(MusicFont::TrebleClef), fm.height());
 }
 
 void ClefPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -32,6 +52,7 @@ void ClefPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
     }
 
     // redraw clef
+    init();
     update(boundingRect());
 }
 
@@ -39,36 +60,19 @@ void ClefPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
 }
 
-QRectF ClefPainter::boundingRect() const
-{
-    QFontMetricsF fm(font);
-    return QRectF(0,
-                  -10, // adjust for the extra height of treble clef above the staff
-                  fm.width(MusicFont::TrebleClef),
-                  fm.height());
-}
-
 void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    MusicFont musicFont;
     painter->setFont(font);
 
-    // draw the correct staff type
     if (staff->GetClef() == Staff::TREBLE_CLEF)
     {
-        painter->drawText(0,
-                          staffInfo.getStdNotationStaffSize() - 5,
-                          musicFont.getSymbol(MusicFont::TrebleClef));
+        painter->drawStaticText(0, -6, displayText);
     }
-    // Draw a bass clef otherwise
     else
     {
-        painter->drawText(0,
-                          staffInfo.getStdNotationLineHeight(2) - staffInfo.getTopStdNotationLine(),
-                          musicFont.getSymbol(MusicFont::BassClef));
+        painter->drawStaticText(0, -21, displayText);
     }
-
 }

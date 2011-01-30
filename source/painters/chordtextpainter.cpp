@@ -13,24 +13,18 @@ ChordTextPainter::ChordTextPainter(ChordText* chordText) :
     displayFont.setPixelSize(10); // needed for cross-platform consistency in font size
     displayFont.setStyleStrategy(QFont::PreferAntialias);
 
-    setDisplayText();
+    init();
 }
 
-void ChordTextPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+void ChordTextPainter::init()
 {
-}
+    QString text = QString::fromStdString(chordText->GetText());
 
-void ChordTextPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-}
+    displayText.setText(text);
+    displayText.prepare(QTransform(), displayFont);
 
-void ChordTextPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
-QRectF ChordTextPainter::boundingRect() const
-{
-    return QFontMetricsF(displayFont).boundingRect(displayText);
+    QFontMetricsF fm(displayFont);
+    bounds = QRectF(0, 0, fm.width(text), fm.height());
 }
 
 void ChordTextPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -39,7 +33,5 @@ void ChordTextPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *
     Q_UNUSED(option);
     painter->setFont(displayFont);
 
-    setDisplayText();
-
-    painter->drawText(0, boundingRect().height() , displayText); // the y-coord is used as the baseline of the text
+    painter->drawStaticText(0, 0, displayText);
 }
