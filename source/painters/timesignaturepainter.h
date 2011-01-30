@@ -11,7 +11,6 @@ class TimeSignaturePainter : public PainterBase
 public:
     TimeSignaturePainter(const StaffData& staffInformation, const TimeSignature& signature);
 
-    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
@@ -19,7 +18,8 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-private:
+    void init();
+
     const StaffData& staffInfo;
     const TimeSignature& timeSignature;
 };

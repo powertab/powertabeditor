@@ -12,10 +12,16 @@
 QFont KeySignaturePainter::musicFont = MusicFont().getFont();
 
 KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature) :
-        staffInfo(staffInformation),
-        keySignature(signature)
+    staffInfo(staffInformation),
+    keySignature(signature)
 {
+    initAccidentalPositions();
     init();
+}
+
+void KeySignaturePainter::init()
+{
+    bounds = QRectF(0, -10, keySignature.GetWidth(), staffInfo.getStdNotationStaffSize());
 }
 
 void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -31,11 +37,6 @@ void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 
 void KeySignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
-}
-
-QRectF KeySignaturePainter::boundingRect() const
-{
-    return QRectF(0, -10, keySignature.GetWidth(), staffInfo.getStdNotationStaffSize());
 }
 
 void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -58,7 +59,7 @@ void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIte
 
 void KeySignaturePainter::adjustHeightOffset(QVector<double>& lst)
 {
-    for (QVector<double>::iterator i = lst.begin(); i != lst.end(); ++i)
+    for (auto i = lst.begin(); i != lst.end(); ++i)
     {
         *i -= staffInfo.getTopStdNotationLine();
     }
@@ -77,7 +78,7 @@ void KeySignaturePainter::drawAccidentals(QVector<double>& positions, QChar acci
     }
 }
 
-void KeySignaturePainter::init()
+void KeySignaturePainter::initAccidentalPositions()
 {
     flatPositions.resize(7);
     sharpPositions.resize(7);

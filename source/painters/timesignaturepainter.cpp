@@ -9,9 +9,15 @@
 #include <QPainter>
 
 TimeSignaturePainter::TimeSignaturePainter(const StaffData& staffInformation, const TimeSignature& signature) :
-        staffInfo(staffInformation),
-        timeSignature(signature)
+    staffInfo(staffInformation),
+    timeSignature(signature)
 {
+    init();
+}
+
+void TimeSignaturePainter::init()
+{
+    bounds = QRectF(0, 0, timeSignature.GetWidth(), staffInfo.getStdNotationStaffSize());
 }
 
 void TimeSignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -27,11 +33,6 @@ void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 
 void TimeSignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
-}
-
-QRectF TimeSignaturePainter::boundingRect() const
-{
-    return QRectF(0, 0, timeSignature.GetWidth(), staffInfo.getStdNotationStaffSize());
 }
 
 void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -64,7 +65,7 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
     {
         displayFont.setPixelSize(27);
         painter->setFont(displayFont);
-        
+
         const int offset = -5;
         uint8_t beatsPerMeasure = timeSignature.GetBeatsPerMeasure();
         uint8_t beatAmount = timeSignature.GetBeatAmount();

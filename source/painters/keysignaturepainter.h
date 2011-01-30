@@ -12,7 +12,6 @@ class KeySignaturePainter : public PainterBase
 public:
     KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature);
 
-    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
@@ -26,6 +25,7 @@ private:
     static QFont musicFont;
     void adjustHeightOffset(QVector<double>& lst);
     void drawAccidentals(QVector<double>& positions, QChar accidental, QPainter* painter);
+    void initAccidentalPositions();
     void init();
 
     QVector<double> flatPositions;
