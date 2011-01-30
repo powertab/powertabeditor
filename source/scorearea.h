@@ -50,6 +50,7 @@ protected:
     void drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
     void drawSystemSymbols(System* system, const StaffData& currentStaffInfo);
+    void drawDividerLine(const StaffData& currentStaffInfo, quint32 height);
 
     QGraphicsScene scene;
     MusicFont musicFont;

@@ -345,6 +345,15 @@ void ScoreArea::drawTabClef(int x, const StaffData& staffInfo)
     scene.addItem(tabClef);
 }
 
+void ScoreArea::drawDividerLine(const StaffData& currentStaffInfo, quint32 height)
+{
+    QGraphicsLineItem* line = new QGraphicsLineItem;
+    line->setLine(currentStaffInfo.leftEdge, height, currentStaffInfo.leftEdge + currentStaffInfo.width, height);
+    line->setOpacity(0.5);
+    line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
+    scene.addItem(line);
+}
+
 void ScoreArea::drawSystemSymbols(System* system, const StaffData& currentStaffInfo)
 {
     quint32 height = system->GetRect().GetTop();
@@ -352,18 +361,14 @@ void ScoreArea::drawSystemSymbols(System* system, const StaffData& currentStaffI
     if (system->HasRehearsalSign()) // rehearsal signs are drawn at the same time as barlines
     {
         height += System::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(currentStaffInfo, height);
     }
-
-    QGraphicsLineItem* line = new QGraphicsLineItem;
-    line->setLine(currentStaffInfo.leftEdge, height, currentStaffInfo.leftEdge + currentStaffInfo.width, height);
-    line->setOpacity(0.5);
-    line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
-    scene.addItem(line);
 
     if (system->GetChordTextCount() > 0)
     {
         drawChordText(system, height, currentStaffInfo);
         height += System::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(currentStaffInfo, height);
     }
 }
 

@@ -81,11 +81,6 @@ void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     drawStaffLines(painter, 5, staffInfo.stdNotationLineSpacing, staffInfo.getTopStdNotationLine(false));
     // Tab staff
     drawStaffLines(painter, staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine(false));
-
-    // draw top border
-    painter->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
-    painter->setOpacity(0.5);
-    painter->drawLine(0, 0, staffInfo.width, 0);
 }
 
 int StaffPainter::drawStaffLines(QPainter* painter, int lineCount, int lineSpacing, int startHeight)
