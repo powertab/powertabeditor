@@ -419,7 +419,6 @@ void PowerTabEditor::closeTab(int index)
     undoManager->removeStack(index);
     documentManager.Remove(index);
     delete tabWidget->widget(index);
-    tabWidget->removeTab(index);
 
     mixerList->removeWidget(mixerList->widget(index));
 
