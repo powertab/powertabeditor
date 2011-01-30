@@ -299,6 +299,22 @@ int Score::FindSystemIndex(System* system) const
     return std::distance(m_systemArray.begin(), result);
 }
 
+void Score::GetTempoMarkersForSystem(std::vector<TempoMarker*>& tempoMarkers, System *system) const
+{
+    uint32_t systemIndex = FindSystemIndex(system);
+
+    tempoMarkers.clear();
+
+    for (size_t i = 0; i < m_tempoMarkerArray.size(); i++)
+    {
+        TempoMarker* marker = m_tempoMarkerArray.at(i);
+        if (marker->GetSystem() == systemIndex)
+        {
+            tempoMarkers.push_back(marker);
+        }
+    }
+}
+
 void Score::UpdateSystemHeight(System* system)
 {
     uint32_t systemIndex = FindSystemIndex(system);
@@ -311,6 +327,14 @@ void Score::UpdateSystemHeight(System* system)
         newSpacing += System::SYSTEM_SYMBOL_SPACING;
     }
     if (system->GetChordTextCount() > 0)
+    {
+        newSpacing += System::SYSTEM_SYMBOL_SPACING;
+    }
+
+    // check for tempo markers
+    std::vector<TempoMarker*> markers;
+    GetTempoMarkersForSystem(markers, system);
+    if (markers.size() > 0)
     {
         newSpacing += System::SYSTEM_SYMBOL_SPACING;
     }

@@ -15,6 +15,7 @@
 #include <painters/chordtextpainter.h>
 #include <painters/staffpainter.h>
 #include <painters/systempainter.h>
+#include <painters/tempomarkerpainter.h>
 
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
@@ -57,11 +58,11 @@ void ScoreArea::renderScore(Score* score, int lineSpacing)
     // Render each system (group of staves) in the entire score
     for (uint32_t i=0; i < score->GetSystemCount(); i++)
     {
-        renderSystem(score->GetSystem(i), lineSpacing);
+        renderSystem(score, score->GetSystem(i), lineSpacing);
     }
 }
 
-void ScoreArea::renderSystem(System* system, int lineSpacing)
+void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
 {
     const Rect systemRectangle = system->GetRect();
 
@@ -114,7 +115,7 @@ void ScoreArea::renderSystem(System* system, int lineSpacing)
 
         if (i == 0)
         {
-            drawSystemSymbols(system, currentStaffInfo);
+            drawSystemSymbols(score, system, currentStaffInfo);
         }
 
         drawLegato(system, currentStaff, currentStaffInfo);
@@ -354,7 +355,7 @@ void ScoreArea::drawDividerLine(const StaffData& currentStaffInfo, quint32 heigh
     scene.addItem(line);
 }
 
-void ScoreArea::drawSystemSymbols(System* system, const StaffData& currentStaffInfo)
+void ScoreArea::drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo)
 {
     quint32 height = system->GetRect().GetTop();
 
@@ -364,11 +365,34 @@ void ScoreArea::drawSystemSymbols(System* system, const StaffData& currentStaffI
         drawDividerLine(currentStaffInfo, height);
     }
 
+    std::vector<TempoMarker*> tempoMarkers;
+    score->GetTempoMarkersForSystem(tempoMarkers, system);
+
+    if (tempoMarkers.size() > 0)
+    {
+        drawTempoMarkers(tempoMarkers, system, height, currentStaffInfo);
+        height += System::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(currentStaffInfo, height);
+    }
+
     if (system->GetChordTextCount() > 0)
     {
         drawChordText(system, height, currentStaffInfo);
         height += System::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(currentStaffInfo, height);
+    }
+
+}
+
+void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height, const StaffData& currentStaffInfo)
+{
+    foreach(TempoMarker* tempoMarker, tempoMarkers)
+    {
+        const quint32 location = system->GetPositionX(tempoMarker->GetPosition());
+
+        TempoMarkerPainter* tempoMarkerPainter = new TempoMarkerPainter(tempoMarker);
+        tempoMarkerPainter->setPos(location, height + 2);
+        scene.addItem(tempoMarkerPainter);
     }
 }
 

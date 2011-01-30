@@ -158,6 +158,8 @@ public:
         return (m_tempoMarkerArray[index]);
     }
 
+    void GetTempoMarkersForSystem(std::vector<TempoMarker*>& tempoMarkers, System* system) const;
+
 // Dynamic Functions
     /// Determines if a dynamic index is valid
     /// @param index dynamic index to validate

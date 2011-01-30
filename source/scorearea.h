@@ -17,6 +17,7 @@ class Caret;
 class Note;
 class StdNotationPainter;
 class Position;
+class TempoMarker;
 
 // The visual display of the score
 
@@ -39,7 +40,7 @@ public:
 
 protected:
     void renderScore(Score* score, int lineSpacing);
-    void renderSystem(System* system, int lineSpacing);
+    void renderSystem(Score* score, System* system, int lineSpacing);
     void drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void renderBars(const StaffData& currentStaffInfo, System* system);
     void drawTabClef(int x, const StaffData& staffInfo);
@@ -49,8 +50,9 @@ protected:
     void drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
-    void drawSystemSymbols(System* system, const StaffData& currentStaffInfo);
+    void drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 height);
+    void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height, const StaffData& currentStaffInfo);
 
     QGraphicsScene scene;
     MusicFont musicFont;
