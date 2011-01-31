@@ -17,6 +17,8 @@
 #include <painters/systempainter.h>
 #include <painters/tempomarkerpainter.h>
 
+#include <cmath>
+
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
 {
@@ -579,19 +581,42 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                     }
                 }
 
-                QGraphicsLineItem* line = new QGraphicsLineItem;
-                line->setLine(beamingGroup[j].location, beamingGroup[j].topNotePos, beamingGroup[j].location, beamingGroup[j].bottomNotePos);
-                scene.addItem(line);
+                {
+                    QGraphicsLineItem* line = new QGraphicsLineItem;
+                    line->setLine(beamingGroup[j].location, beamingGroup[j].topNotePos, beamingGroup[j].location, beamingGroup[j].bottomNotePos);
+                    scene.addItem(line);
+                }
+
+                // extra beams (for 16th notes, etc)
+                BeamingInfo beam = beamingGroup[j];
+                // 16th note gets 1 extra beam, 32nd gets two, etc
+                // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
+                const int extraBeams = log(beam.position->GetPreviousBeamDurationType()) / log(2) - 3;
+
+                for (int k = 1; k <= extraBeams; k++)
+                {
+                    double y = beamDirectionUp ? beam.topNotePos : beam.bottomNotePos;
+                    y += k * 3 * (beamDirectionUp ? 1 : -1);
+
+                    QGraphicsLineItem* line = new QGraphicsLineItem;
+                    line->setLine(beamingGroup[j-1].location + 1, y, beamingGroup[j].location - 1, y);
+                    line->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
+                    scene.addItem(line);
+                }
+
             }
 
-            // draw the line that connects all of the beams
-            QGraphicsLineItem* connector = new QGraphicsLineItem;
+            if (beamingGroup.size() > 1)
+            {
+                // draw the line that connects all of the beams
+                QGraphicsLineItem* connector = new QGraphicsLineItem;
 
-            double height = beamDirectionUp ? beamingGroup.first().topNotePos : beamingGroup.first().bottomNotePos;
-            connector->setLine(beamingGroup.first().location, height, beamingGroup.last().location, height);
-            scene.addItem(connector);
+                double height = beamDirectionUp ? beamingGroup.first().topNotePos : beamingGroup.first().bottomNotePos;
+                connector->setLine(beamingGroup.first().location + 1, height, beamingGroup.last().location - 1, height);
+                connector->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
+                scene.addItem(connector);
+            }
 
-            // calculations
             beamingGroup.clear();
         }
     }
