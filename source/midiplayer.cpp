@@ -18,6 +18,8 @@ MidiPlayer::MidiPlayer(Caret* caret) :
 
     isPlaying = false;
     currentSystemIndex = 0;
+
+    initNaturalHarmonics();
 }
 
 MidiPlayer::~MidiPlayer()
@@ -85,8 +87,8 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 Note* note = position->GetNote(k);
 
                 // find the pitch of the note
-                quint32 pitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
-                pitch += note->GetFretNumber();
+                const quint32 openStringPitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
+                quint32 pitch = openStringPitch + note->GetFretNumber();
 
                 // fill in the note info structure
                 NoteInfo noteInfo;
@@ -107,6 +109,11 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 if (note->IsGhostNote())
                 {
                     noteInfo.velocity = GHOST_VELOCITY;
+                }
+
+                if (note->IsNaturalHarmonic())
+                {
+                    noteInfo.pitch = getNaturalHarmonicPitch(openStringPitch, note->GetFretNumber());
                 }
 
                 if (note->IsTied()) // if the note is tied, delete the previous note-off event
@@ -303,4 +310,20 @@ double MidiPlayer::getWholeRestDuration(System* system, Staff* staff, Position* 
     duration *= numBeats;
 
     return duration;
+}
+
+// initialize the natural harmonics values
+void MidiPlayer::initNaturalHarmonics()
+{
+    naturalHarmonicPitches[3] = 31;
+    naturalHarmonicPitches[4] = naturalHarmonicPitches[9] = 28;
+    naturalHarmonicPitches[16] = naturalHarmonicPitches[28] = 28;
+    naturalHarmonicPitches[5] = naturalHarmonicPitches[24] = 24;
+    naturalHarmonicPitches[7] = naturalHarmonicPitches[19] = 19;
+    naturalHarmonicPitches[12] = 12;
+}
+
+quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const quint8 fret) const
+{
+    return openStringPitch + naturalHarmonicPitches[fret];
 }

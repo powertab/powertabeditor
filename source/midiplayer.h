@@ -5,6 +5,7 @@
 
 #include <QThread>
 #include <QMutex>
+#include <QHash>
 
 class Caret;
 class Position;
@@ -81,6 +82,10 @@ protected:
     bool isPlaying;
     QMutex mutex;
     quint32 currentSystemIndex;
+
+    QHash<quint8, quint8> naturalHarmonicPitches;
+    void initNaturalHarmonics();
+    quint8 getNaturalHarmonicPitch(const quint8 originalPitch, const quint8 fret) const;
 };
 
 #endif // MIDIPLAYER_H
