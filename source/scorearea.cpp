@@ -588,14 +588,13 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 }
 
                 // extra beams (for 16th notes, etc)
-                BeamingInfo beam = beamingGroup[j];
                 // 16th note gets 1 extra beam, 32nd gets two, etc
                 // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
-                const int extraBeams = log(beam.position->GetPreviousBeamDurationType()) / log(2) - 3;
+                const int extraBeams = log(beamingGroup[j].position->GetPreviousBeamDurationType()) / log(2) - 3;
 
                 for (int k = 1; k <= extraBeams; k++)
                 {
-                    double y = beamDirectionUp ? beam.topNotePos : beam.bottomNotePos;
+                    double y = beamDirectionUp ? beamingGroup[j].topNotePos : beamingGroup[j].bottomNotePos;
                     y += k * 3 * (beamDirectionUp ? 1 : -1);
 
                     QGraphicsLineItem* line = new QGraphicsLineItem;

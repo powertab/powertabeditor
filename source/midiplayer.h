@@ -29,13 +29,18 @@ signals:
 protected:
     void run();
 
-private:
-
     enum MessageType
     {
         PLAY_NOTE,
         STOP_NOTE,
         REST,
+    };
+
+    enum NoteVelocities
+    {
+        DEFAULT_VELOCITY = 127,
+        MUTED_VELOCITY = 60,
+        GHOST_VELOCITY = 50,
     };
 
     // Holds information about a MIDI event
@@ -48,6 +53,8 @@ private:
         double duration;
         double startTime;
         quint8 position; // position of the note within the staff, used for moving the caret accordingly
+        bool isMuted;
+        int velocity;
 
         // used for sorting NoteInfo objects by their start time
         inline bool operator<(const NoteInfo& note)

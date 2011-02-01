@@ -8,6 +8,7 @@
 #include <painters/caret.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/guitar.h>
+#include <powertabdocument/generalmidi.h>
 
 MidiPlayer::MidiPlayer(Caret* caret) :
     caret(caret)
@@ -96,6 +97,17 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 noteInfo.duration = duration;
                 noteInfo.startTime = startTime;
                 noteInfo.position = positionIndex;
+                noteInfo.isMuted = note->IsMuted();
+                noteInfo.velocity = DEFAULT_VELOCITY;
+
+                if (note->IsMuted())
+                {
+                    noteInfo.velocity = MUTED_VELOCITY;
+                }
+                if (note->IsGhostNote())
+                {
+                    noteInfo.velocity = GHOST_VELOCITY;
+                }
 
                 if (note->IsTied()) // if the note is tied, delete the previous note-off event
                 {
@@ -174,11 +186,19 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
         if (noteInfo.messageType == PLAY_NOTE)
         {
             // grab the patch/pan/volume immediately before playback to allow for real-time mixing
-            rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.guitar->GetPreset());
+            if (noteInfo.isMuted)
+            {
+                rtMidiWrapper.setPatch(noteInfo.channel, midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
+            }
+            else
+            {
+                rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.guitar->GetPreset());
+            }
+
             rtMidiWrapper.setPan(noteInfo.channel, noteInfo.guitar->GetPan());
             rtMidiWrapper.setVolume(noteInfo.channel, noteInfo.guitar->GetInitialVolume());
 
-            rtMidiWrapper.playNote(noteInfo.channel, noteInfo.pitch, 127);
+            rtMidiWrapper.playNote(noteInfo.channel, noteInfo.pitch, noteInfo.velocity);
         }
         else if (noteInfo.messageType == STOP_NOTE)
         {
