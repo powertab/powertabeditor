@@ -88,7 +88,8 @@ SOURCES += main.cpp\
     painters/systempainter.cpp \
     actions/editrehearsalsign.cpp \
     dialogs/rehearsalsigndialog.cpp \
-    painters/tempomarkerpainter.cpp
+    painters/tempomarkerpainter.cpp \
+    actions/editnaturalharmonic.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -161,7 +162,8 @@ HEADERS  += powertabeditor.h \
     painters/systempainter.h \
     actions/editrehearsalsign.h \
     dialogs/rehearsalsigndialog.h \
-    painters/tempomarkerpainter.h
+    painters/tempomarkerpainter.h \
+    actions/editnaturalharmonic.h
 
 RESOURCES += \
     resources.qrc

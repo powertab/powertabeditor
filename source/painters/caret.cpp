@@ -151,6 +151,7 @@ bool Caret::setCurrentStringIndex(uint8_t stringIndex)
     {
         currentStringIndex = stringIndex;
         update(boundingRect());
+        emit moved();
         return true;
     }
     else
@@ -212,7 +213,7 @@ void Caret::moveCaretVertical(int offset)
 {
     currentStringIndex = (currentStringIndex + offset + currentStaffInfo.numOfStrings) % currentStaffInfo.numOfStrings;
     update(boundingRect()); // trigger a re-draw
-    // TODO - select any note that occurs at this string
+    emit moved();
 }
 
 // Moves the caret to the first position in the staff

@@ -68,6 +68,7 @@ private slots:
 
     void editChordName();
     void editRehearsalSign();
+    void editNaturalHarmonic();
 
     void updateNoteDuration(int duration);
 
@@ -123,6 +124,9 @@ private:
 
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs
+
+    QMenu* tabSymbolsMenu;
+    QAction* naturalHarmonicAct; // add/remove natural harmonics
 
     std::unique_ptr<PreferencesDialog> preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in

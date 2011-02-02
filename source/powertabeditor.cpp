@@ -38,6 +38,7 @@
 #include <actions/addchordtext.h>
 #include <actions/updatenoteduration.h>
 #include <actions/editrehearsalsign.h>
+#include <actions/editnaturalharmonic.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -251,6 +252,11 @@ void PowerTabEditor::CreateActions()
     rehearsalSignAct->setCheckable(true);
     rehearsalSignAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_R));
     connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
+
+    // Tab Symbol Actions
+    naturalHarmonicAct = new QAction(tr("Natural Harmonic"), this);
+    naturalHarmonicAct->setCheckable(true);
+    connect(naturalHarmonicAct, SIGNAL(triggered()), this, SLOT(editNaturalHarmonic()));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -308,6 +314,10 @@ void PowerTabEditor::CreateMenus()
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     musicSymbolsMenu->addAction(rehearsalSignAct);
+
+    // Tab Symbols Menu
+    tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
+    tabSymbolsMenu->addAction(naturalHarmonicAct);
 }
 
 void PowerTabEditor::CreateTabArea()
@@ -389,13 +399,13 @@ void PowerTabEditor::OpenFile()
             // switch to the new document
             tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
 
-            updateActions();
-
              // if this is the first open document, enable score area actions
             if (documentManager.getCurrentDocumentIndex() == 0)
             {
                 updateScoreAreaActions(true);
             }
+
+            updateActions(); // update available actions for the current position
         }
     }
 }
@@ -611,6 +621,16 @@ void PowerTabEditor::editRehearsalSign()
 
 }
 
+void PowerTabEditor::editNaturalHarmonic()
+{
+    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
+    Q_ASSERT(note != NULL); // this action should not be available if there is no note at this position
+
+    const bool hasHarmonic = note->IsNaturalHarmonic();
+
+    undoManager->push(new EditNaturalHarmonic(note, !hasHarmonic));
+}
+
 // Updates whether menu items are checked, etc, whenever the caret moves
 void PowerTabEditor::updateActions()
 {
@@ -619,6 +639,7 @@ void PowerTabEditor::updateActions()
     System* currentSystem = caret->getCurrentSystem();
     Position* currentPosition = caret->getCurrentPosition();
     Barline* currentBarline = currentSystem->GetBarlineAtPosition(caretPosition);
+    Note* currentNote = caret->getCurrentNote();
 
     // Check for chord text
     if (currentSystem->HasChordText(caretPosition))
@@ -664,13 +685,26 @@ void PowerTabEditor::updateActions()
         rehearsalSignAct->setDisabled(true);
         rehearsalSignAct->setChecked(false);
     }
+
+    qDebug() << "String: " << caret->getCurrentStringIndex();
+    if (currentNote != NULL)
+    {
+        // Natural harmonic
+        naturalHarmonicAct->setEnabled(true);
+        naturalHarmonicAct->setChecked(currentNote->IsNaturalHarmonic());
+    }
+    else
+    {
+        naturalHarmonicAct->setChecked(false);
+        naturalHarmonicAct->setEnabled(false);
+    }
 }
 
 // Enables/disables actions that should only be available when a score is opened
 void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
-    menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu;
+    menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu;
 
     QAction* action;
     QMenu* menu;

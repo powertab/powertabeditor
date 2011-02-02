@@ -312,7 +312,8 @@ double MidiPlayer::getWholeRestDuration(System* system, Staff* staff, Position* 
     return duration;
 }
 
-// initialize the natural harmonics values
+// initialize the mapping of frets to pitch offsets (counted in half-steps or frets)
+// e.g. The natural harmonic at the 7th fret is an octave and a fifth - 19 frets - above the pitch of the open string
 void MidiPlayer::initNaturalHarmonics()
 {
     naturalHarmonicPitches[3] = 31;
@@ -323,6 +324,7 @@ void MidiPlayer::initNaturalHarmonics()
     naturalHarmonicPitches[12] = 12;
 }
 
+// Add the pitch offset for the natural harmonic to the pitch of the open string
 quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const quint8 fret) const
 {
     return openStringPitch + naturalHarmonicPitches[fret];
