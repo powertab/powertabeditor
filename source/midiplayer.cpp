@@ -231,7 +231,8 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
     }
 }
 
-TempoMarker* MidiPlayer::getCurrentTempoMarker() const
+// Finds the active tempo marker
+TempoMarker* MidiPlayer::getCurrentTempoMarker(Position* currentPosition) const
 {
     Score* currentScore = caret->getCurrentScore();
 
@@ -241,7 +242,7 @@ TempoMarker* MidiPlayer::getCurrentTempoMarker() const
     for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
     {
         TempoMarker* temp = currentScore->GetTempoMarker(i);
-        if (temp->GetSystem() <= currentSystemIndex)
+        if (temp->GetSystem() <= currentSystemIndex && temp->GetPosition() <= currentPosition->GetPosition())
         {
             currentTempoMarker = temp;
         }
@@ -250,9 +251,9 @@ TempoMarker* MidiPlayer::getCurrentTempoMarker() const
     return currentTempoMarker;
 }
 
-double MidiPlayer::getCurrentTempo() const
+double MidiPlayer::getCurrentTempo(Position* currentPosition) const
 {
-    TempoMarker* tempoMarker = getCurrentTempoMarker();
+    TempoMarker* tempoMarker = getCurrentTempoMarker(currentPosition);
 
     double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
     double beatType = TempoMarker::DEFAULT_BEAT_TYPE;
@@ -269,7 +270,7 @@ double MidiPlayer::getCurrentTempo() const
 
 double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
 {
-    double tempo = getCurrentTempo();
+    double tempo = getCurrentTempo(currentPosition);
 
     double duration = currentPosition->GetDurationType();
     duration = tempo * 4.0 / duration;
@@ -303,7 +304,7 @@ double MidiPlayer::getWholeRestDuration(System* system, Staff* staff, Position* 
 
     const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignatureConstRef();
 
-    double tempo = getCurrentTempo();
+    double tempo = getCurrentTempo(position);
     double beatDuration = currentTimeSignature.GetBeatAmount();
     double duration = tempo * 4.0 / beatDuration;
     int numBeats = currentTimeSignature.GetBeatsPerMeasure();

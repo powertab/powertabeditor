@@ -69,8 +69,8 @@ protected:
         }
     };
 
-    double getCurrentTempo() const;
-    TempoMarker* getCurrentTempoMarker() const;
+    double getCurrentTempo(Position* currentPosition) const;
+    TempoMarker* getCurrentTempoMarker(Position* currentPosition) const;
     double calculateNoteDuration(Position* currentPosition) const;
     void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
     void playNotesInSystem(std::list<NoteInfo>& noteList, int startPos);
