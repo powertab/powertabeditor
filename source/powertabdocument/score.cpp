@@ -250,18 +250,16 @@ void Score::UpdateToVer2Structure()
             if (newStaves.at(m) == NULL)
             {
                 Staff* newStaff = new Staff;
-                Staff* exampleStaff = currentSystem->m_staffArray.at(0);
-                // copy old staff but with rests instead
-                for (uint32_t n=0; n < exampleStaff->highMelodyPositionArray.size(); n++)
+
+                std::vector<Barline*> barlines;
+                currentSystem->GetBarlines(barlines);
+
+                // just insert a whole rest after each barline, except for the last one
+                for (size_t n = 0; n < barlines.size() - 1; n++)
                 {
-                    newStaff->SetStandardNotationStaffAboveSpacing(15);
-                    Position* newPosition = exampleStaff->highMelodyPositionArray.at(n)->CloneObject();
-                    newPosition->SetRest();
-                    for(uint32_t q=0; q < newPosition->m_noteArray.size(); q++)
-                    {
-                        delete newPosition->m_noteArray.at(q);
-                    }
-                    newPosition->m_noteArray.clear();
+                    Barline* barline = barlines.at(n);
+                    Position* newPosition = new Position(barline->GetPosition() + 1, 1, 0);
+                    newPosition->SetRest(true);
                     newStaff->highMelodyPositionArray.push_back(newPosition);
                 }
 
