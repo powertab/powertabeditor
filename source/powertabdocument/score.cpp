@@ -190,15 +190,14 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     return (stream.CheckState());
 }
 
+// Remove guitar-ins and adjust the score structure, so that each guitar corresponds to its own staff
 void Score::UpdateToVer2Structure()
 {
     using std::pair;
     using std::multimap;
 
-    multimap<uint32_t, GuitarIn*> guitarInMap;
-    multimap<uint32_t, uint32_t> guitarToStaffMap;
-    typedef multimap<uint32_t, GuitarIn*>::iterator guitarInIt;
-    typedef multimap<uint32_t, uint32_t>::iterator guitarToStaffIt; // keeps track of which staffs contain which guitars
+    multimap<uint32_t, GuitarIn*> guitarInMap; // map systems to Guitar In symbols
+    multimap<uint32_t, uint32_t> guitarToStaffMap; // map guitars to (possibly multiple) staves
 
     // find all guitar in symbols and the system they occur in
     for (uint32_t i=0; i < m_guitarInArray.size(); i++)
@@ -209,21 +208,29 @@ void Score::UpdateToVer2Structure()
 
     for (uint32_t i=0; i < m_systemArray.size(); i++) // iterate through all systems
     {
-        // if there are guitar ins, readjust the Guitar->Staff mapping
+        // if there are guitar ins in the system, readjust the Guitar->Staff mapping
+        // otherwise, let it continue from the previous system
         if ((guitarInMap.count(i)) >= 1)
         {
             //std::cerr << "In System " << i << std::endl;
-            pair<guitarInIt, guitarInIt> range = guitarInMap.equal_range(i);
+            auto range = guitarInMap.equal_range(i);
             for (auto i = range.first; i != range.second; ++i)
             {
-                guitarToStaffMap.erase(i->second->GetStaff());
+                GuitarIn* currentGuitarIn = i->second;
+                // only readjust the Guitar->Staff mapping if we're actually changing the staff guitar, not just the rhythm slash
+                if (currentGuitarIn->HasStaffGuitarsSet())
+                {
+                    guitarToStaffMap.erase(currentGuitarIn->GetStaff());
+                }
                 //std::cerr << "At Position: " << i->second->GetPosition() << std::endl;
-                std::bitset<8> guitarBitmap(i->second->GetStaffGuitars());
+
+                // Map the new guitars to the appropriate staves
+                std::bitset<8> guitarBitmap(currentGuitarIn->GetStaffGuitars());
                 for (uint8_t gtr = 0; gtr < 8; gtr++)
                 {
                     if (guitarBitmap.test(gtr) == true)
                     {
-                        guitarToStaffMap.insert(pair<uint32_t, uint32_t>(i->second->GetStaff(), gtr));
+                        guitarToStaffMap.insert(pair<uint32_t, uint32_t>(currentGuitarIn->GetStaff(), gtr));
                         //std::cerr << "Guitar In: " << (int)gtr + 1 << std::endl;
                     }
                 }
@@ -232,13 +239,13 @@ void Score::UpdateToVer2Structure()
 
         System* currentSystem = m_systemArray.at(i);
 
-        vector<Staff*> newStaves(m_guitarArray.size(), NULL); // one staff per track
+        vector<Staff*> newStaves(m_guitarArray.size(), NULL); // one staff per guitar
 
         for (uint32_t j=0; j < currentSystem->m_staffArray.size(); j++) // go through staves
         {
             Staff* currentStaff = currentSystem->m_staffArray.at(j);
 
-            pair<guitarToStaffIt, guitarToStaffIt> range = guitarToStaffMap.equal_range(j); // find guitars for this staff
+            auto range = guitarToStaffMap.equal_range(j); // find guitars for this staff
             for (auto k = range.first; k != range.second; ++k)
             {
                 newStaves[k->second] = currentStaff->CloneObject();
