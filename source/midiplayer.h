@@ -42,6 +42,8 @@ protected:
         DEFAULT_VELOCITY = 127,
         MUTED_VELOCITY = 60,
         GHOST_VELOCITY = 50,
+        WEAK_ACCENT = 80,
+        STRONG_ACCENT = 127,
     };
 
     // Holds information about a MIDI event
@@ -55,6 +57,7 @@ protected:
         double startTime;
         quint8 position; // position of the note within the staff, used for moving the caret accordingly
         bool isMuted;
+        bool isMetronome;
         int velocity;
 
         // used for sorting NoteInfo objects by their start time
@@ -69,10 +72,11 @@ protected:
         }
     };
 
-    double getCurrentTempo(Position* currentPosition) const;
-    TempoMarker* getCurrentTempoMarker(Position* currentPosition) const;
+    double getCurrentTempo(const quint32 positionIndex) const;
+    TempoMarker* getCurrentTempoMarker(const quint32 positionIndex) const;
     double calculateNoteDuration(Position* currentPosition) const;
     void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
+    void generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const;
     void playNotesInSystem(std::list<NoteInfo>& noteList, int startPos);
     double getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const;
 

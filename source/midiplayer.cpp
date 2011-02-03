@@ -44,6 +44,7 @@ void MidiPlayer::run()
     {
         std::list<NoteInfo> noteList;
         generateNotesInSystem(currentSystemIndex, noteList);
+        generateMetronome(currentSystemIndex, noteList);
 
         noteList.sort();
 
@@ -105,6 +106,7 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 noteInfo.startTime = startTime;
                 noteInfo.position = positionIndex;
                 noteInfo.isMuted = note->IsMuted();
+                noteInfo.isMetronome = false;
                 noteInfo.velocity = DEFAULT_VELOCITY;
 
                 if (note->IsMuted())
@@ -192,18 +194,28 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
 
         if (noteInfo.messageType == PLAY_NOTE)
         {
-            // grab the patch/pan/volume immediately before playback to allow for real-time mixing
-            if (noteInfo.isMuted)
+            if (noteInfo.isMetronome)
             {
-                rtMidiWrapper.setPatch(noteInfo.channel, midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
+                rtMidiWrapper.setPatch(noteInfo.channel, midi::MIDI_PRESET_WOODBLOCK);
+                rtMidiWrapper.setVolume(noteInfo.channel, 127);
+                rtMidiWrapper.setPan(noteInfo.channel, Guitar::PAN_CENTER);
             }
             else
             {
-                rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.guitar->GetPreset());
-            }
+                // grab the patch/pan/volume immediately before playback to allow for real-time mixing
+                if (noteInfo.isMuted)
+                {
+                    rtMidiWrapper.setPatch(noteInfo.channel, midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
+                }
 
-            rtMidiWrapper.setPan(noteInfo.channel, noteInfo.guitar->GetPan());
-            rtMidiWrapper.setVolume(noteInfo.channel, noteInfo.guitar->GetInitialVolume());
+                else
+                {
+                    rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.guitar->GetPreset());
+                }
+
+                rtMidiWrapper.setPan(noteInfo.channel, noteInfo.guitar->GetPan());
+                rtMidiWrapper.setVolume(noteInfo.channel, noteInfo.guitar->GetInitialVolume());
+            }
 
             rtMidiWrapper.playNote(noteInfo.channel, noteInfo.pitch, noteInfo.velocity);
         }
@@ -232,7 +244,7 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
 }
 
 // Finds the active tempo marker
-TempoMarker* MidiPlayer::getCurrentTempoMarker(Position* currentPosition) const
+TempoMarker* MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) const
 {
     Score* currentScore = caret->getCurrentScore();
 
@@ -242,7 +254,7 @@ TempoMarker* MidiPlayer::getCurrentTempoMarker(Position* currentPosition) const
     for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
     {
         TempoMarker* temp = currentScore->GetTempoMarker(i);
-        if (temp->GetSystem() <= currentSystemIndex && temp->GetPosition() <= currentPosition->GetPosition())
+        if (temp->GetSystem() <= currentSystemIndex && temp->GetPosition() <=  positionIndex)
         {
             currentTempoMarker = temp;
         }
@@ -251,9 +263,9 @@ TempoMarker* MidiPlayer::getCurrentTempoMarker(Position* currentPosition) const
     return currentTempoMarker;
 }
 
-double MidiPlayer::getCurrentTempo(Position* currentPosition) const
+double MidiPlayer::getCurrentTempo(const quint32 positionIndex) const
 {
-    TempoMarker* tempoMarker = getCurrentTempoMarker(currentPosition);
+    TempoMarker* tempoMarker = getCurrentTempoMarker(positionIndex);
 
     double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
     double beatType = TempoMarker::DEFAULT_BEAT_TYPE;
@@ -270,7 +282,7 @@ double MidiPlayer::getCurrentTempo(Position* currentPosition) const
 
 double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
 {
-    double tempo = getCurrentTempo(currentPosition);
+    const double tempo = getCurrentTempo(currentPosition->GetPosition());
 
     double duration = currentPosition->GetDurationType();
     duration = tempo * 4.0 / duration;
@@ -304,7 +316,7 @@ double MidiPlayer::getWholeRestDuration(System* system, Staff* staff, Position* 
 
     const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignatureConstRef();
 
-    double tempo = getCurrentTempo(position);
+    double tempo = getCurrentTempo(position->GetPosition());
     double beatDuration = currentTimeSignature.GetBeatAmount();
     double duration = tempo * 4.0 / beatDuration;
     int numBeats = currentTimeSignature.GetBeatsPerMeasure();
@@ -329,4 +341,63 @@ void MidiPlayer::initNaturalHarmonics()
 quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const quint8 fret) const
 {
     return openStringPitch + naturalHarmonicPitches[fret];
+}
+
+// Generates the metronome ticks
+void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const
+{
+    System* system = caret->getCurrentScore()->GetSystem(systemIndex);
+
+    std::vector<Barline*> barlines;
+    system->GetBarlines(barlines);
+    barlines.pop_back(); // don't need the end barline
+
+    double startTime = 0;
+
+    for (size_t i = 0; i < barlines.size(); i++)
+    {
+        Barline* barline = barlines.at(i);
+        const TimeSignature& timeSig = barline->GetTimeSignatureConstRef();
+
+        const quint8 numPulses = timeSig.GetPulses();
+        const quint8 beatsPerMeasure = timeSig.GetBeatsPerMeasure();
+        const quint8 beatValue = timeSig.GetBeatAmount();
+
+        // figure out duration of pulse
+        const double tempo = getCurrentTempo(barline->GetPosition());
+        double duration = tempo * 4.0 / beatValue;
+        duration *= beatsPerMeasure / numPulses;
+
+        for (quint8 j = 0; j < numPulses; j++)
+        {
+            // fill in the note info structure
+            NoteInfo noteInfo;
+            noteInfo.channel = 15;
+            noteInfo.messageType = PLAY_NOTE;
+            noteInfo.position = barline->GetPosition();
+            noteInfo.pitch = midi::MIDI_NOTE_MIDDLE_C;
+            noteInfo.duration = duration;
+            noteInfo.startTime = startTime;
+            noteInfo.isMuted = false;
+            noteInfo.isMetronome = true;
+
+            if (j == 0)
+            {
+                noteInfo.velocity = STRONG_ACCENT;
+            }
+            else
+            {
+                noteInfo.velocity = WEAK_ACCENT;
+            }
+            noteList.push_back(noteInfo);
+
+            // now, add the note-off event
+            noteInfo.startTime += duration;
+            noteInfo.duration = 0;
+            noteInfo.messageType = STOP_NOTE;
+            noteList.push_back(noteInfo);
+
+            startTime += duration;
+        }
+    }
 }
