@@ -90,6 +90,11 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 const quint32 openStringPitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
                 quint32 pitch = openStringPitch + note->GetFretNumber();
 
+                if (note->IsNaturalHarmonic())
+                {
+                    pitch = getNaturalHarmonicPitch(openStringPitch, note->GetFretNumber());
+                }
+
                 // fill in the note info structure
                 NoteInfo noteInfo;
                 noteInfo.channel = i;
@@ -109,11 +114,6 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 if (note->IsGhostNote())
                 {
                     noteInfo.velocity = GHOST_VELOCITY;
-                }
-
-                if (note->IsNaturalHarmonic())
-                {
-                    noteInfo.pitch = getNaturalHarmonicPitch(openStringPitch, note->GetFretNumber());
                 }
 
                 if (note->IsTied()) // if the note is tied, delete the previous note-off event
