@@ -8,6 +8,8 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QLabel;
 class QComboBox;
+class QCheckBox;
+class QFormLayout;
 
 // Dialog to allow the user to modify general editor-wide settings
 
@@ -17,10 +19,11 @@ class MIDITab : public QWidget
 public:
     explicit MIDITab(QWidget *parent = 0);
 
-    QVBoxLayout *root_layout;
-    QHBoxLayout *bottom_line;
-    QLabel		*label;
-    QComboBox	*box;
+    QVBoxLayout* rootLayout;
+    QHBoxLayout* bottomLine;
+    QFormLayout* formLayout;
+    QComboBox*	midiPort;
+    QCheckBox* metronomeEnabled;
 
 signals:
 
@@ -37,12 +40,8 @@ public:
 private:
     MIDITab* midiTab;
     QTabWidget* tabWidget;
-    //Barline* barLine;
-    //QSpinBox* repeatCount;
-    //QComboBox* barLineType;
 
 private slots:
-    //void disableRepeatCount(int newBarlineType);
     void accept();
     void reject();
 };

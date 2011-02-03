@@ -47,7 +47,6 @@ QSplitter* PowerTabEditor::horSplitter = NULL;
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
-    preferencesDialog(new PreferencesDialog),
     mixerList(new QStackedWidget),
     skinManager(new SkinManager("default"))
 {
@@ -413,6 +412,7 @@ void PowerTabEditor::OpenFile()
 // Opens the preferences dialog
 void PowerTabEditor::OpenPreferences()
 {
+    std::unique_ptr<PreferencesDialog> preferencesDialog(new PreferencesDialog);
     preferencesDialog->exec();
 }
 

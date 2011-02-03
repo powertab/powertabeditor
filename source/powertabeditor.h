@@ -128,7 +128,6 @@ private:
     QMenu* tabSymbolsMenu;
     QAction* naturalHarmonicAct; // add/remove natural harmonics
 
-    std::unique_ptr<PreferencesDialog> preferencesDialog;
     QString previousDirectory; // previous directory that a file was opened in
     std::unique_ptr<QStackedWidget> mixerList;
 

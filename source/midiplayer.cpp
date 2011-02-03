@@ -381,7 +381,13 @@ void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteLis
             noteInfo.isMuted = false;
             noteInfo.isMetronome = true;
 
-            if (j == 0)
+            // find the note volume - either disabled, strong accent, or weak accent
+            QSettings settings;
+            if (settings.value("midi/metronomeEnabled").toBool() == false)
+            {
+                noteInfo.velocity = 0;
+            }
+            else if (j == 0)
             {
                 noteInfo.velocity = STRONG_ACCENT;
             }
@@ -389,6 +395,7 @@ void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteLis
             {
                 noteInfo.velocity = WEAK_ACCENT;
             }
+
             noteList.push_back(noteInfo);
 
             // now, add the note-off event

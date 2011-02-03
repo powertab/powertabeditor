@@ -10,39 +10,46 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QCheckBox>
 
 MIDITab::MIDITab(QWidget *parent) :
     QWidget(parent)
 {
-    root_layout = new QVBoxLayout(this);
+    rootLayout = new QVBoxLayout(this);
+
+    formLayout = new QFormLayout;
 
     QLabel *tab_description = new QLabel();
     tab_description->setText(tr("These settings allow customization of the MIDI output."));
-    root_layout->addWidget(tab_description);
+    rootLayout->addWidget(tab_description);
 
-    root_layout->addStretch(1);
+    rootLayout->addStretch(1);
 
-    label = new QLabel();
-    label->setText(tr("MIDI Input Device:"));
-
-    root_layout->addWidget(label);
-
-    box = new QComboBox();
-
+    midiPort = new QComboBox();
 
     RtMidiWrapper rtMidiWrapper;
     for(int i=0;i<rtMidiWrapper.getPortCount();i++)
     {
-        box->addItem(QString(rtMidiWrapper.getPortName(i).c_str()));
+        midiPort->addItem(QString(rtMidiWrapper.getPortName(i).c_str()));
     }
 
-    root_layout->addWidget(box);
+    formLayout->addRow(tr("MIDI Input Device:"), midiPort);
 
-    bottom_line = new QHBoxLayout();
+    metronomeEnabled = new QCheckBox;
+    formLayout->addRow(tr("Metronome Enabled"), metronomeEnabled);
 
-    bottom_line->setSpacing(100);
+    rootLayout->addLayout(formLayout);
 
-    root_layout->addLayout(bottom_line,1);
+    bottomLine = new QHBoxLayout();
+
+    bottomLine->setSpacing(100);
+
+    rootLayout->addLayout(bottomLine,1);
+
+    // initialize the widget values
+    QSettings settings;
+    midiPort->setCurrentIndex(settings.value("midi/preferredPort").toInt());
+    metronomeEnabled->setChecked(settings.value("midi/metronomeEnabled").toBool());
 }
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
@@ -75,31 +82,19 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
-/*
-void PreferencesDialog::disableRepeatCount(int newBarlineType)
-{
-    if (newBarlineType == barLine->repeatEnd || newBarlineType == barLine->repeatStart)
-    {
-        repeatCount->setEnabled(true);
-    }
-    else
-    {
-        repeatCount->setEnabled(false);
-    }
-}
-*/
-
 void PreferencesDialog::accept()
 {
     QSettings settings;
     // save the preferred midi port
-    settings.setValue("midi/preferredPort", midiTab->box->currentIndex());
+    settings.setValue("midi/preferredPort", midiTab->midiPort->currentIndex());
+    // save the metronome settings
+    settings.setValue("midi/metronomeEnabled", midiTab->metronomeEnabled->isChecked());
     settings.sync();
 
-    done(1);
+    done(Accepted);
 }
 
 void PreferencesDialog::reject()
 {
-    done(1);
+    done(Rejected);
 }
