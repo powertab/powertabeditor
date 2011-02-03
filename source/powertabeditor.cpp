@@ -686,7 +686,6 @@ void PowerTabEditor::updateActions()
         rehearsalSignAct->setChecked(false);
     }
 
-    qDebug() << "String: " << caret->getCurrentStringIndex();
     if (currentNote != NULL)
     {
         // Natural harmonic

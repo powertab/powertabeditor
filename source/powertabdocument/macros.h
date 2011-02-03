@@ -47,11 +47,12 @@ using std::string;
 
 #ifndef CHECK_THAT
 #define CHECK_THAT(cond, rc) 	\
-	if ( cond ) {}			\
-	else {					\
-		std::cerr << "Error at: " << std::endl << __FILE__ << std::endl << "Line: " <<  __LINE__ << std::endl; \
-		return rc;							\
-	}
+    if ( cond ) {}			\
+    else {					\
+        std::cerr << "Error at: " << std::endl << __FILE__ << std::endl << "Line: " <<  __LINE__ << std::endl; \
+        assert(cond); \
+        return rc;							\
+    }
 
 #endif
 
