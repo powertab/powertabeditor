@@ -279,19 +279,16 @@ void Score::UpdateToVer2Structure()
         {
             delete currentSystem->m_staffArray.at(n);
         }
-        currentSystem->m_staffArray.swap(newStaves);
+        currentSystem->m_staffArray = newStaves;
 
         // readjust locations / heights
         currentSystem->CalculateHeight();
-        Rect rect = currentSystem->GetRect();
-        if (i == 0)
+        if (i != 0) // adjust the location of every staff after the first
         {
-            currentSystem->SetRect(Rect(rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight()));
-        }
-        else
-        {
+            Rect currentRect = currentSystem->GetRect();
             Rect prevRect = m_systemArray.at(i-1)->GetRect();
-            currentSystem->SetRect(Rect(rect.GetX(), prevRect.GetBottom() + 50, rect.GetWidth(), rect.GetHeight()));
+            currentRect.SetY(prevRect.GetBottom() + 50);
+            currentSystem->SetRect(currentRect);
         }
 
     }
