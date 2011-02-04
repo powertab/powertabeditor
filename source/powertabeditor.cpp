@@ -649,6 +649,24 @@ void PowerTabEditor::editNoteMuted()
     undoManager->push(new ToggleProperty<Note>(note, &Note::SetMuted, !isMuted, text));
 }
 
+// Updates the given QAction to be checked and/or enabled, based on the results of calling
+// the predicate member function of the provided object
+template<class T>
+void updatePropertyStatus(QAction* action, T* object, bool (T::*predicate)(void) const)
+{
+    if (object == NULL)
+    {
+        action->setChecked(false);
+        action->setEnabled(false);
+    }
+    else
+    {
+        action->setEnabled(true);
+        const bool propertySet = (object->*predicate)();
+        action->setChecked(propertySet);
+    }
+}
+
 // Updates whether menu items are checked, etc, whenever the caret moves
 void PowerTabEditor::updateActions()
 {
@@ -660,14 +678,7 @@ void PowerTabEditor::updateActions()
     Note* currentNote = caret->getCurrentNote();
 
     // Check for chord text
-    if (currentSystem->HasChordText(caretPosition))
-    {
-        chordNameAct->setChecked(true);
-    }
-    else
-    {
-        chordNameAct->setChecked(false);
-    }
+    chordNameAct->setChecked(currentSystem->HasChordText(caretPosition));
 
     // note duration
     if (currentPosition != NULL)
@@ -685,43 +696,11 @@ void PowerTabEditor::updateActions()
         }
     }
 
-    // rehearsal sign
-    if (currentBarline != NULL)
-    {
-        rehearsalSignAct->setEnabled(true);
-        if (currentBarline->GetRehearsalSignRef().IsSet())
-        {
-            rehearsalSignAct->setChecked(true);
-        }
-        else
-        {
-            rehearsalSignAct->setChecked(false);
-        }
-    }
-    else
-    {
-        rehearsalSignAct->setDisabled(true);
-        rehearsalSignAct->setChecked(false);
-    }
+    RehearsalSign* currentRehearsalSign = currentBarline == NULL ? NULL : currentBarline->GetRehearsalSignPtr();
+    updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
 
-    if (currentNote != NULL)
-    {
-        // Natural harmonic
-        naturalHarmonicAct->setEnabled(true);
-        naturalHarmonicAct->setChecked(currentNote->IsNaturalHarmonic());
-
-        // Note muted
-        noteMutedAct->setEnabled(true);
-        noteMutedAct->setChecked(currentNote->IsMuted());
-    }
-    else
-    {
-        naturalHarmonicAct->setChecked(false);
-        naturalHarmonicAct->setEnabled(false);
-
-        noteMutedAct->setChecked(false);
-        noteMutedAct->setEnabled(false);
-    }
+    updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
+    updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
 }
 
 // Enables/disables actions that should only be available when a score is opened
