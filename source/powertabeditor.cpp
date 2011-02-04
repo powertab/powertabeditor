@@ -246,6 +246,10 @@ void PowerTabEditor::CreateActions()
 
     connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(updateNoteDuration(int)));
 
+    tiedNoteAct = new QAction(tr("Tied"), this);
+    tiedNoteAct->setCheckable(true);
+    connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
+
     noteMutedAct = new QAction(tr("Muted"), this);
     noteMutedAct->setCheckable(true);
     connect(noteMutedAct, SIGNAL(triggered()), this, SLOT(editNoteMuted()));
@@ -317,6 +321,8 @@ void PowerTabEditor::CreateMenus()
     notesMenu->addAction(sixteenthNoteAct);
     notesMenu->addAction(thirtySecondNoteAct);
     notesMenu->addAction(sixtyFourthNoteAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(tiedNoteAct);
     notesMenu->addSeparator();
     notesMenu->addAction(noteMutedAct);
     notesMenu->addSeparator();
@@ -665,6 +671,16 @@ void PowerTabEditor::editGhostNote()
     undoManager->push(new ToggleProperty<Note>(note, &Note::SetGhostNote, !isGhostNote, text));
 }
 
+void PowerTabEditor::editTiedNote()
+{
+    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
+
+    const bool isTied = note->IsTied();
+    const QString text = isTied ? tr("Remove Note Tie") : tr("Set Note Tie");
+
+    undoManager->push(new ToggleProperty<Note>(note, &Note::SetTied, !isTied, text));
+}
+
 // Updates the given QAction to be checked and/or enabled, based on the results of calling
 // the predicate member function of the provided object
 template<class T>
@@ -718,6 +734,7 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
     updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
     updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);
+    updatePropertyStatus(tiedNoteAct, currentNote, &Note::IsTied);
 }
 
 // Enables/disables actions that should only be available when a score is opened
