@@ -141,7 +141,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
 
         double x = system->GetPositionX(currentBarline->GetPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
-        double timeSigX = x + barlinePainter->boundingRect().width() + keySig.GetWidth() + 2;
+        double timeSigX = x + barlinePainter->boundingRect().width() + keySig.GetWidth();
         double rehearsalSignX = x;
 
         if (i == 0) // start bar of system
@@ -156,7 +156,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
             }
 
             keySigX = currentStaffInfo.leftEdge + system->GetClefWidth();
-            timeSigX = currentStaffInfo.leftEdge + system->GetClefWidth() + keySig.GetWidth() + 7;
+            timeSigX = currentStaffInfo.leftEdge + system->GetClefWidth() + keySig.GetWidth();
         }
         else if (i == barlines.size() - 1) // last barline of system
         {

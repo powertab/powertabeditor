@@ -22,7 +22,7 @@ public:
 
 protected:
 
-    double centerItem(double xmin, double xmax, double width)
+    double centerItem(double xmin, double xmax, double width) const
     {
         return (xmin + ((xmax - (xmin + width)) / 2) + 1);
     }

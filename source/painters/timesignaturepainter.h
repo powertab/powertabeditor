@@ -2,6 +2,7 @@
 #define TIMESIGNATUREPAINTER_H
 
 #include "painterbase.h"
+#include "staffdata.h"
 
 class StaffData;
 class TimeSignature;
@@ -19,8 +20,9 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     void init();
+    void drawNumber(QPainter* painter, const double y, const quint8 number) const;
 
-    const StaffData& staffInfo;
+    StaffData staffInfo;
     const TimeSignature& timeSignature;
 };
 

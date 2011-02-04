@@ -1,6 +1,5 @@
 #include "timesignaturepainter.h"
 
-#include "staffdata.h"
 #include <powertabdocument/timesignature.h>
 #include <musicfont.h>
 
@@ -40,11 +39,10 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    MusicFont musicFont;
-    QFont displayFont = musicFont.getFont();
-
     if (timeSignature.IsCommonTime() || timeSignature.IsCutTime())
     {
+        MusicFont musicFont;
+        QFont displayFont = musicFont.getFont();
         displayFont.setPixelSize(25);
         painter->setFont(displayFont);
 
@@ -60,22 +58,24 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
         painter->drawText(0, staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(), symbol);
     }
-
     else
     {
-        displayFont.setPixelSize(27);
-        painter->setFont(displayFont);
-
-        const int offset = -5;
-        uint8_t beatsPerMeasure = timeSignature.GetBeatsPerMeasure();
-        uint8_t beatAmount = timeSignature.GetBeatAmount();
-
-        painter->drawText(beatsPerMeasure <= 10 ? 0 : offset,
-                          staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(),
-                          QString().setNum(beatsPerMeasure));
-
-        painter->drawText(beatAmount <= 10 ? 0 : offset,
-                          staffInfo.getStdNotationLineHeight(5) - staffInfo.getTopStdNotationLine(),
-                          QString().setNum(beatAmount));
+        drawNumber(painter, staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(), timeSignature.GetBeatsPerMeasure());
+        drawNumber(painter, staffInfo.getStdNotationLineHeight(5) - staffInfo.getTopStdNotationLine(), timeSignature.GetBeatAmount());
     }
+}
+
+void TimeSignaturePainter::drawNumber(QPainter* painter, const double y, const quint8 number) const
+{
+    QString text = QString().setNum(number);
+
+    MusicFont musicFont;
+    QFont displayFont = musicFont.getFont();
+    displayFont.setPixelSize(27);
+
+    const double width = QFontMetricsF(displayFont).width(text);
+    const double x = centerItem(0, timeSignature.GetWidth(), width);
+
+    painter->setFont(displayFont);
+    painter->drawText(x, y, text);
 }
