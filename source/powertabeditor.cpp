@@ -38,7 +38,7 @@
 #include <actions/addchordtext.h>
 #include <actions/updatenoteduration.h>
 #include <actions/editrehearsalsign.h>
-#include <actions/editnaturalharmonic.h>
+#include <actions/toggleproperty.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -246,6 +246,10 @@ void PowerTabEditor::CreateActions()
 
     connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(updateNoteDuration(int)));
 
+    noteMutedAct = new QAction(tr("Muted"), this);
+    noteMutedAct->setCheckable(true);
+    connect(noteMutedAct, SIGNAL(triggered()), this, SLOT(editNoteMuted()));
+
     // Music Symbol Actions
     rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
     rehearsalSignAct->setCheckable(true);
@@ -309,6 +313,8 @@ void PowerTabEditor::CreateMenus()
     notesMenu->addAction(sixteenthNoteAct);
     notesMenu->addAction(thirtySecondNoteAct);
     notesMenu->addAction(sixtyFourthNoteAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(noteMutedAct);
 
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -627,8 +633,20 @@ void PowerTabEditor::editNaturalHarmonic()
     Q_ASSERT(note != NULL); // this action should not be available if there is no note at this position
 
     const bool hasHarmonic = note->IsNaturalHarmonic();
+    const QString text = hasHarmonic ? tr("Remove Natural Harmonic") : tr("Set Natural Harmonic");
 
-    undoManager->push(new EditNaturalHarmonic(note, !hasHarmonic));
+    undoManager->push(new ToggleProperty<Note>(note, &Note::SetNaturalHarmonic, !hasHarmonic, text));
+}
+
+void PowerTabEditor::editNoteMuted()
+{
+    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
+    Q_ASSERT(note != NULL); // this action should not be available if there is no note at this position
+
+    const bool isMuted = note->IsMuted();
+    const QString text = isMuted ? tr("Remove Note Muted") : tr("Set Note Muted");
+
+    undoManager->push(new ToggleProperty<Note>(note, &Note::SetMuted, !isMuted, text));
 }
 
 // Updates whether menu items are checked, etc, whenever the caret moves
@@ -691,11 +709,18 @@ void PowerTabEditor::updateActions()
         // Natural harmonic
         naturalHarmonicAct->setEnabled(true);
         naturalHarmonicAct->setChecked(currentNote->IsNaturalHarmonic());
+
+        // Note muted
+        noteMutedAct->setEnabled(true);
+        noteMutedAct->setChecked(currentNote->IsMuted());
     }
     else
     {
         naturalHarmonicAct->setChecked(false);
         naturalHarmonicAct->setEnabled(false);
+
+        noteMutedAct->setChecked(false);
+        noteMutedAct->setEnabled(false);
     }
 }
 

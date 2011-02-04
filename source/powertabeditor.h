@@ -69,6 +69,7 @@ private slots:
     void editChordName();
     void editRehearsalSign();
     void editNaturalHarmonic();
+    void editNoteMuted();
 
     void updateNoteDuration(int duration);
 
@@ -121,6 +122,7 @@ private:
     QAction* sixteenthNoteAct;
     QAction* thirtySecondNoteAct;
     QAction* sixtyFourthNoteAct;
+    QAction* noteMutedAct; // sets the note to be muted
 
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs
