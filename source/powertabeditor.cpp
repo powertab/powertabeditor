@@ -250,6 +250,10 @@ void PowerTabEditor::CreateActions()
     noteMutedAct->setCheckable(true);
     connect(noteMutedAct, SIGNAL(triggered()), this, SLOT(editNoteMuted()));
 
+    ghostNoteAct = new QAction(tr("Ghost Note"), this);
+    ghostNoteAct->setCheckable(true);
+    connect(ghostNoteAct, SIGNAL(triggered()), this, SLOT(editGhostNote()));
+
     // Music Symbol Actions
     rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
     rehearsalSignAct->setCheckable(true);
@@ -315,6 +319,8 @@ void PowerTabEditor::CreateMenus()
     notesMenu->addAction(sixtyFourthNoteAct);
     notesMenu->addSeparator();
     notesMenu->addAction(noteMutedAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(ghostNoteAct);
 
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -649,6 +655,16 @@ void PowerTabEditor::editNoteMuted()
     undoManager->push(new ToggleProperty<Note>(note, &Note::SetMuted, !isMuted, text));
 }
 
+void PowerTabEditor::editGhostNote()
+{
+    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
+
+    const bool isGhostNote = note->IsGhostNote();
+    const QString text = isGhostNote ? tr("Remove Ghost Note") : tr("Set Ghost Note");
+
+    undoManager->push(new ToggleProperty<Note>(note, &Note::SetGhostNote, !isGhostNote, text));
+}
+
 // Updates the given QAction to be checked and/or enabled, based on the results of calling
 // the predicate member function of the provided object
 template<class T>
@@ -701,6 +717,7 @@ void PowerTabEditor::updateActions()
 
     updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
     updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
+    updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);
 }
 
 // Enables/disables actions that should only be available when a score is opened
