@@ -39,6 +39,7 @@
 #include <actions/updatenoteduration.h>
 #include <actions/editrehearsalsign.h>
 #include <actions/toggleproperty.h>
+#include <actions/shifttabnumber.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -192,6 +193,21 @@ void PowerTabEditor::CreateActions()
     prevStaffAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
     connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
 
+    // Actions for shifting tab numbers up/down a string
+    shiftTabNumberMapper = new QSignalMapper(this);
+
+    shiftTabNumUp = new QAction(tr("Shift Tab Number Up"), this);
+    shiftTabNumUp->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up));
+    connect(shiftTabNumUp, SIGNAL(triggered()), shiftTabNumberMapper, SLOT(map()));
+    shiftTabNumberMapper->setMapping(shiftTabNumUp, Position::SHIFT_UP);
+
+    shiftTabNumDown = new QAction(tr("Shift Tab Number Down"), this);
+    shiftTabNumDown->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
+    connect(shiftTabNumDown, SIGNAL(triggered()), shiftTabNumberMapper, SLOT(map()));
+    shiftTabNumberMapper->setMapping(shiftTabNumDown, Position::SHIFT_DOWN);
+
+    connect(shiftTabNumberMapper, SIGNAL(mapped(int)), this, SLOT(shiftTabNumber(int)));
+
     // Text-related actions
     chordNameAct = new QAction(tr("Chord Name..."), this);
     chordNameAct->setShortcut(QKeySequence(Qt::Key_C));
@@ -307,6 +323,10 @@ void PowerTabEditor::CreateMenus()
     positionStaffMenu->addAction(lastPositionAct);
     positionStaffMenu->addAction(nextStaffAct);
     positionStaffMenu->addAction(prevStaffAct);
+
+    positionMenu->addSeparator();
+    positionMenu->addAction(shiftTabNumUp);
+    positionMenu->addAction(shiftTabNumDown);
 
     // Text Menu
     textMenu = menuBar()->addMenu(tr("&Text"));
@@ -516,6 +536,22 @@ void PowerTabEditor::startStopPlayback()
         playPauseAct->setText(tr("Play"));
         getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
     }
+}
+
+void PowerTabEditor::shiftTabNumber(int direction)
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    const quint8 numStringsInStaff = caret->getCurrentStaff()->GetTablatureStaffType();
+    Position* currentPos = caret->getCurrentPosition();
+    Note* currentNote = caret->getCurrentNote();
+    const Tuning& tuning = caret->getCurrentScore()->GetGuitar(caret->getCurrentStaffIndex())->GetTuningConstRef();
+
+    if (!currentPos->CanShiftTabNumber(currentNote, direction, numStringsInStaff, tuning))
+    {
+        return;
+    }
+
+    undoManager->push(new ShiftTabNumber(currentPos, currentNote, direction, numStringsInStaff, tuning));
 }
 
 bool PowerTabEditor::moveCaretToPosition(quint8 position)
@@ -748,6 +784,9 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
     updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);
     updatePropertyStatus(tiedNoteAct, currentNote, &Note::IsTied);
+
+    shiftTabNumDown->setEnabled(currentNote != NULL);
+    shiftTabNumUp->setEnabled(currentNote != NULL);
 }
 
 // Enables/disables actions that should only be available when a score is opened

@@ -13,6 +13,7 @@
 #include "position.h"
 
 #include "powertabfileheader.h"     // Needed for file version constants
+#include "tuning.h"
 
 // Constants
 // Default Constants
@@ -811,4 +812,55 @@ Note* Position::GetNoteByString(uint8_t string) const
     {
         return *note;
     }
+}
+
+bool Position::CanShiftTabNumber(Note *note, int type, uint8_t numStringsInStaff, const Tuning& tuning) const
+{
+    // check that the note is actually in this position
+    CHECK_THAT(std::find(m_noteArray.begin(), m_noteArray.end(), note) != m_noteArray.end(), false);
+
+    const int newStringNum = GetShiftedStringNumber(note, type);
+
+    // check that the string number is valid
+    if (!Note::IsValidString(newStringNum) || newStringNum >= numStringsInStaff)
+    {
+        return false;
+    }
+
+    // check if there is already a note at this string
+    Note* noteAtString = GetNoteByString(newStringNum);
+    if (noteAtString != NULL)
+    {
+        return false;
+    }
+
+    const int newFretNum = GetShiftedFretNumber(note, note->GetString(), newStringNum, tuning);
+    return (newFretNum >=0 && Note::IsValidFretNumber(newFretNum));
+}
+
+bool Position::ShiftTabNumber(Note* note, int type, uint8_t numStringsInStaff, const Tuning& tuning)
+{
+    CHECK_THAT(CanShiftTabNumber(note, type, numStringsInStaff, tuning), false);
+
+    const int newString = GetShiftedStringNumber(note, type);
+    note->SetFretNumber(GetShiftedFretNumber(note, note->GetString(), newString, tuning));
+    note->SetString(newString);
+
+    return true;
+}
+
+int Position::GetShiftedStringNumber(Note* note, int type) const
+{
+    const int stringNum = note->GetString();
+    int newStringNum = (type == SHIFT_UP) ? stringNum - 1 : stringNum + 1;
+    return newStringNum;
+}
+
+int Position::GetShiftedFretNumber(Note* note, int originalString, int newString, const Tuning& tuning) const
+{
+    const int originalFret = note->GetFretNumber();
+
+    const int pitchDiff = tuning.GetNote(originalString) - tuning.GetNote(newString);
+
+    return originalFret + pitchDiff;
 }

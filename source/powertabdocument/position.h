@@ -50,6 +50,12 @@ public:
     static const uint8_t     MIN_MULTIBAR_REST_MEASURE_COUNT;                ///< Minimum allowed value for a multibar rest measure count
     static const uint8_t     MAX_MULTIBAR_REST_MEASURE_COUNT;                ///< Maximum allowed value for a multibar rest measure count
 
+    enum ShiftType
+    {
+        SHIFT_UP,
+        SHIFT_DOWN,
+    };
+
     enum beamingFlags
     {
         irregularGroupingNotesPlayedOverMask    = (uint16_t)0x07,             ///< Mask used to get notes played over value
@@ -815,6 +821,12 @@ public:
     }
 
     Note* GetNoteByString(uint8_t string) const;
+    bool CanShiftTabNumber(Note* note, int type, uint8_t numStringsInStaff, const Tuning& tuning) const;
+    bool ShiftTabNumber(Note* note, int type, uint8_t numStringsInStaff, const Tuning& tuning);
+
+protected:
+    int GetShiftedStringNumber(Note* note, int type) const;
+    int GetShiftedFretNumber(Note* note, int originalString, int newString, const Tuning& tuning) const;
 };
 
 #endif

@@ -74,6 +74,7 @@ private slots:
     void editTiedNote();
 
     void updateNoteDuration(int duration);
+    void shiftTabNumber(int direction);
 
 private:
     bool isPlaying;
@@ -110,6 +111,10 @@ private:
     QAction* prevStringAct; // navigate to the previous string in the staff
     QAction* nextStaffAct; // navigate to the next staff in the system
     QAction* prevStaffAct; // navigate to the previous staff in the system
+
+    QAction* shiftTabNumUp; // shift tab numbers up/down by a string
+    QAction* shiftTabNumDown;
+    QSignalMapper* shiftTabNumberMapper;
 
     QMenu* textMenu;
     QAction* chordNameAct; // add/remove a chord name
