@@ -20,3 +20,4 @@ TODO:
 - work on complete rendering support
 - support more interactive editor functionality (i.e. editing notes, removing barlines, etc)
 - support more features for MIDI playback (bends, vibrato, etc)
+- prevent the toolbox from being collapsed
