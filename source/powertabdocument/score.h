@@ -220,6 +220,7 @@ public:
     }
 
     void UpdateSystemHeight(System* system);
+    int UpdateExtraSpacing(System* system);
 
     int FindSystemIndex(System* system) const;
 

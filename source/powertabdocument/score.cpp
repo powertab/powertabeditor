@@ -328,10 +328,23 @@ void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, 
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
 }
 
-void Score::UpdateSystemHeight(System* system)
+void Score::UpdateSystemHeight(System *system)
 {
-    uint32_t systemIndex = FindSystemIndex(system);
+    int spacingDifference = UpdateExtraSpacing(system);
 
+    // adjust position of subsequent systems
+    uint32_t systemIndex = FindSystemIndex(system) + 1;
+    for (; systemIndex < GetSystemCount(); systemIndex++)
+    {
+        System* currentSystem = m_systemArray.at(systemIndex);
+        Rect rect = currentSystem->GetRect();
+        rect.SetTop(rect.GetTop() + spacingDifference);
+        currentSystem->SetRect(rect);
+    }
+}
+
+int Score::UpdateExtraSpacing(System* system)
+{
     const uint32_t originalExtraSpacing = system->GetExtraSpacing();
     uint32_t newSpacing = 0;
 
@@ -368,15 +381,5 @@ void Score::UpdateSystemHeight(System* system)
 
     system->SetExtraSpacing(newSpacing);
 
-    int spacingDifference = newSpacing - originalExtraSpacing;
-
-    // adjust position of subsequent systems
-    systemIndex++;
-    for (; systemIndex < GetSystemCount(); systemIndex++)
-    {
-        System* currentSystem = m_systemArray.at(systemIndex);
-        Rect rect = currentSystem->GetRect();
-        rect.SetTop(rect.GetTop() + spacingDifference);
-        currentSystem->SetRect(rect);
-    }
+    return newSpacing - originalExtraSpacing;
 }
