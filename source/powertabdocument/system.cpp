@@ -21,7 +21,6 @@ const uint8_t System::DEFAULT_POSITION_SPACING                       = 20;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_ABOVE             = 0;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_BELOW             = 0;
 const uint8_t System::DEFAULT_EXTRA_SPACING                          = 0;
-const uint8_t System::CHORD_TEXT_SPACING                             = 12;
 const uint8_t System::SYSTEM_SYMBOL_SPACING = 18; // spacing given to a system symbol (i.e. rehearsal sign)
 
 // Position Spacing Constants
