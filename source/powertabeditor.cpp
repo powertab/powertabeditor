@@ -673,7 +673,17 @@ void PowerTabEditor::editGhostNote()
 
 void PowerTabEditor::editTiedNote()
 {
-    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* note = caret->getCurrentNote();
+    Position* currentPosition = caret->getCurrentPosition();
+    Staff* currentStaff = caret->getCurrentStaff();
+
+    // check if note is able to be tied
+    if (!currentStaff->CanTieNote(currentPosition, note))
+    {
+        tiedNoteAct->setChecked(false);
+        return;
+    }
 
     const bool isTied = note->IsTied();
     const QString text = isTied ? tr("Remove Note Tie") : tr("Set Note Tie");
@@ -683,19 +693,22 @@ void PowerTabEditor::editTiedNote()
 
 // Updates the given QAction to be checked and/or enabled, based on the results of calling
 // the predicate member function of the provided object
-template<class T>
-void updatePropertyStatus(QAction* action, T* object, bool (T::*predicate)(void) const)
+namespace
 {
-    if (object == NULL)
+    template<class T>
+    void updatePropertyStatus(QAction* action, T* object, bool (T::*predicate)(void) const)
     {
-        action->setChecked(false);
-        action->setEnabled(false);
-    }
-    else
-    {
-        action->setEnabled(true);
-        const bool propertySet = (object->*predicate)();
-        action->setChecked(propertySet);
+        if (object == NULL)
+        {
+            action->setChecked(false);
+            action->setEnabled(false);
+        }
+        else
+        {
+            action->setEnabled(true);
+            const bool propertySet = (object->*predicate)();
+            action->setChecked(propertySet);
+        }
     }
 }
 

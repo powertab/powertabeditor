@@ -308,3 +308,23 @@ bool Staff::IsOnlyPositionInBar(Position *position, System *system) const
 
     return true;
 }
+
+// Figures out if the given note can be set as tied
+// The previous position in the staff must contain a Note at the same string & fret
+bool Staff::CanTieNote(Position* position, Note* note) const
+{
+    // find previous position
+    auto location = std::find(highMelodyPositionArray.begin(), highMelodyPositionArray.end(), position);
+
+    // if the position was not found, or is the first position, it cannot be tied
+    if (location == highMelodyPositionArray.end() || location == highMelodyPositionArray.begin())
+    {
+        return false;
+    }
+
+    Position* prevPosition = *(--location);
+
+    Note* matchingNote = prevPosition->GetNoteByString(note->GetString());
+
+    return !(matchingNote == NULL || matchingNote->GetFretNumber() != note->GetFretNumber());
+}
