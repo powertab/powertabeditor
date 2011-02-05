@@ -19,51 +19,51 @@ void NotePage::createNoteButtons()
         QString icon, tip;
         QAction* action = NULL;
 
-        noteButton[i] = new QPushButton;
-
         switch(i)
         {
             case 0:
-                icon=":/images/whole_note.gif";
+				icon=":/images/whole_note";
                 tip="Whole Note";
                 action = mainWindow->wholeNoteAct;
                 break;
             case 1:
-                icon=":/images/half_note.gif";
+				icon=":/images/half_note";
                 tip="Half Note";
                 action = mainWindow->halfNoteAct;
                 break;
             case 2:
-                icon=":/images/quarter_note.gif";
+				icon=":/images/quarter_note";
                 tip="Quarter Note";
                 action = mainWindow->quarterNoteAct;
                 break;
             case 3:
-                icon=":/images/8th_note.gif";
+				icon=":/images/8th_note";
                 tip="8th Note";
                 action = mainWindow->eighthNoteAct;
                 break;
             case 4:
-                icon=":/images/16th_note.gif";
+				icon=":/images/16th_note";
                 tip="16th Note";
                 action = mainWindow->sixteenthNoteAct;
                 break;
             case 5:
-                icon=":/images/32th_note.gif";
+				icon=":/images/32nd_note";
                 tip="32nd Note";
                 action = mainWindow->thirtySecondNoteAct;
                 break;
             case 6:
-                icon=":/images/64th_note.gif";
+				icon=":/images/64th_note";
                 tip="64th Note";
                 action = mainWindow->sixtyFourthNoteAct;
                 break;
         }
 
-        noteButton[i]->setIcon(QIcon(icon));
+		noteButton[i] = new QPushButton(QIcon(icon),"");
+		noteButton[i]->setIcon(QIcon(icon));
+		noteButton[i]->setIconSize(QSize(24,24));
         noteButton[i]->setToolTip(tip);
         noteButton[i]->setCheckable(true);
-        noteButton[i]->setFlat(true);
+        noteButton[i]->setFlat(true);		
 
         connect(noteButton[i], SIGNAL(clicked()), action, SLOT(trigger()));
         connect(action, SIGNAL(toggled(bool)), noteButton[i], SLOT(setChecked(bool)));
@@ -88,16 +88,17 @@ void NotePage::createRestButtons()
 
         switch(i)
         {
-            case 0:	icon=":/images/whole_rest.gif";		tip="Whole Rest"; break;
-            case 1: icon=":/images/half_rest.gif";		tip="Half Rest"; break;
-            case 2: icon=":/images/quarter_rest.gif";	tip="Quarter Rest"; break;
-            case 3: icon=":/images/8th_rest.gif";		tip="8th Rest"; break;
-            case 4: icon=":/images/16th_rest.gif";		tip="16th Rest"; break;
-            case 5: icon=":/images/32nd_rest.gif";		tip="32nd Rest"; break;
-            case 6: icon=":/images/64th_rest.gif";		tip="64th Rest"; break;
+			case 0:	icon=":/images/whole_rest";		tip="Whole Rest"; break;
+			case 1: icon=":/images/half_rest";		tip="Half Rest"; break;
+			case 2: icon=":/images/quarter_rest";	tip="Quarter Rest"; break;
+			case 3: icon=":/images/8th_rest";		tip="8th Rest"; break;
+			case 4: icon=":/images/16th_rest";		tip="16th Rest"; break;
+			case 5: icon=":/images/32nd_rest";		tip="32nd Rest"; break;
+			case 6: icon=":/images/64th_rest";		tip="64th Rest"; break;
         }
 
         restButton[i] = new QPushButton(QIcon(icon),"");
+		restButton[i]->setIconSize(QSize(24,24));
         restButton[i]->setToolTip(tip);
         restButton[i]->setCheckable(true);
         restButton[i]->setFlat(true);

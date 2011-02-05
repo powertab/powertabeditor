@@ -4,20 +4,6 @@
         <file alias="LiberationSans-Regular.ttf">fonts/LiberationSans-Regular.ttf</file>
     </qresource>
     <qresource prefix="/images">
-        <file alias="8th_note.gif">images/8th_note.gif</file>
-        <file alias="16th_note.gif">images/16th_note.gif</file>
-        <file alias="64th_note.gif">images/64th_note.gif</file>
-        <file alias="half_note.gif">images/half_note.gif</file>
-        <file alias="quarter_note.gif">images/quarter_note.gif</file>
-        <file alias="whole_note.gif">images/whole_note.gif</file>
-        <file alias="32th_note.gif">images/32th_note.gif</file>
-        <file alias="8th_rest.gif">images/8th_rest.gif</file>
-        <file alias="16th_rest.gif">images/16th_rest.gif</file>
-        <file alias="32nd_rest.gif">images/32nd_rest.gif</file>
-        <file alias="64th_rest.gif">images/64th_rest.gif</file>
-        <file alias="half_rest.gif">images/half_rest.gif</file>
-        <file alias="quarter_rest.gif">images/quarter_rest.gif</file>
-        <file alias="whole_rest.gif">images/whole_rest.gif</file>
         <file alias="dotted_note.gif">images/dotted_note.gif</file>
         <file alias="doubledotted_note.gif">images/doubledotted_note.gif</file>
         <file alias="tie_note.gif">images/tie_note.gif</file>
@@ -40,6 +26,20 @@
         <file alias="addpercussiontrack.gif">images/addpercussiontrack.gif</file>
         <file alias="decreasetablineheight.gif">images/decreasetablineheight.gif</file>
         <file alias="increasetablineheight.gif">images/increasetablineheight.gif</file>
+        <file alias="8th_note">images/8th_note.png</file>
+        <file alias="16th_note">images/16th_note.png</file>
+        <file alias="32nd_note">images/32nd_note.png</file>
+        <file alias="64th_note">images/64th_note.png</file>
+        <file alias="half_note">images/half_note.png</file>
+        <file alias="quarter_note">images/quarter_note.png</file>
+        <file alias="whole_note">images/whole_note.png</file>
+        <file alias="8th_rest">images/8th_rest.png</file>
+        <file alias="16th_rest">images/16th_rest.png</file>
+        <file alias="32nd_rest">images/32nd_rest.png</file>
+        <file alias="64th_rest">images/64th_rest.png</file>
+        <file alias="half_rest">images/half_rest.png</file>
+        <file alias="quarter_rest">images/quarter_rest.png</file>
+        <file alias="whole_rest">images/whole_rest.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="toolbox_note.png">icons/toolbox_note.png</file>
