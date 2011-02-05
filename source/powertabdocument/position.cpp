@@ -798,6 +798,9 @@ struct NoteComparison
     }
 };
 
+/// Finds the note located at a specific string.
+/// @param string The string to search for a note at.
+/// @return A pointer to the Note object if it is found, otherwise NULL.
 Note* Position::GetNoteByString(uint8_t string) const
 {
     NoteComparison compare;
@@ -814,7 +817,13 @@ Note* Position::GetNoteByString(uint8_t string) const
     }
 }
 
-bool Position::CanShiftTabNumber(Note *note, int type, uint8_t numStringsInStaff, const Tuning& tuning) const
+/// Determines if the tab number of a note can be shifted up or down by a string
+/// @param note The note that will be shifted
+/// @param type Type of shift (up or down)
+/// @param numStringsInStaff The number of strings in the current staff
+/// @param tuning The tuning of the guitar in the current staff
+/// @return True if the note can be shifted, false otherwise.
+bool Position::CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const
 {
     // check that the note is actually in this position
     CHECK_THAT(std::find(m_noteArray.begin(), m_noteArray.end(), note) != m_noteArray.end(), false);
@@ -838,7 +847,13 @@ bool Position::CanShiftTabNumber(Note *note, int type, uint8_t numStringsInStaff
     return (newFretNum >=0 && Note::IsValidFretNumber(newFretNum));
 }
 
-bool Position::ShiftTabNumber(Note* note, int type, uint8_t numStringsInStaff, const Tuning& tuning)
+/// Shifts the tab number of a note up or down by a string
+/// @param note The note that will be shifted
+/// @param type Type of shift (up or down)
+/// @param numStringsInStaff The number of strings in the current staff
+/// @param tuning The tuning of the guitar in the current staff
+/// @return True if the note was successfully shifted, false otherwise.
+bool Position::ShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning)
 {
     CHECK_THAT(CanShiftTabNumber(note, type, numStringsInStaff, tuning), false);
 
@@ -849,13 +864,23 @@ bool Position::ShiftTabNumber(Note* note, int type, uint8_t numStringsInStaff, c
     return true;
 }
 
-int Position::GetShiftedStringNumber(Note* note, int type) const
+/// Finds the string that the note will be shifted to
+/// @param note The note that will be shifted
+/// @param type Type of shift
+/// @return The new string number that the note will have after applying the shift
+int Position::GetShiftedStringNumber(Note* note, ShiftType type) const
 {
     const int stringNum = note->GetString();
     int newStringNum = (type == SHIFT_UP) ? stringNum - 1 : stringNum + 1;
     return newStringNum;
 }
 
+/// Finds the fret number that the note will be shifted to after changing strings
+/// @param note The note that will be shifted
+/// @param originalString The original string that the note was on
+/// @param newString The string that the note will shift to
+/// @param tuning The tuning of the guitar in the current staff
+/// @return The new fret number that the note will have after applying the shift
 int Position::GetShiftedFretNumber(Note* note, int originalString, int newString, const Tuning& tuning) const
 {
     const int originalFret = note->GetFretNumber();

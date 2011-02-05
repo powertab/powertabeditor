@@ -540,18 +540,19 @@ void PowerTabEditor::startStopPlayback()
 
 void PowerTabEditor::shiftTabNumber(int direction)
 {
+    const Position::ShiftType shiftType = static_cast<Position::ShiftType>(direction);
     Caret* caret = getCurrentScoreArea()->getCaret();
     const quint8 numStringsInStaff = caret->getCurrentStaff()->GetTablatureStaffType();
     Position* currentPos = caret->getCurrentPosition();
     Note* currentNote = caret->getCurrentNote();
     const Tuning& tuning = caret->getCurrentScore()->GetGuitar(caret->getCurrentStaffIndex())->GetTuningConstRef();
 
-    if (!currentPos->CanShiftTabNumber(currentNote, direction, numStringsInStaff, tuning))
+    if (!currentPos->CanShiftTabNumber(currentNote, shiftType, numStringsInStaff, tuning))
     {
         return;
     }
 
-    undoManager->push(new ShiftTabNumber(currentPos, currentNote, direction, numStringsInStaff, tuning));
+    undoManager->push(new ShiftTabNumber(currentPos, currentNote, shiftType, numStringsInStaff, tuning));
 }
 
 bool PowerTabEditor::moveCaretToPosition(quint8 position)

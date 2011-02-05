@@ -1,8 +1,6 @@
 #include "shifttabnumber.h"
 
-#include <powertabdocument/position.h>
-
-ShiftTabNumber::ShiftTabNumber(Position* currentPos, Note* note, int direction, quint8 numStringsInStaff, const Tuning& tuning) :
+ShiftTabNumber::ShiftTabNumber(Position* currentPos, Note* note, Position::ShiftType direction, quint8 numStringsInStaff, const Tuning& tuning) :
     currentPos(currentPos),
     note(note),
     direction(direction),
@@ -26,6 +24,6 @@ void ShiftTabNumber::redo()
 
 void ShiftTabNumber::undo()
 {
-    int oppositeDirection = (direction == Position::SHIFT_UP) ? Position::SHIFT_DOWN : Position::SHIFT_UP;
+    const Position::ShiftType oppositeDirection = (direction == Position::SHIFT_UP) ? Position::SHIFT_DOWN : Position::SHIFT_UP;
     currentPos->ShiftTabNumber(note, oppositeDirection, numStringsInStaff, tuning);
 }

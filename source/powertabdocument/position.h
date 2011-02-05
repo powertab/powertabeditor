@@ -821,11 +821,11 @@ public:
     }
 
     Note* GetNoteByString(uint8_t string) const;
-    bool CanShiftTabNumber(Note* note, int type, uint8_t numStringsInStaff, const Tuning& tuning) const;
-    bool ShiftTabNumber(Note* note, int type, uint8_t numStringsInStaff, const Tuning& tuning);
+    bool CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const;
+    bool ShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning);
 
 protected:
-    int GetShiftedStringNumber(Note* note, int type) const;
+    int GetShiftedStringNumber(Note* note, ShiftType type) const;
     int GetShiftedFretNumber(Note* note, int originalString, int newString, const Tuning& tuning) const;
 };
 
