@@ -15,11 +15,8 @@ the entire score)
 - the project builds without any warnings / errors on Windows with QtCreator
 
 TODO: 
-Short Term:
 - redraw only the required areas upon an undo/redo action
 - fix up exporting of files (PowerTabOutputStream), due to some difficulties in porting the original code
-
-Longer Term:
 - work on complete rendering support
-- work on the interactive editor functionality (i.e. editing notes, removing barlines, etc)
-- work on MIDI playback
+- support more interactive editor functionality (i.e. editing notes, removing barlines, etc)
+- support more features for MIDI playback (bends, vibrato, etc)
