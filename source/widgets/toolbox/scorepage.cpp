@@ -12,19 +12,19 @@ void ScorePage::createSongButtons()
     songGroup = new QGroupBox(tr("Song"));
     songLayout = new QHBoxLayout;
 
-    addInstrumentButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	addInstrumentButton = new QPushButton(QIcon(":images/addinstrument.gif"),"");
     addInstrumentButton->setToolTip(tr("Add Instrument"));
     addInstrumentButton->setFlat(true);
 
-    addPercussionButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	addPercussionButton = new QPushButton(QIcon(":images/addpercussiontrack.gif"),"");
     addPercussionButton->setToolTip(tr("Add Percussion Track"));
     addPercussionButton->setFlat(true);
 
-    increaseHeightButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	increaseHeightButton = new QPushButton(QIcon(":images/increasetablineheight.gif"),"");
     increaseHeightButton->setToolTip(tr("Increase Tablature Line Height"));
     increaseHeightButton->setFlat(true);
 
-    decreaseHeightButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	decreaseHeightButton = new QPushButton(QIcon(":images/decreasetablineheight.gif"),"");
     decreaseHeightButton->setToolTip(tr("Decrease Tablature Line Height"));
     decreaseHeightButton->setFlat(true);
 
