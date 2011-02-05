@@ -235,7 +235,7 @@ void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& curren
                 continue;
             }
 
-            if ((note->HasShiftSlide() || note->HasLegatoSlide()) && !note->HasSlideOutOf())
+            if (note->HasShiftSlide() || note->HasLegatoSlide())
             {
                 Position* nextPosition = staff->GetPosition(voice, j + 1);
                 Note* nextNote = nextPosition->GetNoteByString(string);
