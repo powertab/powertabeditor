@@ -261,6 +261,10 @@ void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& curren
 
             if (note->HasShiftSlide() || note->HasLegatoSlide())
             {
+                if (j == staff->GetPositionCount(voice) - 1)
+                {
+                    continue;
+                }
                 Position* nextPosition = staff->GetPosition(voice, j + 1);
                 Note* nextNote = nextPosition->GetNoteByString(string);
 
