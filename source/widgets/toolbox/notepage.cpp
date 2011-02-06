@@ -119,27 +119,32 @@ void NotePage::createRhythmButtons()
     rhythmGroup = new QGroupBox(tr("Rhythmic Devices"));
     rhythmLayout = new QHBoxLayout;
 
-    dottedButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	dottedButton = new QPushButton(QIcon(":images/dotted_note"),"");
+	dottedButton->setIconSize(QSize(24,24));
     dottedButton->setToolTip(tr("Dotted Note"));
     dottedButton->setCheckable(true);
     dottedButton->setFlat(true);
 
-    doubleDottedButton = new QPushButton(QIcon(":images/doubledotted_note.gif"),"");
+	doubleDottedButton = new QPushButton(QIcon(":images/doubledotted_note"),"");
+	doubleDottedButton->setIconSize(QSize(24,24));
     doubleDottedButton->setToolTip(tr("Double Dotted Note"));
     doubleDottedButton->setCheckable(true);
     doubleDottedButton->setFlat(true);
 
-    tieButton = new QPushButton(QIcon(":images/tie_note.gif"),"");
+	tieButton = new QPushButton(QIcon(":images/tie_note"),"");
+	tieButton->setIconSize(QSize(24,24));
     tieButton->setToolTip(tr("Tie Note"));
     tieButton->setCheckable(true);
     tieButton->setFlat(true);
 
-    groupingButton = new QPushButton(QIcon(":images/grouping.gif"),"");
+	groupingButton = new QPushButton(QIcon(":images/group_note"),"");
+	groupingButton->setIconSize(QSize(24,24));
     groupingButton->setToolTip(tr("Group Note"));
     groupingButton->setCheckable(true);
     groupingButton->setFlat(true);
 
-    fermataButton = new QPushButton(QIcon(":images/fermata.gif"),"");
+	fermataButton = new QPushButton(QIcon(":images/fermata"),"");
+	fermataButton->setIconSize(QSize(24,24));
     fermataButton->setToolTip(tr("Fermata"));
     fermataButton->setCheckable(true);
     fermataButton->setFlat(true);

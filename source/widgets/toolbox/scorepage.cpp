@@ -44,31 +44,31 @@ void ScorePage::createSectionButtons()
     sectionGroup = new QGroupBox(tr("Section"));
     sectionLayout = new QHBoxLayout;
 
-    insertSectionBeforeButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	insertSectionBeforeButton = new QPushButton(QIcon(":images/dotted_note"),"");
     insertSectionBeforeButton->setToolTip(tr("Insert Section Before"));
     insertSectionBeforeButton->setFlat(true);
 
-    insertSectionAfterButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	insertSectionAfterButton = new QPushButton(QIcon(":images/dotted_note"),"");
     insertSectionAfterButton->setToolTip(tr("Insert Section After"));
     insertSectionAfterButton->setFlat(true);
 
-    removeSectionButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	removeSectionButton = new QPushButton(QIcon(":images/dotted_note"),"");
     removeSectionButton->setToolTip(tr("Remove Section"));
     removeSectionButton->setFlat(true);
 
-    addBarButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	addBarButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addBarButton->setToolTip(tr("Add Bar"));
     addBarButton->setFlat(true);
 
-    increaseWidthButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	increaseWidthButton = new QPushButton(QIcon(":images/dotted_note"),"");
     increaseWidthButton->setToolTip(tr("Increase Width"));
     increaseWidthButton->setFlat(true);
 
-    decreaseWidthButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	decreaseWidthButton = new QPushButton(QIcon(":images/dotted_note"),"");
     decreaseWidthButton->setToolTip(tr("Decrease Width"));
     decreaseWidthButton->setFlat(true);
 
-    justifyButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	justifyButton = new QPushButton(QIcon(":images/dotted_note"),"");
     justifyButton->setToolTip(tr("Justify"));
     justifyButton->setFlat(true);
 
@@ -91,19 +91,19 @@ void ScorePage::createFlowDynamicsButtons()
     flowDynamicsGroup = new QGroupBox(tr("Flow && Dynamics"));
     flowDynamicsLayout = new QHBoxLayout;
 
-    addRehearsalSignButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	addRehearsalSignButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addRehearsalSignButton->setToolTip(tr("Add Rehearsal Sign"));
     addRehearsalSignButton->setFlat(true);
 
-    addDirectionButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	addDirectionButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addDirectionButton->setToolTip(tr("Add Musical Direction"));
     addDirectionButton->setFlat(true);
 
-    addTempoMarkerButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	addTempoMarkerButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addTempoMarkerButton->setToolTip(tr("Add Tempo Marker"));
     addTempoMarkerButton->setFlat(true);
 
-    addVolumeMarkerButton = new QPushButton(QIcon(":images/dotted_note.gif"),"");
+	addVolumeMarkerButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addVolumeMarkerButton->setToolTip(tr("Add Volume Marker"));
     addVolumeMarkerButton->setFlat(true);
 
