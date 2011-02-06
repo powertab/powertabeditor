@@ -52,7 +52,7 @@ protected:
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
     void drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
-    void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height, const StaffData& currentStaffInfo);
+    void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height);
 
     QGraphicsScene scene;
     MusicFont musicFont;

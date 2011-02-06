@@ -402,7 +402,7 @@ void ScoreArea::drawSystemSymbols(Score* score, System* system, const StaffData&
 
     if (tempoMarkers.size() > 0)
     {
-        drawTempoMarkers(tempoMarkers, system, height, currentStaffInfo);
+        drawTempoMarkers(tempoMarkers, system, height);
         height += System::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(currentStaffInfo, height);
     }
@@ -416,7 +416,7 @@ void ScoreArea::drawSystemSymbols(Score* score, System* system, const StaffData&
 
 }
 
-void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height, const StaffData& currentStaffInfo)
+void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height)
 {
     foreach(TempoMarker* tempoMarker, tempoMarkers)
     {
