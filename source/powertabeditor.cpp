@@ -275,6 +275,11 @@ void PowerTabEditor::CreateActions()
     ghostNoteAct->setCheckable(true);
     connect(ghostNoteAct, SIGNAL(triggered()), this, SLOT(editGhostNote()));
 
+    staccatoNoteAct = new QAction(tr("Staccato"), this);
+    staccatoNoteAct->setCheckable(true);
+    staccatoNoteAct->setShortcut(QKeySequence(Qt::Key_Z));
+    connect(staccatoNoteAct, SIGNAL(triggered()), this, SLOT(editStaccato()));
+
     // Music Symbol Actions
     rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
     rehearsalSignAct->setCheckable(true);
@@ -348,6 +353,8 @@ void PowerTabEditor::CreateMenus()
     notesMenu->addAction(noteMutedAct);
     notesMenu->addSeparator();
     notesMenu->addAction(ghostNoteAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(staccatoNoteAct);
 
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -692,6 +699,16 @@ void PowerTabEditor::editNoteMuted()
     undoManager->push(new ToggleProperty<Note>(note, &Note::SetMuted, !isMuted, text));
 }
 
+void PowerTabEditor::editStaccato()
+{
+    Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
+
+    const bool isStaccato = position->IsStaccato();
+    const QString text = isStaccato ? tr("Remove Staccato") : tr("Set Staccato");
+
+    undoManager->push(new ToggleProperty<Position>(position, &Position::SetStaccato, !isStaccato, text));
+}
+
 void PowerTabEditor::editGhostNote()
 {
     Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
@@ -779,6 +796,7 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
     updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);
     updatePropertyStatus(tiedNoteAct, currentNote, &Note::IsTied);
+    updatePropertyStatus(staccatoNoteAct, currentPosition, &Position::IsStaccato);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);
