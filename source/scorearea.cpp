@@ -556,6 +556,17 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
         beamingGroup << beaming;
 
+        // if the position is staccato, draw the dot near either the top or bottom note of the position, depending on beam direction
+        if (beaming.position->IsStaccato())
+        {
+            const double y = beaming.beamUp ? beaming.bottomNotePos : beaming.topNotePos - 15;
+
+            QGraphicsTextItem* dot = new QGraphicsTextItem(QChar(MusicFont::Dot));
+            dot->setFont(musicFont.getFontRef());
+            centerItem(dot, beaming.location, beaming.location + currentStaffInfo.positionWidth + 2, y - 25);
+            dot->setParentItem(activeStaff);
+        }
+
         // if we're at the end of a beam group, or have a note by itself (not part of a group), draw the beams
         if (beaming.position->IsBeamEnd() || (!beaming.position->IsBeamStart() && beamingGroup.size() == 1))
         {
