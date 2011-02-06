@@ -33,7 +33,7 @@ MIDITab::MIDITab(QWidget *parent) :
         midiPort->addItem(QString(rtMidiWrapper.getPortName(i).c_str()));
     }
 
-    formLayout->addRow(tr("MIDI Input Device:"), midiPort);
+    formLayout->addRow(tr("MIDI Output Device:"), midiPort);
 
     metronomeEnabled = new QCheckBox;
     formLayout->addRow(tr("Metronome Enabled"), metronomeEnabled);
