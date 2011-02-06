@@ -122,6 +122,10 @@ void PowerTabEditor::CreateActions()
     openFileAct->setStatusTip(tr("Open an existing document"));
     connect(openFileAct, SIGNAL(triggered()), this, SLOT(OpenFile()));
 
+    closeTabAct = new QAction(tr("&Close Tab"), this);
+    closeTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    connect(closeTabAct, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
+
     preferencesAct = new QAction(tr("&Preferences..."), this);
     preferencesAct->setShortcuts(QKeySequence::Preferences);
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(OpenPreferences()));
@@ -312,6 +316,7 @@ void PowerTabEditor::CreateMenus()
     // File Menu
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openFileAct);
+    fileMenu->addAction(closeTabAct);
     fileMenu->addSeparator();
     fileMenu->addAction(preferencesAct);
     fileMenu->addSeparator();
@@ -482,6 +487,11 @@ void PowerTabEditor::OpenPreferences()
     preferencesDialog->exec();
 }
 
+void PowerTabEditor::closeCurrentTab()
+{
+    closeTab(tabWidget->currentIndex());
+}
+
 // Close a document and clean up
 void PowerTabEditor::closeTab(int index)
 {
@@ -534,7 +544,7 @@ void PowerTabEditor::cycleTab(int offset)
 {
     int newIndex = (tabWidget->currentIndex() + offset) % tabWidget->count();
 
-    while(newIndex < 0) // make sure that negative array indices wrap around
+    if (newIndex < 0) // make sure that negative array indices wrap around
     {
         newIndex += tabWidget->count();
     }
@@ -852,6 +862,8 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
             action->setEnabled(enable);
         }
     }
+
+    closeTabAct->setEnabled(enable);
 }
 
 void PowerTabEditor::updateNoteDuration(int duration)

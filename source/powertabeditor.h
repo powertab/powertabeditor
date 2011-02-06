@@ -47,6 +47,7 @@ private slots:
     void OpenFile();
     void OpenPreferences();
     void RefreshOnUndoRedo(int);
+    void closeCurrentTab();
     void closeTab(int index);
     void switchTab(int index);
     void startStopPlayback();
@@ -87,6 +88,7 @@ private:
     DocumentManager documentManager;
     QMenu* fileMenu;
     QAction* openFileAct;
+    QAction* closeTabAct;
     QAction* preferencesAct;
     QAction* exitAppAct;
 
