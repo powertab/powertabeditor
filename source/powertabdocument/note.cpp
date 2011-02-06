@@ -984,13 +984,16 @@ void Note::ClearComplexSymbolArrayContents()
         m_complexSymbolArray[i] = notUsed;
 }
 
-// For muted notes, display 'x'
-// For tapped harmonics, display '7(14)', where 14 is the tapped note
-// For natural harmonics, display '[12]'
-// For ghost notes, display '(12)'
-// Otherwise, just display the fret number
+/// Creates a text representation of the note, including brackets for ghost notes, harmonics, etc
+/// @return The text representation of the note
 std::string Note::GetText() const
 {
+    // For muted notes, display 'x'
+    // For tapped harmonics, display '7(14)', where 14 is the tapped note
+    // For natural harmonics, display '[12]'
+    // For ghost notes, display '(12)'
+    // Otherwise, just display the fret number
+
     if (IsMuted())
     {
         return "x";
@@ -1036,7 +1039,9 @@ std::string Note::GetText() const
     return output.str();
 }
 
-// Returns the pitch of the note, for the given guitar tuning
+/// Calculates the pitch of the note, for the given guitar tuning
+/// @param tuning The tuning for the guitar that is playing the note
+/// @return The pitch of the note
 uint8_t Note::GetPitch(Tuning* tuning) const
 {
     return tuning->GetNote(GetString()) + GetFretNumber();

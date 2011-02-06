@@ -571,7 +571,6 @@ public:
     bool HasArtificialHarmonic() const;
     bool ClearArtificialHarmonic();
 
-    /// Returns a text representation of the note, including brackets for ghost notes, harmonics, etc
     std::string GetText() const;
 
     uint8_t GetPitch(Tuning* tuning) const;
