@@ -546,7 +546,7 @@ void PowerTabEditor::shiftTabNumber(int direction)
         return;
     }
 
-    undoManager->push(new ShiftTabNumber(currentPos, currentNote, shiftType, numStringsInStaff, tuning));
+    undoManager->push(new ShiftTabNumber(caret, currentPos, currentNote, shiftType, numStringsInStaff, tuning));
 }
 
 bool PowerTabEditor::moveCaretToPosition(quint8 position)
