@@ -74,6 +74,8 @@ private slots:
     void editTiedNote();
     void editStaccato();
 
+    void cycleTab(int offset);
+
     void updateNoteDuration(int duration);
     void shiftTabNumber(int direction);
 
@@ -140,6 +142,11 @@ private:
 
     QMenu* tabSymbolsMenu;
     QAction* naturalHarmonicAct; // add/remove natural harmonics
+
+    QMenu* windowMenu;
+    QAction* nextTabAct; // cycle to the next/previous tab
+    QAction* prevTabAct;
+    QSignalMapper* tabCycleMapper;
 
     QString previousDirectory; // previous directory that a file was opened in
     std::unique_ptr<QStackedWidget> mixerList;

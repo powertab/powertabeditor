@@ -290,6 +290,21 @@ void PowerTabEditor::CreateActions()
     naturalHarmonicAct = new QAction(tr("Natural Harmonic"), this);
     naturalHarmonicAct->setCheckable(true);
     connect(naturalHarmonicAct, SIGNAL(triggered()), this, SLOT(editNaturalHarmonic()));
+
+    // Window Menu Actions
+    tabCycleMapper = new QSignalMapper(this);
+
+    nextTabAct = new QAction(tr("Next Tab"), this);
+    nextTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    connect(nextTabAct, SIGNAL(triggered()), tabCycleMapper, SLOT(map()));
+    tabCycleMapper->setMapping(nextTabAct, 1);
+
+    prevTabAct = new QAction(tr("Previous Tab"), this);
+    prevTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    connect(prevTabAct, SIGNAL(triggered()), tabCycleMapper, SLOT(map()));
+    tabCycleMapper->setMapping(prevTabAct, -1);
+
+    connect(tabCycleMapper, SIGNAL(mapped(int)), this, SLOT(cycleTab(int)));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -363,6 +378,11 @@ void PowerTabEditor::CreateMenus()
     // Tab Symbols Menu
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     tabSymbolsMenu->addAction(naturalHarmonicAct);
+
+    // Window Menu
+    windowMenu = menuBar()->addMenu(tr("&Window"));
+    windowMenu->addAction(nextTabAct);
+    windowMenu->addAction(prevTabAct);
 }
 
 void PowerTabEditor::CreateTabArea()
@@ -506,6 +526,20 @@ void PowerTabEditor::switchTab(int index)
 ScoreArea* PowerTabEditor::getCurrentScoreArea()
 {
     return reinterpret_cast<ScoreArea*>(tabWidget->currentWidget());
+}
+
+/// Cycles through the tabs in the tab bar
+/// @param offset Direction and number of tabs to move by (i.e. -1 moves back one tab)
+void PowerTabEditor::cycleTab(int offset)
+{
+    int newIndex = (tabWidget->currentIndex() + offset) % tabWidget->count();
+
+    while(newIndex < 0) // make sure that negative array indices wrap around
+    {
+        newIndex += tabWidget->count();
+    }
+
+    tabWidget->setCurrentIndex(newIndex);
 }
 
 void PowerTabEditor::startStopPlayback()
@@ -806,7 +840,7 @@ void PowerTabEditor::updateActions()
 void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
-    menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu;
+    menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
 
     QAction* action;
     QMenu* menu;
