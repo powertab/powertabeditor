@@ -51,13 +51,19 @@ protected:
     void drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
     void drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo);
-    void drawDividerLine(const StaffData& currentStaffInfo, quint32 height);
+    void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height, const StaffData& currentStaffInfo);
 
     QGraphicsScene scene;
     MusicFont musicFont;
     void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
     Caret* caret;
+    QList<QGraphicsItem*> systemList;
+
+    // holds the parent object of the staff that is being drawn
+    // all QGraphicsItems that are a part of the staff have this object as their parent
+    QGraphicsItem* activeStaff;
+    QGraphicsItem* activeSystem;
 
     struct BeamingInfo
     {

@@ -28,6 +28,8 @@ ScoreArea::ScoreArea(QWidget *parent) :
     setScene(&scene);
     setRenderHints(QPainter::HighQualityAntialiasing);
 
+    activeStaff = NULL;
+    activeSystem = NULL;
 }
 
 void ScoreArea::renderDocument()
@@ -77,6 +79,8 @@ void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
     SystemPainter* sysPainter = new SystemPainter(system);
     sysPainter->setPos(leftEdge, topEdge);
     scene.addItem(sysPainter);
+    systemList << sysPainter;
+    activeSystem = sysPainter;
 
     // Draw each staff
     for (uint32_t i=0; i < system->GetStaffCount(); i++)
@@ -100,15 +104,16 @@ void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
 
         // Draw the staff lines
         StaffPainter* staffPainter = new StaffPainter(system, currentStaff, currentStaffInfo);
-        staffPainter->setPos(currentStaffInfo.leftEdge, system->GetStaffHeightOffset(i, true));
-        scene.addItem(staffPainter);
+        staffPainter->setPos(0, system->GetStaffHeightOffset(i));
+        staffPainter->setParentItem(activeSystem);
+        activeStaff = staffPainter;
 
         // Draw the clefs
         ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, currentStaff);
-        clefPainter->setPos(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo.getTopStdNotationLine());
-        scene.addItem(clefPainter);
+        clefPainter->setPos(system->GetClefPadding(), currentStaffInfo.getTopStdNotationLine(false));
+        clefPainter->setParentItem(activeStaff);
 
-        drawTabClef(currentStaffInfo.leftEdge + system->GetClefPadding(), currentStaffInfo);
+        drawTabClef(system->GetClefPadding(), currentStaffInfo);
 
         renderBars(currentStaffInfo, system);
 
@@ -139,7 +144,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
 
         BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo, currentBarline);
 
-        double x = system->GetPositionX(currentBarline->GetPosition());
+        double x = system->GetPositionX(currentBarline->GetPosition()) - currentStaffInfo.leftEdge;
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
         double timeSigX = x + barlinePainter->boundingRect().width() + keySig.GetWidth();
         double rehearsalSignX = x;
@@ -148,19 +153,19 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
         {
             if (currentBarline->IsBar()) // for normal bars, display a line at the far left edge
             {
-                x = currentStaffInfo.leftEdge - barlinePainter->boundingRect().width() / 2 - 0.5;
+                x = 0 - barlinePainter->boundingRect().width() / 2 - 0.5;
             }
             else // otherwise, display the bar after the clef, etc, and to the left of the first note
             {
-                x = system->GetFirstPositionX() - currentStaffInfo.positionWidth;
+                x = system->GetFirstPositionX() - currentStaffInfo.leftEdge - currentStaffInfo.positionWidth;
             }
 
-            keySigX = currentStaffInfo.leftEdge + system->GetClefWidth();
-            timeSigX = currentStaffInfo.leftEdge + system->GetClefWidth() + keySig.GetWidth();
+            keySigX = system->GetClefWidth();
+            timeSigX = system->GetClefWidth() + keySig.GetWidth();
         }
         else if (i == barlines.size() - 1) // last barline of system
         {
-            x = system->GetRect().GetRight() - barlinePainter->boundingRect().width() / 2;
+            x = system->GetRect().GetWidth() - barlinePainter->boundingRect().width() / 2 - 1;
 
             if (currentBarline->IsRepeatEnd())
             {
@@ -172,27 +177,27 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
             }
         }
 
-        barlinePainter->setPos(x, currentStaffInfo.topEdge);
-        scene.addItem(barlinePainter);
+        barlinePainter->setPos(x, 0);
+        barlinePainter->setParentItem(activeStaff);
 
         if (keySig.IsShown())
         {
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig);
-            keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
-            scene.addItem(keySigPainter);
+            keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine(false));
+            keySigPainter->setParentItem(activeStaff);
         }
 
         if (timeSig.IsShown())
         {
             TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig);
-            timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
-            scene.addItem(timeSigPainter);
+            timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine(false));
+            timeSigPainter->setParentItem(activeStaff);
         }
 
         const RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSignConstRef();
         if (rehearsalSign.IsSet())
         {
-            const int y = system->GetRect().GetTop() + 1;
+            const int y = 1;
             QFont displayFont("Helvetica");
             displayFont.setPixelSize(12);
 
@@ -212,10 +217,10 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
             boundingRect.translate(-4, 0);
             QGraphicsRectItem* rect = new QGraphicsRectItem(boundingRect);
             rect->setPos(rehearsalSignX, y);
-            scene.addItem(rect);
 
-            scene.addItem(signText);
-            scene.addItem(signLetter);
+            rect->setParentItem(activeSystem);
+            signText->setParentItem(activeSystem);
+            signLetter->setParentItem(activeSystem);
         }
     }
 }
@@ -240,10 +245,10 @@ void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& curren
                 Position* nextPosition = staff->GetPosition(voice, j + 1);
                 Note* nextNote = nextPosition->GetNoteByString(string);
 
-                const double leftPos = system->GetPositionX(position->GetPosition());
-                const double width = system->GetPositionX(nextPosition->GetPosition()) - leftPos;
+                const double leftPos = system->GetPositionX(position->GetPosition()) - currentStaffInfo.leftEdge;
+                const double width = system->GetPositionX(nextPosition->GetPosition()) - leftPos - currentStaffInfo.leftEdge;
                 double height = 5;
-                double y = (currentStaffInfo.getTabLineHeight(string + 1, true) + currentStaffInfo.getTabLineHeight(string, true)) / 2;
+                double y = (currentStaffInfo.getTabLineHeight(string + 1, false) + currentStaffInfo.getTabLineHeight(string, false)) / 2;
 
                 if (nextNote->GetFretNumber() > note->GetFretNumber())
                 {
@@ -254,9 +259,9 @@ void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& curren
                 QPainterPath path;
                 path.lineTo(width - currentStaffInfo.positionWidth / 2, height);
 
-                QGraphicsPathItem *line = new QGraphicsPathItem(path);
+                QGraphicsPathItem* line = new QGraphicsPathItem(path);
                 line->setPos(leftPos + system->GetPositionSpacing() / 1.5 + 1, y + height / 2);
-                scene.addItem(line);
+                line->setParentItem(activeStaff);
 
                 drawComplexSymbolText(staff, currentStaffInfo, note, leftPos);
             }
@@ -291,16 +296,16 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
 
                 if (!note->HasLegatoSlide()) // this is done during the drawSlides() function
                 {
-                    drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
+                    drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition) - currentStaffInfo.leftEdge);
                 }
             }
 
             else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
             {
-                const double leftPos = system->GetPositionX(startPos);
-                const double width = system->GetPositionX(currentPosition) - leftPos;
+                const double leftPos = system->GetPositionX(startPos) - currentStaffInfo.leftEdge;
+                const double width = system->GetPositionX(currentPosition) - leftPos - currentStaffInfo.leftEdge;
                 double height = 7.5;
-                double y = currentStaffInfo.getTabLineHeight(string, true) - 2;
+                double y = currentStaffInfo.getTabLineHeight(string, false) - 2;
 
                 if (string >= currentStaffInfo.numOfStrings / 2)
                 {
@@ -315,14 +320,14 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
 
                 QGraphicsPathItem *arc = new QGraphicsPathItem(path);
                 arc->setPos(leftPos + system->GetPositionSpacing() / 2, y);
-                scene.addItem(arc);
+                arc->setParentItem(activeStaff);
 
                 startPos = -1;
             }
 
             if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
             {
-                drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
+                drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition) - currentStaffInfo.leftEdge);
 
                 const double height = 10;
                 const double width = 6;
@@ -330,8 +335,9 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
                 path.moveTo(width, height / 2);
                 path.arcTo(0, 0, width, height, 0, 180);
                 QGraphicsPathItem *arc = new QGraphicsPathItem(path);
-                arc->setPos(system->GetPositionX(currentPosition) + 2, currentStaffInfo.getTabLineHeight(string, true) - 2);
-                scene.addItem(arc);
+                arc->setPos(system->GetPositionX(currentPosition) - currentStaffInfo.leftEdge + 2,
+                            currentStaffInfo.getTabLineHeight(string, false) - 2);
+                arc->setParentItem(activeStaff);
 
                 startPos = -1;
             }
@@ -343,23 +349,24 @@ void ScoreArea::drawTabClef(int x, const StaffData& staffInfo)
 {
     // Draw the tab clef
     QGraphicsSimpleTextItem* tabClef = new QGraphicsSimpleTextItem;
-    tabClef->setPos(x, staffInfo.getTopTabLine() - 12);
+    tabClef->setPos(x, staffInfo.getTopTabLine(false) - 12);
     musicFont.setSymbol(tabClef, MusicFont::TabClef, staffInfo.numOfStrings * 4.25);
-    scene.addItem(tabClef);
+    tabClef->setParentItem(activeStaff);
 }
 
-void ScoreArea::drawDividerLine(const StaffData& currentStaffInfo, quint32 height)
+void ScoreArea::drawDividerLine(const StaffData& currentStaffInfo, quint32 y)
 {
     QGraphicsLineItem* line = new QGraphicsLineItem;
-    line->setLine(currentStaffInfo.leftEdge, height, currentStaffInfo.leftEdge + currentStaffInfo.width, height);
+    line->setLine(0, y, currentStaffInfo.width, y);
     line->setOpacity(0.5);
     line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
-    scene.addItem(line);
+
+    line->setParentItem(activeSystem);
 }
 
 void ScoreArea::drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo)
 {
-    quint32 height = system->GetRect().GetTop();
+    quint32 height = 0;
 
     if (system->HasRehearsalSign()) // rehearsal signs are drawn at the same time as barlines
     {
@@ -390,11 +397,11 @@ void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System*
 {
     foreach(TempoMarker* tempoMarker, tempoMarkers)
     {
-        const quint32 location = system->GetPositionX(tempoMarker->GetPosition());
+        const quint32 location = system->GetPositionX(tempoMarker->GetPosition()) - currentStaffInfo.leftEdge;
 
         TempoMarkerPainter* tempoMarkerPainter = new TempoMarkerPainter(tempoMarker);
         tempoMarkerPainter->setPos(location, height + 4);
-        scene.addItem(tempoMarkerPainter);
+        tempoMarkerPainter->setParentItem(activeSystem);
     }
 }
 
@@ -405,11 +412,11 @@ void ScoreArea::drawChordText(System* system, quint32 height, const StaffData& c
         ChordText* chordText = system->GetChordText(i);
         Q_ASSERT(chordText != NULL);
 
-        const quint32 location = system->GetPositionX(chordText->GetPosition());
+        const quint32 location = system->GetPositionX(chordText->GetPosition()) - currentStaffInfo.leftEdge;
 
         ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
         centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth, height + 4);
-        scene.addItem(chordTextPainter);
+        chordTextPainter->setParentItem(activeSystem);
     }
 }
 
@@ -418,7 +425,7 @@ void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& curr
     for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
     {
         Position* currentPosition = staff->GetPosition(0, i);
-        const quint32 location = system->GetPositionX(currentPosition->GetPosition());
+        const quint32 location = system->GetPositionX(currentPosition->GetPosition()) - currentStaffInfo.leftEdge;
 
         for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
         {
@@ -426,8 +433,8 @@ void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& curr
 
             TabNotePainter* tabNote = new TabNotePainter(note);
             centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
-                       currentStaffInfo.getTabLineHeight(note->GetString()) + currentStaffInfo.tabLineSpacing / 2 - 1);
-            scene.addItem(tabNote);
+                       currentStaffInfo.getTabLineHeight(note->GetString(), false) + currentStaffInfo.tabLineSpacing / 2 - 1);
+            tabNote->setParentItem(activeStaff);
         }
     }
 }
@@ -444,7 +451,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
     for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
     {
         Position* currentPosition = staff->GetPosition(0, i);
-        const quint32 location = system->GetPositionX(currentPosition->GetPosition());
+        const quint32 location = system->GetPositionX(currentPosition->GetPosition()) - currentStaffInfo.leftEdge;
         currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
 
         // if we reach a new bar, we can adjust all of the accidentals for the previous bar
@@ -474,8 +481,8 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
         {
             StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, NULL, currentGuitar->GetTuningPtr(), currentKeySig);
             centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
-                       currentStaffInfo.getTopStdNotationLine());
-            scene.addItem(stdNotePainter);
+                       currentStaffInfo.getTopStdNotationLine(false));
+            stdNotePainter->setParentItem(activeStaff);
             continue;
         }
 
@@ -497,9 +504,9 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
             beamingInfo.topNotePos = std::min(beamingInfo.topNotePos, stdNotePainter->getYLocation());
         }
 
-        beamingInfo.topNotePos += currentStaffInfo.getTopStdNotationLine();
-        beamingInfo.bottomNotePos += currentStaffInfo.getTopStdNotationLine();
-        beamingInfo.beamUp = currentStaffInfo.getStdNotationLineHeight(3) < beamingInfo.bottomNotePos;
+        beamingInfo.topNotePos += currentStaffInfo.getTopStdNotationLine(false);
+        beamingInfo.bottomNotePos += currentStaffInfo.getTopStdNotationLine(false);
+        beamingInfo.beamUp = currentStaffInfo.getStdNotationLineHeight(3, false) < beamingInfo.bottomNotePos;
         beamingInfo.location = location;
 
         if (currentPosition->GetDurationType() != 1)
@@ -511,9 +518,9 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
     // after adjusting accidentals, etc, we can add the painters to the scene
     foreach(StdNotationPainter* painter, notePainters)
     {
-        const quint32 location = system->GetPositionX(painter->getPositionObject()->GetPosition());
-        painter->setPos(location, currentStaffInfo.getTopStdNotationLine());
-        scene.addItem(painter);
+        const quint32 location = system->GetPositionX(painter->getPositionObject()->GetPosition()) - currentStaffInfo.leftEdge;
+        painter->setPos(location, currentStaffInfo.getTopStdNotationLine(false));
+        painter->setParentItem(activeStaff);
     }
 
     QList<BeamingInfo> beamingGroup;
@@ -584,7 +591,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 {
                     QGraphicsLineItem* line = new QGraphicsLineItem;
                     line->setLine(beamingGroup[j].location, beamingGroup[j].topNotePos, beamingGroup[j].location, beamingGroup[j].bottomNotePos);
-                    scene.addItem(line);
+                    line->setParentItem(activeStaff);
                 }
 
                 // extra beams (for 16th notes, etc)
@@ -600,7 +607,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                     QGraphicsLineItem* line = new QGraphicsLineItem;
                     line->setLine(beamingGroup[j-1].location + 1, y, beamingGroup[j].location - 1, y);
                     line->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
-                    scene.addItem(line);
+                    line->setParentItem(activeStaff);
                 }
 
             }
@@ -613,7 +620,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 double height = beamDirectionUp ? beamingGroup.first().topNotePos : beamingGroup.first().bottomNotePos;
                 connector->setLine(beamingGroup.first().location + 1, height, beamingGroup.last().location - 1, height);
                 connector->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
-                scene.addItem(connector);
+                connector->setParentItem(activeStaff);
             }
 
             beamingGroup.clear();
@@ -642,7 +649,7 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
     QFont displayFont("Liberation Sans");
     displayFont.setPixelSize(10);
 
-    int y = currentStaffInfo.getBottomTabLine() + 2;
+    int y = currentStaffInfo.getBottomTabLine(false) + 2;
 
     // for hammerons and pulloffs, we need to push the text further down to avoid overlap with the arc
     if ((int)note->GetString() == (int)staff->GetTablatureStaffType() - 1)
@@ -678,7 +685,8 @@ void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaf
     {
         centerItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y);
     }
-    scene.addItem(textItem);
+
+    textItem->setParentItem(activeStaff);
 }
 
 void ScoreArea::adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap)

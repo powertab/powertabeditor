@@ -16,9 +16,9 @@
 #include <QDebug>
 
 StaffPainter::StaffPainter(System* system, Staff* staff, const StaffData& staffInfo) :
-        system(system),
-        staff(staff),
-        staffInfo(staffInfo)
+    system(system),
+    staff(staff),
+    staffInfo(staffInfo)
 {
     pen = QPen(QBrush(QColor(0,0,0)), 0.75);
     init();
