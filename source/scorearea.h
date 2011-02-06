@@ -29,7 +29,7 @@ public:
     explicit ScoreArea(QWidget *parent = 0);
 
     void renderDocument(PowerTabDocument* doc);
-    void renderDocument();
+    void updateSystem(const quint32 systemIndex);
 
     PowerTabDocument* document;
 

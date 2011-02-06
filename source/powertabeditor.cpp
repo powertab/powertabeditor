@@ -98,18 +98,19 @@ PowerTabEditor::~PowerTabEditor()
 {
 }
 
-// Redraws the *entire* document upon undo/redo
-// TODO - notify the appropriate painter to redraw itself, instead
-// of redrawing the whole score
+// Refreshes the score area upon undo/redo
 void PowerTabEditor::RefreshOnUndoRedo(int index)
 {
     Q_UNUSED(index);
 
     Caret* caret = getCurrentScoreArea()->getCaret();
+    // Update the data model
     caret->getCurrentScore()->UpdateSystemHeight(caret->getCurrentSystem());
 
-    RefreshCurrentDocument();
-    connect(getCurrentScoreArea()->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
+    // Update the score area
+    getCurrentScoreArea()->updateSystem(caret->getCurrentSystemIndex());
+
+    // Update the status of all actions
     updateActions();
 }
 
@@ -452,13 +453,6 @@ void PowerTabEditor::OpenPreferences()
 {
     std::unique_ptr<PreferencesDialog> preferencesDialog(new PreferencesDialog);
     preferencesDialog->exec();
-}
-
-// Redraws the whole score of the current document
-void PowerTabEditor::RefreshCurrentDocument()
-{
-    ScoreArea* currentDoc = reinterpret_cast<ScoreArea *>(tabWidget->currentWidget());
-    currentDoc->renderDocument();
 }
 
 // Close a document and clean up

@@ -32,14 +32,10 @@ ScoreArea::ScoreArea(QWidget *parent) :
     activeSystem = NULL;
 }
 
-void ScoreArea::renderDocument()
-{
-    renderDocument(document);
-}
-
 void ScoreArea::renderDocument(PowerTabDocument *doc)
 {
     scene.clear();
+    systemList.clear();
     document = doc;
     int lineSpacing = document->GetTablatureStaffLineSpacing();
 
@@ -57,12 +53,36 @@ void ScoreArea::renderDocument(PowerTabDocument *doc)
     scene.addItem(caret);
 }
 
+/// Updates the system after changes have been made
+/// @param systemIndex The index of the system that was modified
+void ScoreArea::updateSystem(const quint32 systemIndex)
+{
+    // delete and remove the system from the scene
+    delete systemList.takeAt(systemIndex);
+
+    // redraw the system
+    Score* currentScore = document->GetGuitarScore();
+    renderSystem(currentScore, currentScore->GetSystem(systemIndex), document->GetTablatureStaffLineSpacing());
+    systemList.insert(systemIndex, activeSystem);
+
+    // Adjust the position of subsequent systems
+    for (int i = systemIndex; i < systemList.size(); i++)
+    {
+        QGraphicsItem* systemPainter = systemList.at(i);
+        const Rect currentSystemRect = currentScore->GetSystem(i)->GetRect();
+        systemPainter->setPos(currentSystemRect.GetLeft(), currentSystemRect.GetTop());
+    }
+
+    caret->updatePosition();
+}
+
 void ScoreArea::renderScore(Score* score, int lineSpacing)
 {
     // Render each system (group of staves) in the entire score
     for (uint32_t i=0; i < score->GetSystemCount(); i++)
     {
         renderSystem(score, score->GetSystem(i), lineSpacing);
+        systemList << activeSystem;
     }
 }
 
@@ -79,7 +99,6 @@ void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
     SystemPainter* sysPainter = new SystemPainter(system);
     sysPainter->setPos(leftEdge, topEdge);
     scene.addItem(sysPainter);
-    systemList << sysPainter;
     activeSystem = sysPainter;
 
     // Draw each staff
