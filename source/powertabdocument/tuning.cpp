@@ -15,20 +15,21 @@
 #include "tuning.h"
 #include "generalmidi.h"
 
-const char*       Tuning::DEFAULT_NAME                    = "";
-const uint8_t        Tuning::DEFAULT_DATA                    = 0;
-const int8_t        Tuning::MIN_MUSIC_NOTATION_OFFSET       = -12;
-const int8_t        Tuning::MAX_MUSIC_NOTATION_OFFSET       = 12;
-const uint32_t      Tuning::MIN_STRING_COUNT                = 3;
-const uint32_t      Tuning::MAX_STRING_COUNT                = 7;
+using std::pair;
+using std::string;
+
+const string    Tuning::DEFAULT_NAME                    = "";
+const uint8_t   Tuning::DEFAULT_DATA                    = 0;
+const int8_t    Tuning::MIN_MUSIC_NOTATION_OFFSET       = -12;
+const int8_t    Tuning::MAX_MUSIC_NOTATION_OFFSET       = 12;
+const uint32_t  Tuning::MIN_STRING_COUNT                = 3;
+const uint32_t  Tuning::MAX_STRING_COUNT                = 7;
 
 // Constructors/Destructors
 /// Default Constructor
 Tuning::Tuning() :
     m_name(DEFAULT_NAME), m_data(DEFAULT_DATA)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
 }
 
 /// Primary Constructor
@@ -48,8 +49,6 @@ Tuning::Tuning(const char* name, int8_t musicNotationOffset, bool sharps,
     uint8_t note1, uint8_t note2, uint8_t note3, uint8_t note4, uint8_t note5,
     uint8_t note6, uint8_t note7) : m_name(name), m_data(DEFAULT_DATA)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     assert(name != NULL);
     assert(IsValidMusicNotationOffset(musicNotationOffset));
 
@@ -62,25 +61,18 @@ Tuning::Tuning(const char* name, int8_t musicNotationOffset, bool sharps,
 Tuning::Tuning(const Tuning& tuning) :
     m_name(DEFAULT_NAME), m_data(DEFAULT_DATA)
 {
-    //------Last Checked------//
-    // - Dec 7, 2004
     *this = tuning;
 }
 
 /// Destructor
 Tuning::~Tuning()
 {
-    //------Last Checked------//
-    // - Dec 9, 2004
 }
 
 // Operators
 /// Assignment operator
 const Tuning& Tuning::operator=(const Tuning& tuning)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
-
     // Check for assignment to self
     if (this != &tuning)
     {
@@ -98,9 +90,6 @@ const Tuning& Tuning::operator=(const Tuning& tuning)
 /// Equality operator
 bool Tuning::operator==(const Tuning& tuning) const
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
-
     size_t thisStringCount = GetStringCount();
     size_t otherStringCount = tuning.GetStringCount();
 
@@ -125,8 +114,6 @@ bool Tuning::operator==(const Tuning& tuning) const
 /// Inequality Operator
 bool Tuning::operator!=(const Tuning& tuning) const
 {
-    //------Last Checked------//
-    // - Dec 7, 2004
     return (!operator==(tuning));
 }
 
@@ -136,8 +123,6 @@ bool Tuning::operator!=(const Tuning& tuning) const
 /// @return True if the object was serialized, false if not
 bool Tuning::Serialize(PowerTabOutputStream& stream)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     stream.WriteMFCString(m_name);
     CHECK_THAT(stream.CheckState(), false);
 
@@ -210,8 +195,6 @@ bool Tuning::SetTuning(const char* name, int8_t musicNotationOffset,
     bool sharps, uint8_t note1, uint8_t note2, uint8_t note3, uint8_t note4,
     uint8_t note5, uint8_t note6, uint8_t note7)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     if (!SetName(name))
         return (false);
     SetSharps(sharps);
@@ -225,9 +208,6 @@ bool Tuning::SetTuning(const char* name, int8_t musicNotationOffset,
 /// @return True if the tunings have the same notes, false if not
 bool Tuning::IsSameTuning(const Tuning& tuning) const
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
-
     size_t thisStringCount = GetStringCount();
     size_t otherStringCount = tuning.GetStringCount();
 
@@ -259,8 +239,6 @@ bool Tuning::IsSameTuning(const Tuning& tuning) const
 bool Tuning::IsSameTuning(uint8_t note1, uint8_t note2, uint8_t note3,
     uint8_t note4, uint8_t note5, uint8_t note6, uint8_t note7) const
 {
-    //------Last Checked------//
-    // - Dec 15, 2004
     Tuning temp;
     temp.AddTuningNotes(note1, note2, note3, note4, note5, note6, note7);
     return (IsSameTuning(temp));
@@ -272,8 +250,6 @@ bool Tuning::IsSameTuning(uint8_t note1, uint8_t note2, uint8_t note3,
 /// @param set True uses use sharps, false uses flats
 void Tuning::SetSharps(bool set)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     m_data &= ~sharpsMask;
     if (set)
         m_data |= sharpsMask;
@@ -285,8 +261,6 @@ void Tuning::SetSharps(bool set)
 /// @return True if the music notation offset was set, false if not
 bool Tuning::SetMusicNotationOffset(int8_t musicNotationOffset)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     CHECK_THAT(IsValidMusicNotationOffset(musicNotationOffset), false);
 
     // Clear the current music notation offset
@@ -306,8 +280,6 @@ bool Tuning::SetMusicNotationOffset(int8_t musicNotationOffset)
 /// @return The music notation offset, in semi-tones
 int8_t Tuning::GetMusicNotationOffset() const
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     int8_t returnValue = (int8_t)((m_data & musicNotationOffsetValueMask) >> 1);
 
     // If the sign is set, the value is negative
@@ -324,8 +296,6 @@ int8_t Tuning::GetMusicNotationOffset() const
 /// @return True if the note was set, false if not
 bool Tuning::SetNote(uint32_t string, uint8_t note)
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     CHECK_THAT(IsValidString(string), false);
     CHECK_THAT(midi::IsValidMidiNote(note), false);
     m_noteArray[string] = note;
@@ -339,8 +309,6 @@ bool Tuning::SetNote(uint32_t string, uint8_t note)
 /// @return The MIDI note assigned to the string
 uint8_t Tuning::GetNote(uint32_t string, bool includeMusicNotationOffset) const
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     CHECK_THAT(IsValidString(string), midi::MIDI_NOTE_MIDDLE_C);
 
     uint8_t returnValue = m_noteArray[string];
@@ -387,12 +355,10 @@ bool Tuning::IsOpenStringNote(uint8_t note) const
 /// Gets the MIDI note range for the tuning (lowest possible playable note +
 /// highest possible playable note)
 /// @param capo Capo value to apply to the tuning
-/// @return .cx - contains the lowest possible note, .cy - contains the highest
+/// @return A pair that contains the lowest possible note and the highest
 /// possible note
 pair<int, int> Tuning::GetNoteRange(uint8_t capo) const
 {
-    //------Last Checked------//
-    // - Apr 22, 2007
     pair<int, int> returnValue(notUsed, 0);
 
     // Loop through each tuning note and get the minimum and maximum notes for
@@ -461,8 +427,6 @@ bool Tuning::AddTuningNotes(uint8_t note1, uint8_t note2, uint8_t note3,
 /// Deletes the contents (and frees the memory) of the note array
 void Tuning::DeleteNoteArrayContents()
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     m_noteArray.clear();
 }
 
