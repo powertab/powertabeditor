@@ -419,7 +419,7 @@ int System::CalculatePositionCount(int positionSpacing) const
 
     // The available width extends from the first position to the right side of
     // the system
-    int width = m_rect.GetRight() - GetFirstPositionX();
+    int width = m_rect.GetWidth();
 
     // Subtract the width of the key and time signatures on the barlines within
     // the system (does not include the starting barline)
@@ -449,15 +449,14 @@ int System::GetPositionCount() const
     return (CalculatePositionCount(GetPositionSpacing()));
 }
 
-/// Gets the x co-ordinate of the first position in the system
+/// Gets the x co-ordinate of the first position in the system, relative to the left edge
 /// @return The x co-ordinate of the first position in the system
 int System::GetFirstPositionX() const
 {
     //------Last Checked------//
     // - Aug 30, 2007
 
-    // Start at the leftmost point in the system
-    int returnValue = m_rect.GetLeft();
+    int returnValue = 0;
 
     // Add the width of the clef; the symbol itself is 16 units wide, with 3
     // units of space on both sides, for a total of 22 units
@@ -483,7 +482,7 @@ int System::GetFirstPositionX() const
     return (returnValue);
 }
 
-/// Gets the x co-ordinate of the nth position in the system
+/// Gets the x co-ordinate of the nth position in the system, relative to the left edge of the system
 /// @param position Zero-based index of the position to retrieve the x
 /// co-ordinate for
 /// @return The x co-ordinate for the position, or the x co-ordinate of the

@@ -125,7 +125,7 @@ void Caret::updatePosition()
     System* currentSystem = getCurrentSystem();
 
     updateStaffInfo();
-    setPos(currentSystem->GetPositionX(currentPositionIndex),
+    setPos(currentSystem->GetRect().GetLeft() + currentSystem->GetPositionX(currentPositionIndex),
            currentSystem->GetStaffHeightOffset(currentStaffIndex, true) + currentStaffInfo.getTabStaffOffset()
            );
     emit moved();
