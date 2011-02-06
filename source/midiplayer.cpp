@@ -138,7 +138,7 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 if (!note->HasTieWrap())
                 {
                     // now, add the note-off event, scheduled for after the note's duration has ended
-                    noteInfo.startTime += duration;
+                    noteInfo.startTime += position->IsStaccato() ? duration / 2 : duration;
                     noteInfo.duration = 0;
                     noteInfo.messageType = STOP_NOTE;
                     noteList.push_back(noteInfo);
