@@ -37,6 +37,11 @@ protected:
         REST,
     };
 
+    enum Durations
+    {
+        GRACE_NOTE_DURATION = 60,
+    };
+
     enum NoteVelocities
     {
         DEFAULT_VELOCITY = 127,

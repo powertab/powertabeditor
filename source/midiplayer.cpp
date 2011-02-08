@@ -80,7 +80,14 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
         {
             Position* position = staff->GetPosition(0, j);
 
-            const double duration = calculateNoteDuration(position); // each note at a position has the same duration
+            double duration = calculateNoteDuration(position); // each note at a position has the same duration
+
+            if (position->IsAcciaccatura()) // grace note
+            {
+                duration = GRACE_NOTE_DURATION;
+                startTime -= duration;
+            }
+
             const quint32 positionIndex = position->GetPosition(); // only keep track of position for the first staff
 
             for (quint32 k = 0; k < position->GetNoteCount(); k++)
