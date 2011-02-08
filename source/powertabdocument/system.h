@@ -250,6 +250,7 @@ public:
     }
     Barline* GetBarlineAtPosition(uint32_t position) const;
     Barline* GetPrecedingBarline(uint32_t position) const;
+    Barline* GetNextBarline(uint32_t position) const;
     void GetBarlines(vector<Barline*>& barlineArray);
 
     bool HasRehearsalSign() const;

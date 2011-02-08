@@ -19,6 +19,8 @@ class QSplitter;
 class MidiPlayer;
 class QSignalMapper;
 class QActionGroup;
+class QKeyEvent;
+class QEvent;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -41,6 +43,7 @@ protected:
     void CreateMenus();
     void CreateTabArea();
     void updateScoreAreaActions(bool disable);
+    bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
     void updateActions();
@@ -66,6 +69,9 @@ private slots:
     bool moveCaretToNextSection();
     bool moveCaretToPrevSection();
     void moveCaretToLastSection();
+    
+    void moveCaretToNextBar();
+    void moveCaretToPrevBar();
 
     void editChordName();
     void editRehearsalSign();
@@ -116,6 +122,8 @@ private:
     QAction* prevStringAct; // navigate to the previous string in the staff
     QAction* nextStaffAct; // navigate to the next staff in the system
     QAction* prevStaffAct; // navigate to the previous staff in the system
+    QAction* nextBarAct; // navigate to the first non-bar pos in the next bar
+    QAction* prevBarAct; // navigate to the first non-bar pos in the prev bar
 
     QAction* shiftTabNumUp; // shift tab numbers up/down by a string
     QAction* shiftTabNumDown;

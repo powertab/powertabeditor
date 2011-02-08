@@ -27,6 +27,9 @@ public:
     void moveCaretToStart();
     void moveCaretToEnd();
 
+    void moveCaretToNextBar();
+    void moveCaretToPrevBar();
+
     bool moveCaretSection(int offset);
     void moveCaretToFirstSection();
     void moveCaretToLastSection();

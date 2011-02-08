@@ -376,6 +376,28 @@ Barline* System::GetPrecedingBarline(uint32_t position) const
     return *barline;
 }
 
+Barline* System::GetNextBarline(uint32_t position) const
+{
+    // if position is past the last barline in array return m_endBar
+    if (m_barlineArray.empty() ||
+        position > m_barlineArray.at(GetBarlineCount() - 1)->GetPosition())
+        return const_cast<Barline *>(&m_endBar);
+
+    // if position is before the first non-startbar barline
+    if (position < m_barlineArray.at(0)->GetPosition())
+        return m_barlineArray.at(0);
+    
+    CompareBarlineToPosition compareToPosition;
+    compareToPosition.position = position;
+    auto barline = 
+            std::find_if(m_barlineArray.rbegin(), 
+                         m_barlineArray.rend(),  
+                         compareToPosition);
+
+    --barline;
+    return *barline;
+}
+
 /// Gets a list of barlines in the system
 /// @param barlineArray Holds the barline return values
 void System::GetBarlines(vector<Barline*>& barlineArray)

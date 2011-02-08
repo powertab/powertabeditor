@@ -16,6 +16,8 @@
 #include <QStackedWidget>
 #include <QSignalMapper>
 #include <QActionGroup>
+#include <QKeyEvent>
+#include <QEvent>
 
 #include <powertabeditor.h>
 #include <scorearea.h>
@@ -114,6 +116,34 @@ void PowerTabEditor::RefreshOnUndoRedo(int index)
     updateActions();
 }
 
+// this is a reimplementation of QObject's eventFilter function
+// it returns true to tell Qt to stop propagating this event
+// this is necessary to intercept tab key presses before they are
+// used to cycle focus to different widgets
+bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
+{
+    ScoreArea* currentDoc = 
+            reinterpret_cast<ScoreArea *>(tabWidget->currentWidget());
+    if (object == currentDoc && event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if ((keyEvent->key() == Qt::Key_Tab) &&
+            (keyEvent->modifiers() == Qt::NoModifier))
+        {
+            moveCaretToNextBar();
+            return true;
+        }
+        else if ((keyEvent->key() == Qt::Key_Backtab) ||
+                 (keyEvent->key() == Qt::Key_Tab &&
+                  keyEvent->modifiers() == Qt::ShiftModifier))
+        {
+            moveCaretToPrevBar();
+            return true;
+        }
+    }
+    return QMainWindow::eventFilter(object, event);
+}
+
 void PowerTabEditor::CreateActions()
 {
     // File-related actions
@@ -198,6 +228,16 @@ void PowerTabEditor::CreateActions()
     prevStaffAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
     connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
 
+    // the shortcuts for these two won't do anything since the tabs get 
+    // sucked up by our event filter first
+    nextBarAct = new QAction(tr("Next Bar"), this);
+    nextBarAct->setShortcut(QKeySequence(Qt::Key_Tab));
+    connect(nextBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextBar()));
+    
+    prevBarAct = new QAction(tr("Previous Bar"), this);
+    prevBarAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Tab));
+    connect(prevBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevBar()));
+
     // Actions for shifting tab numbers up/down a string
     shiftTabNumberMapper = new QSignalMapper(this);
 
@@ -268,6 +308,7 @@ void PowerTabEditor::CreateActions()
     connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(updateNoteDuration(int)));
 
     tiedNoteAct = new QAction(tr("Tied"), this);
+    tiedNoteAct->setShortcut(QKeySequence(Qt::Key_Y));
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
 
@@ -276,6 +317,7 @@ void PowerTabEditor::CreateActions()
     connect(noteMutedAct, SIGNAL(triggered()), this, SLOT(editNoteMuted()));
 
     ghostNoteAct = new QAction(tr("Ghost Note"), this);
+    ghostNoteAct->setShortcut(QKeySequence(Qt::Key_N));
     ghostNoteAct->setCheckable(true);
     connect(ghostNoteAct, SIGNAL(triggered()), this, SLOT(editGhostNote()));
 
@@ -349,6 +391,8 @@ void PowerTabEditor::CreateMenus()
     positionStaffMenu->addAction(lastPositionAct);
     positionStaffMenu->addAction(nextStaffAct);
     positionStaffMenu->addAction(prevStaffAct);
+    positionStaffMenu->addAction(nextBarAct);
+    positionStaffMenu->addAction(prevBarAct);
 
     positionMenu->addSeparator();
     positionMenu->addAction(shiftTabNumUp);
@@ -427,6 +471,7 @@ void PowerTabEditor::OpenFile()
         if (success)
         {
             ScoreArea* score = new ScoreArea;
+            score->installEventFilter(this);
             score->renderDocument(documentManager.getCurrentDocument());
             QFileInfo fileInfo(fileName);
             // save this as the previous directory
@@ -453,7 +498,8 @@ void PowerTabEditor::OpenFile()
 
             connect(score->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
 
-            tabWidget->addTab(score, title);
+            int tabIndex = tabWidget->addTab(score, title);
+            tabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
 
             // add the guitars to a new mixer
             Mixer* mixer = new Mixer(skinManager);
@@ -663,6 +709,16 @@ bool PowerTabEditor::moveCaretToNextStaff()
 bool PowerTabEditor::moveCaretToPrevStaff()
 {
     return getCurrentScoreArea()->getCaret()->moveCaretStaff(-1);
+}
+
+void PowerTabEditor::moveCaretToNextBar()
+{
+    getCurrentScoreArea()->getCaret()->moveCaretToNextBar();
+}
+
+void PowerTabEditor::moveCaretToPrevBar()
+{
+    getCurrentScoreArea()->getCaret()->moveCaretToPrevBar();
 }
 
 // If there is a chord name at the current position, remove it

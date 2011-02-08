@@ -283,6 +283,76 @@ void Caret::moveCaretToLastSection()
     moveCaretSection( currentScore->GetSystemCount() - currentSystemIndex - 1 );
 }
 
+void Caret::moveCaretToNextBar()
+{
+    Barline* nextBarline = getCurrentSystem()->GetNextBarline
+            (currentPositionIndex);
+    
+    // if we are at the end of the system go to next staff
+    if (nextBarline == &(getCurrentSystem()->m_endBar))
+    {
+        // if we can't move to the next staff, move to next section
+        if (!moveCaretStaff(1))
+            moveCaretSection(1);
+    }
+    else
+    {
+        // move caret to the first note position of the next bar
+        moveCaretHorizontal
+                (nextBarline->GetPosition() - currentPositionIndex + 1);
+    }
+}
+
+void Caret::moveCaretToPrevBar()
+{
+    System* currentSystem = getCurrentSystem();
+    Barline* prevBarline = currentSystem->GetPrecedingBarline
+            (currentPositionIndex);
+
+    // if we are at the beginning of the system back up one
+    if (prevBarline == &(currentSystem->m_startBar))
+    {
+        // move caret up one staff or section
+        if (moveCaretStaff(-1) || moveCaretSection(-1))
+        {
+            // if new system has > 1 bar, and we actually moved up one
+            // (i.e. we are not already at the very first system), move 
+            // caret to beginning of last bar
+            System* newCurrentSystem = getCurrentSystem();
+            if (!newCurrentSystem->m_barlineArray.empty())
+            {
+                Barline* lastBar =
+                        newCurrentSystem->GetBarline
+                                (newCurrentSystem->GetBarlineCount() - 1);
+
+                moveCaretHorizontal
+                        (lastBar->GetPosition() - currentPositionIndex + 1);
+            }
+        }
+    }
+    else
+    {
+        // if we need to move to beginning of system
+        if (prevBarline == currentSystem->GetBarline(0))
+        {
+            moveCaretToStart();
+            return;
+        }
+    
+        std::vector<Barline*> sysBars;
+        currentSystem->GetBarlines(sysBars);
+        
+        // we want the position of the bar line before this one
+        std::vector<Barline*>::iterator barlinesIt =
+                std::find(sysBars.begin(), sysBars.end(), prevBarline);
+        barlinesIt--;
+        
+        moveCaretHorizontal
+                (((int) (*barlinesIt)->GetPosition()) - 
+                 ((int) currentPositionIndex) + 1);
+    }
+}
+
 System* Caret::getCurrentSystem() const
 {
     return currentScore->GetSystem(currentSystemIndex);
