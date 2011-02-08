@@ -80,6 +80,7 @@ private slots:
     void editGhostNote();
     void editTiedNote();
     void editStaccato();
+    void editHammerPull();
 
     void cycleTab(int offset);
 
@@ -151,6 +152,7 @@ private:
     QAction* rehearsalSignAct; // add/remove rehearsal signs
 
     QMenu* tabSymbolsMenu;
+    QAction* hammerPullAct; // add/remove hammer-on or pull-off
     QAction* naturalHarmonicAct; // add/remove natural harmonics
 
     QMenu* windowMenu;

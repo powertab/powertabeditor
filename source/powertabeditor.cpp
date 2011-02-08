@@ -333,6 +333,11 @@ void PowerTabEditor::CreateActions()
     connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
 
     // Tab Symbol Actions
+    hammerPullAct = new QAction(tr("Hammer On/Pull Off"), this);
+    hammerPullAct->setCheckable(true);
+    hammerPullAct->setShortcut(QKeySequence(Qt::Key_H));
+    connect(hammerPullAct, SIGNAL(triggered()), this, SLOT(editHammerPull()));
+    
     naturalHarmonicAct = new QAction(tr("Natural Harmonic"), this);
     naturalHarmonicAct->setCheckable(true);
     connect(naturalHarmonicAct, SIGNAL(triggered()), this, SLOT(editNaturalHarmonic()));
@@ -426,6 +431,7 @@ void PowerTabEditor::CreateMenus()
 
     // Tab Symbols Menu
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
+    tabSymbolsMenu->addAction(hammerPullAct);
     tabSymbolsMenu->addAction(naturalHarmonicAct);
 
     // Window Menu
@@ -775,6 +781,39 @@ void PowerTabEditor::editRehearsalSign()
         rehearsalSignDialog.exec();
     }
 
+}
+
+void PowerTabEditor::editHammerPull()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* note = caret->getCurrentNote();
+    
+    // if 'h' is pressed but there is no note do nothing
+    if (note == NULL) return;
+    
+    Position* currentPosition = caret->getCurrentPosition();
+    Staff* currentStaff = caret->getCurrentStaff();
+    
+    if (currentStaff->CanHammerOn(currentPosition, note))
+    {
+        const bool isHammerOn = note->HasHammerOn();
+        const QString text = isHammerOn ? tr("Remove Hammer On") : 
+                tr("Add Hammer On");
+        undoManager->push(new ToggleProperty<Note>(note, &Note::SetHammerOn,
+                !isHammerOn, text));
+    }
+    else if (currentStaff->CanPullOff(currentPosition, note))
+    {
+        const bool isPullOff = note->HasPullOff();
+        const QString text = isPullOff ? tr("Remove Pull Off") :
+                tr("Add Pull Off");
+        undoManager->push(new ToggleProperty<Note>(note, &Note::SetPullOff,
+                !isPullOff, text));
+    }
+    else
+    {
+        hammerPullAct->setChecked(false);
+    }
 }
 
 void PowerTabEditor::editNaturalHarmonic()

@@ -309,6 +309,46 @@ bool Staff::IsOnlyPositionInBar(Position *position, System *system) const
     return true;
 }
 
+bool Staff::CanHammerOn(Position* position, Note* note) const
+{
+    // find next position
+    auto location = std::find(highMelodyPositionArray.begin(),
+            highMelodyPositionArray.end(), position);
+    
+    // if position was not found it cannot hammer
+    if (location == highMelodyPositionArray.end())
+    {
+        return false;
+    }
+    
+    Position* nextPosition = *(++location);
+    
+    Note* nextNote = nextPosition->GetNoteByString(note->GetString());
+    
+    return !(nextNote == NULL || 
+            nextNote->GetFretNumber() <= note->GetFretNumber());
+}
+
+bool Staff::CanPullOff(Position* position, Note* note) const
+{
+    // find next position
+    auto location = std::find(highMelodyPositionArray.begin(),
+            highMelodyPositionArray.end(), position);
+    
+    // if position was not found it cannot hammer
+    if (location == highMelodyPositionArray.end())
+    {
+        return false;
+    }
+    
+    Position* nextPosition = *(++location);
+    
+    Note* nextNote = nextPosition->GetNoteByString(note->GetString());
+    
+    return !(nextNote == NULL || 
+            nextNote->GetFretNumber() >= note->GetFretNumber());
+}
+
 // Figures out if the given note can be set as tied
 // The previous position in the staff must contain a Note at the same string & fret
 bool Staff::CanTieNote(Position* position, Note* note) const

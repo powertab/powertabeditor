@@ -213,6 +213,8 @@ public:
 
     bool IsOnlyPositionInBar(Position* position, System* system) const;
 
+    bool CanHammerOn(Position* position, Note* note) const;
+    bool CanPullOff(Position* position, Note* note) const;
     bool CanTieNote(Position* position, Note* note) const;
 
     int GetHeight() const;
