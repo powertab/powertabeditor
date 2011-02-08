@@ -304,6 +304,13 @@ public:
         return (IsSimpleFlagSet(pullOff) &&
             IsSimpleFlagSet(hammerPullFromToNowhere));
     }
+    
+    /// Determines if the note has either a hammer-on or a pull-off
+    /// @return True if the note has either a hammer-on or a pull-off
+    bool HasHammerOnOrPulloff() const
+    {
+        return (HasHammerOn() || HasPullOff());
+    }
 
 // Natural Harmonic Functions
     /// Sets or clears a natural harmonic

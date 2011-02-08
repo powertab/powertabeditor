@@ -122,8 +122,8 @@ void PowerTabEditor::RefreshOnUndoRedo(int index)
 // used to cycle focus to different widgets
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
-    ScoreArea* currentDoc = 
-            reinterpret_cast<ScoreArea *>(tabWidget->currentWidget());
+    ScoreArea* currentDoc = getCurrentScoreArea();
+
     if (object == currentDoc && event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
@@ -936,6 +936,7 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);
     updatePropertyStatus(tiedNoteAct, currentNote, &Note::IsTied);
     updatePropertyStatus(staccatoNoteAct, currentPosition, &Position::IsStaccato);
+    updatePropertyStatus(hammerPullAct, currentNote, &Note::HasHammerOnOrPulloff);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);
