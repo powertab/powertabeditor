@@ -14,6 +14,8 @@
 
 #include "position.h"
 
+#include <list>
+
 class System;
 
 #define NUM_STAFF_VOICES 2    ///< Number of voices in a staff
@@ -33,7 +35,8 @@ public:
     static const uint8_t DEFAULT_TABLATURE_STAFF_BELOW_SPACING;          ///< Default value for the tablature staff below spacing member variable
     static const uint8_t STD_NOTATION_LINE_SPACING;
     static const uint8_t STD_NOTATION_STAFF_TYPE;
-    static const uint8_t STAFF_BORDER_SPACING; // padding around top and bottom of staves
+    static const uint8_t STAFF_BORDER_SPACING; /// padding around top and bottom of staves
+    static const uint8_t TAB_SYMBOL_HEIGHT; /// height allocated for drawing a tab symbol 
 
     // Clef Constants
     static const uint8_t TREBLE_CLEF;                                ///< Treble clef
@@ -218,6 +221,14 @@ public:
     bool CanTieNote(Position* position, Note* note) const;
 
     int GetHeight() const;
+    
+    void CalculateTabStaffBelowSpacing();
+    
+protected:
+    typedef bool (Position::*PositionProperty)() const;
+    typedef bool (Note::*NoteProperty)() const;
+    int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions,
+                                      const std::list<NoteProperty>& notePredicates);
 };
 
 #endif

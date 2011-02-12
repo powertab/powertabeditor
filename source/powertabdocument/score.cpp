@@ -328,11 +328,25 @@ void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, 
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
 }
 
+/// Updates the height of the system, and adjusts the height of subsequent systems as necessary
+/// @param system The system to update the height of
 void Score::UpdateSystemHeight(System *system)
 {
-    int spacingDifference = UpdateExtraSpacing(system);
+    // Store the original height, recalculate the height, then find the height difference
+    
+    const int originalHeight = system->GetRect().GetHeight();
+    
+    for (size_t i = 0; i < system->GetStaffCount(); i++)
+    {
+        system->GetStaff(i)->CalculateTabStaffBelowSpacing();
+    }
+    
+    UpdateExtraSpacing(system);
+    
+    system->CalculateHeight();
+    const int spacingDifference = system->GetRect().GetHeight() - originalHeight;
 
-    // adjust position of subsequent systems
+    // adjust position of subsequent systems based on the height change
     uint32_t systemIndex = FindSystemIndex(system) + 1;
     for (; systemIndex < GetSystemCount(); systemIndex++)
     {
@@ -343,11 +357,10 @@ void Score::UpdateSystemHeight(System *system)
     }
 }
 
-int Score::UpdateExtraSpacing(System* system)
+void Score::UpdateExtraSpacing(System* system)
 {
-    const uint32_t originalExtraSpacing = system->GetExtraSpacing();
     uint32_t newSpacing = 0;
-
+    
     if (system->HasRehearsalSign())
     {
         newSpacing += System::SYSTEM_SYMBOL_SPACING;
@@ -380,6 +393,4 @@ int Score::UpdateExtraSpacing(System* system)
     }
 
     system->SetExtraSpacing(newSpacing);
-
-    return newSpacing - originalExtraSpacing;
 }

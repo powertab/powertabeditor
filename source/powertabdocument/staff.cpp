@@ -26,6 +26,7 @@ const uint8_t Staff::DEFAULT_TABLATURE_STAFF_BELOW_SPACING               = 0;
 const uint8_t Staff::STD_NOTATION_LINE_SPACING = 7;
 const uint8_t Staff::STD_NOTATION_STAFF_TYPE = 5;
 const uint8_t Staff::STAFF_BORDER_SPACING = 10;
+const uint8_t Staff::TAB_SYMBOL_HEIGHT = 10;
 
 // Clef Constants
 const uint8_t Staff::TREBLE_CLEF                         = 0;
@@ -367,4 +368,68 @@ bool Staff::CanTieNote(Position* position, Note* note) const
     Note* matchingNote = prevPosition->GetNoteByString(note->GetString());
 
     return !(matchingNote == NULL || matchingNote->GetFretNumber() != note->GetFretNumber());
+}
+
+namespace 
+{
+    // Tests a predicate member function against a pointer to an object of type T
+    template<typename T>
+    struct TestPredicatePtr
+    {
+        typedef bool (T::*Predicate)() const;
+        
+        TestPredicatePtr(T* object) : object(object) {}
+        
+        bool operator()(Predicate pred)
+        {
+            return (object->*pred)();
+        }
+        
+    protected:
+        T* object;
+    };
+}
+
+/// Calculates the spacing required to display the given position and note properties.
+int Staff::CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions,
+                                         const std::list<NoteProperty>& notePredicates)
+{
+    int maxNumProperties = 0;
+    for (auto i = highMelodyPositionArray.begin(); i != highMelodyPositionArray.end(); ++i)
+    {
+        int numProperties = 0;
+        
+        // Check how many position properties are enabled at the current position
+        TestPredicatePtr<Position> pred(*i);
+        numProperties = std::count_if(positionFunctions.begin(), positionFunctions.end(), pred);
+        
+        std::vector<Note*> currentNotes;
+        (*i)->GetNotes(currentNotes);
+        // For each of the note properties, they will be displayed if they are enabled for at least one of
+        // the notes at the current position
+        for (auto j = notePredicates.begin(); j != notePredicates.end(); ++j)
+        {
+            // check if the predicate is true for at least one note
+            numProperties += std::find_if(currentNotes.begin(), currentNotes.end(), std::mem_fun(*j)) != currentNotes.end();
+        }
+        
+        // the highest number of properties enabled for a position in this system will determine the required height
+        maxNumProperties = std::max(maxNumProperties, numProperties);
+    }
+    
+    return maxNumProperties * TAB_SYMBOL_HEIGHT;
+}
+
+void Staff::CalculateTabStaffBelowSpacing()
+{
+    // Create list of all properties that are displayed below the tab staff
+    std::list<PositionProperty> positionFunctions = {
+        &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap
+    };
+    
+    std::list<NoteProperty> notePredicates = {
+        &Note::HasHammerOnOrPulloff, &Note::HasSlide, &Note::HasTappedHarmonic, &Note::HasArtificialHarmonic        
+    };
+    
+    SetTablatureStaffBelowSpacing(CalculateSpacingForProperties(positionFunctions, notePredicates));
 }
