@@ -35,27 +35,23 @@ class PowerTabEditor : public QMainWindow
 public:
     PowerTabEditor(QWidget *parent = 0);
     ~PowerTabEditor();
-    static void RefreshCurrentDocument();
-    static QTabWidget* tabWidget;
     static std::unique_ptr<UndoManager> undoManager;
-    static QSplitter* vertSplitter;
-    static QSplitter* horSplitter;
     static ScoreArea* getCurrentScoreArea();
     static Position* getCurrentPosition();
     static Note* getCurrentNote();
 
 protected:
-    void CreateActions();
-    void CreateMenus();
-    void CreateTabArea();
+    void createActions();
+    void createMenus();
+    void createTabArea();
     void updateScoreAreaActions(bool disable);
     bool eventFilter(QObject *obj, QEvent *ev);
 
-private slots:
+protected slots:
     void updateActions();
-    void OpenFile();
-    void OpenPreferences();
-    void RefreshOnUndoRedo(int);
+    void openFile();
+    void openPreferences();
+    void refreshOnUndoRedo(int);
     void closeCurrentTab();
     void closeTab(int index);
     void switchTab(int index);
@@ -89,10 +85,14 @@ private slots:
     void updateNoteDuration(int duration);
     void shiftTabNumber(int direction);
 
-private:
+protected:
     bool isPlaying;
 
+    static QTabWidget* tabWidget;
+    
     Toolbox* toolBox;
+    QSplitter* vertSplitter;
+    QSplitter* horSplitter;
 
     DocumentManager documentManager;
     QMenu* fileMenu;

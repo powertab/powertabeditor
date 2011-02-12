@@ -45,8 +45,6 @@
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
-QSplitter* PowerTabEditor::vertSplitter = NULL;
-QSplitter* PowerTabEditor::horSplitter = NULL;
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
@@ -66,11 +64,11 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     // retrieve the previous directory that a file was opened/saved to (default value is home directory)
     previousDirectory = settings.value("app/previousDirectory", QDir::homePath()).toString();
 
-    connect(undoManager.get(), SIGNAL(indexChanged(int)), this, SLOT(RefreshOnUndoRedo(int)));
+    connect(undoManager.get(), SIGNAL(indexChanged(int)), this, SLOT(refreshOnUndoRedo(int)));
 
-    CreateActions();
-    CreateMenus();
-    CreateTabArea();
+    createActions();
+    createMenus();
+    createTabArea();
 
     isPlaying = false;
 
@@ -101,7 +99,7 @@ PowerTabEditor::~PowerTabEditor()
 }
 
 // Refreshes the score area upon undo/redo
-void PowerTabEditor::RefreshOnUndoRedo(int index)
+void PowerTabEditor::refreshOnUndoRedo(int index)
 {
     Q_UNUSED(index);
 
@@ -144,13 +142,13 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     return QMainWindow::eventFilter(object, event);
 }
 
-void PowerTabEditor::CreateActions()
+void PowerTabEditor::createActions()
 {
     // File-related actions
     openFileAct = new QAction(tr("&Open..."), this);
     openFileAct->setShortcuts(QKeySequence::Open);
     openFileAct->setStatusTip(tr("Open an existing document"));
-    connect(openFileAct, SIGNAL(triggered()), this, SLOT(OpenFile()));
+    connect(openFileAct, SIGNAL(triggered()), this, SLOT(openFile()));
 
     closeTabAct = new QAction(tr("&Close Tab"), this);
     closeTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
@@ -158,7 +156,7 @@ void PowerTabEditor::CreateActions()
 
     preferencesAct = new QAction(tr("&Preferences..."), this);
     preferencesAct->setShortcuts(QKeySequence::Preferences);
-    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(OpenPreferences()));
+    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(openPreferences()));
 
     // Exit the application
     exitAppAct = new QAction(tr("&Quit"), this);
@@ -376,7 +374,7 @@ void PowerTabEditor::CreateActions()
     connect(togglePropertyMapper, SIGNAL(mapped(int)), this, SLOT(editProperty(int)));
 }
 
-void PowerTabEditor::CreateMenus()
+void PowerTabEditor::createMenus()
 {
     // File Menu
     fileMenu = menuBar()->addMenu(tr("&File"));
@@ -458,7 +456,7 @@ void PowerTabEditor::CreateMenus()
     windowMenu->addAction(prevTabAct);
 }
 
-void PowerTabEditor::CreateTabArea()
+void PowerTabEditor::createTabArea()
 {
     tabWidget = new QTabWidget;
     tabWidget->setTabsClosable(true);
@@ -477,7 +475,7 @@ void PowerTabEditor::CreateTabArea()
 }
 
 // Open a new file
-void PowerTabEditor::OpenFile()
+void PowerTabEditor::openFile()
 {
     QString fileFilter;
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), previousDirectory, fileFilter);
@@ -551,7 +549,7 @@ void PowerTabEditor::OpenFile()
 }
 
 // Opens the preferences dialog
-void PowerTabEditor::OpenPreferences()
+void PowerTabEditor::openPreferences()
 {
     std::unique_ptr<PreferencesDialog> preferencesDialog(new PreferencesDialog);
     preferencesDialog->exec();
