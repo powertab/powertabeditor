@@ -229,6 +229,43 @@ protected:
     typedef bool (Note::*NoteProperty)() const;
     int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions,
                                       const std::list<NoteProperty>& notePredicates);
+    
+    enum SearchDirection
+    {
+        NextNote = 1,
+        PrevNote = -1,
+    };
+    
+    /// Compares the fret numbers of two consecutive notes, using the given comparision function (binary predicate)
+    template<typename FretComparison>
+    bool CompareWithNote(SearchDirection searchDirection, Position* position, Note* note, FretComparison comp) const
+    {
+        // find where the position is within the staff
+        auto location = std::find(highMelodyPositionArray.begin(),
+                                  highMelodyPositionArray.end(), position);
+        
+        // if position was not found, we cannot compare it to the next one
+        if (location == highMelodyPositionArray.end())
+        {
+            return false;
+        }
+        
+        // check that the new location is still valid
+        int newIndex = location - highMelodyPositionArray.begin() + searchDirection;
+        if (newIndex < 0 || newIndex >= (int)highMelodyPositionArray.size())
+        {
+            return false;
+        }
+        
+        std::advance(location, searchDirection);
+        
+        Position* nextPosition = *location;        
+        Note* nextNote = nextPosition->GetNoteByString(note->GetString());
+        
+        // check if a note was found on the same string in the next position,
+        // and if the fret number comparision is satisfied
+        return (nextNote != NULL && comp(note->GetFretNumber(), nextNote->GetFretNumber()));
+    }
 };
 
 #endif

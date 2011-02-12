@@ -312,62 +312,22 @@ bool Staff::IsOnlyPositionInBar(Position *position, System *system) const
 
 bool Staff::CanHammerOn(Position* position, Note* note) const
 {
-    // find next position
-    auto location = std::find(highMelodyPositionArray.begin(),
-            highMelodyPositionArray.end(), position);
-    
-    // if position was not found it cannot hammer
-    if (location == highMelodyPositionArray.end())
-    {
-        return false;
-    }
-    
-    Position* nextPosition = *(++location);
-    
-    Note* nextNote = nextPosition->GetNoteByString(note->GetString());
-    
-    return !(nextNote == NULL || 
-            nextNote->GetFretNumber() <= note->GetFretNumber());
+    // In order to perform a hammer-on, the note must be lower than the next
+    return CompareWithNote(NextNote, position, note, std::less<uint8_t>());
 }
 
 bool Staff::CanPullOff(Position* position, Note* note) const
 {
-    // find next position
-    auto location = std::find(highMelodyPositionArray.begin(),
-            highMelodyPositionArray.end(), position);
-    
-    // if position was not found it cannot hammer
-    if (location == highMelodyPositionArray.end())
-    {
-        return false;
-    }
-    
-    Position* nextPosition = *(++location);
-    
-    Note* nextNote = nextPosition->GetNoteByString(note->GetString());
-    
-    return !(nextNote == NULL || 
-            nextNote->GetFretNumber() >= note->GetFretNumber());
+    // In order to perform a pull-off, the note must be higher than the next
+    return CompareWithNote(NextNote, position, note, std::greater<uint8_t>());
 }
 
 // Figures out if the given note can be set as tied
 // The previous position in the staff must contain a Note at the same string & fret
 bool Staff::CanTieNote(Position* position, Note* note) const
 {
-    // find previous position
-    auto location = std::find(highMelodyPositionArray.begin(), highMelodyPositionArray.end(), position);
-
-    // if the position was not found, or is the first position, it cannot be tied
-    if (location == highMelodyPositionArray.end() || location == highMelodyPositionArray.begin())
-    {
-        return false;
-    }
-
-    Position* prevPosition = *(--location);
-
-    Note* matchingNote = prevPosition->GetNoteByString(note->GetString());
-
-    return !(matchingNote == NULL || matchingNote->GetFretNumber() != note->GetFretNumber());
+    // In order to tie, the note must be the same as the previous
+    return CompareWithNote(PrevNote, position, note, std::equal_to<uint8_t>());
 }
 
 namespace 
