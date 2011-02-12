@@ -79,7 +79,7 @@ public:
     /// @return True if the description was set, false if not
     bool SetDescription(const string& description)
     {
-        CHECK_THAT(description.size() > 0, false);
+        CHECK_THAT(!description.empty(), false);
         m_description = description;
         return true;
     }
@@ -95,7 +95,7 @@ public:
         {return (GetLetter() != notSet);}
     /// Clears the rehearsal sign letter and description, and sets to not set
     void Clear()
-        {SetLetter(notSet); SetDescription("");}
+        {SetLetter(notSet); m_description.clear();}
     string GetFormattedText() const;
 };
 

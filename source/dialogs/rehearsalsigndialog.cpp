@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QCompleter>
 #include <QDialogButtonBox>
+#include <QMessageBox>
 
 RehearsalSignDialog::RehearsalSignDialog(Score* score, RehearsalSign* rehearsalSign, QWidget *parent) :
     QDialog(parent),
@@ -98,9 +99,20 @@ void RehearsalSignDialog::accept()
 {
     QChar letter = letterChoice->currentText().at(0); // should only be one letter
     std::string description = descriptionChoice->currentText().toStdString();
-
-    PowerTabEditor::undoManager->push(new EditRehearsalSign(rehearsalSign, true, letter.toAscii(), description));
-    done(QDialog::Accepted);
+    
+    if (description.empty())
+    {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle(tr("Rehearsal Sign"));
+        msgBox.setText(tr("The Rehearsal Sign description cannot be empty."));
+        msgBox.exec();
+    }
+    else
+    {
+		PowerTabEditor::undoManager->push(new EditRehearsalSign(rehearsalSign, true, letter.toAscii(), description));
+		done(QDialog::Accepted);
+    }
 }
 
 void RehearsalSignDialog::reject()
