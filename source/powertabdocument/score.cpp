@@ -357,40 +357,24 @@ void Score::UpdateSystemHeight(System *system)
     }
 }
 
+/// Updates the extra spacing at the top of the system (for rehearsal signs, etc)
 void Score::UpdateExtraSpacing(System* system)
 {
-    uint32_t newSpacing = 0;
-    
-    if (system->HasRehearsalSign())
-    {
-        newSpacing += System::SYSTEM_SYMBOL_SPACING;
-    }
-    if (system->GetChordTextCount() > 0)
-    {
-        newSpacing += System::SYSTEM_SYMBOL_SPACING;
-    }
-
-    // check for tempo markers
+    // get list of tempo markers
     std::vector<TempoMarker*> markers;
     GetTempoMarkersInSystem(markers, system);
-    if (markers.size() > 0)
-    {
-        newSpacing += System::SYSTEM_SYMBOL_SPACING;
-    }
-
-    // check for musical directions
-    if (system->GetDirectionCount() > 0)
-    {
-        newSpacing += System::SYSTEM_SYMBOL_SPACING;
-    }
-
-    // check for alternate endings
+    
+    // get list of alternate endings
     std::vector<AlternateEnding*> endings;
     GetAlternateEndingsInSystem(endings, system);
-    if (endings.size() > 0)
-    {
-        newSpacing += System::SYSTEM_SYMBOL_SPACING;
-    }
-
-    system->SetExtraSpacing(newSpacing);
+    
+    // Find how many different items occur in the system (i.e. is there at least one rehearsal sign, tempo marker, etc)
+    const int numItems = system->HasRehearsalSign() +
+            (system->GetChordTextCount() > 0) +
+            !markers.empty() +
+            (system->GetDirectionCount() > 0) +
+            !endings.empty();
+    
+    // Each type of item gets a line to itself
+    system->SetExtraSpacing(numItems * System::SYSTEM_SYMBOL_SPACING);
 }
