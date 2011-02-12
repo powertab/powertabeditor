@@ -352,7 +352,7 @@ namespace
 
 /// Calculates the spacing required to display the given position and note properties.
 int Staff::CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions,
-                                         const std::list<NoteProperty>& notePredicates)
+                                         const std::list<NoteProperty>& notePredicates) const
 {
     int maxNumProperties = 0;
     for (auto i = highMelodyPositionArray.begin(); i != highMelodyPositionArray.end(); ++i)
@@ -392,4 +392,20 @@ void Staff::CalculateTabStaffBelowSpacing()
     };
     
     SetTablatureStaffBelowSpacing(CalculateSpacingForProperties(positionFunctions, notePredicates));
+}
+
+void Staff::CalculateSymbolSpacing()
+{
+    // Create list of all properties that are displayed between the tab staff and std. notation staff
+    std::list<PositionProperty> positionFunctions = {
+        &Position::HasFermata, &Position::HasLetRing, &Position::HasVolumeSwell,
+        &Position::HasVibrato, &Position::HasWideVibrato, &Position::HasPalmMuting,
+        &Position::HasTremoloPicking, &Position::HasTremoloBar
+    };
+    
+    std::list<NoteProperty> notePredicates = {
+        &Note::HasTrill, &Note::IsNaturalHarmonic
+    };
+    
+    SetSymbolSpacing(CalculateSpacingForProperties(positionFunctions, notePredicates));
 }

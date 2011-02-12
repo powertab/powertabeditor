@@ -338,7 +338,9 @@ void Score::UpdateSystemHeight(System *system)
     
     for (size_t i = 0; i < system->GetStaffCount(); i++)
     {
-        system->GetStaff(i)->CalculateTabStaffBelowSpacing();
+        Staff* currentSystem = system->GetStaff(i);
+        currentSystem->CalculateTabStaffBelowSpacing();
+        currentSystem->CalculateSymbolSpacing();
     }
     
     UpdateExtraSpacing(system);

@@ -223,12 +223,13 @@ public:
     int GetHeight() const;
     
     void CalculateTabStaffBelowSpacing();
+    void CalculateSymbolSpacing();
     
 protected:
     typedef bool (Position::*PositionProperty)() const;
     typedef bool (Note::*NoteProperty)() const;
     int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions,
-                                      const std::list<NoteProperty>& notePredicates);
+                                      const std::list<NoteProperty>& notePredicates) const;
     
     enum SearchDirection
     {
