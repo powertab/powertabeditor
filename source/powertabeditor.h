@@ -3,10 +3,12 @@
 
 #include <QMainWindow>
 
+#include <boost/variant.hpp>
 #include <memory>
 
 #include <documentmanager.h>
 #include <actions/undomanager.h>
+#include <actions/toggleproperty.h>
 
 class QTabWidget;
 class ScoreArea;
@@ -21,6 +23,8 @@ class QSignalMapper;
 class QActionGroup;
 class QKeyEvent;
 class QEvent;
+class Note;
+class Position;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -37,6 +41,8 @@ public:
     static QSplitter* vertSplitter;
     static QSplitter* horSplitter;
     static ScoreArea* getCurrentScoreArea();
+    static Position* getCurrentPosition();
+    static Note* getCurrentNote();
 
 protected:
     void CreateActions();
@@ -75,11 +81,7 @@ private slots:
 
     void editChordName();
     void editRehearsalSign();
-    void editNaturalHarmonic();
-    void editNoteMuted();
-    void editGhostNote();
     void editTiedNote();
-    void editStaccato();
     void editHammerPull();
 
     void cycleTab(int offset);
@@ -160,11 +162,61 @@ private:
     QAction* prevTabAct;
     QSignalMapper* tabCycleMapper;
 
+    QSignalMapper* togglePropertyMapper;
+
     QString previousDirectory; // previous directory that a file was opened in
     std::unique_ptr<QStackedWidget> mixerList;
 
     std::shared_ptr<SkinManager> skinManager;
     std::unique_ptr<MidiPlayer> midiPlayer;
+
+protected slots:
+    
+    // Used for editing simple toggleable properties, such as ghost notes or staccato
+    // applies the propertyEditor functor to the specified toggleableProperty
+    void editProperty(int propertyIndex)
+    {
+        boost::apply_visitor(propertyEditor(), toggleableProperties[propertyIndex]);
+    }
+    
+protected:
+    
+    // stores information about a toggleable property, for later use by the propertyEditor function
+    template<typename T>
+    struct ToggleablePropertyRecord
+    {
+        T* (*objectGetter)(); // pointer to a function for retrieving the object, e.g. getCurrentNote
+        bool (T::*checkPropertySet)() const; // function to check if the property is set, e.g. Note::IsMuted
+        bool (T::*propertySetter)(bool); // function to set the property as true/false, e.g. Note::SetMuted
+        QString propertyName; // name of the property, for use with the undo menu
+    };
+
+    // Store all of the ToggleablePropertyRecords in one list, regardless of which type (e.g. Note, Position) that
+    // the structure is instantiated for. Using boost::variant makes this possible, and allows to still retrieve the type
+    // of the original object later on.
+    // This allows us to use QSignalMapper to map all toggleable properties to a location in the toggleableProperties list,
+    // and then perform an undo/redo action using the functions in the ToggleablePropertyRecord, after a signal is triggered
+    typedef boost::variant< ToggleablePropertyRecord<Note>, ToggleablePropertyRecord<Position> > ToggleableProperty;
+    QList<ToggleableProperty> toggleableProperties; 
+    
+    // Takes a ToggleablePropertyRecord from the 'toggleableProperties' list of boost::variant objects,
+    // and performs an undo/redo action
+    struct propertyEditor : public boost::static_visitor<>
+    {
+        template <typename T>
+        void operator()(ToggleablePropertyRecord<T>& propertyRecord) const
+        {
+            T* object = propertyRecord.objectGetter(); // get the object we are modifying, such as a Note* or Position*
+            if (object == NULL) return;
+            
+            const bool isPropertySet = (object->*(propertyRecord.checkPropertySet))();
+            const QString text = isPropertySet ? "Remove " + propertyRecord.propertyName : 
+                                 "Set " + propertyRecord.propertyName;
+            
+            // Perform the undo/redo action
+            undoManager->push(new ToggleProperty<T>(object, propertyRecord.propertySetter, !isPropertySet, text));
+        }
+    };
 };
 
 #endif // POWERTABEDITOR_H

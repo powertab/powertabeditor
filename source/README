@@ -2,6 +2,12 @@ BUILDING:
 - Download and install the Qt SDK for your platform (http://qt.nokia.com/downloads, choose the LGPL-licensed version)
 	- this includes the QtCreator IDE and the Qt libraries and tools
 - for Linux systems, ensure that ALSA libraries and headers (i.e. libasound2 and libasound2-dev) are installed
+- set up the Boost libraries (http://www.boost.org/)
+    - for Linux systems, install the package provided by your distribution. For Ubuntu, this will be libboost-dev
+    - for Windows, install the Boost libraries to some location on your computer, either by extracting a downloaded package
+      from http://www.boost.org/users/download/#releases, or using the installer from BoostPro http://www.boostpro.com/download/
+        - you do not need to build any libraries, as the components of Boost that we use are header-only
+        - edit the 'win32:INCLUDEPATH' line in the powertabeditor.pro file to specify the location of your Boost installation
 - Open the powertabeditor.pro file in QtCreator, and choose Build / Build All
 - Then, either use Debug / Start Debugging, or Build / Run to run the program
 

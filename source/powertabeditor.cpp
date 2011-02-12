@@ -312,20 +312,32 @@ void PowerTabEditor::CreateActions()
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
 
+    togglePropertyMapper = new QSignalMapper(this);
+    
     noteMutedAct = new QAction(tr("Muted"), this);
     noteMutedAct->setCheckable(true);
-    connect(noteMutedAct, SIGNAL(triggered()), this, SLOT(editNoteMuted()));
+    connect(noteMutedAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(noteMutedAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Note>) 
+                                  {&getCurrentNote, &Note::IsMuted, &Note::SetMuted, noteMutedAct->text()});
 
     ghostNoteAct = new QAction(tr("Ghost Note"), this);
     ghostNoteAct->setShortcut(QKeySequence(Qt::Key_N));
     ghostNoteAct->setCheckable(true);
-    connect(ghostNoteAct, SIGNAL(triggered()), this, SLOT(editGhostNote()));
-
+    connect(ghostNoteAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(ghostNoteAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Note>) 
+                                  {&getCurrentNote, &Note::IsGhostNote, &Note::SetGhostNote, ghostNoteAct->text()});
+    
     staccatoNoteAct = new QAction(tr("Staccato"), this);
     staccatoNoteAct->setCheckable(true);
     staccatoNoteAct->setShortcut(QKeySequence(Qt::Key_Z));
-    connect(staccatoNoteAct, SIGNAL(triggered()), this, SLOT(editStaccato()));
-
+    connect(staccatoNoteAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(staccatoNoteAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+                                  {&getCurrentPosition, &Position::IsStaccato, &Position::SetStaccato, staccatoNoteAct->text()});
+    
+    
     // Music Symbol Actions
     rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
     rehearsalSignAct->setCheckable(true);
@@ -340,7 +352,11 @@ void PowerTabEditor::CreateActions()
     
     naturalHarmonicAct = new QAction(tr("Natural Harmonic"), this);
     naturalHarmonicAct->setCheckable(true);
-    connect(naturalHarmonicAct, SIGNAL(triggered()), this, SLOT(editNaturalHarmonic()));
+    connect(naturalHarmonicAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(naturalHarmonicAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Note>)
+                                  {&getCurrentNote, &Note::IsNaturalHarmonic,
+                                   &Note::SetNaturalHarmonic, naturalHarmonicAct->text()});
 
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
@@ -356,6 +372,8 @@ void PowerTabEditor::CreateActions()
     tabCycleMapper->setMapping(prevTabAct, -1);
 
     connect(tabCycleMapper, SIGNAL(mapped(int)), this, SLOT(cycleTab(int)));
+    
+    connect(togglePropertyMapper, SIGNAL(mapped(int)), this, SLOT(editProperty(int)));
 }
 
 void PowerTabEditor::CreateMenus()
@@ -590,6 +608,16 @@ ScoreArea* PowerTabEditor::getCurrentScoreArea()
     return reinterpret_cast<ScoreArea*>(tabWidget->currentWidget());
 }
 
+Position* PowerTabEditor::getCurrentPosition()
+{
+    return getCurrentScoreArea()->getCaret()->getCurrentPosition();
+}
+
+Note* PowerTabEditor::getCurrentNote()
+{
+    return getCurrentScoreArea()->getCaret()->getCurrentNote();
+}
+
 /// Cycles through the tabs in the tab bar
 /// @param offset Direction and number of tabs to move by (i.e. -1 moves back one tab)
 void PowerTabEditor::cycleTab(int offset)
@@ -814,48 +842,6 @@ void PowerTabEditor::editHammerPull()
     {
         hammerPullAct->setChecked(false);
     }
-}
-
-void PowerTabEditor::editNaturalHarmonic()
-{
-    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
-    Q_ASSERT(note != NULL); // this action should not be available if there is no note at this position
-
-    const bool hasHarmonic = note->IsNaturalHarmonic();
-    const QString text = hasHarmonic ? tr("Remove Natural Harmonic") : tr("Set Natural Harmonic");
-
-    undoManager->push(new ToggleProperty<Note>(note, &Note::SetNaturalHarmonic, !hasHarmonic, text));
-}
-
-void PowerTabEditor::editNoteMuted()
-{
-    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
-    Q_ASSERT(note != NULL); // this action should not be available if there is no note at this position
-
-    const bool isMuted = note->IsMuted();
-    const QString text = isMuted ? tr("Remove Note Muted") : tr("Set Note Muted");
-
-    undoManager->push(new ToggleProperty<Note>(note, &Note::SetMuted, !isMuted, text));
-}
-
-void PowerTabEditor::editStaccato()
-{
-    Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
-
-    const bool isStaccato = position->IsStaccato();
-    const QString text = isStaccato ? tr("Remove Staccato") : tr("Set Staccato");
-
-    undoManager->push(new ToggleProperty<Position>(position, &Position::SetStaccato, !isStaccato, text));
-}
-
-void PowerTabEditor::editGhostNote()
-{
-    Note* note = getCurrentScoreArea()->getCaret()->getCurrentNote();
-
-    const bool isGhostNote = note->IsGhostNote();
-    const QString text = isGhostNote ? tr("Remove Ghost Note") : tr("Set Ghost Note");
-
-    undoManager->push(new ToggleProperty<Note>(note, &Note::SetGhostNote, !isGhostNote, text));
 }
 
 void PowerTabEditor::editTiedNote()
