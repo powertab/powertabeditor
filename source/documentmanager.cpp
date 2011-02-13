@@ -5,6 +5,8 @@
 
 #include <powertabdocument/powertabdocument.h>
 
+using std::shared_ptr;
+
 DocumentManager::DocumentManager()
 {
     currentDocumentIndex = -1;
@@ -12,20 +14,18 @@ DocumentManager::DocumentManager()
 
 DocumentManager::~DocumentManager()
 {
-    qDeleteAll(documentList.begin(), documentList.end());
 }
 
-PowerTabDocument* DocumentManager::getCurrentDocument()
+shared_ptr<PowerTabDocument> DocumentManager::getCurrentDocument()
 {
     if (currentDocumentIndex < 0 || currentDocumentIndex >= documentList.size())
-        return NULL;
+        return shared_ptr<PowerTabDocument>();
     else
         return documentList.at(currentDocumentIndex);
 }
 
 void DocumentManager::removeDocument(int index)
 {
-    delete documentList[index];
     documentList.removeAt(index);
     currentDocumentIndex = 0;
 }
@@ -35,8 +35,7 @@ bool DocumentManager::addDocument(const QString& fileName)
     // check that the document is not already open
     for (auto i = documentList.begin(); i != documentList.end(); ++i)
     {
-        PowerTabDocument* doc = *i;
-        if (doc->GetFileName() == fileName.toStdString())
+        if ((*i)->GetFileName() == fileName.toStdString())
         {
             currentDocumentIndex = i - documentList.begin();
             return false;
@@ -44,7 +43,7 @@ bool DocumentManager::addDocument(const QString& fileName)
     }
 
     // try to open the file
-    PowerTabDocument* newDocument = new PowerTabDocument();
+    shared_ptr<PowerTabDocument> newDocument(new PowerTabDocument);
     bool success = newDocument->Load(fileName.toStdString());
     if (!success)
     {

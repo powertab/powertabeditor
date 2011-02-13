@@ -2,6 +2,7 @@
 #define DOCUMENTMANAGER_H
 
 #include <QList>
+#include <memory>
 
 class QString;
 class PowerTabDocument;
@@ -17,12 +18,12 @@ public:
 
     bool addDocument(const QString& fileName);
     void removeDocument(int index);
-    PowerTabDocument* getCurrentDocument();
+    std::shared_ptr<PowerTabDocument> getCurrentDocument();
     void setCurrentDocumentIndex(int index);
     int getCurrentDocumentIndex() const;
 
 private:
-    QList<PowerTabDocument*> documentList;
+    QList<std::shared_ptr<PowerTabDocument> > documentList;
     int currentDocumentIndex;
 };
 

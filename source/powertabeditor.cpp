@@ -526,7 +526,7 @@ void PowerTabEditor::openFile()
             // add the guitars to a new mixer
             Mixer* mixer = new Mixer(skinManager);
             QScrollArea* scrollArea = new QScrollArea;
-            PowerTabDocument* doc = documentManager.getCurrentDocument();
+            std::shared_ptr<PowerTabDocument> doc = documentManager.getCurrentDocument();
             for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
             {
                 mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));

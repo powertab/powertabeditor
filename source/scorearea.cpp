@@ -32,7 +32,7 @@ ScoreArea::ScoreArea(QWidget *parent) :
     activeSystem = NULL;
 }
 
-void ScoreArea::renderDocument(PowerTabDocument *doc)
+void ScoreArea::renderDocument(std::shared_ptr<PowerTabDocument> doc)
 {
     scene.clear();
     systemList.clear();

@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QMultiMap>
+#include <memory>
 
 #include <musicfont.h>
 
@@ -28,10 +29,10 @@ class ScoreArea : public QGraphicsView
 public:
     explicit ScoreArea(QWidget *parent = 0);
 
-    void renderDocument(PowerTabDocument* doc);
+    void renderDocument(std::shared_ptr<PowerTabDocument> doc);
     void updateSystem(const quint32 systemIndex);
 
-    PowerTabDocument* document;
+    std::shared_ptr<PowerTabDocument> document;
 
     inline Caret* getCaret()
     {
