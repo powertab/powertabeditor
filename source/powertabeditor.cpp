@@ -487,7 +487,7 @@ void PowerTabEditor::openFile()
     else
     {
         qDebug() << "Opening file: " << fileName;
-        bool success = documentManager.Add(fileName); // add the file to the document manager
+        bool success = documentManager.addDocument(fileName); // add the file to the document manager
 
         // draw the score if it was successful
         if (success)
@@ -564,7 +564,7 @@ void PowerTabEditor::closeCurrentTab()
 void PowerTabEditor::closeTab(int index)
 {
     undoManager->removeStack(index);
-    documentManager.Remove(index);
+    documentManager.removeDocument(index);
     delete tabWidget->widget(index);
 
     mixerList->removeWidget(mixerList->widget(index));
@@ -591,7 +591,7 @@ void PowerTabEditor::switchTab(int index)
 
     if(documentManager.getCurrentDocument())
     {
-        QString title(documentManager.getCurrentDocument()->GetFileName().c_str());
+        QString title = QString::fromStdString(documentManager.getCurrentDocument()->GetFileName());
         title.remove(0,title.lastIndexOf("/")+1);
         setWindowTitle(title+tr(" - Power Tab Editor 2.0"));
     }

@@ -15,15 +15,15 @@ public:
     DocumentManager();
     ~DocumentManager();
 
-    bool Add(QString& fileName);
-    void Remove(quint32 index);
+    bool addDocument(const QString& fileName);
+    void removeDocument(int index);
     PowerTabDocument* getCurrentDocument();
-    void setCurrentDocumentIndex(quint32 index);
-    quint32 getCurrentDocumentIndex() const;
+    void setCurrentDocumentIndex(int index);
+    int getCurrentDocumentIndex() const;
 
 private:
     QList<PowerTabDocument*> documentList;
-    quint32 currentDocumentIndex;
+    int currentDocumentIndex;
 };
 
 #endif // DOCUMENTMANAGER_H

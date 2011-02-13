@@ -8,10 +8,6 @@
 DocumentManager::DocumentManager()
 {
     currentDocumentIndex = -1;
-    //currentDocumentIndex = 0;
-    /*PowerTabDocument* newDocument = new PowerTabDocument();
-    newDocument->SetFileName("Untitled");
-    documentList.insert(currentDocumentIndex, newDocument);*/
 }
 
 DocumentManager::~DocumentManager()
@@ -21,24 +17,23 @@ DocumentManager::~DocumentManager()
 
 PowerTabDocument* DocumentManager::getCurrentDocument()
 {
-    if ((int)currentDocumentIndex < 0 || (int) currentDocumentIndex >= documentList.size())
+    if (currentDocumentIndex < 0 || currentDocumentIndex >= documentList.size())
         return NULL;
     else
         return documentList.at(currentDocumentIndex);
 }
 
-void DocumentManager::Remove(quint32 index)
+void DocumentManager::removeDocument(int index)
 {
     delete documentList[index];
     documentList.removeAt(index);
     currentDocumentIndex = 0;
 }
 
-bool DocumentManager::Add(QString& fileName)
+bool DocumentManager::addDocument(const QString& fileName)
 {
     // check that the document is not already open
-    QList<PowerTabDocument*>::iterator i;
-    for (i = documentList.begin(); i != documentList.end(); ++i)
+    for (auto i = documentList.begin(); i != documentList.end(); ++i)
     {
         PowerTabDocument* doc = *i;
         if (doc->GetFileName() == fileName.toStdString())
@@ -67,12 +62,12 @@ bool DocumentManager::Add(QString& fileName)
     return true;
 }
 
-void DocumentManager::setCurrentDocumentIndex(quint32 index)
+void DocumentManager::setCurrentDocumentIndex(int index)
 {
     currentDocumentIndex = index;
 }
 
-quint32 DocumentManager::getCurrentDocumentIndex() const
+int DocumentManager::getCurrentDocumentIndex() const
 {
     return currentDocumentIndex;
 }
