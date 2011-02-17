@@ -61,8 +61,8 @@ protected:
     uint8_t m_tablatureStaffBelowSpacing;                            ///< Amount of space alloted from the last line of the tablature staff
 
 public:
-    vector<Position*> highMelodyPositionArray;
-    vector<Position*> lowMelodyPositionArray;
+    std::vector<Position*> highMelodyPositionArray;
+    std::vector<Position*> lowMelodyPositionArray;
 
     // Constructor/Destructor
 public:

@@ -153,7 +153,7 @@ protected:
     uint32_t				m_complexSymbolArray[MAX_POSITION_COMPLEX_SYMBOLS];	    ///< Array of complex symbols
 
 public:
-    vector<Note*> m_noteArray;      ///< Array of notes
+    std::vector<Note*> m_noteArray;      ///< Array of notes
 
     // Constructor/Destructor
 public:

@@ -13,6 +13,9 @@
 #include "colour.h"
 #include "rect.h"
 
+using std::ifstream;
+using std::string;
+
 // Constructor/Destructor
 /// Primary Constructor
 PowerTabInputStream::PowerTabInputStream(const string& filename)

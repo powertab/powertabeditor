@@ -76,7 +76,7 @@ public:
 // Member Variables
 protected:
     uint8_t          m_position;         ///< Zero-based index of the position within the system where the direction is anchored
-    vector<uint16_t>     m_symbolArray;      ///< Array of direction symbols (symbol: top byte = symbol type, next 2 bits = active symbol, next 6 bits = repeat number)
+    std::vector<uint16_t>     m_symbolArray;      ///< Array of direction symbols (symbol: top byte = symbol type, next 2 bits = active symbol, next 6 bits = repeat number)
 
 // Constructor/Destructor
 public:

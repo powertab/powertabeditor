@@ -102,8 +102,8 @@ bool Note::operator==(const Note& note) const
     // - Jan 24, 2005
 
     // Note: Complex symbols aren't necessarily in the same slot in the array
-    vector<uint32_t> thisComplexSymbolArray;
-    vector<uint32_t> thatComplexSymbolArray;
+    std::vector<uint32_t> thisComplexSymbolArray;
+    std::vector<uint32_t> thatComplexSymbolArray;
 
     uint32_t i = 0;
     for (; i < MAX_NOTE_COMPLEX_SYMBOLS; i++)

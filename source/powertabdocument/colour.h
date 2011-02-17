@@ -19,10 +19,10 @@ public:
 			);
 	}
 
-	uint8_t Red() { return _red; }
-	uint8_t Green() { return _green; }
-	uint8_t Blue() { return _blue; }
-	uint8_t Alpha() { return _alpha; }
+        uint8_t Red() const { return _red; }
+        uint8_t Green() const { return _green; }
+        uint8_t Blue() const { return _blue; }
+        uint8_t Alpha() const { return _alpha; }
 
 	void Set(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0, uint8_t alpha = 0);
 

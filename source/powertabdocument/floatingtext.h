@@ -15,6 +15,7 @@
 #include "fontsetting.h"
 #include "powertabobject.h"
 #include "macros.h"
+#include "rect.h"
 
 /// Stores and renders text annotations
 class FloatingText : public PowerTabObject

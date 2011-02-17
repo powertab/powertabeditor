@@ -1,11 +1,13 @@
 #ifndef __RECT_H__
 #define __RECT_H__
 
+#include <stdint.h>
+
 class Rect
 {
 public:
     Rect(void);
-    Rect(int x, int y, int width, int height);
+    Rect(int32_t x, int32_t y, int32_t width, int32_t height);
 
     inline bool operator==(const Rect& rhs) const
     {
@@ -16,74 +18,74 @@ public:
             _height == rhs._height);
     }
 
-    inline int GetLeft() const { return GetX(); }
-    inline void SetLeft(int x) { SetX(x); }
+    inline int32_t GetLeft() const { return GetX(); }
+    inline void SetLeft(int32_t x) { SetX(x); }
 
-    inline int GetX() const
+    inline int32_t GetX() const
     {
         return _x;
     }
 
-    inline void SetX(int x)
+    inline void SetX(int32_t x)
     {
         _x = x;
     }
 
-    inline int GetTop() const { return GetY(); }
-    inline void SetTop(int top) { SetY(top); }
+    inline int32_t GetTop() const { return GetY(); }
+    inline void SetTop(int32_t top) { SetY(top); }
 
-    inline int GetY() const
+    inline int32_t GetY() const
     {
         return _y;
     }
 
-    inline void SetY(int y)
+    inline void SetY(int32_t y)
     {
         _y = y;
     }
 
-    inline int GetBottom() const
+    inline int32_t GetBottom() const
     {
         return _y + _height - 1;
     }
 
-    inline void SetBottom(int bottom)
+    inline void SetBottom(int32_t bottom)
     {
         _height = bottom - _y - 1;
     }
 
-    inline int GetWidth() const
+    inline int32_t GetWidth() const
     {
         return _width;
     }
 
-    inline void SetWidth(int width)
+    inline void SetWidth(int32_t width)
     {
         _width = width;
     }
 
-    inline int GetHeight() const
+    inline int32_t GetHeight() const
     {
         return _height;
     }
 
-    inline void SetHeight(int height)
+    inline void SetHeight(int32_t height)
     {
         _height = height;
     }
 
-    inline int GetRight() const
+    inline int32_t GetRight() const
     {
         return _x + _width - 1;
     }
 
-    inline void SetRight(int right)
+    inline void SetRight(int32_t right)
     {
         _width = right - _x - 1;
     }
 
 protected:
-    int _x, _y, _width, _height;
+    int32_t _x, _y, _width, _height;
 };
 
 #endif

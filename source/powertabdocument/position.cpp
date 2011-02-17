@@ -148,8 +148,8 @@ bool Position::operator==(const Position& position) const
     //------Last Checked------//
     // - Jan 19, 2005
 
-    vector<uint32_t> thisComplexSymbolArray;
-    vector<uint32_t> thatComplexSymbolArray;
+    std::vector<uint32_t> thisComplexSymbolArray;
+    std::vector<uint32_t> thatComplexSymbolArray;
 
     uint32_t i = 0;
     for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)

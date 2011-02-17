@@ -17,6 +17,7 @@
 #include "rhythmslash.h"
 #include "staff.h"
 #include "barline.h"
+#include "rect.h"
 
 /// Stores and renders a system
 class System : public PowerTabObject
@@ -44,11 +45,11 @@ protected:
 
 public:
     Barline             m_startBar;                             ///< Barline at the start of the system
-    vector<Direction*>      m_directionArray;                       ///< List of directions used within the system
-    vector<ChordText*>      m_chordTextArray;                       ///< List of chord text items used within the system
-    vector<RhythmSlash*>    m_rhythmSlashArray;                     ///< List of rhythm slashes used within the system
-    vector<Staff*>          m_staffArray;                           ///< List of staves used within the system
-    vector<Barline*>        m_barlineArray;                         ///< List of barlines (not including start and end bars) used within the system
+    std::vector<Direction*>      m_directionArray;                       ///< List of directions used within the system
+    std::vector<ChordText*>      m_chordTextArray;                       ///< List of chord text items used within the system
+    std::vector<RhythmSlash*>    m_rhythmSlashArray;                     ///< List of rhythm slashes used within the system
+    std::vector<Staff*>          m_staffArray;                           ///< List of staves used within the system
+    std::vector<Barline*>        m_barlineArray;                         ///< List of barlines (not including start and end bars) used within the system
     Barline             m_endBar;                               ///< Barline at the end of the system (time and key signature are not used in this barline)
 
     // Constructor/Destructor
@@ -251,7 +252,7 @@ public:
     Barline* GetBarlineAtPosition(uint32_t position) const;
     Barline* GetPrecedingBarline(uint32_t position) const;
     Barline* GetNextBarline(uint32_t position) const;
-    void GetBarlines(vector<Barline*>& barlineArray);
+    void GetBarlines(std::vector<Barline*>& barlineArray);
 
     bool HasRehearsalSign() const;
 

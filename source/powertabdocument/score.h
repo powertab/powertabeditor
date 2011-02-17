@@ -27,14 +27,14 @@ class Score : public PowerTabObject
 {
 // Member Variables
 public:
-    vector<Guitar*>                 m_guitarArray;              ///< Guitars used by the score
-    vector<ChordDiagram*>           m_chordDiagramArray;        ///< Chord diagrams used in the score
-    vector<FloatingText*>           m_floatingTextArray;        ///< Floating text used in the score
-    vector<GuitarIn*>               m_guitarInArray;            ///< Guitar Ins used in the score
-    vector<TempoMarker*>            m_tempoMarkerArray;         ///< Tempo Markers used in the score
-    vector<Dynamic*>                m_dynamicArray;             ///< Dynamic markers used in the score
-    vector<AlternateEnding*>        m_alternateEndingArray;     ///< Alternate endings used in the score
-    vector<System*>                 m_systemArray;              ///< Systems used in the score
+    std::vector<Guitar*>                 m_guitarArray;              ///< Guitars used by the score
+    std::vector<ChordDiagram*>           m_chordDiagramArray;        ///< Chord diagrams used in the score
+    std::vector<FloatingText*>           m_floatingTextArray;        ///< Floating text used in the score
+    std::vector<GuitarIn*>               m_guitarInArray;            ///< Guitar Ins used in the score
+    std::vector<TempoMarker*>            m_tempoMarkerArray;         ///< Tempo Markers used in the score
+    std::vector<Dynamic*>                m_dynamicArray;             ///< Dynamic markers used in the score
+    std::vector<AlternateEnding*>        m_alternateEndingArray;     ///< Alternate endings used in the score
+    std::vector<System*>                 m_systemArray;              ///< Systems used in the score
 
 // Constructor/Destructor
 public:

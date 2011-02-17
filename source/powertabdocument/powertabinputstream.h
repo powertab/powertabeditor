@@ -14,16 +14,13 @@
 
 #include <stdint.h>
 #include <fstream>
-using std::ifstream;
-
 #include <string>
-using std::string;
 #include <vector>
-using std::vector;
 
-#include "rect.h"
-#include "colour.h"
 #include "macros.h"
+
+class Rect;
+class Colour;
 
 /// Input stream used to deserialize MFC based Power Tab data
 class PowerTabInputStream
@@ -32,16 +29,16 @@ class PowerTabInputStream
 
     // Member Variables
 protected:
-    ifstream    m_stream;
+    std::ifstream    m_stream;
 
     // Constructor/Destructor
 public:
-    PowerTabInputStream(const string& filename);
+    PowerTabInputStream(const std::string& filename);
     ~PowerTabInputStream();
 
     // Read Functions
     uint32_t ReadCount();
-    bool ReadMFCString(string& string);
+    bool ReadMFCString(std::string& string);
     bool ReadWin32ColorRef(Colour& color);
     bool ReadMFCRect(Rect& rect);
 
@@ -64,7 +61,7 @@ public:
     }
 
     template <class T>
-    bool ReadVector(vector<T*>& vect, uint16_t version)
+    bool ReadVector(std::vector<T*>& vect, uint16_t version)
     {
         const uint32_t count = ReadCount();
         CHECK_THAT(CheckState(), false);

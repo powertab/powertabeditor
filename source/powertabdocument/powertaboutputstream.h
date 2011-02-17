@@ -14,7 +14,6 @@
 
 #include <stdint.h>
 #include <fstream>
-using std::ofstream;
 
 #ifdef __GNUC__
 #include <unordered_map>
@@ -26,16 +25,13 @@ using stdext::hash_map;
 #endif
 
 #include <string>
-using std::string;
 #include <vector>
-using std::vector;
 
 #include "powertabstream.h"
-#include "rect.h"
-#include "colour.h"
-#include "powertabobject.h"
 #include "macros.h"
 
+class Rect;
+class Colour;
 class PowerTabObject;
 
 /// Output stream used to serialize MFC based Power Tab data
@@ -44,22 +40,21 @@ class PowerTabOutputStream
 	// Member Variables
 protected:
 	bool						m_mapsInitialized;                  ///< Determines whether or not the maps have been initialized
-	hash_map<string, uint32_t>	m_classInfoHashMap;                 ///< Map of class Ids to object index
+        hash_map<std::string, uint32_t>	m_classInfoHashMap;                 ///< Map of class Ids to object index
 	hash_map<PowerTabObject *, uint32_t>	m_objectHashMap;                    ///< Map of object pointers to object index
 	uint32_t					m_mapCount;                         ///< Internal count of mapped objects
 	PowerTabStreamError			m_lastPowerTabError;                ///< Last Power Tab specific error
-	ofstream m_stream;
+        std::ofstream m_stream;
 
 	// Constructor/Destructor
 public:
-	PowerTabOutputStream(const string& filename);
+        PowerTabOutputStream(const std::string& filename);
 	~PowerTabOutputStream();
 
 	// Write Functions
 	bool WriteCount(uint32_t count);
-	bool WriteAnsiText(const string& text);
-	bool WriteMFCString(const string& string);
-	bool WriteWin32ColorRef(Colour color);
+        bool WriteMFCString(const std::string& string);
+        bool WriteWin32ColorRef(const Colour& colour);
 	bool WriteMFCRect(const Rect& rect);
 	bool WriteObject(PowerTabObject* object);
 
@@ -73,7 +68,7 @@ public:
 	/// @return True if the stream is OK, false if an error has occurred
 	bool CheckState()                                           
 	{return (!fail() && (m_lastPowerTabError == POWERTABSTREAM_NO_ERROR));}
-	string GetLastErrorMessage();
+        std::string GetLastErrorMessage();
 
 protected:
 	bool CheckCount();
@@ -95,7 +90,7 @@ public:
 	}
 
 	template <class T>
-	bool WriteVector(vector<T*>& vect)
+        bool WriteVector(std::vector<T*>& vect)
 	{
 		uint32_t count = vect.size();
 		WriteCount(count);

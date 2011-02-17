@@ -10,7 +10,11 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "powertaboutputstream.h"
-#include <string.h>
+#include "powertabobject.h"
+#include "rect.h"
+#include "colour.h"
+
+using std::ofstream;
 
 // Constructor/Destructor
 /// Primary Constructor
@@ -47,47 +51,20 @@ bool PowerTabOutputStream::WriteCount(uint32_t count)
     return (CheckState());
 }
 
-/// Writes ANSI based text to the stream
-/// @param text Text to write
-/// @return True if the text was written, false if not
-bool PowerTabOutputStream::WriteAnsiText(const string& text)
-{
-    //------Last Checked------//
-    // - Dec 24, 2004
-
-    // Get an ANSI representation of the text
-    const char * buffer = text.c_str();
-
-    // Write text out, one letter at a time
-    // TODO: Update this to write chunks in wxWidgets 2.5
-    size_t i = 0;
-    size_t length = strlen(buffer);
-    for (; i < length; i++)
-    {
-        int8_t letter = buffer[i];
-        *this << letter;
-        CHECK_THAT(CheckState(), false);
-    }
-
-    return (CheckState());
-}
-
-/// Writes a string object to the stream using the Microsoft based (MFC)
-/// string format
+/// Writes a string object to the stream
 /// @param string String to write
 /// @return True if the string was written, false if not
-bool PowerTabOutputStream::WriteMFCString(const string& string)
+bool PowerTabOutputStream::WriteMFCString(const string& str)
 {
-    //------Last Checked------//
-    // - Dec 27, 2004
-    // Note: all Power Tab MFC strings are stored as ANSI text
-
+    const uint32_t length = str.length();
     // Write the string length
-    if (!WriteMFCStringLength(string.length(), false))
+    if (!WriteMFCStringLength(length, false))
         return (false);
 
     // Write the text
-    return (WriteAnsiText(string));
+    m_stream.write(str.data(), length);
+
+    return CheckState();
 }
 
 /// Writes the length of a Microsoft based (MFC) string to the output stream
@@ -132,32 +109,22 @@ bool PowerTabOutputStream::WriteMFCStringLength(uint32_t length, bool unicode)
     return (CheckState());
 }
 
-/// Writes a Color object to the stream using Windows 32-bit COLORREF format
-/// @param color Color to write
+/// Writes a Color object to the stream
+/// @param colour Colour to write
 /// @return True if the color was written, false if not
-bool PowerTabOutputStream::WriteWin32ColorRef(Colour color)
+bool PowerTabOutputStream::WriteWin32ColorRef(const Colour& colour)
 {
-    //------Last Checked------//
-    // - Dec 27, 2004
-    // COLORREF format = 0x00bbggrr
-    uint32_t colorref = MAKELONG(MAKEWORD(color.Red(), color.Green()),
-                                 MAKEWORD(color.Blue(), 0));
-    *this << colorref;
-    return (CheckState());
+    *this << colour.Red() << colour.Green() << colour.Blue() << colour.Alpha();
+    return CheckState();
 }
 
-/// Writes a Rect object to the stream using the Microsoft CRect class format
+/// Writes a Rect object to the stream
 /// @param rect Rect object whose values are to be written
 /// @return True if the rect was written, false if not
 bool PowerTabOutputStream::WriteMFCRect(const Rect& rect)
 {
-    //------Last Checked------//
-    // - Dec 27, 2004
-
-    // CRect format = left, top, right, bottom, all 32 bit integers
-    *this << (int32_t)rect.GetLeft() << (int32_t)rect.GetTop() <<
-            (int32_t)rect.GetRight() << (int32_t)rect.GetBottom();
-    return (CheckState());
+    *this << rect.GetLeft() << rect.GetTop() << rect.GetRight() << rect.GetBottom();
+    return CheckState();
 }
 
 /// Writes a Power Tab object to the stream

@@ -50,7 +50,7 @@ public:
 // Member Variables
 protected:
 	PowerTabFileHeader  m_header;                                               ///< The one and only header (contains file information)
-	vector<Score*>          m_scoreArray;                                           ///< List of scores (zeroth element = guitar score, first element = bass score)
+        std::vector<Score*>          m_scoreArray;                                           ///< List of scores (zeroth element = guitar score, first element = bass score)
 	
 	FontSetting         m_fontSettingArray[NUM_DOCUMENT_FONT_SETTINGS];         ///< List of global font settings
 	int32_t             m_tablatureStaffLineSpacing;                            ///< Amount of space used between lines on the tablature staff

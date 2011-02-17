@@ -400,7 +400,7 @@ Barline* System::GetNextBarline(uint32_t position) const
 
 /// Gets a list of barlines in the system
 /// @param barlineArray Holds the barline return values
-void System::GetBarlines(vector<Barline*>& barlineArray)
+void System::GetBarlines(std::vector<Barline*>& barlineArray)
 {
     //------Last Checked------//
     // - Apr 25, 2006

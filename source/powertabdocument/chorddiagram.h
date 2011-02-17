@@ -43,7 +43,7 @@ class ChordDiagram : public PowerTabObject
 protected:
     ChordName       m_chordName;                ///< Chord name that appears above the chord diagram
     uint8_t          m_topFret;                  ///< Fret represented at the top of the chord diagram
-    vector<uint8_t>     m_fretNumberArray;          ///< List of fret number offsets
+    std::vector<uint8_t>     m_fretNumberArray;          ///< List of fret number offsets
 
 // Constructor/Destructor
 public:

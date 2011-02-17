@@ -239,7 +239,7 @@ void Score::UpdateToVer2Structure()
 
         System* currentSystem = m_systemArray.at(i);
 
-        vector<Staff*> newStaves(m_guitarArray.size(), NULL); // one staff per guitar
+        std::vector<Staff*> newStaves(m_guitarArray.size(), NULL); // one staff per guitar
 
         for (uint32_t j=0; j < currentSystem->m_staffArray.size(); j++) // go through staves
         {
@@ -303,7 +303,7 @@ int Score::FindSystemIndex(System* system) const
 
 // Helper function for GetAlternateEndingsInSystem and GetTempoMarkersInSystem
 template<class Symbol>
-void GetSymbolsInSystem(vector<Symbol*>& output, const vector<Symbol*>& symbolList, const uint32_t systemIndex)
+void GetSymbolsInSystem(std::vector<Symbol*>& output, const std::vector<Symbol*>& symbolList, const uint32_t systemIndex)
 {
     output.clear();
 
