@@ -50,6 +50,7 @@ protected:
 protected slots:
     void updateActions();
     void openFile();
+    void saveFileAs();
     void openPreferences();
     void refreshOnUndoRedo(int);
     void closeCurrentTab();
@@ -87,6 +88,7 @@ protected slots:
 
 protected:
     bool isPlaying;
+    const QString fileFilter;
 
     static QTabWidget* tabWidget;
     
@@ -98,6 +100,7 @@ protected:
     QMenu* fileMenu;
     QAction* openFileAct;
     QAction* closeTabAct;
+    QAction* saveFileAsAct;
     QAction* preferencesAct;
     QAction* exitAppAct;
 

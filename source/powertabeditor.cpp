@@ -48,6 +48,7 @@ std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
+    fileFilter("Power Tab Documents (*.ptb)"),
     mixerList(new QStackedWidget),
     skinManager(new SkinManager("default"))
 {
@@ -153,6 +154,10 @@ void PowerTabEditor::createActions()
     closeTabAct = new QAction(tr("&Close Tab"), this);
     closeTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
     connect(closeTabAct, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
+
+    saveFileAsAct = new QAction(tr("Save As..."), this);
+    saveFileAsAct->setShortcut(QKeySequence::SaveAs);
+    connect(saveFileAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
 
     preferencesAct = new QAction(tr("&Preferences..."), this);
     preferencesAct->setShortcuts(QKeySequence::Preferences);
@@ -381,6 +386,8 @@ void PowerTabEditor::createMenus()
     fileMenu->addAction(openFileAct);
     fileMenu->addAction(closeTabAct);
     fileMenu->addSeparator();
+    fileMenu->addAction(saveFileAsAct);
+    fileMenu->addSeparator();
     fileMenu->addAction(preferencesAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAppAct);
@@ -477,7 +484,6 @@ void PowerTabEditor::createTabArea()
 // Open a new file
 void PowerTabEditor::openFile()
 {
-    QString fileFilter;
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), previousDirectory, fileFilter);
 
     if (fileName.isEmpty())
@@ -545,6 +551,15 @@ void PowerTabEditor::openFile()
 
             updateActions(); // update available actions for the current position
         }
+    }
+}
+
+void PowerTabEditor::saveFileAs()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), previousDirectory, fileFilter);
+    if (!fileName.isEmpty())
+    {
+        // TODO - save the file
     }
 }
 
@@ -944,6 +959,7 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
     }
 
     closeTabAct->setEnabled(enable);
+    saveFileAsAct->setEnabled(enable);
 }
 
 void PowerTabEditor::updateNoteDuration(int duration)
