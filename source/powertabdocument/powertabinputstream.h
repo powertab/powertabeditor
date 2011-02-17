@@ -58,8 +58,6 @@ public:
         return !m_stream.fail();
     }
 
-public:    
-
     inline bool fail()
     {
         return m_stream.fail();
@@ -68,7 +66,7 @@ public:
     template <class T>
     bool ReadVector(vector<T*>& vect, uint16_t version)
     {
-        uint32_t count = ReadCount();
+        const uint32_t count = ReadCount();
         CHECK_THAT(CheckState(), false);
 
         vect.clear();
@@ -77,7 +75,7 @@ public:
             vect.reserve(count);
         }
 
-        while (count--)
+        for (uint32_t i = 0; i < count; i++)
         {
             ReadClassInformation();
             T* temp = new T();

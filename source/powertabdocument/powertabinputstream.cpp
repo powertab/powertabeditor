@@ -31,8 +31,6 @@ PowerTabInputStream::~PowerTabInputStream()
 /// @return The count value
 uint32_t PowerTabInputStream::ReadCount()
 {
-    uint32_t returnValue = 0;
-
     uint16_t wordCount = 0;
     *this >> wordCount;
     CHECK_THAT(CheckState(), 0);
@@ -40,16 +38,14 @@ uint32_t PowerTabInputStream::ReadCount()
     // 16-bit count
     if (wordCount != 0xffff)
     {
-        returnValue = wordCount;
-    }
-    // 32-bit count
-    else
-    {
-        *this >> returnValue;
-        CHECK_THAT(CheckState(), 0);
+        return wordCount;
     }
 
-    return (returnValue);
+    // 32-bit count
+    uint32_t dwordCount = 0;
+    *this >> dwordCount;
+    CHECK_THAT(CheckState(), 0);
+    return dwordCount;
 }
 
 /// Loads an Microsoft based (MFC) string from the stream and copies the text to
@@ -60,17 +56,12 @@ bool PowerTabInputStream::ReadMFCString(string& str)
 {
     str.clear();
 
-    uint32_t length = ReadMFCStringLength();
-    str.reserve(length);
+    const uint32_t length = ReadMFCStringLength();
+    str.resize(length);
 
-    char temp;
-    for (uint32_t i=0; i < length; i++)
-    {
-        *this >> temp;
-        str += temp;
-    }
+    m_stream.read(&str[0], length);
     
-    return (CheckState());
+    return CheckState();
 }
 
 /// Reads a Win32 format COLORREF type from the stream
@@ -78,10 +69,6 @@ bool PowerTabInputStream::ReadMFCString(string& str)
 /// @return True if the color was read, false if not
 bool PowerTabInputStream::ReadWin32ColorRef(Colour& color)
 {
-    //------Last Checked------//
-    // - Dec 27, 2004
-    color.Set(0,0,0);
-
     uint32_t colorref = 0;
     *this >> colorref;
     CHECK_THAT(CheckState(), false);
@@ -98,11 +85,6 @@ bool PowerTabInputStream::ReadWin32ColorRef(Colour& color)
 /// @return True if the rect was read, false if not
 bool PowerTabInputStream::ReadMFCRect(Rect& rect)
 {
-    //------Last Checked------//
-    // - Dec 27, 2004
-
-    rect = Rect(0,0,0,0);
-
     int32_t left = 0, top = 0, right = 0, bottom = 0;
     *this >> left >> top >> right >> bottom;
     CHECK_THAT(CheckState(), false);
@@ -112,7 +94,7 @@ bool PowerTabInputStream::ReadMFCRect(Rect& rect)
     rect.SetRight(right);
     rect.SetBottom(bottom);
        
-    return CheckState();
+    return true;
 }
 
 void PowerTabInputStream::ReadClassInformation()
@@ -152,35 +134,22 @@ void PowerTabInputStream::ReadClassInformation()
         // read the class information for the object (class schema and class name)
         uint16_t schema = 0;
         uint16_t length = 0;
-        uint8_t character = 0;
 
         *this >> schema;
         *this >> length;
-        for (uint16_t i=0; i< length; i++)
-        {
-            *this >> character;
-        }
+        m_stream.seekg(length, std::ios_base::cur);
     }
 
-    else
-    {
-        // existing class index in obj_tag followed by new object
-        // no more reading to do here
-        return;
-    }
-
+    // otherwise, existing class index in obj_tag followed by new object
+    // no more reading to do here
 }
 
 
-/// Reads the length of a Microsoft based (MFC) string from a data input stream.
-/// Also determines the character size of the text (ANSI or Unicode)
-/// @param charSize Size of each character in the string; 1 - ANSI, 2 - Unicode
+/// Reads the length of a string from a data input stream.
 /// @return The length of the string, in characters
 uint32_t PowerTabInputStream::ReadMFCStringLength()
 {
     uint8_t byteLength = 0;
-    uint16_t wordLength = 0;
-    uint32_t doubleWordLength = 0;
     
     // First, try to read a one-byte length
     *this >> byteLength;
@@ -189,6 +158,7 @@ uint32_t PowerTabInputStream::ReadMFCStringLength()
     if (byteLength < 0xff)
         return byteLength;
 
+    uint16_t wordLength = 0;
     // Try a two-byte length
     *this >> wordLength;
     CHECK_THAT(CheckState(), 0);
@@ -196,9 +166,10 @@ uint32_t PowerTabInputStream::ReadMFCStringLength()
     if (wordLength < 0xffff)
         return wordLength;
 
+    uint32_t doubleWordLength = 0;
     // 4-byte length
     *this >> doubleWordLength;
     CHECK_THAT(CheckState(), 0);
     
-    return (doubleWordLength);
+    return doubleWordLength;
 }
