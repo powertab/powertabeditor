@@ -946,13 +946,11 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
     menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
+    menuList << positionSectionMenu << positionStaffMenu;
 
-    QAction* action;
-    QMenu* menu;
-
-    foreach(menu, menuList)
+    foreach(QMenu* menu, menuList)
     {
-        foreach(action, menu->actions())
+        foreach(QAction* action, menu->actions())
         {
             action->setEnabled(enable);
         }
