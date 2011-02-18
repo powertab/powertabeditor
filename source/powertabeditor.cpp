@@ -559,7 +559,7 @@ void PowerTabEditor::saveFileAs()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), previousDirectory, fileFilter);
     if (!fileName.isEmpty())
     {
-        // TODO - save the file
+        documentManager.getCurrentDocument()->Save(fileName.toStdString());
     }
 }
 

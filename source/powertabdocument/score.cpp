@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "score.h"
+#include "powertabfileheader.h"
 #include <map>
 #include <bitset>
 
@@ -185,7 +186,10 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream.ReadVector(m_systemArray, version);
     CHECK_THAT(stream.CheckState(), false);
 
-    UpdateToVer2Structure();
+    if (version == PowerTabFileHeader::FILEVERSION_1_7)
+    {
+        UpdateToVer2Structure();
+    }
 
     return (stream.CheckState());
 }

@@ -19,7 +19,8 @@ const uint16_t PowerTabFileHeader::FILEVERSION_1_0                    = 1;
 const uint16_t PowerTabFileHeader::FILEVERSION_1_0_2                  = 2;
 const uint16_t PowerTabFileHeader::FILEVERSION_1_5                    = 3;
 const uint16_t PowerTabFileHeader::FILEVERSION_1_7                    = 4;
-const uint16_t PowerTabFileHeader::FILEVERSION_CURRENT                = FILEVERSION_1_7;
+const uint16_t PowerTabFileHeader::FILEVERSION_2_0                    = 5;
+const uint16_t PowerTabFileHeader::FILEVERSION_CURRENT                = FILEVERSION_2_0;
 
 const uint8_t PowerTabFileHeader::NUM_FILETYPES                      = 2;
 const uint8_t PowerTabFileHeader::FILETYPE_SONG                      = 0;

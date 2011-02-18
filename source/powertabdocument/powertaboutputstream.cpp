@@ -127,13 +127,11 @@ bool PowerTabOutputStream::WriteMFCRect(const Rect& rect)
     return CheckState();
 }
 
-/// Writes a Power Tab object to the stream
+/// Writes a Power Tab object to the stream, in the format of MFC's CArchive
 /// @param object Power Tab object to write
 /// @return True if the object was written, false if not
 bool PowerTabOutputStream::WriteObject(PowerTabObject* object)
 {
-    //------Last Checked------//
-    // - Dec 21, 2004
     // object can be NULL
 
     // Make sure maps are initialized
@@ -184,9 +182,6 @@ bool PowerTabOutputStream::WriteObject(PowerTabObject* object)
 /// @return True if the class information was written, false if not
 bool PowerTabOutputStream::WriteClassInformation(const PowerTabObject* object)
 {
-    //------Last Checked------//
-    // - Dec 21, 2004
-
     if (object == NULL)
     {
         m_lastPowerTabError = POWERTABSTREAM_BAD_CLASS;
@@ -198,45 +193,53 @@ bool PowerTabOutputStream::WriteClassInformation(const PowerTabObject* object)
 
     // Write out class id of object, with high bit set to indicate
     // new object follows
-    //string classId = object->GetMFCClassId();
+    string classId = object->GetMFCClassName();
 
     // -0 is the id for classes that don't use MFC class information,
     // and thus can't be saved using this format
-    /*if (classId == "-0")
-	{
-		m_lastPowerTabError = POWERTABSTREAM_BAD_CLASS;
-		return (false);
+    if (classId == "-0")
+    {
+        m_lastPowerTabError = POWERTABSTREAM_BAD_CLASS;
+        return (false);
+    }
+
+    // ASSUME: initialized to 0 map
+    uint32_t nClassIndex = 0;
+    if (m_classInfoHashMap.find(classId) != m_classInfoHashMap.end())
+    {
+        nClassIndex = (uint32_t)m_classInfoHashMap[classId];
+        // Previously seen class, write out the index tagged by high bit
+        if (nClassIndex < BIG_OBJECT_TAG)
+            *this << (uint16_t)(CLASS_TAG | nClassIndex);
+        else
+        {
+            *this << BIG_OBJECT_TAG;
+            CHECK_THAT(CheckState(), false);
+            *this << (BIG_CLASS_TAG | nClassIndex);
         }
+    }
+    else
+    {
+        // Store new class
+        *this << NEW_CLASS_TAG;
+        CHECK_THAT(CheckState(), false);
 
-	// ASSUME: initialized to 0 map
-	uint32_t nClassIndex = 0;
-	if (m_classInfoHashMap.find(classId) != m_classInfoHashMap.end())
-	{
-		nClassIndex = (uint32_t)m_classInfoHashMap[classId];
-		// Previously seen class, write out the index tagged by high bit
-		if (nClassIndex < BIG_OBJECT_TAG)
-			*this << (uint16_t)(CLASS_TAG | nClassIndex);
-		else
-		{
-			*this << BIG_OBJECT_TAG;
-			CHECK_THAT(CheckState(), false);
-			*this << (BIG_CLASS_TAG | nClassIndex);
-		}
-	}
-	else
-	{
-		// Store new class
-		*this << NEW_CLASS_TAG;
-		CHECK_THAT(CheckState(), false);
-		
-                //object->WriteMFCClassInformation(*this);
-		CHECK_THAT(CheckState(), false);
+        // Write MFC Class Information
+        *this << object->GetMFCClassSchema();
+        CHECK_THAT(CheckState(), false);
 
-		// Store new class reference in map, checking for overflow
-		if (!CheckCount())
-			return (false);
-		m_classInfoHashMap[classId] = (uint32_t)m_mapCount++;
-        }*/
+        const string className = object->GetMFCClassName();
+        const uint16_t length = className.length();
+        *this << length;
+        m_stream.write(className.data(), length);
+
+        CHECK_THAT(CheckState(), false);
+
+        // Store new class reference in map, checking for overflow
+        if (!CheckCount())
+            return (false);
+        m_classInfoHashMap[classId] = (uint32_t)m_mapCount++;
+    }
 
     return (CheckState());
 }
@@ -291,24 +294,20 @@ bool PowerTabOutputStream::CheckCount()
 /// @return True if the object was mapped, false if not
 bool PowerTabOutputStream::MapObject(const PowerTabObject* object)
 {
-    //------Last Checked------//
-    // - Dec 20, 2004
-
     // Initialize the internal maps
     if (!m_mapsInitialized)
     {
         m_mapsInitialized = true;
 
-        // Note: use void* to void* because it is used for HANDLE maps too
-        //m_objectHashMap[NULL] = (void*)(uint32_t)NULL_TAG;
-        //m_mapCount = 1;
+        m_objectHashMap[NULL] = (uint32_t)NULL_TAG;
+        m_mapCount = 1;
     }
 
     // Map the object
     if (object != NULL)
     {
         if (!CheckCount())
-            return (false);
+            return false;
         m_objectHashMap[(PowerTabObject *)object] = (uint32_t)m_mapCount++;
     }
 

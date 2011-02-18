@@ -111,6 +111,7 @@ bool PowerTabDocument::Load(const string& fileName)
         return false;
     }
 
+    m_header.SetVersion(PowerTabFileHeader::FILEVERSION_CURRENT);
     m_fileName = fileName;
     return true;
 }

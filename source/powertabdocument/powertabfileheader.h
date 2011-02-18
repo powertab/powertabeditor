@@ -32,6 +32,7 @@ public:
     static const uint16_t FILEVERSION_1_0_2;                          ///< Version 1.0.2      Feb. 21, 2000
     static const uint16_t FILEVERSION_1_5;                            ///< Version 1.5        May. 22, 2000
     static const uint16_t FILEVERSION_1_7;                            ///< Version 1.7        Aug. 30, 2000
+    static const uint16_t FILEVERSION_2_0;                            ///< Version 2.0
     static const uint16_t FILEVERSION_CURRENT;                        ///< Current version of power tab file format
     
     static const uint8_t NUM_FILETYPES;                              ///< Number of file types
