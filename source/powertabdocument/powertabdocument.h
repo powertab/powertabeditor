@@ -70,25 +70,19 @@ public:
         }
    
 // Save Functions
-	//wxOutputStream& SaveObject(wxOutputStream& stream);
+        bool Save(const std::string& fileName);
 	
 // Load Functions
-	//TODO - fix these
-	//wxInputStream& LoadObject(wxInputStream& stream);
-        bool Load(string fileName);
-	bool Load(PowerTabInputStream& stream);
-	bool DeserializeFormat1_7(PowerTabInputStream& stream);
-	//bool DeserializeFormat1_5(PowerTabInputStream& stream);
-	//bool DeserializeFormat1_0(PowerTabInputStream& stream, uint16_t version);
+        bool Load(const std::string& fileName);
+        bool Deserialize(PowerTabInputStream& stream);
 	
-// Overrides
-	virtual bool DeleteContents();
+        void DeleteContents();
 
-        string GetFileName()
+        std::string GetFileName()
         {
             return m_fileName;
         }
-        bool SetFileName(string fileName)
+        bool SetFileName(const std::string& fileName)
         {
             m_fileName = fileName;
             return true;
@@ -113,10 +107,6 @@ public:
 	/// @return A pointer to the bass score
 	Score* GetBassScore() const
 		{CHECK_THAT(m_scoreArray.size() >= 2, NULL); return (m_scoreArray[1]);}
-	bool CanMergeGuitarScore(PowerTabDocument& document) const;
-	bool MergeGuitarScore(PowerTabDocument& document);
-	bool CanMergeBassScore(PowerTabDocument& document) const;    
-	bool MergeBassScore(PowerTabDocument& document);
 	void DeleteScoreArrayContents();
 
 // Font Setting Functions
@@ -206,12 +196,6 @@ public:
 	/// units (see generalmidi.h)
 	uint32_t GetFadeOut() const             
 		{return (m_fadeOut);}
-	
-// Error Functions
-	/*void DisplaySerializationError(const string& fileName, off_t offset,
-		const string& errorMessage);
-	void DisplayDeserializationError(const string& fileName, off_t offset,
-		const string& errorMessage);*/
 };
 
 #endif
