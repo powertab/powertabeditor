@@ -35,6 +35,8 @@ public:
         WholeNote = 0xe134,
         HalfNote = 0xe135,
         QuarterNoteOrLess = 0xe136,
+        FermataUp = 0xe161,
+        FermataDown = 0xe162,
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol

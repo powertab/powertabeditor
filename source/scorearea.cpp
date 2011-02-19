@@ -646,20 +646,56 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
             }
 
+            const double beamConnectorHeight = beamDirectionUp ? beamingGroup.first().topNotePos :
+                                               beamingGroup.first().bottomNotePos;
+
             if (beamingGroup.size() > 1)
             {
                 // draw the line that connects all of the beams
                 QGraphicsLineItem* connector = new QGraphicsLineItem;
 
-                double height = beamDirectionUp ? beamingGroup.first().topNotePos : beamingGroup.first().bottomNotePos;
-                connector->setLine(beamingGroup.first().location + 1, height, beamingGroup.last().location - 1, height);
+                connector->setLine(beamingGroup.first().location + 1, beamConnectorHeight,
+                                   beamingGroup.last().location - 1, beamConnectorHeight);
                 connector->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
                 connector->setParentItem(activeStaff);
+            }
+
+            // Draw fermatas if necessary
+            foreach(BeamingInfo beam, beamingGroup)
+            {
+                if (beam.position->HasFermata())
+                {
+                    drawFermata(currentStaffInfo, beam.location, beamConnectorHeight, beamDirectionUp);
+                }
             }
 
             beamingGroup.clear();
         }
     }
+}
+
+void ScoreArea::drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp)
+{
+    double y = 0;
+    // position the fermata directly above/below the staff if possible, unless the note beaming extends
+    // beyond the std. notation staff.
+    // After positioning, offset the height due to the way that QGraphicsTextItem positions text
+    if (beamDirectionUp)
+    {
+        y = std::min<double>(beamConnectorHeight, currentStaffInfo.getTopStdNotationLine(false));
+        y -= 33;
+    }
+    else
+    {
+        y = std::max<double>(beamConnectorHeight, currentStaffInfo.getBottomStdNotationLine(false));
+        y -= 25;
+    }
+
+    const QChar symbol = beamDirectionUp ? MusicFont::FermataUp : MusicFont::FermataDown;
+    QGraphicsSimpleTextItem* fermata = new QGraphicsSimpleTextItem(symbol);
+    fermata->setFont(musicFont.getFontRef());
+    fermata->setPos(x, y);
+    fermata->setParentItem(activeStaff);
 }
 
 // Centers an item, by using it's width to calculate the necessary offset from xmin

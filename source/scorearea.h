@@ -54,6 +54,7 @@ protected:
     void drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height);
+    void drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp);
 
     QGraphicsScene scene;
     MusicFont musicFont;
