@@ -331,6 +331,14 @@ void PowerTabEditor::createActions()
     togglePropertyMapper->setMapping(ghostNoteAct, toggleableProperties.size());
     toggleableProperties.push_back((ToggleablePropertyRecord<Note>) 
                                   {&getCurrentNote, &Note::IsGhostNote, &Note::SetGhostNote, ghostNoteAct->text()});
+
+    fermataAct = new QAction(tr("Fermata"), this);
+    fermataAct->setShortcut(QKeySequence(Qt::Key_F));
+    fermataAct->setCheckable(true);
+    connect(fermataAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(fermataAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+                                   {&getCurrentPosition, &Position::HasFermata, &Position::SetFermata, fermataAct->text()});
     
     staccatoNoteAct = new QAction(tr("Staccato"), this);
     staccatoNoteAct->setCheckable(true);
@@ -445,6 +453,8 @@ void PowerTabEditor::createMenus()
     notesMenu->addAction(noteMutedAct);
     notesMenu->addSeparator();
     notesMenu->addAction(ghostNoteAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(fermataAct);
     notesMenu->addSeparator();
     notesMenu->addAction(staccatoNoteAct);
 
@@ -936,6 +946,7 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(tiedNoteAct, currentNote, &Note::IsTied);
     updatePropertyStatus(staccatoNoteAct, currentPosition, &Position::IsStaccato);
     updatePropertyStatus(hammerPullAct, currentNote, &Note::HasHammerOnOrPulloff);
+    updatePropertyStatus(fermataAct, currentPosition, &Position::HasFermata);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

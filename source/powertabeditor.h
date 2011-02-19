@@ -151,6 +151,7 @@ protected:
     QAction* tiedNoteAct; // sets a note to be tied to the previous note
     QAction* noteMutedAct; // sets the note to be muted
     QAction* ghostNoteAct; // set a note to be a ghost note
+    QAction* fermataAct; // set a position as fermata
     QAction* staccatoNoteAct; // set the notes of a position to be staccato
 
     QMenu* musicSymbolsMenu;
