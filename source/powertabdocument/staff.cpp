@@ -398,13 +398,13 @@ void Staff::CalculateSymbolSpacing()
 {
     // Create list of all properties that are displayed between the tab staff and std. notation staff
     std::list<PositionProperty> positionFunctions = {
-        &Position::HasFermata, &Position::HasLetRing, &Position::HasVolumeSwell,
+        &Position::HasLetRing, &Position::HasVolumeSwell,
         &Position::HasVibrato, &Position::HasWideVibrato, &Position::HasPalmMuting,
         &Position::HasTremoloPicking, &Position::HasTremoloBar
     };
     
     std::list<NoteProperty> notePredicates = {
-        &Note::HasTrill, &Note::IsNaturalHarmonic
+        &Note::HasTrill, &Note::IsNaturalHarmonic, &Note::HasArtificialHarmonic
     };
     
     SetSymbolSpacing(CalculateSpacingForProperties(positionFunctions, notePredicates));
