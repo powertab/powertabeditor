@@ -37,6 +37,9 @@ public:
         QuarterNoteOrLess = 0xe136,
         FermataUp = 0xe161,
         FermataDown = 0xe162,
+        Vibrato = 0xe188,
+        WideVibrato = 0xe18c,
+        Trill = 0xe17a,
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol

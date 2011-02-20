@@ -55,6 +55,7 @@ protected:
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height);
     void drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp);
+    void drawSymbols(System* system, Staff* staff, const StaffData& currentStaffInfo);
 
     QGraphicsScene scene;
     MusicFont musicFont;
@@ -83,6 +84,25 @@ protected:
             topNotePos = 100000; // needs to be larger than any possible position, for using std::min
         }
     };
+
+    // Symbol drawing
+    struct SymbolInfo
+    {
+        QRect rect; ///< the bounding rectangle of the symbol group
+        QGraphicsItem* symbol; ///< contains the information for rendering the symbol
+    };
+
+    QGraphicsItem* createPalmMute(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createLetRing(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createNaturalHarmonic(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createArtificialHarmonic(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createVibrato(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createWideVibrato(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo);
+
+    QGraphicsItem* drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createConnectedSymbolGroup(const QString& text, uint8_t width,
+                                              const StaffData& currentStaffInfo, QFont::Style style = QFont::StyleNormal);
 
 public slots:
     void adjustScroll();

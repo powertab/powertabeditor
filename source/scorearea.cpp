@@ -146,6 +146,7 @@ void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
 
         drawLegato(system, currentStaff, currentStaffInfo);
         drawSlides(system, currentStaff, currentStaffInfo);
+        drawSymbols(system, currentStaff, currentStaffInfo);
     }
 }
 
@@ -696,6 +697,223 @@ void ScoreArea::drawFermata(const StaffData& currentStaffInfo, double x, double 
     fermata->setFont(musicFont.getFontRef());
     fermata->setPos(x, y);
     fermata->setParentItem(activeStaff);
+}
+
+/// Draws the symbols that appear between the tab and standard notation staves
+void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &currentStaffInfo)
+{
+    typedef QGraphicsItem* (ScoreArea::*SymbolCreator)(uint8_t, const StaffData&);
+
+    std::list<SymbolInfo> symbols; // holds all of the symbols that we will draw
+
+    std::vector<Staff::PositionProperty> groupableSymbolPredicates = {
+        &Position::HasLetRing, &Position::HasVibrato, &Position::HasWideVibrato,
+        &Position::HasPalmMuting, &Position::HasNoteWithNaturalHarmonic,
+        &Position::HasNoteWithArtificialHarmonic
+    };
+
+    // function pointers for drawing symbols corresponding to each of the items in the groupableSymbolPredicates list
+    std::vector<SymbolCreator> groupableSymbolCreators = {
+        &ScoreArea::createLetRing, &ScoreArea::createVibrato, &ScoreArea::createWideVibrato,
+        &ScoreArea::createPalmMute, &ScoreArea::createNaturalHarmonic,
+        &ScoreArea::createArtificialHarmonic
+    };
+
+    // Generates the bounding rectangles for each symbol group (i.e. consecutive 'let ring' symbols)
+    // - each rectangle has equal height, and a fixed x-coordinate (the position that a symbol group starts at)
+    // - the rectangle's width represents the number of positions that the symbol group spans
+    // - we later adjust the rectangles' y-coordinates to arrange the symbols without overlap
+    for (auto predicate = groupableSymbolPredicates.begin(); predicate != groupableSymbolPredicates.end(); ++predicate)
+    {
+        bool inGroup = false;
+        SymbolInfo currentSymbolInfo;
+
+        for (size_t i = 0; i < staff->GetPositionCount(0); i++)
+        {
+            Position* currentPosition = staff->GetPosition(0, i);
+
+            const bool propertySet = (currentPosition->**predicate)();
+
+            if (propertySet)
+            {
+                if (inGroup)
+                {
+                    currentSymbolInfo.rect.setRight(currentPosition->GetPosition());
+                }
+                else
+                {
+                    currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
+                    inGroup = true;
+                }
+            }
+            else if (inGroup)
+            {
+                // close the rectangle and render the symbol
+
+                currentSymbolInfo.rect.setRight(currentPosition->GetPosition() - 1);
+                inGroup = false;
+                SymbolCreator symbolCreator = groupableSymbolCreators.at(predicate - groupableSymbolPredicates.begin());
+                currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
+                symbols.push_back(currentSymbolInfo);
+            }
+        }
+    }
+
+    std::vector<Staff::PositionProperty> singleSymbolPredicates = {
+        &Position::HasVolumeSwell, &Position::HasTremoloPicking,
+        &Position::HasTremoloBar, &Position::HasNoteWithTrill
+    };
+    // function pointers for drawing symbols corresponding to each of the items in the singleSymbolPredicates list
+    std::vector<SymbolCreator> singleSymbolCreators = {
+        &ScoreArea::createPalmMute, &ScoreArea::createPalmMute,
+        &ScoreArea::createPalmMute, &ScoreArea::createTrill
+    };
+
+    // Now, generate the rectangles for individual (non-groupable) symbols
+    for (auto predicate = singleSymbolPredicates.begin(); predicate != singleSymbolPredicates.end(); ++predicate)
+    {
+        SymbolInfo currentSymbolInfo;
+
+        for (size_t i = 0; i < staff->GetPositionCount(0); i++)
+        {
+            Position* currentPosition = staff->GetPosition(0, i);
+
+            const bool propertySet = (currentPosition->**predicate)();
+
+            if (propertySet)
+            {
+                // create the rectangle and render the symbol
+                currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
+
+                SymbolCreator symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
+                currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
+                symbols.push_back(currentSymbolInfo);
+            }
+        }
+    }
+
+    // stores the maximum height that has been occupied at each position
+    // this is used to figure out how low we can place a symbol group
+    std::vector<uint8_t> heightMap(system->CalculatePositionCount(currentStaffInfo.positionWidth), 0);
+
+    for (auto i = symbols.begin(); i != symbols.end(); i++)
+    {
+        // find the height to draw the symbol group at
+        const int left = i->rect.left();
+        const int right = i->rect.right();
+
+        // find the lowest height we can place a rectangle at without overlapping the already-placed rectangles
+        const int height = *std::max_element(heightMap.begin() + left, heightMap.begin() + right) + 1;
+        // update the height map and adjust the current symbol group's height
+        std::fill_n(heightMap.begin() + left, i->rect.width(), height);
+        i->rect.moveTop(height);
+
+        // draw the symbol group
+        i->symbol->setPos(system->GetPositionX(i->rect.left()),
+                          currentStaffInfo.getTopTabLine(false) - (i->rect.y() + 1) * Staff::TAB_SYMBOL_HEIGHT);
+        i->symbol->setParentItem(activeStaff);
+    }
+}
+
+// Draws symbols that are grouped across multiple positions (i.e. consecutive "let ring" symbols)
+QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, uint8_t width,
+                                                     const StaffData& currentStaffInfo, QFont::Style style)
+{
+    static QFont font("Liberation Sans");
+    font.setPixelSize(9);
+    font.setStyle(style);
+
+    // Render the description (i.e. "let ring")
+    QGraphicsSimpleTextItem* description = new QGraphicsSimpleTextItem;
+    description->setText(text);
+    description->setFont(font);
+
+    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    group->addToGroup(description);
+
+    // Draw dashed line across the remaining positions in the group
+    if (width > 1)
+    {
+        const double rightEdge = width * currentStaffInfo.positionWidth - 0.5 * currentStaffInfo.positionWidth;
+        const double leftEdge = description->boundingRect().right();
+        const double middleHeight = Staff::TAB_SYMBOL_HEIGHT / 2.0;
+        QGraphicsLineItem* line = new QGraphicsLineItem(leftEdge, middleHeight, rightEdge, middleHeight);
+        line->setPen(QPen(Qt::black, 1, Qt::DashLine));
+
+        group->addToGroup(line);
+
+        // Draw a vertical line at the end of the dotted lines
+        QGraphicsLineItem* lineEnd = new QGraphicsLineItem(line->boundingRect().right(), 1,
+                                                           line->boundingRect().right(), Staff::TAB_SYMBOL_HEIGHT - 1);
+        group->addToGroup(lineEnd);
+    }
+
+    return group;
+}
+
+QGraphicsItem* ScoreArea::createPalmMute(uint8_t width, const StaffData &currentStaffInfo)
+{
+    return createConnectedSymbolGroup("P.M.", width, currentStaffInfo);
+}
+
+QGraphicsItem* ScoreArea::createLetRing(uint8_t width, const StaffData &currentStaffInfo)
+{
+    return createConnectedSymbolGroup("let ring", width, currentStaffInfo, QFont::StyleItalic);
+}
+
+QGraphicsItem* ScoreArea::createNaturalHarmonic(uint8_t width, const StaffData &currentStaffInfo)
+{
+    return createConnectedSymbolGroup("N.H.", width, currentStaffInfo);
+}
+
+QGraphicsItem* ScoreArea::createArtificialHarmonic(uint8_t width, const StaffData &currentStaffInfo)
+{
+    return createConnectedSymbolGroup("A.H.", width, currentStaffInfo);
+}
+
+QGraphicsItem* ScoreArea::drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo)
+{
+    QFont font = musicFont.getFont();
+    font.setPixelSize(25);
+
+    const double symbolWidth = QFontMetricsF(font).width(symbol);
+    const int numSymbols = width * currentStaffInfo.positionWidth / symbolWidth;
+    QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(QString(numSymbols, symbol));
+    text->setFont(font);
+    text->setPos(0, -25);
+
+    // a bit of a hack for getting around the height offset caused by the music font
+    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    group->addToGroup(text);
+
+    return group;
+}
+
+QGraphicsItem* ScoreArea::createVibrato(uint8_t width, const StaffData& currentStaffInfo)
+{
+    return drawContinuousFontSymbols(MusicFont::getSymbol(MusicFont::Vibrato), width, currentStaffInfo);
+}
+
+QGraphicsItem* ScoreArea::createWideVibrato(uint8_t width, const StaffData& currentStaffInfo)
+{
+    return drawContinuousFontSymbols(MusicFont::getSymbol(MusicFont::WideVibrato), width, currentStaffInfo);
+}
+
+QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentStaffInfo)
+{
+    Q_UNUSED(width);
+
+    QFont font(musicFont.getFont());
+    font.setPixelSize(21);
+
+    QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(MusicFont::getSymbol(MusicFont::Trill));
+    text->setFont(font);
+    centerItem(text, 0, currentStaffInfo.positionWidth, -18);
+
+    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    group->addToGroup(text);
+
+    return group;
 }
 
 // Centers an item, by using it's width to calculate the necessary offset from xmin
