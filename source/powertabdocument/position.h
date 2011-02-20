@@ -834,6 +834,18 @@ public:
 protected:
     int GetShiftedStringNumber(Note* note, ShiftType type) const;
     int GetShiftedFretNumber(Note* note, int originalString, int newString, const Tuning& tuning) const;
+
+public:
+    // Functions for checking if at least one of the member notes has a property enabled
+    bool HasNoteWithTrill() const;
+    bool HasNoteWithNaturalHarmonic() const;
+    bool HasNoteWithArtificialHarmonic() const;
+    bool HasNoteWithHammeronOrPulloff() const;
+    bool HasNoteWithSlide() const;
+    bool HasNoteWithTappedHarmonic() const;
+
+protected:
+    bool HasNoteWithProperty(bool (Note::*notePropertyPredicate)() const) const;
 };
 
 #endif

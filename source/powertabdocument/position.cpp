@@ -889,3 +889,41 @@ int Position::GetShiftedFretNumber(Note* note, int originalString, int newString
 
     return originalFret + pitchDiff;
 }
+
+// Checks if at least one of the notes at this position satisfies the given predicate
+bool Position::HasNoteWithProperty(bool (Note::*notePropertyPredicate)() const) const
+{
+    return std::find_if(m_noteArray.begin(), m_noteArray.end(),
+                        std::mem_fun(notePropertyPredicate)) != m_noteArray.end();
+}
+
+bool Position::HasNoteWithTrill() const
+{
+    return HasNoteWithProperty(&Note::HasTrill);
+}
+
+bool Position::HasNoteWithNaturalHarmonic() const
+{
+    return HasNoteWithProperty(&Note::IsNaturalHarmonic);
+}
+
+bool Position::HasNoteWithArtificialHarmonic() const
+{
+    return HasNoteWithProperty(&Note::HasArtificialHarmonic);
+}
+
+bool Position::HasNoteWithHammeronOrPulloff() const
+{
+    return HasNoteWithProperty(&Note::HasHammerOnOrPulloff);
+}
+
+bool Position::HasNoteWithSlide() const
+{
+    return HasNoteWithProperty(&Note::HasSlide);
+}
+
+bool Position::HasNoteWithTappedHarmonic() const
+{
+    return HasNoteWithProperty(&Note::HasTappedHarmonic);
+}
+

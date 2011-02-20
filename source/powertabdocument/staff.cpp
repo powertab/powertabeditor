@@ -351,8 +351,7 @@ namespace
 }
 
 /// Calculates the spacing required to display the given position and note properties.
-int Staff::CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions,
-                                         const std::list<NoteProperty>& notePredicates) const
+int Staff::CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const
 {
     int maxNumProperties = 0;
     for (auto i = highMelodyPositionArray.begin(); i != highMelodyPositionArray.end(); ++i)
@@ -362,16 +361,6 @@ int Staff::CalculateSpacingForProperties(const std::list<PositionProperty>& posi
         // Check how many position properties are enabled at the current position
         TestPredicatePtr<Position> pred(*i);
         numProperties = std::count_if(positionFunctions.begin(), positionFunctions.end(), pred);
-        
-        std::vector<Note*> currentNotes;
-        (*i)->GetNotes(currentNotes);
-        // For each of the note properties, they will be displayed if they are enabled for at least one of
-        // the notes at the current position
-        for (auto j = notePredicates.begin(); j != notePredicates.end(); ++j)
-        {
-            // check if the predicate is true for at least one note
-            numProperties += std::find_if(currentNotes.begin(), currentNotes.end(), std::mem_fun(*j)) != currentNotes.end();
-        }
         
         // the highest number of properties enabled for a position in this system will determine the required height
         maxNumProperties = std::max(maxNumProperties, numProperties);
@@ -384,14 +373,12 @@ void Staff::CalculateTabStaffBelowSpacing()
 {
     // Create list of all properties that are displayed below the tab staff
     std::list<PositionProperty> positionFunctions = {
-        &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap
+        &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap,
+        &Position::HasNoteWithHammeronOrPulloff, &Position::HasNoteWithSlide,
+        &Position::HasNoteWithTappedHarmonic, &Position::HasNoteWithArtificialHarmonic
     };
     
-    std::list<NoteProperty> notePredicates = {
-        &Note::HasHammerOnOrPulloff, &Note::HasSlide, &Note::HasTappedHarmonic, &Note::HasArtificialHarmonic        
-    };
-    
-    SetTablatureStaffBelowSpacing(CalculateSpacingForProperties(positionFunctions, notePredicates));
+    SetTablatureStaffBelowSpacing(CalculateSpacingForProperties(positionFunctions));
 }
 
 void Staff::CalculateSymbolSpacing()
@@ -400,12 +387,9 @@ void Staff::CalculateSymbolSpacing()
     std::list<PositionProperty> positionFunctions = {
         &Position::HasLetRing, &Position::HasVolumeSwell,
         &Position::HasVibrato, &Position::HasWideVibrato, &Position::HasPalmMuting,
-        &Position::HasTremoloPicking, &Position::HasTremoloBar
+        &Position::HasTremoloPicking, &Position::HasTremoloBar, &Position::HasNoteWithTrill,
+        &Position::HasNoteWithNaturalHarmonic, &Position::HasNoteWithArtificialHarmonic
     };
     
-    std::list<NoteProperty> notePredicates = {
-        &Note::HasTrill, &Note::IsNaturalHarmonic, &Note::HasArtificialHarmonic
-    };
-    
-    SetSymbolSpacing(CalculateSpacingForProperties(positionFunctions, notePredicates));
+    SetSymbolSpacing(CalculateSpacingForProperties(positionFunctions));
 }
