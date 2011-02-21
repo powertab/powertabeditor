@@ -160,6 +160,8 @@ protected:
     QMenu* tabSymbolsMenu;
     QAction* hammerPullAct; // add/remove hammer-on or pull-off
     QAction* naturalHarmonicAct; // add/remove natural harmonics
+    QAction* vibratoAct; // add/remove vibrato
+    QAction* wideVibratoAct;
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab

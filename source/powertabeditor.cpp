@@ -369,6 +369,24 @@ void PowerTabEditor::createActions()
                                   {&getCurrentNote, &Note::IsNaturalHarmonic,
                                    &Note::SetNaturalHarmonic, naturalHarmonicAct->text()});
 
+    vibratoAct = new QAction(tr("Vibrato"), this);
+    vibratoAct->setCheckable(true);
+    vibratoAct->setShortcut(QKeySequence(Qt::Key_V));
+    connect(vibratoAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(vibratoAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+                                   {&getCurrentPosition, &Position::HasVibrato,
+                                    &Position::SetVibrato, vibratoAct->text()});
+
+    wideVibratoAct = new QAction(tr("Wide Vibrato"), this);
+    wideVibratoAct->setCheckable(true);
+    wideVibratoAct->setShortcut(QKeySequence(Qt::Key_W));
+    connect(wideVibratoAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(wideVibratoAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+                                   {&getCurrentPosition, &Position::HasWideVibrato,
+                                    &Position::SetWideVibrato, wideVibratoAct->text()});
+
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
 
@@ -466,6 +484,9 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     tabSymbolsMenu->addAction(hammerPullAct);
     tabSymbolsMenu->addAction(naturalHarmonicAct);
+    tabSymbolsMenu->addSeparator();
+    tabSymbolsMenu->addAction(vibratoAct);
+    tabSymbolsMenu->addAction(wideVibratoAct);
 
     // Window Menu
     windowMenu = menuBar()->addMenu(tr("&Window"));
@@ -947,6 +968,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(staccatoNoteAct, currentPosition, &Position::IsStaccato);
     updatePropertyStatus(hammerPullAct, currentNote, &Note::HasHammerOnOrPulloff);
     updatePropertyStatus(fermataAct, currentPosition, &Position::HasFermata);
+    updatePropertyStatus(vibratoAct, currentPosition, &Position::HasVibrato);
+    updatePropertyStatus(wideVibratoAct, currentPosition, &Position::HasWideVibrato);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);
