@@ -765,7 +765,7 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
     };
     // function pointers for drawing symbols corresponding to each of the items in the singleSymbolPredicates list
     std::vector<SymbolCreator> singleSymbolCreators = {
-        &ScoreArea::createPalmMute, &ScoreArea::createPalmMute,
+        &ScoreArea::createPalmMute, &ScoreArea::createTremoloPicking,
         &ScoreArea::createPalmMute, &ScoreArea::createTrill
     };
 
@@ -912,6 +912,25 @@ QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentSta
 
     QGraphicsItemGroup* group = new QGraphicsItemGroup;
     group->addToGroup(text);
+
+    return group;
+}
+
+QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo)
+{
+    Q_UNUSED(width);
+
+    const double offset = Staff::TAB_SYMBOL_HEIGHT / 3;
+
+    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+
+    for (int i = 0; i < 3; i++)
+    {
+        QGraphicsSimpleTextItem* line = new QGraphicsSimpleTextItem(MusicFont::getSymbol(MusicFont::TremoloPicking));
+        line->setFont(musicFont.getFontRef());
+        centerItem(line, 0, currentStaffInfo.positionWidth * 1.25, -37 + i * offset);
+        group->addToGroup(line);
+    }
 
     return group;
 }
