@@ -387,6 +387,15 @@ void PowerTabEditor::createActions()
                                    {&getCurrentPosition, &Position::HasWideVibrato,
                                     &Position::SetWideVibrato, wideVibratoAct->text()});
 
+    palmMuteAct = new QAction(tr("Palm Mute"), this);
+    palmMuteAct->setCheckable(true);
+    palmMuteAct->setShortcut(QKeySequence(Qt::Key_M));
+    connect(palmMuteAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+    togglePropertyMapper->setMapping(palmMuteAct, toggleableProperties.size());
+    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+                                   {&getCurrentPosition, &Position::HasPalmMuting,
+                                    &Position::SetPalmMuting, palmMuteAct->text()});
+
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
 
@@ -487,6 +496,8 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(vibratoAct);
     tabSymbolsMenu->addAction(wideVibratoAct);
+    tabSymbolsMenu->addSeparator();
+    tabSymbolsMenu->addAction(palmMuteAct);
 
     // Window Menu
     windowMenu = menuBar()->addMenu(tr("&Window"));
@@ -970,6 +981,7 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(fermataAct, currentPosition, &Position::HasFermata);
     updatePropertyStatus(vibratoAct, currentPosition, &Position::HasVibrato);
     updatePropertyStatus(wideVibratoAct, currentPosition, &Position::HasWideVibrato);
+    updatePropertyStatus(palmMuteAct, currentPosition, &Position::HasPalmMuting);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

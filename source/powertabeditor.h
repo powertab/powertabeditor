@@ -162,6 +162,7 @@ protected:
     QAction* naturalHarmonicAct; // add/remove natural harmonics
     QAction* vibratoAct; // add/remove vibrato
     QAction* wideVibratoAct;
+    QAction* palmMuteAct; // toggle palm-muting
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab
