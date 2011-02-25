@@ -727,35 +727,41 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
     {
         bool inGroup = false;
         SymbolInfo currentSymbolInfo;
+        const size_t numPositions = staff->GetPositionCount(0);
+        SymbolCreator symbolCreator = groupableSymbolCreators.at(predicate - groupableSymbolPredicates.begin());
 
-        for (size_t i = 0; i < staff->GetPositionCount(0); i++)
+        for (size_t i = 0; i < numPositions; i++)
         {
             Position* currentPosition = staff->GetPosition(0, i);
 
             const bool propertySet = (currentPosition->**predicate)();
 
-            if (propertySet)
+            if (propertySet && inGroup)
             {
-                if (inGroup)
-                {
-                    currentSymbolInfo.rect.setRight(currentPosition->GetPosition());
-                }
-                else
-                {
-                    currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
-                    inGroup = true;
-                }
+                // extend the rectangle to the current position
+                currentSymbolInfo.rect.setRight(currentPosition->GetPosition());
             }
-            else if (inGroup)
+            if (propertySet && !inGroup)
             {
-                // close the rectangle and render the symbol
-
+                // start the rectangle
+                currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
+                inGroup = true;
+            }
+            if (!propertySet && inGroup)
+            {
+                // close up the rectangle and draw the symbol
                 currentSymbolInfo.rect.setRight(currentPosition->GetPosition() - 1);
                 inGroup = false;
-                SymbolCreator symbolCreator = groupableSymbolCreators.at(predicate - groupableSymbolPredicates.begin());
                 currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
                 symbols.push_back(currentSymbolInfo);
             }
+        }
+
+        // if we're at the end of the staff, close the current rectangle if necessary
+        if (inGroup)
+        {
+            currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
+            symbols.push_back(currentSymbolInfo);
         }
     }
 
