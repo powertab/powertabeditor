@@ -333,6 +333,11 @@ void PowerTabEditor::createActions()
     fermataAct->setCheckable(true);
     connectTogglePropertyAction(fermataAct, (ToggleablePropertyRecord<Position>)
                                    {&getCurrentPosition, &Position::HasFermata, &Position::SetFermata, fermataAct->text()});
+
+    letRingAct = new QAction(tr("Let Ring"), this);
+    letRingAct->setCheckable(true);
+    connectTogglePropertyAction(letRingAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::HasLetRing, &Position::SetLetRing, letRingAct->text()});
     
     staccatoNoteAct = new QAction(tr("Staccato"), this);
     staccatoNoteAct->setCheckable(true);
@@ -379,6 +384,12 @@ void PowerTabEditor::createActions()
     connectTogglePropertyAction(palmMuteAct, (ToggleablePropertyRecord<Position>)
                                    {&getCurrentPosition, &Position::HasPalmMuting,
                                     &Position::SetPalmMuting, palmMuteAct->text()});
+
+    tremoloPickingAct = new QAction(tr("Tremolo Picking"), this);
+    tremoloPickingAct->setCheckable(true);
+    connectTogglePropertyAction(tremoloPickingAct, (ToggleablePropertyRecord<Position>)
+                                   {&getCurrentPosition, &Position::HasTremoloPicking,
+                                    &Position::SetTremoloPicking, tremoloPickingAct->text()});
 
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
@@ -477,6 +488,7 @@ void PowerTabEditor::createMenus()
     notesMenu->addSeparator();
     notesMenu->addAction(ghostNoteAct);
     notesMenu->addSeparator();
+    notesMenu->addAction(letRingAct);
     notesMenu->addAction(fermataAct);
     notesMenu->addSeparator();
     notesMenu->addAction(staccatoNoteAct);
@@ -494,6 +506,7 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addAction(wideVibratoAct);
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(palmMuteAct);
+    tabSymbolsMenu->addAction(tremoloPickingAct);
 
     // Window Menu
     windowMenu = menuBar()->addMenu(tr("&Window"));
@@ -978,6 +991,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(vibratoAct, currentPosition, &Position::HasVibrato);
     updatePropertyStatus(wideVibratoAct, currentPosition, &Position::HasWideVibrato);
     updatePropertyStatus(palmMuteAct, currentPosition, &Position::HasPalmMuting);
+    updatePropertyStatus(letRingAct, currentPosition, &Position::HasLetRing);
+    updatePropertyStatus(tremoloPickingAct, currentPosition, &Position::HasTremoloPicking);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);
