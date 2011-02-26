@@ -205,6 +205,8 @@ protected:
     // and then perform an undo/redo action using the functions in the ToggleablePropertyRecord, after a signal is triggered
     typedef boost::variant< ToggleablePropertyRecord<Note>, ToggleablePropertyRecord<Position> > ToggleableProperty;
     QList<ToggleableProperty> toggleableProperties; 
+
+    void connectTogglePropertyAction(QAction* action, const ToggleableProperty& propertyInfo);
     
     // Takes a ToggleablePropertyRecord from the 'toggleableProperties' list of boost::variant objects,
     // and performs an undo/redo action

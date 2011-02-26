@@ -319,33 +319,25 @@ void PowerTabEditor::createActions()
     
     noteMutedAct = new QAction(tr("Muted"), this);
     noteMutedAct->setCheckable(true);
-    connect(noteMutedAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(noteMutedAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Note>) 
-                                  {&getCurrentNote, &Note::IsMuted, &Note::SetMuted, noteMutedAct->text()});
+    connectTogglePropertyAction(noteMutedAct, (ToggleablePropertyRecord<Note>)
+                                {&getCurrentNote, &Note::IsMuted, &Note::SetMuted, noteMutedAct->text()});
 
     ghostNoteAct = new QAction(tr("Ghost Note"), this);
     ghostNoteAct->setShortcut(QKeySequence(Qt::Key_N));
     ghostNoteAct->setCheckable(true);
-    connect(ghostNoteAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(ghostNoteAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Note>) 
+    connectTogglePropertyAction(ghostNoteAct, (ToggleablePropertyRecord<Note>)
                                   {&getCurrentNote, &Note::IsGhostNote, &Note::SetGhostNote, ghostNoteAct->text()});
 
     fermataAct = new QAction(tr("Fermata"), this);
     fermataAct->setShortcut(QKeySequence(Qt::Key_F));
     fermataAct->setCheckable(true);
-    connect(fermataAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(fermataAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+    connectTogglePropertyAction(fermataAct, (ToggleablePropertyRecord<Position>)
                                    {&getCurrentPosition, &Position::HasFermata, &Position::SetFermata, fermataAct->text()});
     
     staccatoNoteAct = new QAction(tr("Staccato"), this);
     staccatoNoteAct->setCheckable(true);
     staccatoNoteAct->setShortcut(QKeySequence(Qt::Key_Z));
-    connect(staccatoNoteAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(staccatoNoteAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+    connectTogglePropertyAction(staccatoNoteAct, (ToggleablePropertyRecord<Position>)
                                   {&getCurrentPosition, &Position::IsStaccato, &Position::SetStaccato, staccatoNoteAct->text()});
     
     
@@ -363,36 +355,28 @@ void PowerTabEditor::createActions()
     
     naturalHarmonicAct = new QAction(tr("Natural Harmonic"), this);
     naturalHarmonicAct->setCheckable(true);
-    connect(naturalHarmonicAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(naturalHarmonicAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Note>)
+    connectTogglePropertyAction(naturalHarmonicAct, (ToggleablePropertyRecord<Note>)
                                   {&getCurrentNote, &Note::IsNaturalHarmonic,
                                    &Note::SetNaturalHarmonic, naturalHarmonicAct->text()});
 
     vibratoAct = new QAction(tr("Vibrato"), this);
     vibratoAct->setCheckable(true);
     vibratoAct->setShortcut(QKeySequence(Qt::Key_V));
-    connect(vibratoAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(vibratoAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+    connectTogglePropertyAction(vibratoAct, (ToggleablePropertyRecord<Position>)
                                    {&getCurrentPosition, &Position::HasVibrato,
                                     &Position::SetVibrato, vibratoAct->text()});
 
     wideVibratoAct = new QAction(tr("Wide Vibrato"), this);
     wideVibratoAct->setCheckable(true);
     wideVibratoAct->setShortcut(QKeySequence(Qt::Key_W));
-    connect(wideVibratoAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(wideVibratoAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+    connectTogglePropertyAction(wideVibratoAct, (ToggleablePropertyRecord<Position>)
                                    {&getCurrentPosition, &Position::HasWideVibrato,
                                     &Position::SetWideVibrato, wideVibratoAct->text()});
 
     palmMuteAct = new QAction(tr("Palm Mute"), this);
     palmMuteAct->setCheckable(true);
     palmMuteAct->setShortcut(QKeySequence(Qt::Key_M));
-    connect(palmMuteAct, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-    togglePropertyMapper->setMapping(palmMuteAct, toggleableProperties.size());
-    toggleableProperties.push_back((ToggleablePropertyRecord<Position>)
+    connectTogglePropertyAction(palmMuteAct, (ToggleablePropertyRecord<Position>)
                                    {&getCurrentPosition, &Position::HasPalmMuting,
                                     &Position::SetPalmMuting, palmMuteAct->text()});
 
@@ -412,6 +396,18 @@ void PowerTabEditor::createActions()
     connect(tabCycleMapper, SIGNAL(mapped(int)), this, SLOT(cycleTab(int)));
     
     connect(togglePropertyMapper, SIGNAL(mapped(int)), this, SLOT(editProperty(int)));
+}
+
+/// This function simplifies the process of initializing a QAction for a ToggleableProperty.
+/// Connects and maps the QAction to the QSignalMapper, and adds the propertyInfo to the toggleableProperties list
+void PowerTabEditor::connectTogglePropertyAction(QAction* action, const ToggleableProperty& propertyInfo)
+{
+    Q_ASSERT(togglePropertyMapper != NULL);
+
+    connect(action, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
+
+    toggleableProperties.push_back(propertyInfo);
+    togglePropertyMapper->setMapping(action, toggleableProperties.size() - 1);
 }
 
 void PowerTabEditor::createMenus()
