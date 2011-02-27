@@ -219,6 +219,8 @@ public:
     bool SetDurationType(uint8_t durationType);
     uint8_t GetDurationType() const;
 
+    double GetDuration() const;
+
     // Irregular Grouping Functions
     /// Determines if an irregular grouping timing is valid
     /// @param notesPlayed Number of notes played
@@ -309,6 +311,8 @@ public:
     /// @return True if the beaming data was cleared, false if not
     bool ClearBeam()
     {return (ClearBeamingFlag(beamingFlagsMask));}
+
+    bool IsBeamable() const;
 
 protected:
     /// Determines if a beaming flag is valid

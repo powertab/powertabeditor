@@ -293,6 +293,8 @@ public:
 
     void CalculateHeight();
     uint32_t GetStaffHeightOffset(uint32_t staff, bool absolutePos = false);
+
+    void CalculateBeamingForStaves();
 };
 
 #endif

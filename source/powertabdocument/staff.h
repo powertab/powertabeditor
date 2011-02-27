@@ -17,6 +17,7 @@
 #include <list>
 
 class System;
+class Barline;
 
 #define NUM_STAFF_VOICES 2    ///< Number of voices in a staff
 
@@ -222,6 +223,10 @@ public:
 
     int GetHeight() const;
     
+    void GetPositionsInRange(std::vector<Position*>& positions, size_t startPos, size_t endPos);
+    void CalculateBeamingForBar(const Barline* startBar, const Barline* endBar);
+    void CalculateBeamingForGroup(std::vector<Position*>& positions);
+
     void CalculateTabStaffBelowSpacing();
     void CalculateSymbolSpacing();
     

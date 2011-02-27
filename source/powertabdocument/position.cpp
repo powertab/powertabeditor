@@ -305,6 +305,30 @@ uint8_t Position::GetDurationType() const
     return ((uint8_t)((m_data & durationTypeMask) >> 24));
 }
 
+/// Returns the note duration, including dots, irregular groupings, etc
+/// This does not include tempo, and the durations are relative to a quarter note
+/// (i.e. A quarter note is 1.0, eighth note is 0.5, etc)
+double Position::GetDuration() const
+{
+    double duration = 4.0 / GetDurationType();
+
+    duration += IsDotted() * 0.5 * duration;
+    duration += IsDoubleDotted() * 0.75 * duration;
+
+    // adjust for irregular groupings (triplets, etc)
+    if (HasIrregularGroupingTiming())
+    {
+        uint8_t notesPlayed = 0, notesPlayedOver = 0;
+        GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
+
+        // for example, with triplets we have 3 notes played in the time of 2,
+        // so each note is 2/3 of its normal duration
+        duration *= static_cast<double>(notesPlayedOver) / static_cast<double>(notesPlayed);
+    }
+
+    return duration;
+}
+
 // Irregular Grouping Functions
 /// Sets the irregular grouping timing
 /// @param notesPlayed Number of notes played
@@ -443,6 +467,13 @@ bool Position::SetBeamingFlag(uint16_t flag)
     m_beaming |= flag;
 
     return (true);
+}
+
+/// Returns whether the position can be beamed with other notes
+/// - The note duration must be an eighth note or less, and the position cannot be a rest
+bool Position::IsBeamable() const
+{
+    return (GetDurationType() >= 8 && !IsRest());
 }
 
 // Data Flag Functions

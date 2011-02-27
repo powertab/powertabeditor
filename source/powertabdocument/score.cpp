@@ -295,6 +295,8 @@ void Score::UpdateToVer2Structure()
             currentSystem->SetRect(currentRect);
         }
 
+        // recalculate the beaming for the member staves, using the current beaming algorithm
+        currentSystem->CalculateBeamingForStaves();
     }
 }
 
@@ -342,10 +344,12 @@ void Score::UpdateSystemHeight(System *system)
     
     for (size_t i = 0; i < system->GetStaffCount(); i++)
     {
-        Staff* currentSystem = system->GetStaff(i);
-        currentSystem->CalculateTabStaffBelowSpacing();
-        currentSystem->CalculateSymbolSpacing();
+        Staff* currentStaff = system->GetStaff(i);
+        currentStaff->CalculateTabStaffBelowSpacing();
+        currentStaff->CalculateSymbolSpacing();
     }
+
+    system->CalculateBeamingForStaves();
     
     UpdateExtraSpacing(system);
     

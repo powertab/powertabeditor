@@ -670,3 +670,22 @@ bool System::HasRehearsalSign() const
     }
     return false;
 }
+
+/// Recalculates the note beaming for each staff in the system
+void System::CalculateBeamingForStaves()
+{
+    std::vector<Barline*> barlines;
+    GetBarlines(barlines);
+
+    // the end bar doesn't keep track of its position normally, so add it in for these calculations
+    m_endBar.SetPosition(this->GetPositionCount());
+
+    for(auto staff = m_staffArray.begin(); staff != m_staffArray.end(); ++staff)
+    {
+        // calculate the beaming for the notes between each pair of barlines
+        for (size_t i = 0; i < barlines.size() - 1; i++)
+        {
+            (*staff)->CalculateBeamingForBar(barlines.at(i), barlines.at(i + 1));
+        }
+    }
+}

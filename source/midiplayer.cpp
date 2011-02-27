@@ -291,24 +291,7 @@ double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
 {
     const double tempo = getCurrentTempo(currentPosition->GetPosition());
 
-    double duration = currentPosition->GetDurationType();
-    duration = tempo * 4.0 / duration;
-    duration += currentPosition->IsDotted() * 0.5 * duration;
-    duration += currentPosition->IsDoubleDotted() * 0.75 * duration;
-
-    // adjust for irregular groupings (triplets, etc)
-    if (currentPosition->HasIrregularGroupingTiming())
-    {
-        quint8 notesPlayed = 0;
-        quint8 notesPlayedOver = 0;
-        currentPosition->GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
-
-        // for example, with triplets we have 3 notes played in the time of 2,
-        // so each note is 2/3 of its normal duration
-        duration *= (double)notesPlayedOver / (double)notesPlayed;
-    }
-
-    return duration;
+    return currentPosition->GetDuration() * tempo;
 }
 
 double MidiPlayer::getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const

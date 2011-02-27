@@ -15,6 +15,8 @@
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "tuning.h"                         // Needed for IsValidStringCount
 
+#include <numeric> // partial_sum
+
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);
 const uint8_t Staff::DEFAULT_CLEF                                        = TREBLE_CLEF;
@@ -392,4 +394,138 @@ void Staff::CalculateSymbolSpacing()
     };
     
     SetSymbolSpacing(CalculateSpacingForProperties(positionFunctions));
+}
+
+/// Calculates the beaming for notes that are located between the two given barlines
+void Staff::CalculateBeamingForBar(const Barline* startBar, const Barline* endBar)
+{
+    // Get the positions in betwen the two bars
+    std::vector<Position*> positions;
+    GetPositionsInRange(positions, startBar->GetPosition(), endBar->GetPosition());
+
+    const TimeSignature& timeSig = startBar->GetTimeSignatureConstRef();
+
+    // Get the beam group patterns from the time signature
+    std::vector<uint8_t> beamGroupPatterns(4, 0);
+
+    timeSig.GetBeamingPattern(beamGroupPatterns[0], beamGroupPatterns[1], beamGroupPatterns[2], beamGroupPatterns[3]);
+
+    // Remove any beam group patterns of size 0 (not set)
+    beamGroupPatterns.erase(std::remove(beamGroupPatterns.begin(), beamGroupPatterns.end(), 0),
+                            beamGroupPatterns.end());
+
+    // Create a list of the durations for each position
+    std::vector<double> durations(positions.size());
+    std::transform(positions.begin(), positions.end(),
+                   durations.begin(), std::mem_fun(&Position::GetDuration));
+    // Convert the duration list to a list of partial sums of the durations
+    // (i.e. timestamps relative to the beginning of the bar)
+    std::partial_sum(durations.begin(), durations.end(), durations.begin());
+
+    double groupBeginTime = 0;
+    auto pattern = beamGroupPatterns.begin();
+    std::vector<double>::iterator groupStart = durations.begin(), groupEnd = durations.begin();
+
+    while (groupEnd != durations.end())
+    {
+        // find where the end of the current beaming pattern group will be
+        const double groupEndTime = *pattern * 0.5 + groupBeginTime;
+
+        // get the range of positions between the start of the beaming pattern group and the end
+        groupStart = std::lower_bound(groupEnd, durations.end(), groupBeginTime);
+        groupEnd = std::upper_bound(groupStart, durations.end(), groupEndTime);
+
+        // get the corresponding positions, and calculate the beaming for this pattern group
+        std::vector<Position*> positionGroup(positions.begin() + (groupStart - durations.begin()),
+                                             positions.begin() + (groupEnd - durations.begin()));
+
+        CalculateBeamingForGroup(positionGroup);
+
+        // Move on to the next beaming pattern, looping around if necessary
+        ++pattern;
+        if (pattern == beamGroupPatterns.end())
+            pattern = beamGroupPatterns.begin();
+
+        groupBeginTime = groupEndTime;
+    }
+}
+
+/// Sets the beaming properties for a group of consecutive notes
+/// (i.e. notes that are part of a beaming pattern group)
+void Staff::CalculateBeamingForGroup(std::vector<Position*>& positions)
+{
+    // Rests and notes greater than eighth notes will break apart a beam group,
+    // so we need to find all of the subgroups of consecutive positions that can be
+    // beamed, and then create beaming groups with those notes
+
+    auto beamableGroupStart = positions.begin();
+    auto beamableGroupEnd = positions.begin();
+
+    auto isBeamable = std::mem_fun(&Position::IsBeamable);
+
+    // Clear all existing beaming information
+    std::for_each(positions.begin(), positions.end(), std::mem_fun(&Position::ClearBeam));
+
+    // find all subgroups of beamable notes (i.e. notes that aren't quarter notes, rests, etc)
+    while (beamableGroupStart != positions.end())
+    {
+        // find the next range of consecutive positions that are beamable
+        beamableGroupStart = std::find_if(beamableGroupEnd, positions.end(), isBeamable);
+        beamableGroupEnd = std::find_if(beamableGroupStart, positions.end(), std::not1(isBeamable));
+
+        for (auto i = beamableGroupStart; i != beamableGroupEnd; ++i)
+        {
+            Position* currentPos = *i;
+
+            if (i == beamableGroupStart)
+            {
+                currentPos->SetPreviousBeamDurationType(0);
+                continue;
+            }
+
+            // set the previous beam duration
+            Position* prevPos = *(i - 1);
+            uint8_t prevDuration = prevPos->GetDurationType();
+
+            // previous beam duration only applies for consecutive notes with the same duration type
+            if (currentPos->GetDurationType() != prevDuration)
+                prevDuration = 8;
+
+            currentPos->SetPreviousBeamDurationType(prevDuration);
+
+            // set any fractional beams
+            if (currentPos->GetDurationType() < prevPos->GetDurationType())
+            {
+                prevPos->SetFractionalLeftBeam();
+            }
+            if (currentPos->GetDurationType() > prevPos->GetDurationType())
+            {
+                currentPos->SetFractionalRightBeam();
+            }
+        }
+
+        if (beamableGroupStart != positions.end())
+        {
+            // set start/end beams
+            (*beamableGroupStart)->SetBeamStart();
+            (*(beamableGroupEnd - 1))->SetBeamEnd();
+        }
+    }
+}
+
+/// Gets all of the positions within the given range (inclusive)
+void Staff::GetPositionsInRange(std::vector<Position*>& positions, size_t startPos, size_t endPos)
+{
+    positions.clear();
+
+    for (size_t i = 0; i < highMelodyPositionArray.size(); i++)
+    {
+        Position* currentPosition = highMelodyPositionArray.at(i);
+        const uint32_t location = currentPosition->GetPosition();
+
+        if (location >= startPos && location <= endPos)
+        {
+            positions.push_back(currentPosition);
+        }
+    }
 }
