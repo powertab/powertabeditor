@@ -391,6 +391,18 @@ void PowerTabEditor::createActions()
                                    {&getCurrentPosition, &Position::HasTremoloPicking,
                                     &Position::SetTremoloPicking, tremoloPickingAct->text()});
 
+    arpeggioUpAct = new QAction(tr("Arpeggio Up"), this);
+    arpeggioUpAct->setCheckable(true);
+    connectTogglePropertyAction(arpeggioUpAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::HasArpeggioUp,
+                                 &Position::SetArpeggioUp, arpeggioUpAct->text()});
+
+    arpeggioDownAct = new QAction(tr("Arpeggio Down"), this);
+    arpeggioDownAct->setCheckable(true);
+    connectTogglePropertyAction(arpeggioDownAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::HasArpeggioDown,
+                                 &Position::SetArpeggioDown, arpeggioUpAct->text()});
+
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
 
@@ -507,6 +519,9 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(palmMuteAct);
     tabSymbolsMenu->addAction(tremoloPickingAct);
+    tabSymbolsMenu->addSeparator();
+    tabSymbolsMenu->addAction(arpeggioUpAct);
+    tabSymbolsMenu->addAction(arpeggioDownAct);
 
     // Window Menu
     windowMenu = menuBar()->addMenu(tr("&Window"));
@@ -993,6 +1008,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(palmMuteAct, currentPosition, &Position::HasPalmMuting);
     updatePropertyStatus(letRingAct, currentPosition, &Position::HasLetRing);
     updatePropertyStatus(tremoloPickingAct, currentPosition, &Position::HasTremoloPicking);
+    updatePropertyStatus(arpeggioUpAct, currentPosition, &Position::HasArpeggioUp);
+    updatePropertyStatus(arpeggioDownAct, currentPosition, &Position::HasArpeggioDown);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

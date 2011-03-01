@@ -165,6 +165,8 @@ protected:
     QAction* wideVibratoAct;
     QAction* palmMuteAct; // toggle palm-muting
     QAction* tremoloPickingAct; // toggle tremolo picking
+    QAction* arpeggioUpAct;
+    QAction* arpeggioDownAct;
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab
