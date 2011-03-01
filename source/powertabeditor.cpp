@@ -310,12 +310,22 @@ void PowerTabEditor::createActions()
 
     connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(updateNoteDuration(int)));
 
+    togglePropertyMapper = new QSignalMapper(this);
+
+    dottedNoteAct = new QAction(tr("Dotted"), this);
+    dottedNoteAct->setCheckable(true);
+    connectTogglePropertyAction(dottedNoteAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::IsDotted, &Position::SetDotted, dottedNoteAct->text()});
+
+    doubleDottedNoteAct = new QAction(tr("Double Dotted"), this);
+    doubleDottedNoteAct->setCheckable(true);
+    connectTogglePropertyAction(doubleDottedNoteAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::IsDoubleDotted, &Position::SetDoubleDotted, doubleDottedNoteAct->text()});
+
     tiedNoteAct = new QAction(tr("Tied"), this);
     tiedNoteAct->setShortcut(QKeySequence(Qt::Key_Y));
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
-
-    togglePropertyMapper = new QSignalMapper(this);
     
     noteMutedAct = new QAction(tr("Muted"), this);
     noteMutedAct->setCheckable(true);
@@ -493,6 +503,9 @@ void PowerTabEditor::createMenus()
     notesMenu->addAction(sixteenthNoteAct);
     notesMenu->addAction(thirtySecondNoteAct);
     notesMenu->addAction(sixtyFourthNoteAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(dottedNoteAct);
+    notesMenu->addAction(doubleDottedNoteAct);
     notesMenu->addSeparator();
     notesMenu->addAction(tiedNoteAct);
     notesMenu->addSeparator();
@@ -1010,6 +1023,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(tremoloPickingAct, currentPosition, &Position::HasTremoloPicking);
     updatePropertyStatus(arpeggioUpAct, currentPosition, &Position::HasArpeggioUp);
     updatePropertyStatus(arpeggioDownAct, currentPosition, &Position::HasArpeggioDown);
+    updatePropertyStatus(dottedNoteAct, currentPosition, &Position::IsDotted);
+    updatePropertyStatus(doubleDottedNoteAct, currentPosition, &Position::IsDoubleDotted);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);
