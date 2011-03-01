@@ -41,6 +41,8 @@ public:
         WideVibrato = 0xe18c,
         Trill = 0xe17a,
         TremoloPicking = 0xe19f,
+        ArpeggioDown = 0xe189,
+        ArpeggioUp = 0xe18a,
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol

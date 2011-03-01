@@ -827,6 +827,8 @@ public:
     Note* GetNoteByString(uint8_t string) const;
     bool CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const;
     bool ShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning);
+
+    std::pair<uint8_t, uint8_t> GetStringBounds() const;
     
     /// Gets a list of the notes at this position
     /// @param notes A reference to a list that will store the notes 

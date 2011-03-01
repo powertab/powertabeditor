@@ -460,7 +460,46 @@ void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& curr
                        currentStaffInfo.getTabLineHeight(note->GetString(), false) + currentStaffInfo.tabLineSpacing / 2 - 1);
             tabNote->setParentItem(activeStaff);
         }
+
+        // draw arpeggios if necessary
+        if (currentPosition->HasArpeggioDown() || currentPosition->HasArpeggioUp())
+        {
+            drawArpeggio(currentPosition, location, currentStaffInfo);
+        }
     }
+}
+
+void ScoreArea::drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo)
+{
+    // get the highest and lowest strings used at this position, and
+    // convert the string indices to positions on the staff
+    std::pair<quint8, quint8> bounds = position->GetStringBounds();
+    bounds.first = currentStaffInfo.getTabLineHeight(bounds.first + 1, false);
+    bounds.second = currentStaffInfo.getTabLineHeight(bounds.second + 1, false);
+
+    const uint8_t height = bounds.second - bounds.first;
+
+    // take a vibrato segment, spanning the distance from top to bottom note, and then rotate it by 90 degrees
+    QFont font = musicFont.getFont();
+    const QChar arpeggioSymbol = musicFont.getSymbol(MusicFont::Vibrato);
+    const double symbolWidth = QFontMetricsF(font).width(arpeggioSymbol);
+    const int numSymbols = height / symbolWidth;
+
+    QGraphicsSimpleTextItem* arpeggio = new QGraphicsSimpleTextItem(QString(numSymbols, arpeggioSymbol));
+    arpeggio->setFont(font);
+    arpeggio->rotate(90);
+    arpeggio->setPos(x + 1.5 * font.pixelSize(), bounds.first);
+    arpeggio->setParentItem(activeStaff);
+
+    // draw the end of the arpeggio
+    const QChar arpeggioEnd = position->HasArpeggioUp() ? musicFont.getSymbol(MusicFont::ArpeggioUp) :
+                              musicFont.getSymbol(MusicFont::ArpeggioDown);
+
+    QGraphicsSimpleTextItem* endPoint = new QGraphicsSimpleTextItem(arpeggioEnd);
+    const double y = position->HasArpeggioUp() ? bounds.first : bounds.second;
+    endPoint->setFont(font);
+    endPoint->setPos(x + 3, y - 1.45 * font.pixelSize());
+    endPoint->setParentItem(activeStaff);
 }
 
 void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo)
@@ -661,7 +700,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 connector->setParentItem(activeStaff);
             }
 
-            // Draw fermatas if necessary
+            // Draw fermatas, arpg if necessary
             foreach(BeamingInfo beam, beamingGroup)
             {
                 if (beam.position->HasFermata())

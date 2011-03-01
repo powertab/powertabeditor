@@ -56,6 +56,7 @@ protected:
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height);
     void drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp);
     void drawSymbols(System* system, Staff* staff, const StaffData& currentStaffInfo);
+    void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
 
     QGraphicsScene scene;
     MusicFont musicFont;

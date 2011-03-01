@@ -958,3 +958,17 @@ bool Position::HasNoteWithTappedHarmonic() const
     return HasNoteWithProperty(&Note::HasTappedHarmonic);
 }
 
+/// Returns the highest and lowest strings that are used by notes in this position
+std::pair<uint8_t, uint8_t> Position::GetStringBounds() const
+{
+    // create list of string numbers for each position
+    std::vector<uint8_t> strings(m_noteArray.size());
+    std::transform(m_noteArray.begin(), m_noteArray.end(), strings.begin(),
+                   std::mem_fun(&Note::GetString));
+
+    auto lowest = std::min_element(strings.begin(), strings.end());
+    auto highest = std::max_element(strings.begin(), strings.end());
+
+    return std::make_pair(*lowest, *highest);
+}
+
