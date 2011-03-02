@@ -55,8 +55,9 @@ protected:
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height);
     void drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp);
-    void drawAccent(Position* position, const StaffData& currentStaffInfo, double x,
-                    double beamConnectorHeight, bool beamDirectionUp);
+
+    struct BeamingInfo;
+    void drawAccent(const BeamingInfo& beamingInfo, const StaffData& currentStaffInfo, double x, bool beamDirectionUp);
 
     void drawSymbols(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);

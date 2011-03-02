@@ -709,8 +709,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 }
                 if (beam.position->HasSforzando() || beam.position->HasMarcato())
                 {
-                    drawAccent(beam.position, currentStaffInfo, system->GetPositionX(beam.position->GetPosition()),
-                               beamConnectorHeight, beamDirectionUp);
+                    drawAccent(beam, currentStaffInfo, system->GetPositionX(beam.position->GetPosition()), beamDirectionUp);
                 }
             }
 
@@ -719,37 +718,36 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
     }
 }
 
-void ScoreArea::drawAccent(Position* position, const StaffData& currentStaffInfo, double x,
-                           double beamConnectorHeight, bool beamDirectionUp)
+void ScoreArea::drawAccent(const BeamingInfo& beamingInfo, const StaffData& currentStaffInfo, double x, bool beamDirectionUp)
 {
     double y = 0;
     // position the accent directly above/below the staff if possible, unless the note beaming extends
     // beyond the std. notation staff.
     // - it should be positioned opposite to the fermata symbols
     // After positioning, offset the height due to the way that QGraphicsTextItem positions text
-    if (beamDirectionUp)
+    if (beamDirectionUp == false)
     {
-        y = std::max<double>(beamConnectorHeight, currentStaffInfo.getBottomStdNotationLine(false));
-        y -= 20;
+        y = std::min<double>(beamingInfo.topNotePos, currentStaffInfo.getTopStdNotationLine(false));
+        y -= 38;
     }
     else
     {
-        y = std::min<double>(beamConnectorHeight, currentStaffInfo.getTopStdNotationLine(false));
-        y -= 38;
+        y = std::max<double>(beamingInfo.bottomNotePos, currentStaffInfo.getBottomStdNotationLine(false));
+        y -= 20;
     }
 
     QChar symbol;
-    if (position->HasMarcato())
+    if (beamingInfo.position->HasMarcato())
     {
         symbol = musicFont.getSymbol(MusicFont::Marcato);
     }
-    else if (position->HasSforzando())
+    else if (beamingInfo.position->HasSforzando())
     {
         symbol = musicFont.getSymbol(MusicFont::Sforzando);
         y += 3;
     }
 
-    if (position->IsStaccato())
+    if (beamingInfo.position->IsStaccato())
     {
         y += beamDirectionUp ? 7 : -7;
     }
