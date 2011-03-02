@@ -603,7 +603,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
 
             QGraphicsTextItem* dot = new QGraphicsTextItem(QChar(MusicFont::Dot));
             dot->setFont(musicFont.getFontRef());
-            centerItem(dot, beaming.location, beaming.location + currentStaffInfo.positionWidth + 2, y - 25);
+            centerItem(dot, beaming.location, beaming.location + currentStaffInfo.positionWidth + 4, y - 25);
             dot->setParentItem(activeStaff);
         }
 
@@ -707,11 +707,57 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 {
                     drawFermata(currentStaffInfo, beam.location, beamConnectorHeight, beamDirectionUp);
                 }
+                if (beam.position->HasSforzando() || beam.position->HasMarcato())
+                {
+                    drawAccent(beam.position, currentStaffInfo, system->GetPositionX(beam.position->GetPosition()),
+                               beamConnectorHeight, beamDirectionUp);
+                }
             }
 
             beamingGroup.clear();
         }
     }
+}
+
+void ScoreArea::drawAccent(Position* position, const StaffData& currentStaffInfo, double x,
+                           double beamConnectorHeight, bool beamDirectionUp)
+{
+    double y = 0;
+    // position the accent directly above/below the staff if possible, unless the note beaming extends
+    // beyond the std. notation staff.
+    // - it should be positioned opposite to the fermata symbols
+    // After positioning, offset the height due to the way that QGraphicsTextItem positions text
+    if (beamDirectionUp)
+    {
+        y = std::max<double>(beamConnectorHeight, currentStaffInfo.getBottomStdNotationLine(false));
+        y -= 20;
+    }
+    else
+    {
+        y = std::min<double>(beamConnectorHeight, currentStaffInfo.getTopStdNotationLine(false));
+        y -= 38;
+    }
+
+    QChar symbol;
+    if (position->HasMarcato())
+    {
+        symbol = musicFont.getSymbol(MusicFont::Marcato);
+    }
+    else if (position->HasSforzando())
+    {
+        symbol = musicFont.getSymbol(MusicFont::Sforzando);
+        y += 3;
+    }
+
+    if (position->IsStaccato())
+    {
+        y += beamDirectionUp ? 7 : -7;
+    }
+
+    QGraphicsSimpleTextItem* accent = new QGraphicsSimpleTextItem(symbol);
+    accent->setFont(musicFont.getFontRef());
+    accent->setPos(x + currentStaffInfo.positionWidth / 1.75, y);
+    accent->setParentItem(activeStaff);
 }
 
 void ScoreArea::drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp)

@@ -43,6 +43,8 @@ public:
         TremoloPicking = 0xe19f,
         ArpeggioDown = 0xe189,
         ArpeggioUp = 0xe18a,
+        Marcato = 0xe16a,
+        Sforzando = 0xe172,
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol
