@@ -828,6 +828,9 @@ public:
     bool CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const;
     bool ShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning);
 
+    void SortNotesUp();
+    void SortNotesDown();
+
     std::pair<uint8_t, uint8_t> GetStringBounds() const;
     
     /// Gets a list of the notes at this position

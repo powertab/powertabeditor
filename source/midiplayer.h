@@ -40,6 +40,7 @@ protected:
     enum Durations
     {
         GRACE_NOTE_DURATION = 60,
+        ARPEGGIO_OFFSET = 30,
     };
 
     enum NoteVelocities

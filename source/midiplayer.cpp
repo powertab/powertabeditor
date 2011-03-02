@@ -90,8 +90,27 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
 
             const quint32 positionIndex = position->GetPosition(); // only keep track of position for the first staff
 
+            // If the position has an arpeggio, sort the notes by string in the specified direction.
+            // This is so the notes can be played in the correct order, with a slight delay between each
+            if (position->HasArpeggioDown())
+            {
+                position->SortNotesDown();
+            }
+            else if (position->HasArpeggioUp())
+            {
+                position->SortNotesUp();
+            }
+
             for (quint32 k = 0; k < position->GetNoteCount(); k++)
             {
+                // for arpeggios, delay the start of each note a small amount from the last,
+                // and also adjust the duration correspondingly
+                if (position->HasArpeggioDown() || position->HasArpeggioUp())
+                {
+                    startTime += ARPEGGIO_OFFSET;
+                    duration -= ARPEGGIO_OFFSET;
+                }
+
                 Note* note = position->GetNote(k);
 
                 // find the pitch of the note

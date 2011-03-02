@@ -972,3 +972,26 @@ std::pair<uint8_t, uint8_t> Position::GetStringBounds() const
     return std::make_pair(*lowest, *highest);
 }
 
+// Functor used for sorting notes by their string index
+// - derives from std::binary_function so that we can make use of std::not2
+//   for sorting in the opposite direction
+struct CompareStrings : public std::binary_function<Note*, Note*, bool>
+{
+    bool operator()(Note* note1, Note* note2) const
+    {
+        return note1->GetString() < note2->GetString();
+    }
+};
+
+// Sorts notes from top to bottom
+void Position::SortNotesDown()
+{
+    std::sort(m_noteArray.begin(), m_noteArray.end(), CompareStrings());
+}
+
+// Sorts notes from bottom to top
+void Position::SortNotesUp()
+{
+    std::sort(m_noteArray.begin(), m_noteArray.end(), std::not2(CompareStrings()));
+}
+
