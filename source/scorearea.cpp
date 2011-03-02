@@ -877,13 +877,13 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
                 // if a volume swell is set, set the symbol width to span across the duration of the volume swell
                 if (*predicate == &Position::HasVolumeSwell)
                 {
-                    uint8_t startVolume = 0, endVolume = 0, duration = 0;
+                    quint8 startVolume = 0, endVolume = 0, duration = 0;
                     currentPosition->GetVolumeSwell(startVolume, endVolume, duration);
 
                     // get the position of the last note of the volume swell
-                    Position* lastPos = staff->GetPosition(0, currentPosition->GetPosition() + duration);
+                    Position* lastPos = staff->GetPosition(0, i + duration);
                     Q_ASSERT(lastPos != NULL); // the last position of the volume swell should be on this staff
-                    currentSymbolInfo.rect.setWidth(lastPos->GetPosition() - currentPosition->GetPosition());
+                    currentSymbolInfo.rect.setRight(lastPos->GetPosition());
                 }
 
                 SymbolCreator symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
