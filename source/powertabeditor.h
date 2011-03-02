@@ -156,6 +156,8 @@ protected:
     QAction* letRingAct;
     QAction* fermataAct; // set a position as fermata
     QAction* staccatoNoteAct; // set the notes of a position to be staccato
+    QAction* marcatoAct; // set an accent
+    QAction* sforzandoAct; // set a heavy accent
 
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs

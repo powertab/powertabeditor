@@ -354,7 +354,17 @@ void PowerTabEditor::createActions()
     staccatoNoteAct->setShortcut(QKeySequence(Qt::Key_Z));
     connectTogglePropertyAction(staccatoNoteAct, (ToggleablePropertyRecord<Position>)
                                   {&getCurrentPosition, &Position::IsStaccato, &Position::SetStaccato, staccatoNoteAct->text()});
-    
+
+    marcatoAct = new QAction(tr("Accent"), this);
+    marcatoAct->setCheckable(true);
+    marcatoAct->setShortcut(QKeySequence(Qt::Key_A));
+    connectTogglePropertyAction(marcatoAct, (ToggleablePropertyRecord<Position>)
+                                  {&getCurrentPosition, &Position::HasMarcato, &Position::SetMarcato, marcatoAct->text()});
+
+    sforzandoAct = new QAction(tr("Heavy Accent"), this);
+    sforzandoAct->setCheckable(true);
+    connectTogglePropertyAction(sforzandoAct, (ToggleablePropertyRecord<Position>)
+                                  {&getCurrentPosition, &Position::HasSforzando, &Position::SetSforzando, sforzandoAct->text()});
     
     // Music Symbol Actions
     rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
@@ -517,6 +527,8 @@ void PowerTabEditor::createMenus()
     notesMenu->addAction(fermataAct);
     notesMenu->addSeparator();
     notesMenu->addAction(staccatoNoteAct);
+    notesMenu->addAction(marcatoAct);
+    notesMenu->addAction(sforzandoAct);
 
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -1025,6 +1037,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(arpeggioDownAct, currentPosition, &Position::HasArpeggioDown);
     updatePropertyStatus(dottedNoteAct, currentPosition, &Position::IsDotted);
     updatePropertyStatus(doubleDottedNoteAct, currentPosition, &Position::IsDoubleDotted);
+    updatePropertyStatus(marcatoAct, currentPosition, &Position::HasMarcato);
+    updatePropertyStatus(sforzandoAct, currentPosition, &Position::HasSforzando);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);
