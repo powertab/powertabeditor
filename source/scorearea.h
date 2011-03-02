@@ -101,6 +101,7 @@ protected:
     QGraphicsItem* createWideVibrato(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo);
 
     QGraphicsItem* drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, uint8_t width,

@@ -810,7 +810,7 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
     };
     // function pointers for drawing symbols corresponding to each of the items in the singleSymbolPredicates list
     std::vector<SymbolCreator> singleSymbolCreators = {
-        &ScoreArea::createPalmMute, &ScoreArea::createTremoloPicking,
+        &ScoreArea::createVolumeSwell, &ScoreArea::createTremoloPicking,
         &ScoreArea::createPalmMute, &ScoreArea::createTrill
     };
 
@@ -829,6 +829,18 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
             {
                 // create the rectangle and render the symbol
                 currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
+
+                // if a volume swell is set, set the symbol width to span across the duration of the volume swell
+                if (*predicate == &Position::HasVolumeSwell)
+                {
+                    uint8_t startVolume = 0, endVolume = 0, duration = 0;
+                    currentPosition->GetVolumeSwell(startVolume, endVolume, duration);
+
+                    // get the position of the last note of the volume swell
+                    Position* lastPos = staff->GetPosition(0, currentPosition->GetPosition() + duration);
+                    Q_ASSERT(lastPos != NULL); // the last position of the volume swell should be on this staff
+                    currentSymbolInfo.rect.setWidth(lastPos->GetPosition() - currentPosition->GetPosition());
+                }
 
                 SymbolCreator symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
                 currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
@@ -978,6 +990,18 @@ QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& c
     }
 
     return group;
+}
+
+QGraphicsItem* ScoreArea::createVolumeSwell(uint8_t width, const StaffData &currentStaffInfo)
+{
+    // in this case, the width of the symbol rectangle is the # of positions that the volume swell spans
+    QPainterPath path;
+    path.moveTo(width * currentStaffInfo.positionWidth, 0);
+    path.lineTo(currentStaffInfo.positionWidth / 2.0, Staff::TAB_SYMBOL_HEIGHT / 2.0);
+    path.lineTo(width * currentStaffInfo.positionWidth, Staff::TAB_SYMBOL_HEIGHT);
+
+    QGraphicsPathItem* swell = new QGraphicsPathItem(path);
+    return swell;
 }
 
 // Centers an item, by using it's width to calculate the necessary offset from xmin
