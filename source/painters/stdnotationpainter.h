@@ -42,6 +42,7 @@ protected:
     void init();
     int findAccidentalType(const QString& noteText) const;
     QString getAccidentalText() const;
+    void addDots(QPainter* painter, double x, double y) const;
 
     StaffData staffInfo;
     Position* position;

@@ -83,6 +83,7 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
     width = QFontMetricsF(musicFont).width(displayText);
 
     painter->drawText(staffInfo.getNoteHeadRightEdge() - width, yLocation, displayText);
+    addDots(painter, staffInfo.getNoteHeadRightEdge() + 2, yLocation);
 }
 
 double StdNotationPainter::getNoteHeadWidth()
@@ -151,18 +152,8 @@ void StdNotationPainter::drawRest(QPainter *painter)
 
     QString textToDraw = restSymbol;
 
-    // add dots if necessary
-    if (position->IsDotted())
-    {
-        textToDraw.append(QChar(MusicFont::Dot));
-    }
-    if (position->IsDoubleDotted())
-    {
-        textToDraw += QString(2, (QChar(MusicFont::Dot)));
-        textToDraw.insert(2, " ");
-    }
-
     painter->drawText(0, height, textToDraw);
+    addDots(painter, QFontMetricsF(musicFont).width(textToDraw) + 2, 1.6 * staffInfo.stdNotationLineSpacing);
 
     return;
 }
@@ -231,4 +222,19 @@ QString StdNotationPainter::getAccidentalText() const
     }
 
     return text;
+}
+
+void StdNotationPainter::addDots(QPainter* painter, double x, double y) const
+{
+    const QChar dot = MusicFont::getSymbol(MusicFont::Dot);
+
+    if (position->IsDotted())
+    {
+        painter->drawText(x, y, dot);
+    }
+    else if (position->IsDoubleDotted())
+    {
+        painter->drawText(x, y, dot);
+        painter->drawText(x + 4, y, dot);
+    }
 }
