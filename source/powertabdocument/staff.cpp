@@ -489,18 +489,28 @@ void Staff::CalculateBeamingForGroup(std::vector<Position*>& positions)
 
             // previous beam duration only applies for consecutive notes with the same duration type
             if (currentPos->GetDurationType() != prevDuration)
+            {
                 prevDuration = 8;
+            }
+            else
+            {
+                // clear fractional beams for the previous position, since we will connect it to the current note
+                prevPos->SetFractionalLeftBeam(false);
+                prevPos->SetFractionalRightBeam(false);
+            }
 
             currentPos->SetPreviousBeamDurationType(prevDuration);
 
             // set any fractional beams
-            if (currentPos->GetDurationType() < prevPos->GetDurationType())
-            {
-                prevPos->SetFractionalLeftBeam();
-            }
             if (currentPos->GetDurationType() > prevPos->GetDurationType())
             {
                 currentPos->SetFractionalRightBeam();
+            }
+            else if (currentPos->GetDurationType() < prevPos->GetDurationType())
+            {
+                // a previously set beam takes precedence
+                if (!prevPos->HasFractionalRightBeam())
+                    prevPos->SetFractionalLeftBeam();
             }
         }
 

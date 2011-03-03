@@ -671,19 +671,46 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                 // extra beams (for 16th notes, etc)
                 // 16th note gets 1 extra beam, 32nd gets two, etc
                 // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
-                const int extraBeams = log(beamingGroup[j].position->GetPreviousBeamDurationType()) / log(2) - 3;
+                const int extraBeams = log(beamingGroup[j].position->GetDurationType()) / log(2) - 3;
 
-                for (int k = 1; k <= extraBeams; k++)
+                const bool hasFullBeaming = (beamingGroup[j].position->GetPreviousBeamDurationType() ==
+                                             beamingGroup[j].position->GetDurationType());
+                const bool hasFractionalLeft = beamingGroup[j].position->HasFractionalLeftBeam();
+                const bool hasFractionalRight = beamingGroup[j].position->HasFractionalRightBeam();
+
+                if (hasFullBeaming || hasFractionalLeft || hasFractionalRight)
                 {
-                    double y = beamDirectionUp ? beamingGroup[j].topNotePos : beamingGroup[j].bottomNotePos;
-                    y += k * 3 * (beamDirectionUp ? 1 : -1);
+                    for (int k = 1; k <= extraBeams; k++)
+                    {
+                        double y = beamDirectionUp ? beamingGroup[j].topNotePos : beamingGroup[j].bottomNotePos;
+                        y += k * 3 * (beamDirectionUp ? 1 : -1);
 
-                    QGraphicsLineItem* line = new QGraphicsLineItem;
-                    line->setLine(beamingGroup[j-1].location + 1, y, beamingGroup[j].location - 1, y);
-                    line->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
-                    line->setParentItem(activeStaff);
+                        double xStart = 0, xEnd = 0;
+
+                        const double fractionalBeamWidth = 5;
+
+                        if (hasFullBeaming)
+                        {
+                            xStart = beamingGroup[j-1].location + 1;
+                            xEnd = beamingGroup[j].location - 1;
+                        }
+                        else if (hasFractionalLeft)
+                        {
+                            xStart = beamingGroup[j].location + 1;
+                            xEnd = xStart + fractionalBeamWidth;
+                        }
+                        else if (hasFractionalRight)
+                        {
+                            xEnd = beamingGroup[j].location - 1;
+                            xStart = xEnd - fractionalBeamWidth;
+                        }
+
+                        QGraphicsLineItem* line = new QGraphicsLineItem;
+                        line->setLine(xStart, y, xEnd, y);
+                        line->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
+                        line->setParentItem(activeStaff);
+                    }
                 }
-
             }
 
             const double beamConnectorHeight = beamDirectionUp ? beamingGroup.first().topNotePos :
