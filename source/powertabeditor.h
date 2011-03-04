@@ -81,6 +81,7 @@ protected slots:
     void editRehearsalSign();
     void editTiedNote();
     void editHammerPull();
+    void editTrill();
 
     void increasePositionSpacing();
     void decreasePositionSpacing();
@@ -179,6 +180,7 @@ protected:
     QAction* tremoloPickingAct; // toggle tremolo picking
     QAction* arpeggioUpAct;
     QAction* arpeggioDownAct;
+    QAction* trillAction; // create or remove a trill
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab

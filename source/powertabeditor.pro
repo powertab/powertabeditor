@@ -95,7 +95,10 @@ SOURCES += main.cpp\
     dialogs/rehearsalsigndialog.cpp \
     painters/tempomarkerpainter.cpp \
     actions/shifttabnumber.cpp \
-    actions/changepositionspacing.cpp
+    actions/changepositionspacing.cpp \
+    actions/removetrill.cpp \
+    dialogs/trilldialog.cpp \
+    actions/addtrill.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -171,7 +174,10 @@ HEADERS  += powertabeditor.h \
     painters/tempomarkerpainter.h \
     actions/toggleproperty.h \
     actions/shifttabnumber.h \
-    actions/changepositionspacing.h
+    actions/changepositionspacing.h \
+    actions/removetrill.h \
+    dialogs/trilldialog.h \
+    actions/addtrill.h
 
 RESOURCES += \
     resources.qrc

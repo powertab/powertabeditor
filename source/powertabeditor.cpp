@@ -27,6 +27,7 @@
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/rehearsalsigndialog.h>
+#include <dialogs/trilldialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 
@@ -43,6 +44,8 @@
 #include <actions/toggleproperty.h>
 #include <actions/shifttabnumber.h>
 #include <actions/changepositionspacing.h>
+#include <actions/removetrill.h>
+#include <actions/addtrill.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -433,6 +436,10 @@ void PowerTabEditor::createActions()
                                 {&getCurrentPosition, &Position::HasArpeggioDown,
                                  &Position::SetArpeggioDown, arpeggioUpAct->text()});
 
+    trillAction = new QAction(tr("Trill"), this);
+    trillAction->setCheckable(true);
+    connect(trillAction, SIGNAL(triggered()), this, SLOT(editTrill()));
+
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
 
@@ -559,6 +566,7 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(palmMuteAct);
     tabSymbolsMenu->addAction(tremoloPickingAct);
+    tabSymbolsMenu->addAction(trillAction);
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(arpeggioUpAct);
     tabSymbolsMenu->addAction(arpeggioDownAct);
@@ -924,6 +932,30 @@ void PowerTabEditor::editChordName()
 
 }
 
+// Add/Remove the trill at the current position
+void PowerTabEditor::editTrill()
+{
+    Note* currentNote = getCurrentScoreArea()->getCaret()->getCurrentNote();
+
+    if (currentNote->HasTrill())
+    {
+        undoManager->push(new RemoveTrill(currentNote));
+    }
+    else // add a new trill
+    {
+        quint8 trillFret = 0;
+        TrillDialog trillDialog(currentNote, trillFret);
+        if (trillDialog.exec() == QDialog::Accepted)
+        {
+            undoManager->push(new AddTrill(currentNote, trillFret));
+        }
+        else
+        {
+            trillAction->setChecked(false);
+        }
+    }
+}
+
 // If there is a rehearsal sign at the barline, remove it
 // If there is no rehearsal sign, show the dialog to add one
 void PowerTabEditor::editRehearsalSign()
@@ -1075,6 +1107,7 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(doubleDottedNoteAct, currentPosition, &Position::IsDoubleDotted);
     updatePropertyStatus(marcatoAct, currentPosition, &Position::HasMarcato);
     updatePropertyStatus(sforzandoAct, currentPosition, &Position::HasSforzando);
+    updatePropertyStatus(trillAction, currentNote, &Note::HasTrill);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

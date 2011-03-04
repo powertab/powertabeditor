@@ -548,8 +548,10 @@ public:
     /// Determines if trill data is valid
     /// @param trilledFretNumber Trilled fret number to validate
     /// @return True if the trill data is valid, false if not
-    static bool IsValidTrill(uint8_t trilledFretNumber)
-        {return (IsValidTrilledFretNumber(trilledFretNumber));}
+    bool IsValidTrill(uint8_t trilledFretNumber)
+    {
+        return IsValidTrilledFretNumber(trilledFretNumber) && trilledFretNumber != GetFretNumber();
+    }
     bool SetTrill(uint8_t trilledFretNumber);
     bool GetTrill(uint8_t& trilledFretNumber) const;
     bool HasTrill() const;
