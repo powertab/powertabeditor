@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "system.h"
+#include "staff.h"
 #include <cassert>
 #include <algorithm>
 
@@ -433,9 +434,8 @@ bool System::IsValidPosition(int position) const
 /// @return The number of positions that will fit across the system
 int System::CalculatePositionCount(int positionSpacing) const
 {
-    //------Last Checked------//
-    // - Aug 30, 2007
-    CHECK_THAT(IsValidPositionSpacing(positionSpacing), 0);
+    if (positionSpacing < MIN_POSITION_SPACING)
+        return 0;
 
     int returnValue = 0;
 
@@ -688,4 +688,39 @@ void System::CalculateBeamingForStaves()
             (*staff)->CalculateBeamingForBar(barlines.at(i), barlines.at(i + 1));
         }
     }
+}
+
+/// Determines if a position spacing is valid
+/// @param positionSpacing Position spacing to validate
+/// @return True if the position spacing is valid, false if not
+bool System::IsValidPositionSpacing(int positionSpacing) const
+{
+    if (positionSpacing < MIN_POSITION_SPACING)
+        return false;
+
+    // find the max number of positions that will fit using the given spacing
+    const uint32_t maxNumPositions = CalculatePositionCount(positionSpacing);
+
+    // need to compare against the positions in each member staff
+    for (size_t i = 0; i < m_staffArray.size(); i++)
+    {
+        Position* lastPositionInStaff = m_staffArray.at(i)->GetLastPosition();
+        if (lastPositionInStaff != NULL && lastPositionInStaff->GetPosition() >= maxNumPositions - 1)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/// Sets the position spacing for the system
+bool System::SetPositionSpacing(uint8_t positionSpacing)
+{
+    if (!IsValidPositionSpacing(positionSpacing))
+        return false;
+
+    m_positionSpacing = positionSpacing;
+
+    return true;
 }

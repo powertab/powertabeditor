@@ -213,6 +213,7 @@ public:
         }
     }
 
+    Position* GetLastPosition() const;
     Position* GetPositionByPosition(uint32_t index) const;
 
     bool IsOnlyPositionInBar(Position* position, System* system) const;

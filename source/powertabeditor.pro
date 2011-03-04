@@ -94,7 +94,8 @@ SOURCES += main.cpp\
     actions/editrehearsalsign.cpp \
     dialogs/rehearsalsigndialog.cpp \
     painters/tempomarkerpainter.cpp \
-    actions/shifttabnumber.cpp
+    actions/shifttabnumber.cpp \
+    actions/changepositionspacing.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -169,7 +170,8 @@ HEADERS  += powertabeditor.h \
     dialogs/rehearsalsigndialog.h \
     painters/tempomarkerpainter.h \
     actions/toggleproperty.h \
-    actions/shifttabnumber.h
+    actions/shifttabnumber.h \
+    actions/changepositionspacing.h
 
 RESOURCES += \
     resources.qrc

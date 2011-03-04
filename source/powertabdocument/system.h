@@ -89,15 +89,14 @@ public:
     }
 
     // Position Spacing Functions
-    /// Determines if a position spacing is valid
-    /// @param positionSpacing Position spacing to validate
-    /// @return True if the position spacing is valid, false if not
-    bool IsValidPositionSpacing(int positionSpacing) const
-    {return (positionSpacing >= MIN_POSITION_SPACING);}
+    bool IsValidPositionSpacing(int positionSpacing) const;
+
     /// Gets the amount of spacing between positions
     /// @return The amount of spacing between positions
     uint32_t GetPositionSpacing() const
     {return (m_positionSpacing);}
+
+    bool SetPositionSpacing(uint8_t positionSpacing);
 
     // Rhythm Slash Spacing Above Functions
     /// Gets the amount of spacing above the rhythm slashes (when slashes are

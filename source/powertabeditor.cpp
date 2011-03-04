@@ -42,6 +42,7 @@
 #include <actions/editrehearsalsign.h>
 #include <actions/toggleproperty.h>
 #include <actions/shifttabnumber.h>
+#include <actions/changepositionspacing.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -261,6 +262,15 @@ void PowerTabEditor::createActions()
     chordNameAct->setShortcut(QKeySequence(Qt::Key_C));
     chordNameAct->setCheckable(true);
     connect(chordNameAct, SIGNAL(triggered()), this, SLOT(editChordName()));
+
+    // Section-related actions
+    increasePositionSpacingAct = new QAction(tr("Increase Position Spacing"), this);
+    increasePositionSpacingAct->setShortcut(QKeySequence(Qt::Key_Plus));
+    connect(increasePositionSpacingAct, SIGNAL(triggered()), this, SLOT(increasePositionSpacing()));
+
+    decreasePositionSpacingAct = new QAction(tr("Decrease Position Spacing"), this);
+    decreasePositionSpacingAct->setShortcut(QKeySequence(Qt::Key_Minus));
+    connect(decreasePositionSpacingAct, SIGNAL(triggered()), this, SLOT(decreasePositionSpacing()));
 
     // Note-related actions
     noteDurationMapper = new QSignalMapper(this);
@@ -503,6 +513,11 @@ void PowerTabEditor::createMenus()
     // Text Menu
     textMenu = menuBar()->addMenu(tr("&Text"));
     textMenu->addAction(chordNameAct);
+
+    // Section Menu
+    sectionMenu = menuBar()->addMenu(tr("&Section"));
+    sectionMenu->addAction(increasePositionSpacingAct);
+    sectionMenu->addAction(decreasePositionSpacingAct);
 
     // Note Menu
     notesMenu = menuBar()->addMenu(tr("&Notes"));
@@ -859,6 +874,27 @@ void PowerTabEditor::moveCaretToPrevBar()
     getCurrentScoreArea()->getCaret()->moveCaretToPrevBar();
 }
 
+void PowerTabEditor::increasePositionSpacing()
+{
+    changePositionSpacing(1);
+}
+
+void PowerTabEditor::decreasePositionSpacing()
+{
+    changePositionSpacing(-1);
+}
+
+void PowerTabEditor::changePositionSpacing(int offset)
+{
+    System* currentSystem = getCurrentScoreArea()->getCaret()->getCurrentSystem();
+
+    const int newSpacing = currentSystem->GetPositionSpacing() + offset;
+    if (currentSystem->IsValidPositionSpacing(newSpacing))
+    {
+        undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing));
+    }
+}
+
 // If there is a chord name at the current position, remove it
 // If there is no chord name, show the dialog to add a chord name
 // Existing chord names are edited by clicking on the chord name
@@ -1049,7 +1085,7 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
     menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
-    menuList << positionSectionMenu << positionStaffMenu;
+    menuList << positionSectionMenu << positionStaffMenu << sectionMenu;
 
     foreach(QMenu* menu, menuList)
     {

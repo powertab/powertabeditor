@@ -539,3 +539,12 @@ void Staff::GetPositionsInRange(std::vector<Position*>& positions, size_t startP
         }
     }
 }
+
+/// Returns the last position in the staff (returns NULL if no positions exist)
+Position* Staff::GetLastPosition() const
+{
+    if (highMelodyPositionArray.empty())
+        return NULL;
+
+    return highMelodyPositionArray.back();
+}

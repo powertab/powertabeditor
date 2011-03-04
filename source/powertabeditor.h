@@ -46,6 +46,7 @@ protected:
     void createTabArea();
     void updateScoreAreaActions(bool disable);
     bool eventFilter(QObject *obj, QEvent *ev);
+    void changePositionSpacing(int offset);
 
 protected slots:
     void updateActions();
@@ -80,6 +81,9 @@ protected slots:
     void editRehearsalSign();
     void editTiedNote();
     void editHammerPull();
+
+    void increasePositionSpacing();
+    void decreasePositionSpacing();
 
     void cycleTab(int offset);
 
@@ -137,6 +141,10 @@ protected:
 
     QMenu* textMenu;
     QAction* chordNameAct; // add/remove a chord name
+
+    QMenu* sectionMenu;
+    QAction* increasePositionSpacingAct;
+    QAction* decreasePositionSpacingAct;
 
     QMenu* notesMenu;
     QSignalMapper* noteDurationMapper; // map note duration signals to a slot
