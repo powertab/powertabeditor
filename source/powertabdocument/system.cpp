@@ -11,8 +11,8 @@
 
 #include "system.h"
 #include "staff.h"
-#include <cassert>
 #include <algorithm>
+#include <stdexcept>
 
 #include "powertabfileheader.h"                     // Needed for file version constants
 
@@ -646,10 +646,17 @@ bool System::RemoveChordText(uint32_t index)
     return true;
 }
 
-// Returns the index of a staff within the system
-int System::FindStaffIndex(Staff *staff) const
+/// Returns the index of a staff within the system
+/// @param staff The staff to be located in the system
+/// @return The zero-based index of the staff
+/// @throw std::out_of_range if the staff does not exist in the system
+size_t System::FindStaffIndex(Staff *staff) const
 {
     auto result = std::find(m_staffArray.begin(), m_staffArray.end(), staff);
+
+    if (result == m_staffArray.end())
+        throw std::out_of_range("Staff not in system");
+
     return std::distance(m_staffArray.begin(), result);
 }
 

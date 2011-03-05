@@ -528,14 +528,7 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
         KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
 
         // Find the guitar corresponding to the current staff
-        Guitar* currentGuitar = NULL;
-        for (uint32_t j = 0; j < system->GetStaffCount(); j++)
-        {
-            if (system->GetStaff(j) == staff)
-            {
-                currentGuitar = document->GetGuitarScore()->GetGuitar(j);
-            }
-        }
+        Guitar* currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));
 
         Q_ASSERT(currentGuitar != NULL);
 
