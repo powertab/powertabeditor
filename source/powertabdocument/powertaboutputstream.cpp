@@ -22,7 +22,7 @@ PowerTabOutputStream::PowerTabOutputStream(const string& filename) :
 	m_mapsInitialized(false), m_mapCount(0),
 	m_lastPowerTabError(POWERTABSTREAM_NO_ERROR)
 {
-    m_stream.open(filename.c_str());
+    m_stream.open(filename.c_str(), ofstream::out | ofstream::binary);
 }
 
 /// Destructor
