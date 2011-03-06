@@ -47,7 +47,6 @@ protected:
     void drawTabClef(int x, const StaffData& staffInfo);
     void drawChordText(System* system, quint32 height, const StaffData& currentStaffInfo);
     void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
-    void drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x);
     void drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
@@ -55,6 +54,7 @@ protected:
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height);
     void drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp);
+    void drawSymbolsBelowTabStaff(System *system, Staff *staff, const StaffData &currentStaffInfo);
 
     struct BeamingInfo;
     void drawAccent(const BeamingInfo& beamingInfo, const StaffData& currentStaffInfo, double x, bool beamDirectionUp);
@@ -106,6 +106,10 @@ protected:
     QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo);
+
+    QGraphicsItem* createPlainText(const QString& text, QFont::Style style);
+    QGraphicsItem* createPickStroke(const QString& text);
+    QGraphicsItem* createArtificialHarmonicText(Position* position);
 
     QGraphicsItem* drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, uint8_t width,

@@ -19,6 +19,9 @@
 
 #include <cmath>
 
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
+
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
 {
@@ -147,6 +150,7 @@ void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
         drawLegato(system, currentStaff, currentStaffInfo);
         drawSlides(system, currentStaff, currentStaffInfo);
         drawSymbols(system, currentStaff, currentStaffInfo);
+        drawSymbolsBelowTabStaff(system, currentStaff, currentStaffInfo);
     }
 }
 
@@ -286,8 +290,6 @@ void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& curren
                 QGraphicsPathItem* line = new QGraphicsPathItem(path);
                 line->setPos(leftPos + system->GetPositionSpacing() / 1.5 + 1, y + height / 2);
                 line->setParentItem(activeStaff);
-
-                drawComplexSymbolText(staff, currentStaffInfo, note, leftPos);
             }
         }
     }
@@ -316,11 +318,6 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
                 if (startPos == -1) // set the start position of an arc
                 {
                     startPos = currentPosition;
-                }
-
-                if (!note->HasLegatoSlide()) // this is done during the drawSlides() function
-                {
-                    drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
                 }
             }
 
@@ -351,8 +348,6 @@ void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& curren
 
             if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
             {
-                drawComplexSymbolText(staff, currentStaffInfo, note, system->GetPositionX(currentPosition));
-
                 const double height = 10;
                 const double width = 6;
                 QPainterPath path;
@@ -802,6 +797,101 @@ void ScoreArea::drawFermata(const StaffData& currentStaffInfo, double x, double 
     fermata->setParentItem(activeStaff);
 }
 
+/// Draws the text symbols that appear below the tab staff (hammerons, slides, etc)
+void ScoreArea::drawSymbolsBelowTabStaff(System *system, Staff *staff, const StaffData &currentStaffInfo)
+{
+    std::vector<Staff::PositionProperty> positionPredicates = {
+        &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap,
+        &Position::HasNoteWithHammeron, &Position::HasNoteWithPulloff,
+        &Position::HasNoteWithHammeronFromNowhere, &Position::HasNoteWithPulloffToNowhere,
+        &Position::HasNoteWithSlide, &Position::HasNoteWithTappedHarmonic,
+        &Position::HasNoteWithArtificialHarmonic
+    };
+
+    typedef boost::function<QGraphicsItem* (void)> SymbolCreationFn;
+
+    // functions for creating symbols, corresponding to each element of positionPredicates
+    std::vector<SymbolCreationFn> symbolCreationsFns = {
+        boost::bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeDown)),
+        boost::bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeUp)),
+        boost::bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
+        boost::bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
+        boost::bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
+        boost::bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
+        boost::bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
+        boost::bind(&ScoreArea::createPlainText, this, "sl.", QFont::StyleItalic),
+        boost::bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
+        // temporary placeholder - we will properly bind this later with the correct text for the harmonic's note value
+        boost::bind(&ScoreArea::createArtificialHarmonicText, this, (Position*)NULL),
+    };
+
+    std::list<SymbolInfo> symbols;
+
+    // check each property for each position
+    for (auto predicate = positionPredicates.begin(); predicate != positionPredicates.end(); ++predicate)
+    {
+        for (size_t i = 0; i < staff->GetPositionCount(0); i++)
+        {
+            Position* currentPosition = staff->GetPosition(0, i);
+
+            const bool propertySet = (currentPosition->**predicate)();
+
+            if (propertySet)
+            {
+                SymbolInfo symbolInfo;
+
+                // symbols that are centered between adjacent positions
+                if (*predicate == &Position::HasNoteWithSlide || *predicate == &Position::HasNoteWithHammeron ||
+                    *predicate == &Position::HasNoteWithPulloff)
+                {
+                    int nextPos = staff->GetIndexOfNextPosition(system, currentPosition);
+                    if (nextPos != system->GetPositionCount() - 1)
+                        nextPos++;
+
+                    symbolInfo.rect.setRect(currentPosition->GetPosition(), 0, nextPos - currentPosition->GetPosition(), 1);
+                }
+                else // symbols that appear directly below a position
+                {
+                    symbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
+                }
+
+                // draw the symbol
+                SymbolCreationFn symbolCreator = symbolCreationsFns.at(predicate - positionPredicates.begin());
+
+                if (*predicate == &Position::HasNoteWithArtificialHarmonic)
+                {
+                    symbolCreator = boost::bind(&ScoreArea::createArtificialHarmonicText, this, currentPosition);
+                }
+
+                symbolInfo.symbol = symbolCreator();
+                symbols.push_back(symbolInfo);
+            }
+        }
+    }
+
+    // stores the maximum height that has been occupied by symbols at each position
+    // this is used to figure out how low we can place a symbol
+    std::vector<uint8_t> heightMap(system->GetPositionCount(), 0);
+
+    // draw each symbol
+    for (auto i = symbols.begin(); i != symbols.end(); i++)
+    {
+        const int left = i->rect.left();
+
+        // find the lowest height we can place the symbol at without overlapping the already-placed symbols
+        const int height = heightMap.at(left) + 1;
+        // update the height map and adjust the current symbol's height
+        heightMap[left] = height;
+        i->rect.moveTop(height);
+
+        // draw the symbol group
+        centerItem(i->symbol, system->GetPositionX(left), system->GetPositionX(left + i->rect.width()),
+                   currentStaffInfo.getBottomTabLine(false) + i->rect.y() * Staff::TAB_SYMBOL_HEIGHT);
+
+        i->symbol->setParentItem(activeStaff);
+    }
+}
+
 /// Draws the symbols that appear between the tab and standard notation staves
 void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &currentStaffInfo)
 {
@@ -915,7 +1005,7 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
 
     // stores the maximum height that has been occupied at each position
     // this is used to figure out how low we can place a symbol group
-    std::vector<uint8_t> heightMap(system->CalculatePositionCount(currentStaffInfo.positionWidth), 0);
+    std::vector<uint8_t> heightMap(system->GetPositionCount(), 0);
 
     for (auto i = symbols.begin(); i != symbols.end(); i++)
     {
@@ -1082,53 +1172,6 @@ void ScoreArea::adjustScroll()
     ensureVisible(caret, 50, 100);
 }
 
-void ScoreArea::drawComplexSymbolText(Staff* staff, const StaffData& currentStaffInfo, Note* note, const int x)
-{
-    QString text;
-
-    QFont displayFont("Liberation Sans");
-    displayFont.setPixelSize(10);
-
-    int y = currentStaffInfo.getBottomTabLine(false) + 2;
-
-    // for hammerons and pulloffs, we need to push the text further down to avoid overlap with the arc
-    if ((int)note->GetString() == (int)staff->GetTablatureStaffType() - 1)
-    {
-        y += 8;
-    }
-
-    // draw the appropriate text below the staff (i.e. 'H', 'P', etc)
-    if (note->HasHammerOn() || note->HasHammerOnFromNowhere())
-    {
-        text = "H";
-    }
-    else if (note->HasPullOff() || note->HasPullOffToNowhere())
-    {
-        text = "P";
-    }
-    else if (note->HasSlide())
-    {
-        text = "sl.";
-        displayFont.setItalic(true);
-    }
-
-    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(displayFont);
-
-    // for these items, put the text directly under the note
-    if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
-    {
-        centerItem(textItem, x, x + currentStaffInfo.positionWidth, y);
-    }
-    // for these, put the text between this note and the next one
-    else
-    {
-        centerItem(textItem, x, x + 2 * currentStaffInfo.positionWidth, y);
-    }
-
-    textItem->setParentItem(activeStaff);
-}
-
 void ScoreArea::adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap)
 {
     QList<double> keys = accidentalsMap.uniqueKeys();
@@ -1159,4 +1202,59 @@ void ScoreArea::adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accide
 
         ++i;
     }
+}
+
+/// Creates a plain text item; useful for symbols that don't use the music font (hammerons, slides, etc)
+QGraphicsItem* ScoreArea::createPlainText(const QString& text, QFont::Style style)
+{
+    QFont displayFont("Liberation Sans");
+    displayFont.setPixelSize(10);
+    displayFont.setStyle(style);
+
+    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
+    textItem->setFont(displayFont);
+    textItem->setPos(0, -8);
+
+    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    group->addToGroup(textItem);
+
+    return group;
+}
+
+QGraphicsItem* ScoreArea::createPickStroke(const QString& text)
+{
+    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
+    textItem->setFont(musicFont.getFontRef());
+    textItem->setPos(2, -28);
+
+    // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
+    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    group->addToGroup(textItem);
+
+    return group;
+}
+
+// Creates the text portion of an artificial harmonic - displaying the note value
+QGraphicsItem* ScoreArea::createArtificialHarmonicText(Position* position)
+{
+    std::vector<Note*> notes;
+    position->GetNotes(notes);
+
+    // find the note with an artificial harmonic
+    auto location = std::find_if(notes.begin(), notes.end(), std::mem_fun(&Note::HasArtificialHarmonic));
+
+     // this function should not even be executed if there is no note with an artificial harmonic
+    Q_ASSERT(location != notes.end());
+
+    Note* note = *location;
+
+    quint8 key = 0, variation = 0, octave = 0;
+    note->GetArtificialHarmonic(key, variation, octave);
+
+    // use the ChordName class to convert the key/variation data to a text representation
+    ChordName name(key, variation, ChordName::DEFAULT_FORMULA, ChordName::DEFAULT_FORMULA_MODIFICATIONS);
+
+    const QString text = QString().fromStdString(name.GetKeyText(false));
+
+    return createPlainText(text, QFont::StyleNormal);
 }

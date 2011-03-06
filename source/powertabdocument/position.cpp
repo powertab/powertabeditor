@@ -948,6 +948,26 @@ bool Position::HasNoteWithHammeronOrPulloff() const
     return HasNoteWithProperty(&Note::HasHammerOnOrPulloff);
 }
 
+bool Position::HasNoteWithHammeron() const
+{
+    return HasNoteWithProperty(&Note::HasHammerOn);
+}
+
+bool Position::HasNoteWithHammeronFromNowhere() const
+{
+    return HasNoteWithProperty(&Note::HasHammerOnFromNowhere);
+}
+
+bool Position::HasNoteWithPulloff() const
+{
+    return HasNoteWithProperty(&Note::HasPullOff);
+}
+
+bool Position::HasNoteWithPulloffToNowhere() const
+{
+    return HasNoteWithProperty(&Note::HasPullOffToNowhere);
+}
+
 bool Position::HasNoteWithSlide() const
 {
     return HasNoteWithProperty(&Note::HasSlide);

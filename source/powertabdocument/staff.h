@@ -215,6 +215,7 @@ public:
 
     Position* GetLastPosition() const;
     Position* GetPositionByPosition(uint32_t index) const;
+    size_t GetIndexOfNextPosition(System* system, Position* position) const;
 
     bool IsOnlyPositionInBar(Position* position, System* system) const;
 
@@ -230,7 +231,7 @@ public:
 
     void CalculateTabStaffBelowSpacing();
     void CalculateSymbolSpacing();
-    
+
     typedef bool (Position::*PositionProperty)() const;
 
 protected:

@@ -45,6 +45,8 @@ public:
         ArpeggioUp = 0xe18a,
         Marcato = 0xe16a,
         Sforzando = 0xe172,
+        PickStrokeUp = 0xe17d,
+        PickStrokeDown = 0xe177,
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol

@@ -16,6 +16,7 @@
 #include "tuning.h"                         // Needed for IsValidStringCount
 
 #include <numeric> // partial_sum
+#include <stdexcept>
 
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);
@@ -289,6 +290,27 @@ Position* Staff::GetPositionByPosition(uint32_t index) const
     return NULL;
 }
 
+/// Finds the position index of the next position
+/// @throw std::out_of_range if the position does not exist in this staff
+size_t Staff::GetIndexOfNextPosition(System* system, Position *position) const
+{
+    auto location = std::find(highMelodyPositionArray.begin(), highMelodyPositionArray.end(), position);
+
+    if (location == highMelodyPositionArray.end())
+        throw std::out_of_range("Position not in system");
+
+    std::advance(location, 1);
+
+    if (location == highMelodyPositionArray.end())
+    {
+        return system->GetPositionCount() - 1;
+    }
+    else
+    {
+        return (*location)->GetPosition();
+    }
+}
+
 // Returns true if the given position is the only Position object in its bar
 bool Staff::IsOnlyPositionInBar(Position *position, System *system) const
 {
@@ -379,7 +401,7 @@ void Staff::CalculateTabStaffBelowSpacing()
         &Position::HasNoteWithHammeronOrPulloff, &Position::HasNoteWithSlide,
         &Position::HasNoteWithTappedHarmonic, &Position::HasNoteWithArtificialHarmonic
     };
-    
+
     SetTablatureStaffBelowSpacing(CalculateSpacingForProperties(positionFunctions));
 }
 

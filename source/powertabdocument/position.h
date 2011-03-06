@@ -850,6 +850,10 @@ public:
     bool HasNoteWithNaturalHarmonic() const;
     bool HasNoteWithArtificialHarmonic() const;
     bool HasNoteWithHammeronOrPulloff() const;
+    bool HasNoteWithHammeron() const;
+    bool HasNoteWithHammeronFromNowhere() const;
+    bool HasNoteWithPulloff() const;
+    bool HasNoteWithPulloffToNowhere() const;
     bool HasNoteWithSlide() const;
     bool HasNoteWithTappedHarmonic() const;
 
