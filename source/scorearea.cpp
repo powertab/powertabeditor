@@ -809,20 +809,21 @@ void ScoreArea::drawSymbolsBelowTabStaff(System *system, Staff *staff, const Sta
     };
 
     typedef boost::function<QGraphicsItem* (void)> SymbolCreationFn;
+    using boost::bind;
 
     // functions for creating symbols, corresponding to each element of positionPredicates
     std::vector<SymbolCreationFn> symbolCreationsFns = {
-        boost::bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeDown)),
-        boost::bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeUp)),
-        boost::bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
-        boost::bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
-        boost::bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
-        boost::bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
-        boost::bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
-        boost::bind(&ScoreArea::createPlainText, this, "sl.", QFont::StyleItalic),
-        boost::bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
+        bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeDown)),
+        bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeUp)),
+        bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
+        bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
+        bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
+        bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
+        bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
+        bind(&ScoreArea::createPlainText, this, "sl.", QFont::StyleItalic),
+        bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
         // temporary placeholder - we will properly bind this later with the correct text for the harmonic's note value
-        boost::bind(&ScoreArea::createArtificialHarmonicText, this, (Position*)NULL),
+        bind(&ScoreArea::createArtificialHarmonicText, this, (Position*)NULL),
     };
 
     std::list<SymbolInfo> symbols;
@@ -860,7 +861,7 @@ void ScoreArea::drawSymbolsBelowTabStaff(System *system, Staff *staff, const Sta
 
                 if (*predicate == &Position::HasNoteWithArtificialHarmonic)
                 {
-                    symbolCreator = boost::bind(&ScoreArea::createArtificialHarmonicText, this, currentPosition);
+                    symbolCreator = bind(&ScoreArea::createArtificialHarmonicText, this, currentPosition);
                 }
 
                 symbolInfo.symbol = symbolCreator();
@@ -895,7 +896,8 @@ void ScoreArea::drawSymbolsBelowTabStaff(System *system, Staff *staff, const Sta
 /// Draws the symbols that appear between the tab and standard notation staves
 void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &currentStaffInfo)
 {
-    typedef QGraphicsItem* (ScoreArea::*SymbolCreator)(uint8_t, const StaffData&);
+    typedef boost::function<QGraphicsItem* (uint8_t, const StaffData&)> SymbolCreationFn;
+    using boost::bind;
 
     std::list<SymbolInfo> symbols; // holds all of the symbols that we will draw
 
@@ -905,11 +907,14 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
         &Position::HasNoteWithArtificialHarmonic
     };
 
-    // function pointers for drawing symbols corresponding to each of the items in the groupableSymbolPredicates list
-    std::vector<SymbolCreator> groupableSymbolCreators = {
-        &ScoreArea::createLetRing, &ScoreArea::createVibrato, &ScoreArea::createWideVibrato,
-        &ScoreArea::createPalmMute, &ScoreArea::createNaturalHarmonic,
-        &ScoreArea::createArtificialHarmonic
+    // function objects for drawing symbols corresponding to each of the items in the groupableSymbolPredicates list
+    std::vector<SymbolCreationFn> groupableSymbolCreators = {
+        bind(&ScoreArea::createConnectedSymbolGroup, this, "let ring", QFont::StyleItalic, _1, _2),
+        bind(&ScoreArea::drawContinuousFontSymbols, this, MusicFont::Vibrato, _1, _2),
+        bind(&ScoreArea::drawContinuousFontSymbols, this, MusicFont::WideVibrato, _1, _2),
+        bind(&ScoreArea::createConnectedSymbolGroup, this, "P.M.", QFont::StyleNormal, _1, _2),
+        bind(&ScoreArea::createConnectedSymbolGroup, this, "N.H.", QFont::StyleNormal, _1, _2),
+        bind(&ScoreArea::createConnectedSymbolGroup, this, "A.H.", QFont::StyleNormal, _1, _2),
     };
 
     // Generates the bounding rectangles for each symbol group (i.e. consecutive 'let ring' symbols)
@@ -921,7 +926,7 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
         bool inGroup = false;
         SymbolInfo currentSymbolInfo;
         const size_t numPositions = staff->GetPositionCount(0);
-        SymbolCreator symbolCreator = groupableSymbolCreators.at(predicate - groupableSymbolPredicates.begin());
+        SymbolCreationFn symbolCreator = groupableSymbolCreators.at(predicate - groupableSymbolPredicates.begin());
 
         for (size_t i = 0; i < numPositions; i++)
         {
@@ -945,7 +950,7 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
                 // close up the rectangle and draw the symbol
                 currentSymbolInfo.rect.setRight(currentPosition->GetPosition() - 1);
                 inGroup = false;
-                currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
+                currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
                 symbols.push_back(currentSymbolInfo);
             }
         }
@@ -953,7 +958,7 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
         // if we're at the end of the staff, close the current rectangle if necessary
         if (inGroup)
         {
-            currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
+            currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
             symbols.push_back(currentSymbolInfo);
         }
     }
@@ -962,10 +967,13 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
         &Position::HasVolumeSwell, &Position::HasTremoloPicking,
         &Position::HasTremoloBar, &Position::HasNoteWithTrill
     };
-    // function pointers for drawing symbols corresponding to each of the items in the singleSymbolPredicates list
-    std::vector<SymbolCreator> singleSymbolCreators = {
-        &ScoreArea::createVolumeSwell, &ScoreArea::createTremoloPicking,
-        &ScoreArea::createPalmMute, &ScoreArea::createTrill
+
+    // function objects for drawing symbols corresponding to each of the items in the singleSymbolPredicates list
+    std::vector<SymbolCreationFn> singleSymbolCreators = {
+        bind(&ScoreArea::createVolumeSwell, this, _1, _2),
+        bind(&ScoreArea::createTremoloPicking, this, _1, _2),
+        bind(&ScoreArea::createTremoloPicking, this, _1, _2), // TODO - create function for drawing tremolo bars
+        bind(&ScoreArea::createTrill, this, _1, _2),
     };
 
     // Now, generate the rectangles for individual (non-groupable) symbols
@@ -996,8 +1004,8 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
                     currentSymbolInfo.rect.setRight(lastPos->GetPosition());
                 }
 
-                SymbolCreator symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
-                currentSymbolInfo.symbol = (this->*symbolCreator)(currentSymbolInfo.rect.width(), currentStaffInfo);
+                SymbolCreationFn symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
+                currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
                 symbols.push_back(currentSymbolInfo);
             }
         }
@@ -1027,8 +1035,8 @@ void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &curre
 }
 
 // Draws symbols that are grouped across multiple positions (i.e. consecutive "let ring" symbols)
-QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, uint8_t width,
-                                                     const StaffData& currentStaffInfo, QFont::Style style)
+QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, QFont::Style style, uint8_t width,
+                                                     const StaffData& currentStaffInfo)
 {
     static QFont font("Liberation Sans");
     font.setPixelSize(9);
@@ -1062,26 +1070,6 @@ QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, uint8_
     return group;
 }
 
-QGraphicsItem* ScoreArea::createPalmMute(uint8_t width, const StaffData &currentStaffInfo)
-{
-    return createConnectedSymbolGroup("P.M.", width, currentStaffInfo);
-}
-
-QGraphicsItem* ScoreArea::createLetRing(uint8_t width, const StaffData &currentStaffInfo)
-{
-    return createConnectedSymbolGroup("let ring", width, currentStaffInfo, QFont::StyleItalic);
-}
-
-QGraphicsItem* ScoreArea::createNaturalHarmonic(uint8_t width, const StaffData &currentStaffInfo)
-{
-    return createConnectedSymbolGroup("N.H.", width, currentStaffInfo);
-}
-
-QGraphicsItem* ScoreArea::createArtificialHarmonic(uint8_t width, const StaffData &currentStaffInfo)
-{
-    return createConnectedSymbolGroup("A.H.", width, currentStaffInfo);
-}
-
 QGraphicsItem* ScoreArea::drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo)
 {
     QFont font = musicFont.getFont();
@@ -1098,16 +1086,6 @@ QGraphicsItem* ScoreArea::drawContinuousFontSymbols(QChar symbol, uint8_t width,
     group->addToGroup(text);
 
     return group;
-}
-
-QGraphicsItem* ScoreArea::createVibrato(uint8_t width, const StaffData& currentStaffInfo)
-{
-    return drawContinuousFontSymbols(MusicFont::getSymbol(MusicFont::Vibrato), width, currentStaffInfo);
-}
-
-QGraphicsItem* ScoreArea::createWideVibrato(uint8_t width, const StaffData& currentStaffInfo)
-{
-    return drawContinuousFontSymbols(MusicFont::getSymbol(MusicFont::WideVibrato), width, currentStaffInfo);
 }
 
 QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentStaffInfo)

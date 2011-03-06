@@ -97,12 +97,6 @@ protected:
         QGraphicsItem* symbol; ///< contains the information for rendering the symbol
     };
 
-    QGraphicsItem* createPalmMute(uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createLetRing(uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createNaturalHarmonic(uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createArtificialHarmonic(uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createVibrato(uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createWideVibrato(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo);
@@ -112,8 +106,8 @@ protected:
     QGraphicsItem* createArtificialHarmonicText(Position* position);
 
     QGraphicsItem* drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createConnectedSymbolGroup(const QString& text, uint8_t width,
-                                              const StaffData& currentStaffInfo, QFont::Style style = QFont::StyleNormal);
+    QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, uint8_t width,
+                                              const StaffData& currentStaffInfo);
 
 public slots:
     void adjustScroll();
