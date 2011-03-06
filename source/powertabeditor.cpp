@@ -436,9 +436,28 @@ void PowerTabEditor::createActions()
                                 {&getCurrentPosition, &Position::HasArpeggioDown,
                                  &Position::SetArpeggioDown, arpeggioUpAct->text()});
 
+    tapAct = new QAction(tr("Tap"), this);
+    tapAct->setCheckable(true);
+    tapAct->setShortcut(QKeySequence(Qt::Key_P));
+    connectTogglePropertyAction(tapAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::HasTap,
+                                 &Position::SetTap, tapAct->text()});
+
     trillAction = new QAction(tr("Trill"), this);
     trillAction->setCheckable(true);
     connect(trillAction, SIGNAL(triggered()), this, SLOT(editTrill()));
+
+    pickStrokeUpAct = new QAction(tr("Pickstroke Up"), this);
+    pickStrokeUpAct->setCheckable(true);
+    connectTogglePropertyAction(pickStrokeUpAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::HasPickStrokeUp,
+                                 &Position::SetPickStrokeUp, pickStrokeUpAct->text()});
+
+    pickStrokeDownAct = new QAction(tr("Pickstroke Down"), this);
+    pickStrokeDownAct->setCheckable(true);
+    connectTogglePropertyAction(pickStrokeDownAct, (ToggleablePropertyRecord<Position>)
+                                {&getCurrentPosition, &Position::HasPickStrokeDown,
+                                 &Position::SetPickStrokeDown, pickStrokeDownAct->text()});
 
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
@@ -567,9 +586,13 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addAction(palmMuteAct);
     tabSymbolsMenu->addAction(tremoloPickingAct);
     tabSymbolsMenu->addAction(trillAction);
+    tabSymbolsMenu->addAction(tapAct);
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(arpeggioUpAct);
     tabSymbolsMenu->addAction(arpeggioDownAct);
+    tabSymbolsMenu->addSeparator();
+    tabSymbolsMenu->addAction(pickStrokeUpAct);
+    tabSymbolsMenu->addAction(pickStrokeDownAct);
 
     // Window Menu
     windowMenu = menuBar()->addMenu(tr("&Window"));
@@ -1107,7 +1130,11 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(doubleDottedNoteAct, currentPosition, &Position::IsDoubleDotted);
     updatePropertyStatus(marcatoAct, currentPosition, &Position::HasMarcato);
     updatePropertyStatus(sforzandoAct, currentPosition, &Position::HasSforzando);
+
     updatePropertyStatus(trillAction, currentNote, &Note::HasTrill);
+    updatePropertyStatus(tapAct, currentPosition, &Position::HasTap);
+    updatePropertyStatus(pickStrokeUpAct, currentPosition, &Position::HasPickStrokeUp);
+    updatePropertyStatus(pickStrokeDownAct, currentPosition, &Position::HasPickStrokeDown);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

@@ -180,7 +180,10 @@ protected:
     QAction* tremoloPickingAct; // toggle tremolo picking
     QAction* arpeggioUpAct;
     QAction* arpeggioDownAct;
+    QAction* tapAct;
     QAction* trillAction; // create or remove a trill
+    QAction* pickStrokeUpAct;
+    QAction* pickStrokeDownAct;
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab
