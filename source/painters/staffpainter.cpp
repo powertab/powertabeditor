@@ -26,6 +26,8 @@ StaffPainter::StaffPainter(System* system, Staff* staff, const StaffData& staffI
 
 void StaffPainter::init()
 {
+    selectionEnd = selectionStart = 0;
+
     bounds = QRectF(0, 0, staffInfo.width, staffInfo.height);
 
     // Standard notation staff
@@ -34,12 +36,10 @@ void StaffPainter::init()
     drawStaffLines(staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine(false));
 }
 
-void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
-}
+    selectionStart = selectionEnd = mouseEvent->pos().x();
 
-void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
-{
     qreal y = mouseEvent->pos().y();
     qreal x = mouseEvent->pos().x();
 
@@ -64,6 +64,13 @@ void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }
 }
 
+void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
+{
+    Q_UNUSED(mouseEvent);
+
+    update(boundingRect());
+}
+
 // useful function for figuring out what string and what position a mouse click occurred at
 inline int StaffPainter::findClosestPosition(qreal click, qreal relativePos, qreal spacing)
 {
@@ -72,8 +79,10 @@ inline int StaffPainter::findClosestPosition(qreal click, qreal relativePos, qre
     return pos;
 }
 
-void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
+    selectionEnd = mouseEvent->pos().x();
+    update(boundingRect()); // trigger a redraw
 }
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -84,6 +93,14 @@ void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     painter->setPen(pen);
 
     painter->drawPath(path);
+
+    if (selectionStart != selectionEnd)
+    {
+        painter->setBrush(QColor(168, 205, 241, 125));
+        painter->setPen(QPen(QBrush(), 0));
+        QRectF rect(selectionStart, staffInfo.getTopTabLine(false) + 1, selectionEnd - selectionStart, staffInfo.getTabStaffSize() - 1);
+        painter->drawRect(rect);
+    }
 }
 
 int StaffPainter::drawStaffLines(int lineCount, int lineSpacing, int startHeight)
