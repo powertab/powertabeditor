@@ -38,7 +38,7 @@ void StaffPainter::init()
 
 void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
-    selectionStart = selectionEnd = mouseEvent->pos().x();
+    selectionStart = selectionEnd = 0;
 
     qreal y = mouseEvent->pos().y();
     qreal x = mouseEvent->pos().x();
@@ -51,7 +51,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     {
         Caret* caret = PowerTabEditor::getCurrentScoreArea()->getCaret();
 
-        int position = findClosestPosition(x, system->GetFirstPositionX() + 0.5 * staffInfo.positionWidth, staffInfo.positionWidth);
+        int position = findClosestPosition(x, system->GetFirstPositionX() + 0.5 * staffInfo.positionWidth, staffInfo.positionWidth) - 1;
         int staffIndex = system->FindStaffIndex(staff);
 
         Score* currentScore = caret->getCurrentScore();
@@ -59,8 +59,11 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
         caret->setCurrentSystemIndex(systemIndex);
         caret->setCurrentStaffIndex(staffIndex);
-        caret->setCurrentPositionIndex(position - 1);
+        caret->setCurrentPositionIndex(position);
         caret->setCurrentStringIndex(string);
+
+        selectionStart = selectionEnd = position;
+        qDebug() << "Selection Start: " << selectionStart;
     }
 }
 
@@ -71,7 +74,11 @@ void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
     update(boundingRect());
 }
 
-// useful function for figuring out what string and what position a mouse click occurred at
+/// useful function for figuring out what string and what position a mouse click occurred at
+/// Finds the closest position, using the spacing between each position and the start point
+/// @param click - The position that the click occurred at
+/// @param relativePos - The position that everything is relative to (i.e. top line of a staff)
+/// @param spacing - Spacing between items
 inline int StaffPainter::findClosestPosition(qreal click, qreal relativePos, qreal spacing)
 {
     qreal temp = (click - relativePos) / spacing;
@@ -81,8 +88,18 @@ inline int StaffPainter::findClosestPosition(qreal click, qreal relativePos, qre
 
 void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
-    selectionEnd = mouseEvent->pos().x();
+    const double x = mouseEvent->pos().x();
+    int newPos = findClosestPosition(x, system->GetFirstPositionX() + 0.5 * staffInfo.positionWidth, staffInfo.positionWidth);
+
+    if (newPos <= 0 || newPos >= system->GetPositionCount())
+        return;
+
+    selectionEnd = newPos;
+    if (selectionEnd <= selectionStart)
+        selectionEnd--;
+
     update(boundingRect()); // trigger a redraw
+    qDebug() << "Selection End: " << selectionEnd;
 }
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -94,13 +111,16 @@ void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
     painter->drawPath(path);
 
-    if (selectionStart != selectionEnd)
-    {
-        painter->setBrush(QColor(168, 205, 241, 125));
-        painter->setPen(QPen(QBrush(), 0));
-        QRectF rect(selectionStart, staffInfo.getTopTabLine(false) + 1, selectionEnd - selectionStart, staffInfo.getTabStaffSize() - 1);
-        painter->drawRect(rect);
-    }
+    painter->setBrush(QColor(168, 205, 241, 125));
+    painter->setPen(QPen(QBrush(), 0));
+
+    int leftPos = system->GetPositionX(std::min(selectionStart, selectionEnd));
+    int rightPos = system->GetPositionX(std::max(selectionStart, selectionEnd));
+    if (selectionEnd < selectionStart)
+        rightPos += staffInfo.positionWidth;
+
+    QRectF rect(leftPos, staffInfo.getTopTabLine(false) + 1, rightPos - leftPos, staffInfo.getTabStaffSize() - 1);
+    painter->drawRect(rect);
 }
 
 int StaffPainter::drawStaffLines(int lineCount, int lineSpacing, int startHeight)

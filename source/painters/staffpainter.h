@@ -29,8 +29,8 @@ protected:
     StaffData staffInfo;
     QPen pen;
 
-    double selectionStart;
-    double selectionEnd;
+    int selectionStart;
+    int selectionEnd;
 
     void init();
 };
