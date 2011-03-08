@@ -1,0 +1,16 @@
+This folder contains unit tests, using the Boost Test library
+(http://www.boost.org/doc/libs/1_46_0/libs/test/doc/html/utf.html)
+
+Installation:
+    - Install boost as described in the source/README file
+    - The Boost.Test library is not header-only, and requires a compiled library
+
+    Linux: 
+        - For Ubuntu, install libboost-test-dev
+        - other distributions should have a similar package
+
+    Windows:
+        - TODO
+
+TODO - compile the powertabdocument classes as a separate library so that
+we don't need to recompile everything for running the tests
