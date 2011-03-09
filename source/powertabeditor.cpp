@@ -397,6 +397,12 @@ void PowerTabEditor::createActions()
                                   {&getCurrentNote, &Note::IsNaturalHarmonic,
                                    &Note::SetNaturalHarmonic, naturalHarmonicAct->text()});
 
+    shiftSlideAct = new QAction(tr("Shift Slide"), this);
+    shiftSlideAct->setCheckable(true);
+
+    legatoSlideAct = new QAction(tr("Legato Slide"), this);
+    legatoSlideAct->setCheckable(true);
+
     vibratoAct = new QAction(tr("Vibrato"), this);
     vibratoAct->setCheckable(true);
     vibratoAct->setShortcut(QKeySequence(Qt::Key_V));
@@ -458,6 +464,20 @@ void PowerTabEditor::createActions()
     connectTogglePropertyAction(pickStrokeDownAct, (ToggleablePropertyRecord<Position>)
                                 {&getCurrentPosition, &Position::HasPickStrokeDown,
                                  &Position::SetPickStrokeDown, pickStrokeDownAct->text()});
+
+    // Slide Into Menu
+    slideIntoFromAboveAct = new QAction(tr("Slide Into From Above"), this);
+    slideIntoFromAboveAct->setCheckable(true);
+
+    slideIntoFromBelowAct = new QAction(tr("Slide Into From Below"), this);
+    slideIntoFromBelowAct->setCheckable(true);
+
+    // Slide Out Of Menu
+    slideOutOfDownwardsAct = new QAction(tr("Slide Out Of Downwards"), this);
+    slideOutOfDownwardsAct->setCheckable(true);
+
+    slideOutOfUpwardsAct = new QAction(tr("Slide Out Of Upwards"), this);
+    slideOutOfUpwardsAct->setCheckable(true);
 
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
@@ -579,6 +599,19 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     tabSymbolsMenu->addAction(hammerPullAct);
     tabSymbolsMenu->addAction(naturalHarmonicAct);
+    tabSymbolsMenu->addSeparator();
+
+    slideIntoMenu = tabSymbolsMenu->addMenu(tr("Slide Into"));
+    slideIntoMenu->addAction(slideIntoFromBelowAct);
+    slideIntoMenu->addAction(slideIntoFromAboveAct);
+
+    tabSymbolsMenu->addAction(shiftSlideAct);
+    tabSymbolsMenu->addAction(legatoSlideAct);
+
+    slideOutOfMenu = tabSymbolsMenu->addMenu(tr("Slide Out Of"));
+    slideOutOfMenu->addAction(slideOutOfDownwardsAct);
+    slideOutOfMenu->addAction(slideOutOfUpwardsAct);
+
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(vibratoAct);
     tabSymbolsMenu->addAction(wideVibratoAct);
@@ -1135,6 +1168,11 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(tapAct, currentPosition, &Position::HasTap);
     updatePropertyStatus(pickStrokeUpAct, currentPosition, &Position::HasPickStrokeUp);
     updatePropertyStatus(pickStrokeDownAct, currentPosition, &Position::HasPickStrokeDown);
+
+    updatePropertyStatus(shiftSlideAct, currentNote, &Note::HasShiftSlide);
+    updatePropertyStatus(legatoSlideAct, currentNote, &Note::HasLegatoSlide);
+    updatePropertyStatus(slideOutOfDownwardsAct, currentNote, &Note::HasSlideOutOfDownwards);
+    updatePropertyStatus(slideOutOfUpwardsAct, currentNote, &Note::HasSlideOutOfUpwards);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

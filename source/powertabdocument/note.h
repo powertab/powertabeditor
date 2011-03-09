@@ -477,6 +477,21 @@ public:
     bool HasSlideOutOf() const;
     bool ClearSlideOutOf();
 
+    inline bool HasSlideOutOfDownwards() const
+    {
+        uint8_t type = 0;
+        int8_t steps = 0;
+        GetSlideOutOf(type, steps);
+        return type == slideOutOfDownwards;
+    }
+    inline bool HasSlideOutOfUpwards() const
+    {
+        uint8_t type = 0;
+        int8_t steps = 0;
+        GetSlideOutOf(type, steps);
+        return type == slideOutOfUpwards;
+    }
+
 // Bend Functions
     static bool IsValidBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
         uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint);

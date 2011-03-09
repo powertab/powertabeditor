@@ -174,6 +174,8 @@ protected:
     QMenu* tabSymbolsMenu;
     QAction* hammerPullAct; // add/remove hammer-on or pull-off
     QAction* naturalHarmonicAct; // add/remove natural harmonics
+    QAction* shiftSlideAct;
+    QAction* legatoSlideAct;
     QAction* vibratoAct; // add/remove vibrato
     QAction* wideVibratoAct;
     QAction* palmMuteAct; // toggle palm-muting
@@ -184,6 +186,15 @@ protected:
     QAction* trillAction; // create or remove a trill
     QAction* pickStrokeUpAct;
     QAction* pickStrokeDownAct;
+
+    QMenu* slideIntoMenu;
+    QAction* slideIntoFromAboveAct;
+    QAction* slideIntoFromBelowAct;
+
+    QMenu* slideOutOfMenu;
+    QAction* slideOutOfDownwardsAct;
+    QAction* slideOutOfUpwardsAct;
+
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab
