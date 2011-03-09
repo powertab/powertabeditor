@@ -46,6 +46,7 @@
 #include <actions/changepositionspacing.h>
 #include <actions/removetrill.h>
 #include <actions/addtrill.h>
+#include <actions/editslideout.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -149,6 +150,9 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 
 void PowerTabEditor::createActions()
 {
+    slideOutMapper = new QSignalMapper(this);
+    connect(slideOutMapper, SIGNAL(mapped(int)), this, SLOT(editSlide(int)));
+
     // File-related actions
     openFileAct = new QAction(tr("&Open..."), this);
     openFileAct->setShortcuts(QKeySequence::Open);
@@ -399,9 +403,13 @@ void PowerTabEditor::createActions()
 
     shiftSlideAct = new QAction(tr("Shift Slide"), this);
     shiftSlideAct->setCheckable(true);
+    connect(shiftSlideAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
+    slideOutMapper->setMapping(shiftSlideAct, Note::slideOutOfShiftSlide);
 
     legatoSlideAct = new QAction(tr("Legato Slide"), this);
     legatoSlideAct->setCheckable(true);
+    connect(legatoSlideAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
+    slideOutMapper->setMapping(legatoSlideAct, Note::slideOutOfLegatoSlide);
 
     vibratoAct = new QAction(tr("Vibrato"), this);
     vibratoAct->setCheckable(true);
@@ -475,9 +483,13 @@ void PowerTabEditor::createActions()
     // Slide Out Of Menu
     slideOutOfDownwardsAct = new QAction(tr("Slide Out Of Downwards"), this);
     slideOutOfDownwardsAct->setCheckable(true);
+    connect(slideOutOfDownwardsAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
+    slideOutMapper->setMapping(slideOutOfDownwardsAct, Note::slideOutOfDownwards);
 
     slideOutOfUpwardsAct = new QAction(tr("Slide Out Of Upwards"), this);
     slideOutOfUpwardsAct->setCheckable(true);
+    connect(slideOutOfUpwardsAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
+    slideOutMapper->setMapping(slideOutOfUpwardsAct, Note::slideOutOfUpwards);
 
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
@@ -1201,4 +1213,19 @@ void PowerTabEditor::updateNoteDuration(int duration)
 {
     Position* currentPosition = getCurrentScoreArea()->getCaret()->getCurrentPosition();
     undoManager->push(new UpdateNoteDuration(currentPosition, duration));
+}
+
+void PowerTabEditor::editSlide(int newSlideType)
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* note = caret->getCurrentNote();
+
+    quint8 currentType = 0;
+    qint8 steps = 0;
+    note->GetSlideOutOf(currentType, steps);
+
+    if (currentType == newSlideType)
+        newSlideType = Note::slideOutOfNone;
+
+    undoManager->push(new EditSlideOut(note, newSlideType, 0));
 }

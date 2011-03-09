@@ -98,7 +98,8 @@ SOURCES += main.cpp\
     actions/changepositionspacing.cpp \
     actions/removetrill.cpp \
     dialogs/trilldialog.cpp \
-    actions/addtrill.cpp
+    actions/addtrill.cpp \
+    actions/editslideout.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -177,7 +178,8 @@ HEADERS  += powertabeditor.h \
     actions/changepositionspacing.h \
     actions/removetrill.h \
     dialogs/trilldialog.h \
-    actions/addtrill.h
+    actions/addtrill.h \
+    actions/editslideout.h
 
 RESOURCES += \
     resources.qrc

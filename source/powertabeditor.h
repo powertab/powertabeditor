@@ -82,6 +82,7 @@ protected slots:
     void editTiedNote();
     void editHammerPull();
     void editTrill();
+    void editSlide(int newSlideType);
 
     void increasePositionSpacing();
     void decreasePositionSpacing();
@@ -194,7 +195,7 @@ protected:
     QMenu* slideOutOfMenu;
     QAction* slideOutOfDownwardsAct;
     QAction* slideOutOfUpwardsAct;
-
+    QSignalMapper* slideOutMapper;
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab
