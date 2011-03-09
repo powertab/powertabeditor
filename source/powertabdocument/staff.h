@@ -222,6 +222,7 @@ public:
     bool CanHammerOn(Position* position, Note* note) const;
     bool CanPullOff(Position* position, Note* note) const;
     bool CanTieNote(Position* position, Note* note) const;
+    bool CanSlideBetweenNotes(Position* position, Note* note) const;
 
     int GetHeight() const;
     

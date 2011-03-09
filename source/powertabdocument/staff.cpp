@@ -354,6 +354,13 @@ bool Staff::CanTieNote(Position* position, Note* note) const
     return CompareWithNote(PrevNote, position, note, std::equal_to<uint8_t>());
 }
 
+/// Determines if we can slide from the given note to the next note (shift or legato slides)
+/// The next note must exist and be a different fret number
+bool Staff::CanSlideBetweenNotes(Position *position, Note *note) const
+{
+    return CompareWithNote(NextNote, position, note, std::not_equal_to<uint8_t>());
+}
+
 namespace 
 {
     // Tests a predicate member function against a pointer to an object of type T
