@@ -1221,15 +1221,38 @@ void PowerTabEditor::editSlide(int newSlideType)
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
     Note* note = caret->getCurrentNote();
+    Position* position = caret->getCurrentPosition();
 
-    const qint8 newSteps = caret->getCurrentStaff()->GetSlideSteps(caret->getCurrentPosition(), note);
+    qint8 newSteps = 0;
+
+    // for shift/legato slides, get the number of steps we will shift
+    if (newSlideType == Note::slideOutOfLegatoSlide || newSlideType == Note::slideOutOfShiftSlide)
+    {
+        Staff* staff = caret->getCurrentStaff();
+
+        // if we can't do a slide, uncheck the action that was just pressed and abort
+        if (!staff->CanSlideBetweenNotes(position, note))
+        {
+            if (newSlideType == Note::slideOutOfLegatoSlide)
+                legatoSlideAct->setChecked(false);
+            else if (newSlideType == Note::slideOutOfShiftSlide)
+                shiftSlideAct->setChecked(false);
+
+            return;
+        }
+
+        newSteps = caret->getCurrentStaff()->GetSlideSteps(position, note);
+    }
 
     // find what the current slide is set to - if it is the same, remove the slide
     quint8 currentType = 0;
     qint8 steps = 0;
     note->GetSlideOutOf(currentType, steps);
     if (currentType == newSlideType)
+    {
         newSlideType = Note::slideOutOfNone;
+        newSteps = 0;
+    }
 
     undoManager->push(new EditSlideOut(note, newSlideType, newSteps));
 }
