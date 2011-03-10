@@ -577,3 +577,42 @@ Position* Staff::GetLastPosition() const
 
     return highMelodyPositionArray.back();
 }
+
+/// Returns the number of steps (frets) between the given note and the next note on the string
+/// @throws std::logic_error If there is no note at the same string for the next position
+int8_t Staff::GetSlideSteps(Position *position, Note *note) const
+{
+    Note* nextNote = GetAdjacentNoteOnString(Staff::NextNote, position, note);
+
+    if (!nextNote)
+        throw std::logic_error("The next position does not have a note on the same string.");
+
+    return nextNote->GetFretNumber() - note->GetFretNumber();
+}
+
+Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, Position *position, Note *note) const
+{
+    // find where the position is within the staff
+    auto location = std::find(highMelodyPositionArray.begin(),
+                              highMelodyPositionArray.end(), position);
+
+    // if position was not found, we cannot compare it to the next one
+    if (location == highMelodyPositionArray.end())
+    {
+        return NULL;
+    }
+
+    // check that the new location is still valid
+    int newIndex = location - highMelodyPositionArray.begin() + searchDirection;
+    if (newIndex < 0 || newIndex >= (int)highMelodyPositionArray.size())
+    {
+        return NULL;
+    }
+
+    std::advance(location, searchDirection);
+
+    Position* nextPosition = *location;
+    Note* nextNote = nextPosition->GetNoteByString(note->GetString());
+
+    return nextNote;
+}

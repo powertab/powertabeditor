@@ -403,11 +403,13 @@ void PowerTabEditor::createActions()
 
     shiftSlideAct = new QAction(tr("Shift Slide"), this);
     shiftSlideAct->setCheckable(true);
+    shiftSlideAct->setShortcut(QKeySequence(Qt::Key_S));
     connect(shiftSlideAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
     slideOutMapper->setMapping(shiftSlideAct, Note::slideOutOfShiftSlide);
 
     legatoSlideAct = new QAction(tr("Legato Slide"), this);
     legatoSlideAct->setCheckable(true);
+    legatoSlideAct->setShortcut(QKeySequence(Qt::Key_L));
     connect(legatoSlideAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
     slideOutMapper->setMapping(legatoSlideAct, Note::slideOutOfLegatoSlide);
 
@@ -1220,12 +1222,14 @@ void PowerTabEditor::editSlide(int newSlideType)
     Caret* caret = getCurrentScoreArea()->getCaret();
     Note* note = caret->getCurrentNote();
 
+    const qint8 newSteps = caret->getCurrentStaff()->GetSlideSteps(caret->getCurrentPosition(), note);
+
+    // find what the current slide is set to - if it is the same, remove the slide
     quint8 currentType = 0;
     qint8 steps = 0;
     note->GetSlideOutOf(currentType, steps);
-
     if (currentType == newSlideType)
         newSlideType = Note::slideOutOfNone;
 
-    undoManager->push(new EditSlideOut(note, newSlideType, 0));
+    undoManager->push(new EditSlideOut(note, newSlideType, newSteps));
 }

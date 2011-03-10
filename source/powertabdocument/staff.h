@@ -223,6 +223,7 @@ public:
     bool CanPullOff(Position* position, Note* note) const;
     bool CanTieNote(Position* position, Note* note) const;
     bool CanSlideBetweenNotes(Position* position, Note* note) const;
+    int8_t GetSlideSteps(Position* position, Note* note) const;
 
     int GetHeight() const;
     
@@ -244,36 +245,19 @@ protected:
         PrevNote = -1,
     };
     
-    /// Compares the fret numbers of two consecutive notes, using the given comparision function (binary predicate)
+    /// Compares the fret numbers of two consecutive notes on the same string,
+    /// using the given comparision function (binary predicate)
     template<typename FretComparison>
     bool CompareWithNote(SearchDirection searchDirection, Position* position, Note* note, FretComparison comp) const
     {
-        // find where the position is within the staff
-        auto location = std::find(highMelodyPositionArray.begin(),
-                                  highMelodyPositionArray.end(), position);
-        
-        // if position was not found, we cannot compare it to the next one
-        if (location == highMelodyPositionArray.end())
-        {
-            return false;
-        }
-        
-        // check that the new location is still valid
-        int newIndex = location - highMelodyPositionArray.begin() + searchDirection;
-        if (newIndex < 0 || newIndex >= (int)highMelodyPositionArray.size())
-        {
-            return false;
-        }
-        
-        std::advance(location, searchDirection);
-        
-        Position* nextPosition = *location;        
-        Note* nextNote = nextPosition->GetNoteByString(note->GetString());
+        Note* nextNote = GetAdjacentNoteOnString(searchDirection, position, note);
         
         // check if a note was found on the same string in the next position,
         // and if the fret number comparision is satisfied
         return (nextNote != NULL && comp(note->GetFretNumber(), nextNote->GetFretNumber()));
     }
+
+    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, Position* position, Note* note) const;
 };
 
 #endif

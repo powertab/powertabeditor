@@ -17,6 +17,7 @@ struct StaffFixture
 
         // put some sample notes at each position
         positions.at(0)->m_noteArray.push_back(new Note(1, 4));
+        positions.at(0)->m_noteArray.push_back(new Note(2, 3));
         positions.at(1)->m_noteArray.push_back(new Note(1, 5));
         positions.at(2)->m_noteArray.push_back(new Note(1, 5));
         positions.at(3)->m_noteArray.push_back(new Note(1, 6));
@@ -137,6 +138,29 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
         {
             Position* pos = positions.at(positions.size() - 1);
             BOOST_CHECK(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+
+    BOOST_FIXTURE_TEST_SUITE(GetSlideSteps, StaffFixture)
+
+        BOOST_AUTO_TEST_CASE(Calculation)
+        {
+            Position* pos = positions.at(0);
+            BOOST_CHECK_EQUAL(staff.GetSlideSteps(pos, pos->GetNote(0)), 1);
+
+            pos = positions.at(1);
+            BOOST_CHECK_EQUAL(staff.GetSlideSteps(pos, pos->GetNote(0)), 0);
+
+            pos = positions.at(3);
+            BOOST_CHECK_EQUAL(staff.GetSlideSteps(pos, pos->GetNote(0)), -1);
+        }
+
+        BOOST_AUTO_TEST_CASE(ThrowsWithNoAdjacentNote)
+        {
+            Position* pos = positions.at(0);
+            // use note on the second string, since the next position only has a note on the first string
+            BOOST_CHECK_THROW(staff.GetSlideSteps(pos, pos->GetNote(1)), std::logic_error);
         }
 
     BOOST_AUTO_TEST_SUITE_END()
