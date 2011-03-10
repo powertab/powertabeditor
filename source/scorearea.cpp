@@ -249,48 +249,57 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
     }
 }
 
+/// draws all of the slides for a staff
 void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
     const int voice = 0;
+
+    // iterate across each string on the staff
     for (int string = 0; string < staff->GetTablatureStaffType(); string++)
     {
         for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
         {
-            Position* position = staff->GetPosition(voice, j);
-            Note* note = position->GetNoteByString(string);
+            Position* currentPosition = staff->GetPosition(voice, j);
+            Note* note = currentPosition->GetNoteByString(string);
 
             if (note == NULL)
             {
                 continue;
             }
 
-            if (note->HasShiftSlide() || note->HasLegatoSlide())
+            // get the slide type
+            quint8 type = 0;
+            qint8 steps = 0;
+
+            note->GetSlideOutOf(type, steps);
+
+            if (type == Note::slideOutOfNone)
+                continue;
+
+            // figure out if we're sliding up or down
+            const bool slideUp = (type == Note::slideOutOfUpwards) || (steps > 0);
+
+            // get the index of the next position
+            const size_t nextPosIndex = staff->GetIndexOfNextPosition(system, currentPosition);
+
+            const double leftPos = system->GetPositionX(currentPosition->GetPosition());
+            const double width = system->GetPositionX(nextPosIndex) - leftPos;
+
+            double height = 5;
+            double y = (currentStaffInfo.getTabLineHeight(string + 1, false) + currentStaffInfo.getTabLineHeight(string, false)) / 2;
+
+            if (slideUp) // if we're sliding up, flip the diagonal line
             {
-                if (j == staff->GetPositionCount(voice) - 1)
-                {
-                    continue;
-                }
-                Position* nextPosition = staff->GetPosition(voice, j + 1);
-                Note* nextNote = nextPosition->GetNoteByString(string);
-
-                const double leftPos = system->GetPositionX(position->GetPosition());
-                const double width = system->GetPositionX(nextPosition->GetPosition()) - leftPos;
-                double height = 5;
-                double y = (currentStaffInfo.getTabLineHeight(string + 1, false) + currentStaffInfo.getTabLineHeight(string, false)) / 2;
-
-                if (nextNote->GetFretNumber() > note->GetFretNumber())
-                {
-                    height = -height;
-                    y += currentStaffInfo.tabLineSpacing + 1;
-                }
-
-                QPainterPath path;
-                path.lineTo(width - currentStaffInfo.positionWidth / 2, height);
-
-                QGraphicsPathItem* line = new QGraphicsPathItem(path);
-                line->setPos(leftPos + system->GetPositionSpacing() / 1.5 + 1, y + height / 2);
-                line->setParentItem(activeStaff);
+                height = -height;
+                y += currentStaffInfo.tabLineSpacing + 1;
             }
+
+            QPainterPath path;
+            path.lineTo(width - currentStaffInfo.positionWidth / 2, height);
+
+            QGraphicsPathItem* line = new QGraphicsPathItem(path);
+            line->setPos(leftPos + system->GetPositionSpacing() / 1.5 + 1, y + height / 2);
+            line->setParentItem(activeStaff);
         }
     }
 }
