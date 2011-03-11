@@ -35,6 +35,7 @@ protected:
         PLAY_NOTE,
         STOP_NOTE,
         REST,
+        BEND_NOTE,
     };
 
     enum Durations
@@ -85,6 +86,7 @@ protected:
     void generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const;
     void playNotesInSystem(std::list<NoteInfo>& noteList, int startPos);
     double getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const;
+    void addVibrato(std::list<NoteInfo>& noteList, int channel, double startTime, double duration) const;
 
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;

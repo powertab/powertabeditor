@@ -144,6 +144,11 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                     noteInfo.velocity = GHOST_VELOCITY;
                 }
 
+                if (position->HasVibrato())
+                {
+                    addVibrato(noteList, i, startTime, duration);
+                }
+
                 if (note->IsTied()) // if the note is tied, delete the previous note-off event
                 {
                     NoteInfo temp;
@@ -249,6 +254,10 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
         {
             rtMidiWrapper.stopNote(noteInfo.channel, noteInfo.pitch);
         }
+        else if (noteInfo.messageType == BEND_NOTE)
+        {
+            rtMidiWrapper.setPitchBend(noteInfo.channel, noteInfo.velocity);
+        }
 
         // if we've moved to a new position, move the caret
         if (noteInfo.position > currentPosition)
@@ -280,7 +289,9 @@ TempoMarker* MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) cons
     for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
     {
         TempoMarker* temp = currentScore->GetTempoMarker(i);
-        if (temp->GetSystem() <= currentSystemIndex && temp->GetPosition() <=  positionIndex)
+        if (temp->GetSystem() <= currentSystemIndex &&
+            temp->GetPosition() <=  positionIndex &&
+            !temp->IsAlterationOfPace()) // TODO - properly support alterations of pace
         {
             currentTempoMarker = temp;
         }
@@ -299,6 +310,8 @@ double MidiPlayer::getCurrentTempo(const quint32 positionIndex) const
     if (tempoMarker != NULL)
     {
         bpm = tempoMarker->GetBeatsPerMinute();
+        Q_ASSERT(bpm != 0);
+
         beatType = tempoMarker->GetBeatType();
     }
 
@@ -416,4 +429,50 @@ void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteLis
             startTime += duration;
         }
     }
+}
+
+/// Adds a vibrato effect for the notes playing at the given channel.
+/// The vibrato effect begin at the given start time and last for the given duration.
+/// The effect is created by sending MIDI pitch-bend up/down events throughout the note duration
+void MidiPlayer::addVibrato(std::list<NoteInfo> &noteList, int channel, double startTime, double duration) const
+{
+    const int vibratoRate = 100; // length between pitch bend events
+    const int vibratoDepth = 6; // amount to bend the pitch by
+    const int DEFAULT_BEND = 64;
+    const double endTime = startTime + duration;
+
+    NoteInfo noteInfo;
+    noteInfo.channel = channel;
+    noteInfo.startTime = startTime;
+    noteInfo.duration = vibratoRate;
+    noteInfo.messageType = BEND_NOTE;
+
+    bool bendUp = false;
+
+    while (startTime <= endTime)
+    {
+        // either bend the note up, or back down to the original note
+        if (bendUp)
+        {
+            noteInfo.velocity = DEFAULT_BEND + vibratoDepth;
+        }
+        else
+        {
+            noteInfo.velocity = DEFAULT_BEND;
+        }
+
+        bendUp = !bendUp;
+
+        noteInfo.startTime = startTime;
+
+        noteList.push_back(noteInfo);
+
+        startTime += vibratoRate;
+    }
+
+    // make sure we reset to the default pitch bend so that following notes are not affected
+    noteInfo.startTime = endTime;
+    noteInfo.duration = 0;
+    noteInfo.velocity = DEFAULT_BEND;
+    noteList.push_back(noteInfo);
 }
