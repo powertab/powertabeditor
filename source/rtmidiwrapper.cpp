@@ -11,26 +11,17 @@ RtMidiWrapper::~RtMidiWrapper()
 {
 }
 
-bool RtMidiWrapper::sendMidiMessage(int a, int b, int c)
+bool RtMidiWrapper::sendMidiMessage(uint8_t a, uint8_t b, uint8_t c)
 {
-    std::vector<unsigned char> message;
+    std::vector<uint8_t> message;
 
-    if (a>=0)
-    {
-        message.push_back(a);
-    }
-    if (b>=0)
-    {
+    message.push_back(a);
+
+    if (b <= 127)
         message.push_back(b);
-    }
-    if (c>=0)
-    {
+
+    if (c <= 127)
         message.push_back(c);
-    }
-    if (message.empty())
-    {
-        return false;
-    }
 
     try
     {
@@ -44,11 +35,11 @@ bool RtMidiWrapper::sendMidiMessage(int a, int b, int c)
     return true;
 }
 
-bool RtMidiWrapper::initialize(unsigned int preferredPort)
+bool RtMidiWrapper::initialize(uint32_t preferredPort)
 {
     midiout->closePort(); // close any open ports
 
-    unsigned int num_ports = midiout->getPortCount();
+    uint32_t num_ports = midiout->getPortCount();
 
     if (num_ports<=0)
     {
@@ -67,17 +58,17 @@ bool RtMidiWrapper::initialize(unsigned int preferredPort)
     return true;
 }
 
-int RtMidiWrapper::getPortCount()
+uint32_t RtMidiWrapper::getPortCount()
 {
     return midiout->getPortCount();
 }
 
-std::string RtMidiWrapper::getPortName(int port)
+std::string RtMidiWrapper::getPortName(uint32_t port)
 {
     return midiout->getPortName(port);
 }
 
-bool RtMidiWrapper::usePort(int port)
+bool RtMidiWrapper::usePort(uint32_t port)
 {
     try
     {
@@ -92,125 +83,87 @@ bool RtMidiWrapper::usePort(int port)
     return true;
 }
 
-bool RtMidiWrapper::setPatch (int channel, int patch)
+bool RtMidiWrapper::setPatch(uint8_t channel, uint8_t patch)
 {
-    if (patch<0)
+    if (patch > 127)
     {
-        patch=0;
-    }
-    else if (patch>127)
-    {
-        patch=127;
+        patch = 127;
     }
 
     // MIDI program change
     // first parameter is 0xC0-0xCF with C being the id and 0-F being the channel (0-15)
     // second parameter is the new patch (0-127)
-    int command=192+channel;
-    return sendMidiMessage(command, patch, -1);
+    return sendMidiMessage(PROGRAM_CHANGE + channel, patch, -1);
 }
 
-bool RtMidiWrapper::setVolume (int channel, int volume)
+bool RtMidiWrapper::setVolume (uint8_t channel, uint8_t volume)
 {
-    if (volume<0)
+    if (volume > 127)
     {
-        volume=0;
-    }
-    else if (volume>127)
-    {
-        volume=127;
+        volume = 127;
     }
 
-    // MIDI control change
-    // first parameter is 0xB0-0xBF with B being the id and 0-F being the channel (0-15)
-    // second parameter is the control to change (0-127), 7 is channel volume
-    // third parameter is the new volume (0-127)
-    int command=176+channel;
-    return sendMidiMessage(command, 7, volume);
+    return sendMidiMessage(CONTROL_CHANGE + channel, CHANNEL_VOLUME, volume);
 }
 
-bool RtMidiWrapper::setPan (int channel, int pan)
+bool RtMidiWrapper::setPan(uint8_t channel, uint8_t pan)
 {
-    if (pan<0)
-    {
-        pan=0;
-    }
-    else if (pan>127)
-    {
-        pan=127;
+    if (pan > 127)
+    { 
+        pan = 127;
     }
 
     // MIDI control change
     // first parameter is 0xB0-0xBF with B being the id and 0-F being the channel (0-15)
     // second parameter is the control to change (0-127), 10 is channel pan
     // third parameter is the new pan (0-127)
-    int command=176+channel;
-    return sendMidiMessage(command, 10, pan);
+    return sendMidiMessage(CONTROL_CHANGE + channel , PAN_CHANGE, pan);
 }
 
-bool RtMidiWrapper::setPitchBend (int channel, int bend)
+bool RtMidiWrapper::setPitchBend (uint8_t channel, uint8_t bend)
 {
-    if (bend<0)
-    {
-        bend=0;
-    }
-    else if (bend>127)
-    {
-        bend=127;
-    }
+    if (bend > 127)
+        bend = 127;
 
     // MIDI pitch bend
     // first parameter is 0xE0-0xEF with E being the id and 0-F being the channel (0-15)
     // second parameter is the lsb (0-127)
     // third parameter is the msb (0-127)
-    int command=224+channel;
-    return sendMidiMessage(command, 0, bend);
+    return sendMidiMessage(PITCH_WHEEL + channel, 0, bend);
 }
 
-bool RtMidiWrapper::playNote(int channel, int pitch, int velocity)
+bool RtMidiWrapper::playNote(uint8_t channel, uint8_t pitch, uint8_t velocity)
 {
-    if (pitch<0)
+    if (pitch > 127)
     {
-        pitch=0;
-    }
-    else if (pitch>127)
-    {
-        pitch=127;
+        pitch = 127;
     }
 
-    if (velocity<1)
+    if (velocity == 0)
     {
-        velocity=1;
+        velocity = 1;
     }
-    else if (velocity>127)
+    else if (velocity > 127)
     {
-        velocity=127;
+        velocity = 127;
     }
 
     // MIDI note on
     // first parameter 0x90-9x9F with 9 being the id and 0-F being the channel (0-15)
     // second parameter is the pitch of the note (0-127), 60 would be a 'middle C'
     // third parameter is the velocity of the note (1-127), 0 is not allowed, 64 would be no velocity
-    int command=144+channel;
-    return sendMidiMessage(command, pitch, velocity);
+    return sendMidiMessage(NOTE_ON + channel, pitch, velocity);
 }
 
-bool RtMidiWrapper::stopNote(int channel, int pitch)
+bool RtMidiWrapper::stopNote(uint8_t channel, uint8_t pitch)
 {
-    if (pitch<0)
-    {
-        pitch=0;
-    }
-    else if (pitch>127)
-    {
+    if (pitch > 127)
         pitch=127;
-    }
 
     // MIDI note off
     // first parameter 0x80-9x8F with 8 being the id and 0-F being the channel (0-15)
     // second parameter is the pitch of the note (0-127), 60 would be a 'middle C'
-    int command=128+channel;
-    return sendMidiMessage(command, pitch, 127);
+    return sendMidiMessage(NOTE_OFF + channel, pitch, 127);
 }
 
 bool RtMidiWrapper::setVibrato(uint8_t channel, uint8_t modulation)

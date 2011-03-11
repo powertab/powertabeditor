@@ -28,9 +28,9 @@ MIDITab::MIDITab(QWidget *parent) :
     midiPort = new QComboBox();
 
     RtMidiWrapper rtMidiWrapper;
-    for(int i=0;i<rtMidiWrapper.getPortCount();i++)
+    for(quint32 i = 0;i < rtMidiWrapper.getPortCount(); i++)
     {
-        midiPort->addItem(QString(rtMidiWrapper.getPortName(i).c_str()));
+        midiPort->addItem(QString().fromStdString(rtMidiWrapper.getPortName(i)));
     }
 
     formLayout->addRow(tr("MIDI Output Device:"), midiPort);
