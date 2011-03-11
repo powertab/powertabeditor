@@ -47,6 +47,7 @@
 #include <actions/removetrill.h>
 #include <actions/addtrill.h>
 #include <actions/editslideout.h>
+#include <actions/updatetabnumber.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -143,6 +144,27 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
         {
             moveCaretToPrevBar();
             return true;
+        }
+        else if ((keyEvent->key() >= Qt::Key_0) &&
+                 (keyEvent->key() <= Qt::Key_9))
+        {
+            // this arithmetic and this condition assume that Key_0 ... Key_9
+            // are assigned ascending continuous numbers as they are in Qt 4.7
+            int typedNumber = keyEvent->key() - Qt::Key_0;
+            Caret *caret = getCurrentScoreArea()->getCaret();
+            Note *currentNote = caret->getCurrentNote();
+            Position *currentPosition = caret->getCurrentPosition();
+            Staff *currentStaff = caret->getCurrentStaff();
+
+            if (currentNote != NULL)
+            {
+                // if there is already a number here update it
+                undoManager->push(new UpdateTabNumber(typedNumber, currentNote, currentPosition, currentStaff));
+            }
+            else
+            {
+                std::cout << "Insert tab number not yet implemented!" << std::endl;
+            }
         }
     }
     return QMainWindow::eventFilter(object, event);

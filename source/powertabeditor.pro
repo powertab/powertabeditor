@@ -99,7 +99,8 @@ SOURCES += main.cpp\
     actions/removetrill.cpp \
     dialogs/trilldialog.cpp \
     actions/addtrill.cpp \
-    actions/editslideout.cpp
+    actions/editslideout.cpp \
+    actions/updatetabnumber.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -179,7 +180,8 @@ HEADERS  += powertabeditor.h \
     actions/removetrill.h \
     dialogs/trilldialog.h \
     actions/addtrill.h \
-    actions/editslideout.h
+    actions/editslideout.h \
+    actions/updatetabnumber.h
 
 RESOURCES += \
     resources.qrc

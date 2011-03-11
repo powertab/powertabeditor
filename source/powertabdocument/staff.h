@@ -234,6 +234,9 @@ public:
     void CalculateTabStaffBelowSpacing();
     void CalculateSymbolSpacing();
 
+    void UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber);
+    void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote);
+
     typedef bool (Position::*PositionProperty)() const;
 
 protected:

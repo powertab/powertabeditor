@@ -616,3 +616,72 @@ Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, Position *
 
     return nextNote;
 }
+
+void Staff::UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber)
+{
+    // hopefully this line will make it easier later when we handle multiple melodies
+    std::vector<Position *> & positionArray = highMelodyPositionArray;
+
+    // find the position in our vector of positions
+    std::vector<Position *>::iterator positionIt = std::find(positionArray.begin(), positionArray.end(), position);
+    assert(positionIt != positionArray.end());
+
+    note->SetFretNumber(fretNumber);
+
+    if (positionIt != positionArray.begin())
+    {
+        // update note before this note
+        Note *prevNote = (*(positionIt-1))->GetNoteByString(note->GetString());
+        if (prevNote != NULL)
+            UpdateNote((*(positionIt-1)), prevNote, note);
+    }
+    if (positionIt+1 != positionArray.end())
+    {
+        // update note after this note
+        Note *nextNote = (*(positionIt+1))->GetNoteByString(note->GetString());
+        if (nextNote != NULL)
+            UpdateNote((*positionIt), note, nextNote);
+    }
+}
+
+void Staff::UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote)
+{
+    const bool canPull = CanPullOff(prevPosition, previousNote);
+    const bool canHammer = CanHammerOn(prevPosition, previousNote);
+
+    if (previousNote->HasPullOff() && !canPull)
+    {
+        previousNote->SetPullOff(false);
+        if (canHammer)
+            previousNote->SetHammerOn(true);
+    }
+    else if (previousNote->HasHammerOn() && !canHammer)
+    {
+        previousNote->SetHammerOn(false);
+        if (canPull)
+            previousNote->SetPullOff(true);
+    }
+
+    // need to check slides
+    uint8_t slideType;
+    int8_t slideSteps;
+    if (previousNote->GetSlideOutOf(slideType, slideSteps))
+    {
+        // if the note used to slide but no longer can then remove slide
+        if (!CanSlideBetweenNotes(prevPosition, previousNote))
+        {
+            previousNote->SetSlideOutOf(Note::slideOutOfNone, 0);
+        }
+        else
+        {
+            int8_t newSteps = GetSlideSteps(prevPosition, previousNote);
+            previousNote->ClearSlideOutOf();
+            previousNote->SetSlideOutOf(slideType, newSteps);
+        }
+    }
+
+    if (nextNote->IsTied() && nextNote->GetFretNumber() != previousNote->GetFretNumber())
+    {
+        nextNote->SetTied(false);
+    }
+}
