@@ -26,6 +26,17 @@ public:
     bool setPitchBend(int channel, int bend); // bend in the range -200(2 semitones down)-200(2 semitones up)
     bool playNote(int channel, int pitch, int velocity);
     bool stopNote(int channel, int pitch);
+    bool setVibrato(uint8_t channel, uint8_t modulation);
+
+    enum MidiMessage
+    {
+        CONTROL_CHANGE = 176,
+    };
+
+    enum ControlChanges
+    {
+        MOD_WHEEL = 1,
+    };
 };
 
 #endif // RTMIDIWRAPPER_H

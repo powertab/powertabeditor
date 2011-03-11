@@ -146,7 +146,11 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
 
                 if (position->HasVibrato())
                 {
-                    addVibrato(noteList, i, startTime, duration);
+                    addVibrato(noteList, i, startTime, duration, NORMAL_VIBRATO);
+                }
+                else if (position->HasWideVibrato())
+                {
+                    addVibrato(noteList, i, startTime, duration, WIDE_VIBRATO);
                 }
 
                 if (note->IsTied()) // if the note is tied, delete the previous note-off event
@@ -254,9 +258,9 @@ void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
         {
             rtMidiWrapper.stopNote(noteInfo.channel, noteInfo.pitch);
         }
-        else if (noteInfo.messageType == BEND_NOTE)
+        else if (noteInfo.messageType == VIBRATO)
         {
-            rtMidiWrapper.setPitchBend(noteInfo.channel, noteInfo.velocity);
+            rtMidiWrapper.setVibrato(noteInfo.channel, noteInfo.velocity);
         }
 
         // if we've moved to a new position, move the caret
@@ -432,47 +436,34 @@ void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteLis
 }
 
 /// Adds a vibrato effect for the notes playing at the given channel.
-/// The vibrato effect begin at the given start time and last for the given duration.
-/// The effect is created by sending MIDI pitch-bend up/down events throughout the note duration
-void MidiPlayer::addVibrato(std::list<NoteInfo> &noteList, int channel, double startTime, double duration) const
+/// The vibrato effect begins at the given start time and last for the given duration.
+void MidiPlayer::addVibrato(std::list<NoteInfo> &noteList, int channel, double startTime, double duration, VibratoType type) const
 {
-    const int vibratoRate = 100; // length between pitch bend events
-    const int vibratoDepth = 6; // amount to bend the pitch by
-    const int DEFAULT_BEND = 64;
-    const double endTime = startTime + duration;
+    // get the user's vibrato settings, depending on the vibrato type
+    QSettings settings;
+    quint8 vibratoWidth = 0;
 
+    if (type == NORMAL_VIBRATO)
+    {
+        vibratoWidth = settings.value("midi/vibrato", 85).toUInt();
+    }
+    else if (type == WIDE_VIBRATO)
+    {
+        vibratoWidth = settings.value("midi/wide_vibrato", 127).toUInt();
+    }
+
+    // add the vibrato event
     NoteInfo noteInfo;
     noteInfo.channel = channel;
     noteInfo.startTime = startTime;
-    noteInfo.duration = vibratoRate;
-    noteInfo.messageType = BEND_NOTE;
+    noteInfo.messageType = VIBRATO;
 
-    bool bendUp = false;
+    noteInfo.velocity = vibratoWidth;
+    noteInfo.startTime = startTime;
+    noteList.push_back(noteInfo);
 
-    while (startTime <= endTime)
-    {
-        // either bend the note up, or back down to the original note
-        if (bendUp)
-        {
-            noteInfo.velocity = DEFAULT_BEND + vibratoDepth;
-        }
-        else
-        {
-            noteInfo.velocity = DEFAULT_BEND;
-        }
-
-        bendUp = !bendUp;
-
-        noteInfo.startTime = startTime;
-
-        noteList.push_back(noteInfo);
-
-        startTime += vibratoRate;
-    }
-
-    // make sure we reset to the default pitch bend so that following notes are not affected
-    noteInfo.startTime = endTime;
-    noteInfo.duration = 0;
-    noteInfo.velocity = DEFAULT_BEND;
+    // make sure we reset the vibrato so that any following notes are not affected
+    noteInfo.startTime = startTime + duration;
+    noteInfo.velocity = 0;
     noteList.push_back(noteInfo);
 }

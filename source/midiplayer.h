@@ -35,7 +35,7 @@ protected:
         PLAY_NOTE,
         STOP_NOTE,
         REST,
-        BEND_NOTE,
+        VIBRATO,
     };
 
     enum Durations
@@ -51,6 +51,12 @@ protected:
         GHOST_VELOCITY = 50,
         WEAK_ACCENT = 80,
         STRONG_ACCENT = 127,
+    };
+
+    enum VibratoType
+    {
+        NORMAL_VIBRATO,
+        WIDE_VIBRATO,
     };
 
     // Holds information about a MIDI event
@@ -86,7 +92,7 @@ protected:
     void generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const;
     void playNotesInSystem(std::list<NoteInfo>& noteList, int startPos);
     double getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const;
-    void addVibrato(std::list<NoteInfo>& noteList, int channel, double startTime, double duration) const;
+    void addVibrato(std::list<NoteInfo>& noteList, int channel, double startTime, double duration, VibratoType type) const;
 
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;

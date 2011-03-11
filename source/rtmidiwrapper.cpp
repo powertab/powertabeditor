@@ -212,3 +212,11 @@ bool RtMidiWrapper::stopNote(int channel, int pitch)
     int command=128+channel;
     return sendMidiMessage(command, pitch, 127);
 }
+
+bool RtMidiWrapper::setVibrato(uint8_t channel, uint8_t modulation)
+{
+    if (modulation > 127)
+        modulation = 127;
+
+    return sendMidiMessage(CONTROL_CHANGE + channel, MOD_WHEEL, modulation);
+}
