@@ -51,6 +51,7 @@
 #include <actions/addtrill.h>
 #include <actions/editslideout.h>
 #include <actions/updatetabnumber.h>
+#include <actions/positionshift.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -230,6 +231,12 @@ void PowerTabEditor::createActions()
     lastSectionAct = new QAction(tr("Last Section"), this);
     lastSectionAct->setShortcuts(QKeySequence::MoveToEndOfDocument);
     connect(lastSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToLastSection()));
+
+    shiftForwardAct = new QAction(tr("Shift Forward"), this);
+    connect(shiftForwardAct, SIGNAL(triggered()), this, SLOT(shiftForward()));
+
+    shiftBackwardAct = new QAction(tr("Shift Backward"), this);
+    connect(shiftBackwardAct, SIGNAL(triggered()), this, SLOT(shiftBackward()));
 
     // Position-related actions
     startPositionAct = new QAction(tr("Move to &Start"), this);
@@ -594,6 +601,9 @@ void PowerTabEditor::createMenus()
     positionMenu->addSeparator();
     positionMenu->addAction(shiftTabNumUp);
     positionMenu->addAction(shiftTabNumDown);
+    positionMenu->addSeparator();
+    positionMenu->addAction(shiftForwardAct);
+    positionMenu->addAction(shiftBackwardAct);
 
     // Text Menu
     textMenu = menuBar()->addMenu(tr("&Text"));
@@ -998,6 +1008,22 @@ void PowerTabEditor::changePositionSpacing(int offset)
     }
 }
 
+void PowerTabEditor::shiftForward()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+
+    undoManager->push(new PositionShift(caret->getCurrentSystem(),
+                                        caret->getCurrentPositionIndex(), PositionShift::SHIFT_FORWARD));
+}
+
+void PowerTabEditor::shiftBackward()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+
+    undoManager->push(new PositionShift(caret->getCurrentSystem(),
+                                        caret->getCurrentPositionIndex(), PositionShift::SHIFT_BACKWARD));
+}
+
 // If there is a chord name at the current position, remove it
 // If there is no chord name, show the dialog to add a chord name
 // Existing chord names are edited by clicking on the chord name
@@ -1212,6 +1238,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(legatoSlideAct, currentNote, &Note::HasLegatoSlide);
     updatePropertyStatus(slideOutOfDownwardsAct, currentNote, &Note::HasSlideOutOfDownwards);
     updatePropertyStatus(slideOutOfUpwardsAct, currentNote, &Note::HasSlideOutOfUpwards);
+
+    shiftBackwardAct->setEnabled(currentPosition == NULL);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

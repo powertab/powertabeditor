@@ -87,6 +87,9 @@ protected slots:
     void increasePositionSpacing();
     void decreasePositionSpacing();
 
+    void shiftForward();
+    void shiftBackward();
+
     void cycleTab(int offset);
 
     void updateNoteDuration(int duration);
@@ -124,6 +127,8 @@ protected:
     QAction* nextSectionAct;
     QAction* prevSectionAct;
     QAction* lastSectionAct;
+    QAction* shiftForwardAct;
+    QAction* shiftBackwardAct;
 
     QMenu* positionStaffMenu;
     QAction* nextPositionAct; // navigate to the next position in the staff

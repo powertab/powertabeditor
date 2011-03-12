@@ -13,6 +13,7 @@
 #include "staff.h"
 #include <algorithm>
 #include <stdexcept>
+#include <tr1/functional>
 
 #include "powertabfileheader.h"                     // Needed for file version constants
 #include "direction.h"
@@ -734,4 +735,84 @@ bool System::SetPositionSpacing(uint8_t positionSpacing)
     m_positionSpacing = positionSpacing;
 
     return true;
+}
+
+/// Shifts the position for an object (must provide GetPosition() and SetPosition(uint32_t) functions)
+/// The object is constructed with a position comparison function, a position index, and an offset.
+/// The object's position is compared with the supplied index using the given function, and is adjusted by the offset
+/// if the comparison function is satisfied.
+template <class T>
+struct ShiftPosition
+{
+    typedef std::tr1::function<bool (uint32_t, uint32_t)> PositionIndexComparison;
+
+    ShiftPosition(PositionIndexComparison comparePositions, uint32_t positionIndex, int offset) :
+        comparePositions(comparePositions),
+        positionIndex(positionIndex),
+        offset(offset)
+    {
+    }
+
+    void operator()(T* item)
+    {
+        if (comparePositions(item->GetPosition(), positionIndex))
+        {
+            item->SetPosition(item->GetPosition() + offset);
+        }
+    }
+
+    PositionIndexComparison comparePositions;
+    uint32_t positionIndex;
+    int offset;
+};
+
+/// Shifts all positions forward/backward starting from the given index.
+void System::PerformPositionShift(uint32_t positionIndex, int offset)
+{
+    if (!IsValidPosition(positionIndex))
+        throw std::out_of_range("Invalid position index");
+
+    const std::tr1::function<bool (uint32_t, uint32_t)> comparison = std::greater_equal<uint32_t>();
+
+    // decrease the position spacing to make room for the extra position
+    SetPositionSpacing(GetPositionSpacing() - offset);
+
+    // shift forward barlines
+    ShiftPosition<Barline> shiftBarlines(comparison, positionIndex, offset);
+    std::for_each(m_barlineArray.begin(), m_barlineArray.end(), shiftBarlines);
+
+    // shift direction symbols
+    ShiftPosition<Direction> shiftDirections(comparison, positionIndex, offset);
+    std::for_each(m_directionArray.begin(), m_directionArray.end(), shiftDirections);
+
+    // shift chords
+    ShiftPosition<ChordText> shiftChords(comparison, positionIndex, offset);
+    std::for_each(m_chordTextArray.begin(), m_chordTextArray.end(), shiftChords);
+
+    // shift rhythm slashes
+    ShiftPosition<RhythmSlash> shiftSlashes(comparison, positionIndex, offset);
+    std::for_each(m_rhythmSlashArray.begin(), m_rhythmSlashArray.end(), shiftSlashes);
+
+    // shift positions for each staff
+    ShiftPosition<Position> shiftPosition(comparison, positionIndex, offset);
+
+    for (size_t i = 0; i < m_staffArray.size(); i++)
+    {
+        Staff* staff = m_staffArray.at(i);
+
+        for (size_t j = 0; j < staff->GetPositionCount(0); j++)
+        {
+            shiftPosition(staff->GetPosition(0, j));
+        }
+    }
+}
+
+void System::ShiftForward(uint32_t positionIndex)
+{
+    PerformPositionShift(positionIndex, 1);
+}
+
+void System::ShiftBackward(uint32_t positionIndex)
+{
+    PerformPositionShift(positionIndex, -1);
 }

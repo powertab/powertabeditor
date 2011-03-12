@@ -295,6 +295,12 @@ public:
     uint32_t GetStaffHeightOffset(uint32_t staff, bool absolutePos = false);
 
     void CalculateBeamingForStaves();
+
+    void ShiftForward(uint32_t positionIndex);
+    void ShiftBackward(uint32_t positionIndex);
+
+protected:
+    void PerformPositionShift(uint32_t positionIndex, int offset);
 };
 
 #endif
