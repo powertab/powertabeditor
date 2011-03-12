@@ -15,6 +15,10 @@
 #include <stdexcept>
 
 #include "powertabfileheader.h"                     // Needed for file version constants
+#include "direction.h"
+#include "chordtext.h"
+#include "rhythmslash.h"
+#include "position.h"
 
 // Default Constants
 const Rect System::DEFAULT_RECT                                   = Rect(0,0,0,0);

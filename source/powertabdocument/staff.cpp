@@ -11,6 +11,7 @@
 
 #include "staff.h"
 
+#include "position.h"
 #include "system.h"
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "tuning.h"                         // Needed for IsValidStringCount

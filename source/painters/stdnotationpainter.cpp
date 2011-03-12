@@ -7,6 +7,8 @@
 #include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
 #include <powertabdocument/keysignature.h>
+#include <powertabdocument/note.h>
+
 #include <musicfont.h>
 #include "staffdata.h"
 

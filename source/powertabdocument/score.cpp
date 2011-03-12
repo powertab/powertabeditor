@@ -10,7 +10,18 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "score.h"
+
+#include "staff.h"
 #include "powertabfileheader.h"
+#include "system.h"
+#include "guitar.h"
+#include "chorddiagram.h"
+#include "floatingtext.h"
+#include "guitarin.h"
+#include "tempomarker.h"
+#include "alternateending.h"
+#include "position.h"
+
 #include <map>
 #include <bitset>
 

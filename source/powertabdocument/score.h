@@ -12,14 +12,16 @@
 #ifndef __SCORE_H__
 #define __SCORE_H__
 
-#include "guitar.h"
-#include "chorddiagram.h"
-#include "floatingtext.h"
-#include "guitarin.h"
-#include "tempomarker.h"
-#include "dynamic.h"
-#include "alternateending.h"
-#include "system.h"
+#include "powertabobject.h"
+
+class Guitar;
+class FloatingText;
+class ChordDiagram;
+class GuitarIn;
+class TempoMarker;
+class Dynamic;
+class AlternateEnding;
+class System;
 
 /// Stores and renders a score
 // Note: This is a class used to make life easier - it's not a class that exists in PTE v1.7

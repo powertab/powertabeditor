@@ -1,6 +1,7 @@
 #include "removechordtext.h"
 
 #include <powertabdocument/system.h>
+#include <powertabdocument/chordtext.h>
 
 RemoveChordText::RemoveChordText(System* system, quint32 index) :
     system(system), index(index)

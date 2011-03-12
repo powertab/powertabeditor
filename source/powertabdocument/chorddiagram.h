@@ -13,7 +13,6 @@
 #define __CHORDDIAGRAM_H__
 
 #include "chordname.h"
-#include "tuning.h"
 
 #include "powertabobject.h"
 #include "macros.h"

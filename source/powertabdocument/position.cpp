@@ -12,6 +12,7 @@
 #include <algorithm>
 #include "position.h"
 
+#include "note.h"
 #include "powertabfileheader.h"     // Needed for file version constants
 #include "tuning.h"
 

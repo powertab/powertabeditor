@@ -12,12 +12,13 @@
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
-#include "direction.h"
-#include "chordtext.h"
-#include "rhythmslash.h"
-#include "staff.h"
 #include "barline.h"
 #include "rect.h"
+
+class Direction;
+class ChordText;
+class RhythmSlash;
+class Staff;
 
 /// Stores and renders a system
 class System : public PowerTabObject

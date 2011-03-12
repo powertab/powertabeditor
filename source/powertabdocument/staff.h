@@ -12,10 +12,11 @@
 #ifndef __STAFF_H__
 #define __STAFF_H__
 
-#include "position.h"
-
 #include <list>
 
+#include "note.h"
+
+class Position;
 class System;
 class Barline;
 

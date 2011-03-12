@@ -2,6 +2,7 @@
 
 #include <powertabdocument/rehearsalsign.h>
 #include <powertabdocument/score.h>
+#include <powertabdocument/system.h>
 
 #include <powertabeditor.h>
 

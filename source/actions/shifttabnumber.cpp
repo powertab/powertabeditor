@@ -2,6 +2,8 @@
 
 #include <painters/caret.h>
 
+#include <powertabdocument/note.h>
+
 ShiftTabNumber::ShiftTabNumber(Caret* caret, Position* currentPos, Note* note, Position::ShiftType direction, quint8 numStringsInStaff, const Tuning& tuning) :
     caret(caret),
     currentPos(currentPos),

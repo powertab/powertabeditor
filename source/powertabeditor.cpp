@@ -30,6 +30,9 @@
 #include <dialogs/trilldialog.h>
 
 #include <powertabdocument/powertabdocument.h>
+#include <powertabdocument/guitar.h>
+#include <powertabdocument/system.h>
+#include <powertabdocument/chordtext.h>
 
 #include <widgets/mixer/mixer.h>
 #include <widgets/toolbox/toolbox.h>

@@ -4,6 +4,13 @@
 #include <QDebug>
 
 #include <powertabdocument/powertabdocument.h>
+#include <powertabdocument/guitar.h>
+#include <powertabdocument/rect.h>
+#include <powertabdocument/system.h>
+#include <powertabdocument/tempomarker.h>
+#include <powertabdocument/staff.h>
+#include <powertabdocument/position.h>
+
 #include <painters/staffdata.h>
 #include <painters/barlinepainter.h>
 #include <painters/tabnotepainter.h>

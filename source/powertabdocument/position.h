@@ -12,7 +12,9 @@
 #ifndef __POSITION_H__
 #define __POSITION_H__
 
-#include "note.h"
+class Note;
+class Tuning;
+
 #include "dynamic.h"        // Needed for volume swell volumes and validation
 
 #define MAX_POSITION_COMPLEX_SYMBOLS    2   ///< Maximum allowed number of complex symbols per position object

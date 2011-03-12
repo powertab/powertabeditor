@@ -3,6 +3,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powertabdocument/system.h>
+#include <powertabdocument/staff.h>
 
 BOOST_AUTO_TEST_SUITE(SystemTest)
 

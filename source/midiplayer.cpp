@@ -6,9 +6,14 @@
 #include <algorithm>
 
 #include <painters/caret.h>
+
 #include <powertabdocument/score.h>
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/generalmidi.h>
+#include <powertabdocument/system.h>
+#include <powertabdocument/tempomarker.h>
+#include <powertabdocument/staff.h>
+#include <powertabdocument/position.h>
 
 MidiPlayer::MidiPlayer(Caret* caret) :
     caret(caret)
