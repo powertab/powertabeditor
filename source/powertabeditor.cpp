@@ -68,14 +68,18 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf"); // used for music notation
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf"); // used for tab notes
 
-    // load application settings
+    // set app information
     QCoreApplication::setOrganizationName("Power Tab");
     QCoreApplication::setApplicationName("Power Tab Editor");
+    QCoreApplication::setApplicationVersion("2.0");
+
+    // load application settings
     QSettings settings;
     // retrieve the previous directory that a file was opened/saved to (default value is home directory)
     previousDirectory = settings.value("app/previousDirectory", QDir::homePath()).toString();
 
     connect(undoManager.get(), SIGNAL(indexChanged(int)), this, SLOT(refreshOnUndoRedo(int)));
+    connect(undoManager.get(), SIGNAL(cleanChanged(bool)), this, SLOT(updateModified(bool)));
 
     createActions();
     createMenus();
@@ -85,7 +89,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
 
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
-    setWindowTitle(tr("Power Tab Editor 2.0"));
+    setWindowTitle(getApplicationName());
 
     horSplitter = new QSplitter();
     horSplitter->setOrientation(Qt::Horizontal);
@@ -823,16 +827,29 @@ void PowerTabEditor::switchTab(int index)
     mixerList->setCurrentIndex(index);
     undoManager->setActiveStackIndex(index);
 
+    // update the window title with the file path of the active document
     if(documentManager.getCurrentDocument())
     {
-        QString title = QString::fromStdString(documentManager.getCurrentDocument()->GetFileName());
-        title.remove(0,title.lastIndexOf("/")+1);
-        setWindowTitle(title+tr(" - Power Tab Editor 2.0"));
+        const QString path = QString::fromStdString(documentManager.getCurrentDocument()->GetFileName());
+        const QString docName = QFileInfo(path).fileName();
+        setWindowTitle(docName + "[*] - " + getApplicationName()); // need the [*] for using setWindowModified
     }
     else
     {
-        setWindowTitle(tr("Power Tab Editor 2.0"));
+        setWindowTitle(getApplicationName());
     }
+}
+
+/// Marks the window as modified/unmodified depending on the state of the active UndoStack
+void PowerTabEditor::updateModified(bool clean)
+{
+    setWindowModified(!clean);
+}
+
+/// Returns the application name & version (e.g. 'Power Tab Editor 2.0')
+QString PowerTabEditor::getApplicationName() const
+{
+    return QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
 }
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()

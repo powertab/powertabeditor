@@ -50,6 +50,7 @@ protected:
 
 protected slots:
     void updateActions();
+    void updateModified(bool);
     void openFile();
     void saveFileAs();
     void openPreferences();
@@ -98,6 +99,8 @@ protected slots:
 protected:
     bool isPlaying;
     const QString fileFilter;
+
+    QString getApplicationName() const;
 
     static QTabWidget* tabWidget;
     
