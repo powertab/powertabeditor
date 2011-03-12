@@ -51,7 +51,8 @@ SOURCES += \
     ../source/powertabdocument/chorddiagram.cpp \
     ../source/powertabdocument/barline.cpp \
     ../source/powertabdocument/alternateending.cpp \
-    powertabdocument/system_test.cpp
+    powertabdocument/system_test.cpp \
+    powertabdocument/position_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
