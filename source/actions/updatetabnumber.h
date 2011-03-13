@@ -25,6 +25,7 @@ protected:
     uint8_t prevFretNumber;
     Note *origPrevNote;
     Note *origNextNote;
+    Note *origNote;
 };
 
 #endif // UPDATETABNUMBER_H

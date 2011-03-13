@@ -27,13 +27,16 @@ UpdateTabNumber::UpdateTabNumber(uint8_t typedNumber, Note* note, Position* posi
     if (tempNote)
         origNextNote = tempNote->CloneObject();
 
+    origNote = note->CloneObject();
+
     setText(QObject::tr("Update Tab Number"));
 }
 
 UpdateTabNumber::~UpdateTabNumber()
 {
-    delete origPrevNote;
+    delete origNote;
     delete origNextNote;
+    delete origPrevNote;
 }
 
 void UpdateTabNumber::redo()
@@ -43,7 +46,7 @@ void UpdateTabNumber::redo()
 
 void UpdateTabNumber::undo()
 {
-    note->SetFretNumber(prevFretNumber);
+    *note = *origNote;
 
     if (origPrevNote)
     {
