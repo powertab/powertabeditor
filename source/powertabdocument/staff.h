@@ -240,15 +240,17 @@ public:
 
     typedef bool (Position::*PositionProperty)() const;
 
-protected:
-    int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const;
-    
     enum SearchDirection
     {
         NextNote = 1,
         PrevNote = -1,
     };
-    
+
+    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, Position* position, Note* note) const;
+
+protected:
+    int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const;
+        
     /// Compares the fret numbers of two consecutive notes on the same string,
     /// using the given comparision function (binary predicate)
     template<typename FretComparison>
@@ -260,8 +262,6 @@ protected:
         // and if the fret number comparision is satisfied
         return (nextNote != NULL && comp(note->GetFretNumber(), nextNote->GetFretNumber()));
     }
-
-    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, Position* position, Note* note) const;
 };
 
 #endif

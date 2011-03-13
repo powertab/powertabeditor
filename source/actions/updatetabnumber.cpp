@@ -1,12 +1,11 @@
 #include "updatetabnumber.h"
 
-#include <painters/caret.h>
-#include <iostream>
-
 UpdateTabNumber::UpdateTabNumber(uint8_t typedNumber, Note* note, Position* position, Staff* staff) :
     note(note),
     position(position),
-    staff(staff)
+    staff(staff),
+    origPrevNote(NULL),
+    origNextNote(NULL)
 {
     // save old fret number so we can undo
     prevFretNumber = note->GetFretNumber();
@@ -20,7 +19,21 @@ UpdateTabNumber::UpdateTabNumber(uint8_t typedNumber, Note* note, Position* posi
         newFretNumber = typedNumber;
     }
 
+    Note *tempNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note);
+    if (tempNote)
+        origPrevNote = tempNote->CloneObject();
+
+    tempNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note);
+    if (tempNote)
+        origNextNote = tempNote->CloneObject();
+
     setText(QObject::tr("Update Tab Number"));
+}
+
+UpdateTabNumber::~UpdateTabNumber()
+{
+    delete origPrevNote;
+    delete origNextNote;
 }
 
 void UpdateTabNumber::redo()
@@ -30,5 +43,17 @@ void UpdateTabNumber::redo()
 
 void UpdateTabNumber::undo()
 {
-    staff->UpdateTabNumber(position, note, prevFretNumber);
+    note->SetFretNumber(prevFretNumber);
+
+    if (origPrevNote)
+    {
+        Note *prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note);
+        *prevNote = *origPrevNote;
+    }
+
+    if (origNextNote)
+    {
+        Note *nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note);
+        *nextNote = *origNextNote;
+    }
 }

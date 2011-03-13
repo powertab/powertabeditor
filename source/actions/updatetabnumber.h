@@ -13,6 +13,7 @@ class UpdateTabNumber : public QUndoCommand
 {
 public:
     UpdateTabNumber(uint8_t typedNumber, Note* note, Position* position, Staff* staff);
+    ~UpdateTabNumber();
     void undo();
     void redo();
 
@@ -22,6 +23,8 @@ protected:
     Staff* staff;
     uint8_t newFretNumber;
     uint8_t prevFretNumber;
+    Note *origPrevNote;
+    Note *origNextNote;
 };
 
 #endif // UPDATETABNUMBER_H
