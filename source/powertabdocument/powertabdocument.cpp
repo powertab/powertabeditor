@@ -184,3 +184,8 @@ void PowerTabDocument::DeleteScoreArrayContents()
     m_scoreArray.clear();
 }
 
+/// Initializes the document (only necessary for creating new documents, not opening existing ones)
+void PowerTabDocument::Init()
+{
+    GetGuitarScore()->Init();
+}

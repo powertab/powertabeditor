@@ -56,7 +56,7 @@ protected:
 	int32_t             m_tablatureStaffLineSpacing;                            ///< Amount of space used between lines on the tablature staff
 	uint32_t            m_fadeIn;                                               ///< Amount of fade in at the start of the song (in MIDI units - see generalmidi.h)
 	uint32_t            m_fadeOut;                                              ///< Amount of fade out at the end of the song (in MIDI units - see generalmidi.h)
-        string              m_fileName; ///< Name of the currently open file
+        std::string         m_fileName; ///< Name of the currently open file
 
 // Constructor/Destructor
 public:
@@ -68,6 +68,8 @@ public:
         {
             return m_fileName == doc.m_fileName;
         }
+
+        void Init();
    
 // Save Functions
         bool Save(const std::string& fileName);

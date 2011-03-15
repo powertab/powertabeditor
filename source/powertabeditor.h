@@ -51,6 +51,7 @@ protected:
 protected slots:
     void updateActions();
     void updateModified(bool);
+    void createNewFile();
     void openFile();
     void saveFileAs();
     void openPreferences();
@@ -101,6 +102,7 @@ protected:
     const QString fileFilter;
 
     QString getApplicationName() const;
+    void setupNewDocument();
 
     static QTabWidget* tabWidget;
     
@@ -110,6 +112,7 @@ protected:
 
     DocumentManager documentManager;
     QMenu* fileMenu;
+    QAction* newFileAct;
     QAction* openFileAct;
     QAction* closeTabAct;
     QAction* saveFileAsAct;

@@ -48,7 +48,7 @@ bool DocumentManager::addDocument(const QString& fileName)
     if (!success)
     {
         QMessageBox msgBox;
-        msgBox.setText("Error opening file");
+        msgBox.setText(QObject::tr("Error opening file"));
         msgBox.exec();
         return false;
     }
@@ -69,5 +69,15 @@ void DocumentManager::setCurrentDocumentIndex(int index)
 int DocumentManager::getCurrentDocumentIndex() const
 {
     return currentDocumentIndex;
+}
+
+/// creates a new (blank) document
+void DocumentManager::createDocument()
+{
+    shared_ptr<PowerTabDocument> doc(new PowerTabDocument);
+    doc->SetFileName("Untitled.ptb");
+    doc->Init();
+    documentList << doc;
+    currentDocumentIndex = documentList.length() - 1;
 }
 

@@ -22,7 +22,7 @@
 #include "position.h"
 
 // Default Constants
-const Rect System::DEFAULT_RECT                                   = Rect(0,0,0,0);
+const Rect System::DEFAULT_RECT                                   = Rect(0,0,750,0);
 const uint8_t System::DEFAULT_POSITION_SPACING                       = 20;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_ABOVE             = 0;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_BELOW             = 0;
@@ -815,4 +815,11 @@ void System::ShiftForward(uint32_t positionIndex)
 void System::ShiftBackward(uint32_t positionIndex)
 {
     PerformPositionShift(positionIndex, -1);
+}
+
+void System::Init()
+{
+    m_staffArray.push_back(new Staff);
+
+    CalculateHeight();
 }

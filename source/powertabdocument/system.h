@@ -59,6 +59,8 @@ public:
     System(const System& system);
     ~System();
 
+    void Init();
+
     // Operators
     const System& operator=(const System& system);
     bool operator==(const System& system) const;

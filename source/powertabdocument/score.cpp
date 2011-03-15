@@ -28,9 +28,6 @@
 /// Default Constructor
 Score::Score()
 {
-    m_systemArray.push_back(new System);
-    //------Last Checked------//
-    // - Jan 5, 2005
 }
 
 /// Copy Constructor
@@ -398,4 +395,13 @@ void Score::UpdateExtraSpacing(System* system)
     
     // Each type of item gets a line to itself
     system->SetExtraSpacing(numItems * System::SYSTEM_SYMBOL_SPACING);
+}
+
+void Score::Init()
+{
+    m_guitarArray.push_back(new Guitar);
+
+    System* newSystem = new System;
+    newSystem->Init();
+    m_systemArray.push_back(newSystem);
 }

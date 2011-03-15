@@ -184,6 +184,10 @@ void PowerTabEditor::createActions()
     connect(slideOutMapper, SIGNAL(mapped(int)), this, SLOT(editSlide(int)));
 
     // File-related actions
+    newFileAct = new QAction(tr("&New"), this);
+    newFileAct->setShortcuts(QKeySequence::New);
+    connect(newFileAct, SIGNAL(triggered()), this, SLOT(createNewFile()));
+
     openFileAct = new QAction(tr("&Open..."), this);
     openFileAct->setShortcuts(QKeySequence::Open);
     openFileAct->setStatusTip(tr("Open an existing document"));
@@ -563,6 +567,7 @@ void PowerTabEditor::createMenus()
 {
     // File Menu
     fileMenu = menuBar()->addMenu(tr("&File"));
+    fileMenu->addAction(newFileAct);
     fileMenu->addAction(openFileAct);
     fileMenu->addAction(closeTabAct);
     fileMenu->addSeparator();
@@ -704,6 +709,13 @@ void PowerTabEditor::createTabArea()
     updateScoreAreaActions(false);
 }
 
+// Create a blank file
+void PowerTabEditor::createNewFile()
+{
+    documentManager.createDocument();
+    setupNewDocument();
+}
+
 // Open a new file
 void PowerTabEditor::openFile()
 {
@@ -716,65 +728,76 @@ void PowerTabEditor::openFile()
     else
     {
         qDebug() << "Opening file: " << fileName;
-        bool success = documentManager.addDocument(fileName); // add the file to the document manager
 
-        // draw the score if it was successful
-        if (success)
+        // add the file to the document manager; draw the score and initialize if successful
+        if (documentManager.addDocument(fileName))
         {
-            ScoreArea* score = new ScoreArea;
-            score->installEventFilter(this);
-            score->renderDocument(documentManager.getCurrentDocument());
             QFileInfo fileInfo(fileName);
             // save this as the previous directory
             previousDirectory = fileInfo.absolutePath();
             QSettings settings;
             settings.setValue("app/previousDirectory", previousDirectory);
 
-            QString title = fileInfo.fileName();
-            QFontMetrics fm (tabWidget->font());
-
-            bool chopped = false;
-
-            // each tab is 200px wide, so we want to shorten the name if it's wider than 140px
-            while(fm.width(title)>140)
-            {
-                title.chop(1);
-                chopped = true;
-            }
-
-            if (chopped)
-                title.append("...");
-
-            undoManager->addNewUndoStack();
-
-            connect(score->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
-
-            int tabIndex = tabWidget->addTab(score, title);
-            tabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
-
-            // add the guitars to a new mixer
-            Mixer* mixer = new Mixer(skinManager);
-            QScrollArea* scrollArea = new QScrollArea;
-            std::shared_ptr<PowerTabDocument> doc = documentManager.getCurrentDocument();
-            for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
-            {
-                mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
-            }
-            scrollArea->setWidget(mixer);
-            mixerList->addWidget(scrollArea);
-
-            // switch to the new document
-            tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
-
-             // if this is the first open document, enable score area actions
-            if (documentManager.getCurrentDocumentIndex() == 0)
-            {
-                updateScoreAreaActions(true);
-            }
-
-            updateActions(); // update available actions for the current position
+            setupNewDocument();
         }
     }
+}
+
+/// Creates the scorearea, mixer, etc, for a new document
+/// Assumes that the new document has already been added to the document manager,
+/// and is set as the current document
+void PowerTabEditor::setupNewDocument()
+{
+    std::shared_ptr<PowerTabDocument> doc(documentManager.getCurrentDocument());
+
+    ScoreArea* score = new ScoreArea;
+    score->installEventFilter(this);
+    score->renderDocument(doc);
+    connect(score->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
+
+    undoManager->addNewUndoStack();
+
+    QFileInfo fileInfo(QString().fromStdString(doc->GetFileName()));
+
+    // create title for the tab bar
+    QString title = fileInfo.fileName();
+    QFontMetrics fm (tabWidget->font());
+
+    bool chopped = false;
+
+    // each tab is 200px wide, so we want to shorten the name if it's wider than 140px
+    while(fm.width(title)>140)
+    {
+        title.chop(1);
+        chopped = true;
+    }
+
+    if (chopped)
+        title.append("...");
+
+    int tabIndex = tabWidget->addTab(score, title);
+    tabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
+
+    // add the guitars to a new mixer
+    Mixer* mixer = new Mixer(skinManager);
+    QScrollArea* scrollArea = new QScrollArea;
+    for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
+    {
+        mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
+    }
+    scrollArea->setWidget(mixer);
+    mixerList->addWidget(scrollArea);
+
+    // switch to the new document
+    tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
+
+     // if this is the only open document, enable score area actions
+    if (documentManager.getCurrentDocumentIndex() == 0)
+    {
+        updateScoreAreaActions(true);
+    }
+
+    updateActions(); // update available actions for the current position
 }
 
 void PowerTabEditor::saveFileAs()

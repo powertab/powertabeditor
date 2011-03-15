@@ -44,6 +44,8 @@ public:
     Score(const Score& score);
     ~Score();
 
+    void Init();
+
 // Operators
     const Score& operator=(const Score& score);
     bool operator==(const Score& score) const;
