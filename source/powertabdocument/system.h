@@ -256,6 +256,9 @@ public:
     Barline* GetNextBarline(uint32_t position) const;
     void GetBarlines(std::vector<Barline*>& barlineArray);
 
+    bool InsertBarline(Barline* barline);
+    bool RemoveBarline(uint32_t position);
+
     bool HasRehearsalSign() const;
 
     // End Bar Functions

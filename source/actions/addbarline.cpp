@@ -14,10 +14,11 @@ AddBarline::AddBarline(System* system, quint32 position, quint8 type, quint8 rep
 
 void AddBarline::redo()
 {
-    // TODO
+    Barline* newBar = new Barline(position, type, repeats);
+    system->InsertBarline(newBar);
 }
 
 void AddBarline::undo()
 {
-    // TODO
+    system->RemoveBarline(position);
 }

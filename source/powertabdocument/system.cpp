@@ -826,3 +826,45 @@ void System::Init()
 
     CalculateHeight();
 }
+
+/// Removes the barline at the given position, if possible
+bool System::RemoveBarline(uint32_t position)
+{
+    using std::tr1::bind;
+    using namespace std::tr1::placeholders;
+
+    // find the barline that has the given position
+    auto bar = std::find_if(m_barlineArray.begin(), m_barlineArray.end(),
+                            bind(std::equal_to<uint32_t>(),
+                                 bind(&Barline::GetPosition, _1), position)
+                            );
+
+    if (bar == m_barlineArray.end())
+        return false;
+
+    // delete and remove the bar from the array
+    delete *bar;
+    m_barlineArray.erase(bar);
+    return true;
+}
+
+namespace
+{
+struct CompareBarlinesByPosition
+{
+    bool operator() (Barline* bar1, Barline* bar2)
+    {
+        return bar1->GetPosition() < bar2->GetPosition();
+    }
+};
+}
+
+/// Inserts the given barline.
+/// The barline array is then sorted by position
+bool System::InsertBarline(Barline* barline)
+{
+    m_barlineArray.push_back(barline);
+    std::sort(m_barlineArray.begin(), m_barlineArray.end(), CompareBarlinesByPosition());
+
+    return true;
+}
