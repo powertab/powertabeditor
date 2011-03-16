@@ -64,7 +64,7 @@ void BarlineDialog::init()
 
 void BarlineDialog::disableRepeatCount(int newBarlineType)
 {
-    if (newBarlineType == Barline::repeatEnd || newBarlineType == Barline::repeatStart)
+    if (newBarlineType == Barline::repeatEnd)
     {
         repeatCount->setEnabled(true);
     }
