@@ -381,3 +381,9 @@ Note* Caret::getCurrentNote() const
         return NULL;
     }
 }
+
+/// Returns the barline at the current position (or NULL if the current position is not a barline)
+Barline* Caret::getCurrentBarline() const
+{
+    return getCurrentSystem()->GetBarlineAtPosition(currentPositionIndex);
+}

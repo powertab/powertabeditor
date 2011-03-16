@@ -28,6 +28,7 @@
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/rehearsalsigndialog.h>
 #include <dialogs/trilldialog.h>
+#include <dialogs/barlinedialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -429,6 +430,11 @@ void PowerTabEditor::createActions()
     rehearsalSignAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_R));
     connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
 
+    barlineAct = new QAction(tr("Barline..."), this);
+    barlineAct->setCheckable(true);
+    barlineAct->setShortcut(QKeySequence(Qt::Key_B));
+    connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarline()));
+
     // Tab Symbol Actions
     hammerPullAct = new QAction(tr("Hammer On/Pull Off"), this);
     hammerPullAct->setCheckable(true);
@@ -652,6 +658,7 @@ void PowerTabEditor::createMenus()
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     musicSymbolsMenu->addAction(rehearsalSignAct);
+    musicSymbolsMenu->addAction(barlineAct);
 
     // Tab Symbols Menu
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
@@ -753,7 +760,9 @@ void PowerTabEditor::setupNewDocument()
     ScoreArea* score = new ScoreArea;
     score->installEventFilter(this);
     score->renderDocument(doc);
+
     connect(score->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
+    connect(score, SIGNAL(barlineClicked(int)), this, SLOT(editBarline(int)));
 
     undoManager->addNewUndoStack();
 
@@ -1064,6 +1073,33 @@ void PowerTabEditor::shiftBackward()
                                         caret->getCurrentPositionIndex(), PositionShift::SHIFT_BACKWARD));
 }
 
+/// Edits or creates a barline.
+/// If position is not specified, the caret's current position is used
+void PowerTabEditor::editBarline(int position)
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Barline* barLine = NULL;
+
+    if (position == -1)
+    {
+         barLine = caret->getCurrentBarline();
+    }
+    else
+    {
+        barLine = caret->getCurrentSystem()->GetBarlineAtPosition(position);
+    }
+
+    if (barLine != NULL) // edit existing barline
+    {
+        BarlineDialog dialog(barLine);
+        dialog.exec();
+    }
+    else // create new barline
+    {
+        // TODO - create new barline
+    }
+}
+
 // If there is a chord name at the current position, remove it
 // If there is no chord name, show the dialog to add a chord name
 // Existing chord names are edited by clicking on the chord name
@@ -1123,9 +1159,8 @@ void PowerTabEditor::editRehearsalSign()
 {
     // Find if there is a rehearsal sign at the current position
     Caret* caret = getCurrentScoreArea()->getCaret();
-    const quint32 caretPosition = caret->getCurrentPositionIndex();
     Score* currentScore = caret->getCurrentScore();
-    Barline* currentBarline = caret->getCurrentSystem()->GetBarlineAtPosition(caretPosition);
+    Barline* currentBarline = caret->getCurrentBarline();
 
     // the rehearsal sign action should not be available unless there is a barline at the current position
     Q_ASSERT(currentBarline != NULL);
@@ -1225,7 +1260,7 @@ void PowerTabEditor::updateActions()
     const quint32 caretPosition = caret->getCurrentPositionIndex();
     System* currentSystem = caret->getCurrentSystem();
     Position* currentPosition = caret->getCurrentPosition();
-    Barline* currentBarline = currentSystem->GetBarlineAtPosition(caretPosition);
+    Barline* currentBarline = caret->getCurrentBarline();
     Note* currentNote = caret->getCurrentNote();
 
     // Check for chord text
@@ -1249,6 +1284,22 @@ void PowerTabEditor::updateActions()
 
     RehearsalSign* currentRehearsalSign = currentBarline == NULL ? NULL : currentBarline->GetRehearsalSignPtr();
     updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
+
+    if (currentBarline != NULL) // current position is bar
+    {
+        barlineAct->setText(tr("Edit Barline"));
+        barlineAct->setEnabled(true);
+    }
+    else if (currentPosition == NULL) // current position is empty
+    {
+        barlineAct->setText(tr("Insert Barline"));
+        barlineAct->setEnabled(true);
+    }
+    else // current position has notes
+    {
+        barlineAct->setDisabled(true);
+        barlineAct->setText(tr("Barline"));
+    }
 
     updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
     updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);

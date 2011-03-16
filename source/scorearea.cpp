@@ -175,6 +175,9 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
 
         BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo, currentBarline);
 
+        // forward the barline's signal to our signal
+        connect(barlinePainter, SIGNAL(clicked(int)), this, SIGNAL(barlineClicked(int)));
+
         double x = system->GetPositionX(currentBarline->GetPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
         double timeSigX = x + barlinePainter->boundingRect().width() + keySig.GetWidth();

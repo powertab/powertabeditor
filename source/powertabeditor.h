@@ -85,6 +85,7 @@ protected slots:
     void editHammerPull();
     void editTrill();
     void editSlide(int newSlideType);
+    void editBarline(int position = -1);
 
     void increasePositionSpacing();
     void decreasePositionSpacing();
@@ -182,6 +183,7 @@ protected:
 
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs
+    QAction* barlineAct;
 
     QMenu* tabSymbolsMenu;
     QAction* hammerPullAct; // add/remove hammer-on or pull-off

@@ -9,6 +9,7 @@ class Position;
 class Staff;
 class System;
 class Score;
+class Barline;
 
 // Highlights the current position within the score
 
@@ -51,6 +52,7 @@ public:
     Staff* getCurrentStaff() const;
     Position* getCurrentPosition() const;
     Note* getCurrentNote() const;
+    Barline* getCurrentBarline() const;
 
     inline quint32 getCurrentSystemIndex() const
     {

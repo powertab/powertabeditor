@@ -327,10 +327,9 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
 /// doesn't exist
 Barline* System::GetBarlineAtPosition(uint32_t position) const
 {
-    //------Last Checked------//
-    // - Jan 26, 2005
+    // start bar
     if (position == 0)
-        return ((Barline*)&m_startBar);
+        return const_cast<Barline*>(&m_startBar);
 
     // Iterate through the barlines
     size_t barlineIndex = 0;
@@ -349,6 +348,10 @@ Barline* System::GetBarlineAtPosition(uint32_t position) const
         if (barline->GetPosition() == position)
             return (barline);
     }
+
+    // last bar of system
+    if (position == static_cast<uint32_t>(GetPositionCount()))
+        return const_cast<Barline*>(&m_endBar);
 
     // Barline not found at position
     return (NULL);

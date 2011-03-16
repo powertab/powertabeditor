@@ -6,23 +6,26 @@
 
 class Barline;
 
-class BarlinePainter : public PainterBase
+class BarlinePainter : public QObject, public PainterBase
 {
+    Q_OBJECT
+
 public:
     BarlinePainter(StaffData staffInformation, Barline* barLinePtr);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+signals:
+    void clicked(int);
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     void init();
     void drawVerticalLines(QPainter* painter, double x);
 
-private:
     StaffData staffInfo;
     Barline* barLine;
     double x;

@@ -5,7 +5,6 @@
 #include <QStringBuilder>
 #include <QGraphicsSceneMouseEvent>
 
-#include <dialogs/barlinedialog.h>
 #include <powertabdocument/barline.h>
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
@@ -61,12 +60,7 @@ void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
 {
-    BarlineDialog dialog(barLine);
-    dialog.exec();
-}
-
-void BarlinePainter::mouseMoveEvent(QGraphicsSceneMouseEvent*)
-{
+    emit clicked(barLine->GetPosition());
 }
 
 QRectF BarlinePainter::boundingRect() const

@@ -109,6 +109,9 @@ protected:
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, uint8_t width,
                                               const StaffData& currentStaffInfo);
 
+signals:
+    void barlineClicked(int position);
+
 public slots:
     void adjustScroll();
 

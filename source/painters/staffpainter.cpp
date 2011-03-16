@@ -52,6 +52,9 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
         Caret* caret = PowerTabEditor::getCurrentScoreArea()->getCaret();
 
         int position = findClosestPosition(x, system->GetFirstPositionX() + 0.5 * staffInfo.positionWidth, staffInfo.positionWidth) - 1;
+        if (position < 0)
+            position = 0;
+
         int staffIndex = system->FindStaffIndex(staff);
 
         Score* currentScore = caret->getCurrentScore();
@@ -95,7 +98,7 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
         return;
 
     selectionEnd = newPos;
-    if (selectionEnd <= selectionStart)
+    if (selectionEnd <= selectionStart && selectionEnd != 0)
         selectionEnd--;
 
     update(boundingRect()); // trigger a redraw

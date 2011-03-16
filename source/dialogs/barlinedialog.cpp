@@ -79,16 +79,16 @@ void BarlineDialog::accept()
     if (barLine->GetType() == barLineType->currentIndex() &&
         (int)barLine->GetRepeatCount() == repeatCount->value())
     {
-        done(-1);
+        done(QDialog::Rejected);
     }
     else
     {
         PowerTabEditor::undoManager->push(new ChangeBarLineType(barLine, barLineType->currentIndex(), repeatCount->value()));
-        done(barLineType->currentIndex());
+        done(QDialog::Accepted);
     }
 }
 
 void BarlineDialog::reject()
 {
-    done(-1);
+    done(QDialog::Rejected);
 }
