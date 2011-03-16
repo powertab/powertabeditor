@@ -1,6 +1,5 @@
 #include "barlinedialog.h"
-#include <powertabeditor.h>
-#include <actions/changebarlinetype.h>
+
 #include <powertabdocument/barline.h>
 
 #include <QDialogButtonBox>
@@ -9,10 +8,11 @@
 #include <QSpinBox>
 #include <QComboBox>
 
-BarlineDialog::BarlineDialog(Barline* bar, QWidget *parent) :
-        QDialog(parent)
+/// Constructor: the barType and repeats references will be updated with the values that the user selects
+BarlineDialog::BarlineDialog(quint8& barType, quint8& repeats) :
+    barType(barType),
+    repeats(repeats)
 {
-    barLine = bar;
     setWindowTitle(tr("Music Bar"));
     setModal(true);
 
@@ -39,7 +39,7 @@ BarlineDialog::BarlineDialog(Barline* bar, QWidget *parent) :
     buttonsLayout->addLayout(formLayout);
     buttonsLayout->addWidget(buttonBox);
 
-	buttonsLayout->setSizeConstraint(QLayout::SetFixedSize);
+    buttonsLayout->setSizeConstraint(QLayout::SetFixedSize);
     setLayout(buttonsLayout);
 
     init();
@@ -52,19 +52,19 @@ BarlineDialog::BarlineDialog(Barline* bar, QWidget *parent) :
 void BarlineDialog::init()
 {
     // set limits for repeat count
-    repeatCount->setMinimum(barLine->MIN_REPEAT_COUNT);
-    repeatCount->setMaximum(barLine->MAX_REPEAT_COUNT);
+    repeatCount->setMinimum(Barline::MIN_REPEAT_COUNT);
+    repeatCount->setMaximum(Barline::MAX_REPEAT_COUNT);
 
-    // get repeat count
-    repeatCount->setValue(barLine->GetRepeatCount());
+    // set default repeat count
+    repeatCount->setValue(repeats);
 
     // set bar line type choice
-    barLineType->setCurrentIndex(barLine->GetType());
+    barLineType->setCurrentIndex(barType);
 }
 
 void BarlineDialog::disableRepeatCount(int newBarlineType)
 {
-    if (newBarlineType == barLine->repeatEnd || newBarlineType == barLine->repeatStart)
+    if (newBarlineType == Barline::repeatEnd || newBarlineType == Barline::repeatStart)
     {
         repeatCount->setEnabled(true);
     }
@@ -76,16 +76,10 @@ void BarlineDialog::disableRepeatCount(int newBarlineType)
 
 void BarlineDialog::accept()
 {
-    if (barLine->GetType() == barLineType->currentIndex() &&
-        (int)barLine->GetRepeatCount() == repeatCount->value())
-    {
-        done(QDialog::Rejected);
-    }
-    else
-    {
-        PowerTabEditor::undoManager->push(new ChangeBarLineType(barLine, barLineType->currentIndex(), repeatCount->value()));
-        done(QDialog::Accepted);
-    }
+    barType = barLineType->currentIndex();
+    repeats = repeatCount->value();
+
+    done(QDialog::Accepted);
 }
 
 void BarlineDialog::reject()

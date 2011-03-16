@@ -53,6 +53,8 @@
 #include <actions/editslideout.h>
 #include <actions/updatetabnumber.h>
 #include <actions/positionshift.h>
+#include <actions/changebarlinetype.h>
+#include <actions/addbarline.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -1091,12 +1093,24 @@ void PowerTabEditor::editBarline(int position)
 
     if (barLine != NULL) // edit existing barline
     {
-        BarlineDialog dialog(barLine);
-        dialog.exec();
+        quint8 type = barLine->GetType(), repeats = barLine->GetRepeatCount();
+
+        BarlineDialog dialog(type, repeats);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            undoManager->push(new ChangeBarLineType(barLine, type, repeats));
+        }
     }
     else // create new barline
     {
-        // TODO - create new barline
+        quint8 type = Barline::bar, repeats = Barline::MIN_REPEAT_COUNT;
+
+        BarlineDialog dialog(type, repeats);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            undoManager->push(new AddBarline(caret->getCurrentSystem(),
+                                             caret->getCurrentPositionIndex(), type, repeats));
+        }
     }
 }
 
