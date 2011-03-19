@@ -13,14 +13,13 @@
 #define __STAFF_H__
 
 #include <list>
+#include <array>
 
 #include "note.h"
 
 class Position;
 class System;
 class Barline;
-
-#define NUM_STAFF_VOICES 2    ///< Number of voices in a staff
 
 /// Stores and renders a staff
 class Staff : public PowerTabObject
@@ -54,6 +53,8 @@ public:
         tablatureStaffTypeMask      = (uint8_t)0xf                   ///< Mask used to retrieve the tablature type (3 - 7 string)
     };
 
+    enum { NUM_STAFF_VOICES = 2 }; ///< Number of voices in a staff
+
     // Member Variables
 protected:
     uint8_t m_data;											        ///< Top 4 bits = clef type, bottom 4 bits = tablature type
@@ -63,8 +64,7 @@ protected:
     uint8_t m_tablatureStaffBelowSpacing;                            ///< Amount of space alloted from the last line of the tablature staff
 
 public:
-    std::vector<Position*> highMelodyPositionArray;
-    std::vector<Position*> lowMelodyPositionArray;
+    std::array<std::vector<Position*>, NUM_STAFF_VOICES> positionArrays; ///< collection of position arrays, one per voice
 
     // Constructor/Destructor
 public:
@@ -182,41 +182,13 @@ public:
         CHECK_THAT(IsValidVoice(voice), false);
         return (index < GetPositionCount(voice));
     }
-    /// Gets the number of positions in the staff
-    /// @param voice Voice of the positions to get the count of
-    /// @return The number of positions in the staff
-    size_t GetPositionCount(uint32_t voice) const
-    {
-        CHECK_THAT(IsValidVoice(voice), 0);
-        if (voice == 0)
-        {
-            return highMelodyPositionArray.size();
-        }
-        else
-        {
-            return lowMelodyPositionArray.size();
-        }
-    }
-    /// Gets the nth position in the staff
-    /// @param voice Voice the position belongs to
-    /// @param index Index of the position to get
-    /// @return The nth position in the staff
-    Position* GetPosition(uint32_t voice, uint32_t index) const
-    {
-        CHECK_THAT(IsValidPositionIndex(voice, index), NULL);
-        if (voice == 0)
-        {
-            return highMelodyPositionArray[index];
-        }
-        else
-        {
-            return lowMelodyPositionArray[index];
-        }
-    }
+
+    size_t GetPositionCount(uint32_t voice) const;
+    Position* GetPosition(uint32_t voice, uint32_t index) const;
 
     Position* GetLastPosition() const;
-    Position* GetPositionByPosition(uint32_t index) const;
-    size_t GetIndexOfNextPosition(System* system, Position* position) const;
+    Position* GetPositionByPosition(uint32_t voice, uint32_t index) const;
+    size_t GetIndexOfNextPosition(uint32_t voice, System* system, Position* position) const;
 
     bool IsOnlyPositionInBar(Position* position, System* system) const;
 
@@ -228,7 +200,7 @@ public:
 
     int GetHeight() const;
     
-    void GetPositionsInRange(std::vector<Position*>& positions, size_t startPos, size_t endPos);
+    void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos);
     void CalculateBeamingForBar(const Barline* startBar, const Barline* endBar);
     void CalculateBeamingForGroup(std::vector<Position*>& positions);
 

@@ -279,7 +279,7 @@ void Score::UpdateToVer2Structure()
                     Barline* barline = barlines.at(n);
                     Position* newPosition = new Position(barline->GetPosition() + 1, 1, 0);
                     newPosition->SetRest(true);
-                    newStaff->highMelodyPositionArray.push_back(newPosition);
+                    newStaff->positionArrays[0].push_back(newPosition);
                 }
 
                 newStaves[m] = newStaff;

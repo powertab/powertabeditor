@@ -366,7 +366,7 @@ Staff* Caret::getCurrentStaff() const
 Position* Caret::getCurrentPosition() const
 {
     // may return NULL if the current position does not have a Position object
-    return getCurrentStaff()->GetPositionByPosition(currentPositionIndex);
+    return getCurrentStaff()->GetPositionByPosition(0, currentPositionIndex); // TODO - support multiple voices
 }
 
 Note* Caret::getCurrentNote() const

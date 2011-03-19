@@ -18,6 +18,7 @@
 
 #include <numeric> // partial_sum
 #include <stdexcept>
+#include <functional>
 
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);
@@ -49,8 +50,6 @@ Staff::Staff() :
     m_symbolSpacing(DEFAULT_SYMBOL_SPACING),
     m_tablatureStaffBelowSpacing(DEFAULT_TABLATURE_STAFF_BELOW_SPACING)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
 }
 
 /// Primary Constructor
@@ -63,8 +62,6 @@ Staff::Staff(uint8_t tablatureStaffType, uint8_t clef) :
     m_symbolSpacing(DEFAULT_SYMBOL_SPACING),
     m_tablatureStaffBelowSpacing(DEFAULT_TABLATURE_STAFF_BELOW_SPACING)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     SetClef(clef);
     SetTablatureStaffType(tablatureStaffType);
 }
@@ -77,35 +74,25 @@ Staff::Staff(const Staff& staff) :
     m_symbolSpacing(DEFAULT_SYMBOL_SPACING),
     m_tablatureStaffBelowSpacing(DEFAULT_TABLATURE_STAFF_BELOW_SPACING)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     *this = staff;
 }
 
 /// Destructor
 Staff::~Staff()
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
-    for (uint32_t i = 0; i < highMelodyPositionArray.size(); i++)
+    for (auto i = positionArrays.begin(); i != positionArrays.end(); ++i)
     {
-        delete highMelodyPositionArray.at(i);
+        for (auto j = i->begin(); j != i->end(); ++j)
+        {
+            delete *j;
+        }
+        i->clear();
     }
-    for (uint32_t i = 0; i < lowMelodyPositionArray.size(); i++)
-    {
-        delete lowMelodyPositionArray.at(i);
-    }
-    highMelodyPositionArray.clear();
-    lowMelodyPositionArray.clear();
 }
 
 /// Assignment Operator
 const Staff& Staff::operator=(const Staff& staff)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
-
-    // Check for assignment to self
     if (this != &staff)
     {
         m_data = staff.m_data;
@@ -116,10 +103,9 @@ const Staff& Staff::operator=(const Staff& staff)
         m_symbolSpacing = staff.m_symbolSpacing;
         m_tablatureStaffBelowSpacing = staff.m_tablatureStaffBelowSpacing;
 
-        highMelodyPositionArray = staff.highMelodyPositionArray;
-        lowMelodyPositionArray = staff.lowMelodyPositionArray;
+        positionArrays = staff.positionArrays;
     }
-    return (*this);
+    return *this;
 }
 
 Staff* Staff::CloneObject() const
@@ -132,13 +118,13 @@ Staff* Staff::CloneObject() const
     newStaff->m_symbolSpacing = m_symbolSpacing;
     newStaff->m_tablatureStaffBelowSpacing = m_tablatureStaffBelowSpacing;
 
-    for (uint32_t i=0; i < highMelodyPositionArray.size(); i++)
+    for (size_t i = 0; i < positionArrays.size(); i++)
     {
-        newStaff->highMelodyPositionArray.push_back(highMelodyPositionArray.at(i)->CloneObject());
-    }
-    for (uint32_t i=0; i < lowMelodyPositionArray.size(); i++)
-    {
-        newStaff->lowMelodyPositionArray.push_back(lowMelodyPositionArray.at(i)->CloneObject());
+        // clone each position array into the new staff
+        std::transform(positionArrays[i].begin(),
+                       positionArrays[i].end(),
+                       std::back_inserter(newStaff->positionArrays[i]),
+                       std::mem_fun(&Position::CloneObject));
     }
 
     return newStaff;
@@ -157,8 +143,7 @@ bool Staff::operator==(const Staff& staff) const
             staff.m_standardNotationStaffBelowSpacing) &&
         (m_symbolSpacing == staff.m_symbolSpacing) &&
         (m_tablatureStaffBelowSpacing == staff.m_tablatureStaffBelowSpacing) &&
-        (highMelodyPositionArray == staff.highMelodyPositionArray) &&
-        (lowMelodyPositionArray == staff.lowMelodyPositionArray)
+        (positionArrays == staff.positionArrays)
     );
 }
 
@@ -183,13 +168,14 @@ bool Staff::Serialize(PowerTabOutputStream& stream)
         m_tablatureStaffBelowSpacing;
     CHECK_THAT(stream.CheckState(), false);
 
-    stream.WriteVector(highMelodyPositionArray);
-    CHECK_THAT(stream.CheckState(), false);
+    // TODO - should we serialize the number of voices??
+    for (size_t i = 0; i < positionArrays.size(); i++)
+    {
+        stream.WriteVector(positionArrays[i]);
+        CHECK_THAT(stream.CheckState(), false);
+    }
 
-    stream.WriteVector(lowMelodyPositionArray);
-    CHECK_THAT(stream.CheckState(), false);
-
-    return (stream.CheckState());
+    return stream.CheckState();
 }
 
 /// Performs deserialization for the class
@@ -198,45 +184,18 @@ bool Staff::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool Staff::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
+    stream >> m_data >> m_standardNotationStaffAboveSpacing >>
+              m_standardNotationStaffBelowSpacing >> m_symbolSpacing >>
+              m_tablatureStaffBelowSpacing;
+    CHECK_THAT(stream.CheckState(), false);
 
-    // Version 1.0 and 1.0.2, music/tab staff type stored in separate variables
-    if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-        version == PowerTabFileHeader::FILEVERSION_1_0_2)
+    for (size_t i = 0; i < positionArrays.size(); i++)
     {
-        uint8_t clef, tablatureStaffType;
-        stream >> clef >> tablatureStaffType >>
-            m_standardNotationStaffAboveSpacing >>
-            m_standardNotationStaffBelowSpacing >> m_symbolSpacing >>
-            m_tablatureStaffBelowSpacing;
-        CHECK_THAT(stream.CheckState(), false);
-
-        SetClef(clef);
-        SetTablatureStaffType(tablatureStaffType);
-
-        stream.ReadVector(highMelodyPositionArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
-        stream.ReadVector(lowMelodyPositionArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-    }
-    // Version 1.5 and up
-    else
-    {
-        stream >> m_data >> m_standardNotationStaffAboveSpacing >>
-            m_standardNotationStaffBelowSpacing >> m_symbolSpacing >>
-            m_tablatureStaffBelowSpacing;
-        CHECK_THAT(stream.CheckState(), false);
-
-        stream.ReadVector(highMelodyPositionArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
-        stream.ReadVector(lowMelodyPositionArray, version);
+        stream.ReadVector(positionArrays[i], version);
         CHECK_THAT(stream.CheckState(), false);
     }
 
-    return (stream.CheckState());
+    return stream.CheckState();
 }
 
 /// Sets the clef used on the standard notation staff
@@ -277,14 +236,47 @@ int Staff::GetHeight() const
             (GetTablatureStaffType() - 1) * 9 + 4 * STAFF_BORDER_SPACING; // TODO - pass in the tab line separation as a parameter
 }
 
-// Finds the Position object at the given position index in the staff
-Position* Staff::GetPositionByPosition(uint32_t index) const
+/// Gets the number of positions in the staff
+/// @param voice Voice of the positions to get the count of
+/// @throw std::out_of_range if the voice is invalid
+size_t Staff::GetPositionCount(uint32_t voice) const
 {
-    for (uint32_t i = 0; i < highMelodyPositionArray.size(); i++)
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
+
+    return positionArrays[voice].size();
+}
+
+/// Gets the nth position in the staff
+/// @param voice Voice the position belongs to
+/// @param index Index of the position to get
+/// @throw std::out_of_range if the voice or index are invalid
+Position* Staff::GetPosition(uint32_t voice, uint32_t index) const
+{
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
+
+    if (!IsValidPositionIndex(voice, index))
+        throw std::out_of_range("Invalid position index");
+
+    return positionArrays[voice].at(index);
+}
+
+/// Finds the Position object at the given position index & voice in the staff
+/// @return The position object, or NULL if not found
+/// @throw std::out_of_range If the voice is invalid
+Position* Staff::GetPositionByPosition(uint32_t voice, uint32_t index) const
+{
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
+
+    const std::vector<Position*>& positionArray = positionArrays.at(voice);
+
+    for (auto i = positionArray.begin(); i != positionArray.end(); ++i)
     {
-        if (highMelodyPositionArray.at(i)->GetPosition() == index)
+        if ((*i)->GetPosition() == index)
         {
-            return highMelodyPositionArray.at(i);
+            return *i;
         }
     }
 
@@ -292,17 +284,22 @@ Position* Staff::GetPositionByPosition(uint32_t index) const
 }
 
 /// Finds the position index of the next position
-/// @throw std::out_of_range if the position does not exist in this staff
-size_t Staff::GetIndexOfNextPosition(System* system, Position *position) const
+/// @throw std::out_of_range if the position does not exist in this staff, or if the voice is invalid
+size_t Staff::GetIndexOfNextPosition(uint32_t voice, System* system, Position *position) const
 {
-    auto location = std::find(highMelodyPositionArray.begin(), highMelodyPositionArray.end(), position);
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
 
-    if (location == highMelodyPositionArray.end())
+    const std::vector<Position*>& positionArray = positionArrays.at(voice);
+
+    auto location = std::find(positionArray.begin(), positionArray.end(), position);
+
+    if (location == positionArray.end())
         throw std::out_of_range("Position not in system");
 
     std::advance(location, 1);
 
-    if (location == highMelodyPositionArray.end())
+    if (location == positionArray.end())
     {
         return system->GetPositionCount() - 1;
     }
@@ -325,7 +322,7 @@ bool Staff::IsOnlyPositionInBar(Position *position, System *system) const
 
     for (uint32_t i = (*startBar)->GetPosition() + 1; i < (*endBar)->GetPosition(); i++)
     {
-        Position* pos = GetPositionByPosition(i);
+        Position* pos = GetPositionByPosition(0, i); // TODO - support multiple voices
         if (pos != NULL && pos != position)
         {
             return false;
@@ -385,8 +382,10 @@ namespace
 /// Calculates the spacing required to display the given position and note properties.
 int Staff::CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const
 {
+    const std::vector<Position*>& positionArray = positionArrays[0]; // TODO - support multiple voices
+
     int maxNumProperties = 0;
-    for (auto i = highMelodyPositionArray.begin(); i != highMelodyPositionArray.end(); ++i)
+    for (auto i = positionArray.begin(); i != positionArray.end(); ++i)
     {
         int numProperties = 0;
         
@@ -431,7 +430,7 @@ void Staff::CalculateBeamingForBar(const Barline* startBar, const Barline* endBa
 {
     // Get the positions in betwen the two bars
     std::vector<Position*> positions;
-    GetPositionsInRange(positions, startBar->GetPosition(), endBar->GetPosition());
+    GetPositionsInRange(positions, 0, startBar->GetPosition(), endBar->GetPosition());
 
     const TimeSignature& timeSig = startBar->GetTimeSignatureConstRef();
 
@@ -554,29 +553,52 @@ void Staff::CalculateBeamingForGroup(std::vector<Position*>& positions)
 }
 
 /// Gets all of the positions within the given range (inclusive)
-void Staff::GetPositionsInRange(std::vector<Position*>& positions, size_t startPos, size_t endPos)
+/// @param Output parameter, to store the positions that are in the range
+void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos)
 {
-    positions.clear();
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
 
-    for (size_t i = 0; i < highMelodyPositionArray.size(); i++)
+    positionsInRange.clear();
+
+    const std::vector<Position*>& positionArray = positionArrays.at(voice);
+
+    for (size_t i = 0; i < positionArray.size(); i++)
     {
-        Position* currentPosition = highMelodyPositionArray.at(i);
+        Position* currentPosition = positionArray.at(i);
         const uint32_t location = currentPosition->GetPosition();
 
         if (location >= startPos && location <= endPos)
         {
-            positions.push_back(currentPosition);
+            positionsInRange.push_back(currentPosition);
         }
     }
 }
 
-/// Returns the last position in the staff (returns NULL if no positions exist)
+/// Returns the last position in the staff, regardless of voice (returns NULL if no positions exist)
 Position* Staff::GetLastPosition() const
 {
-    if (highMelodyPositionArray.empty())
+    using std::bind;
+    using namespace std::placeholders;
+
+    std::vector<Position*> lastPositions;
+
+    // construct a list of the last positions for each voice
+    for (size_t i = 0; i < positionArrays.size(); i++)
+    {
+        if (!positionArrays[i].empty())
+            lastPositions.push_back(positionArrays[i].back());
+    }
+
+    if (lastPositions.empty())
         return NULL;
 
-    return highMelodyPositionArray.back();
+    // return the position with the largest position index
+    return *std::max_element(lastPositions.begin(), lastPositions.end(),
+                            bind(std::less<uint32_t>(),
+                                 bind(&Position::GetPosition, _1),
+                                 bind(&Position::GetPosition, _2)
+                                 ));
 }
 
 /// Returns the number of steps (frets) between the given note and the next note on the string
@@ -593,19 +615,21 @@ int8_t Staff::GetSlideSteps(Position *position, Note *note) const
 
 Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, Position *position, Note *note) const
 {
+    const std::vector<Position*>& positionArray = positionArrays[0]; // TODO - support multiple voices
+
     // find where the position is within the staff
-    auto location = std::find(highMelodyPositionArray.begin(),
-                              highMelodyPositionArray.end(), position);
+    auto location = std::find(positionArray.begin(),
+                              positionArray.end(), position);
 
     // if position was not found, we cannot compare it to the next one
-    if (location == highMelodyPositionArray.end())
+    if (location == positionArray.end())
     {
         return NULL;
     }
 
     // check that the new location is still valid
-    int newIndex = location - highMelodyPositionArray.begin() + searchDirection;
-    if (newIndex < 0 || newIndex >= (int)highMelodyPositionArray.size())
+    int newIndex = location - positionArray.begin() + searchDirection;
+    if (newIndex < 0 || newIndex >= (int)positionArray.size())
     {
         return NULL;
     }
@@ -621,10 +645,10 @@ Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, Position *
 void Staff::UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber)
 {
     // hopefully this line will make it easier later when we handle multiple melodies
-    std::vector<Position *> & positionArray = highMelodyPositionArray;
+    const std::vector<Position*>& positionArray = positionArrays[0];
 
     // find the position in our vector of positions
-    std::vector<Position *>::iterator positionIt = std::find(positionArray.begin(), positionArray.end(), position);
+    auto positionIt = std::find(positionArray.begin(), positionArray.end(), position);
     assert(positionIt != positionArray.end());
 
     note->SetFretNumber(fretNumber);

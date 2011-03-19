@@ -290,7 +290,7 @@ void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& curren
             const bool slideUp = (type == Note::slideOutOfUpwards) || (steps > 0);
 
             // get the index of the next position
-            const size_t nextPosIndex = staff->GetIndexOfNextPosition(system, currentPosition);
+            const size_t nextPosIndex = staff->GetIndexOfNextPosition(voice, system, currentPosition);
 
             const double leftPos = system->GetPositionX(currentPosition->GetPosition());
             const double width = system->GetPositionX(nextPosIndex) - leftPos;
@@ -864,7 +864,7 @@ void ScoreArea::drawSymbolsBelowTabStaff(System *system, Staff *staff, const Sta
                 if (*predicate == &Position::HasNoteWithSlide || *predicate == &Position::HasNoteWithHammeron ||
                     *predicate == &Position::HasNoteWithPulloff)
                 {
-                    int nextPos = staff->GetIndexOfNextPosition(system, currentPosition);
+                    int nextPos = staff->GetIndexOfNextPosition(0, system, currentPosition);
                     if (nextPos != system->GetPositionCount() - 1)
                         nextPos++;
 
