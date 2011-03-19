@@ -6,25 +6,27 @@
 #include <QVBoxLayout>
 
 #include <skinmanager.h>
+#include <widgets/common.h>
+#include <powertabeditor.h>
 
 void ScorePage::createSongButtons()
 {
     songGroup = new QGroupBox(tr("Song"));
     songLayout = new QHBoxLayout;
 
-	addInstrumentButton = new QPushButton(QIcon(":images/addinstrument.gif"),"");
+    addInstrumentButton = new QPushButton(QIcon(":images/addinstrument.gif"),"");
     addInstrumentButton->setToolTip(tr("Add Instrument"));
     addInstrumentButton->setFlat(true);
 
-	addPercussionButton = new QPushButton(QIcon(":images/addpercussiontrack.gif"),"");
+    addPercussionButton = new QPushButton(QIcon(":images/addpercussiontrack.gif"),"");
     addPercussionButton->setToolTip(tr("Add Percussion Track"));
     addPercussionButton->setFlat(true);
 
-	increaseHeightButton = new QPushButton(QIcon(":images/increasetablineheight.gif"),"");
+    increaseHeightButton = new QPushButton(QIcon(":images/increasetablineheight.gif"),"");
     increaseHeightButton->setToolTip(tr("Increase Tablature Line Height"));
     increaseHeightButton->setFlat(true);
 
-	decreaseHeightButton = new QPushButton(QIcon(":images/decreasetablineheight.gif"),"");
+    decreaseHeightButton = new QPushButton(QIcon(":images/decreasetablineheight.gif"),"");
     decreaseHeightButton->setToolTip(tr("Decrease Tablature Line Height"));
     decreaseHeightButton->setFlat(true);
 
@@ -44,31 +46,33 @@ void ScorePage::createSectionButtons()
     sectionGroup = new QGroupBox(tr("Section"));
     sectionLayout = new QHBoxLayout;
 
-	insertSectionBeforeButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    insertSectionBeforeButton = new QPushButton(QIcon(":images/dotted_note"),"");
     insertSectionBeforeButton->setToolTip(tr("Insert Section Before"));
     insertSectionBeforeButton->setFlat(true);
 
-	insertSectionAfterButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    insertSectionAfterButton = new QPushButton(QIcon(":images/dotted_note"),"");
     insertSectionAfterButton->setToolTip(tr("Insert Section After"));
     insertSectionAfterButton->setFlat(true);
 
-	removeSectionButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    removeSectionButton = new QPushButton(QIcon(":images/dotted_note"),"");
     removeSectionButton->setToolTip(tr("Remove Section"));
     removeSectionButton->setFlat(true);
 
-	addBarButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    addBarButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addBarButton->setToolTip(tr("Add Bar"));
     addBarButton->setFlat(true);
 
-	increaseWidthButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    increaseWidthButton = new QPushButton(QIcon(":images/dotted_note"),"");
     increaseWidthButton->setToolTip(tr("Increase Width"));
     increaseWidthButton->setFlat(true);
+    connectButtonToAction(increaseWidthButton, mainWindow->increasePositionSpacingAct);
 
-	decreaseWidthButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    decreaseWidthButton = new QPushButton(QIcon(":images/dotted_note"),"");
     decreaseWidthButton->setToolTip(tr("Decrease Width"));
     decreaseWidthButton->setFlat(true);
+    connectButtonToAction(decreaseWidthButton, mainWindow->decreasePositionSpacingAct);
 
-	justifyButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    justifyButton = new QPushButton(QIcon(":images/dotted_note"),"");
     justifyButton->setToolTip(tr("Justify"));
     justifyButton->setFlat(true);
 
@@ -91,19 +95,19 @@ void ScorePage::createFlowDynamicsButtons()
     flowDynamicsGroup = new QGroupBox(tr("Flow && Dynamics"));
     flowDynamicsLayout = new QHBoxLayout;
 
-	addRehearsalSignButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    addRehearsalSignButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addRehearsalSignButton->setToolTip(tr("Add Rehearsal Sign"));
     addRehearsalSignButton->setFlat(true);
 
-	addDirectionButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    addDirectionButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addDirectionButton->setToolTip(tr("Add Musical Direction"));
     addDirectionButton->setFlat(true);
 
-	addTempoMarkerButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    addTempoMarkerButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addTempoMarkerButton->setToolTip(tr("Add Tempo Marker"));
     addTempoMarkerButton->setFlat(true);
 
-	addVolumeMarkerButton = new QPushButton(QIcon(":images/dotted_note"),"");
+    addVolumeMarkerButton = new QPushButton(QIcon(":images/dotted_note"),"");
     addVolumeMarkerButton->setToolTip(tr("Add Volume Marker"));
     addVolumeMarkerButton->setFlat(true);
 
@@ -118,7 +122,9 @@ void ScorePage::createFlowDynamicsButtons()
     layout->addWidget(flowDynamicsGroup);
 }
 
-ScorePage::ScorePage(std::shared_ptr<SkinManager> skinManager, QFrame *parent) : QFrame(parent)
+ScorePage::ScorePage(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager, QFrame *parent) :
+    QFrame(parent),
+    mainWindow(mainWindow)
 {
     setFrameStyle(QFrame::StyledPanel);
 

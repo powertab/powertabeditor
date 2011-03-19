@@ -15,7 +15,7 @@ Toolbox::Toolbox(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinMa
 
     setStyleSheet(skinManager->getToolboxTabStyle());
 
-    scorePage = new ScorePage(skinManager, 0);
+    scorePage = new ScorePage(mainWindow, skinManager, 0);
     addTab(scorePage, QIcon(":/icons/toolbox_score.png"),"");
 
     notePage = new NotePage(mainWindow, skinManager, 0);

@@ -31,6 +31,7 @@ class PowerTabEditor : public QMainWindow
     Q_OBJECT
 
     friend class NotePage;
+    friend class ScorePage;
 
 public:
     PowerTabEditor(QWidget *parent = 0);

@@ -10,13 +10,17 @@ class QPushButton;
 class QGroupBox;
 class QHBoxLayout;
 class QVBoxLayout;
+class PowerTabEditor;
 
 class ScorePage : public QFrame
 {
     Q_OBJECT
 
 public:
-    ScorePage(std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
+    ScorePage(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
+
+protected:
+    PowerTabEditor* mainWindow;
 
     QVBoxLayout *layout;
 

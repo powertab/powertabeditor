@@ -7,6 +7,7 @@
 
 class SkinManager;
 class QPushButton;
+class QAbstractButton;
 class QGroupBox;
 class QHBoxLayout;
 class QVBoxLayout;

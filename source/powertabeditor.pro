@@ -102,7 +102,8 @@ SOURCES += main.cpp\
     actions/editslideout.cpp \
     actions/updatetabnumber.cpp \
     actions/positionshift.cpp \
-    actions/addbarline.cpp
+    actions/addbarline.cpp \
+    widgets/common.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -185,7 +186,8 @@ HEADERS  += powertabeditor.h \
     actions/editslideout.h \
     actions/updatetabnumber.h \
     actions/positionshift.h \
-    actions/addbarline.h
+    actions/addbarline.h \
+    widgets/common.h
 
 RESOURCES += \
     resources.qrc
