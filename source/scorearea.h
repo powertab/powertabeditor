@@ -47,7 +47,11 @@ protected:
     void drawTabClef(int x, const StaffData& staffInfo);
     void drawChordText(System* system, quint32 height, const StaffData& currentStaffInfo);
     void drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo);
+
     void drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo);
+    void drawSlidesHelper(System* system, const StaffData& currentStaffInfo, quint8 string,
+                          bool slideUp, quint32 posIndex1, quint32 posIndex2);
+
     void drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
     void drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo);
