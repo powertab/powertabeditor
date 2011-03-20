@@ -109,9 +109,8 @@ const Position& Position::operator=(const Position& position)
         m_data = position.m_data;
 
         // copy the complex symbols
-        std::copy(position.m_complexSymbolArray,
-                  position.m_complexSymbolArray + MAX_POSITION_COMPLEX_SYMBOLS,
-                  m_complexSymbolArray);
+        std::copy(position.m_complexSymbolArray.begin(), position.m_complexSymbolArray.end(),
+                  m_complexSymbolArray.begin());
 
         // clean out the current note array
         for (auto i = m_noteArray.begin(); i != m_noteArray.end(); ++i)
@@ -148,10 +147,9 @@ struct CompareNotePointers
 bool Position::operator==(const Position& position) const
 {
     // Compare complex symbols (regardless of the order they appear in)
-    std::vector<uint32_t> thisComplexSymbolArray(m_complexSymbolArray,
-                                                 m_complexSymbolArray + MAX_POSITION_COMPLEX_SYMBOLS);
-    std::vector<uint32_t> thatComplexSymbolArray(position.m_complexSymbolArray,
-                                                 position.m_complexSymbolArray + MAX_POSITION_COMPLEX_SYMBOLS);
+    std::vector<uint32_t> thisComplexSymbolArray(m_complexSymbolArray.begin(), m_complexSymbolArray.end());
+    std::vector<uint32_t> thatComplexSymbolArray(position.m_complexSymbolArray.begin(),
+                                                 position.m_complexSymbolArray.end());
 
     std::sort(thisComplexSymbolArray.begin(), thisComplexSymbolArray.end());
     std::sort(thatComplexSymbolArray.begin(), thatComplexSymbolArray.end());
@@ -732,8 +730,7 @@ bool Position::AddComplexSymbol(uint32_t symbolData)
     // insert there
     else
     {
-        uint32_t i = 0;
-        for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
+        for (uint32_t i = 0; i < m_complexSymbolArray.size(); i++)
         {
             if (m_complexSymbolArray[i] == notUsed)
             {
@@ -751,11 +748,8 @@ bool Position::AddComplexSymbol(uint32_t symbolData)
 /// @return The number of complex symbols used by the position
 size_t Position::GetComplexSymbolCount() const
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
     size_t returnValue = 0;
-    size_t i = 0;
-    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
+    for (size_t i = 0; i < m_complexSymbolArray.size(); i++)
     {
         // Slot is not used; break out
         if (m_complexSymbolArray[i] == notUsed)
@@ -771,12 +765,9 @@ size_t Position::GetComplexSymbolCount() const
 /// found
 uint32_t Position::FindComplexSymbol(uint8_t type) const
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
     uint32_t returnValue = (uint32_t)-1;
 
-    uint32_t i = 0;
-    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
+    for (uint32_t i = 0; i < m_complexSymbolArray.size(); i++)
     {
         // Found the symbol type; break out
         if (HIBYTE(HIWORD(m_complexSymbolArray[i])) == type)
@@ -794,16 +785,13 @@ uint32_t Position::FindComplexSymbol(uint8_t type) const
 /// @return True if the symbol was removed, false if not
 bool Position::RemoveComplexSymbol(uint8_t type)
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
     bool returnValue = false;
 
-    uint32_t i = 0;
-    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
+    for (auto i = m_complexSymbolArray.begin(); i != m_complexSymbolArray.end(); ++i)
     {
-        if (HIBYTE(HIWORD(m_complexSymbolArray[i])) == type)
+        if (HIBYTE(HIWORD(*i)) == type)
         {
-            m_complexSymbolArray[i] = notUsed;
+            *i = notUsed;
             returnValue = true;
             break;
         }
@@ -815,11 +803,7 @@ bool Position::RemoveComplexSymbol(uint8_t type)
 /// Clears the contents of the symbol array (sets all elements to "not used")
 void Position::ClearComplexSymbolArrayContents()
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
-    uint32_t i = 0;
-    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
-        m_complexSymbolArray[i] = notUsed;
+    std::fill(m_complexSymbolArray.begin(), m_complexSymbolArray.end(), notUsed);
 }
 
 // functor for the GetNoteByString function

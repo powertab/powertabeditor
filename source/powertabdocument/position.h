@@ -17,8 +17,9 @@ class Tuning;
 
 #include "dynamic.h"        // Needed for volume swell volumes and validation
 
+#include <array>
+
 #define MAX_POSITION_COMPLEX_SYMBOLS    2   ///< Maximum allowed number of complex symbols per position object
-// Note: needs to be #define so array works properly
 
 /// Stores and renders a position (a group of notes, or a rest)
 class Position : public PowerTabObject
@@ -126,7 +127,7 @@ public:
         dataFlagsMask       = (uint32_t)0xffffff,               ///< Mask that filters out all valid data flags
         durationTypeMask    = (uint32_t)0xff000000              ///< Mask used to retrieve the duration type
 
-                          };
+    };
 
     enum complexSymbolTypes
     {
@@ -134,7 +135,7 @@ public:
         tremoloBar              = (uint8_t)'c',
         multibarRest            = (uint8_t)'j',
         notUsed                 = (uint32_t)0
-                              };
+    };
 
     enum tremoloBarTypes
     {
@@ -145,14 +146,14 @@ public:
         returnAndRelease        = (uint8_t)0x04,
         returnAndHold           = (uint8_t)0x05,
         invertedDip             = (uint8_t)0x06
-                              };
+    };
 
     // Member Variables
 protected:
     uint8_t	m_position; ///< Zero-based index of the position within the system where the position is anchored
     uint16_t	m_beaming;  ///< Beaming and irregular grouping timing data
     uint32_t	m_data;     ///< Duration and simple symbol flags
-    uint32_t	m_complexSymbolArray[MAX_POSITION_COMPLEX_SYMBOLS];     ///< Array of complex symbols
+    std::array<uint32_t, MAX_POSITION_COMPLEX_SYMBOLS> m_complexSymbolArray; ///< Array of complex symbols
 
 public:
     std::vector<Note*> m_noteArray;      ///< Array of notes
