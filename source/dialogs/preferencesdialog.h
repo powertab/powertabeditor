@@ -10,6 +10,7 @@ class QLabel;
 class QComboBox;
 class QCheckBox;
 class QFormLayout;
+class QSpinBox;
 
 // Dialog to allow the user to modify general editor-wide settings
 
@@ -24,6 +25,8 @@ public:
     QFormLayout* formLayout;
     QComboBox*	midiPort;
     QCheckBox* metronomeEnabled;
+    QSpinBox* vibratoStrength;
+    QSpinBox* wideVibratoStrength;
 
 signals:
 

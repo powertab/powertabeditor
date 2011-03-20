@@ -36,7 +36,15 @@ MIDITab::MIDITab(QWidget *parent) :
     formLayout->addRow(tr("MIDI Output Device:"), midiPort);
 
     metronomeEnabled = new QCheckBox;
-    formLayout->addRow(tr("Metronome Enabled"), metronomeEnabled);
+    formLayout->addRow(tr("Metronome Enabled:"), metronomeEnabled);
+
+    vibratoStrength = new QSpinBox;
+    vibratoStrength->setRange(1, 127);
+    formLayout->addRow(tr("Vibrato Strength:"), vibratoStrength);
+
+    wideVibratoStrength = new QSpinBox;
+    wideVibratoStrength->setRange(1, 127);
+    formLayout->addRow(tr("Wide Vibrato Strength:"), wideVibratoStrength);
 
     rootLayout->addLayout(formLayout);
 
@@ -50,6 +58,8 @@ MIDITab::MIDITab(QWidget *parent) :
     QSettings settings;
     midiPort->setCurrentIndex(settings.value("midi/preferredPort").toInt());
     metronomeEnabled->setChecked(settings.value("midi/metronomeEnabled").toBool());
+    vibratoStrength->setValue(settings.value("midi/vibrato", 85).toUInt());
+    wideVibratoStrength->setValue(settings.value("midi/wide_vibrato", 127).toUInt());
 }
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
@@ -89,6 +99,9 @@ void PreferencesDialog::accept()
     settings.setValue("midi/preferredPort", midiTab->midiPort->currentIndex());
     // save the metronome settings
     settings.setValue("midi/metronomeEnabled", midiTab->metronomeEnabled->isChecked());
+
+    settings.setValue("midi/vibrato", midiTab->vibratoStrength->value());
+    settings.setValue("midi/wide_vibrato", midiTab->wideVibratoStrength->value());
     settings.sync();
 
     done(Accepted);
