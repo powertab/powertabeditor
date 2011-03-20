@@ -149,10 +149,10 @@ public:
 
     // Member Variables
 protected:
-    uint8_t					m_position;				                                ///< Zero-based index of the position within the system where the position is anchored
-    uint16_t					m_beaming;				                                ///< Beaming and irregular grouping timing data
-    uint32_t				m_data;			                                        ///< Duration and simple symbol flags
-    uint32_t				m_complexSymbolArray[MAX_POSITION_COMPLEX_SYMBOLS];	    ///< Array of complex symbols
+    uint8_t	m_position; ///< Zero-based index of the position within the system where the position is anchored
+    uint16_t	m_beaming;  ///< Beaming and irregular grouping timing data
+    uint32_t	m_data;     ///< Duration and simple symbol flags
+    uint32_t	m_complexSymbolArray[MAX_POSITION_COMPLEX_SYMBOLS];     ///< Array of complex symbols
 
 public:
     std::vector<Note*> m_noteArray;      ///< Array of notes

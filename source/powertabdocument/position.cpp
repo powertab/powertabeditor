@@ -101,9 +101,6 @@ Position::~Position()
 /// Assignment Operator
 const Position& Position::operator=(const Position& position)
 {
-    //------Last Checked------//
-    // - Jan 18, 2005
-
     // Check for assignment to self
     if (this != &position)
     {
@@ -111,11 +108,21 @@ const Position& Position::operator=(const Position& position)
         m_beaming = position.m_beaming;
         m_data = position.m_data;
 
-        size_t i = 0;
-        for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
-            m_complexSymbolArray[i] = position.m_complexSymbolArray[i];
+        // copy the complex symbols
+        std::copy(position.m_complexSymbolArray,
+                  position.m_complexSymbolArray + MAX_POSITION_COMPLEX_SYMBOLS,
+                  m_complexSymbolArray);
 
-        m_noteArray = position.m_noteArray;
+        // clean out the current note array
+        for (auto i = m_noteArray.begin(); i != m_noteArray.end(); ++i)
+            delete *i;
+
+        m_noteArray.clear();
+
+        // clone the note array
+        std::transform(position.m_noteArray.begin(), position.m_noteArray.end(),
+                       std::back_inserter(m_noteArray),
+                       std::mem_fun(&Note::CloneObject));
     }
     return (*this);
 }
@@ -123,57 +130,54 @@ const Position& Position::operator=(const Position& position)
 Position* Position::CloneObject() const
 {
     Position* newPosition = new Position;
-    newPosition->m_position = m_position;
-    newPosition->m_beaming = m_beaming;
-    newPosition->m_data = m_data;
 
-    size_t i = 0;
-    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
-    {
-        newPosition->m_complexSymbolArray[i] = m_complexSymbolArray[i];
-    }
-
-    newPosition->m_noteArray.clear();
-
-    for (uint32_t i=0; i < m_noteArray.size(); i++)
-    {
-        newPosition->m_noteArray.push_back(m_noteArray.at(i)->CloneObject());
-    }
+    *newPosition = *this;
 
     return newPosition;
 }
 
+struct CompareNotePointers
+{
+    bool operator()(Note* note1, Note* note2)
+    {
+        return *note1 == *note2;
+    }
+};
+
 /// Equality Operator
 bool Position::operator==(const Position& position) const
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
-
-    std::vector<uint32_t> thisComplexSymbolArray;
-    std::vector<uint32_t> thatComplexSymbolArray;
-
-    uint32_t i = 0;
-    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
-    {
-        thisComplexSymbolArray.push_back(m_complexSymbolArray[i]);
-        thatComplexSymbolArray.push_back(position.m_complexSymbolArray[i]);
-    }
+    // Compare complex symbols (regardless of the order they appear in)
+    std::vector<uint32_t> thisComplexSymbolArray(m_complexSymbolArray,
+                                                 m_complexSymbolArray + MAX_POSITION_COMPLEX_SYMBOLS);
+    std::vector<uint32_t> thatComplexSymbolArray(position.m_complexSymbolArray,
+                                                 position.m_complexSymbolArray + MAX_POSITION_COMPLEX_SYMBOLS);
 
     std::sort(thisComplexSymbolArray.begin(), thisComplexSymbolArray.end());
     std::sort(thatComplexSymbolArray.begin(), thatComplexSymbolArray.end());
 
-    i = 0;
-    for (; i < MAX_POSITION_COMPLEX_SYMBOLS; i++)
+    if (!(thisComplexSymbolArray == thatComplexSymbolArray))
     {
-        if (thisComplexSymbolArray[i] != thatComplexSymbolArray[i])
-            return (false);
+        return false;
     }
 
+    // compare notes (by value, not by their pointers)
+    if (m_noteArray.size() != position.m_noteArray.size())
+    {
+        return false;
+    }
+
+    if (!std::equal(m_noteArray.begin(), m_noteArray.end(),
+                    position.m_noteArray.begin(), CompareNotePointers()))
+    {
+        return false;
+    }
+
+    // compare all other data
     return (
         (m_position == position.m_position) &&
         (m_beaming == position.m_beaming) &&
-        (m_data == position.m_data) &&
-        (m_noteArray == position.m_noteArray)
+        (m_data == position.m_data)
     );
 }
 
