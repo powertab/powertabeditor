@@ -524,8 +524,8 @@ void ScoreArea::drawArpeggio(Position* position, quint32 x, const StaffData& cur
 
     QGraphicsSimpleTextItem* arpeggio = new QGraphicsSimpleTextItem(QString(numSymbols, arpeggioSymbol));
     arpeggio->setFont(font);
-    arpeggio->rotate(90);
-    arpeggio->setPos(x + 1.5 * font.pixelSize(), bounds.first);
+    arpeggio->setPos(x + arpeggio->boundingRect().height() / 2.0 - 3.0, bounds.first);
+    arpeggio->setRotation(90);
     arpeggio->setParentItem(activeStaff);
 
     // draw the end of the arpeggio
@@ -535,7 +535,7 @@ void ScoreArea::drawArpeggio(Position* position, quint32 x, const StaffData& cur
     QGraphicsSimpleTextItem* endPoint = new QGraphicsSimpleTextItem(arpeggioEnd);
     const double y = position->HasArpeggioUp() ? bounds.first : bounds.second;
     endPoint->setFont(font);
-    endPoint->setPos(x + 3, y - 1.45 * font.pixelSize());
+    endPoint->setPos(x, y - 1.45 * font.pixelSize());
     endPoint->setParentItem(activeStaff);
 }
 
