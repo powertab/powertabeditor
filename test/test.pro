@@ -89,4 +89,5 @@ HEADERS += \
     ../source/powertabdocument/chordname.h \
     ../source/powertabdocument/chorddiagram.h \
     ../source/powertabdocument/barline.h \
-    ../source/powertabdocument/alternateending.h
+    ../source/powertabdocument/alternateending.h \
+    powertabdocument/tuning_fixtures.h

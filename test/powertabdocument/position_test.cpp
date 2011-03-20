@@ -5,6 +5,8 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/note.h>
 
+#include "tuning_fixtures.h"
+
 struct PositionFixture
 {
     PositionFixture()
@@ -12,11 +14,13 @@ struct PositionFixture
         pos = new Position(2, 4, 1);
 
         note1 = new Note(1, 0);
-        note2 = new Note(3, 0);
-        note3 = new Note(5, 0);
+        note2 = new Note(3, 5);
+        note3 = new Note(5, 4);
+        note4 = new Note(0, 0);
         pos->m_noteArray.push_back(note1);
         pos->m_noteArray.push_back(note2);
         pos->m_noteArray.push_back(note3);
+        pos->m_noteArray.push_back(note4);
 
         pos->SetArpeggioUp(true);
         pos->SetPickStrokeDown(true);
@@ -28,7 +32,7 @@ struct PositionFixture
         delete pos;
     }
 
-    Note *note1, *note2, *note3;
+    Note *note1, *note2, *note3, *note4;
     Position* pos;
 };
 
@@ -45,7 +49,7 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
 
         BOOST_FIXTURE_TEST_CASE(MultipleStrings, PositionFixture)
         {
-            BOOST_CHECK(pos->GetStringBounds() == (std::pair<uint8_t, uint8_t>(1, 5)));
+            BOOST_CHECK(pos->GetStringBounds() == (std::pair<uint8_t, uint8_t>(0, 5)));
         }
 
         BOOST_AUTO_TEST_CASE(SingleString)
@@ -87,5 +91,30 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
 
         delete pos2;
     }
+
+    BOOST_FIXTURE_TEST_SUITE(ShiftString, PositionFixture)
+
+        BOOST_AUTO_TEST_CASE(CanShiftTabNumber)
+        {
+            const uint8_t numStrings = 6;
+            StandardTuningFixture stdTuning;
+            Tuning tuning = stdTuning.tuning;
+
+            // can't shift up since we are at the high E string
+            BOOST_CHECK(!pos->CanShiftTabNumber(note4, Position::SHIFT_UP, numStrings, tuning));
+            // can't shift down since there is already a note at string # 1
+            BOOST_CHECK(!pos->CanShiftTabNumber(note4, Position::SHIFT_DOWN, numStrings, tuning));
+
+            // at fret 5 on the D string, so can shift up or down
+            BOOST_CHECK(pos->CanShiftTabNumber(note2, Position::SHIFT_DOWN, numStrings, tuning));
+            BOOST_CHECK(pos->CanShiftTabNumber(note2, Position::SHIFT_UP, numStrings, tuning));
+
+            // at fret 4, so we can't shift up to a higher string
+            BOOST_CHECK(!pos->CanShiftTabNumber(note3, Position::SHIFT_UP, numStrings, tuning));
+            // can't shift down from bottom string
+            BOOST_CHECK(!pos->CanShiftTabNumber(note3, Position::SHIFT_DOWN, numStrings, tuning));
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
