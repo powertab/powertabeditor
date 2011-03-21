@@ -13,7 +13,7 @@
 #include "staff.h"
 #include <algorithm>
 #include <stdexcept>
-#include <tr1/functional>
+#include <functional>
 
 #include "powertabfileheader.h"                     // Needed for file version constants
 #include "direction.h"
@@ -747,7 +747,7 @@ bool System::SetPositionSpacing(uint8_t positionSpacing)
 template <class T>
 struct ShiftPosition
 {
-    typedef std::tr1::function<bool (uint32_t, uint32_t)> PositionIndexComparison;
+    typedef std::function<bool (uint32_t, uint32_t)> PositionIndexComparison;
 
     ShiftPosition(PositionIndexComparison comparePositions, uint32_t positionIndex, int offset) :
         comparePositions(comparePositions),
@@ -775,7 +775,7 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     if (!IsValidPosition(positionIndex))
         throw std::out_of_range("Invalid position index");
 
-    const std::tr1::function<bool (uint32_t, uint32_t)> comparison = std::greater_equal<uint32_t>();
+    const std::function<bool (uint32_t, uint32_t)> comparison = std::greater_equal<uint32_t>();
 
     // decrease the position spacing to make room for the extra position
     SetPositionSpacing(GetPositionSpacing() - offset);
@@ -830,8 +830,8 @@ void System::Init()
 /// Removes the barline at the given position, if possible
 bool System::RemoveBarline(uint32_t position)
 {
-    using std::tr1::bind;
-    using namespace std::tr1::placeholders;
+    using std::bind;
+    using namespace std::placeholders;
 
     // find the barline that has the given position
     auto bar = std::find_if(m_barlineArray.begin(), m_barlineArray.end(),
