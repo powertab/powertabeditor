@@ -103,7 +103,8 @@ SOURCES += main.cpp\
     actions/updatetabnumber.cpp \
     actions/positionshift.cpp \
     actions/addbarline.cpp \
-    widgets/common.cpp
+    widgets/common.cpp \
+    actions/deletebarline.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -187,7 +188,8 @@ HEADERS  += powertabeditor.h \
     actions/updatetabnumber.h \
     actions/positionshift.h \
     actions/addbarline.h \
-    widgets/common.h
+    widgets/common.h \
+    actions/deletebarline.h
 
 RESOURCES += \
     resources.qrc

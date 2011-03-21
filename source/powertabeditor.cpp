@@ -55,6 +55,7 @@
 #include <actions/positionshift.h>
 #include <actions/changebarlinetype.h>
 #include <actions/addbarline.h>
+#include <actions/deletebarline.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -306,6 +307,14 @@ void PowerTabEditor::createActions()
     shiftTabNumberMapper->setMapping(shiftTabNumDown, Position::SHIFT_DOWN);
 
     connect(shiftTabNumberMapper, SIGNAL(mapped(int)), this, SLOT(shiftTabNumber(int)));
+
+    clearNoteAct = new QAction(tr("Clear Note"), this);
+    clearNoteAct->setShortcut(QKeySequence::Delete);
+    connect(clearNoteAct, SIGNAL(triggered()), this, SLOT(clearNote()));
+
+    clearCurrentPositionAct = new QAction(tr("Clear Position"), this);
+    clearCurrentPositionAct->setShortcut(QKeySequence::DeleteEndOfWord);
+    connect(clearCurrentPositionAct, SIGNAL(triggered()), this, SLOT(clearCurrentPosition()));
 
     // Text-related actions
     chordNameAct = new QAction(tr("Chord Name..."), this);
@@ -621,6 +630,9 @@ void PowerTabEditor::createMenus()
     positionMenu->addSeparator();
     positionMenu->addAction(shiftForwardAct);
     positionMenu->addAction(shiftBackwardAct);
+    positionMenu->addSeparator();
+    positionMenu->addAction(clearNoteAct);
+    positionMenu->addAction(clearCurrentPositionAct);
 
     // Text Menu
     textMenu = menuBar()->addMenu(tr("&Text"));
@@ -1075,6 +1087,36 @@ void PowerTabEditor::shiftBackward()
                                         caret->getCurrentPositionIndex(), PositionShift::SHIFT_BACKWARD));
 }
 
+/// Clears the note at the caret's current position
+void PowerTabEditor::clearNote()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* currentNote = caret->getCurrentNote();
+
+    Q_ASSERT(currentNote != NULL);
+
+    // TODO - implement this
+}
+
+/// Completely clears the caret's current position
+/// Either removes a barline, or all of the notes at the position
+void PowerTabEditor::clearCurrentPosition()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    System* system = caret->getCurrentSystem();
+    Position* currentPos = caret->getCurrentPosition();
+    Barline* currentBar = caret->getCurrentBarline();
+
+    if (currentPos != NULL)
+    {
+        // TODO - implement this
+    }
+    else if (currentBar != NULL) // remove barline
+    {
+        undoManager->push(new DeleteBarline(system, currentBar));
+    }
+}
+
 /// Edits or creates a barline.
 /// If position is not specified, the caret's current position is used
 void PowerTabEditor::editBarline(int position)
@@ -1345,6 +1387,10 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(slideOutOfUpwardsAct, currentNote, &Note::HasSlideOutOfUpwards);
 
     shiftBackwardAct->setEnabled(currentPosition == NULL);
+
+    clearNoteAct->setEnabled(currentNote != NULL);
+
+    clearCurrentPositionAct->setEnabled(currentPosition != NULL || currentBarline != NULL);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

@@ -94,6 +94,9 @@ protected slots:
     void shiftForward();
     void shiftBackward();
 
+    void clearNote();
+    void clearCurrentPosition();
+
     void cycleTab(int offset);
 
     void updateNoteDuration(int duration);
@@ -137,6 +140,8 @@ protected:
     QAction* lastSectionAct;
     QAction* shiftForwardAct;
     QAction* shiftBackwardAct;
+    QAction* clearNoteAct; // clears the active note
+    QAction* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
 
     QMenu* positionStaffMenu;
     QAction* nextPositionAct; // navigate to the next position in the staff
