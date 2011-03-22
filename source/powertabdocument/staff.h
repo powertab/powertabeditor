@@ -186,6 +186,9 @@ public:
     size_t GetPositionCount(uint32_t voice) const;
     Position* GetPosition(uint32_t voice, uint32_t index) const;
 
+    bool InsertPosition(uint32_t voice, Position* position);
+    bool RemovePosition(uint32_t voice, uint32_t index);
+
     Position* GetLastPosition() const;
     Position* GetPositionByPosition(uint32_t voice, uint32_t index) const;
     size_t GetIndexOfNextPosition(uint32_t voice, System* system, Position* position) const;

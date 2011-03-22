@@ -710,3 +710,52 @@ void Staff::UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNot
         nextNote->SetTied(false);
     }
 }
+
+struct SortByPosition
+{
+    bool operator() (Position* pos1, Position* pos2)
+    {
+        return pos1->GetPosition() < pos2->GetPosition();
+    }
+};
+
+/// Insert a position into the given voice
+/// @throw std::out_of_range If the voice is not valid
+bool Staff::InsertPosition(uint32_t voice, Position *position)
+{
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
+
+    // check that the new position won't overlap with existing positions
+    if (GetPositionByPosition(voice, position->GetPosition()) != NULL)
+        return false;
+
+    std::vector<Position*>& positionArray = positionArrays[voice];
+
+    // add the position and re-sort by position index
+    positionArray.push_back(position);
+    std::sort(positionArray.begin(), positionArray.end(), SortByPosition());
+
+    return true;
+}
+
+/// Removes and deletes the given position from the specified voice
+bool Staff::RemovePosition(uint32_t voice, uint32_t index)
+{
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
+
+    // get the position object
+    Position* pos = GetPositionByPosition(voice, index);
+    CHECK_THAT(pos != NULL, false);
+
+    // get the iterator to it (for erasing from the array)
+    std::vector<Position*>& positionArray = positionArrays[voice];
+    auto location = std::find(positionArray.begin(), positionArray.end(), pos);
+    CHECK_THAT(location != positionArray.end(), false);
+
+    // remove it
+    delete pos;
+    positionArray.erase(location);
+    return true;
+}

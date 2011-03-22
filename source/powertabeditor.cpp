@@ -56,6 +56,7 @@
 #include <actions/changebarlinetype.h>
 #include <actions/addbarline.h>
 #include <actions/deletebarline.h>
+#include <actions/deleteposition.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -1109,7 +1110,8 @@ void PowerTabEditor::clearCurrentPosition()
 
     if (currentPos != NULL)
     {
-        // TODO - implement this
+        const quint32 voice = 0; // leaving this here for when we support multiple voices
+        undoManager->push(new DeletePosition(caret->getCurrentStaff(), currentPos, voice));
     }
     else if (currentBar != NULL) // remove barline
     {

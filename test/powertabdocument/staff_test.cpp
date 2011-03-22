@@ -206,4 +206,27 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
 
     BOOST_AUTO_TEST_SUITE_END()
 
+    BOOST_FIXTURE_TEST_CASE(InsertPosition, StaffFixture)
+    {
+        const size_t originalPosCount = staff.GetPositionCount(0);
+        Position* newPos = new Position(1, 4, 0);
+        staff.InsertPosition(0, newPos);
+
+        BOOST_CHECK_EQUAL(staff.GetPositionCount(0), originalPosCount + 1);
+        // check that the position list was re-sorted by position index
+        BOOST_CHECK_EQUAL(staff.GetPosition(0, 1), newPos);
+
+        // cannot insert a position if there is already something at that position
+        BOOST_CHECK(staff.InsertPosition(0, newPos) == false);
+    }
+
+    BOOST_FIXTURE_TEST_CASE(RemovePosition, StaffFixture)
+    {
+        staff.RemovePosition(0, 2);
+
+        // check that it was removed, and the positions were shifted accordingly
+        BOOST_CHECK_EQUAL(staff.GetPositionCount(0), highPositions.size() - 1);
+        BOOST_CHECK_EQUAL(staff.GetPosition(0, 1), highPositions.at(2));
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
