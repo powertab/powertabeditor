@@ -79,133 +79,136 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
         Staff* staff = system->GetStaff(i);
         Guitar* guitar = caret->getCurrentScore()->GetGuitar(i);
 
-        double startTime = 0; // each note in the staff is given a start time relative to the first note of the staff
-
-        for (quint32 j = 0; j < staff->GetPositionCount(0); j++)
+        for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
         {
-            Position* position = staff->GetPosition(0, j);
+            double startTime = 0; // each note in the staff is given a start time relative to the first note of the staff
 
-            double duration = calculateNoteDuration(position); // each note at a position has the same duration
-
-            if (position->IsAcciaccatura()) // grace note
+            for (quint32 j = 0; j < staff->GetPositionCount(voice); j++)
             {
-                duration = GRACE_NOTE_DURATION;
-                startTime -= duration;
-            }
+                Position* position = staff->GetPosition(voice, j);
 
-            const quint32 positionIndex = position->GetPosition(); // only keep track of position for the first staff
+                double duration = calculateNoteDuration(position); // each note at a position has the same duration
 
-            // If the position has an arpeggio, sort the notes by string in the specified direction.
-            // This is so the notes can be played in the correct order, with a slight delay between each
-            if (position->HasArpeggioDown())
-            {
-                position->SortNotesDown();
-            }
-            else if (position->HasArpeggioUp())
-            {
-                position->SortNotesUp();
-            }
-
-            for (quint32 k = 0; k < position->GetNoteCount(); k++)
-            {
-                // for arpeggios, delay the start of each note a small amount from the last,
-                // and also adjust the duration correspondingly
-                if (position->HasArpeggioDown() || position->HasArpeggioUp())
+                if (position->IsAcciaccatura()) // grace note
                 {
-                    startTime += ARPEGGIO_OFFSET;
-                    duration -= ARPEGGIO_OFFSET;
+                    duration = GRACE_NOTE_DURATION;
+                    startTime -= duration;
                 }
 
-                Note* note = position->GetNote(k);
+                const quint32 positionIndex = position->GetPosition(); // only keep track of position for the first staff
 
-                // find the pitch of the note
-                const quint32 openStringPitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
-                quint32 pitch = openStringPitch + note->GetFretNumber();
-
-                if (note->IsNaturalHarmonic())
+                // If the position has an arpeggio, sort the notes by string in the specified direction.
+                // This is so the notes can be played in the correct order, with a slight delay between each
+                if (position->HasArpeggioDown())
                 {
-                    pitch = getNaturalHarmonicPitch(openStringPitch, note->GetFretNumber());
+                    position->SortNotesDown();
+                }
+                else if (position->HasArpeggioUp())
+                {
+                    position->SortNotesUp();
                 }
 
-                // fill in the note info structure
-                NoteInfo noteInfo;
-                noteInfo.channel = i;
-                noteInfo.messageType = position->IsRest() ? REST : PLAY_NOTE;
-                noteInfo.pitch = pitch;
-                noteInfo.guitar = guitar;
-                noteInfo.duration = duration;
-                noteInfo.startTime = startTime;
-                noteInfo.position = positionIndex;
-                noteInfo.isMuted = note->IsMuted();
-                noteInfo.isMetronome = false;
-                noteInfo.velocity = DEFAULT_VELOCITY;
-
-                if (note->IsMuted())
+                for (quint32 k = 0; k < position->GetNoteCount(); k++)
                 {
-                    noteInfo.velocity = MUTED_VELOCITY;
-                }
-                if (note->IsGhostNote())
-                {
-                    noteInfo.velocity = GHOST_VELOCITY;
-                }
-
-                if (position->HasVibrato())
-                {
-                    addVibrato(noteList, i, startTime, duration, NORMAL_VIBRATO);
-                }
-                else if (position->HasWideVibrato())
-                {
-                    addVibrato(noteList, i, startTime, duration, WIDE_VIBRATO);
-                }
-
-                if (note->IsTied()) // if the note is tied, delete the previous note-off event
-                {
-                    NoteInfo temp;
-                    temp.channel = i;
-                    temp.messageType = STOP_NOTE;
-                    temp.pitch = pitch;
-                    auto prevNoteEnd = std::find(noteList.rbegin(), noteList.rend(), temp);
-                    if (prevNoteEnd != noteList.rend())
+                    // for arpeggios, delay the start of each note a small amount from the last,
+                    // and also adjust the duration correspondingly
+                    if (position->HasArpeggioDown() || position->HasArpeggioUp())
                     {
-                        noteList.erase(--prevNoteEnd.base());
+                        startTime += ARPEGGIO_OFFSET;
+                        duration -= ARPEGGIO_OFFSET;
+                    }
+
+                    Note* note = position->GetNote(k);
+
+                    // find the pitch of the note
+                    const quint32 openStringPitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
+                    quint32 pitch = openStringPitch + note->GetFretNumber();
+
+                    if (note->IsNaturalHarmonic())
+                    {
+                        pitch = getNaturalHarmonicPitch(openStringPitch, note->GetFretNumber());
+                    }
+
+                    // fill in the note info structure
+                    NoteInfo noteInfo;
+                    noteInfo.channel = i;
+                    noteInfo.messageType = position->IsRest() ? REST : PLAY_NOTE;
+                    noteInfo.pitch = pitch;
+                    noteInfo.guitar = guitar;
+                    noteInfo.duration = duration;
+                    noteInfo.startTime = startTime;
+                    noteInfo.position = positionIndex;
+                    noteInfo.isMuted = note->IsMuted();
+                    noteInfo.isMetronome = false;
+                    noteInfo.velocity = DEFAULT_VELOCITY;
+
+                    if (note->IsMuted())
+                    {
+                        noteInfo.velocity = MUTED_VELOCITY;
+                    }
+                    if (note->IsGhostNote())
+                    {
+                        noteInfo.velocity = GHOST_VELOCITY;
+                    }
+
+                    if (position->HasVibrato())
+                    {
+                        addVibrato(noteList, i, startTime, duration, NORMAL_VIBRATO);
+                    }
+                    else if (position->HasWideVibrato())
+                    {
+                        addVibrato(noteList, i, startTime, duration, WIDE_VIBRATO);
+                    }
+
+                    if (note->IsTied()) // if the note is tied, delete the previous note-off event
+                    {
+                        NoteInfo temp;
+                        temp.channel = i;
+                        temp.messageType = STOP_NOTE;
+                        temp.pitch = pitch;
+                        auto prevNoteEnd = std::find(noteList.rbegin(), noteList.rend(), temp);
+                        if (prevNoteEnd != noteList.rend())
+                        {
+                            noteList.erase(--prevNoteEnd.base());
+                        }
+                    }
+                    else // otherwise, if the note is not tied, add a new note
+                    {
+                        noteList.push_back(noteInfo);
+                    }
+
+                    if (!note->HasTieWrap())
+                    {
+                        // now, add the note-off event, scheduled for after the note's duration has ended
+                        noteInfo.startTime += position->IsStaccato() ? duration / 2 : duration;
+                        noteInfo.duration = 0;
+                        noteInfo.messageType = STOP_NOTE;
+                        noteList.push_back(noteInfo);
                     }
                 }
-                else // otherwise, if the note is not tied, add a new note
+
+                if (position->IsRest())
                 {
+                    NoteInfo noteInfo;
+                    noteInfo.messageType = REST;
+                    noteInfo.duration = duration;
+                    noteInfo.position = positionIndex;
+                    noteInfo.startTime = startTime;
+
+                    // for whole rests, they must last for the entire bar, regardless of time signature
+                    if (position->GetDurationType() == 1)
+                    {
+                        noteInfo.duration = getWholeRestDuration(system, staff, position, noteInfo.duration);
+                    }
+
                     noteList.push_back(noteInfo);
-                }
 
-                if (!note->HasTieWrap())
+                    startTime += noteInfo.duration;
+                }
+                else
                 {
-                    // now, add the note-off event, scheduled for after the note's duration has ended
-                    noteInfo.startTime += position->IsStaccato() ? duration / 2 : duration;
-                    noteInfo.duration = 0;
-                    noteInfo.messageType = STOP_NOTE;
-                    noteList.push_back(noteInfo);
+                    startTime += duration;
                 }
-            }
-
-            if (position->IsRest())
-            {
-                NoteInfo noteInfo;
-                noteInfo.messageType = REST;
-                noteInfo.duration = duration;
-                noteInfo.position = positionIndex;
-                noteInfo.startTime = startTime;
-
-                // for whole rests, they must last for the entire bar, regardless of time signature
-                if (position->GetDurationType() == 1)
-                {
-                    noteInfo.duration = getWholeRestDuration(system, staff, position, noteInfo.duration);
-                }
-
-                noteList.push_back(noteInfo);
-
-                startTime += noteInfo.duration;
-            }
-            else
-            {
-                startTime += duration;
             }
         }
     }
