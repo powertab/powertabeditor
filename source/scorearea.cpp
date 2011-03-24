@@ -262,49 +262,50 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
 /// draws all of the slides for a staff
 void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
-    const quint32 voice = 0;
-
-    // iterate across the staff for each string
-    for (quint8 string = 0; string < staff->GetTablatureStaffType(); string++)
+    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
-        for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
+        // iterate across the staff for each string
+        for (quint8 string = 0; string < staff->GetTablatureStaffType(); string++)
         {
-            Position* currentPosition = staff->GetPosition(voice, j);
-            Note* note = currentPosition->GetNoteByString(string);
-
-            if (note == NULL)
+            for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
             {
-                continue;
-            }
+                Position* currentPosition = staff->GetPosition(voice, j);
+                Note* note = currentPosition->GetNoteByString(string);
 
-            quint8 type = 0;
-            qint8 steps = 0;
+                if (note == NULL)
+                {
+                    continue;
+                }
 
-            // draw any slides out of the note
-            note->GetSlideOutOf(type, steps);
+                quint8 type = 0;
+                qint8 steps = 0;
 
-            if (type != Note::slideOutOfNone)
-            {
-                // figure out if we're sliding up or down
-                const bool slideUp = (type == Note::slideOutOfUpwards) || (steps > 0);
+                // draw any slides out of the note
+                note->GetSlideOutOf(type, steps);
 
-                // get the index of the next position
-                const size_t nextPosIndex = staff->GetIndexOfNextPosition(voice, system, currentPosition);
+                if (type != Note::slideOutOfNone)
+                {
+                    // figure out if we're sliding up or down
+                    const bool slideUp = (type == Note::slideOutOfUpwards) || (steps > 0);
 
-                drawSlidesHelper(system, currentStaffInfo, string, slideUp, currentPosition->GetPosition(), nextPosIndex);
-            }
+                    // get the index of the next position
+                    const size_t nextPosIndex = staff->GetIndexOfNextPosition(voice, system, currentPosition);
 
-            // draw any slides into the note
-            note->GetSlideInto(type);
-            if (type != Note::slideIntoNone)
-            {
-                const quint32 currentPosIndex = currentPosition->GetPosition();
+                    drawSlidesHelper(system, currentStaffInfo, string, slideUp, currentPosition->GetPosition(), nextPosIndex);
+                }
 
-                const bool slideUp = (type == Note::slideIntoFromBelow);
+                // draw any slides into the note
+                note->GetSlideInto(type);
+                if (type != Note::slideIntoNone)
+                {
+                    const quint32 currentPosIndex = currentPosition->GetPosition();
 
-                const quint32 prevPosIndex = (currentPosIndex == 0) ? 0 : currentPosIndex - 1;
+                    const bool slideUp = (type == Note::slideIntoFromBelow);
 
-                drawSlidesHelper(system, currentStaffInfo, string, slideUp, prevPosIndex, currentPosIndex);
+                    const quint32 prevPosIndex = (currentPosIndex == 0) ? 0 : currentPosIndex - 1;
+
+                    drawSlidesHelper(system, currentStaffInfo, string, slideUp, prevPosIndex, currentPosIndex);
+                }
             }
         }
     }
@@ -339,68 +340,70 @@ void ScoreArea::drawSlidesHelper(System* system, const StaffData& currentStaffIn
 
 void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
-    const int voice = 0;
-    for (int string = 0; string < staff->GetTablatureStaffType(); string++)
+    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
-        int startPos = -1;
-        for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
+        for (int string = 0; string < staff->GetTablatureStaffType(); string++)
         {
-            Position* position = staff->GetPosition(voice, j);
-            Note* note = position->GetNoteByString(string);
-
-            const int currentPosition = position->GetPosition();
-
-            if (note == NULL)
+            int startPos = -1;
+            for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
             {
-                startPos = -1;
-                continue;
-            }
-            if (note->HasHammerOn() || note->HasPullOff() || note->HasLegatoSlide())
-            {
-                if (startPos == -1) // set the start position of an arc
+                Position* position = staff->GetPosition(voice, j);
+                Note* note = position->GetNoteByString(string);
+
+                const int currentPosition = position->GetPosition();
+
+                if (note == NULL)
                 {
-                    startPos = currentPosition;
+                    startPos = -1;
+                    continue;
                 }
-            }
-
-            else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
-            {
-                const double leftPos = system->GetPositionX(startPos);
-                const double width = system->GetPositionX(currentPosition) - leftPos;
-                double height = 7.5;
-                double y = currentStaffInfo.getTabLineHeight(string, false) - 2;
-
-                if (string >= currentStaffInfo.numOfStrings / 2)
+                if (note->HasHammerOn() || note->HasPullOff() || note->HasLegatoSlide())
                 {
-                    // for notes on the bottom half of the staff, flip the arc and place it below the notes
-                    y += 2 * currentStaffInfo.tabLineSpacing + height / 2.5;
-                    height = -height;
+                    if (startPos == -1) // set the start position of an arc
+                    {
+                        startPos = currentPosition;
+                    }
                 }
 
-                QPainterPath path;
-                path.moveTo(width, height / 2);
-                path.arcTo(0, 0, width, height, 0, 180);
+                else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
+                {
+                    const double leftPos = system->GetPositionX(startPos);
+                    const double width = system->GetPositionX(currentPosition) - leftPos;
+                    double height = 7.5;
+                    double y = currentStaffInfo.getTabLineHeight(string, false) - 2;
 
-                QGraphicsPathItem *arc = new QGraphicsPathItem(path);
-                arc->setPos(leftPos + system->GetPositionSpacing() / 2, y);
-                arc->setParentItem(activeStaff);
+                    if (string >= currentStaffInfo.numOfStrings / 2)
+                    {
+                        // for notes on the bottom half of the staff, flip the arc and place it below the notes
+                        y += 2 * currentStaffInfo.tabLineSpacing + height / 2.5;
+                        height = -height;
+                    }
 
-                startPos = -1;
-            }
+                    QPainterPath path;
+                    path.moveTo(width, height / 2);
+                    path.arcTo(0, 0, width, height, 0, 180);
 
-            if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
-            {
-                const double height = 10;
-                const double width = 6;
-                QPainterPath path;
-                path.moveTo(width, height / 2);
-                path.arcTo(0, 0, width, height, 0, 180);
-                QGraphicsPathItem *arc = new QGraphicsPathItem(path);
-                arc->setPos(system->GetPositionX(currentPosition) + 2,
-                            currentStaffInfo.getTabLineHeight(string, false) - 2);
-                arc->setParentItem(activeStaff);
+                    QGraphicsPathItem *arc = new QGraphicsPathItem(path);
+                    arc->setPos(leftPos + system->GetPositionSpacing() / 2, y);
+                    arc->setParentItem(activeStaff);
 
-                startPos = -1;
+                    startPos = -1;
+                }
+
+                if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
+                {
+                    const double height = 10;
+                    const double width = 6;
+                    QPainterPath path;
+                    path.moveTo(width, height / 2);
+                    path.arcTo(0, 0, width, height, 0, 180);
+                    QGraphicsPathItem *arc = new QGraphicsPathItem(path);
+                    arc->setPos(system->GetPositionX(currentPosition) + 2,
+                                currentStaffInfo.getTabLineHeight(string, false) - 2);
+                    arc->setParentItem(activeStaff);
+
+                    startPos = -1;
+                }
             }
         }
     }
@@ -481,27 +484,31 @@ void ScoreArea::drawChordText(System* system, quint32 height, const StaffData& c
     }
 }
 
+/// Draws the tab notes for all notes (and voices) in the staff
 void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
 {
-    for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
+    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
-        Position* currentPosition = staff->GetPosition(0, i);
-        const quint32 location = system->GetPositionX(currentPosition->GetPosition());
-
-        for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
+        for (quint32 i=0; i < staff->GetPositionCount(voice); i++)
         {
-            Note* note = currentPosition->GetNote(j);
+            Position* currentPosition = staff->GetPosition(voice, i);
+            const quint32 location = system->GetPositionX(currentPosition->GetPosition());
 
-            TabNotePainter* tabNote = new TabNotePainter(note);
-            centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
-                       currentStaffInfo.getTabLineHeight(note->GetString(), false) + currentStaffInfo.tabLineSpacing / 2 - 1);
-            tabNote->setParentItem(activeStaff);
-        }
+            for (quint32 j=0; j < currentPosition->GetNoteCount(); j++)
+            {
+                Note* note = currentPosition->GetNote(j);
 
-        // draw arpeggios if necessary
-        if (currentPosition->HasArpeggioDown() || currentPosition->HasArpeggioUp())
-        {
-            drawArpeggio(currentPosition, location, currentStaffInfo);
+                TabNotePainter* tabNote = new TabNotePainter(note);
+                centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
+                           currentStaffInfo.getTabLineHeight(note->GetString(), false) + currentStaffInfo.tabLineSpacing / 2 - 1);
+                tabNote->setParentItem(activeStaff);
+            }
+
+            // draw arpeggios if necessary
+            if (currentPosition->HasArpeggioDown() || currentPosition->HasArpeggioUp())
+            {
+                drawArpeggio(currentPosition, location, currentStaffInfo);
+            }
         }
     }
 }
@@ -548,63 +555,66 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
     QMultiMap<double, StdNotationPainter*> accidentalsMap;
     QList<BeamingInfo> beamings;
 
-    for (uint32_t i=0; i < staff->GetPositionCount(0); i++)
+    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
-        Position* currentPosition = staff->GetPosition(0, i);
-        const quint32 location = system->GetPositionX(currentPosition->GetPosition());
-        currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
-
-        // if we reach a new bar, we can adjust all of the accidentals for the previous bar
-        if (currentBarline != prevBarline)
+        for (quint32 i=0; i < staff->GetPositionCount(voice); i++)
         {
-            adjustAccidentals(accidentalsMap);
-            accidentalsMap.clear();
-            prevBarline = currentBarline;
-        }
+            Position* currentPosition = staff->GetPosition(voice, i);
+            const quint32 location = system->GetPositionX(currentPosition->GetPosition());
+            currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
 
-        KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
+            // if we reach a new bar, we can adjust all of the accidentals for the previous bar
+            if (currentBarline != prevBarline)
+            {
+                adjustAccidentals(accidentalsMap);
+                accidentalsMap.clear();
+                prevBarline = currentBarline;
+            }
 
-        // Find the guitar corresponding to the current staff
-        Guitar* currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));
+            KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
 
-        Q_ASSERT(currentGuitar != NULL);
+            // Find the guitar corresponding to the current staff
+            Guitar* currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));
 
-        // just draw rests right away, since we don't have to worry about beaming or accidentals
-        if (currentPosition->IsRest())
-        {
-            StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, NULL, currentGuitar->GetTuningPtr(), currentKeySig);
-            centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
-                       currentStaffInfo.getTopStdNotationLine(false));
-            stdNotePainter->setParentItem(activeStaff);
-            continue;
-        }
+            Q_ASSERT(currentGuitar != NULL);
 
-        BeamingInfo beamingInfo;
-        beamingInfo.position = currentPosition;
+            // just draw rests right away, since we don't have to worry about beaming or accidentals
+            if (currentPosition->IsRest())
+            {
+                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, NULL, currentGuitar->GetTuningPtr(), currentKeySig);
+                centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
+                           currentStaffInfo.getTopStdNotationLine(false));
+                stdNotePainter->setParentItem(activeStaff);
+                continue;
+            }
 
-        for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
-        {
-            Note* note = currentPosition->GetNote(j);
+            BeamingInfo beamingInfo;
+            beamingInfo.position = currentPosition;
 
-            StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition,
-                                                                        note, currentGuitar->GetTuningPtr(), currentKeySig);
-            notePainters << stdNotePainter;
+            for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
+            {
+                Note* note = currentPosition->GetNote(j);
 
-            // map all of the notes for each position on the staff, so that we can adjust accidentals later
-            accidentalsMap.insert(stdNotePainter->getYLocation(), stdNotePainter);
+                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition,
+                                                                            note, currentGuitar->GetTuningPtr(), currentKeySig);
+                notePainters << stdNotePainter;
 
-            beamingInfo.bottomNotePos = std::max(beamingInfo.bottomNotePos, stdNotePainter->getYLocation());
-            beamingInfo.topNotePos = std::min(beamingInfo.topNotePos, stdNotePainter->getYLocation());
-        }
+                // map all of the notes for each position on the staff, so that we can adjust accidentals later
+                accidentalsMap.insert(stdNotePainter->getYLocation(), stdNotePainter);
 
-        beamingInfo.topNotePos += currentStaffInfo.getTopStdNotationLine(false);
-        beamingInfo.bottomNotePos += currentStaffInfo.getTopStdNotationLine(false);
-        beamingInfo.beamUp = currentStaffInfo.getStdNotationLineHeight(3, false) < beamingInfo.bottomNotePos;
-        beamingInfo.location = location;
+                beamingInfo.bottomNotePos = std::max(beamingInfo.bottomNotePos, stdNotePainter->getYLocation());
+                beamingInfo.topNotePos = std::min(beamingInfo.topNotePos, stdNotePainter->getYLocation());
+            }
 
-        if (currentPosition->GetDurationType() != 1)
-        {
-            beamings << beamingInfo;
+            beamingInfo.topNotePos += currentStaffInfo.getTopStdNotationLine(false);
+            beamingInfo.bottomNotePos += currentStaffInfo.getTopStdNotationLine(false);
+            beamingInfo.beamUp = currentStaffInfo.getStdNotationLineHeight(3, false) < beamingInfo.bottomNotePos;
+            beamingInfo.location = location;
+
+            if (currentPosition->GetDurationType() != 1)
+            {
+                beamings << beamingInfo;
+            }
         }
     }
 
