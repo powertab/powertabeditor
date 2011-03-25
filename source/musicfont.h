@@ -47,6 +47,14 @@ public:
         Sforzando = 0xe172,
         PickStrokeUp = 0xe17d,
         PickStrokeDown = 0xe177,
+        FlagUp1 = 0xe199,
+        FlagUp2 = 0xe19a,
+        FlagUp3 = 0xe19b,
+        FlagUp4 = 0xe19c,
+        FlagDown1 = 0xe19e,
+        FlagDown2 = 0xe1a1,
+        FlagDown3 = 0xe1a2,
+        FlagDown4 = 0xe1a3,
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol

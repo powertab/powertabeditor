@@ -708,6 +708,12 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
                     line->setParentItem(activeStaff);
                 }
 
+                // draw a flag for single notes (eighth notes or less)
+                if (beamingGroup.size() == 1 && beamingGroup[j].position->GetDurationType() > 4)
+                {
+                    drawNoteFlag(beamingGroup[j]);
+                }
+
                 // extra beams (for 16th notes, etc)
                 // 16th note gets 1 extra beam, 32nd gets two, etc
                 // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
@@ -783,6 +789,58 @@ void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& c
             beamingGroup.clear();
         }
     }
+}
+
+void ScoreArea::drawNoteFlag(const BeamingInfo& beamingInfo)
+{
+    Q_ASSERT(beamingInfo.position->GetDurationType() > 4);
+
+    // choose the flag symbol, depending on duration and stem direction
+    QChar symbol = 0;
+    if (beamingInfo.beamUp)
+    {
+        switch(beamingInfo.position->GetDurationType())
+        {
+        case 8:
+            symbol = MusicFont::FlagUp1;
+            break;
+        case 16:
+            symbol = MusicFont::FlagUp2;
+            break;
+        case 32:
+            symbol = MusicFont::FlagUp3;
+            break;
+        default: // 64
+            symbol = MusicFont::FlagUp4;
+            break;
+        }
+    }
+    else
+    {
+        switch(beamingInfo.position->GetDurationType())
+        {
+        case 8:
+            symbol = MusicFont::FlagDown1;
+            break;
+        case 16:
+            symbol = MusicFont::FlagDown2;
+            break;
+        case 32:
+            symbol = MusicFont::FlagDown3;
+            break;
+        default: // 64
+            symbol = MusicFont::FlagDown4;
+            break;
+        }
+    }
+
+    // draw the symbol
+    double y = beamingInfo.beamUp ? beamingInfo.topNotePos : beamingInfo.bottomNotePos;
+    y -= 35; // adjust for spacing caused by the music symbol font
+    QGraphicsTextItem* flag = new QGraphicsTextItem(symbol);
+    flag->setFont(musicFont.getFontRef());
+    flag->setPos(beamingInfo.location - 3, y);
+    flag->setParentItem(activeStaff);
 }
 
 void ScoreArea::drawAccent(const BeamingInfo& beamingInfo, const StaffData& currentStaffInfo, double x, bool beamDirectionUp)

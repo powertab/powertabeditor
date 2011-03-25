@@ -62,6 +62,7 @@ protected:
 
     struct BeamingInfo;
     void drawAccent(const BeamingInfo& beamingInfo, const StaffData& currentStaffInfo, double x, bool beamDirectionUp);
+    void drawNoteFlag(const BeamingInfo& beamingInfo);
 
     void drawSymbols(System* system, Staff* staff, const StaffData& currentStaffInfo);
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
