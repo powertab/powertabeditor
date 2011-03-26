@@ -15,6 +15,8 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 
+using std::shared_ptr;
+
 MidiPlayer::MidiPlayer(Caret* caret) :
     caret(caret)
 {
@@ -72,7 +74,7 @@ void MidiPlayer::run()
 // Generates a list of all notes in the given system, by iterating through each position in each staff of the system
 void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const
 {
-    System* system = caret->getCurrentScore()->GetSystem(systemIndex);
+    shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
     for (quint32 i = 0; i < system->GetStaffCount(); i++)
     {
@@ -338,7 +340,7 @@ double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
     return currentPosition->GetDuration() * tempo;
 }
 
-double MidiPlayer::getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const
+double MidiPlayer::getWholeRestDuration(shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const
 {
     Barline* prevBarline = system->GetPrecedingBarline(position->GetPosition());
 
@@ -380,7 +382,7 @@ quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const q
 // Generates the metronome ticks
 void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const
 {
-    System* system = caret->getCurrentScore()->GetSystem(systemIndex);
+    shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
     std::vector<Barline*> barlines;
     system->GetBarlines(barlines);

@@ -2,18 +2,19 @@
 #define CHANGEPOSITIONSPACING_H
 
 #include <QUndoCommand>
+#include <memory>
 
 class System;
 
 class ChangePositionSpacing : public QUndoCommand
 {
 public:
-    ChangePositionSpacing(System* system, quint8 spacing);
+    ChangePositionSpacing(std::shared_ptr<System> system, quint8 spacing);
     void undo();
     void redo();
 
 protected:
-    System* system;
+    std::shared_ptr<System> system;
     const quint8 newSpacing;
     const quint8 originalSpacing;
 };

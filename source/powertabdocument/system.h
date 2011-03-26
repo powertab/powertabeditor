@@ -297,7 +297,7 @@ public:
     int GetCumulativeInternalKeyAndTimeSignatureWidth(int position = -1) const;
 
     void CalculateHeight();
-    uint32_t GetStaffHeightOffset(uint32_t staff, bool absolutePos = false);
+    uint32_t GetStaffHeightOffset(uint32_t staff, bool absolutePos = false) const;
 
     void CalculateBeamingForStaves();
 

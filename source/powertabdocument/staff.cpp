@@ -285,7 +285,7 @@ Position* Staff::GetPositionByPosition(uint32_t voice, uint32_t index) const
 
 /// Finds the position index of the next position
 /// @throw std::out_of_range if the position does not exist in this staff, or if the voice is invalid
-size_t Staff::GetIndexOfNextPosition(uint32_t voice, System* system, Position *position) const
+size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<System> system, Position *position) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");
@@ -310,7 +310,7 @@ size_t Staff::GetIndexOfNextPosition(uint32_t voice, System* system, Position *p
 }
 
 // Returns true if the given position is the only Position object in its bar
-bool Staff::IsOnlyPositionInBar(Position *position, System *system) const
+bool Staff::IsOnlyPositionInBar(Position *position, std::shared_ptr<System> system) const
 {
     std::vector<Barline*> barlines;
     system->GetBarlines(barlines);

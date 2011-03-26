@@ -2,7 +2,9 @@
 
 #include <powertabdocument/system.h>
 
-DeleteBarline::DeleteBarline(System* system, Barline* barline) :
+using std::shared_ptr;
+
+DeleteBarline::DeleteBarline(shared_ptr<System> system, Barline* barline) :
     system(system),
     barline(barline)
 {

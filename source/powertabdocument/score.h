@@ -14,6 +14,8 @@
 
 #include "powertabobject.h"
 
+#include <memory>
+
 class Guitar;
 class FloatingText;
 class ChordDiagram;
@@ -30,6 +32,10 @@ class Score : public PowerTabObject
 public:
     static const uint8_t SYSTEM_SPACING; ///< spacing between adjacent systems
 
+    // some useful typedefs for smart pointers
+    typedef std::shared_ptr<System> SystemPtr;
+    typedef std::shared_ptr<const System> SystemConstPtr;
+
 // Member Variables
 public:
     std::vector<Guitar*>                 m_guitarArray;              ///< Guitars used by the score
@@ -39,7 +45,7 @@ public:
     std::vector<TempoMarker*>            m_tempoMarkerArray;         ///< Tempo Markers used in the score
     std::vector<Dynamic*>                m_dynamicArray;             ///< Dynamic markers used in the score
     std::vector<AlternateEnding*>        m_alternateEndingArray;     ///< Alternate endings used in the score
-    std::vector<System*>                 m_systemArray;              ///< Systems used in the score
+    std::vector<SystemPtr>              m_systemArray;              ///< Systems used in the score
 
 // Constructor/Destructor
 public:
@@ -165,7 +171,7 @@ public:
         return (m_tempoMarkerArray[index]);
     }
 
-    void GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, System* system) const;
+    void GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, SystemConstPtr system) const;
 
 // Dynamic Functions
     /// Determines if a dynamic index is valid
@@ -205,7 +211,7 @@ public:
         return (m_alternateEndingArray[index]);
     }
 
-    void GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, System *system) const;
+    void GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, SystemConstPtr system) const;
 
 // System Functions
     /// Determines if a system index is valid
@@ -220,21 +226,22 @@ public:
     /// Gets the nth system in the score
     /// @param index Index of the system to get
     /// @return The nth system in the score
-    System* GetSystem(uint32_t index) const
+    SystemPtr GetSystem(uint32_t index) const
     {
-        CHECK_THAT(IsValidSystemIndex(index), NULL);
-        return (m_systemArray[index]);
+        CHECK_THAT(IsValidSystemIndex(index), SystemPtr());
+
+        return m_systemArray[index];
     }
 
     bool RemoveSystem(size_t index);
-    bool InsertSystem(System* system, size_t index);
+    bool InsertSystem(SystemPtr system, size_t index);
 
-    void UpdateSystemHeight(System* system);
-    void ShiftFollowingSystems(const System* system, const int heightDifference);
+    void UpdateSystemHeight(SystemPtr system);
+    void ShiftFollowingSystems(SystemConstPtr system, const int heightDifference);
 
-    void UpdateExtraSpacing(System* system);
+    void UpdateExtraSpacing(SystemPtr system);
 
-    int FindSystemIndex(const System* system) const;
+    int FindSystemIndex(SystemConstPtr system) const;
 
     void UpdateToVer2Structure();
 

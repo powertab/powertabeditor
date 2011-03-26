@@ -2,8 +2,10 @@
 #define REMOVESYSTEM_H
 
 #include <QUndoCommand>
+#include <memory>
 
 class Score;
+class System;
 
 class RemoveSystem : public QObject, public QUndoCommand
 {
@@ -18,6 +20,7 @@ signals:
 
 protected:
     Score* score;
+    std::shared_ptr<System> systemCopy;
     const quint32 index;
 };
 

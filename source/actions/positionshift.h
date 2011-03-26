@@ -2,6 +2,7 @@
 #define POSITIONSHIFT_H
 
 #include <QUndoCommand>
+#include <memory>
 
 class System;
 
@@ -14,12 +15,12 @@ public:
         SHIFT_BACKWARD,
     };
 
-    PositionShift(System* system, quint32 positionIndex, ShiftType type);
+    PositionShift(std::shared_ptr<System> system, quint32 positionIndex, ShiftType type);
     void redo();
     void undo();
 
 protected:
-    System* system;
+    std::shared_ptr<System> system;
     const quint32 positionIndex;
     const ShiftType type;
 };

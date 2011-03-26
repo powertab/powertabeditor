@@ -4,6 +4,8 @@
 #include "painterbase.h"
 #include "staffdata.h"
 
+#include <memory>
+
 class Note;
 class Position;
 class Staff;
@@ -48,7 +50,7 @@ public:
     bool setCurrentSystemIndex(uint32_t systemIndex);
 
     Score* getCurrentScore() const;
-    System* getCurrentSystem() const;
+    std::shared_ptr<System> getCurrentSystem() const;
     Staff* getCurrentStaff() const;
     Position* getCurrentPosition() const;
     Note* getCurrentNote() const;

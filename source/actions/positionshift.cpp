@@ -2,7 +2,9 @@
 
 #include <powertabdocument/system.h>
 
-PositionShift::PositionShift(System* system, quint32 positionIndex, ShiftType type) :
+using std::shared_ptr;
+
+PositionShift::PositionShift(shared_ptr<System> system, quint32 positionIndex, ShiftType type) :
     system(system),
     positionIndex(positionIndex),
     type(type)

@@ -3,7 +3,9 @@
 #include <powertabdocument/barline.h>
 #include <powertabdocument/system.h>
 
-AddBarline::AddBarline(System* system, quint32 position, quint8 type, quint8 repeats) :
+using std::shared_ptr;
+
+AddBarline::AddBarline(shared_ptr<System> system, quint32 position, quint8 type, quint8 repeats) :
     system(system),
     position(position),
     type(type),

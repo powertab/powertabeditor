@@ -2,6 +2,7 @@
 #define ADDCHORDTEXT_H
 
 #include <QUndoCommand>
+#include <memory>
 
 class ChordText;
 class System;
@@ -9,14 +10,14 @@ class System;
 class AddChordText : public QUndoCommand
 {
 public:
-    AddChordText(System* system, ChordText* chordText, quint32 index);
+    AddChordText(std::shared_ptr<System> system, ChordText* chordText, quint32 index);
     ~AddChordText();
     virtual void undo();
     virtual void redo();
 
 protected:
     ChordText* chordText;
-    System* system;
+    std::shared_ptr<System> system;
     const quint32 index;
     bool chordTextInUse;
 };

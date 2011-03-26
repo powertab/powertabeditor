@@ -2,6 +2,7 @@
 #define REMOVECHORDTEXT_H
 
 #include <QUndoCommand>
+#include <memory>
 
 class ChordText;
 class System;
@@ -11,14 +12,14 @@ class System;
 class RemoveChordText : public QUndoCommand
 {
 public:
-    RemoveChordText(System* system, quint32 index);
+    RemoveChordText(std::shared_ptr<System> system, quint32 index);
     ~RemoveChordText();
     virtual void undo();
     virtual void redo();
 
 protected:
     ChordText* chordText;
-    System* system;
+    std::shared_ptr<System> system;
     const quint32 index;
     bool chordTextInUse;
 };

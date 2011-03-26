@@ -59,6 +59,8 @@
 #include <actions/deleteposition.h>
 #include <actions/removesystem.h>
 
+using std::shared_ptr;
+
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 
@@ -1069,7 +1071,7 @@ void PowerTabEditor::decreasePositionSpacing()
 
 void PowerTabEditor::changePositionSpacing(int offset)
 {
-    System* currentSystem = getCurrentScoreArea()->getCaret()->getCurrentSystem();
+    shared_ptr<System> currentSystem = getCurrentScoreArea()->getCaret()->getCurrentSystem();
 
     const int newSpacing = currentSystem->GetPositionSpacing() + offset;
     if (currentSystem->IsValidPositionSpacing(newSpacing))
@@ -1119,7 +1121,7 @@ void PowerTabEditor::clearNote()
 void PowerTabEditor::clearCurrentPosition()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
-    System* system = caret->getCurrentSystem();
+    shared_ptr<System> system = caret->getCurrentSystem();
     Position* currentPos = caret->getCurrentPosition();
     Barline* currentBar = caret->getCurrentBarline();
 
@@ -1181,7 +1183,7 @@ void PowerTabEditor::editChordName()
     // Find if there is a chord name at the current position
     Caret* caret = getCurrentScoreArea()->getCaret();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
-    System* currentSystem = caret->getCurrentSystem();
+    shared_ptr<System> currentSystem = caret->getCurrentSystem();
 
     int chordTextIndex = caret->getCurrentSystem()->FindChordText(caretPosition);
     if (chordTextIndex == -1) // if not found, add a new chord name
@@ -1330,8 +1332,9 @@ namespace
 void PowerTabEditor::updateActions()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
+    const Score* currentScore = caret->getCurrentScore();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
-    System* currentSystem = caret->getCurrentSystem();
+    shared_ptr<System> currentSystem = caret->getCurrentSystem();
     Position* currentPosition = caret->getCurrentPosition();
     Barline* currentBarline = caret->getCurrentBarline();
     Note* currentNote = caret->getCurrentNote();
@@ -1406,6 +1409,8 @@ void PowerTabEditor::updateActions()
     shiftBackwardAct->setEnabled(currentPosition == NULL);
 
     clearNoteAct->setEnabled(currentNote != NULL);
+
+    removeCurrentSystemAct->setEnabled(currentScore->GetSystemCount() > 1);
 
     clearCurrentPositionAct->setEnabled(currentPosition != NULL || currentBarline != NULL);
 

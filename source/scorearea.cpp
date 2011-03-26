@@ -29,6 +29,8 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 
+using std::shared_ptr;
+
 ScoreArea::ScoreArea(QWidget *parent) :
         QGraphicsView(parent)
 {
@@ -113,7 +115,7 @@ void ScoreArea::renderScore(Score* score, int lineSpacing)
     }
 }
 
-void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
+void ScoreArea::renderSystem(Score* score, shared_ptr<System> system, int lineSpacing)
 {
     const Rect systemRectangle = system->GetRect();
 
@@ -179,7 +181,7 @@ void ScoreArea::renderSystem(Score* score, System* system, int lineSpacing)
 }
 
 // Draw all of the barlines for the staff.
-void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
+void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<System> system)
 {
     std::vector<Barline*> barlines;
     system->GetBarlines(barlines);
@@ -277,7 +279,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, System* system)
 }
 
 /// draws all of the slides for a staff
-void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& currentStaffInfo)
+void ScoreArea::drawSlides(shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo)
 {
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
@@ -330,7 +332,7 @@ void ScoreArea::drawSlides(System* system, Staff* staff, const StaffData& curren
 
 /// Helper function to perform the actual rendering of a slide
 /// Draws a slide on the given string, between the two position indexes
-void ScoreArea::drawSlidesHelper(System* system, const StaffData& currentStaffInfo, quint8 string,
+void ScoreArea::drawSlidesHelper(shared_ptr<System> system, const StaffData& currentStaffInfo, quint8 string,
                                  bool slideUp, quint32 posIndex1, quint32 posIndex2)
 {
     Q_ASSERT(posIndex1 <= posIndex2);
@@ -355,7 +357,7 @@ void ScoreArea::drawSlidesHelper(System* system, const StaffData& currentStaffIn
     line->setParentItem(activeStaff);
 }
 
-void ScoreArea::drawLegato(System* system, Staff* staff, const StaffData& currentStaffInfo)
+void ScoreArea::drawLegato(shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo)
 {
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
@@ -445,7 +447,7 @@ void ScoreArea::drawDividerLine(const StaffData& currentStaffInfo, quint32 y)
     line->setParentItem(activeSystem);
 }
 
-void ScoreArea::drawSystemSymbols(Score* score, System* system, const StaffData& currentStaffInfo)
+void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<System> system, const StaffData& currentStaffInfo)
 {
     quint32 height = 0;
 
@@ -474,7 +476,7 @@ void ScoreArea::drawSystemSymbols(Score* score, System* system, const StaffData&
 
 }
 
-void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System* system, quint32 height)
+void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, shared_ptr<System> system, quint32 height)
 {
     foreach(TempoMarker* tempoMarker, tempoMarkers)
     {
@@ -486,7 +488,7 @@ void ScoreArea::drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, System*
     }
 }
 
-void ScoreArea::drawChordText(System* system, quint32 height, const StaffData& currentStaffInfo)
+void ScoreArea::drawChordText(shared_ptr<System> system, quint32 height, const StaffData& currentStaffInfo)
 {
     for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
     {
@@ -502,7 +504,7 @@ void ScoreArea::drawChordText(System* system, quint32 height, const StaffData& c
 }
 
 /// Draws the tab notes for all notes (and voices) in the staff
-void ScoreArea::drawTabNotes(System* system, Staff* staff, const StaffData& currentStaffInfo)
+void ScoreArea::drawTabNotes(shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo)
 {
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
@@ -563,7 +565,7 @@ void ScoreArea::drawArpeggio(Position* position, quint32 x, const StaffData& cur
     endPoint->setParentItem(activeStaff);
 }
 
-void ScoreArea::drawStdNotation(System* system, Staff* staff, const StaffData& currentStaffInfo)
+void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo)
 {
     Barline* currentBarline = NULL;
     Barline* prevBarline = system->GetStartBarPtr();
@@ -925,7 +927,7 @@ void ScoreArea::drawFermata(const StaffData& currentStaffInfo, double x, double 
 }
 
 /// Draws the text symbols that appear below the tab staff (hammerons, slides, etc)
-void ScoreArea::drawSymbolsBelowTabStaff(System *system, Staff *staff, const StaffData &currentStaffInfo)
+void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<System> system, Staff *staff, const StaffData &currentStaffInfo)
 {
     std::vector<Staff::PositionProperty> positionPredicates = {
         &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap,
@@ -1021,7 +1023,7 @@ void ScoreArea::drawSymbolsBelowTabStaff(System *system, Staff *staff, const Sta
 }
 
 /// Draws the symbols that appear between the tab and standard notation staves
-void ScoreArea::drawSymbols(System *system, Staff *staff, const StaffData &currentStaffInfo)
+void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const StaffData &currentStaffInfo)
 {
     typedef boost::function<QGraphicsItem* (uint8_t, const StaffData&)> SymbolCreationFn;
     using boost::bind;

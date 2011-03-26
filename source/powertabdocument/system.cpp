@@ -596,7 +596,7 @@ void System::CalculateHeight()
 
 // Get the height offset of a staff from the top of the system
 // Optionally, can return the absolute position of the top of the staff
-uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos)
+uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos) const
 {
     CHECK_THAT(IsValidStaffIndex(staff), 0);
 

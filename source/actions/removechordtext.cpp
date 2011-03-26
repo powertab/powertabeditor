@@ -3,7 +3,9 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/chordtext.h>
 
-RemoveChordText::RemoveChordText(System* system, quint32 index) :
+using std::shared_ptr;
+
+RemoveChordText::RemoveChordText(shared_ptr<System> system, quint32 index) :
     system(system), index(index)
 {
     setText(QObject::tr("Remove Chord Text"));

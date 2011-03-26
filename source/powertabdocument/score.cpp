@@ -69,10 +69,6 @@ Score::~Score()
     {
         delete m_alternateEndingArray.at(i);
     }
-    for (uint32_t i = 0; i < m_systemArray.size(); i++)
-    {
-        delete m_systemArray.at(i);
-    }
     m_guitarArray.clear();
     m_chordDiagramArray.clear();
     m_floatingTextArray.clear();
@@ -80,7 +76,6 @@ Score::~Score()
     m_tempoMarkerArray.clear();
     m_dynamicArray.clear();
     m_alternateEndingArray.clear();
-    m_systemArray.clear();
 }
 
 // Operators
@@ -209,20 +204,18 @@ bool Score::RemoveSystem(size_t index)
 {
     CHECK_THAT(IsValidSystemIndex(index), false);
 
-    const System* system = m_systemArray.at(index);
+    SystemConstPtr system = m_systemArray.at(index);
 
     // adjust height of following systems
     ShiftFollowingSystems(system, -(system->GetRect().GetHeight() + SYSTEM_SPACING));
 
-    // delete and remove from array
-    delete system;
     m_systemArray.erase(m_systemArray.begin() + index);
 
     return true;
 }
 
 /// Inserts a system into the score at the specified location
-bool Score::InsertSystem(System* system, size_t index)
+bool Score::InsertSystem(SystemPtr system, size_t index)
 {
     CHECK_THAT(IsValidSystemIndex(index) || index == GetSystemCount(), false);
 
@@ -280,7 +273,7 @@ void Score::UpdateToVer2Structure()
             }
         }
 
-        System* currentSystem = m_systemArray.at(i);
+        SystemPtr currentSystem = m_systemArray.at(i);
 
         std::vector<Staff*> newStaves(m_guitarArray.size(), NULL); // one staff per guitar
 
@@ -340,7 +333,7 @@ void Score::UpdateToVer2Structure()
 }
 
 // Finds the index of a system within the score
-int Score::FindSystemIndex(const System* system) const
+int Score::FindSystemIndex(SystemConstPtr system) const
 {
     auto result = std::find(m_systemArray.begin(), m_systemArray.end(), system);
     return std::distance(m_systemArray.begin(), result);
@@ -363,19 +356,19 @@ void GetSymbolsInSystem(std::vector<Symbol*>& output, const std::vector<Symbol*>
 }
 
 // Finds all of the tempo markers that are in the given system
-void Score::GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, System *system) const
+void Score::GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, SystemConstPtr system) const
 {
     GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
 }
 
-void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, System *system) const
+void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, SystemConstPtr system) const
 {
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
 }
 
 /// Updates the height of the system, and adjusts the height of subsequent systems as necessary
 /// @param system The system to update the height of
-void Score::UpdateSystemHeight(System *system)
+void Score::UpdateSystemHeight(SystemPtr system)
 {
     // Store the original height, recalculate the height, then find the height difference
     
@@ -399,12 +392,12 @@ void Score::UpdateSystemHeight(System *system)
 }
 
 /// Shifts all following systems by the given height difference
-void Score::ShiftFollowingSystems(const System* system, const int heightDifference)
+void Score::ShiftFollowingSystems(SystemConstPtr system, const int heightDifference)
 {
     uint32_t systemIndex = FindSystemIndex(system) + 1;
     for (; systemIndex < GetSystemCount(); systemIndex++)
     {
-        System* currentSystem = m_systemArray.at(systemIndex);
+        SystemPtr currentSystem = m_systemArray.at(systemIndex);
 
         Rect rect = currentSystem->GetRect();
         rect.SetTop(rect.GetTop() + heightDifference);
@@ -413,7 +406,7 @@ void Score::ShiftFollowingSystems(const System* system, const int heightDifferen
 }
 
 /// Updates the extra spacing at the top of the system (for rehearsal signs, etc)
-void Score::UpdateExtraSpacing(System* system)
+void Score::UpdateExtraSpacing(SystemPtr system)
 {
     // get list of tempo markers
     std::vector<TempoMarker*> markers;
@@ -438,7 +431,7 @@ void Score::Init()
 {
     m_guitarArray.push_back(new Guitar);
 
-    System* newSystem = new System;
+    SystemPtr newSystem(new System);
     newSystem->Init();
-    m_systemArray.push_back(newSystem);
+    InsertSystem(newSystem, 0);
 }

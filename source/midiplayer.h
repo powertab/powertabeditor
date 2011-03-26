@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QMutex>
 #include <QHash>
+#include <memory>
 
 class Caret;
 class Position;
@@ -91,7 +92,7 @@ protected:
     void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
     void generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const;
     void playNotesInSystem(std::list<NoteInfo>& noteList, int startPos);
-    double getWholeRestDuration(System* system, Staff* staff, Position* position, double originalDuration) const;
+    double getWholeRestDuration(std::shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const;
     void addVibrato(std::list<NoteInfo>& noteList, int channel, double startTime, double duration, VibratoType type) const;
 
     Caret* caret;

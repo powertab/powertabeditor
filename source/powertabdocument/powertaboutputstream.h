@@ -19,6 +19,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "powertabstream.h"
 #include "macros.h"
@@ -83,7 +84,7 @@ public:
     }
 
     template <class T>
-            bool WriteVector(std::vector<T*>& vect)
+    bool WriteVector(std::vector<T*>& vect)
     {
         uint32_t count = vect.size();
         WriteCount(count);
@@ -91,6 +92,22 @@ public:
         for (uint32_t i = 0; i < count; i++)
         {
             WriteObject(vect[i]);
+            CHECK_THAT(CheckState(), false);
+        }
+        return true;
+    }
+
+    // used for vectors of smart pointers
+    // TODO - should combine duplicated code with the other version of WriteVector
+    template <class T>
+    bool WriteVector(std::vector<std::shared_ptr<T> >& vect)
+    {
+        const size_t count = vect.size();
+        WriteCount(count);
+        CHECK_THAT(CheckState(), false);
+        for (size_t i = 0; i < count; i++)
+        {
+            WriteObject(vect[i].get());
             CHECK_THAT(CheckState(), false);
         }
         return true;

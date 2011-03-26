@@ -6,6 +6,7 @@ RemoveSystem::RemoveSystem(Score* score, quint32 index) :
     score(score),
     index(index)
 {
+    systemCopy = score->GetSystem(index);
     setText(QObject::tr("Remove System"));
 }
 
@@ -17,5 +18,6 @@ void RemoveSystem::redo()
 
 void RemoveSystem::undo()
 {
-    // TODO
+    score->InsertSystem(systemCopy, index);
+    emit triggered();
 }

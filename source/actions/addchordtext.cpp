@@ -3,7 +3,9 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/chordtext.h>
 
-AddChordText::AddChordText(System* system, ChordText* chordText, quint32 index) :
+using std::shared_ptr;
+
+AddChordText::AddChordText(shared_ptr<System> system, ChordText* chordText, quint32 index) :
     chordText(chordText),
     system(system),
     index(index)

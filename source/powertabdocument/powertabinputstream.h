@@ -16,6 +16,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "macros.h"
 
@@ -76,6 +77,31 @@ public:
         {
             ReadClassInformation();
             T* temp = new T();
+            temp->Deserialize(*this, version);
+            CHECK_THAT(CheckState(), false);
+            vect.push_back(temp);
+        }
+        return true;
+    }
+
+    // used for vectors of smart pointers
+    // TODO - should combine duplicated code with the other version of ReadVector
+    template <class T>
+    bool ReadVector(std::vector<std::shared_ptr<T> >& vect, uint16_t version)
+    {
+        const uint32_t count = ReadCount();
+        CHECK_THAT(CheckState(), false);
+
+        vect.clear();
+        if (count > 0)
+        {
+            vect.reserve(count);
+        }
+
+        for (uint32_t i = 0; i < count; i++)
+        {
+            ReadClassInformation();
+            std::shared_ptr<T> temp(new T);
             temp->Deserialize(*this, version);
             CHECK_THAT(CheckState(), false);
             vect.push_back(temp);

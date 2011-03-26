@@ -2,18 +2,19 @@
 #define SYSTEMPAINTER_H
 
 #include "painterbase.h"
+#include <memory>
 
 class System;
 
 class SystemPainter : public PainterBase
 {
 public:
-    SystemPainter(System* system);
+    SystemPainter(std::shared_ptr<System> system);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
-    System* system;
+    std::shared_ptr<System> system;
 
     void init();
 };

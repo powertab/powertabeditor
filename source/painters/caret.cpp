@@ -9,6 +9,8 @@
 #include <powertabdocument/note.h>
 #include <powertabdocument/position.h>
 
+using std::shared_ptr;
+
 Caret::Caret(int tabLineSpacing) :
     lineSpacing(tabLineSpacing)
 {
@@ -48,7 +50,7 @@ QRectF Caret::boundingRect() const
 void Caret::updateStaffInfo()
 {
     Staff* currentStaff = getCurrentStaff();
-    System* currentSystem = getCurrentSystem();
+    shared_ptr<const System> currentSystem = getCurrentSystem();
 
     currentStaffInfo.numOfStrings = currentStaff->GetTablatureStaffType();
     currentStaffInfo.stdNotationStaffAboveSpacing = currentStaff->GetStandardNotationStaffAboveSpacing();
@@ -122,7 +124,7 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
 
 void Caret::updatePosition()
 {
-    System* currentSystem = getCurrentSystem();
+    shared_ptr<const System> currentSystem = getCurrentSystem();
 
     updateStaffInfo();
     setPos(currentSystem->GetRect().GetLeft() + currentSystem->GetPositionX(currentPositionIndex),
@@ -305,7 +307,7 @@ void Caret::moveCaretToNextBar()
 
 void Caret::moveCaretToPrevBar()
 {
-    System* currentSystem = getCurrentSystem();
+    shared_ptr<System> currentSystem = getCurrentSystem();
     Barline* prevBarline = currentSystem->GetPrecedingBarline
             (currentPositionIndex);
 
@@ -318,15 +320,12 @@ void Caret::moveCaretToPrevBar()
             // if new system has > 1 bar, and we actually moved up one
             // (i.e. we are not already at the very first system), move 
             // caret to beginning of last bar
-            System* newCurrentSystem = getCurrentSystem();
+            shared_ptr<const System> newCurrentSystem = getCurrentSystem();
             if (!newCurrentSystem->m_barlineArray.empty())
             {
-                Barline* lastBar =
-                        newCurrentSystem->GetBarline
-                                (newCurrentSystem->GetBarlineCount() - 1);
+                Barline* lastBar = newCurrentSystem->GetBarline(newCurrentSystem->GetBarlineCount() - 1);
 
-                moveCaretHorizontal
-                        (lastBar->GetPosition() - currentPositionIndex + 1);
+                moveCaretHorizontal(lastBar->GetPosition() - currentPositionIndex + 1);
             }
         }
     }
@@ -353,7 +352,7 @@ void Caret::moveCaretToPrevBar()
     }
 }
 
-System* Caret::getCurrentSystem() const
+shared_ptr<System> Caret::getCurrentSystem() const
 {
     return currentScore->GetSystem(currentSystemIndex);
 }

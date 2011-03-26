@@ -2,6 +2,7 @@
 #define DELETEBARLINE_H
 
 #include <QUndoCommand>
+#include <memory>
 
 class Barline;
 class System;
@@ -9,13 +10,13 @@ class System;
 class DeleteBarline : public QUndoCommand
 {
 public:
-    DeleteBarline(System* system, Barline* barline);
+    DeleteBarline(std::shared_ptr<System> system, Barline* barline);
     ~DeleteBarline();
     void redo();
     void undo();
 
 protected:
-    System* system;
+    std::shared_ptr<System> system;
     Barline* barline;
     Barline* barlineCopy;
 };
