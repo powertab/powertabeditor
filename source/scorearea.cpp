@@ -40,6 +40,8 @@ ScoreArea::ScoreArea(QWidget *parent) :
 
     activeStaff = NULL;
     activeSystem = NULL;
+
+    redrawOnNextRefresh = false;
 }
 
 void ScoreArea::renderDocument(std::shared_ptr<PowerTabDocument> doc)
@@ -67,23 +69,38 @@ void ScoreArea::renderDocument(std::shared_ptr<PowerTabDocument> doc)
 /// @param systemIndex The index of the system that was modified
 void ScoreArea::updateSystem(const quint32 systemIndex)
 {
-    // delete and remove the system from the scene
-    delete systemList.takeAt(systemIndex);
-
-    // redraw the system
-    Score* currentScore = document->GetGuitarScore();
-    renderSystem(currentScore, currentScore->GetSystem(systemIndex), document->GetTablatureStaffLineSpacing());
-    systemList.insert(systemIndex, activeSystem);
-
-    // Adjust the position of subsequent systems
-    for (int i = systemIndex; i < systemList.size(); i++)
+    if (redrawOnNextRefresh)
     {
-        QGraphicsItem* systemPainter = systemList.at(i);
-        const Rect currentSystemRect = currentScore->GetSystem(i)->GetRect();
-        systemPainter->setPos(currentSystemRect.GetLeft(), currentSystemRect.GetTop());
+        redrawOnNextRefresh = false;
+        renderDocument(document);
     }
+    else
+    {
+        // delete and remove the system from the scene
+        delete systemList.takeAt(systemIndex);
 
-    caret->updatePosition();
+        // redraw the system
+        Score* currentScore = document->GetGuitarScore();
+        renderSystem(currentScore, currentScore->GetSystem(systemIndex), document->GetTablatureStaffLineSpacing());
+        systemList.insert(systemIndex, activeSystem);
+
+        // Adjust the position of subsequent systems
+        for (int i = systemIndex; i < systemList.size(); i++)
+        {
+            QGraphicsItem* systemPainter = systemList.at(i);
+            const Rect currentSystemRect = currentScore->GetSystem(i)->GetRect();
+            systemPainter->setPos(currentSystemRect.GetLeft(), currentSystemRect.GetTop());
+        }
+
+        caret->updatePosition();
+    }
+}
+
+/// Used to request that a full redraw is performed when the ScoreArea is next updated
+void ScoreArea::requestFullRedraw()
+{
+    Q_ASSERT(!redrawOnNextRefresh);
+    redrawOnNextRefresh = true;
 }
 
 void ScoreArea::renderScore(Score* score, int lineSpacing)

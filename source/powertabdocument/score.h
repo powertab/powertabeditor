@@ -27,6 +27,9 @@ class System;
 // Note: This is a class used to make life easier - it's not a class that exists in PTE v1.7
 class Score : public PowerTabObject
 {
+public:
+    static const uint8_t SYSTEM_SPACING; ///< spacing between adjacent systems
+
 // Member Variables
 public:
     std::vector<Guitar*>                 m_guitarArray;              ///< Guitars used by the score
@@ -223,10 +226,15 @@ public:
         return (m_systemArray[index]);
     }
 
+    bool RemoveSystem(size_t index);
+    bool InsertSystem(System* system, size_t index);
+
     void UpdateSystemHeight(System* system);
+    void ShiftFollowingSystems(const System* system, const int heightDifference);
+
     void UpdateExtraSpacing(System* system);
 
-    int FindSystemIndex(System* system) const;
+    int FindSystemIndex(const System* system) const;
 
     void UpdateToVer2Structure();
 

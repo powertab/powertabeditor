@@ -77,6 +77,7 @@ protected:
     // all QGraphicsItems that are a part of the staff have this object as their parent
     QGraphicsItem* activeStaff;
     QGraphicsItem* activeSystem;
+    bool redrawOnNextRefresh;
 
     struct BeamingInfo
     {
@@ -119,6 +120,7 @@ signals:
 
 public slots:
     void adjustScroll();
+    void requestFullRedraw();
 
 };
 

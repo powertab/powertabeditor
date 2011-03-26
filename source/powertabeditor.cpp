@@ -57,6 +57,7 @@
 #include <actions/addbarline.h>
 #include <actions/deletebarline.h>
 #include <actions/deleteposition.h>
+#include <actions/removesystem.h>
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -331,6 +332,9 @@ void PowerTabEditor::createActions()
     decreasePositionSpacingAct = new QAction(tr("Decrease Position Spacing"), this);
     decreasePositionSpacingAct->setShortcut(QKeySequence(Qt::Key_Minus));
     connect(decreasePositionSpacingAct, SIGNAL(triggered()), this, SLOT(decreasePositionSpacing()));
+
+    removeCurrentSystemAct = new QAction(tr("Remove Current System"), this);
+    connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
 
     // Note-related actions
     noteDurationMapper = new QSignalMapper(this);
@@ -643,6 +647,8 @@ void PowerTabEditor::createMenus()
     sectionMenu = menuBar()->addMenu(tr("&Section"));
     sectionMenu->addAction(increasePositionSpacingAct);
     sectionMenu->addAction(decreasePositionSpacingAct);
+    sectionMenu->addSeparator();
+    sectionMenu->addAction(removeCurrentSystemAct);
 
     // Note Menu
     notesMenu = menuBar()->addMenu(tr("&Notes"));
@@ -1070,6 +1076,15 @@ void PowerTabEditor::changePositionSpacing(int offset)
     {
         undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing));
     }
+}
+
+void PowerTabEditor::removeCurrentSystem()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+
+    RemoveSystem* removeSystemAct = new RemoveSystem(caret->getCurrentScore(), caret->getCurrentSystemIndex());
+    connect(removeSystemAct, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
+    undoManager->push(removeSystemAct);
 }
 
 void PowerTabEditor::shiftForward()

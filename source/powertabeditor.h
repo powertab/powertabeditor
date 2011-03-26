@@ -91,6 +91,8 @@ protected slots:
     void increasePositionSpacing();
     void decreasePositionSpacing();
 
+    void removeCurrentSystem();
+
     void shiftForward();
     void shiftBackward();
 
@@ -165,6 +167,7 @@ protected:
     QMenu* sectionMenu;
     QAction* increasePositionSpacingAct;
     QAction* decreasePositionSpacingAct;
+    QAction* removeCurrentSystemAct;
 
     QMenu* notesMenu;
     QSignalMapper* noteDurationMapper; // map note duration signals to a slot

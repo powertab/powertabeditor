@@ -25,6 +25,8 @@
 #include <map>
 #include <bitset>
 
+const uint8_t Score::SYSTEM_SPACING = 50;
+
 /// Default Constructor
 Score::Score()
 {
@@ -202,6 +204,35 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     return (stream.CheckState());
 }
 
+/// Removes the system at the specified index
+bool Score::RemoveSystem(size_t index)
+{
+    CHECK_THAT(IsValidSystemIndex(index), false);
+
+    const System* system = m_systemArray.at(index);
+
+    // adjust height of following systems
+    ShiftFollowingSystems(system, -(system->GetRect().GetHeight() + SYSTEM_SPACING));
+
+    // delete and remove from array
+    delete system;
+    m_systemArray.erase(m_systemArray.begin() + index);
+
+    return true;
+}
+
+/// Inserts a system into the score at the specified location
+bool Score::InsertSystem(System* system, size_t index)
+{
+    CHECK_THAT(IsValidSystemIndex(index) || index == GetSystemCount(), false);
+
+    m_systemArray.insert(m_systemArray.begin() + index, system);
+
+    ShiftFollowingSystems(system, system->GetRect().GetHeight() + SYSTEM_SPACING);
+
+    return true;
+}
+
 // Remove guitar-ins and adjust the score structure, so that each guitar corresponds to its own staff
 void Score::UpdateToVer2Structure()
 {
@@ -299,7 +330,7 @@ void Score::UpdateToVer2Structure()
         {
             Rect currentRect = currentSystem->GetRect();
             Rect prevRect = m_systemArray.at(i-1)->GetRect();
-            currentRect.SetY(prevRect.GetBottom() + 50);
+            currentRect.SetY(prevRect.GetBottom() + SYSTEM_SPACING);
             currentSystem->SetRect(currentRect);
         }
 
@@ -309,7 +340,7 @@ void Score::UpdateToVer2Structure()
 }
 
 // Finds the index of a system within the score
-int Score::FindSystemIndex(System* system) const
+int Score::FindSystemIndex(const System* system) const
 {
     auto result = std::find(m_systemArray.begin(), m_systemArray.end(), system);
     return std::distance(m_systemArray.begin(), result);
@@ -364,13 +395,19 @@ void Score::UpdateSystemHeight(System *system)
     system->CalculateHeight();
     const int spacingDifference = system->GetRect().GetHeight() - originalHeight;
 
-    // adjust position of subsequent systems based on the height change
+    ShiftFollowingSystems(system, spacingDifference);
+}
+
+/// Shifts all following systems by the given height difference
+void Score::ShiftFollowingSystems(const System* system, const int heightDifference)
+{
     uint32_t systemIndex = FindSystemIndex(system) + 1;
     for (; systemIndex < GetSystemCount(); systemIndex++)
     {
         System* currentSystem = m_systemArray.at(systemIndex);
+
         Rect rect = currentSystem->GetRect();
-        rect.SetTop(rect.GetTop() + spacingDifference);
+        rect.SetTop(rect.GetTop() + heightDifference);
         currentSystem->SetRect(rect);
     }
 }
