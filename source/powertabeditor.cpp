@@ -340,6 +340,7 @@ void PowerTabEditor::createActions()
     connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
 
     insertSystemAtEndAct = new QAction(tr("Insert System At End"), this);
+    insertSystemAtEndAct->setShortcut(QKeySequence(Qt::Key_N));
     connect(insertSystemAtEndAct, SIGNAL(triggered()), this, SLOT(insertSystemAtEnd()));
 
     insertSystemBeforeAct = new QAction(tr("Insert System Before"), this);
