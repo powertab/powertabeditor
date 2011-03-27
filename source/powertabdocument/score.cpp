@@ -221,6 +221,16 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
 
     m_systemArray.insert(m_systemArray.begin() + index, system);
 
+    // ensure the system has enough staves for each guitar
+    if (system->GetStaffCount() != GetGuitarCount())
+    {
+        std::vector<uint8_t> staffSizes;
+        std::transform(m_guitarArray.begin(), m_guitarArray.end(),
+                       std::back_inserter(staffSizes), std::mem_fun(&Guitar::GetStringCount));
+        system->Init(staffSizes);
+    }
+
+    system->CalculateHeight();
     ShiftFollowingSystems(system, system->GetRect().GetHeight() + SYSTEM_SPACING);
 
     return true;
@@ -429,9 +439,16 @@ void Score::UpdateExtraSpacing(SystemPtr system)
 
 void Score::Init()
 {
-    m_guitarArray.push_back(new Guitar);
+    // create a guitar
+    Guitar* guitar = new Guitar;
+    guitar->GetTuningPtr()->SetToStandard();
+    m_guitarArray.push_back(guitar);
+
+    // create a system and initialize the staves
+    std::vector<uint8_t> staffSizes;
+    staffSizes.push_back(guitar->GetStringCount());
 
     SystemPtr newSystem(new System);
-    newSystem->Init();
+    newSystem->Init(staffSizes);
     InsertSystem(newSystem, 0);
 }

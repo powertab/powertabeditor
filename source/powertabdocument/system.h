@@ -59,7 +59,7 @@ public:
     System(const System& system);
     ~System();
 
-    void Init();
+    void Init(const std::vector<uint8_t>& staffSizes);
 
     // Operators
     const System& operator=(const System& system);

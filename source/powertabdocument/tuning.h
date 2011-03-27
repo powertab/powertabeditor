@@ -156,6 +156,8 @@ public:
     {return (IsValidStringCount(GetStringCount()));}
 
     std::string GetSpelling() const;
+
+    void SetToStandard();
 };
 
 #endif

@@ -22,7 +22,7 @@
 #include "position.h"
 
 // Default Constants
-const Rect System::DEFAULT_RECT                                   = Rect(0,0,750,0);
+const Rect System::DEFAULT_RECT                                   = Rect(50, 20, 750, 0);
 const uint8_t System::DEFAULT_POSITION_SPACING                       = 20;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_ABOVE             = 0;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_BELOW             = 0;
@@ -820,9 +820,15 @@ void System::ShiftBackward(uint32_t positionIndex)
     PerformPositionShift(positionIndex, -1);
 }
 
-void System::Init()
+/// Initializes the system, creating staves using the given list of staff sizes (# of strings)
+void System::Init(const std::vector<uint8_t>& staffSizes)
 {
-    m_staffArray.push_back(new Staff);
+    m_staffArray.clear();
+
+    for (size_t i = 0; i < staffSizes.size(); i++)
+    {
+        m_staffArray.push_back(new Staff(staffSizes.at(i), Staff::TREBLE_CLEF));
+    }
 
     CalculateHeight();
 }

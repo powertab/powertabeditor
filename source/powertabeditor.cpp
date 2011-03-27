@@ -58,6 +58,7 @@
 #include <actions/deletebarline.h>
 #include <actions/deleteposition.h>
 #include <actions/removesystem.h>
+#include <actions/addsystem.h>
 
 using std::shared_ptr;
 
@@ -337,6 +338,15 @@ void PowerTabEditor::createActions()
 
     removeCurrentSystemAct = new QAction(tr("Remove Current System"), this);
     connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
+
+    insertSystemAtEndAct = new QAction(tr("Insert System At End"), this);
+    connect(insertSystemAtEndAct, SIGNAL(triggered()), this, SLOT(insertSystemAtEnd()));
+
+    insertSystemBeforeAct = new QAction(tr("Insert System Before"), this);
+    connect(insertSystemBeforeAct, SIGNAL(triggered()), this, SLOT(insertSystemBefore()));
+
+    insertSystemAfterAct = new QAction(tr("Insert System After"), this);
+    connect(insertSystemAfterAct, SIGNAL(triggered()), this, SLOT(insertSystemAfter()));
 
     // Note-related actions
     noteDurationMapper = new QSignalMapper(this);
@@ -649,6 +659,10 @@ void PowerTabEditor::createMenus()
     sectionMenu = menuBar()->addMenu(tr("&Section"));
     sectionMenu->addAction(increasePositionSpacingAct);
     sectionMenu->addAction(decreasePositionSpacingAct);
+    sectionMenu->addSeparator();
+    sectionMenu->addAction(insertSystemAtEndAct);
+    sectionMenu->addAction(insertSystemBeforeAct);
+    sectionMenu->addAction(insertSystemAfterAct);
     sectionMenu->addSeparator();
     sectionMenu->addAction(removeCurrentSystemAct);
 
@@ -1087,6 +1101,34 @@ void PowerTabEditor::removeCurrentSystem()
     RemoveSystem* removeSystemAct = new RemoveSystem(caret->getCurrentScore(), caret->getCurrentSystemIndex());
     connect(removeSystemAct, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
     undoManager->push(removeSystemAct);
+}
+
+void PowerTabEditor::insertSystemAfter()
+{
+    const size_t index = getCurrentScoreArea()->getCaret()->getCurrentSystemIndex() + 1;
+    performSystemInsert(index);
+}
+
+void PowerTabEditor::insertSystemBefore()
+{
+    const size_t currentIndex = getCurrentScoreArea()->getCaret()->getCurrentSystemIndex();
+    performSystemInsert(currentIndex);
+}
+
+void PowerTabEditor::insertSystemAtEnd()
+{
+    const size_t index = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetSystemCount();
+    performSystemInsert(index);
+}
+
+void PowerTabEditor::performSystemInsert(size_t index)
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* score = caret->getCurrentScore();
+
+    AddSystem* addSystemAct = new AddSystem(score, index);
+    connect(addSystemAct, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
+    undoManager->push(addSystemAct);
 }
 
 void PowerTabEditor::shiftForward()

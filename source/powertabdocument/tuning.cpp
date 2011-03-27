@@ -451,3 +451,13 @@ string Tuning::GetSpelling() const
 
     return returnValue.str();
 }
+
+/// Sets the tuning to standard EADGBE tuning
+void Tuning::SetToStandard()
+{
+    using namespace midi;
+
+    DeleteNoteArrayContents();
+    AddTuningNotes(MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
+                   MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, notUsed);
+}

@@ -48,6 +48,7 @@ protected:
     void updateScoreAreaActions(bool disable);
     bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
+    void performSystemInsert(size_t index);
 
 protected slots:
     void updateActions();
@@ -92,6 +93,9 @@ protected slots:
     void decreasePositionSpacing();
 
     void removeCurrentSystem();
+    void insertSystemAtEnd();
+    void insertSystemBefore();
+    void insertSystemAfter();
 
     void shiftForward();
     void shiftBackward();
@@ -167,6 +171,9 @@ protected:
     QMenu* sectionMenu;
     QAction* increasePositionSpacingAct;
     QAction* decreasePositionSpacingAct;
+    QAction* insertSystemAtEndAct;
+    QAction* insertSystemBeforeAct;
+    QAction* insertSystemAfterAct;
     QAction* removeCurrentSystemAct;
 
     QMenu* notesMenu;
