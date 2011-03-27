@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QVector>
+#include <QDebug>
 
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
@@ -23,6 +24,8 @@ Caret::Caret(int tabLineSpacing) :
 
     currentStaffTopEdge = 0;
     inPlaybackMode = false;
+
+    selectionRange = std::make_pair(0, 0);
 }
 
 void Caret::setPlaybackMode(bool playBack)
@@ -43,7 +46,7 @@ Score* Caret::getCurrentScore() const
 
 QRectF Caret::boundingRect() const
 {
-    return QRectF(0, -CARET_NOTE_SPACING, getCurrentSystem()->GetPositionSpacing(),
+    return QRectF(0, -CARET_NOTE_SPACING, getCurrentSystem()->GetRect().GetWidth(),
                   currentStaffInfo.getTabStaffSize() + 2 * CARET_NOTE_SPACING);
 }
 
@@ -84,12 +87,15 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         painter->setPen(QPen(Qt::blue, PEN_WIDTH));
     }
 
+    shared_ptr<System> currentSystem = getCurrentSystem();
+    const int leftPos = currentSystem->GetPositionX(currentPositionIndex);
+
     // get top
     int y1 = 0;
     // get bottom
     int y2 = currentStaffInfo.getTabStaffSize();
     // get x-coordinate
-    int x = centerItem(0, currentStaffInfo.positionWidth, 1);
+    int x = centerItem(leftPos, leftPos + currentStaffInfo.positionWidth, 1);
 
     if (inPlaybackMode) // if in playback mode, just draw a vertical line and don't highlight selected note
     {
@@ -110,8 +116,8 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         }
 
         // draw horizontal lines around note
-        lines.append(QLine(0, boundary1, currentStaffInfo.positionWidth, boundary1));
-        lines.append(QLine(0, boundary2, currentStaffInfo.positionWidth, boundary2));
+        lines.append(QLine(leftPos, boundary1, leftPos + currentStaffInfo.positionWidth, boundary1));
+        lines.append(QLine(leftPos, boundary2, leftPos + currentStaffInfo.positionWidth, boundary2));
 
         // draw to bottom of staff, if necessary
         if (y2 > boundary2)
@@ -120,6 +126,28 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
         }
         painter->drawLines(lines);
     }
+
+    paintSelection(painter);
+}
+
+/// Draws a highlighted box around the selected range
+void Caret::paintSelection(QPainter* painter)
+{
+    painter->setBrush(QColor(168, 205, 241, 125));
+    painter->setPen(QPen(QBrush(), 0));
+
+    shared_ptr<System> system = getCurrentSystem();
+
+    int leftPos = system->GetPositionX(std::min(selectionRange.first, selectionRange.second));
+    int rightPos = system->GetPositionX(std::max(selectionRange.first, selectionRange.second));
+
+    if (selectionRange.first != selectionRange.second)
+    {
+        rightPos += currentStaffInfo.positionWidth;
+    }
+
+    QRectF rect(leftPos, 1, rightPos - leftPos, currentStaffInfo.getTabStaffSize() - 1);
+    painter->drawRect(rect);
 }
 
 void Caret::updatePosition()
@@ -127,9 +155,8 @@ void Caret::updatePosition()
     shared_ptr<const System> currentSystem = getCurrentSystem();
 
     updateStaffInfo();
-    setPos(currentSystem->GetRect().GetLeft() + currentSystem->GetPositionX(currentPositionIndex),
-           currentSystem->GetStaffHeightOffset(currentStaffIndex, true) + currentStaffInfo.getTabStaffOffset()
-           );
+    setPos(currentSystem->GetRect().GetLeft(),
+           currentSystem->GetStaffHeightOffset(currentStaffIndex, true) + currentStaffInfo.getTabStaffOffset());
     emit moved();
 }
 
@@ -139,9 +166,7 @@ bool Caret::moveCaretHorizontal(int offset)
     const quint32 nextPosition = currentPositionIndex + offset;
     if (getCurrentSystem()->IsValidPosition(nextPosition)) // check that the next position is valid
     {
-        currentPositionIndex = nextPosition;
-        moveToNewPosition();
-        updatePosition(); // redraw the caret
+        setCurrentPositionIndex(nextPosition);
         return true;
     }
     return false;
@@ -167,7 +192,6 @@ bool Caret::setCurrentSystemIndex(uint32_t systemIndex)
     if (systemIndex < currentScore->GetSystemCount())
     {
         currentSystemIndex = systemIndex;
-        moveToNewPosition();
         updatePosition();
         update(boundingRect());
         return true;
@@ -183,7 +207,6 @@ bool Caret::setCurrentStaffIndex(uint32_t staffIndex)
     if (staffIndex < getCurrentSystem()->GetStaffCount())
     {
         currentStaffIndex = staffIndex;
-        moveToNewPosition();
         updatePosition();
         update(boundingRect());
         return true;
@@ -199,7 +222,6 @@ bool Caret::setCurrentPositionIndex(uint8_t positionIndex)
     if (positionIndex < getCurrentSystem()->GetPositionCount())
     {
         currentPositionIndex = positionIndex;
-        moveToNewPosition();
         updatePosition();
         update(boundingRect());
         return true;
@@ -240,21 +262,12 @@ bool Caret::moveCaretStaff(int offset)
         currentStringIndex = 0;
         currentPositionIndex = 0;
 
-        moveToNewPosition();
         updatePosition();
 
         return true;
     }
 
     return false;
-}
-
-void Caret::moveToNewPosition()
-{
-    /*currentSystem = currentScore->GetSystem(currentSystemIndex);
-    currentStaff = currentSystem->GetStaff(currentStaffIndex);
-    selectedPosition = currentStaff->GetPositionByPosition(currentPositionIndex);
-    selectedNote = 0;*/
 }
 
 bool Caret::moveCaretSection(int offset)
@@ -266,8 +279,6 @@ bool Caret::moveCaretSection(int offset)
         currentPositionIndex = 0;
         currentStaffIndex = 0;
         currentSystemIndex = nextSystem;
-
-        moveToNewPosition();
 
         updatePosition();
         return true;
@@ -385,4 +396,10 @@ Note* Caret::getCurrentNote() const
 Barline* Caret::getCurrentBarline() const
 {
     return getCurrentSystem()->GetBarlineAtPosition(currentPositionIndex);
+}
+
+void Caret::updateSelection(int start, int end)
+{
+    qDebug() << "Selected Range: " << start << ", " << end;
+    selectionRange = std::make_pair(start, end);
 }

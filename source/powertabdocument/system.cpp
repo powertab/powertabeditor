@@ -542,6 +542,27 @@ int System::GetPositionX(int position) const
     return (returnValue);
 }
 
+/// Gets the position index for an x-coordinate in the system
+/// @return The closest position to the given x-coordinate, or the first/last position if it is out of range
+size_t System::GetPositionFromX(int x) const
+{
+    if (GetPositionX(0) >= x)
+    {
+        return 0;
+    }
+
+    for (int i = 1; i < GetPositionCount(); i++)
+    {
+        if (GetPositionX(i) >= x)
+        {
+            return i - 1;
+        }
+    }
+
+    // if the x-coordinate is past the last position, just return the last position index
+    return GetPositionCount() - 1;
+}
+
 // Operations
 /// Gets the total width used by all key and time signatures that reside within
 /// the system (does not include the start bar)

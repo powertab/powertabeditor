@@ -10,12 +10,17 @@
 class Staff;
 class System;
 
-class StaffPainter : public PainterBase
+class StaffPainter : public QObject, public PainterBase
 {
+    Q_OBJECT
+
 public:
     StaffPainter(std::shared_ptr<System> system, Staff* staff, const StaffData& staffInfo);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+signals:
+    void selectionUpdated(int selectionStart, int selectionEnd);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

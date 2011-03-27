@@ -40,6 +40,7 @@ public:
     bool moveCaretStaff(int offset);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paintSelection(QPainter* painter);
     QRectF boundingRect() const;
 
     void setScore(Score* newScore);
@@ -79,9 +80,11 @@ public:
 signals:
     void moved();
 
+public slots:
+    void updateSelection(int start, int end);
+
 protected:
     void updateStaffInfo();
-    void moveToNewPosition();
 
     bool inPlaybackMode;
 
@@ -94,6 +97,8 @@ protected:
     quint32 currentStaffTopEdge;
     int lineSpacing;
     StaffData currentStaffInfo;
+
+    std::pair<int, int> selectionRange;
 
     static const int CARET_NOTE_SPACING = 6; // spacing around a highlighted note
 };

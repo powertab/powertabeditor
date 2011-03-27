@@ -53,10 +53,6 @@ void ScoreArea::renderDocument(std::shared_ptr<PowerTabDocument> doc)
     document = doc;
     int lineSpacing = document->GetTablatureStaffLineSpacing();
 
-    // Render each score
-    // Only worry about the guitar score so far
-    renderScore(document->GetGuitarScore(), lineSpacing);
-
     // Set up the caret
     caret = new Caret(doc->GetTablatureStaffLineSpacing());
     connect(caret, SIGNAL(moved()), this, SLOT(adjustScroll()));
@@ -65,6 +61,10 @@ void ScoreArea::renderDocument(std::shared_ptr<PowerTabDocument> doc)
     caret->updatePosition();
 
     scene.addItem(caret);
+
+    // Render each score
+    // Only worry about the guitar score so far
+    renderScore(document->GetGuitarScore(), lineSpacing);
 }
 
 /// Updates the system after changes have been made
@@ -152,6 +152,8 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<System> system, int lineSp
 
         // Draw the staff lines
         StaffPainter* staffPainter = new StaffPainter(system, currentStaff, currentStaffInfo);
+        connect(staffPainter, SIGNAL(selectionUpdated(int,int)), caret, SLOT(updateSelection(int,int)));
+
         staffPainter->setPos(0, system->GetStaffHeightOffset(i));
         staffPainter->setParentItem(activeSystem);
         activeStaff = staffPainter;

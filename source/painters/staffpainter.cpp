@@ -38,8 +38,6 @@ void StaffPainter::init()
 
 void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
-    selectionStart = selectionEnd = 0;
-
     qreal y = mouseEvent->pos().y();
     qreal x = mouseEvent->pos().x();
 
@@ -51,9 +49,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     {
         Caret* caret = PowerTabEditor::getCurrentScoreArea()->getCaret();
 
-        int position = findClosestPosition(x, system->GetFirstPositionX() + 0.5 * staffInfo.positionWidth, staffInfo.positionWidth) - 1;
-        if (position < 0)
-            position = 0;
+        const int position = system->GetPositionFromX(x);
 
         int staffIndex = system->FindStaffIndex(staff);
 
@@ -66,7 +62,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
         caret->setCurrentStringIndex(string);
 
         selectionStart = selectionEnd = position;
-        qDebug() << "Selection Start: " << selectionStart;
+        emit selectionUpdated(selectionStart, selectionEnd);
     }
 }
 
@@ -92,17 +88,10 @@ inline int StaffPainter::findClosestPosition(qreal click, qreal relativePos, qre
 void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
     const double x = mouseEvent->pos().x();
-    int newPos = findClosestPosition(x, system->GetFirstPositionX() + 0.5 * staffInfo.positionWidth, staffInfo.positionWidth);
-
-    if (newPos <= 0 || newPos >= system->GetPositionCount())
-        return;
-
-    selectionEnd = newPos;
-    if (selectionEnd <= selectionStart && selectionEnd != 0)
-        selectionEnd--;
+    selectionEnd = system->GetPositionFromX(x);
 
     update(boundingRect()); // trigger a redraw
-    qDebug() << "Selection End: " << selectionEnd;
+    emit selectionUpdated(selectionStart, selectionEnd);
 }
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -113,17 +102,6 @@ void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     painter->setPen(pen);
 
     painter->drawPath(path);
-
-    painter->setBrush(QColor(168, 205, 241, 125));
-    painter->setPen(QPen(QBrush(), 0));
-
-    int leftPos = system->GetPositionX(std::min(selectionStart, selectionEnd));
-    int rightPos = system->GetPositionX(std::max(selectionStart, selectionEnd));
-    if (selectionEnd < selectionStart)
-        rightPos += staffInfo.positionWidth;
-
-    QRectF rect(leftPos, staffInfo.getTopTabLine(false) + 1, rightPos - leftPos, staffInfo.getTabStaffSize() - 1);
-    painter->drawRect(rect);
 }
 
 int StaffPainter::drawStaffLines(int lineCount, int lineSpacing, int startHeight)

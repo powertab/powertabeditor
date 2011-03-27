@@ -281,6 +281,7 @@ public:
     int GetPositionCount() const;
     int GetFirstPositionX() const;
     int GetPositionX(int position) const;
+    size_t GetPositionFromX(int x) const;
 
     // Returns the width of a clef
     int GetClefWidth() const
