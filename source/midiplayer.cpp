@@ -1,6 +1,7 @@
 #include "midiplayer.h"
 
 #include <QSettings>
+#include <QDebug>
 
 #include <list>
 #include <algorithm>
@@ -43,7 +44,7 @@ void MidiPlayer::run()
     isPlaying = true;
 
     currentSystemIndex = caret->getCurrentSystemIndex();
-    int startPos = caret->getCurrentPositionIndex();
+    quint32 startPos = caret->getCurrentPositionIndex();
 
     // go through each system, generate a list of the notes (midi events) from each staff
     // then, sort notes by their start time, and play them in order
@@ -59,7 +60,7 @@ void MidiPlayer::run()
 
         if (startPos > 0)
         {
-            startPos = -1;
+            startPos = 0;
         }
 
         if (!isPlaying)
@@ -97,7 +98,7 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                     startTime -= duration;
                 }
 
-                const quint32 positionIndex = position->GetPosition(); // only keep track of position for the first staff
+                const quint32 positionIndex = position->GetPosition();
 
                 // If the position has an arpeggio, sort the notes by string in the specified direction.
                 // This is so the notes can be played in the correct order, with a slight delay between each
@@ -218,9 +219,9 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
 
 // The notes are already in order of occurrence, so just play them one by one
 // startPos is used to identify the starting position to begin playback from
-void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, int startPos)
+void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, quint32 startPos)
 {
-    quint8 currentPosition = 0;
+    quint32 currentPosition = 0;
 
     while (!noteList.empty())
     {

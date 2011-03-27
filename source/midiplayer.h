@@ -69,10 +69,16 @@ protected:
         Guitar* guitar;
         double duration;
         double startTime;
-        quint8 position; // position of the note within the staff, used for moving the caret accordingly
+        quint32 position; // position of the note within the staff, used for moving the caret accordingly
         bool isMuted;
         bool isMetronome;
         int velocity;
+
+        NoteInfo() :
+            messageType(PLAY_NOTE), channel(0), pitch(0), guitar(NULL), duration(0), startTime(0),
+            position(0), isMuted(false), isMetronome(false), velocity(0)
+        {
+        }
 
         // used for sorting NoteInfo objects by their start time
         inline bool operator<(const NoteInfo& note)
@@ -91,7 +97,7 @@ protected:
     double calculateNoteDuration(Position* currentPosition) const;
     void generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const;
     void generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const;
-    void playNotesInSystem(std::list<NoteInfo>& noteList, int startPos);
+    void playNotesInSystem(std::list<NoteInfo>& noteList, quint32 startPos);
     double getWholeRestDuration(std::shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const;
     void addVibrato(std::list<NoteInfo>& noteList, int channel, double startTime, double duration, VibratoType type) const;
 
