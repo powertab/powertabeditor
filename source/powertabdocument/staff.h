@@ -222,7 +222,7 @@ public:
         PrevNote = -1,
     };
 
-    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, Position* position, Note* note) const;
+    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, Position* position, Note* note, uint32_t voice = 0) const;
 
 protected:
     int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const;

@@ -107,7 +107,12 @@ SOURCES += main.cpp\
     actions/deletebarline.cpp \
     actions/deleteposition.cpp \
     actions/removesystem.cpp \
-    actions/addsystem.cpp
+    actions/addsystem.cpp \
+    audio/midievent.cpp \
+    audio/playnoteevent.cpp \
+    audio/stopnoteevent.cpp \
+    audio/vibratoevent.cpp \
+    audio/metronomeevent.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -195,7 +200,12 @@ HEADERS  += powertabeditor.h \
     actions/deletebarline.h \
     actions/deleteposition.h \
     actions/removesystem.h \
-    actions/addsystem.h
+    actions/addsystem.h \
+    audio/midievent.h \
+    audio/playnoteevent.h \
+    audio/stopnoteevent.h \
+    audio/vibratoevent.h \
+    audio/metronomeevent.h
 
 RESOURCES += \
     resources.qrc

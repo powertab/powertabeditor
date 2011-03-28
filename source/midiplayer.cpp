@@ -16,7 +16,14 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 
+#include <audio/midievent.h>
+#include <audio/playnoteevent.h>
+#include <audio/vibratoevent.h>
+#include <audio/stopnoteevent.h>
+#include <audio/metronomeevent.h>
+
 using std::shared_ptr;
+using std::unique_ptr;
 
 MidiPlayer::MidiPlayer(Caret* caret) :
     caret(caret)
@@ -32,12 +39,19 @@ MidiPlayer::MidiPlayer(Caret* caret) :
 
 MidiPlayer::~MidiPlayer()
 {
-    mutex.lock();
     isPlaying = false;
-    mutex.unlock();
 
     wait();
 }
+
+/// Compares the start times of two midi events
+struct CompareEventTimestamps
+{
+    bool operator()(const unique_ptr<MidiEvent>& event1, const unique_ptr<MidiEvent>& event2)
+    {
+        return event1->getStartTime() < event2->getStartTime();
+    }
+};
 
 void MidiPlayer::run()
 {
@@ -50,13 +64,13 @@ void MidiPlayer::run()
     // then, sort notes by their start time, and play them in order
     for (; currentSystemIndex < caret->getCurrentScore()->GetSystemCount(); ++currentSystemIndex)
     {
-        std::list<NoteInfo> noteList;
-        generateNotesInSystem(currentSystemIndex, noteList);
-        generateMetronome(currentSystemIndex, noteList);
+        std::list<unique_ptr<MidiEvent>> eventList;
+        generateEventsForSystem(currentSystemIndex, eventList);
+        generateMetronome(currentSystemIndex, eventList);
 
-        noteList.sort();
+        eventList.sort(CompareEventTimestamps());
 
-        playNotesInSystem(noteList, startPos);
+        playNotesInSystem(eventList, startPos);
 
         if (startPos > 0)
         {
@@ -73,7 +87,7 @@ void MidiPlayer::run()
 }
 
 // Generates a list of all notes in the given system, by iterating through each position in each staff of the system
-void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& noteList) const
+void MidiPlayer::generateEventsForSystem(int systemIndex, std::list<unique_ptr<MidiEvent> >& eventList) const
 {
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
@@ -91,6 +105,18 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                 Position* position = staff->GetPosition(voice, j);
 
                 double duration = calculateNoteDuration(position); // each note at a position has the same duration
+
+                if (position->IsRest())
+                {
+                    // for whole rests, they must last for the entire bar, regardless of time signature
+                    if (position->GetDurationType() == 1)
+                    {
+                        duration = getWholeRestDuration(system, staff, position, duration);
+                    }
+
+                    startTime += duration;
+                    continue;
+                }
 
                 if (position->IsAcciaccatura()) // grace note
                 {
@@ -132,163 +158,108 @@ void MidiPlayer::generateNotesInSystem(int systemIndex, std::list<NoteInfo>& not
                         pitch = getNaturalHarmonicPitch(openStringPitch, note->GetFretNumber());
                     }
 
-                    // fill in the note info structure
-                    NoteInfo noteInfo;
-                    noteInfo.channel = i;
-                    noteInfo.messageType = position->IsRest() ? REST : PLAY_NOTE;
-                    noteInfo.pitch = pitch;
-                    noteInfo.guitar = guitar;
-                    noteInfo.duration = duration;
-                    noteInfo.startTime = startTime;
-                    noteInfo.position = positionIndex;
-                    noteInfo.isMuted = note->IsMuted();
-                    noteInfo.isMetronome = false;
-                    noteInfo.velocity = DEFAULT_VELOCITY;
-
+                    // figure out the velocity
+                    PlayNoteEvent::VelocityType velocity = PlayNoteEvent::DEFAULT_VELOCITY;
                     if (note->IsMuted())
                     {
-                        noteInfo.velocity = MUTED_VELOCITY;
+                        velocity = PlayNoteEvent::MUTED_VELOCITY;
                     }
                     if (note->IsGhostNote())
                     {
-                        noteInfo.velocity = GHOST_VELOCITY;
+                        velocity = PlayNoteEvent::GHOST_VELOCITY;
                     }
 
-                    if (position->HasVibrato())
+                    // if this note is not tied to the previous note, play the note
+                    if (!note->IsTied())
                     {
-                        addVibrato(noteList, i, startTime, duration, NORMAL_VIBRATO);
-                    }
-                    else if (position->HasWideVibrato())
-                    {
-                        addVibrato(noteList, i, startTime, duration, WIDE_VIBRATO);
+                        unique_ptr<PlayNoteEvent> noteEvent(new PlayNoteEvent(i, startTime, duration,
+                                                                              pitch, positionIndex, guitar,
+                                                                              note->IsMuted(), velocity));
+                        eventList.push_back(std::move(noteEvent));
                     }
 
-                    if (note->IsTied()) // if the note is tied, delete the previous note-off event
+                    // vibrato events
+                    if (position->HasVibrato() || position->HasWideVibrato())
                     {
-                        NoteInfo temp;
-                        temp.channel = i;
-                        temp.messageType = STOP_NOTE;
-                        temp.pitch = pitch;
-                        auto prevNoteEnd = std::find(noteList.rbegin(), noteList.rend(), temp);
-                        if (prevNoteEnd != noteList.rend())
+                        VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NORMAL_VIBRATO :
+                                                                                  VibratoEvent::WIDE_VIBRATO;
+
+                        // add vibrato event, and an event to turn of the vibrato after the note is done
+                        eventList.push_back(unique_ptr<VibratoEvent>(new VibratoEvent(i, startTime, positionIndex,
+                                                                                      VibratoEvent::VIBRATO_ON, type)));
+
+                        eventList.push_back(unique_ptr<VibratoEvent>(new VibratoEvent(i, startTime + duration,
+                                                                                      positionIndex, VibratoEvent::VIBRATO_OFF)));
+                    }
+
+                    bool tiedToNextNote = false;
+                    // check if this note is tied to the next note
+                    {
+                        Note* nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note, voice);
+                        if (nextNote && nextNote->IsTied())
                         {
-                            noteList.erase(--prevNoteEnd.base());
+                            tiedToNextNote = true;
                         }
                     }
-                    else // otherwise, if the note is not tied, add a new note
-                    {
-                        noteList.push_back(noteInfo);
-                    }
 
-                    if (!note->HasTieWrap())
+                    // end the note, unless we are tied to the next note
+                    if (!note->HasTieWrap() && !tiedToNextNote)
                     {
-                        // now, add the note-off event, scheduled for after the note's duration has ended
-                        noteInfo.startTime += position->IsStaccato() ? duration / 2 : duration;
-                        noteInfo.duration = 0;
-                        noteInfo.messageType = STOP_NOTE;
-                        noteList.push_back(noteInfo);
+                        const double noteLength = position->IsStaccato() ? duration / 2.0 : duration;
+                        unique_ptr<StopNoteEvent> stopEvent(new StopNoteEvent(i, startTime + noteLength, positionIndex, pitch));
+                        eventList.push_back(std::move(stopEvent));
                     }
                 }
 
-                if (position->IsRest())
-                {
-                    NoteInfo noteInfo;
-                    noteInfo.messageType = REST;
-                    noteInfo.duration = duration;
-                    noteInfo.position = positionIndex;
-                    noteInfo.startTime = startTime;
-
-                    // for whole rests, they must last for the entire bar, regardless of time signature
-                    if (position->GetDurationType() == 1)
-                    {
-                        noteInfo.duration = getWholeRestDuration(system, staff, position, noteInfo.duration);
-                    }
-
-                    noteList.push_back(noteInfo);
-
-                    startTime += noteInfo.duration;
-                }
-                else
-                {
-                    startTime += duration;
-                }
+                startTime += duration;
             }
         }
     }
 }
 
-// The notes are already in order of occurrence, so just play them one by one
+// The events are already in order of occurrence, so just play them one by one
 // startPos is used to identify the starting position to begin playback from
-void MidiPlayer::playNotesInSystem(std::list<NoteInfo>& noteList, quint32 startPos)
+void MidiPlayer::playNotesInSystem(std::list<unique_ptr<MidiEvent> >& eventList, quint32 startPos)
 {
     quint32 currentPosition = 0;
 
-    while (!noteList.empty())
+    while (!eventList.empty())
     {
         if (!isPlaying)
         {
             return;
         }
 
-        NoteInfo noteInfo = noteList.front();
-        noteList.pop_front();
+        unique_ptr<MidiEvent> activeEvent = std::move(eventList.front());
+        eventList.pop_front();
 
-        if (noteInfo.position < startPos)
+        const uint32_t eventPosition = activeEvent->getPositionIndex();
+
+        if (eventPosition < startPos)
         {
             continue;
         }
 
-        if (noteInfo.messageType == PLAY_NOTE)
-        {
-            if (noteInfo.isMetronome)
-            {
-                rtMidiWrapper.setPatch(noteInfo.channel, midi::MIDI_PRESET_WOODBLOCK);
-                rtMidiWrapper.setVolume(noteInfo.channel, 127);
-                rtMidiWrapper.setPan(noteInfo.channel, Guitar::PAN_CENTER);
-            }
-            else
-            {
-                // grab the patch/pan/volume immediately before playback to allow for real-time mixing
-                if (noteInfo.isMuted)
-                {
-                    rtMidiWrapper.setPatch(noteInfo.channel, midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
-                }
-
-                else
-                {
-                    rtMidiWrapper.setPatch(noteInfo.channel, noteInfo.guitar->GetPreset());
-                }
-
-                rtMidiWrapper.setPan(noteInfo.channel, noteInfo.guitar->GetPan());
-                rtMidiWrapper.setVolume(noteInfo.channel, noteInfo.guitar->GetInitialVolume());
-            }
-
-            rtMidiWrapper.playNote(noteInfo.channel, noteInfo.pitch, noteInfo.velocity);
-        }
-        else if (noteInfo.messageType == STOP_NOTE)
-        {
-            rtMidiWrapper.stopNote(noteInfo.channel, noteInfo.pitch);
-        }
-        else if (noteInfo.messageType == VIBRATO)
-        {
-            rtMidiWrapper.setVibrato(noteInfo.channel, noteInfo.velocity);
-        }
+        activeEvent->performEvent(rtMidiWrapper);
 
         // if we've moved to a new position, move the caret
-        if (noteInfo.position > currentPosition)
+        if (eventPosition > currentPosition)
         {
-            currentPosition = noteInfo.position;
+            currentPosition = eventPosition;
             emit playbackPositionChanged(currentPosition);
         }
 
-        // pause for the required time between notes
-        if (!noteList.empty())
+        // add delay between this event and the next one
+        if (!eventList.empty())
         {
-            usleep(1000 * (noteList.front().startTime - noteInfo.startTime));
+            const int sleepDuration = eventList.front()->getStartTime() - activeEvent->getStartTime();
+            Q_ASSERT(sleepDuration >= 0);
+
+            usleep(1000 * sleepDuration);
         }
         else
         {
-            usleep(1000 * noteInfo.duration);
+            usleep(1000 * activeEvent->getDuration());
         }
     }
 }
@@ -381,7 +352,7 @@ quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const q
 }
 
 // Generates the metronome ticks
-void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteList) const
+void MidiPlayer::generateMetronome(int systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const
 {
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
@@ -405,76 +376,20 @@ void MidiPlayer::generateMetronome(int systemIndex, std::list<NoteInfo>& noteLis
         double duration = tempo * 4.0 / beatValue;
         duration *= beatsPerMeasure / numPulses;
 
+        const quint32 position = barline->GetPosition();
+
         for (quint8 j = 0; j < numPulses; j++)
         {
-            // fill in the note info structure
-            NoteInfo noteInfo;
-            noteInfo.channel = 15;
-            noteInfo.messageType = PLAY_NOTE;
-            noteInfo.position = barline->GetPosition();
-            noteInfo.pitch = midi::MIDI_NOTE_MIDDLE_C;
-            noteInfo.duration = duration;
-            noteInfo.startTime = startTime;
-            noteInfo.isMuted = false;
-            noteInfo.isMetronome = true;
+            MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
+                                                               MetronomeEvent::WEAK_ACCENT;
 
-            // find the note volume - either disabled, strong accent, or weak accent
-            QSettings settings;
-            if (settings.value("midi/metronomeEnabled").toBool() == false)
-            {
-                noteInfo.velocity = 0;
-            }
-            else if (j == 0)
-            {
-                noteInfo.velocity = STRONG_ACCENT;
-            }
-            else
-            {
-                noteInfo.velocity = WEAK_ACCENT;
-            }
-
-            noteList.push_back(noteInfo);
-
-            // now, add the note-off event
-            noteInfo.startTime += duration;
-            noteInfo.duration = 0;
-            noteInfo.messageType = STOP_NOTE;
-            noteList.push_back(noteInfo);
+            eventList.push_back( unique_ptr<MetronomeEvent>( new MetronomeEvent(METRONOME_CHANNEL, startTime,
+                                                                                duration, position, velocity)));
 
             startTime += duration;
+
+            eventList.push_back( unique_ptr<StopNoteEvent> ( new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
+                                                                               MetronomeEvent::METRONOME_PITCH)));
         }
     }
-}
-
-/// Adds a vibrato effect for the notes playing at the given channel.
-/// The vibrato effect begins at the given start time and last for the given duration.
-void MidiPlayer::addVibrato(std::list<NoteInfo> &noteList, int channel, double startTime, double duration, VibratoType type) const
-{
-    // get the user's vibrato settings, depending on the vibrato type
-    QSettings settings;
-    quint8 vibratoWidth = 0;
-
-    if (type == NORMAL_VIBRATO)
-    {
-        vibratoWidth = settings.value("midi/vibrato", 85).toUInt();
-    }
-    else if (type == WIDE_VIBRATO)
-    {
-        vibratoWidth = settings.value("midi/wide_vibrato", 127).toUInt();
-    }
-
-    // add the vibrato event
-    NoteInfo noteInfo;
-    noteInfo.channel = channel;
-    noteInfo.startTime = startTime;
-    noteInfo.messageType = VIBRATO;
-
-    noteInfo.velocity = vibratoWidth;
-    noteInfo.startTime = startTime;
-    noteList.push_back(noteInfo);
-
-    // make sure we reset the vibrato so that any following notes are not affected
-    noteInfo.startTime = startTime + duration;
-    noteInfo.velocity = 0;
-    noteList.push_back(noteInfo);
 }

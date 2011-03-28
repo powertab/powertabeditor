@@ -613,9 +613,13 @@ int8_t Staff::GetSlideSteps(Position *position, Note *note) const
     return nextNote->GetFretNumber() - note->GetFretNumber();
 }
 
-Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, Position *position, Note *note) const
+// TODO - remove the default argument for the voice parameter, once we finish full support for high & low melodies
+Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, Position *position, Note *note, uint32_t voice) const
 {
-    const std::vector<Position*>& positionArray = positionArrays[0]; // TODO - support multiple voices
+    if (!IsValidVoice(voice))
+        throw std::out_of_range("Invalid voice");
+
+    const std::vector<Position*>& positionArray = positionArrays[voice];
 
     // find where the position is within the staff
     auto location = std::find(positionArray.begin(),
