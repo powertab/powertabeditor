@@ -38,8 +38,8 @@ public:
     ~PowerTabEditor();
     static std::unique_ptr<UndoManager> undoManager;
     static ScoreArea* getCurrentScoreArea();
-    static Position* getCurrentPosition();
-    static Note* getCurrentNote();
+    static void getSelectedPositions(std::vector<Position*>& positions);
+    static void getSelectedNotes(std::vector<Note*>& notes);
 
 protected:
     void createActions();
@@ -254,9 +254,15 @@ protected:
     template<typename T>
     struct ToggleablePropertyRecord
     {
-        T* (*objectGetter)(); // pointer to a function for retrieving the object, e.g. getCurrentNote
-        bool (T::*checkPropertySet)() const; // function to check if the property is set, e.g. Note::IsMuted
-        bool (T::*propertySetter)(bool); // function to set the property as true/false, e.g. Note::SetMuted
+         // gets a list of the selected Notes, Positions, etc
+        std::function<void (std::vector<T*>&)> getObjects;
+
+        // function to check if the property is set, e.g. Note::IsMuted
+        std::function<bool (const T*)> propertyGetter;
+
+        // function to set the property as true/false, e.g. Note::SetMuted
+        std::function<bool (T*, bool)> propertySetter;
+
         QString propertyName; // name of the property, for use with the undo menu
     };
 
@@ -277,15 +283,12 @@ protected:
         template <typename T>
         void operator()(ToggleablePropertyRecord<T>& propertyRecord) const
         {
-            T* object = propertyRecord.objectGetter(); // get the object we are modifying, such as a Note* or Position*
-            if (object == NULL) return;
-            
-            const bool isPropertySet = (object->*(propertyRecord.checkPropertySet))();
-            const QString text = isPropertySet ? "Remove " + propertyRecord.propertyName : 
-                                 "Set " + propertyRecord.propertyName;
+            std::vector<T*> objects;
+            propertyRecord.getObjects(objects);  // get the object(s) we are modifying, such as Notes or Positions
             
             // Perform the undo/redo action
-            undoManager->push(new ToggleProperty<T>(object, propertyRecord.propertySetter, !isPropertySet, text));
+            undoManager->push(new ToggleProperty<T>(objects, propertyRecord.propertySetter,
+                                                    propertyRecord.propertyGetter, propertyRecord.propertyName));
         }
     };
 };
