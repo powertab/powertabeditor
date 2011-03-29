@@ -77,6 +77,9 @@ public:
         return currentStringIndex;
     }
 
+    void getSelectedPositions(std::vector<Position*>& positions);
+    void getSelectedNotes(std::vector<Note*>& notes);
+
 signals:
     void moved();
 

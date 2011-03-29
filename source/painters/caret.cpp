@@ -11,6 +11,7 @@
 #include <powertabdocument/position.h>
 
 using std::shared_ptr;
+using std::vector;
 
 Caret::Caret(int tabLineSpacing) :
     lineSpacing(tabLineSpacing)
@@ -222,6 +223,7 @@ bool Caret::setCurrentPositionIndex(uint8_t positionIndex)
     if (positionIndex < getCurrentSystem()->GetPositionCount())
     {
         currentPositionIndex = positionIndex;
+        selectionRange = std::make_pair(positionIndex, positionIndex);
         updatePosition();
         update(boundingRect());
         return true;
@@ -261,6 +263,7 @@ bool Caret::moveCaretStaff(int offset)
         currentStaffIndex = nextStaff;
         currentStringIndex = 0;
         currentPositionIndex = 0;
+        selectionRange = std::make_pair(0, 0);
 
         updatePosition();
 
@@ -278,6 +281,7 @@ bool Caret::moveCaretSection(int offset)
         currentStringIndex = 0;
         currentPositionIndex = 0;
         currentStaffIndex = 0;
+        selectionRange = std::make_pair(0, 0);
         currentSystemIndex = nextSystem;
 
         updatePosition();
@@ -402,4 +406,29 @@ void Caret::updateSelection(int start, int end)
 {
     qDebug() << "Selected Range: " << start << ", " << end;
     selectionRange = std::make_pair(start, end);
+}
+
+/// Returns a list of all of the Position objects that are currently selected
+void Caret::getSelectedPositions(vector<Position *>& positions)
+{
+    getCurrentStaff()->GetPositionsInRange(positions, 0,
+                                           std::min(selectionRange.first, selectionRange.second),
+                                           std::max(selectionRange.first, selectionRange.second));
+}
+
+/// Returns a list of all of the Note objects that are currently selected
+void Caret::getSelectedNotes(vector<Note*>& notes)
+{
+    vector<Position*> positions;
+    getSelectedPositions(positions);
+
+    notes.clear();
+
+    for (size_t i = 0; i < positions.size(); i++)
+    {
+        for (size_t j = 0; j < positions[i]->GetNoteCount(); j++)
+        {
+            notes.push_back(positions[i]->GetNote(j));
+        }
+    }
 }
