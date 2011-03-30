@@ -64,10 +64,15 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
 
     BOOST_AUTO_TEST_CASE(Equality)
     {
-        PositionFixture pos1;
-        PositionFixture pos2;
+        PositionFixture pos1, pos2, pos3;
 
         BOOST_CHECK(*(pos1.pos) == *(pos2.pos));
+        pos2.pos->GetNote(0)->SetTrill(5);
+        BOOST_CHECK(*(pos1.pos) != *(pos2.pos));
+
+        BOOST_CHECK(*(pos1.pos) == *(pos3.pos));
+        pos3.pos->SetTremoloBar(Position::diveAndHold, 4, 4);
+        BOOST_CHECK(*(pos1.pos) != *(pos3.pos));
     }
 
     BOOST_FIXTURE_TEST_CASE(CloneObject, PositionFixture)
@@ -88,6 +93,9 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
 
         *pos2 = *pos;
         BOOST_CHECK(*pos == *pos2);
+
+        pos2->GetNote(0)->SetFretNumber(24);
+        BOOST_CHECK(*pos != *pos2);
 
         delete pos2;
     }

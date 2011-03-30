@@ -47,8 +47,6 @@ Position::Position() :
     m_position(DEFAULT_POSITION), m_beaming(DEFAULT_BEAMING),
     m_data(DEFAULT_DATA)
 {
-    //------Last Checked------//
-    // - Jan 18, 2005
     ClearComplexSymbolArrayContents();
 }
 
@@ -61,8 +59,6 @@ Position::Position() :
 Position::Position(uint32_t position, uint8_t durationType, uint8_t dotCount) :
     m_position(position), m_beaming(DEFAULT_BEAMING), m_data(DEFAULT_DATA)
 {
-    //------Last Checked------//
-    // - Jan 18, 2005
     assert(IsValidPosition(position));
     assert(IsValidDurationType(durationType));
 
@@ -80,22 +76,16 @@ Position::Position(const Position& position) :
     m_position(DEFAULT_POSITION), m_beaming(DEFAULT_BEAMING),
     m_data(DEFAULT_DATA)
 {
-    //------Last Checked------//
-    // - Dec 17, 2004
     *this = position;
 }
 
 /// Destructor
 Position::~Position()
 {
-    //------Last Checked------//
-    // - Jan 18, 2005
-    ClearComplexSymbolArrayContents();
     for (uint32_t i = 0; i < m_noteArray.size(); i++)
     {
         delete m_noteArray.at(i);
     }
-    m_noteArray.clear();
 }
 
 /// Assignment Operator
@@ -128,11 +118,7 @@ const Position& Position::operator=(const Position& position)
 
 Position* Position::CloneObject() const
 {
-    Position* newPosition = new Position;
-
-    *newPosition = *this;
-
-    return newPosition;
+    return new Position(*this);
 }
 
 struct CompareNotePointers
