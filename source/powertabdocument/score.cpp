@@ -456,6 +456,14 @@ bool Score::InsertGuitar(GuitarPtr guitar)
     m_guitarArray.push_back(guitar);
     guitar->SetNumber(m_guitarArray.size() - 1);
 
+    // add staff to each system
+    for (size_t i = 0; i < m_systemArray.size(); i++)
+    {
+        SystemPtr system = m_systemArray[i];
+        system->m_staffArray.push_back(new Staff);
+        UpdateSystemHeight(system);
+    }
+
     return true;
 }
 
@@ -465,6 +473,14 @@ bool Score::RemoveGuitar(size_t index)
     CHECK_THAT(IsValidGuitarIndex(index), false);
 
     m_guitarArray.erase(m_guitarArray.begin() + index);
+
+    // remove staff from each system
+    for (size_t i = 0; i < m_systemArray.size(); i++)
+    {
+        SystemPtr system = m_systemArray[i];
+        system->m_staffArray.erase(system->m_staffArray.begin() + index);
+        UpdateSystemHeight(system);
+    }
 
     return true;
 }

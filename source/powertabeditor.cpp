@@ -1195,7 +1195,9 @@ void PowerTabEditor::addGuitar()
     Mixer* currentMixer = dynamic_cast<Mixer*>(scrollArea->widget());
     Q_ASSERT(currentMixer != NULL);
 
-    undoManager->push(new AddGuitar(score, currentMixer));
+    AddGuitar* addGuitar = new AddGuitar(score, currentMixer);
+    connect(addGuitar, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
+    undoManager->push(addGuitar);
 }
 
 /// Edits or creates a barline.
