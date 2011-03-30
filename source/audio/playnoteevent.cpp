@@ -6,8 +6,10 @@
 
 #include <assert.h>
 
+using std::shared_ptr;
+
 PlayNoteEvent::PlayNoteEvent(uint8_t channel, double startTime, double duration, uint8_t pitch,
-                             uint32_t positionIndex, Guitar* guitar, bool isMuted, VelocityType velocity) :
+                             uint32_t positionIndex, shared_ptr<Guitar> guitar, bool isMuted, VelocityType velocity) :
     MidiEvent(channel, startTime, duration, positionIndex),
     pitch(pitch),
     guitar(guitar),

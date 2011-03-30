@@ -595,7 +595,7 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
             KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
 
             // Find the guitar corresponding to the current staff
-            Guitar* currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));
+            shared_ptr<Guitar> currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));
 
             Q_ASSERT(currentGuitar != NULL);
 

@@ -35,10 +35,11 @@ public:
     // some useful typedefs for smart pointers
     typedef std::shared_ptr<System> SystemPtr;
     typedef std::shared_ptr<const System> SystemConstPtr;
+    typedef std::shared_ptr<Guitar> GuitarPtr;
 
 // Member Variables
 public:
-    std::vector<Guitar*>                 m_guitarArray;              ///< Guitars used by the score
+    std::vector<GuitarPtr>              m_guitarArray;              ///< Guitars used by the score
     std::vector<ChordDiagram*>           m_chordDiagramArray;        ///< Chord diagrams used in the score
     std::vector<FloatingText*>           m_floatingTextArray;        ///< Floating text used in the score
     std::vector<GuitarIn*>               m_guitarInArray;            ///< Guitar Ins used in the score
@@ -82,17 +83,19 @@ public:
     /// @return True if the guitar index is valid, false if not
     bool IsValidGuitarIndex(uint32_t index) const
         {return (index < GetGuitarCount());}
+
     /// Gets the number of guitars in the score
     /// @return The number of guitars in the score
     size_t GetGuitarCount() const
         {return (m_guitarArray.size());}
+
     /// Gets the nth guitar in the score
     /// @param index Index of the guitar to get
     /// @return The nth guitar in the score
-    Guitar* GetGuitar(uint32_t index) const
+    GuitarPtr GetGuitar(uint32_t index) const
     {
-        CHECK_THAT(IsValidGuitarIndex(index), NULL);
-        return (m_guitarArray[index]);
+        CHECK_THAT(IsValidGuitarIndex(index), GuitarPtr());
+        return m_guitarArray[index];
     }
 
 // Chord Diagram Functions

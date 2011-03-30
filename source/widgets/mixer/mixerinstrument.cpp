@@ -10,7 +10,9 @@
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/generalmidi.h>
 
-MixerInstrument::MixerInstrument(Guitar* instrument, QWidget *parent) :
+using std::shared_ptr;
+
+MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent) :
     QWidget(parent),
     guitar(instrument)
 {

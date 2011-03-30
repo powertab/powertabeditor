@@ -43,12 +43,6 @@ Score::Score(const Score& score)
 /// Destructor
 Score::~Score()
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
-    for (uint32_t i = 0; i < m_guitarArray.size(); i++)
-    {
-        delete m_guitarArray.at(i);
-    }
     for (uint32_t i = 0; i < m_chordDiagramArray.size(); i++)
     {
         delete m_chordDiagramArray.at(i);
@@ -225,8 +219,11 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
     if (system->GetStaffCount() != GetGuitarCount())
     {
         std::vector<uint8_t> staffSizes;
+        // make a list of the number of strings for each guitar
+        using namespace std::placeholders;
         std::transform(m_guitarArray.begin(), m_guitarArray.end(),
-                       std::back_inserter(staffSizes), std::mem_fun(&Guitar::GetStringCount));
+                       std::back_inserter(staffSizes),
+                       std::bind(&Guitar::GetStringCount, _1));
         system->Init(staffSizes);
     }
 
@@ -440,7 +437,7 @@ void Score::UpdateExtraSpacing(SystemPtr system)
 void Score::Init()
 {
     // create a guitar
-    Guitar* guitar = new Guitar;
+    GuitarPtr guitar = std::make_shared<Guitar>();
     guitar->GetTuningPtr()->SetToStandard();
     m_guitarArray.push_back(guitar);
 

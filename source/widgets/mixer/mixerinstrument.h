@@ -2,6 +2,7 @@
 #define MIXERINSTRUMENT_H
 
 #include <QWidget>
+#include <memory>
 
 class Guitar;
 class QHBoxLayout;
@@ -15,8 +16,9 @@ class MixerInstrument : public QWidget
 {
     Q_OBJECT
 public:
-    MixerInstrument(Guitar* instrument, QWidget *parent = 0);
-    Guitar* getInstrument() { return guitar; }
+    MixerInstrument(std::shared_ptr<Guitar> instrument, QWidget *parent = 0);
+
+    std::shared_ptr<Guitar> getInstrument() { return guitar; }
 
 protected:
     QHBoxLayout* layout;
@@ -30,18 +32,14 @@ protected:
     QSlider* trackVolume;
     QDial* trackPan;
 
-	QComboBox* trackPatch;
+    QComboBox* trackPatch;
 
-    Guitar* guitar;
-
-signals:
+    std::shared_ptr<Guitar> guitar;
 
 public slots:
-
     void changePan(int value);
     void changeVolume(int value);
-	void changePatch(int value);
-
+    void changePatch(int value);
 };
 
 #endif // MIXERINSTRUMENT_H

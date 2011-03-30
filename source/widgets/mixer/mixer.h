@@ -16,11 +16,12 @@ class Mixer : public QFrame
 public:
     Mixer(std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
 
-    void AddInstrument(Guitar* guitar);
-    Guitar* getInstrument(int index);
+    void AddInstrument(std::shared_ptr<Guitar> guitar);
+
+    std::shared_ptr<Guitar> getInstrument(size_t index);
 
 protected:
-    QList<MixerInstrument *> channelList;
+    std::vector<MixerInstrument*> channelList;
     QVBoxLayout* layout;
 
 signals:

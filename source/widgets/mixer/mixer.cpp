@@ -5,7 +5,9 @@
 #include <skinmanager.h>
 #include "mixerinstrument.h"
 
-Mixer::Mixer(std::shared_ptr<SkinManager> skinManager, QFrame *parent) :
+using std::shared_ptr;
+
+Mixer::Mixer(shared_ptr<SkinManager> skinManager, QFrame *parent) :
     QFrame(parent)
 {
     setFrameStyle(QFrame::StyledPanel);
@@ -17,7 +19,7 @@ Mixer::Mixer(std::shared_ptr<SkinManager> skinManager, QFrame *parent) :
     setLayout(layout);
 }
 
-void Mixer::AddInstrument(Guitar *guitar)
+void Mixer::AddInstrument(shared_ptr<Guitar> guitar)
 {
     MixerInstrument* channel = new MixerInstrument(guitar);
     layout->addWidget(channel);
@@ -25,7 +27,7 @@ void Mixer::AddInstrument(Guitar *guitar)
     channelList.push_back(channel);
 }
 
-Guitar* Mixer::getInstrument(int index)
+shared_ptr<Guitar> Mixer::getInstrument(size_t index)
 {
     return channelList.at(index)->getInstrument();
 }

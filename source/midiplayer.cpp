@@ -94,7 +94,7 @@ void MidiPlayer::generateEventsForSystem(int systemIndex, std::list<unique_ptr<M
     for (quint32 i = 0; i < system->GetStaffCount(); i++)
     {
         Staff* staff = system->GetStaff(i);
-        Guitar* guitar = caret->getCurrentScore()->GetGuitar(i);
+        shared_ptr<Guitar> guitar = caret->getCurrentScore()->GetGuitar(i);
 
         for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
         {
