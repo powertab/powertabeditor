@@ -59,6 +59,7 @@
 #include <actions/deleteposition.h>
 #include <actions/removesystem.h>
 #include <actions/addsystem.h>
+#include <actions/addguitar.h>
 
 using std::shared_ptr;
 
@@ -568,6 +569,10 @@ void PowerTabEditor::createActions()
     connect(slideOutOfUpwardsAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
     slideOutMapper->setMapping(slideOutOfUpwardsAct, Note::slideOutOfUpwards);
 
+    // Guitar Menu
+    addGuitarAct = new QAction(tr("Add Guitar"), this);
+    connect(addGuitarAct, SIGNAL(triggered()), this, SLOT(addGuitar()));
+
     // Window Menu Actions
     tabCycleMapper = new QSignalMapper(this);
 
@@ -715,6 +720,9 @@ void PowerTabEditor::createMenus()
     slideOutOfMenu->addAction(slideOutOfDownwardsAct);
     slideOutOfMenu->addAction(slideOutOfUpwardsAct);
 
+    guitarMenu = menuBar()->addMenu(tr("&Guitar"));
+    guitarMenu->addAction(addGuitarAct);
+
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(vibratoAct);
     tabSymbolsMenu->addAction(wideVibratoAct);
@@ -830,7 +838,7 @@ void PowerTabEditor::setupNewDocument()
     QScrollArea* scrollArea = new QScrollArea;
     for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
     {
-        mixer->AddInstrument(doc->GetGuitarScore()->GetGuitar(i));
+        mixer->addInstrument(doc->GetGuitarScore()->GetGuitar(i));
     }
     scrollArea->setWidget(mixer);
     mixerList->addWidget(scrollArea);
@@ -924,7 +932,7 @@ QString PowerTabEditor::getApplicationName() const
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()
 {
-    return reinterpret_cast<ScoreArea*>(tabWidget->currentWidget());
+    return dynamic_cast<ScoreArea*>(tabWidget->currentWidget());
 }
 
 void PowerTabEditor::getSelectedPositions(std::vector<Position*>& positions)
@@ -1177,6 +1185,17 @@ void PowerTabEditor::clearCurrentPosition()
     {
         undoManager->push(new DeleteBarline(system, currentBar));
     }
+}
+
+void PowerTabEditor::addGuitar()
+{
+    Score* score = getCurrentScoreArea()->getCaret()->getCurrentScore();
+
+    QScrollArea* scrollArea = dynamic_cast<QScrollArea*>(mixerList->currentWidget());
+    Mixer* currentMixer = dynamic_cast<Mixer*>(scrollArea->widget());
+    Q_ASSERT(currentMixer != NULL);
+
+    undoManager->push(new AddGuitar(score, currentMixer));
 }
 
 /// Edits or creates a barline.

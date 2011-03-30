@@ -3,6 +3,7 @@
 
 #include <QFrame>
 
+#include <vector>
 #include <memory>
 
 class SkinManager;
@@ -16,12 +17,13 @@ class Mixer : public QFrame
 public:
     Mixer(std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
 
-    void AddInstrument(std::shared_ptr<Guitar> guitar);
+    void addInstrument(std::shared_ptr<Guitar> guitar);
+    void removeInstrument(size_t index);
 
-    std::shared_ptr<Guitar> getInstrument(size_t index);
+    std::shared_ptr<Guitar> getInstrument(size_t index) const;
 
 protected:
-    std::vector<MixerInstrument*> channelList;
+    std::vector<std::shared_ptr<MixerInstrument> > channelList;
     QVBoxLayout* layout;
 
 signals:

@@ -183,7 +183,7 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
 	connect(trackPatch, SIGNAL(activated(int)), this, SLOT(changePatch(int)));
 	layout->addWidget(trackPatch);
 
-    layout->addStretch();
+    layout->setSizeConstraint(QLayout::SetFixedSize);
 
     setLayout(layout);
 }
@@ -200,6 +200,6 @@ void MixerInstrument::changeVolume(int value)
 
 void MixerInstrument::changePatch(int value)
 {
-	guitar->SetPreset(value);
+    guitar->SetPreset(value);
 }
 

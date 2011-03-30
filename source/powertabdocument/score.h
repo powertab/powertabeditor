@@ -30,7 +30,8 @@ class System;
 class Score : public PowerTabObject
 {
 public:
-    static const uint8_t SYSTEM_SPACING; ///< spacing between adjacent systems
+    static const uint8_t SYSTEM_SPACING = 50; ///< spacing between adjacent systems
+    static const uint8_t MAX_NUM_GUITARS = 15; ///< maximum number of guitars allowed (limited by MIDI channels)
 
     // some useful typedefs for smart pointers
     typedef std::shared_ptr<System> SystemPtr;
@@ -97,6 +98,9 @@ public:
         CHECK_THAT(IsValidGuitarIndex(index), GuitarPtr());
         return m_guitarArray[index];
     }
+
+    bool InsertGuitar(GuitarPtr guitar);
+    bool RemoveGuitar(size_t index);
 
 // Chord Diagram Functions
     /// Determines if a guitar index is valid

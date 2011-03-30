@@ -25,8 +25,6 @@
 #include <map>
 #include <bitset>
 
-const uint8_t Score::SYSTEM_SPACING = 50;
-
 /// Default Constructor
 Score::Score()
 {
@@ -448,4 +446,25 @@ void Score::Init()
     SystemPtr newSystem(new System);
     newSystem->Init(staffSizes);
     InsertSystem(newSystem, 0);
+}
+
+/// Inserts a guitar into the score, and creates a corresponding staff
+bool Score::InsertGuitar(GuitarPtr guitar)
+{
+    CHECK_THAT(m_guitarArray.size() < MAX_NUM_GUITARS, false);
+
+    m_guitarArray.push_back(guitar);
+    guitar->SetNumber(m_guitarArray.size() - 1);
+
+    return true;
+}
+
+/// Removes the guitar (and staff) at the specified index
+bool Score::RemoveGuitar(size_t index)
+{
+    CHECK_THAT(IsValidGuitarIndex(index), false);
+
+    m_guitarArray.erase(m_guitarArray.begin() + index);
+
+    return true;
 }

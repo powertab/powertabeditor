@@ -112,7 +112,8 @@ SOURCES += main.cpp\
     audio/playnoteevent.cpp \
     audio/stopnoteevent.cpp \
     audio/vibratoevent.cpp \
-    audio/metronomeevent.cpp
+    audio/metronomeevent.cpp \
+    actions/addguitar.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -205,7 +206,8 @@ HEADERS  += powertabeditor.h \
     audio/playnoteevent.h \
     audio/stopnoteevent.h \
     audio/vibratoevent.h \
-    audio/metronomeevent.h
+    audio/metronomeevent.h \
+    actions/addguitar.h
 
 RESOURCES += \
     resources.qrc

@@ -103,6 +103,8 @@ protected slots:
     void clearNote();
     void clearCurrentPosition();
 
+    void addGuitar();
+
     void cycleTab(int offset);
 
     void updateNoteDuration(int duration);
@@ -225,6 +227,9 @@ protected:
     QAction* slideOutOfDownwardsAct;
     QAction* slideOutOfUpwardsAct;
     QSignalMapper* slideOutMapper;
+
+    QMenu* guitarMenu;
+    QAction* addGuitarAct;
 
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab

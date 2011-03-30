@@ -16,18 +16,27 @@ Mixer::Mixer(shared_ptr<SkinManager> skinManager, QFrame *parent) :
 
     layout = new QVBoxLayout;
     layout->setSpacing(0);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
     setLayout(layout);
 }
 
-void Mixer::AddInstrument(shared_ptr<Guitar> guitar)
+void Mixer::addInstrument(shared_ptr<Guitar> guitar)
 {
-    MixerInstrument* channel = new MixerInstrument(guitar);
-    layout->addWidget(channel);
+    std::shared_ptr<MixerInstrument> channel(new MixerInstrument(guitar));
+    layout->addWidget(channel.get());
 
     channelList.push_back(channel);
 }
 
-shared_ptr<Guitar> Mixer::getInstrument(size_t index)
+void Mixer::removeInstrument(size_t index)
+{
+    Q_ASSERT(index < channelList.size());
+
+    layout->removeWidget(channelList.at(index).get());
+    channelList.erase(channelList.begin() + index);
+}
+
+shared_ptr<Guitar> Mixer::getInstrument(size_t index) const
 {
     return channelList.at(index)->getInstrument();
 }
