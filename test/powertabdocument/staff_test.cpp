@@ -229,4 +229,16 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
         BOOST_CHECK_EQUAL(staff.GetPosition(0, 1), highPositions.at(2));
     }
 
+    BOOST_FIXTURE_TEST_CASE(AssignmentAndEquality, StaffFixture)
+    {
+        Staff newStaff;
+        BOOST_CHECK(newStaff != staff);
+
+        newStaff = staff;
+        BOOST_CHECK(newStaff == staff);
+
+        newStaff.GetPosition(0, 2)->SetArpeggioDown(true);
+        BOOST_CHECK(newStaff != staff);
+    }
+
 BOOST_AUTO_TEST_SUITE_END()

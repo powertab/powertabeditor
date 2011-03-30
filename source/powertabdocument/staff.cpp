@@ -77,7 +77,6 @@ Staff::Staff(const Staff& staff) :
     *this = staff;
 }
 
-/// Destructor
 Staff::~Staff()
 {
     for (auto i = positionArrays.begin(); i != positionArrays.end(); ++i)
@@ -86,11 +85,9 @@ Staff::~Staff()
         {
             delete *j;
         }
-        i->clear();
     }
 }
 
-/// Assignment Operator
 const Staff& Staff::operator=(const Staff& staff)
 {
     if (this != &staff)
@@ -103,55 +100,57 @@ const Staff& Staff::operator=(const Staff& staff)
         m_symbolSpacing = staff.m_symbolSpacing;
         m_tablatureStaffBelowSpacing = staff.m_tablatureStaffBelowSpacing;
 
-        positionArrays = staff.positionArrays;
+        for (size_t i = 0; i < staff.positionArrays.size(); i++)
+        {
+            // clone each position array
+            std::transform(staff.positionArrays[i].begin(),
+                           staff.positionArrays[i].end(),
+                           std::back_inserter(positionArrays[i]),
+                           std::mem_fun(&Position::CloneObject));
+        }
     }
     return *this;
 }
 
 Staff* Staff::CloneObject() const
 {
-    Staff* newStaff = new Staff;
-
-    newStaff->m_data = m_data;
-    newStaff->m_standardNotationStaffAboveSpacing = m_standardNotationStaffAboveSpacing;
-    newStaff->m_standardNotationStaffBelowSpacing = m_standardNotationStaffBelowSpacing;
-    newStaff->m_symbolSpacing = m_symbolSpacing;
-    newStaff->m_tablatureStaffBelowSpacing = m_tablatureStaffBelowSpacing;
-
-    for (size_t i = 0; i < positionArrays.size(); i++)
-    {
-        // clone each position array into the new staff
-        std::transform(positionArrays[i].begin(),
-                       positionArrays[i].end(),
-                       std::back_inserter(newStaff->positionArrays[i]),
-                       std::mem_fun(&Position::CloneObject));
-    }
-
-    return newStaff;
+    return new Staff(*this);
 }
 
-/// Equality Operator
+struct ComparePositionPointers
+{
+    bool operator()(Position* pos1, Position* pos2)
+    {
+        return *pos1 == *pos2;
+    }
+};
+
 bool Staff::operator==(const Staff& staff) const
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
-    return (
-        (m_data == staff.m_data) &&
-        (m_standardNotationStaffAboveSpacing ==
-            staff.m_standardNotationStaffAboveSpacing) &&
-        (m_standardNotationStaffBelowSpacing ==
-            staff.m_standardNotationStaffBelowSpacing) &&
-        (m_symbolSpacing == staff.m_symbolSpacing) &&
-        (m_tablatureStaffBelowSpacing == staff.m_tablatureStaffBelowSpacing) &&
-        (positionArrays == staff.positionArrays)
-    );
+    // compare each position in each voice
+    for (size_t i = 0; i < staff.positionArrays.size(); i++)
+    {
+        if (staff.positionArrays[i].size() != positionArrays[i].size())
+        {
+            return false;
+        }
+
+        if (!std::equal(positionArrays[i].begin(), positionArrays[i].end(),
+                        staff.positionArrays[i].begin(), ComparePositionPointers()))
+        {
+            return false;
+        }
+    }
+
+    return ((m_data == staff.m_data) &&
+            (m_standardNotationStaffAboveSpacing == staff.m_standardNotationStaffAboveSpacing) &&
+            (m_standardNotationStaffBelowSpacing == staff.m_standardNotationStaffBelowSpacing) &&
+            (m_symbolSpacing == staff.m_symbolSpacing) &&
+            (m_tablatureStaffBelowSpacing == staff.m_tablatureStaffBelowSpacing));
 }
 
-/// Inequality Operator
 bool Staff::operator!=(const Staff& staff) const
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     return (!operator==(staff));
 }
 
