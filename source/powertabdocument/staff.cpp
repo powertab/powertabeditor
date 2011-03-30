@@ -19,6 +19,7 @@
 #include <numeric> // partial_sum
 #include <stdexcept>
 #include <functional>
+#include <algorithm>
 
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);

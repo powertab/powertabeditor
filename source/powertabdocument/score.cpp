@@ -24,6 +24,7 @@
 
 #include <map>
 #include <bitset>
+#include <algorithm>
 
 /// Default Constructor
 Score::Score()

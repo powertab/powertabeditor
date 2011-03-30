@@ -10,6 +10,8 @@
 #include <powertabdocument/note.h>
 #include <powertabdocument/position.h>
 
+#include <algorithm>
+
 using std::shared_ptr;
 using std::vector;
 

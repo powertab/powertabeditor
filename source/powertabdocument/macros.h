@@ -3,9 +3,7 @@
 
 #include <cassert>
 #include <stdint.h>
-#include <algorithm> // std::transform
 #include <string>
-using std::string;
 #include <iostream>
 
 // Little-endian based LONG/WORD/BYTE macros
@@ -33,18 +31,6 @@ using std::string;
 #define HIBYTE(w)           ((uint8_t)((uint32_t)(w) >> 8))
 #endif
 
-// min/max macros - TODO - remove these in favour of std::min and std::max
-/*
-#ifndef NOMINMAX
-#ifndef max
-#define max(a,b)  (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef min
-#define min(a,b)  (((a) < (b)) ? (a) : (b))
-#endif
-#endif*/
-
 #ifndef CHECK_THAT
 #define CHECK_THAT(cond, rc) 	\
     if ( cond ) {}			\
@@ -60,6 +46,6 @@ using std::string;
 #define UNUSED(x) (void)x;
 
 
-extern string ArabicToRoman(uint32_t number, bool upperCase);
+extern std::string ArabicToRoman(uint32_t number, bool upperCase);
 
 #endif
