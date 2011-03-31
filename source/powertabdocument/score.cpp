@@ -461,7 +461,7 @@ bool Score::InsertGuitar(GuitarPtr guitar)
     for (size_t i = 0; i < m_systemArray.size(); i++)
     {
         SystemPtr system = m_systemArray[i];
-        system->m_staffArray.push_back(new Staff);
+        system->m_staffArray.push_back(new Staff(guitar->GetStringCount(), Staff::TREBLE_CLEF));
         UpdateSystemHeight(system);
     }
 
@@ -484,4 +484,12 @@ bool Score::RemoveGuitar(size_t index)
     }
 
     return true;
+}
+
+void Score::MergeScore(const Score &otherScore)
+{
+    using namespace std::placeholders;
+
+    std::for_each(otherScore.m_guitarArray.begin(), otherScore.m_guitarArray.end(),
+                  std::bind(&Score::InsertGuitar, this, _1));
 }

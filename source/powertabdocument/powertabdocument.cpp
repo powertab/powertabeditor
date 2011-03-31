@@ -144,6 +144,8 @@ bool PowerTabDocument::Deserialize(PowerTabInputStream& stream)
     }
     m_scoreArray.push_back(bassScore);
 
+    guitarScore->MergeScore(*bassScore);
+
     // Read the document font settings
     uint32_t fontSettingIndex = 0;
     for (; fontSettingIndex < NUM_DOCUMENT_FONT_SETTINGS; fontSettingIndex++)

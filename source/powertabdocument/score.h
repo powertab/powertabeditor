@@ -252,6 +252,8 @@ public:
 
     void UpdateToVer2Structure();
 
+    void MergeScore(const Score& otherScore);
+
 };
 
 #endif

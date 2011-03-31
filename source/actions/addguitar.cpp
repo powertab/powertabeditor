@@ -9,6 +9,8 @@ AddGuitar::AddGuitar(Score* score, Mixer* mixer) :
     mixer(mixer)
 {
     newGuitar = std::make_shared<Guitar>();
+    newGuitar->GetTuningRef().SetToStandard();
+
     setText(QObject::tr("Add Guitar"));
 }
 
