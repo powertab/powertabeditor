@@ -60,33 +60,34 @@ void MidiPlayer::run()
     currentSystemIndex = caret->getCurrentSystemIndex();
     quint32 startPos = caret->getCurrentPositionIndex();
 
+    std::list<unique_ptr<MidiEvent> > eventList;
+    double timeStamp = 0;
+
     // go through each system, generate a list of the notes (midi events) from each staff
     // then, sort notes by their start time, and play them in order
     for (; currentSystemIndex < caret->getCurrentScore()->GetSystemCount(); ++currentSystemIndex)
     {
-        std::list<unique_ptr<MidiEvent>> eventList;
-        generateEventsForSystem(currentSystemIndex, eventList);
-        generateMetronome(currentSystemIndex, eventList);
-
-        eventList.sort(CompareEventTimestamps());
-
-        playMidiEvents(eventList, startPos);
+        generateMetronome(currentSystemIndex, timeStamp, eventList);
+        timeStamp = generateEventsForSystem(currentSystemIndex, timeStamp, eventList);
 
         if (startPos > 0)
         {
             startPos = 0;
         }
 
-        if (!isPlaying)
-        {
-            return;
-        }
+        eventList.sort(CompareEventTimestamps());
     }
+
+    playMidiEvents(eventList, startPos);
 }
 
-// Generates a list of all notes in the given system, by iterating through each position in each staff of the system
-void MidiPlayer::generateEventsForSystem(uint32_t systemIndex, std::list<unique_ptr<MidiEvent> >& eventList) const
+/// Generates a list of all notes in the given system, by iterating through each position in each staff of the system
+/// @return The timestamp of the end of the last event in the system
+double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double systemStartTime,
+                                         std::list<unique_ptr<MidiEvent> >& eventList) const
 {
+    double endTime = systemStartTime;
+
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
     for (quint32 i = 0; i < system->GetStaffCount(); i++)
@@ -96,7 +97,8 @@ void MidiPlayer::generateEventsForSystem(uint32_t systemIndex, std::list<unique_
 
         for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
         {
-            double startTime = 0; // each note in the staff is given a start time relative to the first note of the staff
+            // each note in the staff is given a start time relative to the first note of the staff
+            double startTime = systemStartTime;
 
             for (quint32 j = 0; j < staff->GetPositionCount(voice); j++)
             {
@@ -212,9 +214,13 @@ void MidiPlayer::generateEventsForSystem(uint32_t systemIndex, std::list<unique_
                 }
 
                 startTime += duration;
+
+                endTime = std::max(endTime, startTime);
             }
         }
     }
+
+    return endTime;
 }
 
 // The events are already in order of occurrence, so just play them one by one
@@ -254,6 +260,7 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList, qu
         if (eventSystemIndex != currentSystem)
         {
             currentSystem = eventSystemIndex;
+            currentPosition = 0;
             emit playbackSystemChanged(currentSystem);
         }
 
@@ -360,15 +367,14 @@ quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const q
 }
 
 // Generates the metronome ticks
-void MidiPlayer::generateMetronome(uint32_t systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const
+void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
+                                   std::list<std::unique_ptr<MidiEvent> >& eventList) const
 {
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
     std::vector<Barline*> barlines;
     system->GetBarlines(barlines);
     barlines.pop_back(); // don't need the end barline
-
-    double startTime = 0;
 
     for (size_t i = 0; i < barlines.size(); i++)
     {

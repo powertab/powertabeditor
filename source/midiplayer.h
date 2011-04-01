@@ -44,8 +44,10 @@ protected:
     TempoMarker* getCurrentTempoMarker(const quint32 positionIndex) const;
     double calculateNoteDuration(Position* currentPosition) const;
 
-    void generateEventsForSystem(uint32_t systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const;
-    void generateMetronome(uint32_t systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const;
+    double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,
+                                 std::list<std::unique_ptr<MidiEvent> >& eventList) const;
+    void generateMetronome(uint32_t systemIndex, double startTime,
+                           std::list<std::unique_ptr<MidiEvent> >& eventList) const;
     void playMidiEvents(std::list<std::unique_ptr<MidiEvent> >& eventList, quint32 startPos);
     double getWholeRestDuration(std::shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const;
 
