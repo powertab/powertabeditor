@@ -48,7 +48,7 @@ protected:
                                  std::list<std::unique_ptr<MidiEvent> >& eventList) const;
     void generateMetronome(uint32_t systemIndex, double startTime,
                            std::list<std::unique_ptr<MidiEvent> >& eventList) const;
-    void playMidiEvents(std::list<std::unique_ptr<MidiEvent> >& eventList, quint32 startPos);
+    void playMidiEvents(std::list<std::unique_ptr<MidiEvent> >& eventList, uint32_t startSystem, uint32_t startPos);
     double getWholeRestDuration(std::shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const;
 
     Caret* caret;

@@ -57,28 +57,24 @@ void MidiPlayer::run()
 {
     isPlaying = true;
 
-    currentSystemIndex = caret->getCurrentSystemIndex();
-    quint32 startPos = caret->getCurrentPositionIndex();
+    uint32_t startSystemIndex = caret->getCurrentSystemIndex();
+    uint32_t startPos = caret->getCurrentPositionIndex();
 
     std::list<unique_ptr<MidiEvent> > eventList;
     double timeStamp = 0;
 
     // go through each system, generate a list of the notes (midi events) from each staff
     // then, sort notes by their start time, and play them in order
-    for (; currentSystemIndex < caret->getCurrentScore()->GetSystemCount(); ++currentSystemIndex)
+    for (currentSystemIndex = 0; currentSystemIndex < caret->getCurrentScore()->GetSystemCount(); ++currentSystemIndex)
     {
         generateMetronome(currentSystemIndex, timeStamp, eventList);
-        timeStamp = generateEventsForSystem(currentSystemIndex, timeStamp, eventList);
 
-        if (startPos > 0)
-        {
-            startPos = 0;
-        }
+        timeStamp = generateEventsForSystem(currentSystemIndex, timeStamp, eventList);
 
         eventList.sort(CompareEventTimestamps());
     }
 
-    playMidiEvents(eventList, startPos);
+    playMidiEvents(eventList, startSystemIndex, startPos);
 }
 
 /// Generates a list of all notes in the given system, by iterating through each position in each staff of the system
@@ -225,7 +221,8 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
 // The events are already in order of occurrence, so just play them one by one
 // startPos is used to identify the starting position to begin playback from
-void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList, quint32 startPos)
+void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
+                                uint32_t startSystem, uint32_t startPos)
 {
     uint32_t currentPosition = 0;
     uint32_t currentSystem = 0;
@@ -241,10 +238,15 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList, qu
         eventList.pop_front();
 
         const uint32_t eventPosition = activeEvent->getPositionIndex();
+        const uint32_t eventSystemIndex = activeEvent->getSystemIndex();
 
-        if (eventPosition < startPos)
+        if (eventSystemIndex < startSystem || eventPosition < startPos)
         {
             continue;
+        }
+        else
+        {
+            startPos = startSystem = 0;
         }
 
         activeEvent->performEvent(rtMidiWrapper);
@@ -256,7 +258,6 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList, qu
             emit playbackPositionChanged(currentPosition);
         }
 
-        const uint32_t eventSystemIndex = activeEvent->getSystemIndex();
         if (eventSystemIndex != currentSystem)
         {
             currentSystem = eventSystemIndex;
