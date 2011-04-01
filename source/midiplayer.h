@@ -26,7 +26,7 @@ public:
 
 signals:
     // these signals are used to notify the caret when a position change is necessary
-    void playbackSystemChanged();
+    void playbackSystemChanged(quint32 systemIndex);
     void playbackPositionChanged(quint8 positionIndex);
 
 protected:
@@ -44,8 +44,8 @@ protected:
     TempoMarker* getCurrentTempoMarker(const quint32 positionIndex) const;
     double calculateNoteDuration(Position* currentPosition) const;
 
-    void generateEventsForSystem(int systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const;
-    void generateMetronome(int systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const;
+    void generateEventsForSystem(uint32_t systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const;
+    void generateMetronome(uint32_t systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const;
     void playNotesInSystem(std::list<std::unique_ptr<MidiEvent> >& eventList, quint32 startPos);
     double getWholeRestDuration(std::shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const;
 

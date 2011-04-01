@@ -970,7 +970,7 @@ void PowerTabEditor::startStopPlayback()
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
 
         midiPlayer.reset(new MidiPlayer(getCurrentScoreArea()->getCaret()));
-        connect(midiPlayer.get(), SIGNAL(playbackSystemChanged()), this, SLOT(moveCaretToNextSection()));
+        connect(midiPlayer.get(), SIGNAL(playbackSystemChanged(quint32)), this, SLOT(moveCaretToSystem(quint32)));
         connect(midiPlayer.get(), SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));
         connect(midiPlayer.get(), SIGNAL(finished()), this, SLOT(startStopPlayback()));
         midiPlayer->start();
@@ -1005,6 +1005,13 @@ void PowerTabEditor::shiftTabNumber(int direction)
     }
 
     undoManager->push(new ShiftTabNumber(caret, currentPos, currentNote, shiftType, numStringsInStaff, tuning));
+}
+
+bool PowerTabEditor::moveCaretToSystem(quint32 system)
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    const int offset = system - caret->getCurrentSystemIndex();
+    return getCurrentScoreArea()->getCaret()->moveCaretSection(offset);
 }
 
 bool PowerTabEditor::moveCaretToPosition(quint8 position)

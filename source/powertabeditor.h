@@ -69,6 +69,7 @@ protected slots:
     void moveCaretToStart();
     void moveCaretToEnd();
     bool moveCaretToPosition(quint8 position);
+    bool moveCaretToSystem(quint32 system);
 
     bool moveCaretToNextStaff();
     bool moveCaretToPrevStaff();

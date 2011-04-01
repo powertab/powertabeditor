@@ -6,7 +6,7 @@
 class StopNoteEvent : public MidiEvent
 {
 public:
-    StopNoteEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint8_t pitch);
+    StopNoteEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex, uint8_t pitch);
 
     void performEvent(RtMidiWrapper& sequencer);
 

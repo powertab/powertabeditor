@@ -6,9 +6,9 @@
 
 const uint8_t MetronomeEvent::METRONOME_PITCH = midi::MIDI_NOTE_MIDDLE_C;
 
-MetronomeEvent::MetronomeEvent(uint8_t channel, double startTime,
-                               double duration, uint32_t positionIndex, VelocityType velocity) :
-    MidiEvent(channel, startTime, duration, positionIndex),
+MetronomeEvent::MetronomeEvent(uint8_t channel, double startTime, double duration,
+                               uint32_t positionIndex, uint32_t systemIndex, VelocityType velocity) :
+    MidiEvent(channel, startTime, duration, positionIndex, systemIndex),
     velocity(velocity)
 {
 }

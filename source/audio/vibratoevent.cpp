@@ -3,9 +3,9 @@
 #include <rtmidiwrapper.h>
 #include <QSettings>
 
-VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionIndex,
+VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
                            EventType eventType, VibratoType vibratoType) :
-    MidiEvent(channel, startTime, 0, positionIndex),
+    MidiEvent(channel, startTime, 0, positionIndex, systemIndex),
     eventType(eventType),
     vibratoType(vibratoType)
 {

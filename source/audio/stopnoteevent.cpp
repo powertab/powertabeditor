@@ -2,8 +2,9 @@
 
 #include <rtmidiwrapper.h>
 
-StopNoteEvent::StopNoteEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint8_t pitch) :
-    MidiEvent(channel, startTime, 0, positionIndex),
+StopNoteEvent::StopNoteEvent(uint8_t channel, double startTime, uint32_t positionIndex,
+                             uint32_t systemIndex, uint8_t pitch) :
+    MidiEvent(channel, startTime, 0, positionIndex, systemIndex),
     pitch(pitch)
 {
 }

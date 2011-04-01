@@ -192,7 +192,7 @@ bool Caret::setCurrentStringIndex(uint8_t stringIndex)
 
 bool Caret::setCurrentSystemIndex(uint32_t systemIndex)
 {
-    if (systemIndex < currentScore->GetSystemCount())
+    if (currentScore->IsValidSystemIndex(systemIndex))
     {
         currentSystemIndex = systemIndex;
         updatePosition();
@@ -207,7 +207,7 @@ bool Caret::setCurrentSystemIndex(uint32_t systemIndex)
 
 bool Caret::setCurrentStaffIndex(uint32_t staffIndex)
 {
-    if (staffIndex < getCurrentSystem()->GetStaffCount())
+    if (getCurrentSystem()->IsValidStaffIndex(staffIndex))
     {
         currentStaffIndex = staffIndex;
         updatePosition();

@@ -81,13 +81,11 @@ void MidiPlayer::run()
         {
             return;
         }
-
-        emit playbackSystemChanged();
     }
 }
 
 // Generates a list of all notes in the given system, by iterating through each position in each staff of the system
-void MidiPlayer::generateEventsForSystem(int systemIndex, std::list<unique_ptr<MidiEvent> >& eventList) const
+void MidiPlayer::generateEventsForSystem(uint32_t systemIndex, std::list<unique_ptr<MidiEvent> >& eventList) const
 {
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
@@ -172,8 +170,8 @@ void MidiPlayer::generateEventsForSystem(int systemIndex, std::list<unique_ptr<M
                     // if this note is not tied to the previous note, play the note
                     if (!note->IsTied())
                     {
-                        unique_ptr<PlayNoteEvent> noteEvent(new PlayNoteEvent(i, startTime, duration,
-                                                                              pitch, positionIndex, guitar,
+                        unique_ptr<PlayNoteEvent> noteEvent(new PlayNoteEvent(i, startTime, duration, pitch,
+                                                                              positionIndex, systemIndex, guitar,
                                                                               note->IsMuted(), velocity));
                         eventList.push_back(std::move(noteEvent));
                     }
@@ -185,11 +183,11 @@ void MidiPlayer::generateEventsForSystem(int systemIndex, std::list<unique_ptr<M
                                                                                   VibratoEvent::WIDE_VIBRATO;
 
                         // add vibrato event, and an event to turn of the vibrato after the note is done
-                        eventList.push_back(unique_ptr<VibratoEvent>(new VibratoEvent(i, startTime, positionIndex,
+                        eventList.push_back(unique_ptr<VibratoEvent>(new VibratoEvent(i, startTime, positionIndex, systemIndex,
                                                                                       VibratoEvent::VIBRATO_ON, type)));
 
-                        eventList.push_back(unique_ptr<VibratoEvent>(new VibratoEvent(i, startTime + duration,
-                                                                                      positionIndex, VibratoEvent::VIBRATO_OFF)));
+                        eventList.push_back(unique_ptr<VibratoEvent>(new VibratoEvent(i, startTime + duration, positionIndex,
+                                                                                      systemIndex, VibratoEvent::VIBRATO_OFF)));
                     }
 
                     bool tiedToNextNote = false;
@@ -206,7 +204,9 @@ void MidiPlayer::generateEventsForSystem(int systemIndex, std::list<unique_ptr<M
                     if (!note->HasTieWrap() && !tiedToNextNote)
                     {
                         const double noteLength = position->IsStaccato() ? duration / 2.0 : duration;
-                        unique_ptr<StopNoteEvent> stopEvent(new StopNoteEvent(i, startTime + noteLength, positionIndex, pitch));
+
+                        unique_ptr<StopNoteEvent> stopEvent(new StopNoteEvent(i, startTime + noteLength,
+                                                                              positionIndex, systemIndex, pitch));
                         eventList.push_back(std::move(stopEvent));
                     }
                 }
@@ -221,7 +221,8 @@ void MidiPlayer::generateEventsForSystem(int systemIndex, std::list<unique_ptr<M
 // startPos is used to identify the starting position to begin playback from
 void MidiPlayer::playNotesInSystem(std::list<unique_ptr<MidiEvent> >& eventList, quint32 startPos)
 {
-    quint32 currentPosition = 0;
+    uint32_t currentPosition = 0;
+    uint32_t currentSystem = 0;
 
     while (!eventList.empty())
     {
@@ -247,6 +248,13 @@ void MidiPlayer::playNotesInSystem(std::list<unique_ptr<MidiEvent> >& eventList,
         {
             currentPosition = eventPosition;
             emit playbackPositionChanged(currentPosition);
+        }
+
+        const uint32_t eventSystemIndex = activeEvent->getSystemIndex();
+        if (eventSystemIndex != currentSystem)
+        {
+            currentSystem = eventSystemIndex;
+            emit playbackSystemChanged(currentSystem);
         }
 
         // add delay between this event and the next one
@@ -352,7 +360,7 @@ quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const q
 }
 
 // Generates the metronome ticks
-void MidiPlayer::generateMetronome(int systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const
+void MidiPlayer::generateMetronome(uint32_t systemIndex, std::list<std::unique_ptr<MidiEvent> >& eventList) const
 {
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
@@ -383,13 +391,13 @@ void MidiPlayer::generateMetronome(int systemIndex, std::list<std::unique_ptr<Mi
             MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
                                                                MetronomeEvent::WEAK_ACCENT;
 
-            eventList.push_back( unique_ptr<MetronomeEvent>( new MetronomeEvent(METRONOME_CHANNEL, startTime,
-                                                                                duration, position, velocity)));
+            eventList.push_back( unique_ptr<MetronomeEvent>( new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
+                                                                                position, systemIndex, velocity)));
 
             startTime += duration;
 
             eventList.push_back( unique_ptr<StopNoteEvent> ( new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
-                                                                               MetronomeEvent::METRONOME_PITCH)));
+                                                                               systemIndex, MetronomeEvent::METRONOME_PITCH)));
         }
     }
 }
