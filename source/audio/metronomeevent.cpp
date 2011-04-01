@@ -13,16 +13,18 @@ MetronomeEvent::MetronomeEvent(uint8_t channel, double startTime, double duratio
 {
 }
 
-void MetronomeEvent::performEvent(RtMidiWrapper& sequencer)
+void MetronomeEvent::performEvent(RtMidiWrapper& sequencer) const
 {
     // check if the metronome has been disabled
     QSettings settings;
+
+    VelocityType actualVelocity = velocity;
     if (settings.value("midi/metronomeEnabled").toBool() == false)
     {
-        velocity = METRONOME_OFF;
+        actualVelocity = METRONOME_OFF;
     }
 
     sequencer.setPatch(channel, midi::MIDI_PRESET_WOODBLOCK);
     sequencer.setVolume(channel, midi::MAX_MIDI_CHANNEL_VOLUME);
-    sequencer.playNote(channel, METRONOME_PITCH, velocity);
+    sequencer.playNote(channel, METRONOME_PITCH, actualVelocity);
 }

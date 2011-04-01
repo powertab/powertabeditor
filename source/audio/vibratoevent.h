@@ -21,7 +21,7 @@ public:
     VibratoEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
                  EventType eventType, VibratoType vibratoType = NORMAL_VIBRATO);
 
-    void performEvent(RtMidiWrapper& sequencer);
+    void performEvent(RtMidiWrapper& sequencer) const;
 
 protected:
     EventType eventType;

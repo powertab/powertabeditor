@@ -11,7 +11,7 @@ VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionI
 {
 }
 
-void VibratoEvent::performEvent(RtMidiWrapper& sequencer)
+void VibratoEvent::performEvent(RtMidiWrapper& sequencer) const
 {
     if (eventType == VIBRATO_ON)
     {

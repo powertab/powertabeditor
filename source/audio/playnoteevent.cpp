@@ -18,7 +18,7 @@ PlayNoteEvent::PlayNoteEvent(uint8_t channel, double startTime, double duration,
 {
 }
 
-void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer)
+void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer) const
 {
     assert(guitar != NULL);
 

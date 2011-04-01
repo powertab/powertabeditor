@@ -70,7 +70,7 @@ void MidiPlayer::run()
 
         eventList.sort(CompareEventTimestamps());
 
-        playNotesInSystem(eventList, startPos);
+        playMidiEvents(eventList, startPos);
 
         if (startPos > 0)
         {
@@ -219,7 +219,7 @@ void MidiPlayer::generateEventsForSystem(uint32_t systemIndex, std::list<unique_
 
 // The events are already in order of occurrence, so just play them one by one
 // startPos is used to identify the starting position to begin playback from
-void MidiPlayer::playNotesInSystem(std::list<unique_ptr<MidiEvent> >& eventList, quint32 startPos)
+void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList, quint32 startPos)
 {
     uint32_t currentPosition = 0;
     uint32_t currentSystem = 0;

@@ -9,7 +9,7 @@ StopNoteEvent::StopNoteEvent(uint8_t channel, double startTime, uint32_t positio
 {
 }
 
-void StopNoteEvent::performEvent(RtMidiWrapper& sequencer)
+void StopNoteEvent::performEvent(RtMidiWrapper& sequencer) const
 {
     sequencer.stopNote(channel, pitch);
 }

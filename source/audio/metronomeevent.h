@@ -18,7 +18,7 @@ public:
     MetronomeEvent(uint8_t channel, double startTime, double duration,
                    uint32_t positionIndex, uint32_t systemIndex, VelocityType velocity);
 
-    void performEvent(RtMidiWrapper& sequencer);
+    void performEvent(RtMidiWrapper& sequencer) const;
 
 protected:
     VelocityType velocity;
