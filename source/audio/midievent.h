@@ -1,7 +1,7 @@
 #ifndef MIDIEVENT_H
 #define MIDIEVENT_H
 
-#include <stdint.h>
+#include <cstdint>
 
 class RtMidiWrapper;
 

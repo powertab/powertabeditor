@@ -5,6 +5,7 @@
 
 #include <list>
 #include <algorithm>
+#include <boost/next_prior.hpp>
 
 #include <painters/caret.h>
 
@@ -21,6 +22,7 @@
 #include <audio/vibratoevent.h>
 #include <audio/stopnoteevent.h>
 #include <audio/metronomeevent.h>
+#include <audio/repeatcontroller.h>
 
 using std::shared_ptr;
 using std::unique_ptr;
@@ -224,24 +226,28 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
                                 uint32_t startSystem, uint32_t startPos)
 {
+    RepeatController repeatController(caret->getCurrentScore());
+
     uint32_t currentPosition = 0;
     uint32_t currentSystem = 0;
 
-    while (!eventList.empty())
+    auto playbackPos = eventList.begin();
+
+    while (playbackPos != eventList.end())
     {
         if (!isPlaying)
         {
             return;
         }
 
-        unique_ptr<MidiEvent> activeEvent = std::move(eventList.front());
-        eventList.pop_front();
+        const MidiEvent& activeEvent = *playbackPos->get();
 
-        const uint32_t eventPosition = activeEvent->getPositionIndex();
-        const uint32_t eventSystemIndex = activeEvent->getSystemIndex();
+        const uint32_t eventPosition = activeEvent.getPositionIndex();
+        const uint32_t eventSystemIndex = activeEvent.getSystemIndex();
 
         if (eventSystemIndex < startSystem || eventPosition < startPos)
         {
+            ++playbackPos;
             continue;
         }
         else
@@ -249,7 +255,19 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
             startPos = startSystem = 0;
         }
 
-        activeEvent->performEvent(rtMidiWrapper);
+        uint32_t newSystem = 0, newPos = 0;
+        if (repeatController.checkForRepeat(currentSystem, currentPosition, newSystem, newPos))
+        {
+            qDebug() << "Moving to: " << newSystem << ", " << newPos;
+            startSystem = newSystem;
+            startPos = newPos + 1; // offset from the barline itself
+            emit playbackSystemChanged(startSystem);
+            emit playbackPositionChanged(startPos);
+            playbackPos = eventList.begin();
+            continue;
+        }
+
+        activeEvent.performEvent(rtMidiWrapper);
 
         // if we've moved to a new position, move the caret
         if (eventPosition > currentPosition)
@@ -266,17 +284,20 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
         }
 
         // add delay between this event and the next one
-        if (!eventList.empty())
+        auto nextEvent = boost::next(playbackPos);
+        if (nextEvent != eventList.end())
         {
-            const int sleepDuration = eventList.front()->getStartTime() - activeEvent->getStartTime();
+            const int sleepDuration = (*nextEvent)->getStartTime() - activeEvent.getStartTime();
             Q_ASSERT(sleepDuration >= 0);
 
             usleep(1000 * sleepDuration);
         }
         else
         {
-            usleep(1000 * activeEvent->getDuration());
+            usleep(1000 * activeEvent.getDuration());
         }
+
+        ++playbackPos;
     }
 }
 
