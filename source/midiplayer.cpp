@@ -46,12 +46,11 @@ MidiPlayer::~MidiPlayer()
     wait();
 }
 
-/// Compares the start times of two midi events
-struct CompareEventTimestamps
+struct CompareEvents
 {
     bool operator()(const unique_ptr<MidiEvent>& event1, const unique_ptr<MidiEvent>& event2)
     {
-        return event1->getStartTime() < event2->getStartTime();
+        return *event1 < *event2;
     }
 };
 
@@ -73,7 +72,7 @@ void MidiPlayer::run()
 
         timeStamp = generateEventsForSystem(currentSystemIndex, timeStamp, eventList);
 
-        eventList.sort(CompareEventTimestamps());
+        eventList.sort(CompareEvents());
     }
 
     playMidiEvents(eventList, startSystemIndex, startPos);
@@ -240,10 +239,10 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
             return;
         }
 
-        const MidiEvent& activeEvent = *playbackPos->get();
+        const MidiEvent* activeEvent = playbackPos->get();
 
-        const uint32_t eventPosition = activeEvent.getPositionIndex();
-        const uint32_t eventSystemIndex = activeEvent.getSystemIndex();
+        const uint32_t eventPosition = activeEvent->getPositionIndex();
+        const uint32_t eventSystemIndex = activeEvent->getSystemIndex();
 
         if (eventSystemIndex < startSystem || eventPosition < startPos)
         {
@@ -254,20 +253,6 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
         {
             startPos = startSystem = 0;
         }
-
-        uint32_t newSystem = 0, newPos = 0;
-        if (repeatController.checkForRepeat(currentSystem, currentPosition, newSystem, newPos))
-        {
-            qDebug() << "Moving to: " << newSystem << ", " << newPos;
-            startSystem = newSystem;
-            startPos = newPos + 1; // offset from the barline itself
-            emit playbackSystemChanged(startSystem);
-            emit playbackPositionChanged(startPos);
-            playbackPos = eventList.begin();
-            continue;
-        }
-
-        activeEvent.performEvent(rtMidiWrapper);
 
         // if we've moved to a new position, move the caret
         if (eventPosition > currentPosition)
@@ -283,18 +268,33 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
             emit playbackSystemChanged(currentSystem);
         }
 
+        uint32_t newSystem = 0, newPos = 0;
+        if (repeatController.checkForRepeat(currentSystem, currentPosition, newSystem, newPos))
+        {
+            qDebug() << "Moving to: " << newSystem << ", " << newPos;
+            startSystem = newSystem;
+            startPos = newPos;
+            currentPosition = currentSystem = 0;
+            emit playbackSystemChanged(startSystem);
+            emit playbackPositionChanged(startPos);
+            playbackPos = eventList.begin();
+            continue;
+        }
+
+        activeEvent->performEvent(rtMidiWrapper);
+
         // add delay between this event and the next one
         auto nextEvent = boost::next(playbackPos);
         if (nextEvent != eventList.end())
         {
-            const int sleepDuration = (*nextEvent)->getStartTime() - activeEvent.getStartTime();
+            const int sleepDuration = (*nextEvent)->getStartTime() - activeEvent->getStartTime();
             Q_ASSERT(sleepDuration >= 0);
 
             usleep(1000 * sleepDuration);
         }
         else
         {
-            usleep(1000 * activeEvent.getDuration());
+            usleep(1000 * activeEvent->getDuration());
         }
 
         ++playbackPos;

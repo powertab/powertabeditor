@@ -3,6 +3,7 @@
 #include <powertabdocument/generalmidi.h>
 #include <rtmidiwrapper.h>
 #include <QSettings>
+#include <QDebug>
 
 const uint8_t MetronomeEvent::METRONOME_PITCH = midi::MIDI_NOTE_MIDDLE_C;
 
@@ -15,6 +16,8 @@ MetronomeEvent::MetronomeEvent(uint8_t channel, double startTime, double duratio
 
 void MetronomeEvent::performEvent(RtMidiWrapper& sequencer) const
 {
+    qDebug() << "Metronome: " << systemIndex << ", " << positionIndex;
+
     // check if the metronome has been disabled
     QSettings settings;
 

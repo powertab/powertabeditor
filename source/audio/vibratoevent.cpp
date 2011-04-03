@@ -2,6 +2,7 @@
 
 #include <rtmidiwrapper.h>
 #include <QSettings>
+#include <QDebug>
 
 VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
                            EventType eventType, VibratoType vibratoType) :
@@ -13,6 +14,8 @@ VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionI
 
 void VibratoEvent::performEvent(RtMidiWrapper& sequencer) const
 {
+    qDebug() << "Vibrato: " << systemIndex << ", " << positionIndex;
+
     if (eventType == VIBRATO_ON)
     {
         QSettings settings;

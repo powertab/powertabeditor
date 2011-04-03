@@ -13,6 +13,8 @@ public:
     MidiEvent(uint8_t channel, double startTime, double duration, uint32_t positionIndex, uint32_t systemIndex);
     virtual ~MidiEvent() {}
 
+    bool operator<(const MidiEvent& event) const;
+
     virtual void performEvent(RtMidiWrapper& sequencer) const = 0;
 
     uint32_t getPositionIndex() const;
