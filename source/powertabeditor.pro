@@ -114,7 +114,9 @@ SOURCES += main.cpp\
     audio/vibratoevent.cpp \
     audio/metronomeevent.cpp \
     actions/addguitar.cpp \
-    audio/repeatcontroller.cpp
+    audio/repeatcontroller.cpp \
+    painters/notestem.cpp \
+    painters/beamgroup.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -209,7 +211,9 @@ HEADERS  += powertabeditor.h \
     audio/vibratoevent.h \
     audio/metronomeevent.h \
     actions/addguitar.h \
-    audio/repeatcontroller.h
+    audio/repeatcontroller.h \
+    painters/notestem.h \
+    painters/beamgroup.h
 
 RESOURCES += \
     resources.qrc

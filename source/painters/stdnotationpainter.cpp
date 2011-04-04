@@ -14,7 +14,8 @@
 
 QFont StdNotationPainter::musicFont = MusicFont().getFont();
 
-StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, Position* position, Note* note, Tuning* tuning, KeySignature* keySignature):
+StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, const Position* position, const Note* note,
+                                       const Tuning* tuning, const KeySignature* keySignature):
         staffInfo(staffInfo),
         position(position),
         note(note),

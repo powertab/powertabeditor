@@ -34,7 +34,7 @@ public:
 
     std::shared_ptr<PowerTabDocument> document;
 
-    inline Caret* getCaret()
+    inline Caret* getCaret() const
     {
         return caret;
     }
@@ -58,12 +58,7 @@ protected:
     void drawSystemSymbols(Score* score, std::shared_ptr<System> system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, std::shared_ptr<System> system, quint32 height);
-    void drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp);
     void drawSymbolsBelowTabStaff(std::shared_ptr<System> system, Staff *staff, const StaffData &currentStaffInfo);
-
-    struct BeamingInfo;
-    void drawAccent(const BeamingInfo& beamingInfo, const StaffData& currentStaffInfo, double x, bool beamDirectionUp);
-    void drawNoteFlag(const BeamingInfo& beamingInfo);
 
     void drawSymbols(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
@@ -79,23 +74,6 @@ protected:
     QGraphicsItem* activeStaff;
     QGraphicsItem* activeSystem;
     bool redrawOnNextRefresh;
-
-    struct BeamingInfo
-    {
-        Position* position;
-        double topNotePos;
-        double bottomNotePos;
-        bool beamUp;
-        double location;
-
-        BeamingInfo()
-        {
-            position = NULL;
-            beamUp = false;
-            bottomNotePos = -100000;
-            topNotePos = 100000; // needs to be larger than any possible position, for using std::min
-        }
-    };
 
     // Symbol drawing
     struct SymbolInfo

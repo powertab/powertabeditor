@@ -20,13 +20,12 @@ public:
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
 
-protected:
-
-    double centerItem(double xmin, double xmax, double width) const
+    static double centerItem(double xmin, double xmax, double width)
     {
         return (xmin + ((xmax - (xmin + width)) / 2) + 1);
     }
 
+protected:
     QRectF bounds;
     QPainterPath path;
 };

@@ -23,6 +23,8 @@
 #include <painters/staffpainter.h>
 #include <painters/systempainter.h>
 #include <painters/tempomarkerpainter.h>
+#include <painters/notestem.h>
+#include <painters/beamgroup.h>
 
 #include <cmath>
 
@@ -574,15 +576,22 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
 
     QList<StdNotationPainter*> notePainters;
     QMultiMap<double, StdNotationPainter*> accidentalsMap;
-    QList<BeamingInfo> beamings;
+    std::list<NoteStem> stems;
 
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
         for (quint32 i=0; i < staff->GetPositionCount(voice); i++)
         {
-            Position* currentPosition = staff->GetPosition(voice, i);
+            const Position* currentPosition = staff->GetPosition(voice, i);
             const quint32 location = system->GetPositionX(currentPosition->GetPosition());
             currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
+            KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
+
+            // Find the guitar corresponding to the current staff
+            shared_ptr<Guitar> currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));
+            Q_ASSERT(currentGuitar != NULL);
+
+            std::vector<double> noteLocations;
 
             // if we reach a new bar, we can adjust all of the accidentals for the previous bar
             if (currentBarline != prevBarline)
@@ -591,13 +600,6 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
                 accidentalsMap.clear();
                 prevBarline = currentBarline;
             }
-
-            KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
-
-            // Find the guitar corresponding to the current staff
-            shared_ptr<Guitar> currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));
-
-            Q_ASSERT(currentGuitar != NULL);
 
             // just draw rests right away, since we don't have to worry about beaming or accidentals
             if (currentPosition->IsRest())
@@ -609,12 +611,9 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
                 continue;
             }
 
-            BeamingInfo beamingInfo;
-            beamingInfo.position = currentPosition;
-
-            for (uint32_t j=0; j < currentPosition->GetNoteCount(); j++)
+            for (uint32_t j = 0; j < currentPosition->GetNoteCount(); j++)
             {
-                Note* note = currentPosition->GetNote(j);
+                const Note* note = currentPosition->GetNote(j);
 
                 StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition,
                                                                             note, currentGuitar->GetTuningPtr(), currentKeySig);
@@ -623,18 +622,13 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
                 // map all of the notes for each position on the staff, so that we can adjust accidentals later
                 accidentalsMap.insert(stdNotePainter->getYLocation(), stdNotePainter);
 
-                beamingInfo.bottomNotePos = std::max(beamingInfo.bottomNotePos, stdNotePainter->getYLocation());
-                beamingInfo.topNotePos = std::min(beamingInfo.topNotePos, stdNotePainter->getYLocation());
+                noteLocations.push_back(stdNotePainter->getYLocation());
             }
-
-            beamingInfo.topNotePos += currentStaffInfo.getTopStdNotationLine(false);
-            beamingInfo.bottomNotePos += currentStaffInfo.getTopStdNotationLine(false);
-            beamingInfo.beamUp = currentStaffInfo.getStdNotationLineHeight(3, false) < beamingInfo.bottomNotePos;
-            beamingInfo.location = location;
 
             if (currentPosition->GetDurationType() != 1)
             {
-                beamings << beamingInfo;
+                NoteStem stem(currentStaffInfo, currentPosition, location, noteLocations);
+                stems.push_back(stem);
             }
         }
     }
@@ -647,285 +641,22 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
         painter->setParentItem(activeStaff);
     }
 
-    QList<BeamingInfo> beamingGroup;
-    const double beamLength = currentStaffInfo.stdNotationLineSpacing * 3.5;
-
-    // draw beams
-    for (int i = 0; i < beamings.size(); i++)
+    std::vector<NoteStem> currentStemGroup;
+    while(!stems.empty())
     {
-        BeamingInfo beaming = beamings[i];
+        NoteStem stem = stems.front();
+        stems.pop_front();
 
-        beamingGroup << beaming;
+        currentStemGroup.push_back(stem);
 
-        // if the position is staccato, draw the dot near either the top or bottom note of the position, depending on beam direction
-        if (beaming.position->IsStaccato())
+        if (stem.position()->IsBeamEnd() || (!stem.position()->IsBeamStart() && currentStemGroup.size() == 1))
         {
-            const double y = beaming.beamUp ? beaming.bottomNotePos : beaming.topNotePos - 15;
+            BeamGroup group(currentStaffInfo, currentStemGroup);
+            currentStemGroup.clear();
 
-            QGraphicsTextItem* dot = new QGraphicsTextItem(QChar(MusicFont::Dot));
-            dot->setFont(musicFont.getFontRef());
-            centerItem(dot, beaming.location, beaming.location + currentStaffInfo.positionWidth + 4, y - 25);
-            dot->setParentItem(activeStaff);
-        }
-
-        // if we're at the end of a beam group, or have a note by itself (not part of a group), draw the beams
-        if (beaming.position->IsBeamEnd() || (!beaming.position->IsBeamStart() && beamingGroup.size() == 1))
-        {
-            // figure out which direction all of the beams in the group should point, based on how many point upwards/downwards
-            uint8_t notesAboveMiddle = 0, notesBelowMiddle = 0;
-            foreach(BeamingInfo beam, beamingGroup)
-            {
-                if (beam.beamUp)
-                {
-                    notesBelowMiddle++;
-                }
-                else
-                {
-                    notesAboveMiddle++;
-                }
-            }
-
-            bool beamDirectionUp = notesBelowMiddle >= notesAboveMiddle;
-
-            // find the highest/lowest position of a beam within the group - all other beams will stretch to this position
-            double highestPos = 10000000, lowestPos = -10000000;
-            if (beamDirectionUp)
-            {
-                foreach(BeamingInfo beam, beamingGroup)
-                {
-                    highestPos = std::min(highestPos, beam.topNotePos);
-                }
-            }
-            else
-            {
-                foreach(BeamingInfo beam, beamingGroup)
-                {
-                    lowestPos = std::max(lowestPos, beam.bottomNotePos);
-                }
-            }
-
-            // set the position of each beam, and draw them
-            for (int j = 0; j < beamingGroup.size(); j++)
-            {
-                beamingGroup[j].beamUp = beamDirectionUp;
-                if (beamDirectionUp)
-                {
-                    beamingGroup[j].location += currentStaffInfo.getNoteHeadRightEdge() - 1;
-                    beamingGroup[j].topNotePos = highestPos - beamLength;
-                }
-                else
-                {
-                    beamingGroup[j].bottomNotePos = lowestPos + beamLength;
-                    beamingGroup[j].location += currentStaffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth();
-                    if (beamingGroup[j].position->GetDurationType() == 2) // visual adjustment for half notes
-                    {
-                        beamingGroup[j].location -= 2;
-                    }
-                }
-
-                {
-                    QGraphicsLineItem* line = new QGraphicsLineItem;
-                    line->setLine(beamingGroup[j].location, beamingGroup[j].topNotePos, beamingGroup[j].location, beamingGroup[j].bottomNotePos);
-                    line->setParentItem(activeStaff);
-                }
-
-                // draw a flag for single notes (eighth notes or less)
-                if (beamingGroup.size() == 1 && beamingGroup[j].position->GetDurationType() > 4)
-                {
-                    drawNoteFlag(beamingGroup[j]);
-                }
-
-                // extra beams (for 16th notes, etc)
-                // 16th note gets 1 extra beam, 32nd gets two, etc
-                // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
-                const int extraBeams = log(beamingGroup[j].position->GetDurationType()) / log(2) - 3;
-
-                const bool hasFullBeaming = (beamingGroup[j].position->GetPreviousBeamDurationType() ==
-                                             beamingGroup[j].position->GetDurationType());
-                const bool hasFractionalLeft = beamingGroup[j].position->HasFractionalLeftBeam();
-                const bool hasFractionalRight = beamingGroup[j].position->HasFractionalRightBeam();
-
-                if (hasFullBeaming || hasFractionalLeft || hasFractionalRight)
-                {
-                    for (int k = 1; k <= extraBeams; k++)
-                    {
-                        double y = beamDirectionUp ? beamingGroup[j].topNotePos : beamingGroup[j].bottomNotePos;
-                        y += k * 3 * (beamDirectionUp ? 1 : -1);
-
-                        double xStart = 0, xEnd = 0;
-
-                        const double fractionalBeamWidth = 5;
-
-                        if (hasFullBeaming)
-                        {
-                            xStart = beamingGroup[j-1].location + 1;
-                            xEnd = beamingGroup[j].location - 1;
-                        }
-                        else if (hasFractionalLeft)
-                        {
-                            xStart = beamingGroup[j].location + 1;
-                            xEnd = xStart + fractionalBeamWidth;
-                        }
-                        else if (hasFractionalRight)
-                        {
-                            xEnd = beamingGroup[j].location - 1;
-                            xStart = xEnd - fractionalBeamWidth;
-                        }
-
-                        QGraphicsLineItem* line = new QGraphicsLineItem;
-                        line->setLine(xStart, y, xEnd, y);
-                        line->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
-                        line->setParentItem(activeStaff);
-                    }
-                }
-            }
-
-            const double beamConnectorHeight = beamDirectionUp ? beamingGroup.first().topNotePos :
-                                               beamingGroup.first().bottomNotePos;
-
-            if (beamingGroup.size() > 1)
-            {
-                // draw the line that connects all of the beams
-                QGraphicsLineItem* connector = new QGraphicsLineItem;
-
-                connector->setLine(beamingGroup.first().location + 1, beamConnectorHeight,
-                                   beamingGroup.last().location - 1, beamConnectorHeight);
-                connector->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
-                connector->setParentItem(activeStaff);
-            }
-
-            // Draw fermatas, arpg if necessary
-            foreach(BeamingInfo beam, beamingGroup)
-            {
-                if (beam.position->HasFermata())
-                {
-                    drawFermata(currentStaffInfo, beam.location, beamConnectorHeight, beamDirectionUp);
-                }
-                if (beam.position->HasSforzando() || beam.position->HasMarcato())
-                {
-                    drawAccent(beam, currentStaffInfo, system->GetPositionX(beam.position->GetPosition()), beamDirectionUp);
-                }
-            }
-
-            beamingGroup.clear();
+            group.drawStems(activeStaff);
         }
     }
-}
-
-void ScoreArea::drawNoteFlag(const BeamingInfo& beamingInfo)
-{
-    Q_ASSERT(beamingInfo.position->GetDurationType() > 4);
-
-    // choose the flag symbol, depending on duration and stem direction
-    QChar symbol = 0;
-    if (beamingInfo.beamUp)
-    {
-        switch(beamingInfo.position->GetDurationType())
-        {
-        case 8:
-            symbol = MusicFont::FlagUp1;
-            break;
-        case 16:
-            symbol = MusicFont::FlagUp2;
-            break;
-        case 32:
-            symbol = MusicFont::FlagUp3;
-            break;
-        default: // 64
-            symbol = MusicFont::FlagUp4;
-            break;
-        }
-    }
-    else
-    {
-        switch(beamingInfo.position->GetDurationType())
-        {
-        case 8:
-            symbol = MusicFont::FlagDown1;
-            break;
-        case 16:
-            symbol = MusicFont::FlagDown2;
-            break;
-        case 32:
-            symbol = MusicFont::FlagDown3;
-            break;
-        default: // 64
-            symbol = MusicFont::FlagDown4;
-            break;
-        }
-    }
-
-    // draw the symbol
-    double y = beamingInfo.beamUp ? beamingInfo.topNotePos : beamingInfo.bottomNotePos;
-    y -= 35; // adjust for spacing caused by the music symbol font
-    QGraphicsTextItem* flag = new QGraphicsTextItem(symbol);
-    flag->setFont(musicFont.getFontRef());
-    flag->setPos(beamingInfo.location - 3, y);
-    flag->setParentItem(activeStaff);
-}
-
-void ScoreArea::drawAccent(const BeamingInfo& beamingInfo, const StaffData& currentStaffInfo, double x, bool beamDirectionUp)
-{
-    double y = 0;
-    // position the accent directly above/below the staff if possible, unless the note beaming extends
-    // beyond the std. notation staff.
-    // - it should be positioned opposite to the fermata symbols
-    // After positioning, offset the height due to the way that QGraphicsTextItem positions text
-    if (beamDirectionUp == false)
-    {
-        y = std::min<double>(beamingInfo.topNotePos, currentStaffInfo.getTopStdNotationLine(false));
-        y -= 38;
-    }
-    else
-    {
-        y = std::max<double>(beamingInfo.bottomNotePos, currentStaffInfo.getBottomStdNotationLine(false));
-        y -= 20;
-    }
-
-    QChar symbol;
-    if (beamingInfo.position->HasMarcato())
-    {
-        symbol = musicFont.getSymbol(MusicFont::Marcato);
-    }
-    else if (beamingInfo.position->HasSforzando())
-    {
-        symbol = musicFont.getSymbol(MusicFont::Sforzando);
-        y += 3;
-    }
-
-    if (beamingInfo.position->IsStaccato())
-    {
-        y += beamDirectionUp ? 7 : -7;
-    }
-
-    QGraphicsSimpleTextItem* accent = new QGraphicsSimpleTextItem(symbol);
-    accent->setFont(musicFont.getFontRef());
-    accent->setPos(x + currentStaffInfo.positionWidth / 1.75, y);
-    accent->setParentItem(activeStaff);
-}
-
-void ScoreArea::drawFermata(const StaffData& currentStaffInfo, double x, double beamConnectorHeight, bool beamDirectionUp)
-{
-    double y = 0;
-    // position the fermata directly above/below the staff if possible, unless the note beaming extends
-    // beyond the std. notation staff.
-    // After positioning, offset the height due to the way that QGraphicsTextItem positions text
-    if (beamDirectionUp)
-    {
-        y = std::min<double>(beamConnectorHeight, currentStaffInfo.getTopStdNotationLine(false));
-        y -= 33;
-    }
-    else
-    {
-        y = std::max<double>(beamConnectorHeight, currentStaffInfo.getBottomStdNotationLine(false));
-        y -= 25;
-    }
-
-    const QChar symbol = beamDirectionUp ? MusicFont::FermataUp : MusicFont::FermataDown;
-    QGraphicsSimpleTextItem* fermata = new QGraphicsSimpleTextItem(symbol);
-    fermata->setFont(musicFont.getFontRef());
-    fermata->setPos(x, y);
-    fermata->setParentItem(activeStaff);
 }
 
 /// Draws the text symbols that appear below the tab staff (hammerons, slides, etc)

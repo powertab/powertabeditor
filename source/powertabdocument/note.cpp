@@ -1042,7 +1042,7 @@ std::string Note::GetText() const
 /// Calculates the pitch of the note, for the given guitar tuning
 /// @param tuning The tuning for the guitar that is playing the note
 /// @return The pitch of the note
-uint8_t Note::GetPitch(Tuning* tuning) const
+uint8_t Note::GetPitch(const Tuning* tuning) const
 {
     return tuning->GetNote(GetString()) + GetFretNumber();
 }

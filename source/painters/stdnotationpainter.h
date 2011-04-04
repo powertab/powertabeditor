@@ -13,7 +13,8 @@ class KeySignature;
 class StdNotationPainter : public PainterBase
 {
 public:
-    StdNotationPainter(const StaffData& staffInfo, Position* position, Note* note, Tuning* tuning, KeySignature* keySignature);
+    StdNotationPainter(const StaffData& staffInfo, const Position* position, const Note* note,
+                       const Tuning* tuning, const KeySignature* keySignature);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -29,7 +30,7 @@ public:
     };
 
     inline double getYLocation() const { return yLocation; }
-    inline Position* getPositionObject() const { return position; }
+    inline const Position* getPositionObject() const { return position; }
 
     static double getNoteHeadWidth();
 
@@ -45,10 +46,10 @@ protected:
     void addDots(QPainter* painter, double x, double y) const;
 
     StaffData staffInfo;
-    Position* position;
-    Note* note;
-    Tuning* tuning;
-    KeySignature* keySignature;
+    const Position* position;
+    const Note* note;
+    const Tuning* tuning;
+    const KeySignature* keySignature;
     static QFont musicFont;
     double yLocation;
     double width;
