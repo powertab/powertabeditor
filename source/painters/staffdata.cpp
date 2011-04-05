@@ -44,30 +44,24 @@ int StaffData::getTabStaffSize() const
     return (numOfStrings - 1) * tabLineSpacing;
 }
 
-// Calculates the height offset for the given tab line
-// Optionally can calculate absolute/relative position
-int StaffData::getTabLineHeight(int stringNum, bool absolutePos) const
+/// Calculates the height offset for the given tab line
+int StaffData::getTabLineHeight(int stringNum) const
 {
     int offset = height - tabStaffBelowSpacing - staffBorderSpacing - (numOfStrings - stringNum) * tabLineSpacing;
-
-    if (absolutePos)
-    {
-        offset += topEdge;
-    }
 
     return offset;
 }
 
-// Calculates the height offset of the top line of the tab staff
-int StaffData::getTopTabLine(bool absolutePos) const
+/// Calculates the height offset of the top line of the tab staff
+int StaffData::getTopTabLine() const
 {
-    return getTabLineHeight(1, absolutePos);
+    return getTabLineHeight(1);
 }
 
-// Calculates the height offset of the bottom line of the tab staff
-int StaffData::getBottomTabLine(bool absolutePos) const
+/// Calculates the height offset of the bottom line of the tab staff
+int StaffData::getBottomTabLine() const
 {
-    return getTabLineHeight(numOfStrings, absolutePos);
+    return getTabLineHeight(numOfStrings);
 }
 
 // Calculates the height offset for the given standard notation staff line
@@ -98,9 +92,9 @@ int StaffData::getTopStdNotationLine(bool absolutePos) const
 }
 
 // Calculates the height offset of the bottom line of the standard notation staff
-int StaffData::getBottomStdNotationLine(bool absolutePos) const
+int StaffData::getBottomStdNotationLine() const
 {
-    return getStdNotationLineHeight(numOfStdNotationLines, absolutePos);
+    return getStdNotationLineHeight(numOfStdNotationLines, false);
 }
 
 // Gives the position of the right edge of a note head, relative to the start of a position

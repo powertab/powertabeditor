@@ -33,7 +33,7 @@ void StaffPainter::init()
     // Standard notation staff
     drawStaffLines(staffInfo.numOfStdNotationLines, staffInfo.stdNotationLineSpacing, staffInfo.getTopStdNotationLine(false));
     // Tab staff
-    drawStaffLines(staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine(false));
+    drawStaffLines(staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine());
 }
 
 void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
@@ -43,7 +43,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 
     // find the position relative to the top of the staff, in terms of the tab line spacing
     // Then, round to find the string index (keep it zero-based since that's what the caret uses)
-    int string = findClosestPosition(y, staffInfo.getTopTabLine(false), staffInfo.tabLineSpacing);
+    int string = findClosestPosition(y, staffInfo.getTopTabLine(), staffInfo.tabLineSpacing);
 
     if (string >= 0 && string < staffInfo.numOfStrings)
     {

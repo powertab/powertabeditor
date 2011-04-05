@@ -345,7 +345,7 @@ void ScoreArea::drawSlidesHelper(shared_ptr<System> system, const StaffData& cur
     const double width = system->GetPositionX(posIndex2) - leftPos;
 
     double height = 5;
-    double y = (currentStaffInfo.getTabLineHeight(string + 1, false) + currentStaffInfo.getTabLineHeight(string, false)) / 2;
+    double y = (currentStaffInfo.getTabLineHeight(string + 1) + currentStaffInfo.getTabLineHeight(string)) / 2;
 
     if (slideUp) // if we're sliding up, flip the diagonal line
     {
@@ -393,7 +393,7 @@ void ScoreArea::drawLegato(shared_ptr<System> system, Staff* staff, const StaffD
                     const double leftPos = system->GetPositionX(startPos);
                     const double width = system->GetPositionX(currentPosition) - leftPos;
                     double height = 7.5;
-                    double y = currentStaffInfo.getTabLineHeight(string, false) - 2;
+                    double y = currentStaffInfo.getTabLineHeight(string) - 2;
 
                     if (string >= currentStaffInfo.numOfStrings / 2)
                     {
@@ -422,7 +422,7 @@ void ScoreArea::drawLegato(shared_ptr<System> system, Staff* staff, const StaffD
                     path.arcTo(0, 0, width, height, 0, 180);
                     QGraphicsPathItem *arc = new QGraphicsPathItem(path);
                     arc->setPos(system->GetPositionX(currentPosition) + 2,
-                                currentStaffInfo.getTabLineHeight(string, false) - 2);
+                                currentStaffInfo.getTabLineHeight(string) - 2);
                     arc->setParentItem(activeStaff);
 
                     startPos = -1;
@@ -436,7 +436,7 @@ void ScoreArea::drawTabClef(int x, const StaffData& staffInfo)
 {
     // Draw the tab clef
     QGraphicsSimpleTextItem* tabClef = new QGraphicsSimpleTextItem;
-    tabClef->setPos(x, staffInfo.getTopTabLine(false) - 12);
+    tabClef->setPos(x, staffInfo.getTopTabLine() - 12);
     musicFont.setSymbol(tabClef, MusicFont::TabClef, staffInfo.numOfStrings * 4.25);
     tabClef->setParentItem(activeStaff);
 }
@@ -523,7 +523,7 @@ void ScoreArea::drawTabNotes(shared_ptr<System> system, Staff* staff, const Staf
 
                 TabNotePainter* tabNote = new TabNotePainter(note);
                 centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
-                           currentStaffInfo.getTabLineHeight(note->GetString(), false) + currentStaffInfo.tabLineSpacing / 2 - 1);
+                           currentStaffInfo.getTabLineHeight(note->GetString()) + currentStaffInfo.tabLineSpacing / 2 - 1);
                 tabNote->setParentItem(activeStaff);
             }
 
@@ -541,8 +541,8 @@ void ScoreArea::drawArpeggio(Position* position, quint32 x, const StaffData& cur
     // get the highest and lowest strings used at this position, and
     // convert the string indices to positions on the staff
     std::pair<quint8, quint8> bounds = position->GetStringBounds();
-    bounds.first = currentStaffInfo.getTabLineHeight(bounds.first + 1, false);
-    bounds.second = currentStaffInfo.getTabLineHeight(bounds.second + 1, false);
+    bounds.first = currentStaffInfo.getTabLineHeight(bounds.first + 1);
+    bounds.second = currentStaffInfo.getTabLineHeight(bounds.second + 1);
 
     const uint8_t height = bounds.second - bounds.first;
 
@@ -749,7 +749,7 @@ void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<System> system, Staff *staff
 
         // draw the symbol group
         centerItem(i->symbol, system->GetPositionX(left), system->GetPositionX(left + i->rect.width()),
-                   currentStaffInfo.getBottomTabLine(false) + i->rect.y() * Staff::TAB_SYMBOL_HEIGHT);
+                   currentStaffInfo.getBottomTabLine() + i->rect.y() * Staff::TAB_SYMBOL_HEIGHT);
 
         i->symbol->setParentItem(activeStaff);
     }
@@ -891,7 +891,7 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
 
         // draw the symbol group
         i->symbol->setPos(system->GetPositionX(i->rect.left()),
-                          currentStaffInfo.getTopTabLine(false) - (i->rect.y() + 1) * Staff::TAB_SYMBOL_HEIGHT);
+                          currentStaffInfo.getTopTabLine() - (i->rect.y() + 1) * Staff::TAB_SYMBOL_HEIGHT);
         i->symbol->setParentItem(activeStaff);
     }
 }

@@ -52,7 +52,7 @@ void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent* event)
     qreal y = event->pos().y();
 
     // only handle clicks that occur in the standard notation staff
-    if (y > staffInfo.getBottomStdNotationLine(false) || y < staffInfo.getTopStdNotationLine(false))
+    if (y > staffInfo.getBottomStdNotationLine() || y < staffInfo.getTopStdNotationLine(false))
     {
         event->ignore();
     }
@@ -140,9 +140,9 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
             centre = staffInfo.numOfStrings / 2;
         }
 
-        height = (staffInfo.getTabLineHeight(centre + 1, false) + staffInfo.getTabLineHeight(centre + 2, false)) / 2 + 0.5;
+        height = (staffInfo.getTabLineHeight(centre + 1) + staffInfo.getTabLineHeight(centre + 2)) / 2 + 0.5;
         painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
-        height = (staffInfo.getTabLineHeight(centre, false) + staffInfo.getTabLineHeight(centre - 1, false)) / 2 + 0.5;
+        height = (staffInfo.getTabLineHeight(centre) + staffInfo.getTabLineHeight(centre - 1)) / 2 + 0.5;
         painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
     }
 
@@ -154,9 +154,9 @@ void BarlinePainter::drawVerticalLines(QPainter* painter, double x)
 
     // draw a single bar line
     lines[0] = QLine(x, staffInfo.getTopStdNotationLine(false) + 1,
-                     x, staffInfo.getBottomStdNotationLine(false));
-    lines[1] = QLine(x, staffInfo.getTopTabLine(false) + 1,
-                     x, staffInfo.getBottomTabLine(false));
+                     x, staffInfo.getBottomStdNotationLine());
+    lines[1] = QLine(x, staffInfo.getTopTabLine() + 1,
+                     x, staffInfo.getBottomTabLine());
 
     painter->drawLines(lines);
 }

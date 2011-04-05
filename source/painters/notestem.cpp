@@ -170,7 +170,7 @@ QGraphicsItem* NoteStem::createFermata() const
     }
     else
     {
-        y = std::max<double>(bottom_, staffInfo_.getBottomStdNotationLine(false));
+        y = std::max<double>(bottom_, staffInfo_.getBottomStdNotationLine());
         y -= 25;
     }
 
@@ -198,7 +198,7 @@ QGraphicsItem* NoteStem::createAccent() const
     }
     else
     {
-        y = std::max<double>(bottom_, staffInfo_.getBottomStdNotationLine(false));
+        y = std::max<double>(bottom_, staffInfo_.getBottomStdNotationLine());
         y -= 20;
     }
 

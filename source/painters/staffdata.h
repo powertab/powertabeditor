@@ -23,15 +23,15 @@ public:
 
     StaffData();
 
-    int getTabLineHeight(int stringNum, bool absolutePos = true) const;
-    int getTopTabLine(bool absolutePos = true) const;
-    int getBottomTabLine(bool absolutePos = true) const;
+    int getTabLineHeight(int stringNum) const;
+    int getTopTabLine() const;
+    int getBottomTabLine() const;
     int getTabStaffSize() const;
 
     int getStdNotationLineHeight(int lineNumber, bool absolutePos = true) const;
     double getStdNotationSpaceHeight(int spaceNumber, bool absolutePos = true) const;
     int getTopStdNotationLine(bool absolutePos = true) const;
-    int getBottomStdNotationLine(bool absolutePos = true) const;
+    int getBottomStdNotationLine() const;
 
     int getStdNotationStaffSize() const;
 
