@@ -56,12 +56,12 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
             symbol = musicFont.getSymbol(MusicFont::CutTime);
         }
 
-        painter->drawText(0, staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(), symbol);
+        painter->drawText(0, 2 * staffInfo.stdNotationLineSpacing, symbol);
     }
     else
     {
-        drawNumber(painter, staffInfo.getStdNotationLineHeight(3) - staffInfo.getTopStdNotationLine(), timeSignature.GetBeatsPerMeasure());
-        drawNumber(painter, staffInfo.getStdNotationLineHeight(5) - staffInfo.getTopStdNotationLine(), timeSignature.GetBeatAmount());
+        drawNumber(painter, 2 * staffInfo.stdNotationLineSpacing, timeSignature.GetBeatsPerMeasure());
+        drawNumber(painter, 4 * staffInfo.stdNotationLineSpacing, timeSignature.GetBeatAmount());
     }
 }
 

@@ -52,7 +52,7 @@ void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent* event)
     qreal y = event->pos().y();
 
     // only handle clicks that occur in the standard notation staff
-    if (y > staffInfo.getBottomStdNotationLine() || y < staffInfo.getTopStdNotationLine(false))
+    if (y > staffInfo.getBottomStdNotationLine() || y < staffInfo.getTopStdNotationLine())
     {
         event->ignore();
     }
@@ -94,7 +94,7 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setFont(repeatFont);
 
         const QString message = QString().setNum(barLine->GetRepeatCount()) % "x";
-        painter->drawText(3, staffInfo.getTopStdNotationLine(false) - 3, message);
+        painter->drawText(3, staffInfo.getTopStdNotationLine() - 3, message);
     }
 
     // draw a single bar line
@@ -125,9 +125,9 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
             centre = (int)(staffInfo.numOfStdNotationLines / 2) + 1;
         }
 
-        height = (staffInfo.getStdNotationLineHeight(centre, false) + staffInfo.getStdNotationLineHeight(centre + 1, false)) / 2 + 0.5;
+        height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre + 1)) / 2 + 0.5;
         painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
-        height = (staffInfo.getStdNotationLineHeight(centre, false) + staffInfo.getStdNotationLineHeight(centre - 1, false)) / 2 + 0.5;
+        height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre - 1)) / 2 + 0.5;
         painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
 
         centre = height = 0;
@@ -153,7 +153,7 @@ void BarlinePainter::drawVerticalLines(QPainter* painter, double x)
     QVector<QLine> lines(2);
 
     // draw a single bar line
-    lines[0] = QLine(x, staffInfo.getTopStdNotationLine(false) + 1,
+    lines[0] = QLine(x, staffInfo.getTopStdNotationLine() + 1,
                      x, staffInfo.getBottomStdNotationLine());
     lines[1] = QLine(x, staffInfo.getTopTabLine() + 1,
                      x, staffInfo.getBottomTabLine());

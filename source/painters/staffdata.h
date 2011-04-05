@@ -28,9 +28,9 @@ public:
     int getBottomTabLine() const;
     int getTabStaffSize() const;
 
-    int getStdNotationLineHeight(int lineNumber, bool absolutePos = true) const;
-    double getStdNotationSpaceHeight(int spaceNumber, bool absolutePos = true) const;
-    int getTopStdNotationLine(bool absolutePos = true) const;
+    int getStdNotationLineHeight(int lineNumber) const;
+    double getStdNotationSpaceHeight(int spaceNumber) const;
+    int getTopStdNotationLine() const;
     int getBottomStdNotationLine() const;
 
     int getStdNotationStaffSize() const;

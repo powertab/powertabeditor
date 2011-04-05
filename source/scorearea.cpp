@@ -162,7 +162,7 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<System> system, int lineSp
 
         // Draw the clefs
         ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, currentStaff);
-        clefPainter->setPos(system->GetClefPadding(), currentStaffInfo.getTopStdNotationLine(false));
+        clefPainter->setPos(system->GetClefPadding(), currentStaffInfo.getTopStdNotationLine());
         clefPainter->setParentItem(activeStaff);
 
         drawTabClef(system->GetClefPadding(), currentStaffInfo);
@@ -240,14 +240,14 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<System>
         if (keySig.IsShown())
         {
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig);
-            keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine(false));
+            keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
             keySigPainter->setParentItem(activeStaff);
         }
 
         if (timeSig.IsShown())
         {
             TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig);
-            timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine(false));
+            timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
             timeSigPainter->setParentItem(activeStaff);
         }
 
@@ -606,7 +606,7 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
             {
                 StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, NULL, currentGuitar->GetTuningPtr(), currentKeySig);
                 centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
-                           currentStaffInfo.getTopStdNotationLine(false));
+                           currentStaffInfo.getTopStdNotationLine());
                 stdNotePainter->setParentItem(activeStaff);
                 continue;
             }
@@ -637,7 +637,7 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
     foreach(StdNotationPainter* painter, notePainters)
     {
         const quint32 location = system->GetPositionX(painter->getPositionObject()->GetPosition());
-        painter->setPos(location, currentStaffInfo.getTopStdNotationLine(false));
+        painter->setPos(location, currentStaffInfo.getTopStdNotationLine());
         painter->setParentItem(activeStaff);
     }
 

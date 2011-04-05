@@ -28,10 +28,10 @@ NoteStem::NoteStem(const StaffData& staffInfo, const Position* position,
         bottom_ = *std::max_element(noteLocations.begin(), noteLocations.end());
     }
 
-    top_ += staffInfo_.getTopStdNotationLine(false);
-    bottom_ += staffInfo_.getTopStdNotationLine(false);
+    top_ += staffInfo_.getTopStdNotationLine();
+    bottom_ += staffInfo_.getTopStdNotationLine();
 
-    direction_ = (staffInfo_.getStdNotationLineHeight(3, false) < bottom_) ? StemUp : StemDown;
+    direction_ = (staffInfo_.getStdNotationLineHeight(3) < bottom_) ? StemUp : StemDown;
 }
 
 const Position* NoteStem::position() const
@@ -165,7 +165,7 @@ QGraphicsItem* NoteStem::createFermata() const
     // After positioning, offset the height due to the way that QGraphicsTextItem positions text
     if (direction_ == StemUp)
     {
-        y = std::min<double>(top_, staffInfo_.getTopStdNotationLine(false));
+        y = std::min<double>(top_, staffInfo_.getTopStdNotationLine());
         y -= 33;
     }
     else
@@ -193,7 +193,7 @@ QGraphicsItem* NoteStem::createAccent() const
     // After positioning, offset the height due to the way that QGraphicsTextItem positions text
     if (direction_ == StemDown)
     {
-        y = std::min<double>(top_, staffInfo_.getTopStdNotationLine(false));
+        y = std::min<double>(top_, staffInfo_.getTopStdNotationLine());
         y -= 38;
     }
     else

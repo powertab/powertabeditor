@@ -31,7 +31,7 @@ void StaffPainter::init()
     bounds = QRectF(0, 0, staffInfo.width, staffInfo.height);
 
     // Standard notation staff
-    drawStaffLines(staffInfo.numOfStdNotationLines, staffInfo.stdNotationLineSpacing, staffInfo.getTopStdNotationLine(false));
+    drawStaffLines(staffInfo.numOfStdNotationLines, staffInfo.stdNotationLineSpacing, staffInfo.getTopStdNotationLine());
     // Tab staff
     drawStaffLines(staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine());
 }

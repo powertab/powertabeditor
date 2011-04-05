@@ -39,11 +39,8 @@ void KeySignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
 }
 
-void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
     painter->setFont(musicFont);
 
     // draw the appropriate accidentals

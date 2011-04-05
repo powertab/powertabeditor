@@ -51,7 +51,7 @@ void StdNotationPainter::init()
 
 QRectF StdNotationPainter::boundingRect() const
 {
-    return QRectF(0, -staffInfo.getTopStdNotationLine(false), width, staffInfo.getTopTabLine());
+    return QRectF(0, -staffInfo.getTopStdNotationLine(), width, staffInfo.getTopTabLine());
 }
 
 void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
