@@ -64,7 +64,7 @@ int StaffData::getBottomTabLine() const
     return getTabLineHeight(numOfStrings);
 }
 
-// Calculates the height offset for the given standard notation staff line
+/// Calculates the height offset for the given standard notation staff line
 int StaffData::getStdNotationLineHeight(int lineNumber) const
 {
     int offset = stdNotationStaffAboveSpacing + staffBorderSpacing + (lineNumber - 1) * stdNotationLineSpacing;
