@@ -897,10 +897,19 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
                     quint8 startVolume = 0, endVolume = 0, duration = 0;
                     currentPosition->GetVolumeSwell(startVolume, endVolume, duration);
 
+                    uint32_t lastPosIndex = 0;
+
                     // get the position of the last note of the volume swell
-                    Position* lastPos = staff->GetPosition(0, i + duration);
-                    Q_ASSERT(lastPos != NULL); // the last position of the volume swell should be on this staff
-                    currentSymbolInfo.rect.setRight(lastPos->GetPosition());
+                    // if the volume swell extends onto the next system, just display until the end of this staff
+                    if (!staff->IsValidPositionIndex(0, i + duration))
+                    {
+                        lastPosIndex = system->GetPositionCount() - 1;
+                    }
+                    else
+                    {
+                        lastPosIndex = staff->GetPosition(0, i + duration)->GetPosition();
+                    }
+                    currentSymbolInfo.rect.setRight(lastPosIndex);
                 }
 
                 SymbolCreationFn symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
