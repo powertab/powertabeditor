@@ -243,6 +243,7 @@ public:
                                     uint8_t& notesPlayedOver) const;
     bool HasIrregularGroupingTiming() const;
     bool ClearIrregularGroupingTiming();
+    std::string GetIrregularGroupingText() const;
 
     // Previous Beam Duration Functions
     /// Determines if a previous beam duration type is valid

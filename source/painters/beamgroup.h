@@ -17,13 +17,15 @@ public:
 
     static const double FRACTIONAL_BEAM_WIDTH = 5;
 
+    void copyNoteSteams(std::vector<NoteStem>& stems) const;
+
 private:
     void setStemDirections();
     void adjustStemHeights();
 
-    StaffData staffInfo_;
-    std::vector<NoteStem> noteStems_;
-    NoteStem::StemDirection stemDirection_;
+    StaffData staffInfo;
+    std::vector<NoteStem> noteStems;
+    NoteStem::StemDirection stemDirection;
 };
 
 #endif // BEAMGROUP_H

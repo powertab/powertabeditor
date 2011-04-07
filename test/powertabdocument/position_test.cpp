@@ -125,4 +125,28 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
 
     BOOST_AUTO_TEST_SUITE_END()
 
+    BOOST_AUTO_TEST_SUITE(IrregularNoteText)
+
+        BOOST_AUTO_TEST_CASE(NoGrouping)
+        {
+            Position pos;
+            BOOST_CHECK_EQUAL("", pos.GetIrregularGroupingText());
+        }
+
+        BOOST_AUTO_TEST_CASE(Triplet)
+        {
+            Position pos;
+            pos.SetIrregularGroupingTiming(3, 2);
+            BOOST_CHECK_EQUAL("3", pos.GetIrregularGroupingText());
+        }
+
+        BOOST_AUTO_TEST_CASE(Irregular)
+        {
+            Position pos;
+            pos.SetIrregularGroupingTiming(7, 5);
+            BOOST_CHECK_EQUAL("7:5", pos.GetIrregularGroupingText());
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+
 BOOST_AUTO_TEST_SUITE_END()

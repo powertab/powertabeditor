@@ -226,3 +226,31 @@ QGraphicsItem* NoteStem::createAccent() const
 
     return accent;
 }
+
+/// Functor to compare a NoteStem's stem direction
+struct CompareStemDirection
+{
+    CompareStemDirection(NoteStem::StemDirection direction) : direction_(direction)
+    {
+    }
+
+    bool operator()(const NoteStem& stem) const
+    {
+        return stem.direction() == direction_;
+    }
+
+    NoteStem::StemDirection direction_;
+};
+
+/// Finds the most common stem direction for a group of NoteStem's
+NoteStem::StemDirection findDirectionForGroup(const std::vector<NoteStem>& stems)
+{
+    // Find how many stem directions of each type we have
+    const size_t stemsUp = std::count_if(stems.begin(), stems.end(),
+                                         CompareStemDirection(NoteStem::StemUp));
+
+    const size_t stemsDown = std::count_if(stems.begin(), stems.end(),
+                                           CompareStemDirection(NoteStem::StemDown));
+
+    return (stemsDown >= stemsUp) ? NoteStem::StemDown : NoteStem::StemUp;
+}

@@ -25,8 +25,7 @@
 #include <painters/tempomarkerpainter.h>
 #include <painters/notestem.h>
 #include <painters/beamgroup.h>
-
-#include <cmath>
+#include <painters/irregularnotegroup.h>
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
@@ -642,6 +641,9 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
     }
 
     std::vector<NoteStem> currentStemGroup;
+    std::list<NoteStem> updatedStems;
+
+    // group all of the stems into their beaming groups, and draw them
     while(!stems.empty())
     {
         NoteStem stem = stems.front();
@@ -655,6 +657,41 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
             currentStemGroup.clear();
 
             group.drawStems(activeStaff);
+
+            // grab a copy of the updated note stems for later use
+            std::vector<NoteStem> temp;
+            group.copyNoteSteams(temp);
+            updatedStems.insert(updatedStems.end(), temp.begin(), temp.end());
+        }
+    }
+
+    // Now, draw any irregular note groupings (triplets, etc)
+    // This must be done after the beams are drawn, since the note stems will be adjusted during that process
+    std::vector<NoteStem> currentIrregularNoteGroup;
+
+    while(!updatedStems.empty())
+    {
+        NoteStem stem = updatedStems.front();
+        updatedStems.pop_front();
+
+        // check if this note isn't part of an irregular grouping
+        if (!stem.position()->IsIrregularGroupingEnd() &&
+                !stem.position()->IsIrregularGroupingMiddle() &&
+                !stem.position()->IsIrregularGroupingStart())
+        {
+            currentIrregularNoteGroup.clear();
+            continue;
+        }
+
+        currentIrregularNoteGroup.push_back(stem);
+
+        // draw the grouping
+        if (stem.position()->IsIrregularGroupingEnd())
+        {
+            IrregularNoteGroup irregularGroup(currentIrregularNoteGroup);
+            irregularGroup.draw(activeStaff);
+
+            currentIrregularNoteGroup.clear();
         }
     }
 }

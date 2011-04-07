@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <sstream>
 #include "position.h"
 
 #include "note.h"
@@ -380,6 +381,33 @@ bool Position::ClearIrregularGroupingTiming()
     // - Jan 20, 2005
     m_beaming &= ~irregularGroupingTimingMask;
     return (true);
+}
+
+/// Returns a text representation of the irregular grouping text (i.e. "3" or "7:5")
+std::string Position::GetIrregularGroupingText() const
+{
+    if (!HasIrregularGroupingTiming())
+    {
+        return "";
+    }
+
+    uint8_t notesPlayed = 0, notesPlayedOver = 0;
+    GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
+
+    std::ostringstream out;
+    out << static_cast<int>(notesPlayed);
+
+    const bool isNormalGrouping = (notesPlayedOver == 2 || notesPlayedOver == 4 ||
+                                   notesPlayedOver == 8 || notesPlayedOver == 16 ||
+                                   notesPlayedOver == 32 || notesPlayedOver == 64);
+
+    // display the ratio if there is an irregular or non-standard ratio
+    if (!isNormalGrouping || notesPlayed < notesPlayedOver)
+    {
+        out << ":" << static_cast<int>(notesPlayedOver);
+    }
+
+    return out.str();
 }
 
 // Previous Beam Duration Functions
