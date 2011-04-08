@@ -67,6 +67,8 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
         return;
     }
 
+    double xPos = staffInfo.getNoteHeadRightEdge();
+
     // Choose the correct symbol to use for the note head
     QChar noteHead;
     if (position->GetDurationType() == 1)
@@ -82,11 +84,23 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
         noteHead = MusicFont::QuarterNoteOrLess;
     }
 
+    // Display a different note head for harmonics
+    if (note->IsNaturalHarmonic())
+    {
+        noteHead = MusicFont::NaturalHarmonicNoteHead;
+        xPos += 1;
+    }
+    else if (note->HasArtificialHarmonic() || note->HasTappedHarmonic())
+    {
+        noteHead = MusicFont::ArtificialHarmonicNoteHead;
+        xPos += 1;
+    }
+
     QString displayText = getAccidentalText() + noteHead;
     width = QFontMetricsF(musicFont).width(displayText);
 
-    painter->drawText(staffInfo.getNoteHeadRightEdge() - width, yLocation, displayText);
-    addDots(painter, staffInfo.getNoteHeadRightEdge() + 2, yLocation);
+    painter->drawText(xPos - width, yLocation, displayText);
+    addDots(painter, xPos + 2, yLocation);
 }
 
 double StdNotationPainter::getNoteHeadWidth()
