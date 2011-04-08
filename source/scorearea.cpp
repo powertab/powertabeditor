@@ -869,7 +869,7 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
 
     // function objects for drawing symbols corresponding to each of the items in the singleSymbolPredicates list
     std::vector<SymbolCreationFn> singleSymbolCreators = {
-        bind(&ScoreArea::createVolumeSwell, this, _1, _2),
+        bind(&ScoreArea::createVolumeSwell, this, _1, _2, VolumeIncreasing), // set as VolumeIncreasing for now - we will update it later
         bind(&ScoreArea::createTremoloPicking, this, _1, _2),
         bind(&ScoreArea::createTremoloPicking, this, _1, _2), // TODO - create function for drawing tremolo bars
         bind(&ScoreArea::createTrill, this, _1, _2),
@@ -891,6 +891,8 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
                 // create the rectangle and render the symbol
                 currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
 
+                SymbolCreationFn symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
+
                 // if a volume swell is set, set the symbol width to span across the duration of the volume swell
                 if (*predicate == &Position::HasVolumeSwell)
                 {
@@ -910,9 +912,12 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
                         lastPosIndex = staff->GetPosition(0, i + duration)->GetPosition();
                     }
                     currentSymbolInfo.rect.setRight(lastPosIndex);
+
+                    // need to re-bind the function using the correct volume swell type
+                    const VolumeSwellType type = (startVolume <= endVolume) ? VolumeIncreasing : VolumeDecreasing;
+                    symbolCreator = bind(&ScoreArea::createVolumeSwell, this, _1, _2, type);
                 }
 
-                SymbolCreationFn symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
                 currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
                 symbols.push_back(currentSymbolInfo);
             }
@@ -1032,13 +1037,22 @@ QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& c
     return group;
 }
 
-QGraphicsItem* ScoreArea::createVolumeSwell(uint8_t width, const StaffData &currentStaffInfo)
+/// Creates a volume swell QGraphicsItem of the specified type
+QGraphicsItem* ScoreArea::createVolumeSwell(uint8_t width, const StaffData &currentStaffInfo, VolumeSwellType type)
 {
+    double leftX = currentStaffInfo.positionWidth / 2.0;
+    double rightX = width * currentStaffInfo.positionWidth;
+
+    if (type == VolumeDecreasing) // switch directions for decreasing volume swells
+    {
+        std::swap(leftX, rightX);
+    }
+
     // in this case, the width of the symbol rectangle is the # of positions that the volume swell spans
     QPainterPath path;
-    path.moveTo(width * currentStaffInfo.positionWidth, 0);
-    path.lineTo(currentStaffInfo.positionWidth / 2.0, Staff::TAB_SYMBOL_HEIGHT / 2.0);
-    path.lineTo(width * currentStaffInfo.positionWidth, Staff::TAB_SYMBOL_HEIGHT);
+    path.moveTo(rightX, 0);
+    path.lineTo(leftX, Staff::TAB_SYMBOL_HEIGHT / 2.0);
+    path.lineTo(rightX, Staff::TAB_SYMBOL_HEIGHT);
 
     QGraphicsPathItem* swell = new QGraphicsPathItem(path);
     return swell;

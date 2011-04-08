@@ -82,9 +82,16 @@ protected:
         QGraphicsItem* symbol; ///< contains the information for rendering the symbol
     };
 
+    enum VolumeSwellType
+    {
+        VolumeIncreasing,
+        VolumeDecreasing
+    };
+
+    QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo, VolumeSwellType type);
+
     QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo);
 
     QGraphicsItem* createPlainText(const QString& text, QFont::Style style);
     QGraphicsItem* createPickStroke(const QString& text);
