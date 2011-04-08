@@ -2,8 +2,9 @@
 #define UNDOMANAGER_H
 
 #include <QUndoGroup>
-#include <QList>
 #include <QUndoStack>
+
+#include <boost/ptr_container/ptr_vector.hpp>
 
 class QUndoCommand;
 
@@ -12,7 +13,6 @@ class UndoManager : public QUndoGroup
     Q_OBJECT
 public:
     explicit UndoManager(QObject *parent = 0);
-    ~UndoManager();
 
     void addNewUndoStack();
     void setActiveStackIndex(int index);
@@ -20,12 +20,7 @@ public:
     void push(QUndoCommand* cmd);
 
 private:
-    QList<QUndoStack*> undoStacks;
-
-signals:
-
-public slots:
-
+    boost::ptr_vector<QUndoStack> undoStacks;
 };
 
 #endif // UNDOMANAGER_H

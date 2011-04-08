@@ -5,20 +5,10 @@ UndoManager::UndoManager(QObject *parent) :
 {
 }
 
-UndoManager::~UndoManager()
-{
-    // the QUndoGroup is not responsible for managing the memory
-    // of the QUndoStacks that it contains
-    qDeleteAll(undoStacks);
-    undoStacks.clear();
-}
-
 void UndoManager::addNewUndoStack()
 {
-    QUndoStack* stack = new QUndoStack;
-
-    undoStacks.append(stack);
-    addStack(stack);
+    undoStacks.push_back(new QUndoStack);
+    addStack(&undoStacks.back());
 }
 
 void UndoManager::setActiveStackIndex(int index)
@@ -28,16 +18,13 @@ void UndoManager::setActiveStackIndex(int index)
          return;
     }
 
-    QUndoStack* currentStack = undoStacks.at(index);
-
-    setActiveStack(currentStack);
+    setActiveStack(&undoStacks.at(index));
 }
 
 void UndoManager::removeStack(int index)
 {
-    QUndoStack* stack = undoStacks.at(index);
-    delete stack; // stack is automatically removed from the group when it is deleted
-    undoStacks.removeAt(index);
+    // stack is automatically removed from the QUndoGroup when it is deleted
+    undoStacks.erase(undoStacks.begin() + index);
 }
 
 // Pushes the QUndoCommand onto the active stack

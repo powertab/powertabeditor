@@ -6,16 +6,10 @@ using std::shared_ptr;
 
 DeleteBarline::DeleteBarline(shared_ptr<System> system, Barline* barline) :
     system(system),
-    barline(barline)
+    barline(barline),
+    barlineCopy(new Barline(*barline))
 {
     setText(QObject::tr("Delete Barline"));
-
-    barlineCopy = new Barline(*barline);
-}
-
-DeleteBarline::~DeleteBarline()
-{
-    delete barlineCopy;
 }
 
 void DeleteBarline::redo()
