@@ -105,8 +105,10 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
         connector->setParentItem(parent);
     }
 
-     // draw a note flag for single notes (eighth notes or less)
-    if (noteStems.size() == 1 && noteStems.front().position()->GetDurationType() > 4)
+     // draw a note flag for single notes (eighth notes or less) or grace notes
+    if (noteStems.size() == 1 &&
+            (noteStems.front().position()->GetDurationType() > 4 ||
+             noteStems.front().position()->IsAcciaccatura()))
     {
         QGraphicsItem* flag = noteStems.front().createNoteFlag();
         flag->setParentItem(parent);

@@ -22,6 +22,11 @@ NoteStem::NoteStem(const StaffData& staffInfo, const Position* position,
 {
     stemSize_ = staffInfo_.stdNotationLineSpacing * 3.5;
 
+    if (position->IsAcciaccatura()) // shorter stem for grace notes
+    {
+        stemSize_ *= 0.75;
+    }
+
     if (!noteLocations.empty())
     {
         top_ = *std::min_element(noteLocations.begin(), noteLocations.end());
@@ -107,6 +112,11 @@ QGraphicsItem* NoteStem::createNoteFlag() const
             symbol = MusicFont::FlagUp4;
             break;
         }
+
+        if (position_->IsAcciaccatura())
+        {
+            symbol = MusicFont::FlagUp1;
+        }
     }
     else
     {
@@ -124,6 +134,11 @@ QGraphicsItem* NoteStem::createNoteFlag() const
         default: // 64
             symbol = MusicFont::FlagDown4;
             break;
+        }
+
+        if (position_->IsAcciaccatura())
+        {
+            symbol = MusicFont::FlagDown1;
         }
     }
 
