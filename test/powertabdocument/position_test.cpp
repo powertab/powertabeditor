@@ -17,10 +17,10 @@ struct PositionFixture
         note2 = new Note(3, 5);
         note3 = new Note(5, 4);
         note4 = new Note(0, 0);
-        pos->m_noteArray.push_back(note1);
-        pos->m_noteArray.push_back(note2);
-        pos->m_noteArray.push_back(note3);
-        pos->m_noteArray.push_back(note4);
+        pos->InsertNote(note1);
+        pos->InsertNote(note2);
+        pos->InsertNote(note3);
+        pos->InsertNote(note4);
 
         pos->SetArpeggioUp(true);
         pos->SetPickStrokeDown(true);
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
         BOOST_AUTO_TEST_CASE(SingleString)
         {
             Position pos;
-            pos.m_noteArray.push_back(new Note(4, 13));
+            pos.InsertNote(new Note(4, 13));
 
             BOOST_CHECK(pos.GetStringBounds() == (std::pair<uint8_t, uint8_t>(4, 4)));
         }

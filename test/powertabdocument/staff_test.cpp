@@ -16,12 +16,12 @@ struct StaffFixture
         highPositions.push_back(new Position(6, 4, 0));
 
         // put some sample notes at each position
-        highPositions.at(0)->m_noteArray.push_back(new Note(1, 4));
-        highPositions.at(0)->m_noteArray.push_back(new Note(2, 3));
-        highPositions.at(1)->m_noteArray.push_back(new Note(1, 5));
-        highPositions.at(2)->m_noteArray.push_back(new Note(1, 5));
-        highPositions.at(3)->m_noteArray.push_back(new Note(1, 6));
-        highPositions.at(4)->m_noteArray.push_back(new Note(1, 5));
+        highPositions.at(0)->InsertNote(new Note(1, 4));
+        highPositions.at(0)->InsertNote(new Note(2, 3));
+        highPositions.at(1)->InsertNote(new Note(1, 5));
+        highPositions.at(2)->InsertNote(new Note(1, 5));
+        highPositions.at(3)->InsertNote(new Note(1, 6));
+        highPositions.at(4)->InsertNote(new Note(1, 5));
 
         lowPositions.push_back(new Position(1, 4, 0));
         lowPositions.push_back(new Position(3, 8, 0));
