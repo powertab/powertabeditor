@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <algorithm>
+#include <stdexcept>
 #include <sstream>
 #include "position.h"
 
@@ -818,6 +819,33 @@ bool Position::RemoveComplexSymbol(uint8_t type)
 void Position::ClearComplexSymbolArrayContents()
 {
     std::fill(m_complexSymbolArray.begin(), m_complexSymbolArray.end(), notUsed);
+}
+
+/// Inserts the given note
+/// @throw std::invalid_argument If there is already a note at the same string
+void Position::InsertNote(Note* note)
+{
+    if (GetNoteByString(note->GetString()))
+    {
+        throw std::invalid_argument("Cannot insert note - there is already a note at the same string");
+    }
+
+    m_noteArray.push_back(note);
+}
+
+/// Removes the note at the given string
+/// @throw std::invalid_argument If there is not a note at the given string
+void Position::RemoveNote(uint8_t string)
+{
+    Note* note = GetNoteByString(string);
+    if (note == NULL)
+    {
+        throw std::invalid_argument("There is no note to remove at the given string");
+    }
+
+    delete note;
+    // get the iterator to the note, and erase it
+    m_noteArray.erase(std::find(m_noteArray.begin(), m_noteArray.end(), note));
 }
 
 // functor for the GetNoteByString function
