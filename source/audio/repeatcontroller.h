@@ -2,15 +2,13 @@
 #define REPEATCONTROLLER_H
 
 #include <cstdint>
-#include <vector>
+#include <boost/unordered_map.hpp>
 
 class Score;
 
 /// Keeps track of repeat events during playback
 class RepeatController
 {
-    struct Repeat;
-
 public:
     RepeatController(const Score* score);
 
@@ -21,19 +19,20 @@ private:
     void indexRepeats();
 
     const Score* score;
-    std::vector<Repeat> repeatList; ///< Contains all repeat events in the score, in order of occurrence
 
+    /// Holds information about a repeat - where the playback position should move to, and how many repeats are left
     struct Repeat
     {
-        Repeat(uint32_t startBarSystem, uint32_t startBarPos, uint32_t endBarSystem,
-               uint32_t endBarPos, uint8_t numRepeats);
+        Repeat();
+        Repeat(uint32_t startBarSystem, uint32_t startBarPos, uint8_t numRepeats);
 
         uint32_t startBarSystem;    ///< System index of the starting bar
         uint32_t startBarPos;       ///< Position index of the starting bar
-        uint32_t endBarSystem;      ///< System index of the ending bar
-        uint32_t endBarPos;         ///< Position index of the ending bar
         uint8_t repeatsRemaining;   ///< Number of repeats left to perform
     };
+
+    /// Holds all repeat events in the score, indexed by the system and position index of the end bar
+    boost::unordered_map<std::pair<uint32_t, uint32_t>, Repeat> repeats;
 };
 
 #endif // REPEATCONTROLLER_H

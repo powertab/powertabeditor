@@ -8,6 +8,7 @@
 
 using std::shared_ptr;
 using std::vector;
+using std::make_pair;
 
 RepeatController::RepeatController(const Score* score) :
     score(score)
@@ -39,9 +40,10 @@ void RepeatController::indexRepeats()
             }
             else if (currentBar->IsRepeatEnd())
             {
-                repeatList.push_back(Repeat(activeStartBarSystem, activeStartBar->GetPosition(),
-                                            currentSystem, currentBar->GetPosition(),
-                                            currentBar->GetRepeatCount() - 1));
+                // add to the repeat list, indexed by the location of the end bar
+                repeats[make_pair(currentSystem, currentBar->GetPosition())] = Repeat(activeStartBarSystem,
+                                                                                      activeStartBar->GetPosition(),
+                                                                                      currentBar->GetRepeatCount() - 1);
             }
         }
     }
@@ -53,17 +55,20 @@ void RepeatController::indexRepeats()
 bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPos,
                                   uint32_t& newSystem, uint32_t& newPos)
 {
-    if (repeatList.empty()) // no repeat events left in the score
+    if (repeats.empty()) // no repeat events left in the score
     {
         return false;
     }
 
-    Repeat& activeRepeat = repeatList.front();
+    // Find if there is a repeat event at the given location
+    auto repeatIterator = repeats.find(make_pair(currentSystem, currentPos));
 
-    if (currentSystem != activeRepeat.endBarSystem || currentPos != activeRepeat.endBarPos)
+    if (repeatIterator == repeats.end())
     {
         return false;
     }
+
+    Repeat& activeRepeat = repeatIterator->second;
 
     newSystem = activeRepeat.startBarSystem;
     newPos = activeRepeat.startBarPos;
@@ -72,18 +77,20 @@ bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPo
 
     if (activeRepeat.repeatsRemaining == 0)
     {
-        repeatList.erase(repeatList.begin());
+        repeats.erase(repeatIterator);
     }
 
     return true;
 }
 
-RepeatController::Repeat::Repeat(uint32_t startBarSystem, uint32_t startBarPos, uint32_t endBarSystem,
-                                 uint32_t endBarPos, uint8_t numRepeats) :
+RepeatController::Repeat::Repeat() :
+    startBarSystem(0), startBarPos(0), repeatsRemaining(0)
+{
+}
+
+RepeatController::Repeat::Repeat(uint32_t startBarSystem, uint32_t startBarPos, uint8_t numRepeats) :
     startBarSystem(startBarSystem),
     startBarPos(startBarPos),
-    endBarSystem(endBarSystem),
-    endBarPos(endBarPos),
     repeatsRemaining(numRepeats)
 {
 
