@@ -1,5 +1,7 @@
 #include "midievent.h"
 
+#include <boost/test/floating_point_comparison.hpp>
+
 MidiEvent::MidiEvent(uint8_t channel, double startTime, double duration,
                      uint32_t positionIndex, uint32_t systemIndex) :
     channel(channel),
@@ -33,7 +35,10 @@ double MidiEvent::getDuration() const
 /// Compares by timestamp, then by system index, then by position index.
 bool MidiEvent::operator<(const MidiEvent& event) const
 {
-    if (startTime == event.startTime)
+    using namespace boost::test_tools;
+
+    // compare timestamps using a floating point comparison
+    if (check_is_close(startTime, event.startTime, percent_tolerance(0.001)))
     {
         if (systemIndex == event.systemIndex)
         {

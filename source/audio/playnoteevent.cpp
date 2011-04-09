@@ -23,7 +23,7 @@ void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer) const
 {
     Q_ASSERT(guitar != NULL);
 
-    qDebug() << "Play Note: " << systemIndex << ", " << positionIndex;
+    qDebug() << "Play Note: " << systemIndex << ", " << positionIndex << " at " << startTime;
 
     // grab the patch/pan/volume immediately before playback to allow for real-time mixing
     if (isMuted)

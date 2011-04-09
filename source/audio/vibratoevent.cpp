@@ -14,7 +14,7 @@ VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionI
 
 void VibratoEvent::performEvent(RtMidiWrapper& sequencer) const
 {
-    qDebug() << "Vibrato: " << systemIndex << ", " << positionIndex;
+    qDebug() << "Vibrato: " << systemIndex << ", " << positionIndex << " at " << startTime;
 
     if (eventType == VIBRATO_ON)
     {

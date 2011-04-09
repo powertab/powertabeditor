@@ -16,7 +16,7 @@ MetronomeEvent::MetronomeEvent(uint8_t channel, double startTime, double duratio
 
 void MetronomeEvent::performEvent(RtMidiWrapper& sequencer) const
 {
-    qDebug() << "Metronome: " << systemIndex << ", " << positionIndex;
+    qDebug() << "Metronome: " << systemIndex << ", " << positionIndex << " at " << startTime;
 
     // check if the metronome has been disabled
     QSettings settings;

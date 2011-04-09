@@ -2,7 +2,7 @@
 #define REPEATCONTROLLER_H
 
 #include <cstdint>
-#include <queue>
+#include <vector>
 
 class Score;
 
@@ -21,7 +21,7 @@ private:
     void indexRepeats();
 
     const Score* score;
-    std::queue<Repeat> repeatQueue; ///< Contains all repeat events in the score, in order of occurrence
+    std::vector<Repeat> repeatList; ///< Contains all repeat events in the score, in order of occurrence
 
     struct Repeat
     {

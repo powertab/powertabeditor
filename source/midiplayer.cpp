@@ -71,9 +71,9 @@ void MidiPlayer::run()
         generateMetronome(currentSystemIndex, timeStamp, eventList);
 
         timeStamp = generateEventsForSystem(currentSystemIndex, timeStamp, eventList);
-
-        eventList.sort(CompareEvents());
     }
+
+    eventList.sort(CompareEvents());
 
     playMidiEvents(eventList, startSystemIndex, startPos);
 }
@@ -272,6 +272,9 @@ void MidiPlayer::playMidiEvents(std::list<unique_ptr<MidiEvent> >& eventList,
         if (repeatController.checkForRepeat(currentSystem, currentPosition, newSystem, newPos))
         {
             qDebug() << "Moving to: " << newSystem << ", " << newPos;
+            qDebug() << "From position: " << currentSystem << ", " << currentPosition
+                     << " at " << activeEvent->getStartTime();
+
             startSystem = newSystem;
             startPos = newPos;
             currentPosition = currentSystem = 0;
@@ -428,4 +431,9 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
                                                                                systemIndex, MetronomeEvent::METRONOME_PITCH)));
         }
     }
+
+    // insert an empty event for the last barline of the system, to trigger any repeat events for that bar
+    eventList.push_back( unique_ptr<StopNoteEvent> ( new StopNoteEvent(METRONOME_CHANNEL, startTime,
+                                                                       system->GetEndBarConstRef().GetPosition(),
+                                                                       systemIndex, MetronomeEvent::METRONOME_PITCH)));
 }

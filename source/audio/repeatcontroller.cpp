@@ -39,9 +39,9 @@ void RepeatController::indexRepeats()
             }
             else if (currentBar->IsRepeatEnd())
             {
-                repeatQueue.push(Repeat(activeStartBarSystem, activeStartBar->GetPosition(),
-                                        currentSystem, currentBar->GetPosition(),
-                                        currentBar->GetRepeatCount() - 1));
+                repeatList.push_back(Repeat(activeStartBarSystem, activeStartBar->GetPosition(),
+                                            currentSystem, currentBar->GetPosition(),
+                                            currentBar->GetRepeatCount() - 1));
             }
         }
     }
@@ -53,15 +53,14 @@ void RepeatController::indexRepeats()
 bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPos,
                                   uint32_t& newSystem, uint32_t& newPos)
 {
-    if (repeatQueue.empty()) // no repeat events left in the score
+    if (repeatList.empty()) // no repeat events left in the score
     {
         return false;
     }
 
-    Repeat& activeRepeat = repeatQueue.front();
+    Repeat& activeRepeat = repeatList.front();
 
-    if ((currentSystem < activeRepeat.endBarSystem) ||
-        (currentSystem == activeRepeat.endBarSystem && currentPos < activeRepeat.endBarPos))
+    if (currentSystem != activeRepeat.endBarSystem || currentPos != activeRepeat.endBarPos)
     {
         return false;
     }
@@ -73,7 +72,7 @@ bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPo
 
     if (activeRepeat.repeatsRemaining == 0)
     {
-        repeatQueue.pop();
+        repeatList.erase(repeatList.begin());
     }
 
     return true;

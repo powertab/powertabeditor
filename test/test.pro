@@ -51,8 +51,10 @@ SOURCES += \
     ../source/powertabdocument/chorddiagram.cpp \
     ../source/powertabdocument/barline.cpp \
     ../source/powertabdocument/alternateending.cpp \
+    ../source/audio/midievent.cpp \
     powertabdocument/system_test.cpp \
-    powertabdocument/position_test.cpp
+    powertabdocument/position_test.cpp \
+    audio/test_midievent.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
@@ -90,4 +92,5 @@ HEADERS += \
     ../source/powertabdocument/chorddiagram.h \
     ../source/powertabdocument/barline.h \
     ../source/powertabdocument/alternateending.h \
+    ../source/audio/midievent.h \
     powertabdocument/tuning_fixtures.h
