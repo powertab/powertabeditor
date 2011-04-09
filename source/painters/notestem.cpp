@@ -91,7 +91,7 @@ double NoteStem::stemSize() const
 
 QGraphicsItem* NoteStem::createNoteFlag() const
 {
-    Q_ASSERT(position_->GetDurationType() > 4);
+    Q_ASSERT(canDrawFlag());
 
     // choose the flag symbol, depending on duration and stem direction
     QChar symbol = 0;
@@ -268,4 +268,10 @@ NoteStem::StemDirection findDirectionForGroup(const std::vector<NoteStem>& stems
                                            CompareStemDirection(NoteStem::StemDown));
 
     return (stemsDown >= stemsUp) ? NoteStem::StemDown : NoteStem::StemUp;
+}
+
+/// Returns true if we can draw a flag for this note stem (must be eighth note or higher, or a grace note)
+bool NoteStem::canDrawFlag() const
+{
+    return (position_->GetDurationType() > 4) || position_->IsAcciaccatura();
 }

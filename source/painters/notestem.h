@@ -44,6 +44,8 @@ public:
 
     double stemEdge() const;
 
+    bool canDrawFlag() const;
+
 private:
     const Position* position_;
     double x_;
