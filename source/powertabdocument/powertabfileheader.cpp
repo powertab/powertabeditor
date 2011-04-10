@@ -11,6 +11,9 @@
 
 #include "powertabfileheader.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Constants (see .h for details)
 const uint32_t PowerTabFileHeader::POWERTABFILE_MARKER              = 0x62617470;
 
@@ -525,7 +528,7 @@ bool PowerTabFileHeader::DeserializeVersion1_5(PowerTabInputStream& stream)
 	// - Dec 28, 2004
 	uint8_t releasedOn = 0, live = 0;
 	uint16_t year = 0;
-	string releaseTitle = "";
+        std::string releaseTitle = "";
 
 	stream.ReadMFCString(m_songData.title);
 	CHECK_THAT(stream.CheckState(), false);
@@ -614,7 +617,7 @@ bool PowerTabFileHeader::DeserializeVersion1_0(PowerTabInputStream& stream)
 	// - Dec 28, 2004
 	uint8_t releasedOn = 0, live = 0;
 	uint16_t year = 0;
-	string releaseTitle;
+        std::string releaseTitle;
 
 	stream.ReadMFCString(m_songData.title);
 	CHECK_THAT(stream.CheckState(), false);
@@ -691,26 +694,23 @@ bool PowerTabFileHeader::DeserializeVersion1_0(PowerTabInputStream& stream)
 /// Gets the release title for a song (audio title or video title or bootleg
 /// title)
 /// @return The release title for the song
-string PowerTabFileHeader::GetSongReleaseTitle() const
+std::string PowerTabFileHeader::GetSongReleaseTitle() const
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
-	
-	string returnValue = "";
-	
-	uint8_t releaseType = GetSongReleaseType();
+    std::string returnValue = "";
 
-	// Video release
-	if (releaseType == RELEASETYPE_PUBLIC_VIDEO)
-		returnValue = GetSongVideoReleaseTitle();
-	// Bootleg
-	else if (releaseType == RELEASETYPE_BOOTLEG)
-		returnValue = GetSongBootlegTitle();
-	// Audio release
-	else
-		returnValue = GetSongAudioReleaseTitle();
-		
-	return (returnValue);
+    uint8_t releaseType = GetSongReleaseType();
+
+    // Video release
+    if (releaseType == RELEASETYPE_PUBLIC_VIDEO)
+        returnValue = GetSongVideoReleaseTitle();
+    // Bootleg
+    else if (releaseType == RELEASETYPE_BOOTLEG)
+        returnValue = GetSongBootlegTitle();
+    // Audio release
+    else
+        returnValue = GetSongAudioReleaseTitle();
+
+    return (returnValue);
 }
 
 /// Sets the song bootleg date
