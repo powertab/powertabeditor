@@ -16,7 +16,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <memory>
+
+#include <boost/pointee.hpp>
 
 #include "macros.h"
 
@@ -62,8 +63,11 @@ public:
     }
 
     template <class T>
-    bool ReadVector(std::vector<T*>& vect, uint16_t version)
+    bool ReadVector(std::vector<T>& vect, uint16_t version)
     {
+        // Get the type that T points to, regardless of whether T is a raw pointer, shared_ptr, etc
+        typedef typename boost::pointee<T>::type PointeeType;
+
         const uint32_t count = ReadCount();
         CHECK_THAT(CheckState(), false);
 
@@ -76,32 +80,7 @@ public:
         for (uint32_t i = 0; i < count; i++)
         {
             ReadClassInformation();
-            T* temp = new T();
-            temp->Deserialize(*this, version);
-            CHECK_THAT(CheckState(), false);
-            vect.push_back(temp);
-        }
-        return true;
-    }
-
-    // used for vectors of smart pointers
-    // TODO - should combine duplicated code with the other version of ReadVector
-    template <class T>
-    bool ReadVector(std::vector<std::shared_ptr<T> >& vect, uint16_t version)
-    {
-        const uint32_t count = ReadCount();
-        CHECK_THAT(CheckState(), false);
-
-        vect.clear();
-        if (count > 0)
-        {
-            vect.reserve(count);
-        }
-
-        for (uint32_t i = 0; i < count; i++)
-        {
-            ReadClassInformation();
-            std::shared_ptr<T> temp(new T);
+            T temp(new PointeeType);
             temp->Deserialize(*this, version);
             CHECK_THAT(CheckState(), false);
             vect.push_back(temp);
