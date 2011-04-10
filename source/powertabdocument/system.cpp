@@ -21,6 +21,9 @@
 #include "rhythmslash.h"
 #include "position.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default Constants
 const Rect System::DEFAULT_RECT                                   = Rect(50, 20, 750, 0);
 const uint8_t System::DEFAULT_POSITION_SPACING                       = 20;

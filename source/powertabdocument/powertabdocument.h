@@ -13,17 +13,16 @@
 #define __POWERTABDOC_H__
 
 #include "powertabfileheader.h"
-#include "score.h"
 #include "fontsetting.h"
 
-// compatibility classes
-#include "oldrehearsalsign.h"
-#include "oldtimesignature.h"
+#include <vector>
 
 #define NUM_DOCUMENT_FONT_SETTINGS                  3                           ///< Number of document wide font settings
 #define DOCUMENT_FONT_SETTING_CHORD_NAME            0                           ///< Font used to draw the chord name (chord text)
 #define DOCUMENT_FONT_SETTING_TABLATURE_NUMBERS     1                           ///< Font used to draw the fret numbers on the tablature staff
 #define DOCUMENT_FONT_LYRICS                        2                           ///< Unused
+
+class Score;
 
 /// Loads and saves Power Tab files (.ptb)
 class PowerTabDocument

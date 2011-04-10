@@ -18,6 +18,9 @@
 #include "powertabfileheader.h"     // Needed for file version constants
 #include "tuning.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Constants
 // Default Constants
 const uint8_t    Position::DEFAULT_POSITION                              = 0;

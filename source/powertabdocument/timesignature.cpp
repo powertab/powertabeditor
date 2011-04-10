@@ -15,6 +15,9 @@
 #include "timesignature.h"
 #include "generalmidi.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Note: The MIDI_xxx duration constants found in this class are defined in generalmidi.h
 
 const uint32_t   TimeSignature::DEFAULT_DATA            = 0x1a018000;
@@ -445,7 +448,7 @@ bool TimeSignature::SetFlag(uint32_t flag)
 /// Gets a text representation of the meter
 /// @param type Type of text to get (see textTypes enum in .h for values)
 /// @return Text representation of the meter
-string TimeSignature::GetText(uint32_t type) const
+std::string TimeSignature::GetText(uint32_t type) const
 {
     //------Last Checked------//
     // - Dec 13, 2004

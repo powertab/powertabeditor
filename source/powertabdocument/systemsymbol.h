@@ -62,7 +62,7 @@ protected:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                            
+    std::string GetMFCClassName() const
         {return "CSectionSymbol";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema

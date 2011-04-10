@@ -63,7 +63,7 @@ public:
 // Member Variables
 protected:
     uint8_t      m_number;                   ///< Unique number used to identify the guitar (zero-based)
-    string    m_description;              ///< Description of the guitar
+    std::string  m_description;              ///< Description of the guitar
     uint8_t      m_preset;                   ///< MIDI preset to use during playback
     uint8_t      m_initialVolume;            ///< Initial MIDI channel volume level for the guitar
     uint8_t      m_pan;                      ///< Channel pan setting for the guitar
@@ -72,7 +72,7 @@ protected:
     uint8_t      m_tremolo;                  ///< Amount of tremolo effect used by the guitar
     uint8_t      m_phaser;                   ///< Amount of phaser effect used by the guitar
     uint8_t      m_capo;                     ///< Capo placement (0 - no capo)
-    Tuning      m_tuning;                   ///< Guitar tuning
+    Tuning       m_tuning;                   ///< Guitar tuning
 
 // Constructor/Destructor
 public:
@@ -99,7 +99,7 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                        
+    std::string GetMFCClassName() const
         {return "CGuitar";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -128,7 +128,7 @@ public:
     }
     /// Gets the description for the guitar (i.e. Acoustic w/Chorus)
     /// @return The description for the guitar
-    string GetDescription() const                         
+    std::string GetDescription() const
         {return (m_description);}
 
 // Preset Functions
@@ -320,11 +320,11 @@ public:
         {return (m_tuning.GetStringCount());}
     /// Gets the tuning spelling used by the guitar (i.e. E A D G B E)
     /// @return The tuning spelling used by the guitar
-    string GetTuningSpelling() const                      
+    std::string GetTuningSpelling() const
         {return (m_tuning.GetSpelling());}
 
 // Operations
-    string GetLegendText() const;
+    std::string GetLegendText() const;
 };
 
 #endif

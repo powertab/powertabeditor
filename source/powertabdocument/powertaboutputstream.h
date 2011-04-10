@@ -12,7 +12,7 @@
 #ifndef __POWERTABOUTPUTSTREAM_H__
 #define __POWERTABOUTPUTSTREAM_H__
 
-#include <stdint.h>
+#include <cstdint>
 #include <fstream>
 
 #include <unordered_map>

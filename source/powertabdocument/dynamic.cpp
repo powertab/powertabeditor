@@ -11,6 +11,9 @@
 
 #include "dynamic.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 #include "powertabfileheader.h"         // Needed for file version constants
 
 // Default constants
@@ -215,10 +218,8 @@ bool Dynamic::IsVolumeSet(bool rhythmSlashes) const
 /// @param rhythmSlashes If true, gets the rhythm slash volume level text,
 /// otherwise the staff volume level text
 /// @return A text representation of the volume level
-string Dynamic::GetText(bool rhythmSlashes) const
+std::string Dynamic::GetText(bool rhythmSlashes) const
 {
-    //------Last Checked------//
-    // - Jan 13, 2005
     // Get the appropriate volume level
     uint8_t volume = GetVolume(rhythmSlashes);
 

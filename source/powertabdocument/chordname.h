@@ -150,8 +150,11 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const
-        {return "CChordName";}
+    std::string GetMFCClassName() const
+    {
+        return "CChordName";
+    }
+
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
     uint16_t GetMFCClassSchema() const
@@ -178,7 +181,7 @@ public:
             !(key == AFlat && keyVariation == variationUp));
     }
 
-    string GetKeyText(bool getBassNote) const;
+    std::string GetKeyText(bool getBassNote) const;
 
 // Tonic Functions
     bool SetTonic(uint8_t key, uint8_t keyVariation);
@@ -200,7 +203,7 @@ public:
         {return (formula <= minor7thFlatted5th);}
     bool SetFormula(uint8_t formula);
     uint8_t GetFormula() const;
-    string GetFormulaText() const;
+    std::string GetFormulaText() const;
 
 // Brackets Functions
     /// Sets or clears the brackets
@@ -325,7 +328,7 @@ public:
     bool IsTypeUsed() const
         {return (GetType() != typeNotUsed);}
 
-    string GetText() const;
+    std::string GetText() const;
 };
 
 #endif

@@ -11,8 +11,13 @@
 
 #include "powertabdocument.h"
 #include "powertabinputstream.h"
-#include "powertabstream.h"
-#include <math.h>                   // Needed for pow
+#include "powertaboutputstream.h"
+
+// compatibility classes
+#include "oldrehearsalsign.h"
+#include "oldtimesignature.h"
+
+#include "score.h"
 
 using std::string;
 

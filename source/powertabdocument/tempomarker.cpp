@@ -13,6 +13,9 @@
 
 #include "powertabfileheader.h"                     // Needed for file version constants
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default constants
 const char*       TempoMarker::DEFAULT_DESCRIPTION                = "";
 const uint8_t        TempoMarker::DEFAULT_BEAT_TYPE                  = quarter;

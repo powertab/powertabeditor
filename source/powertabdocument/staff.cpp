@@ -15,6 +15,8 @@
 #include "system.h"
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "tuning.h"                         // Needed for IsValidStringCount
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
 
 #include <numeric> // partial_sum
 #include <stdexcept>

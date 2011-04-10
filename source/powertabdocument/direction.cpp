@@ -11,6 +11,9 @@
 
 #include "direction.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default constants
 const uint8_t        Direction::DEFAULT_POSITION                 = 0;
 
@@ -26,7 +29,7 @@ const uint8_t        Direction::NUM_SYMBOL_TYPES                 = 19;
 const uint8_t        Direction::MIN_REPEAT_NUMBER                = 0;
 const uint8_t        Direction::MAX_REPEAT_NUMBER                = 24;
 
-static string directionText[Direction::NUM_SYMBOL_TYPES] = 
+static std::string directionText[Direction::NUM_SYMBOL_TYPES] =
 {
     "Coda", "Double Coda", "Segno", "Segno Segno",
     "Fine", "D.C.", "D.S.", "D.S.S.", "To Coda",
@@ -306,10 +309,8 @@ void Direction::DeleteSymbolArrayContents()
 /// Gets a text representation of a symbol
 /// @param index Index of the symbol to get the text for
 /// @return Text representation of the symbol
-string Direction::GetText(uint32_t index) const
+std::string Direction::GetText(uint32_t index) const
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     uint8_t symbolType = 0;
     uint8_t activeSymbol = 0;
     uint8_t repeatNumber = 0;

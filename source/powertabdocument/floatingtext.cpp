@@ -11,6 +11,9 @@
 
 #include "floatingtext.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default constants
 const char*   FloatingText::DEFAULT_TEXT          = "Text";
 const Rect    FloatingText::DEFAULT_RECT          = Rect(0,0,0,0);

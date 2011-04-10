@@ -58,13 +58,13 @@ public:
 
 // Member Variables
 protected:
-    string    m_faceName;         ///< Face name of the font; i.e. Arial, Times New Roman, etc.
+    std::string m_faceName;         ///< Face name of the font; i.e. Arial, Times New Roman, etc.
     int32_t     m_pointSize;        ///< Height of the font, in points
     int32_t     m_weight;           ///< Font weight (see enum for values)
-    uint8_t      m_italic;           ///< Determines whether or not the font uses italics
-    uint8_t      m_underline;        ///< Determines whether or not the font is underlined
-    uint8_t      m_strikeOut;        ///< Determines whether or not the font is struck out
-    Colour     m_color;            ///< Color of the font
+    uint8_t     m_italic;           ///< Determines whether or not the font uses italics
+    uint8_t     m_underline;        ///< Determines whether or not the font is underlined
+    uint8_t     m_strikeOut;        ///< Determines whether or not the font is struck out
+    Colour      m_color;            ///< Color of the font
 
 // Constructor/Destructor
 public:
@@ -82,7 +82,7 @@ public:
 // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                            
+    std::string GetMFCClassName() const
         {return "CFontItem";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -111,7 +111,7 @@ public:
     }
     /// Gets the face name used by the FontSetting object
     /// @return The face name used by the FontSetting object
-    string GetFaceName() const                            
+    std::string GetFaceName() const
         {return (m_faceName);}
 
 // Point Size Functions

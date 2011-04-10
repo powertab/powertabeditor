@@ -39,7 +39,7 @@ public:
     
 // Member Variables
 protected:
-    string        m_text;                     ///< Text to be output
+    std::string        m_text;                     ///< Text to be output
     Rect          m_rect;                     ///< Bounding rectangle for the text
     uint8_t          m_flags;                    ///< Flags representing alignment and borders (see flags below)
     FontSetting     m_fontSetting;              ///< Font setting (format) to use when drawing the text
@@ -65,7 +65,7 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                            
+    std::string GetMFCClassName() const
         {return "CFloatingText";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -80,7 +80,7 @@ public:
         {CHECK_THAT(text != NULL, false); m_text = text; return (true);}
     /// Gets the text used by the FloatingText object
     /// @return The text used by the FloatingText object
-    string GetText() const                                        
+    std::string GetText() const
         {return (m_text);}
 
 // Rect Functions

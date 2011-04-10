@@ -33,7 +33,7 @@ public:
 	uint8_t          m_position;             ///< Zero based index of the position within the system where the rehearsal sign is anchored
 	uint32_t        m_data;                 ///< Unused data
 	int8_t          m_letter;               ///< The letter used to uniquely identify the rehearsal sign (i.e. A, B, F, etc. - must be a capital letter)
-	string        m_description;          ///< A description that indicates the passage the rehearsal sign is marking (i.e. Chorus, Intro, etc.)
+        std::string        m_description;          ///< A description that indicates the passage the rehearsal sign is marking (i.e. Chorus, Intro, etc.)
 
 // Constructor/Destructor
 public:
@@ -51,7 +51,7 @@ public:
 // MFC Class Functions
 	/// Gets the MFC class id associated with the object
 	/// @return The MFC class id associated with the object
-	string GetMFCClassId() const              
+        std::string GetMFCClassId() const
 	{
 		std::stringstream returnValue;
 		returnValue << GetMFCClassName() << "-" << GetMFCClassSchema();
@@ -59,7 +59,7 @@ public:
 	}
 	/// Gets the MFC Class Name for the object
 	/// @return The MFC Class Name
-	string GetMFCClassName() const            
+        std::string GetMFCClassName() const
 		{return "CRehearsalSign";}
 	/// Gets the MFC Class Schema for the object
 	/// @return The MFC Class Schema

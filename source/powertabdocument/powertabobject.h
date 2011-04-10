@@ -12,12 +12,9 @@
 #ifndef __POWERTABOBJECT_H__
 #define __POWERTABOBJECT_H__
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
-using std::string;
 
-#include "powertabinputstream.h"
-#include "powertaboutputstream.h"
 class PowerTabOutputStream;
 class PowerTabInputStream;
 
@@ -30,7 +27,7 @@ public:
     // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    virtual string GetMFCClassName() const = 0;
+    virtual std::string GetMFCClassName() const = 0;
 
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema

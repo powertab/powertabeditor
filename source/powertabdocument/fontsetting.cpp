@@ -11,6 +11,9 @@
 
 #include "fontsetting.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default constants
 const char*   FontSetting::DEFAULT_FACENAME           = "Times New Roman";
 const int32_t   FontSetting::DEFAULT_POINTSIZE          = 8;

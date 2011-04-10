@@ -10,6 +10,7 @@
 #include <powertabdocument/tempomarker.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
+#include <powertabdocument/score.h>
 
 #include <painters/staffdata.h>
 #include <painters/barlinepainter.h>

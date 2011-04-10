@@ -15,6 +15,8 @@
 #include "powertabobject.h"
 #include "macros.h"
 
+#include <vector>
+
 /// Stores and renders directions
 class Direction : public PowerTabObject
 {
@@ -99,7 +101,7 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                        
+    std::string GetMFCClassName() const
         {return "CDirection";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -169,7 +171,7 @@ protected:
     
 // Operations
 public:
-    string GetText(uint32_t index) const;
+    std::string GetText(uint32_t index) const;
 };
 
 #endif

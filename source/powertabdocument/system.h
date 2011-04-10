@@ -15,6 +15,8 @@
 #include "barline.h"
 #include "rect.h"
 
+#include <vector>
+
 class Direction;
 class ChordText;
 class RhythmSlash;
@@ -74,7 +76,7 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const
+    std::string GetMFCClassName() const
     {return "CSection";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema

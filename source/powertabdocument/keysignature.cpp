@@ -11,6 +11,11 @@
 
 #include "keysignature.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
+using std::string;
+
 // Default constants
 const uint8_t       KeySignature::DEFAULT_DATA              = 0;
 const uint8_t       KeySignature::ACCIDENTAL_WIDTH          = 6;

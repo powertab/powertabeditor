@@ -15,6 +15,7 @@
 #include <list>
 #include <array>
 #include <memory>
+#include <vector>
 
 #include "note.h"
 
@@ -89,7 +90,7 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const
+    std::string GetMFCClassName() const
     {return "CStaff";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema

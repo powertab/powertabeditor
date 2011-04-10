@@ -34,6 +34,7 @@
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/system.h>
 #include <powertabdocument/chordtext.h>
+#include <powertabdocument/score.h>
 
 #include <widgets/mixer/mixer.h>
 #include <widgets/toolbox/toolbox.h>

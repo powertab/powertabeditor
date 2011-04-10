@@ -15,6 +15,7 @@
 #include "colour.h"
 
 using std::ofstream;
+using std::string;
 
 // Constructor/Destructor
 /// Primary Constructor

@@ -12,7 +12,7 @@
 #ifndef __POWERTABINPUTSTREAM_H__
 #define __POWERTABINPUTSTREAM_H__
 
-#include <stdint.h>
+#include <cstdint>
 #include <fstream>
 #include <string>
 #include <vector>

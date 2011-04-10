@@ -181,11 +181,11 @@ bool AlternateEnding::ClearNumber(uint32_t number)
 
 /// Gets the alternate ending text (numbers + D.C./D.S./D.S.S.)
 /// @return Text representation of the alternate ending
-string AlternateEnding::GetText() const
+std::string AlternateEnding::GetText() const
 {
 	//------Last Checked------//
 	// - Dec 3, 2004
-	string returnValue;
+        std::string returnValue;
 
 	int32_t groupStart = -1;
 	int32_t groupEnd = -1;
@@ -219,7 +219,7 @@ string AlternateEnding::GetText() const
 			if (!returnValue.empty())
 				returnValue += ", ";
 				
-			string temp;
+                        std::string temp;
 
 			// Single number
 			if (groupStart == groupEnd)
@@ -262,7 +262,7 @@ string AlternateEnding::GetText() const
 /// Gets the text for a number
 /// @param number Number to get the text for (one based)
 /// @return Text representation of the number
-string AlternateEnding::GetNumberText(uint32_t number)
+std::string AlternateEnding::GetNumberText(uint32_t number)
 {
 	//------Last Checked------//
 	// - Dec 3, 2004

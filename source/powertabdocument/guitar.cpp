@@ -11,6 +11,9 @@
 
 #include <sstream>
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 #include "guitar.h"
 #include "generalmidi.h"
 
@@ -220,7 +223,7 @@ bool Guitar::Deserialize(PowerTabInputStream& stream, uint16_t version)
 
 // Operations
 /// Gets the legend text for the guitar (i.e. Gtr. I - Acoustic (E A D G B E))
-string Guitar::GetLegendText() const
+std::string Guitar::GetLegendText() const
 {
     //------Last Checked------//
     // - Dec 8, 2004

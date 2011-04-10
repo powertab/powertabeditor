@@ -13,6 +13,9 @@
 
 #include "rehearsalsign.h"      // Needed for ConstructRehearsalSign
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default Constants
 const uint16_t        OldRehearsalSign::DEFAULT_SYSTEM            = 0;
 const uint8_t        OldRehearsalSign::DEFAULT_POSITION          = 0;

@@ -11,7 +11,10 @@
 
 #include "rhythmslash.h"
 
-#include <math.h>       // Needed for pow
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
+#include <cmath>       // Needed for pow
 
 // Default Constants
 const uint8_t    RhythmSlash::DEFAULT_POSITION                   = 0;

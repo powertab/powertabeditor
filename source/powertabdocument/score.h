@@ -13,8 +13,10 @@
 #define __SCORE_H__
 
 #include "powertabobject.h"
+#include "macros.h"
 
 #include <memory>
+#include <vector>
 
 class Guitar;
 class FloatingText;
@@ -66,16 +68,16 @@ public:
     bool Serialize(PowerTabOutputStream& stream);
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
-        // TODO - these should probably not be here, since this class was not part
-        // of the original power tab file format
-        string GetMFCClassName() const
-        {
-            return "Score";
-        }
-        uint16_t GetMFCClassSchema() const
-        {
-            return 1;
-        }
+    // TODO - these should probably not be here, since this class was not part
+    // of the original power tab file format
+    std::string GetMFCClassName() const
+    {
+        return "Score";
+    }
+    uint16_t GetMFCClassSchema() const
+    {
+        return 1;
+    }
 
 // Guitar Functions
 public:

@@ -83,7 +83,7 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                            
+    std::string GetMFCClassName() const
         {return "CDynamic";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -196,7 +196,7 @@ protected:
 
 // Operations
 public:
-    string GetText(bool rhythmSlashes) const;
+    std::string GetText(bool rhythmSlashes) const;
 };
 
 #endif

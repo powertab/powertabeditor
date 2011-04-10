@@ -15,6 +15,8 @@
 
 #include "tuning.h"
 #include "powertabfileheader.h"             // Needed for file version constants
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
 
 // Default Constants
 const uint8_t Note::DEFAULT_STRING_DATA      = 0;

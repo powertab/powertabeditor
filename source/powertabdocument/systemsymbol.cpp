@@ -11,6 +11,9 @@
 
 #include "systemsymbol.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default constants
 const uint16_t        SystemSymbol::DEFAULT_SYSTEM            = 0;
 const uint8_t        SystemSymbol::DEFAULT_POSITION          = 0;

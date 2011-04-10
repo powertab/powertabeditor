@@ -12,7 +12,10 @@
 #include "oldtimesignature.h"
 
 #include "timesignature.h"      // Needed for ConstructTimeSignature
-#include <math.h>               // Needed for pow
+#include <cmath>               // Needed for pow
+
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
 
 // Default Constants
 const uint16_t        OldTimeSignature::DEFAULT_SYSTEM            = 0;

@@ -13,6 +13,9 @@
 
 #include "chorddiagram.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default Constants
 const uint8_t ChordDiagram::DEFAULT_TOP_FRET     = 0;
 
@@ -367,26 +370,24 @@ bool ChordDiagram::IsSameVoicing(uint8_t fretNumber1, uint8_t fretNumber2,
 // Operations
 /// Gets the spelling for the chord diagram (i.e. 0 2 2 1 0 0)
 /// @return The spelling for the chord diagram
-string ChordDiagram::GetSpelling() const
+std::string ChordDiagram::GetSpelling() const
 {
-	//------Last Checked------//
-	// - Jan 15, 2005
-	string returnValue;
+    std::string returnValue;
 
-	size_t i = GetStringCount();
-	for (; i > 0; i--)
-	{
-		std::stringstream fretNumber;
-		if (m_fretNumberArray[i - 1] == stringMuted)
-			returnValue += "x";
-		else
-			fretNumber << m_fretNumberArray[i - 1];
-		returnValue += fretNumber.str();
+    size_t i = GetStringCount();
+    for (; i > 0; i--)
+    {
+        std::stringstream fretNumber;
+        if (m_fretNumberArray[i - 1] == stringMuted)
+            returnValue += "x";
+        else
+            fretNumber << m_fretNumberArray[i - 1];
+        returnValue += fretNumber.str();
 
-		// Add a space between numbers
-		if (i > 1)
-			returnValue += " ";
-	}
+        // Add a space between numbers
+        if (i > 1)
+            returnValue += " ";
+    }
 
-	return (returnValue);
+    return returnValue;
 }

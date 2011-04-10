@@ -70,7 +70,7 @@ public:
 
 // Member Variables
 protected:
-	string m_description;
+        std::string m_description;
 
 // Constructor/Destructor
 public:
@@ -97,7 +97,7 @@ public:
 public:
 	/// Gets the MFC Class Name for the object
 	/// @return The MFC Class Name
-	string GetMFCClassName() const                            
+        std::string GetMFCClassName() const
 		{return "CTempoMarker";}
 	/// Gets the MFC Class Schema for the object
 	/// @return The MFC Class Schema
@@ -204,7 +204,7 @@ public:
 	}
 	/// Gets the description
 	/// @return The description
-	string GetDescription() const                     
+        std::string GetDescription() const
 		{return (m_description);}
 };
 

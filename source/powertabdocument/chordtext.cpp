@@ -11,6 +11,9 @@
 
 #include "chordtext.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default Constants
 const uint8_t ChordText::DEFAULT_POSITION = 0;
 

@@ -76,7 +76,7 @@ public:
 // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                            
+    std::string GetMFCClassName() const
         {return "CTimeSignature2";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -211,7 +211,7 @@ public:
 
 // Operations    
 public:
-    string GetText(uint32_t type) const;
+    std::string GetText(uint32_t type) const;
     int GetWidth() const;
 };
 

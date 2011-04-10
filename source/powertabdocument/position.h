@@ -18,6 +18,7 @@ class Tuning;
 #include "dynamic.h"        // Needed for volume swell volumes and validation
 
 #include <array>
+#include <vector>
 
 #define MAX_POSITION_COMPLEX_SYMBOLS    2   ///< Maximum allowed number of complex symbols per position object
 
@@ -180,7 +181,7 @@ public:
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const
+    std::string GetMFCClassName() const
     {return "CPosition";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema

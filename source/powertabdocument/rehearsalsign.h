@@ -32,7 +32,7 @@ public:
 // Member Variables
 protected:
     int8_t      m_letter;               ///< The letter used to uniquely identify the rehearsal sign (i.e. A, B, F, etc. - must be a capital letter)
-    string    m_description;          ///< A description that indicates the passage the rehearsal sign is marking (i.e. Chorus, Intro, etc.)
+    std::string m_description;          ///< A description that indicates the passage the rehearsal sign is marking (i.e. Chorus, Intro, etc.)
 
 // Construction/Destruction
 public:
@@ -49,7 +49,7 @@ public:
 // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const
+    std::string GetMFCClassName() const
         {return "CRehearsalSign2";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -77,7 +77,7 @@ public:
     /// Sets the rehearsal sign description
     /// @param description Description to set
     /// @return True if the description was set, false if not
-    bool SetDescription(const string& description)
+    bool SetDescription(const std::string& description)
     {
         CHECK_THAT(!description.empty(), false);
         m_description = description;
@@ -85,7 +85,7 @@ public:
     }
     /// Gets the rehearsal sign description
     /// @return The rehearsal sign description
-    string GetDescription() const
+    std::string GetDescription() const
         {return (m_description);}
 
 // Operations
@@ -96,7 +96,8 @@ public:
     /// Clears the rehearsal sign letter and description, and sets to not set
     void Clear()
         {SetLetter(notSet); m_description.clear();}
-    string GetFormattedText() const;
+
+    std::string GetFormattedText() const;
 };
 
 #endif

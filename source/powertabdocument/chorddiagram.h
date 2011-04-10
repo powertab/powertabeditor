@@ -17,6 +17,8 @@
 #include "powertabobject.h"
 #include "macros.h"
 
+#include <vector>
+
 /// Stores and renders a chord diagram
 class ChordDiagram : public PowerTabObject
 {
@@ -72,7 +74,7 @@ public:
 public:    
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const                        
+    std::string GetMFCClassName() const
         {return "CChordDiagram";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -167,7 +169,7 @@ public:
         uint8_t fretNumber7 = notUsed) const;
     
 // Operations
-    string GetSpelling() const;
+    std::string GetSpelling() const;
 };
 
 #endif

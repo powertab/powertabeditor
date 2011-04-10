@@ -11,6 +11,9 @@
 
 #include "rehearsalsign.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 #include <sstream>
 
 // Default constants
@@ -140,7 +143,7 @@ bool RehearsalSign::SetLetter(int8_t letter)
 /// Gets a formatted text representation of the rehearsal sign (combines the
 /// letter and the description)
 /// @return The formatted text representation of the rehearsal sign
-string RehearsalSign::GetFormattedText() const
+std::string RehearsalSign::GetFormattedText() const
 {
     std::stringstream sstream;
     sstream << GetLetter() << " -- " << GetDescription();

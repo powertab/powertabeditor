@@ -76,7 +76,7 @@ public:
 // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    string GetMFCClassName() const
+    std::string GetMFCClassName() const
         {return "CKeySignature";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
@@ -248,7 +248,7 @@ public:
         {return (IsFlagSet(cancellation));}
 
 // Operations
-    string GetText() const;
+    std::string GetText() const;
     int GetWidth() const;
 
 // Flag Functions

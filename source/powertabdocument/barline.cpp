@@ -12,6 +12,8 @@
 #include "barline.h"
 
 #include "powertabfileheader.h"         // Needed for FILE_VERSION constants
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
 
 // Default Constants
 const uint8_t Barline::DEFAULT_POSITION      = 0;

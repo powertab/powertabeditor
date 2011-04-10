@@ -11,6 +11,9 @@
 
 #include "guitarin.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 // Default constants
 const uint16_t        GuitarIn::DEFAULT_SYSTEM                = 0;
 const uint8_t        GuitarIn::DEFAULT_STAFF                 = 0;
@@ -201,7 +204,7 @@ bool GuitarIn::HasGuitarsSet(bool rhythmSlashes) const
 /// @param rhythmSlashes If true, gets the rhythm slash guitars text, otherwise
 /// the staff guitars text
 /// @return A text representation of the guitars
-string GuitarIn::GetText(bool rhythmSlashes) const
+std::string GuitarIn::GetText(bool rhythmSlashes) const
 {
 	//------Last Checked------//
 	// - Jan 25, 2005
@@ -210,8 +213,8 @@ string GuitarIn::GetText(bool rhythmSlashes) const
 	if (guitars == 0)
 		return "";
 
-	string returnValue;
-	string romanNumerals;
+        std::string returnValue;
+        std::string romanNumerals;
 	
 	// Loop through, add guitars as we go - there are only 7 guitars    
 	uint8_t mask = 1;

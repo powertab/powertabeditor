@@ -48,7 +48,7 @@ public:
 // MFC Class Functions
 	/// Gets the MFC class id associated with the object
 	/// @return The MFC class id associated with the object
-	string GetMFCClassId() const              
+        std::string GetMFCClassId() const
 	{
 		std::stringstream returnValue;
 		returnValue << GetMFCClassName() << "-" << GetMFCClassSchema();
@@ -56,7 +56,7 @@ public:
 	}
 	/// Gets the MFC Class Name for the object
 	/// @return The MFC Class Name
-	string GetMFCClassName() const            
+        std::string GetMFCClassName() const
 		{return "CTimeSignature";}
 	/// Gets the MFC Class Schema for the object
 	/// @return The MFC Class Schema

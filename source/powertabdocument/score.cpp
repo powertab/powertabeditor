@@ -21,6 +21,8 @@
 #include "tempomarker.h"
 #include "alternateending.h"
 #include "position.h"
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
 
 #include <map>
 #include <bitset>

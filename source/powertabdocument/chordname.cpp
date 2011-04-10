@@ -12,8 +12,10 @@
 #include "chordname.h"
 
 #include <sstream>
-#include <math.h>                       // Needed for pow()
 #include "powertabfileheader.h"         // Needed for FILEVERSION constants
+
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
 
 // Default Constants
 const uint16_t ChordName::DEFAULT_KEY                         = (uint16_t)((variationDefault << 12) | (C << 8) | (variationDefault << 4) | C); // C/C
@@ -310,23 +312,23 @@ uint8_t ChordName::GetFormula() const
 
 /// Gets a text representation of the formula
 /// @return A text representation of the formula
-string ChordName::GetFormulaText() const
+std::string ChordName::GetFormulaText() const
 {
-    string returnValue;
+    std::string returnValue;
 
     // Get extensions
     // Add any extension to the chord name
     int nFormula = GetFormula();
     bool bExtension = false;
     uint16_t wExtension[3] = {extended9th, extended11th, extended13th};
-    string strExtension[3] = {"9", "11", "13"};
+    std::string strExtension[3] = {"9", "11", "13"};
 
-    string chordAbbreviations[10] =
+    std::string chordAbbreviations[10] =
     {
         "maj",
         "m",
         "+",
-        string(1, 176), // degree symbol
+        std::string(1, 176), // degree symbol
         "5",
         "add",
         "sus2",
@@ -361,7 +363,7 @@ string ChordName::GetFormulaText() const
     }
 
     // Chord suffixes
-    string strSuffixList[14] =
+    std::string strSuffixList[14] =
     {
         "",
         chordAbbreviations[1],
@@ -383,7 +385,6 @@ string ChordName::GetFormulaText() const
     if (!bExtension && nFormula != 0)
         returnValue += strSuffixList[nFormula];
 
-    string strText;
     uint16_t wFormulaBit[13] =
     {
         suspended2nd, suspended4th, added2nd, added4th, added6th, added9th,
@@ -391,7 +392,7 @@ string ChordName::GetFormulaText() const
         raised5th
     };
 
-    string strAddition[13] =
+    std::string strAddition[13] =
     {
         chordAbbreviations[6], chordAbbreviations[7],
         chordAbbreviations[5] + "2", chordAbbreviations[5] + "4",
@@ -503,11 +504,11 @@ uint8_t ChordName::GetType() const
 // Returns a string representation of the key (i.e. 'F#' or 'Db')
 // Use the getBassNote parameter to choose between returning the tonic key text or
 // the bass note text
-string ChordName::GetKeyText(bool getBassNote) const
+std::string ChordName::GetKeyText(bool getBassNote) const
 {
-    static string variationDefaultText[12] = {"C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"};
-    static string variationDownText[12] = {"B#", "Bx", "Cx", "D#", "Dx", "E#", "Ex", "Fx", "G#", "Gx", "A#", "Ax"};
-    static string variationUpText[12] = {"Dbb", "Db", "Ebb", "Fbb", "Fb", "Gbb", "Gb", "Abb", "", "Bbb", "Cbb", "Cb"};
+    static std::string variationDefaultText[12] = {"C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"};
+    static std::string variationDownText[12] = {"B#", "Bx", "Cx", "D#", "Dx", "E#", "Ex", "Fx", "G#", "Gx", "A#", "Ax"};
+    static std::string variationUpText[12] = {"Dbb", "Db", "Ebb", "Fbb", "Fb", "Gbb", "Gb", "Abb", "", "Bbb", "Cbb", "Cb"};
 
     uint8_t key = 0, variation = 0;
 
@@ -537,7 +538,7 @@ string ChordName::GetKeyText(bool getBassNote) const
     }
 }
 
-string ChordName::GetText() const
+std::string ChordName::GetText() const
 {
     std::stringstream text;
 

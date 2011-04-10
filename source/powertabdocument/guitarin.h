@@ -65,7 +65,7 @@ public:
 
 // MFC Class Functions
 public:
-	string GetMFCClassName() const                            
+        std::string GetMFCClassName() const
 		{return "CGuitarIn";}
 	uint16_t GetMFCClassSchema() const                            
 		{return ((uint16_t)1);}
@@ -173,7 +173,7 @@ protected:
 
 // Operations
 public:
-	string GetText(bool rhythmSlashes) const;
+        std::string GetText(bool rhythmSlashes) const;
 
 };
 

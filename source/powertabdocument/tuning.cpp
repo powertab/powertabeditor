@@ -15,6 +15,9 @@
 #include "tuning.h"
 #include "generalmidi.h"
 
+#include "powertabinputstream.h"
+#include "powertaboutputstream.h"
+
 using std::pair;
 using std::string;
 
