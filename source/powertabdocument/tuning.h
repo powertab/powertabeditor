@@ -12,9 +12,9 @@
 #ifndef __TUNING_H__
 #define __TUNING_H__
 
-#include <stdint.h>
 #include <vector>
 #include <string>
+#include <initializer_list>
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -43,21 +43,22 @@ public:
 
     // Member Variables
 protected:
-    std::string    m_name;                             ///< Name (or description) of the tuning
-    uint8_t      m_data;                             ///< bit 7 = Music notation offset sign, bits 6 to 1 = Music notation offset value, bit 0 = display sharps or flats
-    std::vector<uint8_t> m_noteArray;                        ///< Array of bytes representing the MIDI notes of the tuning, ordered from high string to low string
+    std::string             m_name;         ///< Name (or description) of the tuning
+    uint8_t                 m_data;         ///< bit 7 = Music notation offset sign, bits 6 to 1 = Music notation offset value, bit 0 = display sharps or flats
+    std::vector<uint8_t>    m_noteArray;   ///< Array of bytes representing the MIDI notes of the tuning, ordered from high string to low string
 
     // Constructor/Destructor
 public:
     Tuning();
-    Tuning(const char* name, int8_t musicNotationOffset, bool sharps,
-           uint8_t note1, uint8_t note2, uint8_t note3, uint8_t note4 = notUsed,
-           uint8_t note5 = notUsed, uint8_t note6 = notUsed, uint8_t note7 = notUsed);
     Tuning(const Tuning& tuning);
-    ~Tuning();
+
+    Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
+           const std::vector<uint8_t>& tuningNotes);
+
+    Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
+           std::initializer_list<uint8_t> tuningNotes);
 
     // Operators
-    const Tuning& operator=(const Tuning& tuning);
     bool operator==(const Tuning& tuning) const;
     bool operator!=(const Tuning& tuning) const;
 
@@ -77,24 +78,23 @@ public:
 
     // Tuning Functions
 public:
-    bool SetTuning(const char* name, int8_t musicNotationOffset, bool sharps,
-                   uint8_t note1, uint8_t note2, uint8_t note3, uint8_t note4 = notUsed,
-                   uint8_t note5 = notUsed, uint8_t note6 = notUsed, uint8_t note7 = notUsed);
     bool IsSameTuning(const Tuning& tuning) const;
-    bool IsSameTuning(uint8_t note1, uint8_t note2, uint8_t note3,
-                      uint8_t note4 = notUsed, uint8_t note5 = notUsed, uint8_t note6 = notUsed,
-                      uint8_t note7 = notUsed) const;
 
     // Name Functions
     /// Sets the tuning name (i.e. "Open G")
     /// @param name Name to set
     /// @return True if the name was successfully set, false if not
-    bool SetName(const char* name)
-    {CHECK_THAT(name != NULL, false); m_name = name; return (true);}
+    void SetName(const std::string& name)
+    {
+        m_name = name;
+    }
+
     /// Gets the tuning name (i.e. "Open G")
     /// @return The tuning name
     std::string GetName() const
-    {return (m_name);}
+    {
+        return m_name;
+    }
 
     // Music Notation Offset Functions
     /// Determines if a music notation offset value is valid
@@ -102,19 +102,22 @@ public:
     /// @return True if the music notation offset is valid, false if not
     static bool IsValidMusicNotationOffset(int8_t musicNotationOffset)
     {
-        return ((musicNotationOffset >= MIN_MUSIC_NOTATION_OFFSET) &&
-                ((musicNotationOffset <= MAX_MUSIC_NOTATION_OFFSET)));
+        return (musicNotationOffset >= MIN_MUSIC_NOTATION_OFFSET) &&
+                (musicNotationOffset <= MAX_MUSIC_NOTATION_OFFSET);
     }
     bool SetMusicNotationOffset(int8_t musicNotationOffset);
     int8_t GetMusicNotationOffset() const;
 
     // Sharps Functions
     void SetSharps(bool set = true);
+
     /// Determines if the tuning notes are displayed using sharps, or flats
     /// @return True if the tuning notes are displayed using sharps, false if
     /// flats
     bool UsesSharps() const
-    {return ((m_data & sharpsMask) == sharpsMask);}
+    {
+        return (m_data & sharpsMask) == sharpsMask;
+    }
 
     // String Functions
     /// Determines if a string count is valid
@@ -122,38 +125,37 @@ public:
     /// @return True if the string count is valid, false if not
     static bool IsValidStringCount(size_t stringCount)
     {
-        return ((stringCount >= MIN_STRING_COUNT) &&
-                (stringCount <= MAX_STRING_COUNT));
+        return (stringCount >= MIN_STRING_COUNT) && (stringCount <= MAX_STRING_COUNT);
     }
+
     /// Determines if a string is valid
     /// @param string String to validate
     /// @return True if the string is valid, false if not
     bool IsValidString(uint32_t string) const
-    {return (string < GetStringCount());}
+    {
+        return string < GetStringCount();
+    }
+
     /// Gets the number of strings used by the tuning
     /// @return The number of strings used by the tuning
     size_t GetStringCount() const
-    {return (m_noteArray.size());}
+    {
+        return m_noteArray.size();
+    }
 
     // Note Functions
     bool SetNote(uint32_t string, uint8_t note);
     uint8_t GetNote(uint32_t string,
                     bool includeMusicNotationOffset = false) const;
+
     std::string GetNoteText(uint32_t string) const;
     bool IsOpenStringNote(uint8_t note) const;
-    std::pair<int, int> GetNoteRange(uint8_t capo) const;
+    std::pair<uint8_t, uint8_t> GetNoteRange(uint8_t capo) const;
 
-protected:
-    bool AddTuningNotes(uint8_t note1, uint8_t note2, uint8_t note3, uint8_t note4,
-                        uint8_t note5, uint8_t note6, uint8_t note7);
-    void DeleteNoteArrayContents();
+    bool SetTuningNotes(const std::vector<uint8_t>& tuningNotes);
+    bool SetTuningNotes(std::initializer_list<uint8_t> tuningNotes);
 
-    // Operations
-public:
-    /// Determines if a tuning is valid (has a valid number of strings)
-    /// @return True if the tuning is valid, false if not
-    bool IsValid() const
-    {return (IsValidStringCount(GetStringCount()));}
+    bool IsValid() const;
 
     std::string GetSpelling() const;
 

@@ -40,78 +40,41 @@ Tuning::Tuning() :
 /// @param musicNotationOffset Offset used when drawing notes on the music
 /// staff, in semi-tones
 /// @param sharps Display the tuning notes using sharps as opposed to flats
-/// @param note1 MIDI note value for the 1st string in the tuning (for standard
-/// guitar tuning, this is the high E string)
-/// @param note2 MIDI note value for the 2nd string in the tuning
-/// @param note3 MIDI note value for the 3rd string in the tuning
-/// @param note4 MIDI note value for the 4th string in the tuning
-/// @param note5 MIDI note value for the 5th string in the tuning
-/// @param note6 MIDI note value for the 6th string in the tuning
-/// @param note7 MIDI note value for the 7th string in the tuning
-Tuning::Tuning(const char* name, int8_t musicNotationOffset, bool sharps,
-    uint8_t note1, uint8_t note2, uint8_t note3, uint8_t note4, uint8_t note5,
-    uint8_t note6, uint8_t note7) : m_name(name), m_data(DEFAULT_DATA)
+/// @param tuningNotes A list of the MIDI note values for each string (high to low)
+Tuning::Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
+               const std::vector<uint8_t> &tuningNotes) :
+    m_name(name)
 {
-    assert(name != NULL);
     assert(IsValidMusicNotationOffset(musicNotationOffset));
 
-    SetSharps(sharps);
     SetMusicNotationOffset(musicNotationOffset);
-    AddTuningNotes(note1, note2, note3, note4, note5, note6, note7);
+    SetSharps(sharps);
+    SetTuningNotes(tuningNotes);
 }
 
-/// Copy Constructor
+Tuning::Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
+               std::initializer_list<uint8_t> tuningNotes) :
+    m_name(name)
+{
+    assert(IsValidMusicNotationOffset(musicNotationOffset));
+
+    SetMusicNotationOffset(musicNotationOffset);
+    SetSharps(sharps);
+    SetTuningNotes(tuningNotes);
+}
+
 Tuning::Tuning(const Tuning& tuning) :
     m_name(DEFAULT_NAME), m_data(DEFAULT_DATA)
 {
     *this = tuning;
 }
 
-/// Destructor
-Tuning::~Tuning()
-{
-}
-
-// Operators
-/// Assignment operator
-const Tuning& Tuning::operator=(const Tuning& tuning)
-{
-    // Check for assignment to self
-    if (this != &tuning)
-    {
-        m_name = tuning.m_name;
-        m_data = tuning.m_data;
-        DeleteNoteArrayContents();
-        size_t i = 0;
-        size_t count = tuning.m_noteArray.size();
-        for (; i < count; i++)
-            m_noteArray.push_back(tuning.m_noteArray[i]);
-    }
-    return (*this);
-}
-
 /// Equality operator
 bool Tuning::operator==(const Tuning& tuning) const
 {
-    size_t thisStringCount = GetStringCount();
-    size_t otherStringCount = tuning.GetStringCount();
-
-    // Tunings have a differing number of strings
-    if (thisStringCount != otherStringCount)
-        return (false);
-
-    // Check each string for matching notes
-    size_t i = 0;
-    for (; i < thisStringCount; i++)
-    {
-        if (m_noteArray[i] != tuning.m_noteArray[i])
-            return (false);
-    }
-
-    return (
-        (m_name == tuning.m_name) &&
-        (m_data == tuning.m_data)
-    );
+    return (m_noteArray == tuning.m_noteArray &&
+            m_name == tuning.m_name &&
+            m_data == tuning.m_data);
 }
 
 /// Inequality Operator
@@ -133,13 +96,12 @@ bool Tuning::Serialize(PowerTabOutputStream& stream)
     CHECK_THAT(stream.CheckState(), false);
 
     // Write the string count as a byte
-    size_t stringCount = GetStringCount();
+    const size_t stringCount = GetStringCount();
     stream << (uint8_t)stringCount;
     CHECK_THAT(stream.CheckState(), false);
 
     // Write each note
-    size_t i = 0;
-    for (; i < stringCount; i++)
+    for (size_t i = 0; i < stringCount; i++)
     {
         stream << m_noteArray[i];
         CHECK_THAT(stream.CheckState(), false);
@@ -151,25 +113,22 @@ bool Tuning::Serialize(PowerTabOutputStream& stream)
 /// @param stream Power Tab input stream to load from
 /// @param version File version
 /// @return True if the object was deserialized, false if not
-bool Tuning::Deserialize(PowerTabInputStream& stream, uint16_t version)
+bool Tuning::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
-    UNUSED(version);
-
     stream.ReadMFCString(m_name);
     CHECK_THAT(stream.CheckState(), false);
 
     stream >> m_data;
     CHECK_THAT(stream.CheckState(), false);
 
-    DeleteNoteArrayContents();
+    m_noteArray.clear();
 
     // Get number of notes, then the notes themselves
     uint8_t stringCount = 0;
     stream >> stringCount;
     CHECK_THAT(stream.CheckState(), false);
 
-    size_t i = 0;
-    for (; i < stringCount; i++)
+    for (size_t i = 0; i < stringCount; i++)
     {
         uint8_t note;
         stream >> note;
@@ -179,72 +138,12 @@ bool Tuning::Deserialize(PowerTabInputStream& stream, uint16_t version)
     return (stream.CheckState());
 }
 
-// Tuning Functions
-/// Sets the contents of the Tuning object
-/// @param name Tuning name (Standard, Dropped-D, Open G, etc.)
-/// @param musicNotationOffset Offset used when drawing notes on the music
-/// staff, in semi-tones
-/// @param sharps Display the tuning notes using sharps as opposed to flats
-/// @param note1 MIDI note value for the 1st string in the tuning (for standard
-/// guitar tuning, this is the high E string)
-/// @param note2 MIDI note value for the 2nd string in the tuning
-/// @param note3 MIDI note value for the 3rd string in the tuning
-/// @param note4 MIDI note value for the 4th string in the tuning
-/// @param note5 MIDI note value for the 5th string in the tuning
-/// @param note6 MIDI note value for the 6th string in the tuning
-/// @param note7 MIDI note value for the 7th string in the tuning
-/// @return True if the tuning was set, false if not
-bool Tuning::SetTuning(const char* name, int8_t musicNotationOffset,
-    bool sharps, uint8_t note1, uint8_t note2, uint8_t note3, uint8_t note4,
-    uint8_t note5, uint8_t note6, uint8_t note7)
-{
-    if (!SetName(name))
-        return (false);
-    SetSharps(sharps);
-    if (!SetMusicNotationOffset(musicNotationOffset))
-        return (false);
-    return (AddTuningNotes(note1, note2, note3, note4, note5, note6, note7));
-}
-
 /// Determines if the tuning notes are the same as that of another Tuning object
 /// @param tuning Tuning object to compare with
 /// @return True if the tunings have the same notes, false if not
 bool Tuning::IsSameTuning(const Tuning& tuning) const
 {
-    size_t thisStringCount = GetStringCount();
-    size_t otherStringCount = tuning.GetStringCount();
-
-    // Tunings have a different number of strings
-    if (thisStringCount != otherStringCount)
-        return (false);
-
-    // Check each string for matching notes
-    size_t i = 0;
-    for (; i < thisStringCount; i++)
-    {
-        if (m_noteArray[i] != tuning.m_noteArray[i])
-            return (false);
-    }
-
-    return (true);
-}
-
-/// Determines if the tuning notes are the same
-/// @param note1 MIDI note value for the 1st string in the tuning (for standard
-/// guitar tuning, this is the high E string)
-/// @param note2 MIDI note value for the 2nd string in the tuning
-/// @param note3 MIDI note value for the 3rd string in the tuning
-/// @param note4 MIDI note value for the 4th string in the tuning
-/// @param note5 MIDI note value for the 5th string in the tuning
-/// @param note6 MIDI note value for the 6th string in the tuning
-/// @param note7 MIDI note value for the 7th string in the tuning
-/// @return True if all of the tuning notes match, false if not
-bool Tuning::IsSameTuning(uint8_t note1, uint8_t note2, uint8_t note3,
-    uint8_t note4, uint8_t note5, uint8_t note6, uint8_t note7) const
-{
-    Tuning temp;
-    temp.AddTuningNotes(note1, note2, note3, note4, note5, note6, note7);
-    return (IsSameTuning(temp));
+    return m_noteArray == tuning.m_noteArray;
 }
 
 // Sharps Functions
@@ -302,7 +201,7 @@ bool Tuning::SetNote(uint32_t string, uint8_t note)
     CHECK_THAT(IsValidString(string), false);
     CHECK_THAT(midi::IsValidMidiNote(note), false);
     m_noteArray[string] = note;
-    return (true);
+    return true;
 }
 
 /// Gets the note for assigned to a string
@@ -328,8 +227,6 @@ uint8_t Tuning::GetNote(uint32_t string, bool includeMusicNotationOffset) const
 /// @return A text representation of the note
 string Tuning::GetNoteText(uint32_t string) const
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
     CHECK_THAT(IsValidString(string), "");
     return (midi::GetMidiNoteText(m_noteArray[string], UsesSharps()));
 }
@@ -339,20 +236,7 @@ string Tuning::GetNoteText(uint32_t string) const
 /// @return True if the note can be played as an open string, false if not
 bool Tuning::IsOpenStringNote(uint8_t note) const
 {
-    //------Last Checked------//
-    // - Dec 14, 2004
-    int32_t i = 0;
-    int32_t nCount = GetStringCount();
-    for (; i < nCount; i++)
-    {
-        if (m_noteArray[i] != notUsed)
-        {
-            // Note matches a tuning note; it's an open string note
-            if (m_noteArray[i] == note)
-                return (true);
-        }
-    }
-    return (false);
+    return (std::find(m_noteArray.begin(), m_noteArray.end(), note) != m_noteArray.end());
 }
 
 /// Gets the MIDI note range for the tuning (lowest possible playable note +
@@ -360,95 +244,59 @@ bool Tuning::IsOpenStringNote(uint8_t note) const
 /// @param capo Capo value to apply to the tuning
 /// @return A pair that contains the lowest possible note and the highest
 /// possible note
-pair<int, int> Tuning::GetNoteRange(uint8_t capo) const
+pair<uint8_t, uint8_t> Tuning::GetNoteRange(uint8_t capo) const
 {
-    pair<int, int> returnValue(notUsed, 0);
+    // find iterators to min & max elements
+    auto range = std::minmax_element(m_noteArray.begin(), m_noteArray.end());
 
-    // Loop through each tuning note and get the minimum and maximum notes for
-    // the string
-    size_t i = 0;
-    size_t stringCount = GetStringCount();
-    for (; i < stringCount; i++)
+    // add capo, and 24 frets for the highest note
+    pair<uint8_t, uint8_t> returnValue = std::make_pair(*(range.first) + capo, *(range.second) + capo + 24);
+    return returnValue;
+}
+
+/// Sets the tuning notes, from high to low
+/// @return False if the notes were invalid (invalid MIDI notes, or the number of strings was invalid)
+bool Tuning::SetTuningNotes(const std::vector<uint8_t>& tuningNotes)
+{
+    if (!IsValidStringCount(tuningNotes.size()))
     {
-        if (m_noteArray[i] != notUsed)
-        {
-            returnValue.first = std::min(returnValue.first, m_noteArray[i] + capo);
-            returnValue.second = std::max(returnValue.second, m_noteArray[i] + capo + 24);       // Assume guitar has 24 frets
-        }
+        return false;
     }
-    return (returnValue);
+
+    // check for invalid midi notes
+    if (std::find_if(tuningNotes.begin(), tuningNotes.end(),
+                     std::not1(std::ptr_fun(&midi::IsValidMidiNote))) != tuningNotes.end())
+    {
+        return false;
+    }
+
+    m_noteArray = tuningNotes;
+
+    return true;
 }
 
-/// Sets the tuning notes for the tuning
-/// @param note1 MIDI note value for the 1st string in the tuning (for standard
-/// guitar tuning, this is the high E string)
-/// @param note2 MIDI note value for the 2nd string in the tuning
-/// @param note3 MIDI note value for the 3rd string in the tuning
-/// @param note4 MIDI note value for the 4th string in the tuning
-/// @param note5 MIDI note value for the 5th string in the tuning
-/// @param note6 MIDI note value for the 6th string in the tuning
-/// @param note7 MIDI note value for the 7th string in the tuning
-/// @return True if the tuning notes were set, false if not
-bool Tuning::AddTuningNotes(uint8_t note1, uint8_t note2, uint8_t note3,
-    uint8_t note4, uint8_t note5, uint8_t note6, uint8_t note7)
+/// Sets the tuning notes from high to low, using initializer list syntax
+/// e.g. SetTuningNotes({MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3});
+bool Tuning::SetTuningNotes(std::initializer_list<uint8_t> tuningNotes)
 {
-    using midi::IsValidMidiNote;
-
-    CHECK_THAT(IsValidMidiNote(note1), false);
-    CHECK_THAT(IsValidMidiNote(note2), false);
-    CHECK_THAT(IsValidMidiNote(note3), false);
-    CHECK_THAT(IsValidMidiNote(note4) || (note4 == notUsed), false);
-    CHECK_THAT(IsValidMidiNote(note5) || (note5 == notUsed), false);
-    CHECK_THAT(IsValidMidiNote(note6) || (note6 == notUsed), false);
-    CHECK_THAT(IsValidMidiNote(note7) || (note7 == notUsed), false);
-
-    DeleteNoteArrayContents();
-
-    m_noteArray.push_back(note1);
-    m_noteArray.push_back(note2);
-    m_noteArray.push_back(note3);
-
-    if (note4 == notUsed)
-        return (true);
-    m_noteArray.push_back(note4);
-
-    if (note5 == notUsed)
-        return (true);
-    m_noteArray.push_back(note5);
-
-    if (note6 == notUsed)
-        return (true);
-    m_noteArray.push_back(note6);
-
-    if (note7 == notUsed)
-        return (true);
-    m_noteArray.push_back(note7);
-
-    return (true);
+    std::vector<uint8_t> notes(tuningNotes.begin(), tuningNotes.end());
+    return SetTuningNotes(notes);
 }
 
-/// Deletes the contents (and frees the memory) of the note array
-void Tuning::DeleteNoteArrayContents()
-{
-    m_noteArray.clear();
-}
-
-// Operations
 /// Gets a full string representation of the tuning from low to high
 /// (i.e. E A D G B E)
-/// @return A full string representation of the tuning from low to high
 string Tuning::GetSpelling() const
 {
     std::stringstream returnValue;
 
-    size_t stringCount = GetStringCount();
+    const size_t stringCount = GetStringCount();
 
     // Go from lowest to highest string
-    size_t i = stringCount;
-    for (; i > 0; i--)
+    for (size_t i = stringCount; i > 0; i--)
     {
         if (i != stringCount)
            returnValue << " ";
+
         returnValue << GetNoteText(i - 1);
     }
 
@@ -460,7 +308,14 @@ void Tuning::SetToStandard()
 {
     using namespace midi;
 
-    DeleteNoteArrayContents();
-    AddTuningNotes(MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
-                   MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, notUsed);
+    SetTuningNotes({MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
+                   MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2});
 }
+
+/// Determines if a tuning is valid (has a valid number of strings)
+/// @return True if the tuning is valid, false if not
+bool Tuning::IsValid() const
+{
+    return IsValidStringCount(GetStringCount());
+}
+

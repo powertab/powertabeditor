@@ -54,7 +54,8 @@ SOURCES += \
     ../source/audio/midievent.cpp \
     powertabdocument/system_test.cpp \
     powertabdocument/position_test.cpp \
-    audio/test_midievent.cpp
+    audio/test_midievent.cpp \
+    powertabdocument/tuning_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
