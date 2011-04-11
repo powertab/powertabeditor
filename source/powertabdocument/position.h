@@ -57,7 +57,7 @@ public:
     enum ShiftType
     {
         SHIFT_UP,
-        SHIFT_DOWN,
+        SHIFT_DOWN
     };
 
     enum beamingFlags

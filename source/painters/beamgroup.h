@@ -15,7 +15,7 @@ public:
     void drawStems(QGraphicsItem* parent) const;
     void drawExtraBeams(QGraphicsItem* parent) const;
 
-    static const double FRACTIONAL_BEAM_WIDTH = 5;
+    static const double FRACTIONAL_BEAM_WIDTH;
 
     void copyNoteSteams(std::vector<NoteStem>& stems) const;
 

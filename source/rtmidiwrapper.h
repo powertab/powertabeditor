@@ -41,14 +41,14 @@ public:
         NOTE_ON = 144,
         CONTROL_CHANGE = 176,
         PROGRAM_CHANGE = 192,
-        PITCH_WHEEL = 224,
+        PITCH_WHEEL = 224
     };
 
     enum ControlChanges
     {
         MOD_WHEEL = 1,
         CHANNEL_VOLUME = 7,
-        PAN_CHANGE = 10,
+        PAN_CHANGE = 10
     };
 };
 

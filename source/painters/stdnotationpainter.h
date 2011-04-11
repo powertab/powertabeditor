@@ -26,7 +26,7 @@ public:
         SHARP,
         DOUBLE_SHARP,
         FLAT,
-        DOUBLE_FLAT,
+        DOUBLE_FLAT
     };
 
     inline double getYLocation() const { return yLocation; }

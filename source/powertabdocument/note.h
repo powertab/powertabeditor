@@ -99,7 +99,7 @@ public:
     {
         slideIntoTypeMask       = (uint32_t)0xff0000,               ///< Mask used to retrieve the slide into type
         slideOutOfTypeMask      = (uint32_t)0xff00,                 ///< Mask used to retrieve the slide out of type
-        slideOutOfStepsMask     = (uint32_t)0xff,                   ///< Mask used to retrieve the slide out of steps
+        slideOutOfStepsMask     = (uint32_t)0xff                   ///< Mask used to retrieve the slide out of steps
     };
 
     enum bendTypes

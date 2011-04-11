@@ -220,7 +220,7 @@ public:
     enum SearchDirection
     {
         NextNote = 1,
-        PrevNote = -1,
+        PrevNote = -1
     };
 
     Note* GetAdjacentNoteOnString(SearchDirection searchDirection, Position* position, Note* note, uint32_t voice = 0) const;

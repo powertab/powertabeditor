@@ -24,6 +24,8 @@ class PowerTabObject
     // Constructor/Destructor
 public:
 
+    virtual ~PowerTabObject() {}
+
     // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name

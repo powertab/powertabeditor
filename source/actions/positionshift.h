@@ -12,7 +12,7 @@ public:
     enum ShiftType
     {
         SHIFT_FORWARD,
-        SHIFT_BACKWARD,
+        SHIFT_BACKWARD
     };
 
     PositionShift(std::shared_ptr<System> system, quint32 positionIndex, ShiftType type);

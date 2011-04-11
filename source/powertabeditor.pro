@@ -9,7 +9,7 @@ QT       += core gui
 TARGET = powertabeditor
 TEMPLATE = app
 
-QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__
+QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra
 QMAKE_CXXFLAGS_RELEASE+=-O2
 
 # RtMidi configuration

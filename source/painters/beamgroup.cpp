@@ -11,6 +11,8 @@
 
 #include <cmath> // for log() function
 
+const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
+
 BeamGroup::BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& noteStems) :
     staffInfo(staffInfo),
     noteStems(noteStems)

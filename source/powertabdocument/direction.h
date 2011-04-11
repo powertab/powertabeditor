@@ -72,7 +72,7 @@ public:
     {
         symbolTypeMask                  = (uint16_t)0xff00,       ///< Mask used to retrieve the symbol type (coda, segno, etc.)
         activeSymbolMask                = (uint16_t)0xc0,         ///< Mask used to retrieve the active symbol value
-        repeatNumberMask                = (uint16_t)0x3f,         ///< Mask used to retrieve the repeat number value
+        repeatNumberMask                = (uint16_t)0x3f         ///< Mask used to retrieve the repeat number value
     };
     
 // Member Variables

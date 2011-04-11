@@ -35,7 +35,7 @@ protected:
     enum Durations
     {
         GRACE_NOTE_DURATION = 60,
-        ARPEGGIO_OFFSET = 30,
+        ARPEGGIO_OFFSET = 30
     };
 
     static const quint8 METRONOME_CHANNEL = 15;

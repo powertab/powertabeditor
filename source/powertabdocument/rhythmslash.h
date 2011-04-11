@@ -54,7 +54,7 @@ public:
         tripletStart        = (uint8_t)0x20,                     ///< Start of a triplet group
         tripletMiddle       = (uint8_t)0x40,                     ///< Middle of a triplet group
         tripletEnd          = (uint8_t)0x80,                     ///< End of a triplet group
-        tripletMask         = (uint8_t)0xe0,                     ///< Mask that filters out all possible triplet flags
+        tripletMask         = (uint8_t)0xe0                      ///< Mask that filters out all possible triplet flags
     };
 
     enum dataFlags
@@ -98,7 +98,7 @@ public:
         durationTypeMask        = (uint32_t)0xe00000,           ///< Mask used to retrieve the duration type
         stringNumberMask        = (uint32_t)0x7000000,          ///< Mask used to retrieve the single note string number
         fretNumberMask          = (uint32_t)0xf8000000,         ///< Mask used to retrieve the single note fret number
-        singleNoteDataMask      = (uint32_t)0xff000000,         ///< Mask that filters out the single note data (string number + fret number)
+        singleNoteDataMask      = (uint32_t)0xff000000          ///< Mask that filters out the single note data (string number + fret number)
     };
 
 // Member Variables

@@ -260,14 +260,27 @@ protected:
     template<typename T>
     struct ToggleablePropertyRecord
     {
+        typedef std::function<void (std::vector<T*>&)>  ObjectsGetter;
+        typedef std::function<bool (const T*)> PropertyGetter;
+        typedef std::function<bool (T*, bool)> PropertySetter;
+
+        ToggleablePropertyRecord(ObjectsGetter getObjects, PropertyGetter propertyGetter,
+                                 PropertySetter propertySetter, const QString& propertyName) :
+            getObjects(getObjects),
+            propertyGetter(propertyGetter),
+            propertySetter(propertySetter),
+            propertyName(propertyName)
+        {
+        }
+
          // gets a list of the selected Notes, Positions, etc
-        std::function<void (std::vector<T*>&)> getObjects;
+        ObjectsGetter getObjects;
 
         // function to check if the property is set, e.g. Note::IsMuted
-        std::function<bool (const T*)> propertyGetter;
+        PropertyGetter propertyGetter;
 
         // function to set the property as true/false, e.g. Note::SetMuted
-        std::function<bool (T*, bool)> propertySetter;
+        PropertySetter propertySetter;
 
         QString propertyName; // name of the property, for use with the undo menu
     };
