@@ -119,17 +119,16 @@ public:
 // Description Functions
     /// Sets the description for the guitar
     /// @param description Description to set
-    /// @return True if the description was set, false if not
-    bool SetDescription(const char* description)          
+    void SetDescription(const std::string& description)
     {
-        CHECK_THAT(description != NULL, false);
         m_description = description;
-        return (true);
     }
     /// Gets the description for the guitar (i.e. Acoustic w/Chorus)
     /// @return The description for the guitar
     std::string GetDescription() const
-        {return (m_description);}
+    {
+        return m_description;
+    }
 
 // Preset Functions
     /// Determines if a preset is valid

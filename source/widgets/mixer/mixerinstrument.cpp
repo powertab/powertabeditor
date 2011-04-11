@@ -6,6 +6,7 @@
 #include <QSlider>
 #include <QDial>
 #include <QComboBox>
+#include <QLineEdit>
 
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/generalmidi.h>
@@ -21,10 +22,27 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     instrumentIndex = new QLabel(QString().number(guitar->GetNumber() + 1) + ".");
     layout->addWidget(instrumentIndex);
 
-    instrumentName = new QLabel(QString().fromStdString(guitar->GetDescription()));
+    instrumentName = new ClickableLabel;
+    instrumentName->setText(QString().fromStdString(guitar->GetDescription()));
     instrumentName->setMinimumWidth(150);
     instrumentName->setMaximumWidth(150);
     layout->addWidget(instrumentName);
+
+    instrumentNameEditor = new QLineEdit(instrumentName->text());
+    instrumentNameEditor->setMinimumWidth(150);
+    instrumentNameEditor->setMaximumWidth(150);
+    instrumentNameEditor->hide();
+    layout->addWidget(instrumentNameEditor);
+
+    // when the name is clicked, switch to the text editor
+    connect(instrumentName, SIGNAL(clicked()), instrumentName, SLOT(hide()));
+    connect(instrumentName, SIGNAL(clicked()), instrumentNameEditor, SLOT(show()));
+    connect(instrumentName, SIGNAL(clicked()), instrumentNameEditor, SLOT(setFocus()));
+
+    // after editing is done, update and switch back to the label
+    connect(instrumentNameEditor, SIGNAL(textEdited(QString)), this, SLOT(changeInstrumentName(QString)));
+    connect(instrumentNameEditor, SIGNAL(editingFinished()), instrumentName, SLOT(show()));
+    connect(instrumentNameEditor, SIGNAL(editingFinished()), instrumentNameEditor, SLOT(hide()));
 
     soloPlayback = new QRadioButton;
     layout->addWidget(soloPlayback);
@@ -201,5 +219,11 @@ void MixerInstrument::changeVolume(int value)
 void MixerInstrument::changePatch(int value)
 {
     guitar->SetPreset(value);
+}
+
+void MixerInstrument::changeInstrumentName(QString name)
+{
+    guitar->SetDescription(name.toStdString());
+    instrumentName->setText(name);
 }
 

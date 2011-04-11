@@ -11,6 +11,9 @@ class QRadioButton;
 class QSlider;
 class QDial;
 class QComboBox;
+class QLineEdit;
+
+#include <widgets/common.h>
 
 class MixerInstrument : public QWidget
 {
@@ -24,7 +27,8 @@ protected:
     QHBoxLayout* layout;
 
     QLabel* instrumentIndex;
-    QLabel* instrumentName;
+    ClickableLabel* instrumentName;
+    QLineEdit* instrumentNameEditor;
 
     QRadioButton* soloPlayback;
     QRadioButton* mutePlayback;
@@ -40,6 +44,7 @@ public slots:
     void changePan(int value);
     void changeVolume(int value);
     void changePatch(int value);
+    void changeInstrumentName(QString name);
 };
 
 #endif // MIXERINSTRUMENT_H
