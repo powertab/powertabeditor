@@ -46,8 +46,8 @@ public:
     static const uint8_t BASS_CLEF;                                  ///< Bass clef
 
     // Tablature Staff Type Constants
-    static const uint8_t MIN_TABLATURE_STAFF_TYPE;                   ///< Minimum allowed value for tablature staff type
-    static const uint8_t MAX_TABLATURE_STAFF_TYPE;                   ///< Maximum allowed value for tablature staff type
+    static const uint8_t MIN_TABULATURE_STAFF_TYPE;                   ///< Minimum allowed value for tablature staff type
+    static const uint8_t MAX_TABULATURE_STAFF_TYPE;                   ///< Maximum allowed value for tablature staff type
 
     enum flags
     {
@@ -115,8 +115,8 @@ public:
     /// @return True if the tablature staff type is valid, false if not
     static bool IsValidTablatureStaffType(uint8_t type)
     {
-        return ((type >= MIN_TABLATURE_STAFF_TYPE) &&
-                ((type <= MAX_TABLATURE_STAFF_TYPE)));
+        return ((type >= MIN_TABULATURE_STAFF_TYPE) &&
+                ((type <= MAX_TABULATURE_STAFF_TYPE)));
     }
     bool SetTablatureStaffType(uint8_t type);
     /// Gets the tablature staff type (3-7 strings)

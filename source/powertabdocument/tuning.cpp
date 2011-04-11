@@ -26,7 +26,7 @@ const uint8_t   Tuning::DEFAULT_DATA                    = 0;
 const int8_t    Tuning::MIN_MUSIC_NOTATION_OFFSET       = -12;
 const int8_t    Tuning::MAX_MUSIC_NOTATION_OFFSET       = 12;
 const uint32_t  Tuning::MIN_STRING_COUNT                = 3;
-const uint32_t  Tuning::MAX_STRING_COUNT                = 7;
+const uint32_t  Tuning::MAX_STRING_COUNT                = 8;
 
 // Constructors/Destructors
 /// Default Constructor

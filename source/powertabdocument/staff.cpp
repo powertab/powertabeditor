@@ -41,9 +41,8 @@ const uint8_t Staff::TREBLE_CLEF                         = 0;
 const uint8_t Staff::BASS_CLEF                           = 1;
 
 // Tablature Staff Type Constants
-// Note: If these values change, update the Tuning constants for string count
-const uint8_t Staff::MIN_TABLATURE_STAFF_TYPE            = 3;
-const uint8_t Staff::MAX_TABLATURE_STAFF_TYPE            = 7;
+const uint8_t Staff::MIN_TABULATURE_STAFF_TYPE = Tuning::MIN_STRING_COUNT;
+const uint8_t Staff::MAX_TABULATURE_STAFF_TYPE = Tuning::MAX_STRING_COUNT;
 
 /// Default Constructor
 Staff::Staff() :
