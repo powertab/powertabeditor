@@ -117,7 +117,8 @@ SOURCES += main.cpp\
     audio/repeatcontroller.cpp \
     painters/notestem.cpp \
     painters/beamgroup.cpp \
-    painters/irregularnotegroup.cpp
+    painters/irregularnotegroup.cpp \
+    dialogs/tuningdialog.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -215,7 +216,8 @@ HEADERS  += powertabeditor.h \
     audio/repeatcontroller.h \
     painters/notestem.h \
     painters/beamgroup.h \
-    painters/irregularnotegroup.h
+    painters/irregularnotegroup.h \
+    dialogs/tuningdialog.h
 
 RESOURCES += \
     resources.qrc

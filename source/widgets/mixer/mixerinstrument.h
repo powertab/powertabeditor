@@ -12,8 +12,7 @@ class QSlider;
 class QDial;
 class QComboBox;
 class QLineEdit;
-
-#include <widgets/common.h>
+class ClickableLabel;
 
 class MixerInstrument : public QWidget
 {
@@ -38,6 +37,8 @@ protected:
 
     QComboBox* trackPatch;
 
+    ClickableLabel* tuningLabel;
+
     std::shared_ptr<Guitar> guitar;
 
 public slots:
@@ -45,6 +46,7 @@ public slots:
     void changeVolume(int value);
     void changePatch(int value);
     void changeInstrumentName(QString name);
+    void editTuning();
 };
 
 #endif // MIXERINSTRUMENT_H
