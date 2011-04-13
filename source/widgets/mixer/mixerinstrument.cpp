@@ -238,6 +238,6 @@ void MixerInstrument::changeInstrumentName(QString name)
 
 void MixerInstrument::editTuning()
 {
-    TuningDialog dialog(guitar->GetTuningConstRef());
+    TuningDialog dialog(guitar);
     dialog.exec();
 }

@@ -7,15 +7,21 @@
 #include <QCheckBox>
 #include <QSpinBox>
 
+#include <powertabeditor.h>
+
+#include <powertabdocument/guitar.h>
 #include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
+
+#include <actions/edittuning.h>
 
 #include <algorithm>
 #include <functional>
 
-TuningDialog::TuningDialog(const Tuning& tuning, QWidget *parent) :
+TuningDialog::TuningDialog(std::shared_ptr<Guitar> guitar, QWidget *parent) :
     QDialog(parent),
-    tuning(tuning)
+    guitar(guitar),
+    tuning(guitar->GetTuningConstRef())
 {
     setWindowTitle(tr("Tuning"));
     setModal(true);
@@ -75,6 +81,21 @@ TuningDialog::TuningDialog(const Tuning& tuning, QWidget *parent) :
 
 void TuningDialog::accept()
 {
+    // create a new tuning with the specified settings
+    Tuning newTuning;
+    newTuning.SetName(tuningNameEditor->text().toStdString());
+    newTuning.SetMusicNotationOffset(notationOffsetSelector->value());
+    newTuning.SetSharps(usesSharpsSelector->isChecked());
+    
+    // grab the selected tuning notes
+    std::vector<uint8_t> tuningNotes(numStringsSelector->value());
+    std::transform(stringSelectors.begin(), stringSelectors.begin() + numStringsSelector->value(), 
+                   tuningNotes.begin(), std::mem_fun(&QComboBox::currentIndex));
+    
+    newTuning.SetTuningNotes(tuningNotes);
+    
+    PowerTabEditor::undoManager->push(new EditTuning(guitar, newTuning));
+    
     done(QDialog::Accepted);
 }
 
@@ -99,6 +120,7 @@ void TuningDialog::initStringSelectors()
     }
 }
 
+/// Generates a list of note names, to be used for selecting the pitch of a string
 void TuningDialog::generateNoteNames(bool usesSharps)
 {
     noteNames.clear();
@@ -110,6 +132,7 @@ void TuningDialog::generateNoteNames(bool usesSharps)
     }
 }
 
+/// Switches the note names available for each string
 void TuningDialog::toggleSharps(bool usesSharps)
 {
     generateNoteNames(usesSharps);
@@ -124,6 +147,7 @@ void TuningDialog::toggleSharps(bool usesSharps)
     }
 }
 
+/// Updates which string selection boxes are enabled, based on the number of strings selected
 void TuningDialog::updateEnabledStrings(int numStrings)
 {
     using namespace std::placeholders;

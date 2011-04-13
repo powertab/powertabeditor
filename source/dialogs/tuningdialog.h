@@ -4,18 +4,20 @@
 #include <QDialog>
 
 #include <vector>
+#include <memory>
 
 class Tuning;
 class QComboBox;
 class QLineEdit;
 class QCheckBox;
 class QSpinBox;
+class Guitar;
 
 class TuningDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit TuningDialog(const Tuning& tuning, QWidget *parent = 0);
+    explicit TuningDialog(std::shared_ptr<Guitar> guitar, QWidget *parent = 0);
 
 public slots:
     void accept();
@@ -26,7 +28,9 @@ private slots:
     void updateEnabledStrings(int numStrings);
 
 private:
+    std::shared_ptr<Guitar> guitar;
     const Tuning& tuning;
+    
     QStringList noteNames;
     
     QLineEdit* tuningNameEditor;
