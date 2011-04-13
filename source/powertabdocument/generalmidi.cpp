@@ -12,6 +12,8 @@
 #include "generalmidi.h"
 #include "macros.h"
 
+#include <cstdlib> // abs
+
 #include <vector>
 using std::vector;
 #include <string>

@@ -1167,10 +1167,10 @@ void PowerTabEditor::shiftBackward()
 /// Clears the note at the caret's current position
 void PowerTabEditor::clearNote()
 {
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Note* currentNote = caret->getCurrentNote();
+    //Caret* caret = getCurrentScoreArea()->getCaret();
+    //Note* currentNote = caret->getCurrentNote();
 
-    Q_ASSERT(currentNote != NULL);
+    Q_ASSERT(false);
 
     // TODO - implement this
 }

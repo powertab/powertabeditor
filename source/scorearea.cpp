@@ -28,8 +28,8 @@
 #include <painters/beamgroup.h>
 #include <painters/irregularnotegroup.h>
 
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <functional>
+#include <algorithm>
 
 using std::shared_ptr;
 
@@ -708,8 +708,9 @@ void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<System> system, Staff *staff
         &Position::HasNoteWithArtificialHarmonic
     };
 
-    typedef boost::function<QGraphicsItem* (void)> SymbolCreationFn;
-    using boost::bind;
+    typedef std::function<QGraphicsItem* (void)> SymbolCreationFn;
+    using std::bind;
+    using namespace std::placeholders;
 
     // functions for creating symbols, corresponding to each element of positionPredicates
     std::vector<SymbolCreationFn> symbolCreationsFns = {
@@ -796,8 +797,9 @@ void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<System> system, Staff *staff
 /// Draws the symbols that appear between the tab and standard notation staves
 void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const StaffData &currentStaffInfo)
 {
-    typedef boost::function<QGraphicsItem* (uint8_t, const StaffData&)> SymbolCreationFn;
-    using boost::bind;
+    typedef std::function<QGraphicsItem* (uint8_t, const StaffData&)> SymbolCreationFn;
+    using std::bind;
+    using namespace std::placeholders;
 
     std::list<SymbolInfo> symbols; // holds all of the symbols that we will draw
 
