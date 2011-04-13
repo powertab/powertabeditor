@@ -27,12 +27,11 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     layout->addWidget(instrumentIndex);
 
     instrumentName = new ClickableLabel;
-    instrumentName->setText(QString().fromStdString(guitar->GetDescription()));
     instrumentName->setMinimumWidth(150);
     instrumentName->setMaximumWidth(150);
     layout->addWidget(instrumentName);
 
-    instrumentNameEditor = new QLineEdit(instrumentName->text());
+    instrumentNameEditor = new QLineEdit;
     instrumentNameEditor->setMinimumWidth(150);
     instrumentNameEditor->setMaximumWidth(150);
     instrumentNameEditor->hide();
@@ -58,7 +57,6 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     trackVolume->setMaximumWidth(75);
     trackVolume->setRange(Guitar::MIN_INITIAL_VOLUME, Guitar::MAX_INITIAL_VOLUME);
     trackVolume->setTickInterval(Guitar::MAX_INITIAL_VOLUME / 8 );
-    trackVolume->setValue(guitar->GetInitialVolume());
     connect(trackVolume, SIGNAL(valueChanged(int)), this, SLOT(changeVolume(int)));
     layout->addWidget(trackVolume);
 
@@ -67,7 +65,6 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     trackPan->setRange(Guitar::MIN_PAN, Guitar::MAX_PAN);
     trackPan->setSingleStep(1);
     trackPan->setPageStep(Guitar::MAX_PAN / 8);
-    trackPan->setValue(guitar->GetPan());
     connect(trackPan, SIGNAL(valueChanged(int)), this, SLOT(changePan(int)));
     layout->addWidget(trackPan);
 
@@ -201,14 +198,14 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     trackPatch->addItem("Helicopter");
     trackPatch->addItem("Applause");
     trackPatch->addItem("Gunshot");
-    trackPatch->setCurrentIndex(guitar->GetPreset());
     connect(trackPatch, SIGNAL(activated(int)), this, SLOT(changePatch(int)));
     layout->addWidget(trackPatch);
 
     tuningLabel = new ClickableLabel;
-    tuningLabel->setText(QString().fromStdString(guitar->GetTuningSpelling()));
     layout->addWidget(tuningLabel);
     connect(tuningLabel, SIGNAL(clicked()), this, SLOT(editTuning()));
+    
+    update(); // initialize the widgets
 
     layout->setSizeConstraint(QLayout::SetFixedSize);
 
@@ -240,4 +237,15 @@ void MixerInstrument::editTuning()
 {
     TuningDialog dialog(guitar);
     dialog.exec();
+}
+
+/// Update the widget's data
+void MixerInstrument::update()
+{
+    instrumentName->setText(QString().fromStdString(guitar->GetDescription()));
+    instrumentNameEditor->setText(instrumentName->text());
+    trackVolume->setValue(guitar->GetInitialVolume());
+    trackPan->setValue(guitar->GetPan());
+    trackPatch->setCurrentIndex(guitar->GetPreset());
+    tuningLabel->setText(QString().fromStdString(guitar->GetTuningSpelling()));
 }

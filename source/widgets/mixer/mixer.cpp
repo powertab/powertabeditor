@@ -40,3 +40,12 @@ shared_ptr<Guitar> Mixer::getInstrument(size_t index) const
 {
     return channelList.at(index)->getInstrument();
 }
+
+/// Triggers an update for each channel of the mixer
+void Mixer::update()
+{
+    foreach (auto mixerInstrument, channelList)
+    {
+        mixerInstrument->update();        
+    }
+}

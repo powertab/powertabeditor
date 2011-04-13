@@ -26,9 +26,8 @@ protected:
     std::vector<std::shared_ptr<MixerInstrument> > channelList;
     QVBoxLayout* layout;
 
-signals:
-
 public slots:
+    void update();
 
 };
 

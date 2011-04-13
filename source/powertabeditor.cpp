@@ -843,6 +843,8 @@ void PowerTabEditor::setupNewDocument()
     }
     scrollArea->setWidget(mixer);
     mixerList->addWidget(scrollArea);
+    
+    connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
 
     // switch to the new document
     tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());

@@ -20,7 +20,12 @@ class MixerInstrument : public QWidget
 public:
     MixerInstrument(std::shared_ptr<Guitar> instrument, QWidget *parent = 0);
 
-    std::shared_ptr<Guitar> getInstrument() { return guitar; }
+    std::shared_ptr<Guitar> getInstrument() const
+    {
+        return guitar;
+    }
+    
+    void update();
 
 protected:
     QHBoxLayout* layout;
