@@ -80,7 +80,8 @@ namespace midi
     string GetMidiNoteText(uint8_t note, bool usesSharps, uint8_t numAccidentals)
     {
         CHECK_THAT(IsValidMidiNote(note), "");
-        uint8_t pitch = GetMidiNotePitch(note);
+
+        const uint8_t pitch = GetMidiNotePitch(note);
 
         // find the index of the key, for use with the pitchClasses and keyText vectors
         const int keyC = 15;
@@ -90,7 +91,7 @@ namespace midi
             keyOffset *= -1;
         }
 
-        const int key = keyC + keyOffset;
+        const int tonic = keyC + keyOffset;
 
         uint8_t minDistance = 100; // needs to be larger than any possible distance
         uint8_t bestMatch = 0; // index of the text representation that is the best match
@@ -101,7 +102,7 @@ namespace midi
         {
             if (pitchClasses.at(i) == pitch)
             {
-                uint8_t dist = abs(key - i);
+                uint8_t dist = abs(tonic - i);
                 if (std::min(dist, minDistance) == dist)
                 {
                     minDistance = dist;
@@ -112,7 +113,7 @@ namespace midi
 
         string text = keyText.at(bestMatch);
         // remove accidentals depending on key signature
-        if (key - 1 <= bestMatch && key + 5 >= bestMatch)
+        if (tonic - 1 <= bestMatch && tonic + 5 >= bestMatch)
         {
             if (text.length() > 1)
             {
@@ -131,42 +132,23 @@ namespace midi
     string GetMidiNoteText(uint8_t note, bool sharps)
     {
         CHECK_THAT(IsValidMidiNote(note), "");
-        uint8_t pitch = GetMidiNotePitch(note);
 
-        string notes[12];
+        const uint8_t pitch = GetMidiNotePitch(note);
 
         if (sharps)
         {
-            notes[0] = "C";
-            notes[1] = "C#";
-            notes[2] = "D";
-            notes[3] = "D#";
-            notes[4] = "E";
-            notes[5] = "F";
-            notes[6] = "F#";
-            notes[7] = "G";
-            notes[8] = "G#";
-            notes[9] = "A";
-            notes[10] = "A#";
-            notes[11] = "B";
+            string notes[12] = {"C", "C#", "D", "D#", "E", "F", "F#",
+                                "G", "G#", "A", "A#", "B"};
+
+            return notes[pitch];
         }
         else
         {
-            notes[0] = "C";
-            notes[1] = "Db";
-            notes[2] = "D";
-            notes[3] = "Eb";
-            notes[4] = "E";
-            notes[5] = "F";
-            notes[6] = "Gb";
-            notes[7] = "G";
-            notes[8] = "Ab";
-            notes[9] = "A";
-            notes[10] = "Bb";
-            notes[11] = "B";
-        }
+            string notes[12] = {"C", "Db", "D", "Eb", "E", "F", "Gb",
+                                "G", "Ab", "A", "Bb", "B"};
 
-        return (notes[pitch]);
+            return notes[pitch];
+        }
     }
 
     /// Offsets a MIDI note by an offset
