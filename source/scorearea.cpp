@@ -506,8 +506,7 @@ void ScoreArea::drawChordText(shared_ptr<System> system, quint32 height, const S
 {
     for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
     {
-        ChordText* chordText = system->GetChordText(i);
-        Q_ASSERT(chordText != NULL);
+        const ChordText* chordText = system->GetChordText(i);
 
         const quint32 location = system->GetPositionX(chordText->GetPosition());
 

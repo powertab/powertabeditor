@@ -11,14 +11,14 @@ class ChordText;
 class ChordTextPainter : public PainterBase
 {
 public:
-    ChordTextPainter(ChordText* chordText);
+    ChordTextPainter(const ChordText* chordText);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
     void init();
 
-    ChordText* chordText;
+    const ChordText* chordText;
     static QFont displayFont;
     QStaticText displayText;
 };

@@ -7,7 +7,7 @@
 
 QFont ChordTextPainter::displayFont = QFont("Liberation Sans");
 
-ChordTextPainter::ChordTextPainter(ChordText* chordText) :
+ChordTextPainter::ChordTextPainter(const ChordText* chordText) :
     chordText(chordText)
 {
     displayFont.setPixelSize(10); // needed for cross-platform consistency in font size
@@ -18,7 +18,7 @@ ChordTextPainter::ChordTextPainter(ChordText* chordText) :
 
 void ChordTextPainter::init()
 {
-    QString text = QString::fromStdString(chordText->GetText());
+    const QString text = QString::fromStdString(chordText->GetText());
 
     displayText.setText(text);
     displayText.prepare(QTransform(), displayFont);
@@ -27,10 +27,8 @@ void ChordTextPainter::init()
     bounds = QRectF(0, 0, fm.width(text), fm.height());
 }
 
-void ChordTextPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void ChordTextPainter::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    Q_UNUSED(widget);
-    Q_UNUSED(option);
     painter->setFont(displayFont);
 
     painter->drawStaticText(0, 0, displayText);
