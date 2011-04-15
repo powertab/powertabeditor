@@ -229,12 +229,120 @@ bool Staff::SetTablatureStaffType(uint8_t type)
     return (true);
 }
 
-// Calculates the height of the staff
+/// Calculates the height of the staff
 int Staff::GetHeight() const
 {
     return GetStandardNotationStaffAboveSpacing() + GetStandardNotationStaffBelowSpacing() + GetSymbolSpacing() +
             GetTablatureStaffBelowSpacing() + STD_NOTATION_LINE_SPACING * (STD_NOTATION_STAFF_TYPE - 1) +
             (GetTablatureStaffType() - 1) * 9 + 4 * STAFF_BORDER_SPACING; // TODO - pass in the tab line separation as a parameter
+}
+
+/// Determines if a Clef is valid
+/// @param clef Clef to validate
+/// @return True if the clef is valid, false if not
+bool Staff::IsValidClef(uint8_t clef)
+{
+    return clef == TREBLE_CLEF || clef == BASS_CLEF;
+}
+
+/// Gets the clef used on the standard notation staff
+/// @return The clef used on the standard notation staff
+uint8_t Staff::GetClef() const
+{
+    return (m_data & clefMask) >> 4;
+}
+
+/// Determines if a Tablature Staff Type is valid
+/// @param type Tablature staff type to validate
+/// @return True if the tablature staff type is valid, false if not
+bool Staff::IsValidTablatureStaffType(uint8_t type)
+{
+    return (type >= MIN_TABULATURE_STAFF_TYPE &&
+            type <= MAX_TABULATURE_STAFF_TYPE);
+}
+
+/// Gets the tablature staff type (3-7 strings)
+/// @return The tablature staff type
+uint8_t Staff::GetTablatureStaffType() const
+{
+    return m_data & tablatureStaffTypeMask;
+}
+
+/// Sets the amount of spacing above the standard notation staff
+/// @param spacing Spacing to set
+void Staff::SetStandardNotationStaffAboveSpacing(uint8_t spacing)
+{
+    m_standardNotationStaffAboveSpacing = spacing;
+}
+
+/// Gets the amount of spacing above the standard notation staff
+/// @return The amount of spacing above the standard notation staff
+uint8_t Staff::GetStandardNotationStaffAboveSpacing() const
+{
+    return m_standardNotationStaffAboveSpacing;
+}
+
+/// Sets the amount of spacing below the standard notation staff
+/// @param spacing Spacing to set
+void Staff::SetStandardNotationStaffBelowSpacing(uint8_t spacing)
+{
+    m_standardNotationStaffBelowSpacing = spacing;
+}
+
+/// Gets the amount of spacing below the standard notation staff
+/// @return The amount of spacing below the standard notation staff
+uint8_t Staff::GetStandardNotationStaffBelowSpacing() const
+{
+    return m_standardNotationStaffBelowSpacing;
+}
+
+/// Sets the amount of spacing used by symbols in between the standard
+/// notation and tablature staves
+/// @param spacing Spacing to set
+void Staff::SetSymbolSpacing(uint8_t spacing)
+{
+    m_symbolSpacing = spacing;
+}
+
+/// Gets the amount of spacing used by symbols in between the standard
+/// notation and tablature staves
+/// @return The amount of spacing used by symbols in between the standard
+/// notation and tablature staves
+uint8_t Staff::GetSymbolSpacing() const
+{
+    return m_symbolSpacing;
+}
+
+/// Sets the amount of spacing below the tablature staff
+/// @param spacing Spacing to set
+void Staff::SetTablatureStaffBelowSpacing(uint8_t spacing)
+{
+    m_tablatureStaffBelowSpacing = spacing;
+}
+
+/// Gets the amount of spacing below the tablature staff
+/// @return The amount of spacing below the tablature staff
+uint8_t Staff::GetTablatureStaffBelowSpacing() const
+{
+    return m_tablatureStaffBelowSpacing;
+}
+
+/// Determines if a voice is valid
+/// @param voice Voice to validate
+/// @return True if the voice is valid, false if not
+bool Staff::IsValidVoice(uint32_t voice)
+{
+    return voice < NUM_STAFF_VOICES;
+}
+
+/// Determines if a position index is valid
+/// @param voice Voice the position belongs to
+/// @param index position index to validate
+/// @return True if the position index is valid, false if not
+bool Staff::IsValidPositionIndex(uint32_t voice, uint32_t index) const
+{
+    CHECK_THAT(IsValidVoice(voice), false);
+    return (index < GetPositionCount(voice));
 }
 
 /// Gets the number of positions in the staff
@@ -615,7 +723,8 @@ int8_t Staff::GetSlideSteps(Position *position, Note *note) const
 }
 
 // TODO - remove the default argument for the voice parameter, once we finish full support for high & low melodies
-Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, Position *position, Note *note, uint32_t voice) const
+Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, const Position *position,
+                                     const Note *note, uint32_t voice) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");

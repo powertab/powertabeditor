@@ -14,7 +14,6 @@
 
 #include <cstdint>
 #include <fstream>
-#include <string>
 #include <vector>
 
 #include <boost/pointee.hpp>

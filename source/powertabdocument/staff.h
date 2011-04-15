@@ -49,21 +49,21 @@ public:
     static const uint8_t MIN_TABULATURE_STAFF_TYPE;                   ///< Minimum allowed value for tablature staff type
     static const uint8_t MAX_TABULATURE_STAFF_TYPE;                   ///< Maximum allowed value for tablature staff type
 
-    enum flags
+    enum flags : uint8_t
     {
-        clefMask                    = (uint8_t)0xf0,                 ///< Mask used to retrieve the clef type
-        tablatureStaffTypeMask      = (uint8_t)0xf                   ///< Mask used to retrieve the tablature type (3 - 7 string)
+        clefMask                    = 0xf0,                 ///< Mask used to retrieve the clef type
+        tablatureStaffTypeMask      = 0xf                   ///< Mask used to retrieve the tablature type (3 - 7 string)
     };
 
     enum { NUM_STAFF_VOICES = 2 }; ///< Number of voices in a staff
 
     // Member Variables
 protected:
-    uint8_t m_data;											        ///< Top 4 bits = clef type, bottom 4 bits = tablature type
-    uint8_t m_standardNotationStaffAboveSpacing;                     ///< Amount of space alloted from the top line of the standard notation staff
-    uint8_t m_standardNotationStaffBelowSpacing;                     ///< Amount of space alloted from the last line of the standard notation staff
-    uint8_t m_symbolSpacing;                                         ///< Amount of space alloted for symbols located between the standard notation and tablature staff
-    uint8_t m_tablatureStaffBelowSpacing;                            ///< Amount of space alloted from the last line of the tablature staff
+    uint8_t m_data;                                 ///< Top 4 bits = clef type, bottom 4 bits = tablature type
+    uint8_t m_standardNotationStaffAboveSpacing;    ///< Amount of space alloted from the top line of the standard notation staff
+    uint8_t m_standardNotationStaffBelowSpacing;    ///< Amount of space alloted from the last line of the standard notation staff
+    uint8_t m_symbolSpacing;                        ///< Amount of space alloted for symbols located between the standard notation and tablature staff
+    uint8_t m_tablatureStaffBelowSpacing;           ///< Amount of space alloted from the last line of the tablature staff
 
 public:
     std::array<std::vector<Position*>, NUM_STAFF_VOICES> positionArrays; ///< collection of position arrays, one per voice
@@ -86,104 +86,51 @@ public:
 
     Staff* CloneObject() const;
 
-    // MFC Class Functions
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
-    {return "CStaff";}
+    {
+        return "CStaff";
+    }
+
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
     uint16_t GetMFCClassSchema() const
-    {return ((uint16_t)1);}
+    {
+        return 1;
+    }
 
     // Clef Functions
-    /// Determines if a Clef is valid
-    /// @param clef Clef to validate
-    /// @return True if the clef is valid, false if not
-    static bool IsValidClef(uint8_t clef)
-    {return ((clef >= TREBLE_CLEF) && (clef <= BASS_CLEF));}
+    static bool IsValidClef(uint8_t clef);
     bool SetClef(uint8_t type);
-    /// Gets the clef used on the standard notation staff
-    /// @return The clef used on the standard notation staff
-    uint8_t GetClef() const
-    {return ((uint8_t)((m_data & clefMask) >> 4));}
+    uint8_t GetClef() const;
 
     // Tablature Staff Type Functions
-    /// Determines if a Tablature Staff Type is valid
-    /// @param type Tablature staff type to validate
-    /// @return True if the tablature staff type is valid, false if not
-    static bool IsValidTablatureStaffType(uint8_t type)
-    {
-        return ((type >= MIN_TABULATURE_STAFF_TYPE) &&
-                ((type <= MAX_TABULATURE_STAFF_TYPE)));
-    }
+    static bool IsValidTablatureStaffType(uint8_t type);
     bool SetTablatureStaffType(uint8_t type);
-    /// Gets the tablature staff type (3-7 strings)
-    /// @return The tablature staff type
-    uint8_t GetTablatureStaffType() const
-    {return ((uint8_t)(m_data & tablatureStaffTypeMask));}
+    uint8_t GetTablatureStaffType() const;
 
     // Standard Notation Staff Above Spacing Functions
-    /// Sets the amount of spacing above the standard notation staff
-    /// @param spacing Spacing to set
-    void SetStandardNotationStaffAboveSpacing(uint8_t spacing)
-    {m_standardNotationStaffAboveSpacing = spacing;}
-    /// Gets the amount of spacing above the standard notation staff
-    /// @return The amount of spacing above the standard notation staff
-    uint8_t GetStandardNotationStaffAboveSpacing() const
-    {return (m_standardNotationStaffAboveSpacing);}
+    void SetStandardNotationStaffAboveSpacing(uint8_t spacing);
+    uint8_t GetStandardNotationStaffAboveSpacing() const;
 
     // Standard Notation Staff Below Spacing Functions
-    /// Sets the amount of spacing below the standard notation staff
-    /// @param spacing Spacing to set
-    void SetStandardNotationStaffBelowSpacing(uint8_t spacing)
-    {m_standardNotationStaffBelowSpacing = spacing;}
-    /// Gets the amount of spacing below the standard notation staff
-    /// @return The amount of spacing below the standard notation staff
-    uint8_t GetStandardNotationStaffBelowSpacing() const
-    {return (m_standardNotationStaffBelowSpacing);}
+    void SetStandardNotationStaffBelowSpacing(uint8_t spacing);
+    uint8_t GetStandardNotationStaffBelowSpacing() const;
 
     // Symbol Spacing Functions
-    /// Sets the amount of spacing used by symbols in between the standard
-    /// notation and tablature staves
-    /// @param spacing Spacing to set
-    void SetSymbolSpacing(uint8_t spacing)
-    {m_symbolSpacing = spacing;}
-    /// Gets the amount of spacing used by symbols in between the standard
-    /// notation and tablature staves
-    /// @return The amount of spacing used by symbols in between the standard
-    /// notation and tablature staves
-    uint8_t GetSymbolSpacing() const
-    {return (m_symbolSpacing);}
+    void SetSymbolSpacing(uint8_t spacing);
+    uint8_t GetSymbolSpacing() const;
 
     // Tablature Staff Below Spacing Functions
-    /// Sets the amount of spacing below the tablature staff
-    /// @param spacing Spacing to set
-    void SetTablatureStaffBelowSpacing(uint8_t spacing)
-    {m_tablatureStaffBelowSpacing = spacing;}
-    /// Gets the amount of spacing below the tablature staff
-    /// @return The amount of spacing below the tablature staff
-    uint8_t GetTablatureStaffBelowSpacing() const
-    {return (m_tablatureStaffBelowSpacing);}
+    void SetTablatureStaffBelowSpacing(uint8_t spacing);
+    uint8_t GetTablatureStaffBelowSpacing() const;
 
-    // Voice Functions
-    /// Determines if a voice is valid
-    /// @param voice Voice to validate
-    /// @return True if the voice is valid, false if not
-    static bool IsValidVoice(uint32_t voice)
-    {return (voice < NUM_STAFF_VOICES);}
+    static bool IsValidVoice(uint32_t voice);
 
     // Position Functions
-    /// Determines if a position index is valid
-    /// @param voice Voice the position belongs to
-    /// @param index position index to validate
-    /// @return True if the position index is valid, false if not
-    bool IsValidPositionIndex(uint32_t voice, uint32_t index) const
-    {
-        CHECK_THAT(IsValidVoice(voice), false);
-        return (index < GetPositionCount(voice));
-    }
+    bool IsValidPositionIndex(uint32_t voice, uint32_t index) const;
 
     size_t GetPositionCount(uint32_t voice) const;
     Position* GetPosition(uint32_t voice, uint32_t index) const;
@@ -223,7 +170,8 @@ public:
         PrevNote = -1
     };
 
-    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, Position* position, Note* note, uint32_t voice = 0) const;
+    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, const Position* position,
+                                  const Note* note, uint32_t voice = 0) const;
 
 protected:
     int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const;
@@ -231,9 +179,10 @@ protected:
     /// Compares the fret numbers of two consecutive notes on the same string,
     /// using the given comparision function (binary predicate)
     template<typename FretComparison>
-    bool CompareWithNote(SearchDirection searchDirection, Position* position, Note* note, FretComparison comp) const
+    bool CompareWithNote(SearchDirection searchDirection, const Position* position,
+                         const Note* note, FretComparison comp) const
     {
-        Note* nextNote = GetAdjacentNoteOnString(searchDirection, position, note);
+        const Note* nextNote = GetAdjacentNoteOnString(searchDirection, position, note);
         
         // check if a note was found on the same string in the next position,
         // and if the fret number comparision is satisfied
