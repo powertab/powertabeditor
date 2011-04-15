@@ -169,6 +169,8 @@ public:
         return (m_directionArray[index]);
     }
 
+    size_t MaxDirectionSymbolCount() const;
+
     // Chord Text Functions
     /// Determines if a chord text index is valid
     /// @param index chord text index to validate

@@ -10,7 +10,7 @@ class Direction;
 class DirectionPainter : public PainterBase
 {
 public:
-    DirectionPainter(const Direction* direction);
+    DirectionPainter(const Direction* direction, size_t symbolIndex);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -21,6 +21,7 @@ private:
     QStaticText displayText;
 
     const Direction* direction;
+    const size_t symbolIndex;
 };
 
 #endif // DIRECTIONPAINTER_H

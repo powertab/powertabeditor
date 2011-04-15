@@ -477,7 +477,7 @@ void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<System> system, const
     if (system->GetDirectionCount() > 0)
     {
         drawDirections(system, height, currentStaffInfo);
-        height += System::SYSTEM_SYMBOL_SPACING;
+        height += System::SYSTEM_SYMBOL_SPACING * system->MaxDirectionSymbolCount();
         drawDividerLine(currentStaffInfo, height);
     }
 
@@ -523,11 +523,19 @@ void ScoreArea::drawDirections(shared_ptr<const System> system, quint32 height,
     {
         const Direction* direction = system->GetDirection(i);
 
+        quint32 directionHeight = height; // keeps track of the height for this Direction only
+
         const quint32 location = system->GetPositionX(direction->GetPosition());
 
-        DirectionPainter* directionPainter = new DirectionPainter(direction);
-        centerItem(directionPainter, location, location + currentStaffInfo.positionWidth, height + 4);
-        directionPainter->setParentItem(activeSystem);
+        // draw each symbol for the Direction
+        for (size_t symbol = 0; symbol < direction->GetSymbolCount(); symbol++)
+        {
+            DirectionPainter* directionPainter = new DirectionPainter(direction, symbol);
+            centerItem(directionPainter, location, location + currentStaffInfo.positionWidth, directionHeight + 4);
+            directionPainter->setParentItem(activeSystem);
+
+            directionHeight += System::SYSTEM_SYMBOL_SPACING;
+        }
     }
 }
 

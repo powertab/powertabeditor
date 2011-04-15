@@ -898,3 +898,19 @@ bool System::InsertBarline(Barline* barline)
 
     return true;
 }
+
+/// Returns the largest number of symbols used by a Direction in the system
+size_t System::MaxDirectionSymbolCount() const
+{
+    if (m_directionArray.empty())
+    {
+        return 0;
+    }
+
+    std::vector<size_t> directionCounts(m_directionArray.size());
+
+    std::transform(m_directionArray.begin(), m_directionArray.end(),
+                   directionCounts.begin(), std::mem_fun(&Direction::GetSymbolCount));
+
+    return *std::max_element(directionCounts.begin(), directionCounts.end());
+}

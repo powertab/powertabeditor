@@ -6,8 +6,9 @@
 
 QFont DirectionPainter::displayFont = QFont("Liberation Sans");
 
-DirectionPainter::DirectionPainter(const Direction* direction) :
-    direction(direction)
+DirectionPainter::DirectionPainter(const Direction* direction, size_t symbolIndex) :
+    direction(direction),
+    symbolIndex(symbolIndex)
 {
     displayFont.setPixelSize(10);
     displayFont.setItalic(true);
@@ -18,7 +19,7 @@ DirectionPainter::DirectionPainter(const Direction* direction) :
 
 void DirectionPainter::init()
 {
-    const QString text = QString::fromStdString(direction->GetText(0));
+    const QString text = QString::fromStdString(direction->GetText(symbolIndex));
 
     displayText.setText(text);
     displayText.prepare(QTransform(), displayFont);

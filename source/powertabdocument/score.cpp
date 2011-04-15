@@ -23,6 +23,7 @@
 #include "position.h"
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
+#include "direction.h"
 
 #include <map>
 #include <bitset>
@@ -423,12 +424,12 @@ void Score::UpdateExtraSpacing(SystemPtr system)
     // get list of alternate endings
     std::vector<AlternateEnding*> endings;
     GetAlternateEndingsInSystem(endings, system);
-    
+
     // Find how many different items occur in the system (i.e. is there at least one rehearsal sign, tempo marker, etc)
     const int numItems = system->HasRehearsalSign() +
             (system->GetChordTextCount() > 0) +
             !markers.empty() +
-            (system->GetDirectionCount() > 0) +
+            system->MaxDirectionSymbolCount() +
             !endings.empty();
     
     // Each type of item gets a line to itself
