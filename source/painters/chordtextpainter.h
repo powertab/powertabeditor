@@ -2,7 +2,6 @@
 #define CHORDTEXTPAINTER_H
 
 #include "painterbase.h"
-#include <powertabdocument/chordtext.h>
 
 #include <QFont>
 #include <QStaticText>

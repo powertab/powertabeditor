@@ -11,6 +11,8 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/score.h>
+#include <powertabdocument/direction.h>
+#include <powertabdocument/chordtext.h>
 
 #include <painters/staffdata.h>
 #include <painters/barlinepainter.h>
@@ -27,6 +29,7 @@
 #include <painters/notestem.h>
 #include <painters/beamgroup.h>
 #include <painters/irregularnotegroup.h>
+#include <painters/directionpainter.h>
 
 #include <functional>
 #include <algorithm>
@@ -471,6 +474,13 @@ void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<System> system, const
         drawDividerLine(currentStaffInfo, height);
     }
 
+    if (system->GetDirectionCount() > 0)
+    {
+        drawDirections(system, height, currentStaffInfo);
+        height += System::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(currentStaffInfo, height);
+    }
+
     if (system->GetChordTextCount() > 0)
     {
         drawChordText(system, height, currentStaffInfo);
@@ -504,6 +514,21 @@ void ScoreArea::drawChordText(shared_ptr<System> system, quint32 height, const S
         ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
         centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth, height + 4);
         chordTextPainter->setParentItem(activeSystem);
+    }
+}
+
+void ScoreArea::drawDirections(shared_ptr<const System> system, quint32 height,
+                               const StaffData& currentStaffInfo)
+{
+    for (uint32_t i = 0; i < system->GetDirectionCount(); i++)
+    {
+        const Direction* direction = system->GetDirection(i);
+
+        const quint32 location = system->GetPositionX(direction->GetPosition());
+
+        DirectionPainter* directionPainter = new DirectionPainter(direction);
+        centerItem(directionPainter, location, location + currentStaffInfo.positionWidth, height + 4);
+        directionPainter->setParentItem(activeSystem);
     }
 }
 

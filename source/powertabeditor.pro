@@ -119,7 +119,8 @@ SOURCES += main.cpp\
     painters/beamgroup.cpp \
     painters/irregularnotegroup.cpp \
     dialogs/tuningdialog.cpp \
-    actions/edittuning.cpp
+    actions/edittuning.cpp \
+    painters/directionpainter.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -219,7 +220,8 @@ HEADERS  += powertabeditor.h \
     painters/beamgroup.h \
     painters/irregularnotegroup.h \
     dialogs/tuningdialog.h \
-    actions/edittuning.h
+    actions/edittuning.h \
+    painters/directionpainter.h
 
 RESOURCES += \
     resources.qrc

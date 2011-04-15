@@ -46,7 +46,11 @@ protected:
     void drawTabNotes(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
     void renderBars(const StaffData& currentStaffInfo, std::shared_ptr<System> system);
     void drawTabClef(int x, const StaffData& staffInfo);
+
     void drawChordText(std::shared_ptr<System> system, quint32 height, const StaffData& currentStaffInfo);
+    void drawDirections(std::shared_ptr<const System> system, quint32 height,
+                        const StaffData& currentStaffInfo);
+
     void drawLegato(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
 
     void drawSlides(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
