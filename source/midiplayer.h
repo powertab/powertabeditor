@@ -42,14 +42,15 @@ protected:
 
     double getCurrentTempo(const quint32 positionIndex) const;
     TempoMarker* getCurrentTempoMarker(const quint32 positionIndex) const;
-    double calculateNoteDuration(Position* currentPosition) const;
+    double calculateNoteDuration(const Position* currentPosition) const;
 
     double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,
                                  std::list<std::unique_ptr<MidiEvent> >& eventList) const;
     void generateMetronome(uint32_t systemIndex, double startTime,
                            std::list<std::unique_ptr<MidiEvent> >& eventList) const;
     void playMidiEvents(std::list<std::unique_ptr<MidiEvent> >& eventList, uint32_t startSystem, uint32_t startPos);
-    double getWholeRestDuration(std::shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const;
+    double getWholeRestDuration(std::shared_ptr<const System> system, const Staff* staff, 
+                                const Position* position, double originalDuration) const;
 
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;

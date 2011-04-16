@@ -190,12 +190,12 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<System> system, int lineSp
 // Draw all of the barlines for the staff.
 void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<System> system)
 {
-    std::vector<Barline*> barlines;
+    std::vector<const Barline*> barlines;
     system->GetBarlines(barlines);
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
-        Barline* currentBarline = barlines.at(i);
+        const Barline* currentBarline = barlines.at(i);
         const KeySignature& keySig = currentBarline->GetKeySignatureConstRef();
         const TimeSignature& timeSig = currentBarline->GetTimeSignatureConstRef();
 

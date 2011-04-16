@@ -26,7 +26,7 @@ void RepeatController::indexRepeats()
     {
         shared_ptr<System> system = score->GetSystem(currentSystem);
 
-        vector<Barline*> barlines;
+        vector<const Barline*> barlines;
         system->GetBarlines(barlines);
 
         for (size_t i = 0; i < barlines.size(); i++)

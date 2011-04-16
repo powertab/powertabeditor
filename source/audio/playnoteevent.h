@@ -20,13 +20,13 @@ public:
     };
 
     PlayNoteEvent(uint8_t channel, double startTime, double duration, uint8_t pitch, uint32_t positionIndex,
-                  uint32_t systemIndex, std::shared_ptr<Guitar> guitar, bool isMuted, VelocityType velocity);
+                  uint32_t systemIndex, std::shared_ptr<const Guitar> guitar, bool isMuted, VelocityType velocity);
 
     void performEvent(RtMidiWrapper& sequencer) const;
 
 protected:
     uint8_t pitch;
-    std::shared_ptr<Guitar> guitar;
+    std::shared_ptr<const Guitar> guitar;
     bool isMuted;
     VelocityType velocity;
 };

@@ -85,12 +85,12 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 {
     double endTime = systemStartTime;
 
-    shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
+    shared_ptr<const System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
     for (quint32 i = 0; i < system->GetStaffCount(); i++)
     {
-        Staff* staff = system->GetStaff(i);
-        shared_ptr<Guitar> guitar = caret->getCurrentScore()->GetGuitar(i);
+        const Staff* staff = system->GetStaff(i);
+        shared_ptr<const Guitar> guitar = caret->getCurrentScore()->GetGuitar(i);
 
         for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
         {
@@ -144,7 +144,7 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                         duration -= ARPEGGIO_OFFSET;
                     }
 
-                    Note* note = position->GetNote(k);
+                    const Note* note = position->GetNote(k);
 
                     // find the pitch of the note
                     const quint32 openStringPitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
@@ -192,7 +192,7 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     bool tiedToNextNote = false;
                     // check if this note is tied to the next note
                     {
-                        Note* nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note, voice);
+                        const Note* nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note, voice);
                         if (nextNote && nextNote->IsTied())
                         {
                             tiedToNextNote = true;
@@ -345,14 +345,15 @@ double MidiPlayer::getCurrentTempo(const quint32 positionIndex) const
     return (60.0 / bpm * 1000.0 * (TempoMarker::quarter / beatType));
 }
 
-double MidiPlayer::calculateNoteDuration(Position* currentPosition) const
+double MidiPlayer::calculateNoteDuration(const Position* currentPosition) const
 {
     const double tempo = getCurrentTempo(currentPosition->GetPosition());
 
     return currentPosition->GetDuration() * tempo;
 }
 
-double MidiPlayer::getWholeRestDuration(shared_ptr<System> system, Staff* staff, Position* position, double originalDuration) const
+double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, const Staff* staff, 
+                                        const Position* position, double originalDuration) const
 {
     Barline* prevBarline = system->GetPrecedingBarline(position->GetPosition());
 
@@ -397,13 +398,13 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
 {
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
-    std::vector<Barline*> barlines;
+    std::vector<const Barline*> barlines;
     system->GetBarlines(barlines);
     barlines.pop_back(); // don't need the end barline
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
-        Barline* barline = barlines.at(i);
+        const Barline* barline = barlines.at(i);
         const TimeSignature& timeSig = barline->GetTimeSignatureConstRef();
 
         const quint8 numPulses = timeSig.GetPulses();

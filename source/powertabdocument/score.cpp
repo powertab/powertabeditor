@@ -303,13 +303,13 @@ void Score::UpdateToVer2Structure()
             {
                 Staff* newStaff = new Staff;
 
-                std::vector<Barline*> barlines;
+                std::vector<const Barline*> barlines;
                 currentSystem->GetBarlines(barlines);
 
                 // just insert a whole rest after each barline, except for the last one
                 for (size_t n = 0; n < barlines.size() - 1; n++)
                 {
-                    Barline* barline = barlines.at(n);
+                    const Barline* barline = barlines.at(n);
                     Position* newPosition = new Position(barline->GetPosition() + 1, 1, 0);
                     newPosition->SetRest(true);
                     newStaff->positionArrays[0].push_back(newPosition);

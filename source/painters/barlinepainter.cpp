@@ -9,10 +9,10 @@
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
-BarlinePainter::BarlinePainter(StaffData staffInformation, Barline* barLinePtr)
+BarlinePainter::BarlinePainter(StaffData staffInfo, const Barline* barLinePtr) :
+    staffInfo(staffInfo),
+    barLine(barLinePtr)
 {
-    staffInfo = staffInformation;
-    barLine = barLinePtr;
 }
 
 void BarlinePainter::init()

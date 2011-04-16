@@ -11,7 +11,7 @@ class BarlinePainter : public QObject, public PainterBase
     Q_OBJECT
 
 public:
-    BarlinePainter(StaffData staffInformation, Barline* barLinePtr);
+    BarlinePainter(StaffData staffInfo, const Barline* barLinePtr);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -27,7 +27,7 @@ protected:
     void drawVerticalLines(QPainter* painter, double x);
 
     StaffData staffInfo;
-    Barline* barLine;
+    const Barline* barLine;
     double x;
     double width;
 

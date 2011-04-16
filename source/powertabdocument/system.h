@@ -258,7 +258,7 @@ public:
     Barline* GetBarlineAtPosition(uint32_t position) const;
     Barline* GetPrecedingBarline(uint32_t position) const;
     Barline* GetNextBarline(uint32_t position) const;
-    void GetBarlines(std::vector<Barline*>& barlineArray);
+    void GetBarlines(std::vector<const Barline*>& barlineArray) const;
 
     bool InsertBarline(Barline* barline);
     bool RemoveBarline(uint32_t position);

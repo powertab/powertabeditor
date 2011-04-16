@@ -57,10 +57,10 @@ void RehearsalSignDialog::populateLetterChoices()
     {
         std::shared_ptr<System> system = score->GetSystem(i);
 
-        std::vector<Barline*> barlines;
+        std::vector<const Barline*> barlines;
         system->GetBarlines(barlines);
 
-        foreach(Barline* barline, barlines)
+        foreach(const Barline* barline, barlines)
         {
             const RehearsalSign& currentSign = barline->GetRehearsalSignConstRef();
             if (currentSign.IsSet())

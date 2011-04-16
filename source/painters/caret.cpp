@@ -355,11 +355,11 @@ void Caret::moveCaretToPrevBar()
             return;
         }
     
-        std::vector<Barline*> sysBars;
+        std::vector<const Barline*> sysBars;
         currentSystem->GetBarlines(sysBars);
         
         // we want the position of the bar line before this one
-        std::vector<Barline*>::iterator barlinesIt =
+        std::vector<const Barline*>::iterator barlinesIt =
                 std::find(sysBars.begin(), sysBars.end(), prevBarline);
         barlinesIt--;
         

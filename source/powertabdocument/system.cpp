@@ -412,7 +412,7 @@ Barline* System::GetNextBarline(uint32_t position) const
 
 /// Gets a list of barlines in the system
 /// @param barlineArray Holds the barline return values
-void System::GetBarlines(std::vector<Barline*>& barlineArray)
+void System::GetBarlines(std::vector<const Barline*>& barlineArray) const
 {
     //------Last Checked------//
     // - Apr 25, 2006
@@ -713,7 +713,7 @@ bool System::HasRehearsalSign() const
 /// Recalculates the note beaming for each staff in the system
 void System::CalculateBeamingForStaves()
 {
-    std::vector<Barline*> barlines;
+    std::vector<const Barline*> barlines;
     GetBarlines(barlines);
 
     // the end bar doesn't keep track of its position normally, so add it in for these calculations
