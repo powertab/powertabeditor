@@ -31,7 +31,7 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, const Positio
 
 void StdNotationPainter::init()
 {
-    quint8 pitch = note->GetPitch(tuning);
+    const quint8 pitch = note->GetPitch(tuning);
 
     const bool usesSharps = keySignature->UsesSharps() || keySignature->HasNoKeyAccidentals();
     const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps, keySignature->NumberOfAccidentals()));

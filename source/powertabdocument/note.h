@@ -341,8 +341,10 @@ public:
     /// @return True if the note is a ghost note, false if not
     bool IsGhostNote() const
         {return (IsSimpleFlagSet(ghostNote));}
-
-// 8va Octave Functions
+    
+    int GetOctaveOffset() const;
+    
+    // 8va Octave Functions
     /// Sets or clears an 8va octave marker
     /// @param set True to set the 8va octave marker, false to clear it
     /// @return True if the 8va octave marker was set or cleared, false if not

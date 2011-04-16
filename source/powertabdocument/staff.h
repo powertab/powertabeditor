@@ -22,6 +22,8 @@
 class Position;
 class System;
 class Barline;
+class KeySignature;
+class Tuning;
 
 /// Stores and renders a staff
 class Staff : public PowerTabObject
@@ -161,6 +163,9 @@ public:
 
     void UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber);
     void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote);
+    
+    int GetNoteLocation(const Note* note, const KeySignature* activeKeySig, 
+                        const Tuning* tuning) const;
 
     typedef bool (Position::*PositionProperty)() const;
 

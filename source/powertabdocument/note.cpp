@@ -1048,3 +1048,26 @@ uint8_t Note::GetPitch(const Tuning* tuning) const
 {
     return tuning->GetNote(GetString()) + GetFretNumber();
 }
+
+/// Returns the number of octaves (from -2 to +2) that the note is shifted by
+int Note::GetOctaveOffset() const
+{
+    if (IsOctave8va())
+    {
+        return 1;
+    }
+    if (IsOctave15ma())
+    {
+        return 2;
+    }
+    if (IsOctave8vb())
+    {
+        return -1;
+    }
+    if (IsOctave15mb())
+    {
+        return -2;
+    }
+    
+    return 0;    
+}

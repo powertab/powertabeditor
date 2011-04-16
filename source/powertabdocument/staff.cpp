@@ -15,13 +15,17 @@
 #include "system.h"
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "tuning.h"                         // Needed for IsValidStringCount
+#include "keysignature.h"
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
+#include "generalmidi.h"
 
 #include <numeric> // partial_sum
 #include <stdexcept>
 #include <functional>
 #include <algorithm>
+#include <map>
+#include <cmath>
 
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);
@@ -872,4 +876,36 @@ bool Staff::RemovePosition(uint32_t voice, uint32_t index)
     delete pos;
     positionArray.erase(location);
     return true;
+}
+
+/// Finds the location of the note, relative to the top line of the staff
+/// e.g. for a treble clef, F4 -> 0, E4 -> 1, G4 -> - 1
+int Staff::GetNoteLocation(const Note* note, const KeySignature* activeKeySig, 
+                           const Tuning* tuning) const
+{
+    const uint8_t pitch = note->GetPitch(tuning);
+    
+    const std::string noteText = midi::GetMidiNoteText(pitch, 
+                                                       activeKeySig->UsesSharps() || activeKeySig->HasNoKeyAccidentals());
+    
+    // maps notes to their position on the staff (relative to the top line)
+    // this is for treble clef - we will adjust for bass clef as necessary later on
+    std::map<char, int8_t> notePositions = {
+        {'F', 0}, {'E', 1}, {'D', 2}, {'C', 3}, {'B', -3}, {'A', -2}, {'G', -1}
+    };
+    
+    // find the position of the note, ignoring accidentals (i.e. C# -> C)
+    int y = notePositions.find(noteText.at(0))->second;
+    
+    if (GetClef() == BASS_CLEF) // adjust for bass clef, where A is the note at the top line
+    {
+        y += 2;
+    }
+    
+    const uint8_t TOP_NOTE = (GetClef() == TREBLE_CLEF) ? midi::MIDI_NOTE_F4 : midi::MIDI_NOTE_A2;
+    
+    // add octave shifts
+    y += 7 * (midi::GetMidiNoteOctave(TOP_NOTE) - midi::GetMidiNoteOctave(pitch)) + 7 * note->GetOctaveOffset();
+    
+    return y;
 }
