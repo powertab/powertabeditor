@@ -9,11 +9,12 @@ class Tuning;
 class QPainter;
 class Note;
 class KeySignature;
+class Staff;
 
 class StdNotationPainter : public PainterBase
 {
 public:
-    StdNotationPainter(const StaffData& staffInfo, const Position* position, const Note* note,
+    StdNotationPainter(const StaffData& staffInfo, const Staff* staff, const Position* position, const Note* note,
                        const Tuning* tuning, const KeySignature* keySignature);
 
     QRectF boundingRect() const;
@@ -37,15 +38,14 @@ public:
     int accidental;
 
 protected:
-    int getDisplayPosition(const QString& noteName);
     void drawRest(QPainter* painter);
-    int getOctaveDiff(const Note* currentNote, const int pitch) const;
     void init();
     int findAccidentalType(const QString& noteText) const;
     QString getAccidentalText() const;
     void addDots(QPainter* painter, double x, double y) const;
 
     StaffData staffInfo;
+    const Staff* staff;
     const Position* position;
     const Note* note;
     const Tuning* tuning;

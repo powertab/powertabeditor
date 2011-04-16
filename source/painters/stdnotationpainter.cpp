@@ -1,26 +1,26 @@
 #include "stdnotationpainter.h"
 
 #include <QPainter>
-#include <cmath>
 
 #include <powertabdocument/position.h>
-#include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
 #include <powertabdocument/keysignature.h>
 #include <powertabdocument/note.h>
+#include <powertabdocument/staff.h>
 
 #include <musicfont.h>
-#include "staffdata.h"
 
 QFont StdNotationPainter::musicFont = MusicFont().getFont();
 
-StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, const Position* position, const Note* note,
+StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, const Staff* staff, 
+                                       const Position* position, const Note* note,
                                        const Tuning* tuning, const KeySignature* keySignature):
-        staffInfo(staffInfo),
-        position(position),
-        note(note),
-        tuning(tuning),
-        keySignature(keySignature)
+    staffInfo(staffInfo),
+    staff(staff),
+    position(position),
+    note(note),
+    tuning(tuning),
+    keySignature(keySignature)
 {
     if (!position->IsRest())
     {
@@ -31,21 +31,13 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, const Positio
 
 void StdNotationPainter::init()
 {
+    yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * staffInfo.stdNotationLineSpacing + 1;
+    
     const quint8 pitch = note->GetPitch(tuning);
-
     const bool usesSharps = keySignature->UsesSharps() || keySignature->HasNoKeyAccidentals();
-    const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps, keySignature->NumberOfAccidentals()));
-
-    const int octaveDiff = getOctaveDiff(note, pitch);
-    const double octaveShift = octaveDiff * staffInfo.stdNotationLineSpacing * 3.5;
-    int displayOffset = getDisplayPosition(noteText);
-
-    if (midi::GetMidiNotePitch(pitch) == 5)
-    {
-        displayOffset = 0; // special case, so that F# and Fb are not treated the same as F natural
-    }
-
-    yLocation = displayOffset * 0.5 * staffInfo.stdNotationLineSpacing + 1 + octaveShift;
+    
+    const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps, 
+                                                                          keySignature->NumberOfAccidentals()));
     accidental = findAccidentalType(noteText);
 }
 
@@ -96,7 +88,7 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
         xPos += 1;
     }
 
-    QString displayText = getAccidentalText() + noteHead;
+    const QString displayText = getAccidentalText() + noteHead;
     width = QFontMetricsF(musicFont).width(displayText);
 
     painter->drawText(xPos - width, yLocation, displayText);
@@ -106,32 +98,6 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
 double StdNotationPainter::getNoteHeadWidth()
 {
     return QFontMetricsF(musicFont).width(QChar(MusicFont::QuarterNoteOrLess));
-}
-
-int StdNotationPainter::getOctaveDiff(const Note* currentNote, const int pitch) const
-{
-    // get octave difference
-    int octaveDiff = floor((midi::MIDI_NOTE_F4 - pitch) / 12.0);
-
-    // apply any octave-related notation instructions, like 8va or 8vb
-    if (currentNote->IsOctave8va())
-    {
-        octaveDiff += 1;
-    }
-    if (currentNote->IsOctave15ma())
-    {
-        octaveDiff += 2;
-    }
-    if (currentNote->IsOctave8vb())
-    {
-        octaveDiff -= 1;
-    }
-    if (currentNote->IsOctave15mb())
-    {
-        octaveDiff -= 2;
-    }
-
-    return octaveDiff;
 }
 
 void StdNotationPainter::drawRest(QPainter *painter)
@@ -173,24 +139,6 @@ void StdNotationPainter::drawRest(QPainter *painter)
     addDots(painter, QFontMetricsF(musicFont).width(textToDraw) + 2, 1.6 * staffInfo.stdNotationLineSpacing);
 
     return;
-}
-
-int StdNotationPainter::getDisplayPosition(const QString& noteName)
-{
-    char note = noteName.at(0).toAscii();
-
-    switch(note)
-    {
-    case 'E': return 1;
-    case 'F': return 7;
-    case 'G': return 6;
-    case 'A': return 5;
-    case 'B': return 4;
-    case 'C': return 3;
-    case 'D': return 2;
-    default:
-        return 0;
-    }
 }
 
 int StdNotationPainter::findAccidentalType(const QString& noteText) const

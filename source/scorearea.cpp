@@ -636,7 +636,8 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
             // just draw rests right away, since we don't have to worry about beaming or accidentals
             if (currentPosition->IsRest())
             {
-                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition, NULL, currentGuitar->GetTuningPtr(), currentKeySig);
+                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition, 
+                                                                            NULL, currentGuitar->GetTuningPtr(), currentKeySig);
                 centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
                            currentStaffInfo.getTopStdNotationLine());
                 stdNotePainter->setParentItem(activeStaff);
@@ -647,7 +648,7 @@ void ScoreArea::drawStdNotation(shared_ptr<System> system, Staff* staff, const S
             {
                 const Note* note = currentPosition->GetNote(j);
 
-                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, currentPosition,
+                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition,
                                                                             note, currentGuitar->GetTuningPtr(), currentKeySig);
                 notePainters << stdNotePainter;
 
