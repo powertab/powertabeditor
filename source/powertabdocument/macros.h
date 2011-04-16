@@ -2,9 +2,8 @@
 #define __MACROS_H__
 
 #include <cassert>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
-#include <iostream>
 
 // Little-endian based LONG/WORD/BYTE macros
 #ifndef MAKEWORD
@@ -31,13 +30,15 @@
 #define HIBYTE(w)           ((uint8_t)((uint32_t)(w) >> 8))
 #endif
 
+void logToDebug(const std::string& msg, const std::string& file, int line);
+
 #ifndef CHECK_THAT
 #define CHECK_THAT(cond, rc) 	\
     if ( cond ) {}			\
     else {					\
-        std::cerr << "Error at: " << std::endl << __FILE__ << std::endl << "Line: " <<  __LINE__ << std::endl; \
+        logToDebug("Error at: ", __FILE__, __LINE__); \
         assert(cond); \
-        return rc;							\
+        return rc;	\
     }
 
 #endif
@@ -46,6 +47,6 @@
 #define UNUSED(x) (void)x;
 
 
-extern std::string ArabicToRoman(uint32_t number, bool upperCase);
+std::string ArabicToRoman(uint32_t number, bool upperCase);
 
 #endif

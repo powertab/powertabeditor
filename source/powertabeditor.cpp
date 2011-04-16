@@ -182,7 +182,7 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             }
             else
             {
-                std::cout << "Insert tab number not yet implemented!" << std::endl;
+                qDebug() << "Insert tab number not yet implemented!";
             }
         }
     }

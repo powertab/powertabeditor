@@ -1,5 +1,11 @@
 #include "macros.h"
 #include <algorithm> // std::transform
+#include <iostream>
+
+void logToDebug(const std::string& msg, const std::string& file, int line)
+{
+    std::cerr << msg << std::endl << file << std::endl << "Line: " <<  line << std::endl;
+}
 
 std::string ArabicToRoman(uint32_t number, bool upperCase)
 {
