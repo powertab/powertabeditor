@@ -13,6 +13,7 @@
 #include <sstream>
 #include "note.h"
 
+#include "chordname.h"
 #include "tuning.h"
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "powertabinputstream.h"
@@ -303,6 +304,15 @@ uint8_t Note::GetFretNumber() const
 }
 
 // Simple Flag Functions
+/// Determines if a simple flag is valid
+/// @param flag Flag to validate
+/// @return True if the flag is valid, false if not
+bool Note::IsValidSimpleFlag(uint16_t flag)
+{
+    return (((flag & simpleFlagsMask) != 0) &&
+            ((flag & ~simpleFlagsMask) == 0));
+}
+
 /// Sets a simple flag
 /// @param flag Flag to set
 /// @return True if the flag was set, false if not
@@ -321,6 +331,25 @@ bool Note::SetSimpleFlag(uint16_t flag)
 
     m_simpleData |= flag;
     return (true);
+}
+
+/// Clears a simple flag
+/// @param flag Flag to clear
+/// @return True if the flag was cleared, false if not
+bool Note::ClearSimpleFlag(uint16_t flag)
+{
+    CHECK_THAT(IsValidSimpleFlag(flag), false);
+    m_simpleData &= ~flag;
+    return true;
+}
+
+/// Determines if a simple flag is set
+/// @param flag Flag to test
+/// @return True if the flag is set, false if not
+bool Note::IsSimpleFlagSet(uint16_t flag) const
+{
+    CHECK_THAT(IsValidSimpleFlag(flag), false);
+    return (m_simpleData & flag) == flag;
 }
 
 // Slide Into Functions
@@ -692,6 +721,22 @@ bool Note::ClearBend()
 }
 
 // Tapped Harmonic Functions
+/// Determines if a tapped fret number is valid
+/// @param tappedFretNumber Tapped fret number to validate
+/// @return True if the tapped fret number is valid, false if not
+bool Note::IsValidTappedFretNumber(uint8_t tappedFretNumber)
+{
+    return tappedFretNumber <= MAX_FRET_NUMBER;
+}
+
+/// Determines if tapped harmonic data is valid
+/// @param tappedFretNumber Tapped fret number to validate
+/// @return True if the tapped harmonic data is valid, false if not
+bool Note::IsValidTappedHarmonic(uint8_t tappedFretNumber)
+{
+    return IsValidTappedFretNumber(tappedFretNumber);
+}
+
 /// Sets (adds or updates) a tapped harmonic
 /// @param tappedFretNumber Tapped fret number
 /// @return True if the tapped harmonic was added or updated
@@ -748,6 +793,22 @@ bool Note::ClearTappedHarmonic()
 }
 
 // Trill Functions
+/// Determines if a trilled fret number is valid
+/// @param trilledFretNumber Trilled fret number to validate
+/// @return True if the trilled fret number is valid, false if not
+bool Note::IsValidTrilledFretNumber(uint8_t trilledFretNumber)
+{
+    return trilledFretNumber <= MAX_FRET_NUMBER;
+}
+
+/// Determines if trill data is valid
+/// @param trilledFretNumber Trilled fret number to validate
+/// @return True if the trill data is valid, false if not
+bool Note::IsValidTrill(uint8_t trilledFretNumber) const
+{
+    return IsValidTrilledFretNumber(trilledFretNumber) && trilledFretNumber != GetFretNumber();
+}
+
 /// Sets (adds or updates) a trill
 /// @param trilledFretNumber Trilled fret number
 /// @return True if the trill was added or updated
@@ -803,6 +864,26 @@ bool Note::ClearTrill()
 }
 
 // Artificial Harmonic Functions
+/// Determines if a artificial octave is valid
+/// @param octave Octave to validate
+/// @return True if the artificial harmonic octave is valid, false if not
+bool Note::IsValidArtificialHarmonicOctave(uint8_t octave)
+{
+    return octave <= artificialHarmonicOctave15ma;
+}
+
+/// Determines if artificial harmonic data is valid
+/// @param key Key to validate
+/// @param keyVariation Key variation to validate
+/// @param octave Octave to validate
+/// @return True if the artificial harmonic data is valid, false if not
+bool Note::IsValidArtificialHarmonic(uint8_t key, uint8_t keyVariation,
+                                     uint8_t octave)
+{
+    return (ChordName::IsValidKeyAndVariation(key, keyVariation) &&
+        IsValidArtificialHarmonicOctave(octave));
+}
+
 /// Sets (adds or updates) a artificial harmonic
 /// @param key Key to set (see ChordName::keys enum for values)
 /// @param keyVariation Key variation to set (see ChordName::keyVariation enum
@@ -869,6 +950,16 @@ bool Note::ClearArtificialHarmonic()
 }
 
 // Complex Symbol Array Functions
+/// Determines if a complex symbol type is valid
+/// @param type Symbol type to validate
+/// @return True if the symbol type is valid, false if not
+bool Note::IsValidComplexSymbolType(uint8_t type)
+{
+    return ((type == slide) || (type == bend) || (type == tappedHarmonic) ||
+            (type == tappedHarmonic) || (type == trill) ||
+            (type == artificialHarmonic));
+}
+
 /// Adds a complex symbol to the complex symbol array
 /// @param symbolData Data that makes up the symbol
 /// @return True if the symbol was added or updated, false if not

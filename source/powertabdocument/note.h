@@ -15,7 +15,7 @@
 #define MAX_NOTE_COMPLEX_SYMBOLS     3  ///< Maximum allowed number of complex symbols per note object
                                         // Note: needs to be #define so array works properly
 
-#include "chordname.h"      // Needed for IsValidKeyAndVariation (Artificial Harmonics)
+#include "powertabobject.h"
 
 class Tuning;
 
@@ -406,32 +406,10 @@ public:
 
 // Simple Flag Functions
 protected:
-    // Determines if a simple flag is valid
-    /// @param flag Flag to validate
-    /// @return True if the flag is valid, false if not
-    static bool IsValidSimpleFlag(uint16_t flag)
-    {
-        return (((flag & simpleFlagsMask) != 0) &&
-            ((flag & ~simpleFlagsMask) == 0));
-    }
+    static bool IsValidSimpleFlag(uint16_t flag);
     bool SetSimpleFlag(uint16_t flag);
-    /// Clears a simple flag
-    /// @param flag Flag to clear
-    /// @return True if the flag was cleared, false if not
-    bool ClearSimpleFlag(uint16_t flag)
-    {
-        CHECK_THAT(IsValidSimpleFlag(flag), false);
-        m_simpleData &= ~flag;
-        return (true);
-    }
-    /// Determines if a simple flag is set
-    /// @param flag Flag to test
-    /// @return True if the flag is set, false if not
-    bool IsSimpleFlagSet(uint16_t flag) const
-    {
-        CHECK_THAT(IsValidSimpleFlag(flag), false);
-        return ((m_simpleData & flag) == flag);
-    }
+    bool ClearSimpleFlag(uint16_t flag);
+    bool IsSimpleFlagSet(uint16_t flag) const;
 
 // Slide Functions
 public:
@@ -535,62 +513,28 @@ public:
     bool ClearBend();
 
 // Tapped Harmonic Functions
-    /// Determines if a tapped fret number is valid
-    /// @param tappedFretNumber Tapped fret number to validate
-    /// @return True if the tapped fret number is valid, false if not
-    static bool IsValidTappedFretNumber(uint8_t tappedFretNumber)
-    {
-        return ((tappedFretNumber >= MIN_FRET_NUMBER) &&
-            (tappedFretNumber <= MAX_FRET_NUMBER));
-    }
-    /// Determines if tapped harmonic data is valid
-    /// @param tappedFretNumber Tapped fret number to validate
-    /// @return True if the tapped harmonic data is valid, false if not
-    static bool IsValidTappedHarmonic(uint8_t tappedFretNumber)
-        {return (IsValidTappedFretNumber(tappedFretNumber));}
+    static bool IsValidTappedFretNumber(uint8_t tappedFretNumber);
+    static bool IsValidTappedHarmonic(uint8_t tappedFretNumber);
+    
     bool SetTappedHarmonic(uint8_t tappedFretNumber);
     bool GetTappedHarmonic(uint8_t& tappedFretNumber) const;
     bool HasTappedHarmonic() const;
     bool ClearTappedHarmonic();
 
 // Trill Functions
-    /// Determines if a trilled fret number is valid
-    /// @param trilledFretNumber Trilled fret number to validate
-    /// @return True if the trilled fret number is valid, false if not
-    static bool IsValidTrilledFretNumber(uint8_t trilledFretNumber)
-    {
-        return ((trilledFretNumber >= MIN_FRET_NUMBER) &&
-            (trilledFretNumber <= MAX_FRET_NUMBER));
-    }
-    /// Determines if trill data is valid
-    /// @param trilledFretNumber Trilled fret number to validate
-    /// @return True if the trill data is valid, false if not
-    bool IsValidTrill(uint8_t trilledFretNumber)
-    {
-        return IsValidTrilledFretNumber(trilledFretNumber) && trilledFretNumber != GetFretNumber();
-    }
+    static bool IsValidTrilledFretNumber(uint8_t trilledFretNumber);
+    bool IsValidTrill(uint8_t trilledFretNumber) const;
+    
     bool SetTrill(uint8_t trilledFretNumber);
     bool GetTrill(uint8_t& trilledFretNumber) const;
     bool HasTrill() const;
     bool ClearTrill();
 
 // Artificial Harmonic Functions
-    /// Determines if a artificial octave is valid
-    /// @param octave Octave to validate
-    /// @return True if the artificial harmonic octave is valid, false if not
-    static bool IsValidArtificialHarmonicOctave(uint8_t octave)
-        {return (octave <= artificialHarmonicOctave15ma);}
-    /// Determines if artificial harmonic data is valid
-    /// @param key Key to validate
-    /// @param keyVariation Key variation to validate
-    /// @param octave Octave to validate
-    /// @return True if the artificial harmonic data is valid, false if not
+    static bool IsValidArtificialHarmonicOctave(uint8_t octave);
     static bool IsValidArtificialHarmonic(uint8_t key, uint8_t keyVariation,
-        uint8_t octave)
-    {
-        return (ChordName::IsValidKeyAndVariation(key, keyVariation) &&
-            IsValidArtificialHarmonicOctave(octave));
-    }
+                                          uint8_t octave);
+    
     bool SetArtificialHarmonic(uint8_t key, uint8_t keyVariation, uint8_t octave);
     bool GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
         uint8_t& octave) const;
@@ -603,15 +547,7 @@ public:
 
 // Complex Symbol Array Functions
 protected:
-    /// Determines if a complex symbol type is valid
-    /// @param type Symbol type to validate
-    /// @return True if the symbol type is valid, false if not
-    static bool IsValidComplexSymbolType(uint8_t type)
-    {
-        return ((type == slide) || (type == bend) || (type == tappedHarmonic) ||
-            (type == tappedHarmonic) || (type == trill) ||
-            (type == artificialHarmonic));
-    }
+    static bool IsValidComplexSymbolType(uint8_t type);
     bool AddComplexSymbol(uint32_t symbolData);
     size_t GetComplexSymbolCount() const;
     uint32_t FindComplexSymbol(uint8_t type) const;
