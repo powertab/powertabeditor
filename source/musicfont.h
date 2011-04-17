@@ -56,7 +56,9 @@ public:
         FlagDown3 = 0xe1a2,
         FlagDown4 = 0xe1a3,
         NaturalHarmonicNoteHead = 0xe1d4,
-        ArtificialHarmonicNoteHead = 0xe1d5
+        ArtificialHarmonicNoteHead = 0xe1d5,
+        Coda = 0xe181,
+        Segno = 0xe180
     };
 
     // Returns the symbol corresponding to the specified MusicSymbol

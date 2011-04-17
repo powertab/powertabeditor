@@ -17,11 +17,12 @@ public:
 private:
     void init();
 
-    static QFont displayFont;
+    QFont displayFont;
     QStaticText displayText;
 
     const Direction* direction;
     const size_t symbolIndex;
+    bool usingMusicFont;
 };
 
 #endif // DIRECTIONPAINTER_H
