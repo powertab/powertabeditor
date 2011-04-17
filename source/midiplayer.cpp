@@ -160,6 +160,14 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                         note->GetTappedHarmonic(tappedFret);
                         pitch = getHarmonicPitch(pitch, tappedFret - note->GetFretNumber());
                     }
+                    
+                    if (note->HasArtificialHarmonic())
+                    {
+                        uint8_t key = 0, keyVariation = 0, octaveDiff = 0;
+                        note->GetArtificialHarmonic(key, keyVariation, octaveDiff);
+                        
+                        pitch = (midi::GetMidiNoteOctave(pitch) + octaveDiff + 2) * 12 + key;
+                    }
 
                     // figure out the velocity
                     PlayNoteEvent::VelocityType velocity = PlayNoteEvent::DEFAULT_VELOCITY;

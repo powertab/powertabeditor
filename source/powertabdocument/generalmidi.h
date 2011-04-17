@@ -12,7 +12,7 @@
 #ifndef __GENERALMIDI_H__
 #define __GENERALMIDI_H__
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 namespace midi
