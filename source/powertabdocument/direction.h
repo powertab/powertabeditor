@@ -76,9 +76,9 @@ public:
     };
     
 // Member Variables
-protected:
-    uint8_t          m_position;         ///< Zero-based index of the position within the system where the direction is anchored
-    std::vector<uint16_t>     m_symbolArray;      ///< Array of direction symbols (symbol: top byte = symbol type, next 2 bits = active symbol, next 6 bits = repeat number)
+private:
+    uint8_t                 m_position;         ///< Zero-based index of the position within the system where the direction is anchored
+    std::vector<uint16_t>   m_symbolArray;      ///< Array of direction symbols (symbol: top byte = symbol type, next 2 bits = active symbol, next 6 bits = repeat number)
 
 // Constructor/Destructor
 public:
@@ -86,7 +86,6 @@ public:
     Direction(uint32_t position, uint8_t symbolType, uint8_t activeSymbol,
         uint8_t repeatNumber);
     Direction(const Direction& direction);
-    ~Direction();
     
 // Operators
     const Direction& operator=(const Direction& direction);
@@ -102,75 +101,44 @@ public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
-        {return "CDirection";}
+    {
+        return "CDirection";
+    }
+    
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
     uint16_t GetMFCClassSchema() const                        
-        {return ((uint16_t)1);}
+    {
+        return 1;
+    }
     
 // Position Functions
-    /// Determines whether a position is valid
-    /// @param position Position to validate
-    /// @return True if the position is valid, false if not
-    static bool IsValidPosition(uint32_t position)
-        {return ((position >= MIN_POSITION) && (position <= MAX_POSITION));}
-    /// Sets the position within the system where the direction is anchored
-    /// @param position Zero-based index within the system where the direction
-    /// is anchored
-    /// @return True if the position was set, false if not
-    bool SetPosition(uint32_t position)
-    {
-        CHECK_THAT(IsValidPosition(position), false);
-        m_position = (uint8_t)position;
-        return (true);
-    }
-    /// Gets the position within the system where the direction is anchored
-    /// @return The position within the system where the direction is anchored
-    uint32_t GetPosition() const                           
-        {return (m_position);}
+    static bool IsValidPosition(uint32_t position);
+    bool SetPosition(uint32_t position);
+    uint32_t GetPosition() const;
     
-    /// Determines if a symbol type is valid
-    /// @param symbolType Symbol type to validate
-    /// @return True if the symbol is valid, false if not
-    static bool IsValidSymbolType(uint8_t symbolType)            
-        {return (symbolType <= dalSegnoSegnoAlFine);}
-    /// Determines if an active symbol is valid
-    /// @param activeSymbol Active symbol to validate
-    /// @return True if the active symbol is valid, false if not
-    static bool IsValidActiveSymbol(uint8_t activeSymbol)
-        {return (activeSymbol <= activeDalSegnoSegno);}
-    /// Determines if an repeat number is valid
-    /// @param repeatNumber Repeat number to validate
-    /// @return True if the repeat number is valid, false if not
-    static bool IsValidRepeatNumber(uint8_t repeatNumber)
-    {
-        return ((repeatNumber >= MIN_REPEAT_NUMBER) &&
-            (repeatNumber <= MAX_REPEAT_NUMBER));
-    }
+    static bool IsValidSymbolType(uint8_t symbolType);
+    static bool IsValidActiveSymbol(uint8_t activeSymbol);
+    static bool IsValidRepeatNumber(uint8_t repeatNumber);
         
 // Symbol Array Functions
-    /// Determines if a symbol index is valid
-    /// @param index Index to validate
-    /// @return True if the symbol index is valid, false if not
-    bool IsValidSymbolIndex(uint32_t index) const         
-        {return (index < GetSymbolCount());}
+    bool IsValidSymbolIndex(uint32_t index) const;
+    
     bool AddSymbol(uint8_t symbolType, uint8_t activeSymbol = activeNone,
         uint8_t repeatNumber = 0);
-    /// Gets the number of symbols in the symbol array
-    /// @return The number of symbols in the symbol array
-    size_t GetSymbolCount() const
-        {return (m_symbolArray.size());}
+    
+    size_t GetSymbolCount() const;
+    
     bool SetSymbol(uint32_t index, uint8_t symbolType, uint8_t activeSymbol,
         uint8_t repeatNumber);
+    
     bool GetSymbol(uint32_t index, uint8_t& symbolType, uint8_t& activeSymbol,
         uint8_t& repeatNumber) const;
-    bool IsSymbolType(uint32_t index, uint8_t symbolType) const;
-    bool RemoveSymbolAtIndex(uint32_t index);
-protected:
-    void DeleteSymbolArrayContents();
     
-// Operations
-public:
+    bool IsSymbolType(uint32_t index, uint8_t symbolType) const;
+    
+    bool RemoveSymbolAtIndex(uint32_t index);
+    
     std::string GetText(uint32_t index) const;
 };
 

@@ -44,8 +44,6 @@ static std::string directionText[Direction::NUM_SYMBOL_TYPES] =
 Direction::Direction() : 
     m_position(DEFAULT_POSITION)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
 }
 
 /// Primary Constructor
@@ -57,82 +55,38 @@ Direction::Direction() :
 /// @param repeatNumber Repeat number that must be active for the symbol to be
 /// triggered (0 = none)
 Direction::Direction(uint32_t position, uint8_t symbolType, uint8_t activeSymbol,
-    uint8_t repeatNumber) : m_position(position)
+    uint8_t repeatNumber) : 
+    m_position(position)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     assert(IsValidPosition(position));
     AddSymbol(symbolType, activeSymbol, repeatNumber);   
 }
 
-/// Copy constructor
 Direction::Direction(const Direction& direction) :
     m_position(DEFAULT_POSITION)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     *this = direction;
 }
 
-/// Destructor
-Direction::~Direction()
-{
-    //------Last Checked------//
-    // - Jan 11, 2005
-    DeleteSymbolArrayContents();
-}
-
-/// Assignment Operator
 const Direction& Direction::operator=(const Direction& direction)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
-
-    // Check for assignment to self
     if (this != &direction)
     {
         m_position = direction.m_position;
-    
-        DeleteSymbolArrayContents();
-        
-        size_t i = 0;
-        size_t count = direction.m_symbolArray.size();
-        for (; i < count; i++)
-            m_symbolArray.push_back(direction.m_symbolArray[i]);
+        m_symbolArray = direction.m_symbolArray;
     }
-    return (*this);
+    return *this;
 }
 
-/// Equality Operator
 bool Direction::operator==(const Direction& direction) const
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
-    
-    size_t thisSymbolCount = GetSymbolCount();
-    size_t otherSymbolCount = direction.GetSymbolCount();
-    
-    // Directions have differing number of symbols
-    if (thisSymbolCount != otherSymbolCount)
-        return (false);
-
-    // All symbols must match
-    size_t i = 0;
-    for (; i < thisSymbolCount; i++)
-    {
-        if (m_symbolArray[i] != direction.m_symbolArray[i])
-            return (false);
-    }
-
-    return (m_position == direction.m_position);
+    return (m_position == direction.m_position &&
+            m_symbolArray == direction.m_symbolArray);
 }
 
-/// Inequality Operator
 bool Direction::operator!=(const Direction& direction) const
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
-    return (!operator==(direction));
+    return !operator==(direction);
 }
 
 // Serialize Functions
@@ -141,33 +95,28 @@ bool Direction::operator!=(const Direction& direction) const
 /// @return True if the object was serialized, false if not
 bool Direction::Serialize(PowerTabOutputStream& stream)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     stream << m_position;
     CHECK_THAT(stream.CheckState(), false);
            
-    size_t symbolCount = GetSymbolCount();
+    const size_t symbolCount = GetSymbolCount();
     stream << (uint8_t)symbolCount;
     CHECK_THAT(stream.CheckState(), false);
 
-    size_t i = 0;
-    for (; i < symbolCount; i++)
+    for (size_t i = 0; i < symbolCount; i++)
     {
         stream << m_symbolArray[i];
         CHECK_THAT(stream.CheckState(), false);
     }
 
-    return (stream.CheckState());
+    return stream.CheckState();
 }
 
 /// Performs deserialization for the class
 /// @param stream Power Tab input stream to load from
 /// @param version File version
 /// @return True if the object was deserialized, false if not
-bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t version)
+bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
-    UNUSED(version);
-
     stream >> m_position;
     CHECK_THAT(stream.CheckState(), false);
     
@@ -175,8 +124,7 @@ bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream >> symbolCount;
     CHECK_THAT(stream.CheckState(), false);
 
-    size_t i = 0;
-    for (i = 0; i < symbolCount; i++)
+    for (size_t i = 0; i < symbolCount; i++)
     {
         uint16_t symbol = 0;
         stream >> symbol;
@@ -185,7 +133,57 @@ bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t version)
         m_symbolArray.push_back(symbol);
     }
 
-    return (stream.CheckState());
+    return stream.CheckState();
+}
+
+/// Determines whether a position is valid
+/// @param position Position to validate
+/// @return True if the position is valid, false if not
+bool Direction::IsValidPosition(uint32_t position)
+{
+    return position <= MAX_POSITION;
+}
+
+/// Sets the position within the system where the direction is anchored
+/// @param position Zero-based index within the system where the direction
+/// is anchored
+/// @return True if the position was set, false if not
+bool Direction::SetPosition(uint32_t position)
+{
+    CHECK_THAT(IsValidPosition(position), false);
+    m_position = static_cast<uint8_t>(position);
+    return true;
+}
+
+/// Gets the position within the system where the direction is anchored
+/// @return The position within the system where the direction is anchored
+uint32_t Direction::GetPosition() const                           
+{
+    return m_position;
+}
+
+/// Determines if a symbol type is valid
+/// @param symbolType Symbol type to validate
+/// @return True if the symbol is valid, false if not
+bool Direction::IsValidSymbolType(uint8_t symbolType)            
+{
+    return symbolType <= dalSegnoSegnoAlFine;
+}
+
+/// Determines if an active symbol is valid
+/// @param activeSymbol Active symbol to validate
+/// @return True if the active symbol is valid, false if not
+bool Direction::IsValidActiveSymbol(uint8_t activeSymbol)
+{
+    return activeSymbol <= activeDalSegnoSegno;
+}
+
+/// Determines if an repeat number is valid
+/// @param repeatNumber Repeat number to validate
+/// @return True if the repeat number is valid, false if not
+bool Direction::IsValidRepeatNumber(uint8_t repeatNumber)
+{
+    return repeatNumber <= MAX_REPEAT_NUMBER;
 }
 
 // Symbol Functions
@@ -199,15 +197,13 @@ bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t version)
 bool Direction::AddSymbol(uint8_t symbolType, uint8_t activeSymbol,
     uint8_t repeatNumber)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     CHECK_THAT(IsValidSymbolType(symbolType), false);
     CHECK_THAT(IsValidActiveSymbol(activeSymbol), false);
     CHECK_THAT(IsValidRepeatNumber(repeatNumber), false);
     
     // Can't add anymore symbols
     if (GetSymbolCount() == MAX_SYMBOLS)
-        return (false);
+        return false;
 
     // Add a symbol to the end of the array, then set the data    
     m_symbolArray.push_back(0);
@@ -226,8 +222,6 @@ bool Direction::AddSymbol(uint8_t symbolType, uint8_t activeSymbol,
 bool Direction::SetSymbol(uint32_t index, uint8_t symbolType,
     uint8_t activeSymbol, uint8_t repeatNumber)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     CHECK_THAT(IsValidSymbolIndex(index), false);
     CHECK_THAT(IsValidSymbolType(symbolType), false);
     CHECK_THAT(IsValidActiveSymbol(activeSymbol), false);
@@ -239,7 +233,7 @@ bool Direction::SetSymbol(uint32_t index, uint8_t symbolType,
    
     m_symbolArray[index] = symbol;
     
-    return (true);
+    return true;
 }
 
 /// Gets the symbol stored in the nth index of the symbol array
@@ -251,8 +245,6 @@ bool Direction::SetSymbol(uint32_t index, uint8_t symbolType,
 bool Direction::GetSymbol(uint32_t index, uint8_t& symbolType,
     uint8_t& activeSymbol, uint8_t& repeatNumber) const
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     CHECK_THAT(IsValidSymbolIndex(index), false);
    
     symbolType = activeSymbol = repeatNumber = 0;
@@ -261,7 +253,7 @@ bool Direction::GetSymbol(uint32_t index, uint8_t& symbolType,
     activeSymbol = (uint8_t)((m_symbolArray[index] & activeSymbolMask) >> 6);
     repeatNumber = (uint8_t)(m_symbolArray[index] & repeatNumberMask);
     
-    return (true);
+    return true;
 }
 
 /// Determines if a symbol in the symbol array is a given type
@@ -270,18 +262,19 @@ bool Direction::GetSymbol(uint32_t index, uint8_t& symbolType,
 /// @return True if the symbol is of the type, false if not
 bool Direction::IsSymbolType(uint32_t index, uint8_t symbolType) const
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     CHECK_THAT(IsValidSymbolIndex(index), false);
     CHECK_THAT(IsValidSymbolType(symbolType), false);
     
     uint8_t type = 0;
     uint8_t activeSymbol = 0;
     uint8_t repeatNumber = 0;
+    
     if (!GetSymbol(index, type, activeSymbol, repeatNumber))
-        return (false);
+    {
+        return false;
+    }
         
-    return (type == symbolType);
+    return type == symbolType;
 }
 
 /// Removes a symbol from the symbol array
@@ -289,21 +282,11 @@ bool Direction::IsSymbolType(uint32_t index, uint8_t symbolType) const
 /// @return True if the symbol was removed, false if not
 bool Direction::RemoveSymbolAtIndex(uint32_t index)
 {
-    //------Last Checked------//
-    // - Jan 11, 2005
     CHECK_THAT(IsValidSymbolIndex(index), false);
  
     m_symbolArray.erase(m_symbolArray.begin() + index);
     
-    return (true);
-}
-
-/// Deletes the contents (and frees the memory) of the symbol array
-void Direction::DeleteSymbolArrayContents()
-{
-    //------Last Checked------//
-    // - Jan 11, 2005
-    m_symbolArray.clear();
+    return true;
 }
 
 /// Gets a text representation of a symbol
@@ -314,10 +297,28 @@ std::string Direction::GetText(uint32_t index) const
     uint8_t symbolType = 0;
     uint8_t activeSymbol = 0;
     uint8_t repeatNumber = 0;
+    
     if (!GetSymbol(index, symbolType, activeSymbol, repeatNumber))
+    {
         return "";
-
+    }
+    
     CHECK_THAT(IsValidSymbolType(symbolType), "");
     
-    return (directionText[symbolType]);
+    return directionText[symbolType];
+}
+
+/// Determines if a symbol index is valid
+/// @param index Index to validate
+/// @return True if the symbol index is valid, false if not
+bool Direction::IsValidSymbolIndex(uint32_t index) const         
+{
+    return index < GetSymbolCount();
+}
+
+/// Gets the number of symbols in the symbol array
+/// @return The number of symbols in the symbol array
+size_t Direction::GetSymbolCount() const
+{
+    return m_symbolArray.size();
 }
