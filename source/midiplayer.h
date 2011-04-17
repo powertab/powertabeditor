@@ -4,7 +4,6 @@
 #include <rtmidiwrapper.h>
 
 #include <QThread>
-#include <QMutex>
 #include <QHash>
 #include <memory>
 
@@ -15,6 +14,7 @@ class Guitar;
 class System;
 class Staff;
 class MidiEvent;
+class Note;
 
 class MidiPlayer : public QThread
 {
@@ -51,6 +51,8 @@ protected:
     void playMidiEvents(std::list<std::unique_ptr<MidiEvent> >& eventList, uint32_t startSystem, uint32_t startPos);
     double getWholeRestDuration(std::shared_ptr<const System> system, const Staff* staff, 
                                 const Position* position, double originalDuration) const;
+    
+    uint32_t getActualNotePitch(const Note* note, std::shared_ptr<const Guitar> guitar) const;
 
     Caret* caret;
     RtMidiWrapper rtMidiWrapper;

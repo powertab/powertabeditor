@@ -4,7 +4,6 @@
 #include <QDebug>
 
 #include <list>
-#include <algorithm>
 #include <boost/next_prior.hpp>
 
 #include <painters/caret.h>
@@ -146,28 +145,7 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
                     const Note* note = position->GetNote(k);
 
-                    // find the pitch of the note
-                    const quint32 openStringPitch = guitar->GetTuning().GetNote(note->GetString()) + guitar->GetCapo();
-                    quint32 pitch = openStringPitch + note->GetFretNumber();
-
-                    if (note->IsNaturalHarmonic())
-                    {
-                        pitch = getHarmonicPitch(openStringPitch, note->GetFretNumber());
-                    }
-                    if (note->HasTappedHarmonic())
-                    {
-                        uint8_t tappedFret = 0;
-                        note->GetTappedHarmonic(tappedFret);
-                        pitch = getHarmonicPitch(pitch, tappedFret - note->GetFretNumber());
-                    }
-                    
-                    if (note->HasArtificialHarmonic())
-                    {
-                        uint8_t key = 0, keyVariation = 0, octaveDiff = 0;
-                        note->GetArtificialHarmonic(key, keyVariation, octaveDiff);
-                        
-                        pitch = (midi::GetMidiNoteOctave(pitch) + octaveDiff + 2) * 12 + key;
-                    }
+                    uint32_t pitch = getActualNotePitch(note, guitar);
 
                     // figure out the velocity
                     PlayNoteEvent::VelocityType velocity = PlayNoteEvent::DEFAULT_VELOCITY;
@@ -187,6 +165,18 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                                                                               positionIndex, systemIndex, guitar,
                                                                               note->IsMuted(), velocity));
                         eventList.push_back(std::move(noteEvent));
+                    }
+                    // if the note is tied, make sure that the pitch is the same as the previous note, 
+                    // so that the Stop Note event works correctly with harmonics
+                    else 
+                    {
+                        const Note* prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note, voice);
+                        
+                        // TODO - deal with ties that wrap across systems
+                        if (prevNote)
+                        {
+                            pitch = getActualNotePitch(prevNote, guitar);
+                        }
                     }
 
                     // vibrato events
@@ -450,4 +440,34 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
     eventList.push_back( unique_ptr<StopNoteEvent> ( new StopNoteEvent(METRONOME_CHANNEL, startTime,
                                                                        system->GetEndBarConstRef().GetPosition(),
                                                                        systemIndex, MetronomeEvent::METRONOME_PITCH)));
+}
+
+uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guitar> guitar) const
+{
+    const Tuning& tuning = guitar->GetTuningConstRef();
+    
+    const quint32 openStringPitch = tuning.GetNote(note->GetString()) + guitar->GetCapo();
+    quint32 pitch = openStringPitch + note->GetFretNumber();
+    
+    if (note->IsNaturalHarmonic())
+    {
+        pitch = getHarmonicPitch(openStringPitch, note->GetFretNumber());
+    }
+    
+    if (note->HasTappedHarmonic())
+    {
+        uint8_t tappedFret = 0;
+        note->GetTappedHarmonic(tappedFret);
+        pitch = getHarmonicPitch(pitch, tappedFret - note->GetFretNumber());
+    }
+    
+    if (note->HasArtificialHarmonic())
+    {
+        uint8_t key = 0, keyVariation = 0, octaveDiff = 0;
+        note->GetArtificialHarmonic(key, keyVariation, octaveDiff);
+        
+        pitch = (midi::GetMidiNoteOctave(pitch) + octaveDiff + 2) * 12 + key;
+    }
+    
+    return pitch;
 }
