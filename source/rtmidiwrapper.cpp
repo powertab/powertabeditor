@@ -173,3 +173,11 @@ bool RtMidiWrapper::setVibrato(uint8_t channel, uint8_t modulation)
 
     return sendMidiMessage(CONTROL_CHANGE + channel, MOD_WHEEL, modulation);
 }
+
+/// Turns sustain on or off for the specified channel
+bool RtMidiWrapper::setSustain(uint8_t channel, bool sustainOn)
+{
+    const uint8_t value = sustainOn ? 127 : 0;
+    
+    return sendMidiMessage(CONTROL_CHANGE + channel, HOLD_PEDAL, value);
+}

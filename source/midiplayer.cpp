@@ -21,6 +21,7 @@
 #include <audio/vibratoevent.h>
 #include <audio/stopnoteevent.h>
 #include <audio/metronomeevent.h>
+#include <audio/letringevent.h>
 #include <audio/repeatcontroller.h>
 
 using std::shared_ptr;
@@ -95,6 +96,8 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
         {
             // each note in the staff is given a start time relative to the first note of the staff
             double startTime = systemStartTime;
+            
+            bool letRingActive = false;
 
             for (quint32 j = 0; j < staff->GetPositionCount(voice); j++)
             {
@@ -191,6 +194,20 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
                         eventList.push_back(unique_ptr<VibratoEvent>(new VibratoEvent(i, startTime + duration, positionIndex,
                                                                                       systemIndex, VibratoEvent::VIBRATO_OFF)));
+                    }
+                    
+                    // let ring events
+                    if (position->HasLetRing() && !letRingActive)
+                    {
+                        eventList.push_back(unique_ptr<LetRingEvent>(new LetRingEvent(i, startTime, positionIndex, systemIndex,
+                                                                                      LetRingEvent::LET_RING_ON)));
+                        letRingActive = true;
+                    }
+                    else if (!position->HasLetRing() && letRingActive)
+                    {
+                        eventList.push_back(unique_ptr<LetRingEvent>(new LetRingEvent(i, startTime, positionIndex, systemIndex,
+                                                                                      LetRingEvent::LET_RING_OFF)));
+                        letRingActive = false;
                     }
 
                     bool tiedToNextNote = false;

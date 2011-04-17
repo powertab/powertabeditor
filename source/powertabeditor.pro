@@ -120,7 +120,8 @@ SOURCES += main.cpp\
     painters/irregularnotegroup.cpp \
     dialogs/tuningdialog.cpp \
     actions/edittuning.cpp \
-    painters/directionpainter.cpp
+    painters/directionpainter.cpp \
+    audio/letringevent.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -221,7 +222,8 @@ HEADERS  += powertabeditor.h \
     painters/irregularnotegroup.h \
     dialogs/tuningdialog.h \
     actions/edittuning.h \
-    painters/directionpainter.h
+    painters/directionpainter.h \
+    audio/letringevent.h
 
 RESOURCES += \
     resources.qrc

@@ -34,6 +34,7 @@ public:
     bool playNote(uint8_t channel, uint8_t pitch, uint8_t velocity);
     bool stopNote(uint8_t channel, uint8_t pitch);
     bool setVibrato(uint8_t channel, uint8_t modulation);
+    bool setSustain(uint8_t channel, bool sustainOn);
 
     enum MidiMessage
     {
@@ -48,7 +49,8 @@ public:
     {
         MOD_WHEEL = 1,
         CHANNEL_VOLUME = 7,
-        PAN_CHANGE = 10
+        PAN_CHANGE = 10,
+        HOLD_PEDAL = 64
     };
 };
 
