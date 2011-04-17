@@ -2,6 +2,7 @@
 
 #include <QGraphicsPathItem>
 #include <QDebug>
+#include <QMultiMap>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>

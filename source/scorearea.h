@@ -3,7 +3,6 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QMultiMap>
 #include <memory>
 
 #include <musicfont.h>
@@ -19,6 +18,9 @@ class Note;
 class StdNotationPainter;
 class Position;
 class TempoMarker;
+
+template <class Key, class T>
+class QMultiMap;
 
 // The visual display of the score
 
