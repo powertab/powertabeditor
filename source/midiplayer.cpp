@@ -36,7 +36,7 @@ MidiPlayer::MidiPlayer(Caret* caret) :
     isPlaying = false;
     currentSystemIndex = 0;
 
-    initNaturalHarmonics();
+    initHarmonicPitches();
 }
 
 MidiPlayer::~MidiPlayer()
@@ -152,7 +152,13 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
                     if (note->IsNaturalHarmonic())
                     {
-                        pitch = getNaturalHarmonicPitch(openStringPitch, note->GetFretNumber());
+                        pitch = getHarmonicPitch(openStringPitch, note->GetFretNumber());
+                    }
+                    if (note->HasTappedHarmonic())
+                    {
+                        uint8_t tappedFret = 0;
+                        note->GetTappedHarmonic(tappedFret);
+                        pitch = getHarmonicPitch(pitch, tappedFret - note->GetFretNumber());
                     }
 
                     // figure out the velocity
@@ -376,20 +382,19 @@ double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, const S
 
 // initialize the mapping of frets to pitch offsets (counted in half-steps or frets)
 // e.g. The natural harmonic at the 7th fret is an octave and a fifth - 19 frets - above the pitch of the open string
-void MidiPlayer::initNaturalHarmonics()
+void MidiPlayer::initHarmonicPitches()
 {
-    naturalHarmonicPitches[3] = 31;
-    naturalHarmonicPitches[4] = naturalHarmonicPitches[9] = 28;
-    naturalHarmonicPitches[16] = naturalHarmonicPitches[28] = 28;
-    naturalHarmonicPitches[5] = naturalHarmonicPitches[24] = 24;
-    naturalHarmonicPitches[7] = naturalHarmonicPitches[19] = 19;
-    naturalHarmonicPitches[12] = 12;
+    harmonicPitches[3] = 31;
+    harmonicPitches[4] = harmonicPitches[9] = 28;
+    harmonicPitches[16] = harmonicPitches[28] = 28;
+    harmonicPitches[5] = harmonicPitches[24] = 24;
+    harmonicPitches[7] = harmonicPitches[19] = 19;
+    harmonicPitches[12] = 12;
 }
 
-// Add the pitch offset for the natural harmonic to the pitch of the open string
-quint8 MidiPlayer::getNaturalHarmonicPitch(const quint8 openStringPitch, const quint8 fret) const
+quint8 MidiPlayer::getHarmonicPitch(const quint8 basePitch, const quint8 fretOffset) const
 {
-    return openStringPitch + naturalHarmonicPitches[fret];
+    return basePitch + harmonicPitches[fretOffset];
 }
 
 // Generates the metronome ticks

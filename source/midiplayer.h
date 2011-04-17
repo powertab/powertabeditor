@@ -58,9 +58,9 @@ protected:
     bool isPlaying;
     quint32 currentSystemIndex;
 
-    QHash<quint8, quint8> naturalHarmonicPitches;
-    void initNaturalHarmonics();
-    quint8 getNaturalHarmonicPitch(const quint8 originalPitch, const quint8 fret) const;
+    QHash<quint8, quint8> harmonicPitches;
+    void initHarmonicPitches();
+    quint8 getHarmonicPitch(const quint8 originalPitch, const quint8 fret) const;
 };
 
 #endif // MIDIPLAYER_H
