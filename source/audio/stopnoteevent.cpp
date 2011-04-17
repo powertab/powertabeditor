@@ -1,7 +1,10 @@
 #include "stopnoteevent.h"
 
 #include <rtmidiwrapper.h>
+
+#if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
+#endif
 
 StopNoteEvent::StopNoteEvent(uint8_t channel, double startTime, uint32_t positionIndex,
                              uint32_t systemIndex, uint8_t pitch) :
@@ -12,7 +15,9 @@ StopNoteEvent::StopNoteEvent(uint8_t channel, double startTime, uint32_t positio
 
 void StopNoteEvent::performEvent(RtMidiWrapper& sequencer) const
 {
+#if defined(LOG_MIDI_EVENTS)
     qDebug() << "Stop Note: " << systemIndex << ", " << positionIndex << " at " << startTime;
+#endif
 
     sequencer.stopNote(channel, pitch);
 }

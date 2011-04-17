@@ -4,8 +4,11 @@
 #include <powertabdocument/generalmidi.h>
 #include <powertabdocument/guitar.h>
 
+#if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
-#include <assert.h>
+#endif
+
+#include <qglobal.h>
 
 using std::shared_ptr;
 
@@ -23,7 +26,9 @@ void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer) const
 {
     Q_ASSERT(guitar != NULL);
 
+#if defined(LOG_MIDI_EVENTS)
     qDebug() << "Play Note: " << systemIndex << ", " << positionIndex << " at " << startTime;
+#endif
 
     // grab the patch/pan/volume immediately before playback to allow for real-time mixing
     if (isMuted)

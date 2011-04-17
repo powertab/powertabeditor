@@ -20,6 +20,9 @@ unix:LIBS += -lasound -lpthread
 macx:DEFINES += __MACOSX_CORE__
 macx:LIBS += -framework CoreMidi -framework CoreAudio -framework CoreFoundation
 
+# uncomment to enable logging for midi events
+#DEFINES += LOG_MIDI_EVENTS
+
 # Replace this with the path to your boost installation if you're compiling on Windows
 # There shouldn't be any need for a unix:INCLUDEPATH, since boost should already be
 # in the include path (/usr/include) if you installed the package from your Linux distribution's repo

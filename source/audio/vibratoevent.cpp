@@ -2,7 +2,10 @@
 
 #include <rtmidiwrapper.h>
 #include <QSettings>
+
+#if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
+#endif
 
 VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
                            EventType eventType, VibratoType vibratoType) :
@@ -14,7 +17,9 @@ VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionI
 
 void VibratoEvent::performEvent(RtMidiWrapper& sequencer) const
 {
+#if defined(LOG_MIDI_EVENTS)
     qDebug() << "Vibrato: " << systemIndex << ", " << positionIndex << " at " << startTime;
+#endif
 
     if (eventType == VIBRATO_ON)
     {
