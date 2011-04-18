@@ -24,6 +24,7 @@
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 #include "direction.h"
+#include "dynamic.h"
 
 #include <map>
 #include <bitset>

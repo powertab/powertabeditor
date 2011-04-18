@@ -14,6 +14,7 @@
 #include <sstream>
 #include "position.h"
 
+#include "dynamic.h"
 #include "note.h"
 #include "powertabfileheader.h"     // Needed for file version constants
 #include "tuning.h"
@@ -532,6 +533,16 @@ bool Position::SetDataFlag(uint32_t flag)
 }
 
 // Volume Swell Functions
+
+bool Position::IsValidVolumeSwell(uint8_t startVolume, uint8_t endVolume, uint8_t duration)
+{
+    return (
+            (Dynamic::IsValidVolume(startVolume) && startVolume != Dynamic::notSet) &&
+            (Dynamic::IsValidVolume(endVolume) && endVolume != Dynamic::notSet) &&
+            (startVolume != endVolume) && (duration <= MAX_VOLUME_SWELL_DURATION)
+            );
+}
+
 /// Sets (adds or updates) a volume swell
 /// @param startVolume Starting volume of the swell
 /// @param endVolume Ending volume of the swell
@@ -1050,4 +1061,3 @@ void Position::SortNotesUp()
 {
     std::sort(m_noteArray.begin(), m_noteArray.end(), std::not2(CompareStrings()));
 }
-

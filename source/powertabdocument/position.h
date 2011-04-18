@@ -15,7 +15,8 @@
 class Note;
 class Tuning;
 
-#include "dynamic.h"        // Needed for volume swell volumes and validation
+#include "powertabobject.h"
+#include "macros.h"
 
 #include <array>
 #include <vector>
@@ -727,14 +728,7 @@ protected:
 
     // Volume Swell Functions
 public:
-    static bool IsValidVolumeSwell(uint8_t startVolume, uint8_t endVolume, uint8_t duration)
-    {
-        return (
-                (Dynamic::IsValidVolume(startVolume) && startVolume != Dynamic::notSet) &&
-                (Dynamic::IsValidVolume(endVolume) && endVolume != Dynamic::notSet) &&
-                (startVolume != endVolume) && (duration <= MAX_VOLUME_SWELL_DURATION)
-                );
-    }
+    static bool IsValidVolumeSwell(uint8_t startVolume, uint8_t endVolume, uint8_t duration);
     bool SetVolumeSwell(uint8_t startVolume, uint8_t endVolume, uint8_t duration);
     bool GetVolumeSwell(uint8_t& startVolume, uint8_t& endVolume,
                         uint8_t& duration) const;
