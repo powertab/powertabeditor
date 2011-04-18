@@ -91,7 +91,7 @@ public:
         CHECK_THAT(CheckState(), false);
         for (uint32_t i = 0; i < count; i++)
         {
-            assert(vect[i] != NULL);
+            assert(vect[i]);
 
             // the '&*' is used to get a raw PowerTabObject pointer,
             // regardless of whether T is a raw pointer, shared_ptr, etc

@@ -24,7 +24,7 @@ PlayNoteEvent::PlayNoteEvent(uint8_t channel, double startTime, double duration,
 
 void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer) const
 {
-    Q_ASSERT(guitar != NULL);
+    Q_ASSERT(guitar);
 
 #if defined(LOG_MIDI_EVENTS)
     qDebug() << "Play Note: " << systemIndex << ", " << positionIndex << " at " << startTime;
