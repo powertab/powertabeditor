@@ -33,12 +33,12 @@ void MusicFont::setNumericText(QGraphicsSimpleTextItem* text, QString number, in
     musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
 }
 
-QFont MusicFont::getFont()
+QFont MusicFont::getFont() const
 {
     return musicNotationFont;
 }
 
-const QFont& MusicFont::getFontRef()
+const QFont& MusicFont::getFontRef() const
 {
     return musicNotationFont;
 }

@@ -767,6 +767,7 @@ public:
     bool GetTremoloBar(uint8_t& type, uint8_t& duration, uint8_t& pitch) const;
     bool HasTremoloBar() const;
     bool ClearTremoloBar();
+    std::string GetTremoloBarText() const;
 
     // Multibar Rest Functions
     /// Determines if a multibar rest count is valid

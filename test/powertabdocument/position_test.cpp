@@ -149,4 +149,24 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
 
     BOOST_AUTO_TEST_SUITE_END()
 
+    BOOST_AUTO_TEST_CASE(TremoloBarText)
+    {
+        Position pos;
+
+        pos.SetTremoloBar(Position::dip, 1, 3);
+        BOOST_CHECK_EQUAL("3/4", pos.GetTremoloBarText());
+
+        pos.SetTremoloBar(Position::dip, 1, 4);
+        BOOST_CHECK_EQUAL("1", pos.GetTremoloBarText());
+
+        pos.SetTremoloBar(Position::dip, 1, 8);
+        BOOST_CHECK_EQUAL("2", pos.GetTremoloBarText());
+
+        pos.SetTremoloBar(Position::dip, 1, 6);
+        BOOST_CHECK_EQUAL("1 1/2", pos.GetTremoloBarText());
+
+        pos.SetTremoloBar(Position::dip, 1, 9);
+        BOOST_CHECK_EQUAL("2 1/4", pos.GetTremoloBarText());
+    }
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -31,6 +31,7 @@
 #include <painters/beamgroup.h>
 #include <painters/irregularnotegroup.h>
 #include <painters/directionpainter.h>
+#include <painters/tremolobarpainter.h>
 
 #include <functional>
 #include <algorithm>
@@ -866,7 +867,7 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
 
         for (size_t i = 0; i < numPositions; i++)
         {
-            Position* currentPosition = staff->GetPosition(0, i);
+            const Position* currentPosition = staff->GetPosition(0, i);
 
             const bool propertySet = (currentPosition->**predicate)();
 
@@ -908,7 +909,7 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
     std::vector<SymbolCreationFn> singleSymbolCreators = {
         bind(&ScoreArea::createVolumeSwell, this, _1, _2, VolumeIncreasing), // set as VolumeIncreasing for now - we will update it later
         bind(&ScoreArea::createTremoloPicking, this, _1, _2),
-        bind(&ScoreArea::createTremoloPicking, this, _1, _2), // TODO - create function for drawing tremolo bars
+        bind(&ScoreArea::createTremoloBar, this, _1, _2, (Position*)NULL),
         bind(&ScoreArea::createTrill, this, _1, _2),
     };
 
@@ -919,7 +920,7 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
 
         for (size_t i = 0; i < staff->GetPositionCount(0); i++)
         {
-            Position* currentPosition = staff->GetPosition(0, i);
+            const Position* currentPosition = staff->GetPosition(0, i);
 
             const bool propertySet = (currentPosition->**predicate)();
 
@@ -953,6 +954,15 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
                     // need to re-bind the function using the correct volume swell type
                     const VolumeSwellType type = (startVolume <= endVolume) ? VolumeIncreasing : VolumeDecreasing;
                     symbolCreator = bind(&ScoreArea::createVolumeSwell, this, _1, _2, type);
+                }
+                else if (*predicate == &Position::HasTremoloBar)
+                {
+                    if (staff->IsValidPositionIndex(0, i + 1))
+                    {
+                        const Position* nextPosition = staff->GetPosition(0, i + 1);
+                        currentSymbolInfo.rect.setRight(nextPosition->GetPosition() - 1);
+                    }
+                    symbolCreator = bind(&ScoreArea::createTremoloBar, this, _1, _2 , currentPosition);
                 }
 
                 currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
@@ -1038,7 +1048,7 @@ QGraphicsItem* ScoreArea::drawContinuousFontSymbols(QChar symbol, uint8_t width,
     return group;
 }
 
-QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentStaffInfo)
+QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentStaffInfo) const
 {
     Q_UNUSED(width);
 
@@ -1055,7 +1065,7 @@ QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentSta
     return group;
 }
 
-QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo)
+QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo) const
 {
     Q_UNUSED(width);
 
@@ -1072,6 +1082,12 @@ QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& c
     }
 
     return group;
+}
+
+QGraphicsItem* ScoreArea::createTremoloBar(uint8_t width, const StaffData& currentStaffInfo,
+                                           const Position* position) const
+{
+    return new TremoloBarPainter(position, width, currentStaffInfo.positionWidth);
 }
 
 /// Creates a volume swell QGraphicsItem of the specified type
@@ -1096,7 +1112,7 @@ QGraphicsItem* ScoreArea::createVolumeSwell(uint8_t width, const StaffData &curr
 }
 
 // Centers an item, by using it's width to calculate the necessary offset from xmin
-void ScoreArea::centerItem(QGraphicsItem* item, float xmin, float xmax, float y)
+void ScoreArea::centerItem(QGraphicsItem* item, float xmin, float xmax, float y) const
 {
     float itemWidth = item->boundingRect().width();
     float centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);

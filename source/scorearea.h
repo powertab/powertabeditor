@@ -71,7 +71,7 @@ protected:
 
     QGraphicsScene scene;
     MusicFont musicFont;
-    void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
+    void centerItem(QGraphicsItem* item, float xmin, float xmax, float y) const;
     Caret* caret;
     QList<QGraphicsItem*> systemList;
 
@@ -96,8 +96,10 @@ protected:
 
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo, VolumeSwellType type);
 
-    QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo);
+    QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo) const;
+    QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo) const;
+    QGraphicsItem* createTremoloBar(uint8_t width, const StaffData& currentStaffInfo,
+                                    const Position* position) const;
 
     QGraphicsItem* createPlainText(const QString& text, QFont::Style style);
     QGraphicsItem* createPickStroke(const QString& text);

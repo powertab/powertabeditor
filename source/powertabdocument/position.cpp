@@ -19,6 +19,10 @@
 #include "powertabfileheader.h"     // Needed for file version constants
 #include "tuning.h"
 
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
+#include <boost/rational.hpp>
+
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
@@ -673,6 +677,35 @@ bool Position::ClearTremoloBar()
     //------Last Checked------//
     // - Jan 19, 2005
     return (RemoveComplexSymbol(tremoloBar));
+}
+
+/// Returns a text representation of the tremolo bar pitch - e.g. "1 3/4"
+std::string Position::GetTremoloBarText() const
+{
+    using boost::lexical_cast;
+    using boost::rational_cast;
+
+    uint8_t type = 0, duration = 0, pitch = 0;
+    GetTremoloBar(type, duration, pitch);
+
+    const boost::rational<int> fraction(pitch, 4);
+
+    // whole number
+    if (fraction.numerator() % fraction.denominator() == 0)
+    {
+        return lexical_cast<std::string>(rational_cast<int>(fraction));
+    }
+    // proper fraction
+    else if (fraction.numerator() < fraction.denominator())
+    {
+        return lexical_cast<std::string>(fraction);
+    }
+    // convert improper fraction to mixed number
+    else
+    {
+        const int wholeNum = rational_cast<int>(fraction);
+        return boost::str(boost::format("%1% %2%") % wholeNum % (fraction - wholeNum));
+    }
 }
 
 // Multibar Rest Functions
