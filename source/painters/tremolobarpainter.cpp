@@ -24,14 +24,22 @@ void TremoloBarPainter::paint(QPainter* painter, const QStyleOptionGraphicsItem*
 
     const QString displayText = QString::fromStdString(position->GetTremoloBarText());
 
-    if (type == Position::dip)
+    if (type == Position::dip || type == Position::invertedDip)
     {
         const double topHeight = Staff::TAB_SYMBOL_HEIGHT / 2.0;
         const double bottomHeight = Staff::TAB_SYMBOL_HEIGHT;
         const double middleX = positionWidth / 2.0;
 
-        painter->drawLine(0, topHeight, middleX, bottomHeight);
-        painter->drawLine(middleX, bottomHeight, positionWidth, topHeight);
+        if (type == Position::dip)
+        {
+            painter->drawLine(0, topHeight, middleX, bottomHeight);
+            painter->drawLine(middleX, bottomHeight, positionWidth, topHeight);
+        }
+        else // invertedDip
+        {
+            painter->drawLine(0, bottomHeight, middleX, topHeight);
+            painter->drawLine(middleX, topHeight, positionWidth, bottomHeight);
+        }
 
         painter->setFont(textFont);
         painter->drawText(centerItem(0, positionWidth, QFontMetricsF(textFont).width(displayText)),
