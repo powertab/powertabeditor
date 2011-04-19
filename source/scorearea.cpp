@@ -957,10 +957,16 @@ void ScoreArea::drawSymbols(shared_ptr<System> system, Staff *staff, const Staff
                 }
                 else if (*predicate == &Position::HasTremoloBar)
                 {
-                    if (staff->IsValidPositionIndex(0, i + 1))
+                    uint8_t type = 0, duration = 0, pitch = 0;
+                    currentPosition->GetTremoloBar(type, duration, pitch);
+
+                    if (!staff->IsValidPositionIndex(0, i + duration))
                     {
-                        const Position* nextPosition = staff->GetPosition(0, i + 1);
-                        currentSymbolInfo.rect.setRight(nextPosition->GetPosition() - 1);
+                        currentSymbolInfo.rect.setRight(system->GetPositionCount() - 1);
+                    }
+                    else
+                    {
+                        currentSymbolInfo.rect.setRight(staff->GetPosition(0, i + duration)->GetPosition() + 1);
                     }
                     symbolCreator = bind(&ScoreArea::createTremoloBar, this, _1, _2 , currentPosition);
                 }
@@ -1087,7 +1093,7 @@ QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& c
 QGraphicsItem* ScoreArea::createTremoloBar(uint8_t width, const StaffData& currentStaffInfo,
                                            const Position* position) const
 {
-    return new TremoloBarPainter(position, width, currentStaffInfo.positionWidth);
+    return new TremoloBarPainter(position, width * currentStaffInfo.positionWidth);
 }
 
 /// Creates a volume swell QGraphicsItem of the specified type
