@@ -31,6 +31,7 @@ const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_ABOVE             = 0;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_BELOW             = 0;
 const uint8_t System::DEFAULT_EXTRA_SPACING                          = 0;
 const uint8_t System::SYSTEM_SYMBOL_SPACING = 18; // spacing given to a system symbol (i.e. rehearsal sign)
+const uint8_t System::RHYTHM_SLASH_SPACING = 2 * System::SYSTEM_SYMBOL_SPACING;
 
 // Position Spacing Constants
 const uint8_t System::MIN_POSITION_SPACING                           = 3;
@@ -625,6 +626,11 @@ uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos) const
     CHECK_THAT(IsValidStaffIndex(staff), 0);
 
     uint32_t offset = GetExtraSpacing() + GetRhythmSlashSpacingAbove() + GetRhythmSlashSpacingBelow();
+
+    if (GetRhythmSlashCount() != 0)
+    {
+        offset += RHYTHM_SLASH_SPACING;
+    }
 
     for (uint32_t i = 0; i < staff; i++)
     {

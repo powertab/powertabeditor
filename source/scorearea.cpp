@@ -14,6 +14,7 @@
 #include <powertabdocument/score.h>
 #include <powertabdocument/direction.h>
 #include <powertabdocument/chordtext.h>
+#include <powertabdocument/rhythmslash.h>
 
 #include <painters/staffdata.h>
 #include <painters/barlinepainter.h>
@@ -32,6 +33,7 @@
 #include <painters/irregularnotegroup.h>
 #include <painters/directionpainter.h>
 #include <painters/tremolobarpainter.h>
+#include <painters/rhythmslashpainter.h>
 
 #include <functional>
 #include <algorithm>
@@ -180,6 +182,7 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<System> system, int lineSp
         if (i == 0)
         {
             drawSystemSymbols(score, system, currentStaffInfo);
+            drawRhythmSlashes(system);
         }
 
         drawLegato(system, currentStaff, currentStaffInfo);
@@ -454,6 +457,21 @@ void ScoreArea::drawDividerLine(const StaffData& currentStaffInfo, quint32 y)
     line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
 
     line->setParentItem(activeSystem);
+}
+
+void ScoreArea::drawRhythmSlashes(shared_ptr<const System> system)
+{
+    const uint32_t y = system->GetExtraSpacing();
+
+    for (size_t i = 0; i < system->GetRhythmSlashCount(); i++)
+    {
+        const RhythmSlash* rhythmSlash = system->GetRhythmSlash(i);
+        const uint32_t x = system->GetPositionX(rhythmSlash->GetPosition());
+
+        RhythmSlashPainter* painter = new RhythmSlashPainter(rhythmSlash);
+        painter->setPos(x, y);
+        painter->setParentItem(activeSystem);
+    }
 }
 
 void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<System> system, const StaffData& currentStaffInfo)

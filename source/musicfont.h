@@ -58,8 +58,12 @@ public:
         NaturalHarmonicNoteHead = 0xe1d4,
         ArtificialHarmonicNoteHead = 0xe1d5,
         Coda = 0xe181,
-        Segno = 0xe180
+        Segno = 0xe180,
+        RhythmSlashFilled = 0xe141,
+        RhythmSlashNoFill = 0xe140
     };
+
+    static const int DEFAULT_FONT_SIZE = 22;
 
     // Returns the symbol corresponding to the specified MusicSymbol
     static QChar getSymbol(MusicSymbol identifier);
@@ -71,7 +75,6 @@ public:
 
 private:
     QFont musicNotationFont;
-    static const int DEFAULT_FONT_SIZE = 22;
 };
 
 #endif // MUSICFONT_H

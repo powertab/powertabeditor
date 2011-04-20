@@ -66,6 +66,8 @@ protected:
     void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, std::shared_ptr<System> system, quint32 height);
     void drawSymbolsBelowTabStaff(std::shared_ptr<System> system, Staff *staff, const StaffData &currentStaffInfo);
 
+    void drawRhythmSlashes(std::shared_ptr<const System> system);
+
     void drawSymbols(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
 
