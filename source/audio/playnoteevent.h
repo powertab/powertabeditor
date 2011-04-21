@@ -15,8 +15,7 @@ public:
         DEFAULT_VELOCITY = 127,
         MUTED_VELOCITY = 60,
         GHOST_VELOCITY = 50,
-        WEAK_ACCENT = 80,
-        STRONG_ACCENT = 127
+        PALM_MUTED_VELOCITY = 112
     };
 
     PlayNoteEvent(uint8_t channel, double startTime, double duration, uint8_t pitch, uint32_t positionIndex,

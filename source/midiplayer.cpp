@@ -151,6 +151,10 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     {
                         velocity = PlayNoteEvent::GHOST_VELOCITY;
                     }
+                    if (position->HasPalmMuting())
+                    {
+                        velocity = PlayNoteEvent::PALM_MUTED_VELOCITY;
+                    }
 
                     // if this note is not tied to the previous note, play the note
                     if (!note->IsTied())
@@ -213,7 +217,16 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     // end the note, unless we are tied to the next note
                     if (!note->HasTieWrap() && !tiedToNextNote)
                     {
-                        const double noteLength = position->IsStaccato() ? duration / 2.0 : duration;
+                        double noteLength = duration;
+
+                        if (position->IsStaccato())
+                        {
+                            noteLength /= 2.0;
+                        }
+                        else if (position->HasPalmMuting())
+                        {
+                            noteLength /= 1.15;
+                        }
 
                         eventList.push_back(new StopNoteEvent(i, startTime + noteLength,
                                                               positionIndex, systemIndex, pitch));
