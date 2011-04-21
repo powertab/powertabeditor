@@ -12,11 +12,7 @@ DocumentManager::DocumentManager()
     currentDocumentIndex = -1;
 }
 
-DocumentManager::~DocumentManager()
-{
-}
-
-shared_ptr<PowerTabDocument> DocumentManager::getCurrentDocument()
+shared_ptr<PowerTabDocument> DocumentManager::getCurrentDocument() const
 {
     if (currentDocumentIndex < 0 || currentDocumentIndex >= documentList.size())
         return shared_ptr<PowerTabDocument>();

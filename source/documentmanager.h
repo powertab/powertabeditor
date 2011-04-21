@@ -14,12 +14,11 @@ class DocumentManager
 {
 public:
     DocumentManager();
-    ~DocumentManager();
 
     bool addDocument(const QString& fileName);
     void createDocument();
     void removeDocument(int index);
-    std::shared_ptr<PowerTabDocument> getCurrentDocument();
+    std::shared_ptr<PowerTabDocument> getCurrentDocument() const;
     void setCurrentDocumentIndex(int index);
     int getCurrentDocumentIndex() const;
 
