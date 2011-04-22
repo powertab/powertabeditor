@@ -204,6 +204,26 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                         letRingActive = false;
                     }
 
+                    // tremolo picking
+                    if (position->HasTremoloPicking())
+                    {
+                        // tremolo picking is done using 32nd notes
+                        const double tremPickNoteDuration = getCurrentTempo(position->GetPosition()) / 8.0;
+                        const int numNotes = duration / tremPickNoteDuration;
+
+                        for (int k = 0; k < numNotes; ++k)
+                        {
+                            const double currentStartTime = startTime + k * tremPickNoteDuration;
+
+                            eventList.push_back(new StopNoteEvent(i, currentStartTime, positionIndex,
+                                                                  systemIndex, pitch));
+
+                            eventList.push_back(new PlayNoteEvent(i, currentStartTime, tremPickNoteDuration, pitch,
+                                                                  positionIndex, systemIndex, guitar,
+                                                                  note->IsMuted(), velocity));
+                        }
+                    }
+
                     bool tiedToNextNote = false;
                     // check if this note is tied to the next note
                     {
