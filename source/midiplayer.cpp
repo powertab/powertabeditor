@@ -69,6 +69,25 @@ void MidiPlayer::run()
     playMidiEvents(eventList, startSystemIndex, startPos);
 }
 
+/// Returns the appropriate note velocity type for the given position/note
+PlayNoteEvent::VelocityType getNoteVelocity(const Position* position, const Note* note)
+{
+    if (note->IsGhostNote())
+    {
+        return PlayNoteEvent::GHOST_VELOCITY;
+    }
+    if (note->IsMuted())
+    {
+        return PlayNoteEvent::MUTED_VELOCITY;
+    }
+    if (position->HasPalmMuting())
+    {
+        return PlayNoteEvent::PALM_MUTED_VELOCITY;
+    }
+
+    return PlayNoteEvent::DEFAULT_VELOCITY;
+}
+
 /// Generates a list of all notes in the given system, by iterating through each position in each staff of the system
 /// @return The timestamp of the end of the last event in the system
 double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double systemStartTime,
@@ -142,20 +161,7 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
                     uint32_t pitch = getActualNotePitch(note, guitar);
 
-                    // figure out the velocity
-                    PlayNoteEvent::VelocityType velocity = PlayNoteEvent::DEFAULT_VELOCITY;
-                    if (note->IsMuted())
-                    {
-                        velocity = PlayNoteEvent::MUTED_VELOCITY;
-                    }
-                    if (note->IsGhostNote())
-                    {
-                        velocity = PlayNoteEvent::GHOST_VELOCITY;
-                    }
-                    if (position->HasPalmMuting())
-                    {
-                        velocity = PlayNoteEvent::PALM_MUTED_VELOCITY;
-                    }
+                    const PlayNoteEvent::VelocityType velocity = getNoteVelocity(position, note);
 
                     // if this note is not tied to the previous note, play the note
                     if (!note->IsTied())
