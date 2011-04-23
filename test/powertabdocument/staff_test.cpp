@@ -1,6 +1,8 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
+#include "serialization_test.h"
+
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/tuning.h>
@@ -282,6 +284,11 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
         
         note.SetOctave15ma(true);
         BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), 12);
+    }
+
+    BOOST_FIXTURE_TEST_CASE(Serialization, StaffFixture)
+    {
+        testSerialization(staff);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -14,22 +14,16 @@
 #include "rect.h"
 #include "colour.h"
 
-using std::ofstream;
 using std::string;
 
 // Constructor/Destructor
 /// Primary Constructor
-PowerTabOutputStream::PowerTabOutputStream(const string& filename) :
-	m_mapsInitialized(false), m_mapCount(0),
-	m_lastPowerTabError(POWERTABSTREAM_NO_ERROR)
+PowerTabOutputStream::PowerTabOutputStream(std::ostream& stream) :
+    m_mapsInitialized(false), m_mapCount(0),
+    m_lastPowerTabError(POWERTABSTREAM_NO_ERROR),
+    m_stream(stream)
 {
-    m_stream.open(filename.c_str(), ofstream::out | ofstream::binary);
-}
-
-/// Destructor
-PowerTabOutputStream::~PowerTabOutputStream()
-{
-    m_stream.close();
+    //m_stream.open(filename.c_str(), ofstream::out | ofstream::binary);
 }
 
 // Write Functions

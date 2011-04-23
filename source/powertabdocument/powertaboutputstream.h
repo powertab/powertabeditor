@@ -13,7 +13,7 @@
 #define __POWERTABOUTPUTSTREAM_H__
 
 #include <cstdint>
-#include <fstream>
+#include <ostream>
 
 #include <unordered_map>
 
@@ -37,12 +37,11 @@ protected:
     std::unordered_map<PowerTabObject*, uint32_t>        m_objectHashMap;      ///< Map of object pointers to object index
     uint32_t                                    m_mapCount;                     ///< Internal count of mapped objects
     PowerTabStreamError                         m_lastPowerTabError;            ///< Last Power Tab specific error
-    std::ofstream m_stream;
+    std::ostream& m_stream;
 
     // Constructor/Destructor
 public:
-    PowerTabOutputStream(const std::string& filename);
-    ~PowerTabOutputStream();
+    PowerTabOutputStream(std::ostream& stream);
 
     // Write Functions
     bool WriteCount(uint32_t count);
@@ -106,11 +105,6 @@ public:
     {
         m_stream.write((char *)&data, sizeof(data));
         return *this;
-    }
-
-    void close()
-    {
-        m_stream.close();
     }
 };
 

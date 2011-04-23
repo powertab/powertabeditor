@@ -96,4 +96,5 @@ HEADERS += \
     ../source/powertabdocument/barline.h \
     ../source/powertabdocument/alternateending.h \
     ../source/audio/midievent.h \
-    powertabdocument/tuning_fixtures.h
+    powertabdocument/tuning_fixtures.h \
+    powertabdocument/serialization_test.h

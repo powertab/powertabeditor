@@ -13,20 +13,11 @@
 #include "colour.h"
 #include "rect.h"
 
-using std::ifstream;
 using std::string;
 
-// Constructor/Destructor
-/// Primary Constructor
-PowerTabInputStream::PowerTabInputStream(const string& filename)
+PowerTabInputStream::PowerTabInputStream(std::istream& stream) :
+    m_stream(stream)
 {
-    m_stream.open(filename.c_str(), ifstream::in | ifstream::binary);
-}
-
-/// Destructor
-PowerTabInputStream::~PowerTabInputStream()
-{
-    m_stream.close();
 }
 
 // Read Functions

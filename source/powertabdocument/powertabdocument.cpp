@@ -17,6 +17,8 @@
 #include "oldrehearsalsign.h"
 #include "oldtimesignature.h"
 
+#include <fstream>
+
 #include "score.h"
 
 using std::string;
@@ -58,10 +60,10 @@ PowerTabDocument::~PowerTabDocument()
 /// Serializes the document to an output stream
 /// @param stream Output stream to save to
 /// @return The output stream
-bool PowerTabDocument::Save(const std::string &fileName)
+bool PowerTabDocument::Save(const string& fileName)
 {
-    // Create our special Power Tab stream
-    PowerTabOutputStream stream(fileName);
+    std::ofstream fileStream(fileName.c_str(), std::ofstream::out | std::ofstream::binary);
+    PowerTabOutputStream stream(fileStream);
 
     // Write the header
     m_header.Serialize(stream);
@@ -93,7 +95,8 @@ bool PowerTabDocument::Save(const std::string &fileName)
 /// @return True if the file was loaded, false if not
 bool PowerTabDocument::Load(const string& fileName)
 {
-    PowerTabInputStream stream(fileName);
+    std::ifstream fileStream(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
+    PowerTabInputStream stream(fileStream);
 
     if (stream.fail())
         return false;

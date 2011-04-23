@@ -4,6 +4,7 @@
 
 #include "tuning_fixtures.h"
 
+#include "serialization_test.h"
 #include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
 
@@ -57,4 +58,9 @@ BOOST_FIXTURE_TEST_CASE(IsOpenStringNote, StandardTuningFixture)
 BOOST_FIXTURE_TEST_CASE(GetNoteRange, StandardTuningFixture)
 {
     BOOST_CHECK(std::make_pair(midi::MIDI_NOTE_F2, midi::MIDI_NOTE_F6) == tuning.GetNoteRange(1));
+}
+
+BOOST_FIXTURE_TEST_CASE(Serialization, StandardTuningFixture)
+{
+    testSerialization(tuning);
 }

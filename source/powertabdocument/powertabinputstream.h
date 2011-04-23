@@ -13,7 +13,7 @@
 #define __POWERTABINPUTSTREAM_H__
 
 #include <cstdint>
-#include <fstream>
+#include <istream>
 #include <vector>
 
 #include <boost/pointee.hpp>
@@ -26,16 +26,12 @@ class Colour;
 /// Input stream used to deserialize MFC based Power Tab data
 class PowerTabInputStream
 {
-    friend class PowerTabFileHeader;
-
     // Member Variables
-protected:
-    std::ifstream    m_stream;
+private:
+    std::istream& m_stream;
 
-    // Constructor/Destructor
 public:
-    PowerTabInputStream(const std::string& filename);
-    ~PowerTabInputStream();
+    PowerTabInputStream(std::istream& stream);
 
     // Read Functions
     uint32_t ReadCount();
@@ -43,7 +39,7 @@ public:
     bool ReadWin32ColorRef(Colour& color);
     bool ReadMFCRect(Rect& rect);
 
-protected:
+private:
     void ReadClassInformation();
     uint32_t ReadMFCStringLength();
 

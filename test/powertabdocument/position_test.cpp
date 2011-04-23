@@ -6,6 +6,7 @@
 #include <powertabdocument/note.h>
 
 #include "tuning_fixtures.h"
+#include "serialization_test.h"
 
 struct PositionFixture
 {
@@ -167,6 +168,11 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
 
         pos.SetTremoloBar(Position::dip, 1, 9);
         BOOST_CHECK_EQUAL("2 1/4", pos.GetTremoloBarText());
+    }
+
+    BOOST_FIXTURE_TEST_CASE(Serialization, PositionFixture)
+    {
+        testSerialization(*pos);
     }
 
 BOOST_AUTO_TEST_SUITE_END()
