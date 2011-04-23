@@ -11,15 +11,13 @@
 
 #include "alternateending.h"
 
-#include <math.h>               // Needed for pow function
-#include <sstream>
+#include <cmath>               // Needed for pow function
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 
-// Constructor/Destructor
 /// Default Constructor
 AlternateEnding::AlternateEnding()
 {
-	//------Last Checked------//
-	// - Dec 4, 2004
 }
 
 /// Primary Constructor
@@ -32,27 +30,9 @@ AlternateEnding::AlternateEnding()
 AlternateEnding::AlternateEnding(uint32_t system, uint32_t position,
 	uint16_t numbers)
 {
-	//------Last Checked------//
-	// - Dec 4, 2004
-	SetSystem(system);
-	SetPosition(position);
-	SetNumbers(numbers);
-}
-
-/// Copy Constructor
-AlternateEnding::AlternateEnding(const AlternateEnding& alternateEnding) :
-    SystemSymbol()
-{
-	//------Last Checked------//
-	// - Dec 3, 2004
-	*this = alternateEnding;
-}
-
-/// Destructor
-AlternateEnding::~AlternateEnding()
-{
-	//------Last Checked------//
-	// - Dec 3, 2004
+    SetSystem(system);
+    SetPosition(position);
+    SetNumbers(numbers);
 }
 
 // Operators
@@ -60,29 +40,21 @@ AlternateEnding::~AlternateEnding()
 const AlternateEnding& AlternateEnding::operator=(
 	const AlternateEnding& alternateEnding)
 {
-	//------Last Checked------//
-	// - Dec 3, 2004
-	
-	// Check for assignment to self
-	if (this != &alternateEnding)
-		SystemSymbol::operator=(alternateEnding);
-	return (*this);
+    if (this != &alternateEnding)
+        SystemSymbol::operator=(alternateEnding);
+    return (*this);
 }
 
 /// Equality Operator
 bool AlternateEnding::operator==(const AlternateEnding& alternateEnding) const
 {
-	//------Last Checked------//
-	// - Jan 12, 2005
-	return (SystemSymbol::operator==(alternateEnding));
+    return (SystemSymbol::operator==(alternateEnding));
 }
 
 /// Inequality Operator
 bool AlternateEnding::operator!=(const AlternateEnding& alternateEnding) const
 {
-	//------Last Checked------//
-	// - Jan 5, 2005
-	return (!operator==(alternateEnding));
+    return (!operator==(alternateEnding));
 }
 	
 // Serialize Functions
@@ -91,9 +63,7 @@ bool AlternateEnding::operator!=(const AlternateEnding& alternateEnding) const
 /// @return True if the object was serialized, false if not
 bool AlternateEnding::Serialize(PowerTabOutputStream& stream)
 {
-	//------Last Checked------//
-	// - Dec 27, 2004
-	return (SystemSymbol::Serialize(stream));
+    return (SystemSymbol::Serialize(stream));
 }
 
 /// Performs deserialization for the class
@@ -102,32 +72,43 @@ bool AlternateEnding::Serialize(PowerTabOutputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool AlternateEnding::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Dec 27, 2004
-	return (SystemSymbol::Deserialize(stream, version));
+    return (SystemSymbol::Deserialize(stream, version));
 }
 
 // Number Functions
+/// Deteremines if a numbers bit map is valid
+/// @param numbers Numbers bit map to validate
+/// @return True if the numbers bit map is valid, false if not
+bool AlternateEnding::IsValidNumbers(uint16_t numbers)
+{
+    return (numbers == 0) ||
+            (((numbers & numbersMask) != 0) && ((numbers & ~numbersMask) == 0));
+}
+
+/// Determines if a number is valid
+/// @param number Number to validate
+/// @return True if the number is valid, false if not
+bool AlternateEnding::IsValidNumber(uint32_t number)
+{
+    return number >= 1 && number <= dalSegnoSegno;
+}
+
 /// Sets the numbers using a bit map
 /// @param numbers Bit map of the numbers to set (bit 0 = 1, bit 1 = 2,
 /// bit 2 = 3, etc.)
 /// @return True if the numbers were set, false if not
 bool AlternateEnding::SetNumbers(uint16_t numbers)
 {
-	//------Last Checked------//
-	// - Jan 12, 2005
-	CHECK_THAT(IsValidNumbers(numbers), false);
-	m_data = MAKELONG(0, numbers);
-	return (true);
+    CHECK_THAT(IsValidNumbers(numbers), false);
+    m_data = MAKELONG(0, numbers);
+    return true;
 }
 
 /// Gets a bit map representing the numbers
 /// @return Bit map representing the numbers
 uint16_t AlternateEnding::GetNumbers() const
 {
-	//------Last Checked------//
-	// - Jan 12, 2005
-	return (HIWORD(m_data));
+    return HIWORD(m_data);
 }
 		
 /// Sets a number
@@ -135,15 +116,13 @@ uint16_t AlternateEnding::GetNumbers() const
 /// @return True if the number was set, false if not
 bool AlternateEnding::SetNumber(uint32_t number)
 {
-	//------Last Checked------//
-	// - Jan 12, 2005
-	CHECK_THAT(IsValidNumber(number), false);
-	
-	// Note: Numbers are stored in zero-based form
-	uint16_t numbers = GetNumbers();
-	numbers |= (uint16_t)(pow((double)2, (double)(number - 1)));
-	
-	return (SetNumbers(numbers));
+    CHECK_THAT(IsValidNumber(number), false);
+
+    // Note: Numbers are stored in zero-based form
+    uint16_t numbers = GetNumbers();
+    numbers |= (uint16_t)(pow((double)2, (double)(number - 1)));
+
+    return (SetNumbers(numbers));
 }
 
 /// Determines if a number is set
@@ -151,17 +130,15 @@ bool AlternateEnding::SetNumber(uint32_t number)
 /// @return True if the number is set, false if not
 bool AlternateEnding::IsNumberSet(uint32_t number) const
 {
-	//------Last Checked------//
-	// - Jan 12, 2005
-	CHECK_THAT(IsValidNumber(number), false);
+    CHECK_THAT(IsValidNumber(number), false);
 
-	// Number is one based, so subtract one
-	number--;
+    // Number is one based, so subtract one
+    number--;
 
-	// Determine if bit is set
-	uint16_t numbers = GetNumbers();
-	uint16_t power = (uint16_t)pow((double)2, (double)number);
-	return ((numbers & power) == power);
+    // Determine if bit is set
+    uint16_t numbers = GetNumbers();
+    uint16_t power = (uint16_t)pow((double)2, (double)number);
+    return ((numbers & power) == power);
 }
 
 /// Clears a number
@@ -169,94 +146,93 @@ bool AlternateEnding::IsNumberSet(uint32_t number) const
 /// @return True if the number was cleared, false if not
 bool AlternateEnding::ClearNumber(uint32_t number)
 {
-	//------Last Checked------//
-	// - Jan 12, 2005
-	CHECK_THAT(IsValidNumber(number), false);
-	
-	uint16_t numbers = GetNumbers(); 
-	numbers &= ~(uint16_t)(pow((double)2, (double)(number - 1)));
-	SetNumbers(numbers);
-	return (true);
+    CHECK_THAT(IsValidNumber(number), false);
+
+    uint16_t numbers = GetNumbers();
+    numbers &= ~(uint16_t)(pow((double)2, (double)(number - 1)));
+    SetNumbers(numbers);
+    return (true);
 }
 
 /// Gets the alternate ending text (numbers + D.C./D.S./D.S.S.)
 /// @return Text representation of the alternate ending
 std::string AlternateEnding::GetText() const
 {
-	//------Last Checked------//
-	// - Dec 3, 2004
-        std::string returnValue;
+    std::string returnValue;
 
-	int32_t groupStart = -1;
-	int32_t groupEnd = -1;
-		
-	// Construct the numbers
-	uint32_t i = 1;
-	uint32_t lastNumber = 8;
-	for (; i <= lastNumber; i++)
-	{
-		bool numberSet = IsNumberSet(i);
+    int32_t groupStart = -1;
+    int32_t groupEnd = -1;
 
-		if (numberSet)
-		{
-			// Starting a new group of numbers
-			if (groupStart == -1)
-				groupStart = groupEnd = i;
-			// Continuing existing group
-			else
-				groupEnd = i;
-		}
-		
-		// Always treat the last number like the end of a group
-		if (i == lastNumber)
-			numberSet = false;
+    // Construct the numbers
+    const uint32_t lastNumber = 8;
+    for (uint32_t i = 1; i <= lastNumber; i++)
+    {
+        bool numberSet = IsNumberSet(i);
 
-		// We've reached the end of a group, if groupStart != -1, then we have a
-		// group
-		if (!numberSet && groupStart != -1)
-		{
-			// Add a separator
-			if (!returnValue.empty())
-				returnValue += ", ";
-				
-                        std::string temp;
+        if (numberSet)
+        {
+            // Starting a new group of numbers
+            if (groupStart == -1)
+            {
+                groupStart = groupEnd = i;
+            }
+            // Continuing existing group
+            else
+            {
+                groupEnd = i;
+            }
+        }
 
-			// Single number
-			if (groupStart == groupEnd)
-			{
-				temp = GetNumberText(groupStart) + ".";
-			}
-			// 2 numbers
-			else if (groupStart == (groupEnd - 1))
-			{
-				temp = GetNumberText(groupStart) + "., " + GetNumberText(groupEnd) + ".";
-			}
-			// > 2 numbers
-			else 
-			{
-				temp = GetNumberText(groupStart) + ".-" + GetNumberText(groupEnd) + ".";
-			}
-				
-			returnValue += temp;
-				
-			// Reset the group data
-			groupStart = groupEnd = -1;
-		}
-	}
-	
-	// Construct the special symbols
-	i = daCapo;
-	for (; i <= dalSegnoSegno; i++)
-	{
-		if (IsNumberSet(i))
-		{
-			if (!returnValue.empty())
-				returnValue += ", ";
-			returnValue += GetNumberText(i).c_str();
-		}
-	}
+        // Always treat the last number like the end of a group
+        if (i == lastNumber)
+            numberSet = false;
 
-	return (returnValue);
+        // We've reached the end of a group, if groupStart != -1, then we have a group
+        if (!numberSet && groupStart != -1)
+        {
+            // Add a separator
+            if (!returnValue.empty())
+            {
+                returnValue += ", ";
+            }
+
+            using boost::format;
+
+            // Single number
+            if (groupStart == groupEnd)
+            {
+                returnValue += str(format("%d.") % GetNumberText(groupStart));
+            }
+            // 2 numbers
+            else if (groupStart == (groupEnd - 1))
+            {
+                returnValue += str(format("%d., %d.") % GetNumberText(groupStart) % GetNumberText(groupEnd));
+            }
+            // > 2 numbers
+            else
+            {
+                returnValue += str(format("%d.-%d.") % GetNumberText(groupStart) % GetNumberText(groupEnd));
+            }
+
+            // Reset the group data
+            groupStart = groupEnd = -1;
+        }
+    }
+
+    // Construct the special symbols
+    for (uint32_t i = daCapo; i <= dalSegnoSegno; i++)
+    {
+        if (IsNumberSet(i))
+        {
+            if (!returnValue.empty())
+            {
+                returnValue += ", ";
+            }
+            returnValue += GetNumberText(i);
+        }
+    }
+
+    return returnValue;
 }
 
 /// Gets the text for a number
@@ -264,20 +240,22 @@ std::string AlternateEnding::GetText() const
 /// @return Text representation of the number
 std::string AlternateEnding::GetNumberText(uint32_t number)
 {
-	//------Last Checked------//
-	// - Dec 3, 2004
-	CHECK_THAT(IsValidNumber(number), "");
-	
-	if (number == daCapo)
-		return "D.C.";
-	else if (number == dalSegno)
-		return "D.S.";
-	else if (number == dalSegnoSegno)
-		return "D.S.S.";
-	else
-	{
-		std::stringstream value;
-		value << number;
-		return value.str();
-	}
+    CHECK_THAT(IsValidNumber(number), "");
+
+    if (number == daCapo)
+    {
+        return "D.C.";
+    }
+    else if (number == dalSegno)
+    {
+        return "D.S.";
+    }
+    else if (number == dalSegnoSegno)
+    {
+        return "D.S.S.";
+    }
+    else
+    {
+        return boost::lexical_cast<std::string>(number);
+    }
 }

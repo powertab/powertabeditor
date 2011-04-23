@@ -31,8 +31,6 @@ public:
 public:
     AlternateEnding();
     AlternateEnding(uint32_t system, uint32_t position, uint16_t numbers);
-    AlternateEnding(const AlternateEnding& alternateEnding);
-    ~AlternateEnding();
    
 // Operators
     const AlternateEnding& operator=(const AlternateEnding& alternateEnding);
@@ -48,26 +46,19 @@ public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
-        {return "CSectionSymbol";}
+    {
+        return "CSectionSymbol";
+    }
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
     uint16_t GetMFCClassSchema() const                            
-        {return ((uint16_t)1);}
+    {
+        return 1;
+    }
     
 // Number Functions
-    /// Deteremines if a numbers bit map is valid
-    /// @param numbers Numbers bit map to validate
-    /// @return True if the numbers bit map is valid, false if not
-    static bool IsValidNumbers(uint16_t numbers)
-    {
-        return ((numbers == 0) ||
-            (((numbers & numbersMask) != 0) && ((numbers & ~numbersMask) == 0)));
-    }
-    /// Determines if a number is valid
-    /// @param number Number to validate
-    /// @return True if the number is valid, false if not
-    static bool IsValidNumber(uint32_t number)
-        {return ((number >= 1) && (number <= dalSegnoSegno));}
+    static bool IsValidNumbers(uint16_t numbers);
+    static bool IsValidNumber(uint32_t number);
     bool SetNumbers(uint16_t numbers);
     uint16_t GetNumbers() const;
     bool SetNumber(uint32_t number);
