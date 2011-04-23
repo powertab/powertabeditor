@@ -105,6 +105,7 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     }
 
                     startTime += duration;
+                    endTime = std::max(endTime, startTime);
                     continue;
                 }
 
