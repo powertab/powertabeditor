@@ -36,7 +36,7 @@ public:
     virtual uint16_t GetMFCClassSchema() const = 0;
 
     // Serialization Functions
-    virtual bool Serialize(PowerTabOutputStream& stream) = 0;
+    virtual bool Serialize(PowerTabOutputStream& stream) const = 0;
     virtual bool Deserialize(PowerTabInputStream& stream, uint16_t version) = 0;
 };
 

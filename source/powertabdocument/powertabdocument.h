@@ -71,7 +71,7 @@ public:
         void Init();
    
 // Save Functions
-        bool Save(const std::string& fileName);
+        bool Save(const std::string& fileName) const;
 	
 // Load Functions
         bool Load(const std::string& fileName);
@@ -79,7 +79,7 @@ public:
 	
         void DeleteContents();
 
-        std::string GetFileName()
+        std::string GetFileName() const
         {
             return m_fileName;
         }

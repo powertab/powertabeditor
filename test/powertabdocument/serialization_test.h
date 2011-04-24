@@ -9,7 +9,7 @@
 
 /// Serialize and then deserialize the given object, and then check for equality
 template <typename T>
-void testSerialization(T& originalObject)
+void testSerialization(const T& originalObject)
 {
     std::ostringstream outputStrStream(std::ostringstream::binary);
     PowerTabOutputStream outputStream(outputStrStream);

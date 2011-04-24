@@ -125,7 +125,7 @@ bool ChordName::operator!=(const ChordName& chordName) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool ChordName::Serialize(PowerTabOutputStream& stream)
+bool ChordName::Serialize(PowerTabOutputStream& stream) const
 {
     //------Last Checked------//
     // - Jan 4, 2005

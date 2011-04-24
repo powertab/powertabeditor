@@ -164,7 +164,7 @@ bool Staff::operator!=(const Staff& staff) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool Staff::Serialize(PowerTabOutputStream& stream)
+bool Staff::Serialize(PowerTabOutputStream& stream) const
 {
     //------Last Checked------//
     // - Jan 5, 2005

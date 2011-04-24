@@ -55,7 +55,7 @@ public:
 
 // Serialization Functions
 protected:
-    virtual bool Serialize(PowerTabOutputStream& stream);
+    virtual bool Serialize(PowerTabOutputStream& stream) const;
     virtual bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
 // MFC Class Functions

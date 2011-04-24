@@ -247,7 +247,7 @@ bool PowerTabFileHeader::operator!=(const PowerTabFileHeader& header) const
 /// Saves a PowerTabFileHeader object to a Power Tab output stream
 /// @param stream Power Tab output stream to save to
 /// @return True if the object was serialized, false if not
-bool PowerTabFileHeader::Serialize(PowerTabOutputStream& stream)
+bool PowerTabFileHeader::Serialize(PowerTabOutputStream& stream) const
 {
 	//------Last Checked------//
 	// - Dec 28, 2004

@@ -76,7 +76,7 @@ public:
     bool operator!=(const Dynamic& dynamic) const;
     
 // Serialization functions
-    bool Serialize(PowerTabOutputStream& stream);
+    bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
 // MFC Class Functions

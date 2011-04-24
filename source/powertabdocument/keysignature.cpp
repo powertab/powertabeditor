@@ -88,14 +88,11 @@ bool KeySignature::operator!=(const KeySignature& keySignature) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool KeySignature::Serialize(PowerTabOutputStream& stream)
+bool KeySignature::Serialize(PowerTabOutputStream& stream) const
 {
-    //------Last Checked------//
-    // - Dec 10, 2004
     stream << m_data;
-    CHECK_THAT(stream.CheckState(), false);
 
-    return (stream.CheckState());
+    return stream.CheckState();
 }
 
 /// Performs deserialization for the class

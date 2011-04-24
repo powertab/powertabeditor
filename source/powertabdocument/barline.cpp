@@ -108,7 +108,7 @@ bool Barline::operator!=(const Barline& barline) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool Barline::Serialize(PowerTabOutputStream& stream)
+bool Barline::Serialize(PowerTabOutputStream& stream) const
 {
 	//------Last Checked------//
 	// - Jan 4, 2005

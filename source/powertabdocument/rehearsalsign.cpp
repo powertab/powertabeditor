@@ -93,10 +93,8 @@ bool RehearsalSign::operator!=(const RehearsalSign& rehearsalSign) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool RehearsalSign::Serialize(PowerTabOutputStream& stream)
+bool RehearsalSign::Serialize(PowerTabOutputStream& stream) const
 {
-    //------Last Checked------//
-    // - Dec 10, 2004
     stream << m_letter;
     CHECK_THAT(stream.CheckState(), false);
 

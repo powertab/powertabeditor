@@ -127,7 +127,7 @@ bool Dynamic::operator!=(const Dynamic& dynamic) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool Dynamic::Serialize(PowerTabOutputStream& stream)
+bool Dynamic::Serialize(PowerTabOutputStream& stream) const
 {
     //------Last Checked------//
     // - Jan 12, 2005

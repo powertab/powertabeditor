@@ -110,7 +110,7 @@ bool SystemSymbol::operator!=(const SystemSymbol& systemSymbol) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool SystemSymbol::Serialize(PowerTabOutputStream& stream)
+bool SystemSymbol::Serialize(PowerTabOutputStream& stream) const
 {
     //------Last Checked------//
     // - Jan 13, 2005

@@ -60,7 +60,7 @@ PowerTabDocument::~PowerTabDocument()
 /// Serializes the document to an output stream
 /// @param stream Output stream to save to
 /// @return The output stream
-bool PowerTabDocument::Save(const string& fileName)
+bool PowerTabDocument::Save(const string& fileName) const
 {
     std::ofstream fileStream(fileName.c_str(), std::ofstream::out | std::ofstream::binary);
     PowerTabOutputStream stream(fileStream);

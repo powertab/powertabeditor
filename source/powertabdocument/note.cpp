@@ -143,11 +143,8 @@ bool Note::operator!=(const Note& note) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool Note::Serialize(PowerTabOutputStream& stream)
+bool Note::Serialize(PowerTabOutputStream& stream) const
 {
-    //------Last Checked------//
-    // - Dec 17, 2004
-
     stream << m_stringData << m_simpleData;
     CHECK_THAT(stream.CheckState(), false);
 
@@ -155,8 +152,7 @@ bool Note::Serialize(PowerTabOutputStream& stream)
     stream << symbolCount;
     CHECK_THAT(stream.CheckState(), false);
 
-    size_t i = 0;
-    for (; i < symbolCount; i++)
+    for (size_t i = 0; i < symbolCount; i++)
     {
         stream << m_complexSymbolArray[i];
         CHECK_THAT(stream.CheckState(), false);

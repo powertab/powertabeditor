@@ -127,7 +127,7 @@ bool GuitarIn::operator!=(const GuitarIn& guitarIn) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool GuitarIn::Serialize(PowerTabOutputStream& stream)
+bool GuitarIn::Serialize(PowerTabOutputStream& stream) const
 {
 	//------Last Checked------//
 	// - Jan 25, 2005

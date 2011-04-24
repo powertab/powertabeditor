@@ -82,7 +82,7 @@ public:
     }
 
     template <class T>
-    bool WriteVector(std::vector<T>& vect)
+    bool WriteVector(const std::vector<T>& vect)
     {
         const size_t count = vect.size();
         WriteCount(count);

@@ -61,7 +61,7 @@ bool AlternateEnding::operator!=(const AlternateEnding& alternateEnding) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool AlternateEnding::Serialize(PowerTabOutputStream& stream)
+bool AlternateEnding::Serialize(PowerTabOutputStream& stream) const
 {
     return (SystemSymbol::Serialize(stream));
 }

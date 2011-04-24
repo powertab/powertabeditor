@@ -58,7 +58,7 @@ public:
     bool operator!=(const FloatingText& floatingText) const;
 
 // Serialize Functions
-    bool Serialize(PowerTabOutputStream& stream);
+    bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
 // MFC Class Functions

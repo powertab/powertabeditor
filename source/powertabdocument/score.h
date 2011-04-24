@@ -65,7 +65,7 @@ public:
     bool operator!=(const Score& score) const;
 
 // Serialization Functions
-    bool Serialize(PowerTabOutputStream& stream);
+    bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
     // TODO - these should probably not be here, since this class was not part

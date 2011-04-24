@@ -121,7 +121,7 @@ bool RhythmSlash::operator!=(const RhythmSlash& rhythmSlash) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool RhythmSlash::Serialize(PowerTabOutputStream& stream)
+bool RhythmSlash::Serialize(PowerTabOutputStream& stream) const
 {
 	//------Last Checked------//
 	// - Dec 17, 2004

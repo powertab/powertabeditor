@@ -124,7 +124,7 @@ bool FontSetting::operator!=(const FontSetting& fontSetting) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool FontSetting::Serialize(PowerTabOutputStream& stream)
+bool FontSetting::Serialize(PowerTabOutputStream& stream) const
 {
     //------Last Checked------//
     // - Dec 5, 2004

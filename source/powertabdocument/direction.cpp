@@ -93,7 +93,7 @@ bool Direction::operator!=(const Direction& direction) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool Direction::Serialize(PowerTabOutputStream& stream)
+bool Direction::Serialize(PowerTabOutputStream& stream) const
 {
     stream << m_position;
     CHECK_THAT(stream.CheckState(), false);

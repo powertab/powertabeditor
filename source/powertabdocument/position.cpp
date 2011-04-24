@@ -187,7 +187,7 @@ bool Position::operator!=(const Position& position) const
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
-bool Position::Serialize(PowerTabOutputStream& stream)
+bool Position::Serialize(PowerTabOutputStream& stream) const
 {
     //------Last Checked------//
     // - Jan 17, 2005

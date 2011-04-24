@@ -184,7 +184,7 @@ public:
     bool operator!=(const PowerTabFileHeader& header) const;
 
 // Serialization Functions
-    bool Serialize(PowerTabOutputStream& stream);
+    bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream);
     bool DeserializeVersion1_7(PowerTabInputStream& stream);
     bool DeserializeVersion1_5(PowerTabInputStream& stream);
