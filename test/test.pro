@@ -57,7 +57,10 @@ SOURCES += \
     audio/test_midievent.cpp \
     powertabdocument/tuning_test.cpp \
     powertabdocument/generalmidi_test.cpp \
-    powertabdocument/alternateending_test.cpp
+    powertabdocument/alternateending_test.cpp \
+    powertabdocument/chorddiagram_test.cpp \
+    powertabdocument/direction_test.cpp \
+    powertabdocument/note_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

@@ -95,18 +95,9 @@ bool Tuning::Serialize(PowerTabOutputStream& stream) const
     stream << m_data;
     CHECK_THAT(stream.CheckState(), false);
 
-    // Write the string count as a byte
-    const size_t stringCount = GetStringCount();
-    stream << (uint8_t)stringCount;
-    CHECK_THAT(stream.CheckState(), false);
+    stream.WriteSmallVector(m_noteArray);
 
-    // Write each note
-    for (size_t i = 0; i < stringCount; i++)
-    {
-        stream << m_noteArray[i];
-        CHECK_THAT(stream.CheckState(), false);
-    }
-    return (stream.CheckState());
+    return stream.CheckState();
 }
 
 /// Performs deserialization for the class
@@ -121,21 +112,8 @@ bool Tuning::Deserialize(PowerTabInputStream& stream, uint16_t)
     stream >> m_data;
     CHECK_THAT(stream.CheckState(), false);
 
-    m_noteArray.clear();
-
-    // Get number of notes, then the notes themselves
-    uint8_t stringCount = 0;
-    stream >> stringCount;
-    CHECK_THAT(stream.CheckState(), false);
-
-    for (size_t i = 0; i < stringCount; i++)
-    {
-        uint8_t note;
-        stream >> note;
-        CHECK_THAT(stream.CheckState(), false);
-        m_noteArray.push_back(note);
-    }
-    return (stream.CheckState());
+    stream.ReadSmallVector(m_noteArray);
+    return stream.CheckState();
 }
 
 /// Determines if the tuning notes are the same as that of another Tuning object

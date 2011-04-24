@@ -106,6 +106,20 @@ public:
         m_stream.write((char *)&data, sizeof(data));
         return *this;
     }
+
+    /// Serializes a small vector (size < 255) by writing the size as one byte,
+    /// followed by each element of the vector.
+    /// This function takes advantage of std::vector's contiguous storage to avoid manually
+    /// looping through each element
+    template <class T>
+    void WriteSmallVector(const std::vector<T> &vect)
+    {
+        const uint8_t count = vect.size();
+        *this << count;
+
+        m_stream.write((char*)&vect[0], count * sizeof(T));
+    }
+
 };
 
 #endif

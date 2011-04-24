@@ -161,26 +161,14 @@ bool ChordDiagram::operator!=(const ChordDiagram& chordDiagram) const
 /// @return True if the object was serialized, false if not
 bool ChordDiagram::Serialize(PowerTabOutputStream& stream) const
 {
-	//------Last Checked------//
-	// - Jan 14, 2005
-	m_chordName.Serialize(stream);
-	CHECK_THAT(stream.CheckState(), false);
-	
-	stream << m_topFret;
-	CHECK_THAT(stream.CheckState(), false);
+    m_chordName.Serialize(stream);
+    CHECK_THAT(stream.CheckState(), false);
 
-	size_t count = GetStringCount();
-	stream << (uint8_t)count;
-	CHECK_THAT(stream.CheckState(), false);
-	
-	size_t i = 0;
-	for (; i < count; i++)
-	{
-		stream << m_fretNumberArray[i];
-		CHECK_THAT(stream.CheckState(), false);
-	}
-		
-	return (true);
+    stream << m_topFret;
+    CHECK_THAT(stream.CheckState(), false);
+
+    stream.WriteSmallVector(m_fretNumberArray);
+    return stream.CheckState();
 }
 
 /// Performs deserialization for the class
@@ -189,29 +177,14 @@ bool ChordDiagram::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool ChordDiagram::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-	//------Last Checked------//
-	// - Jan 14, 2005
-	m_chordName.Deserialize(stream, version);
-	CHECK_THAT(stream.CheckState(), false);
-	
-	stream >> m_topFret;
-	CHECK_THAT(stream.CheckState(), false);
-	
-	uint8_t count = 0;
-	stream >> count;
-	CHECK_THAT(stream.CheckState(), false);
+    m_chordName.Deserialize(stream, version);
+    CHECK_THAT(stream.CheckState(), false);
 
-	size_t i = 0;
-	for (; i < count; i++)
-	{
-		uint8_t fretNumber = 0;
-		stream >> fretNumber;
-		CHECK_THAT(stream.CheckState(), false);
-		
-		m_fretNumberArray.push_back(fretNumber);
-	}
-		
-	return (true);
+    stream >> m_topFret;
+    CHECK_THAT(stream.CheckState(), false);
+
+    stream.ReadSmallVector(m_fretNumberArray);
+    return stream.CheckState();
 }
 
 // Chord Diagram Functions

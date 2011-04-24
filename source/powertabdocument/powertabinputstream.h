@@ -89,6 +89,22 @@ public:
         m_stream.read(reinterpret_cast<char *>(&data), sizeof(data));
         return *this;
     }
+
+    template <class T>
+    bool ReadSmallVector(std::vector<T>& vect)
+    {
+        uint8_t size = 0;
+        *this >> size;
+
+        CHECK_THAT(CheckState(), false);
+
+        vect.clear();
+        vect.resize(size);
+
+        m_stream.read((char*)&vect[0], size * sizeof(T));
+
+        return CheckState();
+    }
 };
 
 #endif

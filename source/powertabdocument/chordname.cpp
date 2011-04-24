@@ -127,11 +127,8 @@ bool ChordName::operator!=(const ChordName& chordName) const
 /// @return True if the object was serialized, false if not
 bool ChordName::Serialize(PowerTabOutputStream& stream) const
 {
-    //------Last Checked------//
-    // - Jan 4, 2005
     stream << m_key << m_formula << m_formulaModifications << m_extra;
-    CHECK_THAT(stream.CheckState(), false);
-    return (stream.CheckState());
+    return stream.CheckState();
 }
 
 /// Performs deserialization for the class

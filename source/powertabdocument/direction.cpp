@@ -97,17 +97,8 @@ bool Direction::Serialize(PowerTabOutputStream& stream) const
 {
     stream << m_position;
     CHECK_THAT(stream.CheckState(), false);
-           
-    const size_t symbolCount = GetSymbolCount();
-    stream << (uint8_t)symbolCount;
-    CHECK_THAT(stream.CheckState(), false);
 
-    for (size_t i = 0; i < symbolCount; i++)
-    {
-        stream << m_symbolArray[i];
-        CHECK_THAT(stream.CheckState(), false);
-    }
-
+    stream.WriteSmallVector(m_symbolArray);
     return stream.CheckState();
 }
 
@@ -119,20 +110,8 @@ bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
     stream >> m_position;
     CHECK_THAT(stream.CheckState(), false);
-    
-    uint8_t symbolCount;
-    stream >> symbolCount;
-    CHECK_THAT(stream.CheckState(), false);
 
-    for (size_t i = 0; i < symbolCount; i++)
-    {
-        uint16_t symbol = 0;
-        stream >> symbol;
-        CHECK_THAT(stream.CheckState(), false);
-        
-        m_symbolArray.push_back(symbol);
-    }
-
+    stream.ReadSmallVector(m_symbolArray);
     return stream.CheckState();
 }
 
