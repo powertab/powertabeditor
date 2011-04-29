@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <istream>
 #include <vector>
+#include <array>
 
 #include <boost/pointee.hpp>
 
@@ -103,6 +104,18 @@ public:
 
         m_stream.read((char*)&vect[0], size * sizeof(T));
 
+        return CheckState();
+    }
+
+    template <class T, size_t N>
+    inline bool ReadSmallVector(std::array<T, N>& array)
+    {
+        uint8_t size = 0;
+        *this >> size;
+
+        CHECK_THAT(CheckState(), false);
+
+        m_stream.read((char*)&array[0], size * sizeof(T));
         return CheckState();
     }
 };

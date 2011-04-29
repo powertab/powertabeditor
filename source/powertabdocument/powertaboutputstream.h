@@ -107,17 +107,17 @@ public:
         return *this;
     }
 
-    /// Serializes a small vector (size < 255) by writing the size as one byte,
-    /// followed by each element of the vector.
-    /// This function takes advantage of std::vector's contiguous storage to avoid manually
+    /// Serializes a small (size < 255) vector or std::array by writing the size as one byte,
+    /// followed by each element of the container.
+    /// This function takes advantage of contiguous storage to avoid manually
     /// looping through each element
     template <class T>
-    void WriteSmallVector(const std::vector<T> &vect)
+    void WriteSmallVector(const T& container)
     {
-        const uint8_t count = vect.size();
+        const uint8_t count = container.size();
         *this << count;
 
-        m_stream.write((char*)&vect[0], count * sizeof(T));
+        m_stream.write((char*)&container[0], count * sizeof(typename T::value_type));
     }
 
 };

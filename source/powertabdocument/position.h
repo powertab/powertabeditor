@@ -21,8 +21,6 @@ class Tuning;
 #include <array>
 #include <vector>
 
-#define MAX_POSITION_COMPLEX_SYMBOLS    2   ///< Maximum allowed number of complex symbols per position object
-
 /// Stores and renders a position (a group of notes, or a rest)
 class Position : public PowerTabObject
 {
@@ -54,6 +52,8 @@ public:
     // Multibar Rest Constants
     static const uint8_t     MIN_MULTIBAR_REST_MEASURE_COUNT;                ///< Minimum allowed value for a multibar rest measure count
     static const uint8_t     MAX_MULTIBAR_REST_MEASURE_COUNT;                ///< Maximum allowed value for a multibar rest measure count
+
+    static const size_t MAX_POSITION_COMPLEX_SYMBOLS = 2; ///< Maximum allowed number of complex symbols per position object
 
     enum ShiftType
     {

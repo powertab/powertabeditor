@@ -12,9 +12,7 @@
 #ifndef __NOTE_H__
 #define __NOTE_H__
 
-#define MAX_NOTE_COMPLEX_SYMBOLS     3  ///< Maximum allowed number of complex symbols per note object
-                                        // Note: needs to be #define so array works properly
-
+#include <array>
 #include "powertabobject.h"
 
 class Tuning;
@@ -40,116 +38,117 @@ public:
     static const uint8_t MAX_BEND_PITCH;                 ///< Maximum allowed pitch for a bend, in quarter steps
     static const uint8_t MAX_BEND_DURATION;              ///< Maximum allowed value for the bend duration
 
-    enum flags
+    static const size_t MAX_NOTE_COMPLEX_SYMBOLS = 3;      ///< Maximum allowed number of complex symbols per note object
+
+    enum flags : uint8_t
     {
-        stringMask          = (uint8_t)0xe0,             ///< Mask used to retrieve the string
-        fretNumberMask      = (uint8_t)0x1f              ///< Mask used to retrieve the fret number
+        stringMask          = 0xe0,             ///< Mask used to retrieve the string
+        fretNumberMask      = 0x1f              ///< Mask used to retrieve the fret number
     };
 
-    enum simpleFlags
+    enum simpleFlags : uint16_t
     {
-        tied                        = (uint16_t)0x01,
-        muted                       = (uint16_t)0x02,
-        tieWrap                     = (uint16_t)0x04,     ///< Used to wrap a tie around systems
-        hammerOn                    = (uint16_t)0x08,
-        pullOff                     = (uint16_t)0x10,
-        hammerPullFromToNowhere     = (uint16_t)0x20,
-        hammerPullMask              = (uint16_t)0x38,     ///< Mask that filters out mutually exclusive hammer on/pull off flags
-        naturalHarmonic             = (uint16_t)0x40,
-        ghostNote                   = (uint16_t)0x80,
-        octave8va                   = (uint16_t)0x100,
-        octave15ma                  = (uint16_t)0x200,
-        octave8vb                   = (uint16_t)0x400,
-        octave15mb                  = (uint16_t)0x800,
-        octaveMask                  = (uint16_t)0xf00,    ///< Mask that filters out mutually exclusive octave flags
-        simpleFlagsMask             = (uint16_t)0xfff     ///< Mask that filters out all possible simple flags
+        tied                        = 0x01,
+        muted                       = 0x02,
+        tieWrap                     = 0x04,     ///< Used to wrap a tie around systems
+        hammerOn                    = 0x08,
+        pullOff                     = 0x10,
+        hammerPullFromToNowhere     = 0x20,
+        hammerPullMask              = 0x38,     ///< Mask that filters out mutually exclusive hammer on/pull off flags
+        naturalHarmonic             = 0x40,
+        ghostNote                   = 0x80,
+        octave8va                   = 0x100,
+        octave15ma                  = 0x200,
+        octave8vb                   = 0x400,
+        octave15mb                  = 0x800,
+        octaveMask                  = 0xf00,    ///< Mask that filters out mutually exclusive octave flags
+        simpleFlagsMask             = 0xfff     ///< Mask that filters out all possible simple flags
     };
 
-    enum complexSymbolTypes
+    enum complexSymbolTypes : uint8_t
     {
-        slide                   = (uint8_t)'d',
-        bend                    = (uint8_t)'e',
-        tappedHarmonic          = (uint8_t)'f',
-        trill                   = (uint8_t)'g',
-        artificialHarmonic      = (uint8_t)'h',
-        notUsed                 = (uint32_t)0
+        slide                   = 'd',
+        bend                    = 'e',
+        tappedHarmonic          = 'f',
+        trill                   = 'g',
+        artificialHarmonic      = 'h',
+        notUsed                 = 0
     };
 
-    enum slideIntoTypes
+    enum slideIntoTypes : uint8_t
     {
-        slideIntoNone                       = (uint8_t)0x00,
-        slideIntoFromBelow                  = (uint8_t)0x01,
-        slideIntoFromAbove                  = (uint8_t)0x02,
-        slideIntoShiftSlideUpwards          = (uint8_t)0x03,     ///< Used for wrapping shift slides around systems
-        slideIntoShiftSlideDownwards        = (uint8_t)0x04,     ///< Used for wrapping shift slides around systems
-        slideIntoLegatoSlideUpwards         = (uint8_t)0x05,     ///< Used for wrapping legato slides around systems
-        slideIntoLegatoSlideDownwards       = (uint8_t)0x06      ///< Used for wrapping legato slides around systems
+        slideIntoNone                       = 0x00,
+        slideIntoFromBelow                  = 0x01,
+        slideIntoFromAbove                  = 0x02,
+        slideIntoShiftSlideUpwards          = 0x03,     ///< Used for wrapping shift slides around systems
+        slideIntoShiftSlideDownwards        = 0x04,     ///< Used for wrapping shift slides around systems
+        slideIntoLegatoSlideUpwards         = 0x05,     ///< Used for wrapping legato slides around systems
+        slideIntoLegatoSlideDownwards       = 0x06      ///< Used for wrapping legato slides around systems
     };
 
-    enum slideOutOfTypes
+    enum slideOutOfTypes : uint8_t
     {
-        slideOutOfNone                      = (uint8_t)0x00,
-        slideOutOfShiftSlide                = (uint8_t)0x01,
-        slideOutOfLegatoSlide               = (uint8_t)0x02,
-        slideOutOfDownwards                 = (uint8_t)0x03,
-        slideOutOfUpwards                   = (uint8_t)0x04
+        slideOutOfNone                      = 0x00,
+        slideOutOfShiftSlide                = 0x01,
+        slideOutOfLegatoSlide               = 0x02,
+        slideOutOfDownwards                 = 0x03,
+        slideOutOfUpwards                   = 0x04
     };
 
-    enum slideFlags
+    enum slideFlags : uint32_t
     {
-        slideIntoTypeMask       = (uint32_t)0xff0000,               ///< Mask used to retrieve the slide into type
-        slideOutOfTypeMask      = (uint32_t)0xff00,                 ///< Mask used to retrieve the slide out of type
-        slideOutOfStepsMask     = (uint32_t)0xff                   ///< Mask used to retrieve the slide out of steps
+        slideIntoTypeMask       = 0xff0000,               ///< Mask used to retrieve the slide into type
+        slideOutOfTypeMask      = 0xff00,                 ///< Mask used to retrieve the slide out of type
+        slideOutOfStepsMask     = 0xff                   ///< Mask used to retrieve the slide out of steps
     };
 
-    enum bendTypes
+    enum bendTypes : uint8_t
     {
-        normalBend              = (uint8_t)0x00,
-        bendAndRelease          = (uint8_t)0x01,
-        bendAndHold             = (uint8_t)0x02,
-        preBend                 = (uint8_t)0x03,
-        preBendAndRelease       = (uint8_t)0x04,
-        preBendAndHold          = (uint8_t)0x05,
-        gradualRelease          = (uint8_t)0x06,
-        immediateRelease        = (uint8_t)0x07
+        normalBend              = 0x00,
+        bendAndRelease          = 0x01,
+        bendAndHold             = 0x02,
+        preBend                 = 0x03,
+        preBendAndRelease       = 0x04,
+        preBendAndHold          = 0x05,
+        gradualRelease          = 0x06,
+        immediateRelease        = 0x07
     };
 
-    enum bendDrawingPoints
+    enum bendDrawingPoints : uint8_t
     {
-        lowPoint                = (uint8_t)0x00,
-        midPoint                = (uint8_t)0x01,
-        highPoint               = (uint8_t)0x02
+        lowPoint                = 0x00,
+        midPoint                = 0x01,
+        highPoint               = 0x02
     };
 
-    enum bendFlags
+    enum bendFlags : uint32_t
     {
-        bendTypeMask            = (uint32_t)0xf00000,               ///< Mask used to retrieve the bend type
-        drawStartMask           = (uint32_t)0xc0000,                ///< Mask used to retrieve the draw start value
-        drawEndMask             = (uint32_t)0x30000,                ///< Mask used to retrieve the draw end value
-        bendDurationMask        = (uint32_t)0xff00,                 ///< Mask used to retrieve the bend duration
-        bentPitchMask           = (uint32_t)0xf0,                   ///< Mask used to retrieve the bent pitch value
-        releasePitchMask        = (uint32_t)0xf                     ///< Mask used to retrieve the release pitch value
+        bendTypeMask            = 0xf00000,               ///< Mask used to retrieve the bend type
+        drawStartMask           = 0xc0000,                ///< Mask used to retrieve the draw start value
+        drawEndMask             = 0x30000,                ///< Mask used to retrieve the draw end value
+        bendDurationMask        = 0xff00,                 ///< Mask used to retrieve the bend duration
+        bentPitchMask           = 0xf0,                   ///< Mask used to retrieve the bent pitch value
+        releasePitchMask        = 0xf                     ///< Mask used to retrieve the release pitch value
     };
 
-    enum artificialHarmonicOctaves
+    enum artificialHarmonicOctaves : uint8_t
     {
-        artificialHarmonicOctaveLoco            = (uint8_t)0x00,
-        artificialHarmonicOctave8va             = (uint8_t)0x01,
-        artificialHarmonicOctave15ma            = (uint8_t)0x02
+        artificialHarmonicOctaveLoco            = 0x00,
+        artificialHarmonicOctave8va             = 0x01,
+        artificialHarmonicOctave15ma            = 0x02
     };
 
 // Member Variables
 protected:
     uint8_t      m_stringData;                                       ///< Top 3 bits = string, bottom 5 bits = fret number
     uint16_t      m_simpleData;						                ///< Contains simple symbol flags
-    uint32_t    m_complexSymbolArray[MAX_NOTE_COMPLEX_SYMBOLS];	    ///< Complex symbol data (1 symbol per element)
+    std::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> m_complexSymbolArray;    ///< Complex symbol data (1 symbol per element)
 
 // Constructor/Destructor
 public:
     Note();
     Note(uint32_t string, uint8_t fretNumber);
     Note(const Note& note);
-    ~Note();
 
 // Operators
     const Note& operator=(const Note& note);
@@ -439,7 +438,7 @@ public:
     bool SetSlideInto(uint8_t type);
     bool GetSlideInto(uint8_t& type) const;
     bool HasSlideInto() const;
-    bool ClearSlideInto();
+    void ClearSlideInto();
 
 // Slide Out Of Functions
     /// Determines if a slide out of type is valid
@@ -455,7 +454,7 @@ public:
     bool SetSlideOutOf(uint8_t type, int8_t steps);
     bool GetSlideOutOf(uint8_t& type, int8_t& steps) const;
     bool HasSlideOutOf() const;
-    bool ClearSlideOutOf();
+    void ClearSlideOutOf();
 
     inline bool HasSlideOutOfDownwards() const
     {
@@ -510,7 +509,7 @@ public:
     bool GetBend(uint8_t& type, uint8_t& bentPitch, uint8_t& releasePitch,
         uint8_t& duration, uint8_t& drawStartPoint, uint8_t& drawEndPoint) const;
     bool HasBend() const;
-    bool ClearBend();
+    void ClearBend();
 
 // Tapped Harmonic Functions
     static bool IsValidTappedFretNumber(uint8_t tappedFretNumber);
@@ -519,7 +518,7 @@ public:
     bool SetTappedHarmonic(uint8_t tappedFretNumber);
     bool GetTappedHarmonic(uint8_t& tappedFretNumber) const;
     bool HasTappedHarmonic() const;
-    bool ClearTappedHarmonic();
+    void ClearTappedHarmonic();
 
 // Trill Functions
     static bool IsValidTrilledFretNumber(uint8_t trilledFretNumber);
@@ -528,7 +527,7 @@ public:
     bool SetTrill(uint8_t trilledFretNumber);
     bool GetTrill(uint8_t& trilledFretNumber) const;
     bool HasTrill() const;
-    bool ClearTrill();
+    void ClearTrill();
 
 // Artificial Harmonic Functions
     static bool IsValidArtificialHarmonicOctave(uint8_t octave);
@@ -539,19 +538,18 @@ public:
     bool GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
         uint8_t& octave) const;
     bool HasArtificialHarmonic() const;
-    bool ClearArtificialHarmonic();
+    void ClearArtificialHarmonic();
 
     std::string GetText() const;
 
     uint8_t GetPitch(const Tuning* tuning) const;
 
 // Complex Symbol Array Functions
-protected:
     static bool IsValidComplexSymbolType(uint8_t type);
     bool AddComplexSymbol(uint32_t symbolData);
     size_t GetComplexSymbolCount() const;
     uint32_t FindComplexSymbol(uint8_t type) const;
-    bool RemoveComplexSymbol(uint8_t type);
+    void RemoveComplexSymbol(uint8_t type);
     void ClearComplexSymbolArrayContents();
 };
 

@@ -178,8 +178,6 @@ bool Position::operator==(const Position& position) const
 /// Inequality Operator
 bool Position::operator!=(const Position& position) const
 {
-    //------Last Checked------//
-    // - Dec 17, 2004
     return (!operator==(position));
 }
 
@@ -189,26 +187,16 @@ bool Position::operator!=(const Position& position) const
 /// @return True if the object was serialized, false if not
 bool Position::Serialize(PowerTabOutputStream& stream) const
 {
-    //------Last Checked------//
-    // - Jan 17, 2005
     stream << m_position << m_beaming << m_data;
     CHECK_THAT(stream.CheckState(), false);
 
-    uint8_t complexCount = GetComplexSymbolCount();
-    stream << complexCount;
+    stream.WriteSmallVector(m_complexSymbolArray);
     CHECK_THAT(stream.CheckState(), false);
-
-    size_t i = 0;
-    for (; i < complexCount; i++)
-    {
-        stream << m_complexSymbolArray[i];
-        CHECK_THAT(stream.CheckState(), false);
-    }
 
     stream.WriteVector(m_noteArray);
     CHECK_THAT(stream.CheckState(), false);
 
-    return (stream.CheckState());
+    return stream.CheckState();
 }
 
 /// Performs deserialization for the class
@@ -217,63 +205,14 @@ bool Position::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool Position::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Jan 17, 2005
+    stream >> m_position >> m_beaming >> m_data;
+    CHECK_THAT(stream.CheckState(), false);
 
-    // Version 1.0/1.0.2 beaming updated
-    if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-        version == PowerTabFileHeader::FILEVERSION_1_0_2)
-    {
-        stream >> m_position >> m_beaming >> m_data;
-        CHECK_THAT(stream.CheckState(), false);
+    stream.ReadSmallVector(m_complexSymbolArray);
+    CHECK_THAT(stream.CheckState(), false);
 
-        // All we have to do is move the irregular flags to the duration
-        // variable, the document will be rebeamed in the CDocument::Serialize()
-        if ((m_beaming & 0x2000) == 0x2000)
-            m_data |= irregularGroupingStart;
-        if ((m_beaming & 0x4000) == 0x4000)
-            m_data |= irregularGroupingMiddle;
-        if ((m_beaming & 0x8000) == 0x8000)
-            m_data |= irregularGroupingEnd;
-
-        uint8_t complexCount;
-        stream >> complexCount;
-        CHECK_THAT(stream.CheckState(), false);
-
-        // Read the symbols
-        size_t i = 0;
-        for (; i < complexCount; i++)
-        {
-            stream >> m_complexSymbolArray[i];
-            CHECK_THAT(stream.CheckState(), false);
-        }
-
-        stream.ReadVector(m_noteArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-    }
-    // Version 1.5 and up
-    else
-    {
-        stream >> m_position >> m_beaming >> m_data;
-        CHECK_THAT(stream.CheckState(), false);
-
-        uint8_t complexCount;
-        stream >> complexCount;
-        CHECK_THAT(stream.CheckState(), false);
-
-        // Read the symbols
-        size_t i = 0;
-        for (; i < complexCount; i++)
-        {
-            stream >> m_complexSymbolArray[i];
-            CHECK_THAT(stream.CheckState(), false);
-        }
-
-        stream.ReadVector(m_noteArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-    }
-
-    return (stream.CheckState());
+    stream.ReadVector(m_noteArray, version);
+    return stream.CheckState();
 }
 
 // Duration Type Functions
