@@ -733,7 +733,7 @@ public:
     bool GetVolumeSwell(uint8_t& startVolume, uint8_t& endVolume,
                         uint8_t& duration) const;
     bool HasVolumeSwell() const;
-    bool ClearVolumeSwell();
+    void ClearVolumeSwell();
 
     // Tremolo Bar Functions
     /// Determines if a tremolo bar type is valid
@@ -766,7 +766,7 @@ public:
     bool SetTremoloBar(uint8_t type, uint8_t duration, uint8_t pitch);
     bool GetTremoloBar(uint8_t& type, uint8_t& duration, uint8_t& pitch) const;
     bool HasTremoloBar() const;
-    bool ClearTremoloBar();
+    void ClearTremoloBar();
     std::string GetTremoloBarText() const;
 
     // Multibar Rest Functions
@@ -786,23 +786,11 @@ public:
     bool SetMultibarRest(uint8_t measureCount);
     bool GetMultibarRest(uint8_t& measureCount) const;
     bool HasMultibarRest() const;
-    bool ClearMultibarRest();
+    void ClearMultibarRest();
 
     // Complex Symbol Array Functions
-protected:
-    /// Determines if a complex symbol type is valid
-    /// @param type Symbol type to validate
-    /// @return True if the symbol type is valid, false if not
-    static bool IsValidComplexSymbolType(uint8_t type)
-    {
-        return ((type == volumeSwell) || (type == tremoloBar) ||
-                (type == multibarRest));
-    }
-    bool AddComplexSymbol(uint32_t symbolData);
-    size_t GetComplexSymbolCount() const;
-    uint32_t FindComplexSymbol(uint8_t type) const;
-    bool RemoveComplexSymbol(uint8_t type);
-    void ClearComplexSymbolArrayContents();
+private:
+    static bool IsValidComplexSymbolType(uint8_t type);
 
     // Note Functions
 public:

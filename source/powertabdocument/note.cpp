@@ -18,6 +18,7 @@
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
+#include "complexsymbolarray.h"
 
 // Default Constants
 const uint8_t Note::DEFAULT_STRING_DATA      = 0;
@@ -41,7 +42,7 @@ Note::Note() :
     m_stringData(DEFAULT_STRING_DATA),
     m_simpleData(DEFAULT_SIMPLE_DATA)
 {
-    ClearComplexSymbolArrayContents();
+    ComplexSymbols::clearComplexSymbols(m_complexSymbolArray);
 }
 
 /// Primary Constructor
@@ -56,7 +57,7 @@ Note::Note(uint32_t string, uint8_t fretNumber) :
 
     SetString(string);
     SetFretNumber(fretNumber);
-    ClearComplexSymbolArrayContents();
+    ComplexSymbols::clearComplexSymbols(m_complexSymbolArray);
 }
 
 /// Copy Constructor
@@ -234,7 +235,7 @@ bool Note::SetSlideInto(uint8_t type)
     }
 
     // Look for an existing slide first
-    uint32_t index = FindComplexSymbol(slide);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, slide);
 
     // Slide exists; update its slide into data
     if (index != (uint32_t)-1)
@@ -245,8 +246,10 @@ bool Note::SetSlideInto(uint8_t type)
     }
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(MAKEWORD(0, 0), MAKEWORD(type, slide));
-    return (AddComplexSymbol(symbolData));
+    const uint32_t symbolData = MAKELONG(MAKEWORD(0, 0), MAKEWORD(type, slide));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the slide into data (if any)
@@ -257,7 +260,7 @@ bool Note::GetSlideInto(uint8_t& type) const
     type = slideIntoNone;
 
     // Get the index of the slide
-    uint32_t index = FindComplexSymbol(slide);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, slide);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -296,7 +299,7 @@ bool Note::HasSlideInto() const
 void Note::ClearSlideInto()
 {
     // Get the index of the slide
-    uint32_t index = FindComplexSymbol(slide);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, slide);
     if (index == (uint32_t)-1)
         return;
 
@@ -306,7 +309,7 @@ void Note::ClearSlideInto()
     if (HasSlideOutOf())
         return;
 
-    RemoveComplexSymbol(slide);
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, slide);
 }
 
 // Slide Out Of Functions
@@ -325,7 +328,7 @@ bool Note::SetSlideOutOf(uint8_t type, int8_t steps)
     }
 
     // Look for an existing slide first
-    uint32_t index = FindComplexSymbol(slide);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, slide);
 
     // Slide exists; update its slide out of data
     if (index != (uint32_t)-1)
@@ -338,8 +341,10 @@ bool Note::SetSlideOutOf(uint8_t type, int8_t steps)
     }
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(MAKEWORD(steps, type), MAKEWORD(0, slide));
-    return (AddComplexSymbol(symbolData));
+    const uint32_t symbolData = MAKELONG(MAKEWORD(steps, type), MAKEWORD(0, slide));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the slide out of data (if any)
@@ -352,7 +357,7 @@ bool Note::GetSlideOutOf(uint8_t& type, int8_t& steps) const
     steps = 0;
 
     // Get the index of the slide
-    uint32_t index = FindComplexSymbol(slide);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, slide);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -379,7 +384,7 @@ bool Note::HasSlideOutOf() const
 void Note::ClearSlideOutOf()
 {
     // Get the index of the slide
-    uint32_t index = FindComplexSymbol(slide);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, slide);
     if (index == (uint32_t)-1)
         return;
 
@@ -389,7 +394,7 @@ void Note::ClearSlideOutOf()
     if (HasSlideInto())
         return;
 
-    RemoveComplexSymbol(slide);
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, slide);
 }
 
 // Bend Functions
@@ -505,7 +510,8 @@ bool Note::SetBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
     symbolData |= (uint32_t)(bentPitch << 4);
     symbolData |= (uint32_t)(releasePitch);
 
-    return (AddComplexSymbol(symbolData));
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the bend data (if any)
@@ -527,7 +533,7 @@ bool Note::GetBend(uint8_t& type, uint8_t& bentPitch, uint8_t& releasePitch,
     drawEndPoint = 0;
 
     // Get the index of the bend
-    uint32_t index = FindComplexSymbol(bend);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, bend);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -548,13 +554,13 @@ bool Note::GetBend(uint8_t& type, uint8_t& bentPitch, uint8_t& releasePitch,
 /// @return True if the note has a bend, false if not
 bool Note::HasBend() const
 {
-    return (FindComplexSymbol(bend) != (uint32_t)-1);
+    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, bend) != (uint32_t)-1);
 }
 
 /// Removes a bend from the note, if possible
 void Note::ClearBend()
 {
-   RemoveComplexSymbol(bend);
+   ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, bend);
 }
 
 // Tapped Harmonic Functions
@@ -582,9 +588,11 @@ bool Note::SetTappedHarmonic(uint8_t tappedFretNumber)
     CHECK_THAT(IsValidTappedHarmonic(tappedFretNumber), false);
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(MAKEWORD(tappedFretNumber, 0),
+    const uint32_t symbolData = MAKELONG(MAKEWORD(tappedFretNumber, 0),
                                    MAKEWORD(0, tappedHarmonic));
-    return (AddComplexSymbol(symbolData));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the tapped harmonic data (if any)
@@ -595,7 +603,7 @@ bool Note::GetTappedHarmonic(uint8_t& tappedFretNumber) const
     tappedFretNumber = 0;
 
     // Get the index of the tapped harmonic
-    uint32_t index = FindComplexSymbol(tappedHarmonic);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, tappedHarmonic);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -610,13 +618,13 @@ bool Note::GetTappedHarmonic(uint8_t& tappedFretNumber) const
 /// @return True if the note has a tapped harmonic, false if not
 bool Note::HasTappedHarmonic() const
 {
-    return (FindComplexSymbol(tappedHarmonic) != (uint32_t)-1);
+    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, tappedHarmonic) != (uint32_t)-1);
 }
 
 /// Removes a tapped harmonic from the note, if possible
 void Note::ClearTappedHarmonic()
 {
-    RemoveComplexSymbol(tappedHarmonic);
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, tappedHarmonic);
 }
 
 // Trill Functions
@@ -644,8 +652,10 @@ bool Note::SetTrill(uint8_t trilledFretNumber)
     CHECK_THAT(IsValidTrill(trilledFretNumber), false);
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(0, MAKEWORD(trilledFretNumber, trill));
-    return (AddComplexSymbol(symbolData));
+    const uint32_t symbolData = MAKELONG(0, MAKEWORD(trilledFretNumber, trill));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the trill data (if any)
@@ -656,7 +666,7 @@ bool Note::GetTrill(uint8_t& trilledFretNumber) const
     trilledFretNumber = 0;
 
     // Get the index of the trill
-    uint32_t index = FindComplexSymbol(trill);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, trill);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -671,13 +681,13 @@ bool Note::GetTrill(uint8_t& trilledFretNumber) const
 /// @return True if the note has a trill, false if not
 bool Note::HasTrill() const
 {
-    return (FindComplexSymbol(trill) != (uint32_t)-1);
+    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, trill) != (uint32_t)-1);
 }
 
 /// Removes a trill from the note, if possible
 void Note::ClearTrill()
 {
-    RemoveComplexSymbol(trill);
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, trill);
 }
 
 // Artificial Harmonic Functions
@@ -712,9 +722,11 @@ bool Note::SetArtificialHarmonic(uint8_t key, uint8_t keyVariation, uint8_t octa
     CHECK_THAT(IsValidArtificialHarmonic(key, keyVariation, octave), false);
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(MAKEWORD(key, keyVariation),
-                                   MAKEWORD(octave, artificialHarmonic));
-    return (AddComplexSymbol(symbolData));
+    const uint32_t symbolData = MAKELONG(MAKEWORD(key, keyVariation),
+                                         MAKEWORD(octave, artificialHarmonic));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the artificial harmonic data (if any)
@@ -730,7 +742,7 @@ bool Note::GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
     octave = 0;
 
     // Get the index of the artificial harmonic
-    uint32_t index = FindComplexSymbol(artificialHarmonic);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, artificialHarmonic);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -747,13 +759,13 @@ bool Note::GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
 /// @return True if the note has a artificial harmonic, false if not
 bool Note::HasArtificialHarmonic() const
 {
-    return (FindComplexSymbol(artificialHarmonic) != (uint32_t)-1);
+    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, artificialHarmonic) != (uint32_t)-1);
 }
 
 /// Removes a artificial harmonic from the note, if possible
 void Note::ClearArtificialHarmonic()
 {
-    RemoveComplexSymbol(artificialHarmonic);
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, artificialHarmonic);
 }
 
 // Complex Symbol Array Functions
@@ -765,101 +777,6 @@ bool Note::IsValidComplexSymbolType(uint8_t type)
     return ((type == slide) || (type == bend) || (type == tappedHarmonic) ||
             (type == tappedHarmonic) || (type == trill) ||
             (type == artificialHarmonic));
-}
-
-/// Adds a complex symbol to the complex symbol array
-/// @param symbolData Data that makes up the symbol
-/// @return True if the symbol was added or updated, false if not
-bool Note::AddComplexSymbol(uint32_t symbolData)
-{
-    // Get and validate the symbol type
-    const uint8_t type = HIBYTE(HIWORD(symbolData));
-    CHECK_THAT(IsValidComplexSymbolType(type), false);
-
-    // Get the index in the complex array where the symbol is stored
-    const uint32_t index = FindComplexSymbol(type);
-
-    // Found symbol in the array, update the symbol data
-    if (index != static_cast<uint32_t>(-1))
-    {
-        m_complexSymbolArray[index] = symbolData;
-        return true;
-    }
-    // Symbol was not found in the array, find the first free array slot and
-    // insert there
-    else
-    {
-        auto firstUnused = std::find(m_complexSymbolArray.begin(),
-                                     m_complexSymbolArray.end(), notUsed);
-
-        if (firstUnused != m_complexSymbolArray.end())
-        {
-            *firstUnused = symbolData;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-}
-
-/// Gets the number of complex symbols used by the note
-/// @return The number of complex symbols used by the note
-size_t Note::GetComplexSymbolCount() const
-{
-    return  m_complexSymbolArray.size() -
-            std::count(m_complexSymbolArray.begin(), m_complexSymbolArray.end(), notUsed);
-}
-
-namespace
-{
-    struct CompareComplexSymbolType
-    {
-        CompareComplexSymbolType(uint8_t symbolType) : symbolType(symbolType) {}
-
-        bool operator()(uint32_t symbol) const
-        {
-            return HIBYTE(HIWORD(symbol)) == symbolType;
-        }
-
-    private:
-        const uint8_t symbolType;
-    };
-}
-
-/// Gets the index of a given complex symbol type in the complex symbol array
-/// @param type Type of symbol to find
-/// @return Index within the array where the symbol was found, or -1 if not
-/// found
-uint32_t Note::FindComplexSymbol(uint8_t type) const
-{
-    auto symbol = std::find_if(m_complexSymbolArray.begin(), m_complexSymbolArray.end(),
-                               CompareComplexSymbolType(type));
-
-    if (symbol != m_complexSymbolArray.end())
-    {
-        return symbol - m_complexSymbolArray.begin();
-    }
-    else
-    {
-        return -1;
-    }
-}
-
-/// Removes a complex symbol from the complex symbol array, if possible
-/// @param type Type of symbol to remove
-/// @return True if the symbol was removed, false if not
-void Note::RemoveComplexSymbol(uint8_t type)
-{
-    std::replace_if(m_complexSymbolArray.begin(), m_complexSymbolArray.end(),
-                    CompareComplexSymbolType(type), notUsed);
-}
-
-/// Clears the contents of the symbol array (sets all elements to "not used")
-void Note::ClearComplexSymbolArrayContents()
-{
-    std::fill(m_complexSymbolArray.begin(), m_complexSymbolArray.end(), notUsed);
 }
 
 /// Creates a text representation of the note, including brackets for ghost notes, harmonics, etc

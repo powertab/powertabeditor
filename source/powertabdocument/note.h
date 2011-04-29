@@ -545,12 +545,8 @@ public:
     uint8_t GetPitch(const Tuning* tuning) const;
 
 // Complex Symbol Array Functions
+private:
     static bool IsValidComplexSymbolType(uint8_t type);
-    bool AddComplexSymbol(uint32_t symbolData);
-    size_t GetComplexSymbolCount() const;
-    uint32_t FindComplexSymbol(uint8_t type) const;
-    void RemoveComplexSymbol(uint8_t type);
-    void ClearComplexSymbolArrayContents();
 };
 
 #endif

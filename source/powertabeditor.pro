@@ -230,7 +230,8 @@ HEADERS  += powertabeditor.h \
     painters/directionpainter.h \
     audio/letringevent.h \
     painters/tremolobarpainter.h \
-    painters/rhythmslashpainter.h
+    painters/rhythmslashpainter.h \
+    powertabdocument/complexsymbolarray.h
 
 RESOURCES += \
     resources.qrc

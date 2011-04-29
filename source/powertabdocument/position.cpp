@@ -26,6 +26,8 @@
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
+#include "complexsymbolarray.h"
+
 // Constants
 // Default Constants
 const uint8_t    Position::DEFAULT_POSITION                              = 0;
@@ -57,7 +59,7 @@ Position::Position() :
     m_position(DEFAULT_POSITION), m_beaming(DEFAULT_BEAMING),
     m_data(DEFAULT_DATA)
 {
-    ClearComplexSymbolArrayContents();
+    ComplexSymbols::clearComplexSymbols(m_complexSymbolArray);
 }
 
 /// Primary Constructor
@@ -78,7 +80,7 @@ Position::Position(uint32_t position, uint8_t durationType, uint8_t dotCount) :
     else if (dotCount == 2)
         SetDoubleDotted();
 
-    ClearComplexSymbolArrayContents();
+    ComplexSymbols::clearComplexSymbols(m_complexSymbolArray);
 }
 
 /// Copy Constructor
@@ -495,14 +497,14 @@ bool Position::IsValidVolumeSwell(uint8_t startVolume, uint8_t endVolume, uint8_
 bool Position::SetVolumeSwell(uint8_t startVolume, uint8_t endVolume,
     uint8_t duration)
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
     CHECK_THAT(IsValidVolumeSwell(startVolume, endVolume, duration), false);
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(MAKEWORD(endVolume, startVolume),
+    const uint32_t symbolData = MAKELONG(MAKEWORD(endVolume, startVolume),
         MAKEWORD(duration, volumeSwell));
-    return (AddComplexSymbol(symbolData));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the volume swell data (if any)
@@ -521,7 +523,7 @@ bool Position::GetVolumeSwell(uint8_t& startVolume, uint8_t& endVolume,
     duration = 0;
 
     // Get the index of the volume swell
-    uint32_t index = FindComplexSymbol(volumeSwell);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, volumeSwell);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -538,18 +540,13 @@ bool Position::GetVolumeSwell(uint8_t& startVolume, uint8_t& endVolume,
 /// @return True if the position has a volume swell, false if not
 bool Position::HasVolumeSwell() const
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
-    return (FindComplexSymbol(volumeSwell) != (uint32_t)-1);
+    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, volumeSwell) != (uint32_t)-1);
 }
 
-/// Removes a volume swell from the position
-/// @return True if the volume swell was removed, false if not
-bool Position::ClearVolumeSwell()
+/// Removes a volume swell from the position, if possible
+void Position::ClearVolumeSwell()
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
-    return (RemoveComplexSymbol(volumeSwell));
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, volumeSwell);
 }
 
 // Tremolo Bar Functions
@@ -561,14 +558,14 @@ bool Position::ClearVolumeSwell()
 /// @return True if the tremolo bar was added or updated
 bool Position::SetTremoloBar(uint8_t type, uint8_t duration, uint8_t pitch)
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
     CHECK_THAT(IsValidTremoloBar(type, duration, pitch), false);
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(MAKEWORD(pitch, duration),
+    const uint32_t symbolData = MAKELONG(MAKEWORD(pitch, duration),
         MAKEWORD(type, tremoloBar));
-    return (AddComplexSymbol(symbolData));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the tremolo bar data (if any)
@@ -587,7 +584,7 @@ bool Position::GetTremoloBar(uint8_t& type, uint8_t& duration,
     pitch = 0;
 
     // Get the index of the tremolo bar
-    uint32_t index = FindComplexSymbol(tremoloBar);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, tremoloBar);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -606,16 +603,13 @@ bool Position::HasTremoloBar() const
 {
     //------Last Checked------//
     // - Jan 19, 2005
-    return (FindComplexSymbol(tremoloBar) != (uint32_t)-1);
+    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, tremoloBar) != (uint32_t)-1);
 }
 
-/// Removes a tremolo bar from the position
-/// @return True if the tremolo bar was removed, false if not
-bool Position::ClearTremoloBar()
+/// Removes a tremolo bar from the position, if possible
+void Position::ClearTremoloBar()
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
-    return (RemoveComplexSymbol(tremoloBar));
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, tremoloBar);
 }
 
 /// Returns a text representation of the tremolo bar pitch - e.g. "1 3/4"
@@ -653,14 +647,14 @@ std::string Position::GetTremoloBarText() const
 /// @return True if the multibar rest was added or updated
 bool Position::SetMultibarRest(uint8_t measureCount)
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
     CHECK_THAT(IsValidMultibarRest(measureCount), false);
 
     // Construct the symbol data, then add it to the array
-    uint32_t symbolData = MAKELONG(MAKEWORD(measureCount, 0),
+    const uint32_t symbolData = MAKELONG(MAKEWORD(measureCount, 0),
         MAKEWORD(0, multibarRest));
-    return (AddComplexSymbol(symbolData));
+
+    ComplexSymbols::addComplexSymbol(m_complexSymbolArray, symbolData);
+    return true;
 }
 
 /// Gets the multibar rest data (if any)
@@ -674,7 +668,7 @@ bool Position::GetMultibarRest(uint8_t& measureCount) const
     measureCount = 0;
 
     // Get the index of the multibar rest
-    uint32_t index = FindComplexSymbol(multibarRest);
+    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, multibarRest);
     if (index == (uint32_t)-1)
         return (false);
 
@@ -691,120 +685,13 @@ bool Position::HasMultibarRest() const
 {
     //------Last Checked------//
     // - Jan 19, 2005
-    return (FindComplexSymbol(multibarRest) != (uint32_t)-1);
+    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, multibarRest) != (uint32_t)-1);
 }
 
-/// Removes a multibar rest from the position
-/// @return True if the multibar rest was removed, false if not
-bool Position::ClearMultibarRest()
+/// Removes a multibar rest from the position, if possbile
+void Position::ClearMultibarRest()
 {
-    //------Last Checked------//
-    // - Jan 19, 2005
-    return (RemoveComplexSymbol(multibarRest));
-}
-
-// Complex Symbol Array Functions
-/// Adds a complex symbol to the complex symbol array
-/// @param symbolData Data that makes up the symbol
-/// @return True if the symbol was added or updated, false if not
-bool Position::AddComplexSymbol(uint32_t symbolData)
-{
-    //------Last Checked------//
-    // - Jan 19, 2005
-
-    // Get and validate the symbol type
-    uint8_t type = HIBYTE(HIWORD(symbolData));
-    CHECK_THAT(IsValidComplexSymbolType(type), false);
-
-    bool returnValue = false;
-
-    // Get the index in the complex array where the symbol is stored
-    uint32_t index = FindComplexSymbol(type);
-
-    // Found symbol in the array, update the symbol data
-    if (index != (uint32_t)-1)
-    {
-        m_complexSymbolArray[index] = symbolData;
-        returnValue = true;
-    }
-    // Symbol was not found in the array, find the first free array slot and
-    // insert there
-    else
-    {
-        for (uint32_t i = 0; i < m_complexSymbolArray.size(); i++)
-        {
-            if (m_complexSymbolArray[i] == notUsed)
-            {
-                m_complexSymbolArray[i] = symbolData;
-                returnValue = true;
-                break;
-            }
-        }
-    }
-
-    return (returnValue);
-}
-
-/// Gets the number of complex symbols used by the position
-/// @return The number of complex symbols used by the position
-size_t Position::GetComplexSymbolCount() const
-{
-    size_t returnValue = 0;
-    for (size_t i = 0; i < m_complexSymbolArray.size(); i++)
-    {
-        // Slot is not used; break out
-        if (m_complexSymbolArray[i] == notUsed)
-            break;
-        returnValue++;
-    }
-    return (returnValue);
-}
-
-/// Gets the index of a given complex symbol type in the complex symbol array
-/// @param type Type of symbol to find
-/// @return Index within the array where the symbol was found, or -1 if not
-/// found
-uint32_t Position::FindComplexSymbol(uint8_t type) const
-{
-    uint32_t returnValue = (uint32_t)-1;
-
-    for (uint32_t i = 0; i < m_complexSymbolArray.size(); i++)
-    {
-        // Found the symbol type; break out
-        if (HIBYTE(HIWORD(m_complexSymbolArray[i])) == type)
-        {
-            returnValue = i;
-            break;
-        }
-    }
-
-    return (returnValue);
-}
-
-/// Removes a complex symbol from the complex symbol array
-/// @param type Type of symbol to remove
-/// @return True if the symbol was removed, false if not
-bool Position::RemoveComplexSymbol(uint8_t type)
-{
-    bool returnValue = false;
-
-    for (auto i = m_complexSymbolArray.begin(); i != m_complexSymbolArray.end(); ++i)
-    {
-        if (HIBYTE(HIWORD(*i)) == type)
-        {
-            *i = notUsed;
-            returnValue = true;
-            break;
-        }
-    }
-
-    return (returnValue);
-}
-
-/// Clears the contents of the symbol array (sets all elements to "not used")
-void Position::ClearComplexSymbolArrayContents()
-{
-    std::fill(m_complexSymbolArray.begin(), m_complexSymbolArray.end(), notUsed);
+    ComplexSymbols::removeComplexSymbol(m_complexSymbolArray, multibarRest);
 }
 
 /// Inserts the given note
@@ -1032,4 +919,13 @@ void Position::SortNotesDown()
 void Position::SortNotesUp()
 {
     std::sort(m_noteArray.begin(), m_noteArray.end(), std::not2(CompareStrings()));
+}
+
+/// Determines if a complex symbol type is valid
+/// @param type Symbol type to validate
+/// @return True if the symbol type is valid, false if not
+bool Position::IsValidComplexSymbolType(uint8_t type)
+{
+    return ((type == volumeSwell) || (type == tremoloBar) ||
+            (type == multibarRest));
 }

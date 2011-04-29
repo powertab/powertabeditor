@@ -60,7 +60,8 @@ SOURCES += \
     powertabdocument/alternateending_test.cpp \
     powertabdocument/chorddiagram_test.cpp \
     powertabdocument/direction_test.cpp \
-    powertabdocument/note_test.cpp
+    powertabdocument/note_test.cpp \
+    powertabdocument/complexsymbolarray_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
