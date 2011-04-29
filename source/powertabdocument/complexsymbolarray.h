@@ -60,7 +60,7 @@ namespace ComplexSymbols
     template <size_t N>
     void clearComplexSymbols(std::array<uint32_t, N>& symbolArray)
     {
-        std::fill(symbolArray.begin(), symbolArray.end(), notUsed);
+        std::fill(symbolArray.begin(), symbolArray.end(), static_cast<uint32_t>(notUsed));
     }
 
     /// Removes a complex symbol from the complex symbol array
@@ -70,7 +70,7 @@ namespace ComplexSymbols
     void removeComplexSymbol(std::array<uint32_t, N>& symbolArray, uint8_t type)
     {
         std::replace_if(symbolArray.begin(), symbolArray.end(),
-                        CompareComplexSymbolType(type), notUsed);
+                        CompareComplexSymbolType(type), static_cast<uint32_t>(notUsed));
     }
 
     /// Adds a complex symbol to the complex symbol array
@@ -92,7 +92,8 @@ namespace ComplexSymbols
         // otherwise, find the first free array slot and insert it there
         else
         {
-            auto firstUnused = std::find(symbolArray.begin(), symbolArray.end(), notUsed);
+            auto firstUnused = std::find(symbolArray.begin(), symbolArray.end(),
+                                         static_cast<uint32_t>(notUsed));
 
             if (firstUnused != symbolArray.end())
             {
