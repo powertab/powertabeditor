@@ -211,12 +211,21 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                         letRingActive = false;
                     }
 
-                    // tremolo picking
-                    if (position->HasTremoloPicking())
+                    // Perform tremolo picking or trills - they work identically, except trills alternate between two pitches
+                    if (position->HasTremoloPicking() || note->HasTrill())
                     {
-                        // tremolo picking is done using 32nd notes
+                        // each note is a 32nd note
                         const double tremPickNoteDuration = getCurrentTempo(position->GetPosition()) / 8.0;
                         const int numNotes = duration / tremPickNoteDuration;
+
+                        // find the other pitch to alternate with (this is just the same pitch for tremolo picking)
+                        uint32_t otherPitch = pitch;
+                        if (note->HasTrill())
+                        {
+                            uint8_t otherFret = 0;
+                            note->GetTrill(otherFret);
+                            otherPitch = pitch + (note->GetFretNumber() - otherFret);
+                        }
 
                         for (int k = 0; k < numNotes; ++k)
                         {
@@ -224,6 +233,9 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
                             eventList.push_back(new StopNoteEvent(i, currentStartTime, positionIndex,
                                                                   systemIndex, pitch));
+
+                            // alternate to the other pitch (this has no effect for tremolo picking)
+                            std::swap(pitch, otherPitch);
 
                             eventList.push_back(new PlayNoteEvent(i, currentStartTime, tremPickNoteDuration, pitch,
                                                                   positionIndex, systemIndex, guitar,
