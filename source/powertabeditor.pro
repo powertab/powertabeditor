@@ -126,7 +126,8 @@ SOURCES += main.cpp\
     painters/directionpainter.cpp \
     audio/letringevent.cpp \
     painters/tremolobarpainter.cpp \
-    painters/rhythmslashpainter.cpp
+    painters/rhythmslashpainter.cpp \
+    audio/bendevent.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -231,7 +232,8 @@ HEADERS  += powertabeditor.h \
     audio/letringevent.h \
     painters/tremolobarpainter.h \
     painters/rhythmslashpainter.h \
-    powertabdocument/complexsymbolarray.h
+    powertabdocument/complexsymbolarray.h \
+    audio/bendevent.h
 
 RESOURCES += \
     resources.qrc

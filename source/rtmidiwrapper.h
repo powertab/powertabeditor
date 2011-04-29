@@ -9,14 +9,14 @@
 **/
 
 #include <string>
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 
 class RtMidiOut;
 
 class RtMidiWrapper
 {
 private:
-    std::unique_ptr<RtMidiOut> midiout;
+    boost::scoped_ptr<RtMidiOut> midiout;
     bool sendMidiMessage(uint8_t a, uint8_t b, uint8_t c);
 
 public:
@@ -24,13 +24,14 @@ public:
     ~RtMidiWrapper();
 
     bool initialize(uint32_t preferredPort = 0);
+    void setPitchBendRange(uint8_t channel, uint8_t semiTones);
     uint32_t getPortCount();
     std::string getPortName(uint32_t port);
     bool usePort(uint32_t port);
     bool setPatch(uint8_t channel, uint8_t patch);
     bool setVolume(uint8_t channel, uint8_t volume);
     bool setPan(uint8_t channel, uint8_t pan); // pan in the range -100(left)-100(right)
-    bool setPitchBend(uint8_t channel, uint8_t bend); // bend in the range -200(2 semitones down)-200(2 semitones up)
+    bool setPitchBend(uint8_t channel, uint8_t bend);
     bool playNote(uint8_t channel, uint8_t pitch, uint8_t velocity);
     bool stopNote(uint8_t channel, uint8_t pitch);
     bool setVibrato(uint8_t channel, uint8_t modulation);
@@ -48,9 +49,12 @@ public:
     enum ControlChanges
     {
         MOD_WHEEL = 1,
+        DATA_ENTRY = 6,
         CHANNEL_VOLUME = 7,
         PAN_CHANGE = 10,
-        HOLD_PEDAL = 64
+        HOLD_PEDAL = 64,
+        RPN_LSB = 100,
+        RPN_MSB = 101
     };
 };
 

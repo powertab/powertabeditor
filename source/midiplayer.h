@@ -1,8 +1,6 @@
 #ifndef MIDIPLAYER_H
 #define MIDIPLAYER_H
 
-#include <rtmidiwrapper.h>
-
 #include <QThread>
 #include <QHash>
 #include <memory>
@@ -52,11 +50,13 @@ protected:
     void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, uint32_t startSystem, uint32_t startPos);
     double getWholeRestDuration(std::shared_ptr<const System> system, const Staff* staff, 
                                 const Position* position, double originalDuration) const;
+
+    void generateBends(boost::ptr_list<MidiEvent>& eventList, uint8_t channel, const Note* note,
+                       double startTime, double duration, uint32_t positionIndex, uint32_t systemIndex) const;
     
     uint32_t getActualNotePitch(const Note* note, std::shared_ptr<const Guitar> guitar) const;
 
     Caret* caret;
-    RtMidiWrapper rtMidiWrapper;
 
     bool isPlaying;
     quint32 currentSystemIndex;

@@ -3,6 +3,8 @@
 #include <QSettings>
 #include <QDebug>
 
+#include <rtmidiwrapper.h>
+
 #include <boost/next_prior.hpp>
 
 #include <painters/caret.h>
@@ -21,6 +23,7 @@
 #include <audio/stopnoteevent.h>
 #include <audio/metronomeevent.h>
 #include <audio/letringevent.h>
+#include <audio/bendevent.h>
 #include <audio/repeatcontroller.h>
 
 using std::shared_ptr;
@@ -29,9 +32,6 @@ using std::unique_ptr;
 MidiPlayer::MidiPlayer(Caret* caret) :
     caret(caret)
 {
-    QSettings settings;
-    rtMidiWrapper.initialize(settings.value("midi/preferredPort", 0).toInt());
-
     isPlaying = false;
     currentSystemIndex = 0;
 
@@ -196,6 +196,11 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                         eventList.push_back(new VibratoEvent(i, startTime + duration, positionIndex,
                                                              systemIndex, VibratoEvent::VIBRATO_OFF));
                     }
+
+                    if (note->HasBend())
+                    {
+                        generateBends(eventList, i, note, startTime, duration, positionIndex, systemIndex);
+                    }
                     
                     // let ring events
                     if (position->HasLetRing() && !letRingActive)
@@ -287,6 +292,18 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
                                 uint32_t startSystem, uint32_t startPos)
 {
+    RtMidiWrapper rtMidiWrapper;
+
+    // set the port for RtMidi
+    QSettings settings;
+    rtMidiWrapper.initialize(settings.value("midi/preferredPort", 0).toInt());
+
+    // set pitch bend settings for each channel to one octave
+    for (uint8_t i = 0; i < midi::NUM_MIDI_CHANNELS_PER_PORT; i++)
+    {
+        rtMidiWrapper.setPitchBendRange(i, 12);
+    }
+
     RepeatController repeatController(caret->getCurrentScore());
 
     uint32_t currentPosition = 0;
@@ -526,4 +543,40 @@ uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guita
     }
     
     return pitch;
+}
+
+void MidiPlayer::generateBends(boost::ptr_list<MidiEvent> &eventList, uint8_t channel, const Note* note,
+                               double startTime, double duration, uint32_t positionIndex, uint32_t systemIndex) const
+{
+    uint8_t type = 0, bentPitch = 0, releasePitch = 0, bendDuration = 0, drawStartPoint = 0, drawEndPoint = 0;
+    note->GetBend(type, bentPitch, releasePitch, bendDuration, drawStartPoint, drawEndPoint);
+
+    const uint8_t bendAmount = BendEvent::DEFAULT_BEND + bentPitch * BendEvent::BEND_QUARTER_TONE;
+    const uint8_t releaseAmount = BendEvent::DEFAULT_BEND + releasePitch * BendEvent::BEND_QUARTER_TONE;
+
+    // perform a pre-bend
+    if (type == Note::preBend || type == Note::preBendAndRelease)
+    {
+        eventList.push_back(new BendEvent(channel, startTime, positionIndex, systemIndex, bendAmount));
+    }
+
+    // bend back down to the release pitch
+    if (type == Note::preBendAndRelease)
+    {
+        const int numBendEvents = abs(bendAmount - releaseAmount);
+        const double bendEventDuration = duration / numBendEvents;
+
+        for (int i = 1; i <= numBendEvents; i++)
+        {
+            eventList.push_back(new BendEvent(channel, startTime + bendEventDuration * i, positionIndex, systemIndex,
+                                              bendAmount - i));
+        }
+    }
+
+    // reset to the release pitch bend value
+    if (type == Note::preBend || type == Note::immediateRelease)
+    {
+        eventList.push_back(new BendEvent(channel, startTime + duration, positionIndex,
+                                          systemIndex, releaseAmount));
+    }
 }

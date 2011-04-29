@@ -125,10 +125,6 @@ bool RtMidiWrapper::setPitchBend (uint8_t channel, uint8_t bend)
     if (bend > 127)
         bend = 127;
 
-    // MIDI pitch bend
-    // first parameter is 0xE0-0xEF with E being the id and 0-F being the channel (0-15)
-    // second parameter is the lsb (0-127)
-    // third parameter is the msb (0-127)
     return sendMidiMessage(PITCH_WHEEL + channel, 0, bend);
 }
 
@@ -180,4 +176,12 @@ bool RtMidiWrapper::setSustain(uint8_t channel, bool sustainOn)
     const uint8_t value = sustainOn ? 127 : 0;
     
     return sendMidiMessage(CONTROL_CHANGE + channel, HOLD_PEDAL, value);
+}
+
+/// Sets the pitch bend range to the given number of semitones
+void RtMidiWrapper::setPitchBendRange(uint8_t channel, uint8_t semiTones)
+{
+    sendMidiMessage(CONTROL_CHANGE + channel, RPN_MSB, 0);
+    sendMidiMessage(CONTROL_CHANGE + channel, RPN_LSB, 0);
+    sendMidiMessage(CONTROL_CHANGE + channel, DATA_ENTRY, semiTones);
 }
