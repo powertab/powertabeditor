@@ -5,20 +5,21 @@
 
 #include <QFont>
 #include <QStaticText>
+#include <memory>
 
 class ChordText;
 
 class ChordTextPainter : public PainterBase
 {
 public:
-    ChordTextPainter(const ChordText* chordText);
+    ChordTextPainter(std::shared_ptr<const ChordText> chordText);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
     void init();
 
-    const ChordText* chordText;
+    std::shared_ptr<const ChordText> chordText;
     static QFont displayFont;
     QStaticText displayText;
 };

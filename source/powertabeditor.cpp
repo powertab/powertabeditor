@@ -1267,7 +1267,7 @@ void PowerTabEditor::editChordName()
         ChordNameDialog chordNameDialog(&chordName);
         if (chordNameDialog.exec() == QDialog::Accepted)
         {
-            ChordText* chordText = new ChordText(caretPosition, chordName);
+            shared_ptr<ChordText> chordText = std::make_shared<ChordText>(caretPosition, chordName);
             undoManager->push(new AddChordText(currentSystem, chordText, chordTextIndex));
         }
     }

@@ -63,19 +63,9 @@ System::System(const System& system) :
 /// Destructor
 System::~System()
 {
-    //------Last Checked------//
-    // - Jan 14, 2005
     for (uint32_t i = 0; i < m_directionArray.size(); i++)
     {
         delete m_directionArray.at(i);
-    }
-    for (uint32_t i = 0; i < m_chordTextArray.size(); i++)
-    {
-        delete m_chordTextArray.at(i);
-    }
-    for (uint32_t i = 0; i < m_rhythmSlashArray.size(); i++)
-    {
-        delete m_rhythmSlashArray.at(i);
     }
     for (uint32_t i = 0; i < m_staffArray.size(); i++)
     {
@@ -86,8 +76,6 @@ System::~System()
         delete m_barlineArray.at(i);
     }
     m_directionArray.clear();
-    m_chordTextArray.clear();
-    m_rhythmSlashArray.clear();
     m_staffArray.clear();
     m_barlineArray.clear();
 }
@@ -645,8 +633,38 @@ uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos) const
     return offset;
 }
 
-// Searches for a ChordText object with the specified position
-// Returns the index of that object if found, and returns -1 otherwise
+/// Determines if a chord text index is valid
+/// @param index chord text index to validate
+/// @return True if the chord text index is valid, false if not
+bool System::IsValidChordTextIndex(uint32_t index) const
+{
+    return index < GetChordTextCount();
+}
+
+/// Gets the number of chord text items in the system
+/// @return The number of chord text items in the system
+size_t System::GetChordTextCount() const
+{
+    return m_chordTextArray.size();
+}
+
+/// Gets the nth chord text item in the system
+/// @param index Index of the chord text to get
+/// @return The nth chord text item in the system
+System::ChordTextPtr System::GetChordText(uint32_t index) const
+{
+    CHECK_THAT(IsValidChordTextIndex(index), ChordTextPtr());
+    return m_chordTextArray[index];
+}
+
+/// @return true If a ChordText item exists at the given position
+bool System::HasChordText(uint32_t position) const
+{
+    return FindChordText(position) != -1;
+}
+
+/// Searches for a ChordText object with the specified position
+/// @return The index of that object if found, and returns -1 otherwise
 int System::FindChordText(uint32_t position) const
 {
     CHECK_THAT(IsValidPosition(position), -1);
@@ -662,20 +680,18 @@ int System::FindChordText(uint32_t position) const
     return -1;
 }
 
-// Inserts a ChordText object at the specified index
-// Returns true if the insertion succeeded
-bool System::InsertChordText(ChordText* chordText, uint32_t index)
+/// Inserts a ChordText object at the specified index
+/// @return true if the insertion succeeded
+bool System::InsertChordText(ChordTextPtr chordText, uint32_t index)
 {
     CHECK_THAT(index <= GetChordTextCount(), false);
 
     m_chordTextArray.insert(m_chordTextArray.begin() + index, chordText);
-
     return true;
 }
 
-// Removes a ChordText object at the specified index
-// Returns true if the removal succeeded
-// NOTE: this only removes the chord text pointer from the array, and does not call 'delete'
+/// Removes a ChordText object at the specified index
+/// @return true if the removal succeeded
 bool System::RemoveChordText(uint32_t index)
 {
     CHECK_THAT(IsValidChordTextIndex(index), false);
@@ -786,7 +802,7 @@ struct ShiftPosition
     {
     }
 
-    void operator()(T* item)
+    void operator()(const T& item)
     {
         if (comparePositions(item->GetPosition(), positionIndex))
         {
@@ -811,23 +827,23 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     SetPositionSpacing(GetPositionSpacing() - offset);
 
     // shift forward barlines
-    ShiftPosition<Barline> shiftBarlines(comparison, positionIndex, offset);
+    ShiftPosition<Barline*> shiftBarlines(comparison, positionIndex, offset);
     std::for_each(m_barlineArray.begin(), m_barlineArray.end(), shiftBarlines);
 
     // shift direction symbols
-    ShiftPosition<Direction> shiftDirections(comparison, positionIndex, offset);
+    ShiftPosition<Direction*> shiftDirections(comparison, positionIndex, offset);
     std::for_each(m_directionArray.begin(), m_directionArray.end(), shiftDirections);
 
     // shift chords
-    ShiftPosition<ChordText> shiftChords(comparison, positionIndex, offset);
+    ShiftPosition<ChordTextPtr> shiftChords(comparison, positionIndex, offset);
     std::for_each(m_chordTextArray.begin(), m_chordTextArray.end(), shiftChords);
 
     // shift rhythm slashes
-    ShiftPosition<RhythmSlash> shiftSlashes(comparison, positionIndex, offset);
+    ShiftPosition<RhythmSlashPtr> shiftSlashes(comparison, positionIndex, offset);
     std::for_each(m_rhythmSlashArray.begin(), m_rhythmSlashArray.end(), shiftSlashes);
 
     // shift positions for each staff
-    ShiftPosition<Position> shiftPosition(comparison, positionIndex, offset);
+    ShiftPosition<Position*> shiftPosition(comparison, positionIndex, offset);
 
     for (size_t i = 0; i < m_staffArray.size(); i++)
     {
@@ -919,4 +935,29 @@ size_t System::MaxDirectionSymbolCount() const
                    directionCounts.begin(), std::mem_fun(&Direction::GetSymbolCount));
 
     return *std::max_element(directionCounts.begin(), directionCounts.end());
+}
+
+// Rhythm Slash Functions
+/// Determines if a rhythm slash index is valid
+/// @param index rhythm slash index to validate
+/// @return True if the rhythm slash index is valid, false if not
+bool System::IsValidRhythmSlashIndex(uint32_t index) const
+{
+    return index < GetRhythmSlashCount();
+}
+
+/// Gets the number of rhythm slashes in the system
+/// @return The number of rhythm slashes in the system
+size_t System::GetRhythmSlashCount() const
+{
+    return m_rhythmSlashArray.size();
+}
+
+/// Gets the nth rhythm slash in the system
+/// @param index Index of the rhythm slash to get
+/// @return The nth rhythm slash in the system
+System::RhythmSlashPtr System::GetRhythmSlash(uint32_t index) const
+{
+    CHECK_THAT(IsValidRhythmSlashIndex(index), RhythmSlashPtr());
+    return m_rhythmSlashArray[index];
 }

@@ -16,6 +16,7 @@
 #include "rect.h"
 
 #include <vector>
+#include <memory>
 
 class Direction;
 class ChordText;
@@ -39,6 +40,9 @@ public:
     // Position Spacing Constants
     static const uint8_t MIN_POSITION_SPACING;
 
+    typedef std::shared_ptr<RhythmSlash> RhythmSlashPtr;
+    typedef std::shared_ptr<ChordText> ChordTextPtr;
+
     // Member Variables
 protected:
     Rect  m_rect;				///< Bounding rect for the system
@@ -50,8 +54,8 @@ protected:
 public:
     Barline             m_startBar;                             ///< Barline at the start of the system
     std::vector<Direction*>      m_directionArray;                       ///< List of directions used within the system
-    std::vector<ChordText*>      m_chordTextArray;                       ///< List of chord text items used within the system
-    std::vector<RhythmSlash*>    m_rhythmSlashArray;                     ///< List of rhythm slashes used within the system
+    std::vector<ChordTextPtr>      m_chordTextArray;    ///< List of chord text items used within the system
+    std::vector<RhythmSlashPtr>    m_rhythmSlashArray;  ///< List of rhythm slashes used within the system
     std::vector<Staff*>          m_staffArray;                           ///< List of staves used within the system
     std::vector<Barline*>        m_barlineArray;                         ///< List of barlines (not including start and end bars) used within the system
     Barline             m_endBar;                               ///< Barline at the end of the system (time and key signature are not used in this barline)
@@ -173,52 +177,19 @@ public:
     size_t MaxDirectionSymbolCount() const;
 
     // Chord Text Functions
-    /// Determines if a chord text index is valid
-    /// @param index chord text index to validate
-    /// @return True if the chord text index is valid, false if not
-    bool IsValidChordTextIndex(uint32_t index) const
-    {return (index < GetChordTextCount());}
-    /// Gets the number of chord text items in the system
-    /// @return The number of chord text items in the system
-    size_t GetChordTextCount() const
-    {return (m_chordTextArray.size());}
-    /// Gets the nth chord text item in the system
-    /// @param index Index of the chord text to get
-    /// @return The nth chord text item in the system
-    ChordText* GetChordText(uint32_t index) const
-    {
-        CHECK_THAT(IsValidChordTextIndex(index), NULL);
-        return (m_chordTextArray[index]);
-    }
+    bool IsValidChordTextIndex(uint32_t index) const;
+    size_t GetChordTextCount() const;
+    ChordTextPtr GetChordText(uint32_t index) const;
 
-    // Returns true if a ChordText item exists at the given position
-    inline bool HasChordText(uint32_t position) const
-    {
-        return FindChordText(position) != -1;
-    }
-
+    bool HasChordText(uint32_t position) const;
     int FindChordText(uint32_t position) const;
-    bool InsertChordText(ChordText* chordText, uint32_t index);
+    bool InsertChordText(ChordTextPtr chordText, uint32_t index);
     bool RemoveChordText(uint32_t index);
 
     // Rhythm Slash Functions
-    /// Determines if a rhythm slash index is valid
-    /// @param index rhythm slash index to validate
-    /// @return True if the rhythm slash index is valid, false if not
-    bool IsValidRhythmSlashIndex(uint32_t index) const
-    {return (index < GetRhythmSlashCount());}
-    /// Gets the number of rhythm slashes in the system
-    /// @return The number of rhythm slashes in the system
-    size_t GetRhythmSlashCount() const
-    {return (m_rhythmSlashArray.size());}
-    /// Gets the nth rhythm slash in the system
-    /// @param index Index of the rhythm slash to get
-    /// @return The nth rhythm slash in the system
-    RhythmSlash* GetRhythmSlash(uint32_t index) const
-    {
-        CHECK_THAT(IsValidRhythmSlashIndex(index), NULL);
-        return (m_rhythmSlashArray[index]);
-    }
+    bool IsValidRhythmSlashIndex(uint32_t index) const;
+    size_t GetRhythmSlashCount() const;
+    RhythmSlashPtr GetRhythmSlash(uint32_t index) const;
 
     // Staff Functions
     /// Determines if a staff index is valid

@@ -3,18 +3,19 @@
 
 #include "painterbase.h"
 #include <QFont>
+#include <memory>
 
 class RhythmSlash;
 
 class RhythmSlashPainter : public PainterBase
 {
 public:
-    RhythmSlashPainter(const RhythmSlash* rhythmSlash);
+    RhythmSlashPainter(std::shared_ptr<const RhythmSlash> rhythmSlash);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
-    const RhythmSlash* rhythmSlash;
+    std::shared_ptr<const RhythmSlash> rhythmSlash;
     static QFont musicFont;
 };
 

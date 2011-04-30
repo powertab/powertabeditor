@@ -7,7 +7,7 @@
 
 QFont RhythmSlashPainter::musicFont = MusicFont().getFont();
 
-RhythmSlashPainter::RhythmSlashPainter(const RhythmSlash* rhythmSlash) :
+RhythmSlashPainter::RhythmSlashPainter(std::shared_ptr<const RhythmSlash> rhythmSlash) :
     rhythmSlash(rhythmSlash)
 {
     bounds = QRectF(0, 0, musicFont.pixelSize(), System::RHYTHM_SLASH_SPACING);

@@ -465,7 +465,7 @@ void ScoreArea::drawRhythmSlashes(shared_ptr<const System> system)
 
     for (size_t i = 0; i < system->GetRhythmSlashCount(); i++)
     {
-        const RhythmSlash* rhythmSlash = system->GetRhythmSlash(i);
+        shared_ptr<const RhythmSlash> rhythmSlash = system->GetRhythmSlash(i);
         const uint32_t x = system->GetPositionX(rhythmSlash->GetPosition());
 
         RhythmSlashPainter* painter = new RhythmSlashPainter(rhythmSlash);
@@ -526,7 +526,7 @@ void ScoreArea::drawChordText(shared_ptr<System> system, quint32 height, const S
 {
     for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
     {
-        const ChordText* chordText = system->GetChordText(i);
+        shared_ptr<const ChordText> chordText = system->GetChordText(i);
 
         const quint32 location = system->GetPositionX(chordText->GetPosition());
 
