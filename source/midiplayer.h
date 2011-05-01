@@ -54,8 +54,18 @@ protected:
     double getWholeRestDuration(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
                                 const Position* position, double originalDuration) const;
 
-    void generateBends(boost::ptr_list<MidiEvent>& eventList, uint8_t channel, const Note* note,
-                       double startTime, double duration, uint32_t positionIndex, uint32_t systemIndex) const;
+    /// Holds basic information about a bend - used to simplify the generateBends function
+    struct BendEventInfo
+    {
+        BendEventInfo(double timestamp, uint8_t pitchBendAmout);
+
+        double timestamp;
+        uint8_t pitchBendAmount;
+    };
+
+    void generateBends(std::vector<BendEventInfo>& bends, double startTime, double duration, const Note* note) const;
+    void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, uint8_t startBendAmount,
+                             uint8_t releaseBendAmount) const;
     
     uint32_t getActualNotePitch(const Note* note, std::shared_ptr<const Guitar> guitar) const;
 

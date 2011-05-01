@@ -199,7 +199,14 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
                     if (note->HasBend())
                     {
-                        generateBends(eventList, i, note, startTime, duration, positionIndex, systemIndex);
+                        std::vector<BendEventInfo> bendEvents;
+                        generateBends(bendEvents, startTime, duration, note);
+
+                        foreach (BendEventInfo event, bendEvents)
+                        {
+                            eventList.push_back(new BendEvent(i, event.timestamp, positionIndex,
+                                                              systemIndex, event.pitchBendAmount));
+                        }
                     }
                     
                     // let ring events
@@ -545,8 +552,9 @@ uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guita
     return pitch;
 }
 
-void MidiPlayer::generateBends(boost::ptr_list<MidiEvent> &eventList, uint8_t channel, const Note* note,
-                               double startTime, double duration, uint32_t positionIndex, uint32_t systemIndex) const
+/// Generates bend events for the given note
+void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTime,
+                               double duration, const Note* note) const
 {
     uint8_t type = 0, bentPitch = 0, releasePitch = 0, bendDuration = 0, drawStartPoint = 0, drawEndPoint = 0;
     note->GetBend(type, bentPitch, releasePitch, bendDuration, drawStartPoint, drawEndPoint);
@@ -557,26 +565,56 @@ void MidiPlayer::generateBends(boost::ptr_list<MidiEvent> &eventList, uint8_t ch
     // perform a pre-bend
     if (type == Note::preBend || type == Note::preBendAndRelease)
     {
-        eventList.push_back(new BendEvent(channel, startTime, positionIndex, systemIndex, bendAmount));
+        bends.push_back(BendEventInfo(startTime, bendAmount));
+    }
+
+    // bend up to bent pitch
+    if (type == Note::bendAndRelease)
+    {
+        generateGradualBend(bends, startTime, duration / 2, BendEvent::DEFAULT_BEND, bendAmount);
     }
 
     // bend back down to the release pitch
     if (type == Note::preBendAndRelease)
     {
-        const int numBendEvents = abs(bendAmount - releaseAmount);
-        const double bendEventDuration = duration / numBendEvents;
-
-        for (int i = 1; i <= numBendEvents; i++)
-        {
-            eventList.push_back(new BendEvent(channel, startTime + bendEventDuration * i, positionIndex, systemIndex,
-                                              bendAmount - i));
-        }
+        generateGradualBend(bends, startTime, duration, bendAmount, releaseAmount);
+    }
+    else if (type == Note::bendAndRelease)
+    {
+        generateGradualBend(bends, startTime + duration / 2, duration / 2, bendAmount, releaseAmount);
     }
 
     // reset to the release pitch bend value
     if (type == Note::preBend || type == Note::immediateRelease)
     {
-        eventList.push_back(new BendEvent(channel, startTime + duration, positionIndex,
-                                          systemIndex, releaseAmount));
+        bends.push_back(BendEventInfo(startTime + duration, releaseAmount));
     }
+}
+
+/// Generates a series of BendEvents to perform a gradual bend over the given duration
+/// Bends the note from the startBendAmount to the releaseBendAmount over the note duration
+void MidiPlayer::generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration,
+                                uint8_t startBendAmount, uint8_t releaseBendAmount) const
+{
+    const int numBendEvents = abs(startBendAmount - releaseBendAmount);
+    const double bendEventDuration = duration / numBendEvents;
+
+    for (int i = 1; i <= numBendEvents; i++)
+    {
+        const double timestamp = startTime + bendEventDuration * i;
+        if (startBendAmount < releaseBendAmount)
+        {
+            bends.push_back(BendEventInfo(timestamp, startBendAmount + i));
+        }
+        else
+        {
+            bends.push_back(BendEventInfo(timestamp, startBendAmount - i));
+        }
+    }
+}
+
+MidiPlayer::BendEventInfo::BendEventInfo(double timestamp, uint8_t pitchBendAmount) :
+    timestamp(timestamp),
+    pitchBendAmount(pitchBendAmount)
+{
 }
