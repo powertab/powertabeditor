@@ -4,13 +4,14 @@
 #include "painterbase.h"
 #include <QFont>
 #include <QStaticText>
+#include <memory>
 
 class Direction;
 
 class DirectionPainter : public PainterBase
 {
 public:
-    DirectionPainter(const Direction* direction, size_t symbolIndex);
+    DirectionPainter(std::shared_ptr<const Direction> direction, size_t symbolIndex);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -20,7 +21,7 @@ private:
     QFont displayFont;
     QStaticText displayText;
 
-    const Direction* direction;
+    std::shared_ptr<const Direction> direction;
     const size_t symbolIndex;
     bool usingMusicFont;
 };

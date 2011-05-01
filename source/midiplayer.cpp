@@ -99,7 +99,7 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
     for (quint32 i = 0; i < system->GetStaffCount(); i++)
     {
-        const Staff* staff = system->GetStaff(i);
+        shared_ptr<const Staff> staff = system->GetStaff(i);
         shared_ptr<const Guitar> guitar = caret->getCurrentScore()->GetGuitar(i);
 
         for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
@@ -429,7 +429,7 @@ double MidiPlayer::calculateNoteDuration(const Position* currentPosition) const
     return currentPosition->GetDuration() * tempo;
 }
 
-double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, const Staff* staff, 
+double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, shared_ptr<const Staff> staff,
                                         const Position* position, double originalDuration) const
 {
     Barline* prevBarline = system->GetPrecedingBarline(position->GetPosition());

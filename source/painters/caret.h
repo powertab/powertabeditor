@@ -52,7 +52,7 @@ public:
 
     Score* getCurrentScore() const;
     std::shared_ptr<System> getCurrentSystem() const;
-    Staff* getCurrentStaff() const;
+    std::shared_ptr<Staff> getCurrentStaff() const;
     Position* getCurrentPosition() const;
     Note* getCurrentNote() const;
     Barline* getCurrentBarline() const;

@@ -40,8 +40,11 @@ public:
     // Position Spacing Constants
     static const uint8_t MIN_POSITION_SPACING;
 
-    typedef std::shared_ptr<RhythmSlash> RhythmSlashPtr;
+    typedef std::shared_ptr<Direction> DirectionPtr;
     typedef std::shared_ptr<ChordText> ChordTextPtr;
+    typedef std::shared_ptr<RhythmSlash> RhythmSlashPtr;
+    typedef std::shared_ptr<Staff> StaffPtr;
+    typedef std::shared_ptr<const Staff> StaffConstPtr;
 
     // Member Variables
 protected:
@@ -52,13 +55,13 @@ protected:
     uint8_t  m_extraSpacing;			///< Extra spacing used within the system (for rehearsal signs + tempo markers)
 
 public:
-    Barline             m_startBar;                             ///< Barline at the start of the system
-    std::vector<Direction*>      m_directionArray;                       ///< List of directions used within the system
-    std::vector<ChordTextPtr>      m_chordTextArray;    ///< List of chord text items used within the system
-    std::vector<RhythmSlashPtr>    m_rhythmSlashArray;  ///< List of rhythm slashes used within the system
-    std::vector<Staff*>          m_staffArray;                           ///< List of staves used within the system
-    std::vector<Barline*>        m_barlineArray;                         ///< List of barlines (not including start and end bars) used within the system
-    Barline             m_endBar;                               ///< Barline at the end of the system (time and key signature are not used in this barline)
+    Barline                         m_startBar;         ///< Barline at the start of the system
+    std::vector<DirectionPtr>       m_directionArray;   ///< List of directions used within the system
+    std::vector<ChordTextPtr>       m_chordTextArray;   ///< List of chord text items used within the system
+    std::vector<RhythmSlashPtr>     m_rhythmSlashArray; ///< List of rhythm slashes used within the system
+    std::vector<StaffPtr>           m_staffArray;       ///< List of staves used within the system
+    std::vector<Barline*>           m_barlineArray;     ///< List of barlines (not including start and end bars) used within the system
+    Barline                         m_endBar;           ///< Barline at the end of the system (time and key signature are not used in this barline)
 
     // Constructor/Destructor
 public:
@@ -150,29 +153,15 @@ public:
 
     /// Gets a pointer to the bar at the start of the system
     /// @return A pointer to the bar at the start of the system
-    Barline* GetStartBarPtr()
+    const Barline* GetStartBarPtr() const
     {
         return &m_startBar;
     }
 
     // Direction Functions
-    /// Determines if a staff index is valid
-    /// @param index staff index to validate
-    /// @return True if the staff index is valid, false if not
-    bool IsValidDirectionIndex(uint32_t index) const
-    {return (index < GetDirectionCount());}
-    /// Gets the number of staffs in the system
-    /// @return The number of staffs in the system
-    size_t GetDirectionCount() const
-    {return (m_directionArray.size());}
-    /// Gets the nth staff in the system
-    /// @param index Index of the staff to get
-    /// @return The nth staff in the system
-    Direction* GetDirection(uint32_t index) const
-    {
-        CHECK_THAT(IsValidDirectionIndex(index), NULL);
-        return (m_directionArray[index]);
-    }
+    bool IsValidDirectionIndex(uint32_t index) const;
+    size_t GetDirectionCount() const;
+    DirectionPtr GetDirection(uint32_t index) const;
 
     size_t MaxDirectionSymbolCount() const;
 
@@ -192,22 +181,11 @@ public:
     RhythmSlashPtr GetRhythmSlash(uint32_t index) const;
 
     // Staff Functions
-    /// Determines if a staff index is valid
-    /// @param index staff index to validate
-    /// @return True if the staff index is valid, false if not
-    bool IsValidStaffIndex(uint32_t index) const
-    {return (index < GetStaffCount());}
-    /// Gets the number of staffs in the system
-    /// @return The number of staffs in the system
-    size_t GetStaffCount() const
-    {return (m_staffArray.size());}
-    /// Gets the nth staff in the system
-    /// @param index Index of the staff to get
-    /// @return The nth staff in the system
-    Staff* GetStaff(uint32_t index) const
-    {CHECK_THAT(IsValidStaffIndex(index), NULL); return (m_staffArray[index]);}
+    bool IsValidStaffIndex(uint32_t index) const;
+    size_t GetStaffCount() const;
+    StaffPtr GetStaff(uint32_t index) const;
 
-    size_t FindStaffIndex(Staff* staff) const;
+    size_t FindStaffIndex(StaffConstPtr staff) const;
 
     // Barline Functions
     /// Determines if a barline index is valid

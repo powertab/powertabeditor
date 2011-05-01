@@ -43,32 +43,45 @@ public:
 
 protected:
     void renderScore(Score* score, int lineSpacing);
-    void renderSystem(Score* score, std::shared_ptr<System> system, int lineSpacing);
+    void renderSystem(Score* score, std::shared_ptr<const System> system, int lineSpacing);
 
-    void drawTabNotes(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
-    void renderBars(const StaffData& currentStaffInfo, std::shared_ptr<System> system);
+    void drawTabNotes(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                      const StaffData& currentStaffInfo);
+
+    void renderBars(const StaffData& currentStaffInfo, std::shared_ptr<const System> system);
     void drawTabClef(int x, const StaffData& staffInfo);
 
-    void drawChordText(std::shared_ptr<System> system, quint32 height, const StaffData& currentStaffInfo);
+    void drawChordText(std::shared_ptr<const System> system, quint32 height, const StaffData& currentStaffInfo);
     void drawDirections(std::shared_ptr<const System> system, quint32 height,
                         const StaffData& currentStaffInfo);
 
-    void drawLegato(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
+    void drawLegato(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                    const StaffData& currentStaffInfo);
 
-    void drawSlides(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
-    void drawSlidesHelper(std::shared_ptr<System> system, const StaffData& currentStaffInfo, quint8 string,
+    void drawSlides(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                    const StaffData& currentStaffInfo);
+
+    void drawSlidesHelper(std::shared_ptr<const System> system, const StaffData& currentStaffInfo, quint8 string,
                           bool slideUp, quint32 posIndex1, quint32 posIndex2);
 
-    void drawStdNotation(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
+    void drawStdNotation(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                         const StaffData& currentStaffInfo);
+
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
-    void drawSystemSymbols(Score* score, std::shared_ptr<System> system, const StaffData& currentStaffInfo);
+    void drawSystemSymbols(Score* score, std::shared_ptr<const System> system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
-    void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers, std::shared_ptr<System> system, quint32 height);
-    void drawSymbolsBelowTabStaff(std::shared_ptr<System> system, Staff *staff, const StaffData &currentStaffInfo);
+
+    void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers,
+                          std::shared_ptr<const System> system, quint32 height);
+
+    void drawSymbolsBelowTabStaff(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                                  const StaffData &currentStaffInfo);
 
     void drawRhythmSlashes(std::shared_ptr<const System> system);
 
-    void drawSymbols(std::shared_ptr<System> system, Staff* staff, const StaffData& currentStaffInfo);
+    void drawSymbols(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                     const StaffData& currentStaffInfo);
+
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
 
     QGraphicsScene scene;

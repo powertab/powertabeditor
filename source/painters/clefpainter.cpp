@@ -9,7 +9,7 @@
 
 QFont ClefPainter::font = MusicFont().getFont();
 
-ClefPainter::ClefPainter(const StaffData& staffData, Staff* staff) :
+ClefPainter::ClefPainter(const StaffData& staffData, std::shared_ptr<const Staff> staff) :
         staffInfo(staffData)
 {
     this->staff = staff;
@@ -42,14 +42,17 @@ void ClefPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 void ClefPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     // on mouse click, switch clef type from treble to bass, or vice versa
-    if (staff->GetClef() == Staff::TREBLE_CLEF)
+
+    // TODO - replace with proper QUndoCommand
+
+    /*if (staff->GetClef() == Staff::TREBLE_CLEF)
     {
         staff->SetClef(Staff::BASS_CLEF);
     }
     else
     {
         staff->SetClef(Staff::TREBLE_CLEF);
-    }
+    }*/
 
     // redraw clef
     init();

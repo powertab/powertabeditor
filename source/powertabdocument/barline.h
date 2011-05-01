@@ -180,7 +180,7 @@ public:
         {return (m_keySignature);}
     /// Gets a pointer to the key signature
     /// @return A pointer to the key signature
-    KeySignature* GetKeySignaturePtr()                          
+    const KeySignature* GetKeySignaturePtr() const
         {return (&m_keySignature);}
     
 // Time Signature Functions
@@ -201,7 +201,7 @@ public:
         {return (m_timeSignature);}
     /// Gets a pointer to the time signature
     /// @return A pointer to the time signature
-    TimeSignature* GetTimeSignaturePtr()                        
+    const TimeSignature* GetTimeSignaturePtr() const
         {return (&m_timeSignature);}
     
 // Rehearsal Sign Functions
@@ -222,7 +222,7 @@ public:
         {return (m_rehearsalSign);}
     /// Gets a pointer to the rehearsal sign
     /// @return A pointer to the rehearsal sign
-    RehearsalSign* GetRehearsalSignPtr()                        
+    const RehearsalSign* GetRehearsalSignPtr() const
         {return (&m_rehearsalSign);}
 
 // Operations

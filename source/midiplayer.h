@@ -45,10 +45,13 @@ protected:
 
     double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,
                                    boost::ptr_list<MidiEvent>& eventList) const;
+
     void generateMetronome(uint32_t systemIndex, double startTime,
                            boost::ptr_list<MidiEvent>& eventList) const;
+
     void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, uint32_t startSystem, uint32_t startPos);
-    double getWholeRestDuration(std::shared_ptr<const System> system, const Staff* staff, 
+
+    double getWholeRestDuration(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
                                 const Position* position, double originalDuration) const;
 
     void generateBends(boost::ptr_list<MidiEvent>& eventList, uint8_t channel, const Note* note,

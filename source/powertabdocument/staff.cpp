@@ -398,7 +398,8 @@ Position* Staff::GetPositionByPosition(uint32_t voice, uint32_t index) const
 
 /// Finds the position index of the next position
 /// @throw std::out_of_range if the position does not exist in this staff, or if the voice is invalid
-size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<System> system, Position *position) const
+size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const System> system,
+                                     Position *position) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");

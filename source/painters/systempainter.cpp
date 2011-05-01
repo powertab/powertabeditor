@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-SystemPainter::SystemPainter(std::shared_ptr<System> system) :
+SystemPainter::SystemPainter(std::shared_ptr<const System> system) :
     system(system)
 {
     init();

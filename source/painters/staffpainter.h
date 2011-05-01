@@ -15,7 +15,8 @@ class StaffPainter : public QObject, public PainterBase
     Q_OBJECT
 
 public:
-    StaffPainter(std::shared_ptr<System> system, Staff* staff, const StaffData& staffInfo);
+    StaffPainter(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                 const StaffData& staffInfo);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -30,8 +31,8 @@ protected:
     int drawStaffLines(int lineCount, int lineSpacing, int startHeight);
     inline int findClosestPosition(qreal click, qreal relativePos, qreal spacing);
 
-    std::shared_ptr<System> system;
-    Staff* staff;
+    std::shared_ptr<const System> system;
+    std::shared_ptr<const Staff> staff;
     StaffData staffInfo;
     QPen pen;
 

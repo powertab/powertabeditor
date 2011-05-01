@@ -5,7 +5,7 @@
 #include <powertabdocument/direction.h>
 #include <musicfont.h>
 
-DirectionPainter::DirectionPainter(const Direction* direction, size_t symbolIndex) :
+DirectionPainter::DirectionPainter(std::shared_ptr<const Direction> direction, size_t symbolIndex) :
     direction(direction),
     symbolIndex(symbolIndex),
     usingMusicFont(true)

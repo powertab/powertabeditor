@@ -15,7 +15,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 
-StaffPainter::StaffPainter(std::shared_ptr<System> system, Staff* staff, const StaffData& staffInfo) :
+StaffPainter::StaffPainter(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+                           const StaffData& staffInfo) :
     system(system),
     staff(staff),
     staffInfo(staffInfo)

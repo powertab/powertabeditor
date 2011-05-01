@@ -63,20 +63,10 @@ System::System(const System& system) :
 /// Destructor
 System::~System()
 {
-    for (uint32_t i = 0; i < m_directionArray.size(); i++)
-    {
-        delete m_directionArray.at(i);
-    }
-    for (uint32_t i = 0; i < m_staffArray.size(); i++)
-    {
-        delete m_staffArray.at(i);
-    }
     for (uint32_t i = 0; i < m_barlineArray.size(); i++)
     {
         delete m_barlineArray.at(i);
     }
-    m_directionArray.clear();
-    m_staffArray.clear();
     m_barlineArray.clear();
 }
 
@@ -251,7 +241,7 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         }
 
         // Update key signs that aren't show to match active key sign
-        KeySignature* activeKeySignature = m_startBar.GetKeySignaturePtr();
+        const KeySignature* activeKeySignature = m_startBar.GetKeySignaturePtr();
 
         size_t i = 0;
         size_t count = m_barlineArray.size();
@@ -700,11 +690,36 @@ bool System::RemoveChordText(uint32_t index)
     return true;
 }
 
+// Staff Functions
+/// Determines if a staff index is valid
+/// @param index staff index to validate
+/// @return True if the staff index is valid, false if not
+bool System::IsValidStaffIndex(uint32_t index) const
+{
+    return index < GetStaffCount();
+}
+
+/// Gets the number of staffs in the system
+/// @return The number of staffs in the system
+size_t System::GetStaffCount() const
+{
+    return m_staffArray.size();
+}
+
+/// Gets the nth staff in the system
+/// @param index Index of the staff to get
+/// @return The nth staff in the system
+System::StaffPtr System::GetStaff(uint32_t index) const
+{
+    CHECK_THAT(IsValidStaffIndex(index), StaffPtr());
+    return m_staffArray[index];
+}
+
 /// Returns the index of a staff within the system
 /// @param staff The staff to be located in the system
 /// @return The zero-based index of the staff
 /// @throw std::out_of_range if the staff does not exist in the system
-size_t System::FindStaffIndex(Staff *staff) const
+size_t System::FindStaffIndex(StaffConstPtr staff) const
 {
     auto result = std::find(m_staffArray.begin(), m_staffArray.end(), staff);
 
@@ -831,7 +846,7 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     std::for_each(m_barlineArray.begin(), m_barlineArray.end(), shiftBarlines);
 
     // shift direction symbols
-    ShiftPosition<Direction*> shiftDirections(comparison, positionIndex, offset);
+    ShiftPosition<DirectionPtr> shiftDirections(comparison, positionIndex, offset);
     std::for_each(m_directionArray.begin(), m_directionArray.end(), shiftDirections);
 
     // shift chords
@@ -847,7 +862,7 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
 
     for (size_t i = 0; i < m_staffArray.size(); i++)
     {
-        Staff* staff = m_staffArray.at(i);
+        StaffConstPtr staff = m_staffArray.at(i);
 
         for (size_t j = 0; j < staff->GetPositionCount(0); j++)
         {
@@ -873,7 +888,7 @@ void System::Init(const std::vector<uint8_t>& staffSizes)
 
     for (size_t i = 0; i < staffSizes.size(); i++)
     {
-        m_staffArray.push_back(new Staff(staffSizes.at(i), Staff::TREBLE_CLEF));
+        m_staffArray.push_back(std::make_shared<Staff>(staffSizes.at(i), Staff::TREBLE_CLEF));
     }
 
     CalculateHeight();
@@ -921,6 +936,31 @@ bool System::InsertBarline(Barline* barline)
     return true;
 }
 
+// Direction Functions
+/// Determines if a staff index is valid
+/// @param index staff index to validate
+/// @return True if the staff index is valid, false if not
+bool System::IsValidDirectionIndex(uint32_t index) const
+{
+    return index < GetDirectionCount();
+}
+
+/// Gets the number of staffs in the system
+/// @return The number of staffs in the system
+size_t System::GetDirectionCount() const
+{
+    return m_directionArray.size();
+}
+
+/// Gets the nth staff in the system
+/// @param index Index of the staff to get
+/// @return The nth staff in the system
+System::DirectionPtr System::GetDirection(uint32_t index) const
+{
+    CHECK_THAT(IsValidDirectionIndex(index), DirectionPtr());
+    return m_directionArray[index];
+}
+
 /// Returns the largest number of symbols used by a Direction in the system
 size_t System::MaxDirectionSymbolCount() const
 {
@@ -931,8 +971,9 @@ size_t System::MaxDirectionSymbolCount() const
 
     std::vector<size_t> directionCounts(m_directionArray.size());
 
-    std::transform(m_directionArray.begin(), m_directionArray.end(),
-                   directionCounts.begin(), std::mem_fun(&Direction::GetSymbolCount));
+    using namespace std::placeholders;
+    std::transform(m_directionArray.begin(), m_directionArray.end(), directionCounts.begin(),
+                   std::bind(&Direction::GetSymbolCount, _1));
 
     return *std::max_element(directionCounts.begin(), directionCounts.end());
 }

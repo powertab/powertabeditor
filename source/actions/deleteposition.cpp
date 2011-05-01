@@ -3,7 +3,7 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/staff.h>
 
-DeletePosition::DeletePosition(Staff* staff, Position* position, quint32 voice) :
+DeletePosition::DeletePosition(std::shared_ptr<Staff> staff, Position* position, quint32 voice) :
     staff(staff),
     position(position),
     voice(voice)

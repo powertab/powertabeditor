@@ -10,12 +10,12 @@ class Position;
 class DeletePosition : public QUndoCommand
 {
 public:
-    DeletePosition(Staff* staff, Position* position, quint32 voice);
+    DeletePosition(std::shared_ptr<Staff> staff, Position* position, quint32 voice);
     void redo();
     void undo();
 
 protected:
-    Staff* staff;
+    std::shared_ptr<Staff> staff;
     Position* position;
     std::unique_ptr<Position> positionCopy;
     const quint32 voice;

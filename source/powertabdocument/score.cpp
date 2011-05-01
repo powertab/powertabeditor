@@ -285,24 +285,24 @@ void Score::UpdateToVer2Structure()
 
         SystemPtr currentSystem = m_systemArray.at(i);
 
-        std::vector<Staff*> newStaves(m_guitarArray.size(), NULL); // one staff per guitar
+        std::vector<System::StaffPtr> newStaves(m_guitarArray.size()); // one staff per guitar
 
         for (uint32_t j=0; j < currentSystem->m_staffArray.size(); j++) // go through staves
         {
-            Staff* currentStaff = currentSystem->m_staffArray.at(j);
+            System::StaffPtr currentStaff = currentSystem->m_staffArray.at(j);
 
             auto range = guitarToStaffMap.equal_range(j); // find guitars for this staff
             for (auto k = range.first; k != range.second; ++k)
             {
-                newStaves[k->second] = currentStaff->CloneObject();
+                newStaves[k->second].reset(currentStaff->CloneObject());
             }
         }
 
         for (uint32_t m=0; m < newStaves.size(); m++) // insert blank staves for any guitars that aren't currently used
         {
-            if (newStaves.at(m) == NULL)
+            if (!newStaves.at(m))
             {
-                Staff* newStaff = new Staff;
+                System::StaffPtr newStaff = std::make_shared<Staff>();
 
                 std::vector<const Barline*> barlines;
                 currentSystem->GetBarlines(barlines);
@@ -321,10 +321,6 @@ void Score::UpdateToVer2Structure()
         }
 
         // clear out the old staves, and swap in the new ones
-        for (uint32_t n=0; n < currentSystem->m_staffArray.size(); n++)
-        {
-            delete currentSystem->m_staffArray.at(n);
-        }
         currentSystem->m_staffArray = newStaves;
 
         // readjust locations / heights
@@ -386,7 +382,7 @@ void Score::UpdateSystemHeight(SystemPtr system)
     
     for (size_t i = 0; i < system->GetStaffCount(); i++)
     {
-        Staff* currentStaff = system->GetStaff(i);
+        System::StaffPtr currentStaff = system->GetStaff(i);
         currentStaff->CalculateTabStaffBelowSpacing();
         currentStaff->CalculateSymbolSpacing();
     }
@@ -465,7 +461,7 @@ bool Score::InsertGuitar(GuitarPtr guitar)
     for (size_t i = 0; i < m_systemArray.size(); i++)
     {
         SystemPtr system = m_systemArray[i];
-        system->m_staffArray.push_back(new Staff(guitar->GetStringCount(), Staff::TREBLE_CLEF));
+        system->m_staffArray.push_back(std::make_shared<Staff>(guitar->GetStringCount(), Staff::TREBLE_CLEF));
         UpdateSystemHeight(system);
     }
 

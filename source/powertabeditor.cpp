@@ -173,7 +173,7 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             Caret *caret = getCurrentScoreArea()->getCaret();
             Note *currentNote = caret->getCurrentNote();
             Position *currentPosition = caret->getCurrentPosition();
-            Staff *currentStaff = caret->getCurrentStaff();
+            shared_ptr<Staff> currentStaff = caret->getCurrentStaff();
 
             if (currentNote != NULL)
             {
@@ -1314,7 +1314,7 @@ void PowerTabEditor::editRehearsalSign()
     // the rehearsal sign action should not be available unless there is a barline at the current position
     Q_ASSERT(currentBarline != NULL);
 
-    RehearsalSign* rehearsalSign = currentBarline->GetRehearsalSignPtr();
+    RehearsalSign* rehearsalSign = &currentBarline->GetRehearsalSignRef();
 
     if (rehearsalSign->IsSet())
     {
@@ -1341,7 +1341,7 @@ void PowerTabEditor::editHammerPull()
     if (note == NULL) return;
     
     Position* currentPosition = caret->getCurrentPosition();
-    Staff* currentStaff = caret->getCurrentStaff();
+    shared_ptr<const Staff> currentStaff = caret->getCurrentStaff();
     
     if (currentStaff->CanHammerOn(currentPosition, note))
     {
@@ -1366,7 +1366,7 @@ void PowerTabEditor::editTiedNote()
     std::vector<Note*> notes;
     getSelectedNotes(notes);
 
-    Staff* currentStaff = caret->getCurrentStaff();
+    shared_ptr<const Staff> currentStaff = caret->getCurrentStaff();
 
     // check if all selected notes are able to be tied
     std::vector<Position*> positions;
@@ -1393,7 +1393,7 @@ void PowerTabEditor::editTiedNote()
 namespace
 {
     template<class T>
-    void updatePropertyStatus(QAction* action, T* object, bool (T::*predicate)(void) const)
+    void updatePropertyStatus(QAction* action, const T* object, bool (T::*predicate)(void) const)
     {
         if (object == NULL)
         {
@@ -1439,7 +1439,7 @@ void PowerTabEditor::updateActions()
         }
     }
 
-    RehearsalSign* currentRehearsalSign = currentBarline == NULL ? NULL : currentBarline->GetRehearsalSignPtr();
+    const RehearsalSign* currentRehearsalSign = currentBarline == NULL ? NULL : currentBarline->GetRehearsalSignPtr();
     updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
 
     if (currentBarline != NULL) // current position is bar
@@ -1535,7 +1535,7 @@ void PowerTabEditor::editSlide(int newSlideType)
     // for shift/legato slides, get the number of steps we will shift
     if (newSlideType == Note::slideOutOfLegatoSlide || newSlideType == Note::slideOutOfShiftSlide)
     {
-        Staff* staff = caret->getCurrentStaff();
+        shared_ptr<const Staff> staff = caret->getCurrentStaff();
 
         // if we can't do a slide, uncheck the action that was just pressed and abort
         if (!staff->CanSlideBetweenNotes(position, note))

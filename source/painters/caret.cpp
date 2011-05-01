@@ -55,7 +55,7 @@ QRectF Caret::boundingRect() const
 
 void Caret::updateStaffInfo()
 {
-    Staff* currentStaff = getCurrentStaff();
+    shared_ptr<const Staff> currentStaff = getCurrentStaff();
     shared_ptr<const System> currentSystem = getCurrentSystem();
 
     currentStaffInfo.numOfStrings = currentStaff->GetTablatureStaffType();
@@ -374,7 +374,7 @@ shared_ptr<System> Caret::getCurrentSystem() const
     return currentScore->GetSystem(currentSystemIndex);
 }
 
-Staff* Caret::getCurrentStaff() const
+shared_ptr<Staff> Caret::getCurrentStaff() const
 {
     return getCurrentSystem()->GetStaff(currentStaffIndex);
 }

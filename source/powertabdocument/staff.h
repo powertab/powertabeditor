@@ -142,7 +142,8 @@ public:
 
     Position* GetLastPosition() const;
     Position* GetPositionByPosition(uint32_t voice, uint32_t index) const;
-    size_t GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<System> system, Position* position) const;
+    size_t GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const System> system,
+                                  Position* position) const;
 
     bool IsOnlyPositionInBar(const Position* position, std::shared_ptr<const System> system) const;
 

@@ -4,6 +4,7 @@
 #include "painterbase.h"
 
 #include <QStaticText>
+#include <memory>
 
 class StaffData;
 class Staff;
@@ -11,7 +12,7 @@ class Staff;
 class ClefPainter : public PainterBase
 {
 public:
-    ClefPainter(const StaffData& staffData, Staff* staff);
+    ClefPainter(const StaffData& staffData, std::shared_ptr<const Staff> staff);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -24,7 +25,7 @@ private:
     void init();
 
     const StaffData& staffInfo;
-    Staff* staff;
+    std::shared_ptr<const Staff> staff;
     static QFont font;
     QStaticText displayText;
 };

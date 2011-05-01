@@ -3,6 +3,7 @@
 
 #include "painterbase.h"
 #include "staffdata.h"
+#include <memory>
 
 class Position;
 class Tuning;
@@ -14,7 +15,7 @@ class Staff;
 class StdNotationPainter : public PainterBase
 {
 public:
-    StdNotationPainter(const StaffData& staffInfo, const Staff* staff, const Position* position, const Note* note,
+    StdNotationPainter(const StaffData& staffInfo, std::shared_ptr<const Staff> staff, const Position* position, const Note* note,
                        const Tuning* tuning, const KeySignature* keySignature);
 
     QRectF boundingRect() const;
@@ -45,7 +46,7 @@ protected:
     void addDots(QPainter* painter, double x, double y) const;
 
     StaffData staffInfo;
-    const Staff* staff;
+    std::shared_ptr<const Staff> staff;
     const Position* position;
     const Note* note;
     const Tuning* tuning;
