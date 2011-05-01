@@ -13,7 +13,6 @@
 #define __DIRECTION_H__
 
 #include "powertabobject.h"
-#include "macros.h"
 
 #include <vector>
 
