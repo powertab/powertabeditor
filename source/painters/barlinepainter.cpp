@@ -6,6 +6,7 @@
 #include <QGraphicsSceneMouseEvent>
 
 #include <powertabdocument/barline.h>
+#include <cmath>
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
@@ -117,33 +118,29 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     {
         painter->setPen(QPen(Qt::black, 0.75));
         const double radius = 1.0;
+        const double dotLocation = x - 1.5 * width; // x-coordinate for the location of the dots
 
-        double height = 0, centre = 0;
+        double height = 0;
 
-        if (staffInfo.numOfStdNotationLines % 2 != 0)
-        {
-            centre = (int)(staffInfo.numOfStdNotationLines / 2) + 1;
-        }
+        const double centreStaffLine = 3; // middle line for std. notation staff
 
-        height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre + 1)) / 2 + 0.5;
-        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
-        height = (staffInfo.getStdNotationLineHeight(centre) + staffInfo.getStdNotationLineHeight(centre - 1)) / 2 + 0.5;
-        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
+        // draw dots for standard notation staff, on either side of the centre
+        height = (staffInfo.getStdNotationLineHeight(centreStaffLine) + staffInfo.getStdNotationLineHeight(centreStaffLine + 1)) / 2.0;
+        painter->drawRect(QRectF(dotLocation, height, radius, radius));
 
-        centre = height = 0;
-        if (staffInfo.numOfStrings % 2 != 0)
-        {
-            centre = (int)(staffInfo.numOfStrings / 2) + 1;
-        }
-        else
-        {
-            centre = staffInfo.numOfStrings / 2;
-        }
+        height = (staffInfo.getStdNotationLineHeight(centreStaffLine) + staffInfo.getStdNotationLineHeight(centreStaffLine - 1)) / 2.0;
+        painter->drawRect(QRectF(dotLocation, height, radius, radius));
 
-        height = (staffInfo.getTabLineHeight(centre + 1) + staffInfo.getTabLineHeight(centre + 2)) / 2 + 0.5;
-        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
-        height = (staffInfo.getTabLineHeight(centre) + staffInfo.getTabLineHeight(centre - 1)) / 2 + 0.5;
-        painter->drawRect(QRectF(x - 1.5*width, height, radius, radius));
+        // offset the repeat dots 2 lines from the edge of the tab staff if we have a large number of strings, otherwise, only offset by 1 line
+        const int offsetFromEdge = (staffInfo.numOfStrings > 4) ? 2 : 1;
+
+        // draw dots for tab staff
+        height = (staffInfo.getTabLineHeight(offsetFromEdge) + staffInfo.getTabLineHeight(offsetFromEdge + 1)) / 2.0;
+        painter->drawRect(QRectF(dotLocation, height, radius, radius));
+
+        height = (staffInfo.getTabLineHeight(staffInfo.numOfStrings - offsetFromEdge) +
+                  staffInfo.getTabLineHeight(staffInfo.numOfStrings - offsetFromEdge + 1)) / 2.0;
+        painter->drawRect(QRectF(dotLocation, height, radius, radius));
     }
 
 }
