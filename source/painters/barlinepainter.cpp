@@ -6,7 +6,6 @@
 #include <QGraphicsSceneMouseEvent>
 
 #include <powertabdocument/barline.h>
-#include <cmath>
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
