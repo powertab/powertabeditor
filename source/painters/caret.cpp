@@ -10,6 +10,7 @@
 #include <powertabdocument/note.h>
 #include <powertabdocument/position.h>
 
+#include <boost/format.hpp>
 #include <algorithm>
 
 using std::shared_ptr;
@@ -161,6 +162,12 @@ void Caret::updatePosition()
     setPos(currentSystem->GetRect().GetLeft(),
            currentSystem->GetStaffHeightOffset(currentStaffIndex, true) + currentStaffInfo.getTabStaffOffset());
     emit moved();
+
+    // useful debug information - display the caret's location in the widget's tooltip
+    boost::format output = boost::format("System: %d, Staff: %d, Position: %d, String: %d") % currentSystemIndex
+            % currentStaffIndex % currentPositionIndex % currentStringIndex;
+
+    setToolTip(QString::fromStdString(output.str()));
 }
 
 // Moves the caret either left or right
