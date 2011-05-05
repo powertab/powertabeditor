@@ -200,7 +200,8 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     if (note->HasBend())
                     {
                         std::vector<BendEventInfo> bendEvents;
-                        generateBends(bendEvents, startTime, duration, note);
+                        generateBends(bendEvents, startTime, duration,
+                                      getCurrentTempo(position->GetPosition()), note);
 
                         foreach (BendEventInfo event, bendEvents)
                         {
@@ -554,7 +555,7 @@ uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guita
 
 /// Generates bend events for the given note
 void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTime,
-                               double duration, const Note* note) const
+                               double duration, double currentTempo, const Note* note) const
 {
     uint8_t type = 0, bentPitch = 0, releasePitch = 0, bendDuration = 0, drawStartPoint = 0, drawEndPoint = 0;
     note->GetBend(type, bentPitch, releasePitch, bendDuration, drawStartPoint, drawEndPoint);
@@ -566,6 +567,18 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTi
     if (type == Note::preBend || type == Note::preBendAndRelease)
     {
         bends.push_back(BendEventInfo(startTime, bendAmount));
+    }
+
+    if (type == Note::normalBend || type == Note::bendAndHold)
+    {
+        if (bendDuration == 0) // default - bend over 32nd note
+        {
+            generateGradualBend(bends, startTime, currentTempo / 8.0, BendEvent::DEFAULT_BEND, bendAmount);
+        }
+        else if (bendDuration == 1) // bend over current note duration
+        {
+            generateGradualBend(bends, startTime, duration, BendEvent::DEFAULT_BEND, bendAmount);
+        }
     }
 
     // bend up to bent pitch
@@ -585,7 +598,7 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTi
     }
 
     // reset to the release pitch bend value
-    if (type == Note::preBend || type == Note::immediateRelease)
+    if (type == Note::preBend || type == Note::immediateRelease || type == Note::normalBend)
     {
         bends.push_back(BendEventInfo(startTime + duration, releaseAmount));
     }

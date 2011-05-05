@@ -63,7 +63,8 @@ protected:
         uint8_t pitchBendAmount;
     };
 
-    void generateBends(std::vector<BendEventInfo>& bends, double startTime, double duration, const Note* note) const;
+    void generateBends(std::vector<BendEventInfo>& bends, double startTime, double duration,
+                       double currentTempo, const Note* note) const;
     void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, uint8_t startBendAmount,
                              uint8_t releaseBendAmount) const;
     
