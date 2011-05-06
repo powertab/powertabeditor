@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <musicfont.h>
 
+const double RhythmSlashPainter::NOTE_HEAD_OFFSET = System::RHYTHM_SLASH_SPACING / 2.0;
+
 QFont RhythmSlashPainter::musicFont = MusicFont().getFont();
 
 RhythmSlashPainter::RhythmSlashPainter(std::shared_ptr<const RhythmSlash> rhythmSlash) :
@@ -43,6 +45,5 @@ void RhythmSlashPainter::paint(QPainter* painter, const QStyleOptionGraphicsItem
     }
 
     // draw note stem
-    const double x = 3.0;
-    painter->drawLine(x, 0, x, System::RHYTHM_SLASH_SPACING / 2.0);
+    painter->drawLine(STEM_OFFSET, 0, STEM_OFFSET, NOTE_HEAD_OFFSET);
 }

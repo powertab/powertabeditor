@@ -38,6 +38,8 @@
 #include <functional>
 #include <algorithm>
 
+#include <boost/foreach.hpp>
+
 using std::shared_ptr;
 
 ScoreArea::ScoreArea(QWidget *parent) :
@@ -465,6 +467,9 @@ void ScoreArea::drawRhythmSlashes(shared_ptr<const System> system)
 {
     const uint32_t y = system->GetExtraSpacing();
 
+    std::vector<RhythmSlashPainter*> slashPainters;
+
+    // generate the rhythm slashes
     for (size_t i = 0; i < system->GetRhythmSlashCount(); i++)
     {
         shared_ptr<const RhythmSlash> rhythmSlash = system->GetRhythmSlash(i);
@@ -472,6 +477,29 @@ void ScoreArea::drawRhythmSlashes(shared_ptr<const System> system)
 
         RhythmSlashPainter* painter = new RhythmSlashPainter(rhythmSlash);
         painter->setPos(x, y);
+        slashPainters.push_back(painter);
+
+        // draw ties
+        if (rhythmSlash->IsTied() && i != 0)
+        {
+            const RhythmSlashPainter* prevSlash = slashPainters.at(i - 1);
+
+            const double xDiff = x - prevSlash->x();
+
+            QPainterPath path;
+            path.moveTo(xDiff, System::RHYTHM_SLASH_SPACING / 4.0);
+            path.arcTo(0, 0, xDiff, System::RHYTHM_SLASH_SPACING / 2.0, 0, 180);
+
+            QGraphicsPathItem* arc = new QGraphicsPathItem(path);
+            arc->setPos(prevSlash->x() + RhythmSlashPainter::STEM_OFFSET,
+                        y + RhythmSlashPainter::NOTE_HEAD_OFFSET - arc->boundingRect().height());
+            arc->setParentItem(activeSystem);
+        }
+    }
+
+    // add each rhythm slash to the scene
+    BOOST_FOREACH(RhythmSlashPainter* painter, slashPainters)
+    {
         painter->setParentItem(activeSystem);
     }
 }
