@@ -44,7 +44,7 @@ protected:
     double calculateNoteDuration(const Position* currentPosition) const;
 
     double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,
-                                   boost::ptr_list<MidiEvent>& eventList) const;
+                                   boost::ptr_list<MidiEvent>& eventList);
 
     void generateMetronome(uint32_t systemIndex, double startTime,
                            boost::ptr_list<MidiEvent>& eventList) const;
@@ -64,7 +64,7 @@ protected:
     };
 
     void generateBends(std::vector<BendEventInfo>& bends, double startTime, double duration,
-                       double currentTempo, const Note* note) const;
+                       double currentTempo, const Note* note);
     void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, uint8_t startBendAmount,
                              uint8_t releaseBendAmount) const;
     
@@ -74,6 +74,7 @@ protected:
 
     bool isPlaying;
     quint32 currentSystemIndex;
+    uint8_t activePitchBend; ///< keeps track of the active pitch bend (used for "bend and hold"-type events)
 
     QHash<quint8, quint8> harmonicPitches;
     void initHarmonicPitches();

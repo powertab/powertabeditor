@@ -49,9 +49,10 @@ public:
     enum ControlChanges
     {
         MOD_WHEEL = 1,
-        DATA_ENTRY = 6,
+        DATA_ENTRY_COARSE = 6,
         CHANNEL_VOLUME = 7,
         PAN_CHANGE = 10,
+        DATA_ENTRY_FINE = 38,
         HOLD_PEDAL = 64,
         RPN_LSB = 100,
         RPN_MSB = 101

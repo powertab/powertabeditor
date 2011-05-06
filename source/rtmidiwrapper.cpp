@@ -183,5 +183,6 @@ void RtMidiWrapper::setPitchBendRange(uint8_t channel, uint8_t semiTones)
 {
     sendMidiMessage(CONTROL_CHANGE + channel, RPN_MSB, 0);
     sendMidiMessage(CONTROL_CHANGE + channel, RPN_LSB, 0);
-    sendMidiMessage(CONTROL_CHANGE + channel, DATA_ENTRY, semiTones);
+    sendMidiMessage(CONTROL_CHANGE + channel, DATA_ENTRY_COARSE, semiTones);
+    sendMidiMessage(CONTROL_CHANGE + channel, DATA_ENTRY_FINE, 0);
 }

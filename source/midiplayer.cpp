@@ -30,11 +30,11 @@ using std::shared_ptr;
 using std::unique_ptr;
 
 MidiPlayer::MidiPlayer(Caret* caret) :
-    caret(caret)
+    caret(caret),
+    isPlaying(false),
+    currentSystemIndex(0),
+    activePitchBend(BendEvent::DEFAULT_BEND)
 {
-    isPlaying = false;
-    currentSystemIndex = 0;
-
     initHarmonicPitches();
 }
 
@@ -91,7 +91,7 @@ PlayNoteEvent::VelocityType getNoteVelocity(const Position* position, const Note
 /// Generates a list of all notes in the given system, by iterating through each position in each staff of the system
 /// @return The timestamp of the end of the last event in the system
 double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double systemStartTime,
-                                           boost::ptr_list<MidiEvent>& eventList) const
+                                           boost::ptr_list<MidiEvent>& eventList)
 {
     double endTime = systemStartTime;
 
@@ -104,6 +104,8 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
         for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
         {
+            activePitchBend = BendEvent::DEFAULT_BEND;
+
             // each note in the staff is given a start time relative to the first note of the staff
             double startTime = systemStartTime;
             
@@ -555,20 +557,21 @@ uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guita
 
 /// Generates bend events for the given note
 void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTime,
-                               double duration, double currentTempo, const Note* note) const
+                               double duration, double currentTempo, const Note* note)
 {
     uint8_t type = 0, bentPitch = 0, releasePitch = 0, bendDuration = 0, drawStartPoint = 0, drawEndPoint = 0;
     note->GetBend(type, bentPitch, releasePitch, bendDuration, drawStartPoint, drawEndPoint);
 
-    const uint8_t bendAmount = BendEvent::DEFAULT_BEND + bentPitch * BendEvent::BEND_QUARTER_TONE;
-    const uint8_t releaseAmount = BendEvent::DEFAULT_BEND + releasePitch * BendEvent::BEND_QUARTER_TONE;
+    const uint8_t bendAmount = floor(BendEvent::DEFAULT_BEND + bentPitch * BendEvent::BEND_QUARTER_TONE);
+    const uint8_t releaseAmount = floor(BendEvent::DEFAULT_BEND + releasePitch * BendEvent::BEND_QUARTER_TONE);
 
     // perform a pre-bend
-    if (type == Note::preBend || type == Note::preBendAndRelease)
+    if (type == Note::preBend || type == Note::preBendAndRelease || type == Note::preBendAndHold)
     {
         bends.push_back(BendEventInfo(startTime, bendAmount));
     }
 
+    // perform a normal (gradual) bend
     if (type == Note::normalBend || type == Note::bendAndHold)
     {
         if (bendDuration == 0) // default - bend over 32nd note
@@ -579,9 +582,10 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTi
         {
             generateGradualBend(bends, startTime, duration, BendEvent::DEFAULT_BEND, bendAmount);
         }
+        // TODO - implement bends that stretch over multiple notes
     }
 
-    // bend up to bent pitch
+    // for a "bend and release", bend up to bent pitch, for half the note duration
     if (type == Note::bendAndRelease)
     {
         generateGradualBend(bends, startTime, duration / 2, BendEvent::DEFAULT_BEND, bendAmount);
@@ -596,11 +600,24 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTi
     {
         generateGradualBend(bends, startTime + duration / 2, duration / 2, bendAmount, releaseAmount);
     }
+    else if (type == Note::gradualRelease)
+    {
+        generateGradualBend(bends, startTime, duration, activePitchBend, releaseAmount);
+    }
 
     // reset to the release pitch bend value
     if (type == Note::preBend || type == Note::immediateRelease || type == Note::normalBend)
     {
         bends.push_back(BendEventInfo(startTime + duration, releaseAmount));
+    }
+
+    if (type == Note::bendAndHold || type == Note::preBendAndHold)
+    {
+        activePitchBend = bendAmount;
+    }
+    else
+    {
+        activePitchBend = releaseAmount;
     }
 }
 
