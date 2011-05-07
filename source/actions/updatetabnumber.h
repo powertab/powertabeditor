@@ -2,8 +2,7 @@
 #define UPDATETABNUMBER_H
 
 #include <QUndoCommand>
-
-#include <powertabdocument/staff.h>
+#include <memory>
 
 class Staff;
 class Position;
