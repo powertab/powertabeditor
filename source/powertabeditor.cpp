@@ -63,6 +63,7 @@
 #include <actions/removesystem.h>
 #include <actions/addsystem.h>
 #include <actions/addguitar.h>
+#include <actions/addnote.h>
 
 using std::shared_ptr;
 
@@ -184,7 +185,9 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             }
             else
             {
-                qDebug() << "Insert tab number not yet implemented!";
+                // TODO - support multiple voices
+                undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
+                                              caret->getCurrentPositionIndex(), 0, currentStaff));
             }
         }
     }
