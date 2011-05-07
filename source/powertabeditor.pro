@@ -128,7 +128,9 @@ SOURCES += main.cpp\
     painters/tremolobarpainter.cpp \
     painters/rhythmslashpainter.cpp \
     audio/bendevent.cpp \
-    actions/addnote.cpp
+    actions/addnote.cpp \
+    audio/repeat.cpp \
+    powertabdocument/systemlocation.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -235,7 +237,9 @@ HEADERS  += powertabeditor.h \
     painters/rhythmslashpainter.h \
     powertabdocument/complexsymbolarray.h \
     audio/bendevent.h \
-    actions/addnote.h
+    actions/addnote.h \
+    audio/repeat.h \
+    powertabdocument/systemlocation.h
 
 RESOURCES += \
     resources.qrc

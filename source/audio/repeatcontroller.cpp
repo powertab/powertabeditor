@@ -37,13 +37,16 @@ void RepeatController::indexRepeats()
             {
                 activeStartBar = currentBar;
                 activeStartBarSystem = currentSystem;
+                const SystemLocation location(activeStartBarSystem,
+                                              activeStartBar->GetPosition());
+
+                repeats[location] = Repeat(location);
             }
             else if (currentBar->IsRepeatEnd())
             {
-                // add to the repeat list, indexed by the location of the end bar
-                repeats[make_pair(currentSystem, currentBar->GetPosition())] = Repeat(activeStartBarSystem,
-                                                                                      activeStartBar->GetPosition(),
-                                                                                      currentBar->GetRepeatCount() - 1);
+                // add to the end bar list for the active repeat group
+                repeats.rbegin()->second.addRepeatEnd(SystemLocation(currentSystem, currentBar->GetPosition()),
+                                                      RepeatEnd(currentBar->GetRepeatCount()));
             }
         }
     }
@@ -55,43 +58,30 @@ void RepeatController::indexRepeats()
 bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPos,
                                   uint32_t& newSystem, uint32_t& newPos)
 {
-    if (repeats.empty()) // no repeat events left in the score
+    if (repeats.empty()) // no repeat events in the score
     {
         return false;
     }
 
-    // Find if there is a repeat event at the given location
-    auto repeatIterator = repeats.find(make_pair(currentSystem, currentPos));
+    // find the active repeat - the last repeat with a start bar less than the current position
+    SystemLocation currentLocation(currentSystem, currentPos);
+    auto activeRepeatGroup = repeats.upper_bound(currentLocation);
+    if (activeRepeatGroup != repeats.begin())
+    {
+        activeRepeatGroup--;
+    }
 
-    if (repeatIterator == repeats.end())
+    // perform the repeat
+    SystemLocation newLocation = activeRepeatGroup->second.performRepeat(currentLocation);
+
+    if (newLocation == currentLocation) // if no position shift occurred
     {
         return false;
     }
-
-    Repeat& activeRepeat = repeatIterator->second;
-
-    newSystem = activeRepeat.startBarSystem;
-    newPos = activeRepeat.startBarPos;
-
-    activeRepeat.repeatsRemaining -= 1;
-
-    if (activeRepeat.repeatsRemaining == 0)
+    else
     {
-        repeats.erase(repeatIterator);
+        newSystem = newLocation.getSystemIndex();
+        newPos = newLocation.getPositionIndex();
+        return true;
     }
-
-    return true;
-}
-
-RepeatController::Repeat::Repeat() :
-    startBarSystem(0), startBarPos(0), repeatsRemaining(0)
-{
-}
-
-RepeatController::Repeat::Repeat(uint32_t startBarSystem, uint32_t startBarPos, uint8_t numRepeats) :
-    startBarSystem(startBarSystem),
-    startBarPos(startBarPos),
-    repeatsRemaining(numRepeats)
-{
-
 }

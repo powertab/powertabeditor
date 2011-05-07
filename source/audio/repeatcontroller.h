@@ -2,7 +2,8 @@
 #define REPEATCONTROLLER_H
 
 #include <cstdint>
-#include <boost/unordered_map.hpp>
+#include <map>
+#include <audio/repeat.h>
 
 class Score;
 
@@ -20,19 +21,7 @@ private:
 
     const Score* score;
 
-    /// Holds information about a repeat - where the playback position should move to, and how many repeats are left
-    struct Repeat
-    {
-        Repeat();
-        Repeat(uint32_t startBarSystem, uint32_t startBarPos, uint8_t numRepeats);
-
-        uint32_t startBarSystem;    ///< System index of the starting bar
-        uint32_t startBarPos;       ///< Position index of the starting bar
-        uint8_t repeatsRemaining;   ///< Number of repeats left to perform
-    };
-
-    /// Holds all repeat events in the score, indexed by the system and position index of the end bar
-    boost::unordered_map<std::pair<uint32_t, uint32_t>, Repeat> repeats;
+    std::map<SystemLocation, Repeat> repeats; ///< Holds all repeats in the score
 };
 
 #endif // REPEATCONTROLLER_H
