@@ -185,9 +185,9 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             }
             else
             {
-                // TODO - support multiple voices
                 undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
-                                              caret->getCurrentPositionIndex(), 0, currentStaff));
+                                              caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
+                                              currentStaff));
             }
         }
     }

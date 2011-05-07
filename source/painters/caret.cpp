@@ -384,10 +384,10 @@ shared_ptr<Staff> Caret::getCurrentStaff() const
     return getCurrentSystem()->GetStaff(currentStaffIndex);
 }
 
+/// may return NULL if the current position does not have a Position object
 Position* Caret::getCurrentPosition() const
 {
-    // may return NULL if the current position does not have a Position object
-    return getCurrentStaff()->GetPositionByPosition(0, currentPositionIndex); // TODO - support multiple voices
+    return getCurrentStaff()->GetPositionByPosition(currentVoice, currentPositionIndex);
 }
 
 Note* Caret::getCurrentNote() const
