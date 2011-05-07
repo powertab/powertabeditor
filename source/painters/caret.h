@@ -77,8 +77,8 @@ public:
         return currentStringIndex;
     }
 
-    void getSelectedPositions(std::vector<Position*>& positions);
-    void getSelectedNotes(std::vector<Note*>& notes);
+    void getSelectedPositions(std::vector<Position*>& positions) const;
+    void getSelectedNotes(std::vector<Note*>& notes) const;
 
 signals:
     void moved();
@@ -103,7 +103,7 @@ protected:
 
     std::pair<int, int> selectionRange;
 
-    static const int CARET_NOTE_SPACING = 6; // spacing around a highlighted note
+    static const int CARET_NOTE_SPACING = 6; ///< spacing around a highlighted note
 };
 
 #endif // CARET_H

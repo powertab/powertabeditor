@@ -17,19 +17,16 @@ using std::shared_ptr;
 using std::vector;
 
 Caret::Caret(int tabLineSpacing) :
-    lineSpacing(tabLineSpacing)
+    inPlaybackMode(false),
+    currentScore(NULL),
+    currentSystemIndex(0),
+    currentStaffIndex(0),
+    currentStringIndex(0),
+    currentPositionIndex(0),
+    currentStaffTopEdge(0),
+    lineSpacing(tabLineSpacing),
+    selectionRange(std::make_pair(0, 0))
 {
-    currentScore = NULL;
-
-    currentPositionIndex = 0;
-    currentStringIndex = 0;
-    currentSystemIndex = 0;
-    currentStaffIndex = 0;
-
-    currentStaffTopEdge = 0;
-    inPlaybackMode = false;
-
-    selectionRange = std::make_pair(0, 0);
 }
 
 void Caret::setPlaybackMode(bool playBack)
@@ -347,7 +344,7 @@ void Caret::moveCaretToPrevBar()
             shared_ptr<const System> newCurrentSystem = getCurrentSystem();
             if (!newCurrentSystem->m_barlineArray.empty())
             {
-                Barline* lastBar = newCurrentSystem->GetBarline(newCurrentSystem->GetBarlineCount() - 1);
+                const Barline* lastBar = newCurrentSystem->GetBarline(newCurrentSystem->GetBarlineCount() - 1);
 
                 moveCaretHorizontal(lastBar->GetPosition() - currentPositionIndex + 1);
             }
@@ -418,7 +415,7 @@ void Caret::updateSelection(int start, int end)
 }
 
 /// Returns a list of all of the Position objects that are currently selected
-void Caret::getSelectedPositions(vector<Position *>& positions)
+void Caret::getSelectedPositions(vector<Position *>& positions) const
 {
     getCurrentStaff()->GetPositionsInRange(positions, 0,
                                            std::min(selectionRange.first, selectionRange.second),
@@ -426,7 +423,7 @@ void Caret::getSelectedPositions(vector<Position *>& positions)
 }
 
 /// Returns a list of all of the Note objects that are currently selected
-void Caret::getSelectedNotes(vector<Note*>& notes)
+void Caret::getSelectedNotes(vector<Note*>& notes) const
 {
     vector<Position*> positions;
     getSelectedPositions(positions);
