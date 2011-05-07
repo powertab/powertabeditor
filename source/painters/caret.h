@@ -5,6 +5,7 @@
 #include "staffdata.h"
 
 #include <memory>
+#include <cstdint>
 
 class Note;
 class Position;
@@ -57,22 +58,25 @@ public:
     Note* getCurrentNote() const;
     Barline* getCurrentBarline() const;
 
-    inline quint32 getCurrentSystemIndex() const
+    uint32_t getCurrentVoice() const;
+    bool setCurrentVoice(uint32_t voice);
+
+    inline uint32_t getCurrentSystemIndex() const
     {
         return currentSystemIndex;
     }
 
-    inline quint32 getCurrentStaffIndex() const
+    inline uint32_t getCurrentStaffIndex() const
     {
         return currentStaffIndex;
     }
 
-    inline quint32 getCurrentPositionIndex() const
+    inline uint32_t getCurrentPositionIndex() const
     {
         return currentPositionIndex;
     }
 
-    inline quint32 getCurrentStringIndex() const
+    inline uint32_t getCurrentStringIndex() const
     {
         return currentStringIndex;
     }
@@ -92,12 +96,14 @@ protected:
     bool inPlaybackMode;
 
     Score* currentScore;
-    quint32 currentSystemIndex;
-    quint32 currentStaffIndex;
-    quint32 currentStringIndex;
-    quint32 currentPositionIndex;
+    uint32_t currentSystemIndex;
+    uint32_t currentStaffIndex;
+    uint32_t currentStringIndex;
+    uint32_t currentPositionIndex;
 
-    quint32 currentStaffTopEdge;
+    uint32_t currentVoice;
+
+    uint32_t currentStaffTopEdge;
     int lineSpacing;
     StaffData currentStaffInfo;
 

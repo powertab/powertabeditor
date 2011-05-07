@@ -23,6 +23,7 @@ Caret::Caret(int tabLineSpacing) :
     currentStaffIndex(0),
     currentStringIndex(0),
     currentPositionIndex(0),
+    currentVoice(0),
     currentStaffTopEdge(0),
     lineSpacing(tabLineSpacing),
     selectionRange(std::make_pair(0, 0))
@@ -437,4 +438,18 @@ void Caret::getSelectedNotes(vector<Note*>& notes) const
             notes.push_back(positions[i]->GetNote(j));
         }
     }
+}
+
+/// Returns the index of the voice that is currently active
+uint32_t Caret::getCurrentVoice() const
+{
+    return currentVoice;
+}
+
+bool Caret::setCurrentVoice(uint32_t voice)
+{
+    CHECK_THAT(Staff::IsValidVoice(voice), false);
+
+    currentVoice = voice;
+    return true;
 }
