@@ -19,8 +19,9 @@ RepeatController::RepeatController(const Score* score) :
 /// Scans through the entire score and finds all of the pairs of repeat bars
 void RepeatController::indexRepeats()
 {
-    const Barline* activeStartBar = score->GetSystem(0)->GetStartBarPtr();
-    uint32_t activeStartBarSystem = 0; // system that the active start bar is in
+    // add start of score as the first repeat
+    const SystemLocation scoreStartLocation(0, 0);
+    repeats[scoreStartLocation] = Repeat(scoreStartLocation);
 
     for (size_t currentSystem = 0; currentSystem < score->GetSystemCount(); currentSystem++)
     {
@@ -35,10 +36,8 @@ void RepeatController::indexRepeats()
 
             if (currentBar->IsRepeatStart())
             {
-                activeStartBar = currentBar;
-                activeStartBarSystem = currentSystem;
-                const SystemLocation location(activeStartBarSystem,
-                                              activeStartBar->GetPosition());
+                const SystemLocation location(currentSystem,
+                                              currentBar->GetPosition());
 
                 repeats[location] = Repeat(location);
             }

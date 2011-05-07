@@ -31,7 +31,7 @@ public:
 
 private:
     std::map<SystemLocation, RepeatEnd> endBars;
-    const SystemLocation startBarLocation;
+    SystemLocation startBarLocation;
     uint8_t activeRepeat;
 };
 
