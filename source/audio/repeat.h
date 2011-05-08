@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <powertabdocument/systemlocation.h>
 #include <boost/unordered_map.hpp>
+#include <memory>
 
 class AlternateEnding;
 
@@ -29,7 +30,7 @@ public:
     Repeat(const SystemLocation& startBarLocation);
 
     void addRepeatEnd(const SystemLocation& location, const RepeatEnd& endBar);
-    void addAlternateEnding(const AlternateEnding* altEnding);
+    void addAlternateEnding(std::shared_ptr<const AlternateEnding> altEnding);
 
     SystemLocation performRepeat(const SystemLocation& location);
 

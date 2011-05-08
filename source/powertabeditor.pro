@@ -130,7 +130,10 @@ SOURCES += main.cpp\
     audio/bendevent.cpp \
     actions/addnote.cpp \
     audio/repeat.cpp \
-    powertabdocument/systemlocation.cpp
+    powertabdocument/systemlocation.cpp \
+    actions/removealternateending.cpp \
+    actions/addalternateending.cpp \
+    dialogs/alternateendingdialog.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -239,7 +242,10 @@ HEADERS  += powertabeditor.h \
     audio/bendevent.h \
     actions/addnote.h \
     audio/repeat.h \
-    powertabdocument/systemlocation.h
+    powertabdocument/systemlocation.h \
+    actions/removealternateending.h \
+    actions/addalternateending.h \
+    dialogs/alternateendingdialog.h
 
 RESOURCES += \
     resources.qrc

@@ -106,6 +106,19 @@ bool SystemSymbol::operator!=(const SystemSymbol& systemSymbol) const
     return (!operator==(systemSymbol));
 }
 
+/// Order symbols by their system, then position index
+bool SystemSymbol::operator<(const SystemSymbol& systemSymbol) const
+{
+    if (m_system == systemSymbol.m_system)
+    {
+        return m_position < systemSymbol.m_position;
+    }
+    else
+    {
+        return m_system < systemSymbol.m_system;
+    }
+}
+
 // Serialize Functions
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to

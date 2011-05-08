@@ -2,6 +2,8 @@
 
 #include <powertabdocument/alternateending.h>
 
+using std::shared_ptr;
+
 Repeat::Repeat(const SystemLocation& startBarLocation) :
     startBarLocation(startBarLocation),
     activeRepeat(1)
@@ -20,7 +22,7 @@ void Repeat::addRepeatEnd(const SystemLocation& location, const RepeatEnd& endBa
 }
 
 /// Adds an alternate ending to the repeat group
-void Repeat::addAlternateEnding(const AlternateEnding* altEnding)
+void Repeat::addAlternateEnding(shared_ptr<const AlternateEnding> altEnding)
 {
     const SystemLocation location(altEnding->GetSystem(), altEnding->GetPosition());
 

@@ -52,6 +52,7 @@ public:
     const SystemSymbol& operator=(const SystemSymbol& systemSymbol);
     bool operator==(const SystemSymbol& systemSymbol) const;
     bool operator!=(const SystemSymbol& systemSymbol) const;
+    bool operator<(const SystemSymbol& systemSymbol) const;
 
 // Serialization Functions
 protected:

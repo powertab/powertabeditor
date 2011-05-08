@@ -515,7 +515,7 @@ void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<const System> system,
         drawDividerLine(currentStaffInfo, height);
     }
 
-    std::vector<AlternateEnding*> altEndings;
+    std::vector<Score::AlternateEndingPtr> altEndings;
     score->GetAlternateEndingsInSystem(altEndings, system);
 
     if (altEndings.size() > 0)
@@ -551,7 +551,7 @@ void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<const System> system,
 
 }
 
-void ScoreArea::drawAltEndings(const std::vector<AlternateEnding*>& altEndings,
+void ScoreArea::drawAltEndings(const std::vector<Score::AlternateEndingPtr>& altEndings,
                                shared_ptr<const System> system, uint32_t height)
 {
     QFont displayFont("Liberation Sans");
@@ -560,7 +560,7 @@ void ScoreArea::drawAltEndings(const std::vector<AlternateEnding*>& altEndings,
     const double TOP_LINE_OFFSET = 2;
     const double TEXT_PADDING = 5;
 
-    BOOST_FOREACH(const AlternateEnding* altEnding, altEndings)
+    BOOST_FOREACH(Score::AlternateEndingConstPtr altEnding, altEndings)
     {
         const uint32_t location = system->GetPositionX(altEnding->GetPosition());
 

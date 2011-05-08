@@ -93,7 +93,6 @@ public:
     
 // Operations
     std::string GetText() const;
-protected:
     static std::string GetNumberText(uint32_t number);
 };
 

@@ -29,6 +29,7 @@
 #include <dialogs/rehearsalsigndialog.h>
 #include <dialogs/trilldialog.h>
 #include <dialogs/barlinedialog.h>
+#include <dialogs/alternateendingdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -37,6 +38,8 @@
 #include <powertabdocument/score.h>
 #include <powertabdocument/note.h>
 #include <powertabdocument/staff.h>
+#include <powertabdocument/systemlocation.h>
+#include <powertabdocument/alternateending.h>
 
 #include <widgets/mixer/mixer.h>
 #include <widgets/toolbox/toolbox.h>
@@ -64,6 +67,8 @@
 #include <actions/addsystem.h>
 #include <actions/addguitar.h>
 #include <actions/addnote.h>
+#include <actions/removealternateending.h>
+#include <actions/addalternateending.h>
 
 using std::shared_ptr;
 
@@ -471,6 +476,11 @@ void PowerTabEditor::createActions()
     barlineAct->setShortcut(QKeySequence(Qt::Key_B));
     connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarline()));
 
+    repeatEndingAct = new QAction(tr("Repeat Ending..."), this);
+    repeatEndingAct->setCheckable(true);
+    repeatEndingAct->setShortcut(QKeySequence(Qt::Key_E));
+    connect(repeatEndingAct, SIGNAL(triggered()), this, SLOT(editRepeatEnding()));
+
     // Tab Symbol Actions
     hammerPullAct = new QAction(tr("Hammer On/Pull Off"), this);
     hammerPullAct->setCheckable(true);
@@ -708,6 +718,7 @@ void PowerTabEditor::createMenus()
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     musicSymbolsMenu->addAction(rehearsalSignAct);
     musicSymbolsMenu->addAction(barlineAct);
+    musicSymbolsMenu->addAction(repeatEndingAct);
 
     // Tab Symbols Menu
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
@@ -1254,6 +1265,30 @@ void PowerTabEditor::editBarline(int position)
     }
 }
 
+void PowerTabEditor::editRepeatEnding()
+{
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* currentScore = caret->getCurrentScore();
+    shared_ptr<AlternateEnding> altEnding = currentScore->FindAlternateEnding(SystemLocation(caret->getCurrentSystemIndex(),
+                                                                                             caret->getCurrentPositionIndex()));
+
+    if (!altEnding) // add an alternate ending
+    {
+        altEnding = std::make_shared<AlternateEnding>(caret->getCurrentSystemIndex(),
+                                                      caret->getCurrentPositionIndex(), 0);
+
+        AlternateEndingDialog dialog(altEnding);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            undoManager->push(new AddAlternateEnding(currentScore, altEnding));
+        }
+    }
+    else
+    {
+        undoManager->push(new RemoveAlternateEnding(currentScore, altEnding));
+    }
+}
+
 // If there is a chord name at the current position, remove it
 // If there is no chord name, show the dialog to add a chord name
 // Existing chord names are edited by clicking on the chord name
@@ -1446,6 +1481,10 @@ void PowerTabEditor::updateActions()
 
     const RehearsalSign* currentRehearsalSign = currentBarline == NULL ? NULL : currentBarline->GetRehearsalSignPtr();
     updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
+
+    shared_ptr<const AlternateEnding> altEnding = currentScore->FindAlternateEnding(SystemLocation(caret->getCurrentSystemIndex(),
+                                                                                        caret->getCurrentPositionIndex()));
+    repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
 
     if (currentBarline != NULL) // current position is bar
     {

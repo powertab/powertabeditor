@@ -84,6 +84,7 @@ protected slots:
 
     void editChordName();
     void editRehearsalSign();
+    void editRepeatEnding();
     void editTiedNote();
     void editHammerPull();
     void editTrill();
@@ -203,6 +204,7 @@ protected:
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs
     QAction* barlineAct;
+    QAction* repeatEndingAct;
 
     QMenu* tabSymbolsMenu;
     QAction* hammerPullAct; // add/remove hammer-on or pull-off

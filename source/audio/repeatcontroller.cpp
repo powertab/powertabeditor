@@ -54,7 +54,7 @@ void RepeatController::indexRepeats()
     // add alternate endings
     for (size_t i = 0; i < score->GetAlternateEndingCount(); i++)
     {
-        const AlternateEnding* altEnding = score->GetAlternateEnding(i);
+        shared_ptr<const AlternateEnding> altEnding = score->GetAlternateEnding(i);
 
         const SystemLocation altEndingLocation(altEnding->GetSystem(),
                                                altEnding->GetPosition());

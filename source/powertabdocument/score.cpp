@@ -25,10 +25,13 @@
 #include "powertaboutputstream.h"
 #include "direction.h"
 #include "dynamic.h"
+#include "systemlocation.h"
 
 #include <map>
 #include <bitset>
 #include <algorithm>
+#include <boost/foreach.hpp>
+#include <boost/iterator/indirect_iterator.hpp>
 
 /// Default Constructor
 Score::Score()
@@ -62,17 +65,6 @@ Score::~Score()
     {
         delete m_tempoMarkerArray.at(i);
     }
-    for (uint32_t i = 0; i < m_alternateEndingArray.size(); i++)
-    {
-        delete m_alternateEndingArray.at(i);
-    }
-    m_guitarArray.clear();
-    m_chordDiagramArray.clear();
-    m_floatingTextArray.clear();
-    m_guitarInArray.clear();
-    m_tempoMarkerArray.clear();
-    m_dynamicArray.clear();
-    m_alternateEndingArray.clear();
 }
 
 // Operators
@@ -347,13 +339,13 @@ int Score::FindSystemIndex(SystemConstPtr system) const
 
 // Helper function for GetAlternateEndingsInSystem and GetTempoMarkersInSystem
 template<class Symbol>
-void GetSymbolsInSystem(std::vector<Symbol*>& output, const std::vector<Symbol*>& symbolList, const uint32_t systemIndex)
+void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& symbolList, const uint32_t systemIndex)
 {
     output.clear();
 
     for (size_t i = 0; i < symbolList.size(); i++)
     {
-        Symbol* symbol = symbolList.at(i);
+        Symbol symbol = symbolList.at(i);
         if (symbol->GetSystem() == systemIndex)
         {
             output.push_back(symbol);
@@ -367,9 +359,23 @@ void Score::GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, Sys
     GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
 }
 
-void Score::GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, SystemConstPtr system) const
+void Score::GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings, SystemConstPtr system) const
 {
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
+}
+
+/// Returns the alternate ending at the given location, or NULL if it is not found
+Score::AlternateEndingPtr Score::FindAlternateEnding(const SystemLocation& location) const
+{
+    BOOST_FOREACH(AlternateEndingPtr ending, m_alternateEndingArray)
+    {
+        if (location == SystemLocation(ending->GetSystem(), ending->GetPosition()))
+        {
+            return ending;
+        }
+    }
+
+    return AlternateEndingPtr();
 }
 
 /// Updates the height of the system, and adjusts the height of subsequent systems as necessary
@@ -419,7 +425,7 @@ void Score::UpdateExtraSpacing(SystemPtr system)
     GetTempoMarkersInSystem(markers, system);
     
     // get list of alternate endings
-    std::vector<AlternateEnding*> endings;
+    std::vector<AlternateEndingPtr> endings;
     GetAlternateEndingsInSystem(endings, system);
 
     // Find how many different items occur in the system (i.e. is there at least one rehearsal sign, tempo marker, etc)
@@ -492,4 +498,47 @@ void Score::MergeScore(const Score &otherScore)
 
     std::for_each(otherScore.m_guitarArray.begin(), otherScore.m_guitarArray.end(),
                   std::bind(&Score::InsertGuitar, this, _1));
+}
+
+/// Determines if a alternate ending index is valid
+/// @param index alternate ending index to validate
+/// @return True if the alternate ending index is valid, false if not
+bool Score::IsValidAlternateEndingIndex(uint32_t index) const
+{
+    return index < GetAlternateEndingCount();
+}
+
+/// Gets the number of alternate endings in the score
+/// @return The number of alternate endings in the score
+size_t Score::GetAlternateEndingCount() const
+{
+    return m_alternateEndingArray.size();
+}
+
+/// Gets the nth alternate ending in the score
+/// @param index Index of the alternate ending to get
+/// @return The nth alternate ending in the score
+Score::AlternateEndingPtr Score::GetAlternateEnding(uint32_t index) const
+{
+    CHECK_THAT(IsValidAlternateEndingIndex(index), AlternateEndingPtr());
+    return m_alternateEndingArray[index];
+}
+
+/// Inserts a new alternate ending into the score
+void Score::InsertAlternateEnding(AlternateEndingPtr altEnding)
+{
+    m_alternateEndingArray.push_back(altEnding);
+
+    // sort the alternate endings by system, then position
+    using boost::make_indirect_iterator;
+    std::sort(make_indirect_iterator(m_alternateEndingArray.begin()),
+              make_indirect_iterator(m_alternateEndingArray.end()));
+}
+
+/// Removes the specified alternate ending from the score, if possible
+void Score::RemoveAlternateEnding(AlternateEndingPtr altEnding)
+{
+    m_alternateEndingArray.erase(std::remove(m_alternateEndingArray.begin(),
+                                             m_alternateEndingArray.end(),
+                                             altEnding));
 }

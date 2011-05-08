@@ -72,7 +72,7 @@ protected:
     void drawSystemSymbols(Score* score, std::shared_ptr<const System> system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
 
-    void drawAltEndings(const std::vector<AlternateEnding*>& altEndings,
+    void drawAltEndings(const std::vector<std::shared_ptr<AlternateEnding> >& altEndings,
                         std::shared_ptr<const System> system, uint32_t height);
 
     void drawTempoMarkers(const std::vector<TempoMarker*>& tempoMarkers,

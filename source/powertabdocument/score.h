@@ -26,6 +26,7 @@ class TempoMarker;
 class Dynamic;
 class AlternateEnding;
 class System;
+class SystemLocation;
 
 /// Stores and renders a score
 // Note: This is a class used to make life easier - it's not a class that exists in PTE v1.7
@@ -39,6 +40,8 @@ public:
     typedef std::shared_ptr<System> SystemPtr;
     typedef std::shared_ptr<const System> SystemConstPtr;
     typedef std::shared_ptr<Guitar> GuitarPtr;
+    typedef std::shared_ptr<AlternateEnding> AlternateEndingPtr;
+    typedef std::shared_ptr<const AlternateEnding> AlternateEndingConstPtr;
 
 // Member Variables
 public:
@@ -48,7 +51,7 @@ public:
     std::vector<GuitarIn*>               m_guitarInArray;            ///< Guitar Ins used in the score
     std::vector<TempoMarker*>            m_tempoMarkerArray;         ///< Tempo Markers used in the score
     std::vector<Dynamic*>                m_dynamicArray;             ///< Dynamic markers used in the score
-    std::vector<AlternateEnding*>        m_alternateEndingArray;     ///< Alternate endings used in the score
+    std::vector<AlternateEndingPtr>     m_alternateEndingArray;     ///< Alternate endings used in the score
     std::vector<SystemPtr>              m_systemArray;              ///< Systems used in the score
 
 // Constructor/Destructor
@@ -202,25 +205,15 @@ public:
     }
 
 // Alternate Ending Functions
-    /// Determines if a alternate ending index is valid
-    /// @param index alternate ending index to validate
-    /// @return True if the alternate ending index is valid, false if not
-    bool IsValidAlternateEndingIndex(uint32_t index) const
-        {return (index < GetAlternateEndingCount());}
-    /// Gets the number of alternate endings in the score
-    /// @return The number of alternate endings in the score
-    size_t GetAlternateEndingCount() const
-        {return (m_alternateEndingArray.size());}
-    /// Gets the nth alternate ending in the score
-    /// @param index Index of the alternate ending to get
-    /// @return The nth alternate ending in the score
-    AlternateEnding* GetAlternateEnding(uint32_t index) const
-    {
-        CHECK_THAT(IsValidAlternateEndingIndex(index), NULL);
-        return (m_alternateEndingArray[index]);
-    }
+    bool IsValidAlternateEndingIndex(uint32_t index) const;
+    size_t GetAlternateEndingCount() const;
+    AlternateEndingPtr GetAlternateEnding(uint32_t index) const;
 
-    void GetAlternateEndingsInSystem(std::vector<AlternateEnding*>& endings, SystemConstPtr system) const;
+    void GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings, SystemConstPtr system) const;
+    AlternateEndingPtr FindAlternateEnding(const SystemLocation& location) const;
+
+    void InsertAlternateEnding(AlternateEndingPtr altEnding);
+    void RemoveAlternateEnding(AlternateEndingPtr altEnding);
 
 // System Functions
     /// Determines if a system index is valid
