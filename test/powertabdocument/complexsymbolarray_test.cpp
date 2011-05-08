@@ -35,6 +35,7 @@ BOOST_AUTO_TEST_SUITE(ComplexSymbolTest)
         BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(array), 2);
 
         std::array<uint32_t, 3> emptyArray;
+        std::fill(emptyArray.begin(), emptyArray.end(), 0);
         BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(emptyArray), 0);
     }
 
