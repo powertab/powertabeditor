@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QHash>
 #include <memory>
+#include <vector>
 #include <boost/ptr_container/ptr_list.hpp>
 
 class Caret;

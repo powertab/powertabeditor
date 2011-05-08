@@ -53,7 +53,7 @@ namespace ComplexSymbols
     size_t getComplexSymbolCount(const std::array<uint32_t, N>& symbolArray)
     {
         return  symbolArray.size() -
-                std::count(symbolArray.begin(), symbolArray.end(), notUsed);
+                std::count(symbolArray.begin(), symbolArray.end(), static_cast<uint32_t>(notUsed));
     }
 
     /// Clears the contents of the symbol array (sets all elements to "not used")
