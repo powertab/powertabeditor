@@ -18,6 +18,7 @@ class Note;
 class StdNotationPainter;
 class Position;
 class TempoMarker;
+class AlternateEnding;
 
 template <class Key, class T>
 class QMultiMap;
@@ -71,7 +72,10 @@ protected:
     void drawSystemSymbols(Score* score, std::shared_ptr<const System> system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
 
-    void drawTempoMarkers(std::vector<TempoMarker*> tempoMarkers,
+    void drawAltEndings(const std::vector<AlternateEnding*>& altEndings,
+                        std::shared_ptr<const System> system, uint32_t height);
+
+    void drawTempoMarkers(const std::vector<TempoMarker*>& tempoMarkers,
                           std::shared_ptr<const System> system, quint32 height);
 
     void drawSymbolsBelowTabStaff(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,

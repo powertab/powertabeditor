@@ -371,7 +371,7 @@ Barline* System::GetNextBarline(uint32_t position) const
 {
     // if position is past the last barline in array return m_endBar
     if (m_barlineArray.empty() ||
-        position > m_barlineArray.at(GetBarlineCount() - 1)->GetPosition())
+        position >= m_barlineArray.at(GetBarlineCount() - 1)->GetPosition())
         return const_cast<Barline *>(&m_endBar);
 
     // if position is before the first non-startbar barline
