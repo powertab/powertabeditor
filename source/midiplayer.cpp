@@ -225,6 +225,13 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                                                              LetRingEvent::LET_RING_OFF));
                         letRingActive = false;
                     }
+                    // make sure that we end the let ring after the last position in the system
+                    else if (letRingActive && (j == staff->GetPositionCount(voice) - 1))
+                    {
+                        eventList.push_back(new LetRingEvent(i, startTime + duration, positionIndex, systemIndex,
+                                                             LetRingEvent::LET_RING_OFF));
+                        letRingActive = false;
+                    }
 
                     // Perform tremolo picking or trills - they work identically, except trills alternate between two pitches
                     if (position->HasTremoloPicking() || note->HasTrill())
