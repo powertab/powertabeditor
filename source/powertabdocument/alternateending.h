@@ -12,6 +12,7 @@
 #ifndef __ALTERNATEENDING_H__
 #define __ALTERNATEENDING_H__
 
+#include <vector>
 #include "systemsymbol.h"
 
 /// Stores and renders alternate ending symbols
@@ -61,6 +62,7 @@ public:
     static bool IsValidNumber(uint32_t number);
     bool SetNumbers(uint16_t numbers);
     uint16_t GetNumbers() const;
+    std::vector<uint8_t> GetListOfNumbers() const;
     bool SetNumber(uint32_t number);
     bool IsNumberSet(uint32_t number) const;
     bool ClearNumber(uint32_t number);

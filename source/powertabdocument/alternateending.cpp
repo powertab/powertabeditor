@@ -110,6 +110,22 @@ uint16_t AlternateEnding::GetNumbers() const
 {
     return HIWORD(m_data);
 }
+
+/// Get a list of all numbers that are set
+std::vector<uint8_t> AlternateEnding::GetListOfNumbers() const
+{
+    std::vector<uint8_t> numbers;
+
+    for (uint8_t i = 1; i < daCapo; i++)
+    {
+        if (IsNumberSet(i))
+        {
+            numbers.push_back(i);
+        }
+    }
+
+    return numbers;
+}
 		
 /// Sets a number
 /// @param number The number to set (one based)

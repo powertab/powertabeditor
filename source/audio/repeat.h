@@ -3,7 +3,9 @@
 
 #include <cstdint>
 #include <powertabdocument/systemlocation.h>
-#include <map>
+#include <boost/unordered_map.hpp>
+
+class AlternateEnding;
 
 /// Represents a repeat end bar
 class RepeatEnd
@@ -27,10 +29,14 @@ public:
     Repeat(const SystemLocation& startBarLocation);
 
     void addRepeatEnd(const SystemLocation& location, const RepeatEnd& endBar);
+    void addAlternateEnding(const AlternateEnding* altEnding);
+
     SystemLocation performRepeat(const SystemLocation& location);
 
 private:
-    std::map<SystemLocation, RepeatEnd> endBars;
+    boost::unordered_map<SystemLocation, RepeatEnd, boost::hash<SystemLocation> > endBars;
+    boost::unordered_map<uint8_t, SystemLocation> alternateEndings;
+
     SystemLocation startBarLocation;
     uint8_t activeRepeat;
 };

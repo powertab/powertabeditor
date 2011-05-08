@@ -2,6 +2,7 @@
 
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
+#include <powertabdocument/alternateending.h>
 
 #include <vector>
 #include <memory>
@@ -49,6 +50,30 @@ void RepeatController::indexRepeats()
             }
         }
     }
+
+    // add alternate endings
+    for (size_t i = 0; i < score->GetAlternateEndingCount(); i++)
+    {
+        const AlternateEnding* altEnding = score->GetAlternateEnding(i);
+
+        const SystemLocation altEndingLocation(altEnding->GetSystem(),
+                                               altEnding->GetPosition());
+
+        Repeat& activeRepeat = getPreviousRepeatGroup(altEndingLocation);
+        activeRepeat.addAlternateEnding(altEnding);
+    }
+}
+
+/// Returns the active repeat - the last repeat with a start bar before the given position
+Repeat& RepeatController::getPreviousRepeatGroup(const SystemLocation& location)
+{
+    auto repeatGroup = repeats.upper_bound(location);
+    if (repeatGroup != repeats.begin())
+    {
+        repeatGroup--;
+    }
+
+    return repeatGroup->second;
 }
 
 /// Checks if a repeat needs to be performed at the given system and position.
@@ -62,16 +87,11 @@ bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPo
         return false;
     }
 
-    // find the active repeat - the last repeat with a start bar less than the current position
     SystemLocation currentLocation(currentSystem, currentPos);
-    auto activeRepeatGroup = repeats.upper_bound(currentLocation);
-    if (activeRepeatGroup != repeats.begin())
-    {
-        activeRepeatGroup--;
-    }
+    Repeat& activeRepeat = getPreviousRepeatGroup(currentLocation);
 
     // perform the repeat
-    SystemLocation newLocation = activeRepeatGroup->second.performRepeat(currentLocation);
+    SystemLocation newLocation = activeRepeat.performRepeat(currentLocation);
 
     if (newLocation == currentLocation) // if no position shift occurred
     {

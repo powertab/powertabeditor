@@ -22,6 +22,7 @@ private:
     const Score* score;
 
     std::map<SystemLocation, Repeat> repeats; ///< Holds all repeats in the score
+    Repeat& getPreviousRepeatGroup(const SystemLocation& location);
 };
 
 #endif // REPEATCONTROLLER_H

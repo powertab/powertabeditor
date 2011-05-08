@@ -1,5 +1,7 @@
 #include "systemlocation.h"
 
+#include <boost/functional/hash.hpp>
+
 SystemLocation::SystemLocation(uint32_t system, uint32_t position) :
     system(system),
     position(position)
@@ -37,4 +39,13 @@ uint32_t SystemLocation::getPositionIndex() const
 uint32_t SystemLocation::getSystemIndex() const
 {
     return system;
+}
+
+/// Enable the use of SystemLocation as a key for boost::unorded_map, etc
+size_t hash_value(const SystemLocation& location)
+{
+    size_t seed = 0;
+    boost::hash_combine(seed, location.getSystemIndex());
+    boost::hash_combine(seed, location.getPositionIndex());
+    return seed;
 }

@@ -24,4 +24,6 @@ private:
     uint32_t position;
 };
 
+size_t hash_value(const SystemLocation& location);
+
 #endif // SYSTEMLOCATION_H
