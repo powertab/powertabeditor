@@ -32,6 +32,8 @@ public:
     void addRepeatEnd(const SystemLocation& location, const RepeatEnd& endBar);
     void addAlternateEnding(std::shared_ptr<const AlternateEnding> altEnding);
 
+    uint8_t getActiveRepeat() const;
+
     SystemLocation performRepeat(const SystemLocation& location);
 
 private:

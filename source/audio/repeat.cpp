@@ -71,6 +71,11 @@ SystemLocation Repeat::performRepeat(const SystemLocation& currentLocation)
     }
 }
 
+uint8_t Repeat::getActiveRepeat() const
+{
+    return activeRepeat;
+}
+
 RepeatEnd::RepeatEnd() :
     repeatCount(0),
     remainingRepeats(0)

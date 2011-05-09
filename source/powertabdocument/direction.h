@@ -36,7 +36,7 @@ public:
     static const uint8_t         MIN_REPEAT_NUMBER;      ///< Minimum allowed value for the repeat number
     static const uint8_t         MAX_REPEAT_NUMBER;      ///< Maximum allowed value for the repeat number
 
-    enum symbolTypes
+    enum SymbolType
     {
         coda                            = (uint8_t)0x00,
         doubleCoda                      = (uint8_t)0x01,
@@ -59,7 +59,7 @@ public:
         dalSegnoSegnoAlFine             = (uint8_t)0x12
     };
 
-    enum activeSymbols
+    enum ActiveSymbolType
     {
         activeNone                      = (uint8_t)0x00,
         activeDaCapo                    = (uint8_t)0x01,
