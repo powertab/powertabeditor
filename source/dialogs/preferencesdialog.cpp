@@ -12,6 +12,8 @@
 #include <QComboBox>
 #include <QCheckBox>
 
+#include <app/settings.h>
+
 MIDITab::MIDITab(QWidget *parent) :
     QWidget(parent)
 {
@@ -56,10 +58,17 @@ MIDITab::MIDITab(QWidget *parent) :
 
     // initialize the widget values
     QSettings settings;
-    midiPort->setCurrentIndex(settings.value("midi/preferredPort").toInt());
-    metronomeEnabled->setChecked(settings.value("midi/metronomeEnabled").toBool());
-    vibratoStrength->setValue(settings.value("midi/vibrato", 85).toUInt());
-    wideVibratoStrength->setValue(settings.value("midi/wide_vibrato", 127).toUInt());
+    midiPort->setCurrentIndex(settings.value(Settings::MIDI_PREFERRED_PORT,
+                                             Settings::MIDI_PREFFERED_PORT_DEFAULT).toInt());
+
+    metronomeEnabled->setChecked(settings.value(Settings::MIDI_METRONOME_ENABLED,
+                                                Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
+
+    vibratoStrength->setValue(settings.value(Settings::MIDI_VIBRATO_LEVEL,
+                                             Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt());
+
+    wideVibratoStrength->setValue(settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
+                                                 Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt());
 }
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
@@ -94,14 +103,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
 void PreferencesDialog::accept()
 {
+    // save the settings
     QSettings settings;
-    // save the preferred midi port
-    settings.setValue("midi/preferredPort", midiTab->midiPort->currentIndex());
-    // save the metronome settings
-    settings.setValue("midi/metronomeEnabled", midiTab->metronomeEnabled->isChecked());
+    settings.setValue(Settings::MIDI_PREFERRED_PORT, midiTab->midiPort->currentIndex());
+    settings.setValue(Settings::MIDI_METRONOME_ENABLED, midiTab->metronomeEnabled->isChecked());
 
-    settings.setValue("midi/vibrato", midiTab->vibratoStrength->value());
-    settings.setValue("midi/wide_vibrato", midiTab->wideVibratoStrength->value());
+    settings.setValue(Settings::MIDI_VIBRATO_LEVEL, midiTab->vibratoStrength->value());
+    settings.setValue(Settings::MIDI_WIDE_VIBRATO_LEVEL, midiTab->wideVibratoStrength->value());
     settings.sync();
 
     done(Accepted);

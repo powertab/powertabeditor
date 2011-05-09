@@ -3,6 +3,7 @@
 #include <powertabdocument/generalmidi.h>
 #include <rtmidiwrapper.h>
 #include <QSettings>
+#include <app/settings.h>
 
 #if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
@@ -27,7 +28,8 @@ void MetronomeEvent::performEvent(RtMidiWrapper& sequencer) const
     QSettings settings;
 
     VelocityType actualVelocity = velocity;
-    if (settings.value("midi/metronomeEnabled").toBool() == false)
+    if (settings.value(Settings::MIDI_METRONOME_ENABLED,
+                       Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool() == false)
     {
         actualVelocity = METRONOME_OFF;
     }

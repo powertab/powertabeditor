@@ -23,6 +23,7 @@
 #include <scorearea.h>
 #include <skinmanager.h>
 #include <midiplayer.h>
+#include <app/settings.h>
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
@@ -95,7 +96,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     // load application settings
     QSettings settings;
     // retrieve the previous directory that a file was opened/saved to (default value is home directory)
-    previousDirectory = settings.value("app/previousDirectory", QDir::homePath()).toString();
+    previousDirectory = settings.value(Settings::APP_PREVIOUS_DIRECTORY, QDir::homePath()).toString();
 
     connect(undoManager.get(), SIGNAL(indexChanged(int)), this, SLOT(refreshOnUndoRedo(int)));
     connect(undoManager.get(), SIGNAL(cleanChanged(bool)), this, SLOT(updateModified(bool)));
@@ -806,7 +807,7 @@ void PowerTabEditor::openFile()
             // save this as the previous directory
             previousDirectory = fileInfo.absolutePath();
             QSettings settings;
-            settings.setValue("app/previousDirectory", previousDirectory);
+            settings.setValue(Settings::APP_PREVIOUS_DIRECTORY, previousDirectory);
 
             setupNewDocument();
         }

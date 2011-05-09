@@ -2,6 +2,7 @@
 
 #include <rtmidiwrapper.h>
 #include <QSettings>
+#include <app/settings.h>
 
 #if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
@@ -28,11 +29,13 @@ void VibratoEvent::performEvent(RtMidiWrapper& sequencer) const
 
         if (vibratoType == NORMAL_VIBRATO)
         {
-            vibratoWidth = settings.value("midi/vibrato", 85).toUInt();
+            vibratoWidth = settings.value(Settings::MIDI_VIBRATO_LEVEL,
+                                          Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt();
         }
         else if (vibratoType == WIDE_VIBRATO)
         {
-            vibratoWidth = settings.value("midi/wide_vibrato", 127).toUInt();
+            vibratoWidth = settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
+                                          Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt();
         }
 
         sequencer.setVibrato(channel, vibratoWidth);

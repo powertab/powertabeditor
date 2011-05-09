@@ -134,7 +134,8 @@ SOURCES += main.cpp\
     actions/removealternateending.cpp \
     actions/addalternateending.cpp \
     dialogs/alternateendingdialog.cpp \
-    audio/directionsymbol.cpp
+    audio/directionsymbol.cpp \
+    app/settings.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -247,7 +248,8 @@ HEADERS  += powertabeditor.h \
     actions/removealternateending.h \
     actions/addalternateending.h \
     dialogs/alternateendingdialog.h \
-    audio/directionsymbol.h
+    audio/directionsymbol.h \
+    app/settings.h
 
 RESOURCES += \
     resources.qrc
