@@ -1,6 +1,7 @@
 #include "repeat.h"
 
 #include <powertabdocument/alternateending.h>
+#include <boost/foreach.hpp>
 
 using std::shared_ptr;
 
@@ -76,6 +77,17 @@ uint8_t Repeat::getActiveRepeat() const
     return activeRepeat;
 }
 
+/// Resets the repeat group to its original state (restores counters, etc)
+void Repeat::reset()
+{
+    activeRepeat = 1;
+
+    BOOST_FOREACH(auto& endBar, endBars)
+    {
+        endBar.second.reset();
+    }
+}
+
 RepeatEnd::RepeatEnd() :
     repeatCount(0),
     remainingRepeats(0)
@@ -100,4 +112,10 @@ bool RepeatEnd::performRepeat()
         remainingRepeats = repeatCount - 1;
         return false;
     }
+}
+
+/// Resets the number of remaining repeats to its original value
+void RepeatEnd::reset()
+{
+    remainingRepeats = repeatCount - 1;
 }

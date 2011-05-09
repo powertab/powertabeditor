@@ -127,9 +127,13 @@ bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPo
         {
             newLocation = performMusicalDirection(direction.getSymbolType());
 
-            if (newLocation != currentLocation) // remove the direction if it was performed
+            if (newLocation != currentLocation)
             {
+                // remove the direction if it was performed
                 directions.erase(directionsAtLocation.first);
+                // reset the repeat count for the active repeat, since we may end up returning to it later
+                // (e.g. D.C. al Fine)
+                activeRepeat.reset();
             }
         }
     }

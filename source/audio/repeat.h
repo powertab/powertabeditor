@@ -17,6 +17,8 @@ public:
 
     bool performRepeat();
 
+    void reset();
+
 private:
     uint8_t repeatCount;
     uint8_t remainingRepeats;
@@ -33,6 +35,8 @@ public:
     void addAlternateEnding(std::shared_ptr<const AlternateEnding> altEnding);
 
     uint8_t getActiveRepeat() const;
+
+    void reset();
 
     SystemLocation performRepeat(const SystemLocation& location);
 
