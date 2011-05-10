@@ -2,6 +2,7 @@
 #define MIDIPLAYER_H
 
 #include <QThread>
+#include <QMutex>
 #include <QHash>
 #include <memory>
 #include <vector>
@@ -21,13 +22,16 @@ class MidiPlayer : public QThread
     Q_OBJECT
 
 public:
-    MidiPlayer(Caret* caret);
+    MidiPlayer(Caret* caret, int playbackSpeed);
     ~MidiPlayer();
 
 signals:
     // these signals are used to notify the caret when a position change is necessary
     void playbackSystemChanged(quint32 systemIndex);
     void playbackPositionChanged(quint8 positionIndex);
+
+public slots:
+    void changePlaybackSpeed(int newPlaybackSpeed);
 
 protected:
     void run();
@@ -73,9 +77,12 @@ protected:
 
     Caret* caret;
 
+    QMutex mutex;
+
     bool isPlaying;
     quint32 currentSystemIndex;
     uint8_t activePitchBend; ///< keeps track of the active pitch bend (used for "bend and hold"-type events)
+    int playbackSpeed; ///< Current playback speed (percent)
 
     QHash<quint8, quint8> harmonicPitches;
     void initHarmonicPitches();

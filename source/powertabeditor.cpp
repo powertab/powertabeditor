@@ -44,6 +44,7 @@
 
 #include <widgets/mixer/mixer.h>
 #include <widgets/toolbox/toolbox.h>
+#include <widgets/playback/playbackwidget.h>
 
 #include <painters/caret.h>
 
@@ -80,6 +81,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
     fileFilter("Power Tab Documents (*.ptb)"),
     mixerList(new QStackedWidget),
+    playbackToolbarList(new QStackedWidget),
     skinManager(new SkinManager("default"))
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
@@ -111,12 +113,16 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     setWindowState(Qt::WindowMaximized);
     setWindowTitle(getApplicationName());
 
+    QSplitter* playbackArea = new QSplitter(Qt::Vertical);
+    playbackArea->addWidget(tabWidget);
+    playbackArea->addWidget(playbackToolbarList.get());
+
     horSplitter = new QSplitter();
     horSplitter->setOrientation(Qt::Horizontal);
 
     toolBox = new Toolbox(this, skinManager);
     horSplitter->addWidget(toolBox);
-    horSplitter->addWidget(tabWidget);
+    horSplitter->addWidget(playbackArea);
 
     vertSplitter = new QSplitter();
     vertSplitter->setOrientation(Qt::Vertical);
@@ -860,6 +866,8 @@ void PowerTabEditor::setupNewDocument()
     }
     scrollArea->setWidget(mixer);
     mixerList->addWidget(scrollArea);
+
+    playbackToolbarList->addWidget(new PlaybackWidget);
     
     connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
 
@@ -904,12 +912,14 @@ void PowerTabEditor::closeTab(int index)
     delete tabWidget->widget(index);
 
     mixerList->removeWidget(mixerList->widget(index));
+    playbackToolbarList->removeWidget(playbackToolbarList->widget(index));
 
     // get the index of the tab that we will now switch to
     const int currentIndex = tabWidget->currentIndex();
 
     undoManager->setActiveStackIndex(currentIndex);
     mixerList->setCurrentIndex(currentIndex);
+    playbackToolbarList->setCurrentIndex(currentIndex);
     documentManager.setCurrentDocumentIndex(currentIndex);
 
     if (currentIndex == -1) // disable score-related actions if no documents are open
@@ -923,6 +933,7 @@ void PowerTabEditor::switchTab(int index)
 {
     documentManager.setCurrentDocumentIndex(index);
     mixerList->setCurrentIndex(index);
+    playbackToolbarList->setCurrentIndex(index);
     undoManager->setActiveStackIndex(index);
 
     // update the window title with the file path of the active document
@@ -979,6 +990,18 @@ void PowerTabEditor::cycleTab(int offset)
     tabWidget->setCurrentIndex(newIndex);
 }
 
+/// Returns the current playback speed
+int PowerTabEditor::getCurrentPlaybackSpeed() const
+{
+    if (playbackToolbarList->count() == 0)
+    {
+        return 0;
+    }
+
+    PlaybackWidget* currentPlaybackWidget = dynamic_cast<PlaybackWidget*>(playbackToolbarList->currentWidget());
+    return currentPlaybackWidget->getPlaybackSpeed();
+}
+
 void PowerTabEditor::startStopPlayback()
 {
     isPlaying = !isPlaying;
@@ -989,10 +1012,11 @@ void PowerTabEditor::startStopPlayback()
 
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
 
-        midiPlayer.reset(new MidiPlayer(getCurrentScoreArea()->getCaret()));
+        midiPlayer.reset(new MidiPlayer(getCurrentScoreArea()->getCaret(), getCurrentPlaybackSpeed()));
         connect(midiPlayer.get(), SIGNAL(playbackSystemChanged(quint32)), this, SLOT(moveCaretToSystem(quint32)));
         connect(midiPlayer.get(), SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));
         connect(midiPlayer.get(), SIGNAL(finished()), this, SLOT(startStopPlayback()));
+        connect(playbackToolbarList->currentWidget(), SIGNAL(playbackSpeedChanged(int)), midiPlayer.get(), SLOT(changePlaybackSpeed(int)));
         midiPlayer->start();
     }
     else

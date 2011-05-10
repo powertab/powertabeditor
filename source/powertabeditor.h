@@ -49,6 +49,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
     void performSystemInsert(size_t index);
+    int getCurrentPlaybackSpeed() const;
 
 protected slots:
     void updateActions();
@@ -243,6 +244,7 @@ protected:
 
     QString previousDirectory; // previous directory that a file was opened in
     std::unique_ptr<QStackedWidget> mixerList;
+    std::unique_ptr<QStackedWidget> playbackToolbarList;
 
     std::shared_ptr<SkinManager> skinManager;
     std::unique_ptr<MidiPlayer> midiPlayer;

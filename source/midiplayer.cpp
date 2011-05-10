@@ -30,25 +30,30 @@
 using std::shared_ptr;
 using std::unique_ptr;
 
-MidiPlayer::MidiPlayer(Caret* caret) :
+MidiPlayer::MidiPlayer(Caret* caret, int playbackSpeed) :
     caret(caret),
     isPlaying(false),
     currentSystemIndex(0),
-    activePitchBend(BendEvent::DEFAULT_BEND)
+    activePitchBend(BendEvent::DEFAULT_BEND),
+    playbackSpeed(playbackSpeed)
 {
     initHarmonicPitches();
 }
 
 MidiPlayer::~MidiPlayer()
 {
+    mutex.lock();
     isPlaying = false;
+    mutex.unlock();
 
     wait();
 }
 
 void MidiPlayer::run()
 {
+    mutex.lock();
     isPlaying = true;
+    mutex.unlock();
 
     uint32_t startSystemIndex = caret->getCurrentSystemIndex();
     uint32_t startPos = caret->getCurrentPositionIndex();
@@ -332,9 +337,14 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
 
     while (activeEvent != eventList.end())
     {
-        if (!isPlaying)
         {
-            return;
+            QMutexLocker locker(&mutex);
+            Q_UNUSED(locker);
+
+            if (!isPlaying)
+            {
+                return;
+            }
         }
 
         const uint32_t eventPosition = activeEvent->getPositionIndex();
@@ -389,9 +399,13 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
             const int sleepDuration = nextEvent->getStartTime() - activeEvent->getStartTime();
             Q_ASSERT(sleepDuration >= 0);
 
-            usleep(1000 * sleepDuration);
+            mutex.lock();
+            const double speedShiftFactor = 100.0 / playbackSpeed; // slow down or speed up playback
+            mutex.unlock();
+
+            usleep(1000 * sleepDuration * speedShiftFactor);
         }
-        else
+        else // last note
         {
             usleep(1000 * activeEvent->getDuration());
         }
@@ -656,4 +670,12 @@ MidiPlayer::BendEventInfo::BendEventInfo(double timestamp, uint8_t pitchBendAmou
     timestamp(timestamp),
     pitchBendAmount(pitchBendAmount)
 {
+}
+
+void MidiPlayer::changePlaybackSpeed(int newPlaybackSpeed)
+{
+    // playback speed may be changed via the main thread during playback
+    mutex.lock();
+    playbackSpeed = newPlaybackSpeed;
+    mutex.unlock();
 }
