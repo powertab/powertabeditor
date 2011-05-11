@@ -350,13 +350,18 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
         const uint32_t eventPosition = activeEvent->getPositionIndex();
         const uint32_t eventSystemIndex = activeEvent->getSystemIndex();
 
+        // if we haven't reached the starting position yet, keep going
         if (eventSystemIndex < startSystem || eventPosition < startPos)
         {
             ++activeEvent;
             continue;
         }
-        else
+        // if we just reached the starting position, update the system index explicitly
+        // to avoid the "currentPosition = 0" effect of a normal system change
+        else if (eventPosition == startPos && eventSystemIndex == startSystem)
         {
+            emit playbackSystemChanged(startSystem);
+            currentSystem = startSystem;
             startPos = startSystem = 0;
         }
 
@@ -367,6 +372,8 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
             emit playbackPositionChanged(currentPosition);
         }
 
+        // moving on to a new system, so we need to reset the position to 0 to ensure
+        // playback begins at the start of the staff
         if (eventSystemIndex != currentSystem)
         {
             currentSystem = eventSystemIndex;
