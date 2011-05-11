@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <boost/ptr_container/ptr_list.hpp>
+#include <powertabdocument/systemlocation.h>
 
 class Caret;
 class Position;
@@ -54,7 +55,7 @@ protected:
     void generateMetronome(uint32_t systemIndex, double startTime,
                            boost::ptr_list<MidiEvent>& eventList) const;
 
-    void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, uint32_t startSystem, uint32_t startPos);
+    void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation);
 
     double getWholeRestDuration(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
                                 const Position* position, double originalDuration) const;

@@ -105,17 +105,16 @@ Repeat& RepeatController::getPreviousRepeatGroup(const SystemLocation& location)
 /// Checks if a repeat needs to be performed at the given system and position.
 /// @return true If the playback position needs to be changed, and
 /// updates the newSystem and newPos parameters with the new playback position
-bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPos,
-                                  uint32_t& newSystem, uint32_t& newPos)
+bool RepeatController::checkForRepeat(const SystemLocation& currentLocation,
+                                      SystemLocation& newLocation)
 {
     if (repeats.empty()) // no repeat events in the score
     {
         return false;
     }
 
-    SystemLocation currentLocation(currentSystem, currentPos);
     Repeat& activeRepeat = getPreviousRepeatGroup(currentLocation);
-    SystemLocation newLocation = currentLocation;
+    newLocation = currentLocation;
 
     // check for directions at location
     auto directionsAtLocation = directions.equal_range(currentLocation);
@@ -144,16 +143,8 @@ bool RepeatController::checkForRepeat(uint32_t currentSystem, uint32_t currentPo
         newLocation = activeRepeat.performRepeat(currentLocation);
     }
 
-    if (newLocation == currentLocation) // if no position shift occurred
-    {
-        return false;
-    }
-    else
-    {
-        newSystem = newLocation.getSystemIndex();
-        newPos = newLocation.getPositionIndex();
-        return true;
-    }
+    // return true if a position shift occurred
+    return (newLocation != currentLocation);
 }
 
 SystemLocation RepeatController::performMusicalDirection(uint8_t directionType)

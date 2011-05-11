@@ -31,9 +31,19 @@ bool SystemLocation::operator==(const SystemLocation& location) const
     return system == location.system && position == location.position;
 }
 
+void SystemLocation::setPositionIndex(uint32_t position)
+{
+    this->position = position;
+}
+
 uint32_t SystemLocation::getPositionIndex() const
 {
     return position;
+}
+
+void SystemLocation::setSystemIndex(uint32_t system)
+{
+    this->system = system;
 }
 
 uint32_t SystemLocation::getSystemIndex() const

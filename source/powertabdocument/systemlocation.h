@@ -16,7 +16,10 @@ public:
     bool operator<(const SystemLocation& location) const;
     bool operator==(const SystemLocation& location) const;
 
+    void setSystemIndex(uint32_t system);
     uint32_t getSystemIndex() const;
+
+    void setPositionIndex(uint32_t position);
     uint32_t getPositionIndex() const;
 
 private:
@@ -24,6 +27,6 @@ private:
     uint32_t position;
 };
 
-size_t hash_value(const SystemLocation& location);
+extern size_t hash_value(const SystemLocation& location);
 
 #endif // SYSTEMLOCATION_H

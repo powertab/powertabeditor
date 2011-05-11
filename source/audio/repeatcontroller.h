@@ -17,8 +17,7 @@ class RepeatController
 public:
     RepeatController(const Score* score);
 
-    bool checkForRepeat(uint32_t currentSystem, uint32_t currentPos,
-                    uint32_t& newSystem, uint32_t& newPos);
+    bool checkForRepeat(const SystemLocation& currentLocation, SystemLocation& newLocation);
 
 private:
     void indexRepeats();

@@ -55,8 +55,8 @@ void MidiPlayer::run()
     isPlaying = true;
     mutex.unlock();
 
-    uint32_t startSystemIndex = caret->getCurrentSystemIndex();
-    uint32_t startPos = caret->getCurrentPositionIndex();
+    const SystemLocation startLocation(caret->getCurrentSystemIndex(),
+                                       caret->getCurrentPositionIndex());
 
     boost::ptr_list<MidiEvent> eventList;
     double timeStamp = 0;
@@ -72,7 +72,7 @@ void MidiPlayer::run()
 
     eventList.sort();
 
-    playMidiEvents(eventList, startSystemIndex, startPos);
+    playMidiEvents(eventList, startLocation);
 }
 
 /// Returns the appropriate note velocity type for the given position/note
@@ -311,9 +311,8 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 }
 
 // The events are already in order of occurrence, so just play them one by one
-// startPos is used to identify the starting position to begin playback from
-void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
-                                uint32_t startSystem, uint32_t startPos)
+// startLocation is used to identify the starting position to begin playback from
+void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation)
 {
     RtMidiWrapper rtMidiWrapper;
 
@@ -330,8 +329,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
 
     RepeatController repeatController(caret->getCurrentScore());
 
-    uint32_t currentPosition = 0;
-    uint32_t currentSystem = 0;
+    SystemLocation currentLocation;
 
     auto activeEvent = eventList.begin();
 
@@ -347,52 +345,52 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList,
             }
         }
 
-        const uint32_t eventPosition = activeEvent->getPositionIndex();
-        const uint32_t eventSystemIndex = activeEvent->getSystemIndex();
+        const SystemLocation eventLocation(activeEvent->getSystemIndex(), activeEvent->getPositionIndex());
 
         // if we haven't reached the starting position yet, keep going
-        if (eventSystemIndex < startSystem || eventPosition < startPos)
+        if (eventLocation < startLocation)
         {
             ++activeEvent;
             continue;
         }
         // if we just reached the starting position, update the system index explicitly
         // to avoid the "currentPosition = 0" effect of a normal system change
-        else if (eventPosition == startPos && eventSystemIndex == startSystem)
+        else if (eventLocation == startLocation)
         {
-            emit playbackSystemChanged(startSystem);
-            currentSystem = startSystem;
-            startPos = startSystem = 0;
+            emit playbackSystemChanged(startLocation.getSystemIndex());
+            currentLocation.setSystemIndex(startLocation.getSystemIndex());
+            startLocation = SystemLocation(0, 0);
         }
 
         // if we've moved to a new position, move the caret
-        if (eventPosition > currentPosition)
+        if (eventLocation.getPositionIndex() > currentLocation.getPositionIndex())
         {
-            currentPosition = eventPosition;
-            emit playbackPositionChanged(currentPosition);
+            currentLocation.setPositionIndex(eventLocation.getPositionIndex());
+            emit playbackPositionChanged(currentLocation.getPositionIndex());
         }
 
         // moving on to a new system, so we need to reset the position to 0 to ensure
         // playback begins at the start of the staff
-        if (eventSystemIndex != currentSystem)
+        if (eventLocation.getSystemIndex() != currentLocation.getSystemIndex())
         {
-            currentSystem = eventSystemIndex;
-            currentPosition = 0;
-            emit playbackSystemChanged(currentSystem);
+            currentLocation.setSystemIndex(eventLocation.getSystemIndex());
+            currentLocation.setPositionIndex(0);
+            emit playbackSystemChanged(currentLocation.getSystemIndex());
         }
 
-        uint32_t newSystem = 0, newPos = 0;
-        if (repeatController.checkForRepeat(currentSystem, currentPosition, newSystem, newPos))
+        SystemLocation newLocation;
+        if (repeatController.checkForRepeat(currentLocation, newLocation))
         {
-            qDebug() << "Moving to: " << newSystem << ", " << newPos;
-            qDebug() << "From position: " << currentSystem << ", " << currentPosition
+            qDebug() << "Moving to: " << newLocation.getSystemIndex()
+                     << ", " << newLocation.getPositionIndex();
+            qDebug() << "From position: " << currentLocation.getSystemIndex()
+                     << ", " << currentLocation.getPositionIndex()
                      << " at " << activeEvent->getStartTime();
 
-            startSystem = newSystem;
-            startPos = newPos;
-            currentPosition = currentSystem = 0;
-            emit playbackSystemChanged(startSystem);
-            emit playbackPositionChanged(startPos);
+            startLocation = newLocation;
+            currentLocation = SystemLocation(0, 0);
+            emit playbackSystemChanged(startLocation.getSystemIndex());
+            emit playbackPositionChanged(startLocation.getPositionIndex());
             activeEvent = eventList.begin();
             continue;
         }
