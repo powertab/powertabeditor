@@ -81,7 +81,7 @@ SOURCES += main.cpp\
     skinmanager.cpp \
     painters/keysignaturepainter.cpp \
     rtmidiwrapper.cpp \
-    rtmidi/rtmidi.cpp \
+    audio/rtmidi/rtmidi.cpp \
     painters/timesignaturepainter.cpp \
     painters/clefpainter.cpp \
     midiplayer.cpp \
@@ -193,8 +193,8 @@ HEADERS  += powertabeditor.h \
     skinmanager.h \
     painters/keysignaturepainter.h \
     rtmidiwrapper.h \
-    rtmidi/rtmidi.h \
-    rtmidi/rterror.h \
+    audio/rtmidi/rtmidi.h \
+    audio/rtmidi/rterror.h \
     painters/timesignaturepainter.h \
     painters/clefpainter.h \
     midiplayer.h \
