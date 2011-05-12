@@ -7,6 +7,7 @@
 #include <rtmidiwrapper.h>
 
 #include <boost/next_prior.hpp>
+#include <boost/foreach.hpp>
 
 #include <painters/caret.h>
 
@@ -121,6 +122,8 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
             {
                 Position* position = staff->GetPosition(voice, j);
 
+                const double currentTempo = getCurrentTempo(position->GetPosition());
+
                 double duration = calculateNoteDuration(position); // each note at a position has the same duration
 
                 if (position->IsRest())
@@ -205,13 +208,21 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                                                              systemIndex, VibratoEvent::VIBRATO_OFF));
                     }
 
-                    if (note->HasBend())
+                    // generate all events that involve pitch bends
                     {
                         std::vector<BendEventInfo> bendEvents;
-                        generateBends(bendEvents, startTime, duration,
-                                      getCurrentTempo(position->GetPosition()), note);
 
-                        foreach (BendEventInfo event, bendEvents)
+                        if (note->HasSlide())
+                        {
+                            generateSlides(bendEvents, startTime, duration, currentTempo, note);
+                        }
+
+                        if (note->HasBend())
+                        {
+                            generateBends(bendEvents, startTime, duration, currentTempo, note);
+                        }
+
+                        BOOST_FOREACH(const BendEventInfo& event, bendEvents)
                         {
                             eventList.push_back(new BendEvent(i, event.timestamp, positionIndex,
                                                               systemIndex, event.pitchBendAmount));
@@ -243,7 +254,7 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     if (position->HasTremoloPicking() || note->HasTrill())
                     {
                         // each note is a 32nd note
-                        const double tremPickNoteDuration = getCurrentTempo(position->GetPosition()) / 8.0;
+                        const double tremPickNoteDuration = currentTempo / 8.0;
                         const int numNotes = duration / tremPickNoteDuration;
 
                         // find the other pitch to alternate with (this is just the same pitch for tremolo picking)
@@ -401,8 +412,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
         auto nextEvent = boost::next(activeEvent);
         if (nextEvent != eventList.end())
         {
-            const int sleepDuration = nextEvent->getStartTime() - activeEvent->getStartTime();
-            Q_ASSERT(sleepDuration >= 0);
+            const int sleepDuration = abs(nextEvent->getStartTime() - activeEvent->getStartTime());
 
             mutex.lock();
             const double speedShiftFactor = 100.0 / playbackSpeed; // slow down or speed up playback
@@ -441,6 +451,7 @@ TempoMarker* MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) cons
     return currentTempoMarker;
 }
 
+/// Returns the current tempo (duration of a quarter note in milliseconds)
 double MidiPlayer::getCurrentTempo(const quint32 positionIndex) const
 {
     TempoMarker* tempoMarker = getCurrentTempoMarker(positionIndex);
@@ -480,7 +491,7 @@ double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, shared_
 
     const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignatureConstRef();
 
-    double tempo = getCurrentTempo(position->GetPosition());
+    const double tempo = getCurrentTempo(position->GetPosition());
     double beatDuration = currentTimeSignature.GetBeatAmount();
     double duration = tempo * 4.0 / beatDuration;
     int numBeats = currentTimeSignature.GetBeatsPerMeasure();
@@ -683,4 +694,82 @@ void MidiPlayer::changePlaybackSpeed(int newPlaybackSpeed)
     mutex.lock();
     playbackSpeed = newPlaybackSpeed;
     mutex.unlock();
+}
+
+/// Generates slides for the given note
+void MidiPlayer::generateSlides(std::vector<BendEventInfo>& bends, double startTime,
+                               double noteDuration, double currentTempo, const Note* note)
+{
+    const int SLIDE_OUT_OF_STEPS = 5;
+
+    const double SLIDE_BELOW_BEND = floor(BendEvent::DEFAULT_BEND -
+                                               SLIDE_OUT_OF_STEPS * 2 * BendEvent::BEND_QUARTER_TONE);
+
+    const double SLIDE_ABOVE_BEND = floor(BendEvent::DEFAULT_BEND +
+                                          SLIDE_OUT_OF_STEPS * 2 * BendEvent::BEND_QUARTER_TONE);
+
+    if (note->HasSlideOutOf())
+    {
+        int8_t steps = 0;
+        uint8_t type = 0;
+        note->GetSlideOutOf(type, steps);
+
+        uint8_t bendAmount = BendEvent::DEFAULT_BEND;
+
+        switch(type)
+        {
+        case Note::slideOutOfLegatoSlide:
+        case Note::slideOutOfShiftSlide:
+            bendAmount = floor(BendEvent::DEFAULT_BEND +
+                               steps * 2 * BendEvent::BEND_QUARTER_TONE);
+            break;
+
+        case Note::slideOutOfDownwards:
+            bendAmount = SLIDE_BELOW_BEND;
+            break;
+
+        case Note::slideOutOfUpwards:
+            bendAmount = SLIDE_ABOVE_BEND;
+            break;
+
+        default:
+            Q_ASSERT("Unexpected slide type");
+            break;
+        }
+
+        // start the slide in the last half of the note duration, to make it somewhat more realistic-sounding
+        const double slideDuration = noteDuration / 2.0;
+        generateGradualBend(bends, startTime + slideDuration, slideDuration,
+                            BendEvent::DEFAULT_BEND, bendAmount);
+
+        // reset pitch wheel after note
+        bends.push_back(BendEventInfo(startTime + noteDuration, BendEvent::DEFAULT_BEND));
+    }
+
+    if (note->HasSlideInto())
+    {
+        uint8_t type = 0;
+        note->GetSlideInto(type);
+
+        uint8_t bendAmount = BendEvent::DEFAULT_BEND;
+
+        switch(type)
+        {
+        case Note::slideIntoFromBelow:
+            bendAmount = SLIDE_BELOW_BEND;
+            break;
+
+        case Note::slideIntoFromAbove:
+            bendAmount = SLIDE_ABOVE_BEND;
+            break;
+
+        default:
+            qDebug() << "Unsupported Slide Into type";
+            break;
+        }
+
+        // slide over a 16th note
+        const double slideDuration = currentTempo / 4.0;
+        generateGradualBend(bends, startTime, slideDuration, bendAmount, BendEvent::DEFAULT_BEND);
+    }
 }

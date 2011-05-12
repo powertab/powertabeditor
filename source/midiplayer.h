@@ -71,6 +71,8 @@ protected:
 
     void generateBends(std::vector<BendEventInfo>& bends, double startTime, double duration,
                        double currentTempo, const Note* note);
+    void generateSlides(std::vector<BendEventInfo>& bends, double startTime, double noteDuration,
+                       double currentTempo, const Note* note);
     void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, uint8_t startBendAmount,
                              uint8_t releaseBendAmount) const;
     
