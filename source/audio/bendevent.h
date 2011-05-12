@@ -13,8 +13,8 @@ public:
 
     void performEvent(RtMidiWrapper& sequencer) const;
 
-    static const uint8_t DEFAULT_BEND = 64;
-    static const double BEND_QUARTER_TONE = 2.625; // Assuming a 12-step pitch bend range
+    static const uint8_t DEFAULT_BEND;
+    static const double BEND_QUARTER_TONE;
 
 private:
     const uint8_t bendAmount;
