@@ -158,6 +158,41 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     position->SortNotesUp();
                 }
 
+                // vibrato events (these apply to all notes in the position)
+                if (position->HasVibrato() || position->HasWideVibrato())
+                {
+                    VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NORMAL_VIBRATO :
+                                                                              VibratoEvent::WIDE_VIBRATO;
+
+                    // add vibrato event, and an event to turn of the vibrato after the note is done
+                    eventList.push_back(new VibratoEvent(i, startTime, positionIndex, systemIndex,
+                                                         VibratoEvent::VIBRATO_ON, type));
+
+                    eventList.push_back(new VibratoEvent(i, startTime + duration, positionIndex,
+                                                         systemIndex, VibratoEvent::VIBRATO_OFF));
+                }
+
+                // let ring events (applied to all notes in the position)
+                if (position->HasLetRing() && !letRingActive)
+                {
+                    eventList.push_back(new LetRingEvent(i, startTime, positionIndex, systemIndex,
+                                                         LetRingEvent::LET_RING_ON));
+                    letRingActive = true;
+                }
+                else if (!position->HasLetRing() && letRingActive)
+                {
+                    eventList.push_back(new LetRingEvent(i, startTime, positionIndex, systemIndex,
+                                                         LetRingEvent::LET_RING_OFF));
+                    letRingActive = false;
+                }
+                // make sure that we end the let ring after the last position in the system
+                else if (letRingActive && (j == staff->GetPositionCount(voice) - 1))
+                {
+                    eventList.push_back(new LetRingEvent(i, startTime + duration, positionIndex, systemIndex,
+                                                         LetRingEvent::LET_RING_OFF));
+                    letRingActive = false;
+                }
+
                 for (quint32 k = 0; k < position->GetNoteCount(); k++)
                 {
                     // for arpeggios, delay the start of each note a small amount from the last,
@@ -194,20 +229,6 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                         }
                     }
 
-                    // vibrato events
-                    if (position->HasVibrato() || position->HasWideVibrato())
-                    {
-                        VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NORMAL_VIBRATO :
-                                                                                  VibratoEvent::WIDE_VIBRATO;
-
-                        // add vibrato event, and an event to turn of the vibrato after the note is done
-                        eventList.push_back(new VibratoEvent(i, startTime, positionIndex, systemIndex,
-                                                             VibratoEvent::VIBRATO_ON, type));
-
-                        eventList.push_back(new VibratoEvent(i, startTime + duration, positionIndex,
-                                                             systemIndex, VibratoEvent::VIBRATO_OFF));
-                    }
-
                     // generate all events that involve pitch bends
                     {
                         std::vector<BendEventInfo> bendEvents;
@@ -227,27 +248,6 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                             eventList.push_back(new BendEvent(i, event.timestamp, positionIndex,
                                                               systemIndex, event.pitchBendAmount));
                         }
-                    }
-                    
-                    // let ring events
-                    if (position->HasLetRing() && !letRingActive)
-                    {
-                        eventList.push_back(new LetRingEvent(i, startTime, positionIndex, systemIndex,
-                                                             LetRingEvent::LET_RING_ON));
-                        letRingActive = true;
-                    }
-                    else if (!position->HasLetRing() && letRingActive)
-                    {
-                        eventList.push_back(new LetRingEvent(i, startTime, positionIndex, systemIndex,
-                                                             LetRingEvent::LET_RING_OFF));
-                        letRingActive = false;
-                    }
-                    // make sure that we end the let ring after the last position in the system
-                    else if (letRingActive && (j == staff->GetPositionCount(voice) - 1))
-                    {
-                        eventList.push_back(new LetRingEvent(i, startTime + duration, positionIndex, systemIndex,
-                                                             LetRingEvent::LET_RING_OFF));
-                        letRingActive = false;
                     }
 
                     // Perform tremolo picking or trills - they work identically, except trills alternate between two pitches
