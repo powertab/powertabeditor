@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <musicfont.h>
 
+const double RhythmSlashPainter::STEM_OFFSET = 3.0;
 const double RhythmSlashPainter::NOTE_HEAD_OFFSET = System::RHYTHM_SLASH_SPACING / 2.0;
 
 QFont RhythmSlashPainter::musicFont = MusicFont().getFont();
