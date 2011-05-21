@@ -243,6 +243,13 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                             generateBends(bendEvents, startTime, duration, currentTempo, note);
                         }
 
+                        // only generate tremolo bar events once, since they apply to all notes in
+                        // the position
+                        if (position->HasTremoloBar() && k == 0)
+                        {
+                            generateTremoloBar(bendEvents, startTime, duration, currentTempo, position);
+                        }
+
                         BOOST_FOREACH(const BendEventInfo& event, bendEvents)
                         {
                             eventList.push_back(new BendEvent(i, event.timestamp, positionIndex,
@@ -335,7 +342,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
     // set pitch bend settings for each channel to one octave
     for (uint8_t i = 0; i < midi::NUM_MIDI_CHANNELS_PER_PORT; i++)
     {
-        rtMidiWrapper.setPitchBendRange(i, 12);
+        rtMidiWrapper.setPitchBendRange(i, 24);
     }
 
     RepeatController repeatController(caret->getCurrentScore());
@@ -771,5 +778,65 @@ void MidiPlayer::generateSlides(std::vector<BendEventInfo>& bends, double startT
         // slide over a 16th note
         const double slideDuration = currentTempo / 4.0;
         generateGradualBend(bends, startTime, slideDuration, bendAmount, BendEvent::DEFAULT_BEND);
+    }
+}
+
+void MidiPlayer::generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
+                                    double noteDuration, double currentTempo, const Position* position)
+{
+    uint8_t type = 0, duration = 0, pitch = 0;
+    position->GetTremoloBar(type, duration, pitch);
+
+    const uint8_t resultantPitch = floor(BendEvent::DEFAULT_BEND -
+                                         pitch * BendEvent::BEND_QUARTER_TONE);
+
+    // drop the pitch over the note duration
+    if (type == Position::diveAndRelease || type == Position::diveAndHold)
+    {
+        generateGradualBend(bends, startTime, noteDuration,
+                            BendEvent::DEFAULT_BEND, resultantPitch);
+    }
+
+    // move from active pitch to resultant pitch over the note duration
+    if (type == Position::returnAndHold || type == Position::returnAndRelease)
+    {
+        generateGradualBend(bends, startTime, noteDuration,
+                            activePitchBend, resultantPitch);
+    }
+
+    if (type == Position::dip || type == Position::invertedDip)
+    {
+        // dip for either a 32nd note, or half the note duration (for very short notes)
+        const double dipDuration = std::min(noteDuration / 2.0, currentTempo / 8.0);
+
+        // pitch that would be used for an inverted dip (bending up instead of down)
+        const uint8_t invertedDipPitch = floor(BendEvent::DEFAULT_BEND +
+                                               pitch * BendEvent::BEND_QUARTER_TONE);
+
+        // select the correct pitch to dip to (allows us to reuse the following lines of
+        // code for both types of dips)
+        const uint8_t dipPitch = (type == Position::dip) ? resultantPitch : invertedDipPitch;
+
+        // quickly drop to the specified pitch and then return
+        generateGradualBend(bends, startTime, dipDuration,
+                            BendEvent::DEFAULT_BEND, dipPitch);
+        generateGradualBend(bends, startTime + dipDuration, dipDuration,
+                            dipPitch, BendEvent::DEFAULT_BEND);
+    }
+
+    if (type == Position::diveAndRelease || type == Position::returnAndRelease
+             || type == Position::release)
+    {
+        // make sure we return to the default pitch, regardless of where the resultant pitch was
+        bends.push_back(BendEventInfo(startTime + noteDuration, BendEvent::DEFAULT_BEND));
+        activePitchBend = BendEvent::DEFAULT_BEND;
+    }
+    else if (type == Position::diveAndHold || type == Position::returnAndHold)
+    {
+        activePitchBend = resultantPitch;
+    }
+    else
+    {
+        activePitchBend = BendEvent::DEFAULT_BEND;
     }
 }

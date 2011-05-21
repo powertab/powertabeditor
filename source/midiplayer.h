@@ -75,6 +75,8 @@ protected:
                        double currentTempo, const Note* note);
     void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, uint8_t startBendAmount,
                              uint8_t releaseBendAmount) const;
+    void generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
+                            double noteDuration, double currentTempo, const Position* position);
     
     uint32_t getActualNotePitch(const Note* note, std::shared_ptr<const Guitar> guitar) const;
 
