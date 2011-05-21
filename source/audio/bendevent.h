@@ -13,6 +13,7 @@ public:
 
     void performEvent(RtMidiWrapper& sequencer) const;
 
+    static const uint8_t PITCH_BEND_RANGE;
     static const uint8_t DEFAULT_BEND;
     static const double BEND_QUARTER_TONE;
 

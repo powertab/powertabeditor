@@ -342,7 +342,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
     // set pitch bend settings for each channel to one octave
     for (uint8_t i = 0; i < midi::NUM_MIDI_CHANNELS_PER_PORT; i++)
     {
-        rtMidiWrapper.setPitchBendRange(i, 24);
+        rtMidiWrapper.setPitchBendRange(i, BendEvent::PITCH_BEND_RANGE);
     }
 
     RepeatController repeatController(caret->getCurrentScore());
