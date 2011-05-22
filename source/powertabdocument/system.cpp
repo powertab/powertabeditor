@@ -24,6 +24,8 @@
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
+#include <boost/foreach.hpp>
+
 // Default Constants
 const Rect System::DEFAULT_RECT                                   = Rect(50, 20, 750, 0);
 const uint8_t System::DEFAULT_POSITION_SPACING                       = 20;
@@ -1001,4 +1003,34 @@ System::RhythmSlashPtr System::GetRhythmSlash(uint32_t index) const
 {
     CHECK_THAT(IsValidRhythmSlashIndex(index), RhythmSlashPtr());
     return m_rhythmSlashArray[index];
+}
+
+/// Searches for a multi-bar rest in the given bar
+/// @param measureCount - output parameter to store the measure count for the multi-bar rest
+bool System::HasMultiBarRest(const Barline* startBar, uint8_t& measureCount) const
+{
+    measureCount = 1;
+    const Barline* nextBar = GetNextBarline(startBar->GetPosition());
+
+    // search through all positions in the bar, for each voice in each staff
+    BOOST_FOREACH(StaffPtr staff, m_staffArray)
+    {
+        for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
+        {
+            std::vector<Position*> positions;
+            staff->GetPositionsInRange(positions, 0, startBar->GetPosition(),
+                                       nextBar->GetPosition());
+
+            BOOST_FOREACH(const Position* pos, positions)
+            {
+                if (pos->HasMultibarRest())
+                {
+                    pos->GetMultibarRest(measureCount);
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }

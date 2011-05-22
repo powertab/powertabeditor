@@ -132,6 +132,14 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
                     if (position->GetDurationType() == 1)
                     {
                         duration = getWholeRestDuration(system, staff, position, duration);
+
+                        // extend for multi-bar rests
+                        if (position->HasMultibarRest())
+                        {
+                            uint8_t measureCount = 0;
+                            position->GetMultibarRest(measureCount);
+                            duration *= measureCount;
+                        }
                     }
 
                     startTime += duration;
@@ -550,18 +558,29 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
 
         const quint32 position = barline->GetPosition();
 
-        for (quint8 j = 0; j < numPulses; j++)
+        // check for multi-bar rests, as we need to generate duplicate metronome events
+        // to fill the extra bars
+        uint8_t measureCount = 0, repeatCount = 1;
+        if (system->HasMultiBarRest(barline, measureCount))
         {
-            MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
-                                                               MetronomeEvent::WEAK_ACCENT;
+            repeatCount = measureCount;
+        }
 
-            eventList.push_back(new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
-                                                   position, systemIndex, velocity));
+        for (uint8_t repeat = 0; repeat < repeatCount; repeat++)
+        {
+            for (quint8 j = 0; j < numPulses; j++)
+            {
+                MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
+                                                                   MetronomeEvent::WEAK_ACCENT;
 
-            startTime += duration;
+                eventList.push_back(new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
+                                                       position, systemIndex, velocity));
 
-            eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
-                                                  systemIndex, MetronomeEvent::METRONOME_PITCH));
+                startTime += duration;
+
+                eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
+                                                      systemIndex, MetronomeEvent::METRONOME_PITCH));
+            }
         }
     }
 

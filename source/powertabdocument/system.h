@@ -259,6 +259,8 @@ public:
     void ShiftForward(uint32_t positionIndex);
     void ShiftBackward(uint32_t positionIndex);
 
+    bool HasMultiBarRest(const Barline* startBar, uint8_t& measureCount) const;
+
 protected:
     void PerformPositionShift(uint32_t positionIndex, int offset);
 };
