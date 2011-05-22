@@ -251,7 +251,8 @@ HEADERS  += powertabeditor.h \
     dialogs/alternateendingdialog.h \
     audio/directionsymbol.h \
     app/settings.h \
-    widgets/playback/playbackwidget.h
+    widgets/playback/playbackwidget.h \
+    app/common.h
 
 RESOURCES += \
     resources.qrc

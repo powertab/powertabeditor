@@ -19,6 +19,7 @@ class StdNotationPainter;
 class Position;
 class TempoMarker;
 class AlternateEnding;
+class Barline;
 
 template <class Key, class T>
 class QMultiMap;
@@ -127,6 +128,9 @@ protected:
     QGraphicsItem* drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo);
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, uint8_t width,
                                               const StaffData& currentStaffInfo);
+
+    void drawMultiBarRest(std::shared_ptr<const System> system, const Barline* currentBarline,
+                          const StaffData& currentStaffInfo, int measureCount);
 
 signals:
     void barlineClicked(int position);

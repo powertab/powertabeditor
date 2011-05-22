@@ -17,6 +17,8 @@
 #include <powertabdocument/rhythmslash.h>
 #include <powertabdocument/alternateending.h>
 
+#include <app/common.h>
+
 #include <painters/staffdata.h>
 #include <painters/barlinepainter.h>
 #include <painters/tabnotepainter.h>
@@ -599,10 +601,7 @@ void ScoreArea::drawAltEndings(const std::vector<Score::AlternateEndingPtr>& alt
         }
 
         // ensure that the line doesn't extend past the edge of the system
-        if (endX > system->GetRect().GetWidth())
-        {
-            endX = system->GetRect().GetWidth();
-        }
+        endX = clamp(endX, 0.0, static_cast<double>(system->GetRect().GetWidth()));
 
         QGraphicsLineItem* horizLine = new QGraphicsLineItem;
         horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
@@ -755,6 +754,14 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
                 adjustAccidentals(accidentalsMap);
                 accidentalsMap.clear();
                 prevBarline = currentBarline;
+            }
+
+            if (currentPosition->HasMultibarRest())
+            {
+                uint8_t measureCount = 0;
+                currentPosition->GetMultibarRest(measureCount);
+                drawMultiBarRest(system, currentBarline, currentStaffInfo, measureCount);
+                continue;
             }
 
             // just draw rests right away, since we don't have to worry about beaming or accidentals
@@ -1340,4 +1347,48 @@ QGraphicsItem* ScoreArea::createArtificialHarmonicText(Position* position)
     const QString text = QString().fromStdString(name.GetKeyText(false));
 
     return createPlainText(text, QFont::StyleNormal);
+}
+
+void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, const Barline* currentBarline,
+                                 const StaffData& currentStaffInfo, int measureCount)
+{
+    const Barline* nextBarline = system->GetNextBarline(currentBarline->GetPosition());
+
+    const double leftX = (currentBarline->GetPosition() == 0) ?
+                system->GetPositionX(currentBarline->GetPosition()) :
+                system->GetPositionX(currentBarline->GetPosition() + 1);
+
+    const double rightX = clamp(static_cast<double>(system->GetPositionX(nextBarline->GetPosition())),
+                                0.0, system->GetRect().GetWidth() - system->GetPositionSpacing() / 2.0);
+
+    // draw measure count
+    QGraphicsSimpleTextItem* measureCountText = new QGraphicsSimpleTextItem;
+    measureCountText->setText(QString().setNum(measureCount));
+    measureCountText->setFont(musicFont.getFont());
+
+    centerItem(measureCountText, leftX, rightX,
+               currentStaffInfo.getTopStdNotationLine() - musicFont.getFontRef().pixelSize() * 1.5);
+
+    measureCountText->setParentItem(activeStaff);
+
+    // draw symbol across std. notation staff
+    QGraphicsLineItem* vertLineLeft = new QGraphicsLineItem(leftX,
+                                                            currentStaffInfo.getStdNotationLineHeight(2),
+                                                            leftX,
+                                                            currentStaffInfo.getStdNotationLineHeight(4));
+    vertLineLeft->setParentItem(activeStaff);
+
+    QGraphicsLineItem* vertLineRight = new QGraphicsLineItem(rightX,
+                                                             currentStaffInfo.getStdNotationLineHeight(2),
+                                                             rightX,
+                                                             currentStaffInfo.getStdNotationLineHeight(4));
+    vertLineRight->setParentItem(activeStaff);
+
+    QGraphicsRectItem* horizontalLine = new QGraphicsRectItem(leftX,
+                                                              currentStaffInfo.getStdNotationLineHeight(2) +
+                                                              0.5 * currentStaffInfo.stdNotationLineSpacing,
+                                                              rightX - leftX,
+                                                              currentStaffInfo.stdNotationLineSpacing * 0.9);
+    horizontalLine->setBrush(QBrush(Qt::black));
+    horizontalLine->setParentItem(activeStaff);
 }
