@@ -26,7 +26,8 @@ SOURCES += \
     powertabdocument/direction_test.cpp \
     powertabdocument/note_test.cpp \
     powertabdocument/complexsymbolarray_test.cpp \
-    actions/test_editslideinto.cpp
+    actions/test_editslideinto.cpp \
+    actions/test_editslideout.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

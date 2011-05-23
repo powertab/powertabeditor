@@ -18,4 +18,6 @@ BOOST_AUTO_TEST_CASE(TestEditSlideInto)
     action.undo();
     note.GetSlideInto(slideType);
     BOOST_CHECK_EQUAL(slideType, Note::slideIntoNone);
+
+    BOOST_CHECK(action.text() == "Slide Into From Below");
 }
