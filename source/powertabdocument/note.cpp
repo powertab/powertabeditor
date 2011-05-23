@@ -252,6 +252,20 @@ bool Note::SetSlideInto(uint8_t type)
     return true;
 }
 
+bool Note::HasSlideIntoFromAbove() const
+{
+    uint8_t type = 0;
+    GetSlideInto(type);
+    return type == Note::slideIntoFromAbove;
+}
+
+bool Note::HasSlideIntoFromBelow() const
+{
+    uint8_t type = 0;
+    GetSlideInto(type);
+    return type == Note::slideIntoFromBelow;
+}
+
 /// Gets the slide into data (if any)
 /// @param type Holds the slide into type return value
 /// @return True if the data was returned, false if not

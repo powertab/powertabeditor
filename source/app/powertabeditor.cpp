@@ -1598,6 +1598,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(legatoSlideAct, currentNote, &Note::HasLegatoSlide);
     updatePropertyStatus(slideOutOfDownwardsAct, currentNote, &Note::HasSlideOutOfDownwards);
     updatePropertyStatus(slideOutOfUpwardsAct, currentNote, &Note::HasSlideOutOfUpwards);
+    updatePropertyStatus(slideIntoFromAboveAct, currentNote, &Note::HasSlideIntoFromAbove);
+    updatePropertyStatus(slideIntoFromBelowAct, currentNote, &Note::HasSlideIntoFromBelow);
 
     shiftBackwardAct->setEnabled(currentPosition == NULL);
 
@@ -1616,7 +1618,8 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
     menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
-    menuList << positionSectionMenu << positionStaffMenu << sectionMenu << octaveMenu;
+    menuList << positionSectionMenu << positionStaffMenu << sectionMenu << octaveMenu << slideIntoMenu;
+    menuList << slideOutOfMenu;
 
     foreach(QMenu* menu, menuList)
     {

@@ -391,6 +391,8 @@ public:
     bool GetSlideInto(uint8_t& type) const;
     bool HasSlideInto() const;
     void ClearSlideInto();
+    bool HasSlideIntoFromAbove() const;
+    bool HasSlideIntoFromBelow() const;
 
 // Slide Out Of Functions
     /// Determines if a slide out of type is valid
