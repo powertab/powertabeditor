@@ -136,7 +136,8 @@ SOURCES += main.cpp\
     dialogs/alternateendingdialog.cpp \
     audio/directionsymbol.cpp \
     app/settings.cpp \
-    widgets/playback/playbackwidget.cpp
+    widgets/playback/playbackwidget.cpp \
+    actions/editslideinto.cpp
 
 HEADERS  += powertabeditor.h \
     documentmanager.h \
@@ -252,7 +253,8 @@ HEADERS  += powertabeditor.h \
     audio/directionsymbol.h \
     app/settings.h \
     widgets/playback/playbackwidget.h \
-    app/common.h
+    app/common.h \
+    actions/editslideinto.h
 
 RESOURCES += \
     resources.qrc

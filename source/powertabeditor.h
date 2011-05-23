@@ -90,6 +90,7 @@ protected slots:
     void editHammerPull();
     void editTrill();
     void editSlide(int newSlideType);
+    void editSlideInto(int newSlideIntoType);
     void editBarline(int position = -1);
 
     void increasePositionSpacing();
@@ -226,6 +227,7 @@ protected:
     QMenu* slideIntoMenu;
     QAction* slideIntoFromAboveAct;
     QAction* slideIntoFromBelowAct;
+    QSignalMapper* slideIntoMapper;
 
     QMenu* slideOutOfMenu;
     QAction* slideOutOfDownwardsAct;

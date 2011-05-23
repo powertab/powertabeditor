@@ -3,10 +3,6 @@ TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++0x -U__STRICT_ANSI__
 
-# don't need qt dependencies
-QT     -= gui core
-LIBS   -= -lQtGui -lQtCore
-
 INCLUDEPATH += "../source"
 
 unix:LIBS += -lboost_unit_test_framework
@@ -53,6 +49,7 @@ SOURCES += \
     ../source/powertabdocument/alternateending.cpp \
     ../source/powertabdocument/systemlocation.cpp \
     ../source/audio/midievent.cpp \
+    ../source/actions/editslideinto.cpp \
     powertabdocument/system_test.cpp \
     powertabdocument/position_test.cpp \
     audio/test_midievent.cpp \
@@ -62,7 +59,8 @@ SOURCES += \
     powertabdocument/chorddiagram_test.cpp \
     powertabdocument/direction_test.cpp \
     powertabdocument/note_test.cpp \
-    powertabdocument/complexsymbolarray_test.cpp
+    powertabdocument/complexsymbolarray_test.cpp \
+    actions/test_editslideinto.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

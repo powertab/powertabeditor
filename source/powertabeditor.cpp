@@ -71,6 +71,7 @@
 #include <actions/addnote.h>
 #include <actions/removealternateending.h>
 #include <actions/addalternateending.h>
+#include <actions/editslideinto.h>
 
 using std::shared_ptr;
 
@@ -210,6 +211,9 @@ void PowerTabEditor::createActions()
 {
     slideOutMapper = new QSignalMapper(this);
     connect(slideOutMapper, SIGNAL(mapped(int)), this, SLOT(editSlide(int)));
+
+    slideIntoMapper = new QSignalMapper(this);
+    connect(slideIntoMapper, SIGNAL(mapped(int)), this, SLOT(editSlideInto(int)));
 
     // File-related actions
     newFileAct = new QAction(tr("&New"), this);
@@ -577,9 +581,13 @@ void PowerTabEditor::createActions()
     // Slide Into Menu
     slideIntoFromAboveAct = new QAction(tr("Slide Into From Above"), this);
     slideIntoFromAboveAct->setCheckable(true);
+    connect(slideIntoFromAboveAct, SIGNAL(triggered()), slideIntoMapper, SLOT(map()));
+    slideIntoMapper->setMapping(slideIntoFromAboveAct, Note::slideIntoFromAbove);
 
     slideIntoFromBelowAct = new QAction(tr("Slide Into From Below"), this);
     slideIntoFromBelowAct->setCheckable(true);
+    connect(slideIntoFromBelowAct, SIGNAL(triggered()), slideIntoMapper, SLOT(map()));
+    slideIntoMapper->setMapping(slideIntoFromBelowAct, Note::slideIntoFromBelow);
 
     // Slide Out Of Menu
     slideOutOfDownwardsAct = new QAction(tr("Slide Out Of Downwards"), this);
@@ -1631,4 +1639,23 @@ void PowerTabEditor::editSlide(int newSlideType)
     }
 
     undoManager->push(new EditSlideOut(note, newSlideType, newSteps));
+}
+
+void PowerTabEditor::editSlideInto(int newSlideIntoType)
+{
+    Q_ASSERT(newSlideIntoType == Note::slideIntoFromBelow ||
+             newSlideIntoType == Note::slideIntoFromAbove);
+
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* note = caret->getCurrentNote();
+
+    // get the current slide type - if it is the same as the new type, we remove the slide
+    uint8_t currentType = 0;
+    note->GetSlideInto(currentType);
+    if (currentType == newSlideIntoType)
+    {
+        newSlideIntoType = Note::slideIntoNone;
+    }
+
+    undoManager->push(new EditSlideInto(note, newSlideIntoType));
 }
