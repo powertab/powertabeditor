@@ -1,9 +1,11 @@
+include (../common.pri)
+
 TARGET = pte_tests
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -std=c++0x -U__STRICT_ANSI__
-
-INCLUDEPATH += "../source"
+LIBS += -L../source/powertabdocument/$${BUILDTYPE} -lpowertabdocument \
+    -L../source/actions/$${BUILDTYPE} -lactions \
+    -L../source/audio/$${BUILDTYPE} -lpteaudio
 
 unix:LIBS += -lboost_unit_test_framework
 
@@ -13,43 +15,7 @@ win32:LIBS += -L'C:/Program Files (x86)/boost/boost_1_44/lib' -lboost_unit_test_
 
 SOURCES += \
     test_main.cpp \
-    powertabdocument/staff_test.cpp \
-    ../source/powertabdocument/tuning.cpp \
-    ../source/powertabdocument/timesignature.cpp \
-    ../source/powertabdocument/tempomarker.cpp \
-    ../source/powertabdocument/systemsymbol.cpp \
-    ../source/powertabdocument/system.cpp \
-    ../source/powertabdocument/staff.cpp \
-    ../source/powertabdocument/score.cpp \
-    ../source/powertabdocument/rhythmslash.cpp \
-    ../source/powertabdocument/rehearsalsign.cpp \
-    ../source/powertabdocument/rect.cpp \
-    ../source/powertabdocument/powertaboutputstream.cpp \
-    ../source/powertabdocument/powertabinputstream.cpp \
-    ../source/powertabdocument/powertabfileheader.cpp \
-    ../source/powertabdocument/powertabdocument.cpp \
-    ../source/powertabdocument/position.cpp \
-    ../source/powertabdocument/oldtimesignature.cpp \
-    ../source/powertabdocument/oldrehearsalsign.cpp \
-    ../source/powertabdocument/note.cpp \
-    ../source/powertabdocument/macros.cpp \
-    ../source/powertabdocument/keysignature.cpp \
-    ../source/powertabdocument/guitarin.cpp \
-    ../source/powertabdocument/guitar.cpp \
-    ../source/powertabdocument/generalmidi.cpp \
-    ../source/powertabdocument/fontsetting.cpp \
-    ../source/powertabdocument/floatingtext.cpp \
-    ../source/powertabdocument/dynamic.cpp \
-    ../source/powertabdocument/direction.cpp \
-    ../source/powertabdocument/colour.cpp \
-    ../source/powertabdocument/chordtext.cpp \
-    ../source/powertabdocument/chordname.cpp \
-    ../source/powertabdocument/chorddiagram.cpp \
-    ../source/powertabdocument/barline.cpp \
-    ../source/powertabdocument/alternateending.cpp \
-    ../source/powertabdocument/systemlocation.cpp \
-    ../source/audio/midievent.cpp \
-    ../source/actions/editslideinto.cpp \
+    powertabdocument/staff_test.cpp \    
     powertabdocument/system_test.cpp \
     powertabdocument/position_test.cpp \
     audio/test_midievent.cpp \
