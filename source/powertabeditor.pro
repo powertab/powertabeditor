@@ -28,8 +28,8 @@ macx:LIBS += -framework CoreMidi -framework CoreAudio -framework CoreFoundation
 # in the include path (/usr/include) if you installed the package from your Linux distribution's repo
 win32:INCLUDEPATH += 'C:/Program Files (x86)/boost/boost_1_44/'
 
-SOURCES += main.cpp\
-        powertabeditor.cpp \
+SOURCES += app/main.cpp\
+    app/powertabeditor.cpp \
     app/documentmanager.cpp \
     powertabdocument/tuning.cpp \
     powertabdocument/timesignature.cpp \
@@ -64,7 +64,7 @@ SOURCES += main.cpp\
     powertabdocument/chorddiagram.cpp \
     powertabdocument/barline.cpp \
     powertabdocument/alternateending.cpp \
-    scorearea.cpp \
+    app/scorearea.cpp \
     painters/musicfont.cpp \
     painters/barlinepainter.cpp \
     painters/staffdata.cpp \
@@ -139,7 +139,7 @@ SOURCES += main.cpp\
     widgets/playback/playbackwidget.cpp \
     actions/editslideinto.cpp
 
-HEADERS  += powertabeditor.h \
+HEADERS  += app/powertabeditor.h \
     app/documentmanager.h \
     powertabdocument/tuning.h \
     powertabdocument/timesignature.h \
@@ -176,7 +176,7 @@ HEADERS  += powertabeditor.h \
     powertabdocument/barline.h \
     powertabdocument/alternateending.h \
     powertabdocument/powertabstream.h \
-    scorearea.h \
+    app/scorearea.h \
     painters/musicfont.h \
     painters/barlinepainter.h \
     painters/staffdata.h \
@@ -257,7 +257,7 @@ HEADERS  += powertabeditor.h \
     actions/editslideinto.h
 
 RESOURCES += \
-    resources.qrc
+    app/resources.qrc
 
 # if shadow building is enabled
 !equals($${PWD}, $${OUT_PWD}) {

@@ -5,8 +5,8 @@
 #include <powertabdocument/score.h>
 
 // For manipulating the caret
-#include <powertabeditor.h>
-#include <scorearea.h>
+#include <app/powertabeditor.h>
+#include <app/scorearea.h>
 #include <painters/caret.h>
 
 #include <cmath>

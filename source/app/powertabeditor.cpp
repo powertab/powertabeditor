@@ -1,3 +1,5 @@
+#include "powertabeditor.h"
+
 #include <QFileDialog>
 #include <QDebug>
 #include <QAction>
@@ -19,8 +21,7 @@
 #include <QKeyEvent>
 #include <QEvent>
 
-#include <powertabeditor.h>
-#include <scorearea.h>
+#include <app/scorearea.h>
 #include <app/skinmanager.h>
 #include <audio/midiplayer.h>
 #include <app/settings.h>

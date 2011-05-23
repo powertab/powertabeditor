@@ -7,7 +7,7 @@
 #include <QAction>
 
 #include <app/skinmanager.h>
-#include <powertabeditor.h>
+#include <app/powertabeditor.h>
 
 #include <widgets/common.h>
 

@@ -7,7 +7,7 @@
 
 #include <app/skinmanager.h>
 #include <widgets/common.h>
-#include <powertabeditor.h>
+#include <app/powertabeditor.h>
 
 void ScorePage::createSongButtons()
 {

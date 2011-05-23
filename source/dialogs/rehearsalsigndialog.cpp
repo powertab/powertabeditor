@@ -4,7 +4,7 @@
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
 
-#include <powertabeditor.h>
+#include <app/powertabeditor.h>
 
 #include <actions/editrehearsalsign.h>
 

@@ -7,7 +7,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 
-#include <powertabeditor.h>
+#include <app/powertabeditor.h>
 
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/tuning.h>
