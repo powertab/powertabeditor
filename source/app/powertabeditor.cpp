@@ -476,6 +476,31 @@ void PowerTabEditor::createActions()
     sforzandoAct->setCheckable(true);
     connectTogglePropertyAction(sforzandoAct, ToggleablePropertyRecord<Position>
                                   ( &getSelectedPositions, &Position::HasSforzando, &Position::SetSforzando, sforzandoAct->text() ));
+
+    // Octave actions
+    octave8vaAct = new QAction(tr("8va"), this);
+    octave8vaAct->setCheckable(true);
+    connectTogglePropertyAction(octave8vaAct, ToggleablePropertyRecord<Note>
+                                ( &getSelectedNotes, &Note::IsOctave8va,
+                                 &Note::SetOctave8va, octave8vaAct->text()));
+
+    octave15maAct = new QAction(tr("15ma"), this);
+    octave15maAct->setCheckable(true);
+    connectTogglePropertyAction(octave15maAct, ToggleablePropertyRecord<Note>
+                                ( &getSelectedNotes, &Note::IsOctave15ma,
+                                 &Note::SetOctave15ma, octave15maAct->text()));
+
+    octave8vbAct = new QAction(tr("8vb"), this);
+    octave8vbAct->setCheckable(true);
+    connectTogglePropertyAction(octave8vbAct, ToggleablePropertyRecord<Note>
+                                ( &getSelectedNotes, &Note::IsOctave8vb,
+                                 &Note::SetOctave8vb, octave8vbAct->text()));
+
+    octave15mbAct = new QAction(tr("15mb"), this);
+    octave15mbAct->setCheckable(true);
+    connectTogglePropertyAction(octave15mbAct, ToggleablePropertyRecord<Note>
+                                ( &getSelectedNotes, &Note::IsOctave15mb,
+                                 &Note::SetOctave15mb, octave15mbAct->text()));
     
     // Music Symbol Actions
     rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
@@ -729,6 +754,10 @@ void PowerTabEditor::createMenus()
     notesMenu->addAction(staccatoNoteAct);
     notesMenu->addAction(marcatoAct);
     notesMenu->addAction(sforzandoAct);
+
+    octaveMenu = notesMenu->addMenu(tr("Octave"));
+    octaveMenu->addActions(QList<QAction*>() << octave8vaAct << octave15maAct
+                           << octave8vbAct << octave15mbAct);
 
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -1555,6 +1584,11 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(marcatoAct, currentPosition, &Position::HasMarcato);
     updatePropertyStatus(sforzandoAct, currentPosition, &Position::HasSforzando);
 
+    updatePropertyStatus(octave8vaAct, currentNote, &Note::IsOctave8va);
+    updatePropertyStatus(octave15maAct, currentNote, &Note::IsOctave15ma);
+    updatePropertyStatus(octave8vbAct, currentNote, &Note::IsOctave8vb);
+    updatePropertyStatus(octave15mbAct, currentNote, &Note::IsOctave15mb);
+
     updatePropertyStatus(trillAction, currentNote, &Note::HasTrill);
     updatePropertyStatus(tapAct, currentPosition, &Position::HasTap);
     updatePropertyStatus(pickStrokeUpAct, currentPosition, &Position::HasPickStrokeUp);
@@ -1582,7 +1616,7 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
     menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
-    menuList << positionSectionMenu << positionStaffMenu << sectionMenu;
+    menuList << positionSectionMenu << positionStaffMenu << sectionMenu << octaveMenu;
 
     foreach(QMenu* menu, menuList)
     {

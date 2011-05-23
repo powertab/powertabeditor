@@ -203,6 +203,12 @@ protected:
     QAction* marcatoAct; // set an accent
     QAction* sforzandoAct; // set a heavy accent
 
+    QMenu* octaveMenu;
+    QAction* octave8vaAct;
+    QAction* octave15maAct;
+    QAction* octave8vbAct;
+    QAction* octave15mbAct;
+
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs
     QAction* barlineAct;
