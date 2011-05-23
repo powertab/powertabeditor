@@ -40,13 +40,13 @@ public:
 
     static const size_t MAX_NOTE_COMPLEX_SYMBOLS = 3;      ///< Maximum allowed number of complex symbols per note object
 
-    enum flags : uint8_t
+    enum flags
     {
         stringMask          = 0xe0,             ///< Mask used to retrieve the string
         fretNumberMask      = 0x1f              ///< Mask used to retrieve the fret number
     };
 
-    enum simpleFlags : uint16_t
+    enum simpleFlags
     {
         tied                        = 0x01,
         muted                       = 0x02,
@@ -65,7 +65,7 @@ public:
         simpleFlagsMask             = 0xfff     ///< Mask that filters out all possible simple flags
     };
 
-    enum complexSymbolTypes : uint8_t
+    enum complexSymbolTypes
     {
         slide                   = 'd',
         bend                    = 'e',
@@ -75,7 +75,7 @@ public:
         notUsed                 = 0
     };
 
-    enum slideIntoTypes : uint8_t
+    enum slideIntoTypes
     {
         slideIntoNone                       = 0x00,
         slideIntoFromBelow                  = 0x01,
@@ -86,7 +86,7 @@ public:
         slideIntoLegatoSlideDownwards       = 0x06      ///< Used for wrapping legato slides around systems
     };
 
-    enum slideOutOfTypes : uint8_t
+    enum slideOutOfTypes
     {
         slideOutOfNone                      = 0x00,
         slideOutOfShiftSlide                = 0x01,
@@ -95,14 +95,14 @@ public:
         slideOutOfUpwards                   = 0x04
     };
 
-    enum slideFlags : uint32_t
+    enum slideFlags
     {
         slideIntoTypeMask       = 0xff0000,               ///< Mask used to retrieve the slide into type
         slideOutOfTypeMask      = 0xff00,                 ///< Mask used to retrieve the slide out of type
         slideOutOfStepsMask     = 0xff                   ///< Mask used to retrieve the slide out of steps
     };
 
-    enum bendTypes : uint8_t
+    enum bendTypes
     {
         normalBend              = 0x00,
         bendAndRelease          = 0x01,
@@ -114,14 +114,14 @@ public:
         immediateRelease        = 0x07
     };
 
-    enum bendDrawingPoints : uint8_t
+    enum bendDrawingPoints
     {
         lowPoint                = 0x00,
         midPoint                = 0x01,
         highPoint               = 0x02
     };
 
-    enum bendFlags : uint32_t
+    enum bendFlags
     {
         bendTypeMask            = 0xf00000,               ///< Mask used to retrieve the bend type
         drawStartMask           = 0xc0000,                ///< Mask used to retrieve the draw start value
@@ -131,7 +131,7 @@ public:
         releasePitchMask        = 0xf                     ///< Mask used to retrieve the release pitch value
     };
 
-    enum artificialHarmonicOctaves : uint8_t
+    enum artificialHarmonicOctaves
     {
         artificialHarmonicOctaveLoco            = 0x00,
         artificialHarmonicOctave8va             = 0x01,
@@ -343,65 +343,17 @@ public:
     
     int GetOctaveOffset() const;
     
-    // 8va Octave Functions
-    /// Sets or clears an 8va octave marker
-    /// @param set True to set the 8va octave marker, false to clear it
-    /// @return True if the 8va octave marker was set or cleared, false if not
-    bool SetOctave8va(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(octave8va));
-        return (SetSimpleFlag(octave8va));
-    }
-    /// Determines if the note is an 8va
-    /// @return True if the note is an 8va, false if not
-    bool IsOctave8va() const
-        {return (IsSimpleFlagSet(octave8va));}
+    bool SetOctave8va(bool set = true);
+    bool IsOctave8va() const;
 
-// 15ma Octave Functions
-    /// Sets or clears an 15ma octave marker
-    /// @param set True to set the 15ma octave marker, false to clear it
-    /// @return True if the 15ma octave marker was set or cleared, false if not
-    bool SetOctave15ma(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(octave15ma));
-        return (SetSimpleFlag(octave15ma));
-    }
-    /// Determines if the note is an 15ma
-    /// @return True if the note is an 15ma, false if not
-    bool IsOctave15ma() const
-        {return (IsSimpleFlagSet(octave15ma));}
+    bool SetOctave15ma(bool set = true);
+    bool IsOctave15ma() const;
 
-// 8vb Octave Functions
-    /// Sets or clears an 8vb octave marker
-    /// @param set True to set the 8vb octave marker, false to clear it
-    /// @return True if the 8vb octave marker was set or cleared, false if not
-    bool SetOctave8vb(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(octave8vb));
-        return (SetSimpleFlag(octave8vb));
-    }
-    /// Determines if the note is an 8vb
-    /// @return True if the note is an 8vb, false if not
-    bool IsOctave8vb() const
-        {return (IsSimpleFlagSet(octave8vb));}
+    bool SetOctave8vb(bool set = true);
+    bool IsOctave8vb() const;
 
-// 15mb Octave Functions
-    /// Sets or clears an 15mb octave marker
-    /// @param set True to set the 15mb octave marker, false to clear it
-    /// @return True if the 15mb octave marker was set or cleared, false if not
-    bool SetOctave15mb(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(octave15mb));
-        return (SetSimpleFlag(octave15mb));
-    }
-    /// Determines if the note is an 15mb
-    /// @return True if the note is an 15mb, false if not
-    bool IsOctave15mb() const
-        {return (IsSimpleFlagSet(octave15mb));}
+    bool SetOctave15mb(bool set = true);
+    bool IsOctave15mb() const;
 
 // Simple Flag Functions
 protected:

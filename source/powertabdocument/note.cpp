@@ -864,3 +864,84 @@ int Note::GetOctaveOffset() const
     
     return 0;    
 }
+
+// 8va Octave Functions
+/// Sets or clears an 8va octave marker
+/// @param set True to set the 8va octave marker, false to clear it
+/// @return True if the 8va octave marker was set or cleared, false if not
+bool Note::SetOctave8va(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(octave8va);
+    }
+    return SetSimpleFlag(octave8va);
+}
+
+/// Determines if the note is an 8va
+/// @return True if the note is an 8va, false if not
+bool Note::IsOctave8va() const
+{
+    return IsSimpleFlagSet(octave8va);
+}
+
+// 15ma Octave Functions
+/// Sets or clears an 15ma octave marker
+/// @param set True to set the 15ma octave marker, false to clear it
+/// @return True if the 15ma octave marker was set or cleared, false if not
+bool Note::SetOctave15ma(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(octave15ma);
+    }
+    return SetSimpleFlag(octave15ma);
+}
+
+/// Determines if the note is an 15ma
+/// @return True if the note is an 15ma, false if not
+bool Note::IsOctave15ma() const
+{
+    return IsSimpleFlagSet(octave15ma);
+}
+
+// 8vb Octave Functions
+/// Sets or clears an 8vb octave marker
+/// @param set True to set the 8vb octave marker, false to clear it
+/// @return True if the 8vb octave marker was set or cleared, false if not
+bool Note::SetOctave8vb(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(octave8vb);
+    }
+
+    return SetSimpleFlag(octave8vb);
+}
+
+/// Determines if the note is an 8vb
+/// @return True if the note is an 8vb, false if not
+bool Note::IsOctave8vb() const
+{
+    return IsSimpleFlagSet(octave8vb);
+}
+
+// 15mb Octave Functions
+/// Sets or clears an 15mb octave marker
+/// @param set True to set the 15mb octave marker, false to clear it
+/// @return True if the 15mb octave marker was set or cleared, false if not
+bool Note::SetOctave15mb(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(octave15mb);
+    }
+    return SetSimpleFlag(octave15mb);
+}
+
+/// Determines if the note is an 15mb
+/// @return True if the note is an 15mb, false if not
+bool Note::IsOctave15mb() const
+{
+    return IsSimpleFlagSet(octave15mb);
+}

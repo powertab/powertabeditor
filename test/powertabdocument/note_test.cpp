@@ -4,6 +4,20 @@
 
 #include "serialization_test.h"
 #include <powertabdocument/note.h>
+#include <functional>
+
+// helper function for testing note properties
+void testNoteProperty(std::function<bool (Note*, bool)> setProperty,
+                      std::function<bool (const Note*)> getProperty)
+{
+    Note note;
+
+    setProperty(&note, true);
+    BOOST_CHECK_EQUAL(getProperty(&note), true);
+
+    setProperty(&note, false);
+    BOOST_CHECK_EQUAL(getProperty(&note), false);
+}
 
 BOOST_AUTO_TEST_SUITE(NoteTest)
 
@@ -51,6 +65,26 @@ BOOST_AUTO_TEST_SUITE(NoteTest)
 
         note.ClearTrill();
         BOOST_CHECK(!note.HasTrill());
+    }
+
+    BOOST_AUTO_TEST_CASE(Octave8va)
+    {
+        testNoteProperty(&Note::SetOctave8va, &Note::IsOctave8va);
+    }
+
+    BOOST_AUTO_TEST_CASE(Octave15ma)
+    {
+        testNoteProperty(&Note::SetOctave15ma, &Note::IsOctave15ma);
+    }
+
+    BOOST_AUTO_TEST_CASE(Octave8vb)
+    {
+        testNoteProperty(&Note::SetOctave8vb, &Note::IsOctave8vb);
+    }
+
+    BOOST_AUTO_TEST_CASE(Octave15mb)
+    {
+        testNoteProperty(&Note::SetOctave15mb, &Note::IsOctave15mb);
     }
 
 BOOST_AUTO_TEST_SUITE_END()
