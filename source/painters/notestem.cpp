@@ -5,7 +5,7 @@
 
 #include <powertabdocument/position.h>
 #include <QGraphicsTextItem>
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 /// Constructor
 /// @param position Pointer to the position object

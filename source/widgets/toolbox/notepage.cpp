@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 #include <QAction>
 
-#include <skinmanager.h>
+#include <app/skinmanager.h>
 #include <powertabeditor.h>
 
 #include <widgets/common.h>

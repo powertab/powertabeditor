@@ -30,7 +30,7 @@ win32:INCLUDEPATH += 'C:/Program Files (x86)/boost/boost_1_44/'
 
 SOURCES += main.cpp\
         powertabeditor.cpp \
-    documentmanager.cpp \
+    app/documentmanager.cpp \
     powertabdocument/tuning.cpp \
     powertabdocument/timesignature.cpp \
     powertabdocument/tempomarker.cpp \
@@ -65,7 +65,7 @@ SOURCES += main.cpp\
     powertabdocument/barline.cpp \
     powertabdocument/alternateending.cpp \
     scorearea.cpp \
-    musicfont.cpp \
+    painters/musicfont.cpp \
     painters/barlinepainter.cpp \
     painters/staffdata.cpp \
     actions/changebarlinetype.cpp \
@@ -78,13 +78,13 @@ SOURCES += main.cpp\
     widgets/toolbox/notepage.cpp \
     widgets/mixer/mixerinstrument.cpp \
     widgets/mixer/mixer.cpp \
-    skinmanager.cpp \
+    app/skinmanager.cpp \
     painters/keysignaturepainter.cpp \
-    rtmidiwrapper.cpp \
+    audio/rtmidiwrapper.cpp \
     audio/rtmidi/rtmidi.cpp \
     painters/timesignaturepainter.cpp \
     painters/clefpainter.cpp \
-    midiplayer.cpp \
+    audio/midiplayer.cpp \
     painters/stdnotationpainter.cpp \
     actions/undomanager.cpp \
     painters/chordtextpainter.cpp \
@@ -140,7 +140,7 @@ SOURCES += main.cpp\
     actions/editslideinto.cpp
 
 HEADERS  += powertabeditor.h \
-    documentmanager.h \
+    app/documentmanager.h \
     powertabdocument/tuning.h \
     powertabdocument/timesignature.h \
     powertabdocument/tempomarker.h \
@@ -177,7 +177,7 @@ HEADERS  += powertabeditor.h \
     powertabdocument/alternateending.h \
     powertabdocument/powertabstream.h \
     scorearea.h \
-    musicfont.h \
+    painters/musicfont.h \
     painters/barlinepainter.h \
     painters/staffdata.h \
     painters/painterbase.h \
@@ -191,14 +191,14 @@ HEADERS  += powertabeditor.h \
     widgets/toolbox/toolbox.h \
     widgets/toolbox/scorepage.h \
     widgets/toolbox/notepage.h \
-    skinmanager.h \
+    app/skinmanager.h \
     painters/keysignaturepainter.h \
-    rtmidiwrapper.h \
+    audio/rtmidiwrapper.h \
     audio/rtmidi/rtmidi.h \
     audio/rtmidi/rterror.h \
     painters/timesignaturepainter.h \
     painters/clefpainter.h \
-    midiplayer.h \
+    audio/midiplayer.h \
     painters/stdnotationpainter.h \
     actions/undomanager.h \
     painters/chordtextpainter.h \

@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QFontMetricsF>
 #include <powertabdocument/direction.h>
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 DirectionPainter::DirectionPainter(std::shared_ptr<const Direction> direction, size_t symbolIndex) :
     direction(direction),

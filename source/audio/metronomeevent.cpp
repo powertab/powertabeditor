@@ -1,7 +1,7 @@
 #include "metronomeevent.h"
 
 #include <powertabdocument/generalmidi.h>
-#include <rtmidiwrapper.h>
+#include <audio/rtmidiwrapper.h>
 #include <QSettings>
 #include <app/settings.h>
 

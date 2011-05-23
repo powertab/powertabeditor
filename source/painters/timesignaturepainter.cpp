@@ -1,7 +1,7 @@
 #include "timesignaturepainter.h"
 
 #include <powertabdocument/timesignature.h>
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 #include <QMessageBox>
 #include <QFont>

@@ -11,7 +11,7 @@
 #include <QListWidget>
 #include <QSignalMapper>
 
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 ChordNameDialog::ChordNameDialog(ChordName* chord, QWidget *parent) :
         QDialog(parent),

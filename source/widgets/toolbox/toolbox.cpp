@@ -1,6 +1,6 @@
 #include "toolbox.h"
 
-#include <skinmanager.h>
+#include <app/skinmanager.h>
 #include "notepage.h"
 #include "scorepage.h"
 

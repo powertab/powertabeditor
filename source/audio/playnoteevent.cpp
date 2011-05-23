@@ -1,6 +1,6 @@
 #include "playnoteevent.h"
 
-#include <rtmidiwrapper.h>
+#include <audio/rtmidiwrapper.h>
 #include <powertabdocument/generalmidi.h>
 #include <powertabdocument/guitar.h>
 

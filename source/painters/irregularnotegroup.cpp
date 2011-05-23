@@ -6,7 +6,7 @@
 
 #include <algorithm>
 #include <powertabdocument/position.h>
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 IrregularNoteGroup::IrregularNoteGroup(const std::vector<NoteStem>& noteStems) :
     noteStems(noteStems)

@@ -1,6 +1,6 @@
 #include "bendevent.h"
 
-#include <rtmidiwrapper.h>
+#include <audio/rtmidiwrapper.h>
 #include <powertabdocument/generalmidi.h>
 
 /// Pitch bend range (in half steps)

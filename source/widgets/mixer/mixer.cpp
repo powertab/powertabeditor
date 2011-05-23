@@ -2,7 +2,7 @@
 
 #include <QVBoxLayout>
 
-#include <skinmanager.h>
+#include <app/skinmanager.h>
 #include "mixerinstrument.h"
 
 using std::shared_ptr;

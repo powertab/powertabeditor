@@ -4,7 +4,7 @@
 #include <app/settings.h>
 #include <QDebug>
 
-#include <rtmidiwrapper.h>
+#include <audio/rtmidiwrapper.h>
 
 #include <boost/next_prior.hpp>
 #include <boost/foreach.hpp>

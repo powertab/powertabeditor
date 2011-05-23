@@ -21,8 +21,8 @@
 
 #include <powertabeditor.h>
 #include <scorearea.h>
-#include <skinmanager.h>
-#include <midiplayer.h>
+#include <app/skinmanager.h>
+#include <audio/midiplayer.h>
 #include <app/settings.h>
 
 #include <dialogs/preferencesdialog.h>

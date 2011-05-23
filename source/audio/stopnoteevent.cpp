@@ -1,6 +1,6 @@
 #include "stopnoteevent.h"
 
-#include <rtmidiwrapper.h>
+#include <audio/rtmidiwrapper.h>
 
 #if defined(LOG_MIDI_EVENTS)
 #include <QDebug>

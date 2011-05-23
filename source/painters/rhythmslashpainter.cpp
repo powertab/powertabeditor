@@ -3,7 +3,7 @@
 #include <powertabdocument/rhythmslash.h>
 #include <powertabdocument/system.h>
 #include <QPainter>
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 const double RhythmSlashPainter::STEM_OFFSET = 3.0;
 const double RhythmSlashPainter::NOTE_HEAD_OFFSET = System::RHYTHM_SLASH_SPACING / 2.0;

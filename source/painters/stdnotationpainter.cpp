@@ -8,7 +8,7 @@
 #include <powertabdocument/note.h>
 #include <powertabdocument/staff.h>
 
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 QFont StdNotationPainter::musicFont = MusicFont().getFont();
 

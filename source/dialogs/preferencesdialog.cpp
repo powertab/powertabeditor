@@ -1,5 +1,6 @@
 #include "preferencesdialog.h"
-#include <rtmidiwrapper.h>
+
+#include <audio/rtmidiwrapper.h>
 
 #include <QDialogButtonBox>
 #include <QFormLayout>

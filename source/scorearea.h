@@ -5,7 +5,7 @@
 #include <QGraphicsScene>
 #include <memory>
 
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 class StaffData;
 class Staff;

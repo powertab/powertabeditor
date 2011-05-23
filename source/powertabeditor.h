@@ -6,7 +6,7 @@
 #include <boost/variant.hpp>
 #include <memory>
 
-#include <documentmanager.h>
+#include <app/documentmanager.h>
 #include <actions/undomanager.h>
 #include <actions/toggleproperty.h>
 

@@ -2,7 +2,7 @@
 
 #include "staffdata.h"
 #include <powertabdocument/keysignature.h>
-#include <musicfont.h>
+#include <painters/musicfont.h>
 
 #include <QMessageBox> // temporary
 #include <QFont>
