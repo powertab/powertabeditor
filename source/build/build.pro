@@ -19,6 +19,19 @@ win32:LIBS += -lwinmm
 unix:LIBS += -lasound -lpthread
 macx:LIBS += -framework CoreMidi -framework CoreAudio -framework CoreFoundation
 
+win32:LIB_EXT='lib'
+unix:LIB_EXT='a'
+
+PRE_TARGETDEPS += \
+    ../app/$${BUILDTYPE}/libapp.$${LIB_EXT} \
+    ../widgets/$${BUILDTYPE}/libwidgets.$${LIB_EXT} \
+    ../dialogs/$${BUILDTYPE}/libdialogs.$${LIB_EXT} \
+    ../actions/$${BUILDTYPE}/libactions.$${LIB_EXT} \
+    ../audio/$${BUILDTYPE}/libpteaudio.$${LIB_EXT} \
+    ../audio/rtmidi/$${BUILDTYPE}/librtmidi.$${LIB_EXT} \
+    ../painters/$${BUILDTYPE}/libpainters.$${LIB_EXT} \
+    ../powertabdocument/$${BUILDTYPE}/libpowertabdocument.$${LIB_EXT}
+
 SOURCES += main.cpp
 
 RESOURCES += resources.qrc
