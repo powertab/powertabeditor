@@ -30,7 +30,8 @@ SOURCES += \
     powertabdocument/complexsymbolarray_test.cpp \
     actions/test_editslideinto.cpp \
     actions/test_editslideout.cpp \
-    app/test_documentmanager.cpp
+    app/test_documentmanager.cpp \
+    powertabdocument/harmonics_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

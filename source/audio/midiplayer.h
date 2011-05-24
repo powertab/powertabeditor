@@ -3,7 +3,6 @@
 
 #include <QThread>
 #include <QMutex>
-#include <QHash>
 #include <memory>
 #include <vector>
 #include <boost/ptr_container/ptr_list.hpp>
@@ -88,10 +87,6 @@ protected:
     quint32 currentSystemIndex;
     uint8_t activePitchBend; ///< keeps track of the active pitch bend (used for "bend and hold"-type events)
     int playbackSpeed; ///< Current playback speed (percent)
-
-    QHash<quint8, quint8> harmonicPitches;
-    void initHarmonicPitches();
-    quint8 getHarmonicPitch(const quint8 originalPitch, const quint8 fret) const;
 };
 
 #endif // MIDIPLAYER_H

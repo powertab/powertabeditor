@@ -18,6 +18,7 @@
 #include <powertabdocument/tempomarker.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
+#include <powertabdocument/harmonics.h>
 
 #include <audio/midievent.h>
 #include <audio/playnoteevent.h>
@@ -38,7 +39,6 @@ MidiPlayer::MidiPlayer(Caret* caret, int playbackSpeed) :
     activePitchBend(BendEvent::DEFAULT_BEND),
     playbackSpeed(playbackSpeed)
 {
-    initHarmonicPitches();
 }
 
 MidiPlayer::~MidiPlayer()
@@ -515,23 +515,6 @@ double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, shared_
     return duration;
 }
 
-// initialize the mapping of frets to pitch offsets (counted in half-steps or frets)
-// e.g. The natural harmonic at the 7th fret is an octave and a fifth - 19 frets - above the pitch of the open string
-void MidiPlayer::initHarmonicPitches()
-{
-    harmonicPitches[3] = 31;
-    harmonicPitches[4] = harmonicPitches[9] = 28;
-    harmonicPitches[16] = harmonicPitches[28] = 28;
-    harmonicPitches[5] = harmonicPitches[24] = 24;
-    harmonicPitches[7] = harmonicPitches[19] = 19;
-    harmonicPitches[12] = 12;
-}
-
-quint8 MidiPlayer::getHarmonicPitch(const quint8 basePitch, const quint8 fretOffset) const
-{
-    return basePitch + harmonicPitches[fretOffset];
-}
-
 // Generates the metronome ticks
 void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
                                    boost::ptr_list<MidiEvent>& eventList) const
@@ -599,14 +582,14 @@ uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guita
     
     if (note->IsNaturalHarmonic())
     {
-        pitch = getHarmonicPitch(openStringPitch, note->GetFretNumber());
+        pitch = openStringPitch + Harmonics::getPitchOffset(note->GetFretNumber());
     }
     
     if (note->HasTappedHarmonic())
     {
         uint8_t tappedFret = 0;
         note->GetTappedHarmonic(tappedFret);
-        pitch = getHarmonicPitch(pitch, tappedFret - note->GetFretNumber());
+        pitch = pitch + Harmonics::getPitchOffset(tappedFret - note->GetFretNumber());
     }
     
     if (note->HasArtificialHarmonic())
