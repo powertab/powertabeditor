@@ -92,6 +92,7 @@ protected slots:
     void editSlide(int newSlideType);
     void editSlideInto(int newSlideIntoType);
     void editBarline(int position = -1);
+    void editTappedHarmonic();
 
     void increasePositionSpacing();
     void decreasePositionSpacing();
@@ -217,6 +218,7 @@ protected:
     QMenu* tabSymbolsMenu;
     QAction* hammerPullAct; // add/remove hammer-on or pull-off
     QAction* naturalHarmonicAct; // add/remove natural harmonics
+    QAction* tappedHarmonicAct;
     QAction* shiftSlideAct;
     QAction* legatoSlideAct;
     QAction* vibratoAct; // add/remove vibrato

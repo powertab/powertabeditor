@@ -32,6 +32,7 @@
 #include <dialogs/trilldialog.h>
 #include <dialogs/barlinedialog.h>
 #include <dialogs/alternateendingdialog.h>
+#include <dialogs/tappedharmonicdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -530,6 +531,10 @@ void PowerTabEditor::createActions()
                                   ( &getSelectedNotes, &Note::IsNaturalHarmonic,
                                    &Note::SetNaturalHarmonic, naturalHarmonicAct->text() ));
 
+    tappedHarmonicAct = new QAction(tr("Tapped Harmonic"), this);
+    tappedHarmonicAct->setCheckable(true);
+    connect(tappedHarmonicAct, SIGNAL(triggered()), this, SLOT(editTappedHarmonic()));
+
     shiftSlideAct = new QAction(tr("Shift Slide"), this);
     shiftSlideAct->setCheckable(true);
     shiftSlideAct->setShortcut(QKeySequence(Qt::Key_S));
@@ -769,6 +774,7 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     tabSymbolsMenu->addAction(hammerPullAct);
     tabSymbolsMenu->addAction(naturalHarmonicAct);
+    tabSymbolsMenu->addAction(tappedHarmonicAct);
     tabSymbolsMenu->addSeparator();
 
     slideIntoMenu = tabSymbolsMenu->addMenu(tr("Slide Into"));
@@ -1405,6 +1411,31 @@ void PowerTabEditor::editTrill()
     }
 }
 
+/// Add/Remove a tapped harmonic at the current note
+void PowerTabEditor::editTappedHarmonic()
+{
+    Note* currentNote = getCurrentScoreArea()->getCaret()->getCurrentNote();
+
+    if (currentNote->HasTappedHarmonic())
+    {
+        // TODO - undoManager->push(new RemoveTappedHarmonic(currentNote));
+    }
+    else // add a tapped harmonic
+    {
+        uint8_t tappedFret = 0;
+        TappedHarmonicDialog dialog(currentNote, tappedFret);
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            // TODO - undoManager->push(new AddTappedHarmonic(currentNote, tappedFret));
+        }
+        else
+        {
+            tappedHarmonicAct->setChecked(false);
+        }
+    }
+}
+
 // If there is a rehearsal sign at the barline, remove it
 // If there is no rehearsal sign, show the dialog to add one
 void PowerTabEditor::editRehearsalSign()
@@ -1566,6 +1597,7 @@ void PowerTabEditor::updateActions()
     }
 
     updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
+    updatePropertyStatus(tappedHarmonicAct, currentNote, &Note::HasTappedHarmonic);
     updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
     updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);
     updatePropertyStatus(tiedNoteAct, currentNote, &Note::IsTied);

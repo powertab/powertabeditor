@@ -7,7 +7,8 @@ HEADERS += \
     preferencesdialog.h \
     chordnamedialog.h \
     barlinedialog.h \
-    alternateendingdialog.h
+    alternateendingdialog.h \
+    tappedharmonicdialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -16,4 +17,5 @@ SOURCES += \
     preferencesdialog.cpp \
     chordnamedialog.cpp \
     barlinedialog.cpp \
-    alternateendingdialog.cpp
+    alternateendingdialog.cpp \
+    tappedharmonicdialog.cpp
