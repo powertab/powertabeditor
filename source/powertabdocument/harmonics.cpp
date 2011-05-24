@@ -36,6 +36,8 @@ namespace Harmonics
     /// Returns a list of all fret offsets that produce harmonics
     std::vector<uint8_t> getFretOffsets()
     {
+        initHarmonicsMap();
+
         std::vector<uint8_t> frets;
         BOOST_FOREACH(auto pair, harmonicsMap)
         {
