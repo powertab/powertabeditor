@@ -3,9 +3,11 @@ include (../common.pri)
 TARGET = pte_tests
 TEMPLATE = app
 
-LIBS += -L../source/powertabdocument/$${BUILDTYPE} -lpowertabdocument \
+LIBS += \
+    -L../source/app/$${BUILDTYPE} -lapp \
     -L../source/actions/$${BUILDTYPE} -lactions \
-    -L../source/audio/$${BUILDTYPE} -lpteaudio
+    -L../source/audio/$${BUILDTYPE} -lpteaudio \
+    -L../source/powertabdocument/$${BUILDTYPE} -lpowertabdocument \
 
 unix:LIBS += -lboost_unit_test_framework
 
@@ -27,7 +29,8 @@ SOURCES += \
     powertabdocument/note_test.cpp \
     powertabdocument/complexsymbolarray_test.cpp \
     actions/test_editslideinto.cpp \
-    actions/test_editslideout.cpp
+    actions/test_editslideout.cpp \
+    app/test_documentmanager.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

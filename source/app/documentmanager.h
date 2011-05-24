@@ -1,15 +1,13 @@
 #ifndef DOCUMENTMANAGER_H
 #define DOCUMENTMANAGER_H
 
-#include <QList>
+#include <vector>
 #include <memory>
 
 class QString;
 class PowerTabDocument;
 
-// Class for keeping track of the opened documents
-// (this is necessary since we can have multiple tabs)
-
+/// Class for managing opened documents
 class DocumentManager
 {
 public:
@@ -23,7 +21,7 @@ public:
     int getCurrentDocumentIndex() const;
 
 private:
-    QList<std::shared_ptr<PowerTabDocument> > documentList;
+    std::vector<std::shared_ptr<PowerTabDocument> > documentList;
     int currentDocumentIndex;
 };
 

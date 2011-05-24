@@ -4,6 +4,7 @@
 #include <QString>
 
 #include <powertabdocument/powertabdocument.h>
+#include <app/common.h>
 
 using std::shared_ptr;
 
@@ -14,15 +15,19 @@ DocumentManager::DocumentManager()
 
 shared_ptr<PowerTabDocument> DocumentManager::getCurrentDocument() const
 {
-    if (currentDocumentIndex < 0 || currentDocumentIndex >= documentList.size())
+    if (currentDocumentIndex == -1)
+    {
         return shared_ptr<PowerTabDocument>();
+    }
     else
+    {
         return documentList.at(currentDocumentIndex);
+    }
 }
 
 void DocumentManager::removeDocument(int index)
 {
-    documentList.removeAt(index);
+    documentList.erase(documentList.begin() + index);
     currentDocumentIndex = 0;
 }
 
@@ -40,7 +45,7 @@ bool DocumentManager::addDocument(const QString& fileName)
 
     // try to open the file
     shared_ptr<PowerTabDocument> newDocument(new PowerTabDocument);
-    bool success = newDocument->Load(fileName.toStdString());
+    const bool success = newDocument->Load(fileName.toStdString());
     if (!success)
     {
         QMessageBox msgBox;
@@ -50,8 +55,8 @@ bool DocumentManager::addDocument(const QString& fileName)
     }
     else
     {
-        documentList.append(newDocument);
-        currentDocumentIndex = documentList.length() - 1;
+        documentList.push_back(newDocument);
+        currentDocumentIndex = documentList.size() - 1;
     }
 
     return true;
@@ -59,6 +64,7 @@ bool DocumentManager::addDocument(const QString& fileName)
 
 void DocumentManager::setCurrentDocumentIndex(int index)
 {
+    index = clamp(index, -1, static_cast<int>(documentList.size() - 1));
     currentDocumentIndex = index;
 }
 
@@ -73,7 +79,7 @@ void DocumentManager::createDocument()
     shared_ptr<PowerTabDocument> doc(new PowerTabDocument);
     doc->SetFileName("Untitled.ptb");
     doc->Init();
-    documentList << doc;
-    currentDocumentIndex = documentList.length() - 1;
+    documentList.push_back(doc);
+    currentDocumentIndex = documentList.size() - 1;
 }
 
