@@ -11,6 +11,3 @@ Installation:
 
     Windows:
         - TODO
-
-TODO - compile the powertabdocument classes as a separate library so that
-we don't need to recompile everything for running the tests

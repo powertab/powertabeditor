@@ -7,17 +7,16 @@ BUILDING:
     - for Windows, install the Boost libraries to some location on your computer, either by extracting a downloaded package
       from http://www.boost.org/users/download/#releases, or using the installer from BoostPro http://www.boostpro.com/download/
         - you do not need to build any libraries, as the components of Boost that we use are header-only
-        - edit the 'win32:INCLUDEPATH' line in the powertabeditor.pro file to specify the location of your Boost installation
+        - edit the 'win32:INCLUDEPATH' line in the common.pri file to specify the location of your Boost installation
 - Open the powertabeditor.pro file in QtCreator, and choose Build / Build All
 - Then, either use Debug / Start Debugging, or Build / Run to run the program
 
 NOTES:
 - the 'PowerTabDocument' code was ported from Brad Larsen's PtParser (http://code.google.com/p/ptparser/)
 	- it could probably use some cleanup, but that's not too high a priority
-- the project builds without any warnings / errors on Windows with QtCreator
+- the project builds without any warnings / errors on Windows and Linux with QtCreator
 
 TODO: 
-- fix up exporting of files (PowerTabOutputStream), due to some difficulties in porting the original code
 - work on complete rendering support
 - support more interactive editor functionality (i.e. editing notes, removing barlines, etc)
 - support more features for MIDI playback (bends, vibrato, etc)
