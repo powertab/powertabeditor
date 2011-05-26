@@ -1,13 +1,10 @@
 include (../common.pri)
 
+SOURCE_DIR=../source
+include (../linking.pri)
+
 TARGET = pte_tests
 TEMPLATE = app
-
-LIBS += \
-    -L../source/app/$${BUILDTYPE} -lapp \
-    -L../source/actions/$${BUILDTYPE} -lactions \
-    -L../source/audio/$${BUILDTYPE} -lpteaudio \
-    -L../source/powertabdocument/$${BUILDTYPE} -lpowertabdocument \
 
 unix:LIBS += -lboost_unit_test_framework
 
