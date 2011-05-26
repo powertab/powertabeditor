@@ -31,7 +31,9 @@ SOURCES += \
     actions/test_editslideinto.cpp \
     actions/test_editslideout.cpp \
     app/test_documentmanager.cpp \
-    powertabdocument/harmonics_test.cpp
+    powertabdocument/harmonics_test.cpp \
+    actions/test_removetappedharmonic.cpp \
+    actions/test_addtappedharmonic.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

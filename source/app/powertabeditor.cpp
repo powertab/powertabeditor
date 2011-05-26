@@ -74,6 +74,8 @@
 #include <actions/removealternateending.h>
 #include <actions/addalternateending.h>
 #include <actions/editslideinto.h>
+#include <actions/removetappedharmonic.h>
+#include <actions/addtappedharmonic.h>
 
 using std::shared_ptr;
 
@@ -1418,7 +1420,7 @@ void PowerTabEditor::editTappedHarmonic()
 
     if (currentNote->HasTappedHarmonic())
     {
-        // TODO - undoManager->push(new RemoveTappedHarmonic(currentNote));
+        undoManager->push(new RemoveTappedHarmonic(currentNote));
     }
     else // add a tapped harmonic
     {
@@ -1427,7 +1429,7 @@ void PowerTabEditor::editTappedHarmonic()
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            // TODO - undoManager->push(new AddTappedHarmonic(currentNote, tappedFret));
+            undoManager->push(new AddTappedHarmonic(currentNote, tappedFret));
         }
         else
         {

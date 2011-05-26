@@ -25,7 +25,9 @@ HEADERS += \
     addguitar.h \
     addchordtext.h \
     addbarline.h \
-    addalternateending.h
+    addalternateending.h \
+    removetappedharmonic.h \
+    addtappedharmonic.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -51,4 +53,6 @@ SOURCES += \
     addguitar.cpp \
     addchordtext.cpp \
     addbarline.cpp \
-    addalternateending.cpp
+    addalternateending.cpp \
+    removetappedharmonic.cpp \
+    addtappedharmonic.cpp

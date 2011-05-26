@@ -61,6 +61,7 @@ void TappedHarmonicDialog::initTappedFrets()
 
 void TappedHarmonicDialog::accept()
 {
+    tappedFret = tappedFretSelector->currentText().toUShort();
     done(Accepted);
 }
 
