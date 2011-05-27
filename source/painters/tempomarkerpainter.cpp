@@ -6,7 +6,7 @@
 
 QFont TempoMarkerPainter::displayFont = QFont("Liberation Sans");
 
-TempoMarkerPainter::TempoMarkerPainter(TempoMarker* tempoMarker):
+TempoMarkerPainter::TempoMarkerPainter(std::shared_ptr<const TempoMarker> tempoMarker):
     tempoMarker(tempoMarker)
 {
     displayFont.setPixelSize(10);

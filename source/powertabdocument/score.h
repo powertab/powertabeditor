@@ -13,7 +13,6 @@
 #define __SCORE_H__
 
 #include "powertabobject.h"
-#include "macros.h"
 
 #include <memory>
 #include <vector>
@@ -47,6 +46,7 @@ public:
     typedef std::shared_ptr<FloatingText> FloatingTextPtr;
     typedef std::shared_ptr<GuitarIn> GuitarInPtr;
     typedef std::shared_ptr<const GuitarIn> GuitarInConstPtr;
+    typedef std::shared_ptr<TempoMarker> TempoMarkerPtr;
 
 // Member Variables
 public:
@@ -54,7 +54,7 @@ public:
     std::vector<ChordDiagramPtr>        m_chordDiagramArray;        ///< Chord diagrams used in the score
     std::vector<FloatingTextPtr>        m_floatingTextArray;        ///< Floating text used in the score
     std::vector<GuitarInPtr>            m_guitarInArray;            ///< Guitar Ins used in the score
-    std::vector<TempoMarker*>           m_tempoMarkerArray;         ///< Tempo Markers used in the score
+    std::vector<TempoMarkerPtr>         m_tempoMarkerArray;         ///< Tempo Markers used in the score
     std::vector<DynamicPtr>             m_dynamicArray;             ///< Dynamic markers used in the score
     std::vector<AlternateEndingPtr>     m_alternateEndingArray;     ///< Alternate endings used in the score
     std::vector<SystemPtr>              m_systemArray;              ///< Systems used in the score
@@ -63,7 +63,6 @@ public:
 public:
     Score();
     Score(const Score& score);
-    ~Score();
 
     void Init();
 
@@ -111,25 +110,11 @@ public:
     GuitarInPtr GetGuitarIn(uint32_t index) const;
 
 // Tempo Marker Functions
-    /// Determines if a tempo marker index is valid
-    /// @param index tempo marker index to validate
-    /// @return True if the tempo marker index is valid, false if not
-    bool IsValidTempoMarkerIndex(uint32_t index) const
-        {return (index < GetTempoMarkerCount());}
-    /// Gets the number of tempo markers in the score
-    /// @return The number of tempo markers in the score
-    size_t GetTempoMarkerCount() const
-        {return (m_tempoMarkerArray.size());}
-    /// Gets the nth tempo marker in the score
-    /// @param index Index of the tempo marker to get
-    /// @return The nth tempo marker in the score
-    TempoMarker* GetTempoMarker(uint32_t index) const
-    {
-        CHECK_THAT(IsValidTempoMarkerIndex(index), NULL);
-        return (m_tempoMarkerArray[index]);
-    }
+    bool IsValidTempoMarkerIndex(uint32_t index) const;
+    size_t GetTempoMarkerCount() const;
+    TempoMarkerPtr GetTempoMarker(uint32_t index) const;
 
-    void GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, SystemConstPtr system) const;
+    void GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, SystemConstPtr system) const;
 
 // Dynamic Functions
     bool IsValidDynamicIndex(uint32_t index) const;

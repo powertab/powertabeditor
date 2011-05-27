@@ -3,6 +3,7 @@
 
 #include "painterbase.h"
 
+#include <memory>
 #include <QFont>
 #include <QStaticText>
 
@@ -11,12 +12,12 @@ class TempoMarker;
 class TempoMarkerPainter : public PainterBase
 {
 public:
-    TempoMarkerPainter(TempoMarker* tempoMarker);
+    TempoMarkerPainter(std::shared_ptr<const TempoMarker> tempoMarker);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
-    TempoMarker* tempoMarker;
+    std::shared_ptr<const TempoMarker> tempoMarker;
     static QFont displayFont;
     QStaticText displayText;
 

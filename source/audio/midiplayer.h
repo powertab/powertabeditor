@@ -45,7 +45,7 @@ protected:
     static const quint8 METRONOME_CHANNEL = 15;
 
     double getCurrentTempo(const quint32 positionIndex) const;
-    TempoMarker* getCurrentTempoMarker(const quint32 positionIndex) const;
+    std::shared_ptr<TempoMarker> getCurrentTempoMarker(const quint32 positionIndex) const;
     double calculateNoteDuration(const Position* currentPosition) const;
 
     double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,

@@ -445,16 +445,16 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
 }
 
 // Finds the active tempo marker
-TempoMarker* MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) const
+std::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) const
 {
-    Score* currentScore = caret->getCurrentScore();
+    const Score* currentScore = caret->getCurrentScore();
 
-    TempoMarker* currentTempoMarker = NULL;
+    Score::TempoMarkerPtr currentTempoMarker;
 
     // find the active tempo marker
     for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
     {
-        TempoMarker* temp = currentScore->GetTempoMarker(i);
+        Score::TempoMarkerPtr temp = currentScore->GetTempoMarker(i);
         if (temp->GetSystem() <= currentSystemIndex &&
             temp->GetPosition() <=  positionIndex &&
             !temp->IsAlterationOfPace()) // TODO - properly support alterations of pace
@@ -469,12 +469,12 @@ TempoMarker* MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) cons
 /// Returns the current tempo (duration of a quarter note in milliseconds)
 double MidiPlayer::getCurrentTempo(const quint32 positionIndex) const
 {
-    TempoMarker* tempoMarker = getCurrentTempoMarker(positionIndex);
+    Score::TempoMarkerPtr tempoMarker = getCurrentTempoMarker(positionIndex);
 
     double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
     double beatType = TempoMarker::DEFAULT_BEAT_TYPE;
 
-    if (tempoMarker != NULL)
+    if (tempoMarker)
     {
         bpm = tempoMarker->GetBeatsPerMinute();
         Q_ASSERT(bpm != 0);

@@ -76,7 +76,7 @@ protected:
     void drawAltEndings(const std::vector<std::shared_ptr<AlternateEnding> >& altEndings,
                         std::shared_ptr<const System> system, uint32_t height);
 
-    void drawTempoMarkers(const std::vector<TempoMarker*>& tempoMarkers,
+    void drawTempoMarkers(const std::vector<std::shared_ptr<TempoMarker> >& tempoMarkers,
                           std::shared_ptr<const System> system, quint32 height);
 
     void drawSymbolsBelowTabStaff(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,

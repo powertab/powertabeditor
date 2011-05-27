@@ -527,7 +527,7 @@ void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<const System> system,
         drawDividerLine(currentStaffInfo, height);
     }
 
-    std::vector<TempoMarker*> tempoMarkers;
+    std::vector<Score::TempoMarkerPtr> tempoMarkers;
     score->GetTempoMarkersInSystem(tempoMarkers, system);
 
     if (tempoMarkers.size() > 0)
@@ -610,10 +610,10 @@ void ScoreArea::drawAltEndings(const std::vector<Score::AlternateEndingPtr>& alt
     }
 }
 
-void ScoreArea::drawTempoMarkers(const std::vector<TempoMarker*>& tempoMarkers,
+void ScoreArea::drawTempoMarkers(const std::vector<Score::TempoMarkerPtr>& tempoMarkers,
                                  shared_ptr<const System> system, quint32 height)
 {
-    BOOST_FOREACH(TempoMarker* tempoMarker, tempoMarkers)
+    BOOST_FOREACH(Score::TempoMarkerPtr tempoMarker, tempoMarkers)
     {
         const quint32 location = system->GetPositionX(tempoMarker->GetPosition());
 

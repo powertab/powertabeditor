@@ -44,15 +44,6 @@ Score::Score(const Score& score)
     *this = score;
 }
 
-/// Destructor
-Score::~Score()
-{
-    for (uint32_t i = 0; i < m_tempoMarkerArray.size(); i++)
-    {
-        delete m_tempoMarkerArray.at(i);
-    }
-}
-
 // Operators
 /// Assignment Operator
 const Score& Score::operator=(const Score& score)
@@ -340,7 +331,7 @@ void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& 
 }
 
 // Finds all of the tempo markers that are in the given system
-void Score::GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, SystemConstPtr system) const
+void Score::GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, SystemConstPtr system) const
 {
     GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
 }
@@ -407,7 +398,7 @@ void Score::ShiftFollowingSystems(SystemConstPtr system, const int heightDiffere
 void Score::UpdateExtraSpacing(SystemPtr system)
 {
     // get list of tempo markers
-    std::vector<TempoMarker*> markers;
+    std::vector<TempoMarkerPtr> markers;
     GetTempoMarkersInSystem(markers, system);
     
     // get list of alternate endings
@@ -676,4 +667,29 @@ Score::GuitarInPtr Score::GetGuitarIn(uint32_t index) const
 {
     CHECK_THAT(IsValidGuitarInIndex(index), GuitarInPtr());
     return m_guitarInArray[index];
+}
+
+// Tempo Marker Functions
+/// Determines if a tempo marker index is valid
+/// @param index tempo marker index to validate
+/// @return True if the tempo marker index is valid, false if not
+bool Score::IsValidTempoMarkerIndex(uint32_t index) const
+{
+    return index < GetTempoMarkerCount();
+}
+
+/// Gets the number of tempo markers in the score
+/// @return The number of tempo markers in the score
+size_t Score::GetTempoMarkerCount() const
+{
+    return m_tempoMarkerArray.size();
+}
+
+/// Gets the nth tempo marker in the score
+/// @param index Index of the tempo marker to get
+/// @return The nth tempo marker in the score
+Score::TempoMarkerPtr Score::GetTempoMarker(uint32_t index) const
+{
+    CHECK_THAT(IsValidTempoMarkerIndex(index), TempoMarkerPtr());
+    return m_tempoMarkerArray[index];
 }
