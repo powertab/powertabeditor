@@ -45,13 +45,15 @@ public:
     typedef std::shared_ptr<ChordDiagram> ChordDiagramPtr;
     typedef std::shared_ptr<Dynamic> DynamicPtr;
     typedef std::shared_ptr<FloatingText> FloatingTextPtr;
+    typedef std::shared_ptr<GuitarIn> GuitarInPtr;
+    typedef std::shared_ptr<const GuitarIn> GuitarInConstPtr;
 
 // Member Variables
 public:
     std::vector<GuitarPtr>              m_guitarArray;              ///< Guitars used by the score
     std::vector<ChordDiagramPtr>        m_chordDiagramArray;        ///< Chord diagrams used in the score
     std::vector<FloatingTextPtr>        m_floatingTextArray;        ///< Floating text used in the score
-    std::vector<GuitarIn*>              m_guitarInArray;            ///< Guitar Ins used in the score
+    std::vector<GuitarInPtr>            m_guitarInArray;            ///< Guitar Ins used in the score
     std::vector<TempoMarker*>           m_tempoMarkerArray;         ///< Tempo Markers used in the score
     std::vector<DynamicPtr>             m_dynamicArray;             ///< Dynamic markers used in the score
     std::vector<AlternateEndingPtr>     m_alternateEndingArray;     ///< Alternate endings used in the score
@@ -104,23 +106,9 @@ public:
     FloatingTextPtr GetFloatingText(uint32_t index) const;
 
 // Guitar In Functions
-    /// Determines if a guitar in index is valid
-    /// @param index guitar in index to validate
-    /// @return True if the guitar in index is valid, false if not
-    bool IsValidGuitarInIndex(uint32_t index) const
-        {return (index < GetGuitarInCount());}
-    /// Gets the number of guitar ins in the score
-    /// @return The number of guitar ins in the score
-    size_t GetGuitarInCount() const
-        {return (m_guitarInArray.size());}
-    /// Gets the nth guitar in in the score
-    /// @param index Index of the guitar in to get
-    /// @return The nth guitar in in the score
-    GuitarIn* GetGuitarIn(uint32_t index) const
-    {
-        CHECK_THAT(IsValidGuitarInIndex(index), NULL);
-        return (m_guitarInArray[index]);
-    }
+    bool IsValidGuitarInIndex(uint32_t index) const;
+    size_t GetGuitarInCount() const;
+    GuitarInPtr GetGuitarIn(uint32_t index) const;
 
 // Tempo Marker Functions
     /// Determines if a tempo marker index is valid

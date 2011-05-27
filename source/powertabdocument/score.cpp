@@ -47,10 +47,6 @@ Score::Score(const Score& score)
 /// Destructor
 Score::~Score()
 {
-    for (uint32_t i = 0; i < m_guitarInArray.size(); i++)
-    {
-        delete m_guitarInArray.at(i);
-    }
     for (uint32_t i = 0; i < m_tempoMarkerArray.size(); i++)
     {
         delete m_tempoMarkerArray.at(i);
@@ -224,14 +220,14 @@ void Score::UpdateToVer2Structure()
     using std::pair;
     using std::multimap;
 
-    multimap<uint32_t, GuitarIn*> guitarInMap; // map systems to Guitar In symbols
+    multimap<uint32_t, GuitarInConstPtr> guitarInMap; // map systems to Guitar In symbols
     multimap<uint32_t, uint32_t> guitarToStaffMap; // map guitars to (possibly multiple) staves
 
     // find all guitar in symbols and the system they occur in
     for (uint32_t i=0; i < m_guitarInArray.size(); i++)
     {
-        GuitarIn* gtr_in = m_guitarInArray.at(i);
-        guitarInMap.insert(pair<uint32_t, GuitarIn*>(gtr_in->GetSystem(), gtr_in));
+        GuitarInConstPtr gtr_in = m_guitarInArray.at(i);
+        guitarInMap.insert(pair<uint32_t, GuitarInConstPtr>(gtr_in->GetSystem(), gtr_in));
     }
 
     for (uint32_t i=0; i < m_systemArray.size(); i++) // iterate through all systems
@@ -244,7 +240,7 @@ void Score::UpdateToVer2Structure()
             auto range = guitarInMap.equal_range(i);
             for (auto i = range.first; i != range.second; ++i)
             {
-                GuitarIn* currentGuitarIn = i->second;
+                GuitarInConstPtr currentGuitarIn = i->second;
                 // only readjust the Guitar->Staff mapping if we're actually changing the staff guitar, not just the rhythm slash
                 if (currentGuitarIn->HasStaffGuitarsSet())
                 {
@@ -655,4 +651,29 @@ Score::FloatingTextPtr Score::GetFloatingText(uint32_t index) const
 {
     CHECK_THAT(IsValidFloatingTextIndex(index), FloatingTextPtr());
     return m_floatingTextArray[index];
+}
+
+// Guitar In Functions
+/// Determines if a guitar in index is valid
+/// @param index guitar in index to validate
+/// @return True if the guitar in index is valid, false if not
+bool Score::IsValidGuitarInIndex(uint32_t index) const
+{
+    return index < GetGuitarInCount();
+}
+
+/// Gets the number of guitar ins in the score
+/// @return The number of guitar ins in the score
+size_t Score::GetGuitarInCount() const
+{
+    return m_guitarInArray.size();
+}
+
+/// Gets the nth guitar in in the score
+/// @param index Index of the guitar in to get
+/// @return The nth guitar in in the score
+Score::GuitarInPtr Score::GetGuitarIn(uint32_t index) const
+{
+    CHECK_THAT(IsValidGuitarInIndex(index), GuitarInPtr());
+    return m_guitarInArray[index];
 }
