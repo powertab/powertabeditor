@@ -41,22 +41,12 @@ Score::Score()
 /// Copy Constructor
 Score::Score(const Score& score)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     *this = score;
 }
 
 /// Destructor
 Score::~Score()
 {
-    for (uint32_t i = 0; i < m_chordDiagramArray.size(); i++)
-    {
-        delete m_chordDiagramArray.at(i);
-    }
-    for (uint32_t i = 0; i < m_floatingTextArray.size(); i++)
-    {
-        delete m_floatingTextArray.at(i);
-    }
     for (uint32_t i = 0; i < m_guitarInArray.size(); i++)
     {
         delete m_guitarInArray.at(i);
@@ -541,4 +531,128 @@ void Score::RemoveAlternateEnding(AlternateEndingPtr altEnding)
     m_alternateEndingArray.erase(std::remove(m_alternateEndingArray.begin(),
                                              m_alternateEndingArray.end(),
                                              altEnding));
+}
+
+/// Determines if a chord diagram index is valid
+/// @param index ChordDiagram index to validate
+/// @return True if the chord diagram index is valid, false if not
+bool Score::IsValidChordDiagramIndex(uint32_t index) const
+{
+    return index < GetChordDiagramCount();
+}
+
+/// Gets the number of chord diagrams in the score
+/// @return The number of chord diagrams in the score
+size_t Score::GetChordDiagramCount() const
+{
+    return m_chordDiagramArray.size();
+}
+
+/// Gets the nth chord diagram in the score
+/// @param index Index of the chord diagram to get
+/// @return The nth chord diagram in the score
+Score::ChordDiagramPtr Score::GetChordDiagram(uint32_t index) const
+{
+    CHECK_THAT(IsValidChordDiagramIndex(index), ChordDiagramPtr());
+    return m_chordDiagramArray[index];
+}
+
+// Guitar Functions
+/// Determines if a guitar index is valid
+/// @param index guitar index to validate
+/// @return True if the guitar index is valid, false if not
+bool Score::IsValidGuitarIndex(uint32_t index) const
+{
+    return index < GetGuitarCount();
+}
+
+/// Gets the number of guitars in the score
+/// @return The number of guitars in the score
+size_t Score::GetGuitarCount() const
+{
+    return m_guitarArray.size();
+}
+
+/// Gets the nth guitar in the score
+/// @param index Index of the guitar to get
+/// @return The nth guitar in the score
+Score::GuitarPtr Score::GetGuitar(uint32_t index) const
+{
+    CHECK_THAT(IsValidGuitarIndex(index), GuitarPtr());
+    return m_guitarArray[index];
+}
+
+// System Functions
+/// Determines if a system index is valid
+/// @param index system index to validate
+/// @return True if the system index is valid, false if not
+bool Score::IsValidSystemIndex(uint32_t index) const
+{
+    return index < GetSystemCount();
+}
+
+/// Gets the number of systems in the score
+/// @return The number of systems in the score
+size_t Score::GetSystemCount() const
+{
+    return m_systemArray.size();
+}
+
+/// Gets the nth system in the score
+/// @param index Index of the system to get
+/// @return The nth system in the score
+Score::SystemPtr Score::GetSystem(uint32_t index) const
+{
+    CHECK_THAT(IsValidSystemIndex(index), SystemPtr());
+    return m_systemArray[index];
+}
+
+// Dynamic Functions
+/// Determines if a dynamic index is valid
+/// @param index dynamic index to validate
+/// @return True if the dynamic index is valid, false if not
+bool Score::IsValidDynamicIndex(uint32_t index) const
+{
+    return index < GetDynamicCount();
+}
+
+/// Gets the number of dynamics in the score
+/// @return The number of dynamics in the score
+size_t Score::GetDynamicCount() const
+{
+    return m_dynamicArray.size();
+}
+
+/// Gets the nth dynamic in the score
+/// @param index Index of the dynamic to get
+/// @return The nth dynamic in the score
+Score::DynamicPtr Score::GetDynamic(uint32_t index) const
+{
+    CHECK_THAT(IsValidDynamicIndex(index), DynamicPtr());
+    return m_dynamicArray[index];
+}
+
+// Floating Text Functions
+/// Determines if a floating text index is valid
+/// @param index floating text index to validate
+/// @return True if the floating text index is valid, false if not
+bool Score::IsValidFloatingTextIndex(uint32_t index) const
+{
+    return index < GetFloatingTextCount();
+}
+
+/// Gets the number of floating text items in the score
+/// @return The number of floating text items in the score
+size_t Score::GetFloatingTextCount() const
+{
+    return m_floatingTextArray.size();
+}
+
+/// Gets the nth floating text in the score
+/// @param index Index of the floating text to get
+/// @return The nth floating text in the score
+Score::FloatingTextPtr Score::GetFloatingText(uint32_t index) const
+{
+    CHECK_THAT(IsValidFloatingTextIndex(index), FloatingTextPtr());
+    return m_floatingTextArray[index];
 }

@@ -42,15 +42,18 @@ public:
     typedef std::shared_ptr<Guitar> GuitarPtr;
     typedef std::shared_ptr<AlternateEnding> AlternateEndingPtr;
     typedef std::shared_ptr<const AlternateEnding> AlternateEndingConstPtr;
+    typedef std::shared_ptr<ChordDiagram> ChordDiagramPtr;
+    typedef std::shared_ptr<Dynamic> DynamicPtr;
+    typedef std::shared_ptr<FloatingText> FloatingTextPtr;
 
 // Member Variables
 public:
     std::vector<GuitarPtr>              m_guitarArray;              ///< Guitars used by the score
-    std::vector<ChordDiagram*>           m_chordDiagramArray;        ///< Chord diagrams used in the score
-    std::vector<FloatingText*>           m_floatingTextArray;        ///< Floating text used in the score
-    std::vector<GuitarIn*>               m_guitarInArray;            ///< Guitar Ins used in the score
-    std::vector<TempoMarker*>            m_tempoMarkerArray;         ///< Tempo Markers used in the score
-    std::vector<Dynamic*>                m_dynamicArray;             ///< Dynamic markers used in the score
+    std::vector<ChordDiagramPtr>        m_chordDiagramArray;        ///< Chord diagrams used in the score
+    std::vector<FloatingTextPtr>        m_floatingTextArray;        ///< Floating text used in the score
+    std::vector<GuitarIn*>              m_guitarInArray;            ///< Guitar Ins used in the score
+    std::vector<TempoMarker*>           m_tempoMarkerArray;         ///< Tempo Markers used in the score
+    std::vector<DynamicPtr>             m_dynamicArray;             ///< Dynamic markers used in the score
     std::vector<AlternateEndingPtr>     m_alternateEndingArray;     ///< Alternate endings used in the score
     std::vector<SystemPtr>              m_systemArray;              ///< Systems used in the score
 
@@ -83,67 +86,22 @@ public:
     }
 
 // Guitar Functions
-public:
-    /// Determines if a guitar index is valid
-    /// @param index guitar index to validate
-    /// @return True if the guitar index is valid, false if not
-    bool IsValidGuitarIndex(uint32_t index) const
-        {return (index < GetGuitarCount());}
-
-    /// Gets the number of guitars in the score
-    /// @return The number of guitars in the score
-    size_t GetGuitarCount() const
-        {return (m_guitarArray.size());}
-
-    /// Gets the nth guitar in the score
-    /// @param index Index of the guitar to get
-    /// @return The nth guitar in the score
-    GuitarPtr GetGuitar(uint32_t index) const
-    {
-        CHECK_THAT(IsValidGuitarIndex(index), GuitarPtr());
-        return m_guitarArray[index];
-    }
+    bool IsValidGuitarIndex(uint32_t index) const;
+    size_t GetGuitarCount() const;
+    GuitarPtr GetGuitar(uint32_t index) const;
 
     bool InsertGuitar(GuitarPtr guitar);
     bool RemoveGuitar(size_t index);
 
 // Chord Diagram Functions
-    /// Determines if a guitar index is valid
-    /// @param index ChordDiagram index to validate
-    /// @return True if the guitar index is valid, false if not
-    bool IsValidChordDiagramIndex(uint32_t index) const
-        {return (index < GetChordDiagramCount());}
-    /// Gets the number of guitars in the score
-    /// @return The number of guitars in the score
-    size_t GetChordDiagramCount() const
-        {return (m_chordDiagramArray.size());}
-    /// Gets the nth guitar in the score
-    /// @param index Index of the guitar to get
-    /// @return The nth guitar in the score
-    ChordDiagram* GetChordDiagram(uint32_t index) const
-    {
-        CHECK_THAT(IsValidChordDiagramIndex(index), NULL);
-        return (m_chordDiagramArray[index]);
-    }
+    bool IsValidChordDiagramIndex(uint32_t index) const;
+    size_t GetChordDiagramCount() const;
+    ChordDiagramPtr GetChordDiagram(uint32_t index) const;
 
 // Floating Text Functions
-    /// Determines if a floating text index is valid
-    /// @param index floating text index to validate
-    /// @return True if the floating text index is valid, false if not
-    bool IsValidFloatingTextIndex(uint32_t index) const
-        {return (index < GetFloatingTextCount());}
-    /// Gets the number of floating text items in the score
-    /// @return The number of floating text items in the score
-    size_t GetFloatingTextCount() const
-        {return (m_floatingTextArray.size());}
-    /// Gets the nth floating text in the score
-    /// @param index Index of the floating text to get
-    /// @return The nth floating text in the score
-    FloatingText* GetFloatingText(uint32_t index) const
-    {
-        CHECK_THAT(IsValidFloatingTextIndex(index), NULL);
-        return (m_floatingTextArray[index]);
-    }
+    bool IsValidFloatingTextIndex(uint32_t index) const;
+    size_t GetFloatingTextCount() const;
+    FloatingTextPtr GetFloatingText(uint32_t index) const;
 
 // Guitar In Functions
     /// Determines if a guitar in index is valid
@@ -186,23 +144,9 @@ public:
     void GetTempoMarkersInSystem(std::vector<TempoMarker*>& tempoMarkers, SystemConstPtr system) const;
 
 // Dynamic Functions
-    /// Determines if a dynamic index is valid
-    /// @param index dynamic index to validate
-    /// @return True if the dynamic index is valid, false if not
-    bool IsValidDynamicIndex(uint32_t index) const
-        {return (index < GetDynamicCount());}
-    /// Gets the number of dynamics in the score
-    /// @return The number of dynamics in the score
-    size_t GetDynamicCount() const
-        {return (m_dynamicArray.size());}
-    /// Gets the nth dynamic in the score
-    /// @param index Index of the dynamic to get
-    /// @return The nth dynamic in the score
-    Dynamic* GetDynamic(uint32_t index) const
-    {
-        CHECK_THAT(IsValidDynamicIndex(index), NULL);
-        return (m_dynamicArray[index]);
-    }
+    bool IsValidDynamicIndex(uint32_t index) const;
+    size_t GetDynamicCount() const;
+    DynamicPtr GetDynamic(uint32_t index) const;
 
 // Alternate Ending Functions
     bool IsValidAlternateEndingIndex(uint32_t index) const;
@@ -216,24 +160,9 @@ public:
     void RemoveAlternateEnding(AlternateEndingPtr altEnding);
 
 // System Functions
-    /// Determines if a system index is valid
-    /// @param index system index to validate
-    /// @return True if the system index is valid, false if not
-    bool IsValidSystemIndex(uint32_t index) const
-        {return (index < GetSystemCount());}
-    /// Gets the number of systems in the score
-    /// @return The number of systems in the score
-    size_t GetSystemCount() const
-        {return (m_systemArray.size());}
-    /// Gets the nth system in the score
-    /// @param index Index of the system to get
-    /// @return The nth system in the score
-    SystemPtr GetSystem(uint32_t index) const
-    {
-        CHECK_THAT(IsValidSystemIndex(index), SystemPtr());
-
-        return m_systemArray[index];
-    }
+    bool IsValidSystemIndex(uint32_t index) const;
+    size_t GetSystemCount() const;
+    SystemPtr GetSystem(uint32_t index) const;
 
     bool RemoveSystem(size_t index);
     bool InsertSystem(SystemPtr system, size_t index);
