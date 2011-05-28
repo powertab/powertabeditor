@@ -12,8 +12,7 @@ LIBS += \
     -L$${SOURCE_DIR}/painters/$${BUILDTYPE} -lpainters \
     -L$${SOURCE_DIR}/powertabdocument/$${BUILDTYPE} -lpowertabdocument
 
-win32:LIB_EXT='lib'
-unix:LIB_EXT='a'
+LIB_EXT='a'
 
 PRE_TARGETDEPS += \
     $${SOURCE_DIR}/app/$${BUILDTYPE}/libapp.$${LIB_EXT} \

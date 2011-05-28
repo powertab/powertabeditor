@@ -1,6 +1,6 @@
 include (../../common.pri)
 
-SOURCE_DIR = ../
+SOURCE_DIR = ..
 include (../../linking.pri)
 
 TARGET = ../powertabeditor
