@@ -40,7 +40,8 @@ HEADERS += \
     chorddiagram.h \
     barline.h \
     alternateending.h \
-    harmonics.h
+    harmonics.h \
+    common.h
 
 SOURCES += \
     tuning.cpp \

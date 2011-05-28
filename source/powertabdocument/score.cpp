@@ -26,6 +26,7 @@
 #include "direction.h"
 #include "dynamic.h"
 #include "systemlocation.h"
+#include "common.h"
 
 #include <map>
 #include <bitset>
@@ -48,45 +49,37 @@ Score::Score(const Score& score)
 /// Assignment Operator
 const Score& Score::operator=(const Score& score)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
-
     // Check for assignment to self
     if (this != &score)
     {
-        m_guitarArray = score.m_guitarArray;
-        m_chordDiagramArray = score.m_chordDiagramArray;
-        m_floatingTextArray = score.m_floatingTextArray;
-        m_guitarInArray = score.m_guitarInArray;
-        m_tempoMarkerArray = score.m_tempoMarkerArray;
-        m_dynamicArray = score.m_dynamicArray;
-        m_alternateEndingArray = score.m_alternateEndingArray;
-        m_systemArray = score.m_systemArray;
+        deepCopy(score.m_guitarArray, m_guitarArray);
+        deepCopy(score.m_chordDiagramArray, m_chordDiagramArray);
+        deepCopy(score.m_floatingTextArray, m_floatingTextArray);
+        deepCopy(score.m_guitarInArray, m_guitarInArray);
+        deepCopy(score.m_tempoMarkerArray, m_tempoMarkerArray);
+        deepCopy(score.m_dynamicArray, m_dynamicArray);
+        deepCopy(score.m_alternateEndingArray, m_alternateEndingArray);
+        deepCopy(score.m_systemArray, m_systemArray);
     }
-    return (*this);
+    return *this;
 }
 
 /// Equality Operator
 bool Score::operator==(const Score& score) const
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
-    return (
-        (m_guitarArray == score.m_guitarArray) &&
-        (m_chordDiagramArray == score.m_chordDiagramArray) &&
-        (m_floatingTextArray == score.m_floatingTextArray) &&
-        (m_guitarInArray == score.m_guitarInArray) &&
-        (m_tempoMarkerArray == score.m_tempoMarkerArray) &&
-        (m_dynamicArray == score.m_dynamicArray) &&
-        (m_alternateEndingArray == score.m_alternateEndingArray) &&
-        (m_systemArray == score.m_systemArray));
+    return (isDeepEqual(m_guitarArray, score.m_guitarArray) &&
+            isDeepEqual(m_chordDiagramArray, score.m_chordDiagramArray) &&
+            isDeepEqual(m_floatingTextArray, score.m_floatingTextArray) &&
+            isDeepEqual(m_guitarInArray, score.m_guitarInArray) &&
+            isDeepEqual(m_tempoMarkerArray, score.m_tempoMarkerArray) &&
+            isDeepEqual(m_dynamicArray, score.m_dynamicArray) &&
+            isDeepEqual(m_alternateEndingArray, score.m_alternateEndingArray) &&
+            isDeepEqual(m_systemArray, score.m_systemArray));
 }
 
 /// Inequality Operator
 bool Score::operator!=(const Score& score) const
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     return (!operator==(score));
 }
 
