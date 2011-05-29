@@ -10,6 +10,7 @@ LIBS += \
     -L$${SOURCE_DIR}/audio/$${BUILDTYPE} -lpteaudio \
     -L$${SOURCE_DIR}/audio/rtmidi/$${BUILDTYPE} -lrtmidi \
     -L$${SOURCE_DIR}/painters/$${BUILDTYPE} -lpainters \
+    -L$${SOURCE_DIR}/sigfwd/$${BUILDTYPE} -lsigfwd \
     -L$${SOURCE_DIR}/powertabdocument/$${BUILDTYPE} -lpowertabdocument
 
 LIB_EXT='a'
@@ -22,4 +23,5 @@ PRE_TARGETDEPS += \
     $${SOURCE_DIR}/audio/$${BUILDTYPE}/libpteaudio.$${LIB_EXT} \
     $${SOURCE_DIR}/audio/rtmidi/$${BUILDTYPE}/librtmidi.$${LIB_EXT} \
     $${SOURCE_DIR}/painters/$${BUILDTYPE}/libpainters.$${LIB_EXT} \
+    $${SOURCE_DIR}/sigfwd/$${BUILDTYPE}/libsigfwd.$${LIB_EXT} \
     $${SOURCE_DIR}/powertabdocument/$${BUILDTYPE}/libpowertabdocument.$${LIB_EXT}

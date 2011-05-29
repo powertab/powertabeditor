@@ -7,6 +7,7 @@ SUBDIRS = \
     painters \
     powertabdocument \
     widgets \
+    sigfwd \
     app \
     build # this must be last since it depends on all previous subdirs
 

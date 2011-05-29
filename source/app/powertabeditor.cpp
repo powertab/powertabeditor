@@ -21,6 +21,10 @@
 #include <QKeyEvent>
 #include <QEvent>
 
+// the sigfwd library allows for connecting Qt signals directly to
+// C++ functions & functors, and supports boost::bind for binding arguments to slots
+#include <sigfwd/sigfwd.hpp>
+
 #include <app/scorearea.h>
 #include <app/skinmanager.h>
 #include <audio/midiplayer.h>
@@ -213,12 +217,6 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 
 void PowerTabEditor::createActions()
 {
-    slideOutMapper = new QSignalMapper(this);
-    connect(slideOutMapper, SIGNAL(mapped(int)), this, SLOT(editSlide(int)));
-
-    slideIntoMapper = new QSignalMapper(this);
-    connect(slideIntoMapper, SIGNAL(mapped(int)), this, SLOT(editSlideInto(int)));
-
     // File-related actions
     newFileAct = new QAction(tr("&New"), this);
     newFileAct->setShortcuts(QKeySequence::New);
@@ -326,19 +324,15 @@ void PowerTabEditor::createActions()
     connect(prevBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevBar()));
 
     // Actions for shifting tab numbers up/down a string
-    shiftTabNumberMapper = new QSignalMapper(this);
-
     shiftTabNumUp = new QAction(tr("Shift Tab Number Up"), this);
     shiftTabNumUp->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up));
-    connect(shiftTabNumUp, SIGNAL(triggered()), shiftTabNumberMapper, SLOT(map()));
-    shiftTabNumberMapper->setMapping(shiftTabNumUp, Position::SHIFT_UP);
+    sigfwd::connect(shiftTabNumUp, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_UP));
 
     shiftTabNumDown = new QAction(tr("Shift Tab Number Down"), this);
     shiftTabNumDown->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
-    connect(shiftTabNumDown, SIGNAL(triggered()), shiftTabNumberMapper, SLOT(map()));
-    shiftTabNumberMapper->setMapping(shiftTabNumDown, Position::SHIFT_DOWN);
-
-    connect(shiftTabNumberMapper, SIGNAL(mapped(int)), this, SLOT(shiftTabNumber(int)));
+    sigfwd::connect(shiftTabNumDown, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_DOWN));
 
     clearNoteAct = new QAction(tr("Clear Note"), this);
     clearNoteAct->setShortcut(QKeySequence::Delete);
@@ -377,52 +371,49 @@ void PowerTabEditor::createActions()
     connect(insertSystemAfterAct, SIGNAL(triggered()), this, SLOT(insertSystemAfter()));
 
     // Note-related actions
-    noteDurationMapper = new QSignalMapper(this);
     noteDurationActGroup = new QActionGroup(this);
 
     wholeNoteAct = new QAction(tr("Whole"), this);
     wholeNoteAct->setCheckable(true);
-    connect(wholeNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
-    noteDurationMapper->setMapping(wholeNoteAct, 1);
+    sigfwd::connect(wholeNoteAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 1));
     noteDurationActGroup->addAction(wholeNoteAct);
 
     halfNoteAct = new QAction(tr("Half"), this);
     halfNoteAct->setCheckable(true);
-    connect(halfNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
-    noteDurationMapper->setMapping(halfNoteAct, 2);
+    sigfwd::connect(halfNoteAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 2));
     noteDurationActGroup->addAction(halfNoteAct);
 
     quarterNoteAct = new QAction(tr("Quarter"), this);
     quarterNoteAct->setCheckable(true);
-    connect(quarterNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
-    noteDurationMapper->setMapping(quarterNoteAct, 4);
+    sigfwd::connect(quarterNoteAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 4));
     noteDurationActGroup->addAction(quarterNoteAct);
 
     eighthNoteAct = new QAction(tr("8th"), this);
     eighthNoteAct->setCheckable(true);
-    connect(eighthNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
-    noteDurationMapper->setMapping(eighthNoteAct, 8);
+    sigfwd::connect(eighthNoteAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 8));
     noteDurationActGroup->addAction(eighthNoteAct);
 
     sixteenthNoteAct = new QAction(tr("16th"), this);
     sixteenthNoteAct->setCheckable(true);
-    connect(sixteenthNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
-    noteDurationMapper->setMapping(sixteenthNoteAct, 16);
+    sigfwd::connect(sixteenthNoteAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 16));
     noteDurationActGroup->addAction(sixteenthNoteAct);
 
     thirtySecondNoteAct = new QAction(tr("32nd"), this);
     thirtySecondNoteAct->setCheckable(true);
-    connect(thirtySecondNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
-    noteDurationMapper->setMapping(thirtySecondNoteAct, 32);
+    sigfwd::connect(thirtySecondNoteAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 32));
     noteDurationActGroup->addAction(thirtySecondNoteAct);
 
     sixtyFourthNoteAct = new QAction(tr("64th"), this);
     sixtyFourthNoteAct->setCheckable(true);
-    connect(sixtyFourthNoteAct, SIGNAL(triggered()), noteDurationMapper, SLOT(map()));
-    noteDurationMapper->setMapping(sixtyFourthNoteAct, 64);
+    sigfwd::connect(sixtyFourthNoteAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 64));
     noteDurationActGroup->addAction(sixtyFourthNoteAct);
-
-    connect(noteDurationMapper, SIGNAL(mapped(int)), this, SLOT(updateNoteDuration(int)));
 
     togglePropertyMapper = new QSignalMapper(this);
 
@@ -540,14 +531,14 @@ void PowerTabEditor::createActions()
     shiftSlideAct = new QAction(tr("Shift Slide"), this);
     shiftSlideAct->setCheckable(true);
     shiftSlideAct->setShortcut(QKeySequence(Qt::Key_S));
-    connect(shiftSlideAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
-    slideOutMapper->setMapping(shiftSlideAct, Note::slideOutOfShiftSlide);
+    sigfwd::connect(shiftSlideAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfShiftSlide));
 
     legatoSlideAct = new QAction(tr("Legato Slide"), this);
     legatoSlideAct->setCheckable(true);
     legatoSlideAct->setShortcut(QKeySequence(Qt::Key_L));
-    connect(legatoSlideAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
-    slideOutMapper->setMapping(legatoSlideAct, Note::slideOutOfLegatoSlide);
+    sigfwd::connect(legatoSlideAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfLegatoSlide));
 
     vibratoAct = new QAction(tr("Vibrato"), this);
     vibratoAct->setCheckable(true);
@@ -614,43 +605,39 @@ void PowerTabEditor::createActions()
     // Slide Into Menu
     slideIntoFromAboveAct = new QAction(tr("Slide Into From Above"), this);
     slideIntoFromAboveAct->setCheckable(true);
-    connect(slideIntoFromAboveAct, SIGNAL(triggered()), slideIntoMapper, SLOT(map()));
-    slideIntoMapper->setMapping(slideIntoFromAboveAct, Note::slideIntoFromAbove);
+    sigfwd::connect(slideIntoFromAboveAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSlideInto, this, Note::slideIntoFromAbove));
 
     slideIntoFromBelowAct = new QAction(tr("Slide Into From Below"), this);
     slideIntoFromBelowAct->setCheckable(true);
-    connect(slideIntoFromBelowAct, SIGNAL(triggered()), slideIntoMapper, SLOT(map()));
-    slideIntoMapper->setMapping(slideIntoFromBelowAct, Note::slideIntoFromBelow);
+    sigfwd::connect(slideIntoFromBelowAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSlideInto, this, Note::slideIntoFromBelow));
 
     // Slide Out Of Menu
     slideOutOfDownwardsAct = new QAction(tr("Slide Out Of Downwards"), this);
     slideOutOfDownwardsAct->setCheckable(true);
-    connect(slideOutOfDownwardsAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
-    slideOutMapper->setMapping(slideOutOfDownwardsAct, Note::slideOutOfDownwards);
+    sigfwd::connect(slideOutOfDownwardsAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfDownwards));
 
     slideOutOfUpwardsAct = new QAction(tr("Slide Out Of Upwards"), this);
     slideOutOfUpwardsAct->setCheckable(true);
-    connect(slideOutOfUpwardsAct, SIGNAL(triggered()), slideOutMapper, SLOT(map()));
-    slideOutMapper->setMapping(slideOutOfUpwardsAct, Note::slideOutOfUpwards);
+    sigfwd::connect(slideOutOfUpwardsAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfUpwards));
 
     // Guitar Menu
     addGuitarAct = new QAction(tr("Add Guitar"), this);
     connect(addGuitarAct, SIGNAL(triggered()), this, SLOT(addGuitar()));
 
     // Window Menu Actions
-    tabCycleMapper = new QSignalMapper(this);
-
     nextTabAct = new QAction(tr("Next Tab"), this);
     nextTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
-    connect(nextTabAct, SIGNAL(triggered()), tabCycleMapper, SLOT(map()));
-    tabCycleMapper->setMapping(nextTabAct, 1);
+    sigfwd::connect(nextTabAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::cycleTab, this, 1));
 
     prevTabAct = new QAction(tr("Previous Tab"), this);
     prevTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
-    connect(prevTabAct, SIGNAL(triggered()), tabCycleMapper, SLOT(map()));
-    tabCycleMapper->setMapping(prevTabAct, -1);
-
-    connect(tabCycleMapper, SIGNAL(mapped(int)), this, SLOT(cycleTab(int)));
+    sigfwd::connect(prevTabAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::cycleTab, this, -1));
     
     connect(togglePropertyMapper, SIGNAL(mapped(int)), this, SLOT(editProperty(int)));
 }
@@ -1667,13 +1654,13 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
     saveFileAsAct->setEnabled(enable);
 }
 
-void PowerTabEditor::updateNoteDuration(int duration)
+void PowerTabEditor::updateNoteDuration(uint8_t duration)
 {
     Position* currentPosition = getCurrentScoreArea()->getCaret()->getCurrentPosition();
     undoManager->push(new UpdateNoteDuration(currentPosition, duration));
 }
 
-void PowerTabEditor::editSlide(int newSlideType)
+void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
     Note* note = caret->getCurrentNote();
@@ -1713,7 +1700,7 @@ void PowerTabEditor::editSlide(int newSlideType)
     undoManager->push(new EditSlideOut(note, newSlideType, newSteps));
 }
 
-void PowerTabEditor::editSlideInto(int newSlideIntoType)
+void PowerTabEditor::editSlideInto(uint8_t newSlideIntoType)
 {
     Q_ASSERT(newSlideIntoType == Note::slideIntoFromBelow ||
              newSlideIntoType == Note::slideIntoFromAbove);

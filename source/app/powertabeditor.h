@@ -51,6 +51,12 @@ protected:
     void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
 
+    void editSlideInto(uint8_t newSlideIntoType);
+    void cycleTab(int offset);
+    void editSlideOutOf(uint8_t newSlideType);
+    void shiftTabNumber(int direction);
+    void updateNoteDuration(uint8_t duration);
+
 protected slots:
     void updateActions();
     void updateModified(bool);
@@ -89,8 +95,6 @@ protected slots:
     void editTiedNote();
     void editHammerPull();
     void editTrill();
-    void editSlide(int newSlideType);
-    void editSlideInto(int newSlideIntoType);
     void editBarline(int position = -1);
     void editTappedHarmonic();
 
@@ -109,11 +113,6 @@ protected slots:
     void clearCurrentPosition();
 
     void addGuitar();
-
-    void cycleTab(int offset);
-
-    void updateNoteDuration(int duration);
-    void shiftTabNumber(int direction);
 
 protected:
     bool isPlaying;
@@ -170,7 +169,6 @@ protected:
 
     QAction* shiftTabNumUp; // shift tab numbers up/down by a string
     QAction* shiftTabNumDown;
-    QSignalMapper* shiftTabNumberMapper;
 
     QMenu* textMenu;
     QAction* chordNameAct; // add/remove a chord name
@@ -184,7 +182,6 @@ protected:
     QAction* removeCurrentSystemAct;
 
     QMenu* notesMenu;
-    QSignalMapper* noteDurationMapper; // map note duration signals to a slot
     QActionGroup* noteDurationActGroup; // only one duration can be checked at a time
     QAction* wholeNoteAct; // actions for modifying the duration of a note/rest
     QAction* halfNoteAct;
@@ -235,12 +232,10 @@ protected:
     QMenu* slideIntoMenu;
     QAction* slideIntoFromAboveAct;
     QAction* slideIntoFromBelowAct;
-    QSignalMapper* slideIntoMapper;
 
     QMenu* slideOutOfMenu;
     QAction* slideOutOfDownwardsAct;
     QAction* slideOutOfUpwardsAct;
-    QSignalMapper* slideOutMapper;
 
     QMenu* guitarMenu;
     QAction* addGuitarAct;
@@ -248,7 +243,6 @@ protected:
     QMenu* windowMenu;
     QAction* nextTabAct; // cycle to the next/previous tab
     QAction* prevTabAct;
-    QSignalMapper* tabCycleMapper;
 
     QSignalMapper* togglePropertyMapper;
 

@@ -1,0 +1,11 @@
+unit tests:
+- functor_traits specializations
+- functor_traits for standard binders and adaptors
+- type_name() etc
+- signal_forwarder
+
+system tests:
+- connections for various functor types and functions
+
+other:
+- qmake build scripts?
