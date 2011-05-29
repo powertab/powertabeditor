@@ -56,6 +56,7 @@ protected:
     void editSlideOutOf(uint8_t newSlideType);
     void shiftTabNumber(int direction);
     void updateNoteDuration(uint8_t duration);
+    void editRest(uint8_t duration);
 
 protected slots:
     void updateActions();
@@ -183,7 +184,7 @@ protected:
 
     QMenu* notesMenu;
     QActionGroup* noteDurationActGroup; // only one duration can be checked at a time
-    QAction* wholeNoteAct; // actions for modifying the duration of a note/rest
+    QAction* wholeNoteAct; // actions for modifying the duration of a note
     QAction* halfNoteAct;
     QAction* quarterNoteAct;
     QAction* eighthNoteAct;
@@ -206,6 +207,16 @@ protected:
     QAction* octave15maAct;
     QAction* octave8vbAct;
     QAction* octave15mbAct;
+
+    QMenu* restsMenu;
+    QActionGroup* restDurationsGroup; // allow only one rest duration to be selected at a time
+    QAction* wholeRestAct;
+    QAction* halfRestAct;
+    QAction* quarterRestAct;
+    QAction* eighthRestAct;
+    QAction* sixteenthRestAct;
+    QAction* thirtySecondRestAct;
+    QAction* sixtyFourthRestAct;
 
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs

@@ -80,6 +80,7 @@
 #include <actions/editslideinto.h>
 #include <actions/removetappedharmonic.h>
 #include <actions/addtappedharmonic.h>
+#include <actions/editrest.h>
 
 using std::shared_ptr;
 
@@ -495,6 +496,51 @@ void PowerTabEditor::createActions()
     connectTogglePropertyAction(octave15mbAct, ToggleablePropertyRecord<Note>
                                 ( &getSelectedNotes, &Note::IsOctave15mb,
                                  &Note::SetOctave15mb, octave15mbAct->text()));
+
+    // Rest Actions
+    restDurationsGroup = new QActionGroup(this);
+
+    wholeRestAct = new QAction(tr("Whole"), this);
+    wholeRestAct->setCheckable(true);
+    restDurationsGroup->addAction(wholeRestAct);
+    sigfwd::connect(wholeRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, 1));
+
+    halfRestAct = new QAction(tr("Half"), this);
+    halfRestAct->setCheckable(true);
+    restDurationsGroup->addAction(halfRestAct);
+    sigfwd::connect(halfRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, 2));
+
+    quarterRestAct = new QAction(tr("Quarter"), this);
+    quarterRestAct->setCheckable(true);
+    restDurationsGroup->addAction(quarterRestAct);
+    sigfwd::connect(quarterRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, 4));
+
+    eighthRestAct = new QAction(tr("8th"), this);
+    eighthRestAct->setCheckable(true);
+    restDurationsGroup->addAction(eighthRestAct);
+    sigfwd::connect(eighthRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, 8));
+
+    sixteenthRestAct = new QAction(tr("16th"), this);
+    sixteenthRestAct->setCheckable(true);
+    restDurationsGroup->addAction(sixteenthRestAct);
+    sigfwd::connect(sixteenthRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, 16));
+
+    thirtySecondRestAct = new QAction(tr("32nd"), this);
+    thirtySecondRestAct->setCheckable(true);
+    restDurationsGroup->addAction(thirtySecondRestAct);
+    sigfwd::connect(thirtySecondRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, 32));
+
+    sixtyFourthRestAct = new QAction(tr("64th"), this);
+    sixtyFourthRestAct->setCheckable(true);
+    restDurationsGroup->addAction(sixtyFourthRestAct);
+    sigfwd::connect(sixtyFourthRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, 64));
     
     // Music Symbol Actions
     rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
@@ -752,6 +798,12 @@ void PowerTabEditor::createMenus()
     octaveMenu = notesMenu->addMenu(tr("Octave"));
     octaveMenu->addActions(QList<QAction*>() << octave8vaAct << octave15maAct
                            << octave8vbAct << octave15mbAct);
+
+    // Rests Menu
+    restsMenu = menuBar()->addMenu(tr("Rests"));
+    restsMenu->addActions(QList<QAction*>() << wholeRestAct << halfRestAct <<
+                          quarterRestAct << eighthRestAct << sixteenthRestAct <<
+                          thirtySecondRestAct << sixtyFourthRestAct);
 
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -1546,19 +1598,35 @@ void PowerTabEditor::updateActions()
     // Check for chord text
     chordNameAct->setChecked(currentSystem->HasChordText(caretPosition));
 
-    // note duration
+    // note and rest duration
     if (currentPosition != NULL)
     {
-        quint8 duration = currentPosition->GetDurationType();
-        switch(duration)
+        const uint8_t duration = currentPosition->GetDurationType();
+        if (currentPosition->IsRest())
         {
-        case 1: wholeNoteAct->setChecked(true); break;
-        case 2: halfNoteAct->setChecked(true); break;
-        case 4: quarterNoteAct->setChecked(true); break;
-        case 8: eighthNoteAct->setChecked(true); break;
-        case 16: sixteenthNoteAct->setChecked(true); break;
-        case 32: thirtySecondNoteAct->setChecked(true); break;
-        case 64: sixtyFourthNoteAct->setChecked(true); break;
+            switch(duration)
+            {
+            case 1: wholeRestAct->setChecked(true); break;
+            case 2: halfRestAct->setChecked(true); break;
+            case 4: quarterRestAct->setChecked(true); break;
+            case 8: eighthRestAct->setChecked(true); break;
+            case 16: sixteenthRestAct->setChecked(true); break;
+            case 32: thirtySecondRestAct->setChecked(true); break;
+            case 64: sixtyFourthRestAct->setChecked(true); break;
+            }
+        }
+        else
+        {
+            switch(duration)
+            {
+            case 1: wholeNoteAct->setChecked(true); break;
+            case 2: halfNoteAct->setChecked(true); break;
+            case 4: quarterNoteAct->setChecked(true); break;
+            case 8: eighthNoteAct->setChecked(true); break;
+            case 16: sixteenthNoteAct->setChecked(true); break;
+            case 32: thirtySecondNoteAct->setChecked(true); break;
+            case 64: sixtyFourthNoteAct->setChecked(true); break;
+            }
         }
     }
 
@@ -1658,6 +1726,23 @@ void PowerTabEditor::updateNoteDuration(uint8_t duration)
 {
     Position* currentPosition = getCurrentScoreArea()->getCaret()->getCurrentPosition();
     undoManager->push(new UpdateNoteDuration(currentPosition, duration));
+}
+
+void PowerTabEditor::editRest(uint8_t duration)
+{
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Position* currentPosition = caret->getCurrentPosition();
+
+    // insert an empty position if necessary
+    if (!currentPosition)
+    {
+        System::StaffPtr currentStaff = caret->getCurrentStaff();
+        currentPosition = new Position(caret->getCurrentPositionIndex(),
+                                       Position::DEFAULT_DURATION_TYPE, 0);
+        currentStaff->InsertPosition(caret->getCurrentVoice(), currentPosition);
+    }
+
+    undoManager->push(new EditRest(currentPosition, duration));
 }
 
 void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)

@@ -27,7 +27,8 @@ HEADERS += \
     addbarline.h \
     addalternateending.h \
     removetappedharmonic.h \
-    addtappedharmonic.h
+    addtappedharmonic.h \
+    editrest.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -55,4 +56,5 @@ SOURCES += \
     addbarline.cpp \
     addalternateending.cpp \
     removetappedharmonic.cpp \
-    addtappedharmonic.cpp
+    addtappedharmonic.cpp \
+    editrest.cpp

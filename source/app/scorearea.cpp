@@ -789,7 +789,8 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
                 noteLocations.push_back(stdNotePainter->getYLocation());
             }
 
-            if (currentPosition->GetDurationType() != 1)
+            // add note stem for any notes other than whole notes
+            if (currentPosition->GetDurationType() != 1 && currentPosition->GetNoteCount() > 0)
             {
                 NoteStem stem(currentStaffInfo, currentPosition, location, noteLocations);
                 stems.push_back(stem);
