@@ -2,9 +2,14 @@
 #define POWERTABEDITOR_H
 
 #include <QMainWindow>
+#include <QAction>
 
-#include <boost/variant.hpp>
 #include <memory>
+
+// the sigfwd library allows for connecting Qt signals directly to
+// C++ functions & functors, and supports boost::bind for binding arguments to slots
+#include <boost/bind.hpp>
+#include <sigfwd/sigfwd.hpp>
 
 #include <app/documentmanager.h>
 #include <actions/undomanager.h>
@@ -12,16 +17,13 @@
 
 class QTabWidget;
 class ScoreArea;
-class Mixer;
 class QStackedWidget;
 class SkinManager;
 class PreferencesDialog;
 class Toolbox;
 class QSplitter;
 class MidiPlayer;
-class QSignalMapper;
 class QActionGroup;
-class QKeyEvent;
 class QEvent;
 class Note;
 class Position;
@@ -38,8 +40,8 @@ public:
     ~PowerTabEditor();
     static std::unique_ptr<UndoManager> undoManager;
     static ScoreArea* getCurrentScoreArea();
-    static void getSelectedPositions(std::vector<Position*>& positions);
-    static void getSelectedNotes(std::vector<Note*>& notes);
+    static std::vector<Position*> getSelectedPositions();
+    static std::vector<Note*> getSelectedNotes();
 
 protected:
     void createActions();
@@ -255,8 +257,6 @@ protected:
     QAction* nextTabAct; // cycle to the next/previous tab
     QAction* prevTabAct;
 
-    QSignalMapper* togglePropertyMapper;
-
     QString previousDirectory; // previous directory that a file was opened in
     std::unique_ptr<QStackedWidget> mixerList;
     std::unique_ptr<QStackedWidget> playbackToolbarList;
@@ -264,71 +264,34 @@ protected:
     std::shared_ptr<SkinManager> skinManager;
     std::unique_ptr<MidiPlayer> midiPlayer;
 
-protected slots:
-    
-    // Used for editing simple toggleable properties, such as ghost notes or staccato
-    // applies the propertyEditor functor to the specified toggleableProperty
-    void editProperty(int propertyIndex)
+private:
+    /// helper function for connecting an action to the performToggleProperty slot
+    /// @param objectsGetter - function for retrieving the objects to be edited
+    /// @param propertyGetter - function for checking if an object has a certain property set
+    /// @param propertySetter - function for toggling the property
+    template <typename T>
+    void connectToggleProperty(QAction* action,
+                               std::function<std::vector<T*> (void)> objectsGetter,
+                               std::function<bool (const T*)> propertyGetter,
+                               std::function<bool (T*, bool)> propertySetter)
     {
-        boost::apply_visitor(propertyEditor(), toggleableProperties[propertyIndex]);
+        sigfwd::connect(action, SIGNAL(triggered()),
+                        boost::bind(&PowerTabEditor::performToggleProperty<T>, this,
+                                    // wrap using boost::bind so that the function is evaluated later (we want the currently
+                                    // selected objects, not the objects that were selected when the signal was connected)
+                                    boost::bind(objectsGetter),
+                                    propertySetter,
+                                    propertyGetter,
+                                    action->text()));
     }
-    
-protected:
-    
-    // stores information about a toggleable property, for later use by the propertyEditor function
-    template<typename T>
-    struct ToggleablePropertyRecord
+
+    /// Creates a new ToggleProperty<T> action, forwarding the parameters to its constructor
+    template <typename T>
+    void performToggleProperty(const std::vector<T*>& objects, std::function<bool (T*, bool)> setPropertyFn,
+                               std::function<bool (const T*)> getPropertyFn, const QString& propertyName)
     {
-        typedef std::function<void (std::vector<T*>&)>  ObjectsGetter;
-        typedef std::function<bool (const T*)> PropertyGetter;
-        typedef std::function<bool (T*, bool)> PropertySetter;
-
-        ToggleablePropertyRecord(ObjectsGetter getObjects, PropertyGetter propertyGetter,
-                                 PropertySetter propertySetter, const QString& propertyName) :
-            getObjects(getObjects),
-            propertyGetter(propertyGetter),
-            propertySetter(propertySetter),
-            propertyName(propertyName)
-        {
-        }
-
-         // gets a list of the selected Notes, Positions, etc
-        ObjectsGetter getObjects;
-
-        // function to check if the property is set, e.g. Note::IsMuted
-        PropertyGetter propertyGetter;
-
-        // function to set the property as true/false, e.g. Note::SetMuted
-        PropertySetter propertySetter;
-
-        QString propertyName; // name of the property, for use with the undo menu
-    };
-
-    // Store all of the ToggleablePropertyRecords in one list, regardless of which type (e.g. Note, Position) that
-    // the structure is instantiated for. Using boost::variant makes this possible, and allows to still retrieve the type
-    // of the original object later on.
-    // This allows us to use QSignalMapper to map all toggleable properties to a location in the toggleableProperties list,
-    // and then perform an undo/redo action using the functions in the ToggleablePropertyRecord, after a signal is triggered
-    typedef boost::variant< ToggleablePropertyRecord<Note>, ToggleablePropertyRecord<Position> > ToggleableProperty;
-    QList<ToggleableProperty> toggleableProperties; 
-
-    void connectTogglePropertyAction(QAction* action, const ToggleableProperty& propertyInfo);
-    
-    // Takes a ToggleablePropertyRecord from the 'toggleableProperties' list of boost::variant objects,
-    // and performs an undo/redo action
-    struct propertyEditor : public boost::static_visitor<>
-    {
-        template <typename T>
-        void operator()(ToggleablePropertyRecord<T>& propertyRecord) const
-        {
-            std::vector<T*> objects;
-            propertyRecord.getObjects(objects);  // get the object(s) we are modifying, such as Notes or Positions
-            
-            // Perform the undo/redo action
-            undoManager->push(new ToggleProperty<T>(objects, propertyRecord.propertySetter,
-                                                    propertyRecord.propertyGetter, propertyRecord.propertyName));
-        }
-    };
+        undoManager->push(new ToggleProperty<T>(objects, setPropertyFn, getPropertyFn, propertyName));
+    }
 };
 
 #endif // POWERTABEDITOR_H

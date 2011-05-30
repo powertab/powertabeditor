@@ -16,7 +16,6 @@
 #include <actions/edittuning.h>
 
 #include <algorithm>
-#include <functional>
 
 TuningDialog::TuningDialog(std::shared_ptr<Guitar> guitar, QWidget *parent) :
     QDialog(parent),
@@ -150,13 +149,11 @@ void TuningDialog::toggleSharps(bool usesSharps)
 /// Updates which string selection boxes are enabled, based on the number of strings selected
 void TuningDialog::updateEnabledStrings(int numStrings)
 {
-    using namespace std::placeholders;
-    
     Q_ASSERT(numStrings <= (int)Tuning::MAX_STRING_COUNT && numStrings >= 0);
     
     std::for_each(stringSelectors.begin(), stringSelectors.begin() + numStrings,
-                  std::bind(&QComboBox::setEnabled, _1, true));
+                  boost::bind(&QComboBox::setEnabled, _1, true));
     
     std::for_each(stringSelectors.begin() + numStrings, stringSelectors.end(),
-                  std::bind(&QComboBox::setEnabled, _1, false));
+                  boost::bind(&QComboBox::setEnabled, _1, false));
 }

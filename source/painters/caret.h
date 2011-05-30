@@ -81,8 +81,8 @@ public:
         return currentStringIndex;
     }
 
-    void getSelectedPositions(std::vector<Position*>& positions) const;
-    void getSelectedNotes(std::vector<Note*>& notes) const;
+    std::vector<Position*> getSelectedPositions() const;
+    std::vector<Note*> getSelectedNotes() const;
 
 signals:
     void moved();

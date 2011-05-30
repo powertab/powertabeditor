@@ -6,9 +6,9 @@
 #include <functional>
 #include <algorithm>
 
-// This class is designed to provide an easy way to create a QUndoCommand for the common situation of toggling a property
-// It takes a list of objects, a function for setting the property, a function for getting the value of the property,
-// and the name of the property (for use in the Undo/Redo menu)
+/// This class is designed to provide an easy way to create a QUndoCommand for the common situation of toggling a property
+/// It takes a list of objects, a function for setting the property, a function for getting the value of the property,
+/// and the name of the property (for use in the Undo/Redo menu)
 
 template<class T>
 class ToggleProperty : public QUndoCommand
@@ -17,7 +17,7 @@ class ToggleProperty : public QUndoCommand
     typedef std::function<bool (const T*)> PropertyGetter;
 
 public:
-    ToggleProperty(std::vector<T*> items, PropertySetter setPropertyFn,
+    ToggleProperty(const std::vector<T*>& items, PropertySetter setPropertyFn,
                    PropertyGetter getPropertyFn, const QString& propertyName) :
         items(items),
         setPropertyFn(setPropertyFn)

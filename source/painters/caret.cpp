@@ -416,20 +416,22 @@ void Caret::updateSelection(int start, int end)
 }
 
 /// Returns a list of all of the Position objects that are currently selected
-void Caret::getSelectedPositions(vector<Position *>& positions) const
+std::vector<Position*> Caret::getSelectedPositions() const
 {
+    std::vector<Position*> positions;
     getCurrentStaff()->GetPositionsInRange(positions, 0,
                                            std::min(selectionRange.first, selectionRange.second),
                                            std::max(selectionRange.first, selectionRange.second));
+
+    return positions;
 }
 
 /// Returns a list of all of the Note objects that are currently selected
-void Caret::getSelectedNotes(vector<Note*>& notes) const
+std::vector<Note*> Caret::getSelectedNotes() const
 {
-    vector<Position*> positions;
-    getSelectedPositions(positions);
+    const std::vector<Position*> positions = getSelectedPositions();
 
-    notes.clear();
+    std::vector<Note*> notes;
 
     for (size_t i = 0; i < positions.size(); i++)
     {
@@ -438,6 +440,8 @@ void Caret::getSelectedNotes(vector<Note*>& notes) const
             notes.push_back(positions[i]->GetNote(j));
         }
     }
+
+    return notes;
 }
 
 /// Returns the index of the voice that is currently active

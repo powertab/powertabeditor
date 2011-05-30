@@ -6,9 +6,7 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <QToolBox>
-#include <QListView>
 #include <QTabWidget>
-#include <QUndoStack>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -16,14 +14,9 @@
 #include <QSplitter>
 #include <QScrollArea>
 #include <QStackedWidget>
-#include <QSignalMapper>
 #include <QActionGroup>
 #include <QKeyEvent>
 #include <QEvent>
-
-// the sigfwd library allows for connecting Qt signals directly to
-// C++ functions & functors, and supports boost::bind for binding arguments to slots
-#include <sigfwd/sigfwd.hpp>
 
 #include <app/scorearea.h>
 #include <app/skinmanager.h>
@@ -416,17 +409,15 @@ void PowerTabEditor::createActions()
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 64));
     noteDurationActGroup->addAction(sixtyFourthNoteAct);
 
-    togglePropertyMapper = new QSignalMapper(this);
-
     dottedNoteAct = new QAction(tr("Dotted"), this);
     dottedNoteAct->setCheckable(true);
-    connectTogglePropertyAction(dottedNoteAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::IsDotted, &Position::SetDotted, dottedNoteAct->text() ));
+    connectToggleProperty<Position>(dottedNoteAct, &getSelectedPositions,
+                                    &Position::IsDotted, &Position::SetDotted);
 
     doubleDottedNoteAct = new QAction(tr("Double Dotted"), this);
     doubleDottedNoteAct->setCheckable(true);
-    connectTogglePropertyAction(doubleDottedNoteAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::IsDoubleDotted, &Position::SetDoubleDotted, doubleDottedNoteAct->text() ));
+    connectToggleProperty<Position>(doubleDottedNoteAct, &getSelectedPositions,
+                                    &Position::IsDoubleDotted, &Position::SetDoubleDotted);
 
     tiedNoteAct = new QAction(tr("Tied"), this);
     tiedNoteAct->setShortcut(QKeySequence(Qt::Key_Y));
@@ -435,67 +426,63 @@ void PowerTabEditor::createActions()
     
     noteMutedAct = new QAction(tr("Muted"), this);
     noteMutedAct->setCheckable(true);
-    connectTogglePropertyAction(noteMutedAct, ToggleablePropertyRecord<Note>
-                                ( &getSelectedNotes, &Note::IsMuted, &Note::SetMuted, noteMutedAct->text() ));
+    connectToggleProperty<Note>(noteMutedAct, &getSelectedNotes,
+                                &Note::IsMuted, &Note::SetMuted);
 
     ghostNoteAct = new QAction(tr("Ghost Note"), this);
     ghostNoteAct->setShortcut(QKeySequence(Qt::Key_N));
     ghostNoteAct->setCheckable(true);
-    connectTogglePropertyAction(ghostNoteAct, ToggleablePropertyRecord<Note>
-                                  ( &getSelectedNotes, &Note::IsGhostNote, &Note::SetGhostNote, ghostNoteAct->text() ));
+    connectToggleProperty<Note>(ghostNoteAct, &getSelectedNotes,
+                                &Note::IsGhostNote, &Note::SetGhostNote);
 
     fermataAct = new QAction(tr("Fermata"), this);
     fermataAct->setShortcut(QKeySequence(Qt::Key_F));
     fermataAct->setCheckable(true);
-    connectTogglePropertyAction(fermataAct, ToggleablePropertyRecord<Position>
-                                   ( &getSelectedPositions, &Position::HasFermata, &Position::SetFermata, fermataAct->text() ));
+    connectToggleProperty<Position>(fermataAct, &getSelectedPositions,
+                                    &Position::HasFermata, &Position::SetFermata);
 
     letRingAct = new QAction(tr("Let Ring"), this);
     letRingAct->setCheckable(true);
-    connectTogglePropertyAction(letRingAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::HasLetRing, &Position::SetLetRing, letRingAct->text() ));
+    connectToggleProperty<Position>(letRingAct, &getSelectedPositions,
+                                    &Position::HasLetRing, &Position::SetLetRing);
     
     staccatoNoteAct = new QAction(tr("Staccato"), this);
     staccatoNoteAct->setCheckable(true);
     staccatoNoteAct->setShortcut(QKeySequence(Qt::Key_Z));
-    connectTogglePropertyAction(staccatoNoteAct, ToggleablePropertyRecord<Position>
-                                  ( &getSelectedPositions, &Position::IsStaccato, &Position::SetStaccato, staccatoNoteAct->text() ));
+    connectToggleProperty<Position>(staccatoNoteAct, &getSelectedPositions,
+                                    &Position::IsStaccato, &Position::SetStaccato);
 
     marcatoAct = new QAction(tr("Accent"), this);
     marcatoAct->setCheckable(true);
     marcatoAct->setShortcut(QKeySequence(Qt::Key_A));
-    connectTogglePropertyAction(marcatoAct, ToggleablePropertyRecord<Position>
-                                  ( &getSelectedPositions, &Position::HasMarcato, &Position::SetMarcato, marcatoAct->text() ));
+    connectToggleProperty<Position>(marcatoAct, &getSelectedPositions,
+                                    &Position::HasMarcato, &Position::SetMarcato);
 
     sforzandoAct = new QAction(tr("Heavy Accent"), this);
     sforzandoAct->setCheckable(true);
-    connectTogglePropertyAction(sforzandoAct, ToggleablePropertyRecord<Position>
-                                  ( &getSelectedPositions, &Position::HasSforzando, &Position::SetSforzando, sforzandoAct->text() ));
+    connectToggleProperty<Position>(sforzandoAct, &getSelectedPositions,
+                                    &Position::HasSforzando, &Position::SetSforzando);
 
     // Octave actions
     octave8vaAct = new QAction(tr("8va"), this);
     octave8vaAct->setCheckable(true);
-    connectTogglePropertyAction(octave8vaAct, ToggleablePropertyRecord<Note>
-                                ( &getSelectedNotes, &Note::IsOctave8va,
-                                 &Note::SetOctave8va, octave8vaAct->text()));
+    connectToggleProperty<Note>(octave8vaAct, &getSelectedNotes,
+                                &Note::IsOctave8va, &Note::SetOctave8va);
 
     octave15maAct = new QAction(tr("15ma"), this);
     octave15maAct->setCheckable(true);
-    connectTogglePropertyAction(octave15maAct, ToggleablePropertyRecord<Note>
-                                ( &getSelectedNotes, &Note::IsOctave15ma,
-                                 &Note::SetOctave15ma, octave15maAct->text()));
+    connectToggleProperty<Note>(octave15maAct, &getSelectedNotes,
+                                &Note::IsOctave15ma, &Note::SetOctave15ma);
 
     octave8vbAct = new QAction(tr("8vb"), this);
     octave8vbAct->setCheckable(true);
-    connectTogglePropertyAction(octave8vbAct, ToggleablePropertyRecord<Note>
-                                ( &getSelectedNotes, &Note::IsOctave8vb,
-                                 &Note::SetOctave8vb, octave8vbAct->text()));
+    connectToggleProperty<Note>(octave8vbAct, &getSelectedNotes,
+                                &Note::IsOctave8vb, &Note::SetOctave8vb);
 
     octave15mbAct = new QAction(tr("15mb"), this);
     octave15mbAct->setCheckable(true);
-    connectTogglePropertyAction(octave15mbAct, ToggleablePropertyRecord<Note>
-                                ( &getSelectedNotes, &Note::IsOctave15mb,
-                                 &Note::SetOctave15mb, octave15mbAct->text()));
+    connectToggleProperty<Note>(octave15mbAct, &getSelectedNotes,
+                                &Note::IsOctave15mb, &Note::SetOctave15mb);
 
     // Rest Actions
     restDurationsGroup = new QActionGroup(this);
@@ -566,9 +553,8 @@ void PowerTabEditor::createActions()
     
     naturalHarmonicAct = new QAction(tr("Natural Harmonic"), this);
     naturalHarmonicAct->setCheckable(true);
-    connectTogglePropertyAction(naturalHarmonicAct, ToggleablePropertyRecord<Note>
-                                  ( &getSelectedNotes, &Note::IsNaturalHarmonic,
-                                   &Note::SetNaturalHarmonic, naturalHarmonicAct->text() ));
+    connectToggleProperty<Note>(naturalHarmonicAct, &getSelectedNotes,
+                                &Note::IsNaturalHarmonic, &Note::SetNaturalHarmonic);
 
     tappedHarmonicAct = new QAction(tr("Tapped Harmonic"), this);
     tappedHarmonicAct->setCheckable(true);
@@ -589,48 +575,41 @@ void PowerTabEditor::createActions()
     vibratoAct = new QAction(tr("Vibrato"), this);
     vibratoAct->setCheckable(true);
     vibratoAct->setShortcut(QKeySequence(Qt::Key_V));
-    connectTogglePropertyAction(vibratoAct, ToggleablePropertyRecord<Position>
-                                   ( &getSelectedPositions, &Position::HasVibrato,
-                                    &Position::SetVibrato, vibratoAct->text() ));
+    connectToggleProperty<Position>(vibratoAct, &getSelectedPositions,
+                                    &Position::HasVibrato, &Position::SetVibrato);
 
     wideVibratoAct = new QAction(tr("Wide Vibrato"), this);
     wideVibratoAct->setCheckable(true);
     wideVibratoAct->setShortcut(QKeySequence(Qt::Key_W));
-    connectTogglePropertyAction(wideVibratoAct, ToggleablePropertyRecord<Position>
-                                   ( &getSelectedPositions, &Position::HasWideVibrato,
-                                    &Position::SetWideVibrato, wideVibratoAct->text() ));
+    connectToggleProperty<Position>(wideVibratoAct, &getSelectedPositions,
+                                    &Position::HasWideVibrato, &Position::SetWideVibrato);
 
     palmMuteAct = new QAction(tr("Palm Mute"), this);
     palmMuteAct->setCheckable(true);
     palmMuteAct->setShortcut(QKeySequence(Qt::Key_M));
-    connectTogglePropertyAction(palmMuteAct, ToggleablePropertyRecord<Position>
-                                   ( &getSelectedPositions, &Position::HasPalmMuting,
-                                    &Position::SetPalmMuting, palmMuteAct->text() ));
+    connectToggleProperty<Position>(palmMuteAct, &getSelectedPositions,
+                                    &Position::HasPalmMuting, &Position::SetPalmMuting);
 
     tremoloPickingAct = new QAction(tr("Tremolo Picking"), this);
     tremoloPickingAct->setCheckable(true);
-    connectTogglePropertyAction(tremoloPickingAct, ToggleablePropertyRecord<Position>
-                                   ( &getSelectedPositions, &Position::HasTremoloPicking,
-                                    &Position::SetTremoloPicking, tremoloPickingAct->text() ));
+    connectToggleProperty<Position>(tremoloPickingAct, &getSelectedPositions,
+                                    &Position::HasTremoloPicking, &Position::SetTremoloPicking);
 
     arpeggioUpAct = new QAction(tr("Arpeggio Up"), this);
     arpeggioUpAct->setCheckable(true);
-    connectTogglePropertyAction(arpeggioUpAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::HasArpeggioUp,
-                                 &Position::SetArpeggioUp, arpeggioUpAct->text() ));
+    connectToggleProperty<Position>(arpeggioUpAct, &getSelectedPositions,
+                                    &Position::HasArpeggioUp, &Position::SetArpeggioUp);
 
     arpeggioDownAct = new QAction(tr("Arpeggio Down"), this);
     arpeggioDownAct->setCheckable(true);
-    connectTogglePropertyAction(arpeggioDownAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::HasArpeggioDown,
-                                 &Position::SetArpeggioDown, arpeggioUpAct->text() ));
+    connectToggleProperty<Position>(arpeggioDownAct, &getSelectedPositions,
+                                    &Position::HasArpeggioDown, &Position::SetArpeggioDown);
 
     tapAct = new QAction(tr("Tap"), this);
     tapAct->setCheckable(true);
     tapAct->setShortcut(QKeySequence(Qt::Key_P));
-    connectTogglePropertyAction(tapAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::HasTap,
-                                 &Position::SetTap, tapAct->text() ));
+    connectToggleProperty<Position>(tapAct, &getSelectedPositions,
+                                    &Position::HasTap, &Position::SetTap);
 
     trillAction = new QAction(tr("Trill"), this);
     trillAction->setCheckable(true);
@@ -638,15 +617,13 @@ void PowerTabEditor::createActions()
 
     pickStrokeUpAct = new QAction(tr("Pickstroke Up"), this);
     pickStrokeUpAct->setCheckable(true);
-    connectTogglePropertyAction(pickStrokeUpAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::HasPickStrokeUp,
-                                 &Position::SetPickStrokeUp, pickStrokeUpAct->text() ));
+    connectToggleProperty<Position>(pickStrokeUpAct, &getSelectedPositions,
+                                    &Position::HasPickStrokeUp, &Position::SetPickStrokeUp);
 
     pickStrokeDownAct = new QAction(tr("Pickstroke Down"), this);
     pickStrokeDownAct->setCheckable(true);
-    connectTogglePropertyAction(pickStrokeDownAct, ToggleablePropertyRecord<Position>
-                                ( &getSelectedPositions, &Position::HasPickStrokeDown,
-                                 &Position::SetPickStrokeDown, pickStrokeDownAct->text() ));
+    connectToggleProperty<Position>(pickStrokeDownAct, &getSelectedPositions,
+                                    &Position::HasPickStrokeDown, &Position::SetPickStrokeDown);
 
     // Slide Into Menu
     slideIntoFromAboveAct = new QAction(tr("Slide Into From Above"), this);
@@ -684,20 +661,6 @@ void PowerTabEditor::createActions()
     prevTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
     sigfwd::connect(prevTabAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::cycleTab, this, -1));
-    
-    connect(togglePropertyMapper, SIGNAL(mapped(int)), this, SLOT(editProperty(int)));
-}
-
-/// This function simplifies the process of initializing a QAction for a ToggleableProperty.
-/// Connects and maps the QAction to the QSignalMapper, and adds the propertyInfo to the toggleableProperties list
-void PowerTabEditor::connectTogglePropertyAction(QAction* action, const ToggleableProperty& propertyInfo)
-{
-    Q_ASSERT(togglePropertyMapper != NULL);
-
-    connect(action, SIGNAL(triggered()), togglePropertyMapper, SLOT(map()));
-
-    toggleableProperties.push_back(propertyInfo);
-    togglePropertyMapper->setMapping(action, toggleableProperties.size() - 1);
 }
 
 void PowerTabEditor::createMenus()
@@ -1051,14 +1014,14 @@ ScoreArea* PowerTabEditor::getCurrentScoreArea()
     return dynamic_cast<ScoreArea*>(tabWidget->currentWidget());
 }
 
-void PowerTabEditor::getSelectedPositions(std::vector<Position*>& positions)
+std::vector<Position*> PowerTabEditor::getSelectedPositions()
 {
-    getCurrentScoreArea()->getCaret()->getSelectedPositions(positions);
+    return getCurrentScoreArea()->getCaret()->getSelectedPositions();
 }
 
-void PowerTabEditor::getSelectedNotes(std::vector<Note*>& notes)
+std::vector<Note*> PowerTabEditor::getSelectedNotes()
 {
-    getCurrentScoreArea()->getCaret()->getSelectedNotes(notes);
+    return getCurrentScoreArea()->getCaret()->getSelectedNotes();
 }
 
 /// Cycles through the tabs in the tab bar
@@ -1538,14 +1501,12 @@ void PowerTabEditor::editTiedNote()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
 
-    std::vector<Note*> notes;
-    getSelectedNotes(notes);
+    std::vector<Note*> notes = getSelectedNotes();
 
     shared_ptr<const Staff> currentStaff = caret->getCurrentStaff();
 
     // check if all selected notes are able to be tied
-    std::vector<Position*> positions;
-    getSelectedPositions(positions);
+    std::vector<Position*> positions = getSelectedPositions();
 
     for (size_t i = 0; i < positions.size(); i++)
     {
