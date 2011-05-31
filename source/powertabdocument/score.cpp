@@ -12,6 +12,7 @@
 #include "score.h"
 
 #include "staff.h"
+#include "barline.h"
 #include "powertabfileheader.h"
 #include "system.h"
 #include "guitar.h"
@@ -249,9 +250,9 @@ void Score::UpdateToVer2Structure()
 
         std::vector<System::StaffPtr> newStaves(m_guitarArray.size()); // one staff per guitar
 
-        for (uint32_t j=0; j < currentSystem->m_staffArray.size(); j++) // go through staves
+        for (uint32_t j=0; j < currentSystem->GetStaffCount(); j++) // go through staves
         {
-            System::StaffPtr currentStaff = currentSystem->m_staffArray.at(j);
+            System::StaffPtr currentStaff = currentSystem->GetStaff(j);
 
             auto range = guitarToStaffMap.equal_range(j); // find guitars for this staff
             for (auto k = range.first; k != range.second; ++k)
@@ -266,13 +267,13 @@ void Score::UpdateToVer2Structure()
             {
                 System::StaffPtr newStaff = std::make_shared<Staff>();
 
-                std::vector<const Barline*> barlines;
+                std::vector<System::BarlineConstPtr> barlines;
                 currentSystem->GetBarlines(barlines);
 
                 // just insert a whole rest after each barline, except for the last one
                 for (size_t n = 0; n < barlines.size() - 1; n++)
                 {
-                    const Barline* barline = barlines.at(n);
+                    System::BarlineConstPtr barline = barlines.at(n);
                     Position* newPosition = new Position(barline->GetPosition() + 1, 1, 0);
                     newPosition->SetRest(true);
                     newStaff->positionArrays[0].push_back(newPosition);

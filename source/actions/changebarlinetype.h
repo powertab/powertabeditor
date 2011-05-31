@@ -2,6 +2,7 @@
 #define CHANGEBARLINETYPE_H
 
 #include <QUndoCommand>
+#include <memory>
 
 class Barline;
 
@@ -10,12 +11,12 @@ class Barline;
 class ChangeBarLineType : public QUndoCommand
 {
 public:
-    ChangeBarLineType(Barline* bar, quint8 barType, quint8 repeats);
+    ChangeBarLineType(std::shared_ptr<Barline> bar, quint8 barType, quint8 repeats);
     virtual void undo();
     virtual void redo();
 
 private:
-    Barline* barLine;
+    std::shared_ptr<Barline> barLine;
     quint8 type;
     quint8 repeatCount;
     quint8 originalType;

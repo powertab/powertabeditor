@@ -2,7 +2,7 @@
 
 #include <powertabdocument/barline.h>
 
-ChangeBarLineType::ChangeBarLineType(Barline* bar, quint8 barType, quint8 repeats)
+ChangeBarLineType::ChangeBarLineType(std::shared_ptr<Barline> bar, quint8 barType, quint8 repeats)
 {
     setText(QObject::tr("Change Barline Type"));
     barLine = bar;

@@ -8,6 +8,7 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/note.h>
+#include <powertabdocument/barline.h>
 #include <powertabdocument/position.h>
 
 #include <boost/format.hpp>
@@ -309,11 +310,10 @@ void Caret::moveCaretToLastSection()
 
 void Caret::moveCaretToNextBar()
 {
-    Barline* nextBarline = getCurrentSystem()->GetNextBarline
-            (currentPositionIndex);
+    System::BarlineConstPtr nextBarline = getCurrentSystem()->GetNextBarline(currentPositionIndex);
     
     // if we are at the end of the system go to next staff
-    if (nextBarline == &(getCurrentSystem()->m_endBar))
+    if (nextBarline == getCurrentSystem()->GetEndBar())
     {
         // if we can't move to the next staff, move to next section
         if (!moveCaretStaff(1))
@@ -330,11 +330,10 @@ void Caret::moveCaretToNextBar()
 void Caret::moveCaretToPrevBar()
 {
     shared_ptr<System> currentSystem = getCurrentSystem();
-    Barline* prevBarline = currentSystem->GetPrecedingBarline
-            (currentPositionIndex);
+    System::BarlineConstPtr prevBarline = currentSystem->GetPrecedingBarline(currentPositionIndex);
 
     // if we are at the beginning of the system back up one
-    if (prevBarline == &(currentSystem->m_startBar))
+    if (prevBarline == currentSystem->GetStartBar())
     {
         // move caret up one staff or section
         if (moveCaretStaff(-1) || moveCaretSection(-1))
@@ -343,9 +342,9 @@ void Caret::moveCaretToPrevBar()
             // (i.e. we are not already at the very first system), move 
             // caret to beginning of last bar
             shared_ptr<const System> newCurrentSystem = getCurrentSystem();
-            if (!newCurrentSystem->m_barlineArray.empty())
+            if (newCurrentSystem->GetBarlineCount() > 0)
             {
-                const Barline* lastBar = newCurrentSystem->GetBarline(newCurrentSystem->GetBarlineCount() - 1);
+                System::BarlineConstPtr lastBar = newCurrentSystem->GetBarline(newCurrentSystem->GetBarlineCount() - 1);
 
                 moveCaretHorizontal(lastBar->GetPosition() - currentPositionIndex + 1);
             }
@@ -360,12 +359,11 @@ void Caret::moveCaretToPrevBar()
             return;
         }
     
-        std::vector<const Barline*> sysBars;
+        std::vector<System::BarlineConstPtr> sysBars;
         currentSystem->GetBarlines(sysBars);
         
         // we want the position of the bar line before this one
-        std::vector<const Barline*>::iterator barlinesIt =
-                std::find(sysBars.begin(), sysBars.end(), prevBarline);
+        auto barlinesIt = std::find(sysBars.begin(), sysBars.end(), prevBarline);
         barlinesIt--;
         
         moveCaretHorizontal
@@ -404,7 +402,7 @@ Note* Caret::getCurrentNote() const
 }
 
 /// Returns the barline at the current position (or NULL if the current position is not a barline)
-Barline* Caret::getCurrentBarline() const
+std::shared_ptr<Barline> Caret::getCurrentBarline() const
 {
     return getCurrentSystem()->GetBarlineAtPosition(currentPositionIndex);
 }

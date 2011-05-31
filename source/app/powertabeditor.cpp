@@ -38,6 +38,7 @@
 #include <powertabdocument/score.h>
 #include <powertabdocument/note.h>
 #include <powertabdocument/staff.h>
+#include <powertabdocument/barline.h>
 #include <powertabdocument/systemlocation.h>
 #include <powertabdocument/alternateending.h>
 
@@ -1273,14 +1274,14 @@ void PowerTabEditor::clearCurrentPosition()
     Caret* caret = getCurrentScoreArea()->getCaret();
     shared_ptr<System> system = caret->getCurrentSystem();
     Position* currentPos = caret->getCurrentPosition();
-    Barline* currentBar = caret->getCurrentBarline();
+    shared_ptr<Barline> currentBar = caret->getCurrentBarline();
 
-    if (currentPos != NULL)
+    if (currentPos)
     {
         const quint32 voice = 0; // leaving this here for when we support multiple voices
         undoManager->push(new DeletePosition(caret->getCurrentStaff(), currentPos, voice));
     }
-    else if (currentBar != NULL) // remove barline
+    else if (currentBar) // remove barline
     {
         undoManager->push(new DeleteBarline(system, currentBar));
     }
@@ -1303,8 +1304,8 @@ void PowerTabEditor::addGuitar()
 /// If position is not specified, the caret's current position is used
 void PowerTabEditor::editBarline(int position)
 {
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Barline* barLine = NULL;
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    shared_ptr<Barline> barLine;
 
     if (position == -1)
     {
@@ -1315,7 +1316,7 @@ void PowerTabEditor::editBarline(int position)
         barLine = caret->getCurrentSystem()->GetBarlineAtPosition(position);
     }
 
-    if (barLine != NULL) // edit existing barline
+    if (barLine) // edit existing barline
     {
         quint8 type = barLine->GetType(), repeats = barLine->GetRepeatCount();
 
@@ -1445,12 +1446,12 @@ void PowerTabEditor::editTappedHarmonic()
 void PowerTabEditor::editRehearsalSign()
 {
     // Find if there is a rehearsal sign at the current position
-    Caret* caret = getCurrentScoreArea()->getCaret();
+    const Caret* caret = getCurrentScoreArea()->getCaret();
     Score* currentScore = caret->getCurrentScore();
-    Barline* currentBarline = caret->getCurrentBarline();
+    System::BarlinePtr currentBarline = caret->getCurrentBarline();
 
     // the rehearsal sign action should not be available unless there is a barline at the current position
-    Q_ASSERT(currentBarline != NULL);
+    Q_ASSERT(currentBarline);
 
     RehearsalSign* rehearsalSign = &currentBarline->GetRehearsalSignRef();
 
@@ -1551,10 +1552,10 @@ void PowerTabEditor::updateActions()
     Caret* caret = getCurrentScoreArea()->getCaret();
     const Score* currentScore = caret->getCurrentScore();
     const quint32 caretPosition = caret->getCurrentPositionIndex();
-    shared_ptr<System> currentSystem = caret->getCurrentSystem();
-    Position* currentPosition = caret->getCurrentPosition();
-    Barline* currentBarline = caret->getCurrentBarline();
-    Note* currentNote = caret->getCurrentNote();
+    shared_ptr<const System> currentSystem = caret->getCurrentSystem();
+    const Position* currentPosition = caret->getCurrentPosition();
+    shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
+    const Note* currentNote = caret->getCurrentNote();
 
     // Check for chord text
     chordNameAct->setChecked(currentSystem->HasChordText(caretPosition));
@@ -1591,14 +1592,14 @@ void PowerTabEditor::updateActions()
         }
     }
 
-    const RehearsalSign* currentRehearsalSign = currentBarline == NULL ? NULL : currentBarline->GetRehearsalSignPtr();
+    const RehearsalSign* currentRehearsalSign = currentBarline ? currentBarline->GetRehearsalSignPtr() : NULL;
     updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
 
     shared_ptr<const AlternateEnding> altEnding = currentScore->FindAlternateEnding(SystemLocation(caret->getCurrentSystemIndex(),
                                                                                         caret->getCurrentPositionIndex()));
     repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
 
-    if (currentBarline != NULL) // current position is bar
+    if (currentBarline) // current position is bar
     {
         barlineAct->setText(tr("Edit Barline"));
         barlineAct->setEnabled(true);
@@ -1657,7 +1658,7 @@ void PowerTabEditor::updateActions()
 
     removeCurrentSystemAct->setEnabled(currentScore->GetSystemCount() > 1);
 
-    clearCurrentPositionAct->setEnabled(currentPosition != NULL || currentBarline != NULL);
+    clearCurrentPositionAct->setEnabled(currentPosition != NULL || currentBarline);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

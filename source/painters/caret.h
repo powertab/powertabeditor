@@ -56,7 +56,7 @@ public:
     std::shared_ptr<Staff> getCurrentStaff() const;
     Position* getCurrentPosition() const;
     Note* getCurrentNote() const;
-    Barline* getCurrentBarline() const;
+    std::shared_ptr<Barline> getCurrentBarline() const;
 
     uint32_t getCurrentVoice() const;
     bool setCurrentVoice(uint32_t voice);

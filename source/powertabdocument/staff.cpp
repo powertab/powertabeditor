@@ -13,6 +13,7 @@
 
 #include "position.h"
 #include "system.h"
+#include "barline.h"
 #include "powertabfileheader.h"             // Needed for file version constants
 #include "tuning.h"                         // Needed for IsValidStringCount
 #include "keysignature.h"
@@ -426,10 +427,10 @@ size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const Syste
 // Returns true if the given position is the only Position object in its bar
 bool Staff::IsOnlyPositionInBar(const Position* position, std::shared_ptr<const System> system) const
 {
-    std::vector<const Barline*> barlines;
+    std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
 
-    const Barline* prevBarline = system->GetPrecedingBarline(position->GetPosition());
+    System::BarlineConstPtr prevBarline = system->GetPrecedingBarline(position->GetPosition());
 
     auto startBar = std::find(barlines.begin(), barlines.end(), prevBarline);
     auto endBar = startBar + 1;
@@ -540,7 +541,8 @@ void Staff::CalculateSymbolSpacing()
 }
 
 /// Calculates the beaming for notes that are located between the two given barlines
-void Staff::CalculateBeamingForBar(const Barline* startBar, const Barline* endBar)
+void Staff::CalculateBeamingForBar(std::shared_ptr<const Barline> startBar,
+                                   std::shared_ptr<const Barline> endBar)
 {
     // Get the positions in betwen the two bars
     std::vector<Position*> positions;

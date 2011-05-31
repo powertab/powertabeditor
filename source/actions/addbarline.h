@@ -5,6 +5,7 @@
 #include <memory>
 
 class System;
+class Barline;
 
 class AddBarline : public QUndoCommand
 {
@@ -18,6 +19,7 @@ protected:
     const quint32 position;
     const quint8 type;
     const quint8 repeats;
+    std::shared_ptr<Barline> newBar;
 };
 
 #endif // ADDBARLINE_H

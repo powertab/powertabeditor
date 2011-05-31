@@ -156,7 +156,8 @@ public:
     int GetHeight() const;
     
     void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos);
-    void CalculateBeamingForBar(const Barline* startBar, const Barline* endBar);
+    void CalculateBeamingForBar(std::shared_ptr<const Barline> startBar,
+                                std::shared_ptr<const Barline> endBar);
     void CalculateBeamingForGroup(std::vector<Position*>& positions);
 
     void CalculateTabStaffBelowSpacing();

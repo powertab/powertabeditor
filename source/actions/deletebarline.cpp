@@ -1,13 +1,11 @@
 #include "deletebarline.h"
 
 #include <powertabdocument/system.h>
+#include <powertabdocument/barline.h>
 
-using std::shared_ptr;
-
-DeleteBarline::DeleteBarline(shared_ptr<System> system, Barline* barline) :
+DeleteBarline::DeleteBarline(std::shared_ptr<System> system, std::shared_ptr<Barline> barline) :
     system(system),
-    barline(barline),
-    barlineCopy(new Barline(*barline))
+    barline(barline)
 {
     setText(QObject::tr("Delete Barline"));
 }
@@ -19,6 +17,5 @@ void DeleteBarline::redo()
 
 void DeleteBarline::undo()
 {
-    barline = new Barline(*barlineCopy);
     system->InsertBarline(barline);
 }

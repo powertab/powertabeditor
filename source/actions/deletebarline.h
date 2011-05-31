@@ -10,14 +10,13 @@ class System;
 class DeleteBarline : public QUndoCommand
 {
 public:
-    DeleteBarline(std::shared_ptr<System> system, Barline* barline);
+    DeleteBarline(std::shared_ptr<System> system, std::shared_ptr<Barline> barline);
     void redo();
     void undo();
 
 protected:
     std::shared_ptr<System> system;
-    Barline* barline;
-    std::unique_ptr<Barline> barlineCopy;
+    std::shared_ptr<Barline> barline;
 };
 
 #endif // DELETEBARLINE_H

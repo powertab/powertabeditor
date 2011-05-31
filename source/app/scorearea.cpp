@@ -16,6 +16,7 @@
 #include <powertabdocument/chordtext.h>
 #include <powertabdocument/rhythmslash.h>
 #include <powertabdocument/alternateending.h>
+#include <powertabdocument/barline.h>
 
 #include <app/common.h>
 
@@ -200,12 +201,12 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int 
 // Draw all of the barlines for the staff.
 void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const System> system)
 {
-    std::vector<const Barline*> barlines;
+    std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
-        const Barline* currentBarline = barlines.at(i);
+        System::BarlineConstPtr currentBarline = barlines.at(i);
         const KeySignature& keySig = currentBarline->GetKeySignatureConstRef();
         const TimeSignature& timeSig = currentBarline->GetTimeSignatureConstRef();
 
@@ -582,11 +583,11 @@ void ScoreArea::drawAltEndings(const std::vector<Score::AlternateEndingPtr>& alt
 
         // the horizontal line either stretches to the next repeat end bar in the system,
         // or just to the next bar
-        std::vector<const Barline*> barlines;
+        std::vector<System::BarlineConstPtr> barlines;
         system->GetBarlines(barlines);
 
         double endX = 0;
-        BOOST_FOREACH(const Barline* barline, barlines)
+        BOOST_FOREACH(System::BarlineConstPtr barline, barlines)
         {
             // look for the next repeat end bar
             if (barline->GetPosition() > altEnding->GetPosition() && barline->IsRepeatEnd())
@@ -726,8 +727,8 @@ void ScoreArea::drawArpeggio(Position* position, quint32 x, const StaffData& cur
 void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<const Staff> staff,
                                 const StaffData& currentStaffInfo)
 {
-    const Barline* currentBarline = NULL;
-    const Barline* prevBarline = system->GetStartBarPtr();
+    System::BarlineConstPtr currentBarline;
+    System::BarlineConstPtr prevBarline = system->GetStartBar();
 
     QList<StdNotationPainter*> notePainters;
     QMultiMap<double, StdNotationPainter*> accidentalsMap;
@@ -1350,10 +1351,10 @@ QGraphicsItem* ScoreArea::createArtificialHarmonicText(Position* position)
     return createPlainText(text, QFont::StyleNormal);
 }
 
-void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, const Barline* currentBarline,
+void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, std::shared_ptr<const Barline> currentBarline,
                                  const StaffData& currentStaffInfo, int measureCount)
 {
-    const Barline* nextBarline = system->GetNextBarline(currentBarline->GetPosition());
+    System::BarlineConstPtr nextBarline = system->GetNextBarline(currentBarline->GetPosition());
 
     const double leftX = (currentBarline->GetPosition() == 0) ?
                 system->GetPositionX(currentBarline->GetPosition()) :

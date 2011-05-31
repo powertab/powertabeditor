@@ -129,7 +129,7 @@ protected:
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, uint8_t width,
                                               const StaffData& currentStaffInfo);
 
-    void drawMultiBarRest(std::shared_ptr<const System> system, const Barline* currentBarline,
+    void drawMultiBarRest(std::shared_ptr<const System> system, std::shared_ptr<const Barline> currentBarline,
                           const StaffData& currentStaffInfo, int measureCount);
 
 signals:

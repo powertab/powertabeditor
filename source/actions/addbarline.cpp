@@ -9,14 +9,14 @@ AddBarline::AddBarline(shared_ptr<System> system, quint32 position, quint8 type,
     system(system),
     position(position),
     type(type),
-    repeats(repeats)
+    repeats(repeats),
+    newBar(std::make_shared<Barline>(position, type, repeats))
 {
     setText(QObject::tr("Insert Barline"));
 }
 
 void AddBarline::redo()
 {
-    Barline* newBar = new Barline(position, type, repeats);
     system->InsertBarline(newBar);
 }
 

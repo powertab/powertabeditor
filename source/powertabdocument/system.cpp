@@ -11,6 +11,8 @@
 
 #include "system.h"
 #include "staff.h"
+#include "barline.h"
+
 #include <algorithm>
 #include <stdexcept>
 #include <functional>
@@ -44,7 +46,9 @@ System::System() :
     m_rect(DEFAULT_RECT), m_positionSpacing(DEFAULT_POSITION_SPACING),
     m_rhythmSlashSpacingAbove(DEFAULT_RHYTHM_SLASH_SPACING_ABOVE),
     m_rhythmSlashSpacingBelow(DEFAULT_RHYTHM_SLASH_SPACING_BELOW),
-    m_extraSpacing(DEFAULT_EXTRA_SPACING)
+    m_extraSpacing(DEFAULT_EXTRA_SPACING),
+    m_startBar(new Barline),
+    m_endBar(new Barline)
 {
     //------Last Checked------//
     // - Jan 14, 2005
@@ -55,21 +59,13 @@ System::System(const System& system) :
     m_rect(DEFAULT_RECT), m_positionSpacing(DEFAULT_POSITION_SPACING),
     m_rhythmSlashSpacingAbove(DEFAULT_RHYTHM_SLASH_SPACING_ABOVE),
     m_rhythmSlashSpacingBelow(DEFAULT_RHYTHM_SLASH_SPACING_BELOW),
-    m_extraSpacing(DEFAULT_EXTRA_SPACING)
+    m_extraSpacing(DEFAULT_EXTRA_SPACING),
+    m_startBar(new Barline),
+    m_endBar(new Barline)
 {
     //------Last Checked------//
     // - Dec 16, 2004
     *this = system;
-}
-
-/// Destructor
-System::~System()
-{
-    for (uint32_t i = 0; i < m_barlineArray.size(); i++)
-    {
-        delete m_barlineArray.at(i);
-    }
-    m_barlineArray.clear();
 }
 
 /// Assignment Operator
@@ -139,13 +135,13 @@ bool System::Serialize(PowerTabOutputStream& stream) const
 
     // Note: End bar is stored as a byte; we use Barline class to make it easier
     // for the user
-    uint8_t endBar = (uint8_t)((m_endBar.GetType() << 5) |
-        (m_endBar.GetRepeatCount()));
+    uint8_t endBar = (uint8_t)((m_endBar->GetType() << 5) |
+        (m_endBar->GetRepeatCount()));
     stream << endBar << m_positionSpacing << m_rhythmSlashSpacingAbove <<
         m_rhythmSlashSpacingBelow << m_extraSpacing;
     CHECK_THAT(stream.CheckState(), false);
 
-    m_startBar.Serialize(stream);
+    m_startBar->Serialize(stream);
     CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_directionArray);
@@ -194,22 +190,22 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         uint8_t keyType = (uint8_t)((key >> 4) & 0xf);
         uint8_t keyAccidentals = (uint8_t)(key & 0xf);
 
-        m_startBar.GetKeySignatureRef().Show();
+        m_startBar->GetKeySignatureRef().Show();
 
         // Cancellation
         if (keyType > 2)
-            m_startBar.GetKeySignatureRef().SetCancellation();
+            m_startBar->GetKeySignatureRef().SetCancellation();
 
         keyType = (uint8_t)(((keyType % 2) == 1) ? KeySignature::majorKey :
             KeySignature::minorKey);
 
-        m_startBar.GetKeySignatureRef().SetKey(keyType, keyAccidentals);
+        m_startBar->GetKeySignatureRef().SetKey(keyType, keyAccidentals);
 
         // Update the ending bar
         uint8_t barType = HIBYTE(endBar);
         uint8_t repeatCount = LOBYTE(endBar);
 
-        m_endBar.SetBarlineData(barType, repeatCount);
+        m_endBar->SetBarlineData(barType, repeatCount);
         //SetEndBar(barType, repeatCount);
 
         stream.ReadVector(m_directionArray, version);
@@ -230,20 +226,19 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         // Any barline at position zero is now stored in the section m_startBar
         if (GetBarlineCount() > 0)
         {
-            Barline* barline = m_barlineArray[0];
-            if (barline != NULL)
+            BarlinePtr barline = m_barlineArray[0];
+            if (barline)
             {
                 if (barline->GetPosition() == 0)
                 {
-                    m_startBar = *barline;
-                    delete barline;
+                    *m_startBar = *barline;
                     m_barlineArray.erase(m_barlineArray.begin());
                 }
             }
         }
 
         // Update key signs that aren't show to match active key sign
-        const KeySignature* activeKeySignature = m_startBar.GetKeySignaturePtr();
+        const KeySignature* activeKeySignature = m_startBar->GetKeySignaturePtr();
 
         size_t i = 0;
         size_t count = m_barlineArray.size();
@@ -279,10 +274,10 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         CHECK_THAT(stream.CheckState(), false);
 
         // Update end bar (using Barline class is easier to use)
-        m_endBar.SetBarlineData((uint8_t)((endBar & 0xe0) >> 5),
+        m_endBar->SetBarlineData((uint8_t)((endBar & 0xe0) >> 5),
             (uint8_t)(endBar & 0x1f));
 
-        m_startBar.Deserialize(stream, version);
+        m_startBar->Deserialize(stream, version);
         CHECK_THAT(stream.CheckState(), false);
 
         stream.ReadVector(m_directionArray, version);
@@ -304,48 +299,83 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
     return (stream.CheckState());
 }
 
+// Barline functions
+/// Gets the bar at the start of the system
+/// @return The start bar
+System::BarlinePtr System::GetStartBar() const
+{
+    return m_startBar;
+}
+
+/// Determines if a barline index is valid
+/// @param index barline index to validate
+/// @return True if the barline index is valid, false if not
+bool System::IsValidBarlineIndex(uint32_t index) const
+{
+    return index < GetBarlineCount();
+}
+
+/// Gets the number of barlines in the system
+/// @return The number of barlines in the system
+size_t System::GetBarlineCount() const
+{
+    return m_barlineArray.size();
+}
+
+/// Gets the nth barline in the system
+/// @param index Index of the barline to get
+/// @return The nth barline in the system
+System::BarlinePtr System::GetBarline(uint32_t index) const
+{
+    CHECK_THAT(IsValidBarlineIndex(index), BarlinePtr());
+    return m_barlineArray[index];
+}
+
+/// Gets the bar at the end of the system
+/// @return The end bar
+System::BarlinePtr System::GetEndBar() const
+{
+    return m_endBar;
+}
+
 // Barline Array Functions
 /// Gets the barline at a given position
 /// @param position Position to get the barline for
 /// @return A pointer to the barline at the position, or NULL if the barline
 /// doesn't exist
-Barline* System::GetBarlineAtPosition(uint32_t position) const
+System::BarlinePtr System::GetBarlineAtPosition(uint32_t position) const
 {
     // start bar
     if (position == 0)
-        return const_cast<Barline*>(&m_startBar);
+    {
+        return m_startBar;
+    }
 
     // Iterate through the barlines
-    size_t barlineIndex = 0;
-    size_t barlineCount = GetBarlineCount();
-    for (; barlineIndex < barlineCount; barlineIndex++)
+    for (size_t barlineIndex = 0; barlineIndex < m_barlineArray.size(); barlineIndex++)
     {
-        Barline* barline = GetBarline(barlineIndex);
-
-        if (barline == NULL)
-        {
-            assert(false);
-            continue;
-        }
+        BarlinePtr barline = GetBarline(barlineIndex);
 
         // Found it; return the barline
         if (barline->GetPosition() == position)
-            return (barline);
+            return barline;
     }
 
     // last bar of system
     if (position == static_cast<uint32_t>(GetPositionCount()))
-        return const_cast<Barline*>(&m_endBar);
+    {
+        return m_endBar;
+    }
 
     // Barline not found at position
-    return (NULL);
+    return BarlinePtr();
 }
 
 // Comparison functor for barline positions
 struct CompareBarlineToPosition
 {
     uint32_t position;
-    bool operator()(Barline* barline)
+    bool operator()(const System::BarlineConstPtr& barline)
     {
         return barline->GetPosition() <= position;
     }
@@ -355,11 +385,11 @@ struct CompareBarlineToPosition
 /// Gets the barline preceding a given position
 /// @param position Position to get the preceding barline for
 /// @return A pointer to the barline preceding the position
-Barline* System::GetPrecedingBarline(uint32_t position) const
+System::BarlinePtr System::GetPrecedingBarline(uint32_t position) const
 {
     if (m_barlineArray.empty() || position < m_barlineArray.at(0)->GetPosition())
     {
-        return (Barline*)&m_startBar;
+        return m_startBar;
     }
 
     CompareBarlineToPosition compareToPosition;
@@ -369,12 +399,14 @@ Barline* System::GetPrecedingBarline(uint32_t position) const
     return *barline;
 }
 
-Barline* System::GetNextBarline(uint32_t position) const
+System::BarlinePtr System::GetNextBarline(uint32_t position) const
 {
     // if position is past the last barline in array return m_endBar
     if (m_barlineArray.empty() ||
         position >= m_barlineArray.at(GetBarlineCount() - 1)->GetPosition())
-        return const_cast<Barline *>(&m_endBar);
+    {
+        return m_endBar;
+    }
 
     // if position is before the first non-startbar barline
     if (position < m_barlineArray.at(0)->GetPosition())
@@ -382,10 +414,8 @@ Barline* System::GetNextBarline(uint32_t position) const
     
     CompareBarlineToPosition compareToPosition;
     compareToPosition.position = position;
-    auto barline = 
-            std::find_if(m_barlineArray.rbegin(), 
-                         m_barlineArray.rend(),  
-                         compareToPosition);
+    auto barline = std::find_if(m_barlineArray.rbegin(), m_barlineArray.rend(),
+                                compareToPosition);
 
     --barline;
     return *barline;
@@ -393,12 +423,10 @@ Barline* System::GetNextBarline(uint32_t position) const
 
 /// Gets a list of barlines in the system
 /// @param barlineArray Holds the barline return values
-void System::GetBarlines(std::vector<const Barline*>& barlineArray) const
+void System::GetBarlines(std::vector<BarlineConstPtr>& barlineArray) const
 {
-    //------Last Checked------//
-    // - Apr 25, 2006
     barlineArray.clear();
-    barlineArray.push_back(&m_startBar);
+    barlineArray.push_back(m_startBar);
 
     for (int barline = 0, barlineCount = m_barlineArray.size();
         barline < barlineCount; ++barline)
@@ -406,7 +434,7 @@ void System::GetBarlines(std::vector<const Barline*>& barlineArray) const
         barlineArray.push_back(m_barlineArray[barline]);
     }
 
-    barlineArray.push_back(&m_endBar);
+    barlineArray.push_back(m_endBar);
 }
 
 // Position Functions
@@ -477,11 +505,11 @@ int System::GetFirstPositionX() const
     returnValue += 22;
 
     // Add the width of the starting key signature
-    int keySignatureWidth = m_startBar.GetKeySignatureConstRef().GetWidth();
+    int keySignatureWidth = m_startBar->GetKeySignatureConstRef().GetWidth();
     returnValue += keySignatureWidth;
 
     // Add the width of the starting time signature
-    int timeSignatureWidth = m_startBar.GetTimeSignatureConstRef().GetWidth();
+    int timeSignatureWidth = m_startBar->GetTimeSignatureConstRef().GetWidth();
     returnValue += timeSignatureWidth;
 
     // If we have both a key and time signature, they are separated by 3 units
@@ -490,7 +518,7 @@ int System::GetFirstPositionX() const
 
     // Add the width required by the starting barline; for a standard barline,
     // this is 1 unit of space, otherwise it is the distance between positions
-    int barlineWidth = ((m_startBar.IsBar()) ? 1 : GetPositionSpacing());
+    int barlineWidth = ((m_startBar->IsBar()) ? 1 : GetPositionSpacing());
     returnValue += barlineWidth;
 
     return (returnValue);
@@ -734,7 +762,7 @@ size_t System::FindStaffIndex(StaffConstPtr staff) const
 // Checks if a rehearsal sign occurs in the system
 bool System::HasRehearsalSign() const
 {
-    if (m_startBar.GetRehearsalSignConstRef().IsSet() || m_endBar.GetRehearsalSignConstRef().IsSet())
+    if (m_startBar->GetRehearsalSignConstRef().IsSet() || m_endBar->GetRehearsalSignConstRef().IsSet())
     {
         return true;
     }
@@ -752,11 +780,11 @@ bool System::HasRehearsalSign() const
 /// Recalculates the note beaming for each staff in the system
 void System::CalculateBeamingForStaves()
 {
-    std::vector<const Barline*> barlines;
+    std::vector<BarlineConstPtr> barlines;
     GetBarlines(barlines);
 
     // the end bar doesn't keep track of its position normally, so add it in for these calculations
-    m_endBar.SetPosition(this->GetPositionCount());
+    m_endBar->SetPosition(this->GetPositionCount());
 
     for(auto staff = m_staffArray.begin(); staff != m_staffArray.end(); ++staff)
     {
@@ -844,7 +872,7 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     SetPositionSpacing(GetPositionSpacing() - offset);
 
     // shift forward barlines
-    ShiftPosition<Barline*> shiftBarlines(comparison, positionIndex, offset);
+    ShiftPosition<BarlinePtr> shiftBarlines(comparison, positionIndex, offset);
     std::for_each(m_barlineArray.begin(), m_barlineArray.end(), shiftBarlines);
 
     // shift direction symbols
@@ -911,8 +939,7 @@ bool System::RemoveBarline(uint32_t position)
     if (bar == m_barlineArray.end())
         return false;
 
-    // delete and remove the bar from the array
-    delete *bar;
+    // remove the bar from the array
     m_barlineArray.erase(bar);
     return true;
 }
@@ -921,7 +948,8 @@ namespace
 {
 struct CompareBarlinesByPosition
 {
-    bool operator() (Barline* bar1, Barline* bar2)
+    bool operator() (const System::BarlineConstPtr& bar1,
+                     const System::BarlineConstPtr& bar2)
     {
         return bar1->GetPosition() < bar2->GetPosition();
     }
@@ -930,7 +958,7 @@ struct CompareBarlinesByPosition
 
 /// Inserts the given barline.
 /// The barline array is then sorted by position
-bool System::InsertBarline(Barline* barline)
+bool System::InsertBarline(BarlinePtr barline)
 {
     m_barlineArray.push_back(barline);
     std::sort(m_barlineArray.begin(), m_barlineArray.end(), CompareBarlinesByPosition());
@@ -1007,10 +1035,10 @@ System::RhythmSlashPtr System::GetRhythmSlash(uint32_t index) const
 
 /// Searches for a multi-bar rest in the given bar
 /// @param measureCount - output parameter to store the measure count for the multi-bar rest
-bool System::HasMultiBarRest(const Barline* startBar, uint8_t& measureCount) const
+bool System::HasMultiBarRest(BarlineConstPtr startBar, uint8_t& measureCount) const
 {
     measureCount = 1;
-    const Barline* nextBar = GetNextBarline(startBar->GetPosition());
+    BarlineConstPtr nextBar = GetNextBarline(startBar->GetPosition());
 
     // search through all positions in the bar, for each voice in each staff
     BOOST_FOREACH(StaffPtr staff, m_staffArray)

@@ -12,8 +12,8 @@
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
-#include "barline.h"
 #include "rect.h"
+#include "powertabobject.h"
 
 #include <vector>
 #include <memory>
@@ -22,10 +22,13 @@ class Direction;
 class ChordText;
 class RhythmSlash;
 class Staff;
+class Barline;
 
 /// Stores and renders a system
 class System : public PowerTabObject
 {
+    friend class Score;
+
     // Constants
 public:
     // Default Constants
@@ -45,6 +48,8 @@ public:
     typedef std::shared_ptr<RhythmSlash> RhythmSlashPtr;
     typedef std::shared_ptr<Staff> StaffPtr;
     typedef std::shared_ptr<const Staff> StaffConstPtr;
+    typedef std::shared_ptr<Barline> BarlinePtr;
+    typedef std::shared_ptr<const Barline> BarlineConstPtr;
 
     // Member Variables
 protected:
@@ -54,20 +59,18 @@ protected:
     uint8_t  m_rhythmSlashSpacingBelow;		///< Spacing below the rhythm slashes
     uint8_t  m_extraSpacing;			///< Extra spacing used within the system (for rehearsal signs + tempo markers)
 
-public:
-    Barline                         m_startBar;         ///< Barline at the start of the system
+    BarlinePtr                      m_startBar;         ///< Barline at the start of the system (uses shared_ptr for consistency with barlines from m_barlineArray)
     std::vector<DirectionPtr>       m_directionArray;   ///< List of directions used within the system
     std::vector<ChordTextPtr>       m_chordTextArray;   ///< List of chord text items used within the system
     std::vector<RhythmSlashPtr>     m_rhythmSlashArray; ///< List of rhythm slashes used within the system
     std::vector<StaffPtr>           m_staffArray;       ///< List of staves used within the system
-    std::vector<Barline*>           m_barlineArray;     ///< List of barlines (not including start and end bars) used within the system
-    Barline                         m_endBar;           ///< Barline at the end of the system (time and key signature are not used in this barline)
+    std::vector<BarlinePtr>         m_barlineArray;     ///< List of barlines (not including start and end bars) used within the system
+    BarlinePtr                      m_endBar;           ///< Barline at the end of the system (time and key signature are not used in this barline)
 
     // Constructor/Destructor
 public:
     System();
     System(const System& system);
-    ~System();
 
     void Init(const std::vector<uint8_t>& staffSizes);
 
@@ -138,25 +141,7 @@ public:
     }
 
     // Start Bar Functions
-    /// Gets the bar at the start of the system
-    /// @return The start bar
-    Barline GetStartBar() const
-    {return (m_startBar);}
-    /// Gets a reference to the bar at the start of the system
-    /// @return A reference to the bar at the start of the system
-    Barline& GetStartBarRef()
-    {return (m_startBar);}
-    /// Gets a constant reference to the bar at the start of the system
-    /// @return A constant reference to the bar at the start of the system
-    const Barline& GetStartBarConstRef() const
-    {return (m_startBar);}
-
-    /// Gets a pointer to the bar at the start of the system
-    /// @return A pointer to the bar at the start of the system
-    const Barline* GetStartBarPtr() const
-    {
-        return &m_startBar;
-    }
+    BarlinePtr GetStartBar() const;
 
     // Direction Functions
     bool IsValidDirectionIndex(uint32_t index) const;
@@ -188,46 +173,22 @@ public:
     size_t FindStaffIndex(StaffConstPtr staff) const;
 
     // Barline Functions
-    /// Determines if a barline index is valid
-    /// @param index barline index to validate
-    /// @return True if the barline index is valid, false if not
-    bool IsValidBarlineIndex(uint32_t index) const
-    {return (index < GetBarlineCount());}
-    /// Gets the number of barlines in the system
-    /// @return The number of barlines in the system
-    size_t GetBarlineCount() const
-    {return (m_barlineArray.size());}
-    /// Gets the nth barline in the system
-    /// @param index Index of the barline to get
-    /// @return The nth barline in the system
-    Barline* GetBarline(uint32_t index) const
-    {
-        CHECK_THAT(IsValidBarlineIndex(index), NULL);
-        return (m_barlineArray[index]);
-    }
-    Barline* GetBarlineAtPosition(uint32_t position) const;
-    Barline* GetPrecedingBarline(uint32_t position) const;
-    Barline* GetNextBarline(uint32_t position) const;
-    void GetBarlines(std::vector<const Barline*>& barlineArray) const;
+    bool IsValidBarlineIndex(uint32_t index) const;
+    size_t GetBarlineCount() const;
+    BarlinePtr GetBarline(uint32_t index) const;
 
-    bool InsertBarline(Barline* barline);
+    BarlinePtr GetBarlineAtPosition(uint32_t position) const;
+    BarlinePtr GetPrecedingBarline(uint32_t position) const;
+    BarlinePtr GetNextBarline(uint32_t position) const;
+    void GetBarlines(std::vector<BarlineConstPtr>& barlineArray) const;
+
+    bool InsertBarline(BarlinePtr barline);
     bool RemoveBarline(uint32_t position);
 
     bool HasRehearsalSign() const;
 
     // End Bar Functions
-    /// Gets the bar at the end of the system
-    /// @return The end bar
-    Barline GetEndBar() const
-    {return (m_endBar);}
-    /// Gets a reference to the bar at the end of the system
-    /// @return A reference to the bar at the end of the system
-    Barline& GetEndBarRef()
-    {return (m_endBar);}
-    /// Gets a constant reference to the bar at the end of the system
-    /// @return A constant reference to the bar at the end of the system
-    const Barline& GetEndBarConstRef() const
-    {return (m_endBar);}
+    BarlinePtr GetEndBar() const;
 
     // Position Functions
     bool IsValidPosition(int position) const;
@@ -259,7 +220,7 @@ public:
     void ShiftForward(uint32_t positionIndex);
     void ShiftBackward(uint32_t positionIndex);
 
-    bool HasMultiBarRest(const Barline* startBar, uint8_t& measureCount) const;
+    bool HasMultiBarRest(BarlineConstPtr startBar, uint8_t& measureCount) const;
 
 protected:
     void PerformPositionShift(uint32_t positionIndex, int offset);

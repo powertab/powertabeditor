@@ -2,6 +2,7 @@
 
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
+#include <powertabdocument/barline.h>
 #include <powertabdocument/alternateending.h>
 #include <powertabdocument/direction.h>
 
@@ -29,12 +30,12 @@ void RepeatController::indexRepeats()
     {
         shared_ptr<const System> system = score->GetSystem(currentSystemIndex);
 
-        vector<const Barline*> barlines;
+        vector<System::BarlineConstPtr> barlines;
         system->GetBarlines(barlines);
 
         for (size_t i = 0; i < barlines.size(); i++)
         {
-            const Barline* currentBar = barlines.at(i);
+            System::BarlineConstPtr currentBar = barlines.at(i);
 
             if (currentBar->IsRepeatStart())
             {

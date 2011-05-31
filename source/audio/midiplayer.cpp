@@ -19,6 +19,8 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/harmonics.h>
+#include <powertabdocument/timesignature.h>
+#include <powertabdocument/barline.h>
 
 #include <audio/midievent.h>
 #include <audio/playnoteevent.h>
@@ -496,7 +498,7 @@ double MidiPlayer::calculateNoteDuration(const Position* currentPosition) const
 double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, shared_ptr<const Staff> staff,
                                         const Position* position, double originalDuration) const
 {
-    Barline* prevBarline = system->GetPrecedingBarline(position->GetPosition());
+    System::BarlineConstPtr prevBarline = system->GetPrecedingBarline(position->GetPosition());
 
     // if the whole rest is not the only item in the bar, treat it like a regular rest
     if (!staff->IsOnlyPositionInBar(position, system))
@@ -521,13 +523,13 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
 {
     shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
 
-    std::vector<const Barline*> barlines;
+    std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
     barlines.pop_back(); // don't need the end barline
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
-        const Barline* barline = barlines.at(i);
+        System::BarlineConstPtr barline = barlines.at(i);
         const TimeSignature& timeSig = barline->GetTimeSignatureConstRef();
 
         const quint8 numPulses = timeSig.GetPulses();
@@ -569,7 +571,7 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
 
     // insert an empty event for the last barline of the system, to trigger any repeat events for that bar
     eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime,
-                                          system->GetEndBarConstRef().GetPosition(),
+                                          system->GetEndBar()->GetPosition(),
                                           systemIndex, MetronomeEvent::METRONOME_PITCH));
 }
 

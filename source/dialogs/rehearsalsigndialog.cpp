@@ -3,10 +3,13 @@
 #include <powertabdocument/rehearsalsign.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
+#include <powertabdocument/barline.h>
 
 #include <app/powertabeditor.h>
 
 #include <actions/editrehearsalsign.h>
+
+#include <boost/foreach.hpp>
 
 #include <QFormLayout>
 #include <QComboBox>
@@ -57,10 +60,10 @@ void RehearsalSignDialog::populateLetterChoices()
     {
         std::shared_ptr<System> system = score->GetSystem(i);
 
-        std::vector<const Barline*> barlines;
+        std::vector<System::BarlineConstPtr> barlines;
         system->GetBarlines(barlines);
 
-        foreach(const Barline* barline, barlines)
+        BOOST_FOREACH(System::BarlineConstPtr barline, barlines)
         {
             const RehearsalSign& currentSign = barline->GetRehearsalSignConstRef();
             if (currentSign.IsSet())
