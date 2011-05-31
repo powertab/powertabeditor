@@ -15,13 +15,13 @@ std::shared_ptr<T> clone_shared_ptr(const std::shared_ptr<T>& ptr)
 
 /// Performs a deep copy of a vector of shared_ptr
 template <typename T>
-void deepCopy(const std::vector<std::shared_ptr<T> >& vec1, 
-              std::vector<std::shared_ptr<T> >& vec2)
+void deepCopy(const std::vector<std::shared_ptr<T> >& src,
+              std::vector<std::shared_ptr<T> >& dest)
 {
-    vec2.clear();
+    dest.clear();
     
-    std::transform(vec1.begin(), vec1.end(),
-                   std::back_inserter(vec2),
+    std::transform(src.begin(), src.end(),
+                   std::back_inserter(dest),
                    clone_shared_ptr<T>);
 }
 
