@@ -23,6 +23,8 @@
 #include "rhythmslash.h"
 #include "position.h"
 
+#include "common.h"
+
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
@@ -50,8 +52,6 @@ System::System() :
     m_startBar(new Barline),
     m_endBar(new Barline)
 {
-    //------Last Checked------//
-    // - Jan 14, 2005
 }
 
 /// Copy Constructor
@@ -63,18 +63,12 @@ System::System(const System& system) :
     m_startBar(new Barline),
     m_endBar(new Barline)
 {
-    //------Last Checked------//
-    // - Dec 16, 2004
     *this = system;
 }
 
 /// Assignment Operator
 const System& System::operator=(const System& system)
 {
-    //------Last Checked------//
-    // - Jan 14, 2005
-
-    // Check for assignment to self
     if (this != &system)
     {
         m_rect = system.m_rect;
@@ -82,13 +76,13 @@ const System& System::operator=(const System& system)
         m_rhythmSlashSpacingAbove = system.m_rhythmSlashSpacingAbove;
         m_rhythmSlashSpacingBelow = system.m_rhythmSlashSpacingBelow;
         m_extraSpacing = system.m_extraSpacing;
-        m_startBar = system.m_startBar;
-        m_directionArray = system.m_directionArray;
-        m_chordTextArray = system.m_chordTextArray;
-        m_rhythmSlashArray = system.m_rhythmSlashArray;
-        m_staffArray = system.m_staffArray;
-        m_barlineArray = system.m_barlineArray;
-        m_endBar = system.m_endBar;
+        *m_startBar = *system.m_startBar;
+        deepCopy(system.m_directionArray, m_directionArray);
+        deepCopy(system.m_chordTextArray, m_chordTextArray);
+        deepCopy(system.m_rhythmSlashArray, m_rhythmSlashArray);
+        deepCopy(system.m_staffArray, m_staffArray);
+        deepCopy(system.m_barlineArray, m_barlineArray);
+        *m_endBar = *system.m_endBar;
     }
     return (*this);
 }
@@ -96,29 +90,25 @@ const System& System::operator=(const System& system)
 /// Equality Operator
 bool System::operator==(const System& system) const
 {
-    //------Last Checked------//
-    // - Jan 14, 2005
     return (
         (m_rect == system.m_rect) &&
         (m_positionSpacing == system.m_positionSpacing) &&
         (m_rhythmSlashSpacingAbove == system.m_rhythmSlashSpacingAbove) &&
         (m_rhythmSlashSpacingBelow == system.m_rhythmSlashSpacingBelow) &&
         (m_extraSpacing == system.m_extraSpacing) &&
-        (m_startBar == system.m_startBar) &&
-        (m_directionArray == system.m_directionArray) &&
-        (m_chordTextArray == system.m_chordTextArray) &&
-        (m_rhythmSlashArray == system.m_rhythmSlashArray) &&
-        (m_staffArray == system.m_staffArray) &&
-        (m_barlineArray == system.m_barlineArray) &&
-        (m_endBar == system.m_endBar)
+        (*m_startBar == *system.m_startBar) &&
+        isDeepEqual(m_directionArray, system.m_directionArray) &&
+        isDeepEqual(m_chordTextArray, system.m_chordTextArray) &&
+        isDeepEqual(m_rhythmSlashArray, system.m_rhythmSlashArray) &&
+        isDeepEqual(m_staffArray, system.m_staffArray) &&
+        isDeepEqual(m_barlineArray, system.m_barlineArray) &&
+        (*m_endBar == *system.m_endBar)
     );
 }
 
 /// Inequality Operator
 bool System::operator!=(const System& system) const
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     return (!operator==(system));
 }
 
