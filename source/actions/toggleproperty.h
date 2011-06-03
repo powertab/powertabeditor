@@ -26,8 +26,8 @@ public:
         setProperty = std::find_if(items.begin(), items.end(), std::not1(getPropertyFn)) != items.end();
 
         // set the text for the undo menu
-        setText(setProperty ? "Remove " + propertyName :
-                              "Set " + propertyName);
+        setText(setProperty ? "Set " + propertyName :
+                              "Remove " + propertyName);
     }
 
     void redo()
