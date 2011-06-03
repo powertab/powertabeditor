@@ -446,6 +446,11 @@ void PowerTabEditor::createActions()
     letRingAct->setCheckable(true);
     connectToggleProperty<Position>(letRingAct, &getSelectedPositions,
                                     &Position::HasLetRing, &Position::SetLetRing);
+
+    graceNoteAct = new QAction(tr("Grace Note"), this);
+    graceNoteAct->setCheckable(true);
+    connectToggleProperty<Position>(graceNoteAct, &getSelectedPositions,
+                                    &Position::IsAcciaccatura, &Position::SetAcciaccatura);
     
     staccatoNoteAct = new QAction(tr("Staccato"), this);
     staccatoNoteAct->setCheckable(true);
@@ -755,9 +760,8 @@ void PowerTabEditor::createMenus()
     notesMenu->addAction(letRingAct);
     notesMenu->addAction(fermataAct);
     notesMenu->addSeparator();
-    notesMenu->addAction(staccatoNoteAct);
-    notesMenu->addAction(marcatoAct);
-    notesMenu->addAction(sforzandoAct);
+    notesMenu->addActions(QList<QAction*>() << graceNoteAct << staccatoNoteAct <<
+                          marcatoAct << sforzandoAct);
 
     octaveMenu = notesMenu->addMenu(tr("Octave"));
     octaveMenu->addActions(QList<QAction*>() << octave8vaAct << octave15maAct
@@ -1634,6 +1638,7 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(doubleDottedNoteAct, currentPosition, &Position::IsDoubleDotted);
     updatePropertyStatus(marcatoAct, currentPosition, &Position::HasMarcato);
     updatePropertyStatus(sforzandoAct, currentPosition, &Position::HasSforzando);
+    updatePropertyStatus(graceNoteAct, currentPosition, &Position::IsAcciaccatura);
 
     updatePropertyStatus(octave8vaAct, currentNote, &Note::IsOctave8va);
     updatePropertyStatus(octave15maAct, currentNote, &Note::IsOctave15ma);

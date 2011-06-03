@@ -200,6 +200,7 @@ protected:
     QAction* ghostNoteAct; // set a note to be a ghost note
     QAction* letRingAct;
     QAction* fermataAct; // set a position as fermata
+    QAction* graceNoteAct;
     QAction* staccatoNoteAct; // set the notes of a position to be staccato
     QAction* marcatoAct; // set an accent
     QAction* sforzandoAct; // set a heavy accent
