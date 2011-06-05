@@ -28,7 +28,8 @@ HEADERS += \
     addalternateending.h \
     removetappedharmonic.h \
     addtappedharmonic.h \
-    editrest.h
+    editrest.h \
+    editkeysignature.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -57,4 +58,5 @@ SOURCES += \
     addalternateending.cpp \
     removetappedharmonic.cpp \
     addtappedharmonic.cpp \
-    editrest.cpp
+    editrest.cpp \
+    editkeysignature.cpp

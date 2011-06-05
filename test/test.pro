@@ -33,7 +33,8 @@ SOURCES += \
     actions/test_addtappedharmonic.cpp \
     powertabdocument/score_test.cpp \
     powertabdocument/common_test.cpp \
-    actions/test_editrest.cpp
+    actions/test_editrest.cpp \
+    actions/test_editkeysignature.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

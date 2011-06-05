@@ -415,17 +415,21 @@ System::BarlinePtr System::GetNextBarline(uint32_t position) const
 
 /// Gets a list of barlines in the system
 /// @param barlineArray Holds the barline return values
+void System::GetBarlines(std::vector<BarlinePtr>& barlineArray)
+{
+    barlineArray.clear();
+    barlineArray.push_back(m_startBar);
+    barlineArray.insert(barlineArray.end(), m_barlineArray.begin(), m_barlineArray.end());
+    barlineArray.push_back(m_endBar);
+}
+
+/// Gets a list of barlines in the system
+/// @param barlineArray Holds the barline return values
 void System::GetBarlines(std::vector<BarlineConstPtr>& barlineArray) const
 {
     barlineArray.clear();
     barlineArray.push_back(m_startBar);
-
-    for (int barline = 0, barlineCount = m_barlineArray.size();
-        barline < barlineCount; ++barline)
-    {
-        barlineArray.push_back(m_barlineArray[barline]);
-    }
-
+    barlineArray.insert(barlineArray.end(), m_barlineArray.begin(), m_barlineArray.end());
     barlineArray.push_back(m_endBar);
 }
 
