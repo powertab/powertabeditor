@@ -36,8 +36,10 @@ const uint8_t System::DEFAULT_POSITION_SPACING                       = 20;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_ABOVE             = 0;
 const uint8_t System::DEFAULT_RHYTHM_SLASH_SPACING_BELOW             = 0;
 const uint8_t System::DEFAULT_EXTRA_SPACING                          = 0;
-const uint8_t System::SYSTEM_SYMBOL_SPACING = 18; // spacing given to a system symbol (i.e. rehearsal sign)
+const uint8_t System::SYSTEM_SYMBOL_SPACING = 18; ///< spacing given to a system symbol (i.e. rehearsal sign)
 const uint8_t System::RHYTHM_SLASH_SPACING = 2 * System::SYSTEM_SYMBOL_SPACING;
+const uint8_t System::CLEF_PADDING = 3; ///< padding surrounding a clef
+const uint8_t System::CLEF_WIDTH = 22; ///< width of a clef
 
 // Position Spacing Constants
 const uint8_t System::MIN_POSITION_SPACING                           = 3;

@@ -175,10 +175,10 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int 
 
         // Draw the clefs
         ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, currentStaff);
-        clefPainter->setPos(system->GetClefPadding(), currentStaffInfo.getTopStdNotationLine());
+        clefPainter->setPos(System::CLEF_PADDING, currentStaffInfo.getTopStdNotationLine());
         clefPainter->setParentItem(activeStaff);
 
-        drawTabClef(system->GetClefPadding(), currentStaffInfo);
+        drawTabClef(System::CLEF_PADDING, currentStaffInfo);
 
         renderBars(currentStaffInfo, system);
 
@@ -231,8 +231,8 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const S
                 x = system->GetFirstPositionX() - currentStaffInfo.positionWidth;
             }
 
-            keySigX = system->GetClefWidth();
-            timeSigX = system->GetClefWidth() + keySig.GetWidth();
+            keySigX = System::CLEF_WIDTH;
+            timeSigX = System::CLEF_WIDTH + keySig.GetWidth();
         }
         else if (i == barlines.size() - 1) // last barline of system
         {

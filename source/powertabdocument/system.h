@@ -29,7 +29,6 @@ class System : public PowerTabObject
 {
     friend class Score;
 
-    // Constants
 public:
     // Default Constants
     static const Rect DEFAULT_RECT;
@@ -39,6 +38,8 @@ public:
     static const uint8_t DEFAULT_EXTRA_SPACING;
     static const uint8_t SYSTEM_SYMBOL_SPACING;
     static const uint8_t RHYTHM_SLASH_SPACING;
+    static const uint8_t CLEF_PADDING;
+    static const uint8_t CLEF_WIDTH;
 
     // Position Spacing Constants
     static const uint8_t MIN_POSITION_SPACING;
@@ -52,7 +53,7 @@ public:
     typedef std::shared_ptr<const Barline> BarlineConstPtr;
 
     // Member Variables
-protected:
+private:
     Rect  m_rect;				///< Bounding rect for the system
     uint8_t  m_positionSpacing;			///< Spacing between each position in the system
     uint8_t  m_rhythmSlashSpacingAbove;		///< Spacing above the rhythm slashes
@@ -84,7 +85,6 @@ public:
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
     // MFC Class Functions
-public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
@@ -98,7 +98,9 @@ public:
     /// Gets the bounding rect for the system
     /// @return The bounding rect for the system
     Rect GetRect() const
-    {return (m_rect);}
+    {
+        return m_rect;
+    }
     void SetRect(const Rect& rect)
     {
         m_rect = rect;
@@ -198,17 +200,6 @@ public:
     int GetPositionX(int position) const;
     size_t GetPositionFromX(int x) const;
 
-    // Returns the width of a clef
-    int GetClefWidth() const
-    {
-        return 22;
-    }
-    // Returns the width of a clef
-    int GetClefPadding() const
-    {
-        return 3;
-    }
-
     // Operations
     int GetCumulativeInternalKeyAndTimeSignatureWidth(int position = -1) const;
 
@@ -222,7 +213,7 @@ public:
 
     bool HasMultiBarRest(BarlineConstPtr startBar, uint8_t& measureCount) const;
 
-protected:
+private:
     void PerformPositionShift(uint32_t positionIndex, int offset);
 };
 
