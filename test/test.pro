@@ -34,7 +34,8 @@ SOURCES += \
     powertabdocument/score_test.cpp \
     powertabdocument/common_test.cpp \
     actions/test_editrest.cpp \
-    actions/test_editkeysignature.cpp
+    actions/test_editkeysignature.cpp \
+    powertabdocument/keysignature_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

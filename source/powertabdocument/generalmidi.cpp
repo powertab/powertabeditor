@@ -76,14 +76,9 @@ namespace midi
         return (note <= MAX_MIDI_NOTE);
     }
 
-    // Gets an accurate text representation of a MIDI note, given the key signature (number of accidentals)
-    string GetMidiNoteText(uint8_t note, bool usesSharps, uint8_t numAccidentals)
+    /// Helper function to find the index of a key, for use with the pitchClasses and keyText vectors
+    int GetKeyIndex(bool usesSharps, uint8_t numAccidentals)
     {
-        CHECK_THAT(IsValidMidiNote(note), "");
-
-        const uint8_t pitch = GetMidiNotePitch(note);
-
-        // find the index of the key, for use with the pitchClasses and keyText vectors
         const int keyC = 15;
         int keyOffset = numAccidentals;
         if (!usesSharps)
@@ -91,7 +86,18 @@ namespace midi
             keyOffset *= -1;
         }
 
-        const int tonic = keyC + keyOffset;
+        return keyC + keyOffset;
+    }
+
+    /// Gets an accurate text representation of a MIDI note, given the key signature (number of accidentals)
+    string GetMidiNoteText(uint8_t note, bool usesSharps, uint8_t numAccidentals)
+    {
+        CHECK_THAT(IsValidMidiNote(note), "");
+
+        const uint8_t pitch = GetMidiNotePitch(note);
+
+        // find the index of the key, for use with the pitchClasses and keyText vectors
+        const int tonic = GetKeyIndex(usesSharps, numAccidentals);
 
         uint8_t minDistance = 100; // needs to be larger than any possible distance
         uint8_t bestMatch = 0; // index of the text representation that is the best match
@@ -177,6 +183,18 @@ namespace midi
         //------Last Checked------//
         // - Dec 9, 2004
         return (key <= MAX_MIDI_NOTE_KEY);
+    }
+
+    /// Returns a string representation of the tonic note of the given key
+    /// e.g. GetKeyText(true, false, 1) -> F
+    std::string GetKeyText(bool minor, bool usesSharps, uint8_t numAccidentals)
+    {
+        int tonic = GetKeyIndex(usesSharps, numAccidentals);
+        if (minor)
+        {
+            tonic += 3;
+        }
+        return keyText[tonic];
     }
 
     /// Gets the pitch value for a MIDI note

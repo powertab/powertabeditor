@@ -13,6 +13,8 @@
 
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
+#include "generalmidi.h"
+#include <boost/format.hpp>
 
 using std::string;
 
@@ -223,46 +225,24 @@ uint8_t KeySignature::GetKeyAccidentalsIncludingCancel() const
 
 // Operations
 /// Gets a text representation of the key signature
+/// e.g. "B Minor - F# C#"
 /// @return A text representation of the key signature
-string KeySignature::GetText() const
+std::string KeySignature::GetText() const
 {
-    //------Last Checked------//
-    // - Apr 25, 2006
-    string returnValue;
+    const std::string keyType = (GetKeyType() == majorKey) ? "Major" : "Minor";
+    const std::string tonic = midi::GetKeyText(IsMinorKey(), UsesSharps(), NumberOfAccidentals());
 
-    if (HasOneSharp())
-        returnValue = "#";
-    else if (HasTwoSharps())
-        returnValue = "##";
-    else if (HasThreeSharps())
-        returnValue = "###";
-    else if (HasFourSharps())
-        returnValue = "####";
-    else if (HasFiveSharps())
-        returnValue = "#####";
-    else if (HasSixSharps())
-        returnValue = "######";
-    else if (HasSevenSharps())
-        returnValue = "#######";
-    else if (HasOneFlat())
-        returnValue = "b";
-    else if (HasTwoFlats())
-        returnValue = "bb";
-    else if (HasThreeFlats())
-        returnValue = "bbb";
-    else if (HasFourFlats())
-        returnValue = "bbbb";
-    else if (HasFiveFlats())
-        returnValue = "bbbbb";
-    else if (HasSixFlats())
-        returnValue = "bbbbbb";
-    else if (HasSevenFlats())
-        returnValue = "bbbbbbb";
+    std::string accidentals;
+    for (int i = 0; i < NumberOfAccidentals(); i++)
+    {
+        const int offset = UsesSharps() ? 6 : 2;
+        accidentals += " " + midi::GetKeyText(false, UsesSharps(), offset + i);
+    }
 
-    if (IsMinorKey())
-        returnValue += "m";
+    const string separator = accidentals.empty() ? "" : " -";
 
-    return (returnValue);
+    return boost::str(boost::format("%1% %2%%3%%4%") % tonic % keyType %
+                      separator % accidentals);
 }
 
 /// Gets the width of the key signature, in drawing units (100ths of an inch)

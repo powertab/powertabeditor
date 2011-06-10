@@ -453,6 +453,7 @@ namespace midi
     std::string GetMidiNoteText(uint8_t note, bool sharps);
     uint8_t OffsetMidiNote(uint8_t note, int8_t offset);
     bool IsValidMidiNoteVolume(uint8_t volume);
+    std::string GetKeyText(bool minor, bool usesSharps, uint8_t numAccidentals);
 
     // MIDI Preset Functions
     bool IsValidMidiPreset(uint8_t preset);
