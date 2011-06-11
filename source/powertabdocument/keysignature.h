@@ -236,6 +236,18 @@ public:
     bool IsShown() const
         {return (IsFlagSet(show));}
 
+    void SetShown(bool set)
+    {
+        if (set)
+        {
+            Show();
+        }
+        else
+        {
+            Hide();
+        }
+    }
+
 // Cancellation Functions
     /// Sets or clears the cancellation on a key signature
     /// @param set If true, makes the key signature a cancellation, otherwise

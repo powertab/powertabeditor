@@ -100,6 +100,7 @@ protected slots:
     void editTrill();
     void editBarline(int position = -1);
     void editTappedHarmonic();
+    void editKeySignature();
 
     void increasePositionSpacing();
     void decreasePositionSpacing();
@@ -223,6 +224,7 @@ protected:
 
     QMenu* musicSymbolsMenu;
     QAction* rehearsalSignAct; // add/remove rehearsal signs
+    QAction* keySignatureAct;
     QAction* barlineAct;
     QAction* repeatEndingAct;
 

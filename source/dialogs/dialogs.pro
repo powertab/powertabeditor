@@ -8,7 +8,8 @@ HEADERS += \
     chordnamedialog.h \
     barlinedialog.h \
     alternateendingdialog.h \
-    tappedharmonicdialog.h
+    tappedharmonicdialog.h \
+    keysignaturedialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -18,4 +19,5 @@ SOURCES += \
     chordnamedialog.cpp \
     barlinedialog.cpp \
     alternateendingdialog.cpp \
-    tappedharmonicdialog.cpp
+    tappedharmonicdialog.cpp \
+    keysignaturedialog.cpp
