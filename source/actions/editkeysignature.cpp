@@ -6,11 +6,12 @@
 #include <boost/foreach.hpp>
 
 EditKeySignature::EditKeySignature(Score* score, const SystemLocation& location,
-                                   uint8_t newKeyType, uint8_t newKeyAccidentals) :
+                                   uint8_t newKeyType, uint8_t newKeyAccidentals, bool isShown) :
     score(score),
     location(location),
     newKeySig(newKeyType, newKeyAccidentals)
 {
+    newKeySig.SetShown(isShown);
     // save the original key signature
     Score::SystemConstPtr system = score->GetSystem(location.getSystemIndex());
     System::BarlineConstPtr barline = system->GetBarlineAtPosition(location.getPositionIndex());
@@ -23,6 +24,13 @@ EditKeySignature::EditKeySignature(Score* score, const SystemLocation& location,
 void EditKeySignature::redo()
 {
     switchKeySignatures(oldKeySig, newKeySig);
+    emit triggered();
+}
+
+void EditKeySignature::undo()
+{
+    switchKeySignatures(newKeySig, oldKeySig);
+    emit triggered();
 }
 
 /// Switches from the old key signature to the new key signature, starting at the position
@@ -48,6 +56,11 @@ void EditKeySignature::switchKeySignatures(const KeySignature& oldKey,
             if (key.IsSameKey(oldKey))
             {
                 key.SetKey(newKey.GetKeyType(), newKey.GetKeyAccidentals());
+
+                if (i == startSystem && barline->GetPosition() == location.getPositionIndex())
+                {
+                    key.SetShown(newKey.IsShown());
+                }
             }
             else
             {
@@ -55,9 +68,4 @@ void EditKeySignature::switchKeySignatures(const KeySignature& oldKey,
             }
         }
     }
-}
-
-void EditKeySignature::undo()
-{
-    switchKeySignatures(newKeySig, oldKeySig);
 }

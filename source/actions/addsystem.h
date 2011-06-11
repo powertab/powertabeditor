@@ -14,6 +14,7 @@ public:
     void undo();
 
 signals:
+    // need to trigger a full redraw of the whole score when adding a system
     void triggered();
 
 protected:

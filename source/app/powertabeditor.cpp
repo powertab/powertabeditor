@@ -1321,10 +1321,15 @@ void PowerTabEditor::editKeySignature()
     if (dialog.exec() == QDialog::Accepted)
     {
         const KeySignature newKey = dialog.getNewKey();
-        undoManager->push(new EditKeySignature(caret->getCurrentScore(),
-                                               SystemLocation(caret->getCurrentSystemIndex(),
-                                                              caret->getCurrentPositionIndex()),
-                                               newKey.GetKeyType(), newKey.GetKeyAccidentals()));
+
+        EditKeySignature* action = new EditKeySignature(caret->getCurrentScore(),
+                                                        SystemLocation(caret->getCurrentSystemIndex(),
+                                                                       caret->getCurrentPositionIndex()),
+                                                        newKey.GetKeyType(), newKey.GetKeyAccidentals(),
+                                                        newKey.IsShown());
+
+        connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
+        undoManager->push(action);
     }
 }
 
