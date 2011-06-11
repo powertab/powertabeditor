@@ -125,6 +125,12 @@ void KeySignatureDialog::setKeyAccidentals(int accidentals)
     }
 
     newKey.SetKeyAccidentals(accidentals);
+
+    // by default, force the key to be visible if it differs from the original key
+    if (!newKey.IsSameKey(originalKey))
+    {
+        visibilityToggle->click();
+    }
 }
 
 /// Return the new key, as selected by the user
