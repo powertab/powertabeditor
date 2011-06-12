@@ -695,25 +695,25 @@ void Position::ClearMultibarRest()
 }
 
 /// Inserts the given note
-/// @throw std::invalid_argument If there is already a note at the same string
+/// @throw std::logic_error If there is already a note at the same string
 void Position::InsertNote(Note* note)
 {
     if (GetNoteByString(note->GetString()))
     {
-        throw std::invalid_argument("Cannot insert note - there is already a note at the same string");
+        throw std::logic_error("Cannot insert note - there is already a note at the same string");
     }
 
     m_noteArray.push_back(note);
 }
 
 /// Removes the note at the given string
-/// @throw std::invalid_argument If there is not a note at the given string
+/// @throw std::logic_error If there is not a note at the given string
 void Position::RemoveNote(uint8_t string)
 {
     Note* note = GetNoteByString(string);
     if (note == NULL)
     {
-        throw std::invalid_argument("There is no note to remove at the given string");
+        throw std::logic_error("There is no note to remove at the given string");
     }
 
     delete note;

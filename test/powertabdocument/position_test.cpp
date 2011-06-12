@@ -46,6 +46,41 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
         BOOST_CHECK_EQUAL(pos->GetNoteByString(3), note2);
     }
 
+    BOOST_AUTO_TEST_SUITE(AddNote)
+
+        BOOST_FIXTURE_TEST_CASE(NoNoteAtString, PositionFixture)
+        {
+            Note* newNote = new Note(2, 0);
+            pos->InsertNote(newNote);
+
+            BOOST_CHECK_EQUAL(pos->GetNoteCount(), 5);
+            BOOST_CHECK_EQUAL(pos->GetNoteByString(2), newNote);
+        }
+
+        BOOST_FIXTURE_TEST_CASE(NoteAlreadyAtString, PositionFixture)
+        {
+            BOOST_CHECK_THROW(pos->InsertNote(new Note(0, 0)), std::logic_error);
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+
+    BOOST_AUTO_TEST_SUITE(RemoveNote)
+
+        BOOST_FIXTURE_TEST_CASE(NoNoteAtString, PositionFixture)
+        {
+            BOOST_CHECK_THROW(pos->RemoveNote(2), std::logic_error);
+        }
+
+        BOOST_FIXTURE_TEST_CASE(NoteAlreadyAtString, PositionFixture)
+        {
+            pos->RemoveNote(0);
+
+            BOOST_CHECK_EQUAL(pos->GetNoteCount(), 3);
+            BOOST_CHECK_EQUAL(pos->GetNoteByString(0), (Note*)NULL);
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
+
     BOOST_AUTO_TEST_SUITE(GetStringBounds)
 
         BOOST_FIXTURE_TEST_CASE(MultipleStrings, PositionFixture)
