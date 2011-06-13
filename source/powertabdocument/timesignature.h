@@ -169,6 +169,17 @@ public:
     /// @return True if the time signature is shown, false if not
     bool IsShown() const                            
         {return (IsFlagSet(show));}
+    void SetShown(bool set)
+    {
+        if (set)
+        {
+            Show();
+        }
+        else
+        {
+            Hide();
+        }
+    }
         
 // Pulse Functions
     /// Determines if a pulses value is valid

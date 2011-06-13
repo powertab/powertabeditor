@@ -35,7 +35,8 @@ SOURCES += \
     powertabdocument/common_test.cpp \
     actions/test_editrest.cpp \
     actions/test_editkeysignature.cpp \
-    powertabdocument/keysignature_test.cpp
+    powertabdocument/keysignature_test.cpp \
+    actions/test_edittimesignature.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
@@ -76,4 +77,5 @@ HEADERS += \
     ../source/powertabdocument/systemlocation.h \
     ../source/audio/midievent.h \
     powertabdocument/tuning_fixtures.h \
-    powertabdocument/serialization_test.h
+    powertabdocument/serialization_test.h \
+    powertabdocument/score_fixture.h
