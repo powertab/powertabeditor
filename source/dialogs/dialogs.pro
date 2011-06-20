@@ -9,7 +9,8 @@ HEADERS += \
     barlinedialog.h \
     alternateendingdialog.h \
     tappedharmonicdialog.h \
-    keysignaturedialog.h
+    keysignaturedialog.h \
+    timesignaturedialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -20,4 +21,5 @@ SOURCES += \
     barlinedialog.cpp \
     alternateendingdialog.cpp \
     tappedharmonicdialog.cpp \
-    keysignaturedialog.cpp
+    keysignaturedialog.cpp \
+    timesignaturedialog.cpp

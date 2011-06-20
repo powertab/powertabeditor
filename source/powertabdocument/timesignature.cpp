@@ -481,3 +481,29 @@ int TimeSignature::GetWidth() const
     // All time signatures are 18 units wide
     return (IsShown() ? 18 : 0);
 }
+
+/// Determines if a pulses value is valid (must divide evenly into the # of beats)
+/// @param pulses Pulses value to validate
+/// @return True if the pulses value is valid, false if not
+bool TimeSignature::IsValidPulses(uint8_t pulses)
+{
+    return /*(pulses >= MIN_PULSES) &&*/ (pulses <= MAX_PULSES) &&
+            (pulses == 0 || GetBeatsPerMeasure() % pulses == 0);
+}
+
+/// Sets the number of pulses in a measure
+/// @param pulses Number of pulses to set
+/// @return True if the pulses value was set, false if not
+bool TimeSignature::SetPulses(uint8_t pulses)
+{
+    CHECK_THAT(IsValidPulses(pulses), false);
+    m_pulses = pulses;
+    return true;
+}
+
+/// Gets the number of pulses in a measure
+/// @return The number of pulses in a measure
+uint8_t TimeSignature::GetPulses() const
+{
+    return m_pulses;
+}

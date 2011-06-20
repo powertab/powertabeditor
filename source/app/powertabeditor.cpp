@@ -31,6 +31,7 @@
 #include <dialogs/alternateendingdialog.h>
 #include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/keysignaturedialog.h>
+#include <dialogs/timesignaturedialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -548,6 +549,11 @@ void PowerTabEditor::createActions()
     keySignatureAct->setShortcut(QKeySequence(Qt::Key_K));
     connect(keySignatureAct, SIGNAL(triggered()), this, SLOT(editKeySignature()));
 
+    timeSignatureAct = new QAction(tr("Time Signature..."), this);
+    timeSignatureAct->setCheckable(true);
+    timeSignatureAct->setShortcut(QKeySequence(Qt::Key_T));
+    connect(timeSignatureAct, SIGNAL(triggered()), this, SLOT(editTimeSignature()));
+
     barlineAct = new QAction(tr("Barline..."), this);
     barlineAct->setCheckable(true);
     barlineAct->setShortcut(QKeySequence(Qt::Key_B));
@@ -784,6 +790,7 @@ void PowerTabEditor::createMenus()
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     musicSymbolsMenu->addAction(rehearsalSignAct);
     musicSymbolsMenu->addAction(keySignatureAct);
+    musicSymbolsMenu->addAction(timeSignatureAct);
     musicSymbolsMenu->addAction(barlineAct);
     musicSymbolsMenu->addAction(repeatEndingAct);
 
@@ -1333,6 +1340,19 @@ void PowerTabEditor::editKeySignature()
     }
 }
 
+void PowerTabEditor::editTimeSignature()
+{
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    const TimeSignature& currentTimeSig = caret->getCurrentBarline()->GetTimeSignatureConstRef();
+
+    TimeSignatureDialog dialog(currentTimeSig);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+
+    }
+}
+
 /// Edits or creates a barline.
 /// If position is not specified, the caret's current position is used
 void PowerTabEditor::editBarline(int position)
@@ -1590,6 +1610,8 @@ void PowerTabEditor::updateActions()
     shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
     const Note* currentNote = caret->getCurrentNote();
 
+    const bool onBarline = currentBarline != System::BarlineConstPtr();
+
     // Check for chord text
     chordNameAct->setChecked(currentSystem->HasChordText(caretPosition));
 
@@ -1632,7 +1654,7 @@ void PowerTabEditor::updateActions()
                                                                                         caret->getCurrentPositionIndex()));
     repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
 
-    if (currentBarline) // current position is bar
+    if (onBarline) // current position is bar
     {
         barlineAct->setText(tr("Edit Barline"));
         barlineAct->setEnabled(true);
@@ -1648,8 +1670,11 @@ void PowerTabEditor::updateActions()
         barlineAct->setText(tr("Barline"));
     }
 
-    keySignatureAct->setChecked(currentBarline != System::BarlineConstPtr());
-    keySignatureAct->setEnabled(currentBarline != System::BarlineConstPtr());
+    keySignatureAct->setChecked(onBarline);
+    keySignatureAct->setEnabled(onBarline);
+
+    timeSignatureAct->setCheckable(onBarline);
+    timeSignatureAct->setEnabled(onBarline);
 
     updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
     updatePropertyStatus(tappedHarmonicAct, currentNote, &Note::HasTappedHarmonic);

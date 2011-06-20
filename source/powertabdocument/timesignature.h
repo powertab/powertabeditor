@@ -182,23 +182,9 @@ public:
     }
         
 // Pulse Functions
-    /// Determines if a pulses value is valid
-    /// @param pulses Pulses value to validate
-    /// @return True if the pulses value is valid, false if not
-    static bool IsValidPulses(uint8_t pulses)        
-        {return ((pulses >= MIN_PULSES) && (pulses <= MAX_PULSES));}
-    /// Sets the number of pulses in a measure
-    /// @param pulses Number of pulses to set
-    /// @return True if the pulses value was set, false if not
-    bool SetPulses(uint8_t pulses)                   
-    {
-        CHECK_THAT(IsValidPulses(pulses), false);
-        m_pulses = pulses; return (true);
-    }
-    /// Gets the number of pulses in a measure
-    /// @return The number of pulses in a measure
-    uint8_t GetPulses() const                        
-        {return (m_pulses);}
+    bool IsValidPulses(uint8_t pulses);
+    bool SetPulses(uint8_t pulses);
+    uint8_t GetPulses() const;
     
 // Flag Functions
     /// Determines if a flag is valid

@@ -36,7 +36,8 @@ SOURCES += \
     actions/test_editrest.cpp \
     actions/test_editkeysignature.cpp \
     powertabdocument/keysignature_test.cpp \
-    actions/test_edittimesignature.cpp
+    actions/test_edittimesignature.cpp \
+    powertabdocument/timesignature_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

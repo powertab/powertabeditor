@@ -7,7 +7,8 @@ HEADERS += \
     toolbox/notepage.h \
     playback/playbackwidget.h \
     mixer/mixerinstrument.h \
-    mixer/mixer.h
+    mixer/mixer.h \
+    ../app/powertabeditor.h
 
 SOURCES += \
     common.cpp \
