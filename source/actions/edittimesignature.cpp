@@ -52,8 +52,11 @@ void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
             TimeSignature& time = barline->GetTimeSignatureRef();
             if (time.IsSameMeter(oldTime))
             {
-                time.SetMeter(newTime.GetBeatsPerMeasure(), newTime.GetBeatAmount());
+                // modify everything except for visibility
+                time = newTime;
+                time.SetShown(oldTime.IsShown());
 
+                // only modify visibility for the time signature that was edited directly
                 if (i == startSystem && barline->GetPosition() == location.getPositionIndex())
                 {
                     time.SetShown(newTime.IsShown());
@@ -65,4 +68,6 @@ void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
             }
         }
     }
+
+    emit triggered();
 }

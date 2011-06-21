@@ -10,6 +10,8 @@
 #include <boost/array.hpp>
 #include <boost/foreach.hpp>
 
+#include <sigfwd/sigfwd.hpp>
+
 TimeSignatureDialog::TimeSignatureDialog(const TimeSignature& originalTimeSignature) :
     newTimeSignature(originalTimeSignature)
 {
@@ -56,9 +58,10 @@ TimeSignatureDialog::TimeSignatureDialog(const TimeSignature& originalTimeSignat
     setLayout(mainLayout);
 
     init();
+    connectSignals();
 }
 
-/// Initialize with default values, set up signal/slot connections, etc
+/// Initialize form elements and set default values
 void TimeSignatureDialog::init()
 {
     beatsPerMeasure->setMinimum(TimeSignature::MIN_BEATSPERMEASURE);
@@ -94,6 +97,59 @@ void TimeSignatureDialog::init()
     }
 }
 
+/// Connect up all signals/slots for the dialog
+void TimeSignatureDialog::connectSignals()
+{
+    using boost::bind;
+    using boost::ref;
+
+    sigfwd::connect(visibilityToggle, SIGNAL(toggled(bool)),
+                    bind(&TimeSignature::SetShown, ref(newTimeSignature), _1));
+
+    connect(pulsesPerMeasure, SIGNAL(currentIndexChanged(int)), this, SLOT(editPulses(int)));
+    connect(cutTimeToggle, SIGNAL(toggled(bool)), this, SLOT(editCutTime(bool)));
+    connect(commonTimeToggle, SIGNAL(toggled(bool)), this, SLOT(editCommonTime(bool)));
+    connect(beatValue, SIGNAL(currentIndexChanged(int)), this, SLOT(editBeatValue(int)));
+    connect(beatsPerMeasure, SIGNAL(valueChanged(int)), this, SLOT(editBeatsPerMeasure(int)));
+
+    // TODO - editing and validation for beaming patterns
+}
+
+/// @param index - index in the combo box of the pulses value
+void TimeSignatureDialog::editPulses(int index)
+{
+    newTimeSignature.SetPulses(pulsesPerMeasure->itemData(index).toUInt());
+}
+
+/// @param index - index in the combo box of the beat value
+void TimeSignatureDialog::editBeatValue(int index)
+{
+    newTimeSignature.SetBeatAmount(beatValue->itemData(index).toUInt());
+}
+
+void TimeSignatureDialog::editBeatsPerMeasure(int beats)
+{
+    newTimeSignature.SetBeatsPerMeasure(beats);
+    updatePossiblePulseValues();
+    pulsesPerMeasure->setCurrentIndex(pulsesPerMeasure->findData(beats));
+}
+
+void TimeSignatureDialog::editCutTime(bool enabled)
+{
+    if (enabled)
+    {
+        newTimeSignature.SetCutTime();
+    }
+    else
+    {
+        newTimeSignature.SetMeter(beatsPerMeasure->value(),
+                                  beatValue->itemData(beatValue->currentIndex()).toUInt());
+    }
+
+    beatsPerMeasure->setEnabled(!enabled);
+    beatValue->setEnabled(!enabled);
+}
+
 /// The available options for metronome pulses depend on the number of beats in the measure
 void TimeSignatureDialog::updatePossiblePulseValues()
 {
@@ -104,6 +160,22 @@ void TimeSignatureDialog::updatePossiblePulseValues()
             pulsesPerMeasure->addItem(QString::number(i), i);
         }
     }
+}
+
+void TimeSignatureDialog::editCommonTime(bool enabled)
+{
+    if (enabled)
+    {
+        newTimeSignature.SetCommonTime();
+    }
+    else
+    {
+        newTimeSignature.SetMeter(beatsPerMeasure->value(),
+                                  beatValue->itemData(beatValue->currentIndex()).toUInt());
+    }
+
+    beatsPerMeasure->setEnabled(!enabled);
+    beatValue->setEnabled(!enabled);
 }
 
 TimeSignature TimeSignatureDialog::getNewTimeSignature() const

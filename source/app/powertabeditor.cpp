@@ -78,6 +78,7 @@
 #include <actions/addtappedharmonic.h>
 #include <actions/editrest.h>
 #include <actions/editkeysignature.h>
+#include <actions/edittimesignature.h>
 
 using std::shared_ptr;
 
@@ -1349,7 +1350,13 @@ void PowerTabEditor::editTimeSignature()
 
     if (dialog.exec() == QDialog::Accepted)
     {
+        EditTimeSignature* action = new EditTimeSignature(caret->getCurrentScore(),
+                                                          SystemLocation(caret->getCurrentSystemIndex(),
+                                                                         caret->getCurrentPositionIndex()),
+                                                          dialog.getNewTimeSignature());
 
+        connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
+        undoManager->push(action);
     }
 }
 

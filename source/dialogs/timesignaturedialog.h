@@ -19,8 +19,16 @@ public:
 
     TimeSignature getNewTimeSignature() const;
 
+private slots:
+    void editCutTime(bool enabled);
+    void editCommonTime(bool enabled);
+    void editBeatValue(int index);
+    void editBeatsPerMeasure(int beats);
+    void editPulses(int beats);
+
 private:
     void init();
+    void connectSignals();
     void updatePossiblePulseValues();
 
     TimeSignature newTimeSignature;
