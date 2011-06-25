@@ -6,19 +6,19 @@
 class SkinManager
 {
 public:
-    SkinManager(QString filename);
+    SkinManager(const QString& filename);
 
-    QString getDocumentTabStyle();
-    QString getToolboxTabStyle();
-    QString getToolboxPageStyle();
-    QString getMixerStyle();
+    QString getDocumentTabStyle() const;
+    QString getToolboxTabStyle() const;
+    QString getToolboxPageStyle() const;
+    QString getMixerStyle() const;
 
 private:
     QString documentTabStyle;
     QString toolboxTabStyle, toolboxPageStyle;
     QString mixerStyle;
 
-    QString readSegment(QString skinname, QString filename);
+    QString readSegment(const QString& skinname, const QString& filename);
 };
 
 #endif // SKINMANAGER_H

@@ -4,7 +4,7 @@
 #include <QFile>
 #include <QTextStream>
 
-SkinManager::SkinManager(QString filename)
+SkinManager::SkinManager(const QString& filename)
 {
     documentTabStyle = readSegment(filename,"document_tab.txt");
 
@@ -14,27 +14,27 @@ SkinManager::SkinManager(QString filename)
     mixerStyle = readSegment(filename,"mixer.txt");
 }
 
-QString SkinManager::getDocumentTabStyle()
+QString SkinManager::getDocumentTabStyle() const
 {
     return documentTabStyle;
 }
 
-QString SkinManager::getToolboxTabStyle()
+QString SkinManager::getToolboxTabStyle() const
 {
     return toolboxTabStyle;
 }
 
-QString SkinManager::getToolboxPageStyle()
+QString SkinManager::getToolboxPageStyle() const
 {
     return toolboxPageStyle;
 }
 
-QString SkinManager::getMixerStyle()
+QString SkinManager::getMixerStyle() const
 {
     return mixerStyle;
 }
 
-QString SkinManager::readSegment(QString skinname, QString filename)
+QString SkinManager::readSegment(const QString& skinname, const QString& filename)
 {
     QString out;
     QFile data;

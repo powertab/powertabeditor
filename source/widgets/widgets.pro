@@ -8,7 +8,8 @@ HEADERS += \
     playback/playbackwidget.h \
     mixer/mixerinstrument.h \
     mixer/mixer.h \
-    ../app/powertabeditor.h
+    ../app/powertabeditor.h \
+    ../app/skinmanager.h
 
 SOURCES += \
     common.cpp \
