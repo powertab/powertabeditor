@@ -47,7 +47,8 @@
 using std::shared_ptr;
 
 ScoreArea::ScoreArea(QWidget *parent) :
-        QGraphicsView(parent)
+    QGraphicsView(parent),
+    caret(NULL)
 {
     setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
     setCacheMode(QGraphicsView::CacheBackground);
