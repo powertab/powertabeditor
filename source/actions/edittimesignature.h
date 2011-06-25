@@ -12,7 +12,7 @@ class EditTimeSignature : public QObject, public QUndoCommand
     Q_OBJECT
 
 public:
-    EditTimeSignature(Score* score, const SystemLocation location,
+    EditTimeSignature(Score* score, const SystemLocation& location,
                       const TimeSignature& newTimeSig);
 
     void redo();

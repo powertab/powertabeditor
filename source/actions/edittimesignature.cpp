@@ -5,7 +5,7 @@
 #include <powertabdocument/barline.h>
 #include <boost/foreach.hpp>
 
-EditTimeSignature::EditTimeSignature(Score* score, const SystemLocation location,
+EditTimeSignature::EditTimeSignature(Score* score, const SystemLocation& location,
                                      const TimeSignature& newTimeSig) :
     score(score),
     location(location),
