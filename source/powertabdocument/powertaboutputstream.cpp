@@ -199,10 +199,9 @@ bool PowerTabOutputStream::WriteClassInformation(const PowerTabObject* object)
     }
 
     // ASSUME: initialized to 0 map
-    uint32_t nClassIndex = 0;
     if (m_classInfoHashMap.find(classId) != m_classInfoHashMap.end())
     {
-        nClassIndex = (uint32_t)m_classInfoHashMap[classId];
+        const uint32_t nClassIndex = m_classInfoHashMap[classId];
         // Previously seen class, write out the index tagged by high bit
         if (nClassIndex < BIG_OBJECT_TAG)
             *this << (uint16_t)(CLASS_TAG | nClassIndex);
