@@ -12,12 +12,15 @@
 #include "powertabinputstream.h"
 #include "colour.h"
 #include "rect.h"
+#include "macros.h"
 
 using std::string;
 
 PowerTabInputStream::PowerTabInputStream(std::istream& stream) :
     m_stream(stream)
 {
+    // ensure that the stream will throw std::ifstream::failure if any errors occur
+    stream.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
 }
 
 // Read Functions
@@ -27,7 +30,6 @@ uint32_t PowerTabInputStream::ReadCount()
 {
     uint16_t wordCount = 0;
     *this >> wordCount;
-    CHECK_THAT(CheckState(), 0);
     
     // 16-bit count
     if (wordCount != 0xffff)
@@ -38,7 +40,6 @@ uint32_t PowerTabInputStream::ReadCount()
     // 32-bit count
     uint32_t dwordCount = 0;
     *this >> dwordCount;
-    CHECK_THAT(CheckState(), 0);
     return dwordCount;
 }
 
@@ -46,7 +47,7 @@ uint32_t PowerTabInputStream::ReadCount()
 /// a string object
 /// @param string string object to copy the text to
 /// @return True if the string was read, false if not
-bool PowerTabInputStream::ReadMFCString(string& str)
+void PowerTabInputStream::ReadMFCString(string& str)
 {
     str.clear();
 
@@ -54,41 +55,33 @@ bool PowerTabInputStream::ReadMFCString(string& str)
     str.resize(length);
 
     m_stream.read(&str[0], length);
-    
-    return CheckState();
 }
 
 /// Reads a Win32 format COLORREF type from the stream
 /// @param color Color 
 /// @return True if the color was read, false if not
-bool PowerTabInputStream::ReadWin32ColorRef(Colour& color)
+void PowerTabInputStream::ReadWin32ColorRef(Colour& color)
 {
     uint32_t colorref = 0;
     *this >> colorref;
-    CHECK_THAT(CheckState(), false);
         
     color.Set(LOBYTE(LOWORD(colorref)), HIBYTE(LOWORD(colorref)),
         LOBYTE(HIWORD(colorref)));
-    
-    return true;
 }
 
 /// Loads a Microsoft CRect object from the stream and copies its values to a
 /// Rect object
 /// @param rect Rect object to copy the CRect values to
 /// @return True if the rect was read, false if not
-bool PowerTabInputStream::ReadMFCRect(Rect& rect)
+void PowerTabInputStream::ReadMFCRect(Rect& rect)
 {
     int32_t left = 0, top = 0, right = 0, bottom = 0;
     *this >> left >> top >> right >> bottom;
-    CHECK_THAT(CheckState(), false);
     
     rect.SetLeft(left);
     rect.SetTop(top);
     rect.SetRight(right);
     rect.SetBottom(bottom);
-       
-    return true;
 }
 
 void PowerTabInputStream::ReadClassInformation()
@@ -147,7 +140,6 @@ uint32_t PowerTabInputStream::ReadMFCStringLength()
     
     // First, try to read a one-byte length
     *this >> byteLength;
-    CHECK_THAT(CheckState(), 0);
     
     if (byteLength < 0xff)
         return byteLength;
@@ -155,7 +147,6 @@ uint32_t PowerTabInputStream::ReadMFCStringLength()
     uint16_t wordLength = 0;
     // Try a two-byte length
     *this >> wordLength;
-    CHECK_THAT(CheckState(), 0);
 
     if (wordLength < 0xffff)
         return wordLength;
@@ -163,7 +154,6 @@ uint32_t PowerTabInputStream::ReadMFCStringLength()
     uint32_t doubleWordLength = 0;
     // 4-byte length
     *this >> doubleWordLength;
-    CHECK_THAT(CheckState(), 0);
     
     return doubleWordLength;
 }

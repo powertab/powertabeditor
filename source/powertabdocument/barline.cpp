@@ -142,7 +142,6 @@ bool Barline::Deserialize(PowerTabInputStream& stream, uint16_t version)
 	{
 		uint16_t symbol;
 		stream >> m_position >> symbol;
-		CHECK_THAT(stream.CheckState(), false);
 
 		uint8_t temp = HIBYTE(symbol);
 		uint8_t keyType = (uint8_t)((temp >> 4) & 0xf);
@@ -171,19 +170,15 @@ bool Barline::Deserialize(PowerTabInputStream& stream, uint16_t version)
 	else
 	{        
 		stream >> m_position >> m_data;
-		CHECK_THAT(stream.CheckState(), false);
 		
 		m_keySignature.Deserialize(stream, version);
-		CHECK_THAT(stream.CheckState(), false);
 		
 		m_timeSignature.Deserialize(stream, version);
-		CHECK_THAT(stream.CheckState(), false);
 		
 		m_rehearsalSign.Deserialize(stream, version);
-		CHECK_THAT(stream.CheckState(), false);
 	}
-	
-	return (true);
+
+    return true;
 }
 
 // Barline Data Functions

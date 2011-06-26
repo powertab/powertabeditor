@@ -152,7 +152,6 @@ bool Dynamic::Deserialize(PowerTabInputStream& stream, uint16_t version)
     {
         uint8_t staffVolume;
         stream >> m_system >> m_staff >> m_position >> staffVolume;
-        CHECK_THAT(stream.CheckState(), false);
         
         m_data = MAKEWORD(notSet, staffVolume);
     }
@@ -160,10 +159,9 @@ bool Dynamic::Deserialize(PowerTabInputStream& stream, uint16_t version)
     else
     {
         stream >> m_system >> m_staff >> m_position >> m_data;
-        CHECK_THAT(stream.CheckState(), false);
     }
             
-    return (stream.CheckState());
+    return true;
 }
 
 // Volume Functions

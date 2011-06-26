@@ -180,13 +180,9 @@ bool TempoMarker::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool TempoMarker::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Jan 13, 2005
     SystemSymbol::Deserialize(stream, version);
-    CHECK_THAT(stream.CheckState(), false);
     
     stream.ReadMFCString(m_description);
-    CHECK_THAT(stream.CheckState(), false);
         
     // Version 1.0.2 or less
     if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
@@ -216,7 +212,7 @@ bool TempoMarker::Deserialize(PowerTabInputStream& stream, uint16_t version)
         SetStandardMarker(beatType, beatsPerMinute, m_description.c_str(), tripletFeel);
     }
  
-    return (stream.CheckState());
+    return true;
 }
 
 // Type Functions

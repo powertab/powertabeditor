@@ -108,17 +108,11 @@ bool RehearsalSign::Serialize(PowerTabOutputStream& stream) const
 /// @param stream Power Tab input stream to load from
 /// @param version File version
 /// @return True if the object was deserialized, false if not
-bool RehearsalSign::Deserialize(PowerTabInputStream& stream, uint16_t version)
+bool RehearsalSign::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
-    UNUSED(version);
-
     stream >> m_letter;
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadMFCString(m_description);
-    CHECK_THAT(stream.CheckState(), false);
-
-    return (stream.CheckState());
+    return true;
 }
 
 // Letter Functions

@@ -141,14 +141,10 @@ bool GuitarIn::Serialize(PowerTabOutputStream& stream) const
 /// @param stream Power Tab input stream to load from
 /// @param version File version
 /// @return True if the object was deserialized, false if not
-bool GuitarIn::Deserialize(PowerTabInputStream& stream, uint16_t version)
+bool GuitarIn::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
-    UNUSED(version);
-
 	stream >> m_system >> m_staff >> m_position >> m_data;
-	CHECK_THAT(stream.CheckState(), false);
-	
-	return (stream.CheckState());
+    return true;
 }
 
 // Guitars Functions

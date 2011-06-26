@@ -112,13 +112,9 @@ bool ChordText::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool ChordText::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Jan 3, 2005
     stream >> m_position;
-    CHECK_THAT(stream.CheckState(), false);
 
     m_chordName.Deserialize(stream, version);
-    CHECK_THAT(stream.CheckState(), false);
 
-    return (stream.CheckState());
+    return true;
 }

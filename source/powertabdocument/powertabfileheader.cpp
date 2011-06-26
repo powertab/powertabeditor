@@ -361,26 +361,21 @@ bool PowerTabFileHeader::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool PowerTabFileHeader::Deserialize(PowerTabInputStream& stream)
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
-	
 	// Read the special Power Tab file marker
 	uint32_t marker = 0;
 	stream >> marker;
-	CHECK_THAT(stream.CheckState(), false);
 	
 	if (!IsValidPowerTabFileMarker(marker))
 	{
-		return (false);
+        return false;
 	}
 	
 	// Read the file version
 	stream >> m_version;
-	CHECK_THAT(stream.CheckState(), false);
 	
 	if (!IsValidFileVersion(m_version))
 	{
-		return (false);
+        return false;
 	}
 	
 	// Based on the file version, deserialize
@@ -396,7 +391,7 @@ bool PowerTabFileHeader::Deserialize(PowerTabInputStream& stream)
 	else
 		returnValue = DeserializeVersion1_7(stream);
 	
-	return (returnValue);
+    return returnValue;
 }
 
 /// Loads a v1.7 PowerTabFileHeader object from a Power Tab input stream
@@ -404,119 +399,70 @@ bool PowerTabFileHeader::Deserialize(PowerTabInputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool PowerTabFileHeader::DeserializeVersion1_7(PowerTabInputStream& stream)
 {
-	//------Last Checked------//
-	// - Dec 29, 2004
 	stream >> m_fileType;
-	CHECK_THAT(stream.CheckState(), false);
 	
 	if (!IsValidFileType(m_fileType))
 	{
-		return (false);
+        return false;
 	}
 	
 	if (m_fileType == FILETYPE_SONG)
 	{
 		stream >> m_songData.contentType;
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.title);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.artist);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream >> m_songData.releaseType;
-		CHECK_THAT(stream.CheckState(), false);
 
 		// CASE: Public audio release
 		if (m_songData.releaseType == RELEASETYPE_PUBLIC_AUDIO)
 		{
 			stream >> m_songData.audioData.type;
-			CHECK_THAT(stream.CheckState(), false);
-			
 			stream.ReadMFCString(m_songData.audioData.title);
-			CHECK_THAT(stream.CheckState(), false);
-			
 			stream >> m_songData.audioData.year >> m_songData.audioData.live;
-			CHECK_THAT(stream.CheckState(), false);
 		}
 		// CASE: Public video release
 		else if (m_songData.releaseType == RELEASETYPE_PUBLIC_VIDEO)
 		{
 			stream.ReadMFCString(m_songData.videoData.title);
-			CHECK_THAT(stream.CheckState(), false);
-			
 			stream >> m_songData.videoData.live;
-			CHECK_THAT(stream.CheckState(), false);
 		}
 		// CASE: Bootleg release
 		else if (m_songData.releaseType == RELEASETYPE_BOOTLEG)
 		{
 			stream.ReadMFCString(m_songData.bootlegData.title);
-			CHECK_THAT(stream.CheckState(), false);
-			
 			stream >> m_songData.bootlegData.month >>
 				m_songData.bootlegData.day >> m_songData.bootlegData.year;
-			CHECK_THAT(stream.CheckState(), false);
 		}
 
 		stream >> m_songData.authorType;
-		CHECK_THAT(stream.CheckState(), false);
 
 		// CASE: Author known
 		if (m_songData.authorType == AUTHORTYPE_AUTHORKNOWN)
 		{
 			stream.ReadMFCString(m_songData.authorData.composer);
-			CHECK_THAT(stream.CheckState(), false);
-			
 			stream.ReadMFCString(m_songData.authorData.lyricist);
-			CHECK_THAT(stream.CheckState(), false);
 		}
 		
 		stream.ReadMFCString(m_songData.arranger);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.guitarScoreTranscriber);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.bassScoreTranscriber);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.copyright);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.lyrics);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.guitarScoreNotes);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_songData.bassScoreNotes);
-		CHECK_THAT(stream.CheckState(), false);
 	}
 	// Lesson
 	else if (m_fileType == FILETYPE_LESSON)
 	{
 		stream.ReadMFCString(m_lessonData.title);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_lessonData.subtitle);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream >> m_lessonData.musicStyle >> m_lessonData.level;
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_lessonData.author);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_lessonData.notes);
-		CHECK_THAT(stream.CheckState(), false);
-		
 		stream.ReadMFCString(m_lessonData.copyright);
-		CHECK_THAT(stream.CheckState(), false);
 	}
 		
-	return (stream.CheckState());
+    return true;
 }
 
 /// Loads a v1.5 PowerTabFileHeader object from a Power Tab input stream
@@ -531,32 +477,15 @@ bool PowerTabFileHeader::DeserializeVersion1_5(PowerTabInputStream& stream)
         std::string releaseTitle = "";
 
 	stream.ReadMFCString(m_songData.title);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.artist);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream >> releasedOn;
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(releaseTitle);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream >> live;
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.authorData.composer);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.authorData.lyricist);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.arranger);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream >> year >> m_songData.authorType;
-	CHECK_THAT(stream.CheckState(), false);
-		
+
 	// Clear the composer and lyricist if the song is traditional
 	if (m_songData.authorType == AUTHORTYPE_TRADITIONAL)
 	{
@@ -565,10 +494,7 @@ bool PowerTabFileHeader::DeserializeVersion1_5(PowerTabInputStream& stream)
 	}
 
 	stream.ReadMFCString(m_songData.copyright);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.lyrics);
-	CHECK_THAT(stream.CheckState(), false);
 	
 	// Soundtrack becomes LP
 	if (releasedOn == RO_SOUNDTRACK)
@@ -604,7 +530,7 @@ bool PowerTabFileHeader::DeserializeVersion1_5(PowerTabInputStream& stream)
 		m_songData.audioData.year = year;
 	}
 	
-	return (stream.CheckState());
+    return true;
 }
 
 /// Loads a v1.0 or v1.0.2 format PowerTabFileHeader object from a Power Tab
@@ -620,34 +546,15 @@ bool PowerTabFileHeader::DeserializeVersion1_0(PowerTabInputStream& stream)
         std::string releaseTitle;
 
 	stream.ReadMFCString(m_songData.title);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.artist);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream >> releasedOn;
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(releaseTitle);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream >> live;
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.authorData.composer);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.authorData.lyricist);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.arranger);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.guitarScoreTranscriber);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream >> year >> m_songData.authorType;
-	CHECK_THAT(stream.CheckState(), false);
 	
 	// Clear the composer and lyricist if the song is traditional
 	if (m_songData.authorType == AUTHORTYPE_TRADITIONAL)
@@ -657,13 +564,8 @@ bool PowerTabFileHeader::DeserializeVersion1_0(PowerTabInputStream& stream)
 	}
 	
 	stream.ReadMFCString(m_songData.copyright); 
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.lyrics);
-	CHECK_THAT(stream.CheckState(), false);
-	
 	stream.ReadMFCString(m_songData.guitarScoreNotes);
-	CHECK_THAT(stream.CheckState(), false);
 
 	// Bootleg becomes bootleg
 	if (releasedOn == RO_BOOTLEG)
@@ -688,7 +590,7 @@ bool PowerTabFileHeader::DeserializeVersion1_0(PowerTabInputStream& stream)
 		m_songData.audioData.year = year;
 	}
 	
-	return (stream.CheckState());
+    return true;
 }
 
 /// Gets the release title for a song (audio title or video title or bootleg

@@ -203,22 +203,16 @@ bool Guitar::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool Guitar::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Dec 8, 2004
     stream >> m_number;
-    CHECK_THAT(stream.CheckState(), false);
 
     stream.ReadMFCString(m_description);
-    CHECK_THAT(stream.CheckState(), false);
 
     stream >> m_preset >> m_initialVolume >> m_pan >> m_reverb >> m_chorus >>
         m_tremolo >> m_phaser >> m_capo;
-    CHECK_THAT(stream.CheckState(), false);
 
     m_tuning.Deserialize(stream, version);
-    CHECK_THAT(stream.CheckState(), false);
 
-    return (stream.CheckState());
+    return true;
 }
 
 // Operations

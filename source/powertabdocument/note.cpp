@@ -125,10 +125,9 @@ bool Note::Serialize(PowerTabOutputStream& stream) const
 bool Note::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
     stream >> m_stringData >> m_simpleData;
-    CHECK_THAT(stream.CheckState(), false);
 
     stream.ReadSmallVector(m_complexSymbolArray);
-    return stream.CheckState();
+    return true;
 }
 
 // String Functions

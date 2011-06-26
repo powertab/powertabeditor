@@ -134,13 +134,10 @@ bool RhythmSlash::Serialize(PowerTabOutputStream& stream) const
 /// @param stream Power Tab input stream to load from
 /// @param version File version
 /// @return True if the object was deserialized, false if not
-bool RhythmSlash::Deserialize(PowerTabInputStream& stream, uint16_t version)
+bool RhythmSlash::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
-	UNUSED(version);
-
 	stream >> m_position >> m_beaming >> m_data;
-	CHECK_THAT(stream.CheckState(), false);
-	return (stream.CheckState());
+    return true;
 }
 
 // Duration Type Functions

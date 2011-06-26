@@ -146,7 +146,6 @@ bool ChordName::Deserialize(PowerTabInputStream& stream, uint16_t version)
     {
         uint8_t key;
         stream >> key >> m_formula >> m_formulaModifications >> m_extra;
-        CHECK_THAT(stream.CheckState(), false);
 
         uint8_t tonicKey = (uint8_t)((key >> 4) & 0xf);
         uint8_t bassKey = (uint8_t)(key & 0xf);
@@ -177,10 +176,9 @@ bool ChordName::Deserialize(PowerTabInputStream& stream, uint16_t version)
     else
     {
         stream >> m_key >> m_formula >> m_formulaModifications >> m_extra;
-        CHECK_THAT(stream.CheckState(), false);
     }
 
-    return (stream.CheckState());
+    return true;
 }
 
 // Tonic Functions

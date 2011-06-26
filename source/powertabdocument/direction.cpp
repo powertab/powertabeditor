@@ -109,10 +109,9 @@ bool Direction::Serialize(PowerTabOutputStream& stream) const
 bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
     stream >> m_position;
-    CHECK_THAT(stream.CheckState(), false);
 
     stream.ReadSmallVector(m_symbolArray);
-    return stream.CheckState();
+    return true;
 }
 
 /// Determines whether a position is valid

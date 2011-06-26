@@ -117,13 +117,10 @@ bool TimeSignature::Serialize(PowerTabOutputStream& stream) const
 /// @param stream Power Tab input stream to load from
 /// @param version File version
 /// @return True if the object was deserialized, false if not
-bool TimeSignature::Deserialize(PowerTabInputStream& stream,
-    uint16_t version)
+bool TimeSignature::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
-    UNUSED(version);
-
     stream >> m_data >> m_pulses;
-    return (stream.CheckState());
+    return true;
 }
 
 // Meter Functions

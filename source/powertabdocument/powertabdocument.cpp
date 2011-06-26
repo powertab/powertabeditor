@@ -95,32 +95,30 @@ bool PowerTabDocument::Save(const string& fileName) const
 /// @return True if the file was loaded, false if not
 bool PowerTabDocument::Load(const string& fileName)
 {
-    std::ifstream fileStream(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
-    PowerTabInputStream stream(fileStream);
-
-    if (stream.fail())
-        return false;
-
-    DeleteContents();
-
-    // read the header
-    m_header.Deserialize(stream);
-    if (!stream.CheckState())
+    try
     {
+        std::ifstream fileStream(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
+        PowerTabInputStream stream(fileStream);
+
         DeleteContents();
+
+        // read the header
+        if (!m_header.Deserialize(stream))
+        {
+            return false;
+        }
+
+        // read the rest of the document
+        Deserialize(stream);
+
+        m_header.SetVersion(PowerTabFileHeader::FILEVERSION_CURRENT);
+        m_fileName = fileName;
+    }
+    catch (std::ifstream::failure)
+    {
         return false;
     }
 
-    // read the rest of the document
-    Deserialize(stream);
-    if (!stream.CheckState())
-    {
-        DeleteContents();
-        return false;
-    }
-
-    m_header.SetVersion(PowerTabFileHeader::FILEVERSION_CURRENT);
-    m_fileName = fileName;
     return true;
 }
 
@@ -133,42 +131,26 @@ bool PowerTabDocument::Deserialize(PowerTabInputStream& stream)
     const uint16_t version = m_header.GetVersion();
 
     // Read the guitar score
-    Score* guitarScore = new Score;
-    guitarScore->Deserialize(stream, version);
-    if (!stream.CheckState())
-    {
-        delete guitarScore;
-        return (false);
-    }
-    m_scoreArray.push_back(guitarScore);
+    m_scoreArray.push_back(new Score);
+    m_scoreArray[0]->Deserialize(stream, version);
 
     // Read the bass score
-    Score* bassScore = new Score;
-    bassScore->Deserialize(stream, version);
-    if (!stream.CheckState())
-    {
-        delete bassScore;
-        return (false);
-    }
-    m_scoreArray.push_back(bassScore);
+    m_scoreArray.push_back(new Score);
+    m_scoreArray[1]->Deserialize(stream, version);
 
-    guitarScore->MergeScore(*bassScore);
+    m_scoreArray[0]->MergeScore(*m_scoreArray[1]);
 
     // Read the document font settings
-    uint32_t fontSettingIndex = 0;
-    for (; fontSettingIndex < NUM_DOCUMENT_FONT_SETTINGS; fontSettingIndex++)
+    for (size_t fontSettingIndex = 0; fontSettingIndex < NUM_DOCUMENT_FONT_SETTINGS; fontSettingIndex++)
     {
         FontSetting fontSetting;
         fontSetting.Deserialize(stream, version);
-        CHECK_THAT(stream.CheckState(), false);
 
         m_fontSettingArray[fontSettingIndex] = fontSetting;
     }
 
     // Read the line spacing and fade values
     stream >> m_tablatureStaffLineSpacing >> m_fadeIn >> m_fadeOut;
-    CHECK_THAT(stream.CheckState(), false);
-
     return true;
 }
 

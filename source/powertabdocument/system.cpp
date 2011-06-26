@@ -160,9 +160,6 @@ bool System::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Jan 14, 2005
-
     // Version 1.0 and 1.0.2
     if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
         version == PowerTabFileHeader::FILEVERSION_1_0_2)
@@ -171,12 +168,10 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         uint16_t endBar;
 
         stream.ReadMFCRect(m_rect);
-        CHECK_THAT(stream.CheckState(), false);
 
         stream >> key >> endBar >> m_positionSpacing >>
             m_rhythmSlashSpacingAbove >> m_rhythmSlashSpacingBelow >>
             m_extraSpacing;
-        CHECK_THAT(stream.CheckState(), false);
 
         // Update the key signature at start of section (always shown)
         uint8_t keyType = (uint8_t)((key >> 4) & 0xf);
@@ -201,19 +196,10 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         //SetEndBar(barType, repeatCount);
 
         stream.ReadVector(m_directionArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_chordTextArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_rhythmSlashArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_staffArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_barlineArray, version);
-        CHECK_THAT(stream.CheckState(), false);
 
         // Any barline at position zero is now stored in the section m_startBar
         if (GetBarlineCount() > 0)
@@ -258,37 +244,24 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
     else
     {
         stream.ReadMFCRect(m_rect);
-        CHECK_THAT(stream.CheckState(), false);
 
         uint8_t endBar = 0;
         stream >> endBar >> m_positionSpacing >> m_rhythmSlashSpacingAbove >>
             m_rhythmSlashSpacingBelow >> m_extraSpacing;
-        CHECK_THAT(stream.CheckState(), false);
 
         // Update end bar (using Barline class is easier to use)
         m_endBar->SetBarlineData((uint8_t)((endBar & 0xe0) >> 5),
             (uint8_t)(endBar & 0x1f));
 
         m_startBar->Deserialize(stream, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_directionArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_chordTextArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_rhythmSlashArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_staffArray, version);
-        CHECK_THAT(stream.CheckState(), false);
-
         stream.ReadVector(m_barlineArray, version);
-        CHECK_THAT(stream.CheckState(), false);
     }
 
-    return (stream.CheckState());
+    return true;
 }
 
 // Barline functions

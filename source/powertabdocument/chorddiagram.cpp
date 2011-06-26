@@ -178,13 +178,11 @@ bool ChordDiagram::Serialize(PowerTabOutputStream& stream) const
 bool ChordDiagram::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
     m_chordName.Deserialize(stream, version);
-    CHECK_THAT(stream.CheckState(), false);
 
     stream >> m_topFret;
-    CHECK_THAT(stream.CheckState(), false);
 
     stream.ReadSmallVector(m_fretNumberArray);
-    return stream.CheckState();
+    return true;
 }
 
 // Chord Diagram Functions

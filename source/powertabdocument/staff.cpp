@@ -193,15 +193,13 @@ bool Staff::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream >> m_data >> m_standardNotationStaffAboveSpacing >>
               m_standardNotationStaffBelowSpacing >> m_symbolSpacing >>
               m_tablatureStaffBelowSpacing;
-    CHECK_THAT(stream.CheckState(), false);
 
     for (size_t i = 0; i < positionArrays.size(); i++)
     {
         stream.ReadVector(positionArrays[i], version);
-        CHECK_THAT(stream.CheckState(), false);
     }
 
-    return stream.CheckState();
+    return true;
 }
 
 /// Sets the clef used on the standard notation staff

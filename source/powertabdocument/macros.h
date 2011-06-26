@@ -43,10 +43,6 @@ void logToDebug(const std::string& msg, const std::string& file, int line);
 
 #endif
 
-// Useful macro for hiding "unused parameter" warnings
-#define UNUSED(x) (void)x;
-
-
 std::string ArabicToRoman(uint32_t number, bool upperCase);
 
 #endif

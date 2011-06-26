@@ -107,13 +107,9 @@ bool Tuning::Serialize(PowerTabOutputStream& stream) const
 bool Tuning::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
     stream.ReadMFCString(m_name);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream >> m_data;
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadSmallVector(m_noteArray);
-    return stream.CheckState();
+    return true;
 }
 
 /// Determines if the tuning notes are the same as that of another Tuning object

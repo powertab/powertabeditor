@@ -144,20 +144,15 @@ bool FontSetting::Serialize(PowerTabOutputStream& stream) const
 /// @param stream Power Tab input stream to load from
 /// @param version File version
 /// @return True if the object was deserialized, false if not
-bool FontSetting::Deserialize(PowerTabInputStream& stream, uint16_t version)
+bool FontSetting::Deserialize(PowerTabInputStream& stream, uint16_t)
 {
-    UNUSED(version);
-
     stream.ReadMFCString(m_faceName);
-    CHECK_THAT(stream.CheckState(), false);
     
     stream >> m_pointSize >> m_weight >> m_italic >> m_underline >> m_strikeOut;
-    CHECK_THAT(stream.CheckState(), false);
     
     stream.ReadWin32ColorRef(m_color);
-    CHECK_THAT(stream.CheckState(), false);
     
-    return (stream.CheckState());
+    return true;
 }
 
 /// Updates the contents of the FontSetting object

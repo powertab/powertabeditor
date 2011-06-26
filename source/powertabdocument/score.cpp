@@ -125,38 +125,21 @@ bool Score::Serialize(PowerTabOutputStream& stream) const
 /// @return True if the object was deserialized, false if not
 bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     stream.ReadVector(m_guitarArray, version);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_chordDiagramArray, version);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_floatingTextArray, version);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_guitarInArray, version);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_tempoMarkerArray, version);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_dynamicArray, version);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_alternateEndingArray, version);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_systemArray, version);
-    CHECK_THAT(stream.CheckState(), false);
 
     if (version == PowerTabFileHeader::FILEVERSION_1_7)
     {
         UpdateToVer2Structure();
     }
 
-    return (stream.CheckState());
+    return true;
 }
 
 /// Removes the system at the specified index

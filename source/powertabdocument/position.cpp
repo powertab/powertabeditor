@@ -208,13 +208,10 @@ bool Position::Serialize(PowerTabOutputStream& stream) const
 bool Position::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
     stream >> m_position >> m_beaming >> m_data;
-    CHECK_THAT(stream.CheckState(), false);
 
     stream.ReadSmallVector(m_complexSymbolArray);
-    CHECK_THAT(stream.CheckState(), false);
-
     stream.ReadVector(m_noteArray, version);
-    return stream.CheckState();
+    return true;
 }
 
 // Duration Type Functions

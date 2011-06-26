@@ -126,21 +126,15 @@ bool FloatingText::Serialize(PowerTabOutputStream & stream) const
 /// @return True if the object was deserialized, false if not
 bool FloatingText::Deserialize(PowerTabInputStream & stream, uint16_t version)
 {
-    //------Last Checked------//
-    // - Dec 7, 2004
     stream.ReadMFCString(m_text);
-    CHECK_THAT(stream.CheckState(), false);
     
     stream.ReadMFCRect(m_rect);
-    CHECK_THAT(stream.CheckState(), false);
     
     stream >> m_flags;
-    CHECK_THAT(stream.CheckState(), false);
     
     m_fontSetting.Deserialize(stream, version);
-    CHECK_THAT(stream.CheckState(), false);
     
-    return (stream.CheckState());
+    return true;
 }
 
 // Flag Functions
