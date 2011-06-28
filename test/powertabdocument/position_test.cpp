@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
             Note* newNote = new Note(2, 0);
             pos->InsertNote(newNote);
 
-            BOOST_CHECK_EQUAL(pos->GetNoteCount(), 5);
+            BOOST_CHECK_EQUAL(pos->GetNoteCount(), 5u);
             BOOST_CHECK_EQUAL(pos->GetNoteByString(2), newNote);
         }
 
@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_SUITE(PositionTest)
         {
             pos->RemoveNote(0);
 
-            BOOST_CHECK_EQUAL(pos->GetNoteCount(), 3);
+            BOOST_CHECK_EQUAL(pos->GetNoteCount(), 3u);
             BOOST_CHECK_EQUAL(pos->GetNoteByString(0), (Note*)NULL);
         }
 

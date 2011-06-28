@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_SUITE(TestEditRest)
         action.undo();
 
         BOOST_CHECK(!pos.IsRest());
-        BOOST_CHECK_EQUAL(pos.GetNoteCount(), 0);
+        BOOST_CHECK_EQUAL(pos.GetNoteCount(), 0u);
     }
 
     BOOST_AUTO_TEST_CASE(ModifyExistingRest)
