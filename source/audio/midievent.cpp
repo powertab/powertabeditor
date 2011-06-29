@@ -38,7 +38,7 @@ bool MidiEvent::operator<(const MidiEvent& event) const
     using namespace boost::test_tools;
 
     // compare timestamps using a floating point comparison
-    if (check_is_close(startTime, event.startTime, percent_tolerance(0.001)))
+    if (check_is_close(startTime, event.startTime, fpc::percent_tolerance(0.001)))
     {
         if (systemIndex == event.systemIndex)
         {
