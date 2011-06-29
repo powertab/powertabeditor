@@ -9,194 +9,102 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __POWERTABDOC_H__
-#define __POWERTABDOC_H__
+#ifndef POWER_TAB_DOCUMENT_H
+#define POWER_TAB_DOCUMENT_H
 
 #include "powertabfileheader.h"
 #include "fontsetting.h"
 
 #include <vector>
-
-#define NUM_DOCUMENT_FONT_SETTINGS                  3                           ///< Number of document wide font settings
-#define DOCUMENT_FONT_SETTING_CHORD_NAME            0                           ///< Font used to draw the chord name (chord text)
-#define DOCUMENT_FONT_SETTING_TABLATURE_NUMBERS     1                           ///< Font used to draw the fret numbers on the tablature staff
-#define DOCUMENT_FONT_LYRICS                        2                           ///< Unused
+#include <boost/array.hpp>
 
 class Score;
 
 /// Loads and saves Power Tab files (.ptb)
 class PowerTabDocument
 {
-// Constants
 public:   
-	// Default Constants
-	static const int32_t    DEFAULT_TABLATURE_STAFF_LINE_SPACING;               ///< Default value for the tablature staff line spacing member variable
-	static const uint32_t   DEFAULT_FADE_IN;                                    ///< Default value for the fade in member variable    
-	static const uint32_t   DEFAULT_FADE_OUT;                                   ///< Default value for the fade out member variable
-	
-	// Tablature Staff Line Spacing Constants
-	static const int32_t    MIN_TABLATURE_STAFF_LINE_SPACING;                   ///< Minimum allowed value for the tablature staff line spacing member variable
-	static const int32_t    MAX_TABLATURE_STAFF_LINE_SPACING;                   ///< Maximum allowed value for the tablature staff line spacing member variable
+    // Default Constants
+    static const int32_t    DEFAULT_TABLATURE_STAFF_LINE_SPACING;   ///< Default value for the tablature staff line spacing member variable
+    static const uint32_t   DEFAULT_FADE_IN;                        ///< Default value for the fade in member variable
+    static const uint32_t   DEFAULT_FADE_OUT;                       ///< Default value for the fade out member variable
 
-	// Score Constants
-	static const uint8_t     NUM_SCORES;                                         ///< Number of scores per document (guitar + bass)
-	static const uint8_t     GUITAR_SCORE;                                       ///< Index of the guitar score
-	static const uint8_t     BASS_SCORE;                                         ///< Index of the bass score
-	
-	// Guitar Constants
-	static const uint8_t     MAX_GUITARS;                                        ///< Maximum number of guitars allowed per document
-	
-// Member Variables
-protected:
-	PowerTabFileHeader  m_header;                                               ///< The one and only header (contains file information)
-        std::vector<Score*>          m_scoreArray;                                           ///< List of scores (zeroth element = guitar score, first element = bass score)
-	
-	FontSetting         m_fontSettingArray[NUM_DOCUMENT_FONT_SETTINGS];         ///< List of global font settings
-	int32_t             m_tablatureStaffLineSpacing;                            ///< Amount of space used between lines on the tablature staff
-	uint32_t            m_fadeIn;                                               ///< Amount of fade in at the start of the song (in MIDI units - see generalmidi.h)
-	uint32_t            m_fadeOut;                                              ///< Amount of fade out at the end of the song (in MIDI units - see generalmidi.h)
-        std::string         m_fileName; ///< Name of the currently open file
+    // Tablature Staff Line Spacing Constants
+    static const int32_t    MIN_TABLATURE_STAFF_LINE_SPACING;       ///< Minimum allowed value for the tablature staff line spacing member variable
+    static const int32_t    MAX_TABLATURE_STAFF_LINE_SPACING;       ///< Maximum allowed value for the tablature staff line spacing member variable
 
-// Constructor/Destructor
+    // Score Constants
+    static const uint8_t    NUM_SCORES;                             ///< Number of scores per document (guitar + bass)
+    static const uint8_t    GUITAR_SCORE;                           ///< Index of the guitar score
+    static const uint8_t    BASS_SCORE;                             ///< Index of the bass score
+
+    // Guitar Constants
+    static const uint8_t     MAX_GUITARS;                           ///< Maximum number of guitars allowed per document
+
+    enum
+    {
+        FONT_SETTING_CHORD_NAME,           ///< Font used to draw the chord name (chord text)
+        FONT_SETTING_TABLATURE_NUMBERS,    ///< Font used to draw the fret numbers on the tablature staff
+        FONT_SETTING_LYRICS,               ///< Unused
+        NUM_FONT_SETTINGS                  ///< Number of document wide font settings
+    };
+
+    // Member Variables
+private:
+    PowerTabFileHeader  m_header;                                   ///< The one and only header (contains file information)
+    std::vector<Score*> m_scoreArray;                               ///< List of scores (zeroth element = guitar score, first element = bass score)
+
+    boost::array<FontSetting, NUM_FONT_SETTINGS> m_fontSettings; ///< List of global font settings
+    int32_t             m_tablatureStaffLineSpacing;                    ///< Amount of space used between lines on the tablature staff
+    uint32_t            m_fadeIn;                                       ///< Amount of fade in at the start of the song (in MIDI units - see generalmidi.h)
+    uint32_t            m_fadeOut;                                      ///< Amount of fade out at the end of the song (in MIDI units - see generalmidi.h)
+    std::string         m_fileName;                                     ///< Name of the currently open file
+
 public:
-	PowerTabDocument();
-	~PowerTabDocument();
+    PowerTabDocument();
+    ~PowerTabDocument();
 
-        // Equality operator (based on file name)
-        bool operator==(const PowerTabDocument& doc)
-        {
-            return m_fileName == doc.m_fileName;
-        }
+    void Init();
 
-        void Init();
-   
-// Save Functions
-        bool Save(const std::string& fileName) const;
-	
-// Load Functions
-        bool Load(const std::string& fileName);
-        bool Deserialize(PowerTabInputStream& stream);
-	
-        void DeleteContents();
+    bool Save(const std::string& fileName) const;
+    bool Load(const std::string& fileName);
 
-        std::string GetFileName() const
-        {
-            return m_fileName;
-        }
-        bool SetFileName(const std::string& fileName)
-        {
-            m_fileName = fileName;
-            return true;
-        }
+    bool Deserialize(PowerTabInputStream& stream);
 
-// Header Functions
-	/// Gets a reference to the header
-	/// @return A reference to the header
-	PowerTabFileHeader& GetHeaderRef()      
-		{return (m_header);}
-	/// Gets a constant reference to the header
-	/// @return A constant reference to the header
-	const PowerTabFileHeader& GetHeaderConstRef() const
-		{return (m_header);}
-		
-// Score Functions
-	/// Gets a pointer to the guitar score
-	/// @return A pointer to the guitar score
-	Score* GetGuitarScore() const           
-		{CHECK_THAT(!m_scoreArray.empty(), NULL); return (m_scoreArray[0]);}
-	/// Gets a pointer to the bass score
-	/// @return A pointer to the bass score
-	Score* GetBassScore() const
-		{CHECK_THAT(m_scoreArray.size() >= 2, NULL); return (m_scoreArray[1]);}
-	void DeleteScoreArrayContents();
+    void DeleteContents();
 
-// Font Setting Functions
-	/// Sets the font setting used by chord names
-	/// @param fontSetting Font setting to set
-	void SetChordNameFontSetting(const FontSetting& fontSetting)
-		{m_fontSettingArray[DOCUMENT_FONT_SETTING_CHORD_NAME] = fontSetting;}
-	/// Gets the font setting used by chord names
-	/// @return The font setting used by chord names
-	FontSetting GetChordNameFontSetting() const
-		{return (m_fontSettingArray[DOCUMENT_FONT_SETTING_CHORD_NAME]);}
-	/// Gets a reference to the font setting used by chord names
-	/// @return A reference to the font setting used by chord names
-	FontSetting& GetChordNameFontSettingRef()
-		{return (m_fontSettingArray[DOCUMENT_FONT_SETTING_CHORD_NAME]);}
-	/// Gets a constant reference to the font setting used by chord names
-	/// @return A constant reference to the font setting used by chord names
-	const FontSetting& GetChordNameFontSettingConstRef() const
-		{return (m_fontSettingArray[DOCUMENT_FONT_SETTING_CHORD_NAME]);}
+    std::string GetFileName() const;
+    void SetFileName(const std::string& fileName);
 
-	/// Sets the font setting used by tablature numbers on the tablature staff
-	/// @param fontSetting Font setting to set
-	void SetTablatureNumbersFontSetting(const FontSetting& fontSetting)
-		{m_fontSettingArray[DOCUMENT_FONT_SETTING_TABLATURE_NUMBERS] = fontSetting;}
-	/// Gets the font setting used by tablature numbers on the tablature staff
-	/// @return The font setting used by tablature numbers on the tablature
-	/// staff
-	FontSetting GetTablatureNumbersFontSetting() const
-		{return (m_fontSettingArray[DOCUMENT_FONT_SETTING_TABLATURE_NUMBERS]);}
-	/// Gets a reference to the font setting used by tablature numbers on the
-	/// tablature staff
-	/// @return A reference to the font setting used by tablature numbers on the
-	/// tablature staff
-	FontSetting& GetTablatureNumbersFontSettingRef()
-		{return (m_fontSettingArray[DOCUMENT_FONT_SETTING_TABLATURE_NUMBERS]);}
-	/// Gets a constant reference to the font setting used by tablature numbers
-	/// on the tablature staff
-	/// @return A constant reference to the font setting used by tablature
-	/// numbers on the tablature staff
-	const FontSetting& GetTablatureNumbersFontSettingConstRef() const
-		{return (m_fontSettingArray[DOCUMENT_FONT_SETTING_TABLATURE_NUMBERS]);}
-		
-// Tablature Staff Line Spacing Functions
-	/// Determines if a tablature staff line spacing value is valid
-	/// @param tablatureStaffLineSpacing Tablature staff line spacing value to
-	/// validate
-	/// @return True if the tablature staff line spacing is valid, false if not
-	static bool IsValidTablatureStaffLineSpacing(
-		int32_t tablatureStaffLineSpacing)
-	{
-		return ((tablatureStaffLineSpacing >= MIN_TABLATURE_STAFF_LINE_SPACING) &&
-			(tablatureStaffLineSpacing <= MAX_TABLATURE_STAFF_LINE_SPACING));
-	}
-	/// Sets the amount of spacing between tablature staff lines
-	/// @param tablatureStaffLineSpacing Amount of spacing to set
-	bool SetTablatureStaffLineSpacing(uint32_t tablatureStaffLineSpacing)
-	{
-		CHECK_THAT(IsValidTablatureStaffLineSpacing(tablatureStaffLineSpacing), false);
-		m_tablatureStaffLineSpacing = tablatureStaffLineSpacing;
-		return (true);
-	}
-	/// Gets the amount of spacing between tablature staff lines
-	/// @return The amount of spacing between tablature staff lines
-	int32_t GetTablatureStaffLineSpacing() const
-		{return (m_tablatureStaffLineSpacing);}
-	
-// Fade In Functions
-	/// Sets the amount of fade in at the start of the song or lesson
-	/// @param fadeIn Amount of fade in to set, in MIDI units
-	/// (see generalmidi.h)
-	void SetFadeIn(uint32_t fadeIn)         
-		{m_fadeIn = fadeIn;}
-	/// Gets the amount of fade in at the start of the song or lesson
-	/// @return The amount of fade in at the start of the song or lesson, in
-	/// MIDI units (see generalmidi.h)
-	uint32_t GetFadeIn() const
-		{return (m_fadeIn);}
-	
-// Fade Out Functions
-	/// Sets the amount of fade out at the end of the song or lesson
-	/// @param fadeOut Amount of fade out to set, in MIDI units
-	/// (see generalmidi.h)
-	void SetFadeOut(uint32_t fadeOut)       
-		{m_fadeOut = fadeOut;}
-	/// Gets the amount of fade out at the end of the song or lesson
-	/// @return The amount of fade out at the end of the song or lesson, in MIDI
-	/// units (see generalmidi.h)
-	uint32_t GetFadeOut() const             
-		{return (m_fadeOut);}
+    PowerTabFileHeader& GetHeader();
+    const PowerTabFileHeader& GetHeader() const;
+
+    // Score Functions
+    Score* GetGuitarScore() const;
+    Score* GetBassScore() const;
+    void DeleteScoreArrayContents();
+
+    // Font Setting Functions
+    void SetChordNameFontSetting(const FontSetting& fontSetting);
+    const FontSetting& GetChordNameFontSetting() const;
+    FontSetting& GetChordNameFontSetting();
+
+    void SetTabulatureNumbersFontSetting(const FontSetting& fontSetting);
+    const FontSetting& GetTabulatureNumbersFontSetting() const;
+    FontSetting& GetTabulatureNumbersFontSetting();
+
+    // Tablature Staff Line Spacing Functions
+    static bool IsValidTablatureStaffLineSpacing(int32_t tablatureStaffLineSpacing);
+    bool SetTablatureStaffLineSpacing(uint32_t tablatureStaffLineSpacing);
+    int32_t GetTablatureStaffLineSpacing() const;
+
+    // Fade In Functions
+    void SetFadeIn(uint32_t fadeIn);
+    uint32_t GetFadeIn() const;
+
+    // Fade Out Functions
+    void SetFadeOut(uint32_t fadeOut);
+    uint32_t GetFadeOut() const;
 };
 
-#endif
+#endif // POWER_TAB_DOCUMENT_H
