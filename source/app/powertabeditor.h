@@ -11,7 +11,7 @@
 #include <boost/bind.hpp>
 #include <sigfwd/sigfwd.hpp>
 
-#include <app/documentmanager.h>
+#include <boost/scoped_ptr.hpp>
 #include <actions/undomanager.h>
 #include <actions/toggleproperty.h>
 
@@ -27,6 +27,9 @@ class QActionGroup;
 class QEvent;
 class Note;
 class Position;
+class DocumentManager;
+class FileFormatManager;
+class FileFormat;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -38,7 +41,7 @@ class PowerTabEditor : public QMainWindow
 public:
     PowerTabEditor(QWidget *parent = 0);
     ~PowerTabEditor();
-    static std::unique_ptr<UndoManager> undoManager;
+    static boost::scoped_ptr<UndoManager> undoManager;
     static ScoreArea* getCurrentScoreArea();
     static std::vector<Position*> getSelectedPositions();
     static std::vector<Note*> getSelectedNotes();
@@ -46,6 +49,7 @@ public:
 protected:
     void createActions();
     void createMenus();
+    void initFileFormatMenus();
     void createTabArea();
     void updateScoreAreaActions(bool disable);
     bool eventFilter(QObject *obj, QEvent *ev);
@@ -59,6 +63,8 @@ protected:
     void shiftTabNumber(int direction);
     void updateNoteDuration(uint8_t duration);
     void editRest(uint8_t duration);
+
+    void importFile(const FileFormat& format);
 
 protected slots:
     void updateActions();
@@ -125,6 +131,7 @@ protected:
 
     QString getApplicationName() const;
     void setupNewDocument();
+    void updatePreviousDirectory(const QString& fileName);
 
     static QTabWidget* tabWidget;
     
@@ -132,13 +139,17 @@ protected:
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
 
-    DocumentManager documentManager;
+    boost::scoped_ptr<DocumentManager> documentManager;
+    boost::scoped_ptr<FileFormatManager> fileFormatManager;
+
     QMenu* fileMenu;
     QAction* newFileAct;
     QAction* openFileAct;
     QAction* closeTabAct;
     QAction* saveFileAsAct;
     QAction* preferencesAct;
+    QMenu* importFileMenu;
+    QMenu* exportFileMenu;
     QAction* exitAppAct;
 
     QMenu* editMenu;
@@ -263,11 +274,11 @@ protected:
     QAction* prevTabAct;
 
     QString previousDirectory; // previous directory that a file was opened in
-    std::unique_ptr<QStackedWidget> mixerList;
-    std::unique_ptr<QStackedWidget> playbackToolbarList;
+    boost::scoped_ptr<QStackedWidget> mixerList;
+    boost::scoped_ptr<QStackedWidget> playbackToolbarList;
 
     std::shared_ptr<SkinManager> skinManager;
-    std::unique_ptr<MidiPlayer> midiPlayer;
+    boost::scoped_ptr<MidiPlayer> midiPlayer;
 
 private:
     /// helper function for connecting an action to the performToggleProperty slot

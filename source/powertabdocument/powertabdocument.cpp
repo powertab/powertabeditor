@@ -234,7 +234,7 @@ bool PowerTabDocument::Load(const string& fileName)
         m_header.SetVersion(PowerTabFileHeader::FILEVERSION_CURRENT);
         m_fileName = fileName;
     }
-    catch (std::ifstream::failure)
+    catch (const std::ifstream::failure&)
     {
         return false;
     }

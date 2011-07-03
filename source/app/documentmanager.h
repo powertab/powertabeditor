@@ -14,6 +14,8 @@ public:
     DocumentManager();
 
     bool addDocument(const QString& fileName);
+    bool addImportedDocument(std::shared_ptr<PowerTabDocument> doc);
+
     void createDocument();
     void removeDocument(int index);
     std::shared_ptr<PowerTabDocument> getCurrentDocument() const;

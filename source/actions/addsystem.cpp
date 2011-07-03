@@ -15,6 +15,7 @@ void AddSystem::redo()
     std::shared_ptr<System> newSystem(new System);
 
     // adjust the location of the system (should be below the previous system)
+    // TODO - move this into the Score::InsertSystem method (or add another method)??
     if (index != 0)
     {
         const Rect prevRect = score->GetSystem(index - 1)->GetRect();

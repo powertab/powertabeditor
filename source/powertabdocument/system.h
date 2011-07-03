@@ -144,6 +144,7 @@ public:
 
     // Start Bar Functions
     BarlinePtr GetStartBar() const;
+    void SetStartBar(BarlinePtr barline);
 
     // Direction Functions
     bool IsValidDirectionIndex(uint32_t index) const;

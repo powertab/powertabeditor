@@ -6,6 +6,7 @@ SUBDIRS = \
     dialogs \
     painters \
     powertabdocument \
+    formats \
     widgets \
     sigfwd \
     app \

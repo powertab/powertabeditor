@@ -18,10 +18,13 @@
 #include <QKeyEvent>
 #include <QEvent>
 
+#include <boost/foreach.hpp>
+
 #include <app/scorearea.h>
 #include <app/skinmanager.h>
 #include <audio/midiplayer.h>
 #include <app/settings.h>
+#include <app/documentmanager.h>
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
@@ -80,14 +83,19 @@
 #include <actions/editkeysignature.h>
 #include <actions/edittimesignature.h>
 
+#include <formats/fileformatmanager.h>
+#include <formats/fileformat.h>
+
 using std::shared_ptr;
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
-std::unique_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
+boost::scoped_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
     fileFilter("Power Tab Documents (*.ptb)"),
+    documentManager(new DocumentManager),
+    fileFormatManager(new FileFormatManager),
     mixerList(new QStackedWidget),
     playbackToolbarList(new QStackedWidget),
     skinManager(new SkinManager("default"))
@@ -693,6 +701,9 @@ void PowerTabEditor::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(saveFileAsAct);
     fileMenu->addSeparator();
+    importFileMenu = fileMenu->addMenu(tr("Import..."));
+    exportFileMenu = fileMenu->addMenu(tr("Export..."));
+    fileMenu->addSeparator();
     fileMenu->addAction(preferencesAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAppAct);
@@ -835,6 +846,23 @@ void PowerTabEditor::createMenus()
     windowMenu = menuBar()->addMenu(tr("&Window"));
     windowMenu->addAction(nextTabAct);
     windowMenu->addAction(prevTabAct);
+
+    initFileFormatMenus();
+}
+
+/// Add all file formats to the Import/Export submenus
+void PowerTabEditor::initFileFormatMenus()
+{
+    // add a menu option for importing each file format
+    BOOST_FOREACH(const FileFormat& format, fileFormatManager->importedFileFormats())
+    {
+        QAction* action = new QAction(QString::fromStdString(format.name), this);
+
+        sigfwd::connect(action, SIGNAL(triggered()),
+                        boost::bind(&PowerTabEditor::importFile, this, format));
+
+        importFileMenu->addAction(action);
+    }
 }
 
 void PowerTabEditor::createTabArea()
@@ -858,11 +886,11 @@ void PowerTabEditor::createTabArea()
 // Create a blank file
 void PowerTabEditor::createNewFile()
 {
-    documentManager.createDocument();
+    documentManager->createDocument();
     setupNewDocument();
 }
 
-// Open a new file
+/// Open a new file
 void PowerTabEditor::openFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), previousDirectory, fileFilter);
@@ -876,15 +904,49 @@ void PowerTabEditor::openFile()
         qDebug() << "Opening file: " << fileName;
 
         // add the file to the document manager; draw the score and initialize if successful
-        if (documentManager.addDocument(fileName))
+        if (documentManager->addDocument(fileName))
         {
-            QFileInfo fileInfo(fileName);
-            // save this as the previous directory
-            previousDirectory = fileInfo.absolutePath();
-            QSettings settings;
-            settings.setValue(Settings::APP_PREVIOUS_DIRECTORY, previousDirectory);
-
+            updatePreviousDirectory(fileName);
             setupNewDocument();
+        }
+    }
+}
+
+/// Updates the previous directory (last directory that a file was opened from)
+void PowerTabEditor::updatePreviousDirectory(const QString& fileName)
+{
+    QFileInfo fileInfo(fileName);
+    previousDirectory = fileInfo.absolutePath();
+    QSettings settings;
+    settings.setValue(Settings::APP_PREVIOUS_DIRECTORY, previousDirectory);
+}
+
+void PowerTabEditor::importFile(const FileFormat& format)
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                                    tr("Import ") + QString::fromStdString(format.name),
+                                                    previousDirectory,
+                                                    QString::fromStdString(format.fileExtensions));
+
+    if (!fileName.isEmpty())
+    {
+        qDebug() << "Attempting to import: " << fileName << " ...";
+
+        if (auto document = fileFormatManager->import(fileName.toStdString(), format))
+        {
+            // convert file extension
+            QFileInfo fileInfo(fileName);
+            const QString newFileName = fileInfo.path() + "/" + fileInfo.completeBaseName() + ".ptb";
+            document->SetFileName(newFileName.toStdString());
+
+            qDebug() << "Import Successful!";
+            documentManager->addImportedDocument(document);
+            updatePreviousDirectory(fileName);
+            setupNewDocument();
+        }
+        else
+        {
+            qDebug() << "Import Failed";
         }
     }
 }
@@ -894,7 +956,7 @@ void PowerTabEditor::openFile()
 /// and is set as the current document
 void PowerTabEditor::setupNewDocument()
 {
-    std::shared_ptr<PowerTabDocument> doc(documentManager.getCurrentDocument());
+    std::shared_ptr<PowerTabDocument> doc(documentManager->getCurrentDocument());
 
     ScoreArea* score = new ScoreArea;
     score->installEventFilter(this);
@@ -941,10 +1003,10 @@ void PowerTabEditor::setupNewDocument()
     connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
 
     // switch to the new document
-    tabWidget->setCurrentIndex(documentManager.getCurrentDocumentIndex());
+    tabWidget->setCurrentIndex(documentManager->getCurrentDocumentIndex());
 
      // if this is the only open document, enable score area actions
-    if (documentManager.getCurrentDocumentIndex() == 0)
+    if (documentManager->getCurrentDocumentIndex() == 0)
     {
         updateScoreAreaActions(true);
     }
@@ -957,7 +1019,7 @@ void PowerTabEditor::saveFileAs()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), previousDirectory, fileFilter);
     if (!fileName.isEmpty())
     {
-        documentManager.getCurrentDocument()->Save(fileName.toStdString());
+        documentManager->getCurrentDocument()->Save(fileName.toStdString());
     }
 }
 
@@ -977,7 +1039,7 @@ void PowerTabEditor::closeCurrentTab()
 void PowerTabEditor::closeTab(int index)
 {
     undoManager->removeStack(index);
-    documentManager.removeDocument(index);
+    documentManager->removeDocument(index);
     delete tabWidget->widget(index);
 
     mixerList->removeWidget(mixerList->widget(index));
@@ -989,7 +1051,7 @@ void PowerTabEditor::closeTab(int index)
     undoManager->setActiveStackIndex(currentIndex);
     mixerList->setCurrentIndex(currentIndex);
     playbackToolbarList->setCurrentIndex(currentIndex);
-    documentManager.setCurrentDocumentIndex(currentIndex);
+    documentManager->setCurrentDocumentIndex(currentIndex);
 
     if (currentIndex == -1) // disable score-related actions if no documents are open
     {
@@ -1000,15 +1062,15 @@ void PowerTabEditor::closeTab(int index)
 // When the tab is switched, switch the current document in the document manager
 void PowerTabEditor::switchTab(int index)
 {
-    documentManager.setCurrentDocumentIndex(index);
+    documentManager->setCurrentDocumentIndex(index);
     mixerList->setCurrentIndex(index);
     playbackToolbarList->setCurrentIndex(index);
     undoManager->setActiveStackIndex(index);
 
     // update the window title with the file path of the active document
-    if(documentManager.getCurrentDocument())
+    if(documentManager->getCurrentDocument())
     {
-        const QString path = QString::fromStdString(documentManager.getCurrentDocument()->GetFileName());
+        const QString path = QString::fromStdString(documentManager->getCurrentDocument()->GetFileName());
         const QString docName = QFileInfo(path).fileName();
         setWindowTitle(docName + "[*] - " + getApplicationName()); // need the [*] for using setWindowModified
     }

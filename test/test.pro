@@ -37,7 +37,8 @@ SOURCES += \
     actions/test_editkeysignature.cpp \
     powertabdocument/keysignature_test.cpp \
     actions/test_edittimesignature.cpp \
-    powertabdocument/timesignature_test.cpp
+    powertabdocument/timesignature_test.cpp \
+    formats/guitar_pro/test_gp4.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
@@ -80,3 +81,6 @@ HEADERS += \
     powertabdocument/tuning_fixtures.h \
     powertabdocument/serialization_test.h \
     powertabdocument/score_fixture.h
+
+# copy test files to output directory
+QMAKE_POST_LINK += $$COPY_DIR $${PWD}/formats/guitar_pro/data $$OUT_PWD/$${BUILDTYPE}

@@ -272,6 +272,12 @@ System::BarlinePtr System::GetStartBar() const
     return m_startBar;
 }
 
+/// Sets the bar at the start of the system
+void System::SetStartBar(System::BarlinePtr barline)
+{
+    m_startBar = barline;
+}
+
 /// Determines if a barline index is valid
 /// @param index barline index to validate
 /// @return True if the barline index is valid, false if not

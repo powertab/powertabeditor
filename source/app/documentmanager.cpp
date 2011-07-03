@@ -62,6 +62,15 @@ bool DocumentManager::addDocument(const QString& fileName)
     return true;
 }
 
+/// Adds a document that has already been imported from another file format
+bool DocumentManager::addImportedDocument(std::shared_ptr<PowerTabDocument> doc)
+{
+    // TODO - check that the file is not already open
+    documentList.push_back(doc);
+    currentDocumentIndex = documentList.size() - 1;
+    return true;
+}
+
 void DocumentManager::setCurrentDocumentIndex(int index)
 {
     index = clamp(index, -1, static_cast<int>(documentList.size() - 1));
