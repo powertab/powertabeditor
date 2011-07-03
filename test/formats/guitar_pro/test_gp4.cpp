@@ -65,17 +65,49 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
                                                     MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_B1}));
     }
 
-    BOOST_AUTO_TEST_CASE(ReadBarline)
-    {
-        System::BarlineConstPtr barline1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar();
+    BOOST_AUTO_TEST_SUITE(ReadBarline)
 
-        BOOST_CHECK(barline1->GetTimeSignature().IsSameMeter(TimeSignature(5, 4)));
+        BOOST_AUTO_TEST_CASE(BarlineProperties)
+        {
+            System::BarlineConstPtr barline1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar();
+            BOOST_CHECK(barline1->IsRepeatStart());
+        }
 
-        // TODO - generate appropriate test case for key signatures (TuxGuitar export seems to be broken??)
-        /*BOOST_CHECK(barline1->GetKeySignature().IsSameKey(KeySignature(KeySignature::majorKey,
-                                                                               KeySignature::twoSharps)));*/
-        BOOST_CHECK(barline1->IsRepeatStart());
-    }
+        BOOST_AUTO_TEST_CASE(ReadTimeSignature)
+        {
+            const TimeSignature& timeSig1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar()->GetTimeSignature();
+
+            BOOST_CHECK(timeSig1.IsSameMeter(TimeSignature(5, 4)));
+            BOOST_CHECK(timeSig1.IsShown());
+        }
+
+        BOOST_AUTO_TEST_CASE(ReadKeySignature)
+        {
+            //System::BarlineConstPtr barline1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar();
+
+            // TODO - generate appropriate test case for key signatures (TuxGuitar export seems to be broken??)
+            /*BOOST_CHECK(barline1->GetKeySignature().IsSameKey(KeySignature(KeySignature::majorKey,
+                                                                                   KeySignature::twoSharps)));*/
+        }
+
+        BOOST_AUTO_TEST_CASE(ReadRehearsalSigns)
+        {
+            // Check that rehearsal sign letters are set in sequential order (A, B, C, etc),
+            // and that data is read correctly
+            const RehearsalSign& sign1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar()->GetRehearsalSign();
+
+            BOOST_CHECK_EQUAL(sign1.GetDescription(), "Section 1");
+            BOOST_CHECK(sign1.IsSet());
+            BOOST_CHECK_EQUAL(sign1.GetLetter(), 'A');
+
+            const RehearsalSign& sign2 = doc->GetGuitarScore()->GetSystem(0)->GetBarline(0)->GetRehearsalSign();
+
+            BOOST_CHECK_EQUAL(sign2.GetDescription(), "Section 2");
+            BOOST_CHECK(sign2.IsSet());
+            BOOST_CHECK_EQUAL(sign2.GetLetter(), 'B');
+        }
+
+        BOOST_AUTO_TEST_SUITE_END()
 
     BOOST_AUTO_TEST_CASE(TempoMarkers)
     {

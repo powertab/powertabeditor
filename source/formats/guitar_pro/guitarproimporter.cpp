@@ -133,6 +133,7 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
                                                                 uint32_t numMeasures)
 {
     std::vector<System::BarlinePtr> barlines;
+    char nextRehearsalSignletter = 'A';
 
     for (uint32_t i = 0; i < numMeasures; i++)
     {
@@ -189,9 +190,20 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
 
             if (!description.empty())
             {
-                // TODO - might need to keep track of available letters for rehearsal signs
                 sign.SetDescription(description);
             }
+
+            // set the rehearsal sign letter to the next available letter
+            if (RehearsalSign::IsValidLetter(nextRehearsalSignletter))
+            {
+                sign.SetLetter(nextRehearsalSignletter);
+                nextRehearsalSignletter++;
+            }
+            else
+            {
+                std::cerr << "Too many rehearsal signs! (only A-Z allowed)" << std::endl;
+            }
+
             readColor(stream);
         }
 
