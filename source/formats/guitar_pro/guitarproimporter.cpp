@@ -385,8 +385,8 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
             }
             else
             {
-                currentSystem->InsertBarline(*currentBarline);
                 (*currentBarline)->SetPosition(lastBarlinePos - 1);
+                currentSystem->InsertBarline(*currentBarline);
             }
 
             lastBarlinePos += largestMeasure + 1;

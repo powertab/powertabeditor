@@ -107,6 +107,11 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
             BOOST_CHECK_EQUAL(sign2.GetLetter(), 'B');
         }
 
+        BOOST_AUTO_TEST_CASE(ReadAlternateEndings)
+        {
+            // TODO - create test cases (TuxGuitar cannot export alternate endings to gp4)
+        }
+
         BOOST_AUTO_TEST_SUITE_END()
 
     BOOST_AUTO_TEST_CASE(TempoMarkers)
