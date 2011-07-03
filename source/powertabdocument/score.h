@@ -39,6 +39,7 @@ public:
     typedef std::shared_ptr<System> SystemPtr;
     typedef std::shared_ptr<const System> SystemConstPtr;
     typedef std::shared_ptr<Guitar> GuitarPtr;
+    typedef std::shared_ptr<const Guitar> GuitarConstPtr;
     typedef std::shared_ptr<AlternateEnding> AlternateEndingPtr;
     typedef std::shared_ptr<const AlternateEnding> AlternateEndingConstPtr;
     typedef std::shared_ptr<ChordDiagram> ChordDiagramPtr;
@@ -115,6 +116,8 @@ public:
     TempoMarkerPtr GetTempoMarker(uint32_t index) const;
 
     void GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, SystemConstPtr system) const;
+
+    void InsertTempoMarker(TempoMarkerPtr marker);
 
 // Dynamic Functions
     bool IsValidDynamicIndex(uint32_t index) const;

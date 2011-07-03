@@ -670,3 +670,14 @@ Score::TempoMarkerPtr Score::GetTempoMarker(uint32_t index) const
     CHECK_THAT(IsValidTempoMarkerIndex(index), TempoMarkerPtr());
     return m_tempoMarkerArray[index];
 }
+
+/// Inserts a tempo marker into the score
+void Score::InsertTempoMarker(Score::TempoMarkerPtr marker)
+{
+    m_tempoMarkerArray.push_back(marker);
+
+    // sort the tempo markers by system, then position
+    using boost::make_indirect_iterator;
+    std::sort(make_indirect_iterator(m_tempoMarkerArray.begin()),
+              make_indirect_iterator(m_tempoMarkerArray.end()));
+}
