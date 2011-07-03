@@ -721,9 +721,15 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
 
     if (flags1.test(Gp::HasStrokeEffect))
     {
-        // upstroke and downstroke duration values
-        stream.read<uint8_t>();
-        stream.read<uint8_t>();
+        // upstroke and downstroke duration values - we will just use these for toggling arpeggio up/down
+        if (stream.read<uint8_t>() > 0)
+        {
+            position.SetArpeggioUp();
+        }
+        if (stream.read<uint8_t>() > 0)
+        {
+            position.SetArpeggioDown();
+        }
     }
 
     // TODO - check that rasquedo is an equivalent to tremolo picking

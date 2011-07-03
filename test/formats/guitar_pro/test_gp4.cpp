@@ -8,11 +8,12 @@
 #include <powertabdocument/powertabfileheader.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/guitar.h>
-#include <powertabdocument/tuning.h>
+#include <powertabdocument/staff.h>
 #include <powertabdocument/generalmidi.h>
 #include <powertabdocument/tempomarker.h>
 #include <powertabdocument/system.h>
 #include <powertabdocument/barline.h>
+#include <powertabdocument/position.h>
 
 const std::string FILE_TEST1 = "data/test1.gp4";
 
@@ -22,10 +23,12 @@ struct Gp4Fixture
     {
         BOOST_CHECK_NO_THROW(importer.load(FILE_TEST1));
         doc = importer.load(FILE_TEST1);
+        score = doc->GetGuitarScore();
     }
 
     GuitarProImporter importer;
     std::shared_ptr<PowerTabDocument> doc;
+    Score* score;
 };
 
 BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
@@ -48,8 +51,6 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
     /// Verify that guitars are imported correctly
     BOOST_AUTO_TEST_CASE(TrackImport)
     {
-        const Score* score = doc->GetGuitarScore();
-
         BOOST_CHECK_EQUAL(score->GetGuitarCount(), 2u);
 
         Score::GuitarConstPtr guitar1 = score->GetGuitar(0);
@@ -69,13 +70,13 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
 
         BOOST_AUTO_TEST_CASE(BarlineProperties)
         {
-            System::BarlineConstPtr barline1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar();
+            System::BarlineConstPtr barline1 = score->GetSystem(0)->GetStartBar();
             BOOST_CHECK(barline1->IsRepeatStart());
         }
 
         BOOST_AUTO_TEST_CASE(ReadTimeSignature)
         {
-            const TimeSignature& timeSig1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar()->GetTimeSignature();
+            const TimeSignature& timeSig1 = score->GetSystem(0)->GetStartBar()->GetTimeSignature();
 
             BOOST_CHECK(timeSig1.IsSameMeter(TimeSignature(5, 4)));
             BOOST_CHECK(timeSig1.IsShown());
@@ -83,7 +84,7 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
 
         BOOST_AUTO_TEST_CASE(ReadKeySignature)
         {
-            //System::BarlineConstPtr barline1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar();
+            //System::BarlineConstPtr barline1 = score->GetSystem(0)->GetStartBar();
 
             // TODO - generate appropriate test case for key signatures (TuxGuitar export seems to be broken??)
             /*BOOST_CHECK(barline1->GetKeySignature().IsSameKey(KeySignature(KeySignature::majorKey,
@@ -94,13 +95,13 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
         {
             // Check that rehearsal sign letters are set in sequential order (A, B, C, etc),
             // and that data is read correctly
-            const RehearsalSign& sign1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar()->GetRehearsalSign();
+            const RehearsalSign& sign1 = score->GetSystem(0)->GetStartBar()->GetRehearsalSign();
 
             BOOST_CHECK_EQUAL(sign1.GetDescription(), "Section 1");
             BOOST_CHECK(sign1.IsSet());
             BOOST_CHECK_EQUAL(sign1.GetLetter(), 'A');
 
-            const RehearsalSign& sign2 = doc->GetGuitarScore()->GetSystem(0)->GetBarline(0)->GetRehearsalSign();
+            const RehearsalSign& sign2 = score->GetSystem(0)->GetBarline(0)->GetRehearsalSign();
 
             BOOST_CHECK_EQUAL(sign2.GetDescription(), "Section 2");
             BOOST_CHECK(sign2.IsSet());
@@ -116,9 +117,23 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
 
     BOOST_AUTO_TEST_CASE(TempoMarkers)
     {
-        const Score* score = doc->GetGuitarScore();
-
         BOOST_CHECK_EQUAL(score->GetTempoMarkerCount(), 1u);
     }
+
+    BOOST_AUTO_TEST_SUITE(NoteProperties)
+
+        BOOST_AUTO_TEST_CASE(PositionEffects)
+        {
+            /// Check that the first position is tremolo picked and is tapped
+            const Position* pos = score->GetSystem(0)->GetStaff(0)->GetPosition(0, 0);
+            BOOST_CHECK(pos->HasTremoloPicking());
+            BOOST_CHECK(pos->HasTap());
+
+            BOOST_CHECK(pos->HasArpeggioUp());
+
+            // TODO - test tremolo bar
+        }
+
+    BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE_END()
