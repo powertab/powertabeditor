@@ -208,8 +208,8 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const S
     for (size_t i = 0; i < barlines.size(); i++)
     {
         System::BarlineConstPtr currentBarline = barlines.at(i);
-        const KeySignature& keySig = currentBarline->GetKeySignatureConstRef();
-        const TimeSignature& timeSig = currentBarline->GetTimeSignatureConstRef();
+        const KeySignature& keySig = currentBarline->GetKeySignature();
+        const TimeSignature& timeSig = currentBarline->GetTimeSignature();
 
         BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo, currentBarline);
 
@@ -266,7 +266,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const S
             timeSigPainter->setParentItem(activeStaff);
         }
 
-        const RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSignConstRef();
+        const RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSign();
         if (rehearsalSign.IsSet())
         {
             const int y = 1;
@@ -742,7 +742,7 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
             const Position* currentPosition = staff->GetPosition(voice, i);
             const quint32 location = system->GetPositionX(currentPosition->GetPosition());
             currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
-            const KeySignature* currentKeySig = currentBarline->GetKeySignaturePtr();
+            const KeySignature& currentKeySig = currentBarline->GetKeySignature();
 
             // Find the guitar corresponding to the current staff
             shared_ptr<Guitar> currentGuitar = document->GetGuitarScore()->GetGuitar(system->FindStaffIndex(staff));

@@ -506,7 +506,7 @@ double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, shared_
         return originalDuration;
     }
 
-    const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignatureConstRef();
+    const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignature();
 
     const double tempo = getCurrentTempo(position->GetPosition());
     double beatDuration = currentTimeSignature.GetBeatAmount();
@@ -530,7 +530,7 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
     for (size_t i = 0; i < barlines.size(); i++)
     {
         System::BarlineConstPtr barline = barlines.at(i);
-        const TimeSignature& timeSig = barline->GetTimeSignatureConstRef();
+        const TimeSignature& timeSig = barline->GetTimeSignature();
 
         const quint8 numPulses = timeSig.GetPulses();
         const quint8 beatsPerMeasure = timeSig.GetBeatsPerMeasure();

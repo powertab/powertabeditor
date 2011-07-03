@@ -1385,7 +1385,7 @@ void PowerTabEditor::addGuitar()
 void PowerTabEditor::editKeySignature()
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
-    const KeySignature& keySignature = caret->getCurrentBarline()->GetKeySignatureConstRef();
+    const KeySignature& keySignature = caret->getCurrentBarline()->GetKeySignature();
 
     KeySignatureDialog dialog(keySignature);
     if (dialog.exec() == QDialog::Accepted)
@@ -1406,7 +1406,7 @@ void PowerTabEditor::editKeySignature()
 void PowerTabEditor::editTimeSignature()
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
-    const TimeSignature& currentTimeSig = caret->getCurrentBarline()->GetTimeSignatureConstRef();
+    const TimeSignature& currentTimeSig = caret->getCurrentBarline()->GetTimeSignature();
 
     TimeSignatureDialog dialog(currentTimeSig);
 
@@ -1575,7 +1575,7 @@ void PowerTabEditor::editRehearsalSign()
     // the rehearsal sign action should not be available unless there is a barline at the current position
     Q_ASSERT(currentBarline);
 
-    RehearsalSign* rehearsalSign = &currentBarline->GetRehearsalSignRef();
+    RehearsalSign* rehearsalSign = &currentBarline->GetRehearsalSign();
 
     if (rehearsalSign->IsSet())
     {
@@ -1716,7 +1716,7 @@ void PowerTabEditor::updateActions()
         }
     }
 
-    const RehearsalSign* currentRehearsalSign = currentBarline ? currentBarline->GetRehearsalSignPtr() : NULL;
+    const RehearsalSign* currentRehearsalSign = currentBarline ? &currentBarline->GetRehearsalSign() : NULL;
     updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
 
     shared_ptr<const AlternateEnding> altEnding = currentScore->FindAlternateEnding(SystemLocation(caret->getCurrentSystemIndex(),

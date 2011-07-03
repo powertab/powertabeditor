@@ -143,14 +143,14 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
             auto prevBarline = barlines.back();
 
             // clone time signature, key signature from previous barline
-            barline->SetTimeSignature(prevBarline->GetTimeSignatureConstRef());
-            barline->GetTimeSignatureRef().SetShown(false);
+            barline->SetTimeSignature(prevBarline->GetTimeSignature());
+            barline->GetTimeSignature().SetShown(false);
 
-            barline->SetKeySignature(prevBarline->GetKeySignatureConstRef());
-            barline->GetKeySignatureRef().SetShown(false);
+            barline->SetKeySignature(prevBarline->GetKeySignature());
+            barline->GetKeySignature().SetShown(false);
         }
 
-        TimeSignature& timeSignature = barline->GetTimeSignatureRef();
+        TimeSignature& timeSignature = barline->GetTimeSignature();
 
         const Gp::Flags flags = stream.read<uint8_t>();
 
@@ -183,7 +183,7 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
 
         if (flags.test(Gp::Marker)) // import rehearsal sign
         {
-            RehearsalSign& sign = barline->GetRehearsalSignRef();
+            RehearsalSign& sign = barline->GetRehearsalSign();
 
             const std::string description = stream.readString();
 
@@ -197,7 +197,7 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
 
         if (flags.test(Gp::KeySignatureChange))
         {
-            KeySignature& keySignature = barline->GetKeySignatureRef();
+            KeySignature& keySignature = barline->GetKeySignature();
             keySignature.SetShown(true);
 
             keySignature.SetKeyType(stream.read<uint8_t>()); // tonality type (minor/major)

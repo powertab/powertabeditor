@@ -163,67 +163,19 @@ public:
         {return ((uint32_t)(m_data & repeatCountMask));}
    
 // Key Signature Functions
-    /// Sets the key signature
-    void SetKeySignature(const KeySignature& keySignature)      
-        {m_keySignature = keySignature;}
-    /// Gets the key signature
-    /// @return The key signature
-    KeySignature GetKeySignature() const                        
-        {return (m_keySignature);}
-    /// Gets a reference to the key signature
-    /// @return A reference to the key signature
-    KeySignature& GetKeySignatureRef()                          
-        {return (m_keySignature);}
-    /// Gets a constant reference to the key signature
-    /// @return A constant reference to the key signature
-    const KeySignature& GetKeySignatureConstRef() const         
-        {return (m_keySignature);}
-    /// Gets a pointer to the key signature
-    /// @return A pointer to the key signature
-    const KeySignature* GetKeySignaturePtr() const
-        {return (&m_keySignature);}
+    void SetKeySignature(const KeySignature& keySignature);
+    KeySignature& GetKeySignature();
+    const KeySignature& GetKeySignature() const;
     
 // Time Signature Functions
-    /// Sets the time signature
-    void SetTimeSignature(const TimeSignature& timeSignature)   
-        {m_timeSignature = timeSignature;}
-    /// Gets the time signature
-    /// @return The time signature
-    TimeSignature GetTimeSignature() const                      
-        {return (m_timeSignature);}
-    /// Gets a reference to the time signature
-    /// @return A reference to the time signature
-    TimeSignature& GetTimeSignatureRef()                        
-        {return (m_timeSignature);}
-    /// Gets a constant reference to the time signature
-    /// @return A constant reference to the time signature
-    const TimeSignature& GetTimeSignatureConstRef() const       
-        {return (m_timeSignature);}
-    /// Gets a pointer to the time signature
-    /// @return A pointer to the time signature
-    const TimeSignature* GetTimeSignaturePtr() const
-        {return (&m_timeSignature);}
+    void SetTimeSignature(const TimeSignature& timeSignature);
+    TimeSignature& GetTimeSignature();
+    const TimeSignature& GetTimeSignature() const;
     
 // Rehearsal Sign Functions
-    /// Sets the rehearsal sign
-    void SetRehearsalSign(const RehearsalSign& rehearsalSign)   
-        {m_rehearsalSign = rehearsalSign;}
-    /// Gets the rehearsal sign
-    /// @return The rehearsal sign
-    RehearsalSign GetRehearsalSign() const                      
-        {return (m_rehearsalSign);}
-    /// Gets a reference to the rehearsal sign
-    /// @return A reference to the rehearsal sign
-    RehearsalSign& GetRehearsalSignRef()                        
-        {return (m_rehearsalSign);}
-    /// Gets a constant reference to the rehearsal sign
-    /// @return A constant reference to the rehearsal sign
-    const RehearsalSign& GetRehearsalSignConstRef() const       
-        {return (m_rehearsalSign);}
-    /// Gets a pointer to the rehearsal sign
-    /// @return A pointer to the rehearsal sign
-    const RehearsalSign* GetRehearsalSignPtr() const
-        {return (&m_rehearsalSign);}
+    void SetRehearsalSign(const RehearsalSign& rehearsalSign);
+    RehearsalSign& GetRehearsalSign();
+    const RehearsalSign& GetRehearsalSign() const;
 
 // Operations
     int GetKeyAndTimeSignatureWidth() const;

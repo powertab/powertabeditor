@@ -65,7 +65,7 @@ void RehearsalSignDialog::populateLetterChoices()
 
         BOOST_FOREACH(System::BarlineConstPtr barline, barlines)
         {
-            const RehearsalSign& currentSign = barline->GetRehearsalSignConstRef();
+            const RehearsalSign& currentSign = barline->GetRehearsalSign();
             if (currentSign.IsSet())
             {
                 lettersInUse.insert(currentSign.GetLetter(), 0); // insert the rehearsal sign's letter as a key in the map

@@ -177,16 +177,18 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         uint8_t keyType = (uint8_t)((key >> 4) & 0xf);
         uint8_t keyAccidentals = (uint8_t)(key & 0xf);
 
-        m_startBar->GetKeySignatureRef().Show();
+        m_startBar->GetKeySignature().Show();
 
         // Cancellation
         if (keyType > 2)
-            m_startBar->GetKeySignatureRef().SetCancellation();
+        {
+            m_startBar->GetKeySignature().SetCancellation();
+        }
 
         keyType = (uint8_t)(((keyType % 2) == 1) ? KeySignature::majorKey :
             KeySignature::minorKey);
 
-        m_startBar->GetKeySignatureRef().SetKey(keyType, keyAccidentals);
+        m_startBar->GetKeySignature().SetKey(keyType, keyAccidentals);
 
         // Update the ending bar
         uint8_t barType = HIBYTE(endBar);
@@ -216,27 +218,25 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         }
 
         // Update key signs that aren't show to match active key sign
-        const KeySignature* activeKeySignature = m_startBar->GetKeySignaturePtr();
+        KeySignature& activeKeySignature = m_startBar->GetKeySignature();
 
-        size_t i = 0;
-        size_t count = m_barlineArray.size();
-        for (; i < count; i++)
+        for (size_t i = 0; i < m_barlineArray.size(); i++)
         {
-            KeySignature& keySignature = m_barlineArray[i]->GetKeySignatureRef();
+            KeySignature& keySignature = m_barlineArray[i]->GetKeySignature();
 
             // Key on bar doesn't match active
-            if (keySignature != *activeKeySignature)
+            if (keySignature != activeKeySignature)
             {
                 // Key isn't shown, update key to match
                 if (!keySignature.IsShown())
                 {
-                    keySignature = *activeKeySignature;
+                    keySignature = activeKeySignature;
                     keySignature.Hide();
                     keySignature.SetCancellation(false);
                 }
 
                 // Update active key
-                activeKeySignature = m_barlineArray[i]->GetKeySignaturePtr();
+                activeKeySignature = m_barlineArray[i]->GetKeySignature();
             }
         }
     }
@@ -480,11 +480,11 @@ int System::GetFirstPositionX() const
     returnValue += 22;
 
     // Add the width of the starting key signature
-    int keySignatureWidth = m_startBar->GetKeySignatureConstRef().GetWidth();
+    int keySignatureWidth = m_startBar->GetKeySignature().GetWidth();
     returnValue += keySignatureWidth;
 
     // Add the width of the starting time signature
-    int timeSignatureWidth = m_startBar->GetTimeSignatureConstRef().GetWidth();
+    int timeSignatureWidth = m_startBar->GetTimeSignature().GetWidth();
     returnValue += timeSignatureWidth;
 
     // If we have both a key and time signature, they are separated by 3 units
@@ -737,14 +737,14 @@ size_t System::FindStaffIndex(StaffConstPtr staff) const
 // Checks if a rehearsal sign occurs in the system
 bool System::HasRehearsalSign() const
 {
-    if (m_startBar->GetRehearsalSignConstRef().IsSet() || m_endBar->GetRehearsalSignConstRef().IsSet())
+    if (m_startBar->GetRehearsalSign().IsSet() || m_endBar->GetRehearsalSign().IsSet())
     {
         return true;
     }
 
     for (auto i = m_barlineArray.begin(); i != m_barlineArray.end(); ++i)
     {
-        if ((*i)->GetRehearsalSignConstRef().IsSet())
+        if ((*i)->GetRehearsalSign().IsSet())
         {
             return true;
         }

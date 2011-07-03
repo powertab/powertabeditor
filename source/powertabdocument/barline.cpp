@@ -275,3 +275,57 @@ int Barline::GetKeyAndTimeSignatureWidth() const
 
 	return (returnValue);
 }
+
+/// Sets the key signature
+void Barline::SetKeySignature(const KeySignature& keySignature)
+{
+    m_keySignature = keySignature;
+}
+
+/// Gets the key signature
+KeySignature& Barline::GetKeySignature()
+{
+    return m_keySignature;
+}
+
+/// Gets the key signature
+const KeySignature& Barline::GetKeySignature() const
+{
+    return m_keySignature;
+}
+
+/// Sets the time signature
+void Barline::SetTimeSignature(const TimeSignature& timeSignature)
+{
+    m_timeSignature = timeSignature;
+}
+
+/// Gets the time signature
+TimeSignature& Barline::GetTimeSignature()
+{
+    return m_timeSignature;
+}
+
+/// Gets the time signature
+const TimeSignature& Barline::GetTimeSignature() const
+{
+    return m_timeSignature;
+}
+
+/// Sets the rehearsal sign
+void Barline::SetRehearsalSign(const RehearsalSign& rehearsalSign)
+{
+    m_rehearsalSign = rehearsalSign;
+}
+
+/// Gets the rehearsal sign
+RehearsalSign& Barline::GetRehearsalSign()
+{
+    return m_rehearsalSign;
+}
+
+/// Gets the rehearsal sign
+const RehearsalSign& Barline::GetRehearsalSign() const
+{
+    return m_rehearsalSign;
+}

@@ -52,7 +52,7 @@ void EditKeySignature::switchKeySignatures(const KeySignature& oldKey,
                 continue;
             }
 
-            KeySignature& key = barline->GetKeySignatureRef();
+            KeySignature& key = barline->GetKeySignature();
             if (key.IsSameKey(oldKey))
             {
                 key.SetKey(newKey.GetKeyType(), newKey.GetKeyAccidentals());

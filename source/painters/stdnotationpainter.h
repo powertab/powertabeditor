@@ -16,7 +16,7 @@ class StdNotationPainter : public PainterBase
 {
 public:
     StdNotationPainter(const StaffData& staffInfo, std::shared_ptr<const Staff> staff, const Position* position, const Note* note,
-                       const Tuning& tuning, const KeySignature* keySignature);
+                       const Tuning& tuning, const KeySignature& keySignature);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -50,7 +50,7 @@ protected:
     const Position* position;
     const Note* note;
     const Tuning& tuning;
-    const KeySignature* keySignature;
+    const KeySignature& keySignature;
     static QFont musicFont;
     double yLocation;
     double width;

@@ -547,7 +547,7 @@ void Staff::CalculateBeamingForBar(std::shared_ptr<const Barline> startBar,
     std::vector<Position*> positions;
     GetPositionsInRange(positions, 0, startBar->GetPosition(), endBar->GetPosition());
 
-    const TimeSignature& timeSig = startBar->GetTimeSignatureConstRef();
+    const TimeSignature& timeSig = startBar->GetTimeSignature();
 
     // Get the beam group patterns from the time signature
     std::vector<uint8_t> beamGroupPatterns(4, 0);

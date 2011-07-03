@@ -69,10 +69,10 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
     {
         System::BarlineConstPtr barline1 = doc->GetGuitarScore()->GetSystem(0)->GetStartBar();
 
-        BOOST_CHECK(barline1->GetTimeSignatureConstRef().IsSameMeter(TimeSignature(5, 4)));
+        BOOST_CHECK(barline1->GetTimeSignature().IsSameMeter(TimeSignature(5, 4)));
 
         // TODO - generate appropriate test case for key signatures (TuxGuitar export seems to be broken??)
-        /*BOOST_CHECK(barline1->GetKeySignatureConstRef().IsSameKey(KeySignature(KeySignature::majorKey,
+        /*BOOST_CHECK(barline1->GetKeySignature().IsSameKey(KeySignature(KeySignature::majorKey,
                                                                                KeySignature::twoSharps)));*/
         BOOST_CHECK(barline1->IsRepeatStart());
     }

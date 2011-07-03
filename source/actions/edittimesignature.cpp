@@ -49,7 +49,7 @@ void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
                 continue;
             }
 
-            TimeSignature& time = barline->GetTimeSignatureRef();
+            TimeSignature& time = barline->GetTimeSignature();
             if (time.IsSameMeter(oldTime))
             {
                 // modify everything except for visibility
