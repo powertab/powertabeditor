@@ -20,7 +20,7 @@
 // Note: All MIDI constants and functions are defined in generalmidi.h
 // Default constants
 const uint8_t         Guitar::DEFAULT_NUMBER                 = 0;
-const char*        Guitar::DEFAULT_DESCRIPTION            = "Untitled";
+const std::string     Guitar::DEFAULT_DESCRIPTION            = "Untitled";
 const uint8_t         Guitar::DEFAULT_PRESET                 = midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL;
 const uint8_t         Guitar::DEFAULT_INITIAL_VOLUME         = 104;
 const uint8_t         Guitar::DEFAULT_PAN                    = PAN_CENTER;
@@ -80,16 +80,13 @@ Guitar::Guitar() :
 /// @param tremolo MIDI tremolo level
 /// @param phaser MIDI phaser level
 /// @param capo Capo fret number (0 = no capo)
-Guitar::Guitar(uint8_t number, const char* description, uint8_t preset,
-    uint8_t initialVolume, uint8_t pan, uint8_t reverb, uint8_t chorus,
-    uint8_t tremolo, uint8_t phaser, uint8_t capo) : m_number(number),
+Guitar::Guitar(uint8_t number, const std::string& description, uint8_t preset,
+               uint8_t initialVolume, uint8_t pan, uint8_t reverb, uint8_t chorus,
+               uint8_t tremolo, uint8_t phaser, uint8_t capo) : m_number(number),
     m_description(description), m_preset(preset),
     m_initialVolume(initialVolume), m_pan(pan), m_reverb(reverb),
     m_chorus(chorus), m_tremolo(tremolo), m_phaser(phaser), m_capo(capo)
 {
-    //------Last Checked------//
-    // - Dec 8, 2004
-    assert(description != NULL);
     assert(midi::IsValidMidiPreset(preset));
     assert(midi::IsValidMidiChannelVolume(initialVolume));
     assert(IsValidPan(pan));
@@ -108,16 +105,11 @@ Guitar::Guitar (const Guitar& guitar) :
     m_tremolo(DEFAULT_TREMOLO), m_phaser(DEFAULT_PHASER), m_capo(DEFAULT_CAPO)
 
 {
-    //------Last Checked------//
-    // - Dec 8, 2004
     *this = guitar;
 }
 
-/// Destructor
 Guitar::~Guitar()
 {
-    //------Last Verified------//
-    // - Nov 27, 2004
 }
 
 // Operators
@@ -151,18 +143,18 @@ bool Guitar::operator==(const Guitar& guitar) const
     //------Last Checked------//
     // - Dec 8, 2004
     return (
-        (m_number == guitar.m_number) &&
-        (m_description == guitar.m_description) &&
-        (m_preset == guitar.m_preset) &&
-        (m_initialVolume == guitar.m_initialVolume) &&
-        (m_tuning == guitar.m_tuning) &&
-        (m_pan == guitar.m_pan) &&
-        (m_reverb == guitar.m_reverb) &&
-        (m_chorus == guitar.m_chorus) &&
-        (m_tremolo == guitar.m_tremolo) &&
-        (m_phaser == guitar.m_phaser) &&
-        (m_capo == guitar.m_capo)
-    );
+                (m_number == guitar.m_number) &&
+                (m_description == guitar.m_description) &&
+                (m_preset == guitar.m_preset) &&
+                (m_initialVolume == guitar.m_initialVolume) &&
+                (m_tuning == guitar.m_tuning) &&
+                (m_pan == guitar.m_pan) &&
+                (m_reverb == guitar.m_reverb) &&
+                (m_chorus == guitar.m_chorus) &&
+                (m_tremolo == guitar.m_tremolo) &&
+                (m_phaser == guitar.m_phaser) &&
+                (m_capo == guitar.m_capo)
+                );
 }
 
 /// Inequality Operator
@@ -179,8 +171,6 @@ bool Guitar::operator!=(const Guitar& guitar) const
 /// @return True if the object was serialized, false if not
 bool Guitar::Serialize(PowerTabOutputStream& stream) const
 {
-    //------Last Checked------//
-    // - Dec 8, 2004
     stream << m_number;
     CHECK_THAT(stream.CheckState(), false);
 
@@ -188,7 +178,7 @@ bool Guitar::Serialize(PowerTabOutputStream& stream) const
     CHECK_THAT(stream.CheckState(), false);
 
     stream << m_preset << m_initialVolume << m_pan << m_reverb << m_chorus <<
-        m_tremolo << m_phaser << m_capo;
+              m_tremolo << m_phaser << m_capo;
     CHECK_THAT(stream.CheckState(), false);
 
     m_tuning.Serialize(stream);
@@ -208,7 +198,7 @@ bool Guitar::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream.ReadMFCString(m_description);
 
     stream >> m_preset >> m_initialVolume >> m_pan >> m_reverb >> m_chorus >>
-        m_tremolo >> m_phaser >> m_capo;
+              m_tremolo >> m_phaser >> m_capo;
 
     m_tuning.Deserialize(stream, version);
 
@@ -219,8 +209,6 @@ bool Guitar::Deserialize(PowerTabInputStream& stream, uint16_t version)
 /// Gets the legend text for the guitar (i.e. Gtr. I - Acoustic (E A D G B E))
 std::string Guitar::GetLegendText() const
 {
-    //------Last Checked------//
-    // - Dec 8, 2004
     std::stringstream returnValue;
     returnValue << "Gtr. " << ArabicToRoman(GetNumber() + 1, true);
     returnValue << " - " << GetDescription() << " - " << m_tuning.GetSpelling();
@@ -228,7 +216,6 @@ std::string Guitar::GetLegendText() const
 }
 
 /// Sets the tuning used by the guitar
-/// @param tuning Tuning to set
 /// @return True if the tuning was set, false if not
 bool Guitar::SetTuning(const Tuning& tuning)
 {
@@ -250,15 +237,226 @@ const Tuning& Guitar::GetTuning() const
 }
 
 /// Gets the number of strings on the guitar (determined by the tuning)
-/// @return The number of strings on the guitar
 size_t Guitar::GetStringCount() const
 {
     return m_tuning.GetStringCount();
 }
 
 /// Gets the tuning spelling used by the guitar (i.e. E A D G B E)
-/// @return The tuning spelling used by the guitar
 std::string Guitar::GetTuningSpelling() const
 {
     return m_tuning.GetSpelling();
+}
+
+/// Sets the number (id) used by the guitar
+/// @param number Number to set (zero based)
+void Guitar::SetNumber(uint8_t number)
+{
+    m_number = number;
+}
+
+/// Gets the number (id) used by the guitar
+uint8_t Guitar::GetNumber() const
+{
+    return m_number;
+}
+
+/// Sets the description for the guitar
+void Guitar::SetDescription(const std::string& description)
+{
+    m_description = description;
+}
+
+/// Gets the description for the guitar (i.e. Acoustic w/Chorus)
+std::string Guitar::GetDescription() const
+{
+    return m_description;
+}
+
+/// Determines if a preset is valid
+/// @return True if the preset is valid, false if not
+bool Guitar::IsValidPreset(uint8_t preset)
+{
+    return /*(preset >= MIN_PRESET) && */(preset <= MAX_PRESET);
+}
+
+/// Sets the preset (MIDI) used by the guitar
+/// @param preset Preset to set
+/// @return True if the preset was set, false if not
+bool Guitar::SetPreset(uint8_t preset)
+{
+    CHECK_THAT(IsValidPreset(preset), false);
+    m_preset = preset;
+    return true;
+}
+
+/// Gets the preset (MIDI) used by the guitar
+uint8_t Guitar::GetPreset() const
+{
+    return m_preset;
+}
+
+/// Determines if an initial volume is valid
+/// @return True if the initial volume is valid, false if not
+bool Guitar::IsValidInitialVolume(uint8_t initialVolume)
+{
+    return /*(initialVolume >= MIN_INITIAL_VOLUME) &&*/ (initialVolume <= MAX_INITIAL_VOLUME);
+}
+
+/// Sets the initial volume level of the guitar
+/// @return True if the volume was set, false if not
+bool Guitar::SetInitialVolume(uint8_t initialVolume)
+{
+    CHECK_THAT(IsValidInitialVolume(initialVolume), false);
+    m_initialVolume = initialVolume;
+    return true;
+}
+
+/// Gets the initial volume level of the guitar
+uint8_t Guitar::GetInitialVolume() const
+{
+    return m_initialVolume;
+}
+
+/// Determines if a pan level is valid
+/// @return True if the pan level is valid, false if not
+bool Guitar::IsValidPan(uint8_t pan)
+{
+    return /*(pan >= MIN_PAN) && */(pan <= MAX_PAN);
+}
+
+/// Sets the pan level for the guitar
+/// @param pan Pan level to set (0 - hard left, 64 - center, 127 - hard
+/// right)
+/// @return True if the pan level was set, false if not
+bool Guitar::SetPan(uint8_t pan)
+{
+    CHECK_THAT(IsValidPan(pan), false);
+    m_pan = pan;
+    return true;
+}
+
+/// Gets the pan level for the guitar
+uint8_t Guitar::GetPan() const
+{
+    return m_pan;
+}
+
+/// Determines if a reverb level is valid
+/// @return True if the reverb level is valid, false if not
+bool Guitar::IsValidReverb(uint8_t reverb)
+{
+    return /*(reverb >= MIN_REVERB) && */(reverb <= MAX_REVERB);
+}
+
+/// Sets the reverb level for the guitar
+/// @param reverb Reverb level to set (0 - none, 127 - max)
+/// @return True if the reverb level was set, false if not
+bool Guitar::SetReverb(uint8_t reverb)
+{
+    CHECK_THAT(IsValidReverb(reverb), false);
+    m_reverb = reverb;
+    return true;
+}
+
+/// Gets the reverb level for the guitar
+uint8_t Guitar::GetReverb() const
+{
+    return m_reverb;
+}
+
+/// Determines if a chorus level is valid
+/// @return True if the chorus level is valid, false if not
+bool Guitar::IsValidChorus(uint8_t chorus)
+{
+    return /*(chorus >= MIN_CHORUS) && */(chorus <= MAX_CHORUS);
+}
+
+/// Sets the chorus level for the guitar (0 - none, 127 - maximum chorus)
+/// @return True if the chorus level was set, false if not
+bool Guitar::SetChorus(uint8_t chorus)
+{
+    CHECK_THAT(IsValidChorus(chorus), false);
+    m_chorus = chorus;
+    return true;
+}
+
+/// Gets the chorus level for the guitar
+uint8_t Guitar::GetChorus() const
+{
+    return m_chorus;
+}
+
+/// Determines if a tremolo level is valid
+/// @return True if the tremolo level is valid, false if not
+bool Guitar::IsValidTremolo(uint8_t tremolo)
+{
+    return /*(tremolo >= MIN_TREMOLO) && */(tremolo <= MAX_TREMOLO);
+}
+
+/// Sets the tremolo level for the guitar (0 - none, 127 - maximum tremolo)
+/// @return True if the tremolo level was set, false is not
+bool Guitar::SetTremolo(uint8_t tremolo)
+{
+    CHECK_THAT(IsValidTremolo(tremolo), false);
+    m_tremolo = tremolo;
+    return true;
+}
+
+/// Gets the tremolo level for the guitar
+uint8_t Guitar::GetTremolo() const
+{
+    return m_tremolo;
+}
+
+/// Determines if a phaser level is valid
+/// @return True if the phaser level is valid, false if not
+bool Guitar::IsValidPhaser(uint8_t phaser)
+{
+    return /*(phaser >= MIN_PHASER) && */(phaser <= MAX_PHASER);
+}
+
+/// Sets the phaser level for the guitar (0 - none, 127 - maximum phaser)
+/// @return True if the phaser level was set, false is not
+bool Guitar::SetPhaser(uint8_t phaser)
+{
+    CHECK_THAT(IsValidPhaser(phaser), false);
+    m_phaser = phaser;
+    return true;
+}
+
+/// Gets the phaser level for the guitar
+uint8_t Guitar::GetPhaser() const
+{
+    return m_phaser;
+}
+
+/// Determines if a capo value is valid
+/// @return True if the capo value is valid, false if not
+bool Guitar::IsValidCapo(uint8_t capo)
+{
+    return /*(capo >= MIN_CAPO) && */(capo <= MAX_CAPO);
+}
+
+/// Sets the capo used by the guitar (0 - no capo, all other values
+/// represent the fret where the capo is placed)
+/// @return True if the capo was set, false if not
+bool Guitar::SetCapo(uint8_t capo)
+{
+    CHECK_THAT(IsValidCapo(capo), false);
+    m_capo = capo;
+    return true;
+}
+
+/// Gets the capo setting used by the guitar
+uint8_t Guitar::GetCapo() const
+{
+    return m_capo;
+}
+
+/// Determines if the guitar uses a capo
+/// @return True if the guitar uses a capo, false if not
+bool Guitar::UsesCapo() const
+{
+    return GetCapo() != MIN_CAPO;
 }
