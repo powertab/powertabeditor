@@ -255,35 +255,35 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
         
         Note note(0, 1);
         
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), 0);
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 0);
         
         note.SetFretNumber(0);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), 1); 
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 1);
         
         note.SetFretNumber(3);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), -1); 
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -1);
         
         note.SetFretNumber(2);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), 0); 
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 0);
         
         note.SetFretNumber(14);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), -7);
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -7);
         
         note.SetFretNumber(21);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), -11);
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -11);
         
         // Bass clef
         staff.SetClef(Staff::BASS_CLEF);
         note.SetString(5);
         note.SetFretNumber(5);
         
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), 0);
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 0);
         
         note.SetFretNumber(8);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), -2);
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -2);
         
         note.SetOctave15ma(true);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, &keySig, &tuning), 12);
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 12);
     }
 
     BOOST_FIXTURE_TEST_CASE(Serialization, StaffFixture)

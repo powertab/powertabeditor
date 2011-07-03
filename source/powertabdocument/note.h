@@ -496,7 +496,7 @@ public:
 
     std::string GetText() const;
 
-    uint8_t GetPitch(const Tuning* tuning) const;
+    uint8_t GetPitch(const Tuning& tuning) const;
 
 // Complex Symbol Array Functions
 private:

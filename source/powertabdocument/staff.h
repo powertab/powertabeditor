@@ -51,7 +51,7 @@ public:
     static const uint8_t MIN_TABULATURE_STAFF_TYPE;                   ///< Minimum allowed value for tablature staff type
     static const uint8_t MAX_TABULATURE_STAFF_TYPE;                   ///< Maximum allowed value for tablature staff type
 
-    enum flags : uint8_t
+    enum flags
     {
         clefMask                    = 0xf0,                 ///< Mask used to retrieve the clef type
         tablatureStaffTypeMask      = 0xf                   ///< Mask used to retrieve the tablature type (3 - 7 string)
@@ -107,6 +107,7 @@ public:
     static bool IsValidClef(uint8_t clef);
     bool SetClef(uint8_t type);
     uint8_t GetClef() const;
+    void CalculateClef(const Tuning& tuning);
 
     // Tablature Staff Type Functions
     static bool IsValidTablatureStaffType(uint8_t type);
@@ -166,8 +167,8 @@ public:
     void UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber);
     void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote);
     
-    int GetNoteLocation(const Note* note, const KeySignature* activeKeySig, 
-                        const Tuning* tuning) const;
+    int GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
+                        const Tuning& tuning) const;
 
     typedef bool (Position::*PositionProperty)() const;
 

@@ -31,9 +31,9 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, std::shared_p
 
 void StdNotationPainter::init()
 {
-    yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * staffInfo.stdNotationLineSpacing + 1;
+    yLocation = staff->GetNoteLocation(note, *keySignature, *tuning) * 0.5 * staffInfo.stdNotationLineSpacing + 1;
     
-    const quint8 pitch = note->GetPitch(tuning);
+    const quint8 pitch = note->GetPitch(*tuning);
     const bool usesSharps = keySignature->UsesSharps() || keySignature->HasNoKeyAccidentals();
     
     const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps, 

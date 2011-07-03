@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <map>
 #include <cmath>
+#include <boost/foreach.hpp>
 
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);
@@ -881,13 +882,13 @@ bool Staff::RemovePosition(uint32_t voice, uint32_t index)
 
 /// Finds the location of the note, relative to the top line of the staff
 /// e.g. for a treble clef, F4 -> 0, E4 -> 1, G4 -> - 1
-int Staff::GetNoteLocation(const Note* note, const KeySignature* activeKeySig, 
-                           const Tuning* tuning) const
+int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
+                           const Tuning& tuning) const
 {
     const uint8_t pitch = note->GetPitch(tuning);
     
     const std::string noteText = midi::GetMidiNoteText(pitch, 
-                                                       activeKeySig->UsesSharps() || activeKeySig->HasNoKeyAccidentals());
+                                                       activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals());
     
     // maps notes to their position on the staff (relative to the top line)
     // this is for treble clef - we will adjust for bass clef as necessary later on
@@ -909,4 +910,26 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature* activeKeySig,
     y += 7 * (midi::GetMidiNoteOctave(TOP_NOTE) - midi::GetMidiNoteOctave(pitch)) + 7 * note->GetOctaveOffset();
     
     return y;
+}
+
+/// Computes the appropriate clef (treble or bass) depending on the notes present in the system
+void Staff::CalculateClef(const Tuning& tuning)
+{
+    BOOST_FOREACH(const std::vector<Position*>& posArray, positionArrays)
+    {
+        BOOST_FOREACH(const Position* position, posArray)
+        {
+            for (uint8_t i = 0; i < position->GetNoteCount(); i++)
+            {
+                if (position->GetNote(i)->GetPitch(tuning) <= midi::MIDI_NOTE_A1)
+                {
+                    SetClef(BASS_CLEF);
+                    return;
+                }
+            }
+        }
+    }
+
+    SetClef(TREBLE_CLEF);
+    return;
 }
