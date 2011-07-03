@@ -577,7 +577,7 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
 
 uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guitar> guitar) const
 {
-    const Tuning& tuning = guitar->GetTuningConstRef();
+    const Tuning& tuning = guitar->GetTuning();
     
     const quint32 openStringPitch = tuning.GetNote(note->GetString()) + guitar->GetCapo();
     quint32 pitch = openStringPitch + note->GetFretNumber();

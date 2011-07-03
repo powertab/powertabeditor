@@ -1172,7 +1172,7 @@ void PowerTabEditor::shiftTabNumber(int direction)
     const quint8 numStringsInStaff = caret->getCurrentStaff()->GetTablatureStaffType();
     Position* currentPos = caret->getCurrentPosition();
     Note* currentNote = caret->getCurrentNote();
-    const Tuning& tuning = caret->getCurrentScore()->GetGuitar(caret->getCurrentStaffIndex())->GetTuningConstRef();
+    const Tuning& tuning = caret->getCurrentScore()->GetGuitar(caret->getCurrentStaffIndex())->GetTuning();
 
     if (!currentPos->CanShiftTabNumber(currentNote, shiftType, numStringsInStaff, tuning))
     {

@@ -292,35 +292,12 @@ public:
         {return (GetCapo() != MIN_CAPO);}
 
 // Tuning Functions
-    /// Sets the tuning used by the guitar
-    /// @param tuning Tuning to set
-    /// @return True if the tuning was set, false if not
-    bool SetTuning(const Tuning& tuning)                    
-        {CHECK_THAT(tuning.IsValid(), false); m_tuning = tuning; return (true);}
-    /// Gets the tuning used by the guitar
-    /// @return The tuning used by the guitar
-    Tuning GetTuning() const                                
-        {return (m_tuning);}
-    /// Gets a reference to the Tuning object used by the guitar
-    /// @return A reference to the Tuning object used by the guitar
-    Tuning& GetTuningRef()                                  
-        {return (m_tuning);}
-    /// Gets a constant reference to the Tuning object used by the guitar
-    /// @return A constant reference to the Tuning object used by the guitar
-    const Tuning& GetTuningConstRef() const                 
-        {return (m_tuning);}
-    /// Gets a pointer to the Tuning object used by the guitar
-    /// @return A pointer to the Tuning object used by the guitar
-    Tuning* GetTuningPtr()                                  
-        {return (&m_tuning);}
-    /// Gets the number of strings on the guitar (determined by the tuning)
-    /// @return The number of strings on the guitar
-    int GetStringCount() const                              
-        {return (m_tuning.GetStringCount());}
-    /// Gets the tuning spelling used by the guitar (i.e. E A D G B E)
-    /// @return The tuning spelling used by the guitar
-    std::string GetTuningSpelling() const
-        {return (m_tuning.GetSpelling());}
+    bool SetTuning(const Tuning& tuning);
+    Tuning& GetTuning();
+    const Tuning& GetTuning() const;
+
+    size_t GetStringCount() const;
+    std::string GetTuningSpelling() const;
 
 // Operations
     std::string GetLegendText() const;

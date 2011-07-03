@@ -5,7 +5,7 @@
 EditTuning::EditTuning(std::shared_ptr<Guitar> guitar, const Tuning& newTuning) :
     guitar(guitar),
     newTuning(newTuning),
-    oldTuning(guitar->GetTuningConstRef())    
+    oldTuning(guitar->GetTuning())
 {
     setText(QObject::tr("Edit Tuning"));
 }

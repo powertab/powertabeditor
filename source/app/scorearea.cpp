@@ -770,7 +770,7 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
             if (currentPosition->IsRest())
             {
                 StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition, 
-                                                                            NULL, currentGuitar->GetTuningPtr(), currentKeySig);
+                                                                            NULL, currentGuitar->GetTuning(), currentKeySig);
                 centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
                            currentStaffInfo.getTopStdNotationLine());
                 stdNotePainter->setParentItem(activeStaff);
@@ -782,7 +782,7 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
                 const Note* note = currentPosition->GetNote(j);
 
                 StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition,
-                                                                            note, currentGuitar->GetTuningPtr(), currentKeySig);
+                                                                            note, currentGuitar->GetTuning(), currentKeySig);
                 notePainters << stdNotePainter;
 
                 // map all of the notes for each position on the staff, so that we can adjust accidentals later

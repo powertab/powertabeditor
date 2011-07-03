@@ -360,7 +360,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
                 currentStaff->InsertPosition(0, currentPos);
             }
 
-            currentStaff->CalculateClef(score->GetGuitar(track)->GetTuningConstRef());
+            currentStaff->CalculateClef(score->GetGuitar(track)->GetTuning());
         }
 
         // insert barline

@@ -226,3 +226,39 @@ std::string Guitar::GetLegendText() const
     returnValue << " - " << GetDescription() << " - " << m_tuning.GetSpelling();
     return returnValue.str();
 }
+
+/// Sets the tuning used by the guitar
+/// @param tuning Tuning to set
+/// @return True if the tuning was set, false if not
+bool Guitar::SetTuning(const Tuning& tuning)
+{
+    CHECK_THAT(tuning.IsValid(), false);
+    m_tuning = tuning;
+    return true;
+}
+
+/// Gets the tuning used by the guitar
+Tuning& Guitar::GetTuning()
+{
+    return m_tuning;
+}
+
+/// Gets the tuning used by the guitar
+const Tuning& Guitar::GetTuning() const
+{
+    return m_tuning;
+}
+
+/// Gets the number of strings on the guitar (determined by the tuning)
+/// @return The number of strings on the guitar
+size_t Guitar::GetStringCount() const
+{
+    return m_tuning.GetStringCount();
+}
+
+/// Gets the tuning spelling used by the guitar (i.e. E A D G B E)
+/// @return The tuning spelling used by the guitar
+std::string Guitar::GetTuningSpelling() const
+{
+    return m_tuning.GetSpelling();
+}

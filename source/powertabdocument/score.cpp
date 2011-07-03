@@ -397,7 +397,7 @@ void Score::Init()
 {
     // create a guitar
     GuitarPtr guitar = std::make_shared<Guitar>();
-    guitar->GetTuningPtr()->SetToStandard();
+    guitar->GetTuning().SetToStandard();
     m_guitarArray.push_back(guitar);
 
     // create a system and initialize the staves

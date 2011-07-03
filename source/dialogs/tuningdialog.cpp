@@ -20,7 +20,7 @@
 TuningDialog::TuningDialog(std::shared_ptr<Guitar> guitar, QWidget *parent) :
     QDialog(parent),
     guitar(guitar),
-    tuning(guitar->GetTuningConstRef())
+    tuning(guitar->GetTuning())
 {
     setWindowTitle(tr("Tuning"));
     setModal(true);
