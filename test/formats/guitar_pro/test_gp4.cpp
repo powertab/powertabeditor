@@ -50,13 +50,13 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
     {
         const Score* score = doc->GetGuitarScore();
 
-        BOOST_CHECK_EQUAL(score->GetGuitarCount(), 2);
+        BOOST_CHECK_EQUAL(score->GetGuitarCount(), 2u);
 
         Score::GuitarConstPtr guitar1 = score->GetGuitar(0);
 
         BOOST_CHECK_EQUAL(guitar1->GetDescription(), "First Track");
-        BOOST_CHECK_EQUAL(guitar1->GetNumber(), 0);
-        BOOST_CHECK_EQUAL(guitar1->GetCapo(), 1);
+        BOOST_CHECK_EQUAL(guitar1->GetNumber(), 0u);
+        BOOST_CHECK_EQUAL(guitar1->GetCapo(), 1u);
 
         using namespace midi;
         // 7-string tuning
@@ -118,7 +118,7 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
     {
         const Score* score = doc->GetGuitarScore();
 
-        BOOST_CHECK_EQUAL(score->GetTempoMarkerCount(), 1);
+        BOOST_CHECK_EQUAL(score->GetTempoMarkerCount(), 1u);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

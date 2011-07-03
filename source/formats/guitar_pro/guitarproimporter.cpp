@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <cmath>
+#include <iostream>
 
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/guitar_pro/fileformat.h>

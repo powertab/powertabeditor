@@ -2,6 +2,7 @@
 #define FILEFORMATMANAGER_H
 
 #include <boost/ptr_container/ptr_map.hpp>
+#include <vector>
 #include "fileformat.h"
 
 class FileFormatImporter;

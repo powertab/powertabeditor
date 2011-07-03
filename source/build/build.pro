@@ -19,5 +19,10 @@ RESOURCES += resources.qrc
 # if shadow building is enabled
 !equals($${PWD}, $${OUT_PWD}) {
     # copy skins folder to output directory
-    QMAKE_POST_LINK += $$COPY_DIR $${PWD}/../skins $$OUT_PWD
+    unix|macx {
+        QMAKE_POST_LINK += cp -rf "$${PWD}/../skins" "$${OUT_PWD}"
+    }
+    win32 {
+        QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/../skins\" \"$${OUT_PWD}/skins\"
+    }
 }

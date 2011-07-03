@@ -28,11 +28,11 @@ BOOST_AUTO_TEST_SUITE(ScoreTest)
     {
         Score score;
 
-        BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 0);
+        BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 0u);
 
         score.InsertTempoMarker(Score::TempoMarkerPtr(new TempoMarker(0, 0, false)));
 
-        BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 1);
+        BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 1u);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

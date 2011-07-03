@@ -83,4 +83,9 @@ HEADERS += \
     powertabdocument/score_fixture.h
 
 # copy test files to output directory
-QMAKE_POST_LINK += $$COPY_DIR $${PWD}/formats/guitar_pro/data $$OUT_PWD/$${BUILDTYPE}
+unix|macx {
+    QMAKE_POST_LINK += cp -rf $${PWD}/formats/guitar_pro/data $$OUT_PWD/$${BUILDTYPE}
+}
+win32 {
+    QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/formats/guitar_pro/data\" \"$${OUT_PWD}/$${BUILDTYPE}/data\"
+}

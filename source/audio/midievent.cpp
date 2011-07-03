@@ -1,6 +1,7 @@
 #include "midievent.h"
 
 #include <boost/test/floating_point_comparison.hpp>
+#include <boost/version.hpp>
 
 MidiEvent::MidiEvent(uint8_t channel, double startTime, double duration,
                      uint32_t positionIndex, uint32_t systemIndex) :
@@ -36,9 +37,13 @@ double MidiEvent::getDuration() const
 bool MidiEvent::operator<(const MidiEvent& event) const
 {
     using namespace boost::test_tools;
+    
+#if BOOST_VERSION > 104600 // percent_tolerance was moved to the boost::test_tools::fpc namespace in later verions
+    using namespace fpc;
+#endif
 
     // compare timestamps using a floating point comparison
-    if (check_is_close(startTime, event.startTime, fpc::percent_tolerance(0.001)))
+    if (check_is_close(startTime, event.startTime, percent_tolerance(0.001)))
     {
         if (systemIndex == event.systemIndex)
         {
