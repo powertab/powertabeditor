@@ -6,11 +6,22 @@ QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -W
 
 INCLUDEPATH += $${PWD}/source
 
+# store the subdirectory used for the active build type
 CONFIG(debug, debug|release) {
 BUILDTYPE = debug
 }
 else {
 BUILDTYPE = release
+}
+
+# useful commands for QMAKE_POST_LINK (i.e. copying data files, skins, etc to output directory)
+win {
+    COPY_DIR = xcopy /E /Y
+    COPY_FILE = xcopy /Y
+}
+unix|macx {
+    COPY_DIR = cp -rf
+    COPY_FILE = cp -f
 }
 
 # keep the generated files somewhat separate
