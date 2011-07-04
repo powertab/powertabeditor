@@ -19,6 +19,7 @@
 #include <QEvent>
 
 #include <boost/foreach.hpp>
+#include <boost/timer.hpp>
 
 #include <app/scorearea.h>
 #include <app/skinmanager.h>
@@ -901,11 +902,13 @@ void PowerTabEditor::openFile()
     }
     else
     {
+        boost::timer timer;
         qDebug() << "Opening file: " << fileName;
 
         // add the file to the document manager; draw the score and initialize if successful
         if (documentManager->addDocument(fileName))
         {
+            qDebug() << "File loaded in" << timer.elapsed() << "seconds";
             updatePreviousDirectory(fileName);
             setupNewDocument();
         }
@@ -930,6 +933,7 @@ void PowerTabEditor::importFile(const FileFormat& format)
 
     if (!fileName.isEmpty())
     {
+        boost::timer timer;
         qDebug() << "Attempting to import: " << fileName << " ...";
 
         if (auto document = fileFormatManager->import(fileName.toStdString(), format))
@@ -942,6 +946,9 @@ void PowerTabEditor::importFile(const FileFormat& format)
             qDebug() << "Import Successful!";
             documentManager->addImportedDocument(document);
             updatePreviousDirectory(fileName);
+
+            qDebug() << "File imported in" << timer.elapsed() << "seconds";
+
             setupNewDocument();
         }
         else
@@ -956,6 +963,9 @@ void PowerTabEditor::importFile(const FileFormat& format)
 /// and is set as the current document
 void PowerTabEditor::setupNewDocument()
 {
+    boost::timer timer;
+    qDebug() << "Document creation started ...";
+
     std::shared_ptr<PowerTabDocument> doc(documentManager->getCurrentDocument());
 
     ScoreArea* score = new ScoreArea;
@@ -1012,6 +1022,8 @@ void PowerTabEditor::setupNewDocument()
     }
 
     updateActions(); // update available actions for the current position
+
+    qDebug() << "Document opened in" << timer.elapsed() << "seconds";
 }
 
 void PowerTabEditor::saveFileAs()

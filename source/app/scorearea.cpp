@@ -43,6 +43,7 @@
 #include <algorithm>
 
 #include <boost/foreach.hpp>
+#include <boost/timer.hpp>
 
 using std::shared_ptr;
 
@@ -123,12 +124,16 @@ void ScoreArea::requestFullRedraw()
 
 void ScoreArea::renderScore(Score* score, int lineSpacing)
 {
+    boost::timer timer;
+
     // Render each system (group of staves) in the entire score
     for (uint32_t i=0; i < score->GetSystemCount(); i++)
     {
         renderSystem(score, score->GetSystem(i), lineSpacing);
         systemList << activeSystem;
     }
+
+    qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
 }
 
 void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int lineSpacing)
@@ -143,7 +148,6 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int 
     // draw system rectangle
     SystemPainter* sysPainter = new SystemPainter(system);
     sysPainter->setPos(leftEdge, topEdge);
-    scene.addItem(sysPainter);
     activeSystem = sysPainter;
 
     // Draw each staff
@@ -197,6 +201,8 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int 
         drawSymbols(system, currentStaff, currentStaffInfo);
         drawSymbolsBelowTabStaff(system, currentStaff, currentStaffInfo);
     }
+
+    scene.addItem(activeSystem);
 }
 
 // Draw all of the barlines for the staff.
