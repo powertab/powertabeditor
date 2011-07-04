@@ -19,6 +19,7 @@ protected:
     void init();
 
     Note* note;
+    Qt::GlobalColor textColor;
     static QFont tabFont;
     QStaticText displayText;
 };

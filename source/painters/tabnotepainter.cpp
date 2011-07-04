@@ -13,6 +13,8 @@ TabNotePainter::TabNotePainter(Note* note) :
     tabFont.setPixelSize(10); // needed for cross-platform consistency in font size
     tabFont.setStyleStrategy(QFont::PreferAntialias);
 
+    textColor = note->IsTied() ? Qt::lightGray : Qt::black;
+
     init();
 }
 
@@ -27,21 +29,10 @@ void TabNotePainter::init()
     bounds = QRectF(0, 0, fm.width(noteText), fm.height());
 }
 
-void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
     painter->setFont(tabFont);
-
-    if(note->IsTied())
-    {
-        painter->setPen(Qt::lightGray);
-    }
-    else
-    {
-        painter->setPen(Qt::black);
-    }
+    painter->setPen(textColor);
 
     // offset height by 1 pixel for clarity
     painter->drawStaticText(0, 0, displayText);
