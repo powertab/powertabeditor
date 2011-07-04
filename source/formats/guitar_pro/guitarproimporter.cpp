@@ -732,7 +732,6 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
         }
     }
 
-    // TODO - check that rasquedo is an equivalent to tremolo picking
     position.SetTremoloPicking(flags2.test(Gp::HasRasguedo));
 
     if (flags2.test(Gp::Pickstroke))

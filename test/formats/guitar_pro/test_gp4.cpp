@@ -14,6 +14,7 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/barline.h>
 #include <powertabdocument/position.h>
+#include <powertabdocument/note.h>
 
 const std::string FILE_TEST1 = "data/test1.gp4";
 
@@ -131,7 +132,23 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
 
             BOOST_CHECK(pos->HasArpeggioUp());
 
+            BOOST_CHECK(pos->HasPalmMuting());
+
             // TODO - test tremolo bar
+            // TODO - test pickstroke
+            // TODO - test vibrato
+            // TODO - test staccato
+            // TODO - test let ring
+        }
+
+        BOOST_AUTO_TEST_CASE(NoteEffects)
+        {
+            const Note* note = score->GetSystem(0)->GetStaff(0)->GetPosition(0, 1)->GetNote(0);
+
+            // should have trill with fret 1
+            uint8_t trilledFret = 0;
+            note->GetTrill(trilledFret);
+            BOOST_CHECK_EQUAL(trilledFret, 1);
         }
 
     BOOST_AUTO_TEST_SUITE_END()
