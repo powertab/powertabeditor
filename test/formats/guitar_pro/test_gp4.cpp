@@ -56,6 +56,7 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
 
         Score::GuitarConstPtr guitar1 = score->GetGuitar(0);
 
+        // track information
         BOOST_CHECK_EQUAL(guitar1->GetDescription(), "First Track");
         BOOST_CHECK_EQUAL(guitar1->GetNumber(), 0u);
         BOOST_CHECK_EQUAL(guitar1->GetCapo(), 1u);
@@ -65,6 +66,10 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
         BOOST_CHECK(guitar1->GetTuning() == Tuning("", 0, false,
                                                     {MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
                                                     MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_B1}));
+
+        // midi settings
+        BOOST_CHECK_EQUAL(guitar1->GetPreset(), midi::MIDI_PRESET_OVERDRIVEN_GUITAR);
+        BOOST_CHECK_EQUAL(guitar1->GetInitialVolume(), 95u);
     }
 
     BOOST_AUTO_TEST_SUITE(ReadBarline)

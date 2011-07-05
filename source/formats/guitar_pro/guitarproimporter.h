@@ -7,6 +7,7 @@
 namespace Gp
 {
     class InputStream;
+    class Channel;
 }
 
 class PowerTabFileHeader;
@@ -27,18 +28,26 @@ public:
 private:
     void findFileVersion(Gp::InputStream& stream);
     void readHeader(Gp::InputStream& stream, PowerTabFileHeader& ptbHeader);
-    void readChannels(Gp::InputStream& stream);
+
+    std::vector<Gp::Channel> readChannels(Gp::InputStream& stream);
+
     void readColor(Gp::InputStream& stream);
 
     std::vector<std::shared_ptr<Barline> > readBarlines(Gp::InputStream& stream, uint32_t numMeasures);
-    void readTracks(Gp::InputStream& stream, Score* score, uint32_t numTracks);
+
+    void readTracks(Gp::InputStream& stream, Score* score, uint32_t numTracks,
+                    const std::vector<Gp::Channel>& channels);
+
     uint8_t convertKeyAccidentals(int8_t gpKey);
+
     Tuning readTuning(Gp::InputStream &stream);
+
     void readSystems(Gp::InputStream& stream, Score* score,
                      const std::vector<std::shared_ptr<Barline> >& barlines);
     Position* readBeat(Gp::InputStream& stream);
 
     uint8_t readDuration(Gp::InputStream& stream);
+
     void readNotes(Gp::InputStream& stream, Position& position);
     void readNoteEffects(Gp::InputStream& stream, Position& position, Note& note);
     void readSlide(Gp::InputStream &stream, Note &note);

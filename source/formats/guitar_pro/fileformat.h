@@ -134,7 +134,8 @@ enum BeatStatus
 enum MiscConstants
 {
     NumberOfStrings = 7, ///< Max number of strings for an instrument
-    NumberOfBarres = 5   ///< Max number of barres in a chord
+    NumberOfBarres = 5,   ///< Max number of barres in a chord
+    NumberOfMidiChannels = 64 ///< Used for reading/writing the table of MIDI channels
 };
 
 enum FixedLengthStrings

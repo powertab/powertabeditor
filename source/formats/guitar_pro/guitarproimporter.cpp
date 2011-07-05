@@ -1,12 +1,13 @@
 #include "guitarproimporter.h"
 
+#include "gp_channel.h"
+
 #include <fstream>
 #include <cmath>
 #include <iostream>
 
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/guitar_pro/fileformat.h>
-
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/powertabfileheader.h>
@@ -47,13 +48,13 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
     /*int8_t initialKey = */stream.read<int8_t>();
     stream.read<uint32_t>(); // octave
 
-    readChannels(stream);
+    const std::vector<Gp::Channel> channels = readChannels(stream);
 
     const uint32_t numMeasures = stream.read<uint32_t>();
     const uint32_t numTracks = stream.read<uint32_t>();
 
     std::vector<System::BarlinePtr> barlines = readBarlines(stream, numMeasures);
-    readTracks(stream, score, numTracks);
+    readTracks(stream, score, numTracks, channels);
 
     readSystems(stream, score, barlines);
     fixRepeatEnds(score);
@@ -111,23 +112,32 @@ void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& 
     ptbHeader.SetSongLyrics(lyrics);
 }
 
-void GuitarProImporter::readChannels(Gp::InputStream& stream)
+/// Read the midi channels (i.e. mixer settings)
+std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream)
 {
+    std::vector<Gp::Channel> channels;
+
     // Ignore for now
-    for (int i = 0; i < 64; i++) // 64 MIDI channels
+    for (int i = 0; i < Gp::NumberOfMidiChannels; i++) // 64 MIDI channels
     {
-        stream.read<uint32_t>(); // instrument
-        stream.read<uint8_t>(); // volume
-        stream.read<uint8_t>(); // balance
-        stream.read<uint8_t>(); // chorus
-        stream.read<uint8_t>(); // reverb
-        stream.read<uint8_t>(); // phaser
-        stream.read<uint8_t>(); // tremolo
+        Gp::Channel channel;
+
+        channel.instrument = stream.read<uint32_t>();
+        channel.volume = Gp::Channel::readChannelProperty(stream);
+        channel.balance = Gp::Channel::readChannelProperty(stream);
+        channel.chorus = Gp::Channel::readChannelProperty(stream);
+        channel.reverb = Gp::Channel::readChannelProperty(stream);
+        channel.phaser = Gp::Channel::readChannelProperty(stream);
+        channel.tremolo = Gp::Channel::readChannelProperty(stream);
 
         // unused (gp3 compatibility??)
         stream.read<uint8_t>();
         stream.read<uint8_t>();
+
+        channels.push_back(channel);
     }
+
+    return channels;
 }
 
 std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream& stream,
@@ -249,11 +259,13 @@ uint8_t GuitarProImporter::convertKeyAccidentals(int8_t gpKey)
 }
 
 /// Read and convert all tracks (guitars)
-void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32_t numTracks)
+void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32_t numTracks,
+                                   const std::vector<Gp::Channel>& channels)
 {
     for (uint32_t i = 0; i < numTracks; ++i)
     {
         Score::GuitarPtr guitar = std::make_shared<Guitar>();
+        guitar->SetNumber(score->GetGuitarCount());
 
         // flags used for indicating drum tracks, banjo tracks, etc
         stream.read<uint8_t>();
@@ -262,9 +274,31 @@ void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32
 
         guitar->SetTuning(readTuning(stream));
 
-        stream.read<uint32_t>(); // MIDI port used
-        stream.read<uint32_t>(); // MIDI channel used
-        stream.read<uint32_t>(); // MIDI channel used for effects
+        stream.read<uint32_t>(); // MIDI port used - ignore (Power Tab handles this)
+
+        const uint32_t channelIndex = stream.read<uint32_t>(); // MIDI channel used
+
+        // find the specified channel and copy its information (in Power Tab, the Guitar class
+        // stores the MIDI information along with tuning, etc)
+        if (channelIndex < channels.size())
+        {
+            const Gp::Channel& channel = channels[channelIndex];
+
+            guitar->SetPreset(channel.instrument);
+            guitar->SetInitialVolume(channel.volume);
+            guitar->SetPan(channel.balance);
+            guitar->SetChorus(channel.chorus);
+            guitar->SetReverb(channel.reverb);
+            guitar->SetPhaser(channel.phaser);
+            guitar->SetTremolo(channel.tremolo);
+        }
+        else
+        {
+            std::cerr << "Invalid channel index: " << channelIndex <<
+                         " for track: " << i << std::endl;
+        }
+
+        stream.read<uint32_t>(); // MIDI channel used for effects - ignore
 
         stream.read<uint32_t>(); // number of frets
 
@@ -272,7 +306,6 @@ void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32
 
         readColor(stream); // ignore track color
 
-        guitar->SetNumber(score->GetGuitarCount());
         score->InsertGuitar(guitar);
     }
 }
