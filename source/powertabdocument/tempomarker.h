@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __TEMPOMARKER_H__
-#define __TEMPOMARKER_H__
+#ifndef POWERTABDOCUMENT_TEMPO_MARKER_H
+#define POWERTABDOCUMENT_TEMPO_MARKER_H
 
 #include "systemsymbol.h"
 
@@ -20,8 +20,8 @@ class TempoMarker : public SystemSymbol
 // Constants
 public:
 	// Default constants
-	static const char*        DEFAULT_DESCRIPTION;            ///< Default value for the description member variable
-	static const uint8_t         DEFAULT_BEAT_TYPE;              ///< Default value for the beat type value
+        static const std::string    DEFAULT_DESCRIPTION;            ///< Default value for the description member variable
+        static const uint8_t        DEFAULT_BEAT_TYPE;              ///< Default value for the beat type value
 	static const uint32_t       DEFAULT_BEATS_PER_MINUTE;       ///< Default value for the beats per minute value
 	
 	// Beats Per Minute Constants
@@ -30,42 +30,42 @@ public:
 	
 	enum types
 	{
-		notShown                = (uint8_t)0x00,         ///< Metronome marker is not shown
-		standardMarker          = (uint8_t)0x01,         ///< Standard beats per minute marker (i.e. quarter note = 120)
-		listesso                = (uint8_t)0x02,         ///< Listesso marker (i.e. quarter note = half note)
-		alterationOfPace        = (uint8_t)0x03          ///< Alteration of pace (accel. or rit.)
+                notShown                = 0x00,         ///< Metronome marker is not shown
+                standardMarker          = 0x01,         ///< Standard beats per minute marker (i.e. quarter note = 120)
+                listesso                = 0x02,         ///< Listesso marker (i.e. quarter note = half note)
+                alterationOfPace        = 0x03          ///< Alteration of pace (accel. or rit.)
 	};
 
 	enum beatTypes
 	{
-		half						    = (uint8_t)0x00,
-		halfDotted				        = (uint8_t)0x01,
-		quarter					        = (uint8_t)0x02,
-		quarterDotted				    = (uint8_t)0x03,
-		eighth	    			        = (uint8_t)0x04,
-		eighthDotted			        = (uint8_t)0x05,
-		sixteenth				        = (uint8_t)0x06,
-		sixteenDotted			        = (uint8_t)0x07,
-		thirtySecond			        = (uint8_t)0x08,
-		thirtySecondDotted              = (uint8_t)0x09
+                half                = 0x00,
+                halfDotted          = 0x01,
+                quarter             = 0x02,
+                quarterDotted       = 0x03,
+                eighth              = 0x04,
+                eighthDotted        = 0x05,
+                sixteenth           = 0x06,
+                sixteenDotted       = 0x07,
+                thirtySecond        = 0x08,
+                thirtySecondDotted  = 0x09
 	};
 	
 	enum tripletFeelTypes
 	{
-		noTripletFeel                   = (uint8_t)0x00,
-		tripletFeelEighth               = (uint8_t)0x01,
-		tripletFeelSixteenth            = (uint8_t)0x02,
-		tripletFeelEighthOff            = (uint8_t)0x03,
-		tripletFeelSixteenthOff         = (uint8_t)0x04
+                noTripletFeel                   = 0x00,
+                tripletFeelEighth               = 0x01,
+                tripletFeelSixteenth            = 0x02,
+                tripletFeelEighthOff            = 0x03,
+                tripletFeelSixteenthOff         = 0x04
 	};
 
 	enum flags
 	{
-		beatsPerMinuteMask              = (uint32_t)0xffff,         ///< Mask used to retrieve the beats per minute value
-		tripletFeelTypeMask             = (uint32_t)0x70000,        ///< Mask used to retrieve the triplet feel type
-		listessoBeatTypeMask            = (uint32_t)0x780000,       ///< Mask used to retrieve the listesso beat type
-		beatTypeMask                    = (uint32_t)0x7800000,      ///< Mask used to retrieve the beat type
-		typeMask                        = (uint32_t)0x18000000      ///< Mask used to retrieve the tempo marker type
+                beatsPerMinuteMask              = 0xffff,         ///< Mask used to retrieve the beats per minute value
+                tripletFeelTypeMask             = 0x70000,        ///< Mask used to retrieve the triplet feel type
+                listessoBeatTypeMask            = 0x780000,       ///< Mask used to retrieve the listesso beat type
+                beatTypeMask                    = 0x7800000,      ///< Mask used to retrieve the beat type
+                typeMask                        = 0x18000000      ///< Mask used to retrieve the tempo marker type
 	};
 
 // Member Variables
@@ -76,10 +76,10 @@ protected:
 public:
 	TempoMarker();
 	TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
-		uint32_t beatsPerMinute, const char* description,
+                uint32_t beatsPerMinute, const std::string& description,
 		uint8_t tripletFeelType);
 	TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
-		uint8_t listessoBeatType, const char* description);
+                uint8_t listessoBeatType, const std::string& description);
 	TempoMarker(uint32_t system, uint32_t position, bool accelerando);
 	TempoMarker(const TempoMarker& tempoMarker);
 	~TempoMarker();
@@ -120,14 +120,15 @@ public:
 	
 // Standard Marker Functions
 	bool SetStandardMarker(uint8_t beatType, uint32_t beatsPerMinute,
-		const char* description, uint8_t tripletFeelType = noTripletFeel);
+                const std::string& description, uint8_t tripletFeelType = noTripletFeel);
 	/// Determines if the tempo marker is a standard marker
 	/// @return True if the tempo marker is a standard marker, false if not
 	bool IsStandardMarker() const           
 		{return (GetType() == standardMarker);}
 	
 // Listesso Functions
-	bool SetListesso(uint8_t beatType, uint8_t listessoBeatType, const char* description = "");
+        bool SetListesso(uint8_t beatType, uint8_t listessoBeatType,
+                         const std::string& description = "");
 	/// Determines if the tempo marker is a listesso
 	/// @return True if the tempo marker is a listesso, false if not
 	bool IsListesso() const                 
@@ -196,16 +197,18 @@ public:
 	/// Sets the description
 	/// @param description Description to set
 	/// @return True if the description was set, false if not
-	bool SetDescription(const char* description)      
+        bool SetDescription(const std::string& description)
 	{
-		CHECK_THAT(description != NULL, false);
-		m_description = description;
-		return (true);
+            CHECK_THAT(!description.empty(), false);
+            m_description = description;
+            return (true);
 	}
 	/// Gets the description
 	/// @return The description
         std::string GetDescription() const
-		{return (m_description);}
+        {
+            return m_description;
+        }
 };
 
-#endif
+#endif // POWERTABDOCUMENT_TEMPO_MARKER_H

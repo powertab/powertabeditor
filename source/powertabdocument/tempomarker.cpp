@@ -17,13 +17,13 @@
 #include "powertaboutputstream.h"
 
 // Default constants
-const char*       TempoMarker::DEFAULT_DESCRIPTION                = "";
-const uint8_t        TempoMarker::DEFAULT_BEAT_TYPE                  = quarter;
-const uint32_t      TempoMarker::DEFAULT_BEATS_PER_MINUTE           = 120;
+const std::string   TempoMarker::DEFAULT_DESCRIPTION        = "";
+const uint8_t       TempoMarker::DEFAULT_BEAT_TYPE          = quarter;
+const uint32_t      TempoMarker::DEFAULT_BEATS_PER_MINUTE   = 120;
 
 // Beats Per Minute Constants
-const uint32_t      TempoMarker::MIN_BEATS_PER_MINUTE               = 40;
-const uint32_t      TempoMarker::MAX_BEATS_PER_MINUTE               = 300;
+const uint32_t      TempoMarker::MIN_BEATS_PER_MINUTE       = 40;
+const uint32_t      TempoMarker::MAX_BEATS_PER_MINUTE       = 300;
 
 // Constructor/Destructor
 /// Default Constructor
@@ -47,7 +47,7 @@ TempoMarker::TempoMarker() :
 /// @param tripletFeelType Triplet feel type to set (see tripletFeelTypes for
 /// values)
 TempoMarker::TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
-    uint32_t beatsPerMinute, const char* description, uint8_t tripletFeelType) :
+    uint32_t beatsPerMinute, const std::string& description, uint8_t tripletFeelType) :
     m_description(DEFAULT_DESCRIPTION)
 {
     //------Last Checked------//
@@ -56,7 +56,7 @@ TempoMarker::TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
     assert(IsValidPosition(position));
     assert(IsValidBeatType(beatType));
     assert(IsValidBeatsPerMinute(beatsPerMinute));
-    assert(description != NULL);
+    assert(!description.empty());
     assert(IsValidTripletFeelType(tripletFeelType));
     
     SetSystem(system);
@@ -72,7 +72,7 @@ TempoMarker::TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
 /// @param listessoBeatType Listesso beat type to set
 /// @param description Description to set
 TempoMarker::TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
-    uint8_t listessoBeatType, const char* description) :
+    uint8_t listessoBeatType, const std::string& description) :
     m_description(DEFAULT_DESCRIPTION)
 {
     //------Last Checked------//
@@ -81,7 +81,7 @@ TempoMarker::TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
     assert(IsValidPosition(position));
     assert(IsValidBeatType(beatType));
     assert(IsValidBeatType(listessoBeatType));
-    assert(description != NULL);
+    assert(!description.empty());
 
     SetSystem(system);
     SetPosition(position);    
@@ -241,19 +241,13 @@ uint8_t TempoMarker::GetType() const
 }
 
 /// Sets the standard marker data
-/// @param beatType 
-/// @param beatsPerMinute
-/// @param description
-/// @param tripletFeelType
 /// @return True if the data was set, false if not
 bool TempoMarker::SetStandardMarker(uint8_t beatType, uint32_t beatsPerMinute,
-    const char* description, uint8_t tripletFeelType)
+    const std::string& description, uint8_t tripletFeelType)
 {
-    //------Last Checked------//
-    // - Jan 13, 2005
     CHECK_THAT(IsValidBeatType(beatType), false);
     CHECK_THAT(IsValidBeatsPerMinute(beatsPerMinute), false);
-    CHECK_THAT(description != NULL, false);
+    CHECK_THAT(!description.empty(), false);
     CHECK_THAT(IsValidTripletFeelType(tripletFeelType), false);
     
     m_data = 0;
@@ -272,13 +266,11 @@ bool TempoMarker::SetStandardMarker(uint8_t beatType, uint32_t beatsPerMinute,
 /// @param description Description to set
 /// @return True if the data was set, false if not
 bool TempoMarker::SetListesso(uint8_t beatType, uint8_t listessoBeatType,
-    const char* description)
+                              const std::string& description)
 {
-    //------Last Checked------//
-    // - Jan 13, 2005
     CHECK_THAT(IsValidBeatType(beatType), false);
     CHECK_THAT(IsValidBeatType(listessoBeatType), false);
-    CHECK_THAT(description != NULL, false);
+    CHECK_THAT(!description.empty(), false);
     
     // Clear all current data
     m_data = 0;
