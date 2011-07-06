@@ -17,75 +17,35 @@
 #include <sstream>
 
 // Default constants
-const int8_t    RehearsalSign::DEFAULT_LETTER           = RehearsalSign::notSet;
-const char*   RehearsalSign::DEFAULT_DESCRIPTION      = "";
+const int8_t      RehearsalSign::DEFAULT_LETTER           = RehearsalSign::notSet;
+const std::string RehearsalSign::DEFAULT_DESCRIPTION      = "";
 
 /// Default Constructor
 RehearsalSign::RehearsalSign() :
     m_letter(DEFAULT_LETTER), m_description(DEFAULT_DESCRIPTION)
 {
-    //------Last Checked------//
-    // - Dec 10, 2004
 }
 
 /// Primary Constructor
 /// @param letter Unique letter identifying the rehearsal sign
 /// @param description Description for the rehearsal sign (i.e. Intro)
-RehearsalSign::RehearsalSign(int8_t letter, const char* description) :
+RehearsalSign::RehearsalSign(int8_t letter, const std::string& description) :
     m_letter(letter), m_description(description)
 {
-    //------Last Checked------//
-    // - Dec 10, 2004
     assert(IsValidLetter(letter));
-    assert(description != NULL);
-}
-
-/// Copy Constructor
-RehearsalSign::RehearsalSign(const RehearsalSign& rehearsalSign) :
-    m_letter(DEFAULT_LETTER), m_description(DEFAULT_DESCRIPTION)
-{
-    //------Last Checked------//
-    // - Dec 10, 2004
-    *this = rehearsalSign;
-}
-
-/// Destructor
-RehearsalSign::~RehearsalSign()
-{
-    //------Last Checked------//
-    // - Dec 10, 2004
-}
-
-/// Assignment Operator
-const RehearsalSign& RehearsalSign::operator=(
-    const RehearsalSign& rehearsalSign)
-{
-    //------Last Checked------//
-    // - Dec 10, 2004
-
-    // Check for assignment to self
-    if (this != &rehearsalSign)
-    {
-        m_letter = rehearsalSign.m_letter;
-        m_description = rehearsalSign.m_description;
-    }
-    return (*this);
+    assert(!description.empty());
 }
 
 /// Equality Operator
 bool RehearsalSign::operator==(const RehearsalSign& rehearsalSign) const
 {
-    //------Last Checked------//
-    // - Dec 10, 2004
     return ((m_letter == rehearsalSign.m_letter) &&
-        (m_description == rehearsalSign.m_description));
+            (m_description == rehearsalSign.m_description));
 }
 
 /// Inequality Operator
 bool RehearsalSign::operator!=(const RehearsalSign& rehearsalSign) const
 {
-    //------Last Checked------//
-    // - Dec 10, 2004
     return (!operator==(rehearsalSign));
 }
 

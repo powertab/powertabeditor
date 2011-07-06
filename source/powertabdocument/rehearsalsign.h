@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __REHEARSALSIGN_H__
-#define __REHEARSALSIGN_H__
+#ifndef POWERTABDOCUMENT_REHEARSAL_SIGN_H
+#define POWERTABDOCUMENT_REHEARSAL_SIGN_H
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -18,31 +18,26 @@
 /// Stores and renders Rehearsal Sign symbols
 class RehearsalSign : public PowerTabObject
 {
-// Constants
 public:
-    // Default constants
-    static const int8_t         DEFAULT_LETTER;             ///< Default value for the letter member variable
-    static const char*        DEFAULT_DESCRIPTION;        ///< Default value for the description member variable
+    static const int8_t         DEFAULT_LETTER;         ///< Default value for the rehearsal sign letter
+    static const std::string    DEFAULT_DESCRIPTION;    ///< Default value for the rehearsal sign description
 
     enum flags
     {
-        notSet = (int8_t)0x7f           ///< Marker used to indicate the rehearsal sign is not set (not used)
+        notSet = 0x7f   ///< Marker used to indicate the rehearsal sign is not set (not used)
     };
 
 // Member Variables
 protected:
-    int8_t      m_letter;               ///< The letter used to uniquely identify the rehearsal sign (i.e. A, B, F, etc. - must be a capital letter)
-    std::string m_description;          ///< A description that indicates the passage the rehearsal sign is marking (i.e. Chorus, Intro, etc.)
+    int8_t      m_letter;       ///< The letter used to uniquely identify the rehearsal sign (i.e. A, B, F, etc. - must be a capital letter)
+    std::string m_description;  ///< A description that indicates the passage the rehearsal sign is marking (i.e. Chorus, Intro, etc.)
 
 // Construction/Destruction
 public:
     RehearsalSign();
-    RehearsalSign(int8_t letter, const char* description);
-    RehearsalSign(const RehearsalSign& rehearsalSign);
-    ~RehearsalSign();
+    RehearsalSign(int8_t letter, const std::string& description);
 
 // Operators
-    const RehearsalSign& operator=(const RehearsalSign& rehearsalSign);
     bool operator==(const RehearsalSign& rehearsalSign) const;
     bool operator!=(const RehearsalSign& rehearsalSign) const;
 
@@ -50,11 +45,16 @@ public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
-        {return "CRehearsalSign2";}
+    {
+        return "CRehearsalSign2";
+    }
+
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
     uint16_t GetMFCClassSchema() const
-        {return ((uint16_t)1);}
+    {
+        return 1;
+    }
 
 // Serialization Functions
     bool Serialize(PowerTabOutputStream& stream) const;
@@ -100,4 +100,4 @@ public:
     std::string GetFormattedText() const;
 };
 
-#endif
+#endif // POWERTABDOCUMENT_REHEARSAL_SIGN_H
