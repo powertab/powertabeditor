@@ -7,6 +7,7 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/tuning.h>
 #include <powertabdocument/keysignature.h>
+#include <powertabdocument/generalmidi.h>
 
 // Provides a staff with some positions already inserted
 struct StaffFixture
@@ -289,6 +290,27 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
     BOOST_FIXTURE_TEST_CASE(Serialization, StaffFixture)
     {
         testSerialization(staff);
+    }
+
+    BOOST_FIXTURE_TEST_CASE(CalculateClef, StaffFixture)
+    {
+        using namespace midi;
+
+        Tuning tuning;
+        // create a tuning with a very low 7th string
+        tuning.SetTuningNotes({MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
+                       MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_E1});
+
+        staff.CalculateClef(tuning);
+
+        // the fixture is only using high notes by default, so should have a treble clef
+        BOOST_CHECK_EQUAL(staff.GetClef(), Staff::TREBLE_CLEF);
+
+        // add a low note, which should trigger a switch to the bass clef
+        staff.GetPosition(0,0)->InsertNote(new Note(6, 0));
+        staff.CalculateClef(tuning);
+
+        BOOST_CHECK_EQUAL(staff.GetClef(), Staff::BASS_CLEF);
     }
 
 BOOST_AUTO_TEST_SUITE_END()
