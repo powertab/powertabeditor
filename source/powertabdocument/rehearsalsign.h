@@ -13,7 +13,6 @@
 #define POWERTABDOCUMENT_REHEARSAL_SIGN_H
 
 #include "powertabobject.h"
-#include "macros.h"
 
 /// Stores and renders Rehearsal Sign symbols
 class RehearsalSign : public PowerTabObject
