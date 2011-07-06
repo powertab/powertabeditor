@@ -87,9 +87,17 @@ void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& 
     ptbHeader.SetSongCopyright(stream.readString());
     ptbHeader.SetSongGuitarScoreTranscriber(stream.readString());
 
-    stream.readString(); // TODO - not sure what the "instructional" parameter is used for ...
+    // not entirely sure what the "instructional" field is used for, but we'll add it to
+    // the start of the performance notes
+    const std::string instructions = stream.readString();
 
     std::string comments;
+
+    if (!instructions.empty())
+    {
+        comments += instructions + "\n";
+    }
+
     const uint32_t numComments = stream.read<uint32_t>();
     for (uint32_t i = 0; i < numComments; i++)
     {
