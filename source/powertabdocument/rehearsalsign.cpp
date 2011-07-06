@@ -101,3 +101,46 @@ std::string RehearsalSign::GetFormattedText() const
     sstream << GetLetter() << " -- " << GetDescription();
     return sstream.str();
 }
+
+/// Determines if a letter is valid
+/// @return True if the letter is valid, false if not
+bool RehearsalSign::IsValidLetter(int8_t letter)
+{
+    return (letter >= 'A' && letter <= 'Z') || (letter == notSet);
+}
+
+/// Gets the letter used to uniquely identify the rehearsal sign
+/// @return The letter used to uniquely identify the rehearsal sign
+int8_t RehearsalSign::GetLetter() const
+{
+    return m_letter;
+}
+
+/// Sets the rehearsal sign description
+/// @return True if the description was set, false if not
+bool RehearsalSign::SetDescription(const std::string& description)
+{
+    CHECK_THAT(!description.empty(), false);
+    m_description = description;
+    return true;
+}
+
+/// Gets the rehearsal sign description
+std::string RehearsalSign::GetDescription() const
+{
+    return m_description;
+}
+
+/// Determines if a RehearsalSign object is set (in use)
+/// @return True if the RehearsalSign object is set, false if not
+bool RehearsalSign::IsSet() const
+{
+    return GetLetter() != notSet;
+}
+
+/// Clears the rehearsal sign letter and description, and sets to not set
+void RehearsalSign::Clear()
+{
+    SetLetter(notSet);
+    m_description.clear();
+}
