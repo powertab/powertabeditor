@@ -7,7 +7,6 @@
 #include <iostream>
 
 #include <formats/guitar_pro/inputstream.h>
-#include <formats/guitar_pro/fileformat.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/powertabfileheader.h>

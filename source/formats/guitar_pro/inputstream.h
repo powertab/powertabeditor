@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <bitset>
 
-#include "fileformat.h"
+#include "gp_fileformat.h"
 
 namespace Gp
 {

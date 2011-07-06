@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-#include "fileformat.h" // Guitar Pro constants
+#include "gp_fileformat.h" // Guitar Pro constants
 
 namespace Gp
 {
