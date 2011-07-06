@@ -435,6 +435,12 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
             ++currentBarline;
         }
     }
+
+    // calculate the beaming for all notes
+    for (size_t i = 0; i < score->GetSystemCount(); i++)
+    {
+        score->GetSystem(i)->CalculateBeamingForStaves();
+    }
 }
 
 Position* GuitarProImporter::readBeat(Gp::InputStream& stream)
