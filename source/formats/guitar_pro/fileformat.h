@@ -6,6 +6,13 @@
 namespace Gp
 {
 
+/// Supported Guitar Pro file versions
+enum Version
+{
+    Version3 = 3,
+    Version4 = 4
+};
+
 enum MeasureHeaderFlags
 {
     Numerator,

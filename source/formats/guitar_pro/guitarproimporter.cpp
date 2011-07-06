@@ -21,12 +21,15 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/tempomarker.h>
 
-const std::vector<std::string> GuitarProImporter::gp4Versions = {"FICHIER GUITAR PRO v4.00",
-                                                                "FICHIER GUITAR PRO v4.06",
-                                                                "FICHIER GUITAR PRO L4.06"};
+const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
+    {"FICHIER GUITAR PRO v3.00", Gp::Version3},
+    {"FICHIER GUITAR PRO v4.00", Gp::Version4},
+    {"FICHIER GUITAR PRO v4.06", Gp::Version4},
+    {"FICHIER GUITAR PRO L4.06", Gp::Version4}
+};
 
 GuitarProImporter::GuitarProImporter() :
-    FileFormatImporter(FileFormat("Guitar Pro 4", "*.gp4"))
+    FileFormatImporter(FileFormat("Guitar Pro 3, 4", "*.gp3 *.gp4"))
 {
 }
 
@@ -66,11 +69,17 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
 /// @throw FileFormatException
 void GuitarProImporter::findFileVersion(Gp::InputStream& stream)
 {
-    std::string version = stream.readVersionString();
+    const std::string versionString = stream.readVersionString();
 
-    if (std::find(gp4Versions.begin(), gp4Versions.end(), version) == gp4Versions.end())
+    auto versionStringIt = versionStrings.find(versionString);
+
+    if (versionStringIt != versionStrings.end())
     {
-        throw FileFormatException("Unsupported file version: " + version);
+        stream.version = versionStringIt->second;
+    }
+    else
+    {
+        throw FileFormatException("Unsupported file version: " + versionString);
     }
 }
 

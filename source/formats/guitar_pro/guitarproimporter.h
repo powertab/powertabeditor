@@ -3,6 +3,9 @@
 
 #include <formats/fileformat.h>
 #include <vector>
+#include <map>
+
+#include "fileformat.h" // Guitar Pro constants
 
 namespace Gp
 {
@@ -59,7 +62,8 @@ private:
     void readStartTempo(Gp::InputStream& stream, Score* score);
     void fixRepeatEnds(Score* score);
 
-    static const std::vector<std::string> gp4Versions; ///< The supported versions of .gp4 files
+    /// Supported version strings for Guitar Pro files (maps version strings to version number)
+    static const std::map<std::string, Gp::Version> versionStrings;
 };
 
 #endif // GUITARPROIMPORTER_H

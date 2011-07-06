@@ -8,6 +8,8 @@
 #include <type_traits>
 #include <bitset>
 
+#include "fileformat.h"
+
 namespace Gp
 {
 
@@ -28,6 +30,8 @@ public:
     std::string readVersionString();
 
     void skip(int numBytes);
+
+    Gp::Version version;
 
 private:
     template <class LengthPrefixType>
