@@ -11,7 +11,6 @@ public:
     int leftEdge;
     int width;
     int tabLineSpacing;
-    static const int stdNotationLineSpacing = 7;
     int numOfStrings;
     static const int numOfStdNotationLines = 5;
     int stdNotationStaffAboveSpacing;

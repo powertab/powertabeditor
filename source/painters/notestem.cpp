@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include <powertabdocument/position.h>
+#include <powertabdocument/staff.h>
 #include <QGraphicsTextItem>
 #include <painters/musicfont.h>
 
@@ -20,7 +21,7 @@ NoteStem::NoteStem(const StaffData& staffInfo, const Position* position,
     stemSize_(0),
     staffInfo_(staffInfo)
 {
-    stemSize_ = staffInfo_.stdNotationLineSpacing * 3.5;
+    stemSize_ = Staff::STD_NOTATION_LINE_SPACING * 3.5;
 
     if (position->IsAcciaccatura()) // shorter stem for grace notes
     {

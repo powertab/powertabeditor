@@ -35,7 +35,7 @@ void StaffData::calculateHeight()
 /// Calculates the size of the standard notation staff
 int StaffData::getStdNotationStaffSize() const
 {
-    return (numOfStdNotationLines - 1) * stdNotationLineSpacing;
+    return (numOfStdNotationLines - 1) * Staff::STD_NOTATION_LINE_SPACING;
 }
 
 /// Calculates the size of the tab staff
@@ -67,7 +67,7 @@ int StaffData::getBottomTabLine() const
 /// Calculates the height offset for the given standard notation staff line
 int StaffData::getStdNotationLineHeight(int lineNumber) const
 {
-    int offset = stdNotationStaffAboveSpacing + staffBorderSpacing + (lineNumber - 1) * stdNotationLineSpacing;
+    int offset = stdNotationStaffAboveSpacing + staffBorderSpacing + (lineNumber - 1) * Staff::STD_NOTATION_LINE_SPACING;
 
     return offset;
 }

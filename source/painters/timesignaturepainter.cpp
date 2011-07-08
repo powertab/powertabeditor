@@ -1,6 +1,7 @@
 #include "timesignaturepainter.h"
 
 #include <powertabdocument/timesignature.h>
+#include <powertabdocument/staff.h>
 #include <painters/musicfont.h>
 
 #include <QMessageBox>
@@ -56,12 +57,12 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
             symbol = musicFont.getSymbol(MusicFont::CutTime);
         }
 
-        painter->drawText(0, 2 * staffInfo.stdNotationLineSpacing, symbol);
+        painter->drawText(0, 2 * Staff::STD_NOTATION_LINE_SPACING, symbol);
     }
     else
     {
-        drawNumber(painter, 2 * staffInfo.stdNotationLineSpacing, timeSignature.GetBeatsPerMeasure());
-        drawNumber(painter, 4 * staffInfo.stdNotationLineSpacing, timeSignature.GetBeatAmount());
+        drawNumber(painter, 2 * Staff::STD_NOTATION_LINE_SPACING, timeSignature.GetBeatsPerMeasure());
+        drawNumber(painter, 4 * Staff::STD_NOTATION_LINE_SPACING, timeSignature.GetBeatAmount());
     }
 }
 

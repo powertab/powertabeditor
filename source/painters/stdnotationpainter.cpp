@@ -31,7 +31,7 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, std::shared_p
 
 void StdNotationPainter::init()
 {
-    yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * staffInfo.stdNotationLineSpacing + 1;
+    yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * Staff::STD_NOTATION_LINE_SPACING + 1;
     
     const quint8 pitch = note->GetPitch(tuning);
     const bool usesSharps = keySignature.UsesSharps() || keySignature.HasNoKeyAccidentals();
@@ -103,13 +103,13 @@ double StdNotationPainter::getNoteHeadWidth()
 void StdNotationPainter::drawRest(QPainter *painter)
 {
     QChar restSymbol;
-    int height = 2 * staffInfo.stdNotationLineSpacing - 1; // position is in middle of staff by default
+    int height = 2 * Staff::STD_NOTATION_LINE_SPACING - 1; // position is in middle of staff by default
 
     switch(position->GetDurationType()) // find the correct symbol to display, and adjust the height if necessary
     {
     case 1:
         restSymbol = MusicFont::WholeRest;
-        height = staffInfo.stdNotationLineSpacing + 1;
+        height = Staff::STD_NOTATION_LINE_SPACING + 1;
         break;
     case 2:
         restSymbol = MusicFont::HalfRest;
@@ -136,7 +136,7 @@ void StdNotationPainter::drawRest(QPainter *painter)
     QString textToDraw = restSymbol;
 
     painter->drawText(0, height, textToDraw);
-    addDots(painter, QFontMetricsF(musicFont).width(textToDraw) + 2, 1.6 * staffInfo.stdNotationLineSpacing);
+    addDots(painter, QFontMetricsF(musicFont).width(textToDraw) + 2, 1.6 * Staff::STD_NOTATION_LINE_SPACING);
 
     return;
 }

@@ -1395,9 +1395,9 @@ void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, std::shared_pt
 
     QGraphicsRectItem* horizontalLine = new QGraphicsRectItem(leftX,
                                                               currentStaffInfo.getStdNotationLineHeight(2) +
-                                                              0.5 * currentStaffInfo.stdNotationLineSpacing,
+                                                              0.5 * Staff::STD_NOTATION_LINE_SPACING,
                                                               rightX - leftX,
-                                                              currentStaffInfo.stdNotationLineSpacing * 0.9);
+                                                              Staff::STD_NOTATION_LINE_SPACING * 0.9);
     horizontalLine->setBrush(QBrush(Qt::black));
     horizontalLine->setParentItem(activeStaff);
 }
