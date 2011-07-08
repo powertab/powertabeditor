@@ -57,8 +57,12 @@ enum NoteTypes
 
 enum PositionEffectFlags1
 {
-    // previous bits are used in earlier version
-    HasTapping = 5,
+    VibratoGp3_1, // TODO - not sure what the difference is (perhaps strong vs normal vibrato?)
+    VibratoGp3_2,
+    NaturalHarmonicGp3,
+    ArtificialHarmonicGp3,
+    FadeInGp3,
+    HasTapping = 5, // start of GP4-compatible flags
     HasStrokeEffect
 };
 
@@ -78,7 +82,8 @@ enum PickstrokeTypes
 
 enum TappingTypes
 {
-    TappingNone,
+    TremoloBarGp3 = 0,
+    TappingNone = 0,
     Tapping,
     Slapping,
     Popping

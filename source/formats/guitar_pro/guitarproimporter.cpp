@@ -865,17 +865,47 @@ void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream& stream)
 void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& position)
 {
     const Gp::Flags flags1 = stream.read<uint8_t>();
-    const Gp::Flags flags2 = stream.read<uint8_t>();
+
+    Gp::Flags flags2; // only read this if we are in GP4 or higher
+
+    // GP3 effect decoding
+    if (stream.version == Gp::Version3)
+    {
+        position.SetVibrato(flags1.test(Gp::VibratoGp3_1) || flags1.test(Gp::VibratoGp3_2));
+
+        // FIXME - in Power Tab, harmonic correspond to notes, not to positions (beats)
+        // However, when the Position effects are being read, the notes haven't been read yet ...
+        if (flags1.test(Gp::NaturalHarmonicGp3))
+        {
+            // TODO - set natural harmonic
+        }
+        if (flags1.test(Gp::ArtificialHarmonicGp3))
+        {
+            // TODO - set artificial harmonic
+        }
+
+        // ignore fade-in effect
+    }
+    else
+    {
+        flags2 = stream.read<uint8_t>();
+    }
 
     if (flags1.test(Gp::HasTapping))
     {
         const uint8_t type = stream.read<uint8_t>();
 
+        // in GP3, a value of 0 indicates a tremolo bar
+        if (type == Gp::TremoloBarGp3 && stream.version == Gp::Version3)
+        {
+            readTremoloBar(stream, position);
+        }
+
         position.SetTap(type == Gp::Tapping);
         // Ignore slapping and popping
     }
 
-    if (flags2.test(Gp::HasTremoloBarEvent))
+    if (stream.version >= Gp::Version4 && flags2.test(Gp::HasTremoloBarEvent))
     {
         readTremoloBar(stream, position);
     }
@@ -893,9 +923,12 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
         }
     }
 
-    position.SetTremoloPicking(flags2.test(Gp::HasRasguedo));
+    if (stream.version >= Gp::Version4)
+    {
+        position.SetTremoloPicking(flags2.test(Gp::HasRasguedo));
+    }
 
-    if (flags2.test(Gp::Pickstroke))
+    if (stream.version >= Gp::Version4 && flags2.test(Gp::Pickstroke))
     {
         const uint8_t pickstrokeType = stream.read<uint8_t>();
 
