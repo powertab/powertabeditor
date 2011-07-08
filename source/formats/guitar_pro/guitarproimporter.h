@@ -74,6 +74,8 @@ private:
 
     /// Supported version strings for Guitar Pro files (maps version strings to version number)
     static const std::map<std::string, Gp::Version> versionStrings;
+
+    static const uint8_t DEFAULT_POSITION_SPACING; ///< Default position spacing to use for imported Guitar Pro files
 };
 
 #endif // GUITARPROIMPORTER_H

@@ -28,6 +28,9 @@ const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
     {"FICHIER GUITAR PRO L4.06", Gp::Version4}
 };
 
+// Use a slightly smaller position spacing than the default in order to reduce the number of systems needed
+const uint8_t GuitarProImporter::DEFAULT_POSITION_SPACING = 15;
+
 GuitarProImporter::GuitarProImporter() :
     FileFormatImporter(FileFormat("Guitar Pro 3, 4", "*.gp3 *.gp4"))
 {
@@ -371,6 +374,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
 
     Score::SystemPtr currentSystem = std::make_shared<System>();
     currentSystem->Init(staffSizes);
+    currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
     score->InsertSystem(currentSystem, 0);
 
     auto currentBarline = barlines.begin();
@@ -400,6 +404,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
         {
             currentSystem = std::make_shared<System>();
             currentSystem->Init(staffSizes);
+            currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
 
             // adjust height to be below the previous system
             const Rect prevRect = score->GetSystem(score->GetSystemCount() - 1)->GetRect();
