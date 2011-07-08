@@ -56,11 +56,15 @@ private:
     void readSlide(Gp::InputStream &stream, Note &note);
     void readHarmonic(Gp::InputStream& stream, Note& note);
     void readBend(Gp::InputStream& stream, Note& note);
+    void readTremoloBar(Gp::InputStream& stream, Position& position);
     void readMixTableChangeEvent(Gp::InputStream& stream);
     void readPositionEffects(Gp::InputStream& stream, Position& position);
     void readChordDiagram(Gp::InputStream& stream);
     void readStartTempo(Gp::InputStream& stream, Score* score);
     void fixRepeatEnds(Score* score);
+
+    static uint8_t convertTremoloEventType(uint8_t gpEventType);
+    static uint8_t convertBendPitch(uint32_t gpBendPitch);
 
     /// Supported version strings for Guitar Pro files (maps version strings to version number)
     static const std::map<std::string, Gp::Version> versionStrings;

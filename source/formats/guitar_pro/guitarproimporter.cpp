@@ -706,10 +706,60 @@ void GuitarProImporter::readBend(Gp::InputStream& stream, Note&)
 
     for (uint32_t i = 0; i < numPoints; i++)
     {
-        stream.read<uint32_t>(); // time relative to the previous point
-        stream.read<uint32_t>(); // bend position
-        stream.read<uint8_t>(); // bend vibrato
+        stream.skip(4); // time relative to the previous point
+        stream.skip(4); // bend position
+        stream.skip(1); // bend vibrato
     }
+}
+
+void GuitarProImporter::readTremoloBar(Gp::InputStream& stream, Position& position)
+{
+    const uint8_t eventType = convertTremoloEventType(stream.read<uint8_t>());
+    const uint32_t pitch = convertBendPitch(stream.read<uint32_t>());
+
+    position.SetTremoloBar(eventType, 0, pitch);
+
+    const uint32_t numPoints = stream.read<uint32_t>(); // number of bend points
+    for (uint32_t i = 0; i < numPoints; i++)
+    {
+        stream.skip(4); // time relative to the previous point
+        stream.skip(4); // bend value
+        stream.skip(1); // vibrato (used for bend, not for tremolo bar)
+    }
+}
+
+uint8_t GuitarProImporter::convertTremoloEventType(uint8_t gpEventType)
+{
+    switch(gpEventType)
+    {
+    case Gp::Dip:
+        return Position::dip;
+
+    case Gp::Dive:
+        return Position::diveAndRelease;
+
+    case Gp::ReleaseUp:
+    case Gp::ReleaseDown:
+        return Position::release;
+
+    case Gp::InvertedDip:
+        return Position::invertedDip;
+
+    case Gp::TremoloReturn:
+        return Position::returnAndRelease;
+
+    default:
+    {
+        std::cerr << "Invalid tremolo bar event type: " << (int)gpEventType << std::endl;
+        return -1;
+    }
+    }
+}
+
+/// Converts bend pitches from GP format (25 per quarter tone) to PTB (1 per quarter tone)
+uint8_t GuitarProImporter::convertBendPitch(uint32_t gpBendPitch)
+{
+    return gpBendPitch / 25;
 }
 
 void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream& stream)
@@ -779,9 +829,7 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
 
     if (flags2.test(Gp::HasTremoloBarEvent))
     {
-        // TODO - replace with method that actually reads the tremolo bar data
-        Note note;
-        readBend(stream, note);
+        readTremoloBar(stream, position);
     }
 
     if (flags1.test(Gp::HasStrokeEffect))
