@@ -41,18 +41,17 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
     findFileVersion(stream);
 
     auto ptbDoc = std::make_shared<PowerTabDocument>();
+    Score* score = ptbDoc->GetGuitarScore();
 
     readHeader(stream, ptbDoc->GetHeader());
 
-    Score* score = ptbDoc->GetGuitarScore();
-
     readStartTempo(stream, score);
 
-    /*int32_t initialKey = */stream.read<int32_t>();
+    stream.skip(4); // initial key -- ignore
 
     if (stream.version >= Gp::Version4)
     {
-        stream.read<uint8_t>(); // octave
+        stream.skip(1); // octave 8va -- ignore
     }
 
     const std::vector<Gp::Channel> channels = readChannels(stream);
@@ -69,7 +68,7 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
     return ptbDoc;
 }
 
-/// Check that the file version is supported
+/// Check that the file version string is valid, and set the version flag for the input stream
 /// @throw FileFormatException
 void GuitarProImporter::findFileVersion(Gp::InputStream& stream)
 {
@@ -91,7 +90,7 @@ void GuitarProImporter::findFileVersion(Gp::InputStream& stream)
 void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& ptbHeader)
 {
     ptbHeader.SetSongTitle(stream.readString());
-    stream.readString(); // ignore subtitle (no .ptb equivalent)
+    stream.readString(); // subtitle -- ignore
 
     ptbHeader.SetSongArtist(stream.readString());
     ptbHeader.SetSongAudioReleaseTitle(stream.readString());
@@ -100,8 +99,6 @@ void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& 
     ptbHeader.SetSongCopyright(stream.readString());
     ptbHeader.SetSongGuitarScoreTranscriber(stream.readString());
 
-    // not entirely sure what the "instructional" field is used for, but we'll add it to
-    // the start of the performance notes
     const std::string instructions = stream.readString();
 
     std::string comments;
@@ -111,6 +108,7 @@ void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& 
         comments += instructions + "\n";
     }
 
+    // read several lines of comments
     const uint32_t numComments = stream.read<uint32_t>();
     for (uint32_t i = 0; i < numComments; i++)
     {
@@ -118,17 +116,17 @@ void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& 
     }
     ptbHeader.SetSongGuitarScoreNotes(comments);
 
-    stream.read<uint8_t>(); // TripletFeel attribute
+    stream.skip(1); // triplet feel attribute -- ignore
 
     if (stream.version >= Gp::Version4)
     {
         // read lyrics
         std::string lyrics;
-        stream.read<uint32_t>(); // track number that the lyrics are associated with
+        stream.skip(4); // track number that the lyrics are associated with -- ignore
 
-        for (int i = 0; i < 5; i++) // 5 lines of lyrics
+        for (int i = 0; i < Gp::NumberOfLinesOfLyrics; i++) // read several lines of lyrics
         {
-            stream.read<uint32_t>(); // measure associated with the line
+            stream.skip(4); // measure associated with the line -- ignore
             lyrics += stream.readIntString();
         }
 
@@ -137,11 +135,13 @@ void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& 
 }
 
 /// Read the midi channels (i.e. mixer settings)
+/// We store them into a temporary structure (Gp::Channel) since they must be
+/// referenced later when importing the tracks. Eventually, the data is used
+/// by the Guitar class
 std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream)
 {
     std::vector<Gp::Channel> channels;
 
-    // Ignore for now
     for (int i = 0; i < Gp::NumberOfMidiChannels; i++) // 64 MIDI channels
     {
         Gp::Channel channel;
@@ -154,9 +154,8 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
         channel.phaser = Gp::Channel::readChannelProperty(stream);
         channel.tremolo = Gp::Channel::readChannelProperty(stream);
 
-        // unused (gp3 compatibility??)
-        stream.read<uint8_t>();
-        stream.read<uint8_t>();
+        // ignored (compatibility with older versions
+        stream.skip(2);
 
         channels.push_back(channel);
     }
@@ -164,6 +163,7 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
     return channels;
 }
 
+/// Reads all of the measures in the score
 std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream& stream,
                                                                 uint32_t numMeasures)
 {
@@ -174,11 +174,11 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
     {
         auto barline = std::make_shared<Barline>();
 
+        // clone time signature, key signature from previous barline if possible
         if (i != 0)
         {
             auto prevBarline = barlines.back();
 
-            // clone time signature, key signature from previous barline
             barline->SetTimeSignature(prevBarline->GetTimeSignature());
             barline->GetTimeSignature().SetShown(false);
 
@@ -214,7 +214,7 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
 
         if (flags.test(Gp::AlternateEnding))
         {
-            stream.read<uint8_t>(); // TODO - properly import alternate endings
+            stream.skip(1); // TODO - properly import alternate endings
         }
 
         if (flags.test(Gp::Marker)) // import rehearsal sign
@@ -250,6 +250,7 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
             keySignature.SetKeyType(stream.read<uint8_t>()); // tonality type (minor/major)
             keySignature.SetKeyAccidentals(convertKeyAccidentals(stream.read<int8_t>())); // key accidentals
         }
+
         if (flags.test(Gp::DoubleBar))
         {
             barline->SetType(Barline::doubleBar);
@@ -264,7 +265,7 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
 void GuitarProImporter::readColor(Gp::InputStream& stream)
 {
     // ignore, since PowerTab doesn't currently have any use for the colors in GP files
-    stream.read<uint32_t>(); // 4 bytes - red, green, blue, white
+    stream.skip(4); // 4 bytes - red, green, blue, white
 }
 
 /// Converts key accidentals from the Guitar Pro format to Power Tab
@@ -291,16 +292,15 @@ void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32
         Score::GuitarPtr guitar = std::make_shared<Guitar>();
         guitar->SetNumber(score->GetGuitarCount());
 
-        // flags used for indicating drum tracks, banjo tracks, etc
-        stream.read<uint8_t>();
+        stream.skip(1); // flags used for indicating drum tracks, banjo tracks, etc -- ignore
 
         guitar->SetDescription(stream.readFixedLengthString(Gp::TrackDescriptionLength));
 
         guitar->SetTuning(readTuning(stream));
 
-        stream.read<uint32_t>(); // MIDI port used - ignore (Power Tab handles this)
+        stream.skip(4); // MIDI port used -- ignore (Power Tab handles this)
 
-        const uint32_t channelIndex = stream.read<uint32_t>(); // MIDI channel used
+        const uint32_t channelIndex = stream.read<uint32_t>(); // Index of MIDI channel used
 
         // find the specified channel and copy its information (in Power Tab, the Guitar class
         // stores the MIDI information along with tuning, etc)
@@ -322,9 +322,9 @@ void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32
                          " for track: " << i << std::endl;
         }
 
-        stream.read<uint32_t>(); // MIDI channel used for effects - ignore
+        stream.skip(4); // MIDI channel used for effects -- ignore
 
-        stream.read<uint32_t>(); // number of frets
+        stream.skip(4); // number of frets -- ignore
 
         guitar->SetCapo(stream.read<uint32_t>());
 
@@ -346,7 +346,7 @@ Tuning GuitarProImporter::readTuning(Gp::InputStream& stream)
     /// Gp::NumberOfStrings integers are in the file, but only the first "numStrings" are actually used
     for (uint32_t i = 0; i < Gp::NumberOfStrings; i++)
     {
-        uint32_t tuningNote = stream.read<uint32_t>();
+        const uint32_t tuningNote = stream.read<uint32_t>();
 
         if (i < numStrings)
         {
@@ -459,6 +459,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
     }
 }
 
+/// Reads a beat (Guitar Pro equivalent of a Position in Power Tab)
 Position* GuitarProImporter::readBeat(Gp::InputStream& stream)
 {
     const Gp::Flags flags = stream.read<uint8_t>();
@@ -470,9 +471,10 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream)
     if (flags.test(Gp::BeatStatus))
     {
         const uint8_t status = stream.read<uint8_t>();
+
         if (status == Gp::BeatEmpty)
         {
-            // TODO - handle empty position
+            // TODO - handle empty position?
         }
         else if (status == Gp::BeatRest)
         {
@@ -537,8 +539,6 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
     {
         if (stringsPlayed.test(i))
         {
-            std::cerr << "Reading string " << Gp::NumberOfStrings - i - 1 << std::endl;
-
             Note note;
 
             note.SetString(Gp::NumberOfStrings - i - 1);
@@ -559,14 +559,14 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
 
             if (flags.test(Gp::TimeIndependentDuration))
             {
-                // ignore - this is a repeat of the Position duration
-                stream.read<uint8_t>();
-                stream.read<uint8_t>();
+                // this is a repeat of the Position duration -- ignore
+                stream.skip(1);
+                stream.skip(1);
             }
 
             if (flags.test(Gp::Dynamic))
             {
-                stream.read<uint8_t>(); // TODO - convert into a Dynamic object
+                stream.skip(1); // TODO - convert into a Dynamic object
             }
 
             if (flags.test(Gp::NoteType)) // if there is a non-empty note, read fret number
@@ -583,8 +583,8 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
             if (flags.test(Gp::FingeringType))
             {
                 // left and right hand fingerings -- ignore
-                stream.read<int8_t>();
-                stream.read<int8_t>();
+                stream.skip(1);
+                stream.skip(1);
             }
 
             if (flags.test(Gp::NoteEffects))
@@ -604,6 +604,9 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
     }
 }
 
+/// Reads the effects for the given note
+/// Note: some of the effects apply to the entire Position (not just a single note),
+/// due to differences between Guitar Pro and Power Tab notation
 void GuitarProImporter::readNoteEffects(Gp::InputStream& stream,
                                         Position& position, Note& note)
 {
@@ -617,18 +620,17 @@ void GuitarProImporter::readNoteEffects(Gp::InputStream& stream,
 
     if (header1.test(Gp::HasGraceNote))
     {
-        stream.read<uint8_t>(); // fret number grace note is made from
-        stream.read<uint8_t>(); // grace note dynamic
-        stream.read<uint8_t>(); // transition type
-        stream.read<uint8_t>(); // duration
-
-        // TODO - will need to add an extra note to be the grace note
+        // TODO - handle grace notes
+        stream.skip(1); // fret number grace note is made from
+        stream.skip(1); // grace note dynamic
+        stream.skip(1); // transition type
+        stream.skip(1); // duration
     }
 
     if (header2.test(Gp::HasTremoloPicking))
     {
         // ignore - Power Tab does not allow different values for the tremolo picking duration (e.g. eighth notes)
-        stream.read<uint8_t>();
+        stream.skip(1);
         position.SetTremoloPicking(true);
     }
 
@@ -650,7 +652,7 @@ void GuitarProImporter::readNoteEffects(Gp::InputStream& stream,
             note.SetTrill(fret);
         }
 
-        stream.read<uint8_t>(); // ignore trill duration (duration is a fixed value in Power Tab)
+        stream.skip(1); // ignore trill duration (duration is a fixed value in Power Tab)
     }
 
     position.SetLetRing(header1.test(Gp::HasLetRing));
@@ -946,6 +948,7 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
     }
 }
 
+/// TODO - implement reading of chord diagrams
 void GuitarProImporter::readChordDiagram(Gp::InputStream& stream)
 {
     const Gp::Flags header = stream.read<uint8_t>();
@@ -1049,6 +1052,7 @@ void GuitarProImporter::readOldStyleChord(Gp::InputStream& stream)
     }
 }
 
+/// Read the initial tempo in the score
 void GuitarProImporter::readStartTempo(Gp::InputStream& stream, Score* score)
 {
     Score::TempoMarkerPtr tempo(new TempoMarker(0, 0, false));
