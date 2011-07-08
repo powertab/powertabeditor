@@ -785,7 +785,7 @@ bool System::IsValidPositionSpacing(int positionSpacing) const
     // need to compare against the positions in each member staff
     for (size_t i = 0; i < m_staffArray.size(); i++)
     {
-        Position* lastPositionInStaff = m_staffArray.at(i)->GetLastPosition();
+        const Position* lastPositionInStaff = m_staffArray.at(i)->GetLastPosition();
         if (lastPositionInStaff != NULL && lastPositionInStaff->GetPosition() >= maxNumPositions - 1)
         {
             return false;
