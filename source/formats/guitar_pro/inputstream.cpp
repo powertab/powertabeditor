@@ -28,7 +28,7 @@ std::string Gp::InputStream::readVersionString()
 /// representing the data
 std::string Gp::InputStream::readString()
 {
-    uint32_t size = read<uint32_t>();
+    const uint32_t size = read<uint32_t>();
 
     std::string str = readCharacterString<uint8_t>();
     assert(size - 1 == str.length());
