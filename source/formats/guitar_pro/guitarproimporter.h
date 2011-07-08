@@ -19,6 +19,7 @@ class Score;
 class Barline;
 class Position;
 class Note;
+class AlternateEnding;
 
 /// Imports Guitar Pro files
 class GuitarProImporter : public FileFormatImporter
@@ -29,6 +30,9 @@ public:
     std::shared_ptr<PowerTabDocument> load(const std::string &fileName);
 
 private:
+    typedef std::map<uint32_t, std::shared_ptr<AlternateEnding> > AlternateEndingsMap;
+    typedef std::vector<std::shared_ptr<Barline> > BarlineList;
+
     void findFileVersion(Gp::InputStream& stream);
     void readHeader(Gp::InputStream& stream, PowerTabFileHeader& ptbHeader);
 
@@ -36,7 +40,8 @@ private:
 
     void readColor(Gp::InputStream& stream);
 
-    std::vector<std::shared_ptr<Barline> > readBarlines(Gp::InputStream& stream, uint32_t numMeasures);
+    void readBarlines(Gp::InputStream& stream, uint32_t numMeasures,
+                      BarlineList& barlines, AlternateEndingsMap& altEndings);
 
     void readTracks(Gp::InputStream& stream, Score* score, uint32_t numTracks,
                     const std::vector<Gp::Channel>& channels);
@@ -45,8 +50,8 @@ private:
 
     Tuning readTuning(Gp::InputStream &stream);
 
-    void readSystems(Gp::InputStream& stream, Score* score,
-                     const std::vector<std::shared_ptr<Barline> >& barlines);
+    void readSystems(Gp::InputStream& stream, Score* score, const BarlineList& barlines,
+                     const AlternateEndingsMap& altEndings);
     Position* readBeat(Gp::InputStream& stream);
 
     uint8_t readDuration(Gp::InputStream& stream);

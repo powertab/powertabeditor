@@ -20,6 +20,7 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/tempomarker.h>
 #include <powertabdocument/chorddiagram.h>
+#include <powertabdocument/alternateending.h>
 
 const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
     {"FICHIER GUITAR PRO v3.00", Gp::Version3},
@@ -62,10 +63,13 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
     const uint32_t numMeasures = stream.read<uint32_t>();
     const uint32_t numTracks = stream.read<uint32_t>();
 
-    std::vector<System::BarlinePtr> barlines = readBarlines(stream, numMeasures);
+    BarlineList barlines;
+    AlternateEndingsMap altEndings;
+    readBarlines(stream, numMeasures, barlines, altEndings);
+
     readTracks(stream, score, numTracks, channels);
 
-    readSystems(stream, score, barlines);
+    readSystems(stream, score, barlines, altEndings);
     fixRepeatEnds(score);
 
     return ptbDoc;
@@ -166,19 +170,18 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
     return channels;
 }
 
-/// Reads all of the measures in the score
-std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream& stream,
-                                                                uint32_t numMeasures)
+/// Reads all of the measures in the score, and any alternate endings that occur
+void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasures,
+                                     BarlineList& barlines, AlternateEndingsMap& altEndings)
 {
-    std::vector<System::BarlinePtr> barlines;
     char nextRehearsalSignletter = 'A';
 
-    for (uint32_t i = 0; i < numMeasures; i++)
+    for (uint32_t measure = 0; measure < numMeasures; measure++)
     {
         auto barline = std::make_shared<Barline>();
 
         // clone time signature, key signature from previous barline if possible
-        if (i != 0)
+        if (measure != 0)
         {
             auto prevBarline = barlines.back();
 
@@ -217,7 +220,12 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
 
         if (flags.test(Gp::AlternateEnding))
         {
-            stream.skip(1); // TODO - properly import alternate endings
+            auto altEnding = std::make_shared<AlternateEnding>();
+            altEnding->SetNumber(stream.read<uint8_t>());
+
+            // associate the alternate ending with the barline index - we will insert the Alternate Ending
+            // into the score later, once we know its exact location (i.e. after layout is figured out)
+            altEndings[measure] = altEnding;
         }
 
         if (flags.test(Gp::Marker)) // import rehearsal sign
@@ -261,8 +269,6 @@ std::vector<System::BarlinePtr> GuitarProImporter::readBarlines(Gp::InputStream&
 
         barlines.push_back(barline);
     }
-
-    return barlines;
 }
 
 void GuitarProImporter::readColor(Gp::InputStream& stream)
@@ -364,7 +370,7 @@ Tuning GuitarProImporter::readTuning(Gp::InputStream& stream)
 }
 
 void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
-                                    const std::vector<System::BarlinePtr>& barlines)
+                                    const BarlineList& barlines, const AlternateEndingsMap& altEndings)
 {
     std::vector<uint8_t> staffSizes;
     for (uint32_t guitar = 0; guitar < score->GetGuitarCount(); guitar++)
@@ -450,6 +456,19 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
             {
                 (*currentBarline)->SetPosition(lastBarlinePos - 1);
                 currentSystem->InsertBarline(*currentBarline);
+            }
+
+            {
+                // insert alternate ending (associated with the bar) if neccessary
+                const uint32_t position = (*currentBarline)->GetPosition();
+                auto altEndingIt = altEndings.find(position);
+                if (altEndingIt != altEndings.end())
+                {
+                    Score::AlternateEndingPtr altEnding = altEndingIt->second;
+                    altEnding->SetSystem(score->GetSystemCount() - 1);
+                    altEnding->SetPosition(position);
+                    score->InsertAlternateEnding(altEnding);
+                }
             }
 
             lastBarlinePos += largestMeasure + 1;
