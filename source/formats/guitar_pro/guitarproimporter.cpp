@@ -714,17 +714,29 @@ void GuitarProImporter::readBend(Gp::InputStream& stream, Note&)
 
 void GuitarProImporter::readTremoloBar(Gp::InputStream& stream, Position& position)
 {
-    const uint8_t eventType = convertTremoloEventType(stream.read<uint8_t>());
+    uint8_t eventType;
+    if (stream.version == Gp::Version3)
+    {
+        eventType = Position::dip;
+    }
+    else
+    {
+        eventType = convertTremoloEventType(stream.read<uint8_t>());
+    }
+
     const uint32_t pitch = convertBendPitch(stream.read<uint32_t>());
 
     position.SetTremoloBar(eventType, 0, pitch);
 
-    const uint32_t numPoints = stream.read<uint32_t>(); // number of bend points
-    for (uint32_t i = 0; i < numPoints; i++)
+    if (stream.version >= Gp::Version4)
     {
-        stream.skip(4); // time relative to the previous point
-        stream.skip(4); // bend value
-        stream.skip(1); // vibrato (used for bend, not for tremolo bar)
+        const uint32_t numPoints = stream.read<uint32_t>(); // number of bend points
+        for (uint32_t i = 0; i < numPoints; i++)
+        {
+            stream.skip(4); // time relative to the previous point
+            stream.skip(4); // bend value
+            stream.skip(1); // vibrato (used for bend, not for tremolo bar)
+        }
     }
 }
 
