@@ -47,8 +47,8 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
 
     readStartTempo(stream, score);
 
-    /*int8_t initialKey = */stream.read<int8_t>();
-    stream.read<uint32_t>(); // octave
+    /*int32_t initialKey = */stream.read<int32_t>();
+    stream.read<uint8_t>(); // octave
 
     const std::vector<Gp::Channel> channels = readChannels(stream);
 
