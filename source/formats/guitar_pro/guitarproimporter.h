@@ -52,7 +52,10 @@ private:
     uint8_t readDuration(Gp::InputStream& stream);
 
     void readNotes(Gp::InputStream& stream, Position& position);
+
     void readNoteEffects(Gp::InputStream& stream, Position& position, Note& note);
+    void readNoteEffectsGp3(Gp::InputStream& stream, Position& position, Note& note);
+
     void readSlide(Gp::InputStream &stream, Note &note);
     void readHarmonic(Gp::InputStream& stream, Note& note);
     void readBend(Gp::InputStream& stream, Note& note);

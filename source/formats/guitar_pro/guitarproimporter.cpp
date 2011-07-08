@@ -589,7 +589,14 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
 
             if (flags.test(Gp::NoteEffects))
             {
-                readNoteEffects(stream, position, note);
+                if (stream.version >= Gp::Version4)
+                {
+                    readNoteEffects(stream, position, note);
+                }
+                else if (stream.version == Gp::Version3)
+                {
+                    readNoteEffectsGp3(stream, position, note);
+                }
             }
 
             position.InsertNote(note.CloneObject());
@@ -653,6 +660,35 @@ void GuitarProImporter::readNoteEffects(Gp::InputStream& stream,
     position.SetVibrato(header2.test(Gp::HasVibrato));
     position.SetPalmMuting(header2.test(Gp::HasPalmMute));
     position.SetStaccato(header2.test(Gp::HasStaccato));
+}
+
+/// Note effects are sufficiently different in GP3 to make a separate function necessary
+void GuitarProImporter::readNoteEffectsGp3(Gp::InputStream& stream,
+                                           Position& position, Note& note)
+{
+    const Gp::Flags flags = stream.read<uint8_t>();
+
+    position.SetLetRing(flags.test(Gp::HasLetRing));
+    note.SetHammerOn(flags.test(Gp::HasHammerOnOrPullOff)); // TODO - check whether a pulloff needs to be set instead
+
+    if (flags.test(Gp::HasSlideOutVer3))
+    {
+        note.SetSlideOutOf(Note::slideOutOfDownwards, 12);
+    }
+
+    if (flags.test(Gp::HasBend))
+    {
+        readBend(stream, note);
+    }
+
+    if (flags.test(Gp::HasGraceNote))
+    {
+        stream.read<uint8_t>(); // fret number grace note is made from
+        stream.read<uint8_t>(); // grace note dynamic
+        stream.read<uint8_t>(); // transition type
+        stream.read<uint8_t>(); // duration
+        // TODO - will need to add an extra note to be the grace note
+    }
 }
 
 void GuitarProImporter::readSlide(Gp::InputStream& stream, Note& note)
