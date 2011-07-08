@@ -48,7 +48,11 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
     readStartTempo(stream, score);
 
     /*int32_t initialKey = */stream.read<int32_t>();
-    stream.read<uint8_t>(); // octave
+
+    if (stream.version >= Gp::Version4)
+    {
+        stream.read<uint8_t>(); // octave
+    }
 
     const std::vector<Gp::Channel> channels = readChannels(stream);
 
@@ -115,17 +119,20 @@ void GuitarProImporter::readHeader(Gp::InputStream& stream, PowerTabFileHeader& 
 
     stream.read<uint8_t>(); // TripletFeel attribute
 
-    // read lyrics
-    std::string lyrics;
-    stream.read<uint32_t>(); // track number that the lyrics are associated with
-
-    for (int i = 0; i < 5; i++) // 5 lines of lyrics
+    if (stream.version >= Gp::Version4)
     {
-        stream.read<uint32_t>(); // measure associated with the line
-        lyrics += stream.readIntString();
-    }
+        // read lyrics
+        std::string lyrics;
+        stream.read<uint32_t>(); // track number that the lyrics are associated with
 
-    ptbHeader.SetSongLyrics(lyrics);
+        for (int i = 0; i < 5; i++) // 5 lines of lyrics
+        {
+            stream.read<uint32_t>(); // measure associated with the line
+            lyrics += stream.readIntString();
+        }
+
+        ptbHeader.SetSongLyrics(lyrics);
+    }
 }
 
 /// Read the midi channels (i.e. mixer settings)
@@ -535,7 +542,10 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
 
             const Gp::Flags flags = stream.read<uint8_t>();
 
-            position.SetMarcato(flags.test(Gp::AccentedNote));
+            if (stream.version >= Gp::Version4)
+            {
+                position.SetMarcato(flags.test(Gp::AccentedNote));
+            }
 
             note.SetGhostNote(flags.test(Gp::GhostNote));
             // ignore dotted note flag - already handled elsewhere for the Position object
