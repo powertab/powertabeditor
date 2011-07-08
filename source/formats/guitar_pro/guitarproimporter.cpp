@@ -19,6 +19,7 @@
 #include <powertabdocument/note.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/tempomarker.h>
+#include <powertabdocument/chorddiagram.h>
 
 const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
     {"FICHIER GUITAR PRO v3.00", Gp::Version3},
@@ -499,7 +500,7 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream)
 
     if (flags.test(Gp::Text))
     {
-        stream.readIntString(); // TODO - not sure what to do with this text (floating text???)
+        stream.readString(); // TODO - not sure what to do with this text (floating text???)
     }
 
     if (flags.test(Gp::NoteEffects))
@@ -536,16 +537,15 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
     {
         if (stringsPlayed.test(i))
         {
+            std::cerr << "Reading string " << Gp::NumberOfStrings - i - 1 << std::endl;
+
             Note note;
 
             note.SetString(Gp::NumberOfStrings - i - 1);
 
             const Gp::Flags flags = stream.read<uint8_t>();
 
-            if (stream.version >= Gp::Version4)
-            {
-                position.SetMarcato(flags.test(Gp::AccentedNote));
-            }
+            position.SetMarcato(flags.test(Gp::AccentedNote));
 
             note.SetGhostNote(flags.test(Gp::GhostNote));
             // ignore dotted note flag - already handled elsewhere for the Position object
@@ -859,7 +859,10 @@ void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream& stream)
         stream.read<uint8_t>(); // tempo change duration
     }
 
-    stream.read<uint8_t>(); // details of score-wide or track-specific changes
+    if (stream.version >= Gp::Version4)
+    {
+        stream.read<uint8_t>(); // details of score-wide or track-specific changes
+    }
 }
 
 void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& position)
@@ -949,7 +952,23 @@ void GuitarProImporter::readChordDiagram(Gp::InputStream& stream)
 
     if (!header.test(Gp::Gp4ChordFormat))
     {
-        throw FileFormatException("Unsupported Chord Diagram format");
+        readOldStyleChord(stream);
+        return;
+    }
+
+    if (stream.version == Gp::Version3)
+    {
+        stream.skip(25);
+        stream.readFixedLengthString(34); // chord name
+        stream.read<uint32_t>(); // top fret of chord
+
+        // strings that are used
+        for (int i = 0; i < Gp::NumberOfStringsGp3; i++)
+        {
+            stream.read<uint32_t>();
+        }
+        stream.skip(36);
+        return;
     }
 
     stream.read<bool>(); // sharps/flats
@@ -1009,6 +1028,25 @@ void GuitarProImporter::readChordDiagram(Gp::InputStream& stream)
     }
 
     stream.read<bool>(); // show fingering
+}
+
+/// Reads an old-style "simple" chord
+void GuitarProImporter::readOldStyleChord(Gp::InputStream& stream)
+{
+    ChordDiagram diagram;
+
+    stream.readString(); // chord diagram name
+
+    const uint32_t baseFret = stream.read<uint32_t>();
+    diagram.SetTopFret(baseFret);
+
+    if (baseFret != 0)
+    {
+        for (int i = 0; i < Gp::NumberOfStringsGp3; i++)
+        {
+            diagram.SetFretNumber(i, stream.read<uint32_t>());
+        }
+    }
 }
 
 void GuitarProImporter::readStartTempo(Gp::InputStream& stream, Score* score)

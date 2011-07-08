@@ -62,7 +62,10 @@ private:
     void readTremoloBar(Gp::InputStream& stream, Position& position);
     void readMixTableChangeEvent(Gp::InputStream& stream);
     void readPositionEffects(Gp::InputStream& stream, Position& position);
+
     void readChordDiagram(Gp::InputStream& stream);
+    void readOldStyleChord(Gp::InputStream& stream);
+
     void readStartTempo(Gp::InputStream& stream, Score* score);
     void fixRepeatEnds(Score* score);
 

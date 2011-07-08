@@ -147,7 +147,8 @@ enum MiscConstants
 {
     NumberOfStrings = 7, ///< Max number of strings for an instrument
     NumberOfBarres = 5,   ///< Max number of barres in a chord
-    NumberOfMidiChannels = 64 ///< Used for reading/writing the table of MIDI channels
+    NumberOfMidiChannels = 64, ///< Used for reading/writing the table of MIDI channels
+    NumberOfStringsGp3 = 6 ///< Max number of strings for an instrument in GP3
 };
 
 enum FixedLengthStrings
