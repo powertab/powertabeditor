@@ -189,11 +189,18 @@ bool PowerTabDocument::Save(const string& fileName) const
     m_header.Serialize(stream);
     CHECK_THAT(stream.CheckState(), false);
 
-    // Write the scores
-    for (size_t i = 0; i < m_scoreArray.size(); i++)
+    if (m_header.GetVersion() <= PowerTabFileHeader::FILEVERSION_1_7)
     {
-        m_scoreArray[i]->Serialize(stream);
-        CHECK_THAT(stream.CheckState(), false);
+        // Write the scores
+        for (size_t i = 0; i < m_scoreArray.size(); i++)
+        {
+            m_scoreArray[i]->Serialize(stream);
+            CHECK_THAT(stream.CheckState(), false);
+        }
+    }
+    else // just write the guitar score for version 2.0
+    {
+        m_scoreArray[0]->Serialize(stream);
     }
 
     // Write the document font settings
@@ -254,11 +261,14 @@ bool PowerTabDocument::Deserialize(PowerTabInputStream& stream)
     m_scoreArray.push_back(new Score);
     m_scoreArray[0]->Deserialize(stream, version);
 
-    // Read the bass score
-    m_scoreArray.push_back(new Score);
-    m_scoreArray[1]->Deserialize(stream, version);
+    if (version <= PowerTabFileHeader::FILEVERSION_1_7)
+    {
+        // Read the bass score
+        m_scoreArray.push_back(new Score);
+        m_scoreArray[1]->Deserialize(stream, version);
 
-    m_scoreArray[0]->MergeScore(*m_scoreArray[1]);
+        m_scoreArray[0]->MergeScore(*m_scoreArray[1]);
+    }
 
     // Read the document font settings
     for (size_t fontSettingIndex = 0; fontSettingIndex < NUM_FONT_SETTINGS; fontSettingIndex++)
