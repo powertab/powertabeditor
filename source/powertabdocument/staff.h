@@ -144,15 +144,15 @@ public:
     Position* GetLastPosition() const;
     Position* GetPositionByPosition(uint32_t voice, uint32_t index) const;
     size_t GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const System> system,
-                                  Position* position) const;
+                                  const Position* position) const;
 
     bool IsOnlyPositionInBar(const Position* position, std::shared_ptr<const System> system) const;
 
-    bool CanHammerOn(Position* position, Note* note) const;
-    bool CanPullOff(Position* position, Note* note) const;
-    bool CanTieNote(Position* position, Note* note) const;
-    bool CanSlideBetweenNotes(Position* position, Note* note) const;
-    int8_t GetSlideSteps(Position* position, Note* note) const;
+    bool CanHammerOn(const Position* position, const Note* note) const;
+    bool CanPullOff(const Position* position, const Note* note) const;
+    bool CanTieNote(const Position* position, const Note* note) const;
+    bool CanSlideBetweenNotes(const Position* position, const Note* note) const;
+    int8_t GetSlideSteps(const Position* position, const Note* note) const;
 
     int GetHeight() const;
     

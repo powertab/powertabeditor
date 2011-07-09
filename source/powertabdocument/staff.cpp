@@ -399,7 +399,7 @@ Position* Staff::GetPositionByPosition(uint32_t voice, uint32_t index) const
 /// Finds the position index of the next position
 /// @throw std::out_of_range if the position does not exist in this staff, or if the voice is invalid
 size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const System> system,
-                                     Position *position) const
+                                     const Position* position) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");
@@ -446,13 +446,13 @@ bool Staff::IsOnlyPositionInBar(const Position* position, std::shared_ptr<const 
     return true;
 }
 
-bool Staff::CanHammerOn(Position* position, Note* note) const
+bool Staff::CanHammerOn(const Position* position, const Note* note) const
 {
     // In order to perform a hammer-on, the note must be lower than the next
     return CompareWithNote(NextNote, position, note, std::less<uint8_t>());
 }
 
-bool Staff::CanPullOff(Position* position, Note* note) const
+bool Staff::CanPullOff(const Position* position, const Note* note) const
 {
     // In order to perform a pull-off, the note must be higher than the next
     return CompareWithNote(NextNote, position, note, std::greater<uint8_t>());
@@ -460,7 +460,7 @@ bool Staff::CanPullOff(Position* position, Note* note) const
 
 // Figures out if the given note can be set as tied
 // The previous position in the staff must contain a Note at the same string & fret
-bool Staff::CanTieNote(Position* position, Note* note) const
+bool Staff::CanTieNote(const Position* position, const Note* note) const
 {
     // In order to tie, the note must be the same as the previous
     return CompareWithNote(PrevNote, position, note, std::equal_to<uint8_t>());
@@ -468,7 +468,7 @@ bool Staff::CanTieNote(Position* position, Note* note) const
 
 /// Determines if we can slide from the given note to the next note (shift or legato slides)
 /// The next note must exist and be a different fret number
-bool Staff::CanSlideBetweenNotes(Position *position, Note *note) const
+bool Staff::CanSlideBetweenNotes(const Position* position, const Note* note) const
 {
     return CompareWithNote(NextNote, position, note, std::not_equal_to<uint8_t>());
 }
@@ -718,7 +718,7 @@ Position* Staff::GetLastPosition() const
 
 /// Returns the number of steps (frets) between the given note and the next note on the string
 /// @throws std::logic_error If there is no note at the same string for the next position
-int8_t Staff::GetSlideSteps(Position *position, Note *note) const
+int8_t Staff::GetSlideSteps(const Position* position, const Note* note) const
 {
     Note* nextNote = GetAdjacentNoteOnString(Staff::NextNote, position, note);
 
@@ -892,7 +892,7 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
     
     // maps notes to their position on the staff (relative to the top line)
     // this is for treble clef - we will adjust for bass clef as necessary later on
-    std::map<char, int8_t> notePositions = {
+    const std::map<char, int8_t> notePositions = {
         {'F', 0}, {'E', 1}, {'D', 2}, {'C', 3}, {'B', -3}, {'A', -2}, {'G', -1}
     };
     
