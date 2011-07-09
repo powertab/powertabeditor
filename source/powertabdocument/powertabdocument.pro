@@ -41,7 +41,8 @@ HEADERS += \
     barline.h \
     alternateending.h \
     harmonics.h \
-    common.h
+    common.h \
+    layout.h
 
 SOURCES += \
     tuning.cpp \
@@ -78,4 +79,5 @@ SOURCES += \
     chorddiagram.cpp \
     barline.cpp \
     alternateending.cpp \
-    harmonics.cpp
+    harmonics.cpp \
+    layout.cpp

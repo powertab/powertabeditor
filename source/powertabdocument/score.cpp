@@ -28,6 +28,7 @@
 #include "dynamic.h"
 #include "systemlocation.h"
 #include "common.h"
+#include "layout.h"
 
 #include <map>
 #include <bitset>
@@ -336,6 +337,8 @@ Score::AlternateEndingPtr Score::FindAlternateEnding(const SystemLocation& locat
 /// @param system The system to update the height of
 void Score::UpdateSystemHeight(SystemPtr system)
 {
+    Layout::calculateStdNotationHeight(this, system);
+
     // Store the original height, recalculate the height, then find the height difference
     
     const int originalHeight = system->GetRect().GetHeight();

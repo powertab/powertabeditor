@@ -476,10 +476,12 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
         }
     }
 
-    // calculate the beaming for all notes
+    // calculate the beaming for all notes, and calculate the layout of the systems
     for (size_t i = 0; i < score->GetSystemCount(); i++)
     {
-        score->GetSystem(i)->CalculateBeamingForStaves();
+        Score::SystemPtr system = score->GetSystem(i);
+        system->CalculateBeamingForStaves();
+        score->UpdateSystemHeight(system);
     }
 }
 
