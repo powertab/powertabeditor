@@ -109,9 +109,6 @@ protected slots:
     void editKeySignature();
     void editTimeSignature();
 
-    void increasePositionSpacing();
-    void decreasePositionSpacing();
-
     void removeCurrentSystem();
     void insertSystemAtEnd();
     void insertSystemBefore();

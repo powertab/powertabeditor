@@ -352,11 +352,13 @@ void PowerTabEditor::createActions()
     // Section-related actions
     increasePositionSpacingAct = new Command(tr("Increase Position Spacing"),
                                              "Section.IncreaseSpacing", Qt::Key_Plus, this);
-    connect(increasePositionSpacingAct, SIGNAL(triggered()), this, SLOT(increasePositionSpacing()));
+    sigfwd::connect(increasePositionSpacingAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::changePositionSpacing, this, 1));
 
     decreasePositionSpacingAct = new Command(tr("Decrease Position Spacing"),
                                              "Section.DecreaseSpacing", Qt::Key_Minus, this);
-    connect(decreasePositionSpacingAct, SIGNAL(triggered()), this, SLOT(decreasePositionSpacing()));
+    sigfwd::connect(decreasePositionSpacingAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::changePositionSpacing, this, -1));
 
     removeCurrentSystemAct = new Command(tr("Remove Current System"),
                                          "Section.RemoveCurrentSystem", QKeySequence(), this);
@@ -1267,16 +1269,6 @@ void PowerTabEditor::moveCaretToNextBar()
 void PowerTabEditor::moveCaretToPrevBar()
 {
     getCurrentScoreArea()->getCaret()->moveCaretToPrevBar();
-}
-
-void PowerTabEditor::increasePositionSpacing()
-{
-    changePositionSpacing(1);
-}
-
-void PowerTabEditor::decreasePositionSpacing()
-{
-    changePositionSpacing(-1);
 }
 
 void PowerTabEditor::changePositionSpacing(int offset)
