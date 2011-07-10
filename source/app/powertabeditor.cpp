@@ -228,35 +228,27 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 void PowerTabEditor::createActions()
 {
     // File-related actions
-    newFileAct = new QAction(tr("&New"), this);
-    newFileAct->setShortcuts(QKeySequence::New);
+    newFileAct = new Command(tr("&New"), "File.New", QKeySequence::New, this);
     connect(newFileAct, SIGNAL(triggered()), this, SLOT(createNewFile()));
 
-    openFileAct = new QAction(tr("&Open..."), this);
-    openFileAct->setShortcuts(QKeySequence::Open);
-    openFileAct->setStatusTip(tr("Open an existing document"));
+    openFileAct = new Command(tr("&Open..."), "File.Open", QKeySequence::Open, this);
     connect(openFileAct, SIGNAL(triggered()), this, SLOT(openFile()));
 
-    closeTabAct = new QAction(tr("&Close Tab"), this);
-    closeTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+    closeTabAct = new Command(tr("&Close Tab"), "File.CloseTab", Qt::CTRL + Qt::Key_W, this);
     connect(closeTabAct, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
 
-    saveFileAsAct = new QAction(tr("Save As..."), this);
-    saveFileAsAct->setShortcut(QKeySequence::SaveAs);
+    saveFileAsAct = new Command(tr("Save As..."), "File.SaveAs", QKeySequence::SaveAs, this);
     connect(saveFileAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
 
     editShortcutsAct = new Command(tr("Customize Shortcuts"), "File.CustomizeShortcuts",
                                         QKeySequence(), this);
     connect(editShortcutsAct, SIGNAL(triggered()), this, SLOT(editKeyboardShortcuts()));
 
-    preferencesAct = new QAction(tr("&Preferences..."), this);
-    preferencesAct->setShortcuts(QKeySequence::Preferences);
+    preferencesAct = new Command(tr("&Preferences..."), "File.Preferences", QKeySequence::Preferences, this);
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(openPreferences()));
 
     // Exit the application
-    exitAppAct = new QAction(tr("&Quit"), this);
-    exitAppAct->setShortcuts(QKeySequence::Quit);
-    exitAppAct->setStatusTip(tr("Exit the application"));
+    exitAppAct = new Command(tr("&Quit"), "File.Quit", QKeySequence::Quit, this);
     connect(exitAppAct, SIGNAL(triggered()), this, SLOT(close()));
 
     // Redo / Undo actions
@@ -267,244 +259,237 @@ void PowerTabEditor::createActions()
     redoAct->setShortcuts(QKeySequence::Redo);
 
     // Playback-related actions
-    playPauseAct = new QAction(tr("Play"), this);
-    playPauseAct->setShortcut(QKeySequence(Qt::Key_Space));
+    playPauseAct = new Command(tr("Play"), "PlayPause.Play", Qt::Key_Space, this);
     connect(playPauseAct, SIGNAL(triggered()), this, SLOT(startStopPlayback()));
 
     // Section navigation actions
-    firstSectionAct = new QAction(tr("First Section"), this);
-    firstSectionAct->setShortcuts(QKeySequence::MoveToStartOfDocument);
+    firstSectionAct = new Command(tr("First Section"), "Section.FirstSection",
+                                  QKeySequence::MoveToStartOfDocument, this);
     connect(firstSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToFirstSection()));
 
-    nextSectionAct = new QAction(tr("Next Section"), this);
-    nextSectionAct->setShortcuts(QKeySequence::MoveToNextPage);
+    nextSectionAct = new Command(tr("Next Section"), "Section.NextSection",
+                                 QKeySequence::MoveToNextPage, this);
     connect(nextSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextSection()));
 
-    prevSectionAct = new QAction(tr("Previous Section"), this);
-    prevSectionAct->setShortcuts(QKeySequence::MoveToPreviousPage);
+    prevSectionAct = new Command(tr("Previous Section"), "Section.PreviousSection",
+                                 QKeySequence::MoveToPreviousPage, this);
     connect(prevSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevSection()));
 
-    lastSectionAct = new QAction(tr("Last Section"), this);
-    lastSectionAct->setShortcuts(QKeySequence::MoveToEndOfDocument);
+    lastSectionAct = new Command(tr("Last Section"), "Section.LastSection",
+                                 QKeySequence::MoveToEndOfDocument, this);
     connect(lastSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToLastSection()));
 
-    shiftForwardAct = new QAction(tr("Shift Forward"), this);
+    shiftForwardAct = new Command(tr("Shift Forward"), "Position.ShiftForward", QKeySequence(), this);
     connect(shiftForwardAct, SIGNAL(triggered()), this, SLOT(shiftForward()));
 
-    shiftBackwardAct = new QAction(tr("Shift Backward"), this);
+    shiftBackwardAct = new Command(tr("Shift Backward"), "Position.ShiftBackward", QKeySequence(), this);
     connect(shiftBackwardAct, SIGNAL(triggered()), this, SLOT(shiftBackward()));
 
     // Position-related actions
-    startPositionAct = new QAction(tr("Move to &Start"), this);
-    startPositionAct->setShortcuts(QKeySequence::MoveToStartOfLine);
+    startPositionAct = new Command(tr("Move to &Start"), "Staff.MoveToStart",
+                                   QKeySequence::MoveToStartOfLine, this);
     connect(startPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToStart()));
 
-    nextPositionAct = new QAction(tr("&Next Position"), this);
-    nextPositionAct->setShortcuts(QKeySequence::MoveToNextChar);
+    nextPositionAct = new Command(tr("&Next Position"), "Staff.NextPosition",
+                                  QKeySequence::MoveToNextChar, this);
     connect(nextPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretRight()));
 
-    prevPositionAct = new QAction(tr("&Previous Position"), this);
-    prevPositionAct->setShortcuts(QKeySequence::MoveToPreviousChar);
+    prevPositionAct = new Command(tr("&Previous Position"), "Staff.PreviousPosition",
+                                  QKeySequence::MoveToPreviousChar, this);
     connect(prevPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretLeft()));
 
-    nextStringAct = new QAction(tr("Next String"), this);
-    nextStringAct->setShortcuts(QKeySequence::MoveToNextLine);
+    nextStringAct = new Command(tr("Next String"), "Staff.NextString",
+                                QKeySequence::MoveToNextLine, this);
     connect(nextStringAct, SIGNAL(triggered()), this, SLOT(moveCaretDown()));
 
-    prevStringAct = new QAction(tr("Previous String"), this);
-    prevStringAct->setShortcuts(QKeySequence::MoveToPreviousLine);
+    prevStringAct = new Command(tr("Previous String"), "Staff.PreviousString",
+                                QKeySequence::MoveToPreviousLine, this);
     connect(prevStringAct, SIGNAL(triggered()), this, SLOT(moveCaretUp()));
 
-    lastPositionAct = new QAction(tr("Move to &End"), this);
-    lastPositionAct->setShortcuts(QKeySequence::MoveToEndOfLine);
+    lastPositionAct = new Command(tr("Move to &End"), "Staff.MoveToEnd",
+                                  QKeySequence::MoveToEndOfLine, this);
     connect(lastPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToEnd()));
 
-    nextStaffAct = new QAction(tr("Next Staff"), this);
-    nextStaffAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Down));
+    nextStaffAct = new Command(tr("Next Staff"), "Staff.NextStaff",
+                               Qt::ALT + Qt::Key_Down, this);
     connect(nextStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextStaff()));
 
-    prevStaffAct = new QAction(tr("Previous Staff"), this);
-    prevStaffAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Up));
+    prevStaffAct = new Command(tr("Previous Staff"), "Staff.PreviousStaff",
+                               Qt::ALT + Qt::Key_Up, this);
     connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
 
     // the shortcuts for these two won't do anything since the tabs get 
     // sucked up by our event filter first
-    nextBarAct = new QAction(tr("Next Bar"), this);
-    nextBarAct->setShortcut(QKeySequence(Qt::Key_Tab));
+    nextBarAct = new Command(tr("Next Bar"), "Staff.NextBar", Qt::Key_Tab, this);
     connect(nextBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextBar()));
     
-    prevBarAct = new QAction(tr("Previous Bar"), this);
-    prevBarAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_Tab));
+    prevBarAct = new Command(tr("Previous Bar"), "Staff.PreviousBar", Qt::SHIFT + Qt::Key_Tab, this);
     connect(prevBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevBar()));
 
     // Actions for shifting tab numbers up/down a string
-    shiftTabNumUp = new QAction(tr("Shift Tab Number Up"), this);
-    shiftTabNumUp->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up));
+    shiftTabNumUp = new Command(tr("Shift Tab Number Up"), "Position.ShiftTabNumberUp",
+                                Qt::CTRL + Qt::Key_Up, this);
     sigfwd::connect(shiftTabNumUp, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_UP));
 
-    shiftTabNumDown = new QAction(tr("Shift Tab Number Down"), this);
-    shiftTabNumDown->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
+    shiftTabNumDown = new Command(tr("Shift Tab Number Down"), "Position.ShiftTabNumberDown",
+                                  Qt::CTRL + Qt::Key_Down, this);
     sigfwd::connect(shiftTabNumDown, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_DOWN));
 
-    clearNoteAct = new QAction(tr("Clear Note"), this);
-    clearNoteAct->setShortcut(QKeySequence::Delete);
+    clearNoteAct = new Command(tr("Clear Note"), "Position.ClearNote", QKeySequence::Delete, this);
     connect(clearNoteAct, SIGNAL(triggered()), this, SLOT(clearNote()));
 
-    clearCurrentPositionAct = new QAction(tr("Clear Position"), this);
-    clearCurrentPositionAct->setShortcut(QKeySequence::DeleteEndOfWord);
+    clearCurrentPositionAct = new Command(tr("Clear Position"), "Position.ClearPosition",
+                                          QKeySequence::DeleteEndOfWord, this);
     connect(clearCurrentPositionAct, SIGNAL(triggered()), this, SLOT(clearCurrentPosition()));
 
     // Text-related actions
-    chordNameAct = new QAction(tr("Chord Name..."), this);
-    chordNameAct->setShortcut(QKeySequence(Qt::Key_C));
+    chordNameAct = new Command(tr("Chord Name..."), "Text.ChordName", Qt::Key_C, this);
     chordNameAct->setCheckable(true);
     connect(chordNameAct, SIGNAL(triggered()), this, SLOT(editChordName()));
 
     // Section-related actions
-    increasePositionSpacingAct = new QAction(tr("Increase Position Spacing"), this);
-    increasePositionSpacingAct->setShortcut(QKeySequence(Qt::Key_Plus));
+    increasePositionSpacingAct = new Command(tr("Increase Position Spacing"),
+                                             "Section.IncreaseSpacing", Qt::Key_Plus, this);
     connect(increasePositionSpacingAct, SIGNAL(triggered()), this, SLOT(increasePositionSpacing()));
 
-    decreasePositionSpacingAct = new QAction(tr("Decrease Position Spacing"), this);
-    decreasePositionSpacingAct->setShortcut(QKeySequence(Qt::Key_Minus));
+    decreasePositionSpacingAct = new Command(tr("Decrease Position Spacing"),
+                                             "Section.DecreaseSpacing", Qt::Key_Minus, this);
     connect(decreasePositionSpacingAct, SIGNAL(triggered()), this, SLOT(decreasePositionSpacing()));
 
-    removeCurrentSystemAct = new QAction(tr("Remove Current System"), this);
+    removeCurrentSystemAct = new Command(tr("Remove Current System"),
+                                         "Section.RemoveCurrentSystem", QKeySequence(), this);
     connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
 
-    insertSystemAtEndAct = new QAction(tr("Insert System At End"), this);
-    insertSystemAtEndAct->setShortcut(QKeySequence(Qt::Key_N));
+    insertSystemAtEndAct = new Command(tr("Insert System At End"), "Section.InsertSystemAtEnd",
+                                       Qt::Key_N, this);
     connect(insertSystemAtEndAct, SIGNAL(triggered()), this, SLOT(insertSystemAtEnd()));
 
-    insertSystemBeforeAct = new QAction(tr("Insert System Before"), this);
+    insertSystemBeforeAct = new Command(tr("Insert System Before"),
+                                        "Section.InsertSystemBefore", QKeySequence(), this);
     connect(insertSystemBeforeAct, SIGNAL(triggered()), this, SLOT(insertSystemBefore()));
 
-    insertSystemAfterAct = new QAction(tr("Insert System After"), this);
+    insertSystemAfterAct = new Command(tr("Insert System After"),
+                                       "Section.InsertSystemAfter", QKeySequence(), this);
     connect(insertSystemAfterAct, SIGNAL(triggered()), this, SLOT(insertSystemAfter()));
 
     // Note-related actions
     noteDurationActGroup = new QActionGroup(this);
 
-    wholeNoteAct = new QAction(tr("Whole"), this);
+    wholeNoteAct = new Command(tr("Whole"), "Note.WholeNote", QKeySequence(), this);
     wholeNoteAct->setCheckable(true);
     sigfwd::connect(wholeNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 1));
     noteDurationActGroup->addAction(wholeNoteAct);
 
-    halfNoteAct = new QAction(tr("Half"), this);
+    halfNoteAct = new Command(tr("Half"), "Note.HalfNote", QKeySequence(), this);
     halfNoteAct->setCheckable(true);
     sigfwd::connect(halfNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 2));
     noteDurationActGroup->addAction(halfNoteAct);
 
-    quarterNoteAct = new QAction(tr("Quarter"), this);
+    quarterNoteAct = new Command(tr("Quarter"), "Note.QuarterNote", QKeySequence(), this);
     quarterNoteAct->setCheckable(true);
     sigfwd::connect(quarterNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 4));
     noteDurationActGroup->addAction(quarterNoteAct);
 
-    eighthNoteAct = new QAction(tr("8th"), this);
+    eighthNoteAct = new Command(tr("8th"), "Note.EighthNote", QKeySequence(), this);
     eighthNoteAct->setCheckable(true);
     sigfwd::connect(eighthNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 8));
     noteDurationActGroup->addAction(eighthNoteAct);
 
-    sixteenthNoteAct = new QAction(tr("16th"), this);
+    sixteenthNoteAct = new Command(tr("16th"), "Note.SixteenthNote", QKeySequence(), this);
     sixteenthNoteAct->setCheckable(true);
     sigfwd::connect(sixteenthNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 16));
     noteDurationActGroup->addAction(sixteenthNoteAct);
 
-    thirtySecondNoteAct = new QAction(tr("32nd"), this);
+    thirtySecondNoteAct = new Command(tr("32nd"), "Note.ThirtySecondNote", QKeySequence(), this);
     thirtySecondNoteAct->setCheckable(true);
     sigfwd::connect(thirtySecondNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 32));
     noteDurationActGroup->addAction(thirtySecondNoteAct);
 
-    sixtyFourthNoteAct = new QAction(tr("64th"), this);
+    sixtyFourthNoteAct = new Command(tr("64th"), "Note.SixtyFourthNote", QKeySequence(), this);
     sixtyFourthNoteAct->setCheckable(true);
     sigfwd::connect(sixtyFourthNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 64));
     noteDurationActGroup->addAction(sixtyFourthNoteAct);
 
-    dottedNoteAct = new QAction(tr("Dotted"), this);
+    dottedNoteAct = new Command(tr("Dotted"), "Note.Dotted", QKeySequence(), this);
     dottedNoteAct->setCheckable(true);
     connectToggleProperty<Position>(dottedNoteAct, &getSelectedPositions,
                                     &Position::IsDotted, &Position::SetDotted);
 
-    doubleDottedNoteAct = new QAction(tr("Double Dotted"), this);
+    doubleDottedNoteAct = new Command(tr("Double Dotted"), "Note.DoubleDotted", QKeySequence(), this);
     doubleDottedNoteAct->setCheckable(true);
     connectToggleProperty<Position>(doubleDottedNoteAct, &getSelectedPositions,
                                     &Position::IsDoubleDotted, &Position::SetDoubleDotted);
 
-    tiedNoteAct = new QAction(tr("Tied"), this);
-    tiedNoteAct->setShortcut(QKeySequence(Qt::Key_Y));
+    tiedNoteAct = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
     
-    noteMutedAct = new QAction(tr("Muted"), this);
+    noteMutedAct = new Command(tr("Muted"), "Note.Muted", QKeySequence(), this);
     noteMutedAct->setCheckable(true);
     connectToggleProperty<Note>(noteMutedAct, &getSelectedNotes,
                                 &Note::IsMuted, &Note::SetMuted);
 
-    ghostNoteAct = new QAction(tr("Ghost Note"), this);
-    ghostNoteAct->setShortcut(QKeySequence(Qt::Key_N));
+    ghostNoteAct = new Command(tr("Ghost Note"), "Note.GhostNote", Qt::Key_N, this);
     ghostNoteAct->setCheckable(true);
     connectToggleProperty<Note>(ghostNoteAct, &getSelectedNotes,
                                 &Note::IsGhostNote, &Note::SetGhostNote);
 
-    fermataAct = new QAction(tr("Fermata"), this);
-    fermataAct->setShortcut(QKeySequence(Qt::Key_F));
+    fermataAct = new Command(tr("Fermata"), "Note.Fermata", Qt::Key_F, this);
     fermataAct->setCheckable(true);
     connectToggleProperty<Position>(fermataAct, &getSelectedPositions,
                                     &Position::HasFermata, &Position::SetFermata);
 
-    letRingAct = new QAction(tr("Let Ring"), this);
+    letRingAct = new Command(tr("Let Ring"), "Note.LetRing", QKeySequence(), this);
     letRingAct->setCheckable(true);
     connectToggleProperty<Position>(letRingAct, &getSelectedPositions,
                                     &Position::HasLetRing, &Position::SetLetRing);
 
-    graceNoteAct = new QAction(tr("Grace Note"), this);
+    graceNoteAct = new Command(tr("Grace Note"), "Note.GraceNote", QKeySequence(), this);
     graceNoteAct->setCheckable(true);
     connectToggleProperty<Position>(graceNoteAct, &getSelectedPositions,
                                     &Position::IsAcciaccatura, &Position::SetAcciaccatura);
     
-    staccatoNoteAct = new QAction(tr("Staccato"), this);
+    staccatoNoteAct = new Command(tr("Staccato"), "Note.Staccato", Qt::Key_Z, this);
     staccatoNoteAct->setCheckable(true);
-    staccatoNoteAct->setShortcut(QKeySequence(Qt::Key_Z));
     connectToggleProperty<Position>(staccatoNoteAct, &getSelectedPositions,
                                     &Position::IsStaccato, &Position::SetStaccato);
 
-    marcatoAct = new QAction(tr("Accent"), this);
+    marcatoAct = new Command(tr("Accent"), "Note.Accent", Qt::Key_A, this);
     marcatoAct->setCheckable(true);
-    marcatoAct->setShortcut(QKeySequence(Qt::Key_A));
     connectToggleProperty<Position>(marcatoAct, &getSelectedPositions,
                                     &Position::HasMarcato, &Position::SetMarcato);
 
-    sforzandoAct = new QAction(tr("Heavy Accent"), this);
+    sforzandoAct = new Command(tr("Heavy Accent"), "Note.HeavyAccent", QKeySequence(), this);
     sforzandoAct->setCheckable(true);
     connectToggleProperty<Position>(sforzandoAct, &getSelectedPositions,
                                     &Position::HasSforzando, &Position::SetSforzando);
 
     // Octave actions
-    octave8vaAct = new QAction(tr("8va"), this);
+    octave8vaAct = new Command(tr("8va"), "Note.Octave8va", QKeySequence(), this);
     octave8vaAct->setCheckable(true);
     connectToggleProperty<Note>(octave8vaAct, &getSelectedNotes,
                                 &Note::IsOctave8va, &Note::SetOctave8va);
 
-    octave15maAct = new QAction(tr("15ma"), this);
+    octave15maAct = new Command(tr("15ma"), "Note.Octave15ma", QKeySequence(), this);
     octave15maAct->setCheckable(true);
     connectToggleProperty<Note>(octave15maAct, &getSelectedNotes,
                                 &Note::IsOctave15ma, &Note::SetOctave15ma);
 
-    octave8vbAct = new QAction(tr("8vb"), this);
+    octave8vbAct = new Command(tr("8vb"), "Note.Octave8vb", QKeySequence(), this);
     octave8vbAct->setCheckable(true);
     connectToggleProperty<Note>(octave8vbAct, &getSelectedNotes,
                                 &Note::IsOctave8vb, &Note::SetOctave8vb);
 
-    octave15mbAct = new QAction(tr("15mb"), this);
+    octave15mbAct = new Command(tr("15mb"), "Note.Octave15mb", QKeySequence(), this);
     octave15mbAct->setCheckable(true);
     connectToggleProperty<Note>(octave15mbAct, &getSelectedNotes,
                                 &Note::IsOctave15mb, &Note::SetOctave15mb);
@@ -512,43 +497,43 @@ void PowerTabEditor::createActions()
     // Rest Actions
     restDurationsGroup = new QActionGroup(this);
 
-    wholeRestAct = new QAction(tr("Whole"), this);
+    wholeRestAct = new Command(tr("Whole"), "Rests.Whole", QKeySequence(), this);
     wholeRestAct->setCheckable(true);
     restDurationsGroup->addAction(wholeRestAct);
     sigfwd::connect(wholeRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 1));
 
-    halfRestAct = new QAction(tr("Half"), this);
+    halfRestAct = new Command(tr("Half"), "Rests.Half", QKeySequence(), this);
     halfRestAct->setCheckable(true);
     restDurationsGroup->addAction(halfRestAct);
     sigfwd::connect(halfRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 2));
 
-    quarterRestAct = new QAction(tr("Quarter"), this);
+    quarterRestAct = new Command(tr("Quarter"), "Rests.Quarter", QKeySequence(), this);
     quarterRestAct->setCheckable(true);
     restDurationsGroup->addAction(quarterRestAct);
     sigfwd::connect(quarterRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 4));
 
-    eighthRestAct = new QAction(tr("8th"), this);
+    eighthRestAct = new Command(tr("8th"), "Rests.Eighth", QKeySequence(), this);
     eighthRestAct->setCheckable(true);
     restDurationsGroup->addAction(eighthRestAct);
     sigfwd::connect(eighthRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 8));
 
-    sixteenthRestAct = new QAction(tr("16th"), this);
+    sixteenthRestAct = new Command(tr("16th"), "Rests.Sixteenth", QKeySequence(), this);
     sixteenthRestAct->setCheckable(true);
     restDurationsGroup->addAction(sixteenthRestAct);
     sigfwd::connect(sixteenthRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 16));
 
-    thirtySecondRestAct = new QAction(tr("32nd"), this);
+    thirtySecondRestAct = new Command(tr("32nd"), "Rests.ThirtySecond", QKeySequence(), this);
     thirtySecondRestAct->setCheckable(true);
     restDurationsGroup->addAction(thirtySecondRestAct);
     sigfwd::connect(thirtySecondRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 32));
 
-    sixtyFourthRestAct = new QAction(tr("64th"), this);
+    sixtyFourthRestAct = new Command(tr("64th"), "Rests.SixtyFourth", QKeySequence(), this);
     sixtyFourthRestAct->setCheckable(true);
     restDurationsGroup->addAction(sixtyFourthRestAct);
     sigfwd::connect(sixtyFourthRestAct, SIGNAL(triggered()),
@@ -556,144 +541,140 @@ void PowerTabEditor::createActions()
     
     // Music Symbol Actions
     rehearsalSignAct = new Command(tr("Rehearsal Sign..."), "MusicSymbols.EditRehearsalSign",
-                                   QKeySequence(Qt::SHIFT + Qt::Key_R), this);
+                                   Qt::SHIFT + Qt::Key_R, this);
     rehearsalSignAct->setCheckable(true);
     connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
 
     keySignatureAct = new Command(tr("Key Signature..."), "MusicSymbols.EditKeySignature",
-                                  QKeySequence(Qt::Key_K), this);
+                                  Qt::Key_K, this);
     keySignatureAct->setCheckable(true);
     connect(keySignatureAct, SIGNAL(triggered()), this, SLOT(editKeySignature()));
 
-    timeSignatureAct = new QAction(tr("Time Signature..."), this);
+    timeSignatureAct = new Command(tr("Time Signature..."), "MusicSymbols.EditTimeSignature",
+                                   Qt::Key_T, this);
     timeSignatureAct->setCheckable(true);
-    timeSignatureAct->setShortcut(QKeySequence(Qt::Key_T));
     connect(timeSignatureAct, SIGNAL(triggered()), this, SLOT(editTimeSignature()));
 
-    barlineAct = new QAction(tr("Barline..."), this);
+    barlineAct = new Command(tr("Barline..."), "MusicSymbols.EditBarline", Qt::Key_B, this);
     barlineAct->setCheckable(true);
-    barlineAct->setShortcut(QKeySequence(Qt::Key_B));
     connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarline()));
 
-    repeatEndingAct = new QAction(tr("Repeat Ending..."), this);
+    repeatEndingAct = new Command(tr("Repeat Ending..."), "MusicSymbols.EditRepeatEnding", Qt::Key_E, this);
     repeatEndingAct->setCheckable(true);
-    repeatEndingAct->setShortcut(QKeySequence(Qt::Key_E));
     connect(repeatEndingAct, SIGNAL(triggered()), this, SLOT(editRepeatEnding()));
 
     // Tab Symbol Actions
-    hammerPullAct = new QAction(tr("Hammer On/Pull Off"), this);
+    hammerPullAct = new Command(tr("Hammer On/Pull Off"), "TabSymbols.HammerPull", Qt::Key_H, this);
     hammerPullAct->setCheckable(true);
-    hammerPullAct->setShortcut(QKeySequence(Qt::Key_H));
     connect(hammerPullAct, SIGNAL(triggered()), this, SLOT(editHammerPull()));
     
-    naturalHarmonicAct = new QAction(tr("Natural Harmonic"), this);
+    naturalHarmonicAct = new Command(tr("Natural Harmonic"), "TabSymbols.NaturalHarmonic",
+                                     QKeySequence(), this);
     naturalHarmonicAct->setCheckable(true);
     connectToggleProperty<Note>(naturalHarmonicAct, &getSelectedNotes,
                                 &Note::IsNaturalHarmonic, &Note::SetNaturalHarmonic);
 
-    tappedHarmonicAct = new QAction(tr("Tapped Harmonic"), this);
+    tappedHarmonicAct = new Command(tr("Tapped Harmonic"), "TabSymbols.TappedHarmonic", QKeySequence(), this);
     tappedHarmonicAct->setCheckable(true);
     connect(tappedHarmonicAct, SIGNAL(triggered()), this, SLOT(editTappedHarmonic()));
 
-    shiftSlideAct = new QAction(tr("Shift Slide"), this);
+    shiftSlideAct = new Command(tr("Shift Slide"), "TabSymbols.ShiftSlide", Qt::Key_S, this);
     shiftSlideAct->setCheckable(true);
-    shiftSlideAct->setShortcut(QKeySequence(Qt::Key_S));
     sigfwd::connect(shiftSlideAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfShiftSlide));
 
-    legatoSlideAct = new QAction(tr("Legato Slide"), this);
+    legatoSlideAct = new Command(tr("Legato Slide"), "TabSymbols.LegatoSlide", Qt::Key_L, this);
     legatoSlideAct->setCheckable(true);
-    legatoSlideAct->setShortcut(QKeySequence(Qt::Key_L));
     sigfwd::connect(legatoSlideAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfLegatoSlide));
 
-    vibratoAct = new QAction(tr("Vibrato"), this);
+    vibratoAct = new Command(tr("Vibrato"), "TabSymbols.Vibrato", Qt::Key_V, this);
     vibratoAct->setCheckable(true);
-    vibratoAct->setShortcut(QKeySequence(Qt::Key_V));
     connectToggleProperty<Position>(vibratoAct, &getSelectedPositions,
                                     &Position::HasVibrato, &Position::SetVibrato);
 
-    wideVibratoAct = new QAction(tr("Wide Vibrato"), this);
+    wideVibratoAct = new Command(tr("Wide Vibrato"), "TabSymbols.WideVibrato", Qt::Key_W, this);
     wideVibratoAct->setCheckable(true);
-    wideVibratoAct->setShortcut(QKeySequence(Qt::Key_W));
     connectToggleProperty<Position>(wideVibratoAct, &getSelectedPositions,
                                     &Position::HasWideVibrato, &Position::SetWideVibrato);
 
-    palmMuteAct = new QAction(tr("Palm Mute"), this);
+    palmMuteAct = new Command(tr("Palm Mute"), "TabSymbols.PalmMute", Qt::Key_M, this);
     palmMuteAct->setCheckable(true);
-    palmMuteAct->setShortcut(QKeySequence(Qt::Key_M));
     connectToggleProperty<Position>(palmMuteAct, &getSelectedPositions,
                                     &Position::HasPalmMuting, &Position::SetPalmMuting);
 
-    tremoloPickingAct = new QAction(tr("Tremolo Picking"), this);
+    tremoloPickingAct = new Command(tr("Tremolo Picking"), "TabSymbols.TremoloPicking", QKeySequence(), this);
     tremoloPickingAct->setCheckable(true);
     connectToggleProperty<Position>(tremoloPickingAct, &getSelectedPositions,
                                     &Position::HasTremoloPicking, &Position::SetTremoloPicking);
 
-    arpeggioUpAct = new QAction(tr("Arpeggio Up"), this);
+    arpeggioUpAct = new Command(tr("Arpeggio Up"), "TabSymbols.ArpeggioUp", QKeySequence(), this);
     arpeggioUpAct->setCheckable(true);
     connectToggleProperty<Position>(arpeggioUpAct, &getSelectedPositions,
                                     &Position::HasArpeggioUp, &Position::SetArpeggioUp);
 
-    arpeggioDownAct = new QAction(tr("Arpeggio Down"), this);
+    arpeggioDownAct = new Command(tr("Arpeggio Down"), "TabSymbols.ArpeggioDown", QKeySequence(), this);
     arpeggioDownAct->setCheckable(true);
     connectToggleProperty<Position>(arpeggioDownAct, &getSelectedPositions,
                                     &Position::HasArpeggioDown, &Position::SetArpeggioDown);
 
-    tapAct = new QAction(tr("Tap"), this);
+    tapAct = new Command(tr("Tap"), "TabSymbols.Tap", Qt::Key_P, this);
     tapAct->setCheckable(true);
-    tapAct->setShortcut(QKeySequence(Qt::Key_P));
     connectToggleProperty<Position>(tapAct, &getSelectedPositions,
                                     &Position::HasTap, &Position::SetTap);
 
-    trillAction = new QAction(tr("Trill"), this);
+    trillAction = new Command(tr("Trill"), "TabSymbols.Trill", QKeySequence(), this);
     trillAction->setCheckable(true);
     connect(trillAction, SIGNAL(triggered()), this, SLOT(editTrill()));
 
-    pickStrokeUpAct = new QAction(tr("Pickstroke Up"), this);
+    pickStrokeUpAct = new Command(tr("Pickstroke Up"), "TabSymbols.PickstrokeUp", QKeySequence(), this);
     pickStrokeUpAct->setCheckable(true);
     connectToggleProperty<Position>(pickStrokeUpAct, &getSelectedPositions,
                                     &Position::HasPickStrokeUp, &Position::SetPickStrokeUp);
 
-    pickStrokeDownAct = new QAction(tr("Pickstroke Down"), this);
+    pickStrokeDownAct = new Command(tr("Pickstroke Down"), "TabSymbols.PickStrokeDown",
+                                    QKeySequence(), this);
     pickStrokeDownAct->setCheckable(true);
     connectToggleProperty<Position>(pickStrokeDownAct, &getSelectedPositions,
                                     &Position::HasPickStrokeDown, &Position::SetPickStrokeDown);
 
     // Slide Into Menu
-    slideIntoFromAboveAct = new QAction(tr("Slide Into From Above"), this);
+    slideIntoFromAboveAct = new Command(tr("Slide Into From Above"), "SlideInto.FromAbove",
+                                        QKeySequence(), this);
     slideIntoFromAboveAct->setCheckable(true);
     sigfwd::connect(slideIntoFromAboveAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideInto, this, Note::slideIntoFromAbove));
 
-    slideIntoFromBelowAct = new QAction(tr("Slide Into From Below"), this);
+    slideIntoFromBelowAct = new Command(tr("Slide Into From Below"), "SlideInto.FromBelow",
+                                        QKeySequence(), this);
     slideIntoFromBelowAct->setCheckable(true);
     sigfwd::connect(slideIntoFromBelowAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideInto, this, Note::slideIntoFromBelow));
 
     // Slide Out Of Menu
-    slideOutOfDownwardsAct = new QAction(tr("Slide Out Of Downwards"), this);
+    slideOutOfDownwardsAct = new Command(tr("Slide Out Of Downwards"), "SlideOut.Downwards",
+                                         QKeySequence(), this);
     slideOutOfDownwardsAct->setCheckable(true);
     sigfwd::connect(slideOutOfDownwardsAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfDownwards));
 
-    slideOutOfUpwardsAct = new QAction(tr("Slide Out Of Upwards"), this);
+    slideOutOfUpwardsAct = new Command(tr("Slide Out Of Upwards"), "SlideOut.Upwards",
+                                       QKeySequence(), this);
     slideOutOfUpwardsAct->setCheckable(true);
     sigfwd::connect(slideOutOfUpwardsAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfUpwards));
 
     // Guitar Menu
-    addGuitarAct = new QAction(tr("Add Guitar"), this);
+    addGuitarAct = new Command(tr("Add Guitar"), "Guitar.AddGuitar", QKeySequence(), this);
     connect(addGuitarAct, SIGNAL(triggered()), this, SLOT(addGuitar()));
 
     // Window Menu Actions
-    nextTabAct = new QAction(tr("Next Tab"), this);
-    nextTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Tab));
+    nextTabAct = new Command(tr("Next Tab"), "Window.NextTab", Qt::CTRL + Qt::Key_Tab, this);
     sigfwd::connect(nextTabAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::cycleTab, this, 1));
 
-    prevTabAct = new QAction(tr("Previous Tab"), this);
-    prevTabAct->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab));
+    prevTabAct = new Command(tr("Previous Tab"), "Window.PreviousTab",
+                             Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
     sigfwd::connect(prevTabAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::cycleTab, this, -1));
 }
@@ -864,7 +845,12 @@ void PowerTabEditor::initFileFormatMenus()
     // add a menu option for importing each file format
     BOOST_FOREACH(const FileFormat& format, fileFormatManager->importedFileFormats())
     {
-        QAction* action = new QAction(QString::fromStdString(format.name), this);
+        const QString formatName = QString::fromStdString(format.name);
+        QString formatId = formatName;
+        formatId.remove(" ");
+
+        Command* action = new Command(formatName, "Import." + formatId,
+                                      QKeySequence(), this);
 
         sigfwd::connect(action, SIGNAL(triggered()),
                         boost::bind(&PowerTabEditor::importFile, this, format));
@@ -1666,12 +1652,12 @@ void PowerTabEditor::editTiedNote()
     undoManager->push(new ToggleProperty<Note>(notes, &Note::SetTied, &Note::IsTied, "Note Tie"));
 }
 
-// Updates the given QAction to be checked and/or enabled, based on the results of calling
+// Updates the given Command to be checked and/or enabled, based on the results of calling
 // the predicate member function of the provided object
 namespace
 {
     template<class T>
-    void updatePropertyStatus(QAction* action, const T* object, bool (T::*predicate)(void) const)
+    void updatePropertyStatus(Command* action, const T* object, bool (T::*predicate)(void) const)
     {
         if (object == NULL)
         {

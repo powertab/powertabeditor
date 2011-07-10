@@ -23,7 +23,6 @@ class PreferencesDialog;
 class Toolbox;
 class QSplitter;
 class MidiPlayer;
-class QActionGroup;
 class QEvent;
 class Note;
 class Position;
@@ -146,136 +145,136 @@ protected:
     boost::scoped_ptr<FileFormatManager> fileFormatManager;
 
     QMenu* fileMenu;
-    QAction* newFileAct;
-    QAction* openFileAct;
-    QAction* closeTabAct;
-    QAction* saveFileAsAct;
+    Command* newFileAct;
+    Command* openFileAct;
+    Command* closeTabAct;
+    Command* saveFileAsAct;
     Command* editShortcutsAct;
-    QAction* preferencesAct;
+    Command* preferencesAct;
     QMenu* importFileMenu;
     QMenu* exportFileMenu;
-    QAction* exitAppAct;
+    Command* exitAppAct;
 
     QMenu* editMenu;
     QAction* undoAct;
     QAction* redoAct;
 
     QMenu* playbackMenu;
-    QAction* playPauseAct;
+    Command* playPauseAct;
 
     QMenu* positionMenu;
     QMenu* positionSectionMenu; // menu options for navigating between sections
     // navigate to the first, next, previous, or last section in the score
-    QAction* firstSectionAct;
-    QAction* nextSectionAct;
-    QAction* prevSectionAct;
-    QAction* lastSectionAct;
-    QAction* shiftForwardAct;
-    QAction* shiftBackwardAct;
-    QAction* clearNoteAct; // clears the active note
-    QAction* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
+    Command* firstSectionAct;
+    Command* nextSectionAct;
+    Command* prevSectionAct;
+    Command* lastSectionAct;
+    Command* shiftForwardAct;
+    Command* shiftBackwardAct;
+    Command* clearNoteAct; // clears the active note
+    Command* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
 
     QMenu* positionStaffMenu;
-    QAction* nextPositionAct; // navigate to the next position in the staff
-    QAction* prevPositionAct; // navigate to the previous position in the staff
-    QAction* startPositionAct; // navigate to the first position in the staff
-    QAction* lastPositionAct; // navigate to the last position in the staff
-    QAction* nextStringAct; // navigate to the next string in the staff
-    QAction* prevStringAct; // navigate to the previous string in the staff
-    QAction* nextStaffAct; // navigate to the next staff in the system
-    QAction* prevStaffAct; // navigate to the previous staff in the system
-    QAction* nextBarAct; // navigate to the first non-bar pos in the next bar
-    QAction* prevBarAct; // navigate to the first non-bar pos in the prev bar
+    Command* nextPositionAct; // navigate to the next position in the staff
+    Command* prevPositionAct; // navigate to the previous position in the staff
+    Command* startPositionAct; // navigate to the first position in the staff
+    Command* lastPositionAct; // navigate to the last position in the staff
+    Command* nextStringAct; // navigate to the next string in the staff
+    Command* prevStringAct; // navigate to the previous string in the staff
+    Command* nextStaffAct; // navigate to the next staff in the system
+    Command* prevStaffAct; // navigate to the previous staff in the system
+    Command* nextBarAct; // navigate to the first non-bar pos in the next bar
+    Command* prevBarAct; // navigate to the first non-bar pos in the prev bar
 
-    QAction* shiftTabNumUp; // shift tab numbers up/down by a string
-    QAction* shiftTabNumDown;
+    Command* shiftTabNumUp; // shift tab numbers up/down by a string
+    Command* shiftTabNumDown;
 
     QMenu* textMenu;
-    QAction* chordNameAct; // add/remove a chord name
+    Command* chordNameAct; // add/remove a chord name
 
     QMenu* sectionMenu;
-    QAction* increasePositionSpacingAct;
-    QAction* decreasePositionSpacingAct;
-    QAction* insertSystemAtEndAct;
-    QAction* insertSystemBeforeAct;
-    QAction* insertSystemAfterAct;
-    QAction* removeCurrentSystemAct;
+    Command* increasePositionSpacingAct;
+    Command* decreasePositionSpacingAct;
+    Command* insertSystemAtEndAct;
+    Command* insertSystemBeforeAct;
+    Command* insertSystemAfterAct;
+    Command* removeCurrentSystemAct;
 
     QMenu* notesMenu;
     QActionGroup* noteDurationActGroup; // only one duration can be checked at a time
-    QAction* wholeNoteAct; // actions for modifying the duration of a note
-    QAction* halfNoteAct;
-    QAction* quarterNoteAct;
-    QAction* eighthNoteAct;
-    QAction* sixteenthNoteAct;
-    QAction* thirtySecondNoteAct;
-    QAction* sixtyFourthNoteAct;
-    QAction* dottedNoteAct; // sets a note to be dotted
-    QAction* doubleDottedNoteAct;
-    QAction* tiedNoteAct; // sets a note to be tied to the previous note
-    QAction* noteMutedAct; // sets the note to be muted
-    QAction* ghostNoteAct; // set a note to be a ghost note
-    QAction* letRingAct;
-    QAction* fermataAct; // set a position as fermata
-    QAction* graceNoteAct;
-    QAction* staccatoNoteAct; // set the notes of a position to be staccato
-    QAction* marcatoAct; // set an accent
-    QAction* sforzandoAct; // set a heavy accent
+    Command* wholeNoteAct; // actions for modifying the duration of a note
+    Command* halfNoteAct;
+    Command* quarterNoteAct;
+    Command* eighthNoteAct;
+    Command* sixteenthNoteAct;
+    Command* thirtySecondNoteAct;
+    Command* sixtyFourthNoteAct;
+    Command* dottedNoteAct; // sets a note to be dotted
+    Command* doubleDottedNoteAct;
+    Command* tiedNoteAct; // sets a note to be tied to the previous note
+    Command* noteMutedAct; // sets the note to be muted
+    Command* ghostNoteAct; // set a note to be a ghost note
+    Command* letRingAct;
+    Command* fermataAct; // set a position as fermata
+    Command* graceNoteAct;
+    Command* staccatoNoteAct; // set the notes of a position to be staccato
+    Command* marcatoAct; // set an accent
+    Command* sforzandoAct; // set a heavy accent
 
     QMenu* octaveMenu;
-    QAction* octave8vaAct;
-    QAction* octave15maAct;
-    QAction* octave8vbAct;
-    QAction* octave15mbAct;
+    Command* octave8vaAct;
+    Command* octave15maAct;
+    Command* octave8vbAct;
+    Command* octave15mbAct;
 
     QMenu* restsMenu;
     QActionGroup* restDurationsGroup; // allow only one rest duration to be selected at a time
-    QAction* wholeRestAct;
-    QAction* halfRestAct;
-    QAction* quarterRestAct;
-    QAction* eighthRestAct;
-    QAction* sixteenthRestAct;
-    QAction* thirtySecondRestAct;
-    QAction* sixtyFourthRestAct;
+    Command* wholeRestAct;
+    Command* halfRestAct;
+    Command* quarterRestAct;
+    Command* eighthRestAct;
+    Command* sixteenthRestAct;
+    Command* thirtySecondRestAct;
+    Command* sixtyFourthRestAct;
 
     QMenu* musicSymbolsMenu;
     Command* rehearsalSignAct; // add/remove rehearsal signs
     Command* keySignatureAct;
-    QAction* timeSignatureAct;
-    QAction* barlineAct;
-    QAction* repeatEndingAct;
+    Command* timeSignatureAct;
+    Command* barlineAct;
+    Command* repeatEndingAct;
 
     QMenu* tabSymbolsMenu;
-    QAction* hammerPullAct; // add/remove hammer-on or pull-off
-    QAction* naturalHarmonicAct; // add/remove natural harmonics
-    QAction* tappedHarmonicAct;
-    QAction* shiftSlideAct;
-    QAction* legatoSlideAct;
-    QAction* vibratoAct; // add/remove vibrato
-    QAction* wideVibratoAct;
-    QAction* palmMuteAct; // toggle palm-muting
-    QAction* tremoloPickingAct; // toggle tremolo picking
-    QAction* arpeggioUpAct;
-    QAction* arpeggioDownAct;
-    QAction* tapAct;
-    QAction* trillAction; // create or remove a trill
-    QAction* pickStrokeUpAct;
-    QAction* pickStrokeDownAct;
+    Command* hammerPullAct; // add/remove hammer-on or pull-off
+    Command* naturalHarmonicAct; // add/remove natural harmonics
+    Command* tappedHarmonicAct;
+    Command* shiftSlideAct;
+    Command* legatoSlideAct;
+    Command* vibratoAct; // add/remove vibrato
+    Command* wideVibratoAct;
+    Command* palmMuteAct; // toggle palm-muting
+    Command* tremoloPickingAct; // toggle tremolo picking
+    Command* arpeggioUpAct;
+    Command* arpeggioDownAct;
+    Command* tapAct;
+    Command* trillAction; // create or remove a trill
+    Command* pickStrokeUpAct;
+    Command* pickStrokeDownAct;
 
     QMenu* slideIntoMenu;
-    QAction* slideIntoFromAboveAct;
-    QAction* slideIntoFromBelowAct;
+    Command* slideIntoFromAboveAct;
+    Command* slideIntoFromBelowAct;
 
     QMenu* slideOutOfMenu;
-    QAction* slideOutOfDownwardsAct;
-    QAction* slideOutOfUpwardsAct;
+    Command* slideOutOfDownwardsAct;
+    Command* slideOutOfUpwardsAct;
 
     QMenu* guitarMenu;
-    QAction* addGuitarAct;
+    Command* addGuitarAct;
 
     QMenu* windowMenu;
-    QAction* nextTabAct; // cycle to the next/previous tab
-    QAction* prevTabAct;
+    Command* nextTabAct; // cycle to the next/previous tab
+    Command* prevTabAct;
 
     QString previousDirectory; // previous directory that a file was opened in
     boost::scoped_ptr<QStackedWidget> mixerList;

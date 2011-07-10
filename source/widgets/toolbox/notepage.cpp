@@ -8,6 +8,7 @@
 
 #include <app/skinmanager.h>
 #include <app/powertabeditor.h>
+#include <app/command.h>
 
 #include <widgets/common.h>
 
@@ -19,7 +20,7 @@ void NotePage::createNoteButtons()
     for (int i=0; i<7; i++)
     {
         QString icon, tip;
-        QAction* action = NULL;
+        Command* action = NULL;
 
         switch(i)
         {

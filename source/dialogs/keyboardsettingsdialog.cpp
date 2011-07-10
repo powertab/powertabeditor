@@ -52,8 +52,10 @@ void KeyboardSettingsDialog::initializeCommandTable()
     // populate list of commands
     foreach(Command* command, commands)
     {
+        // NOTE: QAction::toolTip() is called to avoid getting ampersands from
+        //       mnemonics (which would appear in QAction::text)
         QTreeWidgetItem* item = new QTreeWidgetItem(QStringList() << command->id() <<
-                                                    command->text() << command->shortcut().toString());
+                                                    command->toolTip() << command->shortcut().toString());
         item->setData(0, Qt::UserRole, qVariantFromValue(command));
         ui->commandsList->addTopLevelItem(item);
     }
