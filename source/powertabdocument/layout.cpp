@@ -8,7 +8,6 @@
 #include "guitar.h"
 
 #include <limits>
-#include <cmath>
 
 /// Adjust the spacing around the standard notation staff, depending on if any notes are located above/below the staff
 void Layout::calculateStdNotationHeight(Score* score, std::shared_ptr<System> system)
@@ -62,7 +61,7 @@ void Layout::calculateStdNotationHeight(Score* score, std::shared_ptr<System> sy
         {
             if (minNoteLocation < 0) // if the highest note is above the staff
             {
-                staff->SetStandardNotationStaffAboveSpacing(std::abs(minNoteLocation) * 0.5 *
+                staff->SetStandardNotationStaffAboveSpacing(-minNoteLocation * 0.5 *
                                                             Staff::STD_NOTATION_LINE_SPACING +
                                                             Staff::STAFF_BORDER_SPACING);
             }
