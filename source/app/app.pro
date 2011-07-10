@@ -5,11 +5,13 @@ SOURCES += \
     scorearea.cpp \
     documentmanager.cpp \
     settings.cpp \
-    skinmanager.cpp
+    skinmanager.cpp \
+    command.cpp
 
 HEADERS += common.h \
     documentmanager.h \
     powertabeditor.h \
     scorearea.h \
     settings.h \
-    skinmanager.h
+    skinmanager.h \
+    command.h

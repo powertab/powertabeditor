@@ -10,7 +10,8 @@ HEADERS += \
     alternateendingdialog.h \
     tappedharmonicdialog.h \
     keysignaturedialog.h \
-    timesignaturedialog.h
+    timesignaturedialog.h \
+    keyboardsettingsdialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -22,4 +23,8 @@ SOURCES += \
     alternateendingdialog.cpp \
     tappedharmonicdialog.cpp \
     keysignaturedialog.cpp \
-    timesignaturedialog.cpp
+    timesignaturedialog.cpp \
+    keyboardsettingsdialog.cpp
+
+FORMS += \
+    keyboardsettingsdialog.ui

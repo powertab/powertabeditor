@@ -30,6 +30,7 @@ class Position;
 class DocumentManager;
 class FileFormatManager;
 class FileFormat;
+class Command;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -125,6 +126,8 @@ protected slots:
 
     void addGuitar();
 
+    void editKeyboardShortcuts();
+
 protected:
     bool isPlaying;
     const QString fileFilter;
@@ -147,6 +150,7 @@ protected:
     QAction* openFileAct;
     QAction* closeTabAct;
     QAction* saveFileAsAct;
+    Command* editShortcutsAct;
     QAction* preferencesAct;
     QMenu* importFileMenu;
     QMenu* exportFileMenu;
@@ -235,8 +239,8 @@ protected:
     QAction* sixtyFourthRestAct;
 
     QMenu* musicSymbolsMenu;
-    QAction* rehearsalSignAct; // add/remove rehearsal signs
-    QAction* keySignatureAct;
+    Command* rehearsalSignAct; // add/remove rehearsal signs
+    Command* keySignatureAct;
     QAction* timeSignatureAct;
     QAction* barlineAct;
     QAction* repeatEndingAct;

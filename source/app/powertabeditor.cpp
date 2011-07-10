@@ -26,6 +26,7 @@
 #include <audio/midiplayer.h>
 #include <app/settings.h>
 #include <app/documentmanager.h>
+#include <app/command.h>
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
@@ -36,6 +37,7 @@
 #include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/keysignaturedialog.h>
 #include <dialogs/timesignaturedialog.h>
+#include <dialogs/keyboardsettingsdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -242,6 +244,10 @@ void PowerTabEditor::createActions()
     saveFileAsAct = new QAction(tr("Save As..."), this);
     saveFileAsAct->setShortcut(QKeySequence::SaveAs);
     connect(saveFileAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
+
+    editShortcutsAct = new Command(tr("Customize Shortcuts"), "File.CustomizeShortcuts",
+                                        QKeySequence(), this);
+    connect(editShortcutsAct, SIGNAL(triggered()), this, SLOT(editKeyboardShortcuts()));
 
     preferencesAct = new QAction(tr("&Preferences..."), this);
     preferencesAct->setShortcuts(QKeySequence::Preferences);
@@ -549,14 +555,14 @@ void PowerTabEditor::createActions()
                     boost::bind(&PowerTabEditor::editRest, this, 64));
     
     // Music Symbol Actions
-    rehearsalSignAct = new QAction(tr("Rehearsal Sign..."), this);
+    rehearsalSignAct = new Command(tr("Rehearsal Sign..."), "MusicSymbols.EditRehearsalSign",
+                                   QKeySequence(Qt::SHIFT + Qt::Key_R), this);
     rehearsalSignAct->setCheckable(true);
-    rehearsalSignAct->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_R));
     connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
 
-    keySignatureAct = new QAction(tr("Key Signature..."), this);
+    keySignatureAct = new Command(tr("Key Signature..."), "MusicSymbols.EditKeySignature",
+                                  QKeySequence(Qt::Key_K), this);
     keySignatureAct->setCheckable(true);
-    keySignatureAct->setShortcut(QKeySequence(Qt::Key_K));
     connect(keySignatureAct, SIGNAL(triggered()), this, SLOT(editKeySignature()));
 
     timeSignatureAct = new QAction(tr("Time Signature..."), this);
@@ -705,6 +711,7 @@ void PowerTabEditor::createMenus()
     importFileMenu = fileMenu->addMenu(tr("Import..."));
     exportFileMenu = fileMenu->addMenu(tr("Export..."));
     fileMenu->addSeparator();
+    fileMenu->addAction(editShortcutsAct);
     fileMenu->addAction(preferencesAct);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAppAct);
@@ -1907,4 +1914,13 @@ void PowerTabEditor::editSlideInto(uint8_t newSlideIntoType)
     }
 
     undoManager->push(new EditSlideInto(note, newSlideIntoType));
+}
+
+/// Launch a dialog for the user to edit keyboard shortcuts
+void PowerTabEditor::editKeyboardShortcuts()
+{
+    QList<Command*> registeredCommands = findChildren<Command*>();
+
+    KeyboardSettingsDialog dialog(registeredCommands);
+    dialog.exec();
 }
