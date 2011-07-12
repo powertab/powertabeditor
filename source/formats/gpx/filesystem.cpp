@@ -43,7 +43,7 @@ Gpx::FileSystem::FileSystem(std::vector<char> data)
                           std::back_inserter(fileName));
                 fileName.erase(fileName.find_last_not_of('\0') + 1); // trim extra NULL characters
 
-                std::vector<char> file(fileData.begin(), fileData.begin() + fileSize);
+                std::string file(fileData.begin(), fileData.begin() + fileSize);
 
                 files[fileName] = file;
             }
@@ -114,7 +114,7 @@ Gpx::FileSystem Gpx::load(std::istream& stream)
     return Gpx::FileSystem(output);
 }
 
-std::vector<char> Gpx::FileSystem::getFileContents(const std::string& fileName) const
+std::string Gpx::FileSystem::getFileContents(const std::string& fileName) const
 {
     auto file = files.find(fileName);
 

@@ -1,11 +1,10 @@
 #include "gpximporter.h"
 
 #include "filesystem.h"
+#include "documentreader.h"
 #include <fstream>
 
-#include <QByteArray>
-#include <QDebug>
-#include <QDomDocument>
+#include <powertabdocument/powertabdocument.h>
 
 GpxImporter::GpxImporter() :
     FileFormatImporter(FileFormat("Guitar Pro 6", "*.gpx"))
@@ -18,14 +17,11 @@ std::shared_ptr<PowerTabDocument> GpxImporter::load(const std::string& fileName)
     std::ifstream file(fileName.c_str(), std::ios::binary | std::ios::in);
     Gpx::FileSystem fileSystem(Gpx::load(file));
 
-    std::vector<char> scoreData = fileSystem.getFileContents("score.gpif");
-    QByteArray bytes(scoreData.data(), scoreData.size());
-    QDomDocument doc;
+    const std::string scoreData= fileSystem.getFileContents("score.gpif");
 
-    if (!doc.setContent(bytes))
-    {
-        throw FileFormatException("Corrupted file?");
-    }
+    auto doc = std::make_shared<PowerTabDocument>();
+    Gpx::DocumentReader reader(scoreData);
+    reader.readDocument(doc);
 
-    return std::shared_ptr<PowerTabDocument>();
+    return doc;
 }

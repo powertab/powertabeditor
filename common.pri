@@ -1,6 +1,6 @@
 # common build settings for all libraries/executables
 
-QT += core gui xml
+QT += core gui
 
 QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers
 

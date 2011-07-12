@@ -10,7 +10,8 @@ HEADERS += \
     gpx/util.h \
     gpx/filesystem.h \
     gpx/bitstream.h \
-    gpx/gpximporter.h
+    gpx/gpximporter.h \
+    gpx/documentreader.h
 
 SOURCES += \
     fileformat.cpp \
@@ -21,4 +22,5 @@ SOURCES += \
     gpx/util.cpp \
     gpx/filesystem.cpp \
     gpx/bitstream.cpp \
-    gpx/gpximporter.cpp
+    gpx/gpximporter.cpp \
+    gpx/documentreader.cpp

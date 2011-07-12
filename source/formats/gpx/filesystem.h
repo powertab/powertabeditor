@@ -15,10 +15,10 @@ class FileSystem
 public:
     FileSystem(std::vector<char> data);
 
-    std::vector<char> getFileContents(const std::string& fileName) const;
+    std::string getFileContents(const std::string& fileName) const;
 
 private:
-    std::map<std::string, std::vector<char> > files;
+    std::map<std::string, std::string > files; ///< maps filename -> file contents
 
     static const uint32_t SECTOR_SIZE = 0x1000;
 };
