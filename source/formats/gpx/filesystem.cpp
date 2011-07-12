@@ -7,8 +7,7 @@
 
 #include <cassert>
 
-Gpx::FileSystem::FileSystem(const std::vector<char>& contents) :
-    data(contents)
+Gpx::FileSystem::FileSystem(std::vector<char> data)
 {
     data.erase(data.begin(), data.begin() + 4); // skip BCFS header
     size_t offset = 0;
@@ -46,16 +45,10 @@ Gpx::FileSystem::FileSystem(const std::vector<char>& contents) :
 
                 std::vector<char> file(fileData.begin(), fileData.begin() + fileSize);
 
-                files.push_back(File(fileName, file));
+                files[fileName] = file;
             }
         }
     }
-}
-
-Gpx::File::File(const std::string& fileName, const std::vector<char>& contents) :
-    fileName(fileName),
-    contents(contents)
-{
 }
 
 /// Decompress the input file and return the filesystem
@@ -119,4 +112,16 @@ Gpx::FileSystem Gpx::load(std::istream& stream)
     }
 
     return Gpx::FileSystem(output);
+}
+
+std::vector<char> Gpx::FileSystem::getFileContents(const std::string& fileName) const
+{
+    auto file = files.find(fileName);
+
+    if (file == files.end())
+    {
+        throw FileFormatException("Invalid filename");
+    }
+
+    return file->second;
 }
