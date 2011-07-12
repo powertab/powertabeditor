@@ -5,11 +5,15 @@
 #include <QMessageBox>
 
 #include <formats/guitar_pro/guitarproimporter.h>
+#include <formats/gpx/gpximporter.h>
 
 FileFormatManager::FileFormatManager()
 {
     FileFormat format = GuitarProImporter().getFileFormat();
     importers.insert(format, new GuitarProImporter());
+
+    format = GpxImporter().getFileFormat();
+    importers.insert(format, new GpxImporter());
 }
 
 FileFormatManager::~FileFormatManager()
