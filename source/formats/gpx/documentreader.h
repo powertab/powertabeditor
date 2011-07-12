@@ -7,6 +7,7 @@
 
 class PowerTabDocument;
 class PowerTabFileHeader;
+class Score;
 
 namespace Gpx
 {
@@ -22,6 +23,7 @@ private:
     boost::property_tree::ptree gpFile;
 
     void readHeader(PowerTabFileHeader& header);
+    void readTracks(Score* score);
 };
 
 }
