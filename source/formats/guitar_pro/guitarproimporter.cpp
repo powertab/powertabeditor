@@ -406,7 +406,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
         }
 
         // check if we need to jump to a new system (measure is too large)
-        if (!currentSystem->IsValidPosition(lastBarlinePos + largestMeasure))
+        if (!currentSystem->IsValidPosition(lastBarlinePos + largestMeasure + 1))
         {
             currentSystem = std::make_shared<System>();
             currentSystem->Init(staffSizes);
