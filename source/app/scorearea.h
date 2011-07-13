@@ -20,6 +20,7 @@ class Position;
 class TempoMarker;
 class AlternateEnding;
 class Barline;
+class Dynamic;
 
 template <class Key, class T>
 class QMultiMap;
@@ -84,8 +85,8 @@ protected:
 
     void drawRhythmSlashes(std::shared_ptr<const System> system);
 
-    void drawSymbols(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
-                     const StaffData& currentStaffInfo);
+    void drawSymbols(const Score* score, std::shared_ptr<const System> system,
+                     std::shared_ptr<const Staff> staff, const StaffData& currentStaffInfo);
 
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
 
@@ -116,6 +117,7 @@ protected:
 
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo, VolumeSwellType type);
 
+    QGraphicsItem* createDynamic(std::shared_ptr<const Dynamic> dynamic) const;
     QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo) const;
     QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo) const;
     QGraphicsItem* createTremoloBar(uint8_t width, const StaffData& currentStaffInfo,

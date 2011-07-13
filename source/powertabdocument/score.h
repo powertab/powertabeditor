@@ -123,6 +123,7 @@ public:
     bool IsValidDynamicIndex(uint32_t index) const;
     size_t GetDynamicCount() const;
     DynamicPtr GetDynamic(uint32_t index) const;
+    void GetDynamicsInSystem(std::vector<DynamicPtr>& dynamics, SystemConstPtr system) const;
 
 // Alternate Ending Functions
     bool IsValidAlternateEndingIndex(uint32_t index) const;

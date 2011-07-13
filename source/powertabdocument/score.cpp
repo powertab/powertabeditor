@@ -292,7 +292,7 @@ int Score::FindSystemIndex(SystemConstPtr system) const
     return std::distance(m_systemArray.begin(), result);
 }
 
-// Helper function for GetAlternateEndingsInSystem and GetTempoMarkersInSystem
+// Helper function for GetAlternateEndingsInSystem, GetTempoMarkersInSystem, etc
 template<class Symbol>
 void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& symbolList, const uint32_t systemIndex)
 {
@@ -308,7 +308,7 @@ void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& 
     }
 }
 
-// Finds all of the tempo markers that are in the given system
+/// Finds all of the tempo markers that are in the given system
 void Score::GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, SystemConstPtr system) const
 {
     GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
@@ -317,6 +317,12 @@ void Score::GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, S
 void Score::GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings, SystemConstPtr system) const
 {
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
+}
+
+/// Returns all of the dynamics located in the given system
+void Score::GetDynamicsInSystem(std::vector<Score::DynamicPtr> &dynamics, Score::SystemConstPtr system) const
+{
+    GetSymbolsInSystem(dynamics, m_dynamicArray, FindSystemIndex(system));
 }
 
 /// Returns the alternate ending at the given location, or NULL if it is not found

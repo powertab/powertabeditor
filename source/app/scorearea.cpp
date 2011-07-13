@@ -17,6 +17,7 @@
 #include <powertabdocument/rhythmslash.h>
 #include <powertabdocument/alternateending.h>
 #include <powertabdocument/barline.h>
+#include <powertabdocument/dynamic.h>
 
 #include <app/common.h>
 
@@ -198,7 +199,7 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int 
 
         drawLegato(system, currentStaff, currentStaffInfo);
         drawSlides(system, currentStaff, currentStaffInfo);
-        drawSymbols(system, currentStaff, currentStaffInfo);
+        drawSymbols(score, system, currentStaff, currentStaffInfo);
         drawSymbolsBelowTabStaff(system, currentStaff, currentStaffInfo);
     }
 
@@ -969,8 +970,8 @@ void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<const System> system, shared
 }
 
 /// Draws the symbols that appear between the tab and standard notation staves
-void ScoreArea::drawSymbols(shared_ptr<const System> system, shared_ptr<const Staff> staff,
-                            const StaffData &currentStaffInfo)
+void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
+                            shared_ptr<const Staff> staff, const StaffData& currentStaffInfo)
 {
     typedef std::function<QGraphicsItem* (uint8_t, const StaffData&)> SymbolCreationFn;
     using std::bind;
@@ -1113,6 +1114,23 @@ void ScoreArea::drawSymbols(shared_ptr<const System> system, shared_ptr<const St
 
                 currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
                 symbols.push_back(currentSymbolInfo);
+            }
+        }
+    }
+
+    // check for dynamics in the staff
+    {
+        std::vector<Score::DynamicPtr> dynamics;
+        score->GetDynamicsInSystem(dynamics, system);
+
+        BOOST_FOREACH(Score::DynamicPtr dynamic, dynamics)
+        {
+            if (dynamic->GetStaff() == system->FindStaffIndex(staff))
+            {
+                SymbolInfo symbolInfo;
+                symbolInfo.rect.setRect(dynamic->GetPosition(), 0, 1, 1);
+                symbolInfo.symbol = createDynamic(dynamic);
+                symbols.push_back(symbolInfo);
             }
         }
     }
@@ -1400,4 +1418,17 @@ void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, std::shared_pt
                                                               Staff::STD_NOTATION_LINE_SPACING * 0.9);
     horizontalLine->setBrush(QBrush(Qt::black));
     horizontalLine->setParentItem(activeStaff);
+}
+
+QGraphicsItem* ScoreArea::createDynamic(std::shared_ptr<const Dynamic> dynamic) const
+{
+    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(QString::fromStdString(dynamic->GetText(false)));
+    textItem->setFont(musicFont.getFontRef());
+    textItem->setPos(0, -20);
+
+    // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
+    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    group->addToGroup(textItem);
+
+    return group;
 }
