@@ -10,12 +10,13 @@ MusicFont::MusicFont()
     musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
 }
 
+/// Returns the symbol corresponding to the specified MusicSymbol
 QChar MusicFont::getSymbol(MusicSymbol identifier)
 {
     return QChar(identifier);
 }
 
-// Sets the text of the QGraphicsSimpleTextItem to the given music symbol
+/// Sets the text of the QGraphicsSimpleTextItem to the given music symbol
 void MusicFont::setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size)
 {
     text->setText(getSymbol(identifier));
@@ -24,21 +25,8 @@ void MusicFont::setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier,
     musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
 }
 
-// Sets numeric text using the Emmentaler font (this is useful for time signatures)
-void MusicFont::setNumericText(QGraphicsSimpleTextItem* text, QString number, int size)
-{
-    text->setText(number);
-    musicNotationFont.setPixelSize(size);
-    text->setFont(musicNotationFont);
-    musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
-}
-
-QFont MusicFont::getFont() const
-{
-    return musicNotationFont;
-}
-
-const QFont& MusicFont::getFontRef() const
+/// Returns a reference to the font
+const QFont& MusicFont::getFont() const
 {
     return musicNotationFont;
 }

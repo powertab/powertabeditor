@@ -65,13 +65,10 @@ public:
 
     static const int DEFAULT_FONT_SIZE = 22;
 
-    // Returns the symbol corresponding to the specified MusicSymbol
     static QChar getSymbol(MusicSymbol identifier);
 
     void setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size = DEFAULT_FONT_SIZE);
-    void setNumericText(QGraphicsSimpleTextItem* text, QString number, int size = DEFAULT_FONT_SIZE);
-    QFont getFont() const;
-    const QFont& getFontRef() const;
+    const QFont& getFont() const;
 
 private:
     QFont musicNotationFont;

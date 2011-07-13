@@ -24,7 +24,7 @@ ChordNameDialog::ChordNameDialog(ChordName* chord, QWidget *parent) :
     setWindowTitle(tr("Chord Name"));
     setModal(true);
 
-    QFont musicFont = MusicFont().getFont();
+    const QFont& musicFont = MusicFont().getFont();
 
     preview = new QLineEdit;
     preview->setReadOnly(true);

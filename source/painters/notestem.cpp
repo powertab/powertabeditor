@@ -146,7 +146,7 @@ QGraphicsItem* NoteStem::createNoteFlag() const
     // draw the symbol
     const double y = stemEdge() - 35; // adjust for spacing caused by the music symbol font
     QGraphicsTextItem* flag = new QGraphicsTextItem(symbol);
-    flag->setFont(MusicFont().getFontRef());
+    flag->setFont(MusicFont().getFont());
     flag->setPos(x_ - 3, y);
 
     return flag;
@@ -166,7 +166,7 @@ QGraphicsItem* NoteStem::createStaccato() const
     const double xPos = (direction_ == StemUp) ? x_ - 8 : x_ - 2;
 
     QGraphicsTextItem* dot = new QGraphicsTextItem(QChar(MusicFont::Dot));
-    dot->setFont(MusicFont().getFontRef());
+    dot->setFont(MusicFont().getFont());
     dot->setPos(xPos, yPos);
     return dot;
 }
@@ -192,7 +192,7 @@ QGraphicsItem* NoteStem::createFermata() const
 
     const QChar symbol = (direction_ == StemUp) ? MusicFont::FermataUp : MusicFont::FermataDown;
     QGraphicsSimpleTextItem* fermata = new QGraphicsSimpleTextItem(symbol);
-    fermata->setFont(MusicFont().getFontRef());
+    fermata->setFont(MusicFont().getFont());
     fermata->setPos(x_, y);
 
     return fermata;
@@ -237,7 +237,7 @@ QGraphicsItem* NoteStem::createAccent() const
     }
 
     QGraphicsSimpleTextItem* accent = new QGraphicsSimpleTextItem(symbol);
-    accent->setFont(musicFont.getFontRef());
+    accent->setFont(musicFont.getFont());
     accent->setPos(x_, y);
 
     return accent;

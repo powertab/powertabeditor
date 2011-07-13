@@ -710,7 +710,7 @@ void ScoreArea::drawArpeggio(Position* position, quint32 x, const StaffData& cur
     const uint8_t height = bounds.second - bounds.first;
 
     // take a vibrato segment, spanning the distance from top to bottom note, and then rotate it by 90 degrees
-    QFont font = musicFont.getFont();
+    const QFont& font = musicFont.getFont();
     const QChar arpeggioSymbol = musicFont.getSymbol(MusicFont::Vibrato);
     const double symbolWidth = QFontMetricsF(font).width(arpeggioSymbol);
     const int numSymbols = height / symbolWidth;
@@ -1240,7 +1240,7 @@ QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& c
     for (int i = 0; i < 3; i++)
     {
         QGraphicsSimpleTextItem* line = new QGraphicsSimpleTextItem(MusicFont::getSymbol(MusicFont::TremoloPicking));
-        line->setFont(musicFont.getFontRef());
+        line->setFont(musicFont.getFont());
         centerItem(line, 0, currentStaffInfo.positionWidth * 1.25, -37 + i * offset);
         group->addToGroup(line);
     }
@@ -1341,7 +1341,7 @@ QGraphicsItem* ScoreArea::createPlainText(const QString& text, QFont::Style styl
 QGraphicsItem* ScoreArea::createPickStroke(const QString& text)
 {
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(musicFont.getFontRef());
+    textItem->setFont(musicFont.getFont());
     textItem->setPos(2, -28);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
@@ -1394,7 +1394,7 @@ void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, std::shared_pt
     measureCountText->setFont(musicFont.getFont());
 
     centerItem(measureCountText, leftX, rightX,
-               currentStaffInfo.getTopStdNotationLine() - musicFont.getFontRef().pixelSize() * 1.5);
+               currentStaffInfo.getTopStdNotationLine() - musicFont.getFont().pixelSize() * 1.5);
 
     measureCountText->setParentItem(activeStaff);
 
@@ -1423,7 +1423,7 @@ void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, std::shared_pt
 QGraphicsItem* ScoreArea::createDynamic(std::shared_ptr<const Dynamic> dynamic) const
 {
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(QString::fromStdString(dynamic->GetText(false)));
-    textItem->setFont(musicFont.getFontRef());
+    textItem->setFont(musicFont.getFont());
     textItem->setPos(0, -20);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
