@@ -41,11 +41,6 @@ void StdNotationPainter::init()
     accidental = findAccidentalType(noteText);
 }
 
-QRectF StdNotationPainter::boundingRect() const
-{
-    return QRectF(0, -staffInfo.getTopStdNotationLine(), width, staffInfo.getTopTabLine());
-}
-
 void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
@@ -90,6 +85,7 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
 
     const QString displayText = getAccidentalText() + noteHead;
     width = QFontMetricsF(musicFont).width(displayText);
+    bounds = QRectF(0, -staffInfo.getTopStdNotationLine(), width, staffInfo.getTopTabLine());
 
     painter->drawText(xPos - width, yLocation, displayText);
     addDots(painter, xPos + 2, yLocation);

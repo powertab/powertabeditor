@@ -18,7 +18,6 @@ public:
     StdNotationPainter(const StaffData& staffInfo, std::shared_ptr<const Staff> staff, const Position* position, const Note* note,
                        const Tuning& tuning, const KeySignature& keySignature);
 
-    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     enum AccidentalType
