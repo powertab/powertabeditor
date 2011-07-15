@@ -20,7 +20,8 @@ HEADERS += \
     chordtextpainter.h \
     caret.h \
     beamgroup.h \
-    barlinepainter.h
+    barlinepainter.h \
+    restpainter.h
 
 SOURCES += \
     tremolobarpainter.cpp \
@@ -41,4 +42,7 @@ SOURCES += \
     chordtextpainter.cpp \
     caret.cpp \
     beamgroup.cpp \
-    barlinepainter.cpp
+    barlinepainter.cpp \
+    restpainter.cpp
+
+

@@ -38,7 +38,6 @@ public:
     int accidental;
 
 protected:
-    void drawRest(QPainter* painter);
     void init();
     int findAccidentalType(const QString& noteText) const;
     QString getAccidentalText() const;

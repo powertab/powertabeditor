@@ -20,13 +20,10 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, std::shared_p
     position(position),
     note(note),
     tuning(tuning),
-    keySignature(keySignature)
+    keySignature(keySignature),
+    width(10)
 {
-    if (!position->IsRest())
-    {
-        init();
-    }
-    width = 10;
+    init();
 }
 
 void StdNotationPainter::init()
@@ -47,12 +44,6 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
     Q_UNUSED(widget);
 
     painter->setFont(musicFont);
-
-    if (position->IsRest())
-    {
-        drawRest(painter);
-        return;
-    }
 
     double xPos = staffInfo.getNoteHeadRightEdge();
 
@@ -94,47 +85,6 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
 double StdNotationPainter::getNoteHeadWidth()
 {
     return QFontMetricsF(musicFont).width(QChar(MusicFont::QuarterNoteOrLess));
-}
-
-void StdNotationPainter::drawRest(QPainter *painter)
-{
-    QChar restSymbol;
-    int height = 2 * Staff::STD_NOTATION_LINE_SPACING - 1; // position is in middle of staff by default
-
-    switch(position->GetDurationType()) // find the correct symbol to display, and adjust the height if necessary
-    {
-    case 1:
-        restSymbol = MusicFont::WholeRest;
-        height = Staff::STD_NOTATION_LINE_SPACING + 1;
-        break;
-    case 2:
-        restSymbol = MusicFont::HalfRest;
-        height += 1;
-        break;
-    case 4:
-        restSymbol = MusicFont::QuarterRest;
-        break;
-    case 8:
-        restSymbol = MusicFont::EighthRest;
-        break;
-    case 16:
-        restSymbol = MusicFont::SixteenthRest;
-        break;
-    case 32:
-        restSymbol = MusicFont::ThirtySecondRest;
-        break;
-    case 64:
-        restSymbol = MusicFont::SixtyFourthRest;
-        height -= 3;
-        break;
-    }
-
-    QString textToDraw = restSymbol;
-
-    painter->drawText(0, height, textToDraw);
-    addDots(painter, QFontMetricsF(musicFont).width(textToDraw) + 2, 1.6 * Staff::STD_NOTATION_LINE_SPACING);
-
-    return;
 }
 
 int StdNotationPainter::findAccidentalType(const QString& noteText) const

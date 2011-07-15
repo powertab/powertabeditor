@@ -39,6 +39,7 @@
 #include <painters/directionpainter.h>
 #include <painters/tremolobarpainter.h>
 #include <painters/rhythmslashpainter.h>
+#include <painters/restpainter.h>
 
 #include <functional>
 #include <algorithm>
@@ -776,11 +777,10 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
             // just draw rests right away, since we don't have to worry about beaming or accidentals
             if (currentPosition->IsRest())
             {
-                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition, 
-                                                                            NULL, currentGuitar->GetTuning(), currentKeySig);
-                centerItem(stdNotePainter, location, location+currentStaffInfo.positionWidth * 1.25,
+                RestPainter* restPainter = new RestPainter(*currentPosition);
+                centerItem(restPainter, location, location + currentStaffInfo.positionWidth * 1.25,
                            currentStaffInfo.getTopStdNotationLine());
-                stdNotePainter->setParentItem(activeStaff);
+                restPainter->setParentItem(activeStaff);
                 continue;
             }
 
