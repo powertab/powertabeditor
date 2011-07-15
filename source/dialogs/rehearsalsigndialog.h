@@ -15,7 +15,6 @@ public:
 
 public slots:
     void accept();
-    void reject();
 
 protected:
     void populateLetterChoices();

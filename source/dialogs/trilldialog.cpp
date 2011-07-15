@@ -60,8 +60,3 @@ void TrillDialog::accept()
         done(Accepted);
     }
 }
-
-void TrillDialog::reject()
-{
-    done(Rejected);
-}

@@ -98,11 +98,6 @@ void TuningDialog::accept()
     done(QDialog::Accepted);
 }
 
-void TuningDialog::reject()
-{
-    done(QDialog::Rejected);
-}
-
 void TuningDialog::initStringSelectors()
 {
     for (uint8_t i = 0; i < Tuning::MAX_STRING_COUNT; i++)

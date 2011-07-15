@@ -114,12 +114,7 @@ void RehearsalSignDialog::accept()
     }
     else
     {
-		PowerTabEditor::undoManager->push(new EditRehearsalSign(rehearsalSign, true, letter.toAscii(), description));
-		done(QDialog::Accepted);
+        PowerTabEditor::undoManager->push(new EditRehearsalSign(rehearsalSign, true, letter.toAscii(), description));
+        done(QDialog::Accepted);
     }
-}
-
-void RehearsalSignDialog::reject()
-{
-    done(QDialog::Rejected);
 }

@@ -14,7 +14,6 @@ public:
 
 public slots:
     void accept();
-    void reject();
 
 protected:
     Note* note;

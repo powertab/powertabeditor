@@ -81,8 +81,3 @@ void BarlineDialog::accept()
 
     done(QDialog::Accepted);
 }
-
-void BarlineDialog::reject()
-{
-    done(QDialog::Rejected);
-}

@@ -64,8 +64,3 @@ void TappedHarmonicDialog::accept()
     tappedFret = tappedFretSelector->currentText().toUShort();
     done(Accepted);
 }
-
-void TappedHarmonicDialog::reject()
-{
-    done(Rejected);
-}

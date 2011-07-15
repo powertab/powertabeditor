@@ -46,7 +46,6 @@ private:
 
 private slots:
     void accept();
-    void reject();
 };
 
 #endif // PREFERENCESDIALOG_H

@@ -26,7 +26,6 @@ protected:
 private slots:
     void disableRepeatCount(int newBarlineType);
     void accept();
-    void reject();
 };
 
 #endif // BARLINEDIALOG_H

@@ -287,11 +287,6 @@ void ChordNameDialog::accept()
     done(QDialog::Accepted);
 }
 
-void ChordNameDialog::reject()
-{
-    done(QDialog::Rejected);
-}
-
 // Convenience function for setting formula flags
 void ChordNameDialog::setIfChecked(QCheckBox* checkBox, quint16 flag)
 {

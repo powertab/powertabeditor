@@ -74,7 +74,6 @@ protected slots:
 
 public slots:
     void accept();
-    void reject();
 };
 
 #endif // CHORDNAMEDIALOG_H

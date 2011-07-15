@@ -83,8 +83,3 @@ void AlternateEndingDialog::accept()
         done(Accepted);
     }
 }
-
-void AlternateEndingDialog::reject()
-{
-    done(Rejected);
-}

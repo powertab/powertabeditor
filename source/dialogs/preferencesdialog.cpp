@@ -115,8 +115,3 @@ void PreferencesDialog::accept()
 
     done(Accepted);
 }
-
-void PreferencesDialog::reject()
-{
-    done(Rejected);
-}
