@@ -50,6 +50,7 @@
 #include <powertabdocument/barline.h>
 #include <powertabdocument/systemlocation.h>
 #include <powertabdocument/alternateending.h>
+#include <powertabdocument/dynamic.h>
 
 #include <widgets/mixer/mixer.h>
 #include <widgets/toolbox/toolbox.h>
@@ -86,6 +87,7 @@
 #include <actions/editrest.h>
 #include <actions/editkeysignature.h>
 #include <actions/edittimesignature.h>
+#include <actions/adddynamic.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -1915,6 +1917,26 @@ void PowerTabEditor::editKeyboardShortcuts()
 
 void PowerTabEditor::editDynamic()
 {
-    DynamicDialog dialog;
-    dialog.exec();
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* currentScore = caret->getCurrentScore();
+    Score::DynamicPtr dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
+                                                          caret->getCurrentPositionIndex());
+
+    if (!dynamic) // add a dynamic
+    {
+        DynamicDialog dialog;
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            dynamic = std::make_shared<Dynamic>(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
+                                                caret->getCurrentPositionIndex(), dialog.selectedVolumeLevel(),
+                                                Dynamic::notSet);
+
+            undoManager->push(new AddDynamic(currentScore, dynamic));
+        }
+    }
+    else
+    {
+        // TODO - implement
+        //undoManager->push(new RemoveDynamic(currentScore, dynamic));
+    }
 }

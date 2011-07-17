@@ -706,3 +706,17 @@ Score::DynamicPtr Score::FindDynamic(uint32_t system, uint32_t staff, uint32_t p
 
     return DynamicPtr();
 }
+
+/// Insert a new dynamic into the score
+void Score::InsertDynamic(Score::DynamicPtr dynamic)
+{
+    m_dynamicArray.push_back(dynamic);
+}
+
+/// Removes the specified dynamic from the score, if possible
+void Score::RemoveDynamic(Score::DynamicPtr dynamic)
+{
+    m_dynamicArray.erase(std::remove(m_dynamicArray.begin(),
+                                     m_dynamicArray.end(),
+                                     dynamic));
+}

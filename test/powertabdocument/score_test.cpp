@@ -4,6 +4,7 @@
 
 #include <powertabdocument/score.h>
 #include <powertabdocument/alternateending.h>
+#include <powertabdocument/dynamic.h>
 #include <powertabdocument/tempomarker.h>
 
 BOOST_AUTO_TEST_SUITE(ScoreTest)
@@ -33,6 +34,21 @@ BOOST_AUTO_TEST_SUITE(ScoreTest)
         score.InsertTempoMarker(Score::TempoMarkerPtr(new TempoMarker(0, 0, false)));
 
         BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 1u);
+    }
+
+    BOOST_AUTO_TEST_CASE(Dynamics)
+    {
+        Score score;
+        BOOST_CHECK_EQUAL(score.GetDynamicCount(), 0u);
+
+        auto dynamic = std::make_shared<Dynamic>(1, 2, 3, Dynamic::mp, Dynamic::notSet);
+        score.InsertDynamic(dynamic);
+
+        BOOST_CHECK_EQUAL(score.GetDynamicCount(), 1u);
+        BOOST_CHECK_EQUAL(score.FindDynamic(1, 2, 3), dynamic);
+
+        score.RemoveDynamic(dynamic);
+        BOOST_CHECK_EQUAL(score.GetDynamicCount(), 0u);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

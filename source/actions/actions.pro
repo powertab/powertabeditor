@@ -30,7 +30,8 @@ HEADERS += \
     addtappedharmonic.h \
     editrest.h \
     editkeysignature.h \
-    edittimesignature.h
+    edittimesignature.h \
+    adddynamic.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -61,4 +62,7 @@ SOURCES += \
     addtappedharmonic.cpp \
     editrest.cpp \
     editkeysignature.cpp \
-    edittimesignature.cpp
+    edittimesignature.cpp \
+    adddynamic.cpp
+
+
