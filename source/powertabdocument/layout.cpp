@@ -105,37 +105,184 @@ void Layout::CalculateTabStaffBelowSpacing(std::shared_ptr<Staff> staff)
     staff->SetTablatureStaffBelowSpacing(maxHeight * Staff::TAB_SYMBOL_HEIGHT);
 }
 
+namespace
+{
+bool compareHeightOfGroup(const Layout::SymbolGroup& group1, const Layout::SymbolGroup& group2)
+{
+    return group1.height < group2.height;
+}
+}
+
 /// Similar to Layout::CalculateTabStaffBelowSpacing, except for symbols displayed between the
 /// tab staff and standard notation staff. However, some of the symbols used here do not belong
 /// to Position objects (such as dynamics)
 void Layout::CalculateSymbolSpacing(const Score* score, std::shared_ptr<System> system,
                                     std::shared_ptr<Staff> staff)
 {
+    std::vector<SymbolGroup> symbolGroups = CalculateSymbolLayout(score, system, staff);
+
+    // find the height of the highest symbol group
     int maxHeight = 0;
-
-    for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
+    if (!symbolGroups.empty())
     {
-        for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(voice); posIndex++)
-        {
-            const Position* pos = staff->GetPosition(voice, posIndex);
-
-            std::vector<bool> symbols = {
-                pos->HasLetRing(), pos->HasVolumeSwell(), pos->HasVibrato(),
-                pos->HasWideVibrato(), pos->HasPalmMuting(), pos->HasTremoloPicking(),
-                pos->HasTremoloBar(), pos->HasNoteWithTrill(),
-                pos->HasNoteWithNaturalHarmonic(), pos->HasNoteWithArtificialHarmonic()
-            };
-
-            // check for a dynamic at this location
-            {
-                const uint32_t systemIndex = score->FindSystemIndex(system);
-                const uint32_t staffIndex = system->FindStaffIndex(staff);
-                symbols.push_back(score->FindDynamic(systemIndex, staffIndex, posIndex) != Score::DynamicPtr());
-            }
-
-            maxHeight = std::max(maxHeight, std::count(symbols.begin(), symbols.end(), true));
-        }
+        maxHeight = std::max_element(symbolGroups.begin(), symbolGroups.end(), compareHeightOfGroup)->height;
     }
 
     staff->SetSymbolSpacing(maxHeight * Staff::TAB_SYMBOL_HEIGHT);
+}
+
+namespace
+{
+/// Updates the height, by inserting a symbol group spanning the left and right indices
+/// @return The height of the symbol group that was inserted
+int updateHeightMap(std::vector<int>& heightMap, size_t left, size_t right)
+{
+    const int height = *std::max_element(heightMap.begin() + left,
+                                         heightMap.begin() + right) + 1;
+    std::fill_n(heightMap.begin() + left, right - left, height);
+
+    return height;
+}
+}
+
+/// Compute the layout of symbols between the standard notation and tab staves
+/// Returns a list of all symbol groups and their locations (for example, consecutive notes with vibrato
+/// will have their vibrato symbols grouped together, forming a single vibrato symbol spanning the notes)
+std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* score, std::shared_ptr<const System> system,
+                                                               std::shared_ptr<const Staff> staff)
+{
+    std::vector<std::vector<SymbolType> > symbolMap;
+
+    // construct a 2D array, storing the symbols that will be displayed for each position in the staff
+    for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(0); posIndex++)
+    {
+        const Position* pos = staff->GetPosition(0, posIndex);
+
+        std::vector<SymbolType> symbols;
+
+        symbols.push_back(pos->HasLetRing() ? SymbolLetRing : NoSymbol);
+        symbols.push_back(pos->HasVolumeSwell() ? SymbolVolumeSwell : NoSymbol);
+        symbols.push_back(pos->HasVibrato() ? SymbolVibrato : NoSymbol);
+        symbols.push_back(pos->HasWideVibrato() ? SymbolWideVibrato : NoSymbol);
+        symbols.push_back(pos->HasPalmMuting() ? SymbolPalmMuting : NoSymbol);
+        symbols.push_back(pos->HasTremoloPicking() ? SymbolTremoloPicking : NoSymbol);
+        symbols.push_back(pos->HasTremoloBar() ? SymbolTremoloBar : NoSymbol);
+        symbols.push_back(pos->HasNoteWithTrill() ? SymbolTrill : NoSymbol);
+        symbols.push_back(pos->HasNoteWithNaturalHarmonic() ? SymbolNaturalHarmonic : NoSymbol);
+        symbols.push_back(pos->HasNoteWithArtificialHarmonic() ? SymbolArtificialHarmonic : NoSymbol);
+
+        // check for a dynamic at this location
+        {
+            const uint32_t systemIndex = score->FindSystemIndex(system);
+            const uint32_t staffIndex = system->FindStaffIndex(staff);
+            if (score->FindDynamic(systemIndex, staffIndex, posIndex) != Score::DynamicPtr())
+            {
+                symbols.push_back(SymbolDynamic);
+            }
+            else
+            {
+                symbols.push_back(NoSymbol);
+            }
+        }
+
+        symbolMap.push_back(symbols);
+    }
+
+    // After finding the symbols at each position, we need to group together symbols from neighbouring positions
+    // to form larger groups (such as palm muting, vibrato, let ring, etc).
+    // We also need to arrange the symbol groups so that they do not overlap (the groups stack on top of each other)
+
+    // stores the highest occupied vertical location at each position index
+    std::vector<int> heightMap(symbolMap.size(), 0);
+
+    std::vector<SymbolGroup> symbolGroups;
+
+    if (symbolMap.empty())
+    {
+        return symbolGroups;
+    }
+
+    // go through each symbol, and then iterate through the positions and group together symbols
+    for (size_t symbol = 0; symbol < symbolMap.at(0).size(); symbol++)
+    {
+        SymbolType currentSymbolType = NoSymbol;
+        size_t leftPosIndex = 0;
+
+        for (size_t posIndex = 0; posIndex < symbolMap.size(); posIndex++)
+        {
+            SymbolType symbolType = symbolMap[posIndex][symbol];
+
+            // if we've reached the end of a symbol group ...
+            if (symbolType != currentSymbolType ||
+                symbolType == SymbolTrill || // don't group consecutive occurrences of these symbols together
+                symbolType == SymbolTremoloPicking || symbolType == SymbolTremoloBar ||
+                symbolType == SymbolVolumeSwell || symbolType == SymbolDynamic)
+            {
+                // record the symbol group and calculate its location
+                if (currentSymbolType != NoSymbol)
+                {
+                    const size_t rightPosIndex = posIndex;
+
+                    const int height = updateHeightMap(heightMap, leftPosIndex, rightPosIndex);
+
+                    const int leftX = system->GetPositionX(staff->GetPosition(0, leftPosIndex)->GetPosition());
+                    int rightX = system->GetPositionX(staff->GetPosition(0, rightPosIndex)->GetPosition());
+
+                    // special case: tremolo bar events and volume swells have a duration which can stretch
+                    // over several following notes
+                    if (currentSymbolType == SymbolTremoloBar || currentSymbolType == SymbolVolumeSwell)
+                    {
+                        uint8_t duration = 0;
+                        const Position* leftPosition = staff->GetPosition(0, leftPosIndex);
+
+                        // get the duration of the tremolo bar dive or volume swell
+                        if (currentSymbolType == SymbolTremoloBar)
+                        {
+                            uint8_t type = 0, pitch = 0;
+                            leftPosition->GetTremoloBar(type, duration, pitch);
+                        }
+                        else if (currentSymbolType == SymbolVolumeSwell)
+                        {
+                            uint8_t startVolume = 0, endVolume = 0;
+                            leftPosition->GetVolumeSwell(startVolume, endVolume, duration);
+                        }
+
+                        // if the volume swell or tremolo bar extends onto the next system,
+                        // just display until the end of this staff
+                        if (!staff->IsValidPositionIndex(0, leftPosIndex + duration))
+                        {
+                            rightX = system->GetPositionX(system->GetPositionCount() - 1);
+                        }
+                        else
+                        {
+                            rightX = system->GetPositionX(staff->GetPosition(0, leftPosIndex + duration)->GetPosition() + 1);
+                        }
+                    }
+
+                    symbolGroups.push_back(SymbolGroup(leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
+                }
+
+                leftPosIndex = posIndex;
+                currentSymbolType = symbolType;
+            }
+        }
+
+        // if there is a symbol group that stretched to the end of the staff, add it
+        if (currentSymbolType != NoSymbol)
+        {
+            const int leftX = system->GetPositionX(staff->GetPosition(0, leftPosIndex)->GetPosition());
+            const int rightX = system->GetPositionX(system->GetPositionCount() - 1);
+            const int height = updateHeightMap(heightMap, leftPosIndex, symbolMap.size() - 1);
+            symbolGroups.push_back(SymbolGroup(leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
+        }
+    }
+
+    return symbolGroups;
+}
+
+Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int height, Layout::SymbolType type) :
+    leftPosIndex(leftPosIndex),
+    leftX(left), width(width),
+    height(height), symbolType(type)
+{
 }

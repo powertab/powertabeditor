@@ -86,7 +86,7 @@ protected:
     void drawRhythmSlashes(std::shared_ptr<const System> system);
 
     void drawSymbols(const Score* score, std::shared_ptr<const System> system,
-                     std::shared_ptr<const Staff> staff, const StaffData& currentStaffInfo);
+                     std::shared_ptr<const Staff> staff, const StaffData& staffInfo);
 
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
 
@@ -118,17 +118,16 @@ protected:
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo, VolumeSwellType type);
 
     QGraphicsItem* createDynamic(std::shared_ptr<const Dynamic> dynamic) const;
-    QGraphicsItem* createTrill(uint8_t width, const StaffData& currentStaffInfo) const;
-    QGraphicsItem* createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo) const;
-    QGraphicsItem* createTremoloBar(uint8_t width, const StaffData& currentStaffInfo,
-                                    const Position* position) const;
+    QGraphicsItem* createTrill(const StaffData& currentStaffInfo) const;
+    QGraphicsItem* createTremoloPicking(const StaffData& currentStaffInfo) const;
+    QGraphicsItem* createTremoloBar(uint8_t width, const Position* position) const;
 
     QGraphicsItem* createPlainText(const QString& text, QFont::Style style);
     QGraphicsItem* createPickStroke(const QString& text);
     QGraphicsItem* createArtificialHarmonicText(Position* position);
 
-    QGraphicsItem* drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo);
-    QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, uint8_t width,
+    QGraphicsItem* drawContinuousFontSymbols(QChar symbol, int width);
+    QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, int width,
                                               const StaffData& currentStaffInfo);
 
     void drawMultiBarRest(std::shared_ptr<const System> system, std::shared_ptr<const Barline> currentBarline,

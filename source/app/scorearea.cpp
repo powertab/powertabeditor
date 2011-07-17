@@ -18,6 +18,7 @@
 #include <powertabdocument/alternateending.h>
 #include <powertabdocument/barline.h>
 #include <powertabdocument/dynamic.h>
+#include <powertabdocument/layout.h>
 
 #include <app/common.h>
 
@@ -972,196 +973,85 @@ void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<const System> system, shared
 
 /// Draws the symbols that appear between the tab and standard notation staves
 void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
-                            shared_ptr<const Staff> staff, const StaffData& currentStaffInfo)
+                            shared_ptr<const Staff> staff, const StaffData& staffInfo)
 {
-    typedef std::function<QGraphicsItem* (uint8_t, const StaffData&)> SymbolCreationFn;
-    typedef bool (Position::*PositionProperty)() const;
-    using std::bind;
-    using namespace std::placeholders;
+    std::vector<Layout::SymbolGroup> symbolGroups = Layout::CalculateSymbolLayout(score, system, staff);
 
-    std::list<SymbolInfo> symbols; // holds all of the symbols that we will draw
-
-    std::vector<PositionProperty> groupableSymbolPredicates = {
-        &Position::HasLetRing, &Position::HasVibrato, &Position::HasWideVibrato,
-        &Position::HasPalmMuting, &Position::HasNoteWithNaturalHarmonic,
-        &Position::HasNoteWithArtificialHarmonic
-    };
-
-    // function objects for drawing symbols corresponding to each of the items in the groupableSymbolPredicates list
-    std::vector<SymbolCreationFn> groupableSymbolCreators = {
-        bind(&ScoreArea::createConnectedSymbolGroup, this, "let ring", QFont::StyleItalic, _1, _2),
-        bind(&ScoreArea::drawContinuousFontSymbols, this, MusicFont::Vibrato, _1, _2),
-        bind(&ScoreArea::drawContinuousFontSymbols, this, MusicFont::WideVibrato, _1, _2),
-        bind(&ScoreArea::createConnectedSymbolGroup, this, "P.M.", QFont::StyleNormal, _1, _2),
-        bind(&ScoreArea::createConnectedSymbolGroup, this, "N.H.", QFont::StyleNormal, _1, _2),
-        bind(&ScoreArea::createConnectedSymbolGroup, this, "A.H.", QFont::StyleNormal, _1, _2),
-    };
-
-    // Generates the bounding rectangles for each symbol group (i.e. consecutive 'let ring' symbols)
-    // - each rectangle has equal height, and a fixed x-coordinate (the position that a symbol group starts at)
-    // - the rectangle's width represents the number of positions that the symbol group spans
-    // - we later adjust the rectangles' y-coordinates to arrange the symbols without overlap
-    for (auto predicate = groupableSymbolPredicates.begin(); predicate != groupableSymbolPredicates.end(); ++predicate)
+    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
     {
-        bool inGroup = false;
-        SymbolInfo currentSymbolInfo;
-        const size_t numPositions = staff->GetPositionCount(0);
-        SymbolCreationFn symbolCreator = groupableSymbolCreators.at(predicate - groupableSymbolPredicates.begin());
+        QGraphicsItem* renderedSymbol = NULL;
 
-        for (size_t i = 0; i < numPositions; i++)
+        const int width = clamp(symbolGroup.width, 0, system->GetRect().GetWidth() - symbolGroup.leftX);
+
+        switch(symbolGroup.symbolType)
         {
-            const Position* currentPosition = staff->GetPosition(0, i);
+        case Layout::NoSymbol:
+            Q_ASSERT(false); // should have a symbol type!!!
+            break;
 
-            const bool propertySet = (currentPosition->**predicate)();
+        case Layout::SymbolLetRing:
+            renderedSymbol = createConnectedSymbolGroup("let ring", QFont::StyleItalic, width, staffInfo);
+            break;
 
-            if (propertySet && inGroup)
-            {
-                // extend the rectangle to the current position
-                currentSymbolInfo.rect.setRight(currentPosition->GetPosition());
-            }
-            if (propertySet && !inGroup)
-            {
-                // start the rectangle
-                currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
-                inGroup = true;
-            }
-            if (!propertySet && inGroup)
-            {
-                // close up the rectangle and draw the symbol
-                currentSymbolInfo.rect.setRight(currentPosition->GetPosition() - 1);
-                inGroup = false;
-                currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
-                symbols.push_back(currentSymbolInfo);
-            }
+        case Layout::SymbolVolumeSwell:
+        {
+            // figure out the direction of the volume swell
+            uint8_t startVolume = 0, endVolume = 0, duration = 0;
+            staff->GetPosition(0, symbolGroup.leftPosIndex)->GetVolumeSwell(startVolume, endVolume, duration);
+
+            renderedSymbol = createVolumeSwell(width, staffInfo,
+                                               (startVolume <= endVolume) ? VolumeIncreasing : VolumeDecreasing);
+            break;
         }
 
-        // if we're at the end of the staff, close the current rectangle if necessary
-        if (inGroup)
-        {
-            currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
-            symbols.push_back(currentSymbolInfo);
+        case Layout::SymbolVibrato:
+            renderedSymbol = drawContinuousFontSymbols(MusicFont::Vibrato, width);
+            break;
+
+        case Layout::SymbolWideVibrato:
+            renderedSymbol = drawContinuousFontSymbols(MusicFont::WideVibrato, width);
+            break;
+
+        case Layout::SymbolPalmMuting:
+            renderedSymbol = createConnectedSymbolGroup("P.M.", QFont::StyleNormal, width, staffInfo);
+            break;
+
+        case Layout::SymbolTremoloPicking:
+            renderedSymbol = createTremoloPicking(staffInfo);
+            break;
+
+        case Layout::SymbolTremoloBar:
+            renderedSymbol = createTremoloBar(width, staff->GetPosition(0, symbolGroup.leftPosIndex));
+            break;
+
+        case Layout::SymbolTrill:
+            renderedSymbol = createTrill(staffInfo);
+            break;
+
+        case Layout::SymbolNaturalHarmonic:
+            renderedSymbol = createConnectedSymbolGroup("N.H.", QFont::StyleNormal, width, staffInfo);
+            break;
+
+        case Layout::SymbolArtificialHarmonic:
+            renderedSymbol = createConnectedSymbolGroup("A.H.", QFont::StyleNormal, width, staffInfo);
+            break;
+
+        case Layout::SymbolDynamic:
+            renderedSymbol = createDynamic(score->FindDynamic(score->FindSystemIndex(system),
+                                                              system->FindStaffIndex(staff),
+                                                              symbolGroup.leftPosIndex));
+            break;
+
         }
-    }
 
-    std::vector<PositionProperty> singleSymbolPredicates = {
-        &Position::HasVolumeSwell, &Position::HasTremoloPicking,
-        &Position::HasTremoloBar, &Position::HasNoteWithTrill
-    };
-
-    // function objects for drawing symbols corresponding to each of the items in the singleSymbolPredicates list
-    std::vector<SymbolCreationFn> singleSymbolCreators = {
-        bind(&ScoreArea::createVolumeSwell, this, _1, _2, VolumeIncreasing), // set as VolumeIncreasing for now - we will update it later
-        bind(&ScoreArea::createTremoloPicking, this, _1, _2),
-        bind(&ScoreArea::createTremoloBar, this, _1, _2, (Position*)NULL),
-        bind(&ScoreArea::createTrill, this, _1, _2),
-    };
-
-    // Now, generate the rectangles for individual (non-groupable) symbols
-    for (auto predicate = singleSymbolPredicates.begin(); predicate != singleSymbolPredicates.end(); ++predicate)
-    {
-        SymbolInfo currentSymbolInfo;
-
-        for (size_t i = 0; i < staff->GetPositionCount(0); i++)
-        {
-            const Position* currentPosition = staff->GetPosition(0, i);
-
-            const bool propertySet = (currentPosition->**predicate)();
-
-            if (propertySet)
-            {
-                // create the rectangle and render the symbol
-                currentSymbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
-
-                SymbolCreationFn symbolCreator = singleSymbolCreators.at(predicate - singleSymbolPredicates.begin());
-
-                // if a volume swell is set, set the symbol width to span across the duration of the volume swell
-                if (*predicate == &Position::HasVolumeSwell)
-                {
-                    quint8 startVolume = 0, endVolume = 0, duration = 0;
-                    currentPosition->GetVolumeSwell(startVolume, endVolume, duration);
-
-                    uint32_t lastPosIndex = 0;
-
-                    // get the position of the last note of the volume swell
-                    // if the volume swell extends onto the next system, just display until the end of this staff
-                    if (!staff->IsValidPositionIndex(0, i + duration))
-                    {
-                        lastPosIndex = system->GetPositionCount() - 1;
-                    }
-                    else
-                    {
-                        lastPosIndex = staff->GetPosition(0, i + duration)->GetPosition();
-                    }
-                    currentSymbolInfo.rect.setRight(lastPosIndex);
-
-                    // need to re-bind the function using the correct volume swell type
-                    const VolumeSwellType type = (startVolume <= endVolume) ? VolumeIncreasing : VolumeDecreasing;
-                    symbolCreator = bind(&ScoreArea::createVolumeSwell, this, _1, _2, type);
-                }
-                else if (*predicate == &Position::HasTremoloBar)
-                {
-                    uint8_t type = 0, duration = 0, pitch = 0;
-                    currentPosition->GetTremoloBar(type, duration, pitch);
-
-                    if (!staff->IsValidPositionIndex(0, i + duration))
-                    {
-                        currentSymbolInfo.rect.setRight(system->GetPositionCount() - 1);
-                    }
-                    else
-                    {
-                        currentSymbolInfo.rect.setRight(staff->GetPosition(0, i + duration)->GetPosition() + 1);
-                    }
-                    symbolCreator = bind(&ScoreArea::createTremoloBar, this, _1, _2 , currentPosition);
-                }
-
-                currentSymbolInfo.symbol = symbolCreator(currentSymbolInfo.rect.width(), currentStaffInfo);
-                symbols.push_back(currentSymbolInfo);
-            }
-        }
-    }
-
-    // check for dynamics in the staff
-    {
-        std::vector<Score::DynamicPtr> dynamics;
-        score->GetDynamicsInSystem(dynamics, system);
-
-        BOOST_FOREACH(Score::DynamicPtr dynamic, dynamics)
-        {
-            if (dynamic->GetStaff() == system->FindStaffIndex(staff))
-            {
-                SymbolInfo symbolInfo;
-                symbolInfo.rect.setRect(dynamic->GetPosition(), 0, 1, 1);
-                symbolInfo.symbol = createDynamic(dynamic);
-                symbols.push_back(symbolInfo);
-            }
-        }
-    }
-
-    // stores the maximum height that has been occupied at each position
-    // this is used to figure out how low we can place a symbol group
-    std::vector<uint8_t> heightMap(system->GetPositionCount(), 0);
-
-    for (auto i = symbols.begin(); i != symbols.end(); i++)
-    {
-        // find the height to draw the symbol group at
-        const int left = i->rect.left();
-        const int right = i->rect.right();
-
-        // find the lowest height we can place a rectangle at without overlapping the already-placed rectangles
-        const int height = *std::max_element(heightMap.begin() + left, heightMap.begin() + right) + 1;
-        // update the height map and adjust the current symbol group's height
-        std::fill_n(heightMap.begin() + left, i->rect.width(), height);
-        i->rect.moveTop(height);
-
-        // draw the symbol group
-        i->symbol->setPos(system->GetPositionX(i->rect.left()),
-                          currentStaffInfo.getTopTabLine() - (i->rect.y() + 1) * Staff::TAB_SYMBOL_HEIGHT);
-        i->symbol->setParentItem(activeStaff);
+        renderedSymbol->setPos(symbolGroup.leftX,
+                               staffInfo.getTopTabLine() - (symbolGroup.height + 1) * Staff::TAB_SYMBOL_HEIGHT);
+        renderedSymbol->setParentItem(activeStaff);
     }
 }
 
 // Draws symbols that are grouped across multiple positions (i.e. consecutive "let ring" symbols)
-QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, QFont::Style style, uint8_t width,
+QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, QFont::Style style, int width,
                                                      const StaffData& currentStaffInfo)
 {
     static QFont font("Liberation Sans");
@@ -1177,9 +1067,9 @@ QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, QFont:
     group->addToGroup(description);
 
     // Draw dashed line across the remaining positions in the group
-    if (width > 1)
+    if (width > currentStaffInfo.positionWidth)
     {
-        const double rightEdge = width * currentStaffInfo.positionWidth - 0.5 * currentStaffInfo.positionWidth;
+        const double rightEdge = width - 0.5 * currentStaffInfo.positionWidth;
         const double leftEdge = description->boundingRect().right();
         const double middleHeight = Staff::TAB_SYMBOL_HEIGHT / 2.0;
         QGraphicsLineItem* line = new QGraphicsLineItem(leftEdge, middleHeight, rightEdge, middleHeight);
@@ -1196,13 +1086,13 @@ QGraphicsItem* ScoreArea::createConnectedSymbolGroup(const QString& text, QFont:
     return group;
 }
 
-QGraphicsItem* ScoreArea::drawContinuousFontSymbols(QChar symbol, uint8_t width, const StaffData& currentStaffInfo)
+QGraphicsItem* ScoreArea::drawContinuousFontSymbols(QChar symbol, int width)
 {
     QFont font = musicFont.getFont();
     font.setPixelSize(25);
 
     const double symbolWidth = QFontMetricsF(font).width(symbol);
-    const int numSymbols = width * currentStaffInfo.positionWidth / symbolWidth;
+    const int numSymbols = width / symbolWidth;
     QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(QString(numSymbols, symbol));
     text->setFont(font);
     text->setPos(0, -25);
@@ -1214,10 +1104,8 @@ QGraphicsItem* ScoreArea::drawContinuousFontSymbols(QChar symbol, uint8_t width,
     return group;
 }
 
-QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentStaffInfo) const
+QGraphicsItem* ScoreArea::createTrill(const StaffData& currentStaffInfo) const
 {
-    Q_UNUSED(width);
-
     QFont font(musicFont.getFont());
     font.setPixelSize(21);
 
@@ -1231,10 +1119,8 @@ QGraphicsItem* ScoreArea::createTrill(uint8_t width, const StaffData& currentSta
     return group;
 }
 
-QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& currentStaffInfo) const
+QGraphicsItem* ScoreArea::createTremoloPicking(const StaffData& currentStaffInfo) const
 {
-    Q_UNUSED(width);
-
     const double offset = Staff::TAB_SYMBOL_HEIGHT / 3;
 
     QGraphicsItemGroup* group = new QGraphicsItemGroup;
@@ -1250,17 +1136,16 @@ QGraphicsItem* ScoreArea::createTremoloPicking(uint8_t width, const StaffData& c
     return group;
 }
 
-QGraphicsItem* ScoreArea::createTremoloBar(uint8_t width, const StaffData& currentStaffInfo,
-                                           const Position* position) const
+QGraphicsItem* ScoreArea::createTremoloBar(uint8_t width, const Position* position) const
 {
-    return new TremoloBarPainter(position, width * currentStaffInfo.positionWidth);
+    return new TremoloBarPainter(position, width);
 }
 
 /// Creates a volume swell QGraphicsItem of the specified type
-QGraphicsItem* ScoreArea::createVolumeSwell(uint8_t width, const StaffData &currentStaffInfo, VolumeSwellType type)
+QGraphicsItem* ScoreArea::createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo, VolumeSwellType type)
 {
     double leftX = currentStaffInfo.positionWidth / 2.0;
-    double rightX = width * currentStaffInfo.positionWidth;
+    double rightX = width;
 
     if (type == VolumeDecreasing) // switch directions for decreasing volume swells
     {
