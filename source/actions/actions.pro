@@ -31,7 +31,8 @@ HEADERS += \
     editrest.h \
     editkeysignature.h \
     edittimesignature.h \
-    adddynamic.h
+    adddynamic.h \
+    removedynamic.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -63,6 +64,9 @@ SOURCES += \
     editrest.cpp \
     editkeysignature.cpp \
     edittimesignature.cpp \
-    adddynamic.cpp
+    adddynamic.cpp \
+    removedynamic.cpp
+
+
 
 

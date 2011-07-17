@@ -88,6 +88,7 @@
 #include <actions/editkeysignature.h>
 #include <actions/edittimesignature.h>
 #include <actions/adddynamic.h>
+#include <actions/removedynamic.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -1936,7 +1937,6 @@ void PowerTabEditor::editDynamic()
     }
     else
     {
-        // TODO - implement
-        //undoManager->push(new RemoveDynamic(currentScore, dynamic));
+        undoManager->push(new RemoveDynamic(currentScore, dynamic));
     }
 }
