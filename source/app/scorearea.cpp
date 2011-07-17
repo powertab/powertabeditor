@@ -993,10 +993,12 @@ void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
             break;
 
         case Layout::SymbolDynamic:
+        {
+            const Position* pos = staff->GetPosition(0, symbolGroup.leftPosIndex);
             renderedSymbol = createDynamic(score->FindDynamic(score->FindSystemIndex(system),
-                                                              system->FindStaffIndex(staff),
-                                                              symbolGroup.leftPosIndex));
+                                                              system->FindStaffIndex(staff), pos->GetPosition()));
             break;
+        }
 
         default:
             Q_ASSERT(false); // shouldn't have any other symbol types!!!

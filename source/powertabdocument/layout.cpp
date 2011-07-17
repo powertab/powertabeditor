@@ -166,7 +166,7 @@ std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* scor
         {
             const uint32_t systemIndex = score->FindSystemIndex(system);
             const uint32_t staffIndex = system->FindStaffIndex(staff);
-            if (score->FindDynamic(systemIndex, staffIndex, posIndex) != Score::DynamicPtr())
+            if (score->FindDynamic(systemIndex, staffIndex, pos->GetPosition()) != Score::DynamicPtr())
             {
                 symbols.push_back(SymbolDynamic);
             }
