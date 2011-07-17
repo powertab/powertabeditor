@@ -352,7 +352,7 @@ void Score::UpdateSystemHeight(SystemPtr system)
     for (size_t i = 0; i < system->GetStaffCount(); i++)
     {
         System::StaffPtr currentStaff = system->GetStaff(i);
-        Layout::CalculateTabStaffBelowSpacing(currentStaff);
+        Layout::CalculateTabStaffBelowSpacing(system, currentStaff);
         Layout::CalculateSymbolSpacing(this, system, currentStaff);
     }
 

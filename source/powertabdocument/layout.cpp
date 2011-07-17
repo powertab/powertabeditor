@@ -9,6 +9,8 @@
 
 #include <limits>
 #include <algorithm>
+#include <map>
+#include <boost/foreach.hpp>
 
 /// Adjust the spacing around the standard notation staff, depending on if any notes are located above/below the staff
 void Layout::CalculateStdNotationHeight(Score* score, std::shared_ptr<System> system)
@@ -78,39 +80,35 @@ void Layout::CalculateStdNotationHeight(Score* score, std::shared_ptr<System> sy
     }
 }
 
-/// Calculates the spacing below the tab staff, for indicating hammerons, pick strokes, taps, etc.
-/// The symbols are "stacked" on each other, so the height of the spacing is equal to the height
-/// of the largest stack
-void Layout::CalculateTabStaffBelowSpacing(std::shared_ptr<Staff> staff)
-{
-    int maxHeight = 0;
-
-    for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
-    {
-        for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(voice); posIndex++)
-        {
-            const Position* pos = staff->GetPosition(voice, posIndex);
-
-            // count the number of symbols that will be displayed below the staff, for this position
-            std::vector<bool> symbols = {
-                pos->HasPickStrokeDown(), pos->HasPickStrokeUp(), pos->HasTap(),
-                pos->HasNoteWithHammeronOrPulloff(), pos->HasNoteWithSlide(),
-                pos->HasNoteWithTappedHarmonic(), pos->HasNoteWithArtificialHarmonic()
-            };
-
-            maxHeight = std::max(maxHeight, std::count(symbols.begin(), symbols.end(), true));
-        }
-    }
-
-    staff->SetTablatureStaffBelowSpacing(maxHeight * Staff::TAB_SYMBOL_HEIGHT);
-}
-
 namespace
 {
 bool compareHeightOfGroup(const Layout::SymbolGroup& group1, const Layout::SymbolGroup& group2)
 {
     return group1.height < group2.height;
 }
+
+int maxHeightOfSymbolGroups(const std::vector<Layout::SymbolGroup>& symbolGroups)
+{
+    int maxHeight = 0;
+
+    if (!symbolGroups.empty())
+    {
+        maxHeight = std::max_element(symbolGroups.begin(), symbolGroups.end(), compareHeightOfGroup)->height;
+    }
+
+    return maxHeight;
+}
+}
+
+/// Calculates the spacing below the tab staff, for indicating hammerons, pick strokes, taps, etc.
+/// The symbols are "stacked" on each other, so the height of the spacing is equal to the height
+/// of the largest stack
+void Layout::CalculateTabStaffBelowSpacing(std::shared_ptr<const System> system,
+                                           std::shared_ptr<Staff> staff)
+{
+    std::vector<SymbolGroup> symbolGroups = CalculateTabStaffBelowLayout(system, staff);
+
+    staff->SetTablatureStaffBelowSpacing(maxHeightOfSymbolGroups(symbolGroups) * Staff::TAB_SYMBOL_HEIGHT);
 }
 
 /// Similar to Layout::CalculateTabStaffBelowSpacing, except for symbols displayed between the
@@ -121,14 +119,7 @@ void Layout::CalculateSymbolSpacing(const Score* score, std::shared_ptr<System> 
 {
     std::vector<SymbolGroup> symbolGroups = CalculateSymbolLayout(score, system, staff);
 
-    // find the height of the highest symbol group
-    int maxHeight = 0;
-    if (!symbolGroups.empty())
-    {
-        maxHeight = std::max_element(symbolGroups.begin(), symbolGroups.end(), compareHeightOfGroup)->height;
-    }
-
-    staff->SetSymbolSpacing(maxHeight * Staff::TAB_SYMBOL_HEIGHT);
+    staff->SetSymbolSpacing(maxHeightOfSymbolGroups(symbolGroups) * Staff::TAB_SYMBOL_HEIGHT);
 }
 
 namespace
@@ -274,6 +265,46 @@ std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* scor
             const int rightX = system->GetPositionX(system->GetPositionCount() - 1);
             const int height = updateHeightMap(heightMap, leftPosIndex, symbolMap.size() - 1);
             symbolGroups.push_back(SymbolGroup(leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
+        }
+    }
+
+    return symbolGroups;
+}
+
+/// Calculates the layout of symbols displayed below the tab staff (horizontal and vertical positioning)
+/// There are no symbols which are grouped with neighbouring symbols, making the function significantly simpler
+/// than the Layout::CalculateSymbolLayout function
+std::vector<Layout::SymbolGroup> Layout::CalculateTabStaffBelowLayout(std::shared_ptr<const System> system,
+                                                                      std::shared_ptr<const Staff> staff)
+{
+    std::vector<SymbolGroup> symbolGroups;
+
+    for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(0); posIndex++)
+    {
+        const Position* pos = staff->GetPosition(0, posIndex);
+
+        SymbolGroup symbolGroup(pos->GetPosition(), system->GetPositionX(pos->GetPosition()),
+                                system->GetPositionSpacing(), 0, NoSymbol);
+
+        // associate the symbol type with each enabled/disabled symbol
+        std::map<bool, SymbolType> symbols = {
+            {pos->HasPickStrokeDown(), SymbolPickStrokeDown},
+            {pos->HasPickStrokeUp(), SymbolPickStrokeUp},
+            {pos->HasTap(), SymbolTap},
+            {pos->HasNoteWithHammeronOrPulloff(), SymbolHammerOnPullOff},
+            {pos->HasNoteWithSlide(), SymbolSlide},
+            {pos->HasNoteWithTappedHarmonic(), SymbolTappedHarmonic},
+            {pos->HasNoteWithArtificialHarmonic(), SymbolArtificialHarmonic}
+        };
+
+        // for each symbol that is enabled, add a corresponding SymbolGroup to the layout
+        BOOST_FOREACH(const auto& symbol, symbols)
+        {
+            if (symbol.first == true)
+            {
+                symbolGroup.symbolType = symbol.second;
+                symbolGroups.push_back(symbolGroup);
+            }
         }
     }
 

@@ -13,13 +13,14 @@ namespace Layout
 {
 void CalculateStdNotationHeight(Score* score, std::shared_ptr<System> system);
 
-void CalculateTabStaffBelowSpacing(std::shared_ptr<Staff> staff);
+void CalculateTabStaffBelowSpacing(std::shared_ptr<const System> system, std::shared_ptr<Staff> staff);
 void CalculateSymbolSpacing(const Score* score, std::shared_ptr<System> system,
                             std::shared_ptr<Staff> staff);
 
 enum SymbolType
 {
     NoSymbol,
+    // symbols between staves
     SymbolLetRing,
     SymbolVolumeSwell,
     SymbolVibrato,
@@ -30,7 +31,14 @@ enum SymbolType
     SymbolTrill,
     SymbolNaturalHarmonic,
     SymbolArtificialHarmonic,
-    SymbolDynamic
+    SymbolDynamic,
+    // symbols below tab staff
+    SymbolPickStrokeDown,
+    SymbolPickStrokeUp,
+    SymbolTap,
+    SymbolHammerOnPullOff,
+    SymbolSlide,
+    SymbolTappedHarmonic
 };
 
 struct SymbolGroup
@@ -47,6 +55,9 @@ struct SymbolGroup
 std::vector<Layout::SymbolGroup> CalculateSymbolLayout(const Score* score,
                                                        std::shared_ptr<const System> system,
                                                        std::shared_ptr<const Staff> staff);
+
+std::vector<Layout::SymbolGroup> CalculateTabStaffBelowLayout(std::shared_ptr<const System> system,
+                                                              std::shared_ptr<const Staff> staff);
 }
 
 #endif // LAYOUT_H

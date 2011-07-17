@@ -42,9 +42,6 @@
 #include <painters/rhythmslashpainter.h>
 #include <painters/restpainter.h>
 
-#include <functional>
-#include <algorithm>
-
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
 
@@ -874,100 +871,63 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
 
 /// Draws the text symbols that appear below the tab staff (hammerons, slides, etc)
 void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<const System> system, shared_ptr<const Staff> staff,
-                                         const StaffData &currentStaffInfo)
+                                         const StaffData& staffInfo)
 {
-    typedef bool (Position::*PositionProperty)() const;
-    std::vector<PositionProperty> positionPredicates = {
-        &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap,
-        &Position::HasNoteWithHammeron, &Position::HasNoteWithPulloff,
-        &Position::HasNoteWithHammeronFromNowhere, &Position::HasNoteWithPulloffToNowhere,
-        &Position::HasNoteWithSlide, &Position::HasNoteWithTappedHarmonic,
-        &Position::HasNoteWithArtificialHarmonic
-    };
+    std::vector<Layout::SymbolGroup> symbolGroups = Layout::CalculateTabStaffBelowLayout(system, staff);
 
-    typedef std::function<QGraphicsItem* (void)> SymbolCreationFn;
-    using std::bind;
-    using namespace std::placeholders;
-
-    // functions for creating symbols, corresponding to each element of positionPredicates
-    std::vector<SymbolCreationFn> symbolCreationsFns = {
-        bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeDown)),
-        bind(&ScoreArea::createPickStroke, this, musicFont.getSymbol(MusicFont::PickStrokeUp)),
-        bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
-        bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
-        bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
-        bind(&ScoreArea::createPlainText, this, "H", QFont::StyleNormal),
-        bind(&ScoreArea::createPlainText, this, "P", QFont::StyleNormal),
-        bind(&ScoreArea::createPlainText, this, "sl.", QFont::StyleItalic),
-        bind(&ScoreArea::createPlainText, this, "T", QFont::StyleNormal),
-        // temporary placeholder - we will properly bind this later with the correct text for the harmonic's note value
-        bind(&ScoreArea::createArtificialHarmonicText, this, (Position*)NULL),
-    };
-
-    std::list<SymbolInfo> symbols;
-
-    // check each property for each position
-    for (auto predicate = positionPredicates.begin(); predicate != positionPredicates.end(); ++predicate)
+    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
     {
-        for (size_t i = 0; i < staff->GetPositionCount(0); i++)
+        QGraphicsItem* renderedSymbol = NULL;
+
+        switch(symbolGroup.symbolType)
         {
-            Position* currentPosition = staff->GetPosition(0, i);
+        case Layout::SymbolPickStrokeDown:
+            renderedSymbol = createPickStroke(musicFont.getSymbol(MusicFont::PickStrokeDown));
+            break;
 
-            const bool propertySet = (currentPosition->**predicate)();
+        case Layout::SymbolPickStrokeUp:
+            renderedSymbol = createPickStroke(musicFont.getSymbol(MusicFont::PickStrokeUp));
+            break;
 
-            if (propertySet)
+        case Layout::SymbolTap:
+            renderedSymbol = createPlainText("T", QFont::StyleNormal);
+            break;
+
+        case Layout::SymbolHammerOnPullOff:
+        {
+            const Position* pos = staff->GetPositionByPosition(0, symbolGroup.leftPosIndex);
+            if (pos->HasNoteWithHammeron() || pos->HasNoteWithHammeronFromNowhere())
             {
-                SymbolInfo symbolInfo;
-
-                // symbols that are centered between adjacent positions
-                if (*predicate == &Position::HasNoteWithSlide || *predicate == &Position::HasNoteWithHammeron ||
-                    *predicate == &Position::HasNoteWithPulloff)
-                {
-                    int nextPos = staff->GetIndexOfNextPosition(0, system, currentPosition);
-                    if (nextPos != system->GetPositionCount() - 1)
-                        nextPos++;
-
-                    symbolInfo.rect.setRect(currentPosition->GetPosition(), 0, nextPos - currentPosition->GetPosition(), 1);
-                }
-                else // symbols that appear directly below a position
-                {
-                    symbolInfo.rect.setRect(currentPosition->GetPosition(), 0, 1, 1);
-                }
-
-                // draw the symbol
-                SymbolCreationFn symbolCreator = symbolCreationsFns.at(predicate - positionPredicates.begin());
-
-                if (*predicate == &Position::HasNoteWithArtificialHarmonic)
-                {
-                    symbolCreator = bind(&ScoreArea::createArtificialHarmonicText, this, currentPosition);
-                }
-
-                symbolInfo.symbol = symbolCreator();
-                symbols.push_back(symbolInfo);
+                renderedSymbol = createPlainText("H", QFont::StyleNormal);
             }
+            else if (pos->HasNoteWithPulloff() || pos->HasNoteWithPulloffToNowhere())
+            {
+                renderedSymbol = createPlainText("P", QFont::StyleNormal);
+            }
+            break;
         }
-    }
 
-    // stores the maximum height that has been occupied by symbols at each position
-    // this is used to figure out how low we can place a symbol
-    std::vector<uint8_t> heightMap(system->GetPositionCount(), 0);
+        case Layout::SymbolSlide:
+            renderedSymbol = createPlainText("sl.", QFont::StyleItalic);
+            break;
 
-    // draw each symbol
-    for (auto i = symbols.begin(); i != symbols.end(); i++)
-    {
-        const int left = i->rect.left();
+        case Layout::SymbolTappedHarmonic:
+            renderedSymbol = createPlainText("T", QFont::StyleNormal);
+            break;
 
-        // find the lowest height we can place the symbol at without overlapping the already-placed symbols
-        const int height = heightMap.at(left) + 1;
-        // update the height map and adjust the current symbol's height
-        heightMap[left] = height;
-        i->rect.moveTop(height);
+        case Layout::SymbolArtificialHarmonic:
+            renderedSymbol = createArtificialHarmonicText(staff->GetPositionByPosition(0, symbolGroup.leftPosIndex));
+            break;
 
-        // draw the symbol group
-        centerItem(i->symbol, system->GetPositionX(left), system->GetPositionX(left + i->rect.width()),
-                   currentStaffInfo.getBottomTabLine() + i->rect.y() * Staff::TAB_SYMBOL_HEIGHT);
+        default:
+            Q_ASSERT(false); // shouldn't get any other symbol types!!!
+            break;
+        }
 
-        i->symbol->setParentItem(activeStaff);
+        centerItem(renderedSymbol, symbolGroup.leftX, symbolGroup.leftX + symbolGroup.width,
+                   staffInfo.getBottomTabLine() + (symbolGroup.height + 1) * Staff::TAB_SYMBOL_HEIGHT);
+
+        renderedSymbol->setParentItem(activeStaff);
     }
 }
 
@@ -985,10 +945,6 @@ void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
 
         switch(symbolGroup.symbolType)
         {
-        case Layout::NoSymbol:
-            Q_ASSERT(false); // should have a symbol type!!!
-            break;
-
         case Layout::SymbolLetRing:
             renderedSymbol = createConnectedSymbolGroup("let ring", QFont::StyleItalic, width, staffInfo);
             break;
@@ -1042,6 +998,9 @@ void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
                                                               symbolGroup.leftPosIndex));
             break;
 
+        default:
+            Q_ASSERT(false); // shouldn't have any other symbol types!!!
+            break;
         }
 
         renderedSymbol->setPos(symbolGroup.leftX,
