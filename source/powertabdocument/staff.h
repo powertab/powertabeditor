@@ -12,7 +12,6 @@
 #ifndef __STAFF_H__
 #define __STAFF_H__
 
-#include <list>
 #include <array>
 #include <memory>
 #include <vector>
@@ -161,16 +160,11 @@ public:
                                 std::shared_ptr<const Barline> endBar);
     void CalculateBeamingForGroup(std::vector<Position*>& positions);
 
-    void CalculateTabStaffBelowSpacing();
-    void CalculateSymbolSpacing();
-
     void UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber);
     void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote);
     
     int GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
                         const Tuning& tuning) const;
-
-    typedef bool (Position::*PositionProperty)() const;
 
     enum SearchDirection
     {
@@ -182,8 +176,6 @@ public:
                                   const Note* note, uint32_t voice = 0) const;
 
 protected:
-    int CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const;
-        
     /// Compares the fret numbers of two consecutive notes on the same string,
     /// using the given comparision function (binary predicate)
     template<typename FretComparison>

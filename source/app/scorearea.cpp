@@ -875,7 +875,8 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
 void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<const System> system, shared_ptr<const Staff> staff,
                                          const StaffData &currentStaffInfo)
 {
-    std::vector<Staff::PositionProperty> positionPredicates = {
+    typedef bool (Position::*PositionProperty)() const;
+    std::vector<PositionProperty> positionPredicates = {
         &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap,
         &Position::HasNoteWithHammeron, &Position::HasNoteWithPulloff,
         &Position::HasNoteWithHammeronFromNowhere, &Position::HasNoteWithPulloffToNowhere,
@@ -974,12 +975,13 @@ void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
                             shared_ptr<const Staff> staff, const StaffData& currentStaffInfo)
 {
     typedef std::function<QGraphicsItem* (uint8_t, const StaffData&)> SymbolCreationFn;
+    typedef bool (Position::*PositionProperty)() const;
     using std::bind;
     using namespace std::placeholders;
 
     std::list<SymbolInfo> symbols; // holds all of the symbols that we will draw
 
-    std::vector<Staff::PositionProperty> groupableSymbolPredicates = {
+    std::vector<PositionProperty> groupableSymbolPredicates = {
         &Position::HasLetRing, &Position::HasVibrato, &Position::HasWideVibrato,
         &Position::HasPalmMuting, &Position::HasNoteWithNaturalHarmonic,
         &Position::HasNoteWithArtificialHarmonic
@@ -1041,7 +1043,7 @@ void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
         }
     }
 
-    std::vector<Staff::PositionProperty> singleSymbolPredicates = {
+    std::vector<PositionProperty> singleSymbolPredicates = {
         &Position::HasVolumeSwell, &Position::HasTremoloPicking,
         &Position::HasTremoloBar, &Position::HasNoteWithTrill
     };

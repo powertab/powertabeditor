@@ -124,6 +124,7 @@ public:
     size_t GetDynamicCount() const;
     DynamicPtr GetDynamic(uint32_t index) const;
     void GetDynamicsInSystem(std::vector<DynamicPtr>& dynamics, SystemConstPtr system) const;
+    DynamicPtr FindDynamic(uint32_t system, uint32_t staff, uint32_t positionIndex) const;
 
 // Alternate Ending Functions
     bool IsValidAlternateEndingIndex(uint32_t index) const;

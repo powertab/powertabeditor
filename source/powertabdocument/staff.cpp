@@ -493,52 +493,6 @@ namespace
     };
 }
 
-/// Calculates the spacing required to display the given position and note properties.
-int Staff::CalculateSpacingForProperties(const std::list<PositionProperty>& positionFunctions) const
-{
-    const std::vector<Position*>& positionArray = positionArrays[0]; // TODO - support multiple voices
-
-    int maxNumProperties = 0;
-    for (auto i = positionArray.begin(); i != positionArray.end(); ++i)
-    {
-        int numProperties = 0;
-        
-        // Check how many position properties are enabled at the current position
-        TestPredicatePtr<Position> pred(*i);
-        numProperties = std::count_if(positionFunctions.begin(), positionFunctions.end(), pred);
-        
-        // the highest number of properties enabled for a position in this system will determine the required height
-        maxNumProperties = std::max(maxNumProperties, numProperties);
-    }
-    
-    return maxNumProperties * TAB_SYMBOL_HEIGHT;
-}
-
-void Staff::CalculateTabStaffBelowSpacing()
-{
-    // Create list of all properties that are displayed below the tab staff
-    std::list<PositionProperty> positionFunctions = {
-        &Position::HasPickStrokeDown, &Position::HasPickStrokeUp, &Position::HasTap,
-        &Position::HasNoteWithHammeronOrPulloff, &Position::HasNoteWithSlide,
-        &Position::HasNoteWithTappedHarmonic, &Position::HasNoteWithArtificialHarmonic
-    };
-
-    SetTablatureStaffBelowSpacing(CalculateSpacingForProperties(positionFunctions));
-}
-
-void Staff::CalculateSymbolSpacing()
-{
-    // Create list of all properties that are displayed between the tab staff and std. notation staff
-    std::list<PositionProperty> positionFunctions = {
-        &Position::HasLetRing, &Position::HasVolumeSwell,
-        &Position::HasVibrato, &Position::HasWideVibrato, &Position::HasPalmMuting,
-        &Position::HasTremoloPicking, &Position::HasTremoloBar, &Position::HasNoteWithTrill,
-        &Position::HasNoteWithNaturalHarmonic, &Position::HasNoteWithArtificialHarmonic
-    };
-    
-    SetSymbolSpacing(CalculateSpacingForProperties(positionFunctions));
-}
-
 /// Calculates the beaming for notes that are located between the two given barlines
 void Staff::CalculateBeamingForBar(std::shared_ptr<const Barline> startBar,
                                    std::shared_ptr<const Barline> endBar)

@@ -8,9 +8,10 @@
 #include "guitar.h"
 
 #include <limits>
+#include <algorithm>
 
 /// Adjust the spacing around the standard notation staff, depending on if any notes are located above/below the staff
-void Layout::calculateStdNotationHeight(Score* score, std::shared_ptr<System> system)
+void Layout::CalculateStdNotationHeight(Score* score, std::shared_ptr<System> system)
 {
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
@@ -75,4 +76,66 @@ void Layout::calculateStdNotationHeight(Score* score, std::shared_ptr<System> sy
             }
         }
     }
+}
+
+/// Calculates the spacing below the tab staff, for indicating hammerons, pick strokes, taps, etc.
+/// The symbols are "stacked" on each other, so the height of the spacing is equal to the height
+/// of the largest stack
+void Layout::CalculateTabStaffBelowSpacing(std::shared_ptr<Staff> staff)
+{
+    int maxHeight = 0;
+
+    for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
+    {
+        for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(voice); posIndex++)
+        {
+            const Position* pos = staff->GetPosition(voice, posIndex);
+
+            // count the number of symbols that will be displayed below the staff, for this position
+            std::vector<bool> symbols = {
+                pos->HasPickStrokeDown(), pos->HasPickStrokeUp(), pos->HasTap(),
+                pos->HasNoteWithHammeronOrPulloff(), pos->HasNoteWithSlide(),
+                pos->HasNoteWithTappedHarmonic(), pos->HasNoteWithArtificialHarmonic()
+            };
+
+            maxHeight = std::max(maxHeight, std::count(symbols.begin(), symbols.end(), true));
+        }
+    }
+
+    staff->SetTablatureStaffBelowSpacing(maxHeight * Staff::TAB_SYMBOL_HEIGHT);
+}
+
+/// Similar to Layout::CalculateTabStaffBelowSpacing, except for symbols displayed between the
+/// tab staff and standard notation staff. However, some of the symbols used here do not belong
+/// to Position objects (such as dynamics)
+void Layout::CalculateSymbolSpacing(const Score* score, std::shared_ptr<System> system,
+                                    std::shared_ptr<Staff> staff)
+{
+    int maxHeight = 0;
+
+    for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
+    {
+        for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(voice); posIndex++)
+        {
+            const Position* pos = staff->GetPosition(voice, posIndex);
+
+            std::vector<bool> symbols = {
+                pos->HasLetRing(), pos->HasVolumeSwell(), pos->HasVibrato(),
+                pos->HasWideVibrato(), pos->HasPalmMuting(), pos->HasTremoloPicking(),
+                pos->HasTremoloBar(), pos->HasNoteWithTrill(),
+                pos->HasNoteWithNaturalHarmonic(), pos->HasNoteWithArtificialHarmonic()
+            };
+
+            // check for a dynamic at this location
+            {
+                const uint32_t systemIndex = score->FindSystemIndex(system);
+                const uint32_t staffIndex = system->FindStaffIndex(staff);
+                symbols.push_back(score->FindDynamic(systemIndex, staffIndex, posIndex) != Score::DynamicPtr());
+            }
+
+            maxHeight = std::max(maxHeight, std::count(symbols.begin(), symbols.end(), true));
+        }
+    }
+
+    staff->SetSymbolSpacing(maxHeight * Staff::TAB_SYMBOL_HEIGHT);
 }

@@ -343,7 +343,7 @@ Score::AlternateEndingPtr Score::FindAlternateEnding(const SystemLocation& locat
 /// @param system The system to update the height of
 void Score::UpdateSystemHeight(SystemPtr system)
 {
-    Layout::calculateStdNotationHeight(this, system);
+    Layout::CalculateStdNotationHeight(this, system);
 
     // Store the original height, recalculate the height, then find the height difference
     
@@ -352,8 +352,8 @@ void Score::UpdateSystemHeight(SystemPtr system)
     for (size_t i = 0; i < system->GetStaffCount(); i++)
     {
         System::StaffPtr currentStaff = system->GetStaff(i);
-        currentStaff->CalculateTabStaffBelowSpacing();
-        currentStaff->CalculateSymbolSpacing();
+        Layout::CalculateTabStaffBelowSpacing(currentStaff);
+        Layout::CalculateSymbolSpacing(this, system, currentStaff);
     }
 
     system->CalculateBeamingForStaves();
@@ -689,4 +689,20 @@ void Score::InsertTempoMarker(Score::TempoMarkerPtr marker)
     using boost::make_indirect_iterator;
     std::sort(make_indirect_iterator(m_tempoMarkerArray.begin()),
               make_indirect_iterator(m_tempoMarkerArray.end()));
+}
+
+/// Returns the dynamic at the specified location, or NULL if none exists
+Score::DynamicPtr Score::FindDynamic(uint32_t system, uint32_t staff, uint32_t positionIndex) const
+{
+    BOOST_FOREACH(DynamicPtr dynamic, m_dynamicArray)
+    {
+        if (dynamic->GetSystem() == system &&
+            dynamic->GetStaff() == staff &&
+            dynamic->GetPosition() == positionIndex)
+        {
+            return dynamic;
+        }
+    }
+
+    return DynamicPtr();
 }
