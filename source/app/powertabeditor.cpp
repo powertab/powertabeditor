@@ -38,6 +38,7 @@
 #include <dialogs/keysignaturedialog.h>
 #include <dialogs/timesignaturedialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
+#include <dialogs/dynamicdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -565,6 +566,10 @@ void PowerTabEditor::createActions()
     repeatEndingAct->setCheckable(true);
     connect(repeatEndingAct, SIGNAL(triggered()), this, SLOT(editRepeatEnding()));
 
+    dynamicAct = new Command(tr("Dynamic..."), "MusicSymbols.EditDynamic", Qt::Key_D, this);
+    dynamicAct->setCheckable(true);
+    connect(dynamicAct, SIGNAL(triggered()), this, SLOT(editDynamic()));
+
     // Tab Symbol Actions
     hammerPullAct = new Command(tr("Hammer On/Pull Off"), "TabSymbols.HammerPull", Qt::Key_H, this);
     hammerPullAct->setCheckable(true);
@@ -796,6 +801,7 @@ void PowerTabEditor::createMenus()
     musicSymbolsMenu->addAction(timeSignatureAct);
     musicSymbolsMenu->addAction(barlineAct);
     musicSymbolsMenu->addAction(repeatEndingAct);
+    musicSymbolsMenu->addAction(dynamicAct);
 
     // Tab Symbols Menu
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
@@ -1720,6 +1726,10 @@ void PowerTabEditor::updateActions()
                                                                                         caret->getCurrentPositionIndex()));
     repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
 
+    auto dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
+                                             caret->getCurrentPositionIndex());
+    dynamicAct->setChecked(dynamic != Score::DynamicPtr());
+
     if (onBarline) // current position is bar
     {
         barlineAct->setText(tr("Edit Barline"));
@@ -1900,5 +1910,11 @@ void PowerTabEditor::editKeyboardShortcuts()
     QList<Command*> registeredCommands = findChildren<Command*>();
 
     KeyboardSettingsDialog dialog(registeredCommands);
+    dialog.exec();
+}
+
+void PowerTabEditor::editDynamic()
+{
+    DynamicDialog dialog;
     dialog.exec();
 }

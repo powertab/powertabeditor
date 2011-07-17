@@ -108,6 +108,7 @@ protected slots:
     void editTappedHarmonic();
     void editKeySignature();
     void editTimeSignature();
+    void editDynamic();
 
     void removeCurrentSystem();
     void insertSystemAtEnd();
@@ -240,6 +241,7 @@ protected:
     Command* timeSignatureAct;
     Command* barlineAct;
     Command* repeatEndingAct;
+    Command* dynamicAct;
 
     QMenu* tabSymbolsMenu;
     Command* hammerPullAct; // add/remove hammer-on or pull-off

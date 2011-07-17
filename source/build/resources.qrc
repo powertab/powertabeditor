@@ -40,6 +40,14 @@
         <file alias="fermata">../images/fermata.png</file>
         <file alias="group_note">../images/group_note.png</file>
         <file alias="tie_note">../images/tie_note.png</file>
+        <file alias="dynamic_ppp.png">../images/dynamic_ppp.png</file>
+        <file alias="dynamic_pp.png">../images/dynamic_pp.png</file>
+        <file alias="dynamic_p.png">../images/dynamic_p.png</file>
+        <file alias="dynamic_mp.png">../images/dynamic_mp.png</file>
+        <file alias="dynamic_mf.png">../images/dynamic_mf.png</file>
+        <file alias="dynamic_f.png">../images/dynamic_f.png</file>
+        <file alias="dynamic_ff.png">../images/dynamic_ff.png</file>
+        <file alias="dynamic_fff.png">../images/dynamic_fff.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="toolbox_note.png">../icons/toolbox_note.png</file>

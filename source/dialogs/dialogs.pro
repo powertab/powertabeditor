@@ -11,7 +11,8 @@ HEADERS += \
     tappedharmonicdialog.h \
     keysignaturedialog.h \
     timesignaturedialog.h \
-    keyboardsettingsdialog.h
+    keyboardsettingsdialog.h \
+    dynamicdialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -24,7 +25,12 @@ SOURCES += \
     tappedharmonicdialog.cpp \
     keysignaturedialog.cpp \
     timesignaturedialog.cpp \
-    keyboardsettingsdialog.cpp
+    keyboardsettingsdialog.cpp \
+    dynamicdialog.cpp
 
 FORMS += \
-    keyboardsettingsdialog.ui
+    keyboardsettingsdialog.ui \
+    dynamicdialog.ui
+
+
+

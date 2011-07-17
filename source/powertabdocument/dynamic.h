@@ -41,7 +41,7 @@ public:
     static const uint32_t       MAX_POSITION;                       ///< Maximum allowed value for the position member variable
 
     // Volume constants
-    enum volumeLevels
+    enum VolumeLevel
     {
         notSet  = (uint8_t)0xff,
         fff     = (uint8_t)104,
