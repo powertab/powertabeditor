@@ -9,6 +9,7 @@
 class PowerTabDocument;
 class PowerTabFileHeader;
 class Score;
+class Position;
 class KeySignature;
 class TimeSignature;
 class Note;
@@ -52,7 +53,7 @@ private:
     void readMasterBars(Score* score);
     void readKeySignature(const ptree& masterBar, KeySignature& key);
     void readTimeSignature(const ptree& masterBar, TimeSignature& timeSignature);
-    Note* convertNote(int noteId, const Tuning& tuning) const;
+    Note* convertNote(int noteId, Position& position, const Tuning& tuning) const;
 };
 
 struct GpxBar
@@ -85,6 +86,7 @@ struct GpxRhythm
 struct GpxNote
 {
     int id;
+    bool tied;
     boost::property_tree::ptree properties;
 };
 

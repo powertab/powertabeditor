@@ -148,7 +148,7 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 
                 BOOST_FOREACH(int noteId, beat.noteIds)
                 {
-                    Note* note = convertNote(noteId, score->GetGuitar(i)->GetTuning());
+                    Note* note = convertNote(noteId, pos, score->GetGuitar(i)->GetTuning());
                     if (pos.GetNoteByString(note->GetString()))
                     {
                         std::cerr << "Colliding notes at string " << note->GetString() << std::endl;
@@ -301,14 +301,19 @@ void Gpx::DocumentReader::readNotes()
         note.id = currentNote.get<int>("<xmlattr>.id");
         note.properties = currentNote.get_child("Properties");
 
+        note.tied = currentNote.get("Tie.<xmlattr>.destination", "") == "true";
+
         notes[note.id] = note;
     }
 }
 
-Note* Gpx::DocumentReader::convertNote(int noteId, const Tuning& tuning) const
+Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
+                                       const Tuning& tuning) const
 {
     Gpx::GpxNote gpxNote = notes.at(noteId);
     Note ptbNote;
+
+    ptbNote.SetTied(gpxNote.tied);
 
     BOOST_FOREACH(const ptree::value_type& node, gpxNote.properties)
     {
@@ -322,6 +327,10 @@ Note* Gpx::DocumentReader::convertNote(int noteId, const Tuning& tuning) const
         else if (propertyName == "Fret")
         {
             ptbNote.SetFretNumber(property.get<int>("Fret"));
+        }
+        else if (propertyName == "PalmMuted")
+        {
+            position.SetPalmMuting(true);
         }
         else
         {
