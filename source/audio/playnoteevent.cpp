@@ -41,7 +41,7 @@ void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer) const
     }
 
     sequencer.setPan(channel, guitar->GetPan());
-    sequencer.setVolume(channel, guitar->GetInitialVolume());
+    sequencer.setChannelMaxVolume(channel, guitar->GetInitialVolume());
 
     sequencer.playNote(channel, pitch, velocity);
 }

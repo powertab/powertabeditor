@@ -21,6 +21,7 @@
 #include <powertabdocument/harmonics.h>
 #include <powertabdocument/timesignature.h>
 #include <powertabdocument/barline.h>
+#include <powertabdocument/dynamic.h>
 
 #include <audio/midievent.h>
 #include <audio/playnoteevent.h>
@@ -30,6 +31,7 @@
 #include <audio/letringevent.h>
 #include <audio/bendevent.h>
 #include <audio/repeatcontroller.h>
+#include <audio/volumechangeevent.h>
 
 using std::shared_ptr;
 using std::unique_ptr;
@@ -180,6 +182,17 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
 
                     eventList.push_back(new VibratoEvent(i, startTime + duration, positionIndex,
                                                          systemIndex, VibratoEvent::VIBRATO_OFF));
+                }
+
+                // dynamics
+                {
+                    Score::DynamicPtr dynamic = caret->getCurrentScore()->FindDynamic(systemIndex, i, positionIndex);
+                    if (dynamic)
+                    {
+                        eventList.push_back(new VolumeChangeEvent(i, startTime,
+                                                                  positionIndex, systemIndex,
+                                                                  dynamic->GetStaffVolume()));
+                    }
                 }
 
                 // let ring events (applied to all notes in the position)

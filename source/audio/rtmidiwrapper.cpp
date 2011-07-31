@@ -5,6 +5,11 @@
 RtMidiWrapper::RtMidiWrapper() :
     midiout(new RtMidiOut)
 {
+    for (int i = 0; i < 16; i++)
+    {
+        channelMaxVolumes[i] = 127;
+        channelActiveVolumes[i] = 127;
+    }
 }
 
 RtMidiWrapper::~RtMidiWrapper()
@@ -98,12 +103,12 @@ bool RtMidiWrapper::setPatch(uint8_t channel, uint8_t patch)
 
 bool RtMidiWrapper::setVolume (uint8_t channel, uint8_t volume)
 {
-    if (volume > 127)
-    {
-        volume = 127;
-    }
+    assert(volume <= 127);
 
-    return sendMidiMessage(CONTROL_CHANGE + channel, CHANNEL_VOLUME, volume);
+    channelActiveVolumes[channel] = volume;
+
+    return sendMidiMessage(CONTROL_CHANGE + channel, CHANNEL_VOLUME,
+                           (volume / 127.0) * channelMaxVolumes[channel]);
 }
 
 bool RtMidiWrapper::setPan(uint8_t channel, uint8_t pan)
@@ -185,4 +190,21 @@ void RtMidiWrapper::setPitchBendRange(uint8_t channel, uint8_t semiTones)
     sendMidiMessage(CONTROL_CHANGE + channel, RPN_LSB, 0);
     sendMidiMessage(CONTROL_CHANGE + channel, DATA_ENTRY_COARSE, semiTones);
     sendMidiMessage(CONTROL_CHANGE + channel, DATA_ENTRY_FINE, 0);
+}
+
+/// Set the upper limit on a channel's volume
+/// - The volume can then be adjusted within that range by dynamic symbols
+void RtMidiWrapper::setChannelMaxVolume(uint8_t channel, uint8_t newMaxVolume)
+{
+    assert(newMaxVolume <= 127);
+
+    const bool maxVolumeChanged = channelMaxVolumes[channel] != newMaxVolume;
+
+    channelMaxVolumes[channel] = newMaxVolume;
+
+    // If the new volume is different from the existing volume, send out a MIDI message
+    if (maxVolumeChanged)
+    {
+        setVolume(channel, channelActiveVolumes[channel]);
+    }
 }

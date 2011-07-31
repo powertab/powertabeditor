@@ -9,6 +9,7 @@
 **/
 
 #include <string>
+#include <map>
 #include <boost/scoped_ptr.hpp>
 
 class RtMidiOut;
@@ -18,6 +19,9 @@ class RtMidiWrapper
 private:
     boost::scoped_ptr<RtMidiOut> midiout;
     bool sendMidiMessage(uint8_t a, uint8_t b, uint8_t c);
+
+    std::map<uint8_t, uint8_t> channelMaxVolumes; ///< Maximum volume for each channel (as set in the mixer)
+    std::map<uint8_t, uint8_t> channelActiveVolumes; ///< Volume of last active dynamic for each channel
 
 public:
     RtMidiWrapper();
@@ -36,6 +40,8 @@ public:
     bool stopNote(uint8_t channel, uint8_t pitch);
     bool setVibrato(uint8_t channel, uint8_t modulation);
     bool setSustain(uint8_t channel, bool sustainOn);
+
+    void setChannelMaxVolume(uint8_t channel, uint8_t maxVolume);
 
     enum MidiMessage
     {

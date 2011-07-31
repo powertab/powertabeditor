@@ -23,7 +23,8 @@ HEADERS += \
     letringevent.h \
     directionsymbol.h \
     bendevent.h \
-    audio_pch.h
+    audio_pch.h \
+    volumechangeevent.h
 
 SOURCES += \
     vibratoevent.cpp \
@@ -37,5 +38,8 @@ SOURCES += \
     metronomeevent.cpp \
     letringevent.cpp \
     directionsymbol.cpp \
-    bendevent.cpp
+    bendevent.cpp \
+    volumechangeevent.cpp
+
+
 
