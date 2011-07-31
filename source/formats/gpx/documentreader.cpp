@@ -189,7 +189,10 @@ void Gpx::DocumentReader::readBars()
 
 void Gpx::DocumentReader::readKeySignature(const Gpx::DocumentReader::ptree& masterBar, KeySignature& key)
 {
-    key.SetKeyAccidentals(masterBar.get<uint8_t>("Key.AccidentalCount"));
+    // Guitar Pro numbers accidentals from -1 to -7 for flats, but PowerTab uses
+    // 8 - 14 (with 1-7 for sharps)
+    const int numAccidentals = masterBar.get<int>("Key.AccidentalCount");
+    key.SetKeyAccidentals(numAccidentals >= 0 ? numAccidentals : 7 - numAccidentals);
 
     const std::string keyType = masterBar.get<std::string>("Key.Mode");
 
