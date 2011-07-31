@@ -9,8 +9,10 @@
 
 #include <limits>
 #include <algorithm>
+#include <numeric>
 #include <map>
 #include <boost/foreach.hpp>
+#include <iostream>
 
 /// Adjust the spacing around the standard notation staff, depending on if any notes are located above/below the staff
 void Layout::CalculateStdNotationHeight(Score* score, std::shared_ptr<System> system)
@@ -316,4 +318,101 @@ Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int heig
     leftX(left), width(width),
     height(height), symbolType(type)
 {
+}
+
+/// Auto-adjust spacing of notes in the system
+void Layout::FormatSystem(std::shared_ptr<System> system)
+{
+    std::vector<System::BarlinePtr> barlines;
+    system->GetBarlines(barlines);
+
+    // stores the new position of each bar, plus the new positions of all notes in the bar
+    // for each staff
+    std::vector<std::pair<int, std::vector<std::vector<int> > > > newBarPositions;
+
+    int prevBarPos = 0;
+    int nextBarPos = 0;
+
+    for (size_t i = 0; i < barlines.size() - 1; i++)
+    {
+        System::BarlinePtr leftBar = barlines[i];
+        System::BarlinePtr rightBar = barlines[i+1];
+
+        std::vector<std::vector<int> > newPositionsForStaves;
+
+        nextBarPos += 1;
+
+        for (size_t j = 0; j < system->GetStaffCount(); j++)
+        {
+            System::StaffPtr staff = system->GetStaff(j);
+
+            std::vector<Position*> positions;
+            staff->GetPositionsInRange(positions, 0, leftBar->GetPosition(), rightBar->GetPosition());
+
+            if (positions.empty())
+                break;
+
+            std::vector<int> newLocations;
+            newLocations.push_back(prevBarPos);
+
+            // Assign a spacing of 1 for eighth notes and lower, 2 for quarter notes, 4 for
+            // half notes, etc
+            for (size_t k = 0; k < positions.size(); k++)
+            {
+                std::cerr << positions[k]->GetDuration() << std::endl;
+                double spacing = positions[k]->GetDuration();
+
+                if (spacing < 1)
+                    spacing = 1;
+                else
+                    spacing *= 2;
+
+                newLocations.push_back(spacing);
+            }
+
+            // convert into successive position indices, ie [0,1,2,1,2] -> [0,1,3,4,6]
+            std::partial_sum(newLocations.begin(), newLocations.end(), newLocations.begin());
+
+            nextBarPos = std::max(nextBarPos, newLocations.back());
+            newLocations.pop_back();
+
+            newPositionsForStaves.push_back(newLocations);
+        }
+
+        prevBarPos = nextBarPos + 1;
+
+        newBarPositions.push_back(std::make_pair(nextBarPos,
+                                                 newPositionsForStaves));
+    }
+
+    std::map<int, int> currentPosIndexForStaves;
+
+    // now, set the new locations for the bars and notes
+    for (size_t i = 0; i < newBarPositions.size(); i++)
+    {
+        barlines[i + 1]->SetPosition(newBarPositions[i].first);
+
+        const std::vector<std::vector<int> >& newPositionsForStaves = newBarPositions[i].second;
+
+        for (size_t j = 0; j < newPositionsForStaves.size(); j++)
+        {
+            const std::vector<int>& newPositions = newPositionsForStaves[j];
+            System::StaffPtr staff = system->GetStaff(j);
+
+            for (size_t k = 0; k < newPositions.size(); k++)
+            {
+                staff->GetPosition(0, currentPosIndexForStaves[j] + k)->SetPosition(newPositions[k]);
+            }
+
+            currentPosIndexForStaves[j] += newPositions.size();
+        }
+    }
+
+    // set the spacing as large as possible
+    const int availableWidth = system->GetRect().GetWidth() -
+                               system->GetCumulativeInternalKeyAndTimeSignatureWidth();
+
+    const int numPositions = system->GetEndBar()->GetPosition() + 2; // add 2 positions for padding
+
+    system->SetPositionSpacing(availableWidth / numPositions);
 }

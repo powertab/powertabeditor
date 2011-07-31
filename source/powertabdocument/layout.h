@@ -17,6 +17,8 @@ void CalculateTabStaffBelowSpacing(std::shared_ptr<const System> system, std::sh
 void CalculateSymbolSpacing(const Score* score, std::shared_ptr<System> system,
                             std::shared_ptr<Staff> staff);
 
+void FormatSystem(std::shared_ptr<System> system);
+
 enum SymbolType
 {
     NoSymbol,

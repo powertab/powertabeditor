@@ -160,6 +160,11 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
                     }
                 }
 
+                if (pos.GetNoteCount() == 0)
+                {
+                    pos.SetRest(true);
+                }
+
                 positions.push_back(pos.CloneObject());
             }
 

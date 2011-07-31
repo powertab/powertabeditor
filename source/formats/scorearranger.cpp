@@ -7,6 +7,7 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/barline.h>
 #include <powertabdocument/alternateending.h>
+#include <powertabdocument/layout.h>
 
 #include <algorithm>
 
@@ -115,5 +116,6 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
         Score::SystemPtr system = score->GetSystem(i);
         system->CalculateBeamingForStaves();
         score->UpdateSystemHeight(system);
+        Layout::FormatSystem(system);
     }
 }
