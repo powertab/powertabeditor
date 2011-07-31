@@ -78,6 +78,8 @@ struct GpxRhythm
 {
     int id;
     int noteValue;
+    bool dotted;
+    bool doubleDotted;
 };
 
 struct GpxNote

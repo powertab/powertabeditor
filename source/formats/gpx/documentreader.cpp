@@ -141,6 +141,11 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 
                 Position pos;
 
+                GpxRhythm rhythm = rhythms.at(beat.rhythmId);
+                pos.SetDurationType(rhythm.noteValue);
+                pos.SetDotted(rhythm.dotted);
+                pos.SetDoubleDotted(rhythm.doubleDotted);
+
                 BOOST_FOREACH(int noteId, beat.noteIds)
                 {
                     Note* note = convertNote(noteId, score->GetGuitar(i)->GetTuning());
@@ -262,6 +267,7 @@ void Gpx::DocumentReader::readRhythms()
         Gpx::GpxRhythm rhythm;
         rhythm.id = currentRhythm.get<int>("<xmlattr>.id");
 
+        // convert duration to PowerTab format
         const std::string noteValueStr = currentRhythm.get<std::string>("NoteValue");
 
         std::map<std::string, int> noteValuesToInt = {
@@ -271,6 +277,12 @@ void Gpx::DocumentReader::readRhythms()
 
         assert(noteValuesToInt.find(noteValueStr) != noteValuesToInt.end());
         rhythm.noteValue = noteValuesToInt.find(noteValueStr)->second;
+
+        // Handle dotted/double dotted notes
+        const int numDots = currentRhythm.get("AugmentationDot.<xmlattr>.count", 0);
+        std::cerr << "Dots: " << numDots << std::endl;
+        rhythm.dotted = numDots == 1;
+        rhythm.doubleDotted = numDots == 2;
 
         rhythms[rhythm.id] = rhythm;
     }
@@ -300,17 +312,13 @@ Note* Gpx::DocumentReader::convertNote(int noteId, const Tuning& tuning) const
         const ptree& property = node.second;
         const std::string propertyName = property.get<std::string>("<xmlattr>.name");
 
-        std::cerr << propertyName << std::endl;
-
         if (propertyName == "String")
         {
             ptbNote.SetString(tuning.GetStringCount() - property.get<int>("String") - 1);
-            std::cerr << "String: " << ptbNote.GetString() << std::endl;
         }
         else if (propertyName == "Fret")
         {
             ptbNote.SetFretNumber(property.get<int>("Fret"));
-            std::cerr << "Fret: " << (int)ptbNote.GetFretNumber() << std::endl;
         }
         else
         {
