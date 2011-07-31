@@ -1,5 +1,9 @@
 include (../../common.pri)
 
+CONFIG += precompile_header
+
+PRECOMPILED_HEADER = actions_pch.h
+
 HEADERS += \
     updatetabnumber.h \
     updatenoteduration.h \
@@ -32,7 +36,8 @@ HEADERS += \
     editkeysignature.h \
     edittimesignature.h \
     adddynamic.h \
-    removedynamic.h
+    removedynamic.h \
+    actions_pch.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -66,6 +71,7 @@ SOURCES += \
     edittimesignature.cpp \
     adddynamic.cpp \
     removedynamic.cpp
+
 
 
 

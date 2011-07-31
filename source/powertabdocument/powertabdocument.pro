@@ -1,6 +1,9 @@
 include (../../common.pri)
 
 QT -= core gui
+CONFIG += precompile_header
+
+PRECOMPILED_HEADER = powertabdocument_pch.h
 
 HEADERS += \
     tuning.h \
@@ -42,7 +45,8 @@ HEADERS += \
     alternateending.h \
     harmonics.h \
     common.h \
-    layout.h
+    layout.h \
+    powertabdocument_pch.h
 
 SOURCES += \
     tuning.cpp \
@@ -81,3 +85,4 @@ SOURCES += \
     alternateending.cpp \
     harmonics.cpp \
     layout.cpp
+

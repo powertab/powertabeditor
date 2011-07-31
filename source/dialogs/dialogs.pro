@@ -1,5 +1,9 @@
 include (../../common.pri)
 
+CONFIG += precompile_header
+
+PRECOMPILED_HEADER = dialogs_pch.h
+
 HEADERS += \
     tuningdialog.h \
     trilldialog.h \
@@ -12,7 +16,8 @@ HEADERS += \
     keysignaturedialog.h \
     timesignaturedialog.h \
     keyboardsettingsdialog.h \
-    dynamicdialog.h
+    dynamicdialog.h \
+    dialogs_pch.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -31,6 +36,7 @@ SOURCES += \
 FORMS += \
     keyboardsettingsdialog.ui \
     dynamicdialog.ui
+
 
 
 

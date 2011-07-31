@@ -1,6 +1,8 @@
 #include "guitarproimporter.h"
 
 #include <fstream>
+#include <iostream>
+#include <cmath>
 #include <boost/foreach.hpp>
 
 #include <formats/guitar_pro/inputstream.h>

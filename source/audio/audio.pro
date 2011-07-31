@@ -4,6 +4,9 @@ include (../../common.pri)
 # it conflicts with a system library on Ubuntu
 TARGET = pteaudio
 
+CONFIG += precompile_header
+PRECOMPILED_HEADER = audio_pch.h
+
 # uncomment to enable logging for midi events
 #DEFINES += LOG_MIDI_EVENTS
 
@@ -19,7 +22,8 @@ HEADERS += \
     metronomeevent.h \
     letringevent.h \
     directionsymbol.h \
-    bendevent.h
+    bendevent.h \
+    audio_pch.h
 
 SOURCES += \
     vibratoevent.cpp \
@@ -34,3 +38,4 @@ SOURCES += \
     letringevent.cpp \
     directionsymbol.cpp \
     bendevent.cpp
+

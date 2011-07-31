@@ -9,7 +9,7 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#include <math.h>           // Needed for pow()
+#include <cmath>           // Needed for pow()
 #include <sstream>
 
 #include "timesignature.h"
