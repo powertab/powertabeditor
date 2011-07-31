@@ -95,8 +95,8 @@ void Gpx::DocumentReader::readTracks(Score *score)
             std::vector<int> tuningNotes;
             convertStringToList(tuningString, tuningNotes);
 
-            guitar->GetTuning().SetTuningNotes(std::vector<uint8_t>(tuningNotes.begin(),
-                                                                    tuningNotes.end()));
+            guitar->GetTuning().SetTuningNotes(std::vector<uint8_t>(tuningNotes.rbegin(),
+                                                                    tuningNotes.rend()));
 
             // Read capo
             guitar->SetCapo(properties->get("Property.Fret", 0));
@@ -304,7 +304,7 @@ Note* Gpx::DocumentReader::convertNote(int noteId, const Tuning& tuning) const
 
         if (propertyName == "String")
         {
-            ptbNote.SetString(tuning.GetStringCount() - property.get<int>("String"));
+            ptbNote.SetString(tuning.GetStringCount() - property.get<int>("String") - 1);
             std::cerr << "String: " << ptbNote.GetString() << std::endl;
         }
         else if (propertyName == "Fret")
