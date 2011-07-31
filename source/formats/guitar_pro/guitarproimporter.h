@@ -2,6 +2,7 @@
 #define GUITARPROIMPORTER_H
 
 #include <formats/fileformat.h>
+#include <formats/scorearranger.h>
 #include <vector>
 #include <map>
 
@@ -30,9 +31,6 @@ public:
     std::shared_ptr<PowerTabDocument> load(const std::string &fileName);
 
 private:
-    typedef std::map<uint32_t, std::shared_ptr<AlternateEnding> > AlternateEndingsMap;
-    typedef std::vector<std::shared_ptr<Barline> > BarlineList;
-
     void findFileVersion(Gp::InputStream& stream);
     void readHeader(Gp::InputStream& stream, PowerTabFileHeader& ptbHeader);
 
@@ -41,7 +39,7 @@ private:
     void readColor(Gp::InputStream& stream);
 
     void readBarlines(Gp::InputStream& stream, uint32_t numMeasures,
-                      BarlineList& barlines, AlternateEndingsMap& altEndings);
+                      std::vector<BarData>& bars);
 
     void readTracks(Gp::InputStream& stream, Score* score, uint32_t numTracks,
                     const std::vector<Gp::Channel>& channels);
@@ -50,8 +48,8 @@ private:
 
     Tuning readTuning(Gp::InputStream &stream);
 
-    void readSystems(Gp::InputStream& stream, Score* score, const BarlineList& barlines,
-                     const AlternateEndingsMap& altEndings);
+    void readSystems(Gp::InputStream& stream, Score* score, std::vector<BarData> bars);
+
     Position* readBeat(Gp::InputStream& stream);
 
     uint8_t readDuration(Gp::InputStream& stream);
@@ -79,8 +77,6 @@ private:
 
     /// Supported version strings for Guitar Pro files (maps version strings to version number)
     static const std::map<std::string, Gp::Version> versionStrings;
-
-    static const uint8_t DEFAULT_POSITION_SPACING; ///< Default position spacing to use for imported Guitar Pro files
 };
 
 #endif // GUITARPROIMPORTER_H

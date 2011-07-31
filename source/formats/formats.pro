@@ -11,7 +11,8 @@ HEADERS += \
     gpx/filesystem.h \
     gpx/bitstream.h \
     gpx/gpximporter.h \
-    gpx/documentreader.h
+    gpx/documentreader.h \
+    scorearranger.h
 
 SOURCES += \
     fileformat.cpp \
@@ -23,4 +24,7 @@ SOURCES += \
     gpx/filesystem.cpp \
     gpx/bitstream.cpp \
     gpx/gpximporter.cpp \
-    gpx/documentreader.cpp
+    gpx/documentreader.cpp \
+    scorearranger.cpp
+
+

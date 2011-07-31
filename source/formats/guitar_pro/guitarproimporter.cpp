@@ -1,26 +1,21 @@
 #include "guitarproimporter.h"
 
-#include "gp_channel.h"
-
 #include <fstream>
-#include <cmath>
-#include <iostream>
+#include <boost/foreach.hpp>
 
 #include <formats/guitar_pro/inputstream.h>
+#include <formats/guitar_pro/gp_channel.h>
 
 #include <powertabdocument/powertabdocument.h>
-#include <powertabdocument/powertabfileheader.h>
 #include <powertabdocument/barline.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/guitar.h>
+#include <powertabdocument/alternateending.h>
 #include <powertabdocument/score.h>
-#include <powertabdocument/tuning.h>
+#include <powertabdocument/guitar.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/note.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/tempomarker.h>
 #include <powertabdocument/chorddiagram.h>
-#include <powertabdocument/alternateending.h>
+#include <powertabdocument/tempomarker.h>
+#include <powertabdocument/system.h>
 
 const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
     {"FICHIER GUITAR PRO v3.00", Gp::Version3},
@@ -28,9 +23,6 @@ const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
     {"FICHIER GUITAR PRO v4.06", Gp::Version4},
     {"FICHIER GUITAR PRO L4.06", Gp::Version4}
 };
-
-// Use a slightly smaller position spacing than the default in order to reduce the number of systems needed
-const uint8_t GuitarProImporter::DEFAULT_POSITION_SPACING = 15;
 
 GuitarProImporter::GuitarProImporter() :
     FileFormatImporter(FileFormat("Guitar Pro 3, 4", "*.gp3 *.gp4"))
@@ -63,13 +55,12 @@ std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fil
     const uint32_t numMeasures = stream.read<uint32_t>();
     const uint32_t numTracks = stream.read<uint32_t>();
 
-    BarlineList barlines;
-    AlternateEndingsMap altEndings;
-    readBarlines(stream, numMeasures, barlines, altEndings);
+    std::vector<BarData> bars;
+    readBarlines(stream, numMeasures, bars);
 
     readTracks(stream, score, numTracks, channels);
 
-    readSystems(stream, score, barlines, altEndings);
+    readSystems(stream, score, bars);
     fixRepeatEnds(score);
 
     return ptbDoc;
@@ -172,23 +163,24 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
 
 /// Reads all of the measures in the score, and any alternate endings that occur
 void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasures,
-                                     BarlineList& barlines, AlternateEndingsMap& altEndings)
+                                     std::vector<BarData>& bars)
 {
     char nextRehearsalSignletter = 'A';
 
     for (uint32_t measure = 0; measure < numMeasures; measure++)
     {
+        BarData bar;
         auto barline = std::make_shared<Barline>();
 
         // clone time signature, key signature from previous barline if possible
         if (measure != 0)
         {
-            auto prevBarline = barlines.back();
+            const BarData& prevBar = bars.back();
 
-            barline->SetTimeSignature(prevBarline->GetTimeSignature());
+            barline->SetTimeSignature(prevBar.barline->GetTimeSignature());
             barline->GetTimeSignature().SetShown(false);
 
-            barline->SetKeySignature(prevBarline->GetKeySignature());
+            barline->SetKeySignature(prevBar.barline->GetKeySignature());
             barline->GetKeySignature().SetShown(false);
         }
 
@@ -223,9 +215,7 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
             auto altEnding = std::make_shared<AlternateEnding>();
             altEnding->SetNumber(stream.read<uint8_t>());
 
-            // associate the alternate ending with the barline index - we will insert the Alternate Ending
-            // into the score later, once we know its exact location (i.e. after layout is figured out)
-            altEndings[measure] = altEnding;
+            bar.altEnding = altEnding;
         }
 
         if (flags.test(Gp::Marker)) // import rehearsal sign
@@ -267,7 +257,8 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
             barline->SetType(Barline::doubleBar);
         }
 
-        barlines.push_back(barline);
+        bar.barline = barline;
+        bars.push_back(bar);
     }
 }
 
@@ -370,26 +361,11 @@ Tuning GuitarProImporter::readTuning(Gp::InputStream& stream)
 }
 
 void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
-                                    const BarlineList& barlines, const AlternateEndingsMap& altEndings)
+                                    std::vector<BarData> bars)
 {
-    std::vector<uint8_t> staffSizes;
-    for (uint32_t guitar = 0; guitar < score->GetGuitarCount(); guitar++)
-    {
-        staffSizes.push_back(score->GetGuitar(guitar)->GetStringCount());
-    }
-
-    Score::SystemPtr currentSystem = std::make_shared<System>();
-    currentSystem->Init(staffSizes);
-    currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
-    score->InsertSystem(currentSystem, 0);
-
-    auto currentBarline = barlines.begin();
-    uint32_t lastBarlinePos = 0;
-
-    for (uint32_t measure = 0; measure < barlines.size(); measure++)
+    BOOST_FOREACH(BarData& bar, bars)
     {
         std::vector<std::vector<Position*> > positionLists(score->GetGuitarCount());
-        size_t largestMeasure = 0;
 
         for (uint32_t track = 0; track < score->GetGuitarCount(); track++)
         {
@@ -401,88 +377,12 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
             {
                 positionList.push_back(readBeat(stream));
             }
-
-            largestMeasure = std::max(largestMeasure, positionList.size());
         }
 
-        // check if we need to jump to a new system (measure is too large)
-        if (!currentSystem->IsValidPosition(lastBarlinePos + largestMeasure + 1))
-        {
-            currentSystem = std::make_shared<System>();
-            currentSystem->Init(staffSizes);
-            currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
-
-            // adjust height to be below the previous system
-            const Rect prevRect = score->GetSystem(score->GetSystemCount() - 1)->GetRect();
-            Rect currentRect = currentSystem->GetRect();
-            currentRect.SetTop(prevRect.GetBottom() + Score::SYSTEM_SPACING);
-            currentSystem->SetRect(currentRect);
-
-            score->InsertSystem(currentSystem, score->GetSystemCount());
-            lastBarlinePos = 0;
-
-            // ensure that there is enough space in the staff for all notes of the measure
-            if (!currentSystem->IsValidPosition(largestMeasure))
-            {
-                currentSystem->SetPositionSpacing(System::MIN_POSITION_SPACING);
-            }
-        }
-
-        // insert positions
-        for (uint32_t track = 0; track < score->GetGuitarCount(); track++)
-        {
-            const std::vector<Position*>& positionList = positionLists.at(track);
-            System::StaffPtr currentStaff = currentSystem->GetStaff(track);
-
-            for (uint32_t posIndex = 0; posIndex < positionList.size(); posIndex++)
-            {
-                Position* currentPos = positionList.at(posIndex);
-                currentPos->SetPosition(lastBarlinePos + posIndex);
-                currentStaff->InsertPosition(0, currentPos);
-            }
-
-            currentStaff->CalculateClef(score->GetGuitar(track)->GetTuning());
-        }
-
-        // insert barline
-        if (currentBarline != barlines.end())
-        {
-            if (lastBarlinePos == 0)
-            {
-                currentSystem->SetStartBar(*currentBarline);
-                (*currentBarline)->SetPosition(0);
-            }
-            else
-            {
-                (*currentBarline)->SetPosition(lastBarlinePos - 1);
-                currentSystem->InsertBarline(*currentBarline);
-            }
-
-            {
-                // insert alternate ending (associated with the bar) if neccessary
-                const uint32_t position = (*currentBarline)->GetPosition();
-                auto altEndingIt = altEndings.find(position);
-                if (altEndingIt != altEndings.end())
-                {
-                    Score::AlternateEndingPtr altEnding = altEndingIt->second;
-                    altEnding->SetSystem(score->GetSystemCount() - 1);
-                    altEnding->SetPosition(position);
-                    score->InsertAlternateEnding(altEnding);
-                }
-            }
-
-            lastBarlinePos += largestMeasure + 1;
-            ++currentBarline;
-        }
+        bar.positionLists = positionLists;
     }
 
-    // calculate the beaming for all notes, and calculate the layout of the systems
-    for (size_t i = 0; i < score->GetSystemCount(); i++)
-    {
-        Score::SystemPtr system = score->GetSystem(i);
-        system->CalculateBeamingForStaves();
-        score->UpdateSystemHeight(system);
-    }
+    arrangeScore(score, bars);
 }
 
 /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab)
