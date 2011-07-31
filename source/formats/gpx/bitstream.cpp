@@ -28,6 +28,9 @@ uint32_t Gpx::BitStream::readInt()
 /// Reads a single bit
 uint8_t Gpx::BitStream::readBit()
 {
+    if (position / BYTE_LENGTH >= bytes.size())
+        return 0;
+
     char byte = bytes.at(position / BYTE_LENGTH);
     byte >>= ((BYTE_LENGTH - 1) - (position % BYTE_LENGTH));
     byte &= 0x01;
