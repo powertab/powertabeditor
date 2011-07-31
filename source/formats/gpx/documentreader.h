@@ -11,15 +11,17 @@ class PowerTabFileHeader;
 class Score;
 class KeySignature;
 class TimeSignature;
+class Note;
+class Tuning;
 
 namespace Gpx
 {
 
-struct Voice;
-struct Bar;
-struct Beat;
-struct Rhythm;
-struct Note;
+struct GpxVoice;
+struct GpxBar;
+struct GpxBeat;
+struct GpxRhythm;
+struct GpxNote;
 
 class DocumentReader
 {
@@ -33,11 +35,11 @@ private:
 
     ptree gpFile;
 
-    std::map<int, Bar> bars;
-    std::map<int, Voice> voices;
-    std::map<int, Beat> beats;
-    std::map<int, Rhythm> rhythms;
-    std::map<int, Note> notes;
+    std::map<int, GpxBar> bars;
+    std::map<int, GpxVoice> voices;
+    std::map<int, GpxBeat> beats;
+    std::map<int, GpxRhythm> rhythms;
+    std::map<int, GpxNote> notes;
 
     void readHeader(PowerTabFileHeader& header);
     void readTracks(Score* score);
@@ -47,37 +49,38 @@ private:
     void readRhythms();
     void readNotes();
 
-    void readMasterBars();
+    void readMasterBars(Score* score);
     void readKeySignature(const ptree& masterBar, KeySignature& key);
     void readTimeSignature(const ptree& masterBar, TimeSignature& timeSignature);
+    Note* convertNote(int noteId, const Tuning& tuning) const;
 };
 
-struct Bar
+struct GpxBar
 {
     int id;
     std::vector<int> voiceIds;
 };
 
-struct Voice
+struct GpxVoice
 {
     int id;
     std::vector<int> beatIds;
 };
 
-struct Beat
+struct GpxBeat
 {
     int id;
     int rhythmId;
     std::vector<int> noteIds;
 };
 
-struct Rhythm
+struct GpxRhythm
 {
     int id;
     int noteValue;
 };
 
-struct Note
+struct GpxNote
 {
     int id;
     boost::property_tree::ptree properties;

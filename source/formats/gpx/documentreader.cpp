@@ -4,11 +4,15 @@
 #include <boost/foreach.hpp>
 #include <boost/spirit/include/qi.hpp>
 
+#include <formats/scorearranger.h>
+
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/barline.h>
 #include <powertabdocument/system.h>
+#include <powertabdocument/position.h>
+#include <powertabdocument/note.h>
 
 Gpx::DocumentReader::DocumentReader(const std::string& xml)
 {
@@ -21,12 +25,14 @@ void Gpx::DocumentReader::readDocument(std::shared_ptr<PowerTabDocument> doc)
 {
     readHeader(doc->GetHeader());
     readTracks(doc->GetGuitarScore());
-    //readMasterBars();
+
     readBars();
     readVoices();
     readBeats();
     readRhythms();
     readNotes();
+
+    readMasterBars(doc->GetGuitarScore());
 }
 
 /// Loads the header information (song title, artist, etc)
@@ -71,6 +77,7 @@ void Gpx::DocumentReader::readTracks(Score *score)
         const ptree& track = node.second;
 
         Score::GuitarPtr guitar = std::make_shared<Guitar>();
+        guitar->GetTuning().SetToStandard();
 
         guitar->SetDescription(track.get<std::string>("Name"));
         guitar->SetPreset(track.get<int>("GeneralMidi.Program"));
@@ -84,10 +91,12 @@ void Gpx::DocumentReader::readTracks(Score *score)
             // Read the tuning - need to convert from a string of numbers separated by spaces to
             // a vector of integers
             const std::string tuningString = properties->get<std::string>("Property.Pitches");
-            std::vector<uint8_t> tuningNotes;
+
+            std::vector<int> tuningNotes;
             convertStringToList(tuningString, tuningNotes);
 
-            guitar->GetTuning().SetTuningNotes(tuningNotes);
+            guitar->GetTuning().SetTuningNotes(std::vector<uint8_t>(tuningNotes.begin(),
+                                                                    tuningNotes.end()));
 
             // Read capo
             guitar->SetCapo(properties->get("Property.Fret", 0));
@@ -97,14 +106,19 @@ void Gpx::DocumentReader::readTracks(Score *score)
     }
 }
 
-void Gpx::DocumentReader::readMasterBars()
+/// Assemble the bars from the previously-read data
+void Gpx::DocumentReader::readMasterBars(Score* score)
 {
+    std::vector<BarData> ptbBars;
+
     BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.MasterBars"))
     {
         if (node.first != "MasterBar")
         {
             continue;
         }
+
+        BarData barData;
 
         const ptree& masterBar = node.second;
 
@@ -115,7 +129,43 @@ void Gpx::DocumentReader::readMasterBars()
 
         std::vector<int> barIds;
         convertStringToList(masterBar.get<std::string>("Bars"), barIds);
+
+        for (size_t i = 0; i < barIds.size(); i++)
+        {
+            std::vector<Position*> positions;
+
+            // only import a single voice
+            BOOST_FOREACH(int beatId, voices[bars[barIds[i]].voiceIds.at(0)].beatIds)
+            {
+                GpxBeat beat = beats[beatId];
+
+                Position pos;
+
+                BOOST_FOREACH(int noteId, beat.noteIds)
+                {
+                    Note* note = convertNote(noteId, score->GetGuitar(i)->GetTuning());
+                    if (pos.GetNoteByString(note->GetString()))
+                    {
+                        std::cerr << "Colliding notes at string " << note->GetString() << std::endl;
+                        delete note;
+                    }
+                    else
+                    {
+                        pos.InsertNote(note);
+                    }
+                }
+
+                positions.push_back(pos.CloneObject());
+            }
+
+            barData.positionLists.push_back(positions);
+        }
+
+        barData.barline = barline;
+        ptbBars.push_back(barData);
     }
+
+    arrangeScore(score, ptbBars);
 }
 
 void Gpx::DocumentReader::readBars()
@@ -124,7 +174,7 @@ void Gpx::DocumentReader::readBars()
     {
         const ptree& currentBar = node.second;
 
-        Gpx::Bar bar;
+        Gpx::GpxBar bar;
         bar.id = currentBar.get<int>("<xmlattr>.id");
         convertStringToList(currentBar.get<std::string>("Voices"), bar.voiceIds);
 
@@ -180,7 +230,7 @@ void Gpx::DocumentReader::readVoices()
     {
         const ptree& currentVoice = node.second;
 
-        Gpx::Voice voice;
+        Gpx::GpxVoice voice;
         voice.id = currentVoice.get<int>("<xmlattr>.id");
         convertStringToList(currentVoice.get<std::string>("Beats"), voice.beatIds);
 
@@ -194,7 +244,7 @@ void Gpx::DocumentReader::readBeats()
     {
         const ptree& currentBeat = node.second;
 
-        Gpx::Beat beat;
+        Gpx::GpxBeat beat;
         beat.id = currentBeat.get<int>("<xmlattr>.id");
         beat.rhythmId = currentBeat.get<int>("Rhythm.<xmlattr>.ref");
         convertStringToList(currentBeat.get("Notes", ""), beat.noteIds);
@@ -209,7 +259,7 @@ void Gpx::DocumentReader::readRhythms()
     {
         const ptree& currentRhythm = node.second;
 
-        Gpx::Rhythm rhythm;
+        Gpx::GpxRhythm rhythm;
         rhythm.id = currentRhythm.get<int>("<xmlattr>.id");
 
         const std::string noteValueStr = currentRhythm.get<std::string>("NoteValue");
@@ -232,10 +282,41 @@ void Gpx::DocumentReader::readNotes()
     {
         const ptree& currentNote = node.second;
 
-        Gpx::Note note;
+        Gpx::GpxNote note;
         note.id = currentNote.get<int>("<xmlattr>.id");
         note.properties = currentNote.get_child("Properties");
 
         notes[note.id] = note;
     }
+}
+
+Note* Gpx::DocumentReader::convertNote(int noteId, const Tuning& tuning) const
+{
+    Gpx::GpxNote gpxNote = notes.at(noteId);
+    Note ptbNote;
+
+    BOOST_FOREACH(const ptree::value_type& node, gpxNote.properties)
+    {
+        const ptree& property = node.second;
+        const std::string propertyName = property.get<std::string>("<xmlattr>.name");
+
+        std::cerr << propertyName << std::endl;
+
+        if (propertyName == "String")
+        {
+            ptbNote.SetString(tuning.GetStringCount() - property.get<int>("String"));
+            std::cerr << "String: " << ptbNote.GetString() << std::endl;
+        }
+        else if (propertyName == "Fret")
+        {
+            ptbNote.SetFretNumber(property.get<int>("Fret"));
+            std::cerr << "Fret: " << (int)ptbNote.GetFretNumber() << std::endl;
+        }
+        else
+        {
+            std::cerr << "Unhandled property: " << propertyName << std::endl;
+        }
+    }
+
+    return ptbNote.CloneObject();
 }
