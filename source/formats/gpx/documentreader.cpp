@@ -21,7 +21,12 @@ void Gpx::DocumentReader::readDocument(std::shared_ptr<PowerTabDocument> doc)
 {
     readHeader(doc->GetHeader());
     readTracks(doc->GetGuitarScore());
+    //readMasterBars();
     readBars();
+    readVoices();
+    readBeats();
+    readRhythms();
+    readNotes();
 }
 
 /// Loads the header information (song title, artist, etc)
@@ -92,7 +97,7 @@ void Gpx::DocumentReader::readTracks(Score *score)
     }
 }
 
-void Gpx::DocumentReader::readBars()
+void Gpx::DocumentReader::readMasterBars()
 {
     BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.MasterBars"))
     {
@@ -110,6 +115,20 @@ void Gpx::DocumentReader::readBars()
 
         std::vector<int> barIds;
         convertStringToList(masterBar.get<std::string>("Bars"), barIds);
+    }
+}
+
+void Gpx::DocumentReader::readBars()
+{
+    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Bars"))
+    {
+        const ptree& currentBar = node.second;
+
+        Gpx::Bar bar;
+        bar.id = currentBar.get<int>("<xmlattr>.id");
+        convertStringToList(currentBar.get<std::string>("Voices"), bar.voiceIds);
+
+        bars[bar.id] = bar;
     }
 }
 
@@ -152,5 +171,71 @@ void Gpx::DocumentReader::readTimeSignature(const Gpx::DocumentReader::ptree& ma
     else
     {
         timeSignature.SetMeter(timeSigValues[0], timeSigValues[1]);
+    }
+}
+
+void Gpx::DocumentReader::readVoices()
+{
+    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Voices"))
+    {
+        const ptree& currentVoice = node.second;
+
+        Gpx::Voice voice;
+        voice.id = currentVoice.get<int>("<xmlattr>.id");
+        convertStringToList(currentVoice.get<std::string>("Beats"), voice.beatIds);
+
+        voices[voice.id] = voice;
+    }
+}
+
+void Gpx::DocumentReader::readBeats()
+{
+    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Beats"))
+    {
+        const ptree& currentBeat = node.second;
+
+        Gpx::Beat beat;
+        beat.id = currentBeat.get<int>("<xmlattr>.id");
+        beat.rhythmId = currentBeat.get<int>("Rhythm.<xmlattr>.ref");
+        convertStringToList(currentBeat.get("Notes", ""), beat.noteIds);
+
+        beats[beat.id] = beat;
+    }
+}
+
+void Gpx::DocumentReader::readRhythms()
+{
+    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Rhythms"))
+    {
+        const ptree& currentRhythm = node.second;
+
+        Gpx::Rhythm rhythm;
+        rhythm.id = currentRhythm.get<int>("<xmlattr>.id");
+
+        const std::string noteValueStr = currentRhythm.get<std::string>("NoteValue");
+
+        std::map<std::string, int> noteValuesToInt = {
+            {"Whole", 1}, {"Half", 2}, {"Quarter", 4}, {"Eighth", 8},
+            {"16th", 16}, {"32nd", 32}, {"64th", 64}
+        };
+
+        assert(noteValuesToInt.find(noteValueStr) != noteValuesToInt.end());
+        rhythm.noteValue = noteValuesToInt.find(noteValueStr)->second;
+
+        rhythms[rhythm.id] = rhythm;
+    }
+}
+
+void Gpx::DocumentReader::readNotes()
+{
+    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Notes"))
+    {
+        const ptree& currentNote = node.second;
+
+        Gpx::Note note;
+        note.id = currentNote.get<int>("<xmlattr>.id");
+        note.properties = currentNote.get_child("Properties");
+
+        notes[note.id] = note;
     }
 }
