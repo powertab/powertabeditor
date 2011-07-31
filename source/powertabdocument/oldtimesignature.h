@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __OLDTIMESIGNATURE_H__
-#define __OLDTIMESIGNATURE_H__
+#ifndef OLDTIMESIGNATURE_H
+#define OLDTIMESIGNATURE_H
 
 #include "powertabobject.h"
 #include <sstream>
@@ -68,4 +68,4 @@ protected:
 	bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 };
 
-#endif
+#endif // OLDTIMESIGNATURE_H

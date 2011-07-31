@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __KEYSIGNATURE_H__
-#define __KEYSIGNATURE_H__
+#ifndef KEYSIGNATURE_H
+#define KEYSIGNATURE_H
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -285,4 +285,4 @@ protected:
         {CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
 };
 
-#endif
+#endif // KEYSIGNATURE_H

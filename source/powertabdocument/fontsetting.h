@@ -10,8 +10,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __FONTSETTING_H__
-#define __FONTSETTING_H__
+#ifndef FONTSETTING_H
+#define FONTSETTING_H
 
 #include "colour.h"
 #include "powertabobject.h"
@@ -195,4 +195,4 @@ public:
 
 };
 
-#endif
+#endif // FONTSETTING_H

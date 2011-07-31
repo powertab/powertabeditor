@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __POSITION_H__
-#define __POSITION_H__
+#ifndef POSITION_H
+#define POSITION_H
 
 class Note;
 class Tuning;
@@ -852,4 +852,4 @@ protected:
     bool HasNoteWithProperty(bool (Note::*notePropertyPredicate)() const) const;
 };
 
-#endif
+#endif // POSITION_H

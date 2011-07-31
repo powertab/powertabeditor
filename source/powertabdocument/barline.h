@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __BARLINE_H__
-#define __BARLINE_H__
+#ifndef BARLINE_H
+#define BARLINE_H
 
 #include "rehearsalsign.h"
 #include "timesignature.h"
@@ -181,4 +181,4 @@ public:
     int GetKeyAndTimeSignatureWidth() const;
 };
 
-#endif
+#endif // BARLINE_H

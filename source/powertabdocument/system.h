@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __SYSTEM_H__
-#define __SYSTEM_H__
+#ifndef SYSTEM_H
+#define SYSTEM_H
 
 #include "rect.h"
 #include "powertabobject.h"
@@ -219,4 +219,4 @@ private:
     void PerformPositionShift(uint32_t positionIndex, int offset);
 };
 
-#endif
+#endif // SYSTEM_H

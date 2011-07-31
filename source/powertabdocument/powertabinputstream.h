@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __POWERTABINPUTSTREAM_H__
-#define __POWERTABINPUTSTREAM_H__
+#ifndef POWERTABINPUTSTREAM_H
+#define POWERTABINPUTSTREAM_H
 
 #include <cstdint>
 #include <istream>
@@ -98,4 +98,4 @@ public:
     }
 };
 
-#endif
+#endif // POWERTABINPUTSTREAM_H

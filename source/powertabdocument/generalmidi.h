@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __GENERALMIDI_H__
-#define __GENERALMIDI_H__
+#ifndef GENERALMIDI_H
+#define GENERALMIDI_H
 
 #include <cstdint>
 #include <string>
@@ -462,4 +462,4 @@ namespace midi
     bool IsValidMidiPercussionPreset(uint8_t preset);
 }
 
-#endif
+#endif // GENERALMIDI_H

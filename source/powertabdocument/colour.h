@@ -1,5 +1,5 @@
-#ifndef __COLOUR_H__
-#define __COLOUR_H__
+#ifndef COLOUR_H
+#define COLOUR_H
 
 #include <cstdint>
 
@@ -21,4 +21,4 @@ private:
     uint8_t red_, green_, blue_, alpha_;
 };
 
-#endif
+#endif // COLOUR_H

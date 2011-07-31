@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __FLOATINGTEXT_H__
-#define __FLOATINGTEXT_H__
+#ifndef FLOATINGTEXT_H
+#define FLOATINGTEXT_H
 
 #include "fontsetting.h"
 #include "powertabobject.h"
@@ -194,4 +194,4 @@ public:
         {return (m_fontSetting);}
 };
 
-#endif
+#endif // FLOATINGTEXT_H

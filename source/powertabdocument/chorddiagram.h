@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __CHORDDIAGRAM_H__
-#define __CHORDDIAGRAM_H__
+#ifndef CHORDDIAGRAM_H
+#define CHORDDIAGRAM_H
 
 #include "chordname.h"
 
@@ -172,4 +172,4 @@ public:
     std::string GetSpelling() const;
 };
 
-#endif
+#endif // CHORDDIAGRAM_H

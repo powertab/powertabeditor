@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __NOTE_H__
-#define __NOTE_H__
+#ifndef NOTE_H
+#define NOTE_H
 
 #include <array>
 #include "powertabobject.h"
@@ -503,4 +503,4 @@ private:
     static bool IsValidComplexSymbolType(uint8_t type);
 };
 
-#endif
+#endif // NOTE_H

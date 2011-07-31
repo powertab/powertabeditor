@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __SYSTEMSYMBOL_H__
-#define __SYSTEMSYMBOL_H__
+#ifndef SYSTEMSYMBOL_H
+#define SYSTEMSYMBOL_H
 
 #include <stdint.h>
 
@@ -124,4 +124,4 @@ public:
         {return (m_data);}
 };
 
-#endif
+#endif // SYSTEMSYMBOL_H

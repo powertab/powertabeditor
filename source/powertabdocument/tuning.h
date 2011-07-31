@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __TUNING_H__
-#define __TUNING_H__
+#ifndef TUNING_H
+#define TUNING_H
 
 #include <vector>
 #include <string>
@@ -162,4 +162,4 @@ public:
     void SetToStandard();
 };
 
-#endif
+#endif // TUNING_H

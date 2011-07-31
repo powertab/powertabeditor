@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __DYNAMIC_H__
-#define __DYNAMIC_H__
+#ifndef DYNAMIC_H
+#define DYNAMIC_H
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -199,4 +199,4 @@ public:
     std::string GetText(bool rhythmSlashes) const;
 };
 
-#endif
+#endif // DYNAMIC_H

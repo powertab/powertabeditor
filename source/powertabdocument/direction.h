@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __DIRECTION_H__
-#define __DIRECTION_H__
+#ifndef DIRECTION_H
+#define DIRECTION_H
 
 #include "powertabobject.h"
 
@@ -141,4 +141,4 @@ public:
     std::string GetText(uint32_t index) const;
 };
 
-#endif
+#endif // DIRECTION_H

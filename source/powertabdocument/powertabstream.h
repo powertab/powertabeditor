@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __POWERTABSTREAM_H__
-#define __POWERTABSTREAM_H__
+#ifndef POWERTABSTREAM_H
+#define POWERTABSTREAM_H
 
 // Note: Starting with MFC 4.0, the file format written/read has been
 //  extended to eliminate the previous 32k limit.  Files previously written
@@ -190,4 +190,4 @@ public:                                                               \
     typedef T _wxArray##name;                                     \
     _WX_DEFINE_POWERTABARRAY(_wxArray##name, name, base, class expmode)
         
-#endif
+#endif // POWERTABSTREAM_H

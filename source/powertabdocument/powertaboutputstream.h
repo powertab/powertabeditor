@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __POWERTABOUTPUTSTREAM_H__
-#define __POWERTABOUTPUTSTREAM_H__
+#ifndef POWERTABOUTPUTSTREAM_H
+#define POWERTABOUTPUTSTREAM_H
 
 #include <cstdint>
 #include <ostream>
@@ -122,4 +122,4 @@ public:
 
 };
 
-#endif
+#endif // POWERTABOUTPUTSTREAM_H

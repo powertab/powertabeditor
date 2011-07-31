@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __CHORDTEXT_H__
-#define __CHORDTEXT_H__
+#ifndef CHORDTEXT_H
+#define CHORDTEXT_H
 
 #include "chordname.h"
 #include "powertabobject.h"
@@ -101,4 +101,4 @@ public:
     inline std::string GetText() const { return m_chordName.GetText(); }
 };
 
-#endif
+#endif // CHORDTEXT_H

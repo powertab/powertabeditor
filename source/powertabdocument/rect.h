@@ -1,5 +1,5 @@
-#ifndef __RECT_H__
-#define __RECT_H__
+#ifndef RECT_H
+#define RECT_H
 
 #include <cstdint>
 
@@ -39,4 +39,4 @@ private:
     int32_t x_, y_, width_, height_;
 };
 
-#endif
+#endif // RECT_H

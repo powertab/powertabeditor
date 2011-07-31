@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __POWERTABFILEHEADER_H__
-#define __POWERTABFILEHEADER_H__
+#ifndef POWERTABFILEHEADER_H
+#define POWERTABFILEHEADER_H
 
 #include <cstdint>
 #include <string>
@@ -745,4 +745,4 @@ public:
     void LoadDefaults();
 };
 
-#endif
+#endif // POWERTABFILEHEADER_H

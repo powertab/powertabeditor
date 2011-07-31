@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __OLDREHEARSALSIGN_H__
-#define __OLDREHEARSALSIGN_H__
+#ifndef OLDREHEARSALSIGN_H
+#define OLDREHEARSALSIGN_H
 
 class RehearsalSign;
 #include "powertabobject.h"
@@ -71,4 +71,4 @@ protected:
 	bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 };
 
-#endif
+#endif // OLDREHEARSALSIGN_H

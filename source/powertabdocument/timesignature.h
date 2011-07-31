@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __TIMESIGNATURE_H__
-#define __TIMESIGNATURE_H__
+#ifndef TIMESIGNATURE_H
+#define TIMESIGNATURE_H
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -212,4 +212,4 @@ public:
     int GetWidth() const;
 };
 
-#endif
+#endif // TIMESIGNATURE_H

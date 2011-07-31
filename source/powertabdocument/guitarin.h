@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __GUITARIN_H__
-#define __GUITARIN_H__
+#ifndef GUITARIN_H
+#define GUITARIN_H
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -177,4 +177,4 @@ public:
 
 };
 
-#endif
+#endif // GUITARIN_H

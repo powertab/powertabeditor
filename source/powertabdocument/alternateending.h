@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __ALTERNATEENDING_H__
-#define __ALTERNATEENDING_H__
+#ifndef ALTERNATEENDING_H
+#define ALTERNATEENDING_H
 
 #include <vector>
 #include "systemsymbol.h"
@@ -96,4 +96,4 @@ public:
     static std::string GetNumberText(uint32_t number);
 };
 
-#endif
+#endif // ALTERNATEENDING_H

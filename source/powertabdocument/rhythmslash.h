@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __RHYTHMSLASH_H__
-#define __RHYTHMSLASH_H__
+#ifndef RHYTHMSLASH_H
+#define RHYTHMSLASH_H
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -657,4 +657,4 @@ public:
     bool ClearSingleNoteData();
 };
 
-#endif
+#endif // RHYTHMSLASH_H

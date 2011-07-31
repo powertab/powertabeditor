@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __CHORDNAME_H__
-#define __CHORDNAME_H__
+#ifndef CHORDNAME_H
+#define CHORDNAME_H
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -331,4 +331,4 @@ public:
     std::string GetText() const;
 };
 
-#endif
+#endif // CHORDNAME_H

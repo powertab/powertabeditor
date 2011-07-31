@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __STAFF_H__
-#define __STAFF_H__
+#ifndef STAFF_H
+#define STAFF_H
 
 #include <array>
 #include <memory>
@@ -190,4 +190,4 @@ protected:
     }
 };
 
-#endif
+#endif // STAFF_H

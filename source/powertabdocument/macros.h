@@ -1,5 +1,5 @@
-#ifndef __MACROS_H__
-#define __MACROS_H__
+#ifndef MACROS_H
+#define MACROS_H
 
 #include <cassert>
 #include <cstdint>
@@ -45,4 +45,4 @@ void logToDebug(const std::string& msg, const std::string& file, int line);
 
 std::string ArabicToRoman(uint32_t number, bool upperCase);
 
-#endif
+#endif // MACROS_H

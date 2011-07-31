@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __SCORE_H__
-#define __SCORE_H__
+#ifndef SCORE_H
+#define SCORE_H
 
 #include "powertabobject.h"
 
@@ -161,4 +161,4 @@ public:
 
 };
 
-#endif
+#endif // SCORE_H

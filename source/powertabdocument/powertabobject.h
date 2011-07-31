@@ -9,8 +9,8 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __POWERTABOBJECT_H__
-#define __POWERTABOBJECT_H__
+#ifndef POWERTABOBJECT_H
+#define POWERTABOBJECT_H
 
 #include <cstdint>
 #include <string>
@@ -40,4 +40,4 @@ public:
     virtual bool Deserialize(PowerTabInputStream& stream, uint16_t version) = 0;
 };
 
-#endif
+#endif // POWERTABOBJECT_H
