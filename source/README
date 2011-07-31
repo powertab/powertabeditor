@@ -15,9 +15,3 @@ NOTES:
 - the 'PowerTabDocument' code was ported from Brad Larsen's PtParser (http://code.google.com/p/ptparser/)
 	- it could probably use some cleanup, but that's not too high a priority
 - the project builds without any warnings / errors on Windows and Linux with QtCreator
-
-TODO: 
-- work on complete rendering support
-- support more interactive editor functionality (i.e. editing notes, removing barlines, etc)
-- support more features for MIDI playback (bends, vibrato, etc)
-- prevent the toolbox from being collapsed
