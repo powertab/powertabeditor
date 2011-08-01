@@ -4,6 +4,7 @@ QT += core gui
 
 QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers
 
+DEPENDPATH += $${PWD}/source
 INCLUDEPATH += $${PWD}/source
 
 # store the subdirectory used for the active build type
