@@ -53,8 +53,9 @@ void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
             if (time.IsSameMeter(oldTime))
             {
                 // modify everything except for visibility
+                const bool isShown = time.IsShown();
                 time = newTime;
-                time.SetShown(oldTime.IsShown());
+                time.SetShown(isShown);
 
                 // only modify visibility for the time signature that was edited directly
                 if (i == startSystem && barline->GetPosition() == location.getPositionIndex())
