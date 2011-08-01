@@ -6,7 +6,8 @@ SOURCES += \
     documentmanager.cpp \
     settings.cpp \
     skinmanager.cpp \
-    command.cpp
+    command.cpp \
+    clipboard.cpp
 
 HEADERS += common.h \
     documentmanager.h \
@@ -14,4 +15,7 @@ HEADERS += common.h \
     scorearea.h \
     settings.h \
     skinmanager.h \
-    command.h
+    command.h \
+    clipboard.h
+
+

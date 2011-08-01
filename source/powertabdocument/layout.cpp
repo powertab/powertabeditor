@@ -359,7 +359,6 @@ void Layout::FormatSystem(std::shared_ptr<System> system)
             // half notes, etc
             for (size_t k = 0; k < positions.size(); k++)
             {
-                std::cerr << positions[k]->GetDuration() << std::endl;
                 double spacing = positions[k]->GetDuration();
 
                 if (spacing < 1)

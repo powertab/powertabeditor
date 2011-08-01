@@ -37,7 +37,8 @@ HEADERS += \
     edittimesignature.h \
     adddynamic.h \
     removedynamic.h \
-    actions_pch.h
+    actions_pch.h \
+    insertnotes.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -70,7 +71,10 @@ SOURCES += \
     editkeysignature.cpp \
     edittimesignature.cpp \
     adddynamic.cpp \
-    removedynamic.cpp
+    removedynamic.cpp \
+    insertnotes.cpp
+
+
 
 
 

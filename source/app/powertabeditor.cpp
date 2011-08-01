@@ -27,6 +27,7 @@
 #include <app/settings.h>
 #include <app/documentmanager.h>
 #include <app/command.h>
+#include <app/clipboard.h>
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
@@ -261,6 +262,13 @@ void PowerTabEditor::createActions()
 
     redoAct = undoManager->createRedoAction(this, tr("&Redo"));
     redoAct->setShortcuts(QKeySequence::Redo);
+
+    // Copy/Paste
+    copyAct = new Command(tr("Copy"), "Edit.Copy", QKeySequence::Copy, this);
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(copySelectedNotes()));
+
+    pasteAct = new Command(tr("Paste"), "Edit.Paste", QKeySequence::Paste, this);
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(doPaste()));
 
     // Playback-related actions
     playPauseAct = new Command(tr("Play"), "PlayPause.Play", Qt::Key_Space, this);
@@ -711,6 +719,9 @@ void PowerTabEditor::createMenus()
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
+    editMenu->addSeparator();
+    editMenu->addAction(copyAct);
+    editMenu->addAction(pasteAct);
 
     // Playback Menu
     playbackMenu = menuBar()->addMenu(tr("Play&back"));
@@ -1939,4 +1950,14 @@ void PowerTabEditor::editDynamic()
     {
         undoManager->push(new RemoveDynamic(currentScore, dynamic));
     }
+}
+
+void PowerTabEditor::doPaste()
+{
+    Clipboard::paste(undoManager.get(), getCurrentScoreArea()->getCaret());
+}
+
+void PowerTabEditor::copySelectedNotes()
+{
+    Clipboard::copySelection(getSelectedPositions());
 }

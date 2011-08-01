@@ -125,6 +125,9 @@ protected slots:
 
     void editKeyboardShortcuts();
 
+    void doPaste();
+    void copySelectedNotes();
+
 protected:
     bool isPlaying;
     const QString fileFilter;
@@ -156,6 +159,8 @@ protected:
     QMenu* editMenu;
     QAction* undoAct;
     QAction* redoAct;
+    Command* copyAct;
+    Command* pasteAct;
 
     QMenu* playbackMenu;
     Command* playPauseAct;
