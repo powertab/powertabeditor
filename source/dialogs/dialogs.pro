@@ -14,10 +14,10 @@ HEADERS += \
     alternateendingdialog.h \
     tappedharmonicdialog.h \
     keysignaturedialog.h \
-    timesignaturedialog.h \
     keyboardsettingsdialog.h \
     dynamicdialog.h \
-    dialogs_pch.h
+    dialogs_pch.h \
+    timesignaturedialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -29,13 +29,19 @@ SOURCES += \
     alternateendingdialog.cpp \
     tappedharmonicdialog.cpp \
     keysignaturedialog.cpp \
-    timesignaturedialog.cpp \
     keyboardsettingsdialog.cpp \
-    dynamicdialog.cpp
+    dynamicdialog.cpp \
+    timesignaturedialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
-    dynamicdialog.ui
+    dynamicdialog.ui \
+    timesignaturedialog.ui
+
+
+
+
+
 
 
 

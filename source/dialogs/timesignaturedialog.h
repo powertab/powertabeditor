@@ -2,45 +2,41 @@
 #define TIMESIGNATUREDIALOG_H
 
 #include <QDialog>
-
 #include <powertabdocument/timesignature.h>
-#include <boost/array.hpp>
+#include <array>
 
-class QCheckBox;
-class QComboBox;
-class QSpinBox;
 class QLineEdit;
+
+namespace Ui {
+    class TimeSignatureDialog;
+}
 
 class TimeSignatureDialog : public QDialog
 {
     Q_OBJECT
+
 public:
-    TimeSignatureDialog(const TimeSignature& originalTimeSignature);
+    explicit TimeSignatureDialog(const TimeSignature& originalTimeSignature);
+    ~TimeSignatureDialog();
 
     TimeSignature getNewTimeSignature() const;
 
 private slots:
+    void editTimeSignatureVisible(bool isVisible);
+    void editMetronomePulses(int selectedIndex);
     void editCutTime(bool enabled);
     void editCommonTime(bool enabled);
-    void editBeatValue(int index);
-    void editBeatsPerMeasure(int beats);
-    void editPulses(int beats);
+    void editBeatValue(int selectedIndex);
+    void editBeatsPerMeasure(int numBeats);
 
 private:
-    void init();
-    void connectSignals();
-    void updatePossiblePulseValues();
+    Ui::TimeSignatureDialog *ui;
+    std::array<QLineEdit*, 4> beamingPatterns;
 
     TimeSignature newTimeSignature;
 
-    QCheckBox* visibilityToggle;
-    QCheckBox* commonTimeToggle;
-    QCheckBox* cutTimeToggle;
-    QSpinBox* beatsPerMeasure;
-    QComboBox* pulsesPerMeasure;
-    QComboBox* beatValue;
-
-    boost::array<QLineEdit*, 4> beamingPatterns;
+    void init();
+    void updatePossiblePulseValues();
 };
 
 #endif // TIMESIGNATUREDIALOG_H
