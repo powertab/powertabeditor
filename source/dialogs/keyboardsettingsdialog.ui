@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>Edit Keyboard Shortcuts</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTreeWidget" name="commandsList">
