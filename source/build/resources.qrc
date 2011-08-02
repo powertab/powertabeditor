@@ -48,6 +48,8 @@
         <file alias="dynamic_f.png">../images/dynamic_f.png</file>
         <file alias="dynamic_ff.png">../images/dynamic_ff.png</file>
         <file alias="dynamic_fff.png">../images/dynamic_fff.png</file>
+        <file alias="flat.png">../images/flat.png</file>
+        <file alias="sharp.png">../images/sharp.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="toolbox_note.png">../icons/toolbox_note.png</file>

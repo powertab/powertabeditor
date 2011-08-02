@@ -10,8 +10,7 @@
 #include <QButtonGroup>
 #include <QListWidget>
 #include <QSignalMapper>
-
-#include <painters/musicfont.h>
+#include <QIcon>
 
 ChordNameDialog::ChordNameDialog(ChordName* chord, QWidget *parent) :
         QDialog(parent),
@@ -24,7 +23,8 @@ ChordNameDialog::ChordNameDialog(ChordName* chord, QWidget *parent) :
     setWindowTitle(tr("Chord Name"));
     setModal(true);
 
-    const QFont musicFont = MusicFont().getFont();
+    const QIcon sharpIcon(":/images/sharp.png");
+    const QIcon flatIcon(":/images/flat.png");
 
     preview = new QLineEdit;
     preview->setReadOnly(true);
@@ -37,18 +37,16 @@ ChordNameDialog::ChordNameDialog(ChordName* chord, QWidget *parent) :
 
     sharpFlatMapper = new QSignalMapper;
 
-    toggleSharps = new QPushButton();
-    toggleSharps->setFont(musicFont);
+    toggleSharps = new QPushButton(sharpIcon, "");
+    toggleSharps->setIconSize(QSize(24, 24));
     toggleSharps->setCheckable(true);
-    toggleSharps->setText(MusicFont().getSymbol(MusicFont::AccidentalSharp));
     toggleSharps->setToolTip("Toggle Sharps");
     connect(toggleSharps, SIGNAL(released()), sharpFlatMapper, SLOT(map()));
     sharpFlatMapper->setMapping(toggleSharps, toggleSharps);
 
-    toggleFlats = new QPushButton();
-    toggleFlats->setFont(musicFont);
+    toggleFlats = new QPushButton(flatIcon, "");
+    toggleFlats->setIconSize(QSize(24, 24));
     toggleFlats->setCheckable(true);
-    toggleFlats->setText(MusicFont().getSymbol(MusicFont::AccidentalFlat));
     toggleFlats->setToolTip("Toggle Flats");
     connect(toggleFlats, SIGNAL(released()), sharpFlatMapper, SLOT(map()));
     sharpFlatMapper->setMapping(toggleFlats, toggleFlats);
@@ -57,18 +55,16 @@ ChordNameDialog::ChordNameDialog(ChordName* chord, QWidget *parent) :
 
     sharpFlatBassMapper = new QSignalMapper;
 
-    toggleBassSharps = new QPushButton();
-    toggleBassSharps->setFont(musicFont);
+    toggleBassSharps = new QPushButton(sharpIcon, "");
+    toggleBassSharps->setIconSize(QSize(24, 24));
     toggleBassSharps->setCheckable(true);
-    toggleBassSharps->setText(MusicFont().getSymbol(MusicFont::AccidentalSharp));
     toggleBassSharps->setToolTip("Toggle Sharps");
     connect(toggleBassSharps, SIGNAL(released()), sharpFlatBassMapper, SLOT(map()));
     sharpFlatBassMapper->setMapping(toggleBassSharps, toggleBassSharps);
 
-    toggleBassFlats = new QPushButton();
-    toggleBassFlats->setFont(musicFont);
+    toggleBassFlats = new QPushButton(flatIcon, "");
+    toggleBassFlats->setIconSize(QSize(24, 24));
     toggleBassFlats->setCheckable(true);
-    toggleBassFlats->setText(MusicFont().getSymbol(MusicFont::AccidentalFlat));
     toggleBassFlats->setToolTip("Toggle Flats");
     connect(toggleBassFlats, SIGNAL(released()), sharpFlatBassMapper, SLOT(map()));
     sharpFlatBassMapper->setMapping(toggleBassFlats, toggleBassFlats);
