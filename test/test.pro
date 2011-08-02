@@ -6,6 +6,9 @@ include (../linking.pri)
 TARGET = pte_tests
 TEMPLATE = app
 
+CONFIG += precompile_header
+PRECOMPILED_HEADER = test_pch.h
+
 unix:LIBS += -lboost_unit_test_framework
 
 # replace with the path to your boost installation
@@ -80,7 +83,8 @@ HEADERS += \
     ../source/audio/midievent.h \
     powertabdocument/tuning_fixtures.h \
     powertabdocument/serialization_test.h \
-    powertabdocument/score_fixture.h
+    powertabdocument/score_fixture.h \
+    test_pch.h
 
 # copy test files to output directory
 unix|macx {
@@ -89,3 +93,4 @@ unix|macx {
 win32 {
     QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/formats/guitar_pro/data\" \"$${OUT_PWD}/$${BUILDTYPE}/data\"
 }
+
