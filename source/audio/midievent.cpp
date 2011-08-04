@@ -38,7 +38,7 @@ bool MidiEvent::operator<(const MidiEvent& event) const
 {
     using namespace boost::test_tools;
     
-#if BOOST_VERSION > 104600 // percent_tolerance was moved to the boost::test_tools::fpc namespace in later verions
+#if BOOST_VERSION >= 104700 // percent_tolerance was moved to the boost::test_tools::fpc namespace in later verions
     using namespace fpc;
 #endif
 
