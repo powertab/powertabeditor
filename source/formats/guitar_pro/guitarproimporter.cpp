@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 #include <cmath>
 #include <boost/foreach.hpp>
 
@@ -277,7 +278,7 @@ uint8_t GuitarProImporter::convertKeyAccidentals(int8_t gpKey)
     // Power Tab uses 0 for 1, 1 for G, ..., 8 for F, 9 for Bb, etc
     if (gpKey < 0)
     {
-        return KeySignature::sevenSharps + abs(gpKey);
+        return KeySignature::sevenSharps + std::abs(gpKey);
     }
     else
     {
@@ -637,7 +638,7 @@ void GuitarProImporter::readSlide(Gp::InputStream& stream, Note& note)
 
     if (slideValue < 0) // slide into
     {
-        note.SetSlideInto(abs(slideValue));
+        note.SetSlideInto(std::abs(slideValue));
     }
     else if (slideValue > 0)
     {

@@ -2,7 +2,7 @@
 
 QT += core gui
 
-QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers
+QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers -Wno-type-limits
 
 DEPENDPATH += $${PWD}/source
 INCLUDEPATH += $${PWD}/source
@@ -24,7 +24,7 @@ RCC_DIR = $${BUILDTYPE}/rcc
 # Replace this with the path to your boost installation if you're compiling on Windows
 # There shouldn't be any need for a unix:INCLUDEPATH, since boost should already be
 # in the include path (/usr/include) if you installed the package from your Linux distribution's repo
-win32:INCLUDEPATH += 'C:/Program Files (x86)/boost/boost_1_44/'
+win32:INCLUDEPATH += 'C:/Program Files (x86)/boost/boost_1_47/'
 
 # build all subprojects as static libraries unless overridden
 TEMPLATE = lib
