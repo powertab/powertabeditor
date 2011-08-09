@@ -59,7 +59,8 @@ void convertStringToList(const std::string& source, std::vector<T>& dest)
 {
     using namespace boost::spirit::qi;
 
-    bool parsed = parse(source.begin(), source.end(),
+    auto begin = source.begin();
+    bool parsed = parse(begin, source.end(),
                         auto_ % ' ', dest);
 
     if (!parsed)
@@ -223,8 +224,9 @@ void Gpx::DocumentReader::readTimeSignature(const Gpx::DocumentReader::ptree& ma
     std::vector<int> timeSigValues;
     using namespace boost::spirit::qi;
 
+    auto begin = timeString.begin();
     // import time signature (stored in text format - e.g. "4/4")
-    bool parsed = parse(timeString.begin(), timeString.end(),
+    bool parsed = parse(begin, timeString.end(),
                         int_ >> '/' >> int_, timeSigValues);
 
     if (!parsed)
