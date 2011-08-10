@@ -1,7 +1,13 @@
 #ifndef FILEFORMATMANAGER_H
 #define FILEFORMATMANAGER_H
 
+// Workaround for Boost warning that only appears on Windows
+// (see https://svn.boost.org/trac/boost/ticket/4276)
+#ifdef __MINGW32__
+#pragma GCC diagnostic ignored "-Wignored-qualifiers" 
+#endif
 #include <boost/ptr_container/ptr_map.hpp>
+
 #include <vector>
 #include "fileformat.h"
 

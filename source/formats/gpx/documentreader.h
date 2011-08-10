@@ -4,6 +4,12 @@
 #include <memory>
 #include <vector>
 #include <map>
+
+// Temporarily disable -Wtype-limits due to wchar_t warning with Mingw and Boost
+#ifdef __MINGW32__
+#pragma GCC diagnostic ignored "-Wtype-limits" 
+#endif
+
 #include <boost/property_tree/ptree.hpp>
 
 class PowerTabDocument;

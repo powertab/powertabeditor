@@ -2,7 +2,7 @@
 
 QT += core gui
 
-QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers -Wno-type-limits
+QMAKE_CXXFLAGS+=-std=c++0x -U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra
 
 DEPENDPATH += $${PWD}/source
 INCLUDEPATH += $${PWD}/source
