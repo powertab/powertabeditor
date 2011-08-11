@@ -5,10 +5,6 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/barline.h>
 
-#include <app/powertabeditor.h>
-
-#include <actions/editrehearsalsign.h>
-
 #include <boost/foreach.hpp>
 
 #include <QFormLayout>
@@ -17,9 +13,8 @@
 #include <QDialogButtonBox>
 #include <QMessageBox>
 
-RehearsalSignDialog::RehearsalSignDialog(Score* score, RehearsalSign& rehearsalSign, QWidget *parent) :
+RehearsalSignDialog::RehearsalSignDialog(Score* score, QWidget *parent) :
     QDialog(parent),
-    rehearsalSign(rehearsalSign),
     score(score)
 {
     setWindowTitle(tr("Rehearsal Sign"));
@@ -101,21 +96,28 @@ void RehearsalSignDialog::populateDescriptionChoices()
 
 void RehearsalSignDialog::accept()
 {
-    QChar letter = letterChoice->currentText().at(0); // should only be one letter
-    std::string description = descriptionChoice->currentText().toStdString();
+    selectedLetter = letterChoice->currentText().at(0).toAscii(); // should only be one letter
+    enteredDescription = descriptionChoice->currentText().toStdString();
     
-    if (description.empty())
+    if (enteredDescription.empty())
     {
-        QMessageBox msgBox;
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setWindowTitle(tr("Rehearsal Sign"));
-        msgBox.setText(tr("The Rehearsal Sign description cannot be empty."));
-        msgBox.exec();
+        QMessageBox(QMessageBox::Warning, tr("Rehearsal Sign"),
+                    tr("The Rehearsal Sign description cannot be empty.")).exec();
     }
     else
     {
-        PowerTabEditor::undoManager->push(new EditRehearsalSign(rehearsalSign, true,
-                                                                letter.toAscii(), description));
         done(QDialog::Accepted);
     }
+}
+
+/// Returns the letter that was selected by the user
+uint8_t RehearsalSignDialog::getSelectedLetter() const
+{
+    return selectedLetter;
+}
+
+/// Returns the description of the rehearsal sign that was entered by the user
+std::string RehearsalSignDialog::getEnteredDescription() const
+{
+    return enteredDescription;
 }

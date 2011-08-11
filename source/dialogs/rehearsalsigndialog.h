@@ -11,7 +11,10 @@ class RehearsalSignDialog : public QDialog
 {
     Q_OBJECT
 public:
-    RehearsalSignDialog(Score* score, RehearsalSign& rehearsalSign, QWidget *parent = 0);
+    RehearsalSignDialog(Score* score, QWidget *parent = 0);
+
+    uint8_t getSelectedLetter() const;
+    std::string getEnteredDescription() const;
 
 public slots:
     void accept();
@@ -20,8 +23,10 @@ protected:
     void populateLetterChoices();
     void populateDescriptionChoices();
 
-    RehearsalSign& rehearsalSign;
+    uint8_t selectedLetter;
+    std::string enteredDescription;
     Score* score;
+
     QComboBox* letterChoice;
     QComboBox* descriptionChoice;
 };

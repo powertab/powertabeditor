@@ -1598,8 +1598,14 @@ void PowerTabEditor::editRehearsalSign()
     }
     else
     {
-        RehearsalSignDialog rehearsalSignDialog(currentScore, rehearsalSign);
-        rehearsalSignDialog.exec();
+        RehearsalSignDialog dialog(currentScore);
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            undoManager->push(new EditRehearsalSign(rehearsalSign, true,
+                                                    dialog.getSelectedLetter(),
+                                                    dialog.getEnteredDescription()));
+        }
     }
 
 }
