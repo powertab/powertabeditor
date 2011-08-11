@@ -6,6 +6,7 @@
 #include <powertabdocument/barline.h>
 
 #include <boost/foreach.hpp>
+#include <set>
 
 #include <QFormLayout>
 #include <QComboBox>
@@ -48,7 +49,7 @@ RehearsalSignDialog::RehearsalSignDialog(Score* score, QWidget *parent) :
 // populate the list of available letters
 void RehearsalSignDialog::populateLetterChoices()
 {
-    QMap<quint8, quint8> lettersInUse;
+    std::set<uint8_t> lettersInUse;
 
     // find the letters that are already in use, by checking every rehearsal sign in the score
     for(size_t i = 0; i < score->GetSystemCount(); i++)
@@ -63,7 +64,7 @@ void RehearsalSignDialog::populateLetterChoices()
             const RehearsalSign& currentSign = barline->GetRehearsalSign();
             if (currentSign.IsSet())
             {
-                lettersInUse.insert(currentSign.GetLetter(), 0); // insert the rehearsal sign's letter as a key in the map
+                lettersInUse.insert(currentSign.GetLetter());
             }
         }
     }
@@ -71,7 +72,7 @@ void RehearsalSignDialog::populateLetterChoices()
     // add all letters that are not in use to the drop-down list
     for (quint8 currentLetter = 'A'; currentLetter <= 'Z'; currentLetter++)
     {
-        if (!lettersInUse.contains(currentLetter))
+        if (lettersInUse.find(currentLetter) == lettersInUse.end())
         {
             letterChoice->addItem(QChar(currentLetter));
         }
