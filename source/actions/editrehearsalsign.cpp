@@ -2,7 +2,8 @@
 
 #include <powertabdocument/rehearsalsign.h>
 
-EditRehearsalSign::EditRehearsalSign(RehearsalSign* rehearsalSign, bool isShown, quint8 letter, std::string description) :
+EditRehearsalSign::EditRehearsalSign(RehearsalSign& rehearsalSign, bool isShown,
+                                     uint8_t letter, const std::string& description) :
     rehearsalSign(rehearsalSign),
     isShown(isShown),
     letter(letter),
@@ -11,8 +12,8 @@ EditRehearsalSign::EditRehearsalSign(RehearsalSign* rehearsalSign, bool isShown,
     if (!isShown)
     {
         setText(QObject::tr("Remove Rehearsal Sign"));
-        this->letter = rehearsalSign->GetLetter();
-        this->description = rehearsalSign->GetDescription();
+        this->letter = rehearsalSign.GetLetter();
+        this->description = rehearsalSign.GetDescription();
     }
     else
     {
@@ -34,11 +35,11 @@ void EditRehearsalSign::showHide(bool show)
 {
     if (show)
     {
-        rehearsalSign->SetLetter(letter);
-        rehearsalSign->SetDescription(description);
+        rehearsalSign.SetLetter(letter);
+        rehearsalSign.SetDescription(description);
     }
     else
     {
-        rehearsalSign->Clear();
+        rehearsalSign.Clear();
     }
 }

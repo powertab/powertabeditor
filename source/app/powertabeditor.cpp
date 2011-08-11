@@ -1590,9 +1590,9 @@ void PowerTabEditor::editRehearsalSign()
     // the rehearsal sign action should not be available unless there is a barline at the current position
     Q_ASSERT(currentBarline);
 
-    RehearsalSign* rehearsalSign = &currentBarline->GetRehearsalSign();
+    RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSign();
 
-    if (rehearsalSign->IsSet())
+    if (rehearsalSign.IsSet())
     {
         undoManager->push(new EditRehearsalSign(rehearsalSign, false));
     }

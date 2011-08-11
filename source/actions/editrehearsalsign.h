@@ -9,13 +9,14 @@ class RehearsalSign;
 class EditRehearsalSign : public QUndoCommand
 {
 public:
-    EditRehearsalSign(RehearsalSign* rehearsalSign, bool isShown, quint8 letter = 0, std::string description = "");
+    EditRehearsalSign(RehearsalSign& rehearsalSign, bool isShown,
+                      uint8_t letter = 0, const std::string& description = "");
 
     virtual void undo();
     virtual void redo();
 
 protected:
-    RehearsalSign* rehearsalSign;
+    RehearsalSign& rehearsalSign;
     bool isShown;
     quint8 letter;
     std::string description;
