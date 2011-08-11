@@ -1817,7 +1817,7 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
     QList<QMenu*> menuList;
     menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
     menuList << positionSectionMenu << positionStaffMenu << sectionMenu << octaveMenu << slideIntoMenu;
-    menuList << slideOutOfMenu;
+    menuList << slideOutOfMenu << guitarMenu << restsMenu << editMenu;
 
     foreach(QMenu* menu, menuList)
     {
