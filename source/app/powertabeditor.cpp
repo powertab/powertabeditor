@@ -559,14 +559,12 @@ void PowerTabEditor::createActions()
     rehearsalSignAct->setCheckable(true);
     connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
 
-    keySignatureAct = new Command(tr("Key Signature..."), "MusicSymbols.EditKeySignature",
+    keySignatureAct = new Command(tr("Edit Key Signature..."), "MusicSymbols.EditKeySignature",
                                   Qt::Key_K, this);
-    keySignatureAct->setCheckable(true);
     connect(keySignatureAct, SIGNAL(triggered()), this, SLOT(editKeySignature()));
 
-    timeSignatureAct = new Command(tr("Time Signature..."), "MusicSymbols.EditTimeSignature",
+    timeSignatureAct = new Command(tr("Edit Time Signature..."), "MusicSymbols.EditTimeSignature",
                                    Qt::Key_T, this);
-    timeSignatureAct->setCheckable(true);
     connect(timeSignatureAct, SIGNAL(triggered()), this, SLOT(editTimeSignature()));
 
     barlineAct = new Command(tr("Barline..."), "MusicSymbols.EditBarline", Qt::Key_B, this);
@@ -1760,10 +1758,7 @@ void PowerTabEditor::updateActions()
         barlineAct->setText(tr("Barline"));
     }
 
-    keySignatureAct->setChecked(onBarline);
     keySignatureAct->setEnabled(onBarline);
-
-    timeSignatureAct->setCheckable(onBarline);
     timeSignatureAct->setEnabled(onBarline);
 
     updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
