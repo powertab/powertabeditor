@@ -956,10 +956,13 @@ void PowerTabEditor::updatePreviousDirectory(const QString& fileName)
 
 void PowerTabEditor::importFile(const FileFormat& format)
 {
+    const QString fileFilter = QString("%1 (%2)").arg(QString::fromStdString(format.name),
+                                                      QString::fromStdString(format.fileExtensions));
+
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Import ") + QString::fromStdString(format.name),
                                                     previousDirectory,
-                                                    QString::fromStdString(format.fileExtensions));
+                                                    fileFilter);
 
     if (!fileName.isEmpty())
     {
