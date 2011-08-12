@@ -306,7 +306,16 @@ void Gpx::DocumentReader::readRhythms()
         rhythm.noteValue = noteValuesToInt.find(noteValueStr)->second;
 
         // Handle dotted/double dotted notes
-        const int numDots = currentRhythm.get("AugmentationDot.<xmlattr>.count", 0);
+        int numDots = 0;
+        try
+        {
+            numDots = currentRhythm.get<int>("AugmentationDot.<xmlattr>.count");
+        }
+        catch (const boost::property_tree::ptree_error&)
+        {
+            std::cerr << "No dot value for note" << std::endl;
+        }
+
         std::cerr << "Dots: " << numDots << std::endl;
         rhythm.dotted = numDots == 1;
         rhythm.doubleDotted = numDots == 2;
