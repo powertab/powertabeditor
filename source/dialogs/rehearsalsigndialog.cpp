@@ -1,4 +1,5 @@
 #include "rehearsalsigndialog.h"
+#include "ui_rehearsalsigndialog.h"
 
 #include <powertabdocument/rehearsalsign.h>
 #include <powertabdocument/score.h>
@@ -8,42 +9,24 @@
 #include <boost/foreach.hpp>
 #include <set>
 
-#include <QFormLayout>
-#include <QComboBox>
 #include <QCompleter>
-#include <QDialogButtonBox>
 #include <QMessageBox>
 
 RehearsalSignDialog::RehearsalSignDialog(Score* score, QWidget *parent) :
     QDialog(parent),
+    ui(new Ui::RehearsalSignDialog),
     score(score)
 {
-    setWindowTitle(tr("Rehearsal Sign"));
-    setModal(true);
+    ui->setupUi(this);
 
-    letterChoice = new QComboBox;
     populateLetterChoices();
-
-    descriptionChoice = new QComboBox;
-    descriptionChoice->setEditable(true);
     populateDescriptionChoices();
-    descriptionChoice->clearEditText();
+    ui->descriptionComboBox->clearEditText();
+}
 
-    QFormLayout* formLayout = new QFormLayout;
-    formLayout->addRow(tr("Letter:"), letterChoice);
-    formLayout->addRow(tr("Description:"), descriptionChoice);
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
-    QVBoxLayout *buttonsLayout = new QVBoxLayout;
-    buttonsLayout->addStretch(1);
-    buttonsLayout->addLayout(formLayout);
-    buttonsLayout->addWidget(buttonBox);
-
-    buttonsLayout->setSizeConstraint(QLayout::SetFixedSize);
-    setLayout(buttonsLayout);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+RehearsalSignDialog::~RehearsalSignDialog()
+{
+    delete ui;
 }
 
 // populate the list of available letters
@@ -74,7 +57,7 @@ void RehearsalSignDialog::populateLetterChoices()
     {
         if (lettersInUse.find(currentLetter) == lettersInUse.end())
         {
-            letterChoice->addItem(QChar(currentLetter));
+            ui->letterComboBox->addItem(QChar(currentLetter));
         }
     }
 }
@@ -87,18 +70,18 @@ void RehearsalSignDialog::populateDescriptionChoices()
     descriptions << "Interlude" << "Breakdown" << "Bridge" << "Guitar Break" << "Guitar Solo";
     descriptions << "Out-Chorus" << "Outro";
 
-    descriptionChoice->addItems(descriptions);
+    ui->descriptionComboBox->addItems(descriptions);
 
     // Autocompletion for description choices
     QCompleter *completer = new QCompleter(descriptions);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
-    descriptionChoice->setCompleter(completer);
+    ui->descriptionComboBox->setCompleter(completer);
 }
 
 void RehearsalSignDialog::accept()
 {
-    selectedLetter = letterChoice->currentText().at(0).toAscii(); // should only be one letter
-    enteredDescription = descriptionChoice->currentText().toStdString();
+    selectedLetter = ui->letterComboBox->currentText().at(0).toAscii(); // should only be one letter
+    enteredDescription = ui->descriptionComboBox->currentText().toStdString();
     
     if (enteredDescription.empty())
     {

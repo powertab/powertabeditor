@@ -36,13 +36,5 @@ SOURCES += \
 FORMS += \
     keyboardsettingsdialog.ui \
     dynamicdialog.ui \
-    timesignaturedialog.ui
-
-
-
-
-
-
-
-
-
+    timesignaturedialog.ui \
+    rehearsalsigndialog.ui
