@@ -22,12 +22,16 @@
 
 #include <audio/rtmidiwrapper.h>
 #include <app/settings.h>
+#include "app/skinmanager.h"
 
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PreferencesDialog)
 {
     ui->setupUi(this);
+
+    connect(ui->useSkinCheckBox, SIGNAL(toggled(bool)),
+            ui->skinComboBox, SLOT(setEnabled(bool)));
 
     // add available MIDI ports
     RtMidiWrapper rtMidiWrapper;
@@ -38,6 +42,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     ui->vibratoStrengthSpinBox->setRange(1, 127);
     ui->wideVibratoStrengthSpinBox->setRange(1, 127);
+
+    ui->skinComboBox->addItems(SkinManager::availableSkins());
 
     loadCurrentSettings();
 }
@@ -63,6 +69,12 @@ void PreferencesDialog::loadCurrentSettings()
 
     ui->wideVibratoStrengthSpinBox->setValue(settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
                                                             Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt());
+
+    const int skinIndex = ui->skinComboBox->findText(settings.value(Settings::APPEARANCE_SKIN_NAME).toString());
+    ui->skinComboBox->setCurrentIndex(skinIndex == -1 ? 0 : skinIndex);
+
+    ui->useSkinCheckBox->setChecked(settings.value(Settings::APPEARANCE_USE_SKIN, false).toBool());
+    ui->skinComboBox->setEnabled(ui->useSkinCheckBox->isChecked());
 }
 
 /// Save the new settings
@@ -80,6 +92,12 @@ void PreferencesDialog::accept()
 
     settings.setValue(Settings::MIDI_WIDE_VIBRATO_LEVEL,
                       ui->wideVibratoStrengthSpinBox->value());
+
+    settings.setValue(Settings::APPEARANCE_USE_SKIN,
+                      ui->useSkinCheckBox->isChecked());
+
+    settings.setValue(Settings::APPEARANCE_SKIN_NAME,
+                      ui->skinComboBox->currentText());
 
     settings.sync();
 

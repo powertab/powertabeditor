@@ -123,8 +123,7 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     documentManager(new DocumentManager),
     fileFormatManager(new FileFormatManager),
     mixerList(new QStackedWidget),
-    playbackToolbarList(new QStackedWidget),
-    skinManager(new SkinManager("default"))
+    playbackToolbarList(new QStackedWidget)
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
@@ -136,6 +135,10 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QCoreApplication::setOrganizationName("Power Tab");
     QCoreApplication::setApplicationName("Power Tab Editor");
     QCoreApplication::setApplicationVersion("2.0");
+
+    // need to initialize the skin manager after the QCoreApplication initialization, since
+    // it uses the QSettings class
+    skinManager.reset(new SkinManager);
 
     // load application settings
     QSettings settings;
@@ -1075,6 +1078,7 @@ void PowerTabEditor::saveFileAs()
 void PowerTabEditor::openPreferences()
 {
     PreferencesDialog().exec();
+    skinManager->reload();
 }
 
 void PowerTabEditor::closeCurrentTab()

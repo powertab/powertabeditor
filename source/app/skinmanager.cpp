@@ -20,15 +20,13 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QTextStream>
+#include <QDir>
+#include <QSettings>
+#include <app/settings.h>
 
-SkinManager::SkinManager(const QString& filename)
+SkinManager::SkinManager()
 {
-    documentTabStyle = readSegment(filename,"document_tab.txt");
-
-    toolboxTabStyle = readSegment(filename,"toolbox_tab.txt");
-    toolboxPageStyle = readSegment(filename,"toolbox_page.txt");
-
-    mixerStyle = readSegment(filename,"mixer.txt");
+    reload();
 }
 
 QString SkinManager::getDocumentTabStyle() const
@@ -56,7 +54,7 @@ QString SkinManager::readSegment(const QString& skinname, const QString& filenam
     QString out;
     QFile data;
 
-    data.setFileName(QCoreApplication::applicationDirPath()+"/skins/"+skinname+"/"+filename);
+    data.setFileName(skinDir() + "/" + skinname + "/" + filename);
 
     if(data.open(QFile::ReadOnly))
     {
@@ -66,4 +64,34 @@ QString SkinManager::readSegment(const QString& skinname, const QString& filenam
     }
 
     return out;
+}
+
+/// Returns a list of all skins that can be used
+QStringList SkinManager::availableSkins()
+{
+    return QDir(skinDir()).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
+}
+
+/// Returns the directory containing all skins
+QString SkinManager::skinDir()
+{
+    return QCoreApplication::applicationDirPath() + "/skins";
+}
+
+/// Loads the skin specified in the application settings
+/// TODO - ensure that any skinned widgets have their stylesheets updated
+void SkinManager::reload()
+{
+    QString skinName;
+    QSettings settings;
+
+    if (settings.value(Settings::APPEARANCE_USE_SKIN).toBool())
+    {
+        skinName = settings.value(Settings::APPEARANCE_SKIN_NAME).toString();
+    }
+
+    documentTabStyle = readSegment(skinName,"document_tab.txt");
+    toolboxTabStyle = readSegment(skinName,"toolbox_tab.txt");
+    toolboxPageStyle = readSegment(skinName,"toolbox_page.txt");
+    mixerStyle = readSegment(skinName,"mixer.txt");
 }

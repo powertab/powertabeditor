@@ -23,14 +23,20 @@
 class SkinManager
 {
 public:
-    SkinManager(const QString& filename);
+    SkinManager();
+
+    void reload();
 
     QString getDocumentTabStyle() const;
     QString getToolboxTabStyle() const;
     QString getToolboxPageStyle() const;
     QString getMixerStyle() const;
 
+    static QStringList availableSkins();
+
 private:
+    static QString skinDir();
+
     QString documentTabStyle;
     QString toolboxTabStyle, toolboxPageStyle;
     QString mixerStyle;

@@ -36,7 +36,6 @@ class QTabWidget;
 class ScoreArea;
 class QStackedWidget;
 class SkinManager;
-class PreferencesDialog;
 class Toolbox;
 class QSplitter;
 class MidiPlayer;
