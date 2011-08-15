@@ -20,46 +20,22 @@
 
 #include <QDialog>
 
-class QTabWidget;
-class QVBoxLayout;
-class QHBoxLayout;
-class QLabel;
-class QComboBox;
-class QCheckBox;
-class QFormLayout;
-class QSpinBox;
+namespace Ui {
+    class PreferencesDialog;
+}
 
-// Dialog to allow the user to modify general editor-wide settings
-
-class MIDITab : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit MIDITab(QWidget *parent = 0);
-
-    QVBoxLayout* rootLayout;
-    QHBoxLayout* bottomLine;
-    QFormLayout* formLayout;
-    QComboBox*	midiPort;
-    QCheckBox* metronomeEnabled;
-    QSpinBox* vibratoStrength;
-    QSpinBox* wideVibratoStrength;
-
-signals:
-
-public slots:
-
-};
-
+/// Dialog to allow the user to modify general editor-wide settings
 class PreferencesDialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit PreferencesDialog(QWidget *parent = 0);
+    ~PreferencesDialog();
 
 private:
-    MIDITab* midiTab;
-    QTabWidget* tabWidget;
+    Ui::PreferencesDialog* ui;
+
+    void loadCurrentSettings();
 
 private slots:
     void accept();

@@ -37,4 +37,5 @@ FORMS += \
     keyboardsettingsdialog.ui \
     dynamicdialog.ui \
     timesignaturedialog.ui \
-    rehearsalsigndialog.ui
+    rehearsalsigndialog.ui \
+    preferencesdialog.ui
