@@ -18,7 +18,7 @@
 #ifndef GPX_DOCUMENTREADER_H
 #define GPX_DOCUMENTREADER_H
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 #include <map>
 
@@ -52,7 +52,7 @@ class DocumentReader
 public:
     DocumentReader(const std::string& xml);
 
-    void readDocument(std::shared_ptr<PowerTabDocument> doc);
+    void readDocument(boost::shared_ptr<PowerTabDocument> doc);
 
 private:
     typedef boost::property_tree::ptree ptree;

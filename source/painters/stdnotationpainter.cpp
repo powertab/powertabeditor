@@ -29,7 +29,7 @@
 
 QFont StdNotationPainter::musicFont = MusicFont().getFont();
 
-StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, std::shared_ptr<const Staff> staff,
+StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, boost::shared_ptr<const Staff> staff,
                                        const Position* position, const Note* note,
                                        const Tuning& tuning, const KeySignature& keySignature):
     staffInfo(staffInfo),

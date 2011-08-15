@@ -27,7 +27,7 @@
 #include <vector>
 #include <algorithm>
 
-AlternateEndingDialog::AlternateEndingDialog(std::shared_ptr<AlternateEnding> altEnding) :
+AlternateEndingDialog::AlternateEndingDialog(boost::shared_ptr<AlternateEnding> altEnding) :
     altEnding(altEnding)
 {
     const int SPACING = 15;

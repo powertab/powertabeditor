@@ -9,7 +9,7 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm> // std::min and std::max
+#include <algorithm>
 #include <sstream>
 
 #include "tuning.h"
@@ -43,17 +43,6 @@ Tuning::Tuning() :
 /// @param tuningNotes A list of the MIDI note values for each string (high to low)
 Tuning::Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
                const std::vector<uint8_t> &tuningNotes) :
-    m_name(name)
-{
-    assert(IsValidMusicNotationOffset(musicNotationOffset));
-
-    SetMusicNotationOffset(musicNotationOffset);
-    SetSharps(sharps);
-    SetTuningNotes(tuningNotes);
-}
-
-Tuning::Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
-               std::initializer_list<uint8_t> tuningNotes) :
     m_name(name)
 {
     assert(IsValidMusicNotationOffset(musicNotationOffset));
@@ -221,10 +210,11 @@ bool Tuning::IsOpenStringNote(uint8_t note) const
 pair<uint8_t, uint8_t> Tuning::GetNoteRange(uint8_t capo) const
 {
     // find iterators to min & max elements
-    auto range = std::minmax_element(m_noteArray.begin(), m_noteArray.end());
+    std::vector<uint8_t>::const_iterator max = std::max_element(m_noteArray.begin(), m_noteArray.end());
+    std::vector<uint8_t>::const_iterator min = std::min_element(m_noteArray.begin(), m_noteArray.end());
 
     // add capo, and 24 frets for the highest note
-    pair<uint8_t, uint8_t> returnValue = std::make_pair(*(range.first) + capo, *(range.second) + capo + 24);
+    pair<uint8_t, uint8_t> returnValue = std::make_pair(*min + capo, *max + capo + 24);
     return returnValue;
 }
 
@@ -247,14 +237,6 @@ bool Tuning::SetTuningNotes(const std::vector<uint8_t>& tuningNotes)
     m_noteArray = tuningNotes;
 
     return true;
-}
-
-/// Sets the tuning notes from high to low, using initializer list syntax
-/// e.g. SetTuningNotes({MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3});
-bool Tuning::SetTuningNotes(std::initializer_list<uint8_t> tuningNotes)
-{
-    std::vector<uint8_t> notes(tuningNotes.begin(), tuningNotes.end());
-    return SetTuningNotes(notes);
 }
 
 /// Gets a full string representation of the tuning from low to high
@@ -282,8 +264,15 @@ void Tuning::SetToStandard()
 {
     using namespace midi;
 
-    SetTuningNotes({MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
-                   MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2});
+    std::vector<uint8_t> notes;
+    notes.push_back(MIDI_NOTE_E4);
+    notes.push_back(MIDI_NOTE_B3);
+    notes.push_back(MIDI_NOTE_G3);
+    notes.push_back(MIDI_NOTE_D3);
+    notes.push_back(MIDI_NOTE_A2);
+    notes.push_back(MIDI_NOTE_E2);
+
+    SetTuningNotes(notes);
 }
 
 /// Determines if a tuning is valid (has a valid number of strings)

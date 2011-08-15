@@ -19,7 +19,7 @@
 #define DELETEBARLINE_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Barline;
 class System;
@@ -27,13 +27,13 @@ class System;
 class DeleteBarline : public QUndoCommand
 {
 public:
-    DeleteBarline(std::shared_ptr<System> system, std::shared_ptr<Barline> barline);
+    DeleteBarline(boost::shared_ptr<System> system, boost::shared_ptr<Barline> barline);
     void redo();
     void undo();
 
 protected:
-    std::shared_ptr<System> system;
-    std::shared_ptr<Barline> barline;
+    boost::shared_ptr<System> system;
+    boost::shared_ptr<Barline> barline;
 };
 
 #endif // DELETEBARLINE_H

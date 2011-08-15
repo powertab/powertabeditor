@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_SUITE(SystemTest)
         BOOST_AUTO_TEST_CASE(noStaves)
         {
             System emptySystem;
-            std::shared_ptr<Staff> staff;
+            boost::shared_ptr<Staff> staff;
 
             BOOST_CHECK_THROW(emptySystem.FindStaffIndex(staff), std::out_of_range);
         }

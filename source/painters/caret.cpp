@@ -31,7 +31,7 @@
 #include <boost/format.hpp>
 #include <algorithm>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 using std::vector;
 
 Caret::Caret(int tabLineSpacing) :
@@ -380,7 +380,8 @@ void Caret::moveCaretToPrevBar()
         currentSystem->GetBarlines(sysBars);
         
         // we want the position of the bar line before this one
-        auto barlinesIt = std::find(sysBars.begin(), sysBars.end(), prevBarline);
+        std::vector<System::BarlineConstPtr>::const_iterator barlinesIt = std::find(sysBars.begin(),
+                                                                                    sysBars.end(), prevBarline);
         barlinesIt--;
         
         moveCaretHorizontal
@@ -419,7 +420,7 @@ Note* Caret::getCurrentNote() const
 }
 
 /// Returns the barline at the current position (or NULL if the current position is not a barline)
-std::shared_ptr<Barline> Caret::getCurrentBarline() const
+boost::shared_ptr<Barline> Caret::getCurrentBarline() const
 {
     return getCurrentSystem()->GetBarlineAtPosition(currentPositionIndex);
 }

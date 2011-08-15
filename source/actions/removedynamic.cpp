@@ -19,7 +19,7 @@
 
 #include <powertabdocument/score.h>
 
-RemoveDynamic::RemoveDynamic(Score* score, std::shared_ptr<Dynamic> dynamic) :
+RemoveDynamic::RemoveDynamic(Score* score, boost::shared_ptr<Dynamic> dynamic) :
     score(score), dynamic(dynamic)
 {
     setText(QObject::tr("Remove Dynamic"));

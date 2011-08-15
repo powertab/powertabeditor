@@ -19,7 +19,7 @@
 #define ADDTAPPEDHARMONIC_H
 
 #include <QUndoCommand>
-#include <cstdint>
+#include <boost/cstdint.hpp>
 
 class Note;
 

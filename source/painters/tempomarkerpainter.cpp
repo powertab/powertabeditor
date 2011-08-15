@@ -23,7 +23,7 @@
 
 QFont TempoMarkerPainter::displayFont = QFont("Liberation Sans");
 
-TempoMarkerPainter::TempoMarkerPainter(std::shared_ptr<const TempoMarker> tempoMarker):
+TempoMarkerPainter::TempoMarkerPainter(boost::shared_ptr<const TempoMarker> tempoMarker):
     tempoMarker(tempoMarker)
 {
     displayFont.setPixelSize(10);

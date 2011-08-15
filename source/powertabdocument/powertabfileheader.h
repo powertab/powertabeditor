@@ -12,7 +12,7 @@
 #ifndef POWERTABFILEHEADER_H
 #define POWERTABFILEHEADER_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <string>
 
 #include "macros.h"

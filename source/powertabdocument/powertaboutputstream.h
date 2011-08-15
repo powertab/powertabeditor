@@ -12,10 +12,10 @@
 #ifndef POWERTABOUTPUTSTREAM_H
 #define POWERTABOUTPUTSTREAM_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <ostream>
 
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
 
 #include <string>
 #include <vector>
@@ -33,8 +33,8 @@ class PowerTabOutputStream
     // Member Variables
 protected:
     bool                                        m_mapsInitialized;              ///< Determines whether or not the maps have been initialized
-    std::unordered_map<std::string, uint32_t>   m_classInfoHashMap;             ///< Map of class Ids to object index
-    std::unordered_map<PowerTabObject*, uint32_t>        m_objectHashMap;      ///< Map of object pointers to object index
+    boost::unordered_map<std::string, uint32_t>   m_classInfoHashMap;             ///< Map of class Ids to object index
+    boost::unordered_map<PowerTabObject*, uint32_t>        m_objectHashMap;      ///< Map of object pointers to object index
     uint32_t                                    m_mapCount;                     ///< Internal count of mapped objects
     PowerTabStreamError                         m_lastPowerTabError;            ///< Last Power Tab specific error
     std::ostream& m_stream;
@@ -107,7 +107,7 @@ public:
         return *this;
     }
 
-    /// Serializes a small (size < 255) vector or std::array by writing the size as one byte,
+    /// Serializes a small (size < 255) vector or boost::array by writing the size as one byte,
     /// followed by each element of the container.
     /// This function takes advantage of contiguous storage to avoid manually
     /// looping through each element

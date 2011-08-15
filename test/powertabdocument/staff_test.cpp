@@ -18,6 +18,7 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
+#include <boost/assign.hpp>
 #include "serialization_test.h"
 
 #include <powertabdocument/staff.h>
@@ -314,9 +315,13 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
         using namespace midi;
 
         Tuning tuning;
+        std::vector<uint8_t> notes;
+
         // create a tuning with a very low 7th string
-        tuning.SetTuningNotes({MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
-                       MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_E1});
+        using namespace boost::assign;
+        notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
+                 MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_E1;
+        tuning.SetTuningNotes(notes);
 
         staff.CalculateClef(tuning);
 

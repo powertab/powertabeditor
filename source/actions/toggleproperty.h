@@ -20,7 +20,7 @@
 
 #include <QUndoCommand>
 #include <vector>
-#include <functional>
+#include <boost/function.hpp>
 #include <algorithm>
 
 /// This class is designed to provide an easy way to create a QUndoCommand for the common situation of toggling a property
@@ -30,8 +30,8 @@
 template<class T>
 class ToggleProperty : public QUndoCommand
 {
-    typedef std::function<bool (T*, bool)> PropertySetter;
-    typedef std::function<bool (const T*)> PropertyGetter;
+    typedef boost::function<bool (T*, bool)> PropertySetter;
+    typedef boost::function<bool (const T*)> PropertyGetter;
 
 public:
     ToggleProperty(const std::vector<T*>& items, PropertySetter setPropertyFn,

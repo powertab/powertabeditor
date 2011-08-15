@@ -20,7 +20,7 @@
 
 #include <QThread>
 #include <QMutex>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 #include <boost/ptr_container/ptr_list.hpp>
 #include <powertabdocument/systemlocation.h>
@@ -62,7 +62,7 @@ protected:
     static const quint8 METRONOME_CHANNEL = 15;
 
     double getCurrentTempo(const quint32 positionIndex) const;
-    std::shared_ptr<TempoMarker> getCurrentTempoMarker(const quint32 positionIndex) const;
+    boost::shared_ptr<TempoMarker> getCurrentTempoMarker(const quint32 positionIndex) const;
     double calculateNoteDuration(const Position* currentPosition) const;
 
     double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,
@@ -73,7 +73,7 @@ protected:
 
     void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation);
 
-    double getWholeRestDuration(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+    double getWholeRestDuration(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                                 const Position* position, double originalDuration) const;
 
     /// Holds basic information about a bend - used to simplify the generateBends function
@@ -94,7 +94,7 @@ protected:
     void generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
                             double noteDuration, double currentTempo, const Position* position);
     
-    uint32_t getActualNotePitch(const Note* note, std::shared_ptr<const Guitar> guitar) const;
+    uint32_t getActualNotePitch(const Note* note, boost::shared_ptr<const Guitar> guitar) const;
 
     Caret* caret;
 

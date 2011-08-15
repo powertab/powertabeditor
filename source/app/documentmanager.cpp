@@ -23,7 +23,7 @@
 #include <powertabdocument/powertabdocument.h>
 #include <app/common.h>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 DocumentManager::DocumentManager()
 {
@@ -51,11 +51,11 @@ void DocumentManager::removeDocument(int index)
 bool DocumentManager::addDocument(const QString& fileName)
 {
     // check that the document is not already open
-    for (auto i = documentList.begin(); i != documentList.end(); ++i)
+    for (size_t i = 0; i < documentList.size(); i++)
     {
-        if ((*i)->GetFileName() == fileName.toStdString())
+        if (documentList[i]->GetFileName() == fileName.toStdString())
         {
-            currentDocumentIndex = i - documentList.begin();
+            currentDocumentIndex = i;
             return false;
         }
     }
@@ -80,7 +80,7 @@ bool DocumentManager::addDocument(const QString& fileName)
 }
 
 /// Adds a document that has already been imported from another file format
-bool DocumentManager::addImportedDocument(std::shared_ptr<PowerTabDocument> doc)
+bool DocumentManager::addImportedDocument(boost::shared_ptr<PowerTabDocument> doc)
 {
     // TODO - check that the file is not already open
     documentList.push_back(doc);

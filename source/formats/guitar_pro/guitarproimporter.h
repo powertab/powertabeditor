@@ -22,6 +22,7 @@
 #include <formats/scorearranger.h>
 #include <vector>
 #include <map>
+#include <boost/cstdint.hpp>
 
 #include "gp_fileformat.h" // Guitar Pro constants
 
@@ -45,7 +46,7 @@ class GuitarProImporter : public FileFormatImporter
 public:
     GuitarProImporter();
 
-    std::shared_ptr<PowerTabDocument> load(const std::string &fileName);
+    boost::shared_ptr<PowerTabDocument> load(const std::string &fileName);
 
 private:
     void findFileVersion(Gp::InputStream& stream);

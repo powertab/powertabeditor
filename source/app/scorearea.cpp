@@ -62,7 +62,7 @@
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 ScoreArea::ScoreArea(QWidget *parent) :
     QGraphicsView(parent),
@@ -1157,7 +1157,7 @@ void ScoreArea::adjustScroll()
 void ScoreArea::adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap)
 {
     QList<double> keys = accidentalsMap.uniqueKeys();
-    auto i = keys.begin();
+    QList<double>::const_iterator i = keys.begin();
 
     while(i != keys.end())
     {
@@ -1223,7 +1223,8 @@ QGraphicsItem* ScoreArea::createArtificialHarmonicText(Position* position)
     position->GetNotes(notes);
 
     // find the note with an artificial harmonic
-    auto location = std::find_if(notes.begin(), notes.end(), std::mem_fun(&Note::HasArtificialHarmonic));
+    std::vector<Note*>::const_iterator location = std::find_if(notes.begin(), notes.end(),
+                                                               std::mem_fun(&Note::HasArtificialHarmonic));
 
      // this function should not even be executed if there is no note with an artificial harmonic
     Q_ASSERT(location != notes.end());
@@ -1241,7 +1242,7 @@ QGraphicsItem* ScoreArea::createArtificialHarmonicText(Position* position)
     return createPlainText(text, QFont::StyleNormal);
 }
 
-void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, std::shared_ptr<const Barline> currentBarline,
+void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, boost::shared_ptr<const Barline> currentBarline,
                                  const StaffData& currentStaffInfo, int measureCount)
 {
     System::BarlineConstPtr nextBarline = system->GetNextBarline(currentBarline->GetPosition());
@@ -1285,7 +1286,7 @@ void ScoreArea::drawMultiBarRest(shared_ptr<const System> system, std::shared_pt
     horizontalLine->setParentItem(activeStaff);
 }
 
-QGraphicsItem* ScoreArea::createDynamic(std::shared_ptr<const Dynamic> dynamic) const
+QGraphicsItem* ScoreArea::createDynamic(boost::shared_ptr<const Dynamic> dynamic) const
 {
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(QString::fromStdString(dynamic->GetText(false)));
     textItem->setFont(musicFont.getFont());

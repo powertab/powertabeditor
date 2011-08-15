@@ -133,7 +133,7 @@ Gpx::FileSystem Gpx::load(std::istream& stream)
 
 std::string Gpx::FileSystem::getFileContents(const std::string& fileName) const
 {
-    auto file = files.find(fileName);
+    std::map<std::string, std::string>::const_iterator file = files.find(fileName);
 
     if (file == files.end())
     {

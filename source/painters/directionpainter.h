@@ -21,14 +21,14 @@
 #include "painterbase.h"
 #include <QFont>
 #include <QStaticText>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Direction;
 
 class DirectionPainter : public PainterBase
 {
 public:
-    DirectionPainter(std::shared_ptr<const Direction> direction, size_t symbolIndex);
+    DirectionPainter(boost::shared_ptr<const Direction> direction, size_t symbolIndex);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -38,7 +38,7 @@ private:
     QFont displayFont;
     QStaticText displayText;
 
-    std::shared_ptr<const Direction> direction;
+    boost::shared_ptr<const Direction> direction;
     const size_t symbolIndex;
     bool usingMusicFont;
 };

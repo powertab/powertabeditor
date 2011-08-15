@@ -20,7 +20,7 @@
 
 #include "painterbase.h"
 #include "staffdata.h"
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Position;
 class Tuning;
@@ -32,7 +32,7 @@ class Staff;
 class StdNotationPainter : public PainterBase
 {
 public:
-    StdNotationPainter(const StaffData& staffInfo, std::shared_ptr<const Staff> staff, const Position* position, const Note* note,
+    StdNotationPainter(const StaffData& staffInfo, boost::shared_ptr<const Staff> staff, const Position* position, const Note* note,
                        const Tuning& tuning, const KeySignature& keySignature);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -61,7 +61,7 @@ protected:
     void addDots(QPainter* painter, double x, double y) const;
 
     StaffData staffInfo;
-    std::shared_ptr<const Staff> staff;
+    boost::shared_ptr<const Staff> staff;
     const Position* position;
     const Note* note;
     const Tuning& tuning;

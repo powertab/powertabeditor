@@ -20,7 +20,7 @@
 
 #include <QDialog>
 #include <powertabdocument/timesignature.h>
-#include <array>
+#include <boost/array.hpp>
 
 class QLineEdit;
 
@@ -48,7 +48,7 @@ private slots:
 
 private:
     Ui::TimeSignatureDialog *ui;
-    std::array<QLineEdit*, 4> beamingPatterns;
+    boost::array<QLineEdit*, 4> beamingPatterns;
 
     TimeSignature newTimeSignature;
 

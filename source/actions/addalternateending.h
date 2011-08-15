@@ -19,7 +19,7 @@
 #define ADDALTERNATEENDING_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Score;
 class AlternateEnding;
@@ -27,14 +27,14 @@ class AlternateEnding;
 class AddAlternateEnding : public QUndoCommand
 {
 public:
-    AddAlternateEnding(Score* score, std::shared_ptr<AlternateEnding> altEnding);
+    AddAlternateEnding(Score* score, boost::shared_ptr<AlternateEnding> altEnding);
 
     void redo();
     void undo();
 
 private:
     Score* score;
-    std::shared_ptr<AlternateEnding> altEnding;
+    boost::shared_ptr<AlternateEnding> altEnding;
 };
 
 #endif // ADDALTERNATEENDING_H

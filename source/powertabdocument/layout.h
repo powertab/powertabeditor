@@ -18,7 +18,7 @@
 #ifndef LAYOUT_H
 #define LAYOUT_H
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 class Score;
@@ -28,13 +28,13 @@ class Staff;
 /// Contains various functions for computing the layout of staves, systems, notes, etc
 namespace Layout
 {
-void CalculateStdNotationHeight(Score* score, std::shared_ptr<System> system);
+void CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> system);
 
-void CalculateTabStaffBelowSpacing(std::shared_ptr<const System> system, std::shared_ptr<Staff> staff);
-void CalculateSymbolSpacing(const Score* score, std::shared_ptr<System> system,
-                            std::shared_ptr<Staff> staff);
+void CalculateTabStaffBelowSpacing(boost::shared_ptr<const System> system, boost::shared_ptr<Staff> staff);
+void CalculateSymbolSpacing(const Score* score, boost::shared_ptr<System> system,
+                            boost::shared_ptr<Staff> staff);
 
-void FormatSystem(std::shared_ptr<System> system);
+void FormatSystem(boost::shared_ptr<System> system);
 
 enum SymbolType
 {
@@ -72,11 +72,11 @@ struct SymbolGroup
 };
 
 std::vector<Layout::SymbolGroup> CalculateSymbolLayout(const Score* score,
-                                                       std::shared_ptr<const System> system,
-                                                       std::shared_ptr<const Staff> staff);
+                                                       boost::shared_ptr<const System> system,
+                                                       boost::shared_ptr<const Staff> staff);
 
-std::vector<Layout::SymbolGroup> CalculateTabStaffBelowLayout(std::shared_ptr<const System> system,
-                                                              std::shared_ptr<const Staff> staff);
+std::vector<Layout::SymbolGroup> CalculateTabStaffBelowLayout(boost::shared_ptr<const System> system,
+                                                              boost::shared_ptr<const Staff> staff);
 }
 
 #endif // LAYOUT_H

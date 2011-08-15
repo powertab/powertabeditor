@@ -21,7 +21,7 @@
 
 #include <QPainter>
 
-SystemPainter::SystemPainter(std::shared_ptr<const System> system) :
+SystemPainter::SystemPainter(boost::shared_ptr<const System> system) :
     system(system)
 {
     init();

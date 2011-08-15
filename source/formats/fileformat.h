@@ -19,7 +19,7 @@
 #define IFILEFORMAT_H
 
 #include <string>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <stdexcept>
 
 class PowerTabDocument;
@@ -42,7 +42,7 @@ public:
 
     /// Converts the given file into a PowerTabDocument
     /// @throw FileFormatException
-    virtual std::shared_ptr<PowerTabDocument> load(const std::string& fileName) = 0;
+    virtual boost::shared_ptr<PowerTabDocument> load(const std::string& fileName) = 0;
 
     FileFormat getFileFormat() const;
 
@@ -59,7 +59,7 @@ public:
 
     /// Converts the given file into a PowerTabDocument
     /// @throw FileFormatException
-    virtual void save(std::shared_ptr<const PowerTabDocument>, const std::string& fileName) = 0;
+    virtual void save(boost::shared_ptr<const PowerTabDocument>, const std::string& fileName) = 0;
 
     FileFormat getFileFormat() const;
 

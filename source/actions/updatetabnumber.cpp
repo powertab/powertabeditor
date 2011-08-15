@@ -19,7 +19,7 @@
 #include <powertabdocument/staff.h>
 
 UpdateTabNumber::UpdateTabNumber(uint8_t typedNumber, Note* note, Position* position,
-                                 std::shared_ptr<Staff> staff) :
+                                 boost::shared_ptr<Staff> staff) :
     note(note),
     position(position),
     staff(staff),

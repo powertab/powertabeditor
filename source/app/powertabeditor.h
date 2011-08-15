@@ -21,7 +21,7 @@
 #include <QMainWindow>
 #include <QAction>
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 // the sigfwd library allows for connecting Qt signals directly to
 // C++ functions & functors, and supports boost::bind for binding arguments to slots
@@ -45,7 +45,7 @@ class Note;
 class Position;
 class DocumentManager;
 class FileFormatManager;
-class FileFormat;
+struct FileFormat;
 class Command;
 
 class PowerTabEditor : public QMainWindow
@@ -301,7 +301,7 @@ protected:
     boost::scoped_ptr<QStackedWidget> mixerList;
     boost::scoped_ptr<QStackedWidget> playbackToolbarList;
 
-    std::shared_ptr<SkinManager> skinManager;
+    boost::shared_ptr<SkinManager> skinManager;
     boost::scoped_ptr<MidiPlayer> midiPlayer;
 
 private:
@@ -311,9 +311,9 @@ private:
     /// @param propertySetter - function for toggling the property
     template <typename T>
     void connectToggleProperty(QAction* action,
-                               std::function<std::vector<T*> (void)> objectsGetter,
-                               std::function<bool (const T*)> propertyGetter,
-                               std::function<bool (T*, bool)> propertySetter)
+                               boost::function<std::vector<T*> (void)> objectsGetter,
+                               boost::function<bool (const T*)> propertyGetter,
+                               boost::function<bool (T*, bool)> propertySetter)
     {
         sigfwd::connect(action, SIGNAL(triggered()),
                         boost::bind(&PowerTabEditor::performToggleProperty<T>, this,
@@ -327,8 +327,8 @@ private:
 
     /// Creates a new ToggleProperty<T> action, forwarding the parameters to its constructor
     template <typename T>
-    void performToggleProperty(const std::vector<T*>& objects, std::function<bool (T*, bool)> setPropertyFn,
-                               std::function<bool (const T*)> getPropertyFn, const QString& propertyName)
+    void performToggleProperty(const std::vector<T*>& objects, boost::function<bool (T*, bool)> setPropertyFn,
+                               boost::function<bool (const T*)> getPropertyFn, const QString& propertyName)
     {
         undoManager->push(new ToggleProperty<T>(objects, setPropertyFn, getPropertyFn, propertyName));
     }

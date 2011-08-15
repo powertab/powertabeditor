@@ -19,6 +19,7 @@
 #define REMOVETAPPEDHARMONIC_H
 
 #include <QUndoCommand>
+#include <boost/cstdint.hpp>
 
 class Note;
 

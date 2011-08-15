@@ -19,6 +19,7 @@
 #define DYNAMICDIALOG_H
 
 #include <QDialog>
+#include <boost/cstdint.hpp>
 
 class QButtonGroup;
 

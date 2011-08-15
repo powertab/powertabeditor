@@ -17,6 +17,8 @@
   
 #include "addguitar.h"
 
+#include <boost/make_shared.hpp>
+
 #include <powertabdocument/score.h>
 #include <powertabdocument/guitar.h>
 #include <widgets/mixer/mixer.h>
@@ -25,7 +27,7 @@ AddGuitar::AddGuitar(Score* score, Mixer* mixer) :
     score(score),
     mixer(mixer)
 {
-    newGuitar = std::make_shared<Guitar>();
+    newGuitar = boost::make_shared<Guitar>();
     newGuitar->GetTuning().SetToStandard();
 
     setText(QObject::tr("Add Guitar"));

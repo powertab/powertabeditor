@@ -19,6 +19,7 @@
 #define EDITREST_H
 
 #include <QUndoCommand>
+#include <boost/cstdint.hpp>
 
 class Position;
 

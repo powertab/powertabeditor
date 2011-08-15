@@ -14,22 +14,21 @@
 
 #include <cstdlib> // abs
 
-#include <vector>
-using std::vector;
 #include <string>
 using std::string;
 
 namespace midi
 {
-    // Pitches (relative to C = 0) corresponding to the keys in the keyText vector
-    static const vector<uint8_t> pitchClasses = {
+    // Pitches (relative to C = 0) corresponding to the keys in the keyText array
+    static const uint8_t NUM_PITCH_CLASSES = 35;
+    static const uint8_t pitchClasses[NUM_PITCH_CLASSES] = {
         3, 10, 5, 0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5,
         0, 7, 2, 9, 4, 11, 6, 1, 8, 3, 10, 5, 0, 7, 2,
         9, 4, 11, 6, 1
     };
 
     // All of the possible keys, arranged in order of the circle of fifths
-    static const vector<string> keyText = {
+    static const string keyText[NUM_PITCH_CLASSES] = {
         "Fbb", "Cbb", "Gbb", "Dbb", "Abb", "Ebb", "Bbb",
         "Fb", "Cb", "Gb", "Db", "Ab", "Eb", "Bb",
         "F", "C", "G", "D", "A", "E", "B",
@@ -76,7 +75,7 @@ namespace midi
         return (note <= MAX_MIDI_NOTE);
     }
 
-    /// Helper function to find the index of a key, for use with the pitchClasses and keyText vectors
+    /// Helper function to find the index of a key, for use with the pitchClasses and keyText arrays
     int GetKeyIndex(bool usesSharps, uint8_t numAccidentals)
     {
         const int keyC = 15;
@@ -96,7 +95,7 @@ namespace midi
 
         const uint8_t pitch = GetMidiNotePitch(note);
 
-        // find the index of the key, for use with the pitchClasses and keyText vectors
+        // find the index of the key, for use with the pitchClasses and keyText arrays
         const int tonic = GetKeyIndex(usesSharps, numAccidentals);
 
         uint8_t minDistance = 100; // needs to be larger than any possible distance
@@ -104,9 +103,9 @@ namespace midi
 
         // find the correct text representation of the pitch, by finding the representation that is the
         // shortest number of steps away from the tonic on the circle of fifths
-        for (uint8_t i = 0; i < pitchClasses.size(); i++)
+        for (uint8_t i = 0; i < NUM_PITCH_CLASSES; i++)
         {
-            if (pitchClasses.at(i) == pitch)
+            if (pitchClasses[i] == pitch)
             {
                 uint8_t dist = abs(tonic - i);
                 if (std::min(dist, minDistance) == dist)
@@ -117,7 +116,7 @@ namespace midi
             }
         }
 
-        string text = keyText.at(bestMatch);
+        string text = keyText[bestMatch];
         // remove accidentals depending on key signature
         if (tonic - 1 <= bestMatch && tonic + 5 >= bestMatch)
         {

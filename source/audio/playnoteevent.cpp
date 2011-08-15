@@ -27,7 +27,7 @@
 
 #include <qglobal.h>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 PlayNoteEvent::PlayNoteEvent(uint8_t channel, double startTime, double duration, uint8_t pitch, uint32_t positionIndex,
                              uint32_t systemIndex, shared_ptr<const Guitar> guitar, bool isMuted, VelocityType velocity) :

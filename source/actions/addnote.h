@@ -19,8 +19,8 @@
 #define ADDNOTE_H
 
 #include <QUndoCommand>
-#include <cstdint>
-#include <memory>
+#include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
 
 class Staff;
 class Position;
@@ -29,7 +29,7 @@ class AddNote : public QUndoCommand
 {
 public:
     AddNote(uint8_t stringNum, uint8_t fretNumber, uint32_t positionIndex,
-            uint32_t voice, std::shared_ptr<Staff> staff);
+            uint32_t voice, boost::shared_ptr<Staff> staff);
     ~AddNote();
 
     void redo();
@@ -40,7 +40,7 @@ private:
     const uint8_t fretNumber;
     uint32_t positionIndex;
     uint32_t voice;
-    std::shared_ptr<Staff> staff;
+    boost::shared_ptr<Staff> staff;
 
     bool newPositionAdded;
     Position* position;

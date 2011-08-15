@@ -19,7 +19,8 @@
 #define DELETEPOSITION_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
 
 class Staff;
 class Position;
@@ -27,14 +28,14 @@ class Position;
 class DeletePosition : public QUndoCommand
 {
 public:
-    DeletePosition(std::shared_ptr<Staff> staff, Position* position, quint32 voice);
+    DeletePosition(boost::shared_ptr<Staff> staff, Position* position, quint32 voice);
     void redo();
     void undo();
 
 protected:
-    std::shared_ptr<Staff> staff;
+    boost::shared_ptr<Staff> staff;
     Position* position;
-    std::unique_ptr<Position> positionCopy;
+    boost::scoped_ptr<Position> positionCopy;
     const quint32 voice;
 };
 

@@ -20,7 +20,7 @@
 
 #include <QTabWidget>
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class NotePage;
 class ScorePage;
@@ -31,7 +31,7 @@ class Toolbox : public QTabWidget
 {
     Q_OBJECT
 public:
-    Toolbox(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager);
+    Toolbox(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager);
 
 private:
     static ScorePage *scorePage;

@@ -23,11 +23,12 @@
 
 struct StandardTuningFixture
 {
-    StandardTuningFixture() :
-        tuning("Tuning", 0, true, {midi::MIDI_NOTE_E4, midi::MIDI_NOTE_B3,
-            midi::MIDI_NOTE_G3, midi::MIDI_NOTE_D3, midi::MIDI_NOTE_A2,
-            midi::MIDI_NOTE_E2})
+    StandardTuningFixture()
     {
+        tuning.SetName("Tuning");
+        tuning.SetMusicNotationOffset(0);
+        tuning.SetSharps(true);
+        tuning.SetToStandard();
     }
 
     ~StandardTuningFixture() {}

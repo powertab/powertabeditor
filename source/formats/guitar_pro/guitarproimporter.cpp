@@ -22,6 +22,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/guitar_pro/gp_channel.h>
@@ -37,26 +38,27 @@
 #include <powertabdocument/tempomarker.h>
 #include <powertabdocument/system.h>
 
-const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
-    {"FICHIER GUITAR PRO v3.00", Gp::Version3},
-    {"FICHIER GUITAR PRO v4.00", Gp::Version4},
-    {"FICHIER GUITAR PRO v4.06", Gp::Version4},
-    {"FICHIER GUITAR PRO L4.06", Gp::Version4}
-};
+#include <boost/assign/list_of.hpp>
+
+const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = boost::assign::map_list_of
+    ("FICHIER GUITAR PRO v3.00", Gp::Version3)
+    ("FICHIER GUITAR PRO v4.00", Gp::Version4)
+    ("FICHIER GUITAR PRO v4.06", Gp::Version4)
+    ("FICHIER GUITAR PRO L4.06", Gp::Version4);
 
 GuitarProImporter::GuitarProImporter() :
     FileFormatImporter(FileFormat("Guitar Pro 3, 4", "*.gp3 *.gp4"))
 {
 }
 
-std::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fileName)
+boost::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& fileName)
 {
     std::ifstream in(fileName.c_str(), std::ios::binary | std::ios::in);
     Gp::InputStream stream(in);
 
     findFileVersion(stream);
 
-    auto ptbDoc = std::make_shared<PowerTabDocument>();
+    boost::shared_ptr<PowerTabDocument> ptbDoc = boost::make_shared<PowerTabDocument>();
     Score* score = ptbDoc->GetGuitarScore();
 
     readHeader(stream, ptbDoc->GetHeader());
@@ -92,7 +94,7 @@ void GuitarProImporter::findFileVersion(Gp::InputStream& stream)
 {
     const std::string versionString = stream.readVersionString();
 
-    auto versionStringIt = versionStrings.find(versionString);
+    std::map<std::string, Gp::Version>::const_iterator versionStringIt = versionStrings.find(versionString);
 
     if (versionStringIt != versionStrings.end())
     {
@@ -190,7 +192,7 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
     for (uint32_t measure = 0; measure < numMeasures; measure++)
     {
         BarData bar;
-        auto barline = std::make_shared<Barline>();
+        boost::shared_ptr<Barline> barline = boost::make_shared<Barline>();
 
         // clone time signature, key signature from previous barline if possible
         if (measure != 0)
@@ -232,7 +234,7 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
 
         if (flags.test(Gp::AlternateEnding))
         {
-            auto altEnding = std::make_shared<AlternateEnding>();
+            boost::shared_ptr<AlternateEnding> altEnding = boost::make_shared<AlternateEnding>();
             altEnding->SetNumber(stream.read<uint8_t>());
 
             bar.altEnding = altEnding;
@@ -309,7 +311,7 @@ void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32
 {
     for (uint32_t i = 0; i < numTracks; ++i)
     {
-        Score::GuitarPtr guitar = std::make_shared<Guitar>();
+        Score::GuitarPtr guitar = boost::make_shared<Guitar>();
         guitar->SetNumber(score->GetGuitarCount());
 
         stream.skip(1); // flags used for indicating drum tracks, banjo tracks, etc -- ignore

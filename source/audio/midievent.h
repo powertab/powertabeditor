@@ -18,7 +18,7 @@
 #ifndef MIDIEVENT_H
 #define MIDIEVENT_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 
 class RtMidiWrapper;
 

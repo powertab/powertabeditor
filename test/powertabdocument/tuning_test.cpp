@@ -18,6 +18,7 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
+#include <boost/assign.hpp>
 
 #include "tuning_fixtures.h"
 
@@ -55,12 +56,19 @@ BOOST_FIXTURE_TEST_CASE(SetTuningNotes, StandardTuningFixture)
     Tuning tuning2;
 
     using namespace midi;
-    tuning2.SetTuningNotes( {MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
-                           MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2} );
+    using namespace boost::assign;
+    std::vector<uint8_t> notes;
+
+    notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
+             MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2;
+
+    tuning2.SetTuningNotes(notes);
 
     BOOST_CHECK(tuning2.IsSameTuning(tuning));
 
-    tuning2.SetTuningNotes( {MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3} );
+    notes.clear();
+    notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3;
+    tuning2.SetTuningNotes(notes);
 
     BOOST_CHECK(!tuning2.IsSameTuning(tuning));
 }

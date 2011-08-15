@@ -26,7 +26,7 @@
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
-BarlinePainter::BarlinePainter(StaffData staffInfo, std::shared_ptr<const Barline> barLinePtr) :
+BarlinePainter::BarlinePainter(StaffData staffInfo, boost::shared_ptr<const Barline> barLinePtr) :
     staffInfo(staffInfo),
     barLine(barLinePtr),
     x(0),

@@ -115,7 +115,8 @@ const Position& Position::operator=(const Position& position)
                   m_complexSymbolArray.begin());
 
         // clean out the current note array
-        for (auto i = m_noteArray.begin(); i != m_noteArray.end(); ++i)
+        for (std::vector<Note*>::iterator i = m_noteArray.begin();
+             i != m_noteArray.end(); ++i)
             delete *i;
 
         m_noteArray.clear();
@@ -738,7 +739,7 @@ Note* Position::GetNoteByString(uint8_t string) const
     NoteComparison compare;
     compare.string = string;
 
-    auto note = std::find_if(m_noteArray.begin(), m_noteArray.end(), compare);
+    std::vector<Note*>::const_iterator note = std::find_if(m_noteArray.begin(), m_noteArray.end(), compare);
     if (note == m_noteArray.end())
     {
         return NULL;
@@ -889,8 +890,8 @@ std::pair<uint8_t, uint8_t> Position::GetStringBounds() const
     std::transform(m_noteArray.begin(), m_noteArray.end(), strings.begin(),
                    std::mem_fun(&Note::GetString));
 
-    auto lowest = std::min_element(strings.begin(), strings.end());
-    auto highest = std::max_element(strings.begin(), strings.end());
+    std::vector<uint8_t>::const_iterator lowest = std::min_element(strings.begin(), strings.end());
+    std::vector<uint8_t>::const_iterator highest = std::max_element(strings.begin(), strings.end());
 
     return std::make_pair(*lowest, *highest);
 }

@@ -29,7 +29,7 @@ AddSystem::AddSystem(Score* score, quint32 index) :
 
 void AddSystem::redo()
 {
-    std::shared_ptr<System> newSystem(new System);
+    boost::shared_ptr<System> newSystem(new System);
 
     // adjust the location of the system (should be below the previous system)
     // TODO - move this into the Score::InsertSystem method (or add another method)??

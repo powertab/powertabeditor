@@ -55,7 +55,7 @@ namespace sigfwd
     //! copy being made, you can wrap a function in a boost::reference_wrapper usig boost::ref or boost::cref.
     template<typename CallSig, typename Functor>
     connection connectx(QObject *emitter, const char *qt_signal_sig, const Functor &receiver, 
-                        Qt::ConnectionType conn_type = Qt::AutoConnection, bool check_sigs = true)
+                        Qt::ConnectionType conn_type, bool check_sigs)
     {
         using namespace boost;
 

@@ -24,7 +24,7 @@
 
 QFont ChordTextPainter::displayFont = QFont("Liberation Sans");
 
-ChordTextPainter::ChordTextPainter(std::shared_ptr<const ChordText> chordText) :
+ChordTextPainter::ChordTextPainter(boost::shared_ptr<const ChordText> chordText) :
     chordText(chordText)
 {
     displayFont.setPixelSize(10); // needed for cross-platform consistency in font size

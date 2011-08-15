@@ -19,7 +19,7 @@
 #define CHANGEBARLINETYPE_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Barline;
 
@@ -28,12 +28,12 @@ class Barline;
 class ChangeBarLineType : public QUndoCommand
 {
 public:
-    ChangeBarLineType(std::shared_ptr<Barline> bar, quint8 barType, quint8 repeats);
+    ChangeBarLineType(boost::shared_ptr<Barline> bar, quint8 barType, quint8 repeats);
     virtual void undo();
     virtual void redo();
 
 private:
-    std::shared_ptr<Barline> barLine;
+    boost::shared_ptr<Barline> barLine;
     quint8 type;
     quint8 repeatCount;
     quint8 originalType;

@@ -19,7 +19,7 @@
 #define NOTESTEM_H
 
 #include <vector>
-#include <functional>
+#include <boost/function.hpp>
 #include "staffdata.h"
 
 class Position;
@@ -79,7 +79,7 @@ NoteStem::StemDirection findDirectionForGroup(const std::vector<NoteStem>& stems
 /// that is passed to the constructor
 struct CompareStemPositions
 {
-    typedef std::function<double (const NoteStem&)> PositionGetter;
+    typedef boost::function<double (const NoteStem&)> PositionGetter;
 
     CompareStemPositions(PositionGetter posFn) : posFn(posFn) {}
 

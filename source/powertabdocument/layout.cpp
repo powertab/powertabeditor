@@ -29,10 +29,11 @@
 #include <numeric>
 #include <map>
 #include <boost/foreach.hpp>
+#include <boost/assign/list_of.hpp>
 #include <iostream>
 
 /// Adjust the spacing around the standard notation staff, depending on if any notes are located above/below the staff
-void Layout::CalculateStdNotationHeight(Score* score, std::shared_ptr<System> system)
+void Layout::CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> system)
 {
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
@@ -122,8 +123,8 @@ int maxHeightOfSymbolGroups(const std::vector<Layout::SymbolGroup>& symbolGroups
 /// Calculates the spacing below the tab staff, for indicating hammerons, pick strokes, taps, etc.
 /// The symbols are "stacked" on each other, so the height of the spacing is equal to the height
 /// of the largest stack
-void Layout::CalculateTabStaffBelowSpacing(std::shared_ptr<const System> system,
-                                           std::shared_ptr<Staff> staff)
+void Layout::CalculateTabStaffBelowSpacing(boost::shared_ptr<const System> system,
+                                           boost::shared_ptr<Staff> staff)
 {
     std::vector<SymbolGroup> symbolGroups = CalculateTabStaffBelowLayout(system, staff);
 
@@ -133,8 +134,8 @@ void Layout::CalculateTabStaffBelowSpacing(std::shared_ptr<const System> system,
 /// Similar to Layout::CalculateTabStaffBelowSpacing, except for symbols displayed between the
 /// tab staff and standard notation staff. However, some of the symbols used here do not belong
 /// to Position objects (such as dynamics)
-void Layout::CalculateSymbolSpacing(const Score* score, std::shared_ptr<System> system,
-                                    std::shared_ptr<Staff> staff)
+void Layout::CalculateSymbolSpacing(const Score* score, boost::shared_ptr<System> system,
+                                    boost::shared_ptr<Staff> staff)
 {
     std::vector<SymbolGroup> symbolGroups = CalculateSymbolLayout(score, system, staff);
 
@@ -158,8 +159,8 @@ int updateHeightMap(std::vector<int>& heightMap, size_t left, size_t right)
 /// Compute the layout of symbols between the standard notation and tab staves
 /// Returns a list of all symbol groups and their locations (for example, consecutive notes with vibrato
 /// will have their vibrato symbols grouped together, forming a single vibrato symbol spanning the notes)
-std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* score, std::shared_ptr<const System> system,
-                                                               std::shared_ptr<const Staff> staff)
+std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* score, boost::shared_ptr<const System> system,
+                                                               boost::shared_ptr<const Staff> staff)
 {
     std::vector<std::vector<SymbolType> > symbolMap;
 
@@ -293,8 +294,8 @@ std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* scor
 /// Calculates the layout of symbols displayed below the tab staff (horizontal and vertical positioning)
 /// There are no symbols which are grouped with neighbouring symbols, making the function significantly simpler
 /// than the Layout::CalculateSymbolLayout function
-std::vector<Layout::SymbolGroup> Layout::CalculateTabStaffBelowLayout(std::shared_ptr<const System> system,
-                                                                      std::shared_ptr<const Staff> staff)
+std::vector<Layout::SymbolGroup> Layout::CalculateTabStaffBelowLayout(boost::shared_ptr<const System> system,
+                                                                      boost::shared_ptr<const Staff> staff)
 {
     std::vector<SymbolGroup> symbolGroups;
 
@@ -306,22 +307,22 @@ std::vector<Layout::SymbolGroup> Layout::CalculateTabStaffBelowLayout(std::share
                                 system->GetPositionSpacing(), 0, NoSymbol);
 
         // associate the symbol type with each enabled/disabled symbol
-        std::map<bool, SymbolType> symbols = {
-            {pos->HasPickStrokeDown(), SymbolPickStrokeDown},
-            {pos->HasPickStrokeUp(), SymbolPickStrokeUp},
-            {pos->HasTap(), SymbolTap},
-            {pos->HasNoteWithHammeronOrPulloff(), SymbolHammerOnPullOff},
-            {pos->HasNoteWithSlide(), SymbolSlide},
-            {pos->HasNoteWithTappedHarmonic(), SymbolTappedHarmonic},
-            {pos->HasNoteWithArtificialHarmonic(), SymbolArtificialHarmonic}
-        };
+        std::map<bool, SymbolType> symbols = boost::assign::map_list_of
+            (pos->HasPickStrokeDown(), SymbolPickStrokeDown)
+            (pos->HasPickStrokeUp(), SymbolPickStrokeUp)
+            (pos->HasTap(), SymbolTap)
+            (pos->HasNoteWithHammeronOrPulloff(), SymbolHammerOnPullOff)
+            (pos->HasNoteWithSlide(), SymbolSlide)
+            (pos->HasNoteWithTappedHarmonic(), SymbolTappedHarmonic)
+            (pos->HasNoteWithArtificialHarmonic(), SymbolArtificialHarmonic);
 
         // for each symbol that is enabled, add a corresponding SymbolGroup to the layout
-        BOOST_FOREACH(const auto& symbol, symbols)
+        for (std::map<bool, SymbolType>::const_iterator symbol = symbols.begin();
+             symbol != symbols.end(); ++symbol)
         {
-            if (symbol.first == true)
+            if (symbol->first == true)
             {
-                symbolGroup.symbolType = symbol.second;
+                symbolGroup.symbolType = symbol->second;
                 symbolGroups.push_back(symbolGroup);
             }
         }
@@ -338,7 +339,7 @@ Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int heig
 }
 
 /// Auto-adjust spacing of notes in the system
-void Layout::FormatSystem(std::shared_ptr<System> system)
+void Layout::FormatSystem(boost::shared_ptr<System> system)
 {
     std::vector<System::BarlinePtr> barlines;
     system->GetBarlines(barlines);

@@ -19,7 +19,7 @@
 #define ADDCHORDTEXT_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class ChordText;
 class System;
@@ -27,13 +27,13 @@ class System;
 class AddChordText : public QUndoCommand
 {
 public:
-    AddChordText(std::shared_ptr<System> system, std::shared_ptr<ChordText> chordText, quint32 index);
+    AddChordText(boost::shared_ptr<System> system, boost::shared_ptr<ChordText> chordText, quint32 index);
     virtual void undo();
     virtual void redo();
 
 protected:
-    std::shared_ptr<ChordText> chordText;
-    std::shared_ptr<System> system;
+    boost::shared_ptr<ChordText> chordText;
+    boost::shared_ptr<System> system;
     const quint32 index;
 };
 

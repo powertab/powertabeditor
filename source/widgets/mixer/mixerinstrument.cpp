@@ -32,7 +32,7 @@
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/generalmidi.h>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent) :
     QWidget(parent),

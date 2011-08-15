@@ -20,7 +20,7 @@
 
 #include "painterbase.h"
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <QFont>
 #include <QStaticText>
 
@@ -29,12 +29,12 @@ class TempoMarker;
 class TempoMarkerPainter : public PainterBase
 {
 public:
-    TempoMarkerPainter(std::shared_ptr<const TempoMarker> tempoMarker);
+    TempoMarkerPainter(boost::shared_ptr<const TempoMarker> tempoMarker);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
-    std::shared_ptr<const TempoMarker> tempoMarker;
+    boost::shared_ptr<const TempoMarker> tempoMarker;
     static QFont displayFont;
     QStaticText displayText;
 

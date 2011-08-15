@@ -22,7 +22,7 @@
 #include <powertabdocument/direction.h>
 #include <painters/musicfont.h>
 
-DirectionPainter::DirectionPainter(std::shared_ptr<const Direction> direction, size_t symbolIndex) :
+DirectionPainter::DirectionPainter(boost::shared_ptr<const Direction> direction, size_t symbolIndex) :
     direction(direction),
     symbolIndex(symbolIndex),
     usingMusicFont(true)

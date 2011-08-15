@@ -50,8 +50,7 @@
 #include <audio/repeatcontroller.h>
 #include <audio/volumechangeevent.h>
 
-using std::shared_ptr;
-using std::unique_ptr;
+using boost::shared_ptr;
 
 MidiPlayer::MidiPlayer(Caret* caret, int playbackSpeed) :
     caret(caret),
@@ -389,7 +388,8 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
 
     SystemLocation currentLocation;
 
-    auto activeEvent = eventList.begin();
+    typedef boost::ptr_list<MidiEvent>::const_iterator MidiEventIterator;
+    MidiEventIterator activeEvent = eventList.begin();
 
     while (activeEvent != eventList.end())
     {
@@ -456,7 +456,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
         activeEvent->performEvent(rtMidiWrapper);
 
         // add delay between this event and the next one
-        auto nextEvent = boost::next(activeEvent);
+        MidiEventIterator nextEvent = boost::next(activeEvent);
         if (nextEvent != eventList.end())
         {
             const int sleepDuration = abs(nextEvent->getStartTime() - activeEvent->getStartTime());
@@ -477,7 +477,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
 }
 
 // Finds the active tempo marker
-std::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) const
+boost::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) const
 {
     const Score* currentScore = caret->getCurrentScore();
 

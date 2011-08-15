@@ -21,7 +21,7 @@
 #include <QDialog>
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Tuning;
 class QComboBox;
@@ -34,7 +34,7 @@ class TuningDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit TuningDialog(std::shared_ptr<Guitar> guitar, QWidget *parent = 0);
+    explicit TuningDialog(boost::shared_ptr<Guitar> guitar, QWidget *parent = 0);
 
 public slots:
     void accept();
@@ -44,7 +44,7 @@ private slots:
     void updateEnabledStrings(int numStrings);
 
 private:
-    std::shared_ptr<Guitar> guitar;
+    boost::shared_ptr<Guitar> guitar;
     const Tuning& tuning;
     
     QStringList noteNames;

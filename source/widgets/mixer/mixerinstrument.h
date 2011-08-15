@@ -19,7 +19,7 @@
 #define MIXERINSTRUMENT_H
 
 #include <QWidget>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Guitar;
 class QHBoxLayout;
@@ -35,9 +35,9 @@ class MixerInstrument : public QWidget
 {
     Q_OBJECT
 public:
-    MixerInstrument(std::shared_ptr<Guitar> instrument, QWidget *parent = 0);
+    MixerInstrument(boost::shared_ptr<Guitar> instrument, QWidget *parent = 0);
 
-    std::shared_ptr<Guitar> getInstrument() const
+    boost::shared_ptr<Guitar> getInstrument() const
     {
         return guitar;
     }
@@ -61,7 +61,7 @@ protected:
 
     ClickableLabel* tuningLabel;
 
-    std::shared_ptr<Guitar> guitar;
+    boost::shared_ptr<Guitar> guitar;
 
 public slots:
     void changePan(int value);

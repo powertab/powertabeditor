@@ -21,7 +21,7 @@
 #include "notestem.h"
 
 #include <vector>
-#include <cstdint>
+#include <boost/cstdint.hpp>
 
 class QGraphicsItem;
 

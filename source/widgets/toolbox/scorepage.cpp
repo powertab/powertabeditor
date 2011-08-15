@@ -140,7 +140,7 @@ void ScorePage::createFlowDynamicsButtons()
     layout->addWidget(flowDynamicsGroup);
 }
 
-ScorePage::ScorePage(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager, QFrame *parent) :
+ScorePage::ScorePage(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager, QFrame *parent) :
     QFrame(parent),
     mainWindow(mainWindow)
 {

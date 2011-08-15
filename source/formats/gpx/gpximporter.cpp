@@ -20,6 +20,7 @@
 #include "filesystem.h"
 #include "documentreader.h"
 #include <fstream>
+#include <boost/make_shared.hpp>
 
 #include <powertabdocument/powertabdocument.h>
 
@@ -28,7 +29,7 @@ GpxImporter::GpxImporter() :
 {
 }
 
-std::shared_ptr<PowerTabDocument> GpxImporter::load(const std::string& fileName)
+boost::shared_ptr<PowerTabDocument> GpxImporter::load(const std::string& fileName)
 {
     // load the data, decompress, and open as XML document
     std::ifstream file(fileName.c_str(), std::ios::binary | std::ios::in);
@@ -36,7 +37,7 @@ std::shared_ptr<PowerTabDocument> GpxImporter::load(const std::string& fileName)
 
     const std::string scoreData= fileSystem.getFileContents("score.gpif");
 
-    auto doc = std::make_shared<PowerTabDocument>();
+    boost::shared_ptr<PowerTabDocument> doc = boost::make_shared<PowerTabDocument>();
     Gpx::DocumentReader reader(scoreData);
     reader.readDocument(doc);
 

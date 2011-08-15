@@ -19,7 +19,7 @@
 
 #include <powertabdocument/system.h>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 AddChordText::AddChordText(shared_ptr<System> system, shared_ptr<ChordText> chordText, quint32 index) :
     chordText(chordText),

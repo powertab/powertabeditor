@@ -20,7 +20,7 @@ namespace sigfwd
     // Forward declaration
     template<typename CallSig, typename Functor>
     connection connectx(QObject *emitter, const char *qt_signal_sig, const Functor &receiver, 
-                        Qt::ConnectionType conn_type, bool check_sigs);
+                        Qt::ConnectionType conn_type = Qt::AutoConnection, bool check_sigs = true);
 
     namespace impl
     {

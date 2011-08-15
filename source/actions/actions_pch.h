@@ -19,8 +19,8 @@
 #define ACTIONS_PCH_H
 
 #include <QUndoCommand>
-#include <memory>
-#include <cstdint>
+#include <boost/shared_ptr.hpp>
+#include <boost/cstdint.hpp>
 #include <vector>
 
 #endif // ACTIONS_PCH_H

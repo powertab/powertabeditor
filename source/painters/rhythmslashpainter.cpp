@@ -27,7 +27,7 @@ const double RhythmSlashPainter::NOTE_HEAD_OFFSET = System::RHYTHM_SLASH_SPACING
 
 QFont RhythmSlashPainter::musicFont = MusicFont().getFont();
 
-RhythmSlashPainter::RhythmSlashPainter(std::shared_ptr<const RhythmSlash> rhythmSlash) :
+RhythmSlashPainter::RhythmSlashPainter(boost::shared_ptr<const RhythmSlash> rhythmSlash) :
     rhythmSlash(rhythmSlash)
 {
     bounds = QRectF(0, 0, musicFont.pixelSize(), System::RHYTHM_SLASH_SPACING);

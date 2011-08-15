@@ -20,7 +20,7 @@
 #include <powertabdocument/score.h>
 
 AddAlternateEnding::AddAlternateEnding(Score* score,
-                                       std::shared_ptr<AlternateEnding> altEnding) :
+                                       boost::shared_ptr<AlternateEnding> altEnding) :
     score(score),
     altEnding(altEnding)
 {

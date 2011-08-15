@@ -14,7 +14,6 @@
 
 #include <vector>
 #include <string>
-#include <initializer_list>
 
 #include "powertabobject.h"
 #include "macros.h"
@@ -54,9 +53,6 @@ public:
 
     Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
            const std::vector<uint8_t>& tuningNotes);
-
-    Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
-           std::initializer_list<uint8_t> tuningNotes);
 
     // Operators
     bool operator==(const Tuning& tuning) const;
@@ -153,7 +149,6 @@ public:
     std::pair<uint8_t, uint8_t> GetNoteRange(uint8_t capo) const;
 
     bool SetTuningNotes(const std::vector<uint8_t>& tuningNotes);
-    bool SetTuningNotes(std::initializer_list<uint8_t> tuningNotes);
 
     bool IsValid() const;
 

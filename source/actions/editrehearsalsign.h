@@ -19,6 +19,7 @@
 #define EDITREHEARSALSIGN_H
 
 #include <QUndoCommand>
+#include <boost/cstdint.hpp>
 
 class Barline;
 class RehearsalSign;
@@ -35,7 +36,7 @@ public:
 protected:
     RehearsalSign& rehearsalSign;
     bool isShown;
-    quint8 letter;
+    uint8_t letter;
     std::string description;
 
     void showHide(bool show);

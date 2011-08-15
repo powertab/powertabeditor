@@ -19,7 +19,7 @@
 #define POSITIONSHIFT_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class System;
 
@@ -32,12 +32,12 @@ public:
         SHIFT_BACKWARD
     };
 
-    PositionShift(std::shared_ptr<System> system, quint32 positionIndex, ShiftType type);
+    PositionShift(boost::shared_ptr<System> system, quint32 positionIndex, ShiftType type);
     void redo();
     void undo();
 
 protected:
-    std::shared_ptr<System> system;
+    boost::shared_ptr<System> system;
     const quint32 positionIndex;
     const ShiftType type;
 };

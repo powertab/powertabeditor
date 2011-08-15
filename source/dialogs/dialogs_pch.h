@@ -32,7 +32,7 @@
 #include <QLabel>
 #include <QLineEdit>
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 #include <algorithm>
 

@@ -18,16 +18,16 @@
 #ifndef POWERTABDOCUMENT_PCH_H
 #define POWERTABDOCUMENT_PCH_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <string>
 #include <vector>
-#include <memory>
-#include <array>
+#include <boost/shared_ptr.hpp>
+#include <boost/array.hpp>
 #include <istream>
 #include <ostream>
-#include <unordered_map>
+#include <boost/unordered_map.hpp>
+#include <boost/bind.hpp>
 #include <algorithm>
-#include <functional>
 #include <sstream>
 #include <map>
 #include <stdexcept>

@@ -39,7 +39,7 @@ public:
     ~FileFormatManager();
 
     std::vector<FileFormat> importedFileFormats() const;
-    std::shared_ptr<PowerTabDocument> import(const std::string& fileName, const FileFormat& format);
+    boost::shared_ptr<PowerTabDocument> import(const std::string& fileName, const FileFormat& format);
 
 private:
     boost::ptr_map<FileFormat, FileFormatImporter> importers;

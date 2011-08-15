@@ -25,7 +25,7 @@ class GpxImporter : public FileFormatImporter
 public:
     GpxImporter();
 
-    std::shared_ptr<PowerTabDocument> load(const std::string& fileName);
+    boost::shared_ptr<PowerTabDocument> load(const std::string& fileName);
 };
 
 #endif // GPXIMPORTER_H

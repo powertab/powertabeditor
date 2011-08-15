@@ -19,7 +19,8 @@
 #define UPDATETABNUMBER_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/cstdint.hpp>
 
 class Staff;
 class Position;
@@ -29,7 +30,7 @@ class UpdateTabNumber : public QUndoCommand
 {
 public:
     UpdateTabNumber(uint8_t typedNumber, Note* note, Position* position,
-                    std::shared_ptr<Staff> staff);
+                    boost::shared_ptr<Staff> staff);
     ~UpdateTabNumber();
     void undo();
     void redo();
@@ -37,7 +38,7 @@ public:
 protected:
     Note* note;
     Position* position;
-    std::shared_ptr<Staff> staff;
+    boost::shared_ptr<Staff> staff;
     uint8_t newFretNumber;
     uint8_t prevFretNumber;
     Note *origPrevNote;

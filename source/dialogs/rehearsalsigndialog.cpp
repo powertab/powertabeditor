@@ -54,7 +54,7 @@ void RehearsalSignDialog::populateLetterChoices()
     // find the letters that are already in use, by checking every rehearsal sign in the score
     for(size_t i = 0; i < score->GetSystemCount(); i++)
     {
-        std::shared_ptr<System> system = score->GetSystem(i);
+        boost::shared_ptr<System> system = score->GetSystem(i);
 
         std::vector<System::BarlineConstPtr> barlines;
         system->GetBarlines(barlines);

@@ -20,9 +20,11 @@
 
 #include <istream>
 #include <vector>
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <cassert>
-#include <type_traits>
+#include <boost/type_traits/is_arithmetic.hpp>
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/static_assert.hpp>
 #include <bitset>
 
 #include "gp_fileformat.h"
@@ -61,7 +63,7 @@ private:
 template <class T>
 inline T InputStream::read()
 {
-    static_assert(std::is_arithmetic<T>::value, "T must be an arithmetic type");
+    BOOST_STATIC_ASSERT_MSG(boost::is_arithmetic<T>::value, "T must be an arithmetic type");
     T data;
     stream_.read((char*)&data, sizeof(data));
     return data;
@@ -75,7 +77,8 @@ inline T InputStream::read()
 template <typename LengthPrefixType>
 inline std::string InputStream::readCharacterString()
 {
-    static_assert(std::is_integral<LengthPrefixType>::value, "LengthPrefix must be an integral type");
+    BOOST_STATIC_ASSERT_MSG(boost::is_integral<LengthPrefixType>::value,
+                            "LengthPrefix must be an integral type");
 
     const LengthPrefixType length = read<LengthPrefixType>();
 

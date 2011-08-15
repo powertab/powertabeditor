@@ -16,7 +16,7 @@
 #include "powertabobject.h"
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Direction;
 class ChordText;
@@ -44,13 +44,13 @@ public:
     // Position Spacing Constants
     static const uint8_t MIN_POSITION_SPACING;
 
-    typedef std::shared_ptr<Direction> DirectionPtr;
-    typedef std::shared_ptr<ChordText> ChordTextPtr;
-    typedef std::shared_ptr<RhythmSlash> RhythmSlashPtr;
-    typedef std::shared_ptr<Staff> StaffPtr;
-    typedef std::shared_ptr<const Staff> StaffConstPtr;
-    typedef std::shared_ptr<Barline> BarlinePtr;
-    typedef std::shared_ptr<const Barline> BarlineConstPtr;
+    typedef boost::shared_ptr<Direction> DirectionPtr;
+    typedef boost::shared_ptr<ChordText> ChordTextPtr;
+    typedef boost::shared_ptr<RhythmSlash> RhythmSlashPtr;
+    typedef boost::shared_ptr<Staff> StaffPtr;
+    typedef boost::shared_ptr<const Staff> StaffConstPtr;
+    typedef boost::shared_ptr<Barline> BarlinePtr;
+    typedef boost::shared_ptr<const Barline> BarlineConstPtr;
 
     // Member Variables
 private:

@@ -23,11 +23,12 @@
 
 #include <numeric> // partial_sum
 #include <stdexcept>
-#include <functional>
 #include <algorithm>
 #include <map>
 #include <cmath>
 #include <boost/foreach.hpp>
+#include <boost/bind.hpp>
+#include <boost/assign/list_of.hpp>
 
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);
@@ -87,11 +88,12 @@ Staff::Staff(const Staff& staff) :
 
 Staff::~Staff()
 {
-    for (auto i = positionArrays.begin(); i != positionArrays.end(); ++i)
+    for (size_t i = 0; i < positionArrays.size(); i++)
     {
-        for (auto j = i->begin(); j != i->end(); ++j)
+        std::vector<Position*>& positionArray = positionArrays[i];
+        for (size_t j = 0; j < positionArray.size(); j++)
         {
-            delete *j;
+            delete positionArray[j];
         }
     }
 }
@@ -385,11 +387,11 @@ Position* Staff::GetPositionByPosition(uint32_t voice, uint32_t index) const
 
     const std::vector<Position*>& positionArray = positionArrays.at(voice);
 
-    for (auto i = positionArray.begin(); i != positionArray.end(); ++i)
+    for (size_t i = 0; i < positionArray.size(); i++)
     {
-        if ((*i)->GetPosition() == index)
+        if (positionArray[i]->GetPosition() == index)
         {
-            return *i;
+            return positionArray[i];
         }
     }
 
@@ -398,7 +400,7 @@ Position* Staff::GetPositionByPosition(uint32_t voice, uint32_t index) const
 
 /// Finds the position index of the next position
 /// @throw std::out_of_range if the position does not exist in this staff, or if the voice is invalid
-size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const System> system,
+size_t Staff::GetIndexOfNextPosition(uint32_t voice, boost::shared_ptr<const System> system,
                                      const Position* position) const
 {
     if (!IsValidVoice(voice))
@@ -406,7 +408,8 @@ size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const Syste
 
     const std::vector<Position*>& positionArray = positionArrays.at(voice);
 
-    auto location = std::find(positionArray.begin(), positionArray.end(), position);
+    std::vector<Position*>::const_iterator location = std::find(positionArray.begin(),
+                                                                positionArray.end(), position);
 
     if (location == positionArray.end())
         throw std::out_of_range("Position not in system");
@@ -424,15 +427,16 @@ size_t Staff::GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const Syste
 }
 
 // Returns true if the given position is the only Position object in its bar
-bool Staff::IsOnlyPositionInBar(const Position* position, std::shared_ptr<const System> system) const
+bool Staff::IsOnlyPositionInBar(const Position* position, boost::shared_ptr<const System> system) const
 {
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
 
     System::BarlineConstPtr prevBarline = system->GetPrecedingBarline(position->GetPosition());
 
-    auto startBar = std::find(barlines.begin(), barlines.end(), prevBarline);
-    auto endBar = startBar + 1;
+    std::vector<System::BarlineConstPtr>::const_iterator startBar = std::find(barlines.begin(),
+                                                                              barlines.end(), prevBarline);
+    std::vector<System::BarlineConstPtr>::const_iterator endBar = startBar + 1;
 
     for (uint32_t i = (*startBar)->GetPosition() + 1; i < (*endBar)->GetPosition(); i++)
     {
@@ -494,8 +498,8 @@ namespace
 }
 
 /// Calculates the beaming for notes that are located between the two given barlines
-void Staff::CalculateBeamingForBar(std::shared_ptr<const Barline> startBar,
-                                   std::shared_ptr<const Barline> endBar)
+void Staff::CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
+                                   boost::shared_ptr<const Barline> endBar)
 {
     // Get the positions in betwen the two bars
     std::vector<Position*> positions;
@@ -521,7 +525,7 @@ void Staff::CalculateBeamingForBar(std::shared_ptr<const Barline> startBar,
     std::partial_sum(durations.begin(), durations.end(), durations.begin());
 
     double groupBeginTime = 0;
-    auto pattern = beamGroupPatterns.begin();
+    std::vector<uint8_t>::const_iterator pattern = beamGroupPatterns.begin();
     std::vector<double>::iterator groupStart = durations.begin(), groupEnd = durations.begin();
 
     while (groupEnd != durations.end())
@@ -556,10 +560,8 @@ void Staff::CalculateBeamingForGroup(std::vector<Position*>& positions)
     // so we need to find all of the subgroups of consecutive positions that can be
     // beamed, and then create beaming groups with those notes
 
-    auto beamableGroupStart = positions.begin();
-    auto beamableGroupEnd = positions.begin();
-
-    auto isBeamable = std::mem_fun(&Position::IsBeamable);
+    std::vector<Position*>::iterator beamableGroupStart = positions.begin();
+    std::vector<Position*>::iterator beamableGroupEnd = positions.begin();
 
     // Clear all existing beaming information
     std::for_each(positions.begin(), positions.end(), std::mem_fun(&Position::ClearBeam));
@@ -568,10 +570,14 @@ void Staff::CalculateBeamingForGroup(std::vector<Position*>& positions)
     while (beamableGroupStart != positions.end())
     {
         // find the next range of consecutive positions that are beamable
-        beamableGroupStart = std::find_if(beamableGroupEnd, positions.end(), isBeamable);
-        beamableGroupEnd = std::find_if(beamableGroupStart, positions.end(), std::not1(isBeamable));
+        beamableGroupStart = std::find_if(beamableGroupEnd, positions.end(),
+                                          std::mem_fun(&Position::IsBeamable));
 
-        for (auto i = beamableGroupStart; i != beamableGroupEnd; ++i)
+        beamableGroupEnd = std::find_if(beamableGroupStart, positions.end(),
+                                        std::not1(std::mem_fun(&Position::IsBeamable)));
+
+        for (std::vector<Position*>::iterator i = beamableGroupStart;
+             i != beamableGroupEnd; ++i)
         {
             Position* currentPos = *i;
 
@@ -647,8 +653,7 @@ void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32
 /// Returns the last position in the staff, regardless of voice (returns NULL if no positions exist)
 Position* Staff::GetLastPosition() const
 {
-    using std::bind;
-    using namespace std::placeholders;
+    using boost::bind;
 
     std::vector<Position*> lastPositions;
 
@@ -692,8 +697,8 @@ Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, const Posi
     const std::vector<Position*>& positionArray = positionArrays[voice];
 
     // find where the position is within the staff
-    auto location = std::find(positionArray.begin(),
-                              positionArray.end(), position);
+    std::vector<Position*>::const_iterator location = std::find(positionArray.begin(),
+                                                                positionArray.end(), position);
 
     // if position was not found, we cannot compare it to the next one
     if (location == positionArray.end())
@@ -722,7 +727,8 @@ void Staff::UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber)
     const std::vector<Position*>& positionArray = positionArrays[0];
 
     // find the position in our vector of positions
-    auto positionIt = std::find(positionArray.begin(), positionArray.end(), position);
+    std::vector<Position*>::const_iterator positionIt = std::find(positionArray.begin(),
+                                                                  positionArray.end(), position);
     assert(positionIt != positionArray.end());
 
     note->SetFretNumber(fretNumber);
@@ -825,7 +831,7 @@ bool Staff::RemovePosition(uint32_t voice, uint32_t index)
 
     // get the iterator to it (for erasing from the array)
     std::vector<Position*>& positionArray = positionArrays[voice];
-    auto location = std::find(positionArray.begin(), positionArray.end(), pos);
+    std::vector<Position*>::iterator location = std::find(positionArray.begin(), positionArray.end(), pos);
     CHECK_THAT(location != positionArray.end(), false);
 
     // remove it
@@ -846,9 +852,8 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
     
     // maps notes to their position on the staff (relative to the top line)
     // this is for treble clef - we will adjust for bass clef as necessary later on
-    const std::map<char, int8_t> notePositions = {
-        {'F', 0}, {'E', 1}, {'D', 2}, {'C', 3}, {'B', -3}, {'A', -2}, {'G', -1}
-    };
+    const std::map<char, int8_t> notePositions = boost::assign::map_list_of
+        ('F', 0) ('E', 1) ('D', 2) ('C', 3) ('B', -3) ('A', -2) ('G', -1);
     
     // find the position of the note, ignoring accidentals (i.e. C# -> C)
     int y = notePositions.find(noteText.at(0))->second;

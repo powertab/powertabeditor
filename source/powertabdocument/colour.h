@@ -18,7 +18,7 @@
 #ifndef COLOUR_H
 #define COLOUR_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 
 class Colour
 {

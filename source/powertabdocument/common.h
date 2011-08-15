@@ -20,20 +20,21 @@
 
 #include <vector>
 #include <algorithm>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <boost/iterator/indirect_iterator.hpp>
+#include <boost/make_shared.hpp>
 
 /// Helper function - clones a shared_ptr
 template <typename T>
-std::shared_ptr<T> clone_shared_ptr(const std::shared_ptr<T>& ptr)
+boost::shared_ptr<T> clone_shared_ptr(const boost::shared_ptr<T>& ptr)
 {
-    return std::make_shared<T>(*ptr);
+    return boost::make_shared<T>(*ptr);
 }
 
 /// Performs a deep copy of a vector of shared_ptr
 template <typename T>
-void deepCopy(const std::vector<std::shared_ptr<T> >& src,
-              std::vector<std::shared_ptr<T> >& dest)
+void deepCopy(const std::vector<boost::shared_ptr<T> >& src,
+              std::vector<boost::shared_ptr<T> >& dest)
 {
     dest.clear();
     

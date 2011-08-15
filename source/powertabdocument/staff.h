@@ -12,8 +12,8 @@
 #ifndef STAFF_H
 #define STAFF_H
 
-#include <array>
-#include <memory>
+#include <boost/array.hpp>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 #include "note.h"
@@ -67,7 +67,7 @@ protected:
     uint8_t m_tablatureStaffBelowSpacing;           ///< Amount of space alloted from the last line of the tablature staff
 
 public:
-    std::array<std::vector<Position*>, NUM_STAFF_VOICES> positionArrays; ///< collection of position arrays, one per voice
+    boost::array<std::vector<Position*>, NUM_STAFF_VOICES> positionArrays; ///< collection of position arrays, one per voice
 
     // Constructor/Destructor
 public:
@@ -142,10 +142,10 @@ public:
 
     Position* GetLastPosition() const;
     Position* GetPositionByPosition(uint32_t voice, uint32_t index) const;
-    size_t GetIndexOfNextPosition(uint32_t voice, std::shared_ptr<const System> system,
+    size_t GetIndexOfNextPosition(uint32_t voice, boost::shared_ptr<const System> system,
                                   const Position* position) const;
 
-    bool IsOnlyPositionInBar(const Position* position, std::shared_ptr<const System> system) const;
+    bool IsOnlyPositionInBar(const Position* position, boost::shared_ptr<const System> system) const;
 
     bool CanHammerOn(const Position* position, const Note* note) const;
     bool CanPullOff(const Position* position, const Note* note) const;
@@ -156,8 +156,8 @@ public:
     int GetHeight() const;
     
     void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos);
-    void CalculateBeamingForBar(std::shared_ptr<const Barline> startBar,
-                                std::shared_ptr<const Barline> endBar);
+    void CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
+                                boost::shared_ptr<const Barline> endBar);
     void CalculateBeamingForGroup(std::vector<Position*>& positions);
 
     void UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber);

@@ -13,9 +13,10 @@
 #include "staff.h"
 #include "barline.h"
 
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 #include <algorithm>
 #include <stdexcept>
-#include <functional>
 
 #include "powertabfileheader.h"                     // Needed for file version constants
 #include "direction.h"
@@ -365,7 +366,9 @@ System::BarlinePtr System::GetPrecedingBarline(uint32_t position) const
 
     CompareBarlineToPosition compareToPosition;
     compareToPosition.position = position;
-    auto barline = std::find_if(m_barlineArray.rbegin(), m_barlineArray.rend(), compareToPosition);
+    std::vector<BarlinePtr>::const_reverse_iterator barline = std::find_if(m_barlineArray.rbegin(),
+                                                                           m_barlineArray.rend(),
+                                                                           compareToPosition);
 
     return *barline;
 }
@@ -385,8 +388,9 @@ System::BarlinePtr System::GetNextBarline(uint32_t position) const
     
     CompareBarlineToPosition compareToPosition;
     compareToPosition.position = position;
-    auto barline = std::find_if(m_barlineArray.rbegin(), m_barlineArray.rend(),
-                                compareToPosition);
+    std::vector<BarlinePtr>::const_reverse_iterator barline = std::find_if(m_barlineArray.rbegin(),
+                                                                           m_barlineArray.rend(),
+                                                                           compareToPosition);
 
     --barline;
     return *barline;
@@ -726,7 +730,7 @@ System::StaffPtr System::GetStaff(uint32_t index) const
 /// @throw std::out_of_range if the staff does not exist in the system
 size_t System::FindStaffIndex(StaffConstPtr staff) const
 {
-    auto result = std::find(m_staffArray.begin(), m_staffArray.end(), staff);
+    std::vector<StaffPtr>::const_iterator result = std::find(m_staffArray.begin(), m_staffArray.end(), staff);
 
     if (result == m_staffArray.end())
         throw std::out_of_range("Staff not in system");
@@ -742,7 +746,8 @@ bool System::HasRehearsalSign() const
         return true;
     }
 
-    for (auto i = m_barlineArray.begin(); i != m_barlineArray.end(); ++i)
+    for (std::vector<BarlinePtr>::const_iterator i = m_barlineArray.begin();
+         i != m_barlineArray.end(); ++i)
     {
         if ((*i)->GetRehearsalSign().IsSet())
         {
@@ -761,7 +766,8 @@ void System::CalculateBeamingForStaves()
     // the end bar doesn't keep track of its position normally, so add it in for these calculations
     m_endBar->SetPosition(this->GetPositionCount());
 
-    for(auto staff = m_staffArray.begin(); staff != m_staffArray.end(); ++staff)
+    for(std::vector<StaffPtr>::iterator staff = m_staffArray.begin();
+        staff != m_staffArray.end(); ++staff)
     {
         // calculate the beaming for the notes between each pair of barlines
         for (size_t i = 0; i < barlines.size() - 1; i++)
@@ -813,7 +819,7 @@ bool System::SetPositionSpacing(uint8_t positionSpacing)
 template <class T>
 struct ShiftPosition
 {
-    typedef std::function<bool (uint32_t, uint32_t)> PositionIndexComparison;
+    typedef boost::function<bool (uint32_t, uint32_t)> PositionIndexComparison;
 
     ShiftPosition(PositionIndexComparison comparePositions, uint32_t positionIndex, int offset) :
         comparePositions(comparePositions),
@@ -841,7 +847,7 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     if (!IsValidPosition(positionIndex))
         throw std::out_of_range("Invalid position index");
 
-    const std::function<bool (uint32_t, uint32_t)> comparison = std::greater_equal<uint32_t>();
+    const boost::function<bool (uint32_t, uint32_t)> comparison = std::greater_equal<uint32_t>();
 
     // decrease the position spacing to make room for the extra position
     SetPositionSpacing(GetPositionSpacing() - offset);
@@ -893,7 +899,7 @@ void System::Init(const std::vector<uint8_t>& staffSizes)
 
     for (size_t i = 0; i < staffSizes.size(); i++)
     {
-        m_staffArray.push_back(std::make_shared<Staff>(staffSizes.at(i), Staff::TREBLE_CLEF));
+        m_staffArray.push_back(boost::make_shared<Staff>(staffSizes.at(i), Staff::TREBLE_CLEF));
     }
 
     CalculateHeight();
@@ -902,14 +908,13 @@ void System::Init(const std::vector<uint8_t>& staffSizes)
 /// Removes the barline at the given position, if possible
 bool System::RemoveBarline(uint32_t position)
 {
-    using std::bind;
-    using namespace std::placeholders;
+    using boost::bind;
 
     // find the barline that has the given position
-    auto bar = std::find_if(m_barlineArray.begin(), m_barlineArray.end(),
-                            bind(std::equal_to<uint32_t>(),
-                                 bind(&Barline::GetPosition, _1), position)
-                            );
+    std::vector<BarlinePtr>::iterator bar = std::find_if(m_barlineArray.begin(), m_barlineArray.end(),
+                                                         bind(std::equal_to<uint32_t>(),
+                                                              bind(&Barline::GetPosition, _1), position)
+                                                         );
 
     if (bar == m_barlineArray.end())
         return false;
@@ -976,9 +981,8 @@ size_t System::MaxDirectionSymbolCount() const
 
     std::vector<size_t> directionCounts(m_directionArray.size());
 
-    using namespace std::placeholders;
     std::transform(m_directionArray.begin(), m_directionArray.end(), directionCounts.begin(),
-                   std::bind(&Direction::GetSymbolCount, _1));
+                   boost::bind(&Direction::GetSymbolCount, _1));
 
     return *std::max_element(directionCounts.begin(), directionCounts.end());
 }

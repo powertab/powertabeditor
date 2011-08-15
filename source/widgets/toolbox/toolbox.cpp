@@ -24,7 +24,7 @@
 ScorePage *Toolbox::scorePage = NULL;
 NotePage *Toolbox::notePage = NULL;
 
-Toolbox::Toolbox(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager)
+Toolbox::Toolbox(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager)
 {
     setMaximumWidth(350);
     setIconSize(QSize(48,48));

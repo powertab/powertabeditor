@@ -22,21 +22,21 @@
 
 #include <QFont>
 #include <QStaticText>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class ChordText;
 
 class ChordTextPainter : public PainterBase
 {
 public:
-    ChordTextPainter(std::shared_ptr<const ChordText> chordText);
+    ChordTextPainter(boost::shared_ptr<const ChordText> chordText);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
     void init();
 
-    std::shared_ptr<const ChordText> chordText;
+    boost::shared_ptr<const ChordText> chordText;
     static QFont displayFont;
     QStaticText displayText;
 };

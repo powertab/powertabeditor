@@ -18,7 +18,7 @@ class Tuning;
 #include "powertabobject.h"
 #include "macros.h"
 
-#include <array>
+#include <boost/array.hpp>
 #include <vector>
 
 /// Stores and renders a position (a group of notes, or a rest)
@@ -155,7 +155,7 @@ protected:
     uint8_t	m_position; ///< Zero-based index of the position within the system where the position is anchored
     uint16_t	m_beaming;  ///< Beaming and irregular grouping timing data
     uint32_t	m_data;     ///< Duration and simple symbol flags
-    std::array<uint32_t, MAX_POSITION_COMPLEX_SYMBOLS> m_complexSymbolArray; ///< Array of complex symbols
+    boost::array<uint32_t, MAX_POSITION_COMPLEX_SYMBOLS> m_complexSymbolArray; ///< Array of complex symbols
 
 public:
     std::vector<Note*> m_noteArray;      ///< Array of notes

@@ -26,7 +26,7 @@
 #include <iostream>
 #include <vector>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 using std::vector;
 
 RepeatController::RepeatController(const Score* score) :
@@ -111,7 +111,7 @@ void RepeatController::indexDirections(uint32_t systemIndex, shared_ptr<const Sy
 /// Returns the active repeat - the last repeat with a start bar before the given position
 Repeat& RepeatController::getPreviousRepeatGroup(const SystemLocation& location)
 {
-    auto repeatGroup = repeats.upper_bound(location);
+    std::map<SystemLocation, Repeat>::iterator repeatGroup = repeats.upper_bound(location);
     if (repeatGroup != repeats.begin())
     {
         repeatGroup--;
@@ -135,7 +135,9 @@ bool RepeatController::checkForRepeat(const SystemLocation& currentLocation,
     newLocation = currentLocation;
 
     // check for directions at location
-    auto directionsAtLocation = directions.equal_range(currentLocation);
+    std::pair<DirectionMap::iterator, DirectionMap::iterator> directionsAtLocation =
+            directions.equal_range(currentLocation);
+
     if (directionsAtLocation.first != directions.end())
     {
         DirectionSymbol& direction = directionsAtLocation.first->second;
@@ -216,7 +218,7 @@ SystemLocation RepeatController::performMusicalDirection(uint8_t directionType)
     }
 
     // now, find the location of the symbol to jump to
-    auto symbolLocation = symbolLocations.find(nextSymbol);
+    SymbolLocationsMap::iterator symbolLocation = symbolLocations.find(nextSymbol);
     if (symbolLocation != symbolLocations.end())
     {
         return symbolLocation->second;

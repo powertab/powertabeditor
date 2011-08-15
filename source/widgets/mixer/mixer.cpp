@@ -22,7 +22,7 @@
 #include <app/skinmanager.h>
 #include "mixerinstrument.h"
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 Mixer::Mixer(shared_ptr<SkinManager> skinManager, QFrame *parent) :
     QFrame(parent)
@@ -39,7 +39,7 @@ Mixer::Mixer(shared_ptr<SkinManager> skinManager, QFrame *parent) :
 
 void Mixer::addInstrument(shared_ptr<Guitar> guitar)
 {
-    std::shared_ptr<MixerInstrument> channel(new MixerInstrument(guitar));
+    boost::shared_ptr<MixerInstrument> channel(new MixerInstrument(guitar));
     layout->addWidget(channel.get());
 
     channelList.push_back(channel);
@@ -61,7 +61,7 @@ shared_ptr<Guitar> Mixer::getInstrument(size_t index) const
 /// Triggers an update for each channel of the mixer
 void Mixer::update()
 {
-    foreach (auto mixerInstrument, channelList)
+    foreach (boost::shared_ptr<MixerInstrument> mixerInstrument, channelList)
     {
         mixerInstrument->update();        
     }

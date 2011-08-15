@@ -20,7 +20,7 @@
 #include <powertabdocument/alternateending.h>
 #include <boost/foreach.hpp>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 Repeat::Repeat(const SystemLocation& startBarLocation) :
     startBarLocation(startBarLocation),
@@ -48,9 +48,9 @@ void Repeat::addAlternateEnding(shared_ptr<const AlternateEnding> altEnding)
 
     // for each repeat that the ending is active, add it to the alternate endings map along with
     // the location of the ending
-    for (auto i = numbers.begin(); i != numbers.end(); ++i)
+    for (size_t i = 0; i < numbers.size(); i++)
     {
-        alternateEndings[*i] = location;
+        alternateEndings[numbers[i]] = location;
     }
 }
 
@@ -60,11 +60,11 @@ SystemLocation Repeat::performRepeat(const SystemLocation& currentLocation)
 {
     // deal with alternate endings - if we are at the start of the first alternate
     // ending, we can branch off to other alternate endings depending on the active repeat
-    auto firstAltEnding = alternateEndings.find(1);
+    AltEndingsMap::const_iterator firstAltEnding = alternateEndings.find(1);
     if (firstAltEnding != alternateEndings.end() && firstAltEnding->second == currentLocation)
     {
         // branch off to the next alternate ending, if it exists
-        auto nextAltEnding = alternateEndings.find(activeRepeat);
+        AltEndingsMap::const_iterator nextAltEnding = alternateEndings.find(activeRepeat);
         if (nextAltEnding != alternateEndings.end())
         {
             return nextAltEnding->second;
@@ -72,7 +72,7 @@ SystemLocation Repeat::performRepeat(const SystemLocation& currentLocation)
     }
 
     // now, we can look for repeat end bars
-    auto repeatEnd = endBars.find(currentLocation);
+    EndBarsMap::iterator repeatEnd = endBars.find(currentLocation);
 
     if (repeatEnd == endBars.end()) // no repeat end bar at the current location
     {
@@ -99,9 +99,9 @@ void Repeat::reset()
 {
     activeRepeat = 1;
 
-    BOOST_FOREACH(auto& endBar, endBars)
+    for (EndBarsMap::iterator i = endBars.begin(); i != endBars.end(); ++i)
     {
-        endBar.second.reset();
+        i->second.reset();
     }
 }
 

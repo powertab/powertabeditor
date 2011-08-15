@@ -19,7 +19,7 @@
 #define DOCUMENTMANAGER_H
 
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class QString;
 class PowerTabDocument;
@@ -31,16 +31,16 @@ public:
     DocumentManager();
 
     bool addDocument(const QString& fileName);
-    bool addImportedDocument(std::shared_ptr<PowerTabDocument> doc);
+    bool addImportedDocument(boost::shared_ptr<PowerTabDocument> doc);
 
     void createDocument();
     void removeDocument(int index);
-    std::shared_ptr<PowerTabDocument> getCurrentDocument() const;
+    boost::shared_ptr<PowerTabDocument> getCurrentDocument() const;
     void setCurrentDocumentIndex(int index);
     int getCurrentDocumentIndex() const;
 
 private:
-    std::vector<std::shared_ptr<PowerTabDocument> > documentList;
+    std::vector<boost::shared_ptr<PowerTabDocument> > documentList;
     int currentDocumentIndex;
 };
 

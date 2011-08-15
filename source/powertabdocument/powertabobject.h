@@ -12,7 +12,7 @@
 #ifndef POWERTABOBJECT_H
 #define POWERTABOBJECT_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <string>
 
 class PowerTabOutputStream;

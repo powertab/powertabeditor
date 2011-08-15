@@ -73,9 +73,9 @@ void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIte
 
 void KeySignaturePainter::adjustHeightOffset(QVector<double>& lst)
 {
-    for (auto i = lst.begin(); i != lst.end(); ++i)
+    for (int i = 0; i < lst.size(); i++)
     {
-        *i -= staffInfo.getTopStdNotationLine();
+        lst[i] -= staffInfo.getTopStdNotationLine();
     }
 }
 

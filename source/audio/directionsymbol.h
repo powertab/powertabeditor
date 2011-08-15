@@ -18,7 +18,7 @@
 #ifndef DIRECTIONSYMBOL_H
 #define DIRECTIONSYMBOL_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 
 /// Convenient class for storing information about a single direction
 /// (vs. the Direction class which represents multiple directions)

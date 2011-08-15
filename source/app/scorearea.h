@@ -20,7 +20,8 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <memory>
+#include <boost/shared_ptr.hpp>
+#include <boost/cstdint.hpp>
 
 #include <painters/musicfont.h>
 
@@ -51,10 +52,10 @@ class ScoreArea : public QGraphicsView
 public:
     explicit ScoreArea(QWidget *parent = 0);
 
-    void renderDocument(std::shared_ptr<PowerTabDocument> doc);
+    void renderDocument(boost::shared_ptr<PowerTabDocument> doc);
     void updateSystem(const quint32 systemIndex);
 
-    std::shared_ptr<PowerTabDocument> document;
+    boost::shared_ptr<PowerTabDocument> document;
 
     inline Caret* getCaret() const
     {
@@ -63,47 +64,47 @@ public:
 
 protected:
     void renderScore(Score* score, int lineSpacing);
-    void renderSystem(Score* score, std::shared_ptr<const System> system, int lineSpacing);
+    void renderSystem(Score* score, boost::shared_ptr<const System> system, int lineSpacing);
 
-    void drawTabNotes(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+    void drawTabNotes(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                       const StaffData& currentStaffInfo);
 
-    void renderBars(const StaffData& currentStaffInfo, std::shared_ptr<const System> system);
+    void renderBars(const StaffData& currentStaffInfo, boost::shared_ptr<const System> system);
     void drawTabClef(int x, const StaffData& staffInfo);
 
-    void drawChordText(std::shared_ptr<const System> system, quint32 height, const StaffData& currentStaffInfo);
-    void drawDirections(std::shared_ptr<const System> system, quint32 height,
+    void drawChordText(boost::shared_ptr<const System> system, quint32 height, const StaffData& currentStaffInfo);
+    void drawDirections(boost::shared_ptr<const System> system, quint32 height,
                         const StaffData& currentStaffInfo);
 
-    void drawLegato(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+    void drawLegato(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                     const StaffData& currentStaffInfo);
 
-    void drawSlides(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+    void drawSlides(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                     const StaffData& currentStaffInfo);
 
-    void drawSlidesHelper(std::shared_ptr<const System> system, const StaffData& currentStaffInfo, quint8 string,
+    void drawSlidesHelper(boost::shared_ptr<const System> system, const StaffData& currentStaffInfo, quint8 string,
                           bool slideUp, quint32 posIndex1, quint32 posIndex2);
 
-    void drawStdNotation(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+    void drawStdNotation(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                          const StaffData& currentStaffInfo);
 
     void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
-    void drawSystemSymbols(Score* score, std::shared_ptr<const System> system, const StaffData& currentStaffInfo);
+    void drawSystemSymbols(Score* score, boost::shared_ptr<const System> system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
 
-    void drawAltEndings(const std::vector<std::shared_ptr<AlternateEnding> >& altEndings,
-                        std::shared_ptr<const System> system, uint32_t height);
+    void drawAltEndings(const std::vector<boost::shared_ptr<AlternateEnding> >& altEndings,
+                        boost::shared_ptr<const System> system, uint32_t height);
 
-    void drawTempoMarkers(const std::vector<std::shared_ptr<TempoMarker> >& tempoMarkers,
-                          std::shared_ptr<const System> system, quint32 height);
+    void drawTempoMarkers(const std::vector<boost::shared_ptr<TempoMarker> >& tempoMarkers,
+                          boost::shared_ptr<const System> system, quint32 height);
 
-    void drawSymbolsBelowTabStaff(std::shared_ptr<const System> system, std::shared_ptr<const Staff> staff,
+    void drawSymbolsBelowTabStaff(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                                   const StaffData &currentStaffInfo);
 
-    void drawRhythmSlashes(std::shared_ptr<const System> system);
+    void drawRhythmSlashes(boost::shared_ptr<const System> system);
 
-    void drawSymbols(const Score* score, std::shared_ptr<const System> system,
-                     std::shared_ptr<const Staff> staff, const StaffData& staffInfo);
+    void drawSymbols(const Score* score, boost::shared_ptr<const System> system,
+                     boost::shared_ptr<const Staff> staff, const StaffData& staffInfo);
 
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
 
@@ -134,7 +135,7 @@ protected:
 
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo, VolumeSwellType type);
 
-    QGraphicsItem* createDynamic(std::shared_ptr<const Dynamic> dynamic) const;
+    QGraphicsItem* createDynamic(boost::shared_ptr<const Dynamic> dynamic) const;
     QGraphicsItem* createTrill(const StaffData& currentStaffInfo) const;
     QGraphicsItem* createTremoloPicking(const StaffData& currentStaffInfo) const;
     QGraphicsItem* createTremoloBar(uint8_t width, const Position* position) const;
@@ -147,7 +148,7 @@ protected:
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, int width,
                                               const StaffData& currentStaffInfo);
 
-    void drawMultiBarRest(std::shared_ptr<const System> system, std::shared_ptr<const Barline> currentBarline,
+    void drawMultiBarRest(boost::shared_ptr<const System> system, boost::shared_ptr<const Barline> currentBarline,
                           const StaffData& currentStaffInfo, int measureCount);
 
 signals:

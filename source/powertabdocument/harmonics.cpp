@@ -46,7 +46,7 @@ namespace Harmonics
     {
         initHarmonicsMap();
 
-        auto pitchOffset = harmonicsMap.find(fretOffset);
+        std::map<uint8_t, uint8_t>::const_iterator pitchOffset = harmonicsMap.find(fretOffset);
         return (pitchOffset == harmonicsMap.end()) ? 0 : pitchOffset->second;
     }
 
@@ -56,9 +56,10 @@ namespace Harmonics
         initHarmonicsMap();
 
         std::vector<uint8_t> frets;
-        BOOST_FOREACH(auto pair, harmonicsMap)
+        for (std::map<uint8_t, uint8_t>::const_iterator i = harmonicsMap.begin();
+             i != harmonicsMap.end(); ++i)
         {
-            frets.push_back(pair.first);
+            frets.push_back(i->first);
         }
 
         return frets;

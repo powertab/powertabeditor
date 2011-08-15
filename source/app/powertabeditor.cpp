@@ -37,6 +37,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
+#include <boost/make_shared.hpp>
 
 #include <app/scorearea.h>
 #include <app/skinmanager.h>
@@ -111,7 +112,7 @@
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 QTabWidget* PowerTabEditor::tabWidget = NULL;
 boost::scoped_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
@@ -969,7 +970,9 @@ void PowerTabEditor::importFile(const FileFormat& format)
         boost::timer timer;
         qDebug() << "Attempting to import: " << fileName << " ...";
 
-        if (auto document = fileFormatManager->import(fileName.toStdString(), format))
+        boost::shared_ptr<PowerTabDocument> document = fileFormatManager->import(fileName.toStdString(), format);
+
+        if (document)
         {
             // convert file extension
             QFileInfo fileInfo(fileName);
@@ -999,7 +1002,7 @@ void PowerTabEditor::setupNewDocument()
     boost::timer timer;
     qDebug() << "Document creation started ...";
 
-    std::shared_ptr<PowerTabDocument> doc(documentManager->getCurrentDocument());
+    boost::shared_ptr<PowerTabDocument> doc(documentManager->getCurrentDocument());
 
     ScoreArea* score = new ScoreArea;
     score->installEventFilter(this);
@@ -1071,8 +1074,7 @@ void PowerTabEditor::saveFileAs()
 // Opens the preferences dialog
 void PowerTabEditor::openPreferences()
 {
-    std::unique_ptr<PreferencesDialog> preferencesDialog(new PreferencesDialog);
-    preferencesDialog->exec();
+    PreferencesDialog().exec();
 }
 
 void PowerTabEditor::closeCurrentTab()
@@ -1505,7 +1507,7 @@ void PowerTabEditor::editRepeatEnding()
 
     if (!altEnding) // add an alternate ending
     {
-        altEnding = std::make_shared<AlternateEnding>(caret->getCurrentSystemIndex(),
+        altEnding = boost::make_shared<AlternateEnding>(caret->getCurrentSystemIndex(),
                                                       caret->getCurrentPositionIndex(), 0);
 
         AlternateEndingDialog dialog(altEnding);
@@ -1538,7 +1540,7 @@ void PowerTabEditor::editChordName()
         ChordNameDialog chordNameDialog(&chordName);
         if (chordNameDialog.exec() == QDialog::Accepted)
         {
-            shared_ptr<ChordText> chordText = std::make_shared<ChordText>(caretPosition, chordName);
+            shared_ptr<ChordText> chordText = boost::make_shared<ChordText>(caretPosition, chordName);
             undoManager->push(new AddChordText(currentSystem, chordText, chordTextIndex));
         }
     }
@@ -1764,8 +1766,8 @@ void PowerTabEditor::updateActions()
                                                                                         caret->getCurrentPositionIndex()));
     repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
 
-    auto dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
-                                             caret->getCurrentPositionIndex());
+    Score::DynamicPtr dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
+                                                          caret->getCurrentPositionIndex());
     dynamicAct->setChecked(dynamic != Score::DynamicPtr());
 
     if (onBarline) // current position is bar
@@ -1960,7 +1962,7 @@ void PowerTabEditor::editDynamic()
         DynamicDialog dialog;
         if (dialog.exec() == QDialog::Accepted)
         {
-            dynamic = std::make_shared<Dynamic>(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
+            dynamic = boost::make_shared<Dynamic>(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
                                                 caret->getCurrentPositionIndex(), dialog.selectedVolumeLevel(),
                                                 Dynamic::notSet);
 

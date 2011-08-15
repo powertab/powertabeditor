@@ -18,7 +18,7 @@
 #ifndef SYSTEMLOCATION_H
 #define SYSTEMLOCATION_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <boost/operators.hpp> // used to generate additional operators, e.g. <=, !=, etc
 
 /// Convenient class to represent a location in the score - contains system index and position index

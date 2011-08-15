@@ -12,10 +12,10 @@
 #ifndef POWERTABINPUTSTREAM_H
 #define POWERTABINPUTSTREAM_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <istream>
 #include <vector>
-#include <array>
+#include <boost/array.hpp>
 
 #include <boost/pointee.hpp>
 
@@ -89,7 +89,7 @@ public:
     }
 
     template <class T, size_t N>
-    inline void ReadSmallVector(std::array<T, N>& array)
+    inline void ReadSmallVector(boost::array<T, N>& array)
     {
         uint8_t size = 0;
         *this >> size;

@@ -18,17 +18,18 @@
 #include "insertnotes.h"
 
 #include <algorithm>
+#include <boost/make_shared.hpp>
 
 #include <powertabdocument/position.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/system.h>
 #include <powertabdocument/layout.h>
 
-InsertNotes::InsertNotes(std::shared_ptr<System> system, std::shared_ptr<Staff> staff,
+InsertNotes::InsertNotes(boost::shared_ptr<System> system, boost::shared_ptr<Staff> staff,
                          uint32_t insertionPos, const std::vector<Position*>& positions) :
     system(system), staff(staff),
     insertionPos(insertionPos), newPositions(positions),
-    originalSystem(std::make_shared<System>(*system)),
+    originalSystem(boost::make_shared<System>(*system)),
     positionsInUse(false)
 {
     setText(QObject::tr("Insert Notes"));

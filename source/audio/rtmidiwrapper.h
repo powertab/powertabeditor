@@ -28,6 +28,7 @@
 #include <string>
 #include <map>
 #include <boost/scoped_ptr.hpp>
+#include <boost/cstdint.hpp>
 
 class RtMidiOut;
 

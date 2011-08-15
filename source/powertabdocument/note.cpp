@@ -90,8 +90,8 @@ bool Note::operator==(const Note& note) const
     }
 
     // copy the complex symbol arrays and sort them, since complex symbols aren't necessarily in the same slot in the array
-    std::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> thisComplexSymbolArray(m_complexSymbolArray);
-    std::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> thatComplexSymbolArray(note.m_complexSymbolArray);
+    boost::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> thisComplexSymbolArray(m_complexSymbolArray);
+    boost::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> thatComplexSymbolArray(note.m_complexSymbolArray);
 
     std::sort(thisComplexSymbolArray.begin(), thisComplexSymbolArray.end());
     std::sort(thatComplexSymbolArray.begin(), thatComplexSymbolArray.end());

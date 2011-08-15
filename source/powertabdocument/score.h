@@ -14,7 +14,7 @@
 
 #include "powertabobject.h"
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 class Guitar;
@@ -36,18 +36,18 @@ public:
     static const uint8_t MAX_NUM_GUITARS = 15; ///< maximum number of guitars allowed (limited by MIDI channels)
 
     // some useful typedefs for smart pointers
-    typedef std::shared_ptr<System> SystemPtr;
-    typedef std::shared_ptr<const System> SystemConstPtr;
-    typedef std::shared_ptr<Guitar> GuitarPtr;
-    typedef std::shared_ptr<const Guitar> GuitarConstPtr;
-    typedef std::shared_ptr<AlternateEnding> AlternateEndingPtr;
-    typedef std::shared_ptr<const AlternateEnding> AlternateEndingConstPtr;
-    typedef std::shared_ptr<ChordDiagram> ChordDiagramPtr;
-    typedef std::shared_ptr<Dynamic> DynamicPtr;
-    typedef std::shared_ptr<FloatingText> FloatingTextPtr;
-    typedef std::shared_ptr<GuitarIn> GuitarInPtr;
-    typedef std::shared_ptr<const GuitarIn> GuitarInConstPtr;
-    typedef std::shared_ptr<TempoMarker> TempoMarkerPtr;
+    typedef boost::shared_ptr<System> SystemPtr;
+    typedef boost::shared_ptr<const System> SystemConstPtr;
+    typedef boost::shared_ptr<Guitar> GuitarPtr;
+    typedef boost::shared_ptr<const Guitar> GuitarConstPtr;
+    typedef boost::shared_ptr<AlternateEnding> AlternateEndingPtr;
+    typedef boost::shared_ptr<const AlternateEnding> AlternateEndingConstPtr;
+    typedef boost::shared_ptr<ChordDiagram> ChordDiagramPtr;
+    typedef boost::shared_ptr<Dynamic> DynamicPtr;
+    typedef boost::shared_ptr<FloatingText> FloatingTextPtr;
+    typedef boost::shared_ptr<GuitarIn> GuitarInPtr;
+    typedef boost::shared_ptr<const GuitarIn> GuitarInConstPtr;
+    typedef boost::shared_ptr<TempoMarker> TempoMarkerPtr;
 
 // Member Variables
 public:

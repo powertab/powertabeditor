@@ -20,7 +20,7 @@
 
 #include <QFrame>
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class SkinManager;
 class QPushButton;
@@ -34,7 +34,7 @@ class ScorePage : public QFrame
     Q_OBJECT
 
 public:
-    ScorePage(PowerTabEditor* mainWindow, std::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
+    ScorePage(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
 
 protected:
     PowerTabEditor* mainWindow;

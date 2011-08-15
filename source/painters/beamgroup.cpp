@@ -18,7 +18,6 @@
 #include "beamgroup.h"
 
 #include <algorithm>
-#include <functional>
 
 #include "stdnotationpainter.h"
 #include <powertabdocument/position.h>
@@ -58,7 +57,7 @@ void BeamGroup::adjustStemHeights()
         NoteStem highestStem = *std::min_element(noteStems.begin(), noteStems.end(),
                                                  CompareStemPositions(&NoteStem::top));
 
-        for (auto stem = noteStems.begin(); stem != noteStems.end(); ++stem)
+        for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
         {
             stem->setX(stem->x() + staffInfo.getNoteHeadRightEdge() - 1);
             stem->setTop(highestStem.top() - highestStem.stemSize());
@@ -69,7 +68,7 @@ void BeamGroup::adjustStemHeights()
         NoteStem lowestStem = *std::max_element(noteStems.begin(), noteStems.end(),
                                                 CompareStemPositions(&NoteStem::bottom));
 
-        for (auto stem = noteStems.begin(); stem != noteStems.end(); ++stem)
+        for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
         {
             stem->setX(stem->x() + staffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth());
 
@@ -87,7 +86,7 @@ void BeamGroup::adjustStemHeights()
 void BeamGroup::drawStems(QGraphicsItem* parent) const
 {
     // Draw each stem
-    for (auto stem = noteStems.begin(); stem != noteStems.end(); ++stem)
+    for (std::vector<NoteStem>::const_iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
     {
         QGraphicsLineItem* line = new QGraphicsLineItem;
         line->setLine(stem->x(), stem->top(), stem->x(), stem->bottom());
@@ -137,7 +136,8 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
 /// Draws the extra beams required for sixteenth notes, etc
 void BeamGroup::drawExtraBeams(QGraphicsItem* parent) const
 {
-    for (auto stem = noteStems.begin(); stem != noteStems.end(); ++stem)
+    for (std::vector<NoteStem>::const_iterator stem = noteStems.begin();
+         stem != noteStems.end(); ++stem)
     {
         // 16th note gets 1 extra beam, 32nd gets two, etc
         // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)

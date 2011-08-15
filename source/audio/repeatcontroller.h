@@ -18,11 +18,11 @@
 #ifndef REPEATCONTROLLER_H
 #define REPEATCONTROLLER_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <map>
 #include <audio/repeat.h>
 #include <audio/directionsymbol.h>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
 
 class Score;
@@ -38,7 +38,7 @@ public:
 
 private:
     void indexRepeats();
-    void indexDirections(uint32_t systemIndex, std::shared_ptr<const System> system);
+    void indexDirections(uint32_t systemIndex, boost::shared_ptr<const System> system);
 
     SystemLocation performMusicalDirection(uint8_t directionType);
 
@@ -49,8 +49,11 @@ private:
 
     std::map<SystemLocation, Repeat> repeats; ///< Holds all repeats in the score
 
-    boost::unordered_multimap<SystemLocation, DirectionSymbol> directions; ///< Stores each musical direction in the system
-    boost::unordered_map<uint8_t, SystemLocation> symbolLocations; ///< Stores the location of each music symbol (coda, etc)
+    typedef boost::unordered_multimap<SystemLocation, DirectionSymbol> DirectionMap;
+    DirectionMap directions; ///< Stores each musical direction in the system
+
+    typedef boost::unordered_map<uint8_t, SystemLocation> SymbolLocationsMap;
+    SymbolLocationsMap symbolLocations; ///< Stores the location of each music symbol (coda, etc)
 };
 
 #endif // REPEATCONTROLLER_H

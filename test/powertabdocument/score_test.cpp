@@ -18,6 +18,7 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
+#include <boost/make_shared.hpp>
 
 #include <powertabdocument/score.h>
 #include <powertabdocument/alternateending.h>
@@ -58,7 +59,7 @@ BOOST_AUTO_TEST_SUITE(ScoreTest)
         Score score;
         BOOST_CHECK_EQUAL(score.GetDynamicCount(), 0u);
 
-        auto dynamic = std::make_shared<Dynamic>(1, 2, 3, Dynamic::mp, Dynamic::notSet);
+        boost::shared_ptr<Dynamic> dynamic = boost::make_shared<Dynamic>(1, 2, 3, Dynamic::mp, Dynamic::notSet);
         score.InsertDynamic(dynamic);
 
         BOOST_CHECK_EQUAL(score.GetDynamicCount(), 1u);

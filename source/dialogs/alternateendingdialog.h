@@ -19,7 +19,7 @@
 #define ALTERNATEENDINGDIALOG_H
 
 #include <QDialog>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 class AlternateEnding;
@@ -29,13 +29,13 @@ class AlternateEndingDialog : public QDialog
 {
     Q_OBJECT
 public:
-    AlternateEndingDialog(std::shared_ptr<AlternateEnding> altEnding);
+    AlternateEndingDialog(boost::shared_ptr<AlternateEnding> altEnding);
 
 public slots:
     void accept();
 
 private:
-    std::shared_ptr<AlternateEnding> altEnding;
+    boost::shared_ptr<AlternateEnding> altEnding;
     std::vector<QCheckBox*> checkBoxes;
 };
 

@@ -20,14 +20,14 @@
 
 #include "painterbase.h"
 #include <QFont>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class RhythmSlash;
 
 class RhythmSlashPainter : public PainterBase
 {
 public:
-    RhythmSlashPainter(std::shared_ptr<const RhythmSlash> rhythmSlash);
+    RhythmSlashPainter(boost::shared_ptr<const RhythmSlash> rhythmSlash);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -35,7 +35,7 @@ public:
     static const double NOTE_HEAD_OFFSET;
 
 private:
-    std::shared_ptr<const RhythmSlash> rhythmSlash;
+    boost::shared_ptr<const RhythmSlash> rhythmSlash;
     static QFont musicFont;
 };
 

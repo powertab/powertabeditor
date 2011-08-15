@@ -18,7 +18,7 @@
 #ifndef SCOREARRANGER_H
 #define SCOREARRANGER_H
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 class Barline;
@@ -30,8 +30,8 @@ class AlternateEnding;
 /// and a list of positions (one for each staff)
 struct BarData
 {
-    std::shared_ptr<Barline> barline;
-    std::shared_ptr<AlternateEnding> altEnding;
+    boost::shared_ptr<Barline> barline;
+    boost::shared_ptr<AlternateEnding> altEnding;
     std::vector<std::vector<Position*> > positionLists;
 };
 

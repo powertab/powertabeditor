@@ -33,7 +33,7 @@ struct ComplexSymbolFixture
                             MAKEWORD(0, Position::tremoloBar));
     }
 
-    std::array<uint32_t, 3> array;
+    boost::array<uint32_t, 3> array;
 };
 
 BOOST_AUTO_TEST_SUITE(ComplexSymbolTest)
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_SUITE(ComplexSymbolTest)
     {
         BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(array), 2u);
 
-        std::array<uint32_t, 3> emptyArray;
+        boost::array<uint32_t, 3> emptyArray;
         std::fill(emptyArray.begin(), emptyArray.end(), 0);
         BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(emptyArray), 0u);
     }
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_SUITE(ComplexSymbolTest)
 
     BOOST_AUTO_TEST_CASE(AddComplexSymbol)
     {
-        std::array<uint32_t, 3> array;
+        boost::array<uint32_t, 3> array;
         ComplexSymbols::clearComplexSymbols(array);
 
         // add a volume swell

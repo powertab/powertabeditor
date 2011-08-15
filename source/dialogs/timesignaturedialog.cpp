@@ -55,7 +55,7 @@ void TimeSignatureDialog::init()
     ui->beatsPerMeasure->setMinimum(TimeSignature::MIN_BEATSPERMEASURE);
     ui->beatsPerMeasure->setMaximum(TimeSignature::MAX_BEATSPERMEASURE);
 
-    std::array<int, 5> beatValues = {{2, 4, 8, 16, 32}};
+    boost::array<int, 5> beatValues = {{2, 4, 8, 16, 32}};
     for (size_t i = 0; i < beatValues.size(); i++)
     {
         ui->beatValue->addItem(QString::number(beatValues[i]), beatValues[i]);
@@ -81,7 +81,7 @@ void TimeSignatureDialog::init()
     updatePossiblePulseValues();
     ui->metronomePulses->setCurrentIndex(ui->metronomePulses->findData(newTimeSignature.GetPulses()));
 
-    std::array<uint8_t, 4> beamingPatternValues = {{0, 0, 0, 0}};
+    boost::array<uint8_t, 4> beamingPatternValues = {{0, 0, 0, 0}};
     newTimeSignature.GetBeamingPattern(beamingPatternValues[0], beamingPatternValues[1],
                                        beamingPatternValues[2], beamingPatternValues[3]);
     for (size_t i = 0; i < beamingPatterns.size(); i++)

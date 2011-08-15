@@ -19,7 +19,7 @@
 #define GPX_UTIL_H
 
 #include <vector>
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <cstddef>
 
 namespace Gpx

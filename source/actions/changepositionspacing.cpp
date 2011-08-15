@@ -19,7 +19,7 @@
 
 #include <powertabdocument/system.h>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 ChangePositionSpacing::ChangePositionSpacing(shared_ptr<System> system, quint8 spacing) :
     system(system),

@@ -20,7 +20,7 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/barline.h>
 
-DeleteBarline::DeleteBarline(std::shared_ptr<System> system, std::shared_ptr<Barline> barline) :
+DeleteBarline::DeleteBarline(boost::shared_ptr<System> system, boost::shared_ptr<Barline> barline) :
     system(system),
     barline(barline)
 {

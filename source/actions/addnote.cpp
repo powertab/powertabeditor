@@ -22,7 +22,7 @@
 #include <powertabdocument/staff.h>
 
 AddNote::AddNote(uint8_t stringNum, uint8_t fretNumber,
-                 uint32_t positionIndex, uint32_t voice, std::shared_ptr<Staff> staff) :
+                 uint32_t positionIndex, uint32_t voice, boost::shared_ptr<Staff> staff) :
     stringNum(stringNum),
     fretNumber(fretNumber),
     positionIndex(positionIndex),

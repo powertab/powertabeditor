@@ -19,7 +19,7 @@
 #define ADDGUITAR_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Guitar;
 class Score;
@@ -39,7 +39,7 @@ signals:
 private:
     Score* score;
     Mixer* mixer;
-    std::shared_ptr<Guitar> newGuitar;
+    boost::shared_ptr<Guitar> newGuitar;
 };
 
 #endif // ADDGUITAR_H

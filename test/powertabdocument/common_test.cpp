@@ -21,14 +21,14 @@
 
 #include <powertabdocument/common.h>
 #include <vector>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 BOOST_AUTO_TEST_CASE(DeepCopyAndEquality)
 {
-    std::vector<std::shared_ptr<int> > vec1, vec2;
+    std::vector<boost::shared_ptr<int> > vec1, vec2;
     
-    vec1.push_back(std::shared_ptr<int>(new int(5)));
-    vec1.push_back(std::shared_ptr<int>(new int(7)));
+    vec1.push_back(boost::shared_ptr<int>(new int(5)));
+    vec1.push_back(boost::shared_ptr<int>(new int(7)));
     
     deepCopy(vec1, vec2);
 

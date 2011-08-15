@@ -21,8 +21,8 @@
 #include "painterbase.h"
 #include "staffdata.h"
 
-#include <memory>
-#include <cstdint>
+#include <boost/shared_ptr.hpp>
+#include <boost/cstdint.hpp>
 
 class Note;
 class Position;
@@ -69,11 +69,11 @@ public:
     bool setCurrentSystemIndex(uint32_t systemIndex);
 
     Score* getCurrentScore() const;
-    std::shared_ptr<System> getCurrentSystem() const;
-    std::shared_ptr<Staff> getCurrentStaff() const;
+    boost::shared_ptr<System> getCurrentSystem() const;
+    boost::shared_ptr<Staff> getCurrentStaff() const;
     Position* getCurrentPosition() const;
     Note* getCurrentNote() const;
-    std::shared_ptr<Barline> getCurrentBarline() const;
+    boost::shared_ptr<Barline> getCurrentBarline() const;
 
     uint32_t getCurrentVoice() const;
     bool setCurrentVoice(uint32_t voice);

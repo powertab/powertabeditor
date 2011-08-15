@@ -19,7 +19,7 @@
 #define ADDDYNAMIC_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Score;
 class Dynamic;
@@ -27,14 +27,14 @@ class Dynamic;
 class AddDynamic : public QUndoCommand
 {
 public:
-    AddDynamic(Score* score, std::shared_ptr<Dynamic> dynamic);
+    AddDynamic(Score* score, boost::shared_ptr<Dynamic> dynamic);
 
     void redo();
     void undo();
 
 private:
     Score* score;
-    std::shared_ptr<Dynamic> dynamic;
+    boost::shared_ptr<Dynamic> dynamic;
 };
 
 #endif // ADDDYNAMIC_H

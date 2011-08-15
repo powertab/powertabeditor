@@ -18,6 +18,7 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
+#include <boost/assign.hpp>
 
 #include <formats/guitar_pro/guitarproimporter.h>
 
@@ -45,7 +46,7 @@ struct Gp4Fixture
     }
 
     GuitarProImporter importer;
-    std::shared_ptr<PowerTabDocument> doc;
+    boost::shared_ptr<PowerTabDocument> doc;
     Score* score;
 };
 
@@ -79,10 +80,12 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
         BOOST_CHECK_EQUAL(guitar1->GetCapo(), 1u);
 
         using namespace midi;
+        using namespace boost::assign;
+        std::vector<uint8_t> notes;
+        notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
+                 MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_B1;
         // 7-string tuning
-        BOOST_CHECK(guitar1->GetTuning() == Tuning("", 0, false,
-                                                    {MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
-                                                    MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_B1}));
+        BOOST_CHECK(guitar1->GetTuning() == Tuning("", 0, false, notes));
 
         // midi settings
         BOOST_CHECK_EQUAL(guitar1->GetPreset(), midi::MIDI_PRESET_OVERDRIVEN_GUITAR);

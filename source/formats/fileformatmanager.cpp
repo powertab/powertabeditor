@@ -42,7 +42,8 @@ std::vector<FileFormat> FileFormatManager::importedFileFormats() const
 {
     std::vector<FileFormat> formats;
 
-    BOOST_FOREACH(auto importer, importers)
+    for (boost::ptr_map<FileFormat, FileFormatImporter>::const_iterator importer = importers.begin();
+         importer != importers.end(); ++importer)
     {
         formats.push_back(importer->first);
     }
@@ -50,7 +51,7 @@ std::vector<FileFormat> FileFormatManager::importedFileFormats() const
     return formats;
 }
 
-std::shared_ptr<PowerTabDocument> FileFormatManager::import(const std::string& fileName,
+boost::shared_ptr<PowerTabDocument> FileFormatManager::import(const std::string& fileName,
                                                             const FileFormat& format)
 {
     if (importers.find(format) != importers.end())
@@ -67,5 +68,5 @@ std::shared_ptr<PowerTabDocument> FileFormatManager::import(const std::string& f
         }
     }
 
-    return std::shared_ptr<PowerTabDocument>();
+    return boost::shared_ptr<PowerTabDocument>();
 }

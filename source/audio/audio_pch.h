@@ -24,10 +24,10 @@
 #include <QMutex>
 
 #include <string>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <vector>
 #include <map>
-#include <cstdint>
+#include <boost/cstdint.hpp>
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/next_prior.hpp>

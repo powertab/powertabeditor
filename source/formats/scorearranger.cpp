@@ -27,6 +27,7 @@
 #include <powertabdocument/layout.h>
 
 #include <algorithm>
+#include <boost/make_shared.hpp>
 
 /// Arranges the list of bars into systems (useful for importing from other file formats
 /// that don't provide formatting information)
@@ -43,12 +44,12 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
     }
 
     // set up initial system
-    Score::SystemPtr currentSystem = std::make_shared<System>();
+    Score::SystemPtr currentSystem = boost::make_shared<System>();
     currentSystem->Init(staffSizes);
     currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
     score->InsertSystem(currentSystem, 0);
 
-    auto currentBar = bars.begin();
+    std::vector<BarData>::const_iterator currentBar = bars.begin();
     uint32_t lastBarlinePos = 0;
 
     for (uint32_t i = 0; i < bars.size(); i++)
@@ -56,15 +57,15 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
         const std::vector<std::vector<Position*> >& positionLists = bars[i].positionLists;
         size_t largestMeasure = 0;
 
-        for (auto j = positionLists.begin(); j != positionLists.end(); ++j)
+        for (size_t j = 0; j < positionLists.size(); j++)
         {
-            largestMeasure = std::max(j->size(), largestMeasure);
+            largestMeasure = std::max(positionLists[j].size(), largestMeasure);
         }
 
         // check if we need to jump to a new system (measure is too large)
         if (!currentSystem->IsValidPosition(lastBarlinePos + largestMeasure + 1))
         {
-            currentSystem = std::make_shared<System>();
+            currentSystem = boost::make_shared<System>();
             currentSystem->Init(staffSizes);
             currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
 

@@ -34,7 +34,7 @@
 
 #include <algorithm>
 
-TuningDialog::TuningDialog(std::shared_ptr<Guitar> guitar, QWidget *parent) :
+TuningDialog::TuningDialog(boost::shared_ptr<Guitar> guitar, QWidget *parent) :
     QDialog(parent),
     guitar(guitar),
     tuning(guitar->GetTuning())

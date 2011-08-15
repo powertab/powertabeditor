@@ -18,14 +18,14 @@
 #define BOOST_TEST_DYN_LINK
 
 #include <boost/test/unit_test.hpp>
+#include <boost/function.hpp>
 
 #include "serialization_test.h"
 #include <powertabdocument/note.h>
-#include <functional>
 
 // helper function for testing note properties
-void testNoteProperty(std::function<bool (Note*, bool)> setProperty,
-                      std::function<bool (const Note*)> getProperty)
+void testNoteProperty(boost::function<bool (Note*, bool)> setProperty,
+                      boost::function<bool (const Note*)> getProperty)
 {
     Note note;
 

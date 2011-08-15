@@ -20,6 +20,8 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
 #include <boost/spirit/include/qi.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/assign/list_of.hpp>
 
 #include <formats/scorearranger.h>
 
@@ -38,7 +40,7 @@ Gpx::DocumentReader::DocumentReader(const std::string& xml)
     read_xml(xmlStream, gpFile);
 }
 
-void Gpx::DocumentReader::readDocument(std::shared_ptr<PowerTabDocument> doc)
+void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
 {
     readHeader(doc->GetHeader());
     readTracks(doc->GetGuitarScore());
@@ -76,7 +78,7 @@ void convertStringToList(const std::string& source, std::vector<T>& dest)
 {
     using namespace boost::spirit::qi;
 
-    auto begin = source.begin();
+    std::string::const_iterator begin = source.begin();
     bool parsed = parse(begin, source.end(),
                         auto_ % ' ', dest);
 
@@ -94,7 +96,7 @@ void Gpx::DocumentReader::readTracks(Score *score)
     {
         const ptree& track = node.second;
 
-        Score::GuitarPtr guitar = std::make_shared<Guitar>();
+        Score::GuitarPtr guitar = boost::make_shared<Guitar>();
         guitar->GetTuning().SetToStandard();
 
         guitar->SetDescription(track.get<std::string>("Name"));
@@ -140,7 +142,7 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 
         const ptree& masterBar = node.second;
 
-        System::BarlinePtr barline = std::make_shared<Barline>();
+        System::BarlinePtr barline = boost::make_shared<Barline>();
 
         readKeySignature(masterBar, barline->GetKeySignature());
         readTimeSignature(masterBar, barline->GetTimeSignature());
@@ -241,7 +243,7 @@ void Gpx::DocumentReader::readTimeSignature(const Gpx::DocumentReader::ptree& ma
     std::vector<int> timeSigValues;
     using namespace boost::spirit::qi;
 
-    auto begin = timeString.begin();
+    std::string::const_iterator begin = timeString.begin();
     // import time signature (stored in text format - e.g. "4/4")
     bool parsed = parse(begin, timeString.end(),
                         int_ >> '/' >> int_, timeSigValues);
@@ -297,10 +299,9 @@ void Gpx::DocumentReader::readRhythms()
         // convert duration to PowerTab format
         const std::string noteValueStr = currentRhythm.get<std::string>("NoteValue");
 
-        std::map<std::string, int> noteValuesToInt = {
-            {"Whole", 1}, {"Half", 2}, {"Quarter", 4}, {"Eighth", 8},
-            {"16th", 16}, {"32nd", 32}, {"64th", 64}
-        };
+        std::map<std::string, int> noteValuesToInt = boost::assign::map_list_of
+            ("Whole", 1) ("Half", 2) ("Quarter", 4) ("Eighth", 8)
+            ("16th", 16) ("32nd", 32) ("64th", 64);
 
         assert(noteValuesToInt.find(noteValueStr) != noteValuesToInt.end());
         rhythm.noteValue = noteValuesToInt.find(noteValueStr)->second;

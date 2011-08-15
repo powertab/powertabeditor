@@ -19,7 +19,7 @@
 #define REMOVESYSTEM_H
 
 #include <QUndoCommand>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Score;
 class System;
@@ -37,7 +37,7 @@ signals:
 
 protected:
     Score* score;
-    std::shared_ptr<System> systemCopy;
+    boost::shared_ptr<System> systemCopy;
     const quint32 index;
 };
 

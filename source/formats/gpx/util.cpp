@@ -25,7 +25,7 @@ uint32_t Gpx::Util::readUInt(const std::vector<char>& bytes, size_t index)
 {
     uint32_t value = 0;
 
-    auto begin = bytes.begin() + index;
+    std::vector<char>::const_iterator begin = bytes.begin() + index;
 
     using namespace boost::spirit;
     qi::parse(begin, begin + sizeof(uint32_t), qi::dword, value);

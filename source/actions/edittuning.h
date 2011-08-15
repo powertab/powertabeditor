@@ -21,19 +21,19 @@
 #include <QUndoCommand>
 
 #include <powertabdocument/tuning.h>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class Guitar;
 
 class EditTuning : public QUndoCommand
 {
 public:
-    EditTuning(std::shared_ptr<Guitar> guitar, const Tuning& newTuning);
+    EditTuning(boost::shared_ptr<Guitar> guitar, const Tuning& newTuning);
     void redo();
     void undo();
     
 private:
-    std::shared_ptr<Guitar> guitar;
+    boost::shared_ptr<Guitar> guitar;
     const Tuning newTuning;
     const Tuning oldTuning;
 };

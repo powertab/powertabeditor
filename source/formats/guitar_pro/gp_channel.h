@@ -18,7 +18,7 @@
 #ifndef GP_CHANNEL_H
 #define GP_CHANNEL_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 
 namespace Gp {
 

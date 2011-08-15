@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/iterator/indirect_iterator.hpp>
+#include <boost/bind.hpp>
 
 /// Default Constructor
 Score::Score()
@@ -170,10 +171,9 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
     {
         std::vector<uint8_t> staffSizes;
         // make a list of the number of strings for each guitar
-        using namespace std::placeholders;
         std::transform(m_guitarArray.begin(), m_guitarArray.end(),
                        std::back_inserter(staffSizes),
-                       std::bind(&Guitar::GetStringCount, _1));
+                       boost::bind(&Guitar::GetStringCount, _1));
         system->Init(staffSizes);
     }
 
@@ -206,8 +206,10 @@ void Score::UpdateToVer2Structure()
         if ((guitarInMap.count(i)) >= 1)
         {
             //std::cerr << "In System " << i << std::endl;
-            auto range = guitarInMap.equal_range(i);
-            for (auto i = range.first; i != range.second; ++i)
+            typedef std::multimap<uint32_t, GuitarInConstPtr>::iterator GuitarInIterator;
+            pair<GuitarInIterator, GuitarInIterator> range = guitarInMap.equal_range(i);
+
+            for (GuitarInIterator i = range.first; i != range.second; ++i)
             {
                 GuitarInConstPtr currentGuitarIn = i->second;
                 // only readjust the Guitar->Staff mapping if we're actually changing the staff guitar, not just the rhythm slash
@@ -238,8 +240,10 @@ void Score::UpdateToVer2Structure()
         {
             System::StaffPtr currentStaff = currentSystem->GetStaff(j);
 
-            auto range = guitarToStaffMap.equal_range(j); // find guitars for this staff
-            for (auto k = range.first; k != range.second; ++k)
+            typedef multimap<uint32_t, uint32_t>::const_iterator GuitarStaffIterator;
+            // find guitars for this staff
+            pair<GuitarStaffIterator, GuitarStaffIterator> range = guitarToStaffMap.equal_range(j);
+            for (GuitarStaffIterator k = range.first; k != range.second; ++k)
             {
                 newStaves[k->second].reset(currentStaff->CloneObject());
             }
@@ -249,7 +253,7 @@ void Score::UpdateToVer2Structure()
         {
             if (!newStaves.at(m))
             {
-                System::StaffPtr newStaff = std::make_shared<Staff>();
+                System::StaffPtr newStaff = boost::make_shared<Staff>();
 
                 std::vector<System::BarlineConstPtr> barlines;
                 currentSystem->GetBarlines(barlines);
@@ -288,7 +292,8 @@ void Score::UpdateToVer2Structure()
 // Finds the index of a system within the score
 int Score::FindSystemIndex(SystemConstPtr system) const
 {
-    auto result = std::find(m_systemArray.begin(), m_systemArray.end(), system);
+    std::vector<SystemPtr>::const_iterator result = std::find(m_systemArray.begin(),
+                                                                   m_systemArray.end(), system);
     return std::distance(m_systemArray.begin(), result);
 }
 
@@ -405,7 +410,7 @@ void Score::UpdateExtraSpacing(SystemPtr system)
 void Score::Init()
 {
     // create a guitar
-    GuitarPtr guitar = std::make_shared<Guitar>();
+    GuitarPtr guitar = boost::make_shared<Guitar>();
     guitar->GetTuning().SetToStandard();
     m_guitarArray.push_back(guitar);
 
@@ -430,7 +435,7 @@ bool Score::InsertGuitar(GuitarPtr guitar)
     for (size_t i = 0; i < m_systemArray.size(); i++)
     {
         SystemPtr system = m_systemArray[i];
-        system->m_staffArray.push_back(std::make_shared<Staff>(guitar->GetStringCount(), Staff::TREBLE_CLEF));
+        system->m_staffArray.push_back(boost::make_shared<Staff>(guitar->GetStringCount(), Staff::TREBLE_CLEF));
         UpdateSystemHeight(system);
     }
 
@@ -457,10 +462,8 @@ bool Score::RemoveGuitar(size_t index)
 
 void Score::MergeScore(const Score &otherScore)
 {
-    using namespace std::placeholders;
-
     std::for_each(otherScore.m_guitarArray.begin(), otherScore.m_guitarArray.end(),
-                  std::bind(&Score::InsertGuitar, this, _1));
+                  boost::bind(&Score::InsertGuitar, this, _1));
 }
 
 /// Determines if a alternate ending index is valid

@@ -19,7 +19,7 @@
 
 #include <powertabdocument/guitar.h>
 
-EditTuning::EditTuning(std::shared_ptr<Guitar> guitar, const Tuning& newTuning) :
+EditTuning::EditTuning(boost::shared_ptr<Guitar> guitar, const Tuning& newTuning) :
     guitar(guitar),
     newTuning(newTuning),
     oldTuning(guitar->GetTuning())

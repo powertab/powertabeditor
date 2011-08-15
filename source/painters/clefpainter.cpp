@@ -26,7 +26,7 @@
 
 QFont ClefPainter::font = MusicFont().getFont();
 
-ClefPainter::ClefPainter(const StaffData& staffData, std::shared_ptr<const Staff> staff) :
+ClefPainter::ClefPainter(const StaffData& staffData, boost::shared_ptr<const Staff> staff) :
         staffInfo(staffData)
 {
     this->staff = staff;

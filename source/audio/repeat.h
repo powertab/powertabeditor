@@ -18,10 +18,10 @@
 #ifndef REPEAT_H
 #define REPEAT_H
 
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <powertabdocument/systemlocation.h>
 #include <boost/unordered_map.hpp>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 class AlternateEnding;
 
@@ -49,7 +49,7 @@ public:
     Repeat(const SystemLocation& startBarLocation);
 
     void addRepeatEnd(const SystemLocation& location, const RepeatEnd& endBar);
-    void addAlternateEnding(std::shared_ptr<const AlternateEnding> altEnding);
+    void addAlternateEnding(boost::shared_ptr<const AlternateEnding> altEnding);
 
     uint8_t getActiveRepeat() const;
 
@@ -58,8 +58,11 @@ public:
     SystemLocation performRepeat(const SystemLocation& location);
 
 private:
-    boost::unordered_map<SystemLocation, RepeatEnd, boost::hash<SystemLocation> > endBars;
-    boost::unordered_map<uint8_t, SystemLocation> alternateEndings;
+    typedef boost::unordered_map<SystemLocation, RepeatEnd, boost::hash<SystemLocation> > EndBarsMap;
+    EndBarsMap endBars;
+
+    typedef boost::unordered_map<uint8_t, SystemLocation> AltEndingsMap;
+    AltEndingsMap alternateEndings;
 
     SystemLocation startBarLocation;
     uint8_t activeRepeat;

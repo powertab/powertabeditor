@@ -19,6 +19,7 @@
 #define TAPPEDHARMONICDIALOG_H
 
 #include <QDialog>
+#include <boost/cstdint.hpp>
 
 class Note;
 class QComboBox;

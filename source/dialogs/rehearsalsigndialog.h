@@ -19,6 +19,7 @@
 #define REHEARSALSIGNDIALOG_H
 
 #include <QDialog>
+#include <boost/cstdint.hpp>
 
 class Score;
 

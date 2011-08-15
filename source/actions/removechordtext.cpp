@@ -19,7 +19,7 @@
 
 #include <powertabdocument/system.h>
 
-using std::shared_ptr;
+using boost::shared_ptr;
 
 RemoveChordText::RemoveChordText(shared_ptr<System> system, quint32 index) :
     system(system),

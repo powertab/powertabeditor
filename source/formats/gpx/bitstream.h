@@ -19,7 +19,7 @@
 #define GPX_BITSTREAM_H
 
 #include <iosfwd>
-#include <cstdint>
+#include <boost/cstdint.hpp>
 #include <vector>
 
 namespace Gpx
