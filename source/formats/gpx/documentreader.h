@@ -95,6 +95,8 @@ struct GpxBeat
 {
     int id;
     int rhythmId;
+    std::string arpeggioType;
+    std::string brushDirection;
     std::vector<int> noteIds;
 };
 

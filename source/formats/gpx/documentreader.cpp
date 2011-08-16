@@ -162,6 +162,11 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 
                 Position pos;
 
+                pos.SetArpeggioUp(beat.arpeggioType == "Up");
+                pos.SetArpeggioDown(beat.arpeggioType == "Down");
+                pos.SetPickStrokeDown(beat.brushDirection == "Up");
+                pos.SetPickStrokeUp(beat.brushDirection == "Down");
+
                 GpxRhythm rhythm = rhythms.at(beat.rhythmId);
                 pos.SetDurationType(rhythm.noteValue);
                 pos.SetDotted(rhythm.dotted);
@@ -283,6 +288,20 @@ void Gpx::DocumentReader::readBeats()
         beat.id = currentBeat.get<int>("<xmlattr>.id");
         beat.rhythmId = currentBeat.get<int>("Rhythm.<xmlattr>.ref");
         convertStringToList(currentBeat.get("Notes", ""), beat.noteIds);
+
+        beat.arpeggioType = currentBeat.get("Arpeggio", "");
+
+        // Search for brush direction in the properties list
+        BOOST_FOREACH(const ptree::value_type& node, currentBeat.get_child("Properties"))
+        {
+            const ptree& property = node.second;
+            const std::string propertyName = property.get<std::string>("<xmlattr>.name");
+            if (propertyName == "Brush")
+            {
+                beat.brushDirection = property.get<std::string>("Direction");
+                break;
+            }
+        }
 
         beats[beat.id] = beat;
     }
