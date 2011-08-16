@@ -112,6 +112,7 @@ struct GpxNote
     bool tied;
     bool ghostNote;
     int accentType;
+    std::string vibratoType;
     boost::property_tree::ptree properties;
 };
 

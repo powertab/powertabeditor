@@ -35,6 +35,7 @@
 
 Gpx::DocumentReader::DocumentReader(const std::string& xml)
 {
+    std::cout << xml << std::endl;
     std::stringstream xmlStream;
     xmlStream << xml;
     read_xml(xmlStream, gpFile);
@@ -338,6 +339,7 @@ void Gpx::DocumentReader::readNotes()
         note.tied = currentNote.get("Tie.<xmlattr>.destination", "") == "true";
         note.ghostNote = currentNote.get("AntiAccent", "") == "Normal";
         note.accentType = currentNote.get("Accent", 0);
+        note.vibratoType = currentNote.get("Vibrato", "");
 
         notes[note.id] = note;
     }
@@ -355,6 +357,15 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
     position.SetStaccato(gpxNote.accentType == 1);
     position.SetMarcato(gpxNote.accentType == 8);
     position.SetSforzando(gpxNote.accentType == 4);
+
+    if (gpxNote.vibratoType == "Slight")
+    {
+        position.SetVibrato();
+    }
+    else if (gpxNote.vibratoType == "Wide")
+    {
+        position.SetWideVibrato();
+    }
 
     BOOST_FOREACH(const ptree::value_type& node, gpxNote.properties)
     {
@@ -383,6 +394,51 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
             // - this is because we can't decide between hammerons and pulloffs without knowing the next
             //   note (which hasn't been read at this point ...)
             ptbNote.SetHammerOn(true);
+        }
+        else if (propertyName == "LeftHandTapped")
+        {
+            ptbNote.SetHammerOnFromNowhere();
+        }
+        else if (propertyName == "Tapped")
+        {
+            position.SetTap();
+        }
+        else if (propertyName == "Slide")
+        {
+            const int flags = property.get<int>("Flags");
+            switch (flags)
+            {
+            case 16:
+                ptbNote.SetSlideInto(Note::slideIntoFromBelow);
+                break;
+            case 32:
+                ptbNote.SetSlideInto(Note::slideIntoFromAbove);
+                break;
+            case 17:
+                ptbNote.SetSlideInto(Note::slideIntoShiftSlideUpwards);
+                break;
+            case 33:
+                ptbNote.SetSlideInto(Note::slideIntoShiftSlideDownwards);
+                break;
+            case 18:
+                ptbNote.SetSlideInto(Note::slideIntoLegatoSlideUpwards);
+                break;
+            case 34:
+                ptbNote.SetSlideInto(Note::slideIntoLegatoSlideDownwards);
+                break;
+            case 1:
+                ptbNote.SetSlideOutOf(Note::slideOutOfShiftSlide, 0);
+                break;
+            case 2:
+                ptbNote.SetSlideOutOf(Note::slideOutOfLegatoSlide, 0);
+                break;
+            case 4:
+                ptbNote.SetSlideOutOf(Note::slideOutOfDownwards, 0);
+                break;
+            case 8:
+                ptbNote.SetSlideOutOf(Note::slideOutOfUpwards, 0);
+                break;
+            }
         }
         else
         {
