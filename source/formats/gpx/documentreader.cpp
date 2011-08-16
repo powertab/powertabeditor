@@ -336,6 +336,8 @@ void Gpx::DocumentReader::readNotes()
         note.properties = currentNote.get_child("Properties");
 
         note.tied = currentNote.get("Tie.<xmlattr>.destination", "") == "true";
+        note.ghostNote = currentNote.get("AntiAccent", "") == "Normal";
+        note.accentType = currentNote.get("Accent", 0);
 
         notes[note.id] = note;
     }
@@ -348,6 +350,11 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
     Note ptbNote;
 
     ptbNote.SetTied(gpxNote.tied);
+    ptbNote.SetGhostNote(gpxNote.ghostNote);
+
+    position.SetStaccato(gpxNote.accentType == 1);
+    position.SetMarcato(gpxNote.accentType == 8);
+    position.SetSforzando(gpxNote.accentType == 4);
 
     BOOST_FOREACH(const ptree::value_type& node, gpxNote.properties)
     {

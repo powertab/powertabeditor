@@ -110,6 +110,8 @@ struct GpxNote
 {
     int id;
     bool tied;
+    bool ghostNote;
+    int accentType;
     boost::property_tree::ptree properties;
 };
 
