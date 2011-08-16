@@ -63,7 +63,7 @@ private:
 template <class T>
 inline T InputStream::read()
 {
-    BOOST_STATIC_ASSERT_MSG(boost::is_arithmetic<T>::value, "T must be an arithmetic type");
+    BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value); // T must be an arithmetic type
     T data;
     stream_.read((char*)&data, sizeof(data));
     return data;
@@ -77,8 +77,7 @@ inline T InputStream::read()
 template <typename LengthPrefixType>
 inline std::string InputStream::readCharacterString()
 {
-    BOOST_STATIC_ASSERT_MSG(boost::is_integral<LengthPrefixType>::value,
-                            "LengthPrefix must be an integral type");
+    BOOST_STATIC_ASSERT(boost::is_integral<LengthPrefixType>::value); // LengthPrefix must be an integral type
 
     const LengthPrefixType length = read<LengthPrefixType>();
 
