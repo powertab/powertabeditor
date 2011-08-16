@@ -36,6 +36,8 @@ void CalculateSymbolSpacing(const Score* score, boost::shared_ptr<System> system
 
 void FormatSystem(boost::shared_ptr<System> system);
 
+void FixHammerons(boost::shared_ptr<Staff> staff);
+
 enum SymbolType
 {
     NoSymbol,

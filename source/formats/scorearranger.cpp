@@ -135,5 +135,10 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
         system->CalculateBeamingForStaves();
         score->UpdateSystemHeight(system);
         Layout::FormatSystem(system);
+
+        for (size_t i = 0; i < system->GetStaffCount(); i++)
+        {
+            Layout::FixHammerons(system->GetStaff(i));
+        }
     }
 }

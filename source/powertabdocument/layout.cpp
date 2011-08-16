@@ -433,3 +433,30 @@ void Layout::FormatSystem(boost::shared_ptr<System> system)
 
     system->SetPositionSpacing(availableWidth / numPositions);
 }
+
+/// Converts hammerons to pulloffs (or vice versa) if necessary
+/// This is useful when importing files from other formats (Guitar Pro in particular)
+void Layout::FixHammerons(boost::shared_ptr<Staff> staff)
+{
+    for (size_t voice = 0; voice < staff->NUM_STAFF_VOICES; ++voice)
+    {
+        for (size_t i = 0; i < staff->GetPositionCount(voice); ++i)
+        {
+            const Position* pos = staff->GetPosition(voice, i);
+
+            for (size_t j = 0; j < pos->GetNoteCount(); j++)
+            {
+                Note* note = pos->GetNote(j);
+
+                if (note->HasHammerOn() && staff->CanPullOff(pos, note))
+                {
+                    note->SetPullOff(true);
+                }
+                else if (note->HasPullOff() && staff->CanHammerOn(pos, note))
+                {
+                    note->SetHammerOn(true);
+                }
+            }
+        }
+    }
+}

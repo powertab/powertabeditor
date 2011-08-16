@@ -366,6 +366,17 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
         {
             position.SetPalmMuting(true);
         }
+        else if (propertyName == "Muted")
+        {
+            ptbNote.SetMuted(true);
+        }
+        else if (propertyName == "HopoOrigin")
+        {
+            // if the note should actually have a pulloff, this will later be fixed by the Layout::FixHammerons function
+            // - this is because we can't decide between hammerons and pulloffs without knowing the next
+            //   note (which hasn't been read at this point ...)
+            ptbNote.SetHammerOn(true);
+        }
         else
         {
             std::cerr << "Unhandled property: " << propertyName << std::endl;
