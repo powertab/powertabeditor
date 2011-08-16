@@ -7,7 +7,7 @@ echo "Running qmake ..."
 qmake ../../source/source.pro
 
 echo "Building ..."
-make -j2 release
+make -j2
 
 echo "Packaging ..."
 cd build
