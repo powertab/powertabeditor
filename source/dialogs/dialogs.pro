@@ -38,4 +38,5 @@ FORMS += \
     dynamicdialog.ui \
     timesignaturedialog.ui \
     rehearsalsigndialog.ui \
-    preferencesdialog.ui
+    preferencesdialog.ui \
+    tuningdialog.ui

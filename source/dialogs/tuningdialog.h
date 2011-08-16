@@ -25,15 +25,17 @@
 
 class Tuning;
 class QComboBox;
-class QLineEdit;
-class QCheckBox;
-class QSpinBox;
+
+namespace Ui {
+    class TuningDialog;
+}
 
 class TuningDialog : public QDialog
 {
     Q_OBJECT
 public:
     TuningDialog(const Tuning& currentTuning, QWidget *parent = 0);
+    ~TuningDialog();
 
     Tuning getNewTuning() const;
 
@@ -42,12 +44,9 @@ private slots:
     void updateEnabledStrings(int numStrings);
 
 private:
-    QStringList noteNames;
+    Ui::TuningDialog* ui;
 
-    QLineEdit* tuningNameEditor;
-    QCheckBox* usesSharpsSelector;
-    QSpinBox* numStringsSelector;
-    QSpinBox* notationOffsetSelector;
+    QStringList noteNames;
 
     std::vector<QComboBox*> stringSelectors;
 

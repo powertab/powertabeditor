@@ -16,13 +16,7 @@
 */
   
 #include "tuningdialog.h"
-
-#include <QFormLayout>
-#include <QDialogButtonBox>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QSpinBox>
+#include "ui_tuningdialog.h"
 
 #include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
@@ -31,77 +25,56 @@
 #include <boost/bind.hpp>
 
 TuningDialog::TuningDialog(const Tuning& currentTuning, QWidget *parent) :
-    QDialog(parent)
+    QDialog(parent),
+    ui(new Ui::TuningDialog)
 {
-    setWindowTitle(tr("Tuning"));
-    setModal(true);
+    ui->setupUi(this);
 
-    QFormLayout* formLayout = new QFormLayout;
-    
-    tuningNameEditor = new QLineEdit;
-    tuningNameEditor->setText(QString().fromStdString(currentTuning.GetName()));
-    formLayout->addRow(tr("Name:"), tuningNameEditor);
-    
-    usesSharpsSelector = new QCheckBox;
-    usesSharpsSelector->setChecked(currentTuning.UsesSharps());
-    connect(usesSharpsSelector, SIGNAL(toggled(bool)), this, SLOT(toggleSharps(bool)));
-    formLayout->addRow(tr("Sharps:"), usesSharpsSelector);
-    
-    notationOffsetSelector = new QSpinBox;
-    notationOffsetSelector->setMinimum(Tuning::MIN_MUSIC_NOTATION_OFFSET);
-    notationOffsetSelector->setMaximum(Tuning::MAX_MUSIC_NOTATION_OFFSET);
-    notationOffsetSelector->setValue(currentTuning.GetMusicNotationOffset());
-    formLayout->addRow(tr("Music Notation Offset:"), notationOffsetSelector);
-    
-    numStringsSelector = new QSpinBox;
-    numStringsSelector->setMinimum(Tuning::MIN_STRING_COUNT);
-    numStringsSelector->setMaximum(Tuning::MAX_STRING_COUNT);
-    numStringsSelector->setValue(currentTuning.GetStringCount());
+    ui->tuningNameEdit->setText(QString::fromStdString(currentTuning.GetName()));
 
-    formLayout->addRow(tr("Number of Strings:"), numStringsSelector);
-    connect(numStringsSelector, SIGNAL(valueChanged(int)), this, SLOT(updateEnabledStrings(int)));
+    ui->sharpsCheckBox->setChecked(currentTuning.UsesSharps());
+    connect(ui->sharpsCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleSharps(bool)));
+    
+    ui->notationOffsetSpinBox->setMinimum(Tuning::MIN_MUSIC_NOTATION_OFFSET);
+    ui->notationOffsetSpinBox->setMaximum(Tuning::MAX_MUSIC_NOTATION_OFFSET);
+    ui->notationOffsetSpinBox->setValue(currentTuning.GetMusicNotationOffset());
+
+    ui->numStringsSpinBox->setMinimum(Tuning::MIN_STRING_COUNT);
+    ui->numStringsSpinBox->setMaximum(Tuning::MAX_STRING_COUNT);
+    ui->numStringsSpinBox->setValue(currentTuning.GetStringCount());
+    connect(ui->numStringsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateEnabledStrings(int)));
+
+    stringSelectors.push_back(ui->string1);
+    stringSelectors.push_back(ui->string2);
+    stringSelectors.push_back(ui->string3);
+    stringSelectors.push_back(ui->string4);
+    stringSelectors.push_back(ui->string5);
+    stringSelectors.push_back(ui->string6);
+    stringSelectors.push_back(ui->string7);
+    stringSelectors.push_back(ui->string8);
 
     generateNoteNames(currentTuning.UsesSharps());
     initStringSelectors(currentTuning);
     updateEnabledStrings(currentTuning.GetStringCount());
+}
 
-    QHBoxLayout* tuningSelectorsLayout = new QHBoxLayout;
-    
-    foreach (QComboBox* selector, stringSelectors)
-    {
-        tuningSelectorsLayout->addWidget(selector);
-    }
-    
-    formLayout->addRow(tr("Tuning:"), tuningSelectorsLayout);
-    
-    formLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
-    QVBoxLayout *buttonsLayout = new QVBoxLayout;
-    buttonsLayout->addStretch(1);
-    buttonsLayout->addLayout(formLayout);
-    buttonsLayout->addWidget(buttonBox);
-
-    buttonsLayout->setSizeConstraint(QLayout::SetFixedSize);
-    setLayout(buttonsLayout);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+TuningDialog::~TuningDialog()
+{
+    delete ui;
 }
 
 void TuningDialog::initStringSelectors(const Tuning& currentTuning)
 {
-    for (uint8_t i = 0; i < Tuning::MAX_STRING_COUNT; i++)
+    for (size_t i = 0; i < stringSelectors.size(); i++)
     {
-        QComboBox* selector = new QComboBox;
+        QComboBox* selector = stringSelectors[i];
+
         selector->addItems(noteNames);
         
         if (currentTuning.IsValidString(i))
         {
             selector->setCurrentIndex(currentTuning.GetNote(i, false));
         }
-
-        stringSelectors.push_back(selector);
     }
 }
 
@@ -112,7 +85,7 @@ void TuningDialog::generateNoteNames(bool usesSharps)
     
     for (uint8_t note = midi::MIN_MIDI_NOTE; note < midi::MAX_MIDI_NOTE; note++)
     {
-        noteNames << QString().fromStdString(midi::GetMidiNoteText(note, usesSharps)) +
+        noteNames << QString::fromStdString(midi::GetMidiNoteText(note, usesSharps)) +
                      QString().setNum(midi::GetMidiNoteOctave(note));
     }
 }
@@ -148,13 +121,13 @@ Tuning TuningDialog::getNewTuning() const
 {
     // create a new tuning with the specified settings
     Tuning newTuning;
-    newTuning.SetName(tuningNameEditor->text().toStdString());
-    newTuning.SetMusicNotationOffset(notationOffsetSelector->value());
-    newTuning.SetSharps(usesSharpsSelector->isChecked());
+    newTuning.SetName(ui->tuningNameEdit->text().toStdString());
+    newTuning.SetMusicNotationOffset(ui->notationOffsetSpinBox->value());
+    newTuning.SetSharps(ui->sharpsCheckBox->isChecked());
 
     // grab the selected tuning notes
-    std::vector<uint8_t> tuningNotes(numStringsSelector->value());
-    std::transform(stringSelectors.begin(), stringSelectors.begin() + numStringsSelector->value(),
+    std::vector<uint8_t> tuningNotes(ui->numStringsSpinBox->value());
+    std::transform(stringSelectors.begin(), stringSelectors.begin() + ui->numStringsSpinBox->value(),
                    tuningNotes.begin(), std::mem_fun(&QComboBox::currentIndex));
 
     newTuning.SetTuningNotes(tuningNotes);
