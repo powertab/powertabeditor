@@ -88,7 +88,7 @@ protected:
     void drawStdNotation(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                          const StaffData& currentStaffInfo);
 
-    void adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap);
+    void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap);
     void drawSystemSymbols(Score* score, boost::shared_ptr<const System> system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
 

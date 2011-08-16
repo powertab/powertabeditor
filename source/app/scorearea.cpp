@@ -755,7 +755,7 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
     System::BarlineConstPtr prevBarline = system->GetStartBar();
 
     QList<StdNotationPainter*> notePainters;
-    QMultiMap<double, StdNotationPainter*> accidentalsMap;
+    QMultiMap<int, StdNotationPainter*> accidentalsMap;
     std::list<NoteStem> stems;
 
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
@@ -821,6 +821,9 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
             }
         }
     }
+
+    // make sure we adjust accidentals for the last bar of the staff
+    adjustAccidentals(accidentalsMap);
 
     // after adjusting accidentals, etc, we can add the painters to the scene
     foreach(StdNotationPainter* painter, notePainters)
@@ -1154,10 +1157,10 @@ void ScoreArea::adjustScroll()
     ensureVisible(caret, 50, 100);
 }
 
-void ScoreArea::adjustAccidentals(QMultiMap<double, StdNotationPainter*>& accidentalsMap)
+void ScoreArea::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap)
 {
-    QList<double> keys = accidentalsMap.uniqueKeys();
-    QList<double>::const_iterator i = keys.begin();
+    QList<int> keys = accidentalsMap.uniqueKeys();
+    QList<int>::const_iterator i = keys.begin();
 
     while(i != keys.end())
     {
