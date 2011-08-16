@@ -290,7 +290,7 @@ void PowerTabDocument::DeleteContents()
     DeleteScoreArrayContents();
     m_tablatureStaffLineSpacing = DEFAULT_TABLATURE_STAFF_LINE_SPACING;
 
-    m_fontSettings.fill(FontSetting());
+    m_fontSettings.assign(FontSetting());
 
     m_fadeIn = DEFAULT_FADE_IN;
     m_fadeOut = DEFAULT_FADE_OUT;
