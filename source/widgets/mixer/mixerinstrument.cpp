@@ -32,6 +32,9 @@
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/generalmidi.h>
 
+#include <app/powertabeditor.h>
+#include <actions/edittuning.h>
+
 using boost::shared_ptr;
 
 MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent) :
@@ -252,8 +255,12 @@ void MixerInstrument::changeInstrumentName(QString name)
 
 void MixerInstrument::editTuning()
 {
-    TuningDialog dialog(guitar);
-    dialog.exec();
+    TuningDialog dialog(guitar->GetTuning());
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        PowerTabEditor::undoManager->push(new EditTuning(guitar, dialog.getNewTuning()));
+    }
 }
 
 /// Update the widget's data

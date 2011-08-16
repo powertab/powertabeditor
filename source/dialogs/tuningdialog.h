@@ -28,27 +28,22 @@ class QComboBox;
 class QLineEdit;
 class QCheckBox;
 class QSpinBox;
-class Guitar;
 
 class TuningDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit TuningDialog(boost::shared_ptr<Guitar> guitar, QWidget *parent = 0);
+    TuningDialog(const Tuning& currentTuning, QWidget *parent = 0);
 
-public slots:
-    void accept();
+    Tuning getNewTuning() const;
 
 private slots:
     void toggleSharps(bool usesSharps);
     void updateEnabledStrings(int numStrings);
 
 private:
-    boost::shared_ptr<Guitar> guitar;
-    const Tuning& tuning;
-    
     QStringList noteNames;
-    
+
     QLineEdit* tuningNameEditor;
     QCheckBox* usesSharpsSelector;
     QSpinBox* numStringsSelector;
@@ -56,7 +51,7 @@ private:
 
     std::vector<QComboBox*> stringSelectors;
 
-    void initStringSelectors();
+    void initStringSelectors(const Tuning& currentTuning);
     void generateNoteNames(bool usesSharps);
 };
 
