@@ -38,7 +38,9 @@ HEADERS += \
     adddynamic.h \
     removedynamic.h \
     actions_pch.h \
-    insertnotes.h
+    insertnotes.h \
+    removevolumeswell.h \
+    addvolumeswell.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -72,11 +74,6 @@ SOURCES += \
     edittimesignature.cpp \
     adddynamic.cpp \
     removedynamic.cpp \
-    insertnotes.cpp
-
-
-
-
-
-
-
+    insertnotes.cpp \
+    removevolumeswell.cpp \
+    addvolumeswell.cpp

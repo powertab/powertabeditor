@@ -109,6 +109,8 @@
 #include <actions/edittimesignature.h>
 #include <actions/adddynamic.h>
 #include <actions/removedynamic.h>
+#include <actions/removevolumeswell.h>
+#include <actions/addvolumeswell.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -2000,6 +2002,20 @@ void PowerTabEditor::copySelectedNotes()
 
 void PowerTabEditor::editVolumeSwell()
 {
-    VolumeSwellDialog dialog(getCurrentScoreArea()->getCaret()->getCurrentPosition());
-    dialog.exec();
+    Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
+
+    if (!position->HasVolumeSwell())
+    {
+        VolumeSwellDialog dialog(position);
+        if (dialog.exec() == QDialog::Accepted) // add volume swell
+        {
+            undoManager->push(new AddVolumeSwell(position, dialog.getNewStartVolume(),
+                                                 dialog.getNewEndVolume(),
+                                                 dialog.getNewDuration()));
+        }
+    }
+    else // remove volume swell
+    {
+        undoManager->push(new RemoveVolumeSwell(position));
+    }
 }

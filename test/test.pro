@@ -41,7 +41,9 @@ SOURCES += \
     powertabdocument/keysignature_test.cpp \
     actions/test_edittimesignature.cpp \
     powertabdocument/timesignature_test.cpp \
-    formats/guitar_pro/test_gp4.cpp
+    formats/guitar_pro/test_gp4.cpp \
+    actions/test_removevolumeswell.cpp \
+    actions/test_addvolumeswell.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
@@ -93,4 +95,3 @@ unix|macx {
 win32 {
     QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/formats/guitar_pro/data\" \"$${OUT_PWD}/$${BUILDTYPE}/data\"
 }
-
