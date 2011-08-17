@@ -125,6 +125,7 @@ protected slots:
     void editKeySignature();
     void editTimeSignature();
     void editDynamic();
+    void editVolumeSwell();
 
     void removeCurrentSystem();
     void insertSystemAtEnd();
@@ -263,6 +264,7 @@ protected:
     Command* barlineAct;
     Command* repeatEndingAct;
     Command* dynamicAct;
+    Command* volumeSwellAct;
 
     QMenu* tabSymbolsMenu;
     Command* hammerPullAct; // add/remove hammer-on or pull-off

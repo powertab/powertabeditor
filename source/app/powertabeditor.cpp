@@ -58,6 +58,7 @@
 #include <dialogs/timesignaturedialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/dynamicdialog.h>
+#include <dialogs/volumeswelldialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -600,6 +601,11 @@ void PowerTabEditor::createActions()
     dynamicAct->setCheckable(true);
     connect(dynamicAct, SIGNAL(triggered()), this, SLOT(editDynamic()));
 
+    volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
+                                    QKeySequence(), this);
+    volumeSwellAct->setCheckable(true);
+    connect(volumeSwellAct, SIGNAL(triggered()), this, SLOT(editVolumeSwell()));
+
     // Tab Symbol Actions
     hammerPullAct = new Command(tr("Hammer On/Pull Off"), "TabSymbols.HammerPull", Qt::Key_H, this);
     hammerPullAct->setCheckable(true);
@@ -835,6 +841,7 @@ void PowerTabEditor::createMenus()
     musicSymbolsMenu->addAction(barlineAct);
     musicSymbolsMenu->addAction(repeatEndingAct);
     musicSymbolsMenu->addAction(dynamicAct);
+    musicSymbolsMenu->addAction(volumeSwellAct);
 
     // Tab Symbols Menu
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
@@ -1831,6 +1838,8 @@ void PowerTabEditor::updateActions()
     updatePropertyStatus(slideIntoFromAboveAct, currentNote, &Note::HasSlideIntoFromAbove);
     updatePropertyStatus(slideIntoFromBelowAct, currentNote, &Note::HasSlideIntoFromBelow);
 
+    updatePropertyStatus(volumeSwellAct, currentPosition, &Position::HasVolumeSwell);
+
     shiftBackwardAct->setEnabled(currentPosition == NULL);
 
     clearNoteAct->setEnabled(currentNote != NULL);
@@ -1987,4 +1996,10 @@ void PowerTabEditor::doPaste()
 void PowerTabEditor::copySelectedNotes()
 {
     Clipboard::copySelection(getSelectedPositions());
+}
+
+void PowerTabEditor::editVolumeSwell()
+{
+    VolumeSwellDialog dialog(getCurrentScoreArea()->getCaret()->getCurrentPosition());
+    dialog.exec();
 }

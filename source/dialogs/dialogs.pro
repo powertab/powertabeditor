@@ -17,7 +17,8 @@ HEADERS += \
     keyboardsettingsdialog.h \
     dynamicdialog.h \
     dialogs_pch.h \
-    timesignaturedialog.h
+    timesignaturedialog.h \
+    volumeswelldialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -31,7 +32,8 @@ SOURCES += \
     keysignaturedialog.cpp \
     keyboardsettingsdialog.cpp \
     dynamicdialog.cpp \
-    timesignaturedialog.cpp
+    timesignaturedialog.cpp \
+    volumeswelldialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -39,4 +41,5 @@ FORMS += \
     timesignaturedialog.ui \
     rehearsalsigndialog.ui \
     preferencesdialog.ui \
-    tuningdialog.ui
+    tuningdialog.ui \
+    volumeswelldialog.ui
