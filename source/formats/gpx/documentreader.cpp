@@ -168,6 +168,7 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
                 pos.SetPickStrokeUp(beat.brushDirection == "Down");
 
                 pos.SetTremoloPicking(beat.tremoloPicking);
+                pos.SetAcciaccatura(beat.graceNote);
 
                 GpxRhythm rhythm = rhythms.at(beat.rhythmId);
                 pos.SetDurationType(rhythm.noteValue);
@@ -293,6 +294,7 @@ void Gpx::DocumentReader::readBeats()
 
         beat.arpeggioType = currentBeat.get("Arpeggio", "");
         beat.tremoloPicking = currentBeat.find("Tremolo") != currentBeat.not_found();
+        beat.graceNote = currentBeat.find("GraceNotes") != currentBeat.not_found();
 
         // Search for brush direction in the properties list
         BOOST_FOREACH(const ptree::value_type& node, currentBeat.get_child("Properties"))

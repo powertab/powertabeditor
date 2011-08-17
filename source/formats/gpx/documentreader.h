@@ -98,6 +98,7 @@ struct GpxBeat
     std::string arpeggioType;
     std::string brushDirection;
     bool tremoloPicking;
+    bool graceNote;
     std::vector<int> noteIds;
 };
 
