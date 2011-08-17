@@ -174,6 +174,9 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
             uint8_t trilledFret = 0;
             note->GetTrill(trilledFret);
             BOOST_CHECK_EQUAL(trilledFret, 1);
+
+            note = score->GetSystem(0)->GetStaff(0)->GetPosition(0, 3)->GetNote(0);
+            BOOST_CHECK(note->HasPullOff());
         }
 
     BOOST_AUTO_TEST_SUITE_END()

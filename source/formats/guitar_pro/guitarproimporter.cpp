@@ -605,7 +605,7 @@ void GuitarProImporter::readNoteEffects(Gp::InputStream& stream,
 
     position.SetLetRing(header1.test(Gp::HasLetRing));
 
-    note.SetHammerOn(header1.test(Gp::HasHammerOnOrPullOff)); // TODO - check whether a pulloff needs to be set instead
+    note.SetHammerOn(header1.test(Gp::HasHammerOnOrPullOff));
 
     position.SetVibrato(header2.test(Gp::HasVibrato));
     position.SetPalmMuting(header2.test(Gp::HasPalmMute));
@@ -619,7 +619,7 @@ void GuitarProImporter::readNoteEffectsGp3(Gp::InputStream& stream,
     const Gp::Flags flags = stream.read<uint8_t>();
 
     position.SetLetRing(flags.test(Gp::HasLetRing));
-    note.SetHammerOn(flags.test(Gp::HasHammerOnOrPullOff)); // TODO - check whether a pulloff needs to be set instead
+    note.SetHammerOn(flags.test(Gp::HasHammerOnOrPullOff));
 
     if (flags.test(Gp::HasSlideOutVer3))
     {
