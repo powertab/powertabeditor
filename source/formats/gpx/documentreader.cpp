@@ -167,6 +167,8 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
                 pos.SetPickStrokeDown(beat.brushDirection == "Up");
                 pos.SetPickStrokeUp(beat.brushDirection == "Down");
 
+                pos.SetTremoloPicking(beat.tremoloPicking);
+
                 GpxRhythm rhythm = rhythms.at(beat.rhythmId);
                 pos.SetDurationType(rhythm.noteValue);
                 pos.SetDotted(rhythm.dotted);
@@ -290,6 +292,7 @@ void Gpx::DocumentReader::readBeats()
         convertStringToList(currentBeat.get("Notes", ""), beat.noteIds);
 
         beat.arpeggioType = currentBeat.get("Arpeggio", "");
+        beat.tremoloPicking = currentBeat.find("Tremolo") != currentBeat.not_found();
 
         // Search for brush direction in the properties list
         BOOST_FOREACH(const ptree::value_type& node, currentBeat.get_child("Properties"))
@@ -360,6 +363,7 @@ void Gpx::DocumentReader::readNotes()
         note.accentType = currentNote.get("Accent", 0);
         note.vibratoType = currentNote.get("Vibrato", "");
         note.letRing = currentNote.find("LetRing") != currentNote.not_found();
+        note.trillNote = currentNote.get("Trill", -1);
 
         notes[note.id] = note;
     }
@@ -388,6 +392,11 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
     }
 
     position.SetLetRing(gpxNote.letRing);
+
+    if (gpxNote.trillNote != -1)
+    {
+        ptbNote.SetTrill(gpxNote.trillNote - tuning.GetNote(ptbNote.GetString()));
+    }
 
     BOOST_FOREACH(const ptree::value_type& node, gpxNote.properties)
     {

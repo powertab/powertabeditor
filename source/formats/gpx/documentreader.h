@@ -97,6 +97,7 @@ struct GpxBeat
     int rhythmId;
     std::string arpeggioType;
     std::string brushDirection;
+    bool tremoloPicking;
     std::vector<int> noteIds;
 };
 
@@ -116,6 +117,7 @@ struct GpxNote
     int accentType;
     std::string vibratoType;
     bool letRing;
+    int trillNote; ///< Note value is stored in MIDI format (0-127)
     boost::property_tree::ptree properties;
 };
 
