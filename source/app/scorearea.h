@@ -63,8 +63,8 @@ public:
     }
 
 protected:
-    void renderScore(Score* score, int lineSpacing);
-    void renderSystem(Score* score, boost::shared_ptr<const System> system, int lineSpacing);
+    void renderScore(const Score* score, int lineSpacing);
+    void renderSystem(const Score* score, boost::shared_ptr<const System> system, int lineSpacing);
 
     void drawTabNotes(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
                       const StaffData& currentStaffInfo);
@@ -89,7 +89,7 @@ protected:
                          const StaffData& currentStaffInfo);
 
     void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap);
-    void drawSystemSymbols(Score* score, boost::shared_ptr<const System> system, const StaffData& currentStaffInfo);
+    void drawSystemSymbols(const Score* score, boost::shared_ptr<const System> system, const StaffData& currentStaffInfo);
     void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
 
     void drawAltEndings(const std::vector<boost::shared_ptr<AlternateEnding> >& altEndings,

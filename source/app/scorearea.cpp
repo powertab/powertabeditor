@@ -139,7 +139,7 @@ void ScoreArea::requestFullRedraw()
     redrawOnNextRefresh = true;
 }
 
-void ScoreArea::renderScore(Score* score, int lineSpacing)
+void ScoreArea::renderScore(const Score* score, int lineSpacing)
 {
     boost::timer timer;
 
@@ -153,9 +153,9 @@ void ScoreArea::renderScore(Score* score, int lineSpacing)
     qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
 }
 
-void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int lineSpacing)
+void ScoreArea::renderSystem(const Score* score, shared_ptr<const System> system, int lineSpacing)
 {
-    const Rect systemRectangle = system->GetRect();
+    const Rect& systemRectangle = system->GetRect();
 
     // save the top-left position of the system
     const int leftEdge = systemRectangle.GetLeft();
@@ -222,7 +222,7 @@ void ScoreArea::renderSystem(Score* score, shared_ptr<const System> system, int 
     scene.addItem(activeSystem);
 }
 
-// Draw all of the barlines for the staff.
+/// Draw all of the barlines for the staff.
 void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const System> system)
 {
     std::vector<System::BarlineConstPtr> barlines;
@@ -230,7 +230,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const S
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
-        System::BarlineConstPtr currentBarline = barlines.at(i);
+        const System::BarlineConstPtr& currentBarline = barlines[i];
         const KeySignature& keySig = currentBarline->GetKeySignature();
         const TimeSignature& timeSig = currentBarline->GetTimeSignature();
 
@@ -302,7 +302,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const S
             signLetter->setFont(displayFont);
 
             QGraphicsSimpleTextItem* signText = new QGraphicsSimpleTextItem;
-            signText->setText(QString().fromStdString(rehearsalSign.GetDescription()));
+            signText->setText(QString::fromStdString(rehearsalSign.GetDescription()));
             signText->setFont(displayFont);
             signText->setPos(rehearsalSignX + signLetter->boundingRect().width() + 7, y);
 
@@ -320,7 +320,7 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const S
     }
 }
 
-/// draws all of the slides for a staff
+/// Draws all of the slides for a staff
 void ScoreArea::drawSlides(shared_ptr<const System> system, shared_ptr<const Staff> staff,
                            const StaffData& currentStaffInfo)
 {
@@ -331,8 +331,8 @@ void ScoreArea::drawSlides(shared_ptr<const System> system, shared_ptr<const Sta
         {
             for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
             {
-                Position* currentPosition = staff->GetPosition(voice, j);
-                Note* note = currentPosition->GetNoteByString(string);
+                const Position* currentPosition = staff->GetPosition(voice, j);
+                const Note* note = currentPosition->GetNoteByString(string);
 
                 if (note == NULL)
                 {
@@ -349,11 +349,10 @@ void ScoreArea::drawSlides(shared_ptr<const System> system, shared_ptr<const Sta
                 {
                     // figure out if we're sliding up or down
                     const bool slideUp = (type == Note::slideOutOfUpwards) || (steps > 0);
-
-                    // get the index of the next position
                     const size_t nextPosIndex = staff->GetIndexOfNextPosition(voice, system, currentPosition);
 
-                    drawSlidesHelper(system, currentStaffInfo, string, slideUp, currentPosition->GetPosition(), nextPosIndex);
+                    drawSlidesHelper(system, currentStaffInfo, string, slideUp,
+                                     currentPosition->GetPosition(), nextPosIndex);
                 }
 
                 // draw any slides into the note
@@ -361,12 +360,11 @@ void ScoreArea::drawSlides(shared_ptr<const System> system, shared_ptr<const Sta
                 if (type != Note::slideIntoNone)
                 {
                     const quint32 currentPosIndex = currentPosition->GetPosition();
-
                     const bool slideUp = (type == Note::slideIntoFromBelow);
-
                     const quint32 prevPosIndex = (currentPosIndex == 0) ? 0 : currentPosIndex - 1;
 
-                    drawSlidesHelper(system, currentStaffInfo, string, slideUp, prevPosIndex, currentPosIndex);
+                    drawSlidesHelper(system, currentStaffInfo, string,
+                                     slideUp, prevPosIndex, currentPosIndex);
                 }
             }
         }
@@ -375,8 +373,8 @@ void ScoreArea::drawSlides(shared_ptr<const System> system, shared_ptr<const Sta
 
 /// Helper function to perform the actual rendering of a slide
 /// Draws a slide on the given string, between the two position indexes
-void ScoreArea::drawSlidesHelper(shared_ptr<const System> system, const StaffData& currentStaffInfo, quint8 string,
-                                 bool slideUp, quint32 posIndex1, quint32 posIndex2)
+void ScoreArea::drawSlidesHelper(shared_ptr<const System> system, const StaffData& currentStaffInfo,
+                                 quint8 string, bool slideUp, quint32 posIndex1, quint32 posIndex2)
 {
     Q_ASSERT(posIndex1 <= posIndex2);
 
@@ -410,8 +408,8 @@ void ScoreArea::drawLegato(shared_ptr<const System> system, shared_ptr<const Sta
             int startPos = -1;
             for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
             {
-                Position* position = staff->GetPosition(voice, j);
-                Note* note = position->GetNoteByString(string);
+                const Position* position = staff->GetPosition(voice, j);
+                const Note* note = position->GetNoteByString(string);
 
                 const int currentPosition = position->GetPosition();
 
@@ -427,8 +425,9 @@ void ScoreArea::drawLegato(shared_ptr<const System> system, shared_ptr<const Sta
                         startPos = currentPosition;
                     }
                 }
-
-                else if (startPos != -1) // if an arc has been started, and the current note is not a hammer-on/pull-off, end the arc
+                // if an arc has already been started, and the current note is
+                // not a hammer-on/pull-off, end the arc
+                else if (startPos != -1)
                 {
                     const double leftPos = system->GetPositionX(startPos);
                     const double width = system->GetPositionX(currentPosition) - leftPos;
@@ -532,7 +531,8 @@ void ScoreArea::drawRhythmSlashes(shared_ptr<const System> system)
     }
 }
 
-void ScoreArea::drawSystemSymbols(Score* score, shared_ptr<const System> system, const StaffData& currentStaffInfo)
+void ScoreArea::drawSystemSymbols(const Score* score, shared_ptr<const System> system,
+                                  const StaffData& currentStaffInfo)
 {
     quint32 height = 0;
 
