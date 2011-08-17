@@ -115,6 +115,7 @@ struct GpxNote
     bool ghostNote;
     int accentType;
     std::string vibratoType;
+    bool letRing;
     boost::property_tree::ptree properties;
 };
 

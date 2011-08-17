@@ -359,6 +359,7 @@ void Gpx::DocumentReader::readNotes()
         note.ghostNote = currentNote.get("AntiAccent", "") == "Normal";
         note.accentType = currentNote.get("Accent", 0);
         note.vibratoType = currentNote.get("Vibrato", "");
+        note.letRing = currentNote.find("LetRing") != currentNote.not_found();
 
         notes[note.id] = note;
     }
@@ -385,6 +386,8 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
     {
         position.SetWideVibrato();
     }
+
+    position.SetLetRing(gpxNote.letRing);
 
     BOOST_FOREACH(const ptree::value_type& node, gpxNote.properties)
     {
@@ -457,6 +460,19 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
             case 8:
                 ptbNote.SetSlideOutOf(Note::slideOutOfUpwards, 0);
                 break;
+            }
+        }
+        else if (propertyName == "HarmonicType")
+        {
+            const std::string harmonicType = property.get<std::string>("HType");
+
+            if (harmonicType == "Natural")
+            {
+                ptbNote.SetNaturalHarmonic();
+            }
+            else
+            {
+                std::cerr << "Unsupported Harmonic Type - " << harmonicType << std::endl;
             }
         }
         else
