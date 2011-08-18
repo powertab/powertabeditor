@@ -41,12 +41,12 @@ IrregularGroupingDialog::~IrregularGroupingDialog()
     delete ui;
 }
 
-uint8_t IrregularGroupingDialog::newNotesPlayed() const
+uint8_t IrregularGroupingDialog::notesPlayed() const
 {
     return ui->notesPlayedSpinBox->value();
 }
 
-uint8_t IrregularGroupingDialog::newNotesPlayedOver() const
+uint8_t IrregularGroupingDialog::notesPlayedOver() const
 {
     return ui->notesPlayedOverSpinBox->value();
 }

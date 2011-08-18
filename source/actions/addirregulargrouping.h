@@ -15,29 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef IRREGULARGROUPINGDIALOG_H
-#define IRREGULARGROUPINGDIALOG_H
+#ifndef ADDIRREGULARGROUPING_H
+#define ADDIRREGULARGROUPING_H
 
-#include <QDialog>
+#include <QUndoCommand>
+#include <vector>
 #include <boost/cstdint.hpp>
 
-namespace Ui {
-    class IrregularGroupingDialog;
-}
+class Position;
 
-class IrregularGroupingDialog : public QDialog
+class AddIrregularGrouping : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
-    explicit IrregularGroupingDialog(QWidget *parent = 0);
-    ~IrregularGroupingDialog();
+    AddIrregularGrouping(const std::vector<Position*>& positions,
+                         uint8_t notesPlayed, uint8_t notesPlayedOver);
 
-    uint8_t notesPlayed() const;
-    uint8_t notesPlayedOver() const;
+    void redo();
+    void undo();
 
 private:
-    Ui::IrregularGroupingDialog *ui;
+    const std::vector<Position*> positions;
+    const uint8_t notesPlayed;
+    const uint8_t notesPlayedOver;
 };
 
-#endif // IRREGULARGROUPINGDIALOG_H
+#endif // ADDIRREGULARGROUPING_H

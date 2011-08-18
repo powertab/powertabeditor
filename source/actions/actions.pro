@@ -40,7 +40,8 @@ HEADERS += \
     actions_pch.h \
     insertnotes.h \
     removevolumeswell.h \
-    addvolumeswell.h
+    addvolumeswell.h \
+    addirregulargrouping.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -76,4 +77,5 @@ SOURCES += \
     removedynamic.cpp \
     insertnotes.cpp \
     removevolumeswell.cpp \
-    addvolumeswell.cpp
+    addvolumeswell.cpp \
+    addirregulargrouping.cpp

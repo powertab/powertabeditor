@@ -112,6 +112,7 @@
 #include <actions/removedynamic.h>
 #include <actions/removevolumeswell.h>
 #include <actions/addvolumeswell.h>
+#include <actions/addirregulargrouping.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -2030,5 +2031,32 @@ void PowerTabEditor::editVolumeSwell()
 
 void PowerTabEditor::editIrregularGrouping()
 {
-    IrregularGroupingDialog().exec();
+    std::vector<Position*> selectedPositions = getSelectedPositions();
+
+    // check if we are going to be adding or removing an irregular grouping
+    // - if one of the selected notes is part of an irregular group, remove the group
+    bool removeIrregularGrouping = false;
+    for (size_t i = 0; i < selectedPositions.size(); i++)
+    {
+        if (selectedPositions[i]->HasIrregularGroupingTiming())
+        {
+            removeIrregularGrouping = true;
+        }
+    }
+
+    if (removeIrregularGrouping)
+    {
+        // remove grouping
+    }
+    else
+    {
+        IrregularGroupingDialog dialog;
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            undoManager->push(new AddIrregularGrouping(selectedPositions,
+                                                       dialog.notesPlayed(),
+                                                       dialog.notesPlayedOver()));
+        }
+    }
 }

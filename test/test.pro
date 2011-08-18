@@ -43,7 +43,8 @@ SOURCES += \
     powertabdocument/timesignature_test.cpp \
     formats/guitar_pro/test_gp4.cpp \
     actions/test_removevolumeswell.cpp \
-    actions/test_addvolumeswell.cpp
+    actions/test_addvolumeswell.cpp \
+    actions/test_addirregulargrouping.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
