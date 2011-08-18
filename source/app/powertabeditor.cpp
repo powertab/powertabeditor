@@ -59,6 +59,7 @@
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/volumeswelldialog.h>
+#include <dialogs/irregulargroupingdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -532,6 +533,11 @@ void PowerTabEditor::createActions()
     connectToggleProperty<Note>(octave15mbAct, &getSelectedNotes,
                                 &Note::IsOctave15mb, &Note::SetOctave15mb);
 
+    irregularGroupingAct = new Command(tr("Irregular Grouping"), "Note.IrregularGrouping",
+                                       Qt::Key_I, this);
+    irregularGroupingAct->setCheckable(true);
+    connect(irregularGroupingAct, SIGNAL(triggered()), this, SLOT(editIrregularGrouping()));
+
     // Rest Actions
     restDurationsGroup = new QActionGroup(this);
 
@@ -828,6 +834,8 @@ void PowerTabEditor::createMenus()
     octaveMenu = notesMenu->addMenu(tr("Octave"));
     octaveMenu->addActions(QList<QAction*>() << octave8vaAct << octave15maAct
                            << octave8vbAct << octave15mbAct);
+
+    notesMenu->addAction(irregularGroupingAct);
 
     // Rests Menu
     restsMenu = menuBar()->addMenu(tr("Rests"));
@@ -2018,4 +2026,9 @@ void PowerTabEditor::editVolumeSwell()
     {
         undoManager->push(new RemoveVolumeSwell(position));
     }
+}
+
+void PowerTabEditor::editIrregularGrouping()
+{
+    IrregularGroupingDialog().exec();
 }
