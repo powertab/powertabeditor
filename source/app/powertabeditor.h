@@ -126,7 +126,7 @@ protected slots:
     void editTimeSignature();
     void editDynamic();
     void editVolumeSwell();
-    void editIrregularGrouping();
+    void editIrregularGrouping(bool setAsTriplet = false);
 
     void removeCurrentSystem();
     void insertSystemAtEnd();
@@ -241,6 +241,7 @@ protected:
     Command* staccatoNoteAct; // set the notes of a position to be staccato
     Command* marcatoAct; // set an accent
     Command* sforzandoAct; // set a heavy accent
+    Command* tripletAct;
     Command* irregularGroupingAct;
 
     QMenu* octaveMenu;

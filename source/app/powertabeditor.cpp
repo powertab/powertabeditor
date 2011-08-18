@@ -536,6 +536,11 @@ void PowerTabEditor::createActions()
     connectToggleProperty<Note>(octave15mbAct, &getSelectedNotes,
                                 &Note::IsOctave15mb, &Note::SetOctave15mb);
 
+    tripletAct = new Command(tr("Triplet"), "Note.Triplet", Qt::Key_E, this);
+    tripletAct->setCheckable(true);
+    sigfwd::connect(tripletAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editIrregularGrouping, this, true));
+
     irregularGroupingAct = new Command(tr("Irregular Grouping"), "Note.IrregularGrouping",
                                        Qt::Key_I, this);
     irregularGroupingAct->setCheckable(true);
@@ -838,6 +843,7 @@ void PowerTabEditor::createMenus()
     octaveMenu->addActions(QList<QAction*>() << octave8vaAct << octave15maAct
                            << octave8vbAct << octave15mbAct);
 
+    notesMenu->addAction(tripletAct);
     notesMenu->addAction(irregularGroupingAct);
 
     // Rests Menu
@@ -1863,6 +1869,33 @@ void PowerTabEditor::updateActions()
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);
+
+    // irregular grouping
+    tripletAct->setDisabled(true);
+    tripletAct->setChecked(false);
+    irregularGroupingAct->setDisabled(true);
+    irregularGroupingAct->setChecked(false);
+
+    if (currentPosition)
+    {
+        tripletAct->setEnabled(true);
+        irregularGroupingAct->setEnabled(true);
+
+        if (currentPosition->HasIrregularGroupingTiming())
+        {
+            uint8_t notesPlayed = 0, notesPlayedOver = 0;
+            currentPosition->GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
+
+            if (notesPlayed == 3 && notesPlayedOver == 2)
+            {
+                tripletAct->setChecked(true);
+            }
+            else
+            {
+                irregularGroupingAct->setChecked(true);
+            }
+        }
+    }
 }
 
 // Enables/disables actions that should only be available when a score is opened
@@ -2031,7 +2064,7 @@ void PowerTabEditor::editVolumeSwell()
     }
 }
 
-void PowerTabEditor::editIrregularGrouping()
+void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
     Position* selectedPosition = caret->getCurrentPosition();
@@ -2057,13 +2090,21 @@ void PowerTabEditor::editIrregularGrouping()
                 return;
             }
         }
-        IrregularGroupingDialog dialog;
 
-        if (dialog.exec() == QDialog::Accepted)
+        if (setAsTriplet)
         {
-            undoManager->push(new AddIrregularGrouping(selectedPositions,
-                                                       dialog.notesPlayed(),
-                                                       dialog.notesPlayedOver()));
+            undoManager->push(new AddIrregularGrouping(selectedPositions, 3, 2));
+        }
+        else
+        {
+            IrregularGroupingDialog dialog;
+
+            if (dialog.exec() == QDialog::Accepted)
+            {
+                undoManager->push(new AddIrregularGrouping(selectedPositions,
+                                                           dialog.notesPlayed(),
+                                                           dialog.notesPlayedOver()));
+            }
         }
     }
 }
