@@ -1088,6 +1088,8 @@ void PowerTabEditor::setupNewDocument()
 
     updateActions(); // update available actions for the current position
 
+    getCurrentScoreArea()->setFocus();
+
     qDebug() << "Document opened in" << timer.elapsed() << "seconds";
 }
 
