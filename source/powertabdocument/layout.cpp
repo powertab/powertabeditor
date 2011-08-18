@@ -438,7 +438,7 @@ void Layout::FormatSystem(boost::shared_ptr<System> system)
 /// This is useful when importing files from other formats (Guitar Pro in particular)
 void Layout::FixHammerons(boost::shared_ptr<Staff> staff)
 {
-    for (size_t voice = 0; voice < staff->NUM_STAFF_VOICES; ++voice)
+    for (size_t voice = 0; voice < Staff::NUM_STAFF_VOICES; ++voice)
     {
         for (size_t i = 0; i < staff->GetPositionCount(voice); ++i)
         {
