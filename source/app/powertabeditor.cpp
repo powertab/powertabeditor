@@ -34,6 +34,7 @@
 #include <QActionGroup>
 #include <QKeyEvent>
 #include <QEvent>
+#include <QMessageBox>
 
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
@@ -113,6 +114,7 @@
 #include <actions/removevolumeswell.h>
 #include <actions/addvolumeswell.h>
 #include <actions/addirregulargrouping.h>
+#include <actions/removeirregulargrouping.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -2031,25 +2033,30 @@ void PowerTabEditor::editVolumeSwell()
 
 void PowerTabEditor::editIrregularGrouping()
 {
-    std::vector<Position*> selectedPositions = getSelectedPositions();
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Position* selectedPosition = caret->getCurrentPosition();
 
-    // check if we are going to be adding or removing an irregular grouping
-    // - if one of the selected notes is part of an irregular group, remove the group
-    bool removeIrregularGrouping = false;
-    for (size_t i = 0; i < selectedPositions.size(); i++)
+    if (selectedPosition->HasIrregularGroupingTiming())
     {
-        if (selectedPositions[i]->HasIrregularGroupingTiming())
-        {
-            removeIrregularGrouping = true;
-        }
-    }
-
-    if (removeIrregularGrouping)
-    {
-        // remove grouping
+        undoManager->push(new RemoveIrregularGrouping(caret->getCurrentStaff(),
+                                                      selectedPosition));
     }
     else
     {
+        std::vector<Position*> selectedPositions = getSelectedPositions();
+
+        // check if we are going to be adding or removing an irregular grouping
+        // - if one of the selected notes is part of an irregular group, remove the group
+        for (size_t i = 0; i < selectedPositions.size(); i++)
+        {
+            if (selectedPositions[i]->HasIrregularGroupingTiming())
+            {
+                QMessageBox msgBox;
+                msgBox.setText(tr("One or more notes is already part of an irregular group!!!"));
+                msgBox.exec();
+                return;
+            }
+        }
         IrregularGroupingDialog dialog;
 
         if (dialog.exec() == QDialog::Accepted)

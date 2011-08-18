@@ -41,7 +41,8 @@ HEADERS += \
     insertnotes.h \
     removevolumeswell.h \
     addvolumeswell.h \
-    addirregulargrouping.h
+    addirregulargrouping.h \
+    removeirregulargrouping.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -78,4 +79,5 @@ SOURCES += \
     insertnotes.cpp \
     removevolumeswell.cpp \
     addvolumeswell.cpp \
-    addirregulargrouping.cpp
+    addirregulargrouping.cpp \
+    removeirregulargrouping.cpp

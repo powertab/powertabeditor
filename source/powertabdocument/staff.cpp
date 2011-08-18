@@ -892,3 +892,10 @@ void Staff::CalculateClef(const Tuning& tuning)
     SetClef(TREBLE_CLEF);
     return;
 }
+
+/// Returns the location of a position in the position array (e.g. 5th position from beginning of staff)
+size_t Staff::GetIndexOfPosition(uint32_t voice, const Position *position) const
+{
+    const std::vector<Position*>& posArray = positionArrays.at(voice);
+    return std::find(posArray.begin(), posArray.end(), position) - posArray.begin();
+}
