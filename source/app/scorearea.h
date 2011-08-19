@@ -107,6 +107,9 @@ protected:
                      boost::shared_ptr<const Staff> staff, const StaffData& staffInfo);
 
     void drawArpeggio(Position* position, quint32 x, const StaffData& currentStaffInfo);
+    
+    void drawLedgerLines(const std::vector<double>& noteLocations,
+                         const double xLocation, const StaffData& staffData) const;
 
     QGraphicsScene scene;
     MusicFont musicFont;

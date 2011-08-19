@@ -819,6 +819,11 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
                 NoteStem stem(currentStaffInfo, currentPosition, location, noteLocations);
                 stems.push_back(stem);
             }
+
+            if (!noteLocations.empty())
+            {
+                drawLedgerLines(noteLocations, location, currentStaffInfo);
+            }
         }
     }
 
@@ -1300,4 +1305,45 @@ QGraphicsItem* ScoreArea::createDynamic(boost::shared_ptr<const Dynamic> dynamic
     group->addToGroup(textItem);
 
     return group;
+}
+
+/// Draws ledger lines for all notes at a position
+/// @param noteLocations - List of y-coordinates of all notes at the position
+void ScoreArea::drawLedgerLines(const std::vector<double> &noteLocations, 
+                                const double xLocation,
+                                const StaffData& staffData) const
+{
+    const double highestNote = *std::min_element(noteLocations.begin(), noteLocations.end());
+    const double lowestNote = *std::max_element(noteLocations.begin(), noteLocations.end());
+
+    const int numLedgerLinesTop = -highestNote / Staff::STD_NOTATION_LINE_SPACING;
+    const int numLedgerLinesBottom = (lowestNote - staffData.getStdNotationStaffSize()) /
+                                      Staff::STD_NOTATION_LINE_SPACING;
+
+    std::vector<double> ledgerLineLocations;
+
+    if (numLedgerLinesTop > 0)
+    {
+        for (int i = 1; i<= numLedgerLinesTop; i++)
+        {
+            ledgerLineLocations.push_back(staffData.getTopStdNotationLine() -
+                                          i * Staff::STD_NOTATION_LINE_SPACING);
+        }
+    }
+    if (numLedgerLinesBottom > 0)
+    {
+        for (int i = 1; i<= numLedgerLinesBottom; i++)
+        {
+            ledgerLineLocations.push_back(staffData.getBottomStdNotationLine() +
+                                          i * Staff::STD_NOTATION_LINE_SPACING);
+        }
+    }
+
+    for (size_t i = 0; i < ledgerLineLocations.size(); i++)
+    {
+        QGraphicsLineItem* ledgerLine = new QGraphicsLineItem;
+        ledgerLine->setLine(0, 0, StdNotationPainter::getNoteHeadWidth() * 2, 0);
+        centerItem(ledgerLine, xLocation, xLocation + staffData.positionWidth, ledgerLineLocations[i]);
+        ledgerLine->setParentItem(activeStaff);
+    }
 }

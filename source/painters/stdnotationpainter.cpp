@@ -45,7 +45,7 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, boost::shared
 
 void StdNotationPainter::init()
 {
-    yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * Staff::STD_NOTATION_LINE_SPACING + 1;
+    yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * Staff::STD_NOTATION_LINE_SPACING;
     
     const quint8 pitch = note->GetPitch(tuning);
     const bool usesSharps = keySignature.UsesSharps() || keySignature.HasNoKeyAccidentals();
@@ -95,8 +95,8 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
     width = QFontMetricsF(musicFont).width(displayText);
     bounds = QRectF(0, -staffInfo.getTopStdNotationLine(), width, staffInfo.getTopTabLine());
 
-    painter->drawText(xPos - width, yLocation, displayText);
-    addDots(painter, xPos + 2, yLocation);
+    painter->drawText(xPos - width, yLocation + 1, displayText);
+    addDots(painter, xPos + 2, yLocation + 1);
 }
 
 double StdNotationPainter::getNoteHeadWidth()
