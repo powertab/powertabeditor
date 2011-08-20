@@ -20,8 +20,23 @@
 #include <QAction>
 #include <QAbstractButton>
 
+#include <sigfwd/sigfwd.hpp>
+#include <boost/bind.hpp>
+
+namespace {
+void updateButtonEnabled(QAction* action, QAbstractButton* button)
+{
+    button->setEnabled(action->isEnabled());
+}
+}
+
 void connectButtonToAction(QAbstractButton* button, QAction* action)
 {
     QObject::connect(button, SIGNAL(clicked()), action, SLOT(trigger()));
     QObject::connect(action, SIGNAL(toggled(bool)), button, SLOT(setChecked(bool)));
+
+    button->setEnabled(action->isEnabled());
+    // ensure that the button is enabled/disabled whenever the QAction is enabled/disabled
+    sigfwd::connect(action, SIGNAL(changed()),
+                    boost::bind(&updateButtonEnabled, action, button));
 }
