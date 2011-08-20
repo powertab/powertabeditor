@@ -45,7 +45,8 @@ SOURCES += \
     actions/test_removevolumeswell.cpp \
     actions/test_addvolumeswell.cpp \
     actions/test_addirregulargrouping.cpp \
-    actions/test_removeirregulargrouping.cpp
+    actions/test_removeirregulargrouping.cpp \
+    actions/test_updatenoteduration.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

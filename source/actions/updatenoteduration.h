@@ -19,20 +19,21 @@
 #define UPDATENOTEDURATION_H
 
 #include <QUndoCommand>
+#include <boost/cstdint.hpp>
 
 class Position;
 
 class UpdateNoteDuration : public QUndoCommand
 {
 public:
-    UpdateNoteDuration(Position* position, quint8 duration);
+    UpdateNoteDuration(const std::vector<Position*>& positions, uint8_t duration);
     virtual void undo();
     virtual void redo();
 
-protected:
-    Position* position;
-    quint8 newDuration;
-    quint8 originalDuration;
+private:
+    const std::vector<Position*> positions;
+    uint8_t newDuration;
+    std::vector<uint8_t> originalDurations;
 };
 
 #endif // UPDATENOTEDURATION_H

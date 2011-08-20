@@ -19,23 +19,36 @@
 
 #include <powertabdocument/position.h>
 
-UpdateNoteDuration::UpdateNoteDuration(Position* position, quint8 duration) :
-    position(position),
+UpdateNoteDuration::UpdateNoteDuration(const std::vector<Position*>& positions,
+                                       uint8_t duration) :
+    positions(positions),
     newDuration(duration)
 {
     setText(QObject::tr("Update Note Duration"));
-    originalDuration = position->GetDurationType();
 
-    Q_ASSERT(position != NULL);
-    Q_ASSERT(position->IsValidDurationType(newDuration));
+    // store original durations of each position
+    for (size_t i = 0; i < positions.size(); i++)
+    {
+        originalDurations.push_back(positions[i]->GetDurationType());
+    }
+
+    Q_ASSERT(Position::IsValidDurationType(newDuration));
 }
 
+/// Set all positions to the new note duration
 void UpdateNoteDuration::redo()
 {
-    position->SetDurationType(newDuration);
+    for (size_t i = 0; i < positions.size(); i++)
+    {
+        positions[i]->SetDurationType(newDuration);
+    }
 }
 
+/// Restore the original duration for each position
 void UpdateNoteDuration::undo()
 {
-    position->SetDurationType(originalDuration);
+    for (size_t i = 0; i < positions.size(); i++)
+    {
+        positions[i]->SetDurationType(originalDurations[i]);
+    }
 }

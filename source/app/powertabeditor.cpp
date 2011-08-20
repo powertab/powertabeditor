@@ -1920,10 +1920,16 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
     saveFileAsAct->setEnabled(enable);
 }
 
+/// Updates the active note duration (for inserting future notes), and
+/// updates the duration of the selected note(s) if possible
 void PowerTabEditor::updateNoteDuration(uint8_t duration)
 {
-    Position* currentPosition = getCurrentScoreArea()->getCaret()->getCurrentPosition();
-    undoManager->push(new UpdateNoteDuration(currentPosition, duration));
+    const std::vector<Position*> selectedPositions = getSelectedPositions();
+
+    if (!selectedPositions.empty())
+    {
+        undoManager->push(new UpdateNoteDuration(selectedPositions, duration));
+    }
 }
 
 void PowerTabEditor::editRest(uint8_t duration)
