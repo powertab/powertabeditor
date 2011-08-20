@@ -26,8 +26,10 @@ namespace Gp
 /// Supported Guitar Pro file versions
 enum Version
 {
-    Version3 = 3,
-    Version4 = 4
+    Version3,
+    Version4,
+    Version5_0,
+    Version5_1
 };
 
 enum MeasureHeaderFlags
