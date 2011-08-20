@@ -65,11 +65,18 @@ std::string Gp::InputStream::readFixedLengthString(uint32_t maxLength)
     const uint8_t actualLength = read<uint8_t>();
 
     std::string str;
-    str.resize(actualLength);
-    stream_.read(&str[0], actualLength);
 
-    // skip any characters that didn't need to be read
-    skip(maxLength - actualLength);
+    if (maxLength != 0)
+    {
+        str.resize(maxLength);
+    }
+    else
+    {
+        str.resize(actualLength);
+    }
+
+    stream_.read(&str[0], str.size());
+    str.resize(actualLength);
 
     return str;
 }
