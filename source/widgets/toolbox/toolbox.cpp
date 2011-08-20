@@ -21,10 +21,9 @@
 #include "notepage.h"
 #include "scorepage.h"
 
-ScorePage *Toolbox::scorePage = NULL;
-NotePage *Toolbox::notePage = NULL;
-
-Toolbox::Toolbox(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager)
+Toolbox::Toolbox(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager) :
+    scorePage(new ScorePage(mainWindow, skinManager)),
+    notePage(new NotePage(mainWindow, skinManager))
 {
     setMaximumWidth(350);
     setIconSize(QSize(48,48));
@@ -32,9 +31,6 @@ Toolbox::Toolbox(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skin
 
     setStyleSheet(skinManager->getToolboxTabStyle());
 
-    scorePage = new ScorePage(mainWindow, skinManager, 0);
     addTab(scorePage, QIcon(":/icons/toolbox_score.png"),"");
-
-    notePage = new NotePage(mainWindow, skinManager, 0);
     addTab(notePage, QIcon(":/icons/toolbox_note.png"),"");
 }

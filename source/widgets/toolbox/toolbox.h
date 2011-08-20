@@ -34,13 +34,8 @@ public:
     Toolbox(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager);
 
 private:
-    static ScorePage *scorePage;
-    static NotePage *notePage;
-
-signals:
-
-public slots:
-
+    ScorePage *scorePage;
+    NotePage *notePage;
 };
 
 #endif // TOOLBOX_H
