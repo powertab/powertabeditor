@@ -116,6 +116,8 @@ void GuitarProImporter::findFileVersion(Gp::InputStream& stream)
     {
         throw FileFormatException("Unsupported file version: " + versionString);
     }
+
+    std::cerr << "File Version: " << versionString << std::endl;
 }
 
 /// Read the song information (title, artist, etc)
@@ -758,25 +760,42 @@ void GuitarProImporter::readNoteEffectsGp3(Gp::InputStream& stream,
 
 void GuitarProImporter::readSlide(Gp::InputStream& stream, Note& note)
 {
-    const int8_t slideValue = stream.read<uint8_t>();
+    int8_t slideValue = stream.read<int8_t>();
 
-    /* Slide values are as follows:
-      -2 : slide into from above
-      -1 : slide into from below
-      0  : no slide
-      1  : shift slide
-      2  : legato slide
-      3  : slide out of downwards
-      4  : slide out of upwards
-      */
-
-    if (slideValue < 0) // slide into
+    if (stream.version <= Gp::Version4)
     {
-        note.SetSlideInto(std::abs(slideValue));
+        /* Slide values are as follows:
+            -2 : slide into from above
+            -1 : slide into from below
+            0  : no slide
+            1  : shift slide
+            2  : legato slide
+            3  : slide out of downwards
+            4  : slide out of upwards
+        */
+
+        if (slideValue < 0) // slide into
+        {
+            note.SetSlideInto(std::abs(slideValue));
+        }
+        else if (slideValue > 0)
+        {
+            note.SetSlideOutOf(slideValue, 0); // We don't know the number of steps for the slide yet
+        }
     }
-    else if (slideValue > 0)
+    else
     {
-        note.SetSlideOutOf(slideValue, 0); // We don't know the number of steps for the slide yet
+        // slide values are powers of 2
+        slideValue = log2(slideValue) + 1;
+
+        if (slideValue > 4)
+        {
+            note.SetSlideInto(slideValue - 4);
+        }
+        else
+        {
+            note.SetSlideOutOf(slideValue, 0);
+        }
     }
 }
 
@@ -825,7 +844,7 @@ void GuitarProImporter::readTremoloBar(Gp::InputStream& stream, Position& positi
         eventType = convertTremoloEventType(stream.read<uint8_t>());
     }
 
-    const uint32_t pitch = convertBendPitch(stream.read<uint32_t>());
+    const int32_t pitch = convertBendPitch(stream.read<int32_t>());
 
     position.SetTremoloBar(eventType, 0, pitch);
 
@@ -864,15 +883,15 @@ uint8_t GuitarProImporter::convertTremoloEventType(uint8_t gpEventType)
     default:
     {
         std::cerr << "Invalid tremolo bar event type: " << (int)gpEventType << std::endl;
-        return -1;
+        return Position::diveAndRelease;
     }
     }
 }
 
 /// Converts bend pitches from GP format (25 per quarter tone) to PTB (1 per quarter tone)
-uint8_t GuitarProImporter::convertBendPitch(uint32_t gpBendPitch)
+uint8_t GuitarProImporter::convertBendPitch(int32_t gpBendPitch)
 {
-    return gpBendPitch / 25;
+    return std::abs(gpBendPitch / 25);
 }
 
 void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream& stream)

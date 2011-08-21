@@ -94,7 +94,7 @@ private:
     void fixRepeatEnds(Score* score);
 
     static uint8_t convertTremoloEventType(uint8_t gpEventType);
-    static uint8_t convertBendPitch(uint32_t gpBendPitch);
+    static uint8_t convertBendPitch(int32_t gpBendPitch);
 
     /// Supported version strings for Guitar Pro files (maps version strings to version number)
     static const std::map<std::string, Gp::Version> versionStrings;
