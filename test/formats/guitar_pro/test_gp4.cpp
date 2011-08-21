@@ -155,12 +155,12 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
             BOOST_CHECK(pos->HasTremoloPicking());
             BOOST_CHECK(pos->HasTap());
 
-            BOOST_CHECK(pos->HasArpeggioUp());
+            BOOST_CHECK(pos->HasPickStrokeDown());
 
             BOOST_CHECK(pos->HasPalmMuting());
 
             // TODO - test tremolo bar
-            // TODO - test pickstroke
+            // TODO - test arpeggios
             // TODO - test vibrato
             // TODO - test staccato
             // TODO - test let ring
