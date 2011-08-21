@@ -39,6 +39,7 @@ class Barline;
 class Position;
 class Note;
 class AlternateEnding;
+class RehearsalSign;
 
 /// Imports Guitar Pro files
 class GuitarProImporter : public FileFormatImporter
@@ -72,6 +73,8 @@ private:
 
     uint8_t readDuration(Gp::InputStream& stream);
 
+    void readRehearsalSign(Gp::InputStream& stream, RehearsalSign& sign);
+
     void readNotes(Gp::InputStream& stream, Position& position);
 
     void readNoteEffects(Gp::InputStream& stream, Position& position, Note& note);
@@ -95,6 +98,8 @@ private:
 
     /// Supported version strings for Guitar Pro files (maps version strings to version number)
     static const std::map<std::string, Gp::Version> versionStrings;
+
+    char nextRehearsalSignLetter;
 };
 
 #endif // GUITARPROIMPORTER_H

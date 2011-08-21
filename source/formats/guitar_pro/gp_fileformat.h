@@ -58,7 +58,7 @@ enum BeatHeaderFlags
 enum NoteFlags
 {
     TimeIndependentDuration,
-    DottedNote,
+    HeavyAccentedNote,
     GhostNote,
     HasNoteEffects,
     Dynamic,

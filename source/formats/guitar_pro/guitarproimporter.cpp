@@ -226,7 +226,7 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
 void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasures,
                                      std::vector<BarData>& bars)
 {
-    char nextRehearsalSignletter = 'A';
+    nextRehearsalSignLetter = 'A';
 
     for (uint32_t measure = 0; measure < numMeasures; measure++)
     {
@@ -276,6 +276,11 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
             barline->SetRepeatCount(stream.read<uint8_t>() + 1);
         }
 
+        if (flags.test(Gp::Marker) && stream.version == Gp::Version5_1)
+        {
+            readRehearsalSign(stream, barline->GetRehearsalSign());
+        }
+
         if (flags.test(Gp::AlternateEnding))
         {
             boost::shared_ptr<AlternateEnding> altEnding = boost::make_shared<AlternateEnding>();
@@ -284,29 +289,9 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
             bar.altEnding = altEnding;
         }
 
-        if (flags.test(Gp::Marker)) // import rehearsal sign
+        if (flags.test(Gp::Marker) && stream.version != Gp::Version5_1) // import rehearsal sign
         {
-            RehearsalSign& sign = barline->GetRehearsalSign();
-
-            const std::string description = stream.readString();
-
-            if (!description.empty())
-            {
-                sign.SetDescription(description);
-            }
-
-            // set the rehearsal sign letter to the next available letter
-            if (RehearsalSign::IsValidLetter(nextRehearsalSignletter))
-            {
-                sign.SetLetter(nextRehearsalSignletter);
-                nextRehearsalSignletter++;
-            }
-            else
-            {
-                std::cerr << "Too many rehearsal signs! (only A-Z allowed)" << std::endl;
-            }
-
-            readColor(stream);
+            readRehearsalSign(stream, barline->GetRehearsalSign());
         }
 
         if (flags.test(Gp::KeySignatureChange))
@@ -326,7 +311,7 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
         // more unknown GP5 data ...
         if (stream.version > Gp::Version4)
         {
-            if (flags.test(Gp::Numerator) && flags.test(Gp::Denominator))
+            if (flags.test(Gp::Numerator) || flags.test(Gp::Denominator))
             {
                 stream.skip(4);
             }
@@ -370,9 +355,12 @@ void GuitarProImporter::readTracks(Gp::InputStream& stream, Score* score, uint32
 {
     for (uint32_t i = 0; i < numTracks; ++i)
     {
-        if (stream.version == Gp::Version5_0 && i == 0)
+        if (stream.version > Gp::Version4)
         {
-            stream.skip(1);
+            if (i == 0 || stream.version == Gp::Version5_0)
+            {
+                stream.skip(1);
+            }
         }
 
         Score::GuitarPtr guitar = boost::make_shared<Guitar>();
@@ -606,6 +594,11 @@ void GuitarProImporter::readNotes(Gp::InputStream& stream, Position& position)
             const Gp::Flags flags = stream.read<uint8_t>();
 
             position.SetMarcato(flags.test(Gp::AccentedNote));
+
+            if (stream.version > Gp::Version4)
+            {
+                position.SetSforzando(flags.test(Gp::HeavyAccentedNote));
+            }
 
             note.SetGhostNote(flags.test(Gp::GhostNote));
             // ignore dotted note flag - already handled elsewhere for the Position object
@@ -1187,4 +1180,27 @@ void GuitarProImporter::fixRepeatEnds(Score* score)
             }
         }
     }
+}
+
+void GuitarProImporter::readRehearsalSign(Gp::InputStream &stream, RehearsalSign &sign)
+{
+    const std::string description = stream.readString();
+
+    if (!description.empty())
+    {
+        sign.SetDescription(description);
+    }
+
+    // set the rehearsal sign letter to the next available letter
+    if (RehearsalSign::IsValidLetter(nextRehearsalSignLetter))
+    {
+        sign.SetLetter(nextRehearsalSignLetter);
+        nextRehearsalSignLetter++;
+    }
+    else
+    {
+        std::cerr << "Too many rehearsal signs! (only A-Z allowed)" << std::endl;
+    }
+
+    readColor(stream);
 }
