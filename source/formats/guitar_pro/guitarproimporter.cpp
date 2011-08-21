@@ -690,6 +690,10 @@ void GuitarProImporter::readNoteEffects(Gp::InputStream& stream,
         stream.skip(1); // grace note dynamic
         stream.skip(1); // transition type
         stream.skip(1); // duration
+        if (stream.version > Gp::Version4)
+        {
+            stream.skip(1); // flags for GP5
+        }
     }
 
     if (header2.test(Gp::HasTremoloPicking))
@@ -807,12 +811,19 @@ void GuitarProImporter::readHarmonic(Gp::InputStream& stream, Note& note)
     {
         note.SetNaturalHarmonic(true);
     }
-    if (harmonic == Gp::TappedHarmonic)
+    else if (harmonic == Gp::TappedHarmonic)
     {
+        if (stream.version > Gp::Version4)
+        {
+            std::cerr << "Tapped Harmonic Data: " << (int)stream.read<uint8_t>() << std::endl;
+        }
         note.SetTappedHarmonic(true);
     }
-
-    // TODO - handle artificial harmonics
+    // TODO - handle artificial harmonics for GP3, GP4, and GP5
+    else if (harmonic == Gp::ArtificalHarmonicGp5)
+    {
+        stream.skip(3);
+    }
 }
 
 void GuitarProImporter::readBend(Gp::InputStream& stream, Note&)

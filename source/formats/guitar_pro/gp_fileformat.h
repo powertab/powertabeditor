@@ -132,6 +132,7 @@ enum HarmonicTypes
 {
     HarmonicNone = 0,
     NaturalHarmonic = 1,
+    ArtificalHarmonicGp5 = 2,
     TappedHarmonic = 3,
     PinchHarmonic = 4,
     SemiHarmonic = 5,
