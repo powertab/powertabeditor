@@ -1025,14 +1025,14 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
 
     if (flags1.test(Gp::HasStrokeEffect))
     {
-        // upstroke and downstroke duration values - we will just use these for toggling arpeggio up/down
+        // upstroke and downstroke duration values - we will just use these for toggling pickstroke up/down
         if (stream.read<uint8_t>() > 0)
         {
-            position.SetArpeggioUp();
+            position.SetPickStrokeDown();
         }
         if (stream.read<uint8_t>() > 0)
         {
-            position.SetArpeggioDown();
+            position.SetPickStrokeUp();
         }
     }
 
@@ -1047,11 +1047,11 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
 
         if (pickstrokeType == Gp::PickstrokeUp)
         {
-            position.SetPickStrokeUp(true);
+            position.SetArpeggioUp();
         }
         else if (pickstrokeType == Gp::PickstrokeDown)
         {
-            position.SetPickStrokeDown(true);
+            position.SetArpeggioDown();
         }
     }
 }
