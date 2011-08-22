@@ -260,6 +260,8 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         stream.ReadVector(m_rhythmSlashArray, version);
         stream.ReadVector(m_staffArray, version);
         stream.ReadVector(m_barlineArray, version);
+
+        m_endBar->SetPosition(GetPositionCount());
     }
 
     return true;
