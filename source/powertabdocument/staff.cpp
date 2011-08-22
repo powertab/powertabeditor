@@ -648,7 +648,7 @@ void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");
 
-    assert(startPos < endPos);
+    assert(startPos <= endPos);
 
     const std::vector<Position*>& positionArray = positionArrays.at(voice);
 
