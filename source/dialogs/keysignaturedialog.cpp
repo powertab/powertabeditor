@@ -29,8 +29,7 @@
 using boost::bind;
 
 KeySignatureDialog::KeySignatureDialog(const KeySignature& key) :
-    originalKey(key),
-    newKey(originalKey)
+    newKey(key)
 {
     setModal(true);
     setWindowTitle(tr("Key Signature"));
@@ -69,7 +68,7 @@ KeySignatureDialog::KeySignatureDialog(const KeySignature& key) :
     init();
 }
 
-/// Initialize based on the current value of the key signature, and create any signal connections
+/// Initialize based on the original value of the key signature, and create any signal connections
 void KeySignatureDialog::init()
 {
     if (newKey.IsMajorKey())
@@ -82,22 +81,19 @@ void KeySignatureDialog::init()
     }
 
     sigfwd::connect(majorKey, SIGNAL(clicked()),
-                    bind(&KeySignatureDialog::toggleKeyType, this, KeySignature::majorKey));
+                    bind(&KeySignatureDialog::populateKeyTypes, this, KeySignature::majorKey));
     sigfwd::connect(minorKey, SIGNAL(clicked()),
-                    bind(&KeySignatureDialog::toggleKeyType, this, KeySignature::minorKey));
+                    bind(&KeySignatureDialog::populateKeyTypes, this, KeySignature::minorKey));
 
-    populateKeyTypes();
+    populateKeyTypes(newKey.GetKeyType());
 
     keyList->setCurrentIndex(newKey.GetKeyAccidentals());
 
-    connect(keyList, SIGNAL(currentIndexChanged(int)), this, SLOT(setKeyAccidentals(int)));
-
     visibilityToggle->setChecked(newKey.IsShown());
-    connect(visibilityToggle, SIGNAL(clicked(bool)), this, SLOT(toggleVisible(bool)));
 }
 
 /// Populate the list of key types, depending on whether we are using major or minor keys
-void KeySignatureDialog::populateKeyTypes()
+void KeySignatureDialog::populateKeyTypes(uint8_t type)
 {
     // store the original selected index, so we can reset it after repopulating the list
     int originalSelection = keyList->currentIndex();
@@ -108,7 +104,7 @@ void KeySignatureDialog::populateKeyTypes()
 
     keyList->clear();
 
-    KeySignature tempKey(newKey.GetKeyType(), 0);
+    KeySignature tempKey(type, 0);
 
     for (int i = KeySignature::noAccidentals; i <= KeySignature::sevenFlats; i++)
     {
@@ -119,39 +115,27 @@ void KeySignatureDialog::populateKeyTypes()
     keyList->setCurrentIndex(originalSelection);
 }
 
-/// Toggles the key type (major/minor) of the new key signature
-void KeySignatureDialog::toggleKeyType(uint8_t type)
-{
-    newKey.SetKeyType(type);
-    populateKeyTypes();
-}
-
-/// Toggles whether the new key signature will be visible
-void KeySignatureDialog::toggleVisible(bool visible)
-{
-    newKey.SetShown(visible);
-}
-
-/// Updates the selected number of accidentals in the new key signature
-void KeySignatureDialog::setKeyAccidentals(int accidentals)
-{
-    // if this function is called after keyList->clear(), adjust the accidentals value to be valid
-    if (accidentals == -1)
-    {
-        accidentals = KeySignature::noAccidentals;
-    }
-
-    newKey.SetKeyAccidentals(accidentals);
-
-    // by default, force the key to be visible if it differs from the original key
-    if (!newKey.IsSameKey(originalKey))
-    {
-        visibilityToggle->click();
-    }
-}
-
 /// Return the new key, as selected by the user
 KeySignature KeySignatureDialog::getNewKey() const
 {
     return newKey;
+}
+
+void KeySignatureDialog::accept()
+{
+    // update the new key with the values selected in the dialog
+    newKey.SetShown(visibilityToggle->isChecked());
+
+    if (majorKey->isChecked())
+    {
+        newKey.SetKeyType(KeySignature::majorKey);
+    }
+    else if (minorKey->isChecked())
+    {
+        newKey.SetKeyType(KeySignature::minorKey);
+    }
+
+    newKey.SetKeyAccidentals(keyList->currentIndex());
+
+    done(Accepted);
 }

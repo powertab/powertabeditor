@@ -35,12 +35,10 @@ public:
     KeySignature getNewKey() const;
 
 private slots:
-    void toggleKeyType(uint8_t type);
-    void toggleVisible(bool visible);
-    void setKeyAccidentals(int accidentals);
+    void accept();
+    void populateKeyTypes(uint8_t type);
 
 private:
-    const KeySignature& originalKey;
     KeySignature newKey;
 
     QComboBox* keyList;
@@ -49,7 +47,6 @@ private:
     QCheckBox* visibilityToggle;
 
     void init();
-    void populateKeyTypes();
 };
 
 #endif // KEYSIGNATUREDIALOG_H
