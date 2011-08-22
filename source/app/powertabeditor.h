@@ -122,7 +122,7 @@ protected slots:
     void editTrill();
     void editBarline(int position = -1);
     void editTappedHarmonic();
-    void editKeySignature();
+    void editKeySignature(int position = -1);
     void editTimeSignature();
     void editDynamic();
     void editVolumeSwell();

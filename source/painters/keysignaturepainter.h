@@ -20,25 +20,30 @@
 
 #include "painterbase.h"
 #include <QVector>
+#include <boost/cstdint.hpp>
 
 class StaffData;
 class KeySignature;
 
-class KeySignaturePainter : public PainterBase
+class KeySignaturePainter : public QObject, public PainterBase
 {
+    Q_OBJECT
 public:
-    KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature);
+    KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature,
+                        uint32_t position);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+signals:
+    void clicked(int);
 
 private:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
     const StaffData& staffInfo;
     const KeySignature& keySignature;
+    const uint32_t position;
     static QFont musicFont;
     void adjustHeightOffset(QVector<double>& lst);
     void drawAccidentals(QVector<double>& positions, QChar accidental, QPainter* painter);

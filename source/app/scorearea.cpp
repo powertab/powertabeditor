@@ -277,7 +277,10 @@ void ScoreArea::renderBars(const StaffData& currentStaffInfo, shared_ptr<const S
 
         if (keySig.IsShown())
         {
-            KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig);
+            KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig,
+                                                                         currentBarline->GetPosition());
+            connect(keySigPainter, SIGNAL(clicked(int)), this, SIGNAL(keySignatureClicked(int)));
+
             keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
             keySigPainter->setParentItem(activeStaff);
         }

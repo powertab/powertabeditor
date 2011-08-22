@@ -156,6 +156,7 @@ protected:
 
 signals:
     void barlineClicked(int position);
+    void keySignatureClicked(int position);
 
 public slots:
     void adjustScroll();

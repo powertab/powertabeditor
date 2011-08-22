@@ -21,16 +21,18 @@
 #include <powertabdocument/keysignature.h>
 #include <painters/musicfont.h>
 
-#include <QMessageBox> // temporary
 #include <QFont>
 #include <QPainter>
 #include <QVector>
 
 QFont KeySignaturePainter::musicFont = MusicFont().getFont();
 
-KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature) :
+KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation,
+                                         const KeySignature& signature,
+                                         uint32_t position) :
     staffInfo(staffInformation),
-    keySignature(signature)
+    keySignature(signature),
+    position(position)
 {
     initAccidentalPositions();
     init();
@@ -47,13 +49,7 @@ void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 
 void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    QMessageBox message;
-    message.setText("Key Signature");
-    message.exec();
-}
-
-void KeySignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
-{
+    emit clicked(position);
 }
 
 void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)

@@ -1039,6 +1039,7 @@ void PowerTabEditor::setupNewDocument()
 
     connect(score->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
     connect(score, SIGNAL(barlineClicked(int)), this, SLOT(editBarline(int)));
+    connect(score, SIGNAL(keySignatureClicked(int)), this, SLOT(editKeySignature(int)));
 
     undoManager->addNewUndoStack();
 
@@ -1451,10 +1452,21 @@ void PowerTabEditor::addGuitar()
     undoManager->push(addGuitar);
 }
 
-void PowerTabEditor::editKeySignature()
+void PowerTabEditor::editKeySignature(int position)
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
-    const KeySignature& keySignature = caret->getCurrentBarline()->GetKeySignature();
+    shared_ptr<Barline> barline;
+
+    if (position == -1)
+    {
+        barline = caret->getCurrentBarline();
+    }
+    else
+    {
+        barline = caret->getCurrentSystem()->GetBarlineAtPosition(position);
+    }
+
+    const KeySignature& keySignature = barline->GetKeySignature();
 
     KeySignatureDialog dialog(keySignature);
     if (dialog.exec() == QDialog::Accepted)
