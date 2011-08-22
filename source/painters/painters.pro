@@ -21,7 +21,8 @@ HEADERS += \
     caret.h \
     beamgroup.h \
     barlinepainter.h \
-    restpainter.h
+    restpainter.h \
+    systemrenderer.h
 
 SOURCES += \
     tremolobarpainter.cpp \
@@ -43,6 +44,5 @@ SOURCES += \
     caret.cpp \
     beamgroup.cpp \
     barlinepainter.cpp \
-    restpainter.cpp
-
-
+    restpainter.cpp \
+    systemrenderer.cpp

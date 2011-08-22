@@ -834,6 +834,12 @@ public:
         notes = m_noteArray;
     }
 
+    void GetNotes(std::vector<const Note*>& notes) const
+    {
+        notes.clear();
+        std::copy(m_noteArray.begin(), m_noteArray.end(), std::back_inserter(notes));
+    }
+
 protected:
     int GetShiftedStringNumber(Note* note, ShiftType type) const;
     int GetShiftedFretNumber(Note* note, int originalString, int newString, const Tuning& tuning) const;
