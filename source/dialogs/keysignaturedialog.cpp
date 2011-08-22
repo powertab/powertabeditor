@@ -16,103 +16,66 @@
 */
   
 #include "keysignaturedialog.h"
-
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
-#include <QFormLayout>
-#include <QRadioButton>
-#include <QCheckBox>
-#include <QComboBox>
+#include "ui_keysignaturedialog.h"
 
 #include <sigfwd/sigfwd.hpp>
 #include <boost/bind.hpp>
 using boost::bind;
 
 KeySignatureDialog::KeySignatureDialog(const KeySignature& key) :
+    ui(new Ui::KeySignatureDialog),
     newKey(key)
 {
-    setModal(true);
-    setWindowTitle(tr("Key Signature"));
+    ui->setupUi(this);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout;
-
-    QFormLayout* formLayout = new QFormLayout;
-
-    // visibility selection
-    visibilityToggle = new QCheckBox;
-    formLayout->addRow(tr("Visible:"), visibilityToggle);
-
-    // key type selection
-    majorKey = new QRadioButton(tr("Major"));
-    minorKey = new QRadioButton(tr("Minor"));
-
-    QHBoxLayout* keyTypeLayout = new QHBoxLayout;
-    keyTypeLayout->addWidget(majorKey);
-    keyTypeLayout->addWidget(minorKey);
-
-    formLayout->addRow(tr("Key Type:"), keyTypeLayout);
-
-    // key accidentals selection
-    keyList = new QComboBox;
-    formLayout->addRow(tr("Key:"), keyList);
-
-    mainLayout->addLayout(formLayout);
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    mainLayout->addWidget(buttonBox);
-
-    setLayout(mainLayout);
-
-    init();
-}
-
-/// Initialize based on the original value of the key signature, and create any signal connections
-void KeySignatureDialog::init()
-{
+    // Initialize based on the original value of the key signature, and create any signal connections
     if (newKey.IsMajorKey())
     {
-        majorKey->setChecked(true);
+        ui->majorKeyButton->setChecked(true);
     }
     else
     {
-        minorKey->setChecked(true);
+        ui->minorKeyButton->setChecked(true);
     }
 
-    sigfwd::connect(majorKey, SIGNAL(clicked()),
+    sigfwd::connect(ui->majorKeyButton, SIGNAL(clicked()),
                     bind(&KeySignatureDialog::populateKeyTypes, this, KeySignature::majorKey));
-    sigfwd::connect(minorKey, SIGNAL(clicked()),
+    sigfwd::connect(ui->minorKeyButton, SIGNAL(clicked()),
                     bind(&KeySignatureDialog::populateKeyTypes, this, KeySignature::minorKey));
 
     populateKeyTypes(newKey.GetKeyType());
 
-    keyList->setCurrentIndex(newKey.GetKeyAccidentals());
+    ui->keysComboBox->setCurrentIndex(newKey.GetKeyAccidentals());
 
-    visibilityToggle->setChecked(newKey.IsShown());
+    ui->visibilityCheckBox->setChecked(newKey.IsShown());
+}
+
+KeySignatureDialog::~KeySignatureDialog()
+{
+    delete ui;
 }
 
 /// Populate the list of key types, depending on whether we are using major or minor keys
 void KeySignatureDialog::populateKeyTypes(uint8_t type)
 {
     // store the original selected index, so we can reset it after repopulating the list
-    int originalSelection = keyList->currentIndex();
+    int originalSelection = ui->keysComboBox->currentIndex();
     if (originalSelection == -1)
     {
         originalSelection = 0;
     }
 
-    keyList->clear();
+    ui->keysComboBox->clear();
 
     KeySignature tempKey(type, 0);
 
     for (int i = KeySignature::noAccidentals; i <= KeySignature::sevenFlats; i++)
     {
         tempKey.SetKeyAccidentals(i);
-        keyList->addItem(QString::fromStdString(tempKey.GetText()));
+        ui->keysComboBox->addItem(QString::fromStdString(tempKey.GetText()));
     }
 
-    keyList->setCurrentIndex(originalSelection);
+    ui->keysComboBox->setCurrentIndex(originalSelection);
 }
 
 /// Return the new key, as selected by the user
@@ -124,18 +87,18 @@ KeySignature KeySignatureDialog::getNewKey() const
 void KeySignatureDialog::accept()
 {
     // update the new key with the values selected in the dialog
-    newKey.SetShown(visibilityToggle->isChecked());
+    newKey.SetShown(ui->visibilityCheckBox->isChecked());
 
-    if (majorKey->isChecked())
+    if (ui->majorKeyButton->isChecked())
     {
         newKey.SetKeyType(KeySignature::majorKey);
     }
-    else if (minorKey->isChecked())
+    else if (ui->minorKeyButton->isChecked())
     {
         newKey.SetKeyType(KeySignature::minorKey);
     }
 
-    newKey.SetKeyAccidentals(keyList->currentIndex());
+    newKey.SetKeyAccidentals(ui->keysComboBox->currentIndex());
 
     done(Accepted);
 }

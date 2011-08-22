@@ -45,4 +45,5 @@ FORMS += \
     preferencesdialog.ui \
     tuningdialog.ui \
     volumeswelldialog.ui \
-    irregulargroupingdialog.ui
+    irregulargroupingdialog.ui \
+    keysignaturedialog.ui

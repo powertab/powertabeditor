@@ -19,18 +19,18 @@
 #define KEYSIGNATUREDIALOG_H
 
 #include <QDialog>
-class QComboBox;
-class QRadioButton;
-class QCheckBox;
-
 #include <powertabdocument/keysignature.h>
+
+namespace Ui {
+    class KeySignatureDialog;
+}
 
 class KeySignatureDialog : public QDialog
 {
     Q_OBJECT
-
 public:
     KeySignatureDialog(const KeySignature& key);
+    ~KeySignatureDialog();
 
     KeySignature getNewKey() const;
 
@@ -39,14 +39,9 @@ private slots:
     void populateKeyTypes(uint8_t type);
 
 private:
+    Ui::KeySignatureDialog *ui;
+
     KeySignature newKey;
-
-    QComboBox* keyList;
-    QRadioButton* majorKey;
-    QRadioButton* minorKey;
-    QCheckBox* visibilityToggle;
-
-    void init();
 };
 
 #endif // KEYSIGNATUREDIALOG_H
