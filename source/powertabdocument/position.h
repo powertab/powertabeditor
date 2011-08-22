@@ -205,10 +205,13 @@ public:
         m_position = (uint8_t)position;
         return (true);
     }
+
     /// Gets the position within the system where the position is anchored
     /// @return The position within the system where the position is anchored
-    uint32_t GetPosition() const
-    {return (m_position);}
+    inline uint32_t GetPosition() const
+    {
+        return m_position;
+    }
 
     // Duration Type Functions
     /// Determines if a duration type is valid

@@ -24,11 +24,11 @@
 #include <numeric> // partial_sum
 #include <stdexcept>
 #include <algorithm>
-#include <map>
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include <boost/assign/list_of.hpp>
+#include <boost/unordered_map.hpp>
 
 // Default Constants
 const uint8_t Staff::DEFAULT_DATA                                        = (uint8_t)((DEFAULT_CLEF << 4) | DEFAULT_TABLATURE_STAFF_TYPE);
@@ -50,6 +50,13 @@ const uint8_t Staff::BASS_CLEF                           = 1;
 // Tablature Staff Type Constants
 const uint8_t Staff::MIN_TABULATURE_STAFF_TYPE = Tuning::MIN_STRING_COUNT;
 const uint8_t Staff::MAX_TABULATURE_STAFF_TYPE = Tuning::MAX_STRING_COUNT;
+
+// maps notes to their position on the staff (relative to the top line), used for Staff::GetNoteLocation
+// this is for treble clef - it is adjusted for bass clef as necessary
+namespace {
+const boost::unordered_map<char, int8_t> notePositions = boost::assign::map_list_of
+                    ('F', 0) ('E', 1) ('D', 2) ('C', 3) ('B', -3) ('A', -2) ('G', -1);
+}
 
 /// Default Constructor
 Staff::Staff() :
@@ -849,11 +856,6 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
     
     const std::string noteText = midi::GetMidiNoteText(pitch, 
                                                        activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals());
-    
-    // maps notes to their position on the staff (relative to the top line)
-    // this is for treble clef - we will adjust for bass clef as necessary later on
-    const std::map<char, int8_t> notePositions = boost::assign::map_list_of
-        ('F', 0) ('E', 1) ('D', 2) ('C', 3) ('B', -3) ('A', -2) ('G', -1);
     
     // find the position of the note, ignoring accidentals (i.e. C# -> C)
     int y = notePositions.find(noteText.at(0))->second;

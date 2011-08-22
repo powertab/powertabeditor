@@ -29,8 +29,16 @@
 #include <numeric>
 #include <map>
 #include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
+#include <boost/array.hpp>
 #include <iostream>
+
+namespace {
+const boost::array<Layout::SymbolType, 7> symbolsBelowTabStaff = {{
+    Layout::SymbolPickStrokeDown, Layout::SymbolPickStrokeUp, Layout::SymbolTap,
+    Layout::SymbolHammerOnPullOff, Layout::SymbolSlide,
+    Layout::SymbolTappedHarmonic, Layout::SymbolArtificialHarmonic
+}};
+}
 
 /// Adjust the spacing around the standard notation staff, depending on if any notes are located above/below the staff
 void Layout::CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> system)
@@ -306,23 +314,22 @@ std::vector<Layout::SymbolGroup> Layout::CalculateTabStaffBelowLayout(boost::sha
         SymbolGroup symbolGroup(pos->GetPosition(), system->GetPositionX(pos->GetPosition()),
                                 system->GetPositionSpacing(), 0, NoSymbol);
 
-        // associate the symbol type with each enabled/disabled symbol
-        std::map<bool, SymbolType> symbols = boost::assign::map_list_of
-            (pos->HasPickStrokeDown(), SymbolPickStrokeDown)
-            (pos->HasPickStrokeUp(), SymbolPickStrokeUp)
-            (pos->HasTap(), SymbolTap)
-            (pos->HasNoteWithHammeronOrPulloff(), SymbolHammerOnPullOff)
-            (pos->HasNoteWithSlide(), SymbolSlide)
-            (pos->HasNoteWithTappedHarmonic(), SymbolTappedHarmonic)
-            (pos->HasNoteWithArtificialHarmonic(), SymbolArtificialHarmonic);
+        boost::array<bool, 7> enabledSymbols = {{
+            pos->HasPickStrokeDown(),
+            pos->HasPickStrokeUp(),
+            pos->HasTap(),
+            pos->HasNoteWithHammeronOrPulloff(),
+            pos->HasNoteWithSlide(),
+            pos->HasNoteWithTappedHarmonic(),
+            pos->HasNoteWithArtificialHarmonic()
+        }};
 
         // for each symbol that is enabled, add a corresponding SymbolGroup to the layout
-        for (std::map<bool, SymbolType>::const_iterator symbol = symbols.begin();
-             symbol != symbols.end(); ++symbol)
+        for (size_t i = 0; i < enabledSymbols.size(); i++)
         {
-            if (symbol->first == true)
+            if (enabledSymbols[i])
             {
-                symbolGroup.symbolType = symbol->second;
+                symbolGroup.symbolType = symbolsBelowTabStaff[i];
                 symbolGroups.push_back(symbolGroup);
             }
         }

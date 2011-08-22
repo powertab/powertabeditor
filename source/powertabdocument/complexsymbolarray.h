@@ -35,7 +35,7 @@ namespace ComplexSymbols
         CompareComplexSymbolType(uint8_t symbolType) : symbolType(symbolType) {}
 
         /// Extracts the type of the symbol given, and compares it to the supplied symbol type
-        bool operator()(uint32_t symbol) const
+        inline bool operator()(uint32_t symbol) const
         {
             return HIBYTE(HIWORD(symbol)) == symbolType;
         }
