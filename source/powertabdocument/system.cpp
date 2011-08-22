@@ -561,34 +561,34 @@ size_t System::GetPositionFromX(int x) const
 /// all the barlines
 int System::GetCumulativeInternalKeyAndTimeSignatureWidth(int position) const
 {
-    //------Last Checked------//
-    // - Sep 01, 2007
     int returnValue = 0;
 
-    bool bAllBarlines = (position == -1);
+    const bool bAllBarlines = (position == -1);
 
     // Loop through barline list
-    for (int barline = 0, barlineCount = m_barlineArray.size();
-        barline < barlineCount; ++barline)
+    const size_t numBarlines = m_barlineArray.size();
+    for (size_t i = 0; i < numBarlines; ++i)
     {
+        const Barline& barline = *(m_barlineArray[i]);
         // Get the position where the barline resides
-        int barlinePosition = m_barlineArray[barline]->GetPosition();
+        const int barlinePosition = barline.GetPosition();
 
         // Only use bars before the index
         if (bAllBarlines || (barlinePosition < position))
         {
             // Ignore keys and time signs at position 0, they're handled in
             // GetFirstPositionX
-            if (m_barlineArray[barline]->GetPosition() > 0)
+            if (barlinePosition > 0)
             {
                 // Add the width of the key and time signature, if present on
                 // the barline
-                returnValue +=
-                    m_barlineArray[barline]->GetKeyAndTimeSignatureWidth();
+                returnValue += barline.GetKeyAndTimeSignatureWidth();
             }
         }
         else
+        {
             break;
+        }
     }
 
     return (returnValue);

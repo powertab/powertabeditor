@@ -329,9 +329,10 @@ void ScoreArea::drawSlides(shared_ptr<const System> system, shared_ptr<const Sta
         // iterate across the staff for each string
         for (quint8 string = 0; string < staff->GetTablatureStaffType(); string++)
         {
-            for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
+            const size_t positionCount = staff->GetPositionCount(voice);
+            for (size_t i = 0; i < positionCount; i++)
             {
-                const Position* currentPosition = staff->GetPosition(voice, j);
+                const Position* currentPosition = staff->GetPosition(voice, i);
                 const Note* note = currentPosition->GetNoteByString(string);
 
                 if (note == NULL)
@@ -406,9 +407,10 @@ void ScoreArea::drawLegato(shared_ptr<const System> system, shared_ptr<const Sta
         for (int string = 0; string < staff->GetTablatureStaffType(); string++)
         {
             int startPos = -1;
-            for (uint32_t j = 0; j < staff->GetPositionCount(voice); j++)
+            const size_t positionCount = staff->GetPositionCount(voice);
+            for (size_t i = 0; i < positionCount; i++)
             {
-                const Position* position = staff->GetPosition(voice, j);
+                const Position* position = staff->GetPosition(voice, i);
                 const Note* note = position->GetNoteByString(string);
 
                 const int currentPosition = position->GetPosition();

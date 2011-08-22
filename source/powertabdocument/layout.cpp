@@ -178,6 +178,7 @@ std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* scor
         const Position* pos = staff->GetPosition(0, posIndex);
 
         std::vector<SymbolType> symbols;
+        symbols.reserve(12);
 
         symbols.push_back(pos->HasLetRing() ? SymbolLetRing : NoSymbol);
         symbols.push_back(pos->HasVolumeSwell() ? SymbolVolumeSwell : NoSymbol);

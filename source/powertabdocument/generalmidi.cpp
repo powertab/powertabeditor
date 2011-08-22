@@ -36,6 +36,12 @@ namespace midi
         "F##", "C##", "G##", "D##", "A##", "E##", "B##",
     };
 
+    static const string sharpNotesText[12] = {"C", "C#", "D", "D#", "E", "F", "F#",
+                                              "G", "G#", "A", "A#", "B"};
+
+    static const string flatNotesText[12] = {"C", "Db", "D", "Eb", "E", "F", "Gb",
+                                             "G", "Ab", "A", "Bb", "B"};
+
     // MIDI Channel Functions
     /// Determines if a MIDI channel is valid
     /// @param MIDI channel to validate
@@ -142,17 +148,11 @@ namespace midi
 
         if (sharps)
         {
-            string notes[12] = {"C", "C#", "D", "D#", "E", "F", "F#",
-                                "G", "G#", "A", "A#", "B"};
-
-            return notes[pitch];
+            return sharpNotesText[pitch];
         }
         else
         {
-            string notes[12] = {"C", "Db", "D", "Eb", "E", "F", "Gb",
-                                "G", "Ab", "A", "Bb", "B"};
-
-            return notes[pitch];
+            return flatNotesText[pitch];
         }
     }
 

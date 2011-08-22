@@ -153,7 +153,7 @@ public:
 
     void UpdateExtraSpacing(SystemPtr system);
 
-    int FindSystemIndex(SystemConstPtr system) const;
+    int FindSystemIndex(const SystemConstPtr& system) const;
 
     void UpdateToVer2Structure();
 

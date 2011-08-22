@@ -290,7 +290,7 @@ void Score::UpdateToVer2Structure()
 }
 
 // Finds the index of a system within the score
-int Score::FindSystemIndex(SystemConstPtr system) const
+int Score::FindSystemIndex(const SystemConstPtr& system) const
 {
     std::vector<SystemPtr>::const_iterator result = std::find(m_systemArray.begin(),
                                                                    m_systemArray.end(), system);

@@ -378,9 +378,6 @@ Position* Staff::GetPosition(uint32_t voice, uint32_t index) const
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");
 
-    if (!IsValidPositionIndex(voice, index))
-        throw std::out_of_range("Invalid position index");
-
     return positionArrays[voice].at(index);
 }
 
@@ -645,9 +642,8 @@ void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32
 
     const std::vector<Position*>& positionArray = positionArrays.at(voice);
 
-    for (size_t i = 0; i < positionArray.size(); i++)
+    BOOST_FOREACH(Position* currentPosition, positionArray)
     {
-        Position* currentPosition = positionArray.at(i);
         const uint32_t location = currentPosition->GetPosition();
 
         if (location >= startPos && location <= endPos)
@@ -800,7 +796,7 @@ void Staff::UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNot
 
 struct SortByPosition
 {
-    bool operator() (Position* pos1, Position* pos2)
+    inline bool operator() (const Position* pos1, const Position* pos2)
     {
         return pos1->GetPosition() < pos2->GetPosition();
     }
