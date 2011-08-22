@@ -18,6 +18,7 @@
 #include "scorearea.h"
 
 #include <QDebug>
+#include <QProgressDialog>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/score.h>
@@ -105,14 +106,22 @@ void ScoreArea::requestFullRedraw()
 void ScoreArea::renderScore(const Score* score, int lineSpacing)
 {
     boost::timer timer;
+    
+    QProgressDialog progressDialog(tr("Opening ..."), "", 0, score->GetSystemCount());
+    progressDialog.setCancelButton(0);
+    progressDialog.setWindowModality(Qt::WindowModal);
+    progressDialog.show();
 
     // Render each system (group of staves) in the entire score
     for (uint32_t i=0; i < score->GetSystemCount(); i++)
     {
+        progressDialog.setValue(i);
         SystemRenderer renderer(score, lineSpacing);
         systemList << renderer(score->GetSystem(i));
         scene.addItem(systemList.back());
     }
+    
+    progressDialog.setValue(score->GetSystemCount());
 
     qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
 }
