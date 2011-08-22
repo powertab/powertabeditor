@@ -631,6 +631,16 @@ void Staff::CalculateBeamingForGroup(std::vector<Position*>& positions)
     }
 }
 
+namespace {
+struct ComparePositionLower
+{
+    bool operator()(const Position* pos, size_t location)
+    {
+        return pos->GetPosition() < location;
+    }
+};
+}
+
 /// Gets all of the positions within the given range (inclusive)
 /// @param Output parameter, to store the positions that are in the range
 void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos)
@@ -638,17 +648,26 @@ void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");
 
-    positionsInRange.clear();
+    assert(startPos < endPos);
 
     const std::vector<Position*>& positionArray = positionArrays.at(voice);
 
-    BOOST_FOREACH(Position* currentPosition, positionArray)
-    {
-        const uint32_t location = currentPosition->GetPosition();
+    std::vector<Position*>::const_iterator low = std::lower_bound(positionArray.begin(),
+                                                                  positionArray.end(),
+                                                                  startPos,
+                                                                  ComparePositionLower());
 
-        if (location >= startPos && location <= endPos)
+    positionsInRange.clear();
+    while (low != positionArray.end())
+    {
+        if ((*low)->GetPosition() <= endPos)
         {
-            positionsInRange.push_back(currentPosition);
+            positionsInRange.push_back(*low);
+            ++low;
+        }
+        else
+        {
+            return;
         }
     }
 }
@@ -794,7 +813,7 @@ void Staff::UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNot
     }
 }
 
-struct SortByPosition
+struct OrderByPosition
 {
     inline bool operator() (const Position* pos1, const Position* pos2)
     {
@@ -817,7 +836,7 @@ bool Staff::InsertPosition(uint32_t voice, Position *position)
 
     // add the position and re-sort by position index
     positionArray.push_back(position);
-    std::sort(positionArray.begin(), positionArray.end(), SortByPosition());
+    std::sort(positionArray.begin(), positionArray.end(), OrderByPosition());
 
     return true;
 }
@@ -854,7 +873,7 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
                                                        activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals());
     
     // find the position of the note, ignoring accidentals (i.e. C# -> C)
-    int y = notePositions.find(noteText.at(0))->second;
+    int y = notePositions.find(noteText[0])->second;
     
     if (GetClef() == BASS_CLEF) // adjust for bass clef, where A is the note at the top line
     {

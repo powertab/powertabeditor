@@ -862,15 +862,15 @@ int Note::GetOctaveOffset() const
     {
         return 1;
     }
-    if (IsOctave15ma())
+    else if (IsOctave15ma())
     {
         return 2;
     }
-    if (IsOctave8vb())
+    else if (IsOctave8vb())
     {
         return -1;
     }
-    if (IsOctave15mb())
+    else if (IsOctave15mb())
     {
         return -2;
     }
