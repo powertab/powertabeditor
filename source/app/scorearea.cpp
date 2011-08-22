@@ -79,8 +79,11 @@ void ScoreArea::updateSystem(const uint32_t systemIndex)
 
         // redraw the system
         const Score* currentScore = document->GetGuitarScore();
+        
         SystemRenderer renderer(currentScore, document->GetTablatureStaffLineSpacing());
         QGraphicsItem* newSystem = renderer(currentScore->GetSystem(systemIndex));
+        renderer.connectSignals(this);
+        
         scene.addItem(newSystem);
         systemList.insert(systemIndex, newSystem);
 
@@ -119,6 +122,7 @@ void ScoreArea::renderScore(const Score* score, int lineSpacing)
         SystemRenderer renderer(score, lineSpacing);
         systemList << renderer(score->GetSystem(i));
         scene.addItem(systemList.back());
+        renderer.connectSignals(this);
     }
     
     progressDialog.setValue(score->GetSystemCount());

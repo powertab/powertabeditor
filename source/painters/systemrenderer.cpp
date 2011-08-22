@@ -56,6 +56,9 @@
 #include "restpainter.h"
 #include "beamgroup.h"
 #include "irregularnotegroup.h"
+#include "caret.h"
+
+#include <app/scorearea.h>
 
 using boost::shared_ptr;
 
@@ -103,10 +106,7 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
 
         // Draw the staff lines
         StaffPainter* staffPainter = new StaffPainter(system, staff, currentStaffInfo);
-
-        // TODO - connect to caret
-        //connect(staffPainter, SIGNAL(selectionUpdated(int,int)),
-        //caret, SLOT(updateSelection(int,int)));
+        staffPainters.push_back(staffPainter);
 
         staffPainter->setPos(0, system->GetStaffHeightOffset(i));
         staffPainter->setParentItem(parentSystem);
@@ -166,10 +166,7 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo) const
         const TimeSignature& timeSig = currentBarline->GetTimeSignature();
 
         BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo, currentBarline);
-
-        // forward the barline's signal to our signal
-        // TODO - connect barline
-        //connect(barlinePainter, SIGNAL(clicked(int)), this, SIGNAL(barlineClicked(int)));
+        barlinePainters.push_back(barlinePainter);
 
         double x = system->GetPositionX(currentBarline->GetPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
@@ -211,8 +208,7 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo) const
         {
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig,
                                                                          currentBarline->GetPosition());
-            // TODO - connect key signature
-            //connect(keySigPainter, SIGNAL(clicked(int)), this, SIGNAL(keySignatureClicked(int)));
+            keySignaturePainters.push_back(keySigPainter);
 
             keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
             keySigPainter->setParentItem(parentStaff);
@@ -1262,5 +1258,26 @@ void SystemRenderer::drawLedgerLines(const std::vector<double> &noteLocations,
         ledgerLine->setLine(0, 0, StdNotationPainter::getNoteHeadWidth() * 2, 0);
         centerItem(ledgerLine, xLocation, xLocation + staffData.positionWidth, ledgerLineLocations[i]);
         ledgerLine->setParentItem(parentStaff);
+    }
+}
+
+void SystemRenderer::connectSignals(ScoreArea *scoreArea)
+{
+    for (size_t i = 0; i < staffPainters.size(); i++)
+    {
+        QObject::connect(staffPainters[i], SIGNAL(selectionUpdated(int,int)),
+                         scoreArea->getCaret(), SLOT(updateSelection(int,int)));
+    }
+
+    for (size_t i = 0; i < barlinePainters.size(); i++)
+    {
+        QObject::connect(barlinePainters[i], SIGNAL(clicked(int)),
+                         scoreArea, SIGNAL(barlineClicked(int)));
+    }
+
+    for (size_t i = 0; i < keySignaturePainters.size(); i++)
+    {
+        QObject::connect(keySignaturePainters[i], SIGNAL(clicked(int)),
+                         scoreArea, SIGNAL(keySignatureClicked(int)));
     }
 }

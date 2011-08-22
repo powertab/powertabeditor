@@ -35,12 +35,18 @@ class TempoMarker;
 class Dynamic;
 class StdNotationPainter;
 class Barline;
+class ScoreArea;
+class StaffPainter;
+class BarlinePainter;
+class KeySignaturePainter;
 
 class SystemRenderer
 {
 public:
     SystemRenderer(const Score* score, const int lineSpacing);
+    
     QGraphicsItem* operator()(boost::shared_ptr<const System> system);
+    void connectSignals(ScoreArea* scoreArea);
 
 private:
     const Score* score;
@@ -50,6 +56,11 @@ private:
     QGraphicsItem* parentSystem;
     QGraphicsItem* parentStaff;
     MusicFont musicFont;
+    
+    // store these items so that their signals can be connected back to the ScoreArea later
+    mutable std::vector<StaffPainter*> staffPainters;
+    mutable std::vector<BarlinePainter*> barlinePainters;
+    mutable std::vector<KeySignaturePainter*> keySignaturePainters;
 
     enum VolumeSwellType
     {
