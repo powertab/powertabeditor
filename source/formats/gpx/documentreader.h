@@ -25,6 +25,7 @@
 // Temporarily disable -Wtype-limits due to wchar_t warning with Mingw and Boost
 #ifdef __MINGW32__
 #pragma GCC diagnostic ignored "-Wtype-limits" 
+#pragma GCC diagnostic ignored "-Wstrict-aliasing" 
 #endif
 
 #include <boost/property_tree/ptree.hpp>
