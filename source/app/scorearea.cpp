@@ -900,7 +900,8 @@ void ScoreArea::drawStdNotation(shared_ptr<const System> system, shared_ptr<cons
 void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<const System> system, shared_ptr<const Staff> staff,
                                          const StaffData& staffInfo)
 {
-    std::vector<Layout::SymbolGroup> symbolGroups = Layout::CalculateTabStaffBelowLayout(system, staff);
+    std::vector<Layout::SymbolGroup> symbolGroups;
+    Layout::CalculateTabStaffBelowLayout(symbolGroups, system, staff);
 
     BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
     {
@@ -962,7 +963,8 @@ void ScoreArea::drawSymbolsBelowTabStaff(shared_ptr<const System> system, shared
 void ScoreArea::drawSymbols(const Score* score, shared_ptr<const System> system,
                             shared_ptr<const Staff> staff, const StaffData& staffInfo)
 {
-    std::vector<Layout::SymbolGroup> symbolGroups = Layout::CalculateSymbolLayout(score, system, staff);
+    std::vector<Layout::SymbolGroup> symbolGroups;
+    Layout::CalculateSymbolLayout(symbolGroups, score, system, staff);
 
     BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
     {

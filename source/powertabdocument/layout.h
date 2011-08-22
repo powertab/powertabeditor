@@ -73,12 +73,14 @@ struct SymbolGroup
     SymbolType symbolType;
 };
 
-std::vector<Layout::SymbolGroup> CalculateSymbolLayout(const Score* score,
-                                                       boost::shared_ptr<const System> system,
-                                                       boost::shared_ptr<const Staff> staff);
+void CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
+                           const Score* score,
+                           boost::shared_ptr<const System> system,
+                           boost::shared_ptr<const Staff> staff);
 
-std::vector<Layout::SymbolGroup> CalculateTabStaffBelowLayout(boost::shared_ptr<const System> system,
-                                                              boost::shared_ptr<const Staff> staff);
+void CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
+                                  boost::shared_ptr<const System> system,
+                                  boost::shared_ptr<const Staff> staff);
 }
 
 #endif // LAYOUT_H

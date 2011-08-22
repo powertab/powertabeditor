@@ -134,7 +134,8 @@ int maxHeightOfSymbolGroups(const std::vector<Layout::SymbolGroup>& symbolGroups
 void Layout::CalculateTabStaffBelowSpacing(boost::shared_ptr<const System> system,
                                            boost::shared_ptr<Staff> staff)
 {
-    std::vector<SymbolGroup> symbolGroups = CalculateTabStaffBelowLayout(system, staff);
+    std::vector<SymbolGroup> symbolGroups;
+    CalculateTabStaffBelowLayout(symbolGroups, system, staff);
 
     staff->SetTablatureStaffBelowSpacing(maxHeightOfSymbolGroups(symbolGroups) * Staff::TAB_SYMBOL_HEIGHT);
 }
@@ -145,7 +146,8 @@ void Layout::CalculateTabStaffBelowSpacing(boost::shared_ptr<const System> syste
 void Layout::CalculateSymbolSpacing(const Score* score, boost::shared_ptr<System> system,
                                     boost::shared_ptr<Staff> staff)
 {
-    std::vector<SymbolGroup> symbolGroups = CalculateSymbolLayout(score, system, staff);
+    std::vector<SymbolGroup> symbolGroups;
+    CalculateSymbolLayout(symbolGroups, score, system, staff);
 
     staff->SetSymbolSpacing(maxHeightOfSymbolGroups(symbolGroups) * Staff::TAB_SYMBOL_HEIGHT);
 }
@@ -167,8 +169,9 @@ int updateHeightMap(std::vector<int>& heightMap, size_t left, size_t right)
 /// Compute the layout of symbols between the standard notation and tab staves
 /// Returns a list of all symbol groups and their locations (for example, consecutive notes with vibrato
 /// will have their vibrato symbols grouped together, forming a single vibrato symbol spanning the notes)
-std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* score, boost::shared_ptr<const System> system,
-                                                               boost::shared_ptr<const Staff> staff)
+void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
+                                   const Score* score, boost::shared_ptr<const System> system,
+                                   boost::shared_ptr<const Staff> staff)
 {
     std::vector<std::vector<SymbolType> > symbolMap;
 
@@ -215,11 +218,9 @@ std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* scor
     // stores the highest occupied vertical location at each position index
     std::vector<int> heightMap(symbolMap.size(), 0);
 
-    std::vector<SymbolGroup> symbolGroups;
-
     if (symbolMap.empty())
     {
-        return symbolGroups;
+        return;
     }
 
     // go through each symbol, and then iterate through the positions and group together symbols
@@ -296,18 +297,15 @@ std::vector<Layout::SymbolGroup> Layout::CalculateSymbolLayout(const Score* scor
             symbolGroups.push_back(SymbolGroup(leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
         }
     }
-
-    return symbolGroups;
 }
 
 /// Calculates the layout of symbols displayed below the tab staff (horizontal and vertical positioning)
 /// There are no symbols which are grouped with neighbouring symbols, making the function significantly simpler
 /// than the Layout::CalculateSymbolLayout function
-std::vector<Layout::SymbolGroup> Layout::CalculateTabStaffBelowLayout(boost::shared_ptr<const System> system,
-                                                                      boost::shared_ptr<const Staff> staff)
+void Layout::CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
+                                          boost::shared_ptr<const System> system,
+                                          boost::shared_ptr<const Staff> staff)
 {
-    std::vector<SymbolGroup> symbolGroups;
-
     for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(0); posIndex++)
     {
         const Position* pos = staff->GetPosition(0, posIndex);
@@ -335,8 +333,6 @@ std::vector<Layout::SymbolGroup> Layout::CalculateTabStaffBelowLayout(boost::sha
             }
         }
     }
-
-    return symbolGroups;
 }
 
 Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int height, Layout::SymbolType type) :
