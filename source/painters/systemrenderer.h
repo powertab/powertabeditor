@@ -56,11 +56,14 @@ private:
     QGraphicsItem* parentSystem;
     QGraphicsItem* parentStaff;
     MusicFont musicFont;
+    static QFont plainTextFont;
+    static QFont symbolTextFont;
+    static QFont rehearsalSignFont;
     
     // store these items so that their signals can be connected back to the ScoreArea later
-    mutable std::vector<StaffPainter*> staffPainters;
-    mutable std::vector<BarlinePainter*> barlinePainters;
-    mutable std::vector<KeySignaturePainter*> keySignaturePainters;
+    std::vector<StaffPainter*> staffPainters;
+    std::vector<BarlinePainter*> barlinePainters;
+    std::vector<KeySignaturePainter*> keySignaturePainters;
 
     enum VolumeSwellType
     {
@@ -69,51 +72,51 @@ private:
     };
 
     // Centers an item, by using it's width to calculate the necessary offset from xmin
-    void centerItem(QGraphicsItem* item, float xmin, float xmax, float y) const;
+    void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
 
     void drawTabClef(int x, const StaffData& staffInfo);
-    void renderBars(const StaffData& currentStaffInfo) const;
+    void renderBars(const StaffData& currentStaffInfo);
 
-    void drawTabNotes(const StaffData& currentStaffInfo) const;
-    void drawArpeggio(const Position* position, uint32_t x, const StaffData& currentStaffInfo) const;
+    void drawTabNotes(const StaffData& currentStaffInfo);
+    void drawArpeggio(const Position* position, uint32_t x, const StaffData& currentStaffInfo);
 
-    void drawSystemSymbols(const StaffData& currentStaffInfo) const;
-    void drawDividerLine(const StaffData& currentStaffInfo, quint32 y) const;
+    void drawSystemSymbols(const StaffData& currentStaffInfo);
+    void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
     void drawAltEndings(const std::vector<boost::shared_ptr<AlternateEnding> >& altEndings,
-                        uint32_t height) const;
+                        uint32_t height);
     void drawTempoMarkers(const std::vector<boost::shared_ptr<TempoMarker> >& tempoMarkers,
-                          uint32_t height) const;
-    void drawDirections(uint32_t height, const StaffData& currentStaffInfo) const;
-    void drawChordText(uint32_t height, const StaffData& currentStaffInfo) const;
+                          uint32_t height);
+    void drawDirections(uint32_t height, const StaffData& currentStaffInfo);
+    void drawChordText(uint32_t height, const StaffData& currentStaffInfo);
 
-    void drawRhythmSlashes() const;
+    void drawRhythmSlashes();
 
-    void drawLegato(const StaffData& currentStaffInfo) const;
-    void drawSlides(const StaffData& currentStaffInfo) const;
+    void drawLegato(const StaffData& currentStaffInfo);
+    void drawSlides(const StaffData& currentStaffInfo);
     void drawSlidesHelper(const StaffData& currentStaffInfo, quint8 string, bool slideUp,
-                          quint32 posIndex1, quint32 posIndex2) const;
+                          quint32 posIndex1, quint32 posIndex2);
 
-    void drawSymbolsBelowTabStaff(const StaffData& staffInfo) const;
-    QGraphicsItem* createPickStroke(const QString& text) const;
-    QGraphicsItem* createPlainText(const QString& text, QFont::Style style) const;
-    QGraphicsItem* createArtificialHarmonicText(const Position* position) const;
+    void drawSymbolsBelowTabStaff(const StaffData& staffInfo);
+    QGraphicsItem* createPickStroke(const QString& text);
+    QGraphicsItem* createPlainText(const QString& text, QFont::Style style);
+    QGraphicsItem* createArtificialHarmonicText(const Position* position);
 
-    void drawSymbols(const StaffData& staffInfo) const;
+    void drawSymbols(const StaffData& staffInfo);
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, int width,
-                                              const StaffData& currentStaffInfo) const;
+                                              const StaffData& currentStaffInfo);
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo,
-                                     VolumeSwellType type) const;
-    QGraphicsItem* drawContinuousFontSymbols(QChar symbol, int width) const;
-    QGraphicsItem* createTremoloPicking(const StaffData& currentStaffInfo) const;
-    QGraphicsItem* createTrill(const StaffData& currentStaffInfo) const;
-    QGraphicsItem* createDynamic(boost::shared_ptr<const Dynamic> dynamic) const;
+                                     VolumeSwellType type);
+    QGraphicsItem* drawContinuousFontSymbols(QChar symbol, int width);
+    QGraphicsItem* createTremoloPicking(const StaffData& currentStaffInfo);
+    QGraphicsItem* createTrill(const StaffData& currentStaffInfo);
+    QGraphicsItem* createDynamic(boost::shared_ptr<const Dynamic> dynamic);
 
-    void drawStdNotation(const StaffData& currentStaffInfo) const;
-    void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap) const;
+    void drawStdNotation(const StaffData& currentStaffInfo);
+    void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap);
     void drawMultiBarRest(boost::shared_ptr<const Barline> currentBarline,
-                          const StaffData& currentStaffInfo, int measureCount) const;
+                          const StaffData& currentStaffInfo, int measureCount);
     void drawLedgerLines(const std::vector<double> &noteLocations, const double xLocation,
-                         const StaffData& staffData) const;
+                         const StaffData& staffData);
 };
 
 #endif // SYSTEMRENDERER_H

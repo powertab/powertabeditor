@@ -62,10 +62,17 @@
 
 using boost::shared_ptr;
 
+QFont SystemRenderer::plainTextFont("Liberation Sans");
+QFont SystemRenderer::symbolTextFont("Liberation Sans");
+QFont SystemRenderer::rehearsalSignFont("Helvetica");
+
 SystemRenderer::SystemRenderer(const Score* score, const int lineSpacing) :
     score(score), lineSpacing(lineSpacing),
     parentSystem(NULL)
 {
+    plainTextFont.setPixelSize(10);
+    symbolTextFont.setPixelSize(9);
+    rehearsalSignFont.setPixelSize(12);
 }
 
 QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
@@ -154,7 +161,7 @@ void SystemRenderer::drawTabClef(int x, const StaffData& staffInfo)
 }
 
 /// Draw all of the barlines for the staff.
-void SystemRenderer::renderBars(const StaffData& currentStaffInfo) const
+void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
 {
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
@@ -225,17 +232,15 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo) const
         if (rehearsalSign.IsSet())
         {
             const int y = 1;
-            QFont displayFont("Helvetica");
-            displayFont.setPixelSize(12);
 
             QGraphicsSimpleTextItem* signLetter = new QGraphicsSimpleTextItem;
             signLetter->setText(QString(QChar(rehearsalSign.GetLetter())));
             signLetter->setPos(rehearsalSignX, y);
-            signLetter->setFont(displayFont);
+            signLetter->setFont(rehearsalSignFont);
 
             QGraphicsSimpleTextItem* signText = new QGraphicsSimpleTextItem;
             signText->setText(QString::fromStdString(rehearsalSign.GetDescription()));
-            signText->setFont(displayFont);
+            signText->setFont(rehearsalSignFont);
             signText->setPos(rehearsalSignX + signLetter->boundingRect().width() + 7, y);
 
             // draw rectangle around rehearsal sign letter
@@ -253,7 +258,7 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo) const
 }
 
 /// Draws the tab notes for all notes (and voices) in the staff
-void SystemRenderer::drawTabNotes(const StaffData& currentStaffInfo) const
+void SystemRenderer::drawTabNotes(const StaffData& currentStaffInfo)
 {
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
@@ -282,7 +287,7 @@ void SystemRenderer::drawTabNotes(const StaffData& currentStaffInfo) const
 }
 
 void SystemRenderer::drawArpeggio(const Position* position, quint32 x,
-                                  const StaffData& currentStaffInfo) const
+                                  const StaffData& currentStaffInfo)
 {
     // get the highest and lowest strings used at this position, and
     // convert the string indices to positions on the staff
@@ -315,14 +320,14 @@ void SystemRenderer::drawArpeggio(const Position* position, quint32 x,
     endPoint->setParentItem(parentStaff);
 }
 
-void SystemRenderer::centerItem(QGraphicsItem *item, float xmin, float xmax, float y) const
+void SystemRenderer::centerItem(QGraphicsItem *item, float xmin, float xmax, float y)
 {
     float itemWidth = item->boundingRect().width();
     float centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
     item->setPos(centredX, y);
 }
 
-void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo) const
+void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)
 {
     quint32 height = 0;
 
@@ -367,7 +372,7 @@ void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo) const
     }
 }
 
-void SystemRenderer::drawDividerLine(const StaffData& currentStaffInfo, quint32 y) const
+void SystemRenderer::drawDividerLine(const StaffData& currentStaffInfo, quint32 y)
 {
     QGraphicsLineItem* line = new QGraphicsLineItem;
     line->setLine(0, y, currentStaffInfo.width, y);
@@ -379,11 +384,8 @@ void SystemRenderer::drawDividerLine(const StaffData& currentStaffInfo, quint32 
 
 
 void SystemRenderer::drawAltEndings(const std::vector<Score::AlternateEndingPtr>& altEndings,
-                                    uint32_t height) const
+                                    uint32_t height)
 {
-    QFont displayFont("Liberation Sans");
-    displayFont.setPixelSize(10);
-
     const double TOP_LINE_OFFSET = 2;
     const double TEXT_PADDING = 5;
 
@@ -401,7 +403,7 @@ void SystemRenderer::drawAltEndings(const std::vector<Score::AlternateEndingPtr>
         const std::string repeatText = altEnding->GetText();
 
         QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(QString::fromStdString(repeatText));
-        text->setFont(displayFont);
+        text->setFont(plainTextFont);
         text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
         text->setParentItem(parentSystem);
 
@@ -436,7 +438,7 @@ void SystemRenderer::drawAltEndings(const std::vector<Score::AlternateEndingPtr>
 }
 
 void SystemRenderer::drawTempoMarkers(const std::vector<Score::TempoMarkerPtr>& tempoMarkers,
-                                      quint32 height) const
+                                      quint32 height)
 {
     BOOST_FOREACH(Score::TempoMarkerPtr tempoMarker, tempoMarkers)
     {
@@ -448,7 +450,7 @@ void SystemRenderer::drawTempoMarkers(const std::vector<Score::TempoMarkerPtr>& 
     }
 }
 
-void SystemRenderer::drawChordText(uint32_t height, const StaffData& currentStaffInfo) const
+void SystemRenderer::drawChordText(uint32_t height, const StaffData& currentStaffInfo)
 {
     for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
     {
@@ -462,7 +464,7 @@ void SystemRenderer::drawChordText(uint32_t height, const StaffData& currentStaf
     }
 }
 
-void SystemRenderer::drawDirections(uint32_t height, const StaffData& currentStaffInfo) const
+void SystemRenderer::drawDirections(uint32_t height, const StaffData& currentStaffInfo)
 {
     for (uint32_t i = 0; i < system->GetDirectionCount(); i++)
     {
@@ -484,7 +486,7 @@ void SystemRenderer::drawDirections(uint32_t height, const StaffData& currentSta
     }
 }
 
-void SystemRenderer::drawRhythmSlashes() const
+void SystemRenderer::drawRhythmSlashes()
 {
     const uint32_t y = system->GetExtraSpacing();
 
@@ -525,7 +527,7 @@ void SystemRenderer::drawRhythmSlashes() const
     }
 }
 
-void SystemRenderer::drawLegato(const StaffData& currentStaffInfo) const
+void SystemRenderer::drawLegato(const StaffData& currentStaffInfo)
 {
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
@@ -599,7 +601,7 @@ void SystemRenderer::drawLegato(const StaffData& currentStaffInfo) const
 }
 
 /// Draws all of the slides for a staff
-void SystemRenderer::drawSlides(const StaffData& currentStaffInfo) const
+void SystemRenderer::drawSlides(const StaffData& currentStaffInfo)
 {
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
@@ -653,7 +655,7 @@ void SystemRenderer::drawSlides(const StaffData& currentStaffInfo) const
 /// Draws a slide on the given string, between the two position indexes
 void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo, quint8 string,
                                       bool slideUp, quint32 posIndex1,
-                                      quint32 posIndex2) const
+                                      quint32 posIndex2)
 {
     Q_ASSERT(posIndex1 <= posIndex2);
 
@@ -678,7 +680,7 @@ void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo, quint8 
 }
 
 /// Draws the text symbols that appear below the tab staff (hammerons, slides, etc)
-void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo) const
+void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
 {
     std::vector<Layout::SymbolGroup> symbolGroups;
     Layout::CalculateTabStaffBelowLayout(symbolGroups, system, staff);
@@ -739,7 +741,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo) const
     }
 }
 
-QGraphicsItem* SystemRenderer::createPickStroke(const QString& text) const
+QGraphicsItem* SystemRenderer::createPickStroke(const QString& text)
 {
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(musicFont.getFont());
@@ -753,14 +755,12 @@ QGraphicsItem* SystemRenderer::createPickStroke(const QString& text) const
 }
 
 /// Creates a plain text item; useful for symbols that don't use the music font (hammerons, slides, etc)
-QGraphicsItem* SystemRenderer::createPlainText(const QString& text, QFont::Style style) const
+QGraphicsItem* SystemRenderer::createPlainText(const QString& text, QFont::Style style)
 {
-    QFont displayFont("Liberation Sans");
-    displayFont.setPixelSize(10);
-    displayFont.setStyle(style);
+    plainTextFont.setStyle(style);
 
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(displayFont);
+    textItem->setFont(plainTextFont);
     textItem->setPos(0, -8);
 
     QGraphicsItemGroup* group = new QGraphicsItemGroup;
@@ -770,7 +770,7 @@ QGraphicsItem* SystemRenderer::createPlainText(const QString& text, QFont::Style
 }
 
 /// Creates the text portion of an artificial harmonic - displaying the note value
-QGraphicsItem* SystemRenderer::createArtificialHarmonicText(const Position* position) const
+QGraphicsItem* SystemRenderer::createArtificialHarmonicText(const Position* position)
 {
     std::vector<const Note*> notes;
     position->GetNotes(notes);
@@ -796,7 +796,7 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(const Position* posi
 }
 
 /// Draws the symbols that appear between the tab and standard notation staves
-void SystemRenderer::drawSymbols(const StaffData& staffInfo) const
+void SystemRenderer::drawSymbols(const StaffData& staffInfo)
 {
     std::vector<Layout::SymbolGroup> symbolGroups;
     Layout::CalculateSymbolLayout(symbolGroups, score, system, staff);
@@ -880,16 +880,14 @@ void SystemRenderer::drawSymbols(const StaffData& staffInfo) const
 /// Draws symbols that are grouped across multiple positions (i.e. consecutive "let ring" symbols)
 QGraphicsItem* SystemRenderer::createConnectedSymbolGroup(const QString& text,
                                                           QFont::Style style, int width,
-                                                          const StaffData& currentStaffInfo) const
+                                                          const StaffData& currentStaffInfo)
 {
-    static QFont font("Liberation Sans");
-    font.setPixelSize(9);
-    font.setStyle(style);
+    symbolTextFont.setStyle(style);
 
     // Render the description (i.e. "let ring")
     QGraphicsSimpleTextItem* description = new QGraphicsSimpleTextItem;
     description->setText(text);
-    description->setFont(font);
+    description->setFont(symbolTextFont);
 
     QGraphicsItemGroup* group = new QGraphicsItemGroup;
     group->addToGroup(description);
@@ -916,7 +914,7 @@ QGraphicsItem* SystemRenderer::createConnectedSymbolGroup(const QString& text,
 
 /// Creates a volume swell QGraphicsItem of the specified type
 QGraphicsItem* SystemRenderer::createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo,
-                                                 VolumeSwellType type) const
+                                                 VolumeSwellType type)
 {
     double leftX = currentStaffInfo.positionWidth / 2.0;
     double rightX = width;
@@ -936,7 +934,7 @@ QGraphicsItem* SystemRenderer::createVolumeSwell(uint8_t width, const StaffData&
     return swell;
 }
 
-QGraphicsItem* SystemRenderer::drawContinuousFontSymbols(QChar symbol, int width) const
+QGraphicsItem* SystemRenderer::drawContinuousFontSymbols(QChar symbol, int width)
 {
     QFont font = musicFont.getFont();
     font.setPixelSize(25);
@@ -954,7 +952,7 @@ QGraphicsItem* SystemRenderer::drawContinuousFontSymbols(QChar symbol, int width
     return group;
 }
 
-QGraphicsItem* SystemRenderer::createTremoloPicking(const StaffData& currentStaffInfo) const
+QGraphicsItem* SystemRenderer::createTremoloPicking(const StaffData& currentStaffInfo)
 {
     const double offset = Staff::TAB_SYMBOL_HEIGHT / 3;
 
@@ -971,7 +969,7 @@ QGraphicsItem* SystemRenderer::createTremoloPicking(const StaffData& currentStaf
     return group;
 }
 
-QGraphicsItem* SystemRenderer::createTrill(const StaffData& currentStaffInfo) const
+QGraphicsItem* SystemRenderer::createTrill(const StaffData& currentStaffInfo)
 {
     QFont font(musicFont.getFont());
     font.setPixelSize(21);
@@ -986,7 +984,7 @@ QGraphicsItem* SystemRenderer::createTrill(const StaffData& currentStaffInfo) co
     return group;
 }
 
-QGraphicsItem* SystemRenderer::createDynamic(boost::shared_ptr<const Dynamic> dynamic) const
+QGraphicsItem* SystemRenderer::createDynamic(boost::shared_ptr<const Dynamic> dynamic)
 {
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(QString::fromStdString(dynamic->GetText(false)));
     textItem->setFont(musicFont.getFont());
@@ -999,7 +997,7 @@ QGraphicsItem* SystemRenderer::createDynamic(boost::shared_ptr<const Dynamic> dy
     return group;
 }
 
-void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo) const
+void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
 {
     System::BarlineConstPtr currentBarline;
     System::BarlineConstPtr prevBarline = system->GetStartBar();
@@ -1144,7 +1142,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo) const
     }
 }
 
-void SystemRenderer::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap) const
+void SystemRenderer::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap)
 {
     QList<int> keys = accidentalsMap.uniqueKeys();
     QList<int>::const_iterator i = keys.begin();
@@ -1177,7 +1175,7 @@ void SystemRenderer::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& acci
 }
 
 void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBarline,
-                                      const StaffData& currentStaffInfo, int measureCount) const
+                                      const StaffData& currentStaffInfo, int measureCount)
 {
     System::BarlineConstPtr nextBarline = system->GetNextBarline(currentBarline->GetPosition());
 
@@ -1224,7 +1222,7 @@ void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBa
 /// @param noteLocations - List of y-coordinates of all notes at the position
 void SystemRenderer::drawLedgerLines(const std::vector<double> &noteLocations,
                                 const double xLocation,
-                                const StaffData& staffData) const
+                                const StaffData& staffData)
 {
     const double highestNote = *std::min_element(noteLocations.begin(), noteLocations.end());
     const double lowestNote = *std::max_element(noteLocations.begin(), noteLocations.end());
