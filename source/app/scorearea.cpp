@@ -110,7 +110,7 @@ void ScoreArea::renderScore(const Score* score, int lineSpacing)
 {
     boost::timer timer;
     
-    QProgressDialog progressDialog(tr("Opening ..."), "", 0, score->GetSystemCount());
+    QProgressDialog progressDialog(tr("Rendering ..."), "", 0, score->GetSystemCount());
     progressDialog.setCancelButton(0);
     progressDialog.setWindowModality(Qt::WindowModal);
     progressDialog.show();
