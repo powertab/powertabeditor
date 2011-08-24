@@ -19,10 +19,11 @@
 
 #include <algorithm>
 
+#include "staffdata.h"
 #include "stdnotationpainter.h"
 #include <powertabdocument/position.h>
 
-#include <QGraphicsLineItem>
+#include <QGraphicsPathItem>
 #include <QPen>
 
 #include <cmath> // for log() function
@@ -85,16 +86,21 @@ void BeamGroup::adjustStemHeights()
 /// Draws the stems for each note in the group
 void BeamGroup::drawStems(QGraphicsItem* parent) const
 {
+    QList<QGraphicsItem*> symbols;
+
+    QPainterPath stemPath;
+
     // Draw each stem
     for (std::vector<NoteStem>::const_iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
     {
-        QGraphicsLineItem* line = new QGraphicsLineItem;
+        stemPath.moveTo(stem->x(), stem->top());
+        stemPath.lineTo(stem->x(), stem->bottom());
+
+        /*QGraphicsLineItem* line = new QGraphicsLineItem;
         line->setLine(stem->x(), stem->top(), stem->x(), stem->bottom());
-        line->setParentItem(parent);
+        line->setParentItem(parent);*/
 
         // draw any symbols that use information about the stem, like staccato, fermata, etc
-        QList<QGraphicsItem*> symbols;
-
         if (stem->position()->IsStaccato())
             symbols << stem->createStaccato();
 
@@ -108,20 +114,28 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
         {
             symbol->setParentItem(parent);
         }
+        symbols.clear();
     }
+
+    QGraphicsPathItem* stems = new QGraphicsPathItem(stemPath);
+    stems->setParentItem(parent);
+
+    QPainterPath beamPath;
 
     // draw connecting line
     if (noteStems.size() > 1)
     {
         const double connectorHeight = noteStems.front().stemEdge();
 
-        QGraphicsLineItem* connector = new QGraphicsLineItem;
-        connector->setLine(noteStems.front().x() + 1, connectorHeight,
-                           noteStems.back().x() - 1, connectorHeight);
-
-        connector->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
-        connector->setParentItem(parent);
+        beamPath.moveTo(noteStems.front().x() + 1, connectorHeight);
+        beamPath.lineTo(noteStems.back().x() - 1, connectorHeight);
     }
+
+    drawExtraBeams(beamPath);
+
+    QGraphicsPathItem* beams = new QGraphicsPathItem(beamPath);
+    beams->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
+    beams->setParentItem(parent);
 
      // draw a note flag for single notes (eighth notes or less) or grace notes
     if (noteStems.size() == 1 && noteStems.front().canDrawFlag())
@@ -129,19 +143,17 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
         QGraphicsItem* flag = noteStems.front().createNoteFlag();
         flag->setParentItem(parent);
     }
-
-    drawExtraBeams(parent);
 }
 
 /// Draws the extra beams required for sixteenth notes, etc
-void BeamGroup::drawExtraBeams(QGraphicsItem* parent) const
+void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
 {
     for (std::vector<NoteStem>::const_iterator stem = noteStems.begin();
          stem != noteStems.end(); ++stem)
     {
         // 16th note gets 1 extra beam, 32nd gets two, etc
         // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
-        const int extraBeams = log(stem->position()->GetDurationType()) / log(2) - 3;
+        const int extraBeams = log2(stem->position()->GetDurationType()) - 3;
 
         const bool hasFullBeaming = (stem->position()->GetPreviousBeamDurationType() ==
                                      stem->position()->GetDurationType());
@@ -157,8 +169,6 @@ void BeamGroup::drawExtraBeams(QGraphicsItem* parent) const
                 y += i * 3 * ((stemDirection == NoteStem::StemUp) ? 1 : -1);
 
                 double xStart = 0, xEnd = 0;
-
-                const double FRACTIONAL_BEAM_WIDTH = 5;
 
                 if (hasFullBeaming)
                 {
@@ -176,10 +186,8 @@ void BeamGroup::drawExtraBeams(QGraphicsItem* parent) const
                     xStart = xEnd - FRACTIONAL_BEAM_WIDTH;
                 }
 
-                QGraphicsLineItem* line = new QGraphicsLineItem;
-                line->setLine(xStart, y, xEnd, y);
-                line->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
-                line->setParentItem(parent);
+                beamPath.moveTo(xStart, y);
+                beamPath.lineTo(xEnd, y);
             }
         }
     }

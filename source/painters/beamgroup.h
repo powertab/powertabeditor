@@ -20,9 +20,10 @@
 
 #include <vector>
 #include "notestem.h"
-#include "staffdata.h"
 
 class QGraphicsItem;
+class QPainterPath;
+class StaffData;
 
 class BeamGroup
 {
@@ -30,7 +31,7 @@ public:
     BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& noteStems);
 
     void drawStems(QGraphicsItem* parent) const;
-    void drawExtraBeams(QGraphicsItem* parent) const;
+    void drawExtraBeams(QPainterPath& beamPath) const;
 
     static const double FRACTIONAL_BEAM_WIDTH;
 
@@ -40,7 +41,7 @@ private:
     void setStemDirections();
     void adjustStemHeights();
 
-    StaffData staffInfo;
+    const StaffData& staffInfo;
     std::vector<NoteStem> noteStems;
     NoteStem::StemDirection stemDirection;
 };
