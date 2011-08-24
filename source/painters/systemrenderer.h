@@ -71,8 +71,9 @@ private:
         VolumeDecreasing
     };
 
-    // Centers an item, by using it's width to calculate the necessary offset from xmin
     void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
+
+    void drawSystemBox(boost::shared_ptr<const System> system);
 
     void drawTabClef(int x, const StaffData& staffInfo);
     void renderBars(const StaffData& currentStaffInfo);

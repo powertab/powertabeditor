@@ -5,7 +5,6 @@ HEADERS += \
     timesignaturepainter.h \
     tempomarkerpainter.h \
     tabnotepainter.h \
-    systempainter.h \
     stdnotationpainter.h \
     staffpainter.h \
     staffdata.h \
@@ -29,7 +28,6 @@ SOURCES += \
     timesignaturepainter.cpp \
     tempomarkerpainter.cpp \
     tabnotepainter.cpp \
-    systempainter.cpp \
     stdnotationpainter.cpp \
     staffpainter.cpp \
     staffdata.cpp \

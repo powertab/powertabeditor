@@ -39,7 +39,6 @@
 #include <app/common.h>
 
 #include "barlinepainter.h"
-#include "systempainter.h"
 #include "staffdata.h"
 #include "staffpainter.h"
 #include "clefpainter.h"
@@ -81,15 +80,11 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
 
     const Rect& systemRectangle = system->GetRect();
 
-    // save the top-left position of the system
     const int leftEdge = systemRectangle.GetLeft();
-    const int topEdge = systemRectangle.GetTop();
-    const int width = systemRectangle.GetWidth();
+    const int systemWidth = systemRectangle.GetWidth();
 
     // draw system rectangle
-    SystemPainter* sysPainter = new SystemPainter(system);
-    sysPainter->setPos(leftEdge, topEdge);
-    parentSystem = sysPainter;
+    drawSystemBox(system);
 
     // Draw each staff
     for (uint32_t i = 0; i < system->GetStaffCount(); i++)
@@ -108,7 +103,7 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         currentStaffInfo.tabLineSpacing = lineSpacing;
         currentStaffInfo.tabStaffBelowSpacing = staff->GetTablatureStaffBelowSpacing();
         currentStaffInfo.topEdge = system->GetStaffHeightOffset(i, true);
-        currentStaffInfo.width = width;
+        currentStaffInfo.width = systemWidth;
         currentStaffInfo.calculateHeight();
 
         // Draw the staff lines
@@ -143,12 +138,18 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         drawSymbolsBelowTabStaff(currentStaffInfo);
     }
 
-    parentSystem = NULL;
-    parentStaff = NULL;
-    system.reset();
-    staff.reset();
+    return parentSystem;
+}
 
-    return sysPainter;
+void SystemRenderer::drawSystemBox(boost::shared_ptr<const System> system)
+{
+    const Rect& systemRect = system->GetRect();
+
+    QGraphicsRectItem* sysBox = new QGraphicsRectItem(0, 0, systemRect.GetWidth(), systemRect.GetHeight());
+    sysBox->setPos(systemRect.GetLeft(), systemRect.GetTop());
+    sysBox->setPen(QPen(QBrush(QColor(0, 0, 0, 127)), 0.5));
+
+    parentSystem = sysBox;
 }
 
 /// Draws the tab clef
@@ -320,6 +321,7 @@ void SystemRenderer::drawArpeggio(const Position* position, quint32 x,
     endPoint->setParentItem(parentStaff);
 }
 
+/// Centers an item, by using it's width to calculate the necessary offset from xmin
 void SystemRenderer::centerItem(QGraphicsItem *item, float xmin, float xmax, float y)
 {
     float itemWidth = item->boundingRect().width();
