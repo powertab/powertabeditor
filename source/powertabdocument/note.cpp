@@ -131,6 +131,14 @@ bool Note::Deserialize(PowerTabInputStream& stream, uint16_t)
 }
 
 // String Functions
+/// Determines if a string is valid
+/// @param string String to validate
+/// @return True if the string is valid, false if not
+bool Note::IsValidString(uint32_t str)
+{
+    return str <= MAX_STRING;
+}
+
 /// Sets the string for the note
 /// @param string String to set (zero-based)
 /// @return True if the string was set, false if not
@@ -152,6 +160,14 @@ uint32_t Note::GetString() const
 }
 
 // Fret Number Functions
+/// Determines if a fret number is valid
+/// @param fretNumber Fret number to validate
+/// @return True if the fret number is valid, false if not
+bool Note::IsValidFretNumber(uint8_t fretNumber)
+{
+    return fretNumber <= MAX_FRET_NUMBER;
+}
+
 /// Sets the fret number for the note
 /// @param fretNumber Fret number to set
 /// @return True if the fret number was set, false if not
@@ -220,6 +236,23 @@ bool Note::IsSimpleFlagSet(uint16_t flag) const
 }
 
 // Slide Into Functions
+
+/// Determines if a slide into type is valid
+/// @param type Type to validate
+/// @return True if the slide into type is valid, false if not
+bool Note::IsValidSlideIntoType(uint8_t type)
+{
+    return type <= slideIntoLegatoSlideDownwards;
+}
+
+/// Determines if slide into data is valid
+/// @param type Type to validate
+/// @return True if slide into data is valid, false if not
+bool Note::IsValidSlideInto(uint8_t type)
+{
+    return IsValidSlideIntoType(type);
+}
+
 /// Sets (adds or updates) a slide into marker
 /// @param type Slide into type to set (see slideIntoTypes enum for values)
 /// @return True if the slide into marker was added or updated
@@ -284,6 +317,13 @@ bool Note::GetSlideInto(uint8_t& type) const
     return (true);
 }
 
+/// Determines if the note has a slide (either in or out)
+/// @return True if the note has a slide, false if not
+bool Note::HasSlide() const
+{
+    return HasSlideInto() || HasSlideOutOf();
+}
+
 /// Determines if the note has a certain type of slide out
 /// @return True if the note has that slide type, false if not
 bool Note::HasSlideOutType(uint8_t slideType) const
@@ -326,6 +366,23 @@ void Note::ClearSlideInto()
 }
 
 // Slide Out Of Functions
+
+/// Determines if a slide out of type is valid
+/// @param type Type to validate
+/// @return True if the slide out of type is valid, false if not
+bool Note::IsValidSlideOutOfType(uint8_t type)
+{
+    return type <= slideOutOfUpwards;
+}
+
+/// Determines if slide out of data is valid
+/// @param type Type to validate
+/// @return True if the slide out of data is valid, false if not
+bool Note::IsValidSlideOutOf(uint8_t type)
+{
+    return IsValidSlideOutOfType(type);
+}
+
 /// Sets (adds or updates) a slide out of marker
 /// @param type Slide out of type to set (see slideOutOf enum for values)
 /// @param steps Number of steps to slide, in half tones
@@ -391,6 +448,22 @@ bool Note::HasSlideOutOf() const
     if (!GetSlideOutOf(type, steps))
         return (false);
     return (type != slideOutOfNone);
+}
+
+bool Note::HasSlideOutOfDownwards() const
+{
+    uint8_t type = 0;
+    int8_t steps = 0;
+    GetSlideOutOf(type, steps);
+    return type == slideOutOfDownwards;
+}
+
+bool Note::HasSlideOutOfUpwards() const
+{
+    uint8_t type = 0;
+    int8_t steps = 0;
+    GetSlideOutOf(type, steps);
+    return type == slideOutOfUpwards;
 }
 
 /// Removes a slide out of from the note, if possible
@@ -494,6 +567,54 @@ bool Note::IsValidBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
     }
 
     return (returnValue);
+}
+
+/// Determines if a bend type is valid
+/// @param type Bend type to validate
+/// @return True if the bend type is valid, false if not
+bool Note::IsValidBendType(uint8_t type)
+{
+    return type <= immediateRelease;
+}
+
+/// Determines if a bent pitch is valid
+/// @param bentPitch Bent pitch to validate
+/// @return True if the bent pitch is valid, false if not
+bool Note::IsValidBentPitch(uint8_t bentPitch)
+{
+    return bentPitch <= MAX_BEND_PITCH;
+}
+
+/// Determines if a release pitch is valid
+/// @param releasePitch Release pitch to validate
+/// @return True if the release pitch is valid, false if not
+bool Note::IsValidReleasePitch(uint8_t releasePitch)
+{
+    return releasePitch <= MAX_BEND_PITCH;
+}
+
+/// Determines if a bend duration is valid
+/// @param duration Duration to validate
+/// @return True if the duration is valid, false if not
+bool Note::IsValidBendDuration(uint8_t duration)
+{
+    return duration <= MAX_BEND_DURATION;
+}
+
+/// Determines if a draw start point is valid
+/// @param drawStartPoint Draw start point to validate
+/// @return True if the draw start point is valid, false if not
+bool Note::IsValidDrawStartPoint(uint8_t drawStartPoint)
+{
+    return drawStartPoint <= highPoint;
+}
+
+/// Determines if a draw end point is valid
+/// @param drawEndPoint Draw end point to validate
+/// @return True if the draw end point is valid, false if not
+bool Note::IsValidDrawEndPoint(uint8_t drawEndPoint)
+{
+    return drawEndPoint <= highPoint;
 }
 
 /// Sets (adds or updates) a bend
@@ -957,4 +1078,210 @@ bool Note::SetOctave15mb(bool set)
 bool Note::IsOctave15mb() const
 {
     return IsSimpleFlagSet(octave15mb);
+}
+
+/// Sets or clears a tie
+/// @param set True to set the tie, false to clear it
+/// @return True if the tie was set or cleared, false if not
+bool Note::SetTied(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(tied);
+    }
+    else
+    {
+        return SetSimpleFlag(tied);
+    }
+}
+
+/// Determines if the note is tied
+/// @return True if the note is tied, false if not
+bool Note::IsTied() const
+{
+    return IsSimpleFlagSet(tied);
+}
+
+/// Sets or clears the muted effect
+/// @param set True to set the muted effect, false to clear it
+/// @return True if the muted effect was set or cleared, false if not
+bool Note::SetMuted(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(muted);
+    }
+    else
+    {
+        return SetSimpleFlag(muted);
+    }
+}
+
+/// Determines if the note is muted
+/// @return True if the note is muted, false if not
+bool Note::IsMuted() const
+{
+    return IsSimpleFlagSet(muted);
+}
+
+/// Sets or clears a tie wrap
+/// @param set True to set the tie wrap, false to clear it
+/// @return True if the tie wrap was set or cleared, false if not
+bool Note::SetTieWrap(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(tieWrap);
+    }
+    else
+    {
+        return SetSimpleFlag(tieWrap);
+    }
+}
+
+/// Determines if the note has a tie wrap
+/// @return True if the note has a tie wrap, false if not
+bool Note::HasTieWrap() const
+{
+    return IsSimpleFlagSet(tieWrap);
+}
+
+/// Sets or clears a hammer on
+/// @param set True to set the hammer on, false to clear it
+/// @return True if the hammer on was set or cleared, false if not
+bool Note::SetHammerOn(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(hammerPullMask);
+    }
+    else
+    {
+        return SetSimpleFlag(hammerOn) && ClearSimpleFlag(hammerPullFromToNowhere);
+    }
+}
+
+/// Determines if the note has a hammer on
+/// @return True if the note has a hammer on, false if not
+bool Note::HasHammerOn() const
+{
+    return IsSimpleFlagSet(hammerOn) && !IsSimpleFlagSet(hammerPullFromToNowhere);
+}
+
+/// Sets or clears a hammer on from nowhere
+/// @param set True to set the hammer on from nowhere, false to clear it
+/// @return True if the hammer on from nowhere was set or cleared, false if
+/// not
+bool Note::SetHammerOnFromNowhere(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(hammerPullMask);
+    }
+    else
+    {
+        return SetSimpleFlag(hammerOn | hammerPullFromToNowhere);
+    }
+}
+
+/// Determines if the note has a hammer on from nowhere
+/// @return True if the note has a hammer on from nowhere, false if not
+bool Note::HasHammerOnFromNowhere() const
+{
+    return IsSimpleFlagSet(hammerOn | hammerPullFromToNowhere);
+}
+
+/// Sets or clears a pull off
+/// @param set True to set the pull off, false to clear it
+/// @return True if the pull off was set or cleared, false if not
+bool Note::SetPullOff(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(hammerPullMask);
+    }
+    else
+    {
+        return SetSimpleFlag(pullOff) && ClearSimpleFlag(hammerPullFromToNowhere);
+    }
+}
+
+/// Determines if the note has a pull off
+/// @return True if the note has a pull off, false if not
+bool Note::HasPullOff() const
+{
+    return IsSimpleFlagSet(pullOff) && !IsSimpleFlagSet(hammerPullFromToNowhere);
+}
+
+/// Sets or clears a pull off to nowhere
+/// @param set True to set the pull off to nowhere, false to clear it
+/// @return True if the pull off to nowhere was set or cleared, false if not
+bool Note::SetPullOffToNowhere(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(hammerPullMask);
+    }
+    else
+    {
+        return SetSimpleFlag(pullOff | hammerPullFromToNowhere);
+    }
+}
+
+/// Determines if the note has a pull off to nowhere
+/// @return True if the note has a pull off to nowhere, false if not
+bool Note::HasPullOffToNowhere() const
+{
+    return IsSimpleFlagSet(pullOff) && IsSimpleFlagSet(hammerPullFromToNowhere);
+}
+
+/// Determines if the note has either a hammer-on or a pull-off
+/// @return True if the note has either a hammer-on or a pull-off
+bool Note::HasHammerOnOrPulloff() const
+{
+    return HasHammerOn() || HasPullOff();
+}
+
+/// Sets or clears a natural harmonic
+/// @param set True to set the natural harmonic, false to clear it
+/// @return True if the natural harmonic was set or cleared, false if not
+bool Note::SetNaturalHarmonic(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(naturalHarmonic);
+    }
+    else
+    {
+        return SetSimpleFlag(naturalHarmonic);
+    }
+}
+
+/// Determines if the note is a natural harmonic
+/// @return True if the note is a natural harmonic, false if not
+bool Note::IsNaturalHarmonic() const
+{
+    return IsSimpleFlagSet(naturalHarmonic);
+}
+
+/// Sets or clears a ghost note
+/// @param set True to set the ghost note, false to clear it
+/// @return True if the ghost note was set or cleared, false if not
+bool Note::SetGhostNote(bool set)
+{
+    if (!set)
+    {
+        return ClearSimpleFlag(ghostNote);
+    }
+    else
+    {
+        return SetSimpleFlag(ghostNote);
+    }
+}
+
+/// Determines if the note is a ghost note
+/// @return True if the note is a ghost note, false if not
+bool Note::IsGhostNote() const
+{
+    return IsSimpleFlagSet(ghostNote);
 }

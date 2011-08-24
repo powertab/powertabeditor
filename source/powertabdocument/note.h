@@ -139,7 +139,7 @@ public:
     };
 
 // Member Variables
-protected:
+private:
     uint8_t      m_stringData;                                       ///< Top 3 bits = string, bottom 5 bits = fret number
     uint16_t      m_simpleData;						                ///< Contains simple symbol flags
     boost::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> m_complexSymbolArray;    ///< Complex symbol data (1 symbol per element)
@@ -160,10 +160,11 @@ public:
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
     Note* CloneObject() const
-            {return (new Note(*this));}
+    {
+        return new Note(*this);
+    }
 
 // MFC Class Functions
-public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
@@ -174,172 +175,48 @@ public:
         {return ((uint16_t)1);}
 
 // String Functions
-    /// Determines if a string is valid
-    /// @param string String to validate
-    /// @return True if the string is valid, false if not
-        static bool IsValidString(uint32_t str)
-                {return (str <= MAX_STRING);}
-        bool SetString(uint32_t str);
+    static bool IsValidString(uint32_t str);
+    bool SetString(uint32_t str);
     uint32_t GetString() const;
 
 // Fret Number Functions
-    /// Determines if a fret number is valid
-    /// @param fretNumber Fret number to validate
-    /// @return True if the fret number is valid, false if not
-        static bool IsValidFretNumber(uint8_t fretNumber)
-        {return (fretNumber <= MAX_FRET_NUMBER);}
+    static bool IsValidFretNumber(uint8_t fretNumber);
     bool SetFretNumber(uint8_t fretNumber);
     uint8_t GetFretNumber() const;
 
 // Tied Functions
-    /// Sets or clears a tie
-    /// @param set True to set the tie, false to clear it
-    /// @return True if the tie was set or cleared, false if not
-    bool SetTied(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(tied));
-        return (SetSimpleFlag(tied));
-    }
-    /// Determines if the note is tied
-    /// @return True if the note is tied, false if not
-    bool IsTied() const
-        {return (IsSimpleFlagSet(tied));}
+    bool SetTied(bool set = true);
+    bool IsTied() const;
 
 // Muted Functions
-    /// Sets or clears the muted effect
-    /// @param set True to set the muted effect, false to clear it
-    /// @return True if the muted effect was set or cleared, false if not
-    bool SetMuted(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(muted));
-        return (SetSimpleFlag(muted));
-    }
-    /// Determines if the note is muted
-    /// @return True if the note is muted, false if not
-    bool IsMuted() const
-        {return (IsSimpleFlagSet(muted));}
+    bool SetMuted(bool set = true);
+    bool IsMuted() const;
 
 // Tie Wrap Functions
-    /// Sets or clears a tie wrap
-    /// @param set True to set the tie wrap, false to clear it
-    /// @return True if the tie wrap was set or cleared, false if not
-    bool SetTieWrap(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(tieWrap));
-        return (SetSimpleFlag(tieWrap));
-    }
-    /// Determines if the note has a tie wrap
-    /// @return True if the note has a tie wrap, false if not
-    bool HasTieWrap() const
-        {return (IsSimpleFlagSet(tieWrap));}
+    bool SetTieWrap(bool set = true);
+    bool HasTieWrap() const;
 
 // Hammer On Functions
-    /// Sets or clears a hammer on
-    /// @param set True to set the hammer on, false to clear it
-    /// @return True if the hammer on was set or cleared, false if not
-    bool SetHammerOn(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(hammerPullMask));
-        return (SetSimpleFlag(hammerOn) &&
-            ClearSimpleFlag(hammerPullFromToNowhere));
-    }
-    /// Determines if the note has a hammer on
-    /// @return True if the note has a hammer on, false if not
-    bool HasHammerOn() const
-    {
-        return (IsSimpleFlagSet(hammerOn) &&
-            !IsSimpleFlagSet(hammerPullFromToNowhere));
-    }
-    /// Sets or clears a hammer on from nowhere
-    /// @param set True to set the hammer on from nowhere, false to clear it
-    /// @return True if the hammer on from nowhere was set or cleared, false if
-    /// not
-    bool SetHammerOnFromNowhere(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(hammerPullMask));
-        return (SetSimpleFlag(hammerOn | hammerPullFromToNowhere));
-    }
-    /// Determines if the note has a hammer on from nowhere
-    /// @return True if the note has a hammer on from nowhere, false if not
-    bool HasHammerOnFromNowhere() const
-        {return (IsSimpleFlagSet(hammerOn | hammerPullFromToNowhere));}
+    bool SetHammerOn(bool set = true);
+    bool HasHammerOn() const;
+    bool SetHammerOnFromNowhere(bool set = true);
+    bool HasHammerOnFromNowhere() const;
 
 // Pull Off Functions
-    /// Sets or clears a pull off
-    /// @param set True to set the pull off, false to clear it
-    /// @return True if the pull off was set or cleared, false if not
-    bool SetPullOff(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(hammerPullMask));
-        return (SetSimpleFlag(pullOff) &&
-            ClearSimpleFlag(hammerPullFromToNowhere));
-    }
-    /// Determines if the note has a pull off
-    /// @return True if the note has a pull off, false if not
-    bool HasPullOff() const
-    {
-        return (IsSimpleFlagSet(pullOff) &&
-            !IsSimpleFlagSet(hammerPullFromToNowhere));
-    }
-    /// Sets or clears a pull off to nowhere
-    /// @param set True to set the pull off to nowhere, false to clear it
-    /// @return True if the pull off to nowhere was set or cleared, false if not
-    bool SetPullOffToNowhere(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(hammerPullMask));
-        return (SetSimpleFlag(pullOff | hammerPullFromToNowhere));
-    }
-    /// Determines if the note has a pull off to nowhere
-    /// @return True if the note has a pull off to nowhere, false if not
-    bool HasPullOffToNowhere() const
-    {
-        return (IsSimpleFlagSet(pullOff) &&
-            IsSimpleFlagSet(hammerPullFromToNowhere));
-    }
-    
-    /// Determines if the note has either a hammer-on or a pull-off
-    /// @return True if the note has either a hammer-on or a pull-off
-    bool HasHammerOnOrPulloff() const
-    {
-        return (HasHammerOn() || HasPullOff());
-    }
+    bool SetPullOff(bool set = true);
+    bool HasPullOff() const;
+    bool SetPullOffToNowhere(bool set = true);
+    bool HasPullOffToNowhere() const;
+
+    bool HasHammerOnOrPulloff() const;
 
 // Natural Harmonic Functions
-    /// Sets or clears a natural harmonic
-    /// @param set True to set the natural harmonic, false to clear it
-    /// @return True if the natural harmonic was set or cleared, false if not
-    bool SetNaturalHarmonic(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(naturalHarmonic));
-        return (SetSimpleFlag(naturalHarmonic));
-    }
-    /// Determines if the note is a natural harmonic
-    /// @return True if the note is a natural harmonic, false if not
-    bool IsNaturalHarmonic() const
-        {return (IsSimpleFlagSet(naturalHarmonic));}
+    bool SetNaturalHarmonic(bool set = true);
+    bool IsNaturalHarmonic() const;
 
 // Ghost Note Functions
-    /// Sets or clears a ghost note
-    /// @param set True to set the ghost note, false to clear it
-    /// @return True if the ghost note was set or cleared, false if not
-    bool SetGhostNote(bool set = true)
-    {
-        if (!set)
-            return (ClearSimpleFlag(ghostNote));
-        return (SetSimpleFlag(ghostNote));
-    }
-    /// Determines if the note is a ghost note
-    /// @return True if the note is a ghost note, false if not
-    bool IsGhostNote() const
-        {return (IsSimpleFlagSet(ghostNote));}
+    bool SetGhostNote(bool set = true);
+    bool IsGhostNote() const;
     
     int GetOctaveOffset() const;
     
@@ -356,7 +233,7 @@ public:
     bool IsOctave15mb() const;
 
 // Simple Flag Functions
-protected:
+private:
     static bool IsValidSimpleFlag(uint16_t flag);
     bool SetSimpleFlag(uint16_t flag);
     bool ClearSimpleFlag(uint16_t flag);
@@ -364,12 +241,9 @@ protected:
 
 // Slide Functions
 public:
-    /// Determines if the note has a slide (either in or out)
-    /// @return True if the note has a slide, false if not
-    bool HasSlide() const
-        {return (HasSlideInto() || HasSlideOutOf());}
+    bool HasSlide() const;
 
-protected:
+private:
     bool HasSlideOutType(uint8_t slideType) const;
 
 public:
@@ -377,16 +251,9 @@ public:
     inline bool HasShiftSlide() const { return HasSlideOutType(slideOutOfShiftSlide); }
 
 // Slide Into Functions
-    /// Determines if a slide into type is valid
-    /// @param type Type to validate
-    /// @return True if the slide into type is valid, false if not
-    static bool IsValidSlideIntoType(uint8_t type)
-        {return (type <= slideIntoLegatoSlideDownwards);}
-    /// Determines if slide into data is valid
-    /// @param type Type to validate
-    /// @return True if slide into data is valid, false if not
-    static bool IsValidSlideInto(uint8_t type)
-        {return (IsValidSlideIntoType(type));}
+    static bool IsValidSlideIntoType(uint8_t type);
+    static bool IsValidSlideInto(uint8_t type);
+
     bool SetSlideInto(uint8_t type);
     bool GetSlideInto(uint8_t& type) const;
     bool HasSlideInto() const;
@@ -395,73 +262,31 @@ public:
     bool HasSlideIntoFromBelow() const;
 
 // Slide Out Of Functions
-    /// Determines if a slide out of type is valid
-    /// @param type Type to validate
-    /// @return True if the slide out of type is valid, false if not
-    static bool IsValidSlideOutOfType(uint8_t type)
-        {return (type <= slideOutOfUpwards);}
-    /// Determines if slide out of data is valid
-    /// @param type Type to validate
-    /// @return True if the slide out of data is valid, false if not
-    static bool IsValidSlideOutOf(uint8_t type)
-        {return (IsValidSlideOutOfType(type));}
+    static bool IsValidSlideOutOfType(uint8_t type);
+    static bool IsValidSlideOutOf(uint8_t type);
+
     bool SetSlideOutOf(uint8_t type, int8_t steps);
     bool GetSlideOutOf(uint8_t& type, int8_t& steps) const;
     bool HasSlideOutOf() const;
+    bool HasSlideOutOfDownwards() const;
+    bool HasSlideOutOfUpwards() const;
     void ClearSlideOutOf();
-
-    inline bool HasSlideOutOfDownwards() const
-    {
-        uint8_t type = 0;
-        int8_t steps = 0;
-        GetSlideOutOf(type, steps);
-        return type == slideOutOfDownwards;
-    }
-    inline bool HasSlideOutOfUpwards() const
-    {
-        uint8_t type = 0;
-        int8_t steps = 0;
-        GetSlideOutOf(type, steps);
-        return type == slideOutOfUpwards;
-    }
 
 // Bend Functions
     static bool IsValidBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
-        uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint);
-    /// Determines if a bend type is valid
-    /// @param type Bend type to validate
-    /// @return True if the bend type is valid, false if not
-    static bool IsValidBendType(uint8_t type)
-        {return (type <= immediateRelease);}
-    /// Determines if a bent pitch is valid
-    /// @param bentPitch Bent pitch to validate
-    /// @return True if the bent pitch is valid, false if not
-    static bool IsValidBentPitch(uint8_t bentPitch)
-        {return (bentPitch <= MAX_BEND_PITCH);}
-    /// Determines if a release pitch is valid
-    /// @param releasePitch Release pitch to validate
-    /// @return True if the release pitch is valid, false if not
-    static bool IsValidReleasePitch(uint8_t releasePitch)
-        {return (releasePitch <= MAX_BEND_PITCH);}
-    /// Determines if a bend duration is valid
-    /// @param duration Duration to validate
-    /// @return True if the duration is valid, false if not
-    static bool IsValidBendDuration(uint8_t duration)
-        {return (duration <= MAX_BEND_DURATION);}
-    /// Determines if a draw start point is valid
-    /// @param drawStartPoint Draw start point to validate
-    /// @return True if the draw start point is valid, false if not
-    static bool IsValidDrawStartPoint(uint8_t drawStartPoint)
-        {return (drawStartPoint <= highPoint);}
-    /// Determines if a draw end point is valid
-    /// @param drawEndPoint Draw end point to validate
-    /// @return True if the draw end point is valid, false if not
-    static bool IsValidDrawEndPoint(uint8_t drawEndPoint)
-        {return (drawEndPoint <= highPoint);}
+                            uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint);
+
+    static bool IsValidBendType(uint8_t type);
+    static bool IsValidBentPitch(uint8_t bentPitch);
+    static bool IsValidReleasePitch(uint8_t releasePitch);
+    static bool IsValidBendDuration(uint8_t duration);
+    static bool IsValidDrawStartPoint(uint8_t drawStartPoint);
+    static bool IsValidDrawEndPoint(uint8_t drawEndPoint);
+
     bool SetBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
-        uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint);
+                 uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint);
     bool GetBend(uint8_t& type, uint8_t& bentPitch, uint8_t& releasePitch,
-        uint8_t& duration, uint8_t& drawStartPoint, uint8_t& drawEndPoint) const;
+                 uint8_t& duration, uint8_t& drawStartPoint, uint8_t& drawEndPoint) const;
     bool HasBend() const;
     void ClearBend();
 
@@ -489,8 +314,7 @@ public:
                                           uint8_t octave);
     
     bool SetArtificialHarmonic(uint8_t key, uint8_t keyVariation, uint8_t octave);
-    bool GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
-        uint8_t& octave) const;
+    bool GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation, uint8_t& octave) const;
     bool HasArtificialHarmonic() const;
     void ClearArtificialHarmonic();
 
