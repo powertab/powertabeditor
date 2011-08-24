@@ -64,6 +64,7 @@ using boost::shared_ptr;
 QFont SystemRenderer::plainTextFont("Liberation Sans");
 QFont SystemRenderer::symbolTextFont("Liberation Sans");
 QFont SystemRenderer::rehearsalSignFont("Helvetica");
+QFont SystemRenderer::musicNotationFont = MusicFont().getFont();
 
 SystemRenderer::SystemRenderer(const Score* score, const int lineSpacing) :
     score(score), lineSpacing(lineSpacing),
@@ -115,7 +116,7 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         parentStaff = staffPainter;
 
         // Draw the clefs
-        ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, staff);
+        ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, staff, musicNotationFont);
         clefPainter->setPos(System::CLEF_PADDING, currentStaffInfo.getTopStdNotationLine());
         clefPainter->setParentItem(parentStaff);
 
@@ -299,25 +300,24 @@ void SystemRenderer::drawArpeggio(const Position* position, quint32 x,
     const uint8_t height = bounds.second - bounds.first;
 
     // take a vibrato segment, spanning the distance from top to bottom note, and then rotate it by 90 degrees
-    const QFont& font = musicFont.getFont();
-    const QChar arpeggioSymbol = musicFont.getSymbol(MusicFont::Vibrato);
-    const double symbolWidth = QFontMetricsF(font).width(arpeggioSymbol);
+    const QChar arpeggioSymbol = MusicFont::getSymbol(MusicFont::Vibrato);
+    const double symbolWidth = QFontMetricsF(musicNotationFont).width(arpeggioSymbol);
     const int numSymbols = height / symbolWidth;
 
     QGraphicsSimpleTextItem* arpeggio = new QGraphicsSimpleTextItem(QString(numSymbols, arpeggioSymbol));
-    arpeggio->setFont(font);
+    arpeggio->setFont(musicNotationFont);
     arpeggio->setPos(x + arpeggio->boundingRect().height() / 2.0 - 3.0, bounds.first);
     arpeggio->setRotation(90);
     arpeggio->setParentItem(parentStaff);
 
     // draw the end of the arpeggio
-    const QChar arpeggioEnd = position->HasArpeggioUp() ? musicFont.getSymbol(MusicFont::ArpeggioUp) :
-                                                          musicFont.getSymbol(MusicFont::ArpeggioDown);
+    const QChar arpeggioEnd = position->HasArpeggioUp() ? MusicFont::getSymbol(MusicFont::ArpeggioUp) :
+                                                          MusicFont::getSymbol(MusicFont::ArpeggioDown);
 
     QGraphicsSimpleTextItem* endPoint = new QGraphicsSimpleTextItem(arpeggioEnd);
     const double y = position->HasArpeggioUp() ? bounds.first : bounds.second;
-    endPoint->setFont(font);
-    endPoint->setPos(x, y - 1.45 * font.pixelSize());
+    endPoint->setFont(musicNotationFont);
+    endPoint->setPos(x, y - 1.45 * musicNotationFont.pixelSize());
     endPoint->setParentItem(parentStaff);
 }
 
@@ -694,11 +694,11 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
         switch(symbolGroup.symbolType)
         {
         case Layout::SymbolPickStrokeDown:
-            renderedSymbol = createPickStroke(musicFont.getSymbol(MusicFont::PickStrokeDown));
+            renderedSymbol = createPickStroke(MusicFont::getSymbol(MusicFont::PickStrokeDown));
             break;
 
         case Layout::SymbolPickStrokeUp:
-            renderedSymbol = createPickStroke(musicFont.getSymbol(MusicFont::PickStrokeUp));
+            renderedSymbol = createPickStroke(MusicFont::getSymbol(MusicFont::PickStrokeUp));
             break;
 
         case Layout::SymbolTap:
@@ -746,7 +746,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
 QGraphicsItem* SystemRenderer::createPickStroke(const QString& text)
 {
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(musicFont.getFont());
+    textItem->setFont(musicNotationFont);
     textItem->setPos(2, -28);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
@@ -963,7 +963,7 @@ QGraphicsItem* SystemRenderer::createTremoloPicking(const StaffData& currentStaf
     for (int i = 0; i < 3; i++)
     {
         QGraphicsSimpleTextItem* line = new QGraphicsSimpleTextItem(MusicFont::getSymbol(MusicFont::TremoloPicking));
-        line->setFont(musicFont.getFont());
+        line->setFont(musicNotationFont);
         centerItem(line, 0, currentStaffInfo.positionWidth * 1.25, -37 + i * offset);
         group->addToGroup(line);
     }
@@ -989,7 +989,7 @@ QGraphicsItem* SystemRenderer::createTrill(const StaffData& currentStaffInfo)
 QGraphicsItem* SystemRenderer::createDynamic(boost::shared_ptr<const Dynamic> dynamic)
 {
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(QString::fromStdString(dynamic->GetText(false)));
-    textItem->setFont(musicFont.getFont());
+    textItem->setFont(musicNotationFont);
     textItem->setPos(0, -20);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
@@ -1191,10 +1191,10 @@ void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBa
     // draw measure count
     QGraphicsSimpleTextItem* measureCountText = new QGraphicsSimpleTextItem;
     measureCountText->setText(QString().setNum(measureCount));
-    measureCountText->setFont(musicFont.getFont());
+    measureCountText->setFont(musicNotationFont);
 
     centerItem(measureCountText, leftX, rightX,
-               currentStaffInfo.getTopStdNotationLine() - musicFont.getFont().pixelSize() * 1.5);
+               currentStaffInfo.getTopStdNotationLine() - musicNotationFont.pixelSize() * 1.5);
 
     measureCountText->setParentItem(parentStaff);
 

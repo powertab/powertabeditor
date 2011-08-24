@@ -24,10 +24,10 @@
 #include <QPainter>
 #include <QFontMetricsF>
 
-QFont ClefPainter::font = MusicFont().getFont();
-
-ClefPainter::ClefPainter(const StaffData& staffData, boost::shared_ptr<const Staff> staff) :
-        staffInfo(staffData)
+ClefPainter::ClefPainter(const StaffData& staffData, boost::shared_ptr<const Staff> staff,
+                         const QFont& musicFont) :
+    staffInfo(staffData),
+    musicFont(musicFont)
 {
     this->staff = staff;
     init();
@@ -46,9 +46,9 @@ void ClefPainter::init()
         displayText.setText(MusicFont::getSymbol(MusicFont::BassClef));
     }
 
-    displayText.prepare(QTransform(), font);
+    displayText.prepare(QTransform(), musicFont);
 
-    QFontMetricsF fm(font);
+    QFontMetricsF fm(musicFont);
     bounds = QRectF(0, -5, fm.width(MusicFont::TrebleClef), fm.height());
 }
 
@@ -80,12 +80,9 @@ void ClefPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
 {
 }
 
-void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
-    painter->setFont(font);
+    painter->setFont(musicFont);
 
     if (staff->GetClef() == Staff::TREBLE_CLEF)
     {

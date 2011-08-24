@@ -29,7 +29,8 @@ class Staff;
 class ClefPainter : public PainterBase
 {
 public:
-    ClefPainter(const StaffData& staffData, boost::shared_ptr<const Staff> staff);
+    ClefPainter(const StaffData& staffData, boost::shared_ptr<const Staff> staff,
+                const QFont& musicFont);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -43,7 +44,7 @@ private:
 
     const StaffData& staffInfo;
     boost::shared_ptr<const Staff> staff;
-    static QFont font;
+    const QFont& musicFont;
     QStaticText displayText;
 };
 
