@@ -18,19 +18,20 @@
 #ifndef BARLINEPAINTER_H
 #define BARLINEPAINTER_H
 
-#include "painterbase.h"
+#include <QGraphicsItem>
 #include "staffdata.h"
 
 #include <boost/shared_ptr.hpp>
 
 class Barline;
 
-class BarlinePainter : public QObject, public PainterBase
+class BarlinePainter : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
 
 public:
-    BarlinePainter(StaffData staffInfo, boost::shared_ptr<const Barline> barLinePtr);
+    BarlinePainter(const StaffData& staffInfo, boost::shared_ptr<const Barline> barLinePtr);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -45,6 +46,7 @@ protected:
     void init();
     void drawVerticalLines(QPainter* painter, double x);
 
+    QRectF bounds;
     StaffData staffInfo;
     boost::shared_ptr<const Barline> barLine;
     double x;

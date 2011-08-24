@@ -18,11 +18,11 @@
 #include "tabnotepainter.h"
 
 #include <QPainter>
-#include <QFontMetricsF>
 
 #include <powertabdocument/note.h>
 
 QFont TabNotePainter::tabFont = QFont("Liberation Sans");
+QFontMetricsF TabNotePainter::fontMetrics(TabNotePainter::tabFont);
 
 TabNotePainter::TabNotePainter(Note* note) :
     note(note)
@@ -37,13 +37,12 @@ TabNotePainter::TabNotePainter(Note* note) :
 
 void TabNotePainter::init()
 {
-    QString noteText = QString().fromStdString(note->GetText());
+    const QString noteText = QString::fromStdString(note->GetText());
 
     displayText.setText(noteText);
     displayText.prepare(QTransform(), tabFont);
 
-    QFontMetricsF fm(tabFont);
-    bounds = QRectF(0, 0, fm.width(noteText), fm.height());
+    bounds = QRectF(0, 0, fontMetrics.width(noteText), fontMetrics.height());
 }
 
 void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
@@ -51,6 +50,10 @@ void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, Q
     painter->setFont(tabFont);
     painter->setPen(textColor);
 
-    // offset height by 1 pixel for clarity
     painter->drawStaticText(0, 0, displayText);
+}
+
+QRectF TabNotePainter::boundingRect() const
+{
+    return bounds;
 }

@@ -17,6 +17,8 @@
   
 #include "barlinepainter.h"
 
+#include "painterbase.h"
+
 #include <QPainter>
 #include <QPen>
 #include <QStringBuilder>
@@ -26,12 +28,14 @@
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
-BarlinePainter::BarlinePainter(StaffData staffInfo, boost::shared_ptr<const Barline> barLinePtr) :
+BarlinePainter::BarlinePainter(const StaffData& staffInfo,
+                               boost::shared_ptr<const Barline> barLinePtr) :
     staffInfo(staffInfo),
     barLine(barLinePtr),
     x(0),
     width(1)
 {
+    init();
 }
 
 void BarlinePainter::init()
@@ -64,6 +68,8 @@ void BarlinePainter::init()
     {
         x -= 2;
     }
+
+    bounds = QRectF(0, 0, staffInfo.positionWidth, staffInfo.height);
 }
 
 void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent* event)
@@ -84,19 +90,11 @@ void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
 
 QRectF BarlinePainter::boundingRect() const
 {
-    return QRectF(0,
-                  0,
-                  staffInfo.positionWidth,
-                  staffInfo.height);
+    return bounds;
 }
 
-void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
-    init();
-
     painter->setPen(QPen(Qt::black, 0.75)); // thin line
     painter->setBrush(Qt::black);
 

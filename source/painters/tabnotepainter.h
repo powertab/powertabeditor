@@ -18,27 +18,31 @@
 #ifndef TABNOTEPAINTER_H
 #define TABNOTEPAINTER_H
 
-#include "painterbase.h"
+#include <QGraphicsItem>
 
 #include <QFont>
 #include <QStaticText>
+#include <QFontMetrics>
 
 class Note;
 
-class TabNotePainter : public PainterBase
+class TabNotePainter : public QGraphicsItem
 {
 public:
     TabNotePainter(Note* note);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const;
 
 protected:
     void init();
 
+    QRectF bounds;
     Note* note;
     Qt::GlobalColor textColor;
     static QFont tabFont;
     QStaticText displayText;
+    static QFontMetricsF fontMetrics;
 };
 
 #endif // TABNOTEPAINTER_H

@@ -37,14 +37,14 @@ public:
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
 
-    static double centerItem(double xmin, double xmax, double width)
-    {
-        return (xmin + ((xmax - (xmin + width)) / 2) + 1);
-    }
-
 protected:
     QRectF bounds;
     QPainterPath path;
 };
+
+inline double centerItem(double xmin, double xmax, double width)
+{
+    return (xmin + ((xmax - (xmin + width)) / 2) + 1);
+}
 
 #endif // PAINTERBASE_H

@@ -18,7 +18,7 @@
 #ifndef STDNOTATIONPAINTER_H
 #define STDNOTATIONPAINTER_H
 
-#include "painterbase.h"
+#include <QGraphicsItem>
 #include "staffdata.h"
 #include <boost/shared_ptr.hpp>
 
@@ -29,13 +29,14 @@ class Note;
 class KeySignature;
 class Staff;
 
-class StdNotationPainter : public PainterBase
+class StdNotationPainter : public QGraphicsItem
 {
 public:
     StdNotationPainter(const StaffData& staffInfo, boost::shared_ptr<const Staff> staff, const Position* position, const Note* note,
                        const Tuning& tuning, const KeySignature& keySignature);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const;
 
     enum AccidentalType
     {
@@ -54,12 +55,13 @@ public:
 
     int accidental;
 
-protected:
+private:
     void init();
     int findAccidentalType(const QString& noteText) const;
     QString getAccidentalText() const;
     void addDots(QPainter* painter, double x, double y) const;
 
+    QRectF bounds;
     StaffData staffInfo;
     boost::shared_ptr<const Staff> staff;
     const Position* position;

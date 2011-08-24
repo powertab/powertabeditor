@@ -166,3 +166,8 @@ void StdNotationPainter::addDots(QPainter* painter, double x, double y) const
         painter->drawText(x + 4, y, dot);
     }
 }
+
+QRectF StdNotationPainter::boundingRect() const
+{
+    return bounds;
+}
