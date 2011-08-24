@@ -23,6 +23,7 @@ private slots:
 private:
     QMenu* recentFilesMenu;
     QStringList recentFiles;
+    static const int MAX_RECENT_FILES = 10;
 
     void updateMenu();
 };

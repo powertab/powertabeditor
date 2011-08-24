@@ -32,7 +32,13 @@ void RecentFiles::add(const QString &fileName)
 {
     // if the filename is already in the list, move it to the front
     recentFiles.removeOne(fileName);
+
     recentFiles.prepend(fileName);
+
+    if (recentFiles.length() > MAX_RECENT_FILES)
+    {
+        recentFiles.pop_back();
+    }
 
     updateMenu();
 }
