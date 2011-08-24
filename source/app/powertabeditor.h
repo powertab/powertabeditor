@@ -46,6 +46,7 @@ class DocumentManager;
 class FileFormatManager;
 struct FileFormat;
 class Command;
+class RecentFiles;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -86,7 +87,7 @@ protected slots:
     void updateActions();
     void updateModified(bool);
     void createNewFile();
-    void openFile();
+    void openFile(QString fileName = "");
     void saveFileAs();
     void openPreferences();
     void refreshOnUndoRedo(int);
@@ -162,12 +163,14 @@ protected:
 
     boost::scoped_ptr<DocumentManager> documentManager;
     boost::scoped_ptr<FileFormatManager> fileFormatManager;
+    RecentFiles* recentFiles;
 
     QMenu* fileMenu;
     Command* newFileAct;
     Command* openFileAct;
     Command* closeTabAct;
     Command* saveFileAsAct;
+    QMenu* recentFilesMenu;
     Command* editShortcutsAct;
     Command* preferencesAct;
     QMenu* importFileMenu;

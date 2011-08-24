@@ -7,7 +7,8 @@ SOURCES += \
     settings.cpp \
     skinmanager.cpp \
     command.cpp \
-    clipboard.cpp
+    clipboard.cpp \
+    recentfiles.cpp
 
 HEADERS += common.h \
     documentmanager.h \
@@ -16,6 +17,5 @@ HEADERS += common.h \
     settings.h \
     skinmanager.h \
     command.h \
-    clipboard.h
-
-
+    clipboard.h \
+    recentfiles.h

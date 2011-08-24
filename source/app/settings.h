@@ -23,6 +23,7 @@
 namespace Settings
 {
     extern const char* APP_PREVIOUS_DIRECTORY;
+    extern const char* APP_RECENT_FILES;
 
     extern const char* MIDI_PREFERRED_PORT;
     extern const int MIDI_PREFFERED_PORT_DEFAULT;

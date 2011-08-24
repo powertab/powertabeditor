@@ -47,6 +47,7 @@
 #include <app/documentmanager.h>
 #include <app/command.h>
 #include <app/clipboard.h>
+#include <app/recentfiles.h>
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
@@ -158,6 +159,9 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     createActions();
     createMenus();
     createTabArea();
+
+    recentFiles = new RecentFiles(recentFilesMenu, this);
+    connect(recentFiles, SIGNAL(fileSelected(QString)), this, SLOT(openFile(QString)));
 
     isPlaying = false;
 
@@ -748,6 +752,8 @@ void PowerTabEditor::createMenus()
     fileMenu->addSeparator();
     fileMenu->addAction(saveFileAsAct);
     fileMenu->addSeparator();
+    recentFilesMenu = fileMenu->addMenu(tr("Recent Files"));
+    fileMenu->addSeparator();
     importFileMenu = fileMenu->addMenu(tr("Import..."));
     exportFileMenu = fileMenu->addMenu(tr("Export..."));
     fileMenu->addSeparator();
@@ -952,9 +958,12 @@ void PowerTabEditor::createNewFile()
 }
 
 /// Open a new file
-void PowerTabEditor::openFile()
+void PowerTabEditor::openFile(QString fileName)
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), previousDirectory, fileFilter);
+    if (fileName.isEmpty())
+    {
+        fileName = QFileDialog::getOpenFileName(this, tr("Open"), previousDirectory, fileFilter);
+    }
 
     if (fileName.isEmpty())
     {
@@ -969,7 +978,10 @@ void PowerTabEditor::openFile()
         if (documentManager->addDocument(fileName))
         {
             qDebug() << "File loaded in" << timer.elapsed() << "seconds";
+
             updatePreviousDirectory(fileName);
+            recentFiles->add(fileName);
+
             setupNewDocument();
         }
     }

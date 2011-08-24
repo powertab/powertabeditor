@@ -20,6 +20,7 @@
 namespace Settings
 {
     const char* APP_PREVIOUS_DIRECTORY = "app/previousDirectory";
+    const char* APP_RECENT_FILES = "app/recentFiles";
 
     const char* MIDI_PREFERRED_PORT = "midi/preferredPort";
     const int MIDI_PREFFERED_PORT_DEFAULT = 0;
