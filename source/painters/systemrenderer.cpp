@@ -673,12 +673,10 @@ void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo, quint8 
         y += currentStaffInfo.tabLineSpacing + 1;
     }
 
-    QPainterPath path;
-    path.lineTo(width - currentStaffInfo.positionWidth / 2, height);
-
-    QGraphicsPathItem* line = new QGraphicsPathItem(path);
-    line->setPos(leftPos + currentStaffInfo.positionWidth / 1.5 + 1, y + height / 2);
-    line->setParentItem(parentStaff);
+    QGraphicsLineItem* slide = new QGraphicsLineItem(parentStaff);
+    slide->setLine(0, 0, width - currentStaffInfo.positionWidth / 2, height);
+    slide->setPos(leftPos + currentStaffInfo.positionWidth / 1.5 + 1,
+                  y + height / 2);
 }
 
 /// Draws the text symbols that appear below the tab staff (hammerons, slides, etc)
