@@ -128,6 +128,7 @@ void ScoreArea::renderScore(const Score* score, int lineSpacing)
     progressDialog.setValue(score->GetSystemCount());
 
     qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
+    qDebug() << "Rendered " << scene.items().size() << "items";
 }
 
 // ensures that the caret is visible when it changes sections

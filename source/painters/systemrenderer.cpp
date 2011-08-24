@@ -1237,28 +1237,33 @@ void SystemRenderer::drawLedgerLines(const std::vector<double> &noteLocations,
 
     if (numLedgerLinesTop > 0)
     {
+        const int topLineLocation = staffData.getTopStdNotationLine();
         for (int i = 1; i<= numLedgerLinesTop; i++)
         {
-            ledgerLineLocations.push_back(staffData.getTopStdNotationLine() -
-                                          i * Staff::STD_NOTATION_LINE_SPACING);
+            ledgerLineLocations.push_back(topLineLocation - i * Staff::STD_NOTATION_LINE_SPACING);
         }
     }
     if (numLedgerLinesBottom > 0)
     {
+        const int bottomLineLocation = staffData.getBottomStdNotationLine();
         for (int i = 1; i<= numLedgerLinesBottom; i++)
         {
-            ledgerLineLocations.push_back(staffData.getBottomStdNotationLine() +
-                                          i * Staff::STD_NOTATION_LINE_SPACING);
+            ledgerLineLocations.push_back(bottomLineLocation + i * Staff::STD_NOTATION_LINE_SPACING);
         }
     }
 
-    for (size_t i = 0; i < ledgerLineLocations.size(); i++)
+    const double ledgerLineWidth = StdNotationPainter::getNoteHeadWidth() * 2;
+    QPainterPath path;
+
+    for (std::vector<double>::const_iterator location = ledgerLineLocations.begin();
+         location != ledgerLineLocations.end(); ++location)
     {
-        QGraphicsLineItem* ledgerLine = new QGraphicsLineItem;
-        ledgerLine->setLine(0, 0, StdNotationPainter::getNoteHeadWidth() * 2, 0);
-        centerItem(ledgerLine, xLocation, xLocation + staffData.positionWidth, ledgerLineLocations[i]);
-        ledgerLine->setParentItem(parentStaff);
+        path.moveTo(0, *location);
+        path.lineTo(ledgerLineWidth, *location);
     }
+
+    QGraphicsPathItem* ledgerlines = new QGraphicsPathItem(path, parentStaff);
+    centerItem(ledgerlines, xLocation, xLocation + staffData.positionWidth, 0);
 }
 
 void SystemRenderer::connectSignals(ScoreArea *scoreArea)
