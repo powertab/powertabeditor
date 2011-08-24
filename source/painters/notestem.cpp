@@ -25,6 +25,10 @@
 #include <QGraphicsTextItem>
 #include <painters/musicfont.h>
 
+namespace {
+    const QFont musicNotationFont = MusicFont().getFont();
+}
+
 /// Constructor
 /// @param position Pointer to the position object
 /// @param x X-coordinate of the position
@@ -163,7 +167,7 @@ QGraphicsItem* NoteStem::createNoteFlag() const
     // draw the symbol
     const double y = stemEdge() - 35; // adjust for spacing caused by the music symbol font
     QGraphicsTextItem* flag = new QGraphicsTextItem(symbol);
-    flag->setFont(MusicFont().getFont());
+    flag->setFont(musicNotationFont);
     flag->setPos(x_ - 3, y);
 
     return flag;
@@ -183,7 +187,7 @@ QGraphicsItem* NoteStem::createStaccato() const
     const double xPos = (direction_ == StemUp) ? x_ - 8 : x_ - 2;
 
     QGraphicsTextItem* dot = new QGraphicsTextItem(QChar(MusicFont::Dot));
-    dot->setFont(MusicFont().getFont());
+    dot->setFont(musicNotationFont);
     dot->setPos(xPos, yPos);
     return dot;
 }
@@ -209,7 +213,7 @@ QGraphicsItem* NoteStem::createFermata() const
 
     const QChar symbol = (direction_ == StemUp) ? MusicFont::FermataUp : MusicFont::FermataDown;
     QGraphicsSimpleTextItem* fermata = new QGraphicsSimpleTextItem(symbol);
-    fermata->setFont(MusicFont().getFont());
+    fermata->setFont(musicNotationFont);
     fermata->setPos(x_, y);
 
     return fermata;
@@ -235,16 +239,15 @@ QGraphicsItem* NoteStem::createAccent() const
         y -= 20;
     }
 
-    MusicFont musicFont;
     QChar symbol;
 
     if (position_->HasMarcato())
     {
-        symbol = musicFont.getSymbol(MusicFont::Marcato);
+        symbol = MusicFont::getSymbol(MusicFont::Marcato);
     }
     else if (position_->HasSforzando())
     {
-        symbol = musicFont.getSymbol(MusicFont::Sforzando);
+        symbol = MusicFont::getSymbol(MusicFont::Sforzando);
         y += 3;
     }
 
@@ -254,7 +257,7 @@ QGraphicsItem* NoteStem::createAccent() const
     }
 
     QGraphicsSimpleTextItem* accent = new QGraphicsSimpleTextItem(symbol);
-    accent->setFont(musicFont.getFont());
+    accent->setFont(musicNotationFont);
     accent->setPos(x_, y);
 
     return accent;
