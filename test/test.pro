@@ -12,8 +12,7 @@ PRECOMPILED_HEADER = test_pch.h
 unix:LIBS += -lboost_unit_test_framework
 
 # replace with the path to your boost installation
-win32:INCLUDEPATH += 'C:/Program Files (x86)/boost/boost_1_44/'
-win32:LIBS += -L'C:/Program Files (x86)/boost/boost_1_44/lib' -lboost_unit_test_framework
+win32:LIBS += -L'C:/Program Files (x86)/boost/boost_1_47/lib' -lboost_unit_test_framework
 
 SOURCES += \
     test_main.cpp \
