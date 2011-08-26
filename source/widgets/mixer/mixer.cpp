@@ -43,6 +43,9 @@ void Mixer::addInstrument(shared_ptr<Guitar> guitar)
     layout->addWidget(channel.get());
 
     channelList.push_back(channel);
+
+    connect(channel.get(), SIGNAL(visibilityToggled(uint32_t,bool)),
+            this, SIGNAL(visibilityToggled(uint32_t,bool)));
 }
 
 void Mixer::removeInstrument(size_t index)

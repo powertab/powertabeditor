@@ -603,7 +603,7 @@ void System::CalculateHeight()
     int sum = GetStaffHeightOffset(m_staffArray.size() - 1);
 
     // add the height of the last staff
-    sum += m_staffArray.at(m_staffArray.size() - 1)->GetHeight();
+    sum += m_staffArray.back()->GetHeight();
 
     m_rect.SetHeight(sum);
 }
@@ -623,7 +623,7 @@ uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos) const
 
     for (uint32_t i = 0; i < staff; i++)
     {
-        offset += m_staffArray.at(i)->GetHeight();
+        offset += m_staffArray[i]->GetHeight();
     }
 
     if (absolutePos)

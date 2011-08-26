@@ -59,12 +59,13 @@ public:
     enum { NUM_STAFF_VOICES = 2 }; ///< Number of voices in a staff
 
     // Member Variables
-protected:
+private:
     uint8_t m_data;                                 ///< Top 4 bits = clef type, bottom 4 bits = tablature type
     uint8_t m_standardNotationStaffAboveSpacing;    ///< Amount of space alloted from the top line of the standard notation staff
     uint8_t m_standardNotationStaffBelowSpacing;    ///< Amount of space alloted from the last line of the standard notation staff
     uint8_t m_symbolSpacing;                        ///< Amount of space alloted for symbols located between the standard notation and tablature staff
     uint8_t m_tablatureStaffBelowSpacing;           ///< Amount of space alloted from the last line of the tablature staff
+    bool m_isShown;
 
 public:
     boost::array<std::vector<Position*>, NUM_STAFF_VOICES> positionArrays; ///< collection of position arrays, one per voice
@@ -101,6 +102,9 @@ public:
     {
         return 1;
     }
+
+    bool IsShown() const;
+    void SetShown(bool set = true);
 
     // Clef Functions
     static bool IsValidClef(uint8_t clef);

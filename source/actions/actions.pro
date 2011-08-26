@@ -42,7 +42,8 @@ HEADERS += \
     removevolumeswell.h \
     addvolumeswell.h \
     addirregulargrouping.h \
-    removeirregulargrouping.h
+    removeirregulargrouping.h \
+    edittrackshown.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -80,4 +81,5 @@ SOURCES += \
     removevolumeswell.cpp \
     addvolumeswell.cpp \
     addirregulargrouping.cpp \
-    removeirregulargrouping.cpp
+    removeirregulargrouping.cpp \
+    edittrackshown.cpp

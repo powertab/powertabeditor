@@ -64,7 +64,8 @@ Staff::Staff() :
     m_standardNotationStaffAboveSpacing(DEFAULT_STANDARD_NOTATION_STAFF_ABOVE_SPACING),
     m_standardNotationStaffBelowSpacing(DEFAULT_STANDARD_NOTATION_STAFF_BELOW_SPACING),
     m_symbolSpacing(DEFAULT_SYMBOL_SPACING),
-    m_tablatureStaffBelowSpacing(DEFAULT_TABLATURE_STAFF_BELOW_SPACING)
+    m_tablatureStaffBelowSpacing(DEFAULT_TABLATURE_STAFF_BELOW_SPACING),
+    m_isShown(true)
 {
 }
 
@@ -76,7 +77,8 @@ Staff::Staff(uint8_t tablatureStaffType, uint8_t clef) :
     m_standardNotationStaffAboveSpacing(DEFAULT_STANDARD_NOTATION_STAFF_ABOVE_SPACING),
     m_standardNotationStaffBelowSpacing(DEFAULT_STANDARD_NOTATION_STAFF_BELOW_SPACING),
     m_symbolSpacing(DEFAULT_SYMBOL_SPACING),
-    m_tablatureStaffBelowSpacing(DEFAULT_TABLATURE_STAFF_BELOW_SPACING)
+    m_tablatureStaffBelowSpacing(DEFAULT_TABLATURE_STAFF_BELOW_SPACING),
+    m_isShown(true)
 {
     SetClef(clef);
     SetTablatureStaffType(tablatureStaffType);
@@ -116,6 +118,7 @@ const Staff& Staff::operator=(const Staff& staff)
             staff.m_standardNotationStaffBelowSpacing;
         m_symbolSpacing = staff.m_symbolSpacing;
         m_tablatureStaffBelowSpacing = staff.m_tablatureStaffBelowSpacing;
+        m_isShown = staff.m_isShown;
 
         for (size_t i = 0; i < staff.positionArrays.size(); i++)
         {
@@ -163,6 +166,7 @@ bool Staff::operator==(const Staff& staff) const
             (m_standardNotationStaffAboveSpacing == staff.m_standardNotationStaffAboveSpacing) &&
             (m_standardNotationStaffBelowSpacing == staff.m_standardNotationStaffBelowSpacing) &&
             (m_symbolSpacing == staff.m_symbolSpacing) &&
+            (m_isShown == staff.m_isShown) &&
             (m_tablatureStaffBelowSpacing == staff.m_tablatureStaffBelowSpacing));
 }
 
@@ -245,9 +249,16 @@ bool Staff::SetTablatureStaffType(uint8_t type)
 /// Calculates the height of the staff
 int Staff::GetHeight() const
 {
-    return GetStandardNotationStaffAboveSpacing() + GetStandardNotationStaffBelowSpacing() + GetSymbolSpacing() +
-            GetTablatureStaffBelowSpacing() + STD_NOTATION_LINE_SPACING * (STD_NOTATION_STAFF_TYPE - 1) +
-            (GetTablatureStaffType() - 1) * 9 + 4 * STAFF_BORDER_SPACING; // TODO - pass in the tab line separation as a parameter
+    if (!IsShown())
+    {
+        return 0;
+    }
+    else
+    {
+        return  GetStandardNotationStaffAboveSpacing() + GetStandardNotationStaffBelowSpacing() + GetSymbolSpacing() +
+                GetTablatureStaffBelowSpacing() + STD_NOTATION_LINE_SPACING * (STD_NOTATION_STAFF_TYPE - 1) +
+                (GetTablatureStaffType() - 1) * 9 + 4 * STAFF_BORDER_SPACING; // TODO - pass in the tab line separation as a parameter
+    }
 }
 
 /// Determines if a Clef is valid
@@ -915,4 +926,16 @@ size_t Staff::GetIndexOfPosition(uint32_t voice, const Position *position) const
 {
     const std::vector<Position*>& posArray = positionArrays.at(voice);
     return std::find(posArray.begin(), posArray.end(), position) - posArray.begin();
+}
+
+/// Returns whether or not the staff is visible
+bool Staff::IsShown() const
+{
+    return m_isShown;
+}
+
+/// Sets the staff to be visible
+void Staff::SetShown(bool set)
+{
+    m_isShown = set;
 }

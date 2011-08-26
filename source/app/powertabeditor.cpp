@@ -116,6 +116,7 @@
 #include <actions/addvolumeswell.h>
 #include <actions/addirregulargrouping.h>
 #include <actions/removeirregulargrouping.h>
+#include <actions/edittrackshown.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -1078,6 +1079,9 @@ void PowerTabEditor::setupNewDocument()
 
     // add the guitars to a new mixer
     Mixer* mixer = new Mixer(skinManager);
+    connect(mixer, SIGNAL(visibilityToggled(uint32_t,bool)),
+            this, SLOT(toggleGuitarVisible(uint32_t,bool)));
+
     QScrollArea* scrollArea = new QScrollArea;
     for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
     {
@@ -2139,4 +2143,13 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
             }
         }
     }
+}
+
+void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
+{
+    EditTrackShown* action = new EditTrackShown(getCurrentScoreArea()->getCaret()->getCurrentScore(),
+                                                trackIndex, isVisible);
+    connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
+
+    undoManager->push(action);
 }

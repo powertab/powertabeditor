@@ -72,6 +72,7 @@ private:
     uint8_t      m_phaser;                   ///< Amount of phaser effect used by the guitar
     uint8_t      m_capo;                     ///< Capo placement (0 - no capo)
     Tuning       m_tuning;                   ///< Guitar tuning
+    bool         m_isShown;
 
     // Constructor/Destructor
 public:
@@ -164,6 +165,9 @@ public:
 
     size_t GetStringCount() const;
     std::string GetTuningSpelling() const;
+
+    bool IsShown() const;
+    void SetShown(bool set = true);
 
     // Operations
     std::string GetLegendText() const;

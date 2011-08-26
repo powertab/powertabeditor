@@ -141,6 +141,7 @@ protected slots:
     void clearCurrentPosition();
 
     void addGuitar();
+    void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
     void editKeyboardShortcuts();
 

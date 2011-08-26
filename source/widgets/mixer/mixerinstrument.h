@@ -24,7 +24,7 @@
 class Guitar;
 class QHBoxLayout;
 class QLabel;
-class QRadioButton;
+class QCheckBox;
 class QSlider;
 class QDial;
 class QComboBox;
@@ -44,15 +44,17 @@ public:
     
     void update();
 
-protected:
+signals:
+    void visibilityToggled(uint32_t trackNumber, bool isVisible);
+
+private:
     QHBoxLayout* layout;
 
     QLabel* instrumentIndex;
     ClickableLabel* instrumentName;
     QLineEdit* instrumentNameEditor;
 
-    QRadioButton* soloPlayback;
-    QRadioButton* mutePlayback;
+    QCheckBox* isVisible;
 
     QSlider* trackVolume;
     QDial* trackPan;
@@ -63,12 +65,13 @@ protected:
 
     boost::shared_ptr<Guitar> guitar;
 
-public slots:
+private slots:
     void changePan(int value);
     void changeVolume(int value);
     void changePatch(int value);
     void changeInstrumentName(QString name);
     void editTuning();
+    void toggleVisible(bool visible);
 };
 
 #endif // MIXERINSTRUMENT_H

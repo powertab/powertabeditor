@@ -87,13 +87,19 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
     // draw system rectangle
     drawSystemBox(system);
 
+    bool isFirstVisibleStaff = true;
+
     // Draw each staff
     for (uint32_t i = 0; i < system->GetStaffCount(); i++)
     {
+        staff = system->GetStaff(i);
+        if (!staff->IsShown())
+        {
+            continue;
+        }
+
         StaffData currentStaffInfo;
         currentStaffInfo.positionWidth = system->GetPositionSpacing();
-
-        staff = system->GetStaff(i);
 
         // Populate the staff info structure with information from the given staff
         currentStaffInfo.leftEdge = leftEdge;
@@ -127,10 +133,11 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         drawTabNotes(currentStaffInfo);
         drawStdNotation(currentStaffInfo);
 
-        if (i == 0)
+        if (isFirstVisibleStaff)
         {
             drawSystemSymbols(currentStaffInfo);
             drawRhythmSlashes();
+            isFirstVisibleStaff = false;
         }
 
         drawLegato(currentStaffInfo);

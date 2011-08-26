@@ -63,7 +63,8 @@ Guitar::Guitar() :
     m_number(DEFAULT_NUMBER), m_description(DEFAULT_DESCRIPTION),
     m_preset(DEFAULT_PRESET), m_initialVolume(DEFAULT_INITIAL_VOLUME),
     m_pan(DEFAULT_PAN), m_reverb(DEFAULT_REVERB), m_chorus(DEFAULT_CHORUS),
-    m_tremolo(DEFAULT_TREMOLO), m_phaser(DEFAULT_PHASER), m_capo(DEFAULT_CAPO)
+    m_tremolo(DEFAULT_TREMOLO), m_phaser(DEFAULT_PHASER), m_capo(DEFAULT_CAPO),
+    m_isShown(true)
 {
     //------Last Checked------//
     // - Dec 8, 2004
@@ -85,7 +86,8 @@ Guitar::Guitar(uint8_t number, const std::string& description, uint8_t preset,
                uint8_t tremolo, uint8_t phaser, uint8_t capo) : m_number(number),
     m_description(description), m_preset(preset),
     m_initialVolume(initialVolume), m_pan(pan), m_reverb(reverb),
-    m_chorus(chorus), m_tremolo(tremolo), m_phaser(phaser), m_capo(capo)
+    m_chorus(chorus), m_tremolo(tremolo), m_phaser(phaser), m_capo(capo),
+    m_isShown(true)
 {
     assert(midi::IsValidMidiPreset(preset));
     assert(midi::IsValidMidiChannelVolume(initialVolume));
@@ -133,6 +135,7 @@ const Guitar& Guitar::operator=(const Guitar& guitar)
         m_tremolo = guitar.m_tremolo;
         m_phaser = guitar.m_phaser;
         m_capo = guitar.m_capo;
+        m_isShown = guitar.m_isShown;
     }
     return (*this);
 }
@@ -153,7 +156,8 @@ bool Guitar::operator==(const Guitar& guitar) const
                 (m_chorus == guitar.m_chorus) &&
                 (m_tremolo == guitar.m_tremolo) &&
                 (m_phaser == guitar.m_phaser) &&
-                (m_capo == guitar.m_capo)
+                (m_capo == guitar.m_capo) &&
+                (m_isShown == guitar.m_isShown)
                 );
 }
 
@@ -459,4 +463,14 @@ uint8_t Guitar::GetCapo() const
 bool Guitar::UsesCapo() const
 {
     return GetCapo() != MIN_CAPO;
+}
+
+bool Guitar::IsShown() const
+{
+    return m_isShown;
+}
+
+void Guitar::SetShown(bool set)
+{
+    m_isShown = set;
 }

@@ -39,13 +39,15 @@ public:
 
     boost::shared_ptr<Guitar> getInstrument(size_t index) const;
 
-protected:
+signals:
+    void visibilityToggled(uint32_t trackNumber, bool isVisible);
+
+private:
     std::vector<boost::shared_ptr<MixerInstrument> > channelList;
     QVBoxLayout* layout;
 
-public slots:
+private slots:
     void update();
-
 };
 
 #endif // MIXER_H

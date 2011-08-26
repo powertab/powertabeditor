@@ -19,7 +19,7 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QRadioButton>
+#include <QCheckBox>
 #include <QSlider>
 #include <QDial>
 #include <QComboBox>
@@ -67,11 +67,10 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     connect(instrumentNameEditor, SIGNAL(editingFinished()), instrumentName, SLOT(show()));
     connect(instrumentNameEditor, SIGNAL(editingFinished()), instrumentNameEditor, SLOT(hide()));
 
-    soloPlayback = new QRadioButton;
-    layout->addWidget(soloPlayback);
-
-    mutePlayback = new QRadioButton;
-    layout->addWidget(mutePlayback);
+    isVisible = new QCheckBox(tr("Show/Hide"));
+    isVisible->setChecked(guitar->IsShown());
+    connect(isVisible, SIGNAL(toggled(bool)), this, SLOT(toggleVisible(bool)));
+    layout->addWidget(isVisible);
 
     trackVolume = new QSlider(Qt::Horizontal);
     trackVolume->setMaximumWidth(75);
@@ -272,4 +271,9 @@ void MixerInstrument::update()
     trackPan->setValue(guitar->GetPan());
     trackPatch->setCurrentIndex(guitar->GetPreset());
     tuningLabel->setText(QString().fromStdString(guitar->GetTuningSpelling()));
+}
+
+void MixerInstrument::toggleVisible(bool visible)
+{
+    emit visibilityToggled(guitar->GetNumber(), visible);
 }
