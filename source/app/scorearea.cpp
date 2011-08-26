@@ -33,8 +33,7 @@ ScoreArea::ScoreArea(QWidget *parent) :
     QGraphicsView(parent),
     caret(NULL)
 {
-    setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-    setCacheMode(QGraphicsView::CacheBackground);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
     setScene(&scene);
     setRenderHints(QPainter::HighQualityAntialiasing);
