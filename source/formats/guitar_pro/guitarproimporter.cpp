@@ -1027,9 +1027,17 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
         {
             readTremoloBar(stream, position);
         }
+		else
+		{
+			position.SetTap(type == Gp::Tapping);
+			// Ignore slapping and popping
 
-        position.SetTap(type == Gp::Tapping);
-        // Ignore slapping and popping
+			if (stream.version == Gp::Version3)
+			{
+				stream.read<uint32_t>(); // TODO - decipher this data
+			}
+		}
+
     }
 
     if (stream.version >= Gp::Version4 && flags2.test(Gp::HasTremoloBarEvent))
