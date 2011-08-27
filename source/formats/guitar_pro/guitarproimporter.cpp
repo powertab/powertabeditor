@@ -470,12 +470,13 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
         for (uint32_t track = 0; track < score->GetGuitarCount(); track++)
         {
             std::vector<Position*>& positionList = positionLists.at(track);
+            const Tuning& tuning = score->GetGuitar(track)->GetTuning();
 
             const uint32_t numBeats = stream.read<uint32_t>(); // number of beats in measure
 
             for (uint32_t k = 0; k < numBeats; k++)
             {
-                positionList.push_back(readBeat(stream));
+                positionList.push_back(readBeat(stream, tuning));
             }
 
             // TODO - support second voice for GP5
@@ -484,7 +485,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
                 const uint32_t beats = stream.read<uint32_t>();
                 for (uint32_t k = 0; k < beats; k++)
                 {
-                    delete readBeat(stream);
+                    delete readBeat(stream, tuning);
                 }
             }
 
@@ -501,7 +502,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
 }
 
 /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab)
-Position* GuitarProImporter::readBeat(Gp::InputStream& stream)
+Position* GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tuning)
 {
     const Gp::Flags flags = stream.read<uint8_t>();
 
@@ -538,7 +539,7 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream)
 
     if (flags.test(Gp::ChordDiagram))
     {
-        readChordDiagram(stream);
+        readChordDiagram(stream, tuning);
     }
 
     if (flags.test(Gp::Text))
@@ -1070,7 +1071,7 @@ void GuitarProImporter::readPositionEffects(Gp::InputStream& stream, Position& p
 }
 
 /// TODO - test reading of chord diagrams, and implement for GP5
-void GuitarProImporter::readChordDiagram(Gp::InputStream& stream)
+void GuitarProImporter::readChordDiagram(Gp::InputStream& stream, const Tuning& tuning)
 {
     if (stream.version > Gp::Version4)
     {
@@ -1081,7 +1082,7 @@ void GuitarProImporter::readChordDiagram(Gp::InputStream& stream)
 
     if (!header.test(Gp::Gp4ChordFormat))
     {
-        readOldStyleChord(stream);
+        readOldStyleChord(stream, tuning);
         return;
     }
 
@@ -1160,9 +1161,11 @@ void GuitarProImporter::readChordDiagram(Gp::InputStream& stream)
 }
 
 /// Reads an old-style "simple" chord
-void GuitarProImporter::readOldStyleChord(Gp::InputStream& stream)
+void GuitarProImporter::readOldStyleChord(Gp::InputStream& stream, const Tuning& tuning)
 {
-    ChordDiagram diagram;
+    std::vector<uint8_t> fretNumbers(tuning.GetStringCount(), ChordDiagram::stringMuted);
+
+    ChordDiagram diagram(0, fretNumbers);
 
     stream.readString(); // chord diagram name
 
