@@ -22,7 +22,8 @@
 /// Stores and renders a chord diagram
 class ChordDiagram : public PowerTabObject
 {
-// Constants
+public:
+    // Constants
     // Default Constants
     static const uint8_t DEFAULT_TOP_FRET;       ///< Default value for the top fret member variable
 
@@ -40,135 +41,72 @@ class ChordDiagram : public PowerTabObject
         notUsed     = (uint8_t)0xff              ///< String is not used
     };
 
-// Member Variables
-protected:
-    ChordName       m_chordName;                ///< Chord name that appears above the chord diagram
-    uint8_t          m_topFret;                  ///< Fret represented at the top of the chord diagram
-    std::vector<uint8_t>     m_fretNumberArray;          ///< List of fret number offsets
+    // Member Variables
+private:
+    ChordName               m_chordName;                ///< Chord name that appears above the chord diagram
+    uint8_t                 m_topFret;                  ///< Fret represented at the top of the chord diagram
+    std::vector<uint8_t>    m_fretNumberArray;          ///< List of fret number offsets
 
-// Constructor/Destructor
+    // Constructor/Destructor
 public:
     ChordDiagram();
-    ChordDiagram(const ChordName& chordName, uint8_t topFret, uint8_t fretNumber1,
-        uint8_t fretNumber2, uint8_t fretNumber3, uint8_t fretNumber4 = notUsed,
-        uint8_t fretNumber5 = notUsed, uint8_t fretNumber6 = notUsed,
-        uint8_t fretNumber7 = notUsed);
-    ChordDiagram(uint8_t topFret, uint8_t fretNumber1, uint8_t fretNumber2,
-        uint8_t fretNumber3, uint8_t fretNumber4 = notUsed,
-        uint8_t fretNumber5 = notUsed, uint8_t fretNumber6 = notUsed,
-        uint8_t fretNumber7 = notUsed);
+    ChordDiagram(const ChordName& chordName, uint8_t topFret,
+                 const std::vector<uint8_t>& fretNumbers);
+    ChordDiagram(uint8_t topFret, const std::vector<uint8_t>& fretNumbers);
     ChordDiagram(const ChordDiagram& chordDiagram);
-    ~ChordDiagram();
 
-// Operators
+    // Operators
     const ChordDiagram& operator=(const ChordDiagram& chordDiagram);
     bool operator==(const ChordDiagram& chordDiagram) const;
     bool operator!=(const ChordDiagram& chordDiagram) const;
     // TODO: Add operator[]
     
-// Serialize Functions
+    // Serialize Functions
     bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
-// MFC Class Functions
-public:    
+    // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
-        {return "CChordDiagram";}
+    {return "CChordDiagram";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
-    uint16_t GetMFCClassSchema() const                        
-        {return ((uint16_t)1);}
+    uint16_t GetMFCClassSchema() const
+    {return ((uint16_t)1);}
     
-// Chord Diagram Functions
+    // Chord Diagram Functions
     bool SetChordDiagram(const ChordName& chordName, uint8_t topFret,
-        uint8_t fretNumber1, uint8_t fretNumber2, uint8_t fretNumber3,
-        uint8_t fretNumber4 = notUsed, uint8_t fretNumber5 = notUsed,
-        uint8_t fretNumber6 = notUsed, uint8_t fretNumber7 = notUsed);
+                         const std::vector<uint8_t>& fretNumbers);
     
-// Chord Name Functions
-    /// Sets the chord name
-    /// @param chordName Chord name to set
-    void SetChordName(const ChordName& chordName)       
-        {m_chordName = chordName;}
-    /// Gets the chord name
-    /// @return The chord name
-    ChordName GetChordName() const                      
-        {return (m_chordName);}
-    /// Gets a reference to the chord name
-    /// @return A reference to the chord name
-    ChordName& GetChordNameRef()                        
-        {return (m_chordName);}
-    /// Gets a constant reference to the chord name
-    /// @return A constant reference to the chord name
-    const ChordName& GetChordNameConstRef() const       
-        {return (m_chordName);}
-    /// Gets a pointer to the chord name
-    /// @return A pointer to the chord name
-    ChordName* GetChordNamePtr()                        
-        {return (&m_chordName);}
-    
-// Top Fret Functions
-    /// Determines if a top fret value is valid
-    /// @param topFret Top fret to validate
-    /// @return True if the top fret value is valid, false if not
-    static bool IsValidTopFret(uint8_t topFret)
-        {return (topFret <= MAX_TOP_FRET);}
-    /// Sets the top fret
-    /// @param topFret Top fret to set
-    /// @return True if the top fret was set, false if not
-    bool SetTopFret(uint8_t topFret)
-    {
-        CHECK_THAT(IsValidTopFret(topFret), false);
-        m_topFret = topFret;
-        return (true);
-    }
-    /// Gets the top fret value
-    /// @return The top fret
-    uint8_t GetTopFret() const
-        {return (m_topFret);}
+    // Chord Name Functions
+    void SetChordName(const ChordName& chordName);
+    const ChordName& GetChordName() const;
+    ChordName& GetChordName();
 
-// String Functions
-    /// Determines if a string is valid
-    /// @param string String to validate
-    /// @return True if the string is valid, false if not
-    bool IsValidString(uint32_t string) const
-        {return (string < GetStringCount());}
-    /// Gets the number of strings used in the chord diagram
-    /// @return The number of strings used in the chord diagram
-    size_t GetStringCount() const
-        {return (m_fretNumberArray.size());}
+    // Top Fret Functions
+    static bool IsValidTopFret(uint8_t topFret);
+    bool SetTopFret(uint8_t topFret);
+    uint8_t GetTopFret() const;
+
+    // String Functions
+    bool IsValidString(uint32_t string) const;
+    size_t GetStringCount() const;
     
-// Fret Number Functions    
-    /// Determines if a fret number is valid
-    /// @param fretNumber Fret number to validate
-    /// @return True if the fret number is valid, false if not
-    static bool IsValidFretNumber(uint8_t fretNumber)
-    {
-        return ((fretNumber <= MAX_FRET_NUMBER) ||
-            (fretNumber == stringMuted) ||
-            (fretNumber == notUsed));
-    }
+    // Fret Number Functions
+    static bool IsValidFretNumber(uint8_t fretNumber);
     bool SetFretNumber(uint32_t string, uint8_t fretNumber);
     uint8_t GetFretNumber(uint32_t string) const;
-protected:
-    bool AddFretNumbers(uint8_t fretNumber1, uint8_t fretNumber2,
-        uint8_t fretNumber3, uint8_t fretNumber4, uint8_t fretNumber5,
-        uint8_t fretNumber6, uint8_t fretNumber7);
-    /// Deletes the contents (and frees the memory) of the fret number array
-    void DeleteFretNumberArrayContents()
-        {m_fretNumberArray.clear();}
 
-// Voicing Functions
+private:
+    bool AddFretNumbers(const std::vector<uint8_t>& fretNumbers);
+
+    // Voicing Functions
 public:
     bool IsSameVoicing(const ChordDiagram& chordDiagram) const;
-    bool IsSameVoicing(uint8_t fretNumber1, uint8_t fretNumber2,
-        uint8_t fretNumber3, uint8_t fretNumber4 = notUsed,
-        uint8_t fretNumber5 = notUsed, uint8_t fretNumber6 = notUsed,
-        uint8_t fretNumber7 = notUsed) const;
+    bool IsSameVoicing(const std::vector<uint8_t>& fretNumbers) const;
     
-// Operations
+    // Operations
     std::string GetSpelling() const;
 };
 

@@ -22,12 +22,35 @@
 #include "serialization_test.h"
 #include <powertabdocument/chorddiagram.h>
 
+#include <boost/assign/list_of.hpp>
+using namespace boost::assign;
+
 BOOST_AUTO_TEST_SUITE(ChordDiagramTest)
 
     BOOST_AUTO_TEST_CASE(Serialization)
     {
-        ChordDiagram diagram(7, 1, 2, 3, 4);
+        ChordDiagram diagram(7, list_of(1)(2)(3)(4));
         testSerialization(diagram);
+    }
+
+    BOOST_AUTO_TEST_CASE(Spelling)
+    {
+        ChordDiagram diagram(3, list_of(3)(4)(5)(5)(3)(ChordDiagram::stringMuted));
+        BOOST_CHECK_EQUAL(diagram.GetSpelling(), "x 3 5 5 4 3");
+    }
+
+    BOOST_AUTO_TEST_CASE(IsSameVoicing)
+    {
+        ChordDiagram diagram(ChordName(), 3, list_of(3)(4)(5)(5)(3));
+
+        std::vector<uint8_t> voicing = list_of(3)(4)(5)(5)(3);
+        BOOST_CHECK(diagram.IsSameVoicing(voicing));
+
+        voicing[0] = 4;
+        BOOST_CHECK(!diagram.IsSameVoicing(voicing)); // different fret
+
+        voicing.push_back(3);
+        BOOST_CHECK(!diagram.IsSameVoicing(voicing)); // different # of strings
     }
 
 BOOST_AUTO_TEST_SUITE_END()
