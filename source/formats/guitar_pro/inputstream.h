@@ -83,7 +83,12 @@ inline std::string InputStream::readCharacterString()
 
     std::string str;
     str.resize(length);
-    stream_.read(&str[0], length);
+
+	if (length != 0)
+	{
+		stream_.read(&str[0], length);
+	}
+
     return str;
 }
 

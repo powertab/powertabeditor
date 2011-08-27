@@ -54,7 +54,10 @@ void PowerTabInputStream::ReadMFCString(string& str)
     const uint32_t length = ReadMFCStringLength();
     str.resize(length);
 
-    m_stream.read(&str[0], length);
+	if (length != 0)
+	{
+		m_stream.read(&str[0], length);
+	}
 }
 
 /// Reads a Win32 format COLORREF type from the stream

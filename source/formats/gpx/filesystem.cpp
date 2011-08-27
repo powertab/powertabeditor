@@ -24,6 +24,7 @@
 
 #include <cassert>
 #include <iterator>
+#include <app/common.h>
 
 Gpx::FileSystem::FileSystem(std::vector<char> data)
 {
@@ -47,7 +48,7 @@ Gpx::FileSystem::FileSystem(std::vector<char> data)
             while ((block = Util::readUInt(data, blockIndex + 4 * blockCount)) != 0)
             {
                 offset = block * SECTOR_SIZE;
-                std::copy(data.begin() + offset, data.begin() + offset + SECTOR_SIZE,
+				std::copy(data.begin() + offset, data.begin() + Common::clamp<size_t>(offset + SECTOR_SIZE, 0, data.size()),
                           std::back_inserter(fileData));
                 blockCount++;
             }
@@ -111,11 +112,11 @@ Gpx::FileSystem Gpx::load(std::istream& stream)
         {
             const uint32_t p = input.readBits(4);
             const int32_t offset = input.readBits(p, Gpx::BitStream::Reversed);
-            const int32_t length = input.readBits(p, Gpx::BitStream::Reversed);
+            const uint32_t startPos = output.size() - offset;
+
+			const int32_t length = Common::clamp<int32_t>(input.readBits(p, Gpx::BitStream::Reversed), 0, output.size() - startPos);
 
             //std::cerr << "Compressed: offset = " << offset << ", length = " << length << std::endl;
-
-            const uint32_t startPos = output.size() - offset;
 
             std::copy(output.begin() + startPos,
                       output.begin() + startPos + length,
