@@ -1,5 +1,7 @@
 include (../../common.pri)
 
+INCLUDEPATH += $${PWD} # needed for precompiled headers in MSVC
+
 CONFIG += precompile_header
 
 PRECOMPILED_HEADER = actions_pch.h

@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <boost/shared_ptr.hpp>
+#include <boost/cstdint.hpp>
 
 class Guitar;
 class QHBoxLayout;

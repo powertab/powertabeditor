@@ -1,5 +1,7 @@
 include (../../common.pri)
 
+INCLUDEPATH += $${PWD} # needed for precompiled headers in MSVC
+
 # can't use the default name of 'libaudio' since
 # it conflicts with a system library on Ubuntu
 TARGET = pteaudio

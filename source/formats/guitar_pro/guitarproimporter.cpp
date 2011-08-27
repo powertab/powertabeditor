@@ -209,7 +209,7 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
     {
         Gp::Channel channel;
 
-        channel.instrument = clamp<int32_t>(stream.read<int32_t>(), 0, midi::NUM_MIDI_PRESETS);
+        channel.instrument = Common::clamp<int32_t>(stream.read<int32_t>(), 0, midi::NUM_MIDI_PRESETS);
         channel.volume = Gp::Channel::readChannelProperty(stream);
         channel.balance = Gp::Channel::readChannelProperty(stream);
         channel.chorus = Gp::Channel::readChannelProperty(stream);
@@ -531,7 +531,7 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tun
         const uint32_t notesPlayed = stream.read<uint32_t>(); // notes played in the irregular grouping
 
         // the "denominator" of the irregular grouping is the nearest power of 2 (from below)
-        const uint32_t notesOver = pow(2, floor(log2(notesPlayed)));
+        const uint32_t notesOver = pow(2, floor(Common::log2(notesPlayed)));
 
         pos.SetIrregularGroupingTiming(notesPlayed, notesOver);
         pos.SetIrregularGroupingStart(true); // TODO - need to group with other notes properly
@@ -580,7 +580,7 @@ uint8_t GuitarProImporter::readDuration(Gp::InputStream& stream)
 
     // Durations for Guitar Pro are stored as 0 -> quarter note, -1 -> half note, 1 -> eight note, etc
     // We need to convert to 1 = whole note, 2 = half note, 4 = quarter note, etc
-    return pow(2, gpDuration + 2);
+    return pow(2.0, gpDuration + 2);
 }
 
 /// Reads the notes for a given position
@@ -793,7 +793,7 @@ void GuitarProImporter::readSlide(Gp::InputStream& stream, Note& note)
     else
     {
         // slide values are powers of 2
-        slideValue = log2(slideValue) + 1;
+        slideValue = Common::log2(slideValue) + 1;
 
         if (slideValue > 4)
         {

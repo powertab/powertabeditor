@@ -910,12 +910,10 @@ void System::Init(const std::vector<uint8_t>& staffSizes)
 /// Removes the barline at the given position, if possible
 bool System::RemoveBarline(uint32_t position)
 {
-    using boost::bind;
-
     // find the barline that has the given position
     std::vector<BarlinePtr>::iterator bar = std::find_if(m_barlineArray.begin(), m_barlineArray.end(),
-                                                         bind(std::equal_to<uint32_t>(),
-                                                              bind(&Barline::GetPosition, _1), position)
+                                                         boost::bind(std::equal_to<uint32_t>(),
+                                                              boost::bind(&Barline::GetPosition, _1), position)
                                                          );
 
     if (bar == m_barlineArray.end())

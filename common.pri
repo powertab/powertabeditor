@@ -2,7 +2,15 @@
 
 QT += core gui
 
-QMAKE_CXXFLAGS+=-U__STRICT_ANSI__ -Wall -Werror -Wnon-virtual-dtor -Wextra
+QMAKE_CXXFLAGS+= -Wall
+
+win32-g++ {
+    QMAKE_CXXFLAGS += -U__STRICT_ANSI__
+}
+
+win32-g++ | linux-g++ | macx-g++ {
+    QMAKE_CXXFLAGS+= -Werror -Wnon-virtual-dtor -Wextra
+}
 
 DEPENDPATH += $${PWD}/source
 INCLUDEPATH += $${PWD}/source

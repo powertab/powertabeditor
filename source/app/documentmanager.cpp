@@ -90,7 +90,7 @@ bool DocumentManager::addImportedDocument(boost::shared_ptr<PowerTabDocument> do
 
 void DocumentManager::setCurrentDocumentIndex(int index)
 {
-    index = clamp(index, -1, static_cast<int>(documentList.size() - 1));
+    index = Common::clamp(index, -1, static_cast<int>(documentList.size() - 1));
     currentDocumentIndex = index;
 }
 

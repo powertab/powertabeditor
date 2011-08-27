@@ -686,8 +686,6 @@ void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32
 /// Returns the last position in the staff, regardless of voice (returns NULL if no positions exist)
 Position* Staff::GetLastPosition() const
 {
-    using boost::bind;
-
     std::vector<Position*> lastPositions;
 
     // construct a list of the last positions for each voice
@@ -702,9 +700,9 @@ Position* Staff::GetLastPosition() const
 
     // return the position with the largest position index
     return *std::max_element(lastPositions.begin(), lastPositions.end(),
-                            bind(std::less<uint32_t>(),
-                                 bind(&Position::GetPosition, _1),
-                                 bind(&Position::GetPosition, _2)
+                            boost::bind(std::less<uint32_t>(),
+                                 boost::bind(&Position::GetPosition, _1),
+                                 boost::bind(&Position::GetPosition, _2)
                                  ));
 }
 

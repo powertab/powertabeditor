@@ -437,7 +437,7 @@ void SystemRenderer::drawAltEndings(const std::vector<Score::AlternateEndingPtr>
         }
 
         // ensure that the line doesn't extend past the edge of the system
-        endX = clamp(endX, 0.0, static_cast<double>(system->GetRect().GetWidth()));
+        endX = Common::clamp(endX, 0.0, static_cast<double>(system->GetRect().GetWidth()));
 
         QGraphicsLineItem* horizLine = new QGraphicsLineItem;
         horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
@@ -812,7 +812,7 @@ void SystemRenderer::drawSymbols(const StaffData& staffInfo)
     {
         QGraphicsItem* renderedSymbol = NULL;
 
-        const int width = clamp(symbolGroup.width, 0, system->GetRect().GetWidth() - symbolGroup.leftX);
+        const int width = Common::clamp(symbolGroup.width, 0, system->GetRect().GetWidth() - symbolGroup.leftX);
 
         switch(symbolGroup.symbolType)
         {
@@ -1190,8 +1190,8 @@ void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBa
                 system->GetPositionX(currentBarline->GetPosition()) :
                 system->GetPositionX(currentBarline->GetPosition() + 1);
 
-    const double rightX = clamp(static_cast<double>(system->GetPositionX(nextBarline->GetPosition())),
-                                0.0, system->GetRect().GetWidth() - system->GetPositionSpacing() / 2.0);
+    const double rightX = Common::clamp(static_cast<double>(system->GetPositionX(nextBarline->GetPosition())),
+										0.0, system->GetRect().GetWidth() - system->GetPositionSpacing() / 2.0);
 
     // draw measure count
     QGraphicsSimpleTextItem* measureCountText = new QGraphicsSimpleTextItem;

@@ -23,6 +23,7 @@
 #include <formats/fileformat.h>
 
 #include <cassert>
+#include <iterator>
 
 Gpx::FileSystem::FileSystem(std::vector<char> data)
 {

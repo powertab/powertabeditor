@@ -19,12 +19,23 @@
 #define COMMON_H
 
 #include <algorithm>
+#include <cmath>
+
+namespace Common {
 
 /// Returns the value, brought into the range [low, high]
 template <typename T>
 inline T clamp (const T& value, const T& low, const T& high)
 {
     return std::max(std::min(value, high), low);
+}
+
+/// Simple implementation of log2 for compilers with C99 support (e.g. MSVC)
+inline double log2(double n)
+{
+	return std::log(n) / std::log(2.0);
+}
+
 }
 
 #endif // COMMON_H

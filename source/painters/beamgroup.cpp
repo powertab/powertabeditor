@@ -18,6 +18,7 @@
 #include "beamgroup.h"
 
 #include <algorithm>
+#include <app/common.h>
 
 #include "staffdata.h"
 #include "stdnotationpainter.h"
@@ -153,7 +154,7 @@ void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
     {
         // 16th note gets 1 extra beam, 32nd gets two, etc
         // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
-        const int extraBeams = log2(stem->position()->GetDurationType()) - 3;
+        const int extraBeams = Common::log2(stem->position()->GetDurationType()) - 3;
 
         const bool hasFullBeaming = (stem->position()->GetPreviousBeamDurationType() ==
                                      stem->position()->GetDurationType());
