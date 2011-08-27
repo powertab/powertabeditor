@@ -33,7 +33,7 @@ public:
 
     static uint8_t readChannelProperty(Gp::InputStream& stream);
 
-    uint32_t instrument;
+    int32_t instrument;
     uint8_t volume;
     uint8_t balance;
     uint8_t chorus;

@@ -23,6 +23,7 @@
 #include <cmath>
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
+#include <app/common.h>
 
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/guitar_pro/gp_channel.h>
@@ -37,6 +38,7 @@
 #include <powertabdocument/chorddiagram.h>
 #include <powertabdocument/tempomarker.h>
 #include <powertabdocument/system.h>
+#include <powertabdocument/generalmidi.h>
 
 #include <boost/assign/list_of.hpp>
 
@@ -207,7 +209,7 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
     {
         Gp::Channel channel;
 
-        channel.instrument = stream.read<uint32_t>();
+        channel.instrument = clamp<int32_t>(stream.read<int32_t>(), 0, midi::NUM_MIDI_PRESETS);
         channel.volume = Gp::Channel::readChannelProperty(stream);
         channel.balance = Gp::Channel::readChannelProperty(stream);
         channel.chorus = Gp::Channel::readChannelProperty(stream);
