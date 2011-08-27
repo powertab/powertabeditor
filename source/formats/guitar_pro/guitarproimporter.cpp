@@ -301,8 +301,8 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
             KeySignature& keySignature = barline->GetKeySignature();
             keySignature.SetShown(true);
 
-            keySignature.SetKeyType(stream.read<uint8_t>()); // tonality type (minor/major)
             keySignature.SetKeyAccidentals(convertKeyAccidentals(stream.read<int8_t>())); // key accidentals
+            keySignature.SetKeyType(stream.read<uint8_t>()); // tonality type (minor/major)
         }
 
         if (flags.test(Gp::DoubleBar))
