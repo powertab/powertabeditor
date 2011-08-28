@@ -33,9 +33,11 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/note.h>
 
+#include <QDebug>
+
 Gpx::DocumentReader::DocumentReader(const std::string& xml)
 {
-    std::cout << xml << std::endl;
+	qDebug() << xml.c_str();
     std::stringstream xmlStream;
     xmlStream << xml;
     read_xml(xmlStream, gpFile);
@@ -111,13 +113,15 @@ void Gpx::DocumentReader::readTracks(Score *score)
         {
             // Read the tuning - need to convert from a string of numbers separated by spaces to
             // a vector of integers
-            const std::string tuningString = properties->get<std::string>("Property.Pitches");
+			boost::optional<std::string> tuningString = properties->get_optional<std::string>("Property.Pitches");
 
-            std::vector<int> tuningNotes;
-            convertStringToList(tuningString, tuningNotes);
+			if (tuningString)
+			{
+				std::vector<int> tuningNotes;
+				convertStringToList(*tuningString, tuningNotes);
 
-            guitar->GetTuning().SetTuningNotes(std::vector<uint8_t>(tuningNotes.rbegin(),
-                                                                    tuningNotes.rend()));
+				guitar->GetTuning().SetTuningNotes(std::vector<uint8_t>(tuningNotes.rbegin(), tuningNotes.rend()));
+			}
 
             // Read capo
             guitar->SetCapo(properties->get("Property.Fret", 0));
@@ -151,7 +155,7 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
         std::vector<int> barIds;
         convertStringToList(masterBar.get<std::string>("Bars"), barIds);
 
-        for (size_t i = 0; i < barIds.size(); i++)
+		for (size_t i = 0; i < score->GetGuitarCount() && i < barIds.size(); i++)
         {
             std::vector<Position*> positions;
 
@@ -296,17 +300,20 @@ void Gpx::DocumentReader::readBeats()
         beat.tremoloPicking = currentBeat.find("Tremolo") != currentBeat.not_found();
         beat.graceNote = currentBeat.find("GraceNotes") != currentBeat.not_found();
 
-        // Search for brush direction in the properties list
-        BOOST_FOREACH(const ptree::value_type& node, currentBeat.get_child("Properties"))
-        {
-            const ptree& property = node.second;
-            const std::string propertyName = property.get<std::string>("<xmlattr>.name");
-            if (propertyName == "Brush")
-            {
-                beat.brushDirection = property.get<std::string>("Direction");
-                break;
-            }
-        }
+		if (currentBeat.find("Properties") != currentBeat.not_found())
+		{
+			// Search for brush direction in the properties list
+			BOOST_FOREACH(const ptree::value_type& node, currentBeat.get_child("Properties"))
+			{
+				const ptree& property = node.second;
+				const std::string propertyName = property.get<std::string>("<xmlattr>.name");
+				if (propertyName == "Brush")
+				{
+					beat.brushDirection = property.get<std::string>("Direction");
+					break;
+				}
+			}
+		}
 
         beats[beat.id] = beat;
     }
