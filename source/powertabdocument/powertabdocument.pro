@@ -46,7 +46,8 @@ HEADERS += \
     harmonics.h \
     common.h \
     layout.h \
-    powertabdocument_pch.h
+    powertabdocument_pch.h \
+    notestem.h
 
 SOURCES += \
     tuning.cpp \
@@ -84,5 +85,8 @@ SOURCES += \
     barline.cpp \
     alternateending.cpp \
     harmonics.cpp \
-    layout.cpp
+    layout.cpp \
+    notestem.cpp
+
+
 

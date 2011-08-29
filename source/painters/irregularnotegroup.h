@@ -18,8 +18,7 @@
 #ifndef IRREGULARNOTEGROUP_H
 #define IRREGULARNOTEGROUP_H
 
-#include "notestem.h"
-
+#include <powertabdocument/notestem.h>
 #include <vector>
 #include <boost/cstdint.hpp>
 

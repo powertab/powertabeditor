@@ -22,6 +22,7 @@
 
 #include "staffdata.h"
 #include "stdnotationpainter.h"
+#include "musicfont.h"
 #include <powertabdocument/position.h>
 
 #include <QGraphicsPathItem>
@@ -31,10 +32,21 @@
 
 const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
 
+namespace {
+    const QFont musicNotationFont = MusicFont().getFont();
+}
+
 BeamGroup::BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& noteStems) :
     staffInfo(staffInfo),
     noteStems(noteStems)
 {
+    // adjust top/bottom of stems to use absolute coordianates
+    for (size_t i = 0; i < this->noteStems.size(); i++)
+    {
+        this->noteStems[i].stemTop += staffInfo.getTopStdNotationLine();
+        this->noteStems[i].stemBottom += staffInfo.getTopStdNotationLine();
+    }
+
     setStemDirections();
     adjustStemHeights();
 }
@@ -44,11 +56,13 @@ BeamGroup::BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& no
 /// This depends on how many stems currently point upwards/downwards
 void BeamGroup::setStemDirections()
 {
-    stemDirection = findDirectionForGroup(noteStems);
+    stemDirection = NoteStem::findDirectionForGroup(noteStems);
 
     // Assign the new stem direction to each stem
-    std::for_each(noteStems.begin(), noteStems.end(),
-                  std::bind2nd(std::mem_fun_ref(&NoteStem::setDirection), stemDirection));
+    for (size_t i = 0; i < noteStems.size(); i++)
+    {
+        noteStems[i].stemDirection = stemDirection;
+    }
 }
 
 /// Stretches the beams to a common high/low height, depending on stem direction
@@ -57,29 +71,29 @@ void BeamGroup::adjustStemHeights()
     if (stemDirection == NoteStem::StemUp)
     {
         NoteStem highestStem = *std::min_element(noteStems.begin(), noteStems.end(),
-                                                 CompareStemPositions(&NoteStem::top));
+                                                 &compareStemTopPositions);
 
         for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
         {
-            stem->setX(stem->x() + staffInfo.getNoteHeadRightEdge() - 1);
-            stem->setTop(highestStem.top() - highestStem.stemSize());
+            stem->xPosition = stem->xPosition + staffInfo.getNoteHeadRightEdge() - 1;
+            stem->stemTop = highestStem.stemTop - highestStem.stemSize();
         }
     }
     else // stem down
     {
         NoteStem lowestStem = *std::max_element(noteStems.begin(), noteStems.end(),
-                                                CompareStemPositions(&NoteStem::bottom));
+                                                &compareStemBottomPositions);
 
         for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
         {
-            stem->setX(stem->x() + staffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth());
+            stem->xPosition = stem->xPosition + staffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth();
 
-            if (stem->position()->GetDurationType() == 2) // visual adjustment for half notes
+            if (stem->position->GetDurationType() == 2) // visual adjustment for half notes
             {
-                stem->setX(stem->x() - 2);
+                stem->xPosition = stem->xPosition - 2;
             }
 
-            stem->setBottom(lowestStem.bottom() + lowestStem.stemSize());
+            stem->stemBottom = lowestStem.stemBottom + lowestStem.stemSize();
         }
     }
 }
@@ -94,22 +108,18 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
     // Draw each stem
     for (std::vector<NoteStem>::const_iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
     {
-        stemPath.moveTo(stem->x(), stem->top());
-        stemPath.lineTo(stem->x(), stem->bottom());
-
-        /*QGraphicsLineItem* line = new QGraphicsLineItem;
-        line->setLine(stem->x(), stem->top(), stem->x(), stem->bottom());
-        line->setParentItem(parent);*/
+        stemPath.moveTo(stem->xPosition, stem->stemTop);
+        stemPath.lineTo(stem->xPosition, stem->stemBottom);
 
         // draw any symbols that use information about the stem, like staccato, fermata, etc
-        if (stem->position()->IsStaccato())
-            symbols << stem->createStaccato();
+        if (stem->position->IsStaccato())
+            symbols << createStaccato(*stem);
 
-        if (stem->position()->HasFermata())
-            symbols << stem->createFermata();
+        if (stem->position->HasFermata())
+            symbols << createFermata(*stem);
 
-        if (stem->position()->HasSforzando() || stem->position()->HasMarcato())
-            symbols << stem->createAccent();
+        if (stem->position->HasSforzando() || stem->position->HasMarcato())
+            symbols << createAccent(*stem);
 
         foreach (QGraphicsItem* symbol, symbols)
         {
@@ -128,8 +138,8 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
     {
         const double connectorHeight = noteStems.front().stemEdge();
 
-        beamPath.moveTo(noteStems.front().x() + 1, connectorHeight);
-        beamPath.lineTo(noteStems.back().x() - 1, connectorHeight);
+        beamPath.moveTo(noteStems.front().xPosition + 1, connectorHeight);
+        beamPath.lineTo(noteStems.back().xPosition - 1, connectorHeight);
     }
 
     drawExtraBeams(beamPath);
@@ -141,7 +151,7 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
      // draw a note flag for single notes (eighth notes or less) or grace notes
     if (noteStems.size() == 1 && noteStems.front().canDrawFlag())
     {
-        QGraphicsItem* flag = noteStems.front().createNoteFlag();
+        QGraphicsItem* flag = createNoteFlag(noteStems.front());
         flag->setParentItem(parent);
     }
 }
@@ -154,13 +164,13 @@ void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
     {
         // 16th note gets 1 extra beam, 32nd gets two, etc
         // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
-        const int extraBeams = Common::log2(stem->position()->GetDurationType()) - 3;
+        const int extraBeams = Common::log2(stem->position->GetDurationType()) - 3;
 
-        const bool hasFullBeaming = (stem->position()->GetPreviousBeamDurationType() ==
-                                     stem->position()->GetDurationType());
+        const bool hasFullBeaming = (stem->position->GetPreviousBeamDurationType() ==
+                                     stem->position->GetDurationType());
 
-        const bool hasFractionalLeft = stem->position()->HasFractionalLeftBeam();
-        const bool hasFractionalRight = stem->position()->HasFractionalRightBeam();
+        const bool hasFractionalLeft = stem->position->HasFractionalLeftBeam();
+        const bool hasFractionalRight = stem->position->HasFractionalRightBeam();
 
         if (hasFullBeaming || hasFractionalLeft || hasFractionalRight)
         {
@@ -173,17 +183,17 @@ void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
 
                 if (hasFullBeaming)
                 {
-                    xStart = (stem - 1)->x() + 1;
-                    xEnd = stem->x() - 1;
+                    xStart = (stem - 1)->xPosition + 1;
+                    xEnd = stem->xPosition - 1;
                 }
                 else if (hasFractionalLeft)
                 {
-                    xStart = stem->x() + 1;
+                    xStart = stem->xPosition + 1;
                     xEnd = xStart + FRACTIONAL_BEAM_WIDTH;
                 }
                 else if (hasFractionalRight)
                 {
-                    xEnd = stem->x() - 1;
+                    xEnd = stem->xPosition - 1;
                     xStart = xEnd - FRACTIONAL_BEAM_WIDTH;
                 }
 
@@ -199,4 +209,153 @@ void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
 void BeamGroup::copyNoteSteams(std::vector<NoteStem>& stems) const
 {
     stems = this->noteStems;
+}
+
+/// Creates and positions a staccato symbol
+QGraphicsItem* BeamGroup::createStaccato(const NoteStem& noteStem) const
+{
+    // draw the dot near either the top or bottom note of the position, depending on stem direction
+    const double yPos = (noteStem.stemDirection == NoteStem::StemUp) ? noteStem.stemBottom - 25 :
+                                                                       noteStem.stemTop - 43;
+
+    const double xPos = (noteStem.stemDirection == NoteStem::StemUp) ? noteStem.xPosition - 8 :
+                                                                       noteStem.xPosition - 2;
+
+    QGraphicsTextItem* dot = new QGraphicsTextItem(QChar(MusicFont::Dot));
+    dot->setFont(musicNotationFont);
+    dot->setPos(xPos, yPos);
+    return dot;
+}
+
+/// Creates and positions a fermata symbol
+QGraphicsItem* BeamGroup::createFermata(const NoteStem& noteStem) const
+{
+    int y = 0;
+
+    // position the fermata directly above/below the staff if possible, unless the note stem extends
+    // beyond the std. notation staff.
+    // After positioning, offset the height due to the way that QGraphicsTextItem positions text
+    if (noteStem.stemDirection == NoteStem::StemUp)
+    {
+        y = std::min(noteStem.stemTop, staffInfo.getTopStdNotationLine());
+        y -= 33;
+    }
+    else
+    {
+        y = std::max(noteStem.stemBottom, staffInfo.getBottomStdNotationLine());
+        y -= 25;
+    }
+
+    const QChar symbol = (noteStem.stemDirection == NoteStem::StemUp) ? MusicFont::FermataUp : MusicFont::FermataDown;
+    QGraphicsSimpleTextItem* fermata = new QGraphicsSimpleTextItem(symbol);
+    fermata->setFont(musicNotationFont);
+    fermata->setPos(noteStem.xPosition, y);
+
+    return fermata;
+}
+
+/// Creates and positions an accent symbol
+QGraphicsItem* BeamGroup::createAccent(const NoteStem& noteStem) const
+{
+    double y = 0;
+
+    // position the accent directly above/below the staff if possible, unless the note stem extends
+    // beyond the std. notation staff.
+    // - it should be positioned opposite to the fermata symbols
+    // After positioning, offset the height due to the way that QGraphicsTextItem positions text
+    if (noteStem.stemDirection == NoteStem::StemDown)
+    {
+        y = std::min(noteStem.stemTop, staffInfo.getTopStdNotationLine());
+        y -= 38;
+    }
+    else
+    {
+        y = std::max(noteStem.stemBottom, staffInfo.getBottomStdNotationLine());
+        y -= 20;
+    }
+
+    QChar symbol;
+
+    if (noteStem.position->HasMarcato())
+    {
+        symbol = MusicFont::getSymbol(MusicFont::Marcato);
+    }
+    else if (noteStem.position->HasSforzando())
+    {
+        symbol = MusicFont::getSymbol(MusicFont::Sforzando);
+        y += 3;
+    }
+
+    if (noteStem.position->IsStaccato())
+    {
+        y += (noteStem.stemDirection == NoteStem::StemUp) ? 7 : -7;
+    }
+
+    QGraphicsSimpleTextItem* accent = new QGraphicsSimpleTextItem(symbol);
+    accent->setFont(musicNotationFont);
+    accent->setPos(noteStem.xPosition, y);
+
+    return accent;
+}
+
+QGraphicsItem* BeamGroup::createNoteFlag(const NoteStem& noteStem) const
+{
+    Q_ASSERT(noteStem.canDrawFlag());
+
+    // choose the flag symbol, depending on duration and stem direction
+    QChar symbol = 0;
+    if (noteStem.stemDirection == NoteStem::StemUp)
+    {
+        switch(noteStem.position->GetDurationType())
+        {
+        case 8:
+            symbol = MusicFont::FlagUp1;
+            break;
+        case 16:
+            symbol = MusicFont::FlagUp2;
+            break;
+        case 32:
+            symbol = MusicFont::FlagUp3;
+            break;
+        default: // 64
+            symbol = MusicFont::FlagUp4;
+            break;
+        }
+
+        if (noteStem.position->IsAcciaccatura())
+        {
+            symbol = MusicFont::FlagUp1;
+        }
+    }
+    else
+    {
+        switch(noteStem.position->GetDurationType())
+        {
+        case 8:
+            symbol = MusicFont::FlagDown1;
+            break;
+        case 16:
+            symbol = MusicFont::FlagDown2;
+            break;
+        case 32:
+            symbol = MusicFont::FlagDown3;
+            break;
+        default: // 64
+            symbol = MusicFont::FlagDown4;
+            break;
+        }
+
+        if (noteStem.position->IsAcciaccatura())
+        {
+            symbol = MusicFont::FlagDown1;
+        }
+    }
+
+    // draw the symbol
+    const double y = noteStem.stemEdge() - 35; // adjust for spacing caused by the music symbol font
+    QGraphicsTextItem* flag = new QGraphicsTextItem(symbol);
+    flag->setFont(musicNotationFont);
+    flag->setPos(noteStem.xPosition - 3, y);
+
+    return flag;
 }

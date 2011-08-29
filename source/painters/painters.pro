@@ -10,7 +10,6 @@ HEADERS += \
     staffdata.h \
     rhythmslashpainter.h \
     painterbase.h \
-    notestem.h \
     musicfont.h \
     keysignaturepainter.h \
     irregularnotegroup.h \
@@ -32,7 +31,6 @@ SOURCES += \
     staffpainter.cpp \
     staffdata.cpp \
     rhythmslashpainter.cpp \
-    notestem.cpp \
     musicfont.cpp \
     keysignaturepainter.cpp \
     irregularnotegroup.cpp \
@@ -44,3 +42,5 @@ SOURCES += \
     barlinepainter.cpp \
     restpainter.cpp \
     systemrenderer.cpp
+
+

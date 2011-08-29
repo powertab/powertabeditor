@@ -19,7 +19,7 @@
 #define BEAMGROUP_H
 
 #include <vector>
-#include "notestem.h"
+#include <powertabdocument/notestem.h>
 
 class QGraphicsItem;
 class QPainterPath;
@@ -40,6 +40,11 @@ public:
 private:
     void setStemDirections();
     void adjustStemHeights();
+
+    QGraphicsItem* createStaccato(const NoteStem& noteStem) const;
+    QGraphicsItem* createFermata(const NoteStem& noteStem) const;
+    QGraphicsItem* createAccent(const NoteStem& noteStem) const;
+    QGraphicsItem* createNoteFlag(const NoteStem& noteStem) const;
 
     const StaffData& staffInfo;
     std::vector<NoteStem> noteStems;

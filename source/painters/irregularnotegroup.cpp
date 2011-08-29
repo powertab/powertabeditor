@@ -32,32 +32,30 @@ IrregularNoteGroup::IrregularNoteGroup(const std::vector<NoteStem>& noteStems) :
 
 void IrregularNoteGroup::draw(QGraphicsItem* parent)
 {
-    const NoteStem::StemDirection direction = findDirectionForGroup(noteStems);
+    const NoteStem::StemDirection direction = NoteStem::findDirectionForGroup(noteStems);
 
     double y1 = 0, y2 = 0;
 
     if (direction == NoteStem::StemUp)
     {
-        NoteStem highestStem = *std::min_element(noteStems.begin(), noteStems.end(),
-                                                 CompareStemPositions(&NoteStem::top));
+        NoteStem highestStem = *std::min_element(noteStems.begin(), noteStems.end(), compareStemTopPositions);
 
-        y1 = y2 = highestStem.top() - GROUP_SPACING;
+        y1 = y2 = highestStem.stemTop - GROUP_SPACING;
         y2 -= GROUP_HEIGHT;
     }
     else
     {
-        NoteStem lowestStem = *std::max_element(noteStems.begin(), noteStems.end(),
-                                                CompareStemPositions(&NoteStem::bottom));
+        NoteStem lowestStem = *std::max_element(noteStems.begin(), noteStems.end(), compareStemBottomPositions);
 
-        y1 = y2 = lowestStem.bottom() + GROUP_SPACING;
+        y1 = y2 = lowestStem.stemBottom + GROUP_SPACING;
         y2 += GROUP_HEIGHT;
     }
 
-    const double leftX = noteStems.front().x();
-    const double rightX = noteStems.back().x();
+    const double leftX = noteStems.front().xPosition;
+    const double rightX = noteStems.back().xPosition;
 
     // draw the value of the irregular grouping
-    const QString text = QString().fromStdString(noteStems.front().position()->GetIrregularGroupingText());
+    const QString text = QString::fromStdString(noteStems.front().position->GetIrregularGroupingText());
     const double centreX = (leftX + rightX) / 2.0 - 2.0;
 
     QFont font = MusicFont().getFont();

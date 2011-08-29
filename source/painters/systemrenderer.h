@@ -117,7 +117,7 @@ private:
     void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap);
     void drawMultiBarRest(boost::shared_ptr<const Barline> currentBarline,
                           const StaffData& currentStaffInfo, int measureCount);
-    void drawLedgerLines(const std::vector<double> &noteLocations, const double xLocation,
+    void drawLedgerLines(const std::vector<int> &noteLocations, const double xLocation,
                          const StaffData& staffData);
 };
 

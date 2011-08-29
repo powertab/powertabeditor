@@ -35,6 +35,7 @@
 #include <powertabdocument/layout.h>
 #include <powertabdocument/dynamic.h>
 #include <powertabdocument/guitar.h>
+#include <powertabdocument/notestem.h>
 
 #include <app/common.h>
 
@@ -51,7 +52,6 @@
 #include "rhythmslashpainter.h"
 #include "tremolobarpainter.h"
 #include "stdnotationpainter.h"
-#include "notestem.h"
 #include "restpainter.h"
 #include "beamgroup.h"
 #include "irregularnotegroup.h"
@@ -1026,7 +1026,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
             shared_ptr<Guitar> currentGuitar = score->GetGuitar(system->FindStaffIndex(staff));
             Q_ASSERT(currentGuitar);
 
-            std::vector<double> noteLocations;
+            std::vector<int> noteLocations;
 
             // if we reach a new bar, we can adjust all of the accidentals for the previous bar
             if (currentBarline != prevBarline)
@@ -1071,7 +1071,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
             // add note stem for any notes other than whole notes
             if (currentPosition->GetDurationType() != 1 && currentPosition->GetNoteCount() > 0)
             {
-                NoteStem stem(currentStaffInfo, currentPosition, location, noteLocations);
+                NoteStem stem(currentPosition, location, noteLocations);
                 stems.push_back(stem);
             }
 
@@ -1104,7 +1104,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
 
         currentStemGroup.push_back(stem);
 
-        if (stem.position()->IsBeamEnd() || (!stem.position()->IsBeamStart() && currentStemGroup.size() == 1))
+        if (stem.position->IsBeamEnd() || (!stem.position->IsBeamStart() && currentStemGroup.size() == 1))
         {
             BeamGroup group(currentStaffInfo, currentStemGroup);
             currentStemGroup.clear();
@@ -1128,9 +1128,9 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
         updatedStems.pop_front();
 
         // check if this note isn't part of an irregular grouping
-        if (!stem.position()->IsIrregularGroupingEnd() &&
-                !stem.position()->IsIrregularGroupingMiddle() &&
-                !stem.position()->IsIrregularGroupingStart())
+        if (!stem.position->IsIrregularGroupingEnd() &&
+                !stem.position->IsIrregularGroupingMiddle() &&
+                !stem.position->IsIrregularGroupingStart())
         {
             currentIrregularNoteGroup.clear();
             continue;
@@ -1139,7 +1139,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
         currentIrregularNoteGroup.push_back(stem);
 
         // draw the grouping
-        if (stem.position()->IsIrregularGroupingEnd())
+        if (stem.position->IsIrregularGroupingEnd())
         {
             IrregularNoteGroup irregularGroup(currentIrregularNoteGroup);
             irregularGroup.draw(parentStaff);
@@ -1227,18 +1227,18 @@ void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBa
 
 /// Draws ledger lines for all notes at a position
 /// @param noteLocations - List of y-coordinates of all notes at the position
-void SystemRenderer::drawLedgerLines(const std::vector<double> &noteLocations,
+void SystemRenderer::drawLedgerLines(const std::vector<int> &noteLocations,
                                 const double xLocation,
                                 const StaffData& staffData)
 {
-    const double highestNote = *std::min_element(noteLocations.begin(), noteLocations.end());
-    const double lowestNote = *std::max_element(noteLocations.begin(), noteLocations.end());
+    const int highestNote = *std::min_element(noteLocations.begin(), noteLocations.end());
+    const int lowestNote = *std::max_element(noteLocations.begin(), noteLocations.end());
 
     const int numLedgerLinesTop = -highestNote / Staff::STD_NOTATION_LINE_SPACING;
     const int numLedgerLinesBottom = (lowestNote - staffData.getStdNotationStaffSize()) /
                                       Staff::STD_NOTATION_LINE_SPACING;
 
-    std::vector<double> ledgerLineLocations;
+    std::vector<int> ledgerLineLocations;
 
     if (numLedgerLinesTop > 0)
     {
@@ -1260,7 +1260,7 @@ void SystemRenderer::drawLedgerLines(const std::vector<double> &noteLocations,
     const double ledgerLineWidth = StdNotationPainter::getNoteHeadWidth() * 2;
     QPainterPath path;
 
-    for (std::vector<double>::const_iterator location = ledgerLineLocations.begin();
+    for (std::vector<int>::const_iterator location = ledgerLineLocations.begin();
          location != ledgerLineLocations.end(); ++location)
     {
         path.moveTo(0, *location);
