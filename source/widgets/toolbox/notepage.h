@@ -88,6 +88,8 @@ private:
     void createSlideLegatoButtons();
     void createVibratoTremoloButtons();
 
+    void initButton(QPushButton* button);
+
 private slots:
     void resetNoteAndRestButtons();
     void resetDottedButtons();

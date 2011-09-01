@@ -79,11 +79,8 @@ void NotePage::createNoteButtons()
         }
 
         noteButton[i] = new QPushButton(QIcon(icon),"");
-        noteButton[i]->setIcon(QIcon(icon));
-        noteButton[i]->setIconSize(QSize(24,24));
+        initButton(noteButton[i]);
         noteButton[i]->setToolTip(tip);
-        noteButton[i]->setCheckable(true);
-        noteButton[i]->setFlat(true);		
 
         connectButtonToAction(noteButton[i], action);
 
@@ -117,10 +114,8 @@ void NotePage::createRestButtons()
         }
 
         restButton[i] = new QPushButton(QIcon(icon),"");
-        restButton[i]->setIconSize(QSize(24,24));
+        initButton(restButton[i]);
         restButton[i]->setToolTip(tip);
-        restButton[i]->setCheckable(true);
-        restButton[i]->setFlat(true);
 
         connect(restButton[i],SIGNAL(pressed()),this,SLOT(resetNoteAndRestButtons()));
 
@@ -139,38 +134,28 @@ void NotePage::createRhythmButtons()
     rhythmLayout = new QHBoxLayout;
 
     dottedButton = new QPushButton(QIcon(":images/dotted_note"),"");
-    dottedButton->setIconSize(QSize(24,24));
     dottedButton->setToolTip(tr("Dotted Note"));
-    dottedButton->setCheckable(true);
-    dottedButton->setFlat(true);
+    initButton(dottedButton);
     connectButtonToAction(dottedButton, mainWindow->dottedNoteAct);
 
     doubleDottedButton = new QPushButton(QIcon(":images/doubledotted_note"),"");
-    doubleDottedButton->setIconSize(QSize(24,24));
+    initButton(doubleDottedButton);
     doubleDottedButton->setToolTip(tr("Double Dotted Note"));
-    doubleDottedButton->setCheckable(true);
-    doubleDottedButton->setFlat(true);
     connectButtonToAction(doubleDottedButton, mainWindow->doubleDottedNoteAct);
 
     tieButton = new QPushButton(QIcon(":images/tie_note"),"");
-    tieButton->setIconSize(QSize(24,24));
+    initButton(tieButton);
     tieButton->setToolTip(tr("Tie Note"));
-    tieButton->setCheckable(true);
-    tieButton->setFlat(true);
     connectButtonToAction(tieButton, mainWindow->tiedNoteAct);
 
     groupingButton = new QPushButton(QIcon(":images/group_note"),"");
-    groupingButton->setIconSize(QSize(24,24));
+    initButton(groupingButton);
     groupingButton->setToolTip(tr("Group Note"));
-    groupingButton->setCheckable(true);
-    groupingButton->setFlat(true);
     connectButtonToAction(groupingButton, mainWindow->irregularGroupingAct);
 
     fermataButton = new QPushButton(QIcon(":images/fermata"),"");
-    fermataButton->setIconSize(QSize(24,24));
+    initButton(fermataButton);
     fermataButton->setToolTip(tr("Fermata"));
-    fermataButton->setCheckable(true);
-    fermataButton->setFlat(true);
     connectButtonToAction(fermataButton, mainWindow->fermataAct);
 
     connect(dottedButton,SIGNAL(pressed()),this,SLOT(resetDottedButtons()));
@@ -195,51 +180,38 @@ void NotePage::createSlideLegatoButtons()
 
     slideInBelowButton = new QPushButton(QIcon(":images/slideinbelow.gif"),"");
     slideInBelowButton->setToolTip(tr("Slide In From Below"));
-    slideInBelowButton->setCheckable(true);
-    slideInBelowButton->setFlat(true);
+    initButton(slideInBelowButton);
     connectButtonToAction(slideInBelowButton, mainWindow->slideIntoFromBelowAct);
 
     slideInAboveButton = new QPushButton(QIcon(":images/slideinabove.gif"),"");
     slideInAboveButton->setToolTip(tr("Slide In From Above"));
-    slideInAboveButton->setCheckable(true);
-    slideInAboveButton->setFlat(true);
+    initButton(slideInAboveButton);
     connectButtonToAction(slideInAboveButton, mainWindow->slideIntoFromAboveAct);
 
     slideOutBelowButton = new QPushButton(QIcon(":images/slideoutdown.gif"),"");
     slideOutBelowButton->setToolTip(tr("Slide Out Downwards"));
-    slideOutBelowButton->setCheckable(true);
-    slideOutBelowButton->setFlat(true);
+    initButton(slideOutBelowButton);
     connectButtonToAction(slideOutBelowButton, mainWindow->slideOutOfDownwardsAct);
 
     slideOutAboveButton = new QPushButton(QIcon(":images/slideoutup.gif"),"");
     slideOutAboveButton->setToolTip(tr("Slide Out Upwards"));
-    slideOutAboveButton->setCheckable(true);
-    slideOutAboveButton->setFlat(true);
+    initButton(slideOutAboveButton);
     connectButtonToAction(slideOutAboveButton, mainWindow->slideOutOfUpwardsAct);
 
     shiftSlideButton = new QPushButton(QIcon(":images/shiftslide.gif"),"");
     shiftSlideButton->setToolTip(tr("Shift Slide"));
-    shiftSlideButton->setCheckable(true);
-    shiftSlideButton->setFlat(true);
+    initButton(shiftSlideButton);
     connectButtonToAction(shiftSlideButton, mainWindow->shiftSlideAct);
 
     legatoSlideButton = new QPushButton(QIcon(":images/legatoslide.gif"),"");
     legatoSlideButton->setToolTip(tr("Legato Slide"));
-    legatoSlideButton->setCheckable(true);
-    legatoSlideButton->setFlat(true);
+    initButton(legatoSlideButton);
     connectButtonToAction(legatoSlideButton, mainWindow->legatoSlideAct);
 
     legatoButton = new QPushButton(QIcon(":images/legato.gif"),"");
     legatoButton->setToolTip(tr("Legato"));
-    legatoButton->setCheckable(true);
-    legatoButton->setFlat(true);
+    initButton(legatoButton);
     connectButtonToAction(legatoButton, mainWindow->hammerPullAct);
-
-    /*
-    connect(legatoButton,SIGNAL(pressed()),this,SLOT(resetArticulationButtons()));
-    connect(slideButton,SIGNAL(pressed()),this,SLOT(resetArticulationButtons()));
-    connect(legatoSlideButton,SIGNAL(pressed()),this,SLOT(resetArticulationButtons()));
-    */
 
     slideLegatoLayout->addWidget(legatoButton);
     slideLegatoLayout->addWidget(legatoSlideButton);
@@ -262,37 +234,27 @@ void NotePage::createVibratoTremoloButtons()
 
     slightVibratoButton = new QPushButton(QIcon(":images/slightvibrato.gif"),"");
     slightVibratoButton->setToolTip(tr("Slight Vibrato"));
-    slightVibratoButton->setCheckable(true);
-    slightVibratoButton->setFlat(true);
+    initButton(slightVibratoButton);
     connectButtonToAction(slightVibratoButton, mainWindow->vibratoAct);
 
     wideVibratoButton = new QPushButton(QIcon(":images/widevibrato.gif"),"");
     wideVibratoButton->setToolTip(tr("Wide Vibrato"));
-    wideVibratoButton->setCheckable(true);
-    wideVibratoButton->setFlat(true);
+    initButton(wideVibratoButton);
     connectButtonToAction(wideVibratoButton, mainWindow->wideVibratoAct);
 
     bendButton = new QPushButton(QIcon(":images/bend.gif"),"");
     bendButton->setToolTip(tr("Bend"));
-    bendButton->setCheckable(true);
-    bendButton->setFlat(true);
+    initButton(bendButton);
 
     trillButton = new QPushButton(QIcon(":images/trill.gif"),"");
     trillButton->setToolTip(tr("Trill"));
-    trillButton->setCheckable(true);
-    trillButton->setFlat(true);
+    initButton(trillButton);
     connectButtonToAction(trillButton, mainWindow->trillAction);
 
     tremoloButton = new QPushButton(QIcon(":images/tremolo.gif"),"");
     tremoloButton->setToolTip(tr("Tremolo"));
-    tremoloButton->setCheckable(true);
-    tremoloButton->setFlat(true);
+    initButton(tremoloButton);
     connectButtonToAction(tremoloButton, mainWindow->tremoloPickingAct);
-
-    /*
-    connect(dottedButton,SIGNAL(pressed()),this,SLOT(resetDottedButtons()));
-    connect(doubleDottedButton,SIGNAL(pressed()),this,SLOT(resetDottedButtons()));
-    */
 
     vibratoTremoloLayout->addWidget(slightVibratoButton);
     vibratoTremoloLayout->addWidget(wideVibratoButton);
@@ -340,4 +302,12 @@ NotePage::NotePage(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> sk
     layout->addStretch(1);
 
     setLayout(layout);
+}
+
+/// Common initialization code for all buttons in the widget
+void NotePage::initButton(QPushButton *button)
+{
+    button->setIconSize(QSize(24,24));
+    button->setCheckable(true);
+    button->setFlat(true);
 }
