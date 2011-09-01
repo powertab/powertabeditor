@@ -164,6 +164,7 @@ void NotePage::createRhythmButtons()
     groupingButton->setToolTip(tr("Group Note"));
     groupingButton->setCheckable(true);
     groupingButton->setFlat(true);
+    connectButtonToAction(groupingButton, mainWindow->irregularGroupingAct);
 
     fermataButton = new QPushButton(QIcon(":images/fermata"),"");
     fermataButton->setIconSize(QSize(24,24));
@@ -196,11 +197,13 @@ void NotePage::createSlideLegatoButtons()
     slideInBelowButton->setToolTip(tr("Slide In From Below"));
     slideInBelowButton->setCheckable(true);
     slideInBelowButton->setFlat(true);
+    connectButtonToAction(slideInBelowButton, mainWindow->slideIntoFromBelowAct);
 
     slideInAboveButton = new QPushButton(QIcon(":images/slideinabove.gif"),"");
     slideInAboveButton->setToolTip(tr("Slide In From Above"));
     slideInAboveButton->setCheckable(true);
     slideInAboveButton->setFlat(true);
+    connectButtonToAction(slideInAboveButton, mainWindow->slideIntoFromAboveAct);
 
     slideOutBelowButton = new QPushButton(QIcon(":images/slideoutdown.gif"),"");
     slideOutBelowButton->setToolTip(tr("Slide Out Downwards"));
