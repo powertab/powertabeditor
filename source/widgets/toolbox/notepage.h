@@ -91,7 +91,6 @@ private:
 private slots:
     void resetNoteAndRestButtons();
     void resetDottedButtons();
-    void resetSlideLegatoButtons();
 };
 
 #endif // NOTEPAGE_H

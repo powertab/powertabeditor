@@ -321,13 +321,6 @@ void NotePage::resetDottedButtons()
     doubleDottedButton->setChecked(false);
 }
 
-void NotePage::resetSlideLegatoButtons()
-{
-    legatoButton->setChecked(false);
-    legatoSlideButton->setChecked(false);
-    shiftSlideButton->setChecked(false);
-}
-
 NotePage::NotePage(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager, QFrame *parent) :
     QFrame(parent),
     mainWindow(mainWindow)
