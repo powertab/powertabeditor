@@ -53,6 +53,7 @@ enum SymbolType
     SymbolNaturalHarmonic,
     SymbolArtificialHarmonic,
     SymbolDynamic,
+    SymbolBend,
     // symbols below tab staff
     SymbolPickStrokeDown,
     SymbolPickStrokeUp,

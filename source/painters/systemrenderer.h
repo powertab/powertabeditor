@@ -112,6 +112,7 @@ private:
     QGraphicsItem* createTremoloPicking(const StaffData& currentStaffInfo);
     QGraphicsItem* createTrill(const StaffData& currentStaffInfo);
     QGraphicsItem* createDynamic(boost::shared_ptr<const Dynamic> dynamic);
+    QGraphicsItem* createBend(const Position* position, const StaffData& staffInfo);
 
     void drawStdNotation(const StaffData& currentStaffInfo);
     void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap);

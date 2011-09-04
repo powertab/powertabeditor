@@ -156,15 +156,22 @@ namespace
 {
 /// Updates the height, by inserting a symbol group spanning the left and right indices
 /// @return The height of the symbol group that was inserted
-int updateHeightMap(std::vector<int>& heightMap, size_t left, size_t right)
+int updateHeightMap(std::vector<int>& heightMap, size_t left, size_t right, int symbolHeight)
 {
     const int height = *std::max_element(heightMap.begin() + left,
-                                         heightMap.begin() + right) + 1;
+                                         heightMap.begin() + right) + symbolHeight;
     std::fill_n(heightMap.begin() + left, right - left, height);
 
     return height;
 }
+
+int symbolHeight(Layout::SymbolType symbolType)
+{
+    return (symbolType == Layout::SymbolBend) ? 3 : 1;
 }
+
+}
+
 
 /// Compute the layout of symbols between the standard notation and tab staves
 /// Returns a list of all symbol groups and their locations (for example, consecutive notes with vibrato
@@ -182,6 +189,9 @@ void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroup
 
         std::vector<SymbolType> symbols;
         symbols.reserve(12);
+
+        // bends must be drawn lower than any other symbol, since they connect with the tab notes
+        symbols.push_back(pos->HasNoteWithBend() ? SymbolBend : NoSymbol);
 
         symbols.push_back(pos->HasLetRing() ? SymbolLetRing : NoSymbol);
         symbols.push_back(pos->HasVolumeSwell() ? SymbolVolumeSwell : NoSymbol);
@@ -223,7 +233,7 @@ void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroup
         return;
     }
 
-    // go through each symbol, and then iterate through the positions and group together symbols
+    // go through each symbol, and then iterate through the positions and group together symbols (like consecutive notes with vibrato)
     for (size_t symbol = 0; symbol < symbolMap.at(0).size(); symbol++)
     {
         SymbolType currentSymbolType = NoSymbol;
@@ -237,14 +247,15 @@ void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroup
             if (symbolType != currentSymbolType ||
                 symbolType == SymbolTrill || // don't group consecutive occurrences of these symbols together
                 symbolType == SymbolTremoloPicking || symbolType == SymbolTremoloBar ||
-                symbolType == SymbolVolumeSwell || symbolType == SymbolDynamic)
+                symbolType == SymbolVolumeSwell || symbolType == SymbolDynamic ||
+                symbolType == SymbolBend)
             {
                 // record the symbol group and calculate its location
                 if (currentSymbolType != NoSymbol)
                 {
                     const size_t rightPosIndex = posIndex;
 
-                    const int height = updateHeightMap(heightMap, leftPosIndex, rightPosIndex);
+                    const int height = updateHeightMap(heightMap, leftPosIndex, rightPosIndex, symbolHeight(currentSymbolType));
 
                     const int leftX = system->GetPositionX(staff->GetPosition(0, leftPosIndex)->GetPosition());
                     int rightX = system->GetPositionX(staff->GetPosition(0, rightPosIndex)->GetPosition());
@@ -293,7 +304,7 @@ void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroup
         {
             const int leftX = system->GetPositionX(staff->GetPosition(0, leftPosIndex)->GetPosition());
             const int rightX = system->GetPositionX(system->GetPositionCount() - 1);
-            const int height = updateHeightMap(heightMap, leftPosIndex, symbolMap.size() - 1);
+            const int height = updateHeightMap(heightMap, leftPosIndex, symbolMap.size() - 1, symbolHeight(currentSymbolType));
             symbolGroups.push_back(SymbolGroup(leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
         }
     }

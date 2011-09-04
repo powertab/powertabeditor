@@ -873,13 +873,27 @@ void SystemRenderer::drawSymbols(const StaffData& staffInfo)
             break;
         }
 
-        default:
-            Q_ASSERT(false); // shouldn't have any other symbol types!!!
+        case Layout::SymbolBend:
+        {
+            renderedSymbol = createBend(staff->GetPosition(0, symbolGroup.leftPosIndex), staffInfo);
             break;
         }
 
-        renderedSymbol->setPos(symbolGroup.leftX,
-                               staffInfo.getTopTabLine() - (symbolGroup.height + 1) * Staff::TAB_SYMBOL_HEIGHT);
+        default:
+            Q_ASSERT(false); // all symbol types should have been dealt with by now ...
+            break;
+        }
+
+        if (symbolGroup.symbolType != Layout::SymbolBend)
+        {
+            renderedSymbol->setPos(symbolGroup.leftX,
+                                   staffInfo.getTopTabLine() - (symbolGroup.height + 1) * Staff::TAB_SYMBOL_HEIGHT);
+        }
+        else
+        {
+            renderedSymbol->setPos(symbolGroup.leftX, 0);
+        }
+
         renderedSymbol->setParentItem(parentStaff);
     }
 }
@@ -1290,4 +1304,46 @@ void SystemRenderer::connectSignals(ScoreArea *scoreArea)
         QObject::connect(keySignaturePainters[i], SIGNAL(clicked(int)),
                          scoreArea, SIGNAL(keySignatureClicked(int)));
     }
+}
+
+QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffData& staffInfo)
+{
+    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup;
+
+    QPainterPath path;
+
+    const double leftX = staffInfo.getNoteHeadRightEdge();
+    const double rightX = staffInfo.positionWidth;
+
+    for (size_t i = 0; i < position->GetNoteCount(); ++i)
+    {
+        const Note* note = position->GetNote(i);
+
+        if (note->HasBend())
+        {
+            const double yBottom = staffInfo.getTabLineHeight(note->GetString()) + 0.5 * Staff::STD_NOTATION_LINE_SPACING;
+            const double yTop = staffInfo.getTopTabLine() - Staff::TAB_SYMBOL_HEIGHT * 1.5;
+
+            // draw arc for bend
+            // TODO - support drawing different bend types
+            path.moveTo(leftX, yBottom);
+            path.cubicTo(leftX, yBottom, rightX, yBottom,
+                         rightX, yTop);
+
+            // draw arrow head
+            const double ARROW_WIDTH = 5;
+
+            QPolygonF arrowShape;
+            arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yTop)
+                       << QPointF(rightX + ARROW_WIDTH / 2, yTop)
+                       << QPointF(rightX, yTop - ARROW_WIDTH);
+
+            QGraphicsPolygonItem* arrow = new QGraphicsPolygonItem(arrowShape);
+            arrow->setBrush(QBrush(Qt::black));
+            itemGroup->addToGroup(arrow);
+        }
+    }
+
+    itemGroup->addToGroup(new QGraphicsPathItem(path));
+    return itemGroup;
 }

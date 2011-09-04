@@ -840,7 +840,7 @@ public:
         std::copy(m_noteArray.begin(), m_noteArray.end(), std::back_inserter(notes));
     }
 
-protected:
+private:
     int GetShiftedStringNumber(Note* note, ShiftType type) const;
     int GetShiftedFretNumber(Note* note, int originalString, int newString, const Tuning& tuning) const;
 
@@ -856,8 +856,9 @@ public:
     bool HasNoteWithPulloffToNowhere() const;
     bool HasNoteWithSlide() const;
     bool HasNoteWithTappedHarmonic() const;
+    bool HasNoteWithBend() const;
 
-protected:
+private:
     bool HasNoteWithProperty(bool (Note::*notePropertyPredicate)() const) const;
 };
 

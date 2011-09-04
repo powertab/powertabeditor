@@ -927,3 +927,8 @@ bool Position::IsValidComplexSymbolType(uint8_t type)
     return ((type == volumeSwell) || (type == tremoloBar) ||
             (type == multibarRest));
 }
+
+bool Position::HasNoteWithBend() const
+{
+    return HasNoteWithProperty(&Note::HasBend);
+}
