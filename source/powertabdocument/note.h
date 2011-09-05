@@ -290,6 +290,8 @@ public:
     bool HasBend() const;
     void ClearBend();
 
+    static std::string GetBendText(uint8_t pitch);
+
 // Tapped Harmonic Functions
     static bool IsValidTappedFretNumber(uint8_t tappedFretNumber);
     static bool IsValidTappedHarmonic(uint8_t tappedFretNumber);

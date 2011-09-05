@@ -1285,3 +1285,53 @@ bool Note::IsGhostNote() const
 {
     return IsSimpleFlagSet(ghostNote);
 }
+
+/// Returns a text description of the bend (e.g. "1 1/2" or "Full")
+std::string Note::GetBendText(uint8_t pitch)
+{
+    CHECK_THAT(IsValidBentPitch(pitch), "");
+
+    std::stringstream text;
+
+    if (pitch == 0)
+    {
+        text << "Standard";
+    }
+    else if (pitch == 4)
+    {
+        text << "Full";
+    }
+    // display a fraction
+    else
+    {
+        const int quotient = pitch / 4;
+        const int remainder = pitch % 4;
+
+        // whole number
+        if (quotient != 0)
+        {
+            text << quotient;
+
+            if (remainder != 0)
+            {
+                text << " ";
+            }
+        }
+
+        // fractional part
+        if (remainder != 0)
+        {
+            // reduce the fraction
+            if (remainder == 1 || remainder == 3)
+            {
+                text << remainder << "/" << 4;
+            }
+            else
+            {
+                text << "1/2";
+            }
+        }
+    }
+
+    return text.str();
+}

@@ -1341,6 +1341,20 @@ QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffD
             QGraphicsPolygonItem* arrow = new QGraphicsPolygonItem(arrowShape);
             arrow->setBrush(QBrush(Qt::black));
             itemGroup->addToGroup(arrow);
+
+            // draw text for bend (e.g. "Full", "3/4", etc)
+            uint8_t bendType = 0, bentPitch = 0, releasePitch = 0,
+                    duration = 0, drawStartPoint = 0, drawEndPoint = 0;
+            note->GetBend(bendType, bentPitch, releasePitch, duration, drawStartPoint, drawEndPoint);
+
+            if (bendType != Note::gradualRelease && bendType != Note::immediateRelease)
+            {
+                QGraphicsTextItem* bendText = new QGraphicsTextItem(QString::fromStdString(Note::GetBendText(bentPitch)));
+                symbolTextFont.setStyle(QFont::StyleNormal);
+                bendText->setFont(symbolTextFont);
+                centerItem(bendText, leftX, rightX, yTop - 2 * symbolTextFont.pixelSize());
+                itemGroup->addToGroup(bendText);
+            }
         }
     }
 

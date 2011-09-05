@@ -104,5 +104,16 @@ BOOST_AUTO_TEST_SUITE(NoteTest)
         testNoteProperty(&Note::SetOctave15mb, &Note::IsOctave15mb);
     }
 
+    BOOST_AUTO_TEST_CASE(BendText)
+    {
+        BOOST_CHECK_EQUAL(Note::GetBendText(0), "Standard");
+        BOOST_CHECK_EQUAL(Note::GetBendText(4), "Full");
+        BOOST_CHECK_EQUAL(Note::GetBendText(8), "2");
+        BOOST_CHECK_EQUAL(Note::GetBendText(2), "1/2");
+        BOOST_CHECK_EQUAL(Note::GetBendText(9), "2 1/4");
+        BOOST_CHECK_EQUAL(Note::GetBendText(10), "2 1/2");
+        BOOST_CHECK_EQUAL(Note::GetBendText(11), "2 3/4");
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
 
