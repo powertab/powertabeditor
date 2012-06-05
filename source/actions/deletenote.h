@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,37 +14,39 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef ADDNOTE_H
-#define ADDNOTE_H
+
+#ifndef DELETENOTE_H
+#define DELETENOTE_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/cstdint.hpp>
 
 class Staff;
 class Position;
 class Note;
+class DeletePosition;
 
-class AddNote : public QUndoCommand
+class DeleteNote : public QUndoCommand
 {
 public:
-    AddNote(uint8_t stringNum, uint8_t fretNumber, uint32_t positionIndex,
-            uint32_t voice, boost::shared_ptr<Staff> staff);
-    ~AddNote();
+    DeleteNote(boost::shared_ptr<Staff> staff, uint32_t voice,
+               Position* position, uint8_t string);
+    ~DeleteNote();
 
     void redo();
     void undo();
 
-private:
-    const uint8_t stringNum;
-    uint32_t positionIndex;
-    uint32_t voice;
-    boost::shared_ptr<Staff> staff;
-    Note* note;
-    Position* position;
+    static bool canExecute(Position* position, uint8_t string);
 
-    bool newPositionAdded;
+private:
+    boost::shared_ptr<Staff> staff;
+    const uint32_t voice;
+    const uint32_t positionIndex;
+    const uint8_t string;
+    Note* note;
+    boost::scoped_ptr<DeletePosition> deletePosition;
 };
 
-#endif // ADDNOTE_H
+#endif // DELETENOTE_H

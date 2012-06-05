@@ -714,7 +714,6 @@ void Position::RemoveNote(uint8_t string)
         throw std::logic_error("There is no note to remove at the given string");
     }
 
-    delete note;
     // get the iterator to the note, and erase it
     m_noteArray.erase(std::find(m_noteArray.begin(), m_noteArray.end(), note));
 }

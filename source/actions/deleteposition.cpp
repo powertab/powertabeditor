@@ -25,16 +25,15 @@ DeletePosition::DeletePosition(boost::shared_ptr<Staff> staff, Position* positio
     position(position),
     voice(voice)
 {
-    positionCopy.reset(position->CloneObject());
     setText(QObject::tr("Clear Position"));
 }
 
 void DeletePosition::redo()
 {
-    staff->RemovePosition(voice, positionCopy->GetPosition());
+    staff->RemovePosition(voice, position->GetPosition());
 }
 
 void DeletePosition::undo()
 {
-    staff->InsertPosition(voice, positionCopy->CloneObject());
+    staff->InsertPosition(voice, position);
 }

@@ -850,7 +850,7 @@ bool Staff::InsertPosition(uint32_t voice, Position *position)
     return true;
 }
 
-/// Removes and deletes the given position from the specified voice
+/// Removes the given position from the specified voice
 bool Staff::RemovePosition(uint32_t voice, uint32_t index)
 {
     if (!IsValidVoice(voice))
@@ -866,7 +866,6 @@ bool Staff::RemovePosition(uint32_t voice, uint32_t index)
     CHECK_THAT(location != positionArray.end(), false);
 
     // remove it
-    delete pos;
     positionArray.erase(location);
     return true;
 }

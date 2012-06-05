@@ -117,6 +117,7 @@
 #include <actions/addirregulargrouping.h>
 #include <actions/removeirregulargrouping.h>
 #include <actions/edittrackshown.h>
+#include <actions/deletenote.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -1427,12 +1428,15 @@ void PowerTabEditor::shiftBackward()
 /// Clears the note at the caret's current position
 void PowerTabEditor::clearNote()
 {
-    //Caret* caret = getCurrentScoreArea()->getCaret();
-    //Note* currentNote = caret->getCurrentNote();
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Position* position = caret->getCurrentPosition();
+    const uint8_t string = caret->getCurrentStringIndex();
 
-    Q_ASSERT(false);
-
-    // TODO - implement this
+    if (DeleteNote::canExecute(position, string))
+    {
+        undoManager->push(new DeleteNote(caret->getCurrentStaff(), caret->getCurrentVoice(),
+                                         position, string));
+    }
 }
 
 /// Completely clears the caret's current position

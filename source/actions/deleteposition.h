@@ -20,7 +20,6 @@
 
 #include <QUndoCommand>
 #include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
 
 class Staff;
 class Position;
@@ -35,7 +34,6 @@ public:
 protected:
     boost::shared_ptr<Staff> staff;
     Position* position;
-    boost::scoped_ptr<Position> positionCopy;
     const quint32 voice;
 };
 

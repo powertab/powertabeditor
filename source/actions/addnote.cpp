@@ -24,12 +24,12 @@
 AddNote::AddNote(uint8_t stringNum, uint8_t fretNumber,
                  uint32_t positionIndex, uint32_t voice, boost::shared_ptr<Staff> staff) :
     stringNum(stringNum),
-    fretNumber(fretNumber),
     positionIndex(positionIndex),
     voice(voice),
     staff(staff),
-    newPositionAdded(false),
-    position(NULL)
+    note(new Note(stringNum, fretNumber)),
+    position(staff->GetPositionByPosition(voice, positionIndex)),
+    newPositionAdded(false)
 {
     setText(QObject::tr("Add Note"));
 }
@@ -40,16 +40,17 @@ AddNote::~AddNote()
 
 void AddNote::redo()
 {
-    position = staff->GetPositionByPosition(voice, positionIndex);
-
-    if (!position) // add a Position if necessary
+    if (!staff->GetPositionByPosition(voice, positionIndex)) // add a Position if necessary
     {
-        newPositionAdded = true;
-        position = new Position(positionIndex, 8, 0);
+        if (!newPositionAdded)
+        {
+            newPositionAdded = true;
+            position = new Position(positionIndex, 8, 0);
+        }
         staff->InsertPosition(voice, position);
     }
 
-    position->InsertNote(new Note(stringNum, fretNumber));
+    position->InsertNote(note);
 }
 
 void AddNote::undo()
