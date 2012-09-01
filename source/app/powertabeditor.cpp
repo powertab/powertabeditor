@@ -62,6 +62,7 @@
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/volumeswelldialog.h>
 #include <dialogs/irregulargroupingdialog.h>
+#include <dialogs/fileinformationdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -303,6 +304,11 @@ void PowerTabEditor::createActions()
 
     pasteAct = new Command(tr("Paste"), "Edit.Paste", QKeySequence::Paste, this);
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(doPaste()));
+
+    // File Information
+    fileInfoAct = new Command(tr("File Information"), "Edit.FileInformation",
+                              QKeySequence(), this);
+    connect(fileInfoAct, SIGNAL(triggered()), this, SLOT(openFileInformation()));
 
     // Playback-related actions
     playPauseAct = new Command(tr("Play"), "PlayPause.Play", Qt::Key_Space, this);
@@ -771,6 +777,8 @@ void PowerTabEditor::createMenus()
     editMenu->addSeparator();
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
+    editMenu->addSeparator();
+    editMenu->addAction(fileInfoAct);
 
     // Playback Menu
     playbackMenu = menuBar()->addMenu(tr("Play&back"));
@@ -2156,4 +2164,9 @@ void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
     connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
 
     undoManager->push(action);
+}
+
+void PowerTabEditor::openFileInformation()
+{
+    FileInformationDialog(documentManager->getCurrentDocument()).exec();
 }

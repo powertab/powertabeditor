@@ -147,8 +147,8 @@ bool Dynamic::Deserialize(PowerTabInputStream& stream, uint16_t version)
     // - Jan 12, 2005
     
     // Version 1.0 and 1.0.2 (only staff volume was stored)
-    if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-        version == PowerTabFileHeader::FILEVERSION_1_0_2)
+    if (version == PowerTabFileHeader::Version_1_0 ||
+        version == PowerTabFileHeader::Version_1_0_2)
     {
         uint8_t staffVolume;
         stream >> m_system >> m_staff >> m_position >> staffVolume;

@@ -162,8 +162,8 @@ bool System::Serialize(PowerTabOutputStream& stream) const
 bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
 {
     // Version 1.0 and 1.0.2
-    if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-        version == PowerTabFileHeader::FILEVERSION_1_0_2)
+    if (version == PowerTabFileHeader::Version_1_0 ||
+        version == PowerTabFileHeader::Version_1_0_2)
     {
         uint8_t key;
         uint16_t endBar;

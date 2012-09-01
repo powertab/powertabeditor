@@ -185,8 +185,8 @@ bool TempoMarker::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream.ReadMFCString(m_description);
         
     // Version 1.0.2 or less
-    if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-        version == PowerTabFileHeader::FILEVERSION_1_0_2)
+    if (version == PowerTabFileHeader::Version_1_0 ||
+        version == PowerTabFileHeader::Version_1_0_2)
     {
         // Beat types are stored differently now
         uint8_t beatType = HIBYTE(HIWORD(m_data));

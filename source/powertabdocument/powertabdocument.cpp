@@ -189,7 +189,7 @@ bool PowerTabDocument::Save(const string& fileName) const
     m_header.Serialize(stream);
     CHECK_THAT(stream.CheckState(), false);
 
-    if (m_header.GetVersion() <= PowerTabFileHeader::FILEVERSION_1_7)
+    if (m_header.GetVersion() <= PowerTabFileHeader::Version_1_7)
     {
         // Write the scores
         for (size_t i = 0; i < m_scoreArray.size(); i++)
@@ -261,7 +261,7 @@ bool PowerTabDocument::Deserialize(PowerTabInputStream& stream)
     m_scoreArray.push_back(new Score);
     m_scoreArray[0]->Deserialize(stream, version);
 
-    if (version <= PowerTabFileHeader::FILEVERSION_1_7)
+    if (version <= PowerTabFileHeader::Version_1_7)
     {
         // Read the bass score
         m_scoreArray.push_back(new Score);

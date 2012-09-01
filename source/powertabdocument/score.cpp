@@ -136,7 +136,7 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream.ReadVector(m_alternateEndingArray, version);
     stream.ReadVector(m_systemArray, version);
 
-    if (version == PowerTabFileHeader::FILEVERSION_1_7)
+    if (version == PowerTabFileHeader::Version_1_7)
     {
         UpdateToVer2Structure();
     }

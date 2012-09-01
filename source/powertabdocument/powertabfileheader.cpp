@@ -17,13 +17,8 @@
 // Constants (see .h for details)
 const uint32_t PowerTabFileHeader::POWERTABFILE_MARKER              = 0x62617470;
 
-const uint16_t PowerTabFileHeader::NUM_FILEVERSIONS                   = 4;
-const uint16_t PowerTabFileHeader::FILEVERSION_1_0                    = 1;
-const uint16_t PowerTabFileHeader::FILEVERSION_1_0_2                  = 2;
-const uint16_t PowerTabFileHeader::FILEVERSION_1_5                    = 3;
-const uint16_t PowerTabFileHeader::FILEVERSION_1_7                    = 4;
-const uint16_t PowerTabFileHeader::FILEVERSION_2_0                    = 5;
-const uint16_t PowerTabFileHeader::FILEVERSION_CURRENT                = FILEVERSION_2_0;
+const uint16_t PowerTabFileHeader::FILEVERSION_CURRENT                = PowerTabFileHeader::Version_2_0;
+const uint16_t PowerTabFileHeader::NUM_FILEVERSIONS                   = 5;
 
 const uint8_t PowerTabFileHeader::NUM_FILETYPES                      = 2;
 const uint8_t PowerTabFileHeader::FILETYPE_SONG                      = 0;
@@ -382,10 +377,10 @@ bool PowerTabFileHeader::Deserialize(PowerTabInputStream& stream)
 	bool returnValue = false;
 	
 	// Version 1.0 and 1.0.2
-	if (m_version == FILEVERSION_1_0 || m_version == FILEVERSION_1_0_2)
+    if (m_version == Version_1_0 || m_version == Version_1_0_2)
 		returnValue = DeserializeVersion1_0(stream);
 	// Version 1.5
-	else if (m_version == FILEVERSION_1_5)
+    else if (m_version == Version_1_5)
 		returnValue = DeserializeVersion1_5(stream);
 	// Version 1.7 and up
 	else

@@ -141,8 +141,8 @@ bool ChordName::Deserialize(PowerTabInputStream& stream, uint16_t version)
     // - Dec 14, 2004
 
     // Version 1.0 or 1.0.2
-    if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-        version == PowerTabFileHeader::FILEVERSION_1_0_2)
+    if (version == PowerTabFileHeader::Version_1_0 ||
+        version == PowerTabFileHeader::Version_1_0_2)
     {
         uint8_t key;
         stream >> key >> m_formula >> m_formulaModifications >> m_extra;

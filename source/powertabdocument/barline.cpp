@@ -137,8 +137,8 @@ bool Barline::Deserialize(PowerTabInputStream& stream, uint16_t version)
 	// - Jan 4, 2005
 	
 	// Version 1.0/1.0.2 (key was stored in word)
-	if (version == PowerTabFileHeader::FILEVERSION_1_0 ||
-		version == PowerTabFileHeader::FILEVERSION_1_0_2)
+    if (version == PowerTabFileHeader::Version_1_0 ||
+        version == PowerTabFileHeader::Version_1_0_2)
 	{
 		uint16_t symbol;
 		stream >> m_position >> symbol;

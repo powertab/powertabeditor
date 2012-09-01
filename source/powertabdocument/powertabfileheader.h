@@ -27,13 +27,17 @@ class PowerTabFileHeader
 public:
     static const uint32_t POWERTABFILE_MARKER;          ///< Special marker that appears at the start of every Power Tab file
 
-    static const uint16_t NUM_FILEVERSIONS;             ///< Number of power tab file formats
-    static const uint16_t FILEVERSION_1_0;              ///< Version 1.0        Feb. 6, 2000
-    static const uint16_t FILEVERSION_1_0_2;            ///< Version 1.0.2      Feb. 21, 2000
-    static const uint16_t FILEVERSION_1_5;              ///< Version 1.5        May. 22, 2000
-    static const uint16_t FILEVERSION_1_7;              ///< Version 1.7        Aug. 30, 2000
-    static const uint16_t FILEVERSION_2_0;              ///< Version 2.0
-    static const uint16_t FILEVERSION_CURRENT;          ///< Current version of power tab file format
+    enum FileVersion
+    {
+        Version_1_0 = 1,    ///< Version 1.0        Feb. 6, 2000
+        Version_1_0_2,      ///< Version 1.0.2      Feb. 21, 2000
+        Version_1_5,        ///< Version 1.5        May. 22, 2000
+        Version_1_7,        ///< Version 1.7        Aug. 30, 2000
+        Version_2_0         ///< Version 2.0
+    };
+
+    static const uint16_t NUM_FILEVERSIONS;             ///< Number of power tab file formats.
+    static const uint16_t FILEVERSION_CURRENT;          ///< Current version of power tab file format.
     
     static const uint8_t NUM_FILETYPES;                 ///< Number of file types
     static const uint8_t FILETYPE_SONG;                 ///< File is a song
@@ -203,13 +207,13 @@ public:
     /// @return True if the file version is valid, false if not
     static bool IsValidFileVersion(uint16_t version)                  
     {
-        return (version >= FILEVERSION_1_0) && (version <= FILEVERSION_CURRENT);
+        return (version >= Version_1_0) && (version <= FILEVERSION_CURRENT);
     }
 
     /// Sets the file version (see FILEVERSION_ constants for values)
     /// @param version File version to set
     /// @return True if the file version was set, false if not
-    bool SetVersion(uint16_t version)                                 
+    bool SetVersion(uint16_t version)
     {
         CHECK_THAT(IsValidFileVersion(version), false);
         m_version = version;
@@ -218,9 +222,9 @@ public:
 
     /// Gets the file version
     /// @return The file version
-    uint16_t GetVersion() const                                       
+    FileVersion GetVersion() const
     {
-        return m_version;
+        return (FileVersion)m_version;
     }
 
 // File Type Functions

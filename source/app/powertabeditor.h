@@ -63,7 +63,7 @@ public:
     static std::vector<Position*> getSelectedPositions();
     static std::vector<Note*> getSelectedNotes();
 
-protected:
+private:
     void createActions();
     void createMenus();
     void initFileFormatMenus();
@@ -83,13 +83,14 @@ protected:
 
     void importFile(const FileFormat& format);
 
-protected slots:
+private slots:
     void updateActions();
     void updateModified(bool);
     void createNewFile();
     void openFile(QString fileName = "");
     void saveFileAs();
     void openPreferences();
+    void openFileInformation();
     void refreshOnUndoRedo(int);
     void closeCurrentTab();
     void closeTab(int index);
@@ -148,7 +149,7 @@ protected slots:
     void doPaste();
     void copySelectedNotes();
 
-protected:
+private:
     bool isPlaying;
     const QString fileFilter;
 
@@ -183,6 +184,7 @@ protected:
     QAction* redoAct;
     Command* copyAct;
     Command* pasteAct;
+    Command* fileInfoAct;
 
     QMenu* playbackMenu;
     Command* playPauseAct;

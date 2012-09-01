@@ -19,7 +19,8 @@ HEADERS += \
     dialogs_pch.h \
     timesignaturedialog.h \
     volumeswelldialog.h \
-    irregulargroupingdialog.h
+    irregulargroupingdialog.h \
+    fileinformationdialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -35,7 +36,8 @@ SOURCES += \
     dynamicdialog.cpp \
     timesignaturedialog.cpp \
     volumeswelldialog.cpp \
-    irregulargroupingdialog.cpp
+    irregulargroupingdialog.cpp \
+    fileinformationdialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -46,4 +48,5 @@ FORMS += \
     tuningdialog.ui \
     volumeswelldialog.ui \
     irregulargroupingdialog.ui \
-    keysignaturedialog.ui
+    keysignaturedialog.ui \
+    fileinformationdialog.ui
