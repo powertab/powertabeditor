@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>511</width>
-    <height>336</height>
+    <width>537</width>
+    <height>558</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,12 +17,342 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="songInfo">
       <attribute name="title">
        <string>Song Information</string>
       </attribute>
+      <widget class="QWidget" name="formLayoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>281</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="formLayout_2">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <property name="horizontalSpacing">
+         <number>16</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="songTypeLabel">
+          <property name="text">
+           <string>Classification:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetDefaultConstraint</enum>
+          </property>
+          <item>
+           <widget class="QRadioButton" name="songButton">
+            <property name="text">
+             <string>Song</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">songTypeButtonGroup</string>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="lessonButton">
+            <property name="text">
+             <string>Lesson</string>
+            </property>
+            <attribute name="buttonGroup">
+             <string notr="true">songTypeButtonGroup</string>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QStackedWidget" name="songTypeStack">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>50</y>
+         <width>501</width>
+         <height>411</height>
+        </rect>
+       </property>
+       <widget class="QWidget" name="songPage">
+        <widget class="QWidget" name="formLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>481</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="songTitleValue"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="songArtistLabel">
+            <property name="text">
+             <string>Artist:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="songArtistValue"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="songTitleLabel">
+            <property name="text">
+             <string>Title:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>80</y>
+           <width>491</width>
+           <height>181</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Release Information</string>
+         </property>
+         <widget class="QLabel" name="releaseTypeLabel">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>92</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Release Type:</string>
+          </property>
+         </widget>
+         <widget class="QListWidget" name="releaseTypeList">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>50</y>
+            <width>171</width>
+            <height>111</height>
+           </rect>
+          </property>
+          <item>
+           <property name="text">
+            <string>Public Release (Audio)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Public Release (Video)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Bootleg</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Not Released</string>
+           </property>
+          </item>
+         </widget>
+         <widget class="QStackedWidget" name="releaseInfoStack">
+          <property name="geometry">
+           <rect>
+            <x>190</x>
+            <y>30</y>
+            <width>291</width>
+            <height>131</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="albumInfo">
+           <widget class="QWidget" name="formLayoutWidget_4">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>291</width>
+              <height>131</height>
+             </rect>
+            </property>
+            <layout class="QFormLayout" name="formLayout_4">
+             <item row="0" column="0">
+              <widget class="QLabel" name="albumTitleLabel">
+               <property name="text">
+                <string>Album Title:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="albumTitleValue"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="albumTypeLabel">
+               <property name="text">
+                <string>Album Type:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="albumTypeValue">
+               <item>
+                <property name="text">
+                 <string>Single</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>EP</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Album</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Double Album</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Triple Album</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Boxset</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="albumYearLabel">
+               <property name="text">
+                <string>Year:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="audioLiveRecordingLabel">
+               <property name="text">
+                <string>Live Recording:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QCheckBox" name="audioLiveRecordingValue"/>
+             </item>
+             <item row="2" column="1">
+              <widget class="QSpinBox" name="albumYearValue">
+               <property name="maximum">
+                <number>9999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="videoInfo">
+           <widget class="QWidget" name="formLayoutWidget_5">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>291</width>
+              <height>131</height>
+             </rect>
+            </property>
+            <layout class="QFormLayout" name="formLayout_5">
+             <item row="0" column="0">
+              <widget class="QLabel" name="videoTitleLabel">
+               <property name="text">
+                <string>Video Title:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="videoTitleValue"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="videoLiveRecordingLabel">
+               <property name="text">
+                <string>Live Recording:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="videoLiveRecordingValue"/>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="bootlegInfo">
+           <widget class="QWidget" name="formLayoutWidget_6">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>291</width>
+              <height>131</height>
+             </rect>
+            </property>
+            <layout class="QFormLayout" name="formLayout_6">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="bootlegTitleLabel">
+               <property name="text">
+                <string>Bootleg Title:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="bootlegTitleValue"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="bootlegDateLabel">
+               <property name="text">
+                <string>Bootleg Date:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QDateEdit" name="bootlegDateValue"/>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+          <widget class="QWidget" name="notReleasedInfo"/>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="lessonPage"/>
+      </widget>
      </widget>
      <widget class="QWidget" name="authorInfo">
       <attribute name="title">
@@ -202,4 +532,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="songTypeButtonGroup"/>
+ </buttongroups>
 </ui>

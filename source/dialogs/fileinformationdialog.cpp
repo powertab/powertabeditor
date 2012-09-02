@@ -13,13 +13,50 @@ FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument>
 {
     ui->setupUi(this);
 
+    connect(ui->songTypeButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)),
+            this, SLOT(handleSongTypeButtonClick(QAbstractButton*)));
+
+    connect(ui->releaseTypeList, SIGNAL(currentRowChanged(int)),
+            this, SLOT(handleReleaseTypeChanged(int)));
+
+    // Initialize song information.
+    const PowerTabFileHeader& header = doc->GetHeader();
+
+    if (header.GetFileType() == PowerTabFileHeader::FILETYPE_SONG)
+    {
+        ui->songButton->click();
+
+        ui->songTitleValue->setText(QString::fromStdString(header.GetSongTitle()));
+        ui->songArtistValue->setText(QString::fromStdString(header.GetSongArtist()));
+
+        ui->releaseTypeList->setCurrentRow(header.GetSongReleaseType());
+
+        ui->albumTitleValue->setText(QString::fromStdString(header.GetSongAudioReleaseTitle()));
+        ui->albumTypeValue->setCurrentIndex(header.GetSongAudioReleaseType());
+        ui->albumYearValue->setValue(header.GetSongAudioReleaseYear());
+        ui->audioLiveRecordingValue->setChecked(header.IsSongAudioReleaseLive());
+
+        ui->videoTitleValue->setText(QString::fromStdString(header.GetSongVideoReleaseTitle()));
+        ui->videoLiveRecordingValue->setChecked(header.IsSongVideoReleaseLive());
+
+        ui->bootlegTitleValue->setText(QString::fromStdString(header.GetSongBootlegTitle()));
+
+        const boost::gregorian::date bootlegDate = header.GetSongBootlegDate();
+        ui->bootlegDateValue->setDate(QDate(bootlegDate.year(), bootlegDate.month(), bootlegDate.day()));
+    }
+    else
+    {
+        ui->lessonButton->click();
+    }
+
+    // Initialize file properties.
     const QString filePath = QString::fromStdString(doc->GetFileName());
     const QFileInfo fileInfo(filePath);
     QLocale locale;
 
     ui->fileNameValue->setText(fileInfo.fileName());
     ui->fileTypeValue->setText(tr("Power Tab Version %1").arg(
-                                   getFileVersionString(doc->GetHeader())));
+                                   getFileVersionString(header)));
     ui->fileLocationValue->setText(filePath);
     ui->fileSizeValue->setText(tr("%1 bytes").arg(
                                    locale.toString(fileInfo.size())));
@@ -59,4 +96,25 @@ QString FileInformationDialog::getFileVersionString(const PowerTabFileHeader& he
     }
 
     return fileVersion;
+}
+
+void FileInformationDialog::handleSongTypeButtonClick(QAbstractButton *button)
+{
+    if (button == ui->songButton)
+    {
+        ui->songTypeStack->setCurrentIndex(0);
+    }
+    else if (button == ui->lessonButton)
+    {
+        ui->songTypeStack->setCurrentIndex(1);
+    }
+    else
+    {
+        Q_ASSERT_X(false, "handleSongTypeButtonClick", "Unexpected button value");
+    }
+}
+
+void FileInformationDialog::handleReleaseTypeChanged(int index)
+{
+    ui->releaseInfoStack->setCurrentIndex(index);
 }

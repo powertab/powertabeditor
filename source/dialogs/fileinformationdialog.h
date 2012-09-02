@@ -6,6 +6,7 @@
 
 class PowerTabDocument;
 class PowerTabFileHeader;
+class QAbstractButton;
 
 namespace Ui {
 class FileInformationDialog;
@@ -23,6 +24,10 @@ private:
     Ui::FileInformationDialog *ui;
 
     QString getFileVersionString(const PowerTabFileHeader& header);
+
+private slots:
+    void handleSongTypeButtonClick(QAbstractButton* button);
+    void handleReleaseTypeChanged(int index);
 };
 
 #endif // FILEINFORMATIONDIALOG_H
