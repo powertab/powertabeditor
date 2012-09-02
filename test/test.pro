@@ -46,7 +46,8 @@ SOURCES += \
     actions/test_addirregulargrouping.cpp \
     actions/test_removeirregulargrouping.cpp \
     actions/test_updatenoteduration.cpp \
-    actions/test_deletenote.cpp
+    actions/test_deletenote.cpp \
+    powertabdocument/powertabfileheader_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

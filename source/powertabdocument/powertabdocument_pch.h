@@ -35,5 +35,6 @@
 
 #include <boost/pointee.hpp>
 #include <boost/foreach.hpp>
+#include <boost/date_time/gregorian/gregorian_types.hpp>
 
 #endif // POWERTABDOCUMENT_PCH_H

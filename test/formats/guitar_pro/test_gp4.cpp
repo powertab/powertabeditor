@@ -61,7 +61,6 @@ BOOST_FIXTURE_TEST_SUITE(GuitarPro4Import, Gp4Fixture)
         BOOST_CHECK_EQUAL(header.GetSongArtist(), "Artist");
         BOOST_CHECK_EQUAL(header.GetSongAudioReleaseTitle(), "Album");
         BOOST_CHECK_EQUAL(header.GetSongComposer(), "Author");
-        BOOST_CHECK_EQUAL(header.GetSongAudioReleaseYear(), 2010);
         BOOST_CHECK_EQUAL(header.GetSongCopyright(), "Copyright 2011");
         BOOST_CHECK_EQUAL(header.GetSongGuitarScoreTranscriber(), "Tab Creator");
         BOOST_CHECK_EQUAL(header.GetSongGuitarScoreNotes(), "Some Comments");

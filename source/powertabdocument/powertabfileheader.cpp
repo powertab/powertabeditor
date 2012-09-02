@@ -11,6 +11,8 @@
 
 #include "powertabfileheader.h"
 
+#include <boost/date_time/gregorian/gregorian_types.hpp> // for day_clock
+
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
@@ -610,126 +612,82 @@ std::string PowerTabFileHeader::GetSongReleaseTitle() const
     return (returnValue);
 }
 
-/// Sets the song bootleg date
-/// @param date Date to set
+/// Sets the song bootleg date.
+/// @param date Date to set.
 /// @return True if the bootleg date was set, false if not
-bool PowerTabFileHeader::SetSongBootlegDate(uint16_t month, uint16_t day, uint16_t year)
+bool PowerTabFileHeader::SetSongBootlegDate(boost::gregorian::date date)
 {
-	// TODO - check for validity
-	m_songData.bootlegData.month = month;     // wxDateTime month is zero based, so add 1
-	m_songData.bootlegData.day = day;
-	m_songData.bootlegData.year = year;
+    CHECK_THAT(!date.is_not_a_date(), false);
+
+    m_songData.bootlegData.month = date.month();
+    m_songData.bootlegData.day = date.day();
+    m_songData.bootlegData.year = date.year();
 	
-	return (true);
+    return true;
 }
 
 /// Gets the song bootleg date
 /// @return The song bootleg date
-/*
-wxDateTime PowerTabFileHeader::GetSongBootlegDate() const
+boost::gregorian::date PowerTabFileHeader::GetSongBootlegDate() const
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
-	wxDateTime returnValue;
-	returnValue.SetDay(m_songData.bootlegData.day);
-	returnValue.SetYear(m_songData.bootlegData.year);
-	
-	switch (m_songData.bootlegData.month)
-	{
-		case 2:
-			returnValue.SetMonth(wxDateTime::Feb);
-			break;
-		case 3:
-			returnValue.SetMonth(wxDateTime::Mar);
-			break;
-		case 4:
-			returnValue.SetMonth(wxDateTime::Apr);
-			break;
-		case 5:
-			returnValue.SetMonth(wxDateTime::May);
-			break;
-		case 6:
-			returnValue.SetMonth(wxDateTime::Jun);
-			break;
-		case 7:
-			returnValue.SetMonth(wxDateTime::Jul);
-			break;
-		case 8:
-			returnValue.SetMonth(wxDateTime::Aug);
-			break;
-		case 9:
-			returnValue.SetMonth(wxDateTime::Sep);
-			break;
-		case 10:
-			returnValue.SetMonth(wxDateTime::Oct);
-			break;
-		case 11:
-			returnValue.SetMonth(wxDateTime::Nov);
-			break;
-		case 12:
-			returnValue.SetMonth(wxDateTime::Dec);
-			break;
-		default:
-			returnValue.SetMonth(wxDateTime::Jan);
-			break;
-	}
-	
-	return (returnValue);
+    return boost::gregorian::date(m_songData.bootlegData.year,
+                                  m_songData.bootlegData.month,
+                                  m_songData.bootlegData.day);
 }
-*/
 
 // Operations
 /// Loads the default settings for the header
 void PowerTabFileHeader::LoadDefaults()
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
-	m_version = FILEVERSION_CURRENT;
-	m_fileType = FILETYPE_SONG;
+    // Fetch today's date, which is used for initializing year/month/day fields.
+    using namespace boost::gregorian;
+    const date today = day_clock::local_day();
 
-	// Load default song data
-	m_songData.contentType = 0;
-	m_songData.title.clear();
-	m_songData.artist.clear();
-	m_songData.releaseType = RELEASETYPE_PUBLIC_AUDIO;
+    m_version = FILEVERSION_CURRENT;
+    m_fileType = FILETYPE_SONG;
 
-	m_songData.audioData.type = AUDIORELEASETYPE_ALBUM;
-	m_songData.audioData.title.clear();
-	m_songData.audioData.year = 2010; // TODO - replace with current date
-	m_songData.audioData.live = 0;
+    // Load default song data
+    m_songData.contentType = 0;
+    m_songData.title.clear();
+    m_songData.artist.clear();
+    m_songData.releaseType = RELEASETYPE_PUBLIC_AUDIO;
 
-	m_songData.videoData.title.clear();
-	m_songData.videoData.live = 0;
+    m_songData.audioData.type = AUDIORELEASETYPE_ALBUM;
+    m_songData.audioData.title.clear();
+    m_songData.audioData.year = today.year();
+    m_songData.audioData.live = 0;
 
-	m_songData.bootlegData.title.clear();
-	// TODO - replace with current date
-	m_songData.bootlegData.month = 10;
-	m_songData.bootlegData.day = 27;
-	m_songData.bootlegData.year = 2010;
+    m_songData.videoData.title.clear();
+    m_songData.videoData.live = 0;
 
-	m_songData.authorType = AUTHORTYPE_AUTHORKNOWN;
-	
-	m_songData.authorData.composer.clear();
-	m_songData.authorData.lyricist.clear();
-	
-	m_songData.arranger.clear();
-	
-	m_songData.guitarScoreTranscriber.clear();
-	m_songData.bassScoreTranscriber.clear();
-	
-	m_songData.copyright.clear();
-		
-	m_songData.lyrics.clear();
-	
-	m_songData.guitarScoreNotes.clear();
-	m_songData.bassScoreNotes.clear();
-	
-	// Load default lesson data
-	m_lessonData.title.clear();
-	m_lessonData.subtitle.clear();
-	m_lessonData.musicStyle = MUSICSTYLE_GENERAL;
-	m_lessonData.level = LESSONLEVEL_INTERMEDIATE;
-	m_lessonData.author.clear();
-	m_lessonData.notes.clear();
-	m_lessonData.copyright.clear();
+    m_songData.bootlegData.title.clear();
+    m_songData.bootlegData.month = today.month();
+    m_songData.bootlegData.day = today.day();
+    m_songData.bootlegData.year = today.year();
+
+    m_songData.authorType = AUTHORTYPE_AUTHORKNOWN;
+
+    m_songData.authorData.composer.clear();
+    m_songData.authorData.lyricist.clear();
+
+    m_songData.arranger.clear();
+
+    m_songData.guitarScoreTranscriber.clear();
+    m_songData.bassScoreTranscriber.clear();
+
+    m_songData.copyright.clear();
+
+    m_songData.lyrics.clear();
+
+    m_songData.guitarScoreNotes.clear();
+    m_songData.bassScoreNotes.clear();
+
+    // Load default lesson data
+    m_lessonData.title.clear();
+    m_lessonData.subtitle.clear();
+    m_lessonData.musicStyle = MUSICSTYLE_GENERAL;
+    m_lessonData.level = LESSONLEVEL_INTERMEDIATE;
+    m_lessonData.author.clear();
+    m_lessonData.notes.clear();
+    m_lessonData.copyright.clear();
 }

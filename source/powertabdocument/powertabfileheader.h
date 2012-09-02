@@ -13,6 +13,7 @@
 #define POWERTABFILEHEADER_H
 
 #include <boost/cstdint.hpp>
+#include <boost/date_time/gregorian/greg_date.hpp>
 #include <string>
 
 #include "macros.h"
@@ -138,7 +139,7 @@ protected:
         struct BOOTLEG_DATA
         {
             std::string title;  ///< Title of the bootleg
-            uint16_t    month;  ///< Date of bootleg (month is one based)
+            uint16_t    month;  ///< Date of bootleg
             uint16_t    day;
             uint16_t    year;
         } bootlegData;
@@ -470,9 +471,8 @@ public:
         return m_songData.bootlegData.title;
     }
 
-    bool SetSongBootlegDate(uint16_t month, uint16_t day, uint16_t year);
-
-    //wxDateTime GetSongBootlegDate() const;  TODO - replace this
+    bool SetSongBootlegDate(boost::gregorian::date date);
+    boost::gregorian::date GetSongBootlegDate() const;
 
     /// Determines if an author type is valid
     /// @param authorType Author type to validate
