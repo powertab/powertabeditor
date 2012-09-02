@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>537</width>
-    <height>558</height>
+    <height>651</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,7 +81,7 @@
          <x>20</x>
          <y>50</y>
          <width>501</width>
-         <height>411</height>
+         <height>511</height>
         </rect>
        </property>
        <widget class="QWidget" name="songPage">
@@ -126,7 +126,7 @@
            <x>0</x>
            <y>80</y>
            <width>491</width>
-           <height>181</height>
+           <height>161</height>
           </rect>
          </property>
          <property name="title">
@@ -350,14 +350,104 @@
           <widget class="QWidget" name="notReleasedInfo"/>
          </widget>
         </widget>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>250</y>
+           <width>491</width>
+           <height>251</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Author Information</string>
+         </property>
+         <widget class="QWidget" name="formLayoutWidget_7">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>471</width>
+            <height>221</height>
+           </rect>
+          </property>
+          <layout class="QFormLayout" name="formLayout_7">
+           <item row="0" column="0">
+            <widget class="QLabel" name="traditionalSongLabel">
+             <property name="text">
+              <string>Traditional (Author Unknown):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QCheckBox" name="traditionalSongValue"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="composerLabel">
+             <property name="text">
+              <string>Music By:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="composerValue"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="lyricistLabel">
+             <property name="text">
+              <string>Words By:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lyricistValue"/>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="arrangerLabel">
+             <property name="text">
+              <string>Arranged By:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="arrangerValue"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="guitarTranscriberLabel">
+             <property name="text">
+              <string>Guitar Score Transcribed By:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="guitarTranscriberValue"/>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="bassTranscriberLabel">
+             <property name="text">
+              <string>Bass Score Transcribed By:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="bassTranscriberValue"/>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="songCopyrightLabel">
+             <property name="text">
+              <string>Copyright:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QLineEdit" name="songCopyrightValue"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </widget>
        <widget class="QWidget" name="lessonPage"/>
       </widget>
-     </widget>
-     <widget class="QWidget" name="authorInfo">
-      <attribute name="title">
-       <string>Author Information</string>
-      </attribute>
      </widget>
      <widget class="QWidget" name="properties">
       <attribute name="title">

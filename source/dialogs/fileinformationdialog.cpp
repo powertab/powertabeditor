@@ -19,6 +19,9 @@ FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument>
     connect(ui->releaseTypeList, SIGNAL(currentRowChanged(int)),
             this, SLOT(handleReleaseTypeChanged(int)));
 
+    connect(ui->traditionalSongValue, SIGNAL(toggled(bool)),
+            this, SLOT(handleAuthorTypeChanged(bool)));
+
     // Initialize song information.
     const PowerTabFileHeader& header = doc->GetHeader();
 
@@ -43,6 +46,14 @@ FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument>
 
         const boost::gregorian::date bootlegDate = header.GetSongBootlegDate();
         ui->bootlegDateValue->setDate(QDate(bootlegDate.year(), bootlegDate.month(), bootlegDate.day()));
+
+        ui->traditionalSongValue->setChecked(header.GetSongAuthorType() == PowerTabFileHeader::AUTHORTYPE_TRADITIONAL);
+        ui->composerValue->setText(QString::fromStdString(header.GetSongComposer()));
+        ui->lyricistValue->setText(QString::fromStdString(header.GetSongLyricist()));
+        ui->arrangerValue->setText(QString::fromStdString(header.GetSongArranger()));
+        ui->guitarTranscriberValue->setText(QString::fromStdString(header.GetSongGuitarScoreTranscriber()));
+        ui->bassTranscriberValue->setText(QString::fromStdString(header.GetSongBassScoreTranscriber()));
+        ui->songCopyrightValue->setText(QString::fromStdString(header.GetSongCopyright()));
     }
     else
     {
@@ -117,4 +128,10 @@ void FileInformationDialog::handleSongTypeButtonClick(QAbstractButton *button)
 void FileInformationDialog::handleReleaseTypeChanged(int index)
 {
     ui->releaseInfoStack->setCurrentIndex(index);
+}
+
+void FileInformationDialog::handleAuthorTypeChanged(bool traditional)
+{
+    ui->composerValue->setEnabled(!traditional);
+    ui->lyricistValue->setEnabled(!traditional);
 }

@@ -28,6 +28,7 @@ private:
 private slots:
     void handleSongTypeButtonClick(QAbstractButton* button);
     void handleReleaseTypeChanged(int index);
+    void handleAuthorTypeChanged(bool traditional);
 };
 
 #endif // FILEINFORMATIONDIALOG_H
