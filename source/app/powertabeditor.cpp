@@ -119,6 +119,7 @@
 #include <actions/removeirregulargrouping.h>
 #include <actions/edittrackshown.h>
 #include <actions/deletenote.h>
+#include <actions/editfileinformation.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -2168,5 +2169,15 @@ void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
 
 void PowerTabEditor::openFileInformation()
 {
-    FileInformationDialog(documentManager->getCurrentDocument()).exec();
+    boost::shared_ptr<PowerTabDocument> doc = documentManager->getCurrentDocument();
+    FileInformationDialog dialog(doc);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        const PowerTabFileHeader newHeader = dialog.getNewFileHeader();
+        if (newHeader != doc->GetHeader())
+        {
+            undoManager->push(new EditFileInformation(doc, newHeader));
+        }
+    }
 }

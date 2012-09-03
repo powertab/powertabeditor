@@ -78,6 +78,7 @@ public:
 
     PowerTabFileHeader& GetHeader();
     const PowerTabFileHeader& GetHeader() const;
+    void SetHeader(const PowerTabFileHeader& header);
 
     // Score Functions
     Score* GetGuitarScore() const;

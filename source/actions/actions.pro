@@ -46,7 +46,8 @@ HEADERS += \
     addirregulargrouping.h \
     removeirregulargrouping.h \
     edittrackshown.h \
-    deletenote.h
+    deletenote.h \
+    editfileinformation.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -86,4 +87,5 @@ SOURCES += \
     addirregulargrouping.cpp \
     removeirregulargrouping.cpp \
     edittrackshown.cpp \
-    deletenote.cpp
+    deletenote.cpp \
+    editfileinformation.cpp

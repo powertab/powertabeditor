@@ -76,6 +76,11 @@ const PowerTabFileHeader& PowerTabDocument::GetHeader() const
     return m_header;
 }
 
+void PowerTabDocument::SetHeader(const PowerTabFileHeader& header)
+{
+    m_header = header;
+}
+
 /// Sets the font setting used by chord names
 void PowerTabDocument::SetChordNameFontSetting(const FontSetting& fontSetting)
 {

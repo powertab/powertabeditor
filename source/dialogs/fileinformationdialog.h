@@ -2,10 +2,11 @@
 #define FILEINFORMATIONDIALOG_H
 
 #include <QDialog>
+#include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
+#include <powertabdocument/powertabfileheader.h>
 
 class PowerTabDocument;
-class PowerTabFileHeader;
 class QAbstractButton;
 
 namespace Ui {
@@ -19,9 +20,12 @@ class FileInformationDialog : public QDialog
 public:
     explicit FileInformationDialog(boost::shared_ptr<PowerTabDocument> doc, QWidget *parent = 0);
     ~FileInformationDialog();
+
+    PowerTabFileHeader getNewFileHeader() const;
     
 private:
     Ui::FileInformationDialog *ui;
+    const uint8_t contentType;
 
     QString getFileVersionString(const PowerTabFileHeader& header);
 

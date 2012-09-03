@@ -5,11 +5,11 @@
 #include <QDateTime>
 
 #include <powertabdocument/powertabdocument.h>
-#include <powertabdocument/powertabfileheader.h>
 
 FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument> doc, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::FileInformationDialog)
+    ui(new Ui::FileInformationDialog),
+    contentType(doc->GetHeader().GetSongContentType())
 {
     ui->setupUi(this);
 
@@ -100,6 +100,50 @@ FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument>
 FileInformationDialog::~FileInformationDialog()
 {
     delete ui;
+}
+
+PowerTabFileHeader FileInformationDialog::getNewFileHeader() const
+{
+    PowerTabFileHeader header;
+
+    header.SetFileType(ui->songTypeButtonGroup->checkedId());
+    header.SetSongTitle(ui->songTitleValue->text().toStdString());
+    header.SetSongArtist(ui->songArtistValue->text().toStdString());
+    header.SetSongReleaseType(ui->releaseTypeList->currentRow());
+    header.SetSongContentType(contentType);
+    header.SetSongAudioReleaseTitle(ui->albumTitleValue->text().toStdString());
+    header.SetSongAudioReleaseType(ui->albumTypeValue->currentIndex());
+    header.SetSongAudioReleaseYear(ui->albumYearValue->value());
+    header.SetSongAudioReleaseLive(ui->audioLiveRecordingValue->isChecked());
+    header.SetSongVideoReleaseTitle(ui->videoTitleValue->text().toStdString());
+    header.SetSongVideoReleaseLive(ui->videoLiveRecordingValue->isChecked());
+    header.SetSongBootlegTitle(ui->bootlegTitleValue->text().toStdString());
+
+    QDate bootlegDate = ui->bootlegDateValue->date();
+    header.SetSongBootlegDate(boost::gregorian::date(bootlegDate.year(),
+                                                     bootlegDate.month(),
+                                                     bootlegDate.day()));
+
+    header.SetSongAuthorType(ui->traditionalSongValue->isChecked() ?
+                                 PowerTabFileHeader::AUTHORTYPE_TRADITIONAL :
+                                 PowerTabFileHeader::AUTHORTYPE_AUTHORKNOWN);
+    header.SetSongComposer(ui->composerValue->text().toStdString());
+    header.SetSongLyricist(ui->lyricistValue->text().toStdString());
+    header.SetSongArranger(ui->arrangerValue->text().toStdString());
+    header.SetSongGuitarScoreTranscriber(ui->guitarTranscriberValue->text().toStdString());
+    header.SetSongBassScoreTranscriber(ui->bassTranscriberValue->text().toStdString());
+    header.SetSongCopyright(ui->songCopyrightValue->text().toStdString());
+
+    header.SetLessonTitle(ui->lessonTitleValue->text().toStdString());
+    header.SetLessonSubtitle(ui->lessonSubtitleValue->text().toStdString());
+    header.SetLessonMusicStyle(ui->lessonStyleValue->currentIndex());
+    header.SetLessonLevel(ui->lessonLevelButtonGroup->checkedId());
+    header.SetLessonAuthor(ui->lessonAuthorValue->text().toStdString());
+    header.SetLessonCopyright(ui->lessonCopyrightValue->text().toStdString());
+
+    header.SetSongGuitarScoreNotes(ui->guitarNotesValue->toPlainText().toStdString());
+    header.SetSongBassScoreNotes(ui->bassNotesValue->toPlainText().toStdString());
+    return header;
 }
 
 QString FileInformationDialog::getFileVersionString(const PowerTabFileHeader& header)
