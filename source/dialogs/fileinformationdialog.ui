@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="perfNotes">
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -83,6 +83,9 @@
          <width>501</width>
          <height>511</height>
         </rect>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
        </property>
        <widget class="QWidget" name="songPage">
         <widget class="QWidget" name="formLayoutWidget_3">
@@ -446,8 +449,241 @@
          </widget>
         </widget>
        </widget>
-       <widget class="QWidget" name="lessonPage"/>
+       <widget class="QWidget" name="lessonPage">
+        <widget class="QWidget" name="formLayoutWidget_8">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>10</y>
+           <width>481</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_8">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lessonTitleLabel">
+            <property name="text">
+             <string>Title:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lessonTitleValue"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="lessonSubtitleLabel">
+            <property name="text">
+             <string>Subtitle:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lessonSubtitleValue"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="lessonStyleLabel">
+            <property name="text">
+             <string>Style:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="lessonStyleValue">
+            <item>
+             <property name="text">
+              <string>Alternative</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Bluegrass</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Blues</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Country</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Fingerpick</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Flamenco</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Folk</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Funk</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Fusion</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>General</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Jazz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Metal/Shred</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Other</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Pop</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Progressive Rock</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Punk</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Reggae</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Rock</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Swing</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="lessonLevelLabel">
+            <property name="text">
+             <string>Level</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QRadioButton" name="beginnerLevelButton">
+              <property name="text">
+               <string>Beginner</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">lessonLevelButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="intermediateLevelButton">
+              <property name="text">
+               <string>Intermediate</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">lessonLevelButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="advancedLevelButton">
+              <property name="text">
+               <string>Advanced</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">lessonLevelButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>150</y>
+           <width>481</width>
+           <height>261</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Author Information</string>
+         </property>
+         <widget class="QWidget" name="formLayoutWidget_9">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>471</width>
+            <height>131</height>
+           </rect>
+          </property>
+          <layout class="QFormLayout" name="formLayout_9">
+           <item row="0" column="0">
+            <widget class="QLabel" name="lessonAuthorLabel">
+             <property name="text">
+              <string>Author:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lessonAuthorValue"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="lessonCopyrightLabel">
+             <property name="text">
+              <string>Copyright:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lessonCopyrightValue"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </widget>
       </widget>
+     </widget>
+     <widget class="QWidget" name="perfNotesPage">
+      <attribute name="title">
+       <string>Performance Notes</string>
+      </attribute>
      </widget>
      <widget class="QWidget" name="properties">
       <attribute name="title">
@@ -624,5 +860,6 @@
  </connections>
  <buttongroups>
   <buttongroup name="songTypeButtonGroup"/>
+  <buttongroup name="lessonLevelButtonGroup"/>
  </buttongroups>
 </ui>
