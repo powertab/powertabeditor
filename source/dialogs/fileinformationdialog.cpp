@@ -77,6 +77,10 @@ FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument>
     ui->lessonAuthorValue->setText(QString::fromStdString(header.GetLessonAuthor()));
     ui->lessonCopyrightValue->setText(QString::fromStdString(header.GetLessonCopyright()));
 
+    // Initialize performance notes.
+    ui->guitarNotesValue->setPlainText(QString::fromStdString(header.GetSongGuitarScoreNotes()));
+    ui->bassNotesValue->setPlainText(QString::fromStdString(header.GetSongBassScoreNotes()));
+
     // Initialize file properties.
     const QString filePath = QString::fromStdString(doc->GetFileName());
     const QFileInfo fileInfo(filePath);
