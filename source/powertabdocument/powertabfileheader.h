@@ -110,7 +110,7 @@ protected:
     static const uint8_t RO_NONE;
     
 // Member Variables
-protected:
+private:
     uint16_t    m_version;  ///< Version number of the file format
     uint8_t     m_fileType; ///< Type of file
     
@@ -181,7 +181,6 @@ protected:
 public:
     PowerTabFileHeader();
     PowerTabFileHeader(const PowerTabFileHeader& header);
-    ~PowerTabFileHeader();
 
 // Operators
     const PowerTabFileHeader& operator=(const PowerTabFileHeader& header);

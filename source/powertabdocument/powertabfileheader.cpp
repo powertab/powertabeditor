@@ -90,29 +90,17 @@ const uint8_t PowerTabFileHeader::RO_SOUNDTRACK                      = 8;
 const uint8_t PowerTabFileHeader::RO_VIDEO                           = 9;
 const uint8_t PowerTabFileHeader::RO_NONE                            = 10;
 		
-// Constructor/Destructor
 /// Default Constructor
 PowerTabFileHeader::PowerTabFileHeader()
 {
-	//------Last Checked------//
-	// - Dec 4, 2004
 	LoadDefaults();
 }
 
 /// Copy Constructor
 PowerTabFileHeader::PowerTabFileHeader(const PowerTabFileHeader& header)
 {
-	//------Last Checked------//
-	// - Dec 4, 2004
 	LoadDefaults();
 	*this = header;
-}
-
-/// Destructor
-PowerTabFileHeader::~PowerTabFileHeader()
-{
-	//------Last Checked------//
-	// - Dec 4, 2004
 }
 
 // Operators
@@ -120,69 +108,60 @@ PowerTabFileHeader::~PowerTabFileHeader()
 const PowerTabFileHeader& PowerTabFileHeader::operator=(
 	const PowerTabFileHeader& header)
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
-	
-	// Check for assignment to self
-	if (this != &header)
-	{
-		m_version = header.m_version;
-		m_fileType = header.m_fileType;
+    m_version = header.m_version;
+    m_fileType = header.m_fileType;
 
-		m_songData.contentType = header.m_songData.contentType;
-		m_songData.title = header.m_songData.title;
-		m_songData.artist = header.m_songData.artist;
-		m_songData.releaseType = header.m_songData.releaseType;
+    m_songData.contentType = header.m_songData.contentType;
+    m_songData.title = header.m_songData.title;
+    m_songData.artist = header.m_songData.artist;
+    m_songData.releaseType = header.m_songData.releaseType;
 
-		m_songData.audioData.type = header.m_songData.audioData.type;
-		m_songData.audioData.title = header.m_songData.audioData.title;
-		m_songData.audioData.year = header.m_songData.audioData.year;
-		m_songData.audioData.live = header.m_songData.audioData.live;
+    m_songData.audioData.type = header.m_songData.audioData.type;
+    m_songData.audioData.title = header.m_songData.audioData.title;
+    m_songData.audioData.year = header.m_songData.audioData.year;
+    m_songData.audioData.live = header.m_songData.audioData.live;
 
-		m_songData.videoData.title = header.m_songData.videoData.title;
-		m_songData.videoData.live = header.m_songData.videoData.live;
+    m_songData.videoData.title = header.m_songData.videoData.title;
+    m_songData.videoData.live = header.m_songData.videoData.live;
 
-		m_songData.bootlegData.title = header.m_songData.bootlegData.title;
-		m_songData.bootlegData.month = header.m_songData.bootlegData.month;
-		m_songData.bootlegData.day = header.m_songData.bootlegData.day;
-		m_songData.bootlegData.year = header.m_songData.bootlegData.year;
+    m_songData.bootlegData.title = header.m_songData.bootlegData.title;
+    m_songData.bootlegData.month = header.m_songData.bootlegData.month;
+    m_songData.bootlegData.day = header.m_songData.bootlegData.day;
+    m_songData.bootlegData.year = header.m_songData.bootlegData.year;
 
-		m_songData.authorType = header.m_songData.authorType;
+    m_songData.authorType = header.m_songData.authorType;
 
-		m_songData.authorData.composer = header.m_songData.authorData.composer;
-		m_songData.authorData.lyricist = header.m_songData.authorData.lyricist;
+    m_songData.authorData.composer = header.m_songData.authorData.composer;
+    m_songData.authorData.lyricist = header.m_songData.authorData.lyricist;
 
-		m_songData.arranger = header.m_songData.arranger;
-		
-		m_songData.guitarScoreTranscriber =
-			header.m_songData.guitarScoreTranscriber;
-		m_songData.bassScoreTranscriber =
-			header.m_songData.bassScoreTranscriber;
-		
-		m_songData.copyright = header.m_songData.copyright;
-		
-		m_songData.lyrics = header.m_songData.lyrics;
-		
-		m_songData.guitarScoreNotes = header.m_songData.guitarScoreNotes;
-		m_songData.bassScoreNotes = header.m_songData.bassScoreNotes;
+    m_songData.arranger = header.m_songData.arranger;
 
-		m_lessonData.title = header.m_lessonData.title;
-		m_lessonData.subtitle = header.m_lessonData.subtitle;
-		m_lessonData.musicStyle = header.m_lessonData.musicStyle;
-		m_lessonData.level = header.m_lessonData.level;
-		m_lessonData.author = header.m_lessonData.author;
-		m_lessonData.notes = header.m_lessonData.notes;
-		m_lessonData.copyright = header.m_lessonData.copyright;
-	}
+    m_songData.guitarScoreTranscriber =
+            header.m_songData.guitarScoreTranscriber;
+    m_songData.bassScoreTranscriber =
+            header.m_songData.bassScoreTranscriber;
 
-	return (*this);
+    m_songData.copyright = header.m_songData.copyright;
+
+    m_songData.lyrics = header.m_songData.lyrics;
+
+    m_songData.guitarScoreNotes = header.m_songData.guitarScoreNotes;
+    m_songData.bassScoreNotes = header.m_songData.bassScoreNotes;
+
+    m_lessonData.title = header.m_lessonData.title;
+    m_lessonData.subtitle = header.m_lessonData.subtitle;
+    m_lessonData.musicStyle = header.m_lessonData.musicStyle;
+    m_lessonData.level = header.m_lessonData.level;
+    m_lessonData.author = header.m_lessonData.author;
+    m_lessonData.notes = header.m_lessonData.notes;
+    m_lessonData.copyright = header.m_lessonData.copyright;
+
+    return *this;
 }
 
 /// Equality Operator
 bool PowerTabFileHeader::operator==(const PowerTabFileHeader& header) const
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
 	return (
 		(m_version == header.m_version) &&
 		(m_fileType == header.m_fileType) &&
@@ -235,9 +214,7 @@ bool PowerTabFileHeader::operator==(const PowerTabFileHeader& header) const
 /// Inequality Operator
 bool PowerTabFileHeader::operator!=(const PowerTabFileHeader& header) const
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
-	return (!operator==(header));
+    return !operator==(header);
 }
 
 // Serialization Functions
@@ -246,8 +223,6 @@ bool PowerTabFileHeader::operator!=(const PowerTabFileHeader& header) const
 /// @return True if the object was serialized, false if not
 bool PowerTabFileHeader::Serialize(PowerTabOutputStream& stream) const
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
 	stream << POWERTABFILE_MARKER << FILEVERSION_CURRENT << m_fileType;
 	CHECK_THAT(stream.CheckState(), false);
 
@@ -467,11 +442,9 @@ bool PowerTabFileHeader::DeserializeVersion1_7(PowerTabInputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool PowerTabFileHeader::DeserializeVersion1_5(PowerTabInputStream& stream)
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
 	uint8_t releasedOn = 0, live = 0;
 	uint16_t year = 0;
-        std::string releaseTitle = "";
+    std::string releaseTitle = "";
 
 	stream.ReadMFCString(m_songData.title);
 	stream.ReadMFCString(m_songData.artist);
@@ -536,11 +509,9 @@ bool PowerTabFileHeader::DeserializeVersion1_5(PowerTabInputStream& stream)
 /// @return True if the object was deserialized, false if not
 bool PowerTabFileHeader::DeserializeVersion1_0(PowerTabInputStream& stream)
 {
-	//------Last Checked------//
-	// - Dec 28, 2004
-	uint8_t releasedOn = 0, live = 0;
+    uint8_t releasedOn = 0, live = 0;
 	uint16_t year = 0;
-        std::string releaseTitle;
+    std::string releaseTitle;
 
 	stream.ReadMFCString(m_songData.title);
 	stream.ReadMFCString(m_songData.artist);
