@@ -731,6 +731,46 @@
        </layout>
       </widget>
      </widget>
+     <widget class="QWidget" name="lyricsPage">
+      <attribute name="title">
+       <string>Lyrics</string>
+      </attribute>
+      <widget class="QWidget" name="formLayoutWidget_11">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>491</width>
+         <height>541</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="formLayout_11">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
+        <property name="horizontalSpacing">
+         <number>6</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>16</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lyricsLabel">
+          <property name="text">
+           <string>Lyrics:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPlainTextEdit" name="lyricsValue">
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
      <widget class="QWidget" name="properties">
       <attribute name="title">
        <string>Properties</string>

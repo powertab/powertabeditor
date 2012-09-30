@@ -98,6 +98,9 @@ FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument>
     ui->guitarNotesValue->setPlainText(QString::fromStdString(header.GetSongGuitarScoreNotes()));
     ui->bassNotesValue->setPlainText(QString::fromStdString(header.GetSongBassScoreNotes()));
 
+    // Initialize lyrics.
+    ui->lyricsValue->setPlainText(QString::fromStdString(header.GetSongLyrics()));
+
     // Initialize file properties.
     const QString filePath = QString::fromStdString(doc->GetFileName());
     const QFileInfo fileInfo(filePath);
@@ -160,6 +163,9 @@ PowerTabFileHeader FileInformationDialog::getNewFileHeader() const
 
     header.SetSongGuitarScoreNotes(ui->guitarNotesValue->toPlainText().toStdString());
     header.SetSongBassScoreNotes(ui->bassNotesValue->toPlainText().toStdString());
+
+    header.SetSongLyrics(ui->lyricsValue->toPlainText().toStdString());
+
     return header;
 }
 
