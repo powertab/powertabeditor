@@ -35,6 +35,4 @@
 #include <boost/ptr_container/ptr_list.hpp>
 #include <boost/unordered_map.hpp>
 
-#include <audio/rtmidi/rtmidi.h>
-
 #endif // AUDIO_PCH_H

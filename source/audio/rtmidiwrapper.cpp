@@ -17,7 +17,7 @@
   
 #include "rtmidiwrapper.h"
 
-#include <audio/rtmidi/rtmidi.h>
+#include <audio/rtmidi/RtMidi.h>
 
 RtMidiWrapper::RtMidiWrapper() :
     midiout(new RtMidiOut)
