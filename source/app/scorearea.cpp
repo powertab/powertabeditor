@@ -36,7 +36,6 @@ ScoreArea::ScoreArea(QWidget *parent) :
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
     setScene(&scene);
-    setRenderHints(QPainter::HighQualityAntialiasing);
 
     redrawOnNextRefresh = false;
 }
