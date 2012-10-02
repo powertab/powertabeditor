@@ -405,6 +405,10 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
 
         const SystemLocation eventLocation(activeEvent->getSystemIndex(), activeEvent->getPositionIndex());
 
+#if defined(LOG_MIDI_EVENTS)
+        qDebug() << "Playback location: " << eventLocation.getSystemIndex() << ", " << eventLocation.getPositionIndex();
+#endif
+
         // if we haven't reached the starting position yet, keep going
         if (eventLocation < startLocation)
         {
@@ -571,8 +575,6 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
         double duration = tempo * 4.0 / beatValue;
         duration *= beatsPerMeasure / numPulses;
 
-        const quint32 position = barline->GetPosition();
-
         // check for multi-bar rests, as we need to generate duplicate metronome events
         // to fill the extra bars
         uint8_t measureCount = 0, repeatCount = 1;
@@ -588,20 +590,23 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
                 MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
                                                                    MetronomeEvent::WEAK_ACCENT;
 
+                // Metronome events are given a position index of 0 so that they do not
+                // advance the playback position.
                 eventList.push_back(new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
-                                                       position, systemIndex, velocity));
+                                                       0, systemIndex, velocity));
 
                 startTime += duration;
 
-                eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
+                eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, 0,
                                                       systemIndex, MetronomeEvent::METRONOME_PITCH));
             }
         }
     }
 
     // insert an empty event for the last barline of the system, to trigger any repeat events for that bar
-    eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime,
-                                          system->GetEndBar()->GetPosition(),
+    // FIXME - this should be created after the note events have been created, so that playback still works
+    // correctly for bars with an invalid number of notes.
+    eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, 0,
                                           systemIndex, MetronomeEvent::METRONOME_PITCH));
 }
 
