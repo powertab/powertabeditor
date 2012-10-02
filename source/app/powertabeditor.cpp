@@ -1122,10 +1122,20 @@ void PowerTabEditor::setupNewDocument()
 
 void PowerTabEditor::saveFileAs()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), previousDirectory, fileFilter);
-    if (!fileName.isEmpty())
+    QString path = QFileDialog::getSaveFileName(this, tr("Save As"), previousDirectory, fileFilter);
+    if (!path.isEmpty())
     {
-        documentManager->getCurrentDocument()->Save(fileName.toStdString());
+        const std::string stdPath = path.toStdString();
+        boost::shared_ptr<PowerTabDocument> doc = documentManager->getCurrentDocument();
+
+        doc->Save(stdPath);
+        doc->SetFileName(stdPath);
+
+        // Update window title and tab bar.
+        updateWindowTitle();
+        const QString fileName = QFileInfo(path).fileName();
+        tabWidget->setTabText(tabWidget->currentIndex(), fileName);
+        tabWidget->setTabToolTip(tabWidget->currentIndex(), fileName);
     }
 }
 
@@ -1173,7 +1183,12 @@ void PowerTabEditor::switchTab(int index)
     playbackToolbarList->setCurrentIndex(index);
     undoManager->setActiveStackIndex(index);
 
-    // update the window title with the file path of the active document
+    updateWindowTitle();
+}
+
+/// Update the window title with the file path of the active document.
+void PowerTabEditor::updateWindowTitle()
+{
     if(documentManager->getCurrentDocument())
     {
         const QString path = QString::fromStdString(documentManager->getCurrentDocument()->GetFileName());

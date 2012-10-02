@@ -156,6 +156,7 @@ private:
     QString getApplicationName() const;
     void setupNewDocument();
     void updatePreviousDirectory(const QString& fileName);
+    void updateWindowTitle();
 
     static QTabWidget* tabWidget;
     
