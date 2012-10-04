@@ -90,11 +90,14 @@ void TimeSignatureDialog::init()
     }
 }
 
-/// Update the options in the metronome pulses combo box
-/// (The available options for metronome pulses depend on the number of beats in the measure)
+/// Update the options in the metronome pulses combo box (the available options
+/// for metronome pulses depend on the number of beats in the measure).
 void TimeSignatureDialog::updatePossiblePulseValues()
 {
-    for (uint8_t i = TimeSignature::MIN_PULSES; i < TimeSignature::MAX_PULSES; i++)
+    ui->metronomePulses->clear();
+
+    for (uint8_t i = TimeSignature::MIN_PULSES;
+         i < TimeSignature::MAX_PULSES; ++i)
     {
         if (newTimeSignature.IsValidPulses(i))
         {
