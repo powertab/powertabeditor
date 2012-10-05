@@ -48,7 +48,7 @@ public:
     RtMidiWrapper();
     ~RtMidiWrapper();
 
-    bool initialize(size_t preferredApi = 0, uint32_t preferredPort = 0);
+    bool initialize(size_t preferredApi, uint32_t preferredPort);
     void setPitchBendRange(uint8_t channel, uint8_t semiTones);
     size_t getApiCount();
     uint32_t getPortCount(size_t api);

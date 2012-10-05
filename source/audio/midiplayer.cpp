@@ -375,8 +375,11 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
 
     // set the port for RtMidi
     QSettings settings;
-    rtMidiWrapper.initialize(settings.value(Settings::MIDI_PREFERRED_PORT,
-                                            Settings::MIDI_PREFFERED_PORT_DEFAULT).toInt());
+    rtMidiWrapper.initialize(
+                settings.value(Settings::MIDI_PREFERRED_API,
+                               Settings::MIDI_PREFERRED_API_DEFAULT).toInt(),
+                settings.value(Settings::MIDI_PREFERRED_PORT,
+                               Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt());
 
     // set pitch bend settings for each channel to one octave
     for (uint8_t i = 0; i < midi::NUM_MIDI_CHANNELS_PER_PORT; i++)

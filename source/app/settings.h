@@ -25,8 +25,11 @@ namespace Settings
     extern const char* APP_PREVIOUS_DIRECTORY;
     extern const char* APP_RECENT_FILES;
 
+    extern const char* MIDI_PREFERRED_API;
+    extern const int MIDI_PREFERRED_API_DEFAULT;
+
     extern const char* MIDI_PREFERRED_PORT;
-    extern const int MIDI_PREFFERED_PORT_DEFAULT;
+    extern const int MIDI_PREFERRED_PORT_DEFAULT;
 
     extern const char* MIDI_METRONOME_ENABLED;
     extern const bool MIDI_METRONOME_ENABLED_DEFAULT;

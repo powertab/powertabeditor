@@ -24,6 +24,9 @@
 #include <app/settings.h>
 #include "app/skinmanager.h"
 
+typedef std::pair<int, int> MidiApiAndPort;
+Q_DECLARE_METATYPE(MidiApiAndPort)
+
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PreferencesDialog)
@@ -40,7 +43,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
         for(uint32_t j = 0; j < rtMidiWrapper.getPortCount(i); j++)
         {
             std::string portName = rtMidiWrapper.getPortName(i, j);
-            ui->midiPortComboBox->addItem(QString::fromStdString(portName));
+            ui->midiPortComboBox->addItem(QString::fromStdString(portName),
+                        QVariant::fromValue(std::pair<int, int>(i, j)));
         }
     }
 
@@ -62,8 +66,15 @@ void PreferencesDialog::loadCurrentSettings()
 {
     QSettings settings;
 
-    ui->midiPortComboBox->setCurrentIndex(settings.value(Settings::MIDI_PREFERRED_PORT,
-                                                         Settings::MIDI_PREFFERED_PORT_DEFAULT).toInt());
+    const int api = settings.value(Settings::MIDI_PREFERRED_API,
+                              Settings::MIDI_PREFERRED_API_DEFAULT).toInt();
+    const int port = settings.value(Settings::MIDI_PREFERRED_PORT,
+                              Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt();
+
+    // Find the preferred midi port in the combo box.
+    RtMidiWrapper rtMidiWrapper;
+    ui->midiPortComboBox->setCurrentIndex(ui->midiPortComboBox->findText(
+                QString::fromStdString(rtMidiWrapper.getPortName(api, port))));
 
     ui->metronomeEnabledCheckBox->setChecked(settings.value(Settings::MIDI_METRONOME_ENABLED,
                                                             Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
@@ -85,8 +96,11 @@ void PreferencesDialog::loadCurrentSettings()
 void PreferencesDialog::accept()
 {
     QSettings settings;
-    settings.setValue(Settings::MIDI_PREFERRED_PORT,
-                      ui->midiPortComboBox->currentIndex());
+
+    MidiApiAndPort apiAndPort = ui->midiPortComboBox->itemData(
+                ui->midiPortComboBox->currentIndex()).value<MidiApiAndPort>();
+    settings.setValue(Settings::MIDI_PREFERRED_API, apiAndPort.first);
+    settings.setValue(Settings::MIDI_PREFERRED_PORT, apiAndPort.second);
 
     settings.setValue(Settings::MIDI_METRONOME_ENABLED,
                       ui->metronomeEnabledCheckBox->isChecked());

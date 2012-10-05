@@ -22,8 +22,11 @@ namespace Settings
     const char* APP_PREVIOUS_DIRECTORY = "app/previousDirectory";
     const char* APP_RECENT_FILES = "app/recentFiles";
 
+    const char* MIDI_PREFERRED_API = "midi/preferredApi";
+    const int MIDI_PREFERRED_API_DEFAULT = 0;
+
     const char* MIDI_PREFERRED_PORT = "midi/preferredPort";
-    const int MIDI_PREFFERED_PORT_DEFAULT = 0;
+    const int MIDI_PREFERRED_PORT_DEFAULT = 0;
 
     const char* MIDI_METRONOME_ENABLED = "midi/metronomeEnabled";
     const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
