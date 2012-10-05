@@ -519,7 +519,7 @@ void Staff::CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
 {
     // Get the positions in betwen the two bars
     std::vector<Position*> positions;
-    GetPositionsInRange(positions, 0, startBar->GetPosition(), endBar->GetPosition());
+    GetPositionsInRange(positions, 0, startBar->GetPosition(), endBar->GetPosition() - 1);
 
     const TimeSignature& timeSig = startBar->GetTimeSignature();
 

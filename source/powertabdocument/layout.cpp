@@ -67,7 +67,7 @@ void Layout::CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> 
             {
                 std::vector<Position*> positions;
                 staff->GetPositionsInRange(positions, voice, barlines[barlineIndex]->GetPosition(),
-                                           barlines[barlineIndex+1]->GetPosition());
+                                           barlines[barlineIndex+1]->GetPosition() - 1);
 
                 for (size_t i = 0; i < positions.size(); i++)
                 {
@@ -380,7 +380,7 @@ void Layout::FormatSystem(boost::shared_ptr<System> system)
             System::StaffPtr staff = system->GetStaff(j);
 
             std::vector<Position*> positions;
-            staff->GetPositionsInRange(positions, 0, leftBar->GetPosition(), rightBar->GetPosition());
+            staff->GetPositionsInRange(positions, 0, leftBar->GetPosition(), rightBar->GetPosition() - 1);
 
             if (positions.empty())
                 break;
