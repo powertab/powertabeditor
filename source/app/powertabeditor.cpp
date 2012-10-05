@@ -332,10 +332,12 @@ void PowerTabEditor::createActions()
                                  QKeySequence::MoveToEndOfDocument, this);
     connect(lastSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToLastSection()));
 
-    shiftForwardAct = new Command(tr("Shift Forward"), "Position.ShiftForward", QKeySequence(), this);
+    shiftForwardAct = new Command(tr("Shift Forward"), "Position.ShiftForward",
+                                  QKeySequence(Qt::Key_Insert), this);
     connect(shiftForwardAct, SIGNAL(triggered()), this, SLOT(shiftForward()));
 
-    shiftBackwardAct = new Command(tr("Shift Backward"), "Position.ShiftBackward", QKeySequence(), this);
+    shiftBackwardAct = new Command(tr("Shift Backward"), "Position.ShiftBackward",
+                                   QKeySequence(), this);
     connect(shiftBackwardAct, SIGNAL(triggered()), this, SLOT(shiftBackward()));
 
     // Position-related actions
@@ -622,9 +624,12 @@ void PowerTabEditor::createActions()
     barlineAct->setCheckable(true);
     connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarline()));
 
-    repeatEndingAct = new Command(tr("Repeat Ending..."), "MusicSymbols.EditRepeatEnding", Qt::Key_E, this);
+    repeatEndingAct = new Command(tr("Repeat Ending..."),
+                                  "MusicSymbols.EditRepeatEnding",
+                                  Qt::SHIFT + Qt::Key_E, this);
     repeatEndingAct->setCheckable(true);
-    connect(repeatEndingAct, SIGNAL(triggered()), this, SLOT(editRepeatEnding()));
+    connect(repeatEndingAct, SIGNAL(triggered()), this,
+            SLOT(editRepeatEnding()));
 
     dynamicAct = new Command(tr("Dynamic..."), "MusicSymbols.EditDynamic", Qt::Key_D, this);
     dynamicAct->setCheckable(true);
