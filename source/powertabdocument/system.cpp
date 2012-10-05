@@ -59,6 +59,7 @@ System::System() :
 
 /// Copy Constructor
 System::System(const System& system) :
+    PowerTabObject(),
     m_rect(DEFAULT_RECT), m_positionSpacing(DEFAULT_POSITION_SPACING),
     m_rhythmSlashSpacingAbove(DEFAULT_RHYTHM_SLASH_SPACING_ABOVE),
     m_rhythmSlashSpacingBelow(DEFAULT_RHYTHM_SLASH_SPACING_BELOW),

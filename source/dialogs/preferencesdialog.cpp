@@ -35,9 +35,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 
     // add available MIDI ports
     RtMidiWrapper rtMidiWrapper;
-    for(quint32 i = 0; i < rtMidiWrapper.getPortCount(); i++)
+    for (size_t i = 0; i < rtMidiWrapper.getApiCount(); ++i)
     {
-        ui->midiPortComboBox->addItem(QString::fromStdString(rtMidiWrapper.getPortName(i)));
+        for(uint32_t j = 0; j < rtMidiWrapper.getPortCount(i); j++)
+        {
+            std::string portName = rtMidiWrapper.getPortName(i, j);
+            ui->midiPortComboBox->addItem(QString::fromStdString(portName));
+        }
     }
 
     ui->vibratoStrengthSpinBox->setRange(1, 127);

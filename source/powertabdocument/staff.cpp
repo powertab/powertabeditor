@@ -86,6 +86,7 @@ Staff::Staff(uint8_t tablatureStaffType, uint8_t clef) :
 
 /// Copy Constructor
 Staff::Staff(const Staff& staff) :
+    PowerTabObject(),
     m_data(DEFAULT_DATA),
     m_standardNotationStaffAboveSpacing(DEFAULT_STANDARD_NOTATION_STAFF_ABOVE_SPACING),
     m_standardNotationStaffBelowSpacing(DEFAULT_STANDARD_NOTATION_STAFF_BELOW_SPACING),

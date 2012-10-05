@@ -20,17 +20,44 @@
 #include <audio/rtmidi/RtMidi.h>
 
 RtMidiWrapper::RtMidiWrapper() :
-    midiout(new RtMidiOut)
+    midiout(NULL)
 {
     for (int i = 0; i < 16; i++)
     {
         channelMaxVolumes[i] = 127;
         channelActiveVolumes[i] = 127;
     }
+
+    // create all MIDI APIs supported on this platform
+    // catch exceptions to prevent memory leaks
+    try
+    {
+        std::vector<RtMidi::Api> rtMidiApis;
+        RtMidi::getCompiledApi(rtMidiApis);
+
+        std::vector<RtMidi::Api>::const_iterator it;
+        for (it = rtMidiApis.begin(); it != rtMidiApis.end(); ++it)
+        {
+            midiouts.push_back(new RtMidiOut(*it));
+        }
+
+        // select a default midiout
+        assert(midiouts.size() > 0 && "No MIDI APIs compiled");
+        midiout = midiouts[0];
+    }
+    catch (...)
+    {
+        // if a exception is thrown, then the destructor isn't called so we 
+        // must delete any allocated memory
+        dealloc();
+        // let the caller handle the exception further
+        throw;
+    }
 }
 
 RtMidiWrapper::~RtMidiWrapper()
 {
+    dealloc();
 }
 
 bool RtMidiWrapper::sendMidiMessage(uint8_t a, uint8_t b, uint8_t c)
@@ -57,10 +84,25 @@ bool RtMidiWrapper::sendMidiMessage(uint8_t a, uint8_t b, uint8_t c)
     return true;
 }
 
-bool RtMidiWrapper::initialize(uint32_t preferredPort)
+void RtMidiWrapper::dealloc()
+{
+    std::vector<RtMidiOut*>::iterator it;
+    for (it = midiouts.begin(); it != midiouts.end(); ++it)
+    {
+        delete *it;
+        *it = NULL;
+    }
+}
+bool RtMidiWrapper::initialize(size_t preferredApi, uint32_t preferredPort)
 {
     midiout->closePort(); // close any open ports
 
+    if (preferredApi >= midiouts.size())
+    {
+        return false;
+    }
+
+    midiout = midiouts[preferredApi];
     uint32_t num_ports = midiout->getPortCount();
 
     if (num_ports<=0)
@@ -80,29 +122,21 @@ bool RtMidiWrapper::initialize(uint32_t preferredPort)
     return true;
 }
 
-uint32_t RtMidiWrapper::getPortCount()
+size_t RtMidiWrapper::getApiCount()
 {
-    return midiout->getPortCount();
+    return midiouts.size();
 }
 
-std::string RtMidiWrapper::getPortName(uint32_t port)
+uint32_t RtMidiWrapper::getPortCount(size_t api)
 {
-    return midiout->getPortName(port);
+    assert(api < midiouts.size() && "Programming error, api doesn't exist");
+    return midiouts[api]->getPortCount();
 }
 
-bool RtMidiWrapper::usePort(uint32_t port)
+std::string RtMidiWrapper::getPortName(size_t api, uint32_t port)
 {
-    try
-    {
-        midiout->closePort();
-        midiout->openPort(port);
-    }
-    catch (...)
-    {
-         return false;
-    }
-
-    return true;
+    assert(api < midiouts.size() && "Programming error, api doesn't exist");
+    return midiouts[api]->getPortName(port);
 }
 
 bool RtMidiWrapper::setPatch(uint8_t channel, uint8_t patch)

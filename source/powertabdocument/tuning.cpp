@@ -53,7 +53,7 @@ Tuning::Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
 }
 
 Tuning::Tuning(const Tuning& tuning) :
-    m_name(DEFAULT_NAME), m_data(DEFAULT_DATA)
+    PowerTabObject(), m_name(DEFAULT_NAME), m_data(DEFAULT_DATA)
 {
     *this = tuning;
 }

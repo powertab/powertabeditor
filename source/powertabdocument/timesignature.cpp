@@ -53,7 +53,8 @@ TimeSignature::TimeSignature(uint8_t beatsPerMeasure, uint8_t beatAmount) :
 }
 
 /// Copy Constructor
-TimeSignature::TimeSignature(const TimeSignature& timeSignature)
+TimeSignature::TimeSignature(const TimeSignature& timeSignature) :
+    PowerTabObject()
 {
     //------Last Checked------//
     // - Dec 12, 2004

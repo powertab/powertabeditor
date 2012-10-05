@@ -9,10 +9,14 @@ TEMPLATE = app
 CONFIG += precompile_header
 PRECOMPILED_HEADER = test_pch.h
 
-unix:LIBS += -lboost_unit_test_framework
+unix:!macx:LIBS += -lboost_unit_test_framework
 
 # replace with the path to your boost installation
 win32:LIBS += -L'C:/Program Files (x86)/boost/boost_1_47/lib' -lboost_unit_test_framework
+
+macx:LIBS += -L/opt/local/lib -lboost_unit_test_framework-mt\
+             -framework CoreMidi -framework CoreAudio -framework CoreFoundation\
+             -framework AudioToolbox -framework AudioUnit
 
 SOURCES += \
     test_main.cpp \

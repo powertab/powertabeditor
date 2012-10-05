@@ -62,6 +62,7 @@ Note::Note(uint32_t string, uint8_t fretNumber) :
 
 /// Copy Constructor
 Note::Note(const Note& note) :
+    PowerTabObject(),
     m_stringData(DEFAULT_STRING_DATA),
     m_simpleData(DEFAULT_SIMPLE_DATA)
 {

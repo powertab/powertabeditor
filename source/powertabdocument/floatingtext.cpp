@@ -45,6 +45,7 @@ FloatingText::FloatingText(const char* text, Rect rect, uint8_t flags,
 
 /// Copy Constructor
 FloatingText::FloatingText(const FloatingText& floatingText) :
+    PowerTabObject(),
     m_text(DEFAULT_TEXT), m_rect(DEFAULT_RECT), m_flags(DEFAULT_FLAGS)
 {
     //------Last Checked------//

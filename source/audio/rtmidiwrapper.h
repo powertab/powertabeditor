@@ -35,21 +35,24 @@ class RtMidiOut;
 class RtMidiWrapper
 {
 private:
-    boost::scoped_ptr<RtMidiOut> midiout;
+    std::vector<RtMidiOut*> midiouts;
+    RtMidiOut* midiout;
     bool sendMidiMessage(uint8_t a, uint8_t b, uint8_t c);
 
     std::map<uint8_t, uint8_t> channelMaxVolumes; ///< Maximum volume for each channel (as set in the mixer)
     std::map<uint8_t, uint8_t> channelActiveVolumes; ///< Volume of last active dynamic for each channel
 
+    void dealloc();
+
 public:
     RtMidiWrapper();
     ~RtMidiWrapper();
 
-    bool initialize(uint32_t preferredPort = 0);
+    bool initialize(size_t preferredApi = 0, uint32_t preferredPort = 0);
     void setPitchBendRange(uint8_t channel, uint8_t semiTones);
-    uint32_t getPortCount();
-    std::string getPortName(uint32_t port);
-    bool usePort(uint32_t port);
+    size_t getApiCount();
+    uint32_t getPortCount(size_t api);
+    std::string getPortName(size_t api, uint32_t port);
     bool setPatch(uint8_t channel, uint8_t patch);
     bool setVolume(uint8_t channel, uint8_t volume);
     bool setPan(uint8_t channel, uint8_t pan); // pan in the range -100(left)-100(right)

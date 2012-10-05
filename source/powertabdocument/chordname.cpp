@@ -67,6 +67,7 @@ ChordName::ChordName(uint8_t tonicKey, uint8_t tonicKeyVariation, uint8_t formul
 
 /// Copy Constructor
 ChordName::ChordName(const ChordName& chordName) :
+    PowerTabObject(),
     m_key(DEFAULT_KEY), m_formula(DEFAULT_FORMULA),
     m_formulaModifications(DEFAULT_FORMULA_MODIFICATIONS),
     m_extra(DEFAULT_EXTRA)

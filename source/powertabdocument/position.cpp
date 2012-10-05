@@ -85,6 +85,7 @@ Position::Position(uint32_t position, uint8_t durationType, uint8_t dotCount) :
 
 /// Copy Constructor
 Position::Position(const Position& position) :
+    PowerTabObject(),
     m_position(DEFAULT_POSITION), m_beaming(DEFAULT_BEAMING),
     m_data(DEFAULT_DATA)
 {

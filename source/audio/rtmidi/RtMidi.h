@@ -57,6 +57,7 @@ class RtMidi
   enum Api {
     UNSPECIFIED,    /*!< Search for a working compiled API. */
     MACOSX_CORE,    /*!< Macintosh OS-X Core Midi API. */
+    MACOSX_AU,      /*!< Macintosh OS-X AU Soft Synth. */
     LINUX_ALSA,     /*!< The Advanced Linux Sound Architecture API. */
     UNIX_JACK,      /*!< The Jack Low-Latency MIDI Server API. */
     WINDOWS_MM,     /*!< The Microsoft Multimedia MIDI API. */
@@ -147,8 +148,8 @@ class RtMidiIn : public RtMidi
     incoming messages will be ignored.
 
     If no API argument is specified and multiple API support has been
-    compiled, the default order of use is JACK, ALSA (Linux) and CORE,
-    Jack (OS-X).
+    compiled, the default order of use is AU (Mac), CORE (Mac), ALSA (Linux),
+    JACK, MM (Windows), and KS (Windows).
   */
   RtMidiIn( RtMidi::Api api=UNSPECIFIED,
             const std::string clientName = std::string( "RtMidi Input Client"),
@@ -448,7 +449,7 @@ inline void RtMidiOut :: sendMessage( std::vector<unsigned char> *message ) { re
 //
 // **************************************************************** //
 
-#if !defined(__LINUX_ALSA__) && !defined(__UNIX_JACK__) && !defined(__MACOSX_CORE__) && !defined(__WINDOWS_MM__) && !defined(__WINDOWS_KS__)
+#if !defined(__LINUX_ALSA__) && !defined(__UNIX_JACK__) && !defined(__MACOSX_CORE__) && !defined(__MACOSX_AU__) && !defined(__WINDOWS_MM__) && !defined(__WINDOWS_KS__)
   #define __RTMIDI_DUMMY__
 #endif
 
@@ -476,6 +477,42 @@ class MidiOutCore: public MidiOutApi
   MidiOutCore( const std::string clientName );
   ~MidiOutCore( void );
   RtMidi::Api getCurrentApi( void ) { return RtMidi::MACOSX_CORE; };
+  void openPort( unsigned int portNumber, const std::string portName );
+  void openVirtualPort( const std::string portName );
+  void closePort( void );
+  unsigned int getPortCount( void );
+  std::string getPortName( unsigned int portNumber );
+  void sendMessage( std::vector<unsigned char> *message );
+
+ protected:
+  void initialize( const std::string& clientName );
+};
+
+#endif
+
+#if defined(__MACOSX_AU__)
+
+class MidiInAu: public MidiInApi
+{
+ public:
+  MidiInAu( const std::string /*clientName*/, unsigned int queueSizeLimit ) : MidiInApi( queueSizeLimit ) { errorString_ = "MidiInAu: This class provides no functionality."; RtMidi::error( RtError::WARNING, errorString_ ); };
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::MACOSX_AU; };
+  void openPort( unsigned int /*portNumber*/, const std::string /*portName*/ ) {};
+  void openVirtualPort( const std::string /*portName*/ ) {};
+  void closePort( void ) {};
+  unsigned int getPortCount( void ) { return 0; };
+  std::string getPortName( unsigned int /*portNumber*/) { return ""; };
+
+ protected:
+  void initialize( const std::string& /*clientName*/ ) {};
+};
+
+class MidiOutAu: public MidiOutApi
+{
+ public:
+  MidiOutAu( const std::string clientName );
+  ~MidiOutAu( void );
+  RtMidi::Api getCurrentApi( void ) { return RtMidi::MACOSX_AU; };
   void openPort( unsigned int portNumber, const std::string portName );
   void openVirtualPort( const std::string portName );
   void closePort( void );
@@ -664,7 +701,7 @@ class MidiOutDummy: public MidiOutApi
   void closePort( void ) {};
   unsigned int getPortCount( void ) { return 0; };
   std::string getPortName( unsigned int /*portNumber*/ ) { return ""; };
-  void sendMessage( std::vector<unsigned char>* /*message*/ ) {};
+  void sendMessage( std::vector<unsigned char> * /*message*/ ) {};
 
  protected:
   void initialize( const std::string& /*clientName*/ ) {};

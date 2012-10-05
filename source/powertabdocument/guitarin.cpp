@@ -70,7 +70,7 @@ GuitarIn::GuitarIn(uint32_t system, uint32_t staff, uint32_t position,
 
 /// Copy Constructor
 GuitarIn::GuitarIn(const GuitarIn& guitarIn) :
-	m_system(DEFAULT_SYSTEM), m_staff(DEFAULT_STAFF),
+	PowerTabObject(), m_system(DEFAULT_SYSTEM), m_staff(DEFAULT_STAFF),
 	m_position(DEFAULT_POSITION), m_data(DEFAULT_DATA)
 {
 	//------Last Checked------//

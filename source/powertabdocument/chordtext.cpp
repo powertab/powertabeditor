@@ -40,7 +40,7 @@ ChordText::ChordText(uint32_t position, const ChordName& chordName) :
 
 /// Copy Constructor
 ChordText::ChordText(const ChordText& chordText) :
-    m_position(DEFAULT_POSITION)
+    PowerTabObject(), m_position(DEFAULT_POSITION)
 {
     //------Last Checked------//
     // - Jan 3, 2005

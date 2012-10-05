@@ -63,7 +63,7 @@ Direction::Direction(uint32_t position, uint8_t symbolType, uint8_t activeSymbol
 }
 
 Direction::Direction(const Direction& direction) :
-    m_position(DEFAULT_POSITION)
+    PowerTabObject(), m_position(DEFAULT_POSITION)
 {
     *this = direction;
 }

@@ -101,6 +101,7 @@ Guitar::Guitar(uint8_t number, const std::string& description, uint8_t preset,
 
 /// Copy Constructor
 Guitar::Guitar (const Guitar& guitar) :
+    PowerTabObject(),
     m_number(DEFAULT_NUMBER), m_description(DEFAULT_DESCRIPTION),
     m_preset(DEFAULT_PRESET), m_initialVolume(DEFAULT_INITIAL_VOLUME),
     m_pan(DEFAULT_PAN), m_reverb(DEFAULT_REVERB), m_chorus(DEFAULT_CHORUS),

@@ -44,7 +44,7 @@ KeySignature::KeySignature(uint8_t keyType, uint8_t keyAccidentals) :
 
 /// Copy Constructor
 KeySignature::KeySignature(const KeySignature& keySignature) :
-    m_data(DEFAULT_DATA)
+    PowerTabObject(), m_data(DEFAULT_DATA)
 {
     //------Last Checked------//
     // - Dec 10, 2004

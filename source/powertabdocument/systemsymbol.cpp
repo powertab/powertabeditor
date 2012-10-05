@@ -56,7 +56,8 @@ SystemSymbol::SystemSymbol(uint32_t system, uint32_t position, uint32_t data) :
 
 /// Copy Constructor
 SystemSymbol::SystemSymbol(const SystemSymbol& systemSymbol) :
-    m_system(DEFAULT_SYSTEM), m_position(DEFAULT_POSITION), m_data(DEFAULT_DATA)
+    PowerTabObject(), m_system(DEFAULT_SYSTEM), m_position(DEFAULT_POSITION), 
+    m_data(DEFAULT_DATA)
 {
     //------Last Checked------//
     // - Jan 13, 2005

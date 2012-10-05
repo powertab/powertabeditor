@@ -10,8 +10,9 @@ BUILDING:
         - edit the 'win32:INCLUDEPATH' line in the common.pri file to specify the location of your Boost installation
 - Open the powertabeditor.pro file in QtCreator, and choose Build / Build All
 - Then, either use Debug / Start Debugging, or Build / Run to run the program
+- For Mac OS X, see the build/build-macx.sh script for instructions on creating a build environment.
 
 NOTES:
 - the 'PowerTabDocument' code was ported from Brad Larsen's PtParser (http://code.google.com/p/ptparser/)
 	- it could probably use some cleanup, but that's not too high a priority
-- the project builds without any warnings / errors on Windows and Linux with QtCreator
+- the project builds without any warnings / errors on Windows, Mac, and Linux with QtCreator

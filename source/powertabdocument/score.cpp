@@ -43,7 +43,8 @@ Score::Score()
 }
 
 /// Copy Constructor
-Score::Score(const Score& score)
+Score::Score(const Score& score) :
+    PowerTabObject()
 {
     *this = score;
 }

@@ -66,8 +66,8 @@ RhythmSlash::RhythmSlash(uint32_t position, uint8_t durationType,
 
 /// Copy Constructor
 RhythmSlash::RhythmSlash(const RhythmSlash& rhythmSlash) :
-	m_position(DEFAULT_POSITION), m_beaming(DEFAULT_BEAMING),
-	m_data(DEFAULT_DATA)
+	PowerTabObject(), m_position(DEFAULT_POSITION), 
+        m_beaming(DEFAULT_BEAMING), m_data(DEFAULT_DATA)
 {
 	//------Last Checked------//
 	// - Dec 17, 2004

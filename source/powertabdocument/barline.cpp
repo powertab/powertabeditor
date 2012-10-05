@@ -50,7 +50,7 @@ Barline::Barline(uint32_t position, uint8_t type, uint8_t repeatCount) :
 
 /// Copy Constructor
 Barline::Barline(const Barline& barline) :
-	m_position(DEFAULT_POSITION), m_data(DEFAULT_DATA)
+	PowerTabObject(), m_position(DEFAULT_POSITION), m_data(DEFAULT_DATA)
 {
 	//------Last Checked------//
 	// - Jan 4, 2005

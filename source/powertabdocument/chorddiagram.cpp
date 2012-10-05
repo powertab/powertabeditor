@@ -59,7 +59,7 @@ ChordDiagram::ChordDiagram(uint8_t topFret, const std::vector<uint8_t>& fretNumb
 
 /// Copy Constructor
 ChordDiagram::ChordDiagram(const ChordDiagram& chordDiagram) :
-    m_topFret(DEFAULT_TOP_FRET)
+    PowerTabObject(), m_topFret(DEFAULT_TOP_FRET)
 {
     *this = chordDiagram;
 }

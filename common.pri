@@ -34,6 +34,9 @@ RCC_DIR = $${BUILDTYPE}/rcc
 # in the include path (/usr/include) if you installed the package from your Linux distribution's repo
 win32:INCLUDEPATH += 'C:/Program Files (x86)/boost/boost_1_47/'
 
+# Using macports for boost, the default local is below
+macx:INCLUDEPATH += /opt/local/include
+
 # build all subprojects as static libraries unless overridden
 TEMPLATE = lib
 CONFIG += staticlib

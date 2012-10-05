@@ -71,6 +71,7 @@ Dynamic::Dynamic(uint32_t system, uint32_t staff, uint32_t position,
 
 /// Copy Constructor
 Dynamic::Dynamic(const Dynamic& dynamic) :
+    PowerTabObject(),
     m_system(DEFAULT_SYSTEM), m_staff(DEFAULT_STAFF),
     m_position(DEFAULT_POSITION), m_data(DEFAULT_DATA)
 {

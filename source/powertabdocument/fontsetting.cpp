@@ -60,6 +60,7 @@ FontSetting::FontSetting(const char* faceName, int32_t pointSize,
 
 /// Copy Constructor
 FontSetting::FontSetting(const FontSetting& fontSetting) :
+    PowerTabObject(),
     m_faceName(DEFAULT_FACENAME), m_pointSize(DEFAULT_POINTSIZE),
     m_weight(DEFAULT_WEIGHT), m_italic(DEFAULT_ITALIC),
     m_underline(DEFAULT_UNDERLINE), m_strikeOut(DEFAULT_STRIKEOUT),

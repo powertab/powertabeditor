@@ -51,6 +51,9 @@ void RtMidi :: getCompiledApi( std::vector<RtMidi::Api> &apis ) throw()
 
   // The order here will control the order of RtMidi's API search in
   // the constructor.
+#if defined(__MACOSX_AU__)
+  apis.push_back( MACOSX_AU );
+#endif
 #if defined(__MACOSX_CORE__)
   apis.push_back( MACOSX_CORE );
 #endif
@@ -116,6 +119,10 @@ void RtMidiIn :: openMidiApi( RtMidi::Api api, const std::string clientName, uns
 #if defined(__MACOSX_CORE__)
   if ( api == MACOSX_CORE )
     rtapi_ = new MidiInCore( clientName, queueSizeLimit );
+#endif
+#if defined(__MACOSX_AU__)
+  if ( api == MACOSX_AU )
+    rtapi_ = new MidiInAu( clientName, queueSizeLimit );
 #endif
 #if defined(__RTMIDI_DUMMY__)
   if ( api == RTMIDI_DUMMY )
@@ -190,6 +197,10 @@ void RtMidiOut :: openMidiApi( RtMidi::Api api, const std::string clientName )
 #if defined(__MACOSX_CORE__)
   if ( api == MACOSX_CORE )
     rtapi_ = new MidiOutCore( clientName );
+#endif
+#if defined(__MACOSX_AU__)
+  if ( api == MACOSX_AU )
+    rtapi_ = new MidiOutAu( clientName );
 #endif
 #if defined(__RTMIDI_DUMMY__)
   if ( api == RTMIDI_DUMMY )
@@ -363,7 +374,7 @@ struct CoreMidiData {
 //  Class Definitions: MidiInCore
 //*********************************************************************//
 
-void midiInputCallback( const MIDIPacketList *list, void *procRef, void *srcRef )
+void midiInputCallback( const MIDIPacketList *list, void *procRef, void * /*srcRef*/ )
 {
   MidiInApi::RtMidiInData *data = static_cast<MidiInApi::RtMidiInData *> (procRef);
   CoreMidiData *apiData = static_cast<CoreMidiData *> (data->apiData);
@@ -934,7 +945,7 @@ void MidiOutCore :: openVirtualPort( std::string portName )
 
 char *sysexBuffer = 0;
 
-void sysexCompletionProc( MIDISysexSendRequest * sreq )
+void sysexCompletionProc( MIDISysexSendRequest * /*sreq*/ )
 {
   //std::cout << "Completed SysEx send\n";
  delete sysexBuffer;
@@ -1021,6 +1032,241 @@ void MidiOutCore :: sendMessage( std::vector<unsigned char> *message )
 
 #endif  // __MACOSX_CORE__
 
+//*********************************************************************//
+//  API: MACOSX AU Software Synthesizer
+//*********************************************************************//
+
+// Example taken from:
+//   - https://developer.apple.com/library/mac/#samplecode/PlaySoftMIDI/Introduction/Intro.htm
+
+#if defined(__MACOSX_AU__)
+
+// OS-X AU header files.
+#include <AudioUnit/AudioUnit.h>
+#include <AudioToolbox/AudioToolbox.h>
+
+// A structure to hold variables related to the OSX AU API
+// implementation.
+struct AuData {
+  AUGraph audioGraph; /* produces the audio and contains a synth */
+  AudioUnit synthesizer; /* the synth to send MIDI data too */
+};
+
+//*********************************************************************//
+//  API: OS-X AU
+//  Class Definitions: MidiOutAu
+//*********************************************************************//
+
+MidiOutAu :: MidiOutAu( const std::string clientName ) : MidiOutApi()
+{
+  initialize( clientName );
+}
+
+MidiOutAu :: ~MidiOutAu( void )
+{
+  // Close a connection if it exists.
+  closePort();
+
+  // Cleanup.
+  AuData *data = static_cast<AuData *> (apiData_);
+  if ( data->audioGraph ) {
+    DisposeAUGraph( data->audioGraph );
+    data->audioGraph = NULL;
+  }
+  delete data;
+}
+
+void MidiOutAu :: initialize( const std::string& /*clientName*/ )
+{
+  // Set up our AU Graph and AU AU Synth 
+  AUGraph audioGraph;
+  AudioUnit synthesizer;
+
+  // create the empty Audio Graph  
+  if ( NewAUGraph( &audioGraph ) != noErr ) {
+    errorString_ = "MidiOutAu::initialize: error creating AU audioGraph object.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // template to find standard OS X Audio Units to add to our Audio Graph.
+  AudioComponentDescription cd;
+  cd.componentManufacturer = kAudioUnitManufacturer_Apple;
+  cd.componentFlags = 0;
+  cd.componentFlagsMask = 0;
+
+  // create the AU synthesizer (make audio from midi)
+  AUNode synthNode; // owned by the audioGraph, needed to connect nodes later
+  cd.componentType = kAudioUnitType_MusicDevice;
+  cd.componentSubType = kAudioUnitSubType_DLSSynth;
+
+  if ( AUGraphAddNode( audioGraph, &cd, &synthNode ) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    audioGraph = NULL;
+    errorString_ = "MidiOutAu::initialize: error creating AU Synthesizer node.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // create the Peak Limiter (prevents erm peaks!)
+  AUNode limiterNode; // owned by the audioGraph, needed to connect nodes later
+  cd.componentType = kAudioUnitType_Effect;
+  cd.componentSubType = kAudioUnitSubType_PeakLimiter;  
+
+  if ( AUGraphAddNode( audioGraph, &cd, &limiterNode ) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    audioGraph = NULL;
+    errorString_ = "MidiOutAu::initialize: error creating AU Peak Limiter node.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // lets send the created audio somewhere (i.e. the system default speakers or line-out)
+  AUNode outNode; // owned by the audioGraph, needed to connect nodes later
+  cd.componentType = kAudioUnitType_Output;
+  cd.componentSubType = kAudioUnitSubType_DefaultOutput;  
+
+  if ( AUGraphAddNode( audioGraph, &cd, &outNode ) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    audioGraph = NULL;
+    errorString_ = "MidiOutAu::initialize: error creating AU Default Output node.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // created all nodes, next steps to create a Audio Graph (connect them):
+  //  1. "open" them first (not quite sure what that means but it allows us to connect them).
+  //  2. "connect" (MIDI Data -> synthNode -> limiterNode -> outNode).
+  //  3. "initialise", erm yes do this
+  if ( AUGraphOpen( audioGraph ) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    audioGraph = NULL;
+    errorString_ = "MidiOutAu::initialize: error opening AU Audio Graph.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  } 
+  else if ( AUGraphConnectNodeInput( audioGraph, synthNode, 0, limiterNode, 0 ) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    audioGraph = NULL;
+    errorString_ = "MidiOutAu::initialize: error connecting AU Synth node to Limiter node.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+  else if ( AUGraphConnectNodeInput( audioGraph, limiterNode, 0, outNode, 0 ) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    audioGraph = NULL;
+    errorString_ = "MidiOutAu::initialize: error connecting AU Limiter node to Output node.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+  else if ( AUGraphInitialize( audioGraph ) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    audioGraph = NULL;
+    errorString_ = "MidiOutAu::initialize: error initialising the AU Audio Graph.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  // ok we're good to go, finally get the Synth Unit so we can send MIDI to it
+  if ( AUGraphNodeInfo( audioGraph, synthNode, 0, &synthesizer) != noErr ) {
+    DisposeAUGraph( audioGraph );
+    errorString_ = "MidiOutAu::initialize: error caching the AU Synthesizer.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+  
+  // if we get this far ...
+  // the struct now owns the audioGraph
+  // the audioGraph owns the synthesizer
+  // this must always exist after initialized has been called
+  AuData *data = (AuData *) new AuData;
+  data->audioGraph = audioGraph;
+  data->synthesizer = synthesizer;
+  apiData_ = (void *) data;
+}
+
+unsigned int MidiOutAu :: getPortCount()
+{
+  return 1;
+}
+
+std::string MidiOutAu :: getPortName( unsigned int /*portNumber*/ )
+{
+  return "AU Software Synthesizer";
+}
+
+void MidiOutAu :: openPort( unsigned int portNumber, const std::string /*portName*/ )
+{
+  if ( connected_ ) {
+    errorString_ = "MidiOutAu::openPort: a valid connection already exists!";
+    RtMidi::error( RtError::WARNING, errorString_ );
+    return;
+  }
+
+  std::ostringstream ost;
+  if ( portNumber != 0 ) {
+    ost << "MidiOutAu::openPort: the 'portNumber' argument (" << portNumber << ") is invalid.";
+    errorString_ = ost.str();
+    RtMidi::error( RtError::INVALID_PARAMETER, errorString_ );
+    return;
+  }
+
+  AuData *data = static_cast<AuData *> (apiData_);
+  if ( AUGraphStart( data->audioGraph ) != noErr ) {
+    errorString_ = "MidiOutAu::openPort: failed to start the AU Synthesizer.";
+    RtMidi::error( RtError::DRIVER_ERROR, errorString_ );
+    return;
+  }
+
+  connected_ = true;
+}
+
+void MidiOutAu :: closePort( void )
+{
+  if ( connected_ ) {
+    AuData *data = static_cast<AuData *> (apiData_);
+    AUGraphStop ( data->audioGraph );
+    connected_ = false;
+  }
+}
+
+void MidiOutAu :: openVirtualPort( std::string /*portName*/ )
+{
+  // This function cannot be implemented for the OSX AU
+  errorString_ = "MidiInAu::openVirtualPort: cannot be implemented in OSX AU API!";
+  RtMidi::error( RtError::WARNING, errorString_ );
+}
+
+void MidiOutAu :: sendMessage( std::vector<unsigned char> *message )
+{
+  unsigned int nBytes = message->size();
+  if ( nBytes == 0 ) {
+    errorString_ = "MidiOutAu::sendMessage: no data in message argument!";      
+    RtMidi::error( RtError::WARNING, errorString_ );
+    return;
+  }
+
+  if ( connected_ ) {
+    // setup the data to be sent (default to Null
+    UInt32 statusByte = (*message)[0];
+    UInt32 dataByte1 = nBytes > 1 ? (*message)[1] : 0;
+    UInt32 dataByte2 = nBytes > 2 ? (*message)[2] : 0;
+    UInt32 offsetSampleFrame = 0;
+
+    // get the created synthesizer and send checking the result
+    AuData *data = static_cast<AuData *> (apiData_);
+    if ( MusicDeviceMIDIEvent( data->synthesizer, 
+                               statusByte, 
+                               dataByte1, 
+                               dataByte2, 
+                               offsetSampleFrame ) != noErr ) {
+      errorString_ = "MidiOutAu::sendMessage: error sending MIDI message to AU synthesizer.";
+      RtMidi::error( RtError::WARNING, errorString_ );
+    }
+  }
+}
+
+#endif  // __MACOSX_AU__
 
 //*********************************************************************//
 //  API: LINUX ALSA SEQUENCER
