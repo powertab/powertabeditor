@@ -894,15 +894,22 @@ void System::ShiftBackward(uint32_t positionIndex)
     PerformPositionShift(positionIndex, -1);
 }
 
-/// Initializes the system, creating staves using the given list of staff sizes (# of strings)
-void System::Init(const std::vector<uint8_t>& staffSizes)
+/// Initializes the system and creates staves.
+/// @param staffSizes List containing the size of each staff (# of strings).
+/// @param showTimeSignature Whether to display the first time signature in
+/// the staff.
+void System::Init(const std::vector<uint8_t>& staffSizes,
+                  bool showTimeSignature)
 {
     m_staffArray.clear();
 
     for (size_t i = 0; i < staffSizes.size(); i++)
     {
-        m_staffArray.push_back(boost::make_shared<Staff>(staffSizes.at(i), Staff::TREBLE_CLEF));
+        m_staffArray.push_back(boost::make_shared<Staff>(staffSizes.at(i),
+                                                         Staff::TREBLE_CLEF));
     }
+
+    m_startBar->GetTimeSignature().SetShown(showTimeSignature);
 
     CalculateHeight();
 }

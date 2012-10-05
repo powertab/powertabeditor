@@ -45,7 +45,7 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
 
     // set up initial system
     Score::SystemPtr currentSystem = boost::make_shared<System>();
-    currentSystem->Init(staffSizes);
+    currentSystem->Init(staffSizes, false);
     currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
     score->InsertSystem(currentSystem, 0);
 
@@ -66,7 +66,7 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
         if (!currentSystem->IsValidPosition(lastBarlinePos + largestMeasure + 1))
         {
             currentSystem = boost::make_shared<System>();
-            currentSystem->Init(staffSizes);
+            currentSystem->Init(staffSizes, false);
             currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
 
             // adjust height to be below the previous system

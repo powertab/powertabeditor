@@ -174,7 +174,7 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
         std::transform(m_guitarArray.begin(), m_guitarArray.end(),
                        std::back_inserter(staffSizes),
                        boost::bind(&Guitar::GetStringCount, _1));
-        system->Init(staffSizes);
+        system->Init(staffSizes, false);
     }
 
     system->CalculateHeight();
@@ -419,7 +419,7 @@ void Score::Init()
     staffSizes.push_back(guitar->GetStringCount());
 
     SystemPtr newSystem(new System);
-    newSystem->Init(staffSizes);
+    newSystem->Init(staffSizes, true);
     InsertSystem(newSystem, 0);
 }
 
