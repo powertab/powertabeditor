@@ -249,17 +249,23 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             Note *currentNote = caret->getCurrentNote();
             Position *currentPosition = caret->getCurrentPosition();
             shared_ptr<Staff> currentStaff = caret->getCurrentStaff();
+            shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
 
-            if (currentNote != NULL)
+            // Don't allow inserting notes on top of bars (except for the first
+            // bar in the system, which has position 0).
+            if (!currentBarline || caret->getCurrentPositionIndex() == 0)
             {
-                // if there is already a number here update it
-                undoManager->push(new UpdateTabNumber(typedNumber, currentNote, currentPosition, currentStaff));
-            }
-            else
-            {
-                undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
-                                              caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
-                                              currentStaff));
+                if (currentNote != NULL)
+                {
+                    // if there is already a number here update it
+                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote, currentPosition, currentStaff));
+                }
+                else
+                {
+                    undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
+                                                  caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
+                                                  currentStaff));
+                }
             }
         }
     }
