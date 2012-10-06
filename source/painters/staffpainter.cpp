@@ -39,19 +39,16 @@ StaffPainter::StaffPainter(boost::shared_ptr<const System> system, boost::shared
     staffInfo(staffInfo)
 {
     pen = QPen(QBrush(QColor(0,0,0)), 0.75);
-    init();
-}
-
-void StaffPainter::init()
-{
     selectionEnd = selectionStart = 0;
-
     bounds = QRectF(0, 0, staffInfo.width, staffInfo.height);
 
     // Standard notation staff
     drawStaffLines(staffInfo.numOfStdNotationLines, Staff::STD_NOTATION_LINE_SPACING, staffInfo.getTopStdNotationLine());
     // Tab staff
     drawStaffLines(staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine());
+
+    // Only use the left mouse button for making selections.
+    setAcceptedMouseButtons(Qt::LeftButton);
 }
 
 void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)

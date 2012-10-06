@@ -55,8 +55,6 @@ protected:
 
     int selectionStart;
     int selectionEnd;
-
-    void init();
 };
 
 #endif // STAFFPAINTER_H
