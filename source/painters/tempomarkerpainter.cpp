@@ -27,6 +27,7 @@ TempoMarkerPainter::TempoMarkerPainter(boost::shared_ptr<const TempoMarker> temp
     tempoMarker(tempoMarker)
 {
     displayFont.setPixelSize(10);
+    displayFont.setBold(true);
 
     init();
 }
