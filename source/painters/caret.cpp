@@ -427,7 +427,9 @@ boost::shared_ptr<Barline> Caret::getCurrentBarline() const
 
 void Caret::updateSelection(int start, int end)
 {
+#if 0
     qDebug() << "Selected Range: " << start << ", " << end;
+#endif
     selectionRange = std::make_pair(start, end);
 }
 
