@@ -63,6 +63,9 @@ public:
     static std::vector<Position*> getSelectedPositions();
     static std::vector<Note*> getSelectedNotes();
 
+protected:
+    virtual void closeEvent(QCloseEvent*);
+
 private:
     void createActions();
     void createMenus();
@@ -88,12 +91,12 @@ private slots:
     void updateModified(bool);
     void createNewFile();
     void openFile(QString fileName = "");
-    void saveFileAs();
+    bool saveFileAs();
     void openPreferences();
     void openFileInformation();
     void refreshOnUndoRedo(int);
-    void closeCurrentTab();
-    void closeTab(int index);
+    bool closeCurrentTab();
+    bool closeTab(int index);
     void switchTab(int index);
     void startStopPlayback();
     bool moveCaretRight();

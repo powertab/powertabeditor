@@ -1125,9 +1125,13 @@ void PowerTabEditor::setupNewDocument()
     qDebug() << "Document opened in" << timer.elapsed() << "seconds";
 }
 
-void PowerTabEditor::saveFileAs()
+/// Saves the current document with a new filename.
+/// @return True if the file was successfully saved.
+bool PowerTabEditor::saveFileAs()
 {
-    QString path = QFileDialog::getSaveFileName(this, tr("Save As"), previousDirectory, fileFilter);
+    QString path = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                previousDirectory, fileFilter);
+
     if (!path.isEmpty())
     {
         const std::string stdPath = path.toStdString();
@@ -1141,7 +1145,11 @@ void PowerTabEditor::saveFileAs()
         const QString fileName = QFileInfo(path).fileName();
         tabWidget->setTabText(tabWidget->currentIndex(), fileName);
         tabWidget->setTabToolTip(tabWidget->currentIndex(), fileName);
+
+        return true;
     }
+
+    return false;
 }
 
 // Opens the preferences dialog
@@ -1151,14 +1159,57 @@ void PowerTabEditor::openPreferences()
     skinManager->reload();
 }
 
-void PowerTabEditor::closeCurrentTab()
+/// Before exiting, prompt to save any modified documents.
+void PowerTabEditor::closeEvent(QCloseEvent* event)
 {
-    closeTab(tabWidget->currentIndex());
+    while (tabWidget->currentIndex() != -1)
+    {
+        bool closed = closeCurrentTab();
+        if (!closed)
+        {
+            // Don't close if the user pressed Cancel.
+            event->ignore();
+            return;
+        }
+    }
 }
 
-// Close a document and clean up
-void PowerTabEditor::closeTab(int index)
+/// Closes the current document.
+/// @return True if the document was closed.
+bool PowerTabEditor::closeCurrentTab()
 {
+    return closeTab(tabWidget->currentIndex());
+}
+
+/// Close a document and clean up.
+/// @return True if the document was closed.
+bool PowerTabEditor::closeTab(int index)
+{
+    // Prompt to save modified documents.
+    if (isWindowModified())
+    {
+        QMessageBox msg;
+        msg.setWindowTitle(tr("Close Document"));
+        msg.setText(tr("The document has been modified."));
+        msg.setInformativeText(tr("Do you want to save your changes?"));
+        msg.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
+                               QMessageBox::Cancel);
+        msg.setDefaultButton(QMessageBox::Save);
+
+        int ret = msg.exec();
+        if (ret == QMessageBox::Save)
+        {
+            if (!saveFileAs())
+            {
+                return false;
+            }
+        }
+        else if (ret == QMessageBox::Cancel)
+        {
+            return false;
+        }
+    }
+
     undoManager->removeStack(index);
     documentManager->removeDocument(index);
     delete tabWidget->widget(index);
@@ -1178,6 +1229,8 @@ void PowerTabEditor::closeTab(int index)
     {
         updateScoreAreaActions(false);
     }
+
+    return true;
 }
 
 // When the tab is switched, switch the current document in the document manager
