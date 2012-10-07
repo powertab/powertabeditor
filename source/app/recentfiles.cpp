@@ -37,8 +37,13 @@ RecentFiles::RecentFiles(QMenu* recentFilesMenu, QObject* parent) :
     updateMenu();
 }
 
-/// Save the recent files list to disk
 RecentFiles::~RecentFiles()
+{
+    save();
+}
+
+/// Save the recent files list to disk.
+void RecentFiles::save()
 {
     QSettings settings;
     settings.setValue(Settings::APP_RECENT_FILES, recentFiles);
@@ -57,6 +62,7 @@ void RecentFiles::add(const QString &fileName)
         recentFiles.pop_back();
     }
 
+    save();
     updateMenu();
 }
 
@@ -87,6 +93,7 @@ void RecentFiles::updateMenu()
 void RecentFiles::clear()
 {
     recentFiles.clear();
+    save();
     updateMenu();
 }
 

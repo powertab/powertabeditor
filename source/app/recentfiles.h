@@ -43,6 +43,7 @@ private:
     static const int MAX_RECENT_FILES = 10;
 
     void updateMenu();
+    void save();
 };
 
 #endif // RECENTFILES_H
