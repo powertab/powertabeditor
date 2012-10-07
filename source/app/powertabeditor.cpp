@@ -1139,6 +1139,13 @@ bool PowerTabEditor::saveFileAs()
 
     if (!path.isEmpty())
     {
+        // If the user didn't type the extension, add it in.
+        QFileInfo info(path);
+        if (info.suffix().isEmpty())
+        {
+            path += ".ptb";
+        }
+
         const std::string stdPath = path.toStdString();
         boost::shared_ptr<PowerTabDocument> doc = documentManager->getCurrentDocument();
 
