@@ -49,3 +49,13 @@ void UndoManager::push(QUndoCommand* cmd)
 {
     activeStack()->push(cmd);
 }
+
+void UndoManager::beginMacro(const QString& text)
+{
+    activeStack()->beginMacro(text);
+}
+
+void UndoManager::endMacro()
+{
+    activeStack()->endMacro();
+}

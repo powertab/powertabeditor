@@ -184,7 +184,10 @@ public:
     BarlinePtr GetPrecedingBarline(uint32_t position) const;
     BarlinePtr GetNextBarline(uint32_t position) const;
     void GetBarlines(std::vector<BarlineConstPtr>& barlineArray) const;
-    void GetBarlines(std::vector<BarlinePtr>& barlineArray);
+    void GetBarlines(std::vector<BarlinePtr>& barlineArray) const;
+
+    void GetBarlinesInRange(std::vector<BarlinePtr>& barlineArray, size_t start,
+                            size_t end) const;
 
     bool InsertBarline(BarlinePtr barline);
     bool RemoveBarline(uint32_t position);

@@ -431,6 +431,7 @@ void Caret::updateSelection(int start, int end)
     qDebug() << "Selected Range: " << start << ", " << end;
 #endif
     selectionRange = std::make_pair(start, end);
+    emit moved();
 }
 
 /// Returns a list of all of the Position objects that are currently selected
@@ -460,6 +461,24 @@ std::vector<Note*> Caret::getSelectedNotes() const
     }
 
     return notes;
+}
+
+/// Returns a list of all of the barlines in the current selection.
+std::vector<boost::shared_ptr<Barline> > Caret::getSelectedBarlines() const
+{
+    std::vector<boost::shared_ptr<Barline> > barlineArray;
+    getCurrentSystem()->GetBarlinesInRange(barlineArray,
+                std::min(selectionRange.first, selectionRange.second),
+                std::max(selectionRange.first, selectionRange.second));
+
+    return barlineArray;
+}
+
+/// Returns whether there is a selection (regardless of whether any notes,
+/// positions, etc are actually selected).
+bool Caret::hasSelection() const
+{
+    return selectionRange.first != selectionRange.second;
 }
 
 /// Returns the index of the voice that is currently active

@@ -100,6 +100,8 @@ public:
 
     std::vector<Position*> getSelectedPositions() const;
     std::vector<Note*> getSelectedNotes() const;
+    std::vector<boost::shared_ptr<Barline> > getSelectedBarlines() const;
+    bool hasSelection() const;
 
 signals:
     void moved();

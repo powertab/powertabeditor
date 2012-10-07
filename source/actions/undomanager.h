@@ -35,6 +35,8 @@ public:
     void setActiveStackIndex(int index);
     void removeStack(int index);
     void push(QUndoCommand* cmd);
+    void beginMacro(const QString& text);
+    void endMacro();
 
 private:
     boost::ptr_vector<QUndoStack> undoStacks;

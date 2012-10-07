@@ -1539,24 +1539,44 @@ void PowerTabEditor::clearNote()
     }
 }
 
-/// Completely clears the caret's current position
-/// Either removes a barline, or all of the notes at the position
+/// Completely clears the caret's selected positions.
+/// For each position, it either removes a barline, or all of the notes at
+/// the position.
 void PowerTabEditor::clearCurrentPosition()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
     shared_ptr<System> system = caret->getCurrentSystem();
-    Position* currentPos = caret->getCurrentPosition();
-    shared_ptr<Barline> currentBar = caret->getCurrentBarline();
+    shared_ptr<Staff> staff = caret->getCurrentStaff();
+    const std::vector<Position*> positions = caret->getSelectedPositions();
+    const std::vector<shared_ptr<Barline> > bars = caret->getSelectedBarlines();
 
-    if (currentPos)
+    undoManager->beginMacro(tr("Clear Position"));
+
+    for (std::vector<Position*>::const_iterator currentPos = positions.begin();
+         currentPos != positions.end(); ++currentPos)
     {
-        const quint32 voice = 0; // leaving this here for when we support multiple voices
-        undoManager->push(new DeletePosition(caret->getCurrentStaff(), currentPos, voice));
+        if (*currentPos)
+        {
+            // TODO - Leaving this here for when we support multiple voices.
+            const uint32_t voice = 0;
+            undoManager->push(new DeletePosition(staff, *currentPos, voice));
+        }
     }
-    else if (currentBar) // remove barline
+
+    shared_ptr<const Barline> startBar = system->GetStartBar();
+    shared_ptr<const Barline> endBar = system->GetEndBar();
+
+    for (std::vector<shared_ptr<Barline> >::const_iterator bar = bars.begin();
+         bar != bars.end(); ++bar)
     {
-        undoManager->push(new DeleteBarline(system, currentBar));
+        // Don't allow the start/end bars to be deleted.
+        if (*bar && *bar != startBar && *bar != endBar)
+        {
+            undoManager->push(new DeleteBarline(system, *bar));
+        }
     }
+
+    undoManager->endMacro();
 }
 
 void PowerTabEditor::addGuitar()
@@ -1885,6 +1905,7 @@ void PowerTabEditor::updateActions()
     const Position* currentPosition = caret->getCurrentPosition();
     shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
     const Note* currentNote = caret->getCurrentNote();
+    const bool hasSelection = caret->hasSelection();
 
     const bool onBarline = currentBarline != System::BarlineConstPtr();
 
@@ -1999,7 +2020,8 @@ void PowerTabEditor::updateActions()
 
     removeCurrentSystemAct->setEnabled(currentScore->GetSystemCount() > 1);
 
-    clearCurrentPositionAct->setEnabled(currentPosition != NULL || currentBarline);
+    clearCurrentPositionAct->setEnabled(currentPosition != NULL ||
+            currentBarline || hasSelection);
 
     shiftTabNumDown->setEnabled(currentNote != NULL);
     shiftTabNumUp->setEnabled(currentNote != NULL);

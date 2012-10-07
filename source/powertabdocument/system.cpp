@@ -346,7 +346,9 @@ System::BarlinePtr System::GetBarlineAtPosition(uint32_t position) const
     return BarlinePtr();
 }
 
-// Comparison functor for barline positions
+namespace
+{
+/// Comparison functor for barline positions.
 struct CompareBarlineToPosition
 {
     uint32_t position;
@@ -355,6 +357,26 @@ struct CompareBarlineToPosition
         return barline->GetPosition() <= position;
     }
 };
+
+struct CompareBarlineToRange
+{
+    size_t start;
+    size_t end;
+
+    CompareBarlineToRange(size_t start, size_t end) :
+        start(start), end(end)
+    {
+    }
+
+    /// Returns true if the barline is outside the range.
+    bool operator ()(const System::BarlineConstPtr& barline)
+    {
+        const size_t pos = barline->GetPosition();
+        return pos < start || pos > end;
+    }
+};
+}
+
 
 // Barline Array Functions
 /// Gets the barline preceding a given position
@@ -401,12 +423,25 @@ System::BarlinePtr System::GetNextBarline(uint32_t position) const
 
 /// Gets a list of barlines in the system
 /// @param barlineArray Holds the barline return values
-void System::GetBarlines(std::vector<BarlinePtr>& barlineArray)
+void System::GetBarlines(std::vector<BarlinePtr>& barlineArray) const
 {
     barlineArray.clear();
     barlineArray.push_back(m_startBar);
     barlineArray.insert(barlineArray.end(), m_barlineArray.begin(), m_barlineArray.end());
     barlineArray.push_back(m_endBar);
+}
+
+/// Gets a list of all barlines in the system within the specified
+/// position range.
+void System::GetBarlinesInRange(std::vector<BarlinePtr>& barlineArray,
+                                size_t start, size_t end) const
+{
+    assert(start <= end);
+
+    GetBarlines(barlineArray);
+    barlineArray.erase(std::remove_if(barlineArray.begin(), barlineArray.end(),
+                                      CompareBarlineToRange(start, end)),
+                       barlineArray.end());
 }
 
 /// Gets a list of barlines in the system
