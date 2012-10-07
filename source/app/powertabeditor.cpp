@@ -2203,7 +2203,12 @@ void PowerTabEditor::doPaste()
 
 void PowerTabEditor::copySelectedNotes()
 {
-    Clipboard::copySelection(getSelectedPositions());
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    const std::vector<Position*> positions = caret->getSelectedPositions();
+    const Tuning& tuning = caret->getCurrentScore()->GetGuitar(
+                caret->getCurrentStaffIndex())->GetTuning();
+
+    Clipboard::copySelection(getSelectedPositions(), tuning);
 }
 
 void PowerTabEditor::editVolumeSwell()

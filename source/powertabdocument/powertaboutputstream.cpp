@@ -125,7 +125,7 @@ bool PowerTabOutputStream::WriteMFCRect(const Rect& rect)
 /// Writes a Power Tab object to the stream, in the format of MFC's CArchive
 /// @param object Power Tab object to write
 /// @return True if the object was written, false if not
-bool PowerTabOutputStream::WriteObject(PowerTabObject* object)
+bool PowerTabOutputStream::WriteObject(const PowerTabObject* object)
 {
     // object can be NULL
 
@@ -139,10 +139,10 @@ bool PowerTabOutputStream::WriteObject(PowerTabObject* object)
     else
     {
         // Lookup the object in the map
-        if (m_objectHashMap.find((PowerTabObject *)object) != m_objectHashMap.end())
+        if (m_objectHashMap.find(object) != m_objectHashMap.end())
             // Assumes initialized to 0 map
         {
-            uint32_t nObjectIndex = (uint32_t)m_objectHashMap[(PowerTabObject *)object];
+            uint32_t nObjectIndex = m_objectHashMap[object];
 
             // Save out index of already stored object
             if (nObjectIndex < BIG_OBJECT_TAG)

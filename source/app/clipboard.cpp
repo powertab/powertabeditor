@@ -20,7 +20,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
-#include <QDebug>
+#include <QMessageBox>
 
 #include <sstream>
 
@@ -28,11 +28,14 @@
 #include <actions/insertnotes.h>
 
 #include <painters/caret.h>
-#include <powertabdocument/powertaboutputstream.h>
-#include <powertabdocument/powertabinputstream.h>
+#include <powertabdocument/guitar.h>
 #include <powertabdocument/powertabfileheader.h>
+#include <powertabdocument/powertabinputstream.h>
+#include <powertabdocument/powertaboutputstream.h>
 #include <powertabdocument/position.h>
+#include <powertabdocument/score.h>
 #include <powertabdocument/staff.h>
+#include <powertabdocument/tuning.h>
 
 namespace
 {
@@ -40,11 +43,13 @@ const QString PTB_MIME_TYPE = "application/ptb";
 }
 
 /// Stores the selected data on the clipboard
-void Clipboard::copySelection(const std::vector<Position*>& selectedPositions)
+void Clipboard::copySelection(const std::vector<Position*>& selectedPositions,
+                              const Tuning& tuning)
 {
     // serialize the notes to a string
     std::ostringstream ss(std::ios::binary);
     PowerTabOutputStream outputStream(ss);
+    tuning.Serialize(outputStream);
     outputStream.WriteVector(selectedPositions);
     const std::string data = ss.str();
 
@@ -58,10 +63,27 @@ void Clipboard::copySelection(const std::vector<Position*>& selectedPositions)
 
 void Clipboard::paste(UndoManager* undoManager, const Caret* caret)
 {
+    const Tuning& currentTuning = caret->getCurrentScore()->GetGuitar(
+                caret->getCurrentStaffIndex())->GetTuning();
+
     // load data from the clipboard and deserialize
     const QByteArray rawData = QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE);
     std::istringstream inputData(std::string(rawData.data(), rawData.length()));
     PowerTabInputStream inputStream(inputData);
+
+    Tuning tuning;
+    tuning.Deserialize(inputStream, PowerTabFileHeader::FILEVERSION_CURRENT);
+
+    // For safety, prevent pasting into a different tuning.
+    // TODO - it should be possible to e.g. paste notes from a 6-string guitar
+    // into a 7-string guitar.
+    if (currentTuning != tuning)
+    {
+        QMessageBox msg;
+        msg.setText(QObject::tr("Cannot paste notes from a different tuning."));
+        msg.exec();
+        return;
+    }
 
     std::vector<Position*> positions;
     inputStream.ReadVector(positions, PowerTabFileHeader::FILEVERSION_CURRENT);

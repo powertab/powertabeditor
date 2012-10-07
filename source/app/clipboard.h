@@ -21,13 +21,16 @@
 #include <vector>
 
 class Position;
+class Tuning;
 class Caret;
 class UndoManager;
 
 namespace Clipboard
 {
 
-void copySelection(const std::vector<Position*>& selectedPositions);
+void copySelection(const std::vector<Position*>& selectedPositions,
+                   const Tuning& tuning);
+
 void paste(UndoManager* undoManager, const Caret* caret);
 
 }

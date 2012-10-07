@@ -34,7 +34,7 @@ class PowerTabOutputStream
 protected:
     bool                                        m_mapsInitialized;              ///< Determines whether or not the maps have been initialized
     boost::unordered_map<std::string, uint32_t>   m_classInfoHashMap;             ///< Map of class Ids to object index
-    boost::unordered_map<PowerTabObject*, uint32_t>        m_objectHashMap;      ///< Map of object pointers to object index
+    boost::unordered_map<const PowerTabObject*, uint32_t>        m_objectHashMap;      ///< Map of object pointers to object index
     uint32_t                                    m_mapCount;                     ///< Internal count of mapped objects
     PowerTabStreamError                         m_lastPowerTabError;            ///< Last Power Tab specific error
     std::ostream& m_stream;
@@ -48,7 +48,7 @@ public:
     bool WriteMFCString(const std::string& string);
     bool WriteWin32ColorRef(const Colour& colour);
     bool WriteMFCRect(const Rect& rect);
-    bool WriteObject(PowerTabObject* object);
+    bool WriteObject(const PowerTabObject *object);
 
 protected:
     bool WriteClassInformation(const PowerTabObject* object);
