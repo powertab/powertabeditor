@@ -32,6 +32,17 @@ AddBarline::AddBarline(shared_ptr<System> system, quint32 position, quint8 type,
     newBar(boost::make_shared<Barline>(position, type, repeats))
 {
     setText(QObject::tr("Insert Barline"));
+
+    // Use the same time signature and key signature from the previous bar.
+    System::BarlineConstPtr prevBar(system->GetPrecedingBarline(position));
+
+    KeySignature key = prevBar->GetKeySignature();
+    key.SetShown(false);
+    newBar->SetKeySignature(key);
+
+    TimeSignature time = prevBar->GetTimeSignature();
+    time.SetShown(false);
+    newBar->SetTimeSignature(time);
 }
 
 void AddBarline::redo()
