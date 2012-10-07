@@ -46,12 +46,25 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, boost::shared
 void StdNotationPainter::init()
 {
     yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * Staff::STD_NOTATION_LINE_SPACING;
-    
+
+    refreshAccidental(false);
+}
+
+/// Update the accidental for the note.
+/// @param forceAccidental Force accidentals or natural signs to be displayed
+/// even if the note is in the key signature (used for undoing the effects of
+/// preceding natural signs or accidentals).
+void StdNotationPainter::refreshAccidental(bool forceAccidental)
+{
     const quint8 pitch = note->GetPitch(tuning);
-    const bool usesSharps = keySignature.UsesSharps() || keySignature.HasNoKeyAccidentals();
-    
-    const QString noteText = QString::fromStdString(midi::GetMidiNoteText(pitch, usesSharps, 
-                                                                          keySignature.NumberOfAccidentals()));
+    const bool usesSharps = keySignature.UsesSharps() ||
+            keySignature.HasNoKeyAccidentals();
+
+    const QString noteText = QString::fromStdString(
+                midi::GetMidiNoteText(pitch, usesSharps,
+                                      keySignature.NumberOfAccidentals(),
+                                      forceAccidental));
+
     accidental = findAccidentalType(noteText);
 }
 
@@ -121,6 +134,10 @@ int StdNotationPainter::findAccidentalType(const QString& noteText) const
     if (noteText.endsWith("b"))
     {
         return FLAT;
+    }
+    if (noteText.endsWith("="))
+    {
+        return NATURAL;
     }
 
     return NO_ACCIDENTAL;

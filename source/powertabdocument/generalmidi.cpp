@@ -94,21 +94,32 @@ namespace midi
         return keyC + keyOffset;
     }
 
-    /// Gets an accurate text representation of a MIDI note, given the key signature (number of accidentals)
-    string GetMidiNoteText(uint8_t note, bool usesSharps, uint8_t numAccidentals)
+    /// Gets an accurate text representation of a note, given a key
+    /// signature.
+    /// @param note A MIDI pitch.
+    /// @param usesSharps Whether the key signature uses sharps or flats.
+    /// @param numAccidentals The number of accidentals in the key signature.
+    /// @param forceAccidentals Whether to display accidentals for notes that
+    /// are in the key signature (useful for e.g. reinstating a flat or sharp in
+    /// the key signature after a natural sign).
+    string GetMidiNoteText(uint8_t note, bool usesSharps,
+                           uint8_t numAccidentals, bool forceAccidentals)
     {
         CHECK_THAT(IsValidMidiNote(note), "");
 
         const uint8_t pitch = GetMidiNotePitch(note);
 
-        // find the index of the key, for use with the pitchClasses and keyText arrays
+        // Find the index of the key (for the pitchClasses and keyText arrays).
         const int tonic = GetKeyIndex(usesSharps, numAccidentals);
 
-        uint8_t minDistance = 100; // needs to be larger than any possible distance
-        uint8_t bestMatch = 0; // index of the text representation that is the best match
+        // Initial value needs to be larger than any possible distance.
+        uint8_t minDistance = 100;
+        // Index of the text representation that is the best match.
+        uint8_t bestMatch = 0;
 
-        // find the correct text representation of the pitch, by finding the representation that is the
-        // shortest number of steps away from the tonic on the circle of fifths
+        // Find the correct text representation of the pitch, by finding the
+        // representation that is the shortest number of steps away from the
+        // tonic in the circle of fifths.
         for (uint8_t i = 0; i < NUM_PITCH_CLASSES; i++)
         {
             if (pitchClasses[i] == pitch)
@@ -123,24 +134,34 @@ namespace midi
         }
 
         string text = keyText[bestMatch];
-        // remove accidentals depending on key signature
-        if (tonic - 1 <= bestMatch && tonic + 5 >= bestMatch)
+
+        // Add in a natural sign by default.
+        if (text.length() == 1)
+        {
+            text.append("=");
+        }
+
+        // Remove accidentals or natural signs for notes in the key signature.
+        if (tonic - 1 <= bestMatch && tonic + 5 >= bestMatch &&
+            !forceAccidentals)
         {
             if (text.length() > 1)
             {
                 text.erase(text.begin() + 1);
             }
         }
+
         return text;
     }
 
-    /// Gets the text representation of a MIDI note
-    /// - this is less accurate than the other version (which takes the key signature into account)
+    /// Gets the text representation of a MIDI note. This is less accurate than
+    /// GetMidiNoteText, which takes the key signature into account. However, it
+    /// is useful for things like displaying the notes of a tuning.
     /// @param note MIDI note to get the text representation for
-    /// @param sharps True to get the sharp representation of the note, false to get
-    /// the flat representation of the note
+    /// @param sharps True to get the sharp representation of the note, false to
+    /// get the flat representation of the note.
     /// @return A text representation of the MIDI note
-    string GetMidiNoteText(uint8_t note, bool sharps)
+    string GetMidiNoteTextSimple(uint8_t note, bool sharps)
     {
         CHECK_THAT(IsValidMidiNote(note), "");
 

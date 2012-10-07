@@ -191,7 +191,7 @@ uint8_t Tuning::GetNote(uint32_t string, bool includeMusicNotationOffset) const
 string Tuning::GetNoteText(uint32_t string) const
 {
     CHECK_THAT(IsValidString(string), "");
-    return (midi::GetMidiNoteText(m_noteArray[string], UsesSharps()));
+    return (midi::GetMidiNoteTextSimple(m_noteArray[string], UsesSharps()));
 }
 
 /// Determines if a note is a note that can be played as an open string

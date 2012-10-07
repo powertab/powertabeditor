@@ -51,6 +51,8 @@ public:
     inline double getYLocation() const { return yLocation; }
     inline const Position* getPositionObject() const { return position; }
 
+    void refreshAccidental(bool forceAccidental);
+
     static double getNoteHeadWidth();
 
     int accidental;

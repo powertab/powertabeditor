@@ -21,9 +21,37 @@
 
 #include <powertabdocument/generalmidi.h>
 
-BOOST_AUTO_TEST_CASE(GetMidiNoteText)
+BOOST_AUTO_TEST_CASE(TestGetMidiNoteTextSimple)
 {
-    BOOST_CHECK_EQUAL(midi::GetMidiNoteText(midi::MIDI_NOTE_C0, false), "C");
-    BOOST_CHECK_EQUAL(midi::GetMidiNoteText(midi::MIDI_NOTE_FSHARP0, true), "F#");
-    BOOST_CHECK_EQUAL(midi::GetMidiNoteText(midi::MIDI_NOTE_FSHARP0, false), "Gb");
+    using namespace midi;
+
+    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_C0, false), "C");
+    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, true), "F#");
+    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, false), "Gb");
+}
+
+BOOST_AUTO_TEST_CASE(TestGetMidiNoteText)
+{
+    using namespace midi;
+
+    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_C0, false), "C");
+    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, true), "F#");
+    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, false), "Gb");
+
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_G3, true, 2), "G");
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_F3, true, 2), "F=");
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_FSHARP3, true, 2), "F");
+
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_G3, true, 2, true), "G=");
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_F3, true, 2, true), "F=");
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_FSHARP3, true, 2, true), "F#");
+
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_C3, true, 0), "C");
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_ASHARP3, true, 2), "Bb");
+
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_ASHARP3, false, 2), "B");
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_E3, false, 2), "E=");
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_DSHARP3, false, 2), "E");
+
+    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_G3, true, 5, false), "G=");
 }

@@ -85,7 +85,8 @@ void TuningDialog::generateNoteNames(bool usesSharps)
     
     for (uint8_t note = midi::MIN_MIDI_NOTE; note < midi::MAX_MIDI_NOTE; note++)
     {
-        noteNames << QString::fromStdString(midi::GetMidiNoteText(note, usesSharps)) +
+        noteNames << QString::fromStdString(
+                         midi::GetMidiNoteTextSimple(note,usesSharps)) +
                      QString().setNum(midi::GetMidiNoteOctave(note));
     }
 }

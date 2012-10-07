@@ -879,7 +879,8 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
     const uint8_t pitch = note->GetPitch(tuning);
     
     const std::string noteText = midi::GetMidiNoteText(pitch, 
-                                                       activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals());
+            activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals(),
+            activeKeySig.NumberOfAccidentals());
     
     // find the position of the note, ignoring accidentals (i.e. C# -> C)
     int y = notePositions.find(noteText[0])->second;

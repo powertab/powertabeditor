@@ -1186,7 +1186,9 @@ void SystemRenderer::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& acci
                 currentAccidental = note->accidental;
                 if (currentAccidental == StdNotationPainter::NO_ACCIDENTAL)
                 {
-                    note->accidental = StdNotationPainter::NATURAL;
+                    // If we return to a note in the key signature, force its
+                    // accidental (or a natural sign) to be displayed.
+                    note->refreshAccidental(true);
                 }
             }
         }
