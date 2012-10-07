@@ -465,6 +465,8 @@ void Score::MergeScore(const Score &otherScore)
 {
     std::for_each(otherScore.m_guitarArray.begin(), otherScore.m_guitarArray.end(),
                   boost::bind(&Score::InsertGuitar, this, _1));
+
+    // TODO - actually merge the scores together.
 }
 
 /// Determines if a alternate ending index is valid
