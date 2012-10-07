@@ -19,6 +19,8 @@
 
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
+#include <powertabdocument/barline.h>
+#include <boost/make_shared.hpp>
 
 AddSystem::AddSystem(Score* score, quint32 index) :
     score(score),
@@ -29,7 +31,25 @@ AddSystem::AddSystem(Score* score, quint32 index) :
 
 void AddSystem::redo()
 {
-    boost::shared_ptr<System> newSystem(new System);
+    boost::shared_ptr<System> newSystem = boost::make_shared<System>();
+
+    // Carry over the time signature and key signature from the previous system
+    // if possible.
+    if (index > 0)
+    {
+        boost::shared_ptr<const System> prevSystem(score->GetSystem(index - 1));
+        KeySignature key = prevSystem->GetEndBar()->GetKeySignature();
+        TimeSignature time = prevSystem->GetEndBar()->GetTimeSignature();
+
+        boost::shared_ptr<Barline> endBar = newSystem->GetEndBar();
+        endBar->SetKeySignature(key);
+        endBar->SetTimeSignature(time);
+
+        boost::shared_ptr<Barline> startBar = newSystem->GetStartBar();
+        key.SetShown(true);
+        startBar->SetKeySignature(key);
+        startBar->SetTimeSignature(time);
+    }
 
     // adjust the location of the system (should be below the previous system)
     // TODO - move this into the Score::InsertSystem method (or add another method)??

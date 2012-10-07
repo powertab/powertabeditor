@@ -1491,13 +1491,14 @@ void PowerTabEditor::insertSystemAtEnd()
     performSystemInsert(index);
 }
 
+/// Inserts a system at the specified index.
 void PowerTabEditor::performSystemInsert(size_t index)
 {
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
+    Score* score = getCurrentScoreArea()->getCaret()->getCurrentScore();
 
     AddSystem* addSystemAct = new AddSystem(score, index);
-    connect(addSystemAct, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
+    connect(addSystemAct, SIGNAL(triggered()), getCurrentScoreArea(),
+            SLOT(requestFullRedraw()));
     undoManager->push(addSystemAct);
 }
 
