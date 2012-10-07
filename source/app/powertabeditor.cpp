@@ -1067,11 +1067,10 @@ void PowerTabEditor::setupNewDocument()
 
     boost::shared_ptr<PowerTabDocument> doc(documentManager->getCurrentDocument());
 
-    ScoreArea* score = new ScoreArea;
+    ScoreArea* score = new ScoreArea(this);
     score->installEventFilter(this);
     score->renderDocument(doc);
 
-    connect(score->getCaret(), SIGNAL(moved()), this, SLOT(updateActions()));
     connect(score, SIGNAL(barlineClicked(int)), this, SLOT(editBarline(int)));
     connect(score, SIGNAL(keySignatureClicked(int)), this, SLOT(editKeySignature(int)));
 
@@ -1290,6 +1289,11 @@ std::vector<Position*> PowerTabEditor::getSelectedPositions()
 std::vector<Note*> PowerTabEditor::getSelectedNotes()
 {
     return getCurrentScoreArea()->getCaret()->getSelectedNotes();
+}
+
+void PowerTabEditor::registerCaret(Caret* caret)
+{
+    connect(caret, SIGNAL(moved()), this, SLOT(updateActions()));
 }
 
 /// Cycles through the tabs in the tab bar

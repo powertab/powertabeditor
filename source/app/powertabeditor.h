@@ -47,6 +47,7 @@ class FileFormatManager;
 struct FileFormat;
 class Command;
 class RecentFiles;
+class Caret;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -62,6 +63,7 @@ public:
     static ScoreArea* getCurrentScoreArea();
     static std::vector<Position*> getSelectedPositions();
     static std::vector<Note*> getSelectedNotes();
+    void registerCaret(Caret* caret);
 
 protected:
     virtual void closeEvent(QCloseEvent*);

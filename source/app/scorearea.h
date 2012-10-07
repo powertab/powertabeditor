@@ -24,6 +24,7 @@
 #include <boost/cstdint.hpp>
 
 class PowerTabDocument;
+class PowerTabEditor;
 class Caret;
 class Score;
 
@@ -32,7 +33,7 @@ class ScoreArea : public QGraphicsView
 {
     Q_OBJECT
 public:
-    explicit ScoreArea(QWidget *parent = 0);
+    explicit ScoreArea(PowerTabEditor* editor);
 
     void renderDocument(boost::shared_ptr<PowerTabDocument> doc);
     void updateSystem(const uint32_t systemIndex);
@@ -48,6 +49,7 @@ private:
     void renderScore(const Score* score, int lineSpacing);
 
     QGraphicsScene scene;
+    PowerTabEditor* editor;
     Caret* caret;
     QList<QGraphicsItem*> systemList;
 

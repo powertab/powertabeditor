@@ -20,6 +20,7 @@
 #include <QDebug>
 #include <QProgressDialog>
 
+#include <app/powertabeditor.h>
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
@@ -29,8 +30,8 @@
 
 #include <boost/timer.hpp>
 
-ScoreArea::ScoreArea(QWidget *parent) :
-    QGraphicsView(parent),
+ScoreArea::ScoreArea(PowerTabEditor *editor) :
+    editor(editor),
     caret(NULL)
 {
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
@@ -50,9 +51,10 @@ void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
     // Set up the caret
     caret = new Caret(doc->GetTablatureStaffLineSpacing());
     connect(caret, SIGNAL(moved()), this, SLOT(adjustScroll()));
-
     caret->setScore(doc->GetGuitarScore());
     caret->updatePosition();
+
+    editor->registerCaret(caret);
 
     scene.addItem(caret);
 
