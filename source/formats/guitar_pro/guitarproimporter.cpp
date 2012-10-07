@@ -118,8 +118,6 @@ void GuitarProImporter::findFileVersion(Gp::InputStream& stream)
     {
         throw FileFormatException("Unsupported file version: " + versionString);
     }
-
-    std::cerr << "File Version: " << versionString << std::endl;
 }
 
 /// Read the song information (title, artist, etc)
