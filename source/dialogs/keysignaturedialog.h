@@ -37,11 +37,13 @@ public:
 private slots:
     void accept();
     void populateKeyTypes(uint8_t type);
+    void handleModification();
 
 private:
     Ui::KeySignatureDialog *ui;
 
     KeySignature newKey;
+    bool modified;
 };
 
 #endif // KEYSIGNATUREDIALOG_H

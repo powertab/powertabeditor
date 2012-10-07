@@ -24,7 +24,7 @@ using boost::bind;
 
 KeySignatureDialog::KeySignatureDialog(const KeySignature& key) :
     ui(new Ui::KeySignatureDialog),
-    newKey(key)
+    newKey(key), modified(false)
 {
     ui->setupUi(this);
 
@@ -48,6 +48,13 @@ KeySignatureDialog::KeySignatureDialog(const KeySignature& key) :
     ui->keysComboBox->setCurrentIndex(newKey.GetKeyAccidentals());
 
     ui->visibilityCheckBox->setChecked(newKey.IsShown());
+
+    connect(ui->majorKeyButton, SIGNAL(clicked()), this,
+            SLOT(handleModification()));
+    connect(ui->minorKeyButton, SIGNAL(clicked()), this,
+            SLOT(handleModification()));
+    connect(ui->keysComboBox, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(handleModification()));
 }
 
 KeySignatureDialog::~KeySignatureDialog()
@@ -76,6 +83,18 @@ void KeySignatureDialog::populateKeyTypes(uint8_t type)
     }
 
     ui->keysComboBox->setCurrentIndex(originalSelection);
+}
+
+/// After the user makes a modification, set the key signature to be visible.
+/// This is only done for the first modification in case the user doesn't
+/// want to show the key signature.
+void KeySignatureDialog::handleModification()
+{
+    if (!modified)
+    {
+        ui->visibilityCheckBox->setChecked(true);
+    }
+    modified = true;
 }
 
 /// Return the new key, as selected by the user
