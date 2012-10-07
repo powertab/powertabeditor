@@ -8,7 +8,7 @@ win32-g++ {
     QMAKE_CXXFLAGS += -U__STRICT_ANSI__
 }
 
-win32-g++ | linux-g++ | macx-g++ {
+win32-g++ | linux-g++ | macx-g++ | linux-clang {
     QMAKE_CXXFLAGS+= -Werror -Wnon-virtual-dtor -Wextra
 }
 

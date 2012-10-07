@@ -22,7 +22,7 @@ Rect::Rect(void)
     x_ = y_ = width_ = height_ = 0;
 }
 
-Rect::Rect(int32_t x = 0, int32_t y = 0, int32_t width = 0, int32_t height = 0)
+Rect::Rect(int32_t x, int32_t y, int32_t width, int32_t height)
 {
     x_ = x;
     y_ = y;

@@ -28,7 +28,7 @@ TremoloBarPainter::TremoloBarPainter(const Position* position, double width) :
     position(position),
     width(width)
 {
-    textFont.setPixelSize(9.5);
+    textFont.setPixelSize(9);
 
     bounds = QRectF(0, 0, width, Staff::TAB_SYMBOL_HEIGHT);
 }

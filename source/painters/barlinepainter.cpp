@@ -107,7 +107,7 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, Q
     if (barLine->IsRepeatEnd())
     {
         QFont repeatFont("Liberation Sans");
-        repeatFont.setPixelSize(8.5);
+        repeatFont.setPixelSize(8);
         painter->setFont(repeatFont);
 
         const QString message = QString().setNum(barLine->GetRepeatCount()) % "x";
