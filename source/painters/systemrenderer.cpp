@@ -742,7 +742,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
         }
 
         centerItem(renderedSymbol, symbolGroup.leftX, symbolGroup.leftX + symbolGroup.width,
-                   staffInfo.getBottomTabLine() + (symbolGroup.height + 1) * Staff::TAB_SYMBOL_HEIGHT);
+                   staffInfo.getBottomTabLine() + symbolGroup.height * Staff::TAB_SYMBOL_HEIGHT);
 
         renderedSymbol->setParentItem(parentStaff);
     }

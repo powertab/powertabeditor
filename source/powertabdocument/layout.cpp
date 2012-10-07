@@ -320,6 +320,7 @@ void Layout::CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symb
     for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(0); posIndex++)
     {
         const Position* pos = staff->GetPosition(0, posIndex);
+        int height = 1;
 
         SymbolGroup symbolGroup(pos->GetPosition(), system->GetPositionX(pos->GetPosition()),
                                 system->GetPositionSpacing(), 0, NoSymbol);
@@ -340,6 +341,9 @@ void Layout::CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symb
             if (enabledSymbols[i])
             {
                 symbolGroup.symbolType = symbolsBelowTabStaff[i];
+                symbolGroup.height = height;
+                height++;
+
                 symbolGroups.push_back(symbolGroup);
             }
         }
