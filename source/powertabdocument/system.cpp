@@ -497,15 +497,12 @@ int System::CalculatePositionCount(int positionSpacing) const
 }
 
 /// Gets the number of positions that can fit across the system based on the
-/// current position width
-/// @return The number of positions that can fit across the system
+/// current position width.
+/// @return The number of positions that can fit across the system.
 int System::GetPositionCount() const
 {
-    //------Last Checked------//
-    // - Aug 30, 2007
-
-    // Calculate the position count using the current position spacing
-    return (CalculatePositionCount(GetPositionSpacing()));
+    // Calculate the position count using the current position spacing.
+    return CalculatePositionCount(m_positionSpacing);
 }
 
 /// Gets the x co-ordinate of the first position in the system, relative to the left edge
@@ -839,13 +836,15 @@ bool System::IsValidPositionSpacing(int positionSpacing) const
     return true;
 }
 
-/// Sets the position spacing for the system
+/// Sets the position spacing for the system.
 bool System::SetPositionSpacing(uint8_t positionSpacing)
 {
     if (!IsValidPositionSpacing(positionSpacing))
         return false;
 
     m_positionSpacing = positionSpacing;
+
+    m_endBar->SetPosition(GetPositionCount());
 
     return true;
 }
@@ -887,9 +886,6 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
 
     const boost::function<bool (uint32_t, uint32_t)> comparison = std::greater_equal<uint32_t>();
 
-    // decrease the position spacing to make room for the extra position
-    SetPositionSpacing(GetPositionSpacing() - offset);
-
     // shift forward barlines
     ShiftPosition<BarlinePtr> shiftBarlines(comparison, positionIndex, offset);
     std::for_each(m_barlineArray.begin(), m_barlineArray.end(), shiftBarlines);
@@ -918,6 +914,21 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
             shiftPosition(staff->GetPosition(0, j));
         }
     }
+
+    // Reduce the spacing if necessary to create space for the new position.
+    while (m_positionSpacing > MIN_POSITION_SPACING &&
+           !IsValidPositionSpacing(m_positionSpacing))
+    {
+        m_positionSpacing--;
+    }
+
+    if (!IsValidPositionSpacing(m_positionSpacing))
+    {
+        // There need to be a lot of notes for this to happen ...
+        throw std::runtime_error("Not enough space for a new position.");
+    }
+
+    SetPositionSpacing(m_positionSpacing);
 }
 
 void System::ShiftForward(uint32_t positionIndex)
