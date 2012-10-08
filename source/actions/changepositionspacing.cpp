@@ -21,7 +21,8 @@
 
 using boost::shared_ptr;
 
-ChangePositionSpacing::ChangePositionSpacing(shared_ptr<System> system, quint8 spacing) :
+ChangePositionSpacing::ChangePositionSpacing(shared_ptr<System> system,
+                                             uint8_t spacing) :
     system(system),
     newSpacing(spacing),
     originalSpacing(system->GetPositionSpacing())

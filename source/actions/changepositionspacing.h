@@ -19,6 +19,7 @@
 #define CHANGEPOSITIONSPACING_H
 
 #include <QUndoCommand>
+#include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 
 class System;
@@ -26,14 +27,14 @@ class System;
 class ChangePositionSpacing : public QUndoCommand
 {
 public:
-    ChangePositionSpacing(boost::shared_ptr<System> system, quint8 spacing);
-    void undo();
-    void redo();
+    ChangePositionSpacing(boost::shared_ptr<System> system, uint8_t spacing);
+    virtual void undo();
+    virtual void redo();
 
 protected:
     boost::shared_ptr<System> system;
-    const quint8 newSpacing;
-    const quint8 originalSpacing;
+    const uint8_t newSpacing;
+    const uint8_t originalSpacing;
 };
 
 #endif // CHANGEPOSITIONSPACING_H
