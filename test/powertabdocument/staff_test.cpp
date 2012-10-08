@@ -289,7 +289,7 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
         BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -7);
         
         note.SetFretNumber(21);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -11);
+        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -12);
         
         // Bass clef
         staff.SetClef(Staff::BASS_CLEF);
