@@ -45,6 +45,7 @@ private:
     Position* position;
 
     bool newPositionAdded;
+    bool undone;
 };
 
 #endif // ADDNOTE_H
