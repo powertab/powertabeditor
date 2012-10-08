@@ -39,12 +39,11 @@ public:
 
 private:
     boost::shared_ptr<System> system;
-    boost::shared_ptr<Staff> staff;
     const uint32_t insertionPos;
+    const uint32_t staffIndex;
     std::vector<Position*> newPositions;
 
     boost::shared_ptr<System> originalSystem;
-    bool positionsInUse;
 };
 
 #endif // INSERTNOTES_H

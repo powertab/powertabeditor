@@ -27,18 +27,16 @@
 
 InsertNotes::InsertNotes(boost::shared_ptr<System> system, boost::shared_ptr<Staff> staff,
                          uint32_t insertionPos, const std::vector<Position*>& positions) :
-    system(system), staff(staff),
-    insertionPos(insertionPos), newPositions(positions),
-    originalSystem(boost::make_shared<System>(*system)),
-    positionsInUse(false)
+    system(system), insertionPos(insertionPos),
+    staffIndex(system->FindStaffIndex(staff)), newPositions(positions),
+    originalSystem(boost::make_shared<System>(*system))
 {
     setText(QObject::tr("Insert Notes"));
 }
 
 InsertNotes::~InsertNotes()
 {
-    if (!positionsInUse)
-        qDeleteAll(newPositions);
+    qDeleteAll(newPositions);
 }
 
 void InsertNotes::redo()
@@ -51,6 +49,7 @@ void InsertNotes::redo()
     }
 
     // check for any existing notes that will conflict with the new notes
+    boost::shared_ptr<Staff> staff = system->GetStaff(staffIndex);
     std::vector<Position*> currentPositions;
     staff->GetPositionsInRange(currentPositions, 0, newPositions.front()->GetPosition(),
                                newPositions.back()->GetPosition());
@@ -75,18 +74,15 @@ void InsertNotes::redo()
     }
 
     Layout::FormatSystem(system);
-    positionsInUse = true;
+
+    // Do a deep copy of the positions (they are owned by the staff they were
+    // inserted into).
+    std::transform(newPositions.begin(), newPositions.end(),
+                   newPositions.begin(), std::mem_fun(&Position::CloneObject));
 }
 
 void InsertNotes::undo()
 {
-    // do a deep copy of the positions (they are owned by the staff they were previously inserted into)
-    std::transform(newPositions.begin(), newPositions.end(),
-                   newPositions.begin(), std::mem_fun(&Position::CloneObject));
-    positionsInUse = false;
-
     // revert to the original system & staff
-    const uint32_t staffIndex = system->FindStaffIndex(staff);
     *system = *originalSystem;
-    staff = system->GetStaff(staffIndex);
 }
