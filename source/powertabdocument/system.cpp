@@ -480,6 +480,9 @@ int System::CalculatePositionCount(int positionSpacing) const
     // the system
     int width = m_rect.GetWidth();
 
+    // Subtract spacing for the clef, etc.
+    width -= GetFirstPositionX();
+
     // Subtract the width of the key and time signatures on the barlines within
     // the system (does not include the starting barline)
     width -= GetCumulativeInternalKeyAndTimeSignatureWidth();

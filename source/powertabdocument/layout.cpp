@@ -444,11 +444,13 @@ void Layout::FormatSystem(boost::shared_ptr<System> system)
         }
     }
 
-    // set the spacing as large as possible
+    // Set the spacing as large as possible.
     const int availableWidth = system->GetRect().GetWidth() -
-                               system->GetCumulativeInternalKeyAndTimeSignatureWidth();
+            system->GetFirstPositionX() -
+            system->GetCumulativeInternalKeyAndTimeSignatureWidth();
 
-    const int numPositions = system->GetEndBar()->GetPosition() + 2; // add 2 positions for padding
+    // Add a position for padding.
+    const int numPositions = system->GetEndBar()->GetPosition() + 1;
 
     system->SetPositionSpacing(availableWidth / numPositions);
 }
