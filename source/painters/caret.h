@@ -43,6 +43,8 @@ public:
     void updatePosition();
     void setPlaybackMode(bool playBack);
 
+    void adjustToValidLocation();
+
     bool moveCaretHorizontal(int offset);
     void moveCaretVertical(int offset);
     void moveCaretToStart();

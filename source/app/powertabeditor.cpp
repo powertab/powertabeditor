@@ -205,6 +205,8 @@ void PowerTabEditor::refreshOnUndoRedo(int index)
     Q_UNUSED(index);
 
     Caret* caret = getCurrentScoreArea()->getCaret();
+    caret->adjustToValidLocation();
+
     // Update the data model
     caret->getCurrentScore()->UpdateSystemHeight(caret->getCurrentSystem());
 

@@ -21,6 +21,7 @@
 #include <QVector>
 #include <QDebug>
 
+#include <app/common.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
 #include <powertabdocument/staff.h>
@@ -52,6 +53,26 @@ void Caret::setPlaybackMode(bool playBack)
 {
     inPlaybackMode = playBack;
     update(boundingRect()); // redraw the caret
+}
+
+/// Adjusts the caret's location to be valid (useful after e.g. deleting a
+/// system).
+void Caret::adjustToValidLocation()
+{
+    using namespace Common;
+
+    currentSystemIndex = clamp<uint32_t>(currentSystemIndex, 0,
+                                    getCurrentScore()->GetSystemCount() - 1);
+    currentStaffIndex = clamp<uint32_t>(currentStaffIndex, 0,
+                                    getCurrentSystem()->GetStaffCount() - 1);
+
+    uint32_t posLimit = getCurrentSystem()->GetPositionCount() - 1;
+    currentPositionIndex = clamp<uint32_t>(currentPositionIndex, 0, posLimit);
+    selectionRange.first = clamp<int>(selectionRange.first, 0, posLimit);
+    selectionRange.second = clamp<int>(selectionRange.second, 0, posLimit);
+
+    updatePosition();
+    update(boundingRect());
 }
 
 void Caret::setScore(Score* newScore)
