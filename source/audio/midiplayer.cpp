@@ -578,6 +578,8 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
         double duration = tempo * 4.0 / beatValue;
         duration *= beatsPerMeasure / numPulses;
 
+        const uint32_t position = barline->GetPosition();
+
         // check for multi-bar rests, as we need to generate duplicate metronome events
         // to fill the extra bars
         uint8_t measureCount = 0, repeatCount = 1;
@@ -593,23 +595,20 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
                 MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
                                                                    MetronomeEvent::WEAK_ACCENT;
 
-                // Metronome events are given a position index of 0 so that they do not
-                // advance the playback position.
                 eventList.push_back(new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
-                                                       0, systemIndex, velocity));
+                                                       position, systemIndex, velocity));
 
                 startTime += duration;
 
-                eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, 0,
+                eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
                                                       systemIndex, MetronomeEvent::METRONOME_PITCH));
             }
         }
     }
 
     // insert an empty event for the last barline of the system, to trigger any repeat events for that bar
-    // FIXME - this should be created after the note events have been created, so that playback still works
-    // correctly for bars with an invalid number of notes.
-    eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, 0,
+    eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime,
+                                          system->GetEndBar()->GetPosition(),
                                           systemIndex, MetronomeEvent::METRONOME_PITCH));
 }
 
