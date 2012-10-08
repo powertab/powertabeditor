@@ -112,6 +112,26 @@ TimeSignature TimeSignatureDialog::getNewTimeSignature() const
     return newTimeSignature;
 }
 
+/// Save the new beaming pattern values.
+void TimeSignatureDialog::accept()
+{
+    boost::array<uint8_t, 4> beamingPatternValues = {{0, 0, 0, 0}};
+    for (size_t i = 0; i < beamingPatterns.size(); ++i)
+    {
+        QLineEdit* value = beamingPatterns[i];
+        if (value->isEnabled())
+        {
+            beamingPatternValues[i] = value->text().toUInt();
+        }
+    }
+
+    newTimeSignature.SetBeamingPattern(
+                beamingPatternValues[0],beamingPatternValues[1],
+                beamingPatternValues[2], beamingPatternValues[3]);
+
+    done(Accepted);
+}
+
 /// Toggles whether or not the time signature is visible
 void TimeSignatureDialog::editTimeSignatureVisible(bool isVisible)
 {

@@ -39,6 +39,7 @@ public:
     TimeSignature getNewTimeSignature() const;
 
 private slots:
+    virtual void accept();
     void editTimeSignatureVisible(bool isVisible);
     void editMetronomePulses(int selectedIndex);
     void editCutTime(bool enabled);
