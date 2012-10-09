@@ -23,8 +23,10 @@
 ##
 ## 1. Parse Args 
 ## 2. Setup for local system
-## 3. Do the build
-## 4. Package as a <app>.dmg for mac
+## 3. svn update
+## 4. Do the build
+## 5. Package as a <app>.dmg for mac
+## 6. Http upload
 ##
 ################################################################################
 
@@ -51,18 +53,44 @@ USAGE
     build-macx-sh [options]
 
 OPTIONS
-    -clean      Perform a make clean first
+    --clean     Perform a make clean first.
 
-    -rmClean    Perform a rm clean, deleting the working directory
+    --rmClean   Perform a rm clean, deleting the working directory.
 
-    -noPackage  Do not produce a dmg package at the end
+    --noMake    Do not perform a make (compile and link).
+
+    --noPackage Do not produce a dmg package at the end.
+
+    --svnUpdate Retrieve the latest files from the svn depot.
+
+    --svnUsername <username>
+                Username for access to the svn repository.
+
+    --svnPassword <password>
+                Password for access to the svn repository.
+
+    --uploadMethod <method>
+                HTTP - upload to uploadUrl using curl http.
+
+    --uploadUsername <username>
+                Username for the upload to the uploadUrl.
+
+    --uploadPassword <password>
+                Password to allow upload to the uploadUrl.
+
+    --uploadUrl <url>
+                Address to upload the file to.
+
+    --projectDir <directory>
+                The root directory of the project. If not defined the 
+                environment PROJECT_DIR is used instead.
 
 ENVIRONMENT
     The following environment variables change the behaviour of this script.
 
     PROJECT_DIR This is the root directory of the project where all files are
                 contained. If not defined, it is assume this script is being run
-                from \$PROJECT_DIR/build.
+                from \$PROJECT_DIR/build. 
 OVERVIEW
     This script builds the powertabeditor project on mac, for mac.
 
@@ -115,7 +143,8 @@ EXIT STATUS
 #               with this.
 #
 # Parameters  : 
-#     Each parameter is printed on it's own line
+#     1st Parameter is a heading for the log message
+#     2nd and subsequent are the log messages, each written on their own line
 #
 # Returns     :
 #     Logging
@@ -127,10 +156,12 @@ function Log()
     logEntries=${logEntries:-0}
 
     # a fancy timestamp
-    local logPrefix="*** [`printf "%03d" $logEntries` `date -u +%Y%m%d_%T`] ***"
+    timestamp=`date -u +%Y%m%d_%T`
+    formattedLogEntries=`printf "%03d" $logEntries`
+    local logPrefix="*** [$formattedLogEntries / $timestamp] *** $1:"
+    shift
 
     # print the log entry
-    echo
     while [ "$*" ]; do
     {
         echo "$logPrefix $1"
@@ -156,10 +187,26 @@ function Log()
 ################################################################################
 function LogCommand()
 {
-    Log "RUNNING COMMAND" "$*"
-    echo
+    Log RUNNING "$*"
 }
 
+################################################################################
+# Function    : LogCommandCompleted
+#
+# Description : Standard way to log a completed command
+#
+# Parameters  : 
+#     All treated as the command (print on a single line)
+#
+# Returns     :
+#     Logging
+#
+################################################################################
+function LogCommandCompleted()
+{
+    ((logEntries--))
+    Log FINISHED "$*"
+}
 
 ################################################################################
 # Function    : ExecCriticalCmd
@@ -183,9 +230,11 @@ function ExecCriticalCmd()
     {
         Log FAILED \
             "\"$*\"" \
-            "Build aborted"
+            "Build aborted."
         exit 1
     } fi
+
+    LogCommandCompleted $@
 }
 
 
@@ -217,11 +266,12 @@ function ExecCriticalCmdAndStore()
     {
         Log FAILED \
             "\"$*\"" \
-            "Build aborted"
+            "Build aborted."
         exit 1
     } fi
 
     echo $cmdOutput
+    LogCommandCompleted $@
     # store the cmdOutput in var name contained in retVar
     eval $retVar=\"$cmdOutput\"
 }
@@ -248,9 +298,11 @@ function ExecOptionalCmd()
     if [ $? != 0 ]; then
     {
         Log WARNING \
-            "Optional command failed"\
+            "Optional command failed."\
             "$*"
     } fi
+
+    LogCommandCompleted $@
 }
 
 
@@ -266,19 +318,53 @@ function ExecOptionalCmd()
 #
 actionRmClean=0
 actionMakeClean=0
+actionMake=1
 actionPackage=1
+actionSvnUpdate=0
+svnUsername=0
+svnPassword=0
+uploadMethod=0
+uploadUsername=0
+uploadPassword=0
+uploadUrl=0
+projectDir=0
 
 # read each argument passed
 while [ "$*" ]; do
 {
     # see DisplayUsage for what these do
     case $1 in
-    -clean)
+    --clean)
         actionMakeClean=1;;
-    -rmClean)
+    --rmClean)
         actionRmClean=1;;
-    -noPackage)
+    --noMake)
+        actionMake=0;;
+    --noPackage)
         actionPackage=0;;
+    --svnUpdate)
+        actionSvnUpdate=1;;
+    --svnUsername)
+        shift
+        svnUsername=$1;;
+    --svnPassword)
+        shift
+        svnPassword=$1;;
+    --uploadMethod)
+        shift
+        uploadMethod=$1;;
+    --uploadUsername)
+        shift
+        uploadUsername=$1;;
+    --uploadPassword)
+        shift
+        uploadPassword=$1;;
+    --uploadUrl)
+        shift
+        uploadUrl=$1;;
+    --projectDir)
+        shift;
+        projectDir=$1;;
     -h)
         DisplayUsage 
         exit 0;;
@@ -293,22 +379,30 @@ while [ "$*" ]; do
 } done
 
 
+################################################################################
+##
+## Start the build
+##
+################################################################################
+Log START \
+    "Build Started."
+
 #
 # Determine directories, versions of what we're building
 #
-Log START \
-    "Arguments parsed successfully"
-
 projectName="powertabeditor"
 buildType="debug-macx"
 
-if [ $PROJECT_DIR != "" ]; then
+if [ $projectDir == 0 ]; then
 {
-    projectDir="$PROJECT_DIR"
-} 
-else
-{
-    projectDir="`pwd`/.."
+    if [ $PROJECT_DIR != "" ]; then
+    {
+        projectDir="$PROJECT_DIR"
+    } 
+    else
+    {
+        projectDir="`pwd`/.."
+    } fi
 } fi
 
 
@@ -318,18 +412,37 @@ buildDir="${projectDir}/build/${buildType}"
 builtAppDir="${buildDir}/build/powertabeditor.app"
 
 
+#
+# Update the local working copy
+#
+if [ $actionSvnUpdate == 1 ]; then
+{
+    Log INFO \
+        "Getting latest svn files."
+
+    userDetails=""
+    if [ $svnUsername != 0 ]; then
+    {
+        userDetails="$userDetails --username $svnUsername"
+    } fi
+
+    if [ $svnPassword != 0 ]; then
+    {
+        userDetails="$userDetails --password $svnPassword"
+    } fi
+    ExecCriticalCmd svn update $projectDir $userDetails
+} fi
+
+#
 # determine the version we're building
+#
 ExecCriticalCmdAndStore svnversion "svnversion $projectDir"
 
 version="vdev${svnversion}"
 buildName="${projectName}-${version}_${buildType}"
+buildFilename="${buildName}.dmg"
 
 
-################################################################################
-##
-## Start the build
-##
-################################################################################
 Log INFO \
     "Project Directory \"$projectDir\"." \
     "Build name \"$buildName\"."
@@ -340,9 +453,9 @@ Log INFO \
 if [ $actionRmClean == 1 ] && [ -d "$buildDir" ]; then
 {
     Log INFO \
-        "Removing working directory first"
-    ExecCriticalCmd chmod -R u+wrx "$buildDir"
-    ExecCriticalCmd rm -rf "$buildDir"
+        "Removing working directory first."
+    ExecCriticalCmd chmod -vR u+wrx "$buildDir"
+    ExecCriticalCmd rm -vrf "$buildDir"
 } fi
 
 ExecCriticalCmd mkdir -vp "$buildDir"
@@ -360,13 +473,20 @@ if [ $actionMakeClean == 1 ]; then
 else
 {
     Log SKIPPED \
-        "Skipping make clean"
+        "make clean."
 } fi
 
-ExecCriticalCmd make --directory="${buildDir}" -j16
 
-Log INFO \
-    "Finished making"
+if [ $actionMake == 1 ]; then
+{
+    ExecCriticalCmd make --directory="${buildDir}" -j16
+}
+else
+{
+    Log SKIPPED \
+        "make (compiling and linking)."
+} fi
+
 
 ################################################################################
 ##
@@ -380,7 +500,7 @@ Log INFO \
 if [ $actionPackage == 1 ]; then
 {
     Log INFO \
-        "Creating Package `pwd`${buildName}.dmg"
+        "Creating Package `pwd`${buildFilename}."
 
     #
     # Part 1: Create a big enough disk image
@@ -438,24 +558,42 @@ if [ $actionPackage == 1 ]; then
      
     # Finally, compress to make the file size more distributable (using bzip2)
     # have to remove any pre-existing file
-    if [ -f ${buildName}.dmg ]; then
+    if [ -f $buildFilename ]; then
     {
-        ExecOptionalCmd rm "${buildName}.dmg"
+        ExecOptionalCmd rm -v "$buildFilename"
     } fi
 
     ExecCriticalCmd hdiutil convert\
         "$workingDmg"\
         -format UDBZ\
-        -o "${buildName}.dmg"
+        -o "$buildFilename"
 }
 else
 {
-    Log SKIPPED \
-        "Skipping packaging"
+    Log SKIPPED
+        "Packaging."
+} fi
+
+
+#
+# Upload the build to a server
+#
+if [ $uploadMethod == "HTTP" ]; then
+{
+    # Not the most reliable (no check of the response)
+    # http1.0 and Mozilla/4.0 is used for compatiblity
+    Log "INFO: Uploading $buildFilename to $uploadUrl."
+    ExecCriticalCmd curl\
+        --http1.0\
+        --user-agent "Mozilla/4.0"\
+        --form "username=$uploadUsername"\
+        --form "password=$uploadPassword"\
+        --form "build=@$buildFilename;type=application/octet-stream"\
+        "$uploadUrl"
 } fi
 
 
 # If we get this far, the build has been a success
 Log SUCCESS \
-    "Build completed"
+    "Build completed."
 exit 0
