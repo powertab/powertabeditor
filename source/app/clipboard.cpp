@@ -77,7 +77,7 @@ void Clipboard::paste(UndoManager* undoManager, const Caret* caret)
     // For safety, prevent pasting into a different tuning.
     // TODO - it should be possible to e.g. paste notes from a 6-string guitar
     // into a 7-string guitar.
-    if (currentTuning != tuning)
+    if (!currentTuning.IsSameTuning(tuning))
     {
         QMessageBox msg;
         msg.setText(QObject::tr("Cannot paste notes from a different tuning."));
