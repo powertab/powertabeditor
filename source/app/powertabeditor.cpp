@@ -289,9 +289,11 @@ void PowerTabEditor::createActions()
     saveFileAsAct = new Command(tr("Save As..."), "File.SaveAs", QKeySequence::SaveAs, this);
     connect(saveFileAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
 
-    editShortcutsAct = new Command(tr("Customize Shortcuts"), "File.CustomizeShortcuts",
-                                        QKeySequence(), this);
-    connect(editShortcutsAct, SIGNAL(triggered()), this, SLOT(editKeyboardShortcuts()));
+    editShortcutsAct = new Command(tr("Customize Shortcuts..."),
+                                   "File.CustomizeShortcuts", QKeySequence(),
+                                   this);
+    connect(editShortcutsAct, SIGNAL(triggered()), this,
+            SLOT(editKeyboardShortcuts()));
 
     preferencesAct = new Command(tr("&Preferences..."), "File.Preferences", QKeySequence::Preferences, this);
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(openPreferences()));
@@ -315,7 +317,7 @@ void PowerTabEditor::createActions()
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(doPaste()));
 
     // File Information
-    fileInfoAct = new Command(tr("File Information"), "Edit.FileInformation",
+    fileInfoAct = new Command(tr("File Information..."), "Edit.FileInformation",
                               QKeySequence(), this);
     connect(fileInfoAct, SIGNAL(triggered()), this, SLOT(openFileInformation()));
 
@@ -708,7 +710,8 @@ void PowerTabEditor::createActions()
     connectToggleProperty<Position>(tapAct, &getSelectedPositions,
                                     &Position::HasTap, &Position::SetTap);
 
-    trillAction = new Command(tr("Trill"), "TabSymbols.Trill", QKeySequence(), this);
+    trillAction = new Command(tr("Trill..."), "TabSymbols.Trill",
+                              QKeySequence(), this);
     trillAction->setCheckable(true);
     connect(trillAction, SIGNAL(triggered()), this, SLOT(editTrill()));
 
