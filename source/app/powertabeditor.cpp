@@ -426,19 +426,22 @@ void PowerTabEditor::createActions()
                     boost::bind(&PowerTabEditor::changePositionSpacing, this, -1));
 
     removeCurrentSystemAct = new Command(tr("Remove Current System"),
-                                         "Section.RemoveCurrentSystem", QKeySequence(), this);
+                    "Section.RemoveCurrentSystem",
+                    QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N), this);
     connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
 
-    insertSystemAtEndAct = new Command(tr("Insert System At End"), "Section.InsertSystemAtEnd",
-                                       Qt::Key_N, this);
+    insertSystemAtEndAct = new Command(tr("Insert System At End"),
+                    "Section.InsertSystemAtEnd", Qt::Key_N, this);
     connect(insertSystemAtEndAct, SIGNAL(triggered()), this, SLOT(insertSystemAtEnd()));
 
     insertSystemBeforeAct = new Command(tr("Insert System Before"),
-                                        "Section.InsertSystemBefore", QKeySequence(), this);
+                    "Section.InsertSystemBefore",
+                    QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_N), this);
     connect(insertSystemBeforeAct, SIGNAL(triggered()), this, SLOT(insertSystemBefore()));
 
     insertSystemAfterAct = new Command(tr("Insert System After"),
-                                       "Section.InsertSystemAfter", QKeySequence(), this);
+                    "Section.InsertSystemAfter",
+                    QKeySequence(Qt::SHIFT + Qt::Key_N), this);
     connect(insertSystemAfterAct, SIGNAL(triggered()), this, SLOT(insertSystemAfter()));
 
     // Note-related actions
