@@ -85,12 +85,21 @@ OPTIONS
                 The root directory of the project. If not defined the 
                 environment PROJECT_DIR is used instead.
 
+    --qtSrcDir <directory>
+                The location of the QT src files. Required to manually provide
+                the qt_menu.nib directory to the built application. If not
+                defined the environment QT_SRC_DIR is used instead (one of them
+                must be defined). Workround for QTBUG-5952. E.g. 
+                \"~/qt-everywjere-opensource-src-4.8.3/src\".
+
 ENVIRONMENT
     The following environment variables change the behaviour of this script.
 
     PROJECT_DIR This is the root directory of the project where all files are
                 contained. If not defined, it is assume this script is being run
                 from \$PROJECT_DIR/build. 
+
+    QT_SRC_DIR  See the --qtSrcDir option.
 OVERVIEW
     This script builds the powertabeditor project on mac, for mac.
 
@@ -102,21 +111,18 @@ SETUP
                 line tools (preferences -> download). QtSDK will fail to install
                 without these.
 
-    QtSDK v4.8.1 
+    Qt v4.8.3 
+                Compiled from source using ./configure --static.
+
                 On OS X Mountain Lion (v10.8) which prevents e.g. std::cout 
                 << std::strings from compiling. A workaround is to change 
                 -mmacosx-version-min to a higher version (i.e 10.7). The value 
                 is defined globally in g++-macx.conf in the QtSDK. See
                 http://qt-project.org/forums/viewthread/19106.
 
-                Mountain Lion (v10.8) is *not* supported and Qt throws warnings
-                about unsupported version. So far, the only known issue on 10.8
-                is this compile warning and the streams. Fix this by manually 
-                adding 10.8 as allowed version to qglobal.h (in both Qt and 
-                QtCore directories).
-
-                Later Qt SDK's I expect tosolve this, however 4.8.1 was the
-                highest released at time of writing.
+                According to Qt's documentation, building Qt statically is only
+                partially supported. In particular it is necessary to copy 
+                \"src/gui/mac/qt_menu.nib/\" to the \"Resources\" directory.
 
     boost v1.51.0
                 Boost libraries are not shipped by standard in OS X or as part
@@ -328,6 +334,7 @@ uploadUsername=0
 uploadPassword=0
 uploadUrl=0
 projectDir=0
+qtSrcDir=0
 
 # read each argument passed
 while [ "$*" ]; do
@@ -365,6 +372,9 @@ while [ "$*" ]; do
     --projectDir)
         shift;
         projectDir=$1;;
+    --qtSrcDir)
+        shift;
+        qtSrcDir=$1;;
     -h)
         DisplayUsage 
         exit 0;;
@@ -395,7 +405,7 @@ buildType="debug-macx"
 
 if [ $projectDir == 0 ]; then
 {
-    if [ $PROJECT_DIR != "" ]; then
+    if [ "$PROJECT_DIR" != "" ]; then
     {
         projectDir="$PROJECT_DIR"
     } 
@@ -405,6 +415,19 @@ if [ $projectDir == 0 ]; then
     } fi
 } fi
 
+if [ $qtSrcDir == 0 ]; then
+{
+    if [ "$QT_SRC_DIR" != "" ]; then
+    {
+        qtSrcDir="$QT_SRC_DIR"
+    } 
+    else
+    {
+        Log FAILED \
+            "No --qtSrcDir or QT_SRC_DIR defined."
+        exit 1
+    } fi
+} fi
 
 # base the other directories off the projectDir
 sourceDir="${projectDir}/source"
@@ -480,6 +503,10 @@ else
 if [ $actionMake == 1 ]; then
 {
     ExecCriticalCmd make --directory="${buildDir}" -j16
+    # Weird quirk for statically linking the libraries (QTBUG-5952)
+    ExecCriticalCmd cp -Rv\
+        "$qtSrcDir/gui/mac/qt_menu.nib"\
+        "$builtAppDir/Contents/Resources/"
 }
 else
 {
@@ -558,15 +585,15 @@ if [ $actionPackage == 1 ]; then
      
     # Finally, compress to make the file size more distributable (using bzip2)
     # have to remove any pre-existing file
-    if [ -f $buildFilename ]; then
+    if [ -f "$buildDir/$buildFilename" ]; then
     {
-        ExecOptionalCmd rm -v "$buildFilename"
+        ExecOptionalCmd rm -v "$buildDir/$buildFilename"
     } fi
 
     ExecCriticalCmd hdiutil convert\
         "$workingDmg"\
         -format UDBZ\
-        -o "$buildFilename"
+        -o "$buildDir/$buildFilename"
 }
 else
 {
@@ -582,13 +609,14 @@ if [ $uploadMethod == "HTTP" ]; then
 {
     # Not the most reliable (no check of the response)
     # http1.0 and Mozilla/4.0 is used for compatiblity
-    Log "INFO: Uploading $buildFilename to $uploadUrl."
+    Log INFO \
+        "Uploading $buildDir/$buildFilename to $uploadUrl."
     ExecCriticalCmd curl\
         --http1.0\
         --user-agent "Mozilla/4.0"\
         --form "username=$uploadUsername"\
         --form "password=$uploadPassword"\
-        --form "build=@$buildFilename;type=application/octet-stream"\
+        --form "build=@$buildDir/$buildFilename;type=application/octet-stream"\
         "$uploadUrl"
 } fi
 
