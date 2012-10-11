@@ -129,7 +129,9 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
     }
     else
     {
-        key |= e->modifiers();
+        // Add in any modifers like Shift or Ctrl, but remove the keypad modifer
+        // since QKeySequence doesn't handle that well.
+        key |= (e->modifiers() & ~Qt::KeypadModifier);
 
         QKeySequence newKeySequence(key);
         setShortcut(newKeySequence.toString());
