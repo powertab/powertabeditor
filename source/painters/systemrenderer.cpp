@@ -274,6 +274,12 @@ void SystemRenderer::drawTabNotes(const StaffData& currentStaffInfo)
         for (quint32 i=0; i < staff->GetPositionCount(voice); i++)
         {
             const Position* currentPosition = staff->GetPosition(voice, i);
+
+            if (currentPosition->IsRest())
+            {
+                continue;
+            }
+
             const quint32 location = system->GetPositionX(currentPosition->GetPosition());
 
             for (quint32 j=0; j < currentPosition->GetNoteCount(); j++)

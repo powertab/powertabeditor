@@ -20,22 +20,28 @@
 
 #include <QUndoCommand>
 #include <boost/cstdint.hpp>
+#include <vector>
 
+class Note;
 class Position;
 
 class EditRest : public QUndoCommand
 {
 public:
     EditRest(Position* position, uint8_t duration);
+    ~EditRest();
 
     void redo();
     void undo();
 
 private:
+    void saveOrRestoreNotes(bool saveNotes);
+
     Position* position;
     const uint8_t newDuration;
     const uint8_t originalDuration;
     const bool wasAlreadyRest;
+    std::vector<Note*> notes;
 };
 
 #endif // EDITREST_H

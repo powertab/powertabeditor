@@ -719,6 +719,16 @@ void Position::RemoveNote(uint8_t string)
     m_noteArray.erase(std::find(m_noteArray.begin(), m_noteArray.end(), note));
 }
 
+void Position::RemoveNoteByIndex(size_t index)
+{
+    if (!IsValidNoteIndex(index))
+    {
+        throw std::out_of_range("Invalid note index");
+    }
+
+    m_noteArray.erase(m_noteArray.begin() + index);
+}
+
 // functor for the GetNoteByString function
 // using c++0x lambdas would be nice, but mingw doesn't seem to like them ...
 struct NoteComparison

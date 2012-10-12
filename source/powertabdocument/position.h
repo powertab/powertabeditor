@@ -817,6 +817,7 @@ public:
 
     void InsertNote(Note* note);
     void RemoveNote(uint8_t string);
+    void RemoveNoteByIndex(size_t index);
 
     Note* GetNoteByString(uint8_t string) const;
     bool CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const;

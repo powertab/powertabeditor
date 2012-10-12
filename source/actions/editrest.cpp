@@ -39,6 +39,11 @@ EditRest::EditRest(Position* position, uint8_t duration) :
     }
 }
 
+EditRest::~EditRest()
+{
+    qDeleteAll(notes);
+}
+
 void EditRest::redo()
 {
     if (wasAlreadyRest && (newDuration == originalDuration))
@@ -50,10 +55,40 @@ void EditRest::redo()
         position->SetRest(true);
         position->SetDurationType(newDuration);
     }
+
+    saveOrRestoreNotes(!wasAlreadyRest);
 }
 
 void EditRest::undo()
 {
     position->SetRest(wasAlreadyRest);
     position->SetDurationType(originalDuration);
+    saveOrRestoreNotes(wasAlreadyRest);
+}
+
+void EditRest::saveOrRestoreNotes(bool saveNotes)
+{
+    if (saveNotes)
+    {
+        assert(notes.empty());
+
+        for (size_t i = 0; i < position->GetNoteCount(); ++i)
+        {
+            notes.push_back(position->GetNote(i));
+        }
+
+        while (position->GetNoteCount())
+        {
+            position->RemoveNoteByIndex(0);
+        }
+    }
+    else
+    {
+        assert(position->GetNoteCount() == 0);
+        for (size_t i = 0; i < notes.size(); ++i)
+        {
+            position->InsertNote(notes[i]);
+        }
+        notes.clear();
+    }
 }
