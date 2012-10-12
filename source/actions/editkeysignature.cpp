@@ -60,7 +60,8 @@ void EditKeySignature::switchKeySignatures(const KeySignature& oldKey,
     for (size_t i = startSystem; i < score->GetSystemCount(); i++)
     {
         std::vector<System::BarlinePtr> barlines;
-        score->GetSystem(i)->GetBarlines(barlines);
+        Score::SystemPtr system = score->GetSystem(i);
+        system->GetBarlines(barlines);
 
         BOOST_FOREACH(System::BarlinePtr barline, barlines)
         {
@@ -81,8 +82,11 @@ void EditKeySignature::switchKeySignatures(const KeySignature& oldKey,
             }
             else
             {
+                system->AdjustPositionSpacing();
                 return;
             }
         }
+
+        system->AdjustPositionSpacing();
     }
 }

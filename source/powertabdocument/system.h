@@ -204,6 +204,7 @@ public:
     int GetFirstPositionX() const;
     int GetPositionX(int position) const;
     size_t GetPositionFromX(int x) const;
+    uint32_t GetMaxPosition() const;
 
     // Operations
     int GetCumulativeInternalKeyAndTimeSignatureWidth(int position = -1) const;
@@ -215,6 +216,7 @@ public:
 
     void ShiftForward(uint32_t positionIndex);
     void ShiftBackward(uint32_t positionIndex);
+    void AdjustPositionSpacing();
 
     bool HasMultiBarRest(BarlineConstPtr startBar, uint8_t& measureCount) const;
 

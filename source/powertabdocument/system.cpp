@@ -815,29 +815,44 @@ void System::CalculateBeamingForStaves()
     }
 }
 
-/// Determines if a position spacing is valid
-/// @param positionSpacing Position spacing to validate
-/// @return True if the position spacing is valid, false if not
+/// Returns the largest occupied position in the system.
+uint32_t System::GetMaxPosition() const
+{
+    uint32_t maxPosition = 0;
+
+    // Check the positions in each member staff.
+    for (size_t i = 0; i < m_staffArray.size(); i++)
+    {
+        const Position* lastPosition = m_staffArray[i]->GetLastPosition();
+        if (lastPosition)
+        {
+            maxPosition = std::max(maxPosition, lastPosition->GetPosition());
+        }
+    }
+
+    if (!m_barlineArray.empty())
+    {
+        maxPosition = std::max(maxPosition,
+                               m_barlineArray.back()->GetPosition());
+    }
+
+    // TODO - include chord text, rhythm slashes, etc.
+
+    return maxPosition;
+}
+
+/// Determines if a position spacing is valid.
+/// @param positionSpacing Position spacing to validate.
+/// @return True if the position spacing is valid, false if not.
 bool System::IsValidPositionSpacing(int positionSpacing) const
 {
     if (positionSpacing < MIN_POSITION_SPACING)
         return false;
 
-    // find the max number of positions that will fit using the given spacing
-    const uint32_t maxNumPositions = CalculatePositionCount(positionSpacing);
+    // Find the max number of positions that will fit using the given spacing.
+    const uint32_t availablePositions = CalculatePositionCount(positionSpacing);
 
-    // need to compare against the positions in each member staff
-    for (size_t i = 0; i < m_staffArray.size(); i++)
-    {
-        const Position* lastPositionInStaff = m_staffArray.at(i)->GetLastPosition();
-        if (lastPositionInStaff &&
-                lastPositionInStaff->GetPosition() >= maxNumPositions)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return GetMaxPosition() < availablePositions;
 }
 
 /// Sets the position spacing for the system.
@@ -920,19 +935,7 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     }
 
     // Reduce the spacing if necessary to create space for the new position.
-    while (m_positionSpacing > MIN_POSITION_SPACING &&
-           !IsValidPositionSpacing(m_positionSpacing))
-    {
-        m_positionSpacing--;
-    }
-
-    if (!IsValidPositionSpacing(m_positionSpacing))
-    {
-        // There need to be a lot of notes for this to happen ...
-        throw std::runtime_error("Not enough space for a new position.");
-    }
-
-    SetPositionSpacing(m_positionSpacing);
+    AdjustPositionSpacing();
 }
 
 void System::ShiftForward(uint32_t positionIndex)
@@ -943,6 +946,25 @@ void System::ShiftForward(uint32_t positionIndex)
 void System::ShiftBackward(uint32_t positionIndex)
 {
     PerformPositionShift(positionIndex, -1);
+}
+
+/// Reduces the position spacing (only if necessary) to fit all positions on
+/// the staff.
+void System::AdjustPositionSpacing()
+{
+    while (m_positionSpacing > MIN_POSITION_SPACING &&
+           !IsValidPositionSpacing(m_positionSpacing))
+    {
+        m_positionSpacing--;
+    }
+
+    if (!IsValidPositionSpacing(m_positionSpacing))
+    {
+        // There need to be a lot of notes for this to happen ...
+        throw std::runtime_error("Not enough space to fit all positions.");
+    }
+
+    SetPositionSpacing(m_positionSpacing);
 }
 
 /// Initializes the system and creates staves.
