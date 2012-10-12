@@ -38,14 +38,16 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
 
     // record the number of strings that will be in each staff
     std::vector<uint8_t> staffSizes;
-    for (uint32_t guitar = 0; guitar < score->GetGuitarCount(); guitar++)
+    std::vector<bool> visibleStaves;
+    for (uint32_t i = 0; i < score->GetGuitarCount(); i++)
     {
-        staffSizes.push_back(score->GetGuitar(guitar)->GetStringCount());
+        staffSizes.push_back(score->GetGuitar(i)->GetStringCount());
+        visibleStaves.push_back(score->GetGuitar(i)->IsShown());
     }
 
     // set up initial system
     Score::SystemPtr currentSystem = boost::make_shared<System>();
-    currentSystem->Init(staffSizes, false);
+    currentSystem->Init(staffSizes, visibleStaves, false);
     currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
     score->InsertSystem(currentSystem, 0);
 
@@ -66,7 +68,7 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
         if (!currentSystem->IsValidPosition(lastBarlinePos + largestMeasure + 1))
         {
             currentSystem = boost::make_shared<System>();
-            currentSystem->Init(staffSizes, false);
+            currentSystem->Init(staffSizes, visibleStaves, false);
             currentSystem->SetPositionSpacing(DEFAULT_POSITION_SPACING);
 
             // adjust height to be below the previous system

@@ -972,14 +972,17 @@ void System::AdjustPositionSpacing()
 /// @param showTimeSignature Whether to display the first time signature in
 /// the staff.
 void System::Init(const std::vector<uint8_t>& staffSizes,
+                  const std::vector<bool>& visibleStaves,
                   bool showTimeSignature)
 {
+    assert(staffSizes.size() == visibleStaves.size());
     m_staffArray.clear();
 
     for (size_t i = 0; i < staffSizes.size(); i++)
     {
         m_staffArray.push_back(boost::make_shared<Staff>(staffSizes.at(i),
                                                          Staff::TREBLE_CLEF));
+        m_staffArray[i]->SetShown(visibleStaves[i]);
     }
 
     m_startBar->GetTimeSignature().SetShown(showTimeSignature);

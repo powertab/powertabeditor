@@ -175,7 +175,12 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
         std::transform(m_guitarArray.begin(), m_guitarArray.end(),
                        std::back_inserter(staffSizes),
                        boost::bind(&Guitar::GetStringCount, _1));
-        system->Init(staffSizes, false);
+
+        std::vector<bool> visibleStaves;
+        std::transform(m_guitarArray.begin(), m_guitarArray.end(),
+                       std::back_inserter(visibleStaves),
+                       boost::bind(&Guitar::IsShown, _1));
+        system->Init(staffSizes, visibleStaves, false);
     }
 
     system->CalculateHeight();
@@ -419,8 +424,11 @@ void Score::Init()
     std::vector<uint8_t> staffSizes;
     staffSizes.push_back(guitar->GetStringCount());
 
+    std::vector<bool> visibleStaves;
+    visibleStaves.push_back(true);
+
     SystemPtr newSystem(new System);
-    newSystem->Init(staffSizes, true);
+    newSystem->Init(staffSizes, visibleStaves, true);
     InsertSystem(newSystem, 0);
 }
 

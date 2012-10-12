@@ -73,7 +73,8 @@ public:
     System();
     System(const System& system);
 
-    void Init(const std::vector<uint8_t>& staffSizes, bool showTimeSignature);
+    void Init(const std::vector<uint8_t>& staffSizes,
+              const std::vector<bool>& visibleStaves, bool showTimeSignature);
 
     // Operators
     const System& operator=(const System& system);
