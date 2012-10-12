@@ -1335,7 +1335,7 @@ int PowerTabEditor::getCurrentPlaybackSpeed() const
     }
 
     PlaybackWidget* currentPlaybackWidget = dynamic_cast<PlaybackWidget*>(playbackToolbarList->currentWidget());
-    return currentPlaybackWidget->getPlaybackSpeed();
+    return currentPlaybackWidget->playbackSpeed();
 }
 
 void PowerTabEditor::startStopPlayback()

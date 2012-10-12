@@ -17,3 +17,6 @@ SOURCES += \
     playback/playbackwidget.cpp \
     mixer/mixerinstrument.cpp \
     mixer/mixer.cpp
+
+FORMS += \
+    playback/playbackwidget.ui

@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,27 +14,30 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef PLAYBACKWIDGET_H
 #define PLAYBACKWIDGET_H
 
 #include <QWidget>
 
-class QSpinBox;
+namespace Ui {
+class PlaybackWidget;
+}
 
 class PlaybackWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit PlaybackWidget(QWidget* parent = 0);
+    ~PlaybackWidget();
 
-    int getPlaybackSpeed() const;
+    int playbackSpeed() const;
 
 signals:
     void playbackSpeedChanged(int speed);
 
 private:
-    QSpinBox* playbackSpeedSpinner;
+    Ui::PlaybackWidget *ui;
 };
 
 #endif // PLAYBACKWIDGET_H
