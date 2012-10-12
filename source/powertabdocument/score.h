@@ -49,17 +49,6 @@ public:
     typedef boost::shared_ptr<const GuitarIn> GuitarInConstPtr;
     typedef boost::shared_ptr<TempoMarker> TempoMarkerPtr;
 
-// Member Variables
-public:
-    std::vector<GuitarPtr>              m_guitarArray;              ///< Guitars used by the score
-    std::vector<ChordDiagramPtr>        m_chordDiagramArray;        ///< Chord diagrams used in the score
-    std::vector<FloatingTextPtr>        m_floatingTextArray;        ///< Floating text used in the score
-    std::vector<GuitarInPtr>            m_guitarInArray;            ///< Guitar Ins used in the score
-    std::vector<TempoMarkerPtr>         m_tempoMarkerArray;         ///< Tempo Markers used in the score
-    std::vector<DynamicPtr>             m_dynamicArray;             ///< Dynamic markers used in the score
-    std::vector<AlternateEndingPtr>     m_alternateEndingArray;     ///< Alternate endings used in the score
-    std::vector<SystemPtr>              m_systemArray;              ///< Systems used in the score
-
 // Constructor/Destructor
 public:
     Score();
@@ -158,6 +147,16 @@ public:
     void UpdateToVer2Structure();
 
     void MergeScore(const Score& otherScore);
+
+private:
+    std::vector<GuitarPtr> m_guitarArray; ///< Guitars used by the score.
+    std::vector<ChordDiagramPtr> m_chordDiagramArray; ///< Chord diagrams used in the score.
+    std::vector<FloatingTextPtr> m_floatingTextArray; ///< Floating text used in the score.
+    std::vector<GuitarInPtr> m_guitarInArray; ///< Guitar Ins used in the score.
+    std::vector<TempoMarkerPtr> m_tempoMarkerArray; ///< Tempo Markers used in the score.
+    std::vector<DynamicPtr> m_dynamicArray; ///< Dynamic markers used in the score.
+    std::vector<AlternateEndingPtr> m_alternateEndingArray; ///< Alternate endings used in the score.
+    std::vector<SystemPtr> m_systemArray; ///< Systems used in the score.
 
 };
 
