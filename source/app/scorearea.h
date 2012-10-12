@@ -58,6 +58,7 @@ private:
 signals:
     void barlineClicked(int position);
     void keySignatureClicked(int position);
+    void timeSignatureClicked(int position);
 
 public slots:
     void adjustScroll();

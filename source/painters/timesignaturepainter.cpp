@@ -25,9 +25,12 @@
 #include <QFont>
 #include <QPainter>
 
-TimeSignaturePainter::TimeSignaturePainter(const StaffData& staffInformation, const TimeSignature& signature) :
+TimeSignaturePainter::TimeSignaturePainter(const StaffData& staffInformation,
+                                           const TimeSignature& signature,
+                                           uint32_t position) :
     staffInfo(staffInformation),
-    timeSignature(signature)
+    timeSignature(signature),
+    position(position)
 {
     init();
 }
@@ -43,9 +46,7 @@ void TimeSignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 
 void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    QMessageBox message;
-    message.setText("Time Signature");
-    message.exec();
+    emit clicked(position);
 }
 
 void TimeSignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)

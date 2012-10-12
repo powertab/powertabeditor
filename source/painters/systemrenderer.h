@@ -39,6 +39,7 @@ class ScoreArea;
 class StaffPainter;
 class BarlinePainter;
 class KeySignaturePainter;
+class TimeSignaturePainter;
 
 class SystemRenderer
 {
@@ -65,6 +66,7 @@ private:
     std::vector<StaffPainter*> staffPainters;
     std::vector<BarlinePainter*> barlinePainters;
     std::vector<KeySignaturePainter*> keySignaturePainters;
+    std::vector<TimeSignaturePainter*> timeSignaturePainters;
 
     enum VolumeSwellType
     {

@@ -1081,6 +1081,7 @@ void PowerTabEditor::setupNewDocument()
 
     connect(score, SIGNAL(barlineClicked(int)), this, SLOT(editBarline(int)));
     connect(score, SIGNAL(keySignatureClicked(int)), this, SLOT(editKeySignature(int)));
+    connect(score, SIGNAL(timeSignatureClicked(int)), this, SLOT(editTimeSignature(int)));
 
     undoManager->addNewUndoStack();
 
@@ -1632,10 +1633,21 @@ void PowerTabEditor::editKeySignature(int position)
     }
 }
 
-void PowerTabEditor::editTimeSignature()
+void PowerTabEditor::editTimeSignature(int position)
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
-    const TimeSignature& currentTimeSig = caret->getCurrentBarline()->GetTimeSignature();
+    shared_ptr<Barline> barline;
+
+    if (position == -1)
+    {
+        barline = caret->getCurrentBarline();
+    }
+    else
+    {
+        barline = caret->getCurrentSystem()->GetBarlineAtPosition(position);
+    }
+
+    const TimeSignature& currentTimeSig = barline->GetTimeSignature();
 
     TimeSignatureDialog dialog(currentTimeSig);
 

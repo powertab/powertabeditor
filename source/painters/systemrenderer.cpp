@@ -232,7 +232,9 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
 
         if (timeSig.IsShown())
         {
-            TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig);
+            TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig,
+                                                                            currentBarline->GetPosition());
+            timeSignaturePainters.push_back(timeSigPainter);
             timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
             timeSigPainter->setParentItem(parentStaff);
         }
@@ -1311,6 +1313,12 @@ void SystemRenderer::connectSignals(ScoreArea *scoreArea)
     {
         QObject::connect(keySignaturePainters[i], SIGNAL(clicked(int)),
                          scoreArea, SIGNAL(keySignatureClicked(int)));
+    }
+
+    for (size_t i = 0; i < timeSignaturePainters.size(); i++)
+    {
+        QObject::connect(timeSignaturePainters[i], SIGNAL(clicked(int)),
+                         scoreArea, SIGNAL(timeSignatureClicked(int)));
     }
 }
 

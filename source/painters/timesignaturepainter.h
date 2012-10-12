@@ -20,16 +20,22 @@
 
 #include "painterbase.h"
 #include "staffdata.h"
+#include <boost/cstdint.hpp>
 
 class StaffData;
 class TimeSignature;
 
-class TimeSignaturePainter : public PainterBase
+class TimeSignaturePainter : public QObject, public PainterBase
 {
+    Q_OBJECT
 public:
-    TimeSignaturePainter(const StaffData& staffInformation, const TimeSignature& signature);
+    TimeSignaturePainter(const StaffData& staffInformation,
+                         const TimeSignature& signature, uint32_t position);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+signals:
+    void clicked(int);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -41,6 +47,7 @@ protected:
 
     StaffData staffInfo;
     const TimeSignature& timeSignature;
+    const uint32_t position;
 };
 
 #endif // TIMESIGNATUREPAINTER_H

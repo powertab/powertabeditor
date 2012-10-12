@@ -130,7 +130,7 @@ private slots:
     void editBarline(int position = -1);
     void editTappedHarmonic();
     void editKeySignature(int position = -1);
-    void editTimeSignature();
+    void editTimeSignature(int position = -1);
     void editDynamic();
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
