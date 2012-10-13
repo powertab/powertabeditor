@@ -48,6 +48,7 @@ struct FileFormat;
 class Command;
 class RecentFiles;
 class Caret;
+class PlaybackWidget;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -61,8 +62,6 @@ public:
     ~PowerTabEditor();
     static boost::scoped_ptr<UndoManager> undoManager;
     static ScoreArea* getCurrentScoreArea();
-    static std::vector<Position*> getSelectedPositions();
-    static std::vector<Note*> getSelectedNotes();
     void registerCaret(Caret* caret);
 
 protected:
@@ -87,6 +86,10 @@ private:
     void editRest(uint8_t duration);
 
     void importFile(const FileFormat& format);
+
+    static std::vector<Position*> getSelectedPositions();
+    static std::vector<Note*> getSelectedNotes();
+    PlaybackWidget* getCurrentPlaybackWidget() const;
 
 private slots:
     void updateActions();

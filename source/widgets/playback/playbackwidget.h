@@ -32,9 +32,11 @@ public:
     ~PlaybackWidget();
 
     int playbackSpeed() const;
+    void setPlaybackMode(bool isPlaying);
 
 signals:
     void playbackSpeedChanged(int speed);
+    void playbackButtonToggled();
 
 private:
     Ui::PlaybackWidget *ui;

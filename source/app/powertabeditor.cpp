@@ -1119,7 +1119,10 @@ void PowerTabEditor::setupNewDocument()
     scrollArea->setWidget(mixer);
     mixerList->addWidget(scrollArea);
 
-    playbackToolbarList->addWidget(new PlaybackWidget);
+    PlaybackWidget* playback = new PlaybackWidget();
+    connect(playback, SIGNAL(playbackButtonToggled()),
+            this, SLOT(startStopPlayback()));
+    playbackToolbarList->addWidget(playback);
     
     connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
 
@@ -1326,6 +1329,11 @@ void PowerTabEditor::cycleTab(int offset)
     tabWidget->setCurrentIndex(newIndex);
 }
 
+PlaybackWidget* PowerTabEditor::getCurrentPlaybackWidget() const
+{
+    return dynamic_cast<PlaybackWidget*>(playbackToolbarList->currentWidget());
+}
+
 /// Returns the current playback speed
 int PowerTabEditor::getCurrentPlaybackSpeed() const
 {
@@ -1334,8 +1342,7 @@ int PowerTabEditor::getCurrentPlaybackSpeed() const
         return 0;
     }
 
-    PlaybackWidget* currentPlaybackWidget = dynamic_cast<PlaybackWidget*>(playbackToolbarList->currentWidget());
-    return currentPlaybackWidget->playbackSpeed();
+    return getCurrentPlaybackWidget()->playbackSpeed();
 }
 
 void PowerTabEditor::startStopPlayback()
@@ -1347,6 +1354,7 @@ void PowerTabEditor::startStopPlayback()
         playPauseAct->setText(tr("Pause"));
 
         getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
+        getCurrentPlaybackWidget()->setPlaybackMode(true);
 
         midiPlayer.reset(new MidiPlayer(getCurrentScoreArea()->getCaret(), getCurrentPlaybackSpeed()));
         connect(midiPlayer.get(), SIGNAL(playbackSystemChanged(quint32)), this, SLOT(moveCaretToSystem(quint32)));
@@ -1367,6 +1375,7 @@ void PowerTabEditor::startStopPlayback()
 
         playPauseAct->setText(tr("Play"));
         getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
+        getCurrentPlaybackWidget()->setPlaybackMode(false);
     }
 }
 

@@ -29,8 +29,16 @@ PlaybackWidget::PlaybackWidget(QWidget* parent) :
     ui->speedSpinner->setSuffix("%");
     ui->speedSpinner->setValue(100);
 
+    ui->rewindToStartButton->setIcon(style()->standardIcon(
+                                         QStyle::SP_MediaSkipBackward));
+    ui->playPauseButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    ui->metronomeToggleButton->setIcon(style()->standardIcon(
+                                           QStyle::SP_MediaVolumeMuted));
+
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)),
             this, SIGNAL(playbackSpeedChanged(int)));
+    connect(ui->playPauseButton, SIGNAL(clicked()), this,
+            SIGNAL(playbackButtonToggled()));
 }
 
 PlaybackWidget::~PlaybackWidget()
@@ -41,4 +49,19 @@ PlaybackWidget::~PlaybackWidget()
 int PlaybackWidget::playbackSpeed() const
 {
     return ui->speedSpinner->value();
+}
+
+/// Toggles the play/pause button.
+void PlaybackWidget::setPlaybackMode(bool isPlaying)
+{
+    if (isPlaying)
+    {
+        ui->playPauseButton->setIcon(style()->standardIcon(
+                                         QStyle::SP_MediaPause));
+    }
+    else
+    {
+        ui->playPauseButton->setIcon(style()->standardIcon(
+                                         QStyle::SP_MediaPlay));
+    }
 }
