@@ -27,6 +27,7 @@ class PowerTabDocument;
 class PowerTabEditor;
 class Caret;
 class Score;
+class SystemLocationPubSub;
 
 /// The visual display of the score
 class ScoreArea : public QGraphicsView
@@ -45,6 +46,8 @@ public:
         return caret;
     }
 
+    boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
+
 private:
     void renderScore(const Score* score, int lineSpacing);
 
@@ -53,11 +56,12 @@ private:
     Caret* caret;
     QList<QGraphicsItem*> systemList;
 
+    boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
+
     bool redrawOnNextRefresh;
 
 signals:
     void barlineClicked(int position);
-    void keySignatureClicked(int position);
     void timeSignatureClicked(int position);
 
 public slots:

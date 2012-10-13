@@ -18,6 +18,7 @@
 #include "keysignaturepainter.h"
 
 #include "staffdata.h"
+#include <app/pubsub/systemlocationpubsub.h>
 #include <powertabdocument/keysignature.h>
 #include <painters/musicfont.h>
 
@@ -29,10 +30,12 @@ QFont KeySignaturePainter::musicFont = MusicFont().getFont();
 
 KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation,
                                          const KeySignature& signature,
-                                         uint32_t position) :
+                                         const SystemLocation& location,
+                                         boost::shared_ptr<SystemLocationPubSub> pubsub) :
     staffInfo(staffInformation),
     keySignature(signature),
-    position(position)
+    location(location),
+    pubsub(pubsub)
 {
     initAccidentalPositions();
     init();
@@ -49,7 +52,7 @@ void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 
 void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    emit clicked(position);
+    pubsub->publish(location);
 }
 
 void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)

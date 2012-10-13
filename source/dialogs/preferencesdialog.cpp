@@ -22,6 +22,7 @@
 
 #include <audio/rtmidiwrapper.h>
 #include <app/settings.h>
+#include <app/pubsub/settingspubsub.h>
 #include <app/skinmanager.h>
 
 typedef std::pair<int, int> MidiApiAndPort;

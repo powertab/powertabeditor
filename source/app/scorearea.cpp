@@ -21,6 +21,8 @@
 #include <QProgressDialog>
 
 #include <app/powertabeditor.h>
+#include <app/pubsub/systemlocationpubsub.h>
+
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
@@ -29,10 +31,12 @@
 #include <painters/systemrenderer.h>
 
 #include <boost/timer.hpp>
+#include <boost/make_shared.hpp>
 
 ScoreArea::ScoreArea(PowerTabEditor *editor) :
     editor(editor),
-    caret(NULL)
+    caret(NULL),
+    keySignatureClicked(boost::make_shared<SystemLocationPubSub>())
 {
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
@@ -80,9 +84,10 @@ void ScoreArea::updateSystem(const uint32_t systemIndex)
         // redraw the system
         const Score* currentScore = document->GetGuitarScore();
         
-        SystemRenderer renderer(currentScore, document->GetTablatureStaffLineSpacing());
+        SystemRenderer renderer(this, currentScore,
+                                document->GetTablatureStaffLineSpacing());
         QGraphicsItem* newSystem = renderer(currentScore->GetSystem(systemIndex));
-        renderer.connectSignals(this);
+        renderer.connectSignals();
         
         scene.addItem(newSystem);
         systemList.insert(systemIndex, newSystem);
@@ -97,6 +102,11 @@ void ScoreArea::updateSystem(const uint32_t systemIndex)
 
         caret->updatePosition();
     }
+}
+
+boost::shared_ptr<SystemLocationPubSub> ScoreArea::keySignaturePubSub() const
+{
+    return keySignatureClicked;
 }
 
 /// Used to request that a full redraw is performed when the ScoreArea is next updated
@@ -119,10 +129,10 @@ void ScoreArea::renderScore(const Score* score, int lineSpacing)
     for (uint32_t i=0; i < score->GetSystemCount(); i++)
     {
         progressDialog.setValue(i);
-        SystemRenderer renderer(score, lineSpacing);
+        SystemRenderer renderer(this, score, lineSpacing);
         systemList << renderer(score->GetSystem(i));
         scene.addItem(systemList.back());
-        renderer.connectSignals(this);
+        renderer.connectSignals();
     }
     
     progressDialog.setValue(score->GetSystemCount());

@@ -21,21 +21,21 @@
 #include "painterbase.h"
 #include <QVector>
 #include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
+#include <powertabdocument/systemlocation.h>
 
 class StaffData;
+class SystemLocationPubSub;
 class KeySignature;
 
-class KeySignaturePainter : public QObject, public PainterBase
+class KeySignaturePainter : public PainterBase
 {
-    Q_OBJECT
 public:
     KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature,
-                        uint32_t position);
+                        const SystemLocation& location,
+                        boost::shared_ptr<SystemLocationPubSub> pubsub);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
-signals:
-    void clicked(int);
 
 private:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -43,15 +43,18 @@ private:
 
     const StaffData& staffInfo;
     const KeySignature& keySignature;
-    const uint32_t position;
+    const SystemLocation location;
+    boost::shared_ptr<SystemLocationPubSub> pubsub;
+
     static QFont musicFont;
+
+    QVector<double> flatPositions;
+    QVector<double> sharpPositions;
+
     void adjustHeightOffset(QVector<double>& lst);
     void drawAccidentals(QVector<double>& positions, QChar accidental, QPainter* painter);
     void initAccidentalPositions();
     void init();
-
-    QVector<double> flatPositions;
-    QVector<double> sharpPositions;
 };
 
 #endif // KEYSIGNATUREPAINTER_H

@@ -48,6 +48,8 @@
 #include <app/command.h>
 #include <app/clipboard.h>
 #include <app/recentfiles.h>
+#include <app/pubsub/settingspubsub.h>
+#include <app/pubsub/systemlocationpubsub.h>
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
@@ -628,7 +630,8 @@ void PowerTabEditor::createActions()
 
     keySignatureAct = new Command(tr("Edit Key Signature..."), "MusicSymbols.EditKeySignature",
                                   Qt::Key_K, this);
-    connect(keySignatureAct, SIGNAL(triggered()), this, SLOT(editKeySignature()));
+    connect(keySignatureAct, SIGNAL(triggered()), this,
+            SLOT(editKeySignatureFromCaret()));
 
     timeSignatureAct = new Command(tr("Edit Time Signature..."), "MusicSymbols.EditTimeSignature",
                                    Qt::Key_T, this);
@@ -1081,8 +1084,9 @@ void PowerTabEditor::setupNewDocument()
     score->renderDocument(doc);
 
     connect(score, SIGNAL(barlineClicked(int)), this, SLOT(editBarline(int)));
-    connect(score, SIGNAL(keySignatureClicked(int)), this, SLOT(editKeySignature(int)));
     connect(score, SIGNAL(timeSignatureClicked(int)), this, SLOT(editTimeSignature(int)));
+    score->keySignaturePubSub()->subscribe(
+                boost::bind(&PowerTabEditor::editKeySignature, this, _1));
 
     undoManager->addNewUndoStack();
 
@@ -1611,19 +1615,26 @@ void PowerTabEditor::addGuitar()
     undoManager->push(addGuitar);
 }
 
-void PowerTabEditor::editKeySignature(int position)
+/// Edit the key signature at the caret's current location.
+void PowerTabEditor::editKeySignatureFromCaret()
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
+    const SystemLocation caretLocation(caret->getCurrentSystemIndex(),
+                                       caret->getCurrentPositionIndex());
+    editKeySignature(caretLocation);
+}
+
+/// Edit the key signature at the specified location.
+void PowerTabEditor::editKeySignature(const SystemLocation& location)
+{
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* score = caret->getCurrentScore();
     shared_ptr<Barline> barline;
 
-    if (position == -1)
-    {
-        barline = caret->getCurrentBarline();
-    }
-    else
-    {
-        barline = caret->getCurrentSystem()->GetBarlineAtPosition(position);
-    }
+    barline = score->GetSystem(location.getSystemIndex())->GetBarlineAtPosition(
+                location.getPositionIndex());
+
+    Q_ASSERT(barline);
 
     const KeySignature& keySignature = barline->GetKeySignature();
 
@@ -1632,10 +1643,9 @@ void PowerTabEditor::editKeySignature(int position)
     {
         const KeySignature newKey = dialog.getNewKey();
 
-        EditKeySignature* action = new EditKeySignature(caret->getCurrentScore(),
-                                                        SystemLocation(caret->getCurrentSystemIndex(),
-                                                                       caret->getCurrentPositionIndex()),
-                                                        newKey.GetKeyType(), newKey.GetKeyAccidentals(),
+        EditKeySignature* action = new EditKeySignature(score, location,
+                                                        newKey.GetKeyType(),
+                                                        newKey.GetKeyAccidentals(),
                                                         newKey.IsShown());
 
         connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));

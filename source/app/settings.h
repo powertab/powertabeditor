@@ -18,14 +18,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <app/pubsub.h>
-
-/// Provides a way to subscribe to or publish notifications about settings
-/// that have changed.
-class SettingsPubSub : public PubSub<void (const std::string&)>
-{
-};
-
 /// Contains constants for keys used with the QSettings class,
 /// as well as default values for those settings where appropriate
 namespace Settings

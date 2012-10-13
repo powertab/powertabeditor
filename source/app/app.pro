@@ -19,4 +19,6 @@ HEADERS += common.h \
     command.h \
     clipboard.h \
     recentfiles.h \
-    pubsub.h
+    pubsub/pubsub.h \
+    pubsub/systemlocationpubsub.h \
+    pubsub/settingspubsub.h

@@ -66,8 +66,9 @@ QFont SystemRenderer::symbolTextFont("Liberation Sans");
 QFont SystemRenderer::rehearsalSignFont("Helvetica");
 QFont SystemRenderer::musicNotationFont = MusicFont().getFont();
 
-SystemRenderer::SystemRenderer(const Score* score, const int lineSpacing) :
-    score(score), lineSpacing(lineSpacing),
+SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score* score,
+                               const int lineSpacing) :
+    scoreArea(scoreArea), score(score), lineSpacing(lineSpacing),
     parentSystem(NULL)
 {
     plainTextFont.setPixelSize(10);
@@ -175,6 +176,8 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
 
+    const uint32_t systemIndex = score->FindSystemIndex(system);
+
     for (size_t i = 0; i < barlines.size(); i++)
     {
         const System::BarlineConstPtr& currentBarline = barlines[i];
@@ -222,9 +225,10 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
 
         if (keySig.IsShown())
         {
-            KeySignaturePainter* keySigPainter = new KeySignaturePainter(currentStaffInfo, keySig,
-                                                                         currentBarline->GetPosition());
-            keySignaturePainters.push_back(keySigPainter);
+            KeySignaturePainter* keySigPainter = new KeySignaturePainter(
+                        currentStaffInfo, keySig,
+                        SystemLocation(systemIndex, currentBarline->GetPosition()),
+                        scoreArea->keySignaturePubSub());
 
             keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
             keySigPainter->setParentItem(parentStaff);
@@ -1295,7 +1299,7 @@ void SystemRenderer::drawLedgerLines(const std::vector<int> &noteLocations,
     centerItem(ledgerlines, xLocation, xLocation + staffData.positionWidth, 0);
 }
 
-void SystemRenderer::connectSignals(ScoreArea *scoreArea)
+void SystemRenderer::connectSignals()
 {
     for (size_t i = 0; i < staffPainters.size(); i++)
     {
@@ -1307,12 +1311,6 @@ void SystemRenderer::connectSignals(ScoreArea *scoreArea)
     {
         QObject::connect(barlinePainters[i], SIGNAL(clicked(int)),
                          scoreArea, SIGNAL(barlineClicked(int)));
-    }
-
-    for (size_t i = 0; i < keySignaturePainters.size(); i++)
-    {
-        QObject::connect(keySignaturePainters[i], SIGNAL(clicked(int)),
-                         scoreArea, SIGNAL(keySignatureClicked(int)));
     }
 
     for (size_t i = 0; i < timeSignaturePainters.size(); i++)

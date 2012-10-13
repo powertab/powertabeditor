@@ -50,6 +50,7 @@ class RecentFiles;
 class Caret;
 class PlaybackWidget;
 class SettingsPubSub;
+class SystemLocation;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -85,6 +86,7 @@ private:
     void shiftTabNumber(int direction);
     void updateNoteDuration(uint8_t duration);
     void editRest(uint8_t duration);
+    void editKeySignature(const SystemLocation &location);
 
     void importFile(const FileFormat& format);
 
@@ -133,7 +135,7 @@ private slots:
     void editTrill();
     void editBarline(int position = -1);
     void editTappedHarmonic();
-    void editKeySignature(int position = -1);
+    void editKeySignatureFromCaret();
     void editTimeSignature(int position = -1);
     void editDynamic();
     void editVolumeSwell();

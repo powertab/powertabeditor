@@ -20,6 +20,7 @@
 
 #include <QSettings>
 #include <app/settings.h>
+#include <app/pubsub/settingspubsub.h>
 
 PlaybackWidget::PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
                                QWidget* parent) :

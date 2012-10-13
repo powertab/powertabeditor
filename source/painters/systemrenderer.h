@@ -44,12 +44,14 @@ class TimeSignaturePainter;
 class SystemRenderer
 {
 public:
-    SystemRenderer(const Score* score, const int lineSpacing);
+    SystemRenderer(const ScoreArea* scoreArea,
+                   const Score* score, const int lineSpacing);
     
     QGraphicsItem* operator()(boost::shared_ptr<const System> system);
-    void connectSignals(ScoreArea* scoreArea);
+    void connectSignals();
 
 private:
+    const ScoreArea* scoreArea;
     const Score* score;
     const int lineSpacing;
     boost::shared_ptr<const System> system;
@@ -65,7 +67,6 @@ private:
     // store these items so that their signals can be connected back to the ScoreArea later
     std::vector<StaffPainter*> staffPainters;
     std::vector<BarlinePainter*> barlinePainters;
-    std::vector<KeySignaturePainter*> keySignaturePainters;
     std::vector<TimeSignaturePainter*> timeSignaturePainters;
 
     enum VolumeSwellType
