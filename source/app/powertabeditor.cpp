@@ -511,7 +511,7 @@ void PowerTabEditor::createActions()
     connectToggleProperty<Note>(noteMutedAct, &getSelectedNotes,
                                 &Note::IsMuted, &Note::SetMuted);
 
-    ghostNoteAct = new Command(tr("Ghost Note"), "Note.GhostNote", Qt::Key_N, this);
+    ghostNoteAct = new Command(tr("Ghost Note"), "Note.GhostNote", Qt::Key_G, this);
     ghostNoteAct->setCheckable(true);
     connectToggleProperty<Note>(ghostNoteAct, &getSelectedNotes,
                                 &Note::IsGhostNote, &Note::SetGhostNote);
