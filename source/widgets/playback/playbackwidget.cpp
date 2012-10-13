@@ -48,6 +48,8 @@ PlaybackWidget::PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
             SIGNAL(playbackButtonToggled()));
     connect(ui->metronomeToggleButton, SIGNAL(toggled(bool)),
             this, SLOT(onMetronomeButtonToggled(bool)));
+    connect(ui->rewindToStartButton, SIGNAL(clicked()),
+            this, SIGNAL(rewindToStartClicked()));
 
     connection = pubsub->subscribe(
                 boost::bind(&PlaybackWidget::onSettingChanged, this, _1));

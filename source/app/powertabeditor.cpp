@@ -1130,6 +1130,8 @@ void PowerTabEditor::setupNewDocument()
     PlaybackWidget* playback = new PlaybackWidget(settingsPubSub);
     connect(playback, SIGNAL(playbackButtonToggled()),
             this, SLOT(startStopPlayback()));
+    connect(playback, SIGNAL(rewindToStartClicked()),
+            this, SLOT(rewindPlaybackToStart()));
     playbackToolbarList->addWidget(playback);
     
     connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
@@ -1384,6 +1386,23 @@ void PowerTabEditor::startStopPlayback()
         playPauseAct->setText(tr("Play"));
         getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
         getCurrentPlaybackWidget()->setPlaybackMode(false);
+    }
+}
+
+/// Move the caret back to the start, and restart playback if necessary.
+void PowerTabEditor::rewindPlaybackToStart()
+{
+    const bool wasPlaying = isPlaying;
+    if (wasPlaying)
+    {
+        startStopPlayback();
+    }
+
+    getCurrentScoreArea()->getCaret()->moveCaretToFirstSection();
+
+    if (wasPlaying)
+    {
+        startStopPlayback();
     }
 }
 

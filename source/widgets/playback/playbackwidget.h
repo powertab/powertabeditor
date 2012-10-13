@@ -42,6 +42,7 @@ public:
 signals:
     void playbackSpeedChanged(int speed);
     void playbackButtonToggled();
+    void rewindToStartClicked();
 
 private slots:
     void onMetronomeButtonToggled(bool enable);

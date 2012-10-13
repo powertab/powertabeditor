@@ -108,6 +108,7 @@ private slots:
     bool closeTab(int index);
     void switchTab(int index);
     void startStopPlayback();
+    void rewindPlaybackToStart();
     bool moveCaretRight();
     bool moveCaretLeft();
     void moveCaretDown();
