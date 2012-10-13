@@ -18,6 +18,7 @@
 #include "editrest.h"
 
 #include <powertabdocument/position.h>
+#include <powertabdocument/note.h>
 
 EditRest::EditRest(Position* position, uint8_t duration) :
     position(position),
