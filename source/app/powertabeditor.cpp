@@ -635,7 +635,8 @@ void PowerTabEditor::createActions()
 
     timeSignatureAct = new Command(tr("Edit Time Signature..."), "MusicSymbols.EditTimeSignature",
                                    Qt::Key_T, this);
-    connect(timeSignatureAct, SIGNAL(triggered()), this, SLOT(editTimeSignature()));
+    connect(timeSignatureAct, SIGNAL(triggered()), this,
+            SLOT(editTimeSignatureFromCaret()));
 
     barlineAct = new Command(tr("Barline..."), "MusicSymbols.EditBarline", Qt::Key_B, this);
     barlineAct->setCheckable(true);
@@ -1084,7 +1085,9 @@ void PowerTabEditor::setupNewDocument()
     score->renderDocument(doc);
 
     connect(score, SIGNAL(barlineClicked(int)), this, SLOT(editBarline(int)));
-    connect(score, SIGNAL(timeSignatureClicked(int)), this, SLOT(editTimeSignature(int)));
+
+    score->timeSignaturePubSub()->subscribe(
+                boost::bind(&PowerTabEditor::editTimeSignature, this, _1));
     score->keySignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editKeySignature, this, _1));
 
@@ -1629,11 +1632,8 @@ void PowerTabEditor::editKeySignature(const SystemLocation& location)
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
     Score* score = caret->getCurrentScore();
-    shared_ptr<Barline> barline;
-
-    barline = score->GetSystem(location.getSystemIndex())->GetBarlineAtPosition(
-                location.getPositionIndex());
-
+    shared_ptr<Barline> barline = score->GetSystem(location.getSystemIndex())->
+            GetBarlineAtPosition(location.getPositionIndex());
     Q_ASSERT(barline);
 
     const KeySignature& keySignature = barline->GetKeySignature();
@@ -1653,19 +1653,23 @@ void PowerTabEditor::editKeySignature(const SystemLocation& location)
     }
 }
 
-void PowerTabEditor::editTimeSignature(int position)
+/// Edit the time signature at the caret's current location.
+void PowerTabEditor::editTimeSignatureFromCaret()
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
-    shared_ptr<Barline> barline;
+    const SystemLocation caretLocation(caret->getCurrentSystemIndex(),
+                                       caret->getCurrentPositionIndex());
+    editTimeSignature(caretLocation);
+}
 
-    if (position == -1)
-    {
-        barline = caret->getCurrentBarline();
-    }
-    else
-    {
-        barline = caret->getCurrentSystem()->GetBarlineAtPosition(position);
-    }
+/// Edit the time signature at the specified location.
+void PowerTabEditor::editTimeSignature(const SystemLocation& location)
+{
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* score = caret->getCurrentScore();
+    shared_ptr<Barline> barline = score->GetSystem(location.getSystemIndex())->
+            GetBarlineAtPosition(location.getPositionIndex());
+    Q_ASSERT(barline);
 
     const TimeSignature& currentTimeSig = barline->GetTimeSignature();
 
@@ -1673,9 +1677,7 @@ void PowerTabEditor::editTimeSignature(int position)
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        EditTimeSignature* action = new EditTimeSignature(caret->getCurrentScore(),
-                                                          SystemLocation(caret->getCurrentSystemIndex(),
-                                                                         caret->getCurrentPositionIndex()),
+        EditTimeSignature* action = new EditTimeSignature(score, location,
                                                           dialog.getNewTimeSignature());
 
         connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));

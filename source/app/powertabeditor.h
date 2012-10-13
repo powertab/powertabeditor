@@ -87,6 +87,7 @@ private:
     void updateNoteDuration(uint8_t duration);
     void editRest(uint8_t duration);
     void editKeySignature(const SystemLocation &location);
+    void editTimeSignature(const SystemLocation &location);
 
     void importFile(const FileFormat& format);
 
@@ -136,7 +137,7 @@ private slots:
     void editBarline(int position = -1);
     void editTappedHarmonic();
     void editKeySignatureFromCaret();
-    void editTimeSignature(int position = -1);
+    void editTimeSignatureFromCaret();
     void editDynamic();
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);

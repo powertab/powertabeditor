@@ -21,21 +21,22 @@
 #include "painterbase.h"
 #include "staffdata.h"
 #include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
+#include <powertabdocument/systemlocation.h>
 
 class StaffData;
 class TimeSignature;
+class SystemLocationPubSub;
 
-class TimeSignaturePainter : public QObject, public PainterBase
+class TimeSignaturePainter : public PainterBase
 {
-    Q_OBJECT
 public:
     TimeSignaturePainter(const StaffData& staffInformation,
-                         const TimeSignature& signature, uint32_t position);
+                         const TimeSignature& signature,
+                         const SystemLocation& location,
+                         boost::shared_ptr<SystemLocationPubSub> pubsub);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
-signals:
-    void clicked(int);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -47,7 +48,8 @@ protected:
 
     StaffData staffInfo;
     const TimeSignature& timeSignature;
-    const uint32_t position;
+    const SystemLocation location;
+    boost::shared_ptr<SystemLocationPubSub> pubsub;
 };
 
 #endif // TIMESIGNATUREPAINTER_H

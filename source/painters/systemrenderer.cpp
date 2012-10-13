@@ -223,11 +223,12 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
         barlinePainter->setPos(x, 0);
         barlinePainter->setParentItem(parentStaff);
 
+        const SystemLocation location(systemIndex, currentBarline->GetPosition());
+
         if (keySig.IsShown())
         {
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(
-                        currentStaffInfo, keySig,
-                        SystemLocation(systemIndex, currentBarline->GetPosition()),
+                        currentStaffInfo, keySig, location,
                         scoreArea->keySignaturePubSub());
 
             keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
@@ -236,9 +237,10 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
 
         if (timeSig.IsShown())
         {
-            TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(currentStaffInfo, timeSig,
-                                                                            currentBarline->GetPosition());
-            timeSignaturePainters.push_back(timeSigPainter);
+            TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(
+                        currentStaffInfo, timeSig, location,
+                        scoreArea->timeSignaturePubSub());
+
             timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
             timeSigPainter->setParentItem(parentStaff);
         }
@@ -1311,12 +1313,6 @@ void SystemRenderer::connectSignals()
     {
         QObject::connect(barlinePainters[i], SIGNAL(clicked(int)),
                          scoreArea, SIGNAL(barlineClicked(int)));
-    }
-
-    for (size_t i = 0; i < timeSignaturePainters.size(); i++)
-    {
-        QObject::connect(timeSignaturePainters[i], SIGNAL(clicked(int)),
-                         scoreArea, SIGNAL(timeSignatureClicked(int)));
     }
 }
 

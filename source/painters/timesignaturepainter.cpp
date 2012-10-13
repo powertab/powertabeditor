@@ -17,6 +17,7 @@
   
 #include "timesignaturepainter.h"
 
+#include <app/pubsub/systemlocationpubsub.h>
 #include <powertabdocument/timesignature.h>
 #include <powertabdocument/staff.h>
 #include <painters/musicfont.h>
@@ -27,10 +28,12 @@
 
 TimeSignaturePainter::TimeSignaturePainter(const StaffData& staffInformation,
                                            const TimeSignature& signature,
-                                           uint32_t position) :
+                                           const SystemLocation &location,
+                                           boost::shared_ptr<SystemLocationPubSub> pubsub) :
     staffInfo(staffInformation),
     timeSignature(signature),
-    position(position)
+    location(location),
+    pubsub(pubsub)
 {
     init();
 }
@@ -46,7 +49,7 @@ void TimeSignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 
 void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    emit clicked(position);
+    pubsub->publish(location);
 }
 
 void TimeSignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)

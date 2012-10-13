@@ -47,6 +47,7 @@ public:
     }
 
     boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
+    boost::shared_ptr<SystemLocationPubSub> timeSignaturePubSub() const;
 
 private:
     void renderScore(const Score* score, int lineSpacing);
@@ -57,12 +58,12 @@ private:
     QList<QGraphicsItem*> systemList;
 
     boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
+    boost::shared_ptr<SystemLocationPubSub> timeSignatureClicked;
 
     bool redrawOnNextRefresh;
 
 signals:
     void barlineClicked(int position);
-    void timeSignatureClicked(int position);
 
 public slots:
     void adjustScroll();
