@@ -29,7 +29,7 @@ AddNote::AddNote(uint8_t stringNum, uint8_t fretNumber,
     staff(staff),
     note(new Note(stringNum, fretNumber)),
     position(staff->GetPositionByPosition(voice, positionIndex)),
-    wasRest(position->IsRest()),
+    wasRest(position && position->IsRest()),
     newPositionAdded(false), undone(false)
 {
     setText(QObject::tr("Add Note"));
