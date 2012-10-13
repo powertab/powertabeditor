@@ -40,7 +40,7 @@ struct Gp4Fixture
 {
     Gp4Fixture()
     {
-        BOOST_CHECK_NO_THROW(importer.load(FILE_TEST1));
+        BOOST_REQUIRE_NO_THROW(importer.load(FILE_TEST1));
         doc = importer.load(FILE_TEST1);
         score = doc->GetGuitarScore();
     }

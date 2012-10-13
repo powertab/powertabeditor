@@ -12,7 +12,7 @@ PRECOMPILED_HEADER = test_pch.h
 unix:!macx:LIBS += -lboost_unit_test_framework
 
 # replace with the path to your boost installation
-win32:LIBS += -L'C:/Program Files (x86)/boost/boost_1_47/lib' -lboost_unit_test_framework
+win32:LIBS += -L'C:/Program Files/boost/boost_1_51/lib' -lboost_unit_test_framework
 
 macx:LIBS += -L/opt/local/lib -lboost_unit_test_framework-mt\
              -framework CoreMidi -framework CoreAudio -framework CoreFoundation\
