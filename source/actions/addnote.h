@@ -44,6 +44,7 @@ private:
     Note* note;
     Position* position;
 
+    const bool wasRest; ///< Whether the position was originally a rest.
     bool newPositionAdded;
     bool undone;
 };

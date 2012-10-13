@@ -29,6 +29,7 @@ AddNote::AddNote(uint8_t stringNum, uint8_t fretNumber,
     staff(staff),
     note(new Note(stringNum, fretNumber)),
     position(staff->GetPositionByPosition(voice, positionIndex)),
+    wasRest(position->IsRest()),
     newPositionAdded(false), undone(false)
 {
     setText(QObject::tr("Add Note"));
@@ -54,6 +55,7 @@ void AddNote::redo()
         staff->InsertPosition(voice, position);
     }
 
+    position->SetRest(false);
     position->InsertNote(note);
     undone = false;
 }
@@ -62,6 +64,7 @@ void AddNote::undo()
 {
     undone = true;
     position->RemoveNote(stringNum);
+    position->SetRest(wasRest);
 
     if (newPositionAdded)
     {
