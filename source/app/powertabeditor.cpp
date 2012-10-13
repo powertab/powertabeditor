@@ -135,7 +135,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     documentManager(new DocumentManager),
     fileFormatManager(new FileFormatManager),
     mixerList(new QStackedWidget),
-    playbackToolbarList(new QStackedWidget)
+    playbackToolbarList(new QStackedWidget),
+    settingsPubSub(new SettingsPubSub())
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
@@ -1119,7 +1120,7 @@ void PowerTabEditor::setupNewDocument()
     scrollArea->setWidget(mixer);
     mixerList->addWidget(scrollArea);
 
-    PlaybackWidget* playback = new PlaybackWidget();
+    PlaybackWidget* playback = new PlaybackWidget(settingsPubSub);
     connect(playback, SIGNAL(playbackButtonToggled()),
             this, SLOT(startStopPlayback()));
     playbackToolbarList->addWidget(playback);
@@ -1179,7 +1180,7 @@ bool PowerTabEditor::saveFileAs()
 // Opens the preferences dialog
 void PowerTabEditor::openPreferences()
 {
-    PreferencesDialog().exec();
+    PreferencesDialog(settingsPubSub).exec();
     skinManager->reload();
 }
 

@@ -18,9 +18,13 @@
 #include "playbackwidget.h"
 #include "ui_playbackwidget.h"
 
-PlaybackWidget::PlaybackWidget(QWidget* parent) :
+#include <QSettings>
+#include <app/settings.h>
+
+PlaybackWidget::PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
+                               QWidget* parent) :
     QWidget(parent),
-    ui(new Ui::PlaybackWidget)
+    ui(new Ui::PlaybackWidget), pubsub(pubsub)
 {
     ui->setupUi(this);
 
@@ -35,15 +39,23 @@ PlaybackWidget::PlaybackWidget(QWidget* parent) :
     ui->metronomeToggleButton->setIcon(style()->standardIcon(
                                            QStyle::SP_MediaVolumeMuted));
 
+    updateMetronomeButton();
+
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)),
             this, SIGNAL(playbackSpeedChanged(int)));
     connect(ui->playPauseButton, SIGNAL(clicked()), this,
             SIGNAL(playbackButtonToggled()));
+    connect(ui->metronomeToggleButton, SIGNAL(toggled(bool)),
+            this, SLOT(onMetronomeButtonToggled(bool)));
+
+    connection = pubsub->subscribe(
+                boost::bind(&PlaybackWidget::onSettingChanged, this, _1));
 }
 
 PlaybackWidget::~PlaybackWidget()
 {
     delete ui;
+    connection.disconnect();
 }
 
 int PlaybackWidget::playbackSpeed() const
@@ -63,5 +75,30 @@ void PlaybackWidget::setPlaybackMode(bool isPlaying)
     {
         ui->playPauseButton->setIcon(style()->standardIcon(
                                          QStyle::SP_MediaPlay));
+    }
+}
+
+void PlaybackWidget::updateMetronomeButton()
+{
+    QSettings settings;
+    ui->metronomeToggleButton->setChecked(
+                settings.value(Settings::MIDI_METRONOME_ENABLED,
+                               Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
+}
+
+/// When the metronome button is toggled, update the setting.
+void PlaybackWidget::onMetronomeButtonToggled(bool enable)
+{
+    QSettings settings;
+    settings.setValue(Settings::MIDI_METRONOME_ENABLED, enable);
+    pubsub->publish(Settings::MIDI_METRONOME_ENABLED);
+}
+
+/// Listens for changes to the metronome setting.
+void PlaybackWidget::onSettingChanged(const std::string &setting)
+{
+    if (setting == Settings::MIDI_METRONOME_ENABLED)
+    {
+        updateMetronomeButton();
     }
 }

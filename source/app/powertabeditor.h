@@ -49,6 +49,7 @@ class Command;
 class RecentFiles;
 class Caret;
 class PlaybackWidget;
+class SettingsPubSub;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -322,6 +323,8 @@ private:
 
     boost::shared_ptr<SkinManager> skinManager;
     boost::scoped_ptr<MidiPlayer> midiPlayer;
+
+    boost::shared_ptr<SettingsPubSub> settingsPubSub;
 
 private:
     /// helper function for connecting an action to the performToggleProperty slot

@@ -19,21 +19,26 @@
 #define PREFERENCESDIALOG_H
 
 #include <QDialog>
+#include <boost/shared_ptr.hpp>
 
 namespace Ui {
     class PreferencesDialog;
 }
+
+class SettingsPubSub;
 
 /// Dialog to allow the user to modify general editor-wide settings
 class PreferencesDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit PreferencesDialog(QWidget *parent = 0);
+    explicit PreferencesDialog(boost::shared_ptr<SettingsPubSub> pubsub,
+                               QWidget *parent = 0);
     ~PreferencesDialog();
 
 private:
     Ui::PreferencesDialog* ui;
+    boost::shared_ptr<SettingsPubSub> pubsub;
 
     void loadCurrentSettings();
 

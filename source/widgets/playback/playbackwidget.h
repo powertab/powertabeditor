@@ -19,16 +19,21 @@
 #define PLAYBACKWIDGET_H
 
 #include <QWidget>
+#include <boost/shared_ptr.hpp>
+#include <boost/signals2/connection.hpp>
 
 namespace Ui {
 class PlaybackWidget;
 }
 
+class SettingsPubSub;
+
 class PlaybackWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PlaybackWidget(QWidget* parent = 0);
+    explicit PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
+                            QWidget* parent = 0);
     ~PlaybackWidget();
 
     int playbackSpeed() const;
@@ -38,8 +43,16 @@ signals:
     void playbackSpeedChanged(int speed);
     void playbackButtonToggled();
 
+private slots:
+    void onMetronomeButtonToggled(bool enable);
+
 private:
+    void updateMetronomeButton();
+    void onSettingChanged(const std::string& setting);
+
     Ui::PlaybackWidget *ui;
+    boost::shared_ptr<SettingsPubSub> pubsub;
+    boost::signals2::connection connection;
 };
 
 #endif // PLAYBACKWIDGET_H

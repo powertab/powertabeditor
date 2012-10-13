@@ -18,4 +18,5 @@ HEADERS += common.h \
     skinmanager.h \
     command.h \
     clipboard.h \
-    recentfiles.h
+    recentfiles.h \
+    pubsub.h

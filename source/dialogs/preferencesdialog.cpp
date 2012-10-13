@@ -22,14 +22,15 @@
 
 #include <audio/rtmidiwrapper.h>
 #include <app/settings.h>
-#include "app/skinmanager.h"
+#include <app/skinmanager.h>
 
 typedef std::pair<int, int> MidiApiAndPort;
 Q_DECLARE_METATYPE(MidiApiAndPort)
 
-PreferencesDialog::PreferencesDialog(QWidget *parent) :
+PreferencesDialog::PreferencesDialog(boost::shared_ptr<SettingsPubSub> pubsub,
+                                     QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::PreferencesDialog)
+    ui(new Ui::PreferencesDialog), pubsub(pubsub)
 {
     ui->setupUi(this);
 
@@ -118,6 +119,8 @@ void PreferencesDialog::accept()
                       ui->skinComboBox->currentText());
 
     settings.sync();
+
+    pubsub->publish(Settings::MIDI_METRONOME_ENABLED);
 
     done(Accepted);
 }
