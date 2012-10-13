@@ -987,6 +987,8 @@ void System::Init(const std::vector<uint8_t>& staffSizes,
 
     m_startBar->GetTimeSignature().SetShown(showTimeSignature);
 
+    m_endBar->SetPosition(GetPositionCount());
+
     CalculateHeight();
 }
 
