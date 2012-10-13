@@ -350,7 +350,7 @@ void PowerTabEditor::createActions()
     connect(shiftForwardAct, SIGNAL(triggered()), this, SLOT(shiftForward()));
 
     shiftBackwardAct = new Command(tr("Shift Backward"), "Position.ShiftBackward",
-                                   QKeySequence(), this);
+                                   QKeySequence(Qt::SHIFT + Qt::Key_Insert), this);
     connect(shiftBackwardAct, SIGNAL(triggered()), this, SLOT(shiftBackward()));
 
     // Position-related actions
