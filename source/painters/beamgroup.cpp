@@ -75,7 +75,7 @@ void BeamGroup::adjustStemHeights()
 
         for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
         {
-            stem->xPosition = stem->xPosition + staffInfo.getNoteHeadRightEdge() - 1;
+            stem->xPosition += stem->noteHeadRightEdge - 1;
             stem->stemTop = highestStem.stemTop - highestStem.stemSize();
         }
     }
@@ -86,13 +86,7 @@ void BeamGroup::adjustStemHeights()
 
         for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
         {
-            stem->xPosition = stem->xPosition + staffInfo.getNoteHeadRightEdge() - StdNotationPainter::getNoteHeadWidth();
-
-            if (stem->position->GetDurationType() == 2) // visual adjustment for half notes
-            {
-                stem->xPosition = stem->xPosition - 2;
-            }
-
+            stem->xPosition += stem->noteHeadRightEdge - stem->noteHeadWidth;
             stem->stemBottom = lowestStem.stemBottom + lowestStem.stemSize();
         }
     }
@@ -138,8 +132,8 @@ void BeamGroup::drawStems(QGraphicsItem* parent) const
     {
         const double connectorHeight = noteStems.front().stemEdge();
 
-        beamPath.moveTo(noteStems.front().xPosition + 1, connectorHeight);
-        beamPath.lineTo(noteStems.back().xPosition - 1, connectorHeight);
+        beamPath.moveTo(noteStems.front().xPosition + 0.5, connectorHeight);
+        beamPath.lineTo(noteStems.back().xPosition, connectorHeight);
     }
 
     drawExtraBeams(beamPath);
@@ -183,12 +177,12 @@ void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
 
                 if (hasFullBeaming)
                 {
-                    xStart = (stem - 1)->xPosition + 1;
+                    xStart = (stem - 1)->xPosition + 0.5;
                     xEnd = stem->xPosition - 1;
                 }
                 else if (hasFractionalLeft)
                 {
-                    xStart = stem->xPosition + 1;
+                    xStart = stem->xPosition + 0.5;
                     xEnd = xStart + FRACTIONAL_BEAM_WIDTH;
                 }
                 else if (hasFractionalRight)
@@ -237,12 +231,12 @@ QGraphicsItem* BeamGroup::createFermata(const NoteStem& noteStem) const
     // After positioning, offset the height due to the way that QGraphicsTextItem positions text
     if (noteStem.stemDirection == NoteStem::StemUp)
     {
-        y = std::min(noteStem.stemTop, staffInfo.getTopStdNotationLine());
+        y = std::min<double>(noteStem.stemTop, staffInfo.getTopStdNotationLine());
         y -= 33;
     }
     else
     {
-        y = std::max(noteStem.stemBottom, staffInfo.getBottomStdNotationLine());
+        y = std::max<double>(noteStem.stemBottom, staffInfo.getBottomStdNotationLine());
         y -= 25;
     }
 
@@ -265,12 +259,12 @@ QGraphicsItem* BeamGroup::createAccent(const NoteStem& noteStem) const
     // After positioning, offset the height due to the way that QGraphicsTextItem positions text
     if (noteStem.stemDirection == NoteStem::StemDown)
     {
-        y = std::min(noteStem.stemTop, staffInfo.getTopStdNotationLine());
+        y = std::min<double>(noteStem.stemTop, staffInfo.getTopStdNotationLine());
         y -= 38;
     }
     else
     {
-        y = std::max(noteStem.stemBottom, staffInfo.getBottomStdNotationLine());
+        y = std::max<double>(noteStem.stemBottom, staffInfo.getBottomStdNotationLine());
         y -= 20;
     }
 

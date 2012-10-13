@@ -51,8 +51,6 @@ public:
 
     int getStdNotationStaffSize() const;
 
-    double getNoteHeadRightEdge() const;
-
     void calculateHeight();
 
     int getTabStaffOffset() const;

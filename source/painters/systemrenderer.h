@@ -120,8 +120,10 @@ private:
     void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap);
     void drawMultiBarRest(boost::shared_ptr<const Barline> currentBarline,
                           const StaffData& currentStaffInfo, int measureCount);
-    void drawLedgerLines(const std::vector<int> &noteLocations, const double xLocation,
-                         const StaffData& staffData);
+
+    void drawLedgerLines(const std::vector<int> &noteLocations,
+                         const double xLocation, const StaffData& staffData,
+                         const double noteHeadWidth);
 };
 
 #endif // SYSTEMRENDERER_H

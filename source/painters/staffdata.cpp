@@ -106,9 +106,3 @@ int StaffData::getBottomStdNotationLine() const
 {
     return getStdNotationLineHeight(numOfStdNotationLines);
 }
-
-/// Gives the position of the right edge of a note head, relative to the start of a position
-double StaffData::getNoteHeadRightEdge() const
-{
-    return 0.75 * positionWidth;
-}

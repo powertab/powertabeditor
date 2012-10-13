@@ -32,10 +32,12 @@ class Staff;
 class StdNotationPainter : public QGraphicsItem
 {
 public:
-    StdNotationPainter(const StaffData& staffInfo, boost::shared_ptr<const Staff> staff, const Position* position, const Note* note,
+    StdNotationPainter(const StaffData& staffInfo,
+                       boost::shared_ptr<const Staff> staff,
+                       const Position* position, const Note* note,
                        const Tuning& tuning, const KeySignature& keySignature);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*);
     QRectF boundingRect() const;
 
     enum AccidentalType
@@ -48,31 +50,36 @@ public:
         DOUBLE_FLAT
     };
 
-    inline double getYLocation() const { return yLocation; }
-    inline const Position* getPositionObject() const { return position; }
+    double getYLocation() const;
+    const Position* getPositionObject() const;
+    double noteHeadWidth() const;
+    double noteHeadRightEdge() const;
 
     void refreshAccidental(bool forceAccidental);
 
-    static double getNoteHeadWidth();
-
-    int accidental;
+    AccidentalType accidental;
 
 private:
     void init();
-    int findAccidentalType(const QString& noteText) const;
+    void setNoteHead();
+    AccidentalType findAccidentalType(const QString& noteText) const;
     QString getAccidentalText() const;
     void addDots(QPainter* painter, double x, double y) const;
 
     QRectF bounds;
+
     StaffData staffInfo;
     boost::shared_ptr<const Staff> staff;
     const Position* position;
     const Note* note;
     const Tuning& tuning;
     const KeySignature& keySignature;
+
     static QFont musicFont;
     double yLocation;
-    double width;
+    double xLocation;
+    double rightEdge;
+    QChar noteHead;
 };
 
 #endif // STDNOTATIONPAINTER_H

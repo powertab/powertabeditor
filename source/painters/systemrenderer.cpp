@@ -1082,12 +1082,13 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
                 continue;
             }
 
+            StdNotationPainter* stdNotePainter = NULL;
             for (uint32_t j = 0; j < currentPosition->GetNoteCount(); j++)
             {
                 const Note* note = currentPosition->GetNote(j);
 
-                StdNotationPainter* stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition,
-                                                                            note, currentGuitar->GetTuning(), currentKeySig);
+                stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition,
+                                                        note, currentGuitar->GetTuning(), currentKeySig);
                 notePainters << stdNotePainter;
 
                 // map all of the notes for each position on the staff, so that we can adjust accidentals later
@@ -1099,13 +1100,16 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
             // add note stem for any notes other than whole notes
             if (currentPosition->GetDurationType() != 1 && currentPosition->GetNoteCount() > 0)
             {
-                NoteStem stem(currentPosition, location, noteLocations);
+                NoteStem stem(currentPosition, location, noteLocations,
+                              stdNotePainter->noteHeadWidth(),
+                              stdNotePainter->noteHeadRightEdge());
                 stems.push_back(stem);
             }
 
             if (!noteLocations.empty())
             {
-                drawLedgerLines(noteLocations, location, currentStaffInfo);
+                drawLedgerLines(noteLocations, location, currentStaffInfo,
+                                stdNotePainter->noteHeadWidth());
             }
         }
     }
@@ -1258,8 +1262,9 @@ void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBa
 /// Draws ledger lines for all notes at a position
 /// @param noteLocations - List of y-coordinates of all notes at the position
 void SystemRenderer::drawLedgerLines(const std::vector<int> &noteLocations,
-                                const double xLocation,
-                                const StaffData& staffData)
+                                     const double xLocation,
+                                     const StaffData& staffData,
+                                     const double noteHeadWidth)
 {
     const int highestNote = *std::min_element(noteLocations.begin(), noteLocations.end());
     const int lowestNote = *std::max_element(noteLocations.begin(), noteLocations.end());
@@ -1287,7 +1292,7 @@ void SystemRenderer::drawLedgerLines(const std::vector<int> &noteLocations,
         }
     }
 
-    const double ledgerLineWidth = StdNotationPainter::getNoteHeadWidth() * 2;
+    const double ledgerLineWidth = noteHeadWidth * 2;
     QPainterPath path;
 
     for (std::vector<int>::const_iterator location = ledgerLineLocations.begin();
@@ -1322,7 +1327,7 @@ QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffD
 
     QPainterPath path;
 
-    const double leftX = staffInfo.getNoteHeadRightEdge();
+    const double leftX = 0.75 * staffInfo.positionWidth;
     const double rightX = staffInfo.positionWidth;
 
     for (size_t i = 0; i < position->GetNoteCount(); ++i)

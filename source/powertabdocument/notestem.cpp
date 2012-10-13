@@ -21,10 +21,13 @@
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 
-NoteStem::NoteStem(const Position* position, int xPosition,
-                   const std::vector<int>& noteLocations) :
+NoteStem::NoteStem(const Position* position, double xPosition,
+                   const std::vector<int>& noteLocations,
+                   double noteHeadWidth, double noteHeadRightEdge) :
     position(position),
-    xPosition(xPosition)
+    xPosition(xPosition),
+    noteHeadWidth(noteHeadWidth),
+    noteHeadRightEdge(noteHeadRightEdge)
 {
     stemTop = *std::min_element(noteLocations.begin(), noteLocations.end());
     stemBottom = *std::max_element(noteLocations.begin(), noteLocations.end());
@@ -32,9 +35,9 @@ NoteStem::NoteStem(const Position* position, int xPosition,
     stemDirection = Staff::STD_NOTATION_LINE_SPACING * 2 < stemBottom ? StemUp : StemDown;
 }
 
-float NoteStem::stemSize() const
+double NoteStem::stemSize() const
 {
-    float stemSize = Staff::STD_NOTATION_LINE_SPACING * 3.5;
+    double stemSize = Staff::STD_NOTATION_LINE_SPACING * 3.5;
 
     if (position->IsAcciaccatura())
     {
@@ -45,7 +48,7 @@ float NoteStem::stemSize() const
 }
 
 /// Returns the y-coordinate of the edge of the stem (where it meets the connecting beam)
-int NoteStem::stemEdge() const
+double NoteStem::stemEdge() const
 {
     return (stemDirection == StemUp) ? stemTop : stemBottom;
 }

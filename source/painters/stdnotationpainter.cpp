@@ -38,16 +38,18 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, boost::shared
     note(note),
     tuning(tuning),
     keySignature(keySignature),
-    width(10)
+    yLocation(0), xLocation(0), rightEdge(0), noteHead('X')
 {
     init();
 }
 
 void StdNotationPainter::init()
 {
-    yLocation = staff->GetNoteLocation(note, keySignature, tuning) * 0.5 * Staff::STD_NOTATION_LINE_SPACING;
+    yLocation = staff->GetNoteLocation(note, keySignature, tuning) *
+            0.5 * Staff::STD_NOTATION_LINE_SPACING;
 
     refreshAccidental(false);
+    setNoteHead();
 }
 
 /// Update the accidental for the note.
@@ -68,17 +70,9 @@ void StdNotationPainter::refreshAccidental(bool forceAccidental)
     accidental = findAccidentalType(noteText);
 }
 
-void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+/// Choose the correct symbol to use for the note head.
+void StdNotationPainter::setNoteHead()
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
-    painter->setFont(musicFont);
-
-    double xPos = staffInfo.getNoteHeadRightEdge();
-
-    // Choose the correct symbol to use for the note head
-    QChar noteHead;
     if (position->GetDurationType() == 1)
     {
         noteHead = MusicFont::WholeNote;
@@ -96,28 +90,47 @@ void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem
     if (note->IsNaturalHarmonic())
     {
         noteHead = MusicFont::NaturalHarmonicNoteHead;
-        xPos += 1;
     }
     else if (note->HasArtificialHarmonic() || note->HasTappedHarmonic())
     {
         noteHead = MusicFont::ArtificialHarmonicNoteHead;
-        xPos += 1;
     }
 
-    const QString displayText = getAccidentalText() + noteHead;
-    width = QFontMetricsF(musicFont).width(displayText);
-    bounds = QRectF(0, -staffInfo.getTopStdNotationLine(), width, staffInfo.getTopTabLine());
-
-    painter->drawText(xPos - width, yLocation + 1, displayText);
-    addDots(painter, xPos + 2, yLocation + 1);
+    const double noteWidth = noteHeadWidth();
+    xLocation = (staffInfo.positionWidth - noteWidth) * 0.5;
+    rightEdge = xLocation + noteWidth;
 }
 
-double StdNotationPainter::getNoteHeadWidth()
+double StdNotationPainter::noteHeadWidth() const
 {
-    return QFontMetricsF(musicFont).width(QChar(MusicFont::QuarterNoteOrLess));
+    QFontMetricsF metrics(musicFont);
+    return metrics.width(noteHead); // TODO - cache this value?
 }
 
-int StdNotationPainter::findAccidentalType(const QString& noteText) const
+double StdNotationPainter::noteHeadRightEdge() const
+{
+    return rightEdge;
+}
+
+void StdNotationPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
+{
+    painter->setFont(musicFont);
+
+    const QString accidentalText = getAccidentalText();
+    QFontMetricsF metrics(musicFont);
+    const double accidentalWidth = metrics.width(accidentalText);
+
+    const QString displayText = accidentalText + noteHead;
+    const double displayWidth = metrics.width(displayText);
+    bounds = QRectF(0, -staffInfo.getTopStdNotationLine(), displayWidth,
+                    staffInfo.getTopTabLine());
+
+    painter->drawText(xLocation - accidentalWidth, yLocation + 1, displayText);
+    addDots(painter, rightEdge + 2, yLocation + 1);
+}
+
+StdNotationPainter::AccidentalType StdNotationPainter::findAccidentalType(
+        const QString& noteText) const
 {
     if (noteText.endsWith("##"))
     {
@@ -164,6 +177,8 @@ QString StdNotationPainter::getAccidentalText() const
     case NATURAL:
         text += QChar(MusicFont::Natural);
         break;
+    case NO_ACCIDENTAL:
+        break; // Do nothing.
     }
 
     return text;
@@ -187,4 +202,14 @@ void StdNotationPainter::addDots(QPainter* painter, double x, double y) const
 QRectF StdNotationPainter::boundingRect() const
 {
     return bounds;
+}
+
+double StdNotationPainter::getYLocation() const
+{
+    return yLocation;
+}
+
+const Position *StdNotationPainter::getPositionObject() const
+{
+    return position;
 }

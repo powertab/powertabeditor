@@ -31,16 +31,20 @@ public:
         StemDown
     };
 
-    NoteStem(const Position* position, int xPosition, const std::vector<int>& noteLocations);
+    NoteStem(const Position* position, double xPosition,
+             const std::vector<int>& noteLocations, double noteHeadWidth,
+             double noteHeadRightEdge);
 
     const Position* position;
-    int xPosition;
-    int stemTop;
-    int stemBottom;
+    double xPosition;
+    double stemTop;
+    double stemBottom;
+    double noteHeadWidth;
+    double noteHeadRightEdge;
     StemDirection stemDirection;
 
-    float stemSize() const;
-    int stemEdge() const;
+    double stemSize() const;
+    double stemEdge() const;
     bool canDrawFlag() const;
 
     static NoteStem::StemDirection findDirectionForGroup(const std::vector<NoteStem>& stems);
