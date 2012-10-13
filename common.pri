@@ -5,7 +5,7 @@ QT += core gui
 QMAKE_CXXFLAGS+= -Wall
 
 win32-g++ {
-    QMAKE_CXXFLAGS += -U__STRICT_ANSI__
+    QMAKE_CXXFLAGS += -U__STRICT_ANSI__ -fno-strict-aliasing
 }
 
 win32-g++ | linux-g++ | macx-g++ | linux-clang {
