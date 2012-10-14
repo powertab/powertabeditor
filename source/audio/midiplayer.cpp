@@ -142,15 +142,25 @@ void MidiPlayer::generateEvents(const Score* score,
                 }
             }
 
+            // Don't add in the metronome for empty bars, but add an empty event
+            // for the left bar so that repeats, etc. are triggered.
+            if (timeStamp == barStartTime)
+            {
+                eventList.push_back(new DummyEvent(METRONOME_CHANNEL, timeStamp, 0,
+                                                   leftBar->GetPosition(), i));
+                continue;
+            }
+
             // Add metronome ticks for the bar.
             timeStamp = generateMetronome(i, system, leftBar, barStartTime,
                                           timeStamp, eventList);
-
-            // Add event at the next bar's position in order to trigger any
-            // repeats or alternate endings.
-            eventList.push_back(new DummyEvent(METRONOME_CHANNEL, timeStamp, 0,
-                                               rightBar->GetPosition(), i));
         }
+
+        // Add event at the end bar's position in order to trigger any
+        // repeats or alternate endings. We don't need this for any other bars
+        // since there are metronome events at the other bars.
+        eventList.push_back(new DummyEvent(METRONOME_CHANNEL, timeStamp, 0,
+                                           barlines.back()->GetPosition(), i));
     }
 }
 
