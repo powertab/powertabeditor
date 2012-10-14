@@ -360,6 +360,10 @@ Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int heig
 /// Auto-adjust spacing of notes in the system
 void Layout::FormatSystem(boost::shared_ptr<System> system)
 {
+    // Ensure that the end bar is farther than any other position (needed so
+    // that GetPositionsInRange() doesn't miss any positions).
+    system->GetEndBar()->SetPosition(system->GetMaxPosition() + 1);
+
     std::vector<System::BarlinePtr> barlines;
     system->GetBarlines(barlines);
 
@@ -450,7 +454,7 @@ void Layout::FormatSystem(boost::shared_ptr<System> system)
             system->GetCumulativeInternalKeyAndTimeSignatureWidth();
 
     // Add a position for padding.
-    const int numPositions = system->GetEndBar()->GetPosition() + 1;
+    const int numPositions = system->GetMaxPosition() + 1;
 
     system->SetPositionSpacing(availableWidth / numPositions);
 }
