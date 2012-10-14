@@ -55,7 +55,6 @@ using boost::shared_ptr;
 MidiPlayer::MidiPlayer(Caret* caret, int playbackSpeed) :
     caret(caret),
     isPlaying(false),
-    currentSystemIndex(0),
     activePitchBend(BendEvent::DEFAULT_BEND),
     playbackSpeed(playbackSpeed)
 {
@@ -80,20 +79,28 @@ void MidiPlayer::run()
                                        caret->getCurrentPositionIndex());
 
     boost::ptr_list<MidiEvent> eventList;
-    double timeStamp = 0;
+    generateEvents(caret->getCurrentScore(), eventList);
 
-    // go through each system, generate a list of the notes (midi events) from each staff
-    // then, sort notes by their start time, and play them in order
-    for (currentSystemIndex = 0; currentSystemIndex < caret->getCurrentScore()->GetSystemCount(); ++currentSystemIndex)
-    {
-        generateMetronome(currentSystemIndex, timeStamp, eventList);
-
-        timeStamp = generateEventsForSystem(currentSystemIndex, timeStamp, eventList);
-    }
-
+    // Sort the events by their start time, and play them in order.
     eventList.sort();
 
     playMidiEvents(eventList, startLocation);
+}
+
+void MidiPlayer::generateEvents(const Score* score,
+                                boost::ptr_list<MidiEvent>& eventList)
+{
+    double timeStamp = 0;
+    const size_t n = score->GetSystemCount();
+
+    for (uint32_t i = 0; i < n; ++i)
+    {
+        generateMetronome(i, timeStamp, eventList);
+
+        // Go through each system, and generate a list of the notes (MIDI events)
+        // from each staff and voice.
+        timeStamp = generateEventsForSystem(i, timeStamp, eventList);
+    }
 }
 
 /// Returns the appropriate note velocity type for the given position/note
@@ -142,16 +149,18 @@ double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double sy
             {
                 Position* position = staff->GetPosition(voice, j);
 
-                const double currentTempo = getCurrentTempo(position->GetPosition());
+                const SystemLocation location(systemIndex, position->GetPosition());
+                const double currentTempo = getCurrentTempo(location);
 
-                double duration = calculateNoteDuration(position); // each note at a position has the same duration
+                // Each note at a position has the same duration.
+                double duration = calculateNoteDuration(systemIndex, position);
 
                 if (position->IsRest())
                 {
                     // for whole rests, they must last for the entire bar, regardless of time signature
                     if (position->GetDurationType() == 1)
                     {
-                        duration = getWholeRestDuration(system, staff, position, duration);
+                        duration = getWholeRestDuration(system, staff, systemIndex, position, duration);
 
                         // extend for multi-bar rests
                         if (position->HasMultibarRest())
@@ -484,7 +493,8 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
 }
 
 // Finds the active tempo marker
-boost::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(const quint32 positionIndex) const
+boost::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(
+        const SystemLocation& location) const
 {
     const Score* currentScore = caret->getCurrentScore();
 
@@ -494,8 +504,8 @@ boost::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(const quint32 p
     for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
     {
         Score::TempoMarkerPtr temp = currentScore->GetTempoMarker(i);
-        if (temp->GetSystem() <= currentSystemIndex &&
-            temp->GetPosition() <=  positionIndex &&
+        if (temp->GetSystem() <= location.getSystemIndex() &&
+            temp->GetPosition() <=  location.getPositionIndex() &&
             !temp->IsAlterationOfPace()) // TODO - properly support alterations of pace
         {
             currentTempoMarker = temp;
@@ -505,10 +515,10 @@ boost::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(const quint32 p
     return currentTempoMarker;
 }
 
-/// Returns the current tempo (duration of a quarter note in milliseconds)
-double MidiPlayer::getCurrentTempo(const quint32 positionIndex) const
+/// Returns the current tempo (duration of a quarter note in milliseconds).
+double MidiPlayer::getCurrentTempo(const SystemLocation& location) const
 {
-    Score::TempoMarkerPtr tempoMarker = getCurrentTempoMarker(positionIndex);
+    Score::TempoMarkerPtr tempoMarker = getCurrentTempoMarker(location);
 
     double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
     double beatType = TempoMarker::DEFAULT_BEAT_TYPE;
@@ -525,15 +535,18 @@ double MidiPlayer::getCurrentTempo(const quint32 positionIndex) const
     return (60.0 / bpm * 1000.0 * (TempoMarker::quarter / beatType));
 }
 
-double MidiPlayer::calculateNoteDuration(const Position* currentPosition) const
+double MidiPlayer::calculateNoteDuration(uint32_t systemIndex,
+                                         const Position* currentPosition) const
 {
-    const double tempo = getCurrentTempo(currentPosition->GetPosition());
+    const double tempo = getCurrentTempo(
+                SystemLocation(systemIndex, currentPosition->GetPosition()));
 
     return currentPosition->GetDuration() * tempo;
 }
 
-double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, shared_ptr<const Staff> staff,
-                                        const Position* position, double originalDuration) const
+double MidiPlayer::getWholeRestDuration(
+        shared_ptr<const System> system, shared_ptr<const Staff> staff,
+        uint32_t systemIndex, const Position* position, double originalDuration) const
 {
     System::BarlineConstPtr prevBarline = system->GetPrecedingBarline(position->GetPosition());
 
@@ -545,7 +558,9 @@ double MidiPlayer::getWholeRestDuration(shared_ptr<const System> system, shared_
 
     const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignature();
 
-    const double tempo = getCurrentTempo(position->GetPosition());
+    const double tempo = getCurrentTempo(
+                SystemLocation(systemIndex, position->GetPosition()));
+
     double beatDuration = currentTimeSignature.GetBeatAmount();
     double duration = tempo * 4.0 / beatDuration;
     int numBeats = currentTimeSignature.GetBeatsPerMeasure();
@@ -574,7 +589,8 @@ void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
         const quint8 beatValue = timeSig.GetBeatAmount();
 
         // figure out duration of pulse
-        const double tempo = getCurrentTempo(barline->GetPosition());
+        const double tempo = getCurrentTempo(
+                    SystemLocation(systemIndex, barline->GetPosition()));
         double duration = tempo * 4.0 / beatValue;
         duration *= beatsPerMeasure / numPulses;
 

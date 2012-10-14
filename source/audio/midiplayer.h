@@ -33,6 +33,7 @@ class System;
 class Staff;
 class MidiEvent;
 class Note;
+class Score;
 
 class MidiPlayer : public QThread
 {
@@ -50,8 +51,11 @@ signals:
 public slots:
     void changePlaybackSpeed(int newPlaybackSpeed);
 
-protected:
+private:
     void run();
+
+    void generateEvents(const Score* score,
+                        boost::ptr_list<MidiEvent>& eventList);
 
     enum Durations
     {
@@ -61,9 +65,9 @@ protected:
 
     static const quint8 METRONOME_CHANNEL = 15;
 
-    double getCurrentTempo(const quint32 positionIndex) const;
-    boost::shared_ptr<TempoMarker> getCurrentTempoMarker(const quint32 positionIndex) const;
-    double calculateNoteDuration(const Position* currentPosition) const;
+    double getCurrentTempo(const SystemLocation& location) const;
+    boost::shared_ptr<TempoMarker> getCurrentTempoMarker(const SystemLocation &location) const;
+    double calculateNoteDuration(uint32_t systemIndex, const Position *currentPosition) const;
 
     double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,
                                    boost::ptr_list<MidiEvent>& eventList);
@@ -74,7 +78,7 @@ protected:
     void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation);
 
     double getWholeRestDuration(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
-                                const Position* position, double originalDuration) const;
+                                uint32_t systemIndex, const Position *position, double originalDuration) const;
 
     /// Holds basic information about a bend - used to simplify the generateBends function
     struct BendEventInfo
@@ -101,7 +105,6 @@ protected:
     QMutex mutex;
 
     bool isPlaying;
-    quint32 currentSystemIndex;
     uint8_t activePitchBend; ///< keeps track of the active pitch bend (used for "bend and hold"-type events)
     int playbackSpeed; ///< Current playback speed (percent)
 };

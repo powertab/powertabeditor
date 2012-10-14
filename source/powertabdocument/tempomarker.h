@@ -143,7 +143,6 @@ public:
     bool HasTripletFeel() const;
 
     // Beats Per Minute Functions
-
     static bool IsValidBeatsPerMinute(uint32_t beatsPerMinute);
     bool SetBeatsPerMinute(uint32_t beatsPerMinute);
     uint32_t GetBeatsPerMinute() const;
