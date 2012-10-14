@@ -25,7 +25,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 
-#include <widgets/common.h>
+#include <widgets/clickablelabel.h>
 
 #include <dialogs/tuningdialog.h>
 

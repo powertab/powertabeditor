@@ -15,14 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef CLICKABLE_LABEL_H
+#define CLICKABLE_LABEL_H
 
-// Contains general code that is used by multiple widgets.
+#include <QLabel>
 
-class QAbstractButton;
-class QAction;
+/// A subclass of QLabel that emits signals when it is clicked.
+class ClickableLabel : public QLabel
+{
+    Q_OBJECT
+public:
+    ClickableLabel(QWidget* parent = 0);
 
-void connectButtonToAction(QAbstractButton* button, QAction* action);
+protected:
+    virtual void enterEvent(QEvent*);
+    virtual void leaveEvent(QEvent*);
+    virtual void mouseReleaseEvent(QMouseEvent*);
+    virtual void mouseDoubleClickEvent(QMouseEvent*);
 
-#endif // COMMON_H
+signals:
+    void clicked();
+    void doubleClicked();
+};
+
+#endif // CLICKABLE_LABEL_H

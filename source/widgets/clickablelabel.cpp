@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,15 +14,31 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef COMMON_H
-#define COMMON_H
 
-// Contains general code that is used by multiple widgets.
+#include "clickablelabel.h"
 
-class QAbstractButton;
-class QAction;
+ClickableLabel::ClickableLabel(QWidget *parent) :
+    QLabel(parent)
+{
+    setStyleSheet("padding: 4px");
+}
 
-void connectButtonToAction(QAbstractButton* button, QAction* action);
+void ClickableLabel::enterEvent(QEvent*)
+{
+    setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+}
 
-#endif // COMMON_H
+void ClickableLabel::leaveEvent(QEvent *)
+{
+    setFrameStyle(QFrame::NoFrame);
+}
+
+void ClickableLabel::mouseReleaseEvent(QMouseEvent *)
+{
+    emit clicked();
+}
+
+void ClickableLabel::mouseDoubleClickEvent(QMouseEvent *)
+{
+    emit doubleClicked();
+}
