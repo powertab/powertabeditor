@@ -33,7 +33,7 @@ class VolumeSwellDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit VolumeSwellDialog(const Position* position, QWidget *parent = 0);
+    explicit VolumeSwellDialog(QWidget* parent, const Position* position);
     ~VolumeSwellDialog();
 
     void accept();

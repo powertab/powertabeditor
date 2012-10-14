@@ -18,7 +18,8 @@
 #include "timesignaturedialog.h"
 #include "ui_timesignaturedialog.h"
 
-TimeSignatureDialog::TimeSignatureDialog(const TimeSignature& originalTimeSignature) :
+TimeSignatureDialog::TimeSignatureDialog(QWidget *parent, const TimeSignature &originalTimeSignature) :
+    QDialog(parent),
     ui(new Ui::TimeSignatureDialog),
     newTimeSignature(originalTimeSignature)
 {

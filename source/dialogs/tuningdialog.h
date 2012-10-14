@@ -34,7 +34,7 @@ class TuningDialog : public QDialog
 {
     Q_OBJECT
 public:
-    TuningDialog(const Tuning& currentTuning, QWidget *parent = 0);
+    TuningDialog(QWidget* parent, const Tuning& currentTuning);
     ~TuningDialog();
 
     Tuning getNewTuning() const;

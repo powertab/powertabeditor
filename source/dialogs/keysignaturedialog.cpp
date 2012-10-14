@@ -22,7 +22,8 @@
 #include <boost/bind.hpp>
 using boost::bind;
 
-KeySignatureDialog::KeySignatureDialog(const KeySignature& key) :
+KeySignatureDialog::KeySignatureDialog(QWidget *parent, const KeySignature &key) :
+    QDialog(parent),
     ui(new Ui::KeySignatureDialog),
     newKey(key), modified(false)
 {

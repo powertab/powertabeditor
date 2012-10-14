@@ -29,11 +29,11 @@
 #include <QSignalMapper>
 #include <QIcon>
 
-ChordNameDialog::ChordNameDialog(ChordName* chord, QWidget *parent) :
-        QDialog(parent),
-        originalChordName(chord),
-        tonicKeyOptions(7),
-        bassKeyOptions(7)
+ChordNameDialog::ChordNameDialog(QWidget *parent, ChordName *chord) :
+    QDialog(parent),
+    originalChordName(chord),
+    tonicKeyOptions(7),
+    bassKeyOptions(7)
 {
     chordName = *originalChordName; // make a temporary copy for editing
 

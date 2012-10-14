@@ -32,7 +32,7 @@ class KeyboardSettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    KeyboardSettingsDialog(const QList<Command*>& commands, QWidget* parent = 0);
+    KeyboardSettingsDialog(QWidget* parent, const QList<Command*>& commands);
     ~KeyboardSettingsDialog();
 
 private slots:

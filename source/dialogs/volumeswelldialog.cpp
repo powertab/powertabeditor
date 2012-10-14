@@ -21,7 +21,7 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/dynamic.h>
 
-VolumeSwellDialog::VolumeSwellDialog(const Position* position, QWidget *parent) :
+VolumeSwellDialog::VolumeSwellDialog(QWidget *parent, const Position *position) :
     QDialog(parent),
     ui(new Ui::VolumeSwellDialog)
 {

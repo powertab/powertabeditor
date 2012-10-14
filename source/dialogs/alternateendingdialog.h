@@ -29,7 +29,8 @@ class AlternateEndingDialog : public QDialog
 {
     Q_OBJECT
 public:
-    AlternateEndingDialog(boost::shared_ptr<AlternateEnding> altEnding);
+    AlternateEndingDialog(QWidget* parent,
+                          boost::shared_ptr<AlternateEnding> altEnding);
 
 public slots:
     void accept();

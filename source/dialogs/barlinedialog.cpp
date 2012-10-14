@@ -26,7 +26,9 @@
 #include <QComboBox>
 
 /// Constructor: the barType and repeats references will be updated with the values that the user selects
-BarlineDialog::BarlineDialog(quint8& barType, quint8& repeats) :
+BarlineDialog::BarlineDialog(QWidget *parent,
+                             quint8& barType, quint8 &repeats) :
+    QDialog(parent),
     barType(barType),
     repeats(repeats)
 {

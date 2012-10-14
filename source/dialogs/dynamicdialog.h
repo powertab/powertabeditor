@@ -32,7 +32,7 @@ class DynamicDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit DynamicDialog(QWidget *parent = 0);
+    explicit DynamicDialog(QWidget *parent);
     ~DynamicDialog();
 
     uint8_t selectedVolumeLevel() const;

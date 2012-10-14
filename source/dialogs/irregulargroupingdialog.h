@@ -30,7 +30,7 @@ class IrregularGroupingDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit IrregularGroupingDialog(QWidget *parent = 0);
+    explicit IrregularGroupingDialog(QWidget *parent);
     ~IrregularGroupingDialog();
 
     uint8_t notesPlayed() const;

@@ -29,7 +29,7 @@
 #include <QCompleter>
 #include <QMessageBox>
 
-RehearsalSignDialog::RehearsalSignDialog(Score* score, QWidget *parent) :
+RehearsalSignDialog::RehearsalSignDialog(QWidget *parent, Score *score) :
     QDialog(parent),
     ui(new Ui::RehearsalSignDialog),
     score(score)

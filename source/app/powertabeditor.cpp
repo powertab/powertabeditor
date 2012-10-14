@@ -1189,7 +1189,7 @@ bool PowerTabEditor::saveFileAs()
 // Opens the preferences dialog
 void PowerTabEditor::openPreferences()
 {
-    PreferencesDialog(settingsPubSub).exec();
+    PreferencesDialog(this, settingsPubSub).exec();
     skinManager->reload();
 }
 
@@ -1222,7 +1222,7 @@ bool PowerTabEditor::closeTab(int index)
     // Prompt to save modified documents.
     if (isWindowModified())
     {
-        QMessageBox msg;
+        QMessageBox msg(this);
         msg.setWindowTitle(tr("Close Document"));
         msg.setText(tr("The document has been modified."));
         msg.setInformativeText(tr("Do you want to save your changes?"));
@@ -1657,7 +1657,7 @@ void PowerTabEditor::editKeySignature(const SystemLocation& location)
 
     const KeySignature& keySignature = barline->GetKeySignature();
 
-    KeySignatureDialog dialog(keySignature);
+    KeySignatureDialog dialog(this, keySignature);
     if (dialog.exec() == QDialog::Accepted)
     {
         const KeySignature newKey = dialog.getNewKey();
@@ -1692,7 +1692,7 @@ void PowerTabEditor::editTimeSignature(const SystemLocation& location)
 
     const TimeSignature& currentTimeSig = barline->GetTimeSignature();
 
-    TimeSignatureDialog dialog(currentTimeSig);
+    TimeSignatureDialog dialog(this, currentTimeSig);
 
     if (dialog.exec() == QDialog::Accepted)
     {
@@ -1724,7 +1724,7 @@ void PowerTabEditor::editBarline(int position)
     {
         quint8 type = barLine->GetType(), repeats = barLine->GetRepeatCount();
 
-        BarlineDialog dialog(type, repeats);
+        BarlineDialog dialog(this, type, repeats);
         if (dialog.exec() == QDialog::Accepted)
         {
             undoManager->push(new ChangeBarLineType(barLine, type, repeats));
@@ -1734,7 +1734,7 @@ void PowerTabEditor::editBarline(int position)
     {
         quint8 type = Barline::bar, repeats = Barline::MIN_REPEAT_COUNT;
 
-        BarlineDialog dialog(type, repeats);
+        BarlineDialog dialog(this, type, repeats);
         if (dialog.exec() == QDialog::Accepted)
         {
             undoManager->push(new AddBarline(caret->getCurrentSystem(),
@@ -1755,7 +1755,7 @@ void PowerTabEditor::editRepeatEnding()
         altEnding = boost::make_shared<AlternateEnding>(caret->getCurrentSystemIndex(),
                                                       caret->getCurrentPositionIndex(), 0);
 
-        AlternateEndingDialog dialog(altEnding);
+        AlternateEndingDialog dialog(this, altEnding);
         if (dialog.exec() == QDialog::Accepted)
         {
             undoManager->push(new AddAlternateEnding(currentScore, altEnding));
@@ -1782,7 +1782,7 @@ void PowerTabEditor::editChordName()
     {
         chordTextIndex = 0;
         ChordName chordName;
-        ChordNameDialog chordNameDialog(&chordName);
+        ChordNameDialog chordNameDialog(this, &chordName);
         if (chordNameDialog.exec() == QDialog::Accepted)
         {
             shared_ptr<ChordText> chordText = boost::make_shared<ChordText>(caretPosition, chordName);
@@ -1808,7 +1808,7 @@ void PowerTabEditor::editTrill()
     else // add a new trill
     {
         quint8 trillFret = 0;
-        TrillDialog trillDialog(currentNote, trillFret);
+        TrillDialog trillDialog(this, currentNote, trillFret);
         if (trillDialog.exec() == QDialog::Accepted)
         {
             undoManager->push(new AddTrill(currentNote, trillFret));
@@ -1832,7 +1832,7 @@ void PowerTabEditor::editTappedHarmonic()
     else // add a tapped harmonic
     {
         uint8_t tappedFret = 0;
-        TappedHarmonicDialog dialog(currentNote, tappedFret);
+        TappedHarmonicDialog dialog(this, currentNote, tappedFret);
 
         if (dialog.exec() == QDialog::Accepted)
         {
@@ -1865,7 +1865,7 @@ void PowerTabEditor::editRehearsalSign()
     }
     else
     {
-        RehearsalSignDialog dialog(currentScore);
+        RehearsalSignDialog dialog(this, currentScore);
 
         if (dialog.exec() == QDialog::Accepted)
         {
@@ -2228,7 +2228,7 @@ void PowerTabEditor::editKeyboardShortcuts()
 {
     QList<Command*> registeredCommands = findChildren<Command*>();
 
-    KeyboardSettingsDialog dialog(registeredCommands);
+    KeyboardSettingsDialog dialog(this, registeredCommands);
     dialog.exec();
 }
 
@@ -2241,7 +2241,7 @@ void PowerTabEditor::editDynamic()
 
     if (!dynamic) // add a dynamic
     {
-        DynamicDialog dialog;
+        DynamicDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted)
         {
             dynamic = boost::make_shared<Dynamic>(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
@@ -2278,7 +2278,7 @@ void PowerTabEditor::editVolumeSwell()
 
     if (!position->HasVolumeSwell())
     {
-        VolumeSwellDialog dialog(position);
+        VolumeSwellDialog dialog(this, position);
         if (dialog.exec() == QDialog::Accepted) // add volume swell
         {
             undoManager->push(new AddVolumeSwell(position, dialog.getNewStartVolume(),
@@ -2325,7 +2325,7 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
         }
         else
         {
-            IrregularGroupingDialog dialog;
+            IrregularGroupingDialog dialog(this);
 
             if (dialog.exec() == QDialog::Accepted)
             {
@@ -2349,7 +2349,7 @@ void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
 void PowerTabEditor::openFileInformation()
 {
     boost::shared_ptr<PowerTabDocument> doc = documentManager->getCurrentDocument();
-    FileInformationDialog dialog(doc);
+    FileInformationDialog dialog(this, doc);
 
     if (dialog.exec() == QDialog::Accepted)
     {

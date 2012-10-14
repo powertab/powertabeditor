@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 
-TuningDialog::TuningDialog(const Tuning& currentTuning, QWidget *parent) :
+TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning) :
     QDialog(parent),
     ui(new Ui::TuningDialog)
 {

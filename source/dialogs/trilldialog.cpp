@@ -24,7 +24,8 @@
 #include <QDialogButtonBox>
 #include <QMessageBox>
 
-TrillDialog::TrillDialog(Note* note, quint8& trillFret) :
+TrillDialog::TrillDialog(QWidget* parent, Note* note, quint8& trillFret) :
+    QDialog(parent),
     note(note),
     trillFret(trillFret)
 {

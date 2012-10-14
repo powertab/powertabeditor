@@ -27,7 +27,9 @@
 #include <QDialogButtonBox>
 #include <QComboBox>
 
-TappedHarmonicDialog::TappedHarmonicDialog(const Note* note, uint8_t& tappedFret) :
+TappedHarmonicDialog::TappedHarmonicDialog(QWidget *parent, const Note *note,
+                                           uint8_t &tappedFret) :
+    QDialog(parent),
     note(note),
     tappedFret(tappedFret)
 {

@@ -24,8 +24,8 @@
 
 Q_DECLARE_METATYPE(Command*)
 
-KeyboardSettingsDialog::KeyboardSettingsDialog(const QList<Command*>& commands,
-                                               QWidget* parent) :
+KeyboardSettingsDialog::KeyboardSettingsDialog(QWidget *parent,
+                                               const QList<Command *> &commands) :
     QDialog(parent),
     ui(new Ui::KeyboardSettingsDialog),
     commands(commands)

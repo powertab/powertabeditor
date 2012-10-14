@@ -34,7 +34,7 @@ class ChordNameDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ChordNameDialog(ChordName* chord, QWidget *parent = 0);
+    explicit ChordNameDialog(QWidget* parent, ChordName* chord);
 
 protected:
     ChordName chordName;

@@ -27,7 +27,9 @@
 #include <vector>
 #include <algorithm>
 
-AlternateEndingDialog::AlternateEndingDialog(boost::shared_ptr<AlternateEnding> altEnding) :
+AlternateEndingDialog::AlternateEndingDialog(QWidget* parent,
+                                             boost::shared_ptr<AlternateEnding> altEnding) :
+    QDialog(parent),
     altEnding(altEnding)
 {
     const int SPACING = 15;
@@ -76,7 +78,7 @@ void AlternateEndingDialog::accept()
     if (std::find_if(checkBoxes.begin(), checkBoxes.end(),
                      std::mem_fun(&QCheckBox::isChecked)) == checkBoxes.end())
     {
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setWindowTitle(tr("Repeat Ending"));
         msgBox.setText(tr("You must select at least one repeat number."));

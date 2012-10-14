@@ -35,7 +35,8 @@ class FileInformationDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit FileInformationDialog(boost::shared_ptr<PowerTabDocument> doc, QWidget *parent = 0);
+    explicit FileInformationDialog(QWidget* parent,
+                                   boost::shared_ptr<PowerTabDocument> doc);
     ~FileInformationDialog();
 
     PowerTabFileHeader getNewFileHeader() const;

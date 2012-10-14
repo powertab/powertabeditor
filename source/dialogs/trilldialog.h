@@ -27,7 +27,7 @@ class TrillDialog : public QDialog
 {
     Q_OBJECT
 public:
-    TrillDialog(Note* note, quint8& trillFret);
+    TrillDialog(QWidget *parent, Note *note, quint8 &trillFret);
 
 public slots:
     void accept();

@@ -28,7 +28,7 @@ class TappedHarmonicDialog : public QDialog
 {
     Q_OBJECT
 public:
-    TappedHarmonicDialog(const Note* note, uint8_t& tappedFret);
+    TappedHarmonicDialog(QWidget* parent, const Note* note, uint8_t& tappedFret);
 
 public slots:
     void accept();

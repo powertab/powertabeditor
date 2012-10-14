@@ -23,7 +23,8 @@
 
 #include <powertabdocument/powertabdocument.h>
 
-FileInformationDialog::FileInformationDialog(boost::shared_ptr<PowerTabDocument> doc, QWidget *parent) :
+FileInformationDialog::FileInformationDialog(QWidget *parent,
+                                             boost::shared_ptr<PowerTabDocument> doc) :
     QDialog(parent),
     ui(new Ui::FileInformationDialog),
     contentType(doc->GetHeader().GetSongContentType())

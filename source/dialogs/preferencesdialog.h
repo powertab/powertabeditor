@@ -32,8 +32,8 @@ class PreferencesDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit PreferencesDialog(boost::shared_ptr<SettingsPubSub> pubsub,
-                               QWidget *parent = 0);
+    explicit PreferencesDialog(QWidget* parent,
+                               boost::shared_ptr<SettingsPubSub> pubsub);
     ~PreferencesDialog();
 
 private:

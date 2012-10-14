@@ -29,7 +29,7 @@ class BarlineDialog : public QDialog
 {
     Q_OBJECT
 public:
-    BarlineDialog(quint8& barType, quint8& repeats);
+    BarlineDialog(QWidget* parent, quint8& barType, quint8& repeats);
 
 protected:
     quint8& barType;
