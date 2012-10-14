@@ -50,6 +50,22 @@
 #include <audio/repeatcontroller.h>
 #include <audio/volumechangeevent.h>
 
+/// A MIDI event that does nothing, but is useful for triggering a position
+/// change.
+class DummyEvent : public MidiEvent
+{
+public:
+    DummyEvent(uint8_t channel, double startTime, double duration,
+               uint32_t positionIndex, uint32_t systemIndex) :
+        MidiEvent(channel, startTime, duration, positionIndex, systemIndex)
+    {
+    }
+
+    virtual void performEvent(RtMidiWrapper&) const
+    {
+    }
+};
+
 using boost::shared_ptr;
 
 MidiPlayer::MidiPlayer(Caret* caret, int playbackSpeed) :
@@ -91,15 +107,50 @@ void MidiPlayer::generateEvents(const Score* score,
                                 boost::ptr_list<MidiEvent>& eventList)
 {
     double timeStamp = 0;
-    const size_t n = score->GetSystemCount();
 
-    for (uint32_t i = 0; i < n; ++i)
+    for (uint32_t i = 0; i < score->GetSystemCount(); ++i)
     {
-        generateMetronome(i, timeStamp, eventList);
+        shared_ptr<const System> system = score->GetSystem(i);
 
-        // Go through each system, and generate a list of the notes (MIDI events)
-        // from each staff and voice.
-        timeStamp = generateEventsForSystem(i, timeStamp, eventList);
+        std::vector<shared_ptr<const Barline> > barlines;
+        system->GetBarlines(barlines);
+
+        for (size_t j = 0; j < barlines.size() - 1; ++j)
+        {
+            shared_ptr<const Barline> leftBar = barlines[j];
+            shared_ptr<const Barline> rightBar = barlines[j+1];
+
+            const double barStartTime = timeStamp;
+
+            for (uint32_t k = 0; k < system->GetStaffCount(); ++k)
+            {
+                shared_ptr<const Staff> staff = system->GetStaff(k);
+
+                for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES;
+                     ++voice)
+                {
+                    std::vector<Position*> positions;
+                    staff->GetPositionsInRange(positions, voice,
+                                               leftBar->GetPosition(),
+                                               rightBar->GetPosition() - 1);
+
+                    double endTime = generateEventsForBar(i, positions, score,
+                                                          system, staff, k,
+                                                          voice, barStartTime,
+                                                          eventList);
+                    timeStamp = std::max(timeStamp, endTime);
+                }
+            }
+
+            // Add metronome ticks for the bar.
+            timeStamp = generateMetronome(i, system, leftBar, barStartTime,
+                                          timeStamp, eventList);
+
+            // Add event at the next bar's position in order to trigger any
+            // repeats or alternate endings.
+            eventList.push_back(new DummyEvent(METRONOME_CHANNEL, timeStamp, 0,
+                                               rightBar->GetPosition(), i));
+        }
     }
 }
 
@@ -122,258 +173,245 @@ PlayNoteEvent::VelocityType getNoteVelocity(const Position* position, const Note
     return PlayNoteEvent::DEFAULT_VELOCITY;
 }
 
-/// Generates a list of all notes in the given system, by iterating through each position in each staff of the system
-/// @return The timestamp of the end of the last event in the system
-double MidiPlayer::generateEventsForSystem(uint32_t systemIndex, const double systemStartTime,
-                                           boost::ptr_list<MidiEvent>& eventList)
+/// Generates a list of all notes in the given bar (list of positions).
+/// @return The timestamp of the end of the last event in the bar.
+double MidiPlayer::generateEventsForBar(
+        uint32_t systemIndex, const std::vector<Position*>& positions,
+        const Score* score, boost::shared_ptr<const System> system,
+        boost::shared_ptr<const Staff> staff, uint32_t staffIndex,
+        const uint32_t voice, const double barStartTime,
+        boost::ptr_list<MidiEvent>& eventList)
 {
-    double endTime = systemStartTime;
+    activePitchBend = BendEvent::DEFAULT_BEND;
+    double startTime = barStartTime;
+    bool letRingActive = false;
 
-    shared_ptr<const System> system = caret->getCurrentScore()->GetSystem(systemIndex);
+    const uint32_t channel = staffIndex; // 1 channel per guitar/staff.
+    shared_ptr<const Guitar> guitar = score->GetGuitar(channel);
 
-    for (quint32 i = 0; i < system->GetStaffCount(); i++)
+    for (size_t i = 0; i < positions.size(); ++i)
     {
-        shared_ptr<const Staff> staff = system->GetStaff(i);
-        shared_ptr<const Guitar> guitar = caret->getCurrentScore()->GetGuitar(i);
+        Position* position = positions[i];
 
-        for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
+        const uint32_t positionIndex = position->GetPosition();
+        const SystemLocation location(systemIndex, positionIndex);
+        const double currentTempo = getCurrentTempo(location);
+
+        // Each note at a position has the same duration.
+        double duration = calculateNoteDuration(systemIndex, position);
+
+        if (position->IsRest())
         {
-            activePitchBend = BendEvent::DEFAULT_BEND;
-
-            // each note in the staff is given a start time relative to the first note of the staff
-            double startTime = systemStartTime;
-            
-            bool letRingActive = false;
-
-            for (quint32 j = 0; j < staff->GetPositionCount(voice); j++)
+            // for whole rests, they must last for the entire bar, regardless of time signature
+            if (position->GetDurationType() == 1)
             {
-                Position* position = staff->GetPosition(voice, j);
+                duration = getWholeRestDuration(system, staff, systemIndex, position, duration);
 
-                const SystemLocation location(systemIndex, position->GetPosition());
-                const double currentTempo = getCurrentTempo(location);
-
-                // Each note at a position has the same duration.
-                double duration = calculateNoteDuration(systemIndex, position);
-
-                if (position->IsRest())
+                // extend for multi-bar rests
+                if (position->HasMultibarRest())
                 {
-                    // for whole rests, they must last for the entire bar, regardless of time signature
-                    if (position->GetDurationType() == 1)
-                    {
-                        duration = getWholeRestDuration(system, staff, systemIndex, position, duration);
-
-                        // extend for multi-bar rests
-                        if (position->HasMultibarRest())
-                        {
-                            uint8_t measureCount = 0;
-                            position->GetMultibarRest(measureCount);
-                            duration *= measureCount;
-                        }
-                    }
-
-                    startTime += duration;
-                    endTime = std::max(endTime, startTime);
-                    continue;
+                    uint8_t measureCount = 0;
+                    position->GetMultibarRest(measureCount);
+                    duration *= measureCount;
                 }
+            }
 
-                if (position->IsAcciaccatura()) // grace note
-                {
-                    duration = GRACE_NOTE_DURATION;
-                    startTime -= duration;
-                }
+            startTime += duration;
+            continue;
+        }
 
-                const quint32 positionIndex = position->GetPosition();
+        if (position->IsAcciaccatura()) // grace note
+        {
+            duration = GRACE_NOTE_DURATION;
+            startTime -= duration;
+        }
 
-                // If the position has an arpeggio, sort the notes by string in the specified direction.
-                // This is so the notes can be played in the correct order, with a slight delay between each
-                if (position->HasArpeggioDown())
-                {
-                    position->SortNotesDown();
-                }
-                else if (position->HasArpeggioUp())
-                {
-                    position->SortNotesUp();
-                }
+        // If the position has an arpeggio, sort the notes by string in the specified direction.
+        // This is so the notes can be played in the correct order, with a slight delay between each
+        if (position->HasArpeggioDown())
+        {
+            position->SortNotesDown();
+        }
+        else if (position->HasArpeggioUp())
+        {
+            position->SortNotesUp();
+        }
 
-                // vibrato events (these apply to all notes in the position)
-                if (position->HasVibrato() || position->HasWideVibrato())
-                {
-                    VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NORMAL_VIBRATO :
-                                                                              VibratoEvent::WIDE_VIBRATO;
+        // vibrato events (these apply to all notes in the position)
+        if (position->HasVibrato() || position->HasWideVibrato())
+        {
+            VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NORMAL_VIBRATO :
+                                                                      VibratoEvent::WIDE_VIBRATO;
 
-                    // add vibrato event, and an event to turn of the vibrato after the note is done
-                    eventList.push_back(new VibratoEvent(i, startTime, positionIndex, systemIndex,
-                                                         VibratoEvent::VIBRATO_ON, type));
+            // add vibrato event, and an event to turn of the vibrato after the note is done
+            eventList.push_back(new VibratoEvent(channel, startTime, positionIndex, systemIndex,
+                                                 VibratoEvent::VIBRATO_ON, type));
 
-                    eventList.push_back(new VibratoEvent(i, startTime + duration, positionIndex,
-                                                         systemIndex, VibratoEvent::VIBRATO_OFF));
-                }
+            eventList.push_back(new VibratoEvent(channel, startTime + duration, positionIndex,
+                                                 systemIndex, VibratoEvent::VIBRATO_OFF));
+        }
 
-                // dynamics
-                {
-                    Score::DynamicPtr dynamic = caret->getCurrentScore()->FindDynamic(systemIndex, i, positionIndex);
-                    if (dynamic)
-                    {
-                        eventList.push_back(new VolumeChangeEvent(i, startTime,
-                                                                  positionIndex, systemIndex,
-                                                                  dynamic->GetStaffVolume()));
-                    }
-                }
-
-                // let ring events (applied to all notes in the position)
-                if (position->HasLetRing() && !letRingActive)
-                {
-                    eventList.push_back(new LetRingEvent(i, startTime, positionIndex, systemIndex,
-                                                         LetRingEvent::LET_RING_ON));
-                    letRingActive = true;
-                }
-                else if (!position->HasLetRing() && letRingActive)
-                {
-                    eventList.push_back(new LetRingEvent(i, startTime, positionIndex, systemIndex,
-                                                         LetRingEvent::LET_RING_OFF));
-                    letRingActive = false;
-                }
-                // make sure that we end the let ring after the last position in the system
-                else if (letRingActive && (j == staff->GetPositionCount(voice) - 1))
-                {
-                    eventList.push_back(new LetRingEvent(i, startTime + duration, positionIndex, systemIndex,
-                                                         LetRingEvent::LET_RING_OFF));
-                    letRingActive = false;
-                }
-
-                for (quint32 k = 0; k < position->GetNoteCount(); k++)
-                {
-                    // for arpeggios, delay the start of each note a small amount from the last,
-                    // and also adjust the duration correspondingly
-                    if (position->HasArpeggioDown() || position->HasArpeggioUp())
-                    {
-                        startTime += ARPEGGIO_OFFSET;
-                        duration -= ARPEGGIO_OFFSET;
-                    }
-
-                    const Note* note = position->GetNote(k);
-
-                    uint32_t pitch = getActualNotePitch(note, guitar);
-
-                    const PlayNoteEvent::VelocityType velocity = getNoteVelocity(position, note);
-
-                    // if this note is not tied to the previous note, play the note
-                    if (!note->IsTied())
-                    {
-                        eventList.push_back(new PlayNoteEvent(i, startTime, duration, pitch,
-                                                              positionIndex, systemIndex, guitar,
-                                                              note->IsMuted(), velocity));
-                    }
-                    // if the note is tied, make sure that the pitch is the same as the previous note, 
-                    // so that the Stop Note event works correctly with harmonics
-                    else 
-                    {
-                        const Note* prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note, voice);
-                        
-                        // TODO - deal with ties that wrap across systems
-                        if (prevNote)
-                        {
-                            pitch = getActualNotePitch(prevNote, guitar);
-                        }
-                    }
-
-                    // generate all events that involve pitch bends
-                    {
-                        std::vector<BendEventInfo> bendEvents;
-
-                        if (note->HasSlide())
-                        {
-                            generateSlides(bendEvents, startTime, duration, currentTempo, note);
-                        }
-
-                        if (note->HasBend())
-                        {
-                            generateBends(bendEvents, startTime, duration, currentTempo, note);
-                        }
-
-                        // only generate tremolo bar events once, since they apply to all notes in
-                        // the position
-                        if (position->HasTremoloBar() && k == 0)
-                        {
-                            generateTremoloBar(bendEvents, startTime, duration, currentTempo, position);
-                        }
-
-                        BOOST_FOREACH(const BendEventInfo& event, bendEvents)
-                        {
-                            eventList.push_back(new BendEvent(i, event.timestamp, positionIndex,
-                                                              systemIndex, event.pitchBendAmount));
-                        }
-                    }
-
-                    // Perform tremolo picking or trills - they work identically, except trills alternate between two pitches
-                    if (position->HasTremoloPicking() || note->HasTrill())
-                    {
-                        // each note is a 32nd note
-                        const double tremPickNoteDuration = currentTempo / 8.0;
-                        const int numNotes = duration / tremPickNoteDuration;
-
-                        // find the other pitch to alternate with (this is just the same pitch for tremolo picking)
-                        uint32_t otherPitch = pitch;
-                        if (note->HasTrill())
-                        {
-                            uint8_t otherFret = 0;
-                            note->GetTrill(otherFret);
-                            otherPitch = pitch + (note->GetFretNumber() - otherFret);
-                        }
-
-                        for (int k = 0; k < numNotes; ++k)
-                        {
-                            const double currentStartTime = startTime + k * tremPickNoteDuration;
-
-                            eventList.push_back(new StopNoteEvent(i, currentStartTime, positionIndex,
-                                                                  systemIndex, pitch));
-
-                            // alternate to the other pitch (this has no effect for tremolo picking)
-                            std::swap(pitch, otherPitch);
-
-                            eventList.push_back(new PlayNoteEvent(i, currentStartTime, tremPickNoteDuration, pitch,
-                                                                  positionIndex, systemIndex, guitar,
-                                                                  note->IsMuted(), velocity));
-                        }
-                    }
-
-                    bool tiedToNextNote = false;
-                    // check if this note is tied to the next note
-                    {
-                        const Note* nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note, voice);
-                        if (nextNote && nextNote->IsTied())
-                        {
-                            tiedToNextNote = true;
-                        }
-                    }
-
-                    // end the note, unless we are tied to the next note
-                    if (!note->HasTieWrap() && !tiedToNextNote)
-                    {
-                        double noteLength = duration;
-
-                        if (position->IsStaccato())
-                        {
-                            noteLength /= 2.0;
-                        }
-                        else if (position->HasPalmMuting())
-                        {
-                            noteLength /= 1.15;
-                        }
-
-                        eventList.push_back(new StopNoteEvent(i, startTime + noteLength,
-                                                              positionIndex, systemIndex, pitch));
-                    }
-                }
-
-                startTime += duration;
-
-                endTime = std::max(endTime, startTime);
+        // dynamics
+        {
+            Score::DynamicPtr dynamic = score->FindDynamic(systemIndex, channel, positionIndex);
+            if (dynamic)
+            {
+                eventList.push_back(new VolumeChangeEvent(channel, startTime,
+                                                          positionIndex, systemIndex,
+                                                          dynamic->GetStaffVolume()));
             }
         }
+
+        // let ring events (applied to all notes in the position)
+        if (position->HasLetRing() && !letRingActive)
+        {
+            eventList.push_back(new LetRingEvent(channel, startTime, positionIndex, systemIndex,
+                                                 LetRingEvent::LET_RING_ON));
+            letRingActive = true;
+        }
+        else if (!position->HasLetRing() && letRingActive)
+        {
+            eventList.push_back(new LetRingEvent(channel, startTime, positionIndex, systemIndex,
+                                                 LetRingEvent::LET_RING_OFF));
+            letRingActive = false;
+        }
+        // Make sure that we end the let ring after the last position in the bar.
+        else if (letRingActive && position == positions.back())
+        {
+            eventList.push_back(new LetRingEvent(channel, startTime + duration, positionIndex, systemIndex,
+                                                 LetRingEvent::LET_RING_OFF));
+            letRingActive = false;
+        }
+
+        for (uint32_t j = 0; j < position->GetNoteCount(); j++)
+        {
+            // for arpeggios, delay the start of each note a small amount from the last,
+            // and also adjust the duration correspondingly
+            if (position->HasArpeggioDown() || position->HasArpeggioUp())
+            {
+                startTime += ARPEGGIO_OFFSET;
+                duration -= ARPEGGIO_OFFSET;
+            }
+
+            const Note* note = position->GetNote(j);
+
+            uint32_t pitch = getActualNotePitch(note, guitar);
+
+            const PlayNoteEvent::VelocityType velocity = getNoteVelocity(position, note);
+
+            // if this note is not tied to the previous note, play the note
+            if (!note->IsTied())
+            {
+                eventList.push_back(new PlayNoteEvent(channel, startTime, duration, pitch,
+                                                      positionIndex, systemIndex, guitar,
+                                                      note->IsMuted(), velocity));
+            }
+            // if the note is tied, make sure that the pitch is the same as the previous note,
+            // so that the Stop Note event works correctly with harmonics
+            else
+            {
+                const Note* prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note, voice);
+
+                // TODO - deal with ties that wrap across systems
+                if (prevNote)
+                {
+                    pitch = getActualNotePitch(prevNote, guitar);
+                }
+            }
+
+            // generate all events that involve pitch bends
+            {
+                std::vector<BendEventInfo> bendEvents;
+
+                if (note->HasSlide())
+                {
+                    generateSlides(bendEvents, startTime, duration, currentTempo, note);
+                }
+
+                if (note->HasBend())
+                {
+                    generateBends(bendEvents, startTime, duration, currentTempo, note);
+                }
+
+                // only generate tremolo bar events once, since they apply to all notes in
+                // the position
+                if (position->HasTremoloBar() && j == 0)
+                {
+                    generateTremoloBar(bendEvents, startTime, duration, currentTempo, position);
+                }
+
+                BOOST_FOREACH(const BendEventInfo& event, bendEvents)
+                {
+                    eventList.push_back(new BendEvent(channel, event.timestamp, positionIndex,
+                                                      systemIndex, event.pitchBendAmount));
+                }
+            }
+
+            // Perform tremolo picking or trills - they work identically, except trills alternate between two pitches
+            if (position->HasTremoloPicking() || note->HasTrill())
+            {
+                // each note is a 32nd note
+                const double tremPickNoteDuration = currentTempo / 8.0;
+                const int numNotes = duration / tremPickNoteDuration;
+
+                // find the other pitch to alternate with (this is just the same pitch for tremolo picking)
+                uint32_t otherPitch = pitch;
+                if (note->HasTrill())
+                {
+                    uint8_t otherFret = 0;
+                    note->GetTrill(otherFret);
+                    otherPitch = pitch + (note->GetFretNumber() - otherFret);
+                }
+
+                for (int k = 0; k < numNotes; ++k)
+                {
+                    const double currentStartTime = startTime + k * tremPickNoteDuration;
+
+                    eventList.push_back(new StopNoteEvent(channel, currentStartTime, positionIndex,
+                                                          systemIndex, pitch));
+
+                    // alternate to the other pitch (this has no effect for tremolo picking)
+                    std::swap(pitch, otherPitch);
+
+                    eventList.push_back(new PlayNoteEvent(channel, currentStartTime, tremPickNoteDuration, pitch,
+                                                          positionIndex, systemIndex, guitar,
+                                                          note->IsMuted(), velocity));
+                }
+            }
+
+            bool tiedToNextNote = false;
+            // check if this note is tied to the next note
+            {
+                const Note* nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note, voice);
+                if (nextNote && nextNote->IsTied())
+                {
+                    tiedToNextNote = true;
+                }
+            }
+
+            // end the note, unless we are tied to the next note
+            if (!note->HasTieWrap() && !tiedToNextNote)
+            {
+                double noteLength = duration;
+
+                if (position->IsStaccato())
+                {
+                    noteLength /= 2.0;
+                }
+                else if (position->HasPalmMuting())
+                {
+                    noteLength /= 1.15;
+                }
+
+                eventList.push_back(new StopNoteEvent(channel, startTime + noteLength,
+                                                      positionIndex, systemIndex, pitch));
+            }
+        }
+
+        startTime += duration;
     }
 
-    return endTime;
+    return startTime;
 }
 
 // The events are already in order of occurrence, so just play them one by one
@@ -569,63 +607,64 @@ double MidiPlayer::getWholeRestDuration(
     return duration;
 }
 
-// Generates the metronome ticks
-void MidiPlayer::generateMetronome(uint32_t systemIndex, double startTime,
-                                   boost::ptr_list<MidiEvent>& eventList) const
+/// Generates metronome ticks for a bar.
+/// @param notesEndTime The timestamp of the last note event in the bar.
+double MidiPlayer::generateMetronome(uint32_t systemIndex,
+                                     shared_ptr<const System> system,
+                                     shared_ptr<const Barline> barline,
+                                     double startTime, const double notesEndTime,
+                                     boost::ptr_list<MidiEvent>& eventList) const
 {
-    shared_ptr<System> system = caret->getCurrentScore()->GetSystem(systemIndex);
+    const TimeSignature& timeSig = barline->GetTimeSignature();
 
-    std::vector<System::BarlineConstPtr> barlines;
-    system->GetBarlines(barlines);
-    barlines.pop_back(); // don't need the end barline
+    uint8_t numPulses = timeSig.GetPulses();
+    const uint8_t beatsPerMeasure = timeSig.GetBeatsPerMeasure();
+    const uint8_t beatValue = timeSig.GetBeatAmount();
 
-    for (size_t i = 0; i < barlines.size(); i++)
+    const uint32_t position = barline->GetPosition();
+
+    // Figure out duration of pulse.
+    const double tempo = getCurrentTempo(SystemLocation(systemIndex, position));
+    double duration = tempo * 4.0 / beatValue;
+    duration *= beatsPerMeasure / numPulses;
+
+    // Check for multi-bar rests, as we need to generate more metronome events
+    // to fill the extra bars.
+    uint8_t measureCount = 0;
+    uint8_t repeatCount = 1;
+    if (system->HasMultiBarRest(barline, measureCount))
     {
-        System::BarlineConstPtr barline = barlines.at(i);
-        const TimeSignature& timeSig = barline->GetTimeSignature();
+        repeatCount = measureCount;
+    }
 
-        const quint8 numPulses = timeSig.GetPulses();
-        const quint8 beatsPerMeasure = timeSig.GetBeatsPerMeasure();
-        const quint8 beatValue = timeSig.GetBeatAmount();
+    // If there are too many notes in the bar, add some more metronome pulses.
+    // If there are too few notes, we don't remove any metronome pulses.
+    if (repeatCount == 1)
+    {
+        numPulses = std::max<uint8_t>(numPulses,
+                                      (notesEndTime - startTime) / duration);
+    }
 
-        // figure out duration of pulse
-        const double tempo = getCurrentTempo(
-                    SystemLocation(systemIndex, barline->GetPosition()));
-        double duration = tempo * 4.0 / beatValue;
-        duration *= beatsPerMeasure / numPulses;
-
-        const uint32_t position = barline->GetPosition();
-
-        // check for multi-bar rests, as we need to generate duplicate metronome events
-        // to fill the extra bars
-        uint8_t measureCount = 0, repeatCount = 1;
-        if (system->HasMultiBarRest(barline, measureCount))
+    for (uint8_t repeat = 0; repeat < repeatCount; repeat++)
+    {
+        for (uint8_t j = 0; j < numPulses; j++)
         {
-            repeatCount = measureCount;
-        }
+            MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
+                                                               MetronomeEvent::WEAK_ACCENT;
 
-        for (uint8_t repeat = 0; repeat < repeatCount; repeat++)
-        {
-            for (quint8 j = 0; j < numPulses; j++)
-            {
-                MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
-                                                                   MetronomeEvent::WEAK_ACCENT;
+            eventList.push_back(new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
+                                                   position, systemIndex, velocity));
 
-                eventList.push_back(new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
-                                                       position, systemIndex, velocity));
+            startTime += duration;
 
-                startTime += duration;
-
-                eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
-                                                      systemIndex, MetronomeEvent::METRONOME_PITCH));
-            }
+            eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
+                                                  systemIndex, MetronomeEvent::METRONOME_PITCH));
         }
     }
 
-    // insert an empty event for the last barline of the system, to trigger any repeat events for that bar
-    eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime,
-                                          system->GetEndBar()->GetPosition(),
-                                          systemIndex, MetronomeEvent::METRONOME_PITCH));
+    startTime = std::max(startTime, notesEndTime);
+
+    return startTime;
 }
 
 uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guitar> guitar) const
@@ -727,7 +766,7 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTi
 /// Generates a series of BendEvents to perform a gradual bend over the given duration
 /// Bends the note from the startBendAmount to the releaseBendAmount over the note duration
 void MidiPlayer::generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration,
-                                uint8_t startBendAmount, uint8_t releaseBendAmount) const
+                                     int startBendAmount, int releaseBendAmount) const
 {
     const int numBendEvents = abs(startBendAmount - releaseBendAmount);
     const double bendEventDuration = duration / numBendEvents;

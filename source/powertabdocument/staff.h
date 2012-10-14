@@ -160,7 +160,7 @@ public:
 
     int GetHeight() const;
     
-    void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos);
+    void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos) const;
     void CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
                                 boost::shared_ptr<const Barline> endBar);
     void CalculateBeamingForGroup(std::vector<Position*>& positions);

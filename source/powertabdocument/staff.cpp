@@ -655,7 +655,7 @@ struct ComparePositionLower
 
 /// Gets all of the positions within the given range (inclusive)
 /// @param Output parameter, to store the positions that are in the range
-void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos)
+void Staff::GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");

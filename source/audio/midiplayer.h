@@ -34,6 +34,7 @@ class Staff;
 class MidiEvent;
 class Note;
 class Score;
+class Barline;
 
 class MidiPlayer : public QThread
 {
@@ -69,11 +70,20 @@ private:
     boost::shared_ptr<TempoMarker> getCurrentTempoMarker(const SystemLocation &location) const;
     double calculateNoteDuration(uint32_t systemIndex, const Position *currentPosition) const;
 
-    double generateEventsForSystem(uint32_t systemIndex, double systemStartTime,
-                                   boost::ptr_list<MidiEvent>& eventList);
+    double generateEventsForBar(uint32_t systemIndex,
+                                const std::vector<Position*>& positions,
+                                const Score* score,
+                                boost::shared_ptr<const System> system,
+                                boost::shared_ptr<const Staff> staff,
+                                uint32_t staffIndex,
+                                const uint32_t voice, const double barStartTime,
+                                boost::ptr_list<MidiEvent>& eventList);
 
-    void generateMetronome(uint32_t systemIndex, double startTime,
-                           boost::ptr_list<MidiEvent>& eventList) const;
+    double generateMetronome(uint32_t systemIndex,
+                             boost::shared_ptr<const System> system,
+                             boost::shared_ptr<const Barline> barline,
+                             double startTime, const double notesEndTime,
+                             boost::ptr_list<MidiEvent>& eventList) const;
 
     void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation);
 
@@ -93,8 +103,8 @@ private:
                        double currentTempo, const Note* note);
     void generateSlides(std::vector<BendEventInfo>& bends, double startTime, double noteDuration,
                        double currentTempo, const Note* note);
-    void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, uint8_t startBendAmount,
-                             uint8_t releaseBendAmount) const;
+    void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, int startBendAmount,
+                             int releaseBendAmount) const;
     void generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
                             double noteDuration, double currentTempo, const Position* position);
     
