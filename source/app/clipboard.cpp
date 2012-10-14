@@ -61,13 +61,22 @@ void Clipboard::copySelection(const std::vector<Position*>& selectedPositions,
     clipboard->setMimeData(mimeData);
 }
 
-void Clipboard::paste(UndoManager* undoManager, const Caret* caret)
+void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
+                      const Caret* caret)
 {
     const Tuning& currentTuning = caret->getCurrentScore()->GetGuitar(
                 caret->getCurrentStaffIndex())->GetTuning();
 
     // load data from the clipboard and deserialize
     const QByteArray rawData = QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE);
+    if (rawData.isEmpty())
+    {
+        QMessageBox msg(parent);
+        msg.setText(QObject::tr("The clipboard does not contain any notes."));
+        msg.exec();
+        return;
+    }
+
     std::istringstream inputData(std::string(rawData.data(), rawData.length()));
     PowerTabInputStream inputStream(inputData);
 
@@ -79,7 +88,7 @@ void Clipboard::paste(UndoManager* undoManager, const Caret* caret)
     // into a 7-string guitar.
     if (!currentTuning.IsSameTuning(tuning))
     {
-        QMessageBox msg;
+        QMessageBox msg(parent);
         msg.setText(QObject::tr("Cannot paste notes from a different tuning."));
         msg.exec();
         return;

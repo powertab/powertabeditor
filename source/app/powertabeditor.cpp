@@ -2259,7 +2259,7 @@ void PowerTabEditor::editDynamic()
 
 void PowerTabEditor::doPaste()
 {
-    Clipboard::paste(undoManager.get(), getCurrentScoreArea()->getCaret());
+    Clipboard::paste(this, undoManager.get(), getCurrentScoreArea()->getCaret());
 }
 
 void PowerTabEditor::copySelectedNotes()

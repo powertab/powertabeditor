@@ -24,6 +24,7 @@ class Position;
 class Tuning;
 class Caret;
 class UndoManager;
+class QWidget;
 
 namespace Clipboard
 {
@@ -31,7 +32,7 @@ namespace Clipboard
 void copySelection(const std::vector<Position*>& selectedPositions,
                    const Tuning& tuning);
 
-void paste(UndoManager* undoManager, const Caret* caret);
+void paste(QWidget* parent, UndoManager *undoManager, const Caret *caret);
 
 }
 #endif // CLIPBOARD_H
