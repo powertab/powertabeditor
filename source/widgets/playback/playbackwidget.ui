@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>302</width>
+    <width>325</width>
     <height>27</height>
    </rect>
   </property>
@@ -38,6 +38,9 @@
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
+     <property name="toolTip">
+      <string>Adjusts the current playback speed.</string>
+     </property>
     </widget>
    </item>
    <item>
@@ -49,6 +52,9 @@
    </item>
    <item>
     <widget class="QPushButton" name="rewindToStartButton">
+     <property name="toolTip">
+      <string>Click to move playback to the beginning of the score.</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -56,6 +62,9 @@
    </item>
    <item>
     <widget class="QPushButton" name="playPauseButton">
+     <property name="toolTip">
+      <string>Click to start or stop playback.</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -66,6 +75,9 @@
    </item>
    <item>
     <widget class="QPushButton" name="metronomeToggleButton">
+     <property name="toolTip">
+      <string>Click to toggle whether the metronome is turned on.</string>
+     </property>
      <property name="text">
       <string/>
      </property>

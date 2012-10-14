@@ -49,6 +49,7 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     instrumentName = new ClickableLabel;
     instrumentName->setMinimumWidth(150);
     instrumentName->setMaximumWidth(150);
+    instrumentName->setToolTip(tr("Click to change instrument name."));
     layout->addWidget(instrumentName);
 
     instrumentNameEditor = new QLineEdit;
@@ -69,6 +70,7 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
 
     isVisible = new QCheckBox(tr("Show/Hide"));
     isVisible->setChecked(guitar->IsShown());
+    isVisible->setToolTip(tr("Click to toggle whether the instrument is displayed in the score."));
     connect(isVisible, SIGNAL(toggled(bool)), this, SLOT(toggleVisible(bool)));
     layout->addWidget(isVisible);
 
@@ -76,6 +78,7 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     trackVolume->setMaximumWidth(75);
     trackVolume->setRange(Guitar::MIN_INITIAL_VOLUME, Guitar::MAX_INITIAL_VOLUME);
     trackVolume->setTickInterval(Guitar::MAX_INITIAL_VOLUME / 8 );
+    trackVolume->setToolTip(tr("Drag to adjust volume."));
     connect(trackVolume, SIGNAL(valueChanged(int)), this, SLOT(changeVolume(int)));
     layout->addWidget(trackVolume);
 
@@ -84,6 +87,7 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     trackPan->setRange(Guitar::MIN_PAN, Guitar::MAX_PAN);
     trackPan->setSingleStep(1);
     trackPan->setPageStep(Guitar::MAX_PAN / 8);
+    trackPan->setToolTip(tr("Drag to adjust panning."));
     connect(trackPan, SIGNAL(valueChanged(int)), this, SLOT(changePan(int)));
     layout->addWidget(trackPan);
 
@@ -221,6 +225,7 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
     layout->addWidget(trackPatch);
 
     tuningLabel = new ClickableLabel;
+    tuningLabel->setToolTip(tr("Click to adjust tuning."));
     layout->addWidget(tuningLabel);
     connect(tuningLabel, SIGNAL(clicked()), this, SLOT(editTuning()));
     
