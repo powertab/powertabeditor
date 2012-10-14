@@ -196,6 +196,10 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     vertSplitter->addWidget(mixerList.get());
 
     setCentralWidget(vertSplitter);
+
+    // Install a top-level event filter to catch keyboard events (i.e. for
+    // entering tab numbers) regardless of which widget has focus.
+    installEventFilter(this);
 }
 
 PowerTabEditor::~PowerTabEditor()
@@ -228,23 +232,10 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
     ScoreArea* currentDoc = getCurrentScoreArea();
 
-    if (object == currentDoc && event->type() == QEvent::KeyPress)
+    if (currentDoc && event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if ((keyEvent->key() == Qt::Key_Tab) &&
-            (keyEvent->modifiers() == Qt::NoModifier))
-        {
-            moveCaretToNextBar();
-            return true;
-        }
-        else if ((keyEvent->key() == Qt::Key_Backtab) ||
-                 (keyEvent->key() == Qt::Key_Tab &&
-                  keyEvent->modifiers() == Qt::ShiftModifier))
-        {
-            moveCaretToPrevBar();
-            return true;
-        }
-        else if ((keyEvent->key() >= Qt::Key_0) &&
+        if ((keyEvent->key() >= Qt::Key_0) &&
                  (keyEvent->key() <= Qt::Key_9))
         {
             // this arithmetic and this condition assume that Key_0 ... Key_9
