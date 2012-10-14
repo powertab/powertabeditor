@@ -1115,7 +1115,7 @@ void PowerTabEditor::setupNewDocument()
     tabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
 
     // add the guitars to a new mixer
-    Mixer* mixer = new Mixer(skinManager);
+    Mixer* mixer = new Mixer();
     connect(mixer, SIGNAL(visibilityToggled(uint32_t,bool)),
             this, SLOT(toggleGuitarVisible(uint32_t,bool)));
 

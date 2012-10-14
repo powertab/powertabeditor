@@ -44,11 +44,6 @@ QString SkinManager::getToolboxPageStyle() const
     return toolboxPageStyle;
 }
 
-QString SkinManager::getMixerStyle() const
-{
-    return mixerStyle;
-}
-
 QString SkinManager::readSegment(const QString& skinname, const QString& filename)
 {
     QString out;
@@ -93,5 +88,4 @@ void SkinManager::reload()
     documentTabStyle = readSegment(skinName,"document_tab.txt");
     toolboxTabStyle = readSegment(skinName,"toolbox_tab.txt");
     toolboxPageStyle = readSegment(skinName,"toolbox_page.txt");
-    mixerStyle = readSegment(skinName,"mixer.txt");
 }

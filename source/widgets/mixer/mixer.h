@@ -33,7 +33,7 @@ class Mixer : public QFrame
 {
     Q_OBJECT
 public:
-    Mixer(boost::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
+    Mixer(QFrame *parent = 0);
 
     void addInstrument(boost::shared_ptr<Guitar> guitar);
     void removeInstrument(size_t index);

@@ -19,17 +19,14 @@
 
 #include <QVBoxLayout>
 
-#include <app/skinmanager.h>
 #include "mixerinstrument.h"
 
 using boost::shared_ptr;
 
-Mixer::Mixer(shared_ptr<SkinManager> skinManager, QFrame *parent) :
+Mixer::Mixer(QFrame *parent) :
     QFrame(parent)
 {
     setFrameStyle(QFrame::StyledPanel);
-
-    setStyleSheet(skinManager->getMixerStyle());
 
     layout = new QVBoxLayout;
     layout->setSpacing(0);

@@ -30,7 +30,6 @@ public:
     QString getDocumentTabStyle() const;
     QString getToolboxTabStyle() const;
     QString getToolboxPageStyle() const;
-    QString getMixerStyle() const;
 
     static QStringList availableSkins();
 
@@ -38,8 +37,8 @@ private:
     static QString skinDir();
 
     QString documentTabStyle;
-    QString toolboxTabStyle, toolboxPageStyle;
-    QString mixerStyle;
+    QString toolboxTabStyle;
+    QString toolboxPageStyle;
 
     QString readSegment(const QString& skinname, const QString& filename);
 };
