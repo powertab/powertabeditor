@@ -43,7 +43,8 @@ MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent)
 {
     layout = new QHBoxLayout;
 
-    instrumentIndex = new QLabel(QString().number(guitar->GetNumber() + 1) + ".");
+    instrumentIndex = new QLabel(QString("%1.").arg(guitar->GetNumber() + 1));
+    instrumentIndex->setMinimumWidth(25);
     layout->addWidget(instrumentIndex);
 
     instrumentName = new ClickableLabel;
