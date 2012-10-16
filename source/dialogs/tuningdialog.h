@@ -25,6 +25,7 @@
 
 class Tuning;
 class QComboBox;
+class TuningDictionary;
 
 namespace Ui {
     class TuningDialog;
@@ -34,7 +35,8 @@ class TuningDialog : public QDialog
 {
     Q_OBJECT
 public:
-    TuningDialog(QWidget* parent, const Tuning& currentTuning);
+    TuningDialog(QWidget* parent, const Tuning& currentTuning,
+                 boost::shared_ptr<TuningDictionary> tuningDictionary);
     ~TuningDialog();
 
     Tuning getNewTuning() const;
@@ -42,12 +44,14 @@ public:
 private slots:
     void toggleSharps(bool usesSharps);
     void updateEnabledStrings(int numStrings);
+    void updateTuningDictionary(int numStrings);
+    void loadPreset();
 
 private:
     Ui::TuningDialog* ui;
+    boost::shared_ptr<TuningDictionary> tuningDictionary;
 
     QStringList noteNames;
-
     std::vector<QComboBox*> stringSelectors;
 
     void initStringSelectors(const Tuning& currentTuning);

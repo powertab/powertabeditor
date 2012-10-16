@@ -31,12 +31,15 @@ class QDial;
 class QComboBox;
 class QLineEdit;
 class ClickableLabel;
+class TuningDictionary;
 
 class MixerInstrument : public QWidget
 {
     Q_OBJECT
 public:
-    MixerInstrument(boost::shared_ptr<Guitar> instrument, QWidget *parent = 0);
+    MixerInstrument(boost::shared_ptr<Guitar> instrument,
+                    boost::shared_ptr<TuningDictionary> tuningDictionary,
+                    QWidget *parent);
 
     boost::shared_ptr<Guitar> getInstrument() const
     {
@@ -65,6 +68,7 @@ private:
     ClickableLabel* tuningLabel;
 
     boost::shared_ptr<Guitar> guitar;
+    boost::shared_ptr<TuningDictionary> tuningDictionary;
 
 private slots:
     void changePan(int value);

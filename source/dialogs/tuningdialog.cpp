@@ -18,15 +18,20 @@
 #include "tuningdialog.h"
 #include "ui_tuningdialog.h"
 
+#include <app/tuningdictionary.h>
 #include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
 
 #include <algorithm>
 #include <boost/bind.hpp>
 
-TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning) :
+Q_DECLARE_METATYPE(boost::shared_ptr<Tuning>);
+
+TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
+                           boost::shared_ptr<TuningDictionary> tuningDictionary) :
     QDialog(parent),
-    ui(new Ui::TuningDialog)
+    ui(new Ui::TuningDialog),
+    tuningDictionary(tuningDictionary)
 {
     ui->setupUi(this);
 
@@ -43,6 +48,10 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning) :
     ui->numStringsSpinBox->setMaximum(Tuning::MAX_STRING_COUNT);
     ui->numStringsSpinBox->setValue(currentTuning.GetStringCount());
     connect(ui->numStringsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateEnabledStrings(int)));
+    connect(ui->numStringsSpinBox, SIGNAL(valueChanged(int)), this, SLOT(updateTuningDictionary(int)));
+
+    connect(ui->presetComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(loadPreset()));
 
     stringSelectors.push_back(ui->string1);
     stringSelectors.push_back(ui->string2);
@@ -53,6 +62,7 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning) :
     stringSelectors.push_back(ui->string7);
     stringSelectors.push_back(ui->string8);
 
+    updateTuningDictionary(currentTuning.GetStringCount());
     generateNoteNames(currentTuning.UsesSharps());
     initStringSelectors(currentTuning);
     updateEnabledStrings(currentTuning.GetStringCount());
@@ -116,6 +126,36 @@ void TuningDialog::updateEnabledStrings(int numStrings)
     
     std::for_each(stringSelectors.begin() + numStrings, stringSelectors.end(),
                   boost::bind(&QComboBox::setEnabled, _1, false));
+}
+
+/// Load all tuning presets for the specified number of strings.
+void TuningDialog::updateTuningDictionary(int numStrings)
+{
+    std::vector<boost::shared_ptr<Tuning> > tunings;
+    tuningDictionary->findTunings(tunings, numStrings);
+
+    ui->presetComboBox->clear();
+
+    for (size_t i = 0; i < tunings.size(); ++i)
+    {
+        boost::shared_ptr<Tuning> tuning = tunings[i];
+        ui->presetComboBox->addItem(QString("%1 - %2").arg(
+                    QString::fromStdString(tuning->GetName()),
+                    QString::fromStdString(tuning->GetSpelling())),
+                QVariant::fromValue(tuning));
+    }
+}
+
+/// Load the currently-selected tuning preset.
+void TuningDialog::loadPreset()
+{
+    if (ui->presetComboBox->currentIndex() < 0)
+        return;
+
+    boost::shared_ptr<Tuning> tuning = ui->presetComboBox->itemData(
+                ui->presetComboBox->currentIndex()).value<boost::shared_ptr<Tuning> >();
+    ui->sharpsCheckBox->setChecked(tuning->UsesSharps());
+    initStringSelectors(*tuning);
 }
 
 Tuning TuningDialog::getNewTuning() const

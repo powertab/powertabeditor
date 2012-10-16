@@ -28,12 +28,14 @@ class SkinManager;
 class MixerInstrument;
 class Guitar;
 class QVBoxLayout;
+class TuningDictionary;
 
 class Mixer : public QFrame
 {
     Q_OBJECT
 public:
-    Mixer(QFrame *parent = 0);
+    Mixer(boost::shared_ptr<TuningDictionary> tuningDictionary,
+          QFrame *parent = 0);
 
     void addInstrument(boost::shared_ptr<Guitar> guitar);
     void removeInstrument(size_t index);
@@ -45,6 +47,7 @@ signals:
 
 private:
     std::vector<boost::shared_ptr<MixerInstrument> > channelList;
+    boost::shared_ptr<TuningDictionary> tuningDictionary;
     QVBoxLayout* layout;
 
 private slots:

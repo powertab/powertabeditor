@@ -55,7 +55,7 @@ void TuningDictionary::load()
 }
 
 /// Saves the tuning dictionary to a file.
-void TuningDictionary::save()
+void TuningDictionary::save() const
 {
     try
     {
@@ -77,6 +77,22 @@ void TuningDictionary::save()
 void TuningDictionary::loadInBackground()
 {
     QtConcurrent::run(this, &TuningDictionary::load);
+}
+
+/// Returns all tunings with the specified number of strings.
+void TuningDictionary::findTunings(
+        std::vector<boost::shared_ptr<Tuning> >& outTunings, size_t numStrings) const
+{
+    outTunings.clear();
+
+    for (size_t i = 0; i < tunings.size(); ++i)
+    {
+        boost::shared_ptr<Tuning> tuning = tunings[i];
+        if (tuning->GetStringCount() == numStrings)
+        {
+            outTunings.push_back(tuning);
+        }
+    }
 }
 
 std::string TuningDictionary::tuningFilePath()

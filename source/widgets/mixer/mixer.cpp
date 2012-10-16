@@ -23,8 +23,10 @@
 
 using boost::shared_ptr;
 
-Mixer::Mixer(QFrame *parent) :
-    QFrame(parent)
+Mixer::Mixer(boost::shared_ptr<TuningDictionary> tuningDictionary,
+             QFrame *parent) :
+    QFrame(parent),
+    tuningDictionary(tuningDictionary)
 {
     setFrameStyle(QFrame::StyledPanel);
 
@@ -36,7 +38,8 @@ Mixer::Mixer(QFrame *parent) :
 
 void Mixer::addInstrument(shared_ptr<Guitar> guitar)
 {
-    boost::shared_ptr<MixerInstrument> channel(new MixerInstrument(guitar));
+    boost::shared_ptr<MixerInstrument> channel(
+                new MixerInstrument(guitar, tuningDictionary, this));
     layout->addWidget(channel.get());
 
     channelList.push_back(channel);

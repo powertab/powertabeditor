@@ -37,9 +37,12 @@
 
 using boost::shared_ptr;
 
-MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument, QWidget *parent) :
+MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument,
+                                 shared_ptr<TuningDictionary> tuningDictionary,
+                                 QWidget *parent) :
     QWidget(parent),
-    guitar(instrument)
+    guitar(instrument),
+    tuningDictionary(tuningDictionary)
 {
     layout = new QHBoxLayout;
 
@@ -260,7 +263,7 @@ void MixerInstrument::changeInstrumentName(QString name)
 
 void MixerInstrument::editTuning()
 {
-    TuningDialog dialog(this, guitar->GetTuning());
+    TuningDialog dialog(this, guitar->GetTuning(), tuningDictionary);
 
     if (dialog.exec() == QDialog::Accepted)
     {

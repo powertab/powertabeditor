@@ -30,14 +30,16 @@ public:
     TuningDictionary();
 
     void load();
-    void save();
-
+    void save() const;
     void loadInBackground();
+
+    void findTunings(std::vector<boost::shared_ptr<Tuning> >& outTunings,
+                     size_t numStrings) const;
 
 private:
     static std::string tuningFilePath();
 
-    QMutex mutex;
+    mutable QMutex mutex;
     std::vector<boost::shared_ptr<Tuning> > tunings;
 };
 

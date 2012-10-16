@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>839</width>
-    <height>176</height>
+    <width>846</width>
+    <height>241</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -96,6 +96,20 @@
         <widget class="QComboBox" name="string8"/>
        </item>
       </layout>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="presetLabel">
+       <property name="text">
+        <string>Preset:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="presetComboBox">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
