@@ -50,6 +50,7 @@
 #include <app/recentfiles.h>
 #include <app/pubsub/settingspubsub.h>
 #include <app/pubsub/systemlocationpubsub.h>
+#include <app/tuningdictionary.h>
 
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/chordnamedialog.h>
@@ -138,7 +139,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     fileFormatManager(new FileFormatManager),
     mixerList(new QStackedWidget),
     playbackToolbarList(new QStackedWidget),
-    settingsPubSub(new SettingsPubSub())
+    settingsPubSub(new SettingsPubSub()),
+    tuningDictionary(new TuningDictionary())
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
@@ -200,6 +202,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     // Install a top-level event filter to catch keyboard events (i.e. for
     // entering tab numbers) regardless of which widget has focus.
     installEventFilter(this);
+
+    tuningDictionary->loadInBackground();
 }
 
 PowerTabEditor::~PowerTabEditor()

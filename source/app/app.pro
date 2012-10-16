@@ -8,7 +8,8 @@ SOURCES += \
     skinmanager.cpp \
     command.cpp \
     clipboard.cpp \
-    recentfiles.cpp
+    recentfiles.cpp \
+    tuningdictionary.cpp
 
 HEADERS += common.h \
     documentmanager.h \
@@ -21,4 +22,5 @@ HEADERS += common.h \
     recentfiles.h \
     pubsub/pubsub.h \
     pubsub/systemlocationpubsub.h \
-    pubsub/settingspubsub.h
+    pubsub/settingspubsub.h \
+    tuningdictionary.h

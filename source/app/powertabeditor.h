@@ -51,6 +51,7 @@ class Caret;
 class PlaybackWidget;
 class SettingsPubSub;
 class SystemLocation;
+class TuningDictionary;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -329,6 +330,7 @@ private:
     boost::scoped_ptr<MidiPlayer> midiPlayer;
 
     boost::shared_ptr<SettingsPubSub> settingsPubSub;
+    boost::shared_ptr<TuningDictionary> tuningDictionary;
 
 private:
     /// helper function for connecting an action to the performToggleProperty slot

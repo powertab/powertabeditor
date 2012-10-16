@@ -21,14 +21,15 @@ RESOURCES += resources.qrc
 !equals($${PWD}, $${OUT_PWD}) {
     # copy skins folder to output directory
     unix:!macx: {
-        QMAKE_POST_LINK += cp -rf "$${PWD}/../skins" "$${OUT_PWD}"
+        QMAKE_POST_LINK += cp -rf "$${PWD}/../skins" "$${PWD}/../data" "$${OUT_PWD}"
     }
     # ignore hidden folders (i.e. .svn)
     macx {
         QMAKE_POST_LINK += rsync -av --exclude='.*'\
-            "$${PWD}/../skins" "$${OUT_PWD}/powertabeditor.app/Contents/MacOS/"
+            "$${PWD}/../skins" "$${PWD}/../data" "$${OUT_PWD}/powertabeditor.app/Contents/MacOS/"
     }
     win32 {
         QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/../skins\" \"$${OUT_PWD}/skins\"
+        QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/../data\" \"$${OUT_PWD}/data\"
     }
 }
