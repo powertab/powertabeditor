@@ -262,9 +262,12 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                                                   caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
                                                   currentStaff));
                 }
+
+                return true;
             }
         }
     }
+
     return QMainWindow::eventFilter(object, event);
 }
 
