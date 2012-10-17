@@ -42,7 +42,7 @@ struct Gp4Fixture
     {
         BOOST_REQUIRE_NO_THROW(importer.load(FILE_TEST1));
         doc = importer.load(FILE_TEST1);
-        score = doc->GetGuitarScore();
+        score = doc->GetScore(0);
     }
 
     GuitarProImporter importer;

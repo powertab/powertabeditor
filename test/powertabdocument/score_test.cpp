@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_SUITE(ScoreTest)
 
     BOOST_AUTO_TEST_CASE(CopyAndEquality)
     {
-        Score score1, score2;
+        Score score1("Guitar"), score2("Guitar");
         
         // basic checks for equality
         BOOST_CHECK(score1 == score2);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_SUITE(ScoreTest)
 
     BOOST_AUTO_TEST_CASE(InsertTempoMarker)
     {
-        Score score;
+        Score score("Guitar");
 
         BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 0u);
 
@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_SUITE(ScoreTest)
 
     BOOST_AUTO_TEST_CASE(Dynamics)
     {
-        Score score;
+        Score score("Guitar");
         BOOST_CHECK_EQUAL(score.GetDynamicCount(), 0u);
 
         boost::shared_ptr<Dynamic> dynamic = boost::make_shared<Dynamic>(1, 2, 3, Dynamic::mp, Dynamic::notSet);

@@ -30,6 +30,7 @@
 struct ScoreFixture
 {
     ScoreFixture() :
+        score("Guitar"),
         system1(new System),
         system2(new System),
         system3(new System),

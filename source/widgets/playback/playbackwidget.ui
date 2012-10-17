@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>325</width>
+    <width>418</width>
     <height>27</height>
    </rect>
   </property>
@@ -30,11 +30,11 @@
     <widget class="QComboBox" name="scoreSelector">
      <property name="toolTip">
       <string>Select the score to view.</string>
-    </property>
+     </property>
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line">
+    <widget class="Line" name="line2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -58,7 +58,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line">
+    <widget class="Line" name="line1">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
