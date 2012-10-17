@@ -30,29 +30,29 @@ RtMidiWrapper::RtMidiWrapper() :
 
     // create all MIDI APIs supported on this platform
     // catch exceptions to prevent memory leaks
-    try
-    {
-        std::vector<RtMidi::Api> rtMidiApis;
-        RtMidi::getCompiledApi(rtMidiApis);
+    std::vector<RtMidi::Api> rtMidiApis;
+    RtMidi::getCompiledApi(rtMidiApis);
 
-        std::vector<RtMidi::Api>::const_iterator it;
-        for (it = rtMidiApis.begin(); it != rtMidiApis.end(); ++it)
+    std::vector<RtMidi::Api>::const_iterator it;
+    for (it = rtMidiApis.begin(); it != rtMidiApis.end(); ++it)
+    {
+        try
         {
-            midiouts.push_back(new RtMidiOut(*it));
+            std::auto_ptr<RtMidiOut> midiOut(new RtMidiOut(*it));
+            midiouts.push_back(midiOut.release());
         }
+        catch (...)
+        {
+            // continue anyway, another api might work
+            // found on mac that the Core API kept failing after repeated 
+            // creations and the exceptions weren't caught
+            // TODO investigate why.
+        }
+    }
 
-        // select a default midiout
-        assert(midiouts.size() > 0 && "No MIDI APIs compiled");
-        midiout = midiouts[0];
-    }
-    catch (...)
-    {
-        // if a exception is thrown, then the destructor isn't called so we 
-        // must delete any allocated memory
-        dealloc();
-        // let the caller handle the exception further
-        throw;
-    }
+    // select a default midiout
+    assert(midiouts.size() > 0 && "No MIDI APIs compiled");
+    midiout = midiouts[0];
 }
 
 RtMidiWrapper::~RtMidiWrapper()

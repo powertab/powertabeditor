@@ -32,11 +32,6 @@ const uint32_t  PowerTabDocument::DEFAULT_FADE_OUT                          = 0;
 const int32_t   PowerTabDocument::MIN_TABLATURE_STAFF_LINE_SPACING          = 6;
 const int32_t   PowerTabDocument::MAX_TABLATURE_STAFF_LINE_SPACING          = 14;
 
-// Score Constants
-const uint8_t    PowerTabDocument::NUM_SCORES                                = 2;
-const uint8_t    PowerTabDocument::GUITAR_SCORE                              = 0;
-const uint8_t    PowerTabDocument::BASS_SCORE                                = 1;
-
 // Guitar Constants
 const uint8_t    PowerTabDocument::MAX_GUITARS                               = 7;
 
@@ -46,8 +41,9 @@ PowerTabDocument::PowerTabDocument() :
     m_tablatureStaffLineSpacing(DEFAULT_TABLATURE_STAFF_LINE_SPACING),
     m_fadeIn(DEFAULT_FADE_IN), m_fadeOut(DEFAULT_FADE_OUT)
 {
-    m_scoreArray.push_back(new Score);
-    m_scoreArray.push_back(new Score);
+    m_scoreArray.push_back(new Score("Player View"));
+    m_scoreArray.push_back(new Score("Guitar Score"));
+    m_scoreArray.push_back(new Score("Bass Score"));
 }
 
 /// Destructor
@@ -166,21 +162,28 @@ uint32_t PowerTabDocument::GetFadeOut() const
     return m_fadeOut;
 }
 
-/// Returns the guitar score
-Score* PowerTabDocument::GetGuitarScore() const
+/// Returns the number of scores (guitar, bass, etc)
+size_t PowerTabDocument::GetNumberOfScores() const
 {
-    CHECK_THAT(!m_scoreArray.empty(), NULL);
-    return m_scoreArray[GUITAR_SCORE];
+    return m_scoreArray.size();
 }
 
-/// Gets a pointer to the bass score
-/// @return A pointer to the bass score
-Score* PowerTabDocument::GetBassScore() const
+/// Gets a pointer to the score at index
+/// @param index Which score to get
+/// @return A pointer to thescore
+Score* PowerTabDocument::GetScore(size_t index) const
 {
-    CHECK_THAT(m_scoreArray.size() >= 2, NULL);
-    return m_scoreArray[BASS_SCORE];
+    CHECK_THAT(index < m_scoreArray.size(), NULL);
+    return m_scoreArray[index];
 }
 
+/// Gets a pointer to the player score
+/// @return A pointer to the player score
+Score* PowerTabDocument::GetPlayerScore() const
+{
+    CHECK_THAT(0 < m_scoreArray.size(), NULL);
+    return m_scoreArray[0];
+}
 // Save Functions
 /// Serializes the document to an output stream
 /// @param stream Output stream to save to
@@ -262,17 +265,20 @@ bool PowerTabDocument::Deserialize(PowerTabInputStream& stream)
     // Set the version
     const uint16_t version = m_header.GetVersion();
 
-    // Read the guitar score
-    m_scoreArray.push_back(new Score);
-    m_scoreArray[0]->Deserialize(stream, version);
+    // the Player view
+    m_scoreArray.push_back(new Score("Player View"));
+
+    // Read the guitar score and add to the Player view
+    m_scoreArray.push_back(new Score("Guitar Score"));
+    m_scoreArray[1]->Deserialize(stream, version);
+    m_scoreArray[0]->MergeScore(*(m_scoreArray[1]));
 
     if (version <= PowerTabFileHeader::Version_1_7)
     {
-        // Read the bass score
-        m_scoreArray.push_back(new Score);
-        m_scoreArray[1]->Deserialize(stream, version);
-
-        m_scoreArray[0]->MergeScore(*m_scoreArray[1]);
+        // Read the bass score and add to the Player view (TODO)
+        m_scoreArray.push_back(new Score("Bass Score"));
+        m_scoreArray[2]->Deserialize(stream, version);
+        //m_scoreArray[0]->MergeScore(*(m_scoreArray[2]));
     }
 
     // Read the document font settings
@@ -282,6 +288,12 @@ bool PowerTabDocument::Deserialize(PowerTabInputStream& stream)
         fontSetting.Deserialize(stream, version);
 
         m_fontSettings[fontSettingIndex] = fontSetting;
+    }
+
+    // make the Player view look like the player view
+    if (version == PowerTabFileHeader::Version_1_7)
+    {
+        m_scoreArray[0]->UpdateToVer2Structure();
     }
 
     // Read the line spacing and fade values
@@ -314,5 +326,8 @@ void PowerTabDocument::DeleteScoreArrayContents()
 /// Initializes the document to an empty score (only necessary for creating new documents, not opening existing ones)
 void PowerTabDocument::Init()
 {
-    GetGuitarScore()->Init();
+    for (size_t i = 0; i < GetNumberOfScores(); ++i)
+    {
+        GetScore(i)->Init();
+    }
 }

@@ -38,11 +38,13 @@ public:
 
     int playbackSpeed() const;
     void setPlaybackMode(bool isPlaying);
+    void onDocumentUpdated(QStringList& scores);
 
 signals:
     void playbackSpeedChanged(int speed);
     void playbackButtonToggled();
     void rewindToStartClicked();
+    void scoreSelected(int scoreIndex);
 
 private slots:
     void onMetronomeButtonToggled(bool enable);

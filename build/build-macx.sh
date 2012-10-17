@@ -597,7 +597,7 @@ if [ $actionPackage == 1 ]; then
 }
 else
 {
-    Log SKIPPED
+    Log SKIPPED \
         "Packaging."
 } fi
 

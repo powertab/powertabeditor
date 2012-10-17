@@ -33,11 +33,6 @@ public:
     static const int32_t    MIN_TABLATURE_STAFF_LINE_SPACING;       ///< Minimum allowed value for the tablature staff line spacing member variable
     static const int32_t    MAX_TABLATURE_STAFF_LINE_SPACING;       ///< Maximum allowed value for the tablature staff line spacing member variable
 
-    // Score Constants
-    static const uint8_t    NUM_SCORES;                             ///< Number of scores per document (guitar + bass)
-    static const uint8_t    GUITAR_SCORE;                           ///< Index of the guitar score
-    static const uint8_t    BASS_SCORE;                             ///< Index of the bass score
-
     // Guitar Constants
     static const uint8_t     MAX_GUITARS;                           ///< Maximum number of guitars allowed per document
 
@@ -81,8 +76,9 @@ public:
     void SetHeader(const PowerTabFileHeader& header);
 
     // Score Functions
-    Score* GetGuitarScore() const;
-    Score* GetBassScore() const;
+    size_t GetNumberOfScores() const;
+    Score* GetPlayerScore() const;
+    Score* GetScore(size_t index) const;
     void DeleteScoreArrayContents();
 
     // Font Setting Functions

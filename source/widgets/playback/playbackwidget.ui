@@ -27,6 +27,20 @@
     <number>0</number>
    </property>
    <item>
+    <widget class="QComboBox" name="scoreSelector">
+     <property name="toolTip">
+      <string>Select the score to view.</string>
+    </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="speedLabel">
      <property name="text">
       <string>Speed:</string>

@@ -51,7 +51,7 @@ public:
 
 // Constructor/Destructor
 public:
-    Score();
+    Score(const char* name);
     Score(const Score& score);
 
     void Init();
@@ -148,6 +148,8 @@ public:
 
     void MergeScore(const Score& otherScore);
 
+    std::string GetScoreName() const;
+
 private:
     std::vector<GuitarPtr> m_guitarArray; ///< Guitars used by the score.
     std::vector<ChordDiagramPtr> m_chordDiagramArray; ///< Chord diagrams used in the score.
@@ -157,6 +159,7 @@ private:
     std::vector<DynamicPtr> m_dynamicArray; ///< Dynamic markers used in the score.
     std::vector<AlternateEndingPtr> m_alternateEndingArray; ///< Alternate endings used in the score.
     std::vector<SystemPtr> m_systemArray; ///< Systems used in the score.
+    std::string m_scoreName; ///< Name of the score (e.g. Bass, Guitar, etc)
 
 };
 

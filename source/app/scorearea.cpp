@@ -36,6 +36,7 @@
 ScoreArea::ScoreArea(PowerTabEditor *editor) :
     editor(editor),
     caret(NULL),
+    scoreIndex(0),
     keySignatureClicked(boost::make_shared<SystemLocationPubSub>()),
     timeSignatureClicked(boost::make_shared<SystemLocationPubSub>())
 {
@@ -56,7 +57,7 @@ void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
     // Set up the caret
     caret = new Caret(doc->GetTablatureStaffLineSpacing());
     connect(caret, SIGNAL(moved()), this, SLOT(adjustScroll()));
-    caret->setScore(doc->GetGuitarScore());
+    caret->setScore(doc->GetScore(scoreIndex));
     caret->updatePosition();
 
     editor->registerCaret(caret);
@@ -65,7 +66,7 @@ void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
 
     // Render each score
     // Only worry about the guitar score so far
-    renderScore(document->GetGuitarScore(), lineSpacing);
+    renderScore(document->GetScore(scoreIndex), lineSpacing);
 }
 
 /// Updates the system after changes have been made
@@ -83,7 +84,7 @@ void ScoreArea::updateSystem(const uint32_t systemIndex)
         delete systemList.takeAt(systemIndex);
 
         // redraw the system
-        const Score* currentScore = document->GetGuitarScore();
+        const Score* currentScore = document->GetScore(scoreIndex);
         
         SystemRenderer renderer(this, currentScore,
                                 document->GetTablatureStaffLineSpacing());
@@ -151,4 +152,14 @@ void ScoreArea::renderScore(const Score* score, int lineSpacing)
 void ScoreArea::adjustScroll()
 {
     ensureVisible(caret, 50, 100);
+}
+
+void ScoreArea::setScoreIndex(int newScoreIndex)
+{
+    assert(newScoreIndex >= 0 && "Invalid newScoreIndex");
+    if (scoreIndex != static_cast<size_t>(newScoreIndex))
+    {
+        scoreIndex = newScoreIndex;
+        renderDocument(document);
+    }
 }

@@ -46,7 +46,7 @@ Gpx::DocumentReader::DocumentReader(const std::string& xml)
 void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
 {
     readHeader(doc->GetHeader());
-    readTracks(doc->GetGuitarScore());
+    readTracks(doc->GetScore(0));
 
     readBars();
     readVoices();
@@ -54,7 +54,7 @@ void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
     readRhythms();
     readNotes();
 
-    readMasterBars(doc->GetGuitarScore());
+    readMasterBars(doc->GetScore(0));
 }
 
 /// Loads the header information (song title, artist, etc)

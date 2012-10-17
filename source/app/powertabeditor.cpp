@@ -1118,9 +1118,10 @@ void PowerTabEditor::setupNewDocument()
             this, SLOT(toggleGuitarVisible(uint32_t,bool)));
 
     QScrollArea* scrollArea = new QScrollArea;
-    for (quint32 i=0; i < doc->GetGuitarScore()->GetGuitarCount(); i++)
+    // show all players
+    for (quint32 i=0; i < doc->GetPlayerScore()->GetGuitarCount(); i++)
     {
-        mixer->addInstrument(doc->GetGuitarScore()->GetGuitar(i));
+        mixer->addInstrument(doc->GetPlayerScore()->GetGuitar(i));
     }
     scrollArea->setWidget(mixer);
     mixerList->addWidget(scrollArea);
@@ -1130,7 +1131,17 @@ void PowerTabEditor::setupNewDocument()
             this, SLOT(startStopPlayback()));
     connect(playback, SIGNAL(rewindToStartClicked()),
             this, SLOT(rewindPlaybackToStart()));
+    connect(playback, SIGNAL(scoreSelected(int)),
+            score, SLOT(setScoreIndex(int)));
     playbackToolbarList->addWidget(playback);
+
+    // ensure all the scores are visible to select
+    QStringList scores;
+    for (size_t i = 0; i < doc->GetNumberOfScores(); ++i)
+    {
+        scores.append(doc->GetScore(i)->GetScoreName().c_str());
+    }
+    playback->onDocumentUpdated(scores);
     
     connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
 

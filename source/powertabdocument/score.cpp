@@ -38,7 +38,8 @@
 #include <boost/bind.hpp>
 
 /// Default Constructor
-Score::Score()
+Score::Score(const char* name)
+    : m_scoreName(name)
 {
 }
 
@@ -64,6 +65,7 @@ const Score& Score::operator=(const Score& score)
         deepCopy(score.m_dynamicArray, m_dynamicArray);
         deepCopy(score.m_alternateEndingArray, m_alternateEndingArray);
         deepCopy(score.m_systemArray, m_systemArray);
+        m_scoreName = score.m_scoreName;
     }
     return *this;
 }
@@ -78,7 +80,8 @@ bool Score::operator==(const Score& score) const
             isDeepEqual(m_tempoMarkerArray, score.m_tempoMarkerArray) &&
             isDeepEqual(m_dynamicArray, score.m_dynamicArray) &&
             isDeepEqual(m_alternateEndingArray, score.m_alternateEndingArray) &&
-            isDeepEqual(m_systemArray, score.m_systemArray));
+            isDeepEqual(m_systemArray, score.m_systemArray) &&
+            m_scoreName == score.m_scoreName);
 }
 
 /// Inequality Operator
@@ -136,11 +139,6 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream.ReadVector(m_dynamicArray, version);
     stream.ReadVector(m_alternateEndingArray, version);
     stream.ReadVector(m_systemArray, version);
-
-    if (version == PowerTabFileHeader::Version_1_7)
-    {
-        UpdateToVer2Structure();
-    }
 
     return true;
 }
@@ -471,9 +469,9 @@ bool Score::RemoveGuitar(size_t index)
 
 void Score::MergeScore(const Score &otherScore)
 {
-    std::for_each(otherScore.m_guitarArray.begin(), otherScore.m_guitarArray.end(),
-                  boost::bind(&Score::InsertGuitar, this, _1));
-
+    std::string keepName = m_scoreName;
+    *(this) = otherScore;
+    m_scoreName = keepName;
     // TODO - actually merge the scores together.
 }
 
@@ -733,4 +731,10 @@ void Score::RemoveDynamic(Score::DynamicPtr dynamic)
     m_dynamicArray.erase(std::remove(m_dynamicArray.begin(),
                                      m_dynamicArray.end(),
                                      dynamic));
+}
+
+/// @return The name of the score
+std::string Score::GetScoreName() const
+{
+    return m_scoreName;
 }

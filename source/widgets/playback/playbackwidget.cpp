@@ -50,6 +50,8 @@ PlaybackWidget::PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
             this, SLOT(onMetronomeButtonToggled(bool)));
     connect(ui->rewindToStartButton, SIGNAL(clicked()),
             this, SIGNAL(rewindToStartClicked()));
+    connect(ui->scoreSelector, SIGNAL(currentIndexChanged(int)),
+            this, SIGNAL(scoreSelected(int)));
 
     connection = pubsub->subscribe(
                 boost::bind(&PlaybackWidget::onSettingChanged, this, _1));
@@ -104,4 +106,10 @@ void PlaybackWidget::onSettingChanged(const std::string &setting)
     {
         updateMetronomeButton();
     }
+}
+
+void PlaybackWidget::onDocumentUpdated(QStringList& scores)
+{
+    ui->scoreSelector->clear();
+    ui->scoreSelector->addItems(scores);
 }

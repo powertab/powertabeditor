@@ -56,6 +56,7 @@ private:
     PowerTabEditor* editor;
     Caret* caret;
     QList<QGraphicsItem*> systemList;
+    size_t scoreIndex;
 
     boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
     boost::shared_ptr<SystemLocationPubSub> timeSignatureClicked;
@@ -68,6 +69,7 @@ signals:
 public slots:
     void adjustScroll();
     void requestFullRedraw();
+    void setScoreIndex(int newScoreIndex);
 };
 
 #endif // SCOREAREA_H

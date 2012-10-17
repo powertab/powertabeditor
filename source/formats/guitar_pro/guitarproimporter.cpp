@@ -63,7 +63,7 @@ boost::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& f
     findFileVersion(stream);
 
     boost::shared_ptr<PowerTabDocument> ptbDoc = boost::make_shared<PowerTabDocument>();
-    Score* score = ptbDoc->GetGuitarScore();
+    Score* score = ptbDoc->GetScore(0);
 
     readHeader(stream, ptbDoc->GetHeader());
 
