@@ -453,8 +453,8 @@ void Layout::FormatSystem(boost::shared_ptr<System> system)
             system->GetFirstPositionX() -
             system->GetCumulativeInternalKeyAndTimeSignatureWidth();
 
-    // Add a position for padding.
-    const int numPositions = system->GetMaxPosition() + 1;
+    // Add some padding.
+    const int numPositions = system->GetMaxPosition() + 2;
 
     system->SetPositionSpacing(availableWidth / numPositions);
 }
