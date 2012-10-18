@@ -169,10 +169,10 @@ QString StdNotationPainter::getAccidentalText() const
         text += QChar(MusicFont::AccidentalSharp);
         break;
     case DOUBLE_FLAT:
-        text += QString(2, QChar(MusicFont::AccidentalFlat));
+        text += QChar(MusicFont::AccidentalDoubleFlat);
         break;
     case DOUBLE_SHARP:
-        text += QString(2, QChar(MusicFont::AccidentalSharp));
+        text += QChar(MusicFont::AccidentalDoubleSharp);
         break;
     case NATURAL:
         text += QChar(MusicFont::Natural);
