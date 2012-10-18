@@ -290,6 +290,23 @@ BOOST_AUTO_TEST_SUITE(TestStaff)
         
         note.SetFretNumber(21);
         BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -12);
+
+        // Test some edge cases with B#.
+        {
+            KeySignature sevenSharps(KeySignature::majorKey, 7);
+            note.SetString(4);
+            note.SetFretNumber(1);
+            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 12);
+
+            note.SetFretNumber(2);
+            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 11);
+
+            note.SetFretNumber(3);
+            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 11);
+
+            note.SetFretNumber(4);
+            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 10);
+        }
         
         // Bass clef
         staff.SetClef(Staff::BASS_CLEF);

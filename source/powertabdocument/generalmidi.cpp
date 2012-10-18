@@ -229,12 +229,26 @@ namespace midi
 
     /// Gets the octave value for a MIDI note
     /// @param note MIDI note to get the octave value for
+    /// @param noteText Text representation of the note, without accidentals.
+    /// This is used for handling unusual accidentals like B# or Cb.
     /// @return The octave value for the MIDI note
-    int32_t GetMidiNoteOctave(uint8_t note)
+    int32_t GetMidiNoteOctave(uint8_t note, char noteText)
     {
-        //------Last Checked------//
-        // - Dec 9, 2004
-        return ((note / 12) - 1);
+        int32_t octave = (note / 12) - 1;
+
+        // Handle special cases of B# and Cb, where the normal octave calculation
+        // is off by one.
+        const uint8_t pitch = GetMidiNotePitch(note);
+        if (pitch == MIDI_NOTE_KEY_C && noteText == 'B')
+        {
+            octave--;
+        }
+        else if (pitch == MIDI_NOTE_KEY_B && noteText == 'C')
+        {
+            octave++;
+        }
+
+        return octave;
     }
 
     /// Determines if a MIDI note volume is valid

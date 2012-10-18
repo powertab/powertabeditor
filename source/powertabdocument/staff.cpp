@@ -881,7 +881,7 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
     const std::string noteText = midi::GetMidiNoteText(pitch, 
             activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals(),
             activeKeySig.NumberOfAccidentals());
-    
+
     // find the position of the note, ignoring accidentals (i.e. C# -> C)
     int y = notePositions.find(noteText[0])->second;
     
@@ -893,7 +893,9 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
     const uint8_t TOP_NOTE = (GetClef() == TREBLE_CLEF) ? midi::MIDI_NOTE_F4 : midi::MIDI_NOTE_A2;
     
     // add octave shifts
-    y += 7 * (midi::GetMidiNoteOctave(TOP_NOTE) - midi::GetMidiNoteOctave(pitch)) + 7 * note->GetOctaveOffset();
+    y += 7 * (midi::GetMidiNoteOctave(TOP_NOTE) -
+              midi::GetMidiNoteOctave(pitch, noteText[0])) +
+            7 * note->GetOctaveOffset();
     
     return y;
 }
