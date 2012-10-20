@@ -466,18 +466,28 @@ std::vector<Position*> Caret::getSelectedPositions() const
     return positions;
 }
 
-/// Returns a list of all of the Note objects that are currently selected
+/// Returns a list of all of the Note objects that are currently selected.
 std::vector<Note*> Caret::getSelectedNotes() const
 {
-    const std::vector<Position*> positions = getSelectedPositions();
-
     std::vector<Note*> notes;
 
-    for (size_t i = 0; i < positions.size(); i++)
+    if (hasSelection())
     {
-        for (size_t j = 0; j < positions[i]->GetNoteCount(); j++)
+        const std::vector<Position*> positions = getSelectedPositions();
+        for (size_t i = 0; i < positions.size(); i++)
         {
-            notes.push_back(positions[i]->GetNote(j));
+            for (size_t j = 0; j < positions[i]->GetNoteCount(); j++)
+            {
+                notes.push_back(positions[i]->GetNote(j));
+            }
+        }
+    }
+    else
+    {
+        Note* selectedNote = getCurrentNote();
+        if (selectedNote)
+        {
+            notes.push_back(selectedNote);
         }
     }
 
