@@ -370,7 +370,7 @@ double MidiPlayer::generateEventsForBar(
                 {
                     uint8_t otherFret = 0;
                     note->GetTrill(otherFret);
-                    otherPitch = pitch + (note->GetFretNumber() - otherFret);
+                    otherPitch = pitch + (otherFret - note->GetFretNumber());
                 }
 
                 for (int k = 0; k < numNotes; ++k)
