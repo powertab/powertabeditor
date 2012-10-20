@@ -20,7 +20,8 @@ HEADERS += \
     timesignaturedialog.h \
     volumeswelldialog.h \
     irregulargroupingdialog.h \
-    fileinformationdialog.h
+    fileinformationdialog.h \
+    gotorehearsalsigndialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -37,7 +38,8 @@ SOURCES += \
     timesignaturedialog.cpp \
     volumeswelldialog.cpp \
     irregulargroupingdialog.cpp \
-    fileinformationdialog.cpp
+    fileinformationdialog.cpp \
+    gotorehearsalsigndialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -49,4 +51,5 @@ FORMS += \
     volumeswelldialog.ui \
     irregulargroupingdialog.ui \
     keysignaturedialog.ui \
-    fileinformationdialog.ui
+    fileinformationdialog.ui \
+    gotorehearsalsigndialog.ui

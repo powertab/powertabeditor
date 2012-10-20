@@ -66,6 +66,7 @@
 #include <dialogs/volumeswelldialog.h>
 #include <dialogs/irregulargroupingdialog.h>
 #include <dialogs/fileinformationdialog.h>
+#include <dialogs/gotorehearsalsigndialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -409,6 +410,12 @@ void PowerTabEditor::createActions()
     clearCurrentPositionAct = new Command(tr("Clear Position"), "Position.ClearPosition",
                                           QKeySequence::DeleteEndOfWord, this);
     connect(clearCurrentPositionAct, SIGNAL(triggered()), this, SLOT(clearCurrentPosition()));
+
+    gotoRehearsalSignAct = new Command(tr("Go To Rehearsal Sign..."),
+                                       "Position.GoToRehearsalSign",
+                                       Qt::CTRL + Qt::Key_H, this);
+    connect(gotoRehearsalSignAct, SIGNAL(triggered()),
+            this, SLOT(gotoRehearsalSign()));
 
     // Text-related actions
     chordNameAct = new Command(tr("Chord Name..."), "Text.ChordName", Qt::Key_C, this);
@@ -837,6 +844,8 @@ void PowerTabEditor::createMenus()
     positionMenu->addSeparator();
     positionMenu->addAction(clearNoteAct);
     positionMenu->addAction(clearCurrentPositionAct);
+    positionMenu->addSeparator();
+    positionMenu->addAction(gotoRehearsalSignAct);
 
     // Text Menu
     textMenu = menuBar()->addMenu(tr("&Text"));
@@ -1512,6 +1521,20 @@ void PowerTabEditor::moveCaretToNextBar()
 void PowerTabEditor::moveCaretToPrevBar()
 {
     getCurrentScoreArea()->getCaret()->moveCaretToPrevBar();
+}
+
+/// Allows the user to jump to a specific rehearsal sign.
+void PowerTabEditor::gotoRehearsalSign()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    GoToRehearsalSignDialog dialog(this, caret->getCurrentScore());
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        SystemLocation location = dialog.getLocation();
+        caret->setCurrentSystemIndex(location.getSystemIndex());
+        caret->setCurrentPositionIndex(location.getPositionIndex());
+    }
 }
 
 void PowerTabEditor::changePositionSpacing(int offset)

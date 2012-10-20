@@ -130,6 +130,8 @@ private slots:
     void moveCaretToNextBar();
     void moveCaretToPrevBar();
 
+    void gotoRehearsalSign();
+
     void editChordName();
     void editRehearsalSign();
     void editRepeatEnding();
@@ -215,6 +217,7 @@ private:
     Command* shiftBackwardAct;
     Command* clearNoteAct; // clears the active note
     Command* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
+    Command* gotoRehearsalSignAct;
 
     QMenu* positionStaffMenu;
     Command* nextPositionAct; // navigate to the next position in the staff
