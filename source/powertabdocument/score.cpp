@@ -278,18 +278,9 @@ void Score::UpdateToVer2Structure()
         // clear out the old staves, and swap in the new ones
         currentSystem->m_staffArray = newStaves;
 
-        // readjust locations / heights
-        currentSystem->CalculateHeight();
-        if (i != 0) // adjust the location of every staff after the first
-        {
-            Rect currentRect = currentSystem->GetRect();
-            Rect prevRect = m_systemArray.at(i-1)->GetRect();
-            currentRect.SetY(prevRect.GetBottom() + SYSTEM_SPACING);
-            currentSystem->SetRect(currentRect);
-        }
-
-        // recalculate the beaming for the member staves, using the current beaming algorithm
-        currentSystem->CalculateBeamingForStaves();
+        // Compute the system height, beaming, etc, since there are rendering
+        // differences versus v1.7.
+        UpdateSystemHeight(currentSystem);
     }
 }
 
