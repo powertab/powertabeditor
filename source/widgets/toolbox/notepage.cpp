@@ -232,12 +232,12 @@ void NotePage::createVibratoTremoloButtons()
     vibratoTremoloGroup = new QGroupBox(tr("Vibrato && Tremolo"));
     vibratoTremoloLayout = new QHBoxLayout;
 
-    slightVibratoButton = new QPushButton(QIcon(":images/slightvibrato.gif"),"");
-    slightVibratoButton->setToolTip(tr("Slight Vibrato"));
-    initButton(slightVibratoButton);
-    connectButtonToAction(slightVibratoButton, mainWindow->vibratoAct);
+    vibratoButton = new QPushButton(QIcon(":images/vibrato.png"),"");
+    vibratoButton->setToolTip(tr("Vibrato"));
+    initButton(vibratoButton);
+    connectButtonToAction(vibratoButton, mainWindow->vibratoAct);
 
-    wideVibratoButton = new QPushButton(QIcon(":images/widevibrato.gif"),"");
+    wideVibratoButton = new QPushButton(QIcon(":images/widevibrato.png"),"");
     wideVibratoButton->setToolTip(tr("Wide Vibrato"));
     initButton(wideVibratoButton);
     connectButtonToAction(wideVibratoButton, mainWindow->wideVibratoAct);
@@ -246,17 +246,17 @@ void NotePage::createVibratoTremoloButtons()
     bendButton->setToolTip(tr("Bend"));
     initButton(bendButton);
 
-    trillButton = new QPushButton(QIcon(":images/trill.gif"),"");
+    trillButton = new QPushButton(QIcon(":images/trill.png"),"");
     trillButton->setToolTip(tr("Trill"));
     initButton(trillButton);
     connectButtonToAction(trillButton, mainWindow->trillAction);
 
-    tremoloButton = new QPushButton(QIcon(":images/tremolo.gif"),"");
+    tremoloButton = new QPushButton(QIcon(":images/tremolo.png"),"");
     tremoloButton->setToolTip(tr("Tremolo"));
     initButton(tremoloButton);
     connectButtonToAction(tremoloButton, mainWindow->tremoloPickingAct);
 
-    vibratoTremoloLayout->addWidget(slightVibratoButton);
+    vibratoTremoloLayout->addWidget(vibratoButton);
     vibratoTremoloLayout->addWidget(wideVibratoButton);
     vibratoTremoloLayout->addWidget(bendButton);
     vibratoTremoloLayout->addWidget(trillButton);

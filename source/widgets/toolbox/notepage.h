@@ -76,7 +76,7 @@ private:
     QPushButton *legatoButton;
 
     // vibrato and tremolo group
-    QPushButton *slightVibratoButton;
+    QPushButton *vibratoButton;
     QPushButton *wideVibratoButton;
     QPushButton *bendButton;
     QPushButton *trillButton;

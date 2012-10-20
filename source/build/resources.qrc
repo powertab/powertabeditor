@@ -12,10 +12,10 @@
         <file alias="slideinbelow.gif">../images/slideinbelow.gif</file>
         <file alias="slideoutdown.gif">../images/slideoutdown.gif</file>
         <file alias="slideoutup.gif">../images/slideoutup.gif</file>
-        <file alias="slightvibrato.gif">../images/slightvibrato.gif</file>
-        <file alias="tremolo.gif">../images/tremolo.gif</file>
-        <file alias="trill.gif">../images/trill.gif</file>
-        <file alias="widevibrato.gif">../images/widevibrato.gif</file>
+        <file alias="vibrato.png">../images/vibrato.png</file>
+        <file alias="widevibrato.png">../images/widevibrato.png</file>
+        <file alias="tremolo.png">../images/tremolo.png</file>
+        <file alias="trill.png">../images/trill.png</file>
         <file alias="tab_close_button.png">../images/tab_close_button.png</file>
         <file alias="addinstrument.gif">../images/addinstrument.gif</file>
         <file alias="addpercussiontrack.gif">../images/addpercussiontrack.gif</file>
