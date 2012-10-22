@@ -20,6 +20,7 @@ public:
 private:
     Ui::TempoMarkerDialog *ui;
     QButtonGroup* beatTypes;
+    QButtonGroup* listessoBeatTypes;
 };
 
 #endif // TEMPOMARKERDIALOG_H

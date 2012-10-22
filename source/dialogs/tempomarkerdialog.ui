@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>161</height>
+    <height>209</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Tempo Marker Dialog</string>
+   <string>Tempo Marker</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -29,6 +29,16 @@
       <widget class="QLabel" name="descriptionLabel">
        <property name="text">
         <string>Description:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="descriptionComboBox">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
        </property>
       </widget>
      </item>
@@ -276,16 +286,6 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="descriptionComboBox">
-       <property name="editable">
-        <bool>true</bool>
-       </property>
-       <property name="sizeAdjustPolicy">
-        <enum>QComboBox::AdjustToContents</enum>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="bpmLabel">
        <property name="text">
@@ -295,6 +295,250 @@
      </item>
      <item row="2" column="1">
       <widget class="QSpinBox" name="bpmSpinBox"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lIstessoLabel">
+       <property name="text">
+        <string>L'istesso:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="listessoNote2Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/half_note</normaloff>:/images/half_note</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoDottedNote2Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/half_note_dotted</normaloff>:/images/half_note_dotted</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoNote4Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/quarter_note</normaloff>:/images/quarter_note</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoDottedNote4Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/dotted_note</normaloff>:/images/dotted_note</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoNote8Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/8th_note</normaloff>:/images/8th_note</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoDottedNote8Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/8th_note_dotted</normaloff>:/images/8th_note_dotted</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoNote16Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/16th_note</normaloff>:/images/16th_note</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoDottedNote16Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/16th_note_dotted</normaloff>:/images/16th_note_dotted</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoNote32Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/32nd_note</normaloff>:/images/32nd_note</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="listessoDottedNote32Button">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/32nd_note_dotted</normaloff>:/images/32nd_note_dotted</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
