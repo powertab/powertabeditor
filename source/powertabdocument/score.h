@@ -104,7 +104,9 @@ public:
     size_t GetTempoMarkerCount() const;
     TempoMarkerPtr GetTempoMarker(uint32_t index) const;
 
-    void GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, SystemConstPtr system) const;
+    void GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers,
+                                 SystemConstPtr system) const;
+    TempoMarkerPtr FindTempoMarker(const SystemLocation& location) const;
 
     void InsertTempoMarker(TempoMarkerPtr marker);
 

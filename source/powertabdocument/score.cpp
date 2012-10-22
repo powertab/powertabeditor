@@ -314,6 +314,20 @@ void Score::GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, S
     GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
 }
 
+/// Returns the tempo marker at the given location, or NULL if it is not found.
+Score::TempoMarkerPtr Score::FindTempoMarker(const SystemLocation &location) const
+{
+    BOOST_FOREACH(TempoMarkerPtr marker, m_tempoMarkerArray)
+    {
+        if (location == SystemLocation(marker->GetSystem(), marker->GetPosition()))
+        {
+            return marker;
+        }
+    }
+
+    return TempoMarkerPtr();
+}
+
 void Score::GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings, SystemConstPtr system) const
 {
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));

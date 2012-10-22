@@ -134,6 +134,7 @@ private slots:
 
     void editChordName();
     void editRehearsalSign();
+    void editTempoMarker();
     void editRepeatEnding();
     void editTiedNote();
     void editHammerPull();
@@ -286,6 +287,7 @@ private:
 
     QMenu* musicSymbolsMenu;
     Command* rehearsalSignAct; // add/remove rehearsal signs
+    Command* tempoMarkerAct;
     Command* keySignatureAct;
     Command* timeSignatureAct;
     Command* barlineAct;

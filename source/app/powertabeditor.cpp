@@ -67,6 +67,7 @@
 #include <dialogs/irregulargroupingdialog.h>
 #include <dialogs/fileinformationdialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
+#include <dialogs/tempomarkerdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -633,6 +634,11 @@ void PowerTabEditor::createActions()
     rehearsalSignAct->setCheckable(true);
     connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
 
+    tempoMarkerAct = new Command(tr("Tempo Marker..."),"MusicSymbols.EditTempoMarker",
+                                 Qt::Key_O, this);
+    tempoMarkerAct->setCheckable(true);
+    connect(tempoMarkerAct, SIGNAL(triggered()), this, SLOT(editTempoMarker()));
+
     keySignatureAct = new Command(tr("Edit Key Signature..."), "MusicSymbols.EditKeySignature",
                                   Qt::Key_K, this);
     connect(keySignatureAct, SIGNAL(triggered()), this,
@@ -903,6 +909,7 @@ void PowerTabEditor::createMenus()
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     musicSymbolsMenu->addAction(rehearsalSignAct);
+    musicSymbolsMenu->addAction(tempoMarkerAct);
     musicSymbolsMenu->addAction(keySignatureAct);
     musicSymbolsMenu->addAction(timeSignatureAct);
     musicSymbolsMenu->addAction(barlineAct);
@@ -1909,6 +1916,13 @@ void PowerTabEditor::editRehearsalSign()
 
 }
 
+/// Add or remove a tempo marker.
+void PowerTabEditor::editTempoMarker()
+{
+    TempoMarkerDialog dialog(this);
+    dialog.exec();
+}
+
 void PowerTabEditor::editHammerPull()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
@@ -2040,8 +2054,13 @@ void PowerTabEditor::updateActions()
     const RehearsalSign* currentRehearsalSign = currentBarline ? &currentBarline->GetRehearsalSign() : NULL;
     updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
 
-    shared_ptr<const AlternateEnding> altEnding = currentScore->FindAlternateEnding(SystemLocation(caret->getCurrentSystemIndex(),
-                                                                                        caret->getCurrentPositionIndex()));
+    const SystemLocation location(caret->getCurrentSystemIndex(),
+                                  caret->getCurrentPositionIndex());
+
+    shared_ptr<const TempoMarker> tempoMarker = currentScore->FindTempoMarker(location);
+    tempoMarkerAct->setChecked(tempoMarker != shared_ptr<const TempoMarker>());
+
+    shared_ptr<const AlternateEnding> altEnding = currentScore->FindAlternateEnding(location);
     repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
 
     Score::DynamicPtr dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
