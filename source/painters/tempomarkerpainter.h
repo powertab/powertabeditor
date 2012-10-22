@@ -33,12 +33,15 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-protected:
+private:
     boost::shared_ptr<const TempoMarker> tempoMarker;
     static QFont displayFont;
     QStaticText displayText;
+    QRectF beatTypeRect;
 
-    void init();
+    QString getBeatTypeImage() const;
+
+    static const int HEIGHT_OFFSET = 2;
 };
 
 #endif // TEMPOMARKERPAINTER_H

@@ -22,10 +22,14 @@
         <file alias="decreasetablineheight.gif">../images/decreasetablineheight.gif</file>
         <file alias="increasetablineheight.gif">../images/increasetablineheight.gif</file>
         <file alias="8th_note">../images/8th_note.png</file>
+        <file alias="8th_note_dotted">../images/8th_note_dotted.png</file>
         <file alias="16th_note">../images/16th_note.png</file>
+        <file alias="16th_note_dotted">../images/16th_note_dotted.png</file>
         <file alias="32nd_note">../images/32nd_note.png</file>
+        <file alias="32nd_note_dotted">../images/32nd_note_dotted.png</file>
         <file alias="64th_note">../images/64th_note.png</file>
         <file alias="half_note">../images/half_note.png</file>
+        <file alias="half_note_dotted">../images/half_note_dotted.png</file>
         <file alias="quarter_note">../images/quarter_note.png</file>
         <file alias="whole_note">../images/whole_note.png</file>
         <file alias="8th_rest">../images/8th_rest.png</file>

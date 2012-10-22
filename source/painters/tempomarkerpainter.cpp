@@ -29,29 +29,74 @@ TempoMarkerPainter::TempoMarkerPainter(boost::shared_ptr<const TempoMarker> temp
     displayFont.setPixelSize(10);
     displayFont.setBold(true);
 
-    init();
-}
+    QFontMetricsF fm(displayFont);
+    const qreal fontHeight = fm.height();
 
-void TempoMarkerPainter::init()
-{
     QString text;
-    text += QString::fromStdString(tempoMarker->GetDescription());
-    text += " ";
+    text += QString::fromStdString(tempoMarker->GetDescription()) + " ";
+
+    const QString imageSpacing(3, ' ');
+    // Reserve space for the beat type image.
+    beatTypeRect = QRectF(fm.width(text), -HEIGHT_OFFSET, fm.width(imageSpacing),
+                          fontHeight + HEIGHT_OFFSET);
+    text += imageSpacing;
+    text += " = ";
+
     text += QString().setNum(tempoMarker->GetBeatsPerMinute());
 
     displayText.setText(text);
     displayText.prepare(QTransform(), displayFont);
 
-    QFontMetricsF fm(displayFont);
-    bounds = QRectF(0, 0, fm.width(text), fm.height());
+    bounds = QRectF(0, 0, fm.width(text), fontHeight);
 }
 
-void TempoMarkerPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void TempoMarkerPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    Q_UNUSED(widget);
-    Q_UNUSED(option);
-
+    painter->setRenderHints(QPainter::SmoothPixmapTransform);
     painter->setFont(displayFont);
+    painter->drawStaticText(0, HEIGHT_OFFSET, displayText);
 
-    painter->drawStaticText(0, 0, displayText);
+    QPixmap image(getBeatTypeImage());
+    painter->drawPixmap(beatTypeRect, image, image.rect());
+}
+
+QString TempoMarkerPainter::getBeatTypeImage() const
+{
+    QString file;
+
+    switch (tempoMarker->GetBeatType())
+    {
+    case TempoMarker::half:
+        file = ":images/half_note";
+        break;
+    case TempoMarker::halfDotted:
+        file = ":images/half_note_dotted";
+        break;
+    case TempoMarker::quarter:
+        file = ":images/quarter_note";
+        break;
+    case TempoMarker::quarterDotted:
+        file = ":images/dotted_note";
+        break;
+    case TempoMarker::eighth:
+        file = ":images/8th_note";
+        break;
+    case TempoMarker::eighthDotted:
+        file = ":images/8th_note_dotted";
+        break;
+    case TempoMarker::sixteenth:
+        file = ":images/16th_note";
+        break;
+    case TempoMarker::sixteenDotted:
+        file = ":images/16th_note_dotted";
+        break;
+    case TempoMarker::thirtySecond:
+        file = ":images/32nd_note";
+        break;
+    case TempoMarker::thirtySecondDotted:
+        file = ":images/32nd_note_dotted";
+        break;
+    }
+
+    return file;
 }
