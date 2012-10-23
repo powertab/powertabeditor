@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>209</height>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -535,6 +535,88 @@
          </property>
          <property name="autoRaise">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="tripletFeelLabel">
+       <property name="text">
+        <string>Triplet Feel:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QCheckBox" name="tripletFeel8thCheckBox">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/triplet_feel_eighth.png</normaloff>:/images/triplet_feel_eighth.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>48</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="tripletFeel8thOffCheckBox">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/triplet_feel_eighth_off.png</normaloff>:/images/triplet_feel_eighth_off.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>48</width>
+           <height>48</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="tripletFeel16thCheckBox">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/triplet_feel_sixteenth.png</normaloff>:/images/triplet_feel_sixteenth.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>48</width>
+           <height>48</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="tripletFeel16thOffCheckBox">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../build/resources.qrc">
+           <normaloff>:/images/triplet_feel_sixteenth_off.png</normaloff>:/images/triplet_feel_sixteenth_off.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>48</width>
+           <height>48</height>
+          </size>
          </property>
         </widget>
        </item>
