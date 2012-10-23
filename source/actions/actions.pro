@@ -48,7 +48,8 @@ HEADERS += \
     edittrackshown.h \
     deletenote.h \
     editfileinformation.h \
-    removetempomarker.h
+    removetempomarker.h \
+    addtempomarker.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -90,4 +91,5 @@ SOURCES += \
     edittrackshown.cpp \
     deletenote.cpp \
     editfileinformation.cpp \
-    removetempomarker.cpp
+    removetempomarker.cpp \
+    addtempomarker.cpp

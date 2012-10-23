@@ -35,7 +35,7 @@ public:
     explicit TempoMarkerDialog(QWidget* parent);
     ~TempoMarkerDialog();
 
-    TempoMarker::Type type() const;
+    TempoMarker::Type markerType() const;
     TempoMarker::BeatType beatType() const;
     TempoMarker::BeatType listessoBeatType() const;
     TempoMarker::TripletFeelType tripletFeelType() const;

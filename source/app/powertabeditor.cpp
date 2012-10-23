@@ -126,6 +126,7 @@
 #include <actions/deletenote.h>
 #include <actions/editfileinformation.h>
 #include <actions/removetempomarker.h>
+#include <actions/addtempomarker.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -1931,7 +1932,24 @@ void PowerTabEditor::editTempoMarker()
         TempoMarkerDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted)
         {
-            // TODO - add tempo marker.
+            marker = boost::make_shared<TempoMarker>();
+            marker->SetSystem(caret->getCurrentSystemIndex());
+            marker->SetPosition(caret->getCurrentPositionIndex());
+            marker->SetType(dialog.markerType());
+            marker->SetTripletFeelType(dialog.tripletFeelType());
+
+            if (dialog.markerType() == TempoMarker::listesso)
+            {
+                marker->SetListesso(dialog.beatType(), dialog.listessoBeatType(),
+                                    dialog.description());
+            }
+            else if (dialog.markerType() == TempoMarker::standardMarker)
+            {
+                marker->SetStandardMarker(dialog.beatType(), dialog.beatsPerMinute(),
+                                          dialog.description(), dialog.tripletFeelType());
+            }
+
+            undoManager->push(new AddTempoMarker(currentScore, marker));
         }
     }
     else

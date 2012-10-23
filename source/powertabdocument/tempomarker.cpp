@@ -52,7 +52,6 @@ TempoMarker::TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
     assert(IsValidPosition(position));
     assert(IsValidBeatType(beatType));
     assert(IsValidBeatsPerMinute(beatsPerMinute));
-    assert(!description.empty());
     assert(IsValidTripletFeelType(tripletFeelType));
     
     SetSystem(system);
@@ -75,7 +74,6 @@ TempoMarker::TempoMarker(uint32_t system, uint32_t position, uint8_t beatType,
     assert(IsValidPosition(position));
     assert(IsValidBeatType(beatType));
     assert(IsValidBeatType(listessoBeatType));
-    assert(!description.empty());
 
     SetSystem(system);
     SetPosition(position);
@@ -209,7 +207,6 @@ bool TempoMarker::SetStandardMarker(uint8_t beatType, uint32_t beatsPerMinute,
 {
     CHECK_THAT(IsValidBeatType(beatType), false);
     CHECK_THAT(IsValidBeatsPerMinute(beatsPerMinute), false);
-    CHECK_THAT(!description.empty(), false);
     CHECK_THAT(IsValidTripletFeelType(tripletFeelType), false);
     
     m_data = 0;
@@ -239,7 +236,6 @@ bool TempoMarker::SetListesso(uint8_t beatType, uint8_t listessoBeatType,
 {
     CHECK_THAT(IsValidBeatType(beatType), false);
     CHECK_THAT(IsValidBeatType(listessoBeatType), false);
-    CHECK_THAT(!description.empty(), false);
     
     // Clear all current data
     m_data = 0;
@@ -420,7 +416,6 @@ uint32_t TempoMarker::GetBeatsPerMinute() const
 /// @return True if the description was set, false if not.
 bool TempoMarker::SetDescription(const std::string& description)
 {
-    CHECK_THAT(!description.empty(), false);
     m_description = description;
     return true;
 }

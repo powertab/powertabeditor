@@ -83,6 +83,8 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget* parent) :
     ui->listessoNote2Button->setChecked(true);
 
     // Prevent triplet feel types from being selected at once.
+    tripletFeelTypes->addButton(ui->tripletFeelNoneCheckBox,
+                                TempoMarker::noTripletFeel);
     tripletFeelTypes->addButton(ui->tripletFeel8thCheckBox,
                                 TempoMarker::tripletFeelEighth);
     tripletFeelTypes->addButton(ui->tripletFeel8thOffCheckBox,
@@ -91,13 +93,12 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget* parent) :
                                 TempoMarker::tripletFeelSixteenth);
     tripletFeelTypes->addButton(ui->tripletFeel16thOffCheckBox,
                                 TempoMarker::tripletFeelSixteenthOff);
+    ui->tripletFeelNoneCheckBox->setChecked(true);
 
     connect(ui->enableListessoCheckBox, SIGNAL(clicked(bool)),
             this, SLOT(onListessoChanged(bool)));
     ui->enableListessoCheckBox->setChecked(false);
     onListessoChanged(false);
-
-    ui->tripletFeelNoneCheckBox->setChecked(true);
 
     connect(ui->showMetronomeMarkerCheckBox, SIGNAL(clicked(bool)),
             this, SLOT(onShowMetronomeMarkerChanged(bool)));
@@ -112,9 +113,9 @@ TempoMarkerDialog::~TempoMarkerDialog()
 }
 
 /// Returns the type of the tempo marker.
-TempoMarker::Type TempoMarkerDialog::type() const
+TempoMarker::Type TempoMarkerDialog::markerType() const
 {
-    if (ui->showMetronomeMarkerCheckBox->isChecked())
+    if (!ui->showMetronomeMarkerCheckBox->isChecked())
     {
         return TempoMarker::notShown;
     }
