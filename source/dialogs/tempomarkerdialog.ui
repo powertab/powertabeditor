@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>489</width>
-    <height>270</height>
+    <width>658</width>
+    <height>297</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -309,6 +309,13 @@
         <number>0</number>
        </property>
        <item>
+        <widget class="QCheckBox" name="enableListessoCheckBox">
+         <property name="text">
+          <string>Enable</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QToolButton" name="listessoNote2Button">
          <property name="text">
           <string/>
@@ -549,6 +556,16 @@
      </item>
      <item row="4" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QCheckBox" name="tripletFeelNoneCheckBox">
+         <property name="text">
+          <string>None</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QCheckBox" name="tripletFeel8thCheckBox">
          <property name="text">
@@ -621,6 +638,16 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="showMetronomeMarkerLabel">
+       <property name="text">
+        <string>Show Metronome Marker:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="showMetronomeMarkerCheckBox"/>
      </item>
     </layout>
    </item>

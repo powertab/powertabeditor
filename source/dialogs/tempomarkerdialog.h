@@ -17,10 +17,15 @@ public:
     explicit TempoMarkerDialog(QWidget* parent);
     ~TempoMarkerDialog();
 
+private slots:
+    void onListessoChanged(bool enabled);
+    void onShowMetronomeMarkerChanged(bool enabled);
+
 private:
     Ui::TempoMarkerDialog *ui;
     QButtonGroup* beatTypes;
     QButtonGroup* listessoBeatTypes;
+    QButtonGroup* tripletFeelTypes;
 };
 
 #endif // TEMPOMARKERDIALOG_H

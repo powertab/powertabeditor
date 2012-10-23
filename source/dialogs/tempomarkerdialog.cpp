@@ -10,7 +10,8 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget* parent) :
     QDialog(parent),
     ui(new Ui::TempoMarkerDialog),
     beatTypes(new QButtonGroup(this)),
-    listessoBeatTypes(new QButtonGroup(this))
+    listessoBeatTypes(new QButtonGroup(this)),
+    tripletFeelTypes(new QButtonGroup(this))
 {
     ui->setupUi(this);
 
@@ -66,10 +67,60 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget* parent) :
                                  TempoMarker::thirtySecondDotted);
     ui->listessoNote2Button->setChecked(true);
 
+    // Prevent triplet feel types from being selected at once.
+    tripletFeelTypes->addButton(ui->tripletFeel8thCheckBox,
+                                TempoMarker::tripletFeelEighth);
+    tripletFeelTypes->addButton(ui->tripletFeel8thOffCheckBox,
+                                TempoMarker::tripletFeelEighthOff);
+    tripletFeelTypes->addButton(ui->tripletFeel16thCheckBox,
+                                TempoMarker::tripletFeelSixteenth);
+    tripletFeelTypes->addButton(ui->tripletFeel16thOffCheckBox,
+                                TempoMarker::tripletFeelSixteenthOff);
+
+    connect(ui->enableListessoCheckBox, SIGNAL(clicked(bool)),
+            this, SLOT(onListessoChanged(bool)));
+    ui->enableListessoCheckBox->setChecked(false);
+    onListessoChanged(false);
+
+    ui->tripletFeelNoneCheckBox->setChecked(true);
+
+    connect(ui->showMetronomeMarkerCheckBox, SIGNAL(clicked(bool)),
+            this, SLOT(onShowMetronomeMarkerChanged(bool)));
+    ui->showMetronomeMarkerCheckBox->setChecked(true);
+
     ui->descriptionComboBox->setFocus();
 }
 
 TempoMarkerDialog::~TempoMarkerDialog()
 {
     delete ui;
+}
+
+/// Disable the BPM spinner if listesso is enabled.
+void TempoMarkerDialog::onListessoChanged(bool enabled)
+{
+    foreach (QAbstractButton* button, listessoBeatTypes->buttons())
+    {
+        button->setEnabled(enabled);
+    }
+
+    ui->bpmSpinBox->setEnabled(!enabled);
+}
+
+/// Disable the beat types, BPM spinner, and listesso beat types if the
+/// metronome marker will be hidden.
+void TempoMarkerDialog::onShowMetronomeMarkerChanged(bool enabled)
+{
+    QList<QAbstractButton*> buttons;
+    buttons << beatTypes->buttons() << listessoBeatTypes->buttons();
+
+    foreach (QAbstractButton* button, buttons)
+    {
+        button->setEnabled(enabled);
+    }
+
+    ui->bpmSpinBox->setEnabled(enabled);
+
+    // Keep the state of the listesso buttons consistent.
+    onListessoChanged(ui->enableListessoCheckBox->isChecked());
 }
