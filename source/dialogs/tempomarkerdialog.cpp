@@ -1,10 +1,25 @@
+/*
+  * Copyright (C) 2012 Cameron White
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  *
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "tempomarkerdialog.h"
 #include "ui_tempomarkerdialog.h"
 
 #include <QCompleter>
 #include <QButtonGroup>
-
-#include <powertabdocument/tempomarker.h>
 
 TempoMarkerDialog::TempoMarkerDialog(QWidget* parent) :
     QDialog(parent),
@@ -94,6 +109,53 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget* parent) :
 TempoMarkerDialog::~TempoMarkerDialog()
 {
     delete ui;
+}
+
+/// Returns the type of the tempo marker.
+TempoMarker::Type TempoMarkerDialog::type() const
+{
+    if (ui->showMetronomeMarkerCheckBox->isChecked())
+    {
+        return TempoMarker::notShown;
+    }
+    else if (ui->enableListessoCheckBox->isChecked())
+    {
+        return TempoMarker::listesso;
+    }
+    else
+    {
+        return TempoMarker::standardMarker;
+    }
+}
+
+/// Returns the beat type that was selected.
+TempoMarker::BeatType TempoMarkerDialog::beatType() const
+{
+    return static_cast<TempoMarker::BeatType>(beatTypes->checkedId());
+}
+
+/// Returns the listesso beat type that was selected.
+TempoMarker::BeatType TempoMarkerDialog::listessoBeatType() const
+{
+    return static_cast<TempoMarker::BeatType>(listessoBeatTypes->checkedId());
+}
+
+/// Returns the triplet feel type that was selected.
+TempoMarker::TripletFeelType TempoMarkerDialog::tripletFeelType() const
+{
+    return static_cast<TempoMarker::TripletFeelType>(tripletFeelTypes->checkedId());
+}
+
+/// Returns the tempo marker description.
+std::string TempoMarkerDialog::description() const
+{
+    return ui->descriptionComboBox->currentText().toStdString();
+}
+
+/// Returns the beats per minute value that was selected.
+int TempoMarkerDialog::beatsPerMinute() const
+{
+    return ui->bpmSpinBox->value();
 }
 
 /// Disable the BPM spinner if listesso is enabled.

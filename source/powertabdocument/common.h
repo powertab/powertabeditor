@@ -31,6 +31,16 @@ boost::shared_ptr<T> clone_shared_ptr(const boost::shared_ptr<T>& ptr)
     return boost::make_shared<T>(*ptr);
 }
 
+template <typename T>
+struct CompareSharedPtr
+{
+    bool operator()(const boost::shared_ptr<const T>& ptr1,
+                    const boost::shared_ptr<const T>& ptr2)
+    {
+        return *ptr1 < *ptr2;
+    }
+};
+
 /// Performs a deep copy of a vector of shared_ptr
 template <typename T>
 void deepCopy(const std::vector<boost::shared_ptr<T> >& src,

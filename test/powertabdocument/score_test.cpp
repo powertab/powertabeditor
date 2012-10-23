@@ -24,6 +24,7 @@
 #include <powertabdocument/alternateending.h>
 #include <powertabdocument/dynamic.h>
 #include <powertabdocument/tempomarker.h>
+#include <powertabdocument/systemlocation.h>
 
 BOOST_AUTO_TEST_SUITE(ScoreTest)
 
@@ -67,6 +68,23 @@ BOOST_AUTO_TEST_SUITE(ScoreTest)
 
         score.RemoveDynamic(dynamic);
         BOOST_CHECK_EQUAL(score.GetDynamicCount(), 0u);
+    }
+
+    BOOST_AUTO_TEST_CASE(TempoMarkers)
+    {
+        Score score("Guitar");
+        BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 0u);
+
+        boost::shared_ptr<TempoMarker> marker = boost::make_shared<TempoMarker>();
+        marker->SetSystem(1);
+        marker->SetPosition(2);
+        score.InsertTempoMarker(marker);
+
+        BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 1u);
+        BOOST_CHECK_EQUAL(score.FindTempoMarker(SystemLocation(1, 2)), marker);
+
+        score.RemoveTempoMarker(marker);
+        BOOST_CHECK_EQUAL(score.GetTempoMarkerCount(), 0u);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

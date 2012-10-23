@@ -29,7 +29,7 @@ public:
     /// Maximum allowed value for the beats per minute.
     static const uint32_t MAX_BEATS_PER_MINUTE;
 
-    enum types
+    enum Type
     {
         /// Metronome marker is not shown.
         notShown = 0x00,
@@ -41,7 +41,7 @@ public:
         alterationOfPace = 0x03
     };
 
-    enum beatTypes
+    enum BeatType
     {
         half                = 0x00,
         halfDotted          = 0x01,
@@ -55,7 +55,7 @@ public:
         thirtySecondDotted  = 0x09
     };
 
-    enum tripletFeelTypes
+    enum TripletFeelType
     {
         noTripletFeel                   = 0x00,
         tripletFeelEighth               = 0x01,
@@ -64,7 +64,7 @@ public:
         tripletFeelSixteenthOff         = 0x04
     };
 
-    enum flags
+    enum Flags
     {
         /// Mask used to retrieve the beats per minute value.
         beatsPerMinuteMask = 0xffff,

@@ -109,6 +109,7 @@ public:
     TempoMarkerPtr FindTempoMarker(const SystemLocation& location) const;
 
     void InsertTempoMarker(TempoMarkerPtr marker);
+    void RemoveTempoMarker(TempoMarkerPtr marker);
 
 // Dynamic Functions
     bool IsValidDynamicIndex(uint32_t index) const;

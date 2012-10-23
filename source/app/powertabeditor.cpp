@@ -125,6 +125,7 @@
 #include <actions/edittrackshown.h>
 #include <actions/deletenote.h>
 #include <actions/editfileinformation.h>
+#include <actions/removetempomarker.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -1919,8 +1920,24 @@ void PowerTabEditor::editRehearsalSign()
 /// Add or remove a tempo marker.
 void PowerTabEditor::editTempoMarker()
 {
-    TempoMarkerDialog dialog(this);
-    dialog.exec();
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* currentScore = caret->getCurrentScore();
+    Score::TempoMarkerPtr marker = currentScore->FindTempoMarker(
+                SystemLocation(caret->getCurrentSystemIndex(),
+                               caret->getCurrentPositionIndex()));
+
+    if (!marker) // Add a tempo marker.
+    {
+        TempoMarkerDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            // TODO - add tempo marker.
+        }
+    }
+    else
+    {
+        undoManager->push(new RemoveTempoMarker(currentScore, marker));
+    }
 }
 
 void PowerTabEditor::editHammerPull()

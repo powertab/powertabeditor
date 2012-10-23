@@ -47,7 +47,8 @@ HEADERS += \
     removeirregulargrouping.h \
     edittrackshown.h \
     deletenote.h \
-    editfileinformation.h
+    editfileinformation.h \
+    removetempomarker.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -88,4 +89,5 @@ SOURCES += \
     removeirregulargrouping.cpp \
     edittrackshown.cpp \
     deletenote.cpp \
-    editfileinformation.cpp
+    editfileinformation.cpp \
+    removetempomarker.cpp

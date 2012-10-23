@@ -34,7 +34,6 @@
 #include <bitset>
 #include <algorithm>
 #include <boost/foreach.hpp>
-#include <boost/iterator/indirect_iterator.hpp>
 #include <boost/bind.hpp>
 
 /// Default Constructor
@@ -510,9 +509,8 @@ void Score::InsertAlternateEnding(AlternateEndingPtr altEnding)
     m_alternateEndingArray.push_back(altEnding);
 
     // sort the alternate endings by system, then position
-    using boost::make_indirect_iterator;
-    std::sort(make_indirect_iterator(m_alternateEndingArray.begin()),
-              make_indirect_iterator(m_alternateEndingArray.end()));
+    std::sort(m_alternateEndingArray.begin(), m_alternateEndingArray.end(),
+              CompareSharedPtr<AlternateEnding>());
 }
 
 /// Removes the specified alternate ending from the score, if possible
@@ -703,9 +701,16 @@ void Score::InsertTempoMarker(Score::TempoMarkerPtr marker)
     m_tempoMarkerArray.push_back(marker);
 
     // sort the tempo markers by system, then position
-    using boost::make_indirect_iterator;
-    std::sort(make_indirect_iterator(m_tempoMarkerArray.begin()),
-              make_indirect_iterator(m_tempoMarkerArray.end()));
+    std::sort(m_tempoMarkerArray.begin(), m_tempoMarkerArray.end(),
+              CompareSharedPtr<TempoMarker>());
+}
+
+/// Removes a tempo marker from the score, if possible.
+void Score::RemoveTempoMarker(Score::TempoMarkerPtr marker)
+{
+    m_tempoMarkerArray.erase(std::remove(m_tempoMarkerArray.begin(),
+                                         m_tempoMarkerArray.end(),
+                                         marker));
 }
 
 /// Returns the dynamic at the specified location, or NULL if none exists
