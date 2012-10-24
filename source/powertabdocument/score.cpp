@@ -434,6 +434,12 @@ void Score::Init()
     SystemPtr newSystem(new System);
     newSystem->Init(staffSizes, visibleStaves, true);
     InsertSystem(newSystem, 0);
+
+    // Create a default tempo marker.
+    TempoMarkerPtr marker = boost::make_shared<TempoMarker>(0, 0,
+                    TempoMarker::quarter, TempoMarker::DEFAULT_BEATS_PER_MINUTE,
+                    "Moderately", TempoMarker::noTripletFeel);
+    InsertTempoMarker(marker);
 }
 
 /// Inserts a guitar into the score, and creates a corresponding staff
