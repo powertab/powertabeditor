@@ -22,16 +22,19 @@
 #include <boost/shared_ptr.hpp>
 
 class Barline;
+class Score;
 class System;
 
 class DeleteBarline : public QUndoCommand
 {
 public:
-    DeleteBarline(boost::shared_ptr<System> system, boost::shared_ptr<Barline> barline);
+    DeleteBarline(Score* score, boost::shared_ptr<System> system,
+                  boost::shared_ptr<Barline> barline);
     void redo();
     void undo();
 
 protected:
+    Score* score;
     boost::shared_ptr<System> system;
     boost::shared_ptr<Barline> barline;
 };

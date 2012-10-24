@@ -1658,7 +1658,8 @@ void PowerTabEditor::clearCurrentPosition()
         // Don't allow the start/end bars to be deleted.
         if (*bar && *bar != startBar && *bar != endBar)
         {
-            undoManager->push(new DeleteBarline(system, *bar));
+            undoManager->push(new DeleteBarline(caret->getCurrentScore(),
+                                                system, *bar));
         }
     }
 

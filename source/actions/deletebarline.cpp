@@ -17,22 +17,30 @@
   
 #include "deletebarline.h"
 
-#include <powertabdocument/system.h>
 #include <powertabdocument/barline.h>
+#include <powertabdocument/score.h>
+#include <powertabdocument/system.h>
 
-DeleteBarline::DeleteBarline(boost::shared_ptr<System> system, boost::shared_ptr<Barline> barline) :
+DeleteBarline::DeleteBarline(Score* score, boost::shared_ptr<System> system,
+                             boost::shared_ptr<Barline> barline) :
+    QUndoCommand(QObject::tr("Delete Barline")),
+    score(score),
     system(system),
     barline(barline)
 {
-    setText(QObject::tr("Delete Barline"));
 }
 
 void DeleteBarline::redo()
 {
     system->RemoveBarline(barline->GetPosition());
+
+    // Update the rehearsal signs letters, since a rehearsal sign may have been
+    // removed.
+    score->FormatRehearsalSigns();
 }
 
 void DeleteBarline::undo()
 {
     system->InsertBarline(barline);
+    score->FormatRehearsalSigns();
 }
