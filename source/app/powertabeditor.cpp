@@ -1768,7 +1768,8 @@ void PowerTabEditor::editBarline(int position)
         BarlineDialog dialog(this, type, repeats);
         if (dialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new ChangeBarLineType(barLine, type, repeats));
+            undoManager->push(new ChangeBarLineType(barLine, dialog.barlineType(),
+                                                    dialog.repeatCount()));
         }
     }
     else // create new barline
@@ -1779,7 +1780,9 @@ void PowerTabEditor::editBarline(int position)
         if (dialog.exec() == QDialog::Accepted)
         {
             undoManager->push(new AddBarline(caret->getCurrentSystem(),
-                                             caret->getCurrentPositionIndex(), type, repeats));
+                                             caret->getCurrentPositionIndex(),
+                                             dialog.barlineType(),
+                                             dialog.repeatCount()));
         }
     }
 }

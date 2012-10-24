@@ -10,7 +10,6 @@ HEADERS += \
     rehearsalsigndialog.h \
     preferencesdialog.h \
     chordnamedialog.h \
-    barlinedialog.h \
     alternateendingdialog.h \
     tappedharmonicdialog.h \
     keysignaturedialog.h \
@@ -22,7 +21,8 @@ HEADERS += \
     irregulargroupingdialog.h \
     fileinformationdialog.h \
     gotorehearsalsigndialog.h \
-    tempomarkerdialog.h
+    tempomarkerdialog.h \
+    barlinedialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -30,7 +30,6 @@ SOURCES += \
     rehearsalsigndialog.cpp \
     preferencesdialog.cpp \
     chordnamedialog.cpp \
-    barlinedialog.cpp \
     alternateendingdialog.cpp \
     tappedharmonicdialog.cpp \
     keysignaturedialog.cpp \
@@ -41,7 +40,8 @@ SOURCES += \
     irregulargroupingdialog.cpp \
     fileinformationdialog.cpp \
     gotorehearsalsigndialog.cpp \
-    tempomarkerdialog.cpp
+    tempomarkerdialog.cpp \
+    barlinedialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -55,4 +55,5 @@ FORMS += \
     keysignaturedialog.ui \
     fileinformationdialog.ui \
     gotorehearsalsigndialog.ui \
-    tempomarkerdialog.ui
+    tempomarkerdialog.ui \
+    barlinedialog.ui

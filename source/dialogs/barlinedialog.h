@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,35 +14,33 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef BARLINEDIALOG_H
 #define BARLINEDIALOG_H
 
 #include <QDialog>
+#include <boost/cstdint.hpp>
 
-class QSpinBox;
-class QComboBox;
-
-// Dialog to allow the user to modify a barline
+namespace Ui {
+class BarlineDialog;
+}
 
 class BarlineDialog : public QDialog
 {
     Q_OBJECT
+
 public:
-    BarlineDialog(QWidget* parent, quint8& barType, quint8& repeats);
+    explicit BarlineDialog(QWidget* parent, uint8_t barType, uint8_t repeats);
+    ~BarlineDialog();
 
-protected:
-    quint8& barType;
-    quint8& repeats;
-
-    QSpinBox* repeatCount;
-    QComboBox* barLineType;
-
-    void init();
+    uint8_t barlineType() const;
+    uint8_t repeatCount() const;
 
 private slots:
-    void disableRepeatCount(int newBarlineType);
-    void accept();
+    void onBarlineTypeChanged(int);
+
+private:
+    Ui::BarlineDialog *ui;
 };
 
 #endif // BARLINEDIALOG_H
