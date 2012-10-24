@@ -47,22 +47,48 @@ ScoreArea::ScoreArea(PowerTabEditor *editor) :
     redrawOnNextRefresh = false;
 }
 
+ScoreArea::~ScoreArea()
+{
+    // Prevent double deletion.
+    if (caret)
+    {
+        scene.removeItem(caret.get());
+    }
+}
+
 void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
 {
+    bool newCaret = (caret == NULL);
+
+    if (caret)
+    {
+        scene.removeItem(caret.get());
+    }
+
     scene.clear();
     systemList.clear();
     document = doc;
     int lineSpacing = document->GetTablatureStaffLineSpacing();
 
     // Set up the caret
-    caret = new Caret(doc->GetTablatureStaffLineSpacing());
-    connect(caret, SIGNAL(moved()), this, SLOT(adjustScroll()));
+    if (newCaret)
+    {
+        caret.reset(new Caret(doc->GetTablatureStaffLineSpacing()));
+        connect(caret.get(), SIGNAL(moved()), this, SLOT(adjustScroll()));
+    }
+
     caret->setScore(doc->GetScore(scoreIndex));
-    caret->updatePosition();
 
-    editor->registerCaret(caret);
+    // Adjust the caret to a valid position, since (for example) a system may
+    // have been removed.
+    caret->adjustToValidLocation();
 
-    scene.addItem(caret);
+    if (newCaret)
+    {
+        editor->registerCaret(caret.get());
+    }
+
+    scene.addItem(caret.get());
 
     // Render each score
     // Only worry about the guitar score so far
@@ -151,7 +177,7 @@ void ScoreArea::renderScore(const Score* score, int lineSpacing)
 // ensures that the caret is visible when it changes sections
 void ScoreArea::adjustScroll()
 {
-    ensureVisible(caret, 50, 100);
+    ensureVisible(caret.get(), 50, 100);
 }
 
 void ScoreArea::setScoreIndex(int newScoreIndex)

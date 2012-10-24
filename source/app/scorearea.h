@@ -20,6 +20,8 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
+
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/cstdint.hpp>
 
@@ -35,6 +37,7 @@ class ScoreArea : public QGraphicsView
     Q_OBJECT
 public:
     explicit ScoreArea(PowerTabEditor* editor);
+    ~ScoreArea();
 
     void renderDocument(boost::shared_ptr<PowerTabDocument> doc);
     void updateSystem(const uint32_t systemIndex);
@@ -43,7 +46,7 @@ public:
 
     inline Caret* getCaret() const
     {
-        return caret;
+        return caret.get();
     }
 
     boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
@@ -54,7 +57,7 @@ private:
 
     QGraphicsScene scene;
     PowerTabEditor* editor;
-    Caret* caret;
+    boost::scoped_ptr<Caret> caret;
     QList<QGraphicsItem*> systemList;
     size_t scoreIndex;
 
