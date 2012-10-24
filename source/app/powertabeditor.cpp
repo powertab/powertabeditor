@@ -1892,7 +1892,7 @@ void PowerTabEditor::editRehearsalSign()
 {
     // Find if there is a rehearsal sign at the current position
     const Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* currentScore = caret->getCurrentScore();
+    Score* score = caret->getCurrentScore();
     System::BarlinePtr currentBarline = caret->getCurrentBarline();
 
     // the rehearsal sign action should not be available unless there is a barline at the current position
@@ -1902,17 +1902,22 @@ void PowerTabEditor::editRehearsalSign()
 
     if (rehearsalSign.IsSet())
     {
-        undoManager->push(new EditRehearsalSign(rehearsalSign, false));
+        EditRehearsalSign* action = new EditRehearsalSign(score, rehearsalSign, false);
+        connect(action, SIGNAL(triggered()), getCurrentScoreArea(),
+                SLOT(requestFullRedraw()));
+        undoManager->push(action);
     }
     else
     {
-        RehearsalSignDialog dialog(this, currentScore);
+        RehearsalSignDialog dialog(this);
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new EditRehearsalSign(rehearsalSign, true,
-                                                    dialog.getSelectedLetter(),
-                                                    dialog.getEnteredDescription()));
+            EditRehearsalSign* action = new EditRehearsalSign(score, rehearsalSign, true,
+                                                              dialog.description());
+            connect(action, SIGNAL(triggered()), getCurrentScoreArea(),
+                    SLOT(requestFullRedraw()));
+            undoManager->push(action);
         }
     }
 

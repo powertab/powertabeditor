@@ -143,4 +143,6 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
             Layout::FixHammerons(system->GetStaff(i));
         }
     }
+
+    score->FormatRehearsalSigns();
 }

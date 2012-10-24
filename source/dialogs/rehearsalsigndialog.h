@@ -19,9 +19,6 @@
 #define REHEARSALSIGNDIALOG_H
 
 #include <QDialog>
-#include <boost/cstdint.hpp>
-
-class Score;
 
 namespace Ui {
     class RehearsalSignDialog;
@@ -31,11 +28,10 @@ class RehearsalSignDialog : public QDialog
 {
     Q_OBJECT
 public:
-    RehearsalSignDialog(QWidget* parent, Score* score);
+    RehearsalSignDialog(QWidget* parent);
     ~RehearsalSignDialog();
 
-    uint8_t getSelectedLetter() const;
-    std::string getEnteredDescription() const;
+    std::string description() const;
 
 public slots:
     void accept();
@@ -43,12 +39,7 @@ public slots:
 private:
     Ui::RehearsalSignDialog* ui;
 
-    void populateLetterChoices();
     void populateDescriptionChoices();
-
-    uint8_t selectedLetter;
-    std::string enteredDescription;
-    Score* score;
 };
 
 #endif // REHEARSALSIGNDIALOG_H

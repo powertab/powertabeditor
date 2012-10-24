@@ -139,6 +139,8 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream.ReadVector(m_alternateEndingArray, version);
     stream.ReadVector(m_systemArray, version);
 
+    FormatRehearsalSigns();
+
     return true;
 }
 
@@ -477,6 +479,35 @@ void Score::MergeScore(const Score &otherScore)
     *(this) = otherScore;
     m_scoreName = keepName;
     // TODO - actually merge the scores together.
+}
+
+/// Automatically assigns letters to rehearsal signs in the score.
+void Score::FormatRehearsalSigns()
+{
+    char nextLetter = 'A';
+
+    BOOST_FOREACH(SystemPtr system, m_systemArray)
+    {
+        std::vector<System::BarlinePtr> barlines;
+        system->GetBarlines(barlines);
+
+        BOOST_FOREACH(System::BarlinePtr barline, barlines)
+        {
+            RehearsalSign& currentSign = barline->GetRehearsalSign();
+            if (currentSign.IsSet())
+            {
+                currentSign.SetLetter(nextLetter);
+
+                nextLetter++;
+                if (nextLetter > 'Z')
+                {
+                    // For now, just wrap around to A again if we run out of
+                    // rehearsal signs.
+                    nextLetter = 'A';
+                }
+            }
+        }
+    }
 }
 
 /// Determines if a alternate ending index is valid

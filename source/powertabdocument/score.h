@@ -151,6 +151,8 @@ public:
 
     void MergeScore(const Score& otherScore);
 
+    void FormatRehearsalSigns();
+
     std::string GetScoreName() const;
 
 private:

@@ -18,18 +18,18 @@
 #include "editrehearsalsign.h"
 
 #include <powertabdocument/rehearsalsign.h>
+#include <powertabdocument/score.h>
 
-EditRehearsalSign::EditRehearsalSign(RehearsalSign& rehearsalSign, bool isShown,
-                                     uint8_t letter, const std::string& description) :
+EditRehearsalSign::EditRehearsalSign(Score* score, RehearsalSign& rehearsalSign,
+                                     bool isShown, const std::string& description) :
+    score(score),
     rehearsalSign(rehearsalSign),
     isShown(isShown),
-    letter(letter),
     description(description)
 {
     if (!isShown)
     {
         setText(QObject::tr("Remove Rehearsal Sign"));
-        this->letter = rehearsalSign.GetLetter();
         this->description = rehearsalSign.GetDescription();
     }
     else
@@ -52,11 +52,15 @@ void EditRehearsalSign::showHide(bool show)
 {
     if (show)
     {
-        rehearsalSign.SetLetter(letter);
+        rehearsalSign.SetLetter('A'); // Set the rehearsal sign to be active.
         rehearsalSign.SetDescription(description);
     }
     else
     {
         rehearsalSign.Clear();
     }
+
+    // Recompute the letters for all rehearsal signs, and redraw the score.
+    score->FormatRehearsalSigns();
+    emit triggered();
 }

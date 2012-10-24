@@ -23,20 +23,25 @@
 
 class Barline;
 class RehearsalSign;
+class Score;
 
-class EditRehearsalSign : public QUndoCommand
+class EditRehearsalSign : public QObject, public QUndoCommand
 {
+    Q_OBJECT
 public:
-    EditRehearsalSign(RehearsalSign& rehearsalSign, bool isShown,
-                      uint8_t letter = 0, const std::string& description = "");
+    EditRehearsalSign(Score* score, RehearsalSign& rehearsalSign, bool isShown,
+                      const std::string& description = "");
 
     virtual void undo();
     virtual void redo();
 
-protected:
+signals:
+    void triggered();
+
+private:
+    Score* score;
     RehearsalSign& rehearsalSign;
     bool isShown;
-    uint8_t letter;
     std::string description;
 
     void showHide(bool show);

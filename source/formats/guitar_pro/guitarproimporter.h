@@ -98,8 +98,6 @@ private:
 
     /// Supported version strings for Guitar Pro files (maps version strings to version number)
     static const std::map<std::string, Gp::Version> versionStrings;
-
-    char nextRehearsalSignLetter;
 };
 
 #endif // GUITARPROIMPORTER_H

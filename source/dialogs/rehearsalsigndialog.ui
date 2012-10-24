@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>197</width>
-    <height>91</height>
+    <height>80</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,24 +19,17 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
-      <widget class="QLabel" name="letterLabel">
-       <property name="text">
-        <string>Letter:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="letterComboBox"/>
-     </item>
-     <item row="1" column="0">
       <widget class="QLabel" name="descriptionLabel">
        <property name="text">
         <string>Description:</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="0" column="1">
       <widget class="QComboBox" name="descriptionComboBox">
        <property name="editable">
         <bool>true</bool>

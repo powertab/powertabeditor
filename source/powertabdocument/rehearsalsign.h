@@ -69,8 +69,13 @@ public:
 
     // Member Variables
 private:
-    int8_t      m_letter;       ///< The letter used to uniquely identify the rehearsal sign (i.e. A, B, F, etc. - must be a capital letter)
-    std::string m_description;  ///< A description that indicates the passage the rehearsal sign is marking (i.e. Chorus, Intro, etc.)
+    /// The letter used to uniquely identify the rehearsal sign
+    /// (i.e. A, B, F, etc. - must be a capital letter).
+    int8_t      m_letter;
+
+    /// A description that indicates the passage the rehearsal sign is
+    /// marking (i.e. Chorus, Intro, etc.).
+    std::string m_description;
 
 };
 

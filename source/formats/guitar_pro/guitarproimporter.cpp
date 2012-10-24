@@ -228,8 +228,6 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(Gp::InputStream& stream
 void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasures,
                                      std::vector<BarData>& bars)
 {
-    nextRehearsalSignLetter = 'A';
-
     for (uint32_t measure = 0; measure < numMeasures; measure++)
     {
         if (stream.version > Gp::Version4 && measure > 0)
@@ -1232,16 +1230,9 @@ void GuitarProImporter::readRehearsalSign(Gp::InputStream &stream, RehearsalSign
         sign.SetDescription(description);
     }
 
-    // set the rehearsal sign letter to the next available letter
-    if (RehearsalSign::IsValidLetter(nextRehearsalSignLetter))
-    {
-        sign.SetLetter(nextRehearsalSignLetter);
-        nextRehearsalSignLetter++;
-    }
-    else
-    {
-        std::cerr << "Too many rehearsal signs! (only A-Z allowed)" << std::endl;
-    }
+    // Set the letter to A for now - the proper letter will be set after
+    // importing the whole document.
+    sign.SetLetter('A');
 
     readColor(stream);
 }
