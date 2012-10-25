@@ -36,49 +36,51 @@ void NotePage::createNoteButtons()
 
     for (int i=0; i<7; i++)
     {
-        QString icon, tip;
+        QString icon;
+        QString tip;
         Command* action = NULL;
 
         switch(i)
         {
         case 0:
-            icon=":/images/whole_note";
-            tip="Whole Note";
+            icon =":/images/whole_note";
+            tip = tr("Whole Note");
             action = mainWindow->wholeNoteAct;
             break;
         case 1:
-            icon=":/images/half_note";
-            tip="Half Note";
+            icon =":/images/half_note";
+            tip = tr("Half Note");
             action = mainWindow->halfNoteAct;
             break;
         case 2:
-            icon=":/images/quarter_note";
-            tip="Quarter Note";
+            icon = ":/images/quarter_note";
+            tip = tr("Quarter Note");
             action = mainWindow->quarterNoteAct;
             break;
         case 3:
-            icon=":/images/8th_note";
-            tip="8th Note";
+            icon = ":/images/8th_note";
+            tip = tr("8th Note");
             action = mainWindow->eighthNoteAct;
             break;
         case 4:
-            icon=":/images/16th_note";
-            tip="16th Note";
+            icon = ":/images/16th_note";
+            tip = tr("16th Note");
             action = mainWindow->sixteenthNoteAct;
             break;
         case 5:
-            icon=":/images/32nd_note";
-            tip="32nd Note";
+            icon = ":/images/32nd_note";
+            tip = tr("32nd Note");
             action = mainWindow->thirtySecondNoteAct;
             break;
         case 6:
             icon=":/images/64th_note";
-            tip="64th Note";
+            tip = tr("64th Note");
             action = mainWindow->sixtyFourthNoteAct;
             break;
         }
 
-        noteButton[i] = new QPushButton(QIcon(icon),"");
+        noteButton[i] = new QPushButton();
+        noteButton[i]->setIcon(QIcon(icon));
         initButton(noteButton[i]);
         noteButton[i]->setToolTip(tip);
 
@@ -100,24 +102,55 @@ void NotePage::createRestButtons()
 
     for (int i=0; i<7; i++)
     {
-        QString icon, tip;
+        QString icon;
+        QString tip;
+        Command* action = NULL;
 
         switch(i)
         {
-        case 0:	icon=":/images/whole_rest";		tip="Whole Rest"; break;
-        case 1: icon=":/images/half_rest";		tip="Half Rest"; break;
-        case 2: icon=":/images/quarter_rest";	tip="Quarter Rest"; break;
-        case 3: icon=":/images/8th_rest";		tip="8th Rest"; break;
-        case 4: icon=":/images/16th_rest";		tip="16th Rest"; break;
-        case 5: icon=":/images/32nd_rest";		tip="32nd Rest"; break;
-        case 6: icon=":/images/64th_rest";		tip="64th Rest"; break;
+        case 0:
+            icon = ":/images/whole_rest";
+            tip= tr("Whole Rest");
+            action = mainWindow->wholeRestAct;
+            break;
+        case 1:
+            icon = ":/images/half_rest";
+            tip = tr("Half Rest");
+            action = mainWindow->halfRestAct;
+            break;
+        case 2:
+            icon = ":/images/quarter_rest";
+            tip = tr("Quarter Rest");
+            action = mainWindow->quarterRestAct;
+            break;
+        case 3:
+            icon = ":/images/8th_rest";
+            tip = tr("8th Rest");
+            action = mainWindow->eighthRestAct;
+            break;
+        case 4:
+            icon = ":/images/16th_rest";
+            tip = tr("16th Rest");
+            action = mainWindow->sixteenthRestAct;
+            break;
+        case 5:
+            icon = ":/images/32nd_rest";
+            tip = tr("32nd Rest");
+            action = mainWindow->thirtySecondRestAct;
+            break;
+        case 6:
+            icon = ":/images/64th_rest";
+            tip = tr("64th Rest");
+            action = mainWindow->sixtyFourthRestAct;
+            break;
         }
 
-        restButton[i] = new QPushButton(QIcon(icon),"");
+        restButton[i] = new QPushButton();
+        restButton[i]->setIcon(QIcon(icon));
         initButton(restButton[i]);
         restButton[i]->setToolTip(tip);
 
-        connect(restButton[i],SIGNAL(pressed()),this,SLOT(resetNoteAndRestButtons()));
+        connectButtonToAction(restButton[i], action);
 
         restLayout->addWidget(restButton[i]);
     }
@@ -266,15 +299,6 @@ void NotePage::createVibratoTremoloButtons()
 
     vibratoTremoloGroup->setLayout(vibratoTremoloLayout);
     layout->addWidget(vibratoTremoloGroup);
-}
-
-void NotePage::resetNoteAndRestButtons()
-{
-    for (int i=0; i<7; i++)
-        noteButton[i]->setChecked(false);
-
-    for (int i=0; i<7; i++)
-        restButton[i]->setChecked(false);
 }
 
 void NotePage::resetDottedButtons()

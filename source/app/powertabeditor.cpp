@@ -2079,6 +2079,14 @@ void PowerTabEditor::updateActions()
             case 32: thirtySecondRestAct->setChecked(true); break;
             case 64: sixtyFourthRestAct->setChecked(true); break;
             }
+
+            wholeNoteAct->setChecked(false);
+            halfNoteAct->setChecked(false);
+            quarterNoteAct->setChecked(false);
+            eighthNoteAct->setChecked(false);
+            sixteenthNoteAct->setChecked(false);
+            thirtySecondNoteAct->setChecked(false);
+            sixtyFourthNoteAct->setChecked(false);
         }
         else
         {
@@ -2091,6 +2099,11 @@ void PowerTabEditor::updateActions()
             case 16: sixteenthNoteAct->setChecked(true); break;
             case 32: thirtySecondNoteAct->setChecked(true); break;
             case 64: sixtyFourthNoteAct->setChecked(true); break;
+            }
+
+            foreach (QAction* action, restsMenu->actions())
+            {
+                action->setChecked(false);
             }
         }
     }

@@ -91,7 +91,6 @@ private:
     void initButton(QPushButton* button);
 
 private slots:
-    void resetNoteAndRestButtons();
     void resetDottedButtons();
 };
 
