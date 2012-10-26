@@ -38,7 +38,8 @@ ScoreArea::ScoreArea(PowerTabEditor *editor) :
     caret(NULL),
     scoreIndex(0),
     keySignatureClicked(boost::make_shared<SystemLocationPubSub>()),
-    timeSignatureClicked(boost::make_shared<SystemLocationPubSub>())
+    timeSignatureClicked(boost::make_shared<SystemLocationPubSub>()),
+    barlineClicked(boost::make_shared<SystemLocationPubSub>())
 {
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
@@ -140,6 +141,11 @@ boost::shared_ptr<SystemLocationPubSub> ScoreArea::keySignaturePubSub() const
 boost::shared_ptr<SystemLocationPubSub> ScoreArea::timeSignaturePubSub() const
 {
     return timeSignatureClicked;
+}
+
+boost::shared_ptr<SystemLocationPubSub> ScoreArea::barlinePubSub() const
+{
+    return barlineClicked;
 }
 
 /// Used to request that a full redraw is performed when the ScoreArea is next updated

@@ -66,7 +66,6 @@ private:
     
     // store these items so that their signals can be connected back to the ScoreArea later
     std::vector<StaffPainter*> staffPainters;
-    std::vector<BarlinePainter*> barlinePainters;
 
     enum VolumeSwellType
     {

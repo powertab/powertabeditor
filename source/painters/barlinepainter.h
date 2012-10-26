@@ -22,22 +22,22 @@
 #include "staffdata.h"
 
 #include <boost/shared_ptr.hpp>
+#include <powertabdocument/systemlocation.h>
 
 class Barline;
+class SystemLocation;
+class SystemLocationPubSub;
 
-class BarlinePainter : public QObject, public QGraphicsItem
+class BarlinePainter : public QGraphicsItem
 {
-    Q_OBJECT
-    Q_INTERFACES(QGraphicsItem)
-
 public:
-    BarlinePainter(const StaffData& staffInfo, boost::shared_ptr<const Barline> barLinePtr);
+    BarlinePainter(const StaffData& staffInfo,
+                   boost::shared_ptr<const Barline> barLinePtr,
+                   const SystemLocation& location,
+                   boost::shared_ptr<SystemLocationPubSub> pubsub);
 
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
-signals:
-    void clicked(int);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -49,6 +49,8 @@ protected:
     QRectF bounds;
     StaffData staffInfo;
     boost::shared_ptr<const Barline> barLine;
+    SystemLocation location;
+    boost::shared_ptr<SystemLocationPubSub> pubsub;
     double x;
     double width;
 

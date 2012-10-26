@@ -183,9 +183,10 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
         const System::BarlineConstPtr& currentBarline = barlines[i];
         const KeySignature& keySig = currentBarline->GetKeySignature();
         const TimeSignature& timeSig = currentBarline->GetTimeSignature();
+        const SystemLocation location(systemIndex, currentBarline->GetPosition());
 
-        BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo, currentBarline);
-        barlinePainters.push_back(barlinePainter);
+        BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo,
+                                    currentBarline, location, scoreArea->barlinePubSub());
 
         double x = system->GetPositionX(currentBarline->GetPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
@@ -222,8 +223,6 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
 
         barlinePainter->setPos(x, 0);
         barlinePainter->setParentItem(parentStaff);
-
-        const SystemLocation location(systemIndex, currentBarline->GetPosition());
 
         if (keySig.IsShown())
         {
@@ -1312,12 +1311,6 @@ void SystemRenderer::connectSignals()
     {
         QObject::connect(staffPainters[i], SIGNAL(selectionUpdated(int,int)),
                          scoreArea->getCaret(), SLOT(updateSelection(int,int)));
-    }
-
-    for (size_t i = 0; i < barlinePainters.size(); i++)
-    {
-        QObject::connect(barlinePainters[i], SIGNAL(clicked(int)),
-                         scoreArea, SIGNAL(barlineClicked(int)));
     }
 }
 

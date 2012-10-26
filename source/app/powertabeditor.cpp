@@ -653,7 +653,7 @@ void PowerTabEditor::createActions()
 
     barlineAct = new Command(tr("Barline..."), "MusicSymbols.EditBarline", Qt::Key_B, this);
     barlineAct->setCheckable(true);
-    connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarline()));
+    connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarlineFromCaret()));
 
     repeatEndingAct = new Command(tr("Repeat Ending..."),
                                   "MusicSymbols.EditRepeatEnding",
@@ -1100,12 +1100,12 @@ void PowerTabEditor::setupNewDocument()
     score->installEventFilter(this);
     score->renderDocument(doc);
 
-    connect(score, SIGNAL(barlineClicked(int)), this, SLOT(editBarline(int)));
-
     score->timeSignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editTimeSignature, this, _1));
     score->keySignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editKeySignature, this, _1));
+    score->barlinePubSub()->subscribe(
+                boost::bind(&PowerTabEditor::editBarline, this, _1));
 
     undoManager->addNewUndoStack();
 
@@ -1746,30 +1746,36 @@ void PowerTabEditor::editTimeSignature(const SystemLocation& location)
     }
 }
 
-/// Edits or creates a barline.
-/// If position is not specified, the caret's current position is used
-void PowerTabEditor::editBarline(int position)
+/// Edit the barline at the caret's current location.
+void PowerTabEditor::editBarlineFromCaret()
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
-    shared_ptr<Barline> barLine;
+    const SystemLocation caretLocation(caret->getCurrentSystemIndex(),
+                                       caret->getCurrentPositionIndex());
+    editBarline(caretLocation);
+}
 
-    if (position == -1)
-    {
-         barLine = caret->getCurrentBarline();
-    }
-    else
-    {
-        barLine = caret->getCurrentSystem()->GetBarlineAtPosition(position);
-    }
+/// Edits or creates a barline at the specified position.
+void PowerTabEditor::editBarline(const SystemLocation& location)
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* score = caret->getCurrentScore();
+    shared_ptr<Barline> barline = score->GetSystem(location.getSystemIndex())->
+            GetBarlineAtPosition(location.getPositionIndex());
 
-    if (barLine) // edit existing barline
+    // Move the cursor to the barline. This is important if a barline in another
+    // system was clicked, since otherwise it might not be redrawn properly.
+    caret->setCurrentSystemIndex(location.getSystemIndex());
+    caret->setCurrentPositionIndex(location.getPositionIndex());
+
+    if (barline) // edit existing barline
     {
-        quint8 type = barLine->GetType(), repeats = barLine->GetRepeatCount();
+        quint8 type = barline->GetType(), repeats = barline->GetRepeatCount();
 
         BarlineDialog dialog(this, type, repeats);
         if (dialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new ChangeBarLineType(barLine, dialog.barlineType(),
+            undoManager->push(new ChangeBarLineType(barline, dialog.barlineType(),
                                                     dialog.repeatCount()));
         }
     }

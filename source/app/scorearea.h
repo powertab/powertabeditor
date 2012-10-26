@@ -51,6 +51,7 @@ public:
 
     boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
     boost::shared_ptr<SystemLocationPubSub> timeSignaturePubSub() const;
+    boost::shared_ptr<SystemLocationPubSub> barlinePubSub() const;
 
 private:
     void renderScore(const Score* score, int lineSpacing);
@@ -63,11 +64,9 @@ private:
 
     boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
     boost::shared_ptr<SystemLocationPubSub> timeSignatureClicked;
+    boost::shared_ptr<SystemLocationPubSub> barlineClicked;
 
     bool redrawOnNextRefresh;
-
-signals:
-    void barlineClicked(int position);
 
 public slots:
     void adjustScroll();

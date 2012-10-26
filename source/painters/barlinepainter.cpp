@@ -24,14 +24,19 @@
 #include <QStringBuilder>
 #include <QGraphicsSceneMouseEvent>
 
+#include <app/pubsub/systemlocationpubsub.h>
 #include <powertabdocument/barline.h>
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
 BarlinePainter::BarlinePainter(const StaffData& staffInfo,
-                               boost::shared_ptr<const Barline> barLinePtr) :
+                               boost::shared_ptr<const Barline> barLinePtr,
+                               const SystemLocation& location,
+                               boost::shared_ptr<SystemLocationPubSub> pubsub) :
     staffInfo(staffInfo),
     barLine(barLinePtr),
+    location(location),
+    pubsub(pubsub),
     x(0),
     width(1)
 {
@@ -85,7 +90,7 @@ void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
 {
-    emit clicked(barLine->GetPosition());
+    pubsub->publish(location);
 }
 
 QRectF BarlinePainter::boundingRect() const
