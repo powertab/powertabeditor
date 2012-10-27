@@ -17,9 +17,12 @@
   
 #include "documentreader.h"
 
-#include <boost/property_tree/xml_parser.hpp>
+#include <sstream>
+
+#include "pugixml/pugixml.hpp"
+#include "pugixml/foreach.hpp"
+
 #include <boost/foreach.hpp>
-#include <boost/spirit/include/qi.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/assign/list_of.hpp>
 
@@ -33,20 +36,24 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/note.h>
 
-#include <QDebug>
+using namespace pugi;
 
 Gpx::DocumentReader::DocumentReader(const std::string& xml)
 {
-	qDebug() << xml.c_str();
-    std::stringstream xmlStream;
-    xmlStream << xml;
-    read_xml(xmlStream, gpFile);
+    xml_parse_result result = xml_data.load(xml.c_str());
+
+    if (result.status != pugi::status_ok)
+    {
+        throw std::runtime_error(result.description());
+    }
+
+    file = xml_data.first_child(); // The "GPIF" node.
 }
 
 void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
 {
     readHeader(doc->GetHeader());
-    readTracks(doc->GetScore(0));
+    readTracks(doc->GetPlayerScore());
 
     readBars();
     readVoices();
@@ -54,23 +61,23 @@ void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
     readRhythms();
     readNotes();
 
-    readMasterBars(doc->GetScore(0));
+    readMasterBars(doc->GetPlayerScore());
 }
 
-/// Loads the header information (song title, artist, etc)
+/// Loads the header information (song title, artist, etc).
 void Gpx::DocumentReader::readHeader(PowerTabFileHeader& header)
 {
-    const ptree& gpHeader = gpFile.get_child("GPIF.Score");
+    xml_node gpHeader = file.child("Score");
 
-    header.SetSongTitle(gpHeader.get<std::string>("Title"));
-    header.SetSongArtist(gpHeader.get<std::string>("Artist"));
-    header.SetSongAudioReleaseTitle(gpHeader.get<std::string>("Album"));
-    header.SetSongLyricist(gpHeader.get<std::string>("Words"));
-    header.SetSongComposer(gpHeader.get<std::string>("Music"));
-    header.SetSongCopyright(gpHeader.get<std::string>("Copyright"));
+    header.SetSongTitle(gpHeader.child_value("Title"));
+    header.SetSongArtist(gpHeader.child_value("Artist"));
+    header.SetSongAudioReleaseTitle(gpHeader.child_value("Album"));
+    header.SetSongLyricist(gpHeader.child_value("Words"));
+    header.SetSongComposer(gpHeader.child_value("Music"));
+    header.SetSongCopyright(gpHeader.child_value("Copyright"));
 
-    header.SetSongGuitarScoreTranscriber(gpHeader.get<std::string>("Tabber"));
-    header.SetSongGuitarScoreNotes(gpHeader.get<std::string>("Instructions"));
+    header.SetSongGuitarScoreTranscriber(gpHeader.child_value("Tabber"));
+    header.SetSongGuitarScoreNotes(gpHeader.child_value("Instructions"));
 }
 
 namespace
@@ -79,83 +86,82 @@ namespace
 template <typename T>
 void convertStringToList(const std::string& source, std::vector<T>& dest)
 {
-    using namespace boost::spirit::qi;
+    std::stringstream ss(source);
+    T item;
+    dest.clear();
 
-    std::string::const_iterator begin = source.begin();
-    bool parsed = parse(begin, source.end(),
-                        auto_ % ' ', dest);
+    while (ss >> item)
+    {
+        dest.push_back(item);
+    }
 
-    if (!parsed)
+    if (dest.empty())
     {
         std::cerr << "Parsing of list failed!!" << std::endl;
     }
 }
 }
 
-/// Imports the tracks and performs a conversion to the PowerTab Guitar class
+/// Imports the tracks and performs a conversion to the PowerTab Guitar class.
 void Gpx::DocumentReader::readTracks(Score *score)
 {
-    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Tracks"))
+    BOOST_FOREACH(xml_node track, file.child("Tracks"))
     {
-        const ptree& track = node.second;
-
         Score::GuitarPtr guitar = boost::make_shared<Guitar>();
         guitar->GetTuning().SetToStandard();
 
-        guitar->SetDescription(track.get<std::string>("Name"));
-        guitar->SetPreset(track.get<int>("GeneralMidi.Program"));
+        guitar->SetDescription(track.child_value("Name"));
+        guitar->SetPreset(track.child("GeneralMidi").child("Program").text().as_int());
 
-        guitar->SetInitialVolume(track.get("ChannelStrip.Volume", Guitar::DEFAULT_INITIAL_VOLUME));
+        xml_node volume = track.child("ChannelStrip").child("Volume");
+        guitar->SetInitialVolume(volume.text().as_int(Guitar::DEFAULT_INITIAL_VOLUME));
 
         // Not all tracks will have a Properties node ...
-        boost::optional<const ptree&> properties = track.get_child_optional("Properties");
+        xml_node properties = track.child("Properties");
         if (properties)
         {
             // Read the tuning - need to convert from a string of numbers separated by spaces to
             // a vector of integers
-			boost::optional<std::string> tuningString = properties->get_optional<std::string>("Property.Pitches");
-
-			if (tuningString)
+            xml_node pitches = properties.select_single_node("./Property/Pitches").node();
+            if (pitches)
 			{
 				std::vector<int> tuningNotes;
-				convertStringToList(*tuningString, tuningNotes);
+                convertStringToList(pitches.child_value(), tuningNotes);
 
 				guitar->GetTuning().SetTuningNotes(std::vector<uint8_t>(tuningNotes.rbegin(), tuningNotes.rend()));
 			}
 
             // Read capo
-            guitar->SetCapo(properties->get("Property.Fret", 0));
+            xml_node capo = properties.select_single_node("./Property/Fret").node();
+            guitar->SetCapo(capo.text().as_int());
         }
 
         score->InsertGuitar(guitar);
     }
 }
 
-/// Assemble the bars from the previously-read data
+/// Assemble the bars from the previously-read data.
 void Gpx::DocumentReader::readMasterBars(Score* score)
 {
     std::vector<BarData> ptbBars;
 
-    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.MasterBars"))
+    BOOST_FOREACH(xml_node masterBar, file.child("MasterBars"))
     {
-        if (node.first != "MasterBar")
+        if (masterBar.name() != std::string("MasterBar"))
         {
             continue;
         }
 
         BarData barData;
-
-        const ptree& masterBar = node.second;
-
         System::BarlinePtr barline = boost::make_shared<Barline>();
 
         readKeySignature(masterBar, barline->GetKeySignature());
         readTimeSignature(masterBar, barline->GetTimeSignature());
 
         std::vector<int> barIds;
-        convertStringToList(masterBar.get<std::string>("Bars"), barIds);
+        convertStringToList(masterBar.child_value("Bars"), barIds);
 
-		for (size_t i = 0; i < score->GetGuitarCount() && i < barIds.size(); i++)
+        for (size_t i = 0; i < score->GetGuitarCount() && i < barIds.size(); ++i)
         {
             std::vector<Position*> positions;
 
@@ -213,26 +219,27 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 
 void Gpx::DocumentReader::readBars()
 {
-    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Bars"))
+    BOOST_FOREACH(xml_node currentBar, file.child("Bars"))
     {
-        const ptree& currentBar = node.second;
-
         Gpx::GpxBar bar;
-        bar.id = currentBar.get<int>("<xmlattr>.id");
-        convertStringToList(currentBar.get<std::string>("Voices"), bar.voiceIds);
+        bar.id = currentBar.attribute("id").as_int();
+        convertStringToList(currentBar.child_value("Voices"), bar.voiceIds);
 
         bars[bar.id] = bar;
     }
 }
 
-void Gpx::DocumentReader::readKeySignature(const Gpx::DocumentReader::ptree& masterBar, KeySignature& key)
+void Gpx::DocumentReader::readKeySignature(
+        const pugi::xml_node& masterBar, KeySignature& key)
 {
+    xml_node key_node = masterBar.child("Key");
+
     // Guitar Pro numbers accidentals from -1 to -7 for flats, but PowerTab uses
-    // 8 - 14 (with 1-7 for sharps)
-    const int numAccidentals = masterBar.get<int>("Key.AccidentalCount");
+    // 8 - 14 (with 1-7 for sharps).
+    const int numAccidentals = key_node.child("AccidentalCount").text().as_int();
     key.SetKeyAccidentals(numAccidentals >= 0 ? numAccidentals : 7 - numAccidentals);
 
-    const std::string keyType = masterBar.get<std::string>("Key.Mode");
+    const std::string keyType = key_node.child_value("Mode");
 
     if (keyType == "Major")
     {
@@ -244,42 +251,38 @@ void Gpx::DocumentReader::readKeySignature(const Gpx::DocumentReader::ptree& mas
     }
     else
     {
-        std::cerr << "Unknown key type" << std::endl;
+        std::cerr << "Unknown key type: " << keyType << std::endl;
     }
 }
 
-void Gpx::DocumentReader::readTimeSignature(const Gpx::DocumentReader::ptree& masterBar,
+void Gpx::DocumentReader::readTimeSignature(const xml_node& masterBar,
                                             TimeSignature& timeSignature)
 {
-    const std::string timeString = masterBar.get<std::string>("Time");
+    const std::string timeString = masterBar.child_value("Time");
 
-    std::vector<int> timeSigValues;
-    using namespace boost::spirit::qi;
+    // Import time signature (stored in text format - e.g. "4/4").
+    std::stringstream ss(timeString);
+    int timeSigValue0 = -1;
+    int timeSigValue1 = -1;
+    char slash = 0;
 
-    std::string::const_iterator begin = timeString.begin();
-    // import time signature (stored in text format - e.g. "4/4")
-    bool parsed = parse(begin, timeString.end(),
-                        int_ >> '/' >> int_, timeSigValues);
-
-    if (!parsed)
+    if (ss >> timeSigValue0 >> slash >> timeSigValue1)
     {
-        std::cerr << "Parsing of time signature failed!!" << std::endl;
+        timeSignature.SetMeter(timeSigValue0, timeSigValue1);
     }
     else
     {
-        timeSignature.SetMeter(timeSigValues[0], timeSigValues[1]);
+        std::cerr << "Parsing of time signature failed!!" << std::endl;
     }
 }
 
 void Gpx::DocumentReader::readVoices()
 {
-    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Voices"))
+    BOOST_FOREACH(xml_node currentVoice, file.child("Voices"))
     {
-        const ptree& currentVoice = node.second;
-
         Gpx::GpxVoice voice;
-        voice.id = currentVoice.get<int>("<xmlattr>.id");
-        convertStringToList(currentVoice.get<std::string>("Beats"), voice.beatIds);
+        voice.id = currentVoice.attribute("id").as_int();
+        convertStringToList(currentVoice.child_value("Beats"), voice.beatIds);
 
         voices[voice.id] = voice;
     }
@@ -287,32 +290,26 @@ void Gpx::DocumentReader::readVoices()
 
 void Gpx::DocumentReader::readBeats()
 {
-    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Beats"))
+    BOOST_FOREACH(xml_node currentBeat, file.child("Beats"))
     {
-        const ptree& currentBeat = node.second;
-
         Gpx::GpxBeat beat;
-        beat.id = currentBeat.get<int>("<xmlattr>.id");
-        beat.rhythmId = currentBeat.get<int>("Rhythm.<xmlattr>.ref");
-        convertStringToList(currentBeat.get("Notes", ""), beat.noteIds);
+        beat.id = currentBeat.attribute("id").as_int();
+        beat.rhythmId = currentBeat.child("Rhythm").attribute("ref").as_int();
+        convertStringToList(currentBeat.child_value("Notes"), beat.noteIds);
 
-        beat.arpeggioType = currentBeat.get("Arpeggio", "");
-        beat.tremoloPicking = currentBeat.find("Tremolo") != currentBeat.not_found();
-        beat.graceNote = currentBeat.find("GraceNotes") != currentBeat.not_found();
+        beat.arpeggioType = currentBeat.child_value("Arpeggio");
+        beat.tremoloPicking = !currentBeat.child("Tremolo").empty();
+        beat.graceNote = !currentBeat.child("GraceNotes").empty();
 
-		if (currentBeat.find("Properties") != currentBeat.not_found())
+        xml_node properties = currentBeat.child("Properties");
+        if (properties)
 		{
-			// Search for brush direction in the properties list
-			BOOST_FOREACH(const ptree::value_type& node, currentBeat.get_child("Properties"))
-			{
-				const ptree& property = node.second;
-				const std::string propertyName = property.get<std::string>("<xmlattr>.name");
-				if (propertyName == "Brush")
-				{
-					beat.brushDirection = property.get<std::string>("Direction");
-					break;
-				}
-			}
+            // Search for brush direction in the properties list.
+            xml_node brush = properties.select_single_node("./Property[@name = 'Brush']/Direction").node();
+            if (brush)
+            {
+                beat.brushDirection = brush.child_value();
+            }
 		}
 
         beats[beat.id] = beat;
@@ -321,15 +318,13 @@ void Gpx::DocumentReader::readBeats()
 
 void Gpx::DocumentReader::readRhythms()
 {
-    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Rhythms"))
+    BOOST_FOREACH(xml_node currentRhythm, file.child("Rhythms"))
     {
-        const ptree& currentRhythm = node.second;
-
         Gpx::GpxRhythm rhythm;
-        rhythm.id = currentRhythm.get<int>("<xmlattr>.id");
+        rhythm.id = currentRhythm.attribute("id").as_int();
 
-        // convert duration to PowerTab format
-        const std::string noteValueStr = currentRhythm.get<std::string>("NoteValue");
+        // Convert duration to PowerTab format.
+        const std::string noteValueStr = currentRhythm.child_value("NoteValue");
 
         std::map<std::string, int> noteValuesToInt = boost::assign::map_list_of
             ("Whole", 1) ("Half", 2) ("Quarter", 4) ("Eighth", 8)
@@ -339,15 +334,7 @@ void Gpx::DocumentReader::readRhythms()
         rhythm.noteValue = noteValuesToInt.find(noteValueStr)->second;
 
         // Handle dotted/double dotted notes
-        int numDots = 0;
-        try
-        {
-            numDots = currentRhythm.get<int>("AugmentationDot.<xmlattr>.count");
-        }
-        catch (const boost::property_tree::ptree_error&)
-        {
-            std::cerr << "No dot value for note" << std::endl;
-        }
+        int numDots = currentRhythm.child("AugmentationDot").attribute("count").as_int();
 
         std::cerr << "Dots: " << numDots << std::endl;
         rhythm.dotted = numDots == 1;
@@ -359,20 +346,18 @@ void Gpx::DocumentReader::readRhythms()
 
 void Gpx::DocumentReader::readNotes()
 {
-    BOOST_FOREACH(const ptree::value_type& node, gpFile.get_child("GPIF.Notes"))
+    BOOST_FOREACH(xml_node currentNote, file.child("Notes"))
     {
-        const ptree& currentNote = node.second;
-
         Gpx::GpxNote note;
-        note.id = currentNote.get<int>("<xmlattr>.id");
-        note.properties = currentNote.get_child("Properties");
+        note.id = currentNote.attribute("id").as_int();
+        note.properties = currentNote.child("Properties");
 
-        note.tied = currentNote.get("Tie.<xmlattr>.destination", "") == "true";
-        note.ghostNote = currentNote.get("AntiAccent", "") == "Normal";
-        note.accentType = currentNote.get("Accent", 0);
-        note.vibratoType = currentNote.get("Vibrato", "");
-        note.letRing = currentNote.find("LetRing") != currentNote.not_found();
-        note.trillNote = currentNote.get("Trill", -1);
+        note.tied = currentNote.child("Tie").attribute("destination").as_string() == std::string("true");
+        note.ghostNote = currentNote.child_value("AntiAccent") == std::string("Normal");
+        note.accentType = currentNote.child("Accent").text().as_int();
+        note.vibratoType = currentNote.child_value("Vibrato");
+        note.letRing = !currentNote.child("LetRing").empty();
+        note.trillNote = currentNote.child("Trill").text().as_int(-1);
 
         notes[note.id] = note;
     }
@@ -407,18 +392,18 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
         ptbNote.SetTrill(gpxNote.trillNote - tuning.GetNote(ptbNote.GetString()));
     }
 
-    BOOST_FOREACH(const ptree::value_type& node, gpxNote.properties)
+    BOOST_FOREACH(xml_node property, gpxNote.properties)
     {
-        const ptree& property = node.second;
-        const std::string propertyName = property.get<std::string>("<xmlattr>.name");
+        const std::string propertyName = property.attribute("name").as_string();
 
         if (propertyName == "String")
         {
-            ptbNote.SetString(tuning.GetStringCount() - property.get<int>("String") - 1);
+            ptbNote.SetString(tuning.GetStringCount() -
+                              property.child("String").text().as_int() - 1);
         }
         else if (propertyName == "Fret")
         {
-            ptbNote.SetFretNumber(property.get<int>("Fret"));
+            ptbNote.SetFretNumber(property.child("Fret").text().as_int());
         }
         else if (propertyName == "PalmMuted")
         {
@@ -445,7 +430,7 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
         }
         else if (propertyName == "Slide")
         {
-            const int flags = property.get<int>("Flags");
+            const int flags = property.child("Flags").text().as_int();
             switch (flags)
             {
             case 16:
@@ -482,7 +467,7 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
         }
         else if (propertyName == "HarmonicType")
         {
-            const std::string harmonicType = property.get<std::string>("HType");
+            const std::string harmonicType = property.child_value("HType");
 
             if (harmonicType == "Natural")
             {

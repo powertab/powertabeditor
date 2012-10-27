@@ -22,13 +22,7 @@
 #include <vector>
 #include <map>
 
-// Temporarily disable -Wtype-limits due to wchar_t warning with Mingw and Boost
-#ifdef __MINGW32__
-#pragma GCC diagnostic ignored "-Wtype-limits" 
-#pragma GCC diagnostic ignored "-Wstrict-aliasing" 
-#endif
-
-#include <boost/property_tree/ptree.hpp>
+#include "pugixml/pugixml.hpp"
 
 class PowerTabDocument;
 class PowerTabFileHeader;
@@ -56,9 +50,8 @@ public:
     void readDocument(boost::shared_ptr<PowerTabDocument> doc);
 
 private:
-    typedef boost::property_tree::ptree ptree;
-
-    ptree gpFile;
+    pugi::xml_document xml_data;
+    pugi::xml_node file;
 
     std::map<int, GpxBar> bars;
     std::map<int, GpxVoice> voices;
@@ -75,8 +68,8 @@ private:
     void readNotes();
 
     void readMasterBars(Score* score);
-    void readKeySignature(const ptree& masterBar, KeySignature& key);
-    void readTimeSignature(const ptree& masterBar, TimeSignature& timeSignature);
+    void readKeySignature(const pugi::xml_node &masterBar, KeySignature& key);
+    void readTimeSignature(const pugi::xml_node &masterBar, TimeSignature& timeSignature);
     Note* convertNote(int noteId, Position& position, const Tuning& tuning) const;
 };
 
@@ -120,7 +113,7 @@ struct GpxNote
     std::string vibratoType;
     bool letRing;
     int trillNote; ///< Note value is stored in MIDI format (0-127)
-    boost::property_tree::ptree properties;
+    pugi::xml_node properties;
 };
 
 }

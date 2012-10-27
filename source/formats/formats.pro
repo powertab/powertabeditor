@@ -12,7 +12,10 @@ HEADERS += \
     gpx/bitstream.h \
     gpx/gpximporter.h \
     gpx/documentreader.h \
-    scorearranger.h
+    scorearranger.h \
+    gpx/pugixml/pugixml.hpp \
+    gpx/pugixml/pugiconfig.hpp \
+    gpx/pugixml/foreach.hpp
 
 SOURCES += \
     fileformat.cpp \
@@ -25,7 +28,8 @@ SOURCES += \
     gpx/bitstream.cpp \
     gpx/gpximporter.cpp \
     gpx/documentreader.cpp \
-    scorearranger.cpp
+    scorearranger.cpp \
+    gpx/pugixml/pugixml.cpp
 
 
 
