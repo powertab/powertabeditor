@@ -1418,6 +1418,9 @@ void PowerTabEditor::startStopPlayback()
         playPauseAct->setText(tr("Play"));
         getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
         getCurrentPlaybackWidget()->setPlaybackMode(false);
+
+        updateScoreAreaActions(true);
+        updateActions();
     }
 }
 
@@ -2057,9 +2060,17 @@ namespace
     }
 }
 
-// Updates whether menu items are checked, etc, whenever the caret moves
+/// Updates whether menu items are checked, etc, whenever the caret moves.
 void PowerTabEditor::updateActions()
 {
+    // Disable editing during playback.
+    if (isPlaying)
+    {
+        updateScoreAreaActions(false);
+        playPauseAct->setEnabled(true);
+        return;
+    }
+
     Caret* caret = getCurrentScoreArea()->getCaret();
     const Score* currentScore = caret->getCurrentScore();
     const quint32 caretPosition = caret->getCurrentPositionIndex();

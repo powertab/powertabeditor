@@ -75,7 +75,7 @@ private:
     void createMenus();
     void initFileFormatMenus();
     void createTabArea();
-    void updateScoreAreaActions(bool disable);
+    void updateScoreAreaActions(bool enable);
     bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
     void performSystemInsert(size_t index);
