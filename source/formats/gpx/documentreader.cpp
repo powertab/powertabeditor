@@ -17,6 +17,7 @@
   
 #include "documentreader.h"
 
+#include <iostream>
 #include <sstream>
 
 #include "pugixml/pugixml.hpp"

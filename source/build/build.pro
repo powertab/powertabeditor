@@ -29,7 +29,6 @@ RESOURCES += resources.qrc
             "$${PWD}/../skins" "$${PWD}/../data" "$${OUT_PWD}/powertabeditor.app/Contents/MacOS/"
     }
     win32 {
-        QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/../skins\" \"$${OUT_PWD}/skins\"
-        QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/../data\" \"$${OUT_PWD}/data\"
+        QMAKE_POST_LINK += xcopy /E /Y /I \"$${PWD}/../skins\" \"$${OUT_PWD}/skins\" & xcopy /E /Y /I \"$${PWD}/../data\" \"$${OUT_PWD}/data\"
     }
 }
