@@ -360,6 +360,9 @@ Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int heig
 /// Auto-adjust spacing of notes in the system
 void Layout::FormatSystem(boost::shared_ptr<System> system)
 {
+    // FIXME - this function doesn't properly adjust the locations of tempo
+    // markers, chord names, etc.
+
     // Ensure that the end bar is farther than any other position (needed so
     // that GetPositionsInRange() doesn't miss any positions).
     system->GetEndBar()->SetPosition(system->GetMaxPosition() + 1);

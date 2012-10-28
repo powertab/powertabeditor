@@ -35,6 +35,7 @@
 #include <powertabdocument/system.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/note.h>
+#include <powertabdocument/tempomarker.h>
 
 using namespace pugi;
 
@@ -60,6 +61,7 @@ void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
     readBeats();
     readRhythms();
     readNotes();
+    readAutomations();
 
     readMasterBars(doc->GetPlayerScore());
 }
@@ -154,6 +156,23 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 
         BarData barData;
         System::BarlinePtr barline = boost::make_shared<Barline>();
+
+        if (automations.find(ptbBars.size()) != automations.end())
+        {
+            GpxAutomation automation = automations.find(ptbBars.size())->second;
+            if (automation.type == "Tempo")
+            {
+                barData.tempoMarker = boost::make_shared<TempoMarker>();
+
+                if (automation.value.size() != 2)
+                {
+                    throw std::runtime_error("Invalid tempo");
+                }
+
+                barData.tempoMarker->SetBeatsPerMinute(automation.value[0] *
+                                                    automation.value[1] / 2.0);
+            }
+        }
 
         readKeySignature(masterBar, barline->GetKeySignature());
         readTimeSignature(masterBar, barline->GetTimeSignature());
@@ -360,6 +379,25 @@ void Gpx::DocumentReader::readNotes()
         note.trillNote = currentNote.child("Trill").text().as_int(-1);
 
         notes[note.id] = note;
+    }
+}
+
+void Gpx::DocumentReader::readAutomations()
+{
+    BOOST_FOREACH(xpath_node node, file.select_nodes("./MasterTrack/Automations/Automation"))
+    {
+        xml_node currentAutomation = node.node();
+        Gpx::GpxAutomation gpxAutomation;
+        gpxAutomation.type = currentAutomation.child_value("Type");
+        gpxAutomation.linear = currentAutomation.child("Linear").text().as_bool();
+        gpxAutomation.bar = currentAutomation.child("Bar").text().as_int();
+        gpxAutomation.position = currentAutomation.child("Position").text().as_double();
+        gpxAutomation.visible = currentAutomation.child("Visible").text().as_bool();
+        convertStringToList(currentAutomation.child_value("Value"), gpxAutomation.value);
+
+        // TODO - this code doesn't support having multiple automations in a
+        // bar.
+        automations[gpxAutomation.bar] = gpxAutomation;
     }
 }
 

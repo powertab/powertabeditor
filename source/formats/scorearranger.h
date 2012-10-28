@@ -25,6 +25,7 @@ class Barline;
 class Position;
 class Score;
 class AlternateEnding;
+class TempoMarker;
 
 /// Stores data for a single bar - barline, an (optional) alternate ending,
 /// and a list of positions (one for each staff)
@@ -32,6 +33,7 @@ struct BarData
 {
     boost::shared_ptr<Barline> barline;
     boost::shared_ptr<AlternateEnding> altEnding;
+    boost::shared_ptr<TempoMarker> tempoMarker;
     std::vector<std::vector<Position*> > positionLists;
 };
 

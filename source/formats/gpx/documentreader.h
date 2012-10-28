@@ -18,9 +18,10 @@
 #ifndef GPX_DOCUMENTREADER_H
 #define GPX_DOCUMENTREADER_H
 
-#include <boost/shared_ptr.hpp>
-#include <vector>
 #include <map>
+#include <vector>
+
+#include <boost/shared_ptr.hpp>
 
 #include "pugixml/pugixml.hpp"
 
@@ -41,6 +42,7 @@ struct GpxBar;
 struct GpxBeat;
 struct GpxRhythm;
 struct GpxNote;
+struct GpxAutomation;
 
 class DocumentReader
 {
@@ -58,6 +60,7 @@ private:
     std::map<int, GpxBeat> beats;
     std::map<int, GpxRhythm> rhythms;
     std::map<int, GpxNote> notes;
+    std::map<int, GpxAutomation> automations;
 
     void readHeader(PowerTabFileHeader& header);
     void readTracks(Score* score);
@@ -66,6 +69,7 @@ private:
     void readBeats();
     void readRhythms();
     void readNotes();
+    void readAutomations();
 
     void readMasterBars(Score* score);
     void readKeySignature(const pugi::xml_node &masterBar, KeySignature& key);
@@ -114,6 +118,16 @@ struct GpxNote
     bool letRing;
     int trillNote; ///< Note value is stored in MIDI format (0-127)
     pugi::xml_node properties;
+};
+
+struct GpxAutomation
+{
+    std::string type;
+    bool linear;
+    int bar;
+    double position;
+    bool visible;
+    std::vector<int> value;
 };
 
 }

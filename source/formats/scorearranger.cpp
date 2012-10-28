@@ -25,6 +25,7 @@
 #include <powertabdocument/barline.h>
 #include <powertabdocument/alternateending.h>
 #include <powertabdocument/layout.h>
+#include <powertabdocument/tempomarker.h>
 
 #include <algorithm>
 #include <boost/make_shared.hpp>
@@ -123,6 +124,14 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
                 currentBar->altEnding->SetSystem(score->GetSystemCount() - 1);
                 currentBar->altEnding->SetPosition(currentBar->barline->GetPosition());
                 score->InsertAlternateEnding(currentBar->altEnding);
+            }
+
+            // Insert tempo marker if necessary.
+            if (currentBar->tempoMarker)
+            {
+                currentBar->tempoMarker->SetSystem(score->GetSystemCount() - 1);
+                currentBar->tempoMarker->SetPosition(currentBar->barline->GetPosition());
+                score->InsertTempoMarker(currentBar->tempoMarker);
             }
 
             lastBarlinePos += largestMeasure + 1;
