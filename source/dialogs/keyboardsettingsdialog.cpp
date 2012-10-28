@@ -189,5 +189,5 @@ void KeyboardSettingsDialog::accept()
 /// Get the Command corresponding to the currently selected row
 Command * KeyboardSettingsDialog::activeCommand() const
 {
-    return qVariantValue<Command*>(ui->commandsList->currentItem()->data(0, Qt::UserRole));
+    return ui->commandsList->currentItem()->data(0, Qt::UserRole).value<Command*>();
 }

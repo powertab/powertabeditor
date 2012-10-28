@@ -36,6 +36,7 @@ public:
 
 private:
     void loadShortcut();
+    QString settingsKey() const;
 
     const QString id_; /// unique identifer (used when storing a customized key sequence)
     const QKeySequence defaultShortcut_;

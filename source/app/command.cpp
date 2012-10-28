@@ -40,13 +40,22 @@ QKeySequence Command::defaultShortcut() const
     return defaultShortcut_;
 }
 
-/// Set the shortcut for the command, and save it externally so that the setting will persist
+/// Set the shortcut for the command, and save it externally so that the
+/// setting will persist.
 void Command::setShortcut(const QKeySequence& shortcut)
 {
     QAction::setShortcut(shortcut);
 
     QSettings settings;
-    settings.setValue(KEY_PREFIX + id_, shortcut.toString());
+    // Only save shortcuts that are different from the default.
+    if (shortcut == defaultShortcut())
+    {
+        settings.remove(settingsKey());
+    }
+    else
+    {
+        settings.setValue(settingsKey(), shortcut.toString());
+    }
 }
 
 /// Loads the shortcut for the command - if there is not a customized shortuct in the settings file,
@@ -55,8 +64,14 @@ void Command::loadShortcut()
 {
     QSettings settings;
 
-    const QString keySequence = settings.value(KEY_PREFIX + id_,
+    const QString keySequence = settings.value(settingsKey(),
                                                defaultShortcut_.toString()).toString();
 
     QAction::setShortcut(keySequence);
+}
+
+/// Returns the name of the key used for storing the customized shortcut.
+QString Command::settingsKey() const
+{
+    return KEY_PREFIX + id_;
 }
