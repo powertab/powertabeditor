@@ -1271,6 +1271,11 @@ bool PowerTabEditor::closeTab(int index)
         }
     }
 
+    if (isPlaying)
+    {
+        startStopPlayback();
+    }
+
     undoManager->removeStack(index);
     documentManager->removeDocument(index);
     delete tabWidget->widget(index);
@@ -1402,12 +1407,12 @@ void PowerTabEditor::startStopPlayback()
     }
     else
     {
-        // if we manually stop playback, let the midi thread finish, and the finished() signal will trigger this function again
-        if (midiPlayer.get() != NULL && midiPlayer->isRunning())
+        // If we manually stop playback, tell the midi thread to finish.
+        if (midiPlayer && midiPlayer->isRunning())
         {
-            isPlaying = true;
+            // Avoid recursion from the finished() signal being called.
+            midiPlayer->disconnect(this);
             midiPlayer.reset();
-            return;
         }
 
         playPauseAct->setText(tr("Play"));
