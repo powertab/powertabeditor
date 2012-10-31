@@ -211,38 +211,38 @@ void NotePage::createSlideLegatoButtons()
     slideLegatoGroup = new QGroupBox(tr("Slide && Legato"));
     slideLegatoLayout = new QHBoxLayout;
 
-    slideInBelowButton = new QPushButton(QIcon(":images/slideinbelow.gif"),"");
+    slideInBelowButton = new QPushButton(QIcon(":images/slideinbelow"),"");
     slideInBelowButton->setToolTip(tr("Slide In From Below"));
     initButton(slideInBelowButton);
     connectButtonToAction(slideInBelowButton, mainWindow->slideIntoFromBelowAct);
 
-    slideInAboveButton = new QPushButton(QIcon(":images/slideinabove.gif"),"");
+    slideInAboveButton = new QPushButton(QIcon(":images/slideinabove"),"");
     slideInAboveButton->setToolTip(tr("Slide In From Above"));
     initButton(slideInAboveButton);
     connectButtonToAction(slideInAboveButton, mainWindow->slideIntoFromAboveAct);
 
-    slideOutBelowButton = new QPushButton(QIcon(":images/slideoutdown.gif"),"");
+    slideOutBelowButton = new QPushButton(QIcon(":images/slideoutdown"),"");
     slideOutBelowButton->setToolTip(tr("Slide Out Downwards"));
     initButton(slideOutBelowButton);
     connectButtonToAction(slideOutBelowButton, mainWindow->slideOutOfDownwardsAct);
 
-    slideOutAboveButton = new QPushButton(QIcon(":images/slideoutup.gif"),"");
+    slideOutAboveButton = new QPushButton(QIcon(":images/slideoutup"),"");
     slideOutAboveButton->setToolTip(tr("Slide Out Upwards"));
     initButton(slideOutAboveButton);
     connectButtonToAction(slideOutAboveButton, mainWindow->slideOutOfUpwardsAct);
 
-    shiftSlideButton = new QPushButton(QIcon(":images/shiftslide.gif"),"");
+    shiftSlideButton = new QPushButton(QIcon(":images/shiftslide"),"");
     shiftSlideButton->setToolTip(tr("Shift Slide"));
     initButton(shiftSlideButton);
     connectButtonToAction(shiftSlideButton, mainWindow->shiftSlideAct);
 
-    legatoSlideButton = new QPushButton(QIcon(":images/legatoslide.gif"),"");
+    legatoSlideButton = new QPushButton(QIcon(":images/legatoslide"),"");
     legatoSlideButton->setToolTip(tr("Legato Slide"));
     initButton(legatoSlideButton);
     connectButtonToAction(legatoSlideButton, mainWindow->legatoSlideAct);
 
-    legatoButton = new QPushButton(QIcon(":images/legato.gif"),"");
-    legatoButton->setToolTip(tr("Legato"));
+    legatoButton = new QPushButton(QIcon(":images/legato"),"");
+    legatoButton->setToolTip(tr("Hammer On/Pull Off"));
     initButton(legatoButton);
     connectButtonToAction(legatoButton, mainWindow->hammerPullAct);
 
@@ -275,7 +275,7 @@ void NotePage::createVibratoTremoloButtons()
     initButton(wideVibratoButton);
     connectButtonToAction(wideVibratoButton, mainWindow->wideVibratoAct);
 
-    bendButton = new QPushButton(QIcon(":images/bend.gif"),"");
+    bendButton = new QPushButton(QIcon(":images/bend"),"");
     bendButton->setToolTip(tr("Bend"));
     initButton(bendButton);
 

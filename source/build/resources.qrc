@@ -4,14 +4,14 @@
         <file alias="LiberationSans-Regular.ttf">../fonts/LiberationSans-Regular.ttf</file>
     </qresource>
     <qresource prefix="/images">
-        <file alias="bend.gif">../images/bend.gif</file>
-        <file alias="legato.gif">../images/legato.gif</file>
-        <file alias="legatoslide.gif">../images/legatoslide.gif</file>
-        <file alias="shiftslide.gif">../images/shiftslide.gif</file>
-        <file alias="slideinabove.gif">../images/slideinabove.gif</file>
-        <file alias="slideinbelow.gif">../images/slideinbelow.gif</file>
-        <file alias="slideoutdown.gif">../images/slideoutdown.gif</file>
-        <file alias="slideoutup.gif">../images/slideoutup.gif</file>
+        <file alias="bend">../images/bend.png</file>
+        <file alias="legato">../images/legato.png</file>
+        <file alias="legatoslide">../images/legatoslide.png</file>
+        <file alias="shiftslide">../images/shiftslide.png</file>
+        <file alias="slideinabove">../images/slideinabove.png</file>
+        <file alias="slideinbelow">../images/slideinbelow.png</file>
+        <file alias="slideoutdown">../images/slideoutdown.png</file>
+        <file alias="slideoutup">../images/slideoutup.png</file>
         <file alias="vibrato.png">../images/vibrato.png</file>
         <file alias="widevibrato.png">../images/widevibrato.png</file>
         <file alias="tremolo.png">../images/tremolo.png</file>
