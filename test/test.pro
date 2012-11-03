@@ -3,6 +3,8 @@ include (../common.pri)
 SOURCE_DIR=../source
 include (../linking.pri)
 
+INCLUDEPATH += $${PWD}
+
 TARGET = pte_tests
 TEMPLATE = app
 
