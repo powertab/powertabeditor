@@ -105,7 +105,7 @@ namespace midi
     string GetMidiNoteText(uint8_t note, bool usesSharps,
                            uint8_t numAccidentals, bool forceAccidentals)
     {
-        CHECK_THAT(IsValidMidiNote(note), "");
+        PTB_CHECK_THAT(IsValidMidiNote(note), "");
 
         const uint8_t pitch = GetMidiNotePitch(note);
 
@@ -163,7 +163,7 @@ namespace midi
     /// @return A text representation of the MIDI note
     string GetMidiNoteTextSimple(uint8_t note, bool sharps)
     {
-        CHECK_THAT(IsValidMidiNote(note), "");
+        PTB_CHECK_THAT(IsValidMidiNote(note), "");
 
         const uint8_t pitch = GetMidiNotePitch(note);
 

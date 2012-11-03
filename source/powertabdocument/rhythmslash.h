@@ -146,7 +146,7 @@ public:
     /// @return True if the position was set, false if not
     bool SetPosition(uint32_t position)
     {
-        CHECK_THAT(IsValidPosition(position), false);
+        PTB_CHECK_THAT(IsValidPosition(position), false);
         m_position = (uint8_t)position;
         return (true);
     }
@@ -242,7 +242,7 @@ protected:
     /// @return True if the beaming flag was cleared, false if not
     bool ClearBeamingFlag(uint8_t flag)                          
     {
-        CHECK_THAT(IsValidBeamingFlag(flag), false);
+        PTB_CHECK_THAT(IsValidBeamingFlag(flag), false);
         m_beaming &= ~flag;
         return (true);
     }
@@ -251,7 +251,7 @@ protected:
     /// @return True if the flag is set, false if not
     bool IsBeamingFlagSet(uint8_t flag) const                    
     {
-        CHECK_THAT(IsValidBeamingFlag(flag), false);
+        PTB_CHECK_THAT(IsValidBeamingFlag(flag), false);
         return ((m_beaming & flag) == flag);
     }
 
@@ -316,7 +316,7 @@ protected:
     /// @return True if the triplet flag was cleared, false if not
     bool ClearTripletFlag(uint8_t flag)                          
     {
-        CHECK_THAT(IsValidTripletFlag(flag), false);
+        PTB_CHECK_THAT(IsValidTripletFlag(flag), false);
         m_beaming &= ~flag;
         return (true);
     }
@@ -325,7 +325,7 @@ protected:
     /// @return True if the flag is set, false if not
     bool IsTripletFlagSet(uint8_t flag) const                    
     {
-        CHECK_THAT(IsValidTripletFlag(flag), false);
+        PTB_CHECK_THAT(IsValidTripletFlag(flag), false);
         return ((m_beaming & flag) == flag);
     }
 
@@ -624,13 +624,13 @@ protected:
     /// @param flag Flag to clear
     /// @return True if the flag was cleared, false if not
     bool ClearDataFlag(uint32_t flag)
-        {CHECK_THAT(IsValidDataFlag(flag), false); m_data &= ~flag; return (true);}
+        {PTB_CHECK_THAT(IsValidDataFlag(flag), false); m_data &= ~flag; return (true);}
     /// Determines if a data flag is set
     /// @param flag Flag to test
     /// @return True if the flag is set, false if not
     bool IsDataFlagSet(uint32_t flag) const
     {
-        CHECK_THAT(IsValidDataFlag(flag), false);
+        PTB_CHECK_THAT(IsValidDataFlag(flag), false);
         return ((m_data & flag) == flag);
     }
     

@@ -135,7 +135,7 @@ public:                                                               \
     { base::RemoveAt(uiIndex, nRemove); }                             \
   void Remove(T Item)                                                 \
     { int iIndex = Index(Item);                                       \
-      CHECK_THAT2_MSG( iIndex != wxNOT_FOUND, return,                    \
+      PTB_CHECK_THAT2_MSG( iIndex != wxNOT_FOUND, return,                    \
          _WX_ERROR_REMOVE);                                           \
       base::RemoveAt((size_t)iIndex); }                               \
                                                                       \
@@ -145,12 +145,12 @@ public:                                                               \
   {                                                                   \
     uint32_t count = base::GetCount();                                \
     stream.WriteCount(count);                                         \
-    CHECK_THAT(stream.CheckState(), false);                              \
+    PTB_CHECK_THAT(stream.CheckState(), false);                              \
     size_t i = 0;                                                     \
     for (; i < count; i++)                                            \
     {                                                                 \
         stream.WriteObject((*this)[i]);                               \
-        CHECK_THAT(stream.CheckState(), false);                          \
+        PTB_CHECK_THAT(stream.CheckState(), false);                          \
     }                                                                 \
     return (true);                                                    \
   }                                                                   \
@@ -158,13 +158,13 @@ public:                                                               \
   bool Deserialize(PowerTabInputStream& stream, uint16_t version)       \
   {                                                                   \
     uint32_t newCount = stream.ReadCount();                           \
-    CHECK_THAT(stream.CheckState(), false);                              \
+    PTB_CHECK_THAT(stream.CheckState(), false);                              \
     if (newCount > 0)                                                 \
         base::Alloc(newCount);                                        \
     while (newCount--)                                                \
     {                                                                 \
         PowerTabObject* newData = stream.ReadObject(version);         \
-        CHECK_THAT(stream.CheckState(), false);                          \
+        PTB_CHECK_THAT(stream.CheckState(), false);                          \
         base::Add(newData);                                           \
     }                                                                 \
     return (true);                                                    \

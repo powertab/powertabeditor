@@ -224,105 +224,105 @@ bool PowerTabFileHeader::operator!=(const PowerTabFileHeader& header) const
 bool PowerTabFileHeader::Serialize(PowerTabOutputStream& stream) const
 {
 	stream << POWERTABFILE_MARKER << FILEVERSION_CURRENT << m_fileType;
-	CHECK_THAT(stream.CheckState(), false);
+	PTB_CHECK_THAT(stream.CheckState(), false);
 
 	// Song
 	if (IsSong())
 	{
 		stream << m_songData.contentType;
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.title);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.artist);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream << m_songData.releaseType;
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 
 		if (m_songData.releaseType == RELEASETYPE_PUBLIC_AUDIO)
 		{
 			stream << m_songData.audioData.type;
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 			
 			stream.WriteMFCString(m_songData.audioData.title);
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 			
 			stream << m_songData.audioData.year << m_songData.audioData.live;
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 		}
 		else if (m_songData.releaseType == RELEASETYPE_PUBLIC_VIDEO)
 		{
 			stream.WriteMFCString(m_songData.videoData.title);
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 			
 			stream << m_songData.videoData.live;
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 		}
 		else if (m_songData.releaseType == RELEASETYPE_BOOTLEG)
 		{
 			stream.WriteMFCString(m_songData.bootlegData.title);
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 			
 			stream << m_songData.bootlegData.month <<
 				m_songData.bootlegData.day << m_songData.bootlegData.year;
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 		}
 
 		stream << m_songData.authorType;
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 
 		if (m_songData.authorType == AUTHORTYPE_AUTHORKNOWN)
 		{
 			stream.WriteMFCString(m_songData.authorData.composer);
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 			
 			stream.WriteMFCString(m_songData.authorData.lyricist);
-			CHECK_THAT(stream.CheckState(), false);
+			PTB_CHECK_THAT(stream.CheckState(), false);
 		}
 	
 		stream.WriteMFCString(m_songData.arranger);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.guitarScoreTranscriber);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.bassScoreTranscriber);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.copyright);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.lyrics);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.guitarScoreNotes);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_songData.bassScoreNotes);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 	}
 	// Lesson
 	else if (IsLesson())
 	{
 		stream.WriteMFCString(m_lessonData.title);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_lessonData.subtitle);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream << m_lessonData.musicStyle << m_lessonData.level;
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_lessonData.author);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_lessonData.notes);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 		
 		stream.WriteMFCString(m_lessonData.copyright);
-		CHECK_THAT(stream.CheckState(), false);
+		PTB_CHECK_THAT(stream.CheckState(), false);
 	}
 		
 	return (stream.CheckState());
@@ -588,7 +588,7 @@ std::string PowerTabFileHeader::GetSongReleaseTitle() const
 /// @return True if the bootleg date was set, false if not
 bool PowerTabFileHeader::SetSongBootlegDate(boost::gregorian::date date)
 {
-    CHECK_THAT(!date.is_not_a_date(), false);
+    PTB_CHECK_THAT(!date.is_not_a_date(), false);
 
     m_songData.bootlegData.month = date.month();
     m_songData.bootlegData.day = date.day();

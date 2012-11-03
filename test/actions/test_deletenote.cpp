@@ -15,28 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <actions/deletenote.h>
 #include <powertabdocument/note.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 
-BOOST_AUTO_TEST_CASE(TestCanDeleteNote)
+TEST_CASE("Actions/DeleteNote/CanDeleteNote", "")
 {
-    BOOST_CHECK(!DeleteNote::canExecute(NULL, 2));
+    REQUIRE(!DeleteNote::canExecute(NULL, 2));
 
     Position position;
-    BOOST_CHECK(!DeleteNote::canExecute(&position, 3));
+    REQUIRE(!DeleteNote::canExecute(&position, 3));
 
     position.InsertNote(new Note(3, 12));
-    BOOST_CHECK(DeleteNote::canExecute(&position, 3));
-    BOOST_CHECK(!DeleteNote::canExecute(&position, 2));
+    REQUIRE(DeleteNote::canExecute(&position, 3));
+    REQUIRE(!DeleteNote::canExecute(&position, 2));
 }
 
-BOOST_AUTO_TEST_CASE(TestDeleteNote)
+TEST_CASE("Actions/DeleteNote/DeleteNote", "")
 {
     const uint32_t string1 = 2, string2 = 4;
     const uint8_t fret1 = 12, fret2 = 13;
@@ -50,19 +48,19 @@ BOOST_AUTO_TEST_CASE(TestDeleteNote)
     DeleteNote action(staff, /* voice */ 0, position, string1);
 
     action.redo();
-    BOOST_CHECK_EQUAL(position->GetNoteCount(), 1);
-    BOOST_CHECK(!position->GetNoteByString(string1));
-    BOOST_CHECK(position->GetNoteByString(string2));
+    REQUIRE(position->GetNoteCount() == 1);
+    REQUIRE(!position->GetNoteByString(string1));
+    REQUIRE(position->GetNoteByString(string2));
 
     action.undo();
-    BOOST_CHECK_EQUAL(position->GetNoteCount(), 2);
-    BOOST_CHECK(position->GetNoteByString(string1));
-    BOOST_CHECK(position->GetNoteByString(string2));
-    BOOST_CHECK_EQUAL(position->GetNoteByString(string1)->GetFretNumber(), fret1);
-    BOOST_CHECK_EQUAL(position->GetNoteByString(string2)->GetFretNumber(), fret2);
+    REQUIRE(position->GetNoteCount() == 2);
+    REQUIRE(position->GetNoteByString(string1));
+    REQUIRE(position->GetNoteByString(string2));
+    REQUIRE(position->GetNoteByString(string1)->GetFretNumber() == fret1);
+    REQUIRE(position->GetNoteByString(string2)->GetFretNumber() == fret2);
 }
 
-BOOST_AUTO_TEST_CASE(TestDeleteLastNote)
+TEST_CASE("Actions/DeleteNote/DeleteLastNote", "")
 {
     boost::shared_ptr<Staff> staff(new Staff);
     Position* position = new Position;
@@ -72,10 +70,10 @@ BOOST_AUTO_TEST_CASE(TestDeleteLastNote)
     DeleteNote action(staff, /* voice */ 0, position, 2);
 
     action.redo();
-    BOOST_CHECK_EQUAL(staff->GetPositionCount(0), 0);
+    REQUIRE(staff->GetPositionCount(0) == 0);
 
     action.undo();
-    BOOST_CHECK_EQUAL(staff->GetPositionCount(0), 1);
-    BOOST_CHECK_EQUAL(staff->GetPosition(0, 0)->GetNoteCount(), 1);
+    REQUIRE(staff->GetPositionCount(0) == 1);
+    REQUIRE(staff->GetPosition(0, 0)->GetNoteCount() == 1);
 }
 

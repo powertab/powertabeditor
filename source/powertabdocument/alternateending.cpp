@@ -99,7 +99,7 @@ bool AlternateEnding::IsValidNumber(uint32_t number)
 /// @return True if the numbers were set, false if not
 bool AlternateEnding::SetNumbers(uint16_t numbers)
 {
-    CHECK_THAT(IsValidNumbers(numbers), false);
+    PTB_CHECK_THAT(IsValidNumbers(numbers), false);
     m_data = MAKELONG(0, numbers);
     return true;
 }
@@ -132,7 +132,7 @@ std::vector<uint8_t> AlternateEnding::GetListOfNumbers() const
 /// @return True if the number was set, false if not
 bool AlternateEnding::SetNumber(uint32_t number)
 {
-    CHECK_THAT(IsValidNumber(number), false);
+    PTB_CHECK_THAT(IsValidNumber(number), false);
 
     // Note: Numbers are stored in zero-based form
     uint16_t numbers = GetNumbers();
@@ -146,7 +146,7 @@ bool AlternateEnding::SetNumber(uint32_t number)
 /// @return True if the number is set, false if not
 bool AlternateEnding::IsNumberSet(uint32_t number) const
 {
-    CHECK_THAT(IsValidNumber(number), false);
+    PTB_CHECK_THAT(IsValidNumber(number), false);
 
     // Number is one based, so subtract one
     number--;
@@ -162,7 +162,7 @@ bool AlternateEnding::IsNumberSet(uint32_t number) const
 /// @return True if the number was cleared, false if not
 bool AlternateEnding::ClearNumber(uint32_t number)
 {
-    CHECK_THAT(IsValidNumber(number), false);
+    PTB_CHECK_THAT(IsValidNumber(number), false);
 
     uint16_t numbers = GetNumbers();
     numbers &= ~(uint16_t)(pow((double)2, (double)(number - 1)));
@@ -256,7 +256,7 @@ std::string AlternateEnding::GetText() const
 /// @return Text representation of the number
 std::string AlternateEnding::GetNumberText(uint32_t number)
 {
-    CHECK_THAT(IsValidNumber(number), "");
+    PTB_CHECK_THAT(IsValidNumber(number), "");
 
     if (number == daCapo)
     {

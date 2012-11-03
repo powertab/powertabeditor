@@ -201,7 +201,7 @@ public:
     /// @return True if the position was set, false if not
     bool SetPosition(uint32_t position)
     {
-        CHECK_THAT(IsValidPosition(position), false);
+        PTB_CHECK_THAT(IsValidPosition(position), false);
         m_position = (uint8_t)position;
         return (true);
     }
@@ -338,7 +338,7 @@ protected:
     /// @return True if the beaming flag was cleared, false if not
     bool ClearBeamingFlag(uint16_t flag)
     {
-        CHECK_THAT(IsValidBeamingFlag(flag), false);
+        PTB_CHECK_THAT(IsValidBeamingFlag(flag), false);
         m_beaming &= ~flag;
         return (true);
     }
@@ -347,7 +347,7 @@ protected:
     /// @return True if the flag is set, false if not
     bool IsBeamingFlagSet(uint16_t flag) const
     {
-        CHECK_THAT(IsValidBeamingFlag(flag), false);
+        PTB_CHECK_THAT(IsValidBeamingFlag(flag), false);
         return ((m_beaming & flag) == flag);
     }
 
@@ -716,7 +716,7 @@ protected:
     /// @return True if the flag was cleared, false if not
     bool ClearDataFlag(uint32_t flag)
     {
-        CHECK_THAT(IsValidDataFlag(flag), false);
+        PTB_CHECK_THAT(IsValidDataFlag(flag), false);
         m_data &= ~flag;
         return (true);
     }
@@ -725,7 +725,7 @@ protected:
     /// @return True if the flag is set, false if not
     bool IsDataFlagSet(uint32_t flag) const
     {
-        CHECK_THAT(IsValidDataFlag(flag), false);
+        PTB_CHECK_THAT(IsValidDataFlag(flag), false);
         return ((m_data & flag) == flag);
     }
 
@@ -811,7 +811,7 @@ public:
     /// @return The nth note in the position
     Note* GetNote(uint32_t index) const
     {
-        CHECK_THAT(IsValidNoteIndex(index), NULL);
+        PTB_CHECK_THAT(IsValidNoteIndex(index), NULL);
         return (m_noteArray[index]);
     }
 

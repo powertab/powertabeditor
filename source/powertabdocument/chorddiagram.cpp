@@ -95,10 +95,10 @@ bool ChordDiagram::operator!=(const ChordDiagram& chordDiagram) const
 bool ChordDiagram::Serialize(PowerTabOutputStream& stream) const
 {
     m_chordName.Serialize(stream);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream << m_topFret;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteSmallVector(m_fretNumberArray);
     return stream.CheckState();
@@ -151,8 +151,8 @@ bool ChordDiagram::IsValidFretNumber(uint8_t fretNumber)
 /// @return True if the fret number was set, false if not
 bool ChordDiagram::SetFretNumber(uint32_t string, uint8_t fretNumber)
 {
-    CHECK_THAT(IsValidString(string), false);
-    CHECK_THAT(IsValidFretNumber(fretNumber), false);
+    PTB_CHECK_THAT(IsValidString(string), false);
+    PTB_CHECK_THAT(IsValidFretNumber(fretNumber), false);
     m_fretNumberArray[string] = fretNumber;
     return (true);
 }
@@ -162,7 +162,7 @@ bool ChordDiagram::SetFretNumber(uint32_t string, uint8_t fretNumber)
 /// @return The fret number on the string
 uint8_t ChordDiagram::GetFretNumber(uint32_t string) const
 {
-    CHECK_THAT(IsValidString(string), 0);
+    PTB_CHECK_THAT(IsValidString(string), 0);
     return m_fretNumberArray[string];
 }
 
@@ -171,11 +171,11 @@ uint8_t ChordDiagram::GetFretNumber(uint32_t string) const
 /// @return True if the chord diagram fret numbers were set, false if not
 bool ChordDiagram::AddFretNumbers(const std::vector<uint8_t>& fretNumbers)
 {
-    CHECK_THAT(Tuning::IsValidStringCount(fretNumbers.size()), false);
+    PTB_CHECK_THAT(Tuning::IsValidStringCount(fretNumbers.size()), false);
 
     for (size_t i = 0; i < fretNumbers.size(); i++)
     {
-        CHECK_THAT(IsValidFretNumber(fretNumbers[i]), false);
+        PTB_CHECK_THAT(IsValidFretNumber(fretNumbers[i]), false);
     }
 
     m_fretNumberArray = fretNumbers;
@@ -272,7 +272,7 @@ bool ChordDiagram::IsValidTopFret(uint8_t topFret)
 /// @return True if the top fret was set, false if not
 bool ChordDiagram::SetTopFret(uint8_t topFret)
 {
-    CHECK_THAT(IsValidTopFret(topFret), false);
+    PTB_CHECK_THAT(IsValidTopFret(topFret), false);
     m_topFret = topFret;
     return true;
 }

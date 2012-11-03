@@ -15,43 +15,41 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <powertabdocument/generalmidi.h>
 
-BOOST_AUTO_TEST_CASE(TestGetMidiNoteTextSimple)
+TEST_CASE("PowerTabDocument/GeneralMidi/GetMidiNoteTextSimple", "")
 {
     using namespace midi;
 
-    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_C0, false), "C");
-    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, true), "F#");
-    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, false), "Gb");
+    REQUIRE(GetMidiNoteTextSimple(MIDI_NOTE_C0, false) == "C");
+    REQUIRE(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, true) == "F#");
+    REQUIRE(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, false) == "Gb");
 }
 
-BOOST_AUTO_TEST_CASE(TestGetMidiNoteText)
+TEST_CASE("PowerTabDocument/GeneralMidi/GetMidiNoteText", "")
 {
     using namespace midi;
 
-    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_C0, false), "C");
-    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, true), "F#");
-    BOOST_CHECK_EQUAL(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, false), "Gb");
+    REQUIRE(GetMidiNoteTextSimple(MIDI_NOTE_C0, false) == "C");
+    REQUIRE(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, true) == "F#");
+    REQUIRE(GetMidiNoteTextSimple(MIDI_NOTE_FSHARP0, false) == "Gb");
 
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_G3, true, 2), "G");
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_F3, true, 2), "F=");
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_FSHARP3, true, 2), "F");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_G3, true, 2) == "G");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_F3, true, 2) == "F=");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_FSHARP3, true, 2) == "F");
 
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_G3, true, 2, true), "G=");
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_F3, true, 2, true), "F=");
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_FSHARP3, true, 2, true), "F#");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_G3, true, 2, true) == "G=");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_F3, true, 2, true) == "F=");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_FSHARP3, true, 2, true) == "F#");
 
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_C3, true, 0), "C");
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_ASHARP3, true, 2), "Bb");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_C3, true, 0) == "C");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_ASHARP3, true, 2) == "Bb");
 
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_ASHARP3, false, 2), "B");
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_E3, false, 2), "E=");
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_DSHARP3, false, 2), "E");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_ASHARP3, false, 2) == "B");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_E3, false, 2) == "E=");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_DSHARP3, false, 2) == "E");
 
-    BOOST_CHECK_EQUAL(GetMidiNoteText(MIDI_NOTE_G3, true, 5, false), "G=");
+    REQUIRE(GetMidiNoteText(MIDI_NOTE_G3, true, 5, false) == "G=");
 }

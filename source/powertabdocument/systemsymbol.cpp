@@ -129,7 +129,7 @@ bool SystemSymbol::Serialize(PowerTabOutputStream& stream) const
     //------Last Checked------//
     // - Jan 13, 2005
     stream << m_system << m_position << m_data;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     return (stream.CheckState());
 }
 

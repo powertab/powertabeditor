@@ -273,16 +273,16 @@ protected:
     /// Sets a flag used by the KeySignature object
     /// @param flag The flag to set
     bool SetFlag(uint8_t flag)
-        {CHECK_THAT(IsValidFlag(flag), false); m_data |= flag; return (true);}
+        {PTB_CHECK_THAT(IsValidFlag(flag), false); m_data |= flag; return (true);}
     /// Clears a flag used by the KeySignature object
     /// @param flag The flag to clear
     bool ClearFlag(uint8_t flag)
-        {CHECK_THAT(IsValidFlag(flag), false); m_data &= ~flag; return (true);}
+        {PTB_CHECK_THAT(IsValidFlag(flag), false); m_data &= ~flag; return (true);}
     /// Determines if a flag used by the KeySignature object is set
     /// @param flag The flag to test
     /// @return True if the flag is set, false if not
     bool IsFlagSet(uint8_t flag) const
-        {CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
+        {PTB_CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
 };
 
 #endif // KEYSIGNATURE_H

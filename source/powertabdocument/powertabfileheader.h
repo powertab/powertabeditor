@@ -215,7 +215,7 @@ public:
     /// @return True if the file version was set, false if not
     bool SetVersion(uint16_t version)
     {
-        CHECK_THAT(IsValidFileVersion(version), false);
+        PTB_CHECK_THAT(IsValidFileVersion(version), false);
         m_version = version;
         return true;
     }
@@ -241,7 +241,7 @@ public:
     /// @return True if the file type was set, false if not
     bool SetFileType(uint8_t fileType)                               
     {
-        CHECK_THAT(IsValidFileType(fileType), false);
+        PTB_CHECK_THAT(IsValidFileType(fileType), false);
         m_fileType = fileType;
         return true;
     }
@@ -293,7 +293,7 @@ public:
     /// @return True if the content type was set, false if not
     bool SetSongContentType(uint8_t contentType)                     
     {
-        CHECK_THAT(IsValidSongContentType(contentType), false);
+        PTB_CHECK_THAT(IsValidSongContentType(contentType), false);
         m_songData.contentType = contentType;
         return true;
     }
@@ -346,7 +346,7 @@ public:
     /// @return True if the song release type was set, false if not
     bool SetSongReleaseType(uint8_t releaseType)                     
     {
-        CHECK_THAT(IsValidSongReleaseType(releaseType), false);
+        PTB_CHECK_THAT(IsValidSongReleaseType(releaseType), false);
         m_songData.releaseType = releaseType;
         return true;
     }
@@ -374,7 +374,7 @@ public:
     /// @return True if the song audio release type was set, false if not
     bool SetSongAudioReleaseType(uint8_t type)                       
     {
-        CHECK_THAT(IsValidAudioReleaseType(type), false);
+        PTB_CHECK_THAT(IsValidAudioReleaseType(type), false);
         m_songData.audioData.type = type;
         return true;
     }
@@ -486,7 +486,7 @@ public:
     /// @return True if the song author type was set, false if not
     bool SetSongAuthorType(uint8_t authorType)                       
     {
-        CHECK_THAT(IsValidAuthorType(authorType), false);
+        PTB_CHECK_THAT(IsValidAuthorType(authorType), false);
         m_songData.authorType = authorType;
         return true;
     }
@@ -666,7 +666,7 @@ public:
     /// @return True if the music musicStyle was set, false if not
     bool SetLessonMusicStyle(uint16_t musicStyle)                     
     {
-        CHECK_THAT(IsValidMusicStyle(musicStyle), false);
+        PTB_CHECK_THAT(IsValidMusicStyle(musicStyle), false);
         m_lessonData.musicStyle = musicStyle;
         return true;
     }
@@ -690,7 +690,7 @@ public:
     /// @return True if the lesson level was set, false if not
     bool SetLessonLevel(uint8_t level)                               
     {
-        CHECK_THAT(IsValidLessonLevel(level), false);
+        PTB_CHECK_THAT(IsValidLessonLevel(level), false);
         m_lessonData.level = level;
         return true;
     }

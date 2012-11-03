@@ -15,14 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <actions/editslideout.h>
 #include <powertabdocument/note.h>
 
-BOOST_AUTO_TEST_CASE(TestEditSlideOut)
+TEST_CASE("Actions/EditSlideOut", "")
 {
     Note note;
     uint8_t slideType = Note::slideOutOfNone;
@@ -31,14 +29,14 @@ BOOST_AUTO_TEST_CASE(TestEditSlideOut)
 
     action.redo();
     note.GetSlideOutOf(slideType, steps);
-    BOOST_CHECK_EQUAL(slideType, Note::slideOutOfLegatoSlide);
-    BOOST_CHECK_EQUAL(steps, 5);
+    REQUIRE(slideType == Note::slideOutOfLegatoSlide);
+    REQUIRE(steps == 5);
 
     action.undo();
     note.GetSlideOutOf(slideType, steps);
-    BOOST_CHECK_EQUAL(slideType, Note::slideOutOfNone);
-    BOOST_CHECK_EQUAL(steps, 0);
+    REQUIRE(slideType == Note::slideOutOfNone);
+    REQUIRE(steps == 0);
 
-    BOOST_CHECK(action.text() == "Legato Slide");
+    REQUIRE(action.text() == "Legato Slide");
 }
 

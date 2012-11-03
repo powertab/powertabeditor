@@ -98,10 +98,10 @@ bool ChordText::Serialize(PowerTabOutputStream& stream) const
     //------Last Checked------//
     // - Jan 3, 2005
     stream << m_position;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     m_chordName.Serialize(stream);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     return (stream.CheckState());
 }

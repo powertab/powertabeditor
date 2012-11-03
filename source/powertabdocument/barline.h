@@ -97,7 +97,7 @@ public:
     /// @return True if the position was set, false if not
     bool SetPosition(uint32_t position)                         
     {
-        CHECK_THAT(IsValidPosition(position), false);
+        PTB_CHECK_THAT(IsValidPosition(position), false);
         m_position = (uint8_t)position;
         return (true);
     }

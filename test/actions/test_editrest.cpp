@@ -14,69 +14,63 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#define BOOST_TEST_DYN_LINK
 
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <actions/editrest.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/note.h>
 
-BOOST_AUTO_TEST_SUITE(TestEditRest)
+TEST_CASE("Actions/EditRest/NoExistingRest", "")
+{
+    Position pos;
 
-    BOOST_AUTO_TEST_CASE(NoExistingRest)
-    {
-        Position pos;
+    EditRest action(&pos, 16);
 
-        EditRest action(&pos, 16);
+    action.redo();
 
-        action.redo();
+    REQUIRE(pos.IsRest());
+    REQUIRE(pos.GetDurationType() == 16);
 
-        BOOST_CHECK(pos.IsRest());
-        BOOST_CHECK_EQUAL(pos.GetDurationType(), 16);
+    action.undo();
 
-        action.undo();
+    REQUIRE(!pos.IsRest());
+    REQUIRE(pos.GetNoteCount() == 0u);
+}
 
-        BOOST_CHECK(!pos.IsRest());
-        BOOST_CHECK_EQUAL(pos.GetNoteCount(), 0u);
-    }
+TEST_CASE("Actions/EditRest/ModifyExistingRest", "")
+{
+    Position pos;
+    pos.SetRest(true);
+    pos.SetDurationType(4);
 
-    BOOST_AUTO_TEST_CASE(ModifyExistingRest)
-    {
-        Position pos;
-        pos.SetRest(true);
-        pos.SetDurationType(4);
+    EditRest action(&pos, 16);
 
-        EditRest action(&pos, 16);
+    action.redo();
 
-        action.redo();
+    REQUIRE(pos.IsRest());
+    REQUIRE(pos.GetDurationType() == 16);
 
-        BOOST_CHECK(pos.IsRest());
-        BOOST_CHECK_EQUAL(pos.GetDurationType(), 16);
+    action.undo();
 
-        action.undo();
+    REQUIRE(pos.IsRest());
+    REQUIRE(pos.GetDurationType() == 4);
+}
 
-        BOOST_CHECK(pos.IsRest());
-        BOOST_CHECK_EQUAL(pos.GetDurationType(), 4);
-    }
+TEST_CASE("Actions/EditRest/RemoveRest", "")
+{
+    Position pos;
+    pos.SetRest(true);
+    pos.SetDurationType(4);
 
-    BOOST_AUTO_TEST_CASE(RemoveRest)
-    {
-        Position pos;
-        pos.SetRest(true);
-        pos.SetDurationType(4);
+    EditRest action(&pos, 4);
 
-        EditRest action(&pos, 4);
+    action.redo();
 
-        action.redo();
+    REQUIRE(pos.IsRest() == false);
 
-        BOOST_CHECK(pos.IsRest() == false);
+    action.undo();
 
-        action.undo();
-
-        BOOST_CHECK(pos.IsRest());
-        BOOST_CHECK_EQUAL(pos.GetDurationType(), 4);
-    }
-
-BOOST_AUTO_TEST_SUITE_END()
+    REQUIRE(pos.IsRest());
+    REQUIRE(pos.GetDurationType() == 4);
+}

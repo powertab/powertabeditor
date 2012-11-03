@@ -187,13 +187,13 @@ bool Staff::Serialize(PowerTabOutputStream& stream) const
     stream << m_data << m_standardNotationStaffAboveSpacing <<
         m_standardNotationStaffBelowSpacing << m_symbolSpacing <<
         m_tablatureStaffBelowSpacing;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     // TODO - should we serialize the number of voices??
     for (size_t i = 0; i < positionArrays.size(); i++)
     {
         stream.WriteVector(positionArrays[i]);
-        CHECK_THAT(stream.CheckState(), false);
+        PTB_CHECK_THAT(stream.CheckState(), false);
     }
 
     return stream.CheckState();
@@ -224,7 +224,7 @@ bool Staff::SetClef(uint8_t clef)
 {
     //------Last Checked------//
     // - Jan 5, 2005
-    CHECK_THAT(clef <= 1, false);
+    PTB_CHECK_THAT(clef <= 1, false);
 
     m_data &= ~clefMask;
     m_data |= (uint8_t)(clef << 4);
@@ -239,7 +239,7 @@ bool Staff::SetTablatureStaffType(uint8_t type)
 {
     //------Last Checked------//
     // - Jan 5, 2005
-    CHECK_THAT(Tuning::IsValidStringCount(type), false);
+    PTB_CHECK_THAT(Tuning::IsValidStringCount(type), false);
 
     m_data &= ~tablatureStaffTypeMask;
     m_data |= type;
@@ -366,7 +366,7 @@ bool Staff::IsValidVoice(uint32_t voice)
 /// @return True if the position index is valid, false if not
 bool Staff::IsValidPositionIndex(uint32_t voice, uint32_t index) const
 {
-    CHECK_THAT(IsValidVoice(voice), false);
+    PTB_CHECK_THAT(IsValidVoice(voice), false);
     return (index < GetPositionCount(voice));
 }
 
@@ -859,12 +859,12 @@ bool Staff::RemovePosition(uint32_t voice, uint32_t index)
 
     // get the position object
     Position* pos = GetPositionByPosition(voice, index);
-    CHECK_THAT(pos != NULL, false);
+    PTB_CHECK_THAT(pos != NULL, false);
 
     // get the iterator to it (for erasing from the array)
     std::vector<Position*>& positionArray = positionArrays[voice];
     std::vector<Position*>::iterator location = std::find(positionArray.begin(), positionArray.end(), pos);
-    CHECK_THAT(location != positionArray.end(), false);
+    PTB_CHECK_THAT(location != positionArray.end(), false);
 
     // remove it
     positionArray.erase(location);

@@ -27,7 +27,7 @@ void logToDebug(const std::string& msg, const std::string& file, int line)
 std::string ArabicToRoman(uint32_t number, bool upperCase)
 {
     // Can only convert 1 to 5999
-    CHECK_THAT(((number > 0) && (number < 6000)), "");
+    PTB_CHECK_THAT(((number > 0) && (number < 6000)), "");
 
     std::string returnValue;
     while (number >= 1000)	{number -= 1000; returnValue += "m";}

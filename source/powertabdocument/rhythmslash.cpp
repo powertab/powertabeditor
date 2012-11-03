@@ -126,7 +126,7 @@ bool RhythmSlash::Serialize(PowerTabOutputStream& stream) const
 	//------Last Checked------//
 	// - Dec 17, 2004
 	stream << m_position << m_beaming << m_data;
-	CHECK_THAT(stream.CheckState(), false);
+	PTB_CHECK_THAT(stream.CheckState(), false);
 	return (stream.CheckState());
 }
 
@@ -149,7 +149,7 @@ bool RhythmSlash::SetDurationType(uint8_t durationType)
 {
 	//------Last Checked------//
 	// - Jan 6, 2005
-	CHECK_THAT(IsValidDurationType(durationType), false);
+	PTB_CHECK_THAT(IsValidDurationType(durationType), false);
 
 	// Duration type is stored in power of two format
 	m_data &= ~durationTypeMask;
@@ -192,7 +192,7 @@ bool RhythmSlash::SetPreviousBeamDurationType(uint8_t durationType)
 {
 	//------Last Checked------//
 	// - Jan 7, 2005
-	CHECK_THAT(IsValidPreviousBeamDurationType(durationType), false);
+	PTB_CHECK_THAT(IsValidPreviousBeamDurationType(durationType), false);
 	
 	// Clear the current duration type
 	m_beaming &= ~previousBeamDurationTypeMask;
@@ -228,7 +228,7 @@ bool RhythmSlash::SetBeamingFlag(uint8_t flag)
 {
 	//------Last Checked------//
 	// - Jan 7, 2005
-	CHECK_THAT(IsValidBeamingFlag(flag), false);
+	PTB_CHECK_THAT(IsValidBeamingFlag(flag), false);
 	
 	// Mutually exclusive operations
 	if ((flag & beamStart) == beamStart)
@@ -252,7 +252,7 @@ bool RhythmSlash::SetTripletFlag(uint8_t flag)
 {
 	//------Last Checked------//
 	// - Jan 6, 2005
-	CHECK_THAT(IsValidTripletFlag(flag), false);
+	PTB_CHECK_THAT(IsValidTripletFlag(flag), false);
 	
 	// Clear any current triplet flags
 	ClearTripletFlag(tripletMask);
@@ -278,7 +278,7 @@ bool RhythmSlash::SetDataFlag(uint32_t flag)
 {
 	//------Last Checked------//
 	// - Jan 7, 2005
-	CHECK_THAT(IsValidDataFlag(flag), false);
+	PTB_CHECK_THAT(IsValidDataFlag(flag), false);
 	
 	// Mutually exclusive operations
 	if ((flag & dottedMask) != 0)
@@ -316,8 +316,8 @@ bool RhythmSlash::SetSingleNoteData(uint8_t stringNumber, uint8_t fretNumber)
 {
 	//------Last Checked------//
 	// - Jan 6, 2005
-	CHECK_THAT(IsValidStringNumber(stringNumber), false);
-	CHECK_THAT(IsValidFretNumber(fretNumber), false);
+	PTB_CHECK_THAT(IsValidStringNumber(stringNumber), false);
+	PTB_CHECK_THAT(IsValidFretNumber(fretNumber), false);
 
 	if (!SetDataFlag(singleNote))
 		return (false);

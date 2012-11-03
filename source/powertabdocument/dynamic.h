@@ -102,7 +102,7 @@ public:
     /// @return True if the system was set, false if not
     bool SetSystem(uint32_t system)
     {
-        CHECK_THAT(IsValidSystem(system), false);
+        PTB_CHECK_THAT(IsValidSystem(system), false);
         m_system = (uint16_t)system;
         return (true);
     }
@@ -122,7 +122,7 @@ public:
     /// @return True if the staff was set, false if not
     bool SetStaff(uint32_t staff)
     {
-        CHECK_THAT(IsValidStaff(staff), false);
+        PTB_CHECK_THAT(IsValidStaff(staff), false);
         m_staff = (uint8_t)staff;
         return (true);
     }
@@ -143,7 +143,7 @@ public:
     /// @return True if the position was set, false if not
     bool SetPosition(uint32_t position)
     {
-        CHECK_THAT(IsValidPosition(position), false);
+        PTB_CHECK_THAT(IsValidPosition(position), false);
         m_position = (uint8_t)position;
         return (true);
     }

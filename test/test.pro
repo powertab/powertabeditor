@@ -9,49 +9,43 @@ TEMPLATE = app
 CONFIG += precompile_header
 PRECOMPILED_HEADER = test_pch.h
 
-unix:!macx:LIBS += -lboost_unit_test_framework
-
-# replace with the path to your boost installation
-win32:LIBS += -L'C:/Program Files/boost/boost_1_51/lib' -lboost_unit_test_framework
-
-macx:LIBS += -L/opt/local/lib -lboost_unit_test_framework-mt\
-             -framework CoreMidi -framework CoreAudio -framework CoreFoundation\
+macx:LIBS += -framework CoreMidi -framework CoreAudio -framework CoreFoundation\
              -framework AudioToolbox -framework AudioUnit
 
 SOURCES += \
     test_main.cpp \
-    powertabdocument/staff_test.cpp \    
-    powertabdocument/system_test.cpp \
-    powertabdocument/position_test.cpp \
-    audio/test_midievent.cpp \
-    powertabdocument/tuning_test.cpp \
-    powertabdocument/generalmidi_test.cpp \
-    powertabdocument/alternateending_test.cpp \
-    powertabdocument/chorddiagram_test.cpp \
-    powertabdocument/direction_test.cpp \
-    powertabdocument/note_test.cpp \
-    powertabdocument/complexsymbolarray_test.cpp \
     actions/test_editslideinto.cpp \
-    actions/test_editslideout.cpp \
-    app/test_documentmanager.cpp \
-    powertabdocument/harmonics_test.cpp \
+    actions/test_addirregulargrouping.cpp \
+    actions/test_updatenoteduration.cpp \
+    actions/test_removevolumeswell.cpp \
     actions/test_removetappedharmonic.cpp \
-    actions/test_addtappedharmonic.cpp \
-    powertabdocument/score_test.cpp \
-    powertabdocument/common_test.cpp \
+    actions/test_removeirregulargrouping.cpp \
+    actions/test_edittimesignature.cpp \
+    actions/test_editslideout.cpp \
     actions/test_editrest.cpp \
     actions/test_editkeysignature.cpp \
-    powertabdocument/keysignature_test.cpp \
-    actions/test_edittimesignature.cpp \
-    powertabdocument/timesignature_test.cpp \
-    formats/guitar_pro/test_gp4.cpp \
-    actions/test_removevolumeswell.cpp \
-    actions/test_addvolumeswell.cpp \
-    actions/test_addirregulargrouping.cpp \
-    actions/test_removeirregulargrouping.cpp \
-    actions/test_updatenoteduration.cpp \
     actions/test_deletenote.cpp \
-    powertabdocument/powertabfileheader_test.cpp
+    actions/test_addvolumeswell.cpp \
+    actions/test_addtappedharmonic.cpp \
+    app/test_documentmanager.cpp \
+    audio/test_midievent.cpp \
+    formats/guitar_pro/test_gp4.cpp \
+    powertabdocument/tuning_test.cpp \
+    powertabdocument/timesignature_test.cpp \
+    powertabdocument/system_test.cpp \
+    powertabdocument/staff_test.cpp \
+    powertabdocument/score_test.cpp \
+    powertabdocument/powertabfileheader_test.cpp \
+    powertabdocument/position_test.cpp \
+    powertabdocument/note_test.cpp \
+    powertabdocument/keysignature_test.cpp \
+    powertabdocument/harmonics_test.cpp \
+    powertabdocument/generalmidi_test.cpp \
+    powertabdocument/direction_test.cpp \
+    powertabdocument/complexsymbolarray_test.cpp \
+    powertabdocument/common_test.cpp \
+    powertabdocument/chorddiagram_test.cpp \
+    powertabdocument/alternateending_test.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
@@ -94,7 +88,8 @@ HEADERS += \
     powertabdocument/tuning_fixtures.h \
     powertabdocument/serialization_test.h \
     powertabdocument/score_fixture.h \
-    test_pch.h
+    test_pch.h \
+    catch.hpp
 
 # copy test files to output directory
 unix|macx {

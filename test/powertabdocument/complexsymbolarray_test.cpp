@@ -14,10 +14,8 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#define BOOST_TEST_DYN_LINK
 
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <powertabdocument/complexsymbolarray.h>
 #include <powertabdocument/position.h>
@@ -36,50 +34,46 @@ struct ComplexSymbolFixture
     boost::array<uint32_t, 3> array;
 };
 
-BOOST_AUTO_TEST_SUITE(ComplexSymbolTest)
+TEST_CASE_METHOD(ComplexSymbolFixture, "PowerTabDocument/ComplexSymbols/FindComplexSymbol", "")
+{
+    REQUIRE(ComplexSymbols::findComplexSymbol(array, Position::multibarRest) == -1u);
 
-    BOOST_FIXTURE_TEST_CASE(FindComplexSymbol, ComplexSymbolFixture)
-    {
-        BOOST_CHECK_EQUAL(ComplexSymbols::findComplexSymbol(array, Position::multibarRest), -1u);
+    REQUIRE(ComplexSymbols::findComplexSymbol(array, Position::volumeSwell) == 0u);
 
-        BOOST_CHECK_EQUAL(ComplexSymbols::findComplexSymbol(array, Position::volumeSwell), 0u);
+    REQUIRE(ComplexSymbols::findComplexSymbol(array, Position::tremoloBar) == 2u);
+}
 
-        BOOST_CHECK_EQUAL(ComplexSymbols::findComplexSymbol(array, Position::tremoloBar), 2u);
-    }
+TEST_CASE_METHOD(ComplexSymbolFixture, "PowerTabDocument/ComplexSymbols/GetComplexSymbolCount", "")
+{
+    REQUIRE(ComplexSymbols::getComplexSymbolCount(array) == 2u);
 
-    BOOST_FIXTURE_TEST_CASE(GetComplexSymbolCount, ComplexSymbolFixture)
-    {
-        BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(array), 2u);
+    boost::array<uint32_t, 3> emptyArray;
+    std::fill(emptyArray.begin(), emptyArray.end(), 0);
+    REQUIRE(ComplexSymbols::getComplexSymbolCount(emptyArray) == 0u);
+}
 
-        boost::array<uint32_t, 3> emptyArray;
-        std::fill(emptyArray.begin(), emptyArray.end(), 0);
-        BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(emptyArray), 0u);
-    }
+TEST_CASE_METHOD(ComplexSymbolFixture, "PowerTabDocument/ComplexSymbols/ClearComplexSymbols", "")
+{
+    REQUIRE(ComplexSymbols::getComplexSymbolCount(array) == 2u);
 
-    BOOST_FIXTURE_TEST_CASE(ClearComplexSymbols, ComplexSymbolFixture)
-    {
-        BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(array), 2u);
+    ComplexSymbols::clearComplexSymbols(array);
+    REQUIRE(ComplexSymbols::getComplexSymbolCount(array) == 0u);
+}
 
-        ComplexSymbols::clearComplexSymbols(array);
-        BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(array), 0u);
-    }
+TEST_CASE_METHOD(ComplexSymbolFixture, "PowerTabDocument/ComplexSymbols/RemoveComplexSymbol", "")
+{
+    ComplexSymbols::removeComplexSymbol(array, Position::volumeSwell);
+    REQUIRE(ComplexSymbols::findComplexSymbol(array, Position::volumeSwell) == -1u);
+    REQUIRE(ComplexSymbols::getComplexSymbolCount(array) == 1u);
+}
 
-    BOOST_FIXTURE_TEST_CASE(RemoveComplexSymbol, ComplexSymbolFixture)
-    {
-        ComplexSymbols::removeComplexSymbol(array, Position::volumeSwell);
-        BOOST_CHECK_EQUAL(ComplexSymbols::findComplexSymbol(array, Position::volumeSwell), -1u);
-        BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(array), 1u);
-    }
+TEST_CASE("PowerTabDocument/ComplexSymbols/AddComplexSymbol", "")
+{
+    boost::array<uint32_t, 3> array;
+    ComplexSymbols::clearComplexSymbols(array);
 
-    BOOST_AUTO_TEST_CASE(AddComplexSymbol)
-    {
-        boost::array<uint32_t, 3> array;
-        ComplexSymbols::clearComplexSymbols(array);
-
-        // add a volume swell
-        ComplexSymbols::addComplexSymbol(array, MAKELONG(MAKEWORD(0, 0), MAKEWORD(0, Position::volumeSwell)));
-        BOOST_CHECK_EQUAL(ComplexSymbols::getComplexSymbolCount(array), 1u);
-        BOOST_CHECK_EQUAL(ComplexSymbols::findComplexSymbol(array, Position::volumeSwell), 0u);
-    }
-
-BOOST_AUTO_TEST_SUITE_END()
+    // add a volume swell
+    ComplexSymbols::addComplexSymbol(array, MAKELONG(MAKEWORD(0, 0), MAKEWORD(0, Position::volumeSwell)));
+    REQUIRE(ComplexSymbols::getComplexSymbolCount(array) == 1u);
+    REQUIRE(ComplexSymbols::findComplexSymbol(array, Position::volumeSwell) == 0u);
+}

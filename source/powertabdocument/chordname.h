@@ -249,7 +249,7 @@ protected:
     /// @return True if the flag was set, false if not
     bool SetFormulaFlag(uint8_t flag)
     {
-        CHECK_THAT(IsValidFormulaFlag(flag), false);
+        PTB_CHECK_THAT(IsValidFormulaFlag(flag), false);
         m_formula |= flag;
         return (true);
     }
@@ -258,7 +258,7 @@ protected:
     /// @return True if the flag was cleared, false if not
     bool ClearFormulaFlag(uint8_t flag)
     {
-        CHECK_THAT(IsValidFormulaFlag(flag), false);
+        PTB_CHECK_THAT(IsValidFormulaFlag(flag), false);
         m_formula &= ~flag;
         return (true);
     }

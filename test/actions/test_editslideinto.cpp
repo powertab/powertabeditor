@@ -15,14 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <actions/editslideinto.h>
 #include <powertabdocument/note.h>
 
-BOOST_AUTO_TEST_CASE(TestEditSlideInto)
+TEST_CASE("Actions/EditSlideInto", "")
 {
     Note note;
     uint8_t slideType = 0;
@@ -30,11 +28,11 @@ BOOST_AUTO_TEST_CASE(TestEditSlideInto)
 
     action.redo();
     note.GetSlideInto(slideType);
-    BOOST_CHECK_EQUAL(slideType, Note::slideIntoFromBelow);
+    REQUIRE(slideType == Note::slideIntoFromBelow);
 
     action.undo();
     note.GetSlideInto(slideType);
-    BOOST_CHECK_EQUAL(slideType, Note::slideIntoNone);
+    REQUIRE(slideType == Note::slideIntoNone);
 
-    BOOST_CHECK(action.text() == "Slide Into From Below");
+    REQUIRE(action.text() == "Slide Into From Below");
 }

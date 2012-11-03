@@ -15,14 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <actions/updatenoteduration.h>
 #include <powertabdocument/position.h>
 
-BOOST_AUTO_TEST_CASE(TestUpdateNoteDuration)
+TEST_CASE("Actions/UpdateNoteDuration", "")
 {
     Position pos1(0, 4, 0), pos2(1, 2, 0), pos3(2, 1, 0);
 
@@ -34,12 +32,12 @@ BOOST_AUTO_TEST_CASE(TestUpdateNoteDuration)
     UpdateNoteDuration action(positions, 8);
 
     action.redo();
-    BOOST_CHECK_EQUAL(pos1.GetDurationType(), 8);
-    BOOST_CHECK_EQUAL(pos2.GetDurationType(), 8);
-    BOOST_CHECK_EQUAL(pos3.GetDurationType(), 8);
+    REQUIRE(pos1.GetDurationType() == 8);
+    REQUIRE(pos2.GetDurationType() == 8);
+    REQUIRE(pos3.GetDurationType() == 8);
 
     action.undo();
-    BOOST_CHECK_EQUAL(pos1.GetDurationType(), 4);
-    BOOST_CHECK_EQUAL(pos2.GetDurationType(), 2);
-    BOOST_CHECK_EQUAL(pos3.GetDurationType(), 1);
+    REQUIRE(pos1.GetDurationType() == 4);
+    REQUIRE(pos2.GetDurationType() == 2);
+    REQUIRE(pos3.GetDurationType() == 1);
 }

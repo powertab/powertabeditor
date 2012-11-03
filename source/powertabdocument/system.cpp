@@ -125,7 +125,7 @@ bool System::Serialize(PowerTabOutputStream& stream) const
     //------Last Checked------//
     // - Jan 14, 2005
     stream.WriteMFCRect(m_rect);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     // Note: End bar is stored as a byte; we use Barline class to make it easier
     // for the user
@@ -133,25 +133,25 @@ bool System::Serialize(PowerTabOutputStream& stream) const
         (m_endBar->GetRepeatCount()));
     stream << endBar << m_positionSpacing << m_rhythmSlashSpacingAbove <<
         m_rhythmSlashSpacingBelow << m_extraSpacing;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     m_startBar->Serialize(stream);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_directionArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_chordTextArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_rhythmSlashArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_staffArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_barlineArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     return (stream.CheckState());
 }
@@ -302,7 +302,7 @@ size_t System::GetBarlineCount() const
 /// @return The nth barline in the system
 System::BarlinePtr System::GetBarline(uint32_t index) const
 {
-    CHECK_THAT(IsValidBarlineIndex(index), BarlinePtr());
+    PTB_CHECK_THAT(IsValidBarlineIndex(index), BarlinePtr());
     return m_barlineArray[index];
 }
 
@@ -555,7 +555,7 @@ int System::GetPositionX(int position) const
     int returnValue = GetFirstPositionX();
 
     // Validate the position
-    CHECK_THAT(IsValidPosition(position), returnValue);
+    PTB_CHECK_THAT(IsValidPosition(position), returnValue);
 
     // Get the width of all key and time signatures up to, but not
     // including, the position
@@ -648,7 +648,7 @@ void System::CalculateHeight()
 // Optionally, can return the absolute position of the top of the staff
 uint32_t System::GetStaffHeightOffset(uint32_t staff, bool absolutePos) const
 {
-    CHECK_THAT(IsValidStaffIndex(staff), 0);
+    PTB_CHECK_THAT(IsValidStaffIndex(staff), 0);
 
     uint32_t offset = GetExtraSpacing() + GetRhythmSlashSpacingAbove() + GetRhythmSlashSpacingBelow();
 
@@ -690,7 +690,7 @@ size_t System::GetChordTextCount() const
 /// @return The nth chord text item in the system
 System::ChordTextPtr System::GetChordText(uint32_t index) const
 {
-    CHECK_THAT(IsValidChordTextIndex(index), ChordTextPtr());
+    PTB_CHECK_THAT(IsValidChordTextIndex(index), ChordTextPtr());
     return m_chordTextArray[index];
 }
 
@@ -704,7 +704,7 @@ bool System::HasChordText(uint32_t position) const
 /// @return The index of that object if found, and returns -1 otherwise
 int System::FindChordText(uint32_t position) const
 {
-    CHECK_THAT(IsValidPosition(position), -1);
+    PTB_CHECK_THAT(IsValidPosition(position), -1);
 
     for (uint32_t i = 0; i < m_chordTextArray.size(); i++)
     {
@@ -721,7 +721,7 @@ int System::FindChordText(uint32_t position) const
 /// @return true if the insertion succeeded
 bool System::InsertChordText(ChordTextPtr chordText, uint32_t index)
 {
-    CHECK_THAT(index <= GetChordTextCount(), false);
+    PTB_CHECK_THAT(index <= GetChordTextCount(), false);
 
     m_chordTextArray.insert(m_chordTextArray.begin() + index, chordText);
     return true;
@@ -731,7 +731,7 @@ bool System::InsertChordText(ChordTextPtr chordText, uint32_t index)
 /// @return true if the removal succeeded
 bool System::RemoveChordText(uint32_t index)
 {
-    CHECK_THAT(IsValidChordTextIndex(index), false);
+    PTB_CHECK_THAT(IsValidChordTextIndex(index), false);
 
     m_chordTextArray.erase(m_chordTextArray.begin() + index);
     return true;
@@ -758,7 +758,7 @@ size_t System::GetStaffCount() const
 /// @return The nth staff in the system
 System::StaffPtr System::GetStaff(uint32_t index) const
 {
-    CHECK_THAT(IsValidStaffIndex(index), StaffPtr());
+    PTB_CHECK_THAT(IsValidStaffIndex(index), StaffPtr());
     return m_staffArray[index];
 }
 
@@ -1052,7 +1052,7 @@ size_t System::GetDirectionCount() const
 /// @return The nth staff in the system
 System::DirectionPtr System::GetDirection(uint32_t index) const
 {
-    CHECK_THAT(IsValidDirectionIndex(index), DirectionPtr());
+    PTB_CHECK_THAT(IsValidDirectionIndex(index), DirectionPtr());
     return m_directionArray[index];
 }
 
@@ -1093,7 +1093,7 @@ size_t System::GetRhythmSlashCount() const
 /// @return The nth rhythm slash in the system
 System::RhythmSlashPtr System::GetRhythmSlash(uint32_t index) const
 {
-    CHECK_THAT(IsValidRhythmSlashIndex(index), RhythmSlashPtr());
+    PTB_CHECK_THAT(IsValidRhythmSlashIndex(index), RhythmSlashPtr());
     return m_rhythmSlashArray[index];
 }
 

@@ -15,24 +15,17 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define BOOST_TEST_DYN_LINK
+#include <catch.hpp>
 
-#include <boost/test/unit_test.hpp>
 #include <powertabdocument/powertabfileheader.h>
 #include <boost/date_time/gregorian/gregorian_io.hpp>
 
-BOOST_AUTO_TEST_SUITE(PowerTabFileHeaderTest)
+TEST_CASE("PowerTabDocument/FileHeader/BootlegDate",
+          "Sanity test to ensure that conversion to/from the boost::gregorian::date structures works.")
+{
+    boost::gregorian::date day(2012, 5, 7);
+    PowerTabFileHeader header;
 
-    // Sanity test to ensure that conversion to/from the boost::gregorian::date structures works.
-    BOOST_AUTO_TEST_CASE(BootlegDate)
-    {
-        boost::gregorian::date day(2012, 5, 7);
-        PowerTabFileHeader header;
-
-        header.SetSongBootlegDate(day);
-        BOOST_CHECK_EQUAL(day, header.GetSongBootlegDate());
-    }
-
-BOOST_AUTO_TEST_SUITE_END()
-
-
+    header.SetSongBootlegDate(day);
+    REQUIRE(day == header.GetSongBootlegDate());
+}

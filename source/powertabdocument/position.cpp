@@ -192,13 +192,13 @@ bool Position::operator!=(const Position& position) const
 bool Position::Serialize(PowerTabOutputStream& stream) const
 {
     stream << m_position << m_beaming << m_data;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteSmallVector(m_complexSymbolArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_noteArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     return stream.CheckState();
 }
@@ -225,7 +225,7 @@ bool Position::SetDurationType(uint8_t durationType)
 {
     //------Last Checked------//
     // - Jan 18, 2005
-    CHECK_THAT(IsValidDurationType(durationType), false);
+    PTB_CHECK_THAT(IsValidDurationType(durationType), false);
 
     // Duration type is stored in power of two format
     m_data &= ~durationTypeMask;
@@ -278,7 +278,7 @@ bool Position::SetIrregularGroupingTiming(uint8_t notesPlayed,
 {
     //------Last Checked------//
     // - Jan 18, 2005
-    CHECK_THAT(IsValidIrregularGroupingTiming(notesPlayed, notesPlayedOver),
+    PTB_CHECK_THAT(IsValidIrregularGroupingTiming(notesPlayed, notesPlayedOver),
         false);
 
     // Values are stored as 1-15 and 1-7
@@ -369,7 +369,7 @@ bool Position::SetPreviousBeamDurationType(uint8_t durationType)
 {
     //------Last Checked------//
     // - Jan 18, 2005
-    CHECK_THAT(IsValidPreviousBeamDurationType(durationType), false);
+    PTB_CHECK_THAT(IsValidPreviousBeamDurationType(durationType), false);
 
     // Clear the current duration type
     m_beaming &= ~previousBeamDurationTypeMask;
@@ -419,7 +419,7 @@ bool Position::SetBeamingFlag(uint16_t flag)
 {
     //------Last Checked------//
     // - Jan 7, 2005
-    CHECK_THAT(IsValidBeamingFlag(flag), false);
+    PTB_CHECK_THAT(IsValidBeamingFlag(flag), false);
 
     // Mutually exclusive operations
     if ((flag & beamStart) == beamStart)
@@ -450,7 +450,7 @@ bool Position::SetDataFlag(uint32_t flag)
 {
     //------Last Checked------//
     // - Jan 7, 2005
-    CHECK_THAT(IsValidDataFlag(flag), false);
+    PTB_CHECK_THAT(IsValidDataFlag(flag), false);
 
     // Mutually exclusive operations
     if ((flag & dottedMask) != 0)
@@ -496,7 +496,7 @@ bool Position::IsValidVolumeSwell(uint8_t startVolume, uint8_t endVolume, uint8_
 bool Position::SetVolumeSwell(uint8_t startVolume, uint8_t endVolume,
     uint8_t duration)
 {
-    CHECK_THAT(IsValidVolumeSwell(startVolume, endVolume, duration), false);
+    PTB_CHECK_THAT(IsValidVolumeSwell(startVolume, endVolume, duration), false);
 
     // Construct the symbol data, then add it to the array
     const uint32_t symbolData = MAKELONG(MAKEWORD(endVolume, startVolume),
@@ -557,7 +557,7 @@ void Position::ClearVolumeSwell()
 /// @return True if the tremolo bar was added or updated
 bool Position::SetTremoloBar(uint8_t type, uint8_t duration, uint8_t pitch)
 {
-    CHECK_THAT(IsValidTremoloBar(type, duration, pitch), false);
+    PTB_CHECK_THAT(IsValidTremoloBar(type, duration, pitch), false);
 
     // Construct the symbol data, then add it to the array
     const uint32_t symbolData = MAKELONG(MAKEWORD(pitch, duration),
@@ -646,7 +646,7 @@ std::string Position::GetTremoloBarText() const
 /// @return True if the multibar rest was added or updated
 bool Position::SetMultibarRest(uint8_t measureCount)
 {
-    CHECK_THAT(IsValidMultibarRest(measureCount), false);
+    PTB_CHECK_THAT(IsValidMultibarRest(measureCount), false);
 
     // Construct the symbol data, then add it to the array
     const uint32_t symbolData = MAKELONG(MAKEWORD(measureCount, 0),
@@ -769,7 +769,7 @@ Note* Position::GetNoteByString(uint8_t string) const
 bool Position::CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const
 {
     // check that the note is actually in this position
-    CHECK_THAT(std::find(m_noteArray.begin(), m_noteArray.end(), note) != m_noteArray.end(), false);
+    PTB_CHECK_THAT(std::find(m_noteArray.begin(), m_noteArray.end(), note) != m_noteArray.end(), false);
 
     const int newStringNum = GetShiftedStringNumber(note, type);
 
@@ -798,7 +798,7 @@ bool Position::CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsI
 /// @return True if the note was successfully shifted, false otherwise.
 bool Position::ShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning)
 {
-    CHECK_THAT(CanShiftTabNumber(note, type, numStringsInStaff, tuning), false);
+    PTB_CHECK_THAT(CanShiftTabNumber(note, type, numStringsInStaff, tuning), false);
 
     const int newString = GetShiftedStringNumber(note, type);
     note->SetFretNumber(GetShiftedFretNumber(note, note->GetString(), newString, tuning));

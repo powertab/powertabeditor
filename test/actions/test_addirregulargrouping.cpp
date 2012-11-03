@@ -15,15 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 #include <boost/foreach.hpp>
 
 #include <actions/addirregulargrouping.h>
 #include <powertabdocument/position.h>
 
-BOOST_AUTO_TEST_CASE(TestAddIrregularGrouping)
+TEST_CASE("Actions/AddIrregularGrouping", "")
 {
     std::vector<Position*> positions;
 
@@ -38,20 +36,20 @@ BOOST_AUTO_TEST_CASE(TestAddIrregularGrouping)
     action.redo();
     BOOST_FOREACH(const Position* pos, positions)
     {
-        BOOST_CHECK(pos->HasIrregularGroupingTiming());
+        REQUIRE(pos->HasIrregularGroupingTiming());
     }
 
-    BOOST_CHECK(pos1.IsIrregularGroupingStart());
-    BOOST_CHECK(pos2.IsIrregularGroupingMiddle());
-    BOOST_CHECK(pos3.IsIrregularGroupingMiddle());
-    BOOST_CHECK(pos4.IsIrregularGroupingEnd());
+    REQUIRE(pos1.IsIrregularGroupingStart());
+    REQUIRE(pos2.IsIrregularGroupingMiddle());
+    REQUIRE(pos3.IsIrregularGroupingMiddle());
+    REQUIRE(pos4.IsIrregularGroupingEnd());
 
     action.undo();
     BOOST_FOREACH(const Position* pos, positions)
     {
-        BOOST_CHECK(!pos->HasIrregularGroupingTiming());
-        BOOST_CHECK(!pos->IsIrregularGroupingStart());
-        BOOST_CHECK(!pos->IsIrregularGroupingMiddle());
-        BOOST_CHECK(!pos->IsIrregularGroupingEnd());
+        REQUIRE(!pos->HasIrregularGroupingTiming());
+        REQUIRE(!pos->IsIrregularGroupingStart());
+        REQUIRE(!pos->IsIrregularGroupingMiddle());
+        REQUIRE(!pos->IsIrregularGroupingEnd());
     }
 }

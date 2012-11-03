@@ -18,7 +18,8 @@
 #ifndef SERIALIZATION_TEST_H
 #define SERIALIZATION_TEST_H
 
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
+
 #include <sstream>
 #include <powertabdocument/powertabinputstream.h>
 #include <powertabdocument/powertaboutputstream.h>
@@ -38,7 +39,7 @@ void testSerialization(const T& originalObject)
     T newObject;
     newObject.Deserialize(inputStream, PowerTabFileHeader::FILEVERSION_CURRENT);
 
-    BOOST_CHECK(originalObject == newObject);
+    REQUIRE(originalObject == newObject);
 }
 
 #endif // SERIALIZATION_TEST_H

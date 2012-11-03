@@ -15,43 +15,41 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#define BOOST_TEST_DYN_LINK
+#include <catch.hpp>
 
-#include <boost/test/unit_test.hpp>
 #include <boost/assign.hpp>
 
 #include "tuning_fixtures.h"
-
 #include "serialization_test.h"
 #include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
 
-BOOST_FIXTURE_TEST_CASE(GetSpelling, StandardTuningFixture)
+TEST_CASE_METHOD(StandardTuningFixture, "PowerTabDocument/Tuning/GetSpelling", "")
 {
-    BOOST_CHECK_EQUAL("E A D G B E", tuning.GetSpelling());
+    REQUIRE("E A D G B E" == tuning.GetSpelling());
 
     tuning.SetNote(0, midi::MIDI_NOTE_CSHARP0);
-    BOOST_CHECK_EQUAL("E A D G B C#", tuning.GetSpelling());
+    REQUIRE("E A D G B C#" == tuning.GetSpelling());
 
     tuning.SetSharps(false);
-    BOOST_CHECK_EQUAL("E A D G B Db", tuning.GetSpelling());
+    REQUIRE("E A D G B Db" == tuning.GetSpelling());
 }
 
-BOOST_AUTO_TEST_CASE(AssignmentAndEquality)
+TEST_CASE("PowerTabDocument/Tuning/AssignmentAndEquality", "")
 {
     Tuning tuning1, tuning2;
 
     tuning1.SetToStandard();
-    BOOST_CHECK(tuning1 != tuning2);
+    REQUIRE(tuning1 != tuning2);
 
     tuning2 = tuning1;
-    BOOST_CHECK(tuning1 == tuning2);
+    REQUIRE(tuning1 == tuning2);
 
     Tuning tuning3(tuning1);
-    BOOST_CHECK(tuning1 == tuning3);
+    REQUIRE(tuning1 == tuning3);
 }
 
-BOOST_FIXTURE_TEST_CASE(SetTuningNotes, StandardTuningFixture)
+TEST_CASE_METHOD(StandardTuningFixture, "PowerTabDocument/Tuning/SetTuningNotes", "")
 {
     Tuning tuning2;
 
@@ -64,28 +62,28 @@ BOOST_FIXTURE_TEST_CASE(SetTuningNotes, StandardTuningFixture)
 
     tuning2.SetTuningNotes(notes);
 
-    BOOST_CHECK(tuning2.IsSameTuning(tuning));
+    REQUIRE(tuning2.IsSameTuning(tuning));
 
     notes.clear();
     notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3;
     tuning2.SetTuningNotes(notes);
 
-    BOOST_CHECK(!tuning2.IsSameTuning(tuning));
+    REQUIRE(!tuning2.IsSameTuning(tuning));
 }
 
-BOOST_FIXTURE_TEST_CASE(IsOpenStringNote, StandardTuningFixture)
+TEST_CASE_METHOD(StandardTuningFixture, "PowerTabDocument/Tuning/IsOpenStringNote", "")
 {
-    BOOST_CHECK(tuning.IsOpenStringNote(midi::MIDI_NOTE_E4));
-    BOOST_CHECK(tuning.IsOpenStringNote(midi::MIDI_NOTE_A2));
-    BOOST_CHECK(!tuning.IsOpenStringNote(midi::MIDI_NOTE_A3));
+    REQUIRE(tuning.IsOpenStringNote(midi::MIDI_NOTE_E4));
+    REQUIRE(tuning.IsOpenStringNote(midi::MIDI_NOTE_A2));
+    REQUIRE(!tuning.IsOpenStringNote(midi::MIDI_NOTE_A3));
 }
 
-BOOST_FIXTURE_TEST_CASE(GetNoteRange, StandardTuningFixture)
+TEST_CASE_METHOD(StandardTuningFixture, "PowerTabDocument/Tuning/GetNoteRange", "")
 {
-    BOOST_CHECK(std::make_pair(midi::MIDI_NOTE_F2, midi::MIDI_NOTE_F6) == tuning.GetNoteRange(1));
+    REQUIRE(std::make_pair(midi::MIDI_NOTE_F2, midi::MIDI_NOTE_F6) == tuning.GetNoteRange(1));
 }
 
-BOOST_FIXTURE_TEST_CASE(Serialization, StandardTuningFixture)
+TEST_CASE_METHOD(StandardTuningFixture, "PowerTabDocument/Tuning/Serialization", "")
 {
     testSerialization(tuning);
 }

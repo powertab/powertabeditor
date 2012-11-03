@@ -15,27 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#define BOOST_TEST_DYN_LINK
+#include <catch.hpp>
 
-#include <boost/test/unit_test.hpp>
 #include <app/documentmanager.h>
 
-BOOST_AUTO_TEST_CASE(TestDocumentManager)
+TEST_CASE("App/DocumentManager", "")
 {
     DocumentManager manager;
 
-    BOOST_CHECK_EQUAL(manager.getCurrentDocumentIndex(), -1);
+    REQUIRE(manager.getCurrentDocumentIndex() == -1);
 
     manager.createDocument();
-    BOOST_CHECK_EQUAL(manager.getCurrentDocumentIndex(), 0);
+    REQUIRE(manager.getCurrentDocumentIndex() == 0);
 
     // should not be able to set document index to an invalid number
     manager.setCurrentDocumentIndex(1);
-    BOOST_CHECK_EQUAL(manager.getCurrentDocumentIndex(), 0);
+    REQUIRE(manager.getCurrentDocumentIndex() == 0);
 
     // should be able to set document index to a valid number
     manager.createDocument();
     manager.createDocument();
     manager.setCurrentDocumentIndex(1);
-    BOOST_CHECK_EQUAL(manager.getCurrentDocumentIndex(), 1);
+    REQUIRE(manager.getCurrentDocumentIndex() == 1);
 }

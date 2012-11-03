@@ -18,7 +18,19 @@
 #ifndef TEST_PCH_H
 #define TEST_PCH_H
 
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/unit_test.hpp>
+#include <sstream>
+#include <stdexcept>
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <memory>
+#include <vector>
+#include <cstddef>
+#include <set>
+#include <map>
+
+#include <boost/foreach.hpp>
+#include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
 
 #endif // TEST_PCH_H

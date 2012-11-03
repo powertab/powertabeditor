@@ -14,30 +14,24 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#define BOOST_TEST_DYN_LINK
 
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <powertabdocument/timesignature.h>
 
-BOOST_AUTO_TEST_SUITE(TimeSignatureTests)
+TEST_CASE("PowerTabDocument/TimeSignature/ValidPulses", "")
+{
+    TimeSignature time;
 
-    BOOST_AUTO_TEST_CASE(ValidPulses)
-    {
-        TimeSignature time;
+    time.SetBeatsPerMeasure(6);
 
-        time.SetBeatsPerMeasure(6);
+    REQUIRE(time.IsValidPulses(0));
+    REQUIRE(time.IsValidPulses(1));
+    REQUIRE(time.IsValidPulses(2));
+    REQUIRE(time.IsValidPulses(3));
+    REQUIRE(time.IsValidPulses(6));
 
-        BOOST_CHECK(time.IsValidPulses(0));
-        BOOST_CHECK(time.IsValidPulses(1));
-        BOOST_CHECK(time.IsValidPulses(2));
-        BOOST_CHECK(time.IsValidPulses(3));
-        BOOST_CHECK(time.IsValidPulses(6));
-
-        BOOST_CHECK(!time.IsValidPulses(4));
-        BOOST_CHECK(!time.IsValidPulses(7));
-        BOOST_CHECK(!time.IsValidPulses(12));
-    }
-
-BOOST_AUTO_TEST_SUITE_END()
+    REQUIRE(!time.IsValidPulses(4));
+    REQUIRE(!time.IsValidPulses(7));
+    REQUIRE(!time.IsValidPulses(12));
+}

@@ -113,7 +113,7 @@ bool Note::operator!=(const Note& note) const
 bool Note::Serialize(PowerTabOutputStream& stream) const
 {
     stream << m_stringData << m_simpleData;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteSmallVector(m_complexSymbolArray);
     return stream.CheckState();
@@ -145,7 +145,7 @@ bool Note::IsValidString(uint32_t str)
 /// @return True if the string was set, false if not
 bool Note::SetString(uint32_t string)
 {
-    CHECK_THAT(IsValidString(string), false);
+    PTB_CHECK_THAT(IsValidString(string), false);
 
     m_stringData &= ~stringMask;
     m_stringData |= (uint8_t)(string << 5);
@@ -174,7 +174,7 @@ bool Note::IsValidFretNumber(uint8_t fretNumber)
 /// @return True if the fret number was set, false if not
 bool Note::SetFretNumber(uint8_t fretNumber)
 {
-    CHECK_THAT(IsValidFretNumber(fretNumber), false);
+    PTB_CHECK_THAT(IsValidFretNumber(fretNumber), false);
 
     m_stringData &= ~fretNumberMask;
     m_stringData |= fretNumber;
@@ -204,7 +204,7 @@ bool Note::IsValidSimpleFlag(uint16_t flag)
 /// @return True if the flag was set, false if not
 bool Note::SetSimpleFlag(uint16_t flag)
 {
-    CHECK_THAT(IsValidSimpleFlag(flag), false);
+    PTB_CHECK_THAT(IsValidSimpleFlag(flag), false);
 
     // Mutually exclusive operations
     if ((flag & hammerPullMask) != 0)
@@ -222,7 +222,7 @@ bool Note::SetSimpleFlag(uint16_t flag)
 /// @return True if the flag was cleared, false if not
 bool Note::ClearSimpleFlag(uint16_t flag)
 {
-    CHECK_THAT(IsValidSimpleFlag(flag), false);
+    PTB_CHECK_THAT(IsValidSimpleFlag(flag), false);
     m_simpleData &= ~flag;
     return true;
 }
@@ -232,7 +232,7 @@ bool Note::ClearSimpleFlag(uint16_t flag)
 /// @return True if the flag is set, false if not
 bool Note::IsSimpleFlagSet(uint16_t flag) const
 {
-    CHECK_THAT(IsValidSimpleFlag(flag), false);
+    PTB_CHECK_THAT(IsValidSimpleFlag(flag), false);
     return (m_simpleData & flag) == flag;
 }
 
@@ -259,7 +259,7 @@ bool Note::IsValidSlideInto(uint8_t type)
 /// @return True if the slide into marker was added or updated
 bool Note::SetSlideInto(uint8_t type)
 {
-    CHECK_THAT(IsValidSlideInto(type), false);
+    PTB_CHECK_THAT(IsValidSlideInto(type), false);
 
     if (type == slideIntoNone)
     {
@@ -390,7 +390,7 @@ bool Note::IsValidSlideOutOf(uint8_t type)
 /// @return True if the slide out of marker was added or updated
 bool Note::SetSlideOutOf(uint8_t type, int8_t steps)
 {
-    CHECK_THAT(IsValidSlideOutOf(type), false);
+    PTB_CHECK_THAT(IsValidSlideOutOf(type), false);
 
     if (type == slideOutOfNone)
     {
@@ -631,7 +631,7 @@ bool Note::IsValidDrawEndPoint(uint8_t drawEndPoint)
 bool Note::SetBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
                    uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint)
 {
-    CHECK_THAT(IsValidBend(type, bentPitch, releasePitch, duration, drawStartPoint,
+    PTB_CHECK_THAT(IsValidBend(type, bentPitch, releasePitch, duration, drawStartPoint,
                            drawEndPoint), false);
 
     // Construct the symbol data, then add it to the array
@@ -718,7 +718,7 @@ bool Note::IsValidTappedHarmonic(uint8_t tappedFretNumber)
 /// @return True if the tapped harmonic was added or updated
 bool Note::SetTappedHarmonic(uint8_t tappedFretNumber)
 {
-    CHECK_THAT(IsValidTappedHarmonic(tappedFretNumber), false);
+    PTB_CHECK_THAT(IsValidTappedHarmonic(tappedFretNumber), false);
 
     // Construct the symbol data, then add it to the array
     const uint32_t symbolData = MAKELONG(MAKEWORD(tappedFretNumber, 0),
@@ -782,7 +782,7 @@ bool Note::IsValidTrill(uint8_t trilledFretNumber) const
 /// @return True if the trill was added or updated
 bool Note::SetTrill(uint8_t trilledFretNumber)
 {
-    CHECK_THAT(IsValidTrill(trilledFretNumber), false);
+    PTB_CHECK_THAT(IsValidTrill(trilledFretNumber), false);
 
     // Construct the symbol data, then add it to the array
     const uint32_t symbolData = MAKELONG(0, MAKEWORD(trilledFretNumber, trill));
@@ -852,7 +852,7 @@ bool Note::IsValidArtificialHarmonic(uint8_t key, uint8_t keyVariation,
 /// @return True if the artificial harmonic was added or updated
 bool Note::SetArtificialHarmonic(uint8_t key, uint8_t keyVariation, uint8_t octave)
 {
-    CHECK_THAT(IsValidArtificialHarmonic(key, keyVariation, octave), false);
+    PTB_CHECK_THAT(IsValidArtificialHarmonic(key, keyVariation, octave), false);
 
     // Construct the symbol data, then add it to the array
     const uint32_t symbolData = MAKELONG(MAKEWORD(key, keyVariation),
@@ -1288,7 +1288,7 @@ bool Note::IsGhostNote() const
 /// Returns a text description of the bend (e.g. "1 1/2" or "Full")
 std::string Note::GetBendText(uint8_t pitch)
 {
-    CHECK_THAT(IsValidBentPitch(pitch), "");
+    PTB_CHECK_THAT(IsValidBentPitch(pitch), "");
 
     std::stringstream text;
 

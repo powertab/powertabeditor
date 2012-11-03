@@ -230,7 +230,7 @@ bool TimeSignature::SetBeatsPerMeasure(uint8_t beatsPerMeasure)
 {
     //------Last Checked------//
     // - Dec 13, 2004
-    CHECK_THAT(IsValidBeatsPerMeasure(beatsPerMeasure), false);
+    PTB_CHECK_THAT(IsValidBeatsPerMeasure(beatsPerMeasure), false);
 
     // Automatically clear the common and cut time flags
     ClearFlag(commonTime | cutTime);
@@ -271,7 +271,7 @@ bool TimeSignature::SetBeatAmount(uint8_t beatAmount)
 {
     //------Last Checked------//
     // - Dec 13, 2004
-    CHECK_THAT(IsValidBeatAmount(beatAmount), false);
+    PTB_CHECK_THAT(IsValidBeatAmount(beatAmount), false);
 
     // Automatically clear the common and cut time flags
     ClearFlag(commonTime | cutTime);
@@ -325,10 +325,10 @@ bool TimeSignature::SetBeamingPattern(uint8_t beat1, uint8_t beat2, uint8_t beat
 {
     //------Last Checked------//
     // - Dec 13, 2004
-    CHECK_THAT(IsValidBeamingPatternBeat(beat1, true), false);
-    CHECK_THAT(IsValidBeamingPatternBeat(beat2, false), false);
-    CHECK_THAT(IsValidBeamingPatternBeat(beat3, false), false);
-    CHECK_THAT(IsValidBeamingPatternBeat(beat4, false), false);
+    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat1, true), false);
+    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat2, false), false);
+    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat3, false), false);
+    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat4, false), false);
 
     // Clear the old beam data
     m_data &= ~beamingPatternMask;
@@ -429,7 +429,7 @@ bool TimeSignature::SetFlag(uint32_t flag)
 {
     //------Last Checked------//
     // - Dec 13, 2004
-    CHECK_THAT(IsValidFlag(flag), false);
+    PTB_CHECK_THAT(IsValidFlag(flag), false);
 
     // Perform any mutual exclusive flag clearing
     if ((flag & commonTime) == commonTime)
@@ -494,7 +494,7 @@ bool TimeSignature::IsValidPulses(uint8_t pulses)
 /// @return True if the pulses value was set, false if not
 bool TimeSignature::SetPulses(uint8_t pulses)
 {
-    CHECK_THAT(IsValidPulses(pulses), false);
+    PTB_CHECK_THAT(IsValidPulses(pulses), false);
     m_pulses = pulses;
     return true;
 }

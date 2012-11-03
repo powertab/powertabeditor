@@ -137,7 +137,7 @@ bool PowerTabDocument::IsValidTablatureStaffLineSpacing(int32_t tablatureStaffLi
 /// Sets the amount of spacing between tablature staff lines
 bool PowerTabDocument::SetTablatureStaffLineSpacing(uint32_t tablatureStaffLineSpacing)
 {
-    CHECK_THAT(IsValidTablatureStaffLineSpacing(tablatureStaffLineSpacing), false);
+    PTB_CHECK_THAT(IsValidTablatureStaffLineSpacing(tablatureStaffLineSpacing), false);
     m_tablatureStaffLineSpacing = tablatureStaffLineSpacing;
     return true;
 }
@@ -173,7 +173,7 @@ size_t PowerTabDocument::GetNumberOfScores() const
 /// @return A pointer to thescore
 Score* PowerTabDocument::GetScore(size_t index) const
 {
-    CHECK_THAT(index < m_scoreArray.size(), NULL);
+    PTB_CHECK_THAT(index < m_scoreArray.size(), NULL);
     return m_scoreArray[index];
 }
 
@@ -181,7 +181,7 @@ Score* PowerTabDocument::GetScore(size_t index) const
 /// @return A pointer to the player score
 Score* PowerTabDocument::GetPlayerScore() const
 {
-    CHECK_THAT(0 < m_scoreArray.size(), NULL);
+    PTB_CHECK_THAT(0 < m_scoreArray.size(), NULL);
     return m_scoreArray[0];
 }
 // Save Functions
@@ -195,7 +195,7 @@ bool PowerTabDocument::Save(const string& fileName) const
 
     // Write the header
     m_header.Serialize(stream);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     if (m_header.GetVersion() <= PowerTabFileHeader::Version_1_7)
     {
@@ -203,7 +203,7 @@ bool PowerTabDocument::Save(const string& fileName) const
         for (size_t i = 0; i < m_scoreArray.size(); i++)
         {
             m_scoreArray[i]->Serialize(stream);
-            CHECK_THAT(stream.CheckState(), false);
+            PTB_CHECK_THAT(stream.CheckState(), false);
         }
     }
     else // just write the guitar score for version 2.0
@@ -216,7 +216,7 @@ bool PowerTabDocument::Save(const string& fileName) const
     for (; fontSettingIndex < NUM_FONT_SETTINGS; fontSettingIndex++)
     {
         m_fontSettings[fontSettingIndex].Serialize(stream);
-        CHECK_THAT(stream.CheckState(), false);
+        PTB_CHECK_THAT(stream.CheckState(), false);
     }
 
     // Write the line spacing and fade values

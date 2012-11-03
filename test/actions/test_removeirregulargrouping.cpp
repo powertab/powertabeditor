@@ -15,16 +15,15 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define BOOST_TEST_DYN_LINK
+#include <catch.hpp>
 
-#include <boost/test/unit_test.hpp>
 #include <boost/foreach.hpp>
 
 #include <actions/removeirregulargrouping.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
 
-BOOST_AUTO_TEST_CASE(TestRemoveIrregularGrouping)
+TEST_CASE("Actions/RemoveIrregularGrouping", "")
 {
     boost::shared_ptr<Staff> staff(new Staff);
 
@@ -51,21 +50,21 @@ BOOST_AUTO_TEST_CASE(TestRemoveIrregularGrouping)
 
     for (size_t i = 0; i < staff->GetPositionCount(0); i++)
     {
-        BOOST_CHECK(!staff->GetPosition(0, i)->HasIrregularGroupingTiming());
-        BOOST_CHECK(!staff->GetPosition(0, i)->IsIrregularGroupingStart());
-        BOOST_CHECK(!staff->GetPosition(0, i)->IsIrregularGroupingMiddle());
-        BOOST_CHECK(!staff->GetPosition(0, i)->IsIrregularGroupingEnd());
+        REQUIRE(!staff->GetPosition(0, i)->HasIrregularGroupingTiming());
+        REQUIRE(!staff->GetPosition(0, i)->IsIrregularGroupingStart());
+        REQUIRE(!staff->GetPosition(0, i)->IsIrregularGroupingMiddle());
+        REQUIRE(!staff->GetPosition(0, i)->IsIrregularGroupingEnd());
     }
 
     action.undo();
 
     for (size_t i = 1; i <= 4; i++)
     {
-        BOOST_CHECK(staff->GetPosition(0, i)->HasIrregularGroupingTiming());
+        REQUIRE(staff->GetPosition(0, i)->HasIrregularGroupingTiming());
     }
 
-    BOOST_CHECK(staff->GetPosition(0, 1)->IsIrregularGroupingStart());
-    BOOST_CHECK(staff->GetPosition(0, 2)->IsIrregularGroupingMiddle());
-    BOOST_CHECK(staff->GetPosition(0, 3)->IsIrregularGroupingMiddle());
-    BOOST_CHECK(staff->GetPosition(0, 4)->IsIrregularGroupingEnd());
+    REQUIRE(staff->GetPosition(0, 1)->IsIrregularGroupingStart());
+    REQUIRE(staff->GetPosition(0, 2)->IsIrregularGroupingMiddle());
+    REQUIRE(staff->GetPosition(0, 3)->IsIrregularGroupingMiddle());
+    REQUIRE(staff->GetPosition(0, 4)->IsIrregularGroupingEnd());
 }

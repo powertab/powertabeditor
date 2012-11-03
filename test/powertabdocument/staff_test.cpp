@@ -14,10 +14,9 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#define BOOST_TEST_DYN_LINK
 
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
+
 #include <boost/assign.hpp>
 #include "serialization_test.h"
 
@@ -61,295 +60,258 @@ struct StaffFixture
     std::vector<Position*> lowPositions;
 };
 
-// Provides a blank staff
-struct EmptyStaffFixture
+TEST_CASE("PowerTabDocument/Staff/Clef/IsValidClef", "")
 {
-    EmptyStaffFixture() {}
-    ~EmptyStaffFixture() {}
+    REQUIRE(Staff::IsValidClef(Staff::BASS_CLEF));
+    REQUIRE(Staff::IsValidClef(Staff::TREBLE_CLEF));
+    REQUIRE(!Staff::IsValidClef(Staff::BASS_CLEF + 1));
+}
 
+TEST_CASE("PowerTabDocument/Staff/Clef/ModifyClef", "")
+{
     Staff staff;
-};
+    staff.SetClef(Staff::BASS_CLEF);
+    REQUIRE(staff.GetClef() == Staff::BASS_CLEF);
 
-BOOST_AUTO_TEST_SUITE(TestStaff)
+    staff.SetClef(Staff::TREBLE_CLEF);
+    REQUIRE(staff.GetClef() == Staff::TREBLE_CLEF);
+}
 
-    // tests for clef-related functions
-    BOOST_AUTO_TEST_SUITE(Clef)
+TEST_CASE("PowerTabDocument/Staff/GetLastPosition/EmptyStaff", "")
+{
+    Staff emptyStaff;
+    REQUIRE(emptyStaff.GetLastPosition() == NULL);
+}
 
-        BOOST_AUTO_TEST_CASE(IsValidClef)
-        {
-            BOOST_CHECK(Staff::IsValidClef(Staff::BASS_CLEF));
-            BOOST_CHECK(Staff::IsValidClef(Staff::TREBLE_CLEF));
-            BOOST_CHECK(!Staff::IsValidClef(Staff::BASS_CLEF + 1));
-        }
+TEST_CASE("PowerTabDocument/Staff/GetLastPosition/SinglePosition", "")
+{
+    Staff singleItemStaff;
+    Position* pos1 = new Position();
+    singleItemStaff.positionArrays[0].push_back(pos1);
 
-        BOOST_FIXTURE_TEST_CASE(ModifyClef, EmptyStaffFixture)
-        {
-            staff.SetClef(Staff::BASS_CLEF);
-            BOOST_CHECK_EQUAL(staff.GetClef(), Staff::BASS_CLEF);
+    REQUIRE(singleItemStaff.GetLastPosition() == pos1);
+}
 
-            staff.SetClef(Staff::TREBLE_CLEF);
-            BOOST_CHECK_EQUAL(staff.GetClef(), Staff::TREBLE_CLEF);
-        }
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetLastPosition/MultiplePositions", "")
+{
+    REQUIRE(staff.GetLastPosition() == highPositions.back());
+}
 
-    BOOST_AUTO_TEST_SUITE_END()
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/LessThanNextFretOkay", "")
+{
+    Position* pos = highPositions.at(0);
+    REQUIRE(staff.CanHammerOn(pos, pos->GetNote(0)));
+}
 
-    BOOST_AUTO_TEST_SUITE(GetLastPosition)
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/EqualFretsNotOkay", "")
+{
+    Position* pos = highPositions.at(1);
+    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
+}
 
-        BOOST_AUTO_TEST_CASE(empty_staff)
-        {
-            Staff emptyStaff;
-            BOOST_CHECK(emptyStaff.GetLastPosition() == NULL);
-        }
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/GreaterThanNextFretNotOkay", "")
+{
+    Position* pos = highPositions.at(3);
+    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
+}
 
-        BOOST_AUTO_TEST_CASE(single_position)
-        {
-            Staff singleItemStaff;
-            Position* pos1 = new Position();
-            singleItemStaff.positionArrays[0].push_back(pos1);
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/LastNoteCantBeHammeron", "")
+{
+    Position* pos = highPositions.back();
+    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
+}
 
-            BOOST_CHECK_EQUAL(singleItemStaff.GetLastPosition(), pos1);
-        }
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/DifferentFretOkay", "")
+{
+    Position* pos = highPositions.at(0);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)));
 
-        BOOST_FIXTURE_TEST_CASE(multiple_positions, StaffFixture)
-        {
-            BOOST_CHECK_EQUAL(staff.GetLastPosition(), highPositions.back());
-        }
+    pos = highPositions.at(3);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)));
+}
 
-    BOOST_AUTO_TEST_SUITE_END()
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/EqualFretsNotOkay", "")
+{
+    Position* pos = highPositions.at(1);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
+}
 
-    BOOST_FIXTURE_TEST_SUITE(CanHammerOn, StaffFixture)
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/LastNoteCantSlideToNext", "")
+{
+    Position* pos = highPositions.back();
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
+}
 
-        BOOST_AUTO_TEST_CASE(LessThanNextFretOkay)
-        {
-            Position* pos = highPositions.at(0);
-            BOOST_CHECK(staff.CanHammerOn(pos, pos->GetNote(0)));
-        }
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetSlideSteps/Calculation", "")
+{
+    Position* pos = highPositions.at(0);
+    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0)) == 1);
 
-        BOOST_AUTO_TEST_CASE(EqualFretsNotOkay)
-        {
-            Position* pos = highPositions.at(1);
-            BOOST_CHECK(staff.CanHammerOn(pos, pos->GetNote(0)) == false);
-        }
+    pos = highPositions.at(1);
+    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0)) == 0);
 
-        BOOST_AUTO_TEST_CASE(GreaterThanNextFretNotOkay)
-        {
-            Position* pos = highPositions.at(3);
-            BOOST_CHECK(staff.CanHammerOn(pos, pos->GetNote(0)) == false);
-        }
+    pos = highPositions.at(3);
+    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0)) == -1);
+}
 
-        BOOST_AUTO_TEST_CASE(LastNoteCantBeHammeron)
-        {
-            Position* pos = highPositions.at(highPositions.size() - 1);
-            BOOST_CHECK(staff.CanHammerOn(pos, pos->GetNote(0)) == false);
-        }
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetSlideSteps/ThrowsWithNoAdjacentNote", "")
+{
+    Position* pos = highPositions.at(0);
+    // use note on the second string, since the next position only has a note on the first string
+    REQUIRE_THROWS_AS(staff.GetSlideSteps(pos, pos->GetNote(1)),
+                      std::logic_error);
+}
 
-    BOOST_AUTO_TEST_SUITE_END()
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetPositionCount", "")
+{
+    REQUIRE(staff.GetPositionCount(0) == 5u);
+    REQUIRE(staff.GetPositionCount(1) == 2u);
 
-    /// Tests Staff::CanSlideBetweenNotes
-    BOOST_FIXTURE_TEST_SUITE(CanSlideBetweenNotes, StaffFixture)
+    REQUIRE_THROWS_AS(staff.GetPositionCount(2), std::out_of_range);
+}
 
-        BOOST_AUTO_TEST_CASE(DifferentFretOkay)
-        {
-            Position* pos = highPositions.at(0);
-            BOOST_CHECK(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)));
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetPosition", "")
+{
+    REQUIRE(staff.GetPosition(0, 1) == highPositions.at(1));
+    REQUIRE(staff.GetPosition(1, 1) == lowPositions.at(1));
 
-            pos = highPositions.at(3);
-            BOOST_CHECK(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)));
-        }
+    REQUIRE_THROWS_AS(staff.GetPosition(0, 99), std::out_of_range);
+    REQUIRE_THROWS_AS(staff.GetPosition(3, 0), std::out_of_range);
+}
 
-        BOOST_AUTO_TEST_CASE(EqualFretsNotOkay)
-        {
-            Position* pos = highPositions.at(1);
-            BOOST_CHECK(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
-        }
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetPositionByPosition/NullIfNoPositionFound", "")
+{
+    REQUIRE(staff.GetPositionByPosition(0, 1) == NULL);
+    REQUIRE(staff.GetPositionByPosition(0, 99) == NULL);
 
-        BOOST_AUTO_TEST_CASE(LastNoteCantSlideToNext)
-        {
-            Position* pos = highPositions.at(highPositions.size() - 1);
-            BOOST_CHECK(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
-        }
+    REQUIRE_THROWS_AS(staff.GetPositionByPosition(99, 0), std::out_of_range);
+}
 
-    BOOST_AUTO_TEST_SUITE_END()
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetPositionByPosition/PositionFoundCorrectly", "")
+{
+    REQUIRE(staff.GetPositionByPosition(0, 2) == highPositions.at(1));
+    REQUIRE(staff.GetPositionByPosition(1, 1) == lowPositions.at(0));
+}
 
-    BOOST_FIXTURE_TEST_SUITE(GetSlideSteps, StaffFixture)
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/InsertPosition", "")
+{
+    const size_t originalPosCount = staff.GetPositionCount(0);
+    Position* newPos = new Position(1, 4, 0);
+    staff.InsertPosition(0, newPos);
 
-        BOOST_AUTO_TEST_CASE(Calculation)
-        {
-            Position* pos = highPositions.at(0);
-            BOOST_CHECK_EQUAL(staff.GetSlideSteps(pos, pos->GetNote(0)), 1);
+    REQUIRE(staff.GetPositionCount(0) == originalPosCount + 1);
+    // check that the position list was re-sorted by position index
+    REQUIRE(staff.GetPosition(0, 1) == newPos);
 
-            pos = highPositions.at(1);
-            BOOST_CHECK_EQUAL(staff.GetSlideSteps(pos, pos->GetNote(0)), 0);
+    // cannot insert a position if there is already something at that position
+    REQUIRE(staff.InsertPosition(0, newPos) == false);
+}
 
-            pos = highPositions.at(3);
-            BOOST_CHECK_EQUAL(staff.GetSlideSteps(pos, pos->GetNote(0)), -1);
-        }
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/RemovePosition", "")
+{
+    staff.RemovePosition(0, 2);
 
-        BOOST_AUTO_TEST_CASE(ThrowsWithNoAdjacentNote)
-        {
-            Position* pos = highPositions.at(0);
-            // use note on the second string, since the next position only has a note on the first string
-            BOOST_CHECK_THROW(staff.GetSlideSteps(pos, pos->GetNote(1)), std::logic_error);
-        }
+    // check that it was removed, and the positions were shifted accordingly
+    REQUIRE(staff.GetPositionCount(0) == highPositions.size() - 1);
+    REQUIRE(staff.GetPosition(0, 1) == highPositions.at(2));
+}
 
-    BOOST_AUTO_TEST_SUITE_END()
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/AssignmentAndEquality", "")
+{
+    Staff newStaff;
+    REQUIRE(newStaff != staff);
 
-    BOOST_FIXTURE_TEST_CASE(GetPositionCount, StaffFixture)
+    newStaff = staff;
+    REQUIRE(newStaff == staff);
+
+    newStaff.GetPosition(0, 2)->SetArpeggioDown(true);
+    REQUIRE(newStaff != staff);
+}
+
+TEST_CASE("PowerTabDocument/Staff/GetNoteLocation", "")
+{
+    Staff staff;
+
+    KeySignature keySig;
+    Tuning tuning;
+    tuning.SetToStandard();
+
+    Note note(0, 1);
+
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == 0);
+
+    note.SetFretNumber(0);
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == 1);
+
+    note.SetFretNumber(3);
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == -1);
+
+    note.SetFretNumber(2);
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == 0);
+
+    note.SetFretNumber(14);
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == -7);
+
+    note.SetFretNumber(21);
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == -12);
+
+    // Test some edge cases with B#.
     {
-        BOOST_CHECK_EQUAL(staff.GetPositionCount(0), 5u);
-        BOOST_CHECK_EQUAL(staff.GetPositionCount(1), 2u);
+        KeySignature sevenSharps(KeySignature::majorKey, 7);
+        note.SetString(4);
+        note.SetFretNumber(1);
+        REQUIRE(staff.GetNoteLocation(&note, sevenSharps, tuning) == 12);
 
-        BOOST_CHECK_THROW(staff.GetPositionCount(2), std::out_of_range);
-    }
-
-    BOOST_FIXTURE_TEST_CASE(GetPosition, StaffFixture)
-    {
-        BOOST_CHECK_EQUAL(staff.GetPosition(0, 1), highPositions.at(1));
-        BOOST_CHECK_EQUAL(staff.GetPosition(1, 1), lowPositions.at(1));
-
-        BOOST_CHECK_THROW(staff.GetPosition(0, 99), std::out_of_range);
-        BOOST_CHECK_THROW(staff.GetPosition(3, 0), std::out_of_range);
-    }
-
-    BOOST_FIXTURE_TEST_SUITE(GetPositionByPosition, StaffFixture)
-
-        BOOST_AUTO_TEST_CASE(NullIfNoPositionFound)
-        {
-            BOOST_CHECK_EQUAL(staff.GetPositionByPosition(0, 1), (Position*)NULL);
-            BOOST_CHECK_EQUAL(staff.GetPositionByPosition(0, 99), (Position*)NULL);
-
-            BOOST_CHECK_THROW(staff.GetPositionByPosition(99, 0), std::out_of_range);
-        }
-
-        BOOST_AUTO_TEST_CASE(PositionFoundCorrectly)
-        {
-            BOOST_CHECK_EQUAL(staff.GetPositionByPosition(0, 2), highPositions.at(1));
-            BOOST_CHECK_EQUAL(staff.GetPositionByPosition(1, 1), lowPositions.at(0));
-        }
-
-    BOOST_AUTO_TEST_SUITE_END()
-
-    BOOST_FIXTURE_TEST_CASE(InsertPosition, StaffFixture)
-    {
-        const size_t originalPosCount = staff.GetPositionCount(0);
-        Position* newPos = new Position(1, 4, 0);
-        staff.InsertPosition(0, newPos);
-
-        BOOST_CHECK_EQUAL(staff.GetPositionCount(0), originalPosCount + 1);
-        // check that the position list was re-sorted by position index
-        BOOST_CHECK_EQUAL(staff.GetPosition(0, 1), newPos);
-
-        // cannot insert a position if there is already something at that position
-        BOOST_CHECK(staff.InsertPosition(0, newPos) == false);
-    }
-
-    BOOST_FIXTURE_TEST_CASE(RemovePosition, StaffFixture)
-    {
-        staff.RemovePosition(0, 2);
-
-        // check that it was removed, and the positions were shifted accordingly
-        BOOST_CHECK_EQUAL(staff.GetPositionCount(0), highPositions.size() - 1);
-        BOOST_CHECK_EQUAL(staff.GetPosition(0, 1), highPositions.at(2));
-    }
-
-    BOOST_FIXTURE_TEST_CASE(AssignmentAndEquality, StaffFixture)
-    {
-        Staff newStaff;
-        BOOST_CHECK(newStaff != staff);
-
-        newStaff = staff;
-        BOOST_CHECK(newStaff == staff);
-
-        newStaff.GetPosition(0, 2)->SetArpeggioDown(true);
-        BOOST_CHECK(newStaff != staff);
-    }
-    
-    BOOST_AUTO_TEST_CASE(GetNoteLocation)
-    {
-        Staff staff;
-        
-        KeySignature keySig;
-        Tuning tuning;
-        tuning.SetToStandard();
-        
-        Note note(0, 1);
-        
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 0);
-        
-        note.SetFretNumber(0);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 1);
-        
-        note.SetFretNumber(3);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -1);
-        
         note.SetFretNumber(2);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 0);
-        
-        note.SetFretNumber(14);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -7);
-        
-        note.SetFretNumber(21);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -12);
+        REQUIRE(staff.GetNoteLocation(&note, sevenSharps, tuning) == 11);
 
-        // Test some edge cases with B#.
-        {
-            KeySignature sevenSharps(KeySignature::majorKey, 7);
-            note.SetString(4);
-            note.SetFretNumber(1);
-            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 12);
+        note.SetFretNumber(3);
+        REQUIRE(staff.GetNoteLocation(&note, sevenSharps, tuning) == 11);
 
-            note.SetFretNumber(2);
-            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 11);
-
-            note.SetFretNumber(3);
-            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 11);
-
-            note.SetFretNumber(4);
-            BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, sevenSharps, tuning), 10);
-        }
-        
-        // Bass clef
-        staff.SetClef(Staff::BASS_CLEF);
-        note.SetString(5);
-        note.SetFretNumber(5);
-        
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 0);
-        
-        note.SetFretNumber(8);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), -2);
-        
-        note.SetOctave15ma(true);
-        BOOST_CHECK_EQUAL(staff.GetNoteLocation(&note, keySig, tuning), 12);
+        note.SetFretNumber(4);
+        REQUIRE(staff.GetNoteLocation(&note, sevenSharps, tuning) == 10);
     }
 
-    BOOST_FIXTURE_TEST_CASE(Serialization, StaffFixture)
-    {
-        testSerialization(staff);
-    }
+    // Bass clef
+    staff.SetClef(Staff::BASS_CLEF);
+    note.SetString(5);
+    note.SetFretNumber(5);
 
-    BOOST_FIXTURE_TEST_CASE(CalculateClef, StaffFixture)
-    {
-        using namespace midi;
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == 0);
 
-        Tuning tuning;
-        std::vector<uint8_t> notes;
+    note.SetFretNumber(8);
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == -2);
 
-        // create a tuning with a very low 7th string
-        using namespace boost::assign;
-        notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
-                 MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_E1;
-        tuning.SetTuningNotes(notes);
+    note.SetOctave15ma(true);
+    REQUIRE(staff.GetNoteLocation(&note, keySig, tuning) == 12);
+}
 
-        staff.CalculateClef(tuning);
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/Serialization", "")
+{
+    testSerialization(staff);
+}
 
-        // the fixture is only using high notes by default, so should have a treble clef
-        BOOST_CHECK_EQUAL(staff.GetClef(), Staff::TREBLE_CLEF);
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CalculateClef", "")
+{
+    using namespace midi;
 
-        // add a low note, which should trigger a switch to the bass clef
-        staff.GetPosition(0,0)->InsertNote(new Note(6, 0));
-        staff.CalculateClef(tuning);
+    Tuning tuning;
+    std::vector<uint8_t> notes;
 
-        BOOST_CHECK_EQUAL(staff.GetClef(), Staff::BASS_CLEF);
-    }
+    // create a tuning with a very low 7th string
+    using namespace boost::assign;
+    notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
+            MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_E1;
+    tuning.SetTuningNotes(notes);
 
-BOOST_AUTO_TEST_SUITE_END()
+    staff.CalculateClef(tuning);
+
+    // the fixture is only using high notes by default, so should have a treble clef
+    REQUIRE(staff.GetClef() == Staff::TREBLE_CLEF);
+
+    // add a low note, which should trigger a switch to the bass clef
+    staff.GetPosition(0,0)->InsertNote(new Note(6, 0));
+    staff.CalculateClef(tuning);
+
+    REQUIRE(staff.GetClef() == Staff::BASS_CLEF);
+}

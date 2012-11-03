@@ -96,7 +96,7 @@ bool Direction::operator!=(const Direction& direction) const
 bool Direction::Serialize(PowerTabOutputStream& stream) const
 {
     stream << m_position;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteSmallVector(m_symbolArray);
     return stream.CheckState();
@@ -128,7 +128,7 @@ bool Direction::IsValidPosition(uint32_t position)
 /// @return True if the position was set, false if not
 bool Direction::SetPosition(uint32_t position)
 {
-    CHECK_THAT(IsValidPosition(position), false);
+    PTB_CHECK_THAT(IsValidPosition(position), false);
     m_position = static_cast<uint8_t>(position);
     return true;
 }
@@ -175,9 +175,9 @@ bool Direction::IsValidRepeatNumber(uint8_t repeatNumber)
 bool Direction::AddSymbol(uint8_t symbolType, uint8_t activeSymbol,
     uint8_t repeatNumber)
 {
-    CHECK_THAT(IsValidSymbolType(symbolType), false);
-    CHECK_THAT(IsValidActiveSymbol(activeSymbol), false);
-    CHECK_THAT(IsValidRepeatNumber(repeatNumber), false);
+    PTB_CHECK_THAT(IsValidSymbolType(symbolType), false);
+    PTB_CHECK_THAT(IsValidActiveSymbol(activeSymbol), false);
+    PTB_CHECK_THAT(IsValidRepeatNumber(repeatNumber), false);
     
     // Can't add anymore symbols
     if (GetSymbolCount() == MAX_SYMBOLS)
@@ -200,10 +200,10 @@ bool Direction::AddSymbol(uint8_t symbolType, uint8_t activeSymbol,
 bool Direction::SetSymbol(uint32_t index, uint8_t symbolType,
     uint8_t activeSymbol, uint8_t repeatNumber)
 {
-    CHECK_THAT(IsValidSymbolIndex(index), false);
-    CHECK_THAT(IsValidSymbolType(symbolType), false);
-    CHECK_THAT(IsValidActiveSymbol(activeSymbol), false);
-    CHECK_THAT(IsValidRepeatNumber(repeatNumber), false);
+    PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
+    PTB_CHECK_THAT(IsValidSymbolType(symbolType), false);
+    PTB_CHECK_THAT(IsValidActiveSymbol(activeSymbol), false);
+    PTB_CHECK_THAT(IsValidRepeatNumber(repeatNumber), false);
     
     uint16_t symbol = (uint16_t)(symbolType << 8);
     symbol |= (uint16_t)(activeSymbol << 6);
@@ -223,7 +223,7 @@ bool Direction::SetSymbol(uint32_t index, uint8_t symbolType,
 bool Direction::GetSymbol(uint32_t index, uint8_t& symbolType,
     uint8_t& activeSymbol, uint8_t& repeatNumber) const
 {
-    CHECK_THAT(IsValidSymbolIndex(index), false);
+    PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
    
     symbolType = activeSymbol = repeatNumber = 0;
     
@@ -240,8 +240,8 @@ bool Direction::GetSymbol(uint32_t index, uint8_t& symbolType,
 /// @return True if the symbol is of the type, false if not
 bool Direction::IsSymbolType(uint32_t index, uint8_t symbolType) const
 {
-    CHECK_THAT(IsValidSymbolIndex(index), false);
-    CHECK_THAT(IsValidSymbolType(symbolType), false);
+    PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
+    PTB_CHECK_THAT(IsValidSymbolType(symbolType), false);
     
     uint8_t type = 0;
     uint8_t activeSymbol = 0;
@@ -260,7 +260,7 @@ bool Direction::IsSymbolType(uint32_t index, uint8_t symbolType) const
 /// @return True if the symbol was removed, false if not
 bool Direction::RemoveSymbolAtIndex(uint32_t index)
 {
-    CHECK_THAT(IsValidSymbolIndex(index), false);
+    PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
  
     m_symbolArray.erase(m_symbolArray.begin() + index);
     
@@ -281,7 +281,7 @@ std::string Direction::GetText(uint32_t index) const
         return "";
     }
     
-    CHECK_THAT(IsValidSymbolType(symbolType), "");
+    PTB_CHECK_THAT(IsValidSymbolType(symbolType), "");
     
     return directionText[symbolType];
 }

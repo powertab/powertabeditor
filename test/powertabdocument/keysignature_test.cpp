@@ -14,28 +14,20 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#define BOOST_TEST_DYN_LINK
 
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <powertabdocument/keysignature.h>
 
-BOOST_AUTO_TEST_SUITE(KeySignatureTest)
+TEST_CASE("PowerTabDocument/KeySignature/GetText", "")
+{
+    KeySignature key(KeySignature::majorKey, KeySignature::fourFlats);
 
-    BOOST_AUTO_TEST_CASE(GetText)
-    {
-        KeySignature key(KeySignature::majorKey, KeySignature::fourFlats);
+    REQUIRE(key.GetText() == "Ab Major - Bb Eb Ab Db");
 
-        BOOST_CHECK_EQUAL(key.GetText(), "Ab Major - Bb Eb Ab Db");
+    key.SetKey(KeySignature::majorKey, KeySignature::noAccidentals);
+    REQUIRE(key.GetText() == "C Major");
 
-        key.SetKey(KeySignature::majorKey, KeySignature::noAccidentals);
-        BOOST_CHECK_EQUAL(key.GetText(), "C Major");
-
-        key.SetKey(KeySignature::minorKey, KeySignature::twoSharps);
-        BOOST_CHECK_EQUAL(key.GetText(), "B Minor - F# C#");
-    }
-
-BOOST_AUTO_TEST_SUITE_END()
-
-
+    key.SetKey(KeySignature::minorKey, KeySignature::twoSharps);
+    REQUIRE(key.GetText() == "B Minor - F# C#");
+}

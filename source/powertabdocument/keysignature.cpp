@@ -163,7 +163,7 @@ bool KeySignature::SetKeyType(uint8_t keyType)
 {
     //------Last Checked------//
     // - Dec 11, 2004
-    CHECK_THAT(IsValidKeyType(keyType), false);
+    PTB_CHECK_THAT(IsValidKeyType(keyType), false);
     m_data &= ~keyTypeMask;
     m_data |= (keyType << 6);
     return (true);
@@ -178,7 +178,7 @@ bool KeySignature::SetKeyAccidentals(uint8_t keyAccidentals)
 {
     //------Last Checked------//
     // - Dec 11, 2004
-    CHECK_THAT(IsValidKeyAccidentals(keyAccidentals), false);
+    PTB_CHECK_THAT(IsValidKeyAccidentals(keyAccidentals), false);
     m_data &= ~keyAccidentalsMask;
     m_data |= keyAccidentals;
     return (true);

@@ -113,16 +113,16 @@ bool Barline::Serialize(PowerTabOutputStream& stream) const
 	//------Last Checked------//
 	// - Jan 4, 2005
 	stream << m_position << m_data;
-	CHECK_THAT(stream.CheckState(), false);
+	PTB_CHECK_THAT(stream.CheckState(), false);
 	
 	m_keySignature.Serialize(stream);
-	CHECK_THAT(stream.CheckState(), false);
+	PTB_CHECK_THAT(stream.CheckState(), false);
 	
 	m_timeSignature.Serialize(stream);
-	CHECK_THAT(stream.CheckState(), false);
+	PTB_CHECK_THAT(stream.CheckState(), false);
 	
 	m_rehearsalSign.Serialize(stream);
-	CHECK_THAT(stream.CheckState(), false);
+	PTB_CHECK_THAT(stream.CheckState(), false);
 
 	return (true);
 }
@@ -216,7 +216,7 @@ bool Barline::SetType(uint8_t type)
 {
 	//------Last Checked------//
 	// - Jan 4, 2005
-	CHECK_THAT(IsValidType(type), false);
+	PTB_CHECK_THAT(IsValidType(type), false);
 	
 	m_data &= ~typeMask;
 	m_data |= (uint8_t)(type << 5);
@@ -232,7 +232,7 @@ bool Barline::SetRepeatCount(uint32_t repeatCount)
 {
 	//------Last Checked------//
 	// - Jan 4, 2005
-	CHECK_THAT(IsValidRepeatCount(repeatCount), false);
+	PTB_CHECK_THAT(IsValidRepeatCount(repeatCount), false);
 	
 	m_data &= ~repeatCountMask;
 	m_data |= (uint8_t)repeatCount;

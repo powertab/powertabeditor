@@ -15,15 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <powertabdocument/common.h>
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-BOOST_AUTO_TEST_CASE(DeepCopyAndEquality)
+TEST_CASE("PowerTabDocument/Common/DeepCopyAndEquality", "")
 {
     std::vector<boost::shared_ptr<int> > vec1, vec2;
     
@@ -32,12 +30,12 @@ BOOST_AUTO_TEST_CASE(DeepCopyAndEquality)
     
     deepCopy(vec1, vec2);
 
-    BOOST_CHECK_EQUAL(vec1.size(), vec2.size()); 
-    BOOST_CHECK_EQUAL(*vec1[0], *vec2[0]);
-    BOOST_CHECK(isDeepEqual(vec1, vec2));
+    REQUIRE(vec1.size() == vec2.size());
+    REQUIRE(*vec1[0] == *vec2[0]);
+    REQUIRE(isDeepEqual(vec1, vec2));
 
     *vec2[0] = 6;
-    BOOST_CHECK_NE(*vec1[0], *vec2[0]);
-    BOOST_CHECK(!isDeepEqual(vec1, vec2));
+    REQUIRE(*vec1[0] != *vec2[0]);
+    REQUIRE(!isDeepEqual(vec1, vec2));
 }
 

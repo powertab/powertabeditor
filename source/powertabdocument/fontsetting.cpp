@@ -130,13 +130,13 @@ bool FontSetting::Serialize(PowerTabOutputStream& stream) const
     //------Last Checked------//
     // - Dec 5, 2004
     stream.WriteMFCString(m_faceName);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     stream << m_pointSize << m_weight << m_italic << m_underline << m_strikeOut;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     stream.WriteWin32ColorRef(m_color);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     return (stream.CheckState());
 }

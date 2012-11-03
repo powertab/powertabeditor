@@ -56,10 +56,10 @@ bool RehearsalSign::operator!=(const RehearsalSign& rehearsalSign) const
 bool RehearsalSign::Serialize(PowerTabOutputStream& stream) const
 {
     stream << m_letter;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteMFCString(m_description);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     return (stream.CheckState());
 }
@@ -82,7 +82,7 @@ bool RehearsalSign::SetLetter(int8_t letter)
 {
     //------Last Checked------//
     // - Dec 10, 2004
-    CHECK_THAT(IsValidLetter(letter), false);
+    PTB_CHECK_THAT(IsValidLetter(letter), false);
     m_letter = letter;
 
     // If the rehearsal sign is being unset, clear the description
@@ -120,7 +120,7 @@ int8_t RehearsalSign::GetLetter() const
 /// @return True if the description was set, false if not
 bool RehearsalSign::SetDescription(const std::string& description)
 {
-    CHECK_THAT(!description.empty(), false);
+    PTB_CHECK_THAT(!description.empty(), false);
     m_description = description;
     return true;
 }

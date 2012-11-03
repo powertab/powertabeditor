@@ -49,8 +49,8 @@
 
 void logToDebug(const std::string& msg, const std::string& file, int line);
 
-#ifndef CHECK_THAT
-#define CHECK_THAT(cond, rc) 	\
+#ifndef PTB_CHECK_THAT
+#define PTB_CHECK_THAT(cond, rc) 	\
     if ( cond ) {}			\
     else {					\
         logToDebug("Error at: ", __FILE__, __LINE__); \

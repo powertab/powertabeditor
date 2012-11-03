@@ -87,7 +87,7 @@ public:
         const size_t count = vect.size();
         WriteCount(count);
 
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
         for (uint32_t i = 0; i < count; i++)
         {
             assert(vect[i]);
@@ -95,7 +95,7 @@ public:
             // the '&*' is used to get a raw PowerTabObject pointer,
             // regardless of whether T is a raw pointer, shared_ptr, etc
             WriteObject(&*vect[i]);
-            CHECK_THAT(CheckState(), false);
+            PTB_CHECK_THAT(CheckState(), false);
         }
         return true;
     }

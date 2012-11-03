@@ -199,12 +199,12 @@ public:
     /// Clears a flag used by the TimeSignature object
     /// @param flag The flag to clear
     bool ClearFlag(uint32_t flag)                   
-        {CHECK_THAT(IsValidFlag(flag), false); m_data &= ~flag; return (true);}
+        {PTB_CHECK_THAT(IsValidFlag(flag), false); m_data &= ~flag; return (true);}
     /// Determines if a flag used by the TimeSignature object is set
     /// @param flag The flag to test
     /// @return True if the flag is set, false if not
     bool IsFlagSet(uint32_t flag) const             
-        {CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
+        {PTB_CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
 
 // Operations    
 public:

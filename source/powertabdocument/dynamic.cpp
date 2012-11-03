@@ -133,7 +133,7 @@ bool Dynamic::Serialize(PowerTabOutputStream& stream) const
     //------Last Checked------//
     // - Jan 12, 2005
     stream << m_system << m_staff << m_position << m_data;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
    
     return (stream.CheckState());
 }
@@ -175,7 +175,7 @@ bool Dynamic::SetVolume(bool rhythmSlashes, uint8_t volume)
 {
     //------Last Checked------//
     // - Jan 12, 2005
-    CHECK_THAT(IsValidVolume(volume), false);
+    PTB_CHECK_THAT(IsValidVolume(volume), false);
     
     if (rhythmSlashes)
         m_data = MAKEWORD(volume, GetStaffVolume());

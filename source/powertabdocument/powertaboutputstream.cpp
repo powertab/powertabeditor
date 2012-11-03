@@ -34,7 +34,7 @@ bool PowerTabOutputStream::WriteCount(uint32_t count)
 {
     //------Last Checked------//
     // - Dec 20, 2004
-    CHECK_THAT(CheckState(), false);
+    PTB_CHECK_THAT(CheckState(), false);
 
     // 16-bit count
     if (count < 0xffff)
@@ -75,9 +75,9 @@ bool PowerTabOutputStream::WriteMFCStringLength(uint32_t length, bool unicode)
     if (unicode)
     {
         *this << (uint8_t)BYTE_PLACEHOLDER;
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
         *this << (uint16_t)UNICODE_MARKER;
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
     }
 
     // If length is less than byte placeholder, write the length as a byte value
@@ -88,16 +88,16 @@ bool PowerTabOutputStream::WriteMFCStringLength(uint32_t length, bool unicode)
     else if (length < UNICODE_MARKER)
     {
         *this << (uint8_t)BYTE_PLACEHOLDER;
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
         *this << (uint16_t)length;
     }
     // Write the length as a double word
     else
     {
         *this << (uint8_t)BYTE_PLACEHOLDER;
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
         *this << (uint16_t)WORD_PLACEHOLDER;
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
         *this << (uint32_t)length;
     }
 
@@ -150,7 +150,7 @@ bool PowerTabOutputStream::WriteObject(const PowerTabObject* object)
             else
             {
                 *this << BIG_OBJECT_TAG;
-                CHECK_THAT(CheckState(), false);
+                PTB_CHECK_THAT(CheckState(), false);
                 *this << nObjectIndex;
             }
         }
@@ -208,7 +208,7 @@ bool PowerTabOutputStream::WriteClassInformation(const PowerTabObject* object)
         else
         {
             *this << BIG_OBJECT_TAG;
-            CHECK_THAT(CheckState(), false);
+            PTB_CHECK_THAT(CheckState(), false);
             *this << (BIG_CLASS_TAG | nClassIndex);
         }
     }
@@ -216,18 +216,18 @@ bool PowerTabOutputStream::WriteClassInformation(const PowerTabObject* object)
     {
         // Store new class
         *this << NEW_CLASS_TAG;
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
 
         // Write MFC Class Information
         *this << object->GetMFCClassSchema();
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
 
         const string className = object->GetMFCClassName();
         const uint16_t length = className.length();
         *this << length;
         m_stream.write(className.data(), length);
 
-        CHECK_THAT(CheckState(), false);
+        PTB_CHECK_THAT(CheckState(), false);
 
         // Store new class reference in map, checking for overflow
         if (!CheckCount())

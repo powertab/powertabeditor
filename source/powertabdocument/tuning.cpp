@@ -79,10 +79,10 @@ bool Tuning::operator!=(const Tuning& tuning) const
 bool Tuning::Serialize(PowerTabOutputStream& stream) const
 {
     stream.WriteMFCString(m_name);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream << m_data;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteSmallVector(m_noteArray);
 
@@ -126,7 +126,7 @@ void Tuning::SetSharps(bool set)
 /// @return True if the music notation offset was set, false if not
 bool Tuning::SetMusicNotationOffset(int8_t musicNotationOffset)
 {
-    CHECK_THAT(IsValidMusicNotationOffset(musicNotationOffset), false);
+    PTB_CHECK_THAT(IsValidMusicNotationOffset(musicNotationOffset), false);
 
     // Clear the current music notation offset
     m_data &= ~musicNotationOffsetMask;
@@ -161,8 +161,8 @@ int8_t Tuning::GetMusicNotationOffset() const
 /// @return True if the note was set, false if not
 bool Tuning::SetNote(uint32_t string, uint8_t note)
 {
-    CHECK_THAT(IsValidString(string), false);
-    CHECK_THAT(midi::IsValidMidiNote(note), false);
+    PTB_CHECK_THAT(IsValidString(string), false);
+    PTB_CHECK_THAT(midi::IsValidMidiNote(note), false);
     m_noteArray[string] = note;
     return true;
 }
@@ -174,7 +174,7 @@ bool Tuning::SetNote(uint32_t string, uint8_t note)
 /// @return The MIDI note assigned to the string
 uint8_t Tuning::GetNote(uint32_t string, bool includeMusicNotationOffset) const
 {
-    CHECK_THAT(IsValidString(string), midi::MIDI_NOTE_MIDDLE_C);
+    PTB_CHECK_THAT(IsValidString(string), midi::MIDI_NOTE_MIDDLE_C);
 
     uint8_t returnValue = m_noteArray[string];
 
@@ -190,7 +190,7 @@ uint8_t Tuning::GetNote(uint32_t string, bool includeMusicNotationOffset) const
 /// @return A text representation of the note
 string Tuning::GetNoteText(uint32_t string) const
 {
-    CHECK_THAT(IsValidString(string), "");
+    PTB_CHECK_THAT(IsValidString(string), "");
     return (midi::GetMidiNoteTextSimple(m_noteArray[string], UsesSharps()));
 }
 

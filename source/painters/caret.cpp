@@ -520,7 +520,7 @@ uint32_t Caret::getCurrentVoice() const
 
 bool Caret::setCurrentVoice(uint32_t voice)
 {
-    CHECK_THAT(Staff::IsValidVoice(voice), false);
+    PTB_CHECK_THAT(Staff::IsValidVoice(voice), false);
 
     currentVoice = voice;
     return true;

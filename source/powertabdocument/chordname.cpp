@@ -191,7 +191,7 @@ bool ChordName::SetTonic(uint8_t key, uint8_t keyVariation)
 {
     //------Last Checked------//
     // - Jan 17, 2005
-    CHECK_THAT(IsValidKeyAndVariation(key, keyVariation), false);
+    PTB_CHECK_THAT(IsValidKeyAndVariation(key, keyVariation), false);
 
     m_key &= ~tonicKeyAndVariationMask;
 
@@ -235,7 +235,7 @@ bool ChordName::SetBassNote(uint8_t key, uint8_t keyVariation)
 {
     //------Last Checked------//
     // - Jan 17, 2005
-    CHECK_THAT(IsValidKeyAndVariation(key, keyVariation), false);
+    PTB_CHECK_THAT(IsValidKeyAndVariation(key, keyVariation), false);
 
     m_key &= ~bassNoteKeyAndVariationMask;
 
@@ -290,7 +290,7 @@ bool ChordName::SetFormula(uint8_t formula)
 {
     //------Last Checked------//
     // - Jan 4, 2005
-    CHECK_THAT(IsValidFormula(formula), false);
+    PTB_CHECK_THAT(IsValidFormula(formula), false);
 
     m_formula &= ~formulaMask;
     m_formula |= formula;
@@ -439,7 +439,7 @@ bool ChordName::SetFretPosition(uint8_t fretPosition)
 {
     //------Last Checked------//
     // - Jan 4, 2005
-    CHECK_THAT(IsValidFretPosition(fretPosition), false);
+    PTB_CHECK_THAT(IsValidFretPosition(fretPosition), false);
 
     // Note: Fret position is stored as values 0 to 31; 0 = not used, 1 to 31 =
     // open to 30th fret
@@ -473,7 +473,7 @@ bool ChordName::SetType(uint8_t type)
 {
     //------Last Checked------//
     // - Jan 4, 2005
-    CHECK_THAT(IsValidType(type), false);
+    PTB_CHECK_THAT(IsValidType(type), false);
 
     // Note: Type is stored as values 0 to 7; 0 = not used, 1 to 7 = types 2 to
     // 8

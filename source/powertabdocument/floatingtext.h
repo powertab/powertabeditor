@@ -77,7 +77,7 @@ public:
     /// @param text Text to set
     /// @return True if the text was set, false if not
     bool SetText(const char* text)                                
-        {CHECK_THAT(text != NULL, false); m_text = text; return (true);}
+        {PTB_CHECK_THAT(text != NULL, false); m_text = text; return (true);}
     /// Gets the text used by the FloatingText object
     /// @return The text used by the FloatingText object
     std::string GetText() const
@@ -123,7 +123,7 @@ public:
     /// @return True if the alignment was successfully set, false if not
     bool SetAlignment(uint8_t alignment)                             
     {
-        CHECK_THAT(IsValidAlignment(alignment), false);
+        PTB_CHECK_THAT(IsValidAlignment(alignment), false);
         ClearFlag(alignMask);
         SetFlag(alignment);
         return (true);
@@ -139,7 +139,7 @@ public:
     /// the one given by alignment, false if not
     bool IsAligned(uint8_t alignment) const                          
     {
-        CHECK_THAT(IsValidAlignment(alignment), false);
+        PTB_CHECK_THAT(IsValidAlignment(alignment), false);
         return (IsFlagSet(alignment));
     }
     /// Determines if the alignment used by the FloatingText object is left

@@ -98,28 +98,28 @@ bool Score::Serialize(PowerTabOutputStream& stream) const
     //------Last Checked------//
     // - Jan 5, 2005
     stream.WriteVector(m_guitarArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_chordDiagramArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_floatingTextArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_guitarInArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_tempoMarkerArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_dynamicArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_alternateEndingArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteVector(m_systemArray);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     return (stream.CheckState());
 }
@@ -147,7 +147,7 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
 /// Removes the system at the specified index
 bool Score::RemoveSystem(size_t index)
 {
-    CHECK_THAT(IsValidSystemIndex(index), false);
+    PTB_CHECK_THAT(IsValidSystemIndex(index), false);
 
     SystemConstPtr system = m_systemArray.at(index);
 
@@ -162,7 +162,7 @@ bool Score::RemoveSystem(size_t index)
 /// Inserts a system into the score at the specified location
 bool Score::InsertSystem(SystemPtr system, size_t index)
 {
-    CHECK_THAT(IsValidSystemIndex(index) || index == GetSystemCount(), false);
+    PTB_CHECK_THAT(IsValidSystemIndex(index) || index == GetSystemCount(), false);
 
     m_systemArray.insert(m_systemArray.begin() + index, system);
 
@@ -445,7 +445,7 @@ void Score::Init()
 /// Inserts a guitar into the score, and creates a corresponding staff
 bool Score::InsertGuitar(GuitarPtr guitar)
 {
-    CHECK_THAT(m_guitarArray.size() < MAX_NUM_GUITARS, false);
+    PTB_CHECK_THAT(m_guitarArray.size() < MAX_NUM_GUITARS, false);
 
     m_guitarArray.push_back(guitar);
     guitar->SetNumber(m_guitarArray.size() - 1);
@@ -464,7 +464,7 @@ bool Score::InsertGuitar(GuitarPtr guitar)
 /// Removes the guitar (and staff) at the specified index
 bool Score::RemoveGuitar(size_t index)
 {
-    CHECK_THAT(IsValidGuitarIndex(index), false);
+    PTB_CHECK_THAT(IsValidGuitarIndex(index), false);
 
     m_guitarArray.erase(m_guitarArray.begin() + index);
 
@@ -536,7 +536,7 @@ size_t Score::GetAlternateEndingCount() const
 /// @return The nth alternate ending in the score
 Score::AlternateEndingPtr Score::GetAlternateEnding(uint32_t index) const
 {
-    CHECK_THAT(IsValidAlternateEndingIndex(index), AlternateEndingPtr());
+    PTB_CHECK_THAT(IsValidAlternateEndingIndex(index), AlternateEndingPtr());
     return m_alternateEndingArray[index];
 }
 
@@ -578,7 +578,7 @@ size_t Score::GetChordDiagramCount() const
 /// @return The nth chord diagram in the score
 Score::ChordDiagramPtr Score::GetChordDiagram(uint32_t index) const
 {
-    CHECK_THAT(IsValidChordDiagramIndex(index), ChordDiagramPtr());
+    PTB_CHECK_THAT(IsValidChordDiagramIndex(index), ChordDiagramPtr());
     return m_chordDiagramArray[index];
 }
 
@@ -603,7 +603,7 @@ size_t Score::GetGuitarCount() const
 /// @return The nth guitar in the score
 Score::GuitarPtr Score::GetGuitar(uint32_t index) const
 {
-    CHECK_THAT(IsValidGuitarIndex(index), GuitarPtr());
+    PTB_CHECK_THAT(IsValidGuitarIndex(index), GuitarPtr());
     return m_guitarArray[index];
 }
 
@@ -628,7 +628,7 @@ size_t Score::GetSystemCount() const
 /// @return The nth system in the score
 Score::SystemPtr Score::GetSystem(uint32_t index) const
 {
-    CHECK_THAT(IsValidSystemIndex(index), SystemPtr());
+    PTB_CHECK_THAT(IsValidSystemIndex(index), SystemPtr());
     return m_systemArray[index];
 }
 
@@ -653,7 +653,7 @@ size_t Score::GetDynamicCount() const
 /// @return The nth dynamic in the score
 Score::DynamicPtr Score::GetDynamic(uint32_t index) const
 {
-    CHECK_THAT(IsValidDynamicIndex(index), DynamicPtr());
+    PTB_CHECK_THAT(IsValidDynamicIndex(index), DynamicPtr());
     return m_dynamicArray[index];
 }
 
@@ -678,7 +678,7 @@ size_t Score::GetFloatingTextCount() const
 /// @return The nth floating text in the score
 Score::FloatingTextPtr Score::GetFloatingText(uint32_t index) const
 {
-    CHECK_THAT(IsValidFloatingTextIndex(index), FloatingTextPtr());
+    PTB_CHECK_THAT(IsValidFloatingTextIndex(index), FloatingTextPtr());
     return m_floatingTextArray[index];
 }
 
@@ -703,7 +703,7 @@ size_t Score::GetGuitarInCount() const
 /// @return The nth guitar in in the score
 Score::GuitarInPtr Score::GetGuitarIn(uint32_t index) const
 {
-    CHECK_THAT(IsValidGuitarInIndex(index), GuitarInPtr());
+    PTB_CHECK_THAT(IsValidGuitarInIndex(index), GuitarInPtr());
     return m_guitarInArray[index];
 }
 
@@ -728,7 +728,7 @@ size_t Score::GetTempoMarkerCount() const
 /// @return The nth tempo marker in the score
 Score::TempoMarkerPtr Score::GetTempoMarker(uint32_t index) const
 {
-    CHECK_THAT(IsValidTempoMarkerIndex(index), TempoMarkerPtr());
+    PTB_CHECK_THAT(IsValidTempoMarkerIndex(index), TempoMarkerPtr());
     return m_tempoMarkerArray[index];
 }
 

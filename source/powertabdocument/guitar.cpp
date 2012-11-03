@@ -177,17 +177,17 @@ bool Guitar::operator!=(const Guitar& guitar) const
 bool Guitar::Serialize(PowerTabOutputStream& stream) const
 {
     stream << m_number;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream.WriteMFCString(m_description);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     stream << m_preset << m_initialVolume << m_pan << m_reverb << m_chorus <<
               m_tremolo << m_phaser << m_capo;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     m_tuning.Serialize(stream);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
 
     return (stream.CheckState());
 }
@@ -224,7 +224,7 @@ std::string Guitar::GetLegendText() const
 /// @return True if the tuning was set, false if not
 bool Guitar::SetTuning(const Tuning& tuning)
 {
-    CHECK_THAT(tuning.IsValid(), false);
+    PTB_CHECK_THAT(tuning.IsValid(), false);
     m_tuning = tuning;
     return true;
 }
@@ -290,7 +290,7 @@ bool Guitar::IsValidPreset(uint8_t preset)
 /// @return True if the preset was set, false if not
 bool Guitar::SetPreset(uint8_t preset)
 {
-    CHECK_THAT(IsValidPreset(preset), false);
+    PTB_CHECK_THAT(IsValidPreset(preset), false);
     m_preset = preset;
     return true;
 }
@@ -312,7 +312,7 @@ bool Guitar::IsValidInitialVolume(uint8_t initialVolume)
 /// @return True if the volume was set, false if not
 bool Guitar::SetInitialVolume(uint8_t initialVolume)
 {
-    CHECK_THAT(IsValidInitialVolume(initialVolume), false);
+    PTB_CHECK_THAT(IsValidInitialVolume(initialVolume), false);
     m_initialVolume = initialVolume;
     return true;
 }
@@ -336,7 +336,7 @@ bool Guitar::IsValidPan(uint8_t pan)
 /// @return True if the pan level was set, false if not
 bool Guitar::SetPan(uint8_t pan)
 {
-    CHECK_THAT(IsValidPan(pan), false);
+    PTB_CHECK_THAT(IsValidPan(pan), false);
     m_pan = pan;
     return true;
 }
@@ -359,7 +359,7 @@ bool Guitar::IsValidReverb(uint8_t reverb)
 /// @return True if the reverb level was set, false if not
 bool Guitar::SetReverb(uint8_t reverb)
 {
-    CHECK_THAT(IsValidReverb(reverb), false);
+    PTB_CHECK_THAT(IsValidReverb(reverb), false);
     m_reverb = reverb;
     return true;
 }
@@ -381,7 +381,7 @@ bool Guitar::IsValidChorus(uint8_t chorus)
 /// @return True if the chorus level was set, false if not
 bool Guitar::SetChorus(uint8_t chorus)
 {
-    CHECK_THAT(IsValidChorus(chorus), false);
+    PTB_CHECK_THAT(IsValidChorus(chorus), false);
     m_chorus = chorus;
     return true;
 }
@@ -403,7 +403,7 @@ bool Guitar::IsValidTremolo(uint8_t tremolo)
 /// @return True if the tremolo level was set, false is not
 bool Guitar::SetTremolo(uint8_t tremolo)
 {
-    CHECK_THAT(IsValidTremolo(tremolo), false);
+    PTB_CHECK_THAT(IsValidTremolo(tremolo), false);
     m_tremolo = tremolo;
     return true;
 }
@@ -425,7 +425,7 @@ bool Guitar::IsValidPhaser(uint8_t phaser)
 /// @return True if the phaser level was set, false is not
 bool Guitar::SetPhaser(uint8_t phaser)
 {
-    CHECK_THAT(IsValidPhaser(phaser), false);
+    PTB_CHECK_THAT(IsValidPhaser(phaser), false);
     m_phaser = phaser;
     return true;
 }
@@ -448,7 +448,7 @@ bool Guitar::IsValidCapo(uint8_t capo)
 /// @return True if the capo was set, false if not
 bool Guitar::SetCapo(uint8_t capo)
 {
-    CHECK_THAT(IsValidCapo(capo), false);
+    PTB_CHECK_THAT(IsValidCapo(capo), false);
     m_capo = capo;
     return true;
 }

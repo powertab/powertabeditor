@@ -15,31 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define BOOST_TEST_DYN_LINK
-
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
 
 #include <actions/addvolumeswell.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/dynamic.h>
 
-BOOST_AUTO_TEST_CASE(TestAddVolumeSwell)
+TEST_CASE("Actions/AddVolumeSwell", "")
 {
     Position pos;
 
     AddVolumeSwell action(&pos, Dynamic::mf, Dynamic::ff, 3);
 
     action.redo();
-    BOOST_CHECK(pos.HasVolumeSwell());
+    REQUIRE(pos.HasVolumeSwell());
 
     uint8_t startVol, endVol, duration;
     pos.GetVolumeSwell(startVol, endVol, duration);
 
-    BOOST_CHECK_EQUAL(startVol, Dynamic::mf);
-    BOOST_CHECK_EQUAL(endVol, Dynamic::ff);
-    BOOST_CHECK_EQUAL(duration, 3u);
+    REQUIRE(startVol == Dynamic::mf);
+    REQUIRE(endVol == Dynamic::ff);
+    REQUIRE(duration == 3u);
 
     action.undo();
-    BOOST_CHECK(!pos.HasVolumeSwell());
-
+    REQUIRE(!pos.HasVolumeSwell());
 }

@@ -116,10 +116,10 @@ bool TempoMarker::operator!=(const TempoMarker& tempoMarker) const
 bool TempoMarker::Serialize(PowerTabOutputStream& stream) const
 {
     SystemSymbol::Serialize(stream);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     stream.WriteMFCString(m_description);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     return (stream.CheckState());
 }
@@ -178,7 +178,7 @@ bool TempoMarker::IsValidType(uint8_t type)
 /// @return True if the type was set, false if not
 bool TempoMarker::SetType(uint8_t type)
 {
-    CHECK_THAT(IsValidType(type), false);
+    PTB_CHECK_THAT(IsValidType(type), false);
     
     m_data &= ~typeMask;
     m_data |= (uint32_t)(type << 27);
@@ -205,9 +205,9 @@ bool TempoMarker::IsMetronomeMarkerShown() const
 bool TempoMarker::SetStandardMarker(uint8_t beatType, uint32_t beatsPerMinute,
                                     const std::string& description, uint8_t tripletFeelType)
 {
-    CHECK_THAT(IsValidBeatType(beatType), false);
-    CHECK_THAT(IsValidBeatsPerMinute(beatsPerMinute), false);
-    CHECK_THAT(IsValidTripletFeelType(tripletFeelType), false);
+    PTB_CHECK_THAT(IsValidBeatType(beatType), false);
+    PTB_CHECK_THAT(IsValidBeatsPerMinute(beatsPerMinute), false);
+    PTB_CHECK_THAT(IsValidTripletFeelType(tripletFeelType), false);
     
     m_data = 0;
     SetType(standardMarker);
@@ -234,8 +234,8 @@ bool TempoMarker::IsStandardMarker() const
 bool TempoMarker::SetListesso(uint8_t beatType, uint8_t listessoBeatType,
                               const std::string& description)
 {
-    CHECK_THAT(IsValidBeatType(beatType), false);
-    CHECK_THAT(IsValidBeatType(listessoBeatType), false);
+    PTB_CHECK_THAT(IsValidBeatType(beatType), false);
+    PTB_CHECK_THAT(IsValidBeatType(listessoBeatType), false);
     
     // Clear all current data
     m_data = 0;
@@ -311,7 +311,7 @@ bool TempoMarker::IsValidBeatType(uint8_t beatType)
 /// @return True if the beat type was set, false if not
 bool TempoMarker::SetBeatType(uint8_t beatType)
 {
-    CHECK_THAT(IsValidBeatType(beatType), false);
+    PTB_CHECK_THAT(IsValidBeatType(beatType), false);
     
     m_data &= ~beatTypeMask;
     m_data |= (uint32_t)(beatType << 23);
@@ -332,7 +332,7 @@ uint8_t TempoMarker::GetBeatType() const
 /// @return True if the beat type was set, false if not
 bool TempoMarker::SetListessoBeatType(uint8_t beatType)
 {
-    CHECK_THAT(IsValidBeatType(beatType), false);
+    PTB_CHECK_THAT(IsValidBeatType(beatType), false);
     
     m_data &= ~listessoBeatTypeMask;
     m_data |= (uint32_t)(beatType << 19);
@@ -360,7 +360,7 @@ bool TempoMarker::IsValidTripletFeelType(uint8_t tripletFeelType)
 /// @return True if the triplet feel type was set, false if not
 bool TempoMarker::SetTripletFeelType(uint8_t tripletFeelType)
 {
-    CHECK_THAT(IsValidTripletFeelType(tripletFeelType), false);
+    PTB_CHECK_THAT(IsValidTripletFeelType(tripletFeelType), false);
     
     m_data &= ~tripletFeelTypeMask;
     m_data |= (uint32_t)(tripletFeelType << 16);
@@ -396,7 +396,7 @@ bool TempoMarker::IsValidBeatsPerMinute(uint32_t beatsPerMinute)
 /// @return True if the beats per minute value was set, false if not.
 bool TempoMarker::SetBeatsPerMinute(uint32_t beatsPerMinute)
 {
-    CHECK_THAT(IsValidBeatsPerMinute(beatsPerMinute), false);
+    PTB_CHECK_THAT(IsValidBeatsPerMinute(beatsPerMinute), false);
     
     m_data &= ~beatsPerMinuteMask;
     m_data |= beatsPerMinute;

@@ -14,12 +14,10 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#define BOOST_TEST_DYN_LINK
 
-#include <boost/test/unit_test.hpp>
+#include <catch.hpp>
+
 #include <boost/function.hpp>
-
 #include "serialization_test.h"
 #include <powertabdocument/note.h>
 
@@ -30,100 +28,95 @@ void testNoteProperty(boost::function<bool (Note*, bool)> setProperty,
     Note note;
 
     setProperty(&note, true);
-    BOOST_CHECK_EQUAL(getProperty(&note), true);
+    REQUIRE(getProperty(&note) == true);
 
     setProperty(&note, false);
-    BOOST_CHECK_EQUAL(getProperty(&note), false);
+    REQUIRE(getProperty(&note) == false);
 }
 
-BOOST_AUTO_TEST_SUITE(NoteTest)
+TEST_CASE("PowerTabDocument/Note/ConstructionAndAssignment", "")
+{
+    Note note1(4, 5);
+    note1.SetTrill(7); // add some complex symbols
+    note1.SetSlideInto(Note::slideIntoFromBelow);
 
-    BOOST_AUTO_TEST_CASE(ConstructionAndAssignment)
-    {
-        Note note1(4, 5);
-        note1.SetTrill(7); // add some complex symbols
-        note1.SetSlideInto(Note::slideIntoFromBelow);
+    Note note2;
 
-        Note note2;
+    REQUIRE(note1 != note2);
 
-        BOOST_CHECK(note1 != note2);
+    note2 = note1;
 
-        note2 = note1;
+    REQUIRE(note1 == note2);
 
-        BOOST_CHECK(note1 == note2);
+    Note note3(4, 5);
+    // add complex symbols in a different order
+    note3.SetSlideInto(Note::slideIntoFromBelow);
+    note3.SetTrill(7);
 
-        Note note3(4, 5);
-        // add complex symbols in a different order
-        note3.SetSlideInto(Note::slideIntoFromBelow);
-        note3.SetTrill(7);
+    REQUIRE(note1 == note3);
+}
 
-        BOOST_CHECK(note1 == note3);
-    }
+TEST_CASE("PowerTabDocument/Note/Serialization", "")
+{
+    Note note(4, 5);
+    note.SetTrill(7);
+    note.SetSlideOutOf(Note::slideOutOfDownwards, 3);
 
-    BOOST_AUTO_TEST_CASE(Serialization)
-    {
-        Note note(4, 5);
-        note.SetTrill(7);
-        note.SetSlideOutOf(Note::slideOutOfDownwards, 3);
+    testSerialization(note);
+}
 
-        testSerialization(note);
-    }
+TEST_CASE("PowerTabDocument/Note/Trills", "")
+{
+    Note note;
+    note.SetTrill(3);
 
-    BOOST_AUTO_TEST_CASE(Trill)
-    {
-        Note note;
-        note.SetTrill(3);
+    REQUIRE(note.HasTrill());
 
-        BOOST_CHECK(note.HasTrill());
+    uint8_t trill;
+    note.GetTrill(trill);
+    REQUIRE(trill == 3);
 
-        uint8_t trill;
-        note.GetTrill(trill);
-        BOOST_CHECK_EQUAL(trill, 3);
+    note.ClearTrill();
+    REQUIRE(!note.HasTrill());
+}
 
-        note.ClearTrill();
-        BOOST_CHECK(!note.HasTrill());
-    }
+TEST_CASE("PowerTabDocument/Note/Octave8va", "")
+{
+    testNoteProperty(&Note::SetOctave8va, &Note::IsOctave8va);
+}
 
-    BOOST_AUTO_TEST_CASE(Octave8va)
-    {
-        testNoteProperty(&Note::SetOctave8va, &Note::IsOctave8va);
-    }
+TEST_CASE("PowerTabDocument/Note/Octave15va", "")
+{
+    testNoteProperty(&Note::SetOctave15ma, &Note::IsOctave15ma);
+}
 
-    BOOST_AUTO_TEST_CASE(Octave15ma)
-    {
-        testNoteProperty(&Note::SetOctave15ma, &Note::IsOctave15ma);
-    }
+TEST_CASE("PowerTabDocument/Note/Octave8vb", "")
+{
+    testNoteProperty(&Note::SetOctave8vb, &Note::IsOctave8vb);
+}
 
-    BOOST_AUTO_TEST_CASE(Octave8vb)
-    {
-        testNoteProperty(&Note::SetOctave8vb, &Note::IsOctave8vb);
-    }
+TEST_CASE("PowerTabDocument/Note/Octave15mb", "")
+{
+    testNoteProperty(&Note::SetOctave15mb, &Note::IsOctave15mb);
+}
 
-    BOOST_AUTO_TEST_CASE(Octave15mb)
-    {
-        testNoteProperty(&Note::SetOctave15mb, &Note::IsOctave15mb);
-    }
+TEST_CASE("PowerTabDocument/Note/BendText", "")
+{
+    REQUIRE(Note::GetBendText(0) == "Standard");
+    REQUIRE(Note::GetBendText(4) == "Full");
+    REQUIRE(Note::GetBendText(8) == "2");
+    REQUIRE(Note::GetBendText(2) == "1/2");
+    REQUIRE(Note::GetBendText(9) == "2 1/4");
+    REQUIRE(Note::GetBendText(10) == "2 1/2");
+    REQUIRE(Note::GetBendText(11) == "2 3/4");
+}
 
-    BOOST_AUTO_TEST_CASE(BendText)
-    {
-        BOOST_CHECK_EQUAL(Note::GetBendText(0), "Standard");
-        BOOST_CHECK_EQUAL(Note::GetBendText(4), "Full");
-        BOOST_CHECK_EQUAL(Note::GetBendText(8), "2");
-        BOOST_CHECK_EQUAL(Note::GetBendText(2), "1/2");
-        BOOST_CHECK_EQUAL(Note::GetBendText(9), "2 1/4");
-        BOOST_CHECK_EQUAL(Note::GetBendText(10), "2 1/2");
-        BOOST_CHECK_EQUAL(Note::GetBendText(11), "2 3/4");
-    }
+TEST_CASE("PowerTabDocument/Note/ToggleSlide", "")
+{
+    Note note;
+    note.SetSlideOutOf(Note::slideOutOfShiftSlide, -2);
+    REQUIRE(note.HasShiftSlide());
 
-    BOOST_AUTO_TEST_CASE(ToggleSlide)
-    {
-        Note note;
-        note.SetSlideOutOf(Note::slideOutOfShiftSlide, -2);
-        BOOST_CHECK(note.HasShiftSlide());
-
-        note.SetSlideOutOf(Note::slideOutOfLegatoSlide, -2);
-        BOOST_CHECK(note.HasLegatoSlide());
-    }
-
-BOOST_AUTO_TEST_SUITE_END()
-
+    note.SetSlideOutOf(Note::slideOutOfLegatoSlide, -2);
+    REQUIRE(note.HasLegatoSlide());
+}

@@ -107,16 +107,16 @@ bool FloatingText::Serialize(PowerTabOutputStream & stream) const
     //------Last Checked------//
     // - Dec 7, 2004
     stream.WriteMFCString(m_text);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     stream.WriteMFCRect(m_rect);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     stream << m_flags;
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     m_fontSetting.Serialize(stream);
-    CHECK_THAT(stream.CheckState(), false);
+    PTB_CHECK_THAT(stream.CheckState(), false);
     
     return (stream.CheckState());
 }

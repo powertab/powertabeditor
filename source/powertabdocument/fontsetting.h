@@ -105,7 +105,7 @@ public:
     /// @return True if the face name was set, false if not
     bool SetFaceName(const char* faceName)                
     {
-        CHECK_THAT(faceName != NULL, false);
+        PTB_CHECK_THAT(faceName != NULL, false);
         m_faceName = faceName;
         return (true);
     }
@@ -125,7 +125,7 @@ public:
     /// @return true if the point size was set, false if not
     bool SetPointSize(int32_t pointSize)                    
     {
-        CHECK_THAT(IsValidPointSize(pointSize), false);
+        PTB_CHECK_THAT(IsValidPointSize(pointSize), false);
         m_pointSize = pointSize;
         return (true);
     }
@@ -148,7 +148,7 @@ public:
     /// @return True if the weight was set, false if not
     bool SetWeight(int32_t weight)                          
     {
-        CHECK_THAT(IsValidWeight(weight), false);
+        PTB_CHECK_THAT(IsValidWeight(weight), false);
         m_weight = weight;
         return (true);
     }
