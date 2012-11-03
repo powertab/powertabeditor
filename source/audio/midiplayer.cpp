@@ -48,6 +48,7 @@
 #include <audio/letringevent.h>
 #include <audio/bendevent.h>
 #include <audio/repeatcontroller.h>
+#include <audio/restevent.h>
 #include <audio/volumechangeevent.h>
 
 /// A MIDI event that does nothing, but is useful for triggering a position
@@ -226,6 +227,8 @@ double MidiPlayer::generateEventsForBar(
                 }
             }
 
+            eventList.push_back(new RestEvent(channel, startTime, duration,
+                                              positionIndex, systemIndex));
             startTime += duration;
             continue;
         }

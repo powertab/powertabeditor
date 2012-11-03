@@ -27,7 +27,8 @@ class MidiEvent
 public:
     static const uint8_t NUM_CHANNELS = 16;
 
-    MidiEvent(uint8_t channel, double startTime, double duration, uint32_t positionIndex, uint32_t systemIndex);
+    MidiEvent(uint8_t channel, double startTime, double duration,
+              uint32_t positionIndex, uint32_t systemIndex);
     virtual ~MidiEvent() {}
 
     bool operator<(const MidiEvent& event) const;

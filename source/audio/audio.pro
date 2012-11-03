@@ -26,7 +26,8 @@ HEADERS += \
     directionsymbol.h \
     bendevent.h \
     audio_pch.h \
-    volumechangeevent.h
+    volumechangeevent.h \
+    restevent.h
 
 SOURCES += \
     vibratoevent.cpp \
@@ -41,7 +42,8 @@ SOURCES += \
     letringevent.cpp \
     directionsymbol.cpp \
     bendevent.cpp \
-    volumechangeevent.cpp
+    volumechangeevent.cpp \
+    restevent.cpp
 
 
 
