@@ -26,7 +26,7 @@
 #include <iterator>
 #include <app/common.h>
 
-Gpx::FileSystem::FileSystem(std::vector<char> data)
+Gpx::FileSystem::FileSystem(std::vector<uint8_t> data)
 {
     data.erase(data.begin(), data.begin() + 4); // skip BCFS header
     size_t offset = 0;
@@ -42,7 +42,7 @@ Gpx::FileSystem::FileSystem(std::vector<char> data)
 
             int block = 0;
             int blockCount = 0;
-            std::vector<char> fileData;
+            std::vector<uint8_t> fileData;
 
             // read the file data
             while ((block = Util::readUInt(data, blockIndex + 4 * blockCount)) != 0)
@@ -78,7 +78,7 @@ Gpx::FileSystem Gpx::load(std::istream& stream)
     const uint32_t BCFS_HEADER = 0x53464342;
     const uint32_t BCFZ_HEADER = 0x5a464342;
 
-    std::vector<char> output;
+    std::vector<uint8_t> output;
 
     uint32_t header = input.readInt();
     //std::cerr << "Header: " << header << std::endl;

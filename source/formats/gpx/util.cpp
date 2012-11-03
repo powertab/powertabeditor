@@ -17,18 +17,13 @@
   
 #include "util.h"
 
-#include <boost/spirit/include/qi_parse.hpp>
-#include <boost/spirit/include/qi_binary.hpp>
-
-/// Converts 4 bytes starting at the given index into an integer
-uint32_t Gpx::Util::readUInt(const std::vector<char>& bytes, size_t index)
+/// Converts 4 bytes starting at the given index into an integer.
+uint32_t Gpx::Util::readUInt(const std::vector<uint8_t>& bytes, size_t index)
 {
-    uint32_t value = 0;
+    const uint32_t n1 = bytes[index];
+    const uint32_t n2 = bytes[index + 1];
+    const uint32_t n3 = bytes[index + 2];
+    const uint32_t n4 = bytes[index + 3];
 
-    std::vector<char>::const_iterator begin = bytes.begin() + index;
-
-    using namespace boost::spirit;
-    qi::parse(begin, begin + sizeof(uint32_t), qi::dword, value);
-
-    return value;
+    return n1 | (n2 << 8) | (n3 << 16) | (n4 << 24);
 }

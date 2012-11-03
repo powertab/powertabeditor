@@ -29,7 +29,7 @@ Gpx::BitStream::BitStream(std::istream& stream) :
     bytes.resize(stream.tellg());
 
     stream.seekg(0, std::ios::beg);
-    stream.read(&bytes[0], bytes.size());
+    stream.read(reinterpret_cast<char*>(&bytes[0]), bytes.size());
 }
 
 /// Reads a 32-bit integer - assumes that the stream position is exactly on the start of a byte

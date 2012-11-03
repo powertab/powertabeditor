@@ -47,7 +47,7 @@ public:
 
 private:
     uint32_t position; /// current position, in bits
-    std::vector<char> bytes; /// compressed data being read
+    std::vector<uint8_t> bytes; /// compressed data being read
     static const uint32_t BYTE_LENGTH = 8;
 };
 

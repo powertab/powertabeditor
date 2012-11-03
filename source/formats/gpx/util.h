@@ -26,7 +26,7 @@ namespace Gpx
 {
 namespace Util
 {
-    uint32_t readUInt(const std::vector<char>& bytes, size_t index);
+    uint32_t readUInt(const std::vector<uint8_t>& bytes, size_t index);
 }
 }
 

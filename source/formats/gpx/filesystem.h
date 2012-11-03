@@ -31,7 +31,7 @@ namespace Gpx
 class FileSystem
 {
 public:
-    FileSystem(std::vector<char> data);
+    FileSystem(std::vector<uint8_t> data);
 
     std::string getFileContents(const std::string& fileName) const;
 
