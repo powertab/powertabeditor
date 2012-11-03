@@ -68,9 +68,10 @@ TEST_CASE_METHOD(PositionFixture, "PowerTabDocument/Position/AddNote/NoNoteAtStr
     REQUIRE(pos->GetNoteByString(2) == newNote);
 }
 
-TEST_CASE("PowerTabDocument/Position/AddNote/NoteAlreadyAtString", "")
+TEST_CASE_METHOD(PositionFixture, "PowerTabDocument/Position/AddNote/NoteAlreadyAtString", "")
 {
-    REQUIRE_THROWS_AS(PositionFixture().pos->InsertNote(new Note(0, 0)),
+    Note note(0, 0);
+    REQUIRE_THROWS_AS(pos->InsertNote(&note),
                       std::logic_error);
 }
 
@@ -81,7 +82,9 @@ TEST_CASE("PowerTabDocument/Position/RemoveNote/NoNoteAtString", "")
 
 TEST_CASE_METHOD(PositionFixture, "PowerTabDocument/Position/RemoveNote/NoteAlreadyAtString", "")
 {
+    Note* note = pos->GetNoteByString(0);
     pos->RemoveNote(0);
+    delete note;
 
     REQUIRE(pos->GetNoteCount() == 3u);
     REQUIRE(pos->GetNoteByString(0) == NULL);

@@ -209,7 +209,9 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/InsertPosition", "")
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/RemovePosition", "")
 {
+    Position* pos = staff.GetPositionByPosition(0, 2);
     staff.RemovePosition(0, 2);
+    delete pos;
 
     // check that it was removed, and the positions were shifted accordingly
     REQUIRE(staff.GetPositionCount(0) == highPositions.size() - 1);
