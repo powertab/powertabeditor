@@ -404,11 +404,9 @@ bool Note::SetSlideOutOf(uint8_t type, int8_t steps)
     // Slide exists; update its slide out of data
     if (index != (uint32_t)-1)
     {
-        m_complexSymbolArray[index] &= ~(slideOutOfTypeMask |
-                                         slideOutOfStepsMask);
-        m_complexSymbolArray[index] |= (uint32_t)(type << 8);
-        m_complexSymbolArray[index] |= (uint32_t)(steps);
-        return (true);
+        m_complexSymbolArray[index] &= ~(slideOutOfTypeMask | slideOutOfStepsMask);
+        m_complexSymbolArray[index] |= MAKELONG(MAKEWORD(steps, type), 0);
+        return true;
     }
 
     // Construct the symbol data, then add it to the array

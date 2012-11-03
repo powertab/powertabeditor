@@ -115,5 +115,15 @@ BOOST_AUTO_TEST_SUITE(NoteTest)
         BOOST_CHECK_EQUAL(Note::GetBendText(11), "2 3/4");
     }
 
+    BOOST_AUTO_TEST_CASE(ToggleSlide)
+    {
+        Note note;
+        note.SetSlideOutOf(Note::slideOutOfShiftSlide, -2);
+        BOOST_CHECK(note.HasShiftSlide());
+
+        note.SetSlideOutOf(Note::slideOutOfLegatoSlide, -2);
+        BOOST_CHECK(note.HasLegatoSlide());
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
 
