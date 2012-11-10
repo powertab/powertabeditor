@@ -123,7 +123,7 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         parentStaff = staffPainter;
 
         // Draw the clefs
-        ClefPainter* clefPainter = new ClefPainter(currentStaffInfo, staff, musicNotationFont);
+        ClefPainter* clefPainter = new ClefPainter(staff, musicNotationFont);
         clefPainter->setPos(System::CLEF_PADDING, currentStaffInfo.getTopStdNotationLine());
         clefPainter->setParentItem(parentStaff);
 

@@ -24,12 +24,11 @@
 #include <QPainter>
 #include <QFontMetricsF>
 
-ClefPainter::ClefPainter(const StaffData& staffData, boost::shared_ptr<const Staff> staff,
+ClefPainter::ClefPainter(boost::shared_ptr<const Staff> staff,
                          const QFont& musicFont) :
-    staffInfo(staffData),
+    staff(staff),
     musicFont(musicFont)
 {
-    this->staff = staff;
     init();
 }
 
