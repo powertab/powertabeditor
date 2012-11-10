@@ -96,8 +96,8 @@ private:
 
     void drawLegato(const StaffData& currentStaffInfo);
     void drawSlides(const StaffData& currentStaffInfo);
-    void drawSlidesHelper(const StaffData& currentStaffInfo, quint8 string, bool slideUp,
-                          quint32 posIndex1, quint32 posIndex2);
+    void drawSlidesHelper(const StaffData& currentStaffInfo, quint8 string,
+                          bool slideUp, int posIndex1, int posIndex2);
 
     void drawSymbolsBelowTabStaff(const StaffData& staffInfo);
     QGraphicsItem* createPickStroke(const QString& text);

@@ -651,19 +651,24 @@ void SystemRenderer::drawSlides(const StaffData& currentStaffInfo)
                 {
                     // figure out if we're sliding up or down
                     const bool slideUp = (type == Note::slideOutOfUpwards) || (steps > 0);
-                    const size_t nextPosIndex = staff->GetIndexOfNextPosition(voice, system, currentPosition);
+                    const uint32_t curPosIndex = currentPosition->GetPosition();
+
+                    // Get the index of the next position, and also handle the
+                    // edge case where we are at the end of a system.
+                    const uint32_t nextPosIndex = std::max(staff->GetIndexOfNextPosition(voice, system, currentPosition),
+                                                           curPosIndex + 1);
 
                     drawSlidesHelper(currentStaffInfo, string, slideUp,
-                                     currentPosition->GetPosition(), nextPosIndex);
+                                     curPosIndex, nextPosIndex);
                 }
 
                 // draw any slides into the note
                 note->GetSlideInto(type);
                 if (type != Note::slideIntoNone)
                 {
-                    const quint32 currentPosIndex = currentPosition->GetPosition();
+                    const int currentPosIndex = currentPosition->GetPosition();
                     const bool slideUp = (type == Note::slideIntoFromBelow);
-                    const quint32 prevPosIndex = (currentPosIndex == 0) ? 0 : currentPosIndex - 1;
+                    const int prevPosIndex = currentPosIndex - 1;
 
                     drawSlidesHelper(currentStaffInfo, string, slideUp,
                                      prevPosIndex, currentPosIndex);
@@ -675,13 +680,19 @@ void SystemRenderer::drawSlides(const StaffData& currentStaffInfo)
 
 /// Helper function to perform the actual rendering of a slide
 /// Draws a slide on the given string, between the two position indexes
-void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo, quint8 string,
-                                      bool slideUp, quint32 posIndex1,
-                                      quint32 posIndex2)
+void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo,
+                                      quint8 string, bool slideUp, int posIndex1,
+                                      int posIndex2)
 {
     Q_ASSERT(posIndex1 <= posIndex2);
 
-    const double leftPos = system->GetPositionX(posIndex1);
+    double leftPos = system->GetPositionX(std::max(posIndex1, 0));
+    // Handle slides at the first position of a system.
+    if (posIndex1 < 0)
+    {
+        leftPos -= system->GetPositionSpacing() * -posIndex1;
+    }
+
     const double width = system->GetPositionX(posIndex2) - leftPos;
 
     double height = 5;
