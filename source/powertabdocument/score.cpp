@@ -440,6 +440,8 @@ void Score::Init()
                     TempoMarker::quarter, TempoMarker::DEFAULT_BEATS_PER_MINUTE,
                     "Moderately", TempoMarker::noTripletFeel);
     InsertTempoMarker(marker);
+
+    UpdateSystemHeight(newSystem);
 }
 
 /// Inserts a guitar into the score, and creates a corresponding staff
