@@ -60,7 +60,6 @@ void EditRehearsalSign::showHide(bool show)
         rehearsalSign.Clear();
     }
 
-    // Recompute the letters for all rehearsal signs, and redraw the score.
+    // Recompute the letters for all rehearsal signs.
     score->FormatRehearsalSigns();
-    emit triggered();
 }

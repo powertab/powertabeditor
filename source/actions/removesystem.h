@@ -24,16 +24,12 @@
 class Score;
 class System;
 
-class RemoveSystem : public QObject, public QUndoCommand
+class RemoveSystem : public QUndoCommand
 {
-    Q_OBJECT
 public:
     RemoveSystem(Score* score, quint32 index);
     void redo();
     void undo();
-
-signals:
-    void triggered();
 
 protected:
     Score* score;

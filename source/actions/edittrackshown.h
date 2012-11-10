@@ -23,17 +23,13 @@
 
 class Score;
 
-class EditTrackShown : public QObject, public QUndoCommand
+class EditTrackShown : public QUndoCommand
 {
-    Q_OBJECT
 public:
     EditTrackShown(Score* score, uint32_t trackNumber, bool trackShown);
 
     void redo();
     void undo();
-
-signals:
-    void triggered();
 
 private:
     Score* score;

@@ -24,21 +24,18 @@
 #include <widgets/mixer/mixer.h>
 
 AddGuitar::AddGuitar(Score* score, Mixer* mixer) :
+    QUndoCommand(QObject::tr("Add Guitar")),
     score(score),
     mixer(mixer)
 {
     newGuitar = boost::make_shared<Guitar>();
     newGuitar->GetTuning().SetToStandard();
-
-    setText(QObject::tr("Add Guitar"));
 }
 
 void AddGuitar::redo()
 {
     score->InsertGuitar(newGuitar);
     mixer->addInstrument(newGuitar);
-
-    emit triggered();
 }
 
 void AddGuitar::undo()
@@ -47,6 +44,4 @@ void AddGuitar::undo()
 
     score->RemoveGuitar(index);
     mixer->removeInstrument(index);
-
-    emit triggered();
 }

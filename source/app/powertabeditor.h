@@ -31,9 +31,10 @@
 #include <boost/scoped_ptr.hpp>
 #include <actions/undomanager.h>
 #include <actions/toggleproperty.h>
+#include <app/scorearea.h>
+#include <painters/caret.h>
 
 class QTabWidget;
-class ScoreArea;
 class QStackedWidget;
 class SkinManager;
 class Toolbox;
@@ -105,7 +106,8 @@ private slots:
     bool saveFileAs();
     void openPreferences();
     void openFileInformation();
-    void refreshOnUndoRedo(int);
+    void redrawSystem(int);
+    void performFullRedraw();
     bool closeCurrentTab();
     bool closeTab(int index);
     void switchTab(int index);
@@ -364,7 +366,8 @@ private:
     void performToggleProperty(const std::vector<T*>& objects, boost::function<bool (T*, bool)> setPropertyFn,
                                boost::function<bool (const T*)> getPropertyFn, const QString& propertyName)
     {
-        undoManager->push(new ToggleProperty<T>(objects, setPropertyFn, getPropertyFn, propertyName));
+        undoManager->push(new ToggleProperty<T>(objects, setPropertyFn, getPropertyFn, propertyName),
+                          getCurrentScoreArea()->getCaret()->getCurrentSystemIndex());
     }
 };
 

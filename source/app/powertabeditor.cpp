@@ -166,7 +166,8 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     // retrieve the previous directory that a file was opened/saved to (default value is home directory)
     previousDirectory = settings.value(Settings::APP_PREVIOUS_DIRECTORY, QDir::homePath()).toString();
 
-    connect(undoManager.get(), SIGNAL(indexChanged(int)), this, SLOT(refreshOnUndoRedo(int)));
+    connect(undoManager.get(), SIGNAL(redrawNeeded(int)), this, SLOT(redrawSystem(int)));
+    connect(undoManager.get(), SIGNAL(fullRedrawNeeded()), this, SLOT(performFullRedraw()));
     connect(undoManager.get(), SIGNAL(cleanChanged(bool)), this, SLOT(updateModified(bool)));
 
     createActions();
@@ -214,22 +215,28 @@ PowerTabEditor::~PowerTabEditor()
 {
 }
 
-// Refreshes the score area upon undo/redo
-void PowerTabEditor::refreshOnUndoRedo(int index)
+/// Redraws the specified system.
+void PowerTabEditor::redrawSystem(int index)
 {
-    Q_UNUSED(index);
-
     Caret* caret = getCurrentScoreArea()->getCaret();
     caret->adjustToValidLocation();
+    Score* score = caret->getCurrentScore();
 
-    // Update the data model
-    caret->getCurrentScore()->UpdateSystemHeight(caret->getCurrentSystem());
+    // Update the data model.
+    caret->getCurrentScore()->UpdateSystemHeight(score->GetSystem(index));
 
-    // Update the score area
-    getCurrentScoreArea()->updateSystem(caret->getCurrentSystemIndex());
+    // Update the score area.
+    getCurrentScoreArea()->updateSystem(index);
 
     // Update the status of all actions
     updateActions();
+}
+
+/// Redraw the entire score.
+void PowerTabEditor::performFullRedraw()
+{
+    getCurrentScoreArea()->requestFullRedraw();
+    redrawSystem(0); // Trigger a redraw - the system index doesn't matter.
 }
 
 // this is a reimplementation of QObject's eventFilter function
@@ -254,6 +261,7 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             Position *currentPosition = caret->getCurrentPosition();
             shared_ptr<Staff> currentStaff = caret->getCurrentStaff();
             shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
+            const int system = caret->getCurrentSystemIndex();
 
             // Don't allow inserting notes on top of bars (except for the first
             // bar in the system, which has position 0).
@@ -262,13 +270,15 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                 if (currentNote != NULL)
                 {
                     // if there is already a number here update it
-                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote, currentPosition, currentStaff));
+                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote, currentPosition, currentStaff),
+                                      system);
                 }
                 else
                 {
                     undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
                                                   caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
-                                                  currentStaff));
+                                                  currentStaff),
+                                      system);
                 }
 
                 return true;
@@ -1455,7 +1465,9 @@ void PowerTabEditor::shiftTabNumber(int direction)
         return;
     }
 
-    undoManager->push(new ShiftTabNumber(caret, currentPos, currentNote, shiftType, numStringsInStaff, tuning));
+    undoManager->push(new ShiftTabNumber(caret, currentPos, currentNote,
+                                         shiftType, numStringsInStaff, tuning),
+                      caret->getCurrentSystemIndex());
 }
 
 bool PowerTabEditor::moveCaretToSystem(quint32 system)
@@ -1556,12 +1568,14 @@ void PowerTabEditor::gotoRehearsalSign()
 
 void PowerTabEditor::changePositionSpacing(int offset)
 {
-    shared_ptr<System> currentSystem = getCurrentScoreArea()->getCaret()->getCurrentSystem();
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    shared_ptr<System> currentSystem = caret->getCurrentSystem();
 
     const int newSpacing = currentSystem->GetPositionSpacing() + offset;
     if (currentSystem->IsValidPositionSpacing(newSpacing))
     {
-        undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing));
+        undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing),
+                          caret->getCurrentSystemIndex());
     }
 }
 
@@ -1570,8 +1584,7 @@ void PowerTabEditor::removeCurrentSystem()
     Caret* caret = getCurrentScoreArea()->getCaret();
 
     RemoveSystem* removeSystemAct = new RemoveSystem(caret->getCurrentScore(), caret->getCurrentSystemIndex());
-    connect(removeSystemAct, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
-    undoManager->push(removeSystemAct);
+    undoManager->push(removeSystemAct, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::insertSystemAfter()
@@ -1595,12 +1608,11 @@ void PowerTabEditor::insertSystemAtEnd()
 /// Inserts a system at the specified index.
 void PowerTabEditor::performSystemInsert(size_t index)
 {
-    Score* score = getCurrentScoreArea()->getCaret()->getCurrentScore();
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Score* score = caret->getCurrentScore();
 
     AddSystem* addSystemAct = new AddSystem(score, index);
-    connect(addSystemAct, SIGNAL(triggered()), getCurrentScoreArea(),
-            SLOT(requestFullRedraw()));
-    undoManager->push(addSystemAct);
+    undoManager->push(addSystemAct, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::shiftForward()
@@ -1608,7 +1620,9 @@ void PowerTabEditor::shiftForward()
     Caret* caret = getCurrentScoreArea()->getCaret();
 
     undoManager->push(new PositionShift(caret->getCurrentSystem(),
-                                        caret->getCurrentPositionIndex(), PositionShift::SHIFT_FORWARD));
+                                        caret->getCurrentPositionIndex(),
+                                        PositionShift::SHIFT_FORWARD),
+                      caret->getCurrentSystemIndex());
 }
 
 void PowerTabEditor::shiftBackward()
@@ -1616,7 +1630,9 @@ void PowerTabEditor::shiftBackward()
     Caret* caret = getCurrentScoreArea()->getCaret();
 
     undoManager->push(new PositionShift(caret->getCurrentSystem(),
-                                        caret->getCurrentPositionIndex(), PositionShift::SHIFT_BACKWARD));
+                                        caret->getCurrentPositionIndex(),
+                                        PositionShift::SHIFT_BACKWARD),
+                      caret->getCurrentSystemIndex());
 }
 
 /// Clears the note at the caret's current position
@@ -1629,7 +1645,8 @@ void PowerTabEditor::clearNote()
     if (DeleteNote::canExecute(position, string))
     {
         undoManager->push(new DeleteNote(caret->getCurrentStaff(), caret->getCurrentVoice(),
-                                         position, string));
+                                         position, string),
+                          caret->getCurrentSystemIndex());
     }
 }
 
@@ -1653,7 +1670,8 @@ void PowerTabEditor::clearCurrentPosition()
         {
             // TODO - Leaving this here for when we support multiple voices.
             const uint32_t voice = 0;
-            undoManager->push(new DeletePosition(staff, *currentPos, voice));
+            undoManager->push(new DeletePosition(staff, *currentPos, voice),
+                              caret->getCurrentSystemIndex());
         }
     }
 
@@ -1667,7 +1685,8 @@ void PowerTabEditor::clearCurrentPosition()
         if (*bar && *bar != startBar && *bar != endBar)
         {
             undoManager->push(new DeleteBarline(caret->getCurrentScore(),
-                                                system, *bar));
+                                                system, *bar),
+                              caret->getCurrentSystemIndex());
         }
     }
 
@@ -1683,8 +1702,7 @@ void PowerTabEditor::addGuitar()
     Q_ASSERT(currentMixer != NULL);
 
     AddGuitar* addGuitar = new AddGuitar(score, currentMixer);
-    connect(addGuitar, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
-    undoManager->push(addGuitar);
+    undoManager->push(addGuitar, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 /// Edit the key signature at the caret's current location.
@@ -1717,8 +1735,7 @@ void PowerTabEditor::editKeySignature(const SystemLocation& location)
                                                         newKey.GetKeyAccidentals(),
                                                         newKey.IsShown());
 
-        connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
-        undoManager->push(action);
+        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
     }
 }
 
@@ -1748,9 +1765,7 @@ void PowerTabEditor::editTimeSignature(const SystemLocation& location)
     {
         EditTimeSignature* action = new EditTimeSignature(score, location,
                                                           dialog.getNewTimeSignature());
-
-        connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
-        undoManager->push(action);
+        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
     }
 }
 
@@ -1784,7 +1799,8 @@ void PowerTabEditor::editBarline(const SystemLocation& location)
         if (dialog.exec() == QDialog::Accepted)
         {
             undoManager->push(new ChangeBarLineType(barline, dialog.barlineType(),
-                                                    dialog.repeatCount()));
+                                                    dialog.repeatCount()),
+                              caret->getCurrentSystemIndex());
         }
     }
     else // create new barline
@@ -1797,7 +1813,8 @@ void PowerTabEditor::editBarline(const SystemLocation& location)
             undoManager->push(new AddBarline(caret->getCurrentSystem(),
                                              caret->getCurrentPositionIndex(),
                                              dialog.barlineType(),
-                                             dialog.repeatCount()));
+                                             dialog.repeatCount()),
+                              caret->getCurrentSystemIndex());
         }
     }
 }
@@ -1817,12 +1834,14 @@ void PowerTabEditor::editRepeatEnding()
         AlternateEndingDialog dialog(this, altEnding);
         if (dialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new AddAlternateEnding(currentScore, altEnding));
+            undoManager->push(new AddAlternateEnding(currentScore, altEnding),
+                              caret->getCurrentSystemIndex());
         }
     }
     else
     {
-        undoManager->push(new RemoveAlternateEnding(currentScore, altEnding));
+        undoManager->push(new RemoveAlternateEnding(currentScore, altEnding),
+                          caret->getCurrentSystemIndex());
     }
 }
 
@@ -1845,12 +1864,14 @@ void PowerTabEditor::editChordName()
         if (chordNameDialog.exec() == QDialog::Accepted)
         {
             shared_ptr<ChordText> chordText = boost::make_shared<ChordText>(caretPosition, chordName);
-            undoManager->push(new AddChordText(currentSystem, chordText, chordTextIndex));
+            undoManager->push(new AddChordText(currentSystem, chordText, chordTextIndex),
+                              caret->getCurrentSystemIndex());
         }
     }
     else // if found, remove the chord name
     {
-        undoManager->push(new RemoveChordText(currentSystem, chordTextIndex));
+        undoManager->push(new RemoveChordText(currentSystem, chordTextIndex),
+                          caret->getCurrentSystemIndex());
     }
 
 }
@@ -1858,11 +1879,12 @@ void PowerTabEditor::editChordName()
 // Add/Remove the trill at the current position
 void PowerTabEditor::editTrill()
 {
-    Note* currentNote = getCurrentScoreArea()->getCaret()->getCurrentNote();
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* currentNote = caret->getCurrentNote();
 
     if (currentNote->HasTrill())
     {
-        undoManager->push(new RemoveTrill(currentNote));
+        undoManager->push(new RemoveTrill(currentNote), caret->getCurrentSystemIndex());
     }
     else // add a new trill
     {
@@ -1870,7 +1892,7 @@ void PowerTabEditor::editTrill()
         TrillDialog trillDialog(this, currentNote, trillFret);
         if (trillDialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new AddTrill(currentNote, trillFret));
+            undoManager->push(new AddTrill(currentNote, trillFret), caret->getCurrentSystemIndex());
         }
         else
         {
@@ -1882,11 +1904,12 @@ void PowerTabEditor::editTrill()
 /// Add/Remove a tapped harmonic at the current note
 void PowerTabEditor::editTappedHarmonic()
 {
-    Note* currentNote = getCurrentScoreArea()->getCaret()->getCurrentNote();
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* currentNote = caret->getCurrentNote();
 
     if (currentNote->HasTappedHarmonic())
     {
-        undoManager->push(new RemoveTappedHarmonic(currentNote));
+        undoManager->push(new RemoveTappedHarmonic(currentNote), caret->getCurrentSystemIndex());
     }
     else // add a tapped harmonic
     {
@@ -1895,7 +1918,8 @@ void PowerTabEditor::editTappedHarmonic()
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new AddTappedHarmonic(currentNote, tappedFret));
+            undoManager->push(new AddTappedHarmonic(currentNote, tappedFret),
+                                                caret->getCurrentSystemIndex());
         }
         else
         {
@@ -1921,9 +1945,7 @@ void PowerTabEditor::editRehearsalSign()
     if (rehearsalSign.IsSet())
     {
         EditRehearsalSign* action = new EditRehearsalSign(score, rehearsalSign, false);
-        connect(action, SIGNAL(triggered()), getCurrentScoreArea(),
-                SLOT(requestFullRedraw()));
-        undoManager->push(action);
+        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
     }
     else
     {
@@ -1933,9 +1955,7 @@ void PowerTabEditor::editRehearsalSign()
         {
             EditRehearsalSign* action = new EditRehearsalSign(score, rehearsalSign, true,
                                                               dialog.description());
-            connect(action, SIGNAL(triggered()), getCurrentScoreArea(),
-                    SLOT(requestFullRedraw()));
-            undoManager->push(action);
+            undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
         }
     }
 
@@ -1972,12 +1992,14 @@ void PowerTabEditor::editTempoMarker()
                                           dialog.description(), dialog.tripletFeelType());
             }
 
-            undoManager->push(new AddTempoMarker(currentScore, marker));
+            undoManager->push(new AddTempoMarker(currentScore, marker),
+                              caret->getCurrentSystemIndex());
         }
     }
     else
     {
-        undoManager->push(new RemoveTempoMarker(currentScore, marker));
+        undoManager->push(new RemoveTempoMarker(currentScore, marker),
+                          caret->getCurrentSystemIndex());
     }
 }
 
@@ -1999,12 +2021,14 @@ void PowerTabEditor::editHammerPull()
     if (currentStaff->CanHammerOn(currentPosition, note))
     {
         undoManager->push(new ToggleProperty<Note>(notes, &Note::SetHammerOn,
-                                                   &Note::HasHammerOn, tr("Hammer On")));
+                                                   &Note::HasHammerOn, tr("Hammer On")),
+                          caret->getCurrentSystemIndex());
     }
     else if (currentStaff->CanPullOff(currentPosition, note))
     {
         undoManager->push(new ToggleProperty<Note>(notes, &Note::SetPullOff,
-                                                   &Note::HasPullOff, tr("Pull Off")));
+                                                   &Note::HasPullOff, tr("Pull Off")),
+                          caret->getCurrentSystemIndex());
     }
     else
     {
@@ -2036,7 +2060,8 @@ void PowerTabEditor::editTiedNote()
         }
     }
 
-    undoManager->push(new ToggleProperty<Note>(notes, &Note::SetTied, &Note::IsTied, "Note Tie"));
+    undoManager->push(new ToggleProperty<Note>(notes, &Note::SetTied, &Note::IsTied, "Note Tie"),
+                      caret->getCurrentSystemIndex());
 }
 
 // Updates the given Command to be checked and/or enabled, based on the results of calling
@@ -2273,7 +2298,8 @@ void PowerTabEditor::updateNoteDuration(uint8_t duration)
 
     if (!selectedPositions.empty())
     {
-        undoManager->push(new UpdateNoteDuration(selectedPositions, duration));
+        undoManager->push(new UpdateNoteDuration(selectedPositions, duration),
+                          getCurrentScoreArea()->getCaret()->getCurrentSystemIndex());
     }
 }
 
@@ -2291,7 +2317,8 @@ void PowerTabEditor::editRest(uint8_t duration)
         currentStaff->InsertPosition(caret->getCurrentVoice(), currentPosition);
     }
 
-    undoManager->push(new EditRest(currentPosition, duration));
+    undoManager->push(new EditRest(currentPosition, duration),
+                      caret->getCurrentSystemIndex());
 }
 
 void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
@@ -2331,7 +2358,8 @@ void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
         newSteps = 0;
     }
 
-    undoManager->push(new EditSlideOut(note, newSlideType, newSteps));
+    undoManager->push(new EditSlideOut(note, newSlideType, newSteps),
+                      caret->getCurrentSystemIndex());
 }
 
 void PowerTabEditor::editSlideInto(uint8_t newSlideIntoType)
@@ -2350,7 +2378,8 @@ void PowerTabEditor::editSlideInto(uint8_t newSlideIntoType)
         newSlideIntoType = Note::slideIntoNone;
     }
 
-    undoManager->push(new EditSlideInto(note, newSlideIntoType));
+    undoManager->push(new EditSlideInto(note, newSlideIntoType),
+                      caret->getCurrentSystemIndex());
 }
 
 /// Launch a dialog for the user to edit keyboard shortcuts
@@ -2378,12 +2407,14 @@ void PowerTabEditor::editDynamic()
                                                 caret->getCurrentPositionIndex(), dialog.selectedVolumeLevel(),
                                                 Dynamic::notSet);
 
-            undoManager->push(new AddDynamic(currentScore, dynamic));
+            undoManager->push(new AddDynamic(currentScore, dynamic),
+                              caret->getCurrentSystemIndex());
         }
     }
     else
     {
-        undoManager->push(new RemoveDynamic(currentScore, dynamic));
+        undoManager->push(new RemoveDynamic(currentScore, dynamic),
+                          caret->getCurrentSystemIndex());
     }
 }
 
@@ -2404,7 +2435,8 @@ void PowerTabEditor::copySelectedNotes()
 
 void PowerTabEditor::editVolumeSwell()
 {
-    Position* position = getCurrentScoreArea()->getCaret()->getCurrentPosition();
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Position* position = caret->getCurrentPosition();
 
     if (!position->HasVolumeSwell())
     {
@@ -2413,12 +2445,14 @@ void PowerTabEditor::editVolumeSwell()
         {
             undoManager->push(new AddVolumeSwell(position, dialog.getNewStartVolume(),
                                                  dialog.getNewEndVolume(),
-                                                 dialog.getNewDuration()));
+                                                 dialog.getNewDuration()),
+                              caret->getCurrentSystemIndex());
         }
     }
     else // remove volume swell
     {
-        undoManager->push(new RemoveVolumeSwell(position));
+        undoManager->push(new RemoveVolumeSwell(position),
+                          caret->getCurrentSystemIndex());
     }
 }
 
@@ -2430,7 +2464,8 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
     if (selectedPosition->HasIrregularGroupingTiming())
     {
         undoManager->push(new RemoveIrregularGrouping(caret->getCurrentStaff(),
-                                                      selectedPosition));
+                                                      selectedPosition),
+                          caret->getCurrentSystemIndex());
     }
     else
     {
@@ -2451,7 +2486,8 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
 
         if (setAsTriplet)
         {
-            undoManager->push(new AddIrregularGrouping(selectedPositions, 3, 2));
+            undoManager->push(new AddIrregularGrouping(selectedPositions, 3, 2),
+                              caret->getCurrentSystemIndex());
         }
         else
         {
@@ -2461,7 +2497,8 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
             {
                 undoManager->push(new AddIrregularGrouping(selectedPositions,
                                                            dialog.notesPlayed(),
-                                                           dialog.notesPlayedOver()));
+                                                           dialog.notesPlayedOver()),
+                                  caret->getCurrentSystemIndex());
             }
         }
     }
@@ -2469,11 +2506,10 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
 
 void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
 {
-    EditTrackShown* action = new EditTrackShown(getCurrentScoreArea()->getCaret()->getCurrentScore(),
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    EditTrackShown* action = new EditTrackShown(caret->getCurrentScore(),
                                                 trackIndex, isVisible);
-    connect(action, SIGNAL(triggered()), getCurrentScoreArea(), SLOT(requestFullRedraw()));
-
-    undoManager->push(action);
+    undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::openFileInformation()
@@ -2486,7 +2522,8 @@ void PowerTabEditor::openFileInformation()
         const PowerTabFileHeader newHeader = dialog.getNewFileHeader();
         if (newHeader != doc->GetHeader())
         {
-            undoManager->push(new EditFileInformation(doc, newHeader));
+            undoManager->push(new EditFileInformation(doc, newHeader),
+                              UndoManager::AFFECTS_ALL_SYSTEMS);
         }
     }
 }

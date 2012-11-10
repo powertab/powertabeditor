@@ -30,11 +30,11 @@ EditTrackShown::EditTrackShown(Score* score, uint32_t trackNumber,
 
     if (trackShown)
     {
-        setText(tr("Show Track"));
+        setText(QObject::tr("Show Track"));
     }
     else
     {
-        setText(tr("Hide Track"));
+        setText(QObject::tr("Hide Track"));
     }
 }
 
@@ -64,6 +64,4 @@ void EditTrackShown::toggleShown(bool show)
 
         score->ShiftFollowingSystems(system, spacingDifference);
     }
-
-    emit triggered();
 }

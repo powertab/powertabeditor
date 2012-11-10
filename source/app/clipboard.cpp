@@ -105,5 +105,6 @@ void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
     Q_ASSERT(!positions.empty());
 
     undoManager->push(new InsertNotes(caret->getCurrentSystem(), caret->getCurrentStaff(),
-                                      caret->getCurrentPositionIndex(), positions));
+                                      caret->getCurrentPositionIndex(), positions),
+                      caret->getCurrentSystemIndex());
 }

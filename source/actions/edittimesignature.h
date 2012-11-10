@@ -24,20 +24,14 @@ class Score;
 #include <powertabdocument/systemlocation.h>
 #include <powertabdocument/timesignature.h>
 
-class EditTimeSignature : public QObject, public QUndoCommand
+class EditTimeSignature : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
     EditTimeSignature(Score* score, const SystemLocation& location,
                       const TimeSignature& newTimeSig);
 
     void redo();
     void undo();
-
-signals:
-    // need to trigger a full redraw of the whole score when editing a time signature
-    void triggered();
 
 private:
     Score* score;

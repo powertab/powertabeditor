@@ -24,6 +24,7 @@
 
 EditTimeSignature::EditTimeSignature(Score* score, const SystemLocation& location,
                                      const TimeSignature& newTimeSig) :
+    QUndoCommand(QObject::tr("Edit Time Signature")),
     score(score),
     location(location),
     newTimeSig(newTimeSig)
@@ -33,8 +34,6 @@ EditTimeSignature::EditTimeSignature(Score* score, const SystemLocation& locatio
     System::BarlineConstPtr barline = system->GetBarlineAtPosition(location.getPositionIndex());
     Q_ASSERT(barline);
     oldTimeSig = barline->GetTimeSignature();
-
-    setText(QObject::tr("Edit Time Signature"));
 }
 
 void EditTimeSignature::redo()
@@ -86,6 +85,4 @@ void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
             }
         }
     }
-
-    emit triggered();
 }

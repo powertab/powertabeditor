@@ -24,6 +24,7 @@
 
 EditKeySignature::EditKeySignature(Score* score, const SystemLocation& location,
                                    uint8_t newKeyType, uint8_t newKeyAccidentals, bool isShown) :
+    QUndoCommand(QObject::tr("Edit Key Signature")),
     score(score),
     location(location),
     newKeySig(newKeyType, newKeyAccidentals)
@@ -34,20 +35,16 @@ EditKeySignature::EditKeySignature(Score* score, const SystemLocation& location,
     System::BarlineConstPtr barline = system->GetBarlineAtPosition(location.getPositionIndex());
     Q_ASSERT(barline);
     oldKeySig = barline->GetKeySignature();
-
-    setText(QObject::tr("Edit Key Signature"));
 }
 
 void EditKeySignature::redo()
 {
     switchKeySignatures(oldKeySig, newKeySig);
-    emit triggered();
 }
 
 void EditKeySignature::undo()
 {
     switchKeySignatures(newKeySig, oldKeySig);
-    emit triggered();
 }
 
 /// Switches from the old key signature to the new key signature, starting at the position

@@ -17,22 +17,18 @@
   
 #include "addsystem.h"
 
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/barline.h>
 #include <boost/make_shared.hpp>
 
+#include <powertabdocument/barline.h>
+#include <powertabdocument/score.h>
+#include <powertabdocument/system.h>
+
 AddSystem::AddSystem(Score* score, quint32 index) :
+    QUndoCommand(QObject::tr("Add System")),
     score(score),
-    index(index)
+    index(index),
+    system(boost::make_shared<System>())
 {
-    setText(QObject::tr("Add System"));
-}
-
-void AddSystem::redo()
-{
-    boost::shared_ptr<System> newSystem = boost::make_shared<System>();
-
     // Carry over the time signature and key signature from the previous system
     // if possible.
     if (index > 0)
@@ -41,11 +37,11 @@ void AddSystem::redo()
         KeySignature key = prevSystem->GetEndBar()->GetKeySignature();
         TimeSignature time = prevSystem->GetEndBar()->GetTimeSignature();
 
-        boost::shared_ptr<Barline> endBar = newSystem->GetEndBar();
+        boost::shared_ptr<Barline> endBar = system->GetEndBar();
         endBar->SetKeySignature(key);
         endBar->SetTimeSignature(time);
 
-        boost::shared_ptr<Barline> startBar = newSystem->GetStartBar();
+        boost::shared_ptr<Barline> startBar = system->GetStartBar();
         key.SetShown(true);
         startBar->SetKeySignature(key);
         startBar->SetTimeSignature(time);
@@ -57,19 +53,18 @@ void AddSystem::redo()
     {
         const Rect prevRect = score->GetSystem(index - 1)->GetRect();
 
-        Rect currentRect = newSystem->GetRect();
+        Rect currentRect = system->GetRect();
         currentRect.SetTop(prevRect.GetBottom() + Score::SYSTEM_SPACING);
-        newSystem->SetRect(currentRect);
+        system->SetRect(currentRect);
     }
+}
 
-    score->InsertSystem(newSystem, index);
-
-    emit triggered();
+void AddSystem::redo()
+{
+    score->InsertSystem(system, index);
 }
 
 void AddSystem::undo()
 {
     score->RemoveSystem(index);
-
-    emit triggered();
 }

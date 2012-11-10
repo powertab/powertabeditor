@@ -34,12 +34,41 @@ public:
     void addNewUndoStack();
     void setActiveStackIndex(int index);
     void removeStack(int index);
-    void push(QUndoCommand* cmd);
+    void push(QUndoCommand* cmd, int affectedSystem);
     void beginMacro(const QString& text);
     void endMacro();
 
+    static const int AFFECTS_ALL_SYSTEMS = -1;
+
+signals:
+    void fullRedrawNeeded();
+    void redrawNeeded(int);
+
 private:
+    void push(QUndoCommand* cmd);
+    void onSystemChanged(int affectedSystem);
+
     boost::ptr_vector<QUndoStack> undoStacks;
+};
+
+class SignalOnRedo : public QObject, public QUndoCommand
+{
+    Q_OBJECT
+public:
+    virtual void redo();
+
+signals:
+    void triggered();
+};
+
+class SignalOnUndo: public QObject, public QUndoCommand
+{
+    Q_OBJECT
+public:
+    virtual void undo();
+
+signals:
+    void triggered();
 };
 
 #endif // UNDOMANAGER_H

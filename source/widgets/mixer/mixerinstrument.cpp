@@ -267,7 +267,8 @@ void MixerInstrument::editTuning()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        PowerTabEditor::undoManager->push(new EditTuning(guitar, dialog.getNewTuning()));
+        PowerTabEditor::undoManager->push(new EditTuning(guitar, dialog.getNewTuning()),
+                                          UndoManager::AFFECTS_ALL_SYSTEMS);
     }
 }
 

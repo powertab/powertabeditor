@@ -25,18 +25,14 @@ class Barline;
 class RehearsalSign;
 class Score;
 
-class EditRehearsalSign : public QObject, public QUndoCommand
+class EditRehearsalSign : public QUndoCommand
 {
-    Q_OBJECT
 public:
     EditRehearsalSign(Score* score, RehearsalSign& rehearsalSign, bool isShown,
                       const std::string& description = "");
 
     virtual void undo();
     virtual void redo();
-
-signals:
-    void triggered();
 
 private:
     Score* score;

@@ -25,16 +25,12 @@ class Guitar;
 class Score;
 class Mixer;
 
-class AddGuitar : public QObject, public QUndoCommand
+class AddGuitar : public QUndoCommand
 {
-    Q_OBJECT
 public:
     AddGuitar(Score* score, Mixer* mixer);
     void redo();
     void undo();
-
-signals:
-    void triggered();
 
 private:
     Score* score;
