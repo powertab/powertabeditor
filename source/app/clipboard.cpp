@@ -46,6 +46,11 @@ const QString PTB_MIME_TYPE = "application/ptb";
 void Clipboard::copySelection(const std::vector<Position*>& selectedPositions,
                               const Tuning& tuning)
 {
+    if (selectedPositions.empty())
+    {
+        return;
+    }
+
     // serialize the notes to a string
     std::ostringstream ss(std::ios::binary);
     PowerTabOutputStream outputStream(ss);
@@ -96,6 +101,8 @@ void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
 
     std::vector<Position*> positions;
     inputStream.ReadVector(positions, PowerTabFileHeader::FILEVERSION_CURRENT);
+
+    Q_ASSERT(!positions.empty());
 
     undoManager->push(new InsertNotes(caret->getCurrentSystem(), caret->getCurrentStaff(),
                                       caret->getCurrentPositionIndex(), positions));
