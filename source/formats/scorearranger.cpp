@@ -139,6 +139,10 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
         }
     }
 
+    // Show the final barline.
+    score->GetSystem(score->GetSystemCount() - 1)->GetEndBar()->SetType(
+                Barline::doubleBarFine);
+
     // calculate the beaming for all notes, and calculate the layout of the systems
     for (size_t i = 0; i < score->GetSystemCount(); i++)
     {
