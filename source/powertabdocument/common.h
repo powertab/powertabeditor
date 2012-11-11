@@ -47,6 +47,7 @@ void deepCopy(const std::vector<boost::shared_ptr<T> >& src,
               std::vector<boost::shared_ptr<T> >& dest)
 {
     dest.clear();
+    dest.reserve(src.size());
     
     std::transform(src.begin(), src.end(),
                    std::back_inserter(dest),

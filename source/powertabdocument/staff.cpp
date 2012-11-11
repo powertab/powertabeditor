@@ -123,6 +123,7 @@ const Staff& Staff::operator=(const Staff& staff)
 
         for (size_t i = 0; i < staff.positionArrays.size(); i++)
         {
+            positionArrays[i].reserve(staff.positionArrays[i].size());
             // clone each position array
             std::transform(staff.positionArrays[i].begin(),
                            staff.positionArrays[i].end(),

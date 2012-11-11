@@ -121,6 +121,7 @@ const Position& Position::operator=(const Position& position)
             delete *i;
 
         m_noteArray.clear();
+        m_noteArray.reserve(position.m_noteArray.size());
 
         // clone the note array
         std::transform(position.m_noteArray.begin(), position.m_noteArray.end(),
