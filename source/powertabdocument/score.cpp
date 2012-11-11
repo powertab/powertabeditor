@@ -144,7 +144,73 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     return true;
 }
 
-/// Removes the system at the specified index
+namespace
+{
+
+template <class Symbol>
+struct IsSymbolInSystem : std::unary_function<const Symbol&, bool>
+{
+    IsSymbolInSystem(uint32_t systemIndex) :
+        systemIndex(systemIndex)
+    {
+    }
+
+    bool operator()(const Symbol& symbol) const
+    {
+        return symbol->GetSystem() == systemIndex;
+    }
+
+    const uint32_t systemIndex;
+};
+
+/// Helper for GetAlternateEndingsInSystem, GetTempoMarkersInSystem, etc.
+template <class Symbol>
+void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& symbolList, const uint32_t systemIndex)
+{
+    output.clear();
+
+    // Use std::remove_copy_if since std::copy_if is only in C++11.
+    std::remove_copy_if(symbolList.begin(), symbolList.end(),
+                        std::back_inserter(output),
+                        std::not1(IsSymbolInSystem<Symbol>(systemIndex)));
+}
+
+/// Removes the symbols in the specified system, and moves lower symbols up by
+/// one system.
+template <class Symbol>
+void RemoveSymbolsInSystem(std::vector<Symbol>& symbolList, const uint32_t systemIndex)
+{
+    symbolList.erase(std::remove_if(symbolList.begin(), symbolList.end(),
+                                    IsSymbolInSystem<Symbol>(systemIndex)),
+                     symbolList.end());
+
+    // Shift following symbols up by one system.
+    BOOST_FOREACH(const Symbol& symbol, symbolList)
+    {
+        if (symbol->GetSystem() > systemIndex)
+        {
+            symbol->SetSystem(symbol->GetSystem() - 1);
+        }
+    }
+}
+
+/// Shifts symbols down by one system if they are either in or are below the
+/// specified system.
+template <class Symbol>
+void ShiftFollowingSymbols(std::vector<Symbol>& symbolList, const uint32_t systemIndex)
+{
+    BOOST_FOREACH(const Symbol& symbol, symbolList)
+    {
+        if (symbol->GetSystem() >= systemIndex)
+        {
+            symbol->SetSystem(symbol->GetSystem() + 1);
+        }
+    }
+}
+}
+
+/// Removes the system at the specified index. This will also remove any tempo
+/// markers, etc. that are associated with the system.
 bool Score::RemoveSystem(size_t index)
 {
     PTB_CHECK_THAT(IsValidSystemIndex(index), false);
@@ -155,6 +221,11 @@ bool Score::RemoveSystem(size_t index)
     ShiftFollowingSystems(system, -(system->GetRect().GetHeight() + SYSTEM_SPACING));
 
     m_systemArray.erase(m_systemArray.begin() + index);
+
+    // TODO - handle Guitar In symbols.
+    RemoveSymbolsInSystem(m_tempoMarkerArray, index);
+    RemoveSymbolsInSystem(m_dynamicArray, index);
+    RemoveSymbolsInSystem(m_alternateEndingArray, index);
 
     return true;
 }
@@ -181,6 +252,11 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
                        boost::bind(&Guitar::IsShown, _1));
         system->Init(staffSizes, visibleStaves, false);
     }
+
+    // TODO - handle Guitar In symbols.
+    ShiftFollowingSymbols(m_tempoMarkerArray, index);
+    ShiftFollowingSymbols(m_dynamicArray, index);
+    ShiftFollowingSymbols(m_alternateEndingArray, index);
 
     system->CalculateHeight();
     ShiftFollowingSystems(system, system->GetRect().GetHeight() + SYSTEM_SPACING);
@@ -293,21 +369,6 @@ int Score::FindSystemIndex(const SystemConstPtr& system) const
     return std::distance(m_systemArray.begin(), result);
 }
 
-// Helper function for GetAlternateEndingsInSystem, GetTempoMarkersInSystem, etc
-template<class Symbol>
-void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& symbolList, const uint32_t systemIndex)
-{
-    output.clear();
-
-    for (size_t i = 0; i < symbolList.size(); i++)
-    {
-        Symbol symbol = symbolList.at(i);
-        if (symbol->GetSystem() == systemIndex)
-        {
-            output.push_back(symbol);
-        }
-    }
-}
 
 /// Finds all of the tempo markers that are in the given system
 void Score::GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, SystemConstPtr system) const

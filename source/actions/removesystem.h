@@ -19,22 +19,32 @@
 #define REMOVESYSTEM_H
 
 #include <QUndoCommand>
+
+#include <vector>
+#include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 
+class AlternateEnding;
+class Dynamic;
 class Score;
 class System;
+class TempoMarker;
 
 class RemoveSystem : public QUndoCommand
 {
 public:
-    RemoveSystem(Score* score, quint32 index);
+    RemoveSystem(Score* score, uint32_t index);
     void redo();
     void undo();
 
 protected:
     Score* score;
-    boost::shared_ptr<System> systemCopy;
-    const quint32 index;
+    const uint32_t index;
+    boost::shared_ptr<System> system;
+
+    std::vector<boost::shared_ptr<TempoMarker> > tempoMarkers;
+    std::vector<boost::shared_ptr<Dynamic> > dynamics;
+    std::vector<boost::shared_ptr<AlternateEnding> > altEndings;
 };
 
 #endif // REMOVESYSTEM_H

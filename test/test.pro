@@ -47,7 +47,8 @@ SOURCES += \
     powertabdocument/complexsymbolarray_test.cpp \
     powertabdocument/common_test.cpp \
     powertabdocument/chorddiagram_test.cpp \
-    powertabdocument/alternateending_test.cpp
+    powertabdocument/alternateending_test.cpp \
+    actions/test_removesystem.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \
