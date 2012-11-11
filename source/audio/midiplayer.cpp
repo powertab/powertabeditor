@@ -532,7 +532,10 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
             const double speedShiftFactor = 100.0 / playbackSpeed; // slow down or speed up playback
             mutex.unlock();
 
-            usleep(1000 * sleepDuration * speedShiftFactor);
+            if (sleepDuration)
+            {
+                usleep(1000 * sleepDuration * speedShiftFactor);
+            }
         }
         else // last note
         {
