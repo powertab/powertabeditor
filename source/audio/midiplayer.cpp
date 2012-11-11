@@ -572,7 +572,7 @@ double MidiPlayer::getCurrentTempo(const SystemLocation& location) const
     Score::TempoMarkerPtr tempoMarker = getCurrentTempoMarker(location);
 
     double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
-    double beatType = TempoMarker::DEFAULT_BEAT_TYPE;
+    uint8_t beatType = TempoMarker::DEFAULT_BEAT_TYPE;
 
     if (tempoMarker)
     {
@@ -582,8 +582,23 @@ double MidiPlayer::getCurrentTempo(const SystemLocation& location) const
         beatType = tempoMarker->GetBeatType();
     }
 
+    // Convert the values in the TempoMarker::BeatType enum to a factor that
+    // will scale the bpm value to be in terms of quarter notes.
+    double factor = 2.0;
+    if (beatType % 2 == 0)
+    {
+        factor /= std::max(1.0, static_cast<double>(beatType));
+    }
+    else
+    {
+        factor /= std::max(1.0, static_cast<double>(beatType - 1));
+        factor *= 1.5;
+    }
+
+    Q_ASSERT(factor > 0);
+
     // convert bpm to millisecond duration
-    return (60.0 / bpm * 1000.0 * (TempoMarker::quarter / beatType));
+    return (60.0 / (bpm * factor) * 1000.0);
 }
 
 double MidiPlayer::calculateNoteDuration(uint32_t systemIndex,
