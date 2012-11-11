@@ -690,10 +690,16 @@ void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo,
     // Handle slides at the first position of a system.
     if (posIndex1 < 0)
     {
-        leftPos -= system->GetPositionSpacing() * -posIndex1;
+        leftPos -= system->GetPositionSpacing();
     }
 
-    const double width = system->GetPositionX(posIndex2) - leftPos;
+    const int numPositions = system->GetPositionCount();
+    double rightPos = system->GetPositionX(std::min(posIndex2, numPositions));
+    if (posIndex2 > numPositions)
+    {
+        rightPos += system->GetPositionSpacing();
+    }
+    const double width = rightPos - leftPos;
 
     double height = 5;
     double y = (currentStaffInfo.getTabLineHeight(string + 1) + currentStaffInfo.getTabLineHeight(string)) / 2;
