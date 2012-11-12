@@ -469,20 +469,12 @@ bool Staff::IsOnlyPositionInBar(const Position* position, boost::shared_ptr<cons
 
 bool Staff::CanHammerOn(const Position* position, const Note* note) const
 {
-    // Cannot hammer and slide at the same time
-    if (note->HasSlideOutOf())
-        return false;
-
     // In order to perform a hammer-on, the note must be lower than the next
     return CompareWithNote(NextNote, position, note, std::less<uint8_t>());
 }
 
 bool Staff::CanPullOff(const Position* position, const Note* note) const
 {
-    // Cannot hammer and slide at the same time
-    if (note->HasSlideOutOf())
-        return false;
-
     // In order to perform a pull-off, the note must be higher than the next
     return CompareWithNote(NextNote, position, note, std::greater<uint8_t>());
 }
@@ -499,10 +491,6 @@ bool Staff::CanTieNote(const Position* position, const Note* note) const
 /// The next note must exist and be a different fret number
 bool Staff::CanSlideBetweenNotes(const Position* position, const Note* note) const
 {
-    // Cannot hammer/pull and slide at the same time
-    if (note->HasHammerOn() || note->HasPullOff())
-        return false;
-
     return CompareWithNote(NextNote, position, note, std::not_equal_to<uint8_t>());
 }
 

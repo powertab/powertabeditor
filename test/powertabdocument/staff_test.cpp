@@ -121,7 +121,7 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/LastNoteCantB
     REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
 }
 
-TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/CantHammeronIfSlide", "")
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/HammeronReplacesSlide", "")
 {
     // Add a slide between two notes.
     Position* pos = highPositions.at(2);
@@ -130,10 +130,10 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/CantHammeronI
 
     REQUIRE(note->HasSlideOutOf());
 
-    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
+    REQUIRE(staff.CanHammerOn(pos, pos->GetNote(0)));
 }
 
-TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanPullOff/CantPulloffIfSlide", "")
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanPullOff/PulloffReplacesSlide", "")
 {
     // Add a slide between two notes.
     Position* pos = highPositions.at(3);
@@ -142,7 +142,7 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanPullOff/CantPulloffIfS
 
     REQUIRE(note->HasSlideOutOf());
 
-    REQUIRE(!staff.CanPullOff(pos, pos->GetNote(0)));
+    REQUIRE(staff.CanPullOff(pos, pos->GetNote(0)));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/DifferentFretOkay", "")
@@ -166,24 +166,24 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/Last
     REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
 }
 
-TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/CantSlideIfHammeron", "")
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/SlideReplacesHammeron", "")
 {
     // Add a hammeron between two notes.
     Position* pos = highPositions.at(3);
     Note *note = pos->GetNote(0);
     note->SetHammerOn(true);
 
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == true);
 }
 
-TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/CantSlideIfPulloff", "")
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/SlideReplacesPulloff", "")
 {
     // Add a hammeron between two notes.
     Position* pos = highPositions.at(2);
     Note *note = pos->GetNote(0);
     note->SetPullOff(true);
 
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == true);
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetSlideSteps/Calculation", "")

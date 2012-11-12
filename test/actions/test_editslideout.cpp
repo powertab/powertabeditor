@@ -40,3 +40,59 @@ TEST_CASE("Actions/EditSlideOut", "")
     REQUIRE(action.text() == "Legato Slide");
 }
 
+TEST_CASE("Actions/EditSlideOut/ReplaceHammeron", "")
+{
+    // Setup a note with a hammer on.
+    Note note;
+    note.SetHammerOn(true);
+    REQUIRE(note.HasHammerOn());
+
+    // Make a basic slide out of action.
+    uint8_t slideType = Note::slideOutOfNone;
+    int8_t steps = 0;
+    EditSlideOut action(&note, Note::slideOutOfShiftSlide, 5);
+
+    // Do the action.
+    action.redo();
+    note.GetSlideOutOf(slideType, steps);
+    REQUIRE(slideType == Note::slideOutOfShiftSlide);
+    REQUIRE(steps == 5);
+    REQUIRE(!note.HasHammerOn());
+
+    action.undo();
+    note.GetSlideOutOf(slideType, steps);
+    REQUIRE(slideType == Note::slideOutOfNone);
+    REQUIRE(steps == 0);
+    REQUIRE(note.HasHammerOn());
+
+    REQUIRE(action.text() == "Shift Slide");
+}
+
+TEST_CASE("Actions/EditSlideOut/ReplacePulloff", "")
+{
+    // Setup a note with a hammer on.
+    Note note;
+    note.SetPullOff(true);
+    REQUIRE(note.HasPullOff());
+
+    // Make a basic slide out of action.
+    uint8_t slideType = Note::slideOutOfNone;
+    int8_t steps = 0;
+    EditSlideOut action(&note, Note::slideOutOfDownwards, 5);
+
+    // Do the action.
+    action.redo();
+    note.GetSlideOutOf(slideType, steps);
+    REQUIRE(slideType == Note::slideOutOfDownwards);
+    REQUIRE(steps == 5);
+    REQUIRE(!note.HasPullOff());
+
+    action.undo();
+    note.GetSlideOutOf(slideType, steps);
+    REQUIRE(slideType == Note::slideOutOfNone);
+    REQUIRE(steps == 0);
+    REQUIRE(note.HasPullOff());
+
+    REQUIRE(action.text() == "Slide Out Of Downwards");
+}
+

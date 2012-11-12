@@ -127,6 +127,7 @@
 #include <actions/editfileinformation.h>
 #include <actions/removetempomarker.h>
 #include <actions/addtempomarker.h>
+#include <actions/edithammerpull.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -2020,14 +2021,12 @@ void PowerTabEditor::editHammerPull()
     
     if (currentStaff->CanHammerOn(currentPosition, note))
     {
-        undoManager->push(new ToggleProperty<Note>(notes, &Note::SetHammerOn,
-                                                   &Note::HasHammerOn, tr("Hammer On")),
+        undoManager->push(new EditHammerPull(note, EditHammerPull::hammerOn),
                           caret->getCurrentSystemIndex());
     }
     else if (currentStaff->CanPullOff(currentPosition, note))
     {
-        undoManager->push(new ToggleProperty<Note>(notes, &Note::SetPullOff,
-                                                   &Note::HasPullOff, tr("Pull Off")),
+        undoManager->push(new EditHammerPull(note, EditHammerPull::pullOff),
                           caret->getCurrentSystemIndex());
     }
     else

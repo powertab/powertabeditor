@@ -15,29 +15,34 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef EDITSLIDEOUT_H
-#define EDITSLIDEOUT_H
+#ifndef EDITHAMMERPULL_H
+#define EDITHAMMERPULL_H
 
 #include <QUndoCommand>
 
 class Note;
 
-class EditSlideOut : public QUndoCommand
+class EditHammerPull : public QUndoCommand
 {
 public:
-    EditSlideOut(Note* note, quint8 slideType, qint8 steps);
+    enum HammerPullFlags
+    {
+        hammerOn = 0x01,
+        pullOff  = 0x02
+    };
+
+    EditHammerPull(Note* note, HammerPullFlags hammer);
     void redo();
     void undo();
 
 protected:
     Note* note;
-    const quint8 newSlideType;
-    quint8 oldSlideType;
-    const qint8 newSteps;
-    qint8 oldSteps;
 
-    bool oldHammerOn;
-    bool oldPullOff;
+    HammerPullFlags hammer;
+    bool set;
+
+    uint8_t oldSlideType;
+    int8_t oldSteps;
 };
 
-#endif // EDITSLIDEOUT_H
+#endif // EDITHAMMERPULL_H

@@ -48,7 +48,8 @@ SOURCES += \
     powertabdocument/common_test.cpp \
     powertabdocument/chorddiagram_test.cpp \
     powertabdocument/alternateending_test.cpp \
-    actions/test_removesystem.cpp
+    actions/test_removesystem.cpp \
+    actions/test_edithammerpull.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

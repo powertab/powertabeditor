@@ -49,7 +49,8 @@ HEADERS += \
     deletenote.h \
     editfileinformation.h \
     removetempomarker.h \
-    addtempomarker.h
+    addtempomarker.h \
+    edithammerpull.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -92,4 +93,5 @@ SOURCES += \
     deletenote.cpp \
     editfileinformation.cpp \
     removetempomarker.cpp \
-    addtempomarker.cpp
+    addtempomarker.cpp \
+    edithammerpull.cpp

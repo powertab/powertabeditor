@@ -22,7 +22,9 @@
 EditSlideOut::EditSlideOut(Note* note, quint8 slideType, qint8 steps) :
     note(note),
     newSlideType(slideType),
-    newSteps(steps)
+    newSteps(steps),
+    oldHammerOn(note->HasHammerOn()),
+    oldPullOff(note->HasPullOff())
 {
     Q_ASSERT(Note::IsValidSlideOutOfType(slideType));
 
@@ -46,10 +48,20 @@ EditSlideOut::EditSlideOut(Note* note, quint8 slideType, qint8 steps) :
 
 void EditSlideOut::redo()
 {
+    if (note->HasHammerOn())
+        note->SetHammerOn(false);
+    if (note->HasPullOff())
+        note->SetPullOff(false);
+
     note->SetSlideOutOf(newSlideType, newSteps);
 }
 
 void EditSlideOut::undo()
 {
     note->SetSlideOutOf(oldSlideType, oldSteps);
+
+    if (oldHammerOn)
+        note->SetHammerOn(true);
+    if (oldPullOff)
+        note->SetPullOff(true);
 }
