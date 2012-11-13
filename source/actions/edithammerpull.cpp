@@ -21,8 +21,7 @@
 
 EditHammerPull::EditHammerPull(Note* note, HammerPullFlags hammer) :
     note(note),
-    hammer(hammer),
-    set(set)
+    hammer(hammer)
 {
     QString undoText;
 

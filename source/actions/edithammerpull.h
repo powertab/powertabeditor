@@ -39,7 +39,6 @@ protected:
     Note* note;
 
     HammerPullFlags hammer;
-    bool set;
 
     uint8_t oldSlideType;
     int8_t oldSteps;
