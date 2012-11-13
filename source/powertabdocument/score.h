@@ -26,6 +26,7 @@ class Dynamic;
 class AlternateEnding;
 class System;
 class SystemLocation;
+class Tuning;
 
 /// Stores and renders a score
 // Note: This is a class used to make life easier - it's not a class that exists in PTE v1.7
@@ -83,6 +84,8 @@ public:
 
     bool InsertGuitar(GuitarPtr guitar);
     bool RemoveGuitar(size_t index);
+
+    void SetTuning(GuitarPtr guitar, const Tuning& newTuning);
 
 // Chord Diagram Functions
     bool IsValidChordDiagramIndex(uint32_t index) const;

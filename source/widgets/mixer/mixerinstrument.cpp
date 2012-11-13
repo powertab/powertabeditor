@@ -24,6 +24,7 @@
 #include <QDial>
 #include <QComboBox>
 #include <QLineEdit>
+#include <QMessageBox>
 
 #include <widgets/clickablelabel.h>
 
@@ -37,10 +38,11 @@
 
 using boost::shared_ptr;
 
-MixerInstrument::MixerInstrument(shared_ptr<Guitar> instrument,
+MixerInstrument::MixerInstrument(Score* score, shared_ptr<Guitar> instrument,
                                  shared_ptr<TuningDictionary> tuningDictionary,
                                  QWidget *parent) :
     QWidget(parent),
+    score(score),
     guitar(instrument),
     tuningDictionary(tuningDictionary)
 {
@@ -267,8 +269,21 @@ void MixerInstrument::editTuning()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        PowerTabEditor::undoManager->push(new EditTuning(guitar, dialog.getNewTuning()),
-                                          UndoManager::AFFECTS_ALL_SYSTEMS);
+        Tuning newTuning = dialog.getNewTuning();
+        if (EditTuning::canChangeTuning(score, guitar, newTuning))
+        {
+            PowerTabEditor::undoManager->push(new EditTuning(score, guitar, newTuning),
+                                              UndoManager::AFFECTS_ALL_SYSTEMS);
+        }
+        else
+        {
+            // TODO - offer an option to e.g. automatically delete or shift
+            // notes, etc.
+            QMessageBox msg;
+            msg.setText(QObject::tr("Cannot safely change the tuning of this guitar."));
+            msg.exec();
+            return;
+        }
     }
 }
 

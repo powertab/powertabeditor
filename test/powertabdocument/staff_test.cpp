@@ -361,3 +361,12 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CalculateClef", "")
 
     REQUIRE(staff.GetClef() == Staff::BASS_CLEF);
 }
+
+TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/IsValidTablatureStaffType", "")
+{
+    REQUIRE(staff.IsValidTablatureStaffType(6));
+
+    highPositions.at(0)->InsertNote(new Note(5, 3));
+    REQUIRE(staff.IsValidTablatureStaffType(6));
+    REQUIRE(!staff.IsValidTablatureStaffType(5));
+}

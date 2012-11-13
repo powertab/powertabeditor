@@ -32,12 +32,13 @@ class QComboBox;
 class QLineEdit;
 class ClickableLabel;
 class TuningDictionary;
+class Score;
 
 class MixerInstrument : public QWidget
 {
     Q_OBJECT
 public:
-    MixerInstrument(boost::shared_ptr<Guitar> instrument,
+    MixerInstrument(Score* score, boost::shared_ptr<Guitar> instrument,
                     boost::shared_ptr<TuningDictionary> tuningDictionary,
                     QWidget *parent);
 
@@ -67,6 +68,7 @@ private:
 
     ClickableLabel* tuningLabel;
 
+    Score* score;
     boost::shared_ptr<Guitar> guitar;
     boost::shared_ptr<TuningDictionary> tuningDictionary;
 

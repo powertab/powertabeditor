@@ -18,14 +18,16 @@
 #include "mixer.h"
 
 #include <QVBoxLayout>
+#include <boost/make_shared.hpp>
 
 #include "mixerinstrument.h"
 
 using boost::shared_ptr;
 
-Mixer::Mixer(boost::shared_ptr<TuningDictionary> tuningDictionary,
+Mixer::Mixer(Score* score, boost::shared_ptr<TuningDictionary> tuningDictionary,
              QFrame *parent) :
     QFrame(parent),
+    score(score),
     tuningDictionary(tuningDictionary)
 {
     setFrameStyle(QFrame::StyledPanel);
@@ -39,7 +41,8 @@ Mixer::Mixer(boost::shared_ptr<TuningDictionary> tuningDictionary,
 void Mixer::addInstrument(shared_ptr<Guitar> guitar)
 {
     boost::shared_ptr<MixerInstrument> channel(
-                new MixerInstrument(guitar, tuningDictionary, this));
+                boost::make_shared<MixerInstrument>(score, guitar,
+                                                    tuningDictionary, this));
     layout->addWidget(channel.get());
 
     channelList.push_back(channel);

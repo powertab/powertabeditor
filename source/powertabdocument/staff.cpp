@@ -238,9 +238,8 @@ bool Staff::SetClef(uint8_t clef)
 /// @return True if the tablature staff type was set, false if not
 bool Staff::SetTablatureStaffType(uint8_t type)
 {
-    //------Last Checked------//
-    // - Jan 5, 2005
     PTB_CHECK_THAT(Tuning::IsValidStringCount(type), false);
+    PTB_CHECK_THAT(IsValidTablatureStaffType(type), false);
 
     m_data &= ~tablatureStaffTypeMask;
     m_data |= type;
@@ -278,13 +277,36 @@ uint8_t Staff::GetClef() const
     return (m_data & clefMask) >> 4;
 }
 
-/// Determines if a Tablature Staff Type is valid
-/// @param type Tablature staff type to validate
-/// @return True if the tablature staff type is valid, false if not
-bool Staff::IsValidTablatureStaffType(uint8_t type)
+/// Determines if a Tablature Staff Type is valid. In addition to checking
+/// whether the number of strings is in range, it will check if all notes in
+/// the staff are within the range.
+/// @param type Tablature staff type to validate.
+/// @return True if the tablature staff type is valid, false if not.
+bool Staff::IsValidTablatureStaffType(uint8_t type) const
 {
-    return (type >= MIN_TABULATURE_STAFF_TYPE &&
-            type <= MAX_TABULATURE_STAFF_TYPE);
+    if (type < MIN_TABULATURE_STAFF_TYPE || type > MAX_TABULATURE_STAFF_TYPE)
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < positionArrays.size(); ++i)
+    {
+        const std::vector<Position*>& voice = positionArrays[i];
+        for (size_t j = 0; j < voice.size(); ++j)
+        {
+            const Position* pos = voice.at(j);
+            for (size_t m = 0; m < pos->GetNoteCount(); ++m)
+            {
+                const Note* note = pos->GetNote(m);
+                if (note->GetString() >= type)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 /// Gets the tablature staff type (3-7 strings)

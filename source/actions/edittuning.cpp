@@ -18,8 +18,15 @@
 #include "edittuning.h"
 
 #include <powertabdocument/guitar.h>
+#include <powertabdocument/note.h>
+#include <powertabdocument/position.h>
+#include <powertabdocument/score.h>
+#include <powertabdocument/staff.h>
+#include <powertabdocument/system.h>
 
-EditTuning::EditTuning(boost::shared_ptr<Guitar> guitar, const Tuning& newTuning) :
+EditTuning::EditTuning(Score* score, boost::shared_ptr<Guitar> guitar,
+                       const Tuning& newTuning) :
+    score(score),
     guitar(guitar),
     newTuning(newTuning),
     oldTuning(guitar->GetTuning())
@@ -29,10 +36,37 @@ EditTuning::EditTuning(boost::shared_ptr<Guitar> guitar, const Tuning& newTuning
 
 void EditTuning::redo()
 {
-    guitar->SetTuning(newTuning);
+    score->SetTuning(guitar, newTuning);
 }
 
 void EditTuning::undo()
 {
-    guitar->SetTuning(oldTuning);
+    score->SetTuning(guitar, oldTuning);
+}
+
+/// Determines whether the new tuning is safe to use (e.g. there aren't notes on
+/// the strings that would be deleted). Checks all of the notes played by the
+/// guitar.
+bool EditTuning::canChangeTuning(const Score* score,
+                                 boost::shared_ptr<Guitar> guitar,
+                                 const Tuning& newTuning)
+{
+    if (guitar->GetTuning().GetStringCount() <= newTuning.GetStringCount())
+    {
+        return true;
+    }
+
+    const uint32_t staffIndex = guitar->GetNumber();
+    const size_t numStrings = newTuning.GetStringCount();
+
+    for (size_t i = 0; i < score->GetSystemCount(); ++i)
+    {
+        System::StaffConstPtr staff = score->GetSystem(i)->GetStaff(staffIndex);
+        if (!staff->IsValidTablatureStaffType(numStrings))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }

@@ -113,7 +113,7 @@ public:
     void CalculateClef(const Tuning& tuning);
 
     // Tablature Staff Type Functions
-    static bool IsValidTablatureStaffType(uint8_t type);
+    bool IsValidTablatureStaffType(uint8_t type) const;
     bool SetTablatureStaffType(uint8_t type);
     uint8_t GetTablatureStaffType() const;
 

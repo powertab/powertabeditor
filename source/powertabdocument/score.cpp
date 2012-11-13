@@ -29,6 +29,7 @@
 #include "systemlocation.h"
 #include "common.h"
 #include "layout.h"
+#include "tuning.h"
 
 #include <map>
 #include <bitset>
@@ -540,6 +541,22 @@ bool Score::RemoveGuitar(size_t index)
     }
 
     return true;
+}
+
+/// Updates the tuning for the guitar, updates the associated staves, and
+/// reformats the score.
+void Score::SetTuning(Score::GuitarPtr guitar, const Tuning& newTuning)
+{
+    guitar->SetTuning(newTuning);
+    const size_t numStrings = newTuning.GetStringCount();
+    const size_t staffIndex = guitar->GetNumber();
+
+    for (size_t i = 0; i < m_systemArray.size(); ++i)
+    {
+        SystemPtr system = m_systemArray[i];
+        system->GetStaff(staffIndex)->SetTablatureStaffType(numStrings);
+        UpdateSystemHeight(system);
+    }
 }
 
 void Score::MergeScore(const Score &otherScore)

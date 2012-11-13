@@ -29,12 +29,14 @@ class MixerInstrument;
 class Guitar;
 class QVBoxLayout;
 class TuningDictionary;
+class Score;
 
 class Mixer : public QFrame
 {
     Q_OBJECT
 public:
-    Mixer(boost::shared_ptr<TuningDictionary> tuningDictionary,
+    Mixer(Score* score,
+          boost::shared_ptr<TuningDictionary> tuningDictionary,
           QFrame *parent = 0);
 
     void addInstrument(boost::shared_ptr<Guitar> guitar);
@@ -46,6 +48,7 @@ signals:
     void visibilityToggled(uint32_t trackNumber, bool isVisible);
 
 private:
+    Score* score;
     std::vector<boost::shared_ptr<MixerInstrument> > channelList;
     boost::shared_ptr<TuningDictionary> tuningDictionary;
     QVBoxLayout* layout;
