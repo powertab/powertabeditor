@@ -63,7 +63,7 @@ void StdNotationPainter::refreshAccidental(bool forceAccidental)
             keySignature.HasNoKeyAccidentals();
 
     const QString noteText = QString::fromStdString(
-                midi::GetMidiNoteText(pitch, usesSharps,
+                midi::GetMidiNoteText(pitch, keySignature.IsMinorKey(), usesSharps,
                                       keySignature.NumberOfAccidentals(),
                                       forceAccidental));
 

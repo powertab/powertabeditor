@@ -901,7 +901,7 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
 {
     const uint8_t pitch = note->GetPitch(tuning);
     
-    const std::string noteText = midi::GetMidiNoteText(pitch, 
+    const std::string noteText = midi::GetMidiNoteText(pitch, activeKeySig.IsMinorKey(),
             activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals(),
             activeKeySig.NumberOfAccidentals());
 

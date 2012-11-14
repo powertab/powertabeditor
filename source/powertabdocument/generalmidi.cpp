@@ -81,14 +81,20 @@ namespace midi
         return (note <= MAX_MIDI_NOTE);
     }
 
-    /// Helper function to find the index of a key, for use with the pitchClasses and keyText arrays
-    int GetKeyIndex(bool usesSharps, uint8_t numAccidentals)
+    /// Helper function to find the index of a key, for use with the
+    /// pitchClasses and keyText arrays.
+    int GetKeyIndex(bool minor, bool usesSharps, uint8_t numAccidentals)
     {
         const int keyC = 15;
         int keyOffset = numAccidentals;
         if (!usesSharps)
         {
             keyOffset *= -1;
+        }
+
+        if (minor)
+        {
+            keyOffset += 3;
         }
 
         return keyC + keyOffset;
@@ -102,7 +108,7 @@ namespace midi
     /// @param forceAccidentals Whether to display accidentals for notes that
     /// are in the key signature (useful for e.g. reinstating a flat or sharp in
     /// the key signature after a natural sign).
-    string GetMidiNoteText(uint8_t note, bool usesSharps,
+    string GetMidiNoteText(uint8_t note, bool minor, bool usesSharps,
                            uint8_t numAccidentals, bool forceAccidentals)
     {
         PTB_CHECK_THAT(IsValidMidiNote(note), "");
@@ -110,7 +116,7 @@ namespace midi
         const uint8_t pitch = GetMidiNotePitch(note);
 
         // Find the index of the key (for the pitchClasses and keyText arrays).
-        const int tonic = GetKeyIndex(usesSharps, numAccidentals);
+        const int tonic = GetKeyIndex(minor, usesSharps, numAccidentals);
 
         // Initial value needs to be larger than any possible distance.
         uint8_t minDistance = 100;
@@ -141,8 +147,16 @@ namespace midi
             text.append("=");
         }
 
+        int lowerLimit = tonic - 1;
+        int upperLimit = tonic + 5;
+        if (minor)
+        {
+            lowerLimit -= 3;
+            upperLimit -= 3;
+        }
+
         // Remove accidentals or natural signs for notes in the key signature.
-        if (tonic - 1 <= bestMatch && tonic + 5 >= bestMatch &&
+        if (lowerLimit <= bestMatch && upperLimit >= bestMatch &&
             !forceAccidentals)
         {
             if (text.length() > 1)
@@ -209,11 +223,7 @@ namespace midi
     /// e.g. GetKeyText(true, false, 1) -> F
     std::string GetKeyText(bool minor, bool usesSharps, uint8_t numAccidentals)
     {
-        int tonic = GetKeyIndex(usesSharps, numAccidentals);
-        if (minor)
-        {
-            tonic += 3;
-        }
+        int tonic = GetKeyIndex(minor, usesSharps, numAccidentals);
         return keyText[tonic];
     }
 

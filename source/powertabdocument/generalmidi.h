@@ -449,7 +449,7 @@ namespace midi
     bool IsValidMidiNoteKey(uint8_t key);
     uint8_t GetMidiNotePitch(uint8_t note);
     int32_t GetMidiNoteOctave(uint8_t note, char noteText = 0);
-    std::string GetMidiNoteText(uint8_t note, bool usesSharps,
+    std::string GetMidiNoteText(uint8_t note, bool minor, bool usesSharps,
                                 uint8_t numAccidentals,
                                 bool forceAccidentals = false);
     std::string GetMidiNoteTextSimple(uint8_t note, bool sharps);
