@@ -68,6 +68,7 @@
 #include <dialogs/fileinformationdialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/tempomarkerdialog.h>
+#include <dialogs/gotobarlinedialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -424,6 +425,10 @@ void PowerTabEditor::createActions()
     clearCurrentPositionAct = new Command(tr("Clear Position"), "Position.ClearPosition",
                                           QKeySequence::DeleteEndOfWord, this);
     connect(clearCurrentPositionAct, SIGNAL(triggered()), this, SLOT(clearCurrentPosition()));
+
+    gotoBarlineAct = new Command(tr("Go To Barline..."), "Position.GoToBarline",
+                                 Qt::CTRL + Qt::Key_G, this);
+    connect(gotoBarlineAct, SIGNAL(triggered()), this, SLOT(gotoBarline()));
 
     gotoRehearsalSignAct = new Command(tr("Go To Rehearsal Sign..."),
                                        "Position.GoToRehearsalSign",
@@ -864,6 +869,7 @@ void PowerTabEditor::createMenus()
     positionMenu->addAction(clearNoteAct);
     positionMenu->addAction(clearCurrentPositionAct);
     positionMenu->addSeparator();
+    positionMenu->addAction(gotoBarlineAct);
     positionMenu->addAction(gotoRehearsalSignAct);
 
     // Text Menu
@@ -1551,6 +1557,20 @@ void PowerTabEditor::moveCaretToNextBar()
 void PowerTabEditor::moveCaretToPrevBar()
 {
     getCurrentScoreArea()->getCaret()->moveCaretToPrevBar();
+}
+
+/// Allows the user to jump to a specific bar in the score.
+void PowerTabEditor::gotoBarline()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    GoToBarlineDialog dialog(this, caret->getCurrentScore());
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        SystemLocation location = dialog.getLocation();
+        caret->setCurrentSystemIndex(location.getSystemIndex());
+        caret->setCurrentPositionIndex(location.getPositionIndex());
+    }
 }
 
 /// Allows the user to jump to a specific rehearsal sign.

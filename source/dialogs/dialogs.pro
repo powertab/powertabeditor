@@ -22,7 +22,8 @@ HEADERS += \
     fileinformationdialog.h \
     gotorehearsalsigndialog.h \
     tempomarkerdialog.h \
-    barlinedialog.h
+    barlinedialog.h \
+    gotobarlinedialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -41,7 +42,8 @@ SOURCES += \
     fileinformationdialog.cpp \
     gotorehearsalsigndialog.cpp \
     tempomarkerdialog.cpp \
-    barlinedialog.cpp
+    barlinedialog.cpp \
+    gotobarlinedialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -56,4 +58,5 @@ FORMS += \
     fileinformationdialog.ui \
     gotorehearsalsigndialog.ui \
     tempomarkerdialog.ui \
-    barlinedialog.ui
+    barlinedialog.ui \
+    gotobarlinedialog.ui
