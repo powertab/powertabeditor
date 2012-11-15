@@ -18,23 +18,29 @@
 #include "changebarlinetype.h"
 
 #include <powertabdocument/barline.h>
+#include <powertabdocument/system.h>
 
-ChangeBarLineType::ChangeBarLineType(boost::shared_ptr<Barline> bar, quint8 barType, quint8 repeats)
+ChangeBarLineType::ChangeBarLineType(boost::shared_ptr<System> system,
+                                     boost::shared_ptr<Barline> bar,
+                                     uint8_t barType, uint8_t repeats) :
+    QUndoCommand(QObject::tr("Change Barline Type")),
+    system(system),
+    barLine(bar),
+    type(barType),
+    repeatCount(repeats),
+    originalType(barLine->GetType()),
+    originalRepeatCount(barLine->GetRepeatCount())
 {
-    setText(QObject::tr("Change Barline Type"));
-    barLine = bar;
-    originalType = barLine->GetType();
-    originalRepeatCount = barLine->GetRepeatCount();
-    type = barType;
-    repeatCount = repeats;
 }
 
 void ChangeBarLineType::undo()
 {
     barLine->SetBarlineData(originalType, originalRepeatCount);
+    system->AdjustPositionSpacing();
 }
 
 void ChangeBarLineType::redo()
 {
     barLine->SetBarlineData(type, repeatCount);
+    system->AdjustPositionSpacing();
 }

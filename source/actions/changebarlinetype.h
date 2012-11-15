@@ -19,25 +19,30 @@
 #define CHANGEBARLINETYPE_H
 
 #include <QUndoCommand>
+
+#include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 
 class Barline;
+class System;
 
-// Modifys barline properties
-
+/// Modifies a barline's properties.
 class ChangeBarLineType : public QUndoCommand
 {
 public:
-    ChangeBarLineType(boost::shared_ptr<Barline> bar, quint8 barType, quint8 repeats);
+    ChangeBarLineType(boost::shared_ptr<System> system,
+                      boost::shared_ptr<Barline> bar, uint8_t barType,
+                      uint8_t repeats);
     virtual void undo();
     virtual void redo();
 
 private:
+    boost::shared_ptr<System> system;
     boost::shared_ptr<Barline> barLine;
-    quint8 type;
-    quint8 repeatCount;
-    quint8 originalType;
-    quint8 originalRepeatCount;
+    const uint8_t type;
+    const uint8_t repeatCount;
+    const uint8_t originalType;
+    const uint8_t originalRepeatCount;
 };
 
 #endif // CHANGEBARLINETYPE_H

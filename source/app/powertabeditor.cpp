@@ -1804,8 +1804,9 @@ void PowerTabEditor::editBarline(const SystemLocation& location)
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
     Score* score = caret->getCurrentScore();
-    shared_ptr<Barline> barline = score->GetSystem(location.getSystemIndex())->
-            GetBarlineAtPosition(location.getPositionIndex());
+    shared_ptr<System> system = score->GetSystem(location.getSystemIndex());
+    shared_ptr<Barline> barline = system->GetBarlineAtPosition(
+                location.getPositionIndex());
 
     // Move the cursor to the barline. This is important if a barline in another
     // system was clicked, since otherwise it might not be redrawn properly.
@@ -1819,7 +1820,8 @@ void PowerTabEditor::editBarline(const SystemLocation& location)
         BarlineDialog dialog(this, type, repeats);
         if (dialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new ChangeBarLineType(barline, dialog.barlineType(),
+            undoManager->push(new ChangeBarLineType(system, barline,
+                                                    dialog.barlineType(),
                                                     dialog.repeatCount()),
                               caret->getCurrentSystemIndex());
         }
