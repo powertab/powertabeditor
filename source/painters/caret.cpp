@@ -68,6 +68,8 @@ void Caret::adjustToValidLocation()
 
     uint32_t posLimit = getCurrentSystem()->GetPositionCount() - 1;
     currentPositionIndex = clamp<uint32_t>(currentPositionIndex, 0, posLimit);
+    currentStringIndex = clamp<uint32_t>(currentStringIndex, 0,
+                                         currentStaffInfo.numOfStrings - 1);
     selectionRange.first = clamp<int>(selectionRange.first, 0, posLimit);
     selectionRange.second = clamp<int>(selectionRange.second, 0, posLimit);
 
