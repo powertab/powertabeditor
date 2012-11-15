@@ -55,8 +55,9 @@ void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
     const size_t startSystem = location.getSystemIndex();
     for (size_t i = startSystem; i < score->GetSystemCount(); i++)
     {
+        Score::SystemPtr system = score->GetSystem(i);
         std::vector<System::BarlinePtr> barlines;
-        score->GetSystem(i)->GetBarlines(barlines);
+        system->GetBarlines(barlines);
 
         BOOST_FOREACH(System::BarlinePtr barline, barlines)
         {
@@ -81,8 +82,11 @@ void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
             }
             else
             {
+                system->AdjustPositionSpacing();
                 return;
             }
         }
+
+        system->AdjustPositionSpacing();
     }
 }
