@@ -12,12 +12,13 @@
 #ifndef POWERTABINPUTSTREAM_H
 #define POWERTABINPUTSTREAM_H
 
-#include <boost/cstdint.hpp>
 #include <istream>
+#include <memory>
 #include <vector>
-#include <boost/array.hpp>
 
-#include <boost/pointee.hpp>
+#include <boost/array.hpp>
+#include <boost/cstdint.hpp>
+#include <boost/make_shared.hpp>
 
 class Rect;
 class Colour;
@@ -47,23 +48,15 @@ public:
     template <class T>
     void ReadVector(std::vector<T>& vect, uint16_t version)
     {
-        // Get the type that T points to, regardless of whether T is a raw pointer, shared_ptr, etc
-        typedef typename boost::pointee<T>::type PointeeType;
-
         const uint32_t count = ReadCount();
 
         vect.clear();
-        if (count > 0)
-        {
-            vect.reserve(count);
-        }
+        vect.reserve(count);
 
         for (uint32_t i = 0; i < count; i++)
         {
             ReadClassInformation();
-            T temp(new PointeeType);
-            temp->Deserialize(*this, version);
-            vect.push_back(temp);
+            ReadObject(vect, version);
         }
     }
 
@@ -95,6 +88,24 @@ public:
         *this >> size;
 
         m_stream.read((char*)&array[0], size * sizeof(T));
+    }
+
+private:
+    template <class T>
+    inline void ReadObject(std::vector<T*>& vect, uint16_t version)
+    {
+        std::auto_ptr<T> object(new T());
+        object->Deserialize(*this, version);
+        vect.push_back(object.release());
+    }
+
+    template <class T>
+    inline void ReadObject(std::vector<boost::shared_ptr<T> >& vect,
+                           uint16_t version)
+    {
+        boost::shared_ptr<T> object(boost::make_shared<T>());
+        object->Deserialize(*this, version);
+        vect.push_back(object);
     }
 };
 
