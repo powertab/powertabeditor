@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <boost/make_shared.hpp>
 
+#include <powertabdocument/barline.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/system.h>
@@ -48,17 +49,26 @@ void InsertNotes::redo()
         newPositions[i]->SetPosition(newPositions[i]->GetPosition() + offset);
     }
 
-    // check for any existing notes that will conflict with the new notes
+    const size_t startPos = newPositions.front()->GetPosition();
+    const size_t endPos = newPositions.back()->GetPosition();
+
+    // Check for any existing notes or barlines that will conflict with the
+    // new notes.
     boost::shared_ptr<Staff> staff = system->GetStaff(staffIndex);
     std::vector<Position*> currentPositions;
-    staff->GetPositionsInRange(currentPositions, 0, newPositions.front()->GetPosition(),
-                               newPositions.back()->GetPosition());
+    std::vector<System::BarlinePtr> currentBarlines;
+    staff->GetPositionsInRange(currentPositions, 0, startPos, endPos);
+    system->GetBarlinesInRange(currentBarlines, startPos, endPos);
 
-    // if there is a conflict, shift the old notes to the right to make room
-    if (!currentPositions.empty())
+    // if there is a conflict, shift the old notes/barlines to the right.
+    if (!currentPositions.empty() || !currentBarlines.empty())
     {
+        const int firstPosition = currentPositions.empty() ? 0 :
+                                        currentPositions.front()->GetPosition();
+        const int firstBarPos = currentBarlines.empty() ? 0 :
+                                        currentBarlines.front()->GetPosition();
         const int shiftAmount = newPositions.back()->GetPosition() -
-                                currentPositions.front()->GetPosition() + 1;
+                                std::max(firstPosition, firstBarPos) + 1;
         assert(shiftAmount > 0);
 
         for (int i = 0; i < shiftAmount; i++)
@@ -72,8 +82,6 @@ void InsertNotes::redo()
     {
         staff->InsertPosition(0, newPositions[i]);
     }
-
-    Layout::FormatSystem(system);
 
     // Do a deep copy of the positions (they are owned by the staff they were
     // inserted into).
