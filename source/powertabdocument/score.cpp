@@ -170,10 +170,16 @@ void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& 
 {
     output.clear();
 
-    // Use std::remove_copy_if since std::copy_if is only in C++11.
-    std::remove_copy_if(symbolList.begin(), symbolList.end(),
-                        std::back_inserter(output),
-                        std::not1(IsSymbolInSystem<Symbol>(systemIndex)));
+    // remove_copy_if did not compile on OSX, maybe I could have worked out what
+    // was wrong but this is a lot easier to understand and works
+    typename std::vector<Symbol>::const_iterator it;
+    for (it = symbolList.begin() ; it != symbolList.end(); ++it)
+    {
+        if ((*it)->GetSystem() == systemIndex)
+        {
+            output.push_back(*it);
+        }
+    }
 }
 
 /// Removes the symbols in the specified system, and moves lower symbols up by

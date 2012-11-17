@@ -311,6 +311,43 @@ function ExecOptionalCmd()
     LogCommandCompleted $@
 }
 
+################################################################################
+# Function    : ExecOptionalCmdAndStore
+#
+# Description : Same as ExecOptionalCmd but stores the output of the command
+#               in a name var. Only expected to be used when get some simple
+#               information from a command line utlilty (e.g. svnversion)
+#
+# Parameters  : 
+#     1st parameter is the name of the variable to store the command output in
+#     Any further parameters are treated as the command and its arguments.
+#
+# Returns     :
+#     Logging and the output of the command.
+#
+################################################################################
+function ExecOptionalCmdAndStore()
+{
+    local retVar=$1
+    shift
+
+    LogCommand $@
+    cmdOutput=`$@ 2>&1`
+
+    # check if successful
+    if [ $? != 0 ]; then
+    {
+        Log WARNING \
+            "Optional command failed."\
+            "$*"
+    } fi
+
+    echo $cmdOutput
+    LogCommandCompleted $@
+    # store the cmdOutput in var name contained in retVar
+    eval $retVar=\"$cmdOutput\"
+}
+
 
 
 ################################################################################
@@ -442,6 +479,13 @@ if [ $actionSvnUpdate == 1 ]; then
 {
     Log INFO \
         "Getting latest svn files."
+
+    # depending on when this script is started (i.e. just after a wakeup), 
+    # network connectivity may not completely available, give it a chance to 
+    # happen by performing a dns lookup for the svn server
+    ExecOptionalCmdAndStore svnInfo svn info
+    url=$(echo "$svnInfo" | grep URL | cut -d '/' -f 3)
+    ExecOptionalCmd dig $url
 
     userDetails=""
     if [ $svnUsername != 0 ]; then
