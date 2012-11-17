@@ -63,17 +63,20 @@ void InsertNotes::redo()
     // if there is a conflict, shift the old notes/barlines to the right.
     if (!currentPositions.empty() || !currentBarlines.empty())
     {
-        const int firstPosition = currentPositions.empty() ? 0 :
+        const int firstPosition = currentPositions.empty() ? -1 :
                                         currentPositions.front()->GetPosition();
-        const int firstBarPos = currentBarlines.empty() ? 0 :
+        const int firstBarPos = currentBarlines.empty() ? -1 :
                                         currentBarlines.front()->GetPosition();
-        const int shiftAmount = newPositions.back()->GetPosition() -
-                                std::max(firstPosition, firstBarPos) + 1;
-        assert(shiftAmount > 0);
-
-        for (int i = 0; i < shiftAmount; i++)
+        if (firstPosition >= 0 || firstBarPos > 0)
         {
-            system->ShiftForward(insertionPos);
+            const int shiftAmount = newPositions.back()->GetPosition() -
+                                    std::max(firstPosition, firstBarPos) + 1;
+            assert(shiftAmount > 0);
+
+            for (int i = 0; i < shiftAmount; i++)
+            {
+                system->ShiftForward(insertionPos);
+            }
         }
     }
 
