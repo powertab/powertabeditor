@@ -17,32 +17,24 @@
   
 #include "insertnotes.h"
 
-#include <algorithm>
-#include <boost/make_shared.hpp>
-
 #include <powertabdocument/barline.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/system.h>
-#include <powertabdocument/layout.h>
 
-InsertNotes::InsertNotes(boost::shared_ptr<System> system, boost::shared_ptr<Staff> staff,
-                         uint32_t insertionPos, const std::vector<Position*>& positions) :
-    system(system), insertionPos(insertionPos),
-    staffIndex(system->FindStaffIndex(staff)), newPositions(positions),
-    originalSystem(boost::make_shared<System>(*system))
+InsertNotes::InsertNotes(boost::shared_ptr<System> system,
+                         boost::shared_ptr<Staff> staff,
+                         uint32_t insertionPos,
+                         const std::vector<Position*>& positions) :
+    QUndoCommand(QObject::tr("Insert Notes")),
+    system(system),
+    staff(staff),
+    insertionPos(insertionPos),
+    newPositions(positions),
+    shiftAmount(0),
+    ownPositions(true)
 {
-    setText(QObject::tr("Insert Notes"));
-}
-
-InsertNotes::~InsertNotes()
-{
-    qDeleteAll(newPositions);
-}
-
-void InsertNotes::redo()
-{
-    // adjust the locations of the new notes
+    // Adjust the locations of the new notes.
     const int offset = insertionPos - newPositions.front()->GetPosition();
     for (size_t i = 0; i < newPositions.size(); i++)
     {
@@ -54,13 +46,13 @@ void InsertNotes::redo()
 
     // Check for any existing notes or barlines that will conflict with the
     // new notes.
-    boost::shared_ptr<Staff> staff = system->GetStaff(staffIndex);
     std::vector<Position*> currentPositions;
     std::vector<System::BarlinePtr> currentBarlines;
     staff->GetPositionsInRange(currentPositions, 0, startPos, endPos);
     system->GetBarlinesInRange(currentBarlines, startPos, endPos);
 
-    // if there is a conflict, shift the old notes/barlines to the right.
+    // If there is a conflict, we will need toshift the old notes/barlines to
+    // the right.
     if (!currentPositions.empty() || !currentBarlines.empty())
     {
         const int firstPosition = currentPositions.empty() ? -1 :
@@ -69,31 +61,51 @@ void InsertNotes::redo()
                                         currentBarlines.front()->GetPosition();
         if (firstPosition >= 0 || firstBarPos > 0)
         {
-            const int shiftAmount = newPositions.back()->GetPosition() -
-                                    std::max(firstPosition, firstBarPos) + 1;
+            shiftAmount = newPositions.back()->GetPosition() -
+                    std::max(firstPosition, firstBarPos) + 1;
             assert(shiftAmount > 0);
-
-            for (int i = 0; i < shiftAmount; i++)
-            {
-                system->ShiftForward(insertionPos);
-            }
         }
     }
+}
 
-    // finally, insert the new notes
+InsertNotes::~InsertNotes()
+{
+    if (ownPositions)
+    {
+        qDeleteAll(newPositions);
+    }
+}
+
+void InsertNotes::redo()
+{
+    // Shift existing notes / barlines to the right if necessary.
+    for (int i = 0; i < shiftAmount; i++)
+    {
+        system->ShiftForward(insertionPos);
+    }
+
+    // Insert the new notes.
     for (size_t i = 0; i < newPositions.size(); i++)
     {
         staff->InsertPosition(0, newPositions[i]);
     }
 
-    // Do a deep copy of the positions (they are owned by the staff they were
-    // inserted into).
-    std::transform(newPositions.begin(), newPositions.end(),
-                   newPositions.begin(), std::mem_fun(&Position::CloneObject));
+    ownPositions = false;
 }
 
 void InsertNotes::undo()
 {
-    // revert to the original system & staff
-    *system = *originalSystem;
+    // Remove the notes that were added.
+    for (size_t i = 0; i < newPositions.size(); i++)
+    {
+        staff->RemovePosition(0, newPositions[i]->GetPosition());
+    }
+
+    // Undo any shifting that was performed.
+    for (int i = 0; i < shiftAmount; i++)
+    {
+        system->ShiftBackward(insertionPos);
+    }
+
+    ownPositions = true;
 }
