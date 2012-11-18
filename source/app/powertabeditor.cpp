@@ -1640,7 +1640,8 @@ void PowerTabEditor::shiftForward()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
 
-    undoManager->push(new PositionShift(caret->getCurrentSystem(),
+    undoManager->push(new PositionShift(caret->getCurrentScore(),
+                                        caret->getCurrentSystem(),
                                         caret->getCurrentPositionIndex(),
                                         PositionShift::SHIFT_FORWARD),
                       caret->getCurrentSystemIndex());
@@ -1650,7 +1651,8 @@ void PowerTabEditor::shiftBackward()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
 
-    undoManager->push(new PositionShift(caret->getCurrentSystem(),
+    undoManager->push(new PositionShift(caret->getCurrentScore(),
+                                        caret->getCurrentSystem(),
                                         caret->getCurrentPositionIndex(),
                                         PositionShift::SHIFT_BACKWARD),
                       caret->getCurrentSystemIndex());

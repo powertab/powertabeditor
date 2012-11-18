@@ -19,14 +19,17 @@
 
 #include <powertabdocument/barline.h>
 #include <powertabdocument/position.h>
+#include <powertabdocument/score.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/system.h>
 
-InsertNotes::InsertNotes(boost::shared_ptr<System> system,
+InsertNotes::InsertNotes(Score* score,
+                         boost::shared_ptr<System> system,
                          boost::shared_ptr<Staff> staff,
                          uint32_t insertionPos,
                          const std::vector<Position*>& positions) :
     QUndoCommand(QObject::tr("Insert Notes")),
+    score(score),
     system(system),
     staff(staff),
     insertionPos(insertionPos),
@@ -81,7 +84,7 @@ void InsertNotes::redo()
     // Shift existing notes / barlines to the right if necessary.
     for (int i = 0; i < shiftAmount; i++)
     {
-        system->ShiftForward(insertionPos);
+        score->ShiftForward(system, insertionPos);
     }
 
     // Insert the new notes.
@@ -104,7 +107,7 @@ void InsertNotes::undo()
     // Undo any shifting that was performed.
     for (int i = 0; i < shiftAmount; i++)
     {
-        system->ShiftBackward(insertionPos);
+        score->ShiftBackward(system, insertionPos);
     }
 
     ownPositions = true;

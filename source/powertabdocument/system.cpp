@@ -13,7 +13,6 @@
 #include "staff.h"
 #include "barline.h"
 
-#include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <algorithm>
 #include <stdexcept>
@@ -868,35 +867,6 @@ bool System::SetPositionSpacing(uint8_t positionSpacing)
     return true;
 }
 
-/// Shifts the position for an object (must provide GetPosition() and SetPosition(uint32_t) functions)
-/// The object is constructed with a position comparison function, a position index, and an offset.
-/// The object's position is compared with the supplied index using the given function, and is adjusted by the offset
-/// if the comparison function is satisfied.
-template <class T>
-struct ShiftPosition
-{
-    typedef boost::function<bool (uint32_t, uint32_t)> PositionIndexComparison;
-
-    ShiftPosition(PositionIndexComparison comparePositions, uint32_t positionIndex, int offset) :
-        comparePositions(comparePositions),
-        positionIndex(positionIndex),
-        offset(offset)
-    {
-    }
-
-    void operator()(const T& item)
-    {
-        if (comparePositions(item->GetPosition(), positionIndex))
-        {
-            item->SetPosition(item->GetPosition() + offset);
-        }
-    }
-
-    PositionIndexComparison comparePositions;
-    uint32_t positionIndex;
-    int offset;
-};
-
 /// Shifts all positions forward/backward starting from the given index.
 void System::PerformPositionShift(uint32_t positionIndex, int offset)
 {
@@ -938,11 +908,13 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     AdjustPositionSpacing();
 }
 
+/// Shift all positions forward starting from a given location.
 void System::ShiftForward(uint32_t positionIndex)
 {
     PerformPositionShift(positionIndex, 1);
 }
 
+/// Shift all positions backward starting from a given location.
 void System::ShiftBackward(uint32_t positionIndex)
 {
     PerformPositionShift(positionIndex, -1);

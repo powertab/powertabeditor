@@ -485,6 +485,48 @@ void Score::UpdateExtraSpacing(SystemPtr system)
     system->SetExtraSpacing(numItems * System::SYSTEM_SYMBOL_SPACING);
 }
 
+/// Shifts all positions forward/backward starting from the given index.
+void Score::PerformPositionShift(Score::SystemConstPtr system,
+                                 uint32_t positionIndex, int offset)
+{
+    const boost::function<bool (uint32_t, uint32_t)> comparison =
+            std::greater_equal<uint32_t>();
+
+    // Shift tempo markers, dynamics, and alternate endings.
+    // TODO - handle guitar in symbols?
+    std::vector<TempoMarkerPtr> tempoMarkers;
+    std::vector<DynamicPtr> dynamics;
+    std::vector<AlternateEndingPtr> altEndings;
+
+    GetTempoMarkersInSystem(tempoMarkers, system);
+    GetDynamicsInSystem(dynamics, system);
+    GetAlternateEndingsInSystem(altEndings, system);
+
+    ShiftPosition<TempoMarkerPtr> shiftTempoMarkers(comparison, positionIndex,
+                                                    offset);
+    ShiftPosition<DynamicPtr> shiftDynamics(comparison, positionIndex, offset);
+    ShiftPosition<AlternateEndingPtr> shiftAltEndings(comparison, positionIndex,
+                                                      offset);
+
+    std::for_each(tempoMarkers.begin(), tempoMarkers.end(), shiftTempoMarkers);
+    std::for_each(dynamics.begin(), dynamics.end(), shiftDynamics);
+    std::for_each(altEndings.begin(), altEndings.end(), shiftAltEndings);
+}
+
+/// Shift all positions forward in a system, starting from a given location.
+void Score::ShiftForward(Score::SystemPtr system, uint32_t positionIndex)
+{
+    PerformPositionShift(system, positionIndex, 1);
+    system->ShiftForward(positionIndex);
+}
+
+/// Shift all positions backwards in a system, starting from a given location.
+void Score::ShiftBackward(Score::SystemPtr system, uint32_t positionIndex)
+{
+    PerformPositionShift(system, positionIndex, -1);
+    system->ShiftBackward(positionIndex);
+}
+
 void Score::Init()
 {
     // create a guitar

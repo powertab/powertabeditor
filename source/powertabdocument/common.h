@@ -18,9 +18,10 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <vector>
 #include <algorithm>
-#include <boost/shared_ptr.hpp>
+#include <vector>
+
+#include <boost/function.hpp>
 #include <boost/iterator/indirect_iterator.hpp>
 #include <boost/make_shared.hpp>
 
@@ -68,5 +69,36 @@ bool isDeepEqual(const std::vector<T>& vec1, const std::vector<T>& vec2)
                       make_indirect_iterator(vec1.end()),
                       make_indirect_iterator(vec2.begin()));
 }
+
+/// Shifts the position for an object (must provide GetPosition() and
+/// SetPosition(uint32_t) functions).
+/// The object is constructed with a position comparison function, a position
+/// index, and an offset.
+/// The object's position is compared with the supplied index using the given
+/// function, and is adjusted by the offset if the comparison function is true.
+template <class T>
+struct ShiftPosition
+{
+    typedef boost::function<bool (uint32_t, uint32_t)> PositionIndexComparison;
+
+    ShiftPosition(PositionIndexComparison comparePositions, uint32_t positionIndex, int offset) :
+        comparePositions(comparePositions),
+        positionIndex(positionIndex),
+        offset(offset)
+    {
+    }
+
+    void operator()(const T& item)
+    {
+        if (comparePositions(item->GetPosition(), positionIndex))
+        {
+            item->SetPosition(item->GetPosition() + offset);
+        }
+    }
+
+    PositionIndexComparison comparePositions;
+    uint32_t positionIndex;
+    int offset;
+};
 
 #endif // COMMON_H

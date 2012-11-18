@@ -21,6 +21,7 @@
 #include <QUndoCommand>
 #include <boost/shared_ptr.hpp>
 
+class Score;
 class System;
 
 class PositionShift : public QUndoCommand
@@ -32,11 +33,13 @@ public:
         SHIFT_BACKWARD
     };
 
-    PositionShift(boost::shared_ptr<System> system, quint32 positionIndex, ShiftType type);
+    PositionShift(Score* score, boost::shared_ptr<System> system,
+                  uint32_t positionIndex, ShiftType type);
     void redo();
     void undo();
 
-protected:
+private:
+    Score* score;
     boost::shared_ptr<System> system;
     const quint32 positionIndex;
     const ShiftType type;

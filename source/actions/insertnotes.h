@@ -24,13 +24,14 @@
 #include <boost/cstdint.hpp>
 
 class Position;
+class Score;
 class Staff;
 class System;
 
 class InsertNotes : public QUndoCommand
 {
 public:
-    InsertNotes(boost::shared_ptr<System> system,
+    InsertNotes(Score* score, boost::shared_ptr<System> system,
                 boost::shared_ptr<Staff> staff,
                 uint32_t insertionPos,
                 const std::vector<Position*>& newPositions);
@@ -40,6 +41,7 @@ public:
     void undo();
 
 private:
+    Score* score;
     boost::shared_ptr<System> system;
     boost::shared_ptr<Staff> staff;
     const uint32_t insertionPos;

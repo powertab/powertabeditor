@@ -212,16 +212,14 @@ public:
 
     void CalculateHeight();
     uint32_t GetStaffHeightOffset(uint32_t staff, bool absolutePos = false) const;
-
     void CalculateBeamingForStaves();
-
-    void ShiftForward(uint32_t positionIndex);
-    void ShiftBackward(uint32_t positionIndex);
     void AdjustPositionSpacing();
 
     bool HasMultiBarRest(BarlineConstPtr startBar, uint8_t& measureCount) const;
 
 private:
+    void ShiftForward(uint32_t positionIndex);
+    void ShiftBackward(uint32_t positionIndex);
     void PerformPositionShift(uint32_t positionIndex, int offset);
 };
 

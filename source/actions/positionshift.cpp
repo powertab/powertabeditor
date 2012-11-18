@@ -17,11 +17,14 @@
   
 #include "positionshift.h"
 
+#include <powertabdocument/score.h>
 #include <powertabdocument/system.h>
 
 using boost::shared_ptr;
 
-PositionShift::PositionShift(shared_ptr<System> system, quint32 positionIndex, ShiftType type) :
+PositionShift::PositionShift(Score* score, shared_ptr<System> system,
+                             uint32_t positionIndex, ShiftType type) :
+    score(score),
     system(system),
     positionIndex(positionIndex),
     type(type)
@@ -40,11 +43,11 @@ void PositionShift::redo()
 {
     if (type == SHIFT_FORWARD)
     {
-        system->ShiftForward(positionIndex);
+        score->ShiftForward(system, positionIndex);
     }
     else
     {
-        system->ShiftBackward(positionIndex);
+        score->ShiftBackward(system, positionIndex);
     }
 }
 
@@ -52,10 +55,10 @@ void PositionShift::undo()
 {
     if (type == SHIFT_FORWARD)
     {
-        system->ShiftBackward(positionIndex);
+        score->ShiftBackward(system, positionIndex);
     }
     else
     {
-        system->ShiftForward(positionIndex);
+        score->ShiftForward(system, positionIndex);
     }
 }

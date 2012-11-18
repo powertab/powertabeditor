@@ -148,6 +148,9 @@ public:
 
     void UpdateExtraSpacing(SystemPtr system);
 
+    void ShiftForward(SystemPtr system, uint32_t positionIndex);
+    void ShiftBackward(SystemPtr system, uint32_t positionIndex);
+
     int FindSystemIndex(const SystemConstPtr& system) const;
 
     void UpdateToVer2Structure();
@@ -159,6 +162,9 @@ public:
     std::string GetScoreName() const;
 
 private:
+    void PerformPositionShift(Score::SystemConstPtr system,
+                              uint32_t positionIndex, int offset);
+
     std::vector<GuitarPtr> m_guitarArray; ///< Guitars used by the score.
     std::vector<ChordDiagramPtr> m_chordDiagramArray; ///< Chord diagrams used in the score.
     std::vector<FloatingTextPtr> m_floatingTextArray; ///< Floating text used in the score.
@@ -168,7 +174,6 @@ private:
     std::vector<AlternateEndingPtr> m_alternateEndingArray; ///< Alternate endings used in the score.
     std::vector<SystemPtr> m_systemArray; ///< Systems used in the score.
     std::string m_scoreName; ///< Name of the score (e.g. Bass, Guitar, etc)
-
 };
 
 #endif // SCORE_H
