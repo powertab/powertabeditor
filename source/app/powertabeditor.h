@@ -53,6 +53,7 @@ class PlaybackWidget;
 class SettingsPubSub;
 class SystemLocation;
 class TuningDictionary;
+class Mixer;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -97,6 +98,7 @@ private:
     static std::vector<Position*> getSelectedPositions();
     static std::vector<Note*> getSelectedNotes();
     PlaybackWidget* getCurrentPlaybackWidget() const;
+    Mixer* getCurrentMixer();
 
 private slots:
     void updateActions();

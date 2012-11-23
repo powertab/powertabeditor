@@ -1359,6 +1359,14 @@ ScoreArea* PowerTabEditor::getCurrentScoreArea()
     return dynamic_cast<ScoreArea*>(tabWidget->currentWidget());
 }
 
+Mixer* PowerTabEditor::getCurrentMixer()
+{
+    QScrollArea* scrollArea = dynamic_cast<QScrollArea*>(mixerList->currentWidget());
+    Mixer* currentMixer = dynamic_cast<Mixer*>(scrollArea->widget());
+    Q_ASSERT(currentMixer != NULL);
+    return currentMixer;
+}
+
 std::vector<Position*> PowerTabEditor::getSelectedPositions()
 {
     return getCurrentScoreArea()->getCaret()->getSelectedPositions();
@@ -1720,11 +1728,7 @@ void PowerTabEditor::addGuitar()
 {
     Score* score = getCurrentScoreArea()->getCaret()->getCurrentScore();
 
-    QScrollArea* scrollArea = dynamic_cast<QScrollArea*>(mixerList->currentWidget());
-    Mixer* currentMixer = dynamic_cast<Mixer*>(scrollArea->widget());
-    Q_ASSERT(currentMixer != NULL);
-
-    AddGuitar* addGuitar = new AddGuitar(score, currentMixer);
+    AddGuitar* addGuitar = new AddGuitar(score, getCurrentMixer());
     undoManager->push(addGuitar, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
@@ -2530,9 +2534,31 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
 void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
-    EditTrackShown* action = new EditTrackShown(caret->getCurrentScore(),
-                                                trackIndex, isVisible);
-    undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
+    Score* score = caret->getCurrentScore();
+    Mixer* mixer = getCurrentMixer();
+
+    // There must always be at least one visible guitar.
+    bool canToggle = false;
+    for (size_t i = 0; i < score->GetGuitarCount(); ++i)
+    {
+        if (score->GetGuitar(i)->IsShown() && i != trackIndex)
+        {
+            canToggle = true;
+        }
+    }
+
+    if (canToggle)
+    {
+        EditTrackShown* action = new EditTrackShown(score, mixer, trackIndex,
+                                                    isVisible);
+        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
+    else
+    {
+        // Update the state of the checkboxes if we didn't show/hide the guitar.
+        mixer->update();
+    }
+
 }
 
 void PowerTabEditor::openFileInformation()

@@ -17,14 +17,18 @@
 
 #include "edittrackshown.h"
 
-#include <powertabdocument/score.h>
 #include <powertabdocument/guitar.h>
-#include <powertabdocument/system.h>
+#include <powertabdocument/score.h>
 #include <powertabdocument/staff.h>
+#include <powertabdocument/system.h>
+#include <widgets/mixer/mixer.h>
 
-EditTrackShown::EditTrackShown(Score* score, uint32_t trackNumber,
+EditTrackShown::EditTrackShown(Score* score, Mixer* mixer, uint32_t trackNumber,
                                bool trackShown) :
-    score(score), trackNumber(trackNumber), trackShown(trackShown)
+    score(score),
+    mixer(mixer),
+    trackNumber(trackNumber),
+    trackShown(trackShown)
 {
     Q_ASSERT(score->IsValidGuitarIndex(trackNumber));
 
@@ -64,4 +68,6 @@ void EditTrackShown::toggleShown(bool show)
 
         score->ShiftFollowingSystems(system, spacingDifference);
     }
+
+    mixer->update();
 }

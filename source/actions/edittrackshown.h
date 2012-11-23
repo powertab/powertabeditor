@@ -21,18 +21,21 @@
 #include <QUndoCommand>
 #include <boost/cstdint.hpp>
 
+class Mixer;
 class Score;
 
 class EditTrackShown : public QUndoCommand
 {
 public:
-    EditTrackShown(Score* score, uint32_t trackNumber, bool trackShown);
+    EditTrackShown(Score* score, Mixer* mixer, uint32_t trackNumber,
+                   bool trackShown);
 
     void redo();
     void undo();
 
 private:
     Score* score;
+    Mixer* mixer;
     const uint32_t trackNumber;
     const bool trackShown;
 

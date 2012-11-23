@@ -43,6 +43,7 @@ public:
     void removeInstrument(size_t index);
 
     boost::shared_ptr<Guitar> getInstrument(size_t index) const;
+    void update();
 
 signals:
     void visibilityToggled(uint32_t trackNumber, bool isVisible);
@@ -52,9 +53,6 @@ private:
     std::vector<boost::shared_ptr<MixerInstrument> > channelList;
     boost::shared_ptr<TuningDictionary> tuningDictionary;
     QVBoxLayout* layout;
-
-private slots:
-    void update();
 };
 
 #endif // MIXER_H

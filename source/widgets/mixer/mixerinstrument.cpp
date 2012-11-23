@@ -77,7 +77,7 @@ MixerInstrument::MixerInstrument(Score* score, shared_ptr<Guitar> instrument,
     isVisible = new QCheckBox(tr("Show/Hide"));
     isVisible->setChecked(guitar->IsShown());
     isVisible->setToolTip(tr("Click to toggle whether the instrument is displayed in the score."));
-    connect(isVisible, SIGNAL(toggled(bool)), this, SLOT(toggleVisible(bool)));
+    connect(isVisible, SIGNAL(clicked(bool)), this, SLOT(toggleVisible(bool)));
     layout->addWidget(isVisible);
 
     trackVolume = new QSlider(Qt::Horizontal);
@@ -292,6 +292,7 @@ void MixerInstrument::update()
 {
     instrumentName->setText(QString().fromStdString(guitar->GetDescription()));
     instrumentNameEditor->setText(instrumentName->text());
+    isVisible->setChecked(guitar->IsShown());
     trackVolume->setValue(guitar->GetInitialVolume());
     trackPan->setValue(guitar->GetPan());
     trackPatch->setCurrentIndex(guitar->GetPreset());
