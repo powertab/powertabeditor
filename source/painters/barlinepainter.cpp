@@ -108,8 +108,9 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, Q
         painter->setPen(Qt::DashLine);
     }
 
-    // print the repeat count for repeat end bars
-    if (barLine->IsRepeatEnd())
+    // Print the repeat count for repeat end bars.
+    if (barLine->IsRepeatEnd() &&
+            barLine->GetRepeatCount() > Barline::MIN_REPEAT_COUNT)
     {
         QFont repeatFont("Liberation Sans");
         repeatFont.setPixelSize(8);
