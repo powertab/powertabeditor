@@ -4857,7 +4857,7 @@ namespace Catch {
         ~TextColour();
 
     private:
-        ConsoleColourImpl* m_impl;
+        //ConsoleColourImpl* m_impl;
     };
 
 } // end namespace Catch
@@ -6210,7 +6210,7 @@ namespace Catch {
 
     private:
         ReporterConfig m_config;
-        bool m_currentTestSuccess;
+        //bool m_currentTestSuccess;
 
         Stats m_testSuiteStats;
         Stats* m_currentStats;
