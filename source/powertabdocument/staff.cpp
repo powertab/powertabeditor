@@ -776,71 +776,91 @@ Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, const Posi
     return nextNote;
 }
 
-void Staff::UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber)
+void Staff::UpdateTabNumber(Position* position, Note* note, uint8_t fretNumber)
 {
-    // hopefully this line will make it easier later when we handle multiple melodies
-    const std::vector<Position*>& positionArray = positionArrays[0];
-
-    // find the position in our vector of positions
-    std::vector<Position*>::const_iterator positionIt = std::find(positionArray.begin(),
-                                                                  positionArray.end(), position);
-    assert(positionIt != positionArray.end());
-
     note->SetFretNumber(fretNumber);
 
-    if (positionIt != positionArray.begin())
+    // Update hammerons, ties, etc for adjacent notes.
+    UpdateAdjacentNotes(position, note->GetString());
+}
+
+void Staff::ShiftTabNumber(Position* position, Note* note, bool shiftUp,
+                           const Tuning& tuning)
+{
+    const uint32_t prevString = note->GetString();
+    Position::ShiftType type = shiftUp ? Position::SHIFT_UP :
+                                         Position::SHIFT_DOWN;
+    position->ShiftTabNumber(note, type, tuning);
+
+    UpdateAdjacentNotes(position, prevString);
+    UpdateAdjacentNotes(position, note->GetString());
+}
+
+void Staff::UpdateAdjacentNotes(Position* position, uint32_t string)
+{
+    Note* note = position->GetNoteByString(string);
+    const size_t index = GetIndexOfPosition(0, position);
+
+    if (index != 0)
     {
-        // update note before this note
-        Note *prevNote = (*(positionIt-1))->GetNoteByString(note->GetString());
-        if (prevNote != NULL)
-            UpdateNote((*(positionIt-1)), prevNote, note);
+        Position* prevPos = GetPosition(0, index - 1);
+        Note* prevNote = prevPos->GetNoteByString(string);
+        UpdateNote(prevPos, prevNote, note);
     }
-    if (positionIt+1 != positionArray.end())
+
+    if (index + 1 != GetPositionCount(0))
     {
-        // update note after this note
-        Note *nextNote = (*(positionIt+1))->GetNoteByString(note->GetString());
-        if (nextNote != NULL)
-            UpdateNote((*positionIt), note, nextNote);
+        Position* nextPos = GetPosition(0, index + 1);
+        Note* nextNote = nextPos->GetNoteByString(string);
+        UpdateNote(nextPos, note, nextNote);
     }
 }
 
+/// Ensures that all hammerons, pulloffs, and slides are valid for the first note,
+/// and ensures that any ties for the second note are valid. Either of the notes
+/// may be NULL if they do not exist.
 void Staff::UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote)
 {
-    const bool canPull = CanPullOff(prevPosition, previousNote);
-    const bool canHammer = CanHammerOn(prevPosition, previousNote);
+    if (previousNote)
+    {
+        const bool canPull = CanPullOff(prevPosition, previousNote);
+        const bool canHammer = CanHammerOn(prevPosition, previousNote);
 
-    if (previousNote->HasPullOff() && !canPull)
-    {
-        previousNote->SetPullOff(false);
-        if (canHammer)
-            previousNote->SetHammerOn(true);
-    }
-    else if (previousNote->HasHammerOn() && !canHammer)
-    {
-        previousNote->SetHammerOn(false);
-        if (canPull)
-            previousNote->SetPullOff(true);
-    }
-
-    // need to check slides
-    uint8_t slideType;
-    int8_t slideSteps;
-    if (previousNote->GetSlideOutOf(slideType, slideSteps))
-    {
-        // if the note used to slide but no longer can then remove slide
-        if (!CanSlideBetweenNotes(prevPosition, previousNote))
+        if (previousNote->HasPullOff() && !canPull)
         {
-            previousNote->SetSlideOutOf(Note::slideOutOfNone, 0);
+            previousNote->SetPullOff(false);
+            if (canHammer)
+                previousNote->SetHammerOn(true);
         }
-        else
+        else if (previousNote->HasHammerOn() && !canHammer)
         {
-            int8_t newSteps = GetSlideSteps(prevPosition, previousNote);
-            previousNote->ClearSlideOutOf();
-            previousNote->SetSlideOutOf(slideType, newSteps);
+            previousNote->SetHammerOn(false);
+            if (canPull)
+                previousNote->SetPullOff(true);
+        }
+
+        // need to check slides
+        uint8_t slideType;
+        int8_t slideSteps;
+        if (previousNote->GetSlideOutOf(slideType, slideSteps))
+        {
+            // if the note used to slide but no longer can then remove slide
+            if (!CanSlideBetweenNotes(prevPosition, previousNote))
+            {
+                previousNote->SetSlideOutOf(Note::slideOutOfNone, 0);
+            }
+            else
+            {
+                int8_t newSteps = GetSlideSteps(prevPosition, previousNote);
+                previousNote->ClearSlideOutOf();
+                previousNote->SetSlideOutOf(slideType, newSteps);
+            }
         }
     }
 
-    if (nextNote->IsTied() && nextNote->GetFretNumber() != previousNote->GetFretNumber())
+    if (nextNote && nextNote->IsTied() &&
+            (!previousNote ||
+             nextNote->GetFretNumber() != previousNote->GetFretNumber()))
     {
         nextNote->SetTied(false);
     }
@@ -949,6 +969,7 @@ void Staff::CalculateClef(const Tuning& tuning)
 size_t Staff::GetIndexOfPosition(uint32_t voice, const Position *position) const
 {
     const std::vector<Position*>& posArray = positionArrays.at(voice);
+    assert(std::find(posArray.begin(), posArray.end(), position) != posArray.end());
     return std::find(posArray.begin(), posArray.end(), position) - posArray.begin();
 }
 

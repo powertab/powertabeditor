@@ -20,34 +20,52 @@
 #include <painters/caret.h>
 
 #include <powertabdocument/note.h>
+#include <powertabdocument/staff.h>
 
-ShiftTabNumber::ShiftTabNumber(Caret* caret, Position* currentPos, Note* note, Position::ShiftType direction, quint8 numStringsInStaff, const Tuning& tuning) :
-    caret(caret),
-    currentPos(currentPos),
+ShiftTabNumber::ShiftTabNumber(boost::shared_ptr<Staff> staff,
+                               Position* position, Note* note,
+                               Position::ShiftType direction,
+                               const Tuning& tuning) :
+    staff(staff),
+    position(position),
     note(note),
-    direction(direction),
-    numStringsInStaff(numStringsInStaff),
+    shiftUp(direction == Position::SHIFT_UP),
     tuning(tuning)
 {
-    if (direction == Position::SHIFT_UP)
+    setText(shiftUp ? QObject::tr("Shift Tab Number Up") :
+                      QObject::tr("Shift Tab Number Down"));
+
+    prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note);
+    if (prevNote)
     {
-        setText(QObject::tr("Shift Tab Number Up"));
+        origPrevNote = *prevNote;
     }
-    else
+
+    nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note);
+    if (nextNote)
     {
-        setText(QObject::tr("Shift Tab Number Down"));
+        origNextNote = *nextNote;
     }
+
+    origNote = *note;
 }
 
 void ShiftTabNumber::redo()
 {
-    currentPos->ShiftTabNumber(note, direction, numStringsInStaff, tuning);
-    caret->setCurrentStringIndex(note->GetString());
+    staff->ShiftTabNumber(position, note, shiftUp, tuning);
 }
 
 void ShiftTabNumber::undo()
 {
-    const Position::ShiftType oppositeDirection = (direction == Position::SHIFT_UP) ? Position::SHIFT_DOWN : Position::SHIFT_UP;
-    currentPos->ShiftTabNumber(note, oppositeDirection, numStringsInStaff, tuning);
-    caret->setCurrentStringIndex(note->GetString());
+    *note = origNote;
+
+    if (prevNote)
+    {
+        *prevNote = origPrevNote;
+    }
+
+    if (nextNote)
+    {
+        *nextNote = origNextNote;
+    }
 }

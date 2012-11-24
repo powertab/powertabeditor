@@ -165,8 +165,10 @@ public:
                                 boost::shared_ptr<const Barline> endBar);
     void CalculateBeamingForGroup(std::vector<Position*>& positions);
 
-    void UpdateTabNumber(Position *position, Note *note, uint8_t fretNumber);
-    void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote);
+    void UpdateTabNumber(Position* position, Note* note, uint8_t fretNumber);
+    void ShiftTabNumber(Position* position, Note* note, bool shiftUp,
+                        const Tuning& tuning);
+    void UpdateAdjacentNotes(Position*position, uint32_t string);
     
     int GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
                         const Tuning& tuning) const;
@@ -180,7 +182,7 @@ public:
     Note* GetAdjacentNoteOnString(SearchDirection searchDirection, const Position* position,
                                   const Note* note, uint32_t voice = 0) const;
 
-protected:
+private:
     /// Compares the fret numbers of two consecutive notes on the same string,
     /// using the given comparision function (binary predicate)
     template<typename FretComparison>
@@ -193,6 +195,8 @@ protected:
         // and if the fret number comparision is satisfied
         return (nextNote != NULL && comp(note->GetFretNumber(), nextNote->GetFretNumber()));
     }
+
+    void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote);
 };
 
 #endif // STAFF_H

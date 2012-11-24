@@ -143,23 +143,22 @@ TEST_CASE_METHOD(PositionFixture, "PowerTabDocument/Position/Assignment", "")
 
 TEST_CASE_METHOD(PositionFixture, "PowerTabDocument/Position/CanShiftTabNumber", "")
 {
-    const uint8_t numStrings = 6;
     StandardTuningFixture stdTuning;
     Tuning tuning = stdTuning.tuning;
 
     // can't shift up since we are at the high E string
-    REQUIRE(!pos->CanShiftTabNumber(note4, Position::SHIFT_UP, numStrings, tuning));
+    REQUIRE(!pos->CanShiftTabNumber(note4, Position::SHIFT_UP, tuning));
     // can't shift down since there is already a note at string # 1
-    REQUIRE(!pos->CanShiftTabNumber(note4, Position::SHIFT_DOWN, numStrings, tuning));
+    REQUIRE(!pos->CanShiftTabNumber(note4, Position::SHIFT_DOWN, tuning));
 
     // at fret 5 on the D string, so can shift up or down
-    REQUIRE(pos->CanShiftTabNumber(note2, Position::SHIFT_DOWN, numStrings, tuning));
-    REQUIRE(pos->CanShiftTabNumber(note2, Position::SHIFT_UP, numStrings, tuning));
+    REQUIRE(pos->CanShiftTabNumber(note2, Position::SHIFT_DOWN, tuning));
+    REQUIRE(pos->CanShiftTabNumber(note2, Position::SHIFT_UP, tuning));
 
     // at fret 4, so we can't shift up to a higher string
-    REQUIRE(!pos->CanShiftTabNumber(note3, Position::SHIFT_UP, numStrings, tuning));
+    REQUIRE(!pos->CanShiftTabNumber(note3, Position::SHIFT_UP, tuning));
     // can't shift down from bottom string
-    REQUIRE(!pos->CanShiftTabNumber(note3, Position::SHIFT_DOWN, numStrings, tuning));
+    REQUIRE(!pos->CanShiftTabNumber(note3, Position::SHIFT_DOWN, tuning));
 }
 
 TEST_CASE("PowerTabDocument/Position/IrregularNoteText/NoGrouping", "")

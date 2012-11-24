@@ -49,7 +49,9 @@ SOURCES += \
     powertabdocument/chorddiagram_test.cpp \
     powertabdocument/alternateending_test.cpp \
     actions/test_removesystem.cpp \
-    actions/test_edithammerpull.cpp
+    actions/test_edithammerpull.cpp \
+    actions/test_updatetabnumber.cpp \
+    actions/test_shifttabnumber.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

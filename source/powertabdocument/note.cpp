@@ -169,9 +169,10 @@ bool Note::IsValidFretNumber(uint8_t fretNumber)
     return fretNumber <= MAX_FRET_NUMBER;
 }
 
-/// Sets the fret number for the note
-/// @param fretNumber Fret number to set
-/// @return True if the fret number was set, false if not
+/// Sets the fret number for the note. Be careful when using this function, as
+/// it will not update hammerons, pulloffs, etc. with adjacent notes.
+/// @param fretNumber Fret number to set.
+/// @return True if the fret number was set, false if not.
 bool Note::SetFretNumber(uint8_t fretNumber)
 {
     PTB_CHECK_THAT(IsValidFretNumber(fretNumber), false);
@@ -179,7 +180,7 @@ bool Note::SetFretNumber(uint8_t fretNumber)
     m_stringData &= ~fretNumberMask;
     m_stringData |= fretNumber;
 
-    return (true);
+    return true;
 }
 
 /// Gets the fret number on a given string

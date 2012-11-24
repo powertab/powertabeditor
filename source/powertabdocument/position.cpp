@@ -764,10 +764,9 @@ Note* Position::GetNoteByString(uint8_t string) const
 /// Determines if the tab number of a note can be shifted up or down by a string
 /// @param note The note that will be shifted
 /// @param type Type of shift (up or down)
-/// @param numStringsInStaff The number of strings in the current staff
 /// @param tuning The tuning of the guitar in the current staff
 /// @return True if the note can be shifted, false otherwise.
-bool Position::CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const
+bool Position::CanShiftTabNumber(Note* note, ShiftType type, const Tuning& tuning) const
 {
     // check that the note is actually in this position
     PTB_CHECK_THAT(std::find(m_noteArray.begin(), m_noteArray.end(), note) != m_noteArray.end(), false);
@@ -775,7 +774,8 @@ bool Position::CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsI
     const int newStringNum = GetShiftedStringNumber(note, type);
 
     // check that the string number is valid
-    if (!Note::IsValidString(newStringNum) || newStringNum >= numStringsInStaff)
+    if (!Note::IsValidString(newStringNum) ||
+            newStringNum >= (int)tuning.GetStringCount())
     {
         return false;
     }
@@ -794,12 +794,11 @@ bool Position::CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsI
 /// Shifts the tab number of a note up or down by a string
 /// @param note The note that will be shifted
 /// @param type Type of shift (up or down)
-/// @param numStringsInStaff The number of strings in the current staff
 /// @param tuning The tuning of the guitar in the current staff
 /// @return True if the note was successfully shifted, false otherwise.
-bool Position::ShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning)
+bool Position::ShiftTabNumber(Note* note, ShiftType type, const Tuning& tuning)
 {
-    PTB_CHECK_THAT(CanShiftTabNumber(note, type, numStringsInStaff, tuning), false);
+    PTB_CHECK_THAT(CanShiftTabNumber(note, type, tuning), false);
 
     const int newString = GetShiftedStringNumber(note, type);
     note->SetFretNumber(GetShiftedFretNumber(note, note->GetString(), newString, tuning));

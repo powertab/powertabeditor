@@ -820,8 +820,8 @@ public:
     void RemoveNoteByIndex(size_t index);
 
     Note* GetNoteByString(uint8_t string) const;
-    bool CanShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning) const;
-    bool ShiftTabNumber(Note* note, ShiftType type, uint8_t numStringsInStaff, const Tuning& tuning);
+    bool CanShiftTabNumber(Note* note, ShiftType type, const Tuning& tuning) const;
+    bool ShiftTabNumber(Note* note, ShiftType type, const Tuning& tuning);
 
     void SortNotesUp();
     void SortNotesDown();
