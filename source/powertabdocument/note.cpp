@@ -968,12 +968,14 @@ std::string Note::GetText() const
     return output.str();
 }
 
-/// Calculates the pitch of the note, for the given guitar tuning
-/// @param tuning The tuning for the guitar that is playing the note
-/// @return The pitch of the note
-uint8_t Note::GetPitch(const Tuning& tuning) const
+/// Calculates the pitch of the note, for the given guitar tuning.
+/// @param tuning The tuning for the guitar that is playing the note.
+/// @param includeOffset Specifies whether to include the music notation offset
+/// in the pitch.
+/// @return The pitch of the note.
+uint8_t Note::GetPitch(const Tuning& tuning, bool includeOffset) const
 {
-    return tuning.GetNote(GetString()) + GetFretNumber();
+    return tuning.GetNote(GetString(), includeOffset) + GetFretNumber();
 }
 
 /// Returns the number of octaves (from -2 to +2) that the note is shifted by

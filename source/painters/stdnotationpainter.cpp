@@ -58,7 +58,7 @@ void StdNotationPainter::init()
 /// preceding natural signs or accidentals).
 void StdNotationPainter::refreshAccidental(bool forceAccidental)
 {
-    const quint8 pitch = note->GetPitch(tuning);
+    const quint8 pitch = note->GetPitch(tuning, true);
     const bool usesSharps = keySignature.UsesSharps() ||
             keySignature.HasNoKeyAccidentals();
 

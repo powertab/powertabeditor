@@ -919,7 +919,7 @@ bool Staff::RemovePosition(uint32_t voice, uint32_t index)
 int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
                            const Tuning& tuning) const
 {
-    const uint8_t pitch = note->GetPitch(tuning);
+    const uint8_t pitch = note->GetPitch(tuning, true);
     
     const std::string noteText = midi::GetMidiNoteText(pitch, activeKeySig.IsMinorKey(),
             activeKeySig.UsesSharps() || activeKeySig.HasNoKeyAccidentals(),
@@ -952,7 +952,7 @@ void Staff::CalculateClef(const Tuning& tuning)
         {
             for (uint8_t i = 0; i < position->GetNoteCount(); i++)
             {
-                if (position->GetNote(i)->GetPitch(tuning) <= midi::MIDI_NOTE_A1)
+                if (position->GetNote(i)->GetPitch(tuning, true) <= midi::MIDI_NOTE_A1)
                 {
                     SetClef(BASS_CLEF);
                     return;
