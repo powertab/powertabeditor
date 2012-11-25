@@ -272,7 +272,8 @@ void MixerInstrument::editTuning()
         Tuning newTuning = dialog.getNewTuning();
         if (EditTuning::canChangeTuning(score, guitar, newTuning))
         {
-            PowerTabEditor::undoManager->push(new EditTuning(score, guitar, newTuning),
+            PowerTabEditor::undoManager->push(new EditTuning(this, score,
+                                                             guitar, newTuning),
                                               UndoManager::AFFECTS_ALL_SYSTEMS);
         }
         else

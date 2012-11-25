@@ -23,9 +23,12 @@
 #include <powertabdocument/score.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/system.h>
+#include <widgets/mixer/mixerinstrument.h>
 
-EditTuning::EditTuning(Score* score, boost::shared_ptr<Guitar> guitar,
+EditTuning::EditTuning(MixerInstrument* mixer, Score* score,
+                       boost::shared_ptr<Guitar> guitar,
                        const Tuning& newTuning) :
+    mixer(mixer),
     score(score),
     guitar(guitar),
     newTuning(newTuning),
@@ -37,11 +40,13 @@ EditTuning::EditTuning(Score* score, boost::shared_ptr<Guitar> guitar,
 void EditTuning::redo()
 {
     score->SetTuning(guitar, newTuning);
+    mixer->update();
 }
 
 void EditTuning::undo()
 {
     score->SetTuning(guitar, oldTuning);
+    mixer->update();
 }
 
 /// Determines whether the new tuning is safe to use (e.g. there aren't notes on

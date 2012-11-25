@@ -25,13 +25,14 @@
 #include <powertabdocument/tuning.h>
 
 class Guitar;
+class MixerInstrument;
 class Score;
 
 class EditTuning : public QUndoCommand
 {
 public:
-    EditTuning(Score* score, boost::shared_ptr<Guitar> guitar,
-               const Tuning& newTuning);
+    EditTuning(MixerInstrument* mixer, Score* score,
+               boost::shared_ptr<Guitar> guitar, const Tuning& newTuning);
     void redo();
     void undo();
 
@@ -40,6 +41,7 @@ public:
                                 const Tuning& newTuning);
     
 private:
+    MixerInstrument* mixer;
     Score* score;
     boost::shared_ptr<Guitar> guitar;
     const Tuning newTuning;
