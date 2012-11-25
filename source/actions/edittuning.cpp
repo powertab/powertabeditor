@@ -27,12 +27,14 @@
 
 EditTuning::EditTuning(MixerInstrument* mixer, Score* score,
                        boost::shared_ptr<Guitar> guitar,
-                       const Tuning& newTuning) :
+                       const Tuning& newTuning, uint8_t capo) :
     mixer(mixer),
     score(score),
     guitar(guitar),
     newTuning(newTuning),
-    oldTuning(guitar->GetTuning())
+    oldTuning(guitar->GetTuning()),
+    oldCapo(guitar->GetCapo()),
+    newCapo(capo)
 {
     setText(QObject::tr("Edit Tuning"));
 }
@@ -40,12 +42,14 @@ EditTuning::EditTuning(MixerInstrument* mixer, Score* score,
 void EditTuning::redo()
 {
     score->SetTuning(guitar, newTuning);
+    guitar->SetCapo(newCapo);
     mixer->update();
 }
 
 void EditTuning::undo()
 {
     score->SetTuning(guitar, oldTuning);
+    guitar->SetCapo(oldCapo);
     mixer->update();
 }
 

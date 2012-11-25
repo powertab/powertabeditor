@@ -32,7 +32,8 @@ class EditTuning : public QUndoCommand
 {
 public:
     EditTuning(MixerInstrument* mixer, Score* score,
-               boost::shared_ptr<Guitar> guitar, const Tuning& newTuning);
+               boost::shared_ptr<Guitar> guitar, const Tuning& newTuning,
+               uint8_t capo);
     void redo();
     void undo();
 
@@ -46,6 +47,9 @@ private:
     boost::shared_ptr<Guitar> guitar;
     const Tuning newTuning;
     const Tuning oldTuning;
+
+    const uint8_t oldCapo;
+    const uint8_t newCapo;
 };
 
 #endif // EDITTUNING_H

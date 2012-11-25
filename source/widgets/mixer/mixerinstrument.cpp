@@ -265,7 +265,7 @@ void MixerInstrument::changeInstrumentName(QString name)
 
 void MixerInstrument::editTuning()
 {
-    TuningDialog dialog(this, guitar->GetTuning(), tuningDictionary);
+    TuningDialog dialog(this, guitar, tuningDictionary);
 
     if (dialog.exec() == QDialog::Accepted)
     {
@@ -273,7 +273,8 @@ void MixerInstrument::editTuning()
         if (EditTuning::canChangeTuning(score, guitar, newTuning))
         {
             PowerTabEditor::undoManager->push(new EditTuning(this, score,
-                                                             guitar, newTuning),
+                                                             guitar, newTuning,
+                                                             dialog.getNewCapo()),
                                               UndoManager::AFFECTS_ALL_SYSTEMS);
         }
         else

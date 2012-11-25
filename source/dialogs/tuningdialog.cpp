@@ -19,15 +19,17 @@
 #include "ui_tuningdialog.h"
 
 #include <app/tuningdictionary.h>
-#include <powertabdocument/tuning.h>
 #include <powertabdocument/generalmidi.h>
+#include <powertabdocument/guitar.h>
+#include <powertabdocument/tuning.h>
 
 #include <algorithm>
 #include <boost/bind.hpp>
 
 Q_DECLARE_METATYPE(boost::shared_ptr<Tuning>);
 
-TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
+TuningDialog::TuningDialog(QWidget *parent,
+                           boost::shared_ptr<const Guitar> guitar,
                            boost::shared_ptr<TuningDictionary> tuningDictionary) :
     QDialog(parent),
     ui(new Ui::TuningDialog),
@@ -35,10 +37,16 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
 {
     ui->setupUi(this);
 
+    const Tuning& currentTuning = guitar->GetTuning();
+
     ui->tuningNameEdit->setText(QString::fromStdString(currentTuning.GetName()));
 
     ui->sharpsCheckBox->setChecked(currentTuning.UsesSharps());
     connect(ui->sharpsCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleSharps(bool)));
+
+    ui->capoSpinBox->setMinimum(Guitar::MIN_CAPO);
+    ui->capoSpinBox->setMaximum(Guitar::MAX_CAPO);
+    ui->capoSpinBox->setValue(guitar->GetCapo());
     
     ui->notationOffsetSpinBox->setMinimum(Tuning::MIN_MUSIC_NOTATION_OFFSET);
     ui->notationOffsetSpinBox->setMaximum(Tuning::MAX_MUSIC_NOTATION_OFFSET);
@@ -174,4 +182,9 @@ Tuning TuningDialog::getNewTuning() const
     newTuning.SetTuningNotes(tuningNotes);
 
     return newTuning;
+}
+
+uint8_t TuningDialog::getNewCapo() const
+{
+    return ui->capoSpinBox->value();
 }

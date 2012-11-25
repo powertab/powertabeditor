@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>846</width>
-    <height>241</height>
+    <height>274</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,34 +42,34 @@
      <item row="1" column="1">
       <widget class="QCheckBox" name="sharpsCheckBox"/>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="musicNotationOffsetLabel">
        <property name="text">
         <string>Music Notation Offset:</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QSpinBox" name="notationOffsetSpinBox"/>
      </item>
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="numberOfStringsLabel">
        <property name="text">
         <string>Number of Strings:</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <widget class="QSpinBox" name="numStringsSpinBox"/>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="tuningLabel">
        <property name="text">
         <string>Tuning:</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QComboBox" name="string8"/>
@@ -97,19 +97,29 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="0">
+     <item row="6" column="0">
       <widget class="QLabel" name="presetLabel">
        <property name="text">
         <string>Preset:</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="6" column="1">
       <widget class="QComboBox" name="presetComboBox">
        <property name="sizeAdjustPolicy">
         <enum>QComboBox::AdjustToContents</enum>
        </property>
       </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="capoLabel">
+       <property name="text">
+        <string>Capo:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="capoSpinBox"/>
      </item>
     </layout>
    </item>

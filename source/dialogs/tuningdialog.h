@@ -21,10 +21,12 @@
 #include <QDialog>
 
 #include <vector>
+#include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 
-class Tuning;
 class QComboBox;
+class Guitar;
+class Tuning;
 class TuningDictionary;
 
 namespace Ui {
@@ -35,11 +37,12 @@ class TuningDialog : public QDialog
 {
     Q_OBJECT
 public:
-    TuningDialog(QWidget* parent, const Tuning& currentTuning,
+    TuningDialog(QWidget* parent, boost::shared_ptr<const Guitar> guitar,
                  boost::shared_ptr<TuningDictionary> tuningDictionary);
     ~TuningDialog();
 
     Tuning getNewTuning() const;
+    uint8_t getNewCapo() const;
 
 private slots:
     void toggleSharps(bool usesSharps);
