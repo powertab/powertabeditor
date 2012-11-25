@@ -72,28 +72,28 @@
      <item row="4" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QComboBox" name="string1"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="string2"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="string3"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="string4"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="string5"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="string6"/>
+        <widget class="QComboBox" name="string8"/>
        </item>
        <item>
         <widget class="QComboBox" name="string7"/>
        </item>
        <item>
-        <widget class="QComboBox" name="string8"/>
+        <widget class="QComboBox" name="string6"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="string5"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="string4"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="string3"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="string2"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="string1"/>
        </item>
       </layout>
      </item>
