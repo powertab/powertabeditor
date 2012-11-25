@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,29 +14,35 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef TRILLDIALOG_H
 #define TRILLDIALOG_H
 
 #include <QDialog>
+#include <boost/cstdint.hpp>
+
+namespace Ui {
+class TrillDialog;
+}
 
 class Note;
-class QSpinBox;
 
 class TrillDialog : public QDialog
 {
     Q_OBJECT
+
 public:
-    TrillDialog(QWidget *parent, Note *note, quint8 &trillFret);
+    explicit TrillDialog(QWidget* parent, const Note* note);
+    ~TrillDialog();
+
+    uint8_t getTrill() const;
 
 public slots:
     void accept();
 
-protected:
-    Note* note;
-    quint8& trillFret;
-
-    QSpinBox* trillFretSelector;
+private:
+    Ui::TrillDialog *ui;
+    const Note* note;
 };
 
 #endif // TRILLDIALOG_H

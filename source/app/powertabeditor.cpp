@@ -1916,11 +1916,11 @@ void PowerTabEditor::editTrill()
     }
     else // add a new trill
     {
-        quint8 trillFret = 0;
-        TrillDialog trillDialog(this, currentNote, trillFret);
+        TrillDialog trillDialog(this, currentNote);
         if (trillDialog.exec() == QDialog::Accepted)
         {
-            undoManager->push(new AddTrill(currentNote, trillFret), caret->getCurrentSystemIndex());
+            undoManager->push(new AddTrill(currentNote, trillDialog.getTrill()),
+                              caret->getCurrentSystemIndex());
         }
         else
         {

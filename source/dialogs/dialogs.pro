@@ -6,7 +6,6 @@ PRECOMPILED_HEADER = dialogs_pch.h
 
 HEADERS += \
     tuningdialog.h \
-    trilldialog.h \
     rehearsalsigndialog.h \
     preferencesdialog.h \
     chordnamedialog.h \
@@ -23,11 +22,11 @@ HEADERS += \
     gotorehearsalsigndialog.h \
     tempomarkerdialog.h \
     barlinedialog.h \
-    gotobarlinedialog.h
+    gotobarlinedialog.h \
+    trilldialog.h
 
 SOURCES += \
     tuningdialog.cpp \
-    trilldialog.cpp \
     rehearsalsigndialog.cpp \
     preferencesdialog.cpp \
     chordnamedialog.cpp \
@@ -43,7 +42,8 @@ SOURCES += \
     gotorehearsalsigndialog.cpp \
     tempomarkerdialog.cpp \
     barlinedialog.cpp \
-    gotobarlinedialog.cpp
+    gotobarlinedialog.cpp \
+    trilldialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -59,4 +59,5 @@ FORMS += \
     gotorehearsalsigndialog.ui \
     tempomarkerdialog.ui \
     barlinedialog.ui \
-    gotobarlinedialog.ui
+    gotobarlinedialog.ui \
+    trilldialog.ui
