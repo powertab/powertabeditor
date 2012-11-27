@@ -176,6 +176,8 @@ private:
     bool isPlaying;
     const QString fileFilter;
 
+    uint8_t activeDuration;
+
     QString getApplicationName() const;
     void setupNewDocument();
     void updatePreviousDirectory(const QString& fileName);

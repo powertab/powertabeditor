@@ -22,10 +22,12 @@
 #include <powertabdocument/staff.h>
 
 AddNote::AddNote(uint8_t stringNum, uint8_t fretNumber,
-                 uint32_t positionIndex, uint32_t voice, boost::shared_ptr<Staff> staff) :
+                 uint32_t positionIndex, uint32_t voice, boost::shared_ptr<Staff> staff,
+                 uint8_t durationType) :
     stringNum(stringNum),
     positionIndex(positionIndex),
     voice(voice),
+    durationType(durationType),
     staff(staff),
     note(new Note(stringNum, fretNumber)),
     position(staff->GetPositionByPosition(voice, positionIndex)),
@@ -50,7 +52,7 @@ void AddNote::redo()
         if (!newPositionAdded)
         {
             newPositionAdded = true;
-            position = new Position(positionIndex, 8, 0);
+            position = new Position(positionIndex, durationType, 0);
         }
         staff->InsertPosition(voice, position);
     }

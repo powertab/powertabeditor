@@ -30,7 +30,7 @@ class AddNote : public QUndoCommand
 {
 public:
     AddNote(uint8_t stringNum, uint8_t fretNumber, uint32_t positionIndex,
-            uint32_t voice, boost::shared_ptr<Staff> staff);
+            uint32_t voice, boost::shared_ptr<Staff> staff, uint8_t durationType);
     ~AddNote();
 
     void redo();
@@ -40,6 +40,7 @@ private:
     const uint8_t stringNum;
     uint32_t positionIndex;
     uint32_t voice;
+    uint8_t durationType;
     boost::shared_ptr<Staff> staff;
     Note* note;
     Position* position;

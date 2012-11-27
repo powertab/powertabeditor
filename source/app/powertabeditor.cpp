@@ -141,6 +141,7 @@ boost::scoped_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
     fileFilter("Power Tab Documents (*.ptb)"),
+    activeDuration(8),
     documentManager(new DocumentManager),
     fileFormatManager(new FileFormatManager),
     mixerList(new QStackedWidget),
@@ -279,7 +280,7 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                 {
                     undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
                                                   caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
-                                                  currentStaff),
+                                                  currentStaff, activeDuration),
                                       system);
                 }
 
@@ -497,6 +498,7 @@ void PowerTabEditor::createActions()
     sigfwd::connect(eighthNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 8));
     noteDurationActGroup->addAction(eighthNoteAct);
+    eighthNoteAct->setChecked(true);
 
     sixteenthNoteAct = new Command(tr("16th"), "Note.SixteenthNote", QKeySequence(), this);
     sixteenthNoteAct->setCheckable(true);
@@ -2320,6 +2322,9 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
 /// updates the duration of the selected note(s) if possible
 void PowerTabEditor::updateNoteDuration(uint8_t duration)
 {
+    // first and foremost set activeDuration for future notes
+    activeDuration = duration;
+
     const std::vector<Position*> selectedPositions = getSelectedPositions();
 
     if (!selectedPositions.empty())
