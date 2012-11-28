@@ -107,6 +107,7 @@ public:
 
 signals:
     void moved();
+    void selectionChanged();
 
 public slots:
     void updateSelection(int start, int end);

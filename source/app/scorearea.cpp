@@ -183,7 +183,7 @@ void ScoreArea::renderScore(const Score* score, int lineSpacing)
 // ensures that the caret is visible when it changes sections
 void ScoreArea::adjustScroll()
 {
-    ensureVisible(caret.get(), 50, 100);
+    ensureVisible(caret.get(), 0, 100);
 }
 
 void ScoreArea::setScoreIndex(int newScoreIndex)

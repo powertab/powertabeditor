@@ -1382,6 +1382,7 @@ std::vector<Note*> PowerTabEditor::getSelectedNotes()
 void PowerTabEditor::registerCaret(Caret* caret)
 {
     connect(caret, SIGNAL(moved()), this, SLOT(updateActions()));
+    connect(caret, SIGNAL(selectionChanged()), this, SLOT(updateActions()));
 }
 
 /// Cycles through the tabs in the tab bar

@@ -454,7 +454,7 @@ void Caret::updateSelection(int start, int end)
     qDebug() << "Selected Range: " << start << ", " << end;
 #endif
     selectionRange = std::make_pair(start, end);
-    emit moved();
+    emit selectionChanged();
 }
 
 /// Returns a list of all of the Position objects that are currently selected
