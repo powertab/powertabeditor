@@ -62,10 +62,19 @@ InsertNotes::InsertNotes(Score* score,
                                         currentPositions.front()->GetPosition();
         const int firstBarPos = currentBarlines.empty() ? -1 :
                                         currentBarlines.front()->GetPosition();
-        if (firstPosition >= 0 || firstBarPos > 0)
+
+        // Take the smallest positive number, ignoring the start barline.
+        int position = -1;
+        if (firstPosition >= 0 && firstBarPos > 0)
+            position = std::min(firstPosition, firstBarPos);
+        else if (firstPosition >= 0)
+            position = firstPosition;
+        else if (firstBarPos > 0)
+            position = firstBarPos;
+
+        if (position >= 0)
         {
-            shiftAmount = newPositions.back()->GetPosition() -
-                    std::max(firstPosition, firstBarPos) + 1;
+            shiftAmount = newPositions.back()->GetPosition() - position + 1;
             assert(shiftAmount > 0);
         }
     }
