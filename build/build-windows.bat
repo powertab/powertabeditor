@@ -14,6 +14,7 @@ cd build
 
 md pte
 xcopy /E /Y /I skins pte\skins
+xcopy /E /Y /I data pte\data
 xcopy /Y powertabeditor.exe pte\
 rem Adjust locations to Qt/Mingw dlls if necessary
 xcopy /Y C:\Qt\2010.05\qt\bin\QtGui4.dll pte\

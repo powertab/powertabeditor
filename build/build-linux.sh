@@ -14,7 +14,7 @@ cd build
 
 mkdir pte
 cp powertabeditor pte/
-cp -r skins pte/
+cp -r skins data pte/
 
 tar cfa powertabeditor-linux.tar.gz pte/
 mv powertabeditor-linux.tar.gz ../../
