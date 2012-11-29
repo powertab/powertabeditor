@@ -269,6 +269,8 @@ private:
     Command* decreaseDurationAct;
     Command* dottedNoteAct; // sets a note to be dotted
     Command* doubleDottedNoteAct;
+    Command* addDotAct;
+    Command* removeDotAct;
     Command* tiedNoteAct; // sets a note to be tied to the previous note
     Command* noteMutedAct; // sets the note to be muted
     Command* ghostNoteAct; // set a note to be a ghost note

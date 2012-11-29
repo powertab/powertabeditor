@@ -537,6 +537,9 @@ void PowerTabEditor::createActions()
     connectToggleProperty<Position>(doubleDottedNoteAct, &getSelectedPositions,
                                     &Position::IsDoubleDotted, &Position::SetDoubleDotted);
 
+    addDotAct = new Command(tr("Add Dot"), "Note.AddDot", Qt::SHIFT + Qt::Key_Right, this);
+    removeDotAct = new Command(tr("Remove Dot"), "Note.RemoveDot", Qt::SHIFT + Qt::Key_Left, this);
+
     tiedNoteAct = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
@@ -913,6 +916,9 @@ void PowerTabEditor::createMenus()
     notesMenu->addSeparator();
     notesMenu->addAction(dottedNoteAct);
     notesMenu->addAction(doubleDottedNoteAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(addDotAct);
+    notesMenu->addAction(removeDotAct);
     notesMenu->addSeparator();
     notesMenu->addAction(tiedNoteAct);
     notesMenu->addSeparator();
@@ -2315,6 +2321,45 @@ void PowerTabEditor::updateActions()
             {
                 irregularGroupingAct->setChecked(true);
             }
+        }
+    }
+
+    // Set up signal/slot connections for dot add/remove
+    addDotAct->disconnect(SIGNAL(triggered()));
+    removeDotAct->disconnect(SIGNAL(triggered()));
+
+    if (currentPosition != NULL)
+    {
+        if (currentPosition->IsDotted())
+        {
+            connectToggleProperty<Position>(addDotAct, &getSelectedPositions,
+                                            &Position::IsDoubleDotted, &Position::SetDoubleDotted);
+            connectToggleProperty<Position>(addDotAct, &getSelectedPositions,
+                                            &Position::IsDotted, &Position::SetDotted);
+
+            connectToggleProperty<Position>(removeDotAct, &getSelectedPositions,
+                                            &Position::IsDotted, &Position::SetDotted);
+
+            addDotAct->setEnabled(true);
+            removeDotAct->setEnabled(true);
+        }
+        else if (currentPosition->IsDoubleDotted())
+        {
+            connectToggleProperty<Position>(removeDotAct, &getSelectedPositions,
+                                            &Position::IsDotted, &Position::SetDotted);
+            connectToggleProperty<Position>(removeDotAct, &getSelectedPositions,
+                                            &Position::IsDoubleDotted, &Position::SetDoubleDotted);
+
+            addDotAct->setEnabled(false);
+            removeDotAct->setEnabled(true);
+        }
+        else
+        {
+            connectToggleProperty<Position>(addDotAct, &getSelectedPositions,
+                                            &Position::IsDotted, &Position::SetDotted);
+
+            addDotAct->setEnabled(true);
+            removeDotAct->setEnabled(false);
         }
     }
 }
