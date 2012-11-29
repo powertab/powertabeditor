@@ -660,6 +660,10 @@ void PowerTabEditor::createActions()
     sigfwd::connect(sixtyFourthRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 64));
     
+    addRestAct = new Command(tr("Add Rest"), "Rests.AddRest", QKeySequence(Qt::Key_R), this);
+    sigfwd::connect(addRestAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::addRest, this));
+
     // Music Symbol Actions
     rehearsalSignAct = new Command(tr("Rehearsal Sign..."), "MusicSymbols.EditRehearsalSign",
                                    Qt::SHIFT + Qt::Key_R, this);
@@ -944,6 +948,8 @@ void PowerTabEditor::createMenus()
     restsMenu->addActions(QList<QAction*>() << wholeRestAct << halfRestAct <<
                           quarterRestAct << eighthRestAct << sixteenthRestAct <<
                           thirtySecondRestAct << sixtyFourthRestAct);
+    restsMenu->addSeparator();
+    restsMenu->addAction(addRestAct);
 
     // Music Symbols Menu
     musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -2201,7 +2207,7 @@ void PowerTabEditor::updateActions()
         case 64: sixtyFourthNoteAct->setChecked(true); break;
         }
 
-        foreach (QAction* action, restsMenu->actions())
+        foreach (QAction* action, restDurationsGroup->actions())
         {
             action->setChecked(false);
         }
@@ -2423,6 +2429,11 @@ void PowerTabEditor::updateNoteDuration(uint8_t duration)
         undoManager->push(new UpdateNoteDuration(selectedPositions, duration),
                           getCurrentScoreArea()->getCaret()->getCurrentSystemIndex());
     }
+}
+
+void PowerTabEditor::addRest()
+{
+    editRest(activeDuration);
 }
 
 void PowerTabEditor::editRest(uint8_t duration)

@@ -89,6 +89,7 @@ private:
     void editSlideOutOf(uint8_t newSlideType);
     void shiftTabNumber(int direction);
     void updateNoteDuration(uint8_t duration);
+    void addRest();
     void editRest(uint8_t duration);
     void editKeySignature(const SystemLocation &location);
     void editTimeSignature(const SystemLocation &location);
@@ -298,6 +299,7 @@ private:
     Command* sixteenthRestAct;
     Command* thirtySecondRestAct;
     Command* sixtyFourthRestAct;
+    Command* addRestAct;
 
     QMenu* musicSymbolsMenu;
     Command* rehearsalSignAct; // add/remove rehearsal signs
