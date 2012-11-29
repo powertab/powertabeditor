@@ -141,7 +141,7 @@ boost::scoped_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
     fileFilter("Power Tab Documents (*.ptb)"),
-    activeDuration(8),
+    activeDuration(Position::DEFAULT_DURATION_TYPE),
     documentManager(new DocumentManager),
     fileFormatManager(new FileFormatManager),
     mixerList(new QStackedWidget),
