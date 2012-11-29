@@ -498,7 +498,6 @@ void PowerTabEditor::createActions()
     sigfwd::connect(eighthNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 8));
     noteDurationActGroup->addAction(eighthNoteAct);
-    eighthNoteAct->setChecked(true);
 
     sixteenthNoteAct = new Command(tr("16th"), "Note.SixteenthNote", QKeySequence(), this);
     sixteenthNoteAct->setCheckable(true);
@@ -517,6 +516,16 @@ void PowerTabEditor::createActions()
     sigfwd::connect(sixtyFourthNoteAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::updateNoteDuration, this, 64));
     noteDurationActGroup->addAction(sixtyFourthNoteAct);
+
+    increaseDurationAct = new Command(tr("Increase Duration"),
+                                         "Note.IncreaseDuration", Qt::SHIFT + Qt::Key_Up, this);
+    sigfwd::connect(increaseDurationAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::changeNoteDuration, this, true));
+
+    decreaseDurationAct = new Command(tr("Decrease Duration"),
+                                         "Note.DecreaseDuration", Qt::SHIFT + Qt::Key_Down, this);
+    sigfwd::connect(decreaseDurationAct, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::changeNoteDuration, this, false));
 
     dottedNoteAct = new Command(tr("Dotted"), "Note.Dotted", QKeySequence(), this);
     dottedNoteAct->setCheckable(true);
@@ -898,6 +907,9 @@ void PowerTabEditor::createMenus()
     notesMenu->addAction(sixteenthNoteAct);
     notesMenu->addAction(thirtySecondNoteAct);
     notesMenu->addAction(sixtyFourthNoteAct);
+    notesMenu->addSeparator();
+    notesMenu->addAction(increaseDurationAct);
+    notesMenu->addAction(decreaseDurationAct);
     notesMenu->addSeparator();
     notesMenu->addAction(dottedNoteAct);
     notesMenu->addAction(doubleDottedNoteAct);
@@ -2140,49 +2152,57 @@ void PowerTabEditor::updateActions()
     chordNameAct->setChecked(currentSystem->HasChordText(caretPosition));
 
     // note and rest duration
+    uint8_t duration = activeDuration;
+    bool isRest = false;
+
     if (currentPosition != NULL)
     {
-        const uint8_t duration = currentPosition->GetDurationType();
-        if (currentPosition->IsRest())
-        {
-            switch(duration)
-            {
-            case 1: wholeRestAct->setChecked(true); break;
-            case 2: halfRestAct->setChecked(true); break;
-            case 4: quarterRestAct->setChecked(true); break;
-            case 8: eighthRestAct->setChecked(true); break;
-            case 16: sixteenthRestAct->setChecked(true); break;
-            case 32: thirtySecondRestAct->setChecked(true); break;
-            case 64: sixtyFourthRestAct->setChecked(true); break;
-            }
+        duration = currentPosition->GetDurationType();
+        isRest = currentPosition->IsRest();
+    }
 
-            wholeNoteAct->setChecked(false);
-            halfNoteAct->setChecked(false);
-            quarterNoteAct->setChecked(false);
-            eighthNoteAct->setChecked(false);
-            sixteenthNoteAct->setChecked(false);
-            thirtySecondNoteAct->setChecked(false);
-            sixtyFourthNoteAct->setChecked(false);
+    if (isRest)
+    {
+        switch(duration)
+        {
+        case 1: wholeRestAct->setChecked(true); break;
+        case 2: halfRestAct->setChecked(true); break;
+        case 4: quarterRestAct->setChecked(true); break;
+        case 8: eighthRestAct->setChecked(true); break;
+        case 16: sixteenthRestAct->setChecked(true); break;
+        case 32: thirtySecondRestAct->setChecked(true); break;
+        case 64: sixtyFourthRestAct->setChecked(true); break;
         }
-        else
-        {
-            switch(duration)
-            {
-            case 1: wholeNoteAct->setChecked(true); break;
-            case 2: halfNoteAct->setChecked(true); break;
-            case 4: quarterNoteAct->setChecked(true); break;
-            case 8: eighthNoteAct->setChecked(true); break;
-            case 16: sixteenthNoteAct->setChecked(true); break;
-            case 32: thirtySecondNoteAct->setChecked(true); break;
-            case 64: sixtyFourthNoteAct->setChecked(true); break;
-            }
 
-            foreach (QAction* action, restsMenu->actions())
-            {
-                action->setChecked(false);
-            }
+        wholeNoteAct->setChecked(false);
+        halfNoteAct->setChecked(false);
+        quarterNoteAct->setChecked(false);
+        eighthNoteAct->setChecked(false);
+        sixteenthNoteAct->setChecked(false);
+        thirtySecondNoteAct->setChecked(false);
+        sixtyFourthNoteAct->setChecked(false);
+    }
+    else
+    {
+        switch(duration)
+        {
+        case 1: wholeNoteAct->setChecked(true); break;
+        case 2: halfNoteAct->setChecked(true); break;
+        case 4: quarterNoteAct->setChecked(true); break;
+        case 8: eighthNoteAct->setChecked(true); break;
+        case 16: sixteenthNoteAct->setChecked(true); break;
+        case 32: thirtySecondNoteAct->setChecked(true); break;
+        case 64: sixtyFourthNoteAct->setChecked(true); break;
+        }
+
+        foreach (QAction* action, restsMenu->actions())
+        {
+            action->setChecked(false);
         }
     }
+
+    increaseDurationAct->setEnabled(duration != 1);
+    decreaseDurationAct->setEnabled(duration != 64);
 
     const RehearsalSign* currentRehearsalSign = currentBarline ? &currentBarline->GetRehearsalSign() : NULL;
     updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
@@ -2319,6 +2339,31 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
     saveFileAsAct->setEnabled(enable);
 }
 
+void PowerTabEditor::changeNoteDuration(bool increase)
+{
+// TODO shift+up on a selection should increase the duration of each note
+//    const std::vector<Position*> selectedPositions = getSelectedPositions();
+//    if (!selectedPositions.empty())
+//    {
+//        uint duration = selectedPositions.at(0)->GetDuration();
+//        updateNoteDuration(increase ? duration >> 1 : duration << 1);
+//    }
+
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    const Position* currentPosition = caret->getCurrentPosition();
+
+    if (currentPosition != NULL)
+    {
+        uint8_t duration = currentPosition->GetDurationType();
+        updateNoteDuration(increase ? duration >> 1 : duration << 1);
+    }
+    else
+    {
+        updateNoteDuration(increase ? activeDuration >> 1 : activeDuration << 1);
+    }
+
+    updateActions();
+}
 /// Updates the active note duration (for inserting future notes), and
 /// updates the duration of the selected note(s) if possible
 void PowerTabEditor::updateNoteDuration(uint8_t duration)

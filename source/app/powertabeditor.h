@@ -80,6 +80,7 @@ private:
     void updateScoreAreaActions(bool enable);
     bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
+    void changeNoteDuration(bool increase);
     void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
 
@@ -264,6 +265,8 @@ private:
     Command* sixteenthNoteAct;
     Command* thirtySecondNoteAct;
     Command* sixtyFourthNoteAct;
+    Command* increaseDurationAct;
+    Command* decreaseDurationAct;
     Command* dottedNoteAct; // sets a note to be dotted
     Command* doubleDottedNoteAct;
     Command* tiedNoteAct; // sets a note to be tied to the previous note
