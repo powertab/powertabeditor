@@ -105,6 +105,8 @@ public:
     std::vector<boost::shared_ptr<Barline> > getSelectedBarlines() const;
     bool hasSelection() const;
 
+    QString toString() const;
+
 signals:
     void moved();
     void selectionChanged();

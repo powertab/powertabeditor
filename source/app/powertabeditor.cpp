@@ -1194,6 +1194,11 @@ void PowerTabEditor::setupNewDocument()
             this, SLOT(rewindPlaybackToStart()));
     connect(playback, SIGNAL(scoreSelected(int)),
             score, SLOT(setScoreIndex(int)));
+
+    sigfwd::connect(score->getCaret(), SIGNAL(moved()),
+                    boost::bind(&PlaybackWidget::updateLocationLabel, playback,
+                                boost::bind(&Caret::toString, score->getCaret())));
+
     playbackToolbarList->addWidget(playback);
 
     // ensure all the scores are visible to select

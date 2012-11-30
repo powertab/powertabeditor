@@ -193,6 +193,15 @@ void Caret::paintSelection(QPainter* painter)
     painter->drawRect(rect);
 }
 
+QString Caret::toString() const
+{
+	// Add 1 to all indices, since non-computer scientists don't count from 0
+    boost::format output = boost::format("System: %d, Staff: %d, Position: %d, String: %d") % (currentSystemIndex + 1)
+            % (currentStaffIndex + 1) % (currentPositionIndex + 1) % (currentStringIndex + 1);
+
+    return QString::fromStdString(output.str());
+}
+
 void Caret::updatePosition()
 {
     shared_ptr<const System> currentSystem = getCurrentSystem();
@@ -203,10 +212,7 @@ void Caret::updatePosition()
     emit moved();
 
     // useful debug information - display the caret's location in the widget's tooltip
-    boost::format output = boost::format("System: %d, Staff: %d, Position: %d, String: %d") % currentSystemIndex
-            % currentStaffIndex % currentPositionIndex % currentStringIndex;
-
-    setToolTip(QString::fromStdString(output.str()));
+    setToolTip(this->toString());
 }
 
 // Moves the caret either left or right

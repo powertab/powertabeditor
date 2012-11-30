@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>27</height>
+    <width>682</width>
+    <height>45</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -97,6 +97,13 @@
      </property>
      <property name="checkable">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="locationLabel">
+     <property name="text">
+      <string>System: 1, Staff: 1, Position: 1, String: 1</string>
      </property>
     </widget>
    </item>

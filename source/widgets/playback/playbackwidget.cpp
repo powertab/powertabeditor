@@ -113,3 +113,8 @@ void PlaybackWidget::onDocumentUpdated(QStringList& scores)
     ui->scoreSelector->clear();
     ui->scoreSelector->addItems(scores);
 }
+
+void PlaybackWidget::updateLocationLabel(const QString &location)
+{
+    ui->locationLabel->setText(location);
+}

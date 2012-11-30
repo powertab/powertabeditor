@@ -46,6 +46,9 @@ signals:
     void rewindToStartClicked();
     void scoreSelected(int scoreIndex);
 
+public slots:
+    void updateLocationLabel(const QString& location);
+
 private slots:
     void onMetronomeButtonToggled(bool enable);
 
