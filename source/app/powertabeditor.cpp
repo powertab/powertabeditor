@@ -1509,6 +1509,7 @@ void PowerTabEditor::shiftTabNumber(int direction)
     undoManager->push(new ShiftTabNumber(caret->getCurrentStaff(), currentPos,
                                          currentNote, shiftType, tuning),
                       caret->getCurrentSystemIndex());
+    caret->moveCaretVertical(direction == 1 ? direction : -1);
 }
 
 bool PowerTabEditor::moveCaretToSystem(quint32 system)
