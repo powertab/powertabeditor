@@ -180,6 +180,13 @@ bool Note::SetFretNumber(uint8_t fretNumber)
     m_stringData &= ~fretNumberMask;
     m_stringData |= fretNumber;
 
+    // If the trilled fret is the same as the new fret number, clear the trill.
+    uint8_t trilledFret = 0;
+    if (GetTrill(trilledFret) && trilledFret == fretNumber)
+    {
+        ClearTrill();
+    }
+
     return true;
 }
 
