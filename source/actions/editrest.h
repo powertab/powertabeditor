@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef EDITREST_H
 #define EDITREST_H
 
@@ -22,13 +22,16 @@
 #include <boost/cstdint.hpp>
 #include <vector>
 
+#include <powertabdocument/system.h>
+#include <powertabdocument/staff.h>
+
 class Note;
 class Position;
 
 class EditRest : public QUndoCommand
 {
 public:
-    EditRest(Position* position, uint8_t duration);
+    EditRest(Position* position, const System::StaffPtr staff, const uint32_t insertPos, const uint32_t voice, const uint8_t duration);
     ~EditRest();
 
     void redo();
@@ -37,10 +40,18 @@ public:
 private:
     void saveOrRestoreNotes(bool saveNotes);
 
+    uint8_t getOriginalDuration(const Position* position, const uint8_t duration);
+    bool getWasAlreadyRest(const Position* position);
+
     Position* position;
+    const System::StaffPtr staff;
+    const uint32_t insertPos;
+    const uint32_t voice;
     const uint8_t newDuration;
     const uint8_t originalDuration;
     const bool wasAlreadyRest;
+    const bool allocatePosition;
+    bool deletePosition;
     std::vector<Note*> notes;
 };
 

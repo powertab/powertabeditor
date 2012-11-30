@@ -2440,17 +2440,11 @@ void PowerTabEditor::editRest(uint8_t duration)
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
     Position* currentPosition = caret->getCurrentPosition();
+    System::StaffPtr currentStaff = caret->getCurrentStaff();
+    const uint32_t currentVoice = caret->getCurrentVoice();
+    const uint32_t currentPositionIndex = caret->getCurrentPositionIndex();
 
-    // insert an empty position if necessary
-    if (!currentPosition)
-    {
-        System::StaffPtr currentStaff = caret->getCurrentStaff();
-        currentPosition = new Position(caret->getCurrentPositionIndex(),
-                                       Position::DEFAULT_DURATION_TYPE, 0);
-        currentStaff->InsertPosition(caret->getCurrentVoice(), currentPosition);
-    }
-
-    undoManager->push(new EditRest(currentPosition, duration),
+    undoManager->push(new EditRest(currentPosition, currentStaff, currentPositionIndex, currentVoice, duration),
                       caret->getCurrentSystemIndex());
 }
 

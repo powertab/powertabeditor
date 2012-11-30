@@ -14,18 +14,28 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "editrest.h"
 
 #include <powertabdocument/position.h>
 #include <powertabdocument/note.h>
 
-EditRest::EditRest(Position* position, uint8_t duration) :
+EditRest::EditRest(Position* position, const System::StaffPtr staff, const uint32_t insertPos, const uint32_t voice, const uint8_t duration) :
     position(position),
+    staff(staff),
+    insertPos(insertPos),
+    voice(voice),
     newDuration(duration),
-    originalDuration(position->GetDurationType()),
-    wasAlreadyRest(position->IsRest())
+    originalDuration(getOriginalDuration(position, duration)),
+    wasAlreadyRest(getWasAlreadyRest(position)),
+    allocatePosition(position == NULL),
+    deletePosition(false)
 {
+    if (allocatePosition)
+    {
+        this->position = new Position(insertPos, Position::DEFAULT_DURATION_TYPE, 0);
+    }
+
     if (!wasAlreadyRest)
     {
         setText(QObject::tr("Add Rest"));
@@ -43,18 +53,31 @@ EditRest::EditRest(Position* position, uint8_t duration) :
 EditRest::~EditRest()
 {
     qDeleteAll(notes);
+
+    if (deletePosition)
+    {
+        delete position;
+    }
 }
 
 void EditRest::redo()
 {
+    if (allocatePosition)
+    {
+        staff->InsertPosition(voice, position);
+    }
+
     if (wasAlreadyRest && (newDuration == originalDuration))
     {
         position->SetRest(false);
+        staff->RemovePosition(voice, staff->GetIndexOfPosition(voice, position));
+        deletePosition = true;
     }
     else
     {
         position->SetRest(true);
         position->SetDurationType(newDuration);
+        deletePosition = false;
     }
 
     saveOrRestoreNotes(!wasAlreadyRest);
@@ -65,6 +88,17 @@ void EditRest::undo()
     position->SetRest(wasAlreadyRest);
     position->SetDurationType(originalDuration);
     saveOrRestoreNotes(wasAlreadyRest);
+
+    deletePosition = false;
+    if (wasAlreadyRest && (newDuration == originalDuration))
+    {
+        staff->InsertPosition(voice, position);
+    }
+    else if (allocatePosition)
+    {
+        staff->RemovePosition(voice, staff->GetIndexOfPosition(voice, position));
+        deletePosition = true;
+    }
 }
 
 void EditRest::saveOrRestoreNotes(bool saveNotes)
@@ -93,3 +127,14 @@ void EditRest::saveOrRestoreNotes(bool saveNotes)
         notes.clear();
     }
 }
+
+uint8_t EditRest::getOriginalDuration(const Position* position, const uint8_t duration)
+{
+    return (position == NULL ? duration : position->GetDurationType());
+}
+
+bool EditRest::getWasAlreadyRest(const Position* position)
+{
+    return (position != NULL && position->IsRest());
+}
+
