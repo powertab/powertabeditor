@@ -111,6 +111,9 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
             {
                 currentSystem->SetStartBar(currentBar->barline);
                 currentBar->barline->SetPosition(0);
+
+                // Show the key signature at the start of each system.
+                currentBar->barline->GetKeySignature().SetShown(true);
             }
             else
             {
