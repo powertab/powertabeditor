@@ -35,6 +35,18 @@ ShiftTabNumber::ShiftTabNumber(boost::shared_ptr<Staff> staff,
     setText(shiftUp ? QObject::tr("Shift Tab Number Up") :
                       QObject::tr("Shift Tab Number Down"));
 
+    prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note);
+    if (prevNote)
+    {
+        origPrevNote = *prevNote;
+    }
+
+    nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note);
+    if (nextNote)
+    {
+        origNextNote = *nextNote;
+    }
+
     origNote = *note;
 }
 
@@ -46,4 +58,14 @@ void ShiftTabNumber::redo()
 void ShiftTabNumber::undo()
 {
     *note = origNote;
+
+    if (prevNote)
+    {
+        *prevNote = origPrevNote;
+    }
+
+    if (nextNote)
+    {
+        *nextNote = origNextNote;
+    }
 }
