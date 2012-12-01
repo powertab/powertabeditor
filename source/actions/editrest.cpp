@@ -70,7 +70,7 @@ void EditRest::redo()
     if (wasAlreadyRest && (newDuration == originalDuration))
     {
         position->SetRest(false);
-        staff->RemovePosition(voice, staff->GetIndexOfPosition(voice, position));
+        staff->RemovePosition(voice, position->GetPosition());
         deletePosition = true;
     }
     else
@@ -96,7 +96,7 @@ void EditRest::undo()
     }
     else if (allocatePosition)
     {
-        staff->RemovePosition(voice, staff->GetIndexOfPosition(voice, position));
+        staff->RemovePosition(voice, position->GetPosition());
         deletePosition = true;
     }
 }
