@@ -23,7 +23,6 @@
 EditRest::EditRest(Position* position, const System::StaffPtr staff, const uint32_t insertPos, const uint32_t voice, const uint8_t duration) :
     position(position),
     staff(staff),
-    insertPos(insertPos),
     voice(voice),
     newDuration(duration),
     originalDuration(getOriginalDuration(position, duration)),
