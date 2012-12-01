@@ -2297,7 +2297,8 @@ void PowerTabEditor::updateActions()
 
     updatePropertyStatus(volumeSwellAct, currentPosition, &Position::HasVolumeSwell);
 
-    shiftBackwardAct->setEnabled(currentPosition == NULL);
+    shiftBackwardAct->setEnabled(!currentPosition && !currentBarline &&
+                                 !tempoMarker && !altEnding && !dynamic);
 
     clearNoteAct->setEnabled(currentNote != NULL);
 
