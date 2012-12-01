@@ -45,7 +45,6 @@ private:
 
     Position* position;
     const System::StaffPtr staff;
-    const uint32_t insertPos;
     const uint32_t voice;
     const uint8_t newDuration;
     const uint8_t originalDuration;
