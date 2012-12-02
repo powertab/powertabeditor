@@ -48,9 +48,10 @@ public:
     bool canDrawFlag() const;
 
     static NoteStem::StemDirection findDirectionForGroup(const std::vector<NoteStem>& stems);
+    static NoteStem::StemDirection setStemDirection(std::vector<NoteStem>& stems);
+    static NoteStem findHighestStem(const std::vector<NoteStem>& stems);
+    static NoteStem findLowestStem(const std::vector<NoteStem>& stems);
+    static bool needsStem(const Position *pos);
 };
-
-bool compareStemTopPositions(const NoteStem& stem1, const NoteStem& stem2);
-bool compareStemBottomPositions(const NoteStem& stem1, const NoteStem& stem2);
 
 #endif // NOTESTEM_H

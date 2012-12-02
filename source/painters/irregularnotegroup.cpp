@@ -38,14 +38,14 @@ void IrregularNoteGroup::draw(QGraphicsItem* parent)
 
     if (direction == NoteStem::StemUp)
     {
-        NoteStem highestStem = *std::min_element(noteStems.begin(), noteStems.end(), compareStemTopPositions);
+        NoteStem highestStem = NoteStem::findHighestStem(noteStems);
 
         y1 = y2 = highestStem.stemTop - GROUP_SPACING;
         y2 -= GROUP_HEIGHT;
     }
     else
     {
-        NoteStem lowestStem = *std::max_element(noteStems.begin(), noteStems.end(), compareStemBottomPositions);
+        NoteStem lowestStem = NoteStem::findLowestStem(noteStems);
 
         y1 = y2 = lowestStem.stemBottom + GROUP_SPACING;
         y2 += GROUP_HEIGHT;

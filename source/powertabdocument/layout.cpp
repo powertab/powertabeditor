@@ -23,6 +23,7 @@
 #include "barline.h"
 #include "position.h"
 #include "guitar.h"
+#include "notestem.h"
 
 #include <limits>
 #include <algorithm>
@@ -40,18 +41,20 @@ const boost::array<Layout::SymbolType, 7> symbolsBelowTabStaff = {{
 }};
 }
 
-/// Adjust the spacing around the standard notation staff, depending on if any notes are located above/below the staff
+/// Adjust the spacing around the standard notation staff, depending on if any
+/// notes are located above/below the staff.
 void Layout::CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> system)
 {
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
 
+    std::vector<NoteStem> stems;
+
     // idea: find the highest and lowest note of each staff (this requires a lot of loops ...)
     for (size_t staffIndex = 0; staffIndex < system->GetStaffCount(); ++staffIndex)
     {
-        int maxNoteLocation = std::numeric_limits<int>::min();
-        int minNoteLocation = std::numeric_limits<int>::max();
-        bool noteEncountered = false;
+        double maxNoteLocation = std::numeric_limits<double>::min();
+        double minNoteLocation = std::numeric_limits<double>::max();
 
         System::StaffPtr staff = system->GetStaff(staffIndex);
 
@@ -72,39 +75,67 @@ void Layout::CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> 
                 for (size_t i = 0; i < positions.size(); i++)
                 {
                     const Position* pos = positions[i];
+                    std::vector<int> noteLocations;
 
                     for (size_t j = 0; j < pos->GetNoteCount(); j++)
                     {
-                        const int noteLocation = staff->GetNoteLocation(pos->GetNote(j), activeKeySig, tuning);
+                        const double noteLocation = staff->GetNoteLocation(pos->GetNote(j), activeKeySig, tuning) *
+                                0.5 * Staff::STD_NOTATION_LINE_SPACING;
 
                         maxNoteLocation = std::max(maxNoteLocation, noteLocation);
                         minNoteLocation = std::min(minNoteLocation, noteLocation);
 
-                        noteEncountered = true;
+                        noteLocations.push_back(noteLocation);
+                    }
+
+                    if (NoteStem::needsStem(pos))
+                    {
+                        stems.push_back(NoteStem(pos, 0, noteLocations, 0, 0));
                     }
                 }
             }
         }
 
-        // since we use +/- INT_MAX for correctly computing the minimum/maximum, we don't want to accidently
-        // set the staff spacing to a very large/small value
-        if (noteEncountered)
+        // We also need to make sure there is enough space for the beaming. The
+        // max/min comparison above is still necessary though, since e.g. whole
+        // notes are not beamed.
+        std::vector<NoteStem> currentStemGroup;
+        BOOST_FOREACH(const NoteStem& stem, stems)
         {
-            if (minNoteLocation < 0) // if the highest note is above the staff
-            {
-                staff->SetStandardNotationStaffAboveSpacing(-minNoteLocation * 0.5 *
-                                                            Staff::STD_NOTATION_LINE_SPACING +
-                                                            Staff::STAFF_BORDER_SPACING);
-            }
+            currentStemGroup.push_back(stem);
 
-            // if the lowest note is below "middle C" on the staff
-            const int BOTTOM_BOUNDARY = Staff::STD_NOTATION_STAFF_TYPE * 2;
-            if (maxNoteLocation > BOTTOM_BOUNDARY)
+            if (stem.position->IsBeamEnd() ||
+                (!stem.position->IsBeamStart() && currentStemGroup.size() == 1))
             {
-                staff->SetStandardNotationStaffBelowSpacing((maxNoteLocation - BOTTOM_BOUNDARY) *
-                                                            0.5 * Staff::STD_NOTATION_LINE_SPACING);
+                NoteStem::StemDirection direction = NoteStem::setStemDirection(
+                            currentStemGroup);
+
+                if (direction == NoteStem::StemUp)
+                {
+                    NoteStem stem = NoteStem::findHighestStem(currentStemGroup);
+                    minNoteLocation = std::min(minNoteLocation,
+                                               stem.stemTop - stem.stemSize());
+                }
+                else // stem down
+                {
+                    NoteStem stem = NoteStem::findLowestStem(currentStemGroup);
+                    maxNoteLocation = std::max(maxNoteLocation,
+                                            stem.stemBottom + stem.stemSize());
+                }
+
+                currentStemGroup.clear();
             }
         }
+
+        // Add spacing if the note is above the staff (height 0).
+        staff->SetStandardNotationStaffAboveSpacing(-std::min(0.0, minNoteLocation) +
+                                                    Staff::STAFF_BORDER_SPACING);
+
+        // Add spacing if the lowest note is below "middle C" on the staff.
+        const double BOTTOM_BOUNDARY = Staff::STD_NOTATION_STAFF_TYPE *
+                Staff::STD_NOTATION_LINE_SPACING;
+        staff->SetStandardNotationStaffBelowSpacing(
+                    std::max(maxNoteLocation, BOTTOM_BOUNDARY) - BOTTOM_BOUNDARY);
     }
 }
 

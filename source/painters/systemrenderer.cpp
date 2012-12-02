@@ -21,6 +21,8 @@
 
 #include <boost/foreach.hpp>
 
+#include <app/common.h>
+#include <app/scorearea.h>
 #include <powertabdocument/rect.h>
 #include <powertabdocument/system.h>
 #include <powertabdocument/staff.h>
@@ -36,8 +38,6 @@
 #include <powertabdocument/dynamic.h>
 #include <powertabdocument/guitar.h>
 #include <powertabdocument/notestem.h>
-
-#include <app/common.h>
 
 #include "barlinepainter.h"
 #include "staffdata.h"
@@ -56,8 +56,6 @@
 #include "beamgroup.h"
 #include "irregularnotegroup.h"
 #include "caret.h"
-
-#include <app/scorearea.h>
 
 using boost::shared_ptr;
 
@@ -1055,7 +1053,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
 
     QList<StdNotationPainter*> notePainters;
     QMultiMap<int, StdNotationPainter*> accidentalsMap;
-    std::list<NoteStem> stems;
+    std::vector<NoteStem> stems;
 
     for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
     {
@@ -1114,7 +1112,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
             }
 
             // add note stem for any notes other than whole notes
-            if (currentPosition->GetDurationType() != 1 && currentPosition->GetNoteCount() > 0)
+            if (NoteStem::needsStem(currentPosition))
             {
                 NoteStem stem(currentPosition, location, noteLocations,
                               stdNotePainter->noteHeadWidth(),
@@ -1142,17 +1140,15 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
     }
 
     std::vector<NoteStem> currentStemGroup;
-    std::list<NoteStem> updatedStems;
+    std::vector<NoteStem> updatedStems;
 
     // group all of the stems into their beaming groups, and draw them
-    while(!stems.empty())
+    BOOST_FOREACH(const NoteStem& stem, stems)
     {
-        NoteStem stem = stems.front();
-        stems.pop_front();
-
         currentStemGroup.push_back(stem);
 
-        if (stem.position->IsBeamEnd() || (!stem.position->IsBeamStart() && currentStemGroup.size() == 1))
+        if (stem.position->IsBeamEnd() ||
+                (!stem.position->IsBeamStart() && currentStemGroup.size() == 1))
         {
             BeamGroup group(currentStaffInfo, currentStemGroup);
             currentStemGroup.clear();
@@ -1161,7 +1157,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
 
             // grab a copy of the updated note stems for later use
             std::vector<NoteStem> temp;
-            group.copyNoteSteams(temp);
+            group.copyNoteStems(temp);
             updatedStems.insert(updatedStems.end(), temp.begin(), temp.end());
         }
     }
@@ -1170,11 +1166,8 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
     // This must be done after the beams are drawn, since the note stems will be adjusted during that process
     std::vector<NoteStem> currentIrregularNoteGroup;
 
-    while(!updatedStems.empty())
+    BOOST_FOREACH(const NoteStem& stem, stems)
     {
-        NoteStem stem = updatedStems.front();
-        updatedStems.pop_front();
-
         // check if this note isn't part of an irregular grouping
         if (!stem.position->IsIrregularGroupingEnd() &&
                 !stem.position->IsIrregularGroupingMiddle() &&

@@ -35,10 +35,9 @@ public:
 
     static const double FRACTIONAL_BEAM_WIDTH;
 
-    void copyNoteSteams(std::vector<NoteStem>& stems) const;
+    void copyNoteStems(std::vector<NoteStem>& stems) const;
 
 private:
-    void setStemDirections();
     void adjustStemHeights();
 
     QGraphicsItem* createStaccato(const NoteStem& noteStem) const;

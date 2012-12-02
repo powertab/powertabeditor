@@ -426,6 +426,7 @@ Score::AlternateEndingPtr Score::FindAlternateEnding(const SystemLocation& locat
 /// @param system The system to update the height of
 void Score::UpdateSystemHeight(SystemPtr system)
 {
+    system->CalculateBeamingForStaves();
     Layout::CalculateStdNotationHeight(this, system);
 
     // Store the original height, recalculate the height, then find the height difference
@@ -438,8 +439,6 @@ void Score::UpdateSystemHeight(SystemPtr system)
         Layout::CalculateTabStaffBelowSpacing(system, currentStaff);
         Layout::CalculateSymbolSpacing(this, system, currentStaff);
     }
-
-    system->CalculateBeamingForStaves();
     
     UpdateExtraSpacing(system);
     

@@ -81,6 +81,23 @@ NoteStem::StemDirection NoteStem::findDirectionForGroup(const std::vector<NoteSt
     return (stemsDown >= stemsUp) ? NoteStem::StemDown : NoteStem::StemUp;
 }
 
+/// Sets the stem directions for all stems in a group.
+/// This depends on how many stems point upwards/downwards.
+NoteStem::StemDirection NoteStem::setStemDirection(std::vector<NoteStem> &stems)
+{
+    NoteStem::StemDirection dir = findDirectionForGroup(stems);
+
+    // Assign the new stem direction to each stem
+    for (size_t i = 0; i < stems.size(); i++)
+    {
+        stems[i].stemDirection = dir;
+    }
+
+    return dir;
+}
+
+namespace
+{
 bool compareStemTopPositions(const NoteStem &stem1, const NoteStem &stem2)
 {
     return stem1.stemTop < stem2.stemTop;
@@ -89,6 +106,23 @@ bool compareStemTopPositions(const NoteStem &stem1, const NoteStem &stem2)
 bool compareStemBottomPositions(const NoteStem &stem1, const NoteStem &stem2)
 {
     return stem1.stemBottom < stem2.stemBottom;
+}
+}
+
+NoteStem NoteStem::findHighestStem(const std::vector<NoteStem>& stems)
+{
+    return *std::min_element(stems.begin(), stems.end(), &compareStemTopPositions);
+}
+
+NoteStem NoteStem::findLowestStem(const std::vector<NoteStem>& stems)
+{
+    return *std::max_element(stems.begin(), stems.end(), &compareStemBottomPositions);
+}
+
+bool NoteStem::needsStem(const Position *pos)
+{
+    return pos->GetDurationType() != 1 && !pos->IsRest() &&
+            !pos->HasMultibarRest() && pos->GetNoteCount() > 0;
 }
 
 /// Returns true if we can draw a flag for this note stem (must be eighth note or higher, or a grace note)

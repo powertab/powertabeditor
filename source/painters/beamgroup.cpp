@@ -47,22 +47,8 @@ BeamGroup::BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& no
         this->noteStems[i].stemBottom += staffInfo.getTopStdNotationLine();
     }
 
-    setStemDirections();
+    stemDirection = NoteStem::setStemDirection(this->noteStems);
     adjustStemHeights();
-}
-
-
-/// Sets the stem directions for all stems in the beam group
-/// This depends on how many stems currently point upwards/downwards
-void BeamGroup::setStemDirections()
-{
-    stemDirection = NoteStem::findDirectionForGroup(noteStems);
-
-    // Assign the new stem direction to each stem
-    for (size_t i = 0; i < noteStems.size(); i++)
-    {
-        noteStems[i].stemDirection = stemDirection;
-    }
 }
 
 /// Stretches the beams to a common high/low height, depending on stem direction
@@ -70,10 +56,10 @@ void BeamGroup::adjustStemHeights()
 {
     if (stemDirection == NoteStem::StemUp)
     {
-        NoteStem highestStem = *std::min_element(noteStems.begin(), noteStems.end(),
-                                                 &compareStemTopPositions);
+        NoteStem highestStem = NoteStem::findHighestStem(noteStems);
 
-        for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
+        for (std::vector<NoteStem>::iterator stem = noteStems.begin();
+             stem != noteStems.end(); ++stem)
         {
             stem->xPosition += stem->noteHeadRightEdge - 1;
             stem->stemTop = highestStem.stemTop - highestStem.stemSize();
@@ -81,10 +67,10 @@ void BeamGroup::adjustStemHeights()
     }
     else // stem down
     {
-        NoteStem lowestStem = *std::max_element(noteStems.begin(), noteStems.end(),
-                                                &compareStemBottomPositions);
+        NoteStem lowestStem = NoteStem::findLowestStem(noteStems);
 
-        for (std::vector<NoteStem>::iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
+        for (std::vector<NoteStem>::iterator stem = noteStems.begin();
+             stem != noteStems.end(); ++stem)
         {
             stem->xPosition += stem->noteHeadRightEdge - stem->noteHeadWidth;
             stem->stemBottom = lowestStem.stemBottom + lowestStem.stemSize();
@@ -200,7 +186,7 @@ void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
 }
 
 /// Copies all of the note stems in the group
-void BeamGroup::copyNoteSteams(std::vector<NoteStem>& stems) const
+void BeamGroup::copyNoteStems(std::vector<NoteStem>& stems) const
 {
     stems = this->noteStems;
 }
