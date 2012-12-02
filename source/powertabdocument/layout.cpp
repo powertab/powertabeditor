@@ -39,6 +39,24 @@ const boost::array<Layout::SymbolType, 7> symbolsBelowTabStaff = {{
     Layout::SymbolHammerOnPullOff, Layout::SymbolSlide,
     Layout::SymbolTappedHarmonic, Layout::SymbolArtificialHarmonic
 }};
+
+bool compareHeightOfGroup(const Layout::SymbolGroup& group1, const Layout::SymbolGroup& group2)
+{
+    return group1.height < group2.height;
+}
+
+int maxHeightOfSymbolGroups(const std::vector<Layout::SymbolGroup>& symbolGroups)
+{
+    int maxHeight = 0;
+
+    if (!symbolGroups.empty())
+    {
+        maxHeight = std::max_element(symbolGroups.begin(), symbolGroups.end(), compareHeightOfGroup)->height;
+    }
+
+    return maxHeight;
+}
+
 }
 
 /// Adjust the spacing around the standard notation staff, depending on if any
@@ -128,35 +146,22 @@ void Layout::CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> 
         }
 
         // Add spacing if the note is above the staff (height 0).
+        // The staff border spacing leaves enough space for the 8va/15ma symbols
+        // to use.
         staff->SetStandardNotationStaffAboveSpacing(-std::min(0.0, minNoteLocation) +
                                                     Staff::STAFF_BORDER_SPACING);
 
+        std::vector<SymbolGroup> symbolGroups;
+        CalculateStdNotationBelowLayout(symbolGroups, system, staff);
+
         // Add spacing if the lowest note is below "middle C" on the staff.
+        // Also, add space for 8vb/15mb symbols.
         const double BOTTOM_BOUNDARY = Staff::STD_NOTATION_STAFF_TYPE *
                 Staff::STD_NOTATION_LINE_SPACING;
         staff->SetStandardNotationStaffBelowSpacing(
-                    std::max(maxNoteLocation, BOTTOM_BOUNDARY) - BOTTOM_BOUNDARY);
+                    std::max(maxNoteLocation, BOTTOM_BOUNDARY) - BOTTOM_BOUNDARY +
+                    maxHeightOfSymbolGroups(symbolGroups) * Staff::TAB_SYMBOL_HEIGHT);
     }
-}
-
-namespace
-{
-bool compareHeightOfGroup(const Layout::SymbolGroup& group1, const Layout::SymbolGroup& group2)
-{
-    return group1.height < group2.height;
-}
-
-int maxHeightOfSymbolGroups(const std::vector<Layout::SymbolGroup>& symbolGroups)
-{
-    int maxHeight = 0;
-
-    if (!symbolGroups.empty())
-    {
-        maxHeight = std::max_element(symbolGroups.begin(), symbolGroups.end(), compareHeightOfGroup)->height;
-    }
-
-    return maxHeight;
-}
 }
 
 /// Calculates the spacing below the tab staff, for indicating hammerons, pick strokes, taps, etc.
@@ -204,11 +209,13 @@ int symbolHeight(Layout::SymbolType symbolType)
 }
 
 
-/// Compute the layout of symbols between the standard notation and tab staves
-/// Returns a list of all symbol groups and their locations (for example, consecutive notes with vibrato
-/// will have their vibrato symbols grouped together, forming a single vibrato symbol spanning the notes)
+/// Compute the layout of symbols between the standard notation and tab staves.
+/// Returns a list of all symbol groups and their locations (for example,
+/// consecutive notes with vibrato will have their vibrato symbols grouped
+/// together, forming a single vibrato symbol spanning the notes).
 void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
-                                   const Score* score, boost::shared_ptr<const System> system,
+                                   const Score* score,
+                                   boost::shared_ptr<const System> system,
                                    boost::shared_ptr<const Staff> staff)
 {
     std::vector<std::vector<SymbolType> > symbolMap;
@@ -379,6 +386,113 @@ void Layout::CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symb
             }
         }
     }
+}
+
+namespace
+{
+void GroupSymbols(std::vector<Layout::SymbolGroup>& symbolGroups,
+                  const std::vector<Layout::SymbolType>& symbols,
+                  boost::shared_ptr<const System> system,
+                  boost::shared_ptr<const Staff> staff)
+{
+    Layout::SymbolType currentSymbolType = Layout::NoSymbol;
+    size_t leftPosIndex = 0;
+    for (size_t i = 0; i < symbols.size(); ++i)
+    {
+        Layout::SymbolType symbolType = symbols[i];
+
+        // If we've reached the end of a symbol group ...
+        if (symbolType != currentSymbolType)
+        {
+            // Record the symbol group and calculate its location.
+            if (currentSymbolType != Layout::NoSymbol)
+            {
+                const int leftX = system->GetPositionX(
+                            staff->GetPosition(0,leftPosIndex)->GetPosition());
+                const int rightX = system->GetPositionX(
+                            staff->GetPosition(0, i)->GetPosition());
+
+                symbolGroups.push_back(Layout::SymbolGroup(leftPosIndex, leftX,
+                                        rightX - leftX, 1, currentSymbolType));
+            }
+
+            leftPosIndex = i;
+            currentSymbolType = symbolType;
+        }
+    }
+
+    // If there is a symbol group that stretched to the end of the staff, add it
+    if (currentSymbolType != Layout::NoSymbol)
+    {
+        const int leftX = system->GetPositionX(
+                    staff->GetPosition(0, leftPosIndex)->GetPosition());
+        const int rightX = system->GetPositionX(system->GetPositionCount() - 1);
+        symbolGroups.push_back(Layout::SymbolGroup(leftPosIndex, leftX,
+                                        rightX - leftX, 1, currentSymbolType));
+    }
+}
+}
+
+/// Calculate the layout of symbols displayed above the standard notation staff.
+/// This is just the 8va and 15ma symbols.
+void Layout::CalculateStdNotationAboveLayout(
+        std::vector<Layout::SymbolGroup>& symbolGroups,
+        boost::shared_ptr<const System> system,
+        boost::shared_ptr<const Staff> staff)
+{
+    std::vector<SymbolType> symbols;
+
+    for (size_t i = 0; i < staff->GetPositionCount(0); i++)
+    {
+        const Position* pos = staff->GetPosition(0, i);
+
+        if (pos->HasNoteWithOctave8va())
+        {
+            symbols.push_back(SymbolOctave8va);
+        }
+        else if (pos->HasNoteWithOctave15ma())
+        {
+            symbols.push_back(SymbolOctave15ma);
+        }
+        else
+        {
+            symbols.push_back(NoSymbol);
+        }
+    }
+
+    // Group adjacent octave symbols.
+    GroupSymbols(symbolGroups, symbols, system, staff);
+}
+
+/// Calculate the layout of symbols displayed below the standard notation staff.
+/// This is just the 8vb and 15mb symbols.
+void Layout::CalculateStdNotationBelowLayout(
+        std::vector<Layout::SymbolGroup>& symbolGroups,
+        boost::shared_ptr<const System> system,
+        boost::shared_ptr<const Staff> staff)
+{
+    std::vector<SymbolType> symbols;
+
+    for (size_t i = 0; i < staff->GetPositionCount(0); i++)
+    {
+        const Position* pos = staff->GetPosition(0, i);
+
+        if (pos->HasNoteWithOctave8vb())
+        {
+            symbols.push_back(SymbolOctave8vb);
+        }
+        else if (pos->HasNoteWithOctave15mb())
+        {
+            symbols.push_back(SymbolOctave15mb);
+        }
+        else
+        {
+            symbols.push_back(NoSymbol);
+        }
+    }
+
+    // Group adjacent octave symbols.
+    GroupSymbols(symbolGroups, symbols, system, staff);
 }
 
 Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int height, Layout::SymbolType type) :

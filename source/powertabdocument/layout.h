@@ -60,7 +60,13 @@ enum SymbolType
     SymbolTap,
     SymbolHammerOnPullOff,
     SymbolSlide,
-    SymbolTappedHarmonic
+    SymbolTappedHarmonic,
+    // Symbols above standard notation staff.
+    SymbolOctave8va,
+    SymbolOctave15ma,
+    // Symbols below standard notation staff.
+    SymbolOctave8vb,
+    SymbolOctave15mb
 };
 
 struct SymbolGroup
@@ -82,6 +88,14 @@ void CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
 void CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
                                   boost::shared_ptr<const System> system,
                                   boost::shared_ptr<const Staff> staff);
+
+void CalculateStdNotationAboveLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
+                                     boost::shared_ptr<const System> system,
+                                     boost::shared_ptr<const Staff> staff);
+
+void CalculateStdNotationBelowLayout(std::vector<Layout::SymbolGroup>& symbolGroups,
+                                     boost::shared_ptr<const System> system,
+                                     boost::shared_ptr<const Staff> staff);
 }
 
 #endif // LAYOUT_H

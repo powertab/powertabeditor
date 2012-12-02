@@ -143,6 +143,8 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         drawSlides(currentStaffInfo);
         drawSymbols(currentStaffInfo);
         drawSymbolsBelowTabStaff(currentStaffInfo);
+        drawSymbolsAboveStdNotationStaff(currentStaffInfo);
+        drawSymbolsBelowStdNotationStaff(currentStaffInfo);
     }
 
     return parentSystem;
@@ -922,6 +924,68 @@ void SystemRenderer::drawSymbols(const StaffData& staffInfo)
             renderedSymbol->setPos(symbolGroup.leftX, 0);
         }
 
+        renderedSymbol->setParentItem(parentStaff);
+    }
+}
+
+void SystemRenderer::drawSymbolsAboveStdNotationStaff(const StaffData& staffInfo)
+{
+    std::vector<Layout::SymbolGroup> symbolGroups;
+    Layout::CalculateStdNotationAboveLayout(symbolGroups, system, staff);
+
+    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
+    {
+        QGraphicsItem* renderedSymbol = NULL;
+
+        switch(symbolGroup.symbolType)
+        {
+        case Layout::SymbolOctave8va:
+            renderedSymbol = createConnectedSymbolGroup("8va",
+                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+            break;
+        case Layout::SymbolOctave15ma:
+            renderedSymbol = createConnectedSymbolGroup("15ma",
+                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+            break;
+        default:
+            // All symbol types should have been dealt with by now.
+            Q_ASSERT(false);
+            break;
+        }
+
+        renderedSymbol->setPos(symbolGroup.leftX, 0);
+        renderedSymbol->setParentItem(parentStaff);
+    }
+}
+
+void SystemRenderer::drawSymbolsBelowStdNotationStaff(const StaffData& staffInfo)
+{
+    std::vector<Layout::SymbolGroup> symbolGroups;
+    Layout::CalculateStdNotationBelowLayout(symbolGroups, system, staff);
+
+    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
+    {
+        QGraphicsItem* renderedSymbol = NULL;
+
+        switch(symbolGroup.symbolType)
+        {
+        case Layout::SymbolOctave8vb:
+            renderedSymbol = createConnectedSymbolGroup("8vb",
+                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+            break;
+        case Layout::SymbolOctave15mb:
+            renderedSymbol = createConnectedSymbolGroup("15mb",
+                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+            break;
+        default:
+            // All symbol types should have been dealt with by now.
+            Q_ASSERT(false);
+            break;
+        }
+
+        renderedSymbol->setPos(symbolGroup.leftX,
+                               staffInfo.getBottomStdNotationLine() +
+                               staffInfo.stdNotationStaffBelowSpacing);
         renderedSymbol->setParentItem(parentStaff);
     }
 }

@@ -105,6 +105,8 @@ private:
     QGraphicsItem* createArtificialHarmonicText(const Position* position);
 
     void drawSymbols(const StaffData& staffInfo);
+    void drawSymbolsAboveStdNotationStaff(const StaffData &staffInfo);
+    void drawSymbolsBelowStdNotationStaff(const StaffData &staffInfo);
     QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, int width,
                                               const StaffData& currentStaffInfo);
     QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo,

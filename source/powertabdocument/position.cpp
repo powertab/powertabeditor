@@ -942,3 +942,23 @@ bool Position::HasNoteWithBend() const
 {
     return HasNoteWithProperty(&Note::HasBend);
 }
+
+bool Position::HasNoteWithOctave8va() const
+{
+    return HasNoteWithProperty(&Note::IsOctave8va);
+}
+
+bool Position::HasNoteWithOctave15ma() const
+{
+    return HasNoteWithProperty(&Note::IsOctave15ma);
+}
+
+bool Position::HasNoteWithOctave8vb() const
+{
+    return HasNoteWithProperty(&Note::IsOctave8vb);
+}
+
+bool Position::HasNoteWithOctave15mb() const
+{
+    return HasNoteWithProperty(&Note::IsOctave15mb);
+}

@@ -858,6 +858,10 @@ public:
     bool HasNoteWithSlide() const;
     bool HasNoteWithTappedHarmonic() const;
     bool HasNoteWithBend() const;
+    bool HasNoteWithOctave8va() const;
+    bool HasNoteWithOctave15ma() const;
+    bool HasNoteWithOctave8vb() const;
+    bool HasNoteWithOctave15mb() const;
 
 private:
     bool HasNoteWithProperty(bool (Note::*notePropertyPredicate)() const) const;
