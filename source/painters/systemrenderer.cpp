@@ -1230,7 +1230,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
     // This must be done after the beams are drawn, since the note stems will be adjusted during that process
     std::vector<NoteStem> currentIrregularNoteGroup;
 
-    BOOST_FOREACH(const NoteStem& stem, stems)
+    BOOST_FOREACH(const NoteStem& stem, updatedStems)
     {
         // check if this note isn't part of an irregular grouping
         if (!stem.position->IsIrregularGroupingEnd() &&
