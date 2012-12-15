@@ -144,6 +144,7 @@ public:
     bool InsertSystem(SystemPtr system, size_t index);
 
     void UpdateSystemHeight(SystemPtr system);
+    void UpdateAllSystemHeights();
     void ShiftFollowingSystems(SystemConstPtr system, const int heightDifference);
 
     void UpdateExtraSpacing(SystemPtr system);

@@ -448,6 +448,14 @@ void Score::UpdateSystemHeight(SystemPtr system)
     ShiftFollowingSystems(system, spacingDifference);
 }
 
+void Score::UpdateAllSystemHeights()
+{
+    BOOST_FOREACH(const SystemPtr& system, m_systemArray)
+    {
+        UpdateSystemHeight(system);
+    }
+}
+
 /// Shifts all following systems by the given height difference
 void Score::ShiftFollowingSystems(SystemConstPtr system, const int heightDifference)
 {

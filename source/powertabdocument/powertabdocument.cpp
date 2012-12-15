@@ -296,6 +296,10 @@ bool PowerTabDocument::Deserialize(PowerTabInputStream& stream)
         m_scoreArray[0]->UpdateToVer2Structure();
     }
 
+    // TODO - this should eventually be done for the other scores as well. The
+    // layout code currently only handles the v2.0 structure.
+    m_scoreArray[0]->UpdateAllSystemHeights();
+
     // Read the line spacing and fade values
     stream >> m_tablatureStaffLineSpacing >> m_fadeIn >> m_fadeOut;
     return true;
