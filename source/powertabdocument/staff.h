@@ -152,11 +152,13 @@ public:
 
     bool IsOnlyPositionInBar(const Position* position, boost::shared_ptr<const System> system) const;
 
-    bool CanHammerOn(const Position* position, const Note* note) const;
-    bool CanPullOff(const Position* position, const Note* note) const;
-    bool CanTieNote(const Position* position, const Note* note) const;
-    bool CanSlideBetweenNotes(const Position* position, const Note* note) const;
-    int8_t GetSlideSteps(const Position* position, const Note* note) const;
+    bool CanHammerOn(const Position* position, const Note* note, uint32_t voice) const;
+    bool CanPullOff(const Position* position, const Note* note, uint32_t voice) const;
+    bool CanTieNote(const Position* position, const Note* note, uint32_t voice) const;
+    bool CanSlideBetweenNotes(const Position* position, const Note* note,
+                              uint32_t voice) const;
+    int8_t GetSlideSteps(const Position* position, const Note* note,
+                         uint32_t voice) const;
 
     int GetHeight() const;
     
@@ -165,10 +167,11 @@ public:
                                 boost::shared_ptr<const Barline> endBar);
     void CalculateBeamingForGroup(std::vector<Position*>& positions);
 
-    void UpdateTabNumber(Position* position, Note* note, uint8_t fretNumber);
-    void ShiftTabNumber(Position* position, Note* note, bool shiftUp,
+    void UpdateTabNumber(Position* position, Note* note, uint32_t voice,
+                         uint8_t fretNumber);
+    void ShiftTabNumber(Position* position, Note* note, uint32_t voice, bool shiftUp,
                         const Tuning& tuning);
-    void UpdateAdjacentNotes(Position*position, uint32_t string);
+    void UpdateAdjacentNotes(Position* position, uint32_t voice, uint32_t string);
     
     int GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
                         const Tuning& tuning) const;
@@ -179,24 +182,28 @@ public:
         PrevNote = -1
     };
 
-    Note* GetAdjacentNoteOnString(SearchDirection searchDirection, const Position* position,
-                                  const Note* note, uint32_t voice = 0) const;
+    Note* GetAdjacentNoteOnString(SearchDirection searchDirection,
+                                  const Position* position, const Note* note,
+                                  uint32_t voice) const;
 
 private:
     /// Compares the fret numbers of two consecutive notes on the same string,
     /// using the given comparision function (binary predicate)
     template<typename FretComparison>
-    bool CompareWithNote(SearchDirection searchDirection, const Position* position,
-                         const Note* note, FretComparison comp) const
+    bool CompareWithNote(SearchDirection searchDirection,
+                         const Position* position, const Note* note,
+                         uint32_t voice, FretComparison comp) const
     {
-        const Note* nextNote = GetAdjacentNoteOnString(searchDirection, position, note);
+        const Note* nextNote = GetAdjacentNoteOnString(searchDirection,
+                                                       position, note, voice);
         
         // check if a note was found on the same string in the next position,
         // and if the fret number comparision is satisfied
         return (nextNote != NULL && comp(note->GetFretNumber(), nextNote->GetFretNumber()));
     }
 
-    void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote);
+    void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote,
+                    uint32_t voice);
 };
 
 #endif // STAFF_H

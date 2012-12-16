@@ -100,25 +100,25 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetLastPosition/MultipleP
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/LessThanNextFretOkay", "")
 {
     Position* pos = highPositions.at(0);
-    REQUIRE(staff.CanHammerOn(pos, pos->GetNote(0)));
+    REQUIRE(staff.CanHammerOn(pos, pos->GetNote(0), 0));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/EqualFretsNotOkay", "")
 {
     Position* pos = highPositions.at(1);
-    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
+    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0), 0));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/GreaterThanNextFretNotOkay", "")
 {
     Position* pos = highPositions.at(3);
-    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
+    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0), 0));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/LastNoteCantBeHammeron", "")
 {
     Position* pos = highPositions.back();
-    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0)));
+    REQUIRE(!staff.CanHammerOn(pos, pos->GetNote(0), 0));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/HammeronReplacesSlide", "")
@@ -130,7 +130,7 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanHammerOn/HammeronRepla
 
     REQUIRE(note->HasSlideOutOf());
 
-    REQUIRE(staff.CanHammerOn(pos, pos->GetNote(0)));
+    REQUIRE(staff.CanHammerOn(pos, pos->GetNote(0), 0));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanPullOff/PulloffReplacesSlide", "")
@@ -142,28 +142,28 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanPullOff/PulloffReplace
 
     REQUIRE(note->HasSlideOutOf());
 
-    REQUIRE(staff.CanPullOff(pos, pos->GetNote(0)));
+    REQUIRE(staff.CanPullOff(pos, pos->GetNote(0), 0));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/DifferentFretOkay", "")
 {
     Position* pos = highPositions.at(0);
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)));
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0), 0));
 
     pos = highPositions.at(3);
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)));
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0), 0));
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/EqualFretsNotOkay", "")
 {
     Position* pos = highPositions.at(1);
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0), 0) == false);
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/LastNoteCantSlideToNext", "")
 {
     Position* pos = highPositions.back();
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == false);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0), 0) == false);
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/SlideReplacesHammeron", "")
@@ -173,7 +173,7 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/Slid
     Note *note = pos->GetNote(0);
     note->SetHammerOn(true);
 
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == true);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0), 0) == true);
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/SlideReplacesPulloff", "")
@@ -183,26 +183,26 @@ TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/CanSlideBetweenNotes/Slid
     Note *note = pos->GetNote(0);
     note->SetPullOff(true);
 
-    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0)) == true);
+    REQUIRE(staff.CanSlideBetweenNotes(pos, pos->GetNote(0), 0) == true);
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetSlideSteps/Calculation", "")
 {
     Position* pos = highPositions.at(0);
-    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0)) == 1);
+    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0), 0) == 1);
 
     pos = highPositions.at(1);
-    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0)) == 0);
+    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0), 0) == 0);
 
     pos = highPositions.at(3);
-    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0)) == -1);
+    REQUIRE(staff.GetSlideSteps(pos, pos->GetNote(0), 0) == -1);
 }
 
 TEST_CASE_METHOD(StaffFixture, "PowerTabDocument/Staff/GetSlideSteps/ThrowsWithNoAdjacentNote", "")
 {
     Position* pos = highPositions.at(0);
     // use note on the second string, since the next position only has a note on the first string
-    REQUIRE_THROWS_AS(staff.GetSlideSteps(pos, pos->GetNote(1)),
+    REQUIRE_THROWS_AS(staff.GetSlideSteps(pos, pos->GetNote(1), 0),
                       std::logic_error);
 }
 

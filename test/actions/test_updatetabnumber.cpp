@@ -41,7 +41,7 @@ TEST_CASE("Actions/UpdateTabNumber", "")
     note1->SetHammerOn();
     note3->SetTied();
 
-    UpdateTabNumber action(1, note2, pos2, staff);
+    UpdateTabNumber action(1, note2, pos2, 0, staff);
 
     action.redo();
     REQUIRE(note1->HasPullOff());

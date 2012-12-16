@@ -489,31 +489,39 @@ bool Staff::IsOnlyPositionInBar(const Position* position, boost::shared_ptr<cons
     return true;
 }
 
-bool Staff::CanHammerOn(const Position* position, const Note* note) const
+bool Staff::CanHammerOn(const Position* position, const Note* note,
+                        uint32_t voice) const
 {
     // In order to perform a hammer-on, the note must be lower than the next
-    return CompareWithNote(NextNote, position, note, std::less<uint8_t>());
+    return CompareWithNote(NextNote, position, note, voice,
+                           std::less<uint8_t>());
 }
 
-bool Staff::CanPullOff(const Position* position, const Note* note) const
+bool Staff::CanPullOff(const Position* position, const Note* note,
+                       uint32_t voice) const
 {
     // In order to perform a pull-off, the note must be higher than the next
-    return CompareWithNote(NextNote, position, note, std::greater<uint8_t>());
+    return CompareWithNote(NextNote, position, note, voice,
+                           std::greater<uint8_t>());
 }
 
 // Figures out if the given note can be set as tied
 // The previous position in the staff must contain a Note at the same string & fret
-bool Staff::CanTieNote(const Position* position, const Note* note) const
+bool Staff::CanTieNote(const Position* position, const Note* note,
+                       uint32_t voice) const
 {
     // In order to tie, the note must be the same as the previous
-    return CompareWithNote(PrevNote, position, note, std::equal_to<uint8_t>());
+    return CompareWithNote(PrevNote, position, note, voice,
+                           std::equal_to<uint8_t>());
 }
 
 /// Determines if we can slide from the given note to the next note (shift or legato slides)
 /// The next note must exist and be a different fret number
-bool Staff::CanSlideBetweenNotes(const Position* position, const Note* note) const
+bool Staff::CanSlideBetweenNotes(const Position* position, const Note* note,
+                                 uint32_t voice) const
 {
-    return CompareWithNote(NextNote, position, note, std::not_equal_to<uint8_t>());
+    return CompareWithNote(NextNote, position, note, voice,
+                           std::not_equal_to<uint8_t>());
 }
 
 namespace 
@@ -732,9 +740,11 @@ Position* Staff::GetLastPosition() const
 
 /// Returns the number of steps (frets) between the given note and the next note on the string
 /// @throws std::logic_error If there is no note at the same string for the next position
-int8_t Staff::GetSlideSteps(const Position* position, const Note* note) const
+int8_t Staff::GetSlideSteps(const Position* position, const Note* note,
+                            uint32_t voice) const
 {
-    Note* nextNote = GetAdjacentNoteOnString(Staff::NextNote, position, note);
+    Note* nextNote = GetAdjacentNoteOnString(Staff::NextNote, position, note,
+                                             voice);
 
     if (!nextNote)
         throw std::logic_error("The next position does not have a note on the same string.");
@@ -742,9 +752,9 @@ int8_t Staff::GetSlideSteps(const Position* position, const Note* note) const
     return nextNote->GetFretNumber() - note->GetFretNumber();
 }
 
-// TODO - remove the default argument for the voice parameter, once we finish full support for high & low melodies
-Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, const Position *position,
-                                     const Note *note, uint32_t voice) const
+Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection,
+                                     const Position *position, const Note *note,
+                                     uint32_t voice) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");
@@ -776,27 +786,29 @@ Note* Staff::GetAdjacentNoteOnString(SearchDirection searchDirection, const Posi
     return nextNote;
 }
 
-void Staff::UpdateTabNumber(Position* position, Note* note, uint8_t fretNumber)
+void Staff::UpdateTabNumber(Position* position, Note* note, uint32_t voice,
+                            uint8_t fretNumber)
 {
     note->SetFretNumber(fretNumber);
 
     // Update hammerons, ties, etc for adjacent notes.
-    UpdateAdjacentNotes(position, note->GetString());
+    UpdateAdjacentNotes(position, voice, note->GetString());
 }
 
-void Staff::ShiftTabNumber(Position* position, Note* note, bool shiftUp,
-                           const Tuning& tuning)
+void Staff::ShiftTabNumber(Position* position, Note* note, uint32_t voice,
+                           bool shiftUp, const Tuning& tuning)
 {
     const uint32_t prevString = note->GetString();
     Position::ShiftType type = shiftUp ? Position::SHIFT_UP :
                                          Position::SHIFT_DOWN;
     position->ShiftTabNumber(note, type, tuning);
 
-    UpdateAdjacentNotes(position, prevString);
-    UpdateAdjacentNotes(position, note->GetString());
+    UpdateAdjacentNotes(position, voice, prevString);
+    UpdateAdjacentNotes(position, voice, note->GetString());
 }
 
-void Staff::UpdateAdjacentNotes(Position* position, uint32_t string)
+void Staff::UpdateAdjacentNotes(Position* position, uint32_t voice,
+                                uint32_t string)
 {
     Note* note = position->GetNoteByString(string);
     const size_t index = GetIndexOfPosition(0, position);
@@ -805,26 +817,27 @@ void Staff::UpdateAdjacentNotes(Position* position, uint32_t string)
     {
         Position* prevPos = GetPosition(0, index - 1);
         Note* prevNote = prevPos->GetNoteByString(string);
-        UpdateNote(prevPos, prevNote, note);
+        UpdateNote(prevPos, prevNote, note, voice);
     }
 
     if (index + 1 != GetPositionCount(0))
     {
         Position* nextPos = GetPosition(0, index + 1);
         Note* nextNote = nextPos->GetNoteByString(string);
-        UpdateNote(nextPos, note, nextNote);
+        UpdateNote(nextPos, note, nextNote, voice);
     }
 }
 
 /// Ensures that all hammerons, pulloffs, and slides are valid for the first note,
 /// and ensures that any ties for the second note are valid. Either of the notes
 /// may be NULL if they do not exist.
-void Staff::UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote)
+void Staff::UpdateNote(Position *prevPosition, Note *previousNote,
+                       Note *nextNote, uint32_t voice)
 {
     if (previousNote)
     {
-        const bool canPull = CanPullOff(prevPosition, previousNote);
-        const bool canHammer = CanHammerOn(prevPosition, previousNote);
+        const bool canPull = CanPullOff(prevPosition, previousNote, voice);
+        const bool canHammer = CanHammerOn(prevPosition, previousNote, voice);
 
         if (previousNote->HasPullOff() && !canPull)
         {
@@ -845,13 +858,14 @@ void Staff::UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNot
         if (previousNote->GetSlideOutOf(slideType, slideSteps))
         {
             // if the note used to slide but no longer can then remove slide
-            if (!CanSlideBetweenNotes(prevPosition, previousNote))
+            if (!CanSlideBetweenNotes(prevPosition, previousNote, voice))
             {
                 previousNote->SetSlideOutOf(Note::slideOutOfNone, 0);
             }
             else
             {
-                int8_t newSteps = GetSlideSteps(prevPosition, previousNote);
+                int8_t newSteps = GetSlideSteps(prevPosition, previousNote,
+                                                voice);
                 previousNote->ClearSlideOutOf();
                 previousNote->SetSlideOutOf(slideType, newSteps);
             }

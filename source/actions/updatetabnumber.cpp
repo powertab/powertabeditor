@@ -18,8 +18,10 @@
 #include "updatetabnumber.h"
 #include <powertabdocument/staff.h>
 
-UpdateTabNumber::UpdateTabNumber(uint8_t typedNumber, Note* note, Position* position,
+UpdateTabNumber::UpdateTabNumber(uint8_t typedNumber, Note* note,
+                                 Position* position, uint32_t voice,
                                  boost::shared_ptr<Staff> staff) :
+    voice(voice),
     note(note),
     position(position),
     staff(staff),
@@ -38,11 +40,13 @@ UpdateTabNumber::UpdateTabNumber(uint8_t typedNumber, Note* note, Position* posi
         newFretNumber = typedNumber;
     }
 
-    Note *tempNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note);
+    Note *tempNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position,
+                                                    note, voice);
     if (tempNote)
         origPrevNote = tempNote->CloneObject();
 
-    tempNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note);
+    tempNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note,
+                                              voice);
     if (tempNote)
         origNextNote = tempNote->CloneObject();
 
@@ -60,7 +64,7 @@ UpdateTabNumber::~UpdateTabNumber()
 
 void UpdateTabNumber::redo()
 {
-    staff->UpdateTabNumber(position, note, newFretNumber);
+    staff->UpdateTabNumber(position, note, voice, newFretNumber);
 }
 
 void UpdateTabNumber::undo()
@@ -69,13 +73,15 @@ void UpdateTabNumber::undo()
 
     if (origPrevNote)
     {
-        Note *prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note);
+        Note *prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote,
+                                                        position, note, voice);
         *prevNote = *origPrevNote;
     }
 
     if (origNextNote)
     {
-        Note *nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note);
+        Note *nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote,
+                                                        position, note, voice);
         *nextNote = *origNextNote;
     }
 }

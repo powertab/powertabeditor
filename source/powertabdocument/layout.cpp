@@ -621,11 +621,12 @@ void Layout::FixHammerons(boost::shared_ptr<Staff> staff)
             {
                 Note* note = pos->GetNote(j);
 
-                if (note->HasHammerOn() && staff->CanPullOff(pos, note))
+                if (note->HasHammerOn() && staff->CanPullOff(pos, note, voice))
                 {
                     note->SetPullOff(true);
                 }
-                else if (note->HasPullOff() && staff->CanHammerOn(pos, note))
+                else if (note->HasPullOff() &&
+                         staff->CanHammerOn(pos, note, voice))
                 {
                     note->SetHammerOn(true);
                 }

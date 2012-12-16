@@ -32,12 +32,13 @@ class ShiftTabNumber : public QUndoCommand
 {
 public:
     ShiftTabNumber(boost::shared_ptr<Staff> staff, Position* position,
-                   Note* note, Position::ShiftType direction,
+                   Note* note, uint32_t voice, Position::ShiftType direction,
                    const Tuning& tuning);
     void undo();
     void redo();
 
 private:
+    uint32_t voice;
     boost::shared_ptr<Staff> staff;
     Position* position;
     Note* note;

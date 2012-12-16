@@ -45,7 +45,7 @@ TEST_CASE("Actions/ShiftTabNumber", "")
     Tuning tuning;
     tuning.SetToStandard();
 
-    ShiftTabNumber action(staff, pos2, note2, Position::SHIFT_UP, tuning);
+    ShiftTabNumber action(staff, pos2, note2, 0, Position::SHIFT_UP, tuning);
 
     action.redo();
     REQUIRE(!note1->HasHammerOnOrPulloff());

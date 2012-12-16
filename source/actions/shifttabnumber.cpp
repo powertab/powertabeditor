@@ -23,9 +23,10 @@
 #include <powertabdocument/staff.h>
 
 ShiftTabNumber::ShiftTabNumber(boost::shared_ptr<Staff> staff,
-                               Position* position, Note* note,
+                               Position* position, Note* note, uint32_t voice,
                                Position::ShiftType direction,
                                const Tuning& tuning) :
+    voice(voice),
     staff(staff),
     position(position),
     note(note),
@@ -35,13 +36,15 @@ ShiftTabNumber::ShiftTabNumber(boost::shared_ptr<Staff> staff,
     setText(shiftUp ? QObject::tr("Shift Tab Number Up") :
                       QObject::tr("Shift Tab Number Down"));
 
-    prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note);
+    prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note,
+                                              voice);
     if (prevNote)
     {
         origPrevNote = *prevNote;
     }
 
-    nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note);
+    nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note,
+                                              voice);
     if (nextNote)
     {
         origNextNote = *nextNote;
@@ -52,7 +55,7 @@ ShiftTabNumber::ShiftTabNumber(boost::shared_ptr<Staff> staff,
 
 void ShiftTabNumber::redo()
 {
-    staff->ShiftTabNumber(position, note, shiftUp, tuning);
+    staff->ShiftTabNumber(position, note, voice, shiftUp, tuning);
 }
 
 void ShiftTabNumber::undo()

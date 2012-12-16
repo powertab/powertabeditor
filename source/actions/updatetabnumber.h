@@ -30,12 +30,13 @@ class UpdateTabNumber : public QUndoCommand
 {
 public:
     UpdateTabNumber(uint8_t typedNumber, Note* note, Position* position,
-                    boost::shared_ptr<Staff> staff);
+                    uint32_t voice, boost::shared_ptr<Staff> staff);
     ~UpdateTabNumber();
     void undo();
     void redo();
 
 protected:
+    const uint32_t voice;
     Note* note;
     Position* position;
     boost::shared_ptr<Staff> staff;

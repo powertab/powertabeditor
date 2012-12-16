@@ -265,6 +265,7 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
             shared_ptr<Staff> currentStaff = caret->getCurrentStaff();
             shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
             const int system = caret->getCurrentSystemIndex();
+            const uint32_t voice = caret->getCurrentVoice();
 
             // Don't allow inserting notes on top of bars (except for the first
             // bar in the system, which has position 0).
@@ -273,7 +274,8 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                 if (currentNote != NULL)
                 {
                     // if there is already a number here update it
-                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote, currentPosition, currentStaff),
+                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote,
+                                                          currentPosition, voice, currentStaff),
                                       system);
                 }
                 else
@@ -1516,7 +1518,8 @@ void PowerTabEditor::shiftTabNumber(int direction)
     }
 
     undoManager->push(new ShiftTabNumber(caret->getCurrentStaff(), currentPos,
-                                         currentNote, shiftType, tuning),
+                                         currentNote, caret->getCurrentVoice(),
+                                         shiftType, tuning),
                       caret->getCurrentSystemIndex());
     caret->moveCaretVertical(direction == 1 ? direction : -1);
 }
@@ -2072,6 +2075,7 @@ void PowerTabEditor::editHammerPull()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
     Note* note = caret->getCurrentNote();
+    const uint32_t voice = caret->getCurrentVoice();
 
     // TODO - allow editing of hammerons/pulloffs for a group of selected notes??
     std::vector<Note*> notes;
@@ -2083,12 +2087,12 @@ void PowerTabEditor::editHammerPull()
     Position* currentPosition = caret->getCurrentPosition();
     shared_ptr<const Staff> currentStaff = caret->getCurrentStaff();
     
-    if (currentStaff->CanHammerOn(currentPosition, note))
+    if (currentStaff->CanHammerOn(currentPosition, note, voice))
     {
         undoManager->push(new EditHammerPull(note, EditHammerPull::hammerOn),
                           caret->getCurrentSystemIndex());
     }
-    else if (currentStaff->CanPullOff(currentPosition, note))
+    else if (currentStaff->CanPullOff(currentPosition, note, voice))
     {
         undoManager->push(new EditHammerPull(note, EditHammerPull::pullOff),
                           caret->getCurrentSystemIndex());
@@ -2115,7 +2119,8 @@ void PowerTabEditor::editTiedNote()
         Position* currentPosition = positions.at(i);
         for (size_t j = 0; j < currentPosition->GetNoteCount(); j++)
         {
-            if (!currentStaff->CanTieNote(currentPosition, currentPosition->GetNote(j)))
+            if (!currentStaff->CanTieNote(currentPosition, currentPosition->GetNote(j),
+                                          caret->getCurrentVoice()))
             {
                 tiedNoteAct->setChecked(false);
                 return;
@@ -2470,6 +2475,7 @@ void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
     Caret* caret = getCurrentScoreArea()->getCaret();
     Note* note = caret->getCurrentNote();
     Position* position = caret->getCurrentPosition();
+    const uint32_t voice = caret->getCurrentVoice();
 
     qint8 newSteps = 0;
 
@@ -2479,7 +2485,7 @@ void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
         shared_ptr<const Staff> staff = caret->getCurrentStaff();
 
         // if we can't do a slide, uncheck the action that was just pressed and abort
-        if (!staff->CanSlideBetweenNotes(position, note))
+        if (!staff->CanSlideBetweenNotes(position, note, voice))
         {
             if (newSlideType == Note::slideOutOfLegatoSlide)
                 legatoSlideAct->setChecked(false);
@@ -2489,7 +2495,7 @@ void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
             return;
         }
 
-        newSteps = caret->getCurrentStaff()->GetSlideSteps(position, note);
+        newSteps = caret->getCurrentStaff()->GetSlideSteps(position, note, voice);
     }
 
     // find what the current slide is set to - if it is the same, remove the slide
