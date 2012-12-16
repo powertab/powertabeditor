@@ -104,7 +104,9 @@ private:
 
 private slots:
     void updateActions();
+    void updateLocationLabel();
     void updateModified(bool);
+    void updateActiveVoice(int);
     void createNewFile();
     void openFile(QString fileName = "");
     bool saveFileAs();

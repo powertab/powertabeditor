@@ -26,6 +26,7 @@ namespace Ui {
 class PlaybackWidget;
 }
 
+class QButtonGroup;
 class SettingsPubSub;
 
 class PlaybackWidget : public QWidget
@@ -45,6 +46,7 @@ signals:
     void playbackButtonToggled();
     void rewindToStartClicked();
     void scoreSelected(int scoreIndex);
+    void activeVoiceChanged(int voice);
 
 public slots:
     void updateLocationLabel(const QString& location);
@@ -57,6 +59,7 @@ private:
     void onSettingChanged(const std::string& setting);
 
     Ui::PlaybackWidget *ui;
+    QButtonGroup *voices;
     boost::shared_ptr<SettingsPubSub> pubsub;
     boost::signals2::connection connection;
 };

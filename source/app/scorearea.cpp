@@ -60,9 +60,11 @@ ScoreArea::~ScoreArea()
 void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
 {
     bool newCaret = (caret == NULL);
+    uint32_t voice = 0;
 
     if (caret)
     {
+        voice = caret->getCurrentVoice();
         scene.removeItem(caret.get());
     }
 
@@ -79,6 +81,7 @@ void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
     }
 
     caret->setScore(doc->GetScore(scoreIndex));
+    caret->setCurrentVoice(voice);
 
     // Adjust the caret to a valid position, since (for example) a system may
     // have been removed.

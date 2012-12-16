@@ -1194,10 +1194,8 @@ void PowerTabEditor::setupNewDocument()
             this, SLOT(rewindPlaybackToStart()));
     connect(playback, SIGNAL(scoreSelected(int)),
             score, SLOT(setScoreIndex(int)));
-
-    sigfwd::connect(score->getCaret(), SIGNAL(moved()),
-                    boost::bind(&PlaybackWidget::updateLocationLabel, playback,
-                                boost::bind(&Caret::toString, score->getCaret())));
+    connect(playback, SIGNAL(activeVoiceChanged(int)),
+            this, SLOT(updateActiveVoice(int)));
 
     playbackToolbarList->addWidget(playback);
 
@@ -1379,6 +1377,11 @@ void PowerTabEditor::updateModified(bool clean)
     setWindowModified(!clean);
 }
 
+void PowerTabEditor::updateActiveVoice(int voice)
+{
+    getCurrentScoreArea()->getCaret()->setCurrentVoice(voice);
+}
+
 /// Returns the application name & version (e.g. 'Power Tab Editor 2.0')
 QString PowerTabEditor::getApplicationName() const
 {
@@ -1411,6 +1414,7 @@ std::vector<Note*> PowerTabEditor::getSelectedNotes()
 void PowerTabEditor::registerCaret(Caret* caret)
 {
     connect(caret, SIGNAL(moved()), this, SLOT(updateActions()));
+    connect(caret, SIGNAL(moved()), this, SLOT(updateLocationLabel()));
     connect(caret, SIGNAL(selectionChanged()), this, SLOT(updateActions()));
 }
 
@@ -2375,6 +2379,12 @@ void PowerTabEditor::updateActions()
             removeDotAct->setEnabled(false);
         }
     }
+}
+
+void PowerTabEditor::updateLocationLabel()
+{
+    getCurrentPlaybackWidget()->updateLocationLabel(
+                getCurrentScoreArea()->getCaret()->toString());
 }
 
 // Enables/disables actions that should only be available when a score is opened

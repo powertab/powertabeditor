@@ -21,13 +21,21 @@
 #include <QSettings>
 #include <app/settings.h>
 #include <app/pubsub/settingspubsub.h>
+#include <powertabdocument/staff.h>
 
 PlaybackWidget::PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
                                QWidget* parent) :
     QWidget(parent),
-    ui(new Ui::PlaybackWidget), pubsub(pubsub)
+    ui(new Ui::PlaybackWidget),
+    voices(new QButtonGroup(this)),
+    pubsub(pubsub)
 {
     ui->setupUi(this);
+
+    voices->addButton(ui->voice1Button, 0);
+    voices->addButton(ui->voice2Button, 1);
+    Q_ASSERT(voices->buttons().length() == Staff::NUM_STAFF_VOICES);
+    ui->voice1Button->setChecked(true);
 
     ui->speedSpinner->setMinimum(50);
     ui->speedSpinner->setMaximum(125);
@@ -42,6 +50,8 @@ PlaybackWidget::PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
 
     updateMetronomeButton();
 
+    connect(voices, SIGNAL(buttonClicked(int)),
+            this, SIGNAL(activeVoiceChanged(int)));
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)),
             this, SIGNAL(playbackSpeedChanged(int)));
     connect(ui->playPauseButton, SIGNAL(clicked()), this,
