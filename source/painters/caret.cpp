@@ -467,7 +467,7 @@ void Caret::updateSelection(int start, int end)
 std::vector<Position*> Caret::getSelectedPositions() const
 {
     std::vector<Position*> positions;
-    getCurrentStaff()->GetPositionsInRange(positions, 0,
+    getCurrentStaff()->GetPositionsInRange(positions, currentVoice,
                                            std::min(selectionRange.first, selectionRange.second),
                                            std::max(selectionRange.first, selectionRange.second));
 
