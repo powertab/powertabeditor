@@ -811,18 +811,18 @@ void Staff::UpdateAdjacentNotes(Position* position, uint32_t voice,
                                 uint32_t string)
 {
     Note* note = position->GetNoteByString(string);
-    const size_t index = GetIndexOfPosition(0, position);
+    const size_t index = GetIndexOfPosition(voice, position);
 
     if (index != 0)
     {
-        Position* prevPos = GetPosition(0, index - 1);
+        Position* prevPos = GetPosition(voice, index - 1);
         Note* prevNote = prevPos->GetNoteByString(string);
         UpdateNote(prevPos, prevNote, note, voice);
     }
 
-    if (index + 1 != GetPositionCount(0))
+    if (index + 1 != GetPositionCount(voice))
     {
-        Position* nextPos = GetPosition(0, index + 1);
+        Position* nextPos = GetPosition(voice, index + 1);
         Note* nextNote = nextPos->GetNoteByString(string);
         UpdateNote(nextPos, note, nextNote, voice);
     }
