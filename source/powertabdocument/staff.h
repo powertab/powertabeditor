@@ -165,7 +165,6 @@ public:
     void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos) const;
     void CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
                                 boost::shared_ptr<const Barline> endBar);
-    void CalculateBeamingForGroup(std::vector<Position*>& positions);
 
     void UpdateTabNumber(Position* position, Note* note, uint32_t voice,
                          uint8_t fretNumber);
@@ -204,6 +203,11 @@ private:
 
     void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote,
                     uint32_t voice);
+
+    void CalculateBeamingForVoice(boost::shared_ptr<const Barline> startBar,
+                                  boost::shared_ptr<const Barline> endBar,
+                                  uint32_t voice);
+    void CalculateBeamingForGroup(std::vector<Position*>& positions);
 };
 
 #endif // STAFF_H

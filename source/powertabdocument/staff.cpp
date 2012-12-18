@@ -548,19 +548,32 @@ namespace
 void Staff::CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
                                    boost::shared_ptr<const Barline> endBar)
 {
+    for (uint32_t i = 0; i < NUM_STAFF_VOICES; ++i)
+    {
+        CalculateBeamingForVoice(startBar, endBar, i);
+    }
+}
+
+void Staff::CalculateBeamingForVoice(boost::shared_ptr<const Barline> startBar,
+                                     boost::shared_ptr<const Barline> endBar,
+                                     uint32_t voice)
+{
     // Get the positions in betwen the two bars
     std::vector<Position*> positions;
-    GetPositionsInRange(positions, 0, startBar->GetPosition(), endBar->GetPosition() - 1);
+    GetPositionsInRange(positions, voice, startBar->GetPosition(),
+                        endBar->GetPosition() - 1);
 
     const TimeSignature& timeSig = startBar->GetTimeSignature();
 
     // Get the beam group patterns from the time signature
     std::vector<uint8_t> beamGroupPatterns(4, 0);
 
-    timeSig.GetBeamingPattern(beamGroupPatterns[0], beamGroupPatterns[1], beamGroupPatterns[2], beamGroupPatterns[3]);
+    timeSig.GetBeamingPattern(beamGroupPatterns[0], beamGroupPatterns[1],
+                              beamGroupPatterns[2], beamGroupPatterns[3]);
 
     // Remove any beam group patterns of size 0 (not set)
-    beamGroupPatterns.erase(std::remove(beamGroupPatterns.begin(), beamGroupPatterns.end(), 0),
+    beamGroupPatterns.erase(std::remove(beamGroupPatterns.begin(),
+                                        beamGroupPatterns.end(), 0),
                             beamGroupPatterns.end());
 
     // Create a list of the durations for each position
@@ -573,7 +586,8 @@ void Staff::CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
 
     double groupBeginTime = 0;
     std::vector<uint8_t>::const_iterator pattern = beamGroupPatterns.begin();
-    std::vector<double>::iterator groupStart = durations.begin(), groupEnd = durations.begin();
+    std::vector<double>::iterator groupStart = durations.begin();
+    std::vector<double>::iterator groupEnd = durations.begin();
 
     while (groupEnd != durations.end())
     {
