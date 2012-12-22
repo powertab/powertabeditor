@@ -302,7 +302,7 @@ bool PowerTabOutputStream::MapObject(const PowerTabObject* object)
     {
         if (!CheckCount())
             return false;
-        m_objectHashMap[(PowerTabObject *)object] = (uint32_t)m_mapCount++;
+        m_objectHashMap[object] = (uint32_t)m_mapCount++;
     }
 
     return (true);

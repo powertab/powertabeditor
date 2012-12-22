@@ -181,7 +181,7 @@ Score* PowerTabDocument::GetScore(size_t index) const
 /// @return A pointer to the player score
 Score* PowerTabDocument::GetPlayerScore() const
 {
-    PTB_CHECK_THAT(0 < m_scoreArray.size(), NULL);
+    PTB_CHECK_THAT(!m_scoreArray.empty(), NULL);
     return m_scoreArray[0];
 }
 // Save Functions

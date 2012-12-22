@@ -51,7 +51,7 @@ RtMidiWrapper::RtMidiWrapper() :
     }
 
     // select a default midiout
-    assert(midiouts.size() > 0 && "No MIDI APIs compiled");
+    assert(!midiouts.empty() && "No MIDI APIs compiled");
     midiout = midiouts[0];
 }
 

@@ -114,7 +114,7 @@ Repeat& RepeatController::getPreviousRepeatGroup(const SystemLocation& location)
     std::map<SystemLocation, Repeat>::iterator repeatGroup = repeats.upper_bound(location);
     if (repeatGroup != repeats.begin())
     {
-        repeatGroup--;
+        --repeatGroup;
     }
 
     return repeatGroup->second;

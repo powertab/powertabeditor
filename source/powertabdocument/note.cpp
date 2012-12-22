@@ -916,8 +916,7 @@ void Note::ClearArtificialHarmonic()
 bool Note::IsValidComplexSymbolType(uint8_t type)
 {
     return ((type == slide) || (type == bend) || (type == tappedHarmonic) ||
-            (type == tappedHarmonic) || (type == trill) ||
-            (type == artificialHarmonic));
+            (type == trill) || (type == artificialHarmonic));
 }
 
 /// Creates a text representation of the note, including brackets for ghost notes, harmonics, etc

@@ -67,7 +67,7 @@ QFont SystemRenderer::musicNotationFont = MusicFont().getFont();
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score* score,
                                const int lineSpacing) :
     scoreArea(scoreArea), score(score), lineSpacing(lineSpacing),
-    parentSystem(NULL)
+    parentSystem(NULL), parentStaff(NULL)
 {
     plainTextFont.setPixelSize(10);
     symbolTextFont.setPixelSize(9);
@@ -362,7 +362,7 @@ void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)
     std::vector<Score::AlternateEndingPtr> altEndings;
     score->GetAlternateEndingsInSystem(altEndings, system);
 
-    if (altEndings.size() > 0)
+    if (!altEndings.empty())
     {
         drawAltEndings(altEndings, height);
         height += System::SYSTEM_SYMBOL_SPACING;
@@ -372,7 +372,7 @@ void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)
     std::vector<Score::TempoMarkerPtr> tempoMarkers;
     score->GetTempoMarkersInSystem(tempoMarkers, system);
 
-    if (tempoMarkers.size() > 0)
+    if (!tempoMarkers.empty())
     {
         drawTempoMarkers(tempoMarkers, height);
         height += System::SYSTEM_SYMBOL_SPACING;

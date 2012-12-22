@@ -159,7 +159,7 @@ bool TempoMarker::Deserialize(PowerTabInputStream& stream, uint16_t version)
         assert(IsValidBeatsPerMinute(beatsPerMinute));
 
         // All old tempos are standard markers
-        SetStandardMarker(beatType, beatsPerMinute, m_description.c_str(), tripletFeel);
+        SetStandardMarker(beatType, beatsPerMinute, m_description, tripletFeel);
     }
 
     return true;

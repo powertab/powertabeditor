@@ -411,7 +411,7 @@ void Caret::moveCaretToPrevBar()
         // we want the position of the bar line before this one
         std::vector<System::BarlineConstPtr>::const_iterator barlinesIt = std::find(sysBars.begin(),
                                                                                     sysBars.end(), prevBarline);
-        barlinesIt--;
+        --barlinesIt;
         
         moveCaretHorizontal
                 (((int) (*barlinesIt)->GetPosition()) - 
