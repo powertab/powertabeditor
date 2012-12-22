@@ -1730,6 +1730,7 @@ void PowerTabEditor::clearCurrentPosition()
     shared_ptr<Staff> staff = caret->getCurrentStaff();
     const std::vector<Position*> positions = caret->getSelectedPositions();
     const std::vector<shared_ptr<Barline> > bars = caret->getSelectedBarlines();
+    const uint32_t voice = caret->getCurrentVoice();
 
     undoManager->beginMacro(tr("Clear Position"));
 
@@ -1738,8 +1739,6 @@ void PowerTabEditor::clearCurrentPosition()
     {
         if (*currentPos)
         {
-            // TODO - Leaving this here for when we support multiple voices.
-            const uint32_t voice = 0;
             undoManager->push(new DeletePosition(staff, *currentPos, voice),
                               caret->getCurrentSystemIndex());
         }
@@ -2614,7 +2613,8 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
     if (selectedPosition->HasIrregularGroupingTiming())
     {
         undoManager->push(new RemoveIrregularGrouping(caret->getCurrentStaff(),
-                                                      selectedPosition),
+                                                      selectedPosition,
+                                                      caret->getCurrentVoice()),
                           caret->getCurrentSystemIndex());
     }
     else
