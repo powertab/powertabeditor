@@ -44,7 +44,7 @@ TEST_CASE("Actions/RemoveIrregularGrouping", "")
     staff->GetPosition(0, 3)->SetIrregularGroupingMiddle();
     staff->GetPosition(0, 4)->SetIrregularGroupingEnd();
 
-    RemoveIrregularGrouping action(staff, staff->GetPosition(0, 3));
+    RemoveIrregularGrouping action(staff, staff->GetPosition(0, 3), 0);
 
     action.redo();
 

@@ -21,9 +21,11 @@
 #include <powertabdocument/staff.h>
 
 RemoveIrregularGrouping::RemoveIrregularGrouping(boost::shared_ptr<Staff> staff,
-                                                 Position* position) :
+                                                 Position* position,
+                                                 uint32_t voice) :
     staff(staff),
     position(position),
+    voice(voice),
     irregularGroupBounds(findIrregularGroup())
 {
     Q_ASSERT(position->HasIrregularGroupingTiming());
@@ -37,7 +39,7 @@ void RemoveIrregularGrouping::redo()
     for (size_t i = irregularGroupBounds.first;
          i <= irregularGroupBounds.second; i++)
     {
-        Position* position = staff->GetPosition(0, i);
+        Position* position = staff->GetPosition(voice, i);
         position->ClearIrregularGroupingTiming();
         position->SetIrregularGroupingEnd(false);
         position->SetIrregularGroupingMiddle(false);
@@ -50,7 +52,7 @@ void RemoveIrregularGrouping::undo()
     for (size_t i = irregularGroupBounds.first;
          i <= irregularGroupBounds.second; i++)
     {
-        Position* position = staff->GetPosition(0, i);
+        Position* position = staff->GetPosition(voice, i);
         position->SetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
 
         if (i == irregularGroupBounds.first)
@@ -72,21 +74,22 @@ void RemoveIrregularGrouping::undo()
 /// the index of the start/end note in that grouping
 std::pair<size_t, size_t> RemoveIrregularGrouping::findIrregularGroup() const
 {
-    size_t left = 0, right = staff->GetPositionCount(0);
+    size_t left = 0;
+    size_t right = staff->GetPositionCount(voice);
 
     if (position->IsIrregularGroupingStart())
     {
-        left = staff->GetIndexOfPosition(0, position);
+        left = staff->GetIndexOfPosition(voice, position);
         right = findGroupEnd(left);
     }
     else if (position->IsIrregularGroupingEnd())
     {
-        right = staff->GetIndexOfPosition(0, position);
+        right = staff->GetIndexOfPosition(voice, position);
         left = findGroupStart(right);
     }
     else
     {
-        const size_t middle = staff->GetIndexOfPosition(0, position);
+        const size_t middle = staff->GetIndexOfPosition(voice, position);
         left = findGroupStart(middle);
         right = findGroupEnd(middle);
     }
@@ -97,9 +100,9 @@ std::pair<size_t, size_t> RemoveIrregularGrouping::findIrregularGroup() const
 /// Search for the end of an irregular group, starting from the given index
 size_t RemoveIrregularGrouping::findGroupEnd(size_t startIndex) const
 {
-    for (size_t i = startIndex; i < staff->GetPositionCount(0); i++)
+    for (size_t i = startIndex; i < staff->GetPositionCount(voice); i++)
     {
-        if (staff->GetPosition(0, i)->IsIrregularGroupingEnd())
+        if (staff->GetPosition(voice, i)->IsIrregularGroupingEnd())
         {
             return i;
         }
@@ -114,7 +117,7 @@ size_t RemoveIrregularGrouping::findGroupStart(size_t startIndex) const
 {
     for (int i = startIndex; i >= 0; i--)
     {
-        if (staff->GetPosition(0, i)->IsIrregularGroupingStart())
+        if (staff->GetPosition(voice, i)->IsIrregularGroupingStart())
         {
             return i;
         }

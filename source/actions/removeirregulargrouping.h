@@ -28,8 +28,8 @@ class Position;
 class RemoveIrregularGrouping : public QUndoCommand
 {
 public:
-    RemoveIrregularGrouping(boost::shared_ptr<Staff> staff,
-                            Position* position);
+    RemoveIrregularGrouping(boost::shared_ptr<Staff> staff, Position* position,
+                            uint32_t voice);
 
     void redo();
     void undo();
@@ -37,6 +37,7 @@ public:
 private:
     boost::shared_ptr<Staff> staff;
     Position* position;
+    const uint32_t voice;
     const std::pair<size_t, size_t> irregularGroupBounds;
     uint8_t notesPlayed, notesPlayedOver;
 
