@@ -898,9 +898,12 @@ void System::PerformPositionShift(uint32_t positionIndex, int offset)
     {
         StaffConstPtr staff = m_staffArray.at(i);
 
-        for (size_t j = 0; j < staff->GetPositionCount(0); j++)
+        for (size_t voice = 0; voice < Staff::NUM_STAFF_VOICES; ++voice)
         {
-            shiftPosition(staff->GetPosition(0, j));
+            for (size_t j = 0; j < staff->GetPositionCount(voice); ++j)
+            {
+                shiftPosition(staff->GetPosition(voice, j));
+            }
         }
     }
 
