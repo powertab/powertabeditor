@@ -742,7 +742,8 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
 
         case Layout::SymbolHammerOnPullOff:
         {
-            const Position* pos = staff->GetPositionByPosition(0, symbolGroup.leftPosIndex);
+            const Position* pos = staff->GetPositionByPosition(
+                        symbolGroup.voice, symbolGroup.leftPosIndex);
             if (pos->HasNoteWithHammeron() || pos->HasNoteWithHammeronFromNowhere())
             {
                 renderedSymbol = createPlainText("H", QFont::StyleNormal);
@@ -763,7 +764,9 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
             break;
 
         case Layout::SymbolArtificialHarmonic:
-            renderedSymbol = createArtificialHarmonicText(staff->GetPositionByPosition(0, symbolGroup.leftPosIndex));
+            renderedSymbol = createArtificialHarmonicText(
+                        staff->GetPositionByPosition(symbolGroup.voice,
+                                                     symbolGroup.leftPosIndex));
             break;
 
         default:

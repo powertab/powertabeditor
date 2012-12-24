@@ -25,6 +25,7 @@
 #include "guitar.h"
 #include "notestem.h"
 
+#include <bitset>
 #include <limits>
 #include <algorithm>
 #include <numeric>
@@ -329,7 +330,7 @@ void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroup
                         }
                     }
 
-                    symbolGroups.push_back(SymbolGroup(leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
+                    symbolGroups.push_back(SymbolGroup(0, leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
                 }
 
                 leftPosIndex = posIndex;
@@ -343,7 +344,7 @@ void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroup
             const int leftX = system->GetPositionX(staff->GetPosition(0, leftPosIndex)->GetPosition());
             const int rightX = system->GetPositionX(system->GetPositionCount() - 1);
             const int height = updateHeightMap(heightMap, leftPosIndex, symbolMap.size() - 1, symbolHeight(currentSymbolType));
-            symbolGroups.push_back(SymbolGroup(leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
+            symbolGroups.push_back(SymbolGroup(0, leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
         }
     }
 }
@@ -355,35 +356,45 @@ void Layout::CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symb
                                           boost::shared_ptr<const System> system,
                                           boost::shared_ptr<const Staff> staff)
 {
-    for (uint32_t posIndex = 0; posIndex < staff->GetPositionCount(0); posIndex++)
+    const uint32_t numPositions = system->GetMaxPosition();
+    for (uint32_t i = 0; i < numPositions; ++i)
     {
-        const Position* pos = staff->GetPosition(0, posIndex);
-        int height = 1;
-
-        SymbolGroup symbolGroup(pos->GetPosition(), system->GetPositionX(pos->GetPosition()),
+        SymbolGroup symbolGroup(0, i, system->GetPositionX(i),
                                 system->GetPositionSpacing(), 0, NoSymbol);
 
-        boost::array<bool, 7> enabledSymbols = {{
-            pos->HasPickStrokeDown(),
-            pos->HasPickStrokeUp(),
-            pos->HasTap(),
-            pos->HasNoteWithHammeronOrPulloff(),
-            pos->HasNoteWithSlide(),
-            pos->HasNoteWithTappedHarmonic(),
-            pos->HasNoteWithArtificialHarmonic()
-        }};
+        int height = 1;
+        std::bitset<7> prevSymbols;
 
-        // for each symbol that is enabled, add a corresponding SymbolGroup to the layout
-        for (size_t i = 0; i < enabledSymbols.size(); i++)
+        for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES; ++voice)
         {
-            if (enabledSymbols[i])
-            {
-                symbolGroup.symbolType = symbolsBelowTabStaff[i];
-                symbolGroup.height = height;
-                height++;
+            const Position *pos = staff->GetPositionByPosition(voice, i);
+            if (!pos)
+                continue;
 
-                symbolGroups.push_back(symbolGroup);
+            std::bitset<7> curSymbols;
+            curSymbols[0] = pos->HasPickStrokeDown();
+            curSymbols[1] = pos->HasPickStrokeUp();
+            curSymbols[2] = pos->HasTap();
+            curSymbols[3] = pos->HasNoteWithHammeronOrPulloff();
+            curSymbols[4] = pos->HasNoteWithSlide();
+            curSymbols[5] = pos->HasNoteWithTappedHarmonic();
+            curSymbols[6] = pos->HasNoteWithArtificialHarmonic();
+
+            // For each new symbol, add a corresponding SymbolGroup to the layout.
+            for (size_t i = 0; i < prevSymbols.size(); ++i)
+            {
+                if (curSymbols[i] && !prevSymbols[i])
+                {
+                    symbolGroup.voice = voice;
+                    symbolGroup.symbolType = symbolsBelowTabStaff[i];
+                    symbolGroup.height = height;
+                    height++;
+
+                    symbolGroups.push_back(symbolGroup);
+                }
             }
+
+            prevSymbols |= curSymbols;
         }
     }
 }
@@ -412,7 +423,7 @@ void GroupSymbols(std::vector<Layout::SymbolGroup>& symbolGroups,
                 const int rightX = system->GetPositionX(
                             staff->GetPosition(0, i)->GetPosition());
 
-                symbolGroups.push_back(Layout::SymbolGroup(leftPosIndex, leftX,
+                symbolGroups.push_back(Layout::SymbolGroup(0, leftPosIndex, leftX,
                                         rightX - leftX, 1, currentSymbolType));
             }
 
@@ -427,7 +438,7 @@ void GroupSymbols(std::vector<Layout::SymbolGroup>& symbolGroups,
         const int leftX = system->GetPositionX(
                     staff->GetPosition(0, leftPosIndex)->GetPosition());
         const int rightX = system->GetPositionX(system->GetPositionCount() - 1);
-        symbolGroups.push_back(Layout::SymbolGroup(leftPosIndex, leftX,
+        symbolGroups.push_back(Layout::SymbolGroup(0, leftPosIndex, leftX,
                                         rightX - leftX, 1, currentSymbolType));
     }
 }
@@ -495,8 +506,9 @@ void Layout::CalculateStdNotationBelowLayout(
     GroupSymbols(symbolGroups, symbols, system, staff);
 }
 
-Layout::SymbolGroup::SymbolGroup(int leftPosIndex, int left, int width, int height, Layout::SymbolType type) :
-    leftPosIndex(leftPosIndex),
+Layout::SymbolGroup::SymbolGroup(int voice, int leftPosIndex, int left,
+                                 int width, int height, Layout::SymbolType type) :
+    voice(voice), leftPosIndex(leftPosIndex),
     leftX(left), width(width),
     height(height), symbolType(type)
 {

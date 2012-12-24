@@ -71,8 +71,10 @@ enum SymbolType
 
 struct SymbolGroup
 {
-    SymbolGroup(int leftPosIndex, int leftX, int width, int height, SymbolType type);
+    SymbolGroup(int voice, int leftPosIndex, int leftX, int width, int height,
+                SymbolType type);
 
+    int voice;
     int leftPosIndex; /// Position index of the start of the symbol group
     int leftX; /// x-coordinate of the start of the symbol group
     int width; /// Width (in coordinates) of the group
