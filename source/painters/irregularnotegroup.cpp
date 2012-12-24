@@ -17,6 +17,7 @@
   
 #include "irregularnotegroup.h"
 
+#include <QFontMetricsF>
 #include <QGraphicsItem>
 #include <QBrush>
 #include <QPen>
@@ -56,26 +57,27 @@ void IrregularNoteGroup::draw(QGraphicsItem* parent)
 
     // draw the value of the irregular grouping
     const QString text = QString::fromStdString(noteStems.front().position->GetIrregularGroupingText());
-    const double centreX = (leftX + rightX) / 2.0 - 2.0;
 
     QFont font = MusicFont().getFont();
     font.setItalic(true);
     font.setPixelSize(18);
+
+    QFontMetricsF fm(font);
+    const double textWidth = fm.width(text);
+    const double centreX = leftX + (rightX - (leftX + textWidth)) / 2.0;
 
     QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
     textItem->setPos(centreX, y2 - font.pixelSize());
     textItem->setFont(font);
     textItem->setParentItem(parent);
 
-    const double textWidth = font.pixelSize() * text.length();
-
     // draw the two horizontal line segments across the group, and the two vertical lines on either end
     QGraphicsLineItem* horizLine1 = new QGraphicsLineItem;
-    horizLine1->setLine(leftX, y2, centreX - textWidth / 4, y2);
+    horizLine1->setLine(leftX, y2, leftX + 10, y2);
     horizLine1->setParentItem(parent);
 
     QGraphicsLineItem* horizLine2 = new QGraphicsLineItem;
-    horizLine2->setLine(centreX + textWidth * 0.75, y2, rightX, y2);
+    horizLine2->setLine(rightX - 10, y2, rightX, y2);
     horizLine2->setParentItem(parent);
 
     QGraphicsLineItem* vertLine1 = new QGraphicsLineItem;
