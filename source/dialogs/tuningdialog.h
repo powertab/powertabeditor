@@ -38,6 +38,7 @@ class TuningDialog : public QDialog
     Q_OBJECT
 public:
     TuningDialog(QWidget* parent, boost::shared_ptr<const Guitar> guitar,
+                 const Tuning& currentTuning,
                  boost::shared_ptr<TuningDictionary> tuningDictionary);
     ~TuningDialog();
 

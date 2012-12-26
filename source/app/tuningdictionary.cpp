@@ -68,7 +68,7 @@ void TuningDictionary::save() const
     }
     catch (std::exception &e)
     {
-        qDebug() << "Error loading tuning dictionary.";
+        qDebug() << "Error saving tuning dictionary.";
         qDebug() << "Exception: " << e.what();
     }
 }
@@ -93,6 +93,18 @@ void TuningDictionary::findTunings(
             outTunings.push_back(tuning);
         }
     }
+}
+
+/// Adds a new tuning to the tuning dictionary.
+void TuningDictionary::addTuning(boost::shared_ptr<Tuning> tuning)
+{
+    tunings.push_back(tuning);
+}
+
+/// Removes the specified tuning from the dictionary.
+void TuningDictionary::removeTuning(boost::shared_ptr<Tuning> tuning)
+{
+    tunings.erase(std::remove(tunings.begin(), tunings.end(), tuning));
 }
 
 std::string TuningDictionary::tuningFilePath()

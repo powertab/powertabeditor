@@ -23,7 +23,8 @@ HEADERS += \
     tempomarkerdialog.h \
     barlinedialog.h \
     gotobarlinedialog.h \
-    trilldialog.h
+    trilldialog.h \
+    tuningdictionarydialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -43,7 +44,8 @@ SOURCES += \
     tempomarkerdialog.cpp \
     barlinedialog.cpp \
     gotobarlinedialog.cpp \
-    trilldialog.cpp
+    trilldialog.cpp \
+    tuningdictionarydialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -60,4 +62,5 @@ FORMS += \
     tempomarkerdialog.ui \
     barlinedialog.ui \
     gotobarlinedialog.ui \
-    trilldialog.ui
+    trilldialog.ui \
+    tuningdictionarydialog.ui

@@ -35,6 +35,8 @@ public:
 
     void findTunings(std::vector<boost::shared_ptr<Tuning> >& outTunings,
                      size_t numStrings) const;
+    void addTuning(boost::shared_ptr<Tuning> tuning);
+    void removeTuning(boost::shared_ptr<Tuning> tuning);
 
 private:
     static std::string tuningFilePath();

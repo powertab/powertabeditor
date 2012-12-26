@@ -265,7 +265,7 @@ void MixerInstrument::changeInstrumentName(QString name)
 
 void MixerInstrument::editTuning()
 {
-    TuningDialog dialog(this, guitar, tuningDictionary);
+    TuningDialog dialog(this, guitar, guitar->GetTuning(), tuningDictionary);
 
     if (dialog.exec() == QDialog::Accepted)
     {

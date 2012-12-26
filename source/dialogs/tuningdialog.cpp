@@ -28,8 +28,11 @@
 
 Q_DECLARE_METATYPE(boost::shared_ptr<Tuning>);
 
+/// If no guitar is provided, the guitar-specific options such as the capo will
+/// be disabled.
 TuningDialog::TuningDialog(QWidget *parent,
                            boost::shared_ptr<const Guitar> guitar,
+                           const Tuning& currentTuning,
                            boost::shared_ptr<TuningDictionary> tuningDictionary) :
     QDialog(parent),
     ui(new Ui::TuningDialog),
@@ -37,16 +40,22 @@ TuningDialog::TuningDialog(QWidget *parent,
 {
     ui->setupUi(this);
 
-    const Tuning& currentTuning = guitar->GetTuning();
-
     ui->tuningNameEdit->setText(QString::fromStdString(currentTuning.GetName()));
 
     ui->sharpsCheckBox->setChecked(currentTuning.UsesSharps());
     connect(ui->sharpsCheckBox, SIGNAL(toggled(bool)), this, SLOT(toggleSharps(bool)));
 
-    ui->capoSpinBox->setMinimum(Guitar::MIN_CAPO);
-    ui->capoSpinBox->setMaximum(Guitar::MAX_CAPO);
-    ui->capoSpinBox->setValue(guitar->GetCapo());
+    if (guitar)
+    {
+        ui->capoSpinBox->setMinimum(Guitar::MIN_CAPO);
+        ui->capoSpinBox->setMaximum(Guitar::MAX_CAPO);
+        ui->capoSpinBox->setValue(guitar->GetCapo());
+    }
+    else
+    {
+        ui->capoLabel->hide();
+        ui->capoSpinBox->hide();
+    }
     
     ui->notationOffsetSpinBox->setMinimum(Tuning::MIN_MUSIC_NOTATION_OFFSET);
     ui->notationOffsetSpinBox->setMaximum(Tuning::MAX_MUSIC_NOTATION_OFFSET);

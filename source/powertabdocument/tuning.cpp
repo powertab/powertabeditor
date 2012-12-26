@@ -273,6 +273,7 @@ void Tuning::SetToStandard()
     notes.push_back(MIDI_NOTE_E2);
 
     SetTuningNotes(notes);
+    SetName("Standard");
 }
 
 /// Determines if a tuning is valid (has a valid number of strings)

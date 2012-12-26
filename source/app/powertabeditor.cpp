@@ -69,6 +69,7 @@
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/tempomarkerdialog.h>
 #include <dialogs/gotobarlinedialog.h>
+#include <dialogs/tuningdictionarydialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -813,6 +814,11 @@ void PowerTabEditor::createActions()
     addGuitarAct = new Command(tr("Add Guitar"), "Guitar.AddGuitar", QKeySequence(), this);
     connect(addGuitarAct, SIGNAL(triggered()), this, SLOT(addGuitar()));
 
+    tuningDictionaryAct = new Command(tr("Tuning Dictionary"),
+                            "Guitar.TuningDictionary", QKeySequence(), this);
+    connect(tuningDictionaryAct, SIGNAL(triggered()),
+            this, SLOT(showTuningDictionary()));
+
     // Window Menu Actions
     nextTabAct = new Command(tr("Next Tab"), "Window.NextTab", Qt::CTRL + Qt::Key_Tab, this);
     sigfwd::connect(nextTabAct, SIGNAL(triggered()),
@@ -984,6 +990,8 @@ void PowerTabEditor::createMenus()
 
     guitarMenu = menuBar()->addMenu(tr("&Guitar"));
     guitarMenu->addAction(addGuitarAct);
+    guitarMenu->addSeparator();
+    guitarMenu->addAction(tuningDictionaryAct);
 
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(vibratoAct);
@@ -1281,6 +1289,8 @@ void PowerTabEditor::closeEvent(QCloseEvent* event)
             return;
         }
     }
+
+    tuningDictionary->save();
 }
 
 /// Closes the current document.
@@ -1768,6 +1778,12 @@ void PowerTabEditor::addGuitar()
 
     AddGuitar* addGuitar = new AddGuitar(score, getCurrentMixer());
     undoManager->push(addGuitar, UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
+void PowerTabEditor::showTuningDictionary()
+{
+    TuningDictionaryDialog dialog(tuningDictionary, this);
+    dialog.exec();
 }
 
 /// Edit the key signature at the caret's current location.
@@ -2397,7 +2413,7 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
     QList<QMenu*> menuList;
     menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
     menuList << positionSectionMenu << positionStaffMenu << sectionMenu << octaveMenu << slideIntoMenu;
-    menuList << slideOutOfMenu << guitarMenu << restsMenu << editMenu;
+    menuList << slideOutOfMenu << restsMenu << editMenu;
 
     foreach(QMenu* menu, menuList)
     {
@@ -2409,6 +2425,7 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
 
     closeTabAct->setEnabled(enable);
     saveFileAsAct->setEnabled(enable);
+    addGuitarAct->setEnabled(enable);
 }
 
 void PowerTabEditor::changeNoteDuration(bool increase)

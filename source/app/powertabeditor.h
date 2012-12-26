@@ -169,6 +169,7 @@ private slots:
     void clearCurrentPosition();
 
     void addGuitar();
+    void showTuningDictionary();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
     void editKeyboardShortcuts();
@@ -340,6 +341,7 @@ private:
 
     QMenu* guitarMenu;
     Command* addGuitarAct;
+    Command* tuningDictionaryAct;
 
     QMenu* windowMenu;
     Command* nextTabAct; // cycle to the next/previous tab
