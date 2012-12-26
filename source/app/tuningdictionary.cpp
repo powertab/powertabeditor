@@ -37,7 +37,8 @@ void TuningDictionary::load()
 {
     try
     {
-        std::ifstream tuningStream(tuningFilePath().c_str(), std::ifstream::in | std::ifstream::binary);
+        std::ifstream tuningStream(tuningFilePath().c_str(),
+                                   std::ios::in | std::ios::binary);
         PowerTabInputStream inputStream(tuningStream);
 
         std::vector<boost::shared_ptr<Tuning> > newTunings;
@@ -59,7 +60,8 @@ void TuningDictionary::save() const
 {
     try
     {
-        std::ofstream tuningStream(tuningFilePath().c_str(), std::ifstream::in | std::ifstream::binary);
+        std::ofstream tuningStream(tuningFilePath().c_str(),
+                                   std::ios::out | std::ios::binary);
         PowerTabOutputStream outputStream(tuningStream);
 
         QMutexLocker lock(&mutex);
