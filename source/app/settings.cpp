@@ -17,6 +17,8 @@
   
 #include "settings.h"
 
+#include <powertabdocument/generalmidi.h>
+
 namespace Settings
 {
     const char* APP_PREVIOUS_DIRECTORY = "app/previousDirectory";
@@ -30,6 +32,9 @@ namespace Settings
 
     const char* MIDI_METRONOME_ENABLED = "midi/metronomeEnabled";
     const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
+
+    const char* MIDI_METRONOME_PRESET = "midi/metronomePreset";
+    const int MIDI_METRONOME_PRESET_DEFAULT = midi::MIDI_PRESET_WOODBLOCK;
 
     const char* MIDI_VIBRATO_LEVEL = "midi/vibrato";
     const int MIDI_VIBRATO_LEVEL_DEFAULT = 85;

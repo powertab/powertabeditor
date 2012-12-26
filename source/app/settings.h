@@ -34,6 +34,9 @@ namespace Settings
     extern const char* MIDI_METRONOME_ENABLED;
     extern const bool MIDI_METRONOME_ENABLED_DEFAULT;
 
+    extern const char* MIDI_METRONOME_PRESET;
+    extern const int MIDI_METRONOME_PRESET_DEFAULT;
+
     extern const char* MIDI_VIBRATO_LEVEL;
     extern const int MIDI_VIBRATO_LEVEL_DEFAULT;
 

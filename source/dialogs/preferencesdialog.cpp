@@ -20,10 +20,13 @@
 
 #include <QSettings>
 
+#include <boost/foreach.hpp>
+
 #include <audio/rtmidiwrapper.h>
 #include <app/settings.h>
 #include <app/pubsub/settingspubsub.h>
 #include <app/skinmanager.h>
+#include <powertabdocument/generalmidi.h>
 
 typedef std::pair<int, int> MidiApiAndPort;
 Q_DECLARE_METATYPE(MidiApiAndPort)
@@ -48,6 +51,13 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
             ui->midiPortComboBox->addItem(QString::fromStdString(portName),
                         QVariant::fromValue(std::pair<int, int>(i, j)));
         }
+    }
+
+    std::vector<std::string> presetNames;
+    midi::GetMidiPresetNames(presetNames);
+    BOOST_FOREACH(const std::string& name, presetNames)
+    {
+        ui->metronomePresetComboBox->addItem(QString::fromStdString(name));
     }
 
     ui->vibratoStrengthSpinBox->setRange(1, 127);
@@ -81,6 +91,10 @@ void PreferencesDialog::loadCurrentSettings()
     ui->metronomeEnabledCheckBox->setChecked(settings.value(Settings::MIDI_METRONOME_ENABLED,
                                                             Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
 
+    ui->metronomePresetComboBox->setCurrentIndex(settings.value(
+            Settings::MIDI_METRONOME_PRESET,
+            Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
+
     ui->vibratoStrengthSpinBox->setValue(settings.value(Settings::MIDI_VIBRATO_LEVEL,
                                                         Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt());
 
@@ -106,6 +120,9 @@ void PreferencesDialog::accept()
 
     settings.setValue(Settings::MIDI_METRONOME_ENABLED,
                       ui->metronomeEnabledCheckBox->isChecked());
+
+    settings.setValue(Settings::MIDI_METRONOME_PRESET,
+                      ui->metronomePresetComboBox->currentIndex());
 
     settings.setValue(Settings::MIDI_VIBRATO_LEVEL,
                       ui->vibratoStrengthSpinBox->value());

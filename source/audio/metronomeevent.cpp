@@ -51,7 +51,8 @@ void MetronomeEvent::performEvent(RtMidiWrapper& sequencer) const
         actualVelocity = METRONOME_OFF;
     }
 
-    sequencer.setPatch(channel, midi::MIDI_PRESET_WOODBLOCK);
+    sequencer.setPatch(channel, settings.value(Settings::MIDI_METRONOME_PRESET,
+            Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
     sequencer.setChannelMaxVolume(channel, midi::MAX_MIDI_CHANNEL_VOLUME);
     sequencer.playNote(channel, METRONOME_PITCH, actualVelocity);
 }

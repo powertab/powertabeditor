@@ -14,6 +14,7 @@
 
 #include <boost/cstdint.hpp>
 #include <string>
+#include <vector>
 
 namespace midi
 {
@@ -462,6 +463,8 @@ namespace midi
 
     // MIDI Percussion Preset Functions
     bool IsValidMidiPercussionPreset(uint8_t preset);
+
+    void GetMidiPresetNames(std::vector<std::string>& names);
 }
 
 #endif // GENERALMIDI_H
