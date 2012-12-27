@@ -353,7 +353,7 @@ void ChordNameDialog::updateBassNote(int key)
 // Is used by the tonic and bass note selectors
 void ChordNameDialog::updateNote(int key, bool bass)
 {
-    quint8 displayNote = 0;
+    uint8_t displayNote = key;
 
     bool sharps = toggleSharps->isChecked();
     bool flats = toggleFlats->isChecked();
@@ -363,115 +363,11 @@ void ChordNameDialog::updateNote(int key, bool bass)
         flats = toggleBassFlats->isChecked();
     }
 
-    // rather ugly, but I don't think there's a cleaner way to do this without rewriting the ChordName class
-    switch(key)
-    {
-    case ChordName::C:
-        if (sharps) // C#
-        {
-            setNote(ChordName::CSharp, ChordName::variationDefault, bass);
-        }
-        else if (flats) // Cb
-        {
-            setNote(ChordName::B, ChordName::variationUp, bass);
-        }
-        else // C
-        {
-            setNote(ChordName::C, ChordName::variationDefault, bass);
-        }
-        displayNote = ChordName::C;
-        break;
-    case ChordName::D:
-        if (sharps) // D#
-        {
-            setNote(ChordName::EFlat, ChordName::variationDown, bass);
-        }
-        else if (flats) // Db
-        {
-            setNote(ChordName::CSharp, ChordName::variationUp, bass);
-        }
-        else // D
-        {
-            setNote(ChordName::D, ChordName::variationDefault, bass);
-        }
-        displayNote = ChordName::D;
-        break;
-    case ChordName::E:
-        if (sharps) // E#
-        {
-            setNote(ChordName::F, ChordName::variationDown, bass);
-        }
-        else if (flats) // Eb
-        {
-            setNote(ChordName::EFlat, ChordName::variationDefault, bass);
-        }
-        else // E
-        {
-            setNote(ChordName::E, ChordName::variationDefault, bass);
-        }
-        displayNote = ChordName::E;
-        break;
-    case ChordName::F:
-        if (sharps) // F#
-        {
-            setNote(ChordName::FSharp, ChordName::variationDefault, bass);
-        }
-        else if (flats) // Fb
-        {
-            setNote(ChordName::E, ChordName::variationUp, bass);
-        }
-        else // F
-        {
-            setNote(ChordName::F, ChordName::variationDefault, bass);
-        }
-        displayNote = ChordName::F;
-        break;
-    case ChordName::G:
-        if (sharps) // G#
-        {
-            setNote(ChordName::AFlat, ChordName::variationDown, bass);
-        }
-        else if (flats) // Gb
-        {
-            setNote(ChordName::FSharp, ChordName::variationUp, bass);
-        }
-        else // G
-        {
-            setNote(ChordName::G, ChordName::variationDefault, bass);
-        }
-        displayNote = ChordName::G;
-        break;
-    case ChordName::A:
-        if (sharps) // A#
-        {
-            setNote(ChordName::BFlat, ChordName::variationDown, bass);
-        }
-        else if (flats) // Ab
-        {
-            setNote(ChordName::AFlat, ChordName::variationDefault, bass);
-        }
-        else // A
-        {
-            setNote(ChordName::A, ChordName::variationDefault, bass);
-        }
-        displayNote = ChordName::A;
-        break;
-    case ChordName::B:
-        if (sharps) // B#
-        {
-            setNote(ChordName::C, ChordName::variationDown, bass);
-        }
-        else if (flats) // Bb
-        {
-            setNote(ChordName::BFlat, ChordName::variationDefault, bass);
-        }
-        else // B
-        {
-            setNote(ChordName::B, ChordName::variationDefault, bass);
-        }
-        displayNote = ChordName::B;
-        break;
-    }
+    uint8_t newKey = 0;
+    uint8_t newKeyVariation = 0;
+    ChordName::ComputeKeyAndVariation(newKey, newKeyVariation, key, sharps,
+                                      false, flats, false);
+    setNote(newKey, newKeyVariation, bass);
 
     if (!bass)
     {

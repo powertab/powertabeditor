@@ -51,7 +51,9 @@ SOURCES += \
     actions/test_removesystem.cpp \
     actions/test_edithammerpull.cpp \
     actions/test_updatetabnumber.cpp \
-    actions/test_shifttabnumber.cpp
+    actions/test_shifttabnumber.cpp \
+    actions/test_addartificialharmonic.cpp \
+    actions/test_removeartificialharmonic.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

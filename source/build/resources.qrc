@@ -53,7 +53,9 @@
         <file alias="dynamic_ff.png">../images/dynamic_ff.png</file>
         <file alias="dynamic_fff.png">../images/dynamic_fff.png</file>
         <file alias="flat.png">../images/flat.png</file>
+        <file alias="double_flat.png">../images/double_flat.png</file>
         <file alias="sharp.png">../images/sharp.png</file>
+        <file alias="double_sharp.png">../images/double_sharp.png</file>
         <file alias="triplet_feel_eighth.png">../images/triplet_feel_eighth.png</file>
         <file alias="triplet_feel_eighth_off.png">../images/triplet_feel_eighth_off.png</file>
         <file alias="triplet_feel_sixteenth.png">../images/triplet_feel_sixteenth.png</file>

@@ -573,3 +573,201 @@ std::string ChordName::GetText() const
 
     return text.str();
 }
+
+void ChordName::ComputeKeyAndVariation(uint8_t &key, uint8_t &variation,
+        uint8_t currentKey, bool sharp, bool doubleSharp, bool flat,
+        bool doubleFlat)
+{
+    switch(currentKey)
+    {
+    case ChordName::C:
+        if (sharp) // C#
+        {
+            key = ChordName::CSharp;
+            variation = ChordName::variationDefault;
+        }
+        else if (doubleSharp) // C##
+        {
+            key = ChordName::D;
+            variation = ChordName::variationDown;
+        }
+        else if (flat) // Cb
+        {
+            key = ChordName::B;
+            variation = ChordName::variationUp;
+        }
+        else if (doubleFlat) // Cbb
+        {
+            key = ChordName::BFlat;
+            variation = ChordName::variationUp;
+        }
+        else // C
+        {
+            key = ChordName::C;
+            variation = ChordName::variationDefault;
+        }
+        break;
+    case ChordName::D:
+        if (sharp) // D#
+        {
+            key = ChordName::EFlat;
+            variation = ChordName::variationDown;
+        }
+        else if (doubleSharp) // D##
+        {
+            key = ChordName::E;
+            variation = ChordName::variationDown;
+        }
+        else if (flat) // Db
+        {
+            key = ChordName::CSharp;
+            variation = ChordName::variationUp;
+        }
+        else if (doubleFlat) // Dbb
+        {
+            key = ChordName::C;
+            variation = ChordName::variationUp;
+        }
+        else // D
+        {
+            key = ChordName::D;
+            variation = ChordName::variationDefault;
+        }
+        break;
+    case ChordName::E:
+        if (sharp) // E#
+        {
+            key = ChordName::F;
+            variation = ChordName::variationDown;
+        }
+        else if (doubleSharp) // E##
+        {
+            key = ChordName::FSharp;
+            variation = ChordName::variationDown;
+        }
+        else if (flat) // Eb
+        {
+            key = ChordName::EFlat;
+            variation = ChordName::variationDefault;
+        }
+        else if (doubleFlat) // Ebb
+        {
+            key = ChordName::D;
+            variation = ChordName::variationUp;
+        }
+        else // E
+        {
+            key = ChordName::E;
+            variation = ChordName::variationDefault;
+        }
+        break;
+    case ChordName::F:
+        if (sharp) // F#
+        {
+            key = ChordName::FSharp;
+            variation = ChordName::variationDefault;
+        }
+        else if (doubleSharp) // F##
+        {
+            key = ChordName::G;
+            variation = ChordName::variationDown;
+        }
+        else if (flat) // Fb
+        {
+            key = ChordName::E;
+            variation = ChordName::variationUp;
+        }
+        else if (doubleFlat) // Fbb
+        {
+            key = ChordName::EFlat;
+            variation = ChordName::variationUp;
+        }
+        else // F
+        {
+            key = ChordName::F;
+            variation = ChordName::variationDefault;
+        }
+        break;
+    case ChordName::G:
+        if (sharp) // G#
+        {
+            key = ChordName::AFlat;
+            variation = ChordName::variationDown;
+        }
+        else if (doubleSharp) // G##
+        {
+            key = ChordName::A;
+            variation = ChordName::variationDown;
+        }
+        else if (flat) // Gb
+        {
+            key = ChordName::FSharp;
+            variation = ChordName::variationUp;
+        }
+        else if (doubleFlat) // Gbb
+        {
+            key = ChordName::F;
+            variation = ChordName::variationUp;
+        }
+        else // G
+        {
+            key = ChordName::G;
+            variation = ChordName::variationDefault;
+        }
+        break;
+    case ChordName::A:
+        if (sharp) // A#
+        {
+            key = ChordName::BFlat;
+            variation = ChordName::variationDown;
+        }
+        else if (doubleSharp) // A##
+        {
+            key = ChordName::B;
+            variation = ChordName::variationDown;
+        }
+        else if (flat) // Ab
+        {
+            key = ChordName::AFlat;
+            variation = ChordName::variationDefault;
+        }
+        else if (doubleFlat) // Abb
+        {
+            key = ChordName::G;
+            variation = ChordName::variationUp;
+        }
+        else // A
+        {
+            key = ChordName::A;
+            variation = ChordName::variationDefault;
+        }
+        break;
+    case ChordName::B:
+        if (sharp) // B#
+        {
+            key = ChordName::C;
+            variation = ChordName::variationDown;
+        }
+        else if (doubleSharp) // B##
+        {
+            key = ChordName::CSharp;
+            variation = ChordName::variationDown;
+        }
+        else if (flat) // Bb
+        {
+            key = ChordName::BFlat;
+            variation = ChordName::variationDefault;
+        }
+        else if (doubleFlat) // Bbb
+        {
+            key = ChordName::A;
+            variation = ChordName::variationUp;
+        }
+        else // B
+        {
+            key = ChordName::B;
+            variation = ChordName::variationDefault;
+        }
+        break;
+    }
+}

@@ -150,6 +150,7 @@ private slots:
     void editHammerPull();
     void editTrill();
     void editBarlineFromCaret();
+    void editArtificialHarmonic();
     void editTappedHarmonic();
     void editKeySignatureFromCaret();
     void editTimeSignatureFromCaret();
@@ -317,6 +318,7 @@ private:
     QMenu* tabSymbolsMenu;
     Command* hammerPullAct; // add/remove hammer-on or pull-off
     Command* naturalHarmonicAct; // add/remove natural harmonics
+    Command* artificialHarmonicAct;
     Command* tappedHarmonicAct;
     Command* shiftSlideAct;
     Command* legatoSlideAct;

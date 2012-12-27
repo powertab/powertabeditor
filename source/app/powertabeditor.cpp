@@ -70,6 +70,7 @@
 #include <dialogs/tempomarkerdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/tuningdictionarydialog.h>
+#include <dialogs/artificialharmonicdialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -130,6 +131,8 @@
 #include <actions/removetempomarker.h>
 #include <actions/addtempomarker.h>
 #include <actions/edithammerpull.h>
+#include <actions/addartificialharmonic.h>
+#include <actions/removeartificialharmonic.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -719,9 +722,17 @@ void PowerTabEditor::createActions()
     connectToggleProperty<Note>(naturalHarmonicAct, &getSelectedNotes,
                                 &Note::IsNaturalHarmonic, &Note::SetNaturalHarmonic);
 
-    tappedHarmonicAct = new Command(tr("Tapped Harmonic"), "TabSymbols.TappedHarmonic", QKeySequence(), this);
+    artificialHarmonicAct = new Command(tr("Artificial Harmonic..."),
+            "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
+    artificialHarmonicAct->setCheckable(true);
+    connect(artificialHarmonicAct, SIGNAL(triggered()),
+            this, SLOT(editArtificialHarmonic()));
+
+    tappedHarmonicAct = new Command(tr("Tapped Harmonic..."),
+            "TabSymbols.TappedHarmonic", QKeySequence(), this);
     tappedHarmonicAct->setCheckable(true);
-    connect(tappedHarmonicAct, SIGNAL(triggered()), this, SLOT(editTappedHarmonic()));
+    connect(tappedHarmonicAct, SIGNAL(triggered()),
+            this, SLOT(editTappedHarmonic()));
 
     shiftSlideAct = new Command(tr("Shift Slide"), "TabSymbols.ShiftSlide", Qt::Key_S, this);
     shiftSlideAct->setCheckable(true);
@@ -974,6 +985,7 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     tabSymbolsMenu->addAction(hammerPullAct);
     tabSymbolsMenu->addAction(naturalHarmonicAct);
+    tabSymbolsMenu->addAction(artificialHarmonicAct);
     tabSymbolsMenu->addAction(tappedHarmonicAct);
     tabSymbolsMenu->addSeparator();
 
@@ -1858,6 +1870,33 @@ void PowerTabEditor::editBarlineFromCaret()
     editBarline(caretLocation);
 }
 
+void PowerTabEditor::editArtificialHarmonic()
+{
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    Note* currentNote = caret->getCurrentNote();
+
+    if (currentNote->HasArtificialHarmonic())
+    {
+        undoManager->push(new RemoveArtificialHarmonic(currentNote),
+                          caret->getCurrentSystemIndex());
+    }
+    else
+    {
+        ArtificialHarmonicDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            undoManager->push(new AddArtificialHarmonic(currentNote,
+                    dialog.getKey(), dialog.getKeyVariation(),
+                    dialog.getOctave()),
+                              caret->getCurrentSystemIndex());
+        }
+        else
+        {
+            artificialHarmonicAct->setChecked(false);
+        }
+    }
+}
+
 /// Edits or creates a barline at the specified position.
 void PowerTabEditor::editBarline(const SystemLocation& location)
 {
@@ -2281,6 +2320,7 @@ void PowerTabEditor::updateActions()
     timeSignatureAct->setEnabled(onBarline);
 
     updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
+    updatePropertyStatus(artificialHarmonicAct, currentNote, &Note::HasArtificialHarmonic);
     updatePropertyStatus(tappedHarmonicAct, currentNote, &Note::HasTappedHarmonic);
     updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
     updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);

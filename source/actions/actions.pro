@@ -50,7 +50,9 @@ HEADERS += \
     editfileinformation.h \
     removetempomarker.h \
     addtempomarker.h \
-    edithammerpull.h
+    edithammerpull.h \
+    removeartificialharmonic.h \
+    addartificialharmonic.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -94,4 +96,6 @@ SOURCES += \
     editfileinformation.cpp \
     removetempomarker.cpp \
     addtempomarker.cpp \
-    edithammerpull.cpp
+    edithammerpull.cpp \
+    removeartificialharmonic.cpp \
+    addartificialharmonic.cpp

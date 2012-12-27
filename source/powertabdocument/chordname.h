@@ -329,6 +329,10 @@ public:
         {return (GetType() != typeNotUsed);}
 
     std::string GetText() const;
+
+    static void ComputeKeyAndVariation(uint8_t &key, uint8_t &variation,
+            uint8_t currentKey, bool sharp, bool doubleSharp, bool flat,
+            bool doubleFlat);
 };
 
 #endif // CHORDNAME_H
