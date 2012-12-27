@@ -971,6 +971,15 @@ int Staff::GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
     return y;
 }
 
+void Staff::RemoveNote(uint32_t voice, uint32_t position, uint32_t string)
+{
+    Position* pos = GetPositionByPosition(voice, position);
+    assert(pos != NULL);
+
+    pos->RemoveNote(string);
+    UpdateAdjacentNotes(pos, voice, string);
+}
+
 /// Computes the appropriate clef (treble or bass) depending on the notes present in the system
 void Staff::CalculateClef(const Tuning& tuning)
 {

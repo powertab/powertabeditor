@@ -1725,7 +1725,7 @@ void PowerTabEditor::clearNote()
     if (DeleteNote::canExecute(position, string))
     {
         undoManager->push(new DeleteNote(caret->getCurrentStaff(), caret->getCurrentVoice(),
-                                         position, string),
+                                         position, string, true),
                           caret->getCurrentSystemIndex());
     }
 }
@@ -1744,12 +1744,11 @@ void PowerTabEditor::clearCurrentPosition()
 
     undoManager->beginMacro(tr("Clear Position"));
 
-    for (std::vector<Position*>::const_iterator currentPos = positions.begin();
-         currentPos != positions.end(); ++currentPos)
+    BOOST_FOREACH(Position *pos, positions)
     {
-        if (*currentPos)
+        if (pos)
         {
-            undoManager->push(new DeletePosition(staff, *currentPos, voice),
+            undoManager->push(new DeletePosition(staff, pos, voice),
                               caret->getCurrentSystemIndex());
         }
     }

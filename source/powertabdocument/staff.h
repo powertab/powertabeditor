@@ -175,6 +175,8 @@ public:
     int GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
                         const Tuning& tuning) const;
 
+    void RemoveNote(uint32_t voice, uint32_t position, uint32_t string);
+
     enum SearchDirection
     {
         NextNote = 1,

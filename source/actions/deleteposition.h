@@ -20,6 +20,7 @@
 
 #include <QUndoCommand>
 #include <boost/shared_ptr.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 class Staff;
 class Position;
@@ -35,6 +36,8 @@ protected:
     boost::shared_ptr<Staff> staff;
     Position* position;
     const quint32 voice;
+
+    boost::ptr_vector<QUndoCommand> deleteNotes;
 };
 
 #endif // DELETEPOSITION_H

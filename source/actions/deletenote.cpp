@@ -17,23 +17,30 @@
 
 #include "deletenote.h"
 
-#include <actions/deleteposition.h>
 #include <powertabdocument/staff.h>
 #include <powertabdocument/position.h>
-#include <powertabdocument/note.h>
 
 DeleteNote::DeleteNote(boost::shared_ptr<Staff> staff, uint32_t voice,
-                       Position *position, uint8_t string) :
-    staff(staff), voice(voice),
-    positionIndex(position->GetPosition()),
-    string(string), note(position->GetNoteByString(string))
+                       Position *position, uint8_t string,
+                       bool clearEmptyPositions) :
+    QUndoCommand(QObject::tr("Clear Note")),
+    staff(staff), voice(voice), position(position), string(string),
+    deletePosition(position->GetNoteCount() == 1 && clearEmptyPositions),
+    note(position->GetNoteByString(string))
 {
-    if (position->GetNoteCount() == 1)
+    prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note,
+                                              voice);
+    if (prevNote)
     {
-        deletePosition.reset(new DeletePosition(staff, position, voice));
+        origPrevNote = *prevNote;
     }
 
-    setText(QObject::tr("Clear Note"));
+    nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note,
+                                              voice);
+    if (nextNote)
+    {
+        origNextNote = *nextNote;
+    }
 }
 
 DeleteNote::~DeleteNote()
@@ -42,13 +49,11 @@ DeleteNote::~DeleteNote()
 
 void DeleteNote::redo()
 {
+    staff->RemoveNote(voice, position->GetPosition(), string);
+
     if (deletePosition)
     {
-        deletePosition->redo();
-    }
-    else
-    {
-        staff->GetPositionByPosition(voice, positionIndex)->RemoveNote(string);
+        staff->RemovePosition(voice, position->GetPosition());
     }
 }
 
@@ -56,11 +61,19 @@ void DeleteNote::undo()
 {
     if (deletePosition)
     {
-        deletePosition->undo();
+        staff->InsertPosition(voice, position);
     }
-    else
+
+    position->InsertNote(note);
+
+    if (prevNote)
     {
-        staff->GetPositionByPosition(voice, positionIndex)->InsertNote(note);
+        *prevNote = origPrevNote;
+    }
+
+    if (nextNote)
+    {
+        *nextNote = origNextNote;
     }
 }
 
@@ -68,4 +81,3 @@ bool DeleteNote::canExecute(Position *position, uint8_t string)
 {
     return position && position->GetNoteByString(string);
 }
-

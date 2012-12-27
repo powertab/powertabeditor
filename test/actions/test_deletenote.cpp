@@ -45,7 +45,7 @@ TEST_CASE("Actions/DeleteNote/DeleteNote", "")
     position->InsertNote(new Note(string2, fret2));
     staff->InsertPosition(0, position);
 
-    DeleteNote action(staff, /* voice */ 0, position, string1);
+    DeleteNote action(staff, /* voice */ 0, position, string1, true);
 
     action.redo();
     REQUIRE(position->GetNoteCount() == 1);
@@ -67,7 +67,7 @@ TEST_CASE("Actions/DeleteNote/DeleteLastNote", "")
     position->InsertNote(new Note(2, 12));
     staff->InsertPosition(0, position);
 
-    DeleteNote action(staff, /* voice */ 0, position, 2);
+    DeleteNote action(staff, /* voice */ 0, position, 2, true);
 
     action.redo();
     REQUIRE(staff->GetPositionCount(0) == 0);

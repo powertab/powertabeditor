@@ -17,23 +17,42 @@
   
 #include "deleteposition.h"
 
+#include <boost/foreach.hpp>
+
+#include <actions/deletenote.h>
 #include <powertabdocument/position.h>
 #include <powertabdocument/staff.h>
 
-DeletePosition::DeletePosition(boost::shared_ptr<Staff> staff, Position* position, quint32 voice) :
-    staff(staff),
-    position(position),
-    voice(voice)
+DeletePosition::DeletePosition(boost::shared_ptr<Staff> staff,
+                               Position* position, quint32 voice) :
+    QUndoCommand(QObject::tr("Clear Position")),
+    staff(staff), position(position), voice(voice)
 {
-    setText(QObject::tr("Clear Position"));
+    for (size_t i = 0; i < position->GetNoteCount(); ++i)
+    {
+        deleteNotes.push_back(new DeleteNote(staff, voice, position,
+                position->GetNote(i)->GetString(), false));
+    }
 }
 
 void DeletePosition::redo()
 {
+    // Remove each note first, so that e.g. hammerons of adjacent notes are
+    // updated properly.
+    BOOST_FOREACH(QUndoCommand& cmd, deleteNotes)
+    {
+        cmd.redo();
+    }
+
     staff->RemovePosition(voice, position->GetPosition());
 }
 
 void DeletePosition::undo()
 {
     staff->InsertPosition(voice, position);
+
+    BOOST_FOREACH(QUndoCommand& cmd, deleteNotes)
+    {
+        cmd.undo();
+    }
 }

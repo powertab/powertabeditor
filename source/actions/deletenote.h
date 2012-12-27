@@ -19,20 +19,20 @@
 #define DELETENOTE_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <boost/cstdint.hpp>
+#include <boost/shared_ptr.hpp>
+
+#include <powertabdocument/note.h>
 
 class Staff;
 class Position;
 class Note;
-class DeletePosition;
 
 class DeleteNote : public QUndoCommand
 {
 public:
     DeleteNote(boost::shared_ptr<Staff> staff, uint32_t voice,
-               Position* position, uint8_t string);
+               Position* position, uint8_t string, bool clearEmptyPositions);
     ~DeleteNote();
 
     void redo();
@@ -43,10 +43,16 @@ public:
 private:
     boost::shared_ptr<Staff> staff;
     const uint32_t voice;
-    const uint32_t positionIndex;
+    Position* position;
     const uint8_t string;
+
+    bool deletePosition;
+
     Note* note;
-    boost::scoped_ptr<DeletePosition> deletePosition;
+    Note* prevNote;
+    Note origPrevNote;
+    Note* nextNote;
+    Note origNextNote;
 };
 
 #endif // DELETENOTE_H
