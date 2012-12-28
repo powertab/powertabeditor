@@ -18,6 +18,7 @@
 #include "tuningdictionary.h"
 
 #include <QDebug>
+#include <QDir>
 #include <QMutexLocker>
 #include <QtConcurrentRun>
 #include <QCoreApplication>
@@ -37,7 +38,8 @@ void TuningDictionary::load()
 {
     try
     {
-        std::ifstream tuningStream(tuningFilePath().c_str(),
+        QByteArray path = tuningFilePath().toLocal8Bit();
+        std::ifstream tuningStream(path.constData(),
                                    std::ios::in | std::ios::binary);
         PowerTabInputStream inputStream(tuningStream);
 
@@ -60,7 +62,14 @@ void TuningDictionary::save() const
 {
     try
     {
-        std::ofstream tuningStream(tuningFilePath().c_str(),
+        // Ensure the directory exists first.
+        if (!QDir().mkpath(QFileInfo(tuningFilePath()).path()))
+        {
+            throw std::runtime_error("Could not create data directory");
+        }
+
+        QByteArray path = tuningFilePath().toLocal8Bit();
+        std::ofstream tuningStream(path.constData(),
                                    std::ios::out | std::ios::binary);
         PowerTabOutputStream outputStream(tuningStream);
 
@@ -109,9 +118,7 @@ void TuningDictionary::removeTuning(boost::shared_ptr<Tuning> tuning)
     tunings.erase(std::remove(tunings.begin(), tunings.end(), tuning));
 }
 
-std::string TuningDictionary::tuningFilePath()
+QString TuningDictionary::tuningFilePath()
 {
-    QString path = QCoreApplication::applicationDirPath() +
-            "/data/tunings.dat";
-    return path.toStdString();
+    return QCoreApplication::applicationDirPath() + "/data/tunings.dat";
 }

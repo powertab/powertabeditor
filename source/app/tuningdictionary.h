@@ -39,7 +39,7 @@ public:
     void removeTuning(boost::shared_ptr<Tuning> tuning);
 
 private:
-    static std::string tuningFilePath();
+    static QString tuningFilePath();
 
     mutable QMutex mutex;
     std::vector<boost::shared_ptr<Tuning> > tunings;
