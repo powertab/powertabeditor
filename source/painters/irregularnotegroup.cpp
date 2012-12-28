@@ -71,13 +71,15 @@ void IrregularNoteGroup::draw(QGraphicsItem* parent)
     textItem->setFont(font);
     textItem->setParentItem(parent);
 
+    const double lineWidth = std::max(0.0, 0.5 * (rightX - leftX - textWidth - 10));
+
     // draw the two horizontal line segments across the group, and the two vertical lines on either end
     QGraphicsLineItem* horizLine1 = new QGraphicsLineItem;
-    horizLine1->setLine(leftX, y2, leftX + 10, y2);
+    horizLine1->setLine(leftX, y2, leftX + lineWidth, y2);
     horizLine1->setParentItem(parent);
 
     QGraphicsLineItem* horizLine2 = new QGraphicsLineItem;
-    horizLine2->setLine(rightX - 10, y2, rightX, y2);
+    horizLine2->setLine(rightX - lineWidth, y2, rightX, y2);
     horizLine2->setParentItem(parent);
 
     QGraphicsLineItem* vertLine1 = new QGraphicsLineItem;
