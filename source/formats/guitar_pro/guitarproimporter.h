@@ -91,7 +91,6 @@ private:
     void readOldStyleChord(Gp::InputStream& stream, const Tuning& tuning);
 
     void readStartTempo(Gp::InputStream& stream, Score* score);
-    void fixRepeatEnds(Score* score);
 
     static uint8_t convertTremoloEventType(uint8_t gpEventType);
     static uint8_t convertBendPitch(int32_t gpBendPitch);

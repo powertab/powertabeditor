@@ -25,6 +25,7 @@
 
 #include "pugixml/pugixml.hpp"
 
+class Barline;
 class PowerTabDocument;
 class PowerTabFileHeader;
 class Score;
@@ -72,6 +73,7 @@ private:
     void readAutomations();
 
     void readMasterBars(Score* score);
+    void readBarlineType(const pugi::xml_node &masterBar, boost::shared_ptr<Barline> barline);
     void readKeySignature(const pugi::xml_node &masterBar, KeySignature& key);
     void readTimeSignature(const pugi::xml_node &masterBar, TimeSignature& timeSignature);
     Note* convertNote(int noteId, Position& position, const Tuning& tuning) const;

@@ -37,6 +37,7 @@ struct BarData
     std::vector<std::vector<Position*> > positionLists;
 };
 
-void arrangeScore(Score* score, const std::vector<BarData>& bars);
+void arrangeScore(Score* score, const std::vector<BarData>& bars,
+                  bool fixRepeatEnds);
 
 #endif // SCOREARRANGER_H

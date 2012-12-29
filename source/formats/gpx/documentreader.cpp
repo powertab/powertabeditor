@@ -175,6 +175,7 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
             }
         }
 
+        readBarlineType(masterBar, barline);
         readKeySignature(masterBar, barline->GetKeySignature());
         readTimeSignature(masterBar, barline->GetTimeSignature());
 
@@ -234,7 +235,33 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
         ptbBars.push_back(barData);
     }
 
-    arrangeScore(score, ptbBars);
+    arrangeScore(score, ptbBars, true);
+}
+
+void Gpx::DocumentReader::readBarlineType(const xml_node &masterBar,
+                                          boost::shared_ptr<Barline> barline)
+{
+    xml_node repeat_node = masterBar.child("Repeat");
+
+    if (repeat_node)
+    {
+        if (repeat_node.attribute("start").as_bool())
+        {
+            barline->SetType(Barline::repeatStart);
+        }
+        else
+        {
+            // We don't set the end bar type here. It will be set (for the
+            // next bar) during the arrangeScore function, since the Guitar Pro
+            // format can mark a single barline as being both a repeat start
+            // and a repeat end.
+            barline->SetRepeatCount(repeat_node.attribute("count").as_uint());
+        }
+    }
+    else
+    {
+        barline->SetType(Barline::bar);
+    }
 }
 
 void Gpx::DocumentReader::readBars()
@@ -356,7 +383,6 @@ void Gpx::DocumentReader::readRhythms()
         // Handle dotted/double dotted notes
         int numDots = currentRhythm.child("AugmentationDot").attribute("count").as_int();
 
-        std::cerr << "Dots: " << numDots << std::endl;
         rhythm.dotted = numDots == 1;
         rhythm.doubleDotted = numDots == 2;
 

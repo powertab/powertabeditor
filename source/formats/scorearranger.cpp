@@ -30,9 +30,39 @@
 #include <algorithm>
 #include <boost/make_shared.hpp>
 
+namespace
+{
+/// In Guitar Pro, repeat ends are stored with the current barline, not with the next barline
+/// This method adjusts that by shifting repeat ends forward
+/// TODO - need to deal with consecutive pairs of repeat start/end bars
+void fixRepeats(Score *score)
+{
+    for (size_t i = 0; i < score->GetSystemCount(); i++)
+    {
+        Score::SystemPtr currentSystem = score->GetSystem(i);
+        std::vector<System::BarlinePtr> barlines;
+        currentSystem->GetBarlines(barlines);
+
+        for (size_t j = 0; j < barlines.size() - 1; j++)
+        {
+            System::BarlinePtr currentBarline = barlines[j];
+            System::BarlinePtr nextBarline = barlines[j+1];
+
+            if (currentBarline->GetRepeatCount() >= Barline::MIN_REPEAT_COUNT &&
+                    !currentBarline->IsRepeatEnd())
+            {
+                nextBarline->SetType(Barline::repeatEnd);
+                nextBarline->SetRepeatCount(currentBarline->GetRepeatCount());
+            }
+        }
+    }
+}
+}
+
 /// Arranges the list of bars into systems (useful for importing from other file formats
 /// that don't provide formatting information)
-void arrangeScore(Score* score, const std::vector<BarData>& bars)
+void arrangeScore(Score* score, const std::vector<BarData>& bars,
+                  bool fixRepeatEnds)
 {
     // Use a slightly smaller position spacing than the default in order to reduce the number of systems needed
     const uint8_t DEFAULT_POSITION_SPACING = 15;
@@ -161,4 +191,9 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars)
     }
 
     score->FormatRehearsalSigns();
+
+    if (fixRepeatEnds)
+    {
+        fixRepeats(score);
+    }
 }

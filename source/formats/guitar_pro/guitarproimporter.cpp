@@ -95,9 +95,7 @@ boost::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& f
     readBarlines(stream, numMeasures, bars);
 
     readTracks(stream, score, numTracks, channels);
-
     readSystems(stream, score, bars);
-    fixRepeatEnds(score);
 
     return ptbDoc;
 }
@@ -494,7 +492,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
         bar.positionLists = positionLists;
     }
 
-    arrangeScore(score, bars);
+    arrangeScore(score, bars, true);
 }
 
 /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab)
@@ -1193,32 +1191,6 @@ void GuitarProImporter::readStartTempo(Gp::InputStream& stream, Score* score)
     tempo->SetBeatsPerMinute(stream.read<uint32_t>());
 
     score->InsertTempoMarker(tempo);
-}
-
-/// In Guitar Pro, repeat ends are stored with the current barline, not with the next barline
-/// This method adjusts that by shifting repeat ends forward
-/// TODO - need to deal with consecutive pairs of repeat start/end bars
-void GuitarProImporter::fixRepeatEnds(Score* score)
-{
-    for (size_t i = 0; i < score->GetSystemCount(); i++)
-    {
-        Score::SystemPtr currentSystem = score->GetSystem(i);
-        std::vector<System::BarlinePtr> barlines;
-        currentSystem->GetBarlines(barlines);
-
-        for (size_t j = 0; j < barlines.size() - 1; j++)
-        {
-            System::BarlinePtr currentBarline = barlines[j];
-            System::BarlinePtr nextBarline = barlines[j+1];
-
-            if (currentBarline->GetRepeatCount() >= Barline::MIN_REPEAT_COUNT &&
-                    !currentBarline->IsRepeatEnd())
-            {
-                nextBarline->SetType(Barline::repeatEnd);
-                nextBarline->SetRepeatCount(currentBarline->GetRepeatCount());
-            }
-        }
-    }
 }
 
 void GuitarProImporter::readRehearsalSign(Gp::InputStream &stream, RehearsalSign &sign)
