@@ -38,6 +38,6 @@ struct BarData
 };
 
 void arrangeScore(Score* score, const std::vector<BarData>& bars,
-                  bool fixRepeatEnds);
+                  bool fixBarlineTypes);
 
 #endif // SCOREARRANGER_H

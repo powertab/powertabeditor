@@ -57,12 +57,38 @@ void fixRepeats(Score *score)
         }
     }
 }
+
+/// Shift double bars and free-time bars over by one, due to the difference
+/// between how barline types are handled in PowerTab and Guitar Pro.
+void fixDoubleAndFreeTimeBars(Score *score)
+{
+    for (size_t i = 0; i < score->GetSystemCount(); i++)
+    {
+        Score::SystemPtr currentSystem = score->GetSystem(i);
+        std::vector<System::BarlinePtr> barlines;
+        currentSystem->GetBarlines(barlines);
+
+        assert(!barlines.empty());
+
+        for (int j = barlines.size() - 1; j >= 1; --j)
+        {
+            System::BarlinePtr prevBarline = barlines[j-1];
+            System::BarlinePtr currentBarline = barlines[j];
+
+            if (prevBarline->IsDoubleBar() || prevBarline->IsFreeTimeBar())
+            {
+                currentBarline->SetType(prevBarline->GetType());
+                prevBarline->SetType(Barline::bar);
+            }
+        }
+    }
+}
 }
 
 /// Arranges the list of bars into systems (useful for importing from other file formats
 /// that don't provide formatting information)
 void arrangeScore(Score* score, const std::vector<BarData>& bars,
-                  bool fixRepeatEnds)
+                  bool fixBarlineTypes)
 {
     // Use a slightly smaller position spacing than the default in order to reduce the number of systems needed
     const uint8_t DEFAULT_POSITION_SPACING = 15;
@@ -192,8 +218,9 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars,
 
     score->FormatRehearsalSigns();
 
-    if (fixRepeatEnds)
+    if (fixBarlineTypes)
     {
         fixRepeats(score);
+        fixDoubleAndFreeTimeBars(score);
     }
 }

@@ -258,6 +258,14 @@ void Gpx::DocumentReader::readBarlineType(const xml_node &masterBar,
             barline->SetRepeatCount(repeat_node.attribute("count").as_uint());
         }
     }
+    else if (masterBar.child("FreeTime"))
+    {
+        barline->SetType(Barline::freeTimeBar);
+    }
+    else if (masterBar.child("DoubleBar"))
+    {
+        barline->SetType(Barline::doubleBar);
+    }
     else
     {
         barline->SetType(Barline::bar);
