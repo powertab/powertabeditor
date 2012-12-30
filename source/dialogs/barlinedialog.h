@@ -30,7 +30,7 @@ class BarlineDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit BarlineDialog(QWidget* parent, uint8_t barType, uint8_t repeats);
+    explicit BarlineDialog(QWidget* parent, uint8_t barType, uint8_t repeats, bool startBar, bool endBar);
     ~BarlineDialog();
 
     uint8_t barlineType() const;
