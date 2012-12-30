@@ -27,6 +27,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <boost/scoped_ptr.hpp>
 #include <boost/cstdint.hpp>
 

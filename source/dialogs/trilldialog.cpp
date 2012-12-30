@@ -18,6 +18,8 @@
 #include "trilldialog.h"
 #include "ui_trilldialog.h"
 
+#include <QMessageBox>
+
 #include <powertabdocument/note.h>
 
 TrillDialog::TrillDialog(QWidget* parent, const Note* note) :

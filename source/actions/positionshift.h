@@ -19,6 +19,7 @@
 #define POSITIONSHIFT_H
 
 #include <QUndoCommand>
+#include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 
 class Score;

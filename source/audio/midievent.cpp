@@ -17,6 +17,8 @@
   
 #include "midievent.h"
 
+#include <cmath>
+
 MidiEvent::MidiEvent(uint8_t channel, double startTime, double duration,
                      uint32_t positionIndex, uint32_t systemIndex) :
     channel(channel),

@@ -19,6 +19,7 @@
 #define UPDATENOTEDURATION_H
 
 #include <QUndoCommand>
+#include <vector>
 #include <boost/cstdint.hpp>
 
 class Position;
