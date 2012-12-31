@@ -343,7 +343,7 @@ void Layout::CalculateSymbolLayout(std::vector<Layout::SymbolGroup>& symbolGroup
         {
             const int leftX = system->GetPositionX(staff->GetPosition(0, leftPosIndex)->GetPosition());
             const int rightX = system->GetPositionX(system->GetPositionCount() - 1);
-            const int height = updateHeightMap(heightMap, leftPosIndex, symbolMap.size() - 1, symbolHeight(currentSymbolType));
+            const int height = updateHeightMap(heightMap, leftPosIndex, symbolMap.size(), symbolHeight(currentSymbolType));
             symbolGroups.push_back(SymbolGroup(0, leftPosIndex, leftX, rightX - leftX, height, currentSymbolType));
         }
     }
