@@ -150,6 +150,7 @@ private slots:
     void editHammerPull();
     void editTrill();
     void editBarlineFromCaret();
+    void insertStandardBarline();
     void editArtificialHarmonic();
     void editTappedHarmonic();
     void editKeySignatureFromCaret();
@@ -311,6 +312,7 @@ private:
     Command* keySignatureAct;
     Command* timeSignatureAct;
     Command* barlineAct;
+    Command* standardBarlineAct;
     Command* repeatEndingAct;
     Command* dynamicAct;
     Command* volumeSwellAct;

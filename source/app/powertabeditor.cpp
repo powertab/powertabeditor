@@ -691,9 +691,14 @@ void PowerTabEditor::createActions()
     connect(timeSignatureAct, SIGNAL(triggered()), this,
             SLOT(editTimeSignatureFromCaret()));
 
-    barlineAct = new Command(tr("Barline..."), "MusicSymbols.EditBarline", Qt::Key_B, this);
-    barlineAct->setCheckable(true);
+    barlineAct = new Command(tr("Barline..."), "MusicSymbols.EditBarline",
+            Qt::SHIFT + Qt::Key_B, this);
     connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarlineFromCaret()));
+
+    standardBarlineAct = new Command(tr("Insert Standard Barline"),
+            "MusicSymbols.InsertStandardBarline", Qt::Key_B, this);
+    connect(standardBarlineAct, SIGNAL(triggered()), this,
+            SLOT(insertStandardBarline()));
 
     repeatEndingAct = new Command(tr("Repeat Ending..."),
                                   "MusicSymbols.EditRepeatEnding",
@@ -976,6 +981,7 @@ void PowerTabEditor::createMenus()
     musicSymbolsMenu->addAction(tempoMarkerAct);
     musicSymbolsMenu->addAction(keySignatureAct);
     musicSymbolsMenu->addAction(timeSignatureAct);
+    musicSymbolsMenu->addAction(standardBarlineAct);
     musicSymbolsMenu->addAction(barlineAct);
     musicSymbolsMenu->addAction(repeatEndingAct);
     musicSymbolsMenu->addAction(dynamicAct);
@@ -1943,6 +1949,16 @@ void PowerTabEditor::editBarline(const SystemLocation& location)
     }
 }
 
+/// Inserts a standard barline at the current position.
+void PowerTabEditor::insertStandardBarline()
+{
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    undoManager->push(new AddBarline(caret->getCurrentSystem(),
+                                     caret->getCurrentPositionIndex(),
+                                     Barline::bar, 0),
+                      caret->getCurrentSystemIndex());
+}
+
 void PowerTabEditor::editRepeatEnding()
 {
     const Caret* caret = getCurrentScoreArea()->getCaret();
@@ -2318,6 +2334,8 @@ void PowerTabEditor::updateActions()
         barlineAct->setDisabled(true);
         barlineAct->setText(tr("Barline"));
     }
+
+    standardBarlineAct->setEnabled(currentPosition == NULL && !onBarline);
 
     keySignatureAct->setEnabled(onBarline);
     timeSignatureAct->setEnabled(onBarline);
