@@ -315,8 +315,6 @@ bool Caret::moveCaretStaff(int offset)
     if (getCurrentSystem()->IsValidStaffIndex(nextStaff))
     {
         currentStaffIndex = nextStaff;
-        currentStringIndex = 0;
-        currentPositionIndex = 0;
         selectionRange = std::make_pair(0, 0);
 
         updatePosition();
