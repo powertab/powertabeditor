@@ -41,7 +41,7 @@ void RepeatController::indexRepeats()
 {
     // add start of score as the first repeat
     const SystemLocation scoreStartLocation(0, 0);
-    repeats[scoreStartLocation] = Repeat(scoreStartLocation);
+    repeats.insert(std::make_pair(scoreStartLocation, Repeat(scoreStartLocation)));
 
     for (size_t currentSystemIndex = 0; currentSystemIndex < score->GetSystemCount(); currentSystemIndex++)
     {
@@ -59,7 +59,7 @@ void RepeatController::indexRepeats()
                 const SystemLocation location(currentSystemIndex,
                                               currentBar->GetPosition());
 
-                repeats[location] = Repeat(location);
+                repeats.insert(std::make_pair(location, Repeat(location)));
             }
             else if (currentBar->IsRepeatEnd())
             {
