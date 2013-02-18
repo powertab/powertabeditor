@@ -90,6 +90,7 @@ public:
     const Direction& operator=(const Direction& direction);
     bool operator==(const Direction& direction) const;
     bool operator!=(const Direction& direction) const;
+    bool operator<(const Direction& direction) const;
 
 // Serialization functions
     bool Serialize(PowerTabOutputStream& stream) const;

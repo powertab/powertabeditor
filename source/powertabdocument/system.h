@@ -152,6 +152,9 @@ public:
     size_t GetDirectionCount() const;
     DirectionPtr GetDirection(uint32_t index) const;
 
+    void InsertDirection(DirectionPtr direction);
+    void RemoveDirection(DirectionPtr direction);
+    bool HasDirection(uint32_t position) const;
     size_t MaxDirectionSymbolCount() const;
 
     // Chord Text Functions

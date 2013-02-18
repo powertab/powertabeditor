@@ -52,7 +52,9 @@ HEADERS += \
     addtempomarker.h \
     edithammerpull.h \
     removeartificialharmonic.h \
-    addartificialharmonic.h
+    addartificialharmonic.h \
+    addmusicaldirection.h \
+    removemusicaldirection.h
 
 SOURCES += \
     updatetabnumber.cpp \
@@ -98,4 +100,6 @@ SOURCES += \
     addtempomarker.cpp \
     edithammerpull.cpp \
     removeartificialharmonic.cpp \
-    addartificialharmonic.cpp
+    addartificialharmonic.cpp \
+    addmusicaldirection.cpp \
+    removemusicaldirection.cpp

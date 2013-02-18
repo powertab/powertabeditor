@@ -1022,13 +1022,45 @@ size_t System::GetDirectionCount() const
     return m_directionArray.size();
 }
 
-/// Gets the nth staff in the system
-/// @param index Index of the staff to get
-/// @return The nth staff in the system
+/// Gets the nth direction in the system.
+/// @param index Index of the direction to get.
+/// @return The nth direction in the system.
 System::DirectionPtr System::GetDirection(uint32_t index) const
 {
     PTB_CHECK_THAT(IsValidDirectionIndex(index), DirectionPtr());
     return m_directionArray[index];
+}
+
+/// Inserts a new direction into the system.
+void System::InsertDirection(System::DirectionPtr direction)
+{
+    PTB_CHECK_THAT((!HasDirection(direction->GetPosition())), );
+
+    m_directionArray.push_back(direction);
+    std::sort(m_directionArray.begin(), m_directionArray.end(),
+              CompareSharedPtr<Direction>());
+}
+
+/// Removes the specified direction from the system, if possible.
+void System::RemoveDirection(System::DirectionPtr direction)
+{
+    m_directionArray.erase(std::remove(m_directionArray.begin(),
+                                       m_directionArray.end(),
+                                       direction));
+}
+
+/// Determines whether a direction symbol exists at the specified location.
+bool System::HasDirection(uint32_t position) const
+{
+    BOOST_FOREACH(const DirectionPtr &direction, m_directionArray)
+    {
+        if (direction->GetPosition() == position)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /// Returns the largest number of symbols used by a Direction in the system

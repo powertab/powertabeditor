@@ -89,6 +89,11 @@ bool Direction::operator!=(const Direction& direction) const
     return !operator==(direction);
 }
 
+bool Direction::operator<(const Direction &direction) const
+{
+    return m_position < direction.m_position;
+}
+
 // Serialize Functions
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to

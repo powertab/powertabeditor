@@ -17,9 +17,11 @@
 
 #include <catch.hpp>
 
-#include <powertabdocument/system.h>
-#include <powertabdocument/staff.h>
+#include <boost/make_shared.hpp>
+#include <powertabdocument/direction.h>
 #include <powertabdocument/barline.h>
+#include <powertabdocument/staff.h>
+#include <powertabdocument/system.h>
 
 TEST_CASE("PowerTabDocument/System/FindStaffIndex/NoStaves", "")
 {
@@ -40,4 +42,28 @@ TEST_CASE("PowerTabDocument/System/CopyAndEquality", "")
     // check deep copy
     system1.GetBarlineAtPosition(2)->SetBarlineData(Barline::repeatStart, 0);
     REQUIRE(system1 != system2);
+}
+
+TEST_CASE("PowerTabDocument/System/Directions", "")
+{
+    System system;
+    REQUIRE(system.GetDirectionCount() == 0);
+
+    boost::shared_ptr<Direction> dir1 = boost::make_shared<Direction>(5,
+            Direction::dalSegno, Direction::activeNone, 0);
+    boost::shared_ptr<Direction> dir2 = boost::make_shared<Direction>(2,
+            Direction::daCapo, Direction::activeNone, 0);
+
+    system.InsertDirection(dir1);
+    system.InsertDirection(dir2);
+    REQUIRE(system.GetDirectionCount() == 2);
+    REQUIRE(system.GetDirection(0) == dir2); // Should be ordered by position.
+
+    REQUIRE(system.HasDirection(5));
+    REQUIRE(system.HasDirection(2));
+    REQUIRE(!system.HasDirection(0));
+    REQUIRE(!system.HasDirection(7));
+
+    system.RemoveDirection(dir2);
+    REQUIRE(system.GetDirectionCount() == 1);
 }
