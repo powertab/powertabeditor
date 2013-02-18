@@ -1977,6 +1977,10 @@ void PowerTabEditor::editRepeatEnding()
             undoManager->push(new AddAlternateEnding(currentScore, altEnding),
                               caret->getCurrentSystemIndex());
         }
+        else
+        {
+            repeatEndingAct->setChecked(false);
+        }
     }
     else
     {
@@ -2096,6 +2100,10 @@ void PowerTabEditor::editRehearsalSign()
             EditRehearsalSign* action = new EditRehearsalSign(score, rehearsalSign, true,
                                                               dialog.description());
             undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
+        }
+        else
+        {
+            rehearsalSignAct->setChecked(false);
         }
     }
 
@@ -2636,6 +2644,10 @@ void PowerTabEditor::editDynamic()
 
             undoManager->push(new AddDynamic(currentScore, dynamic),
                               caret->getCurrentSystemIndex());
+        }
+        else
+        {
+            dynamicAct->setChecked(false);
         }
     }
     else
