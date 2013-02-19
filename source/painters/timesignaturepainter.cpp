@@ -89,7 +89,7 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
 
 void TimeSignaturePainter::drawNumber(QPainter* painter, const double y, const quint8 number) const
 {
-    QString text = QString().setNum(number);
+    QString text = QString::number(number);
 
     MusicFont musicFont;
     QFont displayFont = musicFont.getFont();

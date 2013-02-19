@@ -1305,7 +1305,7 @@ void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBa
 
     // draw measure count
     QGraphicsSimpleTextItem* measureCountText = new QGraphicsSimpleTextItem;
-    measureCountText->setText(QString().setNum(measureCount));
+    measureCountText->setText(QString::number(measureCount));
     measureCountText->setFont(musicNotationFont);
 
     centerItem(measureCountText, leftX, rightX,

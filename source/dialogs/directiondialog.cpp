@@ -81,7 +81,7 @@ void DirectionDialog::onAddDirection()
 {
     direction.AddSymbol(Direction::coda, Direction::activeNone, 0);
     ui->directionComboBox->addItem(
-                QString().setNum(direction.GetSymbolCount()));
+                QString::number(direction.GetSymbolCount()));
 
     ui->directionComboBox->setCurrentIndex(direction.GetSymbolCount() - 1);
 
@@ -104,7 +104,7 @@ void DirectionDialog::onRemoveDirection()
     // Rebuild the list of symbols.
     for (size_t i = 0; i < direction.GetSymbolCount(); ++i)
     {
-        ui->directionComboBox->addItem(QString().setNum(i + 1));
+        ui->directionComboBox->addItem(QString::number(i + 1));
     }
     ui->directionComboBox->setCurrentIndex(
                 std::min<int>(index, direction.GetSymbolCount() - 1));

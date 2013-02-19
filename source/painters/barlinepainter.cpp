@@ -116,7 +116,7 @@ void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, Q
         repeatFont.setPixelSize(8);
         painter->setFont(repeatFont);
 
-        const QString message = QString().setNum(barLine->GetRepeatCount()) % "x";
+        const QString message = QString::number(barLine->GetRepeatCount()) % "x";
         painter->drawText(3, staffInfo.getTopStdNotationLine() - 3, message);
     }
 

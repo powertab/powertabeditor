@@ -42,7 +42,7 @@ TempoMarkerPainter::TempoMarkerPainter(boost::shared_ptr<const TempoMarker> temp
     text += imageSpacing;
     text += " = ";
 
-    text += QString().setNum(tempoMarker->GetBeatsPerMinute());
+    text += QString::number(tempoMarker->GetBeatsPerMinute());
 
     displayText.setText(text);
     displayText.prepare(QTransform(), displayFont);

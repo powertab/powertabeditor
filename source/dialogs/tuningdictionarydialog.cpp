@@ -41,7 +41,7 @@ TuningDictionaryDialog::TuningDictionaryDialog(
 
     for (uint8_t i = Tuning::MIN_STRING_COUNT; i <= Tuning::MAX_STRING_COUNT; ++i)
     {
-        ui->stringsComboBox->addItem(QString().setNum(i), i);
+        ui->stringsComboBox->addItem(QString::number(i), i);
     }
 
     connect(ui->stringsComboBox, SIGNAL(currentIndexChanged(int)),
