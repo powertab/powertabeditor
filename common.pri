@@ -35,7 +35,7 @@ RCC_DIR = $${BUILDTYPE}/rcc
 # Replace this with the path to your boost installation if you're compiling on Windows
 # There shouldn't be any need for a unix:INCLUDEPATH, since boost should already be
 # in the include path (/usr/include) if you installed the package from your Linux distribution's repo
-win32:INCLUDEPATH += 'C:/Program Files/boost/boost_1_53_0/'
+win32:INCLUDEPATH += 'C:/Program Files/boost/boost_1_49/'
 
 # Using macports for boost, the default local is below
 macx:INCLUDEPATH += /opt/local/include
