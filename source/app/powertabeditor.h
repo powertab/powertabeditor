@@ -145,6 +145,7 @@ private slots:
     void editChordName();
     void editRehearsalSign();
     void editTempoMarker();
+    void editMusicalDirection();
     void editRepeatEnding();
     void editTiedNote();
     void editHammerPull();
@@ -313,6 +314,7 @@ private:
     Command* timeSignatureAct;
     Command* barlineAct;
     Command* standardBarlineAct;
+    Command* musicalDirectionAct;
     Command* repeatEndingAct;
     Command* dynamicAct;
     Command* volumeSwellAct;

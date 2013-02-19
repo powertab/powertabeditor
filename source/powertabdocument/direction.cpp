@@ -29,7 +29,7 @@ const uint8_t        Direction::NUM_SYMBOL_TYPES                 = 19;
 const uint8_t        Direction::MIN_REPEAT_NUMBER                = 0;
 const uint8_t        Direction::MAX_REPEAT_NUMBER                = 24;
 
-static std::string directionText[Direction::NUM_SYMBOL_TYPES] =
+static std::string shortDirectionText[Direction::NUM_SYMBOL_TYPES] =
 {
     "Coda", "Double Coda", "Segno", "Segno Segno",
     "Fine", "D.C.", "D.S.", "D.S.S.", "To Coda",
@@ -37,6 +37,16 @@ static std::string directionText[Direction::NUM_SYMBOL_TYPES] =
     "D.S. al Coda", "D.S. al Dbl. Coda", "D.S.S. al Coda",
     "D.S.S. al Dbl. Coda", "D.C. al Fine", "D.S. al Fine",
     "D.S.S. al Fine"
+};
+
+static std::string longDirectionText[Direction::NUM_SYMBOL_TYPES] =
+{
+    "Coda", "Double Coda", "Segno", "Segno Segno",
+    "Fine", "Da Capo", "Dal Segno", "Dal Segno Segno", "To Coda",
+    "To Double Coda", "Da Capo al Coda", "Da Capo al Double Coda",
+    "Dal Segno al Coda", "Dal Segno al Double Coda", "Dal Segno Segno al Coda",
+    "Dal Segno Segno al Double Coda", "Da Capo al Fine", "Dal Segno al Fine",
+    "Dal Segno Segno al Fine"
 };
 
 // Constructor/Destructor
@@ -272,7 +282,7 @@ bool Direction::RemoveSymbolAtIndex(uint32_t index)
     return true;
 }
 
-/// Gets a text representation of a symbol
+/// Gets a text representation of a symbol, such as "D.S.S. al Fine".
 /// @param index Index of the symbol to get the text for
 /// @return Text representation of the symbol
 std::string Direction::GetText(uint32_t index) const
@@ -288,7 +298,15 @@ std::string Direction::GetText(uint32_t index) const
     
     PTB_CHECK_THAT(IsValidSymbolType(symbolType), "");
     
-    return directionText[symbolType];
+    return shortDirectionText[symbolType];
+}
+
+/// Returns the detailed text representation of a symbol, such as
+/// "Dal Segno Segno al Fine".
+std::string Direction::GetDetailedText(uint8_t symbolType)
+{
+    PTB_CHECK_THAT(IsValidSymbolType(symbolType), "");
+    return longDirectionText[symbolType];
 }
 
 /// Determines if a symbol index is valid

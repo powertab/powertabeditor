@@ -59,10 +59,10 @@ TEST_CASE("PowerTabDocument/System/Directions", "")
     REQUIRE(system.GetDirectionCount() == 2);
     REQUIRE(system.GetDirection(0) == dir2); // Should be ordered by position.
 
-    REQUIRE(system.HasDirection(5));
-    REQUIRE(system.HasDirection(2));
-    REQUIRE(!system.HasDirection(0));
-    REQUIRE(!system.HasDirection(7));
+    REQUIRE(system.FindDirection(5));
+    REQUIRE(system.FindDirection(2));
+    REQUIRE(!system.FindDirection(0));
+    REQUIRE(!system.FindDirection(7));
 
     system.RemoveDirection(dir2);
     REQUIRE(system.GetDirectionCount() == 1);

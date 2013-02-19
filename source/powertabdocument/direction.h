@@ -140,6 +140,7 @@ public:
     bool RemoveSymbolAtIndex(uint32_t index);
     
     std::string GetText(uint32_t index) const;
+    static std::string GetDetailedText(uint8_t symbolType);
 };
 
 #endif // DIRECTION_H

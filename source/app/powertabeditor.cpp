@@ -71,6 +71,7 @@
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/tuningdictionarydialog.h>
 #include <dialogs/artificialharmonicdialog.h>
+#include <dialogs/directiondialog.h>
 
 #include <powertabdocument/powertabdocument.h>
 #include <powertabdocument/guitar.h>
@@ -133,6 +134,8 @@
 #include <actions/edithammerpull.h>
 #include <actions/addartificialharmonic.h>
 #include <actions/removeartificialharmonic.h>
+#include <actions/addmusicaldirection.h>
+#include <actions/removemusicaldirection.h>
 
 #include <formats/fileformatmanager.h>
 #include <formats/fileformat.h>
@@ -700,6 +703,12 @@ void PowerTabEditor::createActions()
     connect(standardBarlineAct, SIGNAL(triggered()), this,
             SLOT(insertStandardBarline()));
 
+    musicalDirectionAct = new Command(tr("Musical Direction..."),
+            "MusicSymbols.EditMusicalDirection", Qt::SHIFT + Qt::Key_D, this);
+    musicalDirectionAct->setCheckable(true);
+    connect(musicalDirectionAct, SIGNAL(triggered()), this,
+            SLOT(editMusicalDirection()));
+
     repeatEndingAct = new Command(tr("Repeat Ending..."),
                                   "MusicSymbols.EditRepeatEnding",
                                   Qt::SHIFT + Qt::Key_E, this);
@@ -983,6 +992,7 @@ void PowerTabEditor::createMenus()
     musicSymbolsMenu->addAction(timeSignatureAct);
     musicSymbolsMenu->addAction(standardBarlineAct);
     musicSymbolsMenu->addAction(barlineAct);
+    musicSymbolsMenu->addAction(musicalDirectionAct);
     musicSymbolsMenu->addAction(repeatEndingAct);
     musicSymbolsMenu->addAction(dynamicAct);
     musicSymbolsMenu->addAction(volumeSwellAct);
@@ -2151,6 +2161,36 @@ void PowerTabEditor::editTempoMarker()
     }
 }
 
+void PowerTabEditor::editMusicalDirection()
+{
+    const Caret* caret = getCurrentScoreArea()->getCaret();
+    boost::shared_ptr<System> system(caret->getCurrentSystem());
+    boost::shared_ptr<Direction> dir(system->FindDirection(
+                                         caret->getCurrentPositionIndex()));
+
+    if (!dir)
+    {
+        DirectionDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            dir = boost::make_shared<Direction>(dialog.getDirection());
+            dir->SetPosition(caret->getCurrentPositionIndex());
+
+            undoManager->push(new AddMusicalDirection(system, dir),
+                              caret->getCurrentSystemIndex());
+        }
+        else
+        {
+            musicalDirectionAct->setChecked(false);
+        }
+    }
+    else
+    {
+        undoManager->push(new RemoveMusicalDirection(system, dir),
+                          caret->getCurrentSystemIndex());
+    }
+}
+
 void PowerTabEditor::editHammerPull()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
@@ -2322,6 +2362,8 @@ void PowerTabEditor::updateActions()
 
     shared_ptr<const AlternateEnding> altEnding = currentScore->FindAlternateEnding(location);
     repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
+
+    musicalDirectionAct->setChecked(currentSystem->FindDirection(caretPosition));
 
     Score::DynamicPtr dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
                                                           caret->getCurrentPositionIndex());

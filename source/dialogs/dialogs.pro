@@ -25,7 +25,8 @@ HEADERS += \
     gotobarlinedialog.h \
     trilldialog.h \
     tuningdictionarydialog.h \
-    artificialharmonicdialog.h
+    artificialharmonicdialog.h \
+    directiondialog.h
 
 SOURCES += \
     tuningdialog.cpp \
@@ -47,7 +48,8 @@ SOURCES += \
     gotobarlinedialog.cpp \
     trilldialog.cpp \
     tuningdictionarydialog.cpp \
-    artificialharmonicdialog.cpp
+    artificialharmonicdialog.cpp \
+    directiondialog.cpp
 
 FORMS += \
     keyboardsettingsdialog.ui \
@@ -66,4 +68,5 @@ FORMS += \
     gotobarlinedialog.ui \
     trilldialog.ui \
     tuningdictionarydialog.ui \
-    artificialharmonicdialog.ui
+    artificialharmonicdialog.ui \
+    directiondialog.ui

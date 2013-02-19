@@ -1034,7 +1034,7 @@ System::DirectionPtr System::GetDirection(uint32_t index) const
 /// Inserts a new direction into the system.
 void System::InsertDirection(System::DirectionPtr direction)
 {
-    PTB_CHECK_THAT((!HasDirection(direction->GetPosition())), );
+    PTB_CHECK_THAT((!FindDirection(direction->GetPosition())), );
 
     m_directionArray.push_back(direction);
     std::sort(m_directionArray.begin(), m_directionArray.end(),
@@ -1050,17 +1050,18 @@ void System::RemoveDirection(System::DirectionPtr direction)
 }
 
 /// Determines whether a direction symbol exists at the specified location.
-bool System::HasDirection(uint32_t position) const
+/// @return The direction, or NULL if none exists.
+System::DirectionPtr System::FindDirection(uint32_t position) const
 {
     BOOST_FOREACH(const DirectionPtr &direction, m_directionArray)
     {
         if (direction->GetPosition() == position)
         {
-            return true;
+            return direction;
         }
     }
 
-    return false;
+    return DirectionPtr();
 }
 
 /// Returns the largest number of symbols used by a Direction in the system
