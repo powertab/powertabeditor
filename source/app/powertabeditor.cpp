@@ -1425,7 +1425,15 @@ void PowerTabEditor::updateActiveVoice(int voice)
 /// Returns the application name & version (e.g. 'Power Tab Editor 2.0')
 QString PowerTabEditor::getApplicationName() const
 {
-    return QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+    QString name = QString("%1 %2 Beta").arg(
+                QCoreApplication::applicationName(),
+                QCoreApplication::applicationVersion());
+
+#ifdef SVN_REVISION
+    name += " r" + QString::number(SVN_REVISION);
+#endif
+
+    return name;
 }
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()
