@@ -69,6 +69,8 @@ public:
     static ScoreArea* getCurrentScoreArea();
     void registerCaret(Caret* caret);
 
+    void openFiles(const std::vector<std::string> &files);
+
 protected:
     virtual void closeEvent(QCloseEvent*);
 

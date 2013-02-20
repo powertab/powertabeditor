@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,32 +14,29 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#include <QApplication>
-#include <app/powertabeditor.h>
-#include <app/options.h>
 
-int main(int argc, char *argv[])
+#ifndef OPTIONS_H
+#define OPTIONS_H
+
+#include <string>
+#include <vector>
+
+class QStringList;
+
+/// Handles command-line argument parsing.
+class Options
 {
-    QApplication a(argc, argv);
+public:
+    Options();
 
-    // set app information
-    QCoreApplication::setOrganizationName("Power Tab");
-    QCoreApplication::setApplicationName("Power Tab Editor");
-    QCoreApplication::setApplicationVersion("2.0");
+    bool parse(const QStringList &argList);
 
-    Options options;
+    std::vector<std::string> filesToOpen();
 
-    if (options.parse(QCoreApplication::arguments()))
-    {
-        PowerTabEditor w;
-        w.show();
-        w.openFiles(options.filesToOpen());
+private:
+    static std::vector<std::string> toStdStringList(const QStringList &args);
 
-        return a.exec();
-    }
-    else
-    {
-        return EXIT_FAILURE;
-    }
-}
+    std::vector<std::string> filenames;
+};
+
+#endif // OPTIONS_H

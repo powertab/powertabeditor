@@ -162,11 +162,6 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf"); // used for music notation
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf"); // used for tab notes
 
-    // set app information
-    QCoreApplication::setOrganizationName("Power Tab");
-    QCoreApplication::setApplicationName("Power Tab Editor");
-    QCoreApplication::setApplicationVersion("2.0");
-
     // need to initialize the skin manager after the QCoreApplication initialization, since
     // it uses the QSettings class
     skinManager.reset(new SkinManager);
@@ -1464,6 +1459,15 @@ void PowerTabEditor::registerCaret(Caret* caret)
     connect(caret, SIGNAL(moved()), this, SLOT(updateActions()));
     connect(caret, SIGNAL(moved()), this, SLOT(updateLocationLabel()));
     connect(caret, SIGNAL(selectionChanged()), this, SLOT(updateActions()));
+}
+
+/// Opens a list of files.
+void PowerTabEditor::openFiles(const std::vector<std::string> &files)
+{
+    BOOST_FOREACH(const std::string &file, files)
+    {
+        openFile(QString::fromStdString(file));
+    }
 }
 
 /// Cycles through the tabs in the tab bar
