@@ -450,6 +450,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
     RepeatController repeatController(caret->getCurrentScore());
 
     SystemLocation currentLocation;
+    SystemLocation prevLocation;
 
     typedef boost::ptr_list<MidiEvent>::const_iterator MidiEventIterator;
     MidiEventIterator activeEvent = eventList.begin();
@@ -484,12 +485,14 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
         {
             emit playbackSystemChanged(startLocation.getSystemIndex());
             currentLocation.setSystemIndex(startLocation.getSystemIndex());
+            prevLocation = currentLocation;
             startLocation = SystemLocation(0, 0);
         }
 
         // if we've moved to a new position, move the caret
         if (eventLocation.getPositionIndex() > currentLocation.getPositionIndex())
         {
+            prevLocation = currentLocation;
             currentLocation.setPositionIndex(eventLocation.getPositionIndex());
             emit playbackPositionChanged(currentLocation.getPositionIndex());
         }
@@ -500,11 +503,12 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
         {
             currentLocation.setSystemIndex(eventLocation.getSystemIndex());
             currentLocation.setPositionIndex(0);
+            prevLocation = currentLocation;
             emit playbackSystemChanged(currentLocation.getSystemIndex());
         }
 
         SystemLocation newLocation;
-        if (repeatController.checkForRepeat(currentLocation, newLocation))
+        if (repeatController.checkForRepeat(prevLocation, currentLocation, newLocation))
         {
             qDebug() << "Moving to: " << newLocation.getSystemIndex()
                      << ", " << newLocation.getPositionIndex();
@@ -513,7 +517,7 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
                      << " at " << activeEvent->getStartTime();
 
             startLocation = newLocation;
-            currentLocation = SystemLocation(0, 0);
+            currentLocation = prevLocation = SystemLocation(0, 0);
             emit playbackSystemChanged(startLocation.getSystemIndex());
             emit playbackPositionChanged(startLocation.getPositionIndex());
             activeEvent = eventList.begin();

@@ -41,9 +41,14 @@ uint8_t DirectionSymbol::getSymbolType() const
     return symbolType;
 }
 
-/// Determines whether the direction should be performed, based on the given information
+/// Determines whether the direction should be performed, based on the
+/// active symbol and repeat number.
+/// If the direction's activation symbol is None, it will always be able to
+/// activate regardless of the currently active symbol.
 bool DirectionSymbol::shouldPerformDirection(uint8_t activeSymbol, uint8_t activeRepeat) const
 {
-    return (this->activeSymbol == activeSymbol && symbolType >= Direction::fine &&
+    return ((this->activeSymbol == Direction::activeNone ||
+             this->activeSymbol == activeSymbol) &&
+            symbolType >= Direction::fine &&
             (repeatNumber == 0 || repeatNumber == activeRepeat));
 }

@@ -123,10 +123,11 @@ Repeat& RepeatController::getPreviousRepeatGroup(const SystemLocation& location)
 /// Checks if a repeat needs to be performed at the given system and position.
 /// @return true If the playback position needs to be changed, and
 /// updates the newSystem and newPos parameters with the new playback position
-bool RepeatController::checkForRepeat(const SystemLocation& currentLocation,
+bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
+                                      const SystemLocation& currentLocation,
                                       SystemLocation& newLocation)
 {
-    if (repeats.empty()) // no repeat events in the score
+    if (repeats.empty()) // No repeat events in the score.
     {
         return false;
     }
@@ -134,36 +135,38 @@ bool RepeatController::checkForRepeat(const SystemLocation& currentLocation,
     Repeat& activeRepeat = getPreviousRepeatGroup(currentLocation);
     newLocation = currentLocation;
 
-    // check for directions at location
-    std::pair<DirectionMap::iterator, DirectionMap::iterator> directionsAtLocation =
-            directions.equal_range(currentLocation);
+    // Check for directions between the previous playback location and the
+    // current location.
+    DirectionMap::iterator leftIt = directions.lower_bound(prevLocation);
+    DirectionMap::iterator rightIt = directions.upper_bound(currentLocation);
 
-    if (directionsAtLocation.first != directions.end())
+    if (leftIt != directions.end() && leftIt != rightIt)
     {
-        DirectionSymbol& direction = directionsAtLocation.first->second;
+        DirectionSymbol& direction = leftIt->second;
 
-        if (direction.shouldPerformDirection(activeSymbol, activeRepeat.getActiveRepeat()))
+        if (direction.shouldPerformDirection(activeSymbol,
+                                             activeRepeat.getActiveRepeat()))
         {
             newLocation = performMusicalDirection(direction.getSymbolType());
 
             if (newLocation != currentLocation)
             {
-                // remove the direction if it was performed
-                directions.erase(directionsAtLocation.first);
-                // reset the repeat count for the active repeat, since we may end up returning to it later
-                // (e.g. D.C. al Fine)
+                // Remove the direction if it was performed.
+                directions.erase(leftIt);
+                // Reset the repeat count for the active repeat, since we may
+                // end up returning to it later (e.g. D.C. al Fine).
                 activeRepeat.reset();
             }
         }
     }
 
-    // if no musical direction was performed, try to perform a repeat
+    // If no musical direction was performed, try to perform a repeat.
     if (newLocation == currentLocation)
     {
         newLocation = activeRepeat.performRepeat(currentLocation);
     }
 
-    // return true if a position shift occurred
+    // Return true if a position shift occurred.
     return (newLocation != currentLocation);
 }
 

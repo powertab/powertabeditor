@@ -34,7 +34,9 @@ class RepeatController
 public:
     RepeatController(const Score* score);
 
-    bool checkForRepeat(const SystemLocation& currentLocation, SystemLocation& newLocation);
+    bool checkForRepeat(const SystemLocation &prevLocation,
+                        const SystemLocation& currentLocation,
+                        SystemLocation& newLocation);
 
 private:
     void indexRepeats();
@@ -49,7 +51,7 @@ private:
 
     std::map<SystemLocation, Repeat> repeats; ///< Holds all repeats in the score
 
-    typedef boost::unordered_multimap<SystemLocation, DirectionSymbol> DirectionMap;
+    typedef std::multimap<SystemLocation, DirectionSymbol> DirectionMap;
     DirectionMap directions; ///< Stores each musical direction in the system
 
     typedef boost::unordered_map<uint8_t, SystemLocation> SymbolLocationsMap;
