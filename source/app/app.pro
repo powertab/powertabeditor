@@ -3,6 +3,8 @@ include (../../common.pri)
 # Find the SVN revision number.
 DEFINES += "SVN_REVISION=$$system(svnversion $${PWD} -n)"
 
+INCLUDEPATH += .
+
 SOURCES += \
     powertabeditor.cpp \
     scorearea.cpp \
