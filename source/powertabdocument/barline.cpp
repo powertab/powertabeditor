@@ -21,7 +21,7 @@ const uint8_t Barline::DEFAULT_DATA          = (uint8_t)(bar << 5);
 
 // Repeat Count Constants
 const uint8_t Barline::MIN_REPEAT_COUNT      = 2;
-const uint8_t Barline::MAX_REPEAT_COUNT      = 24;
+const uint8_t Barline::MAX_REPEAT_COUNT      = 31;
 	
 // Constructor/Destructor
 /// Default Constructor

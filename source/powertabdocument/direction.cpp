@@ -27,7 +27,7 @@ const uint8_t        Direction::NUM_SYMBOL_TYPES                 = 19;
 
 // Repeat Number Constants
 const uint8_t        Direction::MIN_REPEAT_NUMBER                = 0;
-const uint8_t        Direction::MAX_REPEAT_NUMBER                = 24;
+const uint8_t        Direction::MAX_REPEAT_NUMBER                = 31;
 
 static std::string shortDirectionText[Direction::NUM_SYMBOL_TYPES] =
 {
