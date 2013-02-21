@@ -17,6 +17,8 @@ SOURCES += main.cpp
 
 RESOURCES += resources.qrc
 
+win32:RC_FILE = build.rc
+
 # if shadow building is enabled
 !equals($${PWD}, $${OUT_PWD}) {
     # copy skins folder to output directory

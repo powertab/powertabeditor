@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "pte_windows_build", "pte_windows_build.wixproj", "{A4314D6B-DE92-4F2E-8888-A04C224BAC93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A4314D6B-DE92-4F2E-8888-A04C224BAC93}.Debug|x86.ActiveCfg = Debug|x86
+		{A4314D6B-DE92-4F2E-8888-A04C224BAC93}.Debug|x86.Build.0 = Debug|x86
+		{A4314D6B-DE92-4F2E-8888-A04C224BAC93}.Release|x86.ActiveCfg = Release|x86
+		{A4314D6B-DE92-4F2E-8888-A04C224BAC93}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

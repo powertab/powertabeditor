@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  
+  <?define ProductName="Power Tab Editor"?>
+  <?define ProductShortName="Power Tab"?>
+  <?define Manufacturer="Power Tab Community"?>
+  <?define Version="2.0.0.0"?>
+  
+  <?define BuildRootDir="../../source"?>
+  <?define QtBinDir="C:/Qt/4.8.3/bin"?>
+  
+	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade AllowDowngrades="yes" />
+    <MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="Complete" Level="1">
+			<ComponentGroupRef Id="Binaries" />
+      <ComponentGroupRef Id="DataFiles"/>
+		</Feature>
+
+    <Icon Id="powertabeditor.ico" SourceFile="$(var.BuildRootDir)/icons/app_icon.ico" />
+    <Property Id="ARPPRODUCTICON" Value="powertabeditor.ico" />
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="PowerTab" Name="$(var.ProductShortName)">
+          <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+            <Directory Id="DataDir" Name="data" />            
+          </Directory>
+        </Directory>
+			</Directory>
+
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="$(var.ProductShortName)" />
+      </Directory>
+		</Directory>
+	</Fragment>
+
+  <!-- TODO - copy skins -->
+  <!-- TODO - add Guitar Pro file type associations -->
+	<Fragment>
+    <!-- Main executable and required dlls (e.g. Qt) -->
+    <ComponentGroup Id="Binaries" Directory="INSTALLFOLDER">
+      <Component Id="Executable" Guid="2DA29761-7F65-42FF-ADF6-374A67C80C8C">
+        <File Id="PowerTabEditorExe" Name="powertabeditor.exe" Source="$(var.BuildRootDir)/build/powertabeditor.exe" KeyPath="yes" Checksum="yes">
+          <Shortcut Id="PowerTabShortcut" Directory="ProgramMenuDir" Name="$(var.ProductName)" Icon="powertabeditor.ico" Advertise="yes" />
+        </File>
+
+        <RemoveFolder Id="ProgramMenuDir" Directory="ProgramMenuDir" On="uninstall" />
+
+        <ProgId Id="PowerTabEditor.TabFile" Icon="powertabeditor.ico" IconIndex="0" Advertise="yes">
+          <!-- File type associations -->
+          <Extension Id="ptb" ContentType="audio/x-ptb">
+            <Verb Id="open" Command="Open" Argument='"%1"' />
+          </Extension>
+        </ProgId>
+      </Component>
+
+      <Component Id="QtCore" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
+        <File Source="$(var.QtBinDir)/QtCore4.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="QtGui" Guid="FE76E4D8-E4E2-4CC8-B27F-E4D5C6EE718F">
+        <File Source="$(var.QtBinDir)/QtGui4.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+    </ComponentGroup>
+    
+    <!-- Data files -->
+    <ComponentGroup Id="DataFiles" Directory="DataDir">
+      <Component Id="TuningDictionary" Guid="5C770CE4-AF29-447F-8CD5-7F997837CE5C">
+        <File Source="$(var.BuildRootDir)/data/tunings.dat" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+	</Fragment>
+</Wix>
