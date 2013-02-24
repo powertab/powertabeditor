@@ -18,7 +18,7 @@
 #include "fileformat.h"
 
 FileFormat::FileFormat(const std::string &name,
-                       const std::string &fileExtensions) :
+                       const std::vector<std::string> &fileExtensions) :
     name(name),
     fileExtensions(fileExtensions)
 {
@@ -27,6 +27,33 @@ FileFormat::FileFormat(const std::string &name,
 bool FileFormat::operator<(const FileFormat& format) const
 {
     return name < format.name;
+}
+
+/// Returns a correctly formatted file filter for a Qt file dialog.
+/// e.g. "FileType (*.ext1 *.ext2)".
+std::string FileFormat::fileFilter() const
+{
+    return name + " (" + allExtensions() + ")";
+}
+
+std::string FileFormat::allExtensions() const
+{
+    std::string extensions;
+
+    for (size_t i = 0; i < fileExtensions.size(); ++i)
+    {
+        if (i != 0)
+            extensions += " ";
+        extensions += "*." + fileExtensions[i];
+    }
+
+    return extensions;
+}
+
+bool FileFormat::contains(const std::string &extension) const
+{
+    return std::find(fileExtensions.begin(), fileExtensions.end(),
+                     extension) != fileExtensions.end();
 }
 
 FileFormatImporter::FileFormatImporter(const FileFormat& format) :
@@ -38,7 +65,7 @@ FileFormatImporter::~FileFormatImporter()
 {
 }
 
-FileFormat FileFormatImporter::getFileFormat() const
+FileFormat FileFormatImporter::fileFormat() const
 {
     return format;
 }
@@ -46,4 +73,19 @@ FileFormat FileFormatImporter::getFileFormat() const
 FileFormatException::FileFormatException(const std::string& error) :
     std::runtime_error(error)
 {
+}
+
+
+FileFormatExporter::FileFormatExporter(const FileFormat &format) :
+    format(format)
+{
+}
+
+FileFormatExporter::~FileFormatExporter()
+{
+}
+
+FileFormat FileFormatExporter::fileFormat() const
+{
+    return format;
 }

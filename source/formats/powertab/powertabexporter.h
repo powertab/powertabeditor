@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,33 +14,19 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef DOCUMENTMANAGER_H
-#define DOCUMENTMANAGER_H
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
+#ifndef POWERTABEXPORTER_H
+#define POWERTABEXPORTER_H
 
-class QString;
-class PowerTabDocument;
+#include <formats/fileformatmanager.h>
 
-/// Class for managing opened documents
-class DocumentManager
+class PowerTabExporter : public FileFormatExporter
 {
 public:
-    DocumentManager();
+    PowerTabExporter();
 
-    void addDocument(boost::shared_ptr<PowerTabDocument> doc);
-
-    void createDocument();
-    void removeDocument(int index);
-    boost::shared_ptr<PowerTabDocument> getCurrentDocument() const;
-    void setCurrentDocumentIndex(int index);
-    int getCurrentDocumentIndex() const;
-
-private:
-    std::vector<boost::shared_ptr<PowerTabDocument> > documentList;
-    int currentDocumentIndex;
+    virtual void save(boost::shared_ptr<const PowerTabDocument> doc,
+                      const std::string& fileName);
 };
 
-#endif // DOCUMENTMANAGER_H
+#endif // POWERTABEXPORTER_H

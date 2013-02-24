@@ -15,7 +15,10 @@ HEADERS += \
     scorearranger.h \
     gpx/pugixml/pugixml.hpp \
     gpx/pugixml/pugiconfig.hpp \
-    gpx/pugixml/foreach.hpp
+    gpx/pugixml/foreach.hpp \
+    powertab/powertabimporter.h \
+    powertab/powertabexporter.h \
+    powertab/common.h
 
 SOURCES += \
     fileformat.cpp \
@@ -29,8 +32,6 @@ SOURCES += \
     gpx/gpximporter.cpp \
     gpx/documentreader.cpp \
     scorearranger.cpp \
-    gpx/pugixml/pugixml.cpp
-
-
-
-
+    gpx/pugixml/pugixml.cpp \
+    powertab/powertabimporter.cpp \
+    powertab/powertabexporter.cpp

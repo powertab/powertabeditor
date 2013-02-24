@@ -62,7 +62,7 @@ public:
     void Init();
 
     bool Save(const std::string& fileName) const;
-    bool Load(const std::string& fileName);
+    void Load(const std::string& fileName);
 
     bool Deserialize(PowerTabInputStream& stream);
 

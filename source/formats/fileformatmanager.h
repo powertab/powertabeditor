@@ -25,8 +25,9 @@
 #endif
 #include <boost/ptr_container/ptr_map.hpp>
 
-#include <vector>
 #include "fileformat.h"
+#include <vector>
+#include <boost/optional.hpp>
 
 class FileFormatImporter;
 class FileFormatExporter;
@@ -38,12 +39,39 @@ public:
     FileFormatManager();
     ~FileFormatManager();
 
-    std::vector<FileFormat> importedFileFormats() const;
-    boost::shared_ptr<PowerTabDocument> import(const std::string& fileName, const FileFormat& format);
+    boost::optional<FileFormat> findFormat(const std::string &extension) const;
+
+    std::string importFileFilter() const;
+    boost::shared_ptr<PowerTabDocument> importFile(const std::string& fileName,
+                                                   const FileFormat& format);
+
+    std::string exportFileFilter() const;
+    bool exportFile(boost::shared_ptr<const PowerTabDocument> doc,
+                    const std::string& fileName, const FileFormat& format);
 
 private:
+    template <typename Importer>
+    void registerImporter();
+
+    template <typename Exporter>
+    void registerExporter();
+
     boost::ptr_map<FileFormat, FileFormatImporter> importers;
     boost::ptr_map<FileFormat, FileFormatExporter> exporters;
 };
+
+template <typename Importer>
+void FileFormatManager::registerImporter()
+{
+    FileFormat format = Importer().fileFormat();
+    importers.insert(format, new Importer());
+}
+
+template <typename Exporter>
+void FileFormatManager::registerExporter()
+{
+    FileFormat format = Exporter().fileFormat();
+    exporters.insert(format, new Exporter());
+}
 
 #endif // FILEFORMATMANAGER_H

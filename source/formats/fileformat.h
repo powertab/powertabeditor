@@ -18,19 +18,31 @@
 #ifndef IFILEFORMAT_H
 #define IFILEFORMAT_H
 
-#include <string>
-#include <boost/shared_ptr.hpp>
 #include <stdexcept>
+#include <string>
+#include <vector>
+#include <boost/shared_ptr.hpp>
 
 class PowerTabDocument;
 
-struct FileFormat
+class FileFormat
 {
-    FileFormat(const std::string& name, const std::string& fileExtensions);
+public:
+    FileFormat(const std::string& name,
+               const std::vector<std::string>& fileExtensions);
+
     bool operator<(const FileFormat& format) const;
 
-    std::string name; ///< Name of the file format (e.g. "Power Tab", "MIDI", "PDF", etc)
-    std::string fileExtensions; ///< Supported file extensions, separated by spaces (e.g. "*.cpp *.h")
+    std::string fileFilter() const;
+    std::string allExtensions() const;
+
+    bool contains(const std::string &extension) const;
+
+private:
+    /// Name of the file format (e.g. "Power Tab", "MIDI", etc).
+    std::string name;
+    /// Supported file extensions (e.g. {"gp3", "gp4"}).
+    std::vector<std::string> fileExtensions;
 };
 
 /// Base class for all file format importers
@@ -44,7 +56,7 @@ public:
     /// @throw FileFormatException
     virtual boost::shared_ptr<PowerTabDocument> load(const std::string& fileName) = 0;
 
-    FileFormat getFileFormat() const;
+    FileFormat fileFormat() const;
 
 private:
     const FileFormat format;
@@ -61,7 +73,7 @@ public:
     /// @throw FileFormatException
     virtual void save(boost::shared_ptr<const PowerTabDocument>, const std::string& fileName) = 0;
 
-    FileFormat getFileFormat() const;
+    FileFormat fileFormat() const;
 
 private:
     const FileFormat format;

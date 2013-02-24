@@ -225,36 +225,27 @@ bool PowerTabDocument::Save(const string& fileName) const
     return stream.CheckState();
 }
 
-/// Loads a power tab file
-/// @param fileName Full path of the file to load
-/// @return True if the file was loaded, false if not
-bool PowerTabDocument::Load(const string& fileName)
+/// Loads a power tab file.
+/// @param fileName Full path of the file to load.
+/// @throw std::ifstream::failure
+void PowerTabDocument::Load(const string& fileName)
 {
-    try
+    std::ifstream fileStream(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
+    PowerTabInputStream stream(fileStream);
+
+    DeleteContents();
+
+    // read the header
+    if (!m_header.Deserialize(stream))
     {
-        std::ifstream fileStream(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
-        PowerTabInputStream stream(fileStream);
-
-        DeleteContents();
-
-        // read the header
-        if (!m_header.Deserialize(stream))
-        {
-            return false;
-        }
-
-        // read the rest of the document
-        Deserialize(stream);
-
-        m_header.SetVersion(PowerTabFileHeader::FILEVERSION_CURRENT);
-        m_fileName = fileName;
-    }
-    catch (const std::ifstream::failure&)
-    {
-        return false;
+        throw std::runtime_error("Invalid header");
     }
 
-    return true;
+    // read the rest of the document
+    Deserialize(stream);
+
+    m_header.SetVersion(PowerTabFileHeader::FILEVERSION_CURRENT);
+    m_fileName = fileName;
 }
 
 /// Deserializes a file from an input stream

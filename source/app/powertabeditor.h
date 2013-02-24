@@ -45,7 +45,7 @@ class Note;
 class Position;
 class DocumentManager;
 class FileFormatManager;
-struct FileFormat;
+class FileFormat;
 class Command;
 class RecentFiles;
 class Caret;
@@ -77,7 +77,6 @@ protected:
 private:
     void createActions();
     void createMenus();
-    void initFileFormatMenus();
     void createTabArea();
     void updateScoreAreaActions(bool enable);
     bool eventFilter(QObject *obj, QEvent *ev);
@@ -96,8 +95,6 @@ private:
     void editKeySignature(const SystemLocation &location);
     void editTimeSignature(const SystemLocation &location);
     void editBarline(const SystemLocation &location);
-
-    void importFile(const FileFormat& format);
 
     static std::vector<Position*> getSelectedPositions();
     static std::vector<Note*> getSelectedNotes();
@@ -184,7 +181,6 @@ private slots:
 
 private:
     bool isPlaying;
-    const QString fileFilter;
 
     uint8_t activeDuration;
 
@@ -211,8 +207,6 @@ private:
     QMenu* recentFilesMenu;
     Command* editShortcutsAct;
     Command* preferencesAct;
-    QMenu* importFileMenu;
-    QMenu* exportFileMenu;
     Command* exitAppAct;
 
     QMenu* editMenu;

@@ -21,6 +21,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <boost/assign/list_of.hpp>
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <app/common.h>
@@ -51,7 +52,8 @@ const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = boo
     ("FICHIER GUITAR PRO v5.10", Gp::Version5_1);
 
 GuitarProImporter::GuitarProImporter() :
-    FileFormatImporter(FileFormat("Guitar Pro 3, 4, 5", "*.gp3 *.gp4 *.gp5"))
+    FileFormatImporter(FileFormat("Guitar Pro 3, 4, 5",
+                                  boost::assign::list_of("gp3")("gp4")("gp5")))
 {
 }
 

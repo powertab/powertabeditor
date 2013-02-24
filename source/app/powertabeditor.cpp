@@ -147,7 +147,6 @@ boost::scoped_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 
 PowerTabEditor::PowerTabEditor(QWidget *parent) :
     QMainWindow(parent),
-    fileFilter("Power Tab Documents (*.ptb)"),
     activeDuration(Position::DEFAULT_DURATION_TYPE),
     documentManager(new DocumentManager),
     fileFormatManager(new FileFormatManager),
@@ -862,9 +861,6 @@ void PowerTabEditor::createMenus()
     fileMenu->addSeparator();
     recentFilesMenu = fileMenu->addMenu(tr("Recent Files"));
     fileMenu->addSeparator();
-    importFileMenu = fileMenu->addMenu(tr("Import..."));
-    exportFileMenu = fileMenu->addMenu(tr("Export..."));
-    fileMenu->addSeparator();
     fileMenu->addAction(editShortcutsAct);
     fileMenu->addAction(preferencesAct);
     fileMenu->addSeparator();
@@ -1035,28 +1031,6 @@ void PowerTabEditor::createMenus()
     windowMenu = menuBar()->addMenu(tr("&Window"));
     windowMenu->addAction(nextTabAct);
     windowMenu->addAction(prevTabAct);
-
-    initFileFormatMenus();
-}
-
-/// Add all file formats to the Import/Export submenus
-void PowerTabEditor::initFileFormatMenus()
-{
-    // add a menu option for importing each file format
-    BOOST_FOREACH(const FileFormat& format, fileFormatManager->importedFileFormats())
-    {
-        const QString formatName = QString::fromStdString(format.name);
-        QString formatId = formatName;
-        formatId.remove(" ");
-
-        Command* action = new Command(formatName, "Import." + formatId,
-                                      QKeySequence(), this);
-
-        sigfwd::connect(action, SIGNAL(triggered()),
-                        boost::bind(&PowerTabEditor::importFile, this, format));
-
-        importFileMenu->addAction(action);
-    }
 }
 
 void PowerTabEditor::createTabArea()
@@ -1089,28 +1063,43 @@ void PowerTabEditor::openFile(QString fileName)
 {
     if (fileName.isEmpty())
     {
-        fileName = QFileDialog::getOpenFileName(this, tr("Open"), previousDirectory, fileFilter);
+        fileName = QFileDialog::getOpenFileName(this, tr("Open"),
+                previousDirectory,
+                QString::fromStdString(fileFormatManager->importFileFilter()));
     }
 
     if (fileName.isEmpty())
     {
         qDebug() << "No file selected";
+        return;
     }
-    else
+
+    boost::timer timer;
+    qDebug() << "Opening file: " << fileName;
+
+    QFileInfo fileInfo(fileName);
+    boost::optional<FileFormat> format = fileFormatManager->findFormat(
+                fileInfo.suffix().toStdString());
+
+    if (!format)
     {
-        boost::timer timer;
-        qDebug() << "Opening file: " << fileName;
+        QMessageBox::warning(this, tr("Error Opening File"),
+                             tr("Unsupported file type."));
+        return;
+    }
 
-        // add the file to the document manager; draw the score and initialize if successful
-        if (documentManager->addDocument(fileName))
-        {
-            qDebug() << "File loaded in" << timer.elapsed() << "seconds";
+    boost::shared_ptr<PowerTabDocument> document = fileFormatManager->importFile(
+                fileName.toStdString(), *format);
 
-            updatePreviousDirectory(fileName);
-            recentFiles->add(fileName);
+    if (document)
+    {
+        qDebug() << "File loaded in" << timer.elapsed() << "seconds";
 
-            setupNewDocument();
-        }
+        documentManager->addDocument(document);
+        updatePreviousDirectory(fileName);
+        recentFiles->add(fileName);
+
+        setupNewDocument();
     }
 }
 
@@ -1121,45 +1110,6 @@ void PowerTabEditor::updatePreviousDirectory(const QString& fileName)
     previousDirectory = fileInfo.absolutePath();
     QSettings settings;
     settings.setValue(Settings::APP_PREVIOUS_DIRECTORY, previousDirectory);
-}
-
-void PowerTabEditor::importFile(const FileFormat& format)
-{
-    const QString fileFilter = QString("%1 (%2)").arg(QString::fromStdString(format.name),
-                                                      QString::fromStdString(format.fileExtensions));
-
-    QString fileName = QFileDialog::getOpenFileName(this,
-                                                    tr("Import ") + QString::fromStdString(format.name),
-                                                    previousDirectory,
-                                                    fileFilter);
-
-    if (!fileName.isEmpty())
-    {
-        boost::timer timer;
-        qDebug() << "Attempting to import: " << fileName << " ...";
-
-        boost::shared_ptr<PowerTabDocument> document = fileFormatManager->import(fileName.toStdString(), format);
-
-        if (document)
-        {
-            // convert file extension
-            QFileInfo fileInfo(fileName);
-            const QString newFileName = fileInfo.path() + "/" + fileInfo.completeBaseName() + ".ptb";
-            document->SetFileName(newFileName.toStdString());
-
-            qDebug() << "Import Successful!";
-            documentManager->addImportedDocument(document);
-            updatePreviousDirectory(fileName);
-
-            qDebug() << "File imported in" << timer.elapsed() << "seconds";
-
-            setupNewDocument();
-        }
-        else
-        {
-            qDebug() << "Import Failed";
-        }
-    }
 }
 
 /// Creates the scorearea, mixer, etc, for a new document
@@ -1263,30 +1213,44 @@ void PowerTabEditor::setupNewDocument()
 bool PowerTabEditor::saveFileAs()
 {
     QString path = QFileDialog::getSaveFileName(this, tr("Save As"),
-                                                previousDirectory, fileFilter);
+            previousDirectory,
+            QString::fromStdString(fileFormatManager->exportFileFilter()));
 
     if (!path.isEmpty())
     {
         // If the user didn't type the extension, add it in.
         QFileInfo info(path);
-        if (info.suffix().isEmpty())
+        QString extension = info.suffix();
+        if (extension.isEmpty())
         {
-            path += ".ptb";
+            extension = "ptb";
+            path += "." + extension;
         }
 
-        const std::string stdPath = path.toStdString();
+        boost::optional<FileFormat> format = fileFormatManager->findFormat(
+                    extension.toStdString());
+        if (!format)
+        {
+            QMessageBox::warning(this, tr("Error Saving File"),
+                                 tr("Unsupported file type."));
+            return false;
+        }
+
+        const std::string newPath = path.toStdString();
         boost::shared_ptr<PowerTabDocument> doc = documentManager->getCurrentDocument();
 
-        doc->Save(stdPath);
-        doc->SetFileName(stdPath);
+        if (fileFormatManager->exportFile(doc, newPath, *format))
+        {
+            doc->SetFileName(newPath);
 
-        // Update window title and tab bar.
-        updateWindowTitle();
-        const QString fileName = QFileInfo(path).fileName();
-        tabWidget->setTabText(tabWidget->currentIndex(), fileName);
-        tabWidget->setTabToolTip(tabWidget->currentIndex(), fileName);
+            // Update window title and tab bar.
+            updateWindowTitle();
+            const QString fileName = QFileInfo(path).fileName();
+            tabWidget->setTabText(tabWidget->currentIndex(), fileName);
+            tabWidget->setTabToolTip(tabWidget->currentIndex(), fileName);
 
-        return true;
+            return true;
+        }
     }
 
     return false;

@@ -55,7 +55,8 @@ SOURCES += \
     actions/test_addartificialharmonic.cpp \
     actions/test_removeartificialharmonic.cpp \
     actions/test_addmusicaldirection.cpp \
-    actions/test_removemusicaldirection.cpp
+    actions/test_removemusicaldirection.cpp \
+    formats/test_fileformat.cpp
 
 HEADERS += \
     ../source/powertabdocument/tuning.h \

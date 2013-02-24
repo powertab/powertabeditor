@@ -48,44 +48,10 @@ void DocumentManager::removeDocument(int index)
     currentDocumentIndex = 0;
 }
 
-bool DocumentManager::addDocument(const QString& fileName)
+void DocumentManager::addDocument(boost::shared_ptr<PowerTabDocument> doc)
 {
-    // check that the document is not already open
-    for (size_t i = 0; i < documentList.size(); i++)
-    {
-        if (documentList[i]->GetFileName() == fileName.toStdString())
-        {
-            currentDocumentIndex = i;
-            return false;
-        }
-    }
-
-    // try to open the file
-    shared_ptr<PowerTabDocument> newDocument(new PowerTabDocument);
-    const bool success = newDocument->Load(fileName.toStdString());
-    if (!success)
-    {
-        QMessageBox msgBox;
-        msgBox.setText(QObject::tr("Error opening file"));
-        msgBox.exec();
-        return false;
-    }
-    else
-    {
-        documentList.push_back(newDocument);
-        currentDocumentIndex = documentList.size() - 1;
-    }
-
-    return true;
-}
-
-/// Adds a document that has already been imported from another file format
-bool DocumentManager::addImportedDocument(boost::shared_ptr<PowerTabDocument> doc)
-{
-    // TODO - check that the file is not already open
     documentList.push_back(doc);
     currentDocumentIndex = documentList.size() - 1;
-    return true;
 }
 
 void DocumentManager::setCurrentDocumentIndex(int index)
