@@ -21,7 +21,7 @@
 using std::pair;
 using std::string;
 
-const string    Tuning::DEFAULT_NAME                    = "";
+const char*     Tuning::DEFAULT_NAME                    = "";
 const uint8_t   Tuning::DEFAULT_DATA                    = 0;
 const int8_t    Tuning::MIN_MUSIC_NOTATION_OFFSET       = -12;
 const int8_t    Tuning::MAX_MUSIC_NOTATION_OFFSET       = 12;
@@ -239,6 +239,11 @@ bool Tuning::SetTuningNotes(const std::vector<uint8_t>& tuningNotes)
     return true;
 }
 
+std::vector<uint8_t> Tuning::GetTuningNotes() const
+{
+    return m_noteArray;
+}
+
 /// Gets a full string representation of the tuning from low to high
 /// (i.e. E A D G B E)
 string Tuning::GetSpelling() const
@@ -274,6 +279,13 @@ void Tuning::SetToStandard()
 
     SetTuningNotes(notes);
     SetName("Standard");
+}
+
+Tuning Tuning::Standard()
+{
+    Tuning tuning;
+    tuning.SetToStandard();
+    return tuning;
 }
 
 /// Determines if a tuning is valid (has a valid number of strings)

@@ -55,7 +55,7 @@ public:
     Score(const char* name);
     Score(const Score& score);
 
-    void Init();
+    void Init(const Guitar &defaultGuitar);
 
 // Operators
     const Score& operator=(const Score& score);

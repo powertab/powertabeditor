@@ -319,10 +319,10 @@ void PowerTabDocument::DeleteScoreArrayContents()
 }
 
 /// Initializes the document to an empty score (only necessary for creating new documents, not opening existing ones)
-void PowerTabDocument::Init()
+void PowerTabDocument::Init(const Guitar &defaultGuitar)
 {
     for (size_t i = 0; i < GetNumberOfScores(); ++i)
     {
-        GetScore(i)->Init();
+        GetScore(i)->Init(defaultGuitar);
     }
 }

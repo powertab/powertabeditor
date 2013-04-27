@@ -15,6 +15,9 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
+#include <QMetaType>
+#include <powertabdocument/tuning.h>
+
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
@@ -45,6 +48,20 @@ namespace Settings
 
     extern const char* APPEARANCE_USE_SKIN;
     extern const char* APPEARANCE_SKIN_NAME;
+
+    extern const char* DEFAULT_INSTRUMENT_NAME;
+    extern const char* DEFAULT_INSTRUMENT_NAME_DEFAULT;
+
+    extern const char* DEFAULT_INSTRUMENT_PRESET;
+    extern const int DEFAULT_INSTRUMENT_PRESET_DEFAULT;
+
+    extern const char* DEFAULT_INSTRUMENT_TUNING;
+    extern const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT;
 }
+
+Q_DECLARE_METATYPE(Tuning);
+
+QDataStream& operator<<(QDataStream& out, const Tuning &tuning);
+QDataStream& operator>>(QDataStream& in, Tuning &tuning);
 
 #endif // SETTINGS_H

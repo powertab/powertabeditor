@@ -1259,7 +1259,7 @@ bool PowerTabEditor::saveFileAs()
 // Opens the preferences dialog
 void PowerTabEditor::openPreferences()
 {
-    PreferencesDialog(this, settingsPubSub).exec();
+    PreferencesDialog(this, settingsPubSub, tuningDictionary).exec();
     skinManager->reload();
 }
 

@@ -22,7 +22,7 @@
 class Tuning : public PowerTabObject
 {
 public:
-    static const std::string    DEFAULT_NAME;                       ///< Default value for the name member variable
+    static const char*          DEFAULT_NAME;                       ///< Default value for the name member variable
     static const uint8_t        DEFAULT_DATA;                       ///< Default value for the data member variable
 
     static const int8_t         MIN_MUSIC_NOTATION_OFFSET;          ///< Minimum allowed value for the music notation offset
@@ -149,12 +149,14 @@ public:
     std::pair<uint8_t, uint8_t> GetNoteRange(uint8_t capo) const;
 
     bool SetTuningNotes(const std::vector<uint8_t>& tuningNotes);
+    std::vector<uint8_t> GetTuningNotes() const;
 
     bool IsValid() const;
 
     std::string GetSpelling() const;
 
     void SetToStandard();
+    static Tuning Standard();
 };
 
 #endif // TUNING_H

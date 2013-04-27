@@ -18,6 +18,7 @@
 #include <vector>
 #include <boost/array.hpp>
 
+class Guitar;
 class Score;
 
 /// Loads and saves Power Tab files (.ptb)
@@ -59,7 +60,7 @@ public:
     PowerTabDocument();
     ~PowerTabDocument();
 
-    void Init();
+    void Init(const Guitar &defaultGuitar);
 
     bool Save(const std::string& fileName) const;
     void Load(const std::string& fileName);

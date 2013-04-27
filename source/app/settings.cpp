@@ -17,6 +17,7 @@
   
 #include "settings.h"
 
+#include <QVector>
 #include <powertabdocument/generalmidi.h>
 
 namespace Settings
@@ -44,4 +45,48 @@ namespace Settings
 
     const char* APPEARANCE_USE_SKIN = "appearance/useSkin";
     const char* APPEARANCE_SKIN_NAME = "appearance/skinName";
+
+    const char* DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
+    const char* DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";
+
+    const char* DEFAULT_INSTRUMENT_PRESET = "app/defaultInstrumentPreset";
+    const int DEFAULT_INSTRUMENT_PRESET_DEFAULT = midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL;
+
+    const char* DEFAULT_INSTRUMENT_TUNING = "app/defaultInstrumentTuning";
+    const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT = Tuning::Standard();
 }
+
+QDataStream& operator<<(QDataStream& out, const Tuning &tuning)
+{
+    out << QString::fromStdString(tuning.GetName());
+    out << tuning.GetMusicNotationOffset();
+    out << tuning.UsesSharps();
+    out << QVector<uint8_t>::fromStdVector(tuning.GetTuningNotes());
+    return out;
+}
+
+QDataStream& operator>>(QDataStream& in, Tuning &tuning)
+{
+    QString name;
+    int8_t offset = 0;
+    bool sharps = false;
+    QVector<uint8_t> notes;
+
+    in >> name >> offset >> sharps >> notes;
+    tuning.SetName(name.toStdString());
+    tuning.SetMusicNotationOffset(offset);
+    tuning.SetSharps(sharps);
+    tuning.SetTuningNotes(notes.toStdVector());
+
+    return in;
+}
+
+// Register the above stream operators so that Tuning objects
+// can be used with QSettings.
+static struct RegisterMetaTypes
+{
+    RegisterMetaTypes()
+    {
+        qRegisterMetaTypeStreamOperators<Tuning>("Tuning");
+    }
+} RegisterMetaTypesAtStart;

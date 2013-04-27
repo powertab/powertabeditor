@@ -18,10 +18,13 @@
 #include "documentmanager.h"
 
 #include <QMessageBox>
+#include <QSettings>
 #include <QString>
 
-#include <powertabdocument/powertabdocument.h>
 #include <app/common.h>
+#include <app/settings.h>
+#include <powertabdocument/guitar.h>
+#include <powertabdocument/powertabdocument.h>
 
 using boost::shared_ptr;
 
@@ -65,12 +68,25 @@ int DocumentManager::getCurrentDocumentIndex() const
     return currentDocumentIndex;
 }
 
-/// creates a new (blank) document
+/// Creates a new (blank) document.
 void DocumentManager::createDocument()
 {
     shared_ptr<PowerTabDocument> doc(new PowerTabDocument);
     doc->SetFileName("Untitled.ptb");
-    doc->Init();
+
+    // Create the default instrument.
+    QSettings settings;
+    Guitar defaultGuitar;
+    defaultGuitar.SetDescription(settings.value(
+            Settings::DEFAULT_INSTRUMENT_NAME,
+            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString());
+    defaultGuitar.SetPreset(settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
+            Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
+    defaultGuitar.SetTuning(settings.value(
+            Settings::DEFAULT_INSTRUMENT_TUNING,
+            QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)).value<Tuning>());
+    doc->Init(defaultGuitar);
+
     documentList.push_back(doc);
     currentDocumentIndex = documentList.size() - 1;
 }

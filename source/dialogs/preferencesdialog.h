@@ -20,12 +20,14 @@
 
 #include <QDialog>
 #include <boost/shared_ptr.hpp>
+#include <powertabdocument/tuning.h>
 
 namespace Ui {
     class PreferencesDialog;
 }
 
 class SettingsPubSub;
+class TuningDictionary;
 
 /// Dialog to allow the user to modify general editor-wide settings
 class PreferencesDialog : public QDialog
@@ -33,17 +35,21 @@ class PreferencesDialog : public QDialog
     Q_OBJECT
 public:
     explicit PreferencesDialog(QWidget* parent,
-                               boost::shared_ptr<SettingsPubSub> pubsub);
+                               boost::shared_ptr<SettingsPubSub> pubsub,
+                               boost::shared_ptr<TuningDictionary> tuningDictionary);
     ~PreferencesDialog();
 
 private:
     Ui::PreferencesDialog* ui;
     boost::shared_ptr<SettingsPubSub> pubsub;
+    boost::shared_ptr<TuningDictionary> tuningDictionary;
+    Tuning defaultInstrumentTuning;
 
     void loadCurrentSettings();
 
 private slots:
     void accept();
+    void editTuning();
 };
 
 #endif // PREFERENCESDIALOG_H

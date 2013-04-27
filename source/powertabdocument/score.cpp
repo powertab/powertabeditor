@@ -534,11 +534,10 @@ void Score::ShiftBackward(Score::SystemPtr system, uint32_t positionIndex)
     system->ShiftBackward(positionIndex);
 }
 
-void Score::Init()
+void Score::Init(const Guitar &defaultGuitar)
 {
     // create a guitar
-    GuitarPtr guitar = boost::make_shared<Guitar>();
-    guitar->GetTuning().SetToStandard();
+    GuitarPtr guitar = boost::make_shared<Guitar>(defaultGuitar);
     m_guitarArray.push_back(guitar);
 
     // create a system and initialize the staves

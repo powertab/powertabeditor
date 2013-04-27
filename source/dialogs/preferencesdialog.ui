@@ -135,6 +135,57 @@
        </layout>
       </widget>
      </widget>
+     <widget class="QWidget" name="defaultsTab">
+      <attribute name="title">
+       <string>Default Instrument</string>
+      </attribute>
+      <widget class="QWidget" name="formLayoutWidget_3">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>321</width>
+         <height>151</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="formLayout_3">
+        <item row="0" column="0">
+         <widget class="QLabel" name="defaultInstrumentNameLabel">
+          <property name="text">
+           <string>Name:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="defaultInstrumentNameLineEdit"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="defaultPresetLabel">
+          <property name="text">
+           <string>Preset:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="defaultPresetComboBox"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="defaultTuningLabel">
+          <property name="text">
+           <string>Tuning:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="ClickableLabel" name="defaultTuningClickButton">
+          <property name="text">
+           <string>Tuning</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </widget>
    </item>
    <item>
@@ -149,6 +200,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>widgets/clickablelabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
