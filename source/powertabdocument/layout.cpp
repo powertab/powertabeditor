@@ -72,7 +72,7 @@ void Layout::CalculateStdNotationHeight(Score* score, boost::shared_ptr<System> 
     // idea: find the highest and lowest note of each staff (this requires a lot of loops ...)
     for (size_t staffIndex = 0; staffIndex < system->GetStaffCount(); ++staffIndex)
     {
-        double maxNoteLocation = std::numeric_limits<double>::min();
+        double maxNoteLocation = -std::numeric_limits<double>::max();
         double minNoteLocation = std::numeric_limits<double>::max();
 
         System::StaffPtr staff = system->GetStaff(staffIndex);
