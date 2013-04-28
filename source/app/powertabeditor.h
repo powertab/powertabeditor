@@ -178,6 +178,7 @@ private slots:
 
     void doPaste();
     void copySelectedNotes();
+    void cutSelectedNotes();
 
 private:
     bool isPlaying;
@@ -212,6 +213,7 @@ private:
     QMenu* editMenu;
     QAction* undoAct;
     QAction* redoAct;
+    Command* cutAct;
     Command* copyAct;
     Command* pasteAct;
     Command* fileInfoAct;

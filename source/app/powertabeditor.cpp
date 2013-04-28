@@ -331,6 +331,9 @@ void PowerTabEditor::createActions()
     redoAct->setShortcuts(QKeySequence::Redo);
 
     // Copy/Paste
+    cutAct = new Command(tr("Cut"), "Edit.Cut", QKeySequence::Cut, this);
+    connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSelectedNotes()));
+
     copyAct = new Command(tr("Copy"), "Edit.Copy", QKeySequence::Copy, this);
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copySelectedNotes()));
 
@@ -871,6 +874,7 @@ void PowerTabEditor::createMenus()
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
     editMenu->addSeparator();
+    editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
     editMenu->addSeparator();
@@ -2706,6 +2710,14 @@ void PowerTabEditor::copySelectedNotes()
                 caret->getCurrentStaffIndex())->GetTuning();
 
     Clipboard::copySelection(getSelectedPositions(), tuning);
+}
+
+void PowerTabEditor::cutSelectedNotes()
+{
+    undoManager->beginMacro(tr("Cut Notes"));
+    copySelectedNotes();
+    clearCurrentPosition();
+    undoManager->endMacro();
 }
 
 void PowerTabEditor::editVolumeSwell()
