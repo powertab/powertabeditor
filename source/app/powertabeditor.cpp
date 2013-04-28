@@ -2677,6 +2677,14 @@ void PowerTabEditor::editDynamic()
 
 void PowerTabEditor::doPaste()
 {
+    if (!Clipboard::hasData())
+    {
+        QMessageBox msg(this);
+        msg.setText(QObject::tr("The clipboard does not contain any notes."));
+        msg.exec();
+        return;
+    }
+
     undoManager->beginMacro(tr("Paste Notes"));
 
     // If there are any selected notes, delete them before pasting.

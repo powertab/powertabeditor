@@ -74,13 +74,7 @@ void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
 
     // load data from the clipboard and deserialize
     const QByteArray rawData = QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE);
-    if (rawData.isEmpty())
-    {
-        QMessageBox msg(parent);
-        msg.setText(QObject::tr("The clipboard does not contain any notes."));
-        msg.exec();
-        return;
-    }
+    Q_ASSERT(!rawData.isEmpty());
 
     std::istringstream inputData(std::string(rawData.data(), rawData.length()));
     PowerTabInputStream inputStream(inputData);
@@ -109,4 +103,9 @@ void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
                                       caret->getCurrentStaff(),
                                       caret->getCurrentPositionIndex(), positions),
                       caret->getCurrentSystemIndex());
+}
+
+bool Clipboard::hasData()
+{
+    return !QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE).isEmpty();
 }

@@ -19,6 +19,7 @@
 #define CLIPBOARD_H
 
 #include <vector>
+#include <QString>
 
 class Position;
 class Tuning;
@@ -33,6 +34,8 @@ void copySelection(const std::vector<Position*>& selectedPositions,
                    const Tuning& tuning);
 
 void paste(QWidget* parent, UndoManager *undoManager, const Caret *caret);
+
+bool hasData();
 
 }
 #endif // CLIPBOARD_H
