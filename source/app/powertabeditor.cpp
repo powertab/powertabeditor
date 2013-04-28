@@ -2677,7 +2677,17 @@ void PowerTabEditor::editDynamic()
 
 void PowerTabEditor::doPaste()
 {
+    undoManager->beginMacro(tr("Paste Notes"));
+
+    // If there are any selected notes, delete them before pasting.
+    if (getCurrentScoreArea()->getCaret()->hasSelection())
+    {
+        clearCurrentPosition();
+    }
+
     Clipboard::paste(this, undoManager.get(), getCurrentScoreArea()->getCaret());
+
+    undoManager->endMacro();
 }
 
 void PowerTabEditor::copySelectedNotes()
