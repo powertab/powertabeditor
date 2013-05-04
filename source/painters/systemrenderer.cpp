@@ -161,12 +161,18 @@ void SystemRenderer::drawSystemBox(boost::shared_ptr<const System> system)
     parentSystem = sysBox;
 }
 
-/// Draws the tab clef
+/// Draws the tab clef.
 void SystemRenderer::drawTabClef(int x, const StaffData& staffInfo)
 {
     QGraphicsSimpleTextItem* tabClef = new QGraphicsSimpleTextItem;
-    tabClef->setPos(x, staffInfo.getTopTabLine() - 12);
-    musicFont.setSymbol(tabClef, MusicFont::TabClef, staffInfo.numOfStrings * 4.25);
+
+    // Determine the size of the clef symbol based on the number of string and
+    // the line spacing.
+    const int pixelSize = (staffInfo.numOfStrings - 1) *
+            staffInfo.tabLineSpacing * 0.6;
+    // Position the clef symbol.
+    tabClef->setPos(x, staffInfo.getTopTabLine() - pixelSize / 2.1);
+    musicFont.setSymbol(tabClef, MusicFont::TabClef, pixelSize);
     tabClef->setParentItem(parentStaff);
 }
 
