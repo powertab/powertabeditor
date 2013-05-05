@@ -5,19 +5,22 @@
   <?define ProductShortName="Power Tab"?>
   <?define Manufacturer="Power Tab Community"?>
   <?define Version="2.0.0.0"?>
+  <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
   
   <?define BuildRootDir="../../source"?>
   <?define QtBinDir="C:/Qt/4.8.3/bin"?>
   
-	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a">
+	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)"
+           Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
-
-		<MajorUpgrade AllowDowngrades="yes" />
     <MediaTemplate EmbedCab="yes" />
+    
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
 		<Feature Id="Complete" Level="1">
 			<ComponentGroupRef Id="Binaries" />
-      <ComponentGroupRef Id="DataFiles"/>
+      <ComponentGroupRef Id="DataFiles" />
+      <ComponentGroupRef Id="Skins" />
 		</Feature>
 
     <Icon Id="powertabeditor.ico" SourceFile="$(var.BuildRootDir)/icons/app_icon.ico" />
@@ -29,35 +32,50 @@
 			<Directory Id="ProgramFilesFolder">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
           <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
-            <Directory Id="DataDir" Name="data" />            
+            <Directory Id="DataDir" Name="data" />
+            <Directory Id="SkinsDir" Name="skins">
+              <Directory Id="DefaultSkinsDir" Name="default" />
+            </Directory>
           </Directory>
         </Directory>
 			</Directory>
 
-      <Directory Id="ProgramMenuFolder" Name="Programs">
+      <Directory Id="ProgramMenuFolder">
         <Directory Id="ProgramMenuDir" Name="$(var.ProductShortName)" />
       </Directory>
 		</Directory>
 	</Fragment>
 
-  <!-- TODO - copy skins -->
-  <!-- TODO - add Guitar Pro file type associations -->
 	<Fragment>
     <!-- Main executable and required dlls (e.g. Qt) -->
     <ComponentGroup Id="Binaries" Directory="INSTALLFOLDER">
       <Component Id="Executable" Guid="2DA29761-7F65-42FF-ADF6-374A67C80C8C">
-        <File Id="PowerTabEditorExe" Name="powertabeditor.exe" Source="$(var.BuildRootDir)/build/powertabeditor.exe" KeyPath="yes" Checksum="yes">
-          <Shortcut Id="PowerTabShortcut" Directory="ProgramMenuDir" Name="$(var.ProductName)" Icon="powertabeditor.ico" Advertise="yes" />
-        </File>
-
-        <RemoveFolder Id="ProgramMenuDir" Directory="ProgramMenuDir" On="uninstall" />
+        <File Source="$(var.BuildRootDir)/build/powertabeditor.exe" KeyPath="yes" Checksum="yes" />
 
         <ProgId Id="PowerTabEditor.TabFile" Icon="powertabeditor.ico" IconIndex="0" Advertise="yes">
           <!-- File type associations -->
           <Extension Id="ptb" ContentType="audio/x-ptb">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
+          <Extension Id="gpx" ContentType="audio/x-gtp">
+            <Verb Id="open" Command="Open" Argument='"%1"' />
+          </Extension>
+          <Extension Id="gp3" ContentType="audio/x-gtp">
+            <Verb Id="open" Command="Open" Argument='"%1"' />
+          </Extension>
+          <Extension Id="gp4" ContentType="audio/x-gtp">
+            <Verb Id="open" Command="Open" Argument='"%1"' />
+          </Extension>
+          <Extension Id="gp5" ContentType="audio/x-gtp">
+            <Verb Id="open" Command="Open" Argument='"%1"' />
+          </Extension>
         </ProgId>
+      </Component>
+      
+      <Component Id="Shortcut" Guid="1F707C20-0FEF-4681-AF1F-69D7E4D8F326">
+        <Shortcut Id="PowerTabShortcut" Directory="ProgramMenuDir" Name="$(var.ProductName)" Icon="powertabeditor.ico" Target="[INSTALLFOLDER]powertabeditor.exe" />
+        <RemoveFolder Id="ProgramMenuDir" Directory="ProgramMenuDir" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Power Tab\Power Tab Editor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
 
       <Component Id="QtCore" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
@@ -70,8 +88,21 @@
     
     <!-- Data files -->
     <ComponentGroup Id="DataFiles" Directory="DataDir">
-      <Component Id="TuningDictionary" Guid="5C770CE4-AF29-447F-8CD5-7F997837CE5C">
-        <File Source="$(var.BuildRootDir)/data/tunings.dat" KeyPath="yes" />
+      <Component Guid="5C770CE4-AF29-447F-8CD5-7F997837CE5C">
+        <File Source="$(var.BuildRootDir)/data/tunings.dat" KeyPath="yes" Checksum="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Skins -->
+    <ComponentGroup Id="Skins" Directory="DefaultSkinsDir">
+      <Component Guid="AAC7EC82-E3C8-420A-ACC9-57BD3A6E1E43">
+        <File Source="$(var.BuildRootDir)/skins/default/document_tab.txt" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Guid="A2269995-E21F-4334-9B4B-0C0DB3B19717">
+        <File Source="$(var.BuildRootDir)/skins/default/toolbox_page.txt" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Guid="198018FF-857D-4D4B-9D6B-F7DD0EB40A39">
+        <File Source="$(var.BuildRootDir)/skins/default/toolbox_tab.txt" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
 	</Fragment>
