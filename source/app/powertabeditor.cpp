@@ -550,7 +550,8 @@ void PowerTabEditor::createActions()
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
     
-    noteMutedAct = new Command(tr("Muted"), "Note.Muted", QKeySequence(), this);
+    noteMutedAct = new Command(tr("Muted"), "Note.Muted",
+                               QKeySequence(Qt::Key_X), this);
     noteMutedAct->setCheckable(true);
     connectToggleProperty<Note>(noteMutedAct, &getSelectedNotes,
                                 &Note::IsMuted, &Note::SetMuted);
