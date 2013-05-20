@@ -357,7 +357,7 @@ void Layout::CalculateTabStaffBelowLayout(std::vector<Layout::SymbolGroup>& symb
                                           boost::shared_ptr<const Staff> staff)
 {
     const uint32_t numPositions = system->GetMaxPosition();
-    for (uint32_t i = 0; i < numPositions; ++i)
+    for (uint32_t i = 0; i <= numPositions; ++i)
     {
         SymbolGroup symbolGroup(0, i, system->GetPositionX(i),
                                 system->GetPositionSpacing(), 0, NoSymbol);
