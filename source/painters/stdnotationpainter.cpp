@@ -86,7 +86,7 @@ void StdNotationPainter::setNoteHead()
         noteHead = MusicFont::QuarterNoteOrLess;
     }
 
-    // Display a different note head for harmonics
+    // Display a different note head for harmonics or muted notes.
     if (note->IsNaturalHarmonic())
     {
         noteHead = MusicFont::NaturalHarmonicNoteHead;
@@ -94,6 +94,10 @@ void StdNotationPainter::setNoteHead()
     else if (note->HasArtificialHarmonic() || note->HasTappedHarmonic())
     {
         noteHead = MusicFont::ArtificialHarmonicNoteHead;
+    }
+    else if (note->IsMuted())
+    {
+        noteHead = MusicFont::MutedNoteHead;
     }
 
     const double noteWidth = noteHeadWidth();

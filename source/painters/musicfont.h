@@ -79,7 +79,8 @@ public:
         Coda = 0xe181,
         Segno = 0xe180,
         RhythmSlashFilled = 0xe141,
-        RhythmSlashNoFill = 0xe140
+        RhythmSlashNoFill = 0xe140,
+        MutedNoteHead = 0xe144
     };
 
     static const int DEFAULT_FONT_SIZE = 22;
