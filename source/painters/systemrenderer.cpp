@@ -223,7 +223,11 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
             }
             else if (currentBarline->IsBar())
             {
-                x += 0.5;
+                x += 1 ;
+            }
+            else if (currentBarline->IsFreeTimeBar())
+            {
+                x += 2;
             }
         }
 
