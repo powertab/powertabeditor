@@ -1126,12 +1126,12 @@ void GuitarProImporter::readChordDiagram(Gp::InputStream& stream, const Tuning& 
     stream.read<uint8_t>(); // tonality of the 9th
     stream.read<uint8_t>(); // tonality of the 11th
 
-    stream.read<uint8_t>(); // base fret of the chord
+    stream.read<int32_t>(); // base fret of the chord
 
     // fret numbers for each string
     for (int i = 0; i < Gp::NumberOfStrings; i++)
     {
-        stream.read<int8_t>();
+        stream.read<int32_t>();
     }
 
     stream.read<uint8_t>(); // number of barres in the chord

@@ -180,7 +180,7 @@ enum FixedLengthStrings
 
 enum ChordDiagramFlags
 {
-    Gp4ChordFormat = 1 ///< Indicates that the chord diagram is in the Gp4 format
+    Gp4ChordFormat ///< Indicates that the chord diagram is in the Gp4 format
 };
 
 }
