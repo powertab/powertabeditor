@@ -22,10 +22,8 @@
 
 #include <powertabdocument/chordtext.h>
 
-QFont ChordTextPainter::displayFont = QFont("Liberation Sans");
-
 ChordTextPainter::ChordTextPainter(boost::shared_ptr<const ChordText> chordText) :
-    chordText(chordText)
+    chordText(chordText), displayFont("Liberation Sans")
 {
     displayFont.setPixelSize(10); // needed for cross-platform consistency in font size
     displayFont.setStyleStrategy(QFont::PreferAntialias);

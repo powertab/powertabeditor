@@ -37,7 +37,7 @@ private:
     const Position& position;
 
     QStaticText textToDraw; /// store the rest symbol that will be drawn
-    static const QFont musicFont;
+    const QFont musicFont;
     QRectF bounds;
     int restHeight;
 };

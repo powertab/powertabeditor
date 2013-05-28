@@ -34,7 +34,7 @@ private:
     const Position* position;
     double width;
 
-    static QFont textFont;
+    QFont textFont;
 };
 
 #endif // TREMOLOBARPAINTER_H

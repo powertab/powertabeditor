@@ -2,6 +2,9 @@
 
 QT += core gui
 
+# Add QtWidgets when compiling against Qt5.
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 QMAKE_CXXFLAGS+= -Wall
 
 # Prevents the compiler from linking against boost::date_time.

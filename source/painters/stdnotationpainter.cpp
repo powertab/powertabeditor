@@ -27,8 +27,6 @@
 
 #include <painters/musicfont.h>
 
-QFont StdNotationPainter::musicFont = MusicFont().getFont();
-
 StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, boost::shared_ptr<const Staff> staff,
                                        const Position* position, const Note* note,
                                        const Tuning& tuning, const KeySignature& keySignature):
@@ -37,7 +35,7 @@ StdNotationPainter::StdNotationPainter(const StaffData& staffInfo, boost::shared
     position(position),
     note(note),
     tuning(tuning),
-    keySignature(keySignature),
+    keySignature(keySignature), musicFont(MusicFont().getFont()),
     yLocation(0), xLocation(0), rightEdge(0), noteHead('X')
 {
     init();

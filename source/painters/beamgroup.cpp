@@ -32,13 +32,10 @@
 
 const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
 
-namespace {
-    const QFont musicNotationFont = MusicFont().getFont();
-}
-
 BeamGroup::BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& noteStems) :
     staffInfo(staffInfo),
-    noteStems(noteStems)
+    noteStems(noteStems),
+    musicNotationFont(MusicFont().getFont())
 {
     // adjust top/bottom of stems to use absolute coordianates
     for (size_t i = 0; i < this->noteStems.size(); i++)

@@ -59,10 +59,10 @@ private:
     QGraphicsItem* parentSystem;
     QGraphicsItem* parentStaff;
     MusicFont musicFont;
-    static QFont plainTextFont;
-    static QFont symbolTextFont;
-    static QFont rehearsalSignFont;
-    static QFont musicNotationFont;
+    QFont plainTextFont;
+    QFont symbolTextFont;
+    QFont rehearsalSignFont;
+    QFont musicNotationFont;
     
     // store these items so that their signals can be connected back to the ScoreArea later
     std::vector<StaffPainter*> staffPainters;

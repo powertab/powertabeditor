@@ -17,6 +17,8 @@
   
 #include "settings.h"
 
+#include <QDataStream>
+#include <QString>
 #include <QVector>
 #include <powertabdocument/generalmidi.h>
 

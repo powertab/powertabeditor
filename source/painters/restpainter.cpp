@@ -23,11 +23,10 @@
 #include <powertabdocument/staff.h>
 #include "musicfont.h"
 
-const QFont RestPainter::musicFont = MusicFont().getFont();
-
 RestPainter::RestPainter(const Position& position, QGraphicsItem* parent) :
     QGraphicsItem(parent),
-    position(position)
+    position(position),
+    musicFont(MusicFont().getFont())
 {
      // position is approximately in middle of staff by default (negative offset necessary due to font spacing)
     restHeight = -2 * Staff::STD_NOTATION_LINE_SPACING - 2;

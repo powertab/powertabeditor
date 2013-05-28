@@ -36,7 +36,7 @@ public:
 
 private:
     boost::shared_ptr<const RhythmSlash> rhythmSlash;
-    static QFont musicFont;
+    QFont musicFont;
 };
 
 #endif // RHYTHMSLASHPAINTER_H

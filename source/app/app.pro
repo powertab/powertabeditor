@@ -1,5 +1,8 @@
 include (../../common.pri)
 
+# Add QtConcurrent when compiling against Qt5.
+greaterThan(QT_MAJOR_VERSION, 4): QT += concurrent
+
 # Find the SVN revision number.
 DEFINES += "SVN_REVISION=$$system(svnversion $${PWD} -n)"
 

@@ -22,11 +22,10 @@
 #include <QPainter>
 #include <QFontMetricsF>
 
-QFont TremoloBarPainter::textFont = QFont("Liberation Sans");
-
 TremoloBarPainter::TremoloBarPainter(const Position* position, double width) :
     position(position),
-    width(width)
+    width(width),
+    textFont("Liberation Sans")
 {
     textFont.setPixelSize(9);
 

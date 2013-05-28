@@ -43,7 +43,7 @@ private:
     void init();
 
     boost::shared_ptr<const Staff> staff;
-    const QFont& musicFont;
+    const QFont musicFont;
     QStaticText displayText;
 };
 

@@ -19,6 +19,7 @@
 #define KEYSIGNATUREPAINTER_H
 
 #include "painterbase.h"
+#include <QFont>
 #include <QVector>
 #include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
@@ -46,7 +47,7 @@ private:
     const SystemLocation location;
     boost::shared_ptr<SystemLocationPubSub> pubsub;
 
-    static QFont musicFont;
+    QFont musicFont;
 
     QVector<double> flatPositions;
     QVector<double> sharpPositions;

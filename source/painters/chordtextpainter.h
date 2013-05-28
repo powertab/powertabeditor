@@ -37,7 +37,7 @@ protected:
     void init();
 
     boost::shared_ptr<const ChordText> chordText;
-    static QFont displayFont;
+    QFont displayFont;
     QStaticText displayText;
 };
 

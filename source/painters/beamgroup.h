@@ -19,6 +19,7 @@
 #define BEAMGROUP_H
 
 #include <vector>
+#include <QFont>
 #include <powertabdocument/notestem.h>
 
 class QGraphicsItem;
@@ -48,6 +49,7 @@ private:
     const StaffData& staffInfo;
     std::vector<NoteStem> noteStems;
     NoteStem::StemDirection stemDirection;
+    QFont musicNotationFont;
 };
 
 #endif // BEAMGROUP_H

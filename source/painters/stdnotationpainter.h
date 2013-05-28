@@ -19,6 +19,7 @@
 #define STDNOTATIONPAINTER_H
 
 #include <QGraphicsItem>
+#include <QFont>
 #include "staffdata.h"
 #include <boost/shared_ptr.hpp>
 
@@ -75,7 +76,7 @@ private:
     const Tuning& tuning;
     const KeySignature& keySignature;
 
-    static QFont musicFont;
+    QFont musicFont;
     double yLocation;
     double xLocation;
     double rightEdge;

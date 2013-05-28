@@ -22,11 +22,8 @@
 #include <powertabdocument/keysignature.h>
 #include <painters/musicfont.h>
 
-#include <QFont>
 #include <QPainter>
 #include <QVector>
-
-QFont KeySignaturePainter::musicFont = MusicFont().getFont();
 
 KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation,
                                          const KeySignature& signature,
@@ -35,7 +32,7 @@ KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation,
     staffInfo(staffInformation),
     keySignature(signature),
     location(location),
-    pubsub(pubsub)
+    pubsub(pubsub), musicFont(MusicFont().getFont())
 {
     initAccidentalPositions();
     init();

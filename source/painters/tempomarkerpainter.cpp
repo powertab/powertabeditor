@@ -21,10 +21,8 @@
 
 #include <QPainter>
 
-QFont TempoMarkerPainter::displayFont = QFont("Liberation Sans");
-
 TempoMarkerPainter::TempoMarkerPainter(boost::shared_ptr<const TempoMarker> tempoMarker):
-    tempoMarker(tempoMarker)
+    tempoMarker(tempoMarker), displayFont("Liberation Sans")
 {
     displayFont.setPixelSize(10);
     displayFont.setBold(true);

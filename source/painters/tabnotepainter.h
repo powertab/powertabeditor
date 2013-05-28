@@ -40,9 +40,9 @@ protected:
     QRectF bounds;
     Note* note;
     Qt::GlobalColor textColor;
-    static QFont tabFont;
+    QFont tabFont;
     QStaticText displayText;
-    static QFontMetricsF fontMetrics;
+    QFontMetricsF fontMetrics;
 };
 
 #endif // TABNOTEPAINTER_H

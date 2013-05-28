@@ -59,15 +59,12 @@
 
 using boost::shared_ptr;
 
-QFont SystemRenderer::plainTextFont("Liberation Sans");
-QFont SystemRenderer::symbolTextFont("Liberation Sans");
-QFont SystemRenderer::rehearsalSignFont("Helvetica");
-QFont SystemRenderer::musicNotationFont = MusicFont().getFont();
-
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score* score,
                                const int lineSpacing) :
     scoreArea(scoreArea), score(score), lineSpacing(lineSpacing),
-    parentSystem(NULL), parentStaff(NULL)
+    parentSystem(NULL), parentStaff(NULL), plainTextFont("Liberation Sans"),
+    symbolTextFont("Liberation Sans"), rehearsalSignFont("Helvetica"),
+    musicNotationFont(musicFont.getFont())
 {
     plainTextFont.setPixelSize(10);
     symbolTextFont.setPixelSize(9);

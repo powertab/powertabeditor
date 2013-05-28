@@ -35,7 +35,7 @@ public:
 
 private:
     boost::shared_ptr<const TempoMarker> tempoMarker;
-    static QFont displayFont;
+    QFont displayFont;
     QStaticText displayText;
     QRectF beatTypeRect;
 

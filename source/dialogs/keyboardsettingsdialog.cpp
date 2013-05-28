@@ -77,7 +77,11 @@ void KeyboardSettingsDialog::initializeCommandTable()
         ui->commandsList->addTopLevelItem(item);
     }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+    ui->commandsList->header()->sectionResizeMode(QHeaderView::ResizeToContents);
+#else
     ui->commandsList->header()->setResizeMode(QHeaderView::ResizeToContents);
+#endif
 
     // resize dialog to avoid horizontal scrollbars
     int totalWidth = 0;
@@ -143,13 +147,13 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
 /// Reset the shortcut for the selected command to the value it had before editing began
 void KeyboardSettingsDialog::resetShortcut()
 {
-    setShortcut(activeCommand()->shortcut());
+    setShortcut(activeCommand()->shortcut().toString());
 }
 
 /// Reset the active command to its default shortcut
 void KeyboardSettingsDialog::resetToDefaultShortcut()
 {
-    setShortcut(activeCommand()->defaultShortcut());
+    setShortcut(activeCommand()->defaultShortcut().toString());
 }
 
 /// Updates the shortcut in the commands list and the shortcut editor
@@ -172,7 +176,7 @@ void KeyboardSettingsDialog::saveShortcuts()
     for (int i = 0; i < ui->commandsList->topLevelItemCount(); i++)
     {
         QTreeWidgetItem* currentItem = ui->commandsList->topLevelItem(i);
-        Command* command = qVariantValue<Command*>(currentItem->data(0, Qt::UserRole));
+        Command* command = currentItem->data(0, Qt::UserRole).value<Command*>();
 
         command->setShortcut(currentItem->text(CommandShortcut));
     }

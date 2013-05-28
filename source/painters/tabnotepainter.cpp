@@ -21,11 +21,8 @@
 
 #include <powertabdocument/note.h>
 
-QFont TabNotePainter::tabFont = QFont("Liberation Sans");
-QFontMetricsF TabNotePainter::fontMetrics(TabNotePainter::tabFont);
-
 TabNotePainter::TabNotePainter(Note* note) :
-    note(note)
+    note(note), tabFont("Liberation Sans"), fontMetrics(tabFont)
 {
     tabFont.setPixelSize(10); // needed for cross-platform consistency in font size
     tabFont.setStyleStrategy(QFont::PreferAntialias);
