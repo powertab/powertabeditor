@@ -88,7 +88,8 @@ private:
     void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation);
 
     double getWholeRestDuration(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
-                                uint32_t systemIndex, const Position *position, double originalDuration) const;
+                                uint32_t systemIndex, uint32_t voice, const Position *position,
+                                double originalDuration) const;
 
     /// Holds basic information about a bend - used to simplify the generateBends function
     struct BendEventInfo

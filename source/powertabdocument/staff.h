@@ -150,7 +150,8 @@ public:
     uint32_t GetIndexOfNextPosition(uint32_t voice, boost::shared_ptr<const System> system,
                                     const Position* position) const;
 
-    bool IsOnlyPositionInBar(const Position* position, boost::shared_ptr<const System> system) const;
+    bool IsOnlyPositionInBar(const Position* position, boost::shared_ptr<const System> system,
+                             uint32_t voice) const;
 
     bool CanHammerOn(const Position* position, const Note* note, uint32_t voice) const;
     bool CanPullOff(const Position* position, const Note* note, uint32_t voice) const;

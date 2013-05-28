@@ -216,7 +216,7 @@ double MidiPlayer::generateEventsForBar(
             // for whole rests, they must last for the entire bar, regardless of time signature
             if (position->GetDurationType() == 1)
             {
-                duration = getWholeRestDuration(system, staff, systemIndex, position, duration);
+                duration = getWholeRestDuration(system, staff, systemIndex, voice, position, duration);
 
                 // extend for multi-bar rests
                 if (position->HasMultibarRest())
@@ -619,12 +619,13 @@ double MidiPlayer::calculateNoteDuration(uint32_t systemIndex,
 
 double MidiPlayer::getWholeRestDuration(
         shared_ptr<const System> system, shared_ptr<const Staff> staff,
-        uint32_t systemIndex, const Position* position, double originalDuration) const
+        uint32_t systemIndex, uint32_t voice, const Position* position,
+        double originalDuration) const
 {
     System::BarlineConstPtr prevBarline = system->GetPrecedingBarline(position->GetPosition());
 
     // if the whole rest is not the only item in the bar, treat it like a regular rest
-    if (!staff->IsOnlyPositionInBar(position, system))
+    if (!staff->IsOnlyPositionInBar(position, system, voice))
     {
         return originalDuration;
     }

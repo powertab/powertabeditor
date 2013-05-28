@@ -466,7 +466,9 @@ uint32_t Staff::GetIndexOfNextPosition(uint32_t voice, boost::shared_ptr<const S
 }
 
 // Returns true if the given position is the only Position object in its bar
-bool Staff::IsOnlyPositionInBar(const Position* position, boost::shared_ptr<const System> system) const
+bool Staff::IsOnlyPositionInBar(const Position* position,
+                                boost::shared_ptr<const System> system,
+                                uint32_t voice) const
 {
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
@@ -479,7 +481,7 @@ bool Staff::IsOnlyPositionInBar(const Position* position, boost::shared_ptr<cons
 
     for (uint32_t i = (*startBar)->GetPosition() + 1; i < (*endBar)->GetPosition(); i++)
     {
-        const Position* pos = GetPositionByPosition(0, i); // TODO - support multiple voices
+        const Position* pos = GetPositionByPosition(voice, i);
         if (pos != NULL && pos != position)
         {
             return false;
