@@ -102,6 +102,10 @@ void InsertNotes::redo()
         staff->InsertPosition(0, newPositions[i]);
     }
 
+    // After inserting the notes, ensure that there is enough space for
+    // them in the system.
+    system->AdjustPositionSpacing();
+
     ownPositions = false;
 }
 
