@@ -1321,7 +1321,7 @@ bool PowerTabEditor::closeTab(int index)
         }
     }
 
-    if (isPlaying)
+    if (getScoreArea(index)->getCaret()->isInPlaybackMode())
     {
         startStopPlayback();
     }
@@ -1467,6 +1467,11 @@ int PowerTabEditor::getCurrentPlaybackSpeed() const
     }
 
     return getCurrentPlaybackWidget()->playbackSpeed();
+}
+
+ScoreArea *PowerTabEditor::getScoreArea(int index)
+{
+    return dynamic_cast<ScoreArea*>(tabWidget->widget(index));
 }
 
 void PowerTabEditor::startStopPlayback()

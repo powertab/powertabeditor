@@ -84,6 +84,7 @@ private:
     void changeNoteDuration(bool increase);
     void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
+    ScoreArea* getScoreArea(int index);
 
     void editSlideInto(uint8_t newSlideIntoType);
     void cycleTab(int offset);

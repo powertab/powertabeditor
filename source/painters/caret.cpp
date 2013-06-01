@@ -55,6 +55,11 @@ void Caret::setPlaybackMode(bool playBack)
     update(boundingRect()); // redraw the caret
 }
 
+bool Caret::isInPlaybackMode() const
+{
+    return inPlaybackMode;
+}
+
 /// Adjusts the caret's location to be valid (useful after e.g. deleting a
 /// system).
 void Caret::adjustToValidLocation()

@@ -42,6 +42,7 @@ public:
 
     void updatePosition();
     void setPlaybackMode(bool playBack);
+    bool isInPlaybackMode() const;
 
     void adjustToValidLocation();
 
