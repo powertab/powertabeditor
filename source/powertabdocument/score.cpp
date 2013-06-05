@@ -242,6 +242,8 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
 {
     PTB_CHECK_THAT(IsValidSystemIndex(index) || index == GetSystemCount(), false);
 
+    const bool firstSystem = m_systemArray.empty();
+
     m_systemArray.insert(m_systemArray.begin() + index, system);
 
     // ensure the system has enough staves for each guitar
@@ -260,10 +262,16 @@ bool Score::InsertSystem(SystemPtr system, size_t index)
         system->Init(staffSizes, visibleStaves, false);
     }
 
-    // TODO - handle Guitar In symbols.
-    ShiftFollowingSymbols(m_tempoMarkerArray, index);
-    ShiftFollowingSymbols(m_dynamicArray, index);
-    ShiftFollowingSymbols(m_alternateEndingArray, index);
+    // Gracefully handle cases where e.g. an initial tempo marker is
+    // added before the first system. Otherwise, move symbols down to
+    // keep them associated with the correct system.
+    if (!firstSystem)
+    {
+        // TODO - handle Guitar In symbols.
+        ShiftFollowingSymbols(m_tempoMarkerArray, index);
+        ShiftFollowingSymbols(m_dynamicArray, index);
+        ShiftFollowingSymbols(m_alternateEndingArray, index);
+    }
 
     system->CalculateHeight();
     ShiftFollowingSystems(system, system->GetRect().GetHeight() + SYSTEM_SPACING);

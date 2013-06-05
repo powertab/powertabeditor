@@ -1188,9 +1188,9 @@ void GuitarProImporter::readOldStyleChord(Gp::InputStream& stream, const Tuning&
 /// Read the initial tempo in the score
 void GuitarProImporter::readStartTempo(Gp::InputStream& stream, Score* score)
 {
-    Score::TempoMarkerPtr tempo(new TempoMarker(0, 0, false));
-    tempo->SetBeatType(TempoMarker::quarter);
-    tempo->SetBeatsPerMinute(stream.read<uint32_t>());
+    const uint32_t bpm = stream.read<uint32_t>();
+    Score::TempoMarkerPtr tempo = boost::make_shared<TempoMarker>(
+                0, 0, TempoMarker::quarter, bpm, "", TempoMarker::noTripletFeel);
 
     score->InsertTempoMarker(tempo);
 }
