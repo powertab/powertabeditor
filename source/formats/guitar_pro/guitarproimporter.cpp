@@ -93,6 +93,11 @@ boost::shared_ptr<PowerTabDocument> GuitarProImporter::load(const std::string& f
     const uint32_t numMeasures = stream.read<uint32_t>();
     const uint32_t numTracks = stream.read<uint32_t>();
 
+    if (numTracks >= Score::MAX_NUM_GUITARS)
+    {
+        throw std::out_of_range("Score contains too many guitars.");
+    }
+
     std::vector<BarData> bars;
     readBarlines(stream, numMeasures, bars);
 

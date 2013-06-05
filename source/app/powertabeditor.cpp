@@ -1094,7 +1094,7 @@ void PowerTabEditor::openFile(QString fileName)
     }
 
     boost::shared_ptr<PowerTabDocument> document = fileFormatManager->importFile(
-                fileName.toStdString(), *format);
+                fileName.toStdString(), *format, this);
 
     if (document)
     {

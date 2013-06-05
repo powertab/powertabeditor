@@ -76,7 +76,7 @@ std::string FileFormatManager::importFileFilter() const
 }
 
 boost::shared_ptr<PowerTabDocument> FileFormatManager::importFile(
-        const std::string& fileName, const FileFormat& format)
+        const std::string& fileName, const FileFormat& format, QWidget *parentWindow)
 {
     if (importers.find(format) != importers.end())
     {
@@ -88,7 +88,7 @@ boost::shared_ptr<PowerTabDocument> FileFormatManager::importFile(
         }
         catch(const std::exception& e)
         {
-            QMessageBox msgBox;
+            QMessageBox msgBox(parentWindow);
             msgBox.setText(QObject::tr("Error importing file - ") + QString(e.what()));
             msgBox.exec();
         }

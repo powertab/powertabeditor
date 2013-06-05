@@ -32,6 +32,8 @@
 class FileFormatImporter;
 class FileFormatExporter;
 
+class QWidget;
+
 /// An interface for import/export of various file formats
 class FileFormatManager
 {
@@ -43,7 +45,8 @@ public:
 
     std::string importFileFilter() const;
     boost::shared_ptr<PowerTabDocument> importFile(const std::string& fileName,
-                                                   const FileFormat& format);
+                                                   const FileFormat& format,
+                                                   QWidget *parentWindow);
 
     std::string exportFileFilter() const;
     bool exportFile(boost::shared_ptr<const PowerTabDocument> doc,
