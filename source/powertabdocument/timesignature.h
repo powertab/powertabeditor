@@ -144,13 +144,12 @@ public:
     uint8_t GetBeatAmount() const;
     
 // Beaming Pattern Functions
-    /// Determines if a beaming pattern beat value is valid
-    /// @param beat Beaming pattern beat value to validate
-    /// @param beat1 True if the beat value is the first beat in the beaming
-    /// pattern
-    /// @return True if the beaming pattern beat value is valid, false if not
-    static bool IsValidBeamingPatternBeat(uint8_t beat, bool beat1)  
-        {return ((beat <= MAX_BEATAMOUNT) && ((beat1) ? (beat > 0) : 1));}
+    /// Determines if the beaming pattern is valid.
+    static bool IsValidBeamingPattern(uint8_t beat1, uint8_t beat2,
+                                      uint8_t beat3, uint8_t beat4);
+    /// Determines if a beaming pattern beat value is valid.
+    static bool IsValidBeamingPatternBeat(uint8_t beat, bool beat1);
+
     bool SetBeamingPattern(uint8_t beat1, uint8_t beat2 = 0, uint8_t beat3 = 0,
         uint8_t beat4 = 0);
     void GetBeamingPattern(uint8_t & beat1, uint8_t & beat2, uint8_t & beat3,

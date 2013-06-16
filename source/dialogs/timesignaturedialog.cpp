@@ -18,6 +18,8 @@
 #include "timesignaturedialog.h"
 #include "ui_timesignaturedialog.h"
 
+#include <QMessageBox>
+
 TimeSignatureDialog::TimeSignatureDialog(QWidget *parent, const TimeSignature &originalTimeSignature) :
     QDialog(parent),
     ui(new Ui::TimeSignatureDialog),
@@ -124,6 +126,19 @@ void TimeSignatureDialog::accept()
         {
             beamingPatternValues[i] = value->text().toUInt();
         }
+    }
+
+    if (!TimeSignature::IsValidBeamingPattern(beamingPatternValues[0],
+                                              beamingPatternValues[1],
+                                              beamingPatternValues[2],
+                                              beamingPatternValues[3]))
+    {
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle(tr("Time Signature"));
+        msgBox.setText(tr("Invalid beaming pattern."));
+        msgBox.exec();
+        return;
     }
 
     newTimeSignature.SetBeamingPattern(

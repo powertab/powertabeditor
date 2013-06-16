@@ -313,6 +313,20 @@ uint8_t TimeSignature::GetBeatAmount() const
     return (beatAmount);
 }
 
+bool TimeSignature::IsValidBeamingPatternBeat(uint8_t beat, bool beat1)
+{
+    return (beat <= MAX_BEATAMOUNT) && (beat1 ? (beat > 0) : 1);
+}
+
+bool TimeSignature::IsValidBeamingPattern(uint8_t beat1, uint8_t beat2,
+                                          uint8_t beat3, uint8_t beat4)
+{
+    return IsValidBeamingPatternBeat(beat1, true) &&
+            IsValidBeamingPatternBeat(beat2, false) &&
+            IsValidBeamingPatternBeat(beat3, false) &&
+            IsValidBeamingPatternBeat(beat4, false);
+}
+
 // Beaming Pattern Functions
 // Sets the beaming pattern
 /// @param beat1 Number of items to beam in the first beat
@@ -323,12 +337,7 @@ uint8_t TimeSignature::GetBeatAmount() const
 bool TimeSignature::SetBeamingPattern(uint8_t beat1, uint8_t beat2, uint8_t beat3,
     uint8_t beat4)
 {
-    //------Last Checked------//
-    // - Dec 13, 2004
-    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat1, true), false);
-    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat2, false), false);
-    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat3, false), false);
-    PTB_CHECK_THAT(IsValidBeamingPatternBeat(beat4, false), false);
+    PTB_CHECK_THAT(IsValidBeamingPattern(beat1, beat2, beat3, beat4), false);
 
     // Clear the old beam data
     m_data &= ~beamingPatternMask;
