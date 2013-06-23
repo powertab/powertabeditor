@@ -30,6 +30,29 @@
 #include <algorithm>
 #include <boost/make_shared.hpp>
 
+PositionData::PositionData(Position *position) : position(position)
+{
+}
+
+PositionData::~PositionData()
+{
+    delete position;
+}
+
+PositionData &PositionData::operator=(const PositionData &other)
+{
+    delete position;
+    position = new Position(*other.position);
+    tempoMarker = other.tempoMarker;
+    return *this;
+}
+
+PositionData::PositionData(const PositionData &other) :
+    position(new Position(*other.position)),
+    tempoMarker(other.tempoMarker)
+{
+}
+
 namespace
 {
 /// In Guitar Pro, repeat ends are stored with the current barline, not with the next barline
@@ -113,7 +136,7 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars,
 
     for (uint32_t i = 0; i < bars.size(); i++)
     {
-        const std::vector<std::vector<Position*> >& positionLists = bars[i].positionLists;
+        const std::vector<std::vector<PositionData> >& positionLists = bars[i].positionLists;
         size_t largestMeasure = 0;
 
         for (size_t j = 0; j < positionLists.size(); j++)
@@ -147,14 +170,24 @@ void arrangeScore(Score* score, const std::vector<BarData>& bars,
         // insert positions
         for (uint32_t track = 0; track < score->GetGuitarCount(); track++)
         {
-            const std::vector<Position*>& positionList = positionLists.at(track);
+            const std::vector<PositionData>& positionList = positionLists.at(track);
             System::StaffPtr currentStaff = currentSystem->GetStaff(track);
 
             for (uint32_t posIndex = 0; posIndex < positionList.size(); posIndex++)
             {
-                Position* currentPos = positionList.at(posIndex);
+                const PositionData &positionData = positionList[posIndex];
+                Position* currentPos = positionData.position;
                 currentPos->SetPosition(lastBarlinePos + posIndex);
-                currentStaff->InsertPosition(0, currentPos);
+                currentStaff->InsertPosition(0, new Position(*currentPos));
+
+                // Insert a tempo marker at the position, if necessary.
+                if (positionData.tempoMarker)
+                {
+                    boost::shared_ptr<TempoMarker> marker = positionData.tempoMarker;
+                    marker->SetSystem(score->GetSystemCount() - 1);
+                    marker->SetPosition(currentPos->GetPosition());
+                    score->InsertTempoMarker(marker);
+                }
             }
 
             currentStaff->CalculateClef(score->GetGuitar(track)->GetTuning());

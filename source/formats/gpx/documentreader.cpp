@@ -184,48 +184,48 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 
         for (size_t i = 0; i < score->GetGuitarCount() && i < barIds.size(); ++i)
         {
-            std::vector<Position*> positions;
+            std::vector<PositionData> positions;
 
             // only import a single voice
             BOOST_FOREACH(int beatId, voices[bars[barIds[i]].voiceIds.at(0)].beatIds)
             {
                 GpxBeat beat = beats[beatId];
 
-                Position pos;
+                Position *pos = new Position();
 
-                pos.SetArpeggioUp(beat.arpeggioType == "Up");
-                pos.SetArpeggioDown(beat.arpeggioType == "Down");
-                pos.SetPickStrokeDown(beat.brushDirection == "Up");
-                pos.SetPickStrokeUp(beat.brushDirection == "Down");
+                pos->SetArpeggioUp(beat.arpeggioType == "Up");
+                pos->SetArpeggioDown(beat.arpeggioType == "Down");
+                pos->SetPickStrokeDown(beat.brushDirection == "Up");
+                pos->SetPickStrokeUp(beat.brushDirection == "Down");
 
-                pos.SetTremoloPicking(beat.tremoloPicking);
-                pos.SetAcciaccatura(beat.graceNote);
+                pos->SetTremoloPicking(beat.tremoloPicking);
+                pos->SetAcciaccatura(beat.graceNote);
 
                 GpxRhythm rhythm = rhythms.at(beat.rhythmId);
-                pos.SetDurationType(rhythm.noteValue);
-                pos.SetDotted(rhythm.dotted);
-                pos.SetDoubleDotted(rhythm.doubleDotted);
+                pos->SetDurationType(rhythm.noteValue);
+                pos->SetDotted(rhythm.dotted);
+                pos->SetDoubleDotted(rhythm.doubleDotted);
 
                 BOOST_FOREACH(int noteId, beat.noteIds)
                 {
-                    Note* note = convertNote(noteId, pos, score->GetGuitar(i)->GetTuning());
-                    if (pos.GetNoteByString(note->GetString()))
+                    Note* note = convertNote(noteId, *pos, score->GetGuitar(i)->GetTuning());
+                    if (pos->GetNoteByString(note->GetString()))
                     {
                         std::cerr << "Colliding notes at string " << note->GetString() << std::endl;
                         delete note;
                     }
                     else
                     {
-                        pos.InsertNote(note);
+                        pos->InsertNote(note);
                     }
                 }
 
-                if (pos.GetNoteCount() == 0)
+                if (pos->GetNoteCount() == 0)
                 {
-                    pos.SetRest(true);
+                    pos->SetRest(true);
                 }
 
-                positions.push_back(pos.CloneObject());
+                positions.push_back(PositionData(pos));
             }
 
             barData.positionLists.push_back(positions);

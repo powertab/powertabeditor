@@ -97,7 +97,7 @@ Position::~Position()
 {
     for (uint32_t i = 0; i < m_noteArray.size(); i++)
     {
-        delete m_noteArray.at(i);
+        delete m_noteArray[i];
     }
 }
 
@@ -110,10 +110,7 @@ const Position& Position::operator=(const Position& position)
         m_position = position.m_position;
         m_beaming = position.m_beaming;
         m_data = position.m_data;
-
-        // copy the complex symbols
-        std::copy(position.m_complexSymbolArray.begin(), position.m_complexSymbolArray.end(),
-                  m_complexSymbolArray.begin());
+        m_complexSymbolArray = position.m_complexSymbolArray;
 
         // clean out the current note array
         for (std::vector<Note*>::iterator i = m_noteArray.begin();

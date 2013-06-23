@@ -27,6 +27,19 @@ class Score;
 class AlternateEnding;
 class TempoMarker;
 
+/// Stores data for a single position, plus any symbols at that position.
+struct PositionData
+{
+    PositionData(Position *position);
+    PositionData(const PositionData &other);
+    ~PositionData();
+    PositionData &operator=(const PositionData &other);
+
+    // TODO - when we can use C++11, this can just be a unique_ptr.
+    Position *position;
+    boost::shared_ptr<TempoMarker> tempoMarker;
+};
+
 /// Stores data for a single bar - barline, an (optional) alternate ending,
 /// and a list of positions (one for each staff)
 struct BarData
@@ -34,7 +47,7 @@ struct BarData
     boost::shared_ptr<Barline> barline;
     boost::shared_ptr<AlternateEnding> altEnding;
     boost::shared_ptr<TempoMarker> tempoMarker;
-    std::vector<std::vector<Position*> > positionLists;
+    std::vector<std::vector<PositionData> > positionLists;
 };
 
 void arrangeScore(Score* score, const std::vector<BarData>& bars,

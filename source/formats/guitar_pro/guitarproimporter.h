@@ -69,7 +69,7 @@ private:
 
     void readSystems(Gp::InputStream& stream, Score* score, std::vector<BarData> bars);
 
-    Position* readBeat(Gp::InputStream& stream, const Tuning& tuning);
+    PositionData readBeat(Gp::InputStream& stream, const Tuning& tuning);
 
     uint8_t readDuration(Gp::InputStream& stream);
 
@@ -84,7 +84,7 @@ private:
     void readHarmonic(Gp::InputStream& stream, Note& note);
     void readBend(Gp::InputStream& stream, Note& note);
     void readTremoloBar(Gp::InputStream& stream, Position& position);
-    void readMixTableChangeEvent(Gp::InputStream& stream);
+    void readMixTableChangeEvent(Gp::InputStream& stream, PositionData &position);
     void readPositionEffects(Gp::InputStream& stream, Position& position);
 
     void readChordDiagram(Gp::InputStream& stream, const Tuning& tuning);

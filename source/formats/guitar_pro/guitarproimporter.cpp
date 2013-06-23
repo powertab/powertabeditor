@@ -466,11 +466,11 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
 {
     BOOST_FOREACH(BarData& bar, bars)
     {
-        std::vector<std::vector<Position*> > positionLists(score->GetGuitarCount());
+        std::vector<std::vector<PositionData> > positionLists(score->GetGuitarCount());
 
         for (uint32_t track = 0; track < score->GetGuitarCount(); track++)
         {
-            std::vector<Position*>& positionList = positionLists.at(track);
+            std::vector<PositionData>& positionList = positionLists.at(track);
             const Tuning& tuning = score->GetGuitar(track)->GetTuning();
 
             const uint32_t numBeats = stream.read<uint32_t>(); // number of beats in measure
@@ -486,7 +486,7 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
                 const uint32_t beats = stream.read<uint32_t>();
                 for (uint32_t k = 0; k < beats; k++)
                 {
-                    delete readBeat(stream, tuning);
+                    readBeat(stream, tuning);
                 }
             }
 
@@ -503,13 +503,14 @@ void GuitarProImporter::readSystems(Gp::InputStream& stream, Score* score,
 }
 
 /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab)
-Position* GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tuning)
+PositionData GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tuning)
 {
     const Gp::Flags flags = stream.read<uint8_t>();
 
-    Position pos;
+    Position *pos = new Position();
+    PositionData data(pos);
 
-    pos.SetDotted(flags.test(Gp::Dotted));
+    pos->SetDotted(flags.test(Gp::Dotted));
 
     if (flags.test(Gp::BeatStatus))
     {
@@ -521,11 +522,11 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tun
         }
         else if (status == Gp::BeatRest)
         {
-            pos.SetRest(true);
+            pos->SetRest(true);
         }
     }
 
-    pos.SetDurationType(readDuration(stream));
+    pos->SetDurationType(readDuration(stream));
 
     if (flags.test(Gp::IrregularGrouping))
     {
@@ -534,8 +535,8 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tun
         // the "denominator" of the irregular grouping is the nearest power of 2 (from below)
         const uint32_t notesOver = pow(2, floor(Common::log2(notesPlayed)));
 
-        pos.SetIrregularGroupingTiming(notesPlayed, notesOver);
-        pos.SetIrregularGroupingStart(true); // TODO - need to group with other notes properly
+        pos->SetIrregularGroupingTiming(notesPlayed, notesOver);
+        pos->SetIrregularGroupingStart(true); // TODO - need to group with other notes properly
     }
 
     if (flags.test(Gp::ChordDiagram))
@@ -543,22 +544,23 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tun
         readChordDiagram(stream, tuning);
     }
 
+    // Floating text - not handled yet.
     if (flags.test(Gp::Text))
     {
-        stream.readString(); // TODO - not sure what to do with this text (floating text???)
+        stream.readString();
     }
 
     if (flags.test(Gp::NoteEffects))
     {
-        readPositionEffects(stream, pos);
+        readPositionEffects(stream, *pos);
     }
 
     if (flags.test(Gp::MixTableChangeEvent))
     {
-        readMixTableChangeEvent(stream);
+        readMixTableChangeEvent(stream, data);
     }
 
-    readNotes(stream, pos);
+    readNotes(stream, *pos);
 
     // unknown GP5 data ...
     if (stream.version > Gp::Version4)
@@ -571,7 +573,7 @@ Position* GuitarProImporter::readBeat(Gp::InputStream& stream, const Tuning& tun
         }
     }
 
-    return pos.CloneObject();
+    return data;
 }
 
 /// Reads a duration value and converts it into PTB format
@@ -909,7 +911,7 @@ uint8_t GuitarProImporter::convertBendPitch(int32_t gpBendPitch)
     return std::abs(gpBendPitch / 25);
 }
 
-void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream& stream)
+void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream& stream, PositionData &position)
 {
     // TODO - implement conversions for this
 
@@ -932,7 +934,13 @@ void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream& stream)
         std::cerr << stream.readString() << std::endl; // tempo name???
     }
 
-    int32_t tempo = stream.read<int32_t>(); // new tempo
+    // New tempo.
+    int32_t tempo = stream.read<int32_t>();
+    if (tempo > 0)
+    {
+        position.tempoMarker = boost::make_shared<TempoMarker>();
+        position.tempoMarker->SetBeatsPerMinute(tempo);
+    }
 
     if (volume >= 0)
     {
