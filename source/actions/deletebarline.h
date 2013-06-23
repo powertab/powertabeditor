@@ -33,7 +33,7 @@ public:
     void redo();
     void undo();
 
-protected:
+private:
     Score* score;
     boost::shared_ptr<System> system;
     boost::shared_ptr<Barline> barline;

@@ -29,7 +29,7 @@ public:
     void undo();
     void redo();
 
-protected:
+private:
     Note* note;
     quint8 trillFret;
 };

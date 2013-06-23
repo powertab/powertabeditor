@@ -32,7 +32,7 @@ public:
     void redo();
     void undo();
 
-protected:
+private:
     boost::shared_ptr<Staff> staff;
     Position* position;
     const quint32 voice;

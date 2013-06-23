@@ -36,7 +36,7 @@ class ScorePage : public QFrame
 public:
     ScorePage(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager, QFrame *parent = 0);
 
-protected:
+private:
     PowerTabEditor* mainWindow;
 
     QVBoxLayout *layout;

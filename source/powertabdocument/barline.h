@@ -50,7 +50,7 @@ public:
     };
 
 // Member Variables
-protected:
+private:
     uint8_t          m_position;                     ///< Zero-based index of the position within the system where the barline is anchored
     uint8_t          m_data;                         ///< Top 3 bits = type, bottom 5 = repeat number
 

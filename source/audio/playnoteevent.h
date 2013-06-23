@@ -40,7 +40,7 @@ public:
 
     void performEvent(RtMidiWrapper& sequencer) const;
 
-protected:
+private:
     uint8_t pitch;
     boost::shared_ptr<const Guitar> guitar;
     bool isMuted;

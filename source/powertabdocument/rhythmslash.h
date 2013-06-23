@@ -102,7 +102,7 @@ public:
     };
 
 // Member Variables
-protected:
+private:
     uint8_t          m_position;         ///< Zero-based index of the position within the system where the rhythm slash is anchored
     uint8_t          m_beaming;          ///< Beaming and triplet data (top 3 bits = triplet flags, bottom 5 bits = beaming flags)
     uint32_t        m_data;             ///< Top byte = single note data, next 3 bits = duration type, remaining bits are flags
@@ -227,7 +227,7 @@ public:
     bool ClearBeam()
         {return (ClearBeamingFlag(beamingFlagsMask));}
                 
-protected:
+private:
     /// Determines if a beaming flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not
@@ -304,7 +304,7 @@ public:
     bool ClearTriplet()
         {return (ClearTripletFlag(tripletMask));}
     
-protected:
+private:
     /// Determines if a triplet flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not
@@ -610,7 +610,7 @@ public:
         {return (IsDataFlagSet(slideOutOfUpwards));}
 
 // Flag Functions
-protected:
+private:
     /// Determines if a data flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not

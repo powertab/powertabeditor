@@ -37,7 +37,7 @@ public:
 
     void performEvent(RtMidiWrapper& sequencer) const;
 
-protected:
+private:
     VelocityType velocity;
 };
 

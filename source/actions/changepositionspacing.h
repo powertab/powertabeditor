@@ -31,7 +31,7 @@ public:
     virtual void undo();
     virtual void redo();
 
-protected:
+private:
     boost::shared_ptr<System> system;
     const uint8_t newSpacing;
     const uint8_t originalSpacing;

@@ -31,7 +31,7 @@ class PowerTabObject;
 class PowerTabOutputStream    
 {
     // Member Variables
-protected:
+private:
     bool                                        m_mapsInitialized;              ///< Determines whether or not the maps have been initialized
     boost::unordered_map<std::string, uint32_t>   m_classInfoHashMap;             ///< Map of class Ids to object index
     boost::unordered_map<const PowerTabObject*, uint32_t>        m_objectHashMap;      ///< Map of object pointers to object index
@@ -50,7 +50,7 @@ public:
     bool WriteMFCRect(const Rect& rect);
     bool WriteObject(const PowerTabObject *object);
 
-protected:
+private:
     bool WriteClassInformation(const PowerTabObject* object);
     bool WriteMFCStringLength(uint32_t length, bool unicode);
 
@@ -62,7 +62,7 @@ public:
     {return (!fail() && (m_lastPowerTabError == POWERTABSTREAM_NO_ERROR));}
     std::string GetLastErrorMessage();
 
-protected:
+private:
     bool CheckCount();
 
     // Operations

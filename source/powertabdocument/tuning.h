@@ -41,7 +41,7 @@ public:
     };
 
     // Member Variables
-protected:
+private:
     std::string             m_name;         ///< Name (or description) of the tuning
     uint8_t                 m_data;         ///< bit 7 = Music notation offset sign, bits 6 to 1 = Music notation offset value, bit 0 = display sharps or flats
     std::vector<uint8_t>    m_noteArray;   ///< Array of bytes representing the MIDI notes of the tuning, ordered from high string to low string

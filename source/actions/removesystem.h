@@ -37,7 +37,7 @@ public:
     void redo();
     void undo();
 
-protected:
+private:
     Score* score;
     const uint32_t index;
     boost::shared_ptr<System> system;

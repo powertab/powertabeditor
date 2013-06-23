@@ -29,7 +29,7 @@ public:
     void redo();
     void undo();
 
-protected:
+private:
     Note* note;
     const quint8 newSlideType;
     quint8 oldSlideType;

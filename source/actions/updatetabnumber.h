@@ -35,7 +35,7 @@ public:
     void undo();
     void redo();
 
-protected:
+private:
     const uint32_t voice;
     Note* note;
     Position* position;

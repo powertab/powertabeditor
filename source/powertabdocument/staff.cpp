@@ -541,7 +541,7 @@ namespace
             return (object->*pred)();
         }
         
-    protected:
+    private:
         T* object;
     };
 }

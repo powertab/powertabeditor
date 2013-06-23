@@ -56,7 +56,7 @@ public:
     };
 
 // Member Variables
-protected:
+private:
     uint16_t      m_system;       ///< Zero-based index of the system where the dynamic is anchored
     uint8_t      m_staff;        ///< Zero-based index of the staff within the system where the dynamic is anchored
     uint8_t      m_position;     ///< Zero-based index of the position within the system where the dynamic is anchored
@@ -189,7 +189,7 @@ public:
     /// @return True if the dynamic volume is set, false if not
     bool IsRhythmSlashVolumeSet() const
         {return (IsVolumeSet(true));}
-protected:
+private:
     bool SetVolume(bool rhythmSlashes, uint8_t volume);
     uint8_t GetVolume(bool rhythmSlashes) const;
     bool IsVolumeSet(bool rhythmSlashes) const;

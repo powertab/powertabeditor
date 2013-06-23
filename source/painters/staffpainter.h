@@ -45,6 +45,7 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+private:
     int drawStaffLines(int lineCount, int lineSpacing, int startHeight);
     inline int findClosestPosition(qreal click, qreal relativePos, qreal spacing);
 

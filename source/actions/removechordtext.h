@@ -33,7 +33,7 @@ public:
     virtual void undo();
     virtual void redo();
 
-protected:
+private:
     boost::shared_ptr<ChordText> chordText;
     boost::shared_ptr<System> system;
     const quint32 index;

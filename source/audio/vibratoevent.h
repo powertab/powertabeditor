@@ -40,7 +40,7 @@ public:
 
     void performEvent(RtMidiWrapper& sequencer) const;
 
-protected:
+private:
     EventType eventType;
     VibratoType vibratoType;
 };

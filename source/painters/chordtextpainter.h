@@ -33,7 +33,7 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-protected:
+private:
     void init();
 
     boost::shared_ptr<const ChordText> chordText;

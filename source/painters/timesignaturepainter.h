@@ -43,6 +43,7 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
+private:
     void init();
     void drawNumber(QPainter* painter, const double y, const quint8 number) const;
 

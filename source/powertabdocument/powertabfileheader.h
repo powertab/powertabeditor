@@ -95,7 +95,7 @@ public:
     static const uint8_t LESSONLEVEL_ADVANCED;          ///< Difficult
 
     // Compatibility Constants (used by v1.0-v1.5 formats)
-protected:
+private:
     static const uint8_t NUM_RELEASEDONS;
     static const uint8_t RO_SINGLE;
     static const uint8_t RO_EP;

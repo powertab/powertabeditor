@@ -30,10 +30,9 @@ public:
     void undo();
     void redo();
 
-protected:
+private:
     Note* note;
     uint8_t originalTrill;
-
 };
 
 #endif // REMOVETRILL_H

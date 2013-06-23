@@ -58,7 +58,7 @@ public:
         std::for_each(items.begin(), items.end(), std::bind2nd(setPropertyFn, !setProperty));
     }
 
-protected:
+private:
     std::vector<T*> items;
     PropertySetter setPropertyFn; ///< function for setting the property
     bool setProperty; ///< indicates whether we are going to add or remove the property

@@ -64,7 +64,7 @@ public:
 		{return ((uint16_t)1);}
 		  
 // Serialization Functions
-protected:  
+private:
 	bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 };
 

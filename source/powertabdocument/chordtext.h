@@ -25,7 +25,7 @@ public:
     static const uint8_t DEFAULT_POSITION;       ///< Default value for the position member variable
 
 // Member Variables
-protected:
+private:
     uint8_t          m_position;                 ///< Zero-based index of the position within the system where the chord text is anchored
     ChordName       m_chordName;	            ///< Chord name data (see ChordName class for details)
 

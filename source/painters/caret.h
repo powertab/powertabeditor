@@ -115,7 +115,7 @@ signals:
 public slots:
     void updateSelection(int start, int end);
 
-protected:
+private:
     void updateStaffInfo();
 
     bool inPlaybackMode;

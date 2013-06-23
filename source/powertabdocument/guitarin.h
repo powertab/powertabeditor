@@ -39,7 +39,7 @@ public:
 	static const uint32_t       MAX_POSITION;                       ///< Maximum allowed value for the position member variable
 	
 // Member Variables
-protected:
+private:
 	uint16_t      m_system;       ///< Zero-based index of the system where the guitar in is anchored
 	uint8_t      m_staff;        ///< Zero-based index of the staff within the system where the guitar in is anchored
 	uint8_t      m_position;     ///< Zero-based index of the position within the system where the guitar in is anchored
@@ -166,7 +166,7 @@ public:
 	/// @return True if the rhythm slash guitars are set, false if not
 	bool HasRhythmSlashGuitarsSet() const
 		{return (HasGuitarsSet(true));}
-protected:
+private:
 	bool SetGuitars(bool rhythmSlashes, uint8_t guitars);
 	uint8_t GetGuitars(bool rhythmSlashes) const;
 	bool HasGuitarsSet(bool rhythmSlashes) const;

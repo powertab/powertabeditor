@@ -36,7 +36,7 @@ class ChordNameDialog : public QDialog
 public:
     explicit ChordNameDialog(QWidget* parent, ChordName* chord);
 
-protected:
+private:
     ChordName chordName;
     ChordName* originalChordName;
 

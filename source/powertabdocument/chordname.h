@@ -122,7 +122,7 @@ public:
     };
 
 // Member Variables
-protected:
+private:
     uint16_t m_key;                                           ///< Chord key and bass note (hiword = tonic, loword = bass note; bits 5-6 = variation, bottom 4 bits = key)
     uint8_t m_formula;                                       ///< Core formula + flags (see formula and formulaFlags enums for values)
     uint16_t m_formulaModifications;                          ///< Stores the formula modifications (see formulaModifications enum for values)
@@ -235,7 +235,7 @@ public:
         {return (IsFormulaFlagSet(noChord));}
 
 // Formula Flag Functions
-protected:
+private:
     /// Determines if a formula flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not

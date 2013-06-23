@@ -38,7 +38,7 @@ public:
     };
     
 // Member Variables
-protected:
+private:
     std::string        m_text;                     ///< Text to be output
     Rect          m_rect;                     ///< Bounding rectangle for the text
     uint8_t          m_flags;                    ///< Flags representing alignment and borders (see flags below)
@@ -97,7 +97,7 @@ public:
         {return ((m_rect.GetWidth() == 0) && (m_rect.GetHeight() == 0));}
 
 // Flag Functions
-protected:
+private:
     void SetFlag(uint8_t flag);
     /// Clears a flag used by the FloatingText object
     /// @param flag The flag to clear

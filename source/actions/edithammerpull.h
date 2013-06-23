@@ -36,11 +36,9 @@ public:
     void redo();
     void undo();
 
-protected:
+private:
     Note* note;
-
     HammerPullFlags hammer;
-
     uint8_t oldSlideType;
     int8_t oldSteps;
 };

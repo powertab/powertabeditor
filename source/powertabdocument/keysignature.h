@@ -58,7 +58,7 @@ public:
     };
 
 // Member Variables
-protected:
+private:
     uint8_t m_data;      ///< Stores all data required by the key signature (see the flags enum for the meaning of the individual bits)
 
 // Constructor/Destructor
@@ -264,7 +264,7 @@ public:
     int GetWidth() const;
 
 // Flag Functions
-protected:
+private:
     /// Determines if a flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not

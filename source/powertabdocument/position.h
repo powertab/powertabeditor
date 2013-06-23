@@ -151,7 +151,7 @@ public:
     };
 
     // Member Variables
-protected:
+private:
     uint8_t	m_position; ///< Zero-based index of the position within the system where the position is anchored
     uint16_t	m_beaming;  ///< Beaming and irregular grouping timing data
     uint32_t	m_data;     ///< Duration and simple symbol flags
@@ -323,7 +323,7 @@ public:
 
     bool IsBeamable() const;
 
-protected:
+private:
     /// Determines if a beaming flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not
@@ -701,7 +701,7 @@ public:
     {return (IsDataFlagSet(irregularGroupingEnd));}
 
     // Flag Functions
-protected:
+private:
     /// Determines if a data flag is valid
     /// @param flag Flag to validate
     /// @return True if the flag is valid, false if not

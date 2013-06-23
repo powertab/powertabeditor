@@ -57,7 +57,7 @@ public:
     };
 
 // Member Variables
-protected:
+private:
     std::string m_faceName;         ///< Face name of the font; i.e. Arial, Times New Roman, etc.
     int32_t     m_pointSize;        ///< Height of the font, in points
     int32_t     m_weight;           ///< Font weight (see enum for values)

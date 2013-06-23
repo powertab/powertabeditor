@@ -57,7 +57,7 @@ public:
     };
     
 // Member Variables
-protected:
+private:
     uint32_t    m_data;             ///< Stores the meter, beaming pattern and any flags (see flags enum for bit breakdown)
     uint8_t      m_pulses;           ///< Number of pulses in a measure
 

@@ -31,11 +31,9 @@ public:
     void redo();
     void undo();
 
-protected:
+private:
     boost::shared_ptr<System> system;
     const quint32 position;
-    const quint8 type;
-    const quint8 repeats;
     boost::shared_ptr<Barline> newBar;
 };
 
