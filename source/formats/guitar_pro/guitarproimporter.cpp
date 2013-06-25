@@ -263,6 +263,7 @@ void GuitarProImporter::readBarlines(Gp::InputStream& stream, uint32_t numMeasur
         {
             timeSignature.SetShown(true);
             timeSignature.SetBeatsPerMeasure(stream.read<uint8_t>());
+            timeSignature.SetPulses(timeSignature.GetBeatsPerMeasure());
         }
         if (flags.test(Gp::Denominator))
         {

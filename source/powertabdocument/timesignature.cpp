@@ -492,7 +492,7 @@ int TimeSignature::GetWidth() const
 /// Determines if a pulses value is valid (must divide evenly into the # of beats)
 /// @param pulses Pulses value to validate
 /// @return True if the pulses value is valid, false if not
-bool TimeSignature::IsValidPulses(uint8_t pulses)
+bool TimeSignature::IsValidPulses(uint8_t pulses) const
 {
     return /*(pulses >= MIN_PULSES) &&*/ (pulses <= MAX_PULSES) &&
             (pulses == 0 || GetBeatsPerMeasure() % pulses == 0);

@@ -654,9 +654,10 @@ double MidiPlayer::generateMetronome(uint32_t systemIndex,
     const TimeSignature& timeSig = barline->GetTimeSignature();
 
     uint8_t numPulses = timeSig.GetPulses();
+    Q_ASSERT(timeSig.IsValidPulses(numPulses));
+
     const uint8_t beatsPerMeasure = timeSig.GetBeatsPerMeasure();
     const uint8_t beatValue = timeSig.GetBeatAmount();
-
     const uint32_t position = barline->GetPosition();
 
     // Figure out duration of pulse.

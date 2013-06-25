@@ -181,7 +181,7 @@ public:
     }
         
 // Pulse Functions
-    bool IsValidPulses(uint8_t pulses);
+    bool IsValidPulses(uint8_t pulses) const;
     bool SetPulses(uint8_t pulses);
     uint8_t GetPulses() const;
     
