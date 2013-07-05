@@ -1,0 +1,52 @@
+cmake_minimum_required(VERSION 2.8.8)
+
+add_library(pteactions
+    addalternateending.cpp
+    addartificialharmonic.cpp
+    addbarline.cpp
+    addchordtext.cpp
+    adddynamic.cpp
+    addguitar.cpp
+    addirregulargrouping.cpp
+    addmusicaldirection.cpp
+    addnote.cpp
+    addsystem.cpp
+    addtappedharmonic.cpp
+    addtempomarker.cpp
+    addtrill.cpp
+    addvolumeswell.cpp
+    changebarlinetype.cpp
+    changepositionspacing.cpp
+    deletebarline.cpp
+    deletenote.cpp
+    deleteposition.cpp
+    editfileinformation.cpp
+    edithammerpull.cpp
+    editkeysignature.cpp
+    editrehearsalsign.cpp
+    editrest.cpp
+    editslideinto.cpp
+    editslideout.cpp
+    edittimesignature.cpp
+    edittrackshown.cpp
+    edittuning.cpp
+    insertnotes.cpp
+    positionshift.cpp
+    removealternateending.cpp
+    removeartificialharmonic.cpp
+    removechordtext.cpp
+    removedynamic.cpp
+    removeirregulargrouping.cpp
+    removemusicaldirection.cpp
+    removesystem.cpp
+    removetappedharmonic.cpp
+    removetempomarker.cpp
+    removetrill.cpp
+    removevolumeswell.cpp
+    shifttabnumber.cpp
+    undomanager.cpp
+    updatenoteduration.cpp
+    updatetabnumber.cpp
+)
+
+qt5_use_modules(pteactions Widgets)

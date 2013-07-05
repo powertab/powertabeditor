@@ -1,0 +1,41 @@
+cmake_minimum_required(VERSION 2.8.8)
+
+add_library(ptedocument
+    alternateending.cpp
+    barline.cpp
+    chorddiagram.cpp
+    chordname.cpp
+    chordtext.cpp
+    colour.cpp
+    direction.cpp
+    dynamic.cpp
+    floatingtext.cpp
+    fontsetting.cpp
+    generalmidi.cpp
+    guitar.cpp
+    guitarin.cpp
+    harmonics.cpp
+    keysignature.cpp
+    layout.cpp
+    macros.cpp
+    note.cpp
+    notestem.cpp
+    oldrehearsalsign.cpp
+    oldtimesignature.cpp
+    position.cpp
+    powertabdocument.cpp
+    powertabfileheader.cpp
+    powertabinputstream.cpp
+    powertaboutputstream.cpp
+    rect.cpp
+    rehearsalsign.cpp
+    rhythmslash.cpp
+    score.cpp
+    staff.cpp
+    system.cpp
+    systemlocation.cpp
+    systemsymbol.cpp
+    tempomarker.cpp
+    timesignature.cpp
+    tuning.cpp
+)
