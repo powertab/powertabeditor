@@ -26,7 +26,7 @@ const uint8_t     TimeSignature::DEFAULT_PULSES          = 4;
 const uint8_t     TimeSignature::MIN_BEATSPERMEASURE     = 1;
 const uint8_t     TimeSignature::MAX_BEATSPERMEASURE     = 32;
 
-const uint8_t     TimeSignature::MIN_BEATAMOUNT          = 2;
+const uint8_t     TimeSignature::MIN_BEATAMOUNT          = 1;
 const uint8_t     TimeSignature::MAX_BEATAMOUNT          = 32;
 
 const uint8_t     TimeSignature::MIN_PULSES              = 0;
@@ -277,16 +277,7 @@ bool TimeSignature::SetBeatAmount(uint8_t beatAmount)
     ClearFlag(commonTime | cutTime);
 
     // The beat amount is stored in power of 2 form
-    if (beatAmount == 2)
-        beatAmount = 1;
-    else if (beatAmount == 4)
-        beatAmount = 2;
-    else if (beatAmount == 8)
-        beatAmount = 3;
-    else if (beatAmount == 16)
-        beatAmount = 4;
-    else if (beatAmount == 32)
-        beatAmount = 5;
+    beatAmount = log2(beatAmount);
 
     m_data &= ~beatAmountMask;
     m_data |= (beatAmount << 24);

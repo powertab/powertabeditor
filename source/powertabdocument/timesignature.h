@@ -137,8 +137,8 @@ public:
     /// @return True if the beat amount is valid, false if not
     static bool IsValidBeatAmount(uint8_t beatAmount)                
     {
-        return ((beatAmount == 2) || (beatAmount == 4) || (beatAmount == 8) ||
-            (beatAmount == 16) || (beatAmount == 32));
+        return beatAmount == 1 || beatAmount == 2 || beatAmount == 4 ||
+            beatAmount == 8 || beatAmount == 16 || beatAmount == 32;
     }
     bool SetBeatAmount(uint8_t beatAmount);
     uint8_t GetBeatAmount() const;

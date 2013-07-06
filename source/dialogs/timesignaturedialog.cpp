@@ -58,10 +58,13 @@ void TimeSignatureDialog::init()
     ui->beatsPerMeasure->setMinimum(TimeSignature::MIN_BEATSPERMEASURE);
     ui->beatsPerMeasure->setMaximum(TimeSignature::MAX_BEATSPERMEASURE);
 
-    boost::array<int, 5> beatValues = {{2, 4, 8, 16, 32}};
-    for (size_t i = 0; i < beatValues.size(); i++)
+    for (uint8_t i = TimeSignature::MIN_BEATAMOUNT;
+            i <= TimeSignature::MAX_BEATAMOUNT; ++i)
     {
-        ui->beatValue->addItem(QString::number(beatValues[i]), beatValues[i]);
+        if (TimeSignature::IsValidBeatAmount(i))
+        {
+            ui->beatValue->addItem(QString::number(i), i);
+        }
     }
 
     beamingPatterns[0] = ui->beamingPattern1;

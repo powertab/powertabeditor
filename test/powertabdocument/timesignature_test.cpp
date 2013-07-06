@@ -35,3 +35,15 @@ TEST_CASE("PowerTabDocument/TimeSignature/ValidPulses", "")
     REQUIRE(!time.IsValidPulses(7));
     REQUIRE(!time.IsValidPulses(12));
 }
+
+TEST_CASE("PowerTabDocument/TimeSignature/BeatAmount", "")
+{
+    TimeSignature time;
+
+    time.SetBeatAmount(2);
+    REQUIRE(time.GetBeatAmount() == 2);
+    time.SetBeatAmount(32);
+    REQUIRE(time.GetBeatAmount() == 32);
+    time.SetBeatAmount(1);
+    REQUIRE(time.GetBeatAmount() == 1);
+}
