@@ -136,7 +136,7 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
 
     shared_ptr<System> currentSystem = getCurrentSystem();
-    const int leftPos = currentSystem->GetPositionX(currentPositionIndex);
+    int leftPos = currentSystem->GetPositionX(currentPositionIndex);
 
     // get top
     int y1 = 0;
@@ -163,9 +163,11 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
             lines.append(QLine(x, y1, x, boundary1));
         }
 
-        // draw horizontal lines around note
-        lines.append(QLine(leftPos, boundary1, leftPos + currentStaffInfo.positionWidth, boundary1));
-        lines.append(QLine(leftPos, boundary2, leftPos + currentStaffInfo.positionWidth, boundary2));
+        // Draw horizontal lines around note, but don't exceed the default width.
+        const int width = std::min<int>(currentStaffInfo.positionWidth, System::DEFAULT_POSITION_SPACING);
+        leftPos = centerItem(leftPos, leftPos + currentStaffInfo.positionWidth, width);
+        lines.append(QLine(leftPos, boundary1, leftPos + width, boundary1));
+        lines.append(QLine(leftPos, boundary2, leftPos + width, boundary2));
 
         // draw to bottom of staff, if necessary
         if (y2 > boundary2)
