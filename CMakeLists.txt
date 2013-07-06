@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 2.8.8)
 project(powertabeditor)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wnon-virtual-dtor -Wextra")
+
+if(MSVC)
+    add_definitions(-DBOOST_ALL_NO_LIB)
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wnon-virtual-dtor -Wextra")
+endif()
 
 # Run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
