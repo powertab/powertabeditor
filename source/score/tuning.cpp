@@ -27,6 +27,8 @@ const int8_t Tuning::MIN_MUSIC_NOTATION_OFFSET = -12;
 const int8_t Tuning::MAX_MUSIC_NOTATION_OFFSET = 12;
 const int Tuning::MIN_STRING_COUNT = 3;
 const int Tuning::MAX_STRING_COUNT = 8;
+const uint8_t Tuning::MIN_CAPO = 0;
+const uint8_t Tuning::MAX_CAPO = 12;
 
 Tuning::Tuning()
     : myName("Standard"),
@@ -130,6 +132,19 @@ bool Tuning::usesSharps() const
 void Tuning::setSharps(bool set)
 {
     myUsesSharps = set;
+}
+
+uint8_t Tuning::getCapo() const
+{
+    return myCapo;
+}
+
+void Tuning::setCapo(uint8_t capo)
+{
+    if (capo < MIN_CAPO || capo > MAX_CAPO)
+        throw std::out_of_range("Invalid capo");
+
+    myCapo = capo;
 }
 
 std::string Tuning::getSpelling() const

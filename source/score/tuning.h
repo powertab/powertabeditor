@@ -57,6 +57,11 @@ public:
     /// Sets whether the tuning is displayed using sharps or flats.
     void setSharps(bool set);
 
+    /// Returns the capo for the tuning (0 == no capo).
+    uint8_t getCapo() const;
+    /// Sets the capo for the tuning.
+    void setCapo(uint8_t capo);
+
     /// Returns a string representation of the tuning from low to
     /// high (e.g. "E A D G B E").
     std::string getSpelling() const;
@@ -66,11 +71,17 @@ public:
     /// Maximum allowed number of strings in a tuning.
     static const int MAX_STRING_COUNT;
 
+    /// Minimum valid capo fret.
+    static const uint8_t MIN_CAPO;
+    /// Maximum valid capo fret.
+    static const uint8_t MAX_CAPO;
+
 private:
     std::string myName;
     std::vector<uint8_t> myNotes;
     int8_t myMusicNotationOffset;
     bool myUsesSharps;
+    uint8_t myCapo;
 
     static const int8_t MIN_MUSIC_NOTATION_OFFSET;
     static const int8_t MAX_MUSIC_NOTATION_OFFSET;
