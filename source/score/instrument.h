@@ -19,6 +19,7 @@
 #define SCORE_INSTRUMENT_H
 
 #include <boost/cstdint.hpp>
+#include <boost/serialization/access.hpp>
 #include <string>
 
 namespace Score {
@@ -27,6 +28,8 @@ class Instrument
 {
 public:
     Instrument();
+
+    bool operator==(const Instrument &other) const;
 
     /// Returns a description of the instrument (e.g. "Clean Guitar").
     const std::string &getDescription() const;
@@ -41,6 +44,13 @@ public:
 private:
     std::string myDescription;
     uint8_t myMidiPreset;
+
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int /*version*/)
+    {
+        ar & myDescription & myMidiPreset;
+    }
 };
 
 }

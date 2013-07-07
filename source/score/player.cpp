@@ -34,6 +34,14 @@ Player::Player()
 {
 }
 
+bool Player::operator==(const Player &other) const
+{
+    return myDescription == other.myDescription &&
+           myMaxVolume == other.myMaxVolume &&
+           myPan == other.myPan &&
+           myTuning == other.myTuning;
+}
+
 const std::string &Player::getDescription() const
 {
     return myDescription;

@@ -28,6 +28,12 @@ Instrument::Instrument()
 {
 }
 
+bool Instrument::operator==(const Instrument &other) const
+{
+    return myDescription == other.myDescription &&
+           myMidiPreset == other.myMidiPreset;
+}
+
 const std::string &Instrument::getDescription() const
 {
     return myDescription;

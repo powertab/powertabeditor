@@ -18,6 +18,7 @@
 #ifndef SCORE_PLAYER_H
 #define SCORE_PLAYER_H
 
+#include <boost/serialization/access.hpp>
 #include <string>
 #include "tuning.h"
 
@@ -27,6 +28,8 @@ class Player
 {
 public:
     Player();
+
+    bool operator==(const Player &other) const;
 
     /// Returns a description of the player (e.g. "Rhythm Guitar 1").
     const std::string &getDescription() const;
@@ -58,6 +61,13 @@ private:
     uint8_t myMaxVolume;
     uint8_t myPan;
     Tuning myTuning;
+
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int /*version*/)
+    {
+        ar & myDescription & myMaxVolume & myPan & myTuning;
+    }
 };
 
 }
