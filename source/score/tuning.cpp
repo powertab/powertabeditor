@@ -33,7 +33,8 @@ const uint8_t Tuning::MAX_CAPO = 12;
 Tuning::Tuning()
     : myName("Standard"),
       myMusicNotationOffset(0),
-      myUsesSharps(true)
+      myUsesSharps(true),
+      myCapo(0)
 {
     // Initialize to standard tuning.
     myNotes.push_back(Midi::MIDI_NOTE_E4);
