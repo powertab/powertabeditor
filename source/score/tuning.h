@@ -19,6 +19,7 @@
 #define SCORE_TUNING_H
 
 #include <boost/cstdint.hpp>
+#include <boost/serialization/access.hpp>
 #include <string>
 #include <vector>
 
@@ -85,6 +86,13 @@ private:
 
     static const int8_t MIN_MUSIC_NOTATION_OFFSET;
     static const int8_t MAX_MUSIC_NOTATION_OFFSET;
+
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int /*version*/)
+    {
+        ar & myName & myNotes & myMusicNotationOffset & myUsesSharps & myCapo;
+    }
 };
 
 }

@@ -55,6 +55,7 @@ add_executable(pte_tests
 qt5_use_modules(pte_tests Widgets)
 
 target_link_libraries(pte_tests
+    ${Boost_LIBRARIES}
     pteapp
     ptewidgets
     ptedialogs

@@ -19,6 +19,7 @@
 
 #include <score/generalmidi.h>
 #include <score/tuning.h>
+#include "test_serialization.h"
 
 using namespace Score; 
 
@@ -60,4 +61,20 @@ TEST_CASE("Score/Tuning/SetTuningNotes", "")
     tuning2.setNotes(notes);
 
     REQUIRE(tuning1 == tuning2);
+}
+
+TEST_CASE("Score/Tuning/Serialization", "")
+{
+    Tuning tuning;
+    std::vector<uint8_t> notes;
+    notes.push_back(Midi::MIDI_NOTE_E4);
+    notes.push_back(Midi::MIDI_NOTE_C2);
+    notes.push_back(Midi::MIDI_NOTE_G3);
+    tuning.setNotes(notes);
+
+    tuning.setMusicNotationOffset(3);
+    tuning.setSharps(false);
+    tuning.setCapo(7);
+
+    Serialization::test(tuning);
 }
