@@ -49,8 +49,10 @@ add_executable(pte_tests
     powertabdocument/timesignature_test.cpp
     powertabdocument/tuning_test.cpp
 
+    score/test_barline.cpp
     score/test_instrument.cpp
     score/test_player.cpp
+    score/test_rehearsalsign.cpp
     score/test_tuning.cpp
 )
 

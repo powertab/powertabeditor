@@ -15,30 +15,29 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SCORE_SCORE_H
-#define SCORE_SCORE_H
-
-#include <vector>
-#include "instrument.h"
-#include "player.h"
-#include "songinfo.h"
-#include "system.h"
+#include "barline.h"
 
 namespace Score {
 
-class Score
+Barline::Barline()
+    : myRehearsalSign()
 {
-public:
-    const SongInfo &getSongInfo() const;
+}
 
-private:
-    // TODO - add line spacing, font settings, chord diagrams, etc.
-    SongInfo mySongInfo;
-    std::vector<System> mySystems;
-    std::vector<Player> myPlayers;
-    std::vector<Instrument> myInstruments;
-};
+bool Barline::operator==(const Barline &other) const
+{
+    return myRehearsalSign == other.myRehearsalSign;
+}
+
+const boost::optional<RehearsalSign> &Barline::getRehearsalSign() const
+{
+    return myRehearsalSign;
+}
+
+void Barline::setRehearsalSign(const boost::optional<RehearsalSign> &sign)
+{
+    myRehearsalSign = sign;
+}
 
 }
 
-#endif

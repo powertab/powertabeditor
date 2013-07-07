@@ -15,30 +15,39 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SCORE_SCORE_H
-#define SCORE_SCORE_H
+#ifndef SCORE_BARLINE_H
+#define SCORE_BARLINE_H
 
-#include <vector>
-#include "instrument.h"
-#include "player.h"
-#include "songinfo.h"
-#include "system.h"
+#include <boost/optional.hpp>
+#include <boost/serialization/access.hpp>
+#include "rehearsalsign.h"
 
 namespace Score {
 
-class Score
+class Barline
 {
 public:
-    const SongInfo &getSongInfo() const;
+    Barline();
+
+    bool operator==(const Barline &other) const;
+
+    /// Returns the rehearsal sign for the bar, if one exists.
+    const boost::optional<RehearsalSign> &getRehearsalSign() const;
+    /// Sets (or clears) the rehearsal sign for the bar.
+    void setRehearsalSign(const boost::optional<RehearsalSign> &sign);
 
 private:
-    // TODO - add line spacing, font settings, chord diagrams, etc.
-    SongInfo mySongInfo;
-    std::vector<System> mySystems;
-    std::vector<Player> myPlayers;
-    std::vector<Instrument> myInstruments;
+    boost::optional<RehearsalSign> myRehearsalSign;
+
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int /*version*/)
+    {
+        ar & myRehearsalSign;
+    }
 };
 
 }
 
 #endif
+

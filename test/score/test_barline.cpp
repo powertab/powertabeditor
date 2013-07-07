@@ -1,3 +1,4 @@
+
 /*
   * Copyright (C) 2013 Cameron White
   *
@@ -14,31 +15,20 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef SCORE_SCORE_H
-#define SCORE_SCORE_H
+#include <score/barline.h>
 
-#include <vector>
-#include "instrument.h"
-#include "player.h"
-#include "songinfo.h"
-#include "system.h"
+using namespace Score; 
 
-namespace Score {
-
-class Score
+TEST_CASE("Score/Barline/RehearsalSign", "")
 {
-public:
-    const SongInfo &getSongInfo() const;
+    Barline barline;
 
-private:
-    // TODO - add line spacing, font settings, chord diagrams, etc.
-    SongInfo mySongInfo;
-    std::vector<System> mySystems;
-    std::vector<Player> myPlayers;
-    std::vector<Instrument> myInstruments;
-};
+    REQUIRE(!barline.getRehearsalSign());
 
+    barline.setRehearsalSign(RehearsalSign("D", "Solo"));
+    REQUIRE(barline.getRehearsalSign());
+    REQUIRE(barline.getRehearsalSign()->getDescription() == "Solo");
 }
-
-#endif

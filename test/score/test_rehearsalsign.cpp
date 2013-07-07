@@ -14,31 +14,19 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef SCORE_SCORE_H
-#define SCORE_SCORE_H
+#include <score/rehearsalsign.h>
+#include "test_serialization.h"
 
-#include <vector>
-#include "instrument.h"
-#include "player.h"
-#include "songinfo.h"
-#include "system.h"
+using namespace Score; 
 
-namespace Score {
-
-class Score
+TEST_CASE("Score/RehearsalSign/Serialization", "")
 {
-public:
-    const SongInfo &getSongInfo() const;
+    RehearsalSign sign;
+    sign.setLetters("B");
+    sign.setDescription("Intro");
 
-private:
-    // TODO - add line spacing, font settings, chord diagrams, etc.
-    SongInfo mySongInfo;
-    std::vector<System> mySystems;
-    std::vector<Player> myPlayers;
-    std::vector<Instrument> myInstruments;
-};
-
+    Serialization::test(sign);
 }
-
-#endif
