@@ -7,6 +7,7 @@ add_subdirectory(dialogs)
 add_subdirectory(formats)
 add_subdirectory(painters)
 add_subdirectory(powertabdocument)
+add_subdirectory(score)
 add_subdirectory(sigfwd)
 add_subdirectory(widgets)
 

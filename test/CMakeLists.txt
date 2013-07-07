@@ -48,6 +48,8 @@ add_executable(pte_tests
     powertabdocument/system_test.cpp
     powertabdocument/timesignature_test.cpp
     powertabdocument/tuning_test.cpp
+
+    score/test_tuning.cpp
 )
 
 qt5_use_modules(pte_tests Widgets)
@@ -63,6 +65,7 @@ target_link_libraries(pte_tests
     sigfwd
     pteformats
     ptedocument
+    ptescore
 )
 
 # Copy the test files to the build directory.
