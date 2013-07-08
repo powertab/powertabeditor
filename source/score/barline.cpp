@@ -20,14 +20,50 @@
 namespace Score {
 
 Barline::Barline()
-    : myRehearsalSign()
+    : myBarType(SingleBar),
+      myRepeatCount(0),
+      myPosition(0)
 {
 }
 
 bool Barline::operator==(const Barline &other) const
 {
-    return myKeySignature == other.myKeySignature &&
+    return myBarType == other.myBarType &&
+           myRepeatCount == other.myRepeatCount &&
+           myPosition == other.myPosition &&
+           myKeySignature == other.myKeySignature &&
+           myTimeSignature == other.myTimeSignature &&
            myRehearsalSign == other.myRehearsalSign;
+}
+
+Barline::BarType Barline::getBarType() const
+{
+    return myBarType;
+}
+
+void Barline::setBarType(BarType type)
+{
+    myBarType = type;
+}
+
+int Barline::getRepeatCount() const
+{
+    return myRepeatCount;
+}
+
+void Barline::setRepeatCount(int count)
+{
+    myRepeatCount = count;
+}
+
+int Barline::getPosition() const
+{
+    return myPosition;
+}
+
+void Barline::setPosition(int position)
+{
+    myPosition = position;
 }
 
 const KeySignature &Barline::getKeySignature() const
@@ -38,6 +74,16 @@ const KeySignature &Barline::getKeySignature() const
 void Barline::setKeySignature(const KeySignature &key)
 {
     myKeySignature = key;
+}
+
+const TimeSignature &Barline::getTimeSignature() const
+{
+    return myTimeSignature;
+}
+
+void Barline::setTimeSignature(const TimeSignature &time)
+{
+    myTimeSignature = time;
 }
 
 const boost::optional<RehearsalSign> &Barline::getRehearsalSign() const

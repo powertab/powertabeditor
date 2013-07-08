@@ -19,6 +19,7 @@
 #include <catch.hpp>
 
 #include <score/barline.h>
+#include "test_serialization.h"
 
 using namespace Score; 
 
@@ -31,4 +32,15 @@ TEST_CASE("Score/Barline/RehearsalSign", "")
     barline.setRehearsalSign(RehearsalSign("D", "Solo"));
     REQUIRE(barline.getRehearsalSign());
     REQUIRE(barline.getRehearsalSign()->getDescription() == "Solo");
+}
+
+TEST_CASE("Score/Barline/Serialization", "")
+{
+    Barline barline;
+    barline.setBarType(Barline::RepeatEnd);
+    barline.setRepeatCount(42);
+    barline.setPosition(23);
+    barline.setRehearsalSign(RehearsalSign("D", "Solo"));
+
+    Serialization::test(barline);
 }
