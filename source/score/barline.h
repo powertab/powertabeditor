@@ -20,6 +20,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/serialization/access.hpp>
+#include "keysignature.h"
 #include "rehearsalsign.h"
 
 namespace Score {
@@ -31,12 +32,18 @@ public:
 
     bool operator==(const Barline &other) const;
 
+    /// Returns the key signature for the bar.
+    const KeySignature &getKeySignature() const;
+    /// Sets the key signature for the bar.
+    void setKeySignature(const KeySignature &key);
+
     /// Returns the rehearsal sign for the bar, if one exists.
     const boost::optional<RehearsalSign> &getRehearsalSign() const;
     /// Sets (or clears) the rehearsal sign for the bar.
     void setRehearsalSign(const boost::optional<RehearsalSign> &sign);
 
 private:
+    KeySignature myKeySignature;
     boost::optional<RehearsalSign> myRehearsalSign;
 
     friend class boost::serialization::access;

@@ -149,20 +149,19 @@ void Tuning::setCapo(uint8_t capo)
     myCapo = capo;
 }
 
-std::string Tuning::getSpelling() const
+std::ostream &operator<<(std::ostream &os, const Tuning &t)
 {
-    std::stringstream returnValue;
-
     // Go from lowest to highest string
-    for (size_t i = myNotes.size(); i > 0; i--)
+    for (int i = t.getStringCount(); i > 0; i--)
     {
-        if (i != myNotes.size())
-           returnValue << " ";
+        if (i != t.getStringCount())
+           os << " ";
 
-        returnValue << Midi::getMidiNoteTextSimple(myNotes[i-1], myUsesSharps);
+        os << Midi::getMidiNoteTextSimple(t.getNote(i - 1, false),
+                                          t.usesSharps());
     }
 
-    return returnValue.str();
+    return os;
 }
 
 }

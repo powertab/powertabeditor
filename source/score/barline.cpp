@@ -26,7 +26,18 @@ Barline::Barline()
 
 bool Barline::operator==(const Barline &other) const
 {
-    return myRehearsalSign == other.myRehearsalSign;
+    return myKeySignature == other.myKeySignature &&
+           myRehearsalSign == other.myRehearsalSign;
+}
+
+const KeySignature &Barline::getKeySignature() const
+{
+    return myKeySignature;
+}
+
+void Barline::setKeySignature(const KeySignature &key)
+{
+    myKeySignature = key;
 }
 
 const boost::optional<RehearsalSign> &Barline::getRehearsalSign() const

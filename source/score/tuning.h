@@ -63,10 +63,6 @@ public:
     /// Sets the capo for the tuning.
     void setCapo(uint8_t capo);
 
-    /// Returns a string representation of the tuning from low to
-    /// high (e.g. "E A D G B E").
-    std::string getSpelling() const;
-
     /// Minimum allowed number of strings in a tuning.
     static const int MIN_STRING_COUNT;
     /// Maximum allowed number of strings in a tuning.
@@ -94,6 +90,10 @@ private:
         ar & myName & myNotes & myMusicNotationOffset & myUsesSharps & myCapo;
     }
 };
+
+/// Returns a string representation of the tuning from low to
+/// high (e.g. "E A D G B E").
+std::ostream &operator<<(std::ostream &os, const Tuning &t);
 
 }
 

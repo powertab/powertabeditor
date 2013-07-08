@@ -17,22 +17,23 @@
   
 #include <catch.hpp>
 
+#include <boost/lexical_cast.hpp>
 #include <score/generalmidi.h>
 #include <score/tuning.h>
 #include "test_serialization.h"
 
 using namespace Score; 
 
-TEST_CASE("Score/Tuning/GetSpelling", "")
+TEST_CASE("Score/Tuning/ToString", "")
 {
     Tuning tuning;
-    REQUIRE("E A D G B E" == tuning.getSpelling());
+    REQUIRE("E A D G B E" == boost::lexical_cast<std::string>(tuning));
 
     tuning.setNote(0, Midi::MIDI_NOTE_CSHARP0);
-    REQUIRE("E A D G B C#" == tuning.getSpelling());
+    REQUIRE("E A D G B C#" == boost::lexical_cast<std::string>(tuning));
 
     tuning.setSharps(false);
-    REQUIRE("E A D G B Db" == tuning.getSpelling());
+    REQUIRE("E A D G B Db" == boost::lexical_cast<std::string>(tuning));
 }
 
 TEST_CASE("Score/Tuning/MusicNotationOffset", "")
