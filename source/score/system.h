@@ -18,10 +18,52 @@
 #ifndef SCORE_SYSTEM_H
 #define SCORE_SYSTEM_H
 
+#include <boost/serialization/access.hpp>
+#include <boost/range/iterator_range_core.hpp>
+#include <vector>
+#include "barline.h"
+
 namespace Score {
 
 class System
 {
+public:
+    typedef std::vector<Barline>::iterator BarlineIterator;
+    typedef std::vector<Barline>::const_iterator BarlineConstIterator;
+
+    System();
+
+    /// Returns the set of barlines in the system.
+    boost::iterator_range<BarlineIterator> getBarlines();
+    /// Returns the set of barlines in the system.
+    boost::iterator_range<BarlineConstIterator> getBarlines() const;
+
+    /// Adds a new barline to the system.
+    void insertBarline(const Barline &barline);
+    /// Removes the specified barline from the system.
+    void removeBarline(const Barline &barline);
+
+    /// Returns the barline at the given position index in the system.
+    const Barline *getBarlineAtPosition(int position) const;
+    Barline *getBarlineAtPosition(int position);
+
+    /// Returns the last barline before (or including) the given position.
+    const Barline *getPreviousBarline(int position) const;
+
+    /// Returns the first barline after (or including) the given position.
+    const Barline *getNextBarline(int position) const;
+
+private:
+    /// List of the barlines in the system. This will always contain at least
+    /// two barlines - the start and end bars.
+    std::vector<Barline> myBarlines;
+
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int /*version*/)
+    {
+        ar & myBarlines;
+    }
 };
 
 }

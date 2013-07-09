@@ -41,6 +41,7 @@ public:
     };
 
     Barline();
+    Barline(int position, BarType type, int repeatCount = 0);
 
     bool operator==(const Barline &other) const;
 

@@ -26,6 +26,13 @@ Barline::Barline()
 {
 }
 
+Barline::Barline(int position, BarType type, int repeatCount)
+    : myBarType(type),
+      myRepeatCount(repeatCount),
+      myPosition(position)
+{
+}
+
 bool Barline::operator==(const Barline &other) const
 {
     return myBarType == other.myBarType &&
