@@ -86,3 +86,25 @@ TEST_CASE("Score/System/TempoMarkers", "")
     REQUIRE(system.getTempoMarkers().size() == 1);
     REQUIRE(system.getTempoMarkers()[0] == tempo2);
 }
+
+TEST_CASE("Score/System/AlternateEndings", "")
+{
+    System system;
+
+    REQUIRE(system.getAlternateEndings().size() == 0);
+
+    AlternateEnding ending1;
+    ending1.setPosition(3);
+    AlternateEnding ending2;
+    ending2.setPosition(5);
+
+    system.insertAlternateEnding(ending2);
+    system.insertAlternateEnding(ending1);
+    REQUIRE(system.getAlternateEndings().size() == 2);
+    REQUIRE(system.getAlternateEndings()[0] == ending1);
+    REQUIRE(system.getAlternateEndings()[1] == ending2);
+
+    system.removeAlternateEnding(ending1);
+    REQUIRE(system.getAlternateEndings().size() == 1);
+    REQUIRE(system.getAlternateEndings()[0] == ending2);
+}

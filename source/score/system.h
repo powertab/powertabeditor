@@ -21,6 +21,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <vector>
+#include "alternateending.h"
 #include "barline.h"
 #include "tempomarker.h"
 
@@ -33,6 +34,8 @@ public:
     typedef std::vector<Barline>::const_iterator BarlineConstIterator;
     typedef std::vector<TempoMarker>::iterator TempoMarkerIterator;
     typedef std::vector<TempoMarker>::const_iterator TempoMarkerConstIterator;
+    typedef std::vector<AlternateEnding>::iterator AlternateEndingIterator;
+    typedef std::vector<AlternateEnding>::const_iterator AlternateEndingConstIterator;
 
     System();
 
@@ -53,7 +56,7 @@ public:
 
     /// Returns the set of tempo markers in the system.
     boost::iterator_range<TempoMarkerIterator> getTempoMarkers();
-    /// Returns the set of barlines in the system.
+    /// Returns the set of tempo markers in the system.
     boost::iterator_range<TempoMarkerConstIterator> getTempoMarkers() const;
 
     /// Adds a new tempo marker to the system.
@@ -61,17 +64,28 @@ public:
     /// Removes the specified tempo marker from the system.
     void removeTempoMarker(const TempoMarker &marker);
 
+    /// Returns the set of alternate endings in the system.
+    boost::iterator_range<AlternateEndingIterator> getAlternateEndings();
+    /// Returns the set of alternate endings in system.
+    boost::iterator_range<AlternateEndingConstIterator> getAlternateEndings() const;
+
+    /// Adds a new alternate ending to the system.
+    void insertAlternateEnding(const AlternateEnding &ending);
+    /// Removes the specified alternate ending from the system.
+    void removeAlternateEnding(const AlternateEnding &ending);
+
 private:
     /// List of the barlines in the system. This will always contain at least
     /// two barlines - the start and end bars.
     std::vector<Barline> myBarlines;
     std::vector<TempoMarker> myTempoMarkers;
+    std::vector<AlternateEnding> myAlternateEndings;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myBarlines & myTempoMarkers;
+        ar & myBarlines & myTempoMarkers & myAlternateEndings;
     }
 };
 

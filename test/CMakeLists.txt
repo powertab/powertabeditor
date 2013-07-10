@@ -49,6 +49,7 @@ add_executable(pte_tests
     powertabdocument/timesignature_test.cpp
     powertabdocument/tuning_test.cpp
 
+    score/test_alternateending.cpp
     score/test_barline.cpp
     score/test_instrument.cpp
     score/test_keysignature.cpp

@@ -121,4 +121,24 @@ void System::removeTempoMarker(const TempoMarker &marker)
     removeObject(myTempoMarkers, marker);
 }
 
+boost::iterator_range<System::AlternateEndingIterator> System::getAlternateEndings()
+{
+    return boost::make_iterator_range(myAlternateEndings);
+}
+
+boost::iterator_range<System::AlternateEndingConstIterator> System::getAlternateEndings() const
+{
+    return boost::make_iterator_range(myAlternateEndings);
+}
+
+void System::insertAlternateEnding(const AlternateEnding &ending)
+{
+    insertObject(myAlternateEndings, ending);
+}
+
+void System::removeAlternateEnding(const AlternateEnding &ending)
+{
+    removeObject(myAlternateEndings, ending);
+}
+
 }

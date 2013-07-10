@@ -18,7 +18,6 @@
 #include "tempomarker.h"
 
 #include <stdexcept>
-#include "generalmidi.h"
 
 namespace Score {
 
@@ -51,7 +50,8 @@ TempoMarker::TempoMarker(int position)
 
 bool TempoMarker::operator==(const TempoMarker &other) const
 {
-    return myMarkerType == other.myMarkerType &&
+    return myPosition == other.myPosition &&
+           myMarkerType == other.myMarkerType &&
            myBeatType == other.myBeatType &&
            myListessoBeatType == other.myListessoBeatType &&
            myTripletFeel == other.myTripletFeel &&
