@@ -31,6 +31,28 @@ TEST_CASE("Score/Staff/Clef", "")
     REQUIRE(staff.getClefType() == Staff::BassClef);
 }
 
+TEST_CASE("Score/Staff/Positions", "")
+{
+    Staff staff;
+
+    REQUIRE(staff.getVoice(0).size() == 0);
+    REQUIRE(staff.getVoice(1).size() == 0);
+    REQUIRE_THROWS(staff.getVoice(2));
+
+    Position pos1(3), pos2(5), pos3(1);
+
+    staff.insertPosition(1, pos1);
+    staff.insertPosition(1, pos2);
+    staff.insertPosition(1, pos3);
+
+    REQUIRE(staff.getVoice(1).size() == 3);
+    staff.removePosition(1, pos1);
+
+    REQUIRE(staff.getVoice(1).size() == 2);
+    REQUIRE(staff.getVoice(1)[0] == pos3);
+    REQUIRE(staff.getVoice(1)[1] == pos2);
+}
+
 TEST_CASE("Score/Staff/Dynamics", "")
 {
     Staff staff;
@@ -52,6 +74,7 @@ TEST_CASE("Score/Staff/Serialization", "")
     Staff staff;
     staff.setViewType(Staff::BassView);
     staff.setClefType(Staff::BassClef);
+    staff.insertPosition(1, Position(42));
     staff.insertDynamic(Dynamic(11, Dynamic::pp));
     staff.setStringCount(7);
 

@@ -28,6 +28,8 @@ Staff::Staff()
       myClefType(TrebleClef),
       myStringCount(6)
 {
+    // boost::array does not initialize elements.
+    myVoices.assign(std::vector<Position>());
 }
 
 bool Staff::operator==(const Staff &other) const
@@ -35,6 +37,7 @@ bool Staff::operator==(const Staff &other) const
     return myViewType == other.myViewType &&
            myClefType == other.myClefType &&
            myStringCount == other.myStringCount &&
+           myVoices == other.myVoices &&
            myDynamics == other.myDynamics;
 }
 
@@ -66,6 +69,27 @@ int Staff::getStringCount() const
 void Staff::setStringCount(int count)
 {
     myStringCount = count;
+}
+
+boost::iterator_range<Staff::VoiceIterator> Staff::getVoice(int voice)
+{
+    return boost::make_iterator_range(myVoices.at(voice));
+}
+
+boost::iterator_range<Staff::VoiceConstIterator> Staff::getVoice(
+        int voice) const
+{
+    return boost::make_iterator_range(myVoices.at(voice));
+}
+
+void Staff::insertPosition(int voice, const Position &position)
+{
+    insertObject(myVoices.at(voice), position);
+}
+
+void Staff::removePosition(int voice, const Position &position)
+{
+    removeObject(myVoices.at(voice), position);
 }
 
 boost::iterator_range<Staff::DynamicIterator> Staff::getDynamics()

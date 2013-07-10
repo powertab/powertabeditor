@@ -18,16 +18,23 @@
 #ifndef SCORE_STAFF_H
 #define SCORE_STAFF_H
 
+#include <boost/array.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <vector>
 #include "dynamic.h"
+#include "position.h"
 
 namespace Score {
 
 class Staff
 {
 public:
+    enum
+    {
+        NUM_VOICES = 2 ///< Number of voices in a staff.
+    };
+
     enum ClefType
     {
         TrebleClef,
@@ -40,6 +47,9 @@ public:
         BassView
     };
 
+    typedef std::vector<Position> Voice;
+    typedef Voice::iterator VoiceIterator;
+    typedef Voice::const_iterator VoiceConstIterator;
     typedef std::vector<Dynamic>::iterator DynamicIterator;
     typedef std::vector<Dynamic>::const_iterator DynamicConstIterator;
 
@@ -62,6 +72,16 @@ public:
     /// Sets the number of strings in the tab staff.
     void setStringCount(int count);
 
+    /// Returns the set of positions in a voice.
+    boost::iterator_range<VoiceIterator> getVoice(int voice);
+    /// Returns the set of positions in a voice.
+    boost::iterator_range<VoiceConstIterator> getVoice(int voice) const;
+
+    /// Adds a new position to the specified voice.
+    void insertPosition(int voice, const Position &position);
+    /// Removes the specified position from a voice.
+    void removePosition(int voice, const Position &position);
+
     /// Returns the set of dynamics in the staff.
     boost::iterator_range<DynamicIterator> getDynamics();
     /// Returns the set of dynamics in the staff.
@@ -76,13 +96,14 @@ private:
     ViewType myViewType;
     ClefType myClefType;
     int myStringCount;
+    boost::array<Voice, NUM_VOICES> myVoices;
     std::vector<Dynamic> myDynamics;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myViewType & myClefType & myStringCount & myDynamics;
+        ar & myViewType & myClefType & myStringCount & myVoices & myDynamics;
     }
 };
 

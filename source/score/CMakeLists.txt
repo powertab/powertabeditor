@@ -8,6 +8,7 @@ add_library(ptescore
     instrument.cpp
     keysignature.cpp
     player.cpp
+    position.cpp
     rehearsalsign.cpp
     score.cpp
     songinfo.cpp
