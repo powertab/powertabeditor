@@ -28,12 +28,39 @@ namespace Score {
 class Staff
 {
 public:
+    enum ClefType
+    {
+        TrebleClef,
+        BassClef
+    };
+
+    enum ViewType
+    {
+        GuitarView,
+        BassView
+    };
+
     typedef std::vector<Dynamic>::iterator DynamicIterator;
     typedef std::vector<Dynamic>::const_iterator DynamicConstIterator;
 
     Staff();
 
     bool operator==(const Staff &other) const;
+
+    /// Returns whether the staff is shown in the guitar view, bass view, etc.
+    ViewType getViewType() const;
+    /// Sets which the view the staff appears in.
+    void setViewType(ViewType type);
+
+    /// Returns whether the staff is a treble or bass clef.
+    ClefType getClefType() const;
+    /// Sets the staff's clef type.
+    void setClefType(ClefType type);
+
+    /// Returns the number of strings in the tab staff.
+    int getStringCount() const;
+    /// Sets the number of strings in the tab staff.
+    void setStringCount(int count);
 
     /// Returns the set of dynamics in the staff.
     boost::iterator_range<DynamicIterator> getDynamics();
@@ -46,13 +73,16 @@ public:
     void removeDynamic(const Dynamic &dynamic);
 
 private:
+    ViewType myViewType;
+    ClefType myClefType;
+    int myStringCount;
     std::vector<Dynamic> myDynamics;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myDynamics;
+        ar & myViewType & myClefType & myStringCount & myDynamics;
     }
 };
 

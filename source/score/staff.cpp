@@ -24,12 +24,48 @@ namespace Score {
 using namespace Detail;
 
 Staff::Staff()
+    : myViewType(GuitarView),
+      myClefType(TrebleClef),
+      myStringCount(6)
 {
 }
 
 bool Staff::operator==(const Staff &other) const
 {
-    return myDynamics == other.myDynamics;
+    return myViewType == other.myViewType &&
+           myClefType == other.myClefType &&
+           myStringCount == other.myStringCount &&
+           myDynamics == other.myDynamics;
+}
+
+Staff::ViewType Staff::getViewType() const
+{
+    return myViewType;
+}
+
+void Staff::setViewType(ViewType type)
+{
+    myViewType = type;
+}
+
+Staff::ClefType Staff::getClefType() const
+{
+    return myClefType;
+}
+
+void Staff::setClefType(ClefType type)
+{
+    myClefType = type;
+}
+
+int Staff::getStringCount() const
+{
+    return myStringCount;
+}
+
+void Staff::setStringCount(int count)
+{
+    myStringCount = count;
 }
 
 boost::iterator_range<Staff::DynamicIterator> Staff::getDynamics()

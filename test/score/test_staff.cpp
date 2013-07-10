@@ -22,6 +22,15 @@
 
 using namespace Score; 
 
+TEST_CASE("Score/Staff/Clef", "")
+{
+    Staff staff;
+
+    REQUIRE(staff.getClefType() == Staff::TrebleClef);
+    staff.setClefType(Staff::BassClef);
+    REQUIRE(staff.getClefType() == Staff::BassClef);
+}
+
 TEST_CASE("Score/Staff/Dynamics", "")
 {
     Staff staff;
@@ -36,4 +45,15 @@ TEST_CASE("Score/Staff/Dynamics", "")
 
     staff.removeDynamic(dynamic);
     REQUIRE(staff.getDynamics().size() == 1);
+}
+
+TEST_CASE("Score/Staff/Serialization", "")
+{
+    Staff staff;
+    staff.setViewType(Staff::BassView);
+    staff.setClefType(Staff::BassClef);
+    staff.insertDynamic(Dynamic(11, Dynamic::pp));
+    staff.setStringCount(7);
+
+    Serialization::test(staff);
 }
