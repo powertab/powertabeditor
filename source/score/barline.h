@@ -45,6 +45,11 @@ public:
 
     bool operator==(const Barline &other) const;
 
+    /// Returns the position within the system where the barline is anchored.
+    int getPosition() const;
+    /// Sets the position within the system where the barline is anchored.
+    void setPosition(int position);
+
     /// Returns the type of barline (single, repeat end, etc).
     BarType getBarType() const;
     /// Sets the type of barline (single, repeat end, etc).
@@ -54,11 +59,6 @@ public:
     int getRepeatCount() const;
     /// Sets the repeat count for repeat end bars.
     void setRepeatCount(int count);
-
-    /// Returns the position within the system where the barline is anchored.
-    int getPosition() const;
-    /// Sets the position within the system where the barline is anchored.
-    void setPosition(int position);
 
     /// Returns the key signature for the bar.
     const KeySignature &getKeySignature() const;
@@ -76,9 +76,9 @@ public:
     void setRehearsalSign(const boost::optional<RehearsalSign> &sign);
 
 private:
+    int myPosition;
     BarType myBarType;
     int myRepeatCount;
-    int myPosition;
     KeySignature myKeySignature;
     TimeSignature myTimeSignature;
     boost::optional<RehearsalSign> myRehearsalSign;
@@ -87,7 +87,7 @@ private:
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myBarType & myRepeatCount & myPosition & myKeySignature &
+        ar & myPosition & myBarType & myRepeatCount & myKeySignature &
              myTimeSignature & myRehearsalSign;
     }
 };

@@ -19,6 +19,35 @@
 
 #include <boost/foreach.hpp>
 
+// Some helper methods to reduce code duplication.
+namespace {
+
+/// Sorts objects by their positions in the system.
+template <typename T>
+struct OrderByPosition
+{
+    bool operator()(const T &obj1, const T &obj2) const
+    {
+        return obj1.getPosition() < obj2.getPosition();
+    }
+};
+
+template <typename T>
+void insertObject(std::vector<T> &objects, const T &obj)
+{
+    objects.push_back(obj);
+    std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
+}
+
+template <typename T>
+void removeObject(std::vector<T> &objects, const T &obj)
+{
+    objects.erase(std::remove(objects.begin(), objects.end(), obj),
+                  objects.end());
+}
+
+}
+
 namespace Score {
 
 System::System()
@@ -40,41 +69,14 @@ boost::iterator_range<System::BarlineConstIterator> System::getBarlines() const
     return boost::make_iterator_range(myBarlines);
 }
 
-struct OrderByPosition
-{
-    bool operator()(const Barline &bar1, const Barline &bar2) const
-    {
-        return bar1.getPosition() < bar2.getPosition();
-    }
-};
-
 void System::insertBarline(const Barline &barline)
 {
-    myBarlines.push_back(barline);
-    std::sort(myBarlines.begin(), myBarlines.end(), OrderByPosition());
+    insertObject(myBarlines, barline);
 }
 
 void System::removeBarline(const Barline &barline)
 {
-    myBarlines.erase(std::remove(myBarlines.begin(), myBarlines.end(), barline),
-                     myBarlines.end());
-}
-
-const Barline *System::getBarlineAtPosition(int position) const
-{
-    BOOST_FOREACH(const Barline &barline, myBarlines)
-    {
-        if (barline.getPosition() == position)
-            return &barline;
-    }
-
-    return NULL;
-}
-
-Barline *System::getBarlineAtPosition(int position)
-{
-    return const_cast<Barline *>(
-            const_cast<const System &>(*this).getBarlineAtPosition(position));
+    removeObject(myBarlines, barline);
 }
 
 const Barline *System::getPreviousBarline(int position) const
@@ -97,6 +99,26 @@ const Barline *System::getNextBarline(int position) const
     }
 
     return NULL;
+}
+
+boost::iterator_range<System::TempoMarkerIterator> System::getTempoMarkers()
+{
+    return boost::make_iterator_range(myTempoMarkers);
+}
+
+boost::iterator_range<System::TempoMarkerConstIterator> System::getTempoMarkers() const
+{
+    return boost::make_iterator_range(myTempoMarkers);
+}
+
+void System::insertTempoMarker(const TempoMarker &marker)
+{
+    insertObject(myTempoMarkers, marker);
+}
+
+void System::removeTempoMarker(const TempoMarker &marker)
+{
+    removeObject(myTempoMarkers, marker);
 }
 
 }

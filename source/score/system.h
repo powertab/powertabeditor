@@ -22,6 +22,7 @@
 #include <boost/range/iterator_range_core.hpp>
 #include <vector>
 #include "barline.h"
+#include "tempomarker.h"
 
 namespace Score {
 
@@ -30,6 +31,8 @@ class System
 public:
     typedef std::vector<Barline>::iterator BarlineIterator;
     typedef std::vector<Barline>::const_iterator BarlineConstIterator;
+    typedef std::vector<TempoMarker>::iterator TempoMarkerIterator;
+    typedef std::vector<TempoMarker>::const_iterator TempoMarkerConstIterator;
 
     System();
 
@@ -43,26 +46,32 @@ public:
     /// Removes the specified barline from the system.
     void removeBarline(const Barline &barline);
 
-    /// Returns the barline at the given position index in the system.
-    const Barline *getBarlineAtPosition(int position) const;
-    Barline *getBarlineAtPosition(int position);
-
     /// Returns the last barline before (or including) the given position.
     const Barline *getPreviousBarline(int position) const;
-
     /// Returns the first barline after (or including) the given position.
     const Barline *getNextBarline(int position) const;
+
+    /// Returns the set of tempo markers in the system.
+    boost::iterator_range<TempoMarkerIterator> getTempoMarkers();
+    /// Returns the set of barlines in the system.
+    boost::iterator_range<TempoMarkerConstIterator> getTempoMarkers() const;
+
+    /// Adds a new tempo marker to the system.
+    void insertTempoMarker(const TempoMarker &marker);
+    /// Removes the specified tempo marker from the system.
+    void removeTempoMarker(const TempoMarker &marker);
 
 private:
     /// List of the barlines in the system. This will always contain at least
     /// two barlines - the start and end bars.
     std::vector<Barline> myBarlines;
+    std::vector<TempoMarker> myTempoMarkers;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myBarlines;
+        ar & myBarlines & myTempoMarkers;
     }
 };
 

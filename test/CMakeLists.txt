@@ -55,6 +55,8 @@ add_executable(pte_tests
     score/test_player.cpp
     score/test_rehearsalsign.cpp
     score/test_system.cpp
+    score/test_systemutils.cpp
+    score/test_tempomarker.cpp
     score/test_timesignature.cpp
     score/test_tuning.cpp
 )

@@ -10,6 +10,7 @@ add_library(ptescore
     score.cpp
     songinfo.cpp
     system.cpp
+    tempomarker.cpp
     timesignature.cpp
     tuning.cpp
 )

@@ -17,8 +17,6 @@
   
 #include <catch.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <score/system.h>
 #include "test_serialization.h"
 
@@ -37,18 +35,6 @@ TEST_CASE("Score/System/Barlines", "")
 
     system.removeBarline(barline);
     REQUIRE(system.getBarlines().size() == 2);
-}
-
-TEST_CASE("Score/System/GetBarlineAtPosition", "")
-{
-    System system;
-
-    Barline barline(42, Barline::SingleBar);
-    system.insertBarline(barline);
-
-    REQUIRE(!system.getBarlineAtPosition(5));
-    REQUIRE(system.getBarlineAtPosition(0)); // Start bar.
-    REQUIRE(*system.getBarlineAtPosition(42) == barline);
 }
 
 TEST_CASE("Score/System/GetPreviousBarline", "")
@@ -77,4 +63,26 @@ TEST_CASE("Score/System/GetNextBarline", "")
     REQUIRE(*system.getNextBarline(10) == barline);
     REQUIRE(*system.getNextBarline(14) == system.getBarlines()[2]);
     REQUIRE(!system.getNextBarline(16));
+}
+
+TEST_CASE("Score/System/TempoMarkers", "")
+{
+    System system;
+
+    REQUIRE(system.getTempoMarkers().size() == 0);
+
+    TempoMarker tempo1(3);
+    tempo1.setBeatsPerMinute(160);
+    TempoMarker tempo2(42);
+    tempo2.setBeatsPerMinute(130);
+
+    system.insertTempoMarker(tempo2);
+    system.insertTempoMarker(tempo1);
+    REQUIRE(system.getTempoMarkers().size() == 2);
+    REQUIRE(system.getTempoMarkers()[0] == tempo1);
+    REQUIRE(system.getTempoMarkers()[1] == tempo2);
+
+    system.removeTempoMarker(tempo1);
+    REQUIRE(system.getTempoMarkers().size() == 1);
+    REQUIRE(system.getTempoMarkers()[0] == tempo2);
 }

@@ -20,27 +20,37 @@
 namespace Score {
 
 Barline::Barline()
-    : myBarType(SingleBar),
-      myRepeatCount(0),
-      myPosition(0)
+    : myPosition(0),
+      myBarType(SingleBar),
+      myRepeatCount(0)
 {
 }
 
 Barline::Barline(int position, BarType type, int repeatCount)
-    : myBarType(type),
-      myRepeatCount(repeatCount),
-      myPosition(position)
+    : myPosition(position),
+      myBarType(type),
+      myRepeatCount(repeatCount)
 {
 }
 
 bool Barline::operator==(const Barline &other) const
 {
-    return myBarType == other.myBarType &&
+    return myPosition == other.myPosition &&
+           myBarType == other.myBarType &&
            myRepeatCount == other.myRepeatCount &&
-           myPosition == other.myPosition &&
            myKeySignature == other.myKeySignature &&
            myTimeSignature == other.myTimeSignature &&
            myRehearsalSign == other.myRehearsalSign;
+}
+
+int Barline::getPosition() const
+{
+    return myPosition;
+}
+
+void Barline::setPosition(int position)
+{
+    myPosition = position;
 }
 
 Barline::BarType Barline::getBarType() const
@@ -61,16 +71,6 @@ int Barline::getRepeatCount() const
 void Barline::setRepeatCount(int count)
 {
     myRepeatCount = count;
-}
-
-int Barline::getPosition() const
-{
-    return myPosition;
-}
-
-void Barline::setPosition(int position)
-{
-    myPosition = position;
 }
 
 const KeySignature &Barline::getKeySignature() const
