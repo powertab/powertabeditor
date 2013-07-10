@@ -22,10 +22,22 @@
 
 using namespace Score; 
 
+TEST_CASE("Score/Position/SimpleProperties", "")
+{
+    Position position;
+
+    REQUIRE(!position.hasProperty(Position::PalmMuting));
+    position.setProperty(Position::PalmMuting, true);
+    REQUIRE(position.hasProperty(Position::PalmMuting));
+}
+
 TEST_CASE("Score/Position/Serialization", "")
 {
     Position position;
     position.setPosition(42);
+    position.setDurationType(Position::HalfNote);
+    position.setProperty(Position::PalmMuting, true);
+    position.setProperty(Position::WideVibrato, true);
 
     Serialization::test(position);
 }

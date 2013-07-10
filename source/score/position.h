@@ -19,14 +19,51 @@
 #define SCORE_POSITION_H
 
 #include <boost/serialization/access.hpp>
+#include <bitset>
 
 namespace Score {
 
 class Position
 {
 public:
+    enum DurationType
+    {
+        WholeNote = 1,
+        HalfNote = 2,
+        QuarterNote = 4,
+        EighthNote = 8,
+        SixteenthNote = 16,
+        ThirtySecondNote = 32,
+        SixtyFourthNote = 64
+    };
+
+    enum SimpleProperty
+    {
+        Dotted,
+        DoubleDotted,
+        Rest,
+        Vibrato,
+        WideVibrato,
+        ArpeggioUp,
+        ArpeggioDown,
+        PickStrokeUp,
+        PickStrokeDown,
+        Staccato,
+        Marcato,
+        Sforzando,
+        TremoloPicking,
+        PalmMuting,
+        Tap,
+        Acciaccatura,
+        TripletFeelFirst,
+        TripletFeelSecond,
+        LetRing,
+        Fermata,
+        NumSimpleProperties
+    };
+
     Position();
-    Position(int position);
+    Position(int position, DurationType duration = EighthNote);
 
     bool operator==(const Position &other) const;
 
@@ -35,14 +72,31 @@ public:
     /// Sets the position within the staff where the position is anchored.
     void setPosition(int position);
 
+    /// Returns the position's duration type (e.g. half note).
+    DurationType getDurationType() const;
+    /// Sets the position's duration type (e.g. half note).
+    void setDurationType(DurationType duration);
+
+    /// Returns whether the position has vibrato, palm muting, etc.
+    bool hasProperty(SimpleProperty property) const;
+    /// Sets whether the position has vibrato, palm muting, etc.
+    void setProperty(SimpleProperty property, bool set = true);
+
+    /// Returns whether the position is a rest.
+    bool isRest() const;
+    /// Sets whether the position is a rest.
+    void setRest(bool set = true);
+
 private:
     int myPosition;
+    DurationType myDurationType;
+    std::bitset<NumSimpleProperties> mySimpleProperties;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myPosition;
+        ar & myPosition & myDurationType & mySimpleProperties;
     }
 };
 

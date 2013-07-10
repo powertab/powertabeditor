@@ -20,18 +20,22 @@
 namespace Score {
 
 Position::Position()
-    : myPosition(0)
+    : myPosition(0),
+      myDurationType(EighthNote)
 {
 }
 
-Position::Position(int position)
-    : myPosition(position)
+Position::Position(int position, DurationType duration)
+    : myPosition(position),
+      myDurationType(duration)
 {
 }
 
 bool Position::operator==(const Position &other) const
 {
-    return myPosition == other.myPosition;
+    return myPosition == other.myPosition &&
+           myDurationType == other.myDurationType &&
+           mySimpleProperties == other.mySimpleProperties;
 }
 
 int Position::getPosition() const
@@ -42,6 +46,36 @@ int Position::getPosition() const
 void Position::setPosition(int position)
 {
     myPosition = position;
+}
+
+Position::DurationType Position::getDurationType() const
+{
+    return myDurationType;
+}
+
+void Position::setDurationType(DurationType type)
+{
+    myDurationType = type;
+}
+
+bool Position::hasProperty(SimpleProperty property) const
+{
+    return mySimpleProperties.test(property);
+}
+
+void Position::setProperty(SimpleProperty property, bool set)
+{
+    mySimpleProperties.set(property, set);
+}
+
+bool Position::isRest() const
+{
+    return hasProperty(Rest);
+}
+
+void Position::setRest(bool set)
+{
+    setProperty(Rest, set);
 }
 
 }
