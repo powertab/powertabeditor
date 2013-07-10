@@ -18,11 +18,11 @@
 #include <catch.hpp>
 
 #include <score/system.h>
-#include <score/systemutils.h>
+#include <score/utils.h>
 
 using namespace Score; 
 
-TEST_CASE("Score/SystemUtils/FindByPosition", "")
+TEST_CASE("Score/Utils/FindByPosition", "")
 {
     System system;
 

@@ -15,46 +15,41 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "dynamic.h"
+#include "staff.h"
+
+#include "utils.h"
 
 namespace Score {
 
-Dynamic::Dynamic()
-    : myPosition(0),
-      myVolume(fff)
+using namespace Detail;
+
+Staff::Staff()
 {
 }
 
-Dynamic::Dynamic(int position, VolumeLevel level)
-    : myPosition(position),
-      myVolume(level)
+bool Staff::operator==(const Staff &other) const
 {
+    return myDynamics == other.myDynamics;
 }
 
-bool Dynamic::operator==(const Dynamic &other) const
+boost::iterator_range<Staff::DynamicIterator> Staff::getDynamics()
 {
-    return myPosition == other.myPosition &&
-           myVolume == other.myVolume;
+    return boost::make_iterator_range(myDynamics);
 }
 
-int Dynamic::getPosition() const
+boost::iterator_range<Staff::DynamicConstIterator> Staff::getDynamics() const
 {
-    return myPosition;
+    return boost::make_iterator_range(myDynamics);
 }
 
-void Dynamic::setPosition(int position)
+void Staff::insertDynamic(const Dynamic &dynamic)
 {
-    myPosition = position;
+    insertObject(myDynamics, dynamic);
 }
 
-Dynamic::VolumeLevel Dynamic::getVolume() const
+void Staff::removeDynamic(const Dynamic &dynamic)
 {
-    return myVolume;
-}
-
-void Dynamic::setVolume(VolumeLevel level)
-{
-    myVolume = level;
+    removeObject(myDynamics, dynamic);
 }
 
 }

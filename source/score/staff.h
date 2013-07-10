@@ -15,53 +15,44 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SCORE_DYNAMIC_H
-#define SCORE_DYNAMIC_H
+#ifndef SCORE_STAFF_H
+#define SCORE_STAFF_H
 
 #include <boost/serialization/access.hpp>
+#include <boost/range/iterator_range_core.hpp>
+#include <vector>
+#include "dynamic.h"
 
 namespace Score {
 
-class Dynamic
+class Staff
 {
 public:
-    enum VolumeLevel
-    {
-        Off = 0,
-        ppp = 13,
-        pp = 26,
-        p = 39,
-        mp = 52,
-        mf = 65,
-        f = 78,
-        ff = 91,
-        fff = 104
-    };
+    typedef std::vector<Dynamic>::iterator DynamicIterator;
+    typedef std::vector<Dynamic>::const_iterator DynamicConstIterator;
 
-    Dynamic();
-    Dynamic(int position, VolumeLevel level);
+    Staff();
 
-    bool operator==(const Dynamic &other) const;
+    bool operator==(const Staff &other) const;
 
-    /// Returns the position within the staff where the dynamic is anchored.
-    int getPosition() const;
-    /// Sets the position within the staff where the dynamic is anchored.
-    void setPosition(int position);
+    /// Returns the set of dynamics in the staff.
+    boost::iterator_range<DynamicIterator> getDynamics();
+    /// Returns the set of dynamics in the staff.
+    boost::iterator_range<DynamicConstIterator> getDynamics() const;
 
-    /// Return the new volume that will be set.
-    VolumeLevel getVolume() const;
-    /// Set the new volume.
-    void setVolume(VolumeLevel level);
+    /// Adds a new dynamic to the staff.
+    void insertDynamic(const Dynamic &dynamic);
+    /// Removes the specified dynamic from the staff.
+    void removeDynamic(const Dynamic &dynamic);
 
 private:
-    int myPosition;
-    VolumeLevel myVolume;
+    std::vector<Dynamic> myDynamics;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myPosition & myVolume;
+        ar & myDynamics;
     }
 };
 

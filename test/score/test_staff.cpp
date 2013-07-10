@@ -14,47 +14,26 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#include "dynamic.h"
+#include <score/staff.h>
+#include "test_serialization.h"
 
-namespace Score {
+using namespace Score; 
 
-Dynamic::Dynamic()
-    : myPosition(0),
-      myVolume(fff)
+TEST_CASE("Score/Staff/Dynamics", "")
 {
-}
+    Staff staff;
 
-Dynamic::Dynamic(int position, VolumeLevel level)
-    : myPosition(position),
-      myVolume(level)
-{
-}
+    REQUIRE(staff.getDynamics().size() == 0);
 
-bool Dynamic::operator==(const Dynamic &other) const
-{
-    return myPosition == other.myPosition &&
-           myVolume == other.myVolume;
-}
+    Dynamic dynamic(3, Dynamic::mf);
+    staff.insertDynamic(dynamic);
+    staff.insertDynamic(Dynamic(1, Dynamic::pp));
+    REQUIRE(staff.getDynamics().size() == 2);
+    REQUIRE(staff.getDynamics()[1] == dynamic);
 
-int Dynamic::getPosition() const
-{
-    return myPosition;
-}
-
-void Dynamic::setPosition(int position)
-{
-    myPosition = position;
-}
-
-Dynamic::VolumeLevel Dynamic::getVolume() const
-{
-    return myVolume;
-}
-
-void Dynamic::setVolume(VolumeLevel level)
-{
-    myVolume = level;
-}
-
+    staff.removeDynamic(dynamic);
+    REQUIRE(staff.getDynamics().size() == 1);
 }

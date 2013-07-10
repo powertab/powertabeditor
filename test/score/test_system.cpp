@@ -22,6 +22,20 @@
 
 using namespace Score; 
 
+TEST_CASE("Score/System/Staves", "")
+{
+    System system;
+
+    REQUIRE(system.getStaves().size() == 0);
+
+    Staff staff;
+    system.insertStaff(staff);
+    REQUIRE(system.getStaves().size() == 1);
+
+    system.removeStaff(staff);
+    REQUIRE(system.getStaves().size() == 0);
+}
+
 TEST_CASE("Score/System/Barlines", "")
 {
     System system;

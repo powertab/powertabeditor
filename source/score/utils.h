@@ -15,16 +15,15 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SCORE_SYSTEMUTILS_H
-#define SCORE_SYSTEMUTILS_H
+#ifndef SCORE_UTILS_H
+#define SCORE_UTILS_H
 
 #include <boost/range/iterator_range_core.hpp>
 
 namespace Score {
     namespace Utils {
 
-        /// Returns the object at the given position index in the system,
-        /// or null if not found.
+        /// Returns the object at the given position index, or null.
         template <typename T>
         const typename T::value_type *findByPosition(
                 const boost::iterator_range<T> &range, int position)
@@ -39,6 +38,34 @@ namespace Score {
             return NULL;
         }
 
+    }
+
+    /// Some helper methods to reduce code duplication.
+    namespace Detail {
+
+        /// Sorts objects by their positions in the system.
+        template <typename T>
+        struct OrderByPosition
+        {
+            bool operator()(const T &obj1, const T &obj2) const
+            {
+                return obj1.getPosition() < obj2.getPosition();
+            }
+        };
+
+        template <typename T>
+        void insertObject(std::vector<T> &objects, const T &obj)
+        {
+            objects.push_back(obj);
+            std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
+        }
+
+        template <typename T>
+        void removeObject(std::vector<T> &objects, const T &obj)
+        {
+            objects.erase(std::remove(objects.begin(), objects.end(), obj),
+                          objects.end());
+        }
     }
 }
 

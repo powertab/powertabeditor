@@ -18,37 +18,11 @@
 #include "system.h"
 
 #include <boost/foreach.hpp>
-
-// Some helper methods to reduce code duplication.
-namespace {
-
-/// Sorts objects by their positions in the system.
-template <typename T>
-struct OrderByPosition
-{
-    bool operator()(const T &obj1, const T &obj2) const
-    {
-        return obj1.getPosition() < obj2.getPosition();
-    }
-};
-
-template <typename T>
-void insertObject(std::vector<T> &objects, const T &obj)
-{
-    objects.push_back(obj);
-    std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
-}
-
-template <typename T>
-void removeObject(std::vector<T> &objects, const T &obj)
-{
-    objects.erase(std::remove(objects.begin(), objects.end(), obj),
-                  objects.end());
-}
-
-}
+#include "utils.h"
 
 namespace Score {
+
+using namespace Detail;
 
 System::System()
 {
@@ -57,6 +31,27 @@ System::System()
     Barline endBar;
     endBar.setPosition(std::numeric_limits<int>::max());
     myBarlines.push_back(endBar);
+}
+
+boost::iterator_range<System::StaffIterator> System::getStaves()
+{
+    return boost::make_iterator_range(myStaves);
+}
+
+boost::iterator_range<System::StaffConstIterator> System::getStaves() const
+{
+    return boost::make_iterator_range(myStaves);
+}
+
+void System::insertStaff(const Staff &staff)
+{
+    myStaves.push_back(staff);
+}
+
+void System::removeStaff(const Staff &staff)
+{
+    myStaves.erase(std::remove(myStaves.begin(), myStaves.end(), staff),
+                   myStaves.end());
 }
 
 boost::iterator_range<System::BarlineIterator> System::getBarlines()

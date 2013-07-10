@@ -23,6 +23,7 @@
 #include <vector>
 #include "alternateending.h"
 #include "barline.h"
+#include "staff.h"
 #include "tempomarker.h"
 
 namespace Score {
@@ -30,6 +31,8 @@ namespace Score {
 class System
 {
 public:
+    typedef std::vector<Staff>::iterator StaffIterator;
+    typedef std::vector<Staff>::const_iterator StaffConstIterator;
     typedef std::vector<Barline>::iterator BarlineIterator;
     typedef std::vector<Barline>::const_iterator BarlineConstIterator;
     typedef std::vector<TempoMarker>::iterator TempoMarkerIterator;
@@ -38,6 +41,16 @@ public:
     typedef std::vector<AlternateEnding>::const_iterator AlternateEndingConstIterator;
 
     System();
+
+    /// Returns the set of staves in the system.
+    boost::iterator_range<StaffIterator> getStaves();
+    /// Returns the set of staves in the system.
+    boost::iterator_range<StaffConstIterator> getStaves() const;
+
+    /// Adds a new staff to the system.
+    void insertStaff(const Staff &barline);
+    /// Removes the specified staff from the system.
+    void removeStaff(const Staff &barline);
 
     /// Returns the set of barlines in the system.
     boost::iterator_range<BarlineIterator> getBarlines();
@@ -75,6 +88,7 @@ public:
     void removeAlternateEnding(const AlternateEnding &ending);
 
 private:
+    std::vector<Staff> myStaves;
     /// List of the barlines in the system. This will always contain at least
     /// two barlines - the start and end bars.
     std::vector<Barline> myBarlines;
@@ -85,7 +99,7 @@ private:
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myBarlines & myTempoMarkers & myAlternateEndings;
+        ar & myStaves & myBarlines & myTempoMarkers & myAlternateEndings;
     }
 };
 
