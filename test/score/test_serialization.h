@@ -22,10 +22,53 @@
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/rational.hpp>
 #include <boost/serialization/bitset.hpp>
 #include <boost/serialization/optional.hpp>
 #include <boost/serialization/vector.hpp>
 #include <sstream>
+
+namespace boost {
+    namespace serialization {
+
+        /// Serialization for boost::rational. This should be moved into a
+        /// common location once we support loading/saving the new file format.
+        template <class Archive, class I>
+        inline void serialize(Archive &ar, boost::rational<I> &num, const unsigned int version)
+        {
+            boost::serialization::split_free(ar, num, version);
+        }
+
+        template <class Archive, class I>
+        void save(Archive &ar, const boost::rational<I> &num, const unsigned int /*version*/)
+        {
+            I numerator = num.numerator();
+            I denominator = num.denominator();
+            ar << numerator << denominator;
+        }
+
+        template <class Archive, class I>
+        void load(Archive &ar, boost::rational<I> &num, const unsigned int /*version*/)
+        {
+            I numerator;
+            I denominator;
+            ar >> numerator >> denominator;
+            num.assign(numerator, denominator);
+        }
+
+        template <class I>
+            struct is_bitwise_serializable< boost::rational<I> >
+            : public is_bitwise_serializable< I > {};
+
+        template <class I>
+            struct implementation_level< boost::rational<I> >
+            : mpl::int_<object_serializable> {} ;
+
+        template <class I>
+            struct tracking_level< boost::rational<I> >
+            : mpl::int_<track_never> {} ;
+    }
+}
 
 namespace Serialization {
 

@@ -18,6 +18,7 @@
 #ifndef SCORE_POSITION_H
 #define SCORE_POSITION_H
 
+#include <boost/rational.hpp>
 #include <boost/serialization/access.hpp>
 #include <bitset>
 
@@ -92,11 +93,17 @@ private:
     DurationType myDurationType;
     std::bitset<NumSimpleProperties> mySimpleProperties;
 
+    /// The total irregular group timing (if the object is part of a nested
+    /// group, the timings are multiplied together).
+    boost::rational<int> myIrregularGroupTiming;
+    // TODO - add an external class for each irregular group.
+
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myPosition & myDurationType & mySimpleProperties;
+        ar & myPosition & myDurationType & mySimpleProperties &
+             myIrregularGroupTiming;
     }
 };
 

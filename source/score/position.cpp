@@ -21,13 +21,15 @@ namespace Score {
 
 Position::Position()
     : myPosition(0),
-      myDurationType(EighthNote)
+      myDurationType(EighthNote),
+      myIrregularGroupTiming(1, 1)
 {
 }
 
 Position::Position(int position, DurationType duration)
     : myPosition(position),
-      myDurationType(duration)
+      myDurationType(duration),
+      myIrregularGroupTiming(1, 1)
 {
 }
 
@@ -35,7 +37,8 @@ bool Position::operator==(const Position &other) const
 {
     return myPosition == other.myPosition &&
            myDurationType == other.myDurationType &&
-           mySimpleProperties == other.mySimpleProperties;
+           mySimpleProperties == other.mySimpleProperties &&
+           myIrregularGroupTiming == other.myIrregularGroupTiming;
 }
 
 int Position::getPosition() const
