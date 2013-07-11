@@ -88,22 +88,31 @@ public:
     /// Sets whether the position is a rest.
     void setRest(bool set = true);
 
+    /// Returns whether the position has a multi-bar rest.
+    bool hasMultiBarRest() const;
+    /// Returns the number of bars to rest for.
+    int getMultiBarRestCount() const;
+    /// Sets the number of bars to rest for.
+    void setMultiBarRest(int count);
+    /// Clears the multi-bar rest for this position.
+    void clearMultiBarRest();
+
 private:
     int myPosition;
     DurationType myDurationType;
     std::bitset<NumSimpleProperties> mySimpleProperties;
-
     /// The total irregular group timing (if the object is part of a nested
     /// group, the timings are multiplied together).
-    boost::rational<int> myIrregularGroupTiming;
     // TODO - add an external class for each irregular group.
+    boost::rational<int> myIrregularGroupTiming;
+    int myMultiBarRestCount;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
         ar & myPosition & myDurationType & mySimpleProperties &
-             myIrregularGroupTiming;
+             myIrregularGroupTiming & myMultiBarRestCount;
     }
 };
 

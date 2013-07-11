@@ -31,6 +31,22 @@ TEST_CASE("Score/Position/SimpleProperties", "")
     REQUIRE(position.hasProperty(Position::PalmMuting));
 }
 
+TEST_CASE("Score/Position/MultiBarRest", "")
+{
+    Position position;
+
+    REQUIRE(!position.hasMultiBarRest());
+    REQUIRE_THROWS(position.getMultiBarRestCount());
+
+    position.setMultiBarRest(7);
+    REQUIRE(position.hasMultiBarRest());
+    REQUIRE(position.getMultiBarRestCount() == 7);
+
+    position.clearMultiBarRest();
+    REQUIRE(!position.hasMultiBarRest());
+    REQUIRE_THROWS(position.getMultiBarRestCount());
+}
+
 TEST_CASE("Score/Position/Serialization", "")
 {
     Position position;
@@ -38,6 +54,7 @@ TEST_CASE("Score/Position/Serialization", "")
     position.setDurationType(Position::HalfNote);
     position.setProperty(Position::PalmMuting, true);
     position.setProperty(Position::WideVibrato, true);
+    position.setMultiBarRest(7);
 
     Serialization::test(position);
 }

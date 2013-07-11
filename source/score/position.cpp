@@ -22,14 +22,16 @@ namespace Score {
 Position::Position()
     : myPosition(0),
       myDurationType(EighthNote),
-      myIrregularGroupTiming(1, 1)
+      myIrregularGroupTiming(1, 1),
+      myMultiBarRestCount(0)
 {
 }
 
 Position::Position(int position, DurationType duration)
     : myPosition(position),
       myDurationType(duration),
-      myIrregularGroupTiming(1, 1)
+      myIrregularGroupTiming(1, 1),
+      myMultiBarRestCount(0)
 {
 }
 
@@ -38,7 +40,8 @@ bool Position::operator==(const Position &other) const
     return myPosition == other.myPosition &&
            myDurationType == other.myDurationType &&
            mySimpleProperties == other.mySimpleProperties &&
-           myIrregularGroupTiming == other.myIrregularGroupTiming;
+           myIrregularGroupTiming == other.myIrregularGroupTiming &&
+           myMultiBarRestCount == other.myMultiBarRestCount;
 }
 
 int Position::getPosition() const
@@ -79,6 +82,32 @@ bool Position::isRest() const
 void Position::setRest(bool set)
 {
     setProperty(Rest, set);
+}
+
+bool Position::hasMultiBarRest() const
+{
+    return myMultiBarRestCount != 0;
+}
+
+int Position::getMultiBarRestCount() const
+{
+    if (!hasMultiBarRest())
+        throw std::logic_error("Position does not have a multi-bar rest");
+
+    return myMultiBarRestCount;
+}
+
+void Position::setMultiBarRest(int count)
+{
+    if (count < 2)
+        throw std::out_of_range("Invalid multi-bar rest count");
+
+    myMultiBarRestCount = count;
+}
+
+void Position::clearMultiBarRest()
+{
+    myMultiBarRestCount = 0;
 }
 
 }
