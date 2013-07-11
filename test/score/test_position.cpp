@@ -47,6 +47,37 @@ TEST_CASE("Score/Position/MultiBarRest", "")
     REQUIRE_THROWS(position.getMultiBarRestCount());
 }
 
+TEST_CASE("Score/Position/Notes", "")
+{
+    Position position;
+    REQUIRE(position.getNotes().size() == 0);
+
+    Note note1(2, 12), note2(4, 13);
+
+    position.insertNote(note2);
+    position.insertNote(note1);
+
+    REQUIRE(position.getNotes().size() == 2);
+    REQUIRE(position.getNotes()[0] == note1);
+    REQUIRE(position.getNotes()[1] == note2);
+
+    position.removeNote(note1);
+    REQUIRE(position.getNotes().size() == 1);
+    REQUIRE(position.getNotes()[0] == note2);
+}
+
+TEST_CASE("Score/Position/FindByString", "")
+{
+    Position position;
+    Note note1(2, 12), note2(4, 13);
+    position.insertNote(note2);
+    position.insertNote(note1);
+
+    REQUIRE(!Utils::findByString(position, 3));
+    REQUIRE(*Utils::findByString(position, 2) == note1);
+    REQUIRE(*Utils::findByString(position, 4) == note2);
+}
+
 TEST_CASE("Score/Position/Serialization", "")
 {
     Position position;

@@ -41,7 +41,8 @@ bool Position::operator==(const Position &other) const
            myDurationType == other.myDurationType &&
            mySimpleProperties == other.mySimpleProperties &&
            myIrregularGroupTiming == other.myIrregularGroupTiming &&
-           myMultiBarRestCount == other.myMultiBarRestCount;
+           myMultiBarRestCount == other.myMultiBarRestCount &&
+           myNotes == other.myNotes;
 }
 
 int Position::getPosition() const
@@ -108,6 +109,37 @@ void Position::setMultiBarRest(int count)
 void Position::clearMultiBarRest()
 {
     myMultiBarRestCount = 0;
+}
+
+boost::iterator_range<Position::NoteIterator> Position::getNotes()
+{
+    return boost::make_iterator_range(myNotes);
+}
+
+boost::iterator_range<Position::NoteConstIterator> Position::getNotes() const
+{
+    return boost::make_iterator_range(myNotes);
+}
+
+/// Functor for sorting notes by their string.
+struct OrderByString
+{
+    bool operator()(const Note &note1, const Note &note2) const
+    {
+        return note1.getString() < note2.getString();
+    }
+};
+
+void Position::insertNote(const Note &note)
+{
+    myNotes.push_back(note);
+    std::sort(myNotes.begin(), myNotes.end(), OrderByString());
+}
+
+void Position::removeNote(const Note &note)
+{
+    myNotes.erase(std::remove(myNotes.begin(), myNotes.end(), note),
+                  myNotes.end());
 }
 
 }

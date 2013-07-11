@@ -18,8 +18,8 @@
 #ifndef SCORE_SYSTEM_H
 #define SCORE_SYSTEM_H
 
-#include <boost/serialization/access.hpp>
 #include <boost/range/iterator_range_core.hpp>
+#include <boost/serialization/access.hpp>
 #include <vector>
 #include "alternateending.h"
 #include "barline.h"

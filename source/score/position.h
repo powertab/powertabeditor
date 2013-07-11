@@ -18,15 +18,21 @@
 #ifndef SCORE_POSITION_H
 #define SCORE_POSITION_H
 
+#include <boost/range/iterator_range_core.hpp>
 #include <boost/rational.hpp>
 #include <boost/serialization/access.hpp>
 #include <bitset>
+#include <vector>
+#include "note.h"
 
 namespace Score {
 
 class Position
 {
 public:
+    typedef std::vector<Note>::iterator NoteIterator;
+    typedef std::vector<Note>::const_iterator NoteConstIterator;
+
     enum DurationType
     {
         WholeNote = 1,
@@ -97,6 +103,16 @@ public:
     /// Clears the multi-bar rest for this position.
     void clearMultiBarRest();
 
+    /// Returns the set of notes in the position.
+    boost::iterator_range<NoteIterator> getNotes();
+    /// Returns the set of notes in the position.
+    boost::iterator_range<NoteConstIterator> getNotes() const;
+
+    /// Adds a new note to the position.
+    void insertNote(const Note &note);
+    /// Removes the specified note from the position.
+    void removeNote(const Note &note);
+
 private:
     int myPosition;
     DurationType myDurationType;
@@ -106,15 +122,29 @@ private:
     // TODO - add an external class for each irregular group.
     boost::rational<int> myIrregularGroupTiming;
     int myMultiBarRestCount;
+    std::vector<Note> myNotes;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
         ar & myPosition & myDurationType & mySimpleProperties &
-             myIrregularGroupTiming & myMultiBarRestCount;
+             myIrregularGroupTiming & myMultiBarRestCount & myNotes;
     }
 };
+
+namespace Utils {
+    inline const Note *findByString(const Position &pos, int string)
+    {
+        for (int i = 0; i < pos.getNotes().size(); ++i)
+        {
+            if (pos.getNotes()[i].getString() == string)
+                return &pos.getNotes()[i];
+        }
+
+        return NULL;
+    }
+}
 
 }
 

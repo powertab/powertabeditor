@@ -7,6 +7,7 @@ add_library(ptescore
     generalmidi.cpp
     instrument.cpp
     keysignature.cpp
+    note.cpp
     player.cpp
     position.cpp
     rehearsalsign.cpp
