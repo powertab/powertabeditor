@@ -57,7 +57,7 @@ public:
     /// Returns whether the tuning is displayed using sharps or flats.
     bool usesSharps() const;
     /// Sets whether the tuning is displayed using sharps or flats.
-    void setSharps(bool set);
+    void setSharps(bool set = true);
 
     /// Returns the capo for the tuning (0 == no capo).
     uint8_t getCapo() const;

@@ -71,7 +71,7 @@ public:
     /// Returns whether the time signature should be displayed.
     bool isVisible() const;
     /// Sets whether the time signature should be displayed.
-    void setVisible(bool visible);
+    void setVisible(bool visible = true);
 
     /// Minimum valid number of beats in a measure.
     static const uint8_t MIN_BEATS_PER_MEASURE;

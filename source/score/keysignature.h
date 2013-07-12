@@ -53,17 +53,17 @@ public:
     /// Returns whether the key signature uses sharps or flats.
     bool usesSharps() const;
     /// Sets whether the key signature uses sharps or flats.
-    void setSharps(bool sharps);
+    void setSharps(bool sharps = true);
 
     /// Returns whether the key signature should be displayed.
     bool isVisible() const;
     /// Sets whether the key signature should be displayed.
-    void setVisible(bool visible);
+    void setVisible(bool visible = true);
 
     /// Returns whether the key signature is a cancellation.
     bool isCancellation() const;
     /// Sets whether the key signature is a cancellation.
-    void setCancellation(bool cancellation);
+    void setCancellation(bool cancellation = true);
 
     /// The maximum valid number of accidentals.
     static const uint8_t MAX_NUM_ACCIDENTALS;

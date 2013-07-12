@@ -52,11 +52,11 @@ public:
     const std::vector<int> &getNumbers() const;
 
     bool hasDaCapo() const;
-    void setDaCapo(bool set);
+    void setDaCapo(bool set = true);
     bool hasDalSegno() const;
-    void setDalSegno(bool set);
+    void setDalSegno(bool set = true);
     bool hasDalSegnoSegno() const;
-    void setDalSegnoSegno(bool set);
+    void setDalSegnoSegno(bool set = true);
 
     /// Minimum valid repeat number.
     static const int MIN_NUMBER;
