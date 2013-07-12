@@ -18,6 +18,7 @@
 #ifndef SCORE_SCORE_H
 #define SCORE_SCORE_H
 
+#include <boost/range/iterator_range_core.hpp>
 #include <boost/serialization/access.hpp>
 #include <vector>
 #include "instrument.h"
@@ -30,10 +31,49 @@ namespace Score {
 class Score
 {
 public:
+    typedef std::vector<System>::iterator SystemIterator;
+    typedef std::vector<System>::const_iterator SystemConstIterator;
+    typedef std::vector<Player>::iterator PlayerIterator;
+    typedef std::vector<Player>::const_iterator PlayerConstIterator;
+    typedef std::vector<Instrument>::iterator InstrumentIterator;
+    typedef std::vector<Instrument>::const_iterator InstrumentConstIterator;
+
     bool operator==(const Score &other) const;
 
+    /// Returns information about the score (e.g. title, author, etc.).
     const ScoreInfo &getScoreInfo() const;
+    /// Sets information about the score (e.g. title, author, etc.).
     void setScoreInfo(const ScoreInfo &info);
+
+    /// Returns the set of systems in the score.
+    boost::iterator_range<SystemIterator> getSystems();
+    /// Returns the set of systems in the score.
+    boost::iterator_range<SystemConstIterator> getSystems() const;
+
+    /// Adds a new system to the score.
+    void insertSystem(const System &system);
+    /// Removes the specified system from the score.
+    void removeSystem(const System &system);
+
+    /// Returns the set of players in the score.
+    boost::iterator_range<PlayerIterator> getPlayers();
+    /// Returns the set of players in the score.
+    boost::iterator_range<PlayerConstIterator> getPlayers() const;
+
+    /// Adds a new player to the score.
+    void insertPlayer(const Player &player);
+    /// Removes the specified player from the score.
+    void removePlayer(const Player &player);
+
+    /// Returns the set of instruments in the score.
+    boost::iterator_range<InstrumentIterator> getInstruments();
+    /// Returns the set of instruments in the score.
+    boost::iterator_range<InstrumentConstIterator> getInstruments() const;
+
+    /// Adds a new instrument to the score.
+    void insertInstrument(const Instrument &instrument);
+    /// Removes the specified instrument from the score.
+    void removeInstrument(const Instrument &instrument);
 
 private:
     // TODO - add line spacing, font settings, chord diagrams, etc.
