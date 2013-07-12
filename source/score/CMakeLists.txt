@@ -10,6 +10,7 @@ add_library(ptescore
     keysignature.cpp
     note.cpp
     player.cpp
+    playerchange.cpp
     position.cpp
     rehearsalsign.cpp
     score.cpp

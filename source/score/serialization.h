@@ -22,6 +22,7 @@
 #include <boost/date_time/gregorian/greg_serialize.hpp>
 #include <boost/rational.hpp>
 #include <boost/serialization/bitset.hpp>
+#include <boost/serialization/map.hpp>
 #include <boost/serialization/optional.hpp>
 #include <boost/serialization/variant.hpp>
 #include <boost/serialization/vector.hpp>
