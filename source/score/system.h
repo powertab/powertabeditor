@@ -24,6 +24,7 @@
 #include "alternateending.h"
 #include "barline.h"
 #include "direction.h"
+#include "playerchange.h"
 #include "staff.h"
 #include "tempomarker.h"
 
@@ -42,6 +43,8 @@ public:
     typedef std::vector<AlternateEnding>::const_iterator AlternateEndingConstIterator;
     typedef std::vector<Direction>::iterator DirectionIterator;
     typedef std::vector<Direction>::const_iterator DirectionConstIterator;
+    typedef std::vector<PlayerChange>::iterator PlayerChangeIterator;
+    typedef std::vector<PlayerChange>::const_iterator PlayerChangeConstIterator;
 
     System();
     bool operator==(const System &other) const;
@@ -101,6 +104,16 @@ public:
     /// Removes the specified musical direction from the system.
     void removeDirection(const Direction &ending);
 
+    /// Returns the set of player changes in the system.
+    boost::iterator_range<PlayerChangeIterator> getPlayerChanges();
+    /// Returns the set of player changes in system.
+    boost::iterator_range<PlayerChangeConstIterator> getPlayerChanges() const;
+
+    /// Adds a new player change to the system.
+    void insertPlayerChange(const PlayerChange &change);
+    /// Removes the specified player change from the system.
+    void removePlayerChange(const PlayerChange &change);
+
 private:
     std::vector<Staff> myStaves;
     /// List of the barlines in the system. This will always contain at least
@@ -109,13 +122,14 @@ private:
     std::vector<TempoMarker> myTempoMarkers;
     std::vector<AlternateEnding> myAlternateEndings;
     std::vector<Direction> myDirections;
+    std::vector<PlayerChange> myPlayerChanges;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
         ar & myStaves & myBarlines & myTempoMarkers & myAlternateEndings &
-             myDirections;
+             myDirections & myPlayerChanges;
     }
 };
 

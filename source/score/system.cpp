@@ -42,7 +42,8 @@ bool System::operator==(const System &other) const
            myBarlines == other.myBarlines &&
            myTempoMarkers == other.myTempoMarkers &&
            myAlternateEndings == other.myAlternateEndings &&
-           myDirections == other.myDirections;
+           myDirections == other.myDirections &&
+           myPlayerChanges == other.myPlayerChanges;
 }
 
 boost::iterator_range<System::StaffIterator> System::getStaves()
@@ -166,6 +167,26 @@ void System::insertDirection(const Direction &direction)
 void System::removeDirection(const Direction &direction)
 {
     removeObject(myDirections, direction);
+}
+
+boost::iterator_range<System::PlayerChangeIterator> System::getPlayerChanges()
+{
+    return boost::make_iterator_range(myPlayerChanges);
+}
+
+boost::iterator_range<System::PlayerChangeConstIterator> System::getPlayerChanges() const
+{
+    return boost::make_iterator_range(myPlayerChanges);
+}
+
+void System::insertPlayerChange(const PlayerChange &change)
+{
+    insertObject(myPlayerChanges, change);
+}
+
+void System::removePlayerChange(const PlayerChange &change)
+{
+    removeObject(myPlayerChanges, change);
 }
 
 }

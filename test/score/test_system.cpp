@@ -144,3 +144,25 @@ TEST_CASE("Score/System/Directions", "")
     REQUIRE(system.getDirections().size() == 1);
     REQUIRE(system.getDirections()[0] == direction2);
 }
+
+TEST_CASE("Score/System/PlayerChanges", "")
+{
+    System system;
+
+    REQUIRE(system.getPlayerChanges().size() == 0);
+
+    PlayerChange change1;
+    change1.setPosition(3);
+    PlayerChange change2;
+    change2.setPosition(5);
+
+    system.insertPlayerChange(change2);
+    system.insertPlayerChange(change1);
+    REQUIRE(system.getPlayerChanges().size() == 2);
+    REQUIRE(system.getPlayerChanges()[0] == change1);
+    REQUIRE(system.getPlayerChanges()[1] == change2);
+
+    system.removePlayerChange(change1);
+    REQUIRE(system.getPlayerChanges().size() == 1);
+    REQUIRE(system.getPlayerChanges()[0] == change2);
+}
