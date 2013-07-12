@@ -14,5 +14,31 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#include "songinfo.h"
+#include <score/scoreinfo.h>
+#include "test_serialization.h"
+
+using namespace Score; 
+
+TEST_CASE("Score/ScoreInfo/ChangeType", "")
+{
+    ScoreInfo info;
+
+    REQUIRE(info.getScoreType() == ScoreInfo::Song);
+    REQUIRE_NOTHROW(info.getSongData());
+    REQUIRE_THROWS(info.getLessonData());
+
+    info.setLessonData(LessonData());
+    REQUIRE(info.getScoreType() == ScoreInfo::Lesson);
+    REQUIRE_THROWS(info.getSongData());
+    REQUIRE_NOTHROW(info.getLessonData());
+}
+
+TEST_CASE("Score/ScoreInfo/Serialization", "")
+{
+    ScoreInfo info;
+
+    Serialization::test(info);
+}

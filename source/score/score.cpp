@@ -19,9 +19,9 @@
 
 namespace Score {
 
-const SongInfo &Score::getSongInfo() const
+const ScoreInfo &Score::getScoreInfo() const
 {
-    return mySongInfo;
+    return myScoreInfo;
 }
 
 }

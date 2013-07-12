@@ -21,7 +21,7 @@
 #include <vector>
 #include "instrument.h"
 #include "player.h"
-#include "songinfo.h"
+#include "scoreinfo.h"
 #include "system.h"
 
 namespace Score {
@@ -29,11 +29,11 @@ namespace Score {
 class Score
 {
 public:
-    const SongInfo &getSongInfo() const;
+    const ScoreInfo &getScoreInfo() const;
 
 private:
     // TODO - add line spacing, font settings, chord diagrams, etc.
-    SongInfo mySongInfo;
+    ScoreInfo myScoreInfo;
     std::vector<System> mySystems;
     std::vector<Player> myPlayers;
     std::vector<Instrument> myInstruments;

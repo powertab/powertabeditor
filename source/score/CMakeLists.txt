@@ -13,7 +13,7 @@ add_library(ptescore
     position.cpp
     rehearsalsign.cpp
     score.cpp
-    songinfo.cpp
+    scoreinfo.cpp
     staff.cpp
     system.cpp
     tempomarker.cpp

@@ -22,9 +22,12 @@
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/date_time/gregorian/formatters_limited.hpp>
+#include <boost/date_time/gregorian/greg_serialize.hpp>
 #include <boost/rational.hpp>
 #include <boost/serialization/bitset.hpp>
 #include <boost/serialization/optional.hpp>
+#include <boost/serialization/variant.hpp>
 #include <boost/serialization/vector.hpp>
 #include <sstream>
 
@@ -66,6 +69,15 @@ namespace boost {
 
         template <class I>
             struct tracking_level< boost::rational<I> >
+            : mpl::int_<track_never> {} ;
+
+        template <class Archive>
+        inline void serialize(Archive &, boost::blank &, const unsigned int)
+        {
+        }
+
+        template <>
+        struct tracking_level< boost::blank >
             : mpl::int_<track_never> {} ;
     }
 }

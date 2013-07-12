@@ -13,7 +13,7 @@ endif()
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Widgets REQUIRED) 
-find_package(Boost REQUIRED COMPONENTS serialization)
+find_package(Boost REQUIRED COMPONENTS serialization date_time)
 
 # Find the ALSA package for Linux.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
