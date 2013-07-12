@@ -19,9 +19,22 @@
 
 namespace Score {
 
+bool Score::operator==(const Score &other) const
+{
+    return myScoreInfo == other.myScoreInfo &&
+           mySystems == other.mySystems &&
+           myPlayers == other.myPlayers &&
+           myInstruments == other.myInstruments;
+}
+
 const ScoreInfo &Score::getScoreInfo() const
 {
     return myScoreInfo;
+}
+
+void Score::setScoreInfo(const ScoreInfo &info)
+{
+    myScoreInfo = info;
 }
 
 }

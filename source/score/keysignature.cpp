@@ -19,6 +19,7 @@
 
 #include <ostream>
 #include <stdexcept>
+#include <string>
 #include "generalmidi.h"
 
 namespace Score {

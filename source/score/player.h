@@ -18,6 +18,7 @@
 #ifndef SCORE_PLAYER_H
 #define SCORE_PLAYER_H
 
+#include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
 #include <string>
 #include "tuning.h"

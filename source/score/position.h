@@ -134,16 +134,7 @@ private:
 };
 
 namespace Utils {
-    inline const Note *findByString(const Position &pos, int string)
-    {
-        for (int i = 0; i < pos.getNotes().size(); ++i)
-        {
-            if (pos.getNotes()[i].getString() == string)
-                return &pos.getNotes()[i];
-        }
-
-        return NULL;
-    }
+    const Note *findByString(const Position &pos, int string);
 }
 
 }

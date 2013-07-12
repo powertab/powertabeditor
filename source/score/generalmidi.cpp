@@ -17,6 +17,8 @@
 
 #include "generalmidi.h"
 
+#include <algorithm>
+#include <cstdlib>
 #include <stdexcept>
 
 namespace Midi {

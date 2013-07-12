@@ -17,7 +17,9 @@
 
 #include "scoreinfo.h"
 
+#include <boost/date_time/date.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <boost/variant/get.hpp>
 
 namespace Score {
 

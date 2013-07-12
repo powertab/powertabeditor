@@ -17,6 +17,11 @@
 
 #include "position.h"
 
+#include <algorithm>
+#include <boost/foreach.hpp>
+#include <cstddef>
+#include <stdexcept>
+
 namespace Score {
 
 Position::Position()
@@ -140,6 +145,17 @@ void Position::removeNote(const Note &note)
 {
     myNotes.erase(std::remove(myNotes.begin(), myNotes.end(), note),
                   myNotes.end());
+}
+
+const Note *Utils::findByString(const Position &pos, int string)
+{
+    BOOST_FOREACH(const Note &note, pos.getNotes())
+    {
+        if (note.getString() == string)
+            return &note;
+    }
+
+    return NULL;
 }
 
 }

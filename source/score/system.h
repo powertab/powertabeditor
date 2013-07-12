@@ -41,6 +41,7 @@ public:
     typedef std::vector<AlternateEnding>::const_iterator AlternateEndingConstIterator;
 
     System();
+    bool operator==(const System &other) const;
 
     /// Returns the set of staves in the system.
     boost::iterator_range<StaffIterator> getStaves();

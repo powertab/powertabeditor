@@ -18,6 +18,7 @@
 #ifndef SCORE_UTILS_H
 #define SCORE_UTILS_H
 
+#include <algorithm>
 #include <boost/range/iterator_range_core.hpp>
 
 namespace Score {

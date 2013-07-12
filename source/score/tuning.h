@@ -20,6 +20,7 @@
 
 #include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
+#include <iosfwd>
 #include <string>
 #include <vector>
 

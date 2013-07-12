@@ -17,7 +17,10 @@
 
 #include "system.h"
 
+#include <algorithm>
 #include <boost/foreach.hpp>
+#include <cstddef>
+#include <limits>
 #include "utils.h"
 
 namespace Score {
@@ -31,6 +34,14 @@ System::System()
     Barline endBar;
     endBar.setPosition(std::numeric_limits<int>::max());
     myBarlines.push_back(endBar);
+}
+
+bool System::operator==(const System &other) const
+{
+    return myStaves == other.myStaves &&
+           myBarlines == other.myBarlines &&
+           myTempoMarkers == other.myTempoMarkers &&
+           myAlternateEndings == other.myAlternateEndings;
 }
 
 boost::iterator_range<System::StaffIterator> System::getStaves()

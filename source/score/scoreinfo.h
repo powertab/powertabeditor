@@ -18,10 +18,11 @@
 #ifndef SCORE_SCOREINFO_H
 #define SCORE_SCOREINFO_H
 
+#include <boost/blank.hpp>
 #include <boost/date_time/gregorian/greg_date.hpp>
-#include <boost/optional.hpp>
+#include <boost/optional/optional.hpp>
 #include <boost/serialization/access.hpp>
-#include <boost/variant.hpp>
+#include <boost/variant/variant.hpp>
 #include <string>
 
 namespace Score {

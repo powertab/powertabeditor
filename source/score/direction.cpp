@@ -17,6 +17,8 @@
 
 #include "direction.h"
 
+#include <algorithm>
+
 namespace Score {
 
 Direction::Direction()

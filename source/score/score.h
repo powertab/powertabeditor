@@ -18,6 +18,7 @@
 #ifndef SCORE_SCORE_H
 #define SCORE_SCORE_H
 
+#include <boost/serialization/access.hpp>
 #include <vector>
 #include "instrument.h"
 #include "player.h"
@@ -29,7 +30,10 @@ namespace Score {
 class Score
 {
 public:
+    bool operator==(const Score &other) const;
+
     const ScoreInfo &getScoreInfo() const;
+    void setScoreInfo(const ScoreInfo &info);
 
 private:
     // TODO - add line spacing, font settings, chord diagrams, etc.
@@ -37,6 +41,13 @@ private:
     std::vector<System> mySystems;
     std::vector<Player> myPlayers;
     std::vector<Instrument> myInstruments;
+
+    friend class boost::serialization::access;
+    template <class Archive>
+    void serialize(Archive &ar, const unsigned int /*version*/)
+    {
+        ar & myScoreInfo & mySystems & myPlayers & myInstruments;
+    }
 };
 
 }
