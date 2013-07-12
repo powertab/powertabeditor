@@ -41,7 +41,8 @@ bool System::operator==(const System &other) const
     return myStaves == other.myStaves &&
            myBarlines == other.myBarlines &&
            myTempoMarkers == other.myTempoMarkers &&
-           myAlternateEndings == other.myAlternateEndings;
+           myAlternateEndings == other.myAlternateEndings &&
+           myDirections == other.myDirections;
 }
 
 boost::iterator_range<System::StaffIterator> System::getStaves()
@@ -145,6 +146,26 @@ void System::insertAlternateEnding(const AlternateEnding &ending)
 void System::removeAlternateEnding(const AlternateEnding &ending)
 {
     removeObject(myAlternateEndings, ending);
+}
+
+boost::iterator_range<System::DirectionIterator> System::getDirections()
+{
+    return boost::make_iterator_range(myDirections);
+}
+
+boost::iterator_range<System::DirectionConstIterator> System::getDirections() const
+{
+    return boost::make_iterator_range(myDirections);
+}
+
+void System::insertDirection(const Direction &direction)
+{
+    insertObject(myDirections, direction);
+}
+
+void System::removeDirection(const Direction &direction)
+{
+    removeObject(myDirections, direction);
 }
 
 }

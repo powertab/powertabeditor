@@ -26,6 +26,11 @@ Direction::Direction()
 {
 }
 
+Direction::Direction(int position)
+    : myPosition(position)
+{
+}
+
 bool Direction::operator==(const Direction &other) const
 {
     return myPosition == other.myPosition &&

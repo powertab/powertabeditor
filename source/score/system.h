@@ -23,6 +23,7 @@
 #include <vector>
 #include "alternateending.h"
 #include "barline.h"
+#include "direction.h"
 #include "staff.h"
 #include "tempomarker.h"
 
@@ -39,6 +40,8 @@ public:
     typedef std::vector<TempoMarker>::const_iterator TempoMarkerConstIterator;
     typedef std::vector<AlternateEnding>::iterator AlternateEndingIterator;
     typedef std::vector<AlternateEnding>::const_iterator AlternateEndingConstIterator;
+    typedef std::vector<Direction>::iterator DirectionIterator;
+    typedef std::vector<Direction>::const_iterator DirectionConstIterator;
 
     System();
     bool operator==(const System &other) const;
@@ -88,6 +91,16 @@ public:
     /// Removes the specified alternate ending from the system.
     void removeAlternateEnding(const AlternateEnding &ending);
 
+    /// Returns the set of musical directions in the system.
+    boost::iterator_range<DirectionIterator> getDirections();
+    /// Returns the set of musical directions in system.
+    boost::iterator_range<DirectionConstIterator> getDirections() const;
+
+    /// Adds a new musical direction to the system.
+    void insertDirection(const Direction &ending);
+    /// Removes the specified musical direction from the system.
+    void removeDirection(const Direction &ending);
+
 private:
     std::vector<Staff> myStaves;
     /// List of the barlines in the system. This will always contain at least
@@ -95,12 +108,14 @@ private:
     std::vector<Barline> myBarlines;
     std::vector<TempoMarker> myTempoMarkers;
     std::vector<AlternateEnding> myAlternateEndings;
+    std::vector<Direction> myDirections;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myStaves & myBarlines & myTempoMarkers & myAlternateEndings;
+        ar & myStaves & myBarlines & myTempoMarkers & myAlternateEndings &
+             myDirections;
     }
 };
 

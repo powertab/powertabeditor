@@ -122,3 +122,25 @@ TEST_CASE("Score/System/AlternateEndings", "")
     REQUIRE(system.getAlternateEndings().size() == 1);
     REQUIRE(system.getAlternateEndings()[0] == ending2);
 }
+
+TEST_CASE("Score/System/Directions", "")
+{
+    System system;
+
+    REQUIRE(system.getDirections().size() == 0);
+
+    Direction direction1;
+    direction1.setPosition(3);
+    Direction direction2;
+    direction2.setPosition(5);
+
+    system.insertDirection(direction2);
+    system.insertDirection(direction1);
+    REQUIRE(system.getDirections().size() == 2);
+    REQUIRE(system.getDirections()[0] == direction1);
+    REQUIRE(system.getDirections()[1] == direction2);
+
+    system.removeDirection(direction1);
+    REQUIRE(system.getDirections().size() == 1);
+    REQUIRE(system.getDirections()[0] == direction2);
+}
