@@ -31,6 +31,38 @@ TEST_CASE("Score/Note/SimpleProperties", "")
     REQUIRE(note.hasProperty(Note::HammerOn));
 }
 
+TEST_CASE("Score/Note/Trill", "")
+{
+    Note note;
+
+    REQUIRE(!note.hasTrill());
+    REQUIRE_THROWS(note.getTrilledFret());
+
+    note.setTrilledFret(5);
+    REQUIRE(note.hasTrill());
+    REQUIRE(note.getTrilledFret() == 5);
+
+    note.clearTrill();
+    REQUIRE(!note.hasTrill());
+    REQUIRE_THROWS(note.getTrilledFret());
+}
+
+TEST_CASE("Score/Note/TappedHarmonic", "")
+{
+    Note note;
+
+    REQUIRE(!note.hasTappedHarmonic());
+    REQUIRE_THROWS(note.getTappedHarmonicFret());
+
+    note.setTappedHarmonicFret(5);
+    REQUIRE(note.hasTappedHarmonic());
+    REQUIRE(note.getTappedHarmonicFret() == 5);
+
+    note.clearTappedHarmonic();
+    REQUIRE(!note.hasTappedHarmonic());
+    REQUIRE_THROWS(note.getTappedHarmonicFret());
+}
+
 TEST_CASE("Score/Note/Serialization", "")
 {
     Note note(3, 12);

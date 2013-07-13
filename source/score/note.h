@@ -63,16 +63,37 @@ public:
     /// Sets whether the note is tied, muted, etc.
     void setProperty(SimpleProperty property, bool set = true);
 
+    /// Returns whether the note has a trill.
+    bool hasTrill() const;
+    /// Returns the fret that the note is trilled with.
+    int getTrilledFret() const;
+    /// Sets the fret that the note is trilled with.
+    void setTrilledFret(int fret);
+    /// Removes the trill for this note.
+    void clearTrill();
+
+    /// Returns whether the note has a tapped harmonic.
+    bool hasTappedHarmonic() const;
+    /// Returns the fret that is tapped.
+    int getTappedHarmonicFret() const;
+    /// Sets the fret that is tapped.
+    void setTappedHarmonicFret(int fret);
+    /// Removes the tapped harmonic for this note.
+    void clearTappedHarmonic();
+
 private:
     int myString;
     int myFretNumber;
     std::bitset<NumSimpleProperties> mySimpleProperties;
+    int myTrilledFret;
+    int myTappedHarmonicFret;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myString & myFretNumber & mySimpleProperties;
+        ar & myString & myFretNumber & mySimpleProperties &
+             myTrilledFret & myTappedHarmonicFret;
     }
 };
 

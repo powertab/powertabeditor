@@ -17,17 +17,23 @@
 
 #include "note.h"
 
+#include <stdexcept>
+
 namespace Score {
 
 Note::Note()
     : myString(0),
-      myFretNumber(0)
+      myFretNumber(0),
+      myTrilledFret(-1),
+      myTappedHarmonicFret(-1)
 {
 }
 
 Note::Note(int string, int fretNumber)
     : myString(string),
-      myFretNumber(fretNumber)
+      myFretNumber(fretNumber),
+      myTrilledFret(-1),
+      myTappedHarmonicFret(-1)
 {
 }
 
@@ -35,7 +41,9 @@ bool Note::operator==(const Note &other) const
 {
     return myString == other.myString &&
            myFretNumber == other.myFretNumber &&
-           mySimpleProperties == other.mySimpleProperties;
+           mySimpleProperties == other.mySimpleProperties &&
+           myTrilledFret == other.myTrilledFret &&
+           myTappedHarmonicFret == other.myTappedHarmonicFret;
 }
 
 int Note::getString() const
@@ -66,6 +74,58 @@ bool Note::hasProperty(SimpleProperty property) const
 void Note::setProperty(SimpleProperty property, bool set)
 {
     mySimpleProperties.set(property, set);
+}
+
+bool Note::hasTrill() const
+{
+    return myTrilledFret != -1;
+}
+
+int Note::getTrilledFret() const
+{
+    if (!hasTrill())
+        throw std::logic_error("Note does not have a trill");
+
+    return myTrilledFret;
+}
+
+void Note::setTrilledFret(int fret)
+{
+    if (fret < 0)
+        throw std::out_of_range("Invalid fret number");
+
+    myTrilledFret = fret;
+}
+
+void Note::clearTrill()
+{
+    myTrilledFret = -1;
+}
+
+bool Note::hasTappedHarmonic() const
+{
+    return myTappedHarmonicFret != -1;
+}
+
+int Note::getTappedHarmonicFret() const
+{
+    if (!hasTappedHarmonic())
+        throw std::logic_error("Note does not have a tapped harmonic");
+
+    return myTappedHarmonicFret;
+}
+
+void Note::setTappedHarmonicFret(int fret)
+{
+    if (fret < 0)
+        throw std::out_of_range("Invalid fret number");
+
+    myTappedHarmonicFret = fret;
+}
+
+void Note::clearTappedHarmonic()
+{
+    myTappedHarmonicFret = -1;
 }
 
 }
