@@ -23,6 +23,7 @@
 #include "powertabdocument/direction.h"
 #include "powertabdocument/dynamic.h"
 #include "powertabdocument/guitar.h"
+#include "powertabdocument/note.h"
 #include "powertabdocument/position.h"
 #include "powertabdocument/powertabdocument.h"
 #include "powertabdocument/score.h"
@@ -407,6 +408,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
     position.setDurationType(static_cast<Position::DurationType>(
                                  oldPosition.GetDurationType()));
 
+    // Import simple properties.
     if (oldPosition.IsDotted())
         position.setProperty(Position::Dotted);
     if (oldPosition.IsDoubleDotted())
@@ -454,4 +456,59 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
         oldPosition.GetMultibarRest(count);
         position.setMultiBarRest(count);
     }
+
+    // Import notes.
+    for (size_t i = 0; i < oldPosition.GetNoteCount(); ++i)
+    {
+        Note note;
+        convert(*oldPosition.GetNote(i), note);
+        position.insertNote(note);
+    }
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
+                                  Note &note)
+{
+    note.setFretNumber(oldNote.GetFretNumber());
+    note.setString(oldNote.GetString());
+
+    if (oldNote.HasTappedHarmonic())
+    {
+        uint8_t fret = 0;
+        oldNote.GetTappedHarmonic(fret);
+        note.setTappedHarmonicFret(fret);
+    }
+
+    if (oldNote.HasTrill())
+    {
+        uint8_t fret = 0;
+        oldNote.GetTrill(fret);
+        note.setTrilledFret(fret);
+    }
+
+    // Import simple properties.
+    if (oldNote.IsTied())
+        note.setProperty(Note::Tied);
+    if (oldNote.IsMuted())
+        note.setProperty(Note::Muted);
+    if (oldNote.HasHammerOn())
+        note.setProperty(Note::HammerOn);
+    if (oldNote.HasPullOff())
+        note.setProperty(Note::PullOff);
+    if (oldNote.HasHammerOnFromNowhere())
+        note.setProperty(Note::HammerOnFromNowhere);
+    if (oldNote.HasPullOffToNowhere())
+        note.setProperty(Note::PullOffToNowhere);
+    if (oldNote.IsNaturalHarmonic())
+        note.setProperty(Note::NaturalHarmonic);
+    if (oldNote.IsGhostNote())
+        note.setProperty(Note::GhostNote);
+    if (oldNote.IsOctave8va())
+        note.setProperty(Note::Octave8va);
+    if (oldNote.IsOctave8vb())
+        note.setProperty(Note::Octave8vb);
+    if (oldNote.IsOctave15ma())
+        note.setProperty(Note::Octave15ma);
+    if (oldNote.IsOctave15mb())
+        note.setProperty(Note::Octave15mb);
 }

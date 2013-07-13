@@ -195,11 +195,11 @@ TEST_CASE("Formats/PowerTabOldImport/Staves", "")
     REQUIRE(dynamic.getVolume() == Dynamic::mp);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Notes", "")
+TEST_CASE("Formats/PowerTabOldImport/Positions", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/notes.ptb", score);
+    importer.load("data/positions.ptb", score);
 
     const System &system = score.getSystems()[0];
     const Staff &staff = system.getStaves()[0];
@@ -224,4 +224,31 @@ TEST_CASE("Formats/PowerTabOldImport/Notes", "")
     REQUIRE(pos2.getDurationType() == Position::EighthNote);
 
     REQUIRE(pos3.getMultiBarRestCount() == 3);
+}
+
+TEST_CASE("Formats/PowerTabOldImport/Notes", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/notes.ptb", score);
+
+    const System &system = score.getSystems()[0];
+    const Staff &staff = system.getStaves()[0];
+    const Note &note1 = staff.getVoice(0)[0].getNotes()[0];
+    const Note &note2 = staff.getVoice(0)[1].getNotes()[0];
+
+    REQUIRE(note1.getFretNumber() == 3);
+    REQUIRE(note1.getString() == 3);
+    REQUIRE(note1.hasTappedHarmonic());
+    REQUIRE(note1.getTappedHarmonicFret() == 15);
+
+    REQUIRE(note1.hasProperty(Note::GhostNote));
+    REQUIRE(note1.hasProperty(Note::HammerOn));
+
+    REQUIRE(!note2.hasTappedHarmonic());
+    REQUIRE(note2.hasTrill());
+    REQUIRE(note2.getTrilledFret() == 1);
+
+    REQUIRE(note2.hasProperty(Note::Octave15mb));
+    REQUIRE(note2.hasProperty(Note::NaturalHarmonic));
 }
