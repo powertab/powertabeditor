@@ -194,3 +194,34 @@ TEST_CASE("Formats/PowerTabOldImport/Staves", "")
     REQUIRE(dynamic.getPosition() == 4);
     REQUIRE(dynamic.getVolume() == Dynamic::mp);
 }
+
+TEST_CASE("Formats/PowerTabOldImport/Notes", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/notes.ptb", score);
+
+    const System &system = score.getSystems()[0];
+    const Staff &staff = system.getStaves()[0];
+    const int voice = 0;
+
+    REQUIRE(staff.getVoice(voice).size() == 3);
+    const Position &pos1 = staff.getVoice(voice)[0];
+    const Position &pos2 = staff.getVoice(voice)[1];
+    const Position &pos3 = staff.getVoice(voice)[2];
+
+    REQUIRE(pos1.getPosition() == 2);
+    REQUIRE(pos1.getDurationType() == Position::HalfNote);
+    REQUIRE(!pos1.hasMultiBarRest());
+    REQUIRE(pos1.hasProperty(Position::DoubleDotted));
+    REQUIRE(pos1.hasProperty(Position::Vibrato));
+    REQUIRE(pos1.hasProperty(Position::ArpeggioDown));
+    REQUIRE(pos1.hasProperty(Position::PickStrokeUp));
+    REQUIRE(pos1.hasProperty(Position::LetRing));
+    REQUIRE(!pos1.hasProperty(Position::PalmMuting));
+
+    REQUIRE(pos2.isRest());
+    REQUIRE(pos2.getDurationType() == Position::EighthNote);
+
+    REQUIRE(pos3.getMultiBarRestCount() == 3);
+}

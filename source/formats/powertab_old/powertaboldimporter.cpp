@@ -23,6 +23,7 @@
 #include "powertabdocument/direction.h"
 #include "powertabdocument/dynamic.h"
 #include "powertabdocument/guitar.h"
+#include "powertabdocument/position.h"
 #include "powertabdocument/powertabdocument.h"
 #include "powertabdocument/score.h"
 #include "powertabdocument/staff.h"
@@ -377,6 +378,18 @@ void PowerTabOldImporter::convert(
         convert(*dynamics[i], dynamic);
         staff.insertDynamic(dynamic);
     }
+
+    // Import positions.
+    for (size_t voice = 0; voice < PowerTabDocument::Staff::NUM_STAFF_VOICES;
+         ++voice)
+    {
+        for (size_t i = 0; i < oldStaff.GetPositionCount(voice); ++i)
+        {
+            Position position;
+            convert(*oldStaff.GetPosition(voice, i), position);
+            staff.insertPosition(voice, position);
+        }
+    }
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Dynamic &oldDynamic,
@@ -385,4 +398,60 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Dynamic &oldDynamic,
     dynamic.setPosition(oldDynamic.GetPosition());
     dynamic.setVolume(static_cast<Dynamic::VolumeLevel>(
                           oldDynamic.GetStaffVolume()));
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
+                                  Position &position)
+{
+    position.setPosition(oldPosition.GetPosition());
+    position.setDurationType(static_cast<Position::DurationType>(
+                                 oldPosition.GetDurationType()));
+
+    if (oldPosition.IsDotted())
+        position.setProperty(Position::Dotted);
+    if (oldPosition.IsDoubleDotted())
+        position.setProperty(Position::DoubleDotted);
+    if (oldPosition.IsRest())
+        position.setRest();
+    if (oldPosition.HasVibrato())
+        position.setProperty(Position::Vibrato);
+    if (oldPosition.HasWideVibrato())
+        position.setProperty(Position::WideVibrato);
+    if (oldPosition.HasArpeggioUp())
+        position.setProperty(Position::ArpeggioUp);
+    if (oldPosition.HasArpeggioDown())
+        position.setProperty(Position::ArpeggioDown);
+    if (oldPosition.HasPickStrokeUp())
+        position.setProperty(Position::PickStrokeUp);
+    if (oldPosition.HasPickStrokeDown())
+        position.setProperty(Position::PickStrokeDown);
+    if (oldPosition.IsStaccato())
+        position.setProperty(Position::Staccato);
+    if (oldPosition.HasMarcato())
+        position.setProperty(Position::Marcato);
+    if (oldPosition.HasSforzando())
+        position.setProperty(Position::Sforzando);
+    if (oldPosition.HasTremoloPicking())
+        position.setProperty(Position::TremoloPicking);
+    if (oldPosition.HasPalmMuting())
+        position.setProperty(Position::PalmMuting);
+    if (oldPosition.HasTap())
+        position.setProperty(Position::Tap);
+    if (oldPosition.IsAcciaccatura())
+        position.setProperty(Position::Acciaccatura);
+    if (oldPosition.IsTripletFeel1st())
+        position.setProperty(Position::TripletFeelFirst);
+    if (oldPosition.IsTripletFeel2nd())
+        position.setProperty(Position::TripletFeelSecond);
+    if (oldPosition.HasLetRing())
+        position.setProperty(Position::LetRing);
+    if (oldPosition.HasFermata())
+        position.setProperty(Position::Fermata);
+
+    if (oldPosition.HasMultibarRest())
+    {
+        uint8_t count = 0;
+        oldPosition.GetMultibarRest(count);
+        position.setMultiBarRest(count);
+    }
 }

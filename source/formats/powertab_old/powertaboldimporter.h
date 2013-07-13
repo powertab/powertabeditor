@@ -28,6 +28,7 @@ class Direction;
 class Dynamic;
 class Guitar;
 class KeySignature;
+class Position;
 class PowerTabFileHeader;
 class RehearsalSign;
 class Score;
@@ -43,6 +44,7 @@ class Barline;
 class Direction;
 class Dynamic;
 class KeySignature;
+class Position;
 class RehearsalSign;
 class ScoreInfo;
 class Staff;
@@ -92,6 +94,9 @@ private:
                         Staff &staff);
     static void convert(const PowerTabDocument::Dynamic &oldDynamic,
                         Dynamic &dynamic);
+
+    static void convert(const PowerTabDocument::Position &oldPosition,
+                        Position &position);
 };
 
 #endif
