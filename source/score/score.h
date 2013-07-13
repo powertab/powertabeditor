@@ -26,8 +26,6 @@
 #include "scoreinfo.h"
 #include "system.h"
 
-namespace Score {
-
 class Score
 {
 public:
@@ -89,7 +87,5 @@ private:
         ar & myScoreInfo & mySystems & myPlayers & myInstruments;
     }
 };
-
-}
 
 #endif

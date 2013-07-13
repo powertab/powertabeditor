@@ -20,8 +20,6 @@
 
 #include <boost/serialization/access.hpp>
 
-namespace Score {
-
 class Dynamic
 {
 public:
@@ -64,7 +62,5 @@ private:
         ar & myPosition & myVolume;
     }
 };
-
-}
 
 #endif

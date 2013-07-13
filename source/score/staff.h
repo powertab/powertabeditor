@@ -25,8 +25,6 @@
 #include "dynamic.h"
 #include "position.h"
 
-namespace Score {
-
 class Staff
 {
 public:
@@ -106,7 +104,5 @@ private:
         ar & myViewType & myClefType & myStringCount & myVoices & myDynamics;
     }
 };
-
-}
 
 #endif

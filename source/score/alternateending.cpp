@@ -20,8 +20,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace Score {
-
 const int AlternateEnding::MIN_NUMBER = 1;
 const int AlternateEnding::MAX_NUMBER = 8;
 
@@ -97,6 +95,4 @@ bool AlternateEnding::hasDalSegnoSegno() const
 void AlternateEnding::setDalSegnoSegno(bool set)
 {
     mySpecialEndings[DalSegnoSegno] = set;
-}
-
 }

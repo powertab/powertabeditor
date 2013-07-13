@@ -24,8 +24,6 @@
 #include "rehearsalsign.h"
 #include "timesignature.h"
 
-namespace Score {
-
 class Barline
 {
 public:
@@ -92,7 +90,4 @@ private:
     }
 };
 
-}
-
 #endif
-

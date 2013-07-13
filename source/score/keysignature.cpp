@@ -22,8 +22,6 @@
 #include <string>
 #include "generalmidi.h"
 
-namespace Score {
-
 const uint8_t KeySignature::MAX_NUM_ACCIDENTALS = 7;
 
 KeySignature::KeySignature()
@@ -131,4 +129,3 @@ std::ostream& operator<<(std::ostream &os, const KeySignature &key)
     return os;
 }
 
-}

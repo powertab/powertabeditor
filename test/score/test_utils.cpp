@@ -20,8 +20,6 @@
 #include <score/system.h>
 #include <score/utils.h>
 
-using namespace Score; 
-
 TEST_CASE("Score/Utils/FindByPosition", "")
 {
     System system;
@@ -29,7 +27,7 @@ TEST_CASE("Score/Utils/FindByPosition", "")
     Barline barline(42, Barline::SingleBar);
     system.insertBarline(barline);
 
-    REQUIRE(!Utils::findByPosition(system.getBarlines(), 5));
-    REQUIRE(Utils::findByPosition(system.getBarlines(), 0)); // Start bar.
-    REQUIRE(*Utils::findByPosition(system.getBarlines(), 42) == barline);
+    REQUIRE(!ScoreUtils::findByPosition(system.getBarlines(), 5));
+    REQUIRE(ScoreUtils::findByPosition(system.getBarlines(), 0)); // Start bar.
+    REQUIRE(*ScoreUtils::findByPosition(system.getBarlines(), 42) == barline);
 }

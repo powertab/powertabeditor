@@ -17,16 +17,17 @@
 
 #include "powertabexporter.h"
 
-#include <formats/powertab/common.h>
-#include <powertabdocument/powertabdocument.h>
+#include "common.h"
+#include <fstream>
+#include <score/serialization.h>
 
-PowerTabExporter::PowerTabExporter() :
-    FileFormatExporter(getPowerTabFileFormat())
+PowerTabExporter::PowerTabExporter()
+    : FileFormatExporter(getPowerTabFileFormat())
 {
 }
 
-void PowerTabExporter::save(boost::shared_ptr<const PowerTabDocument> doc,
-                            const std::string &fileName)
+void PowerTabExporter::save(const std::string &filename, const Score &score)
 {
-    doc->Save(fileName);
+    std::ofstream output(filename.c_str());
+    ScoreUtils::save(output, score);
 }

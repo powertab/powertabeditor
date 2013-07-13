@@ -19,10 +19,6 @@
 
 #include "utils.h"
 
-namespace Score {
-
-using namespace Detail;
-
 Staff::Staff()
     : myViewType(GuitarView),
       myClefType(TrebleClef),
@@ -84,12 +80,12 @@ boost::iterator_range<Staff::VoiceConstIterator> Staff::getVoice(
 
 void Staff::insertPosition(int voice, const Position &position)
 {
-    insertObject(myVoices.at(voice), position);
+    ScoreUtils::insertObject(myVoices.at(voice), position);
 }
 
 void Staff::removePosition(int voice, const Position &position)
 {
-    removeObject(myVoices.at(voice), position);
+    ScoreUtils::removeObject(myVoices.at(voice), position);
 }
 
 boost::iterator_range<Staff::DynamicIterator> Staff::getDynamics()
@@ -104,12 +100,10 @@ boost::iterator_range<Staff::DynamicConstIterator> Staff::getDynamics() const
 
 void Staff::insertDynamic(const Dynamic &dynamic)
 {
-    insertObject(myDynamics, dynamic);
+    ScoreUtils::insertObject(myDynamics, dynamic);
 }
 
 void Staff::removeDynamic(const Dynamic &dynamic)
 {
-    removeObject(myDynamics, dynamic);
-}
-
+    ScoreUtils::removeObject(myDynamics, dynamic);
 }

@@ -22,8 +22,6 @@
 #include <cstddef>
 #include <stdexcept>
 
-namespace Score {
-
 Position::Position()
     : myPosition(0),
       myDurationType(EighthNote),
@@ -158,4 +156,3 @@ const Note *Utils::findByString(const Position &pos, int string)
     return NULL;
 }
 
-}

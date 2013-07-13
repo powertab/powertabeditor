@@ -8,16 +8,16 @@ Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} MY)
 add_definitions(-DSVN_REVISION=${MY_WC_REVISION})
 
 add_library(pteapp
-    clipboard.cpp
-    command.cpp
-    documentmanager.cpp
+    #clipboard.cpp
+    #command.cpp
+    #documentmanager.cpp
     options.cpp
-    powertabeditor.cpp
-    recentfiles.cpp
-    scorearea.cpp
-    settings.cpp
-    skinmanager.cpp
-    tuningdictionary.cpp
+    #powertabeditor.cpp
+    #recentfiles.cpp
+    #scorearea.cpp
+    #settings.cpp
+    #skinmanager.cpp
+    #tuningdictionary.cpp
 )
 
 qt5_use_modules(pteapp Widgets Concurrent)

@@ -22,11 +22,11 @@
 
 TEST_CASE("Score/Score/Systems", "")
 {
-    Score::Score score;
+    Score score;
 
     REQUIRE(score.getSystems().size() == 0);
 
-    Score::System system;
+    System system;
     score.insertSystem(system);
     REQUIRE(score.getSystems().size() == 1);
     score.removeSystem(system);
@@ -35,11 +35,11 @@ TEST_CASE("Score/Score/Systems", "")
 
 TEST_CASE("Score/Score/Players", "")
 {
-    Score::Score score;
+    Score score;
 
     REQUIRE(score.getPlayers().size() == 0);
 
-    Score::Player player;
+    Player player;
     score.insertPlayer(player);
     REQUIRE(score.getPlayers().size() == 1);
     score.removePlayer(player);
@@ -48,11 +48,11 @@ TEST_CASE("Score/Score/Players", "")
 
 TEST_CASE("Score/Score/Instruments", "")
 {
-    Score::Score score;
+    Score score;
 
     REQUIRE(score.getInstruments().size() == 0);
 
-    Score::Instrument instrument;
+    Instrument instrument;
     score.insertInstrument(instrument);
     REQUIRE(score.getInstruments().size() == 1);
     score.removeInstrument(instrument);

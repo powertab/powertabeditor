@@ -17,8 +17,6 @@
 
 #include "rehearsalsign.h"
 
-namespace Score {
-
 RehearsalSign::RehearsalSign()
     : myLetters(""), myDescription("")
 {
@@ -56,4 +54,3 @@ void RehearsalSign::setDescription(const std::string &description)
     myDescription = description;
 }
 
-}

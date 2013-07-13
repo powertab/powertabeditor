@@ -17,34 +17,34 @@
   
 #include "fileformat.h"
 
+#include <algorithm>
+
 FileFormat::FileFormat(const std::string &name,
-                       const std::vector<std::string> &fileExtensions) :
-    name(name),
-    fileExtensions(fileExtensions)
+                       const std::vector<std::string> &fileExtensions)
+    : myName(name),
+      myFileExtensions(fileExtensions)
 {
 }
 
-bool FileFormat::operator<(const FileFormat& format) const
+bool FileFormat::operator<(const FileFormat &format) const
 {
-    return name < format.name;
+    return myName < format.myName;
 }
 
-/// Returns a correctly formatted file filter for a Qt file dialog.
-/// e.g. "FileType (*.ext1 *.ext2)".
 std::string FileFormat::fileFilter() const
 {
-    return name + " (" + allExtensions() + ")";
+    return myName + " (" + allExtensions() + ")";
 }
 
 std::string FileFormat::allExtensions() const
 {
     std::string extensions;
 
-    for (size_t i = 0; i < fileExtensions.size(); ++i)
+    for (size_t i = 0; i < myFileExtensions.size(); ++i)
     {
         if (i != 0)
             extensions += " ";
-        extensions += "*." + fileExtensions[i];
+        extensions += "*." + myFileExtensions[i];
     }
 
     return extensions;
@@ -52,12 +52,12 @@ std::string FileFormat::allExtensions() const
 
 bool FileFormat::contains(const std::string &extension) const
 {
-    return std::find(fileExtensions.begin(), fileExtensions.end(),
-                     extension) != fileExtensions.end();
+    return std::find(myFileExtensions.begin(), myFileExtensions.end(),
+                     extension) != myFileExtensions.end();
 }
 
-FileFormatImporter::FileFormatImporter(const FileFormat& format) :
-    format(format)
+FileFormatImporter::FileFormatImporter(const FileFormat &format) :
+    myFormat(format)
 {
 }
 
@@ -67,17 +67,17 @@ FileFormatImporter::~FileFormatImporter()
 
 FileFormat FileFormatImporter::fileFormat() const
 {
-    return format;
+    return myFormat;
 }
 
-FileFormatException::FileFormatException(const std::string& error) :
-    std::runtime_error(error)
+FileFormatException::FileFormatException(const std::string& error)
+    : std::runtime_error(error)
 {
 }
 
 
-FileFormatExporter::FileFormatExporter(const FileFormat &format) :
-    format(format)
+FileFormatExporter::FileFormatExporter(const FileFormat &format)
+    : myFormat(format)
 {
 }
 
@@ -87,5 +87,5 @@ FileFormatExporter::~FileFormatExporter()
 
 FileFormat FileFormatExporter::fileFormat() const
 {
-    return format;
+    return myFormat;
 }

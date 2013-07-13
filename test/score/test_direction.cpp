@@ -20,8 +20,6 @@
 #include <score/direction.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Direction/Symbols", "")
 {
     Direction direction;

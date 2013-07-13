@@ -21,8 +21,6 @@
 #include <bitset>
 #include <boost/serialization/access.hpp>
 
-namespace Score {
-
 class Note
 {
 public:
@@ -96,7 +94,5 @@ private:
              myTrilledFret & myTappedHarmonicFret;
     }
 };
-
-}
 
 #endif

@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 2.8.8)
 
-add_subdirectory(actions)
+#add_subdirectory(actions)
 add_subdirectory(app)
-add_subdirectory(audio)
-add_subdirectory(dialogs)
+#add_subdirectory(audio)
+#add_subdirectory(dialogs)
 add_subdirectory(formats)
-add_subdirectory(painters)
-add_subdirectory(powertabdocument)
+#add_subdirectory(painters)
+#add_subdirectory(powertabdocument)
 add_subdirectory(score)
-add_subdirectory(sigfwd)
-add_subdirectory(widgets)
+#add_subdirectory(sigfwd)
+#add_subdirectory(widgets)
 
 qt5_add_resources(RESOURCES build/resources.qrc)
 
@@ -27,15 +27,16 @@ qt5_use_modules(powertabeditor Widgets)
 
 target_link_libraries(powertabeditor
     pteapp
-    ptewidgets
-    ptedialogs
-    pteactions
-    pteaudio
-    rtmidi
-    ptepainters
-    sigfwd
+    #ptewidgets
+    #ptedialogs
+    #pteactions
+    #pteaudio
+    #rtmidi
+    #ptepainters
+    #sigfwd
     pteformats
-    ptedocument
+    #ptedocument
+    ptescore
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

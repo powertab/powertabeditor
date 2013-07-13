@@ -22,8 +22,6 @@
 #include <boost/serialization/access.hpp>
 #include <iosfwd>
 
-namespace Score {
-
 class KeySignature
 {
 public:
@@ -85,7 +83,5 @@ private:
 };
 
 std::ostream& operator<<(std::ostream &os, const KeySignature &key);
-
-}
 
 #endif

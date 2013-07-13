@@ -21,8 +21,6 @@
 #include <score/barline.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Barline/RehearsalSign", "")
 {
     Barline barline;

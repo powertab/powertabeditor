@@ -22,8 +22,6 @@
 #include <map>
 #include <vector>
 
-namespace Score {
-
 /// An active player is a player that has an instrument assigned to them,
 /// and is also assigned to a staff.
 class ActivePlayer
@@ -83,7 +81,5 @@ private:
         ar & myPosition & myActivePlayers;
     }
 };
-
-}
 
 #endif

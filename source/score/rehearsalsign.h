@@ -21,8 +21,6 @@
 #include <boost/serialization/access.hpp>
 #include <string>
 
-namespace Score {
-
 class RehearsalSign
 {
 public:
@@ -52,7 +50,5 @@ private:
         ar & myLetters & myDescription;
     }
 };
-
-}
 
 #endif

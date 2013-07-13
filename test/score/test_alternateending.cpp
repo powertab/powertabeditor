@@ -20,8 +20,6 @@
 #include <score/alternateending.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/AlternateEnding/Numbers", "")
 {
     AlternateEnding ending;

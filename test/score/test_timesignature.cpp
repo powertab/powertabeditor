@@ -20,8 +20,6 @@
 #include <score/timesignature.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/TimeSignature/CutTime", "")
 {
     TimeSignature time;

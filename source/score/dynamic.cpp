@@ -17,8 +17,6 @@
 
 #include "dynamic.h"
 
-namespace Score {
-
 Dynamic::Dynamic()
     : myPosition(0),
       myVolume(fff)
@@ -57,4 +55,3 @@ void Dynamic::setVolume(VolumeLevel level)
     myVolume = level;
 }
 
-}

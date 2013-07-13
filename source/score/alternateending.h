@@ -22,8 +22,6 @@
 #include <boost/serialization/access.hpp>
 #include <vector>
 
-namespace Score {
-
 class AlternateEnding
 {
 public:
@@ -75,7 +73,5 @@ private:
         ar & myPosition & myNumbers & mySpecialEndings;
     }
 };
-
-}
 
 #endif

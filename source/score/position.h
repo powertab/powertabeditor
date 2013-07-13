@@ -25,8 +25,6 @@
 #include <vector>
 #include "note.h"
 
-namespace Score {
-
 class Position
 {
 public:
@@ -135,8 +133,6 @@ private:
 
 namespace Utils {
     const Note *findByString(const Position &pos, int string);
-}
-
 }
 
 #endif

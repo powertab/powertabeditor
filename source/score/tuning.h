@@ -24,8 +24,6 @@
 #include <string>
 #include <vector>
 
-namespace Score {
-
 class Tuning
 {
 public:
@@ -95,7 +93,5 @@ private:
 /// Returns a string representation of the tuning from low to
 /// high (e.g. "E A D G B E").
 std::ostream &operator<<(std::ostream &os, const Tuning &t);
-
-}
 
 #endif

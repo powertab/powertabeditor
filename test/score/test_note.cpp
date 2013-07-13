@@ -20,8 +20,6 @@
 #include <score/note.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Note/SimpleProperties", "")
 {
     Note note;

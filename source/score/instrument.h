@@ -22,8 +22,6 @@
 #include <boost/serialization/access.hpp>
 #include <string>
 
-namespace Score {
-
 class Instrument
 {
 public:
@@ -52,7 +50,5 @@ private:
         ar & myDescription & myMidiPreset;
     }
 };
-
-}
 
 #endif

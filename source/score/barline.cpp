@@ -17,8 +17,6 @@
 
 #include "barline.h"
 
-namespace Score {
-
 Barline::Barline()
     : myPosition(0),
       myBarType(SingleBar),
@@ -102,6 +100,3 @@ void Barline::setRehearsalSign(const boost::optional<RehearsalSign> &sign)
 {
     myRehearsalSign = sign;
 }
-
-}
-

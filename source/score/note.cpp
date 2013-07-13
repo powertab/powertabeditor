@@ -19,8 +19,6 @@
 
 #include <stdexcept>
 
-namespace Score {
-
 Note::Note()
     : myString(0),
       myFretNumber(0),
@@ -126,6 +124,4 @@ void Note::setTappedHarmonicFret(int fret)
 void Note::clearTappedHarmonic()
 {
     myTappedHarmonicFret = -1;
-}
-
 }

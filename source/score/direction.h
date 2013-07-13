@@ -22,8 +22,6 @@
 #include <boost/serialization/access.hpp>
 #include <vector>
 
-namespace Score {
-
 class DirectionSymbol
 {
 public:
@@ -120,7 +118,5 @@ private:
         ar & myPosition & mySymbols;
     }
 };
-
-}
 
 #endif

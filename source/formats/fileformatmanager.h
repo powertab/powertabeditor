@@ -15,42 +15,41 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef FILEFORMATMANAGER_H
-#define FILEFORMATMANAGER_H
+#ifndef FORMATS_FILEFORMATMANAGER_H
+#define FORMATS_FILEFORMATMANAGER_H
 
-// Workaround for Boost warning that only appears on Windows
-// (see https://svn.boost.org/trac/boost/ticket/4276)
-#ifdef __MINGW32__
-#pragma GCC diagnostic ignored "-Wignored-qualifiers" 
-#endif
+#include <boost/optional/optional.hpp>
 #include <boost/ptr_container/ptr_map.hpp>
-
 #include "fileformat.h"
-#include <vector>
-#include <boost/optional.hpp>
 
 class FileFormatImporter;
 class FileFormatExporter;
-
 class QWidget;
+class Score;
 
-/// An interface for import/export of various file formats
+/// An interface for import/export of various file formats.
 class FileFormatManager
 {
 public:
     FileFormatManager();
-    ~FileFormatManager();
 
+    /// Returns the file format corresponding to the given extension.
     boost::optional<FileFormat> findFormat(const std::string &extension) const;
 
+    /// Returns a correctly formatted file filter for a Qt file dialog.
+    /// e.g. "FileType (*.ext1 *.ext2);;FileType2 (*.ext3)".
     std::string importFileFilter() const;
-    boost::shared_ptr<PowerTabDocument> importFile(const std::string& fileName,
-                                                   const FileFormat& format,
-                                                   QWidget *parentWindow);
 
+    /// Imports a file into the given score.
+    bool importFile(Score &score, const std::string &filename,
+                    const FileFormat &format, QWidget *parentWindow);
+
+    /// Returns a correctly formatted file filter for a Qt file dialog.
     std::string exportFileFilter() const;
-    bool exportFile(boost::shared_ptr<const PowerTabDocument> doc,
-                    const std::string& fileName, const FileFormat& format);
+
+    /// Exports the given score to a file.
+    bool exportFile(const Score &score, const std::string &filename,
+                    const FileFormat &format);
 
 private:
     template <typename Importer>
@@ -59,22 +58,24 @@ private:
     template <typename Exporter>
     void registerExporter();
 
-    boost::ptr_map<FileFormat, FileFormatImporter> importers;
-    boost::ptr_map<FileFormat, FileFormatExporter> exporters;
+    typedef boost::ptr_map<FileFormat, FileFormatImporter> ImporterMap;
+    typedef boost::ptr_map<FileFormat, FileFormatExporter> ExporterMap;
+    ImporterMap myImporters;
+    ExporterMap myExporters;
 };
 
 template <typename Importer>
 void FileFormatManager::registerImporter()
 {
     FileFormat format = Importer().fileFormat();
-    importers.insert(format, new Importer());
+    myImporters.insert(format, new Importer());
 }
 
 template <typename Exporter>
 void FileFormatManager::registerExporter()
 {
     FileFormat format = Exporter().fileFormat();
-    exporters.insert(format, new Exporter());
+    myExporters.insert(format, new Exporter());
 }
 
 #endif // FILEFORMATMANAGER_H

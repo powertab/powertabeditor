@@ -15,75 +15,80 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef IFILEFORMAT_H
-#define IFILEFORMAT_H
+#ifndef FORMATS_FILEFORMAT_H
+#define FORMATS_FILEFORMAT_H
 
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <boost/shared_ptr.hpp>
 
-class PowerTabDocument;
+class Score;
 
 class FileFormat
 {
 public:
-    FileFormat(const std::string& name,
-               const std::vector<std::string>& fileExtensions);
+    FileFormat(const std::string &myName,
+               const std::vector<std::string> &myFileExtensions);
 
-    bool operator<(const FileFormat& format) const;
+    bool operator<(const FileFormat &format) const;
 
+    /// Returns a correctly formatted file filter for a Qt file dialog.
+    /// e.g. "FileType (*.ext1 *.ext2)".
     std::string fileFilter() const;
+
     std::string allExtensions() const;
 
     bool contains(const std::string &extension) const;
 
 private:
     /// Name of the file format (e.g. "Power Tab", "MIDI", etc).
-    std::string name;
+    std::string myName;
     /// Supported file extensions (e.g. {"gp3", "gp4"}).
-    std::vector<std::string> fileExtensions;
+    std::vector<std::string> myFileExtensions;
 };
 
-/// Base class for all file format importers
+/// Base class for all file format importers.
 class FileFormatImporter
 {
 public:
-    FileFormatImporter(const FileFormat& format);
+    FileFormatImporter(const FileFormat &myFormat);
     virtual ~FileFormatImporter();
 
-    /// Converts the given file into a PowerTabDocument
+    /// Imports the file into the given score.
     /// @throw FileFormatException
-    virtual boost::shared_ptr<PowerTabDocument> load(const std::string& fileName) = 0;
+    virtual void load(const std::string &filename, Score &score) = 0;
 
+    /// Returns the file format corresponding to this importer.
     FileFormat fileFormat() const;
 
 private:
-    const FileFormat format;
+    const FileFormat myFormat;
 };
 
-/// Base class for all file format exporters
+/// Base class for all file format exporters.
 class FileFormatExporter
 {
 public:
-    FileFormatExporter(const FileFormat& format);
+    FileFormatExporter(const FileFormat &myFormat);
     virtual ~FileFormatExporter();
 
-    /// Converts the given file into a PowerTabDocument
+    /// Exports the given score to a file.
     /// @throw FileFormatException
-    virtual void save(boost::shared_ptr<const PowerTabDocument>, const std::string& fileName) = 0;
+    virtual void save(const std::string& filename, const Score &score) = 0;
 
+    /// Returns the file format corresponding to this exporter.
     FileFormat fileFormat() const;
 
 private:
-    const FileFormat format;
+    const FileFormat myFormat;
 };
 
-/// Exception used for any errors with format conversions (e.g. corrupted file, unsupported version, etc)
+/// Exception used for any errors with format conversions
+/// (e.g. corrupted file, unsupported version, etc).
 class FileFormatException : public std::runtime_error
 {
 public:
-    FileFormatException(const std::string& error);
+    FileFormatException(const std::string &error);
 };
 
 #endif // IFILEFORMAT_H

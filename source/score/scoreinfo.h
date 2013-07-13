@@ -25,8 +25,6 @@
 #include <boost/variant/variant.hpp>
 #include <string>
 
-namespace Score {
-
 class SongData
 {
 public:
@@ -222,7 +220,5 @@ private:
         ar & myData;
     }
 };
-
-}
 
 #endif

@@ -18,64 +18,17 @@
 #ifndef SCORE_SERIALIZATION_H
 #define SCORE_SERIALIZATION_H
 
-#include <boost/date_time/gregorian/formatters_limited.hpp>
-#include <boost/date_time/gregorian/greg_serialize.hpp>
-#include <boost/rational.hpp>
-#include <boost/serialization/bitset.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/optional.hpp>
-#include <boost/serialization/variant.hpp>
-#include <boost/serialization/vector.hpp>
+#include <iosfwd>
+class Score;
 
-namespace boost {
-    namespace serialization {
+namespace ScoreUtils {
 
-        /// Implement serialization for boost::rational.
-        template <class Archive, class I>
-        inline void serialize(Archive &ar, boost::rational<I> &num, const unsigned int version)
-        {
-            boost::serialization::split_free(ar, num, version);
-        }
+    template <typename T>
+    void load(std::istream &input, T &obj);
 
-        template <class Archive, class I>
-        void save(Archive &ar, const boost::rational<I> &num, const unsigned int /*version*/)
-        {
-            I numerator = num.numerator();
-            I denominator = num.denominator();
-            ar << numerator << denominator;
-        }
+    template <typename T>
+    void save(std::ostream &output, const T &obj);
 
-        template <class Archive, class I>
-        void load(Archive &ar, boost::rational<I> &num, const unsigned int /*version*/)
-        {
-            I numerator;
-            I denominator;
-            ar >> numerator >> denominator;
-            num.assign(numerator, denominator);
-        }
-
-        template <class I>
-            struct is_bitwise_serializable< boost::rational<I> >
-            : public is_bitwise_serializable< I > {};
-
-        template <class I>
-            struct implementation_level< boost::rational<I> >
-            : mpl::int_<object_serializable> {} ;
-
-        template <class I>
-            struct tracking_level< boost::rational<I> >
-            : mpl::int_<track_never> {} ;
-
-        /// Implement serialization for boost::blank.
-        template <class Archive>
-        inline void serialize(Archive &, boost::blank &, const unsigned int)
-        {
-        }
-
-        template <>
-        struct tracking_level< boost::blank >
-            : mpl::int_<track_never> {} ;
-    }
 }
 
 #endif

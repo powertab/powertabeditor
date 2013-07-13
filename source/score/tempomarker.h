@@ -21,8 +21,6 @@
 #include <boost/serialization/access.hpp>
 #include <string>
 
-namespace Score {
-
 class TempoMarker
 {
 public:
@@ -133,7 +131,5 @@ private:
            & myDescription;
     }
 };
-
-}
 
 #endif

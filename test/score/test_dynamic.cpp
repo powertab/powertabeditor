@@ -20,8 +20,6 @@
 #include <score/dynamic.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Dynamic/Serialization", "")
 {
     Dynamic dynamic;

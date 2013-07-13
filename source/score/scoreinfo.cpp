@@ -21,8 +21,6 @@
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <boost/variant/get.hpp>
 
-namespace Score {
-
 SongData::AudioData::AudioData()
     : myReleaseType(Album),
       myYear(boost::gregorian::day_clock::local_day().year()),
@@ -137,4 +135,3 @@ void ScoreInfo::setLessonData(const LessonData &data)
     myData = data;
 }
 
-}

@@ -20,8 +20,6 @@
 #include <score/tempomarker.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/TempoMarker/BeatsPerMinute", "")
 {
     TempoMarker tempo;

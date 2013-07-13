@@ -23,8 +23,6 @@
 #include <string>
 #include "tuning.h"
 
-namespace Score {
-
 class Player
 {
 public:
@@ -70,7 +68,5 @@ private:
         ar & myDescription & myMaxVolume & myPan & myTuning;
     }
 };
-
-}
 
 #endif

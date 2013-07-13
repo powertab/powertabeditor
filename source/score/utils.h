@@ -21,52 +21,47 @@
 #include <algorithm>
 #include <boost/range/iterator_range_core.hpp>
 
-namespace Score {
-    namespace Utils {
+namespace ScoreUtils {
 
-        /// Returns the object at the given position index, or null.
-        template <typename T>
-        const typename T::value_type *findByPosition(
-                const boost::iterator_range<T> &range, int position)
+    /// Returns the object at the given position index, or null.
+    template <typename T>
+    const typename T::value_type *findByPosition(
+            const boost::iterator_range<T> &range, int position)
+    {
+        size_t n = range.size();
+        for (size_t i = 0; i < n; ++i)
         {
-            size_t n = range.size();
-            for (size_t i = 0; i < n; ++i)
-            {
-                if (range[i].getPosition() == position)
-                    return &range[i];
-            }
-
-            return NULL;
+            if (range[i].getPosition() == position)
+                return &range[i];
         }
 
+        return NULL;
     }
 
-    /// Some helper methods to reduce code duplication.
-    namespace Detail {
+    // Some helper methods to reduce code duplication.
 
-        /// Sorts objects by their positions in the system.
-        template <typename T>
-        struct OrderByPosition
+    /// Sorts objects by their positions in the system.
+    template <typename T>
+    struct OrderByPosition
+    {
+        bool operator()(const T &obj1, const T &obj2) const
         {
-            bool operator()(const T &obj1, const T &obj2) const
-            {
-                return obj1.getPosition() < obj2.getPosition();
-            }
-        };
-
-        template <typename T>
-        void insertObject(std::vector<T> &objects, const T &obj)
-        {
-            objects.push_back(obj);
-            std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
+            return obj1.getPosition() < obj2.getPosition();
         }
+    };
 
-        template <typename T>
-        void removeObject(std::vector<T> &objects, const T &obj)
-        {
-            objects.erase(std::remove(objects.begin(), objects.end(), obj),
-                          objects.end());
-        }
+    template <typename T>
+    void insertObject(std::vector<T> &objects, const T &obj)
+    {
+        objects.push_back(obj);
+        std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
+    }
+
+    template <typename T>
+    void removeObject(std::vector<T> &objects, const T &obj)
+    {
+        objects.erase(std::remove(objects.begin(), objects.end(), obj),
+                      objects.end());
     }
 }
 

@@ -21,8 +21,6 @@
 #include <score/instrument.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Instrument/Serialization", "")
 {
     Instrument instrument;

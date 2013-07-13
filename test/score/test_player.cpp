@@ -21,8 +21,6 @@
 #include <score/player.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Player/Serialization", "")
 {
     Tuning tuning;

@@ -19,8 +19,6 @@
 
 #include <stdexcept>
 
-namespace Score {
-
 const uint8_t TimeSignature::MIN_BEATS_PER_MEASURE = 1;
 const uint8_t TimeSignature::MAX_BEATS_PER_MEASURE = 32;
 const uint8_t TimeSignature::MIN_PULSES = 0;
@@ -148,6 +146,4 @@ bool TimeSignature::isVisible() const
 void TimeSignature::setVisible(bool visible)
 {
     myIsVisible = visible;
-}
-
 }

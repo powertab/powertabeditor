@@ -22,8 +22,6 @@
 #include <score/tuning.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Tuning/ToString", "")
 {
     Tuning tuning;

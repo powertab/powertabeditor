@@ -19,8 +19,6 @@
 
 #include <stdexcept>
 
-namespace Score {
-
 const int TempoMarker::MIN_BEATS_PER_MINUTE = 40;
 const int TempoMarker::MAX_BEATS_PER_MINUTE = 300;
 
@@ -141,6 +139,4 @@ const std::string &TempoMarker::getDescription() const
 void TempoMarker::setDescription(const std::string &description)
 {
     myDescription = description;
-}
-
 }

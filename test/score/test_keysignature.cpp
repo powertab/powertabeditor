@@ -21,8 +21,6 @@
 #include <score/keysignature.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/KeySignature/ToString", "")
 {
     KeySignature key(KeySignature::Major, 4, false);

@@ -19,8 +19,6 @@
 
 #include <algorithm>
 
-namespace Score {
-
 Direction::Direction()
     : myPosition(0)
 {
@@ -103,6 +101,4 @@ DirectionSymbol::ActiveSymbolType DirectionSymbol::getActiveSymbolType() const
 int DirectionSymbol::getRepeatNumber() const
 {
     return myRepeatNumber;
-}
-
 }

@@ -20,8 +20,6 @@
 #include <stdexcept>
 #include "generalmidi.h"
 
-namespace Score {
-
 const uint8_t Player::MIN_VOLUME = Midi::MIN_MIDI_CHANNEL_VOLUME;
 const uint8_t Player::MAX_VOLUME = Midi::MAX_MIDI_CHANNEL_VOLUME;
 const uint8_t Player::MIN_PAN = Midi::MIN_MIDI_CHANNEL_EFFECT_LEVEL;
@@ -88,4 +86,3 @@ void Player::setTuning(const Tuning &tuning)
     myTuning = tuning;
 }
 
-}

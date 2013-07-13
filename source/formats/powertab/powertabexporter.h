@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef POWERTABEXPORTER_H
-#define POWERTABEXPORTER_H
+#ifndef FORMATS_POWERTABEXPORTER_H
+#define FORMATS_POWERTABEXPORTER_H
 
 #include <formats/fileformatmanager.h>
 
@@ -25,8 +25,7 @@ class PowerTabExporter : public FileFormatExporter
 public:
     PowerTabExporter();
 
-    virtual void save(boost::shared_ptr<const PowerTabDocument> doc,
-                      const std::string& fileName);
+    virtual void save(const std::string& filename, const Score &score);
 };
 
 #endif // POWERTABEXPORTER_H

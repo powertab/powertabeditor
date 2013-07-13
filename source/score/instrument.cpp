@@ -20,8 +20,6 @@
 #include <stdexcept>
 #include "generalmidi.h"
 
-namespace Score {
-
 Instrument::Instrument()
     : myDescription(""),
       myMidiPreset(Midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL)
@@ -57,4 +55,3 @@ void Instrument::setMidiPreset(uint8_t preset)
     myMidiPreset = preset;
 }
 
-}

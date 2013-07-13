@@ -15,6 +15,7 @@ add_library(ptescore
     rehearsalsign.cpp
     score.cpp
     scoreinfo.cpp
+    serialization.cpp
     staff.cpp
     system.cpp
     tempomarker.cpp

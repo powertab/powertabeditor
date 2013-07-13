@@ -19,8 +19,6 @@
 
 #include <algorithm>
 
-namespace Score {
-
 ActivePlayer::ActivePlayer()
     : myPlayerNumber(-1),
       myInstrumentNumber(-1)
@@ -93,6 +91,4 @@ void PlayerChange::removeActivePlayer(int staff, const ActivePlayer &player)
     std::vector<ActivePlayer> &playerList = myActivePlayers[staff];
     playerList.erase(std::remove(playerList.begin(), playerList.end(), player),
                      playerList.end());
-}
-
 }

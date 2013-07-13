@@ -17,34 +17,21 @@
   
 #include "fileformatmanager.h"
 
-#include <boost/foreach.hpp>
-
-#include <QMessageBox>
-
-#include <formats/guitar_pro/guitarproimporter.h>
-#include <formats/gpx/gpximporter.h>
 #include <formats/powertab/powertabimporter.h>
 #include <formats/powertab/powertabexporter.h>
-#include <powertabdocument/powertabdocument.h>
+#include <QMessageBox>
 
 FileFormatManager::FileFormatManager()
 {
     registerImporter<PowerTabImporter>();
-    registerImporter<GuitarProImporter>();
-    registerImporter<GpxImporter>();
-
     registerExporter<PowerTabExporter>();
-}
-
-FileFormatManager::~FileFormatManager()
-{
 }
 
 boost::optional<FileFormat> FileFormatManager::findFormat(
         const std::string &extension) const
 {
-    for (boost::ptr_map<FileFormat, FileFormatImporter>::const_iterator importer = importers.begin();
-         importer != importers.end(); ++importer)
+    for (ImporterMap::const_iterator importer = myImporters.begin();
+         importer != myImporters.end(); ++importer)
     {
         if (importer->first.contains(extension))
             return importer->first;
@@ -53,17 +40,15 @@ boost::optional<FileFormat> FileFormatManager::findFormat(
     return 0;
 }
 
-/// Returns a correctly formatted file filter for a Qt file dialog.
-/// e.g. "FileType (*.ext1 *.ext2);;FileType2 (*.ext3)".
 std::string FileFormatManager::importFileFilter() const
 {
     std::string filterAll = "All Supported Formats (";
     std::string filterOther;
 
-    for (boost::ptr_map<FileFormat, FileFormatImporter>::const_iterator importer = importers.begin();
-         importer != importers.end(); ++importer)
+    for (ImporterMap::const_iterator importer = myImporters.begin();
+         importer != myImporters.end(); ++importer)
     {
-        if (importer != importers.begin())
+        if (importer != myImporters.begin())
             filterAll += " ";
 
         filterAll += importer->first.allExtensions();
@@ -75,36 +60,36 @@ std::string FileFormatManager::importFileFilter() const
     return filterAll + filterOther;
 }
 
-boost::shared_ptr<PowerTabDocument> FileFormatManager::importFile(
-        const std::string& fileName, const FileFormat& format, QWidget *parentWindow)
+bool FileFormatManager::importFile(Score &score, const std::string &filename,
+                                   const FileFormat &format, QWidget *parentWindow)
 {
-    if (importers.find(format) != importers.end())
+    if (myImporters.find(format) != myImporters.end())
     {
         try
         {
-            boost::shared_ptr<PowerTabDocument> doc(importers.at(format).load(fileName));
-            doc->SetFileName(fileName);
-            return doc;
+            myImporters.at(format).load(filename, score);
+            return true;
         }
-        catch(const std::exception& e)
+        catch (const std::exception &e)
         {
             QMessageBox msgBox(parentWindow);
             msgBox.setText(QObject::tr("Error importing file - ") + QString(e.what()));
             msgBox.exec();
+            return false;
         }
     }
 
-    return boost::shared_ptr<PowerTabDocument>();
+    return false;
 }
 
 std::string FileFormatManager::exportFileFilter() const
 {
     std::string filter;
 
-    for (boost::ptr_map<FileFormat, FileFormatExporter>::const_iterator exporter = exporters.begin();
-         exporter != exporters.end(); ++exporter)
+    for (ExporterMap::const_iterator exporter = myExporters.begin();
+         exporter != myExporters.end(); ++exporter)
     {
-        if (exporter != exporters.begin())
+        if (exporter != myExporters.begin())
             filter += ";;";
 
         filter += exporter->first.fileFilter();
@@ -113,18 +98,17 @@ std::string FileFormatManager::exportFileFilter() const
     return filter;
 }
 
-bool FileFormatManager::exportFile(
-        boost::shared_ptr<const PowerTabDocument> doc,
-        const std::string &fileName, const FileFormat &format)
+bool FileFormatManager::exportFile(const Score &score, const std::string &filename,
+                                   const FileFormat &format)
 {
-    if (exporters.find(format) != exporters.end())
+    if (myExporters.find(format) != myExporters.end())
     {
         try
         {
-            exporters.at(format).save(doc, fileName);
+            myExporters.at(format).save(filename, score);
             return true;
         }
-        catch(const std::exception& e)
+        catch (const std::exception &e)
         {
             QMessageBox msgBox;
             msgBox.setText(QObject::tr("Error saving file - ") + QString(e.what()));

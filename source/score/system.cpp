@@ -23,10 +23,6 @@
 #include <limits>
 #include "utils.h"
 
-namespace Score {
-
-using namespace Detail;
-
 System::System()
 {
     // Add the start and end bars.
@@ -79,12 +75,12 @@ boost::iterator_range<System::BarlineConstIterator> System::getBarlines() const
 
 void System::insertBarline(const Barline &barline)
 {
-    insertObject(myBarlines, barline);
+    ScoreUtils::insertObject(myBarlines, barline);
 }
 
 void System::removeBarline(const Barline &barline)
 {
-    removeObject(myBarlines, barline);
+    ScoreUtils::removeObject(myBarlines, barline);
 }
 
 const Barline *System::getPreviousBarline(int position) const
@@ -121,12 +117,12 @@ boost::iterator_range<System::TempoMarkerConstIterator> System::getTempoMarkers(
 
 void System::insertTempoMarker(const TempoMarker &marker)
 {
-    insertObject(myTempoMarkers, marker);
+    ScoreUtils::insertObject(myTempoMarkers, marker);
 }
 
 void System::removeTempoMarker(const TempoMarker &marker)
 {
-    removeObject(myTempoMarkers, marker);
+    ScoreUtils::removeObject(myTempoMarkers, marker);
 }
 
 boost::iterator_range<System::AlternateEndingIterator> System::getAlternateEndings()
@@ -141,12 +137,12 @@ boost::iterator_range<System::AlternateEndingConstIterator> System::getAlternate
 
 void System::insertAlternateEnding(const AlternateEnding &ending)
 {
-    insertObject(myAlternateEndings, ending);
+    ScoreUtils::insertObject(myAlternateEndings, ending);
 }
 
 void System::removeAlternateEnding(const AlternateEnding &ending)
 {
-    removeObject(myAlternateEndings, ending);
+    ScoreUtils::removeObject(myAlternateEndings, ending);
 }
 
 boost::iterator_range<System::DirectionIterator> System::getDirections()
@@ -161,12 +157,12 @@ boost::iterator_range<System::DirectionConstIterator> System::getDirections() co
 
 void System::insertDirection(const Direction &direction)
 {
-    insertObject(myDirections, direction);
+    ScoreUtils::insertObject(myDirections, direction);
 }
 
 void System::removeDirection(const Direction &direction)
 {
-    removeObject(myDirections, direction);
+    ScoreUtils::removeObject(myDirections, direction);
 }
 
 boost::iterator_range<System::PlayerChangeIterator> System::getPlayerChanges()
@@ -181,12 +177,10 @@ boost::iterator_range<System::PlayerChangeConstIterator> System::getPlayerChange
 
 void System::insertPlayerChange(const PlayerChange &change)
 {
-    insertObject(myPlayerChanges, change);
+    ScoreUtils::insertObject(myPlayerChanges, change);
 }
 
 void System::removePlayerChange(const PlayerChange &change)
 {
-    removeObject(myPlayerChanges, change);
-}
-
+    ScoreUtils::removeObject(myPlayerChanges, change);
 }

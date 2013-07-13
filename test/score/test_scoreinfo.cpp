@@ -20,8 +20,6 @@
 #include <score/scoreinfo.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/ScoreInfo/ChangeType", "")
 {
     ScoreInfo info;

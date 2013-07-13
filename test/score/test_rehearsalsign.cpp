@@ -20,8 +20,6 @@
 #include <score/rehearsalsign.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/RehearsalSign/Serialization", "")
 {
     RehearsalSign sign;

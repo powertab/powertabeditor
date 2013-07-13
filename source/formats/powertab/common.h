@@ -15,15 +15,15 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef FORMATS_POWERTAB_COMMON_H
+#define FORMATS_POWERTAB_COMMON_H
 
 #include <boost/assign/list_of.hpp>
 #include <formats/fileformat.h>
 
 inline FileFormat getPowerTabFileFormat()
 {
-    return FileFormat("Power Tab Document", boost::assign::list_of("ptb"));
+    return FileFormat("Power Tab Document", boost::assign::list_of("pt2"));
 }
 
 #endif // COMMON_H

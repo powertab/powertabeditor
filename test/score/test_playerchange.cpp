@@ -20,8 +20,6 @@
 #include <score/playerchange.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/PlayerChange/ActivePlayers", "")
 {
     PlayerChange change;

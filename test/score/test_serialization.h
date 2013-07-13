@@ -20,8 +20,6 @@
 
 #include <catch.hpp>
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 #include <score/serialization.h>
 #include <sstream>
 
@@ -33,13 +31,11 @@ namespace Serialization {
     void test(const T &original)
     {
         std::ostringstream output;
-        boost::archive::text_oarchive oa(output);
-        oa << original;
+        ScoreUtils::save(output, original);
 
         T copy;
         std::istringstream input(output.str());
-        boost::archive::text_iarchive ia(input);
-        ia >> copy;
+        ScoreUtils::load(input, copy);
 
         REQUIRE(original == copy);
     }

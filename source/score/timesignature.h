@@ -22,8 +22,6 @@
 #include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
 
-namespace Score {
-
 class TimeSignature
 {
 public:
@@ -98,7 +96,5 @@ private:
              myNumPulses & myIsVisible;
     }
 };
-
-}
 
 #endif

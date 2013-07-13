@@ -21,8 +21,6 @@
 #include <stdexcept>
 #include "generalmidi.h"
 
-namespace Score {
-
 const int8_t Tuning::MIN_MUSIC_NOTATION_OFFSET = -12;
 const int8_t Tuning::MAX_MUSIC_NOTATION_OFFSET = 12;
 const int Tuning::MIN_STRING_COUNT = 3;
@@ -162,6 +160,4 @@ std::ostream &operator<<(std::ostream &os, const Tuning &t)
     }
 
     return os;
-}
-
 }

@@ -17,18 +17,17 @@
 
 #include "powertabimporter.h"
 
-#include <boost/make_shared.hpp>
-#include <formats/powertab/common.h>
-#include <powertabdocument/powertabdocument.h>
+#include "common.h"
+#include <fstream>
+#include <score/serialization.h>
 
-PowerTabImporter::PowerTabImporter() :
-    FileFormatImporter(getPowerTabFileFormat())
+PowerTabImporter::PowerTabImporter()
+    : FileFormatImporter(getPowerTabFileFormat())
 {
 }
 
-boost::shared_ptr<PowerTabDocument> PowerTabImporter::load(const std::string &fileName)
+void PowerTabImporter::load(const std::string &filename, Score &score)
 {
-    boost::shared_ptr<PowerTabDocument> doc = boost::make_shared<PowerTabDocument>();
-    doc->Load(fileName);
-    return doc;
+    std::ifstream input(filename.c_str());
+    ScoreUtils::load(input, score);
 }

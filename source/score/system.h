@@ -28,8 +28,6 @@
 #include "staff.h"
 #include "tempomarker.h"
 
-namespace Score {
-
 class System
 {
 public:
@@ -132,7 +130,5 @@ private:
              myDirections & myPlayerChanges;
     }
 };
-
-}
 
 #endif

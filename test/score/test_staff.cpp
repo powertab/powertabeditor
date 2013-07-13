@@ -20,8 +20,6 @@
 #include <score/staff.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Staff/Clef", "")
 {
     Staff staff;

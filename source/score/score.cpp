@@ -17,8 +17,6 @@
 
 #include "score.h"
 
-namespace Score {
-
 bool Score::operator==(const Score &other) const
 {
     return myScoreInfo == other.myScoreInfo &&
@@ -98,6 +96,4 @@ void Score::removeInstrument(const Instrument &instrument)
 {
     myInstruments.erase(std::remove(myInstruments.begin(), myInstruments.end(), instrument),
                     myInstruments.end());
-}
-
 }

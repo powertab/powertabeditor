@@ -20,8 +20,6 @@
 #include <score/position.h>
 #include "test_serialization.h"
 
-using namespace Score; 
-
 TEST_CASE("Score/Position/SimpleProperties", "")
 {
     Position position;

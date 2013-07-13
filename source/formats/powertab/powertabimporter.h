@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef POWERTABIMPORTER_H
-#define POWERTABIMPORTER_H
+#ifndef FORMATS_POWERTABIMPORTER_H
+#define FORMATS_POWERTABIMPORTER_H
 
 #include <formats/fileformatmanager.h>
 
@@ -25,7 +25,7 @@ class PowerTabImporter : public FileFormatImporter
 public:
     PowerTabImporter();
 
-    virtual boost::shared_ptr<PowerTabDocument> load(const std::string &fileName);
+    virtual void load(const std::string &filename, Score &score);
 };
 
 #endif // POWERTABIMPORTER_H
