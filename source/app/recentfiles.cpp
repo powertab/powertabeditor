@@ -21,19 +21,18 @@
 #include <QSettings>
 
 #include <app/settings.h>
-
-#include <sigfwd/sigfwd.hpp>
 #include <boost/bind.hpp>
+#include <sigfwd/sigfwd.hpp>
 
 RecentFiles::RecentFiles(QMenu* recentFilesMenu, QObject* parent) :
     QObject(parent),
-    recentFilesMenu(recentFilesMenu)
+    myRecentFilesMenu(recentFilesMenu)
 {
     Q_ASSERT(recentFilesMenu);
 
     // load recently used files from previous sessions
     QSettings settings;
-    recentFiles = settings.value(Settings::APP_RECENT_FILES).toStringList();
+    myRecentFiles = settings.value(Settings::APP_RECENT_FILES).toStringList();
     updateMenu();
 }
 
@@ -42,24 +41,22 @@ RecentFiles::~RecentFiles()
     save();
 }
 
-/// Save the recent files list to disk.
 void RecentFiles::save()
 {
     QSettings settings;
-    settings.setValue(Settings::APP_RECENT_FILES, recentFiles);
+    settings.setValue(Settings::APP_RECENT_FILES, myRecentFiles);
 }
 
-/// Adds a file to the recent documents list
 void RecentFiles::add(const QString &fileName)
 {
     // if the filename is already in the list, move it to the front
-    recentFiles.removeOne(fileName);
+    myRecentFiles.removeOne(fileName);
 
-    recentFiles.prepend(fileName);
+    myRecentFiles.prepend(fileName);
 
-    if (recentFiles.length() > MAX_RECENT_FILES)
+    if (myRecentFiles.length() > MAX_RECENT_FILES)
     {
-        recentFiles.pop_back();
+        myRecentFiles.pop_back();
     }
 
     save();
@@ -68,31 +65,32 @@ void RecentFiles::add(const QString &fileName)
 
 void RecentFiles::updateMenu()
 {
-    recentFilesMenu->clear();
+    myRecentFilesMenu->clear();
 
-    foreach (const QString& fileName, recentFiles)
+    foreach (const QString& fileName, myRecentFiles)
     {
-        QAction* fileAction = new QAction(fileName, recentFilesMenu);
-        recentFilesMenu->addAction(fileAction);
+        QAction* fileAction = new QAction(fileName, myRecentFilesMenu);
+        myRecentFilesMenu->addAction(fileAction);
 
         sigfwd::connect(fileAction, SIGNAL(triggered()),
-                        boost::bind(&RecentFiles::handleFileSelection, this, fileName));
+                        boost::bind(&RecentFiles::handleFileSelection, this,
+                                    fileName));
     }
 
-    if (!recentFiles.isEmpty())
+    if (!myRecentFiles.isEmpty())
     {
-        recentFilesMenu->addSeparator();
+        myRecentFilesMenu->addSeparator();
 
-        QAction* clearRecentFiles = new QAction(tr("Clear Recent Files"), recentFilesMenu);
+        QAction* clearRecentFiles = new QAction(tr("Clear Recent Files"),
+                                                myRecentFilesMenu);
         connect(clearRecentFiles, SIGNAL(triggered()), this, SLOT(clear()));
-        recentFilesMenu->addAction(clearRecentFiles);
+        myRecentFilesMenu->addAction(clearRecentFiles);
     }
 }
 
-/// Clear the recent files list
 void RecentFiles::clear()
 {
-    recentFiles.clear();
+    myRecentFiles.clear();
     save();
     updateMenu();
 }

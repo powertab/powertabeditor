@@ -15,33 +15,42 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef APP_COMMAND_H
+#define APP_COMMAND_H
 
 #include <QAction>
 
-/// An extension of QAction, supporting customizable shortcuts, default key sequences, etc
+/// An extension of QAction, supporting customizable shortcuts, default key
+/// sequences, etc.
 class Command : public QAction
 {
     Q_OBJECT
 
 public:
-    Command(const QString& text, const QString& id,
-            const QKeySequence& defaultShortcut, QObject* parent);
+    Command(const QString &text, const QString &id,
+            const QKeySequence &defaultShortcut, QObject *parent);
 
     QString id() const;
     QKeySequence defaultShortcut() const;
 
+    /// Set the shortcut for the command, and save it externally so that the
+    /// setting will persist.
     void setShortcut(const QKeySequence& shortcut);
 
 private:
+    /// Loads the shortcut for the command - if there is not a customized
+    /// shortcut in the settings file, then the default shortcut is used.
     void loadShortcut();
+
+    /// Returns the name of the key used for storing the customized shortcut.
     QString settingsKey() const;
 
-    const QString id_; /// unique identifer (used when storing a customized key sequence)
-    const QKeySequence defaultShortcut_;
+    /// Unique identifer (used when storing a customized key sequence).
+    const QString myId;
+    const QKeySequence myDefaultShortcut;
 
-    static const QString KEY_PREFIX; ///< prefix for all keys used with QSetting
+    /// Prefix for all keys used with QSetting.
+    static const QString KEY_PREFIX;
 };
 
-#endif // COMMAND_H
+#endif

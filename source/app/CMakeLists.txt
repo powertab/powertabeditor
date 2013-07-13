@@ -9,13 +9,13 @@ add_definitions(-DSVN_REVISION=${MY_WC_REVISION})
 
 add_library(pteapp
     #clipboard.cpp
-    #command.cpp
+    command.cpp
     #documentmanager.cpp
     options.cpp
     #powertabeditor.cpp
-    #recentfiles.cpp
+    recentfiles.cpp
     #scorearea.cpp
-    #settings.cpp
+    settings.cpp
     #skinmanager.cpp
     #tuningdictionary.cpp
 )

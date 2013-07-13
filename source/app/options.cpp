@@ -26,10 +26,6 @@ Options::Options()
 {
 }
 
-/// Parses the command lines arguments.
-/// This function may cause the program to exit if e.g. the "--help" argument
-/// is provided.
-/// @return True if the parsing was successful, false otherwise.
 bool Options::parse(const QStringList &argList)
 {
     using namespace TCLAP;
@@ -47,7 +43,7 @@ bool Options::parse(const QStringList &argList)
         std::vector<std::string> args = toStdStringList(argList);
         cmd.parse(args);
 
-        filenames = files.getValue();
+        myFilenames = files.getValue();
 
         return true;
     }
@@ -59,13 +55,11 @@ bool Options::parse(const QStringList &argList)
     }
 }
 
-/// Returns a list of files that should be opened.
 std::vector<std::string> Options::filesToOpen()
 {
-    return filenames;
+    return myFilenames;
 }
 
-/// Converts a QStringList to a vector of std::string.
 std::vector<std::string> Options::toStdStringList(const QStringList &list)
 {
     std::vector<std::string> vec;

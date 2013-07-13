@@ -16,7 +16,7 @@
 */
   
 #include <QMetaType>
-#include <powertabdocument/tuning.h>
+#include <score/tuning.h>
 
 #ifndef SETTINGS_H
 #define SETTINGS_H

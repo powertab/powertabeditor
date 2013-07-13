@@ -15,35 +15,41 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RECENTFILES_H
-#define RECENTFILES_H
+#ifndef APP_RECENTFILES_H
+#define APP_RECENTFILES_H
 
 #include <QStringList>
+
 class QMenu;
 
 class RecentFiles : public QObject
 {
     Q_OBJECT
+
 public:
-    RecentFiles(QMenu* recentFilesMenu, QObject* parent = 0);
+    RecentFiles(QMenu *myRecentFilesMenu, QObject *parent = 0);
     ~RecentFiles();
 
+    /// Adds a file to the recent documents list.
     void add(const QString& fileName);
 
 signals:
     void fileSelected(const QString& fileName);
 
 private slots:
+    /// Clears the recent files list.
     void clear();
     void handleFileSelection(const QString& fileName);
 
 private:
-    QMenu* recentFilesMenu;
-    QStringList recentFiles;
+    QMenu *myRecentFilesMenu;
+    QStringList myRecentFiles;
     static const int MAX_RECENT_FILES = 10;
 
     void updateMenu();
+
+    /// Save the recent files list to disk.
     void save();
 };
 
-#endif // RECENTFILES_H
+#endif

@@ -17,10 +17,11 @@
   
 #include "settings.h"
 
+#include <boost/lexical_cast.hpp>
 #include <QDataStream>
 #include <QString>
 #include <QVector>
-#include <powertabdocument/generalmidi.h>
+#include <score/generalmidi.h>
 
 namespace Settings
 {
@@ -37,7 +38,7 @@ namespace Settings
     const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
 
     const char* MIDI_METRONOME_PRESET = "midi/metronomePreset";
-    const int MIDI_METRONOME_PRESET_DEFAULT = midi::MIDI_PRESET_WOODBLOCK;
+    const int MIDI_METRONOME_PRESET_DEFAULT = Midi::MIDI_PRESET_WOODBLOCK;
 
     const char* MIDI_VIBRATO_LEVEL = "midi/vibrato";
     const int MIDI_VIBRATO_LEVEL_DEFAULT = 85;
@@ -52,18 +53,18 @@ namespace Settings
     const char* DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";
 
     const char* DEFAULT_INSTRUMENT_PRESET = "app/defaultInstrumentPreset";
-    const int DEFAULT_INSTRUMENT_PRESET_DEFAULT = midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL;
+    const int DEFAULT_INSTRUMENT_PRESET_DEFAULT = Midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL;
 
     const char* DEFAULT_INSTRUMENT_TUNING = "app/defaultInstrumentTuning";
-    const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT = Tuning::Standard();
+    const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT = Tuning();
 }
 
 QDataStream& operator<<(QDataStream& out, const Tuning &tuning)
 {
-    out << QString::fromStdString(tuning.GetName());
-    out << tuning.GetMusicNotationOffset();
-    out << tuning.UsesSharps();
-    out << QVector<uint8_t>::fromStdVector(tuning.GetTuningNotes());
+    out << QString::fromStdString(boost::lexical_cast<std::string>(tuning));
+    out << tuning.getMusicNotationOffset();
+    out << tuning.usesSharps();
+    out << QVector<uint8_t>::fromStdVector(tuning.getNotes());
     return out;
 }
 
@@ -75,10 +76,10 @@ QDataStream& operator>>(QDataStream& in, Tuning &tuning)
     QVector<uint8_t> notes;
 
     in >> name >> offset >> sharps >> notes;
-    tuning.SetName(name.toStdString());
-    tuning.SetMusicNotationOffset(offset);
-    tuning.SetSharps(sharps);
-    tuning.SetTuningNotes(notes.toStdVector());
+    tuning.setName(name.toStdString());
+    tuning.setMusicNotationOffset(offset);
+    tuning.setSharps(sharps);
+    tuning.setNotes(notes.toStdVector());
 
     return in;
 }

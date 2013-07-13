@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OPTIONS_H
-#define OPTIONS_H
+#ifndef APP_OPTIONS_H
+#define APP_OPTIONS_H
 
 #include <string>
 #include <vector>
@@ -29,14 +29,20 @@ class Options
 public:
     Options();
 
+    /// Parses the command lines arguments.
+    /// This function may cause the program to exit if e.g. the "--help"
+    /// argument is provided.
+    /// @return True if the parsing was successful, false otherwise.
     bool parse(const QStringList &argList);
 
+    /// Returns a list of files that should be opened.
     std::vector<std::string> filesToOpen();
 
 private:
+    /// Converts a QStringList to a vector of std::string.
     static std::vector<std::string> toStdStringList(const QStringList &args);
 
-    std::vector<std::string> filenames;
+    std::vector<std::string> myFilenames;
 };
 
-#endif // OPTIONS_H
+#endif

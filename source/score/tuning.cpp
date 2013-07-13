@@ -84,6 +84,11 @@ uint8_t Tuning::getNote(int string, bool includeMusicNotationOffset) const
     return note;
 }
 
+std::vector<uint8_t> Tuning::getNotes() const
+{
+    return myNotes;
+}
+
 void Tuning::setNote(int string, uint8_t note)
 {
     if (string >= getStringCount())

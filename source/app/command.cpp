@@ -24,24 +24,22 @@ const QString Command::KEY_PREFIX = "shortcuts/";
 Command::Command(const QString& text, const QString& id,
                  const QKeySequence& defaultShortcut, QObject* parent) :
     QAction(text, parent),
-    id_(id),
-    defaultShortcut_(defaultShortcut)
+    myId(id),
+    myDefaultShortcut(defaultShortcut)
 {
     loadShortcut();
 }
 
 QString Command::id() const
 {
-    return id_;
+    return myId;
 }
 
 QKeySequence Command::defaultShortcut() const
 {
-    return defaultShortcut_;
+    return myDefaultShortcut;
 }
 
-/// Set the shortcut for the command, and save it externally so that the
-/// setting will persist.
 void Command::setShortcut(const QKeySequence& shortcut)
 {
     QAction::setShortcut(shortcut);
@@ -58,20 +56,17 @@ void Command::setShortcut(const QKeySequence& shortcut)
     }
 }
 
-/// Loads the shortcut for the command - if there is not a customized shortuct in the settings file,
-/// then the default shortcut is used
 void Command::loadShortcut()
 {
     QSettings settings;
 
     const QString keySequence = settings.value(settingsKey(),
-                                               defaultShortcut_.toString()).toString();
+                                               myDefaultShortcut.toString()).toString();
 
     QAction::setShortcut(keySequence);
 }
 
-/// Returns the name of the key used for storing the customized shortcut.
 QString Command::settingsKey() const
 {
-    return KEY_PREFIX + id_;
+    return KEY_PREFIX + myId;
 }
