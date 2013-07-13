@@ -74,6 +74,8 @@ TEST_CASE("Formats/PowerTabOldImport/Barlines", "")
 
     const Barline &barline = system.getBarlines()[1];
 
+    REQUIRE(barline.getBarType() == Barline::DoubleBar);
+
     REQUIRE(barline.getRehearsalSign());
     REQUIRE(barline.getRehearsalSign()->getLetters() == "A");
     REQUIRE(barline.getRehearsalSign()->getDescription() == "Intro");
@@ -97,3 +99,23 @@ TEST_CASE("Formats/PowerTabOldImport/Barlines", "")
     REQUIRE(time.isVisible());
 }
 
+TEST_CASE("Formats/PowerTabOldImport/TempoMarkers", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/tempo_markers.ptb", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getTempoMarkers().size() == 1);
+    const TempoMarker &tempo = system.getTempoMarkers()[0];
+
+    REQUIRE(tempo.getPosition() == 3);
+    REQUIRE(tempo.getMarkerType() == TempoMarker::StandardMarker);
+    REQUIRE(tempo.getBeatType() == TempoMarker::Half);
+    REQUIRE(tempo.getListessoBeatType() == TempoMarker::Quarter);
+    REQUIRE(tempo.getTripletFeel() == TempoMarker::TripletFeelSixteenth);
+    REQUIRE(tempo.getAlterationOfPace() == TempoMarker::NoAlterationOfPace);
+    REQUIRE(tempo.getBeatsPerMinute() == 99);
+    REQUIRE(tempo.getDescription() == "Fast Rock");
+}

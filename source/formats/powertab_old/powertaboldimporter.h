@@ -18,6 +18,7 @@
 #ifndef FORMATS_POWERTABOLDIMPORTER_H
 #define FORMATS_POWERTABOLDIMPORTER_H
 
+#include <boost/shared_ptr.hpp>
 #include <formats/fileformatmanager.h>
 
 namespace PowerTabDocument {
@@ -28,6 +29,7 @@ class PowerTabFileHeader;
 class RehearsalSign;
 class Score;
 class System;
+class TempoMarker;
 class TimeSignature;
 class Tuning;
 }
@@ -37,6 +39,7 @@ class KeySignature;
 class RehearsalSign;
 class ScoreInfo;
 class System;
+class TempoMarker;
 class TimeSignature;
 class Tuning;
 
@@ -56,7 +59,8 @@ private:
     static void convert(const PowerTabDocument::Tuning &oldTuning,
                         Tuning &tuning);
 
-    static void convert(const PowerTabDocument::System &oldSystem,
+    static void convert(const PowerTabDocument::Score &oldScore,
+                        boost::shared_ptr<const PowerTabDocument::System> oldSystem,
                         System &system);
 
     static void convert(const PowerTabDocument::Barline &oldBar, Barline &bar);
@@ -66,6 +70,9 @@ private:
                         KeySignature &key);
     static void convert(const PowerTabDocument::TimeSignature &oldTime,
                         TimeSignature &time);
+
+    static void convert(const PowerTabDocument::TempoMarker &oldTempo,
+                        TempoMarker &tempo);
 };
 
 #endif

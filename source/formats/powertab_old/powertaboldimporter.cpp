@@ -23,6 +23,7 @@
 #include "powertabdocument/powertabdocument.h"
 #include "powertabdocument/score.h"
 #include "powertabdocument/system.h"
+#include "powertabdocument/tempomarker.h"
 #include <score/score.h>
 #include <score/generalmidi.h>
 
@@ -131,7 +132,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)
     {
         System system;
-        convert(*oldScore.GetSystem(i), system);
+        convert(oldScore, oldScore.GetSystem(i), system);
         score.insertSystem(system);
     }
 }
@@ -172,21 +173,32 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Tuning &oldTuning,
     // The capo is set from the Guitar object.
 }
 
-void PowerTabOldImporter::convert(const PowerTabDocument::System &oldSystem,
+void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
+                                  PowerTabDocument::Score::SystemConstPtr oldSystem,
                                   System &system)
 {
     // Import barlines.
     Barline &startBar = system.getBarlines()[0];
-    convert(*oldSystem.GetStartBar(), startBar);
+    convert(*oldSystem->GetStartBar(), startBar);
 
     Barline &endBar = system.getBarlines()[1];
-    convert(*oldSystem.GetEndBar(), endBar);
+    convert(*oldSystem->GetEndBar(), endBar);
 
-    for (size_t i = 0; i < oldSystem.GetBarlineCount(); ++i)
+    for (size_t i = 0; i < oldSystem->GetBarlineCount(); ++i)
     {
         Barline bar;
-        convert(*oldSystem.GetBarline(i), bar);
+        convert(*oldSystem->GetBarline(i), bar);
         system.insertBarline(bar);
+    }
+
+    // Import tempo markers.
+    std::vector<boost::shared_ptr<PowerTabDocument::TempoMarker> > tempos;
+    oldScore.GetTempoMarkersInSystem(tempos, oldSystem);
+    for (size_t i = 0; i < tempos.size(); ++i)
+    {
+        TempoMarker marker;
+        convert(*tempos[i], marker);
+        system.insertTempoMarker(marker);
     }
 }
 
@@ -249,4 +261,27 @@ void PowerTabOldImporter::convert(
 
     time.setNumPulses(oldTime.GetPulses());
     time.setVisible(oldTime.IsShown());
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::TempoMarker &oldTempo,
+                                  TempoMarker &tempo)
+{
+    tempo.setPosition(oldTempo.GetPosition());
+    tempo.setMarkerType(static_cast<TempoMarker::MarkerType>(
+                            oldTempo.GetType()));
+    tempo.setBeatType(static_cast<TempoMarker::BeatType>(oldTempo.GetBeatType()));
+    tempo.setListessoBeatType(static_cast<TempoMarker::BeatType>(
+                                  oldTempo.GetListessoBeatType()));
+    tempo.setTripletFeel(static_cast<TempoMarker::TripletFeelType>(
+                             oldTempo.GetTripletFeelType()));
+
+    TempoMarker::AlterationOfPaceType alteration(TempoMarker::NoAlterationOfPace);
+    if (oldTempo.IsRitardando())
+        alteration = TempoMarker::Ritardando;
+    else if (oldTempo.IsAccelerando())
+        alteration = TempoMarker::Accelerando;
+
+    tempo.setAlterationOfPace(alteration);
+    tempo.setBeatsPerMinute(oldTempo.GetBeatsPerMinute());
+    tempo.setDescription(oldTempo.GetDescription());
 }
