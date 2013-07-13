@@ -34,7 +34,7 @@
 #include <score/generalmidi.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
-    : FileFormatImporter(FileFormat("Power Tab Document",
+    : FileFormatImporter(FileFormat("Power Tab Document (v1.7)",
                                     boost::assign::list_of("ptb")))
 {
 }
@@ -325,7 +325,8 @@ void PowerTabOldImporter::convert(const PowerTabDocument::TempoMarker &oldTempo,
         alteration = TempoMarker::Accelerando;
 
     tempo.setAlterationOfPace(alteration);
-    tempo.setBeatsPerMinute(oldTempo.GetBeatsPerMinute());
+    if (alteration == TempoMarker::NoAlterationOfPace)
+        tempo.setBeatsPerMinute(oldTempo.GetBeatsPerMinute());
     tempo.setDescription(oldTempo.GetDescription());
 }
 
