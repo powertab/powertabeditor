@@ -21,10 +21,14 @@
 #include <formats/fileformatmanager.h>
 
 namespace PowerTabDocument {
+class Guitar;
 class PowerTabFileHeader;
+class Score;
+class Tuning;
 }
 
 class ScoreInfo;
+class Tuning;
 
 class PowerTabOldImporter : public FileFormatImporter
 {
@@ -35,6 +39,10 @@ public:
 private:
     static void convert(const PowerTabDocument::PowerTabFileHeader &header,
                         ScoreInfo &info);
+    static void convert(const PowerTabDocument::Score &oldScore,
+                        Score &score);
+    static void convert(const PowerTabDocument::Guitar &guitar, Score &score);
+    static void convert(const PowerTabDocument::Tuning &oldTuning, Tuning &tuning);
 };
 
 #endif

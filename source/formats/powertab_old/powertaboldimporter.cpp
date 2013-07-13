@@ -18,8 +18,11 @@
 #include "powertaboldimporter.h"
 
 #include <boost/assign/list_of.hpp>
+#include "powertabdocument/guitar.h"
 #include "powertabdocument/powertabdocument.h"
+#include "powertabdocument/score.h"
 #include <score/score.h>
+#include <score/generalmidi.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab Document",
@@ -36,6 +39,9 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     ScoreInfo info;
     convert(document.GetHeader(), info);
     score.setScoreInfo(info);
+
+    // TODO - merge bass score.
+    convert(*document.GetScore(0), score);
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::PowerTabFileHeader &header,
@@ -105,4 +111,47 @@ void PowerTabOldImporter::convert(const PowerTabDocument::PowerTabFileHeader &he
 
         info.setLessonData(data);
     }
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore, Score &score)
+{
+    // Convert guitars to players and instruments.
+    for (size_t i = 0; i < oldScore.GetGuitarCount(); ++i)
+    {
+        convert(*oldScore.GetGuitar(i), score);
+    }
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar, Score &score)
+{
+    Player player;
+    player.setDescription(guitar.GetDescription());
+    player.setMaxVolume(guitar.GetInitialVolume());
+    player.setPan(guitar.GetPan());
+
+    Tuning tuning;
+    convert(guitar.GetTuning(), tuning);
+    tuning.setCapo(guitar.GetCapo());
+    player.setTuning(tuning);
+
+    score.insertPlayer(player);
+
+    Instrument instrument;
+    instrument.setMidiPreset(guitar.GetPreset());
+
+    // Use the MIDI preset name as the description.
+    std::vector<std::string> presetNames;
+    Midi::getMidiPresetNames(presetNames);
+    instrument.setDescription(presetNames.at(guitar.GetPreset()));
+
+    score.insertInstrument(instrument);
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Tuning &oldTuning, Tuning &tuning)
+{
+    tuning.setName(oldTuning.GetName());
+    tuning.setNotes(oldTuning.GetTuningNotes());
+    tuning.setMusicNotationOffset(oldTuning.GetMusicNotationOffset());
+    tuning.setSharps(oldTuning.UsesSharps());
+    // The capo is set from the Guitar object.
 }

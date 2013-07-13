@@ -43,3 +43,21 @@ TEST_CASE("Formats/PowerTabOldImport/SongHeader", "")
     REQUIRE(data.getLyrics() == "Some lyrics");
     REQUIRE(data.getPerformanceNotes() == "Some notes.");
 }
+
+TEST_CASE("Formats/PowerTabOldImport/Guitars", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/guitars.ptb", score);
+
+    REQUIRE(score.getPlayers().size() == 2);
+    REQUIRE(score.getInstruments().size() == 2);
+
+    const Player &player1 = score.getPlayers()[0];
+    const Player &player2 = score.getPlayers()[1];
+    REQUIRE(player1.getDescription() == "First Player");
+    REQUIRE(player2.getDescription() == "Second Player");
+    REQUIRE(player2.getTuning().getStringCount() == 7);
+
+    REQUIRE(score.getInstruments()[0].getDescription() == "Electric Guitar (clean)");
+}
