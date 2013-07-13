@@ -78,4 +78,4 @@ void FileFormatManager::registerExporter()
     myExporters.insert(format, new Exporter());
 }
 
-#endif // FILEFORMATMANAGER_H
+#endif

@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2011 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,32 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#ifndef COLOUR_H
+#define COLOUR_H
 
-#ifndef FORMATS_POWERTABIMPORTER_H
-#define FORMATS_POWERTABIMPORTER_H
+#include <boost/cstdint.hpp>
 
-#include <formats/fileformatmanager.h>
+namespace PowerTabDocument {
 
-class PowerTabImporter : public FileFormatImporter
+class Colour
 {
 public:
-    PowerTabImporter();
+    Colour(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0, uint8_t alpha = 0);
 
-    virtual void load(const std::string &filename, Score &score);
+    bool operator==(const Colour& rhs) const;
+
+    uint8_t Red() const;
+    uint8_t Green() const;
+    uint8_t Blue() const;
+    uint8_t Alpha() const;
+    
+    void Set(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0, uint8_t alpha = 0);
+
+private:
+    uint8_t red_, green_, blue_, alpha_;
 };
 
-#endif
+}
+
+#endif // COLOUR_H

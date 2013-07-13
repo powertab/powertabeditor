@@ -28,4 +28,4 @@ public:
     virtual void save(const std::string& filename, const Score &score);
 };
 
-#endif // POWERTABEXPORTER_H
+#endif

@@ -15,15 +15,15 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FORMATS_POWERTABIMPORTER_H
-#define FORMATS_POWERTABIMPORTER_H
+#ifndef FORMATS_POWERTABOLDIMPORTER_H
+#define FORMATS_POWERTABOLDIMPORTER_H
 
 #include <formats/fileformatmanager.h>
 
-class PowerTabImporter : public FileFormatImporter
+class PowerTabOldImporter : public FileFormatImporter
 {
 public:
-    PowerTabImporter();
+    PowerTabOldImporter();
 
     virtual void load(const std::string &filename, Score &score);
 };

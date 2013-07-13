@@ -15,17 +15,21 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FORMATS_POWERTABIMPORTER_H
-#define FORMATS_POWERTABIMPORTER_H
+#include "powertaboldimporter.h"
 
-#include <formats/fileformatmanager.h>
+#include <boost/assign/list_of.hpp>
+#include "powertabdocument/powertabdocument.h"
 
-class PowerTabImporter : public FileFormatImporter
+PowerTabOldImporter::PowerTabOldImporter()
+    : FileFormatImporter(FileFormat("Power Tab Document",
+                                    boost::assign::list_of("ptb")))
 {
-public:
-    PowerTabImporter();
+}
 
-    virtual void load(const std::string &filename, Score &score);
-};
+void PowerTabOldImporter::load(const std::string &filename, Score &score)
+{
+    PowerTabDocument::Document document;
+    document.Load(filename);
 
-#endif
+    (void)score;
+}

@@ -91,4 +91,4 @@ public:
     FileFormatException(const std::string &error);
 };
 
-#endif // IFILEFORMAT_H
+#endif
