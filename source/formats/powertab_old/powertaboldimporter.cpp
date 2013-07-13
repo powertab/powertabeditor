@@ -18,9 +18,11 @@
 #include "powertaboldimporter.h"
 
 #include <boost/assign/list_of.hpp>
+#include "powertabdocument/barline.h"
 #include "powertabdocument/guitar.h"
 #include "powertabdocument/powertabdocument.h"
 #include "powertabdocument/score.h"
+#include "powertabdocument/system.h"
 #include <score/score.h>
 #include <score/generalmidi.h>
 
@@ -44,8 +46,8 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     convert(*document.GetScore(0), score);
 }
 
-void PowerTabOldImporter::convert(const PowerTabDocument::PowerTabFileHeader &header,
-                                  ScoreInfo &info)
+void PowerTabOldImporter::convert(
+        const PowerTabDocument::PowerTabFileHeader &header, ScoreInfo &info)
 {
     using namespace PowerTabDocument;
 
@@ -60,19 +62,23 @@ void PowerTabOldImporter::convert(const PowerTabDocument::PowerTabFileHeader &he
         if (releaseType == PowerTabFileHeader::RELEASETYPE_PUBLIC_AUDIO)
         {
             data.setAudioReleaseInfo(SongData::AudioData(
-                static_cast<SongData::AudioData::AudioReleaseType>(header.GetSongAudioReleaseType()),
-                header.GetSongAudioReleaseTitle(), header.GetSongAudioReleaseYear(),
+                static_cast<SongData::AudioData::AudioReleaseType>(
+                                             header.GetSongAudioReleaseType()),
+                header.GetSongAudioReleaseTitle(),
+                header.GetSongAudioReleaseYear(),
                 header.IsSongAudioReleaseLive()));
         }
         else if (releaseType == PowerTabFileHeader::RELEASETYPE_PUBLIC_VIDEO)
         {
-            data.setVideoReleaseInfo(SongData::VideoData(header.GetSongVideoReleaseTitle(),
-                                                         header.IsSongVideoReleaseLive()));
+            data.setVideoReleaseInfo(SongData::VideoData(
+                header.GetSongVideoReleaseTitle(),
+                header.IsSongVideoReleaseLive()));
         }
         else if (releaseType == PowerTabFileHeader::RELEASETYPE_BOOTLEG)
         {
-            data.setBootlegInfo(SongData::BootlegData(header.GetSongBootlegTitle(),
-                                                      header.GetSongBootlegDate()));
+            data.setBootlegInfo(SongData::BootlegData(
+                header.GetSongBootlegTitle(),
+                header.GetSongBootlegDate()));
         }
         else
         {
@@ -113,16 +119,25 @@ void PowerTabOldImporter::convert(const PowerTabDocument::PowerTabFileHeader &he
     }
 }
 
-void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore, Score &score)
+void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
+                                  Score &score)
 {
     // Convert guitars to players and instruments.
     for (size_t i = 0; i < oldScore.GetGuitarCount(); ++i)
     {
         convert(*oldScore.GetGuitar(i), score);
     }
+
+    for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)
+    {
+        System system;
+        convert(*oldScore.GetSystem(i), system);
+        score.insertSystem(system);
+    }
 }
 
-void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar, Score &score)
+void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
+                                  Score &score)
 {
     Player player;
     player.setDescription(guitar.GetDescription());
@@ -147,11 +162,91 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar, Score 
     score.insertInstrument(instrument);
 }
 
-void PowerTabOldImporter::convert(const PowerTabDocument::Tuning &oldTuning, Tuning &tuning)
+void PowerTabOldImporter::convert(const PowerTabDocument::Tuning &oldTuning,
+                                  Tuning &tuning)
 {
     tuning.setName(oldTuning.GetName());
     tuning.setNotes(oldTuning.GetTuningNotes());
     tuning.setMusicNotationOffset(oldTuning.GetMusicNotationOffset());
     tuning.setSharps(oldTuning.UsesSharps());
     // The capo is set from the Guitar object.
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::System &oldSystem,
+                                  System &system)
+{
+    // Import barlines.
+    Barline &startBar = system.getBarlines()[0];
+    convert(*oldSystem.GetStartBar(), startBar);
+
+    Barline &endBar = system.getBarlines()[1];
+    convert(*oldSystem.GetEndBar(), endBar);
+
+    for (size_t i = 0; i < oldSystem.GetBarlineCount(); ++i)
+    {
+        Barline bar;
+        convert(*oldSystem.GetBarline(i), bar);
+        system.insertBarline(bar);
+    }
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Barline &oldBar,
+                                  Barline &bar)
+{
+    bar.setPosition(oldBar.GetPosition());
+    bar.setBarType(static_cast<Barline::BarType>(oldBar.GetType()));
+    bar.setRepeatCount(oldBar.GetRepeatCount());
+
+    if (oldBar.GetRehearsalSign().IsSet())
+    {
+        RehearsalSign sign;
+        convert(oldBar.GetRehearsalSign(), sign);
+        bar.setRehearsalSign(sign);
+    }
+
+    KeySignature key;
+    convert(oldBar.GetKeySignature(), key);
+    bar.setKeySignature(key);
+
+    TimeSignature time;
+    convert(oldBar.GetTimeSignature(), time);
+    bar.setTimeSignature(time);
+}
+
+void PowerTabOldImporter::convert(
+        const PowerTabDocument::RehearsalSign &oldSign, RehearsalSign &sign)
+{
+    sign.setLetters(std::string(1, oldSign.GetLetter()));
+    sign.setDescription(oldSign.GetDescription());
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::KeySignature &oldKey,
+                                  KeySignature &key)
+{
+    key.setKeyType(static_cast<KeySignature::KeyType>(oldKey.GetKeyType()));
+    key.setNumAccidentals(oldKey.NumberOfAccidentals());
+    key.setSharps(oldKey.UsesSharps());
+    key.setVisible(oldKey.IsShown());
+    key.setCancellation(oldKey.IsCancellation());
+}
+
+void PowerTabOldImporter::convert(
+        const PowerTabDocument::TimeSignature &oldTime, TimeSignature &time)
+{
+    TimeSignature::MeterType type = TimeSignature::Normal;
+    if (oldTime.IsCutTime())
+        type = TimeSignature::CutTime;
+    else if (oldTime.IsCommonTime())
+        type = TimeSignature::CommonTime;
+
+    time.setMeterType(type);
+    time.setBeatsPerMeasure(oldTime.GetBeatsPerMeasure());
+    time.setBeatValue(oldTime.GetBeatAmount());
+
+    TimeSignature::BeamingPattern pattern;
+    oldTime.GetBeamingPattern(pattern[0], pattern[1], pattern[2], pattern[3]);
+    time.setBeamingPattern(pattern);
+
+    time.setNumPulses(oldTime.GetPulses());
+    time.setVisible(oldTime.IsShown());
 }

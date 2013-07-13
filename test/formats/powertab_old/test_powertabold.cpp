@@ -61,3 +61,39 @@ TEST_CASE("Formats/PowerTabOldImport/Guitars", "")
 
     REQUIRE(score.getInstruments()[0].getDescription() == "Electric Guitar (clean)");
 }
+
+TEST_CASE("Formats/PowerTabOldImport/Barlines", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/barlines.ptb", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getBarlines().size() == 3);
+
+    const Barline &barline = system.getBarlines()[1];
+
+    REQUIRE(barline.getRehearsalSign());
+    REQUIRE(barline.getRehearsalSign()->getLetters() == "A");
+    REQUIRE(barline.getRehearsalSign()->getDescription() == "Intro");
+
+    const KeySignature &key = barline.getKeySignature();
+    REQUIRE(key.getKeyType() == KeySignature::Minor);
+    REQUIRE(key.getNumAccidentals() == 2);
+    REQUIRE(key.usesSharps());
+    REQUIRE(!key.isCancellation());
+    REQUIRE(key.isVisible());
+
+    const TimeSignature &time = barline.getTimeSignature();
+    REQUIRE(time.getMeterType() == TimeSignature::Normal);
+    REQUIRE(time.getBeatsPerMeasure() == 5);
+    REQUIRE(time.getBeatValue() == 8);
+    REQUIRE(time.getBeamingPattern()[0] == 3);
+    REQUIRE(time.getBeamingPattern()[1] == 2);
+    REQUIRE(time.getBeamingPattern()[2] == 0);
+    REQUIRE(time.getBeamingPattern()[3] == 0);
+    REQUIRE(time.getNumPulses() == 5);
+    REQUIRE(time.isVisible());
+}
+

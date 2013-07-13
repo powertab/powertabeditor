@@ -21,13 +21,23 @@
 #include <formats/fileformatmanager.h>
 
 namespace PowerTabDocument {
+class Barline;
 class Guitar;
+class KeySignature;
 class PowerTabFileHeader;
+class RehearsalSign;
 class Score;
+class System;
+class TimeSignature;
 class Tuning;
 }
 
+class Barline;
+class KeySignature;
+class RehearsalSign;
 class ScoreInfo;
+class System;
+class TimeSignature;
 class Tuning;
 
 class PowerTabOldImporter : public FileFormatImporter
@@ -41,8 +51,21 @@ private:
                         ScoreInfo &info);
     static void convert(const PowerTabDocument::Score &oldScore,
                         Score &score);
+
     static void convert(const PowerTabDocument::Guitar &guitar, Score &score);
-    static void convert(const PowerTabDocument::Tuning &oldTuning, Tuning &tuning);
+    static void convert(const PowerTabDocument::Tuning &oldTuning,
+                        Tuning &tuning);
+
+    static void convert(const PowerTabDocument::System &oldSystem,
+                        System &system);
+
+    static void convert(const PowerTabDocument::Barline &oldBar, Barline &bar);
+    static void convert(const PowerTabDocument::RehearsalSign &oldSign,
+                        RehearsalSign &sign);
+    static void convert(const PowerTabDocument::KeySignature &oldKey,
+                        KeySignature &key);
+    static void convert(const PowerTabDocument::TimeSignature &oldTime,
+                        TimeSignature &time);
 };
 
 #endif
