@@ -55,9 +55,9 @@ Note::Note(uint32_t string, uint8_t fretNumber) :
     assert(IsValidString(string));
     assert(IsValidFretNumber(fretNumber));
 
+    ComplexSymbols::clearComplexSymbols(m_complexSymbolArray);
     SetString(string);
     SetFretNumber(fretNumber);
-    ComplexSymbols::clearComplexSymbols(m_complexSymbolArray);
 }
 
 /// Copy Constructor
