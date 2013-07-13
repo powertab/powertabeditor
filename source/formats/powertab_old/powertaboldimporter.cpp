@@ -20,6 +20,7 @@
 #include <boost/assign/list_of.hpp>
 #include "powertabdocument/alternateending.h"
 #include "powertabdocument/barline.h"
+#include "powertabdocument/direction.h"
 #include "powertabdocument/guitar.h"
 #include "powertabdocument/powertabdocument.h"
 #include "powertabdocument/score.h"
@@ -202,6 +203,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         system.insertTempoMarker(marker);
     }
 
+    // Import alternate endings.
     std::vector<boost::shared_ptr<PowerTabDocument::AlternateEnding> > endings;
     oldScore.GetAlternateEndingsInSystem(endings, oldSystem);
     for (size_t i = 0; i < endings.size(); ++i)
@@ -209,6 +211,14 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         AlternateEnding ending;
         convert(*endings[i], ending);
         system.insertAlternateEnding(ending);
+    }
+
+    // Import directions.
+    for (size_t i = 0; i < oldSystem->GetDirectionCount(); ++i)
+    {
+        Direction direction;
+        convert(*oldSystem->GetDirection(i), direction);
+        system.insertDirection(direction);
     }
 }
 
@@ -309,4 +319,23 @@ void PowerTabOldImporter::convert(
     ending.setDaCapo(oldEnding.IsDaCapoSet());
     ending.setDalSegno(oldEnding.IsDalSegnoSet());
     ending.setDalSegnoSegno(oldEnding.IsDalSegnoSegnoSet());
+}
+
+void PowerTabOldImporter::convert(
+        const PowerTabDocument::Direction &oldDirection, Direction &direction)
+{
+    direction.setPosition(oldDirection.GetPosition());
+
+    for (size_t i = 0; i < oldDirection.GetSymbolCount(); ++i)
+    {
+        uint8_t type = 0;
+        uint8_t active = 0;
+        uint8_t repeat = 0;
+        oldDirection.GetSymbol(i, type, active, repeat);
+
+        direction.insertSymbol(DirectionSymbol(
+                static_cast<DirectionSymbol::SymbolType>(type),
+                static_cast<DirectionSymbol::ActiveSymbolType>(active),
+                repeat));
+    }
 }

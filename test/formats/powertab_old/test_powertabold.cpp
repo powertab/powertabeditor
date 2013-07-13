@@ -142,3 +142,28 @@ TEST_CASE("Formats/PowerTabOldImport/AlternateEndings", "")
     REQUIRE(!ending.hasDalSegno());
     REQUIRE(!ending.hasDalSegnoSegno());
 }
+
+TEST_CASE("Formats/PowerTabOldImport/Directions", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/directions.ptb", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getDirections().size() == 1);
+    const Direction &direction = system.getDirections()[0];
+
+    REQUIRE(direction.getPosition() == 9);
+    REQUIRE(direction.getSymbols().size() == 2);
+
+    const DirectionSymbol &symbol1 = direction.getSymbols()[0];
+    REQUIRE(symbol1.getSymbolType() == DirectionSymbol::Coda);
+    REQUIRE(symbol1.getRepeatNumber() == 1);
+    REQUIRE(symbol1.getActiveSymbolType() == DirectionSymbol::ActiveNone);
+
+    const DirectionSymbol &symbol2 = direction.getSymbols()[1];
+    REQUIRE(symbol2.getSymbolType() == DirectionSymbol::Segno);
+    REQUIRE(symbol2.getRepeatNumber() == 2);
+    REQUIRE(symbol2.getActiveSymbolType() == DirectionSymbol::ActiveDaCapo);
+}

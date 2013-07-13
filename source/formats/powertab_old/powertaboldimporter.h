@@ -24,6 +24,7 @@
 namespace PowerTabDocument {
 class AlternateEnding;
 class Barline;
+class Direction;
 class Guitar;
 class KeySignature;
 class PowerTabFileHeader;
@@ -37,6 +38,7 @@ class Tuning;
 
 class AlternateEnding;
 class Barline;
+class Direction;
 class KeySignature;
 class RehearsalSign;
 class ScoreInfo;
@@ -77,6 +79,8 @@ private:
                         TempoMarker &tempo);
     static void convert(const PowerTabDocument::AlternateEnding &oldEnding,
                         AlternateEnding &ending);
+    static void convert(const PowerTabDocument::Direction &oldDirection,
+                        Direction &direction);
 };
 
 #endif
