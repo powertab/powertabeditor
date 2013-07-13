@@ -21,6 +21,7 @@
 #include "powertabdocument/alternateending.h"
 #include "powertabdocument/barline.h"
 #include "powertabdocument/direction.h"
+#include "powertabdocument/dynamic.h"
 #include "powertabdocument/guitar.h"
 #include "powertabdocument/powertabdocument.h"
 #include "powertabdocument/score.h"
@@ -222,11 +223,22 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         system.insertDirection(direction);
     }
 
+    std::vector<PowerTabDocument::Score::DynamicPtr> dynamics;
+    oldScore.GetDynamicsInSystem(dynamics, oldSystem);
+
     // Import staves.
     for (size_t i = 0; i < oldSystem->GetStaffCount(); ++i)
     {
+        // Dynamics are now stored in the staff instead of the system.
+        std::vector<PowerTabDocument::Score::DynamicPtr> dynamicsInStaff;
+        for (size_t j = 0; j < dynamics.size(); ++j)
+        {
+            if (dynamics[j]->GetStaff() == i)
+                dynamicsInStaff.push_back(dynamics[j]);
+        }
+
         Staff staff;
-        convert(*oldSystem->GetStaff(i), staff);
+        convert(*oldSystem->GetStaff(i), dynamicsInStaff, staff);
         system.insertStaff(staff);
     }
 }
@@ -349,10 +361,28 @@ void PowerTabOldImporter::convert(
     }
 }
 
-void PowerTabOldImporter::convert(const PowerTabDocument::Staff &oldStaff,
-                                  Staff &staff)
+void PowerTabOldImporter::convert(
+        const PowerTabDocument::Staff &oldStaff,
+        const std::vector<PowerTabDocument::Score::DynamicPtr> &dynamics,
+        Staff &staff)
 {
     staff.setClefType(static_cast<Staff::ClefType>(oldStaff.GetClef()));
     staff.setStringCount(oldStaff.GetTablatureStaffType());
     staff.setViewType(Staff::GuitarView);
+
+    // Import dynamics.
+    for (size_t i = 0; i < dynamics.size(); ++i)
+    {
+        Dynamic dynamic;
+        convert(*dynamics[i], dynamic);
+        staff.insertDynamic(dynamic);
+    }
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Dynamic &oldDynamic,
+                                  Dynamic &dynamic)
+{
+    dynamic.setPosition(oldDynamic.GetPosition());
+    dynamic.setVolume(static_cast<Dynamic::VolumeLevel>(
+                          oldDynamic.GetStaffVolume()));
 }

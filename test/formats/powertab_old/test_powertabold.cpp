@@ -183,8 +183,14 @@ TEST_CASE("Formats/PowerTabOldImport/Staves", "")
     REQUIRE(staff1.getClefType() == Staff::TrebleClef);
     REQUIRE(staff1.getStringCount() == 6);
     REQUIRE(staff1.getViewType() == Staff::GuitarView);
+    REQUIRE(staff1.getDynamics().size() == 0);
 
     REQUIRE(staff2.getClefType() == Staff::BassClef);
     REQUIRE(staff2.getStringCount() == 7);
     REQUIRE(staff2.getViewType() == Staff::GuitarView);
+    REQUIRE(staff2.getDynamics().size() == 1);
+
+    const Dynamic &dynamic = staff2.getDynamics()[0];
+    REQUIRE(dynamic.getPosition() == 4);
+    REQUIRE(dynamic.getVolume() == Dynamic::mp);
 }
