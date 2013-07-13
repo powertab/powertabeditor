@@ -23,58 +23,17 @@
 
 #include <app/common.h>
 #include <app/settings.h>
-#include <powertabdocument/guitar.h>
-#include <powertabdocument/powertabdocument.h>
-
-using boost::shared_ptr;
 
 DocumentManager::DocumentManager()
 {
-    currentDocumentIndex = -1;
 }
 
-shared_ptr<PowerTabDocument> DocumentManager::getCurrentDocument() const
+Document &DocumentManager::addDocument()
 {
-    if (currentDocumentIndex == -1)
-    {
-        return shared_ptr<PowerTabDocument>();
-    }
-    else
-    {
-        return documentList.at(currentDocumentIndex);
-    }
-}
+    myDocumentList.push_back(new Document());
 
-void DocumentManager::removeDocument(int index)
-{
-    documentList.erase(documentList.begin() + index);
-    currentDocumentIndex = 0;
-}
-
-void DocumentManager::addDocument(boost::shared_ptr<PowerTabDocument> doc)
-{
-    documentList.push_back(doc);
-    currentDocumentIndex = documentList.size() - 1;
-}
-
-void DocumentManager::setCurrentDocumentIndex(int index)
-{
-    index = Common::clamp(index, -1, static_cast<int>(documentList.size() - 1));
-    currentDocumentIndex = index;
-}
-
-int DocumentManager::getCurrentDocumentIndex() const
-{
-    return currentDocumentIndex;
-}
-
-/// Creates a new (blank) document.
-void DocumentManager::createDocument()
-{
-    shared_ptr<PowerTabDocument> doc(new PowerTabDocument);
-    doc->SetFileName("Untitled.ptb");
-
-    // Create the default instrument.
+    // TODO - set up a default document.
+#if 0
     QSettings settings;
     Guitar defaultGuitar;
     defaultGuitar.SetDescription(settings.value(
@@ -86,8 +45,74 @@ void DocumentManager::createDocument()
             Settings::DEFAULT_INSTRUMENT_TUNING,
             QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)).value<Tuning>());
     doc->Init(defaultGuitar);
+#endif
 
-    documentList.push_back(doc);
-    currentDocumentIndex = documentList.size() - 1;
+    myCurrentIndex = myDocumentList.size() - 1;
+    return myDocumentList.back();
 }
 
+boost::optional<Document &> DocumentManager::getCurrentDocument()
+{
+    if (myCurrentIndex)
+        return boost::none;
+    else
+        return myDocumentList.at(*myCurrentIndex);
+}
+
+void DocumentManager::removeDocument(int index)
+{
+    myDocumentList.erase(myDocumentList.begin() + index);
+
+    if (myDocumentList.empty())
+        myCurrentIndex = boost::none;
+    else if (myDocumentList.size() >= myCurrentIndex)
+        myCurrentIndex = myDocumentList.size() - 1;
+}
+
+bool DocumentManager::hasOpenDocuments() const
+{
+    return myCurrentIndex;
+}
+
+void DocumentManager::setCurrentDocumentIndex(int index)
+{
+    if (myDocumentList.empty())
+        throw std::logic_error("No open documents");
+
+    myCurrentIndex = index;
+}
+
+int DocumentManager::getCurrentDocumentIndex() const
+{
+    return *myCurrentIndex;
+}
+
+
+Document::Document()
+{
+}
+
+bool Document::hasFilename() const
+{
+    return myFilename;
+}
+
+const std::string &Document::getFilename() const
+{
+    return *myFilename;
+}
+
+void Document::setFilename(const std::string &filename)
+{
+    myFilename = filename;
+}
+
+const Score &Document::getScore() const
+{
+    return myScore;
+}
+
+Score &Document::getScore()
+{
+    return myScore;
+}

@@ -25,7 +25,7 @@ add_executable(pte_tests
     #actions/test_updatenoteduration.cpp
     #actions/test_updatetabnumber.cpp
 
-    #app/test_documentmanager.cpp
+    app/test_documentmanager.cpp
 
     #audio/test_midievent.cpp
 
@@ -75,7 +75,7 @@ qt5_use_modules(pte_tests Widgets)
 
 target_link_libraries(pte_tests
     ${Boost_LIBRARIES}
-    #pteapp
+    pteapp
     #ptewidgets
     #ptedialogs
     #pteactions

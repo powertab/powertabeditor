@@ -15,32 +15,50 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef DOCUMENTMANAGER_H
-#define DOCUMENTMANAGER_H
+#ifndef APP_DOCUMENTMANAGER_H
+#define APP_DOCUMENTMANAGER_H
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
+#include <boost/optional/optional.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
+#include <score/score.h>
 
-class QString;
-class PowerTabDocument;
+/// A document is a score that is either associated with a file or unsaved.
+class Document : boost::noncopyable
+{
+public:
+    Document();
 
-/// Class for managing opened documents
+    bool hasFilename() const;
+    const std::string &getFilename() const;
+    void setFilename(const std::string &filename);
+
+    const Score &getScore() const;
+    Score &getScore();
+
+private:
+    boost::optional<std::string> myFilename;
+    Score myScore;
+};
+
+/// Class for managing open documents.
 class DocumentManager
 {
 public:
     DocumentManager();
 
-    void addDocument(boost::shared_ptr<PowerTabDocument> doc);
+    Document &addDocument();
+    boost::optional<Document &> getCurrentDocument();
 
-    void createDocument();
     void removeDocument(int index);
-    boost::shared_ptr<PowerTabDocument> getCurrentDocument() const;
+
+    bool hasOpenDocuments() const;
     void setCurrentDocumentIndex(int index);
     int getCurrentDocumentIndex() const;
 
 private:
-    std::vector<boost::shared_ptr<PowerTabDocument> > documentList;
-    int currentDocumentIndex;
+    boost::ptr_vector<Document> myDocumentList;
+    boost::optional<size_t> myCurrentIndex;
 };
 
-#endif // DOCUMENTMANAGER_H
+#endif

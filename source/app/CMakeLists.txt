@@ -10,7 +10,7 @@ add_definitions(-DSVN_REVISION=${MY_WC_REVISION})
 add_library(pteapp
     #clipboard.cpp
     command.cpp
-    #documentmanager.cpp
+    documentmanager.cpp
     options.cpp
     #powertabeditor.cpp
     recentfiles.cpp

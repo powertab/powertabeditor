@@ -23,18 +23,29 @@ TEST_CASE("App/DocumentManager", "")
 {
     DocumentManager manager;
 
-    REQUIRE(manager.getCurrentDocumentIndex() == -1);
+    REQUIRE(!manager.hasOpenDocuments());
 
-    manager.createDocument();
-    REQUIRE(manager.getCurrentDocumentIndex() == 0);
+    manager.addDocument();
+    manager.addDocument();
+    manager.addDocument();
 
-    // should not be able to set document index to an invalid number
-    manager.setCurrentDocumentIndex(1);
-    REQUIRE(manager.getCurrentDocumentIndex() == 0);
+    REQUIRE(manager.hasOpenDocuments());
+    REQUIRE(manager.getCurrentDocumentIndex() == 2);
 
-    // should be able to set document index to a valid number
-    manager.createDocument();
-    manager.createDocument();
-    manager.setCurrentDocumentIndex(1);
+    manager.removeDocument(1);
     REQUIRE(manager.getCurrentDocumentIndex() == 1);
+
+    manager.removeDocument(0);
+    REQUIRE(manager.getCurrentDocumentIndex() == 0);
+    manager.removeDocument(0);
+
+    REQUIRE(!manager.hasOpenDocuments());
 }
+
+TEST_CASE("App/Document", "")
+{
+    Document document;
+
+    REQUIRE(!document.hasFilename());
+}
+
