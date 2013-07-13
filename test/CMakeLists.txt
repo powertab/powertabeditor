@@ -31,6 +31,7 @@ add_executable(pte_tests
 
     formats/test_fileformat.cpp
     #formats/guitar_pro/test_gp4.cpp
+    formats/powertab_old/test_powertabold.cpp
 
     #powertabdocument/alternateending_test.cpp
     #powertabdocument/chorddiagram_test.cpp
@@ -83,9 +84,9 @@ target_link_libraries(pte_tests
     #ptepainters
     #sigfwd
     pteformats
-    #ptedocument
     ptescore
 )
 
 # Copy the test files to the build directory.
 #file(COPY formats/guitar_pro/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY formats/powertab_old/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

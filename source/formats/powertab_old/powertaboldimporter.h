@@ -20,12 +20,21 @@
 
 #include <formats/fileformatmanager.h>
 
+namespace PowerTabDocument {
+class PowerTabFileHeader;
+}
+
+class ScoreInfo;
+
 class PowerTabOldImporter : public FileFormatImporter
 {
 public:
     PowerTabOldImporter();
-
     virtual void load(const std::string &filename, Score &score);
+
+private:
+    static void convert(const PowerTabDocument::PowerTabFileHeader &header,
+                        ScoreInfo &info);
 };
 
 #endif
