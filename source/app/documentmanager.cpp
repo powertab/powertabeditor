@@ -51,12 +51,12 @@ Document &DocumentManager::addDocument()
     return myDocumentList.back();
 }
 
-boost::optional<Document &> DocumentManager::getCurrentDocument()
+Document &DocumentManager::getCurrentDocument()
 {
-    if (myCurrentIndex)
-        return boost::none;
-    else
-        return myDocumentList.at(*myCurrentIndex);
+    if (!myCurrentIndex)
+        throw std::logic_error("No documents are currently open");
+
+    return myDocumentList.at(*myCurrentIndex);
 }
 
 void DocumentManager::removeDocument(int index)
@@ -76,10 +76,13 @@ bool DocumentManager::hasOpenDocuments() const
 
 void DocumentManager::setCurrentDocumentIndex(int index)
 {
-    if (myDocumentList.empty())
-        throw std::logic_error("No open documents");
-
-    myCurrentIndex = index;
+    if (index < 0)
+    {
+        Q_ASSERT(myDocumentList.empty());
+        myCurrentIndex = boost::none;
+    }
+    else
+        myCurrentIndex = index;
 }
 
 int DocumentManager::getCurrentDocumentIndex() const

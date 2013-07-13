@@ -32,15 +32,11 @@ int main(int argc, char *argv[])
 
     if (options.parse(QCoreApplication::arguments()))
     {
-#if 0
         PowerTabEditor w;
         w.show();
         w.openFiles(options.filesToOpen());
 
         return a.exec();
-#else
-        return EXIT_SUCCESS;
-#endif
     }
     else
     {

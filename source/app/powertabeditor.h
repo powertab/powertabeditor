@@ -15,14 +15,21 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef POWERTABEDITOR_H
-#define POWERTABEDITOR_H
+#ifndef APP_POWERTABEDITOR_H
+#define APP_POWERTABEDITOR_H
 
 #include <QMainWindow>
-#include <QAction>
 
-#include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <string>
+#include <vector>
 
+class Command;
+class DocumentManager;
+class FileFormatManager;
+class RecentFiles;
+
+#if 0
 // the sigfwd library allows for connecting Qt signals directly to
 // C++ functions & functors, and supports boost::bind for binding arguments to slots
 #include <boost/bind.hpp>
@@ -47,37 +54,95 @@ class DocumentManager;
 class FileFormatManager;
 class FileFormat;
 class Command;
-class RecentFiles;
 class Caret;
 class PlaybackWidget;
 class SettingsPubSub;
 class SystemLocation;
 class TuningDictionary;
 class Mixer;
+#endif
 
 class PowerTabEditor : public QMainWindow
 {
     Q_OBJECT
 
+#if 0
     friend class NotePage;
     friend class ScorePage;
+#endif
 
 public:
-    PowerTabEditor(QWidget *parent = 0);
+    PowerTabEditor();
     ~PowerTabEditor();
+
+    /// Opens the given list of files.
+    void openFiles(const std::vector<std::string> &files);
+
+private slots:
+    /// Creates a new (blank) document.
+    void createNewDocument();
+
+    /// Opens a new file. If 'filename' is empty, the user will be prompted
+    /// to select a filename.
+    void openFile(QString filename = "");
+
+    /// Handle when the active tab is changed.
+    void switchTab(int index);
+
+    /// Closes the specified tab.
+    /// @return True if the document was closed successfully.
+    bool closeTab(int index);
+
+    /// Closes the current document.
+    /// @return True if the document was closed successfully.
+    bool closeCurrentTab();
+
+    /// Saves the current document to a new filename.
+    /// @return True if the file was successfully saved.
+    bool saveFileAs();
+
+private:
+    /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
+    QString getApplicationName() const;
+    /// Updates the window title with the file path of the active document.
+    void updateWindowTitle();
+
+    /// Create all of the commands for the application.
+    void createCommands();
+    /// Set up the menus for the application.
+    void createMenus();
+    /// Create the tab widget and score area.
+    void createTabArea();
+    /// Updates the last directory that a file was opened from.
+    void setPreviousDirectory(const QString &fileName);
+    /// Sets up the UI for the current document after it has been opened.
+    void setupNewTab();
+
+    boost::scoped_ptr<DocumentManager> myDocumentManager;
+    boost::scoped_ptr<FileFormatManager> myFileFormatManager;
+    /// Tracks the last directory that a file was opened from.
+    QString myPreviousDirectory;
+    RecentFiles *myRecentFiles;
+
+    QTabWidget *myTabWidget;
+
+    QMenu *myFileMenu;
+    Command *myNewDocumentCommand;
+    Command *myOpenFileCommand;
+    Command *myCloseTabCommand;
+    Command *mySaveAsCommand;
+    QMenu *myRecentFilesMenu;
+    Command *myExitCommand;
+
+#if 0
     static boost::scoped_ptr<UndoManager> undoManager;
     static ScoreArea* getCurrentScoreArea();
     void registerCaret(Caret* caret);
-
-    void openFiles(const std::vector<std::string> &files);
 
 protected:
     virtual void closeEvent(QCloseEvent*);
 
 private:
-    void createActions();
-    void createMenus();
-    void createTabArea();
     void updateScoreAreaActions(bool enable);
     bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
@@ -107,16 +172,10 @@ private slots:
     void updateLocationLabel();
     void updateModified(bool);
     void updateActiveVoice(int);
-    void createNewFile();
-    void openFile(QString fileName = "");
-    bool saveFileAs();
     void openPreferences();
     void openFileInformation();
     void redrawSystem(int);
     void performFullRedraw();
-    bool closeCurrentTab();
-    bool closeTab(int index);
-    void switchTab(int index);
     void startStopPlayback();
     void rewindPlaybackToStart();
     bool moveCaretRight();
@@ -186,30 +245,12 @@ private:
 
     uint8_t activeDuration;
 
-    QString getApplicationName() const;
-    void setupNewDocument();
-    void updatePreviousDirectory(const QString& fileName);
-    void updateWindowTitle();
-
-    static QTabWidget* tabWidget;
-    
     Toolbox* toolBox;
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
 
-    boost::scoped_ptr<DocumentManager> documentManager;
-    boost::scoped_ptr<FileFormatManager> fileFormatManager;
-    RecentFiles* recentFiles;
-
-    QMenu* fileMenu;
-    Command* newFileAct;
-    Command* openFileAct;
-    Command* closeTabAct;
-    Command* saveFileAsAct;
-    QMenu* recentFilesMenu;
     Command* editShortcutsAct;
     Command* preferencesAct;
-    Command* exitAppAct;
 
     QMenu* editMenu;
     QAction* undoAct;
@@ -352,7 +393,6 @@ private:
     Command* nextTabAct; // cycle to the next/previous tab
     Command* prevTabAct;
 
-    QString previousDirectory; // previous directory that a file was opened in
     boost::scoped_ptr<QStackedWidget> mixerList;
     boost::scoped_ptr<QStackedWidget> playbackToolbarList;
 
@@ -362,7 +402,6 @@ private:
     boost::shared_ptr<SettingsPubSub> settingsPubSub;
     boost::shared_ptr<TuningDictionary> tuningDictionary;
 
-private:
     /// helper function for connecting an action to the performToggleProperty slot
     /// @param objectsGetter - function for retrieving the objects to be edited
     /// @param propertyGetter - function for checking if an object has a certain property set
@@ -391,6 +430,8 @@ private:
         undoManager->push(new ToggleProperty<T>(objects, setPropertyFn, getPropertyFn, propertyName),
                           getCurrentScoreArea()->getCaret()->getCurrentSystemIndex());
     }
+
+#endif
 };
 
-#endif // POWERTABEDITOR_H
+#endif

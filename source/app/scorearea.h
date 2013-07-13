@@ -15,28 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef SCOREAREA_H
-#define SCOREAREA_H
+#ifndef APP_SCOREAREA_H
+#define APP_SCOREAREA_H
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
 
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/cstdint.hpp>
-
-class PowerTabDocument;
-class PowerTabEditor;
-class Caret;
-class Score;
-class SystemLocationPubSub;
-
-/// The visual display of the score
+/// The visual display of the score.
 class ScoreArea : public QGraphicsView
 {
     Q_OBJECT
+
 public:
+#if 0
     explicit ScoreArea(PowerTabEditor* editor);
+#else
+    explicit ScoreArea(QWidget *parent);
+#endif
+
+#if 0
     ~ScoreArea();
 
     void renderDocument(boost::shared_ptr<PowerTabDocument> doc);
@@ -72,6 +69,7 @@ public slots:
     void adjustScroll();
     void requestFullRedraw();
     void setScoreIndex(int newScoreIndex);
+#endif
 };
 
-#endif // SCOREAREA_H
+#endif

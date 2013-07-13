@@ -17,15 +17,29 @@
   
 #include "powertabeditor.h"
 
-#include <QFileDialog>
+#include <app/command.h>
+#include <app/documentmanager.h>
+#include <app/recentfiles.h>
+#include <app/scorearea.h>
+#include <app/settings.h>
+#include <boost/foreach.hpp>
+#include <boost/timer.hpp>
+#include <formats/fileformatmanager.h>
+#include <QCoreApplication>
 #include <QDebug>
+#include <QFileDialog>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QSettings>
+
+#if 0
+#include <QFileDialog>
 #include <QAction>
 #include <QMenuBar>
 #include <QMenu>
 #include <QToolBox>
 #include <QTabWidget>
 #include <QSettings>
-#include <QCoreApplication>
 #include <QFileInfo>
 #include <QFontDatabase>
 #include <QSplitter>
@@ -34,10 +48,7 @@
 #include <QActionGroup>
 #include <QKeyEvent>
 #include <QEvent>
-#include <QMessageBox>
 
-#include <boost/foreach.hpp>
-#include <boost/timer.hpp>
 #include <boost/make_shared.hpp>
 
 #include <app/scorearea.h>
@@ -47,7 +58,6 @@
 #include <app/documentmanager.h>
 #include <app/command.h>
 #include <app/clipboard.h>
-#include <app/recentfiles.h>
 #include <app/pubsub/settingspubsub.h>
 #include <app/pubsub/systemlocationpubsub.h>
 #include <app/tuningdictionary.h>
@@ -137,56 +147,57 @@
 #include <actions/addmusicaldirection.h>
 #include <actions/removemusicaldirection.h>
 
-#include <formats/fileformatmanager.h>
-#include <formats/fileformat.h>
-
-using boost::shared_ptr;
-
-QTabWidget* PowerTabEditor::tabWidget = NULL;
 boost::scoped_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
 
-PowerTabEditor::PowerTabEditor(QWidget *parent) :
-    QMainWindow(parent),
+#endif
+
+PowerTabEditor::PowerTabEditor() :
+    QMainWindow(0),
+    myDocumentManager(new DocumentManager()),
+    myFileFormatManager(new FileFormatManager()),
+    myPreviousDirectory(QSettings().value(Settings::APP_PREVIOUS_DIRECTORY,
+                                          QDir::homePath()).toString()),
+    myRecentFiles(NULL),
+    myTabWidget(NULL)
+#if 0
     activeDuration(Position::DEFAULT_DURATION_TYPE),
-    documentManager(new DocumentManager),
-    fileFormatManager(new FileFormatManager),
     mixerList(new QStackedWidget),
     playbackToolbarList(new QStackedWidget),
     settingsPubSub(new SettingsPubSub()),
     tuningDictionary(new TuningDictionary())
+#endif
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
+
+#if 0
 
     // load fonts from the resource file
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf"); // used for music notation
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf"); // used for tab notes
 
-    // need to initialize the skin manager after the QCoreApplication initialization, since
-    // it uses the QSettings class
     skinManager.reset(new SkinManager);
-
-    // load application settings
-    QSettings settings;
-    // retrieve the previous directory that a file was opened/saved to (default value is home directory)
-    previousDirectory = settings.value(Settings::APP_PREVIOUS_DIRECTORY, QDir::homePath()).toString();
 
     connect(undoManager.get(), SIGNAL(redrawNeeded(int)), this, SLOT(redrawSystem(int)));
     connect(undoManager.get(), SIGNAL(fullRedrawNeeded()), this, SLOT(performFullRedraw()));
     connect(undoManager.get(), SIGNAL(cleanChanged(bool)), this, SLOT(updateModified(bool)));
+#endif
 
-    createActions();
+    createCommands();
     createMenus();
+    myRecentFiles = new RecentFiles(myRecentFilesMenu, this);
+    connect(myRecentFiles, SIGNAL(fileSelected(QString)), this,
+            SLOT(openFile(QString)));
     createTabArea();
 
-    recentFiles = new RecentFiles(recentFilesMenu, this);
-    connect(recentFiles, SIGNAL(fileSelected(QString)), this, SLOT(openFile(QString)));
-
+#if 0
     isPlaying = false;
+#endif
 
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
     setWindowTitle(getApplicationName());
 
+#if 0
     QSplitter* playbackArea = new QSplitter(Qt::Vertical);
     playbackArea->addWidget(tabWidget);
     playbackArea->addWidget(playbackToolbarList.get());
@@ -213,103 +224,244 @@ PowerTabEditor::PowerTabEditor(QWidget *parent) :
     installEventFilter(this);
 
     tuningDictionary->loadInBackground();
+#else
+    setCentralWidget(myTabWidget);
+#endif
 }
 
 PowerTabEditor::~PowerTabEditor()
 {
 }
 
-/// Redraws the specified system.
-void PowerTabEditor::redrawSystem(int index)
+void PowerTabEditor::openFiles(const std::vector<std::string> &files)
 {
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    caret->adjustToValidLocation();
-    Score* score = caret->getCurrentScore();
-
-    // Update the data model.
-    caret->getCurrentScore()->UpdateSystemHeight(score->GetSystem(index));
-
-    // Update the score area.
-    getCurrentScoreArea()->updateSystem(index);
-
-    // Update the status of all actions
-    updateActions();
-}
-
-/// Redraw the entire score.
-void PowerTabEditor::performFullRedraw()
-{
-    getCurrentScoreArea()->requestFullRedraw();
-    redrawSystem(0); // Trigger a redraw - the system index doesn't matter.
-}
-
-// this is a reimplementation of QObject's eventFilter function
-// it returns true to tell Qt to stop propagating this event
-// this is necessary to intercept tab key presses before they are
-// used to cycle focus to different widgets
-bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
-{
-    ScoreArea* currentDoc = getCurrentScoreArea();
-
-    if (currentDoc && event->type() == QEvent::KeyPress)
+    BOOST_FOREACH(const std::string &file, files)
     {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if ((keyEvent->key() >= Qt::Key_0) &&
-                 (keyEvent->key() <= Qt::Key_9))
+        openFile(QString::fromStdString(file));
+    }
+}
+
+void PowerTabEditor::createNewDocument()
+{
+    myDocumentManager->addDocument();
+    setupNewTab();
+}
+
+void PowerTabEditor::openFile(QString filename)
+{
+    if (filename.isEmpty())
+    {
+        filename = QFileDialog::getOpenFileName(this, tr("Open"),
+                myPreviousDirectory,
+                QString::fromStdString(myFileFormatManager->importFileFilter()));
+    }
+
+    if (filename.isEmpty())
+        return;
+
+    boost::timer timer;
+    qDebug() << "Opening file: " << filename;
+
+    QFileInfo fileInfo(filename);
+    boost::optional<FileFormat> format = myFileFormatManager->findFormat(
+                fileInfo.suffix().toStdString());
+
+    if (!format)
+    {
+        QMessageBox::warning(this, tr("Error Opening File"),
+                             tr("Unsupported file type."));
+        return;
+    }
+
+    Document &doc = myDocumentManager->addDocument();
+    if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
+                                        *format, this))
+    {
+        qDebug() << "File loaded in" << timer.elapsed() << "seconds";
+
+        doc.setFilename(filename.toStdString());
+        setPreviousDirectory(filename);
+        myRecentFiles->add(filename);
+        setupNewTab();
+    }
+    else
+    {
+        myDocumentManager->removeDocument(
+                    myDocumentManager->getCurrentDocumentIndex());
+    }
+}
+
+void PowerTabEditor::switchTab(int index)
+{
+    myDocumentManager->setCurrentDocumentIndex(index);
+#if 0
+    mixerList->setCurrentIndex(index);
+    playbackToolbarList->setCurrentIndex(index);
+    undoManager->setActiveStackIndex(index);
+#endif
+
+    updateWindowTitle();
+}
+
+bool PowerTabEditor::closeTab(int index)
+{
+    // Prompt to save modified documents.
+    if (isWindowModified())
+    {
+        QMessageBox msg(this);
+        msg.setWindowTitle(tr("Close Document"));
+        msg.setText(tr("The document has been modified."));
+        msg.setInformativeText(tr("Do you want to save your changes?"));
+        msg.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
+                               QMessageBox::Cancel);
+        msg.setDefaultButton(QMessageBox::Save);
+
+        const int ret = msg.exec();
+        if (ret == QMessageBox::Save)
         {
-            // this arithmetic and this condition assume that Key_0 ... Key_9
-            // are assigned ascending continuous numbers as they are in Qt 4.7
-            int typedNumber = keyEvent->key() - Qt::Key_0;
-            Caret *caret = getCurrentScoreArea()->getCaret();
-            Note *currentNote = caret->getCurrentNote();
-            Position *currentPosition = caret->getCurrentPosition();
-            shared_ptr<Staff> currentStaff = caret->getCurrentStaff();
-            shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
-            const int system = caret->getCurrentSystemIndex();
-            const uint32_t voice = caret->getCurrentVoice();
+            if (!saveFileAs())
+                return false;
+        }
+        else if (ret == QMessageBox::Cancel)
+            return false;
+    }
 
-            // Don't allow inserting notes on top of bars (except for the first
-            // bar in the system, which has position 0).
-            if (!currentBarline || caret->getCurrentPositionIndex() == 0)
-            {
-                if (currentNote != NULL)
-                {
-                    // if there is already a number here update it
-                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote,
-                                                          currentPosition, voice, currentStaff),
-                                      system);
-                }
-                else
-                {
-                    undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
-                                                  caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
-                                                  currentStaff, activeDuration),
-                                      system);
-                }
+#if 0
+    if (getScoreArea(index)->getCaret()->isInPlaybackMode())
+    {
+        startStopPlayback();
+    }
 
-                return true;
-            }
+    undoManager->removeStack(index);
+#endif
+    myDocumentManager->removeDocument(index);
+    delete myTabWidget->widget(index);
+#if 0
+    mixerList->removeWidget(mixerList->widget(index));
+    playbackToolbarList->removeWidget(playbackToolbarList->widget(index));
+#endif
+    // Get the index of the tab that we will now switch to.
+    const int currentIndex = myTabWidget->currentIndex();
+
+#if 0
+    undoManager->setActiveStackIndex(currentIndex);
+    mixerList->setCurrentIndex(currentIndex);
+    playbackToolbarList->setCurrentIndex(currentIndex);
+#endif
+    myDocumentManager->setCurrentDocumentIndex(currentIndex);
+
+#if 0
+    if (currentIndex == -1) // disable score-related actions if no documents are open
+    {
+        updateScoreAreaActions(false);
+    }
+#endif
+
+    return true;
+}
+
+bool PowerTabEditor::closeCurrentTab()
+{
+    return closeTab(myDocumentManager->getCurrentDocumentIndex());
+}
+
+bool PowerTabEditor::saveFileAs()
+{
+    const QString filter(QString::fromStdString(
+                             myFileFormatManager->exportFileFilter()));
+    QString path = QFileDialog::getSaveFileName(this, tr("Save As"),
+                                                myPreviousDirectory, filter);
+
+    if (!path.isEmpty())
+    {
+        // If the user didn't type the extension, add it in.
+        QFileInfo info(path);
+        QString extension = info.suffix();
+        if (extension.isEmpty())
+        {
+            extension = "pt2";
+            path += "." + extension;
+        }
+
+        boost::optional<FileFormat> format = myFileFormatManager->findFormat(
+                    extension.toStdString());
+        if (!format)
+        {
+            QMessageBox::warning(this, tr("Error Saving File"),
+                                 tr("Unsupported file type."));
+            return false;
+        }
+
+        const std::string newPath = path.toStdString();
+        Document &doc = myDocumentManager->getCurrentDocument();
+
+        if (myFileFormatManager->exportFile(doc.getScore(), newPath, *format))
+        {
+            doc.setFilename(newPath);
+
+            // Update window title and tab bar.
+            updateWindowTitle();
+            const QString fileName = QFileInfo(path).fileName();
+            myTabWidget->setTabText(myTabWidget->currentIndex(), fileName);
+            myTabWidget->setTabToolTip(myTabWidget->currentIndex(), fileName);
+
+            return true;
         }
     }
 
-    return QMainWindow::eventFilter(object, event);
+    return false;
 }
 
-void PowerTabEditor::createActions()
+QString PowerTabEditor::getApplicationName() const
 {
-    // File-related actions
-    newFileAct = new Command(tr("&New"), "File.New", QKeySequence::New, this);
-    connect(newFileAct, SIGNAL(triggered()), this, SLOT(createNewFile()));
+    QString name = QString("%1 %2 Beta").arg(
+                QCoreApplication::applicationName(),
+                QCoreApplication::applicationVersion());
 
-    openFileAct = new Command(tr("&Open..."), "File.Open", QKeySequence::Open, this);
-    connect(openFileAct, SIGNAL(triggered()), this, SLOT(openFile()));
+#ifdef SVN_REVISION
+    name += QString(" r") + BOOST_STRINGIZE(SVN_REVISION);
+#endif
 
-    closeTabAct = new Command(tr("&Close Tab"), "File.CloseTab", Qt::CTRL + Qt::Key_W, this);
-    connect(closeTabAct, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
+    return name;
+}
 
-    saveFileAsAct = new Command(tr("Save As..."), "File.SaveAs", QKeySequence::SaveAs, this);
-    connect(saveFileAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
+void PowerTabEditor::updateWindowTitle()
+{
+    if (myDocumentManager->hasOpenDocuments() &&
+        myDocumentManager->getCurrentDocument().hasFilename())
+    {
+        const Document &doc = myDocumentManager->getCurrentDocument();
+        const QString path = QString::fromStdString(doc.getFilename());
+        const QString docName = QFileInfo(path).fileName();
+        // Need the [*] for using setWindowModified.
+        setWindowTitle(docName + "[*] - " + getApplicationName());
+    }
+    else
+        setWindowTitle(getApplicationName());
+}
 
+void PowerTabEditor::createCommands()
+{
+    // File-related commands.
+    myNewDocumentCommand = new Command(tr("&New"), "File.New",
+                                       QKeySequence::New, this);
+    connect(myNewDocumentCommand, SIGNAL(triggered()), this,
+            SLOT(createNewDocument()));
+
+    myOpenFileCommand = new Command(tr("&Open..."), "File.Open",
+                                    QKeySequence::Open, this);
+    connect(myOpenFileCommand, SIGNAL(triggered()), this, SLOT(openFile()));
+
+    myCloseTabCommand = new Command(tr("&Close Tab"), "File.CloseTab",
+                                    Qt::CTRL + Qt::Key_W, this);
+    connect(myCloseTabCommand, SIGNAL(triggered()), this,
+            SLOT(closeCurrentTab()));
+
+    mySaveAsCommand = new Command(tr("Save As..."), "File.SaveAs",
+                                  QKeySequence::SaveAs, this);
+    connect(mySaveAsCommand, SIGNAL(triggered()), this, SLOT(saveFileAs()));
+
+#if 0
     editShortcutsAct = new Command(tr("Customize Shortcuts..."),
                                    "File.CustomizeShortcuts", QKeySequence(),
                                    this);
@@ -318,10 +470,11 @@ void PowerTabEditor::createActions()
 
     preferencesAct = new Command(tr("&Preferences..."), "File.Preferences", QKeySequence::Preferences, this);
     connect(preferencesAct, SIGNAL(triggered()), this, SLOT(openPreferences()));
-
-    // Exit the application
-    exitAppAct = new Command(tr("&Quit"), "File.Quit", QKeySequence::Quit, this);
-    connect(exitAppAct, SIGNAL(triggered()), this, SLOT(close()));
+#endif
+    myExitCommand = new Command(tr("&Quit"), "File.Quit", QKeySequence::Quit,
+                                this);
+    connect(myExitCommand, SIGNAL(triggered()), this, SLOT(close()));
+#if 0
 
     // Redo / Undo actions
     undoAct = undoManager->createUndoAction(this, tr("&Undo"));
@@ -407,11 +560,11 @@ void PowerTabEditor::createActions()
                                Qt::ALT + Qt::Key_Up, this);
     connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
 
-    // the shortcuts for these two won't do anything since the tabs get 
+    // the shortcuts for these two won't do anything since the tabs get
     // sucked up by our event filter first
     nextBarAct = new Command(tr("Next Bar"), "Staff.NextBar", Qt::Key_Tab, this);
     connect(nextBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextBar()));
-    
+
     prevBarAct = new Command(tr("Previous Bar"), "Staff.PreviousBar", Qt::SHIFT + Qt::Key_Tab, this);
     connect(prevBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevBar()));
 
@@ -549,7 +702,7 @@ void PowerTabEditor::createActions()
     tiedNoteAct = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
-    
+
     noteMutedAct = new Command(tr("Muted"), "Note.Muted",
                                QKeySequence(Qt::Key_X), this);
     noteMutedAct->setCheckable(true);
@@ -575,7 +728,7 @@ void PowerTabEditor::createActions()
     graceNoteAct->setCheckable(true);
     connectToggleProperty<Position>(graceNoteAct, &getSelectedPositions,
                                     &Position::IsAcciaccatura, &Position::SetAcciaccatura);
-    
+
     staccatoNoteAct = new Command(tr("Staccato"), "Note.Staccato", Qt::Key_Z, this);
     staccatoNoteAct->setCheckable(true);
     connectToggleProperty<Position>(staccatoNoteAct, &getSelectedPositions,
@@ -666,7 +819,7 @@ void PowerTabEditor::createActions()
     restDurationsGroup->addAction(sixtyFourthRestAct);
     sigfwd::connect(sixtyFourthRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editRest, this, 64));
-    
+
     addRestAct = new Command(tr("Add Rest"), "Rests.AddRest", QKeySequence(Qt::Key_R), this);
     sigfwd::connect(addRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::addRest, this));
@@ -727,7 +880,7 @@ void PowerTabEditor::createActions()
     hammerPullAct = new Command(tr("Hammer On/Pull Off"), "TabSymbols.HammerPull", Qt::Key_H, this);
     hammerPullAct->setCheckable(true);
     connect(hammerPullAct, SIGNAL(triggered()), this, SLOT(editHammerPull()));
-    
+
     naturalHarmonicAct = new Command(tr("Natural Harmonic"), "TabSymbols.NaturalHarmonic",
                                      QKeySequence(), this);
     naturalHarmonicAct->setCheckable(true);
@@ -851,25 +1004,28 @@ void PowerTabEditor::createActions()
                              Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
     sigfwd::connect(prevTabAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::cycleTab, this, -1));
+#endif
 }
 
 void PowerTabEditor::createMenus()
 {
-    // File Menu
-    fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newFileAct);
-    fileMenu->addAction(openFileAct);
-    fileMenu->addAction(closeTabAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(saveFileAsAct);
-    fileMenu->addSeparator();
-    recentFilesMenu = fileMenu->addMenu(tr("Recent Files"));
-    fileMenu->addSeparator();
-    fileMenu->addAction(editShortcutsAct);
-    fileMenu->addAction(preferencesAct);
-    fileMenu->addSeparator();
-    fileMenu->addAction(exitAppAct);
-
+    // File Menu.
+    myFileMenu = menuBar()->addMenu(tr("&File"));
+    myFileMenu->addAction(myNewDocumentCommand);
+    myFileMenu->addAction(myOpenFileCommand);
+    myFileMenu->addAction(myCloseTabCommand);
+    myFileMenu->addSeparator();
+    myFileMenu->addAction(mySaveAsCommand);
+    myFileMenu->addSeparator();
+    myRecentFilesMenu = myFileMenu->addMenu(tr("Recent Files"));
+    myFileMenu->addSeparator();
+#if 0
+    myFileMenu->addAction(editShortcutsAct);
+    myFileMenu->addAction(preferencesAct);
+#endif
+    myFileMenu->addSeparator();
+    myFileMenu->addAction(myExitCommand);
+#if 0
     // Edit Menu
     editMenu = menuBar()->addMenu(tr("&Edit"));
     editMenu->addAction(undoAct);
@@ -1036,98 +1192,45 @@ void PowerTabEditor::createMenus()
     windowMenu = menuBar()->addMenu(tr("&Window"));
     windowMenu->addAction(nextTabAct);
     windowMenu->addAction(prevTabAct);
+#endif
 }
 
 void PowerTabEditor::createTabArea()
 {
-    tabWidget = new QTabWidget;
-    tabWidget->setTabsClosable(true);
+    myTabWidget = new QTabWidget(this);
+    myTabWidget->setTabsClosable(true);
 
+#if 0
     tabWidget->setStyleSheet(skinManager->getDocumentTabStyle());
+#endif
 
-    // creates a new document by default
-    /*ScoreArea* score = new ScoreArea;
-    score->renderDocument(documentManager.getCurrentDocument());
-    tabWidget->addTab(score, tr("Untitled"));*/
-
-    connect(tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
-    connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(switchTab(int)));
-
+    connect(myTabWidget, SIGNAL(tabCloseRequested(int)), this,
+            SLOT(closeTab(int)));
+    connect(myTabWidget, SIGNAL(currentChanged(int)), this,
+            SLOT(switchTab(int)));
+#if 0
     updateScoreAreaActions(false);
+#endif
 }
 
-// Create a blank file
-void PowerTabEditor::createNewFile()
-{
-    documentManager->createDocument();
-    setupNewDocument();
-}
-
-/// Open a new file
-void PowerTabEditor::openFile(QString fileName)
-{
-    if (fileName.isEmpty())
-    {
-        fileName = QFileDialog::getOpenFileName(this, tr("Open"),
-                previousDirectory,
-                QString::fromStdString(fileFormatManager->importFileFilter()));
-    }
-
-    if (fileName.isEmpty())
-    {
-        qDebug() << "No file selected";
-        return;
-    }
-
-    boost::timer timer;
-    qDebug() << "Opening file: " << fileName;
-
-    QFileInfo fileInfo(fileName);
-    boost::optional<FileFormat> format = fileFormatManager->findFormat(
-                fileInfo.suffix().toStdString());
-
-    if (!format)
-    {
-        QMessageBox::warning(this, tr("Error Opening File"),
-                             tr("Unsupported file type."));
-        return;
-    }
-
-    boost::shared_ptr<PowerTabDocument> document = fileFormatManager->importFile(
-                fileName.toStdString(), *format, this);
-
-    if (document)
-    {
-        qDebug() << "File loaded in" << timer.elapsed() << "seconds";
-
-        documentManager->addDocument(document);
-        updatePreviousDirectory(fileName);
-        recentFiles->add(fileName);
-
-        setupNewDocument();
-    }
-}
-
-/// Updates the previous directory (last directory that a file was opened from)
-void PowerTabEditor::updatePreviousDirectory(const QString& fileName)
+void PowerTabEditor::setPreviousDirectory(const QString &fileName)
 {
     QFileInfo fileInfo(fileName);
-    previousDirectory = fileInfo.absolutePath();
+    myPreviousDirectory = fileInfo.absolutePath();
     QSettings settings;
-    settings.setValue(Settings::APP_PREVIOUS_DIRECTORY, previousDirectory);
+    settings.setValue(Settings::APP_PREVIOUS_DIRECTORY, myPreviousDirectory);
 }
 
-/// Creates the scorearea, mixer, etc, for a new document
-/// Assumes that the new document has already been added to the document manager,
-/// and is set as the current document
-void PowerTabEditor::setupNewDocument()
+void PowerTabEditor::setupNewTab()
 {
     boost::timer timer;
-    qDebug() << "Document creation started ...";
+    qDebug() << "Tab creation started ...";
 
-    boost::shared_ptr<PowerTabDocument> doc(documentManager->getCurrentDocument());
+    Q_ASSERT(myDocumentManager->hasOpenDocuments());
+    Document &doc = myDocumentManager->getCurrentDocument();
 
-    ScoreArea* score = new ScoreArea(this);
+    ScoreArea *scorearea = new ScoreArea(this);
+#if 0
     score->installEventFilter(this);
     score->renderDocument(doc);
 
@@ -1139,17 +1242,22 @@ void PowerTabEditor::setupNewDocument()
                 boost::bind(&PowerTabEditor::editBarline, this, _1));
 
     undoManager->addNewUndoStack();
+#endif
 
-    QFileInfo fileInfo(QString().fromStdString(doc->GetFileName()));
+    QString filename = "Untitled";
+    if (doc.hasFilename())
+        filename = QString::fromStdString(doc.getFilename());
 
-    // create title for the tab bar
+    QFileInfo fileInfo(filename);
+
+    // Create title for the tab bar.
     QString title = fileInfo.fileName();
-    QFontMetrics fm (tabWidget->font());
+    QFontMetrics fm (myTabWidget->font());
 
+    // Each tab is 200px wide, so we want to shorten the name if it's wider
+    // than 140px.
     bool chopped = false;
-
-    // each tab is 200px wide, so we want to shorten the name if it's wider than 140px
-    while(fm.width(title)>140)
+    while (fm.width(title) > 140)
     {
         title.chop(1);
         chopped = true;
@@ -1158,9 +1266,10 @@ void PowerTabEditor::setupNewDocument()
     if (chopped)
         title.append("...");
 
-    int tabIndex = tabWidget->addTab(score, title);
-    tabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
+    const int tabIndex = myTabWidget->addTab(scorearea, title);
+    myTabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
 
+#if 0
     // add the guitars to a new mixer
     Mixer* mixer = new Mixer(doc->GetPlayerScore(), tuningDictionary);
     connect(mixer, SIGNAL(visibilityToggled(uint32_t,bool)),
@@ -1194,13 +1303,15 @@ void PowerTabEditor::setupNewDocument()
         scores.append(doc->GetScore(i)->GetScoreName().c_str());
     }
     playback->onDocumentUpdated(scores);
-    
+
     connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
 
-    // switch to the new document
-    tabWidget->setCurrentIndex(documentManager->getCurrentDocumentIndex());
+#endif
+    // Switch to the new document.
+    myTabWidget->setCurrentIndex(myDocumentManager->getCurrentDocumentIndex());
 
-     // if this is the only open document, enable score area actions
+#if 0
+    // if this is the only open document, enable score area actions
     if (documentManager->getCurrentDocumentIndex() == 0)
     {
         updateScoreAreaActions(true);
@@ -1209,57 +1320,87 @@ void PowerTabEditor::setupNewDocument()
     updateActions(); // update available actions for the current position
 
     getCurrentScoreArea()->setFocus();
-
-    qDebug() << "Document opened in" << timer.elapsed() << "seconds";
+#endif
+    qDebug() << "Tab opened in" << timer.elapsed() << "seconds";
 }
 
-/// Saves the current document with a new filename.
-/// @return True if the file was successfully saved.
-bool PowerTabEditor::saveFileAs()
+#if 0
+/// Redraws the specified system.
+void PowerTabEditor::redrawSystem(int index)
 {
-    QString path = QFileDialog::getSaveFileName(this, tr("Save As"),
-            previousDirectory,
-            QString::fromStdString(fileFormatManager->exportFileFilter()));
+    Caret* caret = getCurrentScoreArea()->getCaret();
+    caret->adjustToValidLocation();
+    Score* score = caret->getCurrentScore();
 
-    if (!path.isEmpty())
+    // Update the data model.
+    caret->getCurrentScore()->UpdateSystemHeight(score->GetSystem(index));
+
+    // Update the score area.
+    getCurrentScoreArea()->updateSystem(index);
+
+    // Update the status of all actions
+    updateActions();
+}
+
+/// Redraw the entire score.
+void PowerTabEditor::performFullRedraw()
+{
+    getCurrentScoreArea()->requestFullRedraw();
+    redrawSystem(0); // Trigger a redraw - the system index doesn't matter.
+}
+
+// this is a reimplementation of QObject's eventFilter function
+// it returns true to tell Qt to stop propagating this event
+// this is necessary to intercept tab key presses before they are
+// used to cycle focus to different widgets
+bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
+{
+    ScoreArea* currentDoc = getCurrentScoreArea();
+
+    if (currentDoc && event->type() == QEvent::KeyPress)
     {
-        // If the user didn't type the extension, add it in.
-        QFileInfo info(path);
-        QString extension = info.suffix();
-        if (extension.isEmpty())
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if ((keyEvent->key() >= Qt::Key_0) &&
+                 (keyEvent->key() <= Qt::Key_9))
         {
-            extension = "ptb";
-            path += "." + extension;
-        }
+            // this arithmetic and this condition assume that Key_0 ... Key_9
+            // are assigned ascending continuous numbers as they are in Qt 4.7
+            int typedNumber = keyEvent->key() - Qt::Key_0;
+            Caret *caret = getCurrentScoreArea()->getCaret();
+            Note *currentNote = caret->getCurrentNote();
+            Position *currentPosition = caret->getCurrentPosition();
+            shared_ptr<Staff> currentStaff = caret->getCurrentStaff();
+            shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
+            const int system = caret->getCurrentSystemIndex();
+            const uint32_t voice = caret->getCurrentVoice();
 
-        boost::optional<FileFormat> format = fileFormatManager->findFormat(
-                    extension.toStdString());
-        if (!format)
-        {
-            QMessageBox::warning(this, tr("Error Saving File"),
-                                 tr("Unsupported file type."));
-            return false;
-        }
+            // Don't allow inserting notes on top of bars (except for the first
+            // bar in the system, which has position 0).
+            if (!currentBarline || caret->getCurrentPositionIndex() == 0)
+            {
+                if (currentNote != NULL)
+                {
+                    // if there is already a number here update it
+                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote,
+                                                          currentPosition, voice, currentStaff),
+                                      system);
+                }
+                else
+                {
+                    undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
+                                                  caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
+                                                  currentStaff, activeDuration),
+                                      system);
+                }
 
-        const std::string newPath = path.toStdString();
-        boost::shared_ptr<PowerTabDocument> doc = documentManager->getCurrentDocument();
-
-        if (fileFormatManager->exportFile(doc, newPath, *format))
-        {
-            doc->SetFileName(newPath);
-
-            // Update window title and tab bar.
-            updateWindowTitle();
-            const QString fileName = QFileInfo(path).fileName();
-            tabWidget->setTabText(tabWidget->currentIndex(), fileName);
-            tabWidget->setTabToolTip(tabWidget->currentIndex(), fileName);
-
-            return true;
+                return true;
+            }
         }
     }
 
-    return false;
+    return QMainWindow::eventFilter(object, event);
 }
+
 
 // Opens the preferences dialog
 void PowerTabEditor::openPreferences()
@@ -1285,96 +1426,6 @@ void PowerTabEditor::closeEvent(QCloseEvent* event)
     tuningDictionary->save();
 }
 
-/// Closes the current document.
-/// @return True if the document was closed.
-bool PowerTabEditor::closeCurrentTab()
-{
-    return closeTab(tabWidget->currentIndex());
-}
-
-/// Close a document and clean up.
-/// @return True if the document was closed.
-bool PowerTabEditor::closeTab(int index)
-{
-    // Prompt to save modified documents.
-    if (isWindowModified())
-    {
-        QMessageBox msg(this);
-        msg.setWindowTitle(tr("Close Document"));
-        msg.setText(tr("The document has been modified."));
-        msg.setInformativeText(tr("Do you want to save your changes?"));
-        msg.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
-                               QMessageBox::Cancel);
-        msg.setDefaultButton(QMessageBox::Save);
-
-        int ret = msg.exec();
-        if (ret == QMessageBox::Save)
-        {
-            if (!saveFileAs())
-            {
-                return false;
-            }
-        }
-        else if (ret == QMessageBox::Cancel)
-        {
-            return false;
-        }
-    }
-
-    if (getScoreArea(index)->getCaret()->isInPlaybackMode())
-    {
-        startStopPlayback();
-    }
-
-    undoManager->removeStack(index);
-    documentManager->removeDocument(index);
-    delete tabWidget->widget(index);
-
-    mixerList->removeWidget(mixerList->widget(index));
-    playbackToolbarList->removeWidget(playbackToolbarList->widget(index));
-
-    // get the index of the tab that we will now switch to
-    const int currentIndex = tabWidget->currentIndex();
-
-    undoManager->setActiveStackIndex(currentIndex);
-    mixerList->setCurrentIndex(currentIndex);
-    playbackToolbarList->setCurrentIndex(currentIndex);
-    documentManager->setCurrentDocumentIndex(currentIndex);
-
-    if (currentIndex == -1) // disable score-related actions if no documents are open
-    {
-        updateScoreAreaActions(false);
-    }
-
-    return true;
-}
-
-// When the tab is switched, switch the current document in the document manager
-void PowerTabEditor::switchTab(int index)
-{
-    documentManager->setCurrentDocumentIndex(index);
-    mixerList->setCurrentIndex(index);
-    playbackToolbarList->setCurrentIndex(index);
-    undoManager->setActiveStackIndex(index);
-
-    updateWindowTitle();
-}
-
-/// Update the window title with the file path of the active document.
-void PowerTabEditor::updateWindowTitle()
-{
-    if(documentManager->getCurrentDocument())
-    {
-        const QString path = QString::fromStdString(documentManager->getCurrentDocument()->GetFileName());
-        const QString docName = QFileInfo(path).fileName();
-        setWindowTitle(docName + "[*] - " + getApplicationName()); // need the [*] for using setWindowModified
-    }
-    else
-    {
-        setWindowTitle(getApplicationName());
-    }
-}
-
 /// Marks the window as modified/unmodified depending on the state of the active UndoStack
 void PowerTabEditor::updateModified(bool clean)
 {
@@ -1384,20 +1435,6 @@ void PowerTabEditor::updateModified(bool clean)
 void PowerTabEditor::updateActiveVoice(int voice)
 {
     getCurrentScoreArea()->getCaret()->setCurrentVoice(voice);
-}
-
-/// Returns the application name & version (e.g. 'Power Tab Editor 2.0')
-QString PowerTabEditor::getApplicationName() const
-{
-    QString name = QString("%1 %2 Beta").arg(
-                QCoreApplication::applicationName(),
-                QCoreApplication::applicationVersion());
-
-#ifdef SVN_REVISION
-    name += QString(" r") + BOOST_STRINGIZE(SVN_REVISION);
-#endif
-
-    return name;
 }
 
 ScoreArea* PowerTabEditor::getCurrentScoreArea()
@@ -1428,15 +1465,6 @@ void PowerTabEditor::registerCaret(Caret* caret)
     connect(caret, SIGNAL(moved()), this, SLOT(updateActions()));
     connect(caret, SIGNAL(moved()), this, SLOT(updateLocationLabel()));
     connect(caret, SIGNAL(selectionChanged()), this, SLOT(updateActions()));
-}
-
-/// Opens a list of files.
-void PowerTabEditor::openFiles(const std::vector<std::string> &files)
-{
-    BOOST_FOREACH(const std::string &file, files)
-    {
-        openFile(QString::fromStdString(file));
-    }
 }
 
 /// Cycles through the tabs in the tab bar
@@ -2519,8 +2547,8 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
         }
     }
 
-    closeTabAct->setEnabled(enable);
-    saveFileAsAct->setEnabled(enable);
+    myCloseTabCommand->setEnabled(enable);
+    mySaveAsCommand->setEnabled(enable);
     addGuitarAct->setEnabled(enable);
 }
 
@@ -2842,3 +2870,5 @@ void PowerTabEditor::openFileInformation()
         }
     }
 }
+
+#endif

@@ -7,7 +7,7 @@ add_subdirectory(app)
 add_subdirectory(formats)
 #add_subdirectory(painters)
 add_subdirectory(score)
-#add_subdirectory(sigfwd)
+add_subdirectory(sigfwd)
 #add_subdirectory(widgets)
 
 qt5_add_resources(RESOURCES build/resources.qrc)
@@ -25,6 +25,7 @@ add_executable(powertabeditor WIN32
 qt5_use_modules(powertabeditor Widgets)
 
 target_link_libraries(powertabeditor
+    ${Boost_LIBRARIES}
     pteapp
     #ptewidgets
     #ptedialogs
@@ -32,7 +33,7 @@ target_link_libraries(powertabeditor
     #pteaudio
     #rtmidi
     #ptepainters
-    #sigfwd
+    sigfwd
     pteformats
     ptescore
 )

@@ -12,9 +12,9 @@ add_library(pteapp
     command.cpp
     documentmanager.cpp
     options.cpp
-    #powertabeditor.cpp
+    powertabeditor.cpp
     recentfiles.cpp
-    #scorearea.cpp
+    scorearea.cpp
     settings.cpp
     #skinmanager.cpp
     #tuningdictionary.cpp

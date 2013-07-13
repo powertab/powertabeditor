@@ -48,7 +48,7 @@ public:
     DocumentManager();
 
     Document &addDocument();
-    boost::optional<Document &> getCurrentDocument();
+    Document &getCurrentDocument();
 
     void removeDocument(int index);
 

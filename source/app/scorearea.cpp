@@ -17,6 +17,7 @@
   
 #include "scorearea.h"
 
+#if 0
 #include <QDebug>
 #include <QProgressDialog>
 
@@ -33,6 +34,15 @@
 #include <boost/timer.hpp>
 #include <boost/make_shared.hpp>
 
+#endif
+
+#if 1
+ScoreArea::ScoreArea(QWidget *parent)
+    : QGraphicsView(parent)
+{
+}
+
+#else
 ScoreArea::ScoreArea(PowerTabEditor *editor) :
     editor(editor),
     caret(NULL),
@@ -198,3 +208,5 @@ void ScoreArea::setScoreIndex(int newScoreIndex)
         renderDocument(document);
     }
 }
+
+#endif
