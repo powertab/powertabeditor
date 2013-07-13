@@ -30,6 +30,7 @@ class KeySignature;
 class PowerTabFileHeader;
 class RehearsalSign;
 class Score;
+class Staff;
 class System;
 class TempoMarker;
 class TimeSignature;
@@ -42,6 +43,7 @@ class Direction;
 class KeySignature;
 class RehearsalSign;
 class ScoreInfo;
+class Staff;
 class System;
 class TempoMarker;
 class TimeSignature;
@@ -81,6 +83,9 @@ private:
                         AlternateEnding &ending);
     static void convert(const PowerTabDocument::Direction &oldDirection,
                         Direction &direction);
+
+    static void convert(const PowerTabDocument::Staff &oldStaff,
+                        Staff &staff);
 };
 
 #endif

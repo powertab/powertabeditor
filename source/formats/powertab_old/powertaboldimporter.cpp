@@ -24,6 +24,7 @@
 #include "powertabdocument/guitar.h"
 #include "powertabdocument/powertabdocument.h"
 #include "powertabdocument/score.h"
+#include "powertabdocument/staff.h"
 #include "powertabdocument/system.h"
 #include "powertabdocument/tempomarker.h"
 #include <score/score.h>
@@ -220,6 +221,14 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         convert(*oldSystem->GetDirection(i), direction);
         system.insertDirection(direction);
     }
+
+    // Import staves.
+    for (size_t i = 0; i < oldSystem->GetStaffCount(); ++i)
+    {
+        Staff staff;
+        convert(*oldSystem->GetStaff(i), staff);
+        system.insertStaff(staff);
+    }
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Barline &oldBar,
@@ -338,4 +347,12 @@ void PowerTabOldImporter::convert(
                 static_cast<DirectionSymbol::ActiveSymbolType>(active),
                 repeat));
     }
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::Staff &oldStaff,
+                                  Staff &staff)
+{
+    staff.setClefType(static_cast<Staff::ClefType>(oldStaff.GetClef()));
+    staff.setStringCount(oldStaff.GetTablatureStaffType());
+    staff.setViewType(Staff::GuitarView);
 }

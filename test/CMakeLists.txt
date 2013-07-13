@@ -89,4 +89,7 @@ target_link_libraries(pte_tests
 
 # Copy the test files to the build directory.
 #file(COPY formats/guitar_pro/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-file(COPY formats/powertab_old/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(TARGET pte_tests POST_BUILD COMMAND
+    ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/formats/powertab_old/data
+    ${CMAKE_CURRENT_BINARY_DIR}/data)

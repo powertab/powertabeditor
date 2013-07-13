@@ -167,3 +167,24 @@ TEST_CASE("Formats/PowerTabOldImport/Directions", "")
     REQUIRE(symbol2.getRepeatNumber() == 2);
     REQUIRE(symbol2.getActiveSymbolType() == DirectionSymbol::ActiveDaCapo);
 }
+
+TEST_CASE("Formats/PowerTabOldImport/Staves", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/staves.ptb", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getStaves().size() == 2);
+    const Staff &staff1 = system.getStaves()[0];
+    const Staff &staff2 = system.getStaves()[1];
+
+    REQUIRE(staff1.getClefType() == Staff::TrebleClef);
+    REQUIRE(staff1.getStringCount() == 6);
+    REQUIRE(staff1.getViewType() == Staff::GuitarView);
+
+    REQUIRE(staff2.getClefType() == Staff::BassClef);
+    REQUIRE(staff2.getStringCount() == 7);
+    REQUIRE(staff2.getViewType() == Staff::GuitarView);
+}
