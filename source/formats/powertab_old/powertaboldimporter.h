@@ -22,6 +22,7 @@
 #include <formats/fileformatmanager.h>
 
 namespace PowerTabDocument {
+class AlternateEnding;
 class Barline;
 class Guitar;
 class KeySignature;
@@ -34,6 +35,7 @@ class TimeSignature;
 class Tuning;
 }
 
+class AlternateEnding;
 class Barline;
 class KeySignature;
 class RehearsalSign;
@@ -73,6 +75,8 @@ private:
 
     static void convert(const PowerTabDocument::TempoMarker &oldTempo,
                         TempoMarker &tempo);
+    static void convert(const PowerTabDocument::AlternateEnding &oldEnding,
+                        AlternateEnding &ending);
 };
 
 #endif

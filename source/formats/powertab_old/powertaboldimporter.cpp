@@ -18,6 +18,7 @@
 #include "powertaboldimporter.h"
 
 #include <boost/assign/list_of.hpp>
+#include "powertabdocument/alternateending.h"
 #include "powertabdocument/barline.h"
 #include "powertabdocument/guitar.h"
 #include "powertabdocument/powertabdocument.h"
@@ -200,6 +201,15 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         convert(*tempos[i], marker);
         system.insertTempoMarker(marker);
     }
+
+    std::vector<boost::shared_ptr<PowerTabDocument::AlternateEnding> > endings;
+    oldScore.GetAlternateEndingsInSystem(endings, oldSystem);
+    for (size_t i = 0; i < endings.size(); ++i)
+    {
+        AlternateEnding ending;
+        convert(*endings[i], ending);
+        system.insertAlternateEnding(ending);
+    }
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Barline &oldBar,
@@ -284,4 +294,19 @@ void PowerTabOldImporter::convert(const PowerTabDocument::TempoMarker &oldTempo,
     tempo.setAlterationOfPace(alteration);
     tempo.setBeatsPerMinute(oldTempo.GetBeatsPerMinute());
     tempo.setDescription(oldTempo.GetDescription());
+}
+
+void PowerTabOldImporter::convert(
+        const PowerTabDocument::AlternateEnding &oldEnding,
+        AlternateEnding &ending)
+{
+    ending.setPosition(oldEnding.GetPosition());
+
+    std::vector<uint8_t> numbers = oldEnding.GetListOfNumbers();
+    for (size_t i = 0; i < numbers.size(); ++i)
+        ending.addNumber(numbers[i]);
+
+    ending.setDaCapo(oldEnding.IsDaCapoSet());
+    ending.setDalSegno(oldEnding.IsDalSegnoSet());
+    ending.setDalSegnoSegno(oldEnding.IsDalSegnoSegnoSet());
 }

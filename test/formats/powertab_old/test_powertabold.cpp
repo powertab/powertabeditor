@@ -119,3 +119,26 @@ TEST_CASE("Formats/PowerTabOldImport/TempoMarkers", "")
     REQUIRE(tempo.getBeatsPerMinute() == 99);
     REQUIRE(tempo.getDescription() == "Fast Rock");
 }
+
+TEST_CASE("Formats/PowerTabOldImport/AlternateEndings", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/alternate_endings.ptb", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getAlternateEndings().size() == 1);
+    const AlternateEnding &ending = system.getAlternateEndings()[0];
+
+    REQUIRE(ending.getPosition() == 12);
+
+    std::vector<int> numbers;
+    numbers.push_back(2);
+    numbers.push_back(3);
+    REQUIRE(ending.getNumbers() == numbers);
+
+    REQUIRE(ending.hasDaCapo());
+    REQUIRE(!ending.hasDalSegno());
+    REQUIRE(!ending.hasDalSegnoSegno());
+}
