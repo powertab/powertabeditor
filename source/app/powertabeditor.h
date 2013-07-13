@@ -101,6 +101,17 @@ private slots:
     /// @return True if the file was successfully saved.
     bool saveFileAs();
 
+    /// Cycles through the tabs in the tab bar.
+    /// @param offset Direction and number of tabs to move by
+    /// (i.e. -1 moves back one tab).
+    void cycleTab(int offset);
+
+    /// Launches a dialog for the user to edit keyboard shortcuts.
+    void editKeyboardShortcuts();
+
+    /// Launches the preferences dialog.
+    void editPreferences();
+
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
     QString getApplicationName() const;
@@ -132,7 +143,13 @@ private:
     Command *myCloseTabCommand;
     Command *mySaveAsCommand;
     QMenu *myRecentFilesMenu;
+    Command *myEditShortcutsCommand;
+    Command *myEditPreferencesCommand;
     Command *myExitCommand;
+
+    QMenu *myWindowMenu;
+    Command *myNextTabCommand;
+    Command *myPrevTabCommand;
 
 #if 0
     static boost::scoped_ptr<UndoManager> undoManager;
@@ -152,7 +169,6 @@ private:
     ScoreArea* getScoreArea(int index);
 
     void editSlideInto(uint8_t newSlideIntoType);
-    void cycleTab(int offset);
     void editSlideOutOf(uint8_t newSlideType);
     void shiftTabNumber(int direction);
     void updateNoteDuration(uint8_t duration);
@@ -172,7 +188,6 @@ private slots:
     void updateLocationLabel();
     void updateModified(bool);
     void updateActiveVoice(int);
-    void openPreferences();
     void openFileInformation();
     void redrawSystem(int);
     void performFullRedraw();
@@ -234,8 +249,6 @@ private slots:
     void showTuningDictionary();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
-    void editKeyboardShortcuts();
-
     void doPaste();
     void copySelectedNotes();
     void cutSelectedNotes();
@@ -248,9 +261,6 @@ private:
     Toolbox* toolBox;
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
-
-    Command* editShortcutsAct;
-    Command* preferencesAct;
 
     QMenu* editMenu;
     QAction* undoAct;
@@ -388,10 +398,6 @@ private:
     QMenu* guitarMenu;
     Command* addGuitarAct;
     Command* tuningDictionaryAct;
-
-    QMenu* windowMenu;
-    Command* nextTabAct; // cycle to the next/previous tab
-    Command* prevTabAct;
 
     boost::scoped_ptr<QStackedWidget> mixerList;
     boost::scoped_ptr<QStackedWidget> playbackToolbarList;

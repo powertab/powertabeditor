@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef KEYBOARDSETTINGSDIALOG_H
-#define KEYBOARDSETTINGSDIALOG_H
+#ifndef DIALOGS_KEYBOARDSETTINGSDIALOG_H
+#define DIALOGS_KEYBOARDSETTINGSDIALOG_H
 
 #include <QDialog>
 
@@ -32,27 +32,49 @@ class KeyboardSettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    KeyboardSettingsDialog(QWidget* parent, const QList<Command*>& commands);
+    KeyboardSettingsDialog(QWidget *parent, const QList<Command *> &myCommands);
     ~KeyboardSettingsDialog();
 
 private slots:
+    /// Reset the shortcut for the selected command to the value it had before
+    /// editing began.
     void resetShortcut();
+
+    /// Reset the active command to its default shortcut.
     void resetToDefaultShortcut();
-    void activeCommandChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+
+    /// Switch the text in the shortcut editor when the selected command changes.
+    void activeCommandChanged(QTreeWidgetItem *current,
+                              QTreeWidgetItem *previous);
+
+    /// Save the shortcuts and close the dialog.
     void accept();
 
 private:
+    /// Performs setup such as loading the commands into the table widget, etc.
     void initializeCommandTable();
-    bool eventFilter(QObject* o, QEvent* e);
-    void processKeyPress(QKeyEvent* e);
+
+    /// Capture the key presses as they are typed, in order to get the
+    /// key sequence.
+    bool eventFilter(QObject *o, QEvent *e);
+
+    /// Process the key press and update the key sequence.
+    void processKeyPress(QKeyEvent *e);
+
+    /// Save all of the shortcuts.
     void saveShortcuts();
-    void setShortcut(const QString& shortcut);
-    Command* activeCommand() const;
+
+    /// Updates the shortcut in the commands list and the shortcut editor.
+    void setShortcut(const QString &shortcut);
+
+    /// Get the Command corresponding to the currently selected row.
+    Command *activeCommand() const;
 
     Ui::KeyboardSettingsDialog *ui;
-    QList<Command*> commands;
+    QList<Command*> myCommands;
 
-    /// Corresponds to the columns used in the QTreeWidget for dealing with the data
+    /// Corresponds to the columns used in the QTreeWidget for dealing
+    /// with the data.
     enum Columns
     {
         CommandId,
@@ -61,4 +83,4 @@ private:
     };
 };
 
-#endif // KEYBOARDSETTINGSDIALOG_H
+#endif

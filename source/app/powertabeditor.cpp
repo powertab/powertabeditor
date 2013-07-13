@@ -22,8 +22,10 @@
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
+#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
+#include <dialogs/keyboardsettingsdialog.h>
 #include <formats/fileformatmanager.h>
 #include <QCoreApplication>
 #include <QDebug>
@@ -31,6 +33,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
+#include <sigfwd/sigfwd.hpp>
 
 #if 0
 #include <QFileDialog>
@@ -412,6 +415,36 @@ bool PowerTabEditor::saveFileAs()
     return false;
 }
 
+void PowerTabEditor::cycleTab(int offset)
+{
+    int newIndex = (myTabWidget->currentIndex() + offset) % myTabWidget->count();
+
+    if (newIndex < 0) // Make sure that negative array indices wrap around.
+    {
+        newIndex += myTabWidget->count();
+    }
+
+    myTabWidget->setCurrentIndex(newIndex);
+}
+
+void PowerTabEditor::editKeyboardShortcuts()
+{
+    QList<Command *> registeredCommands = findChildren<Command *>();
+
+    KeyboardSettingsDialog dialog(this, registeredCommands);
+    dialog.exec();
+}
+
+void PowerTabEditor::editPreferences()
+{
+#if 0
+    PreferencesDialog(this, settingsPubSub, tuningDictionary).exec();
+    skinManager->reload();
+#else
+    Q_ASSERT(false);
+#endif
+}
+
 QString PowerTabEditor::getApplicationName() const
 {
     QString name = QString("%1 %2 Beta").arg(
@@ -461,16 +494,18 @@ void PowerTabEditor::createCommands()
                                   QKeySequence::SaveAs, this);
     connect(mySaveAsCommand, SIGNAL(triggered()), this, SLOT(saveFileAs()));
 
-#if 0
-    editShortcutsAct = new Command(tr("Customize Shortcuts..."),
-                                   "File.CustomizeShortcuts", QKeySequence(),
-                                   this);
-    connect(editShortcutsAct, SIGNAL(triggered()), this,
+    myEditShortcutsCommand = new Command(tr("Customize Shortcuts..."),
+                                         "File.CustomizeShortcuts",
+                                         QKeySequence(), this);
+    connect(myEditShortcutsCommand, SIGNAL(triggered()), this,
             SLOT(editKeyboardShortcuts()));
 
-    preferencesAct = new Command(tr("&Preferences..."), "File.Preferences", QKeySequence::Preferences, this);
-    connect(preferencesAct, SIGNAL(triggered()), this, SLOT(openPreferences()));
-#endif
+    myEditPreferencesCommand = new Command(tr("&Preferences..."),
+                                           "File.Preferences",
+                                           QKeySequence::Preferences, this);
+    connect(myEditPreferencesCommand, SIGNAL(triggered()), this,
+            SLOT(editPreferences()));
+
     myExitCommand = new Command(tr("&Quit"), "File.Quit", QKeySequence::Quit,
                                 this);
     connect(myExitCommand, SIGNAL(triggered()), this, SLOT(close()));
@@ -994,17 +1029,18 @@ void PowerTabEditor::createCommands()
                             "Guitar.TuningDictionary", QKeySequence(), this);
     connect(tuningDictionaryAct, SIGNAL(triggered()),
             this, SLOT(showTuningDictionary()));
+#endif
 
-    // Window Menu Actions
-    nextTabAct = new Command(tr("Next Tab"), "Window.NextTab", Qt::CTRL + Qt::Key_Tab, this);
-    sigfwd::connect(nextTabAct, SIGNAL(triggered()),
+    // Window Menu commands.
+    myNextTabCommand = new Command(tr("Next Tab"), "Window.NextTab",
+                                   Qt::CTRL + Qt::Key_Tab, this);
+    sigfwd::connect(myNextTabCommand, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::cycleTab, this, 1));
 
-    prevTabAct = new Command(tr("Previous Tab"), "Window.PreviousTab",
-                             Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
-    sigfwd::connect(prevTabAct, SIGNAL(triggered()),
+    myPrevTabCommand = new Command(tr("Previous Tab"), "Window.PreviousTab",
+                                   Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
+    sigfwd::connect(myPrevTabCommand, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::cycleTab, this, -1));
-#endif
 }
 
 void PowerTabEditor::createMenus()
@@ -1019,10 +1055,8 @@ void PowerTabEditor::createMenus()
     myFileMenu->addSeparator();
     myRecentFilesMenu = myFileMenu->addMenu(tr("Recent Files"));
     myFileMenu->addSeparator();
-#if 0
-    myFileMenu->addAction(editShortcutsAct);
-    myFileMenu->addAction(preferencesAct);
-#endif
+    myFileMenu->addAction(myEditShortcutsCommand);
+    myFileMenu->addAction(myEditPreferencesCommand);
     myFileMenu->addSeparator();
     myFileMenu->addAction(myExitCommand);
 #if 0
@@ -1188,11 +1222,11 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addAction(pickStrokeUpAct);
     tabSymbolsMenu->addAction(pickStrokeDownAct);
 
-    // Window Menu
-    windowMenu = menuBar()->addMenu(tr("&Window"));
-    windowMenu->addAction(nextTabAct);
-    windowMenu->addAction(prevTabAct);
 #endif
+    // Window Menu.
+    myWindowMenu = menuBar()->addMenu(tr("&Window"));
+    myWindowMenu->addAction(myNextTabCommand);
+    myWindowMenu->addAction(myPrevTabCommand);
 }
 
 void PowerTabEditor::createTabArea()
@@ -1401,14 +1435,6 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     return QMainWindow::eventFilter(object, event);
 }
 
-
-// Opens the preferences dialog
-void PowerTabEditor::openPreferences()
-{
-    PreferencesDialog(this, settingsPubSub, tuningDictionary).exec();
-    skinManager->reload();
-}
-
 /// Before exiting, prompt to save any modified documents.
 void PowerTabEditor::closeEvent(QCloseEvent* event)
 {
@@ -1465,20 +1491,6 @@ void PowerTabEditor::registerCaret(Caret* caret)
     connect(caret, SIGNAL(moved()), this, SLOT(updateActions()));
     connect(caret, SIGNAL(moved()), this, SLOT(updateLocationLabel()));
     connect(caret, SIGNAL(selectionChanged()), this, SLOT(updateActions()));
-}
-
-/// Cycles through the tabs in the tab bar
-/// @param offset Direction and number of tabs to move by (i.e. -1 moves back one tab)
-void PowerTabEditor::cycleTab(int offset)
-{
-    int newIndex = (tabWidget->currentIndex() + offset) % tabWidget->count();
-
-    if (newIndex < 0) // make sure that negative array indices wrap around
-    {
-        newIndex += tabWidget->count();
-    }
-
-    tabWidget->setCurrentIndex(newIndex);
 }
 
 PlaybackWidget* PowerTabEditor::getCurrentPlaybackWidget() const
@@ -2670,15 +2682,6 @@ void PowerTabEditor::editSlideInto(uint8_t newSlideIntoType)
 
     undoManager->push(new EditSlideInto(note, newSlideIntoType),
                       caret->getCurrentSystemIndex());
-}
-
-/// Launch a dialog for the user to edit keyboard shortcuts
-void PowerTabEditor::editKeyboardShortcuts()
-{
-    QList<Command*> registeredCommands = findChildren<Command*>();
-
-    KeyboardSettingsDialog dialog(this, registeredCommands);
-    dialog.exec();
 }
 
 void PowerTabEditor::editDynamic()

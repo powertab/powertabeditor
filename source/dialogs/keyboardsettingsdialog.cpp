@@ -19,16 +19,15 @@
 #include "ui_keyboardsettingsdialog.h"
 
 #include <app/command.h>
-
 #include <QKeyEvent>
 
-Q_DECLARE_METATYPE(Command*)
+Q_DECLARE_METATYPE(Command *)
 
 KeyboardSettingsDialog::KeyboardSettingsDialog(QWidget *parent,
-                                               const QList<Command *> &commands) :
-    QDialog(parent),
-    ui(new Ui::KeyboardSettingsDialog),
-    commands(commands)
+                                               const QList<Command *> &commands)
+    : QDialog(parent),
+      ui(new Ui::KeyboardSettingsDialog),
+      myCommands(commands)
 {
     ui->setupUi(this);
 
@@ -38,10 +37,13 @@ KeyboardSettingsDialog::KeyboardSettingsDialog(QWidget *parent,
 
     connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetShortcut()));
 
-    connect(ui->commandsList, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-            this, SLOT(activeCommandChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
+    connect(ui->commandsList,
+            SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
+            this,
+            SLOT(activeCommandChanged(QTreeWidgetItem *,QTreeWidgetItem *)));
 
-    connect(ui->defaultButton, SIGNAL(clicked()), this, SLOT(resetToDefaultShortcut()));
+    connect(ui->defaultButton, SIGNAL(clicked()), this,
+            SLOT(resetToDefaultShortcut()));
 }
 
 KeyboardSettingsDialog::~KeyboardSettingsDialog()
@@ -51,28 +53,30 @@ KeyboardSettingsDialog::~KeyboardSettingsDialog()
 
 namespace
 {
-bool compareCommands(const Command* cmd1, const Command* cmd2)
+bool compareCommands(const Command *cmd1, const Command *cmd2)
 {
     return cmd1->id() < cmd2->id();
 }
 }
 
-/// Setup: load the commands into the table widget, etc
 void KeyboardSettingsDialog::initializeCommandTable()
 {
-    qSort(commands.begin(), commands.end(), compareCommands);
+    qSort(myCommands.begin(), myCommands.end(), compareCommands);
 
     ui->commandsList->setColumnCount(3);
 
-    ui->commandsList->setHeaderLabels(QStringList() << tr("Command") << tr("Label") << tr("Shortcut"));
+    ui->commandsList->setHeaderLabels(QStringList() << tr("Command")
+                                      << tr("Label") << tr("Shortcut"));
 
-    // populate list of commands
-    foreach(Command* command, commands)
+    // Populate list of commands.
+    foreach(Command *command, myCommands)
     {
         // NOTE: QAction::toolTip() is called to avoid getting ampersands from
         //       mnemonics (which would appear in QAction::text)
-        QTreeWidgetItem* item = new QTreeWidgetItem(QStringList() << command->id() <<
-                                                    command->toolTip() << command->shortcut().toString());
+        QTreeWidgetItem* item = new QTreeWidgetItem(
+                    QStringList() << command->id() << command->toolTip()
+                    << command->shortcut().toString());
+
         item->setData(0, Qt::UserRole, qVariantFromValue(command));
         ui->commandsList->addTopLevelItem(item);
     }
@@ -95,17 +99,16 @@ void KeyboardSettingsDialog::initializeCommandTable()
     ui->commandsList->setCurrentItem(ui->commandsList->itemAt(0, 0));
 }
 
-/// Capture the key presses as they are typed, in order to get the key sequence
-bool KeyboardSettingsDialog::eventFilter(QObject*, QEvent *e)
+bool KeyboardSettingsDialog::eventFilter(QObject *, QEvent *e)
 {
     if (e->type() == QEvent::KeyPress)
     {
-        QKeyEvent* k = static_cast<QKeyEvent*>(e);
+        QKeyEvent *k = static_cast<QKeyEvent *>(e);
         processKeyPress(k);
         return true;
     }
 
-    // ignore these events
+    // Ignore these events.
     if (e->type() == QEvent::KeyRelease)
     {
         return true;
@@ -114,19 +117,18 @@ bool KeyboardSettingsDialog::eventFilter(QObject*, QEvent *e)
     return false;
 }
 
-/// Process the key press and update the key sequence
 void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
 {
     int key = e->key();
 
-    // ignore a modifer key by itself (i.e. just the Ctrl key)
+    // Ignore a modifer key by itself (i.e. just the Ctrl key).
     if (key == Qt::Key_Control || key == Qt::Key_Shift ||
             key == Qt::Key_Meta || key == Qt::Key_Alt)
     {
         return;
     }
 
-    // allow the use of backspace to clear the shortcut
+    // Allow the use of backspace to clear the shortcut.
     if (key == Qt::Key_Backspace)
     {
         setShortcut("");
@@ -144,54 +146,46 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
     e->accept();
 }
 
-/// Reset the shortcut for the selected command to the value it had before editing began
 void KeyboardSettingsDialog::resetShortcut()
 {
     setShortcut(activeCommand()->shortcut().toString());
 }
 
-/// Reset the active command to its default shortcut
 void KeyboardSettingsDialog::resetToDefaultShortcut()
 {
     setShortcut(activeCommand()->defaultShortcut().toString());
 }
 
-/// Updates the shortcut in the commands list and the shortcut editor
 void KeyboardSettingsDialog::setShortcut(const QString& shortcut)
 {
     ui->commandsList->currentItem()->setText(CommandShortcut, shortcut);
     ui->shortcutEdit->setText(shortcut);
 }
 
-/// Switch the text in the shortcut editor when the selected command changes
 void KeyboardSettingsDialog::activeCommandChanged(QTreeWidgetItem* current,
                                                   QTreeWidgetItem* /*previous*/)
 {
     ui->shortcutEdit->setText(current->text(CommandShortcut));
 }
 
-/// Save all of the shortcuts
 void KeyboardSettingsDialog::saveShortcuts()
 {
     for (int i = 0; i < ui->commandsList->topLevelItemCount(); i++)
     {
-        QTreeWidgetItem* currentItem = ui->commandsList->topLevelItem(i);
+        QTreeWidgetItem *currentItem = ui->commandsList->topLevelItem(i);
         Command* command = currentItem->data(0, Qt::UserRole).value<Command*>();
 
         command->setShortcut(currentItem->text(CommandShortcut));
     }
 }
 
-/// Save the shortcuts and close the dialog
 void KeyboardSettingsDialog::accept()
 {
     saveShortcuts();
-
     done(Accepted);
 }
 
-/// Get the Command corresponding to the currently selected row
-Command * KeyboardSettingsDialog::activeCommand() const
+Command *KeyboardSettingsDialog::activeCommand() const
 {
     return ui->commandsList->currentItem()->data(0, Qt::UserRole).value<Command*>();
 }
