@@ -17,51 +17,49 @@
 
 #include "systemrenderer.h"
 
-#include <QFontMetricsF>
-
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
+#include <painters/layoutinfo.h>
+#include <painters/staffpainter.h>
+#include <QBrush>
+#include <QGraphicsItem>
+#include <QPen>
+#include <score/system.h>
 
-#include <app/common.h>
-#include <app/scorearea.h>
-#include <powertabdocument/rect.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/position.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/alternateending.h>
-#include <powertabdocument/tempomarker.h>
-#include <powertabdocument/chordtext.h>
-#include <powertabdocument/direction.h>
-#include <powertabdocument/rhythmslash.h>
-#include <powertabdocument/layout.h>
-#include <powertabdocument/dynamic.h>
-#include <powertabdocument/guitar.h>
-#include <powertabdocument/notestem.h>
+SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
+    : myScoreArea(scoreArea),
+      myScore(score),
+      myParentSystem(NULL)
+#if 1
+{
+}
 
-#include "barlinepainter.h"
-#include "staffdata.h"
-#include "staffpainter.h"
-#include "clefpainter.h"
-#include "keysignaturepainter.h"
-#include "timesignaturepainter.h"
-#include "tabnotepainter.h"
-#include "tempomarkerpainter.h"
-#include "chordtextpainter.h"
-#include "directionpainter.h"
-#include "rhythmslashpainter.h"
-#include "tremolobarpainter.h"
-#include "stdnotationpainter.h"
-#include "restpainter.h"
-#include "beamgroup.h"
-#include "irregularnotegroup.h"
-#include "caret.h"
+QGraphicsItem *SystemRenderer::operator()(const System &system)
+{
+    // Draw the bounding rectangle for the system.
+    myParentSystem = new QGraphicsRectItem();
+    myParentSystem->setPen(QPen(QBrush(QColor(0, 0, 0, 127)), 0.5));
 
-using boost::shared_ptr;
+    // Draw each staff.
+    double height = 0;
+    BOOST_FOREACH(const Staff &staff, system.getStaves())
+    {
+        LayoutPtr layout = boost::make_shared<LayoutInfo>(staff);
 
-SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score* score,
-                               const int lineSpacing) :
-    scoreArea(scoreArea), score(score), lineSpacing(lineSpacing),
+        StaffPainter *staffPainter = new StaffPainter(layout);
+        staffPainter->setPos(0, height);
+        staffPainter->setParentItem(myParentSystem);
+
+        height += layout->getStaffHeight();
+    }
+
+    myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
+
+    return myParentSystem;
+}
+
+#else
+    myScoreArea(scoreArea), score(score), lineSpacing(lineSpacing),
     parentSystem(NULL), parentStaff(NULL), plainTextFont("Liberation Sans"),
     symbolTextFont("Liberation Sans"), rehearsalSignFont("Helvetica"),
     musicNotationFont(musicFont.getFont())
@@ -70,19 +68,11 @@ SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score* score,
     symbolTextFont.setPixelSize(9);
     rehearsalSignFont.setPixelSize(12);
 }
+#endif
 
+#if 0
 QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
 {
-    this->system = system;
-
-    const Rect& systemRectangle = system->GetRect();
-
-    const int leftEdge = systemRectangle.GetLeft();
-    const int systemWidth = systemRectangle.GetWidth();
-
-    // draw system rectangle
-    drawSystemBox(system);
-
     bool isFirstVisibleStaff = true;
 
     // Draw each staff
@@ -147,17 +137,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
     return parentSystem;
 }
 
-void SystemRenderer::drawSystemBox(boost::shared_ptr<const System> system)
-{
-    const Rect& systemRect = system->GetRect();
-
-    QGraphicsRectItem* sysBox = new QGraphicsRectItem(0, 0, systemRect.GetWidth(), systemRect.GetHeight());
-    sysBox->setPos(systemRect.GetLeft(), systemRect.GetTop());
-    sysBox->setPen(QPen(QBrush(QColor(0, 0, 0, 127)), 0.5));
-
-    parentSystem = sysBox;
-}
-
 /// Draws the tab clef.
 void SystemRenderer::drawTabClef(int x, const StaffData& staffInfo)
 {
@@ -179,7 +158,7 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
 
-    const uint32_t systemIndex = score->FindSystemIndex(system);
+    const uint32_t systemIndex = myScore->FindSystemIndex(system);
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
@@ -189,7 +168,7 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
         const SystemLocation location(systemIndex, currentBarline->GetPosition());
 
         BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo,
-                                    currentBarline, location, scoreArea->barlinePubSub());
+                                    currentBarline, location, myScoreArea->barlinePubSub());
 
         double x = system->GetPositionX(currentBarline->GetPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
@@ -235,7 +214,7 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
         {
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(
                         currentStaffInfo, keySig, location,
-                        scoreArea->keySignaturePubSub());
+                        myScoreArea->keySignaturePubSub());
 
             keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
             keySigPainter->setParentItem(parentStaff);
@@ -245,7 +224,7 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
         {
             TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(
                         currentStaffInfo, timeSig, location,
-                        scoreArea->timeSignaturePubSub());
+                        myScoreArea->timeSignaturePubSub());
 
             timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
             timeSigPainter->setParentItem(parentStaff);
@@ -367,7 +346,7 @@ void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)
     }
 
     std::vector<Score::AlternateEndingPtr> altEndings;
-    score->GetAlternateEndingsInSystem(altEndings, system);
+    myScore->GetAlternateEndingsInSystem(altEndings, system);
 
     if (!altEndings.empty())
     {
@@ -377,7 +356,7 @@ void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)
     }
 
     std::vector<Score::TempoMarkerPtr> tempoMarkers;
-    score->GetTempoMarkersInSystem(tempoMarkers, system);
+    myScore->GetTempoMarkersInSystem(tempoMarkers, system);
 
     if (!tempoMarkers.empty())
     {
@@ -846,7 +825,7 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(const Position* posi
 void SystemRenderer::drawSymbols(const StaffData& staffInfo)
 {
     std::vector<Layout::SymbolGroup> symbolGroups;
-    Layout::CalculateSymbolLayout(symbolGroups, score, system, staff);
+    Layout::CalculateSymbolLayout(symbolGroups, myScore, system, staff);
 
     BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
     {
@@ -907,7 +886,7 @@ void SystemRenderer::drawSymbols(const StaffData& staffInfo)
         case Layout::SymbolDynamic:
         {
             const Position* pos = staff->GetPosition(0, symbolGroup.leftPosIndex);
-            renderedSymbol = createDynamic(score->FindDynamic(score->FindSystemIndex(system),
+            renderedSymbol = createDynamic(myScore->FindDynamic(myScore->FindSystemIndex(system),
                                                               system->FindStaffIndex(staff),
                                                               pos->GetPosition()));
             break;
@@ -1139,7 +1118,7 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
             const KeySignature& currentKeySig = currentBarline->GetKeySignature();
 
             // Find the guitar corresponding to the current staff
-            shared_ptr<Guitar> currentGuitar = score->GetGuitar(system->FindStaffIndex(staff));
+            shared_ptr<Guitar> currentGuitar = myScore->GetGuitar(system->FindStaffIndex(staff));
             Q_ASSERT(currentGuitar);
 
             std::vector<int> noteLocations;
@@ -1394,7 +1373,7 @@ void SystemRenderer::connectSignals()
     for (size_t i = 0; i < staffPainters.size(); i++)
     {
         QObject::connect(staffPainters[i], SIGNAL(selectionUpdated(int,int)),
-                         scoreArea->getCaret(), SLOT(updateSelection(int,int)));
+                         myScoreArea->getCaret(), SLOT(updateSelection(int,int)));
     }
 }
 
@@ -1453,3 +1432,5 @@ QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffD
     itemGroup->addToGroup(new QGraphicsPathItem(path));
     return itemGroup;
 }
+
+#endif

@@ -17,29 +17,63 @@
   
 #include "scorearea.h"
 
-#if 0
-#include <QDebug>
-#include <QProgressDialog>
-
-#include <app/powertabeditor.h>
-#include <app/pubsub/systemlocationpubsub.h>
-
-#include <powertabdocument/powertabdocument.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-
-#include <painters/caret.h>
-#include <painters/systemrenderer.h>
-
+#include <boost/foreach.hpp>
 #include <boost/timer.hpp>
-#include <boost/make_shared.hpp>
+#include <painters/systemrenderer.h>
+#include <QDebug>
+#include <QGraphicsItem>
+#include <QProgressDialog>
+#include <score/score.h>
 
-#endif
+static const double SYSTEM_SPACING = 50;
 
 #if 1
 ScoreArea::ScoreArea(QWidget *parent)
-    : QGraphicsView(parent)
+    : QGraphicsView(parent),
+      myViewType(Staff::GuitarView)
 {
+    setScene(&myScene);
+}
+
+void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
+{
+    myScene.clear();
+    myRenderedSystems.clear();
+    myScore = score;
+    myViewType = view;
+
+    // TODO - set up caret.
+
+    boost::timer timer;
+    QProgressDialog progressDialog(tr("Rendering ..."), "", 0,
+                                   score.getSystems().size());
+    progressDialog.setCancelButton(0);
+    progressDialog.setWindowModality(Qt::WindowModal);
+    progressDialog.show();
+
+    // Render each system.
+    int i = 0;
+    double height = 0;
+    BOOST_FOREACH(const System &system, score.getSystems())
+    {
+        progressDialog.setValue(i);
+        SystemRenderer render(this, score);
+
+        QGraphicsItem *renderedSystem = render(system);
+        renderedSystem->setPos(0, height);
+        myRenderedSystems << renderedSystem;
+        myScene.addItem(renderedSystem);
+        height += renderedSystem->boundingRect().bottom() + SYSTEM_SPACING;
+#if 0
+        renderer.connectSignals();
+#endif
+        ++i;
+    }
+
+    progressDialog.setValue(i);
+
+    qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
+    qDebug() << "Rendered " << myScene.items().size() << "items";
 }
 
 #else
@@ -168,45 +202,10 @@ void ScoreArea::requestFullRedraw()
     redrawOnNextRefresh = true;
 }
 
-void ScoreArea::renderScore(const Score* score, int lineSpacing)
-{
-    boost::timer timer;
-    
-    QProgressDialog progressDialog(tr("Rendering ..."), "", 0, score->GetSystemCount());
-    progressDialog.setCancelButton(0);
-    progressDialog.setWindowModality(Qt::WindowModal);
-    progressDialog.show();
-
-    // Render each system (group of staves) in the entire score
-    for (uint32_t i=0; i < score->GetSystemCount(); i++)
-    {
-        progressDialog.setValue(i);
-        SystemRenderer renderer(this, score, lineSpacing);
-        systemList << renderer(score->GetSystem(i));
-        scene.addItem(systemList.back());
-        renderer.connectSignals();
-    }
-    
-    progressDialog.setValue(score->GetSystemCount());
-
-    qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
-    qDebug() << "Rendered " << scene.items().size() << "items";
-}
-
 // ensures that the caret is visible when it changes sections
 void ScoreArea::adjustScroll()
 {
     ensureVisible(caret.get(), 0, 100);
-}
-
-void ScoreArea::setScoreIndex(int newScoreIndex)
-{
-    assert(newScoreIndex >= 0 && "Invalid newScoreIndex");
-    if (scoreIndex != static_cast<size_t>(newScoreIndex))
-    {
-        scoreIndex = newScoreIndex;
-        renderDocument(document);
-    }
 }
 
 #endif

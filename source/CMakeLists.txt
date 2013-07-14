@@ -5,7 +5,7 @@ add_subdirectory(app)
 #add_subdirectory(audio)
 add_subdirectory(dialogs)
 add_subdirectory(formats)
-#add_subdirectory(painters)
+add_subdirectory(painters)
 add_subdirectory(score)
 add_subdirectory(sigfwd)
 #add_subdirectory(widgets)
@@ -32,7 +32,7 @@ target_link_libraries(powertabeditor
     #pteactions
     #pteaudio
     #rtmidi
-    #ptepainters
+    ptepainters
     sigfwd
     pteformats
     ptescore

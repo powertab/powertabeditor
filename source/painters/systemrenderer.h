@@ -15,44 +15,29 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SYSTEMRENDERER_H
-#define SYSTEMRENDERER_H
+#ifndef PAINTERS_SYSTEMRENDERER_H
+#define PAINTERS_SYSTEMRENDERER_H
 
-#include <boost/shared_ptr.hpp>
-#include <boost/cstdint.hpp>
-#include <vector>
-#include <QMultiMap>
-#include "musicfont.h"
-
-class Score;
-class System;
 class QGraphicsItem;
-class StaffData;
-class Staff;
-class Position;
-class AlternateEnding;
-class TempoMarker;
-class Dynamic;
-class StdNotationPainter;
-class Barline;
+class QGraphicsRectItem;
+class Score;
 class ScoreArea;
-class StaffPainter;
-class BarlinePainter;
-class KeySignaturePainter;
-class TimeSignaturePainter;
+class System;
 
 class SystemRenderer
 {
 public:
-    SystemRenderer(const ScoreArea* scoreArea,
-                   const Score* score, const int lineSpacing);
+    SystemRenderer(const ScoreArea *myScoreArea, const Score &myScore);
     
-    QGraphicsItem* operator()(boost::shared_ptr<const System> system);
+    QGraphicsItem *operator()(const System &system);
     void connectSignals();
 
 private:
-    const ScoreArea* scoreArea;
-    const Score* score;
+    const ScoreArea *myScoreArea;
+    const Score &myScore;
+    QGraphicsRectItem *myParentSystem;
+
+#if 0
     const int lineSpacing;
     boost::shared_ptr<const System> system;
     boost::shared_ptr<const Staff> staff;
@@ -74,8 +59,6 @@ private:
     };
 
     void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
-
-    void drawSystemBox(boost::shared_ptr<const System> system);
 
     void drawTabClef(int x, const StaffData& staffInfo);
     void renderBars(const StaffData& currentStaffInfo);
@@ -125,6 +108,7 @@ private:
     void drawLedgerLines(const std::vector<int> &noteLocations,
                          const double xLocation, const StaffData& staffData,
                          const double noteHeadWidth);
+#endif
 };
 
-#endif // SYSTEMRENDERER_H
+#endif

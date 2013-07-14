@@ -18,8 +18,12 @@
 #ifndef APP_SCOREAREA_H
 #define APP_SCOREAREA_H
 
+#include <boost/optional.hpp>
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <score/staff.h>
+
+class Score;
 
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
@@ -33,31 +37,24 @@ public:
     explicit ScoreArea(QWidget *parent);
 #endif
 
+    void renderScore(const Score &score, Staff::ViewType view);
+
 #if 0
     ~ScoreArea();
-
-    void renderDocument(boost::shared_ptr<PowerTabDocument> doc);
-    void updateSystem(const uint32_t systemIndex);
-
-    boost::shared_ptr<PowerTabDocument> document;
-
-    inline Caret* getCaret() const
-    {
-        return caret.get();
-    }
 
     boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
     boost::shared_ptr<SystemLocationPubSub> timeSignaturePubSub() const;
     boost::shared_ptr<SystemLocationPubSub> barlinePubSub() const;
-
+#endif
 private:
-    void renderScore(const Score* score, int lineSpacing);
+    QGraphicsScene myScene;
+    boost::optional<const Score &> myScore;
+    Staff::ViewType myViewType;
+    QList<QGraphicsItem *> myRenderedSystems;
 
-    QGraphicsScene scene;
+#if 0
     PowerTabEditor* editor;
     boost::scoped_ptr<Caret> caret;
-    QList<QGraphicsItem*> systemList;
-    size_t scoreIndex;
 
     boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
     boost::shared_ptr<SystemLocationPubSub> timeSignatureClicked;
@@ -68,7 +65,6 @@ private:
 public slots:
     void adjustScroll();
     void requestFullRedraw();
-    void setScoreIndex(int newScoreIndex);
 #endif
 };
 

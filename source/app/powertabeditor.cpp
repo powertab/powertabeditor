@@ -1264,6 +1264,7 @@ void PowerTabEditor::setupNewTab()
     Document &doc = myDocumentManager->getCurrentDocument();
 
     ScoreArea *scorearea = new ScoreArea(this);
+    scorearea->renderScore(doc.getScore(), Staff::GuitarView);
 #if 0
     score->installEventFilter(this);
     score->renderDocument(doc);
@@ -1356,6 +1357,11 @@ void PowerTabEditor::setupNewTab()
     getCurrentScoreArea()->setFocus();
 #endif
     qDebug() << "Tab opened in" << timer.elapsed() << "seconds";
+}
+
+ScoreArea *PowerTabEditor::getScoreArea()
+{
+    return dynamic_cast<ScoreArea *>(myTabWidget->currentWidget());
 }
 
 #if 0
@@ -1463,11 +1469,6 @@ void PowerTabEditor::updateActiveVoice(int voice)
     getCurrentScoreArea()->getCaret()->setCurrentVoice(voice);
 }
 
-ScoreArea* PowerTabEditor::getCurrentScoreArea()
-{
-    return dynamic_cast<ScoreArea*>(tabWidget->currentWidget());
-}
-
 Mixer* PowerTabEditor::getCurrentMixer()
 {
     QScrollArea* scrollArea = dynamic_cast<QScrollArea*>(mixerList->currentWidget());
@@ -1507,11 +1508,6 @@ int PowerTabEditor::getCurrentPlaybackSpeed() const
     }
 
     return getCurrentPlaybackWidget()->playbackSpeed();
-}
-
-ScoreArea *PowerTabEditor::getScoreArea(int index)
-{
-    return dynamic_cast<ScoreArea*>(tabWidget->widget(index));
 }
 
 void PowerTabEditor::startStopPlayback()

@@ -15,47 +15,42 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef STAFFPAINTER_H
-#define STAFFPAINTER_H
+#ifndef PAINTERS_STAFFPAINTER_H
+#define PAINTERS_STAFFPAINTER_H
 
-#include "painterbase.h"
-#include "staffdata.h"
-
-#include <boost/shared_ptr.hpp>
-#include <QPen>
+#include <painters/layoutinfo.h>
+#include <QGraphicsItem>
 
 class Staff;
-class System;
 
-class StaffPainter : public QObject, public PainterBase
+class StaffPainter : public QGraphicsItem
 {
-    Q_OBJECT
-
 public:
-    StaffPainter(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
-                 const StaffData& staffInfo);
+    StaffPainter(const LayoutConstPtr &layout);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                       QWidget *);
+    virtual QRectF boundingRect() const { return myBounds; }
 
+#if 0
 signals:
     void selectionUpdated(int selectionStart, int selectionEnd);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *);
+#endif
 private:
-    int drawStaffLines(int lineCount, int lineSpacing, int startHeight);
+    void drawStaffLines(QPainter *painter, int lineCount, double lineSpacing,
+                        double startHeight);
+
+#if 0
     inline int findClosestPosition(qreal click, qreal relativePos, qreal spacing);
+#endif
 
-    boost::shared_ptr<const System> system;
-    boost::shared_ptr<const Staff> staff;
-    StaffData staffInfo;
-    QPen pen;
-
-    int selectionStart;
-    int selectionEnd;
+    LayoutConstPtr myLayout;
+    const QRectF myBounds;
 };
 
-#endif // STAFFPAINTER_H
+#endif

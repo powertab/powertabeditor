@@ -17,44 +17,26 @@
   
 #include "staffpainter.h"
 
-#include <powertabdocument/staff.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/score.h>
-
-// For manipulating the caret
-#include <app/powertabeditor.h>
-#include <app/scorearea.h>
-#include <painters/caret.h>
-
-#include <cmath>
-
-#include <QPainter>
 #include <QGraphicsSceneMouseEvent>
-#include <QDebug>
+#include <QPainter>
 
-StaffPainter::StaffPainter(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
-                           const StaffData& staffInfo) :
-    system(system),
-    staff(staff),
-    staffInfo(staffInfo)
+StaffPainter::StaffPainter(const LayoutConstPtr &layout)
+    : myLayout(layout),
+      myBounds(0, 0, LayoutInfo::STAFF_WIDTH, layout->getStaffHeight())
 {
-    pen = QPen(QBrush(QColor(0,0,0)), 0.75);
+#if 0
     selectionEnd = selectionStart = 0;
-    bounds = QRectF(0, 0, staffInfo.width, staffInfo.height);
-
-    // Standard notation staff
-    drawStaffLines(staffInfo.numOfStdNotationLines, Staff::STD_NOTATION_LINE_SPACING, staffInfo.getTopStdNotationLine());
-    // Tab staff
-    drawStaffLines(staffInfo.numOfStrings, staffInfo.tabLineSpacing, staffInfo.getTopTabLine());
+#endif
 
     // Only use the left mouse button for making selections.
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
-void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
+#if 0
+void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qreal y = mouseEvent->pos().y();
-    qreal x = mouseEvent->pos().x();
+    qreal y = event->pos().y();
+    qreal x = event->pos().x();
 
     // find the position relative to the top of the staff, in terms of the tab line spacing
     // Then, round to find the string index (keep it zero-based since that's what the caret uses)
@@ -81,10 +63,8 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
     }
 }
 
-void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
+void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    Q_UNUSED(mouseEvent);
-
     update(boundingRect());
 }
 
@@ -100,35 +80,38 @@ inline int StaffPainter::findClosestPosition(qreal click, qreal relativePos, qre
     return pos;
 }
 
-void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent)
+void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    const double x = mouseEvent->pos().x();
+    const double x = event->pos().x();
     selectionEnd = system->GetPositionFromX(x);
 
     update(boundingRect()); // trigger a redraw
     emit selectionUpdated(selectionStart, selectionEnd);
 }
+#endif
 
-void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                         QWidget *)
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
+    painter->setPen(QPen(QBrush(QColor(0,0,0)), 0.75));
 
-    painter->setPen(pen);
+    // Draw standard notation staff.
+    drawStaffLines(painter, LayoutInfo::NUM_STD_NOTATION_LINES,
+                   myLayout->STD_NOTATION_LINE_SPACING,
+                   myLayout->getTopStdNotationLine());
 
-    painter->drawPath(path);
+    // Draw tab staff.
+    drawStaffLines(painter, myLayout->getStringCount(),
+                   myLayout->getTabLineSpacing(), myLayout->getTopTabLine());
 }
 
-int StaffPainter::drawStaffLines(int lineCount, int lineSpacing, int startHeight)
+void StaffPainter::drawStaffLines(QPainter *painter, int lineCount,
+                                  double lineSpacing, double startHeight)
 {
-    int height = 0;
-
-    for (int i=0; i < lineCount; i++)
+    for (int i = 0; i < lineCount; i++)
     {
-        height = i * lineSpacing + startHeight;
-        path.moveTo(0, height);
-        path.lineTo(staffInfo.width, height);
+        const double height = i * lineSpacing + startHeight;
+        painter->drawLine(QPointF(0, height),
+                          QPointF(LayoutInfo::STAFF_WIDTH, height));
     }
-
-    return height;
 }

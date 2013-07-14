@@ -28,6 +28,7 @@ class Command;
 class DocumentManager;
 class FileFormatManager;
 class RecentFiles;
+class ScoreArea;
 
 #if 0
 // the sigfwd library allows for connecting Qt signals directly to
@@ -129,6 +130,9 @@ private:
     /// Sets up the UI for the current document after it has been opened.
     void setupNewTab();
 
+    /// Returns the score area for the active document.
+    ScoreArea *getScoreArea();
+
     boost::scoped_ptr<DocumentManager> myDocumentManager;
     boost::scoped_ptr<FileFormatManager> myFileFormatManager;
     /// Tracks the last directory that a file was opened from.
@@ -153,7 +157,6 @@ private:
 
 #if 0
     static boost::scoped_ptr<UndoManager> undoManager;
-    static ScoreArea* getCurrentScoreArea();
     void registerCaret(Caret* caret);
 
 protected:
@@ -166,7 +169,6 @@ private:
     void changeNoteDuration(bool increase);
     void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
-    ScoreArea* getScoreArea(int index);
 
     void editSlideInto(uint8_t newSlideIntoType);
     void editSlideOutOf(uint8_t newSlideType);
