@@ -15,33 +15,34 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef TEMPOMARKERPAINTER_H
-#define TEMPOMARKERPAINTER_H
+#ifndef PAINTERS_TEMPOMARKERPAINTER_H
+#define PAINTERS_TEMPOMARKERPAINTER_H
 
-#include "painterbase.h"
-
-#include <boost/shared_ptr.hpp>
 #include <QFont>
+#include <QGraphicsItem>
 #include <QStaticText>
 
 class TempoMarker;
 
-class TempoMarkerPainter : public PainterBase
+class TempoMarkerPainter : public QGraphicsItem
 {
 public:
-    TempoMarkerPainter(boost::shared_ptr<const TempoMarker> tempoMarker);
+    TempoMarkerPainter(const TempoMarker &tempo);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                       QWidget *);
+    virtual QRectF boundingRect() const { return myBounds; }
 
 private:
-    boost::shared_ptr<const TempoMarker> tempoMarker;
-    QFont displayFont;
-    QStaticText displayText;
-    QRectF beatTypeRect;
-
     QString getBeatTypeImage() const;
+
+    const TempoMarker &myTempoMarker;
+    QFont myDisplayFont;
+    QStaticText myDisplayText;
+    QRectF myBeatTypeRect;
+    QRectF myBounds;
 
     static const int HEIGHT_OFFSET = 2;
 };
 
-#endif // TEMPOMARKERPAINTER_H
+#endif

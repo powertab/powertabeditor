@@ -17,81 +17,81 @@
   
 #include "tempomarkerpainter.h"
 
-#include <powertabdocument/tempomarker.h>
-
 #include <QPainter>
+#include <score/tempomarker.h>
 
-TempoMarkerPainter::TempoMarkerPainter(boost::shared_ptr<const TempoMarker> tempoMarker):
-    tempoMarker(tempoMarker), displayFont("Liberation Sans")
+TempoMarkerPainter::TempoMarkerPainter(const TempoMarker &tempo)
+    : myTempoMarker(tempo),
+      myDisplayFont("Liberation Sans")
 {
-    displayFont.setPixelSize(10);
-    displayFont.setBold(true);
+    myDisplayFont.setPixelSize(10);
+    myDisplayFont.setBold(true);
 
-    QFontMetricsF fm(displayFont);
-    const qreal fontHeight = fm.height();
+    QFontMetricsF fm(myDisplayFont);
+    const double fontHeight = fm.height();
 
     QString text;
-    text += QString::fromStdString(tempoMarker->GetDescription()) + " ";
+    text += QString::fromStdString(myTempoMarker.getDescription()) + " ";
 
     const QString imageSpacing(3, ' ');
     // Reserve space for the beat type image.
-    beatTypeRect = QRectF(fm.width(text), -HEIGHT_OFFSET, fm.width(imageSpacing),
-                          fontHeight + HEIGHT_OFFSET);
+    myBeatTypeRect = QRectF(fm.width(text), -HEIGHT_OFFSET,
+                            fm.width(imageSpacing), fontHeight + HEIGHT_OFFSET);
     text += imageSpacing;
     text += " = ";
+    text += QString::number(myTempoMarker.getBeatsPerMinute());
 
-    text += QString::number(tempoMarker->GetBeatsPerMinute());
+    myDisplayText.setText(text);
+    myDisplayText.prepare(QTransform(), myDisplayFont);
 
-    displayText.setText(text);
-    displayText.prepare(QTransform(), displayFont);
-
-    bounds = QRectF(0, 0, fm.width(text), fontHeight);
+    myBounds = QRectF(0, 0, fm.width(text), fontHeight);
 }
 
-void TempoMarkerPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
+void TempoMarkerPainter::paint(QPainter *painter,
+                               const QStyleOptionGraphicsItem *, QWidget *)
 {
     painter->setRenderHints(QPainter::SmoothPixmapTransform);
-    painter->setFont(displayFont);
-    painter->drawStaticText(0, HEIGHT_OFFSET, displayText);
+    painter->setFont(myDisplayFont);
+    painter->drawStaticText(0, HEIGHT_OFFSET, myDisplayText);
 
     QPixmap image(getBeatTypeImage());
-    painter->drawPixmap(beatTypeRect, image, image.rect());
+    painter->drawPixmap(myBeatTypeRect, image, image.rect());
 }
 
 QString TempoMarkerPainter::getBeatTypeImage() const
 {
     QString file;
 
-    switch (tempoMarker->GetBeatType())
+    switch (myTempoMarker.getBeatType())
     {
-    case TempoMarker::half:
+    case TempoMarker::Half:
         file = ":images/half_note";
         break;
-    case TempoMarker::halfDotted:
+    case TempoMarker::HalfDotted:
         file = ":images/half_note_dotted";
         break;
-    case TempoMarker::quarter:
+    case TempoMarker::Quarter:
         file = ":images/quarter_note";
         break;
-    case TempoMarker::quarterDotted:
+    case TempoMarker::QuarterDotted:
         file = ":images/dotted_note";
         break;
-    case TempoMarker::eighth:
+    case TempoMarker::Eighth:
         file = ":images/8th_note";
         break;
-    case TempoMarker::eighthDotted:
+    case TempoMarker::EighthDotted:
         file = ":images/8th_note_dotted";
         break;
-    case TempoMarker::sixteenth:
+    case TempoMarker::Sixteenth:
         file = ":images/16th_note";
         break;
-    case TempoMarker::sixteenDotted:
+    case TempoMarker::SixteenthDotted:
         file = ":images/16th_note_dotted";
         break;
-    case TempoMarker::thirtySecond:
+    case TempoMarker::ThirtySecond:
         file = ":images/32nd_note";
         break;
-    case TempoMarker::thirtySecondDotted:
+    case TempoMarker::ThirtySecondDotted:
         file = ":images/32nd_note_dotted";
         break;
     }

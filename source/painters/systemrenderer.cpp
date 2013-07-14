@@ -28,6 +28,7 @@
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
 #include <painters/tabnotepainter.h>
+#include <painters/tempomarkerpainter.h>
 #include <painters/timesignaturepainter.h>
 #include <QBrush>
 #include <QDebug>
@@ -312,17 +313,14 @@ double SystemRenderer::drawSystemSymbols(const System &system,
         drawDividerLine(height);
     }
 
-#if 0
-    std::vector<Score::TempoMarkerPtr> tempoMarkers;
-    myScore->GetTempoMarkersInSystem(tempoMarkers, system);
-
-    if (!tempoMarkers.empty())
+    if (!system.getTempoMarkers().empty())
     {
-        drawTempoMarkers(tempoMarkers, height);
-        height += System::SYSTEM_SYMBOL_SPACING;
-        drawDividerLine(currentStaffInfo, height);
+        drawTempoMarkers(system, layout, height);
+        height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(height);
     }
 
+#if 0
     if (system->GetDirectionCount() > 0)
     {
         drawDirections(height, currentStaffInfo);
@@ -393,7 +391,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         if (endX == 0)
         {
             endX = layout.getPositionX(system.getNextBarline(
-                                           ending.getPosition())->getPosition());
+                                    ending.getPosition() + 1)->getPosition());
         }
 
         // Ensure that the line doesn't extend past the edge of the system.
@@ -406,54 +404,21 @@ void SystemRenderer::drawAlternateEndings(const System &system,
     }
 }
 
+void SystemRenderer::drawTempoMarkers(const System &system,
+                                      const LayoutInfo &layout,
+                                      double height)
+{
+    BOOST_FOREACH(const TempoMarker &tempo, system.getTempoMarkers())
+    {
+        const double location = layout.getPositionX(tempo.getPosition());
+
+        TempoMarkerPainter *painter = new TempoMarkerPainter(tempo);
+        painter->setPos(location, height + 4);
+        painter->setParentItem(myParentSystem);
+    }
+}
+
 #if 0
-QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
-{
-    bool isFirstVisibleStaff = true;
-
-    // Draw each staff
-    for (uint32_t i = 0; i < system->GetStaffCount(); i++)
-    {
-        staff = system->GetStaff(i);
-        if (!staff->IsShown())
-        {
-            continue;
-        }
-
-        drawTabNotes(currentStaffInfo);
-        drawStdNotation(currentStaffInfo);
-
-        if (isFirstVisibleStaff)
-        {
-            drawSystemSymbols(currentStaffInfo);
-            drawRhythmSlashes();
-            isFirstVisibleStaff = false;
-        }
-
-        drawLegato(currentStaffInfo);
-        drawSlides(currentStaffInfo);
-        drawSymbols(currentStaffInfo);
-        drawSymbolsBelowTabStaff(currentStaffInfo);
-        drawSymbolsAboveStdNotationStaff(currentStaffInfo);
-        drawSymbolsBelowStdNotationStaff(currentStaffInfo);
-    }
-
-    return parentSystem;
-}
-
-void SystemRenderer::drawTempoMarkers(const std::vector<Score::TempoMarkerPtr>& tempoMarkers,
-                                      quint32 height)
-{
-    BOOST_FOREACH(Score::TempoMarkerPtr tempoMarker, tempoMarkers)
-    {
-        const quint32 location = system->GetPositionX(tempoMarker->GetPosition());
-
-        TempoMarkerPainter* tempoMarkerPainter = new TempoMarkerPainter(tempoMarker);
-        tempoMarkerPainter->setPos(location, height + 4);
-        tempoMarkerPainter->setParentItem(parentSystem);
-    }
-}
-
 void SystemRenderer::drawChordText(uint32_t height, const StaffData& currentStaffInfo)
 {
     for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
@@ -1427,6 +1392,40 @@ QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffD
 
     itemGroup->addToGroup(new QGraphicsPathItem(path));
     return itemGroup;
+}
+
+QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
+{
+    bool isFirstVisibleStaff = true;
+
+    // Draw each staff
+    for (uint32_t i = 0; i < system->GetStaffCount(); i++)
+    {
+        staff = system->GetStaff(i);
+        if (!staff->IsShown())
+        {
+            continue;
+        }
+
+        drawTabNotes(currentStaffInfo);
+        drawStdNotation(currentStaffInfo);
+
+        if (isFirstVisibleStaff)
+        {
+            drawSystemSymbols(currentStaffInfo);
+            drawRhythmSlashes();
+            isFirstVisibleStaff = false;
+        }
+
+        drawLegato(currentStaffInfo);
+        drawSlides(currentStaffInfo);
+        drawSymbols(currentStaffInfo);
+        drawSymbolsBelowTabStaff(currentStaffInfo);
+        drawSymbolsAboveStdNotationStaff(currentStaffInfo);
+        drawSymbolsBelowStdNotationStaff(currentStaffInfo);
+    }
+
+    return parentSystem;
 }
 
 #endif

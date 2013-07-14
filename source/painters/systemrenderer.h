@@ -67,6 +67,10 @@ private:
     void drawAlternateEndings(const System &system, const LayoutInfo &layout,
                               double height);
 
+    /// Draws all of the tempo markers in the system.
+    void drawTempoMarkers(const System &system, const LayoutInfo &layout,
+                          double height);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 
