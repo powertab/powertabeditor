@@ -76,6 +76,11 @@ double LayoutInfo::getBottomStdNotationLine() const
     return getStdNotationLine(NUM_STD_NOTATION_LINES);
 }
 
+double LayoutInfo::getStdNotationStaffHeight() const
+{
+    return (NUM_STD_NOTATION_LINES - 1) * STD_NOTATION_LINE_SPACING;
+}
+
 double LayoutInfo::getTabLine(int line) const
 {
     return getStaffHeight() - TAB_STAFF_BELOW_SPACING - STAFF_BORDER_SPACING -

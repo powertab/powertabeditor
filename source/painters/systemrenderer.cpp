@@ -24,6 +24,7 @@
 #include <painters/clefpainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
+#include <painters/timesignaturepainter.h>
 #include <QBrush>
 #include <QGraphicsItem>
 #include <QPen>
@@ -104,6 +105,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
     {
         const ScoreLocation location(systemIndex, -1, barline.getPosition());
         const KeySignature &keySig = barline.getKeySignature();
+        const TimeSignature &timeSig = barline.getTimeSignature();
 
         BarlinePainter *barlinePainter = new BarlinePainter(layout, barline,
                 location, myScoreArea->getBarlinePubSub());
@@ -146,6 +148,16 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
         barlinePainter->setPos(x, 0);
         barlinePainter->setParentItem(myParentStaff);
+
+        if (timeSig.isVisible())
+        {
+            TimeSignaturePainter *timeSigPainter = new TimeSignaturePainter(
+                        layout, timeSig, location,
+                        myScoreArea->getTimeSignaturePubSub());
+
+            timeSigPainter->setPos(timeSigX, layout->getTopStdNotationLine());
+            timeSigPainter->setParentItem(myParentStaff);
+        }
     }
 
 #else

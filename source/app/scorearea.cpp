@@ -33,6 +33,7 @@ static const double SYSTEM_SPACING = 50;
 ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myViewType(Staff::GuitarView),
+      myTimeSignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
       myBarlineClicked(boost::make_shared<ScoreLocationPubSub>())
 {
     setScene(&myScene);
@@ -77,6 +78,11 @@ void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
 
     qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
     qDebug() << "Rendered " << myScene.items().size() << "items";
+}
+
+boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getTimeSignaturePubSub() const
+{
+    return myTimeSignatureClicked;
 }
 
 boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getBarlinePubSub() const

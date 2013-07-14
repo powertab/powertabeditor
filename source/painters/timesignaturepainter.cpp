@@ -17,51 +17,35 @@
   
 #include "timesignaturepainter.h"
 
-#include <app/pubsub/systemlocationpubsub.h>
-#include <powertabdocument/timesignature.h>
-#include <powertabdocument/staff.h>
+#include <app/pubsub/scorelocationpubsub.h>
 #include <painters/musicfont.h>
-
-#include <QMessageBox>
-#include <QFont>
 #include <QPainter>
+#include <score/timesignature.h>
 
-TimeSignaturePainter::TimeSignaturePainter(const StaffData& staffInformation,
-                                           const TimeSignature& signature,
-                                           const SystemLocation &location,
-                                           boost::shared_ptr<SystemLocationPubSub> pubsub) :
-    staffInfo(staffInformation),
-    timeSignature(signature),
-    location(location),
-    pubsub(pubsub)
-{
-    init();
-}
-
-void TimeSignaturePainter::init()
-{
-    bounds = QRectF(0, 0, timeSignature.GetWidth(), staffInfo.getStdNotationStaffSize());
-}
-
-void TimeSignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
+                                           const TimeSignature &time,
+                                           const ScoreLocation &location,
+                                           boost::shared_ptr<ScoreLocationPubSub> pubsub)
+    : myLayout(layout),
+      myTimeSignature(time),
+      myLocation(location),
+      myPubSub(pubsub),
+      myBounds(0, 0, LayoutInfo::getWidth(myTimeSignature),
+               myLayout->getStdNotationStaffHeight())
 {
 }
 
 void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    pubsub->publish(location);
+    myPubSub->publish(myLocation);
 }
 
-void TimeSignaturePainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
+void TimeSignaturePainter::paint(QPainter *painter,
+                                 const QStyleOptionGraphicsItem *, QWidget *)
 {
-}
-
-void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
-    if (timeSignature.IsCommonTime() || timeSignature.IsCutTime())
+    const TimeSignature::MeterType meterType = myTimeSignature.getMeterType();
+    if (meterType == TimeSignature::CommonTime ||
+        meterType == TimeSignature::CutTime)
     {
         MusicFont musicFont;
         QFont displayFont = musicFont.getFont();
@@ -69,25 +53,24 @@ void TimeSignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsIt
         painter->setFont(displayFont);
 
         QChar symbol;
-        if (timeSignature.IsCommonTime())
-        {
+        if (meterType == TimeSignature::CommonTime)
             symbol = musicFont.getSymbol(MusicFont::CommonTime);
-        }
         else
-        {
             symbol = musicFont.getSymbol(MusicFont::CutTime);
-        }
 
-        painter->drawText(0, 2 * Staff::STD_NOTATION_LINE_SPACING, symbol);
+        painter->drawText(0, 2 * LayoutInfo::STD_NOTATION_LINE_SPACING, symbol);
     }
     else
     {
-        drawNumber(painter, 2 * Staff::STD_NOTATION_LINE_SPACING, timeSignature.GetBeatsPerMeasure());
-        drawNumber(painter, 4 * Staff::STD_NOTATION_LINE_SPACING, timeSignature.GetBeatAmount());
+        drawNumber(painter, 2 * LayoutInfo::STD_NOTATION_LINE_SPACING,
+                   myTimeSignature.getBeatsPerMeasure());
+        drawNumber(painter, 4 * LayoutInfo::STD_NOTATION_LINE_SPACING,
+                   myTimeSignature.getBeatValue());
     }
 }
 
-void TimeSignaturePainter::drawNumber(QPainter* painter, const double y, const quint8 number) const
+void TimeSignaturePainter::drawNumber(QPainter* painter, const double y,
+                                      const int number) const
 {
     QString text = QString::number(number);
 
@@ -96,7 +79,8 @@ void TimeSignaturePainter::drawNumber(QPainter* painter, const double y, const q
     displayFont.setPixelSize(27);
 
     const double width = QFontMetricsF(displayFont).width(text);
-    const double x = centerItem(0, timeSignature.GetWidth(), width);
+    const double x = LayoutInfo::centerItem(0, LayoutInfo::getWidth(myTimeSignature),
+                                            width);
 
     painter->setFont(displayFont);
     painter->drawText(x, y, text);

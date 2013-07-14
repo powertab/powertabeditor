@@ -45,8 +45,8 @@ public:
     ~ScoreArea();
 
     boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
-    boost::shared_ptr<SystemLocationPubSub> timeSignaturePubSub() const;
 #endif
+    boost::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
 
 private:
@@ -60,8 +60,8 @@ private:
     boost::scoped_ptr<Caret> caret;
 
     boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
-    boost::shared_ptr<SystemLocationPubSub> timeSignatureClicked;
 #endif
+    boost::shared_ptr<ScoreLocationPubSub> myTimeSignatureClicked;
     boost::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
 #if 0
     bool redrawOnNextRefresh;

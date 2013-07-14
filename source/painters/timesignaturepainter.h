@@ -15,42 +15,39 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef TIMESIGNATUREPAINTER_H
-#define TIMESIGNATUREPAINTER_H
+#ifndef PAINTERS_TIMESIGNATUREPAINTER_H
+#define PAINTERS_TIMESIGNATUREPAINTER_H
 
-#include "painterbase.h"
-#include "staffdata.h"
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-#include <powertabdocument/systemlocation.h>
+#include <painters/layoutinfo.h>
+#include <QGraphicsItem>
+#include <score/scorelocation.h>
 
-class StaffData;
+class ScoreLocationPubSub;
 class TimeSignature;
-class SystemLocationPubSub;
 
-class TimeSignaturePainter : public PainterBase
+class TimeSignaturePainter : public QGraphicsItem
 {
 public:
-    TimeSignaturePainter(const StaffData& staffInformation,
-                         const TimeSignature& signature,
-                         const SystemLocation& location,
-                         boost::shared_ptr<SystemLocationPubSub> pubsub);
+    TimeSignaturePainter(const LayoutConstPtr &layout,
+                         const TimeSignature &time,
+                         const ScoreLocation &location,
+                         boost::shared_ptr<ScoreLocationPubSub> pubsub);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                       QWidget *);
+    virtual QRectF boundingRect() const { return myBounds; }
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    void init();
-    void drawNumber(QPainter* painter, const double y, const quint8 number) const;
+    void drawNumber(QPainter* painter, const double y, const int number) const;
 
-    StaffData staffInfo;
-    const TimeSignature& timeSignature;
-    const SystemLocation location;
-    boost::shared_ptr<SystemLocationPubSub> pubsub;
+    LayoutConstPtr myLayout;
+    const TimeSignature &myTimeSignature;
+    const ScoreLocation myLocation;
+    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    const QRectF myBounds;
 };
 
 #endif // TIMESIGNATUREPAINTER_H
