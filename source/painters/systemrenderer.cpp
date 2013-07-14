@@ -25,6 +25,7 @@
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
+#include <painters/tabnotepainter.h>
 #include <painters/timesignaturepainter.h>
 #include <QBrush>
 #include <QGraphicsItem>
@@ -79,6 +80,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout);
 
         drawBarlines(system, systemIndex, layout, isFirstStaff);
+        drawTabNotes(staff, layout);
     }
 
     myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
@@ -202,6 +204,46 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
     }
 }
 
+void SystemRenderer::drawTabNotes(const Staff &staff,
+                                  const LayoutConstPtr &layout)
+{
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    {
+        BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+        {
+            if (pos.isRest())
+                continue;
+
+            const double location = layout->getPositionX(pos.getPosition());
+
+            BOOST_FOREACH(const Note &note, pos.getNotes())
+            {
+                TabNotePainter *tabNote = new TabNotePainter(note);
+                centerItem(tabNote, location, location + layout->getPositionSpacing(),
+                           layout->getTabLine(note.getString()) + layout->getTabLineSpacing() / 2 - 1);
+                tabNote->setParentItem(myParentStaff);
+            }
+
+#if 0
+            // Draw arpeggios if necessary.
+            if (pos.hasProperty(Position::ArpeggioDown) ||
+                pos.hasProperty(Position::ArpeggioUp))
+            {
+                drawArpeggio(pos, location, staff);
+            }
+#endif
+        }
+    }
+}
+
+void SystemRenderer::centerItem(QGraphicsItem *item, double xmin,
+                                double xmax, double y)
+{
+    double itemWidth = item->boundingRect().width();
+    double centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
+    item->setPos(centredX, y);
+}
+
 #if 0
 QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
 {
@@ -215,8 +257,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         {
             continue;
         }
-
-        renderBars(currentStaffInfo);
 
         drawTabNotes(currentStaffInfo);
         drawStdNotation(currentStaffInfo);
@@ -237,41 +277,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
     }
 
     return parentSystem;
-}
-
-/// Draws the tab notes for all notes (and voices) in the staff
-void SystemRenderer::drawTabNotes(const StaffData& currentStaffInfo)
-{
-    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
-    {
-        for (quint32 i=0; i < staff->GetPositionCount(voice); i++)
-        {
-            const Position* currentPosition = staff->GetPosition(voice, i);
-
-            if (currentPosition->IsRest())
-            {
-                continue;
-            }
-
-            const quint32 location = system->GetPositionX(currentPosition->GetPosition());
-
-            for (quint32 j=0; j < currentPosition->GetNoteCount(); j++)
-            {
-                Note* note = currentPosition->GetNote(j);
-
-                TabNotePainter* tabNote = new TabNotePainter(note);
-                centerItem(tabNote, location, location + currentStaffInfo.positionWidth,
-                           currentStaffInfo.getTabLineHeight(note->GetString()) + currentStaffInfo.tabLineSpacing / 2 - 1);
-                tabNote->setParentItem(parentStaff);
-            }
-
-            // draw arpeggios if necessary
-            if (currentPosition->HasArpeggioDown() || currentPosition->HasArpeggioUp())
-            {
-                drawArpeggio(currentPosition, location, currentStaffInfo);
-            }
-        }
-    }
 }
 
 void SystemRenderer::drawArpeggio(const Position* position, quint32 x,
@@ -305,14 +310,6 @@ void SystemRenderer::drawArpeggio(const Position* position, quint32 x,
     endPoint->setFont(musicNotationFont);
     endPoint->setPos(x, y - 1.45 * musicNotationFont.pixelSize());
     endPoint->setParentItem(parentStaff);
-}
-
-/// Centers an item, by using it's width to calculate the necessary offset from xmin
-void SystemRenderer::centerItem(QGraphicsItem *item, float xmin, float xmax, float y)
-{
-    float itemWidth = item->boundingRect().width();
-    float centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
-    item->setPos(centredX, y);
 }
 
 void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)

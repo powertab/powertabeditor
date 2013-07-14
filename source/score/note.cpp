@@ -17,6 +17,7 @@
 
 #include "note.h"
 
+#include <ostream>
 #include <stdexcept>
 
 Note::Note()
@@ -124,4 +125,51 @@ void Note::setTappedHarmonicFret(int fret)
 void Note::clearTappedHarmonic()
 {
     myTappedHarmonicFret = -1;
+}
+
+std::ostream &operator<<(std::ostream &os, const Note &note)
+{
+    // For muted notes, display 'x'.
+    if (note.hasProperty(Note::Muted))
+    {
+        os << "x";
+        return os;
+    }
+
+    // For tapped harmonics, display '7(14)', where 14 is the tapped note
+    // For natural harmonics, display '[12]'
+    // For ghost notes, display '(12)'
+    // Otherwise, just display the fret number
+
+    int noteValue = note.getFretNumber();
+    // For tapped harmonics and trills, display original note first, and
+    // tapped/trilled note after.
+    if (note.hasTappedHarmonic() || note.hasTrill())
+    {
+        os << noteValue;
+
+        if (note.hasTappedHarmonic())
+            noteValue = note.getTappedHarmonicFret();
+        else
+            noteValue = note.getTrilledFret();
+    }
+
+    std::string brackets = "";
+    if (note.hasTappedHarmonic() || note.hasProperty(Note::GhostNote) ||
+        note.hasTrill())
+    {
+        brackets = "()";
+    }
+    else if (note.hasProperty(Note::NaturalHarmonic))
+    {
+        brackets = "[]";
+    }
+
+    if (!brackets.empty())
+        os << brackets[0];
+    os << noteValue;
+    if (!brackets.empty())
+        os << brackets[1];
+
+    return os;
 }

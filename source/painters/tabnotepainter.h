@@ -15,34 +15,31 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef TABNOTEPAINTER_H
-#define TABNOTEPAINTER_H
+#ifndef PAINTERS_TABNOTEPAINTER_H
+#define PAINTERS_TABNOTEPAINTER_H
 
 #include <QGraphicsItem>
 
 #include <QFont>
 #include <QStaticText>
-#include <QFontMetrics>
 
 class Note;
 
 class TabNotePainter : public QGraphicsItem
 {
 public:
-    TabNotePainter(Note* note);
+    TabNotePainter(const Note &note);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-    QRectF boundingRect() const;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                       QWidget *);
+    virtual QRectF boundingRect() const { return myBounds; }
 
 private:
-    void init();
-
-    QRectF bounds;
-    Note* note;
-    Qt::GlobalColor textColor;
-    QFont tabFont;
-    QStaticText displayText;
-    QFontMetricsF fontMetrics;
+    QRectF myBounds;
+    const Note &myNote;
+    const Qt::GlobalColor myTextColor;
+    QFont myTabFont;
+    QStaticText myDisplayText;
 };
 
-#endif // TABNOTEPAINTER_H
+#endif

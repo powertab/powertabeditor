@@ -17,7 +17,7 @@ add_library(ptepainters
     staffpainter.cpp
     #stdnotationpainter.cpp
     systemrenderer.cpp
-    #tabnotepainter.cpp
+    tabnotepainter.cpp
     #tempomarkerpainter.cpp
     timesignaturepainter.cpp
     #tremolobarpainter.cpp

@@ -20,6 +20,7 @@
 
 #include <bitset>
 #include <boost/serialization/access.hpp>
+#include <iosfwd>
 
 class Note
 {
@@ -94,5 +95,9 @@ private:
              myTrilledFret & myTappedHarmonicFret;
     }
 };
+
+/// Creates a text representation of the note, including brackets for ghost
+/// notes, harmonics, etc.
+std::ostream &operator<<(std::ostream &os, const Note &note);
 
 #endif

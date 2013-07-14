@@ -17,6 +17,7 @@
   
 #include <catch.hpp>
 
+#include <boost/lexical_cast.hpp>
 #include <score/note.h>
 #include "test_serialization.h"
 
@@ -59,6 +60,32 @@ TEST_CASE("Score/Note/TappedHarmonic", "")
     note.clearTappedHarmonic();
     REQUIRE(!note.hasTappedHarmonic());
     REQUIRE_THROWS(note.getTappedHarmonicFret());
+}
+
+TEST_CASE("Score/Note/ToString", "")
+{
+    Note note(3, 12);
+
+    REQUIRE(boost::lexical_cast<std::string>(note) == "12");
+
+    note.setTappedHarmonicFret(15);
+    REQUIRE(boost::lexical_cast<std::string>(note) == "12(15)");
+    note.clearTappedHarmonic();
+
+    note.setProperty(Note::NaturalHarmonic);
+    REQUIRE(boost::lexical_cast<std::string>(note) == "[12]");
+    note.setProperty(Note::NaturalHarmonic, false);
+
+    note.setProperty(Note::GhostNote);
+    REQUIRE(boost::lexical_cast<std::string>(note) == "(12)");
+    note.setProperty(Note::GhostNote, false);
+
+    note.setTrilledFret(5);
+    REQUIRE(boost::lexical_cast<std::string>(note) == "12(5)");
+
+    Note mutedNote;
+    mutedNote.setProperty(Note::Muted);
+    REQUIRE(boost::lexical_cast<std::string>(mutedNote) == "x");
 }
 
 TEST_CASE("Score/Note/Serialization", "")

@@ -17,40 +17,33 @@
   
 #include "tabnotepainter.h"
 
+#include <boost/lexical_cast.hpp>
+#include <QFontMetricsF>
 #include <QPainter>
+#include <score/note.h>
 
-#include <powertabdocument/note.h>
-
-TabNotePainter::TabNotePainter(Note* note) :
-    note(note), tabFont("Liberation Sans"), fontMetrics(tabFont)
+TabNotePainter::TabNotePainter(const Note &note)
+    : myNote(note),
+      myTextColor(note.hasProperty(Note::Tied) ? Qt::lightGray : Qt::black),
+      myTabFont("Liberation Sans")
 {
-    tabFont.setPixelSize(10); // needed for cross-platform consistency in font size
-    tabFont.setStyleStrategy(QFont::PreferAntialias);
+    myTabFont.setPixelSize(10);
+    myTabFont.setStyleStrategy(QFont::PreferAntialias);
 
-    textColor = note->IsTied() ? Qt::lightGray : Qt::black;
+    const QString noteText = QString::fromStdString(
+                boost::lexical_cast<std::string>(myNote));
 
-    init();
-}
+    myDisplayText.setText(noteText);
+    myDisplayText.prepare(QTransform(), myTabFont);
 
-void TabNotePainter::init()
-{
-    const QString noteText = QString::fromStdString(note->GetText());
-
-    displayText.setText(noteText);
-    displayText.prepare(QTransform(), tabFont);
-
-    bounds = QRectF(0, 0, fontMetrics.width(noteText), fontMetrics.height());
+    QFontMetricsF fm(myTabFont);
+    myBounds = QRectF(0, 0, fm.width(noteText), fm.height());
 }
 
 void TabNotePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-    painter->setFont(tabFont);
-    painter->setPen(textColor);
+    painter->setFont(myTabFont);
+    painter->setPen(myTextColor);
 
-    painter->drawStaticText(0, 0, displayText);
-}
-
-QRectF TabNotePainter::boundingRect() const
-{
-    return bounds;
+    painter->drawStaticText(0, 0, myDisplayText);
 }

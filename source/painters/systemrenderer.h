@@ -40,9 +40,17 @@ public:
 private:
     /// Draws the tab clef.
     void drawTabClef(double x, const LayoutInfo &layout);
+
     /// Draws barlines, along with time signatures, rehearsal signs, etc.
     void drawBarlines(const System &system, int systemIndex,
                       const LayoutConstPtr &layout, bool isFirstStaff);
+
+    /// Draws the tab notes for all notes in the staff.
+    void drawTabNotes(const Staff &staff, const LayoutConstPtr &layout);
+
+    /// Centers an item, by using its width to calculate the necessary
+    /// offset from xmin.
+    void centerItem(QGraphicsItem *item, double xmin, double xmax, double y);
 
     const ScoreArea *myScoreArea;
     const Score &myScore;
