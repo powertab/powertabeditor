@@ -59,7 +59,7 @@ void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
         progressDialog.setValue(i);
         SystemRenderer render(this, score);
 
-        QGraphicsItem *renderedSystem = render(system);
+        QGraphicsItem *renderedSystem = render(system, myViewType);
         renderedSystem->setPos(0, height);
         myRenderedSystems << renderedSystem;
         myScene.addItem(renderedSystem);

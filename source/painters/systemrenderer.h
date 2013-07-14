@@ -18,6 +18,10 @@
 #ifndef PAINTERS_SYSTEMRENDERER_H
 #define PAINTERS_SYSTEMRENDERER_H
 
+#include <painters/musicfont.h>
+#include <score/staff.h>
+
+struct LayoutInfo;
 class QGraphicsItem;
 class QGraphicsRectItem;
 class Score;
@@ -29,13 +33,21 @@ class SystemRenderer
 public:
     SystemRenderer(const ScoreArea *myScoreArea, const Score &myScore);
     
-    QGraphicsItem *operator()(const System &system);
+    QGraphicsItem *operator()(const System &system, Staff::ViewType view);
     void connectSignals();
 
 private:
+    /// Draws the tab clef.
+    void drawTabClef(double x, const LayoutInfo &layout);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
+
     QGraphicsRectItem *myParentSystem;
+    QGraphicsItem *myParentStaff;
+
+    MusicFont myMusicFont;
+    QFont myMusicNotationFont;
 
 #if 0
     const int lineSpacing;
@@ -60,7 +72,6 @@ private:
 
     void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
 
-    void drawTabClef(int x, const StaffData& staffInfo);
     void renderBars(const StaffData& currentStaffInfo);
 
     void drawTabNotes(const StaffData& currentStaffInfo);

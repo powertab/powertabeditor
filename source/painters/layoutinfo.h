@@ -40,6 +40,8 @@ struct LayoutInfo
     static const double STD_NOTATION_LINE_SPACING;
     /// Padding around top and bottom of staves.
     static const double STAFF_BORDER_SPACING;
+    /// Padding surrounding a clef.
+    static const double CLEF_PADDING;
 
 private:
     const Staff &myStaff;

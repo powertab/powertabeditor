@@ -23,6 +23,7 @@ const double LayoutInfo::STAFF_WIDTH = 750;
 const int LayoutInfo::NUM_STD_NOTATION_LINES = 5;
 const double LayoutInfo::STD_NOTATION_LINE_SPACING = 7;
 const double LayoutInfo::STAFF_BORDER_SPACING = 10;
+const double LayoutInfo::CLEF_PADDING = 3;
 
 // TODO - compute these values based on the note positions, etc.
 namespace {

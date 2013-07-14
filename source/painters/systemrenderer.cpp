@@ -19,6 +19,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
+#include <painters/clefpainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
 #include <QBrush>
@@ -29,12 +30,15 @@
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
     : myScoreArea(scoreArea),
       myScore(score),
-      myParentSystem(NULL)
+      myParentSystem(NULL),
+      myParentStaff(NULL),
+      myMusicNotationFont(myMusicFont.getFont())
 #if 1
 {
 }
 
-QGraphicsItem *SystemRenderer::operator()(const System &system)
+QGraphicsItem *SystemRenderer::operator()(const System &system,
+                                          Staff::ViewType view)
 {
     // Draw the bounding rectangle for the system.
     myParentSystem = new QGraphicsRectItem();
@@ -44,18 +48,42 @@ QGraphicsItem *SystemRenderer::operator()(const System &system)
     double height = 0;
     BOOST_FOREACH(const Staff &staff, system.getStaves())
     {
+        if (staff.getViewType() != view)
+            continue;
+
         LayoutPtr layout = boost::make_shared<LayoutInfo>(staff);
 
-        StaffPainter *staffPainter = new StaffPainter(layout);
-        staffPainter->setPos(0, height);
-        staffPainter->setParentItem(myParentSystem);
-
+        myParentStaff = new StaffPainter(layout);
+        myParentStaff->setPos(0, height);
+        myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
+
+        // Draw the clefs.
+        ClefPainter* clef = new ClefPainter(staff.getClefType(),
+                                            myMusicNotationFont);
+        clef->setPos(LayoutInfo::CLEF_PADDING, layout->getTopStdNotationLine());
+        clef->setParentItem(myParentStaff);
+
+        drawTabClef(LayoutInfo::CLEF_PADDING, *layout);
     }
 
     myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
-
     return myParentSystem;
+}
+
+void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout)
+{
+    QGraphicsSimpleTextItem *tabClef = new QGraphicsSimpleTextItem();
+
+    // Determine the size of the clef symbol based on the number of strings and
+    // the line spacing.
+    const int pixelSize = (layout.getStringCount() - 1) *
+            layout.getTabLineSpacing() * 0.6;
+
+    // Position the clef symbol.
+    tabClef->setPos(x, layout.getTopTabLine() - pixelSize / 2.1);
+    myMusicFont.setSymbol(tabClef, MusicFont::TabClef, pixelSize);
+    tabClef->setParentItem(myParentStaff);
 }
 
 #else
@@ -99,21 +127,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         currentStaffInfo.width = systemWidth;
         currentStaffInfo.calculateHeight();
 
-        // Draw the staff lines
-        StaffPainter* staffPainter = new StaffPainter(system, staff, currentStaffInfo);
-        staffPainters.push_back(staffPainter);
-
-        staffPainter->setPos(0, system->GetStaffHeightOffset(i));
-        staffPainter->setParentItem(parentSystem);
-        parentStaff = staffPainter;
-
-        // Draw the clefs
-        ClefPainter* clefPainter = new ClefPainter(staff, musicNotationFont);
-        clefPainter->setPos(System::CLEF_PADDING, currentStaffInfo.getTopStdNotationLine());
-        clefPainter->setParentItem(parentStaff);
-
-        drawTabClef(System::CLEF_PADDING, currentStaffInfo);
-
         renderBars(currentStaffInfo);
 
         drawTabNotes(currentStaffInfo);
@@ -135,21 +148,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
     }
 
     return parentSystem;
-}
-
-/// Draws the tab clef.
-void SystemRenderer::drawTabClef(int x, const StaffData& staffInfo)
-{
-    QGraphicsSimpleTextItem* tabClef = new QGraphicsSimpleTextItem;
-
-    // Determine the size of the clef symbol based on the number of string and
-    // the line spacing.
-    const int pixelSize = (staffInfo.numOfStrings - 1) *
-            staffInfo.tabLineSpacing * 0.6;
-    // Position the clef symbol.
-    tabClef->setPos(x, staffInfo.getTopTabLine() - pixelSize / 2.1);
-    musicFont.setSymbol(tabClef, MusicFont::TabClef, pixelSize);
-    tabClef->setParentItem(parentStaff);
 }
 
 /// Draw all of the barlines for the staff.

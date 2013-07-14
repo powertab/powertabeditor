@@ -15,22 +15,23 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef MUSICFONT_H
-#define MUSICFONT_H
+#ifndef PAINTERS_MUSICFONT_H
+#define PAINTERS_MUSICFONT_H
 
 #include <QFont>
 class QGraphicsSimpleTextItem;
 
 /*
  Provides an abstraction over the music notation font, by allowing one to
- access notation symbols without directly specifying the Unicode value
+ access notation symbols without directly specifying the Unicode value.
  */
 class MusicFont
 {
 public:
     MusicFont();
 
-    enum MusicSymbol // All of the available music symbols
+    /// All of the available music symbols.
+    enum MusicSymbol
     {
         // TODO - add the rest of the symbols
         WholeRest = 0xe102,
@@ -87,11 +88,12 @@ public:
 
     static QChar getSymbol(MusicSymbol identifier);
 
-    void setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size = DEFAULT_FONT_SIZE);
+    void setSymbol(QGraphicsSimpleTextItem *text, MusicSymbol identifier,
+                   int size = DEFAULT_FONT_SIZE);
     const QFont& getFont() const;
 
 private:
     QFont musicNotationFont;
 };
 
-#endif // MUSICFONT_H
+#endif

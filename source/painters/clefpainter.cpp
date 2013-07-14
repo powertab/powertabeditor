@@ -17,78 +17,30 @@
   
 #include "clefpainter.h"
 
-#include "staffdata.h"
-#include <powertabdocument/staff.h>
 #include <painters/musicfont.h>
-
 #include <QPainter>
-#include <QFontMetricsF>
 
-ClefPainter::ClefPainter(boost::shared_ptr<const Staff> staff,
-                         const QFont& musicFont) :
-    staff(staff),
-    musicFont(musicFont)
+ClefPainter::ClefPainter(Staff::ClefType clefType, const QFont &musicFont)
+    : myClefType(clefType),
+      myMusicFont(musicFont)
 {
-    init();
-}
-
-void ClefPainter::init()
-{
-    // draw the correct staff type
-    if (staff->GetClef() == Staff::TREBLE_CLEF)
-    {
-        displayText.setText(MusicFont::getSymbol(MusicFont::TrebleClef));
-    }
-    // Draw a bass clef otherwise
+    if (myClefType == Staff::TrebleClef)
+        myDisplayText.setText(MusicFont::getSymbol(MusicFont::TrebleClef));
     else
-    {
-        displayText.setText(MusicFont::getSymbol(MusicFont::BassClef));
-    }
+        myDisplayText.setText(MusicFont::getSymbol(MusicFont::BassClef));
 
-    displayText.prepare(QTransform(), musicFont);
-
-    QFontMetricsF fm(musicFont);
-    bounds = QRectF(0, -5, fm.width(MusicFont::TrebleClef), fm.height());
+    myDisplayText.prepare(QTransform(), myMusicFont);
+    QFontMetricsF fm(myMusicFont);
+    myBounds = QRectF(0, -5, fm.width(MusicFont::TrebleClef), fm.height());
 }
 
-void ClefPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*,
+                        QWidget*)
 {
-}
+    painter->setFont(myMusicFont);
 
-void ClefPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-    // on mouse click, switch clef type from treble to bass, or vice versa
-
-    // TODO - replace with proper QUndoCommand
-
-    /*if (staff->GetClef() == Staff::TREBLE_CLEF)
-    {
-        staff->SetClef(Staff::BASS_CLEF);
-    }
+    if (myClefType == Staff::TrebleClef)
+        painter->drawStaticText(0, -6, myDisplayText);
     else
-    {
-        staff->SetClef(Staff::TREBLE_CLEF);
-    }*/
-
-    // redraw clef
-    init();
-    update(boundingRect());
-}
-
-void ClefPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *)
-{
-}
-
-void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
-{
-    painter->setFont(musicFont);
-
-    if (staff->GetClef() == Staff::TREBLE_CLEF)
-    {
-        painter->drawStaticText(0, -6, displayText);
-    }
-    else
-    {
-        painter->drawStaticText(0, -21, displayText);
-    }
+        painter->drawStaticText(0, -21, myDisplayText);
 }

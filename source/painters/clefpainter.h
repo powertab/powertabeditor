@@ -15,36 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef CLEFPAINTER_H
-#define CLEFPAINTER_H
+#ifndef PAINTERS_CLEFPAINTER_H
+#define PAINTERS_CLEFPAINTER_H
 
-#include "painterbase.h"
-
+#include <QFont>
+#include <QGraphicsItem>
 #include <QStaticText>
-#include <boost/shared_ptr.hpp>
+#include <score/staff.h>
 
-class StaffData;
-class Staff;
-
-class ClefPainter : public PainterBase
+class ClefPainter : public QGraphicsItem
 {
 public:
-    ClefPainter(boost::shared_ptr<const Staff> staff,
-                const QFont& musicFont);
+    ClefPainter(Staff::ClefType clefType, const QFont &musicFont);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                       QWidget *);
+    virtual QRectF boundingRect() const { return myBounds; }
 
 private:
-    void init();
-
-    boost::shared_ptr<const Staff> staff;
-    const QFont musicFont;
-    QStaticText displayText;
+    const Staff::ClefType myClefType;
+    const QFont myMusicFont;
+    QStaticText myDisplayText;
+    QRectF myBounds;
 };
 
-#endif // CLEFPAINTER_H
+#endif

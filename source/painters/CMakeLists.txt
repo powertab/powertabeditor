@@ -5,12 +5,12 @@ add_library(ptepainters
     #beamgroup.cpp
     #caret.cpp
     #chordtextpainter.cpp
-    #clefpainter.cpp
+    clefpainter.cpp
     #directionpainter.cpp
     #irregularnotegroup.cpp
     #keysignaturepainter.cpp
     layoutinfo.cpp
-    #musicfont.cpp
+    musicfont.cpp
     #restpainter.cpp
     #rhythmslashpainter.cpp
     #staffdata.cpp

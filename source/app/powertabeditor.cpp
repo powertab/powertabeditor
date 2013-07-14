@@ -30,6 +30,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFileDialog>
+#include <QFontDatabase>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
@@ -44,7 +45,6 @@
 #include <QTabWidget>
 #include <QSettings>
 #include <QFileInfo>
-#include <QFontDatabase>
 #include <QSplitter>
 #include <QScrollArea>
 #include <QStackedWidget>
@@ -172,12 +172,12 @@ PowerTabEditor::PowerTabEditor() :
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
+    // Load the music notation font.
+    QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf");
+    // Load the tab note font.
+    QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf");
+
 #if 0
-
-    // load fonts from the resource file
-    QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf"); // used for music notation
-    QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf"); // used for tab notes
-
     skinManager.reset(new SkinManager);
 
     connect(undoManager.get(), SIGNAL(redrawNeeded(int)), this, SLOT(redrawSystem(int)));
