@@ -211,7 +211,7 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
     {
         BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
         {
-            if (pos.isRest())
+            if (pos.isRest() || pos.getNotes().empty())
                 continue;
 
             const double location = layout->getPositionX(pos.getPosition());
@@ -219,19 +219,19 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
             BOOST_FOREACH(const Note &note, pos.getNotes())
             {
                 TabNotePainter *tabNote = new TabNotePainter(note);
-                centerItem(tabNote, location, location + layout->getPositionSpacing(),
-                           layout->getTabLine(note.getString()) + layout->getTabLineSpacing() / 2 - 1);
+                centerItem(tabNote, location,
+                           location + layout->getPositionSpacing(),
+                           layout->getTabLine(note.getString()) +
+                           layout->getTabLineSpacing() / 2 - 1);
                 tabNote->setParentItem(myParentStaff);
             }
 
-#if 0
             // Draw arpeggios if necessary.
             if (pos.hasProperty(Position::ArpeggioDown) ||
                 pos.hasProperty(Position::ArpeggioUp))
             {
-                drawArpeggio(pos, location, staff);
+                drawArpeggio(pos, location, *layout);
             }
-#endif
         }
     }
 }
@@ -242,6 +242,43 @@ void SystemRenderer::centerItem(QGraphicsItem *item, double xmin,
     double itemWidth = item->boundingRect().width();
     double centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
     item->setPos(centredX, y);
+}
+
+void SystemRenderer::drawArpeggio(const Position &position, double x,
+                                  const LayoutInfo& layout)
+{
+    // Get the highest and lowest strings used at this position, and
+    // convert the string indices to positions on the staff.
+    const double top = layout.getTabLine(
+                position.getNotes().front().getString() + 1);
+    const double bottom = layout.getTabLine(
+                position.getNotes().back().getString() + 1);
+    const double height = bottom - top;
+
+    // Take a vibrato segment, spanning the distance from top to bottom note,
+    // and then rotate it by 90 degrees.
+    const QChar arpeggioSymbol = MusicFont::getSymbol(MusicFont::Vibrato);
+    const double symbolWidth = QFontMetricsF(myMusicNotationFont).width(
+                arpeggioSymbol);
+    const int numSymbols = height / symbolWidth;
+
+    QGraphicsSimpleTextItem *arpeggio = new QGraphicsSimpleTextItem(
+                QString(numSymbols, arpeggioSymbol));
+    arpeggio->setFont(myMusicNotationFont);
+    arpeggio->setPos(x + arpeggio->boundingRect().height() / 2.0 - 3.0, top);
+    arpeggio->setRotation(90);
+    arpeggio->setParentItem(myParentStaff);
+
+    // Draw the end of the arpeggio.
+    const QChar arpeggioEnd = position.hasProperty(Position::ArpeggioUp) ?
+                MusicFont::getSymbol(MusicFont::ArpeggioUp) :
+                MusicFont::getSymbol(MusicFont::ArpeggioDown);
+
+    QGraphicsSimpleTextItem *endPoint = new QGraphicsSimpleTextItem(arpeggioEnd);
+    const double y = position.hasProperty(Position::ArpeggioUp) ? top : bottom;
+    endPoint->setFont(myMusicNotationFont);
+    endPoint->setPos(x, y - 1.45 * myMusicNotationFont.pixelSize());
+    endPoint->setParentItem(myParentStaff);
 }
 
 #if 0
@@ -277,39 +314,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
     }
 
     return parentSystem;
-}
-
-void SystemRenderer::drawArpeggio(const Position* position, quint32 x,
-                                  const StaffData& currentStaffInfo)
-{
-    // get the highest and lowest strings used at this position, and
-    // convert the string indices to positions on the staff
-    std::pair<quint8, quint8> bounds = position->GetStringBounds();
-    bounds.first = currentStaffInfo.getTabLineHeight(bounds.first + 1);
-    bounds.second = currentStaffInfo.getTabLineHeight(bounds.second + 1);
-
-    const uint8_t height = bounds.second - bounds.first;
-
-    // take a vibrato segment, spanning the distance from top to bottom note, and then rotate it by 90 degrees
-    const QChar arpeggioSymbol = MusicFont::getSymbol(MusicFont::Vibrato);
-    const double symbolWidth = QFontMetricsF(musicNotationFont).width(arpeggioSymbol);
-    const int numSymbols = height / symbolWidth;
-
-    QGraphicsSimpleTextItem* arpeggio = new QGraphicsSimpleTextItem(QString(numSymbols, arpeggioSymbol));
-    arpeggio->setFont(musicNotationFont);
-    arpeggio->setPos(x + arpeggio->boundingRect().height() / 2.0 - 3.0, bounds.first);
-    arpeggio->setRotation(90);
-    arpeggio->setParentItem(parentStaff);
-
-    // draw the end of the arpeggio
-    const QChar arpeggioEnd = position->HasArpeggioUp() ? MusicFont::getSymbol(MusicFont::ArpeggioUp) :
-                                                          MusicFont::getSymbol(MusicFont::ArpeggioDown);
-
-    QGraphicsSimpleTextItem* endPoint = new QGraphicsSimpleTextItem(arpeggioEnd);
-    const double y = position->HasArpeggioUp() ? bounds.first : bounds.second;
-    endPoint->setFont(musicNotationFont);
-    endPoint->setPos(x, y - 1.45 * musicNotationFont.pixelSize());
-    endPoint->setParentItem(parentStaff);
 }
 
 void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)

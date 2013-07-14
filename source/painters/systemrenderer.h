@@ -52,6 +52,10 @@ private:
     /// offset from xmin.
     void centerItem(QGraphicsItem *item, double xmin, double xmax, double y);
 
+    /// Draws a arpeggio up/down at the given position.
+    void drawArpeggio(const Position &position, double x,
+                      const LayoutInfo &layout);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 
