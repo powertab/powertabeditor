@@ -17,6 +17,7 @@
   
 #include "layoutinfo.h"
 
+#include <boost/foreach.hpp>
 #include <score/keysignature.h>
 #include <score/staff.h>
 #include <score/system.h>
@@ -126,8 +127,10 @@ double LayoutInfo::getFirstPositionX() const
 
 double LayoutInfo::getPositionX(int position) const
 {
-    // TODO - include barline and time/key signature widths.
     double x = getFirstPositionX();
+    // Include the width of all key/time signatures.
+    x += getCumulativeBarlineWidths(position);
+    // Move over 'n' positions.
     x += (position + 1) * POSITION_SPACING;
     return x;
 }
@@ -145,4 +148,57 @@ double LayoutInfo::getWidth(const KeySignature &key)
 double LayoutInfo::getWidth(const TimeSignature &time)
 {
     return time.isVisible() ? 18 : 0;
+}
+
+double LayoutInfo::getWidth(const Barline &bar)
+{
+    double width = 0;
+
+    // Add the width of the key signature
+    width += getWidth(bar.getKeySignature());
+
+    // If the key signature has width, we need to adjust to account the right
+    // side of the barline.
+    if (width > 0)
+    {
+        // Some bars are thicker than others.
+        if (bar.getBarType() == Barline::DoubleBar)
+            width += 2;
+        else if (bar.getBarType() == Barline::RepeatStart)
+            width += 5;
+        else if (bar.getBarType() == Barline::RepeatEnd ||
+                 bar.getBarType() == Barline::DoubleBarFine)
+            width += 6;
+    }
+
+    // Add the width of the time signature.
+    double timeSignatureWidth = getWidth(bar.getTimeSignature());
+    if (timeSignatureWidth > 0)
+    {
+        // 3 units of space from barline or key signature.
+        width += 3 + timeSignatureWidth;
+    }
+
+    return width;
+}
+
+double LayoutInfo::getCumulativeBarlineWidths(int position) const
+{
+    double width = 0;
+
+    const bool allBarlines = (position == -1);
+
+    BOOST_FOREACH(const Barline &barline, mySystem.getBarlines())
+    {
+        if (barline == mySystem.getBarlines().front() ||
+            barline == mySystem.getBarlines().back())
+            continue;
+
+        if (allBarlines || barline.getPosition() < position)
+            width += getWidth(barline);
+        else
+            break;
+    }
+
+    return width;
 }

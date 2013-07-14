@@ -20,6 +20,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+class Barline;
 class KeySignature;
 class Staff;
 class System;
@@ -65,8 +66,14 @@ struct LayoutInfo
 
     static double getWidth(const KeySignature &key);
     static double getWidth(const TimeSignature &time);
+    static double getWidth(const Barline &bar);
 
 private:
+    /// Gets the total width used by all key and time signatures that reside
+    /// within the system (does not include the start bar). If the position
+    /// is -1, traverse all barlines.
+    double getCumulativeBarlineWidths(int position) const;
+
     const System &mySystem;
     const Staff &myStaff;
 };
