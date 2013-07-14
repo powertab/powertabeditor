@@ -96,6 +96,9 @@ private:
                                               QFont::Style style, double width,
                                               const LayoutInfo &layout);
 
+    /// Draws symbols that appear below the standard notation staff (e.g. 8vb).
+    void drawSymbolsBelowStdNotationStaff(const LayoutInfo &layout);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 

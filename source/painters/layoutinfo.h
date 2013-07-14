@@ -40,7 +40,9 @@ public:
         Hammeron,
         Pulloff,
         Octave8va,
-        Octave15ma
+        Octave15ma,
+        Octave8vb,
+        Octave15mb
     };
 
     SymbolGroup(const Position &position, SymbolType symbol,
@@ -115,6 +117,9 @@ struct LayoutInfo
     const std::vector<SymbolGroup> &getTabStaffBelowSymbols() const;
     const std::vector<SymbolGroup> &getStdNotationStaffAboveSymbols() const;
 
+    double getStdNotationStaffBelowSpacing() const;
+    const std::vector<SymbolGroup> &getStdNotationStaffBelowSymbols() const;
+
 private:
     static const double MIN_POSITION_SPACING;
 
@@ -132,7 +137,16 @@ private:
 
     /// Calculate the layout of symbols displayed above the standard notation
     /// staff. This is just the 8va and 15ma symbols.
-    void calculateTabStaffAboveLayout();
+    void calculateStdNotationStaffAboveLayout();
+
+    /// Calculate the layout of symbols displayed below the standard notation
+    /// staff. This is just the 8vb and 15mb symbols.
+    void calculateStdNotationStaffBelowLayout();
+
+    /// Helper function for calculating the spacing above/below the standard
+    /// notation staff.
+    void calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
+                                     bool aboveStaff);
 
     /// Returns the largest height of any symbol group.
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);
@@ -145,6 +159,8 @@ private:
     double myTabStaffBelowSpacing;
     std::vector<SymbolGroup> myStdNotationStaffAboveSymbols;
     double myStdNotationStaffAboveSpacing;
+    std::vector<SymbolGroup> myStdNotationStaffBelowSymbols;
+    double myStdNotationStaffBelowSpacing;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;

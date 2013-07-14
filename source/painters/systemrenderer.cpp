@@ -92,6 +92,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawTabNotes(staff, layout);
 
         drawSymbolsAboveStdNotationStaff(*layout);
+        drawSymbolsBelowStdNotationStaff(*layout);
         drawSymbolsBelowTabStaff(*layout);
     }
 
@@ -910,26 +911,26 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
     }
 }
 
-#if 0
-
-void SystemRenderer::drawSymbolsBelowStdNotationStaff(const StaffData& staffInfo)
+void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo& layout)
 {
-    std::vector<Layout::SymbolGroup> symbolGroups;
-    Layout::CalculateStdNotationBelowLayout(symbolGroups, system, staff);
-
-    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
+    BOOST_FOREACH(const SymbolGroup &symbolGroup,
+                  layout.getStdNotationStaffBelowSymbols())
     {
-        QGraphicsItem* renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = NULL;
 
-        switch(symbolGroup.symbolType)
+        switch (symbolGroup.getSymbolType())
         {
-        case Layout::SymbolOctave8vb:
+        case SymbolGroup::Octave8vb:
             renderedSymbol = createConnectedSymbolGroup("8vb",
-                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+                                                        QFont::StyleItalic,
+                                                        symbolGroup.getWidth(),
+                                                        layout);
             break;
-        case Layout::SymbolOctave15mb:
+        case SymbolGroup::Octave15mb:
             renderedSymbol = createConnectedSymbolGroup("15mb",
-                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+                                                        QFont::StyleItalic,
+                                                        symbolGroup.getWidth(),
+                                                        layout);
             break;
         default:
             // All symbol types should have been dealt with by now.
@@ -937,14 +938,12 @@ void SystemRenderer::drawSymbolsBelowStdNotationStaff(const StaffData& staffInfo
             break;
         }
 
-        renderedSymbol->setPos(symbolGroup.leftX,
-                               staffInfo.getBottomStdNotationLine() +
-                               staffInfo.stdNotationStaffBelowSpacing);
-        renderedSymbol->setParentItem(parentStaff);
+        renderedSymbol->setPos(symbolGroup.getX(),
+                               layout.getBottomStdNotationLine() +
+                               layout.getStdNotationStaffBelowSpacing());
+        renderedSymbol->setParentItem(myParentStaff);
     }
 }
-
-#endif
 
 QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(const QString &text,
                                                           QFont::Style style,
@@ -1423,7 +1422,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         drawLegato(currentStaffInfo);
         drawSlides(currentStaffInfo);
         drawSymbols(currentStaffInfo);
-        drawSymbolsBelowTabStaff(currentStaffInfo);
     }
 
     return parentSystem;
