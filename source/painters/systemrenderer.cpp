@@ -61,6 +61,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         if (staff.getViewType() != view)
             continue;
 
+        const bool isFirstStaff = (height != 0);
+
         LayoutPtr layout = boost::make_shared<LayoutInfo>(system, staff);
 
         myParentStaff = new StaffPainter(layout);
@@ -76,7 +78,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout);
 
-        drawBarlines(system, systemIndex, layout);
+        drawBarlines(system, systemIndex, layout, isFirstStaff);
     }
 
     myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
@@ -99,9 +101,9 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout)
 }
 
 void SystemRenderer::drawBarlines(const System &system, int systemIndex,
-                                  const LayoutConstPtr &layout)
+                                  const LayoutConstPtr &layout,
+                                  bool isFirstStaff)
 {
-#if 1
     BOOST_FOREACH(const Barline &barline, system.getBarlines())
     {
         const ScoreLocation location(systemIndex, -1, barline.getPosition());
@@ -115,7 +117,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
         double timeSigX = x + barlinePainter->boundingRect().width() +
                 layout->getWidth(keySig);
-        //double rehearsalSignX = x;
+        double rehearsalSignX = x;
 
         if (barline == system.getBarlines().front()) // Start bar of system.
         {
@@ -169,44 +171,35 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             timeSigPainter->setPos(timeSigX, layout->getTopStdNotationLine());
             timeSigPainter->setParentItem(myParentStaff);
         }
-    }
 
-#else
-    std::vector<System::BarlineConstPtr> barlines;
-    system->GetBarlines(barlines);
-
-    const uint32_t systemIndex = myScore->FindSystemIndex(system);
-
-    for (size_t i = 0; i < barlines.size(); i++)
-    {
-        const RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSign();
-        if (rehearsalSign.IsSet())
+        if (barline.hasRehearsalSign() && isFirstStaff)
         {
+            const RehearsalSign &sign = barline.getRehearsalSign();
             const int y = 1;
 
-            QGraphicsSimpleTextItem* signLetter = new QGraphicsSimpleTextItem;
-            signLetter->setText(QString(QChar(rehearsalSign.GetLetter())));
-            signLetter->setPos(rehearsalSignX, y);
-            signLetter->setFont(rehearsalSignFont);
+            QGraphicsSimpleTextItem *signLetters = new QGraphicsSimpleTextItem();
+            signLetters->setText(QString::fromStdString(sign.getLetters()));
+            signLetters->setPos(rehearsalSignX, y);
+            signLetters->setFont(myRehearsalSignFont);
 
-            QGraphicsSimpleTextItem* signText = new QGraphicsSimpleTextItem;
-            signText->setText(QString::fromStdString(rehearsalSign.GetDescription()));
-            signText->setFont(rehearsalSignFont);
-            signText->setPos(rehearsalSignX + signLetter->boundingRect().width() + 7, y);
+            QGraphicsSimpleTextItem *signText = new QGraphicsSimpleTextItem();
+            signText->setText(QString::fromStdString(sign.getDescription()));
+            signText->setFont(myRehearsalSignFont);
+            signText->setPos(rehearsalSignX +
+                             signLetters->boundingRect().width() + 7, y);
 
-            // draw rectangle around rehearsal sign letter
-            QRectF boundingRect = signLetter->boundingRect();
+            // Draw rectangle around rehearsal sign letters.
+            QRectF boundingRect = signLetters->boundingRect();
             boundingRect.setWidth(boundingRect.width() + 7);
             boundingRect.translate(-4, 0);
-            QGraphicsRectItem* rect = new QGraphicsRectItem(boundingRect);
+            QGraphicsRectItem *rect = new QGraphicsRectItem(boundingRect);
             rect->setPos(rehearsalSignX, y);
 
-            rect->setParentItem(parentSystem);
-            signText->setParentItem(parentSystem);
-            signLetter->setParentItem(parentSystem);
+            rect->setParentItem(myParentSystem);
+            signText->setParentItem(myParentSystem);
+            signLetters->setParentItem(myParentSystem);
         }
     }
-#endif
 }
 
 #if 0
