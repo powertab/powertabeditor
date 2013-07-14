@@ -60,6 +60,8 @@ struct LayoutInfo
     static const double ACCIDENTAL_WIDTH;
     /// Space given to the treble/bass clef.
     static const double CLEF_WIDTH;
+    /// Space given to a system-level symbol (e.g. a rehearsal sign).
+    static const double SYSTEM_SYMBOL_SPACING;
 
     static double centerItem(double xmin, double xmax, double width)
     {

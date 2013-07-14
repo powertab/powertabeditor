@@ -30,6 +30,7 @@ const double LayoutInfo::STAFF_BORDER_SPACING = 10;
 const double LayoutInfo::CLEF_PADDING = 3;
 const double LayoutInfo::ACCIDENTAL_WIDTH = 6;
 const double LayoutInfo::CLEF_WIDTH = 22;
+const double LayoutInfo::SYSTEM_SYMBOL_SPACING = 18;
 
 // TODO - compute these values based on the note positions, etc.
 namespace {

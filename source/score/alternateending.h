@@ -20,6 +20,7 @@
 
 #include <bitset>
 #include <boost/serialization/access.hpp>
+#include <iosfwd>
 #include <vector>
 
 class AlternateEnding
@@ -73,5 +74,8 @@ private:
         ar & myPosition & myNumbers & mySpecialEndings;
     }
 };
+
+/// Gets the alternate ending text (numbers + D.C./D.S./D.S.S.).
+std::ostream &operator<<(std::ostream &os, const AlternateEnding &ending);
 
 #endif

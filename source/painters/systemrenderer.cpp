@@ -17,8 +17,10 @@
 
 #include "systemrenderer.h"
 
+#include <app/common.h>
 #include <app/scorearea.h>
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
 #include <painters/barlinepainter.h>
 #include <painters/clefpainter.h>
@@ -28,6 +30,7 @@
 #include <painters/tabnotepainter.h>
 #include <painters/timesignaturepainter.h>
 #include <QBrush>
+#include <QDebug>
 #include <QGraphicsItem>
 #include <QPen>
 #include <score/scorelocation.h>
@@ -62,9 +65,13 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         if (staff.getViewType() != view)
             continue;
 
-        const bool isFirstStaff = (height != 0);
+        const bool isFirstStaff = (height == 0);
+        LayoutConstPtr layout = boost::make_shared<LayoutInfo>(system, staff);
 
-        LayoutPtr layout = boost::make_shared<LayoutInfo>(system, staff);
+        if (isFirstStaff)
+        {
+            height += drawSystemSymbols(system, *layout);
+        }
 
         myParentStaff = new StaffPainter(layout);
         myParentStaff->setPos(0, height);
@@ -281,6 +288,124 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
     endPoint->setParentItem(myParentStaff);
 }
 
+double SystemRenderer::drawSystemSymbols(const System &system,
+                                         const LayoutInfo& layout)
+{
+    double height = 0;
+
+    // Allocate space for any rehearsal signs - they are drawn at the same
+    // time as barlines.
+    BOOST_FOREACH(const Barline &barline, system.getBarlines())
+    {
+        if (barline.hasRehearsalSign())
+        {
+            height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
+            drawDividerLine(height);
+            break;
+        }
+    }
+
+    if (!system.getAlternateEndings().empty())
+    {
+        drawAlternateEndings(system, layout, height);
+        height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(height);
+    }
+
+#if 0
+    std::vector<Score::TempoMarkerPtr> tempoMarkers;
+    myScore->GetTempoMarkersInSystem(tempoMarkers, system);
+
+    if (!tempoMarkers.empty())
+    {
+        drawTempoMarkers(tempoMarkers, height);
+        height += System::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(currentStaffInfo, height);
+    }
+
+    if (system->GetDirectionCount() > 0)
+    {
+        drawDirections(height, currentStaffInfo);
+        height += System::SYSTEM_SYMBOL_SPACING * system->MaxDirectionSymbolCount();
+        drawDividerLine(currentStaffInfo, height);
+    }
+
+    if (system->GetChordTextCount() > 0)
+    {
+        drawChordText(height, currentStaffInfo);
+        height += System::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(currentStaffInfo, height);
+    }
+#endif
+
+    return height;
+}
+
+void SystemRenderer::drawDividerLine(double y)
+{
+    QGraphicsLineItem *line = new QGraphicsLineItem();
+    line->setLine(0, y, LayoutInfo::STAFF_WIDTH, y);
+    line->setOpacity(0.5);
+    line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
+
+    line->setParentItem(myParentSystem);
+}
+
+void SystemRenderer::drawAlternateEndings(const System &system,
+                                          const LayoutInfo &layout,
+                                          double height)
+{
+    const double TOP_LINE_OFFSET = 2;
+    const double TEXT_PADDING = 5;
+
+    BOOST_FOREACH(const AlternateEnding &ending, system.getAlternateEndings())
+    {
+        const double location = layout.getPositionX(ending.getPosition());
+
+        // Draw the vertical line.
+        QGraphicsLineItem *vertLine = new QGraphicsLineItem();
+        vertLine->setLine(0, TOP_LINE_OFFSET, 0,
+                          LayoutInfo::SYSTEM_SYMBOL_SPACING - TOP_LINE_OFFSET);
+        vertLine->setPos(location, height);
+        vertLine->setParentItem(myParentSystem);
+
+        // Draw the text indicating the repeat numbers.
+        QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(
+                QString::fromStdString(boost::lexical_cast<std::string>(ending)));
+        text->setFont(myPlainTextFont);
+        text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
+        text->setParentItem(myParentSystem);
+
+        // The horizontal line either stretches to the next repeat end bar
+        // in the system, or just to the next bar.
+        double endX = 0;
+        BOOST_FOREACH(const Barline &barline, system.getBarlines())
+        {
+            // Look for the next repeat end bar.
+            if (barline.getPosition() > ending.getPosition() &&
+                barline.getBarType() == Barline::RepeatEnd)
+            {
+                endX = layout.getPositionX(barline.getPosition());
+            }
+        }
+
+        // Otherwise, if there is no repeat bar just go to the next barline.
+        if (endX == 0)
+        {
+            endX = layout.getPositionX(system.getNextBarline(
+                                           ending.getPosition())->getPosition());
+        }
+
+        // Ensure that the line doesn't extend past the edge of the system.
+        endX = Common::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
+
+        QGraphicsLineItem *horizLine = new QGraphicsLineItem();
+        horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
+        horizLine->setPos(location, height);
+        horizLine->setParentItem(myParentSystem);
+    }
+}
+
 #if 0
 QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
 {
@@ -314,116 +439,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
     }
 
     return parentSystem;
-}
-
-void SystemRenderer::drawSystemSymbols(const StaffData& currentStaffInfo)
-{
-    quint32 height = 0;
-
-    if (system->HasRehearsalSign()) // rehearsal signs are drawn at the same time as barlines
-    {
-        height += System::SYSTEM_SYMBOL_SPACING;
-        drawDividerLine(currentStaffInfo, height);
-    }
-
-    std::vector<Score::AlternateEndingPtr> altEndings;
-    myScore->GetAlternateEndingsInSystem(altEndings, system);
-
-    if (!altEndings.empty())
-    {
-        drawAltEndings(altEndings, height);
-        height += System::SYSTEM_SYMBOL_SPACING;
-        drawDividerLine(currentStaffInfo, height);
-    }
-
-    std::vector<Score::TempoMarkerPtr> tempoMarkers;
-    myScore->GetTempoMarkersInSystem(tempoMarkers, system);
-
-    if (!tempoMarkers.empty())
-    {
-        drawTempoMarkers(tempoMarkers, height);
-        height += System::SYSTEM_SYMBOL_SPACING;
-        drawDividerLine(currentStaffInfo, height);
-    }
-
-    if (system->GetDirectionCount() > 0)
-    {
-        drawDirections(height, currentStaffInfo);
-        height += System::SYSTEM_SYMBOL_SPACING * system->MaxDirectionSymbolCount();
-        drawDividerLine(currentStaffInfo, height);
-    }
-
-    if (system->GetChordTextCount() > 0)
-    {
-        drawChordText(height, currentStaffInfo);
-        height += System::SYSTEM_SYMBOL_SPACING;
-        drawDividerLine(currentStaffInfo, height);
-    }
-}
-
-void SystemRenderer::drawDividerLine(const StaffData& currentStaffInfo, quint32 y)
-{
-    QGraphicsLineItem* line = new QGraphicsLineItem;
-    line->setLine(0, y, currentStaffInfo.width, y);
-    line->setOpacity(0.5);
-    line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
-
-    line->setParentItem(parentSystem);
-}
-
-
-void SystemRenderer::drawAltEndings(const std::vector<Score::AlternateEndingPtr>& altEndings,
-                                    uint32_t height)
-{
-    const double TOP_LINE_OFFSET = 2;
-    const double TEXT_PADDING = 5;
-
-    BOOST_FOREACH(Score::AlternateEndingConstPtr altEnding, altEndings)
-    {
-        const uint32_t location = system->GetPositionX(altEnding->GetPosition());
-
-        // draw the vertical line
-        QGraphicsLineItem* vertLine = new QGraphicsLineItem;
-        vertLine->setLine(0, TOP_LINE_OFFSET, 0, System::SYSTEM_SYMBOL_SPACING - TOP_LINE_OFFSET);
-        vertLine->setPos(location, height);
-        vertLine->setParentItem(parentSystem);
-
-        // draw the text indicating the repeat numbers
-        const std::string repeatText = altEnding->GetText();
-
-        QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(QString::fromStdString(repeatText));
-        text->setFont(plainTextFont);
-        text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
-        text->setParentItem(parentSystem);
-
-        // the horizontal line either stretches to the next repeat end bar in the system,
-        // or just to the next bar
-        std::vector<System::BarlineConstPtr> barlines;
-        system->GetBarlines(barlines);
-
-        double endX = 0;
-        BOOST_FOREACH(System::BarlineConstPtr barline, barlines)
-        {
-            // look for the next repeat end bar
-            if (barline->GetPosition() > altEnding->GetPosition() && barline->IsRepeatEnd())
-            {
-                endX = system->GetPositionX(barline->GetPosition());
-            }
-        }
-        // otherwise, if there is no next repeat bar, just go to the next barline
-        if (endX == 0)
-        {
-            endX = system->GetPositionX(system->GetNextBarline(altEnding->GetPosition())->GetPosition());
-        }
-
-        // ensure that the line doesn't extend past the edge of the system
-        endX = Common::clamp(endX, 0.0, static_cast<double>(system->GetRect().GetWidth()));
-
-        QGraphicsLineItem* horizLine = new QGraphicsLineItem;
-        horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
-        horizLine->setPos(location, height);
-        horizLine->setParentItem(parentSystem);
-    }
 }
 
 void SystemRenderer::drawTempoMarkers(const std::vector<Score::TempoMarkerPtr>& tempoMarkers,

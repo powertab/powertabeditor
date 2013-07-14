@@ -17,6 +17,7 @@
   
 #include <catch.hpp>
 
+#include <boost/lexical_cast.hpp>
 #include <score/alternateending.h>
 #include "test_serialization.h"
 
@@ -58,6 +59,28 @@ TEST_CASE("Score/AlternateEnding/SpecialEndings", "")
     REQUIRE(!ending.hasDalSegnoSegno());
     ending.setDalSegnoSegno(true);
     REQUIRE(ending.hasDalSegnoSegno());
+}
+
+TEST_CASE("Score/AlternateEnding/ToString", "")
+{
+    AlternateEnding ending;
+
+    REQUIRE(boost::lexical_cast<std::string>(ending) == "");
+
+    ending.addNumber(1);
+    REQUIRE(boost::lexical_cast<std::string>(ending) == "1.");
+
+    ending.addNumber(2);
+    REQUIRE(boost::lexical_cast<std::string>(ending) == "1., 2.");
+
+    ending.addNumber(3);
+    REQUIRE(boost::lexical_cast<std::string>(ending) == "1., 2., 3.");
+
+    ending = AlternateEnding();
+    ending.addNumber(1);
+    ending.addNumber(5);
+    ending.setDalSegno();
+    REQUIRE(boost::lexical_cast<std::string>(ending) == "1., 5., D.S.");
 }
 
 TEST_CASE("Score/AlternateEnding/Serialization", "")

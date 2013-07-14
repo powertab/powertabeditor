@@ -56,6 +56,17 @@ private:
     void drawArpeggio(const Position &position, double x,
                       const LayoutInfo &layout);
 
+    /// Draws system-level symbols such as alternate endings and tempo markers.
+    /// Returns the height required for the symbols.
+    double drawSystemSymbols(const System &system, const LayoutInfo &layout);
+
+    /// Draws a divider line between system symbols.
+    void drawDividerLine(double y);
+
+    /// Draws all of the alternate endings in the system.
+    void drawAlternateEndings(const System &system, const LayoutInfo &layout,
+                              double height);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 
