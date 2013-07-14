@@ -15,32 +15,30 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef DIRECTIONPAINTER_H
-#define DIRECTIONPAINTER_H
+#ifndef PAINTERS_DIRECTIONPAINTER_H
+#define PAINTERS_DIRECTIONPAINTER_H
 
-#include "painterbase.h"
 #include <QFont>
+#include <QGraphicsItem>
 #include <QStaticText>
-#include <boost/shared_ptr.hpp>
 
-class Direction;
+class DirectionSymbol;
 
-class DirectionPainter : public PainterBase
+class DirectionPainter : public QGraphicsItem
 {
 public:
-    DirectionPainter(boost::shared_ptr<const Direction> direction, size_t symbolIndex);
+    DirectionPainter(const DirectionSymbol &symbol);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                       QWidget *);
+    virtual QRectF boundingRect() const { return myBounds; }
 
 private:
-    void init();
-
-    QFont displayFont;
-    QStaticText displayText;
-
-    boost::shared_ptr<const Direction> direction;
-    const size_t symbolIndex;
-    bool usingMusicFont;
+    const DirectionSymbol &mySymbol;
+    QFont myDisplayFont;
+    QStaticText myDisplayText;
+    bool myUsingMusicFont;
+    QRectF myBounds;
 };
 
-#endif // DIRECTIONPAINTER_H
+#endif

@@ -57,7 +57,7 @@ private:
                       const LayoutInfo &layout);
 
     /// Draws system-level symbols such as alternate endings and tempo markers.
-    /// Returns the height required for the symbols.
+    /// @returns The height required for the symbols.
     double drawSystemSymbols(const System &system, const LayoutInfo &layout);
 
     /// Draws a divider line between system symbols.
@@ -70,6 +70,10 @@ private:
     /// Draws all of the tempo markers in the system.
     void drawTempoMarkers(const System &system, const LayoutInfo &layout,
                           double height);
+
+    /// Draws all of the directions in the system.
+    /// @returns The total height required by the directions.
+    double drawDirections(const System &system, const LayoutInfo &layout, double height);
 
     const ScoreArea *myScoreArea;
     const Score &myScore;

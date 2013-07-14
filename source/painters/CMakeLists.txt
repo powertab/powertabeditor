@@ -6,7 +6,7 @@ add_library(ptepainters
     #caret.cpp
     #chordtextpainter.cpp
     clefpainter.cpp
-    #directionpainter.cpp
+    directionpainter.cpp
     #irregularnotegroup.cpp
     keysignaturepainter.cpp
     layoutinfo.cpp

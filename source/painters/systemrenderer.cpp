@@ -24,6 +24,7 @@
 #include <boost/make_shared.hpp>
 #include <painters/barlinepainter.h>
 #include <painters/clefpainter.h>
+#include <painters/directionpainter.h>
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
@@ -320,6 +321,12 @@ double SystemRenderer::drawSystemSymbols(const System &system,
         drawDividerLine(height);
     }
 
+    if (!system.getDirections().empty())
+    {
+        height += drawDirections(system, layout, height);
+        drawDividerLine(height);
+    }
+
 #if 0
     if (system->GetDirectionCount() > 0)
     {
@@ -418,6 +425,34 @@ void SystemRenderer::drawTempoMarkers(const System &system,
     }
 }
 
+double SystemRenderer::drawDirections(const System &system,
+                                      const LayoutInfo &layout,
+                                      double height)
+{
+    double maxHeight = 0;
+
+    BOOST_FOREACH(const Direction &direction, system.getDirections())
+    {
+        double localHeight = 0;
+        const double location = layout.getPositionX(direction.getPosition());
+
+        BOOST_FOREACH(const DirectionSymbol &symbol, direction.getSymbols())
+        {
+            DirectionPainter *painter = new DirectionPainter(symbol);
+            centerItem(painter, location,
+                       location + layout.getPositionSpacing(),
+                       height + localHeight + 4);
+            painter->setParentItem(myParentSystem);
+
+            localHeight += LayoutInfo::SYSTEM_SYMBOL_SPACING;
+        }
+
+        maxHeight = std::max(maxHeight, localHeight);
+    }
+
+    return maxHeight;
+}
+
 #if 0
 void SystemRenderer::drawChordText(uint32_t height, const StaffData& currentStaffInfo)
 {
@@ -430,28 +465,6 @@ void SystemRenderer::drawChordText(uint32_t height, const StaffData& currentStaf
         ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
         centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth, height + 4);
         chordTextPainter->setParentItem(parentSystem);
-    }
-}
-
-void SystemRenderer::drawDirections(uint32_t height, const StaffData& currentStaffInfo)
-{
-    for (uint32_t i = 0; i < system->GetDirectionCount(); i++)
-    {
-        shared_ptr<const Direction> direction = system->GetDirection(i);
-
-        quint32 directionHeight = height; // keeps track of the height for this Direction only
-
-        const quint32 location = system->GetPositionX(direction->GetPosition());
-
-        // draw each symbol for the Direction
-        for (size_t symbol = 0; symbol < direction->GetSymbolCount(); symbol++)
-        {
-            DirectionPainter* directionPainter = new DirectionPainter(direction, symbol);
-            centerItem(directionPainter, location, location + currentStaffInfo.positionWidth, directionHeight + 4);
-            directionPainter->setParentItem(parentSystem);
-
-            directionHeight += System::SYSTEM_SYMBOL_SPACING;
-        }
     }
 }
 

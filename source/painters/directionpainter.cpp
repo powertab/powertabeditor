@@ -17,76 +17,73 @@
   
 #include "directionpainter.h"
 
+#include <painters/musicfont.h>
 #include <QPainter>
 #include <QFontMetricsF>
-#include <powertabdocument/direction.h>
-#include <painters/musicfont.h>
+#include <score/direction.h>
 
-DirectionPainter::DirectionPainter(boost::shared_ptr<const Direction> direction, size_t symbolIndex) :
-    direction(direction),
-    symbolIndex(symbolIndex),
-    usingMusicFont(true)
-{
-    init();
-}
+static QString theDirectionText[] = {
+    "Coda", "Double Coda", "Segno", "Segno Segno",
+    "Fine", "D.C.", "D.S.", "D.S.S.", "To Coda",
+    "To Dbl. Coda", "D.C. al Coda", "D.C. al Dbl. Coda",
+    "D.S. al Coda", "D.S. al Dbl. Coda", "D.S.S. al Coda",
+    "D.S.S. al Dbl. Coda", "D.C. al Fine", "D.S. al Fine",
+    "D.S.S. al Fine"
+};
 
-void DirectionPainter::init()
+DirectionPainter::DirectionPainter(const DirectionSymbol &symbol)
+    : mySymbol(symbol),
+      myUsingMusicFont(true)
 {
+    myDisplayFont = MusicFont().getFont();
+    myDisplayFont.setPixelSize(20);
+    myDisplayFont.setStyleStrategy(QFont::PreferAntialias);
+    
+    // Display music symbols for coda and segno directions, but display
+    // plain text otherwise.
     QString text;
-    
-    uint8_t symbolType = 0, activeSymbol = 0, repeatNumber = 0;
-    direction->GetSymbol(symbolIndex, symbolType, activeSymbol, repeatNumber);
-    
-    displayFont = MusicFont().getFont();
-    displayFont.setPixelSize(20);
-    displayFont.setStyleStrategy(QFont::PreferAntialias);
-    usingMusicFont = true;
-    
-    // display music symbols for coda and segno directions, but display plain text otherwise
-    
-    switch(symbolType)
+
+    switch (mySymbol.getSymbolType())
     {
-    case Direction::coda:
+    case DirectionSymbol::Coda:
         text = QChar(MusicFont::Coda);
         break;
-    case Direction::doubleCoda:
+    case DirectionSymbol::DoubleCoda:
         text = QString(2, MusicFont::Coda);
         break;
-    case Direction::segno:
+    case DirectionSymbol::Segno:
         text = QChar(MusicFont::Segno);
         break;
-    case Direction::segnoSegno:
+    case DirectionSymbol::SegnoSegno:
         text = QString(2, MusicFont::Segno);
         break;
     default:
-        // switch to regular font
-        displayFont = QFont("Liberation Sans");
-        displayFont.setPixelSize(10);
-        displayFont.setItalic(true);
-        displayFont.setStyleStrategy(QFont::PreferAntialias);
-        usingMusicFont = false;
-        
-        text = QString::fromStdString(direction->GetText(symbolIndex));
+        // Switch to regular font.
+        myDisplayFont = QFont("Liberation Sans");
+        myDisplayFont.setPixelSize(10);
+        myDisplayFont.setItalic(true);
+        myDisplayFont.setStyleStrategy(QFont::PreferAntialias);
+        myUsingMusicFont = false;
+
+        text = theDirectionText[mySymbol.getSymbolType()];
         break;
     }
 
-    displayText.setText(text);
-    displayText.prepare(QTransform(), displayFont);
+    myDisplayText.setText(text);
+    myDisplayText.prepare(QTransform(), myDisplayFont);
 
-    QFontMetricsF fm(displayFont);
-    bounds = QRectF(0, 0, fm.width(text), fm.height());
+    QFontMetricsF fm(myDisplayFont);
+    myBounds = QRectF(0, 0, fm.width(text), fm.height());
 }
 
-void DirectionPainter::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
+void DirectionPainter::paint(QPainter *painter,
+                             const QStyleOptionGraphicsItem *, QWidget *)
 {
-    painter->setFont(displayFont);
+    painter->setFont(myDisplayFont);
     
-    if (usingMusicFont) // need to offset the text if we're using the music font
-    {
-        painter->drawStaticText(0, -(displayFont.pixelSize()), displayText);
-    }
+    // Need to offset the text if we're using the music font.
+    if (myUsingMusicFont)
+        painter->drawStaticText(0, -(myDisplayFont.pixelSize()), myDisplayText);
     else
-    {
-        painter->drawStaticText(0, 0, displayText);
-    }
+        painter->drawStaticText(0, 0, myDisplayText);
 }
