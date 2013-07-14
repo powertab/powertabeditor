@@ -73,13 +73,19 @@ struct LayoutInfo
     static double getWidth(const Barline &bar);
 
 private:
+    static const double MIN_POSITION_SPACING;
+
     /// Gets the total width used by all key and time signatures that reside
     /// within the system (does not include the start bar). If the position
     /// is -1, traverse all barlines.
-    double getCumulativeBarlineWidths(int position) const;
+    double getCumulativeBarlineWidths(int position = -1) const;
+
+    /// Compute an optimal position spacing for the system.
+    void computePositionSpacing();
 
     const System &mySystem;
     const Staff &myStaff;
+    double myPositionSpacing;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;

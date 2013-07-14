@@ -327,14 +327,7 @@ double SystemRenderer::drawSystemSymbols(const System &system,
         drawDividerLine(height);
     }
 
-#if 0
-    if (system->GetDirectionCount() > 0)
-    {
-        drawDirections(height, currentStaffInfo);
-        height += System::SYSTEM_SYMBOL_SPACING * system->MaxDirectionSymbolCount();
-        drawDividerLine(currentStaffInfo, height);
-    }
-
+#if 0 // TODO - implement chord text for the new file format.
     if (system->GetChordTextCount() > 0)
     {
         drawChordText(height, currentStaffInfo);
@@ -1420,15 +1413,7 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
             continue;
         }
 
-        drawTabNotes(currentStaffInfo);
         drawStdNotation(currentStaffInfo);
-
-        if (isFirstVisibleStaff)
-        {
-            drawSystemSymbols(currentStaffInfo);
-            drawRhythmSlashes();
-            isFirstVisibleStaff = false;
-        }
 
         drawLegato(currentStaffInfo);
         drawSlides(currentStaffInfo);

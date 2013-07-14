@@ -31,6 +31,7 @@ const double LayoutInfo::CLEF_PADDING = 3;
 const double LayoutInfo::ACCIDENTAL_WIDTH = 6;
 const double LayoutInfo::CLEF_WIDTH = 22;
 const double LayoutInfo::SYSTEM_SYMBOL_SPACING = 18;
+const double LayoutInfo::MIN_POSITION_SPACING = 3;
 
 // TODO - compute these values based on the note positions, etc.
 namespace {
@@ -38,13 +39,14 @@ const double STD_NOTATION_STAFF_ABOVE_SPACING = 9;
 const double STD_NOTATION_STAFF_BELOW_SPACING = 9;
 const double SYMBOL_SPACING = 0;
 const double TAB_STAFF_BELOW_SPACING = 0;
-const double POSITION_SPACING = 20;
 }
 
 LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
     : mySystem(system),
-      myStaff(staff)
+      myStaff(staff),
+      myPositionSpacing(20)
 {
+    computePositionSpacing();
 }
 
 int LayoutInfo::getStringCount() const
@@ -110,7 +112,7 @@ double LayoutInfo::getTabLineSpacing() const
 
 double LayoutInfo::getPositionSpacing() const
 {
-    return POSITION_SPACING;
+    return myPositionSpacing;
 }
 
 double LayoutInfo::getFirstPositionX() const
@@ -142,7 +144,7 @@ double LayoutInfo::getPositionX(int position) const
     // Include the width of all key/time signatures.
     x += getCumulativeBarlineWidths(position);
     // Move over 'n' positions.
-    x += (position + 1) * POSITION_SPACING;
+    x += (position + 1) * getPositionSpacing();
     return x;
 }
 
@@ -212,4 +214,31 @@ double LayoutInfo::getCumulativeBarlineWidths(int position) const
     }
 
     return width;
+}
+
+void LayoutInfo::computePositionSpacing()
+{
+    const double width = getFirstPositionX() + getCumulativeBarlineWidths();
+
+    // Find the number of positions needed for the system.
+    int maxPos = 0;
+    BOOST_FOREACH(const Staff &staff, mySystem.getStaves())
+    {
+        for (int i = 0; i < Staff::NUM_VOICES; ++i)
+        {
+            BOOST_FOREACH(const Position &position, staff.getVoice(i))
+            {
+                maxPos = std::max(maxPos, position.getPosition());
+            }
+        }
+    }
+
+    // TODO - include chord text, tempo markers, etc.
+    BOOST_FOREACH(const Barline &barline, mySystem.getBarlines())
+    {
+        maxPos = std::max(maxPos, barline.getPosition());
+    }
+
+    const double availableSpace = STAFF_WIDTH - width;
+    myPositionSpacing = availableSpace / (maxPos + 2);
 }
