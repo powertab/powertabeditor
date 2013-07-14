@@ -15,47 +15,44 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef KEYSIGNATUREPAINTER_H
-#define KEYSIGNATUREPAINTER_H
+#ifndef PAINTERS_KEYSIGNATUREPAINTER_H
+#define PAINTERS_KEYSIGNATUREPAINTER_H
 
-#include "painterbase.h"
 #include <QFont>
-#include <QVector>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-#include <powertabdocument/systemlocation.h>
+#include <QGraphicsItem>
+#include <painters/layoutinfo.h>
+#include <score/scorelocation.h>
 
-class StaffData;
-class SystemLocationPubSub;
-class KeySignature;
+class ScoreLocationPubSub;
 
-class KeySignaturePainter : public PainterBase
+class KeySignaturePainter : public QGraphicsItem
 {
 public:
-    KeySignaturePainter(const StaffData& staffInformation, const KeySignature& signature,
-                        const SystemLocation& location,
-                        boost::shared_ptr<SystemLocationPubSub> pubsub);
+    KeySignaturePainter(const LayoutConstPtr &layout,
+                        const KeySignature &key,
+                        const ScoreLocation &location,
+                        boost::shared_ptr<ScoreLocationPubSub> pubsub);
 
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+               QWidget *);
+    virtual QRectF boundingRect() const { return myBounds; }
 
 private:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-    const StaffData& staffInfo;
-    const KeySignature& keySignature;
-    const SystemLocation location;
-    boost::shared_ptr<SystemLocationPubSub> pubsub;
+    LayoutConstPtr myLayout;
+    const KeySignature &myKeySignature;
+    const ScoreLocation myLocation;
+    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    QFont myMusicFont;
+    const QRectF myBounds;
+    QVector<double> myFlatPositions;
+    QVector<double> mySharpPositions;
 
-    QFont musicFont;
-
-    QVector<double> flatPositions;
-    QVector<double> sharpPositions;
-
-    void adjustHeightOffset(QVector<double>& lst);
-    void drawAccidentals(QVector<double>& positions, QChar accidental, QPainter* painter);
+    void adjustHeightOffset(QVector<double> &lst);
+    void drawAccidentals(QVector<double> &positions, QChar accidental,
+                         QPainter *painter);
     void initAccidentalPositions();
-    void init();
 };
 
-#endif // KEYSIGNATUREPAINTER_H
+#endif

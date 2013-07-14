@@ -43,9 +43,9 @@ public:
 
 #if 0
     ~ScoreArea();
-
-    boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
 #endif
+
+    boost::shared_ptr<ScoreLocationPubSub> getKeySignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
 
@@ -58,9 +58,9 @@ private:
 #if 0
     PowerTabEditor* editor;
     boost::scoped_ptr<Caret> caret;
-
-    boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
 #endif
+
+    boost::shared_ptr<ScoreLocationPubSub> myKeySignatureClicked;
     boost::shared_ptr<ScoreLocationPubSub> myTimeSignatureClicked;
     boost::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
 #if 0

@@ -8,7 +8,7 @@ add_library(ptepainters
     clefpainter.cpp
     #directionpainter.cpp
     #irregularnotegroup.cpp
-    #keysignaturepainter.cpp
+    keysignaturepainter.cpp
     layoutinfo.cpp
     musicfont.cpp
     #restpainter.cpp

@@ -17,99 +17,88 @@
   
 #include "keysignaturepainter.h"
 
-#include "staffdata.h"
-#include <app/pubsub/systemlocationpubsub.h>
-#include <powertabdocument/keysignature.h>
+#include <app/pubsub/scorelocationpubsub.h>
 #include <painters/musicfont.h>
-
 #include <QPainter>
-#include <QVector>
+#include <score/keysignature.h>
 
-KeySignaturePainter::KeySignaturePainter(const StaffData& staffInformation,
-                                         const KeySignature& signature,
-                                         const SystemLocation& location,
-                                         boost::shared_ptr<SystemLocationPubSub> pubsub) :
-    staffInfo(staffInformation),
-    keySignature(signature),
-    location(location),
-    pubsub(pubsub), musicFont(MusicFont().getFont())
+KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
+                                         const KeySignature &key,
+                                         const ScoreLocation &location,
+                                         boost::shared_ptr<ScoreLocationPubSub> pubsub)
+    : myLayout(layout),
+      myKeySignature(key),
+      myLocation(location),
+      myPubSub(pubsub),
+      myMusicFont(MusicFont().getFont()),
+      myBounds(0, -10, LayoutInfo::getWidth(myKeySignature),
+               layout->getStdNotationStaffHeight())
 {
     initAccidentalPositions();
-    init();
-}
-
-void KeySignaturePainter::init()
-{
-    bounds = QRectF(0, -10, keySignature.GetWidth(), staffInfo.getStdNotationStaffSize());
-}
-
-void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
-{
 }
 
 void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    pubsub->publish(location);
+    myPubSub->publish(myLocation);
 }
 
-void KeySignaturePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
+void KeySignaturePainter::paint(QPainter *painter,
+                                const QStyleOptionGraphicsItem*, QWidget*)
 {
-    painter->setFont(musicFont);
+    painter->setFont(myMusicFont);
 
-    // draw the appropriate accidentals
-    if (keySignature.UsesFlats())
-    {
-        drawAccidentals(flatPositions, MusicFont::AccidentalFlat, painter);
-    }
+    // Draw the appropriate accidentals.
+    if (myKeySignature.usesSharps())
+        drawAccidentals(mySharpPositions, MusicFont::AccidentalSharp, painter);
     else
-    {
-        drawAccidentals(sharpPositions, MusicFont::AccidentalSharp, painter);
-    }
+        drawAccidentals(myFlatPositions, MusicFont::AccidentalFlat, painter);
 }
 
-void KeySignaturePainter::adjustHeightOffset(QVector<double>& lst)
+void KeySignaturePainter::adjustHeightOffset(QVector<double> &lst)
 {
     for (int i = 0; i < lst.size(); i++)
     {
-        lst[i] -= staffInfo.getTopStdNotationLine();
+        lst[i] -= myLayout->getTopStdNotationLine();
     }
 }
 
-void KeySignaturePainter::drawAccidentals(QVector<double>& positions, QChar accidental, QPainter* painter)
+void KeySignaturePainter::drawAccidentals(QVector<double> &positions,
+                                          QChar accidental,
+                                          QPainter *painter)
 {
-    if (keySignature.IsCancellation()) // display natural if a cancellation occurs
-    {
-        accidental = MusicFont::Natural; // draw using naturals
-    }
+    // Display natural if a cancellation occurs.
+    if (myKeySignature.isCancellation())
+        accidental = MusicFont::Natural;
 
-    for(int i = 0; i < keySignature.GetKeyAccidentalsIncludingCancel(); i++)
+    for (int i = 0; i < myKeySignature.getNumAccidentals(true); ++i)
     {
-        painter->drawText(i * KeySignature::ACCIDENTAL_WIDTH, positions.at(i), accidental);
+        painter->drawText(i * LayoutInfo::ACCIDENTAL_WIDTH,
+                          positions.at(i), accidental);
     }
 }
 
 void KeySignaturePainter::initAccidentalPositions()
 {
-    flatPositions.resize(7);
-    sharpPositions.resize(7);
+    myFlatPositions.resize(7);
+    mySharpPositions.resize(7);
 
-    // generate the positions for the key signature accidentals
-    flatPositions.replace(0, staffInfo.getStdNotationLineHeight(3));
-    flatPositions.replace(1, staffInfo.getStdNotationSpaceHeight(1));
-    flatPositions.replace(2, staffInfo.getStdNotationSpaceHeight(3));
-    flatPositions.replace(3, staffInfo.getStdNotationLineHeight(2));
-    flatPositions.replace(4, staffInfo.getStdNotationLineHeight(4));
-    flatPositions.replace(5, staffInfo.getStdNotationSpaceHeight(2));
-    flatPositions.replace(6, staffInfo.getStdNotationSpaceHeight(4));
+    // Generate the positions for the key signature accidentals.
+    myFlatPositions.replace(0, myLayout->getStdNotationLine(3));
+    myFlatPositions.replace(1, myLayout->getStdNotationSpace(1));
+    myFlatPositions.replace(2, myLayout->getStdNotationSpace(3));
+    myFlatPositions.replace(3, myLayout->getStdNotationLine(2));
+    myFlatPositions.replace(4, myLayout->getStdNotationLine(4));
+    myFlatPositions.replace(5, myLayout->getStdNotationSpace(2));
+    myFlatPositions.replace(6, myLayout->getStdNotationSpace(4));
 
-    sharpPositions.replace(0, staffInfo.getStdNotationLineHeight(1));
-    sharpPositions.replace(1, staffInfo.getStdNotationSpaceHeight(2));
-    sharpPositions.replace(2, staffInfo.getStdNotationSpaceHeight(0));
-    sharpPositions.replace(3, staffInfo.getStdNotationLineHeight(2));
-    sharpPositions.replace(4, staffInfo.getStdNotationSpaceHeight(3));
-    sharpPositions.replace(5, staffInfo.getStdNotationSpaceHeight(1));
-    sharpPositions.replace(6, staffInfo.getStdNotationLineHeight(3));
+    mySharpPositions.replace(0, myLayout->getStdNotationLine(1));
+    mySharpPositions.replace(1, myLayout->getStdNotationSpace(2));
+    mySharpPositions.replace(2, myLayout->getStdNotationSpace(0));
+    mySharpPositions.replace(3, myLayout->getStdNotationLine(2));
+    mySharpPositions.replace(4, myLayout->getStdNotationSpace(3));
+    mySharpPositions.replace(5, myLayout->getStdNotationSpace(1));
+    mySharpPositions.replace(6, myLayout->getStdNotationLine(3));
 
-    adjustHeightOffset(flatPositions);
-    adjustHeightOffset(sharpPositions);
+    adjustHeightOffset(myFlatPositions);
+    adjustHeightOffset(mySharpPositions);
 }

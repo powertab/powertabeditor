@@ -35,6 +35,7 @@ struct LayoutInfo
     double getStaffHeight() const;
 
     double getStdNotationLine(int line) const;
+    double getStdNotationSpace(int space) const;
     double getTopStdNotationLine() const;
     double getBottomStdNotationLine() const;
     double getStdNotationStaffHeight() const;

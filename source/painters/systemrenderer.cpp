@@ -22,6 +22,7 @@
 #include <boost/make_shared.hpp>
 #include <painters/barlinepainter.h>
 #include <painters/clefpainter.h>
+#include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
 #include <painters/timesignaturepainter.h>
@@ -149,6 +150,16 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         barlinePainter->setPos(x, 0);
         barlinePainter->setParentItem(myParentStaff);
 
+        if (keySig.isVisible())
+        {
+            KeySignaturePainter *keySigPainter = new KeySignaturePainter(
+                        layout, keySig, location,
+                        myScoreArea->getKeySignaturePubSub());
+
+            keySigPainter->setPos(keySigX, layout->getTopStdNotationLine());
+            keySigPainter->setParentItem(myParentStaff);
+        }
+
         if (timeSig.isVisible())
         {
             TimeSignaturePainter *timeSigPainter = new TimeSignaturePainter(
@@ -168,26 +179,6 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
-        if (keySig.IsShown())
-        {
-            KeySignaturePainter* keySigPainter = new KeySignaturePainter(
-                        currentStaffInfo, keySig, location,
-                        myScoreArea->keySignaturePubSub());
-
-            keySigPainter->setPos(keySigX, currentStaffInfo.getTopStdNotationLine());
-            keySigPainter->setParentItem(parentStaff);
-        }
-
-        if (timeSig.IsShown())
-        {
-            TimeSignaturePainter* timeSigPainter = new TimeSignaturePainter(
-                        currentStaffInfo, timeSig, location,
-                        myScoreArea->timeSignaturePubSub());
-
-            timeSigPainter->setPos(timeSigX, currentStaffInfo.getTopStdNotationLine());
-            timeSigPainter->setParentItem(parentStaff);
-        }
-
         const RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSign();
         if (rehearsalSign.IsSet())
         {

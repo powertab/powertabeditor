@@ -66,6 +66,11 @@ double LayoutInfo::getStdNotationLine(int line) const
             (line - 1) * STD_NOTATION_LINE_SPACING;
 }
 
+double LayoutInfo::getStdNotationSpace(int space) const
+{
+    return (getStdNotationLine(space) + getStdNotationLine(space + 1)) / 2.0;
+}
+
 double LayoutInfo::getTopStdNotationLine() const
 {
     return getStdNotationLine(1);
