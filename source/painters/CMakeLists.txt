@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.8)
 
 add_library(ptepainters
-    #barlinepainter.cpp
+    barlinepainter.cpp
     #beamgroup.cpp
     #caret.cpp
     #chordtextpainter.cpp

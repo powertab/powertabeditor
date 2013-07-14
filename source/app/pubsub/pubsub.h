@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PUBSUB_H
-#define PUBSUB_H
+#ifndef APP_PUBSUB_H
+#define APP_PUBSUB_H
 
 #include <boost/signals2/signal.hpp>
 
@@ -40,4 +40,4 @@ public:
     message_t publish;
 };
 
-#endif // PUBSUB_H
+#endif

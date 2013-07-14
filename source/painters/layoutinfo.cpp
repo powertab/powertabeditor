@@ -17,13 +17,18 @@
   
 #include "layoutinfo.h"
 
+#include <score/keysignature.h>
 #include <score/staff.h>
+#include <score/system.h>
+#include <score/timesignature.h>
 
 const double LayoutInfo::STAFF_WIDTH = 750;
 const int LayoutInfo::NUM_STD_NOTATION_LINES = 5;
 const double LayoutInfo::STD_NOTATION_LINE_SPACING = 7;
 const double LayoutInfo::STAFF_BORDER_SPACING = 10;
 const double LayoutInfo::CLEF_PADDING = 3;
+const double LayoutInfo::ACCIDENTAL_WIDTH = 6;
+const double LayoutInfo::CLEF_WIDTH = 22;
 
 // TODO - compute these values based on the note positions, etc.
 namespace {
@@ -31,10 +36,12 @@ const double STD_NOTATION_STAFF_ABOVE_SPACING = 9;
 const double STD_NOTATION_STAFF_BELOW_SPACING = 9;
 const double SYMBOL_SPACING = 0;
 const double TAB_STAFF_BELOW_SPACING = 0;
+const double POSITION_SPACING = 20;
 }
 
-LayoutInfo::LayoutInfo(const Staff &staff)
-    : myStaff(staff)
+LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
+    : mySystem(system),
+      myStaff(staff)
 {
 }
 
@@ -63,6 +70,11 @@ double LayoutInfo::getTopStdNotationLine() const
     return getStdNotationLine(1);
 }
 
+double LayoutInfo::getBottomStdNotationLine() const
+{
+    return getStdNotationLine(NUM_STD_NOTATION_LINES);
+}
+
 double LayoutInfo::getTabLine(int line) const
 {
     return getStaffHeight() - TAB_STAFF_BELOW_SPACING - STAFF_BORDER_SPACING -
@@ -74,7 +86,63 @@ double LayoutInfo::getTopTabLine() const
     return getTabLine(1);
 }
 
+double LayoutInfo::getBottomTabLine() const
+{
+    return getTabLine(getStringCount());
+}
+
 double LayoutInfo::getTabLineSpacing() const
 {
     return 9;
+}
+
+double LayoutInfo::getPositionSpacing() const
+{
+    return POSITION_SPACING;
+}
+
+double LayoutInfo::getFirstPositionX() const
+{
+    double width = CLEF_PADDING;
+    const Barline &startBar = mySystem.getBarlines()[0];
+
+    const double keyWidth = getWidth(startBar.getKeySignature());
+    width += keyWidth;
+    const double timeWidth = getWidth(startBar.getTimeSignature());
+    width += timeWidth;
+
+    // If we have both a key and time signature, they are separated by 3 units.
+    if (keyWidth > 0 && timeWidth > 0)
+        width += 3;
+
+    // Add the width required by the starting barline; for a standard barline,
+    // this is 1 unit of space, otherwise it is the distance between positions
+    const double barlineWidth = (startBar.getBarType() == Barline::SingleBar)
+            ? 1 : getPositionSpacing();
+    width += barlineWidth;
+
+    return width;
+}
+
+double LayoutInfo::getPositionX(int position) const
+{
+    // TODO - include barline and time/key signature widths.
+    double x = getFirstPositionX();
+    x += (position + 1) * POSITION_SPACING;
+    return x;
+}
+
+double LayoutInfo::getWidth(const KeySignature &key)
+{
+    double width = 0;
+
+    if (key.isVisible())
+        width = key.getNumAccidentals(true) * ACCIDENTAL_WIDTH;
+
+    return width;
+}
+
+double LayoutInfo::getWidth(const TimeSignature &time)
+{
+    return time.isVisible() ? 18 : 0;
 }

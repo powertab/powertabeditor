@@ -1,4 +1,3 @@
-
 /*
   * Copyright (C) 2013 Cameron White
   *
@@ -15,30 +14,28 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#include <catch.hpp>
 
-#include <score/barline.h>
-#include "test_serialization.h"
+#ifndef SCORE_SCORELOCATION_H
+#define SCORE_SCORELOCATION_H
 
-TEST_CASE("Score/Barline/RehearsalSign", "")
+class ScoreLocation
 {
-    Barline barline;
+public:
+    ScoreLocation(int system, int staff, int position);
 
-    REQUIRE(!barline.hasRehearsalSign());
+    int getSystem() const;
+    void setSystem(int system);
 
-    barline.setRehearsalSign(RehearsalSign("D", "Solo"));
-    REQUIRE(barline.hasRehearsalSign());
-    REQUIRE(barline.getRehearsalSign().getDescription() == "Solo");
-}
+    int getStaff() const;
+    void setStaff(int staff);
 
-TEST_CASE("Score/Barline/Serialization", "")
-{
-    Barline barline;
-    barline.setBarType(Barline::RepeatEnd);
-    barline.setRepeatCount(42);
-    barline.setPosition(23);
-    barline.setRehearsalSign(RehearsalSign("D", "Solo"));
+    int getPosition() const;
+    void setPosition(int position);
 
-    Serialization::test(barline);
-}
+private:
+    int mySystem;
+    int myStaff;
+    int myPosition;
+};
+
+#endif

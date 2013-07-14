@@ -17,165 +17,156 @@
   
 #include "barlinepainter.h"
 
-#include "painterbase.h"
-
-#include <QPainter>
-#include <QPen>
-#include <QStringBuilder>
+#include <app/pubsub/scorelocationpubsub.h>
 #include <QGraphicsSceneMouseEvent>
-
-#include <app/pubsub/systemlocationpubsub.h>
-#include <powertabdocument/barline.h>
+#include <QPainter>
+#include <score/barline.h>
 
 const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 
-BarlinePainter::BarlinePainter(const StaffData& staffInfo,
-                               boost::shared_ptr<const Barline> barLinePtr,
-                               const SystemLocation& location,
-                               boost::shared_ptr<SystemLocationPubSub> pubsub) :
-    staffInfo(staffInfo),
-    barLine(barLinePtr),
-    location(location),
-    pubsub(pubsub),
-    x(0),
-    width(1)
+BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
+                               const Barline &barline,
+                               const ScoreLocation &location,
+                               boost::shared_ptr<ScoreLocationPubSub> pubsub)
+    : myLayout(layout),
+      myBarline(barline),
+      myLocation(location),
+      myPubSub(pubsub),
+      myX(0),
+      myWidth(0)
 {
-    init();
+    switch (barline.getBarType())
+    {
+    case Barline::SingleBar:
+        myWidth = 1;
+        break;
+    case Barline::RepeatStart:
+        myWidth = -DOUBLE_BAR_WIDTH;
+        break;
+    default:
+        myWidth = DOUBLE_BAR_WIDTH;
+        break;
+    }
+
+    myX = LayoutInfo::centerItem(myX, myX + layout->getPositionSpacing(),
+                                 myWidth);
+
+    // Adjust alignment for repeat barlines.
+    if (barline.getBarType() == Barline::RepeatStart ||
+        barline.getBarType() == Barline::RepeatEnd)
+    {
+        myX += myWidth;
+    }
+    // Adjust for double barlines.
+    else if (barline.getBarType() == Barline::DoubleBar ||
+             barline.getBarType() == Barline::DoubleBarFine)
+    {
+        myX -= 2;
+    }
+
+    myBounds = QRectF(0, 0, layout->getPositionSpacing(),
+                      layout->getStaffHeight());
 }
 
-void BarlinePainter::init()
+void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    width = 1;
-    x = 0;
+    const qreal y = event->pos().y();
 
-    if (barLine->IsBar())
-    {
-        width = 1;
-    }
-    else if (barLine->IsRepeatStart())
-    {
-        width = -(DOUBLE_BAR_WIDTH);
-    }
-    else
-    {
-        width = DOUBLE_BAR_WIDTH;
-    }
-
-    x = centerItem(x, x + staffInfo.positionWidth, width);
-
-    // adjust alignment for repeat barlines
-    if (barLine->IsRepeatEnd() || barLine->IsRepeatStart())
-    {
-        x += width;
-    }
-    // adjust for double barlines
-    if (barLine->IsDoubleBar() || barLine->IsDoubleBarFine())
-    {
-        x -= 2;
-    }
-
-    bounds = QRectF(0, 0, staffInfo.positionWidth, staffInfo.height);
-}
-
-void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent* event)
-{
-    qreal y = event->pos().y();
-
-    // only handle clicks that occur in the standard notation staff
-    if (y > staffInfo.getBottomStdNotationLine() || y < staffInfo.getTopStdNotationLine())
+    // Only handle clicks that occur in the standard notation staff.
+    if (y > myLayout->getBottomStdNotationLine() ||
+        y < myLayout->getTopStdNotationLine())
     {
         event->ignore();
     }
 }
 
-void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
+void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    pubsub->publish(location);
+    myPubSub->publish(myLocation);
 }
 
-QRectF BarlinePainter::boundingRect() const
+void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                           QWidget *)
 {
-    return bounds;
-}
-
-void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
-{
-    painter->setPen(QPen(Qt::black, 0.75)); // thin line
+    painter->setPen(QPen(Qt::black, 0.75));
     painter->setBrush(Qt::black);
 
-    if (barLine->IsFreeTimeBar())
-    {
+    const Barline::BarType barType = myBarline.getBarType();
+
+    if (barType == Barline::FreeTimeBar)
         painter->setPen(Qt::DashLine);
-    }
 
     // Print the repeat count for repeat end bars.
-    if (barLine->IsRepeatEnd() &&
-            barLine->GetRepeatCount() > Barline::MIN_REPEAT_COUNT)
+    if (barType == Barline::RepeatEnd &&
+        myBarline.getRepeatCount() > Barline::MIN_REPEAT_COUNT)
     {
         QFont repeatFont("Liberation Sans");
         repeatFont.setPixelSize(8);
         painter->setFont(repeatFont);
 
-        const QString message = QString::number(barLine->GetRepeatCount()) % "x";
-        painter->drawText(3, staffInfo.getTopStdNotationLine() - 3, message);
+        const QString message = QString::number(myBarline.getRepeatCount()) + "x";
+        painter->drawText(3, myLayout->getTopStdNotationLine() - 3, message);
     }
 
-    // draw a single bar line
-    drawVerticalLines(painter, x);
+    // Draw a single bar line.
+    drawVerticalLines(painter, myX);
 
-    // draw a second line depending on the bar type
-    if (barLine->IsDoubleBar() || barLine->IsDoubleBarFine() || barLine->IsRepeatEnd() || barLine->IsRepeatStart())
+    // Draw a second line depending on the bar type.
+    if (barType == Barline::DoubleBar || barType == Barline::DoubleBarFine ||
+        barType == Barline::RepeatEnd || barType == Barline::RepeatStart)
     {
-        if (barLine->IsDoubleBarFine() || barLine->IsRepeatEnd() || barLine->IsRepeatStart())
-        {
-            painter->setPen(QPen(Qt::black, 2)); // make the line thicker for certain bar types
-        }
+        // Make the line thicker for certain bar types.
+        if (barType != Barline::DoubleBar)
+            painter->setPen(QPen(Qt::black, 2));
 
-        // draw the second barline with an offset of the specified width
-        drawVerticalLines(painter, x + width);
+        // Draw the second barline with an offset of the specified width.
+        drawVerticalLines(painter, myX + myWidth);
     }
 
-    // draw the dots for repeats
-    if (barLine->IsRepeatEnd() || barLine->IsRepeatStart())
+    // Draw the dots for repeats.
+    if (barType == Barline::RepeatEnd || barType == Barline::RepeatStart)
     {
         painter->setPen(QPen(Qt::black, 0.75));
         const double radius = 1.0;
-        const double dotLocation = x - 1.5 * width; // x-coordinate for the location of the dots
-
+        // x-coordinate for the location of the dots.
+        const double dotLocation = myX - 1.5 * myWidth;
         double height = 0;
+        // Middle line for std. notation staff.
+        const double centreStaffLine = 3;
 
-        const double centreStaffLine = 3; // middle line for std. notation staff
-
-        // draw dots for standard notation staff, on either side of the centre
-        height = (staffInfo.getStdNotationLineHeight(centreStaffLine) + staffInfo.getStdNotationLineHeight(centreStaffLine + 1)) / 2.0;
+        // Draw dots for standard notation staff, on either side of the centre.
+        height = (myLayout->getStdNotationLine(centreStaffLine) +
+                  myLayout->getStdNotationLine(centreStaffLine + 1)) / 2.0;
         painter->drawRect(QRectF(dotLocation, height, radius, radius));
 
-        height = (staffInfo.getStdNotationLineHeight(centreStaffLine) + staffInfo.getStdNotationLineHeight(centreStaffLine - 1)) / 2.0;
+        height = (myLayout->getStdNotationLine(centreStaffLine) +
+                  myLayout->getStdNotationLine(centreStaffLine - 1)) / 2.0;
         painter->drawRect(QRectF(dotLocation, height, radius, radius));
 
-        // offset the repeat dots 2 lines from the edge of the tab staff if we have a large number of strings, otherwise, only offset by 1 line
-        const int offsetFromEdge = (staffInfo.numOfStrings > 4) ? 2 : 1;
+        // Offset the repeat dots 2 lines from the edge of the tab staff if
+        // we have a large number of strings, otherwise, only offset by 1 line.
+        const int offsetFromEdge = (myLayout->getStringCount() > 4) ? 2 : 1;
 
-        // draw dots for tab staff
-        height = (staffInfo.getTabLineHeight(offsetFromEdge) + staffInfo.getTabLineHeight(offsetFromEdge + 1)) / 2.0;
+        // Draw dots for tab staff.
+        height = (myLayout->getTabLine(offsetFromEdge) +
+                  myLayout->getTabLine(offsetFromEdge + 1)) / 2.0;
         painter->drawRect(QRectF(dotLocation, height, radius, radius));
 
-        height = (staffInfo.getTabLineHeight(staffInfo.numOfStrings - offsetFromEdge) +
-                  staffInfo.getTabLineHeight(staffInfo.numOfStrings - offsetFromEdge + 1)) / 2.0;
+        height = (myLayout->getTabLine(myLayout->getStringCount() - offsetFromEdge) +
+                  myLayout->getTabLine(myLayout->getStringCount() - offsetFromEdge + 1)) / 2.0;
         painter->drawRect(QRectF(dotLocation, height, radius, radius));
     }
-
 }
 
-void BarlinePainter::drawVerticalLines(QPainter* painter, double x)
+void BarlinePainter::drawVerticalLines(QPainter *painter, double x)
 {
     QVector<QLine> lines(2);
 
-    // draw a single bar line
-    lines[0] = QLine(x, staffInfo.getTopStdNotationLine() + 1,
-                     x, staffInfo.getBottomStdNotationLine());
-    lines[1] = QLine(x, staffInfo.getTopTabLine() + 1,
-                     x, staffInfo.getBottomTabLine());
+    // Draw a single bar line.
+    lines[0] = QLine(x, myLayout->getTopStdNotationLine() + 1,
+                     x, myLayout->getBottomStdNotationLine());
+    lines[1] = QLine(x, myLayout->getTopTabLine() + 1,
+                     x, myLayout->getBottomTabLine());
 
     painter->drawLines(lines);
 }

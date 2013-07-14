@@ -18,10 +18,10 @@
 #ifndef PAINTERS_SYSTEMRENDERER_H
 #define PAINTERS_SYSTEMRENDERER_H
 
+#include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
 #include <score/staff.h>
 
-struct LayoutInfo;
 class QGraphicsItem;
 class QGraphicsRectItem;
 class Score;
@@ -33,12 +33,16 @@ class SystemRenderer
 public:
     SystemRenderer(const ScoreArea *myScoreArea, const Score &myScore);
     
-    QGraphicsItem *operator()(const System &system, Staff::ViewType view);
+    QGraphicsItem *operator()(const System &system, int systemIndex,
+                              Staff::ViewType view);
     void connectSignals();
 
 private:
     /// Draws the tab clef.
     void drawTabClef(double x, const LayoutInfo &layout);
+    /// Draws barlines, along with time signatures, rehearsal signs, etc.
+    void drawBarlines(const System &system, int systemIndex,
+                      const LayoutConstPtr &layout);
 
     const ScoreArea *myScoreArea;
     const Score &myScore;
@@ -48,19 +52,11 @@ private:
 
     MusicFont myMusicFont;
     QFont myMusicNotationFont;
+    QFont myPlainTextFont;
+    QFont mySymbolTextFont;
+    QFont myRehearsalSignFont;
 
 #if 0
-    const int lineSpacing;
-    boost::shared_ptr<const System> system;
-    boost::shared_ptr<const Staff> staff;
-    QGraphicsItem* parentSystem;
-    QGraphicsItem* parentStaff;
-    MusicFont musicFont;
-    QFont plainTextFont;
-    QFont symbolTextFont;
-    QFont rehearsalSignFont;
-    QFont musicNotationFont;
-    
     // store these items so that their signals can be connected back to the ScoreArea later
     std::vector<StaffPainter*> staffPainters;
 

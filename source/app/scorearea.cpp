@@ -17,7 +17,9 @@
   
 #include "scorearea.h"
 
+#include <app/pubsub/scorelocationpubsub.h>
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 #include <painters/systemrenderer.h>
 #include <QDebug>
@@ -30,7 +32,8 @@ static const double SYSTEM_SPACING = 50;
 #if 1
 ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
-      myViewType(Staff::GuitarView)
+      myViewType(Staff::GuitarView),
+      myBarlineClicked(boost::make_shared<ScoreLocationPubSub>())
 {
     setScene(&myScene);
 }
@@ -59,7 +62,7 @@ void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
         progressDialog.setValue(i);
         SystemRenderer render(this, score);
 
-        QGraphicsItem *renderedSystem = render(system, myViewType);
+        QGraphicsItem *renderedSystem = render(system, i, myViewType);
         renderedSystem->setPos(0, height);
         myRenderedSystems << renderedSystem;
         myScene.addItem(renderedSystem);
@@ -74,6 +77,11 @@ void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
 
     qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
     qDebug() << "Rendered " << myScene.items().size() << "items";
+}
+
+boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getBarlinePubSub() const
+{
+    return myBarlineClicked;
 }
 
 #else

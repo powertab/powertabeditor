@@ -15,44 +15,40 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef BARLINEPAINTER_H
-#define BARLINEPAINTER_H
+#ifndef PAINTERS_BARLINEPAINTER_H
+#define PAINTERS_BARLINEPAINTER_H
 
 #include <QGraphicsItem>
-#include "staffdata.h"
-
 #include <boost/shared_ptr.hpp>
-#include <powertabdocument/systemlocation.h>
+#include <painters/layoutinfo.h>
+#include <score/scorelocation.h>
 
 class Barline;
-class SystemLocation;
-class SystemLocationPubSub;
+class ScoreLocationPubSub;
 
 class BarlinePainter : public QGraphicsItem
 {
 public:
-    BarlinePainter(const StaffData& staffInfo,
-                   boost::shared_ptr<const Barline> barLinePtr,
-                   const SystemLocation& location,
-                   boost::shared_ptr<SystemLocationPubSub> pubsub);
+    BarlinePainter(const LayoutConstPtr& layout, const Barline &barline,
+                   const ScoreLocation& location,
+                   boost::shared_ptr<ScoreLocationPubSub> pubsub);
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const { return myBounds; }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-    void init();
-    void drawVerticalLines(QPainter* painter, double x);
+    void drawVerticalLines(QPainter *painter, double myX);
 
-    QRectF bounds;
-    StaffData staffInfo;
-    boost::shared_ptr<const Barline> barLine;
-    SystemLocation location;
-    boost::shared_ptr<SystemLocationPubSub> pubsub;
-    double x;
-    double width;
+    LayoutConstPtr myLayout;
+    const Barline &myBarline;
+    QRectF myBounds;
+    ScoreLocation myLocation;
+    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    double myX;
+    double myWidth;
 
     static const double DOUBLE_BAR_WIDTH;
 };

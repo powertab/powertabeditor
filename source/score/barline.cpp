@@ -17,6 +17,8 @@
 
 #include "barline.h"
 
+const int Barline::MIN_REPEAT_COUNT = 2;
+
 Barline::Barline()
     : myPosition(0),
       myBarType(SingleBar),
@@ -91,12 +93,22 @@ void Barline::setTimeSignature(const TimeSignature &time)
     myTimeSignature = time;
 }
 
-const boost::optional<RehearsalSign> &Barline::getRehearsalSign() const
+bool Barline::hasRehearsalSign() const
 {
     return myRehearsalSign;
 }
 
-void Barline::setRehearsalSign(const boost::optional<RehearsalSign> &sign)
+const RehearsalSign &Barline::getRehearsalSign() const
+{
+    return *myRehearsalSign;
+}
+
+void Barline::setRehearsalSign(const RehearsalSign &sign)
 {
     myRehearsalSign = sign;
+}
+
+void Barline::clearRehearsalSign()
+{
+    myRehearsalSign = boost::none;
 }

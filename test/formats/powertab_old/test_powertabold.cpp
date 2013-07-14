@@ -76,9 +76,9 @@ TEST_CASE("Formats/PowerTabOldImport/Barlines", "")
 
     REQUIRE(barline.getBarType() == Barline::DoubleBar);
 
-    REQUIRE(barline.getRehearsalSign());
-    REQUIRE(barline.getRehearsalSign()->getLetters() == "A");
-    REQUIRE(barline.getRehearsalSign()->getDescription() == "Intro");
+    REQUIRE(barline.hasRehearsalSign());
+    REQUIRE(barline.getRehearsalSign().getLetters() == "A");
+    REQUIRE(barline.getRehearsalSign().getDescription() == "Intro");
 
     const KeySignature &key = barline.getKeySignature();
     REQUIRE(key.getKeyType() == KeySignature::Minor);

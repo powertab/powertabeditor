@@ -17,14 +17,17 @@
 
 #include "systemrenderer.h"
 
+#include <app/scorearea.h>
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
+#include <painters/barlinepainter.h>
 #include <painters/clefpainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
 #include <QBrush>
 #include <QGraphicsItem>
 #include <QPen>
+#include <score/scorelocation.h>
 #include <score/system.h>
 
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
@@ -32,13 +35,18 @@ SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
       myScore(score),
       myParentSystem(NULL),
       myParentStaff(NULL),
-      myMusicNotationFont(myMusicFont.getFont())
-#if 1
+      myMusicNotationFont(myMusicFont.getFont()),
+      myPlainTextFont("Liberation Sans"),
+      mySymbolTextFont("Liberation Sans"),
+      myRehearsalSignFont("Helvetica")
 {
+    myPlainTextFont.setPixelSize(10);
+    mySymbolTextFont.setPixelSize(9);
+    myRehearsalSignFont.setPixelSize(12);
 }
 
 QGraphicsItem *SystemRenderer::operator()(const System &system,
-                                          Staff::ViewType view)
+                                          int systemIndex, Staff::ViewType view)
 {
     // Draw the bounding rectangle for the system.
     myParentSystem = new QGraphicsRectItem();
@@ -51,7 +59,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         if (staff.getViewType() != view)
             continue;
 
-        LayoutPtr layout = boost::make_shared<LayoutInfo>(staff);
+        LayoutPtr layout = boost::make_shared<LayoutInfo>(system, staff);
 
         myParentStaff = new StaffPainter(layout);
         myParentStaff->setPos(0, height);
@@ -65,6 +73,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         clef->setParentItem(myParentStaff);
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout);
+
+        drawBarlines(system, systemIndex, layout);
     }
 
     myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
@@ -86,73 +96,59 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout)
     tabClef->setParentItem(myParentStaff);
 }
 
-#else
-    myScoreArea(scoreArea), score(score), lineSpacing(lineSpacing),
-    parentSystem(NULL), parentStaff(NULL), plainTextFont("Liberation Sans"),
-    symbolTextFont("Liberation Sans"), rehearsalSignFont("Helvetica"),
-    musicNotationFont(musicFont.getFont())
+void SystemRenderer::drawBarlines(const System &system, int systemIndex,
+                                  const LayoutConstPtr &layout)
 {
-    plainTextFont.setPixelSize(10);
-    symbolTextFont.setPixelSize(9);
-    rehearsalSignFont.setPixelSize(12);
-}
-#endif
-
-#if 0
-QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
-{
-    bool isFirstVisibleStaff = true;
-
-    // Draw each staff
-    for (uint32_t i = 0; i < system->GetStaffCount(); i++)
+#if 1
+    BOOST_FOREACH(const Barline &barline, system.getBarlines())
     {
-        staff = system->GetStaff(i);
-        if (!staff->IsShown())
+        const ScoreLocation location(systemIndex, -1, barline.getPosition());
+        const KeySignature &keySig = barline.getKeySignature();
+
+        BarlinePainter *barlinePainter = new BarlinePainter(layout, barline,
+                location, myScoreArea->getBarlinePubSub());
+
+        double x = layout->getPositionX(barline.getPosition());
+        double keySigX = x + barlinePainter->boundingRect().width() - 1;
+        double timeSigX = x + barlinePainter->boundingRect().width() +
+                layout->getWidth(keySig);
+        //double rehearsalSignX = x;
+
+        if (barline == system.getBarlines().front()) // Start bar of system.
         {
-            continue;
+            // For normal bars, display a line at the far left edge.
+            if (barline.getBarType() == Barline::SingleBar)
+            {
+                x = 0 - barlinePainter->boundingRect().width() / 2 - 0.5;
+            }
+            else
+            {
+                // Otherwise, display the bar after the clef, etc, and to the
+                // left of the first note.
+                x = layout->getFirstPositionX() - layout->getPositionSpacing();
+            }
+
+            keySigX = LayoutInfo::CLEF_WIDTH;
+            timeSigX = LayoutInfo::CLEF_WIDTH + layout->getWidth(keySig);
+        }
+        else if (barline == system.getBarlines().back()) // End bar.
+        {
+            x = LayoutInfo::STAFF_WIDTH -
+                    barlinePainter->boundingRect().width() / 2 - 1;
+
+            if (barline.getBarType() == Barline::RepeatEnd)
+                x -= 6; // bit of a positioning hack.
+            else if (barline.getBarType() == Barline::SingleBar)
+                x += 1 ;
+            else if (barline.getBarType() == Barline::FreeTimeBar)
+                x += 2;
         }
 
-        StaffData currentStaffInfo;
-        currentStaffInfo.positionWidth = system->GetPositionSpacing();
-
-        // Populate the staff info structure with information from the given staff
-        currentStaffInfo.leftEdge = leftEdge;
-        currentStaffInfo.numOfStrings = staff->GetTablatureStaffType();
-        currentStaffInfo.stdNotationStaffAboveSpacing = staff->GetStandardNotationStaffAboveSpacing();
-        currentStaffInfo.stdNotationStaffBelowSpacing = staff->GetStandardNotationStaffBelowSpacing();
-        currentStaffInfo.symbolSpacing = staff->GetSymbolSpacing();
-        currentStaffInfo.tabLineSpacing = lineSpacing;
-        currentStaffInfo.tabStaffBelowSpacing = staff->GetTablatureStaffBelowSpacing();
-        currentStaffInfo.topEdge = system->GetStaffHeightOffset(i, true);
-        currentStaffInfo.width = systemWidth;
-        currentStaffInfo.calculateHeight();
-
-        renderBars(currentStaffInfo);
-
-        drawTabNotes(currentStaffInfo);
-        drawStdNotation(currentStaffInfo);
-
-        if (isFirstVisibleStaff)
-        {
-            drawSystemSymbols(currentStaffInfo);
-            drawRhythmSlashes();
-            isFirstVisibleStaff = false;
-        }
-
-        drawLegato(currentStaffInfo);
-        drawSlides(currentStaffInfo);
-        drawSymbols(currentStaffInfo);
-        drawSymbolsBelowTabStaff(currentStaffInfo);
-        drawSymbolsAboveStdNotationStaff(currentStaffInfo);
-        drawSymbolsBelowStdNotationStaff(currentStaffInfo);
+        barlinePainter->setPos(x, 0);
+        barlinePainter->setParentItem(myParentStaff);
     }
 
-    return parentSystem;
-}
-
-/// Draw all of the barlines for the staff.
-void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
-{
+#else
     std::vector<System::BarlineConstPtr> barlines;
     system->GetBarlines(barlines);
 
@@ -160,54 +156,6 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
 
     for (size_t i = 0; i < barlines.size(); i++)
     {
-        const System::BarlineConstPtr& currentBarline = barlines[i];
-        const KeySignature& keySig = currentBarline->GetKeySignature();
-        const TimeSignature& timeSig = currentBarline->GetTimeSignature();
-        const SystemLocation location(systemIndex, currentBarline->GetPosition());
-
-        BarlinePainter* barlinePainter = new BarlinePainter(currentStaffInfo,
-                                    currentBarline, location, myScoreArea->barlinePubSub());
-
-        double x = system->GetPositionX(currentBarline->GetPosition());
-        double keySigX = x + barlinePainter->boundingRect().width() - 1;
-        double timeSigX = x + barlinePainter->boundingRect().width() + keySig.GetWidth();
-        double rehearsalSignX = x;
-
-        if (i == 0) // start bar of system
-        {
-            if (currentBarline->IsBar()) // for normal bars, display a line at the far left edge
-            {
-                x = 0 - barlinePainter->boundingRect().width() / 2 - 0.5;
-            }
-            else // otherwise, display the bar after the clef, etc, and to the left of the first note
-            {
-                x = system->GetFirstPositionX() - currentStaffInfo.positionWidth;
-            }
-
-            keySigX = System::CLEF_WIDTH;
-            timeSigX = System::CLEF_WIDTH + keySig.GetWidth();
-        }
-        else if (i == barlines.size() - 1) // last barline of system
-        {
-            x = system->GetRect().GetWidth() - barlinePainter->boundingRect().width() / 2 - 1;
-
-            if (currentBarline->IsRepeatEnd())
-            {
-                x -= 6;     // bit of a positioning hack
-            }
-            else if (currentBarline->IsBar())
-            {
-                x += 1 ;
-            }
-            else if (currentBarline->IsFreeTimeBar())
-            {
-                x += 2;
-            }
-        }
-
-        barlinePainter->setPos(x, 0);
-        barlinePainter->setParentItem(parentStaff);
-
         if (keySig.IsShown())
         {
             KeySignaturePainter* keySigPainter = new KeySignaturePainter(
@@ -255,6 +203,44 @@ void SystemRenderer::renderBars(const StaffData& currentStaffInfo)
             signLetter->setParentItem(parentSystem);
         }
     }
+#endif
+}
+
+#if 0
+QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
+{
+    bool isFirstVisibleStaff = true;
+
+    // Draw each staff
+    for (uint32_t i = 0; i < system->GetStaffCount(); i++)
+    {
+        staff = system->GetStaff(i);
+        if (!staff->IsShown())
+        {
+            continue;
+        }
+
+        renderBars(currentStaffInfo);
+
+        drawTabNotes(currentStaffInfo);
+        drawStdNotation(currentStaffInfo);
+
+        if (isFirstVisibleStaff)
+        {
+            drawSystemSymbols(currentStaffInfo);
+            drawRhythmSlashes();
+            isFirstVisibleStaff = false;
+        }
+
+        drawLegato(currentStaffInfo);
+        drawSlides(currentStaffInfo);
+        drawSymbols(currentStaffInfo);
+        drawSymbolsBelowTabStaff(currentStaffInfo);
+        drawSymbolsAboveStdNotationStaff(currentStaffInfo);
+        drawSymbolsBelowStdNotationStaff(currentStaffInfo);
+    }
+
+    return parentSystem;
 }
 
 /// Draws the tab notes for all notes (and voices) in the staff

@@ -19,11 +19,13 @@
 #define APP_SCOREAREA_H
 
 #include <boost/optional.hpp>
+#include <boost/shared_ptr.hpp>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <score/staff.h>
 
 class Score;
+class ScoreLocationPubSub;
 
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
@@ -44,8 +46,9 @@ public:
 
     boost::shared_ptr<SystemLocationPubSub> keySignaturePubSub() const;
     boost::shared_ptr<SystemLocationPubSub> timeSignaturePubSub() const;
-    boost::shared_ptr<SystemLocationPubSub> barlinePubSub() const;
 #endif
+    boost::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
+
 private:
     QGraphicsScene myScene;
     boost::optional<const Score &> myScore;
@@ -58,8 +61,9 @@ private:
 
     boost::shared_ptr<SystemLocationPubSub> keySignatureClicked;
     boost::shared_ptr<SystemLocationPubSub> timeSignatureClicked;
-    boost::shared_ptr<SystemLocationPubSub> barlineClicked;
-
+#endif
+    boost::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
+#if 0
     bool redrawOnNextRefresh;
 
 public slots:

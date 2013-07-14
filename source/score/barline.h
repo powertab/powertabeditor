@@ -68,10 +68,17 @@ public:
     /// Sets the time signature for the bar.
     void setTimeSignature(const TimeSignature &time);
 
-    /// Returns the rehearsal sign for the bar, if one exists.
-    const boost::optional<RehearsalSign> &getRehearsalSign() const;
-    /// Sets (or clears) the rehearsal sign for the bar.
-    void setRehearsalSign(const boost::optional<RehearsalSign> &sign);
+    /// Returns whether the barline has a rehearsal sign.
+    bool hasRehearsalSign() const;
+    /// Returns the rehearsal sign for the bar.
+    const RehearsalSign &getRehearsalSign() const;
+    /// Sets the rehearsal sign for the bar.
+    void setRehearsalSign(const RehearsalSign &sign);
+    /// Clears the rehearsal sign for the bar.
+    void clearRehearsalSign();
+
+    /// Minimum valid number of repeats.
+    static const int MIN_REPEAT_COUNT;
 
 private:
     int myPosition;

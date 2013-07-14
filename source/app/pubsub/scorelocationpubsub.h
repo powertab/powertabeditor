@@ -15,16 +15,16 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SYSTEMLOCATIONPUBSUB_H
-#define SYSTEMLOCATIONPUBSUB_H
+#ifndef APP_SCORELOCATIONPUBSUB_H
+#define APP_SCORELOCATIONPUBSUB_H
 
 #include <app/pubsub/pubsub.h>
-#include <powertabdocument/systemlocation.h>
+#include <score/scorelocation.h>
 
 /// Provides a way to subscribe to or publish notifications about events at
-/// a system location (e.g. a mouse click).
-class SystemLocationPubSub : public PubSub<void (const SystemLocation&)>
+/// a score location (e.g. a mouse click).
+class ScoreLocationPubSub : public PubSub<void (const ScoreLocation&)>
 {
 };
 
-#endif // SYSTEMLOCATIONPUBSUB_H
+#endif
