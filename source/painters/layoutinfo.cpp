@@ -32,21 +32,23 @@ const double LayoutInfo::ACCIDENTAL_WIDTH = 6;
 const double LayoutInfo::CLEF_WIDTH = 22;
 const double LayoutInfo::SYSTEM_SYMBOL_SPACING = 18;
 const double LayoutInfo::MIN_POSITION_SPACING = 3;
+const double LayoutInfo::TAB_SYMBOL_SPACING = 10;
 
 // TODO - compute these values based on the note positions, etc.
 namespace {
 const double STD_NOTATION_STAFF_ABOVE_SPACING = 9;
 const double STD_NOTATION_STAFF_BELOW_SPACING = 9;
 const double SYMBOL_SPACING = 0;
-const double TAB_STAFF_BELOW_SPACING = 0;
 }
 
 LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
     : mySystem(system),
       myStaff(staff),
-      myPositionSpacing(20)
+      myPositionSpacing(20),
+      myTabStaffBelowSpacing(0)
 {
     computePositionSpacing();
+    calculateTabStaffBelowLayout();
 }
 
 int LayoutInfo::getStringCount() const
@@ -57,7 +59,7 @@ int LayoutInfo::getStringCount() const
 double LayoutInfo::getStaffHeight() const
 {
     return STD_NOTATION_STAFF_ABOVE_SPACING + STD_NOTATION_STAFF_BELOW_SPACING +
-            SYMBOL_SPACING + TAB_STAFF_BELOW_SPACING +
+            SYMBOL_SPACING + myTabStaffBelowSpacing +
             STD_NOTATION_LINE_SPACING * (NUM_STD_NOTATION_LINES - 1) +
             (getStringCount() - 1) * getTabLineSpacing() +
             4 * STAFF_BORDER_SPACING;
@@ -91,7 +93,7 @@ double LayoutInfo::getStdNotationStaffHeight() const
 
 double LayoutInfo::getTabLine(int line) const
 {
-    return getStaffHeight() - TAB_STAFF_BELOW_SPACING - STAFF_BORDER_SPACING -
+    return getStaffHeight() - myTabStaffBelowSpacing - STAFF_BORDER_SPACING -
             (getStringCount() - line) * getTabLineSpacing();
 }
 
@@ -241,4 +243,101 @@ void LayoutInfo::computePositionSpacing()
 
     const double availableSpace = STAFF_WIDTH - width;
     myPositionSpacing = availableSpace / (maxPos + 2);
+}
+
+void LayoutInfo::calculateTabStaffBelowLayout()
+{
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    {
+        BOOST_FOREACH(const Position &pos, myStaff.getVoice(voice))
+        {
+            int height = 1;
+            const int position = pos.getPosition();
+            const double x = getPositionX(position);
+            const double width = getPositionSpacing();
+
+            if (pos.hasProperty(Position::PickStrokeUp))
+            {
+                myTabStaffBelowSymbols.push_back(
+                            SymbolGroup(pos, SymbolGroup::PickStrokeUp, x,
+                                        width, height++));
+            }
+
+            if (pos.hasProperty(Position::PickStrokeDown))
+            {
+                myTabStaffBelowSymbols.push_back(
+                            SymbolGroup(pos, SymbolGroup::PickStrokeDown, x,
+                                        width, height++));
+            }
+
+            if (pos.hasProperty(Position::Tap) ||
+                Utils::hasNoteWithTappedHarmonic(pos))
+            {
+                myTabStaffBelowSymbols.push_back(
+                            SymbolGroup(pos, SymbolGroup::Tap, x,
+                                        width, height++));
+            }
+
+            if (Utils::hasNoteWithProperty(pos, Note::HammerOn) ||
+                Utils::hasNoteWithProperty(pos, Note::HammerOnFromNowhere))
+            {
+                myTabStaffBelowSymbols.push_back(
+                            SymbolGroup(pos, SymbolGroup::Hammeron, x,
+                                        width, height++));
+            }
+            else if (Utils::hasNoteWithProperty(pos, Note::PullOff) ||
+                     Utils::hasNoteWithProperty(pos, Note::PullOffToNowhere))
+            {
+                myTabStaffBelowSymbols.push_back(
+                            SymbolGroup(pos, SymbolGroup::Pulloff, x,
+                                        width, height++));
+            }
+        }
+    }
+
+    // Compute the overall spacing needed below the tab staff.
+    int maxHeight = 0;
+    BOOST_FOREACH(const SymbolGroup &group, myTabStaffBelowSymbols)
+    {
+        maxHeight = std::max(maxHeight, group.getHeight());
+    }
+
+    myTabStaffBelowSpacing = maxHeight * TAB_SYMBOL_SPACING;
+}
+
+
+SymbolGroup::SymbolGroup(const Position &position,
+                         SymbolGroup::SymbolType symbol,
+                         double x, double width, double height)
+    : myPosition(&position),
+      mySymbolType(symbol),
+      myX(x),
+      myWidth(width),
+      myHeight(height)
+{
+}
+
+const std::vector<SymbolGroup> &LayoutInfo::getTabStaffBelowSymbols() const
+{
+    return myTabStaffBelowSymbols;
+}
+
+SymbolGroup::SymbolType SymbolGroup::getSymbolType() const
+{
+    return mySymbolType;
+}
+
+double SymbolGroup::getX() const
+{
+    return myX;
+}
+
+double SymbolGroup::getWidth() const
+{
+    return myWidth;
+}
+
+int SymbolGroup::getHeight() const
+{
+    return myHeight;
 }

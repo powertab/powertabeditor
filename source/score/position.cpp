@@ -156,3 +156,25 @@ const Note *Utils::findByString(const Position &pos, int string)
     return NULL;
 }
 
+bool Utils::hasNoteWithTappedHarmonic(const Position &pos)
+{
+    BOOST_FOREACH(const Note &note, pos.getNotes())
+    {
+        if (note.hasTappedHarmonic())
+            return true;
+    }
+
+    return false;
+}
+
+bool Utils::hasNoteWithProperty(const Position &pos,
+                                Note::SimpleProperty property)
+{
+    BOOST_FOREACH(const Note &note, pos.getNotes())
+    {
+        if (note.hasProperty(property))
+            return true;
+    }
+
+    return false;
+}

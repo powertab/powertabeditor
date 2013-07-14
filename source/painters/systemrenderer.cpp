@@ -90,6 +90,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         drawBarlines(system, systemIndex, layout, isFirstStaff);
         drawTabNotes(staff, layout);
+
+        drawSymbolsBelowTabStaff(*layout);
     }
 
     myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
@@ -669,51 +671,42 @@ void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo,
                   y + height / 2);
 }
 
-/// Draws the text symbols that appear below the tab staff (hammerons, slides, etc)
-void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
-{
-    std::vector<Layout::SymbolGroup> symbolGroups;
-    Layout::CalculateTabStaffBelowLayout(symbolGroups, system, staff);
+#endif
 
-    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
+void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo& layout)
+{
+    BOOST_FOREACH(const SymbolGroup &symbolGroup, layout.getTabStaffBelowSymbols())
     {
         QGraphicsItem* renderedSymbol = NULL;
 
-        switch(symbolGroup.symbolType)
+        switch (symbolGroup.getSymbolType())
         {
-        case Layout::SymbolPickStrokeDown:
-            renderedSymbol = createPickStroke(MusicFont::getSymbol(MusicFont::PickStrokeDown));
+        case SymbolGroup::PickStrokeUp:
+            renderedSymbol = createPickStroke(MusicFont::getSymbol(
+                                                  MusicFont::PickStrokeUp));
             break;
-
-        case Layout::SymbolPickStrokeUp:
-            renderedSymbol = createPickStroke(MusicFont::getSymbol(MusicFont::PickStrokeUp));
+        case SymbolGroup::PickStrokeDown:
+            renderedSymbol = createPickStroke(MusicFont::getSymbol(
+                                                  MusicFont::PickStrokeDown));
             break;
-
-        case Layout::SymbolTap:
-            renderedSymbol = createPlainText("T", QFont::StyleNormal);
+        case SymbolGroup::Tap:
+            renderedSymbol = createPlainTextSymbol("T", QFont::StyleNormal);
             break;
-
-        case Layout::SymbolHammerOnPullOff:
-        {
-            const Position* pos = staff->GetPositionByPosition(
-                        symbolGroup.voice, symbolGroup.leftPosIndex);
-            if (pos->HasNoteWithHammeron() || pos->HasNoteWithHammeronFromNowhere())
-            {
-                renderedSymbol = createPlainText("H", QFont::StyleNormal);
-            }
-            else if (pos->HasNoteWithPulloff() || pos->HasNoteWithPulloffToNowhere())
-            {
-                renderedSymbol = createPlainText("P", QFont::StyleNormal);
-            }
+        case SymbolGroup::Hammeron:
+            renderedSymbol = createPlainTextSymbol("H", QFont::StyleNormal);
+            break;
+        case SymbolGroup::Pulloff:
+            renderedSymbol = createPlainTextSymbol("P", QFont::StyleNormal);
+            break;
+        // TODO - handle slides and harmonics.
+        default:
+            Q_ASSERT(false);
             break;
         }
 
+#if 0
         case Layout::SymbolSlide:
             renderedSymbol = createPlainText("sl.", QFont::StyleItalic);
-            break;
-
-        case Layout::SymbolTappedHarmonic:
-            renderedSymbol = createPlainText("T", QFont::StyleNormal);
             break;
 
         case Layout::SymbolArtificialHarmonic:
@@ -721,47 +714,45 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const StaffData& staffInfo)
                         staff->GetPositionByPosition(symbolGroup.voice,
                                                      symbolGroup.leftPosIndex));
             break;
+#endif
 
-        default:
-            Q_ASSERT(false); // shouldn't get any other symbol types!!!
-            break;
-        }
+        centerItem(renderedSymbol, symbolGroup.getX(),
+                   symbolGroup.getX() + symbolGroup.getWidth(),
+                   layout.getBottomTabLine() +
+                   symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
 
-        centerItem(renderedSymbol, symbolGroup.leftX, symbolGroup.leftX + symbolGroup.width,
-                   staffInfo.getBottomTabLine() + symbolGroup.height * Staff::TAB_SYMBOL_HEIGHT);
-
-        renderedSymbol->setParentItem(parentStaff);
+        renderedSymbol->setParentItem(myParentStaff);
     }
 }
 
-QGraphicsItem* SystemRenderer::createPickStroke(const QString& text)
+QGraphicsItem *SystemRenderer::createPickStroke(const QString &text)
 {
-    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(musicNotationFont);
+    QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+    textItem->setFont(myMusicNotationFont);
     textItem->setPos(2, -28);
 
-    // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
-    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    // Sticking the text in a QGraphicsItemGroup allows us to offset the
+    // position of the text from its default location
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
     group->addToGroup(textItem);
-
     return group;
 }
 
-/// Creates a plain text item; useful for symbols that don't use the music font (hammerons, slides, etc)
-QGraphicsItem* SystemRenderer::createPlainText(const QString& text, QFont::Style style)
+QGraphicsItem *SystemRenderer::createPlainTextSymbol(const QString &text,
+                                                     QFont::Style style)
 {
-    plainTextFont.setStyle(style);
+    myPlainTextFont.setStyle(style);
 
-    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(plainTextFont);
+    QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+    textItem->setFont(myPlainTextFont);
     textItem->setPos(0, -8);
 
-    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
     group->addToGroup(textItem);
-
     return group;
 }
 
+#if 0
 /// Creates the text portion of an artificial harmonic - displaying the note value
 QGraphicsItem* SystemRenderer::createArtificialHarmonicText(const Position* position)
 {

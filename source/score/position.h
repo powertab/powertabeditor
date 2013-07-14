@@ -133,6 +133,8 @@ private:
 
 namespace Utils {
     const Note *findByString(const Position &pos, int string);
+    bool hasNoteWithTappedHarmonic(const Position &pos);
+    bool hasNoteWithProperty(const Position &pos, Note::SimpleProperty property);
 }
 
 #endif

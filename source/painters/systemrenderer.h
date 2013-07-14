@@ -75,6 +75,18 @@ private:
     /// @returns The total height required by the directions.
     double drawDirections(const System &system, const LayoutInfo &layout, double height);
 
+    /// Draws the text symbols that appear below the tab staff
+    /// (hammerons, slides, etc).
+    void drawSymbolsBelowTabStaff(const LayoutInfo &layout);
+
+    /// Creates a pick stroke symbol using the given character.
+    QGraphicsItem *createPickStroke(const QString &text);
+
+    /// Creates a plain text item - useful for symbols that don't use the
+    /// music font (hammerons, slides, etc).
+    QGraphicsItem *createPlainTextSymbol(const QString &text,
+                                         QFont::Style style);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 

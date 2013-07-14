@@ -76,6 +76,34 @@ TEST_CASE("Score/Position/FindByString", "")
     REQUIRE(*Utils::findByString(position, 4) == note2);
 }
 
+TEST_CASE("Score/Position/HasNoteWithTappedHarmonic", "")
+{
+    Position position;
+    REQUIRE(!Utils::hasNoteWithTappedHarmonic(position));
+
+    Note note;
+    note.setTappedHarmonicFret(12);
+    position.insertNote(note);
+    REQUIRE(Utils::hasNoteWithTappedHarmonic(position));
+}
+
+TEST_CASE("Score/Position/HasNoteWithProperty", "")
+{
+    Position position;
+
+    REQUIRE(!Utils::hasNoteWithProperty(position, Note::HammerOn));
+
+    Note note;
+    note.setProperty(Note::GhostNote);
+    position.insertNote(note);
+    REQUIRE(!Utils::hasNoteWithProperty(position, Note::HammerOn));
+    position.removeNote(note);
+
+    note.setProperty(Note::HammerOn);
+    position.insertNote(note);
+    REQUIRE(Utils::hasNoteWithProperty(position, Note::HammerOn));
+}
+
 TEST_CASE("Score/Position/Serialization", "")
 {
     Position position;

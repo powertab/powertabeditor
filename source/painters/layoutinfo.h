@@ -19,12 +19,47 @@
 #define PAINTERS_LAYOUTINFO_H
 
 #include <boost/shared_ptr.hpp>
+#include <vector>
 
 class Barline;
 class KeySignature;
+class Position;
 class Staff;
 class System;
 class TimeSignature;
+
+class SymbolGroup
+{
+public:
+    enum SymbolType
+    {
+        PickStrokeUp,
+        PickStrokeDown,
+        Tap,
+        Hammeron,
+        Pulloff
+    };
+
+    SymbolGroup(const Position &position, SymbolType symbol,
+                double x, double width, double height);
+
+    SymbolType getSymbolType() const;
+    double getX() const;
+    double getWidth() const;
+    int getHeight() const;
+
+private:
+    /// First position associated with the symbol group.
+    const Position *myPosition;
+    /// The type of symbol.
+    SymbolType mySymbolType;
+    /// x-coordinate of the start of the symbol group.
+    double myX;
+    /// Width of the symbol group.
+    double myWidth;
+    /// Offset from the staff.
+    int myHeight;
+};
 
 struct LayoutInfo
 {
@@ -62,6 +97,8 @@ struct LayoutInfo
     static const double CLEF_WIDTH;
     /// Space given to a system-level symbol (e.g. a rehearsal sign).
     static const double SYSTEM_SYMBOL_SPACING;
+    /// Space given to a tab symbol (e.g. pickstroke).
+    static const double TAB_SYMBOL_SPACING;
 
     static double centerItem(double xmin, double xmax, double width)
     {
@@ -71,6 +108,8 @@ struct LayoutInfo
     static double getWidth(const KeySignature &key);
     static double getWidth(const TimeSignature &time);
     static double getWidth(const Barline &bar);
+
+    const std::vector<SymbolGroup> &getTabStaffBelowSymbols() const;
 
 private:
     static const double MIN_POSITION_SPACING;
@@ -83,9 +122,16 @@ private:
     /// Compute an optimal position spacing for the system.
     void computePositionSpacing();
 
+    /// Compute the spacing and layout of symbols that are drawn below the
+    /// tab staff.
+    void calculateTabStaffBelowLayout();
+
     const System &mySystem;
     const Staff &myStaff;
     double myPositionSpacing;
+
+    std::vector<SymbolGroup> myTabStaffBelowSymbols;
+    double myTabStaffBelowSpacing;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;
