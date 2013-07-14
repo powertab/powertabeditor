@@ -87,6 +87,15 @@ private:
     QGraphicsItem *createPlainTextSymbol(const QString &text,
                                          QFont::Style style);
 
+    /// Draws symbols that appear above the standard notation staff (e.g. 8va).
+    void drawSymbolsAboveStdNotationStaff(const LayoutInfo &layout);
+
+    /// Draws symbols that are grouped across multiple positions
+    /// (i.e. consecutive "let ring" symbols).
+    QGraphicsItem *createConnectedSymbolGroup(const QString &text,
+                                              QFont::Style style, double width,
+                                              const LayoutInfo &layout);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 

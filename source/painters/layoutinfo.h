@@ -33,11 +33,14 @@ class SymbolGroup
 public:
     enum SymbolType
     {
+        NoSymbol,
         PickStrokeUp,
         PickStrokeDown,
         Tap,
         Hammeron,
-        Pulloff
+        Pulloff,
+        Octave8va,
+        Octave15ma
     };
 
     SymbolGroup(const Position &position, SymbolType symbol,
@@ -110,6 +113,7 @@ struct LayoutInfo
     static double getWidth(const Barline &bar);
 
     const std::vector<SymbolGroup> &getTabStaffBelowSymbols() const;
+    const std::vector<SymbolGroup> &getStdNotationStaffAboveSymbols() const;
 
 private:
     static const double MIN_POSITION_SPACING;
@@ -126,12 +130,21 @@ private:
     /// tab staff.
     void calculateTabStaffBelowLayout();
 
+    /// Calculate the layout of symbols displayed above the standard notation
+    /// staff. This is just the 8va and 15ma symbols.
+    void calculateTabStaffAboveLayout();
+
+    /// Returns the largest height of any symbol group.
+    static int getMaxHeight(const std::vector<SymbolGroup> &groups);
+
     const System &mySystem;
     const Staff &myStaff;
     double myPositionSpacing;
 
     std::vector<SymbolGroup> myTabStaffBelowSymbols;
     double myTabStaffBelowSpacing;
+    std::vector<SymbolGroup> myStdNotationStaffAboveSymbols;
+    double myStdNotationStaffAboveSpacing;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;

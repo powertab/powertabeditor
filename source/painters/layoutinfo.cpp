@@ -36,7 +36,6 @@ const double LayoutInfo::TAB_SYMBOL_SPACING = 10;
 
 // TODO - compute these values based on the note positions, etc.
 namespace {
-const double STD_NOTATION_STAFF_ABOVE_SPACING = 9;
 const double STD_NOTATION_STAFF_BELOW_SPACING = 9;
 const double SYMBOL_SPACING = 0;
 }
@@ -45,10 +44,12 @@ LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
     : mySystem(system),
       myStaff(staff),
       myPositionSpacing(20),
-      myTabStaffBelowSpacing(0)
+      myTabStaffBelowSpacing(0),
+      myStdNotationStaffAboveSpacing(0)
 {
     computePositionSpacing();
     calculateTabStaffBelowLayout();
+    calculateTabStaffAboveLayout();
 }
 
 int LayoutInfo::getStringCount() const
@@ -58,7 +59,7 @@ int LayoutInfo::getStringCount() const
 
 double LayoutInfo::getStaffHeight() const
 {
-    return STD_NOTATION_STAFF_ABOVE_SPACING + STD_NOTATION_STAFF_BELOW_SPACING +
+    return myStdNotationStaffAboveSpacing + STD_NOTATION_STAFF_BELOW_SPACING +
             SYMBOL_SPACING + myTabStaffBelowSpacing +
             STD_NOTATION_LINE_SPACING * (NUM_STD_NOTATION_LINES - 1) +
             (getStringCount() - 1) * getTabLineSpacing() +
@@ -67,7 +68,7 @@ double LayoutInfo::getStaffHeight() const
 
 double LayoutInfo::getStdNotationLine(int line) const
 {
-    return STD_NOTATION_STAFF_ABOVE_SPACING + STAFF_BORDER_SPACING +
+    return myStdNotationStaffAboveSpacing + STAFF_BORDER_SPACING +
             (line - 1) * STD_NOTATION_LINE_SPACING;
 }
 
@@ -296,15 +297,67 @@ void LayoutInfo::calculateTabStaffBelowLayout()
     }
 
     // Compute the overall spacing needed below the tab staff.
+    myTabStaffBelowSpacing =
+            getMaxHeight(myTabStaffBelowSymbols) * TAB_SYMBOL_SPACING;
+}
+
+void LayoutInfo::calculateTabStaffAboveLayout()
+{
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    {
+        SymbolGroup::SymbolType currentType = SymbolGroup::NoSymbol;
+        int leftPos = 0;
+
+        BOOST_FOREACH(const Position &pos, myStaff.getVoice(voice))
+        {
+            SymbolGroup::SymbolType type = SymbolGroup::NoSymbol;
+
+            if (Utils::hasNoteWithProperty(pos, Note::Octave8va))
+                type = SymbolGroup::Octave8va;
+            else if (Utils::hasNoteWithProperty(pos, Note::Octave15ma))
+                type = SymbolGroup::Octave15ma;
+
+            const bool endOfStaff = (pos == myStaff.getVoice(voice).back());
+
+            // If we've reached the end of a group or the end of the staff,
+            // record the group.
+            if (type != currentType || endOfStaff)
+            {
+                if (currentType != SymbolGroup::NoSymbol)
+                {
+                    const double left = getPositionX(leftPos);
+
+                    int rightPos = pos.getPosition();
+                    if (endOfStaff)
+                        rightPos++;
+                    const double right = getPositionX(rightPos);
+
+                    myStdNotationStaffAboveSymbols.push_back(
+                                SymbolGroup(pos, currentType, left,
+                                            right - left, 1));
+                }
+
+                leftPos = pos.getPosition();
+                currentType = type;
+            }
+        }
+    }
+
+    myStdNotationStaffAboveSpacing =
+            getMaxHeight(myStdNotationStaffAboveSymbols) * TAB_SYMBOL_SPACING;
+}
+
+int LayoutInfo::getMaxHeight(const std::vector<SymbolGroup> &groups)
+{
     int maxHeight = 0;
-    BOOST_FOREACH(const SymbolGroup &group, myTabStaffBelowSymbols)
+
+    BOOST_FOREACH(const SymbolGroup &group, groups)
     {
         maxHeight = std::max(maxHeight, group.getHeight());
     }
 
-    myTabStaffBelowSpacing = maxHeight * TAB_SYMBOL_SPACING;
+    return maxHeight;
 }
-
 
 SymbolGroup::SymbolGroup(const Position &position,
                          SymbolGroup::SymbolType symbol,
@@ -320,6 +373,11 @@ SymbolGroup::SymbolGroup(const Position &position,
 const std::vector<SymbolGroup> &LayoutInfo::getTabStaffBelowSymbols() const
 {
     return myTabStaffBelowSymbols;
+}
+
+const std::vector<SymbolGroup> &LayoutInfo::getStdNotationStaffAboveSymbols() const
+{
+    return myStdNotationStaffAboveSymbols;
 }
 
 SymbolGroup::SymbolType SymbolGroup::getSymbolType() const

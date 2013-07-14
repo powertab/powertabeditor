@@ -91,6 +91,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawBarlines(system, systemIndex, layout, isFirstStaff);
         drawTabNotes(staff, layout);
 
+        drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowTabStaff(*layout);
     }
 
@@ -875,24 +876,28 @@ void SystemRenderer::drawSymbols(const StaffData& staffInfo)
     }
 }
 
-void SystemRenderer::drawSymbolsAboveStdNotationStaff(const StaffData& staffInfo)
+#endif
+
+void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
 {
-    std::vector<Layout::SymbolGroup> symbolGroups;
-    Layout::CalculateStdNotationAboveLayout(symbolGroups, system, staff);
-
-    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
+    BOOST_FOREACH(const SymbolGroup &symbolGroup,
+                  layout.getStdNotationStaffAboveSymbols())
     {
-        QGraphicsItem* renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = NULL;
 
-        switch(symbolGroup.symbolType)
+        switch (symbolGroup.getSymbolType())
         {
-        case Layout::SymbolOctave8va:
+        case SymbolGroup::Octave8va:
             renderedSymbol = createConnectedSymbolGroup("8va",
-                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+                                                        QFont::StyleItalic,
+                                                        symbolGroup.getWidth(),
+                                                        layout);
             break;
-        case Layout::SymbolOctave15ma:
+        case SymbolGroup::Octave15ma:
             renderedSymbol = createConnectedSymbolGroup("15ma",
-                            QFont::StyleItalic, symbolGroup.width, staffInfo);
+                                                        QFont::StyleItalic,
+                                                        symbolGroup.getWidth(),
+                                                        layout);
             break;
         default:
             // All symbol types should have been dealt with by now.
@@ -900,10 +905,12 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const StaffData& staffInfo
             break;
         }
 
-        renderedSymbol->setPos(symbolGroup.leftX, 0);
-        renderedSymbol->setParentItem(parentStaff);
+        renderedSymbol->setPos(symbolGroup.getX(), 0);
+        renderedSymbol->setParentItem(myParentStaff);
     }
 }
+
+#if 0
 
 void SystemRenderer::drawSymbolsBelowStdNotationStaff(const StaffData& staffInfo)
 {
@@ -937,40 +944,47 @@ void SystemRenderer::drawSymbolsBelowStdNotationStaff(const StaffData& staffInfo
     }
 }
 
-/// Draws symbols that are grouped across multiple positions (i.e. consecutive "let ring" symbols)
-QGraphicsItem* SystemRenderer::createConnectedSymbolGroup(const QString& text,
-                                                          QFont::Style style, int width,
-                                                          const StaffData& currentStaffInfo)
+#endif
+
+QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(const QString &text,
+                                                          QFont::Style style,
+                                                          double width,
+                                                          const LayoutInfo &layout)
 {
-    symbolTextFont.setStyle(style);
+    mySymbolTextFont.setStyle(style);
 
-    // Render the description (i.e. "let ring")
-    QGraphicsSimpleTextItem* description = new QGraphicsSimpleTextItem;
+    // Render the description (i.e. "let ring").
+    QGraphicsSimpleTextItem *description = new QGraphicsSimpleTextItem ();
     description->setText(text);
-    description->setFont(symbolTextFont);
+    description->setFont(mySymbolTextFont);
 
-    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
     group->addToGroup(description);
 
-    // Draw dashed line across the remaining positions in the group
-    if (width > currentStaffInfo.positionWidth)
+    // Draw dashed line across the remaining positions in the group.
+    if (width > layout.getPositionSpacing())
     {
-        const double rightEdge = width - 0.5 * currentStaffInfo.positionWidth;
+        const double rightEdge = width - 0.5 * layout.getPositionSpacing();
         const double leftEdge = description->boundingRect().right();
-        const double middleHeight = Staff::TAB_SYMBOL_HEIGHT / 2.0;
-        QGraphicsLineItem* line = new QGraphicsLineItem(leftEdge, middleHeight, rightEdge, middleHeight);
-        line->setPen(QPen(Qt::black, 1, Qt::DashLine));
+        const double middleHeight = LayoutInfo::TAB_SYMBOL_SPACING / 2.0;
 
+        QGraphicsLineItem *line = new QGraphicsLineItem(leftEdge, middleHeight,
+                                                        rightEdge, middleHeight);
+        line->setPen(QPen(Qt::black, 1, Qt::DashLine));
         group->addToGroup(line);
 
-        // Draw a vertical line at the end of the dotted lines
-        QGraphicsLineItem* lineEnd = new QGraphicsLineItem(line->boundingRect().right(), 1,
-                                                           line->boundingRect().right(), Staff::TAB_SYMBOL_HEIGHT - 1);
+        // Draw a vertical line at the end of the dotted lines.
+        QGraphicsLineItem *lineEnd = new QGraphicsLineItem(
+                    line->boundingRect().right(), 1,
+                    line->boundingRect().right(),
+                    LayoutInfo::TAB_SYMBOL_SPACING - 1);
         group->addToGroup(lineEnd);
     }
 
     return group;
 }
+
+#if 0
 
 /// Creates a volume swell QGraphicsItem of the specified type
 QGraphicsItem* SystemRenderer::createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo,
@@ -1410,8 +1424,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
         drawSlides(currentStaffInfo);
         drawSymbols(currentStaffInfo);
         drawSymbolsBelowTabStaff(currentStaffInfo);
-        drawSymbolsAboveStdNotationStaff(currentStaffInfo);
-        drawSymbolsBelowStdNotationStaff(currentStaffInfo);
     }
 
     return parentSystem;
