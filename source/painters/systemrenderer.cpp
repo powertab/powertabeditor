@@ -90,6 +90,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         drawBarlines(system, systemIndex, layout, isFirstStaff);
         drawTabNotes(staff, layout);
+        drawLegato(staff, *layout);
 
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
@@ -506,46 +507,46 @@ void SystemRenderer::drawRhythmSlashes()
     }
 }
 
-void SystemRenderer::drawLegato(const StaffData& currentStaffInfo)
+#endif
+
+void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
 {
-    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        for (int string = 0; string < staff->GetTablatureStaffType(); string++)
+        std::map<int, int> arcs;
+
+        BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
         {
-            int startPos = -1;
-            const size_t positionCount = staff->GetPositionCount(voice);
-            for (size_t i = 0; i < positionCount; i++)
+            const int position = pos.getPosition();
+
+            BOOST_FOREACH(const Note &note, pos.getNotes())
             {
-                const Position* position = staff->GetPosition(voice, i);
-                const Note* note = position->GetNoteByString(string);
+                const int string = note.getString();
 
-                const int currentPosition = position->GetPosition();
+                // TODO - include legato slides here.
+                if (note.hasProperty(Note::HammerOn) ||
+                    note.hasProperty(Note::PullOff))
+                {
+                    // Set the start position of an arc, if necessary.
+                    if (arcs.find(string) == arcs.end())
+                        arcs[string] = position;
+                }
+                // If an arc was already started and the current note is not
+                // a hammeron / pulloff, end the arc.
+                else if (arcs.find(string) != arcs.end())
+                {
+                    const int startPos = arcs.find(string)->second;
 
-                if (note == NULL)
-                {
-                    startPos = -1;
-                    continue;
-                }
-                if (note->HasHammerOn() || note->HasPullOff() || note->HasLegatoSlide())
-                {
-                    if (startPos == -1) // set the start position of an arc
-                    {
-                        startPos = currentPosition;
-                    }
-                }
-                // if an arc has already been started, and the current note is
-                // not a hammer-on/pull-off, end the arc
-                else if (startPos != -1)
-                {
-                    const double leftPos = system->GetPositionX(startPos);
-                    const double width = system->GetPositionX(currentPosition) - leftPos;
+                    const double left = layout.getPositionX(startPos);
+                    const double width = layout.getPositionX(position) - left;
                     double height = 7.5;
-                    double y = currentStaffInfo.getTabLineHeight(string) - 2;
+                    double y = layout.getTabLine(string) - 2;
 
-                    if (string >= currentStaffInfo.numOfStrings / 2)
+                    if (string >= layout.getStringCount() / 2)
                     {
-                        // for notes on the bottom half of the staff, flip the arc and place it below the notes
-                        y += 2 * currentStaffInfo.tabLineSpacing + height / 2.5;
+                        // For notes on the bottom half of the staff, flip the
+                        // arc and place it below the notes.
+                        y += 2 * layout.getTabLineSpacing() + height / 2.5;
                         height = -height;
                     }
 
@@ -554,31 +555,37 @@ void SystemRenderer::drawLegato(const StaffData& currentStaffInfo)
                     path.arcTo(0, 0, width, height, 0, 180);
 
                     QGraphicsPathItem *arc = new QGraphicsPathItem(path);
-                    arc->setPos(leftPos + system->GetPositionSpacing() / 2, y);
-                    arc->setParentItem(parentStaff);
+                    arc->setPos(left + layout.getPositionSpacing() / 2, y);
+                    arc->setParentItem(myParentStaff);
 
-                    startPos = -1;
+                    arcs.erase(arcs.find(string));
                 }
 
-                if (note->HasHammerOnFromNowhere() || note->HasPullOffToNowhere())
+                // Draw hammerons/pulloffs to nowhere.
+                if (note.hasProperty(Note::HammerOnFromNowhere) ||
+                    note.hasProperty(Note::PullOffToNowhere))
                 {
                     const double height = 10;
                     const double width = 6;
+
                     QPainterPath path;
                     path.moveTo(width, height / 2);
                     path.arcTo(0, 0, width, height, 0, 180);
-                    QGraphicsPathItem *arc = new QGraphicsPathItem(path);
-                    arc->setPos(system->GetPositionX(currentPosition) + 2,
-                                currentStaffInfo.getTabLineHeight(string) - 2);
-                    arc->setParentItem(parentStaff);
 
-                    startPos = -1;
+                    QGraphicsPathItem *arc = new QGraphicsPathItem(path);
+                    arc->setPos(layout.getPositionX(position) + 2,
+                                layout.getTabLine(string) - 2);
+                    arc->setParentItem(myParentStaff);
+
+                    if (arcs.find(string) != arcs.end())
+                        arcs.erase(arcs.find(string));
                 }
             }
         }
     }
 }
 
+#if 0
 /// Draws all of the slides for a staff
 void SystemRenderer::drawSlides(const StaffData& currentStaffInfo)
 {

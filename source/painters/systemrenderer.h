@@ -99,6 +99,9 @@ private:
     /// Draws symbols that appear below the standard notation staff (e.g. 8vb).
     void drawSymbolsBelowStdNotationStaff(const LayoutInfo &layout);
 
+    /// Draws hammerons, pulloffs, etc in the tab staff.
+    void drawLegato(const Staff &staff, const LayoutInfo &layout);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 
