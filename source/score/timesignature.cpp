@@ -29,7 +29,7 @@ TimeSignature::TimeSignature()
       myBeatsPerMeasure(4),
       myBeatValue(4),
       myNumPulses(4),
-      myIsVisible(true)
+      myIsVisible(false)
 {
     myBeamingPattern[0] = 4;
     myBeamingPattern[1] = 0;

@@ -53,9 +53,9 @@ public:
     boost::iterator_range<StaffConstIterator> getStaves() const;
 
     /// Adds a new staff to the system.
-    void insertStaff(const Staff &barline);
+    void insertStaff(const Staff &staff);
     /// Removes the specified staff from the system.
-    void removeStaff(const Staff &barline);
+    void removeStaff(const Staff &staff);
 
     /// Returns the set of barlines in the system.
     boost::iterator_range<BarlineIterator> getBarlines();
@@ -98,9 +98,9 @@ public:
     boost::iterator_range<DirectionConstIterator> getDirections() const;
 
     /// Adds a new musical direction to the system.
-    void insertDirection(const Direction &ending);
+    void insertDirection(const Direction &direction);
     /// Removes the specified musical direction from the system.
-    void removeDirection(const Direction &ending);
+    void removeDirection(const Direction &direction);
 
     /// Returns the set of player changes in the system.
     boost::iterator_range<PlayerChangeIterator> getPlayerChanges();

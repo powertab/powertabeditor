@@ -109,7 +109,7 @@ double LayoutInfo::getPositionSpacing() const
 
 double LayoutInfo::getFirstPositionX() const
 {
-    double width = CLEF_PADDING;
+    double width = CLEF_WIDTH;
     const Barline &startBar = mySystem.getBarlines()[0];
 
     const double keyWidth = getWidth(startBar.getKeySignature());

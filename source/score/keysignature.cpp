@@ -28,7 +28,7 @@ KeySignature::KeySignature()
     : myKeyType(Major),
       myNumAccidentals(0),
       myUsesSharps(true),
-      myIsVisible(true),
+      myIsVisible(false),
       myIsCancellation(false)
 {
 }
@@ -37,7 +37,7 @@ KeySignature::KeySignature(KeyType type, uint8_t accidentals, bool usesSharps)
     : myKeyType(type),
       myNumAccidentals(accidentals),
       myUsesSharps(usesSharps),
-      myIsVisible(true),
+      myIsVisible(false),
       myIsCancellation(false)
 {
 }

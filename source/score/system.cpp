@@ -20,7 +20,6 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <cstddef>
-#include <limits>
 #include "utils.h"
 
 System::System()
@@ -28,7 +27,7 @@ System::System()
     // Add the start and end bars.
     myBarlines.push_back(Barline());
     Barline endBar;
-    endBar.setPosition(std::numeric_limits<int>::max());
+    endBar.setPosition(30);
     myBarlines.push_back(endBar);
 }
 
