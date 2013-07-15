@@ -33,9 +33,29 @@ const ScoreLocation &Caret::getLocation() const
 void Caret::moveHorizontal(int offset)
 {
     myLocation.setPositionIndex(boost::algorithm::clamp(
-            myLocation.getPositionIndex() + offset, 0,
-            myLocation.getSystem().getBarlines().back().getPosition()));
+            myLocation.getPositionIndex() + offset, 0, getLastPosition()));
 
+    onLocationChanged();
+}
+
+void Caret::moveVertical(int offset)
+{
+    const int numStrings = myLocation.getStaff().getStringCount();
+    myLocation.setString((myLocation.getString() + offset + numStrings) %
+                         numStrings);
+
+    onLocationChanged();
+}
+
+void Caret::moveToStartPosition()
+{
+    myLocation.setPositionIndex(0);
+    onLocationChanged();
+}
+
+void Caret::moveToEndPosition()
+{
+    myLocation.setPositionIndex(getLastPosition());
     onLocationChanged();
 }
 
@@ -43,4 +63,10 @@ boost::signals2::connection Caret::subscribeToChanges(
         const LocationChangedSlot::slot_type &subscriber) const
 {
     return onLocationChanged.connect(subscriber);
+}
+
+int Caret::getLastPosition() const
+{
+    // There must be at least one position space to the left of the last bar.
+    return myLocation.getSystem().getBarlines().back().getPosition() - 2;
 }

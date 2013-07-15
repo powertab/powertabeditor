@@ -446,9 +446,34 @@ void PowerTabEditor::editPreferences()
 #endif
 }
 
+void PowerTabEditor::moveCaretToStart()
+{
+    getCaret().moveToStartPosition();
+}
+
 void PowerTabEditor::moveCaretRight()
 {
     getCaret().moveHorizontal(1);
+}
+
+void PowerTabEditor::moveCaretLeft()
+{
+    getCaret().moveHorizontal(-1);
+}
+
+void PowerTabEditor::moveCaretDown()
+{
+    getCaret().moveVertical(1);
+}
+
+void PowerTabEditor::moveCaretUp()
+{
+    getCaret().moveVertical(-1);
+}
+
+void PowerTabEditor::moveCaretToEnd()
+{
+    getCaret().moveToEndPosition();
 }
 
 QString PowerTabEditor::getApplicationName() const
@@ -568,35 +593,43 @@ void PowerTabEditor::createCommands()
                                    QKeySequence(Qt::SHIFT + Qt::Key_Insert), this);
     connect(shiftBackwardAct, SIGNAL(triggered()), this, SLOT(shiftBackward()));
 
-    // Position-related actions
-    startPositionAct = new Command(tr("Move to &Start"), "Staff.MoveToStart",
-                                   QKeySequence::MoveToStartOfLine, this);
-    connect(startPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToStart()));
-
+    // Position-related actions.
 #endif
+    myStartPositionCommand = new Command(tr("Move to &Start"),
+                                         "Staff.MoveToStart",
+                                         QKeySequence::MoveToStartOfLine, this);
+    connect(myStartPositionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToStart()));
+
     myNextPositionCommand = new Command(tr("&Next Position"),
                                         "Staff.NextPosition",
                                         QKeySequence::MoveToNextChar, this);
     connect(myNextPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretRight()));
 
+    myPrevPositionCommand = new Command(tr("&Previous Position"),
+                                        "Staff.PreviousPosition",
+                                        QKeySequence::MoveToPreviousChar, this);
+    connect(myPrevPositionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretLeft()));
+
+    myNextStringCommand = new Command(tr("Next String"), "Staff.NextString",
+                                      QKeySequence::MoveToNextLine, this);
+    connect(myNextStringCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretDown()));
+
+    myPrevStringCommand = new Command(tr("Previous String"),
+                                      "Staff.PreviousString",
+                                      QKeySequence::MoveToPreviousLine, this);
+    connect(myPrevStringCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretUp()));
+
+    myLastPositionCommand = new Command(tr("Move to &End"), "Staff.MoveToEnd",
+                                        QKeySequence::MoveToEndOfLine, this);
+    connect(myLastPositionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToEnd()));
+
 #if 0
-    prevPositionAct = new Command(tr("&Previous Position"), "Staff.PreviousPosition",
-                                  QKeySequence::MoveToPreviousChar, this);
-    connect(prevPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretLeft()));
-
-    nextStringAct = new Command(tr("Next String"), "Staff.NextString",
-                                QKeySequence::MoveToNextLine, this);
-    connect(nextStringAct, SIGNAL(triggered()), this, SLOT(moveCaretDown()));
-
-    prevStringAct = new Command(tr("Previous String"), "Staff.PreviousString",
-                                QKeySequence::MoveToPreviousLine, this);
-    connect(prevStringAct, SIGNAL(triggered()), this, SLOT(moveCaretUp()));
-
-    lastPositionAct = new Command(tr("Move to &End"), "Staff.MoveToEnd",
-                                  QKeySequence::MoveToEndOfLine, this);
-    connect(lastPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToEnd()));
-
     nextStaffAct = new Command(tr("Next Staff"), "Staff.NextStaff",
                                Qt::ALT + Qt::Key_Down, this);
     connect(nextStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextStaff()));
@@ -1094,18 +1127,15 @@ void PowerTabEditor::createMenus()
     positionSectionMenu->addAction(nextSectionAct);
     positionSectionMenu->addAction(prevSectionAct);
     positionSectionMenu->addAction(lastSectionAct);
-
 #endif
     myPositionStaffMenu = myPositionMenu->addMenu(tr("&Staff"));
-#if 0
-    myPositionStaffMenu->addAction(startPositionAct);
-#endif
+    myPositionStaffMenu->addAction(myStartPositionCommand);
     myPositionStaffMenu->addAction(myNextPositionCommand);
+    myPositionStaffMenu->addAction(myPrevPositionCommand);
+    myPositionStaffMenu->addAction(myNextStringCommand);
+    myPositionStaffMenu->addAction(myPrevStringCommand);
+    myPositionStaffMenu->addAction(myLastPositionCommand);
 #if 0
-    myPositionStaffMenu->addAction(prevPositionAct);
-    myPositionStaffMenu->addAction(nextStringAct);
-    myPositionStaffMenu->addAction(prevStringAct);
-    myPositionStaffMenu->addAction(lastPositionAct);
     myPositionStaffMenu->addAction(nextStaffAct);
     myPositionStaffMenu->addAction(prevStaffAct);
     myPositionStaffMenu->addAction(nextBarAct);
@@ -1614,31 +1644,6 @@ bool PowerTabEditor::moveCaretToSystem(quint32 system)
 bool PowerTabEditor::moveCaretToPosition(quint8 position)
 {
     return getCurrentScoreArea()->getCaret()->setCurrentPositionIndex(position);
-}
-
-bool PowerTabEditor::moveCaretLeft()
-{
-    return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(-1);
-}
-
-void PowerTabEditor::moveCaretDown()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretVertical(1);
-}
-
-void PowerTabEditor::moveCaretUp()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretVertical(-1);
-}
-
-void PowerTabEditor::moveCaretToStart()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretToStart();
-}
-
-void PowerTabEditor::moveCaretToEnd()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretToEnd();
 }
 
 void PowerTabEditor::moveCaretToFirstSection()

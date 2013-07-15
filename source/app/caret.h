@@ -32,13 +32,27 @@ public:
     /// Moves the caret left or right by the specified offset.
     void moveHorizontal(int offset);
 
+    /// Moves the caret up or down to the next string, and wraps around
+    /// if necessary.
+    void moveVertical(int offset);
+
+    /// Moves the caret to the first position in the staff.
+    void moveToStartPosition();
+
+    /// Moves the caret to the last position in the staff.
+    void moveToEndPosition();
+
     typedef boost::signals2::signal<void ()> LocationChangedSlot;
     boost::signals2::connection subscribeToChanges(
             const LocationChangedSlot::slot_type &subscriber) const;
 
 private:
+    /// Returns the last valid position in the system.
+    int getLastPosition() const;
+
     ScoreLocation myLocation;
 
+    /// Send out signals to subscribers whenever the location changes.
     mutable LocationChangedSlot onLocationChanged;
 };
 

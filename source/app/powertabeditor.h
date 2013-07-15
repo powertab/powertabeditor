@@ -114,8 +114,18 @@ private slots:
     /// Launches the preferences dialog.
     void editPreferences();
 
+    /// Moves the caret to the first position in the staff.
+    void moveCaretToStart();
     /// Moves the caret to the right by one position.
     void moveCaretRight();
+    /// Moves the caret to the left by one position.
+    void moveCaretLeft();
+    /// Moves the caret down by one string.
+    void moveCaretDown();
+    /// Moves the caret up by one string.
+    void moveCaretUp();
+    /// Moves the caret to the last position in the staff.
+    void moveCaretToEnd();
 
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
@@ -159,7 +169,12 @@ private:
 
     QMenu *myPositionMenu;
     QMenu *myPositionStaffMenu;
+    Command *myStartPositionCommand;
     Command *myNextPositionCommand;
+    Command *myPrevPositionCommand;
+    Command *myNextStringCommand;
+    Command *myPrevStringCommand;
+    Command *myLastPositionCommand;
 
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
@@ -297,11 +312,6 @@ private:
     Command* gotoBarlineAct;
     Command* gotoRehearsalSignAct;
 
-    Command* prevPositionAct; // navigate to the previous position in the staff
-    Command* startPositionAct; // navigate to the first position in the staff
-    Command* lastPositionAct; // navigate to the last position in the staff
-    Command* nextStringAct; // navigate to the next string in the staff
-    Command* prevStringAct; // navigate to the previous string in the staff
     Command* nextStaffAct; // navigate to the next staff in the system
     Command* prevStaffAct; // navigate to the previous staff in the system
     Command* nextBarAct; // navigate to the first non-bar pos in the next bar
