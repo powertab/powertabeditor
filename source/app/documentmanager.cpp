@@ -90,8 +90,8 @@ int DocumentManager::getCurrentDocumentIndex() const
     return *myCurrentIndex;
 }
 
-
 Document::Document()
+    : myLocation(myScore)
 {
 }
 
@@ -118,4 +118,14 @@ const Score &Document::getScore() const
 Score &Document::getScore()
 {
     return myScore;
+}
+
+const ScoreLocation &Document::getLocation() const
+{
+    return myLocation;
+}
+
+ScoreLocation &Document::getLocation()
+{
+    return myLocation;
 }

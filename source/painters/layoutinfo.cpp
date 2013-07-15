@@ -33,6 +33,7 @@ const double LayoutInfo::CLEF_WIDTH = 22;
 const double LayoutInfo::SYSTEM_SYMBOL_SPACING = 18;
 const double LayoutInfo::MIN_POSITION_SPACING = 3;
 const double LayoutInfo::TAB_SYMBOL_SPACING = 10;
+const double LayoutInfo::DEFAULT_POSITION_SPACING = 20;
 
 // TODO - compute these values based on the note positions, etc.
 namespace {
@@ -42,7 +43,7 @@ const double SYMBOL_SPACING = 0;
 LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
     : mySystem(system),
       myStaff(staff),
-      myPositionSpacing(20),
+      myPositionSpacing(0),
       myTabStaffBelowSpacing(0),
       myStdNotationStaffAboveSpacing(0),
       myStdNotationStaffBelowSpacing(0)
@@ -56,6 +57,38 @@ LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
 int LayoutInfo::getStringCount() const
 {
     return myStaff.getStringCount();
+}
+
+double LayoutInfo::getSystemSymbolSpacing() const
+{
+    double height = 0;
+
+    BOOST_FOREACH(const Barline &barline, mySystem.getBarlines())
+    {
+        if (barline.hasRehearsalSign())
+        {
+            height += SYSTEM_SYMBOL_SPACING;
+            break;
+        }
+    }
+
+    if (!mySystem.getAlternateEndings().empty())
+        height += SYSTEM_SYMBOL_SPACING;
+
+    if (!mySystem.getTempoMarkers().empty())
+        height += SYSTEM_SYMBOL_SPACING;
+
+    double directionHeight = 0;
+    BOOST_FOREACH(const Direction &direction, mySystem.getDirections())
+    {
+        directionHeight = std::max(directionHeight,
+                                   direction.getSymbols().size() *
+                                   SYSTEM_SYMBOL_SPACING);
+    }
+
+    height += directionHeight;
+
+    return height;
 }
 
 double LayoutInfo::getStaffHeight() const
@@ -112,6 +145,11 @@ double LayoutInfo::getBottomTabLine() const
 double LayoutInfo::getTabLineSpacing() const
 {
     return 9;
+}
+
+double LayoutInfo::getTabStaffHeight() const
+{
+    return (getStringCount() - 1) * getTabLineSpacing();
 }
 
 double LayoutInfo::getPositionSpacing() const
@@ -197,6 +235,11 @@ double LayoutInfo::getWidth(const Barline &bar)
     }
 
     return width;
+}
+
+double LayoutInfo::getTabStaffBelowSpacing() const
+{
+    return myTabStaffBelowSpacing;
 }
 
 double LayoutInfo::getCumulativeBarlineWidths(int position) const

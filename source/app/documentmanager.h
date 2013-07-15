@@ -22,6 +22,7 @@
 #include <boost/optional/optional.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <score/score.h>
+#include <score/scorelocation.h>
 
 /// A document is a score that is either associated with a file or unsaved.
 class Document : boost::noncopyable
@@ -36,9 +37,13 @@ public:
     const Score &getScore() const;
     Score &getScore();
 
+    const ScoreLocation &getLocation() const;
+    ScoreLocation &getLocation();
+
 private:
     boost::optional<std::string> myFilename;
     Score myScore;
+    ScoreLocation myLocation;
 };
 
 /// Class for managing open documents.

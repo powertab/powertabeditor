@@ -17,10 +17,12 @@
   
 #include "scorearea.h"
 
+#include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
+#include <painters/caret.h>
 #include <painters/systemrenderer.h>
 #include <QDebug>
 #include <QGraphicsItem>
@@ -40,14 +42,14 @@ ScoreArea::ScoreArea(QWidget *parent)
     setScene(&myScene);
 }
 
-void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
+void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
 {
     myScene.clear();
     myRenderedSystems.clear();
-    myScore = score;
+    myDocument = document;
     myViewType = view;
 
-    // TODO - set up caret.
+    const Score &score = document.getScore();
 
     boost::timer timer;
     QProgressDialog progressDialog(tr("Rendering ..."), "", 0,
@@ -55,6 +57,8 @@ void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
     progressDialog.setCancelButton(0);
     progressDialog.setWindowModality(Qt::WindowModal);
     progressDialog.show();
+
+    Caret *caret = new Caret(document.getLocation());
 
     // Render each system.
     int i = 0;
@@ -73,7 +77,11 @@ void ScoreArea::renderScore(const Score &score, Staff::ViewType view)
         renderer.connectSignals();
 #endif
         ++i;
+
+        caret->addSystemRect(renderedSystem->sceneBoundingRect());
     }
+
+    myScene.addItem(caret);
 
     progressDialog.setValue(i);
 
@@ -198,21 +206,6 @@ void ScoreArea::updateSystem(const uint32_t systemIndex)
 
         caret->updatePosition();
     }
-}
-
-boost::shared_ptr<SystemLocationPubSub> ScoreArea::keySignaturePubSub() const
-{
-    return keySignatureClicked;
-}
-
-boost::shared_ptr<SystemLocationPubSub> ScoreArea::timeSignaturePubSub() const
-{
-    return timeSignatureClicked;
-}
-
-boost::shared_ptr<SystemLocationPubSub> ScoreArea::barlinePubSub() const
-{
-    return barlineClicked;
 }
 
 /// Used to request that a full redraw is performed when the ScoreArea is next updated

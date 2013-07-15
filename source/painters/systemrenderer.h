@@ -57,8 +57,7 @@ private:
                       const LayoutInfo &layout);
 
     /// Draws system-level symbols such as alternate endings and tempo markers.
-    /// @returns The height required for the symbols.
-    double drawSystemSymbols(const System &system, const LayoutInfo &layout);
+    void drawSystemSymbols(const System &system, const LayoutInfo &layout);
 
     /// Draws a divider line between system symbols.
     void drawDividerLine(double y);
@@ -72,8 +71,8 @@ private:
                           double height);
 
     /// Draws all of the directions in the system.
-    /// @returns The total height required by the directions.
-    double drawDirections(const System &system, const LayoutInfo &layout, double height);
+    double drawDirections(const System &system, const LayoutInfo &layout,
+                        double height);
 
     /// Draws the text symbols that appear below the tab staff
     /// (hammerons, slides, etc).

@@ -17,24 +17,103 @@
   
 #include "caret.h"
 
+#include <painters/layoutinfo.h>
 #include <QPainter>
-#include <QVector>
-#include <QDebug>
+#include <score/scorelocation.h>
 
-#include <app/common.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/note.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/position.h>
+const double Caret::PEN_WIDTH = 0.75;
+const double Caret::CARET_NOTE_SPACING = 6;
 
-#include <boost/format.hpp>
-#include <algorithm>
+Caret::Caret(const ScoreLocation &location)
+    : myLocation(location)
+{
+}
 
-using boost::shared_ptr;
-using std::vector;
+void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                  QWidget *)
+{
+    LayoutInfo layout(myLocation.getSystem(), myLocation.getStaff());
 
+    // TODO - only recompute layout and positioning when the location changes.
+    setPos(0, mySystemRects.at(myLocation.getSystemIndex()).top() +
+           layout.getSystemSymbolSpacing() + layout.getStaffHeight() -
+           layout.getTabStaffBelowSpacing() - layout.STAFF_BORDER_SPACING -
+           layout.getTabStaffHeight());
+
+#if 0
+    // set color
+    if (inPlaybackMode)
+    {
+        painter->setPen(QPen(Qt::red, PEN_WIDTH));
+    }
+    else
+    {
+        painter->setPen(QPen(Qt::blue, PEN_WIDTH));
+    }
+#else
+    painter->setPen(QPen(Qt::blue, PEN_WIDTH));
+#endif
+
+    double left = layout.getPositionX(myLocation.getPositionIndex());
+    const double y1 = 0;
+    const double y2 = layout.getTabStaffHeight();
+    const double x = LayoutInfo::centerItem(left,
+                                            left + layout.getPositionSpacing(),
+                                            1);
+
+#if 0
+    // If in playback mode, just draw a vertical line and don't highlight
+    // the selected note.
+    if (inPlaybackMode)
+    {
+        painter->drawLine(x, y1, x, y2);
+    }
+    else
+#endif
+    QVector<QLine> lines(0);
+
+    // Calculations for the box around the selected note.
+    const double stringHeight = layout.getTabLine(myLocation.getString() + 1) -
+            layout.getTopTabLine();
+    const double boundary1 = stringHeight - CARET_NOTE_SPACING;
+    const double boundary2 = stringHeight + CARET_NOTE_SPACING;
+
+    // Draw a line down to the highlighted string, if necessary.
+    if (y1 < boundary1)
+        lines.append(QLine(x, y1, x, boundary1));
+
+    // Draw horizontal lines around note, but don't exceed the default width.
+    const double width = std::min(layout.getPositionSpacing(),
+                                  LayoutInfo::DEFAULT_POSITION_SPACING);
+
+    left = LayoutInfo::centerItem(left, left + layout.getPositionSpacing(),
+                                  width);
+    lines.append(QLine(left, boundary1, left + width, boundary1));
+    lines.append(QLine(left, boundary2, left + width, boundary2));
+
+    // Draw to bottom of staff, if necessary.
+    if (y2 > boundary2)
+        lines.append(QLine(x, boundary2, x, y2));
+
+    painter->drawLines(lines);
+
+#if 0
+    paintSelection(painter);
+#endif
+}
+
+QRectF Caret::boundingRect() const
+{
+    // TODO - implement this.
+    return QRectF();
+}
+
+void Caret::addSystemRect(const QRectF &rect)
+{
+    mySystemRects.push_back(rect);
+}
+
+#if 0
 Caret::Caret(int tabLineSpacing) :
     inPlaybackMode(false),
     currentScore(NULL),
@@ -114,70 +193,6 @@ void Caret::updateStaffInfo()
     currentStaffInfo.width = currentSystem->GetRect().GetWidth();
     currentStaffInfo.positionWidth = currentSystem->GetPositionSpacing();
     currentStaffInfo.calculateHeight();
-}
-
-
-void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
-    updateStaffInfo();
-
-    const double PEN_WIDTH = 0.75;
-    // set color
-    if (inPlaybackMode)
-    {
-        painter->setPen(QPen(Qt::red, PEN_WIDTH));
-    }
-    else
-    {
-        painter->setPen(QPen(Qt::blue, PEN_WIDTH));
-    }
-
-    shared_ptr<System> currentSystem = getCurrentSystem();
-    int leftPos = currentSystem->GetPositionX(currentPositionIndex);
-
-    // get top
-    int y1 = 0;
-    // get bottom
-    int y2 = currentStaffInfo.getTabStaffSize();
-    // get x-coordinate
-    int x = centerItem(leftPos, leftPos + currentStaffInfo.positionWidth, 1);
-
-    if (inPlaybackMode) // if in playback mode, just draw a vertical line and don't highlight selected note
-    {
-        painter->drawLine(x, y1, x, y2);
-    }
-    else
-    {
-        QVector<QLine> lines(0);
-        // calculations for the box around the selected note
-        int stringHeight = currentStaffInfo.getTabLineHeight(currentStringIndex + 1) - currentStaffInfo.getTopTabLine();
-        int boundary1 = stringHeight - CARET_NOTE_SPACING;
-        int boundary2 = stringHeight + CARET_NOTE_SPACING;
-
-        // draw a line down to the highlighted string, if necessary
-        if (y1 < boundary1)
-        {
-            lines.append(QLine(x, y1, x, boundary1));
-        }
-
-        // Draw horizontal lines around note, but don't exceed the default width.
-        const int width = std::min<int>(currentStaffInfo.positionWidth, System::DEFAULT_POSITION_SPACING);
-        leftPos = centerItem(leftPos, leftPos + currentStaffInfo.positionWidth, width);
-        lines.append(QLine(leftPos, boundary1, leftPos + width, boundary1));
-        lines.append(QLine(leftPos, boundary2, leftPos + width, boundary2));
-
-        // draw to bottom of staff, if necessary
-        if (y2 > boundary2)
-        {
-            lines.append(QLine(x, boundary2, x, y2));
-        }
-        painter->drawLines(lines);
-    }
-
-    paintSelection(painter);
 }
 
 /// Draws a highlighted box around the selected range
@@ -538,3 +553,4 @@ bool Caret::setCurrentVoice(uint32_t voice)
     currentVoice = voice;
     return true;
 }
+#endif

@@ -17,39 +17,80 @@
 
 #include "scorelocation.h"
 
-ScoreLocation::ScoreLocation(int system, int staff, int position)
-    : mySystem(system),
-      myStaff(staff),
-      myPosition(position)
+#include <score/score.h>
+
+ScoreLocation::ScoreLocation(const Score &score, int system, int staff,
+                             int position, int voice, int string)
+    : myScore(score),
+      mySystemIndex(system),
+      myStaffIndex(staff),
+      myPositionIndex(position),
+      myVoice(voice),
+      myString(string)
 {
 }
 
-int ScoreLocation::getPosition() const
+const Score &ScoreLocation::getScore() const
 {
-    return myPosition;
+    return myScore;
 }
 
-void ScoreLocation::setPosition(int position)
+int ScoreLocation::getPositionIndex() const
 {
-    myPosition = position;
+    return myPositionIndex;
 }
 
-int ScoreLocation::getStaff() const
+void ScoreLocation::setPositionIndex(int position)
 {
-    return myStaff;
+    myPositionIndex = position;
 }
 
-void ScoreLocation::setStaff(int staff)
+int ScoreLocation::getStaffIndex() const
 {
-    myStaff = staff;
+    return myStaffIndex;
 }
 
-int ScoreLocation::getSystem() const
+void ScoreLocation::setStaffIndex(int staff)
 {
-    return mySystem;
+    myStaffIndex = staff;
 }
 
-void ScoreLocation::setSystem(int system)
+const Staff &ScoreLocation::getStaff() const
 {
-    mySystem = system;
+    return getSystem().getStaves()[myStaffIndex];
+}
+
+int ScoreLocation::getSystemIndex() const
+{
+    return mySystemIndex;
+}
+
+void ScoreLocation::setSystemIndex(int system)
+{
+    mySystemIndex = system;
+}
+
+const System &ScoreLocation::getSystem() const
+{
+    return myScore.getSystems()[mySystemIndex];
+}
+
+int ScoreLocation::getString() const
+{
+    return myString;
+}
+
+void ScoreLocation::setString(int string)
+{
+    myString = string;
+}
+
+int ScoreLocation::getVoice() const
+{
+    return myVoice;
+}
+
+void ScoreLocation::setVoice(int voice)
+{
+    myVoice = voice;
 }

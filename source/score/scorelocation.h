@@ -18,24 +18,42 @@
 #ifndef SCORE_SCORELOCATION_H
 #define SCORE_SCORELOCATION_H
 
+class Score;
+class Staff;
+class System;
+
 class ScoreLocation
 {
 public:
-    ScoreLocation(int system, int staff, int position);
+    ScoreLocation(const Score &score, int system = 0, int staff = 0,
+                  int position = 0, int voice = 0, int string = 0);
 
-    int getSystem() const;
-    void setSystem(int system);
+    const Score &getScore() const;
 
-    int getStaff() const;
-    void setStaff(int staff);
+    int getSystemIndex() const;
+    void setSystemIndex(int system);
+    const System &getSystem() const;
 
-    int getPosition() const;
-    void setPosition(int position);
+    int getStaffIndex() const;
+    void setStaffIndex(int staff);
+    const Staff &getStaff() const;
+
+    int getPositionIndex() const;
+    void setPositionIndex(int position);
+
+    int getVoice() const;
+    void setVoice(int voice);
+
+    int getString() const;
+    void setString(int string);
 
 private:
-    int mySystem;
-    int myStaff;
-    int myPosition;
+    const Score &myScore;
+    int mySystemIndex;
+    int myStaffIndex;
+    int myPositionIndex;
+    int myVoice;
+    int myString;
 };
 
 #endif

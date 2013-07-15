@@ -72,7 +72,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         if (isFirstStaff)
         {
-            height += drawSystemSymbols(system, *layout);
+            drawSystemSymbols(system, *layout);
+            height += layout->getSystemSymbolSpacing();
         }
 
         myParentStaff = new StaffPainter(layout);
@@ -122,7 +123,9 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 {
     BOOST_FOREACH(const Barline &barline, system.getBarlines())
     {
-        const ScoreLocation location(systemIndex, -1, barline.getPosition());
+        const ScoreLocation location(myScore, systemIndex, -1,
+                                     barline.getPosition());
+
         const KeySignature &keySig = barline.getKeySignature();
         const TimeSignature &timeSig = barline.getTimeSignature();
 
@@ -295,8 +298,8 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
     endPoint->setParentItem(myParentStaff);
 }
 
-double SystemRenderer::drawSystemSymbols(const System &system,
-                                         const LayoutInfo& layout)
+void SystemRenderer::drawSystemSymbols(const System &system,
+                                       const LayoutInfo& layout)
 {
     double height = 0;
 
@@ -340,8 +343,6 @@ double SystemRenderer::drawSystemSymbols(const System &system,
         drawDividerLine(currentStaffInfo, height);
     }
 #endif
-
-    return height;
 }
 
 void SystemRenderer::drawDividerLine(double y)
@@ -1426,7 +1427,6 @@ QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system
 
         drawStdNotation(currentStaffInfo);
 
-        drawLegato(currentStaffInfo);
         drawSlides(currentStaffInfo);
         drawSymbols(currentStaffInfo);
     }

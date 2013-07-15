@@ -72,6 +72,7 @@ struct LayoutInfo
 
     int getStringCount() const;
 
+    double getSystemSymbolSpacing() const;
     double getStaffHeight() const;
 
     double getStdNotationLine(int line) const;
@@ -84,6 +85,7 @@ struct LayoutInfo
     double getTopTabLine() const;
     double getBottomTabLine() const;
     double getTabLineSpacing() const;
+    double getTabStaffHeight() const;
 
     double getPositionSpacing() const;
     double getFirstPositionX() const;
@@ -104,6 +106,8 @@ struct LayoutInfo
     static const double SYSTEM_SYMBOL_SPACING;
     /// Space given to a tab symbol (e.g. pickstroke).
     static const double TAB_SYMBOL_SPACING;
+    /// Default position spacing.
+    static const double DEFAULT_POSITION_SPACING;
 
     static double centerItem(double xmin, double xmax, double width)
     {
@@ -114,6 +118,7 @@ struct LayoutInfo
     static double getWidth(const TimeSignature &time);
     static double getWidth(const Barline &bar);
 
+    double getTabStaffBelowSpacing() const;
     const std::vector<SymbolGroup> &getTabStaffBelowSymbols() const;
     const std::vector<SymbolGroup> &getStdNotationStaffAboveSymbols() const;
 

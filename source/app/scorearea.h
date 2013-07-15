@@ -24,7 +24,8 @@
 #include <QGraphicsScene>
 #include <score/staff.h>
 
-class Score;
+class Caret;
+class Document;
 class ScoreLocationPubSub;
 
 /// The visual display of the score.
@@ -39,7 +40,7 @@ public:
     explicit ScoreArea(QWidget *parent);
 #endif
 
-    void renderScore(const Score &score, Staff::ViewType view);
+    void renderDocument(const Document &document, Staff::ViewType view);
 
 #if 0
     ~ScoreArea();
@@ -51,7 +52,7 @@ public:
 
 private:
     QGraphicsScene myScene;
-    boost::optional<const Score &> myScore;
+    boost::optional<const Document &> myDocument;
     Staff::ViewType myViewType;
     QList<QGraphicsItem *> myRenderedSystems;
 

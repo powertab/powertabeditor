@@ -1264,7 +1264,7 @@ void PowerTabEditor::setupNewTab()
     Document &doc = myDocumentManager->getCurrentDocument();
 
     ScoreArea *scorearea = new ScoreArea(this);
-    scorearea->renderScore(doc.getScore(), Staff::GuitarView);
+    scorearea->renderDocument(doc, Staff::GuitarView);
 #if 0
     score->installEventFilter(this);
     score->renderDocument(doc);
