@@ -18,11 +18,11 @@
 #ifndef APP_DOCUMENTMANAGER_H
 #define APP_DOCUMENTMANAGER_H
 
+#include <app/caret.h>
 #include <boost/noncopyable.hpp>
 #include <boost/optional/optional.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <score/score.h>
-#include <score/scorelocation.h>
 
 /// A document is a score that is either associated with a file or unsaved.
 class Document : boost::noncopyable
@@ -37,13 +37,13 @@ public:
     const Score &getScore() const;
     Score &getScore();
 
-    const ScoreLocation &getLocation() const;
-    ScoreLocation &getLocation();
+    const Caret &getCaret() const;
+    Caret &getCaret();
 
 private:
     boost::optional<std::string> myFilename;
     Score myScore;
-    ScoreLocation myLocation;
+    Caret myCaret;
 };
 
 /// Class for managing open documents.

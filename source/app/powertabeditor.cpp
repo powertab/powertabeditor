@@ -17,6 +17,7 @@
   
 #include "powertabeditor.h"
 
+#include <app/caret.h>
 #include <app/command.h>
 #include <app/documentmanager.h>
 #include <app/recentfiles.h>
@@ -445,6 +446,11 @@ void PowerTabEditor::editPreferences()
 #endif
 }
 
+void PowerTabEditor::moveCaretRight()
+{
+    getCaret().moveHorizontal(1);
+}
+
 QString PowerTabEditor::getApplicationName() const
 {
     QString name = QString("%1 %2 Beta").arg(
@@ -567,10 +573,14 @@ void PowerTabEditor::createCommands()
                                    QKeySequence::MoveToStartOfLine, this);
     connect(startPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretToStart()));
 
-    nextPositionAct = new Command(tr("&Next Position"), "Staff.NextPosition",
-                                  QKeySequence::MoveToNextChar, this);
-    connect(nextPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretRight()));
+#endif
+    myNextPositionCommand = new Command(tr("&Next Position"),
+                                        "Staff.NextPosition",
+                                        QKeySequence::MoveToNextChar, this);
+    connect(myNextPositionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretRight()));
 
+#if 0
     prevPositionAct = new Command(tr("&Previous Position"), "Staff.PreviousPosition",
                                   QKeySequence::MoveToPreviousChar, this);
     connect(prevPositionAct, SIGNAL(triggered()), this, SLOT(moveCaretLeft()));
@@ -1075,26 +1085,31 @@ void PowerTabEditor::createMenus()
     playbackMenu = menuBar()->addMenu(tr("Play&back"));
     playbackMenu->addAction(playPauseAct);
 
-    // Position Menu
-    positionMenu = menuBar()->addMenu(tr("&Position"));
-
+#endif
+    // Position Menu.
+    myPositionMenu = menuBar()->addMenu(tr("&Position"));
+#if 0
     positionSectionMenu = positionMenu->addMenu(tr("&Section"));
     positionSectionMenu->addAction(firstSectionAct);
     positionSectionMenu->addAction(nextSectionAct);
     positionSectionMenu->addAction(prevSectionAct);
     positionSectionMenu->addAction(lastSectionAct);
 
-    positionStaffMenu = positionMenu->addMenu(tr("&Staff"));
-    positionStaffMenu->addAction(startPositionAct);
-    positionStaffMenu->addAction(nextPositionAct);
-    positionStaffMenu->addAction(prevPositionAct);
-    positionStaffMenu->addAction(nextStringAct);
-    positionStaffMenu->addAction(prevStringAct);
-    positionStaffMenu->addAction(lastPositionAct);
-    positionStaffMenu->addAction(nextStaffAct);
-    positionStaffMenu->addAction(prevStaffAct);
-    positionStaffMenu->addAction(nextBarAct);
-    positionStaffMenu->addAction(prevBarAct);
+#endif
+    myPositionStaffMenu = myPositionMenu->addMenu(tr("&Staff"));
+#if 0
+    myPositionStaffMenu->addAction(startPositionAct);
+#endif
+    myPositionStaffMenu->addAction(myNextPositionCommand);
+#if 0
+    myPositionStaffMenu->addAction(prevPositionAct);
+    myPositionStaffMenu->addAction(nextStringAct);
+    myPositionStaffMenu->addAction(prevStringAct);
+    myPositionStaffMenu->addAction(lastPositionAct);
+    myPositionStaffMenu->addAction(nextStaffAct);
+    myPositionStaffMenu->addAction(prevStaffAct);
+    myPositionStaffMenu->addAction(nextBarAct);
+    myPositionStaffMenu->addAction(prevBarAct);
 
     positionMenu->addSeparator();
     positionMenu->addAction(shiftTabNumUp);
@@ -1364,6 +1379,11 @@ ScoreArea *PowerTabEditor::getScoreArea()
     return dynamic_cast<ScoreArea *>(myTabWidget->currentWidget());
 }
 
+Caret &PowerTabEditor::getCaret()
+{
+    return myDocumentManager->getCurrentDocument().getCaret();
+}
+
 #if 0
 /// Redraws the specified system.
 void PowerTabEditor::redrawSystem(int index)
@@ -1594,11 +1614,6 @@ bool PowerTabEditor::moveCaretToSystem(quint32 system)
 bool PowerTabEditor::moveCaretToPosition(quint8 position)
 {
     return getCurrentScoreArea()->getCaret()->setCurrentPositionIndex(position);
-}
-
-bool PowerTabEditor::moveCaretRight()
-{
-    return getCurrentScoreArea()->getCaret()->moveCaretHorizontal(1);
 }
 
 bool PowerTabEditor::moveCaretLeft()
@@ -2544,7 +2559,7 @@ void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
     menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
-    menuList << positionSectionMenu << positionStaffMenu << sectionMenu << octaveMenu << slideIntoMenu;
+    menuList << positionSectionMenu << myPositionStaffMenu << sectionMenu << octaveMenu << slideIntoMenu;
     menuList << slideOutOfMenu << restsMenu << editMenu;
 
     foreach(QMenu* menu, menuList)

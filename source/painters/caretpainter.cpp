@@ -15,30 +15,34 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include "caret.h"
+#include "caretpainter.h"
 
+#include <app/caret.h>
 #include <painters/layoutinfo.h>
+#include <QDebug>
 #include <QPainter>
 #include <score/scorelocation.h>
 
-const double Caret::PEN_WIDTH = 0.75;
-const double Caret::CARET_NOTE_SPACING = 6;
+const double CaretPainter::PEN_WIDTH = 0.75;
+const double CaretPainter::CARET_NOTE_SPACING = 6;
 
-Caret::Caret(const ScoreLocation &location)
-    : myLocation(location)
+CaretPainter::CaretPainter(const Caret &caret)
+    : myCaret(caret)
 {
+    caret.subscribeToChanges(boost::bind(&CaretPainter::onLocationChanged,
+                                         this));
 }
 
-void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                   QWidget *)
 {
-    LayoutInfo layout(myLocation.getSystem(), myLocation.getStaff());
+    if (!myLayout)
+    {
+        onLocationChanged();
+        return;
+    }
 
-    // TODO - only recompute layout and positioning when the location changes.
-    setPos(0, mySystemRects.at(myLocation.getSystemIndex()).top() +
-           layout.getSystemSymbolSpacing() + layout.getStaffHeight() -
-           layout.getTabStaffBelowSpacing() - layout.STAFF_BORDER_SPACING -
-           layout.getTabStaffHeight());
+    const ScoreLocation &location = myCaret.getLocation();
 
 #if 0
     // set color
@@ -54,11 +58,11 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     painter->setPen(QPen(Qt::blue, PEN_WIDTH));
 #endif
 
-    double left = layout.getPositionX(myLocation.getPositionIndex());
+    double left = myLayout->getPositionX(location.getPositionIndex());
     const double y1 = 0;
-    const double y2 = layout.getTabStaffHeight();
+    const double y2 = myLayout->getTabStaffHeight();
     const double x = LayoutInfo::centerItem(left,
-                                            left + layout.getPositionSpacing(),
+                                            left + myLayout->getPositionSpacing(),
                                             1);
 
 #if 0
@@ -73,8 +77,8 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     QVector<QLine> lines(0);
 
     // Calculations for the box around the selected note.
-    const double stringHeight = layout.getTabLine(myLocation.getString() + 1) -
-            layout.getTopTabLine();
+    const double stringHeight = myLayout->getTabLine(location.getString() + 1) -
+            myLayout->getTopTabLine();
     const double boundary1 = stringHeight - CARET_NOTE_SPACING;
     const double boundary2 = stringHeight + CARET_NOTE_SPACING;
 
@@ -83,10 +87,10 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
         lines.append(QLine(x, y1, x, boundary1));
 
     // Draw horizontal lines around note, but don't exceed the default width.
-    const double width = std::min(layout.getPositionSpacing(),
+    const double width = std::min(myLayout->getPositionSpacing(),
                                   LayoutInfo::DEFAULT_POSITION_SPACING);
 
-    left = LayoutInfo::centerItem(left, left + layout.getPositionSpacing(),
+    left = LayoutInfo::centerItem(left, left + myLayout->getPositionSpacing(),
                                   width);
     lines.append(QLine(left, boundary1, left + width, boundary1));
     lines.append(QLine(left, boundary2, left + width, boundary2));
@@ -102,15 +106,32 @@ void Caret::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 #endif
 }
 
-QRectF Caret::boundingRect() const
+QRectF CaretPainter::boundingRect() const
 {
-    // TODO - implement this.
-    return QRectF();
+    if (myLayout)
+    {
+        return QRectF(0, -CARET_NOTE_SPACING, LayoutInfo::STAFF_WIDTH,
+                      myLayout->getTabStaffHeight() + 2 * CARET_NOTE_SPACING);
+    }
+    else
+        return QRectF();
 }
 
-void Caret::addSystemRect(const QRectF &rect)
+void CaretPainter::addSystemRect(const QRectF &rect)
 {
     mySystemRects.push_back(rect);
+}
+
+void CaretPainter::onLocationChanged()
+{
+    const ScoreLocation &location = myCaret.getLocation();
+    myLayout.reset(new LayoutInfo(location.getSystem(), location.getStaff()));
+
+    update(boundingRect());
+    setPos(0, mySystemRects.at(location.getSystemIndex()).top() +
+           myLayout->getSystemSymbolSpacing() + myLayout->getStaffHeight() -
+           myLayout->getTabStaffBelowSpacing() - myLayout->STAFF_BORDER_SPACING -
+           myLayout->getTabStaffHeight());
 }
 
 #if 0

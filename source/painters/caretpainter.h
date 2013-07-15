@@ -15,18 +15,19 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef PAINTERS_CARET_H
-#define PAINTERS_CARET_H
+#ifndef PAINTERS_CARETPAINTER_H
+#define PAINTERS_CARETPAINTER_H
 
+#include <boost/scoped_ptr.hpp>
 #include <QGraphicsItem>
 
-class ScoreLocation;
+class Caret;
+struct LayoutInfo;
 
-/// Highlights the current position within the score.
-class Caret : public QGraphicsItem
+class CaretPainter : public QGraphicsItem
 {
 public:
-    Caret(const ScoreLocation &location);
+    CaretPainter(const Caret &caret);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *);
@@ -35,7 +36,10 @@ public:
     void addSystemRect(const QRectF &rect);
 
 private:
-    const ScoreLocation &myLocation;
+    void onLocationChanged();
+
+    const Caret &myCaret;
+    boost::scoped_ptr<LayoutInfo> myLayout;
     std::vector<QRectF> mySystemRects;
 
     static const double PEN_WIDTH;

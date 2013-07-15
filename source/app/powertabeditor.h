@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 
+class Caret;
 class Command;
 class DocumentManager;
 class FileFormatManager;
@@ -113,6 +114,9 @@ private slots:
     /// Launches the preferences dialog.
     void editPreferences();
 
+    /// Moves the caret to the right by one position.
+    void moveCaretRight();
+
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
     QString getApplicationName() const;
@@ -132,6 +136,8 @@ private:
 
     /// Returns the score area for the active document.
     ScoreArea *getScoreArea();
+    /// Returns the caret for the active document.
+    Caret &getCaret();
 
     boost::scoped_ptr<DocumentManager> myDocumentManager;
     boost::scoped_ptr<FileFormatManager> myFileFormatManager;
@@ -150,6 +156,10 @@ private:
     Command *myEditShortcutsCommand;
     Command *myEditPreferencesCommand;
     Command *myExitCommand;
+
+    QMenu *myPositionMenu;
+    QMenu *myPositionStaffMenu;
+    Command *myNextPositionCommand;
 
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
@@ -195,7 +205,6 @@ private slots:
     void performFullRedraw();
     void startStopPlayback();
     void rewindPlaybackToStart();
-    bool moveCaretRight();
     bool moveCaretLeft();
     void moveCaretDown();
     void moveCaretUp();
@@ -275,7 +284,6 @@ private:
     QMenu* playbackMenu;
     Command* playPauseAct;
 
-    QMenu* positionMenu;
     QMenu* positionSectionMenu; // menu options for navigating between sections
     // navigate to the first, next, previous, or last section in the score
     Command* firstSectionAct;
@@ -289,8 +297,6 @@ private:
     Command* gotoBarlineAct;
     Command* gotoRehearsalSignAct;
 
-    QMenu* positionStaffMenu;
-    Command* nextPositionAct; // navigate to the next position in the staff
     Command* prevPositionAct; // navigate to the previous position in the staff
     Command* startPositionAct; // navigate to the first position in the staff
     Command* lastPositionAct; // navigate to the last position in the staff

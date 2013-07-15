@@ -91,7 +91,7 @@ int DocumentManager::getCurrentDocumentIndex() const
 }
 
 Document::Document()
-    : myLocation(myScore)
+    : myCaret(myScore)
 {
 }
 
@@ -120,12 +120,12 @@ Score &Document::getScore()
     return myScore;
 }
 
-const ScoreLocation &Document::getLocation() const
+const Caret &Document::getCaret() const
 {
-    return myLocation;
+    return myCaret;
 }
 
-ScoreLocation &Document::getLocation()
+Caret &Document::getCaret()
 {
-    return myLocation;
+    return myCaret;
 }

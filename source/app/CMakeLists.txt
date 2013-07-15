@@ -8,6 +8,7 @@ Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} MY)
 add_definitions(-DSVN_REVISION=${MY_WC_REVISION})
 
 add_library(pteapp
+    caret.cpp
     #clipboard.cpp
     command.cpp
     documentmanager.cpp

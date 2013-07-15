@@ -22,7 +22,7 @@
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
-#include <painters/caret.h>
+#include <painters/caretpainter.h>
 #include <painters/systemrenderer.h>
 #include <QDebug>
 #include <QGraphicsItem>
@@ -58,7 +58,7 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
     progressDialog.setWindowModality(Qt::WindowModal);
     progressDialog.show();
 
-    Caret *caret = new Caret(document.getLocation());
+    CaretPainter *caretPainter = new CaretPainter(document.getCaret());
 
     // Render each system.
     int i = 0;
@@ -78,10 +78,10 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
 #endif
         ++i;
 
-        caret->addSystemRect(renderedSystem->sceneBoundingRect());
+        caretPainter->addSystemRect(renderedSystem->sceneBoundingRect());
     }
 
-    myScene.addItem(caret);
+    myScene.addItem(caretPainter);
 
     progressDialog.setValue(i);
 
