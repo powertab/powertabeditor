@@ -70,6 +70,15 @@ void Caret::moveToLastSystem()
     moveToSystem(getLastSystemIndex(), false);
 }
 
+void Caret::moveStaff(int offset)
+{
+    myLocation.setStaffIndex(boost::algorithm::clamp(
+            myLocation.getStaffIndex() + offset, 0,
+            myLocation.getSystem().getStaves().size() - 1));
+
+    onLocationChanged();
+}
+
 void Caret::moveToNextBar()
 {
     const Barline *nextBar = myLocation.getSystem().getNextBarline(

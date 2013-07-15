@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <QPainter>
 #include <score/scorelocation.h>
+#include <score/system.h>
 
 const double CaretPainter::PEN_WIDTH = 0.75;
 const double CaretPainter::CARET_NOTE_SPACING = 6;
@@ -125,10 +126,16 @@ void CaretPainter::addSystemRect(const QRectF &rect)
 void CaretPainter::onLocationChanged()
 {
     const ScoreLocation &location = myCaret.getLocation();
-    myLayout.reset(new LayoutInfo(location.getSystem(), location.getStaff()));
+    const System &system = location.getSystem();
+    myLayout.reset(new LayoutInfo(system, location.getStaff()));
+
+    // Compute the offset due to the previous systems.
+    double offset = 0;
+    for (int i = 0; i < location.getStaffIndex(); ++i)
+        offset += LayoutInfo(system, system.getStaves()[i]).getStaffHeight();
 
     update(boundingRect());
-    setPos(0, mySystemRects.at(location.getSystemIndex()).top() +
+    setPos(0, mySystemRects.at(location.getSystemIndex()).top() + offset +
            myLayout->getSystemSymbolSpacing() + myLayout->getStaffHeight() -
            myLayout->getTabStaffBelowSpacing() - myLayout->STAFF_BORDER_SPACING -
            myLayout->getTabStaffHeight());

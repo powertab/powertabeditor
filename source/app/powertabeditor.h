@@ -96,6 +96,10 @@ private slots:
     void moveCaretToPrevSection();
     /// Moves the caret to the last system in the score.
     void moveCaretToLastSection();
+    /// Moves the caret to the next staff in the system.
+    void moveCaretToNextStaff();
+    /// Moves the caret to the previous staff in the system.
+    void moveCaretToPrevStaff();
     /// Moves the caret to the next bar after the current position.
     void moveCaretToNextBar();
     /// Moves the caret to the last bar before the current position.
@@ -154,6 +158,8 @@ private:
     Command *myNextStringCommand;
     Command *myPrevStringCommand;
     Command *myLastPositionCommand;    
+    Command *myNextStaffCommand;
+    Command *myPrevStaffCommand;
     Command *myNextBarCommand;
     Command *myPrevBarCommand;
 
@@ -204,9 +210,6 @@ private slots:
     bool moveCaretLeft();
     void moveCaretDown();
     void moveCaretUp();
-
-    bool moveCaretToNextStaff();
-    bool moveCaretToPrevStaff();    
 
     void gotoBarline();
     void gotoRehearsalSign();
@@ -274,9 +277,6 @@ private:
     Command* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
     Command* gotoBarlineAct;
     Command* gotoRehearsalSignAct;
-
-    Command* nextStaffAct; // navigate to the next staff in the system
-    Command* prevStaffAct; // navigate to the previous staff in the system    
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
     Command* shiftTabNumDown;

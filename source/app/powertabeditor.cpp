@@ -496,6 +496,16 @@ void PowerTabEditor::moveCaretToLastSection()
     getCaret().moveToLastSystem();
 }
 
+void PowerTabEditor::moveCaretToNextStaff()
+{
+    getCaret().moveStaff(1);
+}
+
+void PowerTabEditor::moveCaretToPrevStaff()
+{
+    getCaret().moveStaff(-1);
+}
+
 void PowerTabEditor::moveCaretToNextBar()
 {
     getCaret().moveToNextBar();
@@ -670,15 +680,16 @@ void PowerTabEditor::createCommands()
     connect(myLastPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToEnd()));
 
-#if 0
-    nextStaffAct = new Command(tr("Next Staff"), "Staff.NextStaff",
-                               Qt::ALT + Qt::Key_Down, this);
-    connect(nextStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextStaff()));
+    myNextStaffCommand = new Command(tr("Next Staff"), "Staff.NextStaff",
+                                     Qt::ALT + Qt::Key_Down, this);
+    connect(myNextStaffCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToNextStaff()));
 
-    prevStaffAct = new Command(tr("Previous Staff"), "Staff.PreviousStaff",
-                               Qt::ALT + Qt::Key_Up, this);
-    connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
-#endif
+    myPrevStaffCommand = new Command(tr("Previous Staff"), "Staff.PreviousStaff",
+                                     Qt::ALT + Qt::Key_Up, this);
+    connect(myPrevStaffCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToPrevStaff()));
+
     myNextBarCommand = new Command(tr("Next Bar"), "Staff.NextBar",
                                    Qt::Key_Tab, this);
     connect(myNextBarCommand, SIGNAL(triggered()), this,
@@ -1177,10 +1188,8 @@ void PowerTabEditor::createMenus()
     myPositionStaffMenu->addAction(myNextStringCommand);
     myPositionStaffMenu->addAction(myPrevStringCommand);
     myPositionStaffMenu->addAction(myLastPositionCommand);
-#if 0
-    myPositionStaffMenu->addAction(nextStaffAct);
-    myPositionStaffMenu->addAction(prevStaffAct);
-#endif
+    myPositionStaffMenu->addAction(myNextStaffCommand);
+    myPositionStaffMenu->addAction(myPrevStaffCommand);
     myPositionStaffMenu->addAction(myNextBarCommand);
     myPositionStaffMenu->addAction(myPrevBarCommand);
 

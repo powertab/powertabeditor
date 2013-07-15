@@ -51,6 +51,9 @@ public:
     /// Moves the caret to the last system in the score.
     void moveToLastSystem();
 
+    /// Moves up or down by the given number of staves.
+    void moveStaff(int offset);
+
     /// Moves the caret to the next bar after the current position, or to the
     /// next system if necessary.
     void moveToNextBar();
