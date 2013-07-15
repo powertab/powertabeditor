@@ -496,6 +496,16 @@ void PowerTabEditor::moveCaretToLastSection()
     getCaret().moveToLastSystem();
 }
 
+void PowerTabEditor::moveCaretToNextBar()
+{
+    getCaret().moveToNextBar();
+}
+
+void PowerTabEditor::moveCaretToPrevBar()
+{
+    getCaret().moveToPrevBar();
+}
+
 QString PowerTabEditor::getApplicationName() const
 {
     QString name = QString("%1 %2 Beta").arg(
@@ -668,15 +678,17 @@ void PowerTabEditor::createCommands()
     prevStaffAct = new Command(tr("Previous Staff"), "Staff.PreviousStaff",
                                Qt::ALT + Qt::Key_Up, this);
     connect(prevStaffAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevStaff()));
+#endif
+    myNextBarCommand = new Command(tr("Next Bar"), "Staff.NextBar",
+                                   Qt::Key_Tab, this);
+    connect(myNextBarCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToNextBar()));
 
-    // the shortcuts for these two won't do anything since the tabs get
-    // sucked up by our event filter first
-    nextBarAct = new Command(tr("Next Bar"), "Staff.NextBar", Qt::Key_Tab, this);
-    connect(nextBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextBar()));
-
-    prevBarAct = new Command(tr("Previous Bar"), "Staff.PreviousBar", Qt::SHIFT + Qt::Key_Tab, this);
-    connect(prevBarAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevBar()));
-
+    myPrevBarCommand = new Command(tr("Previous Bar"), "Staff.PreviousBar",
+                                   Qt::SHIFT + Qt::Key_Tab, this);
+    connect(myPrevBarCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToPrevBar()));
+#if 0
     // Actions for shifting tab numbers up/down a string
     shiftTabNumUp = new Command(tr("Shift Tab Number Up"), "Position.ShiftTabNumberUp",
                                 Qt::CTRL + Qt::Key_Up, this);
@@ -1168,9 +1180,11 @@ void PowerTabEditor::createMenus()
 #if 0
     myPositionStaffMenu->addAction(nextStaffAct);
     myPositionStaffMenu->addAction(prevStaffAct);
-    myPositionStaffMenu->addAction(nextBarAct);
-    myPositionStaffMenu->addAction(prevBarAct);
+#endif
+    myPositionStaffMenu->addAction(myNextBarCommand);
+    myPositionStaffMenu->addAction(myPrevBarCommand);
 
+#if 0
     positionMenu->addSeparator();
     positionMenu->addAction(shiftTabNumUp);
     positionMenu->addAction(shiftTabNumDown);
@@ -1684,16 +1698,6 @@ bool PowerTabEditor::moveCaretToNextStaff()
 bool PowerTabEditor::moveCaretToPrevStaff()
 {
     return getCurrentScoreArea()->getCaret()->moveCaretStaff(-1);
-}
-
-void PowerTabEditor::moveCaretToNextBar()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretToNextBar();
-}
-
-void PowerTabEditor::moveCaretToPrevBar()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretToPrevBar();
 }
 
 /// Allows the user to jump to a specific bar in the score.

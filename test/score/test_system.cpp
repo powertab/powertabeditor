@@ -56,10 +56,10 @@ TEST_CASE("Score/System/GetPreviousBarline", "")
     Barline barline(10, Barline::SingleBar);
     system.insertBarline(barline);
 
-    REQUIRE(!system.getPreviousBarline(-1));
-    REQUIRE(*system.getPreviousBarline(0) == system.getBarlines()[0]);
-    REQUIRE(*system.getPreviousBarline(9) == system.getBarlines()[0]);
-    REQUIRE(*system.getPreviousBarline(10) == barline);
+    REQUIRE(!system.getPreviousBarline(0));
+    REQUIRE(*system.getPreviousBarline(1) == system.getBarlines()[0]);
+    REQUIRE(*system.getPreviousBarline(10) == system.getBarlines()[0]);
+    REQUIRE(*system.getPreviousBarline(11) == barline);
 }
 
 TEST_CASE("Score/System/GetNextBarline", "")
@@ -70,11 +70,9 @@ TEST_CASE("Score/System/GetNextBarline", "")
     system.insertBarline(barline);
     system.getBarlines()[2].setPosition(15);
 
-    REQUIRE(*system.getNextBarline(0) == system.getBarlines()[0]);
-    REQUIRE(*system.getNextBarline(5) == barline);
-    REQUIRE(*system.getNextBarline(10) == barline);
-    REQUIRE(*system.getNextBarline(14) == system.getBarlines()[2]);
-    REQUIRE(!system.getNextBarline(16));
+    REQUIRE(*system.getNextBarline(0) == barline);
+    REQUIRE(*system.getNextBarline(10) == system.getBarlines()[2]);
+    REQUIRE(!system.getNextBarline(15));
 }
 
 TEST_CASE("Score/System/TempoMarkers", "")

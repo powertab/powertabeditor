@@ -96,6 +96,10 @@ private slots:
     void moveCaretToPrevSection();
     /// Moves the caret to the last system in the score.
     void moveCaretToLastSection();
+    /// Moves the caret to the next bar after the current position.
+    void moveCaretToNextBar();
+    /// Moves the caret to the last bar before the current position.
+    void moveCaretToPrevBar();
 
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
@@ -138,20 +142,20 @@ private:
     Command *myExitCommand;
 
     QMenu *myPositionMenu;
-
     QMenu *myPositionSectionMenu;
     Command *myFirstSectionCommand;
     Command *myNextSectionCommand;
     Command *myPrevSectionCommand;
     Command *myLastSectionCommand;
-
     QMenu *myPositionStaffMenu;
     Command *myStartPositionCommand;
     Command *myNextPositionCommand;
     Command *myPrevPositionCommand;
     Command *myNextStringCommand;
     Command *myPrevStringCommand;
-    Command *myLastPositionCommand;
+    Command *myLastPositionCommand;    
+    Command *myNextBarCommand;
+    Command *myPrevBarCommand;
 
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
@@ -200,16 +204,9 @@ private slots:
     bool moveCaretLeft();
     void moveCaretDown();
     void moveCaretUp();
-    void moveCaretToStart();
-    void moveCaretToEnd();
-    bool moveCaretToPosition(quint8 position);
-    bool moveCaretToSystem(quint32 system);
 
     bool moveCaretToNextStaff();
-    bool moveCaretToPrevStaff();
-
-    void moveCaretToNextBar();
-    void moveCaretToPrevBar();
+    bool moveCaretToPrevStaff();    
 
     void gotoBarline();
     void gotoRehearsalSign();
@@ -279,9 +276,7 @@ private:
     Command* gotoRehearsalSignAct;
 
     Command* nextStaffAct; // navigate to the next staff in the system
-    Command* prevStaffAct; // navigate to the previous staff in the system
-    Command* nextBarAct; // navigate to the first non-bar pos in the next bar
-    Command* prevBarAct; // navigate to the first non-bar pos in the prev bar
+    Command* prevStaffAct; // navigate to the previous staff in the system    
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
     Command* shiftTabNumDown;

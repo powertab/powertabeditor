@@ -86,7 +86,7 @@ const Barline *System::getPreviousBarline(int position) const
 {
     BOOST_REVERSE_FOREACH(const Barline &barline, myBarlines)
     {
-        if (barline.getPosition() <= position)
+        if (barline.getPosition() < position)
             return &barline;
     }
 
@@ -97,7 +97,7 @@ const Barline *System::getNextBarline(int position) const
 {
     BOOST_FOREACH(const Barline &barline, myBarlines)
     {
-        if (barline.getPosition() >= position)
+        if (barline.getPosition() > position)
             return &barline;
     }
 

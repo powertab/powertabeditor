@@ -397,7 +397,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         if (endX == 0)
         {
             endX = layout.getPositionX(system.getNextBarline(
-                                    ending.getPosition() + 1)->getPosition());
+                                    ending.getPosition())->getPosition());
         }
 
         // Ensure that the line doesn't extend past the edge of the system.
