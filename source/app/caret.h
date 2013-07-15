@@ -42,6 +42,15 @@ public:
     /// Moves the caret to the last position in the staff.
     void moveToEndPosition();
 
+    /// Moves the caret up/down by the given number of systems.
+    void moveSystem(int offset);
+
+    /// Moves the caret to the first system in the score.
+    void moveToFirstSystem();
+
+    /// Moves the caret to the last system in the score.
+    void moveToLastSystem();
+
     typedef boost::signals2::signal<void ()> LocationChangedSlot;
     boost::signals2::connection subscribeToChanges(
             const LocationChangedSlot::slot_type &subscriber) const;
@@ -49,6 +58,8 @@ public:
 private:
     /// Returns the last valid position in the system.
     int getLastPosition() const;
+    /// Returns the last valid system index in the score.
+    int getLastSystemIndex() const;
 
     ScoreLocation myLocation;
 

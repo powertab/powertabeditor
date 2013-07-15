@@ -31,47 +31,9 @@ class FileFormatManager;
 class RecentFiles;
 class ScoreArea;
 
-#if 0
-// the sigfwd library allows for connecting Qt signals directly to
-// C++ functions & functors, and supports boost::bind for binding arguments to slots
-#include <boost/bind.hpp>
-#include <sigfwd/sigfwd.hpp>
-
-#include <boost/scoped_ptr.hpp>
-#include <actions/undomanager.h>
-#include <actions/toggleproperty.h>
-#include <app/scorearea.h>
-#include <painters/caret.h>
-
-class QTabWidget;
-class QStackedWidget;
-class SkinManager;
-class Toolbox;
-class QSplitter;
-class MidiPlayer;
-class QEvent;
-class Note;
-class Position;
-class DocumentManager;
-class FileFormatManager;
-class FileFormat;
-class Command;
-class Caret;
-class PlaybackWidget;
-class SettingsPubSub;
-class SystemLocation;
-class TuningDictionary;
-class Mixer;
-#endif
-
 class PowerTabEditor : public QMainWindow
 {
     Q_OBJECT
-
-#if 0
-    friend class NotePage;
-    friend class ScorePage;
-#endif
 
 public:
     PowerTabEditor();
@@ -126,6 +88,14 @@ private slots:
     void moveCaretUp();
     /// Moves the caret to the last position in the staff.
     void moveCaretToEnd();
+    /// Moves the caret to the first system in the score.
+    void moveCaretToFirstSection();
+    /// Moves the caret to the next system in the score.
+    void moveCaretToNextSection();
+    /// Moves the caret to the previous system in the score.
+    void moveCaretToPrevSection();
+    /// Moves the caret to the last system in the score.
+    void moveCaretToLastSection();
 
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
@@ -168,6 +138,13 @@ private:
     Command *myExitCommand;
 
     QMenu *myPositionMenu;
+
+    QMenu *myPositionSectionMenu;
+    Command *myFirstSectionCommand;
+    Command *myNextSectionCommand;
+    Command *myPrevSectionCommand;
+    Command *myLastSectionCommand;
+
     QMenu *myPositionStaffMenu;
     Command *myStartPositionCommand;
     Command *myNextPositionCommand;
@@ -231,11 +208,6 @@ private slots:
     bool moveCaretToNextStaff();
     bool moveCaretToPrevStaff();
 
-    void moveCaretToFirstSection();
-    bool moveCaretToNextSection();
-    bool moveCaretToPrevSection();
-    void moveCaretToLastSection();
-    
     void moveCaretToNextBar();
     void moveCaretToPrevBar();
 
@@ -299,12 +271,6 @@ private:
     QMenu* playbackMenu;
     Command* playPauseAct;
 
-    QMenu* positionSectionMenu; // menu options for navigating between sections
-    // navigate to the first, next, previous, or last section in the score
-    Command* firstSectionAct;
-    Command* nextSectionAct;
-    Command* prevSectionAct;
-    Command* lastSectionAct;
     Command* shiftForwardAct;
     Command* shiftBackwardAct;
     Command* clearNoteAct; // clears the active note

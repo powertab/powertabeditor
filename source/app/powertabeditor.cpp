@@ -476,6 +476,26 @@ void PowerTabEditor::moveCaretToEnd()
     getCaret().moveToEndPosition();
 }
 
+void PowerTabEditor::moveCaretToFirstSection()
+{
+    getCaret().moveToFirstSystem();
+}
+
+void PowerTabEditor::moveCaretToNextSection()
+{
+    getCaret().moveSystem(1);
+}
+
+void PowerTabEditor::moveCaretToPrevSection()
+{
+    getCaret().moveSystem(-1);
+}
+
+void PowerTabEditor::moveCaretToLastSection()
+{
+    getCaret().moveToLastSystem();
+}
+
 QString PowerTabEditor::getApplicationName() const
 {
     QString name = QString("%1 %2 Beta").arg(
@@ -568,23 +588,34 @@ void PowerTabEditor::createCommands()
     playPauseAct = new Command(tr("Play"), "PlayPause.Play", Qt::Key_Space, this);
     connect(playPauseAct, SIGNAL(triggered()), this, SLOT(startStopPlayback()));
 
-    // Section navigation actions
-    firstSectionAct = new Command(tr("First Section"), "Section.FirstSection",
-                                  QKeySequence::MoveToStartOfDocument, this);
-    connect(firstSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToFirstSection()));
+#endif
+    // Section navigation actions.
+    myFirstSectionCommand = new Command(tr("First Section"),
+                                        "Section.FirstSection",
+                                        QKeySequence::MoveToStartOfDocument,
+                                        this);
+    connect(myFirstSectionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToFirstSection()));
 
-    nextSectionAct = new Command(tr("Next Section"), "Section.NextSection",
-                                 QKeySequence::MoveToNextPage, this);
-    connect(nextSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToNextSection()));
+    myNextSectionCommand = new Command(tr("Next Section"),
+                                       "Section.NextSection",
+                                       QKeySequence::MoveToNextPage, this);
+    connect(myNextSectionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToNextSection()));
 
-    prevSectionAct = new Command(tr("Previous Section"), "Section.PreviousSection",
-                                 QKeySequence::MoveToPreviousPage, this);
-    connect(prevSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToPrevSection()));
+    myPrevSectionCommand = new Command(tr("Previous Section"),
+                                       "Section.PreviousSection",
+                                       QKeySequence::MoveToPreviousPage, this);
+    connect(myPrevSectionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToPrevSection()));
 
-    lastSectionAct = new Command(tr("Last Section"), "Section.LastSection",
-                                 QKeySequence::MoveToEndOfDocument, this);
-    connect(lastSectionAct, SIGNAL(triggered()), this, SLOT(moveCaretToLastSection()));
+    myLastSectionCommand = new Command(tr("Last Section"),
+                                       "Section.LastSection",
+                                       QKeySequence::MoveToEndOfDocument, this);
+    connect(myLastSectionCommand, SIGNAL(triggered()), this,
+            SLOT(moveCaretToLastSection()));
 
+#if 0
     shiftForwardAct = new Command(tr("Shift Forward"), "Position.ShiftForward",
                                   QKeySequence(Qt::Key_Insert), this);
     connect(shiftForwardAct, SIGNAL(triggered()), this, SLOT(shiftForward()));
@@ -592,9 +623,9 @@ void PowerTabEditor::createCommands()
     shiftBackwardAct = new Command(tr("Shift Backward"), "Position.ShiftBackward",
                                    QKeySequence(Qt::SHIFT + Qt::Key_Insert), this);
     connect(shiftBackwardAct, SIGNAL(triggered()), this, SLOT(shiftBackward()));
+#endif
 
     // Position-related actions.
-#endif
     myStartPositionCommand = new Command(tr("Move to &Start"),
                                          "Staff.MoveToStart",
                                          QKeySequence::MoveToStartOfLine, this);
@@ -1121,13 +1152,12 @@ void PowerTabEditor::createMenus()
 #endif
     // Position Menu.
     myPositionMenu = menuBar()->addMenu(tr("&Position"));
-#if 0
-    positionSectionMenu = positionMenu->addMenu(tr("&Section"));
-    positionSectionMenu->addAction(firstSectionAct);
-    positionSectionMenu->addAction(nextSectionAct);
-    positionSectionMenu->addAction(prevSectionAct);
-    positionSectionMenu->addAction(lastSectionAct);
-#endif
+    myPositionSectionMenu = myPositionMenu->addMenu(tr("&Section"));
+    myPositionSectionMenu->addAction(myFirstSectionCommand);
+    myPositionSectionMenu->addAction(myNextSectionCommand);
+    myPositionSectionMenu->addAction(myPrevSectionCommand);
+    myPositionSectionMenu->addAction(myLastSectionCommand);
+
     myPositionStaffMenu = myPositionMenu->addMenu(tr("&Staff"));
     myPositionStaffMenu->addAction(myStartPositionCommand);
     myPositionStaffMenu->addAction(myNextPositionCommand);
@@ -1644,26 +1674,6 @@ bool PowerTabEditor::moveCaretToSystem(quint32 system)
 bool PowerTabEditor::moveCaretToPosition(quint8 position)
 {
     return getCurrentScoreArea()->getCaret()->setCurrentPositionIndex(position);
-}
-
-void PowerTabEditor::moveCaretToFirstSection()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretToFirstSection();
-}
-
-bool PowerTabEditor::moveCaretToNextSection()
-{
-    return getCurrentScoreArea()->getCaret()->moveCaretSection(1);;
-}
-
-bool PowerTabEditor::moveCaretToPrevSection()
-{
-    return getCurrentScoreArea()->getCaret()->moveCaretSection(-1);
-}
-
-void PowerTabEditor::moveCaretToLastSection()
-{
-    getCurrentScoreArea()->getCaret()->moveCaretToLastSection();
 }
 
 bool PowerTabEditor::moveCaretToNextStaff()

@@ -18,6 +18,7 @@
 #include "caret.h"
 
 #include <boost/algorithm/clamp.hpp>
+#include <score/score.h>
 #include <score/system.h>
 
 Caret::Caret(const Score &score)
@@ -59,6 +60,32 @@ void Caret::moveToEndPosition()
     onLocationChanged();
 }
 
+void Caret::moveSystem(int offset)
+{
+    const int prevSystem = myLocation.getSystemIndex();
+    myLocation.setSystemIndex(boost::algorithm::clamp(
+            myLocation.getSystemIndex() + offset, 0, getLastSystemIndex()));
+
+    if (myLocation.getSystemIndex() != prevSystem)
+    {
+        myLocation.setStaffIndex(0);
+        myLocation.setPositionIndex(0);
+        myLocation.setString(0);
+
+        onLocationChanged();
+    }
+}
+
+void Caret::moveToFirstSystem()
+{
+    moveSystem(-myLocation.getSystemIndex());
+}
+
+void Caret::moveToLastSystem()
+{
+    moveSystem(getLastSystemIndex() - myLocation.getSystemIndex());
+}
+
 boost::signals2::connection Caret::subscribeToChanges(
         const LocationChangedSlot::slot_type &subscriber) const
 {
@@ -69,4 +96,9 @@ int Caret::getLastPosition() const
 {
     // There must be at least one position space to the left of the last bar.
     return myLocation.getSystem().getBarlines().back().getPosition() - 2;
+}
+
+int Caret::getLastSystemIndex() const
+{
+    return myLocation.getScore().getSystems().size() - 1;
 }
