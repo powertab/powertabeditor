@@ -72,7 +72,7 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
         renderedSystem->setPos(0, height);
         myRenderedSystems << renderedSystem;
         myScene.addItem(renderedSystem);
-        height += renderedSystem->boundingRect().bottom() + SYSTEM_SPACING;
+        height += renderedSystem->boundingRect().height() + SYSTEM_SPACING;
 #if 0
         renderer.connectSignals();
 #endif
@@ -87,6 +87,45 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
 
     qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
     qDebug() << "Rendered " << myScene.items().size() << "items";
+}
+
+void ScoreArea::redrawSystem(int index)
+{
+    // Delete and remove the system from the scene.
+    delete myRenderedSystems.takeAt(index);
+
+    const Score &score = myDocument->getScore();
+    SystemRenderer render(this, score);
+    QGraphicsItem *newSystem = render(score.getSystems()[index], index,
+                                        myViewType);
+
+    double height = 0;
+    if (index > 0)
+    {
+        height = myRenderedSystems.at(index - 1)->boundingRect().height() +
+                SYSTEM_SPACING;
+    }
+
+    newSystem->setPos(0, height);
+    height += newSystem->boundingRect().height() + SYSTEM_SPACING;
+#if 0
+    renderer.connectSignals();
+#endif
+
+    myScene.addItem(newSystem);
+    myRenderedSystems.insert(index, newSystem);
+
+    // Shift the following systems.
+    for (int i = index + 1; i < myRenderedSystems.size(); ++i)
+    {
+        QGraphicsItem *system = myRenderedSystems[i];
+        system->setPos(0, height);
+        height += system->boundingRect().height() + SYSTEM_SPACING;
+    }
+
+#if 0
+    caret->updatePosition();
+#endif
 }
 
 boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getKeySignaturePubSub() const
@@ -174,43 +213,6 @@ void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
     // Render each score
     // Only worry about the guitar score so far
     renderScore(document->GetScore(scoreIndex), lineSpacing);
-}
-
-/// Updates the system after changes have been made
-/// @param systemIndex The index of the system that was modified
-void ScoreArea::updateSystem(const uint32_t systemIndex)
-{
-    if (redrawOnNextRefresh)
-    {
-        redrawOnNextRefresh = false;
-        renderDocument(document);
-    }
-    else
-    {
-        // delete and remove the system from the scene
-        delete systemList.takeAt(systemIndex);
-
-        // redraw the system
-        const Score* currentScore = document->GetScore(scoreIndex);
-        
-        SystemRenderer renderer(this, currentScore,
-                                document->GetTablatureStaffLineSpacing());
-        QGraphicsItem* newSystem = renderer(currentScore->GetSystem(systemIndex));
-        renderer.connectSignals();
-        
-        scene.addItem(newSystem);
-        systemList.insert(systemIndex, newSystem);
-
-        // Adjust the position of subsequent systems
-        for (int i = systemIndex; i < systemList.size(); i++)
-        {
-            QGraphicsItem* systemPainter = systemList.at(i);
-            const Rect currentSystemRect = currentScore->GetSystem(i)->GetRect();
-            systemPainter->setPos(currentSystemRect.GetLeft(), currentSystemRect.GetTop());
-        }
-
-        caret->updatePosition();
-    }
 }
 
 /// Used to request that a full redraw is performed when the ScoreArea is next updated

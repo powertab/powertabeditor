@@ -42,6 +42,10 @@ public:
 
     void renderDocument(const Document &document, Staff::ViewType view);
 
+    /// Redraws the specified system, and shifts the following systems as
+    /// necessary.
+    void redrawSystem(int index);
+
 #if 0
     ~ScoreArea();
 #endif

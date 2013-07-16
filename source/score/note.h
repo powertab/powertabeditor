@@ -80,6 +80,9 @@ public:
     /// Removes the tapped harmonic for this note.
     void clearTappedHarmonic();
 
+    static const int MIN_FRET_NUMBER;
+    static const int MAX_FRET_NUMBER;
+
 private:
     int myString;
     int myFretNumber;

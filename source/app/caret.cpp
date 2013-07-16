@@ -23,7 +23,7 @@
 #include <score/score.h>
 #include <score/system.h>
 
-Caret::Caret(const Score &score)
+Caret::Caret(Score &score)
     : myLocation(score),
       mySelectionPubSub(boost::make_shared<ScoreLocationPubSub>())
 {

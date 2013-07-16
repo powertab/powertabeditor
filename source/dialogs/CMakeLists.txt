@@ -42,7 +42,7 @@ add_library(ptedialogs
     #tappedharmonicdialog.cpp
     #tempomarkerdialog.cpp
     #timesignaturedialog.cpp
-    #trilldialog.cpp
+    trilldialog.cpp
     #tuningdialog.cpp
     #tuningdictionarydialog.cpp
     #volumeswelldialog.cpp

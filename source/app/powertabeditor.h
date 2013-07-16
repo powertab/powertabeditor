@@ -30,6 +30,8 @@ class DocumentManager;
 class FileFormatManager;
 class RecentFiles;
 class ScoreArea;
+class ScoreLocation;
+class UndoManager;
 
 class PowerTabEditor : public QMainWindow
 {
@@ -76,6 +78,9 @@ private slots:
     /// Launches the preferences dialog.
     void editPreferences();
 
+    /// Redraws only the given system.
+    void redrawSystem(int);
+
     /// Moves the caret to the first position in the staff.
     void moveCaretToStart();
     /// Moves the caret to the right by one position.
@@ -105,6 +110,9 @@ private slots:
     /// Moves the caret to the last bar before the current position.
     void moveCaretToPrevBar();
 
+    /// Adds or removes a trill for the current note.
+    void editTrill();
+
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
     QString getApplicationName() const;
@@ -121,14 +129,20 @@ private:
     void setPreviousDirectory(const QString &fileName);
     /// Sets up the UI for the current document after it has been opened.
     void setupNewTab();
+    /// Updates whether menu items are enabled, checked, etc. depending on the
+    /// current location.
+    void updateCommands();
 
     /// Returns the score area for the active document.
     ScoreArea *getScoreArea();
     /// Returns the caret for the active document.
     Caret &getCaret();
+    /// Returns the location of the caret within the active document.
+    const ScoreLocation &getLocation();
 
     boost::scoped_ptr<DocumentManager> myDocumentManager;
     boost::scoped_ptr<FileFormatManager> myFileFormatManager;
+    boost::scoped_ptr<UndoManager> myUndoManager;
     /// Tracks the last directory that a file was opened from.
     QString myPreviousDirectory;
     RecentFiles *myRecentFiles;
@@ -144,6 +158,10 @@ private:
     Command *myEditShortcutsCommand;
     Command *myEditPreferencesCommand;
     Command *myExitCommand;
+
+    QMenu *myEditMenu;
+    QAction *myUndoAction;
+    QAction *myRedoAction;
 
     QMenu *myPositionMenu;
     QMenu *myPositionSectionMenu;
@@ -163,12 +181,14 @@ private:
     Command *myNextBarCommand;
     Command *myPrevBarCommand;
 
+    QMenu *myTabSymbolsMenu;
+    Command *myTrillCommand;
+
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
     Command *myPrevTabCommand;
 
 #if 0
-    static boost::scoped_ptr<UndoManager> undoManager;
     void registerCaret(Caret* caret);
 
 protected:
@@ -203,7 +223,6 @@ private slots:
     void updateModified(bool);
     void updateActiveVoice(int);
     void openFileInformation();
-    void redrawSystem(int);
     void performFullRedraw();
     void startStopPlayback();
     void rewindPlaybackToStart();
@@ -260,9 +279,6 @@ private:
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
 
-    QMenu* editMenu;
-    QAction* undoAct;
-    QAction* redoAct;
     Command* cutAct;
     Command* copyAct;
     Command* pasteAct;
@@ -348,7 +364,6 @@ private:
     Command* dynamicAct;
     Command* volumeSwellAct;
 
-    QMenu* tabSymbolsMenu;
     Command* hammerPullAct; // add/remove hammer-on or pull-off
     Command* naturalHarmonicAct; // add/remove natural harmonics
     Command* artificialHarmonicAct;
@@ -362,7 +377,6 @@ private:
     Command* arpeggioUpAct;
     Command* arpeggioDownAct;
     Command* tapAct;
-    Command* trillAction; // create or remove a trill
     Command* pickStrokeUpAct;
     Command* pickStrokeDownAct;
 

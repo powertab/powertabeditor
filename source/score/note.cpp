@@ -20,6 +20,9 @@
 #include <ostream>
 #include <stdexcept>
 
+const int Note::MIN_FRET_NUMBER = 0;
+const int Note::MAX_FRET_NUMBER = 29;
+
 Note::Note()
     : myString(0),
       myFretNumber(0),

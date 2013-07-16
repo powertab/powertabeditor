@@ -27,7 +27,7 @@ class ScoreLocationPubSub;
 class Caret
 {
 public:
-    Caret(const Score &score);
+    Caret(Score &score);
 
     const ScoreLocation &getLocation() const;
 

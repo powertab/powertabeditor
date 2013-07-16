@@ -17,17 +17,25 @@
   
 #include "powertabeditor.h"
 
+#include <actions/addtrill.h>
+#include <actions/undomanager.h>
+
 #include <app/caret.h>
 #include <app/command.h>
 #include <app/documentmanager.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
+
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
+
 #include <dialogs/keyboardsettingsdialog.h>
+#include <dialogs/trilldialog.h>
+
 #include <formats/fileformatmanager.h>
+
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFileDialog>
@@ -37,128 +45,11 @@
 #include <QSettings>
 #include <sigfwd/sigfwd.hpp>
 
-#if 0
-#include <QFileDialog>
-#include <QAction>
-#include <QMenuBar>
-#include <QMenu>
-#include <QToolBox>
-#include <QTabWidget>
-#include <QSettings>
-#include <QFileInfo>
-#include <QSplitter>
-#include <QScrollArea>
-#include <QStackedWidget>
-#include <QActionGroup>
-#include <QKeyEvent>
-#include <QEvent>
-
-#include <boost/make_shared.hpp>
-
-#include <app/scorearea.h>
-#include <app/skinmanager.h>
-#include <audio/midiplayer.h>
-#include <app/settings.h>
-#include <app/documentmanager.h>
-#include <app/command.h>
-#include <app/clipboard.h>
-#include <app/pubsub/settingspubsub.h>
-#include <app/pubsub/systemlocationpubsub.h>
-#include <app/tuningdictionary.h>
-
-#include <dialogs/preferencesdialog.h>
-#include <dialogs/chordnamedialog.h>
-#include <dialogs/rehearsalsigndialog.h>
-#include <dialogs/trilldialog.h>
-#include <dialogs/barlinedialog.h>
-#include <dialogs/alternateendingdialog.h>
-#include <dialogs/tappedharmonicdialog.h>
-#include <dialogs/keysignaturedialog.h>
-#include <dialogs/timesignaturedialog.h>
-#include <dialogs/keyboardsettingsdialog.h>
-#include <dialogs/dynamicdialog.h>
-#include <dialogs/volumeswelldialog.h>
-#include <dialogs/irregulargroupingdialog.h>
-#include <dialogs/fileinformationdialog.h>
-#include <dialogs/gotorehearsalsigndialog.h>
-#include <dialogs/tempomarkerdialog.h>
-#include <dialogs/gotobarlinedialog.h>
-#include <dialogs/tuningdictionarydialog.h>
-#include <dialogs/artificialharmonicdialog.h>
-#include <dialogs/directiondialog.h>
-
-#include <powertabdocument/powertabdocument.h>
-#include <powertabdocument/guitar.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/chordtext.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/note.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/systemlocation.h>
-#include <powertabdocument/alternateending.h>
-#include <powertabdocument/dynamic.h>
-
-#include <widgets/mixer/mixer.h>
-#include <widgets/toolbox/toolbox.h>
-#include <widgets/playback/playbackwidget.h>
-
-#include <painters/caret.h>
-
-#include <actions/undomanager.h>
-#include <actions/removechordtext.h>
-#include <actions/addchordtext.h>
-#include <actions/updatenoteduration.h>
-#include <actions/editrehearsalsign.h>
-#include <actions/toggleproperty.h>
-#include <actions/shifttabnumber.h>
-#include <actions/changepositionspacing.h>
-#include <actions/removetrill.h>
-#include <actions/addtrill.h>
-#include <actions/editslideout.h>
-#include <actions/updatetabnumber.h>
-#include <actions/positionshift.h>
-#include <actions/changebarlinetype.h>
-#include <actions/addbarline.h>
-#include <actions/deletebarline.h>
-#include <actions/deleteposition.h>
-#include <actions/removesystem.h>
-#include <actions/addsystem.h>
-#include <actions/addguitar.h>
-#include <actions/addnote.h>
-#include <actions/removealternateending.h>
-#include <actions/addalternateending.h>
-#include <actions/editslideinto.h>
-#include <actions/removetappedharmonic.h>
-#include <actions/addtappedharmonic.h>
-#include <actions/editrest.h>
-#include <actions/editkeysignature.h>
-#include <actions/edittimesignature.h>
-#include <actions/adddynamic.h>
-#include <actions/removedynamic.h>
-#include <actions/removevolumeswell.h>
-#include <actions/addvolumeswell.h>
-#include <actions/addirregulargrouping.h>
-#include <actions/removeirregulargrouping.h>
-#include <actions/edittrackshown.h>
-#include <actions/deletenote.h>
-#include <actions/editfileinformation.h>
-#include <actions/removetempomarker.h>
-#include <actions/addtempomarker.h>
-#include <actions/edithammerpull.h>
-#include <actions/addartificialharmonic.h>
-#include <actions/removeartificialharmonic.h>
-#include <actions/addmusicaldirection.h>
-#include <actions/removemusicaldirection.h>
-
-boost::scoped_ptr<UndoManager> PowerTabEditor::undoManager(new UndoManager);
-
-#endif
-
 PowerTabEditor::PowerTabEditor() :
     QMainWindow(0),
     myDocumentManager(new DocumentManager()),
     myFileFormatManager(new FileFormatManager()),
+    myUndoManager(new UndoManager()),
     myPreviousDirectory(QSettings().value(Settings::APP_PREVIOUS_DIRECTORY,
                                           QDir::homePath()).toString()),
     myRecentFiles(NULL),
@@ -180,10 +71,15 @@ PowerTabEditor::PowerTabEditor() :
 
 #if 0
     skinManager.reset(new SkinManager);
+#endif
 
-    connect(undoManager.get(), SIGNAL(redrawNeeded(int)), this, SLOT(redrawSystem(int)));
-    connect(undoManager.get(), SIGNAL(fullRedrawNeeded()), this, SLOT(performFullRedraw()));
-    connect(undoManager.get(), SIGNAL(cleanChanged(bool)), this, SLOT(updateModified(bool)));
+    connect(myUndoManager.get(), SIGNAL(redrawNeeded(int)), this,
+            SLOT(redrawSystem(int)));
+#if 0
+    connect(myUndoManager.get(), SIGNAL(fullRedrawNeeded()), this,
+            SLOT(performFullRedraw()));
+    connect(myUndoManager.get(), SIGNAL(cleanChanged(bool)), this,
+            SLOT(updateModified(bool)));
 #endif
 
     createCommands();
@@ -301,8 +197,8 @@ void PowerTabEditor::switchTab(int index)
 #if 0
     mixerList->setCurrentIndex(index);
     playbackToolbarList->setCurrentIndex(index);
-    undoManager->setActiveStackIndex(index);
 #endif
+    myUndoManager->setActiveStackIndex(index);
 
     updateWindowTitle();
 }
@@ -335,9 +231,9 @@ bool PowerTabEditor::closeTab(int index)
     {
         startStopPlayback();
     }
-
-    undoManager->removeStack(index);
 #endif
+
+    myUndoManager->removeStack(index);
     myDocumentManager->removeDocument(index);
     delete myTabWidget->widget(index);
 #if 0
@@ -347,8 +243,8 @@ bool PowerTabEditor::closeTab(int index)
     // Get the index of the tab that we will now switch to.
     const int currentIndex = myTabWidget->currentIndex();
 
+    myUndoManager->setActiveStackIndex(currentIndex);
 #if 0
-    undoManager->setActiveStackIndex(currentIndex);
     mixerList->setCurrentIndex(currentIndex);
     playbackToolbarList->setCurrentIndex(currentIndex);
 #endif
@@ -446,6 +342,17 @@ void PowerTabEditor::editPreferences()
 #endif
 }
 
+void PowerTabEditor::redrawSystem(int index)
+{
+#if 1
+    getScoreArea()->redrawSystem(index);
+#else
+    caret->adjustToValidLocation();
+    // Update the status of all actions
+    updateActions();
+#endif
+}
+
 void PowerTabEditor::moveCaretToStart()
 {
     getCaret().moveToStartPosition();
@@ -516,6 +423,29 @@ void PowerTabEditor::moveCaretToPrevBar()
     getCaret().moveToPrevBar();
 }
 
+void PowerTabEditor::editTrill()
+{
+    const ScoreLocation &location = getLocation();
+    const Note *note = location.getNote();
+    Q_ASSERT(note);
+
+    if (note->hasTrill())
+    {
+        // TODO - remove trill.
+    }
+    else
+    {
+        TrillDialog dialog(this, note->getFretNumber());
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(new AddTrill(location, dialog.getTrilledFret()),
+                                location.getSystemIndex());
+        }
+        else
+            myTrillCommand->setChecked(false);
+    }
+}
+
 QString PowerTabEditor::getApplicationName() const
 {
     QString name = QString("%1 %2 Beta").arg(
@@ -580,15 +510,15 @@ void PowerTabEditor::createCommands()
     myExitCommand = new Command(tr("&Quit"), "File.Quit", QKeySequence::Quit,
                                 this);
     connect(myExitCommand, SIGNAL(triggered()), this, SLOT(close()));
+
+    // Undo / Redo actions.
+    myUndoAction = myUndoManager->createUndoAction(this, tr("&Undo"));
+    myUndoAction->setShortcuts(QKeySequence::Undo);
+
+    myRedoAction = myUndoManager->createRedoAction(this, tr("&Redo"));
+    myRedoAction->setShortcuts(QKeySequence::Redo);
+
 #if 0
-
-    // Redo / Undo actions
-    undoAct = undoManager->createUndoAction(this, tr("&Undo"));
-    undoAct->setShortcuts(QKeySequence::Undo);
-
-    redoAct = undoManager->createRedoAction(this, tr("&Redo"));
-    redoAct->setShortcuts(QKeySequence::Redo);
-
     // Copy/Paste
     cutAct = new Command(tr("Cut"), "Edit.Cut", QKeySequence::Cut, this);
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSelectedNotes()));
@@ -1076,10 +1006,12 @@ void PowerTabEditor::createCommands()
     connectToggleProperty<Position>(tapAct, &getSelectedPositions,
                                     &Position::HasTap, &Position::SetTap);
 
-    trillAction = new Command(tr("Trill..."), "TabSymbols.Trill",
-                              QKeySequence(), this);
-    trillAction->setCheckable(true);
-    connect(trillAction, SIGNAL(triggered()), this, SLOT(editTrill()));
+#endif
+    myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
+                                 QKeySequence(), this);
+    myTrillCommand->setCheckable(true);
+    connect(myTrillCommand, SIGNAL(triggered()), this, SLOT(editTrill()));
+#if 0
 
     pickStrokeUpAct = new Command(tr("Pickstroke Up"), "TabSymbols.PickstrokeUp", QKeySequence(), this);
     pickStrokeUpAct->setCheckable(true);
@@ -1156,11 +1088,12 @@ void PowerTabEditor::createMenus()
     myFileMenu->addAction(myEditPreferencesCommand);
     myFileMenu->addSeparator();
     myFileMenu->addAction(myExitCommand);
+
+    // Edit Menu.
+    myEditMenu = menuBar()->addMenu(tr("&Edit"));
+    myEditMenu->addAction(myUndoAction);
+    myEditMenu->addAction(myRedoAction);
 #if 0
-    // Edit Menu
-    editMenu = menuBar()->addMenu(tr("&Edit"));
-    editMenu->addAction(undoAct);
-    editMenu->addAction(redoAct);
     editMenu->addSeparator();
     editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
@@ -1281,8 +1214,10 @@ void PowerTabEditor::createMenus()
     musicSymbolsMenu->addAction(dynamicAct);
     musicSymbolsMenu->addAction(volumeSwellAct);
 
+#endif
     // Tab Symbols Menu
-    tabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
+    myTabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
+#if 0
     tabSymbolsMenu->addAction(hammerPullAct);
     tabSymbolsMenu->addAction(naturalHarmonicAct);
     tabSymbolsMenu->addAction(artificialHarmonicAct);
@@ -1311,7 +1246,9 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(palmMuteAct);
     tabSymbolsMenu->addAction(tremoloPickingAct);
-    tabSymbolsMenu->addAction(trillAction);
+#endif
+    myTabSymbolsMenu->addAction(myTrillCommand);
+#if 0
     tabSymbolsMenu->addAction(tapAct);
     tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(arpeggioUpAct);
@@ -1361,11 +1298,13 @@ void PowerTabEditor::setupNewTab()
     Q_ASSERT(myDocumentManager->hasOpenDocuments());
     Document &doc = myDocumentManager->getCurrentDocument();
 
+    doc.getCaret().subscribeToChanges(
+                boost::bind(&PowerTabEditor::updateCommands, this));
+
     ScoreArea *scorearea = new ScoreArea(this);
     scorearea->renderDocument(doc, Staff::GuitarView);
 #if 0
     score->installEventFilter(this);
-    score->renderDocument(doc);
 
     score->timeSignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editTimeSignature, this, _1));
@@ -1373,9 +1312,9 @@ void PowerTabEditor::setupNewTab()
                 boost::bind(&PowerTabEditor::editKeySignature, this, _1));
     score->barlinePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editBarline, this, _1));
-
-    undoManager->addNewUndoStack();
 #endif
+
+    myUndoManager->addNewUndoStack();
 
     QString filename = "Untitled";
     if (doc.hasFilename())
@@ -1450,11 +1389,20 @@ void PowerTabEditor::setupNewTab()
         updateScoreAreaActions(true);
     }
 
-    updateActions(); // update available actions for the current position
-
-    getCurrentScoreArea()->setFocus();
 #endif
+    updateCommands();
+    scorearea->setFocus();
+
     qDebug() << "Tab opened in" << timer.elapsed() << "seconds";
+}
+
+void PowerTabEditor::updateCommands()
+{
+    const ScoreLocation &location = getLocation();
+    const Note *note = location.getNote();
+
+    myTrillCommand->setEnabled(note);
+    myTrillCommand->setChecked(note && note->hasTrill());
 }
 
 ScoreArea *PowerTabEditor::getScoreArea()
@@ -1467,24 +1415,12 @@ Caret &PowerTabEditor::getCaret()
     return myDocumentManager->getCurrentDocument().getCaret();
 }
 
-#if 0
-/// Redraws the specified system.
-void PowerTabEditor::redrawSystem(int index)
+const ScoreLocation &PowerTabEditor::getLocation()
 {
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    caret->adjustToValidLocation();
-    Score* score = caret->getCurrentScore();
-
-    // Update the data model.
-    caret->getCurrentScore()->UpdateSystemHeight(score->GetSystem(index));
-
-    // Update the score area.
-    getCurrentScoreArea()->updateSystem(index);
-
-    // Update the status of all actions
-    updateActions();
+    return getCaret().getLocation();
 }
 
+#if 0
 /// Redraw the entire score.
 void PowerTabEditor::performFullRedraw()
 {
@@ -2093,31 +2029,6 @@ void PowerTabEditor::editChordName()
                           caret->getCurrentSystemIndex());
     }
 
-}
-
-// Add/Remove the trill at the current position
-void PowerTabEditor::editTrill()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Note* currentNote = caret->getCurrentNote();
-
-    if (currentNote->HasTrill())
-    {
-        undoManager->push(new RemoveTrill(currentNote), caret->getCurrentSystemIndex());
-    }
-    else // add a new trill
-    {
-        TrillDialog trillDialog(this, currentNote);
-        if (trillDialog.exec() == QDialog::Accepted)
-        {
-            undoManager->push(new AddTrill(currentNote, trillDialog.getTrill()),
-                              caret->getCurrentSystemIndex());
-        }
-        else
-        {
-            trillAction->setChecked(false);
-        }
-    }
 }
 
 /// Add/Remove a tapped harmonic at the current note

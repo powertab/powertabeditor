@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef UNDOMANAGER_H
-#define UNDOMANAGER_H
+#ifndef ACTIONS_UNDOMANAGER_H
+#define ACTIONS_UNDOMANAGER_H
 
 #include <QUndoGroup>
 #include <QUndoStack>
@@ -28,14 +28,20 @@ class QUndoCommand;
 class UndoManager : public QUndoGroup
 {
     Q_OBJECT
+
 public:
     explicit UndoManager(QObject *parent = 0);
 
     void addNewUndoStack();
     void setActiveStackIndex(int index);
     void removeStack(int index);
-    void push(QUndoCommand* cmd, int affectedSystem);
-    void beginMacro(const QString& text);
+
+    /// Pushes an undo command onto the active stack.
+    /// @param affectedSystem Index of the system that is modified by this action.
+    /// Use -1 for actions that affect all systems.
+    void push(QUndoCommand *cmd, int affectedSystem);
+
+    void beginMacro(const QString &text);
     void endMacro();
 
     static const int AFFECTS_ALL_SYSTEMS = -1;
@@ -45,7 +51,9 @@ signals:
     void redrawNeeded(int);
 
 private:
-    void push(QUndoCommand* cmd);
+    /// Pushes the QUndoCommand onto the active stack.
+    void push(QUndoCommand *cmd);
+
     void onSystemChanged(int affectedSystem);
 
     boost::ptr_vector<QUndoStack> undoStacks;
@@ -54,6 +62,7 @@ private:
 class SignalOnRedo : public QObject, public QUndoCommand
 {
     Q_OBJECT
+
 public:
     virtual void redo();
 
@@ -64,6 +73,7 @@ signals:
 class SignalOnUndo: public QObject, public QUndoCommand
 {
     Q_OBJECT
+
 public:
     virtual void undo();
 
@@ -71,4 +81,4 @@ signals:
     void triggered();
 };
 
-#endif // UNDOMANAGER_H
+#endif

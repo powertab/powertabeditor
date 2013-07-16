@@ -15,34 +15,32 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TRILLDIALOG_H
-#define TRILLDIALOG_H
+#ifndef DIALOGS_TRILLDIALOG_H
+#define DIALOGS_TRILLDIALOG_H
 
 #include <QDialog>
-#include <boost/cstdint.hpp>
+#include <boost/scoped_ptr.hpp>
 
 namespace Ui {
 class TrillDialog;
 }
-
-class Note;
 
 class TrillDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit TrillDialog(QWidget* parent, const Note* note);
+    explicit TrillDialog(QWidget *parent, int originalFret);
     ~TrillDialog();
 
-    uint8_t getTrill() const;
+    int getTrilledFret() const;
 
 public slots:
     void accept();
 
 private:
     Ui::TrillDialog *ui;
-    const Note* note;
+    const int myOriginalFret;
 };
 
-#endif // TRILLDIALOG_H
+#endif

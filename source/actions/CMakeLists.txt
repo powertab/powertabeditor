@@ -44,7 +44,7 @@ add_library(pteactions
     #removetrill.cpp
     #removevolumeswell.cpp
     #shifttabnumber.cpp
-    #undomanager.cpp
+    undomanager.cpp
     #updatenoteduration.cpp
     #updatetabnumber.cpp
 )

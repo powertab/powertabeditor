@@ -20,16 +20,16 @@
 
 #include <QMessageBox>
 
-#include <powertabdocument/note.h>
+#include <score/note.h>
 
-TrillDialog::TrillDialog(QWidget* parent, const Note* note) :
-    QDialog(parent),
-    ui(new Ui::TrillDialog),
-    note(note)
+TrillDialog::TrillDialog(QWidget *parent, int originalFret)
+    : QDialog(parent),
+      ui(new Ui::TrillDialog),
+      myOriginalFret(originalFret)
 {
     ui->setupUi(this);
 
-    ui->currentFretSpinBox->setValue(note->GetFretNumber());
+    ui->currentFretSpinBox->setValue(originalFret);
 
     ui->trillFretSpinBox->setMinimum(Note::MIN_FRET_NUMBER);
     ui->trillFretSpinBox->setMaximum(Note::MAX_FRET_NUMBER);
@@ -43,16 +43,14 @@ TrillDialog::~TrillDialog()
     delete ui;
 }
 
-uint8_t TrillDialog::getTrill() const
+int TrillDialog::getTrilledFret() const
 {
     return ui->trillFretSpinBox->value();
 }
 
 void TrillDialog::accept()
 {
-    const int selectedFret = ui->trillFretSpinBox->value();
-
-    if (!note->IsValidTrill(selectedFret))
+    if (getTrilledFret() == myOriginalFret)
     {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
