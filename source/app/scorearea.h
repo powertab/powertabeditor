@@ -49,6 +49,7 @@ public:
     boost::shared_ptr<ScoreLocationPubSub> getKeySignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
+    boost::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
 
 private:
     QGraphicsScene myScene;

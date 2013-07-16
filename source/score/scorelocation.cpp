@@ -25,6 +25,7 @@ ScoreLocation::ScoreLocation(const Score &score, int system, int staff,
       mySystemIndex(system),
       myStaffIndex(staff),
       myPositionIndex(position),
+      mySelectionStart(position),
       myVoice(voice),
       myString(string)
 {
@@ -43,6 +44,16 @@ int ScoreLocation::getPositionIndex() const
 void ScoreLocation::setPositionIndex(int position)
 {
     myPositionIndex = position;
+}
+
+int ScoreLocation::getSelectionStart() const
+{
+    return mySelectionStart;
+}
+
+void ScoreLocation::setSelectionStart(int position)
+{
+    mySelectionStart = position;
 }
 
 int ScoreLocation::getStaffIndex() const

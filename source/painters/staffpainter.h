@@ -18,38 +18,38 @@
 #ifndef PAINTERS_STAFFPAINTER_H
 #define PAINTERS_STAFFPAINTER_H
 
+#include <boost/shared_ptr.hpp>
 #include <painters/layoutinfo.h>
 #include <QGraphicsItem>
+#include <score/scorelocation.h>
 
+class ScoreLocation;
+class ScoreLocationPubSub;
 class Staff;
 
 class StaffPainter : public QGraphicsItem
 {
 public:
-    StaffPainter(const LayoutConstPtr &layout);
+    StaffPainter(const LayoutConstPtr &layout,
+                 const ScoreLocation &location,
+                 boost::shared_ptr<ScoreLocationPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *);
     virtual QRectF boundingRect() const { return myBounds; }
 
-#if 0
-signals:
-    void selectionUpdated(int selectionStart, int selectionEnd);
-
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *);
-#endif
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
 private:
     void drawStaffLines(QPainter *painter, int lineCount, double lineSpacing,
                         double startHeight);
-
-#if 0
-    inline int findClosestPosition(qreal click, qreal relativePos, qreal spacing);
-#endif
+    int getPositionFromX(double x) const;
 
     LayoutConstPtr myLayout;
+    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    ScoreLocation myLocation;
     const QRectF myBounds;
 };
 

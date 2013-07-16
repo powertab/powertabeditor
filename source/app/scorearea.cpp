@@ -104,6 +104,11 @@ boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getBarlinePubSub() const
     return myBarlineClicked;
 }
 
+boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getSelectionPubSub() const
+{
+    return myDocument->getCaret().getSelectionPubSub();
+}
+
 #else
 ScoreArea::ScoreArea(PowerTabEditor *editor) :
     editor(editor),

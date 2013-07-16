@@ -17,13 +17,18 @@
 
 #include "caret.h"
 
+#include <app/pubsub/scorelocationpubsub.h>
 #include <boost/algorithm/clamp.hpp>
+#include <boost/make_shared.hpp>
 #include <score/score.h>
 #include <score/system.h>
 
 Caret::Caret(const Score &score)
-    : myLocation(score)
+    : myLocation(score),
+      mySelectionPubSub(boost::make_shared<ScoreLocationPubSub>())
 {
+    mySelectionPubSub->subscribe(
+                boost::bind(&Caret::handleSelectionChanged, this, _1));
 }
 
 const ScoreLocation &Caret::getLocation() const
@@ -127,6 +132,11 @@ boost::signals2::connection Caret::subscribeToChanges(
     return onLocationChanged.connect(subscriber);
 }
 
+boost::shared_ptr<ScoreLocationPubSub> Caret::getSelectionPubSub() const
+{
+    return mySelectionPubSub;
+}
+
 int Caret::getLastPosition() const
 {
     // There must be at least one position space to the left of the last bar.
@@ -142,6 +152,7 @@ void Caret::moveToPosition(int position)
 {
     myLocation.setPositionIndex(boost::algorithm::clamp(position, 0,
                                                         getLastPosition()));
+    myLocation.setSelectionStart(myLocation.getPositionIndex());
 
     onLocationChanged();
 }
@@ -164,8 +175,20 @@ void Caret::moveToSystem(int system, bool keepStaff)
         }
 
         myLocation.setPositionIndex(0);
+        myLocation.setSelectionStart(0);
         myLocation.setString(0);
 
         onLocationChanged();
     }
+}
+
+void Caret::handleSelectionChanged(const ScoreLocation &location)
+{
+    myLocation.setSystemIndex(location.getSystemIndex());
+    myLocation.setStaffIndex(location.getStaffIndex());
+    myLocation.setPositionIndex(location.getPositionIndex());
+    myLocation.setSelectionStart(location.getSelectionStart());
+    myLocation.setString(location.getString());
+
+    onLocationChanged();
 }

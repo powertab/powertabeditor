@@ -88,6 +88,7 @@ struct LayoutInfo
     double getTabStaffHeight() const;
 
     double getPositionSpacing() const;
+    int getNumPositions() const;
     double getFirstPositionX() const;
     double getPositionX(int position) const;
 
@@ -159,6 +160,7 @@ private:
     const System &mySystem;
     const Staff &myStaff;
     double myPositionSpacing;
+    int myNumPositions;
 
     std::vector<SymbolGroup> myTabStaffBelowSymbols;
     double myTabStaffBelowSpacing;

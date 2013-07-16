@@ -17,78 +17,50 @@
   
 #include "staffpainter.h"
 
+#include <app/pubsub/scorelocationpubsub.h>
+#include <cmath>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
-StaffPainter::StaffPainter(const LayoutConstPtr &layout)
+StaffPainter::StaffPainter(const LayoutConstPtr &layout,
+                           const ScoreLocation &location,
+                           boost::shared_ptr<ScoreLocationPubSub> pubsub)
     : myLayout(layout),
+      myPubSub(pubsub),
+      myLocation(location),
       myBounds(0, 0, LayoutInfo::STAFF_WIDTH, layout->getStaffHeight())
 {
-#if 0
-    selectionEnd = selectionStart = 0;
-#endif
-
     // Only use the left mouse button for making selections.
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
-#if 0
 void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qreal y = event->pos().y();
-    qreal x = event->pos().x();
+    const double x = event->pos().x();
+    const double y = event->pos().y();
 
-    // find the position relative to the top of the staff, in terms of the tab line spacing
-    // Then, round to find the string index (keep it zero-based since that's what the caret uses)
-    int string = findClosestPosition(y, staffInfo.getTopTabLine(), staffInfo.tabLineSpacing);
+    // Find the position relative to the top of the staff, in terms of the tab
+    // line spacing. Then, round it to find the string index.
+    const int string = std::floor(((y - myLayout->getTopTabLine()) /
+                                   myLayout->getTabLineSpacing()) + 0.5);
 
-    if (string >= 0 && string < staffInfo.numOfStrings)
+    if (string >= 0 && string < myLayout->getStringCount())
     {
-        Caret* caret = PowerTabEditor::getCurrentScoreArea()->getCaret();
+        const int position = getPositionFromX(x);
+        myLocation.setPositionIndex(position);
+        myLocation.setSelectionStart(position);
+        myLocation.setString(string);
 
-        const int position = system->GetPositionFromX(x);
-
-        int staffIndex = system->FindStaffIndex(staff);
-
-        Score* currentScore = caret->getCurrentScore();
-        int systemIndex = currentScore->FindSystemIndex(system);
-
-        caret->setCurrentSystemIndex(systemIndex);
-        caret->setCurrentStaffIndex(staffIndex);
-        caret->setCurrentPositionIndex(position);
-        caret->setCurrentStringIndex(string);
-
-        selectionStart = selectionEnd = position;
-        emit selectionUpdated(selectionStart, selectionEnd);
+        myPubSub->publish(myLocation);
     }
-}
-
-void StaffPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
-{
-    update(boundingRect());
-}
-
-/// useful function for figuring out what string and what position a mouse click occurred at
-/// Finds the closest position, using the spacing between each position and the start point
-/// @param click - The position that the click occurred at
-/// @param relativePos - The position that everything is relative to (i.e. top line of a staff)
-/// @param spacing - Spacing between items
-inline int StaffPainter::findClosestPosition(qreal click, qreal relativePos, qreal spacing)
-{
-    qreal temp = (click - relativePos) / spacing;
-    int pos = floor(temp + 0.5);
-    return pos;
 }
 
 void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     const double x = event->pos().x();
-    selectionEnd = system->GetPositionFromX(x);
-
-    update(boundingRect()); // trigger a redraw
-    emit selectionUpdated(selectionStart, selectionEnd);
+    myLocation.setPositionIndex(getPositionFromX(x));
+    myPubSub->publish(myLocation);
 }
-#endif
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                          QWidget *)
@@ -114,4 +86,20 @@ void StaffPainter::drawStaffLines(QPainter *painter, int lineCount,
         painter->drawLine(QPointF(0, height),
                           QPointF(LayoutInfo::STAFF_WIDTH, height));
     }
+}
+
+int StaffPainter::getPositionFromX(double x) const
+{
+    if (myLayout->getPositionX(0) >= x)
+        return 0;
+
+    const int maxPosition = myLayout->getNumPositions() - 2;
+
+    for (int i = 1; i < maxPosition; ++i)
+    {
+        if (myLayout->getPositionX(i) >= x)
+            return i - 1;
+    }
+
+    return maxPosition;
 }

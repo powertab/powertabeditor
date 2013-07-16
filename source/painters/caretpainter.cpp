@@ -102,9 +102,20 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
     painter->drawLines(lines);
 
-#if 0
-    paintSelection(painter);
-#endif
+    // Draw the selection
+    painter->setBrush(QColor(168, 205, 241, 125));
+    painter->setPen(QPen(QBrush(), 0));
+
+    left = myLayout->getPositionX(std::min(location.getSelectionStart(),
+                                           location.getPositionIndex()));
+    double right = myLayout->getPositionX(std::max(location.getSelectionStart(),
+                                                   location.getPositionIndex()));
+
+    if (left != right)
+        right += myLayout->getPositionSpacing();
+
+    painter->drawRect(QRectF(left, 1, right - left,
+                             myLayout->getTabStaffHeight() - 1));
 }
 
 QRectF CaretPainter::boundingRect() const

@@ -41,6 +41,9 @@ public:
     int getPositionIndex() const;
     void setPositionIndex(int position);
 
+    int getSelectionStart() const;
+    void setSelectionStart(int position);
+
     int getVoice() const;
     void setVoice(int voice);
 
@@ -52,6 +55,9 @@ private:
     int mySystemIndex;
     int myStaffIndex;
     int myPositionIndex;
+    /// The initial location of the selection. This isn't necessarily less than
+    /// the myPositionIndex value.
+    int mySelectionStart;
     int myVoice;
     int myString;
 };

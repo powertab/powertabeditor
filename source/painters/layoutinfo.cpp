@@ -44,6 +44,7 @@ LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
     : mySystem(system),
       myStaff(staff),
       myPositionSpacing(0),
+      myNumPositions(0),
       myTabStaffBelowSpacing(0),
       myStdNotationStaffAboveSpacing(0),
       myStdNotationStaffBelowSpacing(0)
@@ -157,6 +158,11 @@ double LayoutInfo::getPositionSpacing() const
     return myPositionSpacing;
 }
 
+int LayoutInfo::getNumPositions() const
+{
+    return myNumPositions;
+}
+
 double LayoutInfo::getFirstPositionX() const
 {
     double width = CLEF_WIDTH;
@@ -268,14 +274,14 @@ void LayoutInfo::computePositionSpacing()
     const double width = getFirstPositionX() + getCumulativeBarlineWidths();
 
     // Find the number of positions needed for the system.
-    int maxPos = 0;
     BOOST_FOREACH(const Staff &staff, mySystem.getStaves())
     {
         for (int i = 0; i < Staff::NUM_VOICES; ++i)
         {
             BOOST_FOREACH(const Position &position, staff.getVoice(i))
             {
-                maxPos = std::max(maxPos, position.getPosition());
+                myNumPositions = std::max(myNumPositions,
+                                          position.getPosition());
             }
         }
     }
@@ -283,11 +289,11 @@ void LayoutInfo::computePositionSpacing()
     // TODO - include chord text, tempo markers, etc.
     BOOST_FOREACH(const Barline &barline, mySystem.getBarlines())
     {
-        maxPos = std::max(maxPos, barline.getPosition());
+        myNumPositions = std::max(myNumPositions, barline.getPosition());
     }
 
     const double availableSpace = STAFF_WIDTH - width;
-    myPositionSpacing = availableSpace / (maxPos + 2);
+    myPositionSpacing = availableSpace / (myNumPositions + 2);
 }
 
 void LayoutInfo::calculateTabStaffBelowLayout()

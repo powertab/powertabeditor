@@ -62,10 +62,14 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
     // Draw each staff.
     double height = 0;
+    int i = 0;
     BOOST_FOREACH(const Staff &staff, system.getStaves())
     {
         if (staff.getViewType() != view)
+        {
+            ++i;
             continue;
+        }
 
         const bool isFirstStaff = (height == 0);
         LayoutConstPtr layout = boost::make_shared<LayoutInfo>(system, staff);
@@ -76,7 +80,9 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
             height += layout->getSystemSymbolSpacing();
         }
 
-        myParentStaff = new StaffPainter(layout);
+        myParentStaff = new StaffPainter(layout,
+                                         ScoreLocation(myScore, systemIndex, i),
+                                         myScoreArea->getSelectionPubSub());
         myParentStaff->setPos(0, height);
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
@@ -96,6 +102,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
         drawSymbolsBelowTabStaff(*layout);
+
+        ++i;
     }
 
     myParentSystem->setRect(0, 0, LayoutInfo::STAFF_WIDTH, height);
