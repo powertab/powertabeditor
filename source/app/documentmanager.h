@@ -52,7 +52,10 @@ class DocumentManager
 public:
     DocumentManager();
 
+    /// Add a new, blank document.
     Document &addDocument();
+    /// Add a new document, and initialize it with a staff, player, etc.
+    Document &addDefaultDocument();
     Document &getCurrentDocument();
 
     void removeDocument(int index);

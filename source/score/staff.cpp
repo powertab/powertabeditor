@@ -28,6 +28,13 @@ Staff::Staff()
     myVoices.assign(std::vector<Position>());
 }
 
+Staff::Staff(int stringCount)
+    : myViewType(GuitarView),
+      myClefType(TrebleClef),
+      myStringCount(stringCount)
+{
+}
+
 bool Staff::operator==(const Staff &other) const
 {
     return myViewType == other.myViewType &&

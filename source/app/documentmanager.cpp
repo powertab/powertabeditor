@@ -17,7 +17,6 @@
   
 #include "documentmanager.h"
 
-#include <QMessageBox>
 #include <QSettings>
 #include <QString>
 
@@ -49,6 +48,40 @@ Document &DocumentManager::addDocument()
 
     myCurrentIndex = myDocumentList.size() - 1;
     return myDocumentList.back();
+}
+
+Document &DocumentManager::addDefaultDocument()
+{
+    Document &doc = addDocument();
+    Score &score = doc.getScore();
+    QSettings settings;
+
+    Player player;
+    player.setDescription("Player 1");
+    player.setTuning(settings.value(
+            Settings::DEFAULT_INSTRUMENT_TUNING,
+            QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)
+        ).value<Tuning>());
+    score.insertPlayer(player);
+
+    Instrument instrument;
+    instrument.setDescription(settings.value(
+            Settings::DEFAULT_INSTRUMENT_NAME,
+            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString());
+    instrument.setMidiPreset(settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
+            Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
+    score.insertInstrument(instrument);
+
+    System system;
+    system.insertStaff(Staff(player.getTuning().getStringCount()));
+
+    TempoMarker tempo;
+    tempo.setDescription("Moderately");
+    system.insertTempoMarker(tempo);
+
+    score.insertSystem(system);
+
+    return doc;
 }
 
 Document &DocumentManager::getCurrentDocument()

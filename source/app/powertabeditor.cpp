@@ -247,7 +247,7 @@ void PowerTabEditor::openFiles(const std::vector<std::string> &files)
 
 void PowerTabEditor::createNewDocument()
 {
-    myDocumentManager->addDocument();
+    myDocumentManager->addDefaultDocument();
     setupNewTab();
 }
 
