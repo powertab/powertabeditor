@@ -15,23 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ADDTRILL_H
-#define ADDTRILL_H
+#ifndef ACTIONS_ADDTRILL_H
+#define ACTIONS_ADDTRILL_H
 
 #include <QUndoCommand>
+#include <score/scorelocation.h>
 
 class Note;
 
 class AddTrill : public QUndoCommand
 {
 public:
-    AddTrill(Note* note, quint8 trillFret);
-    void undo();
-    void redo();
+    AddTrill(const ScoreLocation &location, int trillFret);
+
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Note* note;
-    quint8 trillFret;
+    ScoreLocation myLocation;
+    const int myTrillFret;
 };
 
-#endif // ADDTRILL_H
+#endif

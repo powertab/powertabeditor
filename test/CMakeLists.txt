@@ -7,6 +7,7 @@ add_executable(pte_tests
     #actions/test_addirregulargrouping.cpp
     #actions/test_addmusicaldirection.cpp
     #actions/test_addtappedharmonic.cpp
+    actions/test_addtrill.cpp
     #actions/test_addvolumeswell.cpp
     #actions/test_deletenote.cpp
     #actions/test_edithammerpull.cpp
@@ -78,7 +79,7 @@ target_link_libraries(pte_tests
     pteapp
     #ptewidgets
     #ptedialogs
-    #pteactions
+    pteactions
     #pteaudio
     #rtmidi
     #ptepainters

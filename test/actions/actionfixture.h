@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,24 +14,30 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#include "addtrill.h"
 
-#include <score/note.h>
+#ifndef TEST_ACTIONTESTS_H
+#define TEST_ACTIONTESTS_H
 
-AddTrill::AddTrill(const ScoreLocation &location, int trillFret)
-    : QUndoCommand(QObject::tr("Add Trill")),
-      myLocation(location),
-      myTrillFret(trillFret)
+#include <score/score.h>
+#include <score/scorelocation.h>
+
+struct ActionFixture
 {
-}
+    ActionFixture()
+        : myLocation(myScore)
+    {
+        System system;
+        Staff staff(6);
+        staff.insertPosition(0, Position(42));
 
-void AddTrill::redo()
-{
-    myLocation.getNote()->setTrilledFret(myTrillFret);
-}
+        system.insertStaff(staff);
+        myScore.insertSystem(system);
 
-void AddTrill::undo()
-{
-    myLocation.getNote()->clearTrill();
-}
+        myLocation.setPositionIndex(42);
+    }
+
+    Score myScore;
+    ScoreLocation myLocation;
+};
+
+#endif

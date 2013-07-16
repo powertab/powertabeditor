@@ -17,11 +17,26 @@
 
 #include "scorelocation.h"
 
+#include <boost/foreach.hpp>
 #include <score/score.h>
 
 ScoreLocation::ScoreLocation(const Score &score, int system, int staff,
                              int position, int voice, int string)
     : myScore(score),
+      myWriteableScore(0),
+      mySystemIndex(system),
+      myStaffIndex(staff),
+      myPositionIndex(position),
+      mySelectionStart(position),
+      myVoice(voice),
+      myString(string)
+{
+}
+
+ScoreLocation::ScoreLocation(Score &score, int system, int staff, int position,
+                             int voice, int string)
+    : myScore(score),
+      myWriteableScore(&score),
       mySystemIndex(system),
       myStaffIndex(staff),
       myPositionIndex(position),
@@ -44,6 +59,23 @@ int ScoreLocation::getPositionIndex() const
 void ScoreLocation::setPositionIndex(int position)
 {
     myPositionIndex = position;
+}
+
+const Position *ScoreLocation::getPosition() const
+{
+    BOOST_FOREACH(const Position &pos, getStaff().getVoice(myVoice))
+    {
+        if (pos.getPosition() == myPositionIndex)
+            return &pos;
+    }
+
+    return NULL;
+}
+
+Position *ScoreLocation::getPosition()
+{
+    return const_cast<Position *>(
+                const_cast<const ScoreLocation &>(*this).getPosition());
 }
 
 int ScoreLocation::getSelectionStart() const
@@ -71,6 +103,11 @@ const Staff &ScoreLocation::getStaff() const
     return getSystem().getStaves()[myStaffIndex];
 }
 
+Staff &ScoreLocation::getStaff()
+{
+    return getSystem().getStaves()[myStaffIndex];
+}
+
 int ScoreLocation::getSystemIndex() const
 {
     return mySystemIndex;
@@ -86,6 +123,14 @@ const System &ScoreLocation::getSystem() const
     return myScore.getSystems()[mySystemIndex];
 }
 
+System &ScoreLocation::getSystem()
+{
+    if (!myWriteableScore)
+        throw std::logic_error("Cannot write to score");
+
+    return myWriteableScore->getSystems()[mySystemIndex];
+}
+
 int ScoreLocation::getString() const
 {
     return myString;
@@ -94,6 +139,18 @@ int ScoreLocation::getString() const
 void ScoreLocation::setString(int string)
 {
     myString = string;
+}
+
+const Note *ScoreLocation::getNote() const
+{
+    const Position *position = getPosition();
+    return position ? Utils::findByString(*position, myString) : NULL;
+}
+
+Note *ScoreLocation::getNote()
+{
+    return const_cast<Note *>(
+                const_cast<const ScoreLocation &>(*this).getNote());
 }
 
 int ScoreLocation::getVoice() const

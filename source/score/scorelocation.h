@@ -20,6 +20,8 @@
 
 #include <iosfwd>
 
+class Note;
+class Position;
 class Score;
 class Staff;
 class System;
@@ -29,19 +31,28 @@ class ScoreLocation
 public:
     ScoreLocation(const Score &score, int system = 0, int staff = 0,
                   int position = 0, int voice = 0, int string = 0);
+    ScoreLocation(Score &score, int system = 0, int staff = 0,
+                  int position = 0, int voice = 0, int string = 0);
 
     const Score &getScore() const;
 
     int getSystemIndex() const;
     void setSystemIndex(int system);
+
     const System &getSystem() const;
+    System &getSystem();
 
     int getStaffIndex() const;
     void setStaffIndex(int staff);
+
     const Staff &getStaff() const;
+    Staff &getStaff();
 
     int getPositionIndex() const;
     void setPositionIndex(int position);
+
+    const Position *getPosition() const;
+    Position *getPosition();
 
     int getSelectionStart() const;
     void setSelectionStart(int position);
@@ -52,8 +63,13 @@ public:
     int getString() const;
     void setString(int string);
 
+    const Note *getNote() const;
+    Note *getNote();
+
 private:
     const Score &myScore;
+    Score *myWriteableScore;
+
     int mySystemIndex;
     int myStaffIndex;
     int myPositionIndex;
