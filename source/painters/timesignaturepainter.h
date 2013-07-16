@@ -38,7 +38,8 @@ public:
     virtual QRectF boundingRect() const { return myBounds; }
 
 protected:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
     void drawNumber(QPainter* painter, const double y, const int number) const;

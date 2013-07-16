@@ -69,6 +69,11 @@ void TimeSignaturePainter::paint(QPainter *painter,
     }
 }
 
+void TimeSignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+{
+    // No action is needed here, but this will let us grab future mouse events.
+}
+
 void TimeSignaturePainter::drawNumber(QPainter* painter, const double y,
                                       const int number) const
 {

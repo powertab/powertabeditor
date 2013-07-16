@@ -37,6 +37,11 @@ KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
     initAccidentalPositions();
 }
 
+void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+{
+    // No action is needed here, but this will let us grab future mouse events.
+}
+
 void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     myPubSub->publish(myLocation);

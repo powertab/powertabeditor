@@ -38,7 +38,8 @@ public:
     virtual QRectF boundingRect() const { return myBounds; }
 
 private:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     LayoutConstPtr myLayout;
     const KeySignature &myKeySignature;
