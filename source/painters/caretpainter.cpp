@@ -29,7 +29,8 @@ const double CaretPainter::PEN_WIDTH = 0.75;
 const double CaretPainter::CARET_NOTE_SPACING = 6;
 
 CaretPainter::CaretPainter(const Caret &caret)
-    : myCaret(caret)
+    : myCaret(caret),
+      myInPlaybackMode(false)
 {
     caret.subscribeToChanges(boost::bind(&CaretPainter::onLocationChanged,
                                          this));
@@ -46,19 +47,11 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
     const ScoreLocation &location = myCaret.getLocation();
 
-#if 0
-    // set color
-    if (inPlaybackMode)
-    {
+    // Set color.
+    if (myInPlaybackMode)
         painter->setPen(QPen(Qt::red, PEN_WIDTH));
-    }
     else
-    {
         painter->setPen(QPen(Qt::blue, PEN_WIDTH));
-    }
-#else
-    painter->setPen(QPen(Qt::blue, PEN_WIDTH));
-#endif
 
     double left = myLayout->getPositionX(location.getPositionIndex());
     const double y1 = 0;
@@ -67,15 +60,14 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                                             left + myLayout->getPositionSpacing(),
                                             1);
 
-#if 0
     // If in playback mode, just draw a vertical line and don't highlight
     // the selected note.
-    if (inPlaybackMode)
+    if (myInPlaybackMode)
     {
         painter->drawLine(x, y1, x, y2);
+        return;
     }
-    else
-#endif
+
     QVector<QLine> lines(0);
 
     // Calculations for the box around the selected note.
@@ -155,96 +147,3 @@ void CaretPainter::onLocationChanged()
     setToolTip(QString::fromStdString(
                    boost::lexical_cast<std::string>(location)));
 }
-
-#if 0
-void Caret::setPlaybackMode(bool playBack)
-{
-    inPlaybackMode = playBack;
-    update(boundingRect()); // redraw the caret
-}
-
-bool Caret::isInPlaybackMode() const
-{
-    return inPlaybackMode;
-}
-
-/// Adjusts the caret's location to be valid (useful after e.g. deleting a
-/// system).
-void Caret::adjustToValidLocation()
-{
-    using namespace Common;
-
-    currentSystemIndex = clamp<uint32_t>(currentSystemIndex, 0,
-                                    getCurrentScore()->GetSystemCount() - 1);
-    currentStaffIndex = clamp<uint32_t>(currentStaffIndex, 0,
-                                    getCurrentSystem()->GetStaffCount() - 1);
-
-    uint32_t posLimit = getCurrentSystem()->GetPositionCount() - 1;
-    currentPositionIndex = clamp<uint32_t>(currentPositionIndex, 0, posLimit);
-    currentStringIndex = clamp<uint32_t>(currentStringIndex, 0,
-                                         currentStaffInfo.numOfStrings - 1);
-    selectionRange.first = clamp<int>(selectionRange.first, 0, posLimit);
-    selectionRange.second = clamp<int>(selectionRange.second, 0, posLimit);
-
-    updatePosition();
-    update(boundingRect());
-}
-
-/// Returns a list of all of the Position objects that are currently selected
-std::vector<Position*> Caret::getSelectedPositions() const
-{
-    std::vector<Position*> positions;
-    getCurrentStaff()->GetPositionsInRange(positions, currentVoice,
-                                           std::min(selectionRange.first, selectionRange.second),
-                                           std::max(selectionRange.first, selectionRange.second));
-
-    return positions;
-}
-
-/// Returns a list of all of the Note objects that are currently selected.
-std::vector<Note*> Caret::getSelectedNotes() const
-{
-    std::vector<Note*> notes;
-
-    if (hasSelection())
-    {
-        const std::vector<Position*> positions = getSelectedPositions();
-        for (size_t i = 0; i < positions.size(); i++)
-        {
-            for (size_t j = 0; j < positions[i]->GetNoteCount(); j++)
-            {
-                notes.push_back(positions[i]->GetNote(j));
-            }
-        }
-    }
-    else
-    {
-        Note* selectedNote = getCurrentNote();
-        if (selectedNote)
-        {
-            notes.push_back(selectedNote);
-        }
-    }
-
-    return notes;
-}
-
-/// Returns a list of all of the barlines in the current selection.
-std::vector<boost::shared_ptr<Barline> > Caret::getSelectedBarlines() const
-{
-    std::vector<boost::shared_ptr<Barline> > barlineArray;
-    getCurrentSystem()->GetBarlinesInRange(barlineArray,
-                std::min(selectionRange.first, selectionRange.second),
-                std::max(selectionRange.first, selectionRange.second));
-
-    return barlineArray;
-}
-
-/// Returns whether there is a selection (regardless of whether any notes,
-/// positions, etc are actually selected).
-bool Caret::hasSelection() const
-{
-    return selectionRange.first != selectionRange.second;
-}
-
-#endif
