@@ -105,3 +105,12 @@ void ScoreLocation::setVoice(int voice)
 {
     myVoice = voice;
 }
+
+std::ostream &operator <<(std::ostream &os, const ScoreLocation &location)
+{
+    os << "System: " << location.getSystemIndex() + 1;
+    os << ", Staff: " << location.getStaffIndex() + 1;
+    os << ", Posiiton: " << location.getPositionIndex() + 1;
+    os << ", String: " << location.getString() + 1;
+    return os;
+}

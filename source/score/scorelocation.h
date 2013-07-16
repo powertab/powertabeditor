@@ -18,6 +18,8 @@
 #ifndef SCORE_SCORELOCATION_H
 #define SCORE_SCORELOCATION_H
 
+#include <iosfwd>
+
 class Score;
 class Staff;
 class System;
@@ -61,5 +63,7 @@ private:
     int myVoice;
     int myString;
 };
+
+std::ostream &operator<<(std::ostream &os, const ScoreLocation &location);
 
 #endif
