@@ -25,7 +25,6 @@ add_executable(powertabeditor WIN32
 qt5_use_modules(powertabeditor Widgets)
 
 target_link_libraries(powertabeditor
-    ${Boost_LIBRARIES}
     pteapp
     #ptewidgets
     ptedialogs
@@ -36,6 +35,7 @@ target_link_libraries(powertabeditor
     sigfwd
     pteformats
     ptescore
+    ${Boost_LIBRARIES}
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

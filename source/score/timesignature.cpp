@@ -120,8 +120,8 @@ void TimeSignature::setBeamingPattern(const BeamingPattern &pattern)
 bool TimeSignature::isValidNumPulses(uint8_t pulses) const
 {
     // The number of pulses must divide evenly into the number of beats.
-    return pulses >= MIN_PULSES && pulses <= MAX_PULSES &&
-        (pulses == 0 || getBeatsPerMeasure() % pulses == 0);
+    return pulses <= MAX_PULSES &&
+            (pulses == 0 || getBeatsPerMeasure() % pulses == 0);
 }
 
 uint8_t TimeSignature::getNumPulses() const

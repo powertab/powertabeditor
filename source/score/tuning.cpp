@@ -146,7 +146,7 @@ uint8_t Tuning::getCapo() const
 
 void Tuning::setCapo(uint8_t capo)
 {
-    if (capo < MIN_CAPO || capo > MAX_CAPO)
+    if (capo > MAX_CAPO)
         throw std::out_of_range("Invalid capo");
 
     myCapo = capo;

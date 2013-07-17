@@ -57,7 +57,7 @@ uint8_t Player::getMaxVolume() const
 
 void Player::setMaxVolume(uint8_t volume)
 {
-    if (volume < MIN_VOLUME || volume > MAX_VOLUME)
+    if (volume > MAX_VOLUME)
         throw std::out_of_range("Invalid volume");
 
     myMaxVolume = volume;
@@ -70,7 +70,7 @@ uint8_t Player::getPan() const
 
 void Player::setPan(uint8_t pan)
 {
-    if (pan < MIN_PAN || pan > MAX_PAN)
+    if (pan > MAX_PAN)
         throw std::out_of_range("Invalid pan");
 
     myPan = pan;
