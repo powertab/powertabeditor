@@ -40,6 +40,8 @@ public:
 private:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *);
 
     LayoutConstPtr myLayout;
     const KeySignature &myKeySignature;

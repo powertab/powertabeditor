@@ -19,6 +19,7 @@
 
 #include <app/pubsub/scorelocationpubsub.h>
 #include <painters/musicfont.h>
+#include <QCursor>
 #include <QPainter>
 #include <score/keysignature.h>
 
@@ -34,6 +35,7 @@ KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
       myBounds(0, -10, LayoutInfo::getWidth(myKeySignature),
                layout->getStdNotationStaffHeight())
 {
+    setAcceptHoverEvents(true);
     initAccidentalPositions();
 }
 
@@ -45,6 +47,16 @@ void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     myPubSub->publish(myLocation);
+}
+
+void KeySignaturePainter::hoverEnterEvent(QGraphicsSceneHoverEvent *)
+{
+    setCursor(Qt::PointingHandCursor);
+}
+
+void KeySignaturePainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
+{
+    unsetCursor();
 }
 
 void KeySignaturePainter::paint(QPainter *painter,

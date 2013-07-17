@@ -19,6 +19,7 @@
 
 #include <app/pubsub/scorelocationpubsub.h>
 #include <painters/musicfont.h>
+#include <QCursor>
 #include <QPainter>
 #include <score/timesignature.h>
 
@@ -33,6 +34,7 @@ TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
       myBounds(0, 0, LayoutInfo::getWidth(myTimeSignature),
                myLayout->getStdNotationStaffHeight())
 {
+    setAcceptHoverEvents(true);
 }
 
 void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
@@ -72,6 +74,16 @@ void TimeSignaturePainter::paint(QPainter *painter,
 void TimeSignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 {
     // No action is needed here, but this will let us grab future mouse events.
+}
+
+void TimeSignaturePainter::hoverEnterEvent(QGraphicsSceneHoverEvent *)
+{
+    setCursor(Qt::PointingHandCursor);
+}
+
+void TimeSignaturePainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
+{
+    unsetCursor();
 }
 
 void TimeSignaturePainter::drawNumber(QPainter* painter, const double y,

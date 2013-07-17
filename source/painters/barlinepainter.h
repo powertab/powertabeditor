@@ -37,9 +37,12 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 private:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *);
 
+    bool isInStdNotationStaff(double y);
     void drawVerticalLines(QPainter *painter, double myX);
 
     LayoutConstPtr myLayout;

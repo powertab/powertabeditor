@@ -18,6 +18,7 @@
 #include "barlinepainter.h"
 
 #include <app/pubsub/scorelocationpubsub.h>
+#include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <score/barline.h>
@@ -35,6 +36,8 @@ BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
       myX(0),
       myWidth(0)
 {
+    setAcceptHoverEvents(true);
+
     switch (barline.getBarType())
     {
     case Barline::SingleBar:
@@ -70,19 +73,33 @@ BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
 
 void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    const qreal y = event->pos().y();
-
     // Only handle clicks that occur in the standard notation staff.
-    if (y > myLayout->getBottomStdNotationLine() ||
-        y < myLayout->getTopStdNotationLine())
-    {
+    if (!isInStdNotationStaff(event->pos().y()))
         event->ignore();
-    }
 }
 
 void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     myPubSub->publish(myLocation);
+}
+
+void BarlinePainter::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (isInStdNotationStaff(event->pos().y()))
+        setCursor(Qt::PointingHandCursor);
+    else
+        unsetCursor();
+}
+
+void BarlinePainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
+{
+    unsetCursor();
+}
+
+bool BarlinePainter::isInStdNotationStaff(double y)
+{
+    return (y <= myLayout->getBottomStdNotationLine()) &&
+           (y >= myLayout->getTopStdNotationLine());
 }
 
 void BarlinePainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
