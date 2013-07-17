@@ -31,6 +31,11 @@ Caret::Caret(Score &score)
                 boost::bind(&Caret::handleSelectionChanged, this, _1));
 }
 
+ScoreLocation &Caret::getLocation()
+{
+    return myLocation;
+}
+
 const ScoreLocation &Caret::getLocation() const
 {
     return myLocation;

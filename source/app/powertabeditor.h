@@ -21,6 +21,7 @@
 #include <QMainWindow>
 
 #include <boost/scoped_ptr.hpp>
+#include <score/position.h>
 #include <string>
 #include <vector>
 
@@ -133,12 +134,15 @@ private:
     /// current location.
     void updateCommands();
 
+    /// Toggles a simple position property.
+    void editSimpleProperty(Command *command, Position::SimpleProperty property);
+
     /// Returns the score area for the active document.
     ScoreArea *getScoreArea();
     /// Returns the caret for the active document.
     Caret &getCaret();
     /// Returns the location of the caret within the active document.
-    const ScoreLocation &getLocation();
+    ScoreLocation &getLocation();
 
     boost::scoped_ptr<DocumentManager> myDocumentManager;
     boost::scoped_ptr<FileFormatManager> myFileFormatManager;
@@ -183,6 +187,9 @@ private:
 
     QMenu *myTabSymbolsMenu;
     Command *myTrillCommand;
+    Command *myTapCommand;
+    Command *myPickStrokeUpCommand;
+    Command *myPickStrokeDownCommand;
 
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
@@ -376,9 +383,6 @@ private:
     Command* tremoloPickingAct; // toggle tremolo picking
     Command* arpeggioUpAct;
     Command* arpeggioDownAct;
-    Command* tapAct;
-    Command* pickStrokeUpAct;
-    Command* pickStrokeDownAct;
 
     QMenu* slideIntoMenu;
     Command* slideIntoFromAboveAct;
@@ -400,35 +404,6 @@ private:
 
     boost::shared_ptr<SettingsPubSub> settingsPubSub;
     boost::shared_ptr<TuningDictionary> tuningDictionary;
-
-    /// helper function for connecting an action to the performToggleProperty slot
-    /// @param objectsGetter - function for retrieving the objects to be edited
-    /// @param propertyGetter - function for checking if an object has a certain property set
-    /// @param propertySetter - function for toggling the property
-    template <typename T>
-    void connectToggleProperty(QAction* action,
-                               boost::function<std::vector<T*> (void)> objectsGetter,
-                               boost::function<bool (const T*)> propertyGetter,
-                               boost::function<bool (T*, bool)> propertySetter)
-    {
-        sigfwd::connect(action, SIGNAL(triggered()),
-                        boost::bind(&PowerTabEditor::performToggleProperty<T>, this,
-                                    // wrap using boost::bind so that the function is evaluated later (we want the currently
-                                    // selected objects, not the objects that were selected when the signal was connected)
-                                    boost::bind(objectsGetter),
-                                    propertySetter,
-                                    propertyGetter,
-                                    action->text()));
-    }
-
-    /// Creates a new ToggleProperty<T> action, forwarding the parameters to its constructor
-    template <typename T>
-    void performToggleProperty(const std::vector<T*>& objects, boost::function<bool (T*, bool)> setPropertyFn,
-                               boost::function<bool (const T*)> getPropertyFn, const QString& propertyName)
-    {
-        undoManager->push(new ToggleProperty<T>(objects, setPropertyFn, getPropertyFn, propertyName),
-                          getCurrentScoreArea()->getCaret()->getCurrentSystemIndex());
-    }
 
 #endif
 };

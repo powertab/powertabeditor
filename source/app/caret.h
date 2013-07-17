@@ -29,6 +29,7 @@ class Caret
 public:
     Caret(Score &score);
 
+    ScoreLocation &getLocation();
     const ScoreLocation &getLocation() const;
 
     /// Moves the caret left or right by the specified offset.

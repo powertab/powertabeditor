@@ -14,31 +14,20 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef TEST_ACTIONTESTS_H
-#define TEST_ACTIONTESTS_H
+#include <actions/addpositionproperty.h>
+#include <score/position.h>
+#include "actionfixture.h"
 
-#include <score/score.h>
-#include <score/scorelocation.h>
-
-struct ActionFixture
+TEST_CASE_METHOD(ActionFixture, "Actions/AddPositionProperty", "")
 {
-    ActionFixture()
-        : myLocation(myScore)
-    {
-        System system;
-        Staff staff(6);
-        staff.insertPosition(0, Position(42));
+    AddPositionProperty action(myLocation, Position::Tap, "Tap");
 
-        system.insertStaff(staff);
-        myScore.insertSystem(system);
+    action.redo();
+    REQUIRE(myLocation.getPosition()->hasProperty(Position::Tap));
 
-        myLocation.setPositionIndex(42);
-        myLocation.setSelectionStart(42);
-    }
-
-    Score myScore;
-    ScoreLocation myLocation;
-};
-
-#endif
+    action.undo();
+    REQUIRE(!myLocation.getPosition()->hasProperty(Position::Tap));
+}

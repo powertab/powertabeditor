@@ -17,7 +17,9 @@
   
 #include "powertabeditor.h"
 
+#include <actions/addpositionproperty.h>
 #include <actions/addtrill.h>
+#include <actions/removepositionproperty.h>
 #include <actions/removetrill.h>
 #include <actions/undomanager.h>
 
@@ -999,30 +1001,37 @@ void PowerTabEditor::createCommands()
     arpeggioDownAct->setCheckable(true);
     connectToggleProperty<Position>(arpeggioDownAct, &getSelectedPositions,
                                     &Position::HasArpeggioDown, &Position::SetArpeggioDown);
-
-    tapAct = new Command(tr("Tap"), "TabSymbols.Tap", Qt::Key_P, this);
-    tapAct->setCheckable(true);
-    connectToggleProperty<Position>(tapAct, &getSelectedPositions,
-                                    &Position::HasTap, &Position::SetTap);
-
 #endif
+
+    myTapCommand = new Command(tr("Tap"), "TabSymbols.Tap", Qt::Key_P, this);
+    myTapCommand->setCheckable(true);
+    sigfwd::connect(myTapCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleProperty, this,
+                                myTapCommand, Position::Tap));
+
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
                                  QKeySequence(), this);
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, SIGNAL(triggered()), this, SLOT(editTrill()));
+
+    myPickStrokeUpCommand = new Command(tr("Pickstroke Up"),
+                                        "TabSymbols.PickstrokeUp",
+                                        QKeySequence(), this);
+    myPickStrokeUpCommand->setCheckable(true);
+    sigfwd::connect(myPickStrokeUpCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleProperty, this,
+                                myPickStrokeUpCommand, Position::PickStrokeUp));
+
+    myPickStrokeDownCommand = new Command(tr("Pickstroke Down"),
+                                          "TabSymbols.PickStrokeDown",
+                                          QKeySequence(), this);
+    myPickStrokeDownCommand->setCheckable(true);
+    sigfwd::connect(myPickStrokeDownCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleProperty, this,
+                                myPickStrokeDownCommand,
+                                Position::PickStrokeDown));
+
 #if 0
-
-    pickStrokeUpAct = new Command(tr("Pickstroke Up"), "TabSymbols.PickstrokeUp", QKeySequence(), this);
-    pickStrokeUpAct->setCheckable(true);
-    connectToggleProperty<Position>(pickStrokeUpAct, &getSelectedPositions,
-                                    &Position::HasPickStrokeUp, &Position::SetPickStrokeUp);
-
-    pickStrokeDownAct = new Command(tr("Pickstroke Down"), "TabSymbols.PickStrokeDown",
-                                    QKeySequence(), this);
-    pickStrokeDownAct->setCheckable(true);
-    connectToggleProperty<Position>(pickStrokeDownAct, &getSelectedPositions,
-                                    &Position::HasPickStrokeDown, &Position::SetPickStrokeDown);
-
     // Slide Into Menu
     slideIntoFromAboveAct = new Command(tr("Slide Into From Above"), "SlideInto.FromAbove",
                                         QKeySequence(), this);
@@ -1247,16 +1256,16 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addAction(tremoloPickingAct);
 #endif
     myTabSymbolsMenu->addAction(myTrillCommand);
+    myTabSymbolsMenu->addAction(myTapCommand);
+    myTabSymbolsMenu->addSeparator();
 #if 0
-    tabSymbolsMenu->addAction(tapAct);
-    tabSymbolsMenu->addSeparator();
     tabSymbolsMenu->addAction(arpeggioUpAct);
     tabSymbolsMenu->addAction(arpeggioDownAct);
     tabSymbolsMenu->addSeparator();
-    tabSymbolsMenu->addAction(pickStrokeUpAct);
-    tabSymbolsMenu->addAction(pickStrokeDownAct);
-
 #endif
+    myTabSymbolsMenu->addAction(myPickStrokeUpCommand);
+    myTabSymbolsMenu->addAction(myPickStrokeDownCommand);
+
     // Window Menu.
     myWindowMenu = menuBar()->addMenu(tr("&Window"));
     myWindowMenu->addAction(myNextTabCommand);
@@ -1404,6 +1413,37 @@ void PowerTabEditor::updateCommands()
     myTrillCommand->setChecked(note && note->hasTrill());
 }
 
+void PowerTabEditor::editSimpleProperty(Command *command,
+                                        Position::SimpleProperty property)
+{
+    ScoreLocation &location = getLocation();
+    std::vector<Position *> selectedPositions = location.getSelectedPositions();
+    if (selectedPositions.empty())
+        return;
+
+    // If at least one position doesn't have the property set, enable it for
+    // all of them.
+    bool enableProperty = false;
+    BOOST_FOREACH(const Position *pos, selectedPositions)
+    {
+        if (!pos->hasProperty(property))
+            enableProperty = true;
+    }
+
+    if (enableProperty)
+    {
+        myUndoManager->push(new AddPositionProperty(location, property,
+                                                    command->text()),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        myUndoManager->push(new RemovePositionProperty(location, property,
+                                                       command->text()),
+                            location.getSystemIndex());
+    }
+}
+
 ScoreArea *PowerTabEditor::getScoreArea()
 {
     return dynamic_cast<ScoreArea *>(myTabWidget->currentWidget());
@@ -1414,7 +1454,7 @@ Caret &PowerTabEditor::getCaret()
     return myDocumentManager->getCurrentDocument().getCaret();
 }
 
-const ScoreLocation &PowerTabEditor::getLocation()
+ScoreLocation &PowerTabEditor::getLocation()
 {
     return getCaret().getLocation();
 }

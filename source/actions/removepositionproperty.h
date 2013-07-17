@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2011 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,31 +14,28 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#ifndef ACTIONS_REMOVEPOSITIONPROPERTY_H
+#define ACTIONS_REMOVEPOSITIONPROPERTY_H
 
-#ifndef TEST_ACTIONTESTS_H
-#define TEST_ACTIONTESTS_H
-
-#include <score/score.h>
+#include <QUndoCommand>
+#include <score/position.h>
 #include <score/scorelocation.h>
 
-struct ActionFixture
+/// Removes a simple position property for each of the selected notes.
+class RemovePositionProperty : public QUndoCommand
 {
-    ActionFixture()
-        : myLocation(myScore)
-    {
-        System system;
-        Staff staff(6);
-        staff.insertPosition(0, Position(42));
+public:
+    RemovePositionProperty(const ScoreLocation &location,
+                           Position::SimpleProperty property,
+                           const QString &positionDescription);
 
-        system.insertStaff(staff);
-        myScore.insertSystem(system);
+    virtual void redo();
+    virtual void undo();
 
-        myLocation.setPositionIndex(42);
-        myLocation.setSelectionStart(42);
-    }
-
-    Score myScore;
+private:
     ScoreLocation myLocation;
+    const Position::SimpleProperty myProperty;
 };
 
 #endif

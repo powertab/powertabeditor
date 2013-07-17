@@ -88,6 +88,21 @@ void ScoreLocation::setSelectionStart(int position)
     mySelectionStart = position;
 }
 
+std::vector<Position *> ScoreLocation::getSelectedPositions()
+{
+    std::vector<Position *> positions;
+    const int min = std::min(myPositionIndex, mySelectionStart);
+    const int max = std::max(myPositionIndex, mySelectionStart);
+
+    BOOST_FOREACH(Position &pos, getStaff().getVoice(myVoice))
+    {
+        if (pos.getPosition() >= min && pos.getPosition() <= max)
+            positions.push_back(&pos);
+    }
+
+    return positions;
+}
+
 int ScoreLocation::getStaffIndex() const
 {
     return myStaffIndex;

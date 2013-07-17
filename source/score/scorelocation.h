@@ -19,6 +19,7 @@
 #define SCORE_SCORELOCATION_H
 
 #include <iosfwd>
+#include <vector>
 
 class Note;
 class Position;
@@ -56,6 +57,7 @@ public:
 
     int getSelectionStart() const;
     void setSelectionStart(int position);
+    std::vector<Position*> getSelectedPositions();
 
     int getVoice() const;
     void setVoice(int voice);

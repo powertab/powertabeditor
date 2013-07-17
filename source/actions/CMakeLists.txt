@@ -10,6 +10,7 @@ add_library(pteactions
     #addirregulargrouping.cpp
     #addmusicaldirection.cpp
     #addnote.cpp
+    addpositionproperty.cpp
     #addsystem.cpp
     #addtappedharmonic.cpp
     #addtempomarker.cpp
@@ -38,6 +39,7 @@ add_library(pteactions
     #removedynamic.cpp
     #removeirregulargrouping.cpp
     #removemusicaldirection.cpp
+    removepositionproperty.cpp
     #removesystem.cpp
     #removetappedharmonic.cpp
     #removetempomarker.cpp
