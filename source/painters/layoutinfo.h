@@ -24,6 +24,7 @@
 class Barline;
 class KeySignature;
 class Position;
+class Score;
 class Staff;
 class System;
 class TimeSignature;
@@ -68,7 +69,7 @@ private:
 
 struct LayoutInfo
 {
-    LayoutInfo(const System& system, const Staff &staff);
+    LayoutInfo(const Score &score, const System& system, const Staff &staff);
 
     int getStringCount() const;
 
@@ -159,6 +160,7 @@ private:
 
     const System &mySystem;
     const Staff &myStaff;
+    int myLineSpacing;
     double myPositionSpacing;
     int myNumPositions;
 

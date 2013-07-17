@@ -131,12 +131,14 @@ void CaretPainter::onLocationChanged()
 {
     const ScoreLocation &location = myCaret.getLocation();
     const System &system = location.getSystem();
-    myLayout.reset(new LayoutInfo(system, location.getStaff()));
+    myLayout.reset(new LayoutInfo(location.getScore(), system,
+                                  location.getStaff()));
 
     // Compute the offset due to the previous systems.
     double offset = 0;
     for (int i = 0; i < location.getStaffIndex(); ++i)
-        offset += LayoutInfo(system, system.getStaves()[i]).getStaffHeight();
+        offset += LayoutInfo(location.getScore(), system,
+                             system.getStaves()[i]).getStaffHeight();
 
     update(boundingRect());
     setPos(0, mySystemRects.at(location.getSystemIndex()).top() + offset +

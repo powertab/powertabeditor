@@ -16,6 +16,7 @@ add_library(pteactions
     #addtempomarker.cpp
     addtrill.cpp
     #addvolumeswell.cpp
+    adjustlinespacing.cpp
     #changebarlinetype.cpp
     #changepositionspacing.cpp
     #deletebarline.cpp

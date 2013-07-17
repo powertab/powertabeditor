@@ -72,7 +72,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         }
 
         const bool isFirstStaff = (height == 0);
-        LayoutConstPtr layout = boost::make_shared<LayoutInfo>(system, staff);
+        LayoutConstPtr layout = boost::make_shared<LayoutInfo>(myScore, system,
+                                                               staff);
 
         if (isFirstStaff)
         {

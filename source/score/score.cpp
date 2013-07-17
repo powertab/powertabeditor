@@ -17,12 +17,21 @@
 
 #include "score.h"
 
+const int Score::MIN_LINE_SPACING = 6;
+const int Score::MAX_LINE_SPACING = 14;
+
+Score::Score()
+    : myLineSpacing(9)
+{
+}
+
 bool Score::operator==(const Score &other) const
 {
     return myScoreInfo == other.myScoreInfo &&
            mySystems == other.mySystems &&
            myPlayers == other.myPlayers &&
-           myInstruments == other.myInstruments;
+           myInstruments == other.myInstruments &&
+           myLineSpacing == other.myLineSpacing;
 }
 
 const ScoreInfo &Score::getScoreInfo() const
@@ -98,4 +107,17 @@ void Score::removeInstrument(const Instrument &instrument)
 {
     myInstruments.erase(std::remove(myInstruments.begin(), myInstruments.end(), instrument),
                     myInstruments.end());
+}
+
+int Score::getLineSpacing() const
+{
+    return myLineSpacing;
+}
+
+void Score::setLineSpacing(int value)
+{
+    if (value < MIN_LINE_SPACING || value > MAX_LINE_SPACING)
+        throw std::out_of_range("Invalid line spacing");
+
+    myLineSpacing = value;
 }

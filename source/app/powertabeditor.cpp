@@ -20,6 +20,7 @@
 #include <actions/addpositionproperty.h>
 #include <actions/addsystem.h>
 #include <actions/addtrill.h>
+#include <actions/adjustlinespacing.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removetrill.h>
 #include <actions/undomanager.h>
@@ -348,20 +349,15 @@ void PowerTabEditor::editPreferences()
 
 void PowerTabEditor::redrawSystem(int index)
 {
-#if 1
     getScoreArea()->redrawSystem(index);
-#else
-    caret->adjustToValidLocation();
-    // Update the status of all actions
-    updateActions();
-#endif
+    updateCommands();
 }
 
 void PowerTabEditor::redrawScore()
 {
     getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument(),
                                    Staff::GuitarView);
-    // TODO - update actions and caret.
+    updateCommands();
 }
 
 void PowerTabEditor::moveCaretToStart()
@@ -724,7 +720,20 @@ void PowerTabEditor::createCommands()
                     "Section.RemoveCurrentSystem",
                     QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N), this);
     connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
+#endif
+    myIncreaseLineSpacingCommand = new Command(tr("Increase"),
+                                               "Section.IncreaseLineSpacing",
+                                               QKeySequence(), this);
+    sigfwd::connect(myIncreaseLineSpacingCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::adjustLineSpacing, this, 1));
 
+    myDecreaseLineSpacingCommand = new Command(tr("Decrease"),
+                                               "Section.DecreaseLineSpacing",
+                                               QKeySequence(), this);
+    sigfwd::connect(myDecreaseLineSpacingCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::adjustLineSpacing, this, -1));
+
+#if 0
     // Note-related actions
     noteDurationActGroup = new QActionGroup(this);
 
@@ -1197,7 +1206,12 @@ void PowerTabEditor::createMenus()
 #if 0
     mySectionMenu->addSeparator();
     mySectionMenu->addAction(removeCurrentSystemAct);
-
+#endif
+    mySectionMenu->addSeparator();
+    myLineSpacingMenu = mySectionMenu->addMenu(tr("&Line Spacing"));
+    myLineSpacingMenu->addAction(myIncreaseLineSpacingCommand);
+    myLineSpacingMenu->addAction(myDecreaseLineSpacingCommand);
+#if 0
     // Note Menu
     notesMenu = menuBar()->addMenu(tr("&Notes"));
     notesMenu->addAction(wholeNoteAct);
@@ -1452,8 +1466,14 @@ inline void updatePositionProperty(Command *command, const Position *pos,
 void PowerTabEditor::updateCommands()
 {
     const ScoreLocation &location = getLocation();
+    const Score &score = location.getScore();
     const Position *pos = location.getPosition();
     const Note *note = location.getNote();
+
+    myIncreaseLineSpacingCommand->setEnabled(
+                score.getLineSpacing() < Score::MAX_LINE_SPACING);
+    myDecreaseLineSpacingCommand->setEnabled(
+                score.getLineSpacing() > Score::MIN_LINE_SPACING);
 
     myTrillCommand->setEnabled(note);
     myTrillCommand->setChecked(note && note->hasTrill());
@@ -1498,6 +1518,12 @@ void PowerTabEditor::editSimpleProperty(Command *command,
 void PowerTabEditor::insertSystem(int index)
 {
     myUndoManager->push(new AddSystem(getLocation().getScore(), index),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
+void PowerTabEditor::adjustLineSpacing(int amount)
+{
+    myUndoManager->push(new AdjustLineSpacing(getLocation().getScore(), amount),
                         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 

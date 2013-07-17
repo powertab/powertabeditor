@@ -11,6 +11,7 @@ add_executable(pte_tests
     #actions/test_addtappedharmonic.cpp
     actions/test_addtrill.cpp
     #actions/test_addvolumeswell.cpp
+    actions/test_adjustlinespacing.cpp
     #actions/test_deletenote.cpp
     #actions/test_edithammerpull.cpp
     #actions/test_editkeysignature.cpp

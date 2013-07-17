@@ -44,10 +44,12 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     PowerTabDocument::Document document;
     document.Load(filename);
 
-    // TODO - handle line spacing, font settings, etc.
+    // TODO - handle font settings, etc.
     ScoreInfo info;
     convert(document.GetHeader(), info);
     score.setScoreInfo(info);
+
+    score.setLineSpacing(document.GetTablatureStaffLineSpacing());
 
     // TODO - merge bass score.
     convert(*document.GetScore(0), score);

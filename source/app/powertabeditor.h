@@ -148,6 +148,8 @@ private:
 
     /// Helper function to insert a system at the given index.
     void insertSystem(int index);
+    /// Increases or decreases the line spacing by the given amount.
+    void adjustLineSpacing(int amount);
 
     /// Returns the score area for the active document.
     ScoreArea *getScoreArea();
@@ -201,6 +203,9 @@ private:
     Command *myInsertSystemAtEndCommand;
     Command *myInsertSystemBeforeCommand;
     Command *myInsertSystemAfterCommand;
+    QMenu *myLineSpacingMenu;
+    Command *myIncreaseLineSpacingCommand;
+    Command *myDecreaseLineSpacingCommand;
 
     QMenu *myTabSymbolsMenu;
     Command *myTrillCommand;

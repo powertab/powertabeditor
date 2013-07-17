@@ -36,6 +36,7 @@ public:
     typedef std::vector<Instrument>::iterator InstrumentIterator;
     typedef std::vector<Instrument>::const_iterator InstrumentConstIterator;
 
+    Score();
     bool operator==(const Score &other) const;
 
     /// Returns information about the score (e.g. title, author, etc.).
@@ -73,18 +74,28 @@ public:
     /// Removes the specified instrument from the score.
     void removeInstrument(const Instrument &instrument);
 
+    /// Returns the spacing between tabulature lines for the score.
+    int getLineSpacing() const;
+    /// Sets the spacing between tabulature lines for the score.
+    void setLineSpacing(int value);
+
+    static const int MIN_LINE_SPACING;
+    static const int MAX_LINE_SPACING;
+
 private:
-    // TODO - add line spacing, font settings, chord diagrams, etc.
+    // TODO - add font settings, chord diagrams, etc.
     ScoreInfo myScoreInfo;
     std::vector<System> mySystems;
     std::vector<Player> myPlayers;
     std::vector<Instrument> myInstruments;
+    /// Spacing between tab lines (in pixels).
+    int myLineSpacing;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
-        ar & myScoreInfo & mySystems & myPlayers & myInstruments;
+        ar & myScoreInfo & mySystems & myPlayers & myInstruments & myLineSpacing;
     }
 };
 

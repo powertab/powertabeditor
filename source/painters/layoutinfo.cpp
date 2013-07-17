@@ -19,6 +19,7 @@
 
 #include <boost/foreach.hpp>
 #include <score/keysignature.h>
+#include <score/score.h>
 #include <score/staff.h>
 #include <score/system.h>
 #include <score/timesignature.h>
@@ -40,9 +41,11 @@ namespace {
 const double SYMBOL_SPACING = 0;
 }
 
-LayoutInfo::LayoutInfo(const System &system, const Staff &staff)
+LayoutInfo::LayoutInfo(const Score &score, const System &system,
+                       const Staff &staff)
     : mySystem(system),
       myStaff(staff),
+      myLineSpacing(score.getLineSpacing()),
       myPositionSpacing(0),
       myNumPositions(0),
       myTabStaffBelowSpacing(0),
@@ -145,7 +148,7 @@ double LayoutInfo::getBottomTabLine() const
 
 double LayoutInfo::getTabLineSpacing() const
 {
-    return 9;
+    return myLineSpacing;
 }
 
 double LayoutInfo::getTabStaffHeight() const
