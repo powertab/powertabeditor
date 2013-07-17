@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,23 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include "removetrill.h"
+#include <catch.hpp>
 
+#include <actions/removetrill.h>
 #include <score/note.h>
+#include "actionfixture.h"
 
-RemoveTrill::RemoveTrill(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Trill")),
-      myLocation(location),
-      myTrilledFret(location.getNote()->getTrilledFret())
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTrill", "")
 {
-}
+    Note note;
+    const int trillFret = 17;
+    note.setTrilledFret(trillFret);
+    myLocation.getPosition()->insertNote(note);
 
-void RemoveTrill::redo()
-{
-    myLocation.getNote()->clearTrill();
-}
+    RemoveTrill action(myLocation);
 
-void RemoveTrill::undo()
-{
-    myLocation.getNote()->setTrilledFret(myTrilledFret);
+    action.redo();
+    REQUIRE(!myLocation.getNote()->hasTrill());
+
+    action.undo();
+    REQUIRE(myLocation.getNote()->hasTrill());
+    REQUIRE(myLocation.getNote()->getTrilledFret() == trillFret);
 }

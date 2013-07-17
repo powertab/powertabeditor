@@ -15,24 +15,23 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef REMOVETRILL_H
-#define REMOVETRILL_H
+#ifndef ACTIONS_REMOVETRILL_H
+#define ACTIONS_REMOVETRILL_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-
-class Note;
+#include <score/scorelocation.h>
 
 class RemoveTrill : public QUndoCommand
 {
 public:
-    RemoveTrill(Note* note);
-    void undo();
-    void redo();
+    RemoveTrill(const ScoreLocation &location);
+
+    virtual void undo();
+    virtual void redo();
 
 private:
-    Note* note;
-    uint8_t originalTrill;
+    ScoreLocation myLocation;
+    const int myTrilledFret;
 };
 
-#endif // REMOVETRILL_H
+#endif

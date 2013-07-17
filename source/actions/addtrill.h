@@ -21,8 +21,6 @@
 #include <QUndoCommand>
 #include <score/scorelocation.h>
 
-class Note;
-
 class AddTrill : public QUndoCommand
 {
 public:

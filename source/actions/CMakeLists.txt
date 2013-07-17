@@ -41,7 +41,7 @@ add_library(pteactions
     #removesystem.cpp
     #removetappedharmonic.cpp
     #removetempomarker.cpp
-    #removetrill.cpp
+    removetrill.cpp
     #removevolumeswell.cpp
     #shifttabnumber.cpp
     undomanager.cpp

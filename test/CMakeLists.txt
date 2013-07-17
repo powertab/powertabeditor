@@ -21,6 +21,7 @@ add_executable(pte_tests
     #actions/test_removemusicaldirection.cpp
     #actions/test_removesystem.cpp
     #actions/test_removetappedharmonic.cpp
+    actions/test_removetrill.cpp
     #actions/test_removevolumeswell.cpp
     #actions/test_shifttabnumber.cpp
     #actions/test_updatenoteduration.cpp

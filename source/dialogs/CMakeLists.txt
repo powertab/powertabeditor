@@ -15,7 +15,7 @@ set(FORMS
     #rehearsalsigndialog.ui
     #tempomarkerdialog.ui
     #timesignaturedialog.ui
-    #trilldialog.ui
+    trilldialog.ui
     #tuningdialog.ui
     #tuningdictionarydialog.ui
     #volumeswelldialog.ui

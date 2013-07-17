@@ -42,6 +42,7 @@ ChordDiagram::ChordDiagram() :
 /// @param fretNumbers Fret numbers for each string in the chord diagram (from high to low)
 ChordDiagram::ChordDiagram(const ChordName& chordName, uint8_t topFret,
                            const std::vector<uint8_t>& fretNumbers)
+    : m_topFret(topFret)
 {
     assert(IsValidTopFret(topFret));
     SetChordName(chordName);

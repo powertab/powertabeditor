@@ -18,6 +18,7 @@
 #include "powertabeditor.h"
 
 #include <actions/addtrill.h>
+#include <actions/removetrill.h>
 #include <actions/undomanager.h>
 
 #include <app/caret.h>
@@ -430,9 +431,7 @@ void PowerTabEditor::editTrill()
     Q_ASSERT(note);
 
     if (note->hasTrill())
-    {
-        // TODO - remove trill.
-    }
+        myUndoManager->push(new RemoveTrill(location), location.getSystemIndex());
     else
     {
         TrillDialog dialog(this, note->getFretNumber());
