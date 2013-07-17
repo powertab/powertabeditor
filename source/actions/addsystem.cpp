@@ -17,54 +17,44 @@
   
 #include "addsystem.h"
 
-#include <boost/make_shared.hpp>
+#include <score/score.h>
 
-#include <powertabdocument/barline.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-
-AddSystem::AddSystem(Score* score, quint32 index) :
-    QUndoCommand(QObject::tr("Add System")),
-    score(score),
-    index(index),
-    system(boost::make_shared<System>())
+AddSystem::AddSystem(Score &score, int index)
+    : QUndoCommand(QObject::tr("Add System")),
+      myScore(score),
+      myIndex(index)
 {
-    // Carry over the time signature and key signature from the previous system
-    // if possible.
-    if (index > 0)
-    {
-        boost::shared_ptr<const System> prevSystem(score->GetSystem(index - 1));
-        KeySignature key = prevSystem->GetEndBar()->GetKeySignature();
-        TimeSignature time = prevSystem->GetEndBar()->GetTimeSignature();
-
-        boost::shared_ptr<Barline> endBar = system->GetEndBar();
-        endBar->SetKeySignature(key);
-        endBar->SetTimeSignature(time);
-
-        boost::shared_ptr<Barline> startBar = system->GetStartBar();
-        key.SetShown(true);
-        startBar->SetKeySignature(key);
-        startBar->SetTimeSignature(time);
-    }
-
-    // adjust the location of the system (should be below the previous system)
-    // TODO - move this into the Score::InsertSystem method (or add another method)??
-    if (index != 0)
-    {
-        const Rect prevRect = score->GetSystem(index - 1)->GetRect();
-
-        Rect currentRect = system->GetRect();
-        currentRect.SetTop(prevRect.GetBottom() + Score::SYSTEM_SPACING);
-        system->SetRect(currentRect);
-    }
 }
 
 void AddSystem::redo()
 {
-    score->InsertSystem(system, index);
+    // Set up a default staff.
+    System system;
+    system.insertStaff(Staff());
+
+    // Carry over the time signature and key signature from the previous system
+    // if possible.
+    if (myIndex > 0)
+    {
+        const System &prevSystem = myScore.getSystems()[myIndex - 1];
+        KeySignature key = prevSystem.getBarlines().back().getKeySignature();
+        TimeSignature time = prevSystem.getBarlines().back().getTimeSignature();
+
+        Barline &endBar = system.getBarlines().back();
+        key.setVisible(false);
+        endBar.setKeySignature(key);
+        endBar.setTimeSignature(time);
+
+        Barline &startBar = system.getBarlines().front();
+        key.setVisible(true);
+        startBar.setKeySignature(key);
+        startBar.setTimeSignature(time);
+    }
+
+    myScore.insertSystem(system, myIndex);
 }
 
 void AddSystem::undo()
 {
-    score->RemoveSystem(index);
+    myScore.removeSystem(myIndex);
 }

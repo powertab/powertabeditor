@@ -20,6 +20,7 @@
 
 #include <boost/scoped_ptr.hpp>
 #include <QGraphicsItem>
+#include <boost/signals2/connection.hpp>
 
 class Caret;
 struct LayoutInfo;
@@ -42,6 +43,7 @@ private:
     boost::scoped_ptr<LayoutInfo> myLayout;
     std::vector<QRectF> mySystemRects;
     bool myInPlaybackMode;
+    boost::signals2::scoped_connection myCaretConnection;
 
     static const double PEN_WIDTH;
     /// Spacing around a highlighted note.

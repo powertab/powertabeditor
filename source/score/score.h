@@ -48,10 +48,10 @@ public:
     /// Returns the set of systems in the score.
     boost::iterator_range<SystemConstIterator> getSystems() const;
 
-    /// Adds a new system to the score.
-    void insertSystem(const System &system);
+    /// Adds a new system to the score, optionally at a specific index.
+    void insertSystem(const System &system, int index = -1);
     /// Removes the specified system from the score.
-    void removeSystem(const System &system);
+    void removeSystem(int index);
 
     /// Returns the set of players in the score.
     boost::iterator_range<PlayerIterator> getPlayers();

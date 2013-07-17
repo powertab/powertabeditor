@@ -11,7 +11,7 @@ add_library(pteactions
     #addmusicaldirection.cpp
     #addnote.cpp
     addpositionproperty.cpp
-    #addsystem.cpp
+    addsystem.cpp
     #addtappedharmonic.cpp
     #addtempomarker.cpp
     addtrill.cpp

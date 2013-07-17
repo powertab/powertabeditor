@@ -7,6 +7,7 @@ add_executable(pte_tests
     #actions/test_addirregulargrouping.cpp
     #actions/test_addmusicaldirection.cpp
     actions/test_addpositionproperty.cpp
+    actions/test_addsystem.cpp
     #actions/test_addtappedharmonic.cpp
     actions/test_addtrill.cpp
     #actions/test_addvolumeswell.cpp

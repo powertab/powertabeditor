@@ -195,6 +195,16 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         Barline bar;
         convert(*oldSystem->GetBarline(i), bar);
         system.insertBarline(bar);
+
+        // Copy the key and time signature of the last bar into the end bar,
+        // since the v2.0 file format expects this.
+        if (i == oldSystem->GetBarlineCount() - 1)
+        {
+            KeySignature key = bar.getKeySignature();
+            key.setVisible(false);
+            system.getBarlines().back().setKeySignature(key);
+            system.getBarlines().back().setTimeSignature(bar.getTimeSignature());
+        }
     }
 
     // Import tempo markers.

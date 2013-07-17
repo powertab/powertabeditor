@@ -45,15 +45,17 @@ boost::iterator_range<Score::SystemConstIterator> Score::getSystems() const
     return boost::make_iterator_range(mySystems);
 }
 
-void Score::insertSystem(const System &system)
+void Score::insertSystem(const System &system, int index)
 {
-    mySystems.push_back(system);
+    if (index < 0)
+        mySystems.push_back(system);
+    else
+        mySystems.insert(mySystems.begin() + index, system);
 }
 
-void Score::removeSystem(const System &system)
+void Score::removeSystem(int index)
 {
-    mySystems.erase(std::remove(mySystems.begin(), mySystems.end(), system),
-                    mySystems.end());
+    mySystems.erase(mySystems.begin() + index);
 }
 
 boost::iterator_range<Score::PlayerIterator> Score::getPlayers()

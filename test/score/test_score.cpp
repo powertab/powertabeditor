@@ -29,7 +29,7 @@ TEST_CASE("Score/Score/Systems", "")
     System system;
     score.insertSystem(system);
     REQUIRE(score.getSystems().size() == 1);
-    score.removeSystem(system);
+    score.removeSystem(0);
     REQUIRE(score.getSystems().size() == 0);
 }
 

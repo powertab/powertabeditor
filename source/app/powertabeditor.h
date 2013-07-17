@@ -81,6 +81,8 @@ private slots:
 
     /// Redraws only the given system.
     void redrawSystem(int);
+    /// Redraws the entire score.
+    void redrawScore();
 
     /// Moves the caret to the first position in the staff.
     void moveCaretToStart();
@@ -109,7 +111,14 @@ private slots:
     /// Moves the caret to the next bar after the current position.
     void moveCaretToNextBar();
     /// Moves the caret to the last bar before the current position.
-    void moveCaretToPrevBar();
+    void moveCaretToPrevBar();    
+
+    /// Inserts a new system at the end of the score.
+    void insertSystemAtEnd();
+    /// Inserts a new system before the current system.
+    void insertSystemBefore();
+    /// Inserts a new system after the current system.
+    void insertSystemAfter();
 
     /// Adds or removes a trill for the current note.
     void editTrill();
@@ -136,6 +145,9 @@ private:
 
     /// Toggles a simple position property.
     void editSimpleProperty(Command *command, Position::SimpleProperty property);
+
+    /// Helper function to insert a system at the given index.
+    void insertSystem(int index);
 
     /// Returns the score area for the active document.
     ScoreArea *getScoreArea();
@@ -184,6 +196,11 @@ private:
     Command *myPrevStaffCommand;
     Command *myNextBarCommand;
     Command *myPrevBarCommand;
+
+    QMenu *mySectionMenu;
+    Command *myInsertSystemAtEndCommand;
+    Command *myInsertSystemBeforeCommand;
+    Command *myInsertSystemAfterCommand;
 
     QMenu *myTabSymbolsMenu;
     Command *myTrillCommand;
@@ -259,9 +276,6 @@ private slots:
     void editIrregularGrouping(bool setAsTriplet = false);
 
     void removeCurrentSystem();
-    void insertSystemAtEnd();
-    void insertSystemBefore();
-    void insertSystemAfter();
 
     void shiftForward();
     void shiftBackward();
@@ -307,12 +321,8 @@ private:
     QMenu* textMenu;
     Command* chordNameAct; // add/remove a chord name
 
-    QMenu* sectionMenu;
     Command* increasePositionSpacingAct;
     Command* decreasePositionSpacingAct;
-    Command* insertSystemAtEndAct;
-    Command* insertSystemBeforeAct;
-    Command* insertSystemAfterAct;
     Command* removeCurrentSystemAct;
 
     QMenu* notesMenu;

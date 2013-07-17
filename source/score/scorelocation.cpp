@@ -46,6 +46,11 @@ ScoreLocation::ScoreLocation(Score &score, int system, int staff, int position,
 {
 }
 
+Score &ScoreLocation::getScore()
+{
+    return *myWriteableScore;
+}
+
 const Score &ScoreLocation::getScore() const
 {
     return myScore;

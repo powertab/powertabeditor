@@ -30,10 +30,10 @@ const double CaretPainter::CARET_NOTE_SPACING = 6;
 
 CaretPainter::CaretPainter(const Caret &caret)
     : myCaret(caret),
-      myInPlaybackMode(false)
+      myInPlaybackMode(false),
+      myCaretConnection(caret.subscribeToChanges(
+                            boost::bind(&CaretPainter::onLocationChanged, this)))
 {
-    caret.subscribeToChanges(boost::bind(&CaretPainter::onLocationChanged,
-                                         this));
 }
 
 void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,

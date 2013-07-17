@@ -15,26 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ADDSYSTEM_H
-#define ADDSYSTEM_H
+#ifndef ACTIONS_ADDSYSTEM_H
+#define ACTIONS_ADDSYSTEM_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
 
 class Score;
-class System;
 
 class AddSystem : public QUndoCommand
 {
 public:
-    AddSystem(Score* score, quint32 index);
-    void redo();
-    void undo();
+    AddSystem(Score &score, int index);
+
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    const quint32 index;
-    boost::shared_ptr<System> system;
+    Score &myScore;
+    const int myIndex;
 };
 
-#endif // ADDSYSTEM_H
+#endif

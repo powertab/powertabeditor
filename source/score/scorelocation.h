@@ -35,6 +35,7 @@ public:
     ScoreLocation(Score &score, int system = 0, int staff = 0,
                   int position = 0, int voice = 0, int string = 0);
 
+    Score &getScore();
     const Score &getScore() const;
 
     int getSystemIndex() const;

@@ -18,6 +18,7 @@
 #include "powertabeditor.h"
 
 #include <actions/addpositionproperty.h>
+#include <actions/addsystem.h>
 #include <actions/addtrill.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removetrill.h>
@@ -78,9 +79,9 @@ PowerTabEditor::PowerTabEditor() :
 
     connect(myUndoManager.get(), SIGNAL(redrawNeeded(int)), this,
             SLOT(redrawSystem(int)));
-#if 0
     connect(myUndoManager.get(), SIGNAL(fullRedrawNeeded()), this,
-            SLOT(performFullRedraw()));
+            SLOT(redrawScore()));
+#if 0
     connect(myUndoManager.get(), SIGNAL(cleanChanged(bool)), this,
             SLOT(updateModified(bool)));
 #endif
@@ -356,6 +357,13 @@ void PowerTabEditor::redrawSystem(int index)
 #endif
 }
 
+void PowerTabEditor::redrawScore()
+{
+    getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument(),
+                                   Staff::GuitarView);
+    // TODO - update actions and caret.
+}
+
 void PowerTabEditor::moveCaretToStart()
 {
     getCaret().moveToStartPosition();
@@ -424,6 +432,21 @@ void PowerTabEditor::moveCaretToNextBar()
 void PowerTabEditor::moveCaretToPrevBar()
 {
     getCaret().moveToPrevBar();
+}
+
+void PowerTabEditor::insertSystemAtEnd()
+{
+    insertSystem(getLocation().getScore().getSystems().size());
+}
+
+void PowerTabEditor::insertSystemBefore()
+{
+    insertSystem(getLocation().getSystemIndex());
+}
+
+void PowerTabEditor::insertSystemAfter()
+{
+    insertSystem(getLocation().getSystemIndex() + 1);
 }
 
 void PowerTabEditor::editTrill()
@@ -675,24 +698,32 @@ void PowerTabEditor::createCommands()
     sigfwd::connect(decreasePositionSpacingAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::changePositionSpacing, this, -1));
 
+#endif
+    myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
+                                             "Section.InsertSystemAtEnd",
+                                             Qt::Key_N, this);
+    connect(myInsertSystemAtEndCommand, SIGNAL(triggered()), this,
+            SLOT(insertSystemAtEnd()));
+
+    myInsertSystemBeforeCommand = new Command(tr("Insert System Before"),
+                                              "Section.InsertSystemBefore",
+                                              QKeySequence(Qt::ALT + Qt::SHIFT +
+                                                           Qt::Key_N),this);
+    connect(myInsertSystemBeforeCommand, SIGNAL(triggered()), this,
+            SLOT(insertSystemBefore()));
+
+    myInsertSystemAfterCommand = new Command(tr("Insert System After"),
+                                             "Section.InsertSystemAfter",
+                                             QKeySequence(Qt::SHIFT + Qt::Key_N),
+                                             this);
+    connect(myInsertSystemAfterCommand, SIGNAL(triggered()), this,
+            SLOT(insertSystemAfter()));
+
+#if 0
     removeCurrentSystemAct = new Command(tr("Remove Current System"),
                     "Section.RemoveCurrentSystem",
                     QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N), this);
     connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
-
-    insertSystemAtEndAct = new Command(tr("Insert System At End"),
-                    "Section.InsertSystemAtEnd", Qt::Key_N, this);
-    connect(insertSystemAtEndAct, SIGNAL(triggered()), this, SLOT(insertSystemAtEnd()));
-
-    insertSystemBeforeAct = new Command(tr("Insert System Before"),
-                    "Section.InsertSystemBefore",
-                    QKeySequence(Qt::ALT + Qt::SHIFT + Qt::Key_N), this);
-    connect(insertSystemBeforeAct, SIGNAL(triggered()), this, SLOT(insertSystemBefore()));
-
-    insertSystemAfterAct = new Command(tr("Insert System After"),
-                    "Section.InsertSystemAfter",
-                    QKeySequence(Qt::SHIFT + Qt::Key_N), this);
-    connect(insertSystemAfterAct, SIGNAL(triggered()), this, SLOT(insertSystemAfter()));
 
     // Note-related actions
     noteDurationActGroup = new QActionGroup(this);
@@ -1152,16 +1183,20 @@ void PowerTabEditor::createMenus()
     textMenu = menuBar()->addMenu(tr("&Text"));
     textMenu->addAction(chordNameAct);
 
-    // Section Menu
-    sectionMenu = menuBar()->addMenu(tr("&Section"));
-    sectionMenu->addAction(increasePositionSpacingAct);
-    sectionMenu->addAction(decreasePositionSpacingAct);
-    sectionMenu->addSeparator();
-    sectionMenu->addAction(insertSystemAtEndAct);
-    sectionMenu->addAction(insertSystemBeforeAct);
-    sectionMenu->addAction(insertSystemAfterAct);
-    sectionMenu->addSeparator();
-    sectionMenu->addAction(removeCurrentSystemAct);
+#endif
+    // Section Menu.
+    mySectionMenu = menuBar()->addMenu(tr("&Section"));
+#if 0
+    mySectionMenu->addAction(increasePositionSpacingAct);
+    mySectionMenu->addAction(decreasePositionSpacingAct);
+    mySectionMenu->addSeparator();
+#endif
+    mySectionMenu->addAction(myInsertSystemAtEndCommand);
+    mySectionMenu->addAction(myInsertSystemBeforeCommand);
+    mySectionMenu->addAction(myInsertSystemAfterCommand);
+#if 0
+    mySectionMenu->addSeparator();
+    mySectionMenu->addAction(removeCurrentSystemAct);
 
     // Note Menu
     notesMenu = menuBar()->addMenu(tr("&Notes"));
@@ -1404,13 +1439,29 @@ void PowerTabEditor::setupNewTab()
     qDebug() << "Tab opened in" << timer.elapsed() << "seconds";
 }
 
+namespace
+{
+inline void updatePositionProperty(Command *command, const Position *pos,
+                                   Position::SimpleProperty property)
+{
+    command->setEnabled(pos);
+    command->setChecked(pos && pos->hasProperty(property));
+}
+}
+
 void PowerTabEditor::updateCommands()
 {
     const ScoreLocation &location = getLocation();
+    const Position *pos = location.getPosition();
     const Note *note = location.getNote();
 
     myTrillCommand->setEnabled(note);
     myTrillCommand->setChecked(note && note->hasTrill());
+
+    updatePositionProperty(myTapCommand, pos, Position::Tap);
+    updatePositionProperty(myPickStrokeUpCommand, pos, Position::PickStrokeUp);
+    updatePositionProperty(myPickStrokeDownCommand, pos,
+                           Position::PickStrokeDown);
 }
 
 void PowerTabEditor::editSimpleProperty(Command *command,
@@ -1444,6 +1495,12 @@ void PowerTabEditor::editSimpleProperty(Command *command,
     }
 }
 
+void PowerTabEditor::insertSystem(int index)
+{
+    myUndoManager->push(new AddSystem(getLocation().getScore(), index),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
 ScoreArea *PowerTabEditor::getScoreArea()
 {
     return dynamic_cast<ScoreArea *>(myTabWidget->currentWidget());
@@ -1460,13 +1517,6 @@ ScoreLocation &PowerTabEditor::getLocation()
 }
 
 #if 0
-/// Redraw the entire score.
-void PowerTabEditor::performFullRedraw()
-{
-    getCurrentScoreArea()->requestFullRedraw();
-    redrawSystem(0); // Trigger a redraw - the system index doesn't matter.
-}
-
 // this is a reimplementation of QObject's eventFilter function
 // it returns true to tell Qt to stop propagating this event
 // this is necessary to intercept tab key presses before they are
@@ -1731,34 +1781,6 @@ void PowerTabEditor::removeCurrentSystem()
 
     RemoveSystem* removeSystemAct = new RemoveSystem(caret->getCurrentScore(), caret->getCurrentSystemIndex());
     undoManager->push(removeSystemAct, UndoManager::AFFECTS_ALL_SYSTEMS);
-}
-
-void PowerTabEditor::insertSystemAfter()
-{
-    const size_t index = getCurrentScoreArea()->getCaret()->getCurrentSystemIndex() + 1;
-    performSystemInsert(index);
-}
-
-void PowerTabEditor::insertSystemBefore()
-{
-    const size_t currentIndex = getCurrentScoreArea()->getCaret()->getCurrentSystemIndex();
-    performSystemInsert(currentIndex);
-}
-
-void PowerTabEditor::insertSystemAtEnd()
-{
-    const size_t index = getCurrentScoreArea()->getCaret()->getCurrentScore()->GetSystemCount();
-    performSystemInsert(index);
-}
-
-/// Inserts a system at the specified index.
-void PowerTabEditor::performSystemInsert(size_t index)
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
-
-    AddSystem* addSystemAct = new AddSystem(score, index);
-    undoManager->push(addSystemAct, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::shiftForward()
