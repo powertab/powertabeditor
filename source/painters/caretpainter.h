@@ -20,7 +20,7 @@
 
 #include <boost/scoped_ptr.hpp>
 #include <QGraphicsItem>
-#include <boost/signals2/connection.hpp>
+#include <boost/signals2/signal.hpp>
 
 class Caret;
 struct LayoutInfo;
@@ -36,7 +36,13 @@ public:
 
     void addSystemRect(const QRectF &rect);
 
+    typedef boost::signals2::signal<void ()> LocationChangedSlot;
+    /// Register a listener for when the caret painter is updated.
+    boost::signals2::connection subscribeToMovement(
+            const LocationChangedSlot::slot_type &subscriber);
+
 private:
+    /// Redraw the caret painter whenever the caret moves.
     void onLocationChanged();
 
     const Caret &myCaret;
@@ -44,6 +50,7 @@ private:
     std::vector<QRectF> mySystemRects;
     bool myInPlaybackMode;
     boost::signals2::scoped_connection myCaretConnection;
+    LocationChangedSlot onMyLocationChanged;
 
     static const double PEN_WIDTH;
     /// Spacing around a highlighted note.

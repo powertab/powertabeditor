@@ -127,6 +127,12 @@ void CaretPainter::addSystemRect(const QRectF &rect)
     mySystemRects.push_back(rect);
 }
 
+boost::signals2::connection CaretPainter::subscribeToMovement(
+        const LocationChangedSlot::slot_type &subscriber)
+{
+    return onMyLocationChanged.connect(subscriber);
+}
+
 void CaretPainter::onLocationChanged()
 {
     const ScoreLocation &location = myCaret.getLocation();
@@ -148,4 +154,7 @@ void CaretPainter::onLocationChanged()
 
     setToolTip(QString::fromStdString(
                    boost::lexical_cast<std::string>(location)));
+
+    // Notify anyone interested in the caret being redrawn.
+    onMyLocationChanged();
 }

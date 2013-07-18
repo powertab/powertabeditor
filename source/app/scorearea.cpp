@@ -31,10 +31,10 @@
 
 static const double SYSTEM_SPACING = 50;
 
-#if 1
 ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myViewType(Staff::GuitarView),
+      myCaretPainter(NULL),
       myKeySignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
       myTimeSignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
       myBarlineClicked(boost::make_shared<ScoreLocationPubSub>())
@@ -58,7 +58,10 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
     progressDialog.setWindowModality(Qt::WindowModal);
     progressDialog.show();
 
-    CaretPainter *caretPainter = new CaretPainter(document.getCaret());
+    myCaretPainter = new CaretPainter(document.getCaret());
+
+    myCaretPainter->subscribeToMovement(boost::bind(&ScoreArea::adjustScroll,
+                                                    this));
 
     // Render each system.
     int i = 0;
@@ -78,10 +81,10 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
 #endif
         ++i;
 
-        caretPainter->addSystemRect(renderedSystem->sceneBoundingRect());
+        myCaretPainter->addSystemRect(renderedSystem->sceneBoundingRect());
     }
 
-    myScene.addItem(caretPainter);
+    myScene.addItem(myCaretPainter);
 
     progressDialog.setValue(i);
 
@@ -122,10 +125,6 @@ void ScoreArea::redrawSystem(int index)
         system->setPos(0, height);
         height += system->boundingRect().height() + SYSTEM_SPACING;
     }
-
-#if 0
-    caret->updatePosition();
-#endif
 }
 
 boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getKeySignaturePubSub() const
@@ -148,84 +147,7 @@ boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getSelectionPubSub() const
     return myDocument->getCaret().getSelectionPubSub();
 }
 
-#else
-ScoreArea::ScoreArea(PowerTabEditor *editor) :
-    editor(editor),
-    caret(NULL),
-    scoreIndex(0),
-    keySignatureClicked(boost::make_shared<SystemLocationPubSub>()),
-    timeSignatureClicked(boost::make_shared<SystemLocationPubSub>()),
-    barlineClicked(boost::make_shared<SystemLocationPubSub>())
-{
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-
-    setScene(&scene);
-
-    redrawOnNextRefresh = false;
-}
-
-ScoreArea::~ScoreArea()
-{
-    // Prevent double deletion.
-    if (caret)
-    {
-        scene.removeItem(caret.get());
-    }
-}
-
-void ScoreArea::renderDocument(boost::shared_ptr<PowerTabDocument> doc)
-{
-    bool newCaret = (caret == NULL);
-    uint32_t voice = 0;
-
-    if (caret)
-    {
-        voice = caret->getCurrentVoice();
-        scene.removeItem(caret.get());
-    }
-
-    scene.clear();
-    systemList.clear();
-    document = doc;
-    int lineSpacing = document->GetTablatureStaffLineSpacing();
-
-    // Set up the caret
-    if (newCaret)
-    {
-        caret.reset(new Caret(doc->GetTablatureStaffLineSpacing()));
-        connect(caret.get(), SIGNAL(moved()), this, SLOT(adjustScroll()));
-    }
-
-    caret->setScore(doc->GetScore(scoreIndex));
-    caret->setCurrentVoice(voice);
-
-    // Adjust the caret to a valid position, since (for example) a system may
-    // have been removed.
-    caret->adjustToValidLocation();
-
-    if (newCaret)
-    {
-        editor->registerCaret(caret.get());
-    }
-
-    scene.addItem(caret.get());
-
-    // Render each score
-    // Only worry about the guitar score so far
-    renderScore(document->GetScore(scoreIndex), lineSpacing);
-}
-
-/// Used to request that a full redraw is performed when the ScoreArea is next updated
-void ScoreArea::requestFullRedraw()
-{
-    Q_ASSERT(!redrawOnNextRefresh);
-    redrawOnNextRefresh = true;
-}
-
-// ensures that the caret is visible when it changes sections
 void ScoreArea::adjustScroll()
 {
-    ensureVisible(caret.get(), 0, 100);
+    ensureVisible(myCaretPainter->sceneBoundingRect(), 0, 100);
 }
-
-#endif

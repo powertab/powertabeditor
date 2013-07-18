@@ -24,21 +24,15 @@
 #include <QGraphicsScene>
 #include <score/staff.h>
 
-class Caret;
+class CaretPainter;
 class Document;
 class ScoreLocationPubSub;
 
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
 {
-    Q_OBJECT
-
 public:
-#if 0
-    explicit ScoreArea(PowerTabEditor* editor);
-#else
     explicit ScoreArea(QWidget *parent);
-#endif
 
     void renderDocument(const Document &document, Staff::ViewType view);
 
@@ -46,36 +40,24 @@ public:
     /// necessary.
     void redrawSystem(int index);
 
-#if 0
-    ~ScoreArea();
-#endif
-
     boost::shared_ptr<ScoreLocationPubSub> getKeySignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
 
 private:
+    /// Adjusts the scroll location whenever the caret moves.
+    void adjustScroll();
+
     QGraphicsScene myScene;
     boost::optional<const Document &> myDocument;
     Staff::ViewType myViewType;
     QList<QGraphicsItem *> myRenderedSystems;
-
-#if 0
-    PowerTabEditor* editor;
-    boost::scoped_ptr<Caret> caret;
-#endif
+    CaretPainter *myCaretPainter;
 
     boost::shared_ptr<ScoreLocationPubSub> myKeySignatureClicked;
     boost::shared_ptr<ScoreLocationPubSub> myTimeSignatureClicked;
     boost::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
-#if 0
-    bool redrawOnNextRefresh;
-
-public slots:
-    void adjustScroll();
-    void requestFullRedraw();
-#endif
 };
 
 #endif
