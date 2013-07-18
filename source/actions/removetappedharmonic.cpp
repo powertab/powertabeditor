@@ -17,24 +17,21 @@
   
 #include "removetappedharmonic.h"
 
-#include <powertabdocument/note.h>
+#include <score/note.h>
 
-RemoveTappedHarmonic::RemoveTappedHarmonic(Note* note) :
-    note(note),
-    originalFret(0)
+RemoveTappedHarmonic::RemoveTappedHarmonic(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Tapped Harmonic")),
+      myLocation(location),
+      myTappedFret(location.getNote()->getTappedHarmonicFret())
 {
-    Q_ASSERT(note->HasTappedHarmonic());
-
-    note->GetTappedHarmonic(originalFret);
-    setText(QObject::tr("Remove Tapped Harmonic"));
 }
 
 void RemoveTappedHarmonic::redo()
 {
-    note->ClearTappedHarmonic();
+    myLocation.getNote()->clearTappedHarmonic();
 }
 
 void RemoveTappedHarmonic::undo()
 {
-    note->SetTappedHarmonic(originalFret);
+    myLocation.getNote()->setTappedHarmonicFret(myTappedFret);
 }

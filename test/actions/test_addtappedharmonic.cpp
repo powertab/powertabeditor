@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,21 +18,21 @@
 #include <catch.hpp>
 
 #include <actions/addtappedharmonic.h>
-#include <powertabdocument/note.h>
+#include <score/note.h>
+#include "actionfixture.h"
 
-TEST_CASE("Actions/AddTappedHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddTappedHarmonic", "")
 {
     Note note;
-    const uint8_t requestedTappedFret = 17;
-    uint8_t currentTappedFret = 0;
+    myLocation.getPosition()->insertNote(note);
+    const int tappedFret = 17;
 
-    AddTappedHarmonic action(&note, requestedTappedFret);
+    AddTappedHarmonic action(myLocation, tappedFret);
 
     action.redo();
-    REQUIRE(note.HasTappedHarmonic());
-    note.GetTappedHarmonic(currentTappedFret);
-    REQUIRE(currentTappedFret == requestedTappedFret);
+    REQUIRE(myLocation.getNote()->hasTappedHarmonic());
+    REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == tappedFret);
 
     action.undo();
-    REQUIRE(!note.HasTappedHarmonic());
+    REQUIRE(!myLocation.getNote()->hasTappedHarmonic());
 }

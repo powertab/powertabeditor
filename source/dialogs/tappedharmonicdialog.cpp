@@ -16,70 +16,41 @@
 */
   
 #include "tappedharmonicdialog.h"
-
-#include <powertabdocument/note.h>
-#include <powertabdocument/harmonics.h>
+#include "ui_tappedharmonicdialog.h"
 
 #include <boost/foreach.hpp>
+#include <score/note.h>
 
-#include <QFormLayout>
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QComboBox>
-
-TappedHarmonicDialog::TappedHarmonicDialog(QWidget *parent, const Note *note,
-                                           uint8_t &tappedFret) :
-    QDialog(parent),
-    note(note),
-    tappedFret(tappedFret)
+TappedHarmonicDialog::TappedHarmonicDialog(QWidget *parent, int originalFret)
+    : QDialog(parent),
+      ui(new Ui::TappedHarmonicDialog()),
+      myOriginalFret(originalFret)
 {
-    setWindowTitle(tr("Tapped Harmonic"));
-    setModal(true);
+    ui->setupUi(this);
 
-    QFormLayout* formLayout = new QFormLayout;
+    ui->currentFretSpinBox->setValue(myOriginalFret);
 
-    QLabel* frettedNote = new QLabel(QString::number(note->GetFretNumber()));
+    // Populate the list of available frets.
+    BOOST_FOREACH(int offset, Harmonics::getValidFretOffsets())
+    {
+        const int tappedFret = myOriginalFret + offset;
 
-    formLayout->addRow(tr("Fretted Note:"), frettedNote);
-
-    tappedFretSelector = new QComboBox;
-    initTappedFrets();
-
-    formLayout->addRow(tr("Tapped Fret:"), tappedFretSelector);
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
-    QVBoxLayout* buttonsLayout = new QVBoxLayout;
-    buttonsLayout->addStretch(1);
-    buttonsLayout->addLayout(formLayout);
-    buttonsLayout->addWidget(buttonBox);
-
-    buttonsLayout->setSizeConstraint(QLayout::SetFixedSize);
-    setLayout(buttonsLayout);
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+        if (tappedFret <= Note::MAX_FRET_NUMBER)
+            ui->tappedFretComboBox->addItem(QString::number(tappedFret));
+    }
 }
 
-/// Populates the drop-down menu with the available fret numbers for the tapped note
-void TappedHarmonicDialog::initTappedFrets()
+TappedHarmonicDialog::~TappedHarmonicDialog()
 {
-    const uint8_t currentFret = note->GetFretNumber();
-    std::vector<uint8_t> fretOffsets = Harmonics::getFretOffsets();
+    delete ui;
+}
 
-    BOOST_FOREACH(uint8_t fretOffset, fretOffsets)
-    {
-        const uint8_t tappedFret = fretOffset + currentFret;
-
-        // ensure that the tapped fret is actually possible to play
-        if (Note::IsValidFretNumber(tappedFret))
-        {
-            tappedFretSelector->addItem(QString::number(fretOffset + currentFret));
-        }
-    }
+int TappedHarmonicDialog::getTappedFret() const
+{
+    return ui->tappedFretComboBox->currentText().toInt();
 }
 
 void TappedHarmonicDialog::accept()
 {
-    tappedFret = tappedFretSelector->currentText().toUShort();
     done(Accepted);
 }

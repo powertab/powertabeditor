@@ -17,21 +17,22 @@
   
 #include "addtappedharmonic.h"
 
-#include <powertabdocument/note.h>
+#include <score/note.h>
 
-AddTappedHarmonic::AddTappedHarmonic(Note* note, uint8_t tappedFret) :
-    note(note),
-    tappedFret(tappedFret)
+AddTappedHarmonic::AddTappedHarmonic(const ScoreLocation &location,
+                                     int tappedFret)
+    : QUndoCommand(QObject::tr("Add Tapped Harmonic")),
+      myLocation(location),
+      myTappedFret(tappedFret)
 {
-    setText(QObject::tr("Add Tapped Harmonic"));
 }
 
 void AddTappedHarmonic::redo()
 {
-    note->SetTappedHarmonic(tappedFret);
+    myLocation.getNote()->setTappedHarmonicFret(myTappedFret);
 }
 
 void AddTappedHarmonic::undo()
 {
-    note->ClearTappedHarmonic();
+    myLocation.getNote()->clearTappedHarmonic();
 }

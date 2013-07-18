@@ -17,11 +17,22 @@
 
 #include "note.h"
 
+#include <boost/assign/list_of.hpp>
+#include <map>
 #include <ostream>
 #include <stdexcept>
 
 const int Note::MIN_FRET_NUMBER = 0;
 const int Note::MAX_FRET_NUMBER = 29;
+
+namespace {
+/// Mapping of frets to pitch offsets (counted in half-steps or frets).
+/// For example, the natural harmonic at the 7th fret is an octave and
+/// a fifth (19 frets) above the pitch of the open string.
+const std::map<int, int> theHarmonicOffsets = boost::assign::map_list_of
+        (3, 31) (4, 28) (5, 24) (7, 19) (9, 28) (12, 12) (16, 28)
+        (19, 19) (24, 24) (28, 28);
+}
 
 Note::Note()
     : myString(0),
@@ -175,4 +186,17 @@ std::ostream &operator<<(std::ostream &os, const Note &note)
         os << brackets[1];
 
     return os;
+}
+
+std::vector<int> Harmonics::getValidFretOffsets()
+{
+    std::vector<int> frets;
+
+    for (std::map<int, int>::const_iterator i = theHarmonicOffsets.begin();
+         i != theHarmonicOffsets.end(); ++i)
+    {
+        frets.push_back(i->first);
+    }
+
+    return frets;
 }

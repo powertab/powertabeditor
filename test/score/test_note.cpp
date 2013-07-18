@@ -88,6 +88,17 @@ TEST_CASE("Score/Note/ToString", "")
     REQUIRE(boost::lexical_cast<std::string>(mutedNote) == "x");
 }
 
+TEST_CASE("Score/Note/Harmonics/GetValidFretOffsets", "")
+{
+    std::vector<int> frets = Harmonics::getValidFretOffsets();
+
+    REQUIRE(!frets.empty());
+    // Check a couple valid and invalid frets.
+    REQUIRE(std::find(frets.begin(), frets.end(), 12) != frets.end());
+    REQUIRE(std::find(frets.begin(), frets.end(), 7) != frets.end());
+    REQUIRE(std::find(frets.begin(), frets.end(), 8) == frets.end());
+}
+
 TEST_CASE("Score/Note/Serialization", "")
 {
     Note note(3, 12);

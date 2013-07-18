@@ -19,7 +19,6 @@
 #define DIALOGS_TRILLDIALOG_H
 
 #include <QDialog>
-#include <boost/scoped_ptr.hpp>
 
 namespace Ui {
 class TrillDialog;

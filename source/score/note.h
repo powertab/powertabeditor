@@ -21,6 +21,7 @@
 #include <bitset>
 #include <boost/serialization/access.hpp>
 #include <iosfwd>
+#include <vector>
 
 class Note
 {
@@ -98,6 +99,12 @@ private:
              myTrilledFret & myTappedHarmonicFret;
     }
 };
+
+/// Useful utility functions for working with natural and tapped harmonics.
+namespace Harmonics {
+/// Returns a list of all fret offsets that produce harmonics (e.g. 7, 12, etc.)
+std::vector<int> getValidFretOffsets();
+}
 
 /// Creates a text representation of the note, including brackets for ghost
 /// notes, harmonics, etc.

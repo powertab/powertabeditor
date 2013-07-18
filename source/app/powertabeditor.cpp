@@ -19,9 +19,11 @@
 
 #include <actions/addpositionproperty.h>
 #include <actions/addsystem.h>
+#include <actions/addtappedharmonic.h>
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/removepositionproperty.h>
+#include <actions/removetappedharmonic.h>
 #include <actions/removetrill.h>
 #include <actions/undomanager.h>
 
@@ -37,6 +39,7 @@
 #include <boost/timer.hpp>
 
 #include <dialogs/keyboardsettingsdialog.h>
+#include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/trilldialog.h>
 
 #include <formats/fileformatmanager.h>
@@ -443,6 +446,29 @@ void PowerTabEditor::insertSystemBefore()
 void PowerTabEditor::insertSystemAfter()
 {
     insertSystem(getLocation().getSystemIndex() + 1);
+}
+
+void PowerTabEditor::editTappedHarmonic()
+{
+    const ScoreLocation &location = getLocation();
+    const Note *note = location.getNote();
+    Q_ASSERT(note);
+
+    if (note->hasTappedHarmonic())
+        myUndoManager->push(new RemoveTappedHarmonic(location),
+                            location.getSystemIndex());
+    else
+    {
+        TappedHarmonicDialog dialog(this, note->getFretNumber());
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(new AddTappedHarmonic(location,
+                                                      dialog.getTappedFret()),
+                                location.getSystemIndex());
+        }
+        else
+            myTappedHarmonicCommand->setChecked(false);
+    }
 }
 
 void PowerTabEditor::editTrill()
@@ -996,12 +1022,14 @@ void PowerTabEditor::createCommands()
     connect(artificialHarmonicAct, SIGNAL(triggered()),
             this, SLOT(editArtificialHarmonic()));
 
-    tappedHarmonicAct = new Command(tr("Tapped Harmonic..."),
-            "TabSymbols.TappedHarmonic", QKeySequence(), this);
-    tappedHarmonicAct->setCheckable(true);
-    connect(tappedHarmonicAct, SIGNAL(triggered()),
-            this, SLOT(editTappedHarmonic()));
-
+#endif
+    myTappedHarmonicCommand = new Command(tr("Tapped Harmonic..."),
+                                          "TabSymbols.TappedHarmonic",
+                                          QKeySequence(), this);
+    myTappedHarmonicCommand->setCheckable(true);
+    connect(myTappedHarmonicCommand, SIGNAL(triggered()), this,
+            SLOT(editTappedHarmonic()));
+#if 0
     shiftSlideAct = new Command(tr("Shift Slide"), "TabSymbols.ShiftSlide", Qt::Key_S, this);
     shiftSlideAct->setCheckable(true);
     sigfwd::connect(shiftSlideAct, SIGNAL(triggered()),
@@ -1278,8 +1306,10 @@ void PowerTabEditor::createMenus()
     tabSymbolsMenu->addAction(hammerPullAct);
     tabSymbolsMenu->addAction(naturalHarmonicAct);
     tabSymbolsMenu->addAction(artificialHarmonicAct);
-    tabSymbolsMenu->addAction(tappedHarmonicAct);
-    tabSymbolsMenu->addSeparator();
+#endif
+    myTabSymbolsMenu->addAction(myTappedHarmonicCommand);
+    myTabSymbolsMenu->addSeparator();
+#if 0
 
     slideIntoMenu = tabSymbolsMenu->addMenu(tr("Slide Into"));
     slideIntoMenu->addAction(slideIntoFromBelowAct);
@@ -1475,6 +1505,8 @@ void PowerTabEditor::updateCommands()
     myDecreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() > Score::MIN_LINE_SPACING);
 
+    myTappedHarmonicCommand->setEnabled(note);
+    myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
     myTrillCommand->setEnabled(note);
     myTrillCommand->setChecked(note && note->hasTrill());
 
@@ -2116,33 +2148,6 @@ void PowerTabEditor::editChordName()
                           caret->getCurrentSystemIndex());
     }
 
-}
-
-/// Add/Remove a tapped harmonic at the current note
-void PowerTabEditor::editTappedHarmonic()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Note* currentNote = caret->getCurrentNote();
-
-    if (currentNote->HasTappedHarmonic())
-    {
-        undoManager->push(new RemoveTappedHarmonic(currentNote), caret->getCurrentSystemIndex());
-    }
-    else // add a tapped harmonic
-    {
-        uint8_t tappedFret = 0;
-        TappedHarmonicDialog dialog(this, currentNote, tappedFret);
-
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            undoManager->push(new AddTappedHarmonic(currentNote, tappedFret),
-                                                caret->getCurrentSystemIndex());
-        }
-        else
-        {
-            tappedHarmonicAct->setChecked(false);
-        }
-    }
 }
 
 // If there is a rehearsal sign at the barline, remove it

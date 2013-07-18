@@ -120,6 +120,8 @@ private slots:
     /// Inserts a new system after the current system.
     void insertSystemAfter();
 
+    /// Adds or removes a tapped harmonic for the current note.
+    void editTappedHarmonic();
     /// Adds or removes a trill for the current note.
     void editTrill();
 
@@ -208,6 +210,7 @@ private:
     Command *myDecreaseLineSpacingCommand;
 
     QMenu *myTabSymbolsMenu;
+    Command* myTappedHarmonicCommand;
     Command *myTrillCommand;
     Command *myTapCommand;
     Command *myPickStrokeUpCommand;
@@ -273,7 +276,6 @@ private slots:
     void editBarlineFromCaret();
     void insertStandardBarline();
     void editArtificialHarmonic();
-    void editTappedHarmonic();
     void editKeySignatureFromCaret();
     void editTimeSignatureFromCaret();
     void editDynamic();
@@ -389,7 +391,6 @@ private:
     Command* hammerPullAct; // add/remove hammer-on or pull-off
     Command* naturalHarmonicAct; // add/remove natural harmonics
     Command* artificialHarmonicAct;
-    Command* tappedHarmonicAct;
     Command* shiftSlideAct;
     Command* legatoSlideAct;
     Command* vibratoAct; // add/remove vibrato

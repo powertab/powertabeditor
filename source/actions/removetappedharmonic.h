@@ -15,24 +15,23 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef REMOVETAPPEDHARMONIC_H
-#define REMOVETAPPEDHARMONIC_H
+#ifndef ACTIONS_REMOVETAPPEDHARMONIC_H
+#define ACTIONS_REMOVETAPPEDHARMONIC_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-
-class Note;
+#include <score/scorelocation.h>
 
 class RemoveTappedHarmonic : public QUndoCommand
 {
 public:
-    RemoveTappedHarmonic(Note* note);
-    void redo();
-    void undo();
+    RemoveTappedHarmonic(const ScoreLocation &location);
+
+    virtual void undo();
+    virtual void redo();
 
 private:
-    Note* note;
-    uint8_t originalFret;
+    ScoreLocation myLocation;
+    const int myTappedFret;
 };
 
-#endif // REMOVETAPPEDHARMONIC_H
+#endif

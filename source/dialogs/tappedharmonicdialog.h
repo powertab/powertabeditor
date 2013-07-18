@@ -15,31 +15,31 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef TAPPEDHARMONICDIALOG_H
-#define TAPPEDHARMONICDIALOG_H
+#ifndef DIALOGS_TAPPEDHARMONICDIALOG_H
+#define DIALOGS_TAPPEDHARMONICDIALOG_H
 
 #include <QDialog>
-#include <boost/cstdint.hpp>
 
-class Note;
-class QComboBox;
+namespace Ui {
+class TappedHarmonicDialog;
+}
 
 class TappedHarmonicDialog : public QDialog
 {
     Q_OBJECT
+
 public:
-    TappedHarmonicDialog(QWidget* parent, const Note* note, uint8_t& tappedFret);
+    explicit TappedHarmonicDialog(QWidget *parent, int originalFret);
+    ~TappedHarmonicDialog();
+
+    int getTappedFret() const;
 
 public slots:
     void accept();
 
 private:
-    void initTappedFrets();
-
-    const Note* note;
-    uint8_t& tappedFret;
-
-    QComboBox* tappedFretSelector;
+    Ui::TappedHarmonicDialog *ui;
+    const int myOriginalFret;
 };
 
-#endif // TAPPEDHARMONICDIALOG_H
+#endif

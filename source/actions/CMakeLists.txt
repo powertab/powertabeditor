@@ -12,7 +12,7 @@ add_library(pteactions
     #addnote.cpp
     addpositionproperty.cpp
     addsystem.cpp
-    #addtappedharmonic.cpp
+    addtappedharmonic.cpp
     #addtempomarker.cpp
     addtrill.cpp
     #addvolumeswell.cpp
@@ -42,7 +42,7 @@ add_library(pteactions
     #removemusicaldirection.cpp
     removepositionproperty.cpp
     #removesystem.cpp
-    #removetappedharmonic.cpp
+    removetappedharmonic.cpp
     #removetempomarker.cpp
     removetrill.cpp
     #removevolumeswell.cpp

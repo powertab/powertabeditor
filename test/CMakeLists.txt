@@ -8,7 +8,7 @@ add_executable(pte_tests
     #actions/test_addmusicaldirection.cpp
     actions/test_addpositionproperty.cpp
     actions/test_addsystem.cpp
-    #actions/test_addtappedharmonic.cpp
+    actions/test_addtappedharmonic.cpp
     actions/test_addtrill.cpp
     #actions/test_addvolumeswell.cpp
     actions/test_adjustlinespacing.cpp
@@ -24,7 +24,7 @@ add_executable(pte_tests
     #actions/test_removemusicaldirection.cpp
     actions/test_removepositionproperty.cpp
     #actions/test_removesystem.cpp
-    #actions/test_removetappedharmonic.cpp
+    actions/test_removetappedharmonic.cpp
     actions/test_removetrill.cpp
     #actions/test_removevolumeswell.cpp
     #actions/test_shifttabnumber.cpp

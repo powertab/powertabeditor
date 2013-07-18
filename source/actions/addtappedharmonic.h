@@ -15,25 +15,23 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ADDTAPPEDHARMONIC_H
-#define ADDTAPPEDHARMONIC_H
+#ifndef ACTIONS_ADDTAPPEDHARMONIC_H
+#define ACTIONS_ADDTAPPEDHARMONIC_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-
-class Note;
+#include <score/scorelocation.h>
 
 class AddTappedHarmonic : public QUndoCommand
 {
 public:
-    AddTappedHarmonic(Note* note, uint8_t tappedFret);
+    AddTappedHarmonic(const ScoreLocation &location, int tappedFret);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Note* note;
-    const uint8_t tappedFret;
+    ScoreLocation myLocation;
+    const int myTappedFret;
 };
 
-#endif // ADDTAPPEDHARMONIC_H
+#endif

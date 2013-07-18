@@ -18,23 +18,24 @@
 #include <catch.hpp>
 
 #include <actions/removetappedharmonic.h>
-#include <powertabdocument/note.h>
+#include <score/note.h>
+#include "actionfixture.h"
 
-TEST_CASE("Actions/RemoveTappedHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTappedHarmonic", "")
 {
     Note note;
-    const uint8_t originalTappedFret = 17;
-    note.SetTappedHarmonic(originalTappedFret);
-    uint8_t currentTappedFret = 0;
+    const int tappedFret = 17;
+    note.setTappedHarmonicFret(tappedFret);
+    myLocation.getPosition()->insertNote(note);
 
-    RemoveTappedHarmonic action(&note);
+    RemoveTappedHarmonic action(myLocation);
 
     action.redo();
-    REQUIRE(!note.HasTappedHarmonic());
+    REQUIRE(!myLocation.getNote()->hasTappedHarmonic());
 
     action.undo();
-    REQUIRE(note.HasTappedHarmonic());
-    note.GetTappedHarmonic(currentTappedFret);
-    REQUIRE(currentTappedFret == originalTappedFret);
+    REQUIRE(myLocation.getNote()->hasTappedHarmonic());
+    REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == tappedFret);
 }
+
 
