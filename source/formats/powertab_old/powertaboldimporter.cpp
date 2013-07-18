@@ -205,7 +205,10 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
             KeySignature key = bar.getKeySignature();
             key.setVisible(false);
             system.getBarlines().back().setKeySignature(key);
-            system.getBarlines().back().setTimeSignature(bar.getTimeSignature());
+
+            TimeSignature time = bar.getTimeSignature();
+            time.setVisible(false);
+            system.getBarlines().back().setTimeSignature(time);
         }
     }
 

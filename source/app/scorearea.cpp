@@ -76,9 +76,6 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
         myRenderedSystems << renderedSystem;
         myScene.addItem(renderedSystem);
         height += renderedSystem->boundingRect().height() + SYSTEM_SPACING;
-#if 0
-        renderer.connectSignals();
-#endif
         ++i;
 
         myCaretPainter->addSystemRect(renderedSystem->sceneBoundingRect());
@@ -111,9 +108,6 @@ void ScoreArea::redrawSystem(int index)
 
     newSystem->setPos(0, height);
     height += newSystem->boundingRect().height() + SYSTEM_SPACING;
-#if 0
-    renderer.connectSignals();
-#endif
 
     myScene.addItem(newSystem);
     myRenderedSystems.insert(index, newSystem);

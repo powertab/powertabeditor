@@ -1356,15 +1356,6 @@ void SystemRenderer::drawLedgerLines(const std::vector<int> &noteLocations,
     centerItem(ledgerlines, xLocation, xLocation + staffData.positionWidth, 0);
 }
 
-void SystemRenderer::connectSignals()
-{
-    for (size_t i = 0; i < staffPainters.size(); i++)
-    {
-        QObject::connect(staffPainters[i], SIGNAL(selectionUpdated(int,int)),
-                         myScoreArea->getCaret(), SLOT(updateSelection(int,int)));
-    }
-}
-
 QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffData& staffInfo)
 {
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup;

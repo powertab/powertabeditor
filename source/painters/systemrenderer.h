@@ -35,7 +35,6 @@ public:
     
     QGraphicsItem *operator()(const System &system, int systemIndex,
                               Staff::ViewType view);
-    void connectSignals();
 
 private:
     /// Draws the tab clef.
@@ -114,9 +113,6 @@ private:
     QFont myRehearsalSignFont;
 
 #if 0
-    // store these items so that their signals can be connected back to the ScoreArea later
-    std::vector<StaffPainter*> staffPainters;
-
     enum VolumeSwellType
     {
         VolumeIncreasing,
