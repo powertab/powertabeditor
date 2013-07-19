@@ -11,6 +11,7 @@ set(FORMS
     #irregulargroupingdialog.ui
     keyboardsettingsdialog.ui
     #keysignaturedialog.ui
+    playerchangedialog.ui
     #preferencesdialog.ui
     #rehearsalsigndialog.ui
     tappedharmonicdialog.ui
@@ -38,6 +39,7 @@ add_library(ptedialogs
     #irregulargroupingdialog.cpp
     keyboardsettingsdialog.cpp
     #keysignaturedialog.cpp
+    playerchangedialog.cpp
     #preferencesdialog.cpp
     #rehearsalsigndialog.cpp
     tappedharmonicdialog.cpp

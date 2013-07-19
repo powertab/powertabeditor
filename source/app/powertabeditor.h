@@ -125,6 +125,9 @@ private slots:
     /// Adds or removes a trill for the current note.
     void editTrill();
 
+    /// Adds or removes a player change at the current location.
+    void editPlayerChange();
+
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
     QString getApplicationName() const;
@@ -215,6 +218,9 @@ private:
     Command *myTapCommand;
     Command *myPickStrokeUpCommand;
     Command *myPickStrokeDownCommand;
+
+    QMenu *myPlayerMenu;
+    Command *myPlayerChangeCommand;
 
     QMenu *myWindowMenu;
     Command *myNextTabCommand;

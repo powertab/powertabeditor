@@ -39,6 +39,7 @@
 #include <boost/timer.hpp>
 
 #include <dialogs/keyboardsettingsdialog.h>
+#include <dialogs/playerchangedialog.h>
 #include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/trilldialog.h>
 
@@ -490,6 +491,13 @@ void PowerTabEditor::editTrill()
         else
             myTrillCommand->setChecked(false);
     }
+}
+
+void PowerTabEditor::editPlayerChange()
+{
+    PlayerChangeDialog dialog(this, getLocation().getScore(),
+                              getLocation().getSystem());
+    dialog.exec();
 }
 
 QString PowerTabEditor::getApplicationName() const
@@ -1125,7 +1133,13 @@ void PowerTabEditor::createCommands()
     slideOutOfUpwardsAct->setCheckable(true);
     sigfwd::connect(slideOutOfUpwardsAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfUpwards));
-
+#endif
+    myPlayerChangeCommand = new Command("Player Change...",
+                                        "Player.PlayerChange", QKeySequence(),
+                                        this);
+    connect(myPlayerChangeCommand, SIGNAL(triggered()), this,
+            SLOT(editPlayerChange()));
+#if 0
     // Guitar Menu
     addGuitarAct = new Command(tr("Add Guitar"), "Guitar.AddGuitar", QKeySequence(), this);
     connect(addGuitarAct, SIGNAL(triggered()), this, SLOT(addGuitar()));
@@ -1320,8 +1334,11 @@ void PowerTabEditor::createMenus()
 
     slideOutOfMenu = tabSymbolsMenu->addMenu(tr("Slide Out Of"));
     slideOutOfMenu->addAction(slideOutOfDownwardsAct);
-    slideOutOfMenu->addAction(slideOutOfUpwardsAct);
-
+    slideOutOfMenu->addAction(slideOutOfUpwardsAct);    
+#endif
+    myPlayerMenu = menuBar()->addMenu(tr("&Player"));
+    myPlayerMenu->addAction(myPlayerChangeCommand);
+#if 0
     guitarMenu = menuBar()->addMenu(tr("&Guitar"));
     guitarMenu->addAction(addGuitarAct);
     guitarMenu->addSeparator();
