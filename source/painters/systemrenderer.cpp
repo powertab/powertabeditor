@@ -104,6 +104,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsBelowStdNotationStaff(*layout);
         drawSymbolsBelowTabStaff(*layout);
 
+        drawPlayerChanges(system, i, *layout);
+
         ++i;
     }
 
@@ -592,6 +594,34 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                 }
             }
         }
+    }
+}
+
+void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
+                                       const LayoutInfo &layout)
+{
+    BOOST_FOREACH(const PlayerChange &change, system.getPlayerChanges())
+    {
+        const std::vector<ActivePlayer> activePlayers =
+                change.getActivePlayers(staffIndex);
+        if (activePlayers.empty())
+            continue;
+
+        QString description;
+        BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+        {
+            if (!description.isEmpty())
+                description += ", ";
+            description += QString::number(player.getPlayerNumber() + 1);
+        }
+
+        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
+                    "Player " + description);
+        text->setFont(myPlainTextFont);
+        text->setPos(layout.getPositionX(change.getPosition()),
+                     layout.getBottomStdNotationLine() +
+                     LayoutInfo::STAFF_BORDER_SPACING);
+        text->setParentItem(myParentStaff);
     }
 }
 

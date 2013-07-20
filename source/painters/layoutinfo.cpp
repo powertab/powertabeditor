@@ -36,11 +36,6 @@ const double LayoutInfo::MIN_POSITION_SPACING = 3;
 const double LayoutInfo::TAB_SYMBOL_SPACING = 10;
 const double LayoutInfo::DEFAULT_POSITION_SPACING = 20;
 
-// TODO - compute these values based on the note positions, etc.
-namespace {
-const double SYMBOL_SPACING = 0;
-}
-
 LayoutInfo::LayoutInfo(const Score &score, const System &system,
                        const Staff &staff)
     : mySystem(system),
@@ -50,12 +45,14 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system,
       myNumPositions(0),
       myTabStaffBelowSpacing(0),
       myStdNotationStaffAboveSpacing(0),
-      myStdNotationStaffBelowSpacing(0)
+      myStdNotationStaffBelowSpacing(0),
+      mySymbolSpacing(0)
 {
     computePositionSpacing();
     calculateTabStaffBelowLayout();
     calculateStdNotationStaffAboveLayout();
     calculateStdNotationStaffBelowLayout();
+    calculateTabStaffAboveLayout();
 }
 
 int LayoutInfo::getStringCount() const
@@ -98,7 +95,7 @@ double LayoutInfo::getSystemSymbolSpacing() const
 double LayoutInfo::getStaffHeight() const
 {
     return myStdNotationStaffAboveSpacing + myStdNotationStaffBelowSpacing +
-            SYMBOL_SPACING + myTabStaffBelowSpacing +
+            mySymbolSpacing + myTabStaffBelowSpacing +
             STD_NOTATION_LINE_SPACING * (NUM_STD_NOTATION_LINES - 1) +
             (getStringCount() - 1) * getTabLineSpacing() +
             4 * STAFF_BORDER_SPACING;
@@ -419,6 +416,23 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
                 leftPos = pos.getPosition();
                 currentType = type;
             }
+        }
+    }
+}
+
+void LayoutInfo::calculateTabStaffAboveLayout()
+{
+    // Allocate spacing for player changes in the system.
+    const int staffIndex = std::find(mySystem.getStaves().begin(),
+                                      mySystem.getStaves().end(), myStaff) -
+                           mySystem.getStaves().begin();
+
+    BOOST_FOREACH(const PlayerChange &change, mySystem.getPlayerChanges())
+    {
+        if (!change.getActivePlayers(staffIndex).empty())
+        {
+            mySymbolSpacing = TAB_SYMBOL_SPACING;
+            break;
         }
     }
 }

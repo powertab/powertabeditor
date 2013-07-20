@@ -100,6 +100,10 @@ private:
     /// Draws hammerons, pulloffs, etc in the tab staff.
     void drawLegato(const Staff &staff, const LayoutInfo &layout);
 
+    /// Draws player changes for the given staff.
+    void drawPlayerChanges(const System &system, int staffIndex,
+                           const LayoutInfo &layout);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 

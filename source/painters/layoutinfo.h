@@ -155,6 +155,10 @@ private:
     void calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
                                      bool aboveStaff);
 
+    /// Calculate the layout of symbols between the standard notation and
+    /// tab staves.
+    void calculateTabStaffAboveLayout();
+
     /// Returns the largest height of any symbol group.
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);
 
@@ -170,6 +174,7 @@ private:
     double myStdNotationStaffAboveSpacing;
     std::vector<SymbolGroup> myStdNotationStaffBelowSymbols;
     double myStdNotationStaffBelowSpacing;
+    double mySymbolSpacing;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;
