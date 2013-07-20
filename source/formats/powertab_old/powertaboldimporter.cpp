@@ -23,6 +23,7 @@
 #include "powertabdocument/direction.h"
 #include "powertabdocument/dynamic.h"
 #include "powertabdocument/guitar.h"
+#include "powertabdocument/guitarin.h"
 #include "powertabdocument/note.h"
 #include "powertabdocument/position.h"
 #include "powertabdocument/powertabdocument.h"
@@ -143,6 +144,9 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         convert(oldScore, oldScore.GetSystem(i), system);
         score.insertSystem(system);
     }
+
+    // Convert Guitar In's to player changes.
+    convertGuitarIns(oldScore, score);
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
@@ -527,4 +531,86 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
         note.setProperty(Note::Octave15ma);
     if (oldNote.IsOctave15mb())
         note.setProperty(Note::Octave15mb);
+}
+
+namespace {
+
+typedef boost::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> ActivePlayers;
+
+PlayerChange getPlayerChange(const ActivePlayers &activePlayers,
+                             int currentPosition)
+{
+    PlayerChange change;
+    change.setPosition(currentPosition);
+
+    for (size_t player = 0; player < activePlayers.size(); ++player)
+    {
+        const int staff = activePlayers[player];
+        if (staff >= 0)
+        {
+            change.insertActivePlayer(staff,
+                                      ActivePlayer(player, player));
+        }
+    }
+
+    return change;
+}
+
+}
+
+void PowerTabOldImporter::convertGuitarIns(
+        const PowerTabDocument::Score &oldScore, Score &score)
+{
+    // For each guitar, keep track of its current staff.
+    boost::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> activePlayers;
+    activePlayers.fill(-1);
+
+    for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)
+    {
+        std::vector<PowerTabDocument::Score::GuitarInPtr> guitarIns;
+        oldScore.GetGuitarInsInSystem(guitarIns, oldScore.GetSystem(i));
+        if (guitarIns.empty())
+            continue;
+
+        size_t currentPosition = guitarIns.front()->GetPosition();
+
+        // In v1.7, each staff has separate guitar ins. In the new format,
+        // player changes occur at the system level so we need to combine
+        // the guitar ins from several staves.
+        for (size_t j = 0; j < guitarIns.size(); ++j)
+        {
+            PowerTabDocument::Score::GuitarInPtr guitarIn = guitarIns[j];
+
+            // After combining all guitar in's at a position, write out a player
+            // change.
+            if (guitarIn->GetPosition() != currentPosition)
+            {
+                score.getSystems()[i].insertPlayerChange(
+                            getPlayerChange(activePlayers, currentPosition));
+            }
+
+            // Clear out any players that are currently active for this staff.
+            const int staff = guitarIn->GetStaff();
+            for (size_t k = 0; k < activePlayers.size(); ++k)
+            {
+                if (activePlayers[k] == staff)
+                    activePlayers[k] = -1;
+            }
+
+            // Set the active players for this staff.
+            std::bitset<8> activeGuitars(guitarIn->GetStaffGuitars());
+            for (size_t k = 0; k < activePlayers.size(); ++k)
+            {
+                if (activeGuitars[k])
+                    activePlayers[k] = staff;
+            }
+
+            currentPosition = guitarIn->GetPosition();
+        }
+
+        // After processing all of the guitar ins in the system, write out a
+        // final player change.
+        score.getSystems()[i].insertPlayerChange(
+                    getPlayerChange(activePlayers, currentPosition));
+    }
 }

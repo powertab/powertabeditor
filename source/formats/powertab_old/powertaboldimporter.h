@@ -101,6 +101,9 @@ private:
                         Position &position);
     static void convert(const PowerTabDocument::Note &oldNote,
                         Note &note);
+
+    static void convertGuitarIns(const PowerTabDocument::Score &oldScore,
+                                 Score &score);
 };
 
 #endif

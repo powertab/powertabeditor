@@ -252,3 +252,33 @@ TEST_CASE("Formats/PowerTabOldImport/Notes", "")
     REQUIRE(note2.hasProperty(Note::Octave15mb));
     REQUIRE(note2.hasProperty(Note::NaturalHarmonic));
 }
+
+TEST_CASE("Formats/PowerTabOldImport/GuitarIns", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/guitar_ins.ptb", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getPlayerChanges().size() == 4);
+
+    const PlayerChange &change1 = system.getPlayerChanges()[0];
+    const PlayerChange &change2 = system.getPlayerChanges()[1];
+    const PlayerChange &change3 = system.getPlayerChanges()[2];
+    const PlayerChange &change4 = system.getPlayerChanges()[3];
+
+    REQUIRE(change1.getActivePlayers(0).size() == 1);
+    REQUIRE(change1.getActivePlayers(1).empty());
+
+    REQUIRE(change2.getActivePlayers(0).size() == 1);
+    REQUIRE(change2.getActivePlayers(0).front().getPlayerNumber() == 0);
+    REQUIRE(change2.getActivePlayers(1).size() == 1);
+
+    REQUIRE(change3.getActivePlayers(0).size() == 1);
+    REQUIRE(change3.getActivePlayers(0).front().getPlayerNumber() == 1);
+    REQUIRE(change3.getActivePlayers(1).size() == 1);
+
+    REQUIRE(change4.getActivePlayers(0).size() == 1);
+    REQUIRE(change4.getActivePlayers(1).size() == 2);
+}

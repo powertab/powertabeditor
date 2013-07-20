@@ -851,6 +851,12 @@ Score::GuitarInPtr Score::GetGuitarIn(uint32_t index) const
     return m_guitarInArray[index];
 }
 
+void Score::GetGuitarInsInSystem(std::vector<Score::GuitarInPtr> &guitarIns,
+                                 Score::SystemConstPtr system) const
+{
+    GetSymbolsInSystem(guitarIns, m_guitarInArray, FindSystemIndex(system));
+}
+
 // Tempo Marker Functions
 /// Determines if a tempo marker index is valid
 /// @param index tempo marker index to validate

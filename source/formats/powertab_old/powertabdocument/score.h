@@ -36,7 +36,7 @@ class Score : public PowerTabObject
 {
 public:
     static const uint8_t SYSTEM_SPACING = 50; ///< spacing between adjacent systems
-    static const uint8_t MAX_NUM_GUITARS = 15; ///< maximum number of guitars allowed (limited by MIDI channels)
+    static const uint8_t MAX_NUM_GUITARS = 7; ///< maximum number of guitars allowed (limited by MIDI channels)
 
     // some useful typedefs for smart pointers
     typedef boost::shared_ptr<System> SystemPtr;
@@ -103,6 +103,8 @@ public:
     bool IsValidGuitarInIndex(uint32_t index) const;
     size_t GetGuitarInCount() const;
     GuitarInPtr GetGuitarIn(uint32_t index) const;
+    void GetGuitarInsInSystem(std::vector<GuitarInPtr>& guitarIns,
+                              SystemConstPtr system) const;
 
 // Tempo Marker Functions
     bool IsValidTempoMarkerIndex(uint32_t index) const;
