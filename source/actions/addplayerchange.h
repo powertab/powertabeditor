@@ -15,27 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ACTIONS_REMOVEPOSITIONPROPERTY_H
-#define ACTIONS_REMOVEPOSITIONPROPERTY_H
+#ifndef ACTIONS_ADDPLAYERCHANGE_H
+#define ACTIONS_ADDPLAYERCHANGE_H
 
 #include <QUndoCommand>
-#include <score/position.h>
+#include <score/playerchange.h>
 #include <score/scorelocation.h>
 
-/// Removes a simple position property for each of the selected notes.
-class RemovePositionProperty : public QUndoCommand
+class AddPlayerChange : public QUndoCommand
 {
 public:
-    RemovePositionProperty(const ScoreLocation &location,
-                           Position::SimpleProperty property,
-                           const QString &positionDescription);
+    AddPlayerChange(const ScoreLocation &location, const PlayerChange &change);
 
     virtual void redo();
     virtual void undo();
 
 private:
     ScoreLocation myLocation;
-    const Position::SimpleProperty myProperty;
+    PlayerChange myPlayerChange;
 };
 
 #endif

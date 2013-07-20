@@ -17,11 +17,13 @@
   
 #include "powertabeditor.h"
 
+#include <actions/addplayerchange.h>
 #include <actions/addpositionproperty.h>
 #include <actions/addsystem.h>
 #include <actions/addtappedharmonic.h>
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
+#include <actions/removeplayerchange.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removetappedharmonic.h>
 #include <actions/removetrill.h>
@@ -52,6 +54,8 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
+
+#include <score/utils.h>
 #include <sigfwd/sigfwd.hpp>
 
 PowerTabEditor::PowerTabEditor() :
@@ -495,9 +499,31 @@ void PowerTabEditor::editTrill()
 
 void PowerTabEditor::editPlayerChange()
 {
-    PlayerChangeDialog dialog(this, getLocation().getScore(),
-                              getLocation().getSystem());
-    dialog.exec();
+    const ScoreLocation &location = getLocation();
+
+    // Note that adding/removing a player change affects multiple systems,
+    // since the standard notation will need to be updated if the new player
+    // has a different tuning.
+    if (ScoreUtils::findByPosition(location.getSystem().getPlayerChanges(),
+                                   location.getPositionIndex()))
+    {
+        myUndoManager->push(new RemovePlayerChange(location),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
+    else
+    {
+        PlayerChangeDialog dialog(this, location.getScore(),
+                                  location.getSystem());
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(
+                        new AddPlayerChange(location, dialog.getPlayerChange()),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+
+        }
+        else
+            myPlayerChangeCommand->setChecked(false);
+    }
 }
 
 QString PowerTabEditor::getApplicationName() const

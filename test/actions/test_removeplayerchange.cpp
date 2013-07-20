@@ -15,27 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ACTIONS_REMOVEPOSITIONPROPERTY_H
-#define ACTIONS_REMOVEPOSITIONPROPERTY_H
+#include <catch.hpp>
 
-#include <QUndoCommand>
-#include <score/position.h>
+#include <actions/removeplayerchange.h>
+#include <score/score.h>
 #include <score/scorelocation.h>
 
-/// Removes a simple position property for each of the selected notes.
-class RemovePositionProperty : public QUndoCommand
+TEST_CASE("Actions/RemovePlayerChange", "")
 {
-public:
-    RemovePositionProperty(const ScoreLocation &location,
-                           Position::SimpleProperty property,
-                           const QString &positionDescription);
+    Score score;
+    System system;
+    PlayerChange change(5);
+    change.insertActivePlayer(1, ActivePlayer(0, 2));
+    system.insertPlayerChange(change);
+    score.insertSystem(system);
 
-    virtual void redo();
-    virtual void undo();
+    RemovePlayerChange action(ScoreLocation(score, 0, 0, 5));
 
-private:
-    ScoreLocation myLocation;
-    const Position::SimpleProperty myProperty;
-};
+    action.redo();
+    REQUIRE(score.getSystems()[0].getPlayerChanges().size() == 0);
 
-#endif
+    action.undo();
+    REQUIRE(score.getSystems()[0].getPlayerChanges().size() == 1);
+    REQUIRE(score.getSystems()[0].getPlayerChanges()[0] == change);
+}

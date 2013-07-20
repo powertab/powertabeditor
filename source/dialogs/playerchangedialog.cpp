@@ -36,7 +36,7 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
     QHBoxLayout *titleLayout = new QHBoxLayout();
     titleLayout->addWidget(new QLabel(tr("Staff")));
     titleLayout->addWidget(new QLabel(tr("Instrument")));
-    titleLayout->setSpacing(spacing);
+    titleLayout->setSpacing(spacing * 4);
     ui->formLayout->addRow(tr("Player"), titleLayout);
 
     BOOST_FOREACH(const Player &player, score.getPlayers())
@@ -61,10 +61,31 @@ PlayerChangeDialog::~PlayerChangeDialog()
     delete ui;
 }
 
+PlayerChange PlayerChangeDialog::getPlayerChange() const
+{
+    PlayerChange change;
+
+    for (size_t i = 0; i < myStaffComboBoxes.size(); ++i)
+    {
+        const int staff = myStaffComboBoxes[i]->itemData(
+                    myStaffComboBoxes[i]->currentIndex()).toInt();
+        if (staff >= 0)
+        {
+            change.insertActivePlayer(staff,
+                    ActivePlayer(i, myInstrumentComboBoxes[i]->currentIndex()));
+        }
+    }
+
+    return change;
+}
+
 QComboBox *PlayerChangeDialog::getStaffComboBox(int numStrings,
                                                 const System &system)
 {
     QComboBox *list = new QComboBox(this);
+    myStaffComboBoxes.push_back(list);
+
+    list->addItem(tr("None"), -1);
 
     int i = 0;
     BOOST_FOREACH(const Staff &staff, system.getStaves())
@@ -80,6 +101,7 @@ QComboBox *PlayerChangeDialog::getStaffComboBox(int numStrings,
 QComboBox *PlayerChangeDialog::getInstrumentComboBox(const Score &score)
 {
     QComboBox *list = new QComboBox(this);
+    myInstrumentComboBoxes.push_back(list);
 
     int i = 0;
     BOOST_FOREACH(const Instrument &instrument, score.getInstruments())

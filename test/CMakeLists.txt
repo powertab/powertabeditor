@@ -6,6 +6,7 @@ add_executable(pte_tests
     #actions/test_addartificialharmonic.cpp
     #actions/test_addirregulargrouping.cpp
     #actions/test_addmusicaldirection.cpp
+    actions/test_addplayerchange.cpp
     actions/test_addpositionproperty.cpp
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
@@ -22,6 +23,7 @@ add_executable(pte_tests
     #actions/test_removeartificialharmonic.cpp
     #actions/test_removeirregulargrouping.cpp
     #actions/test_removemusicaldirection.cpp
+    actions/test_removeplayerchange.cpp
     actions/test_removepositionproperty.cpp
     #actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp

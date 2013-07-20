@@ -14,32 +14,27 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include "removeplayerchange.h"
 
-#include "addpositionproperty.h"
+#include <score/system.h>
+#include <score/utils.h>
 
-#include <boost/foreach.hpp>
-
-AddPositionProperty::AddPositionProperty(const ScoreLocation &location,
-                                         Position::SimpleProperty property,
-                                         const QString &positionDescription)
-    : QUndoCommand(QObject::tr("Set ") + positionDescription),
+RemovePlayerChange::RemovePlayerChange(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Player Change")),
       myLocation(location),
-      myProperty(property)
+      myPlayerChange(*ScoreUtils::findByPosition(
+                         location.getSystem().getPlayerChanges(),
+                         location.getPositionIndex()))
 {
 }
 
-void AddPositionProperty::redo()
+void RemovePlayerChange::redo()
 {
-    BOOST_FOREACH(Position *pos, myLocation.getSelectedPositions())
-    {
-        pos->setProperty(myProperty, true);
-    }
+    myLocation.getSystem().removePlayerChange(myPlayerChange);
 }
 
-void AddPositionProperty::undo()
+void RemovePlayerChange::undo()
 {
-    BOOST_FOREACH(Position *pos, myLocation.getSelectedPositions())
-    {
-        pos->setProperty(myProperty, false);
-    }
+    myLocation.getSystem().insertPlayerChange(myPlayerChange);
 }

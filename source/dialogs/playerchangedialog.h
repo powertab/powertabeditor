@@ -24,6 +24,7 @@ namespace Ui {
 class PlayerChangeDialog;
 }
 
+class PlayerChange;
 class QComboBox;
 class Score;
 class System;
@@ -36,12 +37,16 @@ public:
     explicit PlayerChangeDialog(QWidget *parent, const Score &score,
                                 const System &system);
     ~PlayerChangeDialog();
+
+    PlayerChange getPlayerChange() const;
     
 private:
     QComboBox *getStaffComboBox(int numStrings, const System &system);
     QComboBox *getInstrumentComboBox(const Score &score);
 
     Ui::PlayerChangeDialog *ui;
+    std::vector<QComboBox *> myStaffComboBoxes;
+    std::vector<QComboBox *> myInstrumentComboBoxes;
 };
 
 #endif

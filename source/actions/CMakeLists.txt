@@ -10,6 +10,7 @@ add_library(pteactions
     #addirregulargrouping.cpp
     #addmusicaldirection.cpp
     #addnote.cpp
+    addplayerchange.cpp
     addpositionproperty.cpp
     addsystem.cpp
     addtappedharmonic.cpp
@@ -40,6 +41,7 @@ add_library(pteactions
     #removedynamic.cpp
     #removeirregulargrouping.cpp
     #removemusicaldirection.cpp
+    removeplayerchange.cpp
     removepositionproperty.cpp
     #removesystem.cpp
     removetappedharmonic.cpp
