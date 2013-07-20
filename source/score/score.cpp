@@ -150,3 +150,35 @@ const PlayerChange *ScoreUtils::getCurrentPlayers(const Score &score,
 
     return lastChange;
 }
+
+void ScoreUtils::adjustRehearsalSigns(Score &score)
+{
+    std::string letters;
+    char letter = 'Z';
+
+    BOOST_FOREACH(System &system, score.getSystems())
+    {
+        BOOST_FOREACH(Barline &barline, system.getBarlines())
+        {
+            if (barline.hasRehearsalSign())
+            {
+                RehearsalSign &sign = barline.getRehearsalSign();
+
+                // Cycle through the letters A-Z, and then to AA, AB, etc.
+                if (letter == 'Z')
+                {
+                    letter = 'A';
+                    letters[letters.size() - 1] = letter;
+                    letters.push_back(letter);
+                }
+                else
+                {
+                    ++letter;
+                    letters[letters.size() - 1] = letter;
+                }
+
+                sign.setLetters(letters);
+            }
+        }
+    }
+}

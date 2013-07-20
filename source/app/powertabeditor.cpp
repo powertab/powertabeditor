@@ -19,12 +19,14 @@
 
 #include <actions/addplayerchange.h>
 #include <actions/addpositionproperty.h>
+#include <actions/addrehearsalsign.h>
 #include <actions/addsystem.h>
 #include <actions/addtappedharmonic.h>
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/removeplayerchange.h>
 #include <actions/removepositionproperty.h>
+#include <actions/removerehearsalsign.h>
 #include <actions/removetappedharmonic.h>
 #include <actions/removetrill.h>
 #include <actions/undomanager.h>
@@ -44,6 +46,7 @@
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/playerchangedialog.h>
+#include <dialogs/rehearsalsigndialog.h>
 #include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/trilldialog.h>
 
@@ -477,6 +480,32 @@ void PowerTabEditor::insertSystemBefore()
 void PowerTabEditor::insertSystemAfter()
 {
     insertSystem(getLocation().getSystemIndex() + 1);
+}
+
+void PowerTabEditor::editRehearsalSign()
+{
+    const ScoreLocation &location = getLocation();
+    const Barline *barline = location.getBarline();
+    Q_ASSERT(barline);
+
+    if (barline->hasRehearsalSign())
+    {
+        myUndoManager->push(new RemoveRehearsalSign(location),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
+    else
+    {
+        RehearsalSignDialog dialog(this);
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(new AddRehearsalSign(location,
+                                                     dialog.getDescription()),
+                                UndoManager::AFFECTS_ALL_SYSTEMS);
+        }
+        else
+            myRehearsalSignCommand->setChecked(false);
+    }
 }
 
 void PowerTabEditor::editTappedHarmonic()
@@ -1023,12 +1052,16 @@ void PowerTabEditor::createCommands()
     sigfwd::connect(addRestAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::addRest, this));
 
+#endif
     // Music Symbol Actions
-    rehearsalSignAct = new Command(tr("Rehearsal Sign..."), "MusicSymbols.EditRehearsalSign",
-                                   Qt::SHIFT + Qt::Key_R, this);
-    rehearsalSignAct->setCheckable(true);
-    connect(rehearsalSignAct, SIGNAL(triggered()), this, SLOT(editRehearsalSign()));
+    myRehearsalSignCommand = new Command(tr("Rehearsal Sign..."),
+                                         "MusicSymbols.EditRehearsalSign",
+                                         Qt::SHIFT + Qt::Key_R, this);
+    myRehearsalSignCommand->setCheckable(true);
+    connect(myRehearsalSignCommand, SIGNAL(triggered()), this,
+            SLOT(editRehearsalSign()));
 
+#if 0
     tempoMarkerAct = new Command(tr("Tempo Marker..."),"MusicSymbols.EditTempoMarker",
                                  Qt::Key_O, this);
     tempoMarkerAct->setCheckable(true);
@@ -1365,9 +1398,11 @@ void PowerTabEditor::createMenus()
     restsMenu->addSeparator();
     restsMenu->addAction(addRestAct);
 
-    // Music Symbols Menu
-    musicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
-    musicSymbolsMenu->addAction(rehearsalSignAct);
+#endif
+    // Music Symbols Menu.
+    myMusicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
+    myMusicSymbolsMenu->addAction(myRehearsalSignCommand);
+#if 0
     musicSymbolsMenu->addAction(tempoMarkerAct);
     musicSymbolsMenu->addAction(keySignatureAct);
     musicSymbolsMenu->addAction(timeSignatureAct);
@@ -1581,12 +1616,17 @@ void PowerTabEditor::updateCommands()
     const Score &score = location.getScore();
     const System &system = location.getSystem();
     const Position *pos = location.getPosition();
+    const int position = location.getPositionIndex();
     const Note *note = location.getNote();
+    const Barline *barline = location.getBarline();
 
     myIncreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() < Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() > Score::MIN_LINE_SPACING);
+
+    myRehearsalSignCommand->setEnabled(barline);
+    myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
 
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
@@ -1599,8 +1639,7 @@ void PowerTabEditor::updateCommands()
                            Position::PickStrokeDown);
 
     myPlayerChangeCommand->setChecked(ScoreUtils::findByPosition(
-                                          system.getPlayerChanges(),
-                                          location.getPositionIndex()));
+                                          system.getPlayerChanges(), position));
 }
 
 void PowerTabEditor::editSimpleProperty(Command *command,
@@ -2205,43 +2244,6 @@ void PowerTabEditor::editChordName()
     {
         undoManager->push(new RemoveChordText(currentSystem, chordTextIndex),
                           caret->getCurrentSystemIndex());
-    }
-
-}
-
-// If there is a rehearsal sign at the barline, remove it
-// If there is no rehearsal sign, show the dialog to add one
-void PowerTabEditor::editRehearsalSign()
-{
-    // Find if there is a rehearsal sign at the current position
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
-    System::BarlinePtr currentBarline = caret->getCurrentBarline();
-
-    // the rehearsal sign action should not be available unless there is a barline at the current position
-    Q_ASSERT(currentBarline);
-
-    RehearsalSign& rehearsalSign = currentBarline->GetRehearsalSign();
-
-    if (rehearsalSign.IsSet())
-    {
-        EditRehearsalSign* action = new EditRehearsalSign(score, rehearsalSign, false);
-        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
-    }
-    else
-    {
-        RehearsalSignDialog dialog(this);
-
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            EditRehearsalSign* action = new EditRehearsalSign(score, rehearsalSign, true,
-                                                              dialog.description());
-            undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
-        }
-        else
-        {
-            rehearsalSignAct->setChecked(false);
-        }
     }
 
 }

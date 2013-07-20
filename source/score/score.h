@@ -100,8 +100,13 @@ private:
 };
 
 namespace ScoreUtils {
+/// Get the current player change for the given position.
 const PlayerChange *getCurrentPlayers(const Score &score, int systemIndex,
                                       int positionIndex);
+
+/// Readjust the letters for the rehearsal signs in the score
+/// (i.e. assigning rehearsal signs the letters "A", "B", and so on).
+void adjustRehearsalSigns(Score &score);
 }
 
 #endif

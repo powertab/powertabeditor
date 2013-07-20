@@ -103,6 +103,11 @@ const RehearsalSign &Barline::getRehearsalSign() const
     return *myRehearsalSign;
 }
 
+RehearsalSign &Barline::getRehearsalSign()
+{
+    return *myRehearsalSign;
+}
+
 void Barline::setRehearsalSign(const RehearsalSign &sign)
 {
     myRehearsalSign = sign;

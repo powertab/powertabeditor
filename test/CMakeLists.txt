@@ -8,6 +8,7 @@ add_executable(pte_tests
     #actions/test_addmusicaldirection.cpp
     actions/test_addplayerchange.cpp
     actions/test_addpositionproperty.cpp
+    actions/test_addrehearsalsign.cpp
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
     actions/test_addtrill.cpp
@@ -25,6 +26,7 @@ add_executable(pte_tests
     #actions/test_removemusicaldirection.cpp
     actions/test_removeplayerchange.cpp
     actions/test_removepositionproperty.cpp
+    actions/test_removerehearsalsign.cpp
     #actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp
     actions/test_removetrill.cpp

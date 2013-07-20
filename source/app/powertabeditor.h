@@ -124,6 +124,9 @@ private slots:
     /// Inserts a new system after the current system.
     void insertSystemAfter();
 
+    /// Adds or removes a rehearsal sign at the current barline.
+    void editRehearsalSign();
+
     /// Adds or removes a tapped harmonic for the current note.
     void editTappedHarmonic();
     /// Adds or removes a trill for the current note.
@@ -218,6 +221,9 @@ private:
     Command *myIncreaseLineSpacingCommand;
     Command *myDecreaseLineSpacingCommand;
 
+    QMenu *myMusicSymbolsMenu;
+    Command *myRehearsalSignCommand;
+
     QMenu *myTabSymbolsMenu;
     Command* myTappedHarmonicCommand;
     Command *myTrillCommand;
@@ -275,7 +281,6 @@ private slots:
     void moveCaretUp();
 
     void editChordName();
-    void editRehearsalSign();
     void editTempoMarker();
     void editMusicalDirection();
     void editRepeatEnding();
@@ -383,8 +388,6 @@ private:
     Command* sixtyFourthRestAct;
     Command* addRestAct;
 
-    QMenu* musicSymbolsMenu;
-    Command* rehearsalSignAct; // add/remove rehearsal signs
     Command* tempoMarkerAct;
     Command* keySignatureAct;
     Command* timeSignatureAct;

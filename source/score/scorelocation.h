@@ -21,6 +21,7 @@
 #include <iosfwd>
 #include <vector>
 
+class Barline;
 class Note;
 class Position;
 class Score;
@@ -43,6 +44,9 @@ public:
 
     const System &getSystem() const;
     System &getSystem();
+
+    const Barline *getBarline() const;
+    Barline *getBarline();
 
     int getStaffIndex() const;
     void setStaffIndex(int staff);

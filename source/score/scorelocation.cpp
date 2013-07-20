@@ -19,6 +19,7 @@
 
 #include <boost/foreach.hpp>
 #include <score/score.h>
+#include <score/utils.h>
 
 ScoreLocation::ScoreLocation(const Score &score, int system, int staff,
                              int position, int voice, int string)
@@ -149,6 +150,18 @@ System &ScoreLocation::getSystem()
         throw std::logic_error("Cannot write to score");
 
     return myWriteableScore->getSystems()[mySystemIndex];
+}
+
+const Barline *ScoreLocation::getBarline() const
+{
+    return ScoreUtils::findByPosition(getSystem().getBarlines(),
+                                      getPositionIndex());
+}
+
+Barline *ScoreLocation::getBarline()
+{
+    return ScoreUtils::findByPosition(getSystem().getBarlines(),
+                                      getPositionIndex());
 }
 
 int ScoreLocation::getString() const

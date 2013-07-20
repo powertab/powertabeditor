@@ -72,6 +72,7 @@ public:
     bool hasRehearsalSign() const;
     /// Returns the rehearsal sign for the bar.
     const RehearsalSign &getRehearsalSign() const;
+    RehearsalSign &getRehearsalSign();
     /// Sets the rehearsal sign for the bar.
     void setRehearsalSign(const RehearsalSign &sign);
     /// Clears the rehearsal sign for the bar.

@@ -21,9 +21,9 @@
 #include <QCompleter>
 #include <QMessageBox>
 
-RehearsalSignDialog::RehearsalSignDialog(QWidget* parent) :
-    QDialog(parent),
-    ui(new Ui::RehearsalSignDialog)
+RehearsalSignDialog::RehearsalSignDialog(QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::RehearsalSignDialog)
 {
     ui->setupUi(this);
 
@@ -39,14 +39,13 @@ RehearsalSignDialog::~RehearsalSignDialog()
 void RehearsalSignDialog::populateDescriptionChoices()
 {
     QStringList descriptions;
-
-    descriptions << "Intro" << "Pre-Verse" << "Verse" << "Pre-Chorus" << "Chorus";
-    descriptions << "Interlude" << "Breakdown" << "Bridge" << "Guitar Break" << "Guitar Solo";
-    descriptions << "Out-Chorus" << "Outro";
+    descriptions << "Intro" << "Pre-Verse" << "Verse" << "Pre-Chorus"
+                 << "Chorus" << "Interlude" << "Breakdown" << "Bridge"
+                 << "Guitar Break" << "Guitar Solo" << "Out-Chorus" << "Outro";
 
     ui->descriptionComboBox->addItems(descriptions);
 
-    // Autocompletion for description choices
+    // Autocompletion for description choices.
     QCompleter *completer = new QCompleter(descriptions);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->descriptionComboBox->setCompleter(completer);
@@ -67,8 +66,7 @@ void RehearsalSignDialog::accept()
     }
 }
 
-/// Returns the description of the rehearsal sign that was entered by the user.
-std::string RehearsalSignDialog::description() const
+std::string RehearsalSignDialog::getDescription() const
 {
     return ui->descriptionComboBox->currentText().toStdString();
 }

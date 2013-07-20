@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,35 +14,27 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef DIALOGS_REHEARSALSIGNDIALOG_H
-#define DIALOGS_REHEARSALSIGNDIALOG_H
 
-#include <QDialog>
+#include "removerehearsalsign.h"
 
-namespace Ui {
-    class RehearsalSignDialog;
+#include <score/barline.h>
+#include <score/score.h>
+
+RemoveRehearsalSign::RemoveRehearsalSign(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Rehearsal Sign")),
+      myLocation(location),
+      myRehearsalSign(location.getBarline()->getRehearsalSign())
+{
 }
 
-class RehearsalSignDialog : public QDialog
+void RemoveRehearsalSign::redo()
 {
-    Q_OBJECT
+    myLocation.getBarline()->clearRehearsalSign();
+    ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
+}
 
-public:
-    RehearsalSignDialog(QWidget *parent);
-    ~RehearsalSignDialog();
-
-    /// Returns the description of the rehearsal sign that was entered by
-    /// the user.
-    std::string getDescription() const;
-
-public slots:
-    void accept();
-
-private:
-    void populateDescriptionChoices();
-
-    Ui::RehearsalSignDialog* ui;
-};
-
-#endif
+void RemoveRehearsalSign::undo()
+{
+    myLocation.getBarline()->setRehearsalSign(myRehearsalSign);
+    ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
+}

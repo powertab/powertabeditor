@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,33 +14,25 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef EDITREHEARSALSIGN_H
-#define EDITREHEARSALSIGN_H
+
+#ifndef ACTIONS_REMOVEREHEARSALSIGN_H
+#define ACTIONS_REMOVEREHEARSALSIGN_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
+#include <score/rehearsalsign.h>
+#include <score/scorelocation.h>
 
-class Barline;
-class RehearsalSign;
-class Score;
-
-class EditRehearsalSign : public QUndoCommand
+class RemoveRehearsalSign : public QUndoCommand
 {
 public:
-    EditRehearsalSign(Score* score, RehearsalSign& rehearsalSign, bool isShown,
-                      const std::string& description = "");
+    RemoveRehearsalSign(const ScoreLocation &location);
 
-    virtual void undo();
     virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    RehearsalSign& rehearsalSign;
-    bool isShown;
-    std::string description;
-
-    void showHide(bool show);
+    ScoreLocation myLocation;
+    const RehearsalSign myRehearsalSign;
 };
 
-#endif // EDITREHEARSALSIGN_H
+#endif

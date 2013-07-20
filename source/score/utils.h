@@ -25,8 +25,8 @@ namespace ScoreUtils {
 
     /// Returns the object at the given position index, or null.
     template <typename T>
-    const typename T::value_type *findByPosition(
-            const boost::iterator_range<T> &range, int position)
+    typename T::pointer findByPosition(const boost::iterator_range<T> &range,
+                                       int position)
     {
         size_t n = range.size();
         for (size_t i = 0; i < n; ++i)
