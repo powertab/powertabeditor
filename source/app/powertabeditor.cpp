@@ -40,6 +40,7 @@
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
 
+#include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/playerchangedialog.h>
@@ -439,6 +440,18 @@ void PowerTabEditor::moveCaretToPrevBar()
     getCaret().moveToPrevBar();
 }
 
+void PowerTabEditor::gotoBarline()
+{
+    GoToBarlineDialog dialog(this, getLocation().getScore());
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        ScoreLocation location(dialog.getLocation());
+        getCaret().moveToSystem(location.getSystemIndex(), true);
+        getCaret().moveToPosition(location.getPositionIndex());
+    }
+}
+
 void PowerTabEditor::gotoRehearsalSign()
 {
     GoToRehearsalSignDialog dialog(this, getLocation().getScore());
@@ -747,11 +760,13 @@ void PowerTabEditor::createCommands()
                                           QKeySequence::DeleteEndOfWord, this);
     connect(clearCurrentPositionAct, SIGNAL(triggered()), this, SLOT(clearCurrentPosition()));
 
-    gotoBarlineAct = new Command(tr("Go To Barline..."), "Position.GoToBarline",
-                                 Qt::CTRL + Qt::Key_G, this);
-    connect(gotoBarlineAct, SIGNAL(triggered()), this, SLOT(gotoBarline()));
-
 #endif
+    myGoToBarlineCommand = new Command(tr("Go To Barline..."),
+                                       "Position.GoToBarline",
+                                       Qt::CTRL + Qt::Key_G, this);
+    connect(myGoToBarlineCommand, SIGNAL(triggered()), this,
+            SLOT(gotoBarline()));
+
     myGoToRehearsalSignCommand = new Command(tr("Go To Rehearsal Sign..."),
                                              "Position.GoToRehearsalSign",
                                              Qt::CTRL + Qt::Key_H, this);
@@ -1276,9 +1291,7 @@ void PowerTabEditor::createMenus()
     positionMenu->addAction(clearCurrentPositionAct);
 #endif
     myPositionMenu->addSeparator();
-#if 0
-    positionMenu->addAction(gotoBarlineAct);
-#endif
+    myPositionMenu->addAction(myGoToBarlineCommand);
     myPositionMenu->addAction(myGoToRehearsalSignCommand);
 #if 0
 
@@ -1864,20 +1877,6 @@ bool PowerTabEditor::moveCaretToNextStaff()
 bool PowerTabEditor::moveCaretToPrevStaff()
 {
     return getCurrentScoreArea()->getCaret()->moveCaretStaff(-1);
-}
-
-/// Allows the user to jump to a specific bar in the score.
-void PowerTabEditor::gotoBarline()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    GoToBarlineDialog dialog(this, caret->getCurrentScore());
-
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        SystemLocation location = dialog.getLocation();
-        caret->setCurrentSystemIndex(location.getSystemIndex());
-        caret->setCurrentPositionIndex(location.getPositionIndex());
-    }
 }
 
 void PowerTabEditor::changePositionSpacing(int offset)

@@ -18,34 +18,31 @@
 #include "gotobarlinedialog.h"
 #include "ui_gotobarlinedialog.h"
 
-#include <powertabdocument/barline.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
+#include <boost/foreach.hpp>
+#include <score/score.h>
 
-GoToBarlineDialog::GoToBarlineDialog(QWidget* parent, const Score* score) :
-    QDialog(parent),
-    ui(new Ui::GoToBarlineDialog),
-    score(score)
+GoToBarlineDialog::GoToBarlineDialog(QWidget *parent, const Score &score)
+    : QDialog(parent),
+      ui(new Ui::GoToBarlineDialog)
 {
     ui->setupUi(this);
 
-    for (size_t i = 0; i < score->GetSystemCount(); ++i)
+    for (long systemIndex = 0; systemIndex < score.getSystems().size();
+         ++systemIndex)
     {
-        Score::SystemConstPtr system(score->GetSystem(i));
-        std::vector<System::BarlineConstPtr> barlines;
-        system->GetBarlines(barlines);
-
+        const System &system = score.getSystems()[systemIndex];
         // Index all barlines except for the end bar.
-        for (size_t j = 0; j < barlines.size() - 1; ++j)
+        for (long i = 0; i < system.getBarlines().size() - 1; ++i)
         {
-            const uint32_t position = barlines[j]->GetPosition();
-            barlineLocations.push_back(SystemLocation(i, position));
+            myLocations.push_back(new ScoreLocation(score, systemIndex, 0,
+                                      system.getBarlines()[i].getPosition()));
+
         }
     }
 
     ui->barlineSpinBox->setValue(1);
     ui->barlineSpinBox->setMinimum(1);
-    ui->barlineSpinBox->setMaximum(barlineLocations.size());
+    ui->barlineSpinBox->setMaximum(myLocations.size());
 }
 
 GoToBarlineDialog::~GoToBarlineDialog()
@@ -54,8 +51,8 @@ GoToBarlineDialog::~GoToBarlineDialog()
 }
 
 /// Returns the location of the selected barline.
-SystemLocation GoToBarlineDialog::getLocation() const
+ScoreLocation GoToBarlineDialog::getLocation() const
 {
     const int index = ui->barlineSpinBox->value();
-    return barlineLocations.at(index - 1);
+    return myLocations.at(index - 1);
 }

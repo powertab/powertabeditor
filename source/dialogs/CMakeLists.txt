@@ -6,7 +6,7 @@ set(FORMS
     #directiondialog.ui
     #dynamicdialog.ui
     #fileinformationdialog.ui
-    #gotobarlinedialog.ui
+    gotobarlinedialog.ui
     gotorehearsalsigndialog.ui
     #irregulargroupingdialog.ui
     keyboardsettingsdialog.ui
@@ -34,7 +34,7 @@ add_library(ptedialogs
     #directiondialog.cpp
     #dynamicdialog.cpp
     #fileinformationdialog.cpp
-    #gotobarlinedialog.cpp
+    gotobarlinedialog.cpp
     gotorehearsalsigndialog.cpp
     #irregulargroupingdialog.cpp
     keyboardsettingsdialog.cpp

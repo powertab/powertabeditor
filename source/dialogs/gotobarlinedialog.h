@@ -15,35 +15,33 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GOTOBARLINEDIALOG_H
-#define GOTOBARLINEDIALOG_H
+#ifndef DIALOGS_GOTOBARLINEDIALOG_H
+#define DIALOGS_GOTOBARLINEDIALOG_H
 
+#include <boost/ptr_container/ptr_vector.hpp>
 #include <QDialog>
-
-#include <vector>
-#include <powertabdocument/systemlocation.h>
+#include <score/scorelocation.h>
 
 namespace Ui {
 class GoToBarlineDialog;
 }
 
 class Score;
-class SystemLocation;
 
 class GoToBarlineDialog : public QDialog
 {
-    Q_OBJECT
 public:
-    explicit GoToBarlineDialog(QWidget *parent, const Score* score);
+    explicit GoToBarlineDialog(QWidget *parent, const Score &score);
     ~GoToBarlineDialog();
 
-    SystemLocation getLocation() const;
+    /// Returns the location of the selected barline.
+    ScoreLocation getLocation() const;
 
 private:
     Ui::GoToBarlineDialog *ui;
-
-    const Score* score;
-    std::vector<SystemLocation> barlineLocations;
+    // ScoreLocation doesn't have a copy assignment operator, so this is the
+    // simplest alternative until C++11.
+    boost::ptr_vector<ScoreLocation> myLocations;
 };
 
-#endif // GOTOBARLINEDIALOG_H
+#endif
