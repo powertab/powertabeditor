@@ -1,39 +1,44 @@
 #include "gotorehearsalsigndialog.h"
 #include "ui_gotorehearsalsigndialog.h"
 
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/systemlocation.h>
+#include <boost/foreach.hpp>
+#include <score/score.h>
+#include <score/scorelocation.h>
 
-Q_DECLARE_METATYPE(SystemLocation)
+// The ScoreLocation class cannot be used with QVariant since it doesn't
+// have a default constructor. So, we use a pair of ints to store the system
+// and position.
+typedef std::pair<int, int> SystemAndPosition;
+Q_DECLARE_METATYPE(SystemAndPosition)
 
 GoToRehearsalSignDialog::GoToRehearsalSignDialog(QWidget *parent,
-                                                 const Score* score) :
-    QDialog(parent),
-    ui(new Ui::GoToRehearsalSignDialog),
-    score(score)
+                                                 const Score &score)
+    : QDialog(parent),
+      ui(new Ui::GoToRehearsalSignDialog),
+      myScore(score)
 {
     ui->setupUi(this);
 
     // Add all of the rehearsal signs in the score to the list.
-    for (size_t i = 0; i < score->GetSystemCount(); ++i)
+    int systemIndex = 0;
+    BOOST_FOREACH(const System &system, score.getSystems())
     {
-        Score::SystemConstPtr system(score->GetSystem(i));
-        std::vector<System::BarlineConstPtr> barlines;
-        system->GetBarlines(barlines);
-
-        for (size_t j = 0; j < barlines.size(); ++j)
+        BOOST_FOREACH(const Barline &barline, system.getBarlines())
         {
-            const RehearsalSign& sign = barlines[j]->GetRehearsalSign();
-            if (sign.IsSet())
+            if (barline.hasRehearsalSign())
             {
-                const uint32_t position = barlines[j]->GetPosition();
-                ui->rehearsalSignComboBox->addItem(
-                            QString::fromStdString(sign.GetFormattedText()),
-                            QVariant::fromValue(SystemLocation(i, position)));
+                SystemAndPosition location = std::make_pair(
+                            systemIndex, barline.getPosition());
+                const RehearsalSign &sign = barline.getRehearsalSign();
+
+                ui->rehearsalSignComboBox->addItem(QString("%1 -- %2").arg(
+                                QString::fromStdString(sign.getLetters()),
+                                QString::fromStdString(sign.getDescription())),
+                            QVariant::fromValue(location));
             }
         }
+
+        ++systemIndex;
     }
 }
 
@@ -42,13 +47,15 @@ GoToRehearsalSignDialog::~GoToRehearsalSignDialog()
     delete ui;
 }
 
-/// Returns the location of the selected rehearsal sign.
-SystemLocation GoToRehearsalSignDialog::getLocation() const
+ScoreLocation GoToRehearsalSignDialog::getLocation() const
 {
     const int index = ui->rehearsalSignComboBox->currentIndex();
     Q_ASSERT(index >= 0);
 
-    return ui->rehearsalSignComboBox->itemData(index).value<SystemLocation>();
+    SystemAndPosition location = ui->rehearsalSignComboBox->itemData(
+                index).value<SystemAndPosition>();
+
+    return ScoreLocation(myScore, location.first, 0, location.second);
 }
 
 void GoToRehearsalSignDialog::accept()

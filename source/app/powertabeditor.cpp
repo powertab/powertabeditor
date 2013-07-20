@@ -40,6 +40,7 @@
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
 
+#include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/playerchangedialog.h>
 #include <dialogs/tappedharmonicdialog.h>
@@ -438,6 +439,18 @@ void PowerTabEditor::moveCaretToPrevBar()
     getCaret().moveToPrevBar();
 }
 
+void PowerTabEditor::gotoRehearsalSign()
+{
+    GoToRehearsalSignDialog dialog(this, getLocation().getScore());
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        ScoreLocation location(dialog.getLocation());
+        getCaret().moveToSystem(location.getSystemIndex(), true);
+        getCaret().moveToPosition(location.getPositionIndex());
+    }
+}
+
 void PowerTabEditor::insertSystemAtEnd()
 {
     insertSystem(getLocation().getScore().getSystems().size());
@@ -738,11 +751,13 @@ void PowerTabEditor::createCommands()
                                  Qt::CTRL + Qt::Key_G, this);
     connect(gotoBarlineAct, SIGNAL(triggered()), this, SLOT(gotoBarline()));
 
-    gotoRehearsalSignAct = new Command(tr("Go To Rehearsal Sign..."),
-                                       "Position.GoToRehearsalSign",
-                                       Qt::CTRL + Qt::Key_H, this);
-    connect(gotoRehearsalSignAct, SIGNAL(triggered()),
-            this, SLOT(gotoRehearsalSign()));
+#endif
+    myGoToRehearsalSignCommand = new Command(tr("Go To Rehearsal Sign..."),
+                                             "Position.GoToRehearsalSign",
+                                             Qt::CTRL + Qt::Key_H, this);
+    connect(myGoToRehearsalSignCommand, SIGNAL(triggered()), this,
+            SLOT(gotoRehearsalSign()));
+#if 0
 
     // Text-related actions
     chordNameAct = new Command(tr("Chord Name..."), "Text.ChordName", Qt::Key_C, this);
@@ -1259,9 +1274,13 @@ void PowerTabEditor::createMenus()
     positionMenu->addSeparator();
     positionMenu->addAction(clearNoteAct);
     positionMenu->addAction(clearCurrentPositionAct);
-    positionMenu->addSeparator();
+#endif
+    myPositionMenu->addSeparator();
+#if 0
     positionMenu->addAction(gotoBarlineAct);
-    positionMenu->addAction(gotoRehearsalSignAct);
+#endif
+    myPositionMenu->addAction(myGoToRehearsalSignCommand);
+#if 0
 
     // Text Menu
     textMenu = menuBar()->addMenu(tr("&Text"));
@@ -1852,20 +1871,6 @@ void PowerTabEditor::gotoBarline()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
     GoToBarlineDialog dialog(this, caret->getCurrentScore());
-
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        SystemLocation location = dialog.getLocation();
-        caret->setCurrentSystemIndex(location.getSystemIndex());
-        caret->setCurrentPositionIndex(location.getPositionIndex());
-    }
-}
-
-/// Allows the user to jump to a specific rehearsal sign.
-void PowerTabEditor::gotoRehearsalSign()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    GoToRehearsalSignDialog dialog(this, caret->getCurrentScore());
 
     if (dialog.exec() == QDialog::Accepted)
     {

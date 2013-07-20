@@ -45,6 +45,9 @@ public:
     /// Moves the caret to the last position in the staff.
     void moveToEndPosition();
 
+    /// Move to the given position index.
+    void moveToPosition(int position);
+
     /// Moves the caret up/down by the given number of systems.
     void moveSystem(int offset);
 
@@ -53,6 +56,9 @@ public:
 
     /// Moves the caret to the last system in the score.
     void moveToLastSystem();
+
+    /// Move to the given system index, optionally keeping the same staff index.
+    void moveToSystem(int system, bool keepStaff);
 
     /// Moves up or down by the given number of staves.
     void moveStaff(int offset);
@@ -76,11 +82,6 @@ private:
     int getLastPosition() const;
     /// Returns the last valid system index in the score.
     int getLastSystemIndex() const;
-
-    /// Move to the given position index.
-    void moveToPosition(int position);
-    /// Move to the given system index, optionally keeping the same staff index.
-    void moveToSystem(int system, bool keepStaff);
 
     void handleSelectionChanged(const ScoreLocation &location);
 

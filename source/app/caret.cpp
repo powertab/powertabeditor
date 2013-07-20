@@ -170,7 +170,7 @@ void Caret::moveToSystem(int system, bool keepStaff)
 
     if (myLocation.getSystemIndex() != prevSystem)
     {
-        if (keepStaff)
+        if (!keepStaff)
             myLocation.setStaffIndex(0);
         else
         {

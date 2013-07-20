@@ -111,7 +111,9 @@ private slots:
     /// Moves the caret to the next bar after the current position.
     void moveCaretToNextBar();
     /// Moves the caret to the last bar before the current position.
-    void moveCaretToPrevBar();    
+    void moveCaretToPrevBar();
+    /// Moves the caret to a specific rehearsal sign.
+    void gotoRehearsalSign();
 
     /// Inserts a new system at the end of the score.
     void insertSystemAtEnd();
@@ -203,6 +205,7 @@ private:
     Command *myPrevStaffCommand;
     Command *myNextBarCommand;
     Command *myPrevBarCommand;
+    Command *myGoToRehearsalSignCommand;
 
     QMenu *mySectionMenu;
     Command *myInsertSystemAtEndCommand;
@@ -269,7 +272,6 @@ private slots:
     void moveCaretUp();
 
     void gotoBarline();
-    void gotoRehearsalSign();
 
     void editChordName();
     void editRehearsalSign();
@@ -326,7 +328,6 @@ private:
     Command* clearNoteAct; // clears the active note
     Command* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
     Command* gotoBarlineAct;
-    Command* gotoRehearsalSignAct;
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
     Command* shiftTabNumDown;
