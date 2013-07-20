@@ -80,9 +80,9 @@ public:
     }
 
 // Guitar Functions
-    bool IsValidGuitarIndex(uint32_t index) const;
+    bool IsValidGuitarIndex(size_t index) const;
     size_t GetGuitarCount() const;
-    GuitarPtr GetGuitar(uint32_t index) const;
+    GuitarPtr GetGuitar(size_t index) const;
 
     bool InsertGuitar(GuitarPtr guitar);
     bool RemoveGuitar(size_t index);

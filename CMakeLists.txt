@@ -4,6 +4,7 @@ project(powertabeditor)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 if(MSVC)
+    add_definitions(-DBOOST_ALL_DYN_LINK)
     add_definitions(-DBOOST_ALL_NO_LIB)
 else()
     # Set -Wno-ignored-qualifiers for boost::ptr_container (see https://svn.boost.org/trac/boost/ticket/4276).
@@ -14,7 +15,7 @@ endif()
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Widgets REQUIRED) 
-find_package(Boost REQUIRED COMPONENTS date_time iostreams serialization)
+find_package(Boost REQUIRED COMPONENTS date_time iostreams serialization zlib)
 
 # Find the ALSA package for Linux.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

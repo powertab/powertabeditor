@@ -49,11 +49,20 @@ endif()
 # Copy the tuning database and the skins to the build directory.
 file(COPY data skins DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-# Copy the Qt dlls to the build folder on Windows.
+# Copy the Qt and Boost dlls to the build folder on Windows.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(DEBUG_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/Debug)
     set(RELEASE_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/Release)
     set(QT_BIN_DIR ${Qt5Core_DIR}/../../../bin)
+    get_filename_component(BOOST_LIB_DIR ${Boost_DATE_TIME_LIBRARY_DEBUG} PATH)
+    get_filename_component(DT_NAME_DEBUG ${Boost_DATE_TIME_LIBRARY_DEBUG} NAME_WE)
+    get_filename_component(IO_NAME_DEBUG ${Boost_IOSTREAMS_LIBRARY_DEBUG} NAME_WE)
+    get_filename_component(SER_NAME_DEBUG ${Boost_SERIALIZATION_LIBRARY_DEBUG} NAME_WE)
+    get_filename_component(ZLIB_NAME_DEBUG ${Boost_ZLIB_LIBRARY_DEBUG} NAME_WE)
+    get_filename_component(DT_NAME_RELEASE ${Boost_DATE_TIME_LIBRARY_RELEASE} NAME_WE)
+    get_filename_component(IO_NAME_RELEASE ${Boost_IOSTREAMS_LIBRARY_RELEASE} NAME_WE)
+    get_filename_component(SER_NAME_RELEASE ${Boost_SERIALIZATION_LIBRARY_RELEASE} NAME_WE)
+    get_filename_component(ZLIB_NAME_RELEASE ${Boost_ZLIB_LIBRARY_RELEASE} NAME_WE)
 
     add_custom_command(TARGET powertabeditor POST_BUILD
 	    COMMAND ${CMAKE_COMMAND} -E make_directory ${DEBUG_BIN_DIR}
@@ -75,5 +84,15 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuin51.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuuc51.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icudt51.dll ${RELEASE_BIN_DIR}
+
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${DT_NAME_DEBUG}.dll ${DEBUG_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${IO_NAME_DEBUG}.dll ${DEBUG_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${SER_NAME_DEBUG}.dll ${DEBUG_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${ZLIB_NAME_DEBUG}.dll ${DEBUG_BIN_DIR}
+
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${DT_NAME_RELEASE}.dll ${RELEASE_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${IO_NAME_RELEASE}.dll ${RELEASE_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${SER_NAME_RELEASE}.dll ${RELEASE_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${ZLIB_NAME_RELEASE}.dll ${RELEASE_BIN_DIR}
     )
 endif()

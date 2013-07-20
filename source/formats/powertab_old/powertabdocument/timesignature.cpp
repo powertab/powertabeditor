@@ -279,7 +279,7 @@ bool TimeSignature::SetBeatAmount(uint8_t beatAmount)
     ClearFlag(commonTime | cutTime);
 
     // The beat amount is stored in power of 2 form
-    beatAmount = log2(beatAmount);
+    beatAmount = std::log(beatAmount) / std::log(2.0);
 
     m_data &= ~beatAmountMask;
     m_data |= (beatAmount << 24);

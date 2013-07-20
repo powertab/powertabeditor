@@ -730,7 +730,7 @@ Score::ChordDiagramPtr Score::GetChordDiagram(uint32_t index) const
 /// Determines if a guitar index is valid
 /// @param index guitar index to validate
 /// @return True if the guitar index is valid, false if not
-bool Score::IsValidGuitarIndex(uint32_t index) const
+bool Score::IsValidGuitarIndex(size_t index) const
 {
     return index < GetGuitarCount();
 }
@@ -745,7 +745,7 @@ size_t Score::GetGuitarCount() const
 /// Gets the nth guitar in the score
 /// @param index Index of the guitar to get
 /// @return The nth guitar in the score
-Score::GuitarPtr Score::GetGuitar(uint32_t index) const
+Score::GuitarPtr Score::GetGuitar(size_t index) const
 {
     PTB_CHECK_THAT(IsValidGuitarIndex(index), GuitarPtr());
     return m_guitarArray[index];
