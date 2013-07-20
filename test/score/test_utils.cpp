@@ -17,6 +17,7 @@
   
 #include <catch.hpp>
 
+#include <score/score.h>
 #include <score/system.h>
 #include <score/utils.h>
 
@@ -30,4 +31,19 @@ TEST_CASE("Score/Utils/FindByPosition", "")
     REQUIRE(!ScoreUtils::findByPosition(system.getBarlines(), 5));
     REQUIRE(ScoreUtils::findByPosition(system.getBarlines(), 0)); // Start bar.
     REQUIRE(*ScoreUtils::findByPosition(system.getBarlines(), 42) == barline);
+}
+
+TEST_CASE("Score/Utils/GetCurrentPlayers", "")
+{
+    Score score;
+    System system;
+    PlayerChange change;
+    change.setPosition(7);
+    change.insertActivePlayer(0, ActivePlayer(1, 2));
+    system.insertPlayerChange(change);
+    score.insertSystem(system);
+
+    REQUIRE(!ScoreUtils::getCurrentPlayers(score, 0, 6));
+    REQUIRE(ScoreUtils::getCurrentPlayers(score, 0, 7));
+    REQUIRE(ScoreUtils::getCurrentPlayers(score, 1, 0));
 }

@@ -24,9 +24,10 @@
 #include <score/score.h>
 
 PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
-                                       const System &system) :
-    QDialog(parent),
-    ui(new Ui::PlayerChangeDialog)
+                                       const System &system,
+                                       const PlayerChange *currentPlayers)
+    : QDialog(parent),
+      ui(new Ui::PlayerChangeDialog)
 {
     ui->setupUi(this);
 
@@ -51,6 +52,24 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
         ui->formLayout->addRow(
                     QString::fromStdString(player.getDescription() + ":"),
                     layout);
+    }
+
+    // Initialize the dialog with the current staff/instrument for each player.
+    if (currentPlayers)
+    {
+        for (int staff = 0; staff < system.getStaves().size(); ++staff)
+        {
+            std::vector<ActivePlayer> players =
+                    currentPlayers->getActivePlayers(staff);
+
+            BOOST_FOREACH(const ActivePlayer &player, players)
+            {
+                const int i = player.getPlayerNumber();
+                myStaffComboBoxes.at(i)->setCurrentIndex(staff + 1);
+                myInstrumentComboBoxes.at(i)->setCurrentIndex(
+                            player.getInstrumentNumber());
+            }
+        }
     }
 
     ui->formLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);

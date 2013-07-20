@@ -99,4 +99,9 @@ private:
     }
 };
 
+namespace ScoreUtils {
+const PlayerChange *getCurrentPlayers(const Score &score, int systemIndex,
+                                      int positionIndex);
+}
+
 #endif

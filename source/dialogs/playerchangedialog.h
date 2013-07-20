@@ -35,7 +35,8 @@ class PlayerChangeDialog : public QDialog
     
 public:
     explicit PlayerChangeDialog(QWidget *parent, const Score &score,
-                                const System &system);
+                                const System &system,
+                                const PlayerChange *currentPlayers);
     ~PlayerChangeDialog();
 
     PlayerChange getPlayerChange() const;

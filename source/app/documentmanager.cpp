@@ -56,6 +56,7 @@ Document &DocumentManager::addDefaultDocument()
     Score &score = doc.getScore();
     QSettings settings;
 
+    // Add an initial player and instrument.
     Player player;
     player.setDescription("Player 1");
     player.setTuning(settings.value(
@@ -72,8 +73,13 @@ Document &DocumentManager::addDefaultDocument()
             Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
     score.insertInstrument(instrument);
 
+    // Add an initial staff, player change, and tempo marker.
     System system;
     system.insertStaff(Staff(player.getTuning().getStringCount()));
+
+    PlayerChange initialPlayers;
+    initialPlayers.insertActivePlayer(0, ActivePlayer(0, 0));
+    system.insertPlayerChange(initialPlayers);
 
     TempoMarker tempo;
     tempo.setDescription("Moderately");

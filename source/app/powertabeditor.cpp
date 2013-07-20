@@ -512,8 +512,14 @@ void PowerTabEditor::editPlayerChange()
     }
     else
     {
+        // Initialize the dialog with the current staves for each player.
+        const PlayerChange *currentPlayers =
+                ScoreUtils::getCurrentPlayers(location.getScore(),
+                                              location.getSystemIndex(),
+                                              location.getPositionIndex());
+
         PlayerChangeDialog dialog(this, location.getScore(),
-                                  location.getSystem());
+                                  location.getSystem(), currentPlayers);
         if (dialog.exec() == QDialog::Accepted)
         {
             myUndoManager->push(
@@ -1163,6 +1169,7 @@ void PowerTabEditor::createCommands()
     myPlayerChangeCommand = new Command("Player Change...",
                                         "Player.PlayerChange", QKeySequence(),
                                         this);
+    myPlayerChangeCommand->setCheckable(true);
     connect(myPlayerChangeCommand, SIGNAL(triggered()), this,
             SLOT(editPlayerChange()));
 #if 0
@@ -1540,6 +1547,7 @@ void PowerTabEditor::updateCommands()
 {
     const ScoreLocation &location = getLocation();
     const Score &score = location.getScore();
+    const System &system = location.getSystem();
     const Position *pos = location.getPosition();
     const Note *note = location.getNote();
 
@@ -1557,6 +1565,10 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myPickStrokeUpCommand, pos, Position::PickStrokeUp);
     updatePositionProperty(myPickStrokeDownCommand, pos,
                            Position::PickStrokeDown);
+
+    myPlayerChangeCommand->setChecked(ScoreUtils::findByPosition(
+                                          system.getPlayerChanges(),
+                                          location.getPositionIndex()));
 }
 
 void PowerTabEditor::editSimpleProperty(Command *command,

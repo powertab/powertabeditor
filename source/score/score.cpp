@@ -17,6 +17,8 @@
 
 #include "score.h"
 
+#include <boost/foreach.hpp>
+
 const int Score::MIN_LINE_SPACING = 6;
 const int Score::MAX_LINE_SPACING = 14;
 
@@ -120,4 +122,31 @@ void Score::setLineSpacing(int value)
         throw std::out_of_range("Invalid line spacing");
 
     myLineSpacing = value;
+}
+
+const PlayerChange *ScoreUtils::getCurrentPlayers(const Score &score,
+                                                  int systemIndex,
+                                                  int positionIndex)
+{
+    const PlayerChange *lastChange = NULL;
+
+    int i = 0;
+    BOOST_FOREACH(const System &system, score.getSystems())
+    {
+        if (i > systemIndex)
+            break;
+
+        BOOST_FOREACH(const PlayerChange &change, system.getPlayerChanges())
+        {
+            if (i < systemIndex ||
+               (i == systemIndex && change.getPosition() <= positionIndex))
+            {
+                lastChange = &change;
+            }
+        }
+
+        ++i;
+    }
+
+    return lastChange;
 }
