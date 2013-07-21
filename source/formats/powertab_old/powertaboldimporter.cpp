@@ -298,7 +298,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::KeySignature &oldKey,
                                   KeySignature &key)
 {
     key.setKeyType(static_cast<KeySignature::KeyType>(oldKey.GetKeyType()));
-    key.setNumAccidentals(oldKey.NumberOfAccidentals());
+    key.setNumAccidentals(oldKey.GetKeyAccidentalsIncludingCancel());
     key.setSharps(oldKey.UsesSharps());
     key.setVisible(oldKey.IsShown());
     key.setCancellation(oldKey.IsCancellation());

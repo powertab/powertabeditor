@@ -138,74 +138,22 @@ public:
     /// @return True if the key signature uses no accidentals, false if not
     bool HasNoKeyAccidentals() const
         {return (GetKeyAccidentals() == noAccidentals);}
-    /// Determines if the key signature has one sharp
-    /// @return True if the key signature has one sharp, false if not
-    bool HasOneSharp() const
-        {return (GetKeyAccidentals() == oneSharp);}
-    /// Determines if the key signature has two sharps
-    /// @return True if the key signature has two sharps, false if not
-    bool HasTwoSharps() const
-        {return (GetKeyAccidentals() == twoSharps);}
-    /// Determines if the key signature has three sharps
-    /// @return True if the key signature has three sharps, false if not
-    bool HasThreeSharps() const
-        {return (GetKeyAccidentals() == threeSharps);}
-    /// Determines if the key signature has four sharps
-    /// @return True if the key signature has four sharps, false if not
-    bool HasFourSharps() const
-        {return (GetKeyAccidentals() == fourSharps);}
-    /// Determines if the key signature has five sharps
-    /// @return True if the key signature has five sharps, false if not
-    bool HasFiveSharps() const
-        {return (GetKeyAccidentals() == fiveSharps);}
-    /// Determines if the key signature has six sharps
-    /// @return True if the key signature has six sharps, false if not
-    bool HasSixSharps() const
-        {return (GetKeyAccidentals() == sixSharps);}
-    /// Determines if the key signature has seven sharps
-    /// @return True if the key signature has seven sharps, false if not
-    bool HasSevenSharps() const
-        {return (GetKeyAccidentals() == sevenSharps);}
-    /// Determines if the key signature has one flat
-    /// @return True if the key signature has one flat, false if not
-    bool HasOneFlat() const
-        {return (GetKeyAccidentals() == oneFlat);}
-    /// Determines if the key signature has two flats
-    /// @return True if the key signature has two flats, false if not
-    bool HasTwoFlats() const
-        {return (GetKeyAccidentals() == twoFlats);}
-    /// Determines if the key signature has three flats
-    /// @return True if the key signature has three flats, false if not
-    bool HasThreeFlats() const
-        {return (GetKeyAccidentals() == threeFlats);}
-    /// Determines if the key signature has four flats
-    /// @return True if the key signature has four flats, false if not
-    bool HasFourFlats() const
-        {return (GetKeyAccidentals() == fourFlats);}
-    /// Determines if the key signature has five flats
-    /// @return True if the key signature has five flats, false if not
-    bool HasFiveFlats() const
-        {return (GetKeyAccidentals() == fiveFlats);}
-    /// Determines if the key signature has six flats
-    /// @return True if the key signature has six flats, false if not
-    bool HasSixFlats() const
-        {return (GetKeyAccidentals() == sixFlats);}
-    /// Determines if the key signature has seven flats
-    /// @return True if the key signature has seven flats, false if not
-    bool HasSevenFlats() const
-        {return (GetKeyAccidentals() == sevenFlats);}
 
     /// Determines if the key signature uses flats
     /// @return True if the key signature uses flats, false if not
     bool UsesFlats() const
     {
-        return (GetKeyAccidentals() >= oneFlat && GetKeyAccidentals() <= sevenFlats);
+        uint8_t key = 0, accidentals = 0;
+        GetDrawKey(key, accidentals);
+        return (accidentals >= oneFlat && accidentals <= sevenFlats);
     }
     /// Determines if the key signature uses sharps
     /// @return True if the key signature uses sharps, false if not
     bool UsesSharps() const
     {
-        return (GetKeyAccidentals() >= oneSharp && GetKeyAccidentals() <= sevenSharps);
+        uint8_t key = 0, accidentals = 0;
+        GetDrawKey(key, accidentals);
+        return (accidentals >= oneSharp && accidentals <= sevenSharps);
     }
 
     /// Determines the number of accidentals in the key signature
