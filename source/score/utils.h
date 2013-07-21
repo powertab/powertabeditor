@@ -53,8 +53,15 @@ namespace ScoreUtils {
     template <typename T>
     void insertObject(std::vector<T> &objects, const T &obj)
     {
+        // Avoid sorting unless we actually need to. This improves performance
+        // quite a bit when, for example, we are importing from other file
+        // formats and inserting objects in order.
+        const bool needsSort = !objects.empty() &&
+                objects.back().getPosition() > obj.getPosition();
+
         objects.push_back(obj);
-        std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
+        if (needsSort)
+            std::sort(objects.begin(), objects.end(), OrderByPosition<T>());
     }
 
     template <typename T>
