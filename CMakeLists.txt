@@ -2,13 +2,17 @@ cmake_minimum_required(VERSION 2.8.8)
 project(powertabeditor)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-DBOOST_ALL_DYN_LINK)
     add_definitions(-DBOOST_ALL_NO_LIB)
 else()
     # Set -Wno-ignored-qualifiers for boost::ptr_container (see https://svn.boost.org/trac/boost/ticket/4276).
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers")
+    if (ENABLE_WERROR)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+    endif()
 endif()
 
 # Run moc automatically when needed.
