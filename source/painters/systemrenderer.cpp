@@ -28,7 +28,6 @@
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
-#include <painters/tabnotepainter.h>
 #include <painters/tempomarkerpainter.h>
 #include <painters/timesignaturepainter.h>
 #include <QBrush>
@@ -49,6 +48,7 @@ SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
       myRehearsalSignFont("Helvetica")
 {
     myPlainTextFont.setPixelSize(10);
+    myPlainTextFont.setStyleStrategy(QFont::PreferAntialias);
     mySymbolTextFont.setPixelSize(9);
     myRehearsalSignFont.setPixelSize(12);
 }
@@ -246,11 +246,18 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
 
             BOOST_FOREACH(const Note &note, pos.getNotes())
             {
-                TabNotePainter *tabNote = new TabNotePainter(note);
+                const QString text = QString::fromStdString(
+                            boost::lexical_cast<std::string>(note));
+
+                QGraphicsSimpleTextItem *tabNote = new QGraphicsSimpleTextItem(text);
+                tabNote->setFont(myPlainTextFont);
+                tabNote->setPen(QPen(note.hasProperty(Note::Tied) ?
+                                         Qt::lightGray : Qt::black));
+
                 centerItem(tabNote, location,
                            location + layout->getPositionSpacing(),
-                           layout->getTabLine(note.getString()) +
-                           layout->getTabLineSpacing() / 2 - 1);
+                           layout->getTabLine(note.getString() + 1) -
+                           0.6 * myPlainTextFont.pixelSize());
                 tabNote->setParentItem(myParentStaff);
             }
 
