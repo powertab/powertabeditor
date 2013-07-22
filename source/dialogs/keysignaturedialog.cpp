@@ -18,37 +18,43 @@
 #include "keysignaturedialog.h"
 #include "ui_keysignaturedialog.h"
 
-#include <sigfwd/sigfwd.hpp>
 #include <boost/bind.hpp>
-using boost::bind;
+#include <boost/lexical_cast.hpp>
+#include <score/keysignature.h>
+#include <sigfwd/sigfwd.hpp>
 
-KeySignatureDialog::KeySignatureDialog(QWidget *parent, const KeySignature &key) :
-    QDialog(parent),
-    ui(new Ui::KeySignatureDialog),
-    newKey(key), modified(false)
+KeySignatureDialog::KeySignatureDialog(QWidget *parent,
+                                       const KeySignature &currentKey)
+    : QDialog(parent),
+      ui(new Ui::KeySignatureDialog),
+      myIsModified(false),
+      myPreviousKey(currentKey)
 {
     ui->setupUi(this);
 
-    // Initialize based on the original value of the key signature, and create any signal connections
-    if (newKey.IsMajorKey())
-    {
+    // Initialize based on the original value of the key signature, and
+    // create any signal connections
+    if (currentKey.getKeyType() == KeySignature::Major)
         ui->majorKeyButton->setChecked(true);
-    }
     else
-    {
         ui->minorKeyButton->setChecked(true);
-    }
 
     sigfwd::connect(ui->majorKeyButton, SIGNAL(clicked()),
-                    bind(&KeySignatureDialog::populateKeyTypes, this, KeySignature::majorKey));
+                    boost::bind(&KeySignatureDialog::populateKeyTypes, this,
+                                KeySignature::Major));
     sigfwd::connect(ui->minorKeyButton, SIGNAL(clicked()),
-                    bind(&KeySignatureDialog::populateKeyTypes, this, KeySignature::minorKey));
+                    boost::bind(&KeySignatureDialog::populateKeyTypes, this,
+                                KeySignature::Minor));
 
-    populateKeyTypes(newKey.GetKeyType());
+    populateKeyTypes(currentKey.getKeyType());
 
-    ui->keysComboBox->setCurrentIndex(newKey.GetKeyAccidentals());
+    // Set the initial index for the keys combo box.
+    int index = currentKey.getNumAccidentals();
+    if (index > 0 && !currentKey.usesSharps())
+        index += KeySignature::MAX_NUM_ACCIDENTALS;
+    ui->keysComboBox->setCurrentIndex(index);
 
-    ui->visibilityCheckBox->setChecked(newKey.IsShown());
+    ui->visibilityCheckBox->setChecked(currentKey.isVisible());
 
     connect(ui->majorKeyButton, SIGNAL(clicked()), this,
             SLOT(handleModification()));
@@ -63,62 +69,70 @@ KeySignatureDialog::~KeySignatureDialog()
     delete ui;
 }
 
-/// Populate the list of key types, depending on whether we are using major or minor keys
-void KeySignatureDialog::populateKeyTypes(uint8_t type)
+KeySignature KeySignatureDialog::getNewKey() const
 {
-    // store the original selected index, so we can reset it after repopulating the list
+    KeySignature key;
+    key.setKeyType(ui->majorKeyButton->isChecked() ? KeySignature::Major
+                                                   : KeySignature::Minor);
+    key.setVisible(ui->visibilityCheckBox->isChecked());
+
+    int numAccidentals = ui->keysComboBox->currentIndex();
+
+    // Create a cancellation if necessary.
+    if (numAccidentals == 0 && myPreviousKey.getNumAccidentals() > 0)
+    {
+        key.setCancellation();
+        key.setNumAccidentals(myPreviousKey.getNumAccidentals());
+        key.setSharps(myPreviousKey.usesSharps());
+    }
+    else
+    {
+        if (numAccidentals > KeySignature::MAX_NUM_ACCIDENTALS)
+        {
+            key.setSharps(false);
+            numAccidentals -= KeySignature::MAX_NUM_ACCIDENTALS;
+        }
+
+        key.setNumAccidentals(numAccidentals);
+    }
+
+    return key;
+}
+
+void KeySignatureDialog::populateKeyTypes(KeySignature::KeyType type)
+{
+    // Store the original selected index, so we can reset it after repopulating
+    // the list.
     int originalSelection = ui->keysComboBox->currentIndex();
     if (originalSelection == -1)
-    {
         originalSelection = 0;
-    }
 
     ui->keysComboBox->clear();
 
-    KeySignature tempKey(type, 0);
+    KeySignature tempKey(type, 0, true);
 
-    for (int i = KeySignature::noAccidentals; i <= KeySignature::sevenFlats; i++)
+    for (uint8_t i = 0; i <= KeySignature::MAX_NUM_ACCIDENTALS; ++i)
     {
-        tempKey.SetKeyAccidentals(i);
-        ui->keysComboBox->addItem(QString::fromStdString(tempKey.GetText()));
+        tempKey.setNumAccidentals(i);
+        ui->keysComboBox->addItem(QString::fromStdString(
+                                      boost::lexical_cast<std::string>(tempKey)));
+    }
+
+    tempKey.setSharps(false);
+    for (uint8_t i = 1; i <= KeySignature::MAX_NUM_ACCIDENTALS; ++i)
+    {
+        tempKey.setNumAccidentals(i);
+        ui->keysComboBox->addItem(QString::fromStdString(
+                                      boost::lexical_cast<std::string>(tempKey)));
     }
 
     ui->keysComboBox->setCurrentIndex(originalSelection);
 }
 
-/// After the user makes a modification, set the key signature to be visible.
-/// This is only done for the first modification in case the user doesn't
-/// want to show the key signature.
 void KeySignatureDialog::handleModification()
 {
-    if (!modified)
-    {
+    if (!myIsModified)
         ui->visibilityCheckBox->setChecked(true);
-    }
-    modified = true;
-}
 
-/// Return the new key, as selected by the user
-KeySignature KeySignatureDialog::getNewKey() const
-{
-    return newKey;
-}
-
-void KeySignatureDialog::accept()
-{
-    // update the new key with the values selected in the dialog
-    newKey.SetShown(ui->visibilityCheckBox->isChecked());
-
-    if (ui->majorKeyButton->isChecked())
-    {
-        newKey.SetKeyType(KeySignature::majorKey);
-    }
-    else if (ui->minorKeyButton->isChecked())
-    {
-        newKey.SetKeyType(KeySignature::minorKey);
-    }
-
-    newKey.SetKeyAccidentals(ui->keysComboBox->currentIndex());
-
-    done(Accepted);
+    myIsModified = true;
 }

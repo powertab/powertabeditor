@@ -17,73 +17,65 @@
   
 #include "editkeysignature.h"
 
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/barline.h>
 #include <boost/foreach.hpp>
+#include <score/barline.h>
+#include <score/score.h>
 
-EditKeySignature::EditKeySignature(Score* score, const SystemLocation& location,
-                                   uint8_t newKeyType, uint8_t newKeyAccidentals, bool isShown) :
-    QUndoCommand(QObject::tr("Edit Key Signature")),
-    score(score),
-    location(location),
-    newKeySig(newKeyType, newKeyAccidentals)
+EditKeySignature::EditKeySignature(const ScoreLocation &location,
+                                   const KeySignature &newKey)
+    : QUndoCommand(QObject::tr("Edit Key Signature")),
+      myLocation(location),
+      myNewKey(newKey),
+      myOldKey(location.getBarline()->getKeySignature())
 {
-    newKeySig.SetShown(isShown);
-    // save the original key signature
-    Score::SystemConstPtr system = score->GetSystem(location.getSystemIndex());
-    System::BarlineConstPtr barline = system->GetBarlineAtPosition(location.getPositionIndex());
-    Q_ASSERT(barline);
-    oldKeySig = barline->GetKeySignature();
 }
 
 void EditKeySignature::redo()
 {
-    switchKeySignatures(oldKeySig, newKeySig);
+    myLocation.getBarline()->setKeySignature(myNewKey);
+    updateFollowingKeySignatures(myOldKey, myNewKey);
 }
 
 void EditKeySignature::undo()
 {
-    switchKeySignatures(newKeySig, oldKeySig);
+    myLocation.getBarline()->setKeySignature(myOldKey);
+    updateFollowingKeySignatures(myNewKey, myOldKey);
 }
 
-/// Switches from the old key signature to the new key signature, starting at the position
-/// stored in the "location" member
-/// Modifies all following key signatures until a different key signature is reached
-void EditKeySignature::switchKeySignatures(const KeySignature& oldKey,
-                                           const KeySignature& newKey)
+void EditKeySignature::updateFollowingKeySignatures(const KeySignature &oldKey,
+                                                    const KeySignature &newKey)
 {
-    const size_t startSystem = location.getSystemIndex();
-    for (size_t i = startSystem; i < score->GetSystemCount(); i++)
-    {
-        std::vector<System::BarlinePtr> barlines;
-        Score::SystemPtr system = score->GetSystem(i);
-        system->GetBarlines(barlines);
+    Score &score = myLocation.getScore();
+    const int startSystem = myLocation.getSystemIndex();
 
-        BOOST_FOREACH(System::BarlinePtr barline, barlines)
+    for (int i = startSystem; i < score.getSystems().size(); ++i)
+    {
+        BOOST_FOREACH(Barline &bar, score.getSystems()[i].getBarlines())
         {
-            if (i == startSystem && barline->GetPosition() < location.getPositionIndex())
+            if (i == startSystem &&
+                bar.getPosition() <= myLocation.getPositionIndex())
             {
                 continue;
             }
 
-            KeySignature& key = barline->GetKeySignature();
-            if (key.IsSameKey(oldKey))
+            const KeySignature &currentKey = bar.getKeySignature();
+            if (currentKey.getKeyType() == oldKey.getKeyType() &&
+                currentKey.getNumAccidentals() == oldKey.getNumAccidentals() &&
+                currentKey.usesSharps() == oldKey.usesSharps())
             {
-                key.SetKey(newKey.GetKeyType(), newKey.GetKeyAccidentals());
-
-                if (i == startSystem && barline->GetPosition() == location.getPositionIndex())
-                {
-                    key.SetShown(newKey.IsShown());
-                }
+                KeySignature key;
+                key.setVisible(bar.getKeySignature().isVisible());
+                key.setCancellation(bar.getKeySignature().isCancellation());
+                key.setSharps(newKey.usesSharps());
+                key.setKeyType(newKey.getKeyType());
+                key.setNumAccidentals(newKey.getNumAccidentals());
+                bar.setKeySignature(key);
             }
             else
             {
-                system->AdjustPositionSpacing();
                 return;
             }
         }
-
-        system->AdjustPositionSpacing();
     }
+
 }

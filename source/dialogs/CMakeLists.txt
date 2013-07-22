@@ -10,7 +10,7 @@ set(FORMS
     gotorehearsalsigndialog.ui
     #irregulargroupingdialog.ui
     keyboardsettingsdialog.ui
-    #keysignaturedialog.ui
+    keysignaturedialog.ui
     playerchangedialog.ui
     #preferencesdialog.ui
     rehearsalsigndialog.ui
@@ -38,7 +38,7 @@ add_library(ptedialogs
     gotorehearsalsigndialog.cpp
     #irregulargroupingdialog.cpp
     keyboardsettingsdialog.cpp
-    #keysignaturedialog.cpp
+    keysignaturedialog.cpp
     playerchangedialog.cpp
     #preferencesdialog.cpp
     rehearsalsigndialog.cpp

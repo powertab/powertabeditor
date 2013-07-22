@@ -126,6 +126,8 @@ private slots:
 
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
+    /// Edits the key signature at the caret's current location.
+    void editKeySignatureFromCaret();
 
     /// Adds or removes a tapped harmonic for the current note.
     void editTappedHarmonic();
@@ -154,6 +156,9 @@ private:
     /// Updates whether menu items are enabled, checked, etc. depending on the
     /// current location.
     void updateCommands();
+
+    /// Edits the key signature at the given location.
+    void editKeySignature(const ScoreLocation &location);
 
     /// Toggles a simple position property.
     void editSimpleProperty(Command *command, Position::SimpleProperty property);
@@ -223,6 +228,7 @@ private:
 
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
+    Command *myKeySignatureCommand;
 
     QMenu *myTabSymbolsMenu;
     Command* myTappedHarmonicCommand;
@@ -258,7 +264,6 @@ private:
     void updateNoteDuration(uint8_t duration);
     void addRest();
     void editRest(uint8_t duration);
-    void editKeySignature(const SystemLocation &location);
     void editTimeSignature(const SystemLocation &location);
     void editBarline(const SystemLocation &location);
 
@@ -290,7 +295,6 @@ private slots:
     void editBarlineFromCaret();
     void insertStandardBarline();
     void editArtificialHarmonic();
-    void editKeySignatureFromCaret();
     void editTimeSignatureFromCaret();
     void editDynamic();
     void editVolumeSwell();
@@ -389,7 +393,6 @@ private:
     Command* addRestAct;
 
     Command* tempoMarkerAct;
-    Command* keySignatureAct;
     Command* timeSignatureAct;
     Command* barlineAct;
     Command* standardBarlineAct;

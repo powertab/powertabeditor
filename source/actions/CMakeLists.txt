@@ -26,7 +26,7 @@ add_library(pteactions
     #deleteposition.cpp
     #editfileinformation.cpp
     #edithammerpull.cpp
-    #editkeysignature.cpp
+    editkeysignature.cpp
     #editrest.cpp
     #editslideinto.cpp
     #editslideout.cpp

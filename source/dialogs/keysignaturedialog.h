@@ -15,11 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef KEYSIGNATUREDIALOG_H
-#define KEYSIGNATUREDIALOG_H
+#ifndef DIALOGS_KEYSIGNATUREDIALOG_H
+#define DIALOGS_KEYSIGNATUREDIALOG_H
 
 #include <QDialog>
-#include <powertabdocument/keysignature.h>
+#include <score/keysignature.h>
 
 namespace Ui {
     class KeySignatureDialog;
@@ -28,22 +28,27 @@ namespace Ui {
 class KeySignatureDialog : public QDialog
 {
     Q_OBJECT
+
 public:
-    KeySignatureDialog(QWidget* parent, const KeySignature& key);
+    KeySignatureDialog(QWidget *parent, const KeySignature &currentKey);
     ~KeySignatureDialog();
 
     KeySignature getNewKey() const;
 
 private slots:
-    void accept();
-    void populateKeyTypes(uint8_t type);
+    /// Populate the list of key types, depending on whether we are using
+    /// major or minor keys.
+    void populateKeyTypes(KeySignature::KeyType type);
+
+    /// After the user makes a modification, set the key signature to be visible.
+    /// This is only done for the first modification in case the user doesn't
+    /// want to show the key signature.
     void handleModification();
 
 private:
     Ui::KeySignatureDialog *ui;
-
-    KeySignature newKey;
-    bool modified;
+    bool myIsModified;
+    const KeySignature myPreviousKey;
 };
 
 #endif // KEYSIGNATUREDIALOG_H

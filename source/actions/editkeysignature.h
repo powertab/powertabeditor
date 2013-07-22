@@ -15,31 +15,30 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef EDITKEYSIGNATURE_H
-#define EDITKEYSIGNATURE_H
+#ifndef DIALOGS_EDITKEYSIGNATURE_H
+#define DIALOGS_EDITKEYSIGNATURE_H
 
 #include <QUndoCommand>
-#include <powertabdocument/systemlocation.h>
-#include <powertabdocument/keysignature.h>
-
-class Score;
+#include <score/keysignature.h>
+#include <score/scorelocation.h>
 
 class EditKeySignature : public QUndoCommand
 {
 public:
-    EditKeySignature(Score* score, const SystemLocation& location,
-                     uint8_t newKeyType, uint8_t newKeyAccidentals, bool isShown);
+    EditKeySignature(const ScoreLocation &location, const KeySignature &newKey);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    void switchKeySignatures(const KeySignature& oldKey, const KeySignature& newKey);
+    /// Updates all of the key signatures following myLocation until a different
+    /// key signature is reached.
+    void updateFollowingKeySignatures(const KeySignature &oldKey,
+                                      const KeySignature &newKey);
 
-    Score* score;
-    const SystemLocation location;
-    KeySignature newKeySig;
-    KeySignature oldKeySig;
+    ScoreLocation myLocation;
+    const KeySignature myNewKey;
+    const KeySignature myOldKey;
 };
 
 #endif // EDITKEYSIGNATURE_H

@@ -24,6 +24,7 @@
 #include <actions/addtappedharmonic.h>
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
+#include <actions/editkeysignature.h>
 #include <actions/removeplayerchange.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removerehearsalsign.h>
@@ -45,6 +46,7 @@
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
+#include <dialogs/keysignaturedialog.h>
 #include <dialogs/playerchangedialog.h>
 #include <dialogs/rehearsalsigndialog.h>
 #include <dialogs/tappedharmonicdialog.h>
@@ -506,6 +508,11 @@ void PowerTabEditor::editRehearsalSign()
         else
             myRehearsalSignCommand->setChecked(false);
     }
+}
+
+void PowerTabEditor::editKeySignatureFromCaret()
+{
+    editKeySignature(getLocation());
 }
 
 void PowerTabEditor::editTappedHarmonic()
@@ -1067,11 +1074,13 @@ void PowerTabEditor::createCommands()
     tempoMarkerAct->setCheckable(true);
     connect(tempoMarkerAct, SIGNAL(triggered()), this, SLOT(editTempoMarker()));
 
-    keySignatureAct = new Command(tr("Edit Key Signature..."), "MusicSymbols.EditKeySignature",
-                                  Qt::Key_K, this);
-    connect(keySignatureAct, SIGNAL(triggered()), this,
+#endif
+    myKeySignatureCommand = new Command(tr("Edit Key Signature..."),
+                                        "MusicSymbols.EditKeySignature",
+                                        Qt::Key_K, this);
+    connect(myKeySignatureCommand, SIGNAL(triggered()), this,
             SLOT(editKeySignatureFromCaret()));
-
+#if 0
     timeSignatureAct = new Command(tr("Edit Time Signature..."), "MusicSymbols.EditTimeSignature",
                                    Qt::Key_T, this);
     connect(timeSignatureAct, SIGNAL(triggered()), this,
@@ -1403,15 +1412,17 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     myMusicSymbolsMenu->addAction(myRehearsalSignCommand);
 #if 0
-    musicSymbolsMenu->addAction(tempoMarkerAct);
-    musicSymbolsMenu->addAction(keySignatureAct);
-    musicSymbolsMenu->addAction(timeSignatureAct);
-    musicSymbolsMenu->addAction(standardBarlineAct);
-    musicSymbolsMenu->addAction(barlineAct);
-    musicSymbolsMenu->addAction(musicalDirectionAct);
-    musicSymbolsMenu->addAction(repeatEndingAct);
-    musicSymbolsMenu->addAction(dynamicAct);
-    musicSymbolsMenu->addAction(volumeSwellAct);
+    myMusicSymbolsMenu->addAction(tempoMarkerAct);
+#endif
+    myMusicSymbolsMenu->addAction(myKeySignatureCommand);
+#if 0
+    myMusicSymbolsMenu->addAction(timeSignatureAct);
+    myMusicSymbolsMenu->addAction(standardBarlineAct);
+    myMusicSymbolsMenu->addAction(barlineAct);
+    myMusicSymbolsMenu->addAction(musicalDirectionAct);
+    myMusicSymbolsMenu->addAction(repeatEndingAct);
+    myMusicSymbolsMenu->addAction(dynamicAct);
+    myMusicSymbolsMenu->addAction(volumeSwellAct);
 
 #endif
     // Tab Symbols Menu
@@ -1627,6 +1638,7 @@ void PowerTabEditor::updateCommands()
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
+    myKeySignatureCommand->setEnabled(barline);
 
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
@@ -1640,6 +1652,19 @@ void PowerTabEditor::updateCommands()
 
     myPlayerChangeCommand->setChecked(ScoreUtils::findByPosition(
                                           system.getPlayerChanges(), position));
+}
+
+void PowerTabEditor::editKeySignature(const ScoreLocation &location)
+{
+    const Barline *barline = location.getBarline();
+    Q_ASSERT(barline);
+
+    KeySignatureDialog dialog(this, barline->getKeySignature());
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->push(new EditKeySignature(location, dialog.getNewKey()),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
 }
 
 void PowerTabEditor::editSimpleProperty(Command *command,
@@ -2029,40 +2054,6 @@ void PowerTabEditor::showTuningDictionary()
 {
     TuningDictionaryDialog dialog(tuningDictionary, this);
     dialog.exec();
-}
-
-/// Edit the key signature at the caret's current location.
-void PowerTabEditor::editKeySignatureFromCaret()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    const SystemLocation caretLocation(caret->getCurrentSystemIndex(),
-                                       caret->getCurrentPositionIndex());
-    editKeySignature(caretLocation);
-}
-
-/// Edit the key signature at the specified location.
-void PowerTabEditor::editKeySignature(const SystemLocation& location)
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
-    shared_ptr<Barline> barline = score->GetSystem(location.getSystemIndex())->
-            GetBarlineAtPosition(location.getPositionIndex());
-    Q_ASSERT(barline);
-
-    const KeySignature& keySignature = barline->GetKeySignature();
-
-    KeySignatureDialog dialog(this, keySignature);
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        const KeySignature newKey = dialog.getNewKey();
-
-        EditKeySignature* action = new EditKeySignature(score, location,
-                                                        newKey.GetKeyType(),
-                                                        newKey.GetKeyAccidentals(),
-                                                        newKey.IsShown());
-
-        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
-    }
 }
 
 /// Edit the time signature at the caret's current location.
