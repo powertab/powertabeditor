@@ -35,6 +35,7 @@
 #include <app/caret.h>
 #include <app/command.h>
 #include <app/documentmanager.h>
+#include <app/pubsub/scorelocationpubsub.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
@@ -1521,10 +1522,14 @@ void PowerTabEditor::setupNewTab()
 #if 0
     score->installEventFilter(this);
 
+    // Connect the signals for mouse clicks on time signatures, barlines, etc.
+    // to the appropriate event handlers.
     score->timeSignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editTimeSignature, this, _1));
-    score->keySignaturePubSub()->subscribe(
+#endif
+    scorearea->getKeySignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editKeySignature, this, _1));
+#if 0
     score->barlinePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editBarline, this, _1));
 #endif
@@ -1654,8 +1659,12 @@ void PowerTabEditor::updateCommands()
                                           system.getPlayerChanges(), position));
 }
 
-void PowerTabEditor::editKeySignature(const ScoreLocation &location)
+void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
 {
+    ScoreLocation location(getLocation());
+    location.setSystemIndex(keyLocation.getSystemIndex());
+    location.setPositionIndex(keyLocation.getPositionIndex());
+
     const Barline *barline = location.getBarline();
     Q_ASSERT(barline);
 
