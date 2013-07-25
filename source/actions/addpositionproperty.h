@@ -36,6 +36,9 @@ public:
 private:
     ScoreLocation myLocation;
     const Position::SimpleProperty myProperty;
+    /// Since setting a property may clear other properties, we need to save
+    /// a copy of the original positions.
+    std::vector<Position> myOriginalPositions;
 };
 
 #endif

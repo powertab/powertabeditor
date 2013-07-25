@@ -26,6 +26,10 @@ AddPositionProperty::AddPositionProperty(const ScoreLocation &location,
       myLocation(location),
       myProperty(property)
 {
+    BOOST_FOREACH(const Position *pos, myLocation.getSelectedPositions())
+    {
+        myOriginalPositions.push_back(*pos);
+    }
 }
 
 void AddPositionProperty::redo()
@@ -38,8 +42,8 @@ void AddPositionProperty::redo()
 
 void AddPositionProperty::undo()
 {
-    BOOST_FOREACH(Position *pos, myLocation.getSelectedPositions())
-    {
-        pos->setProperty(myProperty, false);
-    }
+    std::vector<Position *> selectedPositions = myLocation.getSelectedPositions();
+
+    for (size_t i = 0; i < myOriginalPositions.size(); ++i)
+        *selectedPositions[i] = myOriginalPositions[i];
 }

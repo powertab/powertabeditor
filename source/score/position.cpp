@@ -75,6 +75,15 @@ bool Position::hasProperty(SimpleProperty property) const
 
 void Position::setProperty(SimpleProperty property, bool set)
 {
+    // Handle any mutually-exclusive properties.
+    if (set)
+    {
+        if (property == PickStrokeUp && hasProperty(PickStrokeDown))
+            mySimpleProperties.set(PickStrokeDown, false);
+        if (property == PickStrokeDown && hasProperty(PickStrokeUp))
+            mySimpleProperties.set(PickStrokeUp, false);
+    }
+
     mySimpleProperties.set(property, set);
 }
 
