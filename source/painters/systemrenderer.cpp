@@ -17,8 +17,8 @@
 
 #include "systemrenderer.h"
 
-#include <app/common.h>
 #include <app/scorearea.h>
+#include <boost/algorithm/clamp.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
@@ -421,7 +421,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         }
 
         // Ensure that the line doesn't extend past the edge of the system.
-        endX = Common::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
+        endX = boost::algorithm::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
 
         QGraphicsLineItem *horizLine = new QGraphicsLineItem();
         horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);

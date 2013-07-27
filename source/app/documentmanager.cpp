@@ -20,7 +20,6 @@
 #include <QSettings>
 #include <QString>
 
-#include <app/common.h>
 #include <app/settings.h>
 
 DocumentManager::DocumentManager()
