@@ -104,6 +104,21 @@ private:
     void drawPlayerChanges(const System &system, int staffIndex,
                            const LayoutInfo &layout);
 
+    /// Draws the symbols that appear above the tab staff (e.g. vibrato).
+    void drawSymbolsAboveTabStaff(const Staff &staff, const LayoutInfo &layout);
+
+    /// Draws a sequence of continuous music symbols (e.g. vibrato).
+    QGraphicsItem *drawContinuousFontSymbols(QChar symbol, int width);
+
+    /// Creates a tremolo picking symbol.
+    QGraphicsItem *createTremoloPicking(const LayoutInfo &layout);
+
+    /// Creates a trill symbol.
+    QGraphicsItem *createTrill(const LayoutInfo &layout);
+
+    /// Creates a dynamic symbol.
+    QGraphicsItem *createDynamic(const Dynamic &dynamic);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 

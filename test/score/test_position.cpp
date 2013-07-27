@@ -87,6 +87,17 @@ TEST_CASE("Score/Position/HasNoteWithTappedHarmonic", "")
     REQUIRE(Utils::hasNoteWithTappedHarmonic(position));
 }
 
+TEST_CASE("Score/Position/HasNoteWithTrill", "")
+{
+    Position position;
+    REQUIRE(!Utils::hasNoteWithTrill(position));
+
+    Note note;
+    note.setTrilledFret(12);
+    position.insertNote(note);
+    REQUIRE(Utils::hasNoteWithTrill(position));
+}
+
 TEST_CASE("Score/Position/HasNoteWithProperty", "")
 {
     Position position;

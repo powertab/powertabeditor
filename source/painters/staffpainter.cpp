@@ -46,7 +46,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     if (string >= 0 && string < myLayout->getStringCount())
     {
-        const int position = getPositionFromX(x);
+        const int position = myLayout->getPositionFromX(x);
         myLocation.setPositionIndex(position);
         myLocation.setSelectionStart(position);
         myLocation.setString(string);
@@ -58,7 +58,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     const double x = event->pos().x();
-    myLocation.setPositionIndex(getPositionFromX(x));
+    myLocation.setPositionIndex(myLayout->getPositionFromX(x));
     myPubSub->publish(myLocation);
 }
 
@@ -86,20 +86,4 @@ void StaffPainter::drawStaffLines(QPainter *painter, int lineCount,
         painter->drawLine(QPointF(0, height),
                           QPointF(LayoutInfo::STAFF_WIDTH, height));
     }
-}
-
-int StaffPainter::getPositionFromX(double x) const
-{
-    if (myLayout->getPositionX(0) >= x)
-        return 0;
-
-    const int maxPosition = myLayout->getNumPositions() - 2;
-
-    for (int i = 1; i < maxPosition; ++i)
-    {
-        if (myLayout->getPositionX(i) >= x)
-            return i - 1;
-    }
-
-    return maxPosition;
 }

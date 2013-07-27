@@ -36,6 +36,7 @@
 #include <QPen>
 #include <score/scorelocation.h>
 #include <score/system.h>
+#include <score/utils.h>
 
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
     : myScoreArea(scoreArea),
@@ -102,6 +103,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
+        drawSymbolsAboveTabStaff(staff, *layout);
         drawSymbolsBelowTabStaff(*layout);
 
         drawPlayerChanges(system, i, *layout);
@@ -834,25 +836,59 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(const Position* posi
 
     return createPlainText(text, QFont::StyleNormal);
 }
+#endif
 
-/// Draws the symbols that appear between the tab and standard notation staves
-void SystemRenderer::drawSymbols(const StaffData& staffInfo)
+void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
+                                              const LayoutInfo& layout)
 {
-    std::vector<Layout::SymbolGroup> symbolGroups;
-    Layout::CalculateSymbolLayout(symbolGroups, myScore, system, staff);
-
-    BOOST_FOREACH(const Layout::SymbolGroup& symbolGroup, symbolGroups)
+    BOOST_FOREACH(const SymbolGroup &symbolGroup,
+                  layout.getTabStaffAboveSymbols())
     {
-        QGraphicsItem* renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = NULL;
+        const double width = symbolGroup.getWidth();
 
-        const int width = Common::clamp(symbolGroup.width, 0, system->GetRect().GetWidth() - symbolGroup.leftX);
-
-        switch(symbolGroup.symbolType)
+        switch(symbolGroup.getSymbolType())
         {
-        case Layout::SymbolLetRing:
-            renderedSymbol = createConnectedSymbolGroup("let ring", QFont::StyleItalic, width, staffInfo);
+        case SymbolGroup::LetRing:
+            renderedSymbol = createConnectedSymbolGroup("let ring",
+                                                        QFont::StyleItalic,
+                                                        width, layout);
             break;
+        case SymbolGroup::Vibrato:
+            renderedSymbol = drawContinuousFontSymbols(MusicFont::Vibrato,
+                                                       width);
+            break;
+        case SymbolGroup::WideVibrato:
+            renderedSymbol = drawContinuousFontSymbols(MusicFont::WideVibrato,
+                                                       width);
+            break;
+        case SymbolGroup::PalmMuting:
+            renderedSymbol = createConnectedSymbolGroup("P.M.",
+                                                        QFont::StyleNormal,
+                                                        width, layout);
+            break;
+        case SymbolGroup::TremoloPicking:
+            renderedSymbol = createTremoloPicking(layout);
+            break;
+        case SymbolGroup::Trill:
+            renderedSymbol = createTrill(layout);
+            break;
+        case SymbolGroup::NaturalHarmonic:
+            renderedSymbol = createConnectedSymbolGroup("N.H.",
+                                                        QFont::StyleNormal,
+                                                        width, layout);
+            break;
+        case SymbolGroup::Dynamic:
+        {
+            const int position = layout.getPositionFromX(symbolGroup.getX() + 1);
+            const Dynamic *dynamic = ScoreUtils::findByPosition(
+                        staff.getDynamics(), position);
+            Q_ASSERT(dynamic);
 
+            renderedSymbol = createDynamic(*dynamic);
+            break;
+        }
+#if 0
         case Layout::SymbolVolumeSwell:
         {
             // figure out the direction of the volume swell
@@ -863,75 +899,33 @@ void SystemRenderer::drawSymbols(const StaffData& staffInfo)
                                                (startVolume <= endVolume) ? VolumeIncreasing : VolumeDecreasing);
             break;
         }
-
-        case Layout::SymbolVibrato:
-            renderedSymbol = drawContinuousFontSymbols(MusicFont::Vibrato, width);
-            break;
-
-        case Layout::SymbolWideVibrato:
-            renderedSymbol = drawContinuousFontSymbols(MusicFont::WideVibrato, width);
-            break;
-
-        case Layout::SymbolPalmMuting:
-            renderedSymbol = createConnectedSymbolGroup("P.M.", QFont::StyleNormal, width, staffInfo);
-            break;
-
-        case Layout::SymbolTremoloPicking:
-            renderedSymbol = createTremoloPicking(staffInfo);
-            break;
-
         case Layout::SymbolTremoloBar:
             renderedSymbol = new TremoloBarPainter(staff->GetPosition(0, symbolGroup.leftPosIndex),
                                                    width);
             break;
-
-        case Layout::SymbolTrill:
-            renderedSymbol = createTrill(staffInfo);
-            break;
-
-        case Layout::SymbolNaturalHarmonic:
-            renderedSymbol = createConnectedSymbolGroup("N.H.", QFont::StyleNormal, width, staffInfo);
-            break;
-
         case Layout::SymbolArtificialHarmonic:
             renderedSymbol = createConnectedSymbolGroup("A.H.", QFont::StyleNormal, width, staffInfo);
             break;
-
-        case Layout::SymbolDynamic:
-        {
-            const Position* pos = staff->GetPosition(0, symbolGroup.leftPosIndex);
-            renderedSymbol = createDynamic(myScore->FindDynamic(myScore->FindSystemIndex(system),
-                                                              system->FindStaffIndex(staff),
-                                                              pos->GetPosition()));
-            break;
-        }
-
         case Layout::SymbolBend:
         {
             renderedSymbol = createBend(staff->GetPosition(0, symbolGroup.leftPosIndex), staffInfo);
             break;
         }
+#endif
 
         default:
-            Q_ASSERT(false); // all symbol types should have been dealt with by now ...
+            Q_ASSERT(false);
             break;
         }
 
-        if (symbolGroup.symbolType != Layout::SymbolBend)
-        {
-            renderedSymbol->setPos(symbolGroup.leftX,
-                                   staffInfo.getTopTabLine() - (symbolGroup.height + 1) * Staff::TAB_SYMBOL_HEIGHT);
-        }
-        else
-        {
-            renderedSymbol->setPos(symbolGroup.leftX, 0);
-        }
+        renderedSymbol->setPos(symbolGroup.getX(),
+                layout.getTopTabLine() - LayoutInfo::STAFF_BORDER_SPACING -
+                symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
+        // TODO - position bends differently.
 
-        renderedSymbol->setParentItem(parentStaff);
+        renderedSymbol->setParentItem(myParentStaff);
     }
 }
-
-#endif
 
 void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
 {
@@ -1061,69 +1055,95 @@ QGraphicsItem* SystemRenderer::createVolumeSwell(uint8_t width, const StaffData&
     return swell;
 }
 
-QGraphicsItem* SystemRenderer::drawContinuousFontSymbols(QChar symbol, int width)
+#endif
+QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
+                                                         int width)
 {
-    QFont font = musicFont.getFont();
+    QFont font = myMusicFont.getFont();
     font.setPixelSize(25);
 
     const double symbolWidth = QFontMetricsF(font).width(symbol);
     const int numSymbols = width / symbolWidth;
-    QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(QString(numSymbols, symbol));
+    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
+                QString(numSymbols, symbol));
     text->setFont(font);
     text->setPos(0, -25);
 
-    // a bit of a hack for getting around the height offset caused by the music font
-    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    // A bit of a hack for getting around the height offset caused by the
+    // music font.
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
     group->addToGroup(text);
-
     return group;
 }
 
-QGraphicsItem* SystemRenderer::createTremoloPicking(const StaffData& currentStaffInfo)
+QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
 {
-    const double offset = Staff::TAB_SYMBOL_HEIGHT / 3;
+    const double offset = LayoutInfo::TAB_SYMBOL_SPACING / 3;
 
-    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
 
     for (int i = 0; i < 3; i++)
     {
-        QGraphicsSimpleTextItem* line = new QGraphicsSimpleTextItem(MusicFont::getSymbol(MusicFont::TremoloPicking));
-        line->setFont(musicNotationFont);
-        centerItem(line, 0, currentStaffInfo.positionWidth * 1.25, -37 + i * offset);
+        QGraphicsSimpleTextItem *line = new QGraphicsSimpleTextItem(
+                    MusicFont::getSymbol(MusicFont::TremoloPicking));
+        line->setFont(myMusicNotationFont);
+        centerItem(line, 0, layout.getPositionSpacing() * 1.25,
+                   -37 + i * offset);
         group->addToGroup(line);
     }
 
     return group;
 }
 
-QGraphicsItem* SystemRenderer::createTrill(const StaffData& currentStaffInfo)
+QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
 {
-    QFont font(musicFont.getFont());
+    QFont font(myMusicFont.getFont());
     font.setPixelSize(21);
 
-    QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(MusicFont::getSymbol(MusicFont::Trill));
+    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
+                MusicFont::getSymbol(MusicFont::Trill));
     text->setFont(font);
-    centerItem(text, 0, currentStaffInfo.positionWidth, -18);
+    centerItem(text, 0, layout.getPositionSpacing(), -18);
 
-    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
     group->addToGroup(text);
-
     return group;
 }
 
-QGraphicsItem* SystemRenderer::createDynamic(boost::shared_ptr<const Dynamic> dynamic)
+QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
 {
-    QGraphicsSimpleTextItem* textItem = new QGraphicsSimpleTextItem(QString::fromStdString(dynamic->GetText(false)));
-    textItem->setFont(musicNotationFont);
+    QString text = "fff";
+    Dynamic::VolumeLevel volume = dynamic.getVolume();
+
+    if (volume == Dynamic::Off)
+        text = "off";
+    else if (volume <= Dynamic::ppp)
+        text = "ppp";
+    else if (volume <= Dynamic::pp)
+        text = "pp";
+    else if (volume <= Dynamic::p)
+        text = "p";
+    else if (volume <= Dynamic::mp)
+        text = "mp";
+    else if (volume <= Dynamic::mf)
+        text = "mf";
+    else if (volume <= Dynamic::f)
+        text = "f";
+    else if (volume <= Dynamic::ff)
+        text = "ff";
+
+    QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+    textItem->setFont(myMusicNotationFont);
     textItem->setPos(0, -20);
 
-    // Sticking the text in a QGraphicsItemGroup allows us to offset the position of the text from its default location
-    QGraphicsItemGroup* group = new QGraphicsItemGroup;
+    // Sticking the text in a QGraphicsItemGroup allows us to offset the
+    // position of the text from its default location.
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
     group->addToGroup(textItem);
-
     return group;
 }
 
+#if 0
 void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
 {
     System::BarlineConstPtr currentBarline;

@@ -23,6 +23,7 @@
 #include <score/staff.h>
 #include <score/system.h>
 #include <score/timesignature.h>
+#include <set>
 
 const double LayoutInfo::STAFF_WIDTH = 750;
 const int LayoutInfo::NUM_STD_NOTATION_LINES = 5;
@@ -44,15 +45,15 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system,
       myPositionSpacing(0),
       myNumPositions(0),
       myTabStaffBelowSpacing(0),
+      myTabStaffAboveSpacing(0),
       myStdNotationStaffAboveSpacing(0),
-      myStdNotationStaffBelowSpacing(0),
-      mySymbolSpacing(0)
+      myStdNotationStaffBelowSpacing(0)
 {
     computePositionSpacing();
     calculateTabStaffBelowLayout();
+    calculateTabStaffAboveLayout();
     calculateStdNotationStaffAboveLayout();
     calculateStdNotationStaffBelowLayout();
-    calculateTabStaffAboveLayout();
 }
 
 int LayoutInfo::getStringCount() const
@@ -95,7 +96,7 @@ double LayoutInfo::getSystemSymbolSpacing() const
 double LayoutInfo::getStaffHeight() const
 {
     return myStdNotationStaffAboveSpacing + myStdNotationStaffBelowSpacing +
-            mySymbolSpacing + myTabStaffBelowSpacing +
+            myTabStaffAboveSpacing + myTabStaffBelowSpacing +
             STD_NOTATION_LINE_SPACING * (NUM_STD_NOTATION_LINES - 1) +
             (getStringCount() - 1) * getTabLineSpacing() +
             4 * STAFF_BORDER_SPACING;
@@ -194,6 +195,22 @@ double LayoutInfo::getPositionX(int position) const
     // Move over 'n' positions.
     x += (position + 1) * getPositionSpacing();
     return x;
+}
+
+int LayoutInfo::getPositionFromX(double x) const
+{
+    if (getPositionX(0) >= x)
+        return 0;
+
+    const int maxPosition = getNumPositions() - 2;
+
+    for (int i = 1; i < maxPosition; ++i)
+    {
+        if (getPositionX(i) >= x)
+            return i - 1;
+    }
+
+    return maxPosition;
 }
 
 double LayoutInfo::getWidth(const KeySignature &key)
@@ -310,14 +327,14 @@ void LayoutInfo::calculateTabStaffBelowLayout()
             if (pos.hasProperty(Position::PickStrokeUp))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(pos, SymbolGroup::PickStrokeUp, x,
+                            SymbolGroup(SymbolGroup::PickStrokeUp, x,
                                         width, height++));
             }
 
             if (pos.hasProperty(Position::PickStrokeDown))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(pos, SymbolGroup::PickStrokeDown, x,
+                            SymbolGroup(SymbolGroup::PickStrokeDown, x,
                                         width, height++));
             }
 
@@ -325,7 +342,7 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                 Utils::hasNoteWithTappedHarmonic(pos))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(pos, SymbolGroup::Tap, x,
+                            SymbolGroup(SymbolGroup::Tap, x,
                                         width, height++));
             }
 
@@ -333,14 +350,14 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                 Utils::hasNoteWithProperty(pos, Note::HammerOnFromNowhere))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(pos, SymbolGroup::Hammeron, x,
+                            SymbolGroup(SymbolGroup::Hammeron, x,
                                         width, height++));
             }
             else if (Utils::hasNoteWithProperty(pos, Note::PullOff) ||
                      Utils::hasNoteWithProperty(pos, Note::PullOffToNowhere))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(pos, SymbolGroup::Pulloff, x,
+                            SymbolGroup(SymbolGroup::Pulloff, x,
                                         width, height++));
             }
         }
@@ -409,7 +426,7 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
                         rightPos++;
                     const double right = getPositionX(rightPos);
 
-                    symbols.push_back(SymbolGroup(pos, currentType, left,
+                    symbols.push_back(SymbolGroup(currentType, left,
                                                   right - left, 1));
                 }
 
@@ -420,9 +437,21 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
     }
 }
 
+namespace {
+/// Insert a symbol group spanning the given positions. All of the symbols will
+/// be given the same y location.
+int addToHeightMap(std::vector<int> &heightMap, int left, int right, int height)
+{
+    const int newHeight = *std::max_element(heightMap.begin() + left,
+                                            heightMap.begin() + right) + height;
+    std::fill_n(heightMap.begin() + left, right - left, newHeight);
+    return newHeight;
+}
+}
+
 void LayoutInfo::calculateTabStaffAboveLayout()
 {
-    // Allocate spacing for player changes in the system.
+    // First, allocate spacing for player changes in the system.
     const int staffIndex = std::find(mySystem.getStaves().begin(),
                                       mySystem.getStaves().end(), myStaff) -
                            mySystem.getStaves().begin();
@@ -431,10 +460,137 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     {
         if (!change.getActivePlayers(staffIndex).empty())
         {
-            mySymbolSpacing = TAB_SYMBOL_SPACING;
+            myTabStaffAboveSpacing = TAB_SYMBOL_SPACING;
             break;
         }
     }
+
+    typedef std::set<SymbolGroup::SymbolType> SymbolSet;
+    // For each position in the staff, build a set of symbols at that position.
+    std::vector<SymbolSet> symbolSets(getNumPositions());
+
+    // Add symbols from each position.
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    {
+        BOOST_FOREACH(const Position &pos, myStaff.getVoice(voice))
+        {
+            SymbolSet &set = symbolSets.at(pos.getPosition());
+
+            // TODO - handle bends.
+
+            if (pos.hasProperty(Position::LetRing))
+                set.insert(SymbolGroup::LetRing);
+
+            // TODO - handle volume swells.
+
+            if (pos.hasProperty(Position::Vibrato))
+                set.insert(SymbolGroup::Vibrato);
+            if (pos.hasProperty(Position::WideVibrato))
+                set.insert(SymbolGroup::WideVibrato);
+            if (pos.hasProperty(Position::PalmMuting))
+                set.insert(SymbolGroup::PalmMuting);
+            if (pos.hasProperty(Position::TremoloPicking))
+                set.insert(SymbolGroup::TremoloPicking);
+
+            // TODO - handle tremolo bars.
+
+            if (Utils::hasNoteWithTrill(pos))
+                set.insert(SymbolGroup::Trill);
+            if (Utils::hasNoteWithProperty(pos, Note::NaturalHarmonic))
+                set.insert(SymbolGroup::NaturalHarmonic);
+
+            // TODO - handle artificial harmonics.
+
+            // If there aren't any symbols, insert a dummy symbol so that this
+            // position is treated differently than a completely empty position
+            // and breaks any symbol groups.
+            if (set.empty())
+                set.insert(SymbolGroup::NoSymbol);
+        }
+    }
+
+    // Add dynamic symbols.
+    BOOST_FOREACH(const Dynamic &dynamic, myStaff.getDynamics())
+    {
+        symbolSets.at(dynamic.getPosition()).insert(SymbolGroup::Dynamic);
+    }
+
+    // Now, we need to form symbol groups for symbols such as vibrato or let
+    // ring that are used by multiple consecutive notes.
+    // We also need to compute y-locations for the groups so that none of them
+    // overlap.
+
+    // Stores the highest occupied slot at each position.
+    std::vector<int> heightMap(symbolSets.size(), 0);
+
+    for (SymbolGroup::SymbolType symbol = SymbolGroup::LetRing;
+         symbol <= SymbolGroup::Dynamic; ++symbol)
+    {
+        bool inGroup = false;
+        int leftPos = 0;
+
+        for (size_t i = 0; i < symbolSets.size(); ++i)
+        {
+            const SymbolSet &set = symbolSets[i];
+
+            // Skip empty positions.
+            if (set.empty())
+                continue;
+
+            const bool hasSymbol = set.find(symbol) != set.end();
+
+            // Finish creating a group if we've reached the end of one, or
+            // we're handling a symbol that doesn't get grouped.
+            if ((!hasSymbol && inGroup) || (hasSymbol && (
+                symbol == SymbolGroup::Trill ||
+                symbol == SymbolGroup::TremoloPicking ||
+                symbol == SymbolGroup::Dynamic)))
+            {
+                int rightPos = i;
+
+                if (!inGroup)
+                {
+                    leftPos = i;
+                    rightPos = leftPos + 1;
+                }
+
+                inGroup = false;
+
+                const int height = addToHeightMap(heightMap, leftPos,
+                                                  rightPos, 1);
+                const double leftX = getPositionX(leftPos);
+                const double rightX = getPositionX(rightPos);
+
+                // TODO - handle special cases for tremolo bars and volume
+                // swells.
+
+                myTabStaffAboveSymbols.push_back(
+                            SymbolGroup(symbol, leftX, rightX - leftX, height));
+            }
+            // Start a new group.
+            else if (hasSymbol && !inGroup)
+            {
+                leftPos = i;
+                inGroup = true;
+            }
+        }
+
+        // If we were in a symbol group that stretched to the end of the staff,
+        // add it.
+        if (inGroup)
+        {
+            const double leftX = getPositionX(leftPos);
+            const int rightPos = symbolSets.size() - 1;
+            const double rightX = getPositionX(rightPos);
+            const int height = addToHeightMap(heightMap, leftPos, rightPos, 1);
+            myTabStaffAboveSymbols.push_back(
+                        SymbolGroup(symbol, leftX, rightX - leftX, height));
+        }
+    }
+
+    // Compute the overall spacing needed below the tab staff.
+    myTabStaffAboveSpacing +=
+            getMaxHeight(myTabStaffAboveSymbols) * TAB_SYMBOL_SPACING;
 }
 
 int LayoutInfo::getMaxHeight(const std::vector<SymbolGroup> &groups)
@@ -449,11 +605,9 @@ int LayoutInfo::getMaxHeight(const std::vector<SymbolGroup> &groups)
     return maxHeight;
 }
 
-SymbolGroup::SymbolGroup(const Position &position,
-                         SymbolGroup::SymbolType symbol,
-                         double x, double width, double height)
-    : myPosition(&position),
-      mySymbolType(symbol),
+SymbolGroup::SymbolGroup(SymbolGroup::SymbolType symbol,
+                         double x, double width, int height)
+    : mySymbolType(symbol),
       myX(x),
       myWidth(width),
       myHeight(height)
@@ -463,6 +617,11 @@ SymbolGroup::SymbolGroup(const Position &position,
 const std::vector<SymbolGroup> &LayoutInfo::getTabStaffBelowSymbols() const
 {
     return myTabStaffBelowSymbols;
+}
+
+const std::vector<SymbolGroup> &LayoutInfo::getTabStaffAboveSymbols() const
+{
+    return myTabStaffAboveSymbols;
 }
 
 const std::vector<SymbolGroup> &LayoutInfo::getStdNotationStaffAboveSymbols() const

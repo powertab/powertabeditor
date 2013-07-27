@@ -35,19 +35,34 @@ public:
     enum SymbolType
     {
         NoSymbol,
+
+        // Below tab staff.
         PickStrokeUp,
         PickStrokeDown,
         Tap,
         Hammeron,
         Pulloff,
+
+        // Above standard notation staff.
         Octave8va,
         Octave15ma,
+
+        // Below standard notation staff.
         Octave8vb,
-        Octave15mb
+        Octave15mb,
+
+        // Above tab staff.
+        LetRing,
+        Vibrato,
+        WideVibrato,
+        PalmMuting,
+        TremoloPicking,
+        Trill,
+        NaturalHarmonic,
+        Dynamic
     };
 
-    SymbolGroup(const Position &position, SymbolType symbol,
-                double x, double width, double height);
+    SymbolGroup(SymbolType symbol, double x, double width, int height);
 
     SymbolType getSymbolType() const;
     double getX() const;
@@ -55,8 +70,6 @@ public:
     int getHeight() const;
 
 private:
-    /// First position associated with the symbol group.
-    const Position *myPosition;
     /// The type of symbol.
     SymbolType mySymbolType;
     /// x-coordinate of the start of the symbol group.
@@ -92,6 +105,7 @@ struct LayoutInfo
     int getNumPositions() const;
     double getFirstPositionX() const;
     double getPositionX(int position) const;
+    int getPositionFromX(double x) const;
 
     static const double STAFF_WIDTH;
     static const int NUM_STD_NOTATION_LINES;
@@ -122,6 +136,7 @@ struct LayoutInfo
 
     double getTabStaffBelowSpacing() const;
     const std::vector<SymbolGroup> &getTabStaffBelowSymbols() const;
+    const std::vector<SymbolGroup> &getTabStaffAboveSymbols() const;
     const std::vector<SymbolGroup> &getStdNotationStaffAboveSymbols() const;
 
     double getStdNotationStaffBelowSpacing() const;
@@ -170,11 +185,12 @@ private:
 
     std::vector<SymbolGroup> myTabStaffBelowSymbols;
     double myTabStaffBelowSpacing;
+    std::vector<SymbolGroup> myTabStaffAboveSymbols;
+    double myTabStaffAboveSpacing;
     std::vector<SymbolGroup> myStdNotationStaffAboveSymbols;
     double myStdNotationStaffAboveSpacing;
     std::vector<SymbolGroup> myStdNotationStaffBelowSymbols;
     double myStdNotationStaffBelowSpacing;
-    double mySymbolSpacing;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;

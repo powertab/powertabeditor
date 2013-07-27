@@ -187,3 +187,15 @@ bool Utils::hasNoteWithProperty(const Position &pos,
 
     return false;
 }
+
+
+bool Utils::hasNoteWithTrill(const Position &pos)
+{
+    BOOST_FOREACH(const Note &note, pos.getNotes())
+    {
+        if (note.hasTrill())
+            return true;
+    }
+
+    return false;
+}
