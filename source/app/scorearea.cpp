@@ -102,12 +102,13 @@ void ScoreArea::redrawSystem(int index)
     double height = 0;
     if (index > 0)
     {
-        height = myRenderedSystems.at(index - 1)->boundingRect().height() +
+        height = myRenderedSystems.at(index - 1)->sceneBoundingRect().bottom() +
                 SYSTEM_SPACING;
     }
 
     newSystem->setPos(0, height);
     height += newSystem->boundingRect().height() + SYSTEM_SPACING;
+    myCaretPainter->setSystemRect(index, newSystem->sceneBoundingRect());
 
     myScene.addItem(newSystem);
     myRenderedSystems.insert(index, newSystem);
@@ -118,6 +119,7 @@ void ScoreArea::redrawSystem(int index)
         QGraphicsItem *system = myRenderedSystems[i];
         system->setPos(0, height);
         height += system->boundingRect().height() + SYSTEM_SPACING;
+        myCaretPainter->setSystemRect(i, system->sceneBoundingRect());
     }
 }
 
