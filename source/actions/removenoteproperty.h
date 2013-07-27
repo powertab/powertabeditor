@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,25 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch.hpp>
+#ifndef ACTIONS_REMOVENOTEPROPERTY_H
+#define ACTIONS_REMOVENOTEPROPERTY_H
 
-#include <actions/removetappedharmonic.h>
+#include <QUndoCommand>
 #include <score/note.h>
-#include "actionfixture.h"
+#include <score/scorelocation.h>
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTappedHarmonic", "")
+/// Removes a simple note property for each of the selected notes.
+class RemoveNoteProperty : public QUndoCommand
 {
-    const int tappedFret = 17;
-    myLocation.getNote()->setTappedHarmonicFret(tappedFret);
+public:
+    RemoveNoteProperty(const ScoreLocation &location,
+                       Note::SimpleProperty property,
+                       const QString &description);
 
-    RemoveTappedHarmonic action(myLocation);
+    virtual void redo();
+    virtual void undo();
 
-    action.redo();
-    REQUIRE(!myLocation.getNote()->hasTappedHarmonic());
+private:
+    ScoreLocation myLocation;
+    const Note::SimpleProperty myProperty;
+};
 
-    action.undo();
-    REQUIRE(myLocation.getNote()->hasTappedHarmonic());
-    REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == tappedFret);
-}
-
-
+#endif

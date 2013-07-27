@@ -62,7 +62,7 @@ public:
 
     int getSelectionStart() const;
     void setSelectionStart(int position);
-    std::vector<Position*> getSelectedPositions();
+    std::vector<Position *> getSelectedPositions();
 
     int getVoice() const;
     void setVoice(int voice);
@@ -72,6 +72,7 @@ public:
 
     const Note *getNote() const;
     Note *getNote();
+    std::vector<Note *> getSelectedNotes();
 
 private:
     const Score &myScore;

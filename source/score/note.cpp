@@ -86,6 +86,19 @@ bool Note::hasProperty(SimpleProperty property) const
 
 void Note::setProperty(SimpleProperty property, bool set)
 {
+    // Handle any mutually exclusive properties.
+    if (set)
+    {
+        // Clear all other octave properties if setting an octave property.
+        if (property >= Octave8va && property <= Octave15mb)
+        {
+            for (SimpleProperty p = Octave8va; p <= Octave15mb; ++p)
+            {
+                mySimpleProperties.set(p, false);
+            }
+        }
+    }
+
     mySimpleProperties.set(property, set);
 }
 

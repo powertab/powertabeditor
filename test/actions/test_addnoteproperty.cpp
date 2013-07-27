@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -17,23 +17,22 @@
   
 #include <catch.hpp>
 
-#include <actions/removetappedharmonic.h>
+#include <actions/addnoteproperty.h>
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTappedHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddNoteProperty", "")
 {
-    const int tappedFret = 17;
-    myLocation.getNote()->setTappedHarmonicFret(tappedFret);
+    myLocation.getNote()->setProperty(Note::Octave8va);
 
-    RemoveTappedHarmonic action(myLocation);
+    AddNoteProperty action(myLocation, Note::Octave8vb, "Octave 8vb");
 
+    // Ensure that mutually exclusive properties are cleared and reset as needed.
     action.redo();
-    REQUIRE(!myLocation.getNote()->hasTappedHarmonic());
+    REQUIRE(myLocation.getNote()->hasProperty(Note::Octave8vb));
+    REQUIRE(!myLocation.getNote()->hasProperty(Note::Octave8va));
 
     action.undo();
-    REQUIRE(myLocation.getNote()->hasTappedHarmonic());
-    REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == tappedFret);
+    REQUIRE(!myLocation.getNote()->hasProperty(Note::Octave8vb));
+    REQUIRE(myLocation.getNote()->hasProperty(Note::Octave8va));
 }
-
-

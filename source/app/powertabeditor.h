@@ -162,6 +162,8 @@ private:
 
     /// Toggles a simple position property.
     void editSimpleProperty(Command *command, Position::SimpleProperty property);
+    /// Toggles a simple note property.
+    void editSimpleNoteProperty(Command *command, Note::SimpleProperty property);
 
     /// Helper function to insert a system at the given index.
     void insertSystem(int index);
@@ -225,6 +227,13 @@ private:
     QMenu *myLineSpacingMenu;
     Command *myIncreaseLineSpacingCommand;
     Command *myDecreaseLineSpacingCommand;
+
+    QMenu *myNotesMenu;
+    QMenu *myOctaveMenu;
+    Command *myOctave8vaCommand;
+    Command *myOctave15maCommand;
+    Command *myOctave8vbCommand;
+    Command *myOctave15mbCommand;
 
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
@@ -348,7 +357,6 @@ private:
     Command* decreasePositionSpacingAct;
     Command* removeCurrentSystemAct;
 
-    QMenu* notesMenu;
     QActionGroup* noteDurationActGroup; // only one duration can be checked at a time
     Command* wholeNoteAct; // actions for modifying the duration of a note
     Command* halfNoteAct;
@@ -374,12 +382,6 @@ private:
     Command* sforzandoAct; // set a heavy accent
     Command* tripletAct;
     Command* irregularGroupingAct;
-
-    QMenu* octaveMenu;
-    Command* octave8vaAct;
-    Command* octave15maAct;
-    Command* octave8vbAct;
-    Command* octave15mbAct;
 
     QMenu* restsMenu;
     QActionGroup* restDurationsGroup; // allow only one rest duration to be selected at a time

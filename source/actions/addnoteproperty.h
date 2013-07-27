@@ -14,34 +14,31 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#ifndef ACTIONS_ADDNOTEPROPERTY_H
+#define ACTIONS_ADDNOTEPROPERTY_H
 
-#ifndef TEST_ACTIONTESTS_H
-#define TEST_ACTIONTESTS_H
-
-#include <score/score.h>
+#include <QUndoCommand>
+#include <score/note.h>
 #include <score/scorelocation.h>
 
-struct ActionFixture
+/// Sets a simple note property for each of the selected notes.
+class AddNoteProperty : public QUndoCommand
 {
-    ActionFixture()
-        : myLocation(myScore)
-    {
-        System system;
-        Staff staff(6);
-        Position position(42);
-        position.insertNote(Note(2, 3));
-        staff.insertPosition(0, position);
+public:
+    AddNoteProperty(const ScoreLocation &location,
+                    Note::SimpleProperty property,
+                    const QString &description);
 
-        system.insertStaff(staff);
-        myScore.insertSystem(system);
+    virtual void redo();
+    virtual void undo();
 
-        myLocation.setPositionIndex(42);
-        myLocation.setSelectionStart(42);
-        myLocation.setString(2);
-    }
-
-    Score myScore;
+private:
     ScoreLocation myLocation;
+    const Note::SimpleProperty myProperty;
+    /// Since setting a property may clear other properties, we need to save
+    /// a copy of the original notes.
+    std::vector<Note> myOriginalNotes;
 };
 
 #endif

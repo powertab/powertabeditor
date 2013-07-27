@@ -17,6 +17,7 @@
   
 #include "powertabeditor.h"
 
+#include <actions/addnoteproperty.h>
 #include <actions/addplayerchange.h>
 #include <actions/addpositionproperty.h>
 #include <actions/addrehearsalsign.h>
@@ -25,6 +26,7 @@
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editkeysignature.h>
+#include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removerehearsalsign.h>
@@ -980,27 +982,37 @@ void PowerTabEditor::createCommands()
     connectToggleProperty<Position>(sforzandoAct, &getSelectedPositions,
                                     &Position::HasSforzando, &Position::SetSforzando);
 
+#endif
     // Octave actions
-    octave8vaAct = new Command(tr("8va"), "Note.Octave8va", QKeySequence(), this);
-    octave8vaAct->setCheckable(true);
-    connectToggleProperty<Note>(octave8vaAct, &getSelectedNotes,
-                                &Note::IsOctave8va, &Note::SetOctave8va);
+    myOctave8vaCommand = new Command(tr("8va"), "Note.Octave8va",
+                                     QKeySequence(), this);
+    myOctave8vaCommand->setCheckable(true);
+    sigfwd::connect(myOctave8vaCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
+                                myOctave8vaCommand, Note::Octave8va));
 
-    octave15maAct = new Command(tr("15ma"), "Note.Octave15ma", QKeySequence(), this);
-    octave15maAct->setCheckable(true);
-    connectToggleProperty<Note>(octave15maAct, &getSelectedNotes,
-                                &Note::IsOctave15ma, &Note::SetOctave15ma);
+    myOctave15maCommand = new Command(tr("15ma"), "Note.Octave15ma",
+                                      QKeySequence(), this);
+    myOctave15maCommand->setCheckable(true);
+    sigfwd::connect(myOctave15maCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
+                                myOctave15maCommand, Note::Octave15ma));
 
-    octave8vbAct = new Command(tr("8vb"), "Note.Octave8vb", QKeySequence(), this);
-    octave8vbAct->setCheckable(true);
-    connectToggleProperty<Note>(octave8vbAct, &getSelectedNotes,
-                                &Note::IsOctave8vb, &Note::SetOctave8vb);
+    myOctave8vbCommand = new Command(tr("8vb"), "Note.Octave8vb",
+                                     QKeySequence(), this);
+    myOctave8vbCommand->setCheckable(true);
+    sigfwd::connect(myOctave8vbCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
+                                myOctave8vbCommand, Note::Octave8vb));
 
-    octave15mbAct = new Command(tr("15mb"), "Note.Octave15mb", QKeySequence(), this);
-    octave15mbAct->setCheckable(true);
-    connectToggleProperty<Note>(octave15mbAct, &getSelectedNotes,
-                                &Note::IsOctave15mb, &Note::SetOctave15mb);
+    myOctave15mbCommand = new Command(tr("15mb"), "Note.Octave15mb",
+                                      QKeySequence(), this);
+    myOctave15mbCommand->setCheckable(true);
+    sigfwd::connect(myOctave15mbCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
+                                myOctave15mbCommand, Note::Octave15mb));
 
+#if 0
     tripletAct = new Command(tr("Triplet"), "Note.Triplet", Qt::Key_E, this);
     tripletAct->setCheckable(true);
     sigfwd::connect(tripletAct, SIGNAL(triggered()),
@@ -1361,44 +1373,46 @@ void PowerTabEditor::createMenus()
     myLineSpacingMenu = mySectionMenu->addMenu(tr("&Line Spacing"));
     myLineSpacingMenu->addAction(myIncreaseLineSpacingCommand);
     myLineSpacingMenu->addAction(myDecreaseLineSpacingCommand);
+
+    // Notes Menu.
+    myNotesMenu = menuBar()->addMenu(tr("&Notes"));
 #if 0
-    // Note Menu
-    notesMenu = menuBar()->addMenu(tr("&Notes"));
-    notesMenu->addAction(wholeNoteAct);
-    notesMenu->addAction(halfNoteAct);
-    notesMenu->addAction(quarterNoteAct);
-    notesMenu->addAction(eighthNoteAct);
-    notesMenu->addAction(sixteenthNoteAct);
-    notesMenu->addAction(thirtySecondNoteAct);
-    notesMenu->addAction(sixtyFourthNoteAct);
-    notesMenu->addSeparator();
-    notesMenu->addAction(increaseDurationAct);
-    notesMenu->addAction(decreaseDurationAct);
-    notesMenu->addSeparator();
-    notesMenu->addAction(dottedNoteAct);
-    notesMenu->addAction(doubleDottedNoteAct);
-    notesMenu->addSeparator();
-    notesMenu->addAction(addDotAct);
-    notesMenu->addAction(removeDotAct);
-    notesMenu->addSeparator();
-    notesMenu->addAction(tiedNoteAct);
-    notesMenu->addSeparator();
-    notesMenu->addAction(noteMutedAct);
-    notesMenu->addSeparator();
-    notesMenu->addAction(ghostNoteAct);
-    notesMenu->addSeparator();
-    notesMenu->addAction(letRingAct);
-    notesMenu->addAction(fermataAct);
-    notesMenu->addSeparator();
-    notesMenu->addActions(QList<QAction*>() << graceNoteAct << staccatoNoteAct <<
+    myNotesMenu->addAction(wholeNoteAct);
+    myNotesMenu->addAction(halfNoteAct);
+    myNotesMenu->addAction(quarterNoteAct);
+    myNotesMenu->addAction(eighthNoteAct);
+    myNotesMenu->addAction(sixteenthNoteAct);
+    myNotesMenu->addAction(thirtySecondNoteAct);
+    myNotesMenu->addAction(sixtyFourthNoteAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addAction(increaseDurationAct);
+    myNotesMenu->addAction(decreaseDurationAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addAction(dottedNoteAct);
+    myNotesMenu->addAction(doubleDottedNoteAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addAction(addDotAct);
+    myNotesMenu->addAction(removeDotAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addAction(tiedNoteAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addAction(noteMutedAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addAction(ghostNoteAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addAction(letRingAct);
+    myNotesMenu->addAction(fermataAct);
+    myNotesMenu->addSeparator();
+    myNotesMenu->addActions(QList<QAction*>() << graceNoteAct << staccatoNoteAct <<
                           marcatoAct << sforzandoAct);
 
-    octaveMenu = notesMenu->addMenu(tr("Octave"));
-    octaveMenu->addActions(QList<QAction*>() << octave8vaAct << octave15maAct
-                           << octave8vbAct << octave15mbAct);
-
-    notesMenu->addAction(tripletAct);
-    notesMenu->addAction(irregularGroupingAct);
+#endif
+    myOctaveMenu = myNotesMenu->addMenu(tr("Octave"));
+    myOctaveMenu->addActions(QList<QAction*>() << myOctave8vaCommand << myOctave15maCommand
+                           << myOctave8vbCommand << myOctave15mbCommand);
+#if 0
+    myNotesMenu->addAction(tripletAct);
+    myNotesMenu->addAction(irregularGroupingAct);
 
     // Rests Menu
     restsMenu = menuBar()->addMenu(tr("Rests"));
@@ -1624,6 +1638,13 @@ inline void updatePositionProperty(Command *command, const Position *pos,
     command->setEnabled(pos);
     command->setChecked(pos && pos->hasProperty(property));
 }
+
+inline void updateNoteProperty(Command *command, const Note *note,
+                               Note::SimpleProperty property)
+{
+    command->setEnabled(note);
+    command->setChecked(note && note->hasProperty(property));
+}
 }
 
 void PowerTabEditor::updateCommands()
@@ -1640,6 +1661,11 @@ void PowerTabEditor::updateCommands()
                 score.getLineSpacing() < Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() > Score::MIN_LINE_SPACING);
+
+    updateNoteProperty(myOctave8vaCommand, note, Note::Octave8va);
+    updateNoteProperty(myOctave8vbCommand, note, Note::Octave8vb);
+    updateNoteProperty(myOctave15maCommand, note, Note::Octave15ma);
+    updateNoteProperty(myOctave15mbCommand, note, Note::Octave15mb);
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
@@ -1703,6 +1729,37 @@ void PowerTabEditor::editSimpleProperty(Command *command,
     {
         myUndoManager->push(new RemovePositionProperty(location, property,
                                                        command->text()),
+                            location.getSystemIndex());
+    }
+}
+
+void PowerTabEditor::editSimpleNoteProperty(Command *command,
+                                            Note::SimpleProperty property)
+{
+    ScoreLocation &location = getLocation();
+    std::vector<Note *> selectedNotes = location.getSelectedNotes();
+    if (selectedNotes.empty())
+        return;
+
+    // If at least one note doesn't have the property set, enable it for
+    // all of them.
+    bool enableProperty = false;
+    BOOST_FOREACH(const Note *note, selectedNotes)
+    {
+        if (!note->hasProperty(property))
+            enableProperty = true;
+    }
+
+    if (enableProperty)
+    {
+        myUndoManager->push(new AddNoteProperty(location, property,
+                                                command->text()),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        myUndoManager->push(new RemoveNoteProperty(location, property,
+                                                   command->text()),
                             location.getSystemIndex());
     }
 }
@@ -2650,7 +2707,7 @@ void PowerTabEditor::updateLocationLabel()
 void PowerTabEditor::updateScoreAreaActions(bool enable)
 {
     QList<QMenu*> menuList;
-    menuList << playbackMenu << positionMenu << textMenu << notesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
+    menuList << playbackMenu << positionMenu << textMenu << myNotesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
     menuList << positionSectionMenu << myPositionStaffMenu << sectionMenu << octaveMenu << slideIntoMenu;
     menuList << slideOutOfMenu << restsMenu << editMenu;
 

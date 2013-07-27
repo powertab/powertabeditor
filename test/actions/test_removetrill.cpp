@@ -23,10 +23,8 @@
 
 TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTrill", "")
 {
-    Note note;
     const int trillFret = 17;
-    note.setTrilledFret(trillFret);
-    myLocation.getPosition()->insertNote(note);
+    myLocation.getNote()->setTrilledFret(trillFret);
 
     RemoveTrill action(myLocation);
 

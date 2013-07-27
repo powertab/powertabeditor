@@ -10,6 +10,7 @@ add_library(pteactions
     #addirregulargrouping.cpp
     #addmusicaldirection.cpp
     #addnote.cpp
+    addnoteproperty.cpp
     addplayerchange.cpp
     addpositionproperty.cpp
     addrehearsalsign.cpp
@@ -41,6 +42,7 @@ add_library(pteactions
     #removedynamic.cpp
     #removeirregulargrouping.cpp
     #removemusicaldirection.cpp
+    removenoteproperty.cpp
     removeplayerchange.cpp
     removepositionproperty.cpp
     removerehearsalsign.cpp

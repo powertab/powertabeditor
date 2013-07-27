@@ -15,33 +15,31 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_ACTIONTESTS_H
-#define TEST_ACTIONTESTS_H
+#include "removenoteproperty.h"
 
-#include <score/score.h>
-#include <score/scorelocation.h>
+#include <boost/foreach.hpp>
 
-struct ActionFixture
+RemoveNoteProperty::RemoveNoteProperty(const ScoreLocation &location,
+                                       Note::SimpleProperty property,
+                                       const QString &description)
+    : QUndoCommand(QObject::tr("Remove ") + description),
+      myLocation(location),
+      myProperty(property)
 {
-    ActionFixture()
-        : myLocation(myScore)
+}
+
+void RemoveNoteProperty::redo()
+{
+    BOOST_FOREACH(Note *note, myLocation.getSelectedNotes())
     {
-        System system;
-        Staff staff(6);
-        Position position(42);
-        position.insertNote(Note(2, 3));
-        staff.insertPosition(0, position);
-
-        system.insertStaff(staff);
-        myScore.insertSystem(system);
-
-        myLocation.setPositionIndex(42);
-        myLocation.setSelectionStart(42);
-        myLocation.setString(2);
+        note->setProperty(myProperty, false);
     }
+}
 
-    Score myScore;
-    ScoreLocation myLocation;
-};
-
-#endif
+void RemoveNoteProperty::undo()
+{
+    BOOST_FOREACH(Note *note, myLocation.getSelectedNotes())
+    {
+        note->setProperty(myProperty, true);
+    }
+}

@@ -186,6 +186,30 @@ Note *ScoreLocation::getNote()
                 const_cast<const ScoreLocation &>(*this).getNote());
 }
 
+std::vector<Note *> ScoreLocation::getSelectedNotes()
+{
+    std::vector<Note *> notes;
+
+    if (myPositionIndex == mySelectionStart)
+    {
+        if (getNote())
+            notes.push_back(getNote());
+    }
+    else
+    {
+        std::vector<Position *> selectedPositions(getSelectedPositions());
+        BOOST_FOREACH(Position *pos, selectedPositions)
+        {
+            BOOST_FOREACH(Note &note, pos->getNotes())
+            {
+                notes.push_back(&note);
+            }
+        }
+    }
+
+    return notes;
+}
+
 int ScoreLocation::getVoice() const
 {
     return myVoice;
