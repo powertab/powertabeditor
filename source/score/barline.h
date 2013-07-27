@@ -33,7 +33,6 @@ public:
         DoubleBar,
         FreeTimeBar,
         RepeatStart,
-        OpenBar,
         RepeatEnd,
         DoubleBarFine
     };
