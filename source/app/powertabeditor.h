@@ -156,6 +156,9 @@ private:
     /// Updates whether menu items are enabled, checked, etc. depending on the
     /// current location.
     void updateCommands();
+    /// When a document is opened or closed, enable/disable menu items if
+    /// necessary.
+    void onDocumentOpenedOrClosed(bool hasOpenDocuments);
 
     /// Edits the key signature at the given location.
     void editKeySignature(const ScoreLocation &location);
@@ -260,7 +263,6 @@ protected:
     virtual void closeEvent(QCloseEvent*);
 
 private:
-    void updateScoreAreaActions(bool enable);
     bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
     void changeNoteDuration(bool increase);

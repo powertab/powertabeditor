@@ -273,13 +273,7 @@ bool PowerTabEditor::closeTab(int index)
 #endif
     myDocumentManager->setCurrentDocumentIndex(currentIndex);
 
-#if 0
-    if (currentIndex == -1) // disable score-related actions if no documents are open
-    {
-        updateScoreAreaActions(false);
-    }
-#endif
-
+    onDocumentOpenedOrClosed(currentIndex != -1);
     return true;
 }
 
@@ -1507,9 +1501,8 @@ void PowerTabEditor::createTabArea()
             SLOT(closeTab(int)));
     connect(myTabWidget, SIGNAL(currentChanged(int)), this,
             SLOT(switchTab(int)));
-#if 0
-    updateScoreAreaActions(false);
-#endif
+
+    onDocumentOpenedOrClosed(false);
 }
 
 void PowerTabEditor::setPreviousDirectory(const QString &fileName)
@@ -1616,14 +1609,7 @@ void PowerTabEditor::setupNewTab()
     // Switch to the new document.
     myTabWidget->setCurrentIndex(myDocumentManager->getCurrentDocumentIndex());
 
-#if 0
-    // if this is the only open document, enable score area actions
-    if (documentManager->getCurrentDocumentIndex() == 0)
-    {
-        updateScoreAreaActions(true);
-    }
-
-#endif
+    onDocumentOpenedOrClosed(true);
     updateCommands();
     scorearea->setFocus();
 
@@ -1683,6 +1669,29 @@ void PowerTabEditor::updateCommands()
 
     myPlayerChangeCommand->setChecked(ScoreUtils::findByPosition(
                                           system.getPlayerChanges(), position));
+}
+
+void PowerTabEditor::onDocumentOpenedOrClosed(bool hasOpenDocuments)
+{
+    QList<QMenu *> menuList;
+    menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu <<
+                mySectionMenu << myLineSpacingMenu << myNotesMenu <<
+                myOctaveMenu << myMusicSymbolsMenu << myTabSymbolsMenu <<
+                myPlayerMenu << myWindowMenu;
+
+    foreach(QMenu *menu, menuList)
+    {
+        foreach(QAction *action, menu->actions())
+        {
+            action->setEnabled(hasOpenDocuments);
+        }
+    }
+
+    myCloseTabCommand->setEnabled(hasOpenDocuments);
+    mySaveAsCommand->setEnabled(hasOpenDocuments);
+#if 0
+    addGuitarAct->setEnabled(enable);
+#endif
 }
 
 void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
@@ -2701,27 +2710,6 @@ void PowerTabEditor::updateLocationLabel()
 {
     getCurrentPlaybackWidget()->updateLocationLabel(
                 getCurrentScoreArea()->getCaret()->toString());
-}
-
-// Enables/disables actions that should only be available when a score is opened
-void PowerTabEditor::updateScoreAreaActions(bool enable)
-{
-    QList<QMenu*> menuList;
-    menuList << playbackMenu << positionMenu << textMenu << myNotesMenu << musicSymbolsMenu << tabSymbolsMenu << windowMenu;
-    menuList << positionSectionMenu << myPositionStaffMenu << sectionMenu << octaveMenu << slideIntoMenu;
-    menuList << slideOutOfMenu << restsMenu << editMenu;
-
-    foreach(QMenu* menu, menuList)
-    {
-        foreach(QAction* action, menu->actions())
-        {
-            action->setEnabled(enable);
-        }
-    }
-
-    myCloseTabCommand->setEnabled(enable);
-    mySaveAsCommand->setEnabled(enable);
-    addGuitarAct->setEnabled(enable);
 }
 
 void PowerTabEditor::changeNoteDuration(bool increase)
