@@ -15,36 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef REMOVESYSTEM_H
-#define REMOVESYSTEM_H
+#ifndef ACTIONS_REMOVESYSTEM_H
+#define ACTIONS_REMOVESYSTEM_H
 
 #include <QUndoCommand>
+#include <score/system.h>
 
-#include <vector>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-
-class AlternateEnding;
-class Dynamic;
 class Score;
-class System;
-class TempoMarker;
 
 class RemoveSystem : public QUndoCommand
 {
 public:
-    RemoveSystem(Score* score, uint32_t index);
-    void redo();
-    void undo();
+    RemoveSystem(Score &score, int index);
+
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    const uint32_t index;
-    boost::shared_ptr<System> system;
-
-    std::vector<boost::shared_ptr<TempoMarker> > tempoMarkers;
-    std::vector<boost::shared_ptr<Dynamic> > dynamics;
-    std::vector<boost::shared_ptr<AlternateEnding> > altEndings;
+    Score &myScore;
+    const int myIndex;
+    const System myOriginalSystem;
 };
 
-#endif // REMOVESYSTEM_H
+#endif

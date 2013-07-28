@@ -17,40 +17,22 @@
   
 #include "removesystem.h"
 
-#include <boost/foreach.hpp>
+#include <score/score.h>
 
-#include <powertabdocument/score.h>
-
-RemoveSystem::RemoveSystem(Score* score, uint32_t index) :
-    QUndoCommand(QObject::tr("Remove System")),
-    score(score),
-    index(index),
-    system(score->GetSystem(index))
+RemoveSystem::RemoveSystem(Score &score, int index)
+    : QUndoCommand(QObject::tr("Remove System")),
+      myScore(score),
+      myIndex(index),
+      myOriginalSystem(score.getSystems()[index])
 {
-    score->GetTempoMarkersInSystem(tempoMarkers, system);
-    score->GetDynamicsInSystem(dynamics, system);
-    score->GetAlternateEndingsInSystem(altEndings, system);
 }
 
 void RemoveSystem::redo()
 {
-    score->RemoveSystem(index);
+    myScore.removeSystem(myIndex);
 }
 
 void RemoveSystem::undo()
 {
-    score->InsertSystem(system, index);
-
-    BOOST_FOREACH(boost::shared_ptr<TempoMarker> tempoMarker, tempoMarkers)
-    {
-        score->InsertTempoMarker(tempoMarker);
-    }
-    BOOST_FOREACH(boost::shared_ptr<Dynamic> dynamic, dynamics)
-    {
-        score->InsertDynamic(dynamic);
-    }
-    BOOST_FOREACH(boost::shared_ptr<AlternateEnding> ending, altEndings)
-    {
-        score->InsertAlternateEnding(ending);
-    }
+    myScore.insertSystem(myOriginalSystem, myIndex);
 }

@@ -123,6 +123,8 @@ private slots:
     void insertSystemBefore();
     /// Inserts a new system after the current system.
     void insertSystemAfter();
+    /// Deletes the current system.
+    void removeCurrentSystem();
 
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
@@ -227,6 +229,7 @@ private:
     Command *myInsertSystemAtEndCommand;
     Command *myInsertSystemBeforeCommand;
     Command *myInsertSystemAfterCommand;
+    Command *myRemoveCurrentSystemCommand;
     QMenu *myLineSpacingMenu;
     Command *myIncreaseLineSpacingCommand;
     Command *myDecreaseLineSpacingCommand;
@@ -319,8 +322,6 @@ private slots:
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
 
-    void removeCurrentSystem();
-
     void shiftForward();
     void shiftBackward();
 
@@ -362,10 +363,6 @@ private:
 
     QMenu* textMenu;
     Command* chordNameAct; // add/remove a chord name
-
-    Command* increasePositionSpacingAct;
-    Command* decreasePositionSpacingAct;
-    Command* removeCurrentSystemAct;
 
     QActionGroup* noteDurationActGroup; // only one duration can be checked at a time
     Command* wholeNoteAct; // actions for modifying the duration of a note

@@ -29,7 +29,7 @@ add_executable(pte_tests
     actions/test_removeplayerchange.cpp
     actions/test_removepositionproperty.cpp
     actions/test_removerehearsalsign.cpp
-    #actions/test_removesystem.cpp
+    actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp
     actions/test_removetrill.cpp
     #actions/test_removevolumeswell.cpp

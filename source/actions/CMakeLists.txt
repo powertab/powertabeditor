@@ -46,7 +46,7 @@ add_library(pteactions
     removeplayerchange.cpp
     removepositionproperty.cpp
     removerehearsalsign.cpp
-    #removesystem.cpp
+    removesystem.cpp
     removetappedharmonic.cpp
     #removetempomarker.cpp
     removetrill.cpp

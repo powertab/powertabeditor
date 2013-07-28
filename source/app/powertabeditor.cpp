@@ -30,6 +30,7 @@
 #include <actions/removeplayerchange.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removerehearsalsign.h>
+#include <actions/removesystem.h>
 #include <actions/removetappedharmonic.h>
 #include <actions/removetrill.h>
 #include <actions/undomanager.h>
@@ -481,6 +482,14 @@ void PowerTabEditor::insertSystemAfter()
     insertSystem(getLocation().getSystemIndex() + 1);
 }
 
+void PowerTabEditor::removeCurrentSystem()
+{
+    ScoreLocation &location = getLocation();
+    myUndoManager->push(new RemoveSystem(location.getScore(),
+                                         location.getSystemIndex()),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
 void PowerTabEditor::editRehearsalSign()
 {
     const ScoreLocation &location = getLocation();
@@ -844,12 +853,13 @@ void PowerTabEditor::createCommands()
     connect(myInsertSystemAfterCommand, SIGNAL(triggered()), this,
             SLOT(insertSystemAfter()));
 
-#if 0
-    removeCurrentSystemAct = new Command(tr("Remove Current System"),
-                    "Section.RemoveCurrentSystem",
-                    QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N), this);
-    connect(removeCurrentSystemAct, SIGNAL(triggered()), this, SLOT(removeCurrentSystem()));
-#endif
+    myRemoveCurrentSystemCommand = new Command(tr("Remove Current System"),
+                                         "Section.RemoveCurrentSystem",
+                                         QKeySequence(Qt::CTRL + Qt::SHIFT +
+                                                      Qt::Key_N), this);
+    connect(myRemoveCurrentSystemCommand, SIGNAL(triggered()), this,
+            SLOT(removeCurrentSystem()));
+
     myIncreaseLineSpacingCommand = new Command(tr("Increase"),
                                                "Section.IncreaseLineSpacing",
                                                QKeySequence(), this);
@@ -1385,10 +1395,8 @@ void PowerTabEditor::createMenus()
     mySectionMenu->addAction(myInsertSystemAtEndCommand);
     mySectionMenu->addAction(myInsertSystemBeforeCommand);
     mySectionMenu->addAction(myInsertSystemAfterCommand);
-#if 0
     mySectionMenu->addSeparator();
-    mySectionMenu->addAction(removeCurrentSystemAct);
-#endif
+    mySectionMenu->addAction(myRemoveCurrentSystemCommand);
     mySectionMenu->addSeparator();
     myLineSpacingMenu = mySectionMenu->addMenu(tr("&Line Spacing"));
     myLineSpacingMenu->addAction(myIncreaseLineSpacingCommand);
@@ -1672,6 +1680,7 @@ void PowerTabEditor::updateCommands()
     const Note *note = location.getNote();
     const Barline *barline = location.getBarline();
 
+    myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
     myIncreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() < Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(
@@ -2066,14 +2075,6 @@ void PowerTabEditor::changePositionSpacing(int offset)
         undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing),
                           caret->getCurrentSystemIndex());
     }
-}
-
-void PowerTabEditor::removeCurrentSystem()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-
-    RemoveSystem* removeSystemAct = new RemoveSystem(caret->getCurrentScore(), caret->getCurrentSystemIndex());
-    undoManager->push(removeSystemAct, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::shiftForward()
