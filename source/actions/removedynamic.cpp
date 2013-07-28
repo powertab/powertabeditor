@@ -17,20 +17,25 @@
   
 #include "removedynamic.h"
 
-#include <powertabdocument/score.h>
+#include <score/staff.h>
+#include <score/utils.h>
 
-RemoveDynamic::RemoveDynamic(Score* score, boost::shared_ptr<Dynamic> dynamic) :
-    score(score), dynamic(dynamic)
+RemoveDynamic::RemoveDynamic(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Dynamic")),
+      myLocation(location),
+      myOriginalDynamic(*ScoreUtils::findByPosition(
+                            location.getStaff().getDynamics(),
+                            location.getPositionIndex()))
 {
     setText(QObject::tr("Remove Dynamic"));
 }
 
 void RemoveDynamic::redo()
 {
-    score->RemoveDynamic(dynamic);
+    myLocation.getStaff().removeDynamic(myOriginalDynamic);
 }
 
 void RemoveDynamic::undo()
 {
-    score->InsertDynamic(dynamic);
+    myLocation.getStaff().insertDynamic(myOriginalDynamic);
 }

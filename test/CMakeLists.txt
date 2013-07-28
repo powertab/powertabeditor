@@ -4,6 +4,7 @@ add_executable(pte_tests
     test_main.cpp
 
     #actions/test_addartificialharmonic.cpp
+    actions/test_adddynamic.cpp
     #actions/test_addirregulargrouping.cpp
     #actions/test_addmusicaldirection.cpp
     actions/test_addnoteproperty.cpp
@@ -23,6 +24,7 @@ add_executable(pte_tests
     #actions/test_editslideout.cpp
     #actions/test_edittimesignature.cpp
     #actions/test_removeartificialharmonic.cpp
+    actions/test_removedynamic.cpp
     #actions/test_removeirregulargrouping.cpp
     #actions/test_removemusicaldirection.cpp
     actions/test_removenoteproperty.cpp

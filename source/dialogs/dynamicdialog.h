@@ -15,11 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef DYNAMICDIALOG_H
-#define DYNAMICDIALOG_H
+#ifndef DIALOGS_DYNAMICDIALOG_H
+#define DIALOGS_DYNAMICDIALOG_H
 
 #include <QDialog>
-#include <boost/cstdint.hpp>
+#include <score/dynamic.h>
 
 class QButtonGroup;
 
@@ -29,22 +29,16 @@ namespace Ui {
 
 class DynamicDialog : public QDialog
 {
-    Q_OBJECT
-
 public:
     explicit DynamicDialog(QWidget *parent);
     ~DynamicDialog();
 
-    uint8_t selectedVolumeLevel() const;
-
-private slots:
-    void updateSelectedVolumeLevel(int level);
+    Dynamic::VolumeLevel getVolumeLevel() const;
 
 private:
     Ui::DynamicDialog *ui;
 
-    QButtonGroup* volumeLevels;
-    uint8_t volumeLevel;
+    QButtonGroup *myVolumeLevels;
 };
 
-#endif // DYNAMICDIALOG_H
+#endif

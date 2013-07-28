@@ -15,26 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ADDDYNAMIC_H
-#define ADDDYNAMIC_H
+#ifndef ACTIONS_ADDDYNAMIC_H
+#define ACTIONS_ADDDYNAMIC_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-
-class Score;
-class Dynamic;
+#include <score/dynamic.h>
+#include <score/scorelocation.h>
 
 class AddDynamic : public QUndoCommand
 {
 public:
-    AddDynamic(Score* score, boost::shared_ptr<Dynamic> dynamic);
+    AddDynamic(const ScoreLocation &location, const Dynamic &dynamic);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    boost::shared_ptr<Dynamic> dynamic;
+    ScoreLocation myLocation;
+    const Dynamic myDynamic;
 };
 
-#endif // ADDDYNAMIC_H
+#endif

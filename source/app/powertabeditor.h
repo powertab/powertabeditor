@@ -130,6 +130,8 @@ private slots:
     void editRehearsalSign();
     /// Edits the key signature at the caret's current location.
     void editKeySignatureFromCaret();
+    /// Adds or removes a dynamic at the current location.
+    void editDynamic();
 
     /// Adds or removes a tapped harmonic for the current note.
     void editTappedHarmonic();
@@ -245,6 +247,7 @@ private:
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
     Command *myKeySignatureCommand;
+    Command *myDynamicCommand;
 
     QMenu *myTabSymbolsMenu;
     Command *myNaturalHarmonicCommand;
@@ -318,7 +321,6 @@ private slots:
     void insertStandardBarline();
     void editArtificialHarmonic();
     void editTimeSignatureFromCaret();
-    void editDynamic();
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
 
@@ -406,7 +408,6 @@ private:
     Command* standardBarlineAct;
     Command* musicalDirectionAct;
     Command* repeatEndingAct;
-    Command* dynamicAct;
     Command* volumeSwellAct;
 
     Command* hammerPullAct; // add/remove hammer-on or pull-off

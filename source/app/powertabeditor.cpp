@@ -17,6 +17,7 @@
   
 #include "powertabeditor.h"
 
+#include <actions/adddynamic.h>
 #include <actions/addnoteproperty.h>
 #include <actions/addplayerchange.h>
 #include <actions/addpositionproperty.h>
@@ -26,6 +27,7 @@
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editkeysignature.h>
+#include <actions/removedynamic.h>
 #include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
 #include <actions/removepositionproperty.h>
@@ -47,6 +49,7 @@
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
 
+#include <dialogs/dynamicdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
@@ -519,6 +522,33 @@ void PowerTabEditor::editRehearsalSign()
 void PowerTabEditor::editKeySignatureFromCaret()
 {
     editKeySignature(getLocation());
+}
+
+void PowerTabEditor::editDynamic()
+{
+    ScoreLocation &location = getLocation();
+    const Dynamic *dynamic = ScoreUtils::findByPosition(
+                location.getStaff().getDynamics(), location.getPositionIndex());
+
+    if (dynamic)
+    {
+        myUndoManager->push(new RemoveDynamic(location),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        DynamicDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            Dynamic dynamic(location.getPositionIndex(),
+                            dialog.getVolumeLevel());
+
+            myUndoManager->push(new AddDynamic(location, dynamic),
+                                location.getSystemIndex());
+        }
+        else
+            myDynamicCommand->setChecked(false);
+    }
 }
 
 void PowerTabEditor::editTappedHarmonic()
@@ -1128,11 +1158,12 @@ void PowerTabEditor::createCommands()
     repeatEndingAct->setCheckable(true);
     connect(repeatEndingAct, SIGNAL(triggered()), this,
             SLOT(editRepeatEnding()));
-
-    dynamicAct = new Command(tr("Dynamic..."), "MusicSymbols.EditDynamic", Qt::Key_D, this);
-    dynamicAct->setCheckable(true);
-    connect(dynamicAct, SIGNAL(triggered()), this, SLOT(editDynamic()));
-
+#endif
+    myDynamicCommand = new Command(tr("Dynamic..."), "MusicSymbols.EditDynamic",
+                                   Qt::Key_D, this);
+    myDynamicCommand->setCheckable(true);
+    connect(myDynamicCommand, SIGNAL(triggered()), this, SLOT(editDynamic()));
+#if 0
     volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
                                     QKeySequence(), this);
     volumeSwellAct->setCheckable(true);
@@ -1468,7 +1499,9 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(barlineAct);
     myMusicSymbolsMenu->addAction(musicalDirectionAct);
     myMusicSymbolsMenu->addAction(repeatEndingAct);
-    myMusicSymbolsMenu->addAction(dynamicAct);
+#endif
+    myMusicSymbolsMenu->addAction(myDynamicCommand);
+#if 0
     myMusicSymbolsMenu->addAction(volumeSwellAct);
 
 #endif
@@ -1675,6 +1708,7 @@ void PowerTabEditor::updateCommands()
     const ScoreLocation &location = getLocation();
     const Score &score = location.getScore();
     const System &system = location.getSystem();
+    const Staff &staff = location.getStaff();
     const Position *pos = location.getPosition();
     const int position = location.getPositionIndex();
     const Note *note = location.getNote();
@@ -1696,6 +1730,8 @@ void PowerTabEditor::updateCommands()
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
     myKeySignatureCommand->setEnabled(barline);
+    myDynamicCommand->setChecked(ScoreUtils::findByPosition(staff.getDynamics(),
+                                                      position));
 
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
     myTappedHarmonicCommand->setEnabled(note);
@@ -2868,37 +2904,6 @@ void PowerTabEditor::editSlideInto(uint8_t newSlideIntoType)
 
     undoManager->push(new EditSlideInto(note, newSlideIntoType),
                       caret->getCurrentSystemIndex());
-}
-
-void PowerTabEditor::editDynamic()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* currentScore = caret->getCurrentScore();
-    Score::DynamicPtr dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
-                                                          caret->getCurrentPositionIndex());
-
-    if (!dynamic) // add a dynamic
-    {
-        DynamicDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            dynamic = boost::make_shared<Dynamic>(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
-                                                caret->getCurrentPositionIndex(), dialog.selectedVolumeLevel(),
-                                                Dynamic::notSet);
-
-            undoManager->push(new AddDynamic(currentScore, dynamic),
-                              caret->getCurrentSystemIndex());
-        }
-        else
-        {
-            dynamicAct->setChecked(false);
-        }
-    }
-    else
-    {
-        undoManager->push(new RemoveDynamic(currentScore, dynamic),
-                          caret->getCurrentSystemIndex());
-    }
 }
 
 void PowerTabEditor::doPaste()

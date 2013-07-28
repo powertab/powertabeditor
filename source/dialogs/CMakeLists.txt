@@ -4,7 +4,7 @@ set(FORMS
     #artificialharmonicdialog.ui
     #barlinedialog.ui
     #directiondialog.ui
-    #dynamicdialog.ui
+    dynamicdialog.ui
     #fileinformationdialog.ui
     gotobarlinedialog.ui
     gotorehearsalsigndialog.ui
@@ -32,7 +32,7 @@ add_library(ptedialogs
     #barlinedialog.cpp
     #chordnamedialog.cpp
     #directiondialog.cpp
-    #dynamicdialog.cpp
+    dynamicdialog.cpp
     #fileinformationdialog.cpp
     gotobarlinedialog.cpp
     gotorehearsalsigndialog.cpp

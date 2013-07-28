@@ -15,24 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef DIALOGS_REMOVEDYNAMIC_H
-#define DIALOGS_REMOVEDYNAMIC_H
+#include <catch.hpp>
 
-#include <QUndoCommand>
-#include <score/dynamic.h>
-#include <score/scorelocation.h>
+#include <actions/adddynamic.h>
+#include <score/score.h>
 
-class RemoveDynamic : public QUndoCommand
+TEST_CASE("Actions/AddDynamic", "")
 {
-public:
-    RemoveDynamic(const ScoreLocation &location);
+    Score score;
+    System system;
+    Staff staff;
+    system.insertStaff(staff);
+    score.insertSystem(system);
 
-    virtual void redo();
-    virtual void undo();
+    Dynamic dynamic(6, Dynamic::mp);
+    ScoreLocation location(score, 0, 0, 6);
+    AddDynamic action(location, dynamic);
 
-private:
-    ScoreLocation myLocation;
-    const Dynamic myOriginalDynamic;
-};
+    action.redo();
+    REQUIRE(location.getStaff().getDynamics().size() == 1);
+    REQUIRE(location.getStaff().getDynamics()[0].getVolume() == Dynamic::mp);
 
-#endif
+    action.undo();
+    REQUIRE(location.getStaff().getDynamics().size() == 0);
+}

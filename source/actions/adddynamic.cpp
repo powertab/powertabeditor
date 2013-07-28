@@ -17,21 +17,21 @@
   
 #include "adddynamic.h"
 
-#include <powertabdocument/score.h>
+#include <score/staff.h>
 
-AddDynamic::AddDynamic(Score* score, boost::shared_ptr<Dynamic> dynamic) :
-    score(score),
-    dynamic(dynamic)
+AddDynamic::AddDynamic(const ScoreLocation &location, const Dynamic &dynamic)
+    : QUndoCommand(QObject::tr("Add Dynamic")),
+      myLocation(location),
+      myDynamic(dynamic)
 {
-    setText(QObject::tr("Add Dynamic"));
 }
 
 void AddDynamic::redo()
 {
-    score->InsertDynamic(dynamic);
+    myLocation.getStaff().insertDynamic(myDynamic);
 }
 
 void AddDynamic::undo()
 {
-    score->RemoveDynamic(dynamic);
+    myLocation.getStaff().removeDynamic(myDynamic);
 }
