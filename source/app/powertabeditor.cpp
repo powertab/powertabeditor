@@ -1196,17 +1196,24 @@ void PowerTabEditor::createCommands()
                     boost::bind(&PowerTabEditor::editSimplePositionProperty,
                                 this, myTremoloPickingCommand,
                                 Position::TremoloPicking));
-#if 0
-    arpeggioUpAct = new Command(tr("Arpeggio Up"), "TabSymbols.ArpeggioUp", QKeySequence(), this);
-    arpeggioUpAct->setCheckable(true);
-    connectToggleProperty<Position>(arpeggioUpAct, &getSelectedPositions,
-                                    &Position::HasArpeggioUp, &Position::SetArpeggioUp);
 
-    arpeggioDownAct = new Command(tr("Arpeggio Down"), "TabSymbols.ArpeggioDown", QKeySequence(), this);
-    arpeggioDownAct->setCheckable(true);
-    connectToggleProperty<Position>(arpeggioDownAct, &getSelectedPositions,
-                                    &Position::HasArpeggioDown, &Position::SetArpeggioDown);
-#endif
+    myArpeggioUpCommand = new Command(tr("Arpeggio Up"),
+                                      "TabSymbols.ArpeggioUp", QKeySequence(),
+                                      this);
+    myArpeggioUpCommand->setCheckable(true);
+    sigfwd::connect(myArpeggioUpCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myArpeggioUpCommand,
+                                Position::ArpeggioUp));
+
+    myArpeggioDownCommand = new Command(tr("Arpeggio Down"),
+                                        "TabSymbols.ArpeggioDown",
+                                        QKeySequence(), this);
+    myArpeggioDownCommand->setCheckable(true);
+    sigfwd::connect(myArpeggioDownCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myArpeggioDownCommand,
+                                Position::ArpeggioDown));
 
     myTapCommand = new Command(tr("Tap"), "TabSymbols.Tap", Qt::Key_P, this);
     myTapCommand->setCheckable(true);
@@ -1498,11 +1505,9 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addAction(myTrillCommand);
     myTabSymbolsMenu->addAction(myTapCommand);
     myTabSymbolsMenu->addSeparator();
-#if 0
-    tabSymbolsMenu->addAction(arpeggioUpAct);
-    tabSymbolsMenu->addAction(arpeggioDownAct);
-    tabSymbolsMenu->addSeparator();
-#endif
+    myTabSymbolsMenu->addAction(myArpeggioUpCommand);
+    myTabSymbolsMenu->addAction(myArpeggioDownCommand);
+    myTabSymbolsMenu->addSeparator();
     myTabSymbolsMenu->addAction(myPickStrokeUpCommand);
     myTabSymbolsMenu->addAction(myPickStrokeDownCommand);
 
@@ -1672,6 +1677,8 @@ void PowerTabEditor::updateCommands()
     myDecreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() > Score::MIN_LINE_SPACING);
 
+    updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
+
     updateNoteProperty(myOctave8vaCommand, note, Note::Octave8va);
     updateNoteProperty(myOctave8vbCommand, note, Note::Octave8vb);
     updateNoteProperty(myOctave15maCommand, note, Note::Octave15ma);
@@ -1690,12 +1697,12 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myTremoloPickingCommand, pos, Position::TremoloPicking);
     myTrillCommand->setEnabled(note);
     myTrillCommand->setChecked(note && note->hasTrill());
-
     updatePositionProperty(myTapCommand, pos, Position::Tap);
+    updatePositionProperty(myArpeggioUpCommand, pos, Position::ArpeggioUp);
+    updatePositionProperty(myArpeggioDownCommand, pos, Position::ArpeggioDown);
     updatePositionProperty(myPickStrokeUpCommand, pos, Position::PickStrokeUp);
     updatePositionProperty(myPickStrokeDownCommand, pos,
                            Position::PickStrokeDown);
-    updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
 
     myPlayerChangeCommand->setChecked(ScoreUtils::findByPosition(
                                           system.getPlayerChanges(), position));

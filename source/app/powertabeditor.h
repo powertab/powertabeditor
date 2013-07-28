@@ -254,6 +254,8 @@ private:
     Command *myTapCommand;
     Command *myPickStrokeUpCommand;
     Command *myPickStrokeDownCommand;
+    Command *myArpeggioUpCommand;
+    Command *myArpeggioDownCommand;
 
     QMenu *myPlayerMenu;
     Command *myPlayerChangeCommand;
@@ -414,8 +416,6 @@ private:
     Command* artificialHarmonicAct;
     Command* shiftSlideAct;
     Command* legatoSlideAct;
-    Command* arpeggioUpAct;
-    Command* arpeggioDownAct;
 
     QMenu* slideIntoMenu;
     Command* slideIntoFromAboveAct;

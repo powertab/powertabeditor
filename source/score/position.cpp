@@ -82,6 +82,16 @@ void Position::setProperty(SimpleProperty property, bool set)
             mySimpleProperties.set(PickStrokeDown, false);
         if (property == PickStrokeDown && hasProperty(PickStrokeUp))
             mySimpleProperties.set(PickStrokeUp, false);
+
+        if (property == Vibrato && hasProperty(WideVibrato))
+            mySimpleProperties.set(WideVibrato, false);
+        if (property == WideVibrato && hasProperty(Vibrato))
+            mySimpleProperties.set(Vibrato, false);
+
+        if (property == ArpeggioUp && hasProperty(ArpeggioDown))
+            mySimpleProperties.set(ArpeggioDown, false);
+        if (property == ArpeggioDown && hasProperty(ArpeggioUp))
+            mySimpleProperties.set(ArpeggioUp, false);
     }
 
     mySimpleProperties.set(property, set);
