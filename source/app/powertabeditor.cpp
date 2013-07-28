@@ -951,10 +951,14 @@ void PowerTabEditor::createCommands()
     connectToggleProperty<Position>(fermataAct, &getSelectedPositions,
                                     &Position::HasFermata, &Position::SetFermata);
 
-    letRingAct = new Command(tr("Let Ring"), "Note.LetRing", QKeySequence(), this);
-    letRingAct->setCheckable(true);
-    connectToggleProperty<Position>(letRingAct, &getSelectedPositions,
-                                    &Position::HasLetRing, &Position::SetLetRing);
+#endif
+    myLetRingCommand = new Command(tr("Let Ring"), "Note.LetRing",
+                                   QKeySequence(), this);
+    myLetRingCommand->setCheckable(true);
+    sigfwd::connect(myLetRingCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myLetRingCommand, Position::LetRing));
+#if 0
 
     graceNoteAct = new Command(tr("Grace Note"), "Note.GraceNote", QKeySequence(), this);
     graceNoteAct->setCheckable(true);
@@ -1158,27 +1162,39 @@ void PowerTabEditor::createCommands()
     legatoSlideAct->setCheckable(true);
     sigfwd::connect(legatoSlideAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfLegatoSlide));
+#endif
+    myVibratoCommand = new Command(tr("Vibrato"), "TabSymbols.Vibrato",
+                                   Qt::Key_V, this);
+    myVibratoCommand->setCheckable(true);
+    sigfwd::connect(myVibratoCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myVibratoCommand, Position::Vibrato));
 
-    vibratoAct = new Command(tr("Vibrato"), "TabSymbols.Vibrato", Qt::Key_V, this);
-    vibratoAct->setCheckable(true);
-    connectToggleProperty<Position>(vibratoAct, &getSelectedPositions,
-                                    &Position::HasVibrato, &Position::SetVibrato);
+    myWideVibratoCommand = new Command(tr("Wide Vibrato"),
+                                       "TabSymbols.WideVibrato", Qt::Key_W,
+                                       this);
+    myWideVibratoCommand->setCheckable(true);
+    sigfwd::connect(myWideVibratoCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myWideVibratoCommand,
+                                Position::WideVibrato));
 
-    wideVibratoAct = new Command(tr("Wide Vibrato"), "TabSymbols.WideVibrato", Qt::Key_W, this);
-    wideVibratoAct->setCheckable(true);
-    connectToggleProperty<Position>(wideVibratoAct, &getSelectedPositions,
-                                    &Position::HasWideVibrato, &Position::SetWideVibrato);
+    myPalmMuteCommand = new Command(tr("Palm Mute"), "TabSymbols.PalmMute",
+                                    Qt::Key_M, this);
+    myPalmMuteCommand->setCheckable(true);
+    sigfwd::connect(myPalmMuteCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myPalmMuteCommand, Position::PalmMuting));
 
-    palmMuteAct = new Command(tr("Palm Mute"), "TabSymbols.PalmMute", Qt::Key_M, this);
-    palmMuteAct->setCheckable(true);
-    connectToggleProperty<Position>(palmMuteAct, &getSelectedPositions,
-                                    &Position::HasPalmMuting, &Position::SetPalmMuting);
-
-    tremoloPickingAct = new Command(tr("Tremolo Picking"), "TabSymbols.TremoloPicking", QKeySequence(), this);
-    tremoloPickingAct->setCheckable(true);
-    connectToggleProperty<Position>(tremoloPickingAct, &getSelectedPositions,
-                                    &Position::HasTremoloPicking, &Position::SetTremoloPicking);
-
+    myTremoloPickingCommand = new Command(tr("Tremolo Picking"),
+                                          "TabSymbols.TremoloPicking",
+                                          QKeySequence(), this);
+    myTremoloPickingCommand->setCheckable(true);
+    sigfwd::connect(myTremoloPickingCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myTremoloPickingCommand,
+                                Position::TremoloPicking));
+#if 0
     arpeggioUpAct = new Command(tr("Arpeggio Up"), "TabSymbols.ArpeggioUp", QKeySequence(), this);
     arpeggioUpAct->setCheckable(true);
     connectToggleProperty<Position>(arpeggioUpAct, &getSelectedPositions,
@@ -1193,8 +1209,8 @@ void PowerTabEditor::createCommands()
     myTapCommand = new Command(tr("Tap"), "TabSymbols.Tap", Qt::Key_P, this);
     myTapCommand->setCheckable(true);
     sigfwd::connect(myTapCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleProperty, this,
-                                myTapCommand, Position::Tap));
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myTapCommand, Position::Tap));
 
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
                                  QKeySequence(), this);
@@ -1206,16 +1222,17 @@ void PowerTabEditor::createCommands()
                                         QKeySequence(), this);
     myPickStrokeUpCommand->setCheckable(true);
     sigfwd::connect(myPickStrokeUpCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleProperty, this,
-                                myPickStrokeUpCommand, Position::PickStrokeUp));
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myPickStrokeUpCommand,
+                                Position::PickStrokeUp));
 
     myPickStrokeDownCommand = new Command(tr("Pickstroke Down"),
                                           "TabSymbols.PickStrokeDown",
                                           QKeySequence(), this);
     myPickStrokeDownCommand->setCheckable(true);
     sigfwd::connect(myPickStrokeDownCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleProperty, this,
-                                myPickStrokeDownCommand,
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
+                                this, myPickStrokeDownCommand,
                                 Position::PickStrokeDown));
 
 #if 0
@@ -1394,9 +1411,13 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(ghostNoteAct);
     myNotesMenu->addSeparator();
-    myNotesMenu->addAction(letRingAct);
+#endif
+    myNotesMenu->addAction(myLetRingCommand);
+#if 0
     myNotesMenu->addAction(fermataAct);
+#endif
     myNotesMenu->addSeparator();
+#if 0
     myNotesMenu->addActions(QList<QAction*>() << graceNoteAct << staccatoNoteAct <<
                           marcatoAct << sforzandoAct);
 
@@ -1463,14 +1484,13 @@ void PowerTabEditor::createMenus()
     guitarMenu->addAction(addGuitarAct);
     guitarMenu->addSeparator();
     guitarMenu->addAction(tuningDictionaryAct);
-
-    tabSymbolsMenu->addSeparator();
-    tabSymbolsMenu->addAction(vibratoAct);
-    tabSymbolsMenu->addAction(wideVibratoAct);
-    tabSymbolsMenu->addSeparator();
-    tabSymbolsMenu->addAction(palmMuteAct);
-    tabSymbolsMenu->addAction(tremoloPickingAct);
 #endif
+    myTabSymbolsMenu->addSeparator();
+    myTabSymbolsMenu->addAction(myVibratoCommand);
+    myTabSymbolsMenu->addAction(myWideVibratoCommand);
+    myTabSymbolsMenu->addSeparator();
+    myTabSymbolsMenu->addAction(myPalmMuteCommand);
+    myTabSymbolsMenu->addAction(myTremoloPickingCommand);
     myTabSymbolsMenu->addAction(myTrillCommand);
     myTabSymbolsMenu->addAction(myTapCommand);
     myTabSymbolsMenu->addSeparator();
@@ -1659,6 +1679,10 @@ void PowerTabEditor::updateCommands()
 
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
+    updatePositionProperty(myVibratoCommand, pos, Position::Vibrato);
+    updatePositionProperty(myWideVibratoCommand, pos, Position::WideVibrato);
+    updatePositionProperty(myPalmMuteCommand, pos, Position::PalmMuting);
+    updatePositionProperty(myTremoloPickingCommand, pos, Position::TremoloPicking);
     myTrillCommand->setEnabled(note);
     myTrillCommand->setChecked(note && note->hasTrill());
 
@@ -1666,6 +1690,7 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myPickStrokeUpCommand, pos, Position::PickStrokeUp);
     updatePositionProperty(myPickStrokeDownCommand, pos,
                            Position::PickStrokeDown);
+    updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
 
     myPlayerChangeCommand->setChecked(ScoreUtils::findByPosition(
                                           system.getPlayerChanges(), position));
@@ -1711,8 +1736,8 @@ void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
     }
 }
 
-void PowerTabEditor::editSimpleProperty(Command *command,
-                                        Position::SimpleProperty property)
+void PowerTabEditor::editSimplePositionProperty(Command *command,
+                                                Position::SimpleProperty property)
 {
     ScoreLocation &location = getLocation();
     std::vector<Position *> selectedPositions = location.getSelectedPositions();

@@ -164,7 +164,7 @@ private:
     void editKeySignature(const ScoreLocation &location);
 
     /// Toggles a simple position property.
-    void editSimpleProperty(Command *command, Position::SimpleProperty property);
+    void editSimplePositionProperty(Command *command, Position::SimpleProperty property);
     /// Toggles a simple note property.
     void editSimpleNoteProperty(Command *command, Note::SimpleProperty property);
 
@@ -232,6 +232,7 @@ private:
     Command *myDecreaseLineSpacingCommand;
 
     QMenu *myNotesMenu;
+    Command* myLetRingCommand;
     QMenu *myOctaveMenu;
     Command *myOctave8vaCommand;
     Command *myOctave15maCommand;
@@ -243,7 +244,11 @@ private:
     Command *myKeySignatureCommand;
 
     QMenu *myTabSymbolsMenu;
-    Command* myTappedHarmonicCommand;
+    Command *myTappedHarmonicCommand;
+    Command *myVibratoCommand;
+    Command *myWideVibratoCommand;
+    Command *myPalmMuteCommand;
+    Command *myTremoloPickingCommand;
     Command *myTrillCommand;
     Command *myTapCommand;
     Command *myPickStrokeUpCommand;
@@ -376,7 +381,6 @@ private:
     Command* tiedNoteAct; // sets a note to be tied to the previous note
     Command* noteMutedAct; // sets the note to be muted
     Command* ghostNoteAct; // set a note to be a ghost note
-    Command* letRingAct;
     Command* fermataAct; // set a position as fermata
     Command* graceNoteAct;
     Command* staccatoNoteAct; // set the notes of a position to be staccato
@@ -410,10 +414,6 @@ private:
     Command* artificialHarmonicAct;
     Command* shiftSlideAct;
     Command* legatoSlideAct;
-    Command* vibratoAct; // add/remove vibrato
-    Command* wideVibratoAct;
-    Command* palmMuteAct; // toggle palm-muting
-    Command* tremoloPickingAct; // toggle tremolo picking
     Command* arpeggioUpAct;
     Command* arpeggioDownAct;
 
