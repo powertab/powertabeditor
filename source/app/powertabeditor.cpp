@@ -1128,23 +1128,25 @@ void PowerTabEditor::createCommands()
     volumeSwellAct->setCheckable(true);
     connect(volumeSwellAct, SIGNAL(triggered()), this, SLOT(editVolumeSwell()));
 
-    // Tab Symbol Actions
+    // Tab Symbol Actions.
     hammerPullAct = new Command(tr("Hammer On/Pull Off"), "TabSymbols.HammerPull", Qt::Key_H, this);
     hammerPullAct->setCheckable(true);
     connect(hammerPullAct, SIGNAL(triggered()), this, SLOT(editHammerPull()));
-
-    naturalHarmonicAct = new Command(tr("Natural Harmonic"), "TabSymbols.NaturalHarmonic",
-                                     QKeySequence(), this);
-    naturalHarmonicAct->setCheckable(true);
-    connectToggleProperty<Note>(naturalHarmonicAct, &getSelectedNotes,
-                                &Note::IsNaturalHarmonic, &Note::SetNaturalHarmonic);
-
+#endif
+    myNaturalHarmonicCommand = new Command(tr("Natural Harmonic"),
+                                           "TabSymbols.NaturalHarmonic",
+                                           QKeySequence(), this);
+    myNaturalHarmonicCommand->setCheckable(true);
+    sigfwd::connect(myNaturalHarmonicCommand, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleNoteProperty,
+                                this, myNaturalHarmonicCommand,
+                                Note::NaturalHarmonic));
+#if 0
     artificialHarmonicAct = new Command(tr("Artificial Harmonic..."),
             "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
     artificialHarmonicAct->setCheckable(true);
     connect(artificialHarmonicAct, SIGNAL(triggered()),
             this, SLOT(editArtificialHarmonic()));
-
 #endif
     myTappedHarmonicCommand = new Command(tr("Tapped Harmonic..."),
                                           "TabSymbols.TappedHarmonic",
@@ -1459,7 +1461,9 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
 #if 0
     tabSymbolsMenu->addAction(hammerPullAct);
-    tabSymbolsMenu->addAction(naturalHarmonicAct);
+#endif
+    myTabSymbolsMenu->addAction(myNaturalHarmonicCommand);
+#if 0
     tabSymbolsMenu->addAction(artificialHarmonicAct);
 #endif
     myTabSymbolsMenu->addAction(myTappedHarmonicCommand);
@@ -1677,6 +1681,7 @@ void PowerTabEditor::updateCommands()
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
     myKeySignatureCommand->setEnabled(barline);
 
+    updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
     updatePositionProperty(myVibratoCommand, pos, Position::Vibrato);

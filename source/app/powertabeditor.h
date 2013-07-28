@@ -244,6 +244,7 @@ private:
     Command *myKeySignatureCommand;
 
     QMenu *myTabSymbolsMenu;
+    Command *myNaturalHarmonicCommand;
     Command *myTappedHarmonicCommand;
     Command *myVibratoCommand;
     Command *myWideVibratoCommand;
@@ -410,7 +411,6 @@ private:
     Command* volumeSwellAct;
 
     Command* hammerPullAct; // add/remove hammer-on or pull-off
-    Command* naturalHarmonicAct; // add/remove natural harmonics
     Command* artificialHarmonicAct;
     Command* shiftSlideAct;
     Command* legatoSlideAct;
