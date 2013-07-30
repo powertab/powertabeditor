@@ -17,6 +17,7 @@
   
 #include "powertabeditor.h"
 
+#include <actions/addbarline.h>
 #include <actions/adddynamic.h>
 #include <actions/addnoteproperty.h>
 #include <actions/addplayerchange.h>
@@ -26,6 +27,7 @@
 #include <actions/addtappedharmonic.h>
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
+#include <actions/editbarline.h>
 #include <actions/editkeysignature.h>
 #include <actions/removedynamic.h>
 #include <actions/removenoteproperty.h>
@@ -49,6 +51,7 @@
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
 
+#include <dialogs/barlinedialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
@@ -522,6 +525,20 @@ void PowerTabEditor::editRehearsalSign()
 void PowerTabEditor::editKeySignatureFromCaret()
 {
     editKeySignature(getLocation());
+}
+
+void PowerTabEditor::insertStandardBarline()
+{
+    ScoreLocation &location = getLocation();
+    myUndoManager->push(new AddBarline(location,
+                                       Barline(location.getPositionIndex(),
+                                               Barline::SingleBar)),
+                        location.getSystemIndex());
+}
+
+void PowerTabEditor::editBarlineFromCaret()
+{
+    editBarline(getLocation());
 }
 
 void PowerTabEditor::editDynamic()
@@ -1136,16 +1153,18 @@ void PowerTabEditor::createCommands()
                                    Qt::Key_T, this);
     connect(timeSignatureAct, SIGNAL(triggered()), this,
             SLOT(editTimeSignatureFromCaret()));
-
-    barlineAct = new Command(tr("Barline..."), "MusicSymbols.EditBarline",
-            Qt::SHIFT + Qt::Key_B, this);
-    connect(barlineAct, SIGNAL(triggered()), this, SLOT(editBarlineFromCaret()));
-
-    standardBarlineAct = new Command(tr("Insert Standard Barline"),
-            "MusicSymbols.InsertStandardBarline", Qt::Key_B, this);
-    connect(standardBarlineAct, SIGNAL(triggered()), this,
+#endif
+    myStandardBarlineCommand = new Command(tr("Insert Standard Barline"),
+                                     "MusicSymbols.InsertStandardBarline",
+                                     Qt::Key_B, this);
+    connect(myStandardBarlineCommand, SIGNAL(triggered()), this,
             SLOT(insertStandardBarline()));
 
+    myBarlineCommand = new Command(tr("Barline..."), "MusicSymbols.EditBarline",
+                             Qt::SHIFT + Qt::Key_B, this);
+    connect(myBarlineCommand, SIGNAL(triggered()), this,
+            SLOT(editBarlineFromCaret()));
+#if 0
     musicalDirectionAct = new Command(tr("Musical Direction..."),
             "MusicSymbols.EditMusicalDirection", Qt::SHIFT + Qt::Key_D, this);
     musicalDirectionAct->setCheckable(true);
@@ -1495,8 +1514,10 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(myKeySignatureCommand);
 #if 0
     myMusicSymbolsMenu->addAction(timeSignatureAct);
-    myMusicSymbolsMenu->addAction(standardBarlineAct);
-    myMusicSymbolsMenu->addAction(barlineAct);
+#endif
+    myMusicSymbolsMenu->addAction(myStandardBarlineCommand);
+    myMusicSymbolsMenu->addAction(myBarlineCommand);
+#if 0
     myMusicSymbolsMenu->addAction(musicalDirectionAct);
     myMusicSymbolsMenu->addAction(repeatEndingAct);
 #endif
@@ -1606,10 +1627,8 @@ void PowerTabEditor::setupNewTab()
 #endif
     scorearea->getKeySignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editKeySignature, this, _1));
-#if 0
-    score->barlinePubSub()->subscribe(
+    scorearea->getBarlinePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editBarline, this, _1));
-#endif
 
     myUndoManager->addNewUndoStack();
 
@@ -1730,8 +1749,25 @@ void PowerTabEditor::updateCommands()
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
     myKeySignatureCommand->setEnabled(barline);
+    myStandardBarlineCommand->setEnabled(!pos && !barline);
     myDynamicCommand->setChecked(ScoreUtils::findByPosition(staff.getDynamics(),
                                                       position));
+
+    if (barline) // Current position is bar.
+    {
+        myBarlineCommand->setText(tr("Edit Barline"));
+        myBarlineCommand->setEnabled(true);
+    }
+    else if (!pos) // Current position is empty.
+    {
+        myBarlineCommand->setText(tr("Insert Barline"));
+        myBarlineCommand->setEnabled(true);
+    }
+    else // Current position has notes.
+    {
+        myBarlineCommand->setDisabled(true);
+        myBarlineCommand->setText(tr("Barline"));
+    }
 
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
     myTappedHarmonicCommand->setEnabled(note);
@@ -1790,6 +1826,44 @@ void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
     {
         myUndoManager->push(new EditKeySignature(location, dialog.getNewKey()),
                             UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
+}
+
+void PowerTabEditor::editBarline(const ScoreLocation &barLocation)
+{
+    ScoreLocation location(getLocation());
+    location.setSystemIndex(barLocation.getSystemIndex());
+    location.setPositionIndex(barLocation.getPositionIndex());
+    System &system = location.getSystem();
+
+    Barline *barline = ScoreUtils::findByPosition(system.getBarlines(),
+                                                  location.getPositionIndex());
+
+    if (barline)
+    {
+        const bool isStartBar = *barline == system.getBarlines().front();
+        const bool isEndBar = *barline == system.getBarlines().back();
+
+        BarlineDialog dialog(this, barline->getBarType(),
+                             barline->getRepeatCount(), isStartBar, isEndBar);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(new EditBarline(location, dialog.getBarType(),
+                                                dialog.getRepeatCount()),
+                                location.getSystemIndex());
+        }
+    }
+    else
+    {
+        BarlineDialog dialog(this, Barline::SingleBar, Barline::MIN_REPEAT_COUNT,
+                             false, false);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            Barline bar(location.getPositionIndex(), dialog.getBarType(),
+                        dialog.getRepeatCount());
+            myUndoManager->push(new AddBarline(location, bar),
+                                location.getSystemIndex());
+        }
     }
 }
 
@@ -2235,15 +2309,6 @@ void PowerTabEditor::editTimeSignature(const SystemLocation& location)
     }
 }
 
-/// Edit the barline at the caret's current location.
-void PowerTabEditor::editBarlineFromCaret()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    const SystemLocation caretLocation(caret->getCurrentSystemIndex(),
-                                       caret->getCurrentPositionIndex());
-    editBarline(caretLocation);
-}
-
 void PowerTabEditor::editArtificialHarmonic()
 {
     Caret* caret = getCurrentScoreArea()->getCaret();
@@ -2269,62 +2334,6 @@ void PowerTabEditor::editArtificialHarmonic()
             artificialHarmonicAct->setChecked(false);
         }
     }
-}
-
-/// Edits or creates a barline at the specified position.
-void PowerTabEditor::editBarline(const SystemLocation& location)
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
-    shared_ptr<System> system = score->GetSystem(location.getSystemIndex());
-    shared_ptr<Barline> barline = system->GetBarlineAtPosition(
-                location.getPositionIndex());
-
-    const bool startBar = barline == system->GetStartBar();
-    const bool endBar = barline == system->GetEndBar();
-
-    // Move the cursor to the barline. This is important if a barline in another
-    // system was clicked, since otherwise it might not be redrawn properly.
-    caret->setCurrentSystemIndex(location.getSystemIndex());
-    caret->setCurrentPositionIndex(location.getPositionIndex());
-
-    if (barline) // edit existing barline
-    {
-        quint8 type = barline->GetType(), repeats = barline->GetRepeatCount();
-
-        BarlineDialog dialog(this, type, repeats, startBar, endBar);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            undoManager->push(new ChangeBarLineType(system, barline,
-                                                    dialog.barlineType(),
-                                                    dialog.repeatCount()),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-    else // create new barline
-    {
-        quint8 type = Barline::bar, repeats = Barline::MIN_REPEAT_COUNT;
-
-        BarlineDialog dialog(this, type, repeats, startBar, endBar);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            undoManager->push(new AddBarline(caret->getCurrentSystem(),
-                                             caret->getCurrentPositionIndex(),
-                                             dialog.barlineType(),
-                                             dialog.repeatCount()),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-}
-
-/// Inserts a standard barline at the current position.
-void PowerTabEditor::insertStandardBarline()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    undoManager->push(new AddBarline(caret->getCurrentSystem(),
-                                     caret->getCurrentPositionIndex(),
-                                     Barline::bar, 0),
-                      caret->getCurrentSystemIndex());
 }
 
 void PowerTabEditor::editRepeatEnding()

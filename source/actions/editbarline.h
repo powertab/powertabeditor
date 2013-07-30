@@ -15,34 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef CHANGEBARLINETYPE_H
-#define CHANGEBARLINETYPE_H
+#ifndef DIALOGS_EDITBARLINE_H
+#define DIALOGS_EDITBARLINE_H
 
 #include <QUndoCommand>
+#include <score/barline.h>
+#include <score/scorelocation.h>
 
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-
-class Barline;
-class System;
-
-/// Modifies a barline's properties.
-class ChangeBarLineType : public QUndoCommand
+class EditBarline : public QUndoCommand
 {
 public:
-    ChangeBarLineType(boost::shared_ptr<System> system,
-                      boost::shared_ptr<Barline> bar, uint8_t barType,
-                      uint8_t repeats);
-    virtual void undo();
+    EditBarline(const ScoreLocation &location, Barline::BarType type,
+                int repeats);
+
     virtual void redo();
+    virtual void undo();
 
 private:
-    boost::shared_ptr<System> system;
-    boost::shared_ptr<Barline> barLine;
-    const uint8_t type;
-    const uint8_t repeatCount;
-    const uint8_t originalType;
-    const uint8_t originalRepeatCount;
+    ScoreLocation myLocation;
+    const Barline::BarType myBarType;
+    const Barline::BarType myOriginalBarType;
+    const int myRepeats;
+    const int myOriginalRepeats;
 };
 
-#endif // CHANGEBARLINETYPE_H
+#endif

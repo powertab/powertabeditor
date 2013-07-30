@@ -130,6 +130,10 @@ private slots:
     void editRehearsalSign();
     /// Edits the key signature at the caret's current location.
     void editKeySignatureFromCaret();
+    /// Inserts a single barline at the current location.
+    void insertStandardBarline();
+    /// Edits or inserts a barline at the current location.
+    void editBarlineFromCaret();
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
 
@@ -166,6 +170,8 @@ private:
 
     /// Edits the key signature at the given location.
     void editKeySignature(const ScoreLocation &location);
+    /// Edits the barline at the given location.
+    void editBarline(const ScoreLocation &barLocation);
 
     /// Toggles a simple position property.
     void editSimplePositionProperty(Command *command, Position::SimpleProperty property);
@@ -247,6 +253,8 @@ private:
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
     Command *myKeySignatureCommand;
+    Command *myStandardBarlineCommand;
+    Command *myBarlineCommand;
     Command *myDynamicCommand;
 
     QMenu *myTabSymbolsMenu;
@@ -290,7 +298,6 @@ private:
     void addRest();
     void editRest(uint8_t duration);
     void editTimeSignature(const SystemLocation &location);
-    void editBarline(const SystemLocation &location);
 
     static std::vector<Position*> getSelectedPositions();
     static std::vector<Note*> getSelectedNotes();
@@ -317,8 +324,6 @@ private slots:
     void editTiedNote();
     void editHammerPull();
     void editTrill();
-    void editBarlineFromCaret();
-    void insertStandardBarline();
     void editArtificialHarmonic();
     void editTimeSignatureFromCaret();
     void editVolumeSwell();
@@ -404,8 +409,6 @@ private:
 
     Command* tempoMarkerAct;
     Command* timeSignatureAct;
-    Command* barlineAct;
-    Command* standardBarlineAct;
     Command* musicalDirectionAct;
     Command* repeatEndingAct;
     Command* volumeSwellAct;

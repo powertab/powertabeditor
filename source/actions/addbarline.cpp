@@ -17,38 +17,33 @@
   
 #include "addbarline.h"
 
-#include <boost/make_shared.hpp>
+#include <score/system.h>
 
-#include <powertabdocument/barline.h>
-#include <powertabdocument/system.h>
-
-using boost::shared_ptr;
-
-AddBarline::AddBarline(shared_ptr<System> system, quint32 position, quint8 type, quint8 repeats) :
-    system(system),
-    position(position),
-    newBar(boost::make_shared<Barline>(position, type, repeats))
+AddBarline::AddBarline(const ScoreLocation &location, const Barline &barline)
+    : QUndoCommand(QObject::tr("Insert Barline")),
+      myLocation(location),
+      myBarline(barline)
 {
-    setText(QObject::tr("Insert Barline"));
-
     // Use the same time signature and key signature from the previous bar.
-    System::BarlineConstPtr prevBar(system->GetPrecedingBarline(position));
+    const Barline *prev = myLocation.getSystem().getPreviousBarline(
+                barline.getPosition());
+    Q_ASSERT(prev);
 
-    KeySignature key = prevBar->GetKeySignature();
-    key.SetShown(false);
-    newBar->SetKeySignature(key);
+    KeySignature key = prev->getKeySignature();
+    key.setVisible(false);
+    myBarline.setKeySignature(key);
 
-    TimeSignature time = prevBar->GetTimeSignature();
-    time.SetShown(false);
-    newBar->SetTimeSignature(time);
+    TimeSignature time = prev->getTimeSignature();
+    time.setVisible(false);
+    myBarline.setTimeSignature(time);
 }
 
 void AddBarline::redo()
 {
-    system->InsertBarline(newBar);
+    myLocation.getSystem().insertBarline(myBarline);
 }
 
 void AddBarline::undo()
 {
-    system->RemoveBarline(position);
+    myLocation.getSystem().removeBarline(myBarline);
 }

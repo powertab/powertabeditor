@@ -15,24 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ACTIONS_ADDBARLINE_H
-#define ACTIONS_ADDBARLINE_H
+#include "editbarline.h"
 
-#include <QUndoCommand>
-#include <score/barline.h>
-#include <score/scorelocation.h>
-
-class AddBarline : public QUndoCommand
+EditBarline::EditBarline(const ScoreLocation &location, Barline::BarType type,
+                         int repeats)
+    : QUndoCommand(QObject::tr("Edit Barline Type")),
+      myLocation(location),
+      myBarType(type),
+      myOriginalBarType(location.getBarline()->getBarType()),
+      myRepeats(repeats),
+      myOriginalRepeats(location.getBarline()->getRepeatCount())
 {
-public:
-    AddBarline(const ScoreLocation &location, const Barline &barline);
+}
 
-    virtual void redo();
-    virtual void undo();
+void EditBarline::redo()
+{
+    myLocation.getBarline()->setBarType(myBarType);
+    myLocation.getBarline()->setRepeatCount(myRepeats);
+}
 
-private:
-    ScoreLocation myLocation;
-    Barline myBarline;
-};
-
-#endif
+void EditBarline::undo()
+{
+    myLocation.getBarline()->setBarType(myOriginalBarType);
+    myLocation.getBarline()->setRepeatCount(myOriginalRepeats);
+}

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.8)
 add_library(pteactions
     #addalternateending.cpp
     #addartificialharmonic.cpp
-    #addbarline.cpp
+    addbarline.cpp
     #addchordtext.cpp
     adddynamic.cpp
     #addguitar.cpp
@@ -20,11 +20,11 @@ add_library(pteactions
     addtrill.cpp
     #addvolumeswell.cpp
     adjustlinespacing.cpp
-    #changebarlinetype.cpp
     #changepositionspacing.cpp
     #deletebarline.cpp
     #deletenote.cpp
     #deleteposition.cpp
+    editbarline.cpp
     #editfileinformation.cpp
     #edithammerpull.cpp
     editkeysignature.cpp

@@ -4,6 +4,7 @@ add_executable(pte_tests
     test_main.cpp
 
     #actions/test_addartificialharmonic.cpp
+    actions/test_addbarline.cpp
     actions/test_adddynamic.cpp
     #actions/test_addirregulargrouping.cpp
     #actions/test_addmusicaldirection.cpp
@@ -17,6 +18,7 @@ add_executable(pte_tests
     #actions/test_addvolumeswell.cpp
     actions/test_adjustlinespacing.cpp
     #actions/test_deletenote.cpp
+    actions/test_editbarline.cpp
     #actions/test_edithammerpull.cpp
     actions/test_editkeysignature.cpp
     #actions/test_editrest.cpp

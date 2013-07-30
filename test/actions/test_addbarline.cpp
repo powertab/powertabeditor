@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2011 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,34 +14,26 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef DIALOGS_BARLINEDIALOG_H
-#define DIALOGS_BARLINEDIALOG_H
+#include <actions/addbarline.h>
+#include <score/score.h>
 
-#include <QDialog>
-#include <score/barline.h>
-
-namespace Ui {
-class BarlineDialog;
-}
-
-class BarlineDialog : public QDialog
+TEST_CASE("Actions/AddBarline", "")
 {
-    Q_OBJECT
+    Score score;
+    System system;
+    score.insertSystem(system);
 
-public:
-    explicit BarlineDialog(QWidget *parent, Barline::BarType type, int repeats,
-                           bool isStartBar, bool isEndBar);
-    ~BarlineDialog();
+    ScoreLocation location(score, 0, 0, 6);
+    Barline barline(6, Barline::SingleBar);
+    AddBarline action(location, barline);
 
-    Barline::BarType getBarType() const;
-    int getRepeatCount() const;
+    action.redo();
+    REQUIRE(location.getSystem().getBarlines().size() == 3);
+    REQUIRE(location.getSystem().getBarlines()[1] == barline);
 
-private slots:
-    void onBarlineTypeChanged(int);
-
-private:
-    Ui::BarlineDialog *ui;
-};
-
-#endif
+    action.undo();
+    REQUIRE(location.getSystem().getBarlines().size() == 2);
+}

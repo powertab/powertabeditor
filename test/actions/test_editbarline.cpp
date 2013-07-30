@@ -15,24 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ACTIONS_ADDBARLINE_H
-#define ACTIONS_ADDBARLINE_H
+#include <catch.hpp>
 
-#include <QUndoCommand>
-#include <score/barline.h>
-#include <score/scorelocation.h>
+#include <actions/editbarline.h>
+#include <score/score.h>
 
-class AddBarline : public QUndoCommand
+TEST_CASE("Actions/EditBarline", "")
 {
-public:
-    AddBarline(const ScoreLocation &location, const Barline &barline);
+    Score score;
+    System system;
+    system.insertBarline(Barline(6, Barline::DoubleBar, 3));
+    score.insertSystem(system);
 
-    virtual void redo();
-    virtual void undo();
+    ScoreLocation location(score, 0, 0, 6);
+    EditBarline action(location, Barline::RepeatEnd, 4);
 
-private:
-    ScoreLocation myLocation;
-    Barline myBarline;
-};
+    action.redo();
+    REQUIRE(location.getBarline()->getBarType() == Barline::RepeatEnd);
+    REQUIRE(location.getBarline()->getRepeatCount() == 4);
 
-#endif
+    action.undo();
+    REQUIRE(location.getBarline()->getBarType() == Barline::DoubleBar);
+    REQUIRE(location.getBarline()->getRepeatCount() == 3);
+}

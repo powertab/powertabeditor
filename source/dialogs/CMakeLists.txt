@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.8)
 
 set(FORMS
     #artificialharmonicdialog.ui
-    #barlinedialog.ui
+    barlinedialog.ui
     #directiondialog.ui
     dynamicdialog.ui
     #fileinformationdialog.ui
@@ -29,7 +29,7 @@ add_library(ptedialogs
     ${FORMS_HEADERS}
     #alternateendingdialog.cpp
     #artificialharmonicdialog.cpp
-    #barlinedialog.cpp
+    barlinedialog.cpp
     #chordnamedialog.cpp
     #directiondialog.cpp
     dynamicdialog.cpp
