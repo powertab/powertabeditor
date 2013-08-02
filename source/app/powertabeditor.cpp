@@ -29,6 +29,7 @@
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
 #include <actions/editkeysignature.h>
+#include <actions/edittabnumber.h>
 #include <actions/removedynamic.h>
 #include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
@@ -68,6 +69,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QFontDatabase>
+#include <QKeyEvent>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
@@ -645,6 +647,46 @@ void PowerTabEditor::editPlayerChange()
         else
             myPlayerChangeCommand->setChecked(false);
     }
+}
+
+bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
+{
+    ScoreArea *scorearea = getScoreArea();
+    if (scorearea && event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent->key() >= Qt::Key_0 && keyEvent->key() <= Qt::Key_9)
+        {
+            const int number = keyEvent->key() - Qt::Key_0;
+            ScoreLocation &location = getLocation();
+
+            // Don't allow inserting notes at the same position as a barline,
+            // unless it's the first position of the system.
+            if (!location.getBarline() || location.getPositionIndex() == 0)
+            {
+                // Update the existing note if possible.
+                if (location.getNote())
+                {
+                    myUndoManager->push(new EditTabNumber(location, number),
+                                        location.getSystemIndex());
+                }
+                else
+                {
+                    // TODO
+#if 0
+                    undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
+                                                  caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
+                                                  currentStaff, activeDuration),
+                                      system);
+#endif
+                }
+
+                return true;
+            }
+        }
+    }
+
+    return QMainWindow::eventFilter(object, event);
 }
 
 QString PowerTabEditor::getApplicationName() const
@@ -1617,9 +1659,8 @@ void PowerTabEditor::setupNewTab()
 
     ScoreArea *scorearea = new ScoreArea(this);
     scorearea->renderDocument(doc, Staff::GuitarView);
+    scorearea->installEventFilter(this);
 #if 0
-    score->installEventFilter(this);
-
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
     score->timeSignaturePubSub()->subscribe(
@@ -1957,58 +1998,6 @@ ScoreLocation &PowerTabEditor::getLocation()
 }
 
 #if 0
-// this is a reimplementation of QObject's eventFilter function
-// it returns true to tell Qt to stop propagating this event
-// this is necessary to intercept tab key presses before they are
-// used to cycle focus to different widgets
-bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
-{
-    ScoreArea* currentDoc = getCurrentScoreArea();
-
-    if (currentDoc && event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        if ((keyEvent->key() >= Qt::Key_0) &&
-                 (keyEvent->key() <= Qt::Key_9))
-        {
-            // this arithmetic and this condition assume that Key_0 ... Key_9
-            // are assigned ascending continuous numbers as they are in Qt 4.7
-            int typedNumber = keyEvent->key() - Qt::Key_0;
-            Caret *caret = getCurrentScoreArea()->getCaret();
-            Note *currentNote = caret->getCurrentNote();
-            Position *currentPosition = caret->getCurrentPosition();
-            shared_ptr<Staff> currentStaff = caret->getCurrentStaff();
-            shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
-            const int system = caret->getCurrentSystemIndex();
-            const uint32_t voice = caret->getCurrentVoice();
-
-            // Don't allow inserting notes on top of bars (except for the first
-            // bar in the system, which has position 0).
-            if (!currentBarline || caret->getCurrentPositionIndex() == 0)
-            {
-                if (currentNote != NULL)
-                {
-                    // if there is already a number here update it
-                    undoManager->push(new UpdateTabNumber(typedNumber, currentNote,
-                                                          currentPosition, voice, currentStaff),
-                                      system);
-                }
-                else
-                {
-                    undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
-                                                  caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
-                                                  currentStaff, activeDuration),
-                                      system);
-                }
-
-                return true;
-            }
-        }
-    }
-
-    return QMainWindow::eventFilter(object, event);
-}
-
 /// Before exiting, prompt to save any modified documents.
 void PowerTabEditor::closeEvent(QCloseEvent* event)
 {

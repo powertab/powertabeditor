@@ -15,36 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef UPDATETABNUMBER_H
-#define UPDATETABNUMBER_H
+#ifndef ACTIONS_EDITTABNUMBER_H
+#define ACTIONS_EDITTABNUMBER_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-#include <boost/cstdint.hpp>
+#include <score/note.h>
+#include <score/scorelocation.h>
 
-class Staff;
-class Position;
-class Note;
-
-class UpdateTabNumber : public QUndoCommand
+class EditTabNumber : public QUndoCommand
 {
 public:
-    UpdateTabNumber(uint8_t typedNumber, Note* note, Position* position,
-                    uint32_t voice, boost::shared_ptr<Staff> staff);
-    ~UpdateTabNumber();
-    void undo();
-    void redo();
+    EditTabNumber(const ScoreLocation &location, int typedNumber);
+
+    virtual void redo();
+    virtual void undo();
 
 private:
-    const uint32_t voice;
-    Note* note;
-    Position* position;
-    boost::shared_ptr<Staff> staff;
-    uint8_t newFretNumber;
-    uint8_t prevFretNumber;
-    Note *origPrevNote;
-    Note *origNextNote;
-    Note *origNote;
+    ScoreLocation myLocation;
+    const int myOriginalNumber;
+    int myNewNumber;
 };
 
-#endif // UPDATETABNUMBER_H
+#endif

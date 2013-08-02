@@ -24,6 +24,7 @@ add_executable(pte_tests
     #actions/test_editrest.cpp
     #actions/test_editslideinto.cpp
     #actions/test_editslideout.cpp
+    actions/test_edittabnumber.cpp
     #actions/test_edittimesignature.cpp
     #actions/test_removeartificialharmonic.cpp
     actions/test_removedynamic.cpp
@@ -39,7 +40,6 @@ add_executable(pte_tests
     #actions/test_removevolumeswell.cpp
     #actions/test_shifttabnumber.cpp
     #actions/test_updatenoteduration.cpp
-    #actions/test_updatetabnumber.cpp
 
     app/test_documentmanager.cpp
 

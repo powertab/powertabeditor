@@ -31,6 +31,7 @@ add_library(pteactions
     #editrest.cpp
     #editslideinto.cpp
     #editslideout.cpp
+    edittabnumber.cpp
     #edittimesignature.cpp
     #edittrackshown.cpp
     #edittuning.cpp
@@ -54,7 +55,6 @@ add_library(pteactions
     #shifttabnumber.cpp
     undomanager.cpp
     #updatenoteduration.cpp
-    #updatetabnumber.cpp
 )
 
 qt5_use_modules(pteactions Widgets)

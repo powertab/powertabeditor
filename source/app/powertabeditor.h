@@ -145,6 +145,10 @@ private slots:
     /// Adds or removes a player change at the current location.
     void editPlayerChange();
 
+protected:
+    /// Handle key presses for 0-9 when entering tab numbers.
+    virtual bool eventFilter(QObject *object, QEvent *event);
+
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
     QString getApplicationName() const;
