@@ -17,59 +17,43 @@
   
 #include "addnote.h"
 
-#include <powertabdocument/position.h>
-#include <powertabdocument/note.h>
-#include <powertabdocument/staff.h>
+#include <score/staff.h>
 
-AddNote::AddNote(uint8_t stringNum, uint8_t fretNumber,
-                 uint32_t positionIndex, uint32_t voice, boost::shared_ptr<Staff> staff,
-                 uint8_t durationType) :
-    stringNum(stringNum),
-    positionIndex(positionIndex),
-    voice(voice),
-    durationType(durationType),
-    staff(staff),
-    note(new Note(stringNum, fretNumber)),
-    position(staff->GetPositionByPosition(voice, positionIndex)),
-    wasRest(position && position->IsRest()),
-    newPositionAdded(false), undone(false)
+AddNote::AddNote(const ScoreLocation &location, const Note &note,
+                 Position::DurationType duration)
+    : QUndoCommand(QObject::tr("Add Note")),
+      myLocation(location),
+      myOriginalPosition(myLocation.getPosition() ? *myLocation.getPosition() : 0),
+      myNote(note),
+      myDuration(duration)
 {
-    setText(QObject::tr("Add Note"));
-}
-
-AddNote::~AddNote()
-{
-    if (newPositionAdded && undone)
-    {
-        delete position;
-    }
 }
 
 void AddNote::redo()
 {
-    if (!staff->GetPositionByPosition(voice, positionIndex)) // add a Position if necessary
+    Position *pos = myLocation.getPosition();
+
+    // Add a new position if necessary.
+    if (!pos)
     {
-        if (!newPositionAdded)
-        {
-            newPositionAdded = true;
-            position = new Position(positionIndex, durationType, 0);
-        }
-        staff->InsertPosition(voice, position);
+        myLocation.getStaff().insertPosition(myLocation.getVoice(),
+                Position(myLocation.getPositionIndex(), myDuration));
+        pos = myLocation.getPosition();
     }
 
-    position->SetRest(false);
-    position->InsertNote(note);
-    undone = false;
+    pos->setRest(false);
+    pos->insertNote(myNote);
 }
 
 void AddNote::undo()
 {
-    undone = true;
-    position->RemoveNote(stringNum);
-    position->SetRest(wasRest);
-
-    if (newPositionAdded)
+    if (!myOriginalPosition)
     {
-        staff->RemovePosition(voice, positionIndex);
+        myLocation.getStaff().removePosition(myLocation.getVoice(),
+                                             *myLocation.getPosition());
+    }
+    else
+    {
+        *myLocation.getPosition() = *myOriginalPosition;
     }
 }

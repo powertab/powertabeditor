@@ -8,6 +8,7 @@ add_executable(pte_tests
     actions/test_adddynamic.cpp
     #actions/test_addirregulargrouping.cpp
     #actions/test_addmusicaldirection.cpp
+    actions/test_addnote.cpp
     actions/test_addnoteproperty.cpp
     actions/test_addplayerchange.cpp
     actions/test_addpositionproperty.cpp

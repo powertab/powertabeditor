@@ -19,6 +19,7 @@
 
 #include <actions/addbarline.h>
 #include <actions/adddynamic.h>
+#include <actions/addnote.h>
 #include <actions/addnoteproperty.h>
 #include <actions/addplayerchange.h>
 #include <actions/addpositionproperty.h>
@@ -672,13 +673,12 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                 }
                 else
                 {
-                    // TODO
-#if 0
-                    undoManager->push(new AddNote(caret->getCurrentStringIndex(), typedNumber,
-                                                  caret->getCurrentPositionIndex(), caret->getCurrentVoice(),
-                                                  currentStaff, activeDuration),
-                                      system);
-#endif
+                    // TODO - make duration type customizable.
+                    myUndoManager->push(
+                                new AddNote(location,
+                                            Note(location.getString(), number),
+                                            Position::EighthNote),
+                                location.getSystemIndex());
                 }
 
                 return true;

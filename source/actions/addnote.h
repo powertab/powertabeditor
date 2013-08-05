@@ -15,39 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ADDNOTE_H
-#define ADDNOTE_H
+#ifndef ACTIONS_ADDNOTE_H
+#define ACTIONS_ADDNOTE_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-
-class Staff;
-class Position;
-class Note;
+#include <boost/optional.hpp>
+#include <score/position.h>
+#include <score/scorelocation.h>
 
 class AddNote : public QUndoCommand
 {
 public:
-    AddNote(uint8_t stringNum, uint8_t fretNumber, uint32_t positionIndex,
-            uint32_t voice, boost::shared_ptr<Staff> staff, uint8_t durationType);
-    ~AddNote();
+    AddNote(const ScoreLocation &location, const Note &note,
+            Position::DurationType duration);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    const uint8_t stringNum;
-    uint32_t positionIndex;
-    uint32_t voice;
-    uint8_t durationType;
-    boost::shared_ptr<Staff> staff;
-    Note* note;
-    Position* position;
-
-    const bool wasRest; ///< Whether the position was originally a rest.
-    bool newPositionAdded;
-    bool undone;
+    ScoreLocation myLocation;
+    boost::optional<Position> myOriginalPosition;
+    const Note myNote;
+    const Position::DurationType myDuration;
 };
 
-#endif // ADDNOTE_H
+#endif

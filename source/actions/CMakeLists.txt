@@ -9,7 +9,7 @@ add_library(pteactions
     #addguitar.cpp
     #addirregulargrouping.cpp
     #addmusicaldirection.cpp
-    #addnote.cpp
+    addnote.cpp
     addnoteproperty.cpp
     addplayerchange.cpp
     addpositionproperty.cpp
