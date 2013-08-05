@@ -28,6 +28,7 @@ add_library(pteactions
     #editfileinformation.cpp
     #edithammerpull.cpp
     editkeysignature.cpp
+    editnoteduration.cpp
     #editrest.cpp
     #editslideinto.cpp
     #editslideout.cpp
@@ -54,7 +55,6 @@ add_library(pteactions
     #removevolumeswell.cpp
     #shifttabnumber.cpp
     undomanager.cpp
-    #updatenoteduration.cpp
 )
 
 qt5_use_modules(pteactions Widgets)

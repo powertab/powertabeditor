@@ -17,27 +17,19 @@
 
 #include <catch.hpp>
 
-#include <actions/updatenoteduration.h>
-#include <powertabdocument/position.h>
+#include <actions/editnoteduration.h>
+#include <score/note.h>
+#include "actionfixture.h"
 
-TEST_CASE("Actions/UpdateNoteDuration", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/EditNoteDuration", "")
 {
-    Position pos1(0, 4, 0), pos2(1, 2, 0), pos3(2, 1, 0);
+    myLocation.getPosition()->setDurationType(Position::HalfNote);
 
-    std::vector<Position*> positions;
-    positions.push_back(&pos1);
-    positions.push_back(&pos2);
-    positions.push_back(&pos3);
-
-    UpdateNoteDuration action(positions, 8);
+    EditNoteDuration action(myLocation, Position::ThirtySecondNote);
 
     action.redo();
-    REQUIRE(pos1.GetDurationType() == 8);
-    REQUIRE(pos2.GetDurationType() == 8);
-    REQUIRE(pos3.GetDurationType() == 8);
+    REQUIRE(myLocation.getPosition()->getDurationType() == Position::ThirtySecondNote);
 
     action.undo();
-    REQUIRE(pos1.GetDurationType() == 4);
-    REQUIRE(pos2.GetDurationType() == 2);
-    REQUIRE(pos3.GetDurationType() == 1);
+    REQUIRE(myLocation.getPosition()->getDurationType() == Position::HalfNote);
 }

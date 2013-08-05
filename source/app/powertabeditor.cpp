@@ -30,6 +30,7 @@
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
 #include <actions/editkeysignature.h>
+#include <actions/editnoteduration.h>
 #include <actions/edittabnumber.h>
 #include <actions/removedynamic.h>
 #include <actions/removenoteproperty.h>
@@ -86,9 +87,9 @@ PowerTabEditor::PowerTabEditor() :
     myPreviousDirectory(QSettings().value(Settings::APP_PREVIOUS_DIRECTORY,
                                           QDir::homePath()).toString()),
     myRecentFiles(NULL),
+    myActiveDurationType(Position::EighthNote),
     myTabWidget(NULL)
 #if 0
-    activeDuration(Position::DEFAULT_DURATION_TYPE),
     mixerList(new QStackedWidget),
     playbackToolbarList(new QStackedWidget),
     settingsPubSub(new SettingsPubSub()),
@@ -499,6 +500,18 @@ void PowerTabEditor::removeCurrentSystem()
                         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
+void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
+{
+    // Set the duration for future notes that are added.
+    myActiveDurationType = duration;
+
+    if (!getLocation().getSelectedPositions().empty())
+    {
+        myUndoManager->push(new EditNoteDuration(getLocation(), duration),
+                            getLocation().getSystemIndex());
+    }
+}
+
 void PowerTabEditor::editRehearsalSign()
 {
     const ScoreLocation &location = getLocation();
@@ -673,11 +686,10 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
                 }
                 else
                 {
-                    // TODO - make duration type customizable.
                     myUndoManager->push(
                                 new AddNote(location,
                                             Note(location.getString(), number),
-                                            Position::EighthNote),
+                                            myActiveDurationType),
                                 location.getSystemIndex());
                 }
 
@@ -961,52 +973,23 @@ void PowerTabEditor::createCommands()
     sigfwd::connect(myDecreaseLineSpacingCommand, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::adjustLineSpacing, this, -1));
 
+    // Note-related actions.
+    myNoteDurationGroup = new QActionGroup(this);
+    createNoteDurationCommand(myWholeNoteCommand, tr("Whole"), "Note.WholeNote",
+                              Position::WholeNote);
+    createNoteDurationCommand(myHalfNoteCommand, tr("Half"), "Note.HalfNote",
+                              Position::HalfNote);
+    createNoteDurationCommand(myQuarterNoteCommand, tr("Quarter"),
+                              "Note.QuarterNote", Position::QuarterNote);
+    createNoteDurationCommand(myEighthNoteCommand, tr("8th"),
+                              "Note.EighthNote", Position::EighthNote);
+    createNoteDurationCommand(mySixteenthNoteCommand, tr("16th"),
+                              "Note.SixteenthNote", Position::SixteenthNote);
+    createNoteDurationCommand(myThirtySecondNoteCommand, tr("32nd"),
+                              "Note.ThirtySecondNote", Position::ThirtySecondNote);
+    createNoteDurationCommand(mySixtyFourthNoteCommand, tr("64th"),
+                              "Note.SixtyFourthNote", Position::SixtyFourthNote);
 #if 0
-    // Note-related actions
-    noteDurationActGroup = new QActionGroup(this);
-
-    wholeNoteAct = new Command(tr("Whole"), "Note.WholeNote", QKeySequence(), this);
-    wholeNoteAct->setCheckable(true);
-    sigfwd::connect(wholeNoteAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 1));
-    noteDurationActGroup->addAction(wholeNoteAct);
-
-    halfNoteAct = new Command(tr("Half"), "Note.HalfNote", QKeySequence(), this);
-    halfNoteAct->setCheckable(true);
-    sigfwd::connect(halfNoteAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 2));
-    noteDurationActGroup->addAction(halfNoteAct);
-
-    quarterNoteAct = new Command(tr("Quarter"), "Note.QuarterNote", QKeySequence(), this);
-    quarterNoteAct->setCheckable(true);
-    sigfwd::connect(quarterNoteAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 4));
-    noteDurationActGroup->addAction(quarterNoteAct);
-
-    eighthNoteAct = new Command(tr("8th"), "Note.EighthNote", QKeySequence(), this);
-    eighthNoteAct->setCheckable(true);
-    sigfwd::connect(eighthNoteAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 8));
-    noteDurationActGroup->addAction(eighthNoteAct);
-
-    sixteenthNoteAct = new Command(tr("16th"), "Note.SixteenthNote", QKeySequence(), this);
-    sixteenthNoteAct->setCheckable(true);
-    sigfwd::connect(sixteenthNoteAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 16));
-    noteDurationActGroup->addAction(sixteenthNoteAct);
-
-    thirtySecondNoteAct = new Command(tr("32nd"), "Note.ThirtySecondNote", QKeySequence(), this);
-    thirtySecondNoteAct->setCheckable(true);
-    sigfwd::connect(thirtySecondNoteAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 32));
-    noteDurationActGroup->addAction(thirtySecondNoteAct);
-
-    sixtyFourthNoteAct = new Command(tr("64th"), "Note.SixtyFourthNote", QKeySequence(), this);
-    sixtyFourthNoteAct->setCheckable(true);
-    sigfwd::connect(sixtyFourthNoteAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this, 64));
-    noteDurationActGroup->addAction(sixtyFourthNoteAct);
-
     increaseDurationAct = new Command(tr("Increase Duration"),
                                          "Note.IncreaseDuration", Qt::SHIFT + Qt::Key_Up, this);
     sigfwd::connect(increaseDurationAct, SIGNAL(triggered()),
@@ -1402,6 +1385,18 @@ void PowerTabEditor::createCommands()
                     boost::bind(&PowerTabEditor::cycleTab, this, -1));
 }
 
+void PowerTabEditor::createNoteDurationCommand(
+        Command *&command, const QString &menuName, const QString &commandName,
+        Position::DurationType durationType)
+{
+    command = new Command(menuName, commandName, QKeySequence(), this);
+    command->setCheckable(true);
+    sigfwd::connect(command, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::updateNoteDuration, this,
+                                durationType));
+    myNoteDurationGroup->addAction(command);
+}
+
 void PowerTabEditor::createMenus()
 {
     // File Menu.
@@ -1496,15 +1491,15 @@ void PowerTabEditor::createMenus()
 
     // Notes Menu.
     myNotesMenu = menuBar()->addMenu(tr("&Notes"));
-#if 0
-    myNotesMenu->addAction(wholeNoteAct);
-    myNotesMenu->addAction(halfNoteAct);
-    myNotesMenu->addAction(quarterNoteAct);
-    myNotesMenu->addAction(eighthNoteAct);
-    myNotesMenu->addAction(sixteenthNoteAct);
-    myNotesMenu->addAction(thirtySecondNoteAct);
-    myNotesMenu->addAction(sixtyFourthNoteAct);
+    myNotesMenu->addAction(myWholeNoteCommand);
+    myNotesMenu->addAction(myHalfNoteCommand);
+    myNotesMenu->addAction(myQuarterNoteCommand);
+    myNotesMenu->addAction(myEighthNoteCommand);
+    myNotesMenu->addAction(mySixteenthNoteCommand);
+    myNotesMenu->addAction(myThirtySecondNoteCommand);
+    myNotesMenu->addAction(mySixtyFourthNoteCommand);
     myNotesMenu->addSeparator();
+#if 0
     myNotesMenu->addAction(increaseDurationAct);
     myNotesMenu->addAction(decreaseDurationAct);
     myNotesMenu->addSeparator();
@@ -1779,6 +1774,36 @@ void PowerTabEditor::updateCommands()
                 score.getLineSpacing() < Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() > Score::MIN_LINE_SPACING);
+
+    // Note durations
+    Position::DurationType durationType = myActiveDurationType;
+    if (pos)
+        durationType = pos->getDurationType();
+
+    switch (durationType)
+    {
+    case Position::WholeNote:
+        myWholeNoteCommand->setChecked(true);
+        break;
+    case Position::HalfNote:
+        myHalfNoteCommand->setChecked(true);
+        break;
+    case Position::QuarterNote:
+        myQuarterNoteCommand->setChecked(true);
+        break;
+    case Position::EighthNote:
+        myEighthNoteCommand->setChecked(true);
+        break;
+    case Position::SixteenthNote:
+        mySixteenthNoteCommand->setChecked(true);
+        break;
+    case Position::ThirtySecondNote:
+        myThirtySecondNoteCommand->setChecked(true);
+        break;
+    case Position::SixtyFourthNote:
+        mySixtyFourthNoteCommand->setChecked(true);
+        break;
+    }
 
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
 
@@ -2808,21 +2833,6 @@ void PowerTabEditor::changeNoteDuration(bool increase)
     }
 
     updateActions();
-}
-/// Updates the active note duration (for inserting future notes), and
-/// updates the duration of the selected note(s) if possible
-void PowerTabEditor::updateNoteDuration(uint8_t duration)
-{
-    // first and foremost set activeDuration for future notes
-    activeDuration = duration;
-
-    const std::vector<Position*> selectedPositions = getSelectedPositions();
-
-    if (!selectedPositions.empty())
-    {
-        undoManager->push(new UpdateNoteDuration(selectedPositions, duration),
-                          getCurrentScoreArea()->getCaret()->getCurrentSystemIndex());
-    }
 }
 
 void PowerTabEditor::addRest()

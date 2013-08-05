@@ -22,6 +22,7 @@ add_executable(pte_tests
     actions/test_editbarline.cpp
     #actions/test_edithammerpull.cpp
     actions/test_editkeysignature.cpp
+    actions/test_editnoteduration.cpp
     #actions/test_editrest.cpp
     #actions/test_editslideinto.cpp
     #actions/test_editslideout.cpp
@@ -40,7 +41,6 @@ add_executable(pte_tests
     actions/test_removetrill.cpp
     #actions/test_removevolumeswell.cpp
     #actions/test_shifttabnumber.cpp
-    #actions/test_updatenoteduration.cpp
 
     app/test_documentmanager.cpp
 

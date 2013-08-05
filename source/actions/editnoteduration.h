@@ -15,26 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef UPDATENOTEDURATION_H
-#define UPDATENOTEDURATION_H
+#ifndef ACTIONS_EDITNOTEDURATION_H
+#define ACTIONS_EDITNOTEDURATION_H
 
 #include <QUndoCommand>
-#include <vector>
-#include <boost/cstdint.hpp>
+#include <score/position.h>
+#include <score/scorelocation.h>
 
-class Position;
-
-class UpdateNoteDuration : public QUndoCommand
+class EditNoteDuration : public QUndoCommand
 {
 public:
-    UpdateNoteDuration(const std::vector<Position*>& positions, uint8_t duration);
-    virtual void undo();
+    EditNoteDuration(const ScoreLocation &location,
+                     Position::DurationType duration);
+
     virtual void redo();
+    virtual void undo();
 
 private:
-    const std::vector<Position*> positions;
-    uint8_t newDuration;
-    std::vector<uint8_t> originalDurations;
+    ScoreLocation myLocation;
+    const Position::DurationType myNewDuration;
+    std::vector<Position::DurationType> myOriginalDurations;
 };
 
-#endif // UPDATENOTEDURATION_H
+#endif

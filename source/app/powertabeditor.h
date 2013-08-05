@@ -29,6 +29,7 @@ class Caret;
 class Command;
 class DocumentManager;
 class FileFormatManager;
+class QActionGroup;
 class RecentFiles;
 class ScoreArea;
 class ScoreLocation;
@@ -126,6 +127,10 @@ private slots:
     /// Deletes the current system.
     void removeCurrentSystem();
 
+    /// Updates the duration of the current note and sets the default duration
+    /// for new notes.
+    void updateNoteDuration(Position::DurationType duration);
+
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
     /// Edits the key signature at the caret's current location.
@@ -157,6 +162,10 @@ private:
 
     /// Create all of the commands for the application.
     void createCommands();
+    /// Helper function to create a note duration command.
+    void createNoteDurationCommand(Command *&command, const QString &menuName,
+                                   const QString &commandName,
+                                   Position::DurationType durationType);
     /// Set up the menus for the application.
     void createMenus();
     /// Create the tab widget and score area.
@@ -200,6 +209,7 @@ private:
     /// Tracks the last directory that a file was opened from.
     QString myPreviousDirectory;
     RecentFiles *myRecentFiles;
+    Position::DurationType myActiveDurationType;
 
     QTabWidget *myTabWidget;
 
@@ -247,7 +257,16 @@ private:
     Command *myDecreaseLineSpacingCommand;
 
     QMenu *myNotesMenu;
-    Command* myLetRingCommand;
+    /// Used to ensure that only one duration option is checked at a time.
+    QActionGroup *myNoteDurationGroup;
+    Command *myWholeNoteCommand;
+    Command *myHalfNoteCommand;
+    Command *myQuarterNoteCommand;
+    Command *myEighthNoteCommand;
+    Command *mySixteenthNoteCommand;
+    Command *myThirtySecondNoteCommand;
+    Command *mySixtyFourthNoteCommand;
+    Command *myLetRingCommand;
     QMenu *myOctaveMenu;
     Command *myOctave8vaCommand;
     Command *myOctave15maCommand;
@@ -298,7 +317,6 @@ private:
     void editSlideInto(uint8_t newSlideIntoType);
     void editSlideOutOf(uint8_t newSlideType);
     void shiftTabNumber(int direction);
-    void updateNoteDuration(uint8_t duration);
     void addRest();
     void editRest(uint8_t duration);
     void editTimeSignature(const SystemLocation &location);
@@ -350,8 +368,6 @@ private slots:
 private:
     bool isPlaying;
 
-    uint8_t activeDuration;
-
     Toolbox* toolBox;
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
@@ -375,14 +391,6 @@ private:
     QMenu* textMenu;
     Command* chordNameAct; // add/remove a chord name
 
-    QActionGroup* noteDurationActGroup; // only one duration can be checked at a time
-    Command* wholeNoteAct; // actions for modifying the duration of a note
-    Command* halfNoteAct;
-    Command* quarterNoteAct;
-    Command* eighthNoteAct;
-    Command* sixteenthNoteAct;
-    Command* thirtySecondNoteAct;
-    Command* sixtyFourthNoteAct;
     Command* increaseDurationAct;
     Command* decreaseDurationAct;
     Command* dottedNoteAct; // sets a note to be dotted
