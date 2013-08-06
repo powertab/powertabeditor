@@ -130,6 +130,8 @@ private slots:
     /// Updates the duration of the current note and sets the default duration
     /// for new notes.
     void updateNoteDuration(Position::DurationType duration);
+    /// Increase or decrease the current note duration.
+    void changeNoteDuration(bool increase);
 
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
@@ -266,6 +268,8 @@ private:
     Command *mySixteenthNoteCommand;
     Command *myThirtySecondNoteCommand;
     Command *mySixtyFourthNoteCommand;
+    Command *myIncreaseDurationCommand;
+    Command *myDecreaseDurationCommand;
     Command *myLetRingCommand;
     QMenu *myOctaveMenu;
     Command *myOctave8vaCommand;
@@ -310,7 +314,6 @@ protected:
 private:
     bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
-    void changeNoteDuration(bool increase);
     void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
 
@@ -391,8 +394,6 @@ private:
     QMenu* textMenu;
     Command* chordNameAct; // add/remove a chord name
 
-    Command* increaseDurationAct;
-    Command* decreaseDurationAct;
     Command* dottedNoteAct; // sets a note to be dotted
     Command* doubleDottedNoteAct;
     Command* addDotAct;

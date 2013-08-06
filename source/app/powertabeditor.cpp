@@ -512,6 +512,45 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
     }
 }
 
+void PowerTabEditor::changeNoteDuration(bool increase)
+{
+    if (getLocation().getSelectedPositions().empty())
+    {
+        if (increase && myActiveDurationType == Position::WholeNote)
+            return;
+        if (!increase && myActiveDurationType == Position::SixtyFourthNote)
+            return;
+
+        updateNoteDuration(static_cast<Position::DurationType>(
+                               increase ? myActiveDurationType >> 1 :
+                                          myActiveDurationType << 1));
+        return;
+    }
+
+    myUndoManager->beginMacro(tr("Edit Note Duration"));
+
+    // Increase the duration of each selected position.
+    BOOST_FOREACH(const Position *pos, getLocation().getSelectedPositions())
+    {
+        ScoreLocation location(getLocation());
+        location.setPositionIndex(pos->getPosition());
+        location.setSelectionStart(pos->getPosition());
+
+        Position::DurationType duration = pos->getDurationType();
+        if (increase && duration == Position::WholeNote)
+            continue;
+        if (!increase && duration == Position::SixtyFourthNote)
+            continue;
+
+        myUndoManager->push(new EditNoteDuration(location,
+                static_cast<Position::DurationType>(increase ? duration >> 1 :
+                                                               duration << 1)),
+                            location.getSystemIndex());
+    }
+
+    myUndoManager->endMacro();
+}
+
 void PowerTabEditor::editRehearsalSign()
 {
     const ScoreLocation &location = getLocation();
@@ -989,17 +1028,20 @@ void PowerTabEditor::createCommands()
                               "Note.ThirtySecondNote", Position::ThirtySecondNote);
     createNoteDurationCommand(mySixtyFourthNoteCommand, tr("64th"),
                               "Note.SixtyFourthNote", Position::SixtyFourthNote);
-#if 0
-    increaseDurationAct = new Command(tr("Increase Duration"),
-                                         "Note.IncreaseDuration", Qt::SHIFT + Qt::Key_Up, this);
-    sigfwd::connect(increaseDurationAct, SIGNAL(triggered()),
+
+    myIncreaseDurationCommand = new Command(tr("Increase Duration"),
+                                            "Note.IncreaseDuration",
+                                            Qt::SHIFT + Qt::Key_Up, this);
+    sigfwd::connect(myIncreaseDurationCommand, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::changeNoteDuration, this, true));
 
-    decreaseDurationAct = new Command(tr("Decrease Duration"),
-                                         "Note.DecreaseDuration", Qt::SHIFT + Qt::Key_Down, this);
-    sigfwd::connect(decreaseDurationAct, SIGNAL(triggered()),
+    myDecreaseDurationCommand = new Command(tr("Decrease Duration"),
+                                            "Note.DecreaseDuration",
+                                            Qt::SHIFT + Qt::Key_Down, this);
+    sigfwd::connect(myDecreaseDurationCommand, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::changeNoteDuration, this, false));
 
+#if 0
     dottedNoteAct = new Command(tr("Dotted"), "Note.Dotted", QKeySequence(), this);
     dottedNoteAct->setCheckable(true);
     connectToggleProperty<Position>(dottedNoteAct, &getSelectedPositions,
@@ -1499,10 +1541,10 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myThirtySecondNoteCommand);
     myNotesMenu->addAction(mySixtyFourthNoteCommand);
     myNotesMenu->addSeparator();
-#if 0
-    myNotesMenu->addAction(increaseDurationAct);
-    myNotesMenu->addAction(decreaseDurationAct);
+    myNotesMenu->addAction(myIncreaseDurationCommand);
+    myNotesMenu->addAction(myDecreaseDurationCommand);
     myNotesMenu->addSeparator();
+#if 0
     myNotesMenu->addAction(dottedNoteAct);
     myNotesMenu->addAction(doubleDottedNoteAct);
     myNotesMenu->addSeparator();
@@ -1804,6 +1846,9 @@ void PowerTabEditor::updateCommands()
         mySixtyFourthNoteCommand->setChecked(true);
         break;
     }
+
+    myIncreaseDurationCommand->setEnabled(durationType != Position::WholeNote);
+    myDecreaseDurationCommand->setEnabled(durationType != Position::SixtyFourthNote);
 
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
 
@@ -2807,32 +2852,6 @@ void PowerTabEditor::updateLocationLabel()
 {
     getCurrentPlaybackWidget()->updateLocationLabel(
                 getCurrentScoreArea()->getCaret()->toString());
-}
-
-void PowerTabEditor::changeNoteDuration(bool increase)
-{
-// TODO shift+up on a selection should increase the duration of each note
-//    const std::vector<Position*> selectedPositions = getSelectedPositions();
-//    if (!selectedPositions.empty())
-//    {
-//        uint duration = selectedPositions.at(0)->GetDuration();
-//        updateNoteDuration(increase ? duration >> 1 : duration << 1);
-//    }
-
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    const Position* currentPosition = caret->getCurrentPosition();
-
-    if (currentPosition != NULL)
-    {
-        uint8_t duration = currentPosition->GetDurationType();
-        updateNoteDuration(increase ? duration >> 1 : duration << 1);
-    }
-    else
-    {
-        updateNoteDuration(increase ? activeDuration >> 1 : activeDuration << 1);
-    }
-
-    updateActions();
 }
 
 void PowerTabEditor::addRest()
