@@ -92,9 +92,9 @@ void Note::setProperty(SimpleProperty property, bool set)
         // Clear all other octave properties if setting an octave property.
         if (property >= Octave8va && property <= Octave15mb)
         {
-            for (SimpleProperty p = Octave8va; p <= Octave15mb; ++p)
+            for (int p = Octave8va; p <= Octave15mb; ++p)
             {
-                mySimpleProperties.set(p, false);
+                mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
             }
         }
     }
