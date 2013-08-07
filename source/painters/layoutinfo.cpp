@@ -523,9 +523,11 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // Stores the highest occupied slot at each position.
     std::vector<int> heightMap(symbolSets.size(), 0);
 
-    for (SymbolGroup::SymbolType symbol = SymbolGroup::LetRing;
-         symbol <= SymbolGroup::Dynamic; ++symbol)
+    for (int symbolIndex = SymbolGroup::LetRing;
+         symbolIndex <= SymbolGroup::Dynamic; ++symbolIndex)
     {
+        SymbolGroup::SymbolType symbol = static_cast<SymbolGroup::SymbolType>(
+                    symbolIndex);
         bool inGroup = false;
         int leftPos = 0;
 
