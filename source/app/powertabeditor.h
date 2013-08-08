@@ -295,6 +295,11 @@ private:
     Command *myMutedCommand;
     Command *myGhostNoteCommand;
     Command *myLetRingCommand;
+    Command *myFermataCommand;
+    Command *myGraceNoteCommand;
+    Command *myStaccatoCommand;
+    Command *myMarcatoCommand;
+    Command *mySforzandoCommand;
     QMenu *myOctaveMenu;
     Command *myOctave8vaCommand;
     Command *myOctave15maCommand;
@@ -419,11 +424,6 @@ private:
     Command* chordNameAct; // add/remove a chord name
 
     Command* tiedNoteAct; // sets a note to be tied to the previous note
-    Command* fermataAct; // set a position as fermata
-    Command* graceNoteAct;
-    Command* staccatoNoteAct; // set the notes of a position to be staccato
-    Command* marcatoAct; // set an accent
-    Command* sforzandoAct; // set a heavy accent
     Command* tripletAct;
     Command* irregularGroupingAct;
 

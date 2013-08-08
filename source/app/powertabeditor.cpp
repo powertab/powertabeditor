@@ -1108,39 +1108,29 @@ void PowerTabEditor::createCommands()
                               Qt::Key_X, Note::Muted);
     createNotePropertyCommand(myGhostNoteCommand, tr("Ghost Note"),
                               "Note.GhostNote", Qt::Key_G, Note::GhostNote);
-#if 0
-    fermataAct = new Command(tr("Fermata"), "Note.Fermata", Qt::Key_F, this);
-    fermataAct->setCheckable(true);
-    connectToggleProperty<Position>(fermataAct, &getSelectedPositions,
-                                    &Position::HasFermata, &Position::SetFermata);
 
-#endif
+    createPositionPropertyCommand(myFermataCommand, tr("Fermata"),
+                                  "Note.Fermata", Qt::Key_F, Position::Fermata);
+
     createPositionPropertyCommand(myLetRingCommand, tr("Let Ring"),
                                   "Note.LetRing", QKeySequence(),
                                   Position::LetRing);
-#if 0
 
-    graceNoteAct = new Command(tr("Grace Note"), "Note.GraceNote", QKeySequence(), this);
-    graceNoteAct->setCheckable(true);
-    connectToggleProperty<Position>(graceNoteAct, &getSelectedPositions,
-                                    &Position::IsAcciaccatura, &Position::SetAcciaccatura);
+    createPositionPropertyCommand(myGraceNoteCommand, tr("Grace Note"),
+                                  "Note.GraceNote", QKeySequence(),
+                                  Position::Acciaccatura);
 
-    staccatoNoteAct = new Command(tr("Staccato"), "Note.Staccato", Qt::Key_Z, this);
-    staccatoNoteAct->setCheckable(true);
-    connectToggleProperty<Position>(staccatoNoteAct, &getSelectedPositions,
-                                    &Position::IsStaccato, &Position::SetStaccato);
+    createPositionPropertyCommand(myStaccatoCommand, tr("Staccato"),
+                                  "Note.Staccato", Qt::Key_Z,
+                                  Position::Staccato);
 
-    marcatoAct = new Command(tr("Accent"), "Note.Accent", Qt::Key_A, this);
-    marcatoAct->setCheckable(true);
-    connectToggleProperty<Position>(marcatoAct, &getSelectedPositions,
-                                    &Position::HasMarcato, &Position::SetMarcato);
+    createPositionPropertyCommand(myMarcatoCommand, tr("Accent"), "Note.Accent",
+                                  Qt::Key_A, Position::Marcato);
 
-    sforzandoAct = new Command(tr("Heavy Accent"), "Note.HeavyAccent", QKeySequence(), this);
-    sforzandoAct->setCheckable(true);
-    connectToggleProperty<Position>(sforzandoAct, &getSelectedPositions,
-                                    &Position::HasSforzando, &Position::SetSforzando);
+    createPositionPropertyCommand(mySforzandoCommand, tr("Heavy Accent"),
+                                  "Note.HeavyAccent", QKeySequence(),
+                                  Position::Sforzando);
 
-#endif
     // Octave actions
     createNotePropertyCommand(myOctave8vaCommand, tr("8va"), "Note.Octave8va",
                               QKeySequence(), Note::Octave8va);
@@ -1552,15 +1542,13 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myGhostNoteCommand);
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(myLetRingCommand);
-#if 0
-    myNotesMenu->addAction(fermataAct);
-#endif
+    myNotesMenu->addAction(myFermataCommand);
+    myNotesMenu->addAction(myGraceNoteCommand);
+    myNotesMenu->addAction(myStaccatoCommand);
+    myNotesMenu->addAction(myMarcatoCommand);
+    myNotesMenu->addAction(mySforzandoCommand);
     myNotesMenu->addSeparator();
-#if 0
-    myNotesMenu->addActions(QList<QAction*>() << graceNoteAct << staccatoNoteAct <<
-                          marcatoAct << sforzandoAct);
 
-#endif
     myOctaveMenu = myNotesMenu->addMenu(tr("Octave"));
     myOctaveMenu->addActions(QList<QAction*>() << myOctave8vaCommand << myOctave15maCommand
                            << myOctave8vbCommand << myOctave15mbCommand);
@@ -1848,9 +1836,15 @@ void PowerTabEditor::updateCommands()
     myAddDotCommand->setEnabled(!pos->hasProperty(Position::DoubleDotted));
     myRemoveDotCommand->setEnabled(pos->hasProperty(Position::Dotted) ||
                              pos->hasProperty(Position::DoubleDotted));
+
     updateNoteProperty(myMutedCommand, note, Note::Muted);
     updateNoteProperty(myGhostNoteCommand, note, Note::GhostNote);
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
+    updatePositionProperty(myFermataCommand, pos, Position::Fermata);
+    updatePositionProperty(myGraceNoteCommand, pos, Position::Acciaccatura);
+    updatePositionProperty(myStaccatoCommand, pos, Position::Staccato);
+    updatePositionProperty(myMarcatoCommand, pos, Position::Marcato);
+    updatePositionProperty(mySforzandoCommand, pos, Position::Sforzando);
 
     updateNoteProperty(myOctave8vaCommand, note, Note::Octave8va);
     updateNoteProperty(myOctave8vbCommand, note, Note::Octave8vb);

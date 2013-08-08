@@ -97,6 +97,16 @@ void Position::setProperty(SimpleProperty property, bool set)
             mySimpleProperties.set(DoubleDotted, false);
         if (property == DoubleDotted && hasProperty(Dotted))
             mySimpleProperties.set(Dotted, false);
+
+        if (property == Marcato && hasProperty(Sforzando))
+            mySimpleProperties.set(Sforzando, false);
+        if (property == Sforzando && hasProperty(Marcato))
+            mySimpleProperties.set(Marcato, false);
+
+        if (property == TripletFeelFirst && hasProperty(TripletFeelSecond))
+            mySimpleProperties.set(TripletFeelSecond, false);
+        if (property == TripletFeelSecond && hasProperty(TripletFeelFirst))
+            mySimpleProperties.set(TripletFeelFirst, false);
     }
 
     mySimpleProperties.set(property, set);
