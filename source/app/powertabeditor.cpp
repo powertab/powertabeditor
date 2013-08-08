@@ -551,6 +551,50 @@ void PowerTabEditor::changeNoteDuration(bool increase)
     myUndoManager->endMacro();
 }
 
+void PowerTabEditor::addDot()
+{
+    ScoreLocation &location = getLocation();
+    const Position *pos = location.getPosition();
+    Q_ASSERT(pos);
+
+    if (pos->hasProperty(Position::Dotted))
+    {
+        myUndoManager->push(new AddPositionProperty(
+                                location, Position::DoubleDotted,
+                                myDoubleDottedCommand->text()),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        myUndoManager->push(new AddPositionProperty(
+                                location, Position::Dotted,
+                                myDottedCommand->text()),
+                            location.getSystemIndex());
+    }
+}
+
+void PowerTabEditor::removeDot()
+{
+    ScoreLocation &location = getLocation();
+    const Position *pos = location.getPosition();
+    Q_ASSERT(pos);
+
+    if (pos->hasProperty(Position::DoubleDotted))
+    {
+        myUndoManager->push(new AddPositionProperty(
+                                location, Position::Dotted,
+                                myDottedCommand->text()),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        myUndoManager->push(new RemovePositionProperty(
+                                location, Position::Dotted,
+                                myDottedCommand->text()),
+                            location.getSystemIndex());
+    }
+}
+
 void PowerTabEditor::editRehearsalSign()
 {
     const ScoreLocation &location = getLocation();
@@ -1047,10 +1091,15 @@ void PowerTabEditor::createCommands()
     createPositionPropertyCommand(myDoubleDottedCommand, tr("Double Dotted"),
                                   "Note.DoubleDotted", QKeySequence(),
                                   Position::DoubleDotted);
-#if 0
-    addDotAct = new Command(tr("Add Dot"), "Note.AddDot", Qt::SHIFT + Qt::Key_Right, this);
-    removeDotAct = new Command(tr("Remove Dot"), "Note.RemoveDot", Qt::SHIFT + Qt::Key_Left, this);
 
+    myAddDotCommand = new Command(tr("Add Dot"), "Note.AddDot",
+                            Qt::SHIFT + Qt::Key_Right, this);
+    connect(myAddDotCommand, SIGNAL(triggered()), this, SLOT(addDot()));
+
+    myRemoveDotCommand = new Command(tr("Remove Dot"), "Note.RemoveDot",
+                               Qt::SHIFT + Qt::Key_Left, this);
+    connect(myRemoveDotCommand, SIGNAL(triggered()), this, SLOT(removeDot()));
+#if 0
     tiedNoteAct = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
@@ -1492,10 +1541,10 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myDottedCommand);
     myNotesMenu->addAction(myDoubleDottedCommand);
     myNotesMenu->addSeparator();
-#if 0
-    myNotesMenu->addAction(addDotAct);
-    myNotesMenu->addAction(removeDotAct);
+    myNotesMenu->addAction(myAddDotCommand);
+    myNotesMenu->addAction(myRemoveDotCommand);
     myNotesMenu->addSeparator();
+#if 0
     myNotesMenu->addAction(tiedNoteAct);
     myNotesMenu->addSeparator();
 #endif
@@ -1796,6 +1845,9 @@ void PowerTabEditor::updateCommands()
 
     updatePositionProperty(myDottedCommand, pos, Position::Dotted);
     updatePositionProperty(myDoubleDottedCommand, pos, Position::DoubleDotted);
+    myAddDotCommand->setEnabled(!pos->hasProperty(Position::DoubleDotted));
+    myRemoveDotCommand->setEnabled(pos->hasProperty(Position::Dotted) ||
+                             pos->hasProperty(Position::DoubleDotted));
     updateNoteProperty(myMutedCommand, note, Note::Muted);
     updateNoteProperty(myGhostNoteCommand, note, Note::GhostNote);
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);

@@ -92,6 +92,11 @@ void Position::setProperty(SimpleProperty property, bool set)
             mySimpleProperties.set(ArpeggioDown, false);
         if (property == ArpeggioDown && hasProperty(ArpeggioUp))
             mySimpleProperties.set(ArpeggioUp, false);
+
+        if (property == Dotted && hasProperty(DoubleDotted))
+            mySimpleProperties.set(DoubleDotted, false);
+        if (property == DoubleDotted && hasProperty(Dotted))
+            mySimpleProperties.set(Dotted, false);
     }
 
     mySimpleProperties.set(property, set);

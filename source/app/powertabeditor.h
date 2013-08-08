@@ -132,6 +132,10 @@ private slots:
     void updateNoteDuration(Position::DurationType duration);
     /// Increase or decrease the current note duration.
     void changeNoteDuration(bool increase);
+    /// Adds a dot to the current position's duration.
+    void addDot();
+    /// Removes a dot from the current position's duration.
+    void removeDot();
 
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
@@ -286,6 +290,8 @@ private:
     Command *myDecreaseDurationCommand;
     Command *myDottedCommand;
     Command *myDoubleDottedCommand;
+    Command *myAddDotCommand;
+    Command *myRemoveDotCommand;
     Command *myMutedCommand;
     Command *myGhostNoteCommand;
     Command *myLetRingCommand;
@@ -412,8 +418,6 @@ private:
     QMenu* textMenu;
     Command* chordNameAct; // add/remove a chord name
 
-    Command* addDotAct;
-    Command* removeDotAct;
     Command* tiedNoteAct; // sets a note to be tied to the previous note
     Command* fermataAct; // set a position as fermata
     Command* graceNoteAct;
