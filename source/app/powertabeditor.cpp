@@ -1900,8 +1900,8 @@ void PowerTabEditor::onDocumentOpenedOrClosed(bool hasOpenDocuments)
     QList<QMenu *> menuList;
     menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu <<
                 mySectionMenu << myLineSpacingMenu << myNotesMenu <<
-                myOctaveMenu << myMusicSymbolsMenu << myTabSymbolsMenu <<
-                myPlayerMenu << myWindowMenu;
+                myOctaveMenu << myRestsMenu << myMusicSymbolsMenu <<
+                myTabSymbolsMenu << myPlayerMenu << myWindowMenu;
 
     foreach(QMenu *menu, menuList)
     {
