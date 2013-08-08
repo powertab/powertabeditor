@@ -1058,18 +1058,12 @@ void PowerTabEditor::createCommands()
     tiedNoteAct = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
     tiedNoteAct->setCheckable(true);
     connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
-
-    noteMutedAct = new Command(tr("Muted"), "Note.Muted",
-                               QKeySequence(Qt::Key_X), this);
-    noteMutedAct->setCheckable(true);
-    connectToggleProperty<Note>(noteMutedAct, &getSelectedNotes,
-                                &Note::IsMuted, &Note::SetMuted);
-
-    ghostNoteAct = new Command(tr("Ghost Note"), "Note.GhostNote", Qt::Key_G, this);
-    ghostNoteAct->setCheckable(true);
-    connectToggleProperty<Note>(ghostNoteAct, &getSelectedNotes,
-                                &Note::IsGhostNote, &Note::SetGhostNote);
-
+#endif
+    createNotePropertyCommand(myMutedCommand, tr("Muted"), "Note.Muted",
+                              Qt::Key_X, Note::Muted);
+    createNotePropertyCommand(myGhostNoteCommand, tr("Ghost Note"),
+                              "Note.GhostNote", Qt::Key_G, Note::GhostNote);
+#if 0
     fermataAct = new Command(tr("Fermata"), "Note.Fermata", Qt::Key_F, this);
     fermataAct->setCheckable(true);
     connectToggleProperty<Position>(fermataAct, &getSelectedPositions,
@@ -1106,34 +1100,15 @@ void PowerTabEditor::createCommands()
 
 #endif
     // Octave actions
-    myOctave8vaCommand = new Command(tr("8va"), "Note.Octave8va",
-                                     QKeySequence(), this);
-    myOctave8vaCommand->setCheckable(true);
-    sigfwd::connect(myOctave8vaCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
-                                myOctave8vaCommand, Note::Octave8va));
-
-    myOctave15maCommand = new Command(tr("15ma"), "Note.Octave15ma",
-                                      QKeySequence(), this);
-    myOctave15maCommand->setCheckable(true);
-    sigfwd::connect(myOctave15maCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
-                                myOctave15maCommand, Note::Octave15ma));
-
-    myOctave8vbCommand = new Command(tr("8vb"), "Note.Octave8vb",
-                                     QKeySequence(), this);
-    myOctave8vbCommand->setCheckable(true);
-    sigfwd::connect(myOctave8vbCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
-                                myOctave8vbCommand, Note::Octave8vb));
-
-    myOctave15mbCommand = new Command(tr("15mb"), "Note.Octave15mb",
-                                      QKeySequence(), this);
-    myOctave15mbCommand->setCheckable(true);
-    sigfwd::connect(myOctave15mbCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleNoteProperty, this,
-                                myOctave15mbCommand, Note::Octave15mb));
-
+    createNotePropertyCommand(myOctave8vaCommand, tr("8va"), "Note.Octave8va",
+                              QKeySequence(), Note::Octave8va);
+    createNotePropertyCommand(myOctave15maCommand, tr("15ma"), "Note.Octave15ma",
+                              QKeySequence(), Note::Octave15ma);
+    createNotePropertyCommand(myOctave8vbCommand, tr("8vb"), "Note.Octave8vb",
+                              QKeySequence(), Note::Octave8vb);
+    createNotePropertyCommand(myOctave15mbCommand, tr("15mb"),
+                              "Octave15mb.Octave8va", QKeySequence(),
+                              Note::Octave15mb);
 #if 0
     tripletAct = new Command(tr("Triplet"), "Note.Triplet", Qt::Key_E, this);
     tripletAct->setCheckable(true);
@@ -1260,14 +1235,9 @@ void PowerTabEditor::createCommands()
     hammerPullAct->setCheckable(true);
     connect(hammerPullAct, SIGNAL(triggered()), this, SLOT(editHammerPull()));
 #endif
-    myNaturalHarmonicCommand = new Command(tr("Natural Harmonic"),
-                                           "TabSymbols.NaturalHarmonic",
-                                           QKeySequence(), this);
-    myNaturalHarmonicCommand->setCheckable(true);
-    sigfwd::connect(myNaturalHarmonicCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleNoteProperty,
-                                this, myNaturalHarmonicCommand,
-                                Note::NaturalHarmonic));
+    createNotePropertyCommand(myNaturalHarmonicCommand, tr("Natural Harmonic"),
+                              "TabSymbols.NaturalHarmonic", QKeySequence(),
+                              Note::NaturalHarmonic);
 #if 0
     artificialHarmonicAct = new Command(tr("Artificial Harmonic..."),
             "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
@@ -1439,6 +1409,17 @@ void PowerTabEditor::createNoteDurationCommand(
     myNoteDurationGroup->addAction(command);
 }
 
+void PowerTabEditor::createNotePropertyCommand(
+        Command *&command, const QString &menuName, const QString &commandName,
+        const QKeySequence &shortcut, Note::SimpleProperty property)
+{
+    command = new Command(menuName, commandName, shortcut, this);
+    command->setCheckable(true);
+    sigfwd::connect(command, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimpleNoteProperty,
+                                this, command, property));
+}
+
 void PowerTabEditor::createMenus()
 {
     // File Menu.
@@ -1553,11 +1534,10 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(tiedNoteAct);
     myNotesMenu->addSeparator();
-    myNotesMenu->addAction(noteMutedAct);
-    myNotesMenu->addSeparator();
-    myNotesMenu->addAction(ghostNoteAct);
-    myNotesMenu->addSeparator();
 #endif
+    myNotesMenu->addAction(myMutedCommand);
+    myNotesMenu->addAction(myGhostNoteCommand);
+    myNotesMenu->addSeparator();
     myNotesMenu->addAction(myLetRingCommand);
 #if 0
     myNotesMenu->addAction(fermataAct);
@@ -1850,6 +1830,8 @@ void PowerTabEditor::updateCommands()
     myIncreaseDurationCommand->setEnabled(durationType != Position::WholeNote);
     myDecreaseDurationCommand->setEnabled(durationType != Position::SixtyFourthNote);
 
+    updateNoteProperty(myMutedCommand, note, Note::Muted);
+    updateNoteProperty(myGhostNoteCommand, note, Note::GhostNote);
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
 
     updateNoteProperty(myOctave8vaCommand, note, Note::Octave8va);

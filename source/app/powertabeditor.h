@@ -168,6 +168,12 @@ private:
     void createNoteDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
                                    Position::DurationType durationType);
+    /// Helper function to create a command for toggling a simple note
+    /// property.
+    void createNotePropertyCommand(Command *&command, const QString &menuName,
+                                   const QString &commandName,
+                                   const QKeySequence &shortcut,
+                                   Note::SimpleProperty property);
     /// Set up the menus for the application.
     void createMenus();
     /// Create the tab widget and score area.
@@ -189,7 +195,8 @@ private:
     void editBarline(const ScoreLocation &barLocation);
 
     /// Toggles a simple position property.
-    void editSimplePositionProperty(Command *command, Position::SimpleProperty property);
+    void editSimplePositionProperty(Command *command,
+                                    Position::SimpleProperty property);
     /// Toggles a simple note property.
     void editSimpleNoteProperty(Command *command, Note::SimpleProperty property);
 
@@ -269,7 +276,9 @@ private:
     Command *myThirtySecondNoteCommand;
     Command *mySixtyFourthNoteCommand;
     Command *myIncreaseDurationCommand;
-    Command *myDecreaseDurationCommand;
+    Command *myDecreaseDurationCommand;    
+    Command *myMutedCommand;
+    Command *myGhostNoteCommand;
     Command *myLetRingCommand;
     QMenu *myOctaveMenu;
     Command *myOctave8vaCommand;
@@ -399,8 +408,6 @@ private:
     Command* addDotAct;
     Command* removeDotAct;
     Command* tiedNoteAct; // sets a note to be tied to the previous note
-    Command* noteMutedAct; // sets the note to be muted
-    Command* ghostNoteAct; // set a note to be a ghost note
     Command* fermataAct; // set a position as fermata
     Command* graceNoteAct;
     Command* staccatoNoteAct; // set the notes of a position to be staccato
