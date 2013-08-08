@@ -283,7 +283,9 @@ private:
     Command *myThirtySecondNoteCommand;
     Command *mySixtyFourthNoteCommand;
     Command *myIncreaseDurationCommand;
-    Command *myDecreaseDurationCommand;    
+    Command *myDecreaseDurationCommand;
+    Command *myDottedCommand;
+    Command *myDoubleDottedCommand;
     Command *myMutedCommand;
     Command *myGhostNoteCommand;
     Command *myLetRingCommand;
@@ -410,8 +412,6 @@ private:
     QMenu* textMenu;
     Command* chordNameAct; // add/remove a chord name
 
-    Command* dottedNoteAct; // sets a note to be dotted
-    Command* doubleDottedNoteAct;
     Command* addDotAct;
     Command* removeDotAct;
     Command* tiedNoteAct; // sets a note to be tied to the previous note

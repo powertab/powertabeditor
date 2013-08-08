@@ -1041,17 +1041,13 @@ void PowerTabEditor::createCommands()
     sigfwd::connect(myDecreaseDurationCommand, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::changeNoteDuration, this, false));
 
+    createPositionPropertyCommand(myDottedCommand, tr("Dotted"), "Note.Dotted",
+                                  QKeySequence(), Position::Dotted);
+
+    createPositionPropertyCommand(myDoubleDottedCommand, tr("Double Dotted"),
+                                  "Note.DoubleDotted", QKeySequence(),
+                                  Position::DoubleDotted);
 #if 0
-    dottedNoteAct = new Command(tr("Dotted"), "Note.Dotted", QKeySequence(), this);
-    dottedNoteAct->setCheckable(true);
-    connectToggleProperty<Position>(dottedNoteAct, &getSelectedPositions,
-                                    &Position::IsDotted, &Position::SetDotted);
-
-    doubleDottedNoteAct = new Command(tr("Double Dotted"), "Note.DoubleDotted", QKeySequence(), this);
-    doubleDottedNoteAct->setCheckable(true);
-    connectToggleProperty<Position>(doubleDottedNoteAct, &getSelectedPositions,
-                                    &Position::IsDoubleDotted, &Position::SetDoubleDotted);
-
     addDotAct = new Command(tr("Add Dot"), "Note.AddDot", Qt::SHIFT + Qt::Key_Right, this);
     removeDotAct = new Command(tr("Remove Dot"), "Note.RemoveDot", Qt::SHIFT + Qt::Key_Left, this);
 
@@ -1493,10 +1489,10 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myIncreaseDurationCommand);
     myNotesMenu->addAction(myDecreaseDurationCommand);
     myNotesMenu->addSeparator();
-#if 0
-    myNotesMenu->addAction(dottedNoteAct);
-    myNotesMenu->addAction(doubleDottedNoteAct);
+    myNotesMenu->addAction(myDottedCommand);
+    myNotesMenu->addAction(myDoubleDottedCommand);
     myNotesMenu->addSeparator();
+#if 0
     myNotesMenu->addAction(addDotAct);
     myNotesMenu->addAction(removeDotAct);
     myNotesMenu->addSeparator();
@@ -1798,6 +1794,8 @@ void PowerTabEditor::updateCommands()
     myIncreaseDurationCommand->setEnabled(durationType != Position::WholeNote);
     myDecreaseDurationCommand->setEnabled(durationType != Position::SixtyFourthNote);
 
+    updatePositionProperty(myDottedCommand, pos, Position::Dotted);
+    updatePositionProperty(myDoubleDottedCommand, pos, Position::DoubleDotted);
     updateNoteProperty(myMutedCommand, note, Note::Muted);
     updateNoteProperty(myGhostNoteCommand, note, Note::GhostNote);
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
