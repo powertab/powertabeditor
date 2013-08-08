@@ -174,6 +174,13 @@ private:
                                    const QString &commandName,
                                    const QKeySequence &shortcut,
                                    Note::SimpleProperty property);
+    /// Helper function to create a command for toggling a simple position
+    /// property.
+    void createPositionPropertyCommand(Command *&command,
+                                       const QString &menuName,
+                                       const QString &commandName,
+                                       const QKeySequence &shortcut,
+                                       Position::SimpleProperty property);
     /// Set up the menus for the application.
     void createMenus();
     /// Create the tab widget and score area.

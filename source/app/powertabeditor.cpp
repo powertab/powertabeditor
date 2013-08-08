@@ -1070,12 +1070,9 @@ void PowerTabEditor::createCommands()
                                     &Position::HasFermata, &Position::SetFermata);
 
 #endif
-    myLetRingCommand = new Command(tr("Let Ring"), "Note.LetRing",
-                                   QKeySequence(), this);
-    myLetRingCommand->setCheckable(true);
-    sigfwd::connect(myLetRingCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myLetRingCommand, Position::LetRing));
+    createPositionPropertyCommand(myLetRingCommand, tr("Let Ring"),
+                                  "Note.LetRing", QKeySequence(),
+                                  Position::LetRing);
 #if 0
 
     graceNoteAct = new Command(tr("Grace Note"), "Note.GraceNote", QKeySequence(), this);
@@ -1262,85 +1259,45 @@ void PowerTabEditor::createCommands()
     sigfwd::connect(legatoSlideAct, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfLegatoSlide));
 #endif
-    myVibratoCommand = new Command(tr("Vibrato"), "TabSymbols.Vibrato",
-                                   Qt::Key_V, this);
-    myVibratoCommand->setCheckable(true);
-    sigfwd::connect(myVibratoCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myVibratoCommand, Position::Vibrato));
+    createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
+                                  "TabSymbols.Vibrato", Qt::Key_V,
+                                  Position::Vibrato);
 
-    myWideVibratoCommand = new Command(tr("Wide Vibrato"),
-                                       "TabSymbols.WideVibrato", Qt::Key_W,
-                                       this);
-    myWideVibratoCommand->setCheckable(true);
-    sigfwd::connect(myWideVibratoCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myWideVibratoCommand,
-                                Position::WideVibrato));
+    createPositionPropertyCommand(myWideVibratoCommand, tr("Wide Vibrato"),
+                                  "TabSymbols.WideVibrato", Qt::Key_W,
+                                  Position::WideVibrato);
 
-    myPalmMuteCommand = new Command(tr("Palm Mute"), "TabSymbols.PalmMute",
-                                    Qt::Key_M, this);
-    myPalmMuteCommand->setCheckable(true);
-    sigfwd::connect(myPalmMuteCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myPalmMuteCommand, Position::PalmMuting));
+    createPositionPropertyCommand(myPalmMuteCommand, tr("Palm Mute"),
+                                  "TabSymbols.PalmMute", Qt::Key_M,
+                                  Position::PalmMuting);
 
-    myTremoloPickingCommand = new Command(tr("Tremolo Picking"),
-                                          "TabSymbols.TremoloPicking",
-                                          QKeySequence(), this);
-    myTremoloPickingCommand->setCheckable(true);
-    sigfwd::connect(myTremoloPickingCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myTremoloPickingCommand,
-                                Position::TremoloPicking));
+    createPositionPropertyCommand(myTremoloPickingCommand, tr("Tremolo Picking"),
+                                  "TabSymbols.TremoloPicking", QKeySequence(),
+                                  Position::TremoloPicking);
 
-    myArpeggioUpCommand = new Command(tr("Arpeggio Up"),
-                                      "TabSymbols.ArpeggioUp", QKeySequence(),
-                                      this);
-    myArpeggioUpCommand->setCheckable(true);
-    sigfwd::connect(myArpeggioUpCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myArpeggioUpCommand,
-                                Position::ArpeggioUp));
+    createPositionPropertyCommand(myArpeggioUpCommand, tr("Arpeggio Up"),
+                                  "TabSymbols.ArpeggioUp", QKeySequence(),
+                                  Position::ArpeggioUp);
 
-    myArpeggioDownCommand = new Command(tr("Arpeggio Down"),
-                                        "TabSymbols.ArpeggioDown",
-                                        QKeySequence(), this);
-    myArpeggioDownCommand->setCheckable(true);
-    sigfwd::connect(myArpeggioDownCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myArpeggioDownCommand,
-                                Position::ArpeggioDown));
+    createPositionPropertyCommand(myArpeggioDownCommand, tr("Arpeggio Down"),
+                                  "TabSymbols.ArpeggioDown", QKeySequence(),
+                                  Position::ArpeggioDown);
 
-    myTapCommand = new Command(tr("Tap"), "TabSymbols.Tap", Qt::Key_P, this);
-    myTapCommand->setCheckable(true);
-    sigfwd::connect(myTapCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myTapCommand, Position::Tap));
+    createPositionPropertyCommand(myTapCommand, tr("Tap"), "TabSymbols.Tap",
+                                  Qt::Key_P, Position::Tap);
 
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
                                  QKeySequence(), this);
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, SIGNAL(triggered()), this, SLOT(editTrill()));
 
-    myPickStrokeUpCommand = new Command(tr("Pickstroke Up"),
-                                        "TabSymbols.PickstrokeUp",
-                                        QKeySequence(), this);
-    myPickStrokeUpCommand->setCheckable(true);
-    sigfwd::connect(myPickStrokeUpCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myPickStrokeUpCommand,
-                                Position::PickStrokeUp));
+    createPositionPropertyCommand(myPickStrokeUpCommand, tr("Pickstroke Up"),
+                                  "TabSymbols.PickStrokeUp", QKeySequence(),
+                                  Position::PickStrokeUp);
 
-    myPickStrokeDownCommand = new Command(tr("Pickstroke Down"),
-                                          "TabSymbols.PickStrokeDown",
-                                          QKeySequence(), this);
-    myPickStrokeDownCommand->setCheckable(true);
-    sigfwd::connect(myPickStrokeDownCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, myPickStrokeDownCommand,
-                                Position::PickStrokeDown));
-
+    createPositionPropertyCommand(myPickStrokeDownCommand, tr("Pickstroke Down"),
+                                  "TabSymbols.PickStrokeDown", QKeySequence(),
+                                  Position::PickStrokeDown);
 #if 0
     // Slide Into Menu
     slideIntoFromAboveAct = new Command(tr("Slide Into From Above"), "SlideInto.FromAbove",
@@ -1417,6 +1374,17 @@ void PowerTabEditor::createNotePropertyCommand(
     command->setCheckable(true);
     sigfwd::connect(command, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::editSimpleNoteProperty,
+                                this, command, property));
+}
+
+void PowerTabEditor::createPositionPropertyCommand(
+        Command *&command, const QString &menuName, const QString &commandName,
+        const QKeySequence &shortcut, Position::SimpleProperty property)
+{
+    command = new Command(menuName, commandName, shortcut, this);
+    command->setCheckable(true);
+    sigfwd::connect(command, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
                                 this, command, property));
 }
 
