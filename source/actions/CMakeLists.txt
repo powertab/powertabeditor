@@ -14,6 +14,7 @@ add_library(pteactions
     addplayerchange.cpp
     addpositionproperty.cpp
     addrehearsalsign.cpp
+    addrest.cpp
     addsystem.cpp
     addtappedharmonic.cpp
     #addtempomarker.cpp
@@ -29,7 +30,6 @@ add_library(pteactions
     #edithammerpull.cpp
     editkeysignature.cpp
     editnoteduration.cpp
-    #editrest.cpp
     #editslideinto.cpp
     #editslideout.cpp
     edittabnumber.cpp

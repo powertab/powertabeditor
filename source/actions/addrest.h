@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,21 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch.hpp>
+#ifndef ACTIONS_ADDREST_H
+#define ACTIONS_ADDREST_H
 
-#include <actions/editnoteduration.h>
-#include <score/note.h>
-#include "actionfixture.h"
+#include <QUndoCommand>
+#include <boost/optional.hpp>
+#include <score/position.h>
+#include <score/scorelocation.h>
 
-TEST_CASE_METHOD(ActionFixture, "Actions/EditNoteDuration", "")
+class AddRest : public QUndoCommand
 {
-    myLocation.getPosition()->setDurationType(Position::HalfNote);
+public:
+    AddRest(const ScoreLocation &location, Position::DurationType duration);
 
-    EditNoteDuration action(myLocation, Position::ThirtySecondNote, false);
+    virtual void redo();
+    virtual void undo();
 
-    action.redo();
-    REQUIRE(myLocation.getPosition()->getDurationType() == Position::ThirtySecondNote);
+private:
+    ScoreLocation myLocation;
+    boost::optional<Position> myOriginalPosition;
+    const Position::DurationType myDuration;
+};
 
-    action.undo();
-    REQUIRE(myLocation.getPosition()->getDurationType() == Position::HalfNote);
-}
+#endif

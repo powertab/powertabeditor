@@ -120,6 +120,9 @@ bool Position::isRest() const
 void Position::setRest(bool set)
 {
     setProperty(Rest, set);
+
+    if (set)
+        myNotes.clear();
 }
 
 bool Position::hasMultiBarRest() const

@@ -26,7 +26,8 @@ class EditNoteDuration : public QUndoCommand
 {
 public:
     EditNoteDuration(const ScoreLocation &location,
-                     Position::DurationType duration);
+                     Position::DurationType duration,
+                     bool forRests);
 
     virtual void redo();
     virtual void undo();

@@ -24,6 +24,7 @@
 #include <actions/addplayerchange.h>
 #include <actions/addpositionproperty.h>
 #include <actions/addrehearsalsign.h>
+#include <actions/addrest.h>
 #include <actions/addsystem.h>
 #include <actions/addtappedharmonic.h>
 #include <actions/addtrill.h>
@@ -507,7 +508,7 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
 
     if (!getLocation().getSelectedPositions().empty())
     {
-        myUndoManager->push(new EditNoteDuration(getLocation(), duration),
+        myUndoManager->push(new EditNoteDuration(getLocation(), duration, false),
                             getLocation().getSystemIndex());
     }
 }
@@ -544,7 +545,8 @@ void PowerTabEditor::changeNoteDuration(bool increase)
 
         myUndoManager->push(new EditNoteDuration(location,
                 static_cast<Position::DurationType>(increase ? duration >> 1 :
-                                                               duration << 1)),
+                                                               duration << 1),
+                                                 false),
                             location.getSystemIndex());
     }
 
@@ -593,6 +595,11 @@ void PowerTabEditor::removeDot()
                                 myDottedCommand->text()),
                             location.getSystemIndex());
     }
+}
+
+void PowerTabEditor::addRest()
+{
+    editRest(myActiveDurationType);
 }
 
 void PowerTabEditor::editRehearsalSign()
@@ -1069,9 +1076,11 @@ void PowerTabEditor::createCommands()
     createNoteDurationCommand(mySixteenthNoteCommand, tr("16th"),
                               "Note.SixteenthNote", Position::SixteenthNote);
     createNoteDurationCommand(myThirtySecondNoteCommand, tr("32nd"),
-                              "Note.ThirtySecondNote", Position::ThirtySecondNote);
+                              "Note.ThirtySecondNote",
+                              Position::ThirtySecondNote);
     createNoteDurationCommand(mySixtyFourthNoteCommand, tr("64th"),
-                              "Note.SixtyFourthNote", Position::SixtyFourthNote);
+                              "Note.SixtyFourthNote",
+                              Position::SixtyFourthNote);
 
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
                                             "Note.IncreaseDuration",
@@ -1151,57 +1160,32 @@ void PowerTabEditor::createCommands()
                                        Qt::Key_I, this);
     irregularGroupingAct->setCheckable(true);
     connect(irregularGroupingAct, SIGNAL(triggered()), this, SLOT(editIrregularGrouping()));
-
-    // Rest Actions
-    restDurationsGroup = new QActionGroup(this);
-
-    wholeRestAct = new Command(tr("Whole"), "Rests.Whole", QKeySequence(), this);
-    wholeRestAct->setCheckable(true);
-    restDurationsGroup->addAction(wholeRestAct);
-    sigfwd::connect(wholeRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, 1));
-
-    halfRestAct = new Command(tr("Half"), "Rests.Half", QKeySequence(), this);
-    halfRestAct->setCheckable(true);
-    restDurationsGroup->addAction(halfRestAct);
-    sigfwd::connect(halfRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, 2));
-
-    quarterRestAct = new Command(tr("Quarter"), "Rests.Quarter", QKeySequence(), this);
-    quarterRestAct->setCheckable(true);
-    restDurationsGroup->addAction(quarterRestAct);
-    sigfwd::connect(quarterRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, 4));
-
-    eighthRestAct = new Command(tr("8th"), "Rests.Eighth", QKeySequence(), this);
-    eighthRestAct->setCheckable(true);
-    restDurationsGroup->addAction(eighthRestAct);
-    sigfwd::connect(eighthRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, 8));
-
-    sixteenthRestAct = new Command(tr("16th"), "Rests.Sixteenth", QKeySequence(), this);
-    sixteenthRestAct->setCheckable(true);
-    restDurationsGroup->addAction(sixteenthRestAct);
-    sigfwd::connect(sixteenthRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, 16));
-
-    thirtySecondRestAct = new Command(tr("32nd"), "Rests.ThirtySecond", QKeySequence(), this);
-    thirtySecondRestAct->setCheckable(true);
-    restDurationsGroup->addAction(thirtySecondRestAct);
-    sigfwd::connect(thirtySecondRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, 32));
-
-    sixtyFourthRestAct = new Command(tr("64th"), "Rests.SixtyFourth", QKeySequence(), this);
-    sixtyFourthRestAct->setCheckable(true);
-    restDurationsGroup->addAction(sixtyFourthRestAct);
-    sigfwd::connect(sixtyFourthRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, 64));
-
-    addRestAct = new Command(tr("Add Rest"), "Rests.AddRest", QKeySequence(Qt::Key_R), this);
-    sigfwd::connect(addRestAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::addRest, this));
-
 #endif
+
+    // Rest Actions.
+    myRestDurationGroup = new QActionGroup(this);
+
+    createRestDurationCommand(myWholeRestCommand, tr("Whole"), "Rests.Whole",
+                              Position::WholeNote);
+    createRestDurationCommand(myHalfRestCommand, tr("Half"), "Rests.Half",
+                              Position::HalfNote);
+    createRestDurationCommand(myQuarterRestCommand, tr("Quarter"),
+                              "Rests.Quarter", Position::QuarterNote);
+    createRestDurationCommand(myEighthRestCommand, tr("8th"),
+                              "Rest.Eighth", Position::EighthNote);
+    createRestDurationCommand(mySixteenthRestCommand, tr("16th"),
+                              "Rest.Sixteenth", Position::SixteenthNote);
+    createRestDurationCommand(myThirtySecondRestCommand, tr("32nd"),
+                              "Rest.ThirtySecond",
+                              Position::ThirtySecondNote);
+    createRestDurationCommand(mySixtyFourthRestCommand, tr("64th"),
+                              "Rest.SixtyFourth",
+                              Position::SixtyFourthNote);
+
+    myAddRestCommand = new Command(tr("Add Rest"), "Rests.AddRest", Qt::Key_R,
+                                   this);
+    connect(myAddRestCommand, SIGNAL(triggered()), this, SLOT(addRest()));
+
     // Music Symbol Actions
     myRehearsalSignCommand = new Command(tr("Rehearsal Sign..."),
                                          "MusicSymbols.EditRehearsalSign",
@@ -1401,6 +1385,17 @@ void PowerTabEditor::createNoteDurationCommand(
     myNoteDurationGroup->addAction(command);
 }
 
+void PowerTabEditor::createRestDurationCommand(
+        Command *&command, const QString &menuName, const QString &commandName,
+        Position::DurationType durationType)
+{
+    command = new Command(menuName, commandName, QKeySequence(), this);
+    command->setCheckable(true);
+    sigfwd::connect(command, SIGNAL(triggered()),
+                    boost::bind(&PowerTabEditor::editRest, this, durationType));
+    myRestDurationGroup->addAction(command);
+}
+
 void PowerTabEditor::createNotePropertyCommand(
         Command *&command, const QString &menuName, const QString &commandName,
         const QKeySequence &shortcut, Note::SimpleProperty property)
@@ -1550,21 +1545,27 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addSeparator();
 
     myOctaveMenu = myNotesMenu->addMenu(tr("Octave"));
-    myOctaveMenu->addActions(QList<QAction*>() << myOctave8vaCommand << myOctave15maCommand
-                           << myOctave8vbCommand << myOctave15mbCommand);
+    myOctaveMenu->addAction(myOctave8vaCommand);
+    myOctaveMenu->addAction(myOctave15maCommand);
+    myOctaveMenu->addAction(myOctave8vbCommand);
+    myOctaveMenu->addAction(myOctave15mbCommand);
 #if 0
     myNotesMenu->addAction(tripletAct);
     myNotesMenu->addAction(irregularGroupingAct);
-
-    // Rests Menu
-    restsMenu = menuBar()->addMenu(tr("Rests"));
-    restsMenu->addActions(QList<QAction*>() << wholeRestAct << halfRestAct <<
-                          quarterRestAct << eighthRestAct << sixteenthRestAct <<
-                          thirtySecondRestAct << sixtyFourthRestAct);
-    restsMenu->addSeparator();
-    restsMenu->addAction(addRestAct);
-
 #endif
+
+    // Rests Menu.
+    myRestsMenu = menuBar()->addMenu(tr("Rests"));
+    myRestsMenu->addAction(myWholeRestCommand);
+    myRestsMenu->addAction(myHalfRestCommand);
+    myRestsMenu->addAction(myQuarterRestCommand);
+    myRestsMenu->addAction(myEighthRestCommand);
+    myRestsMenu->addAction(mySixteenthRestCommand);
+    myRestsMenu->addAction(myThirtySecondRestCommand);
+    myRestsMenu->addAction(mySixtyFourthRestCommand);
+    myRestsMenu->addSeparator();
+    myRestsMenu->addAction(myAddRestCommand);
+
     // Music Symbols Menu.
     myMusicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     myMusicSymbolsMenu->addAction(myRehearsalSignCommand);
@@ -1833,9 +1834,9 @@ void PowerTabEditor::updateCommands()
 
     updatePositionProperty(myDottedCommand, pos, Position::Dotted);
     updatePositionProperty(myDoubleDottedCommand, pos, Position::DoubleDotted);
-    myAddDotCommand->setEnabled(!pos->hasProperty(Position::DoubleDotted));
-    myRemoveDotCommand->setEnabled(pos->hasProperty(Position::Dotted) ||
-                             pos->hasProperty(Position::DoubleDotted));
+    myAddDotCommand->setEnabled(pos && !pos->hasProperty(Position::DoubleDotted));
+    myRemoveDotCommand->setEnabled(pos && (pos->hasProperty(Position::Dotted) ||
+                             pos->hasProperty(Position::DoubleDotted)));
 
     updateNoteProperty(myMutedCommand, note, Note::Muted);
     updateNoteProperty(myGhostNoteCommand, note, Note::GhostNote);
@@ -1915,6 +1916,31 @@ void PowerTabEditor::onDocumentOpenedOrClosed(bool hasOpenDocuments)
 #if 0
     addGuitarAct->setEnabled(enable);
 #endif
+}
+
+void PowerTabEditor::editRest(Position::DurationType duration)
+{
+    ScoreLocation &location = getLocation();
+    const Position *pos = location.getPosition();
+
+    if (pos && pos->isRest())
+    {
+        if (pos->getDurationType() == duration)
+        {
+            // TODO - delete rest using the regular command for deleting positions.
+        }
+        else
+        {
+            myUndoManager->push(new EditNoteDuration(location, duration, true),
+                                location.getSystemIndex());
+        }
+    }
+    else
+    {
+        myUndoManager->push(new AddRest(location, duration),
+                            location.getSystemIndex());
+
+    }
 }
 
 void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
@@ -2846,23 +2872,6 @@ void PowerTabEditor::updateLocationLabel()
 {
     getCurrentPlaybackWidget()->updateLocationLabel(
                 getCurrentScoreArea()->getCaret()->toString());
-}
-
-void PowerTabEditor::addRest()
-{
-    editRest(activeDuration);
-}
-
-void PowerTabEditor::editRest(uint8_t duration)
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Position* currentPosition = caret->getCurrentPosition();
-    System::StaffPtr currentStaff = caret->getCurrentStaff();
-    const uint32_t currentVoice = caret->getCurrentVoice();
-    const uint32_t currentPositionIndex = caret->getCurrentPositionIndex();
-
-    undoManager->push(new EditRest(currentPosition, currentStaff, currentPositionIndex, currentVoice, duration),
-                      caret->getCurrentSystemIndex());
 }
 
 void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)

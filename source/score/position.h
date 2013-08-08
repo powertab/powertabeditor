@@ -89,7 +89,8 @@ public:
 
     /// Returns whether the position is a rest.
     bool isRest() const;
-    /// Sets whether the position is a rest.
+    /// Sets whether the position is a rest. If a rest is being set, all
+    /// existing notes will be removed.
     void setRest(bool set = true);
 
     /// Returns whether the position has a multi-bar rest.

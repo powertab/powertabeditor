@@ -137,6 +137,9 @@ private slots:
     /// Removes a dot from the current position's duration.
     void removeDot();
 
+    /// Inserts a rest at the current location.
+    void addRest();
+
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
     /// Edits the key signature at the caret's current location.
@@ -172,6 +175,10 @@ private:
     void createNoteDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
                                    Position::DurationType durationType);
+    /// Helper function to create a rest duration command.
+    void createRestDurationCommand(Command *&command, const QString &menuName,
+                                   const QString &commandName,
+                                   Position::DurationType durationType);
     /// Helper function to create a command for toggling a simple note
     /// property.
     void createNotePropertyCommand(Command *&command, const QString &menuName,
@@ -199,6 +206,9 @@ private:
     /// When a document is opened or closed, enable/disable menu items if
     /// necessary.
     void onDocumentOpenedOrClosed(bool hasOpenDocuments);
+
+    /// Adds or removes a rest at the current location.
+    void editRest(Position::DurationType duration);
 
     /// Edits the key signature at the given location.
     void editKeySignature(const ScoreLocation &location);
@@ -304,7 +314,19 @@ private:
     Command *myOctave8vaCommand;
     Command *myOctave15maCommand;
     Command *myOctave8vbCommand;
-    Command *myOctave15mbCommand;
+    Command *myOctave15mbCommand;    
+
+    QMenu *myRestsMenu;
+    /// Used to ensure that only one duration option is checked at a time.
+    QActionGroup *myRestDurationGroup;
+    Command *myWholeRestCommand;
+    Command *myHalfRestCommand;
+    Command *myQuarterRestCommand;
+    Command *myEighthRestCommand;
+    Command *mySixteenthRestCommand;
+    Command *myThirtySecondRestCommand;
+    Command *mySixtyFourthRestCommand;
+    Command *myAddRestCommand;
 
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
@@ -349,7 +371,6 @@ private:
     void editSlideInto(uint8_t newSlideIntoType);
     void editSlideOutOf(uint8_t newSlideType);
     void shiftTabNumber(int direction);
-    void addRest();
     void editRest(uint8_t duration);
     void editTimeSignature(const SystemLocation &location);
 
@@ -426,17 +447,6 @@ private:
     Command* tiedNoteAct; // sets a note to be tied to the previous note
     Command* tripletAct;
     Command* irregularGroupingAct;
-
-    QMenu* restsMenu;
-    QActionGroup* restDurationsGroup; // allow only one rest duration to be selected at a time
-    Command* wholeRestAct;
-    Command* halfRestAct;
-    Command* quarterRestAct;
-    Command* eighthRestAct;
-    Command* sixteenthRestAct;
-    Command* thirtySecondRestAct;
-    Command* sixtyFourthRestAct;
-    Command* addRestAct;
 
     Command* tempoMarkerAct;
     Command* timeSignatureAct;

@@ -13,6 +13,7 @@ add_executable(pte_tests
     actions/test_addplayerchange.cpp
     actions/test_addpositionproperty.cpp
     actions/test_addrehearsalsign.cpp
+    actions/test_addrest.cpp
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
     actions/test_addtrill.cpp
@@ -23,7 +24,6 @@ add_executable(pte_tests
     #actions/test_edithammerpull.cpp
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
-    #actions/test_editrest.cpp
     #actions/test_editslideinto.cpp
     #actions/test_editslideout.cpp
     actions/test_edittabnumber.cpp

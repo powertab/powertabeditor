@@ -20,8 +20,10 @@
 #include <boost/foreach.hpp>
 
 EditNoteDuration::EditNoteDuration(const ScoreLocation &location,
-                                   Position::DurationType duration)
-    : QUndoCommand(QObject::tr("Edit Note Duration")),
+                                   Position::DurationType duration,
+                                   bool forRests)
+    : QUndoCommand(forRests ? QObject::tr("Edit Rest Duration") :
+                              QObject::tr("Edit Note Duration")),
       myLocation(location),
       myNewDuration(duration)
 {
