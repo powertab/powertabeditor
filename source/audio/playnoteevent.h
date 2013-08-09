@@ -15,36 +15,39 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef PLAYNOTEEVENT_H
-#define PLAYNOTEEVENT_H
+#ifndef AUDIO_PLAYNOTEEVENT_H
+#define AUDIO_PLAYNOTEEVENT_H
 
 #include "midievent.h"
+#include <boost/cstdint.hpp>
 
-#include <boost/shared_ptr.hpp>
-
-class Guitar;
+class Instrument;
+class Player;
 
 class PlayNoteEvent : public MidiEvent
 {
 public:
     enum VelocityType
     {
-        DEFAULT_VELOCITY = 127,
-        MUTED_VELOCITY = 60,
-        GHOST_VELOCITY = 50,
-        PALM_MUTED_VELOCITY = 112
+        DefaultVelocity = 127,
+        MutedVelocity = 60,
+        GhostVelocity = 50,
+        PalmMutedVelocity = 112
     };
 
-    PlayNoteEvent(uint8_t channel, double startTime, double duration, uint8_t pitch, uint32_t positionIndex,
-                  uint32_t systemIndex, boost::shared_ptr<const Guitar> guitar, bool isMuted, VelocityType velocity);
+    PlayNoteEvent(int channel, double startTime, double duration, uint8_t pitch,
+                  int position, int systemIndex, const Player &player,
+                  const Instrument &instrument, bool isMuted,
+                  VelocityType velocity);
 
-    void performEvent(RtMidiWrapper& sequencer) const;
+    void performEvent(MidiOutputDevice &device) const;
 
 private:
-    uint8_t pitch;
-    boost::shared_ptr<const Guitar> guitar;
-    bool isMuted;
-    VelocityType velocity;
+    const uint8_t myPitch;
+    const Player &myPlayer;
+    const Instrument &myInstrument;
+    const bool myIsMuted;
+    const VelocityType myVelocity;
 };
 
-#endif // PLAYNOTEEVENT_H
+#endif

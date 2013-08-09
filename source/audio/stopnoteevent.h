@@ -15,20 +15,22 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef STOPNOTEEVENT_H
-#define STOPNOTEEVENT_H
+#ifndef AUDIO_STOPNOTEEVENT_H
+#define AUDIO_STOPNOTEEVENT_H
 
 #include "midievent.h"
+#include <boost/cstdint.hpp>
 
 class StopNoteEvent : public MidiEvent
 {
 public:
-    StopNoteEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex, uint8_t pitch);
+    StopNoteEvent(int channel, double startTime, int position, int system,
+                  uint8_t pitch);
 
-    void performEvent(RtMidiWrapper& sequencer) const;
+    void performEvent(MidiOutputDevice &device) const;
 
 private:
-    uint8_t pitch;
+    const uint8_t myPitch;
 };
 
-#endif // STOPNOTEEVENT_H
+#endif

@@ -17,13 +17,13 @@
 
 #include "restevent.h"
 
-RestEvent::RestEvent(uint8_t channel, double startTime, double duration,
-                     uint32_t positionIndex, uint32_t systemIndex) :
-    MidiEvent(channel, startTime, duration, positionIndex, systemIndex)
+RestEvent::RestEvent(int channel, double startTime, double duration,
+                     int position, int system)
+    : MidiEvent(channel, startTime, duration, position, system)
 {
 }
 
-void RestEvent::performEvent(RtMidiWrapper &) const
+void RestEvent::performEvent(MidiOutputDevice &) const
 {
     // Do nothing.
 }

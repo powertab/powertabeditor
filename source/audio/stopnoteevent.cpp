@@ -17,24 +17,25 @@
   
 #include "stopnoteevent.h"
 
-#include <audio/rtmidiwrapper.h>
+#include <audio/midioutputdevice.h>
 
 #if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
 #endif
 
-StopNoteEvent::StopNoteEvent(uint8_t channel, double startTime, uint32_t positionIndex,
-                             uint32_t systemIndex, uint8_t pitch) :
-    MidiEvent(channel, startTime, 0, positionIndex, systemIndex),
-    pitch(pitch)
+StopNoteEvent::StopNoteEvent(int channel, double startTime, int position,
+                             int system, uint8_t pitch)
+    : MidiEvent(channel, startTime, 0, position, system),
+      myPitch(pitch)
 {
 }
 
-void StopNoteEvent::performEvent(RtMidiWrapper& sequencer) const
+void StopNoteEvent::performEvent(MidiOutputDevice &device) const
 {
 #if defined(LOG_MIDI_EVENTS)
-    qDebug() << "Stop Note: " << systemIndex << ", " << positionIndex << " at " << startTime;
+    qDebug() << "Stop Note: " << mySystem << ", " << myPosition << " at " <<
+                myStartTime;
 #endif
 
-    sequencer.stopNote(myChannel, pitch);
+    device.stopNote(myChannel, myPitch);
 }

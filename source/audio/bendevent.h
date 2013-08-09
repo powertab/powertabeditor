@@ -15,27 +15,22 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef BENDEVENT_H
-#define BENDEVENT_H
+#ifndef AUDIO_BENDEVENT_H
+#define AUDIO_BENDEVENT_H
 
 #include "midievent.h"
-
-class Note;
+#include <boost/cstdint.hpp>
 
 class BendEvent : public MidiEvent
 {
 public:
-    BendEvent(uint8_t channel, double startTime, uint32_t positionIndex,
-              uint32_t systemIndex, uint8_t bendAmount);
+    BendEvent(int channel, double startTime, int position, int system,
+              uint8_t myBendAmount);
 
-    void performEvent(RtMidiWrapper& sequencer) const;
-
-    static const uint8_t PITCH_BEND_RANGE;
-    static const uint8_t DEFAULT_BEND;
-    static const double BEND_QUARTER_TONE;
+    void performEvent(MidiOutputDevice &device) const;
 
 private:
-    const uint8_t bendAmount;
+    const uint8_t myBendAmount;
 };
 
-#endif // BENDEVENT_H
+#endif

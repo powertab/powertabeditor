@@ -17,42 +17,43 @@
   
 #include "metronomeevent.h"
 
-#include <powertabdocument/generalmidi.h>
-#include <audio/rtmidiwrapper.h>
-#include <QSettings>
 #include <app/settings.h>
+#include <audio/midioutputdevice.h>
+#include <QSettings>
+#include <score/generalmidi.h>
 
 #if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
 #endif
 
-const uint8_t MetronomeEvent::METRONOME_PITCH = midi::MIDI_NOTE_MIDDLE_C;
+static const uint8_t METRONOME_PITCH = Midi::MIDI_NOTE_MIDDLE_C;
 
-MetronomeEvent::MetronomeEvent(uint8_t channel, double startTime, double duration,
-                               uint32_t positionIndex, uint32_t systemIndex, VelocityType velocity) :
-    MidiEvent(channel, startTime, duration, positionIndex, systemIndex),
-    velocity(velocity)
+MetronomeEvent::MetronomeEvent(int channel, double startTime, double duration,
+                               int position, int system, VelocityType velocity)
+    : MidiEvent(channel, startTime, duration, position, system),
+      myVelocity(velocity)
 {
 }
 
-void MetronomeEvent::performEvent(RtMidiWrapper& sequencer) const
+void MetronomeEvent::performEvent(MidiOutputDevice &device) const
 {
 #if defined(LOG_MIDI_EVENTS)
-    qDebug() << "Metronome: " << systemIndex << ", " << positionIndex << " at " << startTime;
+    qDebug() << "Metronome: " << mySystem << ", " << myPosition << " at " <<
+                myStartTime;
 #endif
 
-    // check if the metronome has been disabled
+    // Check if the metronome has been disabled.
     QSettings settings;
 
-    VelocityType actualVelocity = velocity;
-    if (settings.value(Settings::MIDI_METRONOME_ENABLED,
-                       Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool() == false)
+    VelocityType actualVelocity = myVelocity;
+    if (!settings.value(Settings::MIDI_METRONOME_ENABLED,
+                        Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool())
     {
-        actualVelocity = METRONOME_OFF;
+        actualVelocity = MetronomeOff;
     }
 
-    sequencer.setPatch(myChannel, settings.value(Settings::MIDI_METRONOME_PRESET,
+    device.setPatch(myChannel, settings.value(Settings::MIDI_METRONOME_PRESET,
             Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
-    sequencer.setChannelMaxVolume(myChannel, midi::MAX_MIDI_CHANNEL_VOLUME);
-    sequencer.playNote(myChannel, METRONOME_PITCH, actualVelocity);
+    device.setChannelMaxVolume(myChannel, Midi::MAX_MIDI_CHANNEL_VOLUME);
+    device.playNote(myChannel, METRONOME_PITCH, actualVelocity);
 }

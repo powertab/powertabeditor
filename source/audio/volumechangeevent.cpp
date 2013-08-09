@@ -17,17 +17,17 @@
   
 #include "volumechangeevent.h"
 
-#include "rtmidiwrapper.h"
+#include <audio/midioutputdevice.h>
 
-VolumeChangeEvent::VolumeChangeEvent(uint8_t channel, double startTime,
-                                     uint32_t positionIndex, uint32_t systemIndex,
-                                     uint8_t newVolume) :
-    MidiEvent(channel, startTime, 0, positionIndex, systemIndex),
-    newVolume(newVolume)
+VolumeChangeEvent::VolumeChangeEvent(int channel, double startTime,
+                                     int position, int system,
+                                     uint8_t newVolume)
+    : MidiEvent(channel, startTime, 0, position, system),
+      myNewVolume(newVolume)
 {
 }
 
-void VolumeChangeEvent::performEvent(RtMidiWrapper& sequencer) const
+void VolumeChangeEvent::performEvent(MidiOutputDevice &device) const
 {
-    sequencer.setVolume(myChannel, newVolume);
+    device.setVolume(myChannel, myNewVolume);
 }

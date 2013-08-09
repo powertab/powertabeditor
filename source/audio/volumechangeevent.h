@@ -15,21 +15,22 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef VOLUMECHANGEEVENT_H
-#define VOLUMECHANGEEVENT_H
+#ifndef AUDIO_VOLUMECHANGEEVENT_H
+#define AUDIO_VOLUMECHANGEEVENT_H
 
 #include "midievent.h"
+#include <boost/cstdint.hpp>
 
 class VolumeChangeEvent : public MidiEvent
 {
 public:
-    VolumeChangeEvent(uint8_t channel, double startTime, uint32_t positionIndex,
-                      uint32_t systemIndex, uint8_t newVolume);
+    VolumeChangeEvent(int channel, double startTime, int position,
+                      int system, uint8_t myNewVolume);
 
-    void performEvent(RtMidiWrapper&) const;
+    void performEvent(MidiOutputDevice &device) const;
 
 private:
-    const uint8_t newVolume;
+    const uint8_t myNewVolume;
 };
 
-#endif // VOLUMECHANGEEVENT_H
+#endif

@@ -38,11 +38,11 @@ public:
     VibratoEvent(int channel, double startTime, int position, int system,
                  EventType myEventType, VibratoType myVibratoType = NormalVibrato);
 
-    void performEvent(MidiOutputDevice& device) const;
+    void performEvent(MidiOutputDevice &device) const;
 
 private:
-    EventType myEventType;
-    VibratoType myVibratoType;
+    const EventType myEventType;
+    const VibratoType myVibratoType;
 };
 
 #endif

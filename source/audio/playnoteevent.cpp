@@ -17,48 +17,43 @@
   
 #include "playnoteevent.h"
 
-#include <audio/rtmidiwrapper.h>
-#include <powertabdocument/generalmidi.h>
-#include <powertabdocument/guitar.h>
+#include <audio/midioutputdevice.h>
+#include <score/generalmidi.h>
+#include <score/instrument.h>
+#include <score/player.h>
 
 #if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
 #endif
 
-#include <qglobal.h>
-
-using boost::shared_ptr;
-
-PlayNoteEvent::PlayNoteEvent(uint8_t channel, double startTime, double duration, uint8_t pitch, uint32_t positionIndex,
-                             uint32_t systemIndex, shared_ptr<const Guitar> guitar, bool isMuted, VelocityType velocity) :
-    MidiEvent(channel, startTime, duration, positionIndex, systemIndex),
-    pitch(pitch),
-    guitar(guitar),
-    isMuted(isMuted),
-    velocity(velocity)
+PlayNoteEvent::PlayNoteEvent(int channel, double startTime, double duration,
+                             uint8_t pitch, int position, int system,
+                             const Player &player, const Instrument &instrument,
+                             bool isMuted, PlayNoteEvent::VelocityType velocity)
+    : MidiEvent(channel, startTime, duration, position, system),
+      myPitch(pitch),
+      myPlayer(player),
+      myInstrument(instrument),
+      myIsMuted(isMuted),
+      myVelocity(velocity)
 {
 }
 
-void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer) const
+void PlayNoteEvent::performEvent(MidiOutputDevice &device) const
 {
-    Q_ASSERT(guitar);
-
 #if defined(LOG_MIDI_EVENTS)
-    qDebug() << "Play Note: " << systemIndex << ", " << positionIndex << " at " << startTime;
+    qDebug() << "Play Note: " << mySystem << ", " << myPosition << " at " <<
+                myStartTime;
 #endif
 
-    // grab the patch/pan/volume immediately before playback to allow for real-time mixing
-    if (isMuted)
-    {
-        sequencer.setPatch(myChannel, midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
-    }
+    // Grab the patch/pan/volume immediately before playback to allow for
+    // real-time mixing.
+    if (myIsMuted)
+        device.setPatch(myChannel, Midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
     else
-    {
-        sequencer.setPatch(myChannel, guitar->GetPreset());
-    }
+        device.setPatch(myChannel, myInstrument.getMidiPreset());
 
-    sequencer.setPan(myChannel, guitar->GetPan());
-    sequencer.setChannelMaxVolume(myChannel, guitar->GetInitialVolume());
-
-    sequencer.playNote(myChannel, pitch, velocity);
+    device.setPan(myChannel, myPlayer.getPan());
+    device.setChannelMaxVolume(myChannel, myPlayer.getMaxVolume());
+    device.playNote(myChannel, myPitch, myVelocity);
 }

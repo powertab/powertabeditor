@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RESTEVENT_H
-#define RESTEVENT_H
+#ifndef AUDIO_RESTEVENT_H
+#define AUDIO_RESTEVENT_H
 
 #include "midievent.h"
 
@@ -25,10 +25,10 @@
 class RestEvent : public MidiEvent
 {
 public:
-    RestEvent(uint8_t channel, double startTime, double duration,
-              uint32_t positionIndex, uint32_t systemIndex);
+    RestEvent(int channel, double startTime, double duration,
+              int position, int system);
 
-    virtual void performEvent(RtMidiWrapper &sequencer) const;
+    virtual void performEvent(MidiOutputDevice &device) const;
 };
 
-#endif // RESTEVENT_H
+#endif

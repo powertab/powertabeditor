@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef METRONOMEEVENT_H
-#define METRONOMEEVENT_H
+#ifndef AUDIO_METRONOMEEVENT_H
+#define AUDIO_METRONOMEEVENT_H
 
 #include "midievent.h"
 
@@ -25,20 +25,18 @@ class MetronomeEvent : public MidiEvent
 public:
     enum VelocityType
     {
-        STRONG_ACCENT = 127,
-        WEAK_ACCENT = 80,
-        METRONOME_OFF = 0
+        StrongAccent = 127,
+        WeakAccent = 80,
+        MetronomeOff = 0
     };
 
-    static const uint8_t METRONOME_PITCH;
+    MetronomeEvent(int channel, double startTime, double duration,
+                   int position, int system, VelocityType myVelocity);
 
-    MetronomeEvent(uint8_t channel, double startTime, double duration,
-                   uint32_t positionIndex, uint32_t systemIndex, VelocityType velocity);
-
-    void performEvent(RtMidiWrapper& sequencer) const;
+    void performEvent(MidiOutputDevice &device) const;
 
 private:
-    VelocityType velocity;
+    const VelocityType myVelocity;
 };
 
-#endif // METRONOMEEVENT_H
+#endif

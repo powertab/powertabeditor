@@ -17,25 +17,25 @@
   
 #include "letringevent.h"
 
-#include <audio/rtmidiwrapper.h>
+#include <audio/midioutputdevice.h>
 
 #if defined(LOG_MIDI_EVENTS)
 #include <QDebug>
 #endif
 
-LetRingEvent::LetRingEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
-                           EventType eventType) :
-    MidiEvent(channel, startTime, 0, positionIndex, systemIndex),
-    eventType(eventType)
+LetRingEvent::LetRingEvent(int channel, double startTime, int position,
+                           int system, LetRingEvent::EventType eventType)
+    : MidiEvent(channel, startTime, 0, position, system),
+      myEventType(eventType)
 {
 }
 
-void LetRingEvent::performEvent(RtMidiWrapper& sequencer) const
+void LetRingEvent::performEvent(MidiOutputDevice &device) const
 {
 #if defined(LOG_MIDI_EVENTS)
-    qDebug() << "Let Ring " << ((eventType == LET_RING_ON) ? "On" : "Off") << ": "
-                << systemIndex << ", " << positionIndex << " at " << startTime;
+    qDebug() << "Let Ring " << ((myEventType == LET_RING_ON) ? "On" : "Off")
+             << ": " << mySystem << ", " << myPosition << " at " << myStartTime;
 #endif
 
-    sequencer.setSustain(myChannel, eventType == LET_RING_ON);
+    device.setSustain(myChannel, myEventType == LetRingOn);
 }

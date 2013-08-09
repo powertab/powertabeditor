@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef LETRINGEVENT_H
-#define LETRINGEVENT_H
+#ifndef AUDIO_LETRINGEVENT_H
+#define AUDIO_LETRINGEVENT_H
 
 #include "midievent.h"
 
@@ -25,17 +25,17 @@ class LetRingEvent : public MidiEvent
 public:
     enum EventType
     {
-        LET_RING_ON,
-        LET_RING_OFF
+        LetRingOn,
+        LetRingOff
     };
 
-    LetRingEvent(uint8_t channel, double startTime, uint32_t position, uint32_t system,
+    LetRingEvent(int channel, double startTime, int position, int system,
                  EventType eventType);
     
-    void performEvent(RtMidiWrapper& sequencer) const;
+    void performEvent(MidiOutputDevice &device) const;
     
 private:
-    const EventType eventType;
+    const EventType myEventType;
 };
 
-#endif // LETRINGEVENT_H
+#endif
