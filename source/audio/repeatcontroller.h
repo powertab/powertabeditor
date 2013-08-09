@@ -15,47 +15,56 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef REPEATCONTROLLER_H
-#define REPEATCONTROLLER_H
+#ifndef AUDIO_REPEATCONTROLLER_H
+#define AUDIO_REPEATCONTROLLER_H
 
-#include <boost/cstdint.hpp>
-#include <map>
-#include <audio/repeat.h>
-#include <audio/directionsymbol.h>
-#include <boost/shared_ptr.hpp>
-#include <boost/unordered_map.hpp>
+#include "repeat.h"
+#include <score/direction.h>
+#include <score/systemlocation.h>
 
 class Score;
 class System;
 
-/// Keeps track of repeat events during playback
+/// Keeps track of repeat events during playback.
 class RepeatController
 {
 public:
-    RepeatController(const Score* score);
+    RepeatController(const Score &score);
 
+    /// Checks if a repeat needs to be performed at the given location.
+    /// @returns True if the playback position needs to be changed, and updates
+    ///     the newLocation parameter with the new playback location.
     bool checkForRepeat(const SystemLocation &prevLocation,
-                        const SystemLocation& currentLocation,
-                        SystemLocation& newLocation);
+                        const SystemLocation &currentLocation,
+                        SystemLocation &newLocation);
 
 private:
+    /// Scans through the entire score and finds all pairs of repeat bars.
     void indexRepeats();
-    void indexDirections(uint32_t systemIndex, boost::shared_ptr<const System> system);
+    /// Scan through all of the musical directions in the system.
+    void indexDirections(int systemIndex, const System &system);
 
-    SystemLocation performMusicalDirection(uint8_t directionType);
+    SystemLocation performMusicalDirection(
+            DirectionSymbol::SymbolType directionType);
 
-    Repeat& getPreviousRepeatGroup(const SystemLocation& location);
+    /// Returns the active repeat - the last repeat with a start bar before the
+    /// given position.
+    Repeat &getPreviousRepeatGroup(const SystemLocation &location);
 
-    const Score* score;
-    uint8_t activeSymbol; ///< active musical direction symbol during playback
-
-    std::map<SystemLocation, Repeat> repeats; ///< Holds all repeats in the score
+    const Score &myScore;
+    /// The active musical direction symbol during playback.
+    DirectionSymbol::ActiveSymbolType myActiveSymbol;
+    /// Holds all repeats in the score.
+    std::map<SystemLocation, Repeat> myRepeats;
 
     typedef std::multimap<SystemLocation, DirectionSymbol> DirectionMap;
-    DirectionMap directions; ///< Stores each musical direction in the system
+    /// Stores each musical direction in the system.
+    DirectionMap myDirections;
 
-    typedef boost::unordered_map<uint8_t, SystemLocation> SymbolLocationsMap;
-    SymbolLocationsMap symbolLocations; ///< Stores the location of each music symbol (coda, etc)
+    typedef boost::unordered_map<DirectionSymbol::SymbolType, SystemLocation>
+            SymbolLocationsMap;
+    /// Stores the location of each music symbol (coda, etc).
+    SymbolLocationsMap mySymbolLocations;
 };
 
-#endif // REPEATCONTROLLER_H
+#endif

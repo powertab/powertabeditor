@@ -17,102 +17,97 @@
   
 #include "repeatcontroller.h"
 
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/alternateending.h>
-#include <powertabdocument/direction.h>
+#include <boost/foreach.hpp>
+#include <score/score.h>
 
-#include <iostream>
-#include <vector>
+/// Determines whether a direction should be performed, based on the
+/// active symbol and repeat number.
+/// If the direction's activation symbol is None, it will always be able to
+/// activate regardless of the currently active symbol.
+static bool shouldPerformDirection(const DirectionSymbol &symbol,
+        DirectionSymbol::ActiveSymbolType activeSymbol, int activeRepeat)
+{
+    return (symbol.getActiveSymbolType() == DirectionSymbol::ActiveNone ||
+            symbol.getActiveSymbolType() == activeSymbol) &&
+            symbol.getSymbolType() >= DirectionSymbol::Fine &&
+            (symbol.getRepeatNumber() == 0 ||
+             symbol.getRepeatNumber() == activeRepeat);
+}
 
-using boost::shared_ptr;
-using std::vector;
-
-RepeatController::RepeatController(const Score* score) :
-    score(score),
-    activeSymbol(Direction::activeNone)
+RepeatController::RepeatController(const Score &score)
+    : myScore(score),
+      myActiveSymbol(DirectionSymbol::ActiveNone)
 {
     indexRepeats();
 }
 
-/// Scans through the entire score and finds all of the pairs of repeat bars
 void RepeatController::indexRepeats()
 {
-    // add start of score as the first repeat
-    const SystemLocation scoreStartLocation(0, 0);
-    repeats.insert(std::make_pair(scoreStartLocation, Repeat(scoreStartLocation)));
+    // Add start of score as the first repeat.
+    const SystemLocation scoreStart(0, 0);
+    myRepeats.insert(std::make_pair(scoreStart, Repeat(scoreStart)));
 
-    for (size_t currentSystemIndex = 0; currentSystemIndex < score->GetSystemCount(); currentSystemIndex++)
+    int systemIndex = 0;
+    BOOST_FOREACH(const System &system, myScore.getSystems())
     {
-        shared_ptr<const System> system = score->GetSystem(currentSystemIndex);
-
-        vector<System::BarlineConstPtr> barlines;
-        system->GetBarlines(barlines);
-
-        for (size_t i = 0; i < barlines.size(); i++)
+        BOOST_FOREACH(const Barline &bar, system.getBarlines())
         {
-            System::BarlineConstPtr currentBar = barlines.at(i);
-
-            if (currentBar->IsRepeatStart())
+            if (bar.getBarType() == Barline::RepeatStart)
             {
-                const SystemLocation location(currentSystemIndex,
-                                              currentBar->GetPosition());
-
-                repeats.insert(std::make_pair(location, Repeat(location)));
+                const SystemLocation location(systemIndex, bar.getPosition());
+                myRepeats.insert(std::make_pair(location, Repeat(location)));
             }
-            else if (currentBar->IsRepeatEnd())
+            else if (bar.getBarType() == Barline::RepeatEnd)
             {
-                // add to the end bar list for the active repeat group
-                repeats.rbegin()->second.addRepeatEnd(SystemLocation(currentSystemIndex, currentBar->GetPosition()),
-                                                      RepeatEnd(currentBar->GetRepeatCount()));
+                // Add to the end bar list for the active repeat group.
+                myRepeats.rbegin()->second.addRepeatEnd(
+                            SystemLocation(systemIndex, bar.getPosition()),
+                            RepeatEnd(bar.getRepeatCount()));
             }
         }
 
-        indexDirections(currentSystemIndex, system);
+        indexDirections(systemIndex, system);
+        ++systemIndex;
     }
 
-    // add alternate endings
-    for (size_t i = 0; i < score->GetAlternateEndingCount(); i++)
+    // Add alternate endings.
+    systemIndex = 0;
+    BOOST_FOREACH(const System &system, myScore.getSystems())
     {
-        shared_ptr<const AlternateEnding> altEnding = score->GetAlternateEnding(i);
+        BOOST_FOREACH(const AlternateEnding &ending,
+                      system.getAlternateEndings())
+        {
+            const SystemLocation altEndingLocation(systemIndex,
+                                                   ending.getPosition());
 
-        const SystemLocation altEndingLocation(altEnding->GetSystem(),
-                                               altEnding->GetPosition());
+            Repeat& activeRepeat = getPreviousRepeatGroup(altEndingLocation);
+            activeRepeat.addAlternateEnding(systemIndex, ending);
+        }
 
-        Repeat& activeRepeat = getPreviousRepeatGroup(altEndingLocation);
-        activeRepeat.addAlternateEnding(altEnding);
+        ++systemIndex;
     }
 }
 
-/// Scan through all of the musical directions in the system
-void RepeatController::indexDirections(uint32_t systemIndex, shared_ptr<const System> system)
+void RepeatController::indexDirections(int systemIndex, const System &system)
 {
-    for (size_t i = 0; i < system->GetDirectionCount(); i++)
+    BOOST_FOREACH(const Direction &direction, system.getDirections())
     {
-        shared_ptr<const Direction> direction = system->GetDirection(i);
+        const SystemLocation location(systemIndex, direction.getPosition());
 
-        const SystemLocation location(systemIndex, direction->GetPosition());
-
-        for (size_t dirNum = 0; dirNum < direction->GetSymbolCount(); dirNum++)
+        BOOST_FOREACH(const DirectionSymbol &symbol, direction.getSymbols())
         {
-            uint32_t index = 0;
-            uint8_t symbolType = 0, activeSymbol = 0, repeatNumber = 0;
-            direction->GetSymbol(index, symbolType, activeSymbol, repeatNumber);
-
-            directions.insert(std::make_pair(location,
-                                             DirectionSymbol(symbolType, activeSymbol, repeatNumber)));
-
-            symbolLocations.insert(std::make_pair(symbolType, location));
+            myDirections.insert(std::make_pair(location, symbol));
+            mySymbolLocations.insert(std::make_pair(symbol.getSymbolType(),
+                                                    location));
         }
     }
 }
 
-/// Returns the active repeat - the last repeat with a start bar before the given position
-Repeat& RepeatController::getPreviousRepeatGroup(const SystemLocation& location)
+Repeat &RepeatController::getPreviousRepeatGroup(const SystemLocation &location)
 {
-    std::map<SystemLocation, Repeat>::iterator repeatGroup = repeats.upper_bound(location);
-    if (repeatGroup != repeats.begin())
+    std::map<SystemLocation, Repeat>::iterator repeatGroup =
+            myRepeats.upper_bound(location);
+    if (repeatGroup != myRepeats.begin())
     {
         --repeatGroup;
     }
@@ -120,39 +115,35 @@ Repeat& RepeatController::getPreviousRepeatGroup(const SystemLocation& location)
     return repeatGroup->second;
 }
 
-/// Checks if a repeat needs to be performed at the given system and position.
-/// @return true If the playback position needs to be changed, and
-/// updates the newSystem and newPos parameters with the new playback position
 bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
-                                      const SystemLocation& currentLocation,
-                                      SystemLocation& newLocation)
+                                      const SystemLocation &currentLocation,
+                                      SystemLocation &newLocation)
 {
-    if (repeats.empty()) // No repeat events in the score.
-    {
+    // No repeat events in the score.
+    if (myRepeats.empty())
         return false;
-    }
 
-    Repeat& activeRepeat = getPreviousRepeatGroup(currentLocation);
+    Repeat &activeRepeat = getPreviousRepeatGroup(currentLocation);
     newLocation = currentLocation;
 
     // Check for directions between the previous playback location and the
     // current location.
-    DirectionMap::iterator leftIt = directions.lower_bound(prevLocation);
-    DirectionMap::iterator rightIt = directions.upper_bound(currentLocation);
+    DirectionMap::iterator leftIt = myDirections.lower_bound(prevLocation);
+    DirectionMap::iterator rightIt = myDirections.upper_bound(currentLocation);
 
-    if (leftIt != directions.end() && leftIt != rightIt)
+    if (leftIt != myDirections.end() && leftIt != rightIt)
     {
-        DirectionSymbol& direction = leftIt->second;
+        DirectionSymbol &direction = leftIt->second;
 
-        if (direction.shouldPerformDirection(activeSymbol,
-                                             activeRepeat.getActiveRepeat()))
+        if (shouldPerformDirection(direction, myActiveSymbol,
+                                   activeRepeat.getActiveRepeat()))
         {
             newLocation = performMusicalDirection(direction.getSymbolType());
 
             if (newLocation != currentLocation)
             {
                 // Remove the direction if it was performed.
-                directions.erase(leftIt);
+                myDirections.erase(leftIt);
                 // Reset the repeat count for the active repeat, since we may
                 // end up returning to it later (e.g. D.C. al Fine).
                 activeRepeat.reset();
@@ -167,69 +158,78 @@ bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
     }
 
     // Return true if a position shift occurred.
-    return (newLocation != currentLocation);
+    return newLocation != currentLocation;
 }
 
-SystemLocation RepeatController::performMusicalDirection(uint8_t directionType)
+SystemLocation RepeatController::performMusicalDirection(
+        DirectionSymbol::SymbolType directionType)
 {
-    if (directionType == Direction::fine) // go to the end of the score
+    // Go to the end of the score.
+    if (directionType == DirectionSymbol::Fine)
     {
-        const uint32_t lastSystemIndex = score->GetSystemCount() - 1;
-        return SystemLocation(lastSystemIndex, score->GetSystem(lastSystemIndex)->GetPositionCount());
+        const int lastSystemIndex = myScore.getSystems().size() - 1;
+        return SystemLocation(lastSystemIndex,
+                    myScore.getSystems()[lastSystemIndex].getBarlines()
+                              .back().getPosition());
     }
 
-    uint8_t nextSymbol = 0;
+    DirectionSymbol::SymbolType nextSymbol = DirectionSymbol::Coda;
 
-    switch(directionType)
+    switch (directionType)
     {
-    // return to beginning of score
-    case Direction::daCapo:
-    case Direction::daCapoAlCoda:
-    case Direction::daCapoAlDoubleCoda:
-    case Direction::daCapoAlFine:
-        activeSymbol = Direction::activeDaCapo;
+    // Return to beginning of score.
+    case DirectionSymbol::DaCapo:
+    case DirectionSymbol::DaCapoAlCoda:
+    case DirectionSymbol::DaCapoAlDoubleCoda:
+    case DirectionSymbol::DaCapoAlFine:
+        myActiveSymbol = DirectionSymbol::ActiveDaCapo;
         return SystemLocation(0, 0);
         break;
 
-    // return to segno sign
-    case Direction::dalSegno:
-    case Direction::dalSegnoAlCoda:
-    case Direction::dalSegnoAlDoubleCoda:
-    case Direction::dalSegnoAlFine:
-        activeSymbol = Direction::activeDalSegno;
-        nextSymbol = Direction::segno;
+    // Return to Segno sign.
+    case DirectionSymbol::DalSegno:
+    case DirectionSymbol::DalSegnoAlCoda:
+    case DirectionSymbol::DalSegnoAlDoubleCoda:
+    case DirectionSymbol::DalSegnoAlFine:
+        myActiveSymbol = DirectionSymbol::ActiveDalSegno;
+        nextSymbol = DirectionSymbol::Segno;
         break;
 
-    // return to segnoSegno sign
-    case Direction::dalSegnoSegno:
-    case Direction::dalSegnoSegnoAlCoda:
-    case Direction::dalSegnoSegnoAlDoubleCoda:
-    case Direction::dalSegnoSegnoAlFine:
-        activeSymbol = Direction::activeDalSegnoSegno;
-        nextSymbol = Direction::segnoSegno;
+    // Return to SegnoSegno sign.
+    case DirectionSymbol::DalSegnoSegno:
+    case DirectionSymbol::DalSegnoSegnoAlCoda:
+    case DirectionSymbol::DalSegnoSegnoAlDoubleCoda:
+    case DirectionSymbol::DalSegnoSegnoAlFine:
+        myActiveSymbol = DirectionSymbol::ActiveDalSegnoSegno;
+        nextSymbol = DirectionSymbol::SegnoSegno;
         break;
 
-    // jump to coda
-    case Direction::toCoda:
-        nextSymbol = Direction::coda;
+    // Jump to coda.
+    case DirectionSymbol::ToCoda:
+        nextSymbol = DirectionSymbol::Coda;
         break;
 
-    // jump to double coda
-    case Direction::toDoubleCoda:
-        nextSymbol = Direction::doubleCoda;
+    // Jump to double coda.
+    case DirectionSymbol::ToDoubleCoda:
+        nextSymbol = DirectionSymbol::DoubleCoda;
+        break;
+
+    default:
         break;
     }
 
-    // now, find the location of the symbol to jump to
-    SymbolLocationsMap::iterator symbolLocation = symbolLocations.find(nextSymbol);
-    if (symbolLocation != symbolLocations.end())
+    // Now, find the location of the symbol to jump to.
+    SymbolLocationsMap::iterator symbolLocation = mySymbolLocations.find(
+                nextSymbol);
+    if (symbolLocation != mySymbolLocations.end())
     {
         return symbolLocation->second;
     }
     else
     {
-        // this should not happen if the score is properly written
-        std::cerr << "Could not find the symbol " << static_cast<int>(nextSymbol) << std::endl;
+        // This should not happen if the score is properly written.
+        std::cerr << "Could not find the symbol " <<
+                     static_cast<int>(nextSymbol) << std::endl;
         return SystemLocation(0, 0);
     }
 }

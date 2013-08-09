@@ -15,57 +15,65 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef REPEAT_H
-#define REPEAT_H
+#ifndef AUDIO_REPEAT_H
+#define AUDIO_REPEAT_H
 
-#include <boost/cstdint.hpp>
-#include <powertabdocument/systemlocation.h>
 #include <boost/unordered_map.hpp>
-#include <boost/shared_ptr.hpp>
+#include <score/systemlocation.h>
 
 class AlternateEnding;
 
-/// Represents a repeat end bar
+/// Represents a repeat end bar, and tracks the number of remaining repeats to
+/// be played, etc.
 class RepeatEnd
 {
 public:
     RepeatEnd();
-    RepeatEnd(uint8_t repeatCount);
+    RepeatEnd(int repeatCount);
 
-    bool performRepeat();
-
+    /// Resets the number of remaining repeats to its original value.
     void reset();
 
+    /// Adjusts the number of remaining repeats.
+    bool performRepeat();
+
 private:
-    uint8_t repeatCount;
-    uint8_t remainingRepeats;
+    int myRepeatCount;
+    int myRemainingRepeats;
 };
 
-/// Contains all information about a repeat - start bar, end bar(s), alternate endings, repeat count, etc
+/// Contains all information about a repeat - start bar, end bar(s), alternate
+/// endings, repeat count, etc.
 class Repeat
 {
 public:
-    Repeat();
-    Repeat(const SystemLocation& startBarLocation);
+    Repeat(const SystemLocation &myStartBarLocation);
 
-    void addRepeatEnd(const SystemLocation& location, const RepeatEnd& endBar);
-    void addAlternateEnding(boost::shared_ptr<const AlternateEnding> altEnding);
+    /// Adds a new end bar to the repeat.
+    void addRepeatEnd(const SystemLocation &location, const RepeatEnd &endBar);
 
-    uint8_t getActiveRepeat() const;
+    /// Adds an alternate ending to the repeat group.
+    void addAlternateEnding(int system, const AlternateEnding &altEnding);
 
+    int getActiveRepeat() const;
+
+    /// Resets the repeat group to its original state (restores counters, etc).
     void reset();
 
-    SystemLocation performRepeat(const SystemLocation& location);
+    /// Performs a repeat event if possible.
+    /// @returns The playback position to shift to.
+    SystemLocation performRepeat(const SystemLocation &location);
 
 private:
-    typedef boost::unordered_map<SystemLocation, RepeatEnd, boost::hash<SystemLocation> > EndBarsMap;
-    EndBarsMap endBars;
+    typedef boost::unordered_map< SystemLocation, RepeatEnd,
+                                  boost::hash<SystemLocation> > EndBarsMap;
+    EndBarsMap myEndBars;
 
-    typedef boost::unordered_map<uint8_t, SystemLocation> AltEndingsMap;
-    AltEndingsMap alternateEndings;
+    typedef boost::unordered_map<int, SystemLocation> AltEndingsMap;
+    AltEndingsMap myAlternateEndings;
 
-    SystemLocation startBarLocation;
-    uint8_t activeRepeat;
+    const SystemLocation myStartBarLocation;
+    int myActiveRepeat;
 };
 
-#endif // REPEAT_H
+#endif

@@ -19,6 +19,7 @@ add_library(ptescore
     serialization.cpp
     staff.cpp
     system.cpp
+    systemlocation.cpp
     tempomarker.cpp
     timesignature.cpp
     tuning.cpp

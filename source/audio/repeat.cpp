@@ -17,122 +17,111 @@
   
 #include "repeat.h"
 
-#include <powertabdocument/alternateending.h>
 #include <boost/foreach.hpp>
+#include <score/alternateending.h>
 
-using boost::shared_ptr;
-
-Repeat::Repeat(const SystemLocation& startBarLocation) :
-    startBarLocation(startBarLocation),
-    activeRepeat(1)
+Repeat::Repeat(const SystemLocation &startBarLocation)
+    : myStartBarLocation(startBarLocation),
+      myActiveRepeat(1)
 {
 }
 
-Repeat::Repeat():
-    activeRepeat(1)
+void Repeat::addRepeatEnd(const SystemLocation &location,
+                          const RepeatEnd &endBar)
 {
+    myEndBars[location] = endBar;
 }
 
-/// Adds a new end bar to the repeat
-void Repeat::addRepeatEnd(const SystemLocation& location, const RepeatEnd& endBar)
+void Repeat::addAlternateEnding(int system, const AlternateEnding &altEnding)
 {
-    endBars[location] = endBar;
-}
+    const SystemLocation location(system, altEnding.getPosition());
+    const std::vector<int> numbers = altEnding.getNumbers();
 
-/// Adds an alternate ending to the repeat group
-void Repeat::addAlternateEnding(shared_ptr<const AlternateEnding> altEnding)
-{
-    const SystemLocation location(altEnding->GetSystem(), altEnding->GetPosition());
-
-    std::vector<uint8_t> numbers = altEnding->GetListOfNumbers();
-
-    // for each repeat that the ending is active, add it to the alternate endings map along with
-    // the location of the ending
-    for (size_t i = 0; i < numbers.size(); i++)
+    // For each repeat that the ending is active, add it to the alternate
+    // endings map along with the location of the ending.
+    BOOST_FOREACH(int num, numbers)
     {
-        alternateEndings[numbers[i]] = location;
+        myAlternateEndings[num] = location;
     }
 }
 
-/// Performs a repeat event if possible
-/// @return The playback position to shift to
-SystemLocation Repeat::performRepeat(const SystemLocation& currentLocation)
+SystemLocation Repeat::performRepeat(const SystemLocation &currentLocation)
 {
-    // deal with alternate endings - if we are at the start of the first alternate
-    // ending, we can branch off to other alternate endings depending on the active repeat
-    AltEndingsMap::const_iterator firstAltEnding = alternateEndings.find(1);
-    if (firstAltEnding != alternateEndings.end() && firstAltEnding->second == currentLocation)
+    // Deal with alternate endings - if we are at the start of the first
+    // alternate ending, we can branch off to other alternate endings depending
+    // on the active repeat.
+    AltEndingsMap::const_iterator firstAltEnding = myAlternateEndings.find(1);
+    if (firstAltEnding != myAlternateEndings.end() &&
+        firstAltEnding->second == currentLocation)
     {
-        // branch off to the next alternate ending, if it exists
-        AltEndingsMap::const_iterator nextAltEnding = alternateEndings.find(activeRepeat);
-        if (nextAltEnding != alternateEndings.end())
+        // Branch off to the next alternate ending, if it exists.
+        AltEndingsMap::const_iterator nextAltEnding = myAlternateEndings.find(
+                    myActiveRepeat);
+        if (nextAltEnding != myAlternateEndings.end())
         {
             return nextAltEnding->second;
         }
     }
 
-    // now, we can look for repeat end bars
-    EndBarsMap::iterator repeatEnd = endBars.find(currentLocation);
+    // Now, we can look for repeat end bars.
+    EndBarsMap::iterator repeatEnd = myEndBars.find(currentLocation);
 
-    if (repeatEnd == endBars.end()) // no repeat end bar at the current location
-    {
+    // No repeat bar.
+    if (repeatEnd == myEndBars.end())
         return currentLocation;
-    }
-    else if (repeatEnd->second.performRepeat()) // repeat event performed
+    // Repeat event was performed.
+    else if (repeatEnd->second.performRepeat())
     {
-        activeRepeat++;
-        return startBarLocation;
+        myActiveRepeat++;
+        return myStartBarLocation;
     }
-    else // repeat end bar exists, but no repeat event was performed
-    {
+    // Repeat end bar exists, but no repeat event was performed.
+    else
         return currentLocation;
-    }
 }
 
-uint8_t Repeat::getActiveRepeat() const
+int Repeat::getActiveRepeat() const
 {
-    return activeRepeat;
+    return myActiveRepeat;
 }
 
-/// Resets the repeat group to its original state (restores counters, etc)
 void Repeat::reset()
 {
-    activeRepeat = 1;
+    myActiveRepeat = 1;
 
-    for (EndBarsMap::iterator i = endBars.begin(); i != endBars.end(); ++i)
+    for (EndBarsMap::iterator i = myEndBars.begin(); i != myEndBars.end(); ++i)
     {
         i->second.reset();
     }
 }
 
-RepeatEnd::RepeatEnd() :
-    repeatCount(0),
-    remainingRepeats(0)
+RepeatEnd::RepeatEnd()
+    : myRepeatCount(0),
+      myRemainingRepeats(0)
 {
 }
 
-RepeatEnd::RepeatEnd(uint8_t repeatCount) :
-    repeatCount(repeatCount),
-    remainingRepeats(repeatCount - 1)
+RepeatEnd::RepeatEnd(int repeatCount)
+    : myRepeatCount(repeatCount),
+      myRemainingRepeats(repeatCount - 1)
 {
 }
 
 bool RepeatEnd::performRepeat()
 {
-    if (remainingRepeats != 0)
+    if (myRemainingRepeats != 0)
     {
-        remainingRepeats--;
+        myRemainingRepeats--;
         return true;
     }
     else
     {
-        remainingRepeats = repeatCount - 1;
+        myRemainingRepeats = myRepeatCount - 1;
         return false;
     }
 }
 
-/// Resets the number of remaining repeats to its original value
 void RepeatEnd::reset()
 {
-    remainingRepeats = repeatCount - 1;
+    myRemainingRepeats = myRepeatCount - 1;
 }
