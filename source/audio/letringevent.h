@@ -29,7 +29,7 @@ public:
         LET_RING_OFF
     };
 
-    LetRingEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
+    LetRingEvent(uint8_t channel, double startTime, uint32_t position, uint32_t system,
                  EventType eventType);
     
     void performEvent(RtMidiWrapper& sequencer) const;

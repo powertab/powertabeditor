@@ -18,54 +18,50 @@
 #include "midievent.h"
 
 #include <cmath>
+#include "midioutputdevice.h"
 
-MidiEvent::MidiEvent(uint8_t channel, double startTime, double duration,
-                     uint32_t positionIndex, uint32_t systemIndex) :
-    channel(channel),
-    startTime(startTime),
-    duration(duration),
-    positionIndex(positionIndex),
-    systemIndex(systemIndex)
+const int MidiEvent::NUM_CHANNELS = MidiOutputDevice::NUM_CHANNELS;
+
+MidiEvent::MidiEvent(int channel, double startTime, double duration,
+                     int position, int system)
+    : myChannel(channel),
+      myStartTime(startTime),
+      myDuration(duration),
+      myPosition(position),
+      mySystem(system)
 {
 }
 
-uint32_t MidiEvent::getPositionIndex() const
+int MidiEvent::getPosition() const
 {
-    return positionIndex;
+    return myPosition;
 }
 
-uint32_t MidiEvent::getSystemIndex() const
+int MidiEvent::getSystem() const
 {
-    return systemIndex;
+    return mySystem;
 }
 
 double MidiEvent::getStartTime() const
 {
-    return startTime;
+    return myStartTime;
 }
 
 double MidiEvent::getDuration() const
 {
-    return duration;
+    return myDuration;
 }
 
-/// Compares by timestamp, then by system index, then by position index.
-bool MidiEvent::operator<(const MidiEvent& event) const
+bool MidiEvent::operator<(const MidiEvent &event) const
 {
-    // compare timestamps using a floating point comparison
-	if (std::abs(startTime - event.startTime) <= 0.001 * std::abs(startTime))
+    // Compare timestamps using a floating point comparison.
+    if (std::abs(myStartTime - event.myStartTime) <= 0.001 * std::abs(myStartTime))
     {
-        if (systemIndex == event.systemIndex)
-        {
-            return positionIndex < event.positionIndex;
-        }
+        if (mySystem == event.mySystem)
+            return myPosition < event.myPosition;
         else
-        {
-            return systemIndex < event.systemIndex;
-        }
+            return mySystem < event.mySystem;
     }
     else
-    {
-        return startTime < event.startTime;
-    }
+        return myStartTime < event.myStartTime;
 }

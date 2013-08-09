@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.8)
 
 add_subdirectory(actions)
 add_subdirectory(app)
-#add_subdirectory(audio)
+add_subdirectory(audio)
 add_subdirectory(dialogs)
 add_subdirectory(formats)
 add_subdirectory(painters)
@@ -29,8 +29,8 @@ target_link_libraries(powertabeditor
     #ptewidgets
     ptedialogs
     pteactions
-    #pteaudio
-    #rtmidi
+    pteaudio
+    rtmidi
     ptepainters
     sigfwd
     pteformats

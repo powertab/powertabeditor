@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef VIBRATOEVENT_H
-#define VIBRATOEVENT_H
+#ifndef AUDIO_VIBRATOEVENT_H
+#define AUDIO_VIBRATOEVENT_H
 
 #include "midievent.h"
 
@@ -25,24 +25,24 @@ class VibratoEvent : public MidiEvent
 public:
     enum VibratoType
     {
-        NORMAL_VIBRATO,
-        WIDE_VIBRATO
+        NormalVibrato,
+        WideVibrato
     };
 
     enum EventType
     {
-        VIBRATO_ON,
-        VIBRATO_OFF
+        VibratoOn,
+        VibratoOff
     };
 
-    VibratoEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
-                 EventType eventType, VibratoType vibratoType = NORMAL_VIBRATO);
+    VibratoEvent(int channel, double startTime, int position, int system,
+                 EventType myEventType, VibratoType myVibratoType = NormalVibrato);
 
-    void performEvent(RtMidiWrapper& sequencer) const;
+    void performEvent(MidiOutputDevice& device) const;
 
 private:
-    EventType eventType;
-    VibratoType vibratoType;
+    EventType myEventType;
+    VibratoType myVibratoType;
 };
 
-#endif // VIBRATOEVENT_H
+#endif

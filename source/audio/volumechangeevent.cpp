@@ -29,5 +29,5 @@ VolumeChangeEvent::VolumeChangeEvent(uint8_t channel, double startTime,
 
 void VolumeChangeEvent::performEvent(RtMidiWrapper& sequencer) const
 {
-    sequencer.setVolume(channel, newVolume);
+    sequencer.setVolume(myChannel, newVolume);
 }

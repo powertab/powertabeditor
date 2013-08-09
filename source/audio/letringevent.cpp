@@ -37,5 +37,5 @@ void LetRingEvent::performEvent(RtMidiWrapper& sequencer) const
                 << systemIndex << ", " << positionIndex << " at " << startTime;
 #endif
 
-    sequencer.setSustain(channel, eventType == LET_RING_ON);
+    sequencer.setSustain(myChannel, eventType == LET_RING_ON);
 }

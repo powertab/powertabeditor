@@ -36,5 +36,5 @@ void StopNoteEvent::performEvent(RtMidiWrapper& sequencer) const
     qDebug() << "Stop Note: " << systemIndex << ", " << positionIndex << " at " << startTime;
 #endif
 
-    sequencer.stopNote(channel, pitch);
+    sequencer.stopNote(myChannel, pitch);
 }

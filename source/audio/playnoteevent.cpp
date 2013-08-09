@@ -50,15 +50,15 @@ void PlayNoteEvent::performEvent(RtMidiWrapper& sequencer) const
     // grab the patch/pan/volume immediately before playback to allow for real-time mixing
     if (isMuted)
     {
-        sequencer.setPatch(channel, midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
+        sequencer.setPatch(myChannel, midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
     }
     else
     {
-        sequencer.setPatch(channel, guitar->GetPreset());
+        sequencer.setPatch(myChannel, guitar->GetPreset());
     }
 
-    sequencer.setPan(channel, guitar->GetPan());
-    sequencer.setChannelMaxVolume(channel, guitar->GetInitialVolume());
+    sequencer.setPan(myChannel, guitar->GetPan());
+    sequencer.setChannelMaxVolume(myChannel, guitar->GetInitialVolume());
 
-    sequencer.playNote(channel, pitch, velocity);
+    sequencer.playNote(myChannel, pitch, velocity);
 }

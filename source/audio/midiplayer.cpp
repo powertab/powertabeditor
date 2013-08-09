@@ -253,15 +253,15 @@ double MidiPlayer::generateEventsForBar(
         // vibrato events (these apply to all notes in the position)
         if (position->HasVibrato() || position->HasWideVibrato())
         {
-            VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NORMAL_VIBRATO :
-                                                                      VibratoEvent::WIDE_VIBRATO;
+            VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NormalVibrato :
+                                                                      VibratoEvent::WideVibrato;
 
             // add vibrato event, and an event to turn of the vibrato after the note is done
             eventList.push_back(new VibratoEvent(channel, startTime, positionIndex, systemIndex,
-                                                 VibratoEvent::VIBRATO_ON, type));
+                                                 VibratoEvent::VibratoOn, type));
 
             eventList.push_back(new VibratoEvent(channel, startTime + duration, positionIndex,
-                                                 systemIndex, VibratoEvent::VIBRATO_OFF));
+                                                 systemIndex, VibratoEvent::VibratoOff));
         }
 
         // dynamics

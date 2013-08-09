@@ -51,8 +51,8 @@ void MetronomeEvent::performEvent(RtMidiWrapper& sequencer) const
         actualVelocity = METRONOME_OFF;
     }
 
-    sequencer.setPatch(channel, settings.value(Settings::MIDI_METRONOME_PRESET,
+    sequencer.setPatch(myChannel, settings.value(Settings::MIDI_METRONOME_PRESET,
             Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
-    sequencer.setChannelMaxVolume(channel, midi::MAX_MIDI_CHANNEL_VOLUME);
-    sequencer.playNote(channel, METRONOME_PITCH, actualVelocity);
+    sequencer.setChannelMaxVolume(myChannel, midi::MAX_MIDI_CHANNEL_VOLUME);
+    sequencer.playNote(myChannel, METRONOME_PITCH, actualVelocity);
 }

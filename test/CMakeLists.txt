@@ -44,7 +44,7 @@ add_executable(pte_tests
 
     app/test_documentmanager.cpp
 
-    #audio/test_midievent.cpp
+    audio/test_midievent.cpp
 
     formats/test_fileformat.cpp
     #formats/guitar_pro/test_gp4.cpp
@@ -95,8 +95,8 @@ target_link_libraries(pte_tests
     #ptewidgets
     #ptedialogs
     pteactions
-    #pteaudio
-    #rtmidi
+    pteaudio
+    rtmidi
     #ptepainters
     #sigfwd
     pteformats

@@ -17,49 +17,53 @@
   
 #include "vibratoevent.h"
 
-#include <audio/rtmidiwrapper.h>
-#include <QSettings>
 #include <app/settings.h>
+#include <audio/midioutputdevice.h>
+#include <QSettings>
 
-#if defined(LOG_MIDI_EVENTS)
+#ifdef LOG_MIDI_EVENTS
 #include <QDebug>
 #endif
 
-VibratoEvent::VibratoEvent(uint8_t channel, double startTime, uint32_t positionIndex, uint32_t systemIndex,
-                           EventType eventType, VibratoType vibratoType) :
-    MidiEvent(channel, startTime, 0, positionIndex, systemIndex),
-    eventType(eventType),
-    vibratoType(vibratoType)
+VibratoEvent::VibratoEvent(int channel, double startTime, int position,
+                           int system, EventType eventType,
+                           VibratoType vibratoType)
+    : MidiEvent(channel, startTime, 0, position, system),
+      myEventType(eventType),
+      myVibratoType(vibratoType)
 {
 }
 
-void VibratoEvent::performEvent(RtMidiWrapper& sequencer) const
+void VibratoEvent::performEvent(MidiOutputDevice &device) const
 {
-#if defined(LOG_MIDI_EVENTS)
-    qDebug() << "Vibrato: " << systemIndex << ", " << positionIndex << " at " << startTime;
+#ifdef LOG_MIDI_EVENTS
+    qDebug() << "Vibrato: " << mySystem << ", " << myPosition << " at " <<
+                myStartTime;
 #endif
 
-    if (eventType == VIBRATO_ON)
+    switch (myEventType)
+    {
+    case VibratoEvent::VibratoOn:
     {
         QSettings settings;
         uint8_t vibratoWidth = 0;
 
-        if (vibratoType == NORMAL_VIBRATO)
+        if (myVibratoType == NormalVibrato)
         {
             vibratoWidth = settings.value(Settings::MIDI_VIBRATO_LEVEL,
                                           Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt();
         }
-        else if (vibratoType == WIDE_VIBRATO)
+        else if (myVibratoType == WideVibrato)
         {
             vibratoWidth = settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
                                           Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt();
         }
 
-        sequencer.setVibrato(channel, vibratoWidth);
+        device.setVibrato(myChannel, vibratoWidth);
     }
-    else // VIBRATO_OFF
-    {
-        sequencer.setVibrato(channel, 0);
+        break;
+    case VibratoEvent::VibratoOff:
+        device.setVibrato(myChannel, 0);
+        break;
     }
-
 }

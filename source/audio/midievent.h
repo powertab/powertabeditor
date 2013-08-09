@@ -15,37 +15,42 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef MIDIEVENT_H
-#define MIDIEVENT_H
+#ifndef AUDIO_MIDIEVENT_H
+#define AUDIO_MIDIEVENT_H
 
-#include <boost/cstdint.hpp>
-
-class RtMidiWrapper;
+class MidiOutputDevice;
 
 class MidiEvent
 {
 public:
-    static const uint8_t NUM_CHANNELS = 16;
+    static const int NUM_CHANNELS;
 
-    MidiEvent(uint8_t channel, double startTime, double duration,
-              uint32_t positionIndex, uint32_t systemIndex);
+    MidiEvent(int channel, double startTime, double duration,
+              int position, int system);
     virtual ~MidiEvent() {}
 
-    bool operator<(const MidiEvent& event) const;
+    /// Orders by timestamp, then by system index, then by position index.
+    bool operator<(const MidiEvent &event) const;
 
-    virtual void performEvent(RtMidiWrapper& sequencer) const = 0;
+    /// Performs the event by sending commands to the MIDI output device.
+    virtual void performEvent(MidiOutputDevice &sequencer) const = 0;
 
-    uint32_t getPositionIndex() const;
-    uint32_t getSystemIndex() const;
+    int getPosition() const;
+    int getSystem() const;
     double getDuration() const;
     double getStartTime() const;
 
 protected:
-    uint8_t channel;
-    double startTime;
-    double duration;
-    uint32_t positionIndex; ///< position in the staff that the event occurred at
-    uint32_t systemIndex; ///< system that the event occurred in
+    /// The MIDI channel that this event will be sent to.
+    int myChannel;
+    /// The timestamp of the start of the event.
+    double myStartTime;
+    /// The length of the event (e.g. the duration of a note).
+    double myDuration;
+    /// The position in the staff that the event occurs at.
+    int myPosition;
+    /// The system that the event occurs in.
+    int mySystem;
 };
 
-#endif // MIDIEVENT_H
+#endif

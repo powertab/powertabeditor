@@ -38,5 +38,5 @@ BendEvent::BendEvent(uint8_t channel, double startTime, uint32_t positionIndex,
 
 void BendEvent::performEvent(RtMidiWrapper& sequencer) const
 {
-    sequencer.setPitchBend(channel, bendAmount);
+    sequencer.setPitchBend(myChannel, bendAmount);
 }
