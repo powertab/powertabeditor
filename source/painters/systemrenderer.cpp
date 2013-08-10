@@ -107,6 +107,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsBelowTabStaff(*layout);
 
         drawPlayerChanges(system, i, *layout);
+        drawStdNotation(system, staff, *layout);
 
         ++i;
     }
@@ -294,7 +295,7 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
 
     // Take a vibrato segment, spanning the distance from top to bottom note,
     // and then rotate it by 90 degrees.
-    const QChar arpeggioSymbol = MusicFont::getSymbol(MusicFont::Vibrato);
+    const QChar arpeggioSymbol = MusicFont::Vibrato;
     const double symbolWidth = QFontMetricsF(myMusicNotationFont).width(
                 arpeggioSymbol);
     const int numSymbols = height / symbolWidth;
@@ -308,8 +309,7 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
 
     // Draw the end of the arpeggio.
     const QChar arpeggioEnd = position.hasProperty(Position::ArpeggioUp) ?
-                MusicFont::getSymbol(MusicFont::ArpeggioUp) :
-                MusicFont::getSymbol(MusicFont::ArpeggioDown);
+                MusicFont::ArpeggioUp : MusicFont::ArpeggioDown;
 
     QGraphicsSimpleTextItem *endPoint = new QGraphicsSimpleTextItem(arpeggioEnd);
     const double y = position.hasProperty(Position::ArpeggioUp) ? top : bottom;
@@ -740,12 +740,10 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo& layout)
         switch (symbolGroup.getSymbolType())
         {
         case SymbolGroup::PickStrokeUp:
-            renderedSymbol = createPickStroke(MusicFont::getSymbol(
-                                                  MusicFont::PickStrokeUp));
+            renderedSymbol = createPickStroke(QChar(MusicFont::PickStrokeUp));
             break;
         case SymbolGroup::PickStrokeDown:
-            renderedSymbol = createPickStroke(MusicFont::getSymbol(
-                                                  MusicFont::PickStrokeDown));
+            renderedSymbol = createPickStroke(QChar(MusicFont::PickStrokeDown));
             break;
         case SymbolGroup::Tap:
             renderedSymbol = createPlainTextSymbol("T", QFont::StyleNormal);
@@ -1085,7 +1083,7 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
     for (int i = 0; i < 3; i++)
     {
         QGraphicsSimpleTextItem *line = new QGraphicsSimpleTextItem(
-                    MusicFont::getSymbol(MusicFont::TremoloPicking));
+                    QChar(MusicFont::TremoloPicking));
         line->setFont(myMusicNotationFont);
         centerItem(line, 0, layout.getPositionSpacing() * 1.25,
                    -37 + i * offset);
@@ -1101,7 +1099,7 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
     font.setPixelSize(21);
 
     QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
-                MusicFont::getSymbol(MusicFont::Trill));
+                QChar(MusicFont::Trill));
     text->setFont(font);
     centerItem(text, 0, layout.getPositionSpacing(), -18);
 
@@ -1143,9 +1141,35 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
     return group;
 }
 
-#if 0
-void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
+void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
+                                     const LayoutInfo &layout)
 {
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    {
+        BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+        {
+            const double x = layout.getPositionX(pos.getPosition());
+
+            const Barline *prevBar = system.getPreviousBarline(pos.getPosition());
+            if (!prevBar)
+                prevBar = &system.getBarlines().front();
+
+            if (pos.hasMultiBarRest())
+            {
+                drawMultiBarRest(system, *prevBar, layout,
+                                 pos.getMultiBarRestCount());
+            }
+            else if (pos.isRest())
+            {
+                drawRest(pos, x, layout);
+            }
+            else
+            {
+                // TODO
+            }
+        }
+    }
+#if 0
     System::BarlineConstPtr currentBarline;
     System::BarlineConstPtr prevBarline = system->GetStartBar();
 
@@ -1286,8 +1310,12 @@ void SystemRenderer::drawStdNotation(const StaffData& currentStaffInfo)
             currentIrregularNoteGroup.clear();
         }
     }
+#else
+    Q_UNUSED(system);
+#endif
 }
 
+#if 0
 void SystemRenderer::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap)
 {
     QList<int> keys = accidentalsMap.uniqueKeys();
@@ -1321,51 +1349,121 @@ void SystemRenderer::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& acci
         ++i;
     }
 }
+#endif
 
-void SystemRenderer::drawMultiBarRest(boost::shared_ptr<const Barline> currentBarline,
-                                      const StaffData& currentStaffInfo, int measureCount)
+void SystemRenderer::drawMultiBarRest(const System &system,
+                                      const Barline &leftBar,
+                                      const LayoutInfo &layout,
+                                      int measureCount)
 {
-    System::BarlineConstPtr nextBarline = system->GetNextBarline(currentBarline->GetPosition());
+    const Barline *rightBar = system.getNextBarline(leftBar.getPosition());
+    Q_ASSERT(rightBar);
 
-    const double leftX = (currentBarline->GetPosition() == 0) ?
-                system->GetPositionX(currentBarline->GetPosition()) :
-                system->GetPositionX(currentBarline->GetPosition() + 1);
+    const double leftX = (leftBar.getPosition() == 0) ?
+                layout.getPositionX(leftBar.getPosition()) :
+                layout.getPositionX(leftBar.getPosition() + 1);
 
-    const double rightX = Common::clamp(static_cast<double>(system->GetPositionX(nextBarline->GetPosition())),
-										0.0, system->GetRect().GetWidth() - system->GetPositionSpacing() / 2.0);
+    const double rightX = boost::algorithm::clamp(
+                layout.getPositionX(rightBar->getPosition()), 0.0,
+                LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
 
-    // draw measure count
-    QGraphicsSimpleTextItem* measureCountText = new QGraphicsSimpleTextItem;
+    // Draw the measure count.
+    QGraphicsSimpleTextItem *measureCountText = new QGraphicsSimpleTextItem();
     measureCountText->setText(QString::number(measureCount));
-    measureCountText->setFont(musicNotationFont);
+    measureCountText->setFont(myMusicNotationFont);
 
-    centerItem(measureCountText, leftX, rightX,
-               currentStaffInfo.getTopStdNotationLine() - musicNotationFont.pixelSize() * 1.5);
+    centerItem(measureCountText, leftX, rightX, layout.getTopStdNotationLine() -
+               myMusicNotationFont.pixelSize() * 1.5);
+    measureCountText->setParentItem(myParentStaff);
 
-    measureCountText->setParentItem(parentStaff);
+    // Draw symbol across std. notation staff.
+    QGraphicsLineItem *vertLineLeft = new QGraphicsLineItem(
+                leftX, layout.getStdNotationLine(2), leftX,
+                layout.getStdNotationLine(4));
+    vertLineLeft->setParentItem(myParentStaff);
 
-    // draw symbol across std. notation staff
-    QGraphicsLineItem* vertLineLeft = new QGraphicsLineItem(leftX,
-                                                            currentStaffInfo.getStdNotationLineHeight(2),
-                                                            leftX,
-                                                            currentStaffInfo.getStdNotationLineHeight(4));
-    vertLineLeft->setParentItem(parentStaff);
+    QGraphicsLineItem *vertLineRight = new QGraphicsLineItem(
+                rightX, layout.getStdNotationLine(2), rightX,
+                layout.getStdNotationLine(4));
+    vertLineRight->setParentItem(myParentStaff);
 
-    QGraphicsLineItem* vertLineRight = new QGraphicsLineItem(rightX,
-                                                             currentStaffInfo.getStdNotationLineHeight(2),
-                                                             rightX,
-                                                             currentStaffInfo.getStdNotationLineHeight(4));
-    vertLineRight->setParentItem(parentStaff);
+    QGraphicsRectItem *horizontalLine = new QGraphicsRectItem(
+                leftX, layout.getStdNotationLine(2) +
+                0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
+                rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
 
-    QGraphicsRectItem* horizontalLine = new QGraphicsRectItem(leftX,
-                                                              currentStaffInfo.getStdNotationLineHeight(2) +
-                                                              0.5 * Staff::STD_NOTATION_LINE_SPACING,
-                                                              rightX - leftX,
-                                                              Staff::STD_NOTATION_LINE_SPACING * 0.9);
     horizontalLine->setBrush(QBrush(Qt::black));
-    horizontalLine->setParentItem(parentStaff);
+    horizontalLine->setParentItem(myParentStaff);
 }
 
+void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &layout)
+{
+    // Position it approximately in the middle of the staff.
+    double y = -2 * LayoutInfo::STD_NOTATION_LINE_SPACING - 2;
+
+    QChar symbol;
+    switch (pos.getDurationType())
+    {
+    case Position::WholeNote:
+        symbol = MusicFont::WholeRest;
+        y -= LayoutInfo::STD_NOTATION_LINE_SPACING - 1;
+        break;
+    case Position::HalfNote:
+        symbol = MusicFont::HalfRest;
+        break;
+    case Position::QuarterNote:
+        symbol = MusicFont::QuarterRest;
+        break;
+    case Position::EighthNote:
+        symbol = MusicFont::EighthRest;
+        break;
+    case Position::SixteenthNote:
+        symbol = MusicFont::SixteenthRest;
+        break;
+    case Position::ThirtySecondNote:
+        symbol = MusicFont::ThirtySecondRest;
+        break;
+    case Position::SixtyFourthNote:
+        symbol = MusicFont::SixtyFourthRest;
+        y -= 3; // Compensate for the extra height of this symbol.
+        break;
+    }
+
+    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(symbol);
+    text->setFont(myMusicNotationFont);
+    text->setPos(0, y);
+    group->addToGroup(text);
+
+    // Draw dots if necessary.
+    const QChar dot = MusicFont::Dot;
+    const double dotX = myMusicNotationFont.pixelSize() / 2.0;
+    // Position just below second line of staff.
+    const double dotY = -2.7 * LayoutInfo::STD_NOTATION_LINE_SPACING;
+
+    if (pos.hasProperty(Position::Dotted) ||
+        pos.hasProperty(Position::DoubleDotted))
+    {
+        QGraphicsSimpleTextItem *dotText = new QGraphicsSimpleTextItem(dot);
+        dotText->setPos(dotX, dotY);
+        dotText->setFont(myMusicNotationFont);
+        group->addToGroup(dotText);
+
+        if (pos.hasProperty(Position::DoubleDotted))
+        {
+            QGraphicsSimpleTextItem *dotText2 = new QGraphicsSimpleTextItem(dot);
+            dotText2->setPos(dotX + 4, dotY);
+            dotText2->setFont(myMusicNotationFont);
+            group->addToGroup(dotText2);
+        }
+    }
+
+    centerItem(group, x, x + layout.getPositionSpacing() * 1.25,
+               layout.getTopStdNotationLine());
+    group->setParentItem(myParentStaff);
+}
+
+#if 0
 /// Draws ledger lines for all notes at a position
 /// @param noteLocations - List of y-coordinates of all notes at the position
 void SystemRenderer::drawLedgerLines(const std::vector<int> &noteLocations,

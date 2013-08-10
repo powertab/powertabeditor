@@ -54,12 +54,8 @@ void TimeSignaturePainter::paint(QPainter *painter,
         displayFont.setPixelSize(25);
         painter->setFont(displayFont);
 
-        QChar symbol;
-        if (meterType == TimeSignature::CommonTime)
-            symbol = musicFont.getSymbol(MusicFont::CommonTime);
-        else
-            symbol = musicFont.getSymbol(MusicFont::CutTime);
-
+        const QChar symbol = (meterType == TimeSignature::CommonTime) ?
+                    MusicFont::CommonTime : MusicFont::CutTime;
         painter->drawText(0, 2 * LayoutInfo::STD_NOTATION_LINE_SPACING, symbol);
     }
     else

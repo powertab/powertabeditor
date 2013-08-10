@@ -25,9 +25,9 @@ ClefPainter::ClefPainter(Staff::ClefType clefType, const QFont &musicFont)
       myMusicFont(musicFont)
 {
     if (myClefType == Staff::TrebleClef)
-        myDisplayText.setText(MusicFont::getSymbol(MusicFont::TrebleClef));
+        myDisplayText.setText(QChar(MusicFont::TrebleClef));
     else
-        myDisplayText.setText(MusicFont::getSymbol(MusicFont::BassClef));
+        myDisplayText.setText(QChar(MusicFont::BassClef));
 
     myDisplayText.prepare(QTransform(), myMusicFont);
     QFontMetricsF fm(myMusicFont);

@@ -11,7 +11,6 @@ add_library(ptepainters
     keysignaturepainter.cpp
     layoutinfo.cpp
     musicfont.cpp
-    #restpainter.cpp
     #rhythmslashpainter.cpp
     #staffdata.cpp
     staffpainter.cpp

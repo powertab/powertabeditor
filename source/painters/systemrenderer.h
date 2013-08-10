@@ -119,6 +119,17 @@ private:
     /// Creates a dynamic symbol.
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
+    /// Draws notes, beams, and rests.
+    void drawStdNotation(const System &system, const Staff &staff,
+                         const LayoutInfo &layout);
+
+    /// Draws a multi-bar rest symbol.
+    void drawMultiBarRest(const System &system, const Barline &leftBar,
+                          const LayoutInfo &layout, int measureCount);
+
+    /// Draws a rest symbol.
+    void drawRest(const Position &pos, double x, const LayoutInfo &layout);
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 
