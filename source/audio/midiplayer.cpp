@@ -19,6 +19,7 @@
 
 #include <app/settings.h>
 #include <audio/bendevent.h>
+#include <audio/letringevent.h>
 #include <audio/metronomeevent.h>
 #include <audio/midievent.h>
 #include <audio/midioutputdevice.h>
@@ -26,6 +27,8 @@
 #include <audio/repeatcontroller.h>
 #include <audio/restevent.h>
 #include <audio/stopnoteevent.h>
+#include <audio/vibratoevent.h>
+#include <audio/volumechangeevent.h>
 #include <boost/foreach.hpp>
 #include <QDebug>
 #include <QSettings>
@@ -181,7 +184,9 @@ double MidiPlayer::generateEventsForBar(
                       voice, leftPos, rightPos))
     {
         const int position = pos.getPosition();
+#if 0
         const double currentTempo = getCurrentTempo(systemIndex, position);
+#endif
 
         // Each note at a position has the same duration.
         double duration = calculateNoteDuration(systemIndex, pos);
@@ -239,56 +244,91 @@ double MidiPlayer::generateEventsForBar(
         {
             position->SortNotesUp();
         }
+#endif
 
-        // vibrato events (these apply to all notes in the position)
-        if (position->HasVibrato() || position->HasWideVibrato())
+        // Vibrato events (these apply to all notes in the position).
+        if (pos.hasProperty(Position::Vibrato) ||
+            pos.hasProperty(Position::WideVibrato))
         {
-            VibratoEvent::VibratoType type = position->HasVibrato() ? VibratoEvent::NormalVibrato :
-                                                                      VibratoEvent::WideVibrato;
+            VibratoEvent::VibratoType type = pos.hasProperty(Position::Vibrato)
+                    ? VibratoEvent::NormalVibrato : VibratoEvent::WideVibrato;
 
-            // add vibrato event, and an event to turn of the vibrato after the note is done
-            eventList.push_back(new VibratoEvent(channel, startTime, positionIndex, systemIndex,
-                                                 VibratoEvent::VibratoOn, type));
-
-            eventList.push_back(new VibratoEvent(channel, startTime + duration, positionIndex,
-                                                 systemIndex, VibratoEvent::VibratoOff));
-        }
-
-        // dynamics
-        {
-            Score::DynamicPtr dynamic = score->FindDynamic(systemIndex, channel, positionIndex);
-            if (dynamic)
+            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
             {
-                eventList.push_back(new VolumeChangeEvent(channel, startTime,
-                                                          positionIndex, systemIndex,
-                                                          dynamic->GetStaffVolume()));
+                const int channel = player.getPlayerNumber();
+
+                // Add vibrato event, and an event to turn off the vibrato after
+                // the note is done.
+                eventList.push_back(
+                            new VibratoEvent(channel, startTime, position,
+                                             systemIndex,
+                                             VibratoEvent::VibratoOn, type));
+
+                eventList.push_back(
+                            new VibratoEvent(channel, startTime + duration,
+                                             position, systemIndex,
+                                             VibratoEvent::VibratoOff));
             }
         }
 
-        // let ring events (applied to all notes in the position)
-        if (position->HasLetRing() && !letRingActive)
+        // Handle dynamics.
         {
-            eventList.push_back(new LetRingEvent(channel, startTime, positionIndex, systemIndex,
-                                                 LetRingEvent::LET_RING_ON));
+            const Dynamic *dynamic = ScoreUtils::findByPosition(
+                        staff.getDynamics(), position);
+            if (dynamic)
+            {
+                BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+                {
+                    eventList.push_back(
+                        new VolumeChangeEvent(player.getPlayerNumber(),
+                                              startTime, position, systemIndex,
+                                              dynamic->getVolume()));
+                }
+            }
+        }
+
+        // Let ring events (applied to all notes in the position).
+        if (pos.hasProperty(Position::LetRing) && !letRingActive)
+        {
+            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            {
+                eventList.push_back(
+                            new LetRingEvent(player.getPlayerNumber(),
+                                             startTime, position, systemIndex,
+                                             LetRingEvent::LetRingOn));
+            }
+
             letRingActive = true;
         }
-        else if (!position->HasLetRing() && letRingActive)
+        else if (!pos.hasProperty(Position::LetRing) && letRingActive)
         {
-            eventList.push_back(new LetRingEvent(channel, startTime, positionIndex, systemIndex,
-                                                 LetRingEvent::LET_RING_OFF));
+            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            {
+                eventList.push_back(
+                            new LetRingEvent(player.getPlayerNumber(),
+                                             startTime, position, systemIndex,
+                                             LetRingEvent::LetRingOff));
+            }
+
             letRingActive = false;
         }
         // Make sure that we end the let ring after the last position in the bar.
-        else if (letRingActive && position == positions.back())
+        else if (letRingActive &&
+                 (&pos == &staff.getPositionsInRange(voice, leftPos,
+                                                     rightPos).back()))
         {
-            eventList.push_back(new LetRingEvent(channel, startTime + duration, positionIndex, systemIndex,
-                                                 LetRingEvent::LET_RING_OFF));
+            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            {
+                eventList.push_back(
+                            new LetRingEvent(player.getPlayerNumber(),
+                                             startTime + duration, position,
+                                             systemIndex,
+                                             LetRingEvent::LetRingOff));
+            }
+
             letRingActive = false;
         }
-#else
-        Q_UNUSED(currentTempo);
-        Q_UNUSED(letRingActive);
-#endif
+
         BOOST_FOREACH(const Note &note, pos.getNotes())
         {
             // For arpeggios, delay the start of each note a small amount from
