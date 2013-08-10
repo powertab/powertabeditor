@@ -102,8 +102,14 @@ private:
 
 /// Useful utility functions for working with natural and tapped harmonics.
 namespace Harmonics {
+
 /// Returns a list of all fret offsets that produce harmonics (e.g. 7, 12, etc.)
 std::vector<int> getValidFretOffsets();
+
+/// Returns the pitch offset corresponding to the given fret offset.
+/// For example, a fret offset of 12 has a pitch offset of 12 (one octave), and
+/// a fret offset of 7 has pitch offset 19 (octave and a fifth).
+int getPitchOffset(int fretOffset);
 }
 
 /// Creates a text representation of the note, including brackets for ghost

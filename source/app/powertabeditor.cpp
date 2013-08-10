@@ -51,6 +51,8 @@
 #include <app/scorearea.h>
 #include <app/settings.h>
 
+#include <audio/midiplayer.h>
+
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/timer.hpp>
@@ -85,6 +87,7 @@ PowerTabEditor::PowerTabEditor() :
     myDocumentManager(new DocumentManager()),
     myFileFormatManager(new FileFormatManager()),
     myUndoManager(new UndoManager()),
+    myIsPlaying(false),
     myPreviousDirectory(QSettings().value(Settings::APP_PREVIOUS_DIRECTORY,
                                           QDir::homePath()).toString()),
     myRecentFiles(NULL),
@@ -123,10 +126,6 @@ PowerTabEditor::PowerTabEditor() :
     connect(myRecentFiles, SIGNAL(fileSelected(QString)), this,
             SLOT(openFile(QString)));
     createTabArea();
-
-#if 0
-    isPlaying = false;
-#endif
 
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
@@ -285,7 +284,7 @@ bool PowerTabEditor::closeTab(int index)
 #endif
     myDocumentManager->setCurrentDocumentIndex(currentIndex);
 
-    onDocumentOpenedOrClosed(currentIndex != -1);
+    enableEditing(currentIndex != -1);
     return true;
 }
 
@@ -371,6 +370,59 @@ void PowerTabEditor::editPreferences()
 #endif
 }
 
+void PowerTabEditor::startStopPlayback()
+{
+    myIsPlaying = !myIsPlaying;
+
+    if (myIsPlaying)
+    {
+        // Start up the midi player.
+        myPlayPauseCommand->setText(tr("Pause"));
+
+#if 0
+        getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
+        getCurrentPlaybackWidget()->setPlaybackMode(true);
+#endif
+
+        const ScoreLocation &location = getLocation();
+        // TODO - allow playback speed to be adjusted.
+        myMidiPlayer.reset(new MidiPlayer(location.getScore(),
+                                          location.getSystemIndex(),
+                                          location.getPositionIndex(), 100));
+
+        connect(myMidiPlayer.get(), SIGNAL(playbackSystemChanged(int)), this,
+                SLOT(moveCaretToSystem(int)));
+        connect(myMidiPlayer.get(), SIGNAL(playbackPositionChanged(int)), this,
+                SLOT(moveCaretToPosition(int)));
+        connect(myMidiPlayer.get(), SIGNAL(finished()), this,
+                SLOT(startStopPlayback()));
+#if 0
+        connect(playbackToolbarList->currentWidget(), SIGNAL(playbackSpeedChanged(int)), midiPlayer.get(), SLOT(changePlaybackSpeed(int)));
+#endif
+
+        myMidiPlayer->start();
+    }
+    else
+    {
+        // If we manually stop playback, tell the midi thread to finish.
+        if (myMidiPlayer && myMidiPlayer->isRunning())
+        {
+            // Avoid recursion from the finished() signal being called.
+            myMidiPlayer->disconnect(this);
+            myMidiPlayer.reset();
+        }
+
+        myPlayPauseCommand->setText(tr("Play"));
+#if 0
+        getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
+        getCurrentPlaybackWidget()->setPlaybackMode(false);
+#endif
+
+        enableEditing(true);
+        updateCommands();
+    }
+}
+
 void PowerTabEditor::redrawSystem(int index)
 {
     getScoreArea()->redrawSystem(index);
@@ -414,6 +466,11 @@ void PowerTabEditor::moveCaretToEnd()
     getCaret().moveToEndPosition();
 }
 
+void PowerTabEditor::moveCaretToPosition(int position)
+{
+    getCaret().moveToPosition(position);
+}
+
 void PowerTabEditor::moveCaretToFirstSection()
 {
     getCaret().moveToFirstSystem();
@@ -432,6 +489,11 @@ void PowerTabEditor::moveCaretToPrevSection()
 void PowerTabEditor::moveCaretToLastSection()
 {
     getCaret().moveToLastSystem();
+}
+
+void PowerTabEditor::moveCaretToSystem(int system)
+{
+    getCaret().moveToSystem(system, true);
 }
 
 void PowerTabEditor::moveCaretToNextStaff()
@@ -878,12 +940,14 @@ void PowerTabEditor::createCommands()
     fileInfoAct = new Command(tr("File Information..."), "Edit.FileInformation",
                               QKeySequence(), this);
     connect(fileInfoAct, SIGNAL(triggered()), this, SLOT(openFileInformation()));
-
-    // Playback-related actions
-    playPauseAct = new Command(tr("Play"), "PlayPause.Play", Qt::Key_Space, this);
-    connect(playPauseAct, SIGNAL(triggered()), this, SLOT(startStopPlayback()));
-
 #endif
+
+    // Playback-related actions.
+    myPlayPauseCommand = new Command(tr("Play"), "Play.PlayPause",
+                                     Qt::Key_Space, this);
+    connect(myPlayPauseCommand, SIGNAL(triggered()), this,
+            SLOT(startStopPlayback()));
+
     // Section navigation actions.
     myFirstSectionCommand = new Command(tr("First Section"),
                                         "Section.FirstSection",
@@ -1446,12 +1510,11 @@ void PowerTabEditor::createMenus()
     editMenu->addAction(pasteAct);
     editMenu->addSeparator();
     editMenu->addAction(fileInfoAct);
-
-    // Playback Menu
-    playbackMenu = menuBar()->addMenu(tr("Play&back"));
-    playbackMenu->addAction(playPauseAct);
-
 #endif
+    // Playback Menu.
+    myPlaybackMenu = menuBar()->addMenu(tr("Play&back"));
+    myPlaybackMenu->addAction(myPlayPauseCommand);
+
     // Position Menu.
     myPositionMenu = menuBar()->addMenu(tr("&Position"));
     myPositionSectionMenu = myPositionMenu->addMenu(tr("&Section"));
@@ -1654,7 +1717,7 @@ void PowerTabEditor::createTabArea()
     connect(myTabWidget, SIGNAL(currentChanged(int)), this,
             SLOT(switchTab(int)));
 
-    onDocumentOpenedOrClosed(false);
+    enableEditing(false);
 }
 
 void PowerTabEditor::setPreviousDirectory(const QString &fileName)
@@ -1758,7 +1821,7 @@ void PowerTabEditor::setupNewTab()
     // Switch to the new document.
     myTabWidget->setCurrentIndex(myDocumentManager->getCurrentDocumentIndex());
 
-    onDocumentOpenedOrClosed(true);
+    enableEditing(true);
     updateCommands();
     scorearea->setFocus();
 
@@ -1784,6 +1847,14 @@ inline void updateNoteProperty(Command *command, const Note *note,
 
 void PowerTabEditor::updateCommands()
 {
+    // Disable editing during playback.
+    if (myIsPlaying)
+    {
+        enableEditing(false);
+        myPlayPauseCommand->setEnabled(true);
+        return;
+    }
+
     const ScoreLocation &location = getLocation();
     const Score &score = location.getScore();
     const System &system = location.getSystem();
@@ -1895,7 +1966,7 @@ void PowerTabEditor::updateCommands()
                                           system.getPlayerChanges(), position));
 }
 
-void PowerTabEditor::onDocumentOpenedOrClosed(bool hasOpenDocuments)
+void PowerTabEditor::enableEditing(bool enable)
 {
     QList<QMenu *> menuList;
     menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu <<
@@ -1907,12 +1978,12 @@ void PowerTabEditor::onDocumentOpenedOrClosed(bool hasOpenDocuments)
     {
         foreach(QAction *action, menu->actions())
         {
-            action->setEnabled(hasOpenDocuments);
+            action->setEnabled(enable);
         }
     }
 
-    myCloseTabCommand->setEnabled(hasOpenDocuments);
-    mySaveAsCommand->setEnabled(hasOpenDocuments);
+    myCloseTabCommand->setEnabled(enable);
+    mySaveAsCommand->setEnabled(enable);
 #if 0
     addGuitarAct->setEnabled(enable);
 #endif
@@ -2155,43 +2226,6 @@ int PowerTabEditor::getCurrentPlaybackSpeed() const
     }
 
     return getCurrentPlaybackWidget()->playbackSpeed();
-}
-
-void PowerTabEditor::startStopPlayback()
-{
-    isPlaying = !isPlaying;
-
-    if (isPlaying)
-    {
-        playPauseAct->setText(tr("Pause"));
-
-        getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
-        getCurrentPlaybackWidget()->setPlaybackMode(true);
-
-        midiPlayer.reset(new MidiPlayer(getCurrentScoreArea()->getCaret(), getCurrentPlaybackSpeed()));
-        connect(midiPlayer.get(), SIGNAL(playbackSystemChanged(quint32)), this, SLOT(moveCaretToSystem(quint32)));
-        connect(midiPlayer.get(), SIGNAL(playbackPositionChanged(quint8)), this, SLOT(moveCaretToPosition(quint8)));
-        connect(midiPlayer.get(), SIGNAL(finished()), this, SLOT(startStopPlayback()));
-        connect(playbackToolbarList->currentWidget(), SIGNAL(playbackSpeedChanged(int)), midiPlayer.get(), SLOT(changePlaybackSpeed(int)));
-        midiPlayer->start();
-    }
-    else
-    {
-        // If we manually stop playback, tell the midi thread to finish.
-        if (midiPlayer && midiPlayer->isRunning())
-        {
-            // Avoid recursion from the finished() signal being called.
-            midiPlayer->disconnect(this);
-            midiPlayer.reset();
-        }
-
-        playPauseAct->setText(tr("Play"));
-        getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
-        getCurrentPlaybackWidget()->setPlaybackMode(false);
-
-        updateScoreAreaActions(true);
-        updateActions();
-    }
 }
 
 /// Move the caret back to the start, and restart playback if necessary.

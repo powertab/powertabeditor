@@ -24,6 +24,10 @@
 class BendEvent : public MidiEvent
 {
 public:
+    /// Pitch bend range (in half steps)
+    static const uint8_t PITCH_BEND_RANGE = 24;
+    static const uint8_t DEFAULT_BEND = 64;
+
     BendEvent(int channel, double startTime, int position, int system,
               uint8_t myBendAmount);
 

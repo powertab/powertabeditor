@@ -213,3 +213,9 @@ std::vector<int> Harmonics::getValidFretOffsets()
 
     return frets;
 }
+
+int Harmonics::getPitchOffset(int fretOffset)
+{
+    std::map<int, int>::const_iterator it = theHarmonicOffsets.find(fretOffset);
+    return (it != theHarmonicOffsets.end()) ? it->second : 0;
+}

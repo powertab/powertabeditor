@@ -20,13 +20,10 @@
 #include <audio/midioutputdevice.h>
 #include <score/generalmidi.h>
 
-/// Pitch bend range (in half steps)
-static const uint8_t PITCH_BEND_RANGE = 24;
-static const uint8_t DEFAULT_BEND = 64;
 /// Pitch bend amount to bend a note by a quarter tone.
 static const double BEND_QUARTER_TONE =
-        (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - DEFAULT_BEND) /
-        (2.0 * PITCH_BEND_RANGE);
+        (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - BendEvent::DEFAULT_BEND) /
+        (2.0 * BendEvent::PITCH_BEND_RANGE);
 
 BendEvent::BendEvent(int channel, double startTime, int position,
                      int system, uint8_t bendAmount)

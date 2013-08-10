@@ -21,6 +21,7 @@
 
 const int TempoMarker::MIN_BEATS_PER_MINUTE = 40;
 const int TempoMarker::MAX_BEATS_PER_MINUTE = 300;
+const int TempoMarker::DEFAULT_BEATS_PER_MINUTE = 120;
 
 TempoMarker::TempoMarker()
     : myPosition(0),
@@ -29,7 +30,7 @@ TempoMarker::TempoMarker()
       myListessoBeatType(Quarter),
       myTripletFeel(NoTripletFeel),
       myAlterationOfPace(NoAlterationOfPace),
-      myBeatsPerMinute(120),
+      myBeatsPerMinute(DEFAULT_BEATS_PER_MINUTE),
       myDescription("")
 {
 }
@@ -41,7 +42,7 @@ TempoMarker::TempoMarker(int position)
       myListessoBeatType(Quarter),
       myTripletFeel(NoTripletFeel),
       myAlterationOfPace(NoAlterationOfPace),
-      myBeatsPerMinute(120),
+      myBeatsPerMinute(DEFAULT_BEATS_PER_MINUTE),
       myDescription("")
 {
 }

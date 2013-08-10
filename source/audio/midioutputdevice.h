@@ -37,6 +37,7 @@ public:
     static const int NUM_CHANNELS = 16;
 
     MidiOutputDevice();
+    ~MidiOutputDevice();
 
     bool initialize(size_t preferredApi, unsigned int preferredPort);
     size_t getApiCount();

@@ -29,6 +29,7 @@ class Caret;
 class Command;
 class DocumentManager;
 class FileFormatManager;
+class MidiPlayer;
 class QActionGroup;
 class RecentFiles;
 class ScoreArea;
@@ -80,6 +81,9 @@ private slots:
     /// Launches the preferences dialog.
     void editPreferences();
 
+    /// Starts or stops playback of the score.
+    void startStopPlayback();
+
     /// Redraws only the given system.
     void redrawSystem(int);
     /// Redraws the entire score.
@@ -97,6 +101,8 @@ private slots:
     void moveCaretUp();
     /// Moves the caret to the last position in the staff.
     void moveCaretToEnd();
+    /// Moves the caret to the specified position.
+    void moveCaretToPosition(int position);
     /// Moves the caret to the first system in the score.
     void moveCaretToFirstSection();
     /// Moves the caret to the next system in the score.
@@ -105,6 +111,8 @@ private slots:
     void moveCaretToPrevSection();
     /// Moves the caret to the last system in the score.
     void moveCaretToLastSection();
+    /// Moves the caret to the specified system.
+    void moveCaretToSystem(int system);
     /// Moves the caret to the next staff in the system.
     void moveCaretToNextStaff();
     /// Moves the caret to the previous staff in the system.
@@ -203,9 +211,8 @@ private:
     /// Updates whether menu items are enabled, checked, etc. depending on the
     /// current location.
     void updateCommands();
-    /// When a document is opened or closed, enable/disable menu items if
-    /// necessary.
-    void onDocumentOpenedOrClosed(bool hasOpenDocuments);
+    /// Enables or disables all editing commands.
+    void enableEditing(bool enable);
 
     /// Adds or removes a rest at the current location.
     void editRest(Position::DurationType duration);
@@ -236,6 +243,9 @@ private:
     boost::scoped_ptr<DocumentManager> myDocumentManager;
     boost::scoped_ptr<FileFormatManager> myFileFormatManager;
     boost::scoped_ptr<UndoManager> myUndoManager;
+    boost::scoped_ptr<MidiPlayer> myMidiPlayer;
+    /// Tracks whether we are currently in playback mode.
+    bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.
     QString myPreviousDirectory;
     RecentFiles *myRecentFiles;
@@ -256,6 +266,9 @@ private:
     QMenu *myEditMenu;
     QAction *myUndoAction;
     QAction *myRedoAction;
+
+    QMenu *myPlaybackMenu;
+    Command *myPlayPauseCommand;
 
     QMenu *myPositionMenu;
     QMenu *myPositionSectionMenu;
@@ -386,7 +399,6 @@ private slots:
     void updateActiveVoice(int);
     void openFileInformation();
     void performFullRedraw();
-    void startStopPlayback();
     void rewindPlaybackToStart();
     bool moveCaretLeft();
     void moveCaretDown();
@@ -419,8 +431,6 @@ private slots:
     void cutSelectedNotes();
 
 private:
-    bool isPlaying;
-
     Toolbox* toolBox;
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
@@ -429,9 +439,6 @@ private:
     Command* copyAct;
     Command* pasteAct;
     Command* fileInfoAct;
-
-    QMenu* playbackMenu;
-    Command* playPauseAct;
 
     Command* shiftForwardAct;
     Command* shiftBackwardAct;
@@ -473,10 +480,7 @@ private:
 
     boost::scoped_ptr<QStackedWidget> mixerList;
     boost::scoped_ptr<QStackedWidget> playbackToolbarList;
-
     boost::shared_ptr<SkinManager> skinManager;
-    boost::scoped_ptr<MidiPlayer> midiPlayer;
-
     boost::shared_ptr<SettingsPubSub> settingsPubSub;
     boost::shared_ptr<TuningDictionary> tuningDictionary;
 

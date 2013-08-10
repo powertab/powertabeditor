@@ -81,6 +81,10 @@ public:
     DurationType getDurationType() const;
     /// Sets the position's duration type (e.g. half note).
     void setDurationType(DurationType duration);
+    /// Returns the note duration, including dots, irregular groupings, etc.
+    /// This does not include tempo, and the durations are relative to a
+    /// quarter note (i.e. a quarter note is 1.0, eighth note is 0.5, etc).
+    double getDurationTime() const;
 
     /// Returns whether the position has vibrato, palm muting, etc.
     bool hasProperty(SimpleProperty property) const;

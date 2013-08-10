@@ -67,9 +67,9 @@ public:
     /// Removes the specified barline from the system.
     void removeBarline(const Barline &barline);
 
-    /// Returns the last barline before (or including) the given position.
+    /// Returns the last barline before the given position.
     const Barline *getPreviousBarline(int position) const;
-    /// Returns the first barline after (or including) the given position.
+    /// Returns the first barline after the given position.
     const Barline *getNextBarline(int position) const;
 
     /// Returns the set of tempo markers in the system.

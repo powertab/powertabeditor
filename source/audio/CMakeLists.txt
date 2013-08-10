@@ -6,7 +6,7 @@ add_library(pteaudio
     metronomeevent.cpp
     midievent.cpp
     midioutputdevice.cpp
-    #midiplayer.cpp
+    midiplayer.cpp
     playnoteevent.cpp
     repeatcontroller.cpp
     repeat.cpp

@@ -15,81 +15,98 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef MIDIPLAYER_H
-#define MIDIPLAYER_H
+#ifndef AUDIO_MIDIPLAYER_H
+#define AUDIO_MIDIPLAYER_H
 
 #include <QThread>
-#include <QMutex>
-#include <boost/shared_ptr.hpp>
-#include <vector>
+#include <boost/cstdint.hpp>
 #include <boost/ptr_container/ptr_list.hpp>
-#include <powertabdocument/systemlocation.h>
+#include <QMutex>
 
-class Caret;
-class Position;
-class TempoMarker;
-class Guitar;
-class System;
-class Staff;
 class MidiEvent;
 class Note;
+class Position;
 class Score;
-class Barline;
+class Staff;
+class System;
+class TempoMarker;
+class Tuning;
 
 class MidiPlayer : public QThread
 {
     Q_OBJECT
 
 public:
-    MidiPlayer(Caret* caret, int playbackSpeed);
+    MidiPlayer(const Score &score, int startSystem, int startPosition,
+               int speed);
     ~MidiPlayer();
 
 signals:
-    // these signals are used to notify the caret when a position change is necessary
-    void playbackSystemChanged(quint32 systemIndex);
-    void playbackPositionChanged(quint8 positionIndex);
-
+    // These signals are used to move the caret when a position change is
+    // necessary
+    void playbackSystemChanged(int system);
+    void playbackPositionChanged(int position);
+#if 0
 public slots:
     void changePlaybackSpeed(int newPlaybackSpeed);
+#endif
 
 private:
     void run();
+    void setIsPlaying(bool set);
+    bool isPlaying() const;
 
-    void generateEvents(const Score* score,
-                        boost::ptr_list<MidiEvent>& eventList);
+    void generateEvents(boost::ptr_list<MidiEvent> &eventList);
+    void playMidiEvents(const boost::ptr_list<MidiEvent> &eventList);
+
+    /// Generates a list of all notes in the given bar.
+    /// @returns The timestamp of the end of the last event in the bar.
+    double generateEventsForBar(const System &system, int systemIndex,
+                                const Staff &staff, int staffIndex, int voice,
+                                int leftPos, int rightPos,
+                                const double barStartTime,
+                                boost::ptr_list<MidiEvent>& eventList);
+
+    /// Returns the current tempo (duration of a quarter note in milliseconds).
+    double getCurrentTempo(int system, int position) const;
+
+    /// Returns the active tempo marker, if one exists.
+    const TempoMarker *getCurrentTempoMarker(int systemIndex, int position) const;
+
+    /// Calculates the duration of a note in the given position.
+    double calculateNoteDuration(int system, const Position &pos) const;
+
+    double getWholeRestDuration(const System &system, int systemIndex,
+                                const Staff &staff, int voice,
+                                const Position &pos,
+                                double originalDuration) const;
+
+    int getActualNotePitch(const Note &note, const Tuning &tuning) const;
+
+    const Score &myScore;
+    const int myStartSystem;
+    const int myStartPosition;
+    bool myIsPlaying;
+    /// Tracks the active pitch bend (used for "bend and hold"-type events).
+    uint8_t myActivePitchBend;
+    /// The current playback speed (percent).
+    int myPlaybackSpeed;
+    mutable QMutex myMutex;
+
 
     enum Durations
     {
-        GRACE_NOTE_DURATION = 60,
-        ARPEGGIO_OFFSET = 30
+        GraceNoteDuration = 60,
+        ArpeggioOffset = 30
     };
 
-    static const quint8 METRONOME_CHANNEL = 15;
-
-    double getCurrentTempo(const SystemLocation& location) const;
-    boost::shared_ptr<TempoMarker> getCurrentTempoMarker(const SystemLocation &location) const;
-    double calculateNoteDuration(uint32_t systemIndex, const Position *currentPosition) const;
-
-    double generateEventsForBar(uint32_t systemIndex,
-                                const std::vector<Position*>& positions,
-                                const Score* score,
-                                boost::shared_ptr<const System> system,
-                                boost::shared_ptr<const Staff> staff,
-                                uint32_t staffIndex,
-                                const uint32_t voice, const double barStartTime,
-                                boost::ptr_list<MidiEvent>& eventList);
-
+#if 0
     double generateMetronome(uint32_t systemIndex,
                              boost::shared_ptr<const System> system,
                              boost::shared_ptr<const Barline> barline,
                              double startTime, const double notesEndTime,
                              boost::ptr_list<MidiEvent>& eventList) const;
 
-    void playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation);
-
-    double getWholeRestDuration(boost::shared_ptr<const System> system, boost::shared_ptr<const Staff> staff,
-                                uint32_t systemIndex, uint32_t voice, const Position *position,
-                                double originalDuration) const;
 
     /// Holds basic information about a bend - used to simplify the generateBends function
     struct BendEventInfo
@@ -108,16 +125,10 @@ private:
                              int releaseBendAmount) const;
     void generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
                             double noteDuration, double currentTempo, const Position* position);
-    
-    uint32_t getActualNotePitch(const Note* note, boost::shared_ptr<const Guitar> guitar) const;
 
-    Caret* caret;
 
-    QMutex mutex;
 
-    bool isPlaying;
-    uint8_t activePitchBend; ///< keeps track of the active pitch bend (used for "bend and hold"-type events)
-    int playbackSpeed; ///< Current playback speed (percent)
+#endif
 };
 
-#endif // MIDIPLAYER_H
+#endif

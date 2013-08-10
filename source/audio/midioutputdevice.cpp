@@ -53,6 +53,10 @@ MidiOutputDevice::MidiOutputDevice() :
     myMidiOut = &myMidiOuts[0];
 }
 
+MidiOutputDevice::~MidiOutputDevice()
+{
+}
+
 bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
                                        unsigned char c)
 {

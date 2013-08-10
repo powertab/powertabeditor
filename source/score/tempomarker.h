@@ -111,6 +111,8 @@ public:
     static const int MIN_BEATS_PER_MINUTE;
     /// The maximum valid beats per minute.
     static const int MAX_BEATS_PER_MINUTE;
+    /// The default number of beats per minute.
+    static const int DEFAULT_BEATS_PER_MINUTE;
 
 private:
     int myPosition;

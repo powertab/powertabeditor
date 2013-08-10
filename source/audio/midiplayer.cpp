@@ -17,228 +17,219 @@
   
 #include "midiplayer.h"
 
-#include <QSettings>
 #include <app/settings.h>
-#include <QDebug>
-
-#include <audio/rtmidiwrapper.h>
-
-#include <boost/next_prior.hpp>
-#include <boost/foreach.hpp>
-
-#include <painters/caret.h>
-
-#include <powertabdocument/score.h>
-#include <powertabdocument/guitar.h>
-#include <powertabdocument/generalmidi.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/tempomarker.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/position.h>
-#include <powertabdocument/harmonics.h>
-#include <powertabdocument/timesignature.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/dynamic.h>
-
-#include <audio/midievent.h>
-#include <audio/playnoteevent.h>
-#include <audio/vibratoevent.h>
-#include <audio/stopnoteevent.h>
-#include <audio/metronomeevent.h>
-#include <audio/letringevent.h>
 #include <audio/bendevent.h>
+#include <audio/midievent.h>
+#include <audio/midioutputdevice.h>
+#include <audio/playnoteevent.h>
 #include <audio/repeatcontroller.h>
 #include <audio/restevent.h>
-#include <audio/volumechangeevent.h>
+#include <audio/stopnoteevent.h>
+#include <boost/foreach.hpp>
+#include <QDebug>
+#include <QSettings>
+#include <score/generalmidi.h>
+#include <score/score.h>
+#include <score/systemlocation.h>
+#include <score/utils.h>
+
+static const int METRONOME_CHANNEL = 15;
 
 /// A MIDI event that does nothing, but is useful for triggering a position
 /// change.
 class DummyEvent : public MidiEvent
 {
 public:
-    DummyEvent(uint8_t channel, double startTime, double duration,
-               uint32_t positionIndex, uint32_t systemIndex) :
-        MidiEvent(channel, startTime, duration, positionIndex, systemIndex)
+    DummyEvent(int channel, double startTime, double duration,
+               int position, int system)
+        : MidiEvent(channel, startTime, duration, position, system)
     {
     }
 
-    virtual void performEvent(RtMidiWrapper&) const
+    virtual void performEvent(MidiOutputDevice &) const
     {
     }
 };
 
-using boost::shared_ptr;
-
-MidiPlayer::MidiPlayer(Caret* caret, int playbackSpeed) :
-    caret(caret),
-    isPlaying(false),
-    activePitchBend(BendEvent::DEFAULT_BEND),
-    playbackSpeed(playbackSpeed)
+MidiPlayer::MidiPlayer(const Score &score, int startSystem, int startPosition,
+                       int speed)
+    : myScore(score),
+      myStartSystem(startSystem),
+      myStartPosition(startPosition),
+      myIsPlaying(false),
+      myActivePitchBend(BendEvent::DEFAULT_BEND),
+      myPlaybackSpeed(speed)
 {
 }
 
 MidiPlayer::~MidiPlayer()
 {
-    mutex.lock();
-    isPlaying = false;
-    mutex.unlock();
-
+    setIsPlaying(false);
     wait();
 }
 
 void MidiPlayer::run()
 {
-    mutex.lock();
-    isPlaying = true;
-    mutex.unlock();
-
-    const SystemLocation startLocation(caret->getCurrentSystemIndex(),
-                                       caret->getCurrentPositionIndex());
+    setIsPlaying(true);
 
     boost::ptr_list<MidiEvent> eventList;
-    generateEvents(caret->getCurrentScore(), eventList);
+    generateEvents(eventList);
 
     // Sort the events by their start time, and play them in order.
     eventList.sort();
-
-    playMidiEvents(eventList, startLocation);
+    playMidiEvents(eventList);
 }
 
-void MidiPlayer::generateEvents(const Score* score,
-                                boost::ptr_list<MidiEvent>& eventList)
+void MidiPlayer::setIsPlaying(bool set)
 {
-    double timeStamp = 0;
+    QMutexLocker lock(&myMutex);
+    myIsPlaying = set;
+}
 
-    for (uint32_t i = 0; i < score->GetSystemCount(); ++i)
+bool MidiPlayer::isPlaying() const
+{
+    QMutexLocker lock(&myMutex);
+    return myIsPlaying;
+}
+
+void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
+{
+    double time = 0;
+
+    int systemIndex = 0;
+    BOOST_FOREACH(const System &system, myScore.getSystems())
     {
-        shared_ptr<const System> system = score->GetSystem(i);
-
-        std::vector<shared_ptr<const Barline> > barlines;
-        system->GetBarlines(barlines);
-
-        for (size_t j = 0; j < barlines.size() - 1; ++j)
+        BOOST_FOREACH(const Barline &leftBar, system.getBarlines())
         {
-            shared_ptr<const Barline> leftBar = barlines[j];
-            shared_ptr<const Barline> rightBar = barlines[j+1];
+            const Barline *rightBar = system.getNextBarline(
+                        leftBar.getPosition());
+            if (!rightBar)
+                break;
 
-            const double barStartTime = timeStamp;
+            const double barStartTime = time;
 
-            for (uint32_t k = 0; k < system->GetStaffCount(); ++k)
+            int staffIndex = 0;
+            BOOST_FOREACH(const Staff &staff, system.getStaves())
             {
-                shared_ptr<const Staff> staff = system->GetStaff(k);
-
-                for (uint32_t voice = 0; voice < Staff::NUM_STAFF_VOICES;
-                     ++voice)
+                for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
                 {
-                    std::vector<Position*> positions;
-                    staff->GetPositionsInRange(positions, voice,
-                                               leftBar->GetPosition(),
-                                               rightBar->GetPosition() - 1);
+                    const double endTime = generateEventsForBar(system,
+                                systemIndex, staff, staffIndex, voice,
+                                leftBar.getPosition(), rightBar->getPosition(),
+                                barStartTime, eventList);
 
-                    double endTime = generateEventsForBar(i, positions, score,
-                                                          system, staff, k,
-                                                          voice, barStartTime,
-                                                          eventList);
-                    timeStamp = std::max(timeStamp, endTime);
+                    // Force playback to be synchronized at each bar in case
+                    // some staves have too many or too few notes.
+                    time = std::max(time, endTime);
                 }
+
+                ++staffIndex;
             }
 
             // Don't add in the metronome for empty bars, but add an empty event
             // for the left bar so that repeats, etc. are triggered.
-            if (timeStamp == barStartTime)
+            if (time == barStartTime)
             {
-                eventList.push_back(new DummyEvent(METRONOME_CHANNEL, timeStamp, 0,
-                                                   leftBar->GetPosition(), i));
+                eventList.push_back(new DummyEvent(METRONOME_CHANNEL, time, 0,
+                                                   leftBar.getPosition(),
+                                                   systemIndex));
                 continue;
             }
 
             // Add metronome ticks for the bar.
-            timeStamp = generateMetronome(i, system, leftBar, barStartTime,
-                                          timeStamp, eventList);
+#if 0
+            time = generateMetronome(systemIndex, system, leftBar, barStartTime,
+                                     time, eventList);
+#endif
         }
 
         // Add event at the end bar's position in order to trigger any
         // repeats or alternate endings. We don't need this for any other bars
         // since there are metronome events at the other bars.
-        eventList.push_back(new DummyEvent(METRONOME_CHANNEL, timeStamp, 0,
-                                           barlines.back()->GetPosition(), i));
+        eventList.push_back(
+                    new DummyEvent(METRONOME_CHANNEL, time, 0,
+                                   system.getBarlines().back().getPosition(),
+                                   systemIndex));
+
+        ++systemIndex;
     }
 }
 
-/// Returns the appropriate note velocity type for the given position/note
-PlayNoteEvent::VelocityType getNoteVelocity(const Position* position, const Note* note)
+/// Returns the appropriate note velocity type for the given position/note.
+static PlayNoteEvent::VelocityType getNoteVelocity(const Position &pos,
+                                                   const Note &note)
 {
-    if (note->IsGhostNote())
-    {
-        return PlayNoteEvent::GHOST_VELOCITY;
-    }
-    if (note->IsMuted())
-    {
-        return PlayNoteEvent::MUTED_VELOCITY;
-    }
-    if (position->HasPalmMuting())
-    {
-        return PlayNoteEvent::PALM_MUTED_VELOCITY;
-    }
-
-    return PlayNoteEvent::DEFAULT_VELOCITY;
+    if (note.hasProperty(Note::GhostNote))
+        return PlayNoteEvent::GhostVelocity;
+    else if (note.hasProperty(Note::Muted))
+        return PlayNoteEvent::MutedVelocity;
+    else if (pos.hasProperty(Position::PalmMuting))
+        return PlayNoteEvent::PalmMutedVelocity;
+    else
+        return PlayNoteEvent::DefaultVelocity;
 }
 
-/// Generates a list of all notes in the given bar (list of positions).
-/// @return The timestamp of the end of the last event in the bar.
 double MidiPlayer::generateEventsForBar(
-        uint32_t systemIndex, const std::vector<Position*>& positions,
-        const Score* score, boost::shared_ptr<const System> system,
-        boost::shared_ptr<const Staff> staff, uint32_t staffIndex,
-        const uint32_t voice, const double barStartTime,
-        boost::ptr_list<MidiEvent>& eventList)
+        const System &system, int systemIndex, const Staff &staff,
+        int staffIndex, int voice, int leftPos, int rightPos,
+        const double barStartTime, boost::ptr_list<MidiEvent> &eventList)
 {
-    activePitchBend = BendEvent::DEFAULT_BEND;
+    myActivePitchBend = BendEvent::DEFAULT_BEND;
     double startTime = barStartTime;
     bool letRingActive = false;
 
-    const uint32_t channel = staffIndex; // 1 channel per guitar/staff.
-    shared_ptr<const Guitar> guitar = score->GetGuitar(channel);
-
-    for (size_t i = 0; i < positions.size(); ++i)
+    BOOST_FOREACH(const Position &pos, staff.getPositionsInRange(
+                      voice, leftPos, rightPos))
     {
-        Position* position = positions[i];
-
-        const uint32_t positionIndex = position->GetPosition();
-        const SystemLocation location(systemIndex, positionIndex);
-        const double currentTempo = getCurrentTempo(location);
+        const int position = pos.getPosition();
+        const double currentTempo = getCurrentTempo(systemIndex, position);
 
         // Each note at a position has the same duration.
         double duration = calculateNoteDuration(systemIndex, position);
 
-        if (position->IsRest())
-        {
-            // for whole rests, they must last for the entire bar, regardless of time signature
-            if (position->GetDurationType() == 1)
-            {
-                duration = getWholeRestDuration(system, staff, systemIndex, voice, position, duration);
+        const PlayerChange *currentPlayers = ScoreUtils::getCurrentPlayers(
+                    myScore, systemIndex, pos.getPosition());
+        if (!currentPlayers)
+            continue;
 
-                // extend for multi-bar rests
-                if (position->HasMultibarRest())
-                {
-                    uint8_t measureCount = 0;
-                    position->GetMultibarRest(measureCount);
-                    duration *= measureCount;
-                }
+        const std::vector<ActivePlayer> activePlayers =
+                currentPlayers->getActivePlayers(staffIndex);
+        if (activePlayers.empty())
+            continue;
+
+        if (pos.isRest())
+        {
+            // For whole rests, they must last for the entire bar, regardless
+            // of time signature.
+            if (pos.getDurationType() == Position::WholeNote)
+            {
+                duration = getWholeRestDuration(system, systemIndex, staff,
+                                                voice, position, duration);
+
+                // Extend for multi-bar rests.
+                if (pos.hasMultiBarRest())
+                    duration *= pos.getMultiBarRestCount();
             }
 
-            eventList.push_back(new RestEvent(channel, startTime, duration,
-                                              positionIndex, systemIndex));
+            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            {
+                eventList.push_back(
+                            new RestEvent(player.getPlayerNumber(), startTime,
+                                          duration, position, systemIndex));
+            }
+
             startTime += duration;
             continue;
         }
 
-        if (position->IsAcciaccatura()) // grace note
+        // Handle grace notes.
+        if (pos.hasProperty(Position::Acciaccatura))
         {
-            duration = GRACE_NOTE_DURATION;
+            duration = GraceNoteDuration;
             startTime -= duration;
         }
 
+#if 0
         // If the position has an arpeggio, sort the notes by string in the specified direction.
         // This is so the notes can be played in the correct order, with a slight delay between each
         if (position->HasArpeggioDown())
@@ -295,34 +286,55 @@ double MidiPlayer::generateEventsForBar(
                                                  LetRingEvent::LET_RING_OFF));
             letRingActive = false;
         }
-
-        for (uint32_t j = 0; j < position->GetNoteCount(); j++)
+#else
+        Q_UNUSED(currentTempo);
+        Q_UNUSED(letRingActive);
+#endif
+        BOOST_FOREACH(const Note &note, pos.getNotes())
         {
-            // for arpeggios, delay the start of each note a small amount from the last,
-            // and also adjust the duration correspondingly
-            if (position->HasArpeggioDown() || position->HasArpeggioUp())
+            // For arpeggios, delay the start of each note a small amount from
+            // the last, and also adjust the duration correspondingly.
+            if (pos.hasProperty(Position::ArpeggioDown) ||
+                pos.hasProperty(Position::ArpeggioUp))
             {
-                startTime += ARPEGGIO_OFFSET;
-                duration -= ARPEGGIO_OFFSET;
+                startTime += ArpeggioOffset;
+                duration -= ArpeggioOffset;
             }
 
-            const Note* note = position->GetNote(j);
-
-            uint32_t pitch = getActualNotePitch(note, guitar);
+            // Pick a tuning from one of the active players.
+            // TODO - should we handle cases where different tunings are used
+            // by players in the same staff?
+            const int playerIndex = activePlayers.front().getPlayerNumber();
+            const Tuning &tuning = myScore.getPlayers()[playerIndex].getTuning();
+            int pitch = getActualNotePitch(note, tuning);
 
             const PlayNoteEvent::VelocityType velocity = getNoteVelocity(position, note);
 
-            // if this note is not tied to the previous note, play the note
-            if (!note->IsTied())
+            // If this note is not tied to the previous note, play the note.
+            if (!note.hasProperty(Note::Tied))
             {
-                eventList.push_back(new PlayNoteEvent(channel, startTime, duration, pitch,
-                                                      positionIndex, systemIndex, guitar,
-                                                      note->IsMuted(), velocity));
+                BOOST_FOREACH(const ActivePlayer &activePlayer, activePlayers)
+                {
+                    const Player &player = myScore.getPlayers()[
+                            activePlayer.getPlayerNumber()];
+                    const Instrument &instrument = myScore.getInstruments()[
+                            activePlayer.getInstrumentNumber()];
+
+                    eventList.push_back(
+                            new PlayNoteEvent(activePlayer.getPlayerNumber(),
+                                              startTime, duration, pitch,
+                                              position, systemIndex, player,
+                                              instrument,
+                                              note.hasProperty(Note::Muted),
+                                              velocity));
+                }
             }
-            // if the note is tied, make sure that the pitch is the same as the previous note,
-            // so that the Stop Note event works correctly with harmonics
+            // If the note is tied, make sure that the pitch is the same as the
+            // previous note, so that the Stop Note event works correctly with
+            // harmonics.
             else
             {
+#if 0
                 const Note* prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note, voice);
 
                 // TODO - deal with ties that wrap across systems
@@ -330,8 +342,10 @@ double MidiPlayer::generateEventsForBar(
                 {
                     pitch = getActualNotePitch(prevNote, guitar);
                 }
+#endif
             }
 
+#if 0
             // generate all events that involve pitch bends
             {
                 std::vector<BendEventInfo> bendEvents;
@@ -391,8 +405,9 @@ double MidiPlayer::generateEventsForBar(
                                                           note->IsMuted(), velocity));
                 }
             }
-
+#endif
             bool tiedToNextNote = false;
+#if 0
             // check if this note is tied to the next note
             {
                 const Note* nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note, voice);
@@ -401,23 +416,26 @@ double MidiPlayer::generateEventsForBar(
                     tiedToNextNote = true;
                 }
             }
+#endif
 
-            // end the note, unless we are tied to the next note
-            if (!note->HasTieWrap() && !tiedToNextNote)
+            // End the note, unless we are tied to the next note.
+            if (!tiedToNextNote)
             {
                 double noteLength = duration;
 
-                if (position->IsStaccato())
-                {
+                // Shorten the note duration for certain effects.
+                if (pos.hasProperty(Position::Staccato))
                     noteLength /= 2.0;
-                }
-                else if (position->HasPalmMuting())
-                {
+                else if (pos.hasProperty(Position::PalmMuting))
                     noteLength /= 1.15;
-                }
 
-                eventList.push_back(new StopNoteEvent(channel, startTime + noteLength,
-                                                      positionIndex, systemIndex, pitch));
+                BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+                {
+                    eventList.push_back(
+                                new StopNoteEvent(player.getPlayerNumber(),
+                                                  startTime + noteLength,
+                                                  position, systemIndex, pitch));
+                }
             }
         }
 
@@ -427,27 +445,24 @@ double MidiPlayer::generateEventsForBar(
     return startTime;
 }
 
-// The events are already in order of occurrence, so just play them one by one
-// startLocation is used to identify the starting position to begin playback from
-void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLocation startLocation)
+void MidiPlayer::playMidiEvents(const boost::ptr_list<MidiEvent> &eventList)
 {
-    RtMidiWrapper rtMidiWrapper;
+    SystemLocation startLocation(myStartSystem, myStartPosition);
 
-    // set the port for RtMidi
+    MidiOutputDevice device;
+    // Set the port for RtMidi.
     QSettings settings;
-    rtMidiWrapper.initialize(
+    device.initialize(
                 settings.value(Settings::MIDI_PREFERRED_API,
                                Settings::MIDI_PREFERRED_API_DEFAULT).toInt(),
                 settings.value(Settings::MIDI_PREFERRED_PORT,
                                Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt());
 
-    // set pitch bend settings for each channel to one octave
-    for (uint8_t i = 0; i < midi::NUM_MIDI_CHANNELS_PER_PORT; i++)
-    {
-        rtMidiWrapper.setPitchBendRange(i, BendEvent::PITCH_BEND_RANGE);
-    }
+    // Set pitch bend settings for each channel to one octave.
+    for (int i = 0; i < Midi::NUM_MIDI_CHANNELS_PER_PORT; ++i)
+        device.setPitchBendRange(i, BendEvent::PITCH_BEND_RANGE);
 
-    RepeatController repeatController(caret->getCurrentScore());
+    RepeatController repeatController(myScore);
 
     SystemLocation currentLocation;
     SystemLocation prevLocation;
@@ -457,84 +472,84 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
 
     while (activeEvent != eventList.end())
     {
-        {
-            QMutexLocker locker(&mutex);
-            Q_UNUSED(locker);
+        if (!isPlaying())
+            return;
 
-            if (!isPlaying)
-            {
-                return;
-            }
-        }
-
-        const SystemLocation eventLocation(activeEvent->getSystemIndex(), activeEvent->getPositionIndex());
+        const SystemLocation eventLocation(activeEvent->getSystem(),
+                                           activeEvent->getPosition());
 
 #if defined(LOG_MIDI_EVENTS)
-        qDebug() << "Playback location: " << eventLocation.getSystemIndex() << ", " << eventLocation.getPositionIndex();
+        qDebug() << "Playback location: " << eventLocation.getSystem() << ", "
+                 << eventLocation.getPosition();
 #endif
 
-        // if we haven't reached the starting position yet, keep going
+        // If we haven't reached the starting position yet, keep going.
         if (eventLocation < startLocation)
         {
             ++activeEvent;
             continue;
         }
-        // if we just reached the starting position, update the system index explicitly
-        // to avoid the "currentPosition = 0" effect of a normal system change
+        // If we just reached the starting position, update the system index
+        // explicitly to avoid the "currentPosition = 0" effect of a normal
+        // system change.
         else if (eventLocation == startLocation)
         {
-            emit playbackSystemChanged(startLocation.getSystemIndex());
-            currentLocation.setSystemIndex(startLocation.getSystemIndex());
+            emit playbackSystemChanged(startLocation.getSystem());
+            currentLocation.setSystem(startLocation.getSystem());
             prevLocation = currentLocation;
             startLocation = SystemLocation(0, 0);
         }
 
-        // if we've moved to a new position, move the caret
-        if (eventLocation.getPositionIndex() > currentLocation.getPositionIndex())
+        // If we've moved to a new position, move the caret.
+        if (eventLocation.getPosition() > currentLocation.getPosition())
         {
             prevLocation = currentLocation;
-            currentLocation.setPositionIndex(eventLocation.getPositionIndex());
-            emit playbackPositionChanged(currentLocation.getPositionIndex());
+            currentLocation.setPosition(eventLocation.getPosition());
+            emit playbackPositionChanged(currentLocation.getPosition());
         }
 
-        // moving on to a new system, so we need to reset the position to 0 to ensure
-        // playback begins at the start of the staff
-        if (eventLocation.getSystemIndex() != currentLocation.getSystemIndex())
+        // Moving on to a new system, so we need to reset the position to 0 to
+        // ensure playback begins at the start of the staff.
+        if (eventLocation.getSystem() != currentLocation.getSystem())
         {
-            currentLocation.setSystemIndex(eventLocation.getSystemIndex());
-            currentLocation.setPositionIndex(0);
+            currentLocation.setSystem(eventLocation.getSystem());
+            currentLocation.setPosition(0);
             prevLocation = currentLocation;
-            emit playbackSystemChanged(currentLocation.getSystemIndex());
+            emit playbackSystemChanged(currentLocation.getSystem());
         }
 
         SystemLocation newLocation;
-        if (repeatController.checkForRepeat(prevLocation, currentLocation, newLocation))
+        if (repeatController.checkForRepeat(prevLocation, currentLocation,
+                                            newLocation))
         {
-            qDebug() << "Moving to: " << newLocation.getSystemIndex()
-                     << ", " << newLocation.getPositionIndex();
-            qDebug() << "From position: " << currentLocation.getSystemIndex()
-                     << ", " << currentLocation.getPositionIndex()
+#ifdef LOG_MIDI_EVENTS
+            qDebug() << "Moving to: " << newLocation.getSystem()
+                     << ", " << newLocation.getPosition();
+            qDebug() << "From position: " << currentLocation.getSystem()
+                     << ", " << currentLocation.getPosition()
                      << " at " << activeEvent->getStartTime();
-
+#endif
             startLocation = newLocation;
             currentLocation = prevLocation = SystemLocation(0, 0);
-            emit playbackSystemChanged(startLocation.getSystemIndex());
-            emit playbackPositionChanged(startLocation.getPositionIndex());
+            emit playbackSystemChanged(startLocation.getSystem());
+            emit playbackPositionChanged(startLocation.getPosition());
             activeEvent = eventList.begin();
             continue;
         }
 
-        activeEvent->performEvent(rtMidiWrapper);
+        activeEvent->performEvent(device);
 
-        // add delay between this event and the next one
+        // Add delay between this event and the next one.
         MidiEventIterator nextEvent = boost::next(activeEvent);
         if (nextEvent != eventList.end())
         {
-            const int sleepDuration = abs(nextEvent->getStartTime() - activeEvent->getStartTime());
+            const int sleepDuration = abs(nextEvent->getStartTime() -
+                                          activeEvent->getStartTime());
 
-            mutex.lock();
-            const double speedShiftFactor = 100.0 / playbackSpeed; // slow down or speed up playback
-            mutex.unlock();
+            myMutex.lock();
+            // Slow down or speed up playback.
+            const double speedShiftFactor = 100.0 / myPlaybackSpeed;
+            myMutex.unlock();
 
             if (sleepDuration)
             {
@@ -550,43 +565,20 @@ void MidiPlayer::playMidiEvents(boost::ptr_list<MidiEvent>& eventList, SystemLoc
     }
 }
 
-// Finds the active tempo marker
-boost::shared_ptr<TempoMarker> MidiPlayer::getCurrentTempoMarker(
-        const SystemLocation& location) const
+double MidiPlayer::getCurrentTempo(int system, int position) const
 {
-    const Score* currentScore = caret->getCurrentScore();
+    const TempoMarker *marker = getCurrentTempoMarker(system, position);
 
-    Score::TempoMarkerPtr currentTempoMarker;
+    // Default tempo in case there is no tempo marker in the score.
+    double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE;
+    TempoMarker::BeatType beatType = TempoMarker::Quarter;
 
-    // find the active tempo marker
-    for(quint32 i = 0; i < currentScore->GetTempoMarkerCount(); i++)
+    if (marker)
     {
-        Score::TempoMarkerPtr temp = currentScore->GetTempoMarker(i);
-        if (temp->GetSystem() <= location.getSystemIndex() &&
-            temp->GetPosition() <=  location.getPositionIndex() &&
-            !temp->IsAlterationOfPace()) // TODO - properly support alterations of pace
-        {
-            currentTempoMarker = temp;
-        }
-    }
-
-    return currentTempoMarker;
-}
-
-/// Returns the current tempo (duration of a quarter note in milliseconds).
-double MidiPlayer::getCurrentTempo(const SystemLocation& location) const
-{
-    Score::TempoMarkerPtr tempoMarker = getCurrentTempoMarker(location);
-
-    double bpm = TempoMarker::DEFAULT_BEATS_PER_MINUTE; // default tempo in case there is no tempo marker in the score
-    uint8_t beatType = TempoMarker::DEFAULT_BEAT_TYPE;
-
-    if (tempoMarker)
-    {
-        bpm = tempoMarker->GetBeatsPerMinute();
+        bpm = marker->getBeatsPerMinute();
         Q_ASSERT(bpm != 0);
 
-        beatType = tempoMarker->GetBeatType();
+        beatType = marker->getBeatType();
     }
 
     // Convert the values in the TempoMarker::BeatType enum to a factor that
@@ -604,45 +596,79 @@ double MidiPlayer::getCurrentTempo(const SystemLocation& location) const
 
     Q_ASSERT(factor > 0);
 
-    // convert bpm to millisecond duration
+    // Convert bpm to millisecond duration.
     return (60.0 / (bpm * factor) * 1000.0);
 }
 
-double MidiPlayer::calculateNoteDuration(uint32_t systemIndex,
-                                         const Position* currentPosition) const
+const TempoMarker *MidiPlayer::getCurrentTempoMarker(int systemIndex,
+                                                     int position) const
 {
-    const double tempo = getCurrentTempo(
-                SystemLocation(systemIndex, currentPosition->GetPosition()));
+    const TempoMarker *lastMarker = NULL;
 
-    return currentPosition->GetDuration() * tempo;
-}
-
-double MidiPlayer::getWholeRestDuration(
-        shared_ptr<const System> system, shared_ptr<const Staff> staff,
-        uint32_t systemIndex, uint32_t voice, const Position* position,
-        double originalDuration) const
-{
-    System::BarlineConstPtr prevBarline = system->GetPrecedingBarline(position->GetPosition());
-
-    // if the whole rest is not the only item in the bar, treat it like a regular rest
-    if (!staff->IsOnlyPositionInBar(position, system, voice))
+    int i = 0;
+    BOOST_FOREACH(const System &system, myScore.getSystems())
     {
-        return originalDuration;
+        if (i > systemIndex)
+            break;
+
+        BOOST_FOREACH(const TempoMarker &marker, system.getTempoMarkers())
+        {
+            if (i < systemIndex ||
+               (i == systemIndex && marker.getPosition() <= position))
+            {
+                lastMarker = &marker;
+            }
+        }
+
+        ++i;
     }
 
-    const TimeSignature& currentTimeSignature = prevBarline->GetTimeSignature();
+    return lastMarker;
+}
 
-    const double tempo = getCurrentTempo(
-                SystemLocation(systemIndex, position->GetPosition()));
+double MidiPlayer::calculateNoteDuration(int system, const Position &pos) const
+{
+    const double tempo = getCurrentTempo(system, pos.getPosition());
+    return pos.getDurationTime() * tempo;
+}
 
-    double beatDuration = currentTimeSignature.GetBeatAmount();
+double MidiPlayer::getWholeRestDuration(const System &system, int systemIndex,
+                                        const Staff &staff, int voice,
+                                        const Position &pos,
+                                        double originalDuration) const
+{
+    const Barline *prevBar = system.getPreviousBarline(pos.getPosition());
+    // Use the start bar if necessary.
+    if (!prevBar)
+        prevBar = &system.getBarlines().front();
+
+    const Barline *nextBar = system.getNextBarline(pos.getPosition());
+    Q_ASSERT(nextBar);
+
+    // If the whole rest is not the only item in the bar, treat it like a
+    // regular rest.
+    for (int i = prevBar->getPosition(); i < nextBar->getPosition(); ++i)
+    {
+        const Position *otherPos = ScoreUtils::findByPosition(
+                    staff.getVoice(voice), i);
+
+        if (otherPos && otherPos != &pos)
+            return originalDuration;
+    }
+
+    // Otherwise, extend the rest for the entire bar.
+    const TimeSignature& currentTimeSignature = prevBar->getTimeSignature();
+
+    const double tempo = getCurrentTempo(systemIndex, pos.getPosition());
+    double beatDuration = currentTimeSignature.getBeatValue();
     double duration = tempo * 4.0 / beatDuration;
-    int numBeats = currentTimeSignature.GetBeatsPerMeasure();
+    int numBeats = currentTimeSignature.getBeatsPerMeasure();
     duration *= numBeats;
 
     return duration;
 }
 
+#if 0
 /// Generates metronome ticks for a bar.
 /// @param notesEndTime The timestamp of the last note event in the bar.
 double MidiPlayer::generateMetronome(uint32_t systemIndex,
@@ -703,26 +729,25 @@ double MidiPlayer::generateMetronome(uint32_t systemIndex,
 
     return startTime;
 }
+#endif
 
-uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guitar> guitar) const
+int MidiPlayer::getActualNotePitch(const Note &note, const Tuning &tuning) const
 {
-    const Tuning& tuning = guitar->GetTuning();
+    const int openStringPitch = tuning.getNote(note.getString(), false) +
+            tuning.getCapo();
+    int pitch = openStringPitch + note.getFretNumber();
     
-    const quint32 openStringPitch = tuning.GetNote(note->GetString()) + guitar->GetCapo();
-    quint32 pitch = openStringPitch + note->GetFretNumber();
+    if (note.hasProperty(Note::NaturalHarmonic))
+        pitch = openStringPitch + Harmonics::getPitchOffset(note.getFretNumber());
     
-    if (note->IsNaturalHarmonic())
+    if (note.hasTappedHarmonic())
     {
-        pitch = openStringPitch + Harmonics::getPitchOffset(note->GetFretNumber());
+        pitch += Harmonics::getPitchOffset(note.getTappedHarmonicFret() -
+                                           note.getFretNumber());
     }
-    
-    if (note->HasTappedHarmonic())
-    {
-        uint8_t tappedFret = 0;
-        note->GetTappedHarmonic(tappedFret);
-        pitch = pitch + Harmonics::getPitchOffset(tappedFret - note->GetFretNumber());
-    }
-    
+
+    // TODO - implement this for the new file format.
+#if 0
     if (note->HasArtificialHarmonic())
     {
         uint8_t key = 0, keyVariation = 0, octaveDiff = 0;
@@ -730,10 +755,12 @@ uint32_t MidiPlayer::getActualNotePitch(const Note* note, shared_ptr<const Guita
         
         pitch = (midi::GetMidiNoteOctave(pitch) + octaveDiff + 2) * 12 + key;
     }
+#endif
     
     return pitch;
 }
 
+#if 0
 /// Generates bend events for the given note
 void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTime,
                                double duration, double currentTempo, const Note* note)
@@ -831,9 +858,9 @@ MidiPlayer::BendEventInfo::BendEventInfo(double timestamp, uint8_t pitchBendAmou
 void MidiPlayer::changePlaybackSpeed(int newPlaybackSpeed)
 {
     // playback speed may be changed via the main thread during playback
-    mutex.lock();
+    myMutex.lock();
     playbackSpeed = newPlaybackSpeed;
-    mutex.unlock();
+    myMutex.unlock();
 }
 
 /// Generates slides for the given note
@@ -973,3 +1000,4 @@ void MidiPlayer::generateTremoloBar(std::vector<BendEventInfo>& bends, double st
         activePitchBend = BendEvent::DEFAULT_BEND;
     }
 }
+#endif
