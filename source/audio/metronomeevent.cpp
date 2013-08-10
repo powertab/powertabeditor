@@ -26,7 +26,7 @@
 #include <QDebug>
 #endif
 
-static const uint8_t METRONOME_PITCH = Midi::MIDI_NOTE_MIDDLE_C;
+const uint8_t MetronomeEvent::METRONOME_PITCH = Midi::MIDI_NOTE_MIDDLE_C;
 
 MetronomeEvent::MetronomeEvent(int channel, double startTime, double duration,
                                int position, int system, VelocityType velocity)

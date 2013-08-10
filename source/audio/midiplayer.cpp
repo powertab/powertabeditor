@@ -19,6 +19,7 @@
 
 #include <app/settings.h>
 #include <audio/bendevent.h>
+#include <audio/metronomeevent.h>
 #include <audio/midievent.h>
 #include <audio/midioutputdevice.h>
 #include <audio/playnoteevent.h>
@@ -137,10 +138,8 @@ void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
             }
 
             // Add metronome ticks for the bar.
-#if 0
-            time = generateMetronome(systemIndex, system, leftBar, barStartTime,
+            time = generateMetronome(system, systemIndex, leftBar, barStartTime,
                                      time, eventList);
-#endif
         }
 
         // Add event at the end bar's position in order to trigger any
@@ -668,36 +667,41 @@ double MidiPlayer::getWholeRestDuration(const System &system, int systemIndex,
     return duration;
 }
 
-#if 0
-/// Generates metronome ticks for a bar.
-/// @param notesEndTime The timestamp of the last note event in the bar.
-double MidiPlayer::generateMetronome(uint32_t systemIndex,
-                                     shared_ptr<const System> system,
-                                     shared_ptr<const Barline> barline,
-                                     double startTime, const double notesEndTime,
-                                     boost::ptr_list<MidiEvent>& eventList) const
+double MidiPlayer::generateMetronome(const System &system, int systemIndex,
+                                     const Barline &barline, double startTime,
+                                     const double notesEndTime,
+                                     boost::ptr_list<MidiEvent> &eventList) const
 {
-    const TimeSignature& timeSig = barline->GetTimeSignature();
+    const TimeSignature& timeSig = barline.getTimeSignature();
 
-    uint8_t numPulses = timeSig.GetPulses();
-    Q_ASSERT(timeSig.IsValidPulses(numPulses));
+    uint8_t numPulses = timeSig.getNumPulses();
+    Q_ASSERT(timeSig.isValidNumPulses(numPulses));
 
-    const uint8_t beatsPerMeasure = timeSig.GetBeatsPerMeasure();
-    const uint8_t beatValue = timeSig.GetBeatAmount();
-    const uint32_t position = barline->GetPosition();
+    const uint8_t beatsPerMeasure = timeSig.getBeatsPerMeasure();
+    const uint8_t beatValue = timeSig.getBeatValue();
+    const int position = barline.getPosition();
 
     // Figure out duration of pulse.
-    const double tempo = getCurrentTempo(SystemLocation(systemIndex, position));
-    double duration = tempo * 4.0 / beatValue;
-    duration *= beatsPerMeasure / numPulses;
+    const double tempo = getCurrentTempo(systemIndex, position);
+    const double duration = (tempo * 4.0 / beatValue) * beatsPerMeasure / numPulses;
 
     // Check for multi-bar rests, as we need to generate more metronome events
     // to fill the extra bars.
-    uint8_t measureCount = 0;
-    uint8_t repeatCount = 1;
-    if (system->HasMultiBarRest(barline, measureCount))
+    int repeatCount = 1;
+    const Barline *nextBar = system.getNextBarline(barline.getPosition());
+    BOOST_FOREACH(const Staff &staff, system.getStaves())
     {
-        repeatCount = measureCount;
+        for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+        {
+            BOOST_FOREACH(const Position &pos,
+                          staff.getPositionsInRange(voice, barline.getPosition(),
+                                                    nextBar->getPosition()))
+            {
+                if (pos.hasMultiBarRest())
+                    repeatCount = std::max(repeatCount,
+                                           pos.getMultiBarRestCount());
+            }
+        }
     }
 
     // If there are too many notes in the bar, add some more metronome pulses.
@@ -708,28 +712,29 @@ double MidiPlayer::generateMetronome(uint32_t systemIndex,
                                       (notesEndTime - startTime) / duration);
     }
 
-    for (uint8_t repeat = 0; repeat < repeatCount; repeat++)
+    for (int repeat = 0; repeat < repeatCount; ++repeat)
     {
-        for (uint8_t j = 0; j < numPulses; j++)
+        for (uint8_t i = 0; i < numPulses; ++i)
         {
-            MetronomeEvent::VelocityType velocity = (j == 0) ? MetronomeEvent::STRONG_ACCENT :
-                                                               MetronomeEvent::WEAK_ACCENT;
+            MetronomeEvent::VelocityType velocity = (i == 0) ?
+                        MetronomeEvent::StrongAccent :
+                        MetronomeEvent::WeakAccent;
 
-            eventList.push_back(new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
-                                                   position, systemIndex, velocity));
-
+            eventList.push_back(
+                        new MetronomeEvent(METRONOME_CHANNEL, startTime,
+                                           duration, position, systemIndex,
+                                           velocity));
             startTime += duration;
-
-            eventList.push_back(new StopNoteEvent(METRONOME_CHANNEL, startTime, position,
-                                                  systemIndex, MetronomeEvent::METRONOME_PITCH));
+            eventList.push_back(
+                        new StopNoteEvent(METRONOME_CHANNEL, startTime,
+                                          position, systemIndex,
+                                          MetronomeEvent::METRONOME_PITCH));
         }
     }
 
     startTime = std::max(startTime, notesEndTime);
-
     return startTime;
 }
-#endif
 
 int MidiPlayer::getActualNotePitch(const Note &note, const Tuning &tuning) const
 {

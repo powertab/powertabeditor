@@ -19,6 +19,7 @@
 #define AUDIO_METRONOMEEVENT_H
 
 #include "midievent.h"
+#include <boost/cstdint.hpp>
 
 class MetronomeEvent : public MidiEvent
 {
@@ -29,6 +30,8 @@ public:
         WeakAccent = 80,
         MetronomeOff = 0
     };
+
+    static const uint8_t METRONOME_PITCH;
 
     MetronomeEvent(int channel, double startTime, double duration,
                    int position, int system, VelocityType myVelocity);

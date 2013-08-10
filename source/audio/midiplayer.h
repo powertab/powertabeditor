@@ -23,6 +23,7 @@
 #include <boost/ptr_container/ptr_list.hpp>
 #include <QMutex>
 
+class Barline;
 class MidiEvent;
 class Note;
 class Position;
@@ -76,12 +77,22 @@ private:
     /// Calculates the duration of a note in the given position.
     double calculateNoteDuration(int system, const Position &pos) const;
 
+    /// Computes the duration of a whole rest. If it's the only rest/note in the
+    /// bar, then it lasts for the entire bar instead of 4 beats.
     double getWholeRestDuration(const System &system, int systemIndex,
                                 const Staff &staff, int voice,
                                 const Position &pos,
                                 double originalDuration) const;
 
+    /// Computes the pitch of a note, including things like harmonics.
     int getActualNotePitch(const Note &note, const Tuning &tuning) const;
+
+    /// Generates metronome events for a bar.
+    /// @param notesEndTime The timestamp of the last note event in the bar.
+    double generateMetronome(const System &system, int systemIndex,
+                             const Barline &barline, double startTime,
+                             const double notesEndTime,
+                             boost::ptr_list<MidiEvent> &eventList) const;
 
     const Score &myScore;
     const int myStartSystem;
@@ -101,12 +112,6 @@ private:
     };
 
 #if 0
-    double generateMetronome(uint32_t systemIndex,
-                             boost::shared_ptr<const System> system,
-                             boost::shared_ptr<const Barline> barline,
-                             double startTime, const double notesEndTime,
-                             boost::ptr_list<MidiEvent>& eventList) const;
-
 
     /// Holds basic information about a bend - used to simplify the generateBends function
     struct BendEventInfo
