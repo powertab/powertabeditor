@@ -184,9 +184,7 @@ double MidiPlayer::generateEventsForBar(
                       voice, leftPos, rightPos))
     {
         const int position = pos.getPosition();
-#if 0
         const double currentTempo = getCurrentTempo(systemIndex, position);
-#endif
 
         // Each note at a position has the same duration.
         double duration = calculateNoteDuration(systemIndex, pos);
@@ -412,39 +410,58 @@ double MidiPlayer::generateEventsForBar(
                                                       systemIndex, event.pitchBendAmount));
                 }
             }
-
-            // Perform tremolo picking or trills - they work identically, except trills alternate between two pitches
-            if (position->HasTremoloPicking() || note->HasTrill())
+#endif
+            // Perform tremolo picking or trills - they work identically, except
+            // trills alternate between two pitches.
+            if (pos.hasProperty(Position::TremoloPicking) || note.hasTrill())
             {
-                // each note is a 32nd note
+                // Each note is a 32nd note.
                 const double tremPickNoteDuration = currentTempo / 8.0;
                 const int numNotes = duration / tremPickNoteDuration;
 
-                // find the other pitch to alternate with (this is just the same pitch for tremolo picking)
-                uint32_t otherPitch = pitch;
-                if (note->HasTrill())
+                // Find the other pitch to alternate with (this is just the same
+                // pitch for tremolo picking).
+                int otherPitch = pitch;
+                if (note.hasTrill())
                 {
-                    uint8_t otherFret = 0;
-                    note->GetTrill(otherFret);
-                    otherPitch = pitch + (otherFret - note->GetFretNumber());
+                    otherPitch = pitch + (note.getTrilledFret() -
+                                          note.getFretNumber());
                 }
 
-                for (int k = 0; k < numNotes; ++k)
+                for (int i = 0; i < numNotes; ++i)
                 {
-                    const double currentStartTime = startTime + k * tremPickNoteDuration;
+                    const double currentStartTime = startTime +
+                            i * tremPickNoteDuration;
 
-                    eventList.push_back(new StopNoteEvent(channel, currentStartTime, positionIndex,
-                                                          systemIndex, pitch));
+                    BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+                    {
+                        eventList.push_back(
+                            new StopNoteEvent(player.getPlayerNumber(),
+                                              currentStartTime, position,
+                                              systemIndex, pitch));
+                    }
 
-                    // alternate to the other pitch (this has no effect for tremolo picking)
+                    // Alternate to the other pitch (this has no effect for
+                    // tremolo picking).
                     std::swap(pitch, otherPitch);
 
-                    eventList.push_back(new PlayNoteEvent(channel, currentStartTime, tremPickNoteDuration, pitch,
-                                                          positionIndex, systemIndex, guitar,
-                                                          note->IsMuted(), velocity));
+                    BOOST_FOREACH(const ActivePlayer &activePlayer, activePlayers)
+                    {
+                        const Player &player = myScore.getPlayers()[
+                                activePlayer.getPlayerNumber()];
+                        const Instrument &instrument = myScore.getInstruments()[
+                                activePlayer.getInstrumentNumber()];
+
+                        eventList.push_back(
+                            new PlayNoteEvent(activePlayer.getPlayerNumber(),
+                                    currentStartTime, tremPickNoteDuration,
+                                    pitch, position, systemIndex, player,
+                                    instrument, note.hasProperty(Note::Muted),
+                                    velocity));
+                    }
                 }
             }
-#endif
+
             bool tiedToNextNote = false;
 #if 0
             // check if this note is tied to the next note
