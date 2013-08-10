@@ -104,7 +104,6 @@ private:
     int myPlaybackSpeed;
     mutable QMutex myMutex;
 
-
     enum Durations
     {
         GraceNoteDuration = 60,
@@ -112,7 +111,6 @@ private:
     };
 
 #if 0
-
     /// Holds basic information about a bend - used to simplify the generateBends function
     struct BendEventInfo
     {
@@ -130,10 +128,8 @@ private:
                              int releaseBendAmount) const;
     void generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
                             double noteDuration, double currentTempo, const Position* position);
-
-
-
 #endif
+
 };
 
 #endif
