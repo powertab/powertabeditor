@@ -22,10 +22,10 @@
 AddRest::AddRest(const ScoreLocation &location, Position::DurationType duration)
     : QUndoCommand(QObject::tr("Add Rest")),
       myLocation(location),
-      myOriginalPosition(myLocation.getPosition() ? *myLocation.getPosition()
-                                                  : 0),
       myDuration(duration)
 {
+    if (myLocation.getPosition())
+        myOriginalPosition = *myLocation.getPosition();
 }
 
 void AddRest::redo()

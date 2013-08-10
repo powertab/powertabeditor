@@ -88,7 +88,7 @@ public:
     typedef std::vector<DirectionSymbol>::const_iterator SymbolConstIterator;
 
     Direction();
-    Direction(int position);
+    explicit Direction(int position);
 
     bool operator==(const Direction &other) const;
 

@@ -68,7 +68,7 @@ public:
     };
 
     Position();
-    Position(int position, DurationType duration = EighthNote);
+    explicit Position(int position, DurationType duration = EighthNote);
 
     bool operator==(const Position &other) const;
 

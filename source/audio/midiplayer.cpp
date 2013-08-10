@@ -185,7 +185,7 @@ double MidiPlayer::generateEventsForBar(
         const double currentTempo = getCurrentTempo(systemIndex, position);
 
         // Each note at a position has the same duration.
-        double duration = calculateNoteDuration(systemIndex, position);
+        double duration = calculateNoteDuration(systemIndex, pos);
 
         const PlayerChange *currentPlayers = ScoreUtils::getCurrentPlayers(
                     myScore, systemIndex, pos.getPosition());
@@ -204,7 +204,7 @@ double MidiPlayer::generateEventsForBar(
             if (pos.getDurationType() == Position::WholeNote)
             {
                 duration = getWholeRestDuration(system, systemIndex, staff,
-                                                voice, position, duration);
+                                                voice, pos, duration);
 
                 // Extend for multi-bar rests.
                 if (pos.hasMultiBarRest())
@@ -308,7 +308,7 @@ double MidiPlayer::generateEventsForBar(
             const Tuning &tuning = myScore.getPlayers()[playerIndex].getTuning();
             int pitch = getActualNotePitch(note, tuning);
 
-            const PlayNoteEvent::VelocityType velocity = getNoteVelocity(position, note);
+            const PlayNoteEvent::VelocityType velocity = getNoteVelocity(pos, note);
 
             // If this note is not tied to the previous note, play the note.
             if (!note.hasProperty(Note::Tied))

@@ -115,6 +115,20 @@ TEST_CASE("Score/Position/HasNoteWithProperty", "")
     REQUIRE(Utils::hasNoteWithProperty(position, Note::HammerOn));
 }
 
+TEST_CASE("Score/Position/GetDurationTime", "")
+{
+    Position position;
+
+    position.setDurationType(Position::QuarterNote);
+    REQUIRE(position.getDurationTime() == 1.0);
+
+    position.setDurationType(Position::EighthNote);
+    REQUIRE(position.getDurationTime() == 0.5);
+
+    position.setDurationType(Position::WholeNote);
+    REQUIRE(position.getDurationTime() == 4.0);
+}
+
 TEST_CASE("Score/Position/Serialization", "")
 {
     Position position;

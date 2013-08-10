@@ -78,3 +78,21 @@ TEST_CASE("Score/Staff/Serialization", "")
 
     Serialization::test(staff);
 }
+
+TEST_CASE("Score/Staff/GetPositionsInRange", "")
+{
+    Staff staff;
+    Position pos1(1), pos4(4), pos6(6), pos7(7), pos8(8);
+    staff.insertPosition(0, pos1);
+    staff.insertPosition(0, pos4);
+    staff.insertPosition(0, pos6);
+    staff.insertPosition(0, pos7);
+    staff.insertPosition(0, pos8);
+
+    REQUIRE(std::distance(staff.getPositionsInRange(0, 9, 15).begin(),
+                          staff.getPositionsInRange(0, 9, 15).end()) == 0);
+    REQUIRE(std::distance(staff.getPositionsInRange(0, 8, 10).begin(),
+                          staff.getPositionsInRange(0, 8, 10).end()) == 1);
+    REQUIRE(std::distance(staff.getPositionsInRange(0, 4, 7).begin(),
+                          staff.getPositionsInRange(0, 4, 7).end()) == 3);
+}

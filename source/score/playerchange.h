@@ -52,7 +52,7 @@ class PlayerChange
 {
 public:
     PlayerChange();
-    PlayerChange(int position);
+    explicit PlayerChange(int position);
 
     bool operator==(const PlayerChange &other) const;
 

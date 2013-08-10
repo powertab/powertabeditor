@@ -67,7 +67,7 @@ public:
     typedef std::vector<Dynamic>::const_iterator DynamicConstIterator;
 
     Staff();
-    Staff(int stringCount);
+    explicit Staff(int stringCount);
 
     bool operator==(const Staff &other) const;
 

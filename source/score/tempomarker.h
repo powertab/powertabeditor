@@ -63,7 +63,7 @@ public:
     };
 
     TempoMarker();
-    TempoMarker(int position);
+    explicit TempoMarker(int position);
 
     bool operator==(const TempoMarker &other) const;
 

@@ -23,10 +23,11 @@ AddNote::AddNote(const ScoreLocation &location, const Note &note,
                  Position::DurationType duration)
     : QUndoCommand(QObject::tr("Add Note")),
       myLocation(location),
-      myOriginalPosition(myLocation.getPosition() ? *myLocation.getPosition() : 0),
       myNote(note),
       myDuration(duration)
 {
+    if (myLocation.getPosition())
+        myOriginalPosition = *myLocation.getPosition();
 }
 
 void AddNote::redo()
