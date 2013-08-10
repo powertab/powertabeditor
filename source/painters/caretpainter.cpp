@@ -30,7 +30,6 @@ const double CaretPainter::CARET_NOTE_SPACING = 6;
 
 CaretPainter::CaretPainter(const Caret &caret)
     : myCaret(caret),
-      myInPlaybackMode(false),
       myCaretConnection(caret.subscribeToChanges(
                             boost::bind(&CaretPainter::onLocationChanged, this)))
 {
@@ -48,7 +47,7 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     const ScoreLocation &location = myCaret.getLocation();
 
     // Set color.
-    if (myInPlaybackMode)
+    if (myCaret.isInPlaybackMode())
         painter->setPen(QPen(Qt::red, PEN_WIDTH));
     else
         painter->setPen(QPen(Qt::blue, PEN_WIDTH));
@@ -62,7 +61,7 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
     // If in playback mode, just draw a vertical line and don't highlight
     // the selected note.
-    if (myInPlaybackMode)
+    if (myCaret.isInPlaybackMode())
     {
         painter->drawLine(x, y1, x, y2);
         return;

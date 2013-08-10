@@ -25,6 +25,7 @@
 
 Caret::Caret(Score &score)
     : myLocation(score),
+      myInPlaybackMode(false),
       mySelectionPubSub(boost::make_shared<ScoreLocationPubSub>())
 {
     mySelectionPubSub->subscribe(
@@ -39,6 +40,18 @@ ScoreLocation &Caret::getLocation()
 const ScoreLocation &Caret::getLocation() const
 {
     return myLocation;
+}
+
+bool Caret::isInPlaybackMode() const
+{
+    return myInPlaybackMode;
+}
+
+void Caret::setIsInPlaybackMode(bool set)
+{
+    myInPlaybackMode = set;
+    // Trigger a redraw.
+    onLocationChanged();
 }
 
 void Caret::moveHorizontal(int offset)
@@ -189,6 +202,10 @@ void Caret::moveToSystem(int system, bool keepStaff)
 
 void Caret::handleSelectionChanged(const ScoreLocation &location)
 {
+    // Ignore mouse clicks while in playback mode.
+    if (myInPlaybackMode)
+        return;
+
     myLocation.setSystemIndex(location.getSystemIndex());
     myLocation.setStaffIndex(location.getStaffIndex());
     myLocation.setPositionIndex(location.getPositionIndex());

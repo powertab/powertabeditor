@@ -32,6 +32,11 @@ public:
     ScoreLocation &getLocation();
     const ScoreLocation &getLocation() const;
 
+    /// Returns whether the caret is in playback mode.
+    bool isInPlaybackMode() const;
+    /// Sets whether the caret is in playback mode.
+    void setIsInPlaybackMode(bool set);
+
     /// Moves the caret left or right by the specified offset.
     void moveHorizontal(int offset);
 
@@ -86,6 +91,7 @@ private:
     void handleSelectionChanged(const ScoreLocation &location);
 
     ScoreLocation myLocation;
+    bool myInPlaybackMode;
 
     /// Send out signals to subscribers whenever the location changes.
     mutable LocationChangedSlot onLocationChanged;

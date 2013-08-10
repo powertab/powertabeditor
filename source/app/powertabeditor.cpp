@@ -379,8 +379,8 @@ void PowerTabEditor::startStopPlayback()
         // Start up the midi player.
         myPlayPauseCommand->setText(tr("Pause"));
 
+        getCaret().setIsInPlaybackMode(true);
 #if 0
-        getCurrentScoreArea()->getCaret()->setPlaybackMode(true);
         getCurrentPlaybackWidget()->setPlaybackMode(true);
 #endif
 
@@ -413,8 +413,8 @@ void PowerTabEditor::startStopPlayback()
         }
 
         myPlayPauseCommand->setText(tr("Play"));
+        getCaret().setIsInPlaybackMode(false);
 #if 0
-        getCurrentScoreArea()->getCaret()->setPlaybackMode(false);
         getCurrentPlaybackWidget()->setPlaybackMode(false);
 #endif
 

@@ -49,7 +49,6 @@ private:
     const Caret &myCaret;
     boost::scoped_ptr<LayoutInfo> myLayout;
     std::vector<QRectF> mySystemRects;
-    bool myInPlaybackMode;
     boost::signals2::scoped_connection myCaretConnection;
     LocationChangedSlot onMyLocationChanged;
 
