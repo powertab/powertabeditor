@@ -1202,8 +1202,6 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
             dotText->setFont(myMusicNotationFont);
             group->addToGroup(dotText);
 
-            std::cerr << note.isDoubleDotted();
-
             if (note.isDoubleDotted())
             {
                 QGraphicsSimpleTextItem *dotText2 = new QGraphicsSimpleTextItem(dot);
