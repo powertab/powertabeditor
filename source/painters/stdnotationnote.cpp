@@ -17,9 +17,11 @@
 
 #include "stdnotationnote.h"
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
+#include <map>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
 #include <score/generalmidi.h>
@@ -34,9 +36,14 @@ static const boost::unordered_map<char, int> theNotePositions =
                                   ('A', -2) ('G', -1);
 
 StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
+                                 const KeySignature &key, const Tuning &tuning,
                                  double y)
     : myY(y),
-      myPosition(pos.getPosition())
+      myAccidentalType(NoAccidental),
+      myPosition(&pos),
+      myNote(&note),
+      myKey(&key),
+      myTuning(&tuning)
 {
     // Choose the note head symbol.
     switch (pos.getDurationType())
@@ -59,6 +66,8 @@ StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
         myNoteHeadSymbol = MusicFont::ArtificialHarmonicNoteHead;
     else if (note.hasProperty(Note::Muted))
         myNoteHeadSymbol = MusicFont::MutedNoteHead;
+
+    computeAccidentalType(false);
 }
 
 std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
@@ -83,6 +92,9 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
             if (!nextBar)
                 break;
 
+            // Store the current accidental for each line/space in the staff.
+            std::map<int, AccidentalType> accidentals;
+
             BOOST_FOREACH(const Position &pos, staff.getPositionsInRange(
                               voice, bar.getPosition(), nextBar->getPosition()))
             {
@@ -105,11 +117,37 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
 
                 BOOST_FOREACH(const Note &note, pos.getNotes())
                 {
+                    const Tuning tuning = player ? player->getTuning() :
+                                                   fallbackTuning;
                     const double y = getNoteLocation(
-                                staff, note, bar.getKeySignature(),
-                                player ? player->getTuning() : fallbackTuning);
+                                staff, note, bar.getKeySignature(), tuning);
 
-                    notes.push_back(StdNotationNote(pos, note, y));
+                    notes.push_back(StdNotationNote(
+                                        pos, note, bar.getKeySignature(),
+                                        tuning, y));
+                    StdNotationNote &stdNote = notes.back();
+
+                    // Don't show accidentals if there are consecutive
+                    // identical notes on that line/space in the staff.
+                    if (accidentals.find(y) != accidentals.end() &&
+                        accidentals.find(y)->second == stdNote.getAccidentalType())
+                    {
+                        stdNote.clearAccidental();
+                    }
+                    else
+                    {
+                        AccidentalType accidental = stdNote.getAccidentalType();
+                        // If we had some accidental and then returned to a note
+                        // in the key signature, then force its accidental or
+                        // natural sign to be shown.
+                        if (accidentals.find(y) != accidentals.end() &&
+                            accidental == NoAccidental)
+                        {
+                            stdNote.showAccidental();
+                        }
+
+                        accidentals[y] = accidental;
+                    }
                 }
             }
         }
@@ -167,6 +205,32 @@ int StdNotationNote::getOctaveOffset(const Note &note)
         return 0;
 }
 
+void StdNotationNote::computeAccidentalType(bool explicitSymbol)
+{
+    using boost::algorithm::ends_with;
+
+    const int pitch = myTuning->getNote(myNote->getString(), true) +
+            myNote->getFretNumber();
+    const bool usesSharps = myKey->usesSharps() || myKey->getNumAccidentals() == 0;
+
+    const std::string noteText = Midi::getMidiNoteText(
+                pitch, myKey->getKeyType() == KeySignature::Minor, usesSharps,
+                myKey->getNumAccidentals(), explicitSymbol);
+
+    if (ends_with(noteText, "##"))
+        myAccidentalType = DoubleSharp;
+    else if (ends_with(noteText, "#"))
+        myAccidentalType = Sharp;
+    else if (ends_with(noteText, "bb"))
+        myAccidentalType = DoubleFlat;
+    else if (ends_with(noteText, "b"))
+        myAccidentalType = Flat;
+    else if (ends_with(noteText, "="))
+        myAccidentalType = Natural;
+    else
+        myAccidentalType = NoAccidental;
+}
+
 QChar StdNotationNote::getNoteHeadSymbol() const
 {
     return myNoteHeadSymbol;
@@ -174,5 +238,55 @@ QChar StdNotationNote::getNoteHeadSymbol() const
 
 int StdNotationNote::getPosition() const
 {
-    return myPosition;
+    return myPosition->getPosition();
+}
+
+StdNotationNote::AccidentalType StdNotationNote::getAccidentalType() const
+{
+    return myAccidentalType;
+}
+
+QString StdNotationNote::getAccidentalText() const
+{
+    switch (myAccidentalType)
+    {
+    case StdNotationNote::NoAccidental:
+        return QString();
+        break;
+    case StdNotationNote::Natural:
+        return QChar(MusicFont::Natural);
+        break;
+    case StdNotationNote::Sharp:
+        return QChar(MusicFont::AccidentalSharp);
+        break;
+    case StdNotationNote::DoubleSharp:
+        return QChar(MusicFont::AccidentalDoubleSharp);
+        break;
+    case StdNotationNote::Flat:
+        return QChar(MusicFont::AccidentalFlat);
+        break;
+    case StdNotationNote::DoubleFlat:
+        return QChar(MusicFont::AccidentalDoubleFlat);
+        break;
+    }
+}
+
+bool StdNotationNote::isDotted() const
+{
+    return myPosition->hasProperty(Position::Dotted);
+}
+
+void StdNotationNote::clearAccidental()
+{
+    myAccidentalType = NoAccidental;
+}
+
+void StdNotationNote::showAccidental()
+{
+    computeAccidentalType(true);
+}
+
+bool StdNotationNote::isDoubleDotted() const
+{
+    return myPosition->hasProperty(Position::DoubleDotted);
 }

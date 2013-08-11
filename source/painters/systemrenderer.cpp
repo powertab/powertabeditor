@@ -1177,15 +1177,53 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
         const QChar noteHead = note.getNoteHeadSymbol();
         const double noteHeadWidth = myMusicFontMetrics.width(noteHead);
 
+        const QString accidentalText = note.getAccidentalText();
+        const double accidentalWidth = myMusicFontMetrics.width(accidentalText);
+
         const double x = layout.getPositionX(note.getPosition()) +
-                0.5 * (layout.getPositionSpacing() - noteHeadWidth);
+                0.5 * (layout.getPositionSpacing() - noteHeadWidth) -
+                accidentalWidth;
+        const double y = note.getY() + layout.getTopStdNotationLine() -
+                myMusicFontMetrics.ascent();
 
-        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(noteHead);
-
-        text->setPos(x, note.getY() + layout.getTopStdNotationLine() -
-                     myMusicFontMetrics.ascent());
+        QGraphicsItemGroup *group = 0;
+        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
+                    accidentalText + noteHead);
         text->setFont(myMusicNotationFont);
-        text->setParentItem(myParentStaff);
+
+        if (note.isDotted() || note.isDoubleDotted())
+        {
+            group = new QGraphicsItemGroup();
+            const double dotX = noteHeadWidth + 2;
+
+            const QChar dot(MusicFont::Dot);
+            QGraphicsSimpleTextItem *dotText = new QGraphicsSimpleTextItem(dot);
+            dotText->setPos(dotX, 0);
+            dotText->setFont(myMusicNotationFont);
+            group->addToGroup(dotText);
+
+            std::cerr << note.isDoubleDotted();
+
+            if (note.isDoubleDotted())
+            {
+                QGraphicsSimpleTextItem *dotText2 = new QGraphicsSimpleTextItem(dot);
+                dotText2->setPos(dotX + 4, 0);
+                dotText2->setFont(myMusicNotationFont);
+                group->addToGroup(dotText2);
+            }
+        }
+
+        if (group)
+        {
+            group->addToGroup(text);
+            group->setPos(x, y);
+            group->setParentItem(myParentStaff);
+        }
+        else
+        {
+            text->setPos(x, y);
+            text->setParentItem(myParentStaff);
+        }
     }
 
 #if 0
@@ -1333,42 +1371,6 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
     Q_UNUSED(system);
 #endif
 }
-
-#if 0
-void SystemRenderer::adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap)
-{
-    QList<int> keys = accidentalsMap.uniqueKeys();
-    QList<int>::const_iterator i = keys.begin();
-
-    while(i != keys.end())
-    {
-        QList<StdNotationPainter*> notes = accidentalsMap.values(*i);
-        int currentAccidental = StdNotationPainter::NO_ACCIDENTAL;
-
-        for (int j = notes.size() - 1; j >= 0; j--)
-        {
-            StdNotationPainter* note = notes.at(j);
-
-            if (note->accidental == currentAccidental)
-            {
-                note->accidental = StdNotationPainter::NO_ACCIDENTAL;
-            }
-            else
-            {
-                currentAccidental = note->accidental;
-                if (currentAccidental == StdNotationPainter::NO_ACCIDENTAL)
-                {
-                    // If we return to a note in the key signature, force its
-                    // accidental (or a natural sign) to be displayed.
-                    note->refreshAccidental(true);
-                }
-            }
-        }
-
-        ++i;
-    }
-}
-#endif
 
 void SystemRenderer::drawMultiBarRest(const System &system,
                                       const Barline &leftBar,

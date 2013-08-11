@@ -32,7 +32,18 @@ class Tuning;
 class StdNotationNote
 {
 public:
-    StdNotationNote(const Position &pos, const Note &note, double y);
+    enum AccidentalType
+    {
+        NoAccidental,
+        Natural,
+        Sharp,
+        DoubleSharp,
+        Flat,
+        DoubleFlat
+    };
+
+    StdNotationNote(const Position &pos, const Note &note,
+                    const KeySignature &key, const Tuning &tuning, double y);
 
     static std::vector<StdNotationNote> getNotesInStaff(
             const Score &score, const System &system, int systemIndex,
@@ -41,17 +52,37 @@ public:
     double getY() const;
     QChar getNoteHeadSymbol() const;
     int getPosition() const;
+    AccidentalType getAccidentalType() const;
+    QString getAccidentalText() const;
+    bool isDotted() const;
+    bool isDoubleDotted() const;
+
+    /// Remove the note's accidental.
+    void clearAccidental();
+    /// Force the accidental to be shown, even if it's part of the key signature.
+    void showAccidental();
 
 private:
     /// Return the offset of the note from the top of the staff.
     static double getNoteLocation(const Staff &staff, const Note &note,
                                   const KeySignature &key, const Tuning &tuning);
+
     /// Returns the number of octaves (from -2 to 2) that the note is shifted by.
     static int getOctaveOffset(const Note &note);
 
+    /// Computes the accidental for the note.
+    /// @param explicitSymbol If true, an accidental or natural sign will be
+    /// displayed even if the note is in the key signature.
+    void computeAccidentalType(bool explicitSymbol);
+
     double myY;
     QChar myNoteHeadSymbol;
-    int myPosition;
+    AccidentalType myAccidentalType;
+
+    const Position *myPosition;
+    const Note *myNote;
+    const KeySignature *myKey;
+    const Tuning *myTuning;
 };
 
 #endif

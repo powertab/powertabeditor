@@ -144,64 +144,6 @@ private:
     QFont myPlainTextFont;
     QFont mySymbolTextFont;
     QFont myRehearsalSignFont;
-
-#if 0
-    enum VolumeSwellType
-    {
-        VolumeIncreasing,
-        VolumeDecreasing
-    };
-
-    void centerItem(QGraphicsItem* item, float xmin, float xmax, float y);
-
-    void renderBars(const StaffData& currentStaffInfo);
-
-    void drawTabNotes(const StaffData& currentStaffInfo);
-    void drawArpeggio(const Position* position, uint32_t x, const StaffData& currentStaffInfo);
-
-    void drawSystemSymbols(const StaffData& currentStaffInfo);
-    void drawDividerLine(const StaffData& currentStaffInfo, quint32 y);
-    void drawAltEndings(const std::vector<boost::shared_ptr<AlternateEnding> >& altEndings,
-                        uint32_t height);
-    void drawTempoMarkers(const std::vector<boost::shared_ptr<TempoMarker> >& tempoMarkers,
-                          uint32_t height);
-    void drawDirections(uint32_t height, const StaffData& currentStaffInfo);
-    void drawChordText(uint32_t height, const StaffData& currentStaffInfo);
-
-    void drawRhythmSlashes();
-
-    void drawLegato(const StaffData& currentStaffInfo);
-    void drawSlides(const StaffData& currentStaffInfo);
-    void drawSlidesHelper(const StaffData& currentStaffInfo, quint8 string,
-                          bool slideUp, int posIndex1, int posIndex2);
-
-    void drawSymbolsBelowTabStaff(const StaffData& staffInfo);
-    QGraphicsItem* createPickStroke(const QString& text);
-    QGraphicsItem* createPlainText(const QString& text, QFont::Style style);
-    QGraphicsItem* createArtificialHarmonicText(const Position* position);
-
-    void drawSymbols(const StaffData& staffInfo);
-    void drawSymbolsAboveStdNotationStaff(const StaffData &staffInfo);
-    void drawSymbolsBelowStdNotationStaff(const StaffData &staffInfo);
-    QGraphicsItem* createConnectedSymbolGroup(const QString& text, QFont::Style style, int width,
-                                              const StaffData& currentStaffInfo);
-    QGraphicsItem* createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo,
-                                     VolumeSwellType type);
-    QGraphicsItem* drawContinuousFontSymbols(QChar symbol, int width);
-    QGraphicsItem* createTremoloPicking(const StaffData& currentStaffInfo);
-    QGraphicsItem* createTrill(const StaffData& currentStaffInfo);
-    QGraphicsItem* createDynamic(boost::shared_ptr<const Dynamic> dynamic);
-    QGraphicsItem* createBend(const Position* position, const StaffData& staffInfo);
-
-    void drawStdNotation(const StaffData& currentStaffInfo);
-    void adjustAccidentals(QMultiMap<int, StdNotationPainter*>& accidentalsMap);
-    void drawMultiBarRest(boost::shared_ptr<const Barline> currentBarline,
-                          const StaffData& currentStaffInfo, int measureCount);
-
-    void drawLedgerLines(const std::vector<int> &noteLocations,
-                         const double xLocation, const StaffData& staffData,
-                         const double noteHeadWidth);
-#endif
 };
 
 #endif
