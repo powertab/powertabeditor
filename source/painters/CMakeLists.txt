@@ -14,6 +14,7 @@ add_library(ptepainters
     #rhythmslashpainter.cpp
     #staffdata.cpp
     staffpainter.cpp
+    stdnotationnote.cpp
     #stdnotationpainter.cpp
     systemrenderer.cpp
     tempomarkerpainter.cpp

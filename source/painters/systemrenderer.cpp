@@ -28,6 +28,7 @@
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/staffpainter.h>
+#include <painters/stdnotationnote.h>
 #include <painters/tempomarkerpainter.h>
 #include <painters/timesignaturepainter.h>
 #include <QBrush>
@@ -44,6 +45,7 @@ SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
       myParentSystem(NULL),
       myParentStaff(NULL),
       myMusicNotationFont(myMusicFont.getFont()),
+      myMusicFontMetrics(myMusicNotationFont),
       myPlainTextFont("Liberation Sans"),
       mySymbolTextFont("Liberation Sans"),
       myRehearsalSignFont("Helvetica")
@@ -107,7 +109,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsBelowTabStaff(*layout);
 
         drawPlayerChanges(system, i, *layout);
-        drawStdNotation(system, staff, *layout);
+        drawStdNotation(system, systemIndex, staff, i, *layout);
 
         ++i;
     }
@@ -296,8 +298,7 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
     // Take a vibrato segment, spanning the distance from top to bottom note,
     // and then rotate it by 90 degrees.
     const QChar arpeggioSymbol = MusicFont::Vibrato;
-    const double symbolWidth = QFontMetricsF(myMusicNotationFont).width(
-                arpeggioSymbol);
+    const double symbolWidth = myMusicFontMetrics.width(arpeggioSymbol);
     const int numSymbols = height / symbolWidth;
 
     QGraphicsSimpleTextItem *arpeggio = new QGraphicsSimpleTextItem(
@@ -1141,9 +1142,11 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
     return group;
 }
 
-void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
+void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
+                                     const Staff &staff, int staffIndex,
                                      const LayoutInfo &layout)
 {
+    // Draw rests.
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
         BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
@@ -1163,12 +1166,24 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             {
                 drawRest(pos, x, layout);
             }
-            else
-            {
-                // TODO
-            }
         }
     }
+
+    std::vector<StdNotationNote> notes = StdNotationNote::getNotesInStaff(
+                myScore, system, systemIndex, staff, staffIndex);
+
+    BOOST_FOREACH(const StdNotationNote &note, notes)
+    {
+        const double x = layout.getPositionX(note.getPosition());
+        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
+                    note.getNoteHeadSymbol());
+
+        text->setPos(x, note.getY() + layout.getTopStdNotationLine() -
+                     myMusicFontMetrics.ascent());
+        text->setFont(myMusicNotationFont);
+        text->setParentItem(myParentStaff);
+    }
+
 #if 0
     System::BarlineConstPtr currentBarline;
     System::BarlineConstPtr prevBarline = system->GetStartBar();

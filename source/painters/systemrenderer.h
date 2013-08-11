@@ -20,6 +20,7 @@
 
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
+#include <QFontMetricsF>
 #include <score/staff.h>
 
 class QGraphicsItem;
@@ -120,7 +121,8 @@ private:
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
     /// Draws notes, beams, and rests.
-    void drawStdNotation(const System &system, const Staff &staff,
+    void drawStdNotation(const System &system, int systemIndex,
+                         const Staff &staff, int staffIndex,
                          const LayoutInfo &layout);
 
     /// Draws a multi-bar rest symbol.
@@ -138,6 +140,7 @@ private:
 
     MusicFont myMusicFont;
     QFont myMusicNotationFont;
+    QFontMetricsF myMusicFontMetrics;
     QFont myPlainTextFont;
     QFont mySymbolTextFont;
     QFont myRehearsalSignFont;
