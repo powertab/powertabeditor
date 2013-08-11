@@ -736,7 +736,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo& layout)
 {
     BOOST_FOREACH(const SymbolGroup &symbolGroup, layout.getTabStaffBelowSymbols())
     {
-        QGraphicsItem* renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = NULL;
 
         switch (symbolGroup.getSymbolType())
         {
@@ -786,7 +786,7 @@ QGraphicsItem *SystemRenderer::createPickStroke(const QString &text)
 {
     QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(myMusicNotationFont);
-    textItem->setPos(2, -28);
+    textItem->setPos(2, 2 - myMusicFontMetrics.ascent());
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location
@@ -1087,7 +1087,7 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
                     QChar(MusicFont::TremoloPicking));
         line->setFont(myMusicNotationFont);
         centerItem(line, 0, layout.getPositionSpacing() * 1.25,
-                   -37 + i * offset);
+                   -myMusicFontMetrics.ascent() - 7 + i * offset);
         group->addToGroup(line);
     }
 
@@ -1133,7 +1133,7 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
 
     QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(myMusicNotationFont);
-    textItem->setPos(0, -20);
+    textItem->setPos(0, -myMusicFontMetrics.ascent() + 10);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location.
@@ -1174,9 +1174,13 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
 
     BOOST_FOREACH(const StdNotationNote &note, notes)
     {
-        const double x = layout.getPositionX(note.getPosition());
-        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
-                    note.getNoteHeadSymbol());
+        const QChar noteHead = note.getNoteHeadSymbol();
+        const double noteHeadWidth = myMusicFontMetrics.width(noteHead);
+
+        const double x = layout.getPositionX(note.getPosition()) +
+                0.5 * (layout.getPositionSpacing() - noteHeadWidth);
+
+        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(noteHead);
 
         text->setPos(x, note.getY() + layout.getTopStdNotationLine() -
                      myMusicFontMetrics.ascent());
@@ -1387,8 +1391,8 @@ void SystemRenderer::drawMultiBarRest(const System &system,
     measureCountText->setText(QString::number(measureCount));
     measureCountText->setFont(myMusicNotationFont);
 
-    centerItem(measureCountText, leftX, rightX, layout.getTopStdNotationLine() -
-               myMusicNotationFont.pixelSize() * 1.5);
+    centerItem(measureCountText, leftX, rightX,
+               layout.getTopStdNotationLine() - myMusicFontMetrics.ascent());
     measureCountText->setParentItem(myParentStaff);
 
     // Draw symbol across std. notation staff.
@@ -1414,7 +1418,8 @@ void SystemRenderer::drawMultiBarRest(const System &system,
 void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &layout)
 {
     // Position it approximately in the middle of the staff.
-    double y = -2 * LayoutInfo::STD_NOTATION_LINE_SPACING - 2;
+    double y = 2 * LayoutInfo::STD_NOTATION_LINE_SPACING -
+            myMusicFontMetrics.ascent();
 
     QChar symbol;
     switch (pos.getDurationType())
@@ -1454,7 +1459,8 @@ void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &l
     const QChar dot = MusicFont::Dot;
     const double dotX = myMusicNotationFont.pixelSize() / 2.0;
     // Position just below second line of staff.
-    const double dotY = -2.7 * LayoutInfo::STD_NOTATION_LINE_SPACING;
+    const double dotY = 1.6 * LayoutInfo::STD_NOTATION_LINE_SPACING -
+            myMusicFontMetrics.ascent();
 
     if (pos.hasProperty(Position::Dotted) ||
         pos.hasProperty(Position::DoubleDotted))
