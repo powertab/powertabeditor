@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <score/generalmidi.h>
 #include <score/score.h>
+#include <score/staffutils.h>
 #include <score/systemlocation.h>
 #include <score/utils.h>
 
@@ -180,8 +181,8 @@ double MidiPlayer::generateEventsForBar(
     double startTime = barStartTime;
     bool letRingActive = false;
 
-    BOOST_FOREACH(const Position &pos, staff.getPositionsInRange(
-                      voice, leftPos, rightPos))
+    BOOST_FOREACH(const Position &pos, StaffUtils::getPositionsInRange(
+                      staff, voice, leftPos, rightPos))
     {
         const int position = pos.getPosition();
         const double currentTempo = getCurrentTempo(systemIndex, position);
@@ -312,8 +313,8 @@ double MidiPlayer::generateEventsForBar(
         }
         // Make sure that we end the let ring after the last position in the bar.
         else if (letRingActive &&
-                 (&pos == &staff.getPositionsInRange(voice, leftPos,
-                                                     rightPos).back()))
+                 (&pos == &StaffUtils::getPositionsInRange(staff, voice, leftPos,
+                                                           rightPos).back()))
         {
             BOOST_FOREACH(const ActivePlayer &player, activePlayers)
             {
@@ -751,8 +752,9 @@ double MidiPlayer::generateMetronome(const System &system, int systemIndex,
         for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
         {
             BOOST_FOREACH(const Position &pos,
-                          staff.getPositionsInRange(voice, barline.getPosition(),
-                                                    nextBar->getPosition()))
+                          StaffUtils::getPositionsInRange(staff, voice,
+                                                          barline.getPosition(),
+                                                          nextBar->getPosition()))
             {
                 if (pos.hasMultiBarRest())
                     repeatCount = std::max(repeatCount,

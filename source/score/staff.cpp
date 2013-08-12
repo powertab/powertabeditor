@@ -85,13 +85,6 @@ boost::iterator_range<Staff::VoiceConstIterator> Staff::getVoice(
     return boost::make_iterator_range(myVoices.at(voice));
 }
 
-Staff::FilteredVoiceConstIterator Staff::getPositionsInRange(int voice, int left,
-                                                             int right) const
-{
-    boost::iterator_range<VoiceConstIterator> range = getVoice(voice);
-    return boost::adaptors::filter(range, InPositionRange(left, right));
-}
-
 void Staff::insertPosition(int voice, const Position &position)
 {
     ScoreUtils::insertObject(myVoices.at(voice), position);
@@ -120,14 +113,4 @@ void Staff::insertDynamic(const Dynamic &dynamic)
 void Staff::removeDynamic(const Dynamic &dynamic)
 {
     ScoreUtils::removeObject(myDynamics, dynamic);
-}
-
-Staff::InPositionRange::InPositionRange(int left, int right)
-    : myLeft(left), myRight(right)
-{
-}
-
-bool Staff::InPositionRange::operator ()(const Position &pos) const
-{
-    return pos.getPosition() >= myLeft && pos.getPosition() <= myRight;
 }

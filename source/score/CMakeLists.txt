@@ -18,9 +18,14 @@ add_library(ptescore
     scorelocation.cpp
     serialization.cpp
     staff.cpp
+    staffutils.cpp
     system.cpp
     systemlocation.cpp
     tempomarker.cpp
     timesignature.cpp
     tuning.cpp
+
+    # Add header-only files here so that they show up in the generated projects
+    # for Visual Studio, QtCreator, etc.
+    utils.h
 )

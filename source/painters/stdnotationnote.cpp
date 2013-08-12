@@ -26,6 +26,7 @@
 #include <painters/musicfont.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
+#include <score/staffutils.h>
 #include <score/tuning.h>
 
 /// Maps notes to their position on the staff (relative to the top line),
@@ -95,8 +96,9 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
             // Store the current accidental for each line/space in the staff.
             std::map<int, AccidentalType> accidentals;
 
-            BOOST_FOREACH(const Position &pos, staff.getPositionsInRange(
-                              voice, bar.getPosition(), nextBar->getPosition()))
+            BOOST_FOREACH(const Position &pos, StaffUtils::getPositionsInRange(
+                              staff, voice, bar.getPosition(),
+                              nextBar->getPosition()))
             {
                 if (pos.isRest() || pos.hasMultiBarRest())
                     continue;

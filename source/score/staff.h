@@ -20,7 +20,6 @@
 
 #include <boost/array.hpp>
 #include <boost/serialization/access.hpp>
-#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <vector>
 #include "dynamic.h"
@@ -28,17 +27,6 @@
 
 class Staff
 {
-    struct InPositionRange
-    {
-        InPositionRange(int left, int right);
-
-        bool operator()(const Position &pos) const;
-
-    private:
-        const int myLeft;
-        const int myRight;
-    };
-
 public:
     enum
     {
@@ -60,9 +48,6 @@ public:
     typedef std::vector<Position> Voice;
     typedef Voice::iterator VoiceIterator;
     typedef Voice::const_iterator VoiceConstIterator;
-    typedef boost::filtered_range<InPositionRange,
-                                  boost::iterator_range<VoiceConstIterator> >
-            FilteredVoiceConstIterator;
     typedef std::vector<Dynamic>::iterator DynamicIterator;
     typedef std::vector<Dynamic>::const_iterator DynamicConstIterator;
 
@@ -90,9 +75,6 @@ public:
     boost::iterator_range<VoiceIterator> getVoice(int voice);
     /// Returns the set of positions in a voice.
     boost::iterator_range<VoiceConstIterator> getVoice(int voice) const;
-    /// Returns the specified range of positions in a voice.
-    FilteredVoiceConstIterator getPositionsInRange(int voice, int left,
-                                               int right) const;
 
     /// Adds a new position to the specified voice.
     void insertPosition(int voice, const Position &position);

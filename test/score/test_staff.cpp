@@ -18,6 +18,7 @@
 #include <catch.hpp>
 
 #include <score/staff.h>
+#include <score/staffutils.h>
 #include "test_serialization.h"
 
 TEST_CASE("Score/Staff/Clef", "")
@@ -89,10 +90,10 @@ TEST_CASE("Score/Staff/GetPositionsInRange", "")
     staff.insertPosition(0, pos7);
     staff.insertPosition(0, pos8);
 
-    REQUIRE(std::distance(staff.getPositionsInRange(0, 9, 15).begin(),
-                          staff.getPositionsInRange(0, 9, 15).end()) == 0);
-    REQUIRE(std::distance(staff.getPositionsInRange(0, 8, 10).begin(),
-                          staff.getPositionsInRange(0, 8, 10).end()) == 1);
-    REQUIRE(std::distance(staff.getPositionsInRange(0, 4, 7).begin(),
-                          staff.getPositionsInRange(0, 4, 7).end()) == 3);
+    REQUIRE(std::distance(StaffUtils::getPositionsInRange(staff, 0, 9, 15).begin(),
+                          StaffUtils::getPositionsInRange(staff, 0, 9, 15).end()) == 0);
+    REQUIRE(std::distance(StaffUtils::getPositionsInRange(staff, 0, 8, 10).begin(),
+                          StaffUtils::getPositionsInRange(staff, 0, 8, 10).end()) == 1);
+    REQUIRE(std::distance(StaffUtils::getPositionsInRange(staff, 0, 4, 7).begin(),
+                          StaffUtils::getPositionsInRange(staff, 0, 4, 7).end()) == 3);
 }

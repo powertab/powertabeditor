@@ -86,6 +86,10 @@ add_executable(pte_tests
     score/test_timesignature.cpp
     score/test_tuning.cpp
     score/test_utils.cpp
+
+    # Header-only files.
+    actions/actionfixture.h
+    score/test_serialization.h
 )
 
 qt5_use_modules(pte_tests Widgets)
