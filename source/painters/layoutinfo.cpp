@@ -467,7 +467,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
 
     typedef std::set<SymbolGroup::SymbolType> SymbolSet;
     // For each position in the staff, build a set of symbols at that position.
-    std::vector<SymbolSet> symbolSets(getNumPositions());
+    std::vector<SymbolSet> symbolSets(getNumPositions() + 1);
 
     // Add symbols from each position.
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
