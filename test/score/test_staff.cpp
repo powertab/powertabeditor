@@ -97,3 +97,26 @@ TEST_CASE("Score/Staff/GetPositionsInRange", "")
     REQUIRE(std::distance(StaffUtils::getPositionsInRange(staff, 0, 4, 7).begin(),
                           StaffUtils::getPositionsInRange(staff, 0, 4, 7).end()) == 3);
 }
+
+TEST_CASE("Score/Staff/GetNextNote", "")
+{
+    Staff staff;
+    Position pos1(1), pos4(4), pos6(6), pos7(7), pos8(8);
+    pos1.insertNote(Note(2, 1));
+    pos4.insertNote(Note(3, 1));
+    pos6.insertNote(Note(3, 0));
+    pos7.insertNote(Note(4, 2));
+    pos8.insertNote(Note(3, 2));
+    staff.insertPosition(0, pos1);
+    staff.insertPosition(0, pos4);
+    staff.insertPosition(0, pos6);
+    staff.insertPosition(0, pos7);
+    staff.insertPosition(0, pos8);
+
+    REQUIRE(!StaffUtils::getNextNote(staff, 0, 6, 5));
+    REQUIRE(StaffUtils::getNextNote(staff, 0, 6, 4));
+    REQUIRE(!StaffUtils::getNextNote(staff, 0, 6, 3));
+
+    REQUIRE(!StaffUtils::getPreviousNote(staff, 0, 6, 2));
+    REQUIRE(StaffUtils::getPreviousNote(staff, 0, 6, 3));
+}

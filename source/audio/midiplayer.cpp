@@ -372,15 +372,11 @@ double MidiPlayer::generateEventsForBar(
             // harmonics.
             else
             {
-#if 0
-                const Note* prevNote = staff->GetAdjacentNoteOnString(Staff::PrevNote, position, note, voice);
+                const Note *prev = StaffUtils::getPreviousNote(
+                            staff, voice, position, note.getString());
 
-                // TODO - deal with ties that wrap across systems
-                if (prevNote)
-                {
-                    pitch = getActualNotePitch(prevNote, guitar);
-                }
-#endif
+                if (prev)
+                    pitch = getActualNotePitch(*prev, tuning);
             }
 
 #if 0
@@ -464,16 +460,14 @@ double MidiPlayer::generateEventsForBar(
             }
 
             bool tiedToNextNote = false;
-#if 0
-            // check if this note is tied to the next note
+            // Check if this note is tied to the next note.
             {
-                const Note* nextNote = staff->GetAdjacentNoteOnString(Staff::NextNote, position, note, voice);
-                if (nextNote && nextNote->IsTied())
-                {
+                const Note *next = StaffUtils::getNextNote(
+                            staff, voice, position, note.getString());
+
+                if (next && next->hasProperty(Note::Tied))
                     tiedToNextNote = true;
-                }
             }
-#endif
 
             // End the note, unless we are tied to the next note.
             if (!tiedToNextNote)

@@ -17,6 +17,8 @@
 
 #include "staffutils.h"
 
+#include <boost/foreach.hpp>
+
 namespace StaffUtils {
 
 FilteredVoiceConstIterator getPositionsInRange(const Staff &staff, int voice,
@@ -34,6 +36,40 @@ InPositionRange::InPositionRange(int left, int right)
 bool InPositionRange::operator ()(const Position &pos) const
 {
     return pos.getPosition() >= myLeft && pos.getPosition() <= myRight;
+}
+
+const Note *getNextNote(const Staff &staff, int voice, int position,
+                        int string)
+{
+    const Note *note = 0;
+
+    BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+    {
+        if (pos.getPosition() > position)
+        {
+            note = Utils::findByString(pos, string);
+            break;
+        }
+    }
+
+    return note;
+}
+
+const Note *getPreviousNote(const Staff &staff, int voice, int position,
+                            int string)
+{
+    const Note *note = 0;
+
+    BOOST_REVERSE_FOREACH(const Position &pos, staff.getVoice(voice))
+    {
+        if (pos.getPosition() < position)
+        {
+            note = Utils::findByString(pos, string);
+            break;
+        }
+    }
+
+    return note;
 }
 
 }
