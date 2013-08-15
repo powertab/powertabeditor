@@ -27,6 +27,7 @@
 class CaretPainter;
 class Document;
 class ScoreLocationPubSub;
+class StaffPubSub;
 
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
@@ -44,6 +45,7 @@ public:
     boost::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
     boost::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
+    boost::shared_ptr<StaffPubSub> getClefPubSub() const;
 
 private:
     /// Adjusts the scroll location whenever the caret moves.
@@ -58,6 +60,7 @@ private:
     boost::shared_ptr<ScoreLocationPubSub> myKeySignatureClicked;
     boost::shared_ptr<ScoreLocationPubSub> myTimeSignatureClicked;
     boost::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
+    boost::shared_ptr<StaffPubSub> myClefClicked;
 };
 
 #endif

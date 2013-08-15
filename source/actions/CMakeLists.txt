@@ -26,6 +26,7 @@ add_library(pteactions
     #deletenote.cpp
     #deleteposition.cpp
     editbarline.cpp
+    editclef.cpp
     #editfileinformation.cpp
     #edithammerpull.cpp
     editkeysignature.cpp

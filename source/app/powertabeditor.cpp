@@ -30,6 +30,7 @@
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
+#include <actions/editclef.h>
 #include <actions/editkeysignature.h>
 #include <actions/editnoteduration.h>
 #include <actions/edittabnumber.h>
@@ -47,6 +48,7 @@
 #include <app/command.h>
 #include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
+#include <app/pubsub/staffpubsub.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
@@ -1752,6 +1754,8 @@ void PowerTabEditor::setupNewTab()
                 boost::bind(&PowerTabEditor::editKeySignature, this, _1));
     scorearea->getBarlinePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editBarline, this, _1));
+    scorearea->getClefPubSub()->subscribe(
+                boost::bind(&PowerTabEditor::editClef, this, _1, _2));
 
     myUndoManager->addNewUndoStack();
 
@@ -2067,6 +2071,15 @@ void PowerTabEditor::editBarline(const ScoreLocation &barLocation)
                                 location.getSystemIndex());
         }
     }
+}
+
+void PowerTabEditor::editClef(int system, int staff)
+{
+    ScoreLocation location = getLocation();
+    location.setSystemIndex(system);
+    location.setStaffIndex(staff);
+
+    myUndoManager->push(new EditClef(location), location.getSystemIndex());
 }
 
 void PowerTabEditor::editSimplePositionProperty(Command *command,

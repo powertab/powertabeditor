@@ -19,6 +19,12 @@ add_library(pteapp
     settings.cpp
     #skinmanager.cpp
     #tuningdictionary.cpp
+
+    # Header-only files
+    pubsub/pubsub.h
+    pubsub/scorelocationpubsub.h
+    pubsub/settingspubsub.h
+    pubsub/staffpubsub.h
 )
 
 qt5_use_modules(pteapp Widgets Concurrent)

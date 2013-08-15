@@ -17,13 +17,22 @@
   
 #include "clefpainter.h"
 
+#include <app/pubsub/staffpubsub.h>
 #include <painters/musicfont.h>
+#include <QCursor>
 #include <QPainter>
 
-ClefPainter::ClefPainter(Staff::ClefType clefType, const QFont &musicFont)
+ClefPainter::ClefPainter(Staff::ClefType clefType, const QFont &musicFont,
+                         int system, int staff,
+                         boost::shared_ptr<StaffPubSub> pubsub)
     : myClefType(clefType),
-      myMusicFont(musicFont)
+      myMusicFont(musicFont),
+      mySystemIndex(system),
+      myStaffIndex(staff),
+      myPubSub(pubsub)
 {
+    setAcceptHoverEvents(true);
+
     if (myClefType == Staff::TrebleClef)
         myDisplayText.setText(QChar(MusicFont::TrebleClef));
     else
@@ -43,4 +52,25 @@ void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*,
         painter->drawStaticText(0, -6, myDisplayText);
     else
         painter->drawStaticText(0, -21, myDisplayText);
+}
+
+void ClefPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
+{
+    // No action is needed here, but we need to override this method in order
+    // to get the mouse release event.
+}
+
+void ClefPainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+{
+    myPubSub->publish(mySystemIndex, myStaffIndex);
+}
+
+void ClefPainter::hoverEnterEvent(QGraphicsSceneHoverEvent *)
+{
+    setCursor(Qt::PointingHandCursor);
+}
+
+void ClefPainter::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
+{
+    unsetCursor();
 }

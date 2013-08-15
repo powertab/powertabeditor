@@ -19,6 +19,7 @@
 
 #include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
+#include <app/pubsub/staffpubsub.h>
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
@@ -37,7 +38,8 @@ ScoreArea::ScoreArea(QWidget *parent)
       myCaretPainter(NULL),
       myKeySignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
       myTimeSignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
-      myBarlineClicked(boost::make_shared<ScoreLocationPubSub>())
+      myBarlineClicked(boost::make_shared<ScoreLocationPubSub>()),
+      myClefClicked(boost::make_shared<StaffPubSub>())
 {
     setScene(&myScene);
 }
@@ -141,6 +143,11 @@ boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getBarlinePubSub() const
 boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getSelectionPubSub() const
 {
     return myDocument->getCaret().getSelectionPubSub();
+}
+
+boost::shared_ptr<StaffPubSub> ScoreArea::getClefPubSub() const
+{
+    return myClefClicked;
 }
 
 void ScoreArea::adjustScroll()

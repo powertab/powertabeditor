@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,15 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_SETTINGSPUBSUB_H
-#define APP_SETTINGSPUBSUB_H
+#ifndef ACTIONS_EDITCLEF_H
+#define ACTIONS_EDITCLEF_H
 
-#include <app/pubsub/pubsub.h>
+#include <QUndoCommand>
+#include <score/scorelocation.h>
 
-/// Provides a way to subscribe to or publish notifications about settings
-/// that have changed.
-class SettingsPubSub : public PubSub<void (const std::string&)>
+class EditClef : public QUndoCommand
 {
+public:
+    EditClef(const ScoreLocation &location);
+
+    virtual void redo();
+    virtual void undo();
+
+private:
+    void toggleClefType();
+
+    ScoreLocation myLocation;
 };
 
 #endif

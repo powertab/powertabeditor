@@ -93,7 +93,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         // Draw the clefs.
         ClefPainter* clef = new ClefPainter(staff.getClefType(),
-                                            myMusicNotationFont);
+                                            myMusicNotationFont, systemIndex, i,
+                                            myScoreArea->getClefPubSub());
         clef->setPos(LayoutInfo::CLEF_PADDING, layout->getTopStdNotationLine());
         clef->setParentItem(myParentStaff);
 

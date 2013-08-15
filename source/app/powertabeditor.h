@@ -221,6 +221,8 @@ private:
     void editKeySignature(const ScoreLocation &location);
     /// Edits the barline at the given location.
     void editBarline(const ScoreLocation &barLocation);
+    /// Edits the clef at the given location.
+    void editClef(int system, int staff);
 
     /// Toggles a simple position property.
     void editSimplePositionProperty(Command *command,

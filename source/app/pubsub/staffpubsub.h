@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,15 +15,15 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_SETTINGSPUBSUB_H
-#define APP_SETTINGSPUBSUB_H
+#ifndef APP_STAFFPUBSUB_H
+#define APP_STAFFPUBSUB_H
 
 #include <app/pubsub/pubsub.h>
 
-/// Provides a way to subscribe to or publish notifications about settings
-/// that have changed.
-class SettingsPubSub : public PubSub<void (const std::string&)>
+/// Provides a way to subscribe to or publish notifications about events
+/// from a particular staff in a system.
+class StaffPubSub : public PubSub<void (int, int)>
 {
 };
 
-#endif
+#endif // STAFFPUBSUB_H

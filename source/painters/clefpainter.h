@@ -18,25 +18,38 @@
 #ifndef PAINTERS_CLEFPAINTER_H
 #define PAINTERS_CLEFPAINTER_H
 
+#include <boost/shared_ptr.hpp>
 #include <QFont>
 #include <QGraphicsItem>
 #include <QStaticText>
 #include <score/staff.h>
 
+class StaffPubSub;
+
 class ClefPainter : public QGraphicsItem
 {
 public:
-    ClefPainter(Staff::ClefType clefType, const QFont &musicFont);
+    ClefPainter(Staff::ClefType clefType, const QFont &musicFont,
+                int system, int staff,
+                boost::shared_ptr<StaffPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *);
     virtual QRectF boundingRect() const { return myBounds; }
 
 private:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
     const Staff::ClefType myClefType;
     const QFont myMusicFont;
     QStaticText myDisplayText;
     QRectF myBounds;
+    const int mySystemIndex;
+    const int myStaffIndex;
+    boost::shared_ptr<StaffPubSub> myPubSub;
 };
 
 #endif
