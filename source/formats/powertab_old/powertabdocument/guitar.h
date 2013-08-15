@@ -166,13 +166,9 @@ public:
     const Tuning& GetTuning() const;
 
     size_t GetStringCount() const;
-    std::string GetTuningSpelling() const;
 
     bool IsShown() const;
     void SetShown(bool set = true);
-
-    // Operations
-    std::string GetLegendText() const;
 };
 
 }

@@ -213,15 +213,6 @@ bool Guitar::Deserialize(PowerTabInputStream& stream, uint16_t version)
 }
 
 // Operations
-/// Gets the legend text for the guitar (i.e. Gtr. I - Acoustic (E A D G B E))
-std::string Guitar::GetLegendText() const
-{
-    std::stringstream returnValue;
-    returnValue << "Gtr. " << ArabicToRoman(GetNumber() + 1, true);
-    returnValue << " - " << GetDescription() << " - " << m_tuning.GetSpelling();
-    return returnValue.str();
-}
-
 /// Sets the tuning used by the guitar
 /// @return True if the tuning was set, false if not
 bool Guitar::SetTuning(const Tuning& tuning)
@@ -247,12 +238,6 @@ const Tuning& Guitar::GetTuning() const
 size_t Guitar::GetStringCount() const
 {
     return m_tuning.GetStringCount();
-}
-
-/// Gets the tuning spelling used by the guitar (i.e. E A D G B E)
-std::string Guitar::GetTuningSpelling() const
-{
-    return m_tuning.GetSpelling();
 }
 
 /// Sets the number (id) used by the guitar

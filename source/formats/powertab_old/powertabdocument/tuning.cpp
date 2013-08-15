@@ -9,9 +9,6 @@
 // License:         wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include <sstream>
-
 #include "tuning.h"
 #include "generalmidi.h"
 
@@ -103,14 +100,6 @@ bool Tuning::Deserialize(PowerTabInputStream& stream, uint16_t)
     return true;
 }
 
-/// Determines if the tuning notes are the same as that of another Tuning object
-/// @param tuning Tuning object to compare with
-/// @return True if the tunings have the same notes, false if not
-bool Tuning::IsSameTuning(const Tuning& tuning) const
-{
-    return m_noteArray == tuning.m_noteArray;
-}
-
 // Sharps Functions
 /// Sets the tuning to use sharps when displaying the tuning notes (i.e. C# vs
 /// Db)
@@ -157,18 +146,6 @@ int8_t Tuning::GetMusicNotationOffset() const
 }
 
 // Note Functions
-/// Sets the MIDI note value for an existing string in the tuning
-/// @param string String to set the note for
-/// @param note MIDI note to set
-/// @return True if the note was set, false if not
-bool Tuning::SetNote(uint32_t string, uint8_t note)
-{
-    PTB_CHECK_THAT(IsValidString(string), false);
-    PTB_CHECK_THAT(midi::IsValidMidiNote(note), false);
-    m_noteArray[string] = note;
-    return true;
-}
-
 /// Gets the note for assigned to a string
 /// @param string String to get the note for
 /// @param includeMusicNotationOffset Include the music notation offset in the
@@ -185,39 +162,6 @@ uint8_t Tuning::GetNote(uint32_t string, bool includeMusicNotationOffset) const
         returnValue = midi::OffsetMidiNote(returnValue, GetMusicNotationOffset());
 
     return (returnValue);
-}
-
-/// Gets the text representation of a note (i.e. C#, Eb)
-/// @param string String of the note to get the text representation of
-/// @return A text representation of the note
-string Tuning::GetNoteText(uint32_t string) const
-{
-    PTB_CHECK_THAT(IsValidString(string), "");
-    return (midi::GetMidiNoteTextSimple(m_noteArray[string], UsesSharps()));
-}
-
-/// Determines if a note is a note that can be played as an open string
-/// @param note Note to test
-/// @return True if the note can be played as an open string, false if not
-bool Tuning::IsOpenStringNote(uint8_t note) const
-{
-    return (std::find(m_noteArray.begin(), m_noteArray.end(), note) != m_noteArray.end());
-}
-
-/// Gets the MIDI note range for the tuning (lowest possible playable note +
-/// highest possible playable note)
-/// @param capo Capo value to apply to the tuning
-/// @return A pair that contains the lowest possible note and the highest
-/// possible note
-pair<uint8_t, uint8_t> Tuning::GetNoteRange(uint8_t capo) const
-{
-    // find iterators to min & max elements
-    std::vector<uint8_t>::const_iterator max = std::max_element(m_noteArray.begin(), m_noteArray.end());
-    std::vector<uint8_t>::const_iterator min = std::min_element(m_noteArray.begin(), m_noteArray.end());
-
-    // add capo, and 24 frets for the highest note
-    pair<uint8_t, uint8_t> returnValue = std::make_pair(*min + capo, *max + capo + 24);
-    return returnValue;
 }
 
 /// Sets the tuning notes, from high to low
@@ -244,50 +188,6 @@ bool Tuning::SetTuningNotes(const std::vector<uint8_t>& tuningNotes)
 std::vector<uint8_t> Tuning::GetTuningNotes() const
 {
     return m_noteArray;
-}
-
-/// Gets a full string representation of the tuning from low to high
-/// (i.e. E A D G B E)
-string Tuning::GetSpelling() const
-{
-    std::stringstream returnValue;
-
-    const size_t stringCount = GetStringCount();
-
-    // Go from lowest to highest string
-    for (size_t i = stringCount; i > 0; i--)
-    {
-        if (i != stringCount)
-           returnValue << " ";
-
-        returnValue << GetNoteText(i - 1);
-    }
-
-    return returnValue.str();
-}
-
-/// Sets the tuning to standard EADGBE tuning
-void Tuning::SetToStandard()
-{
-    using namespace midi;
-
-    std::vector<uint8_t> notes;
-    notes.push_back(MIDI_NOTE_E4);
-    notes.push_back(MIDI_NOTE_B3);
-    notes.push_back(MIDI_NOTE_G3);
-    notes.push_back(MIDI_NOTE_D3);
-    notes.push_back(MIDI_NOTE_A2);
-    notes.push_back(MIDI_NOTE_E2);
-
-    SetTuningNotes(notes);
-    SetName("Standard");
-}
-
-Tuning Tuning::Standard()
-{
-    Tuning tuning;
-    tuning.SetToStandard();
-    return tuning;
 }
 
 /// Determines if a tuning is valid (has a valid number of strings)

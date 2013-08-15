@@ -76,17 +76,6 @@ public:
 
     // Tuning Functions
 public:
-    bool IsSameTuning(const Tuning& tuning) const;
-
-    // Name Functions
-    /// Sets the tuning name (i.e. "Open G")
-    /// @param name Name to set
-    /// @return True if the name was successfully set, false if not
-    void SetName(const std::string& name)
-    {
-        m_name = name;
-    }
-
     /// Gets the tuning name (i.e. "Open G")
     /// @return The tuning name
     std::string GetName() const
@@ -142,23 +131,13 @@ public:
     }
 
     // Note Functions
-    bool SetNote(uint32_t string, uint8_t note);
     uint8_t GetNote(uint32_t string,
                     bool includeMusicNotationOffset = false) const;
-
-    std::string GetNoteText(uint32_t string) const;
-    bool IsOpenStringNote(uint8_t note) const;
-    std::pair<uint8_t, uint8_t> GetNoteRange(uint8_t capo) const;
 
     bool SetTuningNotes(const std::vector<uint8_t>& tuningNotes);
     std::vector<uint8_t> GetTuningNotes() const;
 
     bool IsValid() const;
-
-    std::string GetSpelling() const;
-
-    void SetToStandard();
-    static Tuning Standard();
 };
 
 }
