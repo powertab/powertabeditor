@@ -15,12 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DIRECTIONDIALOG_H
-#define DIRECTIONDIALOG_H
+#ifndef DIALOGS_DIRECTIONDIALOG_H
+#define DIALOGS_DIRECTIONDIALOG_H
 
 #include <QDialog>
-
-#include <powertabdocument/direction.h>
+#include <score/direction.h>
 
 namespace Ui {
 class DirectionDialog;
@@ -31,7 +30,7 @@ class DirectionDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit DirectionDialog(QWidget *parent = 0);
+    explicit DirectionDialog(QWidget *parent);
     ~DirectionDialog();
 
     Direction getDirection() const;
@@ -39,15 +38,19 @@ public:
     virtual void accept();
 
 private slots:
+    /// Adds a new direction symbol.
     void onAddDirection();
+    /// Remove the active direction symbol.
     void onRemoveDirection();
+    /// When the active symbol is changed, save the current symbol and load data
+    /// for the new symbol.
     void onSymbolIndexChanged(int);
     
 private:
     Ui::DirectionDialog *ui;
 
-    Direction direction;
-    int currentSymbol;
+    Direction myDirection;
+    int myCurrentSymbol;
 };
 
-#endif // DIRECTIONDIALOG_H
+#endif

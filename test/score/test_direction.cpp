@@ -29,7 +29,7 @@ TEST_CASE("Score/Direction/Symbols", "")
     direction.insertSymbol(symbol);
     REQUIRE(direction.getSymbols().size() == 1);
 
-    direction.removeSymbol(symbol);
+    direction.removeSymbol(0);
     REQUIRE(direction.getSymbols().size() == 0);
 }
 

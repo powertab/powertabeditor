@@ -15,24 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "addmusicaldirection.h"
+#ifndef ACTIONS_ADDDIRECTION_H
+#define ACTIONS_ADDDIRECTION_H
 
-#include <powertabdocument/system.h>
+#include <QUndoCommand>
+#include <score/direction.h>
+#include <score/scorelocation.h>
 
-AddMusicalDirection::AddMusicalDirection(boost::shared_ptr<System> system,
-                                         boost::shared_ptr<Direction> direction):
-    QUndoCommand(QObject::tr("Add Musical Direction")),
-    system(system),
-    direction(direction)
+class AddDirection : public QUndoCommand
 {
-}
+public:
+    AddDirection(const ScoreLocation &location, const Direction &direction);
 
-void AddMusicalDirection::redo()
-{
-    system->InsertDirection(direction);
-}
+    virtual void redo();
+    virtual void undo();
 
-void AddMusicalDirection::undo()
-{
-    system->RemoveDirection(direction);
-}
+private:
+    ScoreLocation myLocation;
+    const Direction myDirection;
+};
+
+#endif

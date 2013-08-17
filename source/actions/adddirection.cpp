@@ -15,28 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ADDMUSICALDIRECTION_H
-#define ADDMUSICALDIRECTION_H
+#include "adddirection.h"
 
-#include <QUndoCommand>
+#include <score/system.h>
 
-#include <boost/shared_ptr.hpp>
-
-class Direction;
-class System;
-
-class AddMusicalDirection : public QUndoCommand
+AddDirection::AddDirection(const ScoreLocation &location,
+                           const Direction &direction)
+    : QUndoCommand(QObject::tr("Add Musical Direction")),
+      myLocation(location),
+      myDirection(direction)
 {
-public:
-    AddMusicalDirection(boost::shared_ptr<System> system,
-                        boost::shared_ptr<Direction> direction);
+}
 
-    virtual void redo();
-    virtual void undo();
+void AddDirection::redo()
+{
+    myLocation.getSystem().insertDirection(myDirection);
+}
 
-private:
-    boost::shared_ptr<System> system;
-    boost::shared_ptr<Direction> direction;
-};
-
-#endif // ADDMUSICALDIRECTION_H
+void AddDirection::undo()
+{
+    myLocation.getSystem().removeDirection(myDirection);
+}

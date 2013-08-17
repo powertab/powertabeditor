@@ -15,28 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef REMOVEMUSICALDIRECTION_H
-#define REMOVEMUSICALDIRECTION_H
+#ifndef ACTIONS_REMOVEDIRECTION_H
+#define ACTIONS_REMOVEDIRECTION_H
 
 #include <QUndoCommand>
+#include <score/direction.h>
+#include <score/scorelocation.h>
 
-#include <boost/shared_ptr.hpp>
-
-class Direction;
-class System;
-
-class RemoveMusicalDirection : public QUndoCommand
+class RemoveDirection : public QUndoCommand
 {
 public:
-    RemoveMusicalDirection(boost::shared_ptr<System> system,
-                           boost::shared_ptr<Direction> direction);
+    RemoveDirection(const ScoreLocation &location);
 
     virtual void redo();
     virtual void undo();
 
 private:
-    boost::shared_ptr<System> system;
-    boost::shared_ptr<Direction> direction;
+    ScoreLocation myLocation;
+    const Direction myOriginalDirection;
 };
 
-#endif // REMOVEMUSICALDIRECTION_H
+#endif

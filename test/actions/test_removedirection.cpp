@@ -14,28 +14,28 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+  
 #include <catch.hpp>
 
-#include <boost/make_shared.hpp>
-#include <actions/addmusicaldirection.h>
-#include <powertabdocument/direction.h>
-#include <powertabdocument/system.h>
+#include <actions/removedirection.h>
+#include <score/score.h>
 
-TEST_CASE("Actions/AddMusicalDirection", "")
+TEST_CASE("Actions/RemoveDirection", "")
 {
-    boost::shared_ptr<System> system(boost::make_shared<System>());
-    boost::shared_ptr<Direction> dir(boost::make_shared<Direction>());
+    Score score;
+    System system;
+    Direction direction(6);
+    direction.insertSymbol(DirectionSymbol());
+    system.insertDirection(direction);
+    score.insertSystem(system);
 
-    AddMusicalDirection action(system, dir);
-
-    REQUIRE(system->GetDirectionCount() == 0);
+    ScoreLocation location(score, 0, 0, 6);
+    RemoveDirection action(location);
 
     action.redo();
-    REQUIRE(system->GetDirectionCount() == 1);
-    REQUIRE(system->GetDirection(0) == dir);
+    REQUIRE(location.getSystem().getDirections().empty());
 
     action.undo();
-    REQUIRE(system->GetDirectionCount() == 0);
+    REQUIRE(location.getSystem().getDirections().size() == 1);
+    REQUIRE(location.getSystem().getDirections().front() == direction);
 }
-

@@ -18,22 +18,32 @@
 #include "directiondialog.h"
 #include "ui_directiondialog.h"
 
-#include <QDebug>
+static const int MAX_SYMBOLS = 3;
 
-DirectionDialog::DirectionDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::DirectionDialog),
-    currentSymbol(0)
+static QString theDirectionText[DirectionSymbol::NumSymbolTypes] =
+{
+    "Coda", "Double Coda", "Segno", "Segno Segno",
+    "Fine", "Da Capo", "Dal Segno", "Dal Segno Segno", "To Coda",
+    "To Double Coda", "Da Capo al Coda", "Da Capo al Double Coda",
+    "Dal Segno al Coda", "Dal Segno al Double Coda", "Dal Segno Segno al Coda",
+    "Dal Segno Segno al Double Coda", "Da Capo al Fine", "Dal Segno al Fine",
+    "Dal Segno Segno al Fine"
+};
+
+DirectionDialog::DirectionDialog(QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::DirectionDialog),
+      myCurrentSymbol(0)
 {
     ui->setupUi(this);
 
     // Add the initial symbol.
-    direction.AddSymbol(Direction::coda, Direction::activeNone, 0);
+    myDirection.insertSymbol(DirectionSymbol(DirectionSymbol::Coda));
 
-    for (uint8_t i = Direction::coda; i <= Direction::dalSegnoSegnoAlFine; ++i)
+    for (int i = DirectionSymbol::Coda;
+         i < DirectionSymbol::NumSymbolTypes; ++i)
     {
-        ui->symbolComboBox->addItem(
-                    QString::fromStdString(Direction::GetDetailedText(i)));
+        ui->symbolComboBox->addItem(theDirectionText[i]);
     }
 
     ui->activeSymbolComboBox->addItem("None");
@@ -41,8 +51,7 @@ DirectionDialog::DirectionDialog(QWidget *parent) :
     ui->activeSymbolComboBox->addItem("D.S.");
     ui->activeSymbolComboBox->addItem("D.S.S.");
 
-    ui->repeatNumberSpinBox->setMinimum(Direction::MIN_REPEAT_NUMBER);
-    ui->repeatNumberSpinBox->setMaximum(Direction::MAX_REPEAT_NUMBER);
+    ui->repeatNumberSpinBox->setMinimum(0);
     ui->repeatNumberSpinBox->setValue(0);
 
     ui->directionComboBox->addItem("1");
@@ -64,83 +73,76 @@ DirectionDialog::~DirectionDialog()
 
 Direction DirectionDialog::getDirection() const
 {
-    return direction;
+    return myDirection;
 }
 
 void DirectionDialog::accept()
 {
-    direction.SetSymbol(currentSymbol,
-                        ui->symbolComboBox->currentIndex(),
-                        ui->activeSymbolComboBox->currentIndex(),
-                        ui->repeatNumberSpinBox->value());
+    myDirection.getSymbols()[myCurrentSymbol] = DirectionSymbol(
+                static_cast<DirectionSymbol::SymbolType>(
+                    ui->symbolComboBox->currentIndex()),
+                static_cast<DirectionSymbol::ActiveSymbolType>(
+                    ui->activeSymbolComboBox->currentIndex()),
+                ui->repeatNumberSpinBox->value());
     done(Accepted);
 }
 
-/// Add a new direction symbol.
 void DirectionDialog::onAddDirection()
 {
-    direction.AddSymbol(Direction::coda, Direction::activeNone, 0);
+    myDirection.insertSymbol(DirectionSymbol(DirectionSymbol::Coda));
     ui->directionComboBox->addItem(
-                QString::number(direction.GetSymbolCount()));
+                QString::number(myDirection.getSymbols().size()));
 
-    ui->directionComboBox->setCurrentIndex(direction.GetSymbolCount() - 1);
+    ui->directionComboBox->setCurrentIndex(myDirection.getSymbols().size() - 1);
 
-    if (direction.GetSymbolCount() == Direction::MAX_SYMBOLS)
-    {
+    if (myDirection.getSymbols().size() == MAX_SYMBOLS)
         ui->addDirectionButton->setDisabled(true);
-    }
 
     ui->removeDirectionButton->setEnabled(true);
 }
 
-/// Remove the active direction symbol.
 void DirectionDialog::onRemoveDirection()
 {
     const int index = ui->directionComboBox->currentIndex();
     ui->directionComboBox->clear();
 
-    direction.RemoveSymbolAtIndex(index);
+    myDirection.removeSymbol(index);
 
     // Rebuild the list of symbols.
-    for (size_t i = 0; i < direction.GetSymbolCount(); ++i)
-    {
+    for (long i = 0; i < myDirection.getSymbols().size(); ++i)
         ui->directionComboBox->addItem(QString::number(i + 1));
-    }
+
     ui->directionComboBox->setCurrentIndex(
-                std::min<int>(index, direction.GetSymbolCount() - 1));
+                std::min<int>(index, myDirection.getSymbols().size() - 1));
 
     // Update the Add/Remove buttons.
     ui->addDirectionButton->setEnabled(true);
 
-    if (direction.GetSymbolCount() == 1)
-    {
+    if (myDirection.getSymbols().size() == 1)
         ui->removeDirectionButton->setDisabled(true);
-    }
 }
 
-/// When the active symbol is changed, save the current symbol and load data
-/// for the new symbol.
 void DirectionDialog::onSymbolIndexChanged(int index)
 {
-    if (direction.IsValidSymbolIndex(currentSymbol))
+    if (myCurrentSymbol >= 0 &&
+        myCurrentSymbol < myDirection.getSymbols().size())
     {
-        direction.SetSymbol(currentSymbol,
-                            ui->symbolComboBox->currentIndex(),
-                            ui->activeSymbolComboBox->currentIndex(),
-                            ui->repeatNumberSpinBox->value());
+        myDirection.getSymbols()[myCurrentSymbol] = DirectionSymbol(
+                    static_cast<DirectionSymbol::SymbolType>(
+                        ui->symbolComboBox->currentIndex()),
+                    static_cast<DirectionSymbol::ActiveSymbolType>(
+                        ui->activeSymbolComboBox->currentIndex()),
+                    ui->repeatNumberSpinBox->value());
     }
 
-    if (direction.IsValidSymbolIndex(index))
+    if (index >= 0 && index < myDirection.getSymbols().size())
     {
-        uint8_t symbolType = 0;
-        uint8_t activeSymbol = 0;
-        uint8_t repeatNumber = 0;
-        direction.GetSymbol(index, symbolType, activeSymbol, repeatNumber);
+        const DirectionSymbol &symbol = myDirection.getSymbols()[index];
 
-        ui->symbolComboBox->setCurrentIndex(symbolType);
-        ui->activeSymbolComboBox->setCurrentIndex(activeSymbol);
-        ui->repeatNumberSpinBox->setValue(repeatNumber);
+        ui->symbolComboBox->setCurrentIndex(symbol.getSymbolType());
+        ui->activeSymbolComboBox->setCurrentIndex(symbol.getActiveSymbolType());
+        ui->repeatNumberSpinBox->setValue(symbol.getRepeatNumber());
     }
 
-    currentSymbol = index;
+    myCurrentSymbol = index;
 }

@@ -15,27 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch.hpp>
+#include "removedirection.h"
 
-#include <boost/make_shared.hpp>
-#include <actions/removemusicaldirection.h>
-#include <powertabdocument/direction.h>
-#include <powertabdocument/system.h>
+#include <score/system.h>
+#include <score/utils.h>
 
-TEST_CASE("Actions/RemoveMusicalDirection", "")
+RemoveDirection::RemoveDirection(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Musical Direction")),
+      myLocation(location),
+      myOriginalDirection(*ScoreUtils::findByPosition(
+                              location.getSystem().getDirections(),
+                              location.getPositionIndex()))
 {
-    boost::shared_ptr<System> system(boost::make_shared<System>());
-    boost::shared_ptr<Direction> dir(boost::make_shared<Direction>());
-    system->InsertDirection(dir);
+}
 
-    RemoveMusicalDirection action(system, dir);
+void RemoveDirection::redo()
+{
+    myLocation.getSystem().removeDirection(myOriginalDirection);
+}
 
-    REQUIRE(system->GetDirectionCount() == 1);
-
-    action.redo();
-    REQUIRE(system->GetDirectionCount() == 0);
-
-    action.undo();
-    REQUIRE(system->GetDirectionCount() == 1);
-    REQUIRE(system->GetDirection(0) == dir);
+void RemoveDirection::undo()
+{
+    myLocation.getSystem().insertDirection(myOriginalDirection);
 }

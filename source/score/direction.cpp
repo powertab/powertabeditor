@@ -60,10 +60,9 @@ void Direction::insertSymbol(const DirectionSymbol &symbol)
     mySymbols.push_back(symbol);
 }
 
-void Direction::removeSymbol(const DirectionSymbol &symbol)
+void Direction::removeSymbol(int index)
 {
-    mySymbols.erase(std::remove(mySymbols.begin(), mySymbols.end(), symbol),
-                    mySymbols.end());
+    mySymbols.erase(mySymbols.begin() + index);
 }
 
 DirectionSymbol::DirectionSymbol()

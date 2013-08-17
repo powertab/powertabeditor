@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2011 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,26 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#include "removemusicaldirection.h"
+#include <actions/adddirection.h>
+#include <score/score.h>
 
-#include <powertabdocument/system.h>
-
-RemoveMusicalDirection::RemoveMusicalDirection(boost::shared_ptr<System> system,
-        boost::shared_ptr<Direction> direction) :
-    QUndoCommand(QObject::tr("Remove Musical Direction")),
-    system(system),
-    direction(direction)
+TEST_CASE("Actions/AddDirection", "")
 {
-}
+    Score score;
+    score.insertSystem(System());
 
-void RemoveMusicalDirection::redo()
-{
-    system->RemoveDirection(direction);
-}
+    Direction direction(6);
+    direction.insertSymbol(DirectionSymbol::Segno);
+    ScoreLocation location(score, 0, 0, 6);
+    AddDirection action(location, direction);
 
-void RemoveMusicalDirection::undo()
-{
-    system->InsertDirection(direction);
+    action.redo();
+    REQUIRE(location.getSystem().getDirections().size() == 1);
+    REQUIRE(location.getSystem().getDirections()[0] == direction);
+
+    action.undo();
+    REQUIRE(location.getSystem().getDirections().size() == 0);
 }

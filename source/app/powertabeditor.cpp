@@ -18,6 +18,7 @@
 #include "powertabeditor.h"
 
 #include <actions/addbarline.h>
+#include <actions/adddirection.h>
 #include <actions/adddynamic.h>
 #include <actions/addnote.h>
 #include <actions/addnoteproperty.h>
@@ -36,6 +37,7 @@
 #include <actions/editnoteduration.h>
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
+#include <actions/removedirection.h>
 #include <actions/removedynamic.h>
 #include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
@@ -63,6 +65,7 @@
 #include <boost/timer.hpp>
 
 #include <dialogs/barlinedialog.h>
+#include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
@@ -752,6 +755,34 @@ void PowerTabEditor::editBarlineFromCaret()
     editBarline(getLocation());
 }
 
+void PowerTabEditor::editMusicalDirection()
+{
+    const ScoreLocation &location = getLocation();
+    const Direction *direction = ScoreUtils::findByPosition(
+                location.getSystem().getDirections(),
+                location.getPositionIndex());
+
+    if (direction)
+    {
+        myUndoManager->push(new RemoveDirection(location),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        DirectionDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            Direction direction(dialog.getDirection());
+            direction.setPosition(location.getPositionIndex());
+
+            myUndoManager->push(new AddDirection(location, direction),
+                                location.getSystemIndex());
+        }
+        else
+            myDirectionCommand->setChecked(false);
+    }
+}
+
 void PowerTabEditor::editDynamic()
 {
     ScoreLocation &location = getLocation();
@@ -1330,13 +1361,15 @@ void PowerTabEditor::createCommands()
                              Qt::SHIFT + Qt::Key_B, this);
     connect(myBarlineCommand, SIGNAL(triggered()), this,
             SLOT(editBarlineFromCaret()));
-#if 0
-    musicalDirectionAct = new Command(tr("Musical Direction..."),
-            "MusicSymbols.EditMusicalDirection", Qt::SHIFT + Qt::Key_D, this);
-    musicalDirectionAct->setCheckable(true);
-    connect(musicalDirectionAct, SIGNAL(triggered()), this,
+
+    myDirectionCommand = new Command(tr("Musical Direction..."),
+                                      "MusicSymbols.EditMusicalDirection",
+                                      Qt::SHIFT + Qt::Key_D, this);
+    myDirectionCommand->setCheckable(true);
+    connect(myDirectionCommand, SIGNAL(triggered()), this,
             SLOT(editMusicalDirection()));
 
+#if 0
     repeatEndingAct = new Command(tr("Repeat Ending..."),
                                   "MusicSymbols.EditRepeatEnding",
                                   Qt::SHIFT + Qt::Key_E, this);
@@ -1681,8 +1714,8 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(myTimeSignatureCommand);
     myMusicSymbolsMenu->addAction(myStandardBarlineCommand);
     myMusicSymbolsMenu->addAction(myBarlineCommand);
+    myMusicSymbolsMenu->addAction(myDirectionCommand);
 #if 0
-    myMusicSymbolsMenu->addAction(musicalDirectionAct);
     myMusicSymbolsMenu->addAction(repeatEndingAct);
 #endif
     myMusicSymbolsMenu->addAction(myDynamicCommand);
@@ -1967,10 +2000,12 @@ void PowerTabEditor::updateCommands()
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
     myTempoMarkerCommand->setChecked(ScoreUtils::findByPosition(
-                                   system.getTempoMarkers(), position));
+                                         system.getTempoMarkers(), position));
     myKeySignatureCommand->setEnabled(barline);
     myTimeSignatureCommand->setEnabled(barline);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
+    myDirectionCommand->setChecked(ScoreUtils::findByPosition(
+                                       system.getDirections(), position));
     myDynamicCommand->setChecked(ScoreUtils::findByPosition(staff.getDynamics(),
                                                       position));
 
@@ -2504,36 +2539,6 @@ void PowerTabEditor::editChordName()
                           caret->getCurrentSystemIndex());
     }
 
-}
-
-void PowerTabEditor::editMusicalDirection()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    boost::shared_ptr<System> system(caret->getCurrentSystem());
-    boost::shared_ptr<Direction> dir(system->FindDirection(
-                                         caret->getCurrentPositionIndex()));
-
-    if (!dir)
-    {
-        DirectionDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            dir = boost::make_shared<Direction>(dialog.getDirection());
-            dir->SetPosition(caret->getCurrentPositionIndex());
-
-            undoManager->push(new AddMusicalDirection(system, dir),
-                              caret->getCurrentSystemIndex());
-        }
-        else
-        {
-            musicalDirectionAct->setChecked(false);
-        }
-    }
-    else
-    {
-        undoManager->push(new RemoveMusicalDirection(system, dir),
-                          caret->getCurrentSystemIndex());
-    }
 }
 
 void PowerTabEditor::editHammerPull()

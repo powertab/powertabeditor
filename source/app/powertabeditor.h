@@ -164,6 +164,8 @@ private slots:
     void insertStandardBarline();
     /// Edits or inserts a barline at the current location.
     void editBarlineFromCaret();
+    /// Adds or removes a musical direction at the current position.
+    void editMusicalDirection();
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
 
@@ -360,6 +362,7 @@ private:
     Command *myTimeSignatureCommand;
     Command *myStandardBarlineCommand;
     Command *myBarlineCommand;
+    Command *myDirectionCommand;
     Command *myDynamicCommand;
 
     QMenu *myTabSymbolsMenu;
@@ -414,7 +417,6 @@ private slots:
     void moveCaretUp();
 
     void editChordName();
-    void editMusicalDirection();
     void editRepeatEnding();
     void editTiedNote();
     void editHammerPull();
@@ -463,7 +465,6 @@ private:
     Command* tripletAct;
     Command* irregularGroupingAct;
 
-    Command* musicalDirectionAct;
     Command* repeatEndingAct;
     Command* volumeSwellAct;
 

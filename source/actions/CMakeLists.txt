@@ -5,10 +5,10 @@ add_library(pteactions
     #addartificialharmonic.cpp
     addbarline.cpp
     #addchordtext.cpp
+    adddirection.cpp
     adddynamic.cpp
     #addguitar.cpp
     #addirregulargrouping.cpp
-    #addmusicaldirection.cpp
     addnote.cpp
     addnoteproperty.cpp
     addplayerchange.cpp
@@ -42,9 +42,9 @@ add_library(pteactions
     #removealternateending.cpp
     #removeartificialharmonic.cpp
     #removechordtext.cpp
+    removedirection.cpp
     removedynamic.cpp
     #removeirregulargrouping.cpp
-    #removemusicaldirection.cpp
     removenoteproperty.cpp
     removeplayerchange.cpp
     removepositionproperty.cpp

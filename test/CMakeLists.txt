@@ -5,9 +5,9 @@ add_executable(pte_tests
 
     #actions/test_addartificialharmonic.cpp
     actions/test_addbarline.cpp
+    actions/test_adddirection.cpp
     actions/test_adddynamic.cpp
     #actions/test_addirregulargrouping.cpp
-    #actions/test_addmusicaldirection.cpp
     actions/test_addnote.cpp
     actions/test_addnoteproperty.cpp
     actions/test_addplayerchange.cpp
@@ -31,9 +31,9 @@ add_executable(pte_tests
     actions/test_edittabnumber.cpp
     actions/test_edittimesignature.cpp
     #actions/test_removeartificialharmonic.cpp
+    actions/test_removedirection.cpp
     actions/test_removedynamic.cpp
     #actions/test_removeirregulargrouping.cpp
-    #actions/test_removemusicaldirection.cpp
     actions/test_removenoteproperty.cpp
     actions/test_removeplayerchange.cpp
     actions/test_removepositionproperty.cpp

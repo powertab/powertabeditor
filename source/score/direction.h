@@ -45,7 +45,8 @@ public:
         DalSegnoSegnoAlDoubleCoda,
         DaCapoAlFine,
         DalSegnoAlFine,
-        DalSegnoSegnoAlFine
+        DalSegnoSegnoAlFine,
+        NumSymbolTypes
     };
 
     enum ActiveSymbolType
@@ -105,7 +106,7 @@ public:
     /// Adds a new symbol to the direction.
     void insertSymbol(const DirectionSymbol &symbol);
     /// Removes a symbol from the direction.
-    void removeSymbol(const DirectionSymbol &symbol);
+    void removeSymbol(int index);
 
 private:
     int myPosition;
