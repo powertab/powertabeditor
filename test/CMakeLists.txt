@@ -28,7 +28,7 @@ add_executable(pte_tests
     #actions/test_editslideinto.cpp
     #actions/test_editslideout.cpp
     actions/test_edittabnumber.cpp
-    #actions/test_edittimesignature.cpp
+    actions/test_edittimesignature.cpp
     #actions/test_removeartificialharmonic.cpp
     actions/test_removedynamic.cpp
     #actions/test_removeirregulargrouping.cpp

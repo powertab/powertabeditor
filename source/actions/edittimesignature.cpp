@@ -17,76 +17,58 @@
   
 #include "edittimesignature.h"
 
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/barline.h>
 #include <boost/foreach.hpp>
+#include <score/barline.h>
+#include <score/score.h>
 
-EditTimeSignature::EditTimeSignature(Score* score, const SystemLocation& location,
-                                     const TimeSignature& newTimeSig) :
-    QUndoCommand(QObject::tr("Edit Time Signature")),
-    score(score),
-    location(location),
-    newTimeSig(newTimeSig)
+EditTimeSignature::EditTimeSignature(const ScoreLocation &location,
+                                     const TimeSignature& newTimeSig)
+    : QUndoCommand(QObject::tr("Edit Time Signature")),
+      myLocation(location),
+      myNewTime(newTimeSig),
+      myOldTime(location.getBarline()->getTimeSignature())
 {
-    // save the original time signature
-    Score::SystemConstPtr system = score->GetSystem(location.getSystemIndex());
-    System::BarlineConstPtr barline = system->GetBarlineAtPosition(location.getPositionIndex());
-    Q_ASSERT(barline);
-    oldTimeSig = barline->GetTimeSignature();
 }
 
 void EditTimeSignature::redo()
 {
-    switchTimeSignatures(oldTimeSig, newTimeSig);
+    myLocation.getBarline()->setTimeSignature(myNewTime);
+    updateFollowingTimeSignatures(myOldTime, myNewTime);
 }
 
 void EditTimeSignature::undo()
 {
-    switchTimeSignatures(newTimeSig, oldTimeSig);
+    myLocation.getBarline()->setTimeSignature(myOldTime);
+    updateFollowingTimeSignatures(myNewTime, myOldTime);
 }
 
-/// Switches from the old time signature to the new time signature, starting at the position
-/// stored in the "location" member
-/// Modifies all following time signatures until a different time signature is reached
-void EditTimeSignature::switchTimeSignatures(const TimeSignature& oldTime,
-                                             const TimeSignature& newTime)
+void EditTimeSignature::updateFollowingTimeSignatures(
+        const TimeSignature &oldTime, const TimeSignature &newTime)
 {
-    const size_t startSystem = location.getSystemIndex();
-    for (size_t i = startSystem; i < score->GetSystemCount(); i++)
-    {
-        Score::SystemPtr system = score->GetSystem(i);
-        std::vector<System::BarlinePtr> barlines;
-        system->GetBarlines(barlines);
+    Score &score = myLocation.getScore();
+    const int startSystem = myLocation.getSystemIndex();
 
-        BOOST_FOREACH(System::BarlinePtr barline, barlines)
+    for (int i = startSystem; i < score.getSystems().size(); ++i)
+    {
+        BOOST_FOREACH(Barline &bar, score.getSystems()[i].getBarlines())
         {
-            if (i == startSystem && barline->GetPosition() < location.getPositionIndex())
+            if (i == startSystem &&
+                bar.getPosition() <= myLocation.getPositionIndex())
             {
                 continue;
             }
 
-            TimeSignature& time = barline->GetTimeSignature();
-            if (time.IsSameMeter(oldTime))
+            const TimeSignature &currentTime = bar.getTimeSignature();
+            if (currentTime.getMeterType() == oldTime.getMeterType() &&
+                currentTime.getBeatsPerMeasure() == oldTime.getBeatsPerMeasure() &&
+                currentTime.getBeatValue() == oldTime.getBeatValue())
             {
-                // modify everything except for visibility
-                const bool isShown = time.IsShown();
-                time = newTime;
-                time.SetShown(isShown);
-
-                // only modify visibility for the time signature that was edited directly
-                if (i == startSystem && barline->GetPosition() == location.getPositionIndex())
-                {
-                    time.SetShown(newTime.IsShown());
-                }
+                TimeSignature time(newTime);
+                time.setVisible(currentTime.isVisible());
+                bar.setTimeSignature(time);
             }
             else
-            {
-                system->AdjustPositionSpacing();
                 return;
-            }
         }
-
-        system->AdjustPositionSpacing();
     }
 }

@@ -17,36 +17,36 @@
   
 #include <catch.hpp>
 
-#include "../powertabdocument/score_fixture.h"
 #include <actions/edittimesignature.h>
+#include <score/score.h>
 
-TEST_CASE_METHOD(ScoreFixture, "Actions/EditTimeSignature", "")
+TEST_CASE("Actions/EditTimeSignature", "")
 {
-    TimeSignature newTimeSig(3, 4);
-    newTimeSig.Show();
+    Score score;
+    System system;
+    system.insertBarline(Barline(6, Barline::SingleBar));
+    score.insertSystem(system);
 
-    const TimeSignature oldTimeSig(4, 4);
+    TimeSignature newTime;
+    newTime.setBeatsPerMeasure(5);
+    newTime.setBeatValue(8);
 
-    EditTimeSignature action(&score, SystemLocation(0, 5),
-                             newTimeSig);
+    ScoreLocation location(score, 0, 0, 6);
+    EditTimeSignature action(location, newTime);
 
     action.redo();
-    REQUIRE(system1->GetStartBar()->GetTimeSignature().IsSameMeter(oldTimeSig));
-
-    REQUIRE(bar_1_5->GetTimeSignature().IsSameMeter(newTimeSig));
-    REQUIRE(bar_1_5->GetTimeSignature().IsShown());
-    REQUIRE(system2->GetStartBar()->GetTimeSignature().IsSameMeter(newTimeSig));
-
-    REQUIRE(bar_2_3->GetTimeSignature().IsSameMeter(time_2_3));
-    REQUIRE(system3->GetStartBar()->GetTimeSignature().IsSameMeter(oldTimeSig));
+    {
+        const System &system = score.getSystems()[0];
+        REQUIRE_FALSE(system.getBarlines()[0].getTimeSignature() == newTime);
+        REQUIRE(system.getBarlines()[1].getTimeSignature() == newTime);
+        REQUIRE(system.getBarlines()[2].getTimeSignature() == newTime);
+        REQUIRE(!system.getBarlines()[2].getTimeSignature().isVisible());
+    }
 
     action.undo();
-    REQUIRE(system1->GetStartBar()->GetTimeSignature().IsSameMeter(oldTimeSig));
-
-    REQUIRE(bar_1_5->GetTimeSignature().IsSameMeter(oldTimeSig));
-    REQUIRE(!bar_1_5->GetTimeSignature().IsShown());
-    REQUIRE(system2->GetStartBar()->GetTimeSignature().IsSameMeter(oldTimeSig));
-
-    REQUIRE(bar_2_3->GetTimeSignature().IsSameMeter(time_2_3));
-    REQUIRE(system3->GetStartBar()->GetTimeSignature().IsSameMeter(oldTimeSig));
+    {
+        const System &system = score.getSystems()[0];
+        REQUIRE_FALSE(system.getBarlines()[1].getTimeSignature() == newTime);
+        REQUIRE_FALSE(system.getBarlines()[2].getTimeSignature() == newTime);
+    }
 }

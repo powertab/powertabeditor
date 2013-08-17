@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef DIALOGS_EDITKEYSIGNATURE_H
-#define DIALOGS_EDITKEYSIGNATURE_H
+#ifndef ACTIONS_EDITKEYSIGNATURE_H
+#define ACTIONS_EDITKEYSIGNATURE_H
 
 #include <QUndoCommand>
 #include <score/keysignature.h>
@@ -41,4 +41,4 @@ private:
     const KeySignature myOldKey;
 };
 
-#endif // EDITKEYSIGNATURE_H
+#endif

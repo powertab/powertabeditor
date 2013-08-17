@@ -16,7 +16,7 @@ set(FORMS
     rehearsalsigndialog.ui
     tappedharmonicdialog.ui
     #tempomarkerdialog.ui
-    #timesignaturedialog.ui
+    timesignaturedialog.ui
     trilldialog.ui
     #tuningdialog.ui
     #tuningdictionarydialog.ui
@@ -44,7 +44,7 @@ add_library(ptedialogs
     rehearsalsigndialog.cpp
     tappedharmonicdialog.cpp
     #tempomarkerdialog.cpp
-    #timesignaturedialog.cpp
+    timesignaturedialog.cpp
     trilldialog.cpp
     #tuningdialog.cpp
     #tuningdictionarydialog.cpp

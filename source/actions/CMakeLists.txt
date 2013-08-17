@@ -34,7 +34,7 @@ add_library(pteactions
     #editslideinto.cpp
     #editslideout.cpp
     edittabnumber.cpp
-    #edittimesignature.cpp
+    edittimesignature.cpp
     #edittrackshown.cpp
     #edittuning.cpp
     #insertnotes.cpp

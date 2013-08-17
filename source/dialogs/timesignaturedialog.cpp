@@ -20,13 +20,50 @@
 
 #include <QMessageBox>
 
-TimeSignatureDialog::TimeSignatureDialog(QWidget *parent, const TimeSignature &originalTimeSignature) :
-    QDialog(parent),
-    ui(new Ui::TimeSignatureDialog),
-    newTimeSignature(originalTimeSignature)
+TimeSignatureDialog::TimeSignatureDialog(
+        QWidget *parent, const TimeSignature &currentTimeSignature)
+    : QDialog(parent),
+      ui(new Ui::TimeSignatureDialog),
+      myTimeSignature(currentTimeSignature)
 {
     ui->setupUi(this);
-    init();
+
+    ui->beatsPerMeasure->setMinimum(TimeSignature::MIN_BEATS_PER_MEASURE);
+    ui->beatsPerMeasure->setMaximum(TimeSignature::MAX_BEATS_PER_MEASURE);
+
+    for (uint8_t i = 0; i <= 64; ++i)
+    {
+        if (TimeSignature::isValidBeatValue(i))
+            ui->beatValue->addItem(QString::number(i), i);
+    }
+
+    myBeamingPatterns[0] = ui->beamingPattern1;
+    myBeamingPatterns[1] = ui->beamingPattern2;
+    myBeamingPatterns[2] = ui->beamingPattern3;
+    myBeamingPatterns[3] = ui->beamingPattern4;
+
+    for (size_t i = 0; i < myBeamingPatterns.size(); i++)
+    {
+        myBeamingPatterns[i]->setValidator(new QIntValidator(0, 64, 0));
+    }
+
+    ui->showTimeSignature->setChecked(myTimeSignature.isVisible());
+    ui->commonTime->setChecked(myTimeSignature.getMeterType() ==
+                               TimeSignature::CommonTime);
+    ui->cutTime->setChecked(myTimeSignature.getMeterType() ==
+                            TimeSignature::CutTime);
+
+    ui->beatsPerMeasure->setValue(myTimeSignature.getBeatsPerMeasure());
+    ui->beatValue->setCurrentIndex(ui->beatValue->findData(
+                                       myTimeSignature.getBeatValue()));
+
+    updatePossiblePulseValues();
+    ui->metronomePulses->setCurrentIndex(
+                ui->metronomePulses->findData(myTimeSignature.getNumPulses()));
+
+    boost::array<uint8_t, 4> beamingPattern = myTimeSignature.getBeamingPattern();
+    for (size_t i = 0; i < myBeamingPatterns.size(); i++)
+        myBeamingPatterns[i]->setText(QString::number(beamingPattern[i]));
 
     connect(ui->showTimeSignature, SIGNAL(toggled(bool)),
             this, SLOT(editTimeSignatureVisible(bool)));
@@ -52,52 +89,6 @@ TimeSignatureDialog::~TimeSignatureDialog()
     delete ui;
 }
 
-/// Initialize widgets and set default values
-void TimeSignatureDialog::init()
-{
-    ui->beatsPerMeasure->setMinimum(TimeSignature::MIN_BEATSPERMEASURE);
-    ui->beatsPerMeasure->setMaximum(TimeSignature::MAX_BEATSPERMEASURE);
-
-    for (uint8_t i = TimeSignature::MIN_BEATAMOUNT;
-            i <= TimeSignature::MAX_BEATAMOUNT; ++i)
-    {
-        if (TimeSignature::IsValidBeatAmount(i))
-        {
-            ui->beatValue->addItem(QString::number(i), i);
-        }
-    }
-
-    beamingPatterns[0] = ui->beamingPattern1;
-    beamingPatterns[1] = ui->beamingPattern2;
-    beamingPatterns[2] = ui->beamingPattern3;
-    beamingPatterns[3] = ui->beamingPattern4;
-
-    for (size_t i = 0; i < beamingPatterns.size(); i++)
-    {
-        beamingPatterns[i]->setValidator(new QIntValidator(0, TimeSignature::MAX_BEATAMOUNT, 0));
-    }
-
-    ui->showTimeSignature->setChecked(newTimeSignature.IsShown());
-    ui->commonTime->setChecked(newTimeSignature.IsCommonTime());
-    ui->cutTime->setChecked(newTimeSignature.IsCutTime());
-
-    ui->beatsPerMeasure->setValue(newTimeSignature.GetBeatsPerMeasure());
-    ui->beatValue->setCurrentIndex(ui->beatValue->findData(newTimeSignature.GetBeatAmount()));
-
-    updatePossiblePulseValues();
-    ui->metronomePulses->setCurrentIndex(ui->metronomePulses->findData(newTimeSignature.GetPulses()));
-
-    boost::array<uint8_t, 4> beamingPatternValues = {{0, 0, 0, 0}};
-    newTimeSignature.GetBeamingPattern(beamingPatternValues[0], beamingPatternValues[1],
-                                       beamingPatternValues[2], beamingPatternValues[3]);
-    for (size_t i = 0; i < beamingPatterns.size(); i++)
-    {
-        beamingPatterns[i]->setText(QString::number(beamingPatternValues[i]));
-    }
-}
-
-/// Update the options in the metronome pulses combo box (the available options
-/// for metronome pulses depend on the number of beats in the measure).
 void TimeSignatureDialog::updatePossiblePulseValues()
 {
     ui->metronomePulses->clear();
@@ -105,36 +96,30 @@ void TimeSignatureDialog::updatePossiblePulseValues()
     for (uint8_t i = TimeSignature::MIN_PULSES;
          i < TimeSignature::MAX_PULSES; ++i)
     {
-        if (newTimeSignature.IsValidPulses(i))
+        if (myTimeSignature.isValidNumPulses(i))
         {
             ui->metronomePulses->addItem(QString::number(i), i);
         }
     }
 }
 
-/// Returns a new time signature using the values selected in the dialog
-TimeSignature TimeSignatureDialog::getNewTimeSignature() const
+TimeSignature TimeSignatureDialog::getTimeSignature() const
 {
-    return newTimeSignature;
+    return myTimeSignature;
 }
 
-/// Save the new beaming pattern values.
 void TimeSignatureDialog::accept()
 {
-    boost::array<uint8_t, 4> beamingPatternValues = {{0, 0, 0, 0}};
-    for (size_t i = 0; i < beamingPatterns.size(); ++i)
+    // Save the new beaming pattern values.
+    boost::array<uint8_t, 4> beamingPattern = {{0, 0, 0, 0}};
+    for (size_t i = 0; i < myBeamingPatterns.size(); ++i)
     {
-        QLineEdit* value = beamingPatterns[i];
+        QLineEdit *value = myBeamingPatterns[i];
         if (value->isEnabled())
-        {
-            beamingPatternValues[i] = value->text().toUInt();
-        }
+            beamingPattern[i] = value->text().toUInt();
     }
 
-    if (!TimeSignature::IsValidBeamingPattern(beamingPatternValues[0],
-                                              beamingPatternValues[1],
-                                              beamingPatternValues[2],
-                                              beamingPatternValues[3]))
+    if (beamingPattern[0] == 0)
     {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
@@ -144,72 +129,64 @@ void TimeSignatureDialog::accept()
         return;
     }
 
-    newTimeSignature.SetBeamingPattern(
-                beamingPatternValues[0],beamingPatternValues[1],
-                beamingPatternValues[2], beamingPatternValues[3]);
-
+    myTimeSignature.setBeamingPattern(beamingPattern);
     done(Accepted);
 }
 
-/// Toggles whether or not the time signature is visible
 void TimeSignatureDialog::editTimeSignatureVisible(bool isVisible)
 {
-    newTimeSignature.SetShown(isVisible);
+    myTimeSignature.setVisible(isVisible);
 }
 
-/// @param selectedIndex - index in the combo box of the selected pulses value
 void TimeSignatureDialog::editMetronomePulses(int selectedIndex)
 {
-    newTimeSignature.SetPulses(ui->metronomePulses->itemData(selectedIndex).toUInt());
+    myTimeSignature.setNumPulses(
+                ui->metronomePulses->itemData(selectedIndex).toUInt());
 }
 
-/// Toggles whether the time signature uses cut time
 void TimeSignatureDialog::editCutTime(bool enabled)
 {
     if (enabled)
-    {
-        newTimeSignature.SetCutTime();
-    }
+        myTimeSignature.setMeterType(TimeSignature::CutTime);
     else
     {
-        // reset to a regular time signature
-        newTimeSignature.SetMeter(ui->beatsPerMeasure->value(),
-                                  ui->beatValue->itemData(ui->beatValue->currentIndex()).toUInt());
+        // Reset to a regular time signature.
+        myTimeSignature.setMeterType(TimeSignature::Normal);
+        myTimeSignature.setBeatsPerMeasure(ui->beatsPerMeasure->value());
+        myTimeSignature.setBeatValue(
+                    ui->beatValue->itemData(ui->beatValue->currentIndex()).toUInt());
     }
 
     ui->beatsPerMeasure->setEnabled(!enabled);
     ui->beatValue->setEnabled(!enabled);
 }
 
-/// @param selectedIndex - index in the combo box of the selected beat value
 void TimeSignatureDialog::editBeatValue(int selectedIndex)
 {
-    newTimeSignature.SetBeatAmount(ui->beatValue->itemData(selectedIndex).toUInt());
+    myTimeSignature.setBeatValue(
+                ui->beatValue->itemData(selectedIndex).toUInt());
 }
 
-/// Update the number of beats in the measure
-///  - This will also update the available values for metronome pulses
-void TimeSignatureDialog::editBeatsPerMeasure(int numBeats)
+void TimeSignatureDialog::editBeatsPerMeasure(int beats)
 {
-    newTimeSignature.SetBeatsPerMeasure(numBeats);
+    myTimeSignature.setBeatsPerMeasure(beats);
 
-    // update the metronome pulses combo box
+    // Update the metronome pulses combo box.
     updatePossiblePulseValues();
-    ui->metronomePulses->setCurrentIndex(ui->metronomePulses->findData(numBeats));
+    ui->metronomePulses->setCurrentIndex(ui->metronomePulses->findData(beats));
 }
 
-/// Toggles whether the time signature uses common time
 void TimeSignatureDialog::editCommonTime(bool enabled)
 {
     if (enabled)
-    {
-        newTimeSignature.SetCommonTime();
-    }
+        myTimeSignature.setMeterType(TimeSignature::CommonTime);
     else
     {
-        // reset to a regular time signature
-        newTimeSignature.SetMeter(ui->beatsPerMeasure->value(),
-                                  ui->beatValue->itemData(ui->beatValue->currentIndex()).toUInt());
+        // Reset to a regular time signature.
+        myTimeSignature.setMeterType(TimeSignature::Normal);
+        myTimeSignature.setBeatsPerMeasure(ui->beatsPerMeasure->value());
+        myTimeSignature.setBeatValue(
+                    ui->beatValue->itemData(ui->beatValue->currentIndex()).toUInt());
     }
 
     ui->beatsPerMeasure->setEnabled(!enabled);

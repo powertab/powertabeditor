@@ -15,32 +15,31 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef EDITTIMESIGNATURE_H
-#define EDITTIMESIGNATURE_H
+#ifndef ACTIONS_EDITTIMESIGNATURE_H
+#define ACTIONS_EDITTIMESIGNATURE_H
 
 #include <QUndoCommand>
-
-class Score;
-#include <powertabdocument/systemlocation.h>
-#include <powertabdocument/timesignature.h>
+#include <score/scorelocation.h>
+#include <score/timesignature.h>
 
 class EditTimeSignature : public QUndoCommand
 {
 public:
-    EditTimeSignature(Score* score, const SystemLocation& location,
-                      const TimeSignature& newTimeSig);
+    EditTimeSignature(const ScoreLocation &location,
+                      const TimeSignature &newTimeSig);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    const SystemLocation location;
-    TimeSignature newTimeSig;
-    TimeSignature oldTimeSig;
+    /// Updates all of the time signatures following myLocation until a
+    /// different time signature is reached.
+    void updateFollowingTimeSignatures(const TimeSignature &oldTime,
+                                       const TimeSignature &newTime);
 
-    void switchTimeSignatures(const TimeSignature& oldTime,
-                                                 const TimeSignature& newTime);
+    ScoreLocation myLocation;
+    const TimeSignature myNewTime;
+    const TimeSignature myOldTime;
 };
 
-#endif // EDITTIMESIGNATURE_H
+#endif

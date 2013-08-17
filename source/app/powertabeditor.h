@@ -152,6 +152,8 @@ private slots:
     void editRehearsalSign();
     /// Edits the key signature at the caret's current location.
     void editKeySignatureFromCaret();
+    /// Edits the time signature at the caret's current location.
+    void editTimeSignatureFromCaret();
     /// Inserts a single barline at the current location.
     void insertStandardBarline();
     /// Edits or inserts a barline at the current location.
@@ -218,7 +220,9 @@ private:
     void editRest(Position::DurationType duration);
 
     /// Edits the key signature at the given location.
-    void editKeySignature(const ScoreLocation &location);
+    void editKeySignature(const ScoreLocation &keyLocation);
+    /// Edits the time signature at the given location.
+    void editTimeSignature(const ScoreLocation &timeLocation);
     /// Edits the barline at the given location.
     void editBarline(const ScoreLocation &barLocation);
     /// Edits the clef at the given location.
@@ -346,6 +350,7 @@ private:
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
     Command *myKeySignatureCommand;
+    Command *myTimeSignatureCommand;
     Command *myStandardBarlineCommand;
     Command *myBarlineCommand;
     Command *myDynamicCommand;
@@ -458,7 +463,6 @@ private:
     Command* irregularGroupingAct;
 
     Command* tempoMarkerAct;
-    Command* timeSignatureAct;
     Command* musicalDirectionAct;
     Command* repeatEndingAct;
     Command* volumeSwellAct;

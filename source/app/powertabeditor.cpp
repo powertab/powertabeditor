@@ -34,6 +34,7 @@
 #include <actions/editkeysignature.h>
 #include <actions/editnoteduration.h>
 #include <actions/edittabnumber.h>
+#include <actions/edittimesignature.h>
 #include <actions/removedynamic.h>
 #include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
@@ -68,6 +69,7 @@
 #include <dialogs/playerchangedialog.h>
 #include <dialogs/rehearsalsigndialog.h>
 #include <dialogs/tappedharmonicdialog.h>
+#include <dialogs/timesignaturedialog.h>
 #include <dialogs/trilldialog.h>
 
 #include <formats/fileformatmanager.h>
@@ -697,6 +699,11 @@ void PowerTabEditor::editKeySignatureFromCaret()
     editKeySignature(getLocation());
 }
 
+void PowerTabEditor::editTimeSignatureFromCaret()
+{
+    editTimeSignature(getLocation());
+}
+
 void PowerTabEditor::insertStandardBarline()
 {
     ScoreLocation &location = getLocation();
@@ -1272,12 +1279,13 @@ void PowerTabEditor::createCommands()
                                         Qt::Key_K, this);
     connect(myKeySignatureCommand, SIGNAL(triggered()), this,
             SLOT(editKeySignatureFromCaret()));
-#if 0
-    timeSignatureAct = new Command(tr("Edit Time Signature..."), "MusicSymbols.EditTimeSignature",
+
+    myTimeSignatureCommand = new Command(tr("Edit Time Signature..."),
+                                   "MusicSymbols.EditTimeSignature",
                                    Qt::Key_T, this);
-    connect(timeSignatureAct, SIGNAL(triggered()), this,
+    connect(myTimeSignatureCommand, SIGNAL(triggered()), this,
             SLOT(editTimeSignatureFromCaret()));
-#endif
+
     myStandardBarlineCommand = new Command(tr("Insert Standard Barline"),
                                      "MusicSymbols.InsertStandardBarline",
                                      Qt::Key_B, this);
@@ -1638,9 +1646,7 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(tempoMarkerAct);
 #endif
     myMusicSymbolsMenu->addAction(myKeySignatureCommand);
-#if 0
-    myMusicSymbolsMenu->addAction(timeSignatureAct);
-#endif
+    myMusicSymbolsMenu->addAction(myTimeSignatureCommand);
     myMusicSymbolsMenu->addAction(myStandardBarlineCommand);
     myMusicSymbolsMenu->addAction(myBarlineCommand);
 #if 0
@@ -1744,12 +1750,11 @@ void PowerTabEditor::setupNewTab()
     ScoreArea *scorearea = new ScoreArea(this);
     scorearea->renderDocument(doc, Staff::GuitarView);
     scorearea->installEventFilter(this);
-#if 0
+
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
-    score->timeSignaturePubSub()->subscribe(
+    scorearea->getTimeSignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editTimeSignature, this, _1));
-#endif
     scorearea->getKeySignaturePubSub()->subscribe(
                 boost::bind(&PowerTabEditor::editKeySignature, this, _1));
     scorearea->getBarlinePubSub()->subscribe(
@@ -1930,6 +1935,7 @@ void PowerTabEditor::updateCommands()
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
     myKeySignatureCommand->setEnabled(barline);
+    myTimeSignatureCommand->setEnabled(barline);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
     myDynamicCommand->setChecked(ScoreUtils::findByPosition(staff.getDynamics(),
                                                       position));
@@ -2031,6 +2037,24 @@ void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
     if (dialog.exec() == QDialog::Accepted)
     {
         myUndoManager->push(new EditKeySignature(location, dialog.getNewKey()),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
+}
+
+void PowerTabEditor::editTimeSignature(const ScoreLocation &timeLocation)
+{
+    ScoreLocation location(getLocation());
+    location.setSystemIndex(timeLocation.getSystemIndex());
+    location.setPositionIndex(timeLocation.getPositionIndex());
+
+    const Barline *barline = location.getBarline();
+    Q_ASSERT(barline);
+
+    TimeSignatureDialog dialog(this, barline->getTimeSignature());
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->push(new EditTimeSignature(location,
+                                                  dialog.getTimeSignature()),
                             UndoManager::AFFECTS_ALL_SYSTEMS);
     }
 }

@@ -77,5 +77,4 @@ void EditKeySignature::updateFollowingKeySignatures(const KeySignature &oldKey,
             }
         }
     }
-
 }

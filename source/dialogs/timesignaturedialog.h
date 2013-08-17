@@ -15,12 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef TIMESIGNATUREDIALOG_H
-#define TIMESIGNATUREDIALOG_H
+#ifndef DIALOGS_TIMESIGNATUREDIALOG_H
+#define DIALOGS_TIMESIGNATUREDIALOG_H
 
 #include <QDialog>
-#include <powertabdocument/timesignature.h>
-#include <boost/array.hpp>
+#include <score/timesignature.h>
 
 class QLineEdit;
 
@@ -33,10 +32,12 @@ class TimeSignatureDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TimeSignatureDialog(QWidget* parent, const TimeSignature& originalTimeSignature);
+    explicit TimeSignatureDialog(QWidget *parent,
+                                 const TimeSignature &currentTimeSignature);
     ~TimeSignatureDialog();
 
-    TimeSignature getNewTimeSignature() const;
+    /// Returns a new time signature using the values selected in the dialog.
+    TimeSignature getTimeSignature() const;
 
 private slots:
     virtual void accept();
@@ -45,16 +46,16 @@ private slots:
     void editCutTime(bool enabled);
     void editCommonTime(bool enabled);
     void editBeatValue(int selectedIndex);
-    void editBeatsPerMeasure(int numBeats);
+    void editBeatsPerMeasure(int beats);
 
 private:
-    Ui::TimeSignatureDialog *ui;
-    boost::array<QLineEdit*, 4> beamingPatterns;
-
-    TimeSignature newTimeSignature;
-
-    void init();
+    /// Update the options in the metronome pulses combo box (the available
+    /// options for metronome pulses depend on the number of beats).
     void updatePossiblePulseValues();
+
+    Ui::TimeSignatureDialog *ui;
+    boost::array<QLineEdit *, 4> myBeamingPatterns;
+    TimeSignature myTimeSignature;
 };
 
-#endif // TIMESIGNATUREDIALOG_H
+#endif
