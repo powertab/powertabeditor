@@ -70,6 +70,10 @@ private slots:
     /// @return True if the file was successfully saved.
     bool saveFileAs();
 
+    /// Update the titlebar to show whether the current document has been
+    /// modified.
+    void updateModified(bool);
+
     /// Cycles through the tabs in the tab bar.
     /// @param offset Direction and number of tabs to move by
     /// (i.e. -1 moves back one tab).
@@ -377,8 +381,6 @@ private:
     Command *myPrevTabCommand;
 
 #if 0
-    void registerCaret(Caret* caret);
-
 protected:
     virtual void closeEvent(QCloseEvent*);
 
@@ -394,15 +396,12 @@ private:
     void editRest(uint8_t duration);
     void editTimeSignature(const SystemLocation &location);
 
-    static std::vector<Position*> getSelectedPositions();
-    static std::vector<Note*> getSelectedNotes();
     PlaybackWidget* getCurrentPlaybackWidget() const;
     Mixer* getCurrentMixer();
 
 private slots:
     void updateActions();
     void updateLocationLabel();
-    void updateModified(bool);
     void updateActiveVoice(int);
     void openFileInformation();
     void performFullRedraw();

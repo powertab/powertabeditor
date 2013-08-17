@@ -119,10 +119,8 @@ PowerTabEditor::PowerTabEditor() :
             SLOT(redrawSystem(int)));
     connect(myUndoManager.get(), SIGNAL(fullRedrawNeeded()), this,
             SLOT(redrawScore()));
-#if 0
     connect(myUndoManager.get(), SIGNAL(cleanChanged(bool)), this,
             SLOT(updateModified(bool)));
-#endif
 
     createCommands();
     createMenus();
@@ -342,6 +340,11 @@ bool PowerTabEditor::saveFileAs()
     }
 
     return false;
+}
+
+void PowerTabEditor::updateModified(bool clean)
+{
+    setWindowModified(!clean);
 }
 
 void PowerTabEditor::cycleTab(int offset)
@@ -2213,12 +2216,6 @@ void PowerTabEditor::closeEvent(QCloseEvent* event)
     tuningDictionary->save();
 }
 
-/// Marks the window as modified/unmodified depending on the state of the active UndoStack
-void PowerTabEditor::updateModified(bool clean)
-{
-    setWindowModified(!clean);
-}
-
 void PowerTabEditor::updateActiveVoice(int voice)
 {
     getCurrentScoreArea()->getCaret()->setCurrentVoice(voice);
@@ -2230,23 +2227,6 @@ Mixer* PowerTabEditor::getCurrentMixer()
     Mixer* currentMixer = dynamic_cast<Mixer*>(scrollArea->widget());
     Q_ASSERT(currentMixer != NULL);
     return currentMixer;
-}
-
-std::vector<Position*> PowerTabEditor::getSelectedPositions()
-{
-    return getCurrentScoreArea()->getCaret()->getSelectedPositions();
-}
-
-std::vector<Note*> PowerTabEditor::getSelectedNotes()
-{
-    return getCurrentScoreArea()->getCaret()->getSelectedNotes();
-}
-
-void PowerTabEditor::registerCaret(Caret* caret)
-{
-    connect(caret, SIGNAL(moved()), this, SLOT(updateActions()));
-    connect(caret, SIGNAL(moved()), this, SLOT(updateLocationLabel()));
-    connect(caret, SIGNAL(selectionChanged()), this, SLOT(updateActions()));
 }
 
 PlaybackWidget* PowerTabEditor::getCurrentPlaybackWidget() const
@@ -2300,28 +2280,6 @@ void PowerTabEditor::shiftTabNumber(int direction)
                                          shiftType, tuning),
                       caret->getCurrentSystemIndex());
     caret->moveCaretVertical(direction == 1 ? direction : -1);
-}
-
-bool PowerTabEditor::moveCaretToSystem(quint32 system)
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    const int offset = system - caret->getCurrentSystemIndex();
-    return getCurrentScoreArea()->getCaret()->moveCaretSection(offset);
-}
-
-bool PowerTabEditor::moveCaretToPosition(quint8 position)
-{
-    return getCurrentScoreArea()->getCaret()->setCurrentPositionIndex(position);
-}
-
-bool PowerTabEditor::moveCaretToNextStaff()
-{
-    return getCurrentScoreArea()->getCaret()->moveCaretStaff(1);;
-}
-
-bool PowerTabEditor::moveCaretToPrevStaff()
-{
-    return getCurrentScoreArea()->getCaret()->moveCaretStaff(-1);
 }
 
 void PowerTabEditor::changePositionSpacing(int offset)
@@ -2427,36 +2385,6 @@ void PowerTabEditor::showTuningDictionary()
 {
     TuningDictionaryDialog dialog(tuningDictionary, this);
     dialog.exec();
-}
-
-/// Edit the time signature at the caret's current location.
-void PowerTabEditor::editTimeSignatureFromCaret()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    const SystemLocation caretLocation(caret->getCurrentSystemIndex(),
-                                       caret->getCurrentPositionIndex());
-    editTimeSignature(caretLocation);
-}
-
-/// Edit the time signature at the specified location.
-void PowerTabEditor::editTimeSignature(const SystemLocation& location)
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
-    shared_ptr<Barline> barline = score->GetSystem(location.getSystemIndex())->
-            GetBarlineAtPosition(location.getPositionIndex());
-    Q_ASSERT(barline);
-
-    const TimeSignature& currentTimeSig = barline->GetTimeSignature();
-
-    TimeSignatureDialog dialog(this, currentTimeSig);
-
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        EditTimeSignature* action = new EditTimeSignature(score, location,
-                                                          dialog.getNewTimeSignature());
-        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
-    }
 }
 
 void PowerTabEditor::editArtificialHarmonic()
