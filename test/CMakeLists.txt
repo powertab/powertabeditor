@@ -16,6 +16,7 @@ add_executable(pte_tests
     actions/test_addrest.cpp
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
+    actions/test_addtempomarker.cpp
     actions/test_addtrill.cpp
     #actions/test_addvolumeswell.cpp
     actions/test_adjustlinespacing.cpp
@@ -39,6 +40,7 @@ add_executable(pte_tests
     actions/test_removerehearsalsign.cpp
     actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp
+    actions/test_removetempomarker.cpp
     actions/test_removetrill.cpp
     #actions/test_removevolumeswell.cpp
     #actions/test_shifttabnumber.cpp
@@ -89,6 +91,7 @@ add_executable(pte_tests
     score/test_utils.cpp
 
     # Header-only files.
+    catch.hpp
     actions/actionfixture.h
     score/test_serialization.h
 )

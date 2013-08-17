@@ -15,26 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef REMOVETEMPOMARKER_H
-#define REMOVETEMPOMARKER_H
+#ifndef ACTIONS_REMOVETEMPOMARKER_H
+#define ACTIONS_REMOVETEMPOMARKER_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-
-class Score;
-class TempoMarker;
+#include <score/scorelocation.h>
+#include <score/tempomarker.h>
 
 class RemoveTempoMarker : public QUndoCommand
 {
 public:
-    RemoveTempoMarker(Score* score, boost::shared_ptr<TempoMarker> marker);
+    RemoveTempoMarker(const ScoreLocation &location);
 
     virtual void redo();
     virtual void undo();
 
 private:
-    Score* score;
-    boost::shared_ptr<TempoMarker> marker;
+    ScoreLocation myLocation;
+    const TempoMarker myOriginalTempo;
 };
 
-#endif // REMOVETEMPOMARKER_H
+#endif

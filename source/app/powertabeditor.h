@@ -154,6 +154,8 @@ private slots:
 
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
+    /// Adds or removes a tempo marker at the current position.
+    void editTempoMarker();
     /// Edits the key signature at the caret's current location.
     void editKeySignatureFromCaret();
     /// Edits the time signature at the caret's current location.
@@ -353,6 +355,7 @@ private:
 
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
+    Command *myTempoMarkerCommand;
     Command *myKeySignatureCommand;
     Command *myTimeSignatureCommand;
     Command *myStandardBarlineCommand;
@@ -411,7 +414,6 @@ private slots:
     void moveCaretUp();
 
     void editChordName();
-    void editTempoMarker();
     void editMusicalDirection();
     void editRepeatEnding();
     void editTiedNote();
@@ -461,7 +463,6 @@ private:
     Command* tripletAct;
     Command* irregularGroupingAct;
 
-    Command* tempoMarkerAct;
     Command* musicalDirectionAct;
     Command* repeatEndingAct;
     Command* volumeSwellAct;

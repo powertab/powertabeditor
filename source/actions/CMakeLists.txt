@@ -17,7 +17,7 @@ add_library(pteactions
     addrest.cpp
     addsystem.cpp
     addtappedharmonic.cpp
-    #addtempomarker.cpp
+    addtempomarker.cpp
     addtrill.cpp
     #addvolumeswell.cpp
     adjustlinespacing.cpp
@@ -51,7 +51,7 @@ add_library(pteactions
     removerehearsalsign.cpp
     removesystem.cpp
     removetappedharmonic.cpp
-    #removetempomarker.cpp
+    removetempomarker.cpp
     removetrill.cpp
     #removevolumeswell.cpp
     #shifttabnumber.cpp

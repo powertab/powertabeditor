@@ -15,26 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ADDTEMPOMARKER_H
-#define ADDTEMPOMARKER_H
+#ifndef ACTIONS_ADDTEMPOMARKER_H
+#define ACTIONS_ADDTEMPOMARKER_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-
-class Score;
-class TempoMarker;
+#include <score/scorelocation.h>
+#include <score/tempomarker.h>
 
 class AddTempoMarker : public QUndoCommand
 {
 public:
-    AddTempoMarker(Score* score, boost::shared_ptr<TempoMarker> marker);
+    AddTempoMarker(const ScoreLocation &location, const TempoMarker &marker);
 
     virtual void redo();
     virtual void undo();
 
 private:
-    Score* score;
-    boost::shared_ptr<TempoMarker> marker;
+    ScoreLocation myLocation;
+    const TempoMarker myMarker;
 };
 
-#endif // ADDTEMPOMARKER_H
+#endif

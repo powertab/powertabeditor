@@ -17,22 +17,22 @@
 
 #include "addtempomarker.h"
 
-#include <powertabdocument/score.h>
+#include <score/system.h>
 
-AddTempoMarker::AddTempoMarker(Score* score,
-                               boost::shared_ptr<TempoMarker> marker) :
-    QUndoCommand(QObject::tr("Add Tempo Marker")),
-    score(score),
-    marker(marker)
+AddTempoMarker::AddTempoMarker(const ScoreLocation &location,
+                               const TempoMarker &marker)
+    : QUndoCommand(QObject::tr("Add Tempo Marker")),
+      myLocation(location),
+      myMarker(marker)
 {
 }
 
 void AddTempoMarker::redo()
 {
-    score->InsertTempoMarker(marker);
+    myLocation.getSystem().insertTempoMarker(myMarker);
 }
 
 void AddTempoMarker::undo()
 {
-    score->RemoveTempoMarker(marker);
+    myLocation.getSystem().removeTempoMarker(myMarker);
 }

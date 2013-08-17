@@ -27,6 +27,7 @@
 #include <actions/addrest.h>
 #include <actions/addsystem.h>
 #include <actions/addtappedharmonic.h>
+#include <actions/addtempomarker.h>
 #include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
@@ -42,6 +43,7 @@
 #include <actions/removerehearsalsign.h>
 #include <actions/removesystem.h>
 #include <actions/removetappedharmonic.h>
+#include <actions/removetempomarker.h>
 #include <actions/removetrill.h>
 #include <actions/undomanager.h>
 
@@ -69,6 +71,7 @@
 #include <dialogs/playerchangedialog.h>
 #include <dialogs/rehearsalsigndialog.h>
 #include <dialogs/tappedharmonicdialog.h>
+#include <dialogs/tempomarkerdialog.h>
 #include <dialogs/timesignaturedialog.h>
 #include <dialogs/trilldialog.h>
 
@@ -697,6 +700,34 @@ void PowerTabEditor::editRehearsalSign()
     }
 }
 
+void PowerTabEditor::editTempoMarker()
+{
+    const ScoreLocation &location = getLocation();
+    const TempoMarker *marker = ScoreUtils::findByPosition(
+                location.getSystem().getTempoMarkers(),
+                location.getPositionIndex());
+
+    if (marker)
+    {
+        myUndoManager->push(new RemoveTempoMarker(location),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        TempoMarkerDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            TempoMarker marker(dialog.getTempoMarker());
+            marker.setPosition(location.getPositionIndex());
+
+            myUndoManager->push(new AddTempoMarker(location, marker),
+                                location.getSystemIndex());
+        }
+        else
+            myTempoMarkerCommand->setChecked(false);
+    }
+}
+
 void PowerTabEditor::editKeySignatureFromCaret()
 {
     editKeySignature(getLocation());
@@ -1270,13 +1301,13 @@ void PowerTabEditor::createCommands()
     connect(myRehearsalSignCommand, SIGNAL(triggered()), this,
             SLOT(editRehearsalSign()));
 
-#if 0
-    tempoMarkerAct = new Command(tr("Tempo Marker..."),"MusicSymbols.EditTempoMarker",
+    myTempoMarkerCommand = new Command(tr("Tempo Marker..."),
+                                 "MusicSymbols.EditTempoMarker",
                                  Qt::Key_O, this);
-    tempoMarkerAct->setCheckable(true);
-    connect(tempoMarkerAct, SIGNAL(triggered()), this, SLOT(editTempoMarker()));
+    myTempoMarkerCommand->setCheckable(true);
+    connect(myTempoMarkerCommand, SIGNAL(triggered()), this,
+            SLOT(editTempoMarker()));
 
-#endif
     myKeySignatureCommand = new Command(tr("Edit Key Signature..."),
                                         "MusicSymbols.EditKeySignature",
                                         Qt::Key_K, this);
@@ -1645,9 +1676,7 @@ void PowerTabEditor::createMenus()
     // Music Symbols Menu.
     myMusicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     myMusicSymbolsMenu->addAction(myRehearsalSignCommand);
-#if 0
-    myMusicSymbolsMenu->addAction(tempoMarkerAct);
-#endif
+    myMusicSymbolsMenu->addAction(myTempoMarkerCommand);
     myMusicSymbolsMenu->addAction(myKeySignatureCommand);
     myMusicSymbolsMenu->addAction(myTimeSignatureCommand);
     myMusicSymbolsMenu->addAction(myStandardBarlineCommand);
@@ -1937,6 +1966,8 @@ void PowerTabEditor::updateCommands()
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
+    myTempoMarkerCommand->setChecked(ScoreUtils::findByPosition(
+                                   system.getTempoMarkers(), position));
     myKeySignatureCommand->setEnabled(barline);
     myTimeSignatureCommand->setEnabled(barline);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
@@ -2473,48 +2504,6 @@ void PowerTabEditor::editChordName()
                           caret->getCurrentSystemIndex());
     }
 
-}
-
-/// Add or remove a tempo marker.
-void PowerTabEditor::editTempoMarker()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* currentScore = caret->getCurrentScore();
-    Score::TempoMarkerPtr marker = currentScore->FindTempoMarker(
-                SystemLocation(caret->getCurrentSystemIndex(),
-                               caret->getCurrentPositionIndex()));
-
-    if (!marker) // Add a tempo marker.
-    {
-        TempoMarkerDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            marker = boost::make_shared<TempoMarker>();
-            marker->SetSystem(caret->getCurrentSystemIndex());
-            marker->SetPosition(caret->getCurrentPositionIndex());
-            marker->SetType(dialog.markerType());
-            marker->SetTripletFeelType(dialog.tripletFeelType());
-
-            if (dialog.markerType() == TempoMarker::listesso)
-            {
-                marker->SetListesso(dialog.beatType(), dialog.listessoBeatType(),
-                                    dialog.description());
-            }
-            else if (dialog.markerType() == TempoMarker::standardMarker)
-            {
-                marker->SetStandardMarker(dialog.beatType(), dialog.beatsPerMinute(),
-                                          dialog.description(), dialog.tripletFeelType());
-            }
-
-            undoManager->push(new AddTempoMarker(currentScore, marker),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-    else
-    {
-        undoManager->push(new RemoveTempoMarker(currentScore, marker),
-                          caret->getCurrentSystemIndex());
-    }
 }
 
 void PowerTabEditor::editMusicalDirection()

@@ -15,11 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEMPOMARKERDIALOG_H
-#define TEMPOMARKERDIALOG_H
+#ifndef DIALOGS_TEMPOMARKERDIALOG_H
+#define DIALOGS_TEMPOMARKERDIALOG_H
 
 #include <QDialog>
-#include <powertabdocument/tempomarker.h>
+#include <score/tempomarker.h>
 
 class QButtonGroup;
 
@@ -32,25 +32,23 @@ class TempoMarkerDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit TempoMarkerDialog(QWidget* parent);
+    explicit TempoMarkerDialog(QWidget *parent);
     ~TempoMarkerDialog();
 
-    TempoMarker::Type markerType() const;
-    TempoMarker::BeatType beatType() const;
-    TempoMarker::BeatType listessoBeatType() const;
-    TempoMarker::TripletFeelType tripletFeelType() const;
-    std::string description() const;
-    int beatsPerMinute() const;
+    TempoMarker getTempoMarker() const;
 
 private slots:
+    /// Disables the BPM spinner if listesso is enabled.
     void onListessoChanged(bool enabled);
+    /// Disable the beat types, BPM spinner, and listesso beat types if the
+    /// metronome marker will be hidden.
     void onShowMetronomeMarkerChanged(bool enabled);
 
 private:
     Ui::TempoMarkerDialog *ui;
-    QButtonGroup* beatTypes;
-    QButtonGroup* listessoBeatTypes;
-    QButtonGroup* tripletFeelTypes;
+    QButtonGroup *myBeatTypes;
+    QButtonGroup *myListessoBeatTypes;
+    QButtonGroup *myTripletFeelTypes;
 };
 
-#endif // TEMPOMARKERDIALOG_H
+#endif

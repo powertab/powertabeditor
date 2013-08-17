@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,27 +14,28 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#include "removetempomarker.h"
+#include <actions/removetempomarker.h>
+#include <score/score.h>
 
-#include <score/system.h>
-#include <score/utils.h>
-
-RemoveTempoMarker::RemoveTempoMarker(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Tempo Marker")),
-      myLocation(location),
-      myOriginalTempo(*ScoreUtils::findByPosition(
-                          location.getSystem().getTempoMarkers(),
-                          location.getPositionIndex()))
+TEST_CASE("Actions/RemoveTempoMarker", "")
 {
-}
+    Score score;
+    System system;
+    TempoMarker marker(6);
+    marker.setBeatsPerMinute(160);
+    system.insertTempoMarker(marker);
+    score.insertSystem(system);
 
-void RemoveTempoMarker::redo()
-{
-    myLocation.getSystem().removeTempoMarker(myOriginalTempo);
-}
+    ScoreLocation location(score, 0, 0, 6);
+    RemoveTempoMarker action(location);
 
-void RemoveTempoMarker::undo()
-{
-    myLocation.getSystem().insertTempoMarker(myOriginalTempo);
+    action.redo();
+    REQUIRE(location.getSystem().getTempoMarkers().empty());
+
+    action.undo();
+    REQUIRE(location.getSystem().getTempoMarkers().size() == 1);
+    REQUIRE(location.getSystem().getTempoMarkers().front() == marker);
 }
