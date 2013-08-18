@@ -107,6 +107,11 @@ Position::DurationType NoteStem::getDurationType() const
     return myPosition->getDurationType();
 }
 
+bool NoteStem::isStaccato() const
+{
+    return myPosition->hasProperty(Position::Staccato);
+}
+
 bool NoteStem::isBeamable(const NoteStem &stem)
 {
     return !stem.myPosition->isRest() && !stem.myPosition->hasMultiBarRest() &&
@@ -138,4 +143,19 @@ void NoteStem::setStemType(StemType type)
 bool NoteStem::isGraceNote() const
 {
     return myPosition->hasProperty(Position::Acciaccatura);
+}
+
+bool NoteStem::hasFermata() const
+{
+    return myPosition->hasProperty(Position::Fermata);
+}
+
+bool NoteStem::hasSforzando() const
+{
+    return myPosition->hasProperty(Position::Sforzando);
+}
+
+bool NoteStem::hasMarcato() const
+{
+    return myPosition->hasProperty(Position::Marcato);
 }

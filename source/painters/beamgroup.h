@@ -33,7 +33,7 @@ public:
 
     /// Draws the stems for each note in the group.
     void drawStems(QGraphicsItem *parent, const QFont &musicFont,
-                   const QFontMetricsF &fm) const;
+                   const QFontMetricsF &fm, const LayoutInfo &layout) const;
 
 private:
     /// Compute a common direction for the stems.
@@ -46,13 +46,23 @@ private:
     /// direction.
     void adjustStemHeights();
 
-    QGraphicsItem *createStaccato(const NoteStem& noteStem) const;
-    QGraphicsItem *createFermata(const NoteStem& noteStem) const;
-    QGraphicsItem *createAccent(const NoteStem& noteStem) const;
+    /// Creates and positions a staccato symbol.
+    static QGraphicsItem *createStaccato(const NoteStem& stem,
+                                         const QFont &musicFont);
 
-    QGraphicsItem *createNoteFlag(const NoteStem& stem,
-                                  const QFont &musicFont,
-                                  const QFontMetricsF &fm) const;
+    /// Creates and positions a fermata symbol.
+    static QGraphicsItem *createFermata(const NoteStem& noteStem,
+                                        const QFont &musicFont,
+                                        const LayoutInfo &layout);
+
+    /// Creates and positions an accent symbol.
+    static QGraphicsItem *createAccent(const NoteStem& stem,
+                                       const QFont &musicFont,
+                                       const LayoutInfo &layout);
+
+    static QGraphicsItem *createNoteFlag(const NoteStem& stem,
+                                         const QFont &musicFont,
+                                         const QFontMetricsF &fm);
 
     std::vector<NoteStem> myNoteStems;
     NoteStem::StemType myStemDirection;

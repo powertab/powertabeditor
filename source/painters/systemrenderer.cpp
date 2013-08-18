@@ -1229,7 +1229,8 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
 
     BOOST_FOREACH(const BeamGroup &group, beamGroups)
     {
-        group.drawStems(myParentStaff, myMusicNotationFont, myMusicFontMetrics);
+        group.drawStems(myParentStaff, myMusicNotationFont, myMusicFontMetrics,
+                        layout);
     }
 
 #if 0
