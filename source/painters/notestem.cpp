@@ -109,7 +109,7 @@ Position::DurationType NoteStem::getDurationType() const
 
 bool NoteStem::isBeamable(const NoteStem &stem)
 {
-    return stem.myPosition->isRest() || stem.myPosition->hasMultiBarRest() ||
+    return !stem.myPosition->isRest() && !stem.myPosition->hasMultiBarRest() &&
             stem.myPosition->getDurationType() >= Position::EighthNote;
 }
 

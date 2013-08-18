@@ -364,7 +364,6 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
             symbol = MusicFont::FlagUp4;
             break;
         default:
-            Q_ASSERT(false);
             break;
         }
 
@@ -388,7 +387,6 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
             symbol = MusicFont::FlagDown4;
             break;
         default:
-            Q_ASSERT(false);
             break;
         }
 
