@@ -86,15 +86,13 @@ private:
     static std::vector<uint8_t> getBeamingPatterns(const TimeSignature &timeSig);
 
     /// Calculates the beaming for a set of note stems.
-    static void computeBeaming(const LayoutInfo &layout,
-                               const TimeSignature &timeSig,
+    static void computeBeaming(const TimeSignature &timeSig,
                                const std::vector<NoteStem> &stems,
                                std::vector<BeamGroup> &groups);
 
     /// A group may be split into several beam groups if there are rests,
     /// whole notes, etc.
-    static void computeBeamingGroups(const LayoutInfo &layout,
-                                     const std::vector<NoteStem> &stems,
+    static void computeBeamingGroups(const std::vector<NoteStem> &stems,
                                      std::vector<BeamGroup> &groups);
 
     double myY;

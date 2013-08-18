@@ -76,8 +76,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         }
 
         const bool isFirstStaff = (height == 0);
-        LayoutConstPtr layout = boost::make_shared<LayoutInfo>(myScore, system,
-                                                               staff);
+        LayoutConstPtr layout = boost::make_shared<LayoutInfo>(
+                    myScore, system, systemIndex, staff, i);
 
         if (isFirstStaff)
         {
@@ -111,7 +111,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsBelowTabStaff(*layout);
 
         drawPlayerChanges(system, i, *layout);
-        drawStdNotation(system, systemIndex, staff, i, *layout);
+        drawStdNotation(system, staff, *layout);
 
         ++i;
     }
@@ -632,7 +632,8 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
         text->setFont(myPlainTextFont);
         text->setPos(layout.getPositionX(change.getPosition()),
                      layout.getBottomStdNotationLine() +
-                     LayoutInfo::STAFF_BORDER_SPACING);
+                     LayoutInfo::STAFF_BORDER_SPACING +
+                     layout.getStdNotationStaffBelowSpacing());
         text->setParentItem(myParentStaff);
     }
 }
@@ -1144,8 +1145,7 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
     return group;
 }
 
-void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
-                                     const Staff &staff, int staffIndex,
+void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                                      const LayoutInfo &layout)
 {
     // Draw rests.
@@ -1171,10 +1171,8 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
         }
     }
 
-    std::vector<StdNotationNote> notes;
-    std::vector<BeamGroup> beamGroups;
-    StdNotationNote::getNotesInStaff(myScore, system, systemIndex, staff,
-                                     staffIndex, layout, notes, beamGroups);
+    const std::vector<StdNotationNote> &notes = layout.getStdNotationNotes();
+    const std::vector<BeamGroup> &beamGroups = layout.getBeamGroups();
 
     std::map<int, double> minNoteLocations;
     std::map<int, double> maxNoteLocations;

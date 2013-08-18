@@ -29,11 +29,17 @@ class QGraphicsItem;
 class BeamGroup
 {
 public:
-    BeamGroup(const LayoutInfo &layout, const std::vector<NoteStem> &stems);
+    BeamGroup(const std::vector<NoteStem> &stems);
+
+    /// Adjust the top/bottom of stems to use absolute coordianates.
+    void adjustToStaff(const LayoutInfo &layout);
 
     /// Draws the stems for each note in the group.
     void drawStems(QGraphicsItem *parent, const QFont &musicFont,
                    const QFontMetricsF &fm, const LayoutInfo &layout) const;
+
+    double getTop() const;
+    double getBottom() const;
 
 private:
     /// Compute a common direction for the stems.

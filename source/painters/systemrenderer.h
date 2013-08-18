@@ -122,8 +122,8 @@ private:
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
     /// Draws notes, beams, and rests.
-    void drawStdNotation(const System &system, int systemIndex,
-                         const Staff &staff, int staffIndex,
+    void drawStdNotation(const System &system,
+                         const Staff &staff,
                          const LayoutInfo &layout);
 
     /// Draws a multi-bar rest symbol.

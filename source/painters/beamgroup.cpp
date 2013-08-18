@@ -58,21 +58,22 @@ private:
 const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
 #endif
 
-BeamGroup::BeamGroup(const LayoutInfo &layout,
-                     const std::vector<NoteStem>& stems)
+BeamGroup::BeamGroup(const std::vector<NoteStem>& stems)
     : myNoteStems(stems)
 {
     assert(!myNoteStems.empty());
 
-    // Adjust top/bottom of stems to use absolute coordianates.
+    myStemDirection = computeStemDirection(myNoteStems);
+    adjustStemHeights();
+}
+
+void BeamGroup::adjustToStaff(const LayoutInfo &layout)
+{
     BOOST_FOREACH(NoteStem &stem, myNoteStems)
     {
         stem.setTop(stem.getTop() + layout.getTopStdNotationLine());
         stem.setBottom(stem.getBottom() + layout.getTopStdNotationLine());
     }
-
-    myStemDirection = computeStemDirection(myNoteStems);
-    adjustStemHeights();
 }
 
 void BeamGroup::adjustStemHeights()
@@ -156,6 +157,30 @@ void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
         QGraphicsItem *flag = createNoteFlag(myNoteStems.front(), musicFont, fm);
         flag->setParentItem(parent);
     }
+}
+
+double BeamGroup::getTop() const
+{
+    double top = std::numeric_limits<double>::max();
+
+    BOOST_FOREACH(const NoteStem &stem, myNoteStems)
+    {
+        top = std::min(top, stem.getTop());
+    }
+
+    return top;
+}
+
+double BeamGroup::getBottom() const
+{
+    double bottom = -std::numeric_limits<double>::max();
+
+    BOOST_FOREACH(const NoteStem &stem, myNoteStems)
+    {
+        bottom = std::max(bottom, stem.getBottom());
+    }
+
+    return bottom;
 }
 
 NoteStem::StemType BeamGroup::computeStemDirection(std::vector<NoteStem> &stems)

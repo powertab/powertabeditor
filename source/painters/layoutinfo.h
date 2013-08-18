@@ -19,6 +19,8 @@
 #define PAINTERS_LAYOUTINFO_H
 
 #include <boost/shared_ptr.hpp>
+#include <painters/beamgroup.h>
+#include <painters/stdnotationnote.h>
 #include <vector>
 
 class Barline;
@@ -82,7 +84,8 @@ private:
 
 struct LayoutInfo
 {
-    LayoutInfo(const Score &score, const System& system, const Staff &staff);
+    LayoutInfo(const Score &score, const System& system, int systemIndex,
+               const Staff &staff, int staffIndex);
 
     int getStringCount() const;
 
@@ -142,6 +145,9 @@ struct LayoutInfo
     double getStdNotationStaffBelowSpacing() const;
     const std::vector<SymbolGroup> &getStdNotationStaffBelowSymbols() const;
 
+    const std::vector<StdNotationNote> &getStdNotationNotes() const;
+    const std::vector<BeamGroup> &getBeamGroups() const;
+
 private:
     static const double MIN_POSITION_SPACING;
 
@@ -191,6 +197,9 @@ private:
     double myStdNotationStaffAboveSpacing;
     std::vector<SymbolGroup> myStdNotationStaffBelowSymbols;
     double myStdNotationStaffBelowSpacing;
+
+    std::vector<StdNotationNote> myNotes;
+    std::vector<BeamGroup> myBeamGroups;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;

@@ -28,7 +28,7 @@
 const double LayoutInfo::STAFF_WIDTH = 750;
 const int LayoutInfo::NUM_STD_NOTATION_LINES = 5;
 const double LayoutInfo::STD_NOTATION_LINE_SPACING = 7;
-const double LayoutInfo::STAFF_BORDER_SPACING = 10;
+const double LayoutInfo::STAFF_BORDER_SPACING = 12;
 const double LayoutInfo::CLEF_PADDING = 3;
 const double LayoutInfo::ACCIDENTAL_WIDTH = 6;
 const double LayoutInfo::CLEF_WIDTH = 22;
@@ -37,8 +37,8 @@ const double LayoutInfo::MIN_POSITION_SPACING = 3;
 const double LayoutInfo::TAB_SYMBOL_SPACING = 10;
 const double LayoutInfo::DEFAULT_POSITION_SPACING = 20;
 
-LayoutInfo::LayoutInfo(const Score &score, const System &system,
-                       const Staff &staff)
+LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex,
+                       const Staff &staff, int staffIndex)
     : mySystem(system),
       myStaff(staff),
       myLineSpacing(score.getLineSpacing()),
@@ -52,8 +52,18 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system,
     computePositionSpacing();
     calculateTabStaffBelowLayout();
     calculateTabStaffAboveLayout();
+
+    StdNotationNote::getNotesInStaff(score, system, systemIndex, staff,
+                                     staffIndex, *this, myNotes, myBeamGroups);
+
     calculateStdNotationStaffAboveLayout();
     calculateStdNotationStaffBelowLayout();
+
+    // Update the locations of the stems based on the spacing we just computed.
+    BOOST_FOREACH(BeamGroup &group, myBeamGroups)
+    {
+        group.adjustToStaff(*this);
+    }
 }
 
 int LayoutInfo::getStringCount() const
@@ -374,6 +384,15 @@ void LayoutInfo::calculateStdNotationStaffAboveLayout()
 
     myStdNotationStaffAboveSpacing =
             getMaxHeight(myStdNotationStaffAboveSymbols) * TAB_SYMBOL_SPACING;
+
+    // Reserve space for notes and their stems.
+    double minLocation = std::numeric_limits<double>::max();
+    BOOST_FOREACH(const BeamGroup &group, myBeamGroups)
+    {
+        minLocation = std::min(minLocation, group.getTop());
+    }
+
+    myStdNotationStaffAboveSpacing += -std::min(0.0, minLocation);
 }
 
 void LayoutInfo::calculateStdNotationStaffBelowLayout()
@@ -382,6 +401,17 @@ void LayoutInfo::calculateStdNotationStaffBelowLayout()
 
     myStdNotationStaffBelowSpacing =
             getMaxHeight(myStdNotationStaffBelowSymbols) * TAB_SYMBOL_SPACING;
+
+    // Reserve space for notes and their stems.
+    double maxLocation = -std::numeric_limits<double>::max();
+    BOOST_FOREACH(const BeamGroup &group, myBeamGroups)
+    {
+        maxLocation = std::max(maxLocation, group.getBottom());
+    }
+
+    const double bottomBoundary = 5 * STD_NOTATION_LINE_SPACING;
+    myStdNotationStaffBelowSpacing +=
+            std::max(bottomBoundary, maxLocation) - bottomBoundary;
 }
 
 void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
@@ -639,6 +669,16 @@ double LayoutInfo::getStdNotationStaffBelowSpacing() const
 const std::vector<SymbolGroup> &LayoutInfo::getStdNotationStaffBelowSymbols() const
 {
     return myStdNotationStaffBelowSymbols;
+}
+
+const std::vector<StdNotationNote> &LayoutInfo::getStdNotationNotes() const
+{
+    return myNotes;
+}
+
+const std::vector<BeamGroup> &LayoutInfo::getBeamGroups() const
+{
+    return myBeamGroups;
 }
 
 SymbolGroup::SymbolType SymbolGroup::getSymbolType() const

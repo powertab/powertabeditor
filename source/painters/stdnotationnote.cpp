@@ -175,7 +175,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
                 stems.push_back(NoteStem(pos, x, noteHeadWidth, noteLocations));
             }
 
-            computeBeaming(layout, bar.getTimeSignature(), stems, groups);
+            computeBeaming(bar.getTimeSignature(), stems, groups);
         }
     }
 }
@@ -265,8 +265,7 @@ std::vector<uint8_t> StdNotationNote::getBeamingPatterns(
     return beaming;
 }
 
-void StdNotationNote::computeBeaming(const LayoutInfo &layout,
-                                     const TimeSignature &timeSig,
+void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
                                      const std::vector<NoteStem> &stems,
                                      std::vector<BeamGroup> &groups)
 {
@@ -298,7 +297,7 @@ void StdNotationNote::computeBeaming(const LayoutInfo &layout,
                     stems.begin() + (groupStart - durations.begin()),
                     stems.begin() + (groupEnd - durations.begin()));
 
-        computeBeamingGroups(layout, patternGroup, groups);
+        computeBeamingGroups(patternGroup, groups);
 
         // Move on to the next beaming pattern, looping around if necessary.
         ++groupSize;
@@ -309,8 +308,7 @@ void StdNotationNote::computeBeaming(const LayoutInfo &layout,
     }
 }
 
-void StdNotationNote::computeBeamingGroups(const LayoutInfo &layout,
-                                           const std::vector<NoteStem> &stems,
+void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
                                            std::vector<BeamGroup> &groups)
 {
     // Rests and notes greater than eighth notes will break apart a beam group,
@@ -335,8 +333,7 @@ void StdNotationNote::computeBeamingGroups(const LayoutInfo &layout,
         {
             if (NoteStem::needsStem(*it))
             {
-                groups.push_back(BeamGroup(layout,
-                                           std::vector<NoteStem>(1, *it)));
+                groups.push_back(BeamGroup(std::vector<NoteStem>(1, *it)));
             }
         }
 
@@ -347,7 +344,7 @@ void StdNotationNote::computeBeamingGroups(const LayoutInfo &layout,
         if (beamableGroupStart != beamableGroupEnd)
         {
             std::vector<NoteStem> stems(beamableGroupStart, beamableGroupEnd);
-            groups.push_back(BeamGroup(layout, stems));
+            groups.push_back(BeamGroup(stems));
         }
     }
 }
