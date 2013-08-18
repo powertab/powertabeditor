@@ -22,6 +22,7 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/range/adaptor/map.hpp>
 #include <painters/barlinepainter.h>
 #include <painters/clefpainter.h>
 #include <painters/directionpainter.h>
@@ -1175,6 +1176,10 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
     StdNotationNote::getNotesInStaff(myScore, system, systemIndex, staff,
                                      staffIndex, layout, notes, beamGroups);
 
+    std::map<int, double> minNoteLocations;
+    std::map<int, double> maxNoteLocations;
+    std::map<int, double> noteHeadWidths;
+
     BOOST_FOREACH(const StdNotationNote &note, notes)
     {
         const QChar noteHead = note.getNoteHeadSymbol();
@@ -1225,7 +1230,16 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
             text->setPos(x, y);
             text->setParentItem(myParentStaff);
         }
+
+        const int position = note.getPosition();
+        minNoteLocations[position] = std::min(minNoteLocations[position],
+                                              note.getY());
+        maxNoteLocations[position] = std::max(maxNoteLocations[position],
+                                              note.getY());
+        noteHeadWidths[position] = noteHeadWidth;
     }
+
+    drawLedgerLines(layout, minNoteLocations, maxNoteLocations, noteHeadWidths);
 
     BOOST_FOREACH(const BeamGroup &group, beamGroups)
     {
@@ -1233,150 +1247,7 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
                         layout);
     }
 
-#if 0
-    System::BarlineConstPtr currentBarline;
-    System::BarlineConstPtr prevBarline = system->GetStartBar();
-
-    QList<StdNotationPainter*> notePainters;
-    QMultiMap<int, StdNotationPainter*> accidentalsMap;
-    std::vector<NoteStem> stems;
-
-    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
-    {
-        for (quint32 i=0; i < staff->GetPositionCount(voice); i++)
-        {
-            const Position* currentPosition = staff->GetPosition(voice, i);
-            const quint32 location = system->GetPositionX(currentPosition->GetPosition());
-            currentBarline = system->GetPrecedingBarline(currentPosition->GetPosition());
-            const KeySignature& currentKeySig = currentBarline->GetKeySignature();
-
-            // Find the guitar corresponding to the current staff
-            shared_ptr<Guitar> currentGuitar = myScore->GetGuitar(system->FindStaffIndex(staff));
-            Q_ASSERT(currentGuitar);
-
-            std::vector<int> noteLocations;
-
-            // if we reach a new bar, we can adjust all of the accidentals for the previous bar
-            if (currentBarline != prevBarline)
-            {
-                adjustAccidentals(accidentalsMap);
-                accidentalsMap.clear();
-                prevBarline = currentBarline;
-            }
-
-            if (currentPosition->HasMultibarRest())
-            {
-                uint8_t measureCount = 0;
-                currentPosition->GetMultibarRest(measureCount);
-                drawMultiBarRest(currentBarline, currentStaffInfo, measureCount);
-                continue;
-            }
-
-            // just draw rests right away, since we don't have to worry about beaming or accidentals
-            if (currentPosition->IsRest())
-            {
-                RestPainter* restPainter = new RestPainter(*currentPosition);
-                centerItem(restPainter, location, location + currentStaffInfo.positionWidth * 1.25,
-                           currentStaffInfo.getTopStdNotationLine());
-                restPainter->setParentItem(parentStaff);
-                continue;
-            }
-
-            StdNotationPainter* stdNotePainter = NULL;
-            for (uint32_t j = 0; j < currentPosition->GetNoteCount(); j++)
-            {
-                const Note* note = currentPosition->GetNote(j);
-
-                stdNotePainter = new StdNotationPainter(currentStaffInfo, staff, currentPosition,
-                                                        note, currentGuitar->GetTuning(), currentKeySig);
-                notePainters << stdNotePainter;
-
-                // map all of the notes for each position on the staff, so that we can adjust accidentals later
-                accidentalsMap.insert(stdNotePainter->getYLocation(), stdNotePainter);
-
-                noteLocations.push_back(stdNotePainter->getYLocation());
-            }
-
-            // add note stem for any notes other than whole notes
-            if (NoteStem::needsStem(currentPosition))
-            {
-                NoteStem stem(currentPosition, location, noteLocations,
-                              stdNotePainter->noteHeadWidth(),
-                              stdNotePainter->noteHeadRightEdge());
-                stems.push_back(stem);
-            }
-
-            if (!noteLocations.empty())
-            {
-                drawLedgerLines(noteLocations, location, currentStaffInfo,
-                                stdNotePainter->noteHeadWidth());
-            }
-        }
-    }
-
-    // make sure we adjust accidentals for the last bar of the staff
-    adjustAccidentals(accidentalsMap);
-
-    // after adjusting accidentals, etc, we can add the painters to the scene
-    foreach(StdNotationPainter* painter, notePainters)
-    {
-        const quint32 location = system->GetPositionX(painter->getPositionObject()->GetPosition());
-        painter->setPos(location, currentStaffInfo.getTopStdNotationLine());
-        painter->setParentItem(parentStaff);
-    }
-
-    std::vector<NoteStem> currentStemGroup;
-    std::vector<NoteStem> updatedStems;
-
-    // group all of the stems into their beaming groups, and draw them
-    BOOST_FOREACH(const NoteStem& stem, stems)
-    {
-        currentStemGroup.push_back(stem);
-
-        if (stem.position->IsBeamEnd() ||
-                (!stem.position->IsBeamStart() && currentStemGroup.size() == 1))
-        {
-            BeamGroup group(currentStaffInfo, currentStemGroup);
-            currentStemGroup.clear();
-
-            group.drawStems(parentStaff);
-
-            // grab a copy of the updated note stems for later use
-            std::vector<NoteStem> temp;
-            group.copyNoteStems(temp);
-            updatedStems.insert(updatedStems.end(), temp.begin(), temp.end());
-        }
-    }
-
-    // Now, draw any irregular note groupings (triplets, etc)
-    // This must be done after the beams are drawn, since the note stems will be adjusted during that process
-    std::vector<NoteStem> currentIrregularNoteGroup;
-
-    BOOST_FOREACH(const NoteStem& stem, updatedStems)
-    {
-        // check if this note isn't part of an irregular grouping
-        if (!stem.position->IsIrregularGroupingEnd() &&
-                !stem.position->IsIrregularGroupingMiddle() &&
-                !stem.position->IsIrregularGroupingStart())
-        {
-            currentIrregularNoteGroup.clear();
-            continue;
-        }
-
-        currentIrregularNoteGroup.push_back(stem);
-
-        // draw the grouping
-        if (stem.position->IsIrregularGroupingEnd())
-        {
-            IrregularNoteGroup irregularGroup(currentIrregularNoteGroup);
-            irregularGroup.draw(parentStaff);
-
-            currentIrregularNoteGroup.clear();
-        }
-    }
-#else
-    Q_UNUSED(system);
-#endif
+    // TODO - draw irregular groupings.
 }
 
 void SystemRenderer::drawMultiBarRest(const System &system,
@@ -1493,54 +1364,64 @@ void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &l
     group->setParentItem(myParentStaff);
 }
 
-#if 0
-/// Draws ledger lines for all notes at a position
-/// @param noteLocations - List of y-coordinates of all notes at the position
-void SystemRenderer::drawLedgerLines(const std::vector<int> &noteLocations,
-                                     const double xLocation,
-                                     const StaffData& staffData,
-                                     const double noteHeadWidth)
+void SystemRenderer::drawLedgerLines(
+        const LayoutInfo &layout,
+        const std::map<int, double> &minNoteLocations,
+        const std::map<int, double> &maxNoteLocations,
+        const std::map<int, double> &noteHeadWidths)
 {
-    const int highestNote = *std::min_element(noteLocations.begin(), noteLocations.end());
-    const int lowestNote = *std::max_element(noteLocations.begin(), noteLocations.end());
-
-    const int numLedgerLinesTop = -highestNote / Staff::STD_NOTATION_LINE_SPACING;
-    const int numLedgerLinesBottom = (lowestNote - staffData.getStdNotationStaffSize()) /
-                                      Staff::STD_NOTATION_LINE_SPACING;
-
-    std::vector<int> ledgerLineLocations;
-
-    if (numLedgerLinesTop > 0)
-    {
-        const int topLineLocation = staffData.getTopStdNotationLine();
-        for (int i = 1; i<= numLedgerLinesTop; i++)
-        {
-            ledgerLineLocations.push_back(topLineLocation - i * Staff::STD_NOTATION_LINE_SPACING);
-        }
-    }
-    if (numLedgerLinesBottom > 0)
-    {
-        const int bottomLineLocation = staffData.getBottomStdNotationLine();
-        for (int i = 1; i<= numLedgerLinesBottom; i++)
-        {
-            ledgerLineLocations.push_back(bottomLineLocation + i * Staff::STD_NOTATION_LINE_SPACING);
-        }
-    }
-
-    const double ledgerLineWidth = noteHeadWidth * 2;
     QPainterPath path;
 
-    for (std::vector<int>::const_iterator location = ledgerLineLocations.begin();
-         location != ledgerLineLocations.end(); ++location)
+    BOOST_FOREACH(const int position,
+                  minNoteLocations | boost::adaptors::map_keys)
     {
-        path.moveTo(0, *location);
-        path.lineTo(ledgerLineWidth, *location);
+        const double highestNote = minNoteLocations.at(position);
+        const double lowestNote = maxNoteLocations.at(position);
+
+        const int numLedgerLinesTop = -highestNote /
+                LayoutInfo::STD_NOTATION_LINE_SPACING;
+        const int numLedgerLinesBottom =
+                (lowestNote - layout.getStdNotationStaffHeight()) /
+                LayoutInfo::STD_NOTATION_LINE_SPACING;
+
+        std::vector<double> ledgerLineLocations;
+
+        if (numLedgerLinesTop > 0)
+        {
+            const double topLine = layout.getTopStdNotationLine();
+            for (int i = 1; i <= numLedgerLinesTop; ++i)
+            {
+                ledgerLineLocations.push_back(
+                            topLine - i * LayoutInfo::STD_NOTATION_LINE_SPACING);
+            }
+        }
+
+        if (numLedgerLinesBottom > 0)
+        {
+            const int bottomLine = layout.getBottomStdNotationLine();
+            for (int i = 1; i <= numLedgerLinesBottom; ++i)
+            {
+                ledgerLineLocations.push_back(bottomLine +
+                            i * LayoutInfo::STD_NOTATION_LINE_SPACING);
+            }
+        }
+
+        const double ledgerLineWidth = noteHeadWidths.at(position) * 2;
+        const double x = layout.getPositionX(position) +
+                0.5 * (layout.getPositionSpacing() - ledgerLineWidth);
+
+        BOOST_FOREACH(double location, ledgerLineLocations)
+        {
+            path.moveTo(x, location);
+            path.lineTo(x + ledgerLineWidth, location);
+        }
     }
 
-    QGraphicsPathItem* ledgerlines = new QGraphicsPathItem(path, parentStaff);
-    centerItem(ledgerlines, xLocation, xLocation + staffData.positionWidth, 0);
+    QGraphicsPathItem *ledgerlines = new QGraphicsPathItem(path);
+    ledgerlines->setParentItem(myParentStaff);
 }
 
+#if 0
 QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffData& staffInfo)
 {
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup;

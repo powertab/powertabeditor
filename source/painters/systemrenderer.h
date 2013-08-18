@@ -18,6 +18,7 @@
 #ifndef PAINTERS_SYSTEMRENDERER_H
 #define PAINTERS_SYSTEMRENDERER_H
 
+#include <map>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
 #include <QFontMetricsF>
@@ -131,6 +132,12 @@ private:
 
     /// Draws a rest symbol.
     void drawRest(const Position &pos, double x, const LayoutInfo &layout);
+
+    /// Draws ledger lines for all positions in the staff.
+    void drawLedgerLines(const LayoutInfo &layout,
+                         const std::map<int, double> &minNoteLocations,
+                         const std::map<int, double> &maxNoteLocations,
+                         const std::map<int, double> &noteHeadWidths);
 
     const ScoreArea *myScoreArea;
     const Score &myScore;
