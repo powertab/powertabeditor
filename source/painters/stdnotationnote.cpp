@@ -22,8 +22,10 @@
 #include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
 #include <map>
+#include <numeric>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
+#include <QFontMetricsF>
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/staffutils.h>
@@ -71,12 +73,12 @@ StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
     computeAccidentalType(false);
 }
 
-std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
-        const Score &score, const System &system, int systemIndex,
-        const Staff &staff, int staffIndex)
+void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
+                                      int systemIndex, const Staff &staff,
+                                      int staffIndex, const LayoutInfo &layout,
+                                      std::vector<StdNotationNote> &notes,
+                                      std::vector<BeamGroup> &groups)
 {
-    std::vector<StdNotationNote> notes;
-
     // If there is no active player, use standard 8-string tuning as a default
     // for calculating the music notation.
     Tuning fallbackTuning;
@@ -84,6 +86,9 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
     tuningNotes.push_back(Midi::MIDI_NOTE_B2);
     tuningNotes.push_back(Midi::MIDI_NOTE_E1);
     fallbackTuning.setNotes(tuningNotes);
+
+    QFont musicFont(MusicFont().getFont());
+    QFontMetricsF fm(musicFont);
 
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
@@ -93,6 +98,8 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
             if (!nextBar)
                 break;
 
+            std::vector<NoteStem> stems;
+
             // Store the current accidental for each line/space in the staff.
             std::map<int, AccidentalType> accidentals;
 
@@ -100,8 +107,13 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
                               staff, voice, bar.getPosition(),
                               nextBar->getPosition()))
             {
+                std::vector<double> noteLocations;
+
                 if (pos.isRest() || pos.hasMultiBarRest())
+                {
+                    stems.push_back(NoteStem(pos, 0, 0, noteLocations));
                     continue;
+                }
 
                 // Find an active player so that we know what tuning to use.
                 std::vector<ActivePlayer> activePlayers;
@@ -117,12 +129,16 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
                             activePlayers.front().getPlayerNumber()];
                 }
 
+                double noteHeadWidth = 0;
+
                 BOOST_FOREACH(const Note &note, pos.getNotes())
                 {
                     const Tuning tuning = player ? player->getTuning() :
                                                    fallbackTuning;
                     const double y = getNoteLocation(
                                 staff, note, bar.getKeySignature(), tuning);
+
+                    noteLocations.push_back(y);
 
                     notes.push_back(StdNotationNote(
                                         pos, note, bar.getKeySignature(),
@@ -150,12 +166,18 @@ std::vector<StdNotationNote> StdNotationNote::getNotesInStaff(
 
                         accidentals[y] = accidental;
                     }
+
+                    noteHeadWidth = fm.width(stdNote.getNoteHeadSymbol());
                 }
+
+                const double x = layout.getPositionX(pos.getPosition()) +
+                        0.5 * (layout.getPositionSpacing() - noteHeadWidth);
+                stems.push_back(NoteStem(pos, x, noteHeadWidth, noteLocations));
             }
+
+            computeBeaming(layout, bar.getTimeSignature(), stems, groups);
         }
     }
-
-    return notes;
 }
 
 double StdNotationNote::getY() const
@@ -231,6 +253,103 @@ void StdNotationNote::computeAccidentalType(bool explicitSymbol)
         myAccidentalType = Natural;
     else
         myAccidentalType = NoAccidental;
+}
+
+std::vector<uint8_t> StdNotationNote::getBeamingPatterns(
+        const TimeSignature &timeSig)
+{
+    TimeSignature::BeamingPattern pattern(timeSig.getBeamingPattern());
+    std::vector<uint8_t> beaming(pattern.begin(), pattern.end());
+    beaming.erase(std::remove(beaming.begin(), beaming.end(), 0),
+                  beaming.end());
+    return beaming;
+}
+
+void StdNotationNote::computeBeaming(const LayoutInfo &layout,
+                                     const TimeSignature &timeSig,
+                                     const std::vector<NoteStem> &stems,
+                                     std::vector<BeamGroup> &groups)
+{
+    const std::vector<uint8_t> beamingPatterns(getBeamingPatterns(timeSig));
+
+    // Create a list of the durations for each stem.
+    std::vector<double> durations(stems.size());
+    std::transform(stems.begin(), stems.end(), durations.begin(),
+                   std::mem_fun_ref(&NoteStem::getDurationTime));
+    // Convert the duration list to a list of timestamps relative to the
+    // beginning of the bar.
+    std::partial_sum(durations.begin(), durations.end(), durations.begin());
+
+    double groupBeginTime = 0;
+    std::vector<uint8_t>::const_iterator groupSize = beamingPatterns.begin();
+    std::vector<double>::iterator groupStart = durations.begin();
+    std::vector<double>::iterator groupEnd = durations.begin();
+
+    while (groupEnd != durations.end())
+    {
+        // Find the timestamp where the end of the current pattern group will be.
+        const double groupEndTime = *groupSize * 0.5 + groupBeginTime;
+
+        // Get the stems in the pattern group.
+        groupStart = std::lower_bound(groupEnd, durations.end(), groupBeginTime);
+        groupEnd = std::upper_bound(groupStart, durations.end(), groupEndTime);
+
+        std::vector<NoteStem> patternGroup(
+                    stems.begin() + (groupStart - durations.begin()),
+                    stems.begin() + (groupEnd - durations.begin()));
+
+        computeBeamingGroups(layout, patternGroup, groups);
+
+        // Move on to the next beaming pattern, looping around if necessary.
+        ++groupSize;
+        if (groupSize == beamingPatterns.end())
+            groupSize = beamingPatterns.begin();
+
+        groupBeginTime = groupEndTime;
+    }
+}
+
+void StdNotationNote::computeBeamingGroups(const LayoutInfo &layout,
+                                           const std::vector<NoteStem> &stems,
+                                           std::vector<BeamGroup> &groups)
+{
+    // Rests and notes greater than eighth notes will break apart a beam group,
+    // so we need to find all of the subgroups of consecutive positions that
+    // can be beamed, and then create beaming groups with those notes.
+    std::vector<NoteStem>::const_iterator beamableGroupStart = stems.begin();
+    std::vector<NoteStem>::const_iterator beamableGroupEnd = stems.begin();
+
+    // Find all subgroups of beamable notes (i.e. consecutive notes that aren't
+    // quarter notes, rests, etc).
+    while (beamableGroupEnd != stems.end())
+    {
+        // Find the next range of consecutive stems that are beamable.
+        beamableGroupStart = std::find_if(beamableGroupEnd, stems.end(),
+                                          &NoteStem::isBeamable);
+
+        // If there were any notes that aren't beamed but need stems (like a
+        // half note or a quarter note), create a single-item beam group for
+        // each.
+        for (std::vector<NoteStem>::const_iterator it = beamableGroupEnd;
+             it != beamableGroupStart; ++it)
+        {
+            if (NoteStem::needsStem(*it))
+            {
+                groups.push_back(BeamGroup(layout,
+                                           std::vector<NoteStem>(1, *it)));
+            }
+        }
+
+        // Find the end of the beam group.
+        beamableGroupEnd = std::find_if(beamableGroupStart, stems.end(),
+                                        std::not1(std::ptr_fun(&NoteStem::isBeamable)));
+
+        if (beamableGroupStart != beamableGroupEnd)
+        {
+            std::vector<NoteStem> stems(beamableGroupStart, beamableGroupEnd);
+            groups.push_back(BeamGroup(layout, stems));
+        }
+    }
 }
 
 QChar StdNotationNote::getNoteHeadSymbol() const

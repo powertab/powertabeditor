@@ -17,122 +17,183 @@
   
 #include "beamgroup.h"
 
-#include <algorithm>
-#include <app/common.h>
-
-#include "staffdata.h"
-#include "stdnotationpainter.h"
-#include "musicfont.h"
-#include <powertabdocument/position.h>
-
-#include <QGraphicsPathItem>
+#include <boost/foreach.hpp>
+#include <painters/layoutinfo.h>
+#include <QGraphicsItem>
+#include <QPainterPath>
 #include <QPen>
 
-#include <cmath> // for log() function
-
-const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
-
-BeamGroup::BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& noteStems) :
-    staffInfo(staffInfo),
-    noteStems(noteStems),
-    musicNotationFont(MusicFont().getFont())
+static bool compareStemTopPositions(const NoteStem &stem1,
+                                    const NoteStem &stem2)
 {
-    // adjust top/bottom of stems to use absolute coordianates
-    for (size_t i = 0; i < this->noteStems.size(); i++)
+    return stem1.getTop() < stem2.getTop();
+}
+
+static bool compareStemBottomPositions(const NoteStem &stem1,
+                                       const NoteStem &stem2)
+{
+    return stem1.getBottom() < stem2.getBottom();
+}
+
+/// Functor to compare a NoteStem's stem direction for equality.
+struct CompareStemType
+{
+    CompareStemType(NoteStem::StemType type)
+        : myStemType(type)
     {
-        this->noteStems[i].stemTop += staffInfo.getTopStdNotationLine();
-        this->noteStems[i].stemBottom += staffInfo.getTopStdNotationLine();
     }
 
-    stemDirection = NoteStem::setStemDirection(this->noteStems);
+    bool operator()(const NoteStem& stem) const
+    {
+        return stem.getStemType() == myStemType;
+    }
+
+private:
+    NoteStem::StemType myStemType;
+};
+
+#if 0
+const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
+#endif
+BeamGroup::BeamGroup(const LayoutInfo &layout,
+                     const std::vector<NoteStem>& stems)
+    : myNoteStems(stems)
+{
+    assert(!myNoteStems.empty());
+
+    // Adjust top/bottom of stems to use absolute coordianates.
+    BOOST_FOREACH(NoteStem &stem, myNoteStems)
+    {
+        stem.setTop(stem.getTop() + layout.getTopStdNotationLine());
+        stem.setBottom(stem.getBottom() + layout.getTopStdNotationLine());
+    }
+
+    myStemDirection = computeStemDirection(myNoteStems);
     adjustStemHeights();
 }
 
-/// Stretches the beams to a common high/low height, depending on stem direction
 void BeamGroup::adjustStemHeights()
 {
-    if (stemDirection == NoteStem::StemUp)
+    if (myStemDirection == NoteStem::StemUp)
     {
-        NoteStem highestStem = NoteStem::findHighestStem(noteStems);
+        NoteStem highestStem = findHighestStem(myNoteStems);
 
-        for (std::vector<NoteStem>::iterator stem = noteStems.begin();
-             stem != noteStems.end(); ++stem)
+        BOOST_FOREACH(NoteStem &stem, myNoteStems)
         {
-            stem->xPosition += stem->noteHeadRightEdge - 1;
-            stem->stemTop = highestStem.stemTop - highestStem.stemSize();
+            stem.setX(stem.getNoteHeadRightEdge() - 1);
+            stem.setTop(highestStem.getTop() - highestStem.getStemHeight());
         }
     }
-    else // stem down
+    else // Stem down.
     {
-        NoteStem lowestStem = NoteStem::findLowestStem(noteStems);
+        NoteStem lowestStem = findLowestStem(myNoteStems);
 
-        for (std::vector<NoteStem>::iterator stem = noteStems.begin();
-             stem != noteStems.end(); ++stem)
+        BOOST_FOREACH(NoteStem &stem, myNoteStems)
         {
-            stem->xPosition += stem->noteHeadRightEdge - stem->noteHeadWidth;
-            stem->stemBottom = lowestStem.stemBottom + lowestStem.stemSize();
+            stem.setBottom(lowestStem.getBottom() + lowestStem.getStemHeight());
         }
     }
 }
 
-/// Draws the stems for each note in the group
-void BeamGroup::drawStems(QGraphicsItem* parent) const
+void BeamGroup::drawStems(QGraphicsItem *parent) const
 {
-    QList<QGraphicsItem*> symbols;
-
+    QList<QGraphicsItem *> symbols;
     QPainterPath stemPath;
 
-    // Draw each stem
-    for (std::vector<NoteStem>::const_iterator stem = noteStems.begin(); stem != noteStems.end(); ++stem)
+    // Draw each stem.
+    BOOST_FOREACH(const NoteStem &stem, myNoteStems)
     {
-        stemPath.moveTo(stem->xPosition, stem->stemTop);
-        stemPath.lineTo(stem->xPosition, stem->stemBottom);
+        stemPath.moveTo(stem.getX(), stem.getTop());
+        stemPath.lineTo(stem.getX(), stem.getBottom());
 
-        // draw any symbols that use information about the stem, like staccato, fermata, etc
-        if (stem->position->IsStaccato())
-            symbols << createStaccato(*stem);
+        // TODO
+#if 0
+        // Draw any symbols that use information about the stem, like staccato,
+        // fermata, etc.
+        if (stem.isStaccato())
+            symbols << createStaccato(stem);
 
-        if (stem->position->HasFermata())
-            symbols << createFermata(*stem);
+        if (stem.hasFermata())
+            symbols << createFermata(stem);
 
-        if (stem->position->HasSforzando() || stem->position->HasMarcato())
-            symbols << createAccent(*stem);
+        if (stem.hasSforzando() || stem.hasMarcato())
+            symbols << createAccent(stem);
+#endif
 
-        foreach (QGraphicsItem* symbol, symbols)
-        {
+        BOOST_FOREACH(QGraphicsItem *symbol, symbols)
             symbol->setParentItem(parent);
-        }
+
         symbols.clear();
     }
 
-    QGraphicsPathItem* stems = new QGraphicsPathItem(stemPath);
+    QGraphicsPathItem *stems = new QGraphicsPathItem(stemPath);
     stems->setParentItem(parent);
 
     QPainterPath beamPath;
 
-    // draw connecting line
-    if (noteStems.size() > 1)
+    // Draw connecting line.
+    if (myNoteStems.size() > 1)
     {
-        const double connectorHeight = noteStems.front().stemEdge();
+        const double connectorHeight = myNoteStems.front().getStemEdge();
 
-        beamPath.moveTo(noteStems.front().xPosition + 0.5, connectorHeight);
-        beamPath.lineTo(noteStems.back().xPosition, connectorHeight);
+        beamPath.moveTo(myNoteStems.front().getX() + 0.5, connectorHeight);
+        beamPath.lineTo(myNoteStems.back().getX(), connectorHeight);
     }
 
+    // TODO
+#if 0
     drawExtraBeams(beamPath);
+#endif
 
-    QGraphicsPathItem* beams = new QGraphicsPathItem(beamPath);
+    QGraphicsPathItem *beams = new QGraphicsPathItem(beamPath);
     beams->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
     beams->setParentItem(parent);
 
-     // draw a note flag for single notes (eighth notes or less) or grace notes
-    if (noteStems.size() == 1 && noteStems.front().canDrawFlag())
+    // TODO
+#if 0
+    // Draw a note flag for single notes (eighth notes or less) or grace notes.
+    if (myNoteStems.size() == 1 && myNoteStems.front().canDrawFlag())
     {
-        QGraphicsItem* flag = createNoteFlag(noteStems.front());
+        QGraphicsItem* flag = createNoteFlag(myNoteStems.front());
         flag->setParentItem(parent);
     }
+#endif
 }
 
+NoteStem::StemType BeamGroup::computeStemDirection(std::vector<NoteStem> &stems)
+{
+    // Find how many stem directions of each type we have.
+    const size_t stemsUp = std::count_if(stems.begin(), stems.end(),
+                                         CompareStemType(NoteStem::StemUp));
+
+    const size_t stemsDown = std::count_if(stems.begin(), stems.end(),
+                                           CompareStemType(NoteStem::StemDown));
+
+    NoteStem::StemType stemType = (stemsDown >= stemsUp) ? NoteStem::StemDown :
+                                                           NoteStem::StemUp;
+
+    // Assign the new stem direction to each stem.
+    BOOST_FOREACH(NoteStem &stem, stems)
+    {
+        stem.setStemType(stemType);
+    }
+
+    return stemType;
+}
+
+NoteStem BeamGroup::findHighestStem(const std::vector<NoteStem> &stems)
+{
+    return *std::min_element(stems.begin(), stems.end(),
+                             &compareStemTopPositions);
+}
+
+NoteStem BeamGroup::findLowestStem(const std::vector<NoteStem> &stems)
+{
+    return *std::max_element(stems.begin(), stems.end(),
+                             &compareStemBottomPositions);
+}
+
+#if 0
 /// Draws the extra beams required for sixteenth notes, etc
 void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
 {
@@ -336,3 +397,4 @@ QGraphicsItem* BeamGroup::createNoteFlag(const NoteStem& noteStem) const
 
     return flag;
 }
+#endif

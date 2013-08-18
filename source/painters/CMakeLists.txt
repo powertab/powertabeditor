@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.8)
 
 add_library(ptepainters
     barlinepainter.cpp
-    #beamgroup.cpp
+    beamgroup.cpp
     caretpainter.cpp
     #chordtextpainter.cpp
     clefpainter.cpp
@@ -11,6 +11,7 @@ add_library(ptepainters
     keysignaturepainter.cpp
     layoutinfo.cpp
     musicfont.cpp
+    notestem.cpp
     #rhythmslashpainter.cpp
     #staffdata.cpp
     staffpainter.cpp

@@ -1170,8 +1170,10 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
         }
     }
 
-    std::vector<StdNotationNote> notes = StdNotationNote::getNotesInStaff(
-                myScore, system, systemIndex, staff, staffIndex);
+    std::vector<StdNotationNote> notes;
+    std::vector<BeamGroup> beamGroups;
+    StdNotationNote::getNotesInStaff(myScore, system, systemIndex, staff,
+                                     staffIndex, layout, notes, beamGroups);
 
     BOOST_FOREACH(const StdNotationNote &note, notes)
     {
@@ -1223,6 +1225,11 @@ void SystemRenderer::drawStdNotation(const System &system, int systemIndex,
             text->setPos(x, y);
             text->setParentItem(myParentStaff);
         }
+    }
+
+    BOOST_FOREACH(const BeamGroup &group, beamGroups)
+    {
+        group.drawStems(myParentStaff);
     }
 
 #if 0

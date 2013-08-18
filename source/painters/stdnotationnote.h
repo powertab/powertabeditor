@@ -18,15 +18,20 @@
 #ifndef PAINTERS_STDNOTATIONNOTE_H
 #define PAINTERS_STDNOTATIONNOTE_H
 
+#include <boost/cstdint.hpp>
+#include <painters/beamgroup.h>
+#include <painters/notestem.h>
 #include <QChar>
 #include <vector>
 
+struct LayoutInfo;
 class KeySignature;
 class Note;
 class Position;
 class Score;
 class Staff;
 class System;
+class TimeSignature;
 class Tuning;
 
 class StdNotationNote
@@ -45,9 +50,11 @@ public:
     StdNotationNote(const Position &pos, const Note &note,
                     const KeySignature &key, const Tuning &tuning, double y);
 
-    static std::vector<StdNotationNote> getNotesInStaff(
-            const Score &score, const System &system, int systemIndex,
-            const Staff &staff, int staffIndex);
+    static void getNotesInStaff(const Score &score, const System &system,
+                                int systemIndex, const Staff &staff,
+                                int staffIndex, const LayoutInfo &layout,
+                                std::vector<StdNotationNote> &notes,
+                                std::vector<BeamGroup> &groups);
 
     double getY() const;
     QChar getNoteHeadSymbol() const;
@@ -74,6 +81,21 @@ private:
     /// @param explicitSymbol If true, an accidental or natural sign will be
     /// displayed even if the note is in the key signature.
     void computeAccidentalType(bool explicitSymbol);
+
+    /// Returns the non-zero beaming patterns of the time signature.
+    static std::vector<uint8_t> getBeamingPatterns(const TimeSignature &timeSig);
+
+    /// Calculates the beaming for a set of note stems.
+    static void computeBeaming(const LayoutInfo &layout,
+                               const TimeSignature &timeSig,
+                               const std::vector<NoteStem> &stems,
+                               std::vector<BeamGroup> &groups);
+
+    /// A group may be split into several beam groups if there are rests,
+    /// whole notes, etc.
+    static void computeBeamingGroups(const LayoutInfo &layout,
+                                     const std::vector<NoteStem> &stems,
+                                     std::vector<BeamGroup> &groups);
 
     double myY;
     QChar myNoteHeadSymbol;

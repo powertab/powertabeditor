@@ -15,41 +15,42 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef BEAMGROUP_H
-#define BEAMGROUP_H
+#ifndef PAINTERS_BEAMGROUP_H
+#define PAINTERS_BEAMGROUP_H
 
-#include <vector>
+#include <painters/notestem.h>
 #include <QFont>
-#include <powertabdocument/notestem.h>
+#include <vector>
 
+struct LayoutInfo;
 class QGraphicsItem;
-class QPainterPath;
-class StaffData;
 
 class BeamGroup
 {
 public:
-    BeamGroup(const StaffData& staffInfo, const std::vector<NoteStem>& noteStems);
+    BeamGroup(const LayoutInfo &layout, const std::vector<NoteStem> &stems);
 
-    void drawStems(QGraphicsItem* parent) const;
-    void drawExtraBeams(QPainterPath& beamPath) const;
-
-    static const double FRACTIONAL_BEAM_WIDTH;
-
-    void copyNoteStems(std::vector<NoteStem>& stems) const;
+    /// Draws the stems for each note in the group.
+    void drawStems(QGraphicsItem *parent) const;
 
 private:
+    /// Compute a common direction for the stems.
+    static NoteStem::StemType computeStemDirection(std::vector<NoteStem> &stems);
+
+    static NoteStem findHighestStem(const std::vector<NoteStem> &stems);
+    static NoteStem findLowestStem(const std::vector<NoteStem> &stems);
+
+    /// Stretches the beams to a common high/low height, depending on stem
+    /// direction.
     void adjustStemHeights();
 
-    QGraphicsItem* createStaccato(const NoteStem& noteStem) const;
-    QGraphicsItem* createFermata(const NoteStem& noteStem) const;
-    QGraphicsItem* createAccent(const NoteStem& noteStem) const;
-    QGraphicsItem* createNoteFlag(const NoteStem& noteStem) const;
+    QGraphicsItem *createStaccato(const NoteStem& noteStem) const;
+    QGraphicsItem *createFermata(const NoteStem& noteStem) const;
+    QGraphicsItem *createAccent(const NoteStem& noteStem) const;
+    QGraphicsItem *createNoteFlag(const NoteStem& noteStem) const;
 
-    const StaffData& staffInfo;
-    std::vector<NoteStem> noteStems;
-    NoteStem::StemDirection stemDirection;
-    QFont musicNotationFont;
+    std::vector<NoteStem> myNoteStems;
+    NoteStem::StemType myStemDirection;
 };
 
-#endif // BEAMGROUP_H
+#endif
