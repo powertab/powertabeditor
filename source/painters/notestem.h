@@ -47,6 +47,7 @@ public:
     double getDurationTime() const;
     Position::DurationType getDurationType() const;
     bool isStaccato() const;
+    bool isGraceNote() const;
     bool hasFermata() const;
     bool hasSforzando() const;
     bool hasMarcato() const;
@@ -55,6 +56,9 @@ public:
     static bool isBeamable(const NoteStem &stem);
     /// Returns true if the note should have a stem drawn.
     static bool needsStem(const NoteStem &stem);
+    /// Returns true if the note could possibly have a flag drawn (e.g. an
+    /// eighth note or a grace note).
+    static bool canHaveFlag(const NoteStem &stem);
 
     StemType getStemType() const;
     void setStemType(StemType type);

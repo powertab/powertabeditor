@@ -19,6 +19,8 @@
 
 #include <boost/foreach.hpp>
 #include <painters/layoutinfo.h>
+#include <painters/musicfont.h>
+#include <QFontMetricsF>
 #include <QGraphicsItem>
 #include <QPainterPath>
 #include <QPen>
@@ -55,6 +57,7 @@ private:
 #if 0
 const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
 #endif
+
 BeamGroup::BeamGroup(const LayoutInfo &layout,
                      const std::vector<NoteStem>& stems)
     : myNoteStems(stems)
@@ -95,7 +98,8 @@ void BeamGroup::adjustStemHeights()
     }
 }
 
-void BeamGroup::drawStems(QGraphicsItem *parent) const
+void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
+                          const QFontMetricsF &fm) const
 {
     QList<QGraphicsItem *> symbols;
     QPainterPath stemPath;
@@ -149,15 +153,12 @@ void BeamGroup::drawStems(QGraphicsItem *parent) const
     beams->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
     beams->setParentItem(parent);
 
-    // TODO
-#if 0
     // Draw a note flag for single notes (eighth notes or less) or grace notes.
-    if (myNoteStems.size() == 1 && myNoteStems.front().canDrawFlag())
+    if (myNoteStems.size() == 1 && NoteStem::canHaveFlag(myNoteStems.front()))
     {
-        QGraphicsItem* flag = createNoteFlag(myNoteStems.front());
+        QGraphicsItem *flag = createNoteFlag(myNoteStems.front(), musicFont, fm);
         flag->setParentItem(parent);
     }
-#endif
 }
 
 NoteStem::StemType BeamGroup::computeStemDirection(std::vector<NoteStem> &stems)
@@ -335,66 +336,71 @@ QGraphicsItem* BeamGroup::createAccent(const NoteStem& noteStem) const
 
     return accent;
 }
+#endif
 
-QGraphicsItem* BeamGroup::createNoteFlag(const NoteStem& noteStem) const
+QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
+                                         const QFont &musicFont,
+                                         const QFontMetricsF &fm) const
 {
-    Q_ASSERT(noteStem.canDrawFlag());
+    Q_ASSERT(NoteStem::canHaveFlag(stem));
 
-    // choose the flag symbol, depending on duration and stem direction
     QChar symbol = 0;
-    if (noteStem.stemDirection == NoteStem::StemUp)
+
+    // Choose the flag symbol, depending on duration and stem direction.
+    if (stem.getStemType() == NoteStem::StemUp)
     {
-        switch(noteStem.position->GetDurationType())
+        switch (stem.getDurationType())
         {
-        case 8:
+        case Position::EighthNote:
             symbol = MusicFont::FlagUp1;
             break;
-        case 16:
+        case Position::SixteenthNote:
             symbol = MusicFont::FlagUp2;
             break;
-        case 32:
+        case Position::ThirtySecondNote:
             symbol = MusicFont::FlagUp3;
             break;
-        default: // 64
+        case Position::SixtyFourthNote:
             symbol = MusicFont::FlagUp4;
+            break;
+        default:
+            Q_ASSERT(false);
             break;
         }
 
-        if (noteStem.position->IsAcciaccatura())
-        {
+        if (stem.isGraceNote())
             symbol = MusicFont::FlagUp1;
-        }
     }
     else
     {
-        switch(noteStem.position->GetDurationType())
+        switch (stem.getDurationType())
         {
-        case 8:
+        case Position::EighthNote:
             symbol = MusicFont::FlagDown1;
             break;
-        case 16:
+        case Position::SixteenthNote:
             symbol = MusicFont::FlagDown2;
             break;
-        case 32:
+        case Position::ThirtySecondNote:
             symbol = MusicFont::FlagDown3;
             break;
-        default: // 64
+        case Position::SixtyFourthNote:
             symbol = MusicFont::FlagDown4;
+            break;
+        default:
+            Q_ASSERT(false);
             break;
         }
 
-        if (noteStem.position->IsAcciaccatura())
-        {
+        if (stem.isGraceNote())
             symbol = MusicFont::FlagDown1;
-        }
     }
 
-    // draw the symbol
-    const double y = noteStem.stemEdge() - 35; // adjust for spacing caused by the music symbol font
-    QGraphicsTextItem* flag = new QGraphicsTextItem(symbol);
-    flag->setFont(musicNotationFont);
-    flag->setPos(noteStem.xPosition - 3, y);
+    // Draw the symbol.
+    const double y = stem.getStemEdge() - fm.ascent() - 5;
+    QGraphicsTextItem *flag = new QGraphicsTextItem(symbol);
+    flag->setFont(musicFont);
+    flag->setPos(stem.getX() - 3, y);
 
     return flag;
 }
-#endif

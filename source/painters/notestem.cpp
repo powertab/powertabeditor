@@ -81,7 +81,7 @@ double NoteStem::getStemHeight() const
 {
     double height = LayoutInfo::STD_NOTATION_LINE_SPACING * 3.5;
 
-    if (myPosition->hasProperty(Position::Acciaccatura))
+    if (isGraceNote())
         height *= 0.75;
 
     return height;
@@ -119,6 +119,12 @@ bool NoteStem::needsStem(const NoteStem &stem)
             stem.myPosition->getDurationType() != Position::WholeNote;
 }
 
+bool NoteStem::canHaveFlag(const NoteStem &stem)
+{
+    return stem.myPosition->getDurationType() > Position::QuarterNote ||
+            stem.isGraceNote();
+}
+
 NoteStem::StemType NoteStem::getStemType() const
 {
     return myStemType;
@@ -127,4 +133,9 @@ NoteStem::StemType NoteStem::getStemType() const
 void NoteStem::setStemType(StemType type)
 {
     myStemType = type;
+}
+
+bool NoteStem::isGraceNote() const
+{
+    return myPosition->hasProperty(Position::Acciaccatura);
 }

@@ -23,6 +23,7 @@
 #include <vector>
 
 struct LayoutInfo;
+class QFontMetricsF;
 class QGraphicsItem;
 
 class BeamGroup
@@ -31,7 +32,8 @@ public:
     BeamGroup(const LayoutInfo &layout, const std::vector<NoteStem> &stems);
 
     /// Draws the stems for each note in the group.
-    void drawStems(QGraphicsItem *parent) const;
+    void drawStems(QGraphicsItem *parent, const QFont &musicFont,
+                   const QFontMetricsF &fm) const;
 
 private:
     /// Compute a common direction for the stems.
@@ -47,7 +49,10 @@ private:
     QGraphicsItem *createStaccato(const NoteStem& noteStem) const;
     QGraphicsItem *createFermata(const NoteStem& noteStem) const;
     QGraphicsItem *createAccent(const NoteStem& noteStem) const;
-    QGraphicsItem *createNoteFlag(const NoteStem& noteStem) const;
+
+    QGraphicsItem *createNoteFlag(const NoteStem& stem,
+                                  const QFont &musicFont,
+                                  const QFontMetricsF &fm) const;
 
     std::vector<NoteStem> myNoteStems;
     NoteStem::StemType myStemDirection;
