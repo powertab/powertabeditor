@@ -366,27 +366,31 @@ StdNotationNote::AccidentalType StdNotationNote::getAccidentalType() const
 
 QString StdNotationNote::getAccidentalText() const
 {
+    QString text;
+
     switch (myAccidentalType)
     {
     case StdNotationNote::NoAccidental:
-        return QString();
+        // Do nothing.
         break;
     case StdNotationNote::Natural:
-        return QChar(MusicFont::Natural);
+        text = QChar(MusicFont::Natural);
         break;
     case StdNotationNote::Sharp:
-        return QChar(MusicFont::AccidentalSharp);
+        text = QChar(MusicFont::AccidentalSharp);
         break;
     case StdNotationNote::DoubleSharp:
-        return QChar(MusicFont::AccidentalDoubleSharp);
+        text = QChar(MusicFont::AccidentalDoubleSharp);
         break;
     case StdNotationNote::Flat:
-        return QChar(MusicFont::AccidentalFlat);
+        text = QChar(MusicFont::AccidentalFlat);
         break;
     case StdNotationNote::DoubleFlat:
-        return QChar(MusicFont::AccidentalDoubleFlat);
+        text = QChar(MusicFont::AccidentalDoubleFlat);
         break;
     }
+
+    return text;
 }
 
 bool StdNotationNote::isDotted() const
