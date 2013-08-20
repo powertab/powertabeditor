@@ -28,7 +28,6 @@
 #include "dynamic.h"
 #include "systemlocation.h"
 #include "common.h"
-#include "layout.h"
 #include "tuning.h"
 
 #include <map>
@@ -142,8 +141,6 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
     stream.ReadVector(m_alternateEndingArray, version);
     stream.ReadVector(m_systemArray, version);
 
-    FormatRehearsalSigns();
-
     return true;
 }
 
@@ -218,166 +215,6 @@ void ShiftFollowingSymbols(std::vector<Symbol>& symbolList, const uint32_t syste
 }
 }
 
-/// Removes the system at the specified index. This will also remove any tempo
-/// markers, etc. that are associated with the system.
-bool Score::RemoveSystem(size_t index)
-{
-    PTB_CHECK_THAT(IsValidSystemIndex(index), false);
-
-    SystemConstPtr system = m_systemArray.at(index);
-
-    // adjust height of following systems
-    ShiftFollowingSystems(system, -(system->GetRect().GetHeight() + SYSTEM_SPACING));
-
-    m_systemArray.erase(m_systemArray.begin() + index);
-
-    // TODO - handle Guitar In symbols.
-    RemoveSymbolsInSystem(m_tempoMarkerArray, index);
-    RemoveSymbolsInSystem(m_dynamicArray, index);
-    RemoveSymbolsInSystem(m_alternateEndingArray, index);
-
-    return true;
-}
-
-/// Inserts a system into the score at the specified location
-bool Score::InsertSystem(SystemPtr system, size_t index)
-{
-    PTB_CHECK_THAT(IsValidSystemIndex(index) || index == GetSystemCount(), false);
-
-    const bool firstSystem = m_systemArray.empty();
-
-    m_systemArray.insert(m_systemArray.begin() + index, system);
-
-    // ensure the system has enough staves for each guitar
-    if (system->GetStaffCount() != GetGuitarCount())
-    {
-        std::vector<uint8_t> staffSizes;
-        // make a list of the number of strings for each guitar
-        std::transform(m_guitarArray.begin(), m_guitarArray.end(),
-                       std::back_inserter(staffSizes),
-                       boost::bind(&Guitar::GetStringCount, _1));
-
-        std::vector<bool> visibleStaves;
-        std::transform(m_guitarArray.begin(), m_guitarArray.end(),
-                       std::back_inserter(visibleStaves),
-                       boost::bind(&Guitar::IsShown, _1));
-        system->Init(staffSizes, visibleStaves, false);
-    }
-
-    // Gracefully handle cases where e.g. an initial tempo marker is
-    // added before the first system. Otherwise, move symbols down to
-    // keep them associated with the correct system.
-    if (!firstSystem)
-    {
-        // TODO - handle Guitar In symbols.
-        ShiftFollowingSymbols(m_tempoMarkerArray, index);
-        ShiftFollowingSymbols(m_dynamicArray, index);
-        ShiftFollowingSymbols(m_alternateEndingArray, index);
-    }
-
-    system->CalculateHeight();
-    ShiftFollowingSystems(system, system->GetRect().GetHeight() + SYSTEM_SPACING);
-
-    return true;
-}
-
-// Remove guitar-ins and adjust the score structure, so that each guitar corresponds to its own staff
-void Score::UpdateToVer2Structure()
-{
-    using std::pair;
-    using std::multimap;
-
-    multimap<uint32_t, GuitarInConstPtr> guitarInMap; // map systems to Guitar In symbols
-    multimap<uint32_t, uint32_t> guitarToStaffMap; // map guitars to (possibly multiple) staves
-
-    // find all guitar in symbols and the system they occur in
-    for (uint32_t i=0; i < m_guitarInArray.size(); i++)
-    {
-        GuitarInConstPtr gtr_in = m_guitarInArray.at(i);
-        guitarInMap.insert(pair<uint32_t, GuitarInConstPtr>(gtr_in->GetSystem(), gtr_in));
-    }
-
-    for (uint32_t i=0; i < m_systemArray.size(); i++) // iterate through all systems
-    {
-        // if there are guitar ins in the system, readjust the Guitar->Staff mapping
-        // otherwise, let it continue from the previous system
-        if ((guitarInMap.count(i)) >= 1)
-        {
-            //std::cerr << "In System " << i << std::endl;
-            typedef std::multimap<uint32_t, GuitarInConstPtr>::iterator GuitarInIterator;
-            pair<GuitarInIterator, GuitarInIterator> range = guitarInMap.equal_range(i);
-
-            for (GuitarInIterator i = range.first; i != range.second; ++i)
-            {
-                GuitarInConstPtr currentGuitarIn = i->second;
-                // only readjust the Guitar->Staff mapping if we're actually changing the staff guitar, not just the rhythm slash
-                if (currentGuitarIn->HasStaffGuitarsSet())
-                {
-                    guitarToStaffMap.erase(currentGuitarIn->GetStaff());
-                }
-                //std::cerr << "At Position: " << i->second->GetPosition() << std::endl;
-
-                // Map the new guitars to the appropriate staves
-                std::bitset<8> guitarBitmap(currentGuitarIn->GetStaffGuitars());
-                for (uint8_t gtr = 0; gtr < 8; gtr++)
-                {
-                    if (guitarBitmap.test(gtr) == true)
-                    {
-                        guitarToStaffMap.insert(pair<uint32_t, uint32_t>(currentGuitarIn->GetStaff(), gtr));
-                        //std::cerr << "Guitar In: " << (int)gtr + 1 << std::endl;
-                    }
-                }
-            }
-        }
-
-        SystemPtr currentSystem = m_systemArray.at(i);
-
-        std::vector<System::StaffPtr> newStaves(m_guitarArray.size()); // one staff per guitar
-
-        for (uint32_t j=0; j < currentSystem->GetStaffCount(); j++) // go through staves
-        {
-            System::StaffPtr currentStaff = currentSystem->GetStaff(j);
-
-            typedef multimap<uint32_t, uint32_t>::const_iterator GuitarStaffIterator;
-            // find guitars for this staff
-            pair<GuitarStaffIterator, GuitarStaffIterator> range = guitarToStaffMap.equal_range(j);
-            for (GuitarStaffIterator k = range.first; k != range.second; ++k)
-            {
-                newStaves[k->second].reset(currentStaff->CloneObject());
-            }
-        }
-
-        for (uint32_t m=0; m < newStaves.size(); m++) // insert blank staves for any guitars that aren't currently used
-        {
-            if (!newStaves.at(m))
-            {
-                System::StaffPtr newStaff = boost::make_shared<Staff>();
-
-                std::vector<System::BarlineConstPtr> barlines;
-                currentSystem->GetBarlines(barlines);
-
-                // just insert a whole rest after each barline, except for the last one
-                for (size_t n = 0; n < barlines.size() - 1; n++)
-                {
-                    System::BarlineConstPtr barline = barlines.at(n);
-                    Position* newPosition = new Position(barline->GetPosition() + 1, 1, 0);
-                    newPosition->SetRest(true);
-                    newStaff->positionArrays[0].push_back(newPosition);
-                }
-
-                newStaves[m] = newStaff;
-            }
-        }
-
-        // clear out the old staves, and swap in the new ones
-        currentSystem->m_staffArray = newStaves;
-
-        // Compute the system height, beaming, etc, since there are rendering
-        // differences versus v1.7.
-        UpdateSystemHeight(currentSystem);
-    }
-}
-
 // Finds the index of a system within the score
 int Score::FindSystemIndex(const SystemConstPtr& system) const
 {
@@ -393,20 +230,6 @@ void Score::GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers, S
     GetSymbolsInSystem(tempoMarkers, m_tempoMarkerArray, FindSystemIndex(system));
 }
 
-/// Returns the tempo marker at the given location, or NULL if it is not found.
-Score::TempoMarkerPtr Score::FindTempoMarker(const SystemLocation &location) const
-{
-    BOOST_FOREACH(TempoMarkerPtr marker, m_tempoMarkerArray)
-    {
-        if (location == SystemLocation(marker->GetSystem(), marker->GetPosition()))
-        {
-            return marker;
-        }
-    }
-
-    return TempoMarkerPtr();
-}
-
 void Score::GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings, SystemConstPtr system) const
 {
     GetSymbolsInSystem(endings, m_alternateEndingArray, FindSystemIndex(system));
@@ -416,90 +239,6 @@ void Score::GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings
 void Score::GetDynamicsInSystem(std::vector<Score::DynamicPtr> &dynamics, Score::SystemConstPtr system) const
 {
     GetSymbolsInSystem(dynamics, m_dynamicArray, FindSystemIndex(system));
-}
-
-/// Returns the alternate ending at the given location, or NULL if it is not found
-Score::AlternateEndingPtr Score::FindAlternateEnding(const SystemLocation& location) const
-{
-    BOOST_FOREACH(AlternateEndingPtr ending, m_alternateEndingArray)
-    {
-        if (location == SystemLocation(ending->GetSystem(), ending->GetPosition()))
-        {
-            return ending;
-        }
-    }
-
-    return AlternateEndingPtr();
-}
-
-/// Updates the height of the system, and adjusts the height of subsequent systems as necessary
-/// @param system The system to update the height of
-void Score::UpdateSystemHeight(SystemPtr system)
-{
-    system->CalculateBeamingForStaves();
-    Layout::CalculateStdNotationHeight(this, system);
-
-    // Store the original height, recalculate the height, then find the height difference
-    
-    const int originalHeight = system->GetRect().GetHeight();
-    
-    for (size_t i = 0; i < system->GetStaffCount(); i++)
-    {
-        System::StaffPtr currentStaff = system->GetStaff(i);
-        Layout::CalculateTabStaffBelowSpacing(system, currentStaff);
-        Layout::CalculateSymbolSpacing(this, system, currentStaff);
-    }
-    
-    UpdateExtraSpacing(system);
-    
-    system->CalculateHeight();
-    const int spacingDifference = system->GetRect().GetHeight() - originalHeight;
-
-    ShiftFollowingSystems(system, spacingDifference);
-}
-
-void Score::UpdateAllSystemHeights()
-{
-    BOOST_FOREACH(const SystemPtr& system, m_systemArray)
-    {
-        UpdateSystemHeight(system);
-    }
-}
-
-/// Shifts all following systems by the given height difference
-void Score::ShiftFollowingSystems(SystemConstPtr system, const int heightDifference)
-{
-    uint32_t systemIndex = FindSystemIndex(system) + 1;
-    for (; systemIndex < GetSystemCount(); systemIndex++)
-    {
-        SystemPtr currentSystem = m_systemArray.at(systemIndex);
-
-        Rect rect = currentSystem->GetRect();
-        rect.SetTop(rect.GetTop() + heightDifference);
-        currentSystem->SetRect(rect);
-    }
-}
-
-/// Updates the extra spacing at the top of the system (for rehearsal signs, etc)
-void Score::UpdateExtraSpacing(SystemPtr system)
-{
-    // get list of tempo markers
-    std::vector<TempoMarkerPtr> markers;
-    GetTempoMarkersInSystem(markers, system);
-    
-    // get list of alternate endings
-    std::vector<AlternateEndingPtr> endings;
-    GetAlternateEndingsInSystem(endings, system);
-
-    // Find how many different items occur in the system (i.e. is there at least one rehearsal sign, tempo marker, etc)
-    const int numItems = system->HasRehearsalSign() +
-            (system->GetChordTextCount() > 0) +
-            !markers.empty() +
-            system->MaxDirectionSymbolCount() +
-            !endings.empty();
-    
-    // Each type of item gets a line to itself
-    system->SetExtraSpacing(numItems * System::SYSTEM_SYMBOL_SPACING);
 }
 
 /// Shifts all positions forward/backward starting from the given index.
@@ -544,122 +283,6 @@ void Score::ShiftBackward(Score::SystemPtr system, uint32_t positionIndex)
     system->ShiftBackward(positionIndex);
 }
 
-void Score::Init(const Guitar &defaultGuitar)
-{
-    // create a guitar
-    GuitarPtr guitar = boost::make_shared<Guitar>(defaultGuitar);
-    m_guitarArray.push_back(guitar);
-
-    // create a system and initialize the staves
-    std::vector<uint8_t> staffSizes;
-    staffSizes.push_back(guitar->GetStringCount());
-
-    std::vector<bool> visibleStaves;
-    visibleStaves.push_back(true);
-
-    SystemPtr newSystem(new System);
-    newSystem->Init(staffSizes, visibleStaves, true);
-    InsertSystem(newSystem, 0);
-
-    // Create a default tempo marker.
-    TempoMarkerPtr marker = boost::make_shared<TempoMarker>(0, 0,
-                    TempoMarker::quarter, TempoMarker::DEFAULT_BEATS_PER_MINUTE,
-                    "Moderately", TempoMarker::noTripletFeel);
-    InsertTempoMarker(marker);
-
-    UpdateSystemHeight(newSystem);
-}
-
-/// Inserts a guitar into the score, and creates a corresponding staff
-bool Score::InsertGuitar(GuitarPtr guitar)
-{
-    PTB_CHECK_THAT(m_guitarArray.size() < MAX_NUM_GUITARS, false);
-
-    m_guitarArray.push_back(guitar);
-    guitar->SetNumber(m_guitarArray.size() - 1);
-
-    // add staff to each system
-    for (size_t i = 0; i < m_systemArray.size(); i++)
-    {
-        SystemPtr system = m_systemArray[i];
-        system->m_staffArray.push_back(boost::make_shared<Staff>(guitar->GetStringCount(), Staff::TREBLE_CLEF));
-        UpdateSystemHeight(system);
-    }
-
-    return true;
-}
-
-/// Removes the guitar (and staff) at the specified index
-bool Score::RemoveGuitar(size_t index)
-{
-    PTB_CHECK_THAT(IsValidGuitarIndex(index), false);
-
-    m_guitarArray.erase(m_guitarArray.begin() + index);
-
-    // remove staff from each system
-    for (size_t i = 0; i < m_systemArray.size(); i++)
-    {
-        SystemPtr system = m_systemArray[i];
-        system->m_staffArray.erase(system->m_staffArray.begin() + index);
-        UpdateSystemHeight(system);
-    }
-
-    return true;
-}
-
-/// Updates the tuning for the guitar, updates the associated staves, and
-/// reformats the score.
-void Score::SetTuning(Score::GuitarPtr guitar, const Tuning& newTuning)
-{
-    guitar->SetTuning(newTuning);
-    const size_t numStrings = newTuning.GetStringCount();
-    const size_t staffIndex = guitar->GetNumber();
-
-    for (size_t i = 0; i < m_systemArray.size(); ++i)
-    {
-        SystemPtr system = m_systemArray[i];
-        system->GetStaff(staffIndex)->SetTablatureStaffType(numStrings);
-        UpdateSystemHeight(system);
-    }
-}
-
-void Score::MergeScore(const Score &otherScore)
-{
-    std::string keepName = m_scoreName;
-    *(this) = otherScore;
-    m_scoreName = keepName;
-    // TODO - actually merge the scores together.
-}
-
-/// Automatically assigns letters to rehearsal signs in the score.
-void Score::FormatRehearsalSigns()
-{
-    char nextLetter = 'A';
-
-    BOOST_FOREACH(SystemPtr system, m_systemArray)
-    {
-        std::vector<System::BarlinePtr> barlines;
-        system->GetBarlines(barlines);
-
-        BOOST_FOREACH(System::BarlinePtr barline, barlines)
-        {
-            RehearsalSign& currentSign = barline->GetRehearsalSign();
-            if (currentSign.IsSet())
-            {
-                currentSign.SetLetter(nextLetter);
-
-                nextLetter++;
-                if (nextLetter > 'Z')
-                {
-                    // For now, just wrap around to A again if we run out of
-                    // rehearsal signs.
-                    nextLetter = 'A';
-                }
-            }
-        }
-    }
-}
-
 /// Determines if a alternate ending index is valid
 /// @param index alternate ending index to validate
 /// @return True if the alternate ending index is valid, false if not
@@ -682,24 +305,6 @@ Score::AlternateEndingPtr Score::GetAlternateEnding(uint32_t index) const
 {
     PTB_CHECK_THAT(IsValidAlternateEndingIndex(index), AlternateEndingPtr());
     return m_alternateEndingArray[index];
-}
-
-/// Inserts a new alternate ending into the score
-void Score::InsertAlternateEnding(AlternateEndingPtr altEnding)
-{
-    m_alternateEndingArray.push_back(altEnding);
-
-    // sort the alternate endings by system, then position
-    std::sort(m_alternateEndingArray.begin(), m_alternateEndingArray.end(),
-              CompareSharedPtr<AlternateEnding>());
-}
-
-/// Removes the specified alternate ending from the score, if possible
-void Score::RemoveAlternateEnding(AlternateEndingPtr altEnding)
-{
-    m_alternateEndingArray.erase(std::remove(m_alternateEndingArray.begin(),
-                                             m_alternateEndingArray.end(),
-                                             altEnding));
 }
 
 /// Determines if a chord diagram index is valid
@@ -880,54 +485,6 @@ Score::TempoMarkerPtr Score::GetTempoMarker(uint32_t index) const
 {
     PTB_CHECK_THAT(IsValidTempoMarkerIndex(index), TempoMarkerPtr());
     return m_tempoMarkerArray[index];
-}
-
-/// Inserts a tempo marker into the score
-void Score::InsertTempoMarker(Score::TempoMarkerPtr marker)
-{
-    m_tempoMarkerArray.push_back(marker);
-
-    // sort the tempo markers by system, then position
-    std::sort(m_tempoMarkerArray.begin(), m_tempoMarkerArray.end(),
-              CompareSharedPtr<TempoMarker>());
-}
-
-/// Removes a tempo marker from the score, if possible.
-void Score::RemoveTempoMarker(Score::TempoMarkerPtr marker)
-{
-    m_tempoMarkerArray.erase(std::remove(m_tempoMarkerArray.begin(),
-                                         m_tempoMarkerArray.end(),
-                                         marker));
-}
-
-/// Returns the dynamic at the specified location, or NULL if none exists
-Score::DynamicPtr Score::FindDynamic(uint32_t system, uint32_t staff, uint32_t positionIndex) const
-{
-    BOOST_FOREACH(DynamicPtr dynamic, m_dynamicArray)
-    {
-        if (dynamic->GetSystem() == system &&
-            dynamic->GetStaff() == staff &&
-            dynamic->GetPosition() == positionIndex)
-        {
-            return dynamic;
-        }
-    }
-
-    return DynamicPtr();
-}
-
-/// Insert a new dynamic into the score
-void Score::InsertDynamic(Score::DynamicPtr dynamic)
-{
-    m_dynamicArray.push_back(dynamic);
-}
-
-/// Removes the specified dynamic from the score, if possible
-void Score::RemoveDynamic(Score::DynamicPtr dynamic)
-{
-    m_dynamicArray.erase(std::remove(m_dynamicArray.begin(),
-                                     m_dynamicArray.end(),
-                                     dynamic));
 }
 
 /// @return The name of the score

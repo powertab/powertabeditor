@@ -333,13 +333,4 @@ void Document::DeleteScoreArrayContents()
     m_scoreArray.clear();
 }
 
-/// Initializes the document to an empty score (only necessary for creating new documents, not opening existing ones)
-void Document::Init(const Guitar &defaultGuitar)
-{
-    for (size_t i = 0; i < GetNumberOfScores(); ++i)
-    {
-        GetScore(i)->Init(defaultGuitar);
-    }
-}
-
 }

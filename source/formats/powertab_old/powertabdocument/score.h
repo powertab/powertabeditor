@@ -57,8 +57,6 @@ public:
     Score(const char* name);
     Score(const Score& score);
 
-    void Init(const Guitar &defaultGuitar);
-
 // Operators
     const Score& operator=(const Score& score);
     bool operator==(const Score& score) const;
@@ -84,11 +82,6 @@ public:
     size_t GetGuitarCount() const;
     GuitarPtr GetGuitar(size_t index) const;
 
-    bool InsertGuitar(GuitarPtr guitar);
-    bool RemoveGuitar(size_t index);
-
-    void SetTuning(GuitarPtr guitar, const Tuning& newTuning);
-
 // Chord Diagram Functions
     bool IsValidChordDiagramIndex(uint32_t index) const;
     size_t GetChordDiagramCount() const;
@@ -113,20 +106,12 @@ public:
 
     void GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers,
                                  SystemConstPtr system) const;
-    TempoMarkerPtr FindTempoMarker(const SystemLocation& location) const;
-
-    void InsertTempoMarker(TempoMarkerPtr marker);
-    void RemoveTempoMarker(TempoMarkerPtr marker);
 
 // Dynamic Functions
     bool IsValidDynamicIndex(uint32_t index) const;
     size_t GetDynamicCount() const;
     DynamicPtr GetDynamic(uint32_t index) const;
     void GetDynamicsInSystem(std::vector<DynamicPtr>& dynamics, SystemConstPtr system) const;
-    DynamicPtr FindDynamic(uint32_t system, uint32_t staff, uint32_t positionIndex) const;
-
-    void InsertDynamic(DynamicPtr dynamic);
-    void RemoveDynamic(DynamicPtr dynamic);
 
 // Alternate Ending Functions
     bool IsValidAlternateEndingIndex(uint32_t index) const;
@@ -134,35 +119,16 @@ public:
     AlternateEndingPtr GetAlternateEnding(uint32_t index) const;
 
     void GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings, SystemConstPtr system) const;
-    AlternateEndingPtr FindAlternateEnding(const SystemLocation& location) const;
-
-    void InsertAlternateEnding(AlternateEndingPtr altEnding);
-    void RemoveAlternateEnding(AlternateEndingPtr altEnding);
 
 // System Functions
     bool IsValidSystemIndex(uint32_t index) const;
     size_t GetSystemCount() const;
     SystemPtr GetSystem(uint32_t index) const;
 
-    bool RemoveSystem(size_t index);
-    bool InsertSystem(SystemPtr system, size_t index);
-
-    void UpdateSystemHeight(SystemPtr system);
-    void UpdateAllSystemHeights();
-    void ShiftFollowingSystems(SystemConstPtr system, const int heightDifference);
-
-    void UpdateExtraSpacing(SystemPtr system);
-
     void ShiftForward(SystemPtr system, uint32_t positionIndex);
     void ShiftBackward(SystemPtr system, uint32_t positionIndex);
 
     int FindSystemIndex(const SystemConstPtr& system) const;
-
-    void UpdateToVer2Structure();
-
-    void MergeScore(const Score& otherScore);
-
-    void FormatRehearsalSigns();
 
     std::string GetScoreName() const;
 

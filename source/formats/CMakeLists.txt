@@ -35,10 +35,8 @@ add_library(pteformats
     powertab_old/powertabdocument/guitarin.cpp
     powertab_old/powertabdocument/harmonics.cpp
     powertab_old/powertabdocument/keysignature.cpp
-    powertab_old/powertabdocument/layout.cpp
     powertab_old/powertabdocument/macros.cpp
     powertab_old/powertabdocument/note.cpp
-    powertab_old/powertabdocument/notestem.cpp
     powertab_old/powertabdocument/oldrehearsalsign.cpp
     powertab_old/powertabdocument/oldtimesignature.cpp
     powertab_old/powertabdocument/position.cpp

@@ -62,8 +62,6 @@ public:
     Document();
     ~Document();
 
-    void Init(const Guitar &defaultGuitar);
-
     bool Save(const std::string& fileName) const;
     void Load(const std::string& fileName);
 
