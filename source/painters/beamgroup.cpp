@@ -18,12 +18,15 @@
 #include "beamgroup.h"
 
 #include <boost/foreach.hpp>
+#include <cmath>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
 #include <QFontMetricsF>
 #include <QGraphicsItem>
 #include <QPainterPath>
 #include <QPen>
+
+static const double FRACTIONAL_BEAM_WIDTH = 5.0;
 
 static bool compareStemTopPositions(const NoteStem &stem1,
                                     const NoteStem &stem2)
@@ -53,10 +56,6 @@ struct CompareStemType
 private:
     NoteStem::StemType myStemType;
 };
-
-#if 0
-const double BeamGroup::FRACTIONAL_BEAM_WIDTH = 5;
-#endif
 
 BeamGroup::BeamGroup(const std::vector<NoteStem>& stems)
     : myNoteStems(stems)
@@ -142,10 +141,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
         beamPath.lineTo(myNoteStems.back().getX(), connectorHeight);
     }
 
-    // TODO
-#if 0
     drawExtraBeams(beamPath);
-#endif
 
     QGraphicsPathItem *beams = new QGraphicsPathItem(beamPath);
     beams->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
@@ -216,56 +212,66 @@ NoteStem BeamGroup::findLowestStem(const std::vector<NoteStem> &stems)
                              &compareStemBottomPositions);
 }
 
-#if 0
-/// Draws the extra beams required for sixteenth notes, etc
-void BeamGroup::drawExtraBeams(QPainterPath& beamPath) const
+void BeamGroup::drawExtraBeams(QPainterPath &path) const
 {
-    for (std::vector<NoteStem>::const_iterator stem = noteStems.begin();
-         stem != noteStems.end(); ++stem)
+    for (std::vector<NoteStem>::const_iterator stem = myNoteStems.begin();
+         stem != myNoteStems.end(); ++stem)
     {
+        std::vector<NoteStem>::const_iterator prevStem = boost::prior(stem);
+        std::vector<NoteStem>::const_iterator nextStem = boost::next(stem);
+        const Position::DurationType duration = stem->getDurationType();
+        const Position::DurationType prevDuration = (stem != myNoteStems.begin()) ?
+                    prevStem->getDurationType() : Position::SixtyFourthNote;
+        const Position::DurationType nextDuration = (nextStem != myNoteStems.end()) ?
+                    nextStem->getDurationType() : Position::SixtyFourthNote;
+
         // 16th note gets 1 extra beam, 32nd gets two, etc
-        // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1)
-        const int extraBeams = Common::log2(stem->position->GetDurationType()) - 3;
+        // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1).
+        const int extraBeams = std::log(static_cast<double>(stem->getDurationType())) /
+                std::log(2.0) - 3;
 
-        const bool hasFullBeaming = (stem->position->GetPreviousBeamDurationType() ==
-                                     stem->position->GetDurationType());
+        // The note only has a full beam to the previous note if they have the
+        // same duration type.
+        const bool hasFullBeaming = (prevDuration == duration);
 
-        const bool hasFractionalLeft = stem->position->HasFractionalLeftBeam();
-        const bool hasFractionalRight = stem->position->HasFractionalRightBeam();
+        const bool hasFractionalLeft = (duration > prevDuration);
+        const bool hasFractionalRight = !hasFractionalLeft && duration > nextDuration;
 
-        if (hasFullBeaming || hasFractionalLeft || hasFractionalRight)
+        if (hasFullBeaming || hasFractionalRight || hasFractionalRight)
         {
             for (int i = 1; i <= extraBeams; i++)
             {
-                double y = stem->stemEdge();
-                y += i * 3 * ((stemDirection == NoteStem::StemUp) ? 1 : -1);
+                double y = stem->getStemEdge();
+                y += i * 3 * ((myStemDirection == NoteStem::StemUp) ? 1 : -1);
 
                 double xStart = 0, xEnd = 0;
 
                 if (hasFullBeaming)
                 {
-                    xStart = (stem - 1)->xPosition + 0.5;
-                    xEnd = stem->xPosition - 1;
+                    // Verify that the prevStem iterator is valid.
+                    Q_ASSERT(stem != myNoteStems.begin());
+
+                    xStart = prevStem->getX() + 0.5;
+                    xEnd = stem->getX() - 1;
                 }
-                else if (hasFractionalLeft)
+                else if (hasFractionalRight)
                 {
-                    xStart = stem->xPosition + 0.5;
+                    xStart = stem->getX() + 0.5;
                     xEnd = xStart + FRACTIONAL_BEAM_WIDTH;
                 }
                 else if (hasFractionalRight)
                 {
-                    xEnd = stem->xPosition - 1;
+                    xEnd = stem->getX() - 1;
                     xStart = xEnd - FRACTIONAL_BEAM_WIDTH;
                 }
 
-                beamPath.moveTo(xStart, y);
-                beamPath.lineTo(xEnd, y);
+                path.moveTo(xStart, y);
+                path.lineTo(xEnd, y);
             }
         }
     }
 
 }
-#endif
 
 QGraphicsItem *BeamGroup::createStaccato(const NoteStem &stem,
                                          const QFont &musicFont)

@@ -25,6 +25,7 @@
 struct LayoutInfo;
 class QFontMetricsF;
 class QGraphicsItem;
+class QPainterPath;
 
 class BeamGroup
 {
@@ -51,6 +52,9 @@ private:
     /// Stretches the beams to a common high/low height, depending on stem
     /// direction.
     void adjustStemHeights();
+
+    /// Draws the extra beams required for sixteenth notes, etc.
+    void drawExtraBeams(QPainterPath &path) const;
 
     /// Creates and positions a staccato symbol.
     static QGraphicsItem *createStaccato(const NoteStem& stem,
