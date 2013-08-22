@@ -72,4 +72,10 @@ const Note *getPreviousNote(const Staff &staff, int voice, int position,
     return note;
 }
 
+bool canTieNote(const Staff &staff, int voice, int position, const Note &note)
+{
+    const Note *prevNote = getPreviousNote(staff, voice, position, note.getString());
+    return prevNote && prevNote->getFretNumber() == note.getFretNumber();
+}
+
 }

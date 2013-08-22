@@ -148,6 +148,8 @@ private slots:
     void addDot();
     /// Removes a dot from the current position's duration.
     void removeDot();
+    /// Toggles whether the current note is tied.
+    void editTiedNote();
 
     /// Inserts a rest at the current location.
     void addRest();
@@ -329,6 +331,7 @@ private:
     Command *myDoubleDottedCommand;
     Command *myAddDotCommand;
     Command *myRemoveDotCommand;
+    Command *myTieCommand;
     Command *myMutedCommand;
     Command *myGhostNoteCommand;
     Command *myLetRingCommand;
@@ -418,7 +421,6 @@ private slots:
 
     void editChordName();
     void editRepeatEnding();
-    void editTiedNote();
     void editHammerPull();
     void editTrill();
     void editArtificialHarmonic();
@@ -461,7 +463,6 @@ private:
     QMenu* textMenu;
     Command* chordNameAct; // add/remove a chord name
 
-    Command* tiedNoteAct; // sets a note to be tied to the previous note
     Command* tripletAct;
     Command* irregularGroupingAct;
 

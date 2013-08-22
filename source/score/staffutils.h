@@ -49,6 +49,10 @@ const Note *getNextNote(const Staff &staff, int voice, int position,
 /// Finds the previous note in the staff on the given string.
 const Note *getPreviousNote(const Staff &staff, int voice, int position,
                             int string);
+
+/// Determines whether the specified note can be tied to the previous note.
+/// The previous position must have a note at the same string and fret.
+bool canTieNote(const Staff &staff, int voice, int position, const Note &note);
 }
 
 #endif

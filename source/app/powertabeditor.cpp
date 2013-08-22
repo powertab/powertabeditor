@@ -89,6 +89,7 @@
 #include <QMessageBox>
 #include <QSettings>
 
+#include <score/staffutils.h>
 #include <score/utils.h>
 #include <sigfwd/sigfwd.hpp>
 
@@ -672,6 +673,30 @@ void PowerTabEditor::removeDot()
     }
 }
 
+void PowerTabEditor::editTiedNote()
+{
+    ScoreLocation &location = getLocation();
+    const Staff &staff = location.getStaff();
+    const int voice = location.getVoice();
+    std::vector<Position *> positions = location.getSelectedPositions();
+
+    // Check that all selected notes can be tied.
+    BOOST_FOREACH(const Position *pos, positions)
+    {
+        BOOST_FOREACH(const Note &note, pos->getNotes())
+        {
+            if (!StaffUtils::canTieNote(staff, voice, pos->getPosition(), note))
+            {
+                myTieCommand->setChecked(false);
+                return;
+            }
+        }
+    }
+
+    // Now, we can go ahead and add/remove a tie.
+    editSimpleNoteProperty(myTieCommand, Note::Tied);
+}
+
 void PowerTabEditor::addRest()
 {
     editRest(myActiveDurationType);
@@ -1246,11 +1271,11 @@ void PowerTabEditor::createCommands()
     myRemoveDotCommand = new Command(tr("Remove Dot"), "Note.RemoveDot",
                                Qt::SHIFT + Qt::Key_Left, this);
     connect(myRemoveDotCommand, SIGNAL(triggered()), this, SLOT(removeDot()));
-#if 0
-    tiedNoteAct = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
-    tiedNoteAct->setCheckable(true);
-    connect(tiedNoteAct, SIGNAL(triggered()), this, SLOT(editTiedNote()));
-#endif
+
+    myTieCommand = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
+    myTieCommand->setCheckable(true);
+    connect(myTieCommand, SIGNAL(triggered()), this, SLOT(editTiedNote()));
+
     createNotePropertyCommand(myMutedCommand, tr("Muted"), "Note.Muted",
                               Qt::Key_X, Note::Muted);
     createNotePropertyCommand(myGhostNoteCommand, tr("Ghost Note"),
@@ -1669,10 +1694,7 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myAddDotCommand);
     myNotesMenu->addAction(myRemoveDotCommand);
     myNotesMenu->addSeparator();
-#if 0
-    myNotesMenu->addAction(tiedNoteAct);
-    myNotesMenu->addSeparator();
-#endif
+    myNotesMenu->addAction(myTieCommand);
     myNotesMenu->addAction(myMutedCommand);
     myNotesMenu->addAction(myGhostNoteCommand);
     myNotesMenu->addSeparator();
@@ -1983,6 +2005,7 @@ void PowerTabEditor::updateCommands()
     myRemoveDotCommand->setEnabled(pos && (pos->hasProperty(Position::Dotted) ||
                              pos->hasProperty(Position::DoubleDotted)));
 
+    updateNoteProperty(myTieCommand, note, Note::Tied);
     updateNoteProperty(myMutedCommand, note, Note::Muted);
     updateNoteProperty(myGhostNoteCommand, note, Note::GhostNote);
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
@@ -2571,35 +2594,6 @@ void PowerTabEditor::editHammerPull()
     {
         hammerPullAct->setChecked(false);
     }
-}
-
-void PowerTabEditor::editTiedNote()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-
-    std::vector<Note*> notes = getSelectedNotes();
-
-    shared_ptr<const Staff> currentStaff = caret->getCurrentStaff();
-
-    // check if all selected notes are able to be tied
-    std::vector<Position*> positions = getSelectedPositions();
-
-    for (size_t i = 0; i < positions.size(); i++)
-    {
-        Position* currentPosition = positions.at(i);
-        for (size_t j = 0; j < currentPosition->GetNoteCount(); j++)
-        {
-            if (!currentStaff->CanTieNote(currentPosition, currentPosition->GetNote(j),
-                                          caret->getCurrentVoice()))
-            {
-                tiedNoteAct->setChecked(false);
-                return;
-            }
-        }
-    }
-
-    undoManager->push(new ToggleProperty<Note>(notes, &Note::SetTied, &Note::IsTied, "Note Tie"),
-                      caret->getCurrentSystemIndex());
 }
 
 // Updates the given Command to be checked and/or enabled, based on the results of calling
