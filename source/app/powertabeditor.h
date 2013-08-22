@@ -371,7 +371,10 @@ private:
     Command *myDynamicCommand;
 
     QMenu *myTabSymbolsMenu;
+    QMenu *myHammerOnMenu;
     Command *myHammerPullCommand;
+    Command *myHammerOnFromNowhereCommand;
+    Command *myPullOffToNowhereCommand;
     Command *myNaturalHarmonicCommand;
     Command *myTappedHarmonicCommand;
     Command *myVibratoCommand;

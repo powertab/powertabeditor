@@ -846,7 +846,6 @@ void PowerTabEditor::editHammerPull()
         return;
 
     // TODO - support editing groups of notes.
-    // TODO - allow hammerons/pulloffs from nowhere to be created.
     if (StaffUtils::canHammerOn(staff, voice, position, *note))
     {
         editSimpleNoteProperty(myHammerPullCommand, Note::HammerOn);
@@ -1444,6 +1443,16 @@ void PowerTabEditor::createCommands()
     connect(myHammerPullCommand, SIGNAL(triggered()), this,
             SLOT(editHammerPull()));
 
+    createNotePropertyCommand(myHammerOnFromNowhereCommand,
+                              tr("Hammer On From Nowhere"),
+                              "TabSymbols.HammerOnFromNowhere", QKeySequence(),
+                              Note::HammerOnFromNowhere);
+
+    createNotePropertyCommand(myPullOffToNowhereCommand,
+                              tr("Pull Off To Nowhere"),
+                              "TabSymbols.PullOffToNowhere", QKeySequence(),
+                              Note::PullOffToNowhere);
+
     createNotePropertyCommand(myNaturalHarmonicCommand, tr("Natural Harmonic"),
                               "TabSymbols.NaturalHarmonic", QKeySequence(),
                               Note::NaturalHarmonic);
@@ -1774,7 +1783,11 @@ void PowerTabEditor::createMenus()
 #endif
     // Tab Symbols Menu
     myTabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
-    myTabSymbolsMenu->addAction(myHammerPullCommand);
+    myHammerOnMenu = myTabSymbolsMenu->addMenu(tr("&Hammer Ons/Pull Offs"));
+    myHammerOnMenu->addAction(myHammerPullCommand);
+    myHammerOnMenu->addAction(myHammerOnFromNowhereCommand);
+    myHammerOnMenu->addAction(myPullOffToNowhereCommand);
+
     myTabSymbolsMenu->addAction(myNaturalHarmonicCommand);
 #if 0
     tabSymbolsMenu->addAction(artificialHarmonicAct);
@@ -2076,10 +2089,11 @@ void PowerTabEditor::updateCommands()
     myHammerPullCommand->setEnabled(note);
     myHammerPullCommand->setChecked(
                 note && (note->hasProperty(Note::HammerOn) ||
-                         note->hasProperty(Note::HammerOnFromNowhere) ||
-                         note->hasProperty(Note::PullOff) ||
-                         note->hasProperty(Note::PullOffToNowhere)));
+                         note->hasProperty(Note::PullOff)));
 
+    updateNoteProperty(myHammerOnFromNowhereCommand, note,
+                       Note::HammerOnFromNowhere);
+    updateNoteProperty(myPullOffToNowhereCommand, note, Note::PullOffToNowhere);
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
