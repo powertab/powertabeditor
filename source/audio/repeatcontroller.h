@@ -18,6 +18,7 @@
 #ifndef AUDIO_REPEATCONTROLLER_H
 #define AUDIO_REPEATCONTROLLER_H
 
+#include <map>
 #include "repeat.h"
 #include <score/direction.h>
 #include <score/systemlocation.h>
