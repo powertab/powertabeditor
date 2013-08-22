@@ -93,9 +93,14 @@ void Note::setProperty(SimpleProperty property, bool set)
         if (property >= Octave8va && property <= Octave15mb)
         {
             for (int p = Octave8va; p <= Octave15mb; ++p)
-            {
                 mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
-            }
+        }
+
+        // Clear all hammeron/pulloff properties.
+        if (property >= HammerOn && property <= PullOffToNowhere)
+        {
+            for (int p = HammerOn; p <= PullOffToNowhere; ++p)
+                mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
         }
     }
 

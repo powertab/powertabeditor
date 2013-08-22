@@ -171,6 +171,8 @@ private slots:
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
 
+    /// Adds or removes a hammeron/pulloff for the current note.
+    void editHammerPull();
     /// Adds or removes a tapped harmonic for the current note.
     void editTappedHarmonic();
     /// Adds or removes a trill for the current note.
@@ -369,6 +371,7 @@ private:
     Command *myDynamicCommand;
 
     QMenu *myTabSymbolsMenu;
+    Command *myHammerPullCommand;
     Command *myNaturalHarmonicCommand;
     Command *myTappedHarmonicCommand;
     Command *myVibratoCommand;
@@ -421,10 +424,7 @@ private slots:
 
     void editChordName();
     void editRepeatEnding();
-    void editHammerPull();
-    void editTrill();
     void editArtificialHarmonic();
-    void editTimeSignatureFromCaret();
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
 
@@ -469,7 +469,6 @@ private:
     Command* repeatEndingAct;
     Command* volumeSwellAct;
 
-    Command* hammerPullAct; // add/remove hammer-on or pull-off
     Command* artificialHarmonicAct;
     Command* shiftSlideAct;
     Command* legatoSlideAct;

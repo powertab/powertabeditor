@@ -28,7 +28,6 @@ add_library(pteactions
     editbarline.cpp
     editclef.cpp
     #editfileinformation.cpp
-    #edithammerpull.cpp
     editkeysignature.cpp
     editnoteduration.cpp
     #editslideinto.cpp

@@ -835,6 +835,30 @@ void PowerTabEditor::editDynamic()
     }
 }
 
+void PowerTabEditor::editHammerPull()
+{
+    ScoreLocation &location = getLocation();
+    const Staff &staff = location.getStaff();
+    const int voice = location.getVoice();
+    const int position = location.getPositionIndex();
+    const Note *note = location.getNote();
+    if (!note)
+        return;
+
+    // TODO - support editing groups of notes.
+    // TODO - allow hammerons/pulloffs from nowhere to be created.
+    if (StaffUtils::canHammerOn(staff, voice, position, *note))
+    {
+        editSimpleNoteProperty(myHammerPullCommand, Note::HammerOn);
+    }
+    else if (StaffUtils::canPullOff(staff, voice, position, *note))
+    {
+        editSimpleNoteProperty(myHammerPullCommand, Note::PullOff);
+    }
+    else
+        myHammerPullCommand->setChecked(false);
+}
+
 void PowerTabEditor::editTappedHarmonic()
 {
     const ScoreLocation &location = getLocation();
@@ -1411,12 +1435,15 @@ void PowerTabEditor::createCommands()
                                     QKeySequence(), this);
     volumeSwellAct->setCheckable(true);
     connect(volumeSwellAct, SIGNAL(triggered()), this, SLOT(editVolumeSwell()));
+#endif
 
     // Tab Symbol Actions.
-    hammerPullAct = new Command(tr("Hammer On/Pull Off"), "TabSymbols.HammerPull", Qt::Key_H, this);
-    hammerPullAct->setCheckable(true);
-    connect(hammerPullAct, SIGNAL(triggered()), this, SLOT(editHammerPull()));
-#endif
+    myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
+                                      "TabSymbols.HammerPull", Qt::Key_H, this);
+    myHammerPullCommand->setCheckable(true);
+    connect(myHammerPullCommand, SIGNAL(triggered()), this,
+            SLOT(editHammerPull()));
+
     createNotePropertyCommand(myNaturalHarmonicCommand, tr("Natural Harmonic"),
                               "TabSymbols.NaturalHarmonic", QKeySequence(),
                               Note::NaturalHarmonic);
@@ -1747,9 +1774,7 @@ void PowerTabEditor::createMenus()
 #endif
     // Tab Symbols Menu
     myTabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
-#if 0
-    tabSymbolsMenu->addAction(hammerPullAct);
-#endif
+    myTabSymbolsMenu->addAction(myHammerPullCommand);
     myTabSymbolsMenu->addAction(myNaturalHarmonicCommand);
 #if 0
     tabSymbolsMenu->addAction(artificialHarmonicAct);
@@ -2047,6 +2072,13 @@ void PowerTabEditor::updateCommands()
         myBarlineCommand->setDisabled(true);
         myBarlineCommand->setText(tr("Barline"));
     }
+
+    myHammerPullCommand->setEnabled(note);
+    myHammerPullCommand->setChecked(
+                note && (note->hasProperty(Note::HammerOn) ||
+                         note->hasProperty(Note::HammerOnFromNowhere) ||
+                         note->hasProperty(Note::PullOff) ||
+                         note->hasProperty(Note::PullOffToNowhere)));
 
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
     myTappedHarmonicCommand->setEnabled(note);
@@ -2562,38 +2594,6 @@ void PowerTabEditor::editChordName()
                           caret->getCurrentSystemIndex());
     }
 
-}
-
-void PowerTabEditor::editHammerPull()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Note* note = caret->getCurrentNote();
-    const uint32_t voice = caret->getCurrentVoice();
-
-    // TODO - allow editing of hammerons/pulloffs for a group of selected notes??
-    std::vector<Note*> notes;
-    notes.push_back(note);
-    
-    // if 'h' is pressed but there is no note do nothing
-    if (note == NULL) return;
-    
-    Position* currentPosition = caret->getCurrentPosition();
-    shared_ptr<const Staff> currentStaff = caret->getCurrentStaff();
-    
-    if (currentStaff->CanHammerOn(currentPosition, note, voice))
-    {
-        undoManager->push(new EditHammerPull(note, EditHammerPull::hammerOn),
-                          caret->getCurrentSystemIndex());
-    }
-    else if (currentStaff->CanPullOff(currentPosition, note, voice))
-    {
-        undoManager->push(new EditHammerPull(note, EditHammerPull::pullOff),
-                          caret->getCurrentSystemIndex());
-    }
-    else
-    {
-        hammerPullAct->setChecked(false);
-    }
 }
 
 // Updates the given Command to be checked and/or enabled, based on the results of calling

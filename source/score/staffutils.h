@@ -53,6 +53,14 @@ const Note *getPreviousNote(const Staff &staff, int voice, int position,
 /// Determines whether the specified note can be tied to the previous note.
 /// The previous position must have a note at the same string and fret.
 bool canTieNote(const Staff &staff, int voice, int position, const Note &note);
+
+/// Determines whether the specified note can be hammered on to the next note.
+/// The next position must have a note at the same string and a higher fret.
+bool canHammerOn(const Staff &staff, int voice, int position, const Note &note);
+
+/// Determines whether the specified note can be pulled off to the next note.
+/// The next position must have a note at the same string and a lower fret.
+bool canPullOff(const Staff &staff, int voice, int position, const Note &note);
 }
 
 #endif

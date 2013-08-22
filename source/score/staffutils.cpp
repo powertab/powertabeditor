@@ -74,8 +74,21 @@ const Note *getPreviousNote(const Staff &staff, int voice, int position,
 
 bool canTieNote(const Staff &staff, int voice, int position, const Note &note)
 {
-    const Note *prevNote = getPreviousNote(staff, voice, position, note.getString());
+    const Note *prevNote = getPreviousNote(staff, voice, position,
+                                           note.getString());
     return prevNote && prevNote->getFretNumber() == note.getFretNumber();
+}
+
+bool canHammerOn(const Staff &staff, int voice, int position, const Note &note)
+{
+    const Note *nextNote = getNextNote(staff, voice, position, note.getString());
+    return nextNote && nextNote->getFretNumber() > note.getFretNumber();
+}
+
+bool canPullOff(const Staff &staff, int voice, int position, const Note &note)
+{
+    const Note *nextNote = getNextNote(staff, voice, position, note.getString());
+    return nextNote && nextNote->getFretNumber() < note.getFretNumber();
 }
 
 }

@@ -23,7 +23,6 @@ add_executable(pte_tests
     #actions/test_deletenote.cpp
     actions/test_editbarline.cpp
     actions/test_editclef.cpp
-    #actions/test_edithammerpull.cpp
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
     #actions/test_editslideinto.cpp
