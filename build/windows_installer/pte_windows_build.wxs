@@ -7,8 +7,8 @@
   <?define Version="2.0.0.0"?>
   <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
   
-  <?define BuildRootDir="../../source"?>
-  <?define QtBinDir="C:/Qt/4.8.3/bin"?>
+  <?define SourceDir="../../source"?>
+  <?define BinDir="../../build_cmake/source/Release"?>
   
 	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)"
            Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
@@ -19,11 +19,13 @@
 
 		<Feature Id="Complete" Level="1">
 			<ComponentGroupRef Id="Binaries" />
+      <!--
       <ComponentGroupRef Id="DataFiles" />
       <ComponentGroupRef Id="Skins" />
+      -->
 		</Feature>
 
-    <Icon Id="powertabeditor.ico" SourceFile="$(var.BuildRootDir)/icons/app_icon.ico" />
+    <Icon Id="powertabeditor.ico" SourceFile="$(var.SourceDir)/icons/app_icon.ico" />
     <Property Id="ARPPRODUCTICON" Value="powertabeditor.ico" />
 	</Product>
 
@@ -32,10 +34,12 @@
 			<Directory Id="ProgramFilesFolder">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
           <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+            <!-- TODO - re-enable this when the tuning dictionary and skins are added back.
             <Directory Id="DataDir" Name="data" />
             <Directory Id="SkinsDir" Name="skins">
               <Directory Id="DefaultSkinsDir" Name="default" />
             </Directory>
+            -->
           </Directory>
         </Directory>
 			</Directory>
@@ -47,16 +51,20 @@
 	</Fragment>
 
 	<Fragment>
-    <!-- Main executable and required dlls (e.g. Qt) -->
+    <!-- Main executable and required dlls (e.g. Qt and Boost) -->
     <ComponentGroup Id="Binaries" Directory="INSTALLFOLDER">
       <Component Id="Executable" Guid="2DA29761-7F65-42FF-ADF6-374A67C80C8C">
-        <File Source="$(var.BuildRootDir)/build/powertabeditor.exe" KeyPath="yes" Checksum="yes" />
+        <File Source="$(var.BinDir)/powertabeditor.exe" KeyPath="yes" Checksum="yes" />
 
         <ProgId Id="PowerTabEditor.TabFile" Icon="powertabeditor.ico" IconIndex="0" Advertise="yes">
           <!-- File type associations -->
           <Extension Id="ptb" ContentType="audio/x-ptb">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
+          <Extension Id="pt2" ContentType="audio/x-pt2">
+            <Verb Id="open" Command="Open" Argument='"%1"' />
+          </Extension>
+          <!-- TODO - restore support for importing these formats.
           <Extension Id="gpx" ContentType="audio/x-gtp">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
@@ -69,6 +77,7 @@
           <Extension Id="gp5" ContentType="audio/x-gtp">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
+          -->
         </ProgId>
       </Component>
       
@@ -78,22 +87,55 @@
         <RegistryValue Root="HKCU" Key="Software\Power Tab\Power Tab Editor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
 
-      <Component Id="QtCore" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
-        <File Source="$(var.QtBinDir)/QtCore4.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_date_time" Guid="0EEFDDF6-44AC-4AF2-9B73-6B5FA7DE0BA7">
+        <File Source="$(var.BinDir)/boost_date_time-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="QtGui" Guid="FE76E4D8-E4E2-4CC8-B27F-E4D5C6EE718F">
-        <File Source="$(var.QtBinDir)/QtGui4.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_iostreams" Guid="3224E977-9137-43A1-B7EC-6AA6F276BA5C">
+        <File Source="$(var.BinDir)/boost_iostreams-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="boost_serialization" Guid="F19DF809-23D0-4A92-A35E-FB0ED9280247">
+        <File Source="$(var.BinDir)/boost_serialization-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="boost_zlib" Guid="47D475EF-FF77-43A2-9225-1BF1040BC15B">
+        <File Source="$(var.BinDir)/boost_zlib-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <!-- TODO - build Qt without ANGLE and possibly ICU to avoid bundling these massive dlls
+           (see http://qt-project.org/doc/qt-5.1/qtdoc/deployment-windows.html) -->
+      <Component Id="icudt51" Guid="EE3D84C2-DBBF-465F-8368-B3C7082564BA">
+        <File Source="$(var.BinDir)/icudt51.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="icuin51" Guid="7A999290-D202-4775-A875-DE1EBE05852D">
+        <File Source="$(var.BinDir)/icuin51.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="icuuc51" Guid="ACD4C0D3-9E0B-4809-8BD8-17295E3C021C">
+        <File Source="$(var.BinDir)/icuuc51.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="libEGL" Guid="060B6468-B66B-4B9F-AFE4-8016428ABE9D">
+        <File Source="$(var.BinDir)/libEGL.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="libGLESv2" Guid="14C3744E-4608-4A7A-9C17-3F9085EAF3D5">
+        <File Source="$(var.BinDir)/libGLESv2.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Qt5Core" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
+        <File Source="$(var.BinDir)/Qt5Core.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Qt5Gui" Guid="FE76E4D8-E4E2-4CC8-B27F-E4D5C6EE718F">
+        <File Source="$(var.BinDir)/Qt5Gui.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Qt5Widgets" Guid="00FBE86A-91AA-4E90-A99F-9C7CE76F1874">
+        <File Source="$(var.BinDir)/Qt5Widgets.dll" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
     
-    <!-- Data files -->
+    <!-- Data files
     <ComponentGroup Id="DataFiles" Directory="DataDir">
       <Component Guid="5C770CE4-AF29-447F-8CD5-7F997837CE5C">
         <File Source="$(var.BuildRootDir)/data/tunings.dat" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
+     -->
 
-    <!-- Skins -->
+    <!-- Skins
     <ComponentGroup Id="Skins" Directory="DefaultSkinsDir">
       <Component Guid="AAC7EC82-E3C8-420A-ACC9-57BD3A6E1E43">
         <File Source="$(var.BuildRootDir)/skins/default/document_tab.txt" KeyPath="yes" Checksum="yes" />
@@ -105,5 +147,6 @@
         <File Source="$(var.BuildRootDir)/skins/default/toolbox_tab.txt" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
+     -->
 	</Fragment>
 </Wix>
