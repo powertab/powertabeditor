@@ -44,6 +44,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # Link against winmm and QtMain
     target_link_libraries(powertabeditor winmm Qt5::WinMain)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    find_library(COREAUDIO CoreAudio)
+    find_library(COREMIDI CoreMIDI)
+    find_library(COREFOUNDATION CoreFoundation)
+    find_library(AUDIOTOOLBOX AudioToolbox)
+    find_library(AUDIOUNIT AudioUnit)
+    target_link_libraries(powertabeditor ${COREAUDIO} ${COREMIDI} ${COREFOUNDATION} ${AUDIOTOOLBOX} ${AUDIOUNIT})
 endif()
 
 # Copy the tuning database and the skins to the build directory.
