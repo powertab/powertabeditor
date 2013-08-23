@@ -15,18 +15,18 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef GPX_BITSTREAM_H
-#define GPX_BITSTREAM_H
+#ifndef FORMATS_GPX_BITSTREAM_H
+#define FORMATS_GPX_BITSTREAM_H
 
-#include <iosfwd>
 #include <boost/cstdint.hpp>
+#include <iosfwd>
 #include <vector>
 
 namespace Gpx
 {
 
-/// Provides the ability to read individual bits from a stream
-/// This is required for the compression scheme used in .gpx files
+/// Provides the ability to read individual bits from a stream.
+/// This is required for the compression scheme used in .gpx files.
 class BitStream
 {
 public:
@@ -36,21 +36,31 @@ public:
         Reversed
     };
 
-    BitStream(std::istream& stream);
+    BitStream(std::istream &stream);
 
+    /// Reads a 32-bit unsigned integer from the stream. This assumes that the
+    /// stream position is exactly on the start of a byte.
     uint32_t readInt();
-    uint8_t readBit();
+
+    /// Reads the next bit from the stream.
+    bool readBit();
+
+    /// Reads the next n bits from the stream into an integer.
     int32_t readBits(int n, BitOrder = Normal);
 
-    uint32_t location() const;
-    bool atEnd() const;
+    /// Returns the position in the stream (measured in bytes).
+    size_t getLocation() const;
+
+    /// Returns true if we've reached the end of the stream.
+    bool isAtEnd() const;
 
 private:
-    uint32_t position; /// current position, in bits
-    std::vector<uint8_t> bytes; /// compressed data being read
-    static const uint32_t BYTE_LENGTH = 8;
+    /// The current position in the input (measured in bits).
+    size_t myPosition;
+    /// The compressed data being read.
+    std::vector<uint8_t> myBytes;
 };
 
 }
 
-#endif // GPX_BITSTREAM_H
+#endif

@@ -23,24 +23,18 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/make_shared.hpp>
 
-#include <powertabdocument/powertabdocument.h>
-
 GpxImporter::GpxImporter() :
-    FileFormatImporter(FileFormat("Guitar Pro 6", boost::assign::list_of("gpx")))
+    FileFormatImporter(FileFormat("Guitar Pro 6",
+                                  boost::assign::list_of("gpx")))
 {
 }
 
-boost::shared_ptr<PowerTabDocument> GpxImporter::load(const std::string& fileName)
+void GpxImporter::load(const std::string &filename, Score &score)
 {
-    // load the data, decompress, and open as XML document
-    std::ifstream file(fileName.c_str(), std::ios::binary | std::ios::in);
-    Gpx::FileSystem fileSystem(Gpx::load(file));
+    // Load the data, decompress, and open as XML document.
+    std::ifstream file(filename.c_str(), std::ios::binary | std::ios::in);
+    Gpx::FileSystem fs(file);
 
-    const std::string scoreData= fileSystem.getFileContents("score.gpif");
-
-    boost::shared_ptr<PowerTabDocument> doc = boost::make_shared<PowerTabDocument>();
-    Gpx::DocumentReader reader(scoreData);
-    reader.readDocument(doc);
-
-    return doc;
+    Gpx::DocumentReader reader(fs.getFileContents("score.gpif"));
+    reader.readScore(score);
 }

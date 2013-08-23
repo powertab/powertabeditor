@@ -17,44 +17,37 @@
   
 #include "documentreader.h"
 
-#include <iostream>
-#include <sstream>
-
-#include "pugixml/pugixml.hpp"
-#include "pugixml/foreach.hpp"
-
-#include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/assign/list_of.hpp>
-
-#include <formats/scorearranger.h>
-
-#include <powertabdocument/powertabdocument.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/guitar.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/position.h>
-#include <powertabdocument/note.h>
-#include <powertabdocument/tempomarker.h>
+#include <boost/foreach.hpp>
+#include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <iostream>
+#include "pugixml/foreach.hpp"
+#include "pugixml/pugixml.hpp"
+#include <score/score.h>
+#include <sstream>
+#include <stdexcept>
 
 using namespace pugi;
 
-Gpx::DocumentReader::DocumentReader(const std::string& xml)
+Gpx::DocumentReader::DocumentReader(const std::string &xml)
 {
-    xml_parse_result result = xml_data.load(xml.c_str());
+    xml_parse_result result = myXmlData.load(xml.c_str());
 
     if (result.status != pugi::status_ok)
-    {
         throw std::runtime_error(result.description());
-    }
 
-    file = xml_data.first_child(); // The "GPIF" node.
+    // This is the "GPIF" node.
+    myFile = myXmlData.first_child();
 }
 
-void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
+void Gpx::DocumentReader::readScore(Score &score)
 {
-    readHeader(doc->GetHeader());
+    readHeader(score);
+
+    System system;
+    system.insertStaff(Staff());
+    score.insertSystem(system);
+#if 0
     readTracks(doc->GetPlayerScore());
 
     readBars();
@@ -65,24 +58,36 @@ void Gpx::DocumentReader::readDocument(boost::shared_ptr<PowerTabDocument> doc)
     readAutomations();
 
     readMasterBars(doc->GetPlayerScore());
+#endif
 }
 
 /// Loads the header information (song title, artist, etc).
-void Gpx::DocumentReader::readHeader(PowerTabFileHeader& header)
+void Gpx::DocumentReader::readHeader(Score &score)
 {
-    xml_node gpHeader = file.child("Score");
+    ScoreInfo info;
+    SongData data;
 
-    header.SetSongTitle(gpHeader.child_value("Title"));
-    header.SetSongArtist(gpHeader.child_value("Artist"));
-    header.SetSongAudioReleaseTitle(gpHeader.child_value("Album"));
-    header.SetSongLyricist(gpHeader.child_value("Words"));
-    header.SetSongComposer(gpHeader.child_value("Music"));
-    header.SetSongCopyright(gpHeader.child_value("Copyright"));
+    xml_node header = myFile.child("Score");
 
-    header.SetSongGuitarScoreTranscriber(gpHeader.child_value("Tabber"));
-    header.SetSongGuitarScoreNotes(gpHeader.child_value("Instructions"));
+    data.setTitle(header.child_value("Title"));
+    data.setArtist(header.child_value("Artist"));
+
+    data.setAudioReleaseInfo(
+                SongData::AudioData(SongData::AudioData::Album,
+                                    header.child_value("Album"),
+                                    boost::gregorian::day_clock::local_day().year(),
+                                    false));
+    data.setAuthorInfo(SongData::AuthorData(header.child_value("Music"),
+                                            header.child_value("Words")));
+    data.setCopyright(header.child_value("Copyright"));
+    data.setTranscriber(header.child_value("Tabber"));
+    data.setPerformanceNotes(header.child_value("Instructions"));
+
+    info.setSongData(data);
+    score.setScoreInfo(info);
 }
 
+#if 0
 namespace
 {
 /// Utility function for converting a string of space-separated values to a vector of that type
@@ -108,7 +113,7 @@ void convertStringToList(const std::string& source, std::vector<T>& dest)
 /// Imports the tracks and performs a conversion to the PowerTab Guitar class.
 void Gpx::DocumentReader::readTracks(Score *score)
 {
-    BOOST_FOREACH(xml_node track, file.child("Tracks"))
+    BOOST_FOREACH(xml_node track, myFile.child("Tracks"))
     {
         Score::GuitarPtr guitar = boost::make_shared<Guitar>();
         guitar->GetTuning().SetToStandard();
@@ -148,7 +153,7 @@ void Gpx::DocumentReader::readMasterBars(Score* score)
 {
     std::vector<BarData> ptbBars;
 
-    BOOST_FOREACH(xml_node masterBar, file.child("MasterBars"))
+    BOOST_FOREACH(xml_node masterBar, myFile.child("MasterBars"))
     {
         if (masterBar.name() != std::string("MasterBar"))
         {
@@ -274,7 +279,7 @@ void Gpx::DocumentReader::readBarlineType(const xml_node &masterBar,
 
 void Gpx::DocumentReader::readBars()
 {
-    BOOST_FOREACH(xml_node currentBar, file.child("Bars"))
+    BOOST_FOREACH(xml_node currentBar, myFile.child("Bars"))
     {
         Gpx::GpxBar bar;
         bar.id = currentBar.attribute("id").as_int();
@@ -333,7 +338,7 @@ void Gpx::DocumentReader::readTimeSignature(const xml_node& masterBar,
 
 void Gpx::DocumentReader::readVoices()
 {
-    BOOST_FOREACH(xml_node currentVoice, file.child("Voices"))
+    BOOST_FOREACH(xml_node currentVoice, myFile.child("Voices"))
     {
         Gpx::GpxVoice voice;
         voice.id = currentVoice.attribute("id").as_int();
@@ -345,7 +350,7 @@ void Gpx::DocumentReader::readVoices()
 
 void Gpx::DocumentReader::readBeats()
 {
-    BOOST_FOREACH(xml_node currentBeat, file.child("Beats"))
+    BOOST_FOREACH(xml_node currentBeat, myFile.child("Beats"))
     {
         Gpx::GpxBeat beat;
         beat.id = currentBeat.attribute("id").as_int();
@@ -373,7 +378,7 @@ void Gpx::DocumentReader::readBeats()
 
 void Gpx::DocumentReader::readRhythms()
 {
-    BOOST_FOREACH(xml_node currentRhythm, file.child("Rhythms"))
+    BOOST_FOREACH(xml_node currentRhythm, myFile.child("Rhythms"))
     {
         Gpx::GpxRhythm rhythm;
         rhythm.id = currentRhythm.attribute("id").as_int();
@@ -400,7 +405,7 @@ void Gpx::DocumentReader::readRhythms()
 
 void Gpx::DocumentReader::readNotes()
 {
-    BOOST_FOREACH(xml_node currentNote, file.child("Notes"))
+    BOOST_FOREACH(xml_node currentNote, myFile.child("Notes"))
     {
         Gpx::GpxNote note;
         note.id = currentNote.attribute("id").as_int();
@@ -419,7 +424,7 @@ void Gpx::DocumentReader::readNotes()
 
 void Gpx::DocumentReader::readAutomations()
 {
-    BOOST_FOREACH(xpath_node node, file.select_nodes("./MasterTrack/Automations/Automation"))
+    BOOST_FOREACH(xpath_node node, myFile.select_nodes("./MasterTrack/Automations/Automation"))
     {
         xml_node currentAutomation = node.node();
         Gpx::GpxAutomation gpxAutomation;
@@ -559,3 +564,4 @@ Note* Gpx::DocumentReader::convertNote(int noteId, Position& position,
 
     return ptbNote.CloneObject();
 }
+#endif

@@ -17,8 +17,7 @@
   
 #include "util.h"
 
-/// Converts 4 bytes starting at the given index into an integer.
-uint32_t Gpx::Util::readUInt(const std::vector<uint8_t>& bytes, size_t index)
+uint32_t Gpx::Util::readUInt(const std::vector<uint8_t> &bytes, size_t index)
 {
     const uint32_t n1 = bytes[index];
     const uint32_t n2 = bytes[index + 1];

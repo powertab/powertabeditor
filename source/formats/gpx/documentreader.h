@@ -15,47 +15,39 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef GPX_DOCUMENTREADER_H
-#define GPX_DOCUMENTREADER_H
+#ifndef FORMATS_GPX_DOCUMENTREADER_H
+#define FORMATS_GPX_DOCUMENTREADER_H
 
 #include <map>
+#include "pugixml/pugixml.hpp"
 #include <vector>
 
-#include <boost/shared_ptr.hpp>
-
-#include "pugixml/pugixml.hpp"
-
-class Barline;
-class PowerTabDocument;
-class PowerTabFileHeader;
 class Score;
-class Position;
-class KeySignature;
-class TimeSignature;
-class Note;
-class Tuning;
 
 namespace Gpx
 {
-
+#if 0
 struct GpxVoice;
 struct GpxBar;
 struct GpxBeat;
 struct GpxRhythm;
 struct GpxNote;
 struct GpxAutomation;
-
+#endif
 class DocumentReader
 {
 public:
-    DocumentReader(const std::string& xml);
+    DocumentReader(const std::string &xml);
 
-    void readDocument(boost::shared_ptr<PowerTabDocument> doc);
+    void readScore(Score &score);
 
 private:
-    pugi::xml_document xml_data;
-    pugi::xml_node file;
+    void readHeader(Score &score);
 
+    pugi::xml_document myXmlData;
+    pugi::xml_node myFile;
+
+#if 0
     std::map<int, GpxBar> bars;
     std::map<int, GpxVoice> voices;
     std::map<int, GpxBeat> beats;
@@ -77,8 +69,10 @@ private:
     void readKeySignature(const pugi::xml_node &masterBar, KeySignature& key);
     void readTimeSignature(const pugi::xml_node &masterBar, TimeSignature& timeSignature);
     Note* convertNote(int noteId, Position& position, const Tuning& tuning) const;
+#endif
 };
 
+#if 0
 struct GpxBar
 {
     int id;
@@ -131,7 +125,7 @@ struct GpxAutomation
     bool visible;
     std::vector<int> value;
 };
-
+#endif
 }
 
-#endif // GPX_DOCUMENTREADER_H
+#endif

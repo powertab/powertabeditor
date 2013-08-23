@@ -19,7 +19,7 @@
 #define FORMATS_POWERTABOLDIMPORTER_H
 
 #include <boost/shared_ptr.hpp>
-#include <formats/fileformatmanager.h>
+#include <formats/fileformat.h>
 
 namespace PowerTabDocument {
 class AlternateEnding;

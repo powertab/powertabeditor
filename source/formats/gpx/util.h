@@ -15,19 +15,18 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef GPX_UTIL_H
-#define GPX_UTIL_H
+#ifndef FORMATS_GPX_UTIL_H
+#define FORMATS_GPX_UTIL_H
 
 #include <vector>
 #include <boost/cstdint.hpp>
 #include <cstddef>
 
-namespace Gpx
-{
-namespace Util
-{
-    uint32_t readUInt(const std::vector<uint8_t>& bytes, size_t index);
+namespace Gpx {
+namespace Util {
+    /// Converts 4 bytes starting at the given index into an integer.
+    uint32_t readUInt(const std::vector<uint8_t> &bytes, size_t index);
 }
 }
 
-#endif // GPX_UTIL_H
+#endif

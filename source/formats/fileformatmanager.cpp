@@ -17,6 +17,7 @@
   
 #include "fileformatmanager.h"
 
+#include <formats/gpx/gpximporter.h>
 #include <formats/powertab/powertabimporter.h>
 #include <formats/powertab/powertabexporter.h>
 #include <formats/powertab_old/powertaboldimporter.h>
@@ -27,6 +28,7 @@ FileFormatManager::FileFormatManager()
     registerImporter<PowerTabImporter>();
     registerImporter<PowerTabOldImporter>();
     registerExporter<PowerTabExporter>();
+    registerImporter<GpxImporter>();
 }
 
 boost::optional<FileFormat> FileFormatManager::findFormat(

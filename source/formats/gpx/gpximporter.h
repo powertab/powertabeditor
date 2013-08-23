@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef GPXIMPORTER_H
-#define GPXIMPORTER_H
+#ifndef FORMATS_GPXIMPORTER_H
+#define FORMATS_GPXIMPORTER_H
 
 #include <formats/fileformat.h>
 
@@ -25,7 +25,7 @@ class GpxImporter : public FileFormatImporter
 public:
     GpxImporter();
 
-    boost::shared_ptr<PowerTabDocument> load(const std::string& fileName);
+    virtual void load(const std::string &filename, Score &score);
 };
 
-#endif // GPXIMPORTER_H
+#endif

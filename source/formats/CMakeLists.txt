@@ -5,12 +5,12 @@ add_library(pteformats
     fileformatmanager.cpp
     #scorearranger.cpp
 
-    #gpx/bitstream.cpp
-    #gpx/documentreader.cpp
-    #gpx/filesystem.cpp
-    #gpx/gpximporter.cpp
-    #gpx/util.cpp
-    #gpx/pugixml/pugixml.cpp
+    gpx/bitstream.cpp
+    gpx/documentreader.cpp
+    gpx/filesystem.cpp
+    gpx/gpximporter.cpp
+    gpx/util.cpp
+    gpx/pugixml/pugixml.cpp
 
     #guitar_pro/gp_channel.cpp
     #guitar_pro/guitarproimporter.cpp

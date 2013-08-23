@@ -17,77 +17,71 @@
   
 #include "bitstream.h"
 
-#include "util.h"
-#include <istream>
 #include <cassert>
+#include <istream>
+#include "util.h"
 
-Gpx::BitStream::BitStream(std::istream& stream) :
-    position(0)
+static const uint32_t BYTE_LENGTH = 8;
+
+Gpx::BitStream::BitStream(std::istream &stream)
+    : myPosition(0)
 {
-    // copy data from the stream into an internal buffer
+    // Copy data from the stream into an internal buffer.
     stream.seekg(0, std::ios::end);
-    bytes.resize(stream.tellg());
+    myBytes.resize(stream.tellg());
 
     stream.seekg(0, std::ios::beg);
-    stream.read(reinterpret_cast<char*>(&bytes[0]), bytes.size());
+    stream.read(reinterpret_cast<char *>(&myBytes[0]), myBytes.size());
 }
 
-/// Reads a 32-bit integer - assumes that the stream position is exactly on the start of a byte
 uint32_t Gpx::BitStream::readInt()
 {
-    assert(position % BYTE_LENGTH == 0);
+    assert(myPosition % BYTE_LENGTH == 0);
 
-    const uint32_t value = Gpx::Util::readUInt(bytes, position / BYTE_LENGTH);
-    position += sizeof(uint32_t) * BYTE_LENGTH;
+    const uint32_t value = Gpx::Util::readUInt(myBytes,
+                                               myPosition / BYTE_LENGTH);
+    myPosition += sizeof(uint32_t) * BYTE_LENGTH;
     return value;
 }
 
-/// Reads a single bit
-uint8_t Gpx::BitStream::readBit()
+bool Gpx::BitStream::readBit()
 {
-    if (position / BYTE_LENGTH >= bytes.size())
+    if (myPosition / BYTE_LENGTH >= myBytes.size())
         return 0;
 
-    char byte = bytes.at(position / BYTE_LENGTH);
-    byte >>= ((BYTE_LENGTH - 1) - (position % BYTE_LENGTH));
+    char byte = myBytes[myPosition / BYTE_LENGTH];
+    byte >>= ((BYTE_LENGTH - 1) - (myPosition % BYTE_LENGTH));
     byte &= 0x01;
 
-    position++;
+    ++myPosition;
 
     return byte;
 }
 
-/// Reads an integer of the specified number of bits
 int32_t Gpx::BitStream::readBits(int n, BitOrder order)
 {
     int32_t value = 0;
 
     if (order == Reversed)
     {
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; ++i)
             value |= (readBit() << i);
-        }
     }
     else
     {
-        for (int i = n - 1; i >= 0; i--)
-        {
+        for (int i = n - 1; i >= 0; --i)
             value |= (readBit() << i);
-        }
     }
 
     return value;
 }
 
-/// Returns the location of the stream, in bytes
-uint32_t Gpx::BitStream::location() const
+size_t Gpx::BitStream::getLocation() const
 {
-    return position / BYTE_LENGTH;
+    return myPosition / BYTE_LENGTH;
 }
 
-/// Returns true if the stream has reached the end
-bool Gpx::BitStream::atEnd() const
+bool Gpx::BitStream::isAtEnd() const
 {
-    return location() >= (bytes.size() - 1);
+    return getLocation() >= (myBytes.size() - 1);
 }

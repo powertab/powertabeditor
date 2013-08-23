@@ -15,40 +15,35 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef GPX_FILESYSTEM_H
-#define GPX_FILESYSTEM_H
+#ifndef FORMATS_GPX_FILESYSTEM_H
+#define FORMATS_GPX_FILESYSTEM_H
 
+#include <boost/cstdint.hpp>
+#include <iosfwd>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <boost/cstdint.hpp>
 
 namespace Gpx
 {
 
-/// The uncompressed *.gpx file is essentially a filesystem containing several xml files
-/// This class handles the retrieval of information from that filesystem
+/// The uncompressed *.gpx file is essentially a filesystem containing several
+/// xml files.
+/// This class handles the extraction of information from that filesystem.
 class FileSystem
 {
 public:
-    FileSystem(std::vector<uint8_t> data);
+    FileSystem(std::istream &stream);
 
-    std::string getFileContents(const std::string& fileName) const;
+    const std::string &getFileContents(const std::string &filename) const;
 
 private:
-    std::map<std::string, std::string > files; ///< maps filename -> file contents
+    void readUncompressedData(std::vector<uint8_t> &data);
 
-    static const uint32_t SECTOR_SIZE = 0x1000;
+    /// Maps filenames to file contents.
+    std::map<std::string, std::string> myFiles;
 };
-
-enum ChunkHeader
-{
-    Uncompressed,
-    Compressed
-};
-
-FileSystem load(std::istream& stream);
 
 }
 
-#endif // GPX_FILESYSTEM_H
+#endif
