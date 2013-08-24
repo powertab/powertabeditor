@@ -25,9 +25,9 @@ TEST_CASE("Score/Note/SimpleProperties", "")
 {
     Note note;
 
-    REQUIRE(!note.hasProperty(Note::HammerOn));
-    note.setProperty(Note::HammerOn, true);
-    REQUIRE(note.hasProperty(Note::HammerOn));
+    REQUIRE(!note.hasProperty(Note::HammerOnOrPullOff));
+    note.setProperty(Note::HammerOnOrPullOff, true);
+    REQUIRE(note.hasProperty(Note::HammerOnOrPullOff));
 }
 
 TEST_CASE("Score/Note/Trill", "")

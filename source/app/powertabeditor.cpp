@@ -846,14 +846,8 @@ void PowerTabEditor::editHammerPull()
         return;
 
     // TODO - support editing groups of notes.
-    if (StaffUtils::canHammerOn(staff, voice, position, *note))
-    {
-        editSimpleNoteProperty(myHammerPullCommand, Note::HammerOn);
-    }
-    else if (StaffUtils::canPullOff(staff, voice, position, *note))
-    {
-        editSimpleNoteProperty(myHammerPullCommand, Note::PullOff);
-    }
+    if (StaffUtils::canHammerOnOrPullOff(staff, voice, position, *note))
+        editSimpleNoteProperty(myHammerPullCommand, Note::HammerOnOrPullOff);
     else
         myHammerPullCommand->setChecked(false);
 }
@@ -2087,9 +2081,8 @@ void PowerTabEditor::updateCommands()
     }
 
     myHammerPullCommand->setEnabled(note);
-    myHammerPullCommand->setChecked(
-                note && (note->hasProperty(Note::HammerOn) ||
-                         note->hasProperty(Note::PullOff)));
+    myHammerPullCommand->setChecked(note &&
+                                    note->hasProperty(Note::HammerOnOrPullOff));
 
     updateNoteProperty(myHammerOnFromNowhereCommand, note,
                        Note::HammerOnFromNowhere);

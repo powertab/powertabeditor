@@ -102,17 +102,17 @@ TEST_CASE("Score/Position/HasNoteWithProperty", "")
 {
     Position position;
 
-    REQUIRE(!Utils::hasNoteWithProperty(position, Note::HammerOn));
+    REQUIRE(!Utils::hasNoteWithProperty(position, Note::HammerOnOrPullOff));
 
     Note note;
     note.setProperty(Note::GhostNote);
     position.insertNote(note);
-    REQUIRE(!Utils::hasNoteWithProperty(position, Note::HammerOn));
+    REQUIRE(!Utils::hasNoteWithProperty(position, Note::HammerOnOrPullOff));
     position.removeNote(note);
 
-    note.setProperty(Note::HammerOn);
+    note.setProperty(Note::HammerOnOrPullOff);
     position.insertNote(note);
-    REQUIRE(Utils::hasNoteWithProperty(position, Note::HammerOn));
+    REQUIRE(Utils::hasNoteWithProperty(position, Note::HammerOnOrPullOff));
 }
 
 TEST_CASE("Score/Position/GetDurationTime", "")

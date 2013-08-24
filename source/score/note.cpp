@@ -97,9 +97,9 @@ void Note::setProperty(SimpleProperty property, bool set)
         }
 
         // Clear all hammeron/pulloff properties.
-        if (property >= HammerOn && property <= PullOffToNowhere)
+        if (property >= HammerOnOrPullOff && property <= PullOffToNowhere)
         {
-            for (int p = HammerOn; p <= PullOffToNowhere; ++p)
+            for (int p = HammerOnOrPullOff; p <= PullOffToNowhere; ++p)
                 mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
         }
     }

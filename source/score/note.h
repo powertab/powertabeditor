@@ -30,8 +30,7 @@ public:
     {
         Tied,
         Muted,
-        HammerOn,
-        PullOff,
+        HammerOnOrPullOff,
         HammerOnFromNowhere,
         PullOffToNowhere,
         NaturalHarmonic,

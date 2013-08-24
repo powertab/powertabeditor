@@ -515,11 +515,7 @@ Note Gpx::DocumentReader::convertNote(int noteId, Position &position,
         else if (propertyName == "Muted")
             ptbNote.setProperty(Note::Muted);
         else if (propertyName == "HopoOrigin")
-        {
-            // TODO - fix this up later once we know the fret number of the
-            // next note.
-            ptbNote.setProperty(Note::HammerOn);
-        }
+            ptbNote.setProperty(Note::HammerOnOrPullOff);
         else if (propertyName == "LeftHandTapped")
             ptbNote.setProperty(Note::HammerOnFromNowhere);
         else if (propertyName == "Tapped")

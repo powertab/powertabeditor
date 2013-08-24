@@ -21,6 +21,7 @@
 #include <score/keysignature.h>
 #include <score/score.h>
 #include <score/staff.h>
+#include <score/staffutils.h>
 #include <score/system.h>
 #include <score/timesignature.h>
 #include <set>
@@ -356,14 +357,15 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                                         width, height++));
             }
 
-            if (Utils::hasNoteWithProperty(pos, Note::HammerOn) ||
+            if (StaffUtils::hasNoteWithHammerOn(myStaff, voice, pos) ||
                 Utils::hasNoteWithProperty(pos, Note::HammerOnFromNowhere))
             {
                 myTabStaffBelowSymbols.push_back(
                             SymbolGroup(SymbolGroup::Hammeron, x,
                                         width, height++));
             }
-            else if (Utils::hasNoteWithProperty(pos, Note::PullOff) ||
+            else if ((Utils::hasNoteWithProperty(pos, Note::HammerOnOrPullOff) &&
+                      !StaffUtils::hasNoteWithHammerOn(myStaff, voice, pos)) ||
                      Utils::hasNoteWithProperty(pos, Note::PullOffToNowhere))
             {
                 myTabStaffBelowSymbols.push_back(

@@ -512,9 +512,9 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
     if (oldNote.IsMuted())
         note.setProperty(Note::Muted);
     if (oldNote.HasHammerOn())
-        note.setProperty(Note::HammerOn);
+        note.setProperty(Note::HammerOnOrPullOff);
     if (oldNote.HasPullOff())
-        note.setProperty(Note::PullOff);
+        note.setProperty(Note::HammerOnOrPullOff);
     if (oldNote.HasHammerOnFromNowhere())
         note.setProperty(Note::HammerOnFromNowhere);
     if (oldNote.HasPullOffToNowhere())

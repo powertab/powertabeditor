@@ -243,7 +243,7 @@ TEST_CASE("Formats/PowerTabOldImport/Notes", "")
     REQUIRE(note1.getTappedHarmonicFret() == 15);
 
     REQUIRE(note1.hasProperty(Note::GhostNote));
-    REQUIRE(note1.hasProperty(Note::HammerOn));
+    REQUIRE(note1.hasProperty(Note::HammerOnOrPullOff));
 
     REQUIRE(!note2.hasTappedHarmonic());
     REQUIRE(note2.hasTrill());

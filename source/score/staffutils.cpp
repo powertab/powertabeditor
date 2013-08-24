@@ -79,16 +79,26 @@ bool canTieNote(const Staff &staff, int voice, int position, const Note &note)
     return prevNote && prevNote->getFretNumber() == note.getFretNumber();
 }
 
-bool canHammerOn(const Staff &staff, int voice, int position, const Note &note)
+bool canHammerOnOrPullOff(const Staff &staff, int voice, int position,
+                          const Note &note)
 {
     const Note *nextNote = getNextNote(staff, voice, position, note.getString());
-    return nextNote && nextNote->getFretNumber() > note.getFretNumber();
+    return nextNote && nextNote->getFretNumber() != note.getFretNumber();
 }
 
-bool canPullOff(const Staff &staff, int voice, int position, const Note &note)
+bool hasNoteWithHammerOn(const Staff &staff, int voice, const Position &pos)
 {
-    const Note *nextNote = getNextNote(staff, voice, position, note.getString());
-    return nextNote && nextNote->getFretNumber() < note.getFretNumber();
+    BOOST_FOREACH(const Note &note, pos.getNotes())
+    {
+        if (note.hasProperty(Note::HammerOnOrPullOff))
+        {
+            const Note *nextNote = getNextNote(staff, voice, pos.getPosition(),
+                                               note.getString());
+            return nextNote && nextNote->getFretNumber() > note.getFretNumber();
+        }
+    }
+
+    return false;
 }
 
 }
