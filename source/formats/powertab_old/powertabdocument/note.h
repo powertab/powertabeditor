@@ -17,8 +17,6 @@
 
 namespace PowerTabDocument {
 
-class Tuning;
-
 /// Stores and renders a note
 class Note : public PowerTabObject
 {
@@ -146,27 +144,14 @@ private:
     uint16_t      m_simpleData;						                ///< Contains simple symbol flags
     boost::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> m_complexSymbolArray;    ///< Complex symbol data (1 symbol per element)
 
-// Constructor/Destructor
 public:
     Note();
-    Note(uint32_t string, uint8_t fretNumber);
-    Note(const Note& note);
 
-// Operators
-    const Note& operator=(const Note& note);
-    bool operator==(const Note& note) const;
-    bool operator!=(const Note& note) const;
-
-// Serialization Functions
+    // Serialization Functions
     bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
-    Note* CloneObject() const
-    {
-        return new Note(*this);
-    }
-
-// MFC Class Functions
+    // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
@@ -176,69 +161,29 @@ public:
     uint16_t GetMFCClassSchema() const
         {return ((uint16_t)1);}
 
-// String Functions
-    static bool IsValidString(uint32_t str);
-    bool SetString(uint32_t str);
     uint32_t GetString() const;
-
-// Fret Number Functions
-    static bool IsValidFretNumber(uint8_t fretNumber);
-    bool SetFretNumber(uint8_t fretNumber);
     uint8_t GetFretNumber() const;
 
-// Tied Functions
-    bool SetTied(bool set = true);
     bool IsTied() const;
-
-// Muted Functions
-    bool SetMuted(bool set = true);
     bool IsMuted() const;
-
-// Tie Wrap Functions
-    bool SetTieWrap(bool set = true);
     bool HasTieWrap() const;
 
 // Hammer On Functions
-    bool SetHammerOn(bool set = true);
     bool HasHammerOn() const;
-    bool SetHammerOnFromNowhere(bool set = true);
     bool HasHammerOnFromNowhere() const;
-
-// Pull Off Functions
-    bool SetPullOff(bool set = true);
     bool HasPullOff() const;
-    bool SetPullOffToNowhere(bool set = true);
     bool HasPullOffToNowhere() const;
 
-    bool HasHammerOnOrPulloff() const;
-
-// Natural Harmonic Functions
-    bool SetNaturalHarmonic(bool set = true);
     bool IsNaturalHarmonic() const;
-
-// Ghost Note Functions
-    bool SetGhostNote(bool set = true);
     bool IsGhostNote() const;
-    
-    int GetOctaveOffset() const;
-    
-    bool SetOctave8va(bool set = true);
     bool IsOctave8va() const;
-
-    bool SetOctave15ma(bool set = true);
     bool IsOctave15ma() const;
-
-    bool SetOctave8vb(bool set = true);
     bool IsOctave8vb() const;
-
-    bool SetOctave15mb(bool set = true);
     bool IsOctave15mb() const;
 
 // Simple Flag Functions
 private:
     static bool IsValidSimpleFlag(uint16_t flag);
-    bool SetSimpleFlag(uint16_t flag);
-    bool ClearSimpleFlag(uint16_t flag);
     bool IsSimpleFlagSet(uint16_t flag) const;
 
 // Slide Functions
@@ -253,82 +198,34 @@ public:
     inline bool HasShiftSlide() const { return HasSlideOutType(slideOutOfShiftSlide); }
 
 // Slide Into Functions
-    static bool IsValidSlideIntoType(uint8_t type);
-    static bool IsValidSlideInto(uint8_t type);
-
-    bool SetSlideInto(uint8_t type);
     bool GetSlideInto(uint8_t& type) const;
     bool HasSlideInto() const;
-    void ClearSlideInto();
     bool HasSlideIntoFromAbove() const;
     bool HasSlideIntoFromBelow() const;
 
 // Slide Out Of Functions
-    static bool IsValidSlideOutOfType(uint8_t type);
-    static bool IsValidSlideOutOf(uint8_t type);
-
-    bool SetSlideOutOf(uint8_t type, int8_t steps);
     bool GetSlideOutOf(uint8_t& type, int8_t& steps) const;
     bool HasSlideOutOf() const;
     bool HasSlideOutOfDownwards() const;
     bool HasSlideOutOfUpwards() const;
-    void ClearSlideOutOf();
 
 // Bend Functions
-    static bool IsValidBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
-                            uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint);
-
-    static bool IsValidBendType(uint8_t type);
-    static bool IsValidBentPitch(uint8_t bentPitch);
-    static bool IsValidReleasePitch(uint8_t releasePitch);
-    static bool IsValidBendDuration(uint8_t duration);
-    static bool IsValidDrawStartPoint(uint8_t drawStartPoint);
-    static bool IsValidDrawEndPoint(uint8_t drawEndPoint);
-
-    bool SetBend(uint8_t type, uint8_t bentPitch, uint8_t releasePitch,
-                 uint8_t duration, uint8_t drawStartPoint, uint8_t drawEndPoint);
     bool GetBend(uint8_t& type, uint8_t& bentPitch, uint8_t& releasePitch,
                  uint8_t& duration, uint8_t& drawStartPoint, uint8_t& drawEndPoint) const;
     bool HasBend() const;
-    void ClearBend();
-
-    static std::string GetBendText(uint8_t pitch);
 
 // Tapped Harmonic Functions
-    static bool IsValidTappedFretNumber(uint8_t tappedFretNumber);
-    static bool IsValidTappedHarmonic(uint8_t tappedFretNumber);
-    
-    bool SetTappedHarmonic(uint8_t tappedFretNumber);
     bool GetTappedHarmonic(uint8_t& tappedFretNumber) const;
     bool HasTappedHarmonic() const;
-    void ClearTappedHarmonic();
 
 // Trill Functions
-    static bool IsValidTrilledFretNumber(uint8_t trilledFretNumber);
-    bool IsValidTrill(uint8_t trilledFretNumber) const;
-    
-    bool SetTrill(uint8_t trilledFretNumber);
     bool GetTrill(uint8_t& trilledFretNumber) const;
     bool HasTrill() const;
-    void ClearTrill();
 
 // Artificial Harmonic Functions
-    static bool IsValidArtificialHarmonicOctave(uint8_t octave);
-    static bool IsValidArtificialHarmonic(uint8_t key, uint8_t keyVariation,
-                                          uint8_t octave);
-    
-    bool SetArtificialHarmonic(uint8_t key, uint8_t keyVariation, uint8_t octave);
-    bool GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation, uint8_t& octave) const;
+    bool GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
+                               uint8_t& octave) const;
     bool HasArtificialHarmonic() const;
-    void ClearArtificialHarmonic();
-
-    std::string GetText() const;
-
-    uint8_t GetPitch(const Tuning& tuning, bool includeOffset) const;
-
-// Complex Symbol Array Functions
-private:
-    static bool IsValidComplexSymbolType(uint8_t type);
 };
 
 }

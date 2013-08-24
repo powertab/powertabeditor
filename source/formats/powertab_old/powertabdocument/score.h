@@ -124,9 +124,6 @@ public:
     std::string GetScoreName() const;
 
 private:
-    void PerformPositionShift(Score::SystemConstPtr system,
-                              uint32_t positionIndex, int offset);
-
     std::vector<GuitarPtr> m_guitarArray; ///< Guitars used by the score.
     std::vector<ChordDiagramPtr> m_chordDiagramArray; ///< Chord diagrams used in the score.
     std::vector<FloatingTextPtr> m_floatingTextArray; ///< Floating text used in the score.

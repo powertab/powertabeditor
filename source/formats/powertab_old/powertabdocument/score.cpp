@@ -27,7 +27,6 @@
 #include "direction.h"
 #include "dynamic.h"
 #include "systemlocation.h"
-#include "common.h"
 #include "tuning.h"
 
 #include <map>
@@ -191,34 +190,6 @@ void Score::GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings
 void Score::GetDynamicsInSystem(std::vector<Score::DynamicPtr> &dynamics, Score::SystemConstPtr system) const
 {
     GetSymbolsInSystem(dynamics, m_dynamicArray, FindSystemIndex(system));
-}
-
-/// Shifts all positions forward/backward starting from the given index.
-void Score::PerformPositionShift(Score::SystemConstPtr system,
-                                 uint32_t positionIndex, int offset)
-{
-    const boost::function<bool (uint32_t, uint32_t)> comparison =
-            std::greater_equal<uint32_t>();
-
-    // Shift tempo markers, dynamics, and alternate endings.
-    // TODO - handle guitar in symbols?
-    std::vector<TempoMarkerPtr> tempoMarkers;
-    std::vector<DynamicPtr> dynamics;
-    std::vector<AlternateEndingPtr> altEndings;
-
-    GetTempoMarkersInSystem(tempoMarkers, system);
-    GetDynamicsInSystem(dynamics, system);
-    GetAlternateEndingsInSystem(altEndings, system);
-
-    ShiftPosition<TempoMarkerPtr> shiftTempoMarkers(comparison, positionIndex,
-                                                    offset);
-    ShiftPosition<DynamicPtr> shiftDynamics(comparison, positionIndex, offset);
-    ShiftPosition<AlternateEndingPtr> shiftAltEndings(comparison, positionIndex,
-                                                      offset);
-
-    std::for_each(tempoMarkers.begin(), tempoMarkers.end(), shiftTempoMarkers);
-    std::for_each(dynamics.begin(), dynamics.end(), shiftDynamics);
-    std::for_each(altEndings.begin(), altEndings.end(), shiftAltEndings);
 }
 
 /// Determines if a alternate ending index is valid

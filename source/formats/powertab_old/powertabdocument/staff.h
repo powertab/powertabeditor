@@ -13,18 +13,12 @@
 #define STAFF_H
 
 #include <boost/array.hpp>
-#include <boost/shared_ptr.hpp>
+#include "powertabobject.h"
 #include <vector>
-
-#include "note.h"
 
 namespace PowerTabDocument {
 
 class Position;
-class System;
-class Barline;
-class KeySignature;
-class Tuning;
 
 /// Stores and renders a staff
 class Staff : public PowerTabObject
@@ -76,19 +70,11 @@ public:
 public:
     Staff();
     Staff(uint8_t tablatureStaffType, uint8_t clef);
-    Staff(const Staff& staff);
     ~Staff();
-
-    // Operators
-    const Staff& operator=(const Staff& staff);
-    bool operator==(const Staff& staff) const;
-    bool operator!=(const Staff& staff) const;
 
     // Serialize Functions
     bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
-
-    Staff* CloneObject() const;
 
 public:
     /// Gets the MFC Class Name for the object
@@ -106,101 +92,22 @@ public:
     }
 
     bool IsShown() const;
-    void SetShown(bool set = true);
 
     // Clef Functions
     static bool IsValidClef(uint8_t clef);
     bool SetClef(uint8_t type);
     uint8_t GetClef() const;
-    void CalculateClef(const Tuning& tuning);
 
-    // Tablature Staff Type Functions
     bool IsValidTablatureStaffType(uint8_t type) const;
     bool SetTablatureStaffType(uint8_t type);
     uint8_t GetTablatureStaffType() const;
-
-    // Standard Notation Staff Above Spacing Functions
-    void SetStandardNotationStaffAboveSpacing(uint8_t spacing);
-    uint8_t GetStandardNotationStaffAboveSpacing() const;
-
-    // Standard Notation Staff Below Spacing Functions
-    void SetStandardNotationStaffBelowSpacing(uint8_t spacing);
-    uint8_t GetStandardNotationStaffBelowSpacing() const;
-
-    // Symbol Spacing Functions
-    void SetSymbolSpacing(uint8_t spacing);
-    uint8_t GetSymbolSpacing() const;
-
-    // Tablature Staff Below Spacing Functions
-    void SetTablatureStaffBelowSpacing(uint8_t spacing);
-    uint8_t GetTablatureStaffBelowSpacing() const;
 
     static bool IsValidVoice(uint32_t voice);
 
     // Position Functions
     bool IsValidPositionIndex(uint32_t voice, uint32_t index) const;
-
     size_t GetPositionCount(uint32_t voice) const;
     Position* GetPosition(uint32_t voice, uint32_t index) const;
-
-    bool InsertPosition(uint32_t voice, Position* position);
-    bool RemovePosition(uint32_t voice, uint32_t index);
-
-    Position* GetLastPosition() const;
-    Position* GetPositionByPosition(uint32_t voice, uint32_t index) const;
-    size_t GetIndexOfPosition(uint32_t voice, const Position* position) const;
-
-    bool CanHammerOn(const Position* position, const Note* note, uint32_t voice) const;
-    bool CanPullOff(const Position* position, const Note* note, uint32_t voice) const;
-    bool CanTieNote(const Position* position, const Note* note, uint32_t voice) const;
-    bool CanSlideBetweenNotes(const Position* position, const Note* note,
-                              uint32_t voice) const;
-    int8_t GetSlideSteps(const Position* position, const Note* note,
-                         uint32_t voice) const;
-
-    int GetHeight() const;
-    
-    void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos) const;
-
-    void UpdateTabNumber(Position* position, Note* note, uint32_t voice,
-                         uint8_t fretNumber);
-    void ShiftTabNumber(Position* position, Note* note, uint32_t voice, bool shiftUp,
-                        const Tuning& tuning);
-    void UpdateAdjacentNotes(Position* position, uint32_t voice, uint32_t string);
-    
-    int GetNoteLocation(const Note* note, const KeySignature& activeKeySig,
-                        const Tuning& tuning) const;
-
-    void RemoveNote(uint32_t voice, uint32_t position, uint32_t string);
-
-    enum SearchDirection
-    {
-        NextNote = 1,
-        PrevNote = -1
-    };
-
-    Note* GetAdjacentNoteOnString(SearchDirection searchDirection,
-                                  const Position* position, const Note* note,
-                                  uint32_t voice) const;
-
-private:
-    /// Compares the fret numbers of two consecutive notes on the same string,
-    /// using the given comparision function (binary predicate)
-    template<typename FretComparison>
-    bool CompareWithNote(SearchDirection searchDirection,
-                         const Position* position, const Note* note,
-                         uint32_t voice, FretComparison comp) const
-    {
-        const Note* nextNote = GetAdjacentNoteOnString(searchDirection,
-                                                       position, note, voice);
-        
-        // check if a note was found on the same string in the next position,
-        // and if the fret number comparision is satisfied
-        return (nextNote != NULL && comp(note->GetFretNumber(), nextNote->GetFretNumber()));
-    }
-
-    void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote,
-                    uint32_t voice);
 };
 
 }
