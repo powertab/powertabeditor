@@ -107,6 +107,11 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
                               staff, voice, bar.getPosition(),
                               nextBar->getPosition()))
             {
+                Q_ASSERT(pos.getPosition() == 0 ||
+                         pos.getPosition() != bar.getPosition());
+                Q_ASSERT(pos.getPosition() == 0 ||
+                         pos.getPosition() != nextBar->getPosition());
+
                 std::vector<double> noteLocations;
 
                 if (pos.isRest() || pos.hasMultiBarRest())

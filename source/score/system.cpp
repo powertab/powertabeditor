@@ -74,6 +74,9 @@ boost::iterator_range<System::BarlineConstIterator> System::getBarlines() const
 
 void System::insertBarline(const Barline &barline)
 {
+    // Ensure that the end bar remains the end bar.
+    myBarlines.back().setPosition(std::max(myBarlines.back().getPosition(),
+                                           barline.getPosition() + 1));
     ScoreUtils::insertObject(myBarlines, barline);
 }
 

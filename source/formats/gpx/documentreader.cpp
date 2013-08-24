@@ -28,6 +28,8 @@
 #include <sstream>
 #include <stdexcept>
 
+static const int POSITIONS_PER_SYSTEM = 35;
+
 using namespace pugi;
 
 /// Utility function for parsing a string of space-separated values.
@@ -284,13 +286,31 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
 {
     System system;
     for (int i = 0; i < score.getPlayers().size(); ++i)
-        system.insertStaff(Staff(score.getPlayers()[i].getTuning().getStringCount()));
+    {
+        const Player &player = score.getPlayers()[i];
+        system.insertStaff(Staff(player.getTuning().getStringCount()));
+    }
 
     int barIndex = 0;
+    int startPos = 0;
     BOOST_FOREACH(xml_node masterBar, myFile.child("MasterBars"))
     {
         if (masterBar.name() != std::string("MasterBar"))
             continue;
+
+        // Try to create a new system every so often.
+        if (startPos > POSITIONS_PER_SYSTEM)
+        {
+            system.getBarlines().back().setPosition(startPos + 1);
+            score.insertSystem(system);
+            system = System();
+            for (int i = 0; i < score.getPlayers().size(); ++i)
+            {
+                const Player &player = score.getPlayers()[i];
+                system.insertStaff(Staff(player.getTuning().getStringCount()));
+            }
+            startPos = 0;
+        }
 
         Barline barline;
 
@@ -299,18 +319,13 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
             const Automation automation = myAutomations.find(barIndex)->second;
             if (automation.type == "Tempo")
             {
-                // TODO - insert tempo markers.
-#if 0
-                barData.tempoMarker = boost::make_shared<TempoMarker>();
-
                 if (automation.value.size() != 2)
-                {
                     throw std::runtime_error("Invalid tempo");
-                }
 
-                barData.tempoMarker->SetBeatsPerMinute(automation.value[0] *
-                                                    automation.value[1] / 2.0);
-#endif
+                TempoMarker marker(startPos);
+                marker.setBeatsPerMinute(automation.value[0] *
+                        automation.value[1] / 2.0);
+                system.insertTempoMarker(marker);
             }
         }
 
@@ -327,10 +342,13 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
         std::vector<int> barIds;
         convertStringToList(masterBar.child_value("Bars"), barIds);
 
+        int nextPos = startPos;
+
         for (int i = 0; i < score.getPlayers().size() &&
              i < static_cast<int>(barIds.size()); ++i)
         {
             Staff &staff = system.getStaves()[i];
+            int currentPos = (startPos != 0) ? startPos + 1 : 1;
 
             // TODO - import multiple voices.
             BOOST_FOREACH(int beatId,
@@ -373,17 +391,24 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
                 if (pos.getNotes().empty())
                     pos.setRest();
 
-                pos.setPosition(staff.getVoice(0).size());
+                pos.setPosition(currentPos++);
                 staff.insertPosition(0, pos);
             }
+
+            nextPos = std::max(nextPos, currentPos);
         }
 
-        // TODO - insert bars.
-        //barData.barline = barline;
-        //ptbBars.push_back(barData);
+        barline.setPosition(startPos);
+        if (startPos == 0)
+            system.getBarlines().front() = barline;
+        else
+            system.insertBarline(barline);
+
+        startPos = nextPos;
         ++barIndex;
     }
 
+    system.getBarlines().back().setPosition(startPos + 1);
     score.insertSystem(system);
 }
 
