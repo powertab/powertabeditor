@@ -209,7 +209,6 @@ public:
 
 // Operations    
 public:
-    std::string GetText(uint32_t type) const;
     int GetWidth() const;
 };
 

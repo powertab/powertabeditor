@@ -10,7 +10,6 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include <cmath>           // Needed for pow()
-#include <sstream>
 
 #include "timesignature.h"
 #include "generalmidi.h"
@@ -440,34 +439,6 @@ bool TimeSignature::SetFlag(uint32_t flag)
         ClearFlag(commonTime);
     m_data |= flag;
     return (true);
-}
-
-// Operations
-/// Gets a text representation of the meter
-/// @param type Type of text to get (see textTypes enum in .h for values)
-/// @return Text representation of the meter
-std::string TimeSignature::GetText(uint32_t type) const
-{
-    //------Last Checked------//
-    // - Dec 13, 2004
-    int beatsPerMeasure = GetBeatsPerMeasure();
-    int beatAmount = GetBeatAmount();
-
-    std::stringstream returnValue;
-
-    // Beats per measure only
-    if (type == textBeatsPerMeasure)
-        returnValue << beatsPerMeasure;
-    // Beat amount only
-    else if (type == textBeatAmount)
-        returnValue << beatAmount;
-    // Full meter
-    else
-    {
-        returnValue << beatsPerMeasure << "/" << beatAmount;
-    }
-
-    return returnValue.str();
 }
 
 /// Gets the width of the time signature, in drawing units

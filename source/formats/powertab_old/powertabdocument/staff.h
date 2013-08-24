@@ -149,11 +149,6 @@ public:
     Position* GetLastPosition() const;
     Position* GetPositionByPosition(uint32_t voice, uint32_t index) const;
     size_t GetIndexOfPosition(uint32_t voice, const Position* position) const;
-    uint32_t GetIndexOfNextPosition(uint32_t voice, boost::shared_ptr<const System> system,
-                                    const Position* position) const;
-
-    bool IsOnlyPositionInBar(const Position* position, boost::shared_ptr<const System> system,
-                             uint32_t voice) const;
 
     bool CanHammerOn(const Position* position, const Note* note, uint32_t voice) const;
     bool CanPullOff(const Position* position, const Note* note, uint32_t voice) const;
@@ -166,8 +161,6 @@ public:
     int GetHeight() const;
     
     void GetPositionsInRange(std::vector<Position*>& positionsInRange, uint32_t voice, size_t startPos, size_t endPos) const;
-    void CalculateBeamingForBar(boost::shared_ptr<const Barline> startBar,
-                                boost::shared_ptr<const Barline> endBar);
 
     void UpdateTabNumber(Position* position, Note* note, uint32_t voice,
                          uint8_t fretNumber);
@@ -208,11 +201,6 @@ private:
 
     void UpdateNote(Position *prevPosition, Note *previousNote, Note *nextNote,
                     uint32_t voice);
-
-    void CalculateBeamingForVoice(boost::shared_ptr<const Barline> startBar,
-                                  boost::shared_ptr<const Barline> endBar,
-                                  uint32_t voice);
-    void CalculateBeamingForGroup(std::vector<Position*>& positions);
 };
 
 }

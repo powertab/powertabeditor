@@ -55,12 +55,6 @@ public:
 // Constructor/Destructor
 public:
     Score(const char* name);
-    Score(const Score& score);
-
-// Operators
-    const Score& operator=(const Score& score);
-    bool operator==(const Score& score) const;
-    bool operator!=(const Score& score) const;
 
 // Serialization Functions
     bool Serialize(PowerTabOutputStream& stream) const;
@@ -124,9 +118,6 @@ public:
     bool IsValidSystemIndex(uint32_t index) const;
     size_t GetSystemCount() const;
     SystemPtr GetSystem(uint32_t index) const;
-
-    void ShiftForward(SystemPtr system, uint32_t positionIndex);
-    void ShiftBackward(SystemPtr system, uint32_t positionIndex);
 
     int FindSystemIndex(const SystemConstPtr& system) const;
 

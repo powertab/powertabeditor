@@ -38,57 +38,9 @@
 
 namespace PowerTabDocument {
 
-/// Default Constructor
 Score::Score(const char* name)
     : m_scoreName(name)
 {
-}
-
-/// Copy Constructor
-Score::Score(const Score& score) :
-    PowerTabObject()
-{
-    *this = score;
-}
-
-// Operators
-/// Assignment Operator
-const Score& Score::operator=(const Score& score)
-{
-    // Check for assignment to self
-    if (this != &score)
-    {
-        deepCopy(score.m_guitarArray, m_guitarArray);
-        deepCopy(score.m_chordDiagramArray, m_chordDiagramArray);
-        deepCopy(score.m_floatingTextArray, m_floatingTextArray);
-        deepCopy(score.m_guitarInArray, m_guitarInArray);
-        deepCopy(score.m_tempoMarkerArray, m_tempoMarkerArray);
-        deepCopy(score.m_dynamicArray, m_dynamicArray);
-        deepCopy(score.m_alternateEndingArray, m_alternateEndingArray);
-        deepCopy(score.m_systemArray, m_systemArray);
-        m_scoreName = score.m_scoreName;
-    }
-    return *this;
-}
-
-/// Equality Operator
-bool Score::operator==(const Score& score) const
-{
-    return (isDeepEqual(m_guitarArray, score.m_guitarArray) &&
-            isDeepEqual(m_chordDiagramArray, score.m_chordDiagramArray) &&
-            isDeepEqual(m_floatingTextArray, score.m_floatingTextArray) &&
-            isDeepEqual(m_guitarInArray, score.m_guitarInArray) &&
-            isDeepEqual(m_tempoMarkerArray, score.m_tempoMarkerArray) &&
-            isDeepEqual(m_dynamicArray, score.m_dynamicArray) &&
-            isDeepEqual(m_alternateEndingArray, score.m_alternateEndingArray) &&
-            isDeepEqual(m_systemArray, score.m_systemArray) &&
-            m_scoreName == score.m_scoreName);
-}
-
-/// Inequality Operator
-bool Score::operator!=(const Score& score) const
-{
-    return (!operator==(score));
 }
 
 // Serialization Functions
@@ -267,20 +219,6 @@ void Score::PerformPositionShift(Score::SystemConstPtr system,
     std::for_each(tempoMarkers.begin(), tempoMarkers.end(), shiftTempoMarkers);
     std::for_each(dynamics.begin(), dynamics.end(), shiftDynamics);
     std::for_each(altEndings.begin(), altEndings.end(), shiftAltEndings);
-}
-
-/// Shift all positions forward in a system, starting from a given location.
-void Score::ShiftForward(Score::SystemPtr system, uint32_t positionIndex)
-{
-    PerformPositionShift(system, positionIndex, 1);
-    system->ShiftForward(positionIndex);
-}
-
-/// Shift all positions backwards in a system, starting from a given location.
-void Score::ShiftBackward(Score::SystemPtr system, uint32_t positionIndex)
-{
-    PerformPositionShift(system, positionIndex, -1);
-    system->ShiftBackward(positionIndex);
 }
 
 /// Determines if a alternate ending index is valid

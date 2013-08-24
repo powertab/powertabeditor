@@ -73,15 +73,6 @@ private:
     // Constructor/Destructor
 public:
     System();
-    System(const System& system);
-
-    void Init(const std::vector<uint8_t>& staffSizes,
-              const std::vector<bool>& visibleStaves, bool showTimeSignature);
-
-    // Operators
-    const System& operator=(const System& system);
-    bool operator==(const System& system) const;
-    bool operator!=(const System& system) const;
 
     // Serialzation Functions
     bool Serialize(PowerTabOutputStream& stream) const;
@@ -97,77 +88,18 @@ public:
     uint16_t GetMFCClassSchema() const
     {return ((uint16_t)1);}
 
-    // Rect Functions
-    /// Gets the bounding rect for the system
-    /// @return The bounding rect for the system
-    Rect GetRect() const
-    {
-        return m_rect;
-    }
-    void SetRect(const Rect& rect)
-    {
-        m_rect = rect;
-    }
-
-    // Position Spacing Functions
-    bool IsValidPositionSpacing(int positionSpacing) const;
-
-    /// Gets the amount of spacing between positions
-    /// @return The amount of spacing between positions
-    uint32_t GetPositionSpacing() const
-    {return (m_positionSpacing);}
-
-    bool SetPositionSpacing(uint8_t positionSpacing);
-
-    // Rhythm Slash Spacing Above Functions
-    /// Gets the amount of spacing above the rhythm slashes (when slashes are
-    /// used)
-    /// @return The amount of spacing above the rhythm slashes
-    uint32_t GetRhythmSlashSpacingAbove() const
-    {return (m_rhythmSlashSpacingAbove);}
-
-    // Rhythm Slash Spacing Below Functions
-    /// Gets the amount of spacing below the rhythm slashes (when slashes are
-    /// used)
-    /// @return The amount of spacing below the rhythm slashes
-    uint32_t GetRhythmSlashSpacingBelow() const
-    {return (m_rhythmSlashSpacingBelow);}
-
-    // Extra Spacing Functions
-    /// Gets the extra spacing (used by rehearsal signs, tempo markers, etc.)
-    /// @return The amount of extra spacing
-    uint32_t GetExtraSpacing() const
-    {return (m_extraSpacing);}
-
-    void SetExtraSpacing(uint32_t spacing)
-    {
-        m_extraSpacing = spacing;
-        CalculateHeight();
-    }
-
-    // Start Bar Functions
     BarlinePtr GetStartBar() const;
-    void SetStartBar(BarlinePtr barline);
+    BarlinePtr GetEndBar() const;
 
     // Direction Functions
     bool IsValidDirectionIndex(uint32_t index) const;
     size_t GetDirectionCount() const;
     DirectionPtr GetDirection(uint32_t index) const;
 
-    void InsertDirection(DirectionPtr direction);
-    void RemoveDirection(DirectionPtr direction);
-    DirectionPtr FindDirection(uint32_t position) const;
-    size_t MaxDirectionSymbolCount() const;
-
     // Chord Text Functions
     bool IsValidChordTextIndex(uint32_t index) const;
     size_t GetChordTextCount() const;
     ChordTextPtr GetChordText(uint32_t index) const;
-
-    bool HasChordText(uint32_t position) const;
-    int FindChordText(uint32_t position) const;
-    bool InsertChordText(ChordTextPtr chordText, uint32_t index);
-    bool RemoveChordText(uint32_t index);
 
     // Rhythm Slash Functions
     bool IsValidRhythmSlashIndex(uint32_t index) const;
@@ -179,53 +111,10 @@ public:
     size_t GetStaffCount() const;
     StaffPtr GetStaff(uint32_t index) const;
 
-    size_t FindStaffIndex(StaffConstPtr staff) const;
-
     // Barline Functions
     bool IsValidBarlineIndex(uint32_t index) const;
     size_t GetBarlineCount() const;
     BarlinePtr GetBarline(uint32_t index) const;
-
-    BarlinePtr GetBarlineAtPosition(uint32_t position) const;
-    BarlinePtr GetPrecedingBarline(uint32_t position) const;
-    BarlinePtr GetNextBarline(uint32_t position) const;
-    void GetBarlines(std::vector<BarlineConstPtr>& barlineArray) const;
-    void GetBarlines(std::vector<BarlinePtr>& barlineArray) const;
-
-    void GetBarlinesInRange(std::vector<BarlinePtr>& barlineArray, size_t start,
-                            size_t end) const;
-
-    bool InsertBarline(BarlinePtr barline);
-    bool RemoveBarline(uint32_t position);
-
-    bool HasRehearsalSign() const;
-
-    // End Bar Functions
-    BarlinePtr GetEndBar() const;
-
-    // Position Functions
-    bool IsValidPosition(int position) const;
-    int CalculatePositionCount(int nPositionSpacing) const;
-    int GetPositionCount() const;
-    int GetFirstPositionX() const;
-    int GetPositionX(int position) const;
-    size_t GetPositionFromX(int x) const;
-    uint32_t GetMaxPosition() const;
-
-    // Operations
-    int GetCumulativeInternalKeyAndTimeSignatureWidth(int position = -1) const;
-
-    void CalculateHeight();
-    uint32_t GetStaffHeightOffset(uint32_t staff, bool absolutePos = false) const;
-    void CalculateBeamingForStaves();
-    void AdjustPositionSpacing();
-
-    bool HasMultiBarRest(BarlineConstPtr startBar, uint8_t& measureCount) const;
-
-private:
-    void ShiftForward(uint32_t positionIndex);
-    void ShiftBackward(uint32_t positionIndex);
-    void PerformPositionShift(uint32_t positionIndex, int offset);
 };
 
 }
