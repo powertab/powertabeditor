@@ -30,22 +30,14 @@ public:
         numbersMask         =   (uint16_t)0x7ff           ///< Mask used to retrieve all allowable numbers
     };
     
-// Constructor/Destructor
 public:
     AlternateEnding();
-    AlternateEnding(uint32_t system, uint32_t position, uint16_t numbers);
-   
-// Operators
-    const AlternateEnding& operator=(const AlternateEnding& alternateEnding);
-    bool operator==(const AlternateEnding& alternateEnding) const;
-    bool operator!=(const AlternateEnding& alternateEnding) const;
     
-// Serialization Functions
+    // Serialization Functions
     bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
-// MFC Class Functions
-public:    
+    // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
@@ -59,43 +51,15 @@ public:
         return 1;
     }
     
-// Number Functions
-    static bool IsValidNumbers(uint16_t numbers);
-    static bool IsValidNumber(uint32_t number);
-    bool SetNumbers(uint16_t numbers);
-    uint16_t GetNumbers() const;
     std::vector<uint8_t> GetListOfNumbers() const;
-    bool SetNumber(uint32_t number);
     bool IsNumberSet(uint32_t number) const;
-    bool ClearNumber(uint32_t number);
     
-// Da Capo Functions
-    void SetDaCapo()                                            
-        {SetNumber(daCapo);}
     bool IsDaCapoSet() const                                    
         {return (IsNumberSet(daCapo));}
-    void ClearDaCapo()                                          
-        {ClearNumber(daCapo);}
-    
-// Dal Segno Functions
-    void SetDalSegno()                                          
-        {SetNumber(dalSegno);}
     bool IsDalSegnoSet() const                                  
         {return (IsNumberSet(dalSegno));}
-    void ClearDalSegno()                                        
-        {ClearNumber(dalSegno);}
-    
-// Dal Segno Segno Functions
-    void SetDalSegnoSegno()
-        {SetNumber(dalSegnoSegno);}
     bool IsDalSegnoSegnoSet() const
         {return (IsNumberSet(dalSegnoSegno));}
-    void ClearDalSegnoSegno()
-        {ClearNumber(dalSegnoSegno);}
-    
-// Operations
-    std::string GetText() const;
-    static std::string GetNumberText(uint32_t number);
 };
 
 }

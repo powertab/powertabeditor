@@ -26,7 +26,6 @@
 #include "powertaboutputstream.h"
 #include "direction.h"
 #include "dynamic.h"
-#include "systemlocation.h"
 #include "tuning.h"
 
 #include <map>

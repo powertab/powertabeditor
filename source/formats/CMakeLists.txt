@@ -50,7 +50,6 @@ add_library(pteformats
     powertab_old/powertabdocument/score.cpp
     powertab_old/powertabdocument/staff.cpp
     powertab_old/powertabdocument/system.cpp
-    powertab_old/powertabdocument/systemlocation.cpp
     powertab_old/powertabdocument/systemsymbol.cpp
     powertab_old/powertabdocument/tempomarker.cpp
     powertab_old/powertabdocument/timesignature.cpp

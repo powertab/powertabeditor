@@ -27,7 +27,6 @@ class TempoMarker;
 class Dynamic;
 class AlternateEnding;
 class System;
-class SystemLocation;
 class Tuning;
 
 /// Stores and renders a score

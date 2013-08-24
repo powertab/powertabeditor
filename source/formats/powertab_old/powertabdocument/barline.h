@@ -17,7 +17,6 @@
 #include "keysignature.h"
 
 #include "powertabobject.h"
-#include "macros.h"
 
 namespace PowerTabDocument {
 
@@ -60,24 +59,14 @@ private:
     TimeSignature   m_timeSignature;                ///< Time signature
     RehearsalSign   m_rehearsalSign;                ///< Rehearsal sign
 
-// Constructor/Destructor
 public:
     Barline();
-    Barline(uint32_t position, uint8_t type, uint8_t repeatCount = 0);
-    Barline(const Barline& barline);
-    ~Barline();
 
-// Operators
-    const Barline& operator=(const Barline& barline);
-    bool operator==(const Barline& barline) const;
-    bool operator!=(const Barline& barline) const;
-
-// Serialization Functions
+    // Serialization Functions
     bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
-// MFC Class Functions
-public:
+    // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
     std::string GetMFCClassName() const
@@ -87,32 +76,12 @@ public:
     uint16_t GetMFCClassSchema() const                            
         {return ((uint16_t)1);}
     
-// Position Functions
-    /// Determines whether a position is valid
-    /// @param position Position to validate
-    /// @return True if the position is valid, false if not
-    static bool IsValidPosition(uint32_t position)              
-        {return (position <= 255);}
-    /// Sets the position within the system where the barline is anchored
-    /// @param position Zero-based index within the system where the barline is
-    /// anchored
-    /// @return True if the position was set, false if not
-    bool SetPosition(uint32_t position)                         
-    {
-        PTB_CHECK_THAT(IsValidPosition(position), false);
-        m_position = (uint8_t)position;
-        return (true);
-    }
     /// Gets the position within the system where the barline is anchored
     /// @return The position within the system where the barline is anchored
     uint32_t GetPosition() const                                
         {return (m_position);}
    
-// Barline Data Functions
     bool SetBarlineData(uint8_t type, uint8_t repeatCount);
-    void GetBarlineData(uint8_t& type, uint8_t& repeatCount) const;
-     
-// Type Functions
     /// Determines if a type is valid
     /// @param type Type to validate
     /// @return True if the type is valid, false if not
@@ -149,7 +118,6 @@ public:
     bool IsDoubleBarFine() const                                
         {return (GetType() == doubleBarFine);}
     
-// Repeat Count Functions
     /// Determines if a repeat count is valid
     /// @param repeatCount Repeat count to validate
     /// @return True if the repeat count is valid, false if not
@@ -164,23 +132,10 @@ public:
     uint32_t GetRepeatCount() const                             
         {return ((uint32_t)(m_data & repeatCountMask));}
    
-// Key Signature Functions
-    void SetKeySignature(const KeySignature& keySignature);
-    KeySignature& GetKeySignature();
+    KeySignature &GetKeySignature();
     const KeySignature& GetKeySignature() const;
-    
-// Time Signature Functions
-    void SetTimeSignature(const TimeSignature& timeSignature);
-    TimeSignature& GetTimeSignature();
     const TimeSignature& GetTimeSignature() const;
-    
-// Rehearsal Sign Functions
-    void SetRehearsalSign(const RehearsalSign& rehearsalSign);
-    RehearsalSign& GetRehearsalSign();
     const RehearsalSign& GetRehearsalSign() const;
-
-// Operations
-    int GetKeyAndTimeSignatureWidth() const;
 };
 
 }
