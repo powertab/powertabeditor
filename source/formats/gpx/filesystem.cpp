@@ -42,7 +42,9 @@ Gpx::FileSystem::FileSystem(std::istream &stream)
     const uint32_t header = input.readInt();
 
     // This should be a compressed file right now.
-    assert(header == BCFZ_HEADER);
+    if (header != BCFZ_HEADER)
+        throw FileFormatException("Invalid header");
+
     const uint32_t length = input.readInt();
     std::vector<uint8_t> output;
     output.reserve(length);
