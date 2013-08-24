@@ -104,6 +104,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawBarlines(system, systemIndex, layout, isFirstStaff);
         drawTabNotes(staff, layout);
         drawLegato(staff, *layout);
+        drawSlides(staff, *layout);
 
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
@@ -637,26 +638,19 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
     }
 }
 
-#if 0
-/// Draws all of the slides for a staff
-void SystemRenderer::drawSlides(const StaffData& currentStaffInfo)
+void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
 {
-    for (quint32 voice = 0; voice < Staff::NUM_STAFF_VOICES; voice++)
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        // iterate across the staff for each string
-        for (quint8 string = 0; string < staff->GetTablatureStaffType(); string++)
+        for (int string = 0; string < staff.getStringCount(); ++string)
         {
-            const size_t positionCount = staff->GetPositionCount(voice);
-            for (size_t i = 0; i < positionCount; i++)
+            BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
             {
-                const Position* currentPosition = staff->GetPosition(voice, i);
-                const Note* note = currentPosition->GetNoteByString(string);
-
-                if (note == NULL)
-                {
+                const Note *note = Utils::findByString(pos, string);
+                if (!note)
                     continue;
-                }
 
+#if 0
                 quint8 type = 0;
                 qint8 steps = 0;
 
@@ -677,62 +671,53 @@ void SystemRenderer::drawSlides(const StaffData& currentStaffInfo)
                     drawSlidesHelper(currentStaffInfo, string, slideUp,
                                      curPosIndex, nextPosIndex);
                 }
+#endif
 
-                // draw any slides into the note
-                note->GetSlideInto(type);
-                if (type != Note::slideIntoNone)
+                // Draw any slides going into the note.
+                if (note->hasProperty(Note::SlideIntoFromAbove) ||
+                    note->hasProperty(Note::SlideIntoFromBelow))
                 {
-                    const int currentPosIndex = currentPosition->GetPosition();
-                    const bool slideUp = (type == Note::slideIntoFromBelow);
-                    const int prevPosIndex = currentPosIndex - 1;
-
-                    drawSlidesHelper(currentStaffInfo, string, slideUp,
-                                     prevPosIndex, currentPosIndex);
+                    const int position = pos.getPosition();
+                    drawSlide(layout, string,
+                              note->hasProperty(Note::SlideIntoFromBelow),
+                              position - 1, position);
                 }
             }
         }
     }
 }
 
-/// Helper function to perform the actual rendering of a slide
-/// Draws a slide on the given string, between the two position indexes
-void SystemRenderer::drawSlidesHelper(const StaffData& currentStaffInfo,
-                                      quint8 string, bool slideUp, int posIndex1,
-                                      int posIndex2)
+void SystemRenderer::drawSlide(const LayoutInfo &layout, int string,
+                               bool slideUp, int position1, int position2) const
 {
-    Q_ASSERT(posIndex1 <= posIndex2);
+    Q_ASSERT(position1 <= position2);
 
-    double leftPos = system->GetPositionX(std::max(posIndex1, 0));
-    // Handle slides at the first position of a system.
-    if (posIndex1 < 0)
-    {
-        leftPos -= system->GetPositionSpacing();
-    }
+    double left = layout.getPositionX(std::max(position1, 0));
+    // Adjust slides at the first position of a system.
+    if (position1 < 0)
+        left -= layout.getPositionSpacing();
 
-    const int numPositions = system->GetPositionCount();
-    double rightPos = system->GetPositionX(std::min(posIndex2, numPositions));
-    if (posIndex2 > numPositions)
-    {
-        rightPos += system->GetPositionSpacing();
-    }
-    const double width = rightPos - leftPos;
+    const int numPositions = layout.getNumPositions();
+    double right = layout.getPositionX(std::min(position2, numPositions));
+    if (position2 > numPositions)
+        right += layout.getPositionSpacing();
+
+    const double width = right - left;
 
     double height = 5;
-    double y = (currentStaffInfo.getTabLineHeight(string + 1) + currentStaffInfo.getTabLineHeight(string)) / 2;
+    double y = (layout.getTabLine(string + 1) + layout.getTabLine(string)) / 2;
 
-    if (slideUp) // if we're sliding up, flip the diagonal line
+    if (slideUp) // If we're sliding up, flip the line.
     {
         height = -height;
-        y += currentStaffInfo.tabLineSpacing + 1;
+        y += layout.getTabLineSpacing() + 1;
     }
 
-    QGraphicsLineItem* slide = new QGraphicsLineItem(parentStaff);
-    slide->setLine(0, 0, width - currentStaffInfo.positionWidth / 2, height);
-    slide->setPos(leftPos + currentStaffInfo.positionWidth / 1.5 + 1,
+    QGraphicsLineItem *slide = new QGraphicsLineItem(myParentStaff);
+    slide->setLine(0, 0, width - layout.getPositionSpacing() / 2, height);
+    slide->setPos(left + layout.getPositionSpacing() / 1.5 + 1,
                   y + height / 2);
 }
-
-#endif
 
 void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo& layout)
 {
@@ -757,17 +742,16 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo& layout)
         case SymbolGroup::Pulloff:
             renderedSymbol = createPlainTextSymbol("P", QFont::StyleNormal);
             break;
-        // TODO - handle slides and harmonics.
+        case SymbolGroup::Slide:
+            renderedSymbol = createPlainTextSymbol("sl.", QFont::StyleItalic);
+            break;
+        // TODO - handle harmonics.
         default:
             Q_ASSERT(false);
             break;
         }
 
 #if 0
-        case Layout::SymbolSlide:
-            renderedSymbol = createPlainText("sl.", QFont::StyleItalic);
-            break;
-
         case Layout::SymbolArtificialHarmonic:
             renderedSymbol = createArtificialHarmonicText(
                         staff->GetPositionByPosition(symbolGroup.voice,

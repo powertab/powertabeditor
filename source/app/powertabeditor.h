@@ -377,6 +377,9 @@ private:
     Command *myPullOffToNowhereCommand;
     Command *myNaturalHarmonicCommand;
     Command *myTappedHarmonicCommand;
+    QMenu *mySlideIntoMenu;
+    Command *mySlideIntoFromAboveCommand;
+    Command *mySlideIntoFromBelowCommand;
     Command *myVibratoCommand;
     Command *myWideVibratoCommand;
     Command *myPalmMuteCommand;
@@ -405,7 +408,6 @@ private:
     void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
 
-    void editSlideInto(uint8_t newSlideIntoType);
     void editSlideOutOf(uint8_t newSlideType);
     void shiftTabNumber(int direction);
     void editRest(uint8_t duration);
@@ -475,10 +477,6 @@ private:
     Command* artificialHarmonicAct;
     Command* shiftSlideAct;
     Command* legatoSlideAct;
-
-    QMenu* slideIntoMenu;
-    Command* slideIntoFromAboveAct;
-    Command* slideIntoFromBelowAct;
 
     QMenu* slideOutOfMenu;
     Command* slideOutOfDownwardsAct;

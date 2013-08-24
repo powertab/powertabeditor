@@ -25,7 +25,6 @@ add_executable(pte_tests
     actions/test_editclef.cpp
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
-    #actions/test_editslideinto.cpp
     #actions/test_editslideout.cpp
     actions/test_edittabnumber.cpp
     actions/test_edittimesignature.cpp

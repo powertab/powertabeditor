@@ -1513,20 +1513,16 @@ void PowerTabEditor::createCommands()
     createPositionPropertyCommand(myPickStrokeDownCommand, tr("Pickstroke Down"),
                                   "TabSymbols.PickStrokeDown", QKeySequence(),
                                   Position::PickStrokeDown);
+
+    // Slide Into Menu.
+    createNotePropertyCommand(mySlideIntoFromAboveCommand,
+                              tr("Slide Into From Above"), "SlideInto.FromAbove",
+                              QKeySequence(), Note::SlideIntoFromAbove);
+    createNotePropertyCommand(mySlideIntoFromBelowCommand,
+                              tr("Slide Into From Below"), "SlideInto.FromBelow",
+                              QKeySequence(), Note::SlideIntoFromBelow);
+
 #if 0
-    // Slide Into Menu
-    slideIntoFromAboveAct = new Command(tr("Slide Into From Above"), "SlideInto.FromAbove",
-                                        QKeySequence(), this);
-    slideIntoFromAboveAct->setCheckable(true);
-    sigfwd::connect(slideIntoFromAboveAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSlideInto, this, Note::slideIntoFromAbove));
-
-    slideIntoFromBelowAct = new Command(tr("Slide Into From Below"), "SlideInto.FromBelow",
-                                        QKeySequence(), this);
-    slideIntoFromBelowAct->setCheckable(true);
-    sigfwd::connect(slideIntoFromBelowAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSlideInto, this, Note::slideIntoFromBelow));
-
     // Slide Out Of Menu
     slideOutOfDownwardsAct = new Command(tr("Slide Out Of Downwards"), "SlideOut.Downwards",
                                          QKeySequence(), this);
@@ -1788,12 +1784,12 @@ void PowerTabEditor::createMenus()
 #endif
     myTabSymbolsMenu->addAction(myTappedHarmonicCommand);
     myTabSymbolsMenu->addSeparator();
+
+    mySlideIntoMenu = myTabSymbolsMenu->addMenu(tr("Slide Into"));
+    mySlideIntoMenu->addAction(mySlideIntoFromBelowCommand);
+    mySlideIntoMenu->addAction(mySlideIntoFromAboveCommand);
+
 #if 0
-
-    slideIntoMenu = tabSymbolsMenu->addMenu(tr("Slide Into"));
-    slideIntoMenu->addAction(slideIntoFromBelowAct);
-    slideIntoMenu->addAction(slideIntoFromAboveAct);
-
     tabSymbolsMenu->addAction(shiftSlideAct);
     tabSymbolsMenu->addAction(legatoSlideAct);
 
@@ -2090,6 +2086,10 @@ void PowerTabEditor::updateCommands()
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
+    updateNoteProperty(mySlideIntoFromAboveCommand, note,
+                       Note::SlideIntoFromAbove);
+    updateNoteProperty(mySlideIntoFromBelowCommand, note,
+                       Note::SlideIntoFromBelow);
     updatePositionProperty(myVibratoCommand, pos, Position::Vibrato);
     updatePositionProperty(myWideVibratoCommand, pos, Position::WideVibrato);
     updatePositionProperty(myPalmMuteCommand, pos, Position::PalmMuting);
@@ -2907,26 +2907,6 @@ void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
     }
 
     undoManager->push(new EditSlideOut(note, newSlideType, newSteps),
-                      caret->getCurrentSystemIndex());
-}
-
-void PowerTabEditor::editSlideInto(uint8_t newSlideIntoType)
-{
-    Q_ASSERT(newSlideIntoType == Note::slideIntoFromBelow ||
-             newSlideIntoType == Note::slideIntoFromAbove);
-
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Note* note = caret->getCurrentNote();
-
-    // get the current slide type - if it is the same as the new type, we remove the slide
-    uint8_t currentType = 0;
-    note->GetSlideInto(currentType);
-    if (currentType == newSlideIntoType)
-    {
-        newSlideIntoType = Note::slideIntoNone;
-    }
-
-    undoManager->push(new EditSlideInto(note, newSlideIntoType),
                       caret->getCurrentSystemIndex());
 }
 

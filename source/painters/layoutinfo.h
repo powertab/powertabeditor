@@ -44,6 +44,7 @@ public:
         Tap,
         Hammeron,
         Pulloff,
+        Slide,
 
         // Above standard notation staff.
         Octave8va,

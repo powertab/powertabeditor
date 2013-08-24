@@ -139,6 +139,13 @@ private:
                          const std::map<int, double> &maxNoteLocations,
                          const std::map<int, double> &noteHeadWidths);
 
+    /// Draws all slides in a staff.
+    void drawSlides(const Staff &staff, const LayoutInfo &layout);
+
+    /// Draws a single slide between the given positions.
+    void drawSlide(const LayoutInfo &layout, int string, bool slideUp,
+                   int position1, int position2) const;
+
     const ScoreArea *myScoreArea;
     const Score &myScore;
 

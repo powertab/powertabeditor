@@ -39,6 +39,8 @@ public:
         Octave15ma,
         Octave8vb,
         Octave15mb,
+        SlideIntoFromBelow,
+        SlideIntoFromAbove,
         NumSimpleProperties
     };
 

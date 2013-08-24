@@ -102,6 +102,12 @@ void Note::setProperty(SimpleProperty property, bool set)
             for (int p = HammerOnOrPullOff; p <= PullOffToNowhere; ++p)
                 mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
         }
+
+        // Clear any mutually-exclusive slide types.
+        if (property == SlideIntoFromAbove)
+            mySimpleProperties.set(SlideIntoFromBelow, false);
+        if (property == SlideIntoFromBelow)
+            mySimpleProperties.set(SlideIntoFromAbove, false);
     }
 
     mySimpleProperties.set(property, set);

@@ -30,7 +30,6 @@ add_library(pteactions
     #editfileinformation.cpp
     editkeysignature.cpp
     editnoteduration.cpp
-    #editslideinto.cpp
     #editslideout.cpp
     edittabnumber.cpp
     edittimesignature.cpp

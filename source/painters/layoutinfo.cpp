@@ -372,6 +372,13 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                             SymbolGroup(SymbolGroup::Pulloff, x,
                                         width, height++));
             }
+
+            if (Utils::hasNoteWithProperty(pos, Note::SlideIntoFromAbove) ||
+                Utils::hasNoteWithProperty(pos, Note::SlideIntoFromBelow))
+            {
+                myTabStaffBelowSymbols.push_back(
+                            SymbolGroup(SymbolGroup::Slide, x, width, height++));
+            }
         }
     }
 
