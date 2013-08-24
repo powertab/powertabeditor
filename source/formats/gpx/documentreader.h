@@ -20,20 +20,25 @@
 
 #include <map>
 #include "pugixml/pugixml.hpp"
+#include <score/note.h>
 #include <vector>
 
+class Barline;
+class KeySignature;
+class Position;
 class Score;
+class TimeSignature;
+class Tuning;
 
 namespace Gpx
 {
-#if 0
-struct GpxVoice;
-struct GpxBar;
-struct GpxBeat;
-struct GpxRhythm;
-struct GpxNote;
-struct GpxAutomation;
-#endif
+struct Automation;
+struct Bar;
+struct Beat;
+struct TabNote;
+struct Rhythm;
+struct Voice;
+
 class DocumentReader
 {
 public:
@@ -42,21 +47,9 @@ public:
     void readScore(Score &score);
 
 private:
+    /// Loads the header information (song title, artist, etc).
     void readHeader(Score &score);
-
-    pugi::xml_document myXmlData;
-    pugi::xml_node myFile;
-
-#if 0
-    std::map<int, GpxBar> bars;
-    std::map<int, GpxVoice> voices;
-    std::map<int, GpxBeat> beats;
-    std::map<int, GpxRhythm> rhythms;
-    std::map<int, GpxNote> notes;
-    std::map<int, GpxAutomation> automations;
-
-    void readHeader(PowerTabFileHeader& header);
-    void readTracks(Score* score);
+    void readTracks(Score &score);
     void readBars();
     void readVoices();
     void readBeats();
@@ -64,28 +57,39 @@ private:
     void readNotes();
     void readAutomations();
 
-    void readMasterBars(Score* score);
-    void readBarlineType(const pugi::xml_node &masterBar, boost::shared_ptr<Barline> barline);
-    void readKeySignature(const pugi::xml_node &masterBar, KeySignature& key);
-    void readTimeSignature(const pugi::xml_node &masterBar, TimeSignature& timeSignature);
-    Note* convertNote(int noteId, Position& position, const Tuning& tuning) const;
-#endif
+    /// Assembles the bars from the previously-read data.
+    void readMasterBars(Score &score);
+
+    void readBarlineType(const pugi::xml_node &masterBar, Barline &barline);
+    void readKeySignature(const pugi::xml_node &masterBar, KeySignature &key);
+    void readTimeSignature(const pugi::xml_node &masterBar,
+                           TimeSignature &timeSignature);
+    Note convertNote(int noteId, Position &position, const Tuning &tuning) const;
+
+    pugi::xml_document myXmlData;
+    pugi::xml_node myFile;
+
+    std::map<int, Gpx::Bar> myBars;
+    std::map<int, Gpx::Voice> myVoices;
+    std::map<int, Gpx::Beat> myBeats;
+    std::map<int, Gpx::Rhythm> myRhythms;
+    std::map<int, Gpx::TabNote> myNotes;
+    std::map<int, Gpx::Automation> myAutomations;
 };
 
-#if 0
-struct GpxBar
+struct Bar
 {
     int id;
     std::vector<int> voiceIds;
 };
 
-struct GpxVoice
+struct Voice
 {
     int id;
     std::vector<int> beatIds;
 };
 
-struct GpxBeat
+struct Beat
 {
     int id;
     int rhythmId;
@@ -96,7 +100,7 @@ struct GpxBeat
     std::vector<int> noteIds;
 };
 
-struct GpxRhythm
+struct Rhythm
 {
     int id;
     int noteValue;
@@ -104,7 +108,7 @@ struct GpxRhythm
     bool doubleDotted;
 };
 
-struct GpxNote
+struct TabNote
 {
     int id;
     bool tied;
@@ -116,7 +120,7 @@ struct GpxNote
     pugi::xml_node properties;
 };
 
-struct GpxAutomation
+struct Automation
 {
     std::string type;
     bool linear;
@@ -125,7 +129,6 @@ struct GpxAutomation
     bool visible;
     std::vector<int> value;
 };
-#endif
 }
 
 #endif
