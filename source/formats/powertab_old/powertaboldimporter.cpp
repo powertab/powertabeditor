@@ -189,6 +189,8 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
                                   PowerTabDocument::Score::SystemConstPtr oldSystem,
                                   System &system)
 {
+    int lastPosition = 0;
+
     // Import barlines.
     Barline &startBar = system.getBarlines()[0];
     convert(*oldSystem->GetStartBar(), startBar);
@@ -201,6 +203,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         Barline bar;
         convert(*oldSystem->GetBarline(i), bar);
         system.insertBarline(bar);
+        lastPosition = std::max(lastPosition, bar.getPosition());
 
         // Copy the key and time signature of the last bar into the end bar,
         // since the v2.0 file format expects this.
@@ -259,9 +262,13 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         }
 
         Staff staff;
-        convert(*oldSystem->GetStaff(i), dynamicsInStaff, staff);
+        int lastPosInStaff = convert(*oldSystem->GetStaff(i), dynamicsInStaff,
+                                     staff);
         system.insertStaff(staff);
+        lastPosition = std::max(lastPosition, lastPosInStaff);
     }
+
+    system.getBarlines().back().setPosition(lastPosition + 1);
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Barline &oldBar,
@@ -383,11 +390,12 @@ void PowerTabOldImporter::convert(
     }
 }
 
-void PowerTabOldImporter::convert(
+int PowerTabOldImporter::convert(
         const PowerTabDocument::Staff &oldStaff,
         const std::vector<PowerTabDocument::Score::DynamicPtr> &dynamics,
         Staff &staff)
 {
+    int lastPosition = 0;
     staff.setClefType(static_cast<Staff::ClefType>(oldStaff.GetClef()));
     staff.setStringCount(oldStaff.GetTablatureStaffType());
     staff.setViewType(Staff::GuitarView);
@@ -398,6 +406,7 @@ void PowerTabOldImporter::convert(
         Dynamic dynamic;
         convert(*dynamics[i], dynamic);
         staff.insertDynamic(dynamic);
+        lastPosition = std::max(lastPosition, dynamic.getPosition());
     }
 
     // Import positions.
@@ -409,8 +418,11 @@ void PowerTabOldImporter::convert(
             Position position;
             convert(*oldStaff.GetPosition(voice, i), position);
             staff.insertPosition(voice, position);
+            lastPosition = std::max(position.getPosition(), lastPosition);
         }
     }
+
+    return lastPosition;
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Dynamic &oldDynamic,
@@ -531,6 +543,11 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
         note.setProperty(Note::Octave15ma);
     if (oldNote.IsOctave15mb())
         note.setProperty(Note::Octave15mb);
+
+    if (oldNote.HasSlideIntoFromBelow())
+        note.setProperty(Note::SlideIntoFromBelow);
+    if (oldNote.HasSlideIntoFromAbove())
+        note.setProperty(Note::SlideIntoFromAbove);
 }
 
 namespace {

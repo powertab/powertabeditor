@@ -186,10 +186,6 @@ private:
     static bool IsValidSimpleFlag(uint16_t flag);
     bool IsSimpleFlagSet(uint16_t flag) const;
 
-// Slide Functions
-public:
-    bool HasSlide() const;
-
 private:
     bool HasSlideOutType(uint8_t slideType) const;
 
@@ -199,7 +195,6 @@ public:
 
 // Slide Into Functions
     bool GetSlideInto(uint8_t& type) const;
-    bool HasSlideInto() const;
     bool HasSlideIntoFromAbove() const;
     bool HasSlideIntoFromBelow() const;
 

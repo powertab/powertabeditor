@@ -91,7 +91,7 @@ private:
                         Direction &direction);
 
     typedef boost::shared_ptr<PowerTabDocument::Dynamic> DynamicPtr;
-    static void convert(const PowerTabDocument::Staff &oldStaff,
+    static int convert(const PowerTabDocument::Staff &oldStaff,
                         const std::vector<DynamicPtr> &dynamics,
                         Staff &staff);
     static void convert(const PowerTabDocument::Dynamic &oldDynamic,

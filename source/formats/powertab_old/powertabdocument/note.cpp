@@ -133,13 +133,6 @@ bool Note::GetSlideInto(uint8_t& type) const
     return (true);
 }
 
-/// Determines if the note has a slide (either in or out)
-/// @return True if the note has a slide, false if not
-bool Note::HasSlide() const
-{
-    return HasSlideInto() || HasSlideOutOf();
-}
-
 /// Determines if the note has a certain type of slide out
 /// @return True if the note has that slide type, false if not
 bool Note::HasSlideOutType(uint8_t slideType) const
@@ -152,16 +145,6 @@ bool Note::HasSlideOutType(uint8_t slideType) const
         return false;
     }
     return type == slideType;
-}
-
-/// Determines if the note has a slide into
-/// @return True if the note has a slide into, false if not
-bool Note::HasSlideInto() const
-{
-    uint8_t type = slideIntoNone;
-    if (!GetSlideInto(type))
-        return (false);
-    return (type != slideIntoNone);
 }
 
 /// Gets the slide out of data (if any)
