@@ -37,6 +37,7 @@
 #include <QGraphicsItem>
 #include <QPen>
 #include <score/scorelocation.h>
+#include <score/staffutils.h>
 #include <score/system.h>
 #include <score/utils.h>
 
@@ -650,28 +651,31 @@ void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
                 if (!note)
                     continue;
 
-#if 0
-                quint8 type = 0;
-                qint8 steps = 0;
-
-                // draw any slides out of the note
-                note->GetSlideOutOf(type, steps);
-
-                if (type != Note::slideOutOfNone)
+                // Draw any slides out of the note.
+                if (note->hasProperty(Note::ShiftSlide) ||
+                    note->hasProperty(Note::LegatoSlide) ||
+                    note->hasProperty(Note::SlideOutOfDownwards) ||
+                    note->hasProperty(Note::SlideOutOfUpwards))
                 {
-                    // figure out if we're sliding up or down
-                    const bool slideUp = (type == Note::slideOutOfUpwards) || (steps > 0);
-                    const uint32_t curPosIndex = currentPosition->GetPosition();
+                    // Figure out if we're sliding up or down.
+                    bool slideUp = note->hasProperty(Note::SlideOutOfUpwards);
 
-                    // Get the index of the next position, and also handle the
-                    // edge case where we are at the end of a system.
-                    const uint32_t nextPosIndex = std::max(staff->GetIndexOfNextPosition(voice, system, currentPosition),
-                                                           curPosIndex + 1);
+                    if (note->hasProperty(Note::ShiftSlide) ||
+                            note->hasProperty(Note::LegatoSlide))
+                    {
+                        const Note *nextNote = StaffUtils::getNextNote(
+                                    staff, voice, pos.getPosition(), string);
+                        slideUp = nextNote && nextNote->getFretNumber() >
+                                note->getFretNumber();
+                    }
 
-                    drawSlidesHelper(currentStaffInfo, string, slideUp,
-                                     curPosIndex, nextPosIndex);
+                    const Position *nextPos = StaffUtils::getNextPosition(
+                                staff, voice, pos.getPosition());
+
+                    drawSlide(layout, string, slideUp, pos.getPosition(),
+                              nextPos ? nextPos->getPosition() :
+                                        pos.getPosition() + 1);
                 }
-#endif
 
                 // Draw any slides going into the note.
                 if (note->hasProperty(Note::SlideIntoFromAbove) ||

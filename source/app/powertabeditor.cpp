@@ -1463,17 +1463,7 @@ void PowerTabEditor::createCommands()
     myTappedHarmonicCommand->setCheckable(true);
     connect(myTappedHarmonicCommand, SIGNAL(triggered()), this,
             SLOT(editTappedHarmonic()));
-#if 0
-    shiftSlideAct = new Command(tr("Shift Slide"), "TabSymbols.ShiftSlide", Qt::Key_S, this);
-    shiftSlideAct->setCheckable(true);
-    sigfwd::connect(shiftSlideAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfShiftSlide));
 
-    legatoSlideAct = new Command(tr("Legato Slide"), "TabSymbols.LegatoSlide", Qt::Key_L, this);
-    legatoSlideAct->setCheckable(true);
-    sigfwd::connect(legatoSlideAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfLegatoSlide));
-#endif
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
                                   Position::Vibrato);
@@ -1514,7 +1504,6 @@ void PowerTabEditor::createCommands()
                                   "TabSymbols.PickStrokeDown", QKeySequence(),
                                   Position::PickStrokeDown);
 
-    // Slide Into Menu.
     createNotePropertyCommand(mySlideIntoFromAboveCommand,
                               tr("Slide Into From Above"), "SlideInto.FromAbove",
                               QKeySequence(), Note::SlideIntoFromAbove);
@@ -1522,20 +1511,20 @@ void PowerTabEditor::createCommands()
                               tr("Slide Into From Below"), "SlideInto.FromBelow",
                               QKeySequence(), Note::SlideIntoFromBelow);
 
-#if 0
-    // Slide Out Of Menu
-    slideOutOfDownwardsAct = new Command(tr("Slide Out Of Downwards"), "SlideOut.Downwards",
-                                         QKeySequence(), this);
-    slideOutOfDownwardsAct->setCheckable(true);
-    sigfwd::connect(slideOutOfDownwardsAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfDownwards));
+    createNotePropertyCommand(myShiftSlideCommand, tr("Shift Slide"),
+                              "TabSymbols.ShiftSlide", Qt::Key_S,
+                              Note::ShiftSlide);
+    createNotePropertyCommand(myLegatoSlideCommand, tr("Legato Slide"),
+                              "TabSymbols.LegatoSlide", Qt::Key_L,
+                              Note::LegatoSlide);
 
-    slideOutOfUpwardsAct = new Command(tr("Slide Out Of Upwards"), "SlideOut.Upwards",
-                                       QKeySequence(), this);
-    slideOutOfUpwardsAct->setCheckable(true);
-    sigfwd::connect(slideOutOfUpwardsAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSlideOutOf, this, Note::slideOutOfUpwards));
-#endif
+    createNotePropertyCommand(mySlideOutOfDownwardsCommand,
+                              tr("Slide Out Of Downwards"),"SlideOut.Downwards",
+                              QKeySequence(), Note::SlideOutOfDownwards);
+    createNotePropertyCommand(mySlideOutOfUpwardsCommand,
+                              tr("Slide Out Of Upwards"),"SlideOut.Upwards",
+                              QKeySequence(), Note::SlideOutOfUpwards);
+
     myPlayerChangeCommand = new Command("Player Change...",
                                         "Player.PlayerChange", QKeySequence(),
                                         this);
@@ -1789,14 +1778,13 @@ void PowerTabEditor::createMenus()
     mySlideIntoMenu->addAction(mySlideIntoFromBelowCommand);
     mySlideIntoMenu->addAction(mySlideIntoFromAboveCommand);
 
-#if 0
-    tabSymbolsMenu->addAction(shiftSlideAct);
-    tabSymbolsMenu->addAction(legatoSlideAct);
+    myTabSymbolsMenu->addAction(myShiftSlideCommand);
+    myTabSymbolsMenu->addAction(myLegatoSlideCommand);
 
-    slideOutOfMenu = tabSymbolsMenu->addMenu(tr("Slide Out Of"));
-    slideOutOfMenu->addAction(slideOutOfDownwardsAct);
-    slideOutOfMenu->addAction(slideOutOfUpwardsAct);    
-#endif
+    mySlideOutOfMenu = myTabSymbolsMenu->addMenu(tr("Slide Out Of"));
+    mySlideOutOfMenu->addAction(mySlideOutOfDownwardsCommand);
+    mySlideOutOfMenu->addAction(mySlideOutOfUpwardsCommand);
+
     myPlayerMenu = menuBar()->addMenu(tr("&Player"));
     myPlayerMenu->addAction(myPlayerChangeCommand);
 #if 0
@@ -2086,10 +2074,18 @@ void PowerTabEditor::updateCommands()
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
+
     updateNoteProperty(mySlideIntoFromAboveCommand, note,
                        Note::SlideIntoFromAbove);
     updateNoteProperty(mySlideIntoFromBelowCommand, note,
                        Note::SlideIntoFromBelow);
+    updateNoteProperty(myShiftSlideCommand, note, Note::ShiftSlide);
+    updateNoteProperty(myLegatoSlideCommand, note, Note::LegatoSlide);
+    updateNoteProperty(mySlideOutOfDownwardsCommand, note,
+                       Note::SlideOutOfDownwards);
+    updateNoteProperty(mySlideOutOfUpwardsCommand, note,
+                       Note::SlideOutOfUpwards);
+
     updatePositionProperty(myVibratoCommand, pos, Position::Vibrato);
     updatePositionProperty(myWideVibratoCommand, pos, Position::WideVibrato);
     updatePositionProperty(myPalmMuteCommand, pos, Position::PalmMuting);
@@ -2866,48 +2862,6 @@ void PowerTabEditor::updateLocationLabel()
 {
     getCurrentPlaybackWidget()->updateLocationLabel(
                 getCurrentScoreArea()->getCaret()->toString());
-}
-
-void PowerTabEditor::editSlideOutOf(uint8_t newSlideType)
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Note* note = caret->getCurrentNote();
-    Position* position = caret->getCurrentPosition();
-    const uint32_t voice = caret->getCurrentVoice();
-
-    qint8 newSteps = 0;
-
-    // for shift/legato slides, get the number of steps we will shift
-    if (newSlideType == Note::slideOutOfLegatoSlide || newSlideType == Note::slideOutOfShiftSlide)
-    {
-        shared_ptr<const Staff> staff = caret->getCurrentStaff();
-
-        // if we can't do a slide, uncheck the action that was just pressed and abort
-        if (!staff->CanSlideBetweenNotes(position, note, voice))
-        {
-            if (newSlideType == Note::slideOutOfLegatoSlide)
-                legatoSlideAct->setChecked(false);
-            else if (newSlideType == Note::slideOutOfShiftSlide)
-                shiftSlideAct->setChecked(false);
-
-            return;
-        }
-
-        newSteps = caret->getCurrentStaff()->GetSlideSteps(position, note, voice);
-    }
-
-    // find what the current slide is set to - if it is the same, remove the slide
-    quint8 currentType = 0;
-    qint8 steps = 0;
-    note->GetSlideOutOf(currentType, steps);
-    if (currentType == newSlideType)
-    {
-        newSlideType = Note::slideOutOfNone;
-        newSteps = 0;
-    }
-
-    undoManager->push(new EditSlideOut(note, newSlideType, newSteps),
-                      caret->getCurrentSystemIndex());
 }
 
 void PowerTabEditor::doPaste()

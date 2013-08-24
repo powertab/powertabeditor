@@ -108,6 +108,12 @@ void Note::setProperty(SimpleProperty property, bool set)
             mySimpleProperties.set(SlideIntoFromBelow, false);
         if (property == SlideIntoFromBelow)
             mySimpleProperties.set(SlideIntoFromAbove, false);
+
+        if (property >= ShiftSlide && property <= SlideOutOfUpwards)
+        {
+            for (int p = ShiftSlide; p <= SlideOutOfUpwards; ++p)
+                mySimpleProperties.set(static_cast<SimpleProperty>(p), false);
+        }
     }
 
     mySimpleProperties.set(property, set);

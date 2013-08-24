@@ -375,11 +375,21 @@ private:
     Command *myHammerPullCommand;
     Command *myHammerOnFromNowhereCommand;
     Command *myPullOffToNowhereCommand;
+
     Command *myNaturalHarmonicCommand;
     Command *myTappedHarmonicCommand;
+
     QMenu *mySlideIntoMenu;
     Command *mySlideIntoFromAboveCommand;
     Command *mySlideIntoFromBelowCommand;
+
+    Command *myShiftSlideCommand;
+    Command *myLegatoSlideCommand;
+
+    QMenu *mySlideOutOfMenu;
+    Command *mySlideOutOfDownwardsCommand;
+    Command *mySlideOutOfUpwardsCommand;
+
     Command *myVibratoCommand;
     Command *myWideVibratoCommand;
     Command *myPalmMuteCommand;
@@ -408,10 +418,7 @@ private:
     void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
 
-    void editSlideOutOf(uint8_t newSlideType);
     void shiftTabNumber(int direction);
-    void editRest(uint8_t duration);
-    void editTimeSignature(const SystemLocation &location);
 
     PlaybackWidget* getCurrentPlaybackWidget() const;
     Mixer* getCurrentMixer();
@@ -475,12 +482,6 @@ private:
     Command* volumeSwellAct;
 
     Command* artificialHarmonicAct;
-    Command* shiftSlideAct;
-    Command* legatoSlideAct;
-
-    QMenu* slideOutOfMenu;
-    Command* slideOutOfDownwardsAct;
-    Command* slideOutOfUpwardsAct;
 
     QMenu* guitarMenu;
     Command* addGuitarAct;

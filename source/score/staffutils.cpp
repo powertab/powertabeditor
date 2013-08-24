@@ -38,21 +38,22 @@ bool InPositionRange::operator ()(const Position &pos) const
     return pos.getPosition() >= myLeft && pos.getPosition() <= myRight;
 }
 
-const Note *getNextNote(const Staff &staff, int voice, int position,
-                        int string)
+const Position *getNextPosition(const Staff &staff, int voice, int position)
 {
-    const Note *note = 0;
-
     BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
     {
         if (pos.getPosition() > position)
-        {
-            note = Utils::findByString(pos, string);
-            break;
-        }
+            return &pos;
     }
 
-    return note;
+    return NULL;
+}
+
+const Note *getNextNote(const Staff &staff, int voice, int position,
+                        int string)
+{
+    const Position *nextPos = getNextPosition(staff, voice, position);
+    return nextPos ? Utils::findByString(*nextPos, string) : NULL;
 }
 
 const Note *getPreviousNote(const Staff &staff, int voice, int position,

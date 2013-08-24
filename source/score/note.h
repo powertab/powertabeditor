@@ -41,6 +41,10 @@ public:
         Octave15mb,
         SlideIntoFromBelow,
         SlideIntoFromAbove,
+        ShiftSlide,
+        LegatoSlide,
+        SlideOutOfDownwards,
+        SlideOutOfUpwards,
         NumSimpleProperties
     };
 

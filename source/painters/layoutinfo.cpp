@@ -374,7 +374,11 @@ void LayoutInfo::calculateTabStaffBelowLayout()
             }
 
             if (Utils::hasNoteWithProperty(pos, Note::SlideIntoFromAbove) ||
-                Utils::hasNoteWithProperty(pos, Note::SlideIntoFromBelow))
+                Utils::hasNoteWithProperty(pos, Note::SlideIntoFromBelow) ||
+                Utils::hasNoteWithProperty(pos, Note::ShiftSlide) ||
+                Utils::hasNoteWithProperty(pos, Note::LegatoSlide) ||
+                Utils::hasNoteWithProperty(pos, Note::SlideOutOfDownwards) ||
+                Utils::hasNoteWithProperty(pos, Note::SlideOutOfUpwards))
             {
                 myTabStaffBelowSymbols.push_back(
                             SymbolGroup(SymbolGroup::Slide, x, width, height++));

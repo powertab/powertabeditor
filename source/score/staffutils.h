@@ -42,6 +42,9 @@ typedef boost::filtered_range<InPositionRange,
 FilteredVoiceConstIterator getPositionsInRange(const Staff &staff, int voice,
                                                int left, int right);
 
+/// Returns the next position in the staff, if it exists.
+const Position *getNextPosition(const Staff &staff, int voice, int position);
+
 /// Finds the next note in the staff on the given string.
 const Note *getNextNote(const Staff &staff, int voice, int position,
                         int string);
