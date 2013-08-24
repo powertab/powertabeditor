@@ -231,8 +231,9 @@ void BeamGroup::drawExtraBeams(QPainterPath &path) const
                 std::log(2.0) - 3;
 
         // The note only has a full beam to the previous note if they have the
-        // same duration type.
-        const bool hasFullBeaming = (prevDuration == duration);
+        // same duration type (and if a previous note exists).
+        const bool hasFullBeaming = (prevDuration == duration) &&
+                stem != myNoteStems.begin();
 
         const bool hasFractionalLeft = (duration > prevDuration);
         const bool hasFractionalRight = !hasFractionalLeft && duration > nextDuration;
