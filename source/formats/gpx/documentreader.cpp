@@ -146,14 +146,6 @@ void Gpx::DocumentReader::readTracks(Score &score)
         score.insertPlayer(player);
         score.insertInstrument(instrument);
     }
-
-    // TODO
-#if 0
-    // Set up an initial player change.
-    PlayerChange change;
-    for (int i = 0; i < score.getPlayers().size(); ++i)
-        change.insertActivePlayer(i, ActivePlayer(i, i));
-#endif
 }
 
 void Gpx::DocumentReader::readBars()
@@ -291,6 +283,12 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
         system.insertStaff(Staff(player.getTuning().getStringCount()));
     }
 
+    // Set up an initial player change.
+    PlayerChange change;
+    for (int i = 0; i < score.getPlayers().size(); ++i)
+        change.insertActivePlayer(i, ActivePlayer(i, i));
+    system.insertPlayerChange(change);
+
     int barIndex = 0;
     int startPos = 0;
     BOOST_FOREACH(xml_node masterBar, myFile.child("MasterBars"))
@@ -348,7 +346,7 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
              i < static_cast<int>(barIds.size()); ++i)
         {
             Staff &staff = system.getStaves()[i];
-            int currentPos = (startPos != 0) ? startPos + 1 : 1;
+            int currentPos = (startPos != 0) ? startPos + 1 : 0;
 
             // TODO - import multiple voices.
             BOOST_FOREACH(int beatId,
