@@ -122,4 +122,8 @@ SERIALIZE(TempoMarker)
 SERIALIZE(TimeSignature)
 SERIALIZE(Tuning)
 
+// Used for the clipboard functions.
+SERIALIZE(int)
+SERIALIZE(std::vector<Position>)
+
 }

@@ -9,7 +9,7 @@ add_definitions(-DSVN_REVISION=${MY_WC_REVISION})
 
 add_library(pteapp
     caret.cpp
-    #clipboard.cpp
+    clipboard.cpp
     command.cpp
     documentmanager.cpp
     options.cpp

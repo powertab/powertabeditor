@@ -17,55 +17,44 @@
   
 #include "clipboard.h"
 
+#include <boost/foreach.hpp>
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
-#include <QMessageBox>
-
+#include <QString>
+#include <score/position.h>
+#include <score/serialization.h>
 #include <sstream>
 
-#include <actions/undomanager.h>
-#include <actions/insertnotes.h>
+static const QString PTB_MIME_TYPE = "application/ptb";
 
-#include <painters/caret.h>
-#include <powertabdocument/guitar.h>
-#include <powertabdocument/powertabfileheader.h>
-#include <powertabdocument/powertabinputstream.h>
-#include <powertabdocument/powertaboutputstream.h>
-#include <powertabdocument/position.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/tuning.h>
-
-namespace
-{
-const QString PTB_MIME_TYPE = "application/ptb";
-}
-
-/// Stores the selected data on the clipboard
-void Clipboard::copySelection(const std::vector<Position*>& selectedPositions,
-                              const Tuning& tuning)
+void Clipboard::copySelection(const std::vector<Position *> &selectedPositions,
+                              int numStrings)
 {
     if (selectedPositions.empty())
-    {
         return;
+
+    std::vector<Position> positions;
+    BOOST_FOREACH(const Position *pos, selectedPositions)
+    {
+        positions.push_back(*pos);
     }
 
-    // serialize the notes to a string
-    std::ostringstream ss(std::ios::binary);
-    PowerTabOutputStream outputStream(ss);
-    tuning.Serialize(outputStream);
-    outputStream.WriteVector(selectedPositions);
+    // Serialize the notes to a string.
+    std::ostringstream ss;
+    ScoreUtils::save(ss, numStrings);
+    ScoreUtils::save(ss, positions);
     const std::string data = ss.str();
 
-    // copy the data to the clipboard
-    QMimeData* mimeData = new QMimeData;
+    // Copy the data to the clipboard.
+    QMimeData *mimeData = new QMimeData();
     mimeData->setData(PTB_MIME_TYPE, QByteArray(data.c_str(), data.length()));
 
-    QClipboard* clipboard = QApplication::clipboard();
+    QClipboard *clipboard = QApplication::clipboard();
     clipboard->setMimeData(mimeData);
 }
 
+#if 0
 void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
                       const Caret* caret)
 {
@@ -104,6 +93,7 @@ void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
                                       caret->getCurrentPositionIndex(), positions),
                       caret->getCurrentSystemIndex());
 }
+#endif
 
 bool Clipboard::hasData()
 {

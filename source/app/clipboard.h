@@ -15,27 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef CLIPBOARD_H
-#define CLIPBOARD_H
+#ifndef APP_CLIPBOARD_H
+#define APP_CLIPBOARD_H
 
 #include <vector>
-#include <QString>
 
 class Position;
-class Tuning;
-class Caret;
-class UndoManager;
-class QWidget;
 
 namespace Clipboard
 {
 
-void copySelection(const std::vector<Position*>& selectedPositions,
-                   const Tuning& tuning);
-
+/// Stores the selected data on the clipboard.
+void copySelection(const std::vector<Position *>& selectedPositions,
+                   int numStrings);
+#if 0
 void paste(QWidget* parent, UndoManager *undoManager, const Caret *caret);
+#endif
 
+/// Returns true if any data is on the clipboard.
 bool hasData();
 
 }
-#endif // CLIPBOARD_H
+
+#endif

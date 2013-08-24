@@ -85,6 +85,9 @@ private slots:
     /// Launches the preferences dialog.
     void editPreferences();
 
+    /// Copies the selected positions to the keyboard.
+    void copySelectedNotes();
+
     /// Starts or stops playback of the score.
     void startStopPlayback();
 
@@ -284,6 +287,7 @@ private:
     QMenu *myEditMenu;
     QAction *myUndoAction;
     QAction *myRedoAction;
+    Command *myCopyCommand;
 
     QMenu *myPlaybackMenu;
     Command *myPlayPauseCommand;
@@ -451,7 +455,6 @@ private slots:
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
     void doPaste();
-    void copySelectedNotes();
     void cutSelectedNotes();
 
 private:
@@ -460,7 +463,6 @@ private:
     QSplitter* horSplitter;
 
     Command* cutAct;
-    Command* copyAct;
     Command* pasteAct;
     Command* fileInfoAct;
 

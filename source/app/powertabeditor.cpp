@@ -50,6 +50,7 @@
 #include <actions/undomanager.h>
 
 #include <app/caret.h>
+#include <app/clipboard.h>
 #include <app/command.h>
 #include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
@@ -382,6 +383,15 @@ void PowerTabEditor::editPreferences()
 #else
     Q_ASSERT(false);
 #endif
+}
+
+void PowerTabEditor::copySelectedNotes()
+{
+    ScoreLocation &location = getLocation();
+    const std::vector<Position *> positions = location.getSelectedPositions();
+    const int numStrings = location.getStaff().getStringCount();
+
+    Clipboard::copySelection(positions, numStrings);
 }
 
 void PowerTabEditor::startStopPlayback()
@@ -1045,10 +1055,12 @@ void PowerTabEditor::createCommands()
     // Copy/Paste
     cutAct = new Command(tr("Cut"), "Edit.Cut", QKeySequence::Cut, this);
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSelectedNotes()));
-
-    copyAct = new Command(tr("Copy"), "Edit.Copy", QKeySequence::Copy, this);
-    connect(copyAct, SIGNAL(triggered()), this, SLOT(copySelectedNotes()));
-
+#endif
+    myCopyCommand = new Command(tr("Copy"), "Edit.Copy", QKeySequence::Copy,
+                                this);
+    connect(myCopyCommand, SIGNAL(triggered()), this,
+            SLOT(copySelectedNotes()));
+#if 0
     pasteAct = new Command(tr("Paste"), "Edit.Paste", QKeySequence::Paste, this);
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(doPaste()));
 
@@ -1620,10 +1632,12 @@ void PowerTabEditor::createMenus()
     myEditMenu = menuBar()->addMenu(tr("&Edit"));
     myEditMenu->addAction(myUndoAction);
     myEditMenu->addAction(myRedoAction);
+    myEditMenu->addSeparator();
 #if 0
-    editMenu->addSeparator();
     editMenu->addAction(cutAct);
-    editMenu->addAction(copyAct);
+#endif
+    myEditMenu->addAction(myCopyCommand);
+#if 0
     editMenu->addAction(pasteAct);
     editMenu->addSeparator();
     editMenu->addAction(fileInfoAct);
@@ -2885,16 +2899,6 @@ void PowerTabEditor::doPaste()
     Clipboard::paste(this, undoManager.get(), getCurrentScoreArea()->getCaret());
 
     undoManager->endMacro();
-}
-
-void PowerTabEditor::copySelectedNotes()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    const std::vector<Position*> positions = caret->getSelectedPositions();
-    const Tuning& tuning = caret->getCurrentScore()->GetGuitar(
-                caret->getCurrentStaffIndex())->GetTuning();
-
-    Clipboard::copySelection(getSelectedPositions(), tuning);
 }
 
 void PowerTabEditor::cutSelectedNotes()
