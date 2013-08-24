@@ -169,17 +169,6 @@ bool Note::GetSlideOutOf(uint8_t& type, int8_t& steps) const
     return (true);
 }
 
-/// Determines if the note has a slide out of
-/// @return True if the note has a slide out of, false if not
-bool Note::HasSlideOutOf() const
-{
-    uint8_t type = slideOutOfNone;
-    int8_t steps = 0;
-    if (!GetSlideOutOf(type, steps))
-        return (false);
-    return (type != slideOutOfNone);
-}
-
 bool Note::HasSlideOutOfDownwards() const
 {
     uint8_t type = 0;

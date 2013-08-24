@@ -200,7 +200,6 @@ public:
 
 // Slide Out Of Functions
     bool GetSlideOutOf(uint8_t& type, int8_t& steps) const;
-    bool HasSlideOutOf() const;
     bool HasSlideOutOfDownwards() const;
     bool HasSlideOutOfUpwards() const;
 

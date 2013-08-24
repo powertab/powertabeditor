@@ -548,6 +548,15 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
         note.setProperty(Note::SlideIntoFromBelow);
     if (oldNote.HasSlideIntoFromAbove())
         note.setProperty(Note::SlideIntoFromAbove);
+
+    if (oldNote.HasShiftSlide())
+        note.setProperty(Note::ShiftSlide);
+    if (oldNote.HasLegatoSlide())
+        note.setProperty(Note::LegatoSlide);
+    if (oldNote.HasSlideOutOfDownwards())
+        note.setProperty(Note::SlideOutOfDownwards);
+    if (oldNote.HasSlideOutOfUpwards())
+        note.setProperty(Note::SlideOutOfUpwards);
 }
 
 namespace {
