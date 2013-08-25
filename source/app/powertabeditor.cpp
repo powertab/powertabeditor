@@ -395,6 +395,31 @@ void PowerTabEditor::copySelectedNotes()
     Clipboard::copySelection(positions, numStrings);
 }
 
+void PowerTabEditor::pasteNotes()
+{
+    if (!Clipboard::hasData())
+    {
+        QMessageBox msg(this);
+        msg.setText(QObject::tr("The clipboard does not contain any notes."));
+        msg.exec();
+        return;
+    }
+
+    myUndoManager->beginMacro(tr("Paste Notes"));
+
+    // TODO - implement this once deleting positions is implemented.
+#if 0
+    // If there are any selected notes, delete them before pasting.
+    if (getCurrentScoreArea()->getCaret()->hasSelection())
+    {
+        clearCurrentPosition();
+    }
+#endif
+
+    Clipboard::paste(this, *myUndoManager, getLocation());
+    myUndoManager->endMacro();
+}
+
 void PowerTabEditor::startStopPlayback()
 {
     myIsPlaying = !myIsPlaying;
@@ -1067,7 +1092,7 @@ void PowerTabEditor::createCommands()
     myRedoAction->setShortcuts(QKeySequence::Redo);
 
 #if 0
-    // Copy/Paste
+    // Copy/Paste actions.
     cutAct = new Command(tr("Cut"), "Edit.Cut", QKeySequence::Cut, this);
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSelectedNotes()));
 #endif
@@ -1075,10 +1100,12 @@ void PowerTabEditor::createCommands()
                                 this);
     connect(myCopyCommand, SIGNAL(triggered()), this,
             SLOT(copySelectedNotes()));
-#if 0
-    pasteAct = new Command(tr("Paste"), "Edit.Paste", QKeySequence::Paste, this);
-    connect(pasteAct, SIGNAL(triggered()), this, SLOT(doPaste()));
 
+    myPasteCommand = new Command(tr("Paste"), "Edit.Paste",
+                                 QKeySequence::Paste, this);
+    connect(myPasteCommand, SIGNAL(triggered()), this, SLOT(pasteNotes()));
+
+#if 0
     // File Information
     fileInfoAct = new Command(tr("File Information..."), "Edit.FileInformation",
                               QKeySequence(), this);
@@ -1655,8 +1682,8 @@ void PowerTabEditor::createMenus()
     editMenu->addAction(cutAct);
 #endif
     myEditMenu->addAction(myCopyCommand);
+    myEditMenu->addAction(myPasteCommand);
 #if 0
-    editMenu->addAction(pasteAct);
     editMenu->addSeparator();
     editMenu->addAction(fileInfoAct);
 #endif
@@ -2880,29 +2907,6 @@ void PowerTabEditor::updateLocationLabel()
 {
     getCurrentPlaybackWidget()->updateLocationLabel(
                 getCurrentScoreArea()->getCaret()->toString());
-}
-
-void PowerTabEditor::doPaste()
-{
-    if (!Clipboard::hasData())
-    {
-        QMessageBox msg(this);
-        msg.setText(QObject::tr("The clipboard does not contain any notes."));
-        msg.exec();
-        return;
-    }
-
-    undoManager->beginMacro(tr("Paste Notes"));
-
-    // If there are any selected notes, delete them before pasting.
-    if (getCurrentScoreArea()->getCaret()->hasSelection())
-    {
-        clearCurrentPosition();
-    }
-
-    Clipboard::paste(this, undoManager.get(), getCurrentScoreArea()->getCaret());
-
-    undoManager->endMacro();
 }
 
 void PowerTabEditor::cutSelectedNotes()

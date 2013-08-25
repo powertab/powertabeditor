@@ -34,7 +34,7 @@ add_library(pteactions
     edittimesignature.cpp
     #edittrackshown.cpp
     #edittuning.cpp
-    #insertnotes.cpp
+    insertnotes.cpp
     #removealternateending.cpp
     #removeartificialharmonic.cpp
     #removechordtext.cpp

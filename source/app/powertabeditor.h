@@ -87,6 +87,8 @@ private slots:
 
     /// Copies the selected positions to the keyboard.
     void copySelectedNotes();
+    /// Paste notes from the clipboard at the current location.
+    void pasteNotes();
 
     /// Starts or stops playback of the score.
     void startStopPlayback();
@@ -292,6 +294,7 @@ private:
     QAction *myUndoAction;
     QAction *myRedoAction;
     Command *myCopyCommand;
+    Command *myPasteCommand;
 
     QMenu *myPlaybackMenu;
     Command *myPlayPauseCommand;
@@ -457,7 +460,6 @@ private slots:
     void showTuningDictionary();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
-    void doPaste();
     void cutSelectedNotes();
 
 private:
@@ -466,7 +468,6 @@ private:
     QSplitter* horSplitter;
 
     Command* cutAct;
-    Command* pasteAct;
     Command* fileInfoAct;
 
     Command* clearNoteAct; // clears the active note

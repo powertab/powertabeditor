@@ -202,6 +202,9 @@ static void shift(const boost::iterator_range<T> &range, int position,
 static void shift(System &system, int position, int offset)
 {
     shift(system.getBarlines(), position, offset);
+    // Always keep the first bar at position 0.
+    system.getBarlines().front().setPosition(0);
+
     shift(system.getAlternateEndings(), position, offset);
     shift(system.getTempoMarkers(), position, offset);
     shift(system.getDirections(), position, offset);

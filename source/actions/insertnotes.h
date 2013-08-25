@@ -15,40 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef INSERTNOTES_H
-#define INSERTNOTES_H
+#ifndef ACTIONS_INSERTNOTES_H
+#define ACTIONS_INSERTNOTES_H
 
 #include <QUndoCommand>
+#include <score/position.h>
+#include <score/scorelocation.h>
 #include <vector>
-#include <boost/shared_ptr.hpp>
-#include <boost/cstdint.hpp>
-
-class Position;
-class Score;
-class Staff;
-class System;
 
 class InsertNotes : public QUndoCommand
 {
 public:
-    InsertNotes(Score* score, boost::shared_ptr<System> system,
-                boost::shared_ptr<Staff> staff,
-                uint32_t insertionPos,
-                const std::vector<Position*>& newPositions);
-    ~InsertNotes();
+    InsertNotes(const ScoreLocation &location,
+                const std::vector<Position> &positions);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    boost::shared_ptr<System> system;
-    boost::shared_ptr<Staff> staff;
-    const uint32_t insertionPos;
-    std::vector<Position*> newPositions;
-    int shiftAmount;
-    /// Tracks whether we are responsible for deleting the new positions.
-    bool ownPositions;
+    ScoreLocation myLocation;
+    std::vector<Position> myNewPositions;
+    int myShiftAmount;
 };
 
-#endif // INSERTNOTES_H
+#endif

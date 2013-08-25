@@ -17,51 +17,45 @@
   
 #include "insertnotes.h"
 
-#include <powertabdocument/barline.h>
-#include <powertabdocument/position.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/system.h>
+#include <boost/foreach.hpp>
+#include <score/staffutils.h>
+#include <score/system.h>
 
-InsertNotes::InsertNotes(Score* score,
-                         boost::shared_ptr<System> system,
-                         boost::shared_ptr<Staff> staff,
-                         uint32_t insertionPos,
-                         const std::vector<Position*>& positions) :
-    QUndoCommand(QObject::tr("Insert Notes")),
-    score(score),
-    system(system),
-    staff(staff),
-    insertionPos(insertionPos),
-    newPositions(positions),
-    shiftAmount(0),
-    ownPositions(true)
+InsertNotes::InsertNotes(const ScoreLocation &location,
+                         const std::vector<Position> &positions)
+    : QUndoCommand(QObject::tr("Insert Notes")),
+      myLocation(location),
+      myNewPositions(positions),
+      myShiftAmount(0)
 {
+    const int insertionPos = location.getPositionIndex();
+
     // Adjust the locations of the new notes.
-    const int offset = insertionPos - newPositions.front()->GetPosition();
-    for (size_t i = 0; i < newPositions.size(); i++)
+    const int offset = insertionPos - myNewPositions.front().getPosition();
+    BOOST_FOREACH(Position &pos, myNewPositions)
     {
-        newPositions[i]->SetPosition(newPositions[i]->GetPosition() + offset);
+        pos.setPosition(pos.getPosition() + offset);
     }
 
-    const size_t startPos = newPositions.front()->GetPosition();
-    const size_t endPos = newPositions.back()->GetPosition();
+    const int startPos = myNewPositions.front().getPosition();
+    const int endPos = myNewPositions.back().getPosition();
+
+    const System &system = location.getSystem();
+    const Staff &staff = location.getStaff();
+    const int voice = location.getVoice();
+
+    const Position *nextPos = StaffUtils::getNextPosition(staff, voice, startPos - 1);
+    const Barline *nextBar = system.getNextBarline(startPos - 1);
 
     // Check for any existing notes or barlines that will conflict with the
     // new notes.
-    std::vector<Position*> currentPositions;
-    std::vector<System::BarlinePtr> currentBarlines;
-    staff->GetPositionsInRange(currentPositions, 0, startPos, endPos);
-    system->GetBarlinesInRange(currentBarlines, startPos, endPos);
-
-    // If there is a conflict, we will need toshift the old notes/barlines to
-    // the right.
-    if (!currentPositions.empty() || !currentBarlines.empty())
+    if ((nextPos && nextPos->getPosition() <= endPos) ||
+        (nextBar && nextBar->getPosition() <= endPos))
     {
-        const int firstPosition = currentPositions.empty() ? -1 :
-                                        currentPositions.front()->GetPosition();
-        const int firstBarPos = currentBarlines.empty() ? -1 :
-                                        currentBarlines.front()->GetPosition();
+        const int firstPosition = (nextPos && nextPos->getPosition() <= endPos)
+                ? nextPos->getPosition() : -1;
+        const int firstBarPos = (nextBar && nextBar->getPosition() <= endPos)
+                ? nextBar->getPosition() : -1;
 
         // Take the smallest positive number, ignoring the start barline.
         int position = -1;
@@ -74,54 +68,40 @@ InsertNotes::InsertNotes(Score* score,
 
         if (position >= 0)
         {
-            shiftAmount = newPositions.back()->GetPosition() - position + 1;
-            assert(shiftAmount > 0);
+            myShiftAmount = myNewPositions.back().getPosition() - position + 1;
+            assert(myShiftAmount > 0);
         }
-    }
-}
-
-InsertNotes::~InsertNotes()
-{
-    if (ownPositions)
-    {
-        qDeleteAll(newPositions);
     }
 }
 
 void InsertNotes::redo()
 {
     // Shift existing notes / barlines to the right if necessary.
-    for (int i = 0; i < shiftAmount; i++)
+    for (int i = 0; i < myShiftAmount; ++i)
     {
-        score->ShiftForward(system, insertionPos);
+        SystemUtils::shiftForward(myLocation.getSystem(),
+                                  myLocation.getPositionIndex());
     }
 
     // Insert the new notes.
-    for (size_t i = 0; i < newPositions.size(); i++)
+    BOOST_FOREACH(const Position &pos, myNewPositions)
     {
-        staff->InsertPosition(0, newPositions[i]);
+        myLocation.getStaff().insertPosition(myLocation.getVoice(), pos);
     }
-
-    // After inserting the notes, ensure that there is enough space for
-    // them in the system.
-    system->AdjustPositionSpacing();
-
-    ownPositions = false;
 }
 
 void InsertNotes::undo()
 {
     // Remove the notes that were added.
-    for (size_t i = 0; i < newPositions.size(); i++)
+    BOOST_FOREACH(const Position &pos, myNewPositions)
     {
-        staff->RemovePosition(0, newPositions[i]->GetPosition());
+        myLocation.getStaff().removePosition(myLocation.getVoice(), pos);
     }
 
     // Undo any shifting that was performed.
-    for (int i = 0; i < shiftAmount; i++)
+    for (int i = 0; i < myShiftAmount; ++i)
     {
-        score->ShiftBackward(system, insertionPos);
+        SystemUtils::shiftBackward(myLocation.getSystem(),
+                                   myLocation.getPositionIndex());
     }
-
-    ownPositions = true;
 }

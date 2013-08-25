@@ -17,13 +17,18 @@
   
 #include "clipboard.h"
 
+#include <actions/insertnotes.h>
+#include <actions/undomanager.h>
 #include <boost/foreach.hpp>
 #include <QApplication>
 #include <QClipboard>
+#include <QMessageBox>
 #include <QMimeData>
 #include <QString>
 #include <score/position.h>
+#include <score/scorelocation.h>
 #include <score/serialization.h>
+#include <score/staff.h>
 #include <sstream>
 
 static const QString PTB_MIME_TYPE = "application/ptb";
@@ -54,27 +59,23 @@ void Clipboard::copySelection(const std::vector<Position *> &selectedPositions,
     clipboard->setMimeData(mimeData);
 }
 
-#if 0
-void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
-                      const Caret* caret)
+void Clipboard::paste(QWidget *parent, UndoManager &undoManager, ScoreLocation &location)
 {
-    const Tuning& currentTuning = caret->getCurrentScore()->GetGuitar(
-                caret->getCurrentStaffIndex())->GetTuning();
+    const int currentStaffSize = location.getStaff().getStringCount();
 
-    // load data from the clipboard and deserialize
-    const QByteArray rawData = QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE);
+    // Load data from the clipboard and deserialize.
+    const QByteArray rawData = QApplication::clipboard()->mimeData()->data(
+                PTB_MIME_TYPE);
     Q_ASSERT(!rawData.isEmpty());
 
     std::istringstream inputData(std::string(rawData.data(), rawData.length()));
-    PowerTabInputStream inputStream(inputData);
 
-    Tuning tuning;
-    tuning.Deserialize(inputStream, PowerTabFileHeader::FILEVERSION_CURRENT);
+    int staffSize = 0;
+    ScoreUtils::load(inputData, staffSize);
 
-    // For safety, prevent pasting into a different tuning.
-    // TODO - it should be possible to e.g. paste notes from a 6-string guitar
-    // into a 7-string guitar.
-    if (!currentTuning.IsSameTuning(tuning))
+    // For safety, prevent pasting into a tuning with a different number of
+    // strings.
+    if (currentStaffSize != staffSize)
     {
         QMessageBox msg(parent);
         msg.setText(QObject::tr("Cannot paste notes from a different tuning."));
@@ -82,18 +83,13 @@ void Clipboard::paste(QWidget* parent, UndoManager* undoManager,
         return;
     }
 
-    std::vector<Position*> positions;
-    inputStream.ReadVector(positions, PowerTabFileHeader::FILEVERSION_CURRENT);
-
+    std::vector<Position> positions;
+    ScoreUtils::load(inputData, positions);
     Q_ASSERT(!positions.empty());
 
-    undoManager->push(new InsertNotes(caret->getCurrentScore(),
-                                      caret->getCurrentSystem(),
-                                      caret->getCurrentStaff(),
-                                      caret->getCurrentPositionIndex(), positions),
-                      caret->getCurrentSystemIndex());
+    undoManager.push(new InsertNotes(location, positions),
+                     location.getSystemIndex());
 }
-#endif
 
 bool Clipboard::hasData()
 {
