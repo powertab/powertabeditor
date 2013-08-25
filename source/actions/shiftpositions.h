@@ -15,35 +15,29 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef POSITIONSHIFT_H
-#define POSITIONSHIFT_H
+#ifndef ACTIONS_SHIFTPOSITIONS_H
+#define ACTIONS_SHIFTPOSITIONS_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
+#include <score/scorelocation.h>
 
-class Score;
-class System;
-
-class PositionShift : public QUndoCommand
+class ShiftPositions : public QUndoCommand
 {
 public:
     enum ShiftType
     {
-        SHIFT_FORWARD,
-        SHIFT_BACKWARD
+        Forward,
+        Backward
     };
 
-    PositionShift(Score* score, boost::shared_ptr<System> system,
-                  uint32_t positionIndex, ShiftType type);
-    void redo();
-    void undo();
+    ShiftPositions(const ScoreLocation &location, ShiftType type);
+
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    boost::shared_ptr<System> system;
-    const quint32 positionIndex;
-    const ShiftType type;
+    ScoreLocation myLocation;
+    const ShiftType myShiftType;
 };
 
-#endif // POSITIONSHIFT_H
+#endif

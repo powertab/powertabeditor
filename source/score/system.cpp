@@ -186,3 +186,42 @@ void System::removePlayerChange(const PlayerChange &change)
 {
     ScoreUtils::removeObject(myPlayerChanges, change);
 }
+
+template <typename T>
+static void shift(const boost::iterator_range<T> &range, int position,
+                  int offset)
+{
+    BOOST_FOREACH(typename T::value_type &obj, range)
+    {
+        if (obj.getPosition() >= position)
+            obj.setPosition(obj.getPosition() + offset);
+    }
+}
+
+/// Helper function for the shiftForward and shiftBackward functions.
+static void shift(System &system, int position, int offset)
+{
+    shift(system.getBarlines(), position, offset);
+    shift(system.getAlternateEndings(), position, offset);
+    shift(system.getTempoMarkers(), position, offset);
+    shift(system.getDirections(), position, offset);
+    shift(system.getPlayerChanges(), position, offset);
+
+    BOOST_FOREACH(Staff &staff, system.getStaves())
+    {
+        shift(staff.getDynamics(), position, offset);
+
+        for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+            shift(staff.getVoice(voice), position, offset);
+    }
+}
+
+void SystemUtils::shiftForward(System &system, int position)
+{
+    shift(system, position, 1);
+}
+
+void SystemUtils::shiftBackward(System &system, int position)
+{
+    shift(system, position, -1);
+}

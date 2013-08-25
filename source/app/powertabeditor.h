@@ -128,6 +128,10 @@ private slots:
     void moveCaretToNextBar();
     /// Moves the caret to the last bar before the current position.
     void moveCaretToPrevBar();
+    /// Shifts all positions after the current location forward.
+    void shiftForward();
+    /// Moves all positions after the current location backwards.
+    void shiftBackward();
     /// Moves the caret to a specific barline.
     void gotoBarline();
     /// Moves the caret to a specific rehearsal sign.
@@ -309,6 +313,8 @@ private:
     Command *myPrevStaffCommand;
     Command *myNextBarCommand;
     Command *myPrevBarCommand;
+    Command *myShiftForwardCommand;
+    Command *myShiftBackwardCommand;
     Command *myGoToBarlineCommand;
     Command *myGoToRehearsalSignCommand;
 
@@ -444,9 +450,6 @@ private slots:
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
 
-    void shiftForward();
-    void shiftBackward();
-
     void clearNote();
     void clearCurrentPosition();
 
@@ -466,8 +469,6 @@ private:
     Command* pasteAct;
     Command* fileInfoAct;
 
-    Command* shiftForwardAct;
-    Command* shiftBackwardAct;
     Command* clearNoteAct; // clears the active note
     Command* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
 

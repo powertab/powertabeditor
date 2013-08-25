@@ -131,4 +131,13 @@ private:
     }
 };
 
+namespace SystemUtils {
+
+/// Shifts everything forward starting from the given position.
+void shiftForward(System &system, int position);
+/// Shifts everything backward starting from the given position.
+void shiftBackward(System &system, int position);
+
+}
+
 #endif

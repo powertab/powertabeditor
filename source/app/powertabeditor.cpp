@@ -47,6 +47,7 @@
 #include <actions/removetappedharmonic.h>
 #include <actions/removetempomarker.h>
 #include <actions/removetrill.h>
+#include <actions/shiftpositions.h>
 #include <actions/undomanager.h>
 
 #include <app/caret.h>
@@ -538,6 +539,20 @@ void PowerTabEditor::moveCaretToNextBar()
 void PowerTabEditor::moveCaretToPrevBar()
 {
     getCaret().moveToPrevBar();
+}
+
+void PowerTabEditor::shiftForward()
+{
+    ScoreLocation &location = getLocation();
+    myUndoManager->push(new ShiftPositions(location, ShiftPositions::Forward),
+                        location.getSystemIndex());
+}
+
+void PowerTabEditor::shiftBackward()
+{
+    ScoreLocation &location = getLocation();
+    myUndoManager->push(new ShiftPositions(location, ShiftPositions::Backward),
+                        location.getSystemIndex());
 }
 
 void PowerTabEditor::gotoBarline()
@@ -1102,15 +1117,18 @@ void PowerTabEditor::createCommands()
     connect(myLastSectionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToLastSection()));
 
-#if 0
-    shiftForwardAct = new Command(tr("Shift Forward"), "Position.ShiftForward",
-                                  QKeySequence(Qt::Key_Insert), this);
-    connect(shiftForwardAct, SIGNAL(triggered()), this, SLOT(shiftForward()));
+    myShiftForwardCommand = new Command(tr("Shift Forward"),
+                                        "Position.ShiftForward",
+                                        QKeySequence(Qt::Key_Insert), this);
+    connect(myShiftForwardCommand, SIGNAL(triggered()), this,
+            SLOT(shiftForward()));
 
-    shiftBackwardAct = new Command(tr("Shift Backward"), "Position.ShiftBackward",
-                                   QKeySequence(Qt::SHIFT + Qt::Key_Insert), this);
-    connect(shiftBackwardAct, SIGNAL(triggered()), this, SLOT(shiftBackward()));
-#endif
+    myShiftBackwardCommand = new Command(tr("Shift Backward"),
+                                         "Position.ShiftBackward",
+                                         QKeySequence(Qt::SHIFT + Qt::Key_Insert),
+                                         this);
+    connect(myShiftBackwardCommand, SIGNAL(triggered()), this,
+            SLOT(shiftBackward()));
 
     // Position-related actions.
     myStartPositionCommand = new Command(tr("Move to &Start"),
@@ -1670,9 +1688,11 @@ void PowerTabEditor::createMenus()
     positionMenu->addSeparator();
     positionMenu->addAction(shiftTabNumUp);
     positionMenu->addAction(shiftTabNumDown);
-    positionMenu->addSeparator();
-    positionMenu->addAction(shiftForwardAct);
-    positionMenu->addAction(shiftBackwardAct);
+#endif
+    myPositionMenu->addSeparator();
+    myPositionMenu->addAction(myShiftForwardCommand);
+    myPositionMenu->addAction(myShiftBackwardCommand);
+#if 0
     positionMenu->addSeparator();
     positionMenu->addAction(clearNoteAct);
     positionMenu->addAction(clearCurrentPositionAct);
@@ -1989,12 +2009,20 @@ void PowerTabEditor::updateCommands()
     const int position = location.getPositionIndex();
     const Note *note = location.getNote();
     const Barline *barline = location.getBarline();
+    const TempoMarker *tempoMarker = ScoreUtils::findByPosition(
+                system.getTempoMarkers(), position);
+    const AlternateEnding *altEnding = ScoreUtils::findByPosition(
+                system.getAlternateEndings(), position);
+    const Dynamic *dynamic = ScoreUtils::findByPosition(
+                staff.getDynamics(), position);
 
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
     myIncreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() < Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(
                 score.getLineSpacing() > Score::MIN_LINE_SPACING);
+    myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
+                                       !tempoMarker && !altEnding && !dynamic);
 
     // Note durations
     Position::DurationType durationType = myActiveDurationType;
@@ -2052,15 +2080,13 @@ void PowerTabEditor::updateCommands()
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
-    myTempoMarkerCommand->setChecked(ScoreUtils::findByPosition(
-                                         system.getTempoMarkers(), position));
+    myTempoMarkerCommand->setChecked(tempoMarker != NULL);
     myKeySignatureCommand->setEnabled(barline);
     myTimeSignatureCommand->setEnabled(barline);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
     myDirectionCommand->setChecked(ScoreUtils::findByPosition(
                                        system.getDirections(), position));
-    myDynamicCommand->setChecked(ScoreUtils::findByPosition(staff.getDynamics(),
-                                                      position));
+    myDynamicCommand->setChecked(dynamic != NULL);
 
     if (barline) // Current position is bar.
     {
@@ -2431,28 +2457,6 @@ void PowerTabEditor::changePositionSpacing(int offset)
         undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing),
                           caret->getCurrentSystemIndex());
     }
-}
-
-void PowerTabEditor::shiftForward()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-
-    undoManager->push(new PositionShift(caret->getCurrentScore(),
-                                        caret->getCurrentSystem(),
-                                        caret->getCurrentPositionIndex(),
-                                        PositionShift::SHIFT_FORWARD),
-                      caret->getCurrentSystemIndex());
-}
-
-void PowerTabEditor::shiftBackward()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-
-    undoManager->push(new PositionShift(caret->getCurrentScore(),
-                                        caret->getCurrentSystem(),
-                                        caret->getCurrentPositionIndex(),
-                                        PositionShift::SHIFT_BACKWARD),
-                      caret->getCurrentSystemIndex());
 }
 
 /// Clears the note at the caret's current position

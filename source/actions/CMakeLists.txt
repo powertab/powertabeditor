@@ -35,7 +35,6 @@ add_library(pteactions
     #edittrackshown.cpp
     #edittuning.cpp
     #insertnotes.cpp
-    #positionshift.cpp
     #removealternateending.cpp
     #removeartificialharmonic.cpp
     #removechordtext.cpp
@@ -51,6 +50,7 @@ add_library(pteactions
     removetempomarker.cpp
     removetrill.cpp
     #removevolumeswell.cpp
+    shiftpositions.cpp
     #shifttabnumber.cpp
     undomanager.cpp
 )
