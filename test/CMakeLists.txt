@@ -50,23 +50,6 @@ add_executable(pte_tests
     #formats/guitar_pro/test_gp4.cpp
     formats/powertab_old/test_powertabold.cpp
 
-    #powertabdocument/alternateending_test.cpp
-    #powertabdocument/chorddiagram_test.cpp
-    #powertabdocument/common_test.cpp
-    #powertabdocument/complexsymbolarray_test.cpp
-    #powertabdocument/direction_test.cpp
-    #powertabdocument/generalmidi_test.cpp
-    #powertabdocument/harmonics_test.cpp
-    #powertabdocument/keysignature_test.cpp
-    #powertabdocument/note_test.cpp
-    #powertabdocument/position_test.cpp
-    #powertabdocument/powertabfileheader_test.cpp
-    #powertabdocument/score_test.cpp
-    #powertabdocument/staff_test.cpp
-    #powertabdocument/system_test.cpp
-    #powertabdocument/timesignature_test.cpp
-    #powertabdocument/tuning_test.cpp
-
     score/test_alternateending.cpp
     score/test_barline.cpp
     score/test_direction.cpp
@@ -97,13 +80,9 @@ qt5_use_modules(pte_tests Widgets)
 
 target_link_libraries(pte_tests
     pteapp
-    #ptewidgets
-    #ptedialogs
     pteactions
     pteaudio
     rtmidi
-    #ptepainters
-    #sigfwd
     pteformats
     ptescore
     ${Boost_LIBRARIES}
