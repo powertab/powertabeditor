@@ -15,11 +15,10 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TUNINGDICTIONARYDIALOG_H
-#define TUNINGDICTIONARYDIALOG_H
+#ifndef DIALOGS_TUNINGDICTIONARYDIALOG_H
+#define DIALOGS_TUNINGDICTIONARYDIALOG_H
 
 #include <QDialog>
-#include <boost/shared_ptr.hpp>
 
 namespace Ui {
 class TuningDictionaryDialog;
@@ -34,9 +33,8 @@ class TuningDictionaryDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit TuningDictionaryDialog(
-            boost::shared_ptr<TuningDictionary> tuningDictionary,
-            QWidget *parent);
+    explicit TuningDictionaryDialog(QWidget *parent,
+                                    TuningDictionary &dictionary);
     ~TuningDictionaryDialog();
 
 private slots:
@@ -48,10 +46,10 @@ private slots:
     
 private:
     void onTuningModified();
-    boost::shared_ptr<Tuning> selectedTuning() const;
+    Tuning *selectedTuning() const;
 
     Ui::TuningDictionaryDialog *ui;
-    boost::shared_ptr<TuningDictionary> tuningDictionary;
+    TuningDictionary &myDictionary;
 };
 
-#endif // TUNINGDICTIONARYDIALOG_H
+#endif

@@ -18,7 +18,7 @@ add_library(pteapp
     scorearea.cpp
     settings.cpp
     #skinmanager.cpp
-    #tuningdictionary.cpp
+    tuningdictionary.cpp
 
     # Header-only files
     pubsub/pubsub.h

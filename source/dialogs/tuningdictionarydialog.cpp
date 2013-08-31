@@ -18,19 +18,17 @@
 #include "tuningdictionarydialog.h"
 #include "ui_tuningdictionarydialog.h"
 
-#include <boost/make_shared.hpp>
-
 #include <app/tuningdictionary.h>
-#include <dialogs/tuningdialog.h>
-#include <powertabdocument/tuning.h>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
-Q_DECLARE_METATYPE(boost::shared_ptr<Tuning>);
+Q_DECLARE_METATYPE(Tuning *)
 
-TuningDictionaryDialog::TuningDictionaryDialog(
-        boost::shared_ptr<TuningDictionary> tuningDictionary, QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::TuningDictionaryDialog),
-    tuningDictionary(tuningDictionary)
+TuningDictionaryDialog::TuningDictionaryDialog(QWidget *parent,
+                                               TuningDictionary &dictionary)
+    : QDialog(parent),
+      ui(new Ui::TuningDictionaryDialog),
+      myDictionary(dictionary)
 {
     ui->setupUi(this);
 
@@ -44,10 +42,8 @@ TuningDictionaryDialog::TuningDictionaryDialog(
     ui->tuningsList->header()->setResizeMode(QHeaderView::ResizeToContents);
 #endif
 
-    for (uint8_t i = Tuning::MIN_STRING_COUNT; i <= Tuning::MAX_STRING_COUNT; ++i)
-    {
+    for (int i = Tuning::MIN_STRING_COUNT; i <= Tuning::MAX_STRING_COUNT; ++i)
         ui->stringsComboBox->addItem(QString::number(i), i);
-    }
 
     connect(ui->stringsComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onNumStringsChanged(int)));
@@ -75,40 +71,43 @@ void TuningDictionaryDialog::onNumStringsChanged(int index)
 
     ui->tuningsList->clear();
 
-    std::vector<boost::shared_ptr<Tuning> > tunings;
-    tuningDictionary->findTunings(tunings, numStrings);
-    for (size_t i = 0; i < tunings.size(); ++i)
+    std::vector<Tuning *> tunings;
+    myDictionary.findTunings(numStrings, tunings);
+
+    BOOST_FOREACH(Tuning *tuning, tunings)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(QStringList() <<
-            QString::fromStdString(tunings[i]->GetName()) <<
-            QString::fromStdString(tunings[i]->GetSpelling()));
-        item->setData(0, Qt::UserRole, QVariant::fromValue(tunings[i]));
+            QString::fromStdString(tuning->getName()) <<
+            QString::fromStdString(boost::lexical_cast<std::string>(*tuning)));
+
+        item->setData(0, Qt::UserRole, QVariant::fromValue(tuning));
         ui->tuningsList->addTopLevelItem(item);
     }
 }
 
 void TuningDictionaryDialog::onNewTuning()
 {
+#if 0
     Tuning tuning;
-    tuning.SetToStandard();
     TuningDialog dialog(this, boost::shared_ptr<const Guitar>(), tuning,
-                        tuningDictionary);
+                        myDictionary);
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        tuningDictionary->addTuning(boost::make_shared<Tuning>(dialog.getNewTuning()));
+        myDictionary->addTuning(boost::make_shared<Tuning>(dialog.getNewTuning()));
         onTuningModified();
     }
+#endif
 }
 
 void TuningDictionaryDialog::onDeleteTuning()
 {
-    tuningDictionary->removeTuning(selectedTuning());
+    myDictionary.removeTuning(*selectedTuning());
     onTuningModified();
 }
 
 void TuningDictionaryDialog::onCurrentTuningChanged(QTreeWidgetItem *current,
-                                                  QTreeWidgetItem */*prev*/)
+                                                    QTreeWidgetItem *)
 {
     ui->deleteTuningButton->setEnabled(current != NULL);
     ui->editTuningButton->setEnabled(current != NULL);
@@ -116,14 +115,16 @@ void TuningDictionaryDialog::onCurrentTuningChanged(QTreeWidgetItem *current,
 
 void TuningDictionaryDialog::onEditTuning()
 {
-    boost::shared_ptr<Tuning> tuning = selectedTuning();
+#if 0
+    Tuning *tuning = selectedTuning();
     TuningDialog dialog(this, boost::shared_ptr<const Guitar>(), *tuning,
-                        tuningDictionary);
+                        myDictionary);
     if (dialog.exec() == QDialog::Accepted)
     {
         *tuning = dialog.getNewTuning();
         onTuningModified();
     }
+#endif
 }
 
 void TuningDictionaryDialog::onTuningModified()
@@ -131,8 +132,8 @@ void TuningDictionaryDialog::onTuningModified()
     onNumStringsChanged(ui->stringsComboBox->currentIndex());
 }
 
-boost::shared_ptr<Tuning> TuningDictionaryDialog::selectedTuning() const
+Tuning *TuningDictionaryDialog::selectedTuning() const
 {
-    return ui->tuningsList->currentItem()->data(0, Qt::UserRole).
-            value<boost::shared_ptr<Tuning> >();
+    return ui->tuningsList->currentItem()->data(
+                0, Qt::UserRole).value<Tuning *>();
 }

@@ -34,6 +34,7 @@ class QActionGroup;
 class RecentFiles;
 class ScoreArea;
 class ScoreLocation;
+class TuningDictionary;
 class UndoManager;
 
 class PowerTabEditor : public QMainWindow
@@ -189,10 +190,15 @@ private slots:
 
     /// Adds or removes a player change at the current location.
     void editPlayerChange();
+    /// Shows a dialog to view or edit the tuning dictionary.
+    void showTuningDictionary();
 
 protected:
     /// Handle key presses for 0-9 when entering tab numbers.
     virtual bool eventFilter(QObject *object, QEvent *event);
+
+    /// Performs some final actions before exiting.
+    virtual void closeEvent(QCloseEvent*);
 
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
@@ -271,6 +277,7 @@ private:
     boost::scoped_ptr<FileFormatManager> myFileFormatManager;
     boost::scoped_ptr<UndoManager> myUndoManager;
     boost::scoped_ptr<MidiPlayer> myMidiPlayer;
+    boost::scoped_ptr<TuningDictionary> myTuningDictionary;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.
@@ -416,14 +423,13 @@ private:
 
     QMenu *myPlayerMenu;
     Command *myPlayerChangeCommand;
+    Command *myShowTuningDictionaryCommand;
 
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
     Command *myPrevTabCommand;
 
 #if 0
-protected:
-    virtual void closeEvent(QCloseEvent*);
 
 private:
     bool eventFilter(QObject *obj, QEvent *ev);
@@ -457,7 +463,6 @@ private slots:
     void clearCurrentPosition();
 
     void addGuitar();
-    void showTuningDictionary();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
     void cutSelectedNotes();
@@ -489,13 +494,11 @@ private:
 
     QMenu* guitarMenu;
     Command* addGuitarAct;
-    Command* tuningDictionaryAct;
 
     boost::scoped_ptr<QStackedWidget> mixerList;
     boost::scoped_ptr<QStackedWidget> playbackToolbarList;
     boost::shared_ptr<SkinManager> skinManager;
     boost::shared_ptr<SettingsPubSub> settingsPubSub;
-    boost::shared_ptr<TuningDictionary> tuningDictionary;
 
 #endif
 };

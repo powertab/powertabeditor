@@ -59,6 +59,7 @@
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
+#include <app/tuningdictionary.h>
 
 #include <audio/midiplayer.h>
 
@@ -79,6 +80,7 @@
 #include <dialogs/tempomarkerdialog.h>
 #include <dialogs/timesignaturedialog.h>
 #include <dialogs/trilldialog.h>
+#include <dialogs/tuningdictionarydialog.h>
 
 #include <formats/fileformatmanager.h>
 
@@ -100,6 +102,7 @@ PowerTabEditor::PowerTabEditor() :
     myDocumentManager(new DocumentManager()),
     myFileFormatManager(new FileFormatManager()),
     myUndoManager(new UndoManager()),
+    myTuningDictionary(new TuningDictionary()),
     myIsPlaying(false),
     myPreviousDirectory(QSettings().value(Settings::APP_PREVIOUS_DIRECTORY,
                                           QDir::homePath()).toString()),
@@ -110,7 +113,6 @@ PowerTabEditor::PowerTabEditor() :
     mixerList(new QStackedWidget),
     playbackToolbarList(new QStackedWidget),
     settingsPubSub(new SettingsPubSub()),
-    tuningDictionary(new TuningDictionary())
 #endif
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
@@ -170,6 +172,7 @@ PowerTabEditor::PowerTabEditor() :
 
     tuningDictionary->loadInBackground();
 #else
+    myTuningDictionary->loadInBackground();
     setCentralWidget(myTabWidget);
 #endif
 }
@@ -981,6 +984,12 @@ void PowerTabEditor::editPlayerChange()
     }
 }
 
+void PowerTabEditor::showTuningDictionary()
+{
+    TuningDictionaryDialog dialog(this, *myTuningDictionary);
+    dialog.exec();
+}
+
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
     ScoreArea *scorearea = getScoreArea();
@@ -1017,6 +1026,24 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     }
 
     return QMainWindow::eventFilter(object, event);
+}
+
+void PowerTabEditor::closeEvent(QCloseEvent *)
+{
+#if 0
+    while (tabWidget->currentIndex() != -1)
+    {
+        bool closed = closeCurrentTab();
+        if (!closed)
+        {
+            // Don't close if the user pressed Cancel.
+            event->ignore();
+            return;
+        }
+    }
+#endif
+
+    myTuningDictionary->save();
 }
 
 QString PowerTabEditor::getApplicationName() const
@@ -1582,21 +1609,24 @@ void PowerTabEditor::createCommands()
                               tr("Slide Out Of Upwards"),"SlideOut.Upwards",
                               QKeySequence(), Note::SlideOutOfUpwards);
 
+    // Player menu.
     myPlayerChangeCommand = new Command("Player Change...",
                                         "Player.PlayerChange", QKeySequence(),
                                         this);
     myPlayerChangeCommand->setCheckable(true);
     connect(myPlayerChangeCommand, SIGNAL(triggered()), this,
             SLOT(editPlayerChange()));
+
+    myShowTuningDictionaryCommand = new Command(tr("Tuning Dictionary..."),
+                                                "Player.TuningDictionary",
+                                                QKeySequence(), this);
+    connect(myShowTuningDictionaryCommand, SIGNAL(triggered()),
+            this, SLOT(showTuningDictionary()));
+
 #if 0
     // Guitar Menu
     addGuitarAct = new Command(tr("Add Guitar"), "Guitar.AddGuitar", QKeySequence(), this);
     connect(addGuitarAct, SIGNAL(triggered()), this, SLOT(addGuitar()));
-
-    tuningDictionaryAct = new Command(tr("Tuning Dictionary"),
-                            "Guitar.TuningDictionary", QKeySequence(), this);
-    connect(tuningDictionaryAct, SIGNAL(triggered()),
-            this, SLOT(showTuningDictionary()));
 #endif
 
     // Window Menu commands.
@@ -1846,14 +1876,6 @@ void PowerTabEditor::createMenus()
     mySlideOutOfMenu->addAction(mySlideOutOfDownwardsCommand);
     mySlideOutOfMenu->addAction(mySlideOutOfUpwardsCommand);
 
-    myPlayerMenu = menuBar()->addMenu(tr("&Player"));
-    myPlayerMenu->addAction(myPlayerChangeCommand);
-#if 0
-    guitarMenu = menuBar()->addMenu(tr("&Guitar"));
-    guitarMenu->addAction(addGuitarAct);
-    guitarMenu->addSeparator();
-    guitarMenu->addAction(tuningDictionaryAct);
-#endif
     myTabSymbolsMenu->addSeparator();
     myTabSymbolsMenu->addAction(myVibratoCommand);
     myTabSymbolsMenu->addAction(myWideVibratoCommand);
@@ -1868,6 +1890,14 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addSeparator();
     myTabSymbolsMenu->addAction(myPickStrokeUpCommand);
     myTabSymbolsMenu->addAction(myPickStrokeDownCommand);
+
+    // Player Menu.
+    myPlayerMenu = menuBar()->addMenu(tr("&Player"));
+    myPlayerMenu->addAction(myPlayerChangeCommand);
+    myPlayerMenu->addAction(myShowTuningDictionaryCommand);
+#if 0
+    guitarMenu->addAction(addGuitarAct);
+#endif
 
     // Window Menu.
     myWindowMenu = menuBar()->addMenu(tr("&Window"));
@@ -2176,7 +2206,7 @@ void PowerTabEditor::enableEditing(bool enable)
     menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu <<
                 mySectionMenu << myLineSpacingMenu << myNotesMenu <<
                 myOctaveMenu << myRestsMenu << myMusicSymbolsMenu <<
-                myTabSymbolsMenu << myPlayerMenu << myWindowMenu;
+                myTabSymbolsMenu << myWindowMenu;
 
     foreach(QMenu *menu, menuList)
     {
@@ -2188,6 +2218,7 @@ void PowerTabEditor::enableEditing(bool enable)
 
     myCloseTabCommand->setEnabled(enable);
     mySaveAsCommand->setEnabled(enable);
+    myPlayerChangeCommand->setEnabled(enable);
 #if 0
     addGuitarAct->setEnabled(enable);
 #endif
@@ -2390,22 +2421,6 @@ ScoreLocation &PowerTabEditor::getLocation()
 }
 
 #if 0
-/// Before exiting, prompt to save any modified documents.
-void PowerTabEditor::closeEvent(QCloseEvent* event)
-{
-    while (tabWidget->currentIndex() != -1)
-    {
-        bool closed = closeCurrentTab();
-        if (!closed)
-        {
-            // Don't close if the user pressed Cancel.
-            event->ignore();
-            return;
-        }
-    }
-
-    tuningDictionary->save();
-}
 
 void PowerTabEditor::updateActiveVoice(int voice)
 {
@@ -2548,12 +2563,6 @@ void PowerTabEditor::addGuitar()
 
     AddGuitar* addGuitar = new AddGuitar(score, getCurrentMixer());
     undoManager->push(addGuitar, UndoManager::AFFECTS_ALL_SYSTEMS);
-}
-
-void PowerTabEditor::showTuningDictionary()
-{
-    TuningDictionaryDialog dialog(tuningDictionary, this);
-    dialog.exec();
 }
 
 void PowerTabEditor::editArtificialHarmonic()

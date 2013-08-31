@@ -17,47 +17,33 @@
 
 #include "tuningdictionary.h"
 
+#include <boost/foreach.hpp>
+#include <fstream>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QMutexLocker>
 #include <QtConcurrentRun>
-#include <QCoreApplication>
-#include <fstream>
+#include <score/serialization.h>
+#include <stdexcept>
 
-#include <powertabdocument/powertabinputstream.h>
-#include <powertabdocument/powertaboutputstream.h>
-#include <powertabdocument/powertabfileheader.h>
-#include <powertabdocument/tuning.h>
-
-TuningDictionary::TuningDictionary()
-{
-}
-
-/// Load the tuning dictionary from a file.
 void TuningDictionary::load()
 {
     try
     {
         QByteArray path = tuningFilePath().toLocal8Bit();
-        std::ifstream tuningStream(path.constData(),
-                                   std::ios::in | std::ios::binary);
-        PowerTabInputStream inputStream(tuningStream);
+        std::ifstream file(path.constData(), std::ios::in | std::ios::binary);
 
-        std::vector<boost::shared_ptr<Tuning> > newTunings;
-        inputStream.ReadVector(newTunings, PowerTabFileHeader::Version_2_0);
-
-        QMutexLocker lock(&mutex);
-        Q_UNUSED(lock);
-        tunings = newTunings;
+        QMutexLocker lock(&myMutex);
+        ScoreUtils::load(file, myTunings);
     }
-    catch (std::exception &e)
+    catch (const std::exception &e)
     {
         qDebug() << "Error loading tuning dictionary.";
         qDebug() << "Exception: " << e.what();
     }
 }
 
-/// Saves the tuning dictionary to a file.
 void TuningDictionary::save() const
 {
     try
@@ -69,53 +55,41 @@ void TuningDictionary::save() const
         }
 
         QByteArray path = tuningFilePath().toLocal8Bit();
-        std::ofstream tuningStream(path.constData(),
-                                   std::ios::out | std::ios::binary);
-        PowerTabOutputStream outputStream(tuningStream);
+        std::ofstream file(path.constData());
 
-        QMutexLocker lock(&mutex);
-        Q_UNUSED(lock);
-        outputStream.WriteVector(tunings);
+        QMutexLocker lock(&myMutex);
+        ScoreUtils::save(file, myTunings);
     }
-    catch (std::exception &e)
+    catch (const std::exception &e)
     {
         qDebug() << "Error saving tuning dictionary.";
         qDebug() << "Exception: " << e.what();
     }
 }
 
-/// Loads the tuning dictionary, and runs in a separate thread.
 void TuningDictionary::loadInBackground()
 {
     QtConcurrent::run(this, &TuningDictionary::load);
 }
 
-/// Returns all tunings with the specified number of strings.
-void TuningDictionary::findTunings(
-        std::vector<boost::shared_ptr<Tuning> >& outTunings, size_t numStrings) const
+void TuningDictionary::findTunings(int numStrings,
+                                   std::vector<Tuning *> &tunings)
 {
-    outTunings.clear();
-
-    for (size_t i = 0; i < tunings.size(); ++i)
+    BOOST_FOREACH(Tuning &tuning, myTunings)
     {
-        boost::shared_ptr<Tuning> tuning = tunings[i];
-        if (tuning->GetStringCount() == numStrings)
-        {
-            outTunings.push_back(tuning);
-        }
+        if (tuning.getStringCount() == numStrings)
+            tunings.push_back(&tuning);
     }
 }
 
-/// Adds a new tuning to the tuning dictionary.
-void TuningDictionary::addTuning(boost::shared_ptr<Tuning> tuning)
+void TuningDictionary::addTuning(const Tuning &tuning)
 {
-    tunings.push_back(tuning);
+    myTunings.push_back(tuning);
 }
 
-/// Removes the specified tuning from the dictionary.
-void TuningDictionary::removeTuning(boost::shared_ptr<Tuning> tuning)
+void TuningDictionary::removeTuning(const Tuning &tuning)
 {
-    tunings.erase(std::remove(tunings.begin(), tunings.end(), tuning));
+    myTunings.erase(std::remove(myTunings.begin(), myTunings.end(), tuning));
 }
 
 QString TuningDictionary::tuningFilePath()

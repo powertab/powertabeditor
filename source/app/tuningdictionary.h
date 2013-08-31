@@ -15,34 +15,39 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TUNINGDICTIONARY_H
-#define TUNINGDICTIONARY_H
+#ifndef APP_TUNINGDICTIONARY_H
+#define APP_TUNINGDICTIONARY_H
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
 #include <QMutex>
-
-class Tuning;
+#include <score/tuning.h>
+#include <vector>
 
 class TuningDictionary
 {
 public:
-    TuningDictionary();
-
-    void load();
+    /// Saves the tuning dictionary to a file.
     void save() const;
+
+    /// Loads the tuning dictionary in a separate thread.
     void loadInBackground();
 
-    void findTunings(std::vector<boost::shared_ptr<Tuning> >& outTunings,
-                     size_t numStrings) const;
-    void addTuning(boost::shared_ptr<Tuning> tuning);
-    void removeTuning(boost::shared_ptr<Tuning> tuning);
+    /// Returns all tunings with the specified number of strings.
+    void findTunings(int numStrings, std::vector<Tuning *> &tunings);
+
+    /// Adds a new tuning to the tuning dictionary.
+    void addTuning(const Tuning &tuning);
+
+    /// Removes the specified tuning from the dictionary.
+    void removeTuning(const Tuning &tuning);
 
 private:
+    /// Loads the tuning dictionary from a file.
+    void load();
+
     static QString tuningFilePath();
 
-    mutable QMutex mutex;
-    std::vector<boost::shared_ptr<Tuning> > tunings;
+    mutable QMutex myMutex;
+    std::vector<Tuning> myTunings;
 };
 
-#endif // TUNINGDICTIONARY_H
+#endif

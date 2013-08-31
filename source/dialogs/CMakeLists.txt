@@ -19,7 +19,7 @@ set(FORMS
     timesignaturedialog.ui
     trilldialog.ui
     #tuningdialog.ui
-    #tuningdictionarydialog.ui
+    tuningdictionarydialog.ui
     #volumeswelldialog.ui
 )
 
@@ -47,7 +47,7 @@ add_library(ptedialogs
     timesignaturedialog.cpp
     trilldialog.cpp
     #tuningdialog.cpp
-    #tuningdictionarydialog.cpp
+    tuningdictionarydialog.cpp
     #volumeswelldialog.cpp
 )
 

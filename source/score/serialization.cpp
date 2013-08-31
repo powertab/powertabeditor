@@ -126,4 +126,7 @@ SERIALIZE(Tuning)
 SERIALIZE(int)
 SERIALIZE(std::vector<Position>)
 
+// Used for the tuning dictionary.
+SERIALIZE(std::vector<Tuning>)
+
 }
