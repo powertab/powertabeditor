@@ -59,8 +59,6 @@ const uint8_t         Guitar::MAX_PHASER                     = midi::MAX_MIDI_CH
 const uint8_t         Guitar::MIN_CAPO                       = 0;
 const uint8_t         Guitar::MAX_CAPO                       = 12;
 
-// Constructors/Destructors
-/// Default Constructor
 Guitar::Guitar() :
     m_number(DEFAULT_NUMBER), m_description(DEFAULT_DESCRIPTION),
     m_preset(DEFAULT_PRESET), m_initialVolume(DEFAULT_INITIAL_VOLUME),
@@ -68,111 +66,8 @@ Guitar::Guitar() :
     m_tremolo(DEFAULT_TREMOLO), m_phaser(DEFAULT_PHASER), m_capo(DEFAULT_CAPO),
     m_isShown(true)
 {
-    //------Last Checked------//
-    // - Dec 8, 2004
 }
 
-/// Primary Constructor
-/// @param number Unique number identifing the guitar (zero based)
-/// @param description Description for the guitar
-/// @param preset MIDI preset
-/// @param initialVolume The initial volume level of the guitar
-/// @param pan MIDI pan level
-/// @param reverb MIDI reverb level
-/// @param chorus MIDI chorus level
-/// @param tremolo MIDI tremolo level
-/// @param phaser MIDI phaser level
-/// @param capo Capo fret number (0 = no capo)
-Guitar::Guitar(uint8_t number, const std::string& description, uint8_t preset,
-               uint8_t initialVolume, uint8_t pan, uint8_t reverb, uint8_t chorus,
-               uint8_t tremolo, uint8_t phaser, uint8_t capo) : m_number(number),
-    m_description(description), m_preset(preset),
-    m_initialVolume(initialVolume), m_pan(pan), m_reverb(reverb),
-    m_chorus(chorus), m_tremolo(tremolo), m_phaser(phaser), m_capo(capo),
-    m_isShown(true)
-{
-    assert(midi::IsValidMidiPreset(preset));
-    assert(midi::IsValidMidiChannelVolume(initialVolume));
-    assert(IsValidPan(pan));
-    assert(IsValidReverb(reverb));
-    assert(IsValidChorus(chorus));
-    assert(IsValidTremolo(tremolo));
-    assert(IsValidPhaser(phaser));
-    assert(IsValidCapo(capo));
-}
-
-/// Copy Constructor
-Guitar::Guitar (const Guitar& guitar) :
-    PowerTabObject(),
-    m_number(DEFAULT_NUMBER), m_description(DEFAULT_DESCRIPTION),
-    m_preset(DEFAULT_PRESET), m_initialVolume(DEFAULT_INITIAL_VOLUME),
-    m_pan(DEFAULT_PAN), m_reverb(DEFAULT_REVERB), m_chorus(DEFAULT_CHORUS),
-    m_tremolo(DEFAULT_TREMOLO), m_phaser(DEFAULT_PHASER), m_capo(DEFAULT_CAPO)
-
-{
-    *this = guitar;
-}
-
-Guitar::~Guitar()
-{
-}
-
-// Operators
-/// Assignment operator
-const Guitar& Guitar::operator=(const Guitar& guitar)
-{
-    //------Last Checked------//
-    // - Dec 9, 2004
-
-    // Check for assignment to self
-    if (this != &guitar)
-    {
-        m_number = guitar.m_number;
-        m_description = guitar.m_description;
-        m_preset = guitar.m_preset;
-        m_initialVolume = guitar.m_initialVolume;
-        m_tuning = guitar.m_tuning;
-        m_pan = guitar.m_pan;
-        m_reverb = guitar.m_reverb;
-        m_chorus = guitar.m_chorus;
-        m_tremolo = guitar.m_tremolo;
-        m_phaser = guitar.m_phaser;
-        m_capo = guitar.m_capo;
-        m_isShown = guitar.m_isShown;
-    }
-    return (*this);
-}
-
-/// Equality Operator
-bool Guitar::operator==(const Guitar& guitar) const
-{
-    //------Last Checked------//
-    // - Dec 8, 2004
-    return (
-                (m_number == guitar.m_number) &&
-                (m_description == guitar.m_description) &&
-                (m_preset == guitar.m_preset) &&
-                (m_initialVolume == guitar.m_initialVolume) &&
-                (m_tuning == guitar.m_tuning) &&
-                (m_pan == guitar.m_pan) &&
-                (m_reverb == guitar.m_reverb) &&
-                (m_chorus == guitar.m_chorus) &&
-                (m_tremolo == guitar.m_tremolo) &&
-                (m_phaser == guitar.m_phaser) &&
-                (m_capo == guitar.m_capo) &&
-                (m_isShown == guitar.m_isShown)
-                );
-}
-
-/// Inequality Operator
-bool Guitar::operator!=(const Guitar& guitar) const
-{
-    //------Last Checked------//
-    // - Dec 8, 2004
-    return (!operator==(guitar));
-}
-
-// Serialize Functions
 /// Performs serialization for the class
 /// @param stream Power Tab output stream to serialize to
 /// @return True if the object was serialized, false if not
@@ -209,16 +104,6 @@ bool Guitar::Deserialize(PowerTabInputStream& stream, uint16_t version)
 
     m_tuning.Deserialize(stream, version);
 
-    return true;
-}
-
-// Operations
-/// Sets the tuning used by the guitar
-/// @return True if the tuning was set, false if not
-bool Guitar::SetTuning(const Tuning& tuning)
-{
-    PTB_CHECK_THAT(tuning.IsValid(), false);
-    m_tuning = tuning;
     return true;
 }
 

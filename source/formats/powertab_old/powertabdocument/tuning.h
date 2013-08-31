@@ -51,14 +51,6 @@ private:
     // Constructor/Destructor
 public:
     Tuning();
-    Tuning(const Tuning& tuning);
-
-    Tuning(const std::string& name, int8_t musicNotationOffset, bool sharps,
-           const std::vector<uint8_t>& tuningNotes);
-
-    // Operators
-    bool operator==(const Tuning& tuning) const;
-    bool operator!=(const Tuning& tuning) const;
 
     // MFC Class Functions
     /// Gets the MFC Class Name for the object
@@ -83,20 +75,7 @@ public:
         return m_name;
     }
 
-    // Music Notation Offset Functions
-    /// Determines if a music notation offset value is valid
-    /// @param musicNotationOffset Music notation offset to validate
-    /// @return True if the music notation offset is valid, false if not
-    static bool IsValidMusicNotationOffset(int8_t musicNotationOffset)
-    {
-        return (musicNotationOffset >= MIN_MUSIC_NOTATION_OFFSET) &&
-                (musicNotationOffset <= MAX_MUSIC_NOTATION_OFFSET);
-    }
-    bool SetMusicNotationOffset(int8_t musicNotationOffset);
     int8_t GetMusicNotationOffset() const;
-
-    // Sharps Functions
-    void SetSharps(bool set = true);
 
     /// Determines if the tuning notes are displayed using sharps, or flats
     /// @return True if the tuning notes are displayed using sharps, false if
@@ -115,14 +94,6 @@ public:
         return (stringCount >= MIN_STRING_COUNT) && (stringCount <= MAX_STRING_COUNT);
     }
 
-    /// Determines if a string is valid
-    /// @param string String to validate
-    /// @return True if the string is valid, false if not
-    bool IsValidString(uint32_t string) const
-    {
-        return string < GetStringCount();
-    }
-
     /// Gets the number of strings used by the tuning
     /// @return The number of strings used by the tuning
     size_t GetStringCount() const
@@ -130,14 +101,7 @@ public:
         return m_noteArray.size();
     }
 
-    // Note Functions
-    uint8_t GetNote(uint32_t string,
-                    bool includeMusicNotationOffset = false) const;
-
-    bool SetTuningNotes(const std::vector<uint8_t>& tuningNotes);
     std::vector<uint8_t> GetTuningNotes() const;
-
-    bool IsValid() const;
 };
 
 }

@@ -13,10 +13,6 @@
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
-// compatibility classes
-#include "oldrehearsalsign.h"
-#include "oldtimesignature.h"
-
 #include <fstream>
 
 #include "score.h"

@@ -210,7 +210,6 @@ public:
         {return (IsFlagSet(cancellation));}
 
 // Operations
-    std::string GetText() const;
     int GetWidth() const;
 
 // Flag Functions

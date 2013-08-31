@@ -79,19 +79,6 @@ private:
     // Constructor/Destructor
 public:
     Guitar();
-    Guitar(uint8_t number, const std::string& description = DEFAULT_DESCRIPTION,
-           uint8_t preset = DEFAULT_PRESET,
-           uint8_t initialVolume = DEFAULT_INITIAL_VOLUME,
-           uint8_t pan = DEFAULT_PAN, uint8_t reverb = DEFAULT_REVERB,
-           uint8_t chorus = DEFAULT_CHORUS, uint8_t tremolo = DEFAULT_TREMOLO,
-           uint8_t phaser = DEFAULT_PHASER, uint8_t capo = DEFAULT_CAPO);
-    Guitar(const Guitar& guitar);
-    ~Guitar();
-    
-    // Operators
-    const Guitar& operator=(const Guitar& guitar);
-    bool operator==(const Guitar& guitar) const;
-    bool operator!=(const Guitar& guitar) const;
     
     // Serialization Functions
     bool Serialize(PowerTabOutputStream& stream) const;
@@ -161,7 +148,6 @@ public:
     bool UsesCapo() const;
 
     // Tuning Functions
-    bool SetTuning(const Tuning& tuning);
     Tuning& GetTuning();
     const Tuning& GetTuning() const;
 

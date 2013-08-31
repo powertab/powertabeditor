@@ -13,8 +13,6 @@
 
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
-#include "generalmidi.h"
-#include <boost/format.hpp>
 
 namespace PowerTabDocument {
 
@@ -220,28 +218,6 @@ uint8_t KeySignature::GetKeyAccidentalsIncludingCancel() const
     return numAccidentals;
 }
 
-
-// Operations
-/// Gets a text representation of the key signature
-/// e.g. "B Minor - F# C#"
-/// @return A text representation of the key signature
-std::string KeySignature::GetText() const
-{
-    const std::string keyType = (GetKeyType() == majorKey) ? "Major" : "Minor";
-    const std::string tonic = midi::GetKeyText(IsMinorKey(), UsesSharps(), NumberOfAccidentals());
-
-    std::string accidentals;
-    for (int i = 0; i < NumberOfAccidentals(); i++)
-    {
-        const int offset = UsesSharps() ? 6 : 2;
-        accidentals += " " + midi::GetKeyText(false, UsesSharps(), offset + i);
-    }
-
-    const string separator = accidentals.empty() ? "" : " -";
-
-    return boost::str(boost::format("%1% %2%%3%%4%") % tonic % keyType %
-                      separator % accidentals);
-}
 
 /// Gets the width of the key signature, in drawing units (100ths of an inch)
 /// @return The width of the key signature

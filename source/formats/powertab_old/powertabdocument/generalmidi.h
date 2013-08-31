@@ -13,8 +13,6 @@
 #define GENERALMIDI_H
 
 #include <boost/cstdint.hpp>
-#include <string>
-#include <vector>
 
 namespace midi
 {
@@ -439,32 +437,6 @@ namespace midi
     const uint8_t        MIDI_PERCUSSION_PRESET_OPEN_TRIANGLE                = 46;
     const uint8_t        FIRST_MIDI_PERCUSSION_PRESET                        = MIDI_PERCUSSION_PRESET_ACOUSTIC_BASS_DRUM;
     const uint8_t        LAST_MIDI_PERCUSSION_PRESET                         = MIDI_PERCUSSION_PRESET_OPEN_TRIANGLE;
-
-    // MIDI Channel Functions
-    bool IsValidMidiChannel(uint8_t channel);
-    bool IsValidMidiChannelVolume(uint8_t volume);
-    bool IsValidMidiChannelEffectLevel(uint8_t level);
-
-    // MIDI Note Functions
-    bool IsValidMidiNote(uint8_t note);
-    bool IsValidMidiNoteKey(uint8_t key);
-    uint8_t GetMidiNotePitch(uint8_t note);
-    int32_t GetMidiNoteOctave(uint8_t note, char noteText = 0);
-    std::string GetMidiNoteText(uint8_t note, bool minor, bool usesSharps,
-                                uint8_t numAccidentals,
-                                bool forceAccidentals = false);
-    std::string GetMidiNoteTextSimple(uint8_t note, bool sharps);
-    uint8_t OffsetMidiNote(uint8_t note, int8_t offset);
-    bool IsValidMidiNoteVolume(uint8_t volume);
-    std::string GetKeyText(bool minor, bool usesSharps, uint8_t numAccidentals);
-
-    // MIDI Preset Functions
-    bool IsValidMidiPreset(uint8_t preset);
-
-    // MIDI Percussion Preset Functions
-    bool IsValidMidiPercussionPreset(uint8_t preset);
-
-    void GetMidiPresetNames(std::vector<std::string>& names);
 }
 
-#endif // GENERALMIDI_H
+#endif

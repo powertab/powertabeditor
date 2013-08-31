@@ -63,17 +63,8 @@ private:
     uint32_t    m_data;             ///< Stores the meter, beaming pattern and any flags (see flags enum for bit breakdown)
     uint8_t      m_pulses;           ///< Number of pulses in a measure
 
-// Constructor/Destructor
 public:
     TimeSignature();
-    TimeSignature(uint8_t beatsPerMeasure, uint8_t beatAmount);
-    TimeSignature(const TimeSignature& timeSignature);
-    ~TimeSignature();
-
-// Operators
-    const TimeSignature& operator=(const TimeSignature& timeSignature);
-    bool operator==(const TimeSignature& timeSignature) const;
-    bool operator!=(const TimeSignature& timeSignature) const;
     
 // MFC Class Functions
     /// Gets the MFC Class Name for the object
@@ -89,102 +80,27 @@ public:
     bool Serialize(PowerTabOutputStream& stream) const;
     bool Deserialize(PowerTabInputStream& stream, uint16_t version);
 
-// Meter Functions
-public:
-    bool SetMeter(uint8_t beatsPerMeasure, uint8_t beatAmount);
-    void GetMeter(uint8_t & beatsPerMeasure, uint8_t & beatAmount) const;
-    /// Determines if the meter is the same as that of another TimeSignature
-    /// object
-    /// @param timeSignature TimeSignature object to compare with
-    /// @return True if the time signatures have the same meter, false if not
-    bool IsSameMeter(const TimeSignature& timeSignature) const
-    {
-        return ((GetBeatsPerMeasure() == timeSignature.GetBeatsPerMeasure()) &&
-        (GetBeatAmount() == timeSignature.GetBeatAmount()));
-    }
-    // Sets the time signature to use the cut time symbol and meter
-    void SetCutTime()                               
-        {SetMeter(2,2); SetFlag(cutTime); /* note: Flag must be set after call to SetMeter, cause it clears both cut and common flags) */}
     /// Determines if the time signature is in cut time
     /// @return True if the time signature is in cut time, false if not
     bool IsCutTime() const                          
         {return (IsFlagSet(cutTime));}
-    /// Sets the time signature to use common time symbol and meter
-    void SetCommonTime()                            
-        {SetMeter(4,4); SetFlag(commonTime); /* see note above */}
     /// Determines if the time signature is in common time
     /// @return True if the time signature is in common time, false if not
     bool IsCommonTime() const                       
         {return (IsFlagSet(commonTime));}
-    bool IsCompoundTime() const;
-    bool IsQuadrupleTime() const;
-    uint32_t GetBasicBeat() const;
-    uint32_t GetMeasureTotal() const;
 
-// Beats Per Measure Functions
-    /// Determines if a beats per measure value is valid
-    /// @param beatsPerMeasure Beats per measure value to validate
-    /// @return True if the beats per measure value is valid, false if not
-    static bool IsValidBeatsPerMeasure(uint8_t beatsPerMeasure)      
-    {
-        return ((beatsPerMeasure >= MIN_BEATSPERMEASURE) &&
-            (beatsPerMeasure <= MAX_BEATSPERMEASURE));
-    }
-    bool SetBeatsPerMeasure(uint8_t beatsPerMeasure);
     uint8_t GetBeatsPerMeasure() const;
     
-// Beat Amount Functions
-    /// Determines if a beat amount is valid
-    /// @param beatAmount Beat amount to validate
-    /// @return True if the beat amount is valid, false if not
-    static bool IsValidBeatAmount(uint8_t beatAmount)                
-    {
-        return beatAmount == 1 || beatAmount == 2 || beatAmount == 4 ||
-            beatAmount == 8 || beatAmount == 16 || beatAmount == 32;
-    }
-    bool SetBeatAmount(uint8_t beatAmount);
     uint8_t GetBeatAmount() const;
     
-// Beaming Pattern Functions
-    /// Determines if the beaming pattern is valid.
-    static bool IsValidBeamingPattern(uint8_t beat1, uint8_t beat2,
-                                      uint8_t beat3, uint8_t beat4);
-    /// Determines if a beaming pattern beat value is valid.
-    static bool IsValidBeamingPatternBeat(uint8_t beat, bool beat1);
-
-    bool SetBeamingPattern(uint8_t beat1, uint8_t beat2 = 0, uint8_t beat3 = 0,
-        uint8_t beat4 = 0);
     void GetBeamingPattern(uint8_t & beat1, uint8_t & beat2, uint8_t & beat3,
         uint8_t & beat4) const;
-    bool SetBeamingPatternFromuint32_t(uint32_t beamingPattern);
-    uint32_t GetBeamingPatternAsuint32_t() const;
 
-// Show Functions
-    /// Makes the time signature visible
-    void Show()                                     
-        {SetFlag(show);}
-    /// Makes the time signature invisible
-    void Hide()                                     
-        {ClearFlag(show);}
     /// Determines if the time signature is shown
     /// @return True if the time signature is shown, false if not
     bool IsShown() const                            
         {return (IsFlagSet(show));}
-    void SetShown(bool set)
-    {
-        if (set)
-        {
-            Show();
-        }
-        else
-        {
-            Hide();
-        }
-    }
         
-// Pulse Functions
-    bool IsValidPulses(uint8_t pulses) const;
-    bool SetPulses(uint8_t pulses);
     uint8_t GetPulses() const;
     
 // Flag Functions
@@ -196,20 +112,11 @@ public:
         return ((flag >= show) &&
             (flag <= (show | brackets | commonTime | cutTime)));
     }
-    bool SetFlag(uint32_t flag);
-    /// Clears a flag used by the TimeSignature object
-    /// @param flag The flag to clear
-    bool ClearFlag(uint32_t flag)                   
-        {PTB_CHECK_THAT(IsValidFlag(flag), false); m_data &= ~flag; return (true);}
     /// Determines if a flag used by the TimeSignature object is set
     /// @param flag The flag to test
     /// @return True if the flag is set, false if not
     bool IsFlagSet(uint32_t flag) const             
         {PTB_CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
-
-// Operations    
-public:
-    int GetWidth() const;
 };
 
 }

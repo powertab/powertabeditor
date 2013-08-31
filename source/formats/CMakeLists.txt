@@ -30,15 +30,12 @@ add_library(pteformats
     powertab_old/powertabdocument/dynamic.cpp
     powertab_old/powertabdocument/floatingtext.cpp
     powertab_old/powertabdocument/fontsetting.cpp
-    powertab_old/powertabdocument/generalmidi.cpp
     powertab_old/powertabdocument/guitar.cpp
     powertab_old/powertabdocument/guitarin.cpp
     powertab_old/powertabdocument/harmonics.cpp
     powertab_old/powertabdocument/keysignature.cpp
     powertab_old/powertabdocument/macros.cpp
     powertab_old/powertabdocument/note.cpp
-    powertab_old/powertabdocument/oldrehearsalsign.cpp
-    powertab_old/powertabdocument/oldtimesignature.cpp
     powertab_old/powertabdocument/position.cpp
     powertab_old/powertabdocument/powertabdocument.cpp
     powertab_old/powertabdocument/powertabfileheader.cpp
