@@ -82,6 +82,16 @@ void TuningDictionary::findTunings(int numStrings,
     }
 }
 
+void TuningDictionary::findTunings(int numStrings,
+                                   std::vector<const Tuning *> &tunings) const
+{
+    BOOST_FOREACH(const Tuning &tuning, myTunings)
+    {
+        if (tuning.getStringCount() == numStrings)
+            tunings.push_back(&tuning);
+    }
+}
+
 void TuningDictionary::addTuning(const Tuning &tuning)
 {
     myTunings.push_back(tuning);

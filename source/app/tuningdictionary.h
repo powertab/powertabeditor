@@ -33,6 +33,8 @@ public:
 
     /// Returns all tunings with the specified number of strings.
     void findTunings(int numStrings, std::vector<Tuning *> &tunings);
+    void findTunings(int numStrings,
+                     std::vector<const Tuning *> &tunings) const;
 
     /// Adds a new tuning to the tuning dictionary.
     void addTuning(const Tuning &tuning);

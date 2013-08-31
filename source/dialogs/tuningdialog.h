@@ -15,17 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef TUNINGDIALOG_H
-#define TUNINGDIALOG_H
+#ifndef DIALOGS_TUNINGDIALOG_H
+#define DIALOGS_TUNINGDIALOG_H
 
 #include <QDialog>
 
-#include <vector>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-
 class QComboBox;
-class Guitar;
 class Tuning;
 class TuningDictionary;
 
@@ -36,30 +31,40 @@ namespace Ui {
 class TuningDialog : public QDialog
 {
     Q_OBJECT
+
 public:
-    TuningDialog(QWidget* parent, boost::shared_ptr<const Guitar> guitar,
-                 const Tuning& currentTuning,
-                 boost::shared_ptr<TuningDictionary> tuningDictionary);
+    TuningDialog(QWidget *parent, const Tuning &currentTuning,
+                 const TuningDictionary &dictionary);
     ~TuningDialog();
 
-    Tuning getNewTuning() const;
-    uint8_t getNewCapo() const;
+    Tuning getTuning() const;
 
 private slots:
+    /// Switches the note names available for each string.
     void toggleSharps(bool usesSharps);
+
+    /// Updates which string selection boxes are enabled, based on the number
+    /// of strings selected.
     void updateEnabledStrings(int numStrings);
+
+    /// Loads all tuning presets for the specified number of strings.
     void updateTuningDictionary(int numStrings);
+
+    /// Loads the currently-selected tuning preset.
     void loadPreset();
 
 private:
-    Ui::TuningDialog* ui;
-    boost::shared_ptr<TuningDictionary> tuningDictionary;
+    Ui::TuningDialog *ui;
+    const TuningDictionary &myDictionary;
 
     QStringList noteNames;
-    std::vector<QComboBox*> stringSelectors;
+    std::vector<QComboBox *> stringSelectors;
 
-    void initStringSelectors(const Tuning& currentTuning);
+    void initStringSelectors(const Tuning &currentTuning);
+
+    /// Generates a list of note names, to be used for selecting the pitch
+    /// of a string.
     void generateNoteNames(bool usesSharps);
 };
 
-#endif // TUNINGDIALOG_H
+#endif

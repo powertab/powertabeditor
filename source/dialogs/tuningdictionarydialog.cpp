@@ -21,6 +21,7 @@
 #include <app/tuningdictionary.h>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+#include <dialogs/tuningdialog.h>
 
 Q_DECLARE_METATYPE(Tuning *)
 
@@ -87,17 +88,14 @@ void TuningDictionaryDialog::onNumStringsChanged(int index)
 
 void TuningDictionaryDialog::onNewTuning()
 {
-#if 0
     Tuning tuning;
-    TuningDialog dialog(this, boost::shared_ptr<const Guitar>(), tuning,
-                        myDictionary);
+    TuningDialog dialog(this, tuning, myDictionary);
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        myDictionary->addTuning(boost::make_shared<Tuning>(dialog.getNewTuning()));
+        myDictionary.addTuning(dialog.getTuning());
         onTuningModified();
     }
-#endif
 }
 
 void TuningDictionaryDialog::onDeleteTuning()
@@ -115,16 +113,14 @@ void TuningDictionaryDialog::onCurrentTuningChanged(QTreeWidgetItem *current,
 
 void TuningDictionaryDialog::onEditTuning()
 {
-#if 0
     Tuning *tuning = selectedTuning();
-    TuningDialog dialog(this, boost::shared_ptr<const Guitar>(), *tuning,
-                        myDictionary);
+    TuningDialog dialog(this, *tuning, myDictionary);
+
     if (dialog.exec() == QDialog::Accepted)
     {
-        *tuning = dialog.getNewTuning();
+        *tuning = dialog.getTuning();
         onTuningModified();
     }
-#endif
 }
 
 void TuningDictionaryDialog::onTuningModified()

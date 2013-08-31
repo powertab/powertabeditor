@@ -74,15 +74,15 @@ public:
     /// Maximum valid capo fret.
     static const uint8_t MAX_CAPO;
 
+    static const int8_t MIN_MUSIC_NOTATION_OFFSET;
+    static const int8_t MAX_MUSIC_NOTATION_OFFSET;
+
 private:
     std::string myName;
     std::vector<uint8_t> myNotes;
     int8_t myMusicNotationOffset;
     bool myUsesSharps;
     uint8_t myCapo;
-
-    static const int8_t MIN_MUSIC_NOTATION_OFFSET;
-    static const int8_t MAX_MUSIC_NOTATION_OFFSET;
 
     friend class boost::serialization::access;
     template <class Archive>

@@ -45,8 +45,8 @@ Tuning::Tuning()
 
 bool Tuning::operator==(const Tuning &other) const
 {
-    // Do not compare tuning names.
-    return myNotes == other.myNotes &&
+    return myName == other.myName &&
+           myNotes == other.myNotes &&
            myMusicNotationOffset == other.myMusicNotationOffset &&
            myUsesSharps == other.myUsesSharps &&
            myCapo == other.myCapo;
