@@ -46,9 +46,6 @@ namespace Settings
     extern const char* MIDI_WIDE_VIBRATO_LEVEL;
     extern const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT;
 
-    extern const char* APPEARANCE_USE_SKIN;
-    extern const char* APPEARANCE_SKIN_NAME;
-
     extern const char* DEFAULT_INSTRUMENT_NAME;
     extern const char* DEFAULT_INSTRUMENT_NAME_DEFAULT;
 

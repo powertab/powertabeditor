@@ -57,8 +57,8 @@ private:
     Ui::TuningDialog *ui;
     const TuningDictionary &myDictionary;
 
-    QStringList noteNames;
-    std::vector<QComboBox *> stringSelectors;
+    QStringList myNoteNames;
+    std::vector<QComboBox *> myStringSelectors;
 
     void initStringSelectors(const Tuning &currentTuning);
 

@@ -18,59 +18,50 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
-#include <QSettings>
-
-#include <boost/foreach.hpp>
-
-#include <audio/rtmidiwrapper.h>
-#include <app/settings.h>
 #include <app/pubsub/settingspubsub.h>
-#include <app/skinmanager.h>
+#include <app/settings.h>
+#include <audio/midioutputdevice.h>
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
-#include <powertabdocument/generalmidi.h>
+#include <QSettings>
+#include <score/generalmidi.h>
 
 typedef std::pair<int, int> MidiApiAndPort;
 Q_DECLARE_METATYPE(MidiApiAndPort)
 
-PreferencesDialog::PreferencesDialog(QWidget *parent,
-                                     boost::shared_ptr<SettingsPubSub> pubsub,
-                                     boost::shared_ptr<TuningDictionary> tuningDictionary) :
-    QDialog(parent),
-    ui(new Ui::PreferencesDialog), pubsub(pubsub), tuningDictionary(tuningDictionary)
+PreferencesDialog::PreferencesDialog(
+        QWidget *parent, boost::shared_ptr<SettingsPubSub> settingsPubsub,
+        const TuningDictionary &dictionary)
+    : QDialog(parent),
+      ui(new Ui::PreferencesDialog),
+      mySettingsPubsub(settingsPubsub),
+      myDictionary(dictionary)
 {
     ui->setupUi(this);
 
-    connect(ui->useSkinCheckBox, SIGNAL(toggled(bool)),
-            ui->skinComboBox, SLOT(setEnabled(bool)));
-
-    // add available MIDI ports
-    RtMidiWrapper rtMidiWrapper;
-    for (size_t i = 0; i < rtMidiWrapper.getApiCount(); ++i)
+    // Add available MIDI ports.
+    MidiOutputDevice device;
+    for (size_t i = 0; i < device.getApiCount(); ++i)
     {
-        for(uint32_t j = 0; j < rtMidiWrapper.getPortCount(i); j++)
+        for(unsigned int j = 0; j < device.getPortCount(i); ++j)
         {
-            std::string portName = rtMidiWrapper.getPortName(i, j);
+            std::string portName = device.getPortName(i, j);
             ui->midiPortComboBox->addItem(QString::fromStdString(portName),
-                        QVariant::fromValue(std::pair<int, int>(i, j)));
+                    QVariant::fromValue(std::pair<int, int>(i, j)));
         }
     }
 
     std::vector<std::string> presetNames;
-    midi::GetMidiPresetNames(presetNames);
-    BOOST_FOREACH(const std::string& name, presetNames)
+    Midi::getMidiPresetNames(presetNames);
+    BOOST_FOREACH(const std::string &name, presetNames)
     {
         ui->metronomePresetComboBox->addItem(QString::fromStdString(name));
+        ui->defaultPresetComboBox->addItem(QString::fromStdString(name));
     }
 
     ui->vibratoStrengthSpinBox->setRange(1, 127);
     ui->wideVibratoStrengthSpinBox->setRange(1, 127);
-
-    ui->skinComboBox->addItems(SkinManager::availableSkins());
-
-    BOOST_FOREACH(const std::string& name, presetNames)
-    {
-        ui->defaultPresetComboBox->addItem(QString::fromStdString(name));
-    }
 
     loadCurrentSettings();
 }
@@ -80,7 +71,6 @@ PreferencesDialog::~PreferencesDialog()
     delete ui;
 }
 
-/// Load the current preferences and initialize the widgets with those values
 void PreferencesDialog::loadCurrentSettings()
 {
     QSettings settings;
@@ -91,9 +81,9 @@ void PreferencesDialog::loadCurrentSettings()
                               Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt();
 
     // Find the preferred midi port in the combo box.
-    RtMidiWrapper rtMidiWrapper;
+    MidiOutputDevice device;
     ui->midiPortComboBox->setCurrentIndex(ui->midiPortComboBox->findText(
-                QString::fromStdString(rtMidiWrapper.getPortName(api, port))));
+                QString::fromStdString(device.getPortName(api, port))));
 
     ui->metronomeEnabledCheckBox->setChecked(settings.value(Settings::MIDI_METRONOME_ENABLED,
                                                             Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
@@ -108,12 +98,6 @@ void PreferencesDialog::loadCurrentSettings()
     ui->wideVibratoStrengthSpinBox->setValue(settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
                                                             Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt());
 
-    const int skinIndex = ui->skinComboBox->findText(settings.value(Settings::APPEARANCE_SKIN_NAME).toString());
-    ui->skinComboBox->setCurrentIndex(skinIndex == -1 ? 0 : skinIndex);
-
-    ui->useSkinCheckBox->setChecked(settings.value(Settings::APPEARANCE_USE_SKIN, false).toBool());
-    ui->skinComboBox->setEnabled(ui->useSkinCheckBox->isChecked());
-
     ui->defaultInstrumentNameLineEdit->setText(settings.value(
             Settings::DEFAULT_INSTRUMENT_NAME,
             Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString());
@@ -122,11 +106,11 @@ void PreferencesDialog::loadCurrentSettings()
             Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
 
     ui->defaultTuningClickButton->setToolTip(tr("Click to adjust tuning."));
-    defaultInstrumentTuning = settings.value(
+    myDefaultTuning = settings.value(
             Settings::DEFAULT_INSTRUMENT_TUNING,
             QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)).value<Tuning>();
     ui->defaultTuningClickButton->setText(QString::fromStdString(
-            defaultInstrumentTuning.GetSpelling()));
+            boost::lexical_cast<std::string>(myDefaultTuning)));
     connect(ui->defaultTuningClickButton, SIGNAL(clicked()), this, SLOT(editTuning()));
 }
 
@@ -152,12 +136,6 @@ void PreferencesDialog::accept()
     settings.setValue(Settings::MIDI_WIDE_VIBRATO_LEVEL,
                       ui->wideVibratoStrengthSpinBox->value());
 
-    settings.setValue(Settings::APPEARANCE_USE_SKIN,
-                      ui->useSkinCheckBox->isChecked());
-
-    settings.setValue(Settings::APPEARANCE_SKIN_NAME,
-                      ui->skinComboBox->currentText());
-
     settings.setValue(Settings::DEFAULT_INSTRUMENT_NAME,
                       ui->defaultInstrumentNameLineEdit->text());
 
@@ -165,24 +143,23 @@ void PreferencesDialog::accept()
                       ui->defaultPresetComboBox->currentIndex());
 
     settings.setValue(Settings::DEFAULT_INSTRUMENT_TUNING,
-                      QVariant::fromValue(defaultInstrumentTuning));
+                      QVariant::fromValue(myDefaultTuning));
 
     settings.sync();
 
-    pubsub->publish(Settings::MIDI_METRONOME_ENABLED);
+    mySettingsPubsub->publish(Settings::MIDI_METRONOME_ENABLED);
 
     done(Accepted);
 }
 
 void PreferencesDialog::editTuning()
 {
-    TuningDialog dialog(this, boost::shared_ptr<const Guitar>(),
-                        defaultInstrumentTuning, tuningDictionary);
+    TuningDialog dialog(this, myDefaultTuning, myDictionary);
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        defaultInstrumentTuning = dialog.getNewTuning();
-        ui->defaultTuningClickButton->setText(
-                QString::fromStdString(defaultInstrumentTuning.GetSpelling()));
+        myDefaultTuning = dialog.getTuning();
+        ui->defaultTuningClickButton->setText(QString::fromStdString(
+                boost::lexical_cast<std::string>(myDefaultTuning)));
     }
 }

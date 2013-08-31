@@ -55,6 +55,7 @@
 #include <app/command.h>
 #include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
+#include <app/pubsub/settingspubsub.h>
 #include <app/pubsub/staffpubsub.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
@@ -65,6 +66,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 
 #include <dialogs/barlinedialog.h>
@@ -75,6 +77,7 @@
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/keysignaturedialog.h>
 #include <dialogs/playerchangedialog.h>
+#include <dialogs/preferencesdialog.h>
 #include <dialogs/rehearsalsigndialog.h>
 #include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/tempomarkerdialog.h>
@@ -103,6 +106,7 @@ PowerTabEditor::PowerTabEditor() :
     myFileFormatManager(new FileFormatManager()),
     myUndoManager(new UndoManager()),
     myTuningDictionary(new TuningDictionary()),
+    mySettingsPubSub(boost::make_shared<SettingsPubSub>()),
     myIsPlaying(false),
     myPreviousDirectory(QSettings().value(Settings::APP_PREVIOUS_DIRECTORY,
                                           QDir::homePath()).toString()),
@@ -121,10 +125,6 @@ PowerTabEditor::PowerTabEditor() :
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf");
     // Load the tab note font.
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf");
-
-#if 0
-    skinManager.reset(new SkinManager);
-#endif
 
     connect(myUndoManager.get(), SIGNAL(redrawNeeded(int)), this,
             SLOT(redrawSystem(int)));
@@ -152,7 +152,7 @@ PowerTabEditor::PowerTabEditor() :
     horSplitter = new QSplitter();
     horSplitter->setOrientation(Qt::Horizontal);
 
-    toolBox = new Toolbox(this, skinManager);
+    toolBox = new Toolbox(this);
     horSplitter->addWidget(toolBox);
     horSplitter->addWidget(playbackArea);
 
@@ -381,12 +381,8 @@ void PowerTabEditor::editKeyboardShortcuts()
 
 void PowerTabEditor::editPreferences()
 {
-#if 0
-    PreferencesDialog(this, settingsPubSub, tuningDictionary).exec();
-    skinManager->reload();
-#else
-    Q_ASSERT(false);
-#endif
+    PreferencesDialog dialog(this, mySettingsPubSub, *myTuningDictionary);
+    dialog.exec();
 }
 
 void PowerTabEditor::copySelectedNotes()
@@ -1909,10 +1905,6 @@ void PowerTabEditor::createTabArea()
 {
     myTabWidget = new QTabWidget(this);
     myTabWidget->setTabsClosable(true);
-
-#if 0
-    tabWidget->setStyleSheet(skinManager->getDocumentTabStyle());
-#endif
 
     connect(myTabWidget, SIGNAL(tabCloseRequested(int)), this,
             SLOT(closeTab(int)));

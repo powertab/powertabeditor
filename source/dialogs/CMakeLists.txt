@@ -12,7 +12,7 @@ set(FORMS
     keyboardsettingsdialog.ui
     keysignaturedialog.ui
     playerchangedialog.ui
-    #preferencesdialog.ui
+    preferencesdialog.ui
     rehearsalsigndialog.ui
     tappedharmonicdialog.ui
     tempomarkerdialog.ui
@@ -40,7 +40,7 @@ add_library(ptedialogs
     keyboardsettingsdialog.cpp
     keysignaturedialog.cpp
     playerchangedialog.cpp
-    #preferencesdialog.cpp
+    preferencesdialog.cpp
     rehearsalsigndialog.cpp
     tappedharmonicdialog.cpp
     tempomarkerdialog.cpp

@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef CLICKABLE_LABEL_H
-#define CLICKABLE_LABEL_H
+#ifndef WIDGETS_CLICKABLELABEL_H
+#define WIDGETS_CLICKABLELABEL_H
 
 #include <QLabel>
 
@@ -24,18 +24,19 @@
 class ClickableLabel : public QLabel
 {
     Q_OBJECT
-public:
-    ClickableLabel(QWidget* parent = 0);
 
-protected:
-    virtual void enterEvent(QEvent*);
-    virtual void leaveEvent(QEvent*);
-    virtual void mouseReleaseEvent(QMouseEvent*);
-    virtual void mouseDoubleClickEvent(QMouseEvent*);
+public:
+    ClickableLabel(QWidget *parent);
 
 signals:
     void clicked();
     void doubleClicked();
+
+protected:
+    virtual void enterEvent(QEvent *);
+    virtual void leaveEvent(QEvent *);
+    virtual void mouseReleaseEvent(QMouseEvent *);
+    virtual void mouseDoubleClickEvent(QMouseEvent *);
 };
 
-#endif // CLICKABLE_LABEL_H
+#endif

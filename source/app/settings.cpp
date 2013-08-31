@@ -46,9 +46,6 @@ namespace Settings
     const char* MIDI_WIDE_VIBRATO_LEVEL = "midi/wide_vibrato";
     const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT = 127;
 
-    const char* APPEARANCE_USE_SKIN = "appearance/useSkin";
-    const char* APPEARANCE_SKIN_NAME = "appearance/skinName";
-
     const char* DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
     const char* DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";
 

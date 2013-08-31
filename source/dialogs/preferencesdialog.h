@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef PREFERENCESDIALOG_H
-#define PREFERENCESDIALOG_H
+#ifndef DIALOGS_PREFERENCESDIALOG_H
+#define DIALOGS_PREFERENCESDIALOG_H
 
-#include <QDialog>
 #include <boost/shared_ptr.hpp>
-#include <powertabdocument/tuning.h>
+#include <QDialog>
+#include <score/tuning.h>
 
 namespace Ui {
     class PreferencesDialog;
@@ -29,27 +29,30 @@ namespace Ui {
 class SettingsPubSub;
 class TuningDictionary;
 
-/// Dialog to allow the user to modify general editor-wide settings
+/// Dialog that allows the user to modify general editor-wide settings.
 class PreferencesDialog : public QDialog
 {
     Q_OBJECT
+
 public:
-    explicit PreferencesDialog(QWidget* parent,
-                               boost::shared_ptr<SettingsPubSub> pubsub,
-                               boost::shared_ptr<TuningDictionary> tuningDictionary);
+    explicit PreferencesDialog(QWidget *parent,
+                               boost::shared_ptr<SettingsPubSub> settingsPubsub,
+                               const TuningDictionary &dictionary);
     ~PreferencesDialog();
-
-private:
-    Ui::PreferencesDialog* ui;
-    boost::shared_ptr<SettingsPubSub> pubsub;
-    boost::shared_ptr<TuningDictionary> tuningDictionary;
-    Tuning defaultInstrumentTuning;
-
-    void loadCurrentSettings();
 
 private slots:
     void accept();
     void editTuning();
+
+private:
+    /// Load the current preferences and initialize the widgets with those
+    /// values.
+    void loadCurrentSettings();
+
+    Ui::PreferencesDialog *ui;
+    boost::shared_ptr<SettingsPubSub> mySettingsPubsub;
+    const TuningDictionary &myDictionary;
+    Tuning myDefaultTuning;
 };
 
-#endif // PREFERENCESDIALOG_H
+#endif

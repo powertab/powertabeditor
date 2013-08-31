@@ -21,6 +21,7 @@
 #include <QMainWindow>
 
 #include <boost/scoped_ptr.hpp>
+#include <boost/shared_ptr.hpp>
 #include <score/position.h>
 #include <string>
 #include <vector>
@@ -34,6 +35,7 @@ class QActionGroup;
 class RecentFiles;
 class ScoreArea;
 class ScoreLocation;
+class SettingsPubSub;
 class TuningDictionary;
 class UndoManager;
 
@@ -278,6 +280,7 @@ private:
     boost::scoped_ptr<UndoManager> myUndoManager;
     boost::scoped_ptr<MidiPlayer> myMidiPlayer;
     boost::scoped_ptr<TuningDictionary> myTuningDictionary;
+    boost::shared_ptr<SettingsPubSub> mySettingsPubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.
@@ -497,8 +500,6 @@ private:
 
     boost::scoped_ptr<QStackedWidget> mixerList;
     boost::scoped_ptr<QStackedWidget> playbackToolbarList;
-    boost::shared_ptr<SkinManager> skinManager;
-    boost::shared_ptr<SettingsPubSub> settingsPubSub;
 
 #endif
 };

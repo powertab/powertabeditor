@@ -60,14 +60,14 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     connect(ui->presetComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(loadPreset()));
 
-    stringSelectors.push_back(ui->string1);
-    stringSelectors.push_back(ui->string2);
-    stringSelectors.push_back(ui->string3);
-    stringSelectors.push_back(ui->string4);
-    stringSelectors.push_back(ui->string5);
-    stringSelectors.push_back(ui->string6);
-    stringSelectors.push_back(ui->string7);
-    stringSelectors.push_back(ui->string8);
+    myStringSelectors.push_back(ui->string1);
+    myStringSelectors.push_back(ui->string2);
+    myStringSelectors.push_back(ui->string3);
+    myStringSelectors.push_back(ui->string4);
+    myStringSelectors.push_back(ui->string5);
+    myStringSelectors.push_back(ui->string6);
+    myStringSelectors.push_back(ui->string7);
+    myStringSelectors.push_back(ui->string8);
 
     updateTuningDictionary(currentTuning.getStringCount());
     generateNoteNames(currentTuning.usesSharps());
@@ -82,11 +82,11 @@ TuningDialog::~TuningDialog()
 
 void TuningDialog::initStringSelectors(const Tuning& currentTuning)
 {
-    for (int i = 0; i < static_cast<int>(stringSelectors.size()); i++)
+    for (int i = 0; i < static_cast<int>(myStringSelectors.size()); i++)
     {
-        QComboBox *selector = stringSelectors[i];
+        QComboBox *selector = myStringSelectors[i];
 
-        selector->addItems(noteNames);
+        selector->addItems(myNoteNames);
         
         if (i < currentTuning.getStringCount())
             selector->setCurrentIndex(currentTuning.getNote(i, false));
@@ -95,11 +95,11 @@ void TuningDialog::initStringSelectors(const Tuning& currentTuning)
 
 void TuningDialog::generateNoteNames(bool usesSharps)
 {
-    noteNames.clear();
+    myNoteNames.clear();
     
     for (uint8_t note = Midi::MIN_MIDI_NOTE; note < Midi::MAX_MIDI_NOTE; ++note)
     {
-        noteNames << QString::fromStdString(
+        myNoteNames << QString::fromStdString(
                          Midi::getMidiNoteTextSimple(note,usesSharps)) +
                      QString::number(Midi::getMidiNoteOctave(note));
     }
@@ -111,10 +111,10 @@ void TuningDialog::toggleSharps(bool usesSharps)
     
     for (uint8_t i = 0; i < Tuning::MAX_STRING_COUNT; i++)
     {
-        QComboBox *selector = stringSelectors.at(i);
+        QComboBox *selector = myStringSelectors.at(i);
         const int selectedIndex = selector->currentIndex();
         selector->clear();
-        selector->addItems(noteNames);
+        selector->addItems(myNoteNames);
         selector->setCurrentIndex(selectedIndex);
     }
 }
@@ -123,10 +123,10 @@ void TuningDialog::updateEnabledStrings(int numStrings)
 {
     Q_ASSERT(numStrings <= (int)Tuning::MAX_STRING_COUNT && numStrings >= 0);
     
-    std::for_each(stringSelectors.begin(), stringSelectors.begin() + numStrings,
+    std::for_each(myStringSelectors.begin(), myStringSelectors.begin() + numStrings,
                   boost::bind(&QComboBox::setEnabled, _1, true));
     
-    std::for_each(stringSelectors.begin() + numStrings, stringSelectors.end(),
+    std::for_each(myStringSelectors.begin() + numStrings, myStringSelectors.end(),
                   boost::bind(&QComboBox::setEnabled, _1, false));
 }
 
@@ -169,8 +169,8 @@ Tuning TuningDialog::getTuning() const
 
     // Grab the selected tuning notes.
     std::vector<uint8_t> tuningNotes(ui->numStringsSpinBox->value());
-    std::transform(stringSelectors.begin(),
-                   stringSelectors.begin() + ui->numStringsSpinBox->value(),
+    std::transform(myStringSelectors.begin(),
+                   myStringSelectors.begin() + ui->numStringsSpinBox->value(),
                    tuningNotes.begin(), std::mem_fun(&QComboBox::currentIndex));
 
     newTuning.setNotes(tuningNotes);

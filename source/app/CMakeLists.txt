@@ -17,7 +17,6 @@ add_library(pteapp
     recentfiles.cpp
     scorearea.cpp
     settings.cpp
-    #skinmanager.cpp
     tuningdictionary.cpp
 
     # Header-only files

@@ -8,7 +8,7 @@ add_subdirectory(formats)
 add_subdirectory(painters)
 add_subdirectory(score)
 add_subdirectory(sigfwd)
-#add_subdirectory(widgets)
+add_subdirectory(widgets)
 
 qt5_add_resources(RESOURCES build/resources.qrc)
 
@@ -26,8 +26,8 @@ qt5_use_modules(powertabeditor Widgets)
 
 target_link_libraries(powertabeditor
     pteapp
-    #ptewidgets
     ptedialogs
+    ptewidgets
     pteactions
     pteaudio
     rtmidi
@@ -53,8 +53,8 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     target_link_libraries(powertabeditor ${COREAUDIO} ${COREMIDI} ${COREFOUNDATION} ${AUDIOTOOLBOX} ${AUDIOUNIT})
 endif()
 
-# Copy the tuning database and the skins to the build directory.
-file(COPY data skins DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# Copy the tuning database to the build directory.
+file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Copy the Qt and Boost dlls to the build folder on Windows.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")

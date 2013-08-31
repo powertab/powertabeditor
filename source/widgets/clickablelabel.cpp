@@ -17,13 +17,13 @@
 
 #include "clickablelabel.h"
 
-ClickableLabel::ClickableLabel(QWidget *parent) :
-    QLabel(parent)
+ClickableLabel::ClickableLabel(QWidget *parent)
+    : QLabel(parent)
 {
     setStyleSheet("padding: 4px");
 }
 
-void ClickableLabel::enterEvent(QEvent*)
+void ClickableLabel::enterEvent(QEvent *)
 {
     setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
 }

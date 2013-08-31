@@ -95,46 +95,6 @@
        </layout>
       </widget>
      </widget>
-     <widget class="QWidget" name="appearanceTab">
-      <attribute name="title">
-       <string>Appearance</string>
-      </attribute>
-      <widget class="QWidget" name="formLayoutWidget_2">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>321</width>
-         <height>151</height>
-        </rect>
-       </property>
-       <layout class="QFormLayout" name="formLayout_2">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="useSkinLabel">
-          <property name="text">
-           <string>Use Skin:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QCheckBox" name="useSkinCheckBox"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="skinLabel">
-          <property name="text">
-           <string>Skin:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="skinComboBox"/>
-        </item>
-       </layout>
-      </widget>
-     </widget>
      <widget class="QWidget" name="defaultsTab">
       <attribute name="title">
        <string>Default Instrument</string>
