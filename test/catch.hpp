@@ -1,6 +1,6 @@
 /*
- *  CATCH v1.0 build 8 (master branch)
- *  Generated: 2013-08-16 19:08:52.941769
+ *  CATCH v1.0 build 9 (master branch)
+ *  Generated: 2013-09-07 12:04:25.989589
  *  ----------------------------------------------------------
  *  This file has been merged from multiple headers. Please don't edit it directly
  *  Copyright (c) 2012 Two Blue Cubes Ltd. All rights reserved.
@@ -719,6 +719,18 @@ struct StringMaker<T*> {
     }
 };
 
+/// \brief converts any type to a string
+///
+/// The default template forwards on to ostringstream - except when an
+/// ostringstream overload does not exist - in which case it attempts to detect
+/// that and writes {?}.
+/// Overload (not specialise) this template for custom typs that you don't want
+/// to provide an ostream overload for.
+template<typename T>
+std::string toString( T const& value ) {
+    return StringMaker<T>::convert( value );
+}
+
 template<typename T>
 struct StringMaker<std::vector<T> > {
     static std::string convert( std::vector<T> const& v ) {
@@ -740,18 +752,6 @@ namespace Detail {
         return StringMaker<T>::convert( value );
     }
 } // end namespace Detail
-
-/// \brief converts any type to a string
-///
-/// The default template forwards on to ostringstream - except when an
-/// ostringstream overload does not exist - in which case it attempts to detect
-/// that and writes {?}.
-/// Overload (not specialise) this template for custom typs that you don't want
-/// to provide an ostream overload for.
-template<typename T>
-std::string toString( T const& value ) {
-    return StringMaker<T>::convert( value );
-}
 
 // Built in overloads
 
@@ -5527,7 +5527,7 @@ namespace Catch {
 
     inline std::string extractClassName( std::string const& classOrQualifiedMethodName ) {
         std::string className = classOrQualifiedMethodName;
-        if( className[0] == '&' )
+        if( startsWith( className, "&" ) )
         {
             std::size_t lastColons = className.rfind( "::" );
             std::size_t penultimateColons = className.rfind( "::", lastColons-1 );
@@ -6352,7 +6352,7 @@ namespace Catch {
 namespace Catch {
 
     // These numbers are maintained by a script
-    Version libraryVersion( 1, 0, 8, "master" );
+    Version libraryVersion( 1, 0, 9, "master" );
 }
 
 // #included from: catch_text.hpp
@@ -7302,6 +7302,10 @@ namespace Catch {
                 if( m_config->showDurations() == ShowDurations::Always )
                     stream << "Completed in " << _sectionStats.durationInSeconds << "s" << std::endl;
                 m_headerPrinted = false;
+            }
+            else {
+                if( m_config->showDurations() == ShowDurations::Always )
+                    stream << _sectionStats.sectionInfo.name << " completed in " << _sectionStats.durationInSeconds << "s" << std::endl;
             }
             StreamingReporterBase::sectionEnded( _sectionStats );
         }
