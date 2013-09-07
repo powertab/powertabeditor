@@ -15,26 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef REMOVEALTERNATEENDING_H
-#define REMOVEALTERNATEENDING_H
+#ifndef ACTIONS_REMOVEALTERNATEENDING_H
+#define ACTIONS_REMOVEALTERNATEENDING_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-
-class Score;
-class AlternateEnding;
+#include <score/alternateending.h>
+#include <score/scorelocation.h>
 
 class RemoveAlternateEnding : public QUndoCommand
 {
 public:
-    RemoveAlternateEnding(Score* score, boost::shared_ptr<AlternateEnding> altEnding);
+    RemoveAlternateEnding(const ScoreLocation &location);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    boost::shared_ptr<AlternateEnding> altEnding;
+    ScoreLocation myLocation;
+    const AlternateEnding myOriginalEnding;
 };
 
-#endif // REMOVEALTERNATEENDING_H
+#endif

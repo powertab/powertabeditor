@@ -17,22 +17,24 @@
   
 #include "removealternateending.h"
 
-#include <powertabdocument/score.h>
+#include <score/system.h>
+#include <score/utils.h>
 
-RemoveAlternateEnding::RemoveAlternateEnding(Score* score,
-                                             boost::shared_ptr<AlternateEnding> altEnding) :
-    score(score),
-    altEnding(altEnding)
+RemoveAlternateEnding::RemoveAlternateEnding(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Repeat Ending")),
+      myLocation(location),
+      myOriginalEnding(*ScoreUtils::findByPosition(
+                           location.getSystem().getAlternateEndings(),
+                           location.getPositionIndex()))
 {
-    setText(QObject::tr("Remove Repeat Ending"));
 }
 
 void RemoveAlternateEnding::redo()
 {
-    score->RemoveAlternateEnding(altEnding);
+    myLocation.getSystem().removeAlternateEnding(myOriginalEnding);
 }
 
 void RemoveAlternateEnding::undo()
 {
-    score->InsertAlternateEnding(altEnding);
+    myLocation.getSystem().insertAlternateEnding(myOriginalEnding);
 }

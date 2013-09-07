@@ -15,26 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ADDALTERNATEENDING_H
-#define ADDALTERNATEENDING_H
+#ifndef ACTIONS_ADDALTERNATEENDING_H
+#define ACTIONS_ADDALTERNATEENDING_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-
-class Score;
-class AlternateEnding;
+#include <score/alternateending.h>
+#include <score/scorelocation.h>
 
 class AddAlternateEnding : public QUndoCommand
 {
 public:
-    AddAlternateEnding(Score* score, boost::shared_ptr<AlternateEnding> altEnding);
+    AddAlternateEnding(const ScoreLocation &location,
+                       const AlternateEnding &ending);
 
-    void redo();
-    void undo();
+    virtual void redo();
+    virtual void undo();
 
 private:
-    Score* score;
-    boost::shared_ptr<AlternateEnding> altEnding;
+    ScoreLocation myLocation;
+    const AlternateEnding myEnding;
 };
 
-#endif // ADDALTERNATEENDING_H
+#endif

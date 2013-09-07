@@ -27,7 +27,7 @@ qt5_wrap_ui(FORMS_HEADERS ${FORMS})
 
 add_library(ptedialogs
     ${FORMS_HEADERS}
-    #alternateendingdialog.cpp
+    alternateendingdialog.cpp
     #artificialharmonicdialog.cpp
     barlinedialog.cpp
     #chordnamedialog.cpp

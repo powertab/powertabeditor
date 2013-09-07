@@ -17,66 +17,84 @@
   
 #include "alternateendingdialog.h"
 
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
-#include <QCheckBox>
-#include <QMessageBox>
-
-#include <powertabdocument/alternateending.h>
 #include <boost/foreach.hpp>
-#include <vector>
-#include <algorithm>
+#include <QCheckBox>
+#include <QDialogButtonBox>
+#include <QMessageBox>
+#include <QVBoxLayout>
 
-AlternateEndingDialog::AlternateEndingDialog(QWidget* parent,
-                                             boost::shared_ptr<AlternateEnding> altEnding) :
-    QDialog(parent),
-    altEnding(altEnding)
+AlternateEndingDialog::AlternateEndingDialog(QWidget *parent)
+    : QDialog(parent)
 {
-    const int SPACING = 15;
+    const int LAYOUT_SPACING = 15;
 
     setWindowTitle(tr("Repeat Ending"));
     setModal(true);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout;
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-    std::vector<QHBoxLayout*> horizLayouts;
-    for (uint8_t i = 1; i <= AlternateEnding::dalSegnoSegno; i++)
+    std::vector<QHBoxLayout *> rowLayouts;
+    for (int i = AlternateEnding::MIN_NUMBER; i <= AlternateEnding::MAX_NUMBER; ++i)
     {
-        if ((i - 1) % 4 == 0) // group checkboxes into rows of 4
-        {
-            horizLayouts.push_back(new QHBoxLayout);
-        }
+        // Group checkboxes into rows of 4.
+        if ((i - 1) % 4 == 0)
+            rowLayouts.push_back(new QHBoxLayout());
 
-        QCheckBox* checkBox = new QCheckBox(QString::fromStdString(AlternateEnding::GetNumberText(i)));
-
-        if (altEnding->IsNumberSet(i))
-        {
-            checkBox->setChecked(true);
-        }
-        checkBoxes.push_back(checkBox);
-        horizLayouts.back()->addWidget(checkBox);
+        QCheckBox *checkBox = new QCheckBox(QString::number(i), this);
+        myCheckBoxes.push_back(checkBox);
+        rowLayouts.back()->addWidget(checkBox);
     }
 
-    BOOST_FOREACH(QHBoxLayout* horizLayout, horizLayouts)
+    // Set up the Da Capo, Dal Segno, and Dal Segno Segno checkboxes.
+    myDaCapoCheckbox = new QCheckBox(tr("D.C."), this);
+    myDalSegnoCheckbox = new QCheckBox(tr("D.S."), this);
+    myDalSegnoSegnoCheckbox = new QCheckBox(tr("D.S.S."), this);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(myDaCapoCheckbox);
+    layout->addWidget(myDalSegnoCheckbox);
+    layout->addWidget(myDalSegnoSegnoCheckbox);
+    rowLayouts.push_back(layout);
+
+    BOOST_FOREACH(QHBoxLayout *layout, rowLayouts)
     {
-        horizLayout->setSpacing(SPACING);
-        mainLayout->addLayout(horizLayout);
+        layout->setSpacing(LAYOUT_SPACING);
+        mainLayout->addLayout(layout);
     }
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(
+                QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-    mainLayout->addWidget(buttonBox);
 
-    mainLayout->setSpacing(SPACING);
+    mainLayout->addWidget(buttonBox);
+    mainLayout->setSpacing(LAYOUT_SPACING);
     setLayout(mainLayout);
+}
+
+AlternateEnding AlternateEndingDialog::getAlternateEnding() const
+{
+    AlternateEnding ending;
+
+    for (size_t i = 0; i < myCheckBoxes.size(); ++i)
+    {
+        if (myCheckBoxes[i]->isChecked())
+            ending.addNumber(i + 1);
+    }
+
+    ending.setDaCapo(myDaCapoCheckbox->isChecked());
+    ending.setDalSegno(myDalSegnoCheckbox->isChecked());
+    ending.setDalSegnoSegno(myDalSegnoSegnoCheckbox->isChecked());
+
+    return ending;
 }
 
 void AlternateEndingDialog::accept()
 {
-    // check that at least one repeat number was selected
-    if (std::find_if(checkBoxes.begin(), checkBoxes.end(),
-                     std::mem_fun(&QCheckBox::isChecked)) == checkBoxes.end())
+    // Check that at least one repeat number was selected.
+    if (std::find_if(myCheckBoxes.begin(), myCheckBoxes.end(),
+                     std::mem_fun(&QCheckBox::isChecked)) == myCheckBoxes.end()
+        && !myDaCapoCheckbox->isChecked() && !myDalSegnoCheckbox->isChecked()
+        && !myDalSegnoSegnoCheckbox->isChecked())
     {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
@@ -85,20 +103,5 @@ void AlternateEndingDialog::accept()
         msgBox.exec();
     }
     else
-    {
-        // update alternate ending with the selected checkboxes
-        for(uint8_t i = 1; i <= checkBoxes.size(); i++)
-        {
-            if (checkBoxes[i-1]->isChecked())
-            {
-                altEnding->SetNumber(i);
-            }
-            else
-            {
-                altEnding->ClearNumber(i);
-            }
-        }
-
         done(Accepted);
-    }
 }

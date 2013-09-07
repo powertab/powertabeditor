@@ -15,29 +15,32 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef ALTERNATEENDINGDIALOG_H
-#define ALTERNATEENDINGDIALOG_H
+#ifndef DIALOGS_ALTERNATEENDINGDIALOG_H
+#define DIALOGS_ALTERNATEENDINGDIALOG_H
 
 #include <QDialog>
-#include <boost/shared_ptr.hpp>
+#include <score/alternateending.h>
 #include <vector>
 
-class AlternateEnding;
 class QCheckBox;
 
 class AlternateEndingDialog : public QDialog
 {
     Q_OBJECT
-public:
-    AlternateEndingDialog(QWidget* parent,
-                          boost::shared_ptr<AlternateEnding> altEnding);
 
-public slots:
+public:
+    AlternateEndingDialog(QWidget *parent);
+
+    AlternateEnding getAlternateEnding() const;
+
+private slots:
     void accept();
 
 private:
-    boost::shared_ptr<AlternateEnding> altEnding;
-    std::vector<QCheckBox*> checkBoxes;
+    std::vector<QCheckBox *> myCheckBoxes;
+    QCheckBox *myDaCapoCheckbox;
+    QCheckBox *myDalSegnoCheckbox;
+    QCheckBox *myDalSegnoSegnoCheckbox;
 };
 
-#endif // ALTERNATEENDINGDIALOG_H
+#endif

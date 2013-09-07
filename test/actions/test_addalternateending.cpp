@@ -15,24 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include "addalternateending.h"
+#include <catch.hpp>
 
-#include <score/system.h>
+#include <actions/addalternateending.h>
+#include <score/score.h>
 
-AddAlternateEnding::AddAlternateEnding(const ScoreLocation &location,
-                                       const AlternateEnding &ending)
-    : QUndoCommand(QObject::tr("Add Repeat Ending")),
-      myLocation(location),
-      myEnding(ending)
+TEST_CASE("Actions/AddAlternateEnding", "")
 {
-}
+    Score score;
+    score.insertSystem(System());
 
-void AddAlternateEnding::redo()
-{
-    myLocation.getSystem().insertAlternateEnding(myEnding);
-}
+    AlternateEnding ending(6);
+    ending.addNumber(3);
+    ending.setDaCapo(true);
+    ScoreLocation location(score, 0, 0, 6);
+    AddAlternateEnding action(location, ending);
 
-void AddAlternateEnding::undo()
-{
-    myLocation.getSystem().removeAlternateEnding(myEnding);
+    action.redo();
+    REQUIRE(location.getSystem().getAlternateEndings().size() == 1);
+    REQUIRE(location.getSystem().getAlternateEndings()[0] == ending);
+
+    action.undo();
+    REQUIRE(location.getSystem().getAlternateEndings().size() == 0);
 }

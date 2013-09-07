@@ -180,6 +180,8 @@ private slots:
     void editBarlineFromCaret();
     /// Adds or removes a musical direction at the current position.
     void editMusicalDirection();
+    /// Adds or removes a repeat ending at the current position.
+    void editRepeatEnding();
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
 
@@ -391,6 +393,7 @@ private:
     Command *myStandardBarlineCommand;
     Command *myBarlineCommand;
     Command *myDirectionCommand;
+    Command *myRepeatEndingCommand;
     Command *myDynamicCommand;
 
     QMenu *myTabSymbolsMenu;
@@ -457,7 +460,6 @@ private slots:
     void moveCaretUp();
 
     void editChordName();
-    void editRepeatEnding();
     void editArtificialHarmonic();
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
@@ -490,7 +492,6 @@ private:
     Command* tripletAct;
     Command* irregularGroupingAct;
 
-    Command* repeatEndingAct;
     Command* volumeSwellAct;
 
     Command* artificialHarmonicAct;

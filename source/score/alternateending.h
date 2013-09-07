@@ -35,6 +35,7 @@ public:
     };
 
     AlternateEnding();
+    explicit AlternateEnding(int position);
 
     bool operator==(const AlternateEnding &other) const;
 

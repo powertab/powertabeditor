@@ -17,6 +17,7 @@
   
 #include "powertabeditor.h"
 
+#include <actions/addalternateending.h>
 #include <actions/addbarline.h>
 #include <actions/adddirection.h>
 #include <actions/adddynamic.h>
@@ -37,6 +38,7 @@
 #include <actions/editnoteduration.h>
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
+#include <actions/removealternateending.h>
 #include <actions/removedirection.h>
 #include <actions/removedynamic.h>
 #include <actions/removenoteproperty.h>
@@ -69,6 +71,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 
+#include <dialogs/alternateendingdialog.h>
 #include <dialogs/barlinedialog.h>
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
@@ -857,6 +860,33 @@ void PowerTabEditor::editMusicalDirection()
     }
 }
 
+void PowerTabEditor::editRepeatEnding()
+{
+    ScoreLocation &location(getLocation());
+    AlternateEnding *ending = ScoreUtils::findByPosition(
+                location.getSystem().getAlternateEndings(),
+                location.getPositionIndex());
+
+    if (!ending)
+    {
+        AlternateEndingDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            AlternateEnding altending(dialog.getAlternateEnding());
+            altending.setPosition(location.getPositionIndex());
+            myUndoManager->push(new AddAlternateEnding(location, altending),
+                                location.getSystemIndex());
+        }
+        else
+            myRepeatEndingCommand->setChecked(false);
+    }
+    else
+    {
+        myUndoManager->push(new RemoveAlternateEnding(location),
+                            location.getSystemIndex());
+    }
+}
+
 void PowerTabEditor::editDynamic()
 {
     ScoreLocation &location = getLocation();
@@ -1491,14 +1521,13 @@ void PowerTabEditor::createCommands()
     connect(myDirectionCommand, SIGNAL(triggered()), this,
             SLOT(editMusicalDirection()));
 
-#if 0
-    repeatEndingAct = new Command(tr("Repeat Ending..."),
-                                  "MusicSymbols.EditRepeatEnding",
-                                  Qt::SHIFT + Qt::Key_E, this);
-    repeatEndingAct->setCheckable(true);
-    connect(repeatEndingAct, SIGNAL(triggered()), this,
+    myRepeatEndingCommand = new Command(tr("Repeat Ending..."),
+                                        "MusicSymbols.EditRepeatEnding",
+                                        Qt::SHIFT + Qt::Key_E, this);
+    myRepeatEndingCommand->setCheckable(true);
+    connect(myRepeatEndingCommand, SIGNAL(triggered()), this,
             SLOT(editRepeatEnding()));
-#endif
+
     myDynamicCommand = new Command(tr("Dynamic..."), "MusicSymbols.EditDynamic",
                                    Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
@@ -1839,9 +1868,7 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(myStandardBarlineCommand);
     myMusicSymbolsMenu->addAction(myBarlineCommand);
     myMusicSymbolsMenu->addAction(myDirectionCommand);
-#if 0
-    myMusicSymbolsMenu->addAction(repeatEndingAct);
-#endif
+    myMusicSymbolsMenu->addAction(myRepeatEndingCommand);
     myMusicSymbolsMenu->addAction(myDynamicCommand);
 #if 0
     myMusicSymbolsMenu->addAction(volumeSwellAct);
@@ -2135,6 +2162,7 @@ void PowerTabEditor::updateCommands()
     myStandardBarlineCommand->setEnabled(!pos && !barline);
     myDirectionCommand->setChecked(ScoreUtils::findByPosition(
                                        system.getDirections(), position));
+    myRepeatEndingCommand->setChecked(altEnding);
     myDynamicCommand->setChecked(dynamic != NULL);
 
     if (barline) // Current position is bar.
@@ -2581,36 +2609,6 @@ void PowerTabEditor::editArtificialHarmonic()
         {
             artificialHarmonicAct->setChecked(false);
         }
-    }
-}
-
-void PowerTabEditor::editRepeatEnding()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* currentScore = caret->getCurrentScore();
-    shared_ptr<AlternateEnding> altEnding = currentScore->FindAlternateEnding(SystemLocation(caret->getCurrentSystemIndex(),
-                                                                                             caret->getCurrentPositionIndex()));
-
-    if (!altEnding) // add an alternate ending
-    {
-        altEnding = boost::make_shared<AlternateEnding>(caret->getCurrentSystemIndex(),
-                                                      caret->getCurrentPositionIndex(), 0);
-
-        AlternateEndingDialog dialog(this, altEnding);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            undoManager->push(new AddAlternateEnding(currentScore, altEnding),
-                              caret->getCurrentSystemIndex());
-        }
-        else
-        {
-            repeatEndingAct->setChecked(false);
-        }
-    }
-    else
-    {
-        undoManager->push(new RemoveAlternateEnding(currentScore, altEnding),
-                          caret->getCurrentSystemIndex());
     }
 }
 

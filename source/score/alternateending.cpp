@@ -30,6 +30,11 @@ AlternateEnding::AlternateEnding()
 {
 }
 
+AlternateEnding::AlternateEnding(int position)
+    : myPosition(position)
+{
+}
+
 bool AlternateEnding::operator==(const AlternateEnding &other) const
 {
     return myPosition == other.myPosition &&

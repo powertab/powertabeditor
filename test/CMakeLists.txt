@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.8)
 add_executable(pte_tests
     test_main.cpp
 
+    actions/test_addalternateending.cpp
     #actions/test_addartificialharmonic.cpp
     actions/test_addbarline.cpp
     actions/test_adddirection.cpp
@@ -27,6 +28,7 @@ add_executable(pte_tests
     actions/test_editnoteduration.cpp
     actions/test_edittabnumber.cpp
     actions/test_edittimesignature.cpp
+    actions/test_removealternateending.cpp
     #actions/test_removeartificialharmonic.cpp
     actions/test_removedirection.cpp
     actions/test_removedynamic.cpp

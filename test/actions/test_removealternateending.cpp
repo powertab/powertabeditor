@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,24 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include "addalternateending.h"
+#include <catch.hpp>
 
-#include <score/system.h>
+#include <actions/removealternateending.h>
+#include <score/score.h>
 
-AddAlternateEnding::AddAlternateEnding(const ScoreLocation &location,
-                                       const AlternateEnding &ending)
-    : QUndoCommand(QObject::tr("Add Repeat Ending")),
-      myLocation(location),
-      myEnding(ending)
+TEST_CASE("Actions/RemoveAlternateEnding", "")
 {
-}
+    Score score;
+    System system;
+    AlternateEnding ending(6);
+    ending.addNumber(7);
+    system.insertAlternateEnding(ending);
+    score.insertSystem(system);
 
-void AddAlternateEnding::redo()
-{
-    myLocation.getSystem().insertAlternateEnding(myEnding);
-}
+    ScoreLocation location(score, 0, 0, 6);
+    RemoveAlternateEnding action(location);
 
-void AddAlternateEnding::undo()
-{
-    myLocation.getSystem().removeAlternateEnding(myEnding);
+    action.redo();
+    REQUIRE(location.getSystem().getAlternateEndings().empty());
+
+    action.undo();
+    REQUIRE(location.getSystem().getAlternateEndings().size() == 1);
+    REQUIRE(location.getSystem().getAlternateEndings().front() == ending);
 }
