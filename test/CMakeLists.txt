@@ -21,7 +21,6 @@ add_executable(pte_tests
     actions/test_addtrill.cpp
     #actions/test_addvolumeswell.cpp
     actions/test_adjustlinespacing.cpp
-    #actions/test_deletenote.cpp
     actions/test_editbarline.cpp
     actions/test_editclef.cpp
     actions/test_editkeysignature.cpp
@@ -33,6 +32,7 @@ add_executable(pte_tests
     actions/test_removedirection.cpp
     actions/test_removedynamic.cpp
     #actions/test_removeirregulargrouping.cpp
+    actions/test_removenote.cpp
     actions/test_removenoteproperty.cpp
     actions/test_removeplayerchange.cpp
     actions/test_removepositionproperty.cpp

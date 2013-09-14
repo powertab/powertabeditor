@@ -137,6 +137,8 @@ private slots:
     void shiftForward();
     /// Moves all positions after the current location backwards.
     void shiftBackward();
+    /// Deletes the current note.
+    void removeNote();
     /// Moves the caret to a specific barline.
     void gotoBarline();
     /// Moves the caret to a specific rehearsal sign.
@@ -330,6 +332,7 @@ private:
     Command *myPrevBarCommand;
     Command *myShiftForwardCommand;
     Command *myShiftBackwardCommand;
+    Command *myRemoveNoteCommand;
     Command *myGoToBarlineCommand;
     Command *myGoToRehearsalSignCommand;
 
@@ -438,9 +441,7 @@ private:
 #if 0
 
 private:
-    bool eventFilter(QObject *obj, QEvent *ev);
     void changePositionSpacing(int offset);
-    void performSystemInsert(size_t index);
     int getCurrentPlaybackSpeed() const;
 
     void shiftTabNumber(int direction);
@@ -464,7 +465,6 @@ private slots:
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
 
-    void clearNote();
     void clearCurrentPosition();
 
     void addGuitar();
@@ -480,7 +480,6 @@ private:
     Command* cutAct;
     Command* fileInfoAct;
 
-    Command* clearNoteAct; // clears the active note
     Command* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string

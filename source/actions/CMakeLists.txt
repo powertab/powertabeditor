@@ -23,7 +23,6 @@ add_library(pteactions
     adjustlinespacing.cpp
     #changepositionspacing.cpp
     #deletebarline.cpp
-    #deletenote.cpp
     #deleteposition.cpp
     editbarline.cpp
     editclef.cpp
@@ -41,6 +40,7 @@ add_library(pteactions
     removedirection.cpp
     removedynamic.cpp
     #removeirregulargrouping.cpp
+    removenote.cpp
     removenoteproperty.cpp
     removeplayerchange.cpp
     removepositionproperty.cpp

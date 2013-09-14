@@ -41,6 +41,7 @@
 #include <actions/removealternateending.h>
 #include <actions/removedirection.h>
 #include <actions/removedynamic.h>
+#include <actions/removenote.h>
 #include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
 #include <actions/removepositionproperty.h>
@@ -168,10 +169,6 @@ PowerTabEditor::PowerTabEditor() :
     vertSplitter->addWidget(mixerList.get());
 
     setCentralWidget(vertSplitter);
-
-    // Install a top-level event filter to catch keyboard events (i.e. for
-    // entering tab numbers) regardless of which widget has focus.
-    installEventFilter(this);
 
     tuningDictionary->loadInBackground();
 #else
@@ -580,6 +577,12 @@ void PowerTabEditor::shiftBackward()
     ScoreLocation &location = getLocation();
     myUndoManager->push(new ShiftPositions(location, ShiftPositions::Backward),
                         location.getSystemIndex());
+}
+
+void PowerTabEditor::removeNote()
+{
+    myUndoManager->push(new RemoveNote(getLocation()),
+                        getLocation().getSystemIndex());
 }
 
 void PowerTabEditor::gotoBarline()
@@ -1275,10 +1278,11 @@ void PowerTabEditor::createCommands()
                                   Qt::CTRL + Qt::Key_Down, this);
     sigfwd::connect(shiftTabNumDown, SIGNAL(triggered()),
                     boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_DOWN));
-
-    clearNoteAct = new Command(tr("Clear Note"), "Position.ClearNote", QKeySequence::Delete, this);
-    connect(clearNoteAct, SIGNAL(triggered()), this, SLOT(clearNote()));
-
+#endif
+    myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
+                                      QKeySequence::Delete, this);
+    connect(myRemoveNoteCommand, SIGNAL(triggered()), this, SLOT(removeNote()));
+#if 0
     clearCurrentPositionAct = new Command(tr("Clear Position"), "Position.ClearPosition",
                                           QKeySequence::DeleteEndOfWord, this);
     connect(clearCurrentPositionAct, SIGNAL(triggered()), this, SLOT(clearCurrentPosition()));
@@ -1774,9 +1778,9 @@ void PowerTabEditor::createMenus()
     myPositionMenu->addSeparator();
     myPositionMenu->addAction(myShiftForwardCommand);
     myPositionMenu->addAction(myShiftBackwardCommand);
+    myPositionMenu->addSeparator();
+    myPositionMenu->addAction(myRemoveNoteCommand);
 #if 0
-    positionMenu->addSeparator();
-    positionMenu->addAction(clearNoteAct);
     positionMenu->addAction(clearCurrentPositionAct);
 #endif
     myPositionMenu->addSeparator();
@@ -2099,6 +2103,7 @@ void PowerTabEditor::updateCommands()
                 score.getLineSpacing() > Score::MIN_LINE_SPACING);
     myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                        !tempoMarker && !altEnding && !dynamic);
+    myRemoveNoteCommand->setEnabled(note);
 
     // Note durations
     Position::DurationType durationType = myActiveDurationType;
@@ -2517,21 +2522,6 @@ void PowerTabEditor::changePositionSpacing(int offset)
     if (currentSystem->IsValidPositionSpacing(newSpacing))
     {
         undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing),
-                          caret->getCurrentSystemIndex());
-    }
-}
-
-/// Clears the note at the caret's current position
-void PowerTabEditor::clearNote()
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Position* position = caret->getCurrentPosition();
-    const uint8_t string = caret->getCurrentStringIndex();
-
-    if (DeleteNote::canExecute(position, string))
-    {
-        undoManager->push(new DeleteNote(caret->getCurrentStaff(), caret->getCurrentVoice(),
-                                         position, string, true),
                           caret->getCurrentSystemIndex());
     }
 }

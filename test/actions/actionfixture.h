@@ -30,6 +30,7 @@ struct ActionFixture
         Staff staff(6);
         Position position(42);
         position.insertNote(Note(2, 3));
+        position.insertNote(Note(5, 1));
         staff.insertPosition(0, position);
 
         system.insertStaff(staff);

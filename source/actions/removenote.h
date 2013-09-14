@@ -15,44 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DELETENOTE_H
-#define DELETENOTE_H
+#ifndef ACTIONS_REMOVENOTE_H
+#define ACTIONS_REMOVENOTE_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
+#include <score/position.h>
+#include <score/scorelocation.h>
 
-#include <powertabdocument/note.h>
-
-class Staff;
-class Position;
-class Note;
-
-class DeleteNote : public QUndoCommand
+class RemoveNote : public QUndoCommand
 {
 public:
-    DeleteNote(boost::shared_ptr<Staff> staff, uint32_t voice,
-               Position* position, uint8_t string, bool clearEmptyPositions);
-    ~DeleteNote();
+    RemoveNote(const ScoreLocation &location);
 
-    void redo();
-    void undo();
-
-    static bool canExecute(Position* position, uint8_t string);
+    virtual void redo();
+    virtual void undo();
 
 private:
-    boost::shared_ptr<Staff> staff;
-    const uint32_t voice;
-    Position* position;
-    const uint8_t string;
-
-    bool deletePosition;
-
-    Note* note;
-    Note* prevNote;
-    Note origPrevNote;
-    Note* nextNote;
-    Note origNextNote;
+    ScoreLocation myLocation;
+    const Position myOriginalPosition;
 };
 
-#endif // DELETENOTE_H
+#endif
