@@ -94,6 +94,11 @@ void ScoreLocation::setSelectionStart(int position)
     mySelectionStart = position;
 }
 
+bool ScoreLocation::hasSelection() const
+{
+    return mySelectionStart != myPositionIndex;
+}
+
 std::vector<Position *> ScoreLocation::getSelectedPositions()
 {
     std::vector<Position *> positions;
@@ -206,7 +211,7 @@ std::vector<Note *> ScoreLocation::getSelectedNotes()
 {
     std::vector<Note *> notes;
 
-    if (myPositionIndex == mySelectionStart)
+    if (!hasSelection())
     {
         if (getNote())
             notes.push_back(getNote());

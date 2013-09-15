@@ -387,6 +387,14 @@ void PowerTabEditor::editPreferences()
     dialog.exec();
 }
 
+void PowerTabEditor::cutSelectedNotes()
+{
+    myUndoManager->beginMacro(tr("Cut Notes"));
+    copySelectedNotes();
+    removeSelectedPositions();
+    myUndoManager->endMacro();
+}
+
 void PowerTabEditor::copySelectedNotes()
 {
     ScoreLocation &location = getLocation();
@@ -408,14 +416,9 @@ void PowerTabEditor::pasteNotes()
 
     myUndoManager->beginMacro(tr("Paste Notes"));
 
-    // TODO - implement this once deleting positions is implemented.
-#if 0
     // If there are any selected notes, delete them before pasting.
-    if (getCurrentScoreArea()->getCaret()->hasSelection())
-    {
-        clearCurrentPosition();
-    }
-#endif
+    if (getLocation().hasSelection())
+        removeSelectedPositions();
 
     Clipboard::paste(this, *myUndoManager, getLocation());
     myUndoManager->endMacro();
@@ -587,7 +590,7 @@ void PowerTabEditor::removeNote()
                         getLocation().getSystemIndex());
 }
 
-void PowerTabEditor::removePosition()
+void PowerTabEditor::removeSelectedPositions()
 {
     ScoreLocation location(getLocation());
 
@@ -1190,11 +1193,10 @@ void PowerTabEditor::createCommands()
     myRedoAction = myUndoManager->createRedoAction(this, tr("&Redo"));
     myRedoAction->setShortcuts(QKeySequence::Redo);
 
-#if 0
     // Copy/Paste actions.
-    cutAct = new Command(tr("Cut"), "Edit.Cut", QKeySequence::Cut, this);
-    connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSelectedNotes()));
-#endif
+    myCutCommand = new Command(tr("Cut"), "Edit.Cut", QKeySequence::Cut, this);
+    connect(myCutCommand, SIGNAL(triggered()), this, SLOT(cutSelectedNotes()));
+
     myCopyCommand = new Command(tr("Copy"), "Edit.Copy", QKeySequence::Copy,
                                 this);
     connect(myCopyCommand, SIGNAL(triggered()), this,
@@ -1330,7 +1332,7 @@ void PowerTabEditor::createCommands()
                                           "Position.RemovePosition",
                                           QKeySequence::DeleteEndOfWord, this);
     connect(myRemovePositionCommand, SIGNAL(triggered()), this,
-            SLOT(removePosition()));
+            SLOT(removeSelectedPositions()));
 
     myGoToBarlineCommand = new Command(tr("Go To Barline..."),
                                        "Position.GoToBarline",
@@ -1781,9 +1783,7 @@ void PowerTabEditor::createMenus()
     myEditMenu->addAction(myUndoAction);
     myEditMenu->addAction(myRedoAction);
     myEditMenu->addSeparator();
-#if 0
-    editMenu->addAction(cutAct);
-#endif
+    myEditMenu->addAction(myCutCommand);
     myEditMenu->addAction(myCopyCommand);
     myEditMenu->addAction(myPasteCommand);
 #if 0
@@ -2661,14 +2661,6 @@ void PowerTabEditor::updateLocationLabel()
 {
     getCurrentPlaybackWidget()->updateLocationLabel(
                 getCurrentScoreArea()->getCaret()->toString());
-}
-
-void PowerTabEditor::cutSelectedNotes()
-{
-    undoManager->beginMacro(tr("Cut Notes"));
-    copySelectedNotes();
-    clearCurrentPosition();
-    undoManager->endMacro();
 }
 
 void PowerTabEditor::editVolumeSwell()

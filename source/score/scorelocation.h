@@ -63,6 +63,7 @@ public:
 
     int getSelectionStart() const;
     void setSelectionStart(int position);
+    bool hasSelection() const;
     std::vector<Position *> getSelectedPositions();
 
     int getVoice() const;

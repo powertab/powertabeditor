@@ -88,7 +88,9 @@ private slots:
     /// Launches the preferences dialog.
     void editPreferences();
 
-    /// Copies the selected positions to the keyboard.
+    /// Cuts the selected positions and places them on the clipboard.
+    void cutSelectedNotes();
+    /// Copies the selected positions to the clipboard.
     void copySelectedNotes();
     /// Paste notes from the clipboard at the current location.
     void pasteNotes();
@@ -139,8 +141,8 @@ private slots:
     void shiftBackward();
     /// Deletes the current note.
     void removeNote();
-    /// Deletes the current position.
-    void removePosition();
+    /// Deletes the currently-selected positions.
+    void removeSelectedPositions();
     /// Moves the caret to a specific barline.
     void gotoBarline();
     /// Moves the caret to a specific rehearsal sign.
@@ -309,6 +311,7 @@ private:
     QMenu *myEditMenu;
     QAction *myUndoAction;
     QAction *myRedoAction;
+    Command *myCutCommand;
     Command *myCopyCommand;
     Command *myPasteCommand;
 
@@ -471,14 +474,11 @@ private slots:
     void addGuitar();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
-    void cutSelectedNotes();
-
 private:
     Toolbox* toolBox;
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
 
-    Command* cutAct;
     Command* fileInfoAct;
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
