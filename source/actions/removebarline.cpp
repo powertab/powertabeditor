@@ -14,33 +14,30 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#include "deletebarline.h"
 
-#include <powertabdocument/barline.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/system.h>
+#include "removebarline.h"
 
-DeleteBarline::DeleteBarline(Score* score, boost::shared_ptr<System> system,
-                             boost::shared_ptr<Barline> barline) :
-    QUndoCommand(QObject::tr("Delete Barline")),
-    score(score),
-    system(system),
-    barline(barline)
+#include <score/score.h>
+#include <score/system.h>
+
+RemoveBarline::RemoveBarline(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Barline")),
+      myLocation(location),
+      myOriginalBarline(*location.getBarline())
 {
 }
 
-void DeleteBarline::redo()
+void RemoveBarline::redo()
 {
-    system->RemoveBarline(barline->GetPosition());
+    myLocation.getSystem().removeBarline(myOriginalBarline);
 
     // Update the rehearsal signs letters, since a rehearsal sign may have been
     // removed.
-    score->FormatRehearsalSigns();
+    ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
 }
 
-void DeleteBarline::undo()
+void RemoveBarline::undo()
 {
-    system->InsertBarline(barline);
-    score->FormatRehearsalSigns();
+    myLocation.getSystem().insertBarline(myOriginalBarline);
+    ScoreUtils::adjustRehearsalSigns(myLocation.getScore());
 }

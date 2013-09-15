@@ -29,12 +29,14 @@ add_executable(pte_tests
     actions/test_edittimesignature.cpp
     actions/test_removealternateending.cpp
     #actions/test_removeartificialharmonic.cpp
+    actions/test_removebarline.cpp
     actions/test_removedirection.cpp
     actions/test_removedynamic.cpp
     #actions/test_removeirregulargrouping.cpp
     actions/test_removenote.cpp
     actions/test_removenoteproperty.cpp
     actions/test_removeplayerchange.cpp
+    actions/test_removeposition.cpp
     actions/test_removepositionproperty.cpp
     actions/test_removerehearsalsign.cpp
     actions/test_removesystem.cpp

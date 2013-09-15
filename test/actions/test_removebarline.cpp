@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,29 +14,29 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef DELETEBARLINE_H
-#define DELETEBARLINE_H
 
-#include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
+#include <catch.hpp>
 
-class Barline;
-class Score;
-class System;
+#include <actions/removebarline.h>
+#include <score/score.h>
+#include <score/system.h>
 
-class DeleteBarline : public QUndoCommand
+TEST_CASE("Actions/RemoveBarline", "")
 {
-public:
-    DeleteBarline(Score* score, boost::shared_ptr<System> system,
-                  boost::shared_ptr<Barline> barline);
-    void redo();
-    void undo();
+    Score score;
+    System system;
 
-private:
-    Score* score;
-    boost::shared_ptr<System> system;
-    boost::shared_ptr<Barline> barline;
-};
+    ScoreLocation location(score, 0, 0, 6);
+    Barline barline(6, Barline::SingleBar);
+    system.insertBarline(barline);
+    score.insertSystem(system);
 
-#endif // DELETEBARLINE_H
+    RemoveBarline action(location);
+
+    action.redo();
+    REQUIRE(location.getSystem().getBarlines().size() == 2);
+
+    action.undo();
+    REQUIRE(location.getSystem().getBarlines().size() == 3);
+    REQUIRE(location.getSystem().getBarlines()[1] == barline);
+}

@@ -47,6 +47,7 @@ public:
 
     const Barline *getBarline() const;
     Barline *getBarline();
+    std::vector<Barline *> getSelectedBarlines();
 
     int getStaffIndex() const;
     void setStaffIndex(int staff);

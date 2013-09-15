@@ -22,8 +22,6 @@ add_library(pteactions
     #addvolumeswell.cpp
     adjustlinespacing.cpp
     #changepositionspacing.cpp
-    #deletebarline.cpp
-    #deleteposition.cpp
     editbarline.cpp
     editclef.cpp
     #editfileinformation.cpp
@@ -36,6 +34,7 @@ add_library(pteactions
     insertnotes.cpp
     removealternateending.cpp
     #removeartificialharmonic.cpp
+    removebarline.cpp
     #removechordtext.cpp
     removedirection.cpp
     removedynamic.cpp
@@ -43,6 +42,7 @@ add_library(pteactions
     removenote.cpp
     removenoteproperty.cpp
     removeplayerchange.cpp
+    removeposition.cpp
     removepositionproperty.cpp
     removerehearsalsign.cpp
     removesystem.cpp

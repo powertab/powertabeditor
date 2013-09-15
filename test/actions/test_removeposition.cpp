@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,30 +14,21 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef DELETEPOSITION_H
-#define DELETEPOSITION_H
 
-#include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <catch.hpp>
 
-class Staff;
-class Position;
+#include <actions/removeposition.h>
+#include "actionfixture.h"
 
-class DeletePosition : public QUndoCommand
+TEST_CASE_METHOD(ActionFixture, "Actions/RemovePosition", "")
 {
-public:
-    DeletePosition(boost::shared_ptr<Staff> staff, Position* position, quint32 voice);
-    void redo();
-    void undo();
+    RemovePosition action(myLocation);
 
-private:
-    boost::shared_ptr<Staff> staff;
-    Position* position;
-    const quint32 voice;
+    action.redo();
+    REQUIRE(myLocation.getPosition() == NULL);
 
-    boost::ptr_vector<QUndoCommand> deleteNotes;
-};
-
-#endif // DELETEPOSITION_H
+    action.undo();
+    REQUIRE(myLocation.getPosition() != NULL);
+    REQUIRE(myLocation.getPosition()->getNotes().size() == 2);
+    REQUIRE(myLocation.getNote() != NULL);
+}

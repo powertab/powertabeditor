@@ -39,11 +39,13 @@
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
 #include <actions/removealternateending.h>
+#include <actions/removebarline.h>
 #include <actions/removedirection.h>
 #include <actions/removedynamic.h>
 #include <actions/removenote.h>
 #include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
+#include <actions/removeposition.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removerehearsalsign.h>
 #include <actions/removesystem.h>
@@ -583,6 +585,47 @@ void PowerTabEditor::removeNote()
 {
     myUndoManager->push(new RemoveNote(getLocation()),
                         getLocation().getSystemIndex());
+}
+
+void PowerTabEditor::removePosition()
+{
+    ScoreLocation location(getLocation());
+
+    const std::vector<Position *> selectedPositions(
+        location.getSelectedPositions());
+    const std::vector<Barline *> bars = location.getSelectedBarlines();
+
+    myUndoManager->beginMacro(tr("Remove Position"));
+
+    // The Position pointers will become invalid once we start creating
+    // RemovePosition actions. So, we build a list of their position indices
+    // beforehand and use that instead.
+    std::vector<int> positions;
+    std::transform(selectedPositions.begin(), selectedPositions.end(),
+                   std::back_inserter(positions),
+                   std::mem_fun(&Position::getPosition));
+
+    // Remove each of the selected positions.
+    BOOST_FOREACH(int position, positions)
+    {
+        location.setPositionIndex(position);
+        myUndoManager->push(new RemovePosition(location),
+                            location.getSystemIndex());
+    }
+
+    std::vector<int> barPositions;
+    std::transform(bars.begin(), bars.end(), std::back_inserter(barPositions),
+                   std::mem_fun(&Barline::getPosition));
+
+    // Remove each of the selected barlines.
+    BOOST_FOREACH(int position, barPositions)
+    {
+        location.setPositionIndex(position);
+        myUndoManager->push(new RemoveBarline(location),
+                            location.getSystemIndex());
+    }
+
+    myUndoManager->endMacro();
 }
 
 void PowerTabEditor::gotoBarline()
@@ -1282,12 +1325,13 @@ void PowerTabEditor::createCommands()
     myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
                                       QKeySequence::Delete, this);
     connect(myRemoveNoteCommand, SIGNAL(triggered()), this, SLOT(removeNote()));
-#if 0
-    clearCurrentPositionAct = new Command(tr("Clear Position"), "Position.ClearPosition",
-                                          QKeySequence::DeleteEndOfWord, this);
-    connect(clearCurrentPositionAct, SIGNAL(triggered()), this, SLOT(clearCurrentPosition()));
 
-#endif
+    myRemovePositionCommand = new Command(tr("Remove Position"),
+                                          "Position.RemovePosition",
+                                          QKeySequence::DeleteEndOfWord, this);
+    connect(myRemovePositionCommand, SIGNAL(triggered()), this,
+            SLOT(removePosition()));
+
     myGoToBarlineCommand = new Command(tr("Go To Barline..."),
                                        "Position.GoToBarline",
                                        Qt::CTRL + Qt::Key_G, this);
@@ -1780,9 +1824,7 @@ void PowerTabEditor::createMenus()
     myPositionMenu->addAction(myShiftBackwardCommand);
     myPositionMenu->addSeparator();
     myPositionMenu->addAction(myRemoveNoteCommand);
-#if 0
-    positionMenu->addAction(clearCurrentPositionAct);
-#endif
+    myPositionMenu->addAction(myRemovePositionCommand);
     myPositionMenu->addSeparator();
     myPositionMenu->addAction(myGoToBarlineCommand);
     myPositionMenu->addAction(myGoToRehearsalSignCommand);
@@ -2081,7 +2123,7 @@ void PowerTabEditor::updateCommands()
         return;
     }
 
-    const ScoreLocation &location = getLocation();
+    ScoreLocation location = getLocation();
     const Score &score = location.getScore();
     const System &system = location.getSystem();
     const Staff &staff = location.getStaff();
@@ -2095,6 +2137,7 @@ void PowerTabEditor::updateCommands()
                 system.getAlternateEndings(), position);
     const Dynamic *dynamic = ScoreUtils::findByPosition(
                 staff.getDynamics(), position);
+    const bool hasSelection = !location.getSelectedPositions().empty();
 
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
     myIncreaseLineSpacingCommand->setEnabled(
@@ -2104,6 +2147,7 @@ void PowerTabEditor::updateCommands()
     myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                        !tempoMarker && !altEnding && !dynamic);
     myRemoveNoteCommand->setEnabled(note);
+    myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
 
     // Note durations
     Position::DurationType durationType = myActiveDurationType;
@@ -2526,47 +2570,6 @@ void PowerTabEditor::changePositionSpacing(int offset)
     }
 }
 
-/// Completely clears the caret's selected positions.
-/// For each position, it either removes a barline, or all of the notes at
-/// the position.
-void PowerTabEditor::clearCurrentPosition()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    shared_ptr<System> system = caret->getCurrentSystem();
-    shared_ptr<Staff> staff = caret->getCurrentStaff();
-    const std::vector<Position*> positions = caret->getSelectedPositions();
-    const std::vector<shared_ptr<Barline> > bars = caret->getSelectedBarlines();
-    const uint32_t voice = caret->getCurrentVoice();
-
-    undoManager->beginMacro(tr("Clear Position"));
-
-    BOOST_FOREACH(Position *pos, positions)
-    {
-        if (pos)
-        {
-            undoManager->push(new DeletePosition(staff, pos, voice),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-
-    shared_ptr<const Barline> startBar = system->GetStartBar();
-    shared_ptr<const Barline> endBar = system->GetEndBar();
-
-    for (std::vector<shared_ptr<Barline> >::const_iterator bar = bars.begin();
-         bar != bars.end(); ++bar)
-    {
-        // Don't allow the start/end bars to be deleted.
-        if (*bar && *bar != startBar && *bar != endBar)
-        {
-            undoManager->push(new DeleteBarline(caret->getCurrentScore(),
-                                                system, *bar),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-
-    undoManager->endMacro();
-}
-
 void PowerTabEditor::addGuitar()
 {
     Score* score = getCurrentScoreArea()->getCaret()->getCurrentScore();
@@ -2650,244 +2653,6 @@ namespace
             action->setEnabled(true);
             const bool propertySet = (object->*predicate)();
             action->setChecked(propertySet);
-        }
-    }
-}
-
-/// Updates whether menu items are checked, etc, whenever the caret moves.
-void PowerTabEditor::updateActions()
-{
-    // Disable editing during playback.
-    if (isPlaying)
-    {
-        updateScoreAreaActions(false);
-        playPauseAct->setEnabled(true);
-        return;
-    }
-
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    const Score* currentScore = caret->getCurrentScore();
-    const quint32 caretPosition = caret->getCurrentPositionIndex();
-    shared_ptr<const System> currentSystem = caret->getCurrentSystem();
-    const Position* currentPosition = caret->getCurrentPosition();
-    shared_ptr<const Barline> currentBarline = caret->getCurrentBarline();
-    const Note* currentNote = caret->getCurrentNote();
-    const bool hasSelection = caret->hasSelection();
-
-    const bool onBarline = currentBarline != System::BarlineConstPtr();
-
-    // Check for chord text
-    chordNameAct->setChecked(currentSystem->HasChordText(caretPosition));
-
-    // note and rest duration
-    uint8_t duration = activeDuration;
-    bool isRest = false;
-
-    if (currentPosition != NULL)
-    {
-        duration = currentPosition->GetDurationType();
-        isRest = currentPosition->IsRest();
-    }
-
-    if (isRest)
-    {
-        switch(duration)
-        {
-        case 1: wholeRestAct->setChecked(true); break;
-        case 2: halfRestAct->setChecked(true); break;
-        case 4: quarterRestAct->setChecked(true); break;
-        case 8: eighthRestAct->setChecked(true); break;
-        case 16: sixteenthRestAct->setChecked(true); break;
-        case 32: thirtySecondRestAct->setChecked(true); break;
-        case 64: sixtyFourthRestAct->setChecked(true); break;
-        }
-
-        wholeNoteAct->setChecked(false);
-        halfNoteAct->setChecked(false);
-        quarterNoteAct->setChecked(false);
-        eighthNoteAct->setChecked(false);
-        sixteenthNoteAct->setChecked(false);
-        thirtySecondNoteAct->setChecked(false);
-        sixtyFourthNoteAct->setChecked(false);
-    }
-    else
-    {
-        switch(duration)
-        {
-        case 1: wholeNoteAct->setChecked(true); break;
-        case 2: halfNoteAct->setChecked(true); break;
-        case 4: quarterNoteAct->setChecked(true); break;
-        case 8: eighthNoteAct->setChecked(true); break;
-        case 16: sixteenthNoteAct->setChecked(true); break;
-        case 32: thirtySecondNoteAct->setChecked(true); break;
-        case 64: sixtyFourthNoteAct->setChecked(true); break;
-        }
-
-        foreach (QAction* action, restDurationsGroup->actions())
-        {
-            action->setChecked(false);
-        }
-    }
-
-    increaseDurationAct->setEnabled(duration != 1);
-    decreaseDurationAct->setEnabled(duration != 64);
-
-    const RehearsalSign* currentRehearsalSign = currentBarline ? &currentBarline->GetRehearsalSign() : NULL;
-    updatePropertyStatus(rehearsalSignAct, currentRehearsalSign, &RehearsalSign::IsSet);
-
-    const SystemLocation location(caret->getCurrentSystemIndex(),
-                                  caret->getCurrentPositionIndex());
-
-    shared_ptr<const TempoMarker> tempoMarker = currentScore->FindTempoMarker(location);
-    tempoMarkerAct->setChecked(tempoMarker != shared_ptr<const TempoMarker>());
-
-    shared_ptr<const AlternateEnding> altEnding = currentScore->FindAlternateEnding(location);
-    repeatEndingAct->setChecked(altEnding != shared_ptr<const AlternateEnding>());
-
-    musicalDirectionAct->setChecked(currentSystem->FindDirection(caretPosition));
-
-    Score::DynamicPtr dynamic = currentScore->FindDynamic(caret->getCurrentSystemIndex(), caret->getCurrentStaffIndex(),
-                                                          caret->getCurrentPositionIndex());
-    dynamicAct->setChecked(dynamic != Score::DynamicPtr());
-
-    if (onBarline) // current position is bar
-    {
-        barlineAct->setText(tr("Edit Barline"));
-        barlineAct->setEnabled(true);
-    }
-    else if (currentPosition == NULL) // current position is empty
-    {
-        barlineAct->setText(tr("Insert Barline"));
-        barlineAct->setEnabled(true);
-    }
-    else // current position has notes
-    {
-        barlineAct->setDisabled(true);
-        barlineAct->setText(tr("Barline"));
-    }
-
-    standardBarlineAct->setEnabled(currentPosition == NULL && !onBarline);
-
-    keySignatureAct->setEnabled(onBarline);
-    timeSignatureAct->setEnabled(onBarline);
-
-    updatePropertyStatus(naturalHarmonicAct, currentNote, &Note::IsNaturalHarmonic);
-    updatePropertyStatus(artificialHarmonicAct, currentNote, &Note::HasArtificialHarmonic);
-    updatePropertyStatus(tappedHarmonicAct, currentNote, &Note::HasTappedHarmonic);
-    updatePropertyStatus(noteMutedAct, currentNote, &Note::IsMuted);
-    updatePropertyStatus(ghostNoteAct, currentNote, &Note::IsGhostNote);
-    updatePropertyStatus(tiedNoteAct, currentNote, &Note::IsTied);
-    updatePropertyStatus(staccatoNoteAct, currentPosition, &Position::IsStaccato);
-    updatePropertyStatus(hammerPullAct, currentNote, &Note::HasHammerOnOrPulloff);
-    updatePropertyStatus(fermataAct, currentPosition, &Position::HasFermata);
-    updatePropertyStatus(vibratoAct, currentPosition, &Position::HasVibrato);
-    updatePropertyStatus(wideVibratoAct, currentPosition, &Position::HasWideVibrato);
-    updatePropertyStatus(palmMuteAct, currentPosition, &Position::HasPalmMuting);
-    updatePropertyStatus(letRingAct, currentPosition, &Position::HasLetRing);
-    updatePropertyStatus(tremoloPickingAct, currentPosition, &Position::HasTremoloPicking);
-    updatePropertyStatus(arpeggioUpAct, currentPosition, &Position::HasArpeggioUp);
-    updatePropertyStatus(arpeggioDownAct, currentPosition, &Position::HasArpeggioDown);
-    updatePropertyStatus(dottedNoteAct, currentPosition, &Position::IsDotted);
-    updatePropertyStatus(doubleDottedNoteAct, currentPosition, &Position::IsDoubleDotted);
-    updatePropertyStatus(marcatoAct, currentPosition, &Position::HasMarcato);
-    updatePropertyStatus(sforzandoAct, currentPosition, &Position::HasSforzando);
-    updatePropertyStatus(graceNoteAct, currentPosition, &Position::IsAcciaccatura);
-
-    updatePropertyStatus(octave8vaAct, currentNote, &Note::IsOctave8va);
-    updatePropertyStatus(octave15maAct, currentNote, &Note::IsOctave15ma);
-    updatePropertyStatus(octave8vbAct, currentNote, &Note::IsOctave8vb);
-    updatePropertyStatus(octave15mbAct, currentNote, &Note::IsOctave15mb);
-
-    updatePropertyStatus(trillAction, currentNote, &Note::HasTrill);
-    updatePropertyStatus(tapAct, currentPosition, &Position::HasTap);
-    updatePropertyStatus(pickStrokeUpAct, currentPosition, &Position::HasPickStrokeUp);
-    updatePropertyStatus(pickStrokeDownAct, currentPosition, &Position::HasPickStrokeDown);
-
-    updatePropertyStatus(shiftSlideAct, currentNote, &Note::HasShiftSlide);
-    updatePropertyStatus(legatoSlideAct, currentNote, &Note::HasLegatoSlide);
-    updatePropertyStatus(slideOutOfDownwardsAct, currentNote, &Note::HasSlideOutOfDownwards);
-    updatePropertyStatus(slideOutOfUpwardsAct, currentNote, &Note::HasSlideOutOfUpwards);
-    updatePropertyStatus(slideIntoFromAboveAct, currentNote, &Note::HasSlideIntoFromAbove);
-    updatePropertyStatus(slideIntoFromBelowAct, currentNote, &Note::HasSlideIntoFromBelow);
-
-    updatePropertyStatus(volumeSwellAct, currentPosition, &Position::HasVolumeSwell);
-
-    shiftBackwardAct->setEnabled(!currentPosition && (caretPosition == 0 || !currentBarline) &&
-                                 !tempoMarker && !altEnding && !dynamic);
-
-    clearNoteAct->setEnabled(currentNote != NULL);
-
-    removeCurrentSystemAct->setEnabled(currentScore->GetSystemCount() > 1);
-
-    clearCurrentPositionAct->setEnabled(currentPosition != NULL ||
-            currentBarline || hasSelection);
-
-    shiftTabNumDown->setEnabled(currentNote != NULL);
-    shiftTabNumUp->setEnabled(currentNote != NULL);
-
-    // irregular grouping
-    tripletAct->setDisabled(true);
-    tripletAct->setChecked(false);
-    irregularGroupingAct->setDisabled(true);
-    irregularGroupingAct->setChecked(false);
-
-    if (currentPosition)
-    {
-        tripletAct->setEnabled(true);
-        irregularGroupingAct->setEnabled(true);
-
-        if (currentPosition->HasIrregularGroupingTiming())
-        {
-            uint8_t notesPlayed = 0, notesPlayedOver = 0;
-            currentPosition->GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
-
-            if (notesPlayed == 3 && notesPlayedOver == 2)
-            {
-                tripletAct->setChecked(true);
-            }
-            else
-            {
-                irregularGroupingAct->setChecked(true);
-            }
-        }
-    }
-
-    // Set up signal/slot connections for dot add/remove
-    addDotAct->disconnect(SIGNAL(triggered()));
-    removeDotAct->disconnect(SIGNAL(triggered()));
-
-    if (currentPosition != NULL)
-    {
-        if (currentPosition->IsDotted())
-        {
-            connectToggleProperty<Position>(addDotAct, &getSelectedPositions,
-                                            &Position::IsDoubleDotted, &Position::SetDoubleDotted);
-            connectToggleProperty<Position>(addDotAct, &getSelectedPositions,
-                                            &Position::IsDotted, &Position::SetDotted);
-
-            connectToggleProperty<Position>(removeDotAct, &getSelectedPositions,
-                                            &Position::IsDotted, &Position::SetDotted);
-
-            addDotAct->setEnabled(true);
-            removeDotAct->setEnabled(true);
-        }
-        else if (currentPosition->IsDoubleDotted())
-        {
-            connectToggleProperty<Position>(removeDotAct, &getSelectedPositions,
-                                            &Position::IsDotted, &Position::SetDotted);
-            connectToggleProperty<Position>(removeDotAct, &getSelectedPositions,
-                                            &Position::IsDoubleDotted, &Position::SetDoubleDotted);
-
-            addDotAct->setEnabled(false);
-            removeDotAct->setEnabled(true);
-        }
-        else
-        {
-            connectToggleProperty<Position>(addDotAct, &getSelectedPositions,
-                                            &Position::IsDotted, &Position::SetDotted);
-
-            addDotAct->setEnabled(true);
-            removeDotAct->setEnabled(false);
         }
     }
 }

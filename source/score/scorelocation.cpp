@@ -164,6 +164,22 @@ Barline *ScoreLocation::getBarline()
                                       getPositionIndex());
 }
 
+std::vector<Barline *> ScoreLocation::getSelectedBarlines()
+{
+    std::vector<Barline *> bars;
+    const int min = std::min(myPositionIndex, mySelectionStart);
+    const int max = std::max(myPositionIndex, mySelectionStart);
+
+    BOOST_FOREACH(Barline &bar, getSystem().getBarlines())
+    {
+        const int position = bar.getPosition();
+        if (position > 0 && position >= min && position <= max)
+            bars.push_back(&bar);
+    }
+
+    return bars;
+}
+
 int ScoreLocation::getString() const
 {
     return myString;

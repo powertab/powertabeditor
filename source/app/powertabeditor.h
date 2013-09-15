@@ -139,6 +139,8 @@ private slots:
     void shiftBackward();
     /// Deletes the current note.
     void removeNote();
+    /// Deletes the current position.
+    void removePosition();
     /// Moves the caret to a specific barline.
     void gotoBarline();
     /// Moves the caret to a specific rehearsal sign.
@@ -333,6 +335,7 @@ private:
     Command *myShiftForwardCommand;
     Command *myShiftBackwardCommand;
     Command *myRemoveNoteCommand;
+    Command *myRemovePositionCommand;
     Command *myGoToBarlineCommand;
     Command *myGoToRehearsalSignCommand;
 
@@ -465,8 +468,6 @@ private slots:
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
 
-    void clearCurrentPosition();
-
     void addGuitar();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
@@ -479,8 +480,6 @@ private:
 
     Command* cutAct;
     Command* fileInfoAct;
-
-    Command* clearCurrentPositionAct; // clears out the entire position (either notes or barline)
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
     Command* shiftTabNumDown;
