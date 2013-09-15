@@ -19,10 +19,10 @@
 
 #include <stdexcept>
 
-const uint8_t TimeSignature::MIN_BEATS_PER_MEASURE = 1;
-const uint8_t TimeSignature::MAX_BEATS_PER_MEASURE = 32;
-const uint8_t TimeSignature::MIN_PULSES = 0;
-const uint8_t TimeSignature::MAX_PULSES = 32;
+const int TimeSignature::MIN_BEATS_PER_MEASURE = 1;
+const int TimeSignature::MAX_BEATS_PER_MEASURE = 32;
+const int TimeSignature::MIN_PULSES = 0;
+const int TimeSignature::MAX_PULSES = 32;
 
 TimeSignature::TimeSignature()
     : myMeterType(Normal),
@@ -72,12 +72,12 @@ void TimeSignature::setMeterType(MeterType type)
     myMeterType = type;
 }
 
-uint8_t TimeSignature::getBeatsPerMeasure() const
+int TimeSignature::getBeatsPerMeasure() const
 {
     return myBeatsPerMeasure;
 }
 
-void TimeSignature::setBeatsPerMeasure(uint8_t beats)
+void TimeSignature::setBeatsPerMeasure(int beats)
 {
     if (beats < MIN_BEATS_PER_MEASURE || beats > MAX_BEATS_PER_MEASURE)
         throw std::out_of_range("Invalid beats per measure");
@@ -85,18 +85,18 @@ void TimeSignature::setBeatsPerMeasure(uint8_t beats)
     myBeatsPerMeasure = beats;
 }
 
-bool TimeSignature::isValidBeatValue(uint8_t beatValue)
+bool TimeSignature::isValidBeatValue(int beatValue)
 {
     return beatValue == 1 || beatValue == 2 || beatValue == 4 ||
            beatValue == 8 || beatValue == 16 || beatValue == 32;
 }
 
-uint8_t TimeSignature::getBeatValue() const
+int TimeSignature::getBeatValue() const
 {
     return myBeatValue;
 }
 
-void TimeSignature::setBeatValue(uint8_t beatValue)
+void TimeSignature::setBeatValue(int beatValue)
 {
     if (!isValidBeatValue(beatValue))
         throw std::out_of_range("Invalid beat value");
@@ -117,19 +117,19 @@ void TimeSignature::setBeamingPattern(const BeamingPattern &pattern)
     myBeamingPattern = pattern;
 }
 
-bool TimeSignature::isValidNumPulses(uint8_t pulses) const
+bool TimeSignature::isValidNumPulses(int pulses) const
 {
     // The number of pulses must divide evenly into the number of beats.
     return pulses <= MAX_PULSES &&
             (pulses == 0 || getBeatsPerMeasure() % pulses == 0);
 }
 
-uint8_t TimeSignature::getNumPulses() const
+int TimeSignature::getNumPulses() const
 {
     return myNumPulses;
 }
 
-void TimeSignature::setNumPulses(uint8_t pulses)
+void TimeSignature::setNumPulses(int pulses)
 {
     // The number of pulses must divide evenly into the number of beats.
     if (!isValidNumPulses(pulses))

@@ -19,7 +19,6 @@
 #define SCORE_TIMESIGNATURE_H
 
 #include <boost/array.hpp>
-#include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
 
 class TimeSignature
@@ -42,29 +41,29 @@ public:
     void setMeterType(MeterType type);
 
     /// Returns the number of beats in the measure.
-    uint8_t getBeatsPerMeasure() const;
+    int getBeatsPerMeasure() const;
     /// Sets the number of beats in the measure.
-    void setBeatsPerMeasure(uint8_t beats);
+    void setBeatsPerMeasure(int beats);
 
     /// Determines whether a beat value is valid.
-    static bool isValidBeatValue(uint8_t beatValue);
+    static bool isValidBeatValue(int beatValue);
     /// Returns the beat value (quarter note == 4, eighth note == 8, etc).
-    uint8_t getBeatValue() const;
+    int getBeatValue() const;
     /// Sets the beat value for the measure.
-    void setBeatValue(uint8_t beatValue);
+    void setBeatValue(int beatValue);
 
-    typedef boost::array<uint8_t, 4> BeamingPattern;
+    typedef boost::array<int, 4> BeamingPattern;
     /// Returns the beaming pattern for the measure.
     BeamingPattern getBeamingPattern() const;
     /// Sets the beaming pattern for the measure.
     void setBeamingPattern(const BeamingPattern &pattern);
 
     /// Returns whether a number of metronome pulses is valid.
-    bool isValidNumPulses(uint8_t pulses) const;
+    bool isValidNumPulses(int pulses) const;
     /// Returns the number of metronome pulses in the measure.
-    uint8_t getNumPulses() const;
+    int getNumPulses() const;
     /// Sets the number of metronome pulses in the measure.
-    void setNumPulses(uint8_t pulses);
+    void setNumPulses(int pulses);
 
     /// Returns whether the time signature should be displayed.
     bool isVisible() const;
@@ -72,20 +71,20 @@ public:
     void setVisible(bool visible = true);
 
     /// Minimum valid number of beats in a measure.
-    static const uint8_t MIN_BEATS_PER_MEASURE;
+    static const int MIN_BEATS_PER_MEASURE;
     /// Maximum valid number of beats in a measure.
-    static const uint8_t MAX_BEATS_PER_MEASURE;
+    static const int MAX_BEATS_PER_MEASURE;
     /// Minimum valid number of metronome pulses in a measure.
-    static const uint8_t MIN_PULSES;
+    static const int MIN_PULSES;
     /// Maximum valid number of metronome pulses in a measure.
-    static const uint8_t MAX_PULSES;
+    static const int MAX_PULSES;
 
 private:
     MeterType myMeterType;
-    uint8_t myBeatsPerMeasure;
-    uint8_t myBeatValue;
+    int myBeatsPerMeasure;
+    int myBeatValue;
     BeamingPattern myBeamingPattern;
-    uint8_t myNumPulses;
+    int myNumPulses;
     bool myIsVisible;
 
     friend class boost::serialization::access;

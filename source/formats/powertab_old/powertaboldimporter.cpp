@@ -324,9 +324,11 @@ void PowerTabOldImporter::convert(
     time.setBeatsPerMeasure(oldTime.GetBeatsPerMeasure());
     time.setBeatValue(oldTime.GetBeatAmount());
 
-    TimeSignature::BeamingPattern pattern;
+    boost::array<uint8_t, 4> pattern;
     oldTime.GetBeamingPattern(pattern[0], pattern[1], pattern[2], pattern[3]);
-    time.setBeamingPattern(pattern);
+    boost::array<int, 4> newPattern;
+    std::copy(pattern.begin(), pattern.end(), newPattern.begin());
+    time.setBeamingPattern(newPattern);
 
     time.setNumPulses(oldTime.GetPulses());
     time.setVisible(oldTime.IsShown());

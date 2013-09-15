@@ -60,9 +60,9 @@ public:
     void setSharps(bool set = true);
 
     /// Returns the capo for the tuning (0 == no capo).
-    uint8_t getCapo() const;
+    int getCapo() const;
     /// Sets the capo for the tuning.
-    void setCapo(uint8_t capo);
+    void setCapo(int capo);
 
     /// Minimum allowed number of strings in a tuning.
     static const int MIN_STRING_COUNT;
@@ -70,9 +70,9 @@ public:
     static const int MAX_STRING_COUNT;
 
     /// Minimum valid capo fret.
-    static const uint8_t MIN_CAPO;
+    static const int MIN_CAPO;
     /// Maximum valid capo fret.
-    static const uint8_t MAX_CAPO;
+    static const int MAX_CAPO;
 
     static const int8_t MIN_MUSIC_NOTATION_OFFSET;
     static const int8_t MAX_MUSIC_NOTATION_OFFSET;
@@ -82,7 +82,7 @@ private:
     std::vector<uint8_t> myNotes;
     int8_t myMusicNotationOffset;
     bool myUsesSharps;
-    uint8_t myCapo;
+    int myCapo;
 
     friend class boost::serialization::access;
     template <class Archive>

@@ -18,7 +18,6 @@
 #ifndef SCORE_KEYSIGNATURE_H
 #define SCORE_KEYSIGNATURE_H
 
-#include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
 #include <iosfwd>
 
@@ -32,7 +31,7 @@ public:
     };
 
     KeySignature();
-    KeySignature(KeyType type, uint8_t accidentals, bool usesSharps);
+    KeySignature(KeyType type, int accidentals, bool usesSharps);
 
     bool operator==(const KeySignature &other) const;
 
@@ -44,9 +43,9 @@ public:
     /// Returns the number of accidentals in the key signature.
     /// @param includeCancel Indicates whether accidentals for a cancellation
     /// key signature should be included.
-    uint8_t getNumAccidentals(bool includeCancel = false) const;
+    int getNumAccidentals(bool includeCancel = false) const;
     /// Sets the number of accidentals in the key signature.
-    void setNumAccidentals(uint8_t accidentals);
+    void setNumAccidentals(int accidentals);
 
     /// Returns whether the key signature uses sharps or flats.
     bool usesSharps() const;
@@ -64,11 +63,11 @@ public:
     void setCancellation(bool cancellation = true);
 
     /// The maximum valid number of accidentals.
-    static const uint8_t MAX_NUM_ACCIDENTALS;
+    static const int MAX_NUM_ACCIDENTALS;
 
 private:
     KeyType myKeyType;
-    uint8_t myNumAccidentals;
+    int myNumAccidentals;
     bool myUsesSharps;
     bool myIsVisible;
     bool myIsCancellation;

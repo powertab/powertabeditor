@@ -65,7 +65,7 @@ TEST_CASE("Score/TimeSignature/Serialization", "")
     time.setMeterType(TimeSignature::CutTime);
     time.setBeatsPerMeasure(5);
     time.setBeatValue(8);
-    boost::array<uint8_t, 4> pattern = {{3,2,0,0}};
+    TimeSignature::BeamingPattern pattern = {{3,2,0,0}};
     time.setBeamingPattern(pattern);
     time.setNumPulses(5);
     time.setVisible(false);

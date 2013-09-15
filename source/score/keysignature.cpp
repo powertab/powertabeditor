@@ -22,7 +22,7 @@
 #include <string>
 #include "generalmidi.h"
 
-const uint8_t KeySignature::MAX_NUM_ACCIDENTALS = 7;
+const int KeySignature::MAX_NUM_ACCIDENTALS = 7;
 
 KeySignature::KeySignature()
     : myKeyType(Major),
@@ -33,7 +33,7 @@ KeySignature::KeySignature()
 {
 }
 
-KeySignature::KeySignature(KeyType type, uint8_t accidentals, bool usesSharps)
+KeySignature::KeySignature(KeyType type, int accidentals, bool usesSharps)
     : myKeyType(type),
       myNumAccidentals(accidentals),
       myUsesSharps(usesSharps),
@@ -61,7 +61,7 @@ void KeySignature::setKeyType(KeyType type)
     myKeyType = type;
 }
 
-uint8_t KeySignature::getNumAccidentals(bool includeCancel) const
+int KeySignature::getNumAccidentals(bool includeCancel) const
 {
     // Cancellations will always be C Major / A Minor, so if we are not
     // including the cancellation then there are no accidentals.
@@ -71,7 +71,7 @@ uint8_t KeySignature::getNumAccidentals(bool includeCancel) const
     return myNumAccidentals;
 }
 
-void KeySignature::setNumAccidentals(uint8_t accidentals)
+void KeySignature::setNumAccidentals(int accidentals)
 {
     if (accidentals > MAX_NUM_ACCIDENTALS)
         throw std::out_of_range("Invalid number of accidentals");

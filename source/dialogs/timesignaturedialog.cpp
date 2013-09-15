@@ -31,7 +31,7 @@ TimeSignatureDialog::TimeSignatureDialog(
     ui->beatsPerMeasure->setMinimum(TimeSignature::MIN_BEATS_PER_MEASURE);
     ui->beatsPerMeasure->setMaximum(TimeSignature::MAX_BEATS_PER_MEASURE);
 
-    for (uint8_t i = 0; i <= 64; ++i)
+    for (int i = 0; i <= 64; ++i)
     {
         if (TimeSignature::isValidBeatValue(i))
             ui->beatValue->addItem(QString::number(i), i);
@@ -61,9 +61,9 @@ TimeSignatureDialog::TimeSignatureDialog(
     ui->metronomePulses->setCurrentIndex(
                 ui->metronomePulses->findData(myTimeSignature.getNumPulses()));
 
-    boost::array<uint8_t, 4> beamingPattern = myTimeSignature.getBeamingPattern();
+    TimeSignature::BeamingPattern pattern = myTimeSignature.getBeamingPattern();
     for (size_t i = 0; i < myBeamingPatterns.size(); i++)
-        myBeamingPatterns[i]->setText(QString::number(beamingPattern[i]));
+        myBeamingPatterns[i]->setText(QString::number(pattern[i]));
 
     connect(ui->showTimeSignature, SIGNAL(toggled(bool)),
             this, SLOT(editTimeSignatureVisible(bool)));
@@ -93,7 +93,7 @@ void TimeSignatureDialog::updatePossiblePulseValues()
 {
     ui->metronomePulses->clear();
 
-    for (uint8_t i = TimeSignature::MIN_PULSES;
+    for (int i = TimeSignature::MIN_PULSES;
          i < TimeSignature::MAX_PULSES; ++i)
     {
         if (myTimeSignature.isValidNumPulses(i))
@@ -111,15 +111,15 @@ TimeSignature TimeSignatureDialog::getTimeSignature() const
 void TimeSignatureDialog::accept()
 {
     // Save the new beaming pattern values.
-    boost::array<uint8_t, 4> beamingPattern = {{0, 0, 0, 0}};
+    TimeSignature::BeamingPattern pattern = {{0, 0, 0, 0}};
     for (size_t i = 0; i < myBeamingPatterns.size(); ++i)
     {
         QLineEdit *value = myBeamingPatterns[i];
         if (value->isEnabled())
-            beamingPattern[i] = value->text().toUInt();
+            pattern[i] = value->text().toUInt();
     }
 
-    if (beamingPattern[0] == 0)
+    if (pattern[0] == 0)
     {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
@@ -129,7 +129,7 @@ void TimeSignatureDialog::accept()
         return;
     }
 
-    myTimeSignature.setBeamingPattern(beamingPattern);
+    myTimeSignature.setBeamingPattern(pattern);
     done(Accepted);
 }
 
