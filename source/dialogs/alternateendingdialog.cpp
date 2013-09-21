@@ -18,6 +18,7 @@
 #include "alternateendingdialog.h"
 
 #include <boost/foreach.hpp>
+#include <functional>
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QMessageBox>
