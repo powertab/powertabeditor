@@ -33,12 +33,12 @@ System::System()
 
 bool System::operator==(const System &other) const
 {
-    return myStaves == other.myStaves &&
-           myBarlines == other.myBarlines &&
+    return myStaves == other.myStaves && myBarlines == other.myBarlines &&
            myTempoMarkers == other.myTempoMarkers &&
            myAlternateEndings == other.myAlternateEndings &&
            myDirections == other.myDirections &&
-           myPlayerChanges == other.myPlayerChanges;
+           myPlayerChanges == other.myPlayerChanges &&
+           myChords == other.myChords;
 }
 
 boost::iterator_range<System::StaffIterator> System::getStaves()
@@ -75,8 +75,8 @@ boost::iterator_range<System::BarlineConstIterator> System::getBarlines() const
 void System::insertBarline(const Barline &barline)
 {
     // Ensure that the end bar remains the end bar.
-    myBarlines.back().setPosition(std::max(myBarlines.back().getPosition(),
-                                           barline.getPosition() + 1));
+    myBarlines.back().setPosition(
+        std::max(myBarlines.back().getPosition(), barline.getPosition() + 1));
     ScoreUtils::insertObject(myBarlines, barline);
 }
 
@@ -185,6 +185,26 @@ void System::insertPlayerChange(const PlayerChange &change)
 void System::removePlayerChange(const PlayerChange &change)
 {
     ScoreUtils::removeObject(myPlayerChanges, change);
+}
+
+boost::iterator_range<System::ChordTextIterator> System::getChords()
+{
+    return boost::make_iterator_range(myChords);
+}
+
+boost::iterator_range<System::ChordTextConstIterator> System::getChords() const
+{
+    return boost::make_iterator_range(myChords);
+}
+
+void System::insertChord(const ChordText &chord)
+{
+    ScoreUtils::insertObject(myChords, chord);
+}
+
+void System::removeChord(const ChordText &chord)
+{
+    ScoreUtils::removeObject(myChords, chord);
 }
 
 template <typename T>

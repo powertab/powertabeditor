@@ -23,7 +23,7 @@
 #include <vector>
 #include "alternateending.h"
 #include "barline.h"
-#include "chordname.h"
+#include "chordtext.h"
 #include "direction.h"
 #include "playerchange.h"
 #include "staff.h"
@@ -44,6 +44,8 @@ public:
     typedef std::vector<Direction>::const_iterator DirectionConstIterator;
     typedef std::vector<PlayerChange>::iterator PlayerChangeIterator;
     typedef std::vector<PlayerChange>::const_iterator PlayerChangeConstIterator;
+    typedef std::vector<ChordText>::iterator ChordTextIterator;
+    typedef std::vector<ChordText>::const_iterator ChordTextConstIterator;
 
     System();
     bool operator==(const System &other) const;
@@ -113,6 +115,16 @@ public:
     /// Removes the specified player change from the system.
     void removePlayerChange(const PlayerChange &change);
 
+    /// Returns the set of chord symbols in the system.
+    boost::iterator_range<ChordTextIterator> getChords();
+    /// Returns the set of chord symbols in system.
+    boost::iterator_range<ChordTextConstIterator> getChords() const;
+
+    /// Adds a new chord symbol to the system.
+    void insertChord(const ChordText &chord);
+    /// Removes the specified chord symbol from the system.
+    void removeChord(const ChordText &chord);
+
 private:
     std::vector<Staff> myStaves;
     /// List of the barlines in the system. This will always contain at least
@@ -122,13 +134,14 @@ private:
     std::vector<AlternateEnding> myAlternateEndings;
     std::vector<Direction> myDirections;
     std::vector<PlayerChange> myPlayerChanges;
+    std::vector<ChordText> myChords;
 
     friend class boost::serialization::access;
     template <class Archive>
     void serialize(Archive &ar, const unsigned int /*version*/)
     {
         ar & myStaves & myBarlines & myTempoMarkers & myAlternateEndings &
-             myDirections & myPlayerChanges;
+             myDirections & myPlayerChanges & myChords;
     }
 };
 

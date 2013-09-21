@@ -162,3 +162,25 @@ TEST_CASE("Score/System/PlayerChanges", "")
     REQUIRE(system.getPlayerChanges().size() == 1);
     REQUIRE(system.getPlayerChanges()[0] == change2);
 }
+
+TEST_CASE("Score/System/Chords", "")
+{
+    System system;
+
+    REQUIRE(system.getChords().size() == 0);
+
+    ChordText chord1;
+    chord1.setPosition(3);
+    ChordText chord2;
+    chord2.setPosition(5);
+
+    system.insertChord(chord2);
+    system.insertChord(chord1);
+    REQUIRE(system.getChords().size() == 2);
+    REQUIRE(system.getChords()[0] == chord1);
+    REQUIRE(system.getChords()[1] == chord2);
+
+    system.removeChord(chord1);
+    REQUIRE(system.getChords().size() == 1);
+    REQUIRE(system.getChords()[0] == chord2);
+}

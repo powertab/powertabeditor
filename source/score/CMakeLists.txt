@@ -4,6 +4,7 @@ add_library(ptescore
     alternateending.cpp
     barline.cpp
     chordname.cpp
+    chordtext.cpp
     direction.cpp
     dynamic.cpp
     generalmidi.cpp
