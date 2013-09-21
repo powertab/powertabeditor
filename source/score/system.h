@@ -23,6 +23,7 @@
 #include <vector>
 #include "alternateending.h"
 #include "barline.h"
+#include "chordname.h"
 #include "direction.h"
 #include "playerchange.h"
 #include "staff.h"

@@ -105,6 +105,7 @@ namespace ScoreUtils {
 // can be serialized.
 SERIALIZE(AlternateEnding)
 SERIALIZE(Barline)
+SERIALIZE(ChordName)
 SERIALIZE(Direction)
 SERIALIZE(Dynamic)
 SERIALIZE(Instrument)

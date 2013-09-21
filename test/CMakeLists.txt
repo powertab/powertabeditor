@@ -56,6 +56,7 @@ add_executable(pte_tests
 
     score/test_alternateending.cpp
     score/test_barline.cpp
+    score/test_chordname.cpp
     score/test_direction.cpp
     score/test_dynamic.cpp
     score/test_instrument.cpp
