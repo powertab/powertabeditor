@@ -18,8 +18,10 @@
 #include "powertaboldimporter.h"
 
 #include <boost/assign/list_of.hpp>
+#include <cmath>
 #include "powertabdocument/alternateending.h"
 #include "powertabdocument/barline.h"
+#include "powertabdocument/chordtext.h"
 #include "powertabdocument/direction.h"
 #include "powertabdocument/dynamic.h"
 #include "powertabdocument/guitar.h"
@@ -247,6 +249,14 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
         system.insertDirection(direction);
     }
 
+    // Import chord text symbols.
+    for (size_t i = 0; i < oldSystem->GetChordTextCount(); ++i)
+    {
+        ChordText chord;
+        convert(*oldSystem->GetChordText(i), chord);
+        system.insertChord(chord);
+    }
+
     std::vector<PowerTabDocument::Score::DynamicPtr> dynamics;
     oldScore.GetDynamicsInSystem(dynamics, oldSystem);
 
@@ -390,6 +400,141 @@ void PowerTabOldImporter::convert(
                 static_cast<DirectionSymbol::ActiveSymbolType>(active),
                 repeat));
     }
+}
+
+/// Convert between the old key format and the new key format. This is fairly
+/// awkward to do.
+static void convertKey(uint8_t oldKey, uint8_t oldVariation,
+                       ChordName::Key &key, ChordName::Variation &variation)
+{
+    // Convert keys to the new format.
+    switch (oldKey)
+    {
+        case PowerTabDocument::ChordName::C:
+            key = ChordName::C;
+            variation = ChordName::NoVariation;
+        case PowerTabDocument::ChordName::CSharp:
+            key = ChordName::C;
+            variation = ChordName::Sharp;
+            break;
+        case PowerTabDocument::ChordName::D:
+            key = ChordName::D;
+            variation = ChordName::NoVariation;
+            break;
+        case PowerTabDocument::ChordName::EFlat:
+            key = ChordName::E;
+            variation = ChordName::Flat;
+            break;
+        case PowerTabDocument::ChordName::E:
+            key = ChordName::E;
+            variation = ChordName::NoVariation;
+            break;
+        case PowerTabDocument::ChordName::F:
+            key = ChordName::F;
+            variation = ChordName::NoVariation;
+            break;
+        case PowerTabDocument::ChordName::FSharp:
+            key = ChordName::F;
+            variation = ChordName::Sharp;
+            break;
+        case PowerTabDocument::ChordName::G:
+            key = ChordName::G;
+            variation = ChordName::NoVariation;
+            break;
+        case PowerTabDocument::ChordName::AFlat:
+            key = ChordName::A;
+            variation = ChordName::Flat;
+            break;
+        case PowerTabDocument::ChordName::A:
+            key = ChordName::A;
+            variation = ChordName::NoVariation;
+            break;
+        case PowerTabDocument::ChordName::BFlat:
+            key = ChordName::B;
+            variation = ChordName::Flat;
+            break;
+        case PowerTabDocument::ChordName::B:
+            key = ChordName::B;
+            variation = ChordName::NoVariation;
+            break;
+    }
+
+    // Convert variations to the new format. For example, the up variation of D
+    // is now Ebb, and the down variation is C##.
+    if (oldVariation == PowerTabDocument::ChordName::variationUp)
+    {
+        key = static_cast<ChordName::Key>((key + 1) % ChordName::NumKeys);
+
+        if (variation == ChordName::NoVariation)
+        {
+            variation = (key == ChordName::F || key == ChordName::C)
+                            ? ChordName::Flat
+                            : ChordName::DoubleFlat;
+        }
+        else if (variation == ChordName::Flat)
+            variation = ChordName::DoubleFlat;
+        else
+            variation = ChordName::Flat;
+    }
+    else if (oldVariation == PowerTabDocument::ChordName::variationDown)
+    {
+        key = static_cast<ChordName::Key>((key - 1) % ChordName::NumKeys);
+
+        if (variation == ChordName::NoVariation)
+        {
+            variation = (key == ChordName::B || key == ChordName::E)
+                            ? ChordName::Sharp
+                            : ChordName::DoubleSharp;
+        }
+        else if (variation == ChordName::Flat)
+            variation = ChordName::Sharp;
+        else
+            variation = ChordName::DoubleSharp;
+    }
+}
+
+void PowerTabOldImporter::convert(const PowerTabDocument::ChordText &oldChord,
+                                  ChordText &chord)
+{
+    chord.setPosition(oldChord.GetPosition());
+
+    ChordName name;
+    const PowerTabDocument::ChordName &oldName(oldChord.GetChordNameConstRef());
+
+    uint8_t oldTonic, oldTonicVariation;
+    oldName.GetTonic(oldTonic, oldTonicVariation);
+    ChordName::Key tonic;
+    ChordName::Variation tonicVariation;
+    convertKey(oldTonic, oldTonicVariation, tonic, tonicVariation);
+
+    name.setTonicKey(tonic);
+    name.setTonicVariation(tonicVariation);
+
+    uint8_t oldBassKey, oldBassVariation;
+    oldName.GetBassNote(oldBassKey, oldBassVariation);
+    ChordName::Key bassKey;
+    ChordName::Variation bassVariation;
+    convertKey(oldBassKey, oldBassVariation, bassKey, bassVariation);
+
+    name.setBassKey(bassKey);
+    name.setBassVariation(bassVariation);
+
+    name.setFormula(static_cast<ChordName::Formula>(oldName.GetFormula()));
+
+    for (unsigned int i = PowerTabDocument::ChordName::extended9th;
+         i <= PowerTabDocument::ChordName::suspended4th; i *= 2)
+    {
+        if (oldName.IsFormulaModificationFlagSet(i))
+        {
+            name.setModification(static_cast<ChordName::FormulaModification>(
+                std::log(i) / std::log(2)));
+        }
+    }
+
+    name.setBrackets(oldName.HasBrackets());
+    name.setNoChord(oldName.IsNoChord());
+
+    chord.setChordName(name);
 }
 
 int PowerTabOldImporter::convert(

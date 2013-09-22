@@ -32,16 +32,17 @@ public:
         F,
         G,
         A,
-        B
+        B,
+        NumKeys
     };
 
     enum Variation
     {
-        NoVariation,
-        Sharp,
-        DoubleSharp,
-        Flat,
-        DoubleFlat
+        DoubleFlat = -2,
+        Flat = -1,
+        NoVariation = 0,
+        Sharp = 1,
+        DoubleSharp = 2
     };
 
     enum Formula

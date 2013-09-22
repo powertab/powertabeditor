@@ -282,3 +282,29 @@ TEST_CASE("Formats/PowerTabOldImport/GuitarIns", "")
     REQUIRE(change4.getActivePlayers(0).size() == 1);
     REQUIRE(change4.getActivePlayers(1).size() == 2);
 }
+
+TEST_CASE("Formats/PowerTabOldImport/ChordText", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/chordtext.ptb", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getChords().size() == 1);
+
+    const ChordText &chordText = system.getChords().front();
+    REQUIRE(chordText.getPosition() == 4);
+
+    const ChordName &chord = chordText.getChordName();
+
+    REQUIRE(chord.getTonicKey() == ChordName::F);
+    REQUIRE(chord.getTonicVariation() == ChordName::Sharp);
+    REQUIRE(chord.getBassKey() == ChordName::B);
+    REQUIRE(chord.getBassVariation() == ChordName::Flat);
+
+    REQUIRE(chord.getFormula() == ChordName::Major7th);
+    REQUIRE(chord.hasModification(ChordName::Added9th));
+    REQUIRE(chord.hasModification(ChordName::Raised11th));
+    REQUIRE(chord.hasBrackets());
+}

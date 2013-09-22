@@ -24,6 +24,7 @@
 namespace PowerTabDocument {
 class AlternateEnding;
 class Barline;
+class ChordText;
 class Direction;
 class Dynamic;
 class Guitar;
@@ -42,6 +43,7 @@ class Tuning;
 
 class AlternateEnding;
 class Barline;
+class ChordText;
 class Direction;
 class Dynamic;
 class KeySignature;
@@ -89,6 +91,8 @@ private:
                         AlternateEnding &ending);
     static void convert(const PowerTabDocument::Direction &oldDirection,
                         Direction &direction);
+    static void convert(const PowerTabDocument::ChordText &oldChord,
+                        ChordText &chord);
 
     typedef boost::shared_ptr<PowerTabDocument::Dynamic> DynamicPtr;
     static int convert(const PowerTabDocument::Staff &oldStaff,
