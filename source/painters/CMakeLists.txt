@@ -4,7 +4,6 @@ add_library(ptepainters
     barlinepainter.cpp
     beamgroup.cpp
     caretpainter.cpp
-    #chordtextpainter.cpp
     clefpainter.cpp
     directionpainter.cpp
     #irregularnotegroup.cpp

@@ -91,6 +91,9 @@ double LayoutInfo::getSystemSymbolSpacing() const
     if (!mySystem.getTempoMarkers().empty())
         height += SYSTEM_SYMBOL_SPACING;
 
+    if (!mySystem.getChords().empty())
+        height += SYSTEM_SYMBOL_SPACING;
+
     double directionHeight = 0;
     BOOST_FOREACH(const Direction &direction, mySystem.getDirections())
     {

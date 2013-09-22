@@ -34,7 +34,7 @@ class SystemRenderer
 {
 public:
     SystemRenderer(const ScoreArea *myScoreArea, const Score &myScore);
-    
+
     QGraphicsItem *operator()(const System &system, int systemIndex,
                               Staff::ViewType view);
 
@@ -73,7 +73,11 @@ private:
 
     /// Draws all of the directions in the system.
     double drawDirections(const System &system, const LayoutInfo &layout,
-                        double height);
+                          double height);
+
+    /// Draws all of the chord names in the system.
+    void drawChordText(const System &system, const LayoutInfo &layout,
+                       double height);
 
     /// Draws the text symbols that appear below the tab staff
     /// (hammerons, slides, etc).
@@ -122,8 +126,7 @@ private:
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
     /// Draws notes, beams, and rests.
-    void drawStdNotation(const System &system,
-                         const Staff &staff,
+    void drawStdNotation(const System &system, const Staff &staff,
                          const LayoutInfo &layout);
 
     /// Draws a multi-bar rest symbol.

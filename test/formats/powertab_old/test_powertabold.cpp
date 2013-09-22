@@ -291,20 +291,26 @@ TEST_CASE("Formats/PowerTabOldImport/ChordText", "")
 
     const System &system = score.getSystems()[0];
 
-    REQUIRE(system.getChords().size() == 1);
+    REQUIRE(system.getChords().size() == 2);
 
-    const ChordText &chordText = system.getChords().front();
-    REQUIRE(chordText.getPosition() == 4);
+    const ChordText &chordText1 = system.getChords()[0];
+    REQUIRE(chordText1.getPosition() == 4);
 
-    const ChordName &chord = chordText.getChordName();
+    const ChordName &chord1 = chordText1.getChordName();
 
-    REQUIRE(chord.getTonicKey() == ChordName::F);
-    REQUIRE(chord.getTonicVariation() == ChordName::Sharp);
-    REQUIRE(chord.getBassKey() == ChordName::B);
-    REQUIRE(chord.getBassVariation() == ChordName::Flat);
+    REQUIRE(chord1.getTonicKey() == ChordName::F);
+    REQUIRE(chord1.getTonicVariation() == ChordName::Sharp);
+    REQUIRE(chord1.getBassKey() == ChordName::B);
+    REQUIRE(chord1.getBassVariation() == ChordName::Flat);
 
-    REQUIRE(chord.getFormula() == ChordName::Major7th);
-    REQUIRE(chord.hasModification(ChordName::Added9th));
-    REQUIRE(chord.hasModification(ChordName::Raised11th));
-    REQUIRE(chord.hasBrackets());
+    REQUIRE(chord1.getFormula() == ChordName::Major7th);
+    REQUIRE(chord1.hasModification(ChordName::Added9th));
+    REQUIRE(chord1.hasModification(ChordName::Raised11th));
+    REQUIRE(chord1.hasBrackets());
+
+    const ChordName chord2 = system.getChords()[1].getChordName();
+    REQUIRE(chord2.getTonicKey() == ChordName::C);
+    REQUIRE(chord2.getTonicVariation() == ChordName::NoVariation);
+    REQUIRE(chord2.getBassKey() == ChordName::F);
+    REQUIRE(chord2.getBassVariation() == ChordName::NoVariation);
 }

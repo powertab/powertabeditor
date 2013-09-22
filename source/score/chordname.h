@@ -20,6 +20,7 @@
 
 #include <bitset>
 #include <boost/serialization/access.hpp>
+#include <iosfwd>
 
 class ChordName
 {
@@ -130,5 +131,7 @@ private:
              myFormula & myModifications & myHasBrackets & myIsNoChord;
     }
 };
+
+std::ostream &operator<<(std::ostream &os, const ChordName &chord);
 
 #endif

@@ -413,6 +413,7 @@ static void convertKey(uint8_t oldKey, uint8_t oldVariation,
         case PowerTabDocument::ChordName::C:
             key = ChordName::C;
             variation = ChordName::NoVariation;
+            break;
         case PowerTabDocument::ChordName::CSharp:
             key = ChordName::C;
             variation = ChordName::Sharp;

@@ -17,6 +17,7 @@
   
 #include <catch.hpp>
 
+#include <boost/lexical_cast.hpp>
 #include <score/chordname.h>
 #include "test_serialization.h"
 
@@ -29,4 +30,31 @@ TEST_CASE("Score/ChordName/Serialization", "")
     name.setTonicKey(ChordName::D);
 
     Serialization::test(name);
+}
+
+TEST_CASE("Score/ChordName/ToString", "")
+{
+    ChordName chord;
+
+    chord.setNoChord(true);
+    REQUIRE(boost::lexical_cast<std::string>(chord) == "N.C.");
+
+    chord.setBrackets(true);
+    chord.setTonicKey(ChordName::F);
+    chord.setTonicVariation(ChordName::Flat);
+    chord.setBassKey(ChordName::F);
+    chord.setBassVariation(ChordName::Flat);
+    chord.setFormula(ChordName::Major7th);
+    REQUIRE(boost::lexical_cast<std::string>(chord) == "N.C.(Fbmaj7)");
+
+    chord.setModification(ChordName::Extended11th);
+    REQUIRE(boost::lexical_cast<std::string>(chord) == "N.C.(Fbmaj11)");
+    chord.setModification(ChordName::Extended11th, false);
+
+    chord.setNoChord(false);
+    chord.setTonicVariation(ChordName::Sharp);
+    chord.setBassKey(ChordName::C);
+    chord.setBassVariation(ChordName::Sharp);
+    chord.setModification(ChordName::Flatted9th);
+    REQUIRE(boost::lexical_cast<std::string>(chord) == "(F#maj7b9/C#)");
 }

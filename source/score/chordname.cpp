@@ -17,6 +17,11 @@
 
 #include "chordname.h"
 
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/array.hpp>
+#include <boost/foreach.hpp>
+#include <iostream>
+
 ChordName::ChordName()
     : myTonicKey(C),
       myTonicVariation(NoVariation),
@@ -120,4 +125,75 @@ ChordName::Key ChordName::getTonicKey() const
 void ChordName::setTonicKey(Key key)
 {
     myTonicKey = key;
+}
+
+std::ostream &operator<<(std::ostream &os, const ChordName &chord)
+{
+    static std::string theKeys[] = { "C", "D", "E", "F", "G", "A", "B" };
+    static std::string theVariations[] = { "bb", "b", "", "#", "x" };
+    static std::string theSuffixes[] = { "",   "m",  "+",      "°",    "5",
+                                         "6",  "m6", "7",      "maj7", "m7",
+                                         "+7", "°7", "m/maj7", "m7b5" };
+    static boost::array<ChordName::FormulaModification, 13> theModifications = {
+        ChordName::Suspended2nd, ChordName::Suspended4th, ChordName::Added2nd,
+        ChordName::Added4th,     ChordName::Added6th,     ChordName::Added9th,
+        ChordName::Added11th,    ChordName::Flatted13th,  ChordName::Raised11th,
+        ChordName::Flatted9th,   ChordName::Raised9th,    ChordName::Flatted5th,
+        ChordName::Raised5th
+    };
+    static std::string theModificationText[] = {
+        "sus2", "sus4", "add2", "add4", "add6", "add9", "add11",
+        "b13",  "+11",  "b9",   "+9",   "b5",   "+5"
+    };
+
+    if (chord.isNoChord())
+    {
+        os << "N.C.";
+
+        // Unless the chord has brackets, we're done.
+        if (!chord.hasBrackets())
+            return os;
+    }
+
+    if (chord.hasBrackets())
+        os << "(";
+
+    os << theKeys[chord.getTonicKey()];
+    os << theVariations[chord.getTonicVariation() - ChordName::DoubleFlat];
+
+    // Display the chord formula.
+    {
+        std::string formula = theSuffixes[chord.getFormula()];
+
+        // Handle chord extensions.
+        if (chord.hasModification(ChordName::Extended9th))
+            boost::algorithm::replace_first(formula, "7", "9");
+        else if (chord.hasModification(ChordName::Extended11th))
+            boost::algorithm::replace_first(formula, "7", "11");
+        else if (chord.hasModification(ChordName::Extended13th))
+            boost::algorithm::replace_first(formula, "7", "13");
+
+        os << formula;
+
+        // Display modifications such as 'add9'.
+        for (size_t i = 0; i < theModifications.size(); ++i)
+        {
+            if (chord.hasModification(theModifications[i]))
+                os << theModificationText[i];
+        }
+    }
+
+    // If the tonic key and bass note are different, display the bass note.
+    if (chord.getTonicKey() != chord.getBassKey() ||
+        chord.getTonicVariation() != chord.getBassVariation())
+    {
+        os << "/";
+        os << theKeys[chord.getBassKey()];
+        os << theVariations[chord.getBassVariation() - ChordName::DoubleFlat];
+    }
+
+    if (chord.hasBrackets())
+        os << ")";
+
+    return os;
 }

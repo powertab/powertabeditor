@@ -360,14 +360,12 @@ void SystemRenderer::drawSystemSymbols(const System &system,
         drawDividerLine(height);
     }
 
-#if 0 // TODO - implement chord text for the new file format.
-    if (system->GetChordTextCount() > 0)
+    if (!system.getChords().empty())
     {
-        drawChordText(height, currentStaffInfo);
-        height += System::SYSTEM_SYMBOL_SPACING;
-        drawDividerLine(currentStaffInfo, height);
+        drawChordText(system, layout, height);
+        height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(height);
     }
-#endif
 }
 
 void SystemRenderer::drawDividerLine(double y)
@@ -477,21 +475,24 @@ double SystemRenderer::drawDirections(const System &system,
     return maxHeight;
 }
 
-#if 0
-void SystemRenderer::drawChordText(uint32_t height, const StaffData& currentStaffInfo)
+void SystemRenderer::drawChordText(const System &system,
+                                   const LayoutInfo &layout, double height)
 {
-    for (uint32_t i = 0; i < system->GetChordTextCount(); i++)
+    BOOST_FOREACH(const ChordText & chord, system.getChords())
     {
-        shared_ptr<const ChordText> chordText = system->GetChordText(i);
+        const double x = layout.getPositionX(chord.getPosition());
+        const std::string text =
+            boost::lexical_cast<std::string>(chord.getChordName());
 
-        const quint32 location = system->GetPositionX(chordText->GetPosition());
-
-        ChordTextPainter* chordTextPainter = new ChordTextPainter(chordText);
-        centerItem(chordTextPainter, location, location + currentStaffInfo.positionWidth, height + 4);
-        chordTextPainter->setParentItem(parentSystem);
+        QGraphicsSimpleTextItem *textItem =
+            new QGraphicsSimpleTextItem(QString::fromStdString(text));
+        textItem->setFont(myPlainTextFont);
+        textItem->setPos(x, height + 4);
+        textItem->setParentItem(myParentSystem);
     }
 }
 
+#if 0
 void SystemRenderer::drawRhythmSlashes()
 {
     const uint32_t y = system->GetExtraSpacing();
@@ -796,6 +797,9 @@ QGraphicsItem *SystemRenderer::createPlainTextSymbol(const QString &text,
 
     QGraphicsItemGroup *group = new QGraphicsItemGroup();
     group->addToGroup(textItem);
+
+    myPlainTextFont.setStyle(QFont::StyleNormal);
+
     return group;
 }
 
