@@ -148,6 +148,9 @@ private slots:
     /// Moves the caret to a specific rehearsal sign.
     void gotoRehearsalSign();
 
+    /// Adds or removes a chord name at the current position.
+    void editChordName();
+
     /// Inserts a new system at the end of the score.
     void insertSystemAtEnd();
     /// Inserts a new system before the current system.
@@ -342,6 +345,9 @@ private:
     Command *myGoToBarlineCommand;
     Command *myGoToRehearsalSignCommand;
 
+    QMenu *myTextMenu;
+    Command *myChordNameCommand;
+
     QMenu *mySectionMenu;
     Command *myInsertSystemAtEndCommand;
     Command *myInsertSystemBeforeCommand;
@@ -466,7 +472,6 @@ private slots:
     void moveCaretDown();
     void moveCaretUp();
 
-    void editChordName();
     void editArtificialHarmonic();
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
@@ -483,9 +488,6 @@ private:
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
     Command* shiftTabNumDown;
-
-    QMenu* textMenu;
-    Command* chordNameAct; // add/remove a chord name
 
     Command* tripletAct;
     Command* irregularGroupingAct;

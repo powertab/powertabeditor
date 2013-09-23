@@ -76,6 +76,7 @@
 
 #include <dialogs/alternateendingdialog.h>
 #include <dialogs/barlinedialog.h>
+#include <dialogs/chordnamedialog.h>
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/gotobarlinedialog.h>
@@ -652,6 +653,27 @@ void PowerTabEditor::gotoRehearsalSign()
         ScoreLocation location(dialog.getLocation());
         getCaret().moveToSystem(location.getSystemIndex(), true);
         getCaret().moveToPosition(location.getPositionIndex());
+    }
+}
+
+void PowerTabEditor::editChordName()
+{
+    ScoreLocation &location(getLocation());
+
+    if (!ScoreUtils::findByPosition(location.getSystem().getChords(),
+                                    location.getPositionIndex()))
+    {
+        ChordNameDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            // TODO - add chord name.
+        }
+        else
+            myChordNameCommand->setChecked(false);
+    }
+    else
+    {
+        // TODO - remove chord name.
     }
 }
 
@@ -1345,13 +1367,15 @@ void PowerTabEditor::createCommands()
                                              Qt::CTRL + Qt::Key_H, this);
     connect(myGoToRehearsalSignCommand, SIGNAL(triggered()), this,
             SLOT(gotoRehearsalSign()));
+
+    // Text-related actions.
+    myChordNameCommand = new Command(tr("Chord Name..."), "Text.ChordName",
+                                     Qt::Key_C, this);
+    myChordNameCommand->setCheckable(true);
+    connect(myChordNameCommand, SIGNAL(triggered()), this,
+            SLOT(editChordName()));
+
 #if 0
-
-    // Text-related actions
-    chordNameAct = new Command(tr("Chord Name..."), "Text.ChordName", Qt::Key_C, this);
-    chordNameAct->setCheckable(true);
-    connect(chordNameAct, SIGNAL(triggered()), this, SLOT(editChordName()));
-
     // Section-related actions
     increasePositionSpacingAct = new Command(tr("Increase Position Spacing"),
                                              "Section.IncreaseSpacing", Qt::Key_Plus, this);
@@ -1828,13 +1852,11 @@ void PowerTabEditor::createMenus()
     myPositionMenu->addSeparator();
     myPositionMenu->addAction(myGoToBarlineCommand);
     myPositionMenu->addAction(myGoToRehearsalSignCommand);
-#if 0
 
-    // Text Menu
-    textMenu = menuBar()->addMenu(tr("&Text"));
-    textMenu->addAction(chordNameAct);
+    // Text Menu.
+    myTextMenu = menuBar()->addMenu(tr("&Text"));
+    myTextMenu->addAction(myChordNameCommand);
 
-#endif
     // Section Menu.
     mySectionMenu = menuBar()->addMenu(tr("&Section"));
 #if 0
@@ -2131,23 +2153,26 @@ void PowerTabEditor::updateCommands()
     const int position = location.getPositionIndex();
     const Note *note = location.getNote();
     const Barline *barline = location.getBarline();
-    const TempoMarker *tempoMarker = ScoreUtils::findByPosition(
-                system.getTempoMarkers(), position);
-    const AlternateEnding *altEnding = ScoreUtils::findByPosition(
-                system.getAlternateEndings(), position);
-    const Dynamic *dynamic = ScoreUtils::findByPosition(
-                staff.getDynamics(), position);
+    const TempoMarker *tempoMarker =
+        ScoreUtils::findByPosition(system.getTempoMarkers(), position);
+    const AlternateEnding *altEnding =
+        ScoreUtils::findByPosition(system.getAlternateEndings(), position);
+    const Dynamic *dynamic =
+        ScoreUtils::findByPosition(staff.getDynamics(), position);
     const bool hasSelection = !location.getSelectedPositions().empty();
 
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
-    myIncreaseLineSpacingCommand->setEnabled(
-                score.getLineSpacing() < Score::MAX_LINE_SPACING);
-    myDecreaseLineSpacingCommand->setEnabled(
-                score.getLineSpacing() > Score::MIN_LINE_SPACING);
+    myIncreaseLineSpacingCommand->setEnabled(score.getLineSpacing() <
+                                             Score::MAX_LINE_SPACING);
+    myDecreaseLineSpacingCommand->setEnabled(score.getLineSpacing() >
+                                             Score::MIN_LINE_SPACING);
     myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                        !tempoMarker && !altEnding && !dynamic);
     myRemoveNoteCommand->setEnabled(note);
     myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
+
+    myChordNameCommand->setChecked(
+        ScoreUtils::findByPosition(system.getChords(), position));
 
     // Note durations
     Position::DurationType durationType = myActiveDurationType;
@@ -2156,37 +2181,40 @@ void PowerTabEditor::updateCommands()
 
     switch (durationType)
     {
-    case Position::WholeNote:
-        myWholeNoteCommand->setChecked(true);
-        break;
-    case Position::HalfNote:
-        myHalfNoteCommand->setChecked(true);
-        break;
-    case Position::QuarterNote:
-        myQuarterNoteCommand->setChecked(true);
-        break;
-    case Position::EighthNote:
-        myEighthNoteCommand->setChecked(true);
-        break;
-    case Position::SixteenthNote:
-        mySixteenthNoteCommand->setChecked(true);
-        break;
-    case Position::ThirtySecondNote:
-        myThirtySecondNoteCommand->setChecked(true);
-        break;
-    case Position::SixtyFourthNote:
-        mySixtyFourthNoteCommand->setChecked(true);
-        break;
+        case Position::WholeNote:
+            myWholeNoteCommand->setChecked(true);
+            break;
+        case Position::HalfNote:
+            myHalfNoteCommand->setChecked(true);
+            break;
+        case Position::QuarterNote:
+            myQuarterNoteCommand->setChecked(true);
+            break;
+        case Position::EighthNote:
+            myEighthNoteCommand->setChecked(true);
+            break;
+        case Position::SixteenthNote:
+            mySixteenthNoteCommand->setChecked(true);
+            break;
+        case Position::ThirtySecondNote:
+            myThirtySecondNoteCommand->setChecked(true);
+            break;
+        case Position::SixtyFourthNote:
+            mySixtyFourthNoteCommand->setChecked(true);
+            break;
     }
 
     myIncreaseDurationCommand->setEnabled(durationType != Position::WholeNote);
-    myDecreaseDurationCommand->setEnabled(durationType != Position::SixtyFourthNote);
+    myDecreaseDurationCommand->setEnabled(durationType !=
+                                          Position::SixtyFourthNote);
 
     updatePositionProperty(myDottedCommand, pos, Position::Dotted);
     updatePositionProperty(myDoubleDottedCommand, pos, Position::DoubleDotted);
-    myAddDotCommand->setEnabled(pos && !pos->hasProperty(Position::DoubleDotted));
-    myRemoveDotCommand->setEnabled(pos && (pos->hasProperty(Position::Dotted) ||
-                             pos->hasProperty(Position::DoubleDotted)));
+    myAddDotCommand->setEnabled(pos &&
+                                !pos->hasProperty(Position::DoubleDotted));
+    myRemoveDotCommand->setEnabled(pos &&
+                                   (pos->hasProperty(Position::Dotted) ||
+                                    pos->hasProperty(Position::DoubleDotted)));
 
     updateNoteProperty(myTieCommand, note, Note::Tied);
     updateNoteProperty(myMutedCommand, note, Note::Muted);
@@ -2209,8 +2237,8 @@ void PowerTabEditor::updateCommands()
     myKeySignatureCommand->setEnabled(barline);
     myTimeSignatureCommand->setEnabled(barline);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
-    myDirectionCommand->setChecked(ScoreUtils::findByPosition(
-                                       system.getDirections(), position));
+    myDirectionCommand->setChecked(
+        ScoreUtils::findByPosition(system.getDirections(), position));
     myRepeatEndingCommand->setChecked(altEnding);
     myDynamicCommand->setChecked(dynamic != NULL);
 
@@ -2255,7 +2283,8 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myVibratoCommand, pos, Position::Vibrato);
     updatePositionProperty(myWideVibratoCommand, pos, Position::WideVibrato);
     updatePositionProperty(myPalmMuteCommand, pos, Position::PalmMuting);
-    updatePositionProperty(myTremoloPickingCommand, pos, Position::TremoloPicking);
+    updatePositionProperty(myTremoloPickingCommand, pos,
+                           Position::TremoloPicking);
     myTrillCommand->setEnabled(note);
     myTrillCommand->setChecked(note && note->hasTrill());
     updatePositionProperty(myTapCommand, pos, Position::Tap);
@@ -2265,17 +2294,17 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myPickStrokeDownCommand, pos,
                            Position::PickStrokeDown);
 
-    myPlayerChangeCommand->setChecked(ScoreUtils::findByPosition(
-                                          system.getPlayerChanges(), position));
+    myPlayerChangeCommand->setChecked(
+        ScoreUtils::findByPosition(system.getPlayerChanges(), position));
 }
 
 void PowerTabEditor::enableEditing(bool enable)
 {
     QList<QMenu *> menuList;
-    menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu <<
-                mySectionMenu << myLineSpacingMenu << myNotesMenu <<
-                myOctaveMenu << myRestsMenu << myMusicSymbolsMenu <<
-                myTabSymbolsMenu << myWindowMenu;
+    menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu
+             << myTextMenu << mySectionMenu << myLineSpacingMenu << myNotesMenu
+             << myOctaveMenu << myRestsMenu << myMusicSymbolsMenu
+             << myTabSymbolsMenu << myWindowMenu;
 
     foreach(QMenu *menu, menuList)
     {
@@ -2603,37 +2632,6 @@ void PowerTabEditor::editArtificialHarmonic()
             artificialHarmonicAct->setChecked(false);
         }
     }
-}
-
-// If there is a chord name at the current position, remove it
-// If there is no chord name, show the dialog to add a chord name
-// Existing chord names are edited by clicking on the chord name
-void PowerTabEditor::editChordName()
-{
-    // Find if there is a chord name at the current position
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    const quint32 caretPosition = caret->getCurrentPositionIndex();
-    shared_ptr<System> currentSystem = caret->getCurrentSystem();
-
-    int chordTextIndex = caret->getCurrentSystem()->FindChordText(caretPosition);
-    if (chordTextIndex == -1) // if not found, add a new chord name
-    {
-        chordTextIndex = 0;
-        ChordName chordName;
-        ChordNameDialog chordNameDialog(this, &chordName);
-        if (chordNameDialog.exec() == QDialog::Accepted)
-        {
-            shared_ptr<ChordText> chordText = boost::make_shared<ChordText>(caretPosition, chordName);
-            undoManager->push(new AddChordText(currentSystem, chordText, chordTextIndex),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-    else // if found, remove the chord name
-    {
-        undoManager->push(new RemoveChordText(currentSystem, chordTextIndex),
-                          caret->getCurrentSystemIndex());
-    }
-
 }
 
 // Updates the given Command to be checked and/or enabled, based on the results of calling
