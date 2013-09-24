@@ -2304,7 +2304,7 @@ void PowerTabEditor::enableEditing(bool enable)
     menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu
              << myTextMenu << mySectionMenu << myLineSpacingMenu << myNotesMenu
              << myOctaveMenu << myRestsMenu << myMusicSymbolsMenu
-             << myTabSymbolsMenu << myWindowMenu;
+             << myTabSymbolsMenu << myWindowMenu << myPlaybackMenu;
 
     foreach(QMenu *menu, menuList)
     {
