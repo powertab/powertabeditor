@@ -528,7 +528,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::ChordText &oldChord,
         if (oldName.IsFormulaModificationFlagSet(i))
         {
             name.setModification(static_cast<ChordName::FormulaModification>(
-                std::log(i) / std::log(2)));
+                static_cast<int>(std::log(i) / std::log(2))));
         }
     }
 
