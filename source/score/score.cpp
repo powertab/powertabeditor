@@ -168,13 +168,14 @@ void ScoreUtils::adjustRehearsalSigns(Score &score)
                 if (letter == 'Z')
                 {
                     letter = 'A';
-                    letters[letters.size() - 1] = letter;
+					if (!letters.empty())
+						letters.back() = letter;
                     letters.push_back(letter);
                 }
                 else
                 {
                     ++letter;
-                    letters[letters.size() - 1] = letter;
+					letters.back() = letter;
                 }
 
                 sign.setLetters(letters);
