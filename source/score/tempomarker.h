@@ -129,7 +129,7 @@ private:
 };
 
 template <class Archive>
-void TempoMarker::serialize(Archive &ar, const FileVersion version)
+void TempoMarker::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("marker_type", myMarkerType);

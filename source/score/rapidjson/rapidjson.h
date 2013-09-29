@@ -520,6 +520,12 @@ enum Type {
 	kNumberType = 6,	//!< number
 };
 
+template <typename T>
+inline bool IsAscii(T val) { return val < 256; }
+
+template <>
+inline bool IsAscii<char>(char) { return true; }
+
 } // namespace rapidjson
 
 #endif // RAPIDJSON_RAPIDJSON_H_

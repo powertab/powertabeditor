@@ -82,7 +82,7 @@ private:
             return it->name.GetString();
         }
 
-        std::string operator()(const JSONValue::ConstValueIterator &it) const
+        std::string operator()(const JSONValue::ConstValueIterator &) const
         {
             throw std::logic_error("Cannot read the name of an array element");
         }

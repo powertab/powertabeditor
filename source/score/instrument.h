@@ -48,7 +48,7 @@ private:
 };
 
 template <class Archive>
-void Instrument::serialize(Archive &ar, const FileVersion version)
+void Instrument::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("description", myDescription);
 	ar("midi_preset", myMidiPreset);

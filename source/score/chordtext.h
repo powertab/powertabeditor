@@ -43,7 +43,7 @@ private:
 };
 
 template <class Archive>
-void ChordText::serialize(Archive &ar, const FileVersion version)
+void ChordText::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("chord_name", myChordName);

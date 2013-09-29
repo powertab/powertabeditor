@@ -76,14 +76,14 @@ private:
 };
 
 template <class Archive>
-void ActivePlayer::serialize(Archive &ar, const FileVersion version)
+void ActivePlayer::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("player", myPlayerNumber);
 	ar("instrument", myInstrumentNumber);
 }
 
 template <class Archive>
-void PlayerChange::serialize(Archive &ar, const FileVersion version)
+void PlayerChange::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("active_players", myActivePlayers);

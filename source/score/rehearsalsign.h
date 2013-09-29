@@ -48,7 +48,7 @@ private:
 };
 
 template <class Archive>
-void RehearsalSign::serialize(Archive &ar, const FileVersion version)
+void RehearsalSign::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("letters", myLetters);
 	ar("description", myDescription);

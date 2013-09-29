@@ -77,7 +77,7 @@ private:
 };
 
 template <class Archive>
-void KeySignature::serialize(Archive &ar, const FileVersion version)
+void KeySignature::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("key_type", myKeyType);
 	ar("num_accidentals", myNumAccidentals);

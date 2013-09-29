@@ -66,7 +66,7 @@ private:
 };
 
 template <class Archive>
-void Player::serialize(Archive &ar, const FileVersion version)
+void Player::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("description", myDescription);
 	ar("max_volume", myMaxVolume);

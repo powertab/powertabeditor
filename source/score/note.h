@@ -101,7 +101,7 @@ private:
 };
 
 template <class Archive>
-void Note::serialize(Archive &ar, const FileVersion version)
+void Note::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("string", myString);
 	ar("fret", myFretNumber);

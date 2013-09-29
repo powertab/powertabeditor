@@ -73,7 +73,7 @@ private:
 };
 
 template <class Archive>
-void AlternateEnding::serialize(Archive &ar, const FileVersion version)
+void AlternateEnding::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("numbers", myNumbers);

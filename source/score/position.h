@@ -127,7 +127,7 @@ private:
 };
 
 template <class Archive>
-void Position::serialize(Archive &ar, const FileVersion version)
+void Position::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("duration", myDurationType);

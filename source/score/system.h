@@ -142,7 +142,7 @@ private:
 };
 
 template <class Archive>
-void System::serialize(Archive &ar, const FileVersion version)
+void System::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("staves", myStaves);
 	ar("barlines", myBarlines);

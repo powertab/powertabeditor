@@ -114,7 +114,7 @@ private:
 };
 
 template <class Archive>
-void DirectionSymbol::serialize(Archive &ar, const FileVersion version)
+void DirectionSymbol::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("symbol_type", mySymbolType);
 	ar("active_symbol", myActiveSymbolType);
@@ -122,7 +122,7 @@ void DirectionSymbol::serialize(Archive &ar, const FileVersion version)
 }
 
 template <class Archive>
-void Direction::serialize(Archive &ar, const FileVersion version)
+void Direction::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("symbols", mySymbols);

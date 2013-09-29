@@ -93,7 +93,7 @@ private:
 };
 
 template <class Archive>
-void Barline::serialize(Archive &ar, const FileVersion version)
+void Barline::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("bar_type", myBarType);

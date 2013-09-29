@@ -92,7 +92,7 @@ private:
 };
 
 template <class Archive>
-void TimeSignature::serialize(Archive &ar, const FileVersion version)
+void TimeSignature::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("meter_type", myMeterType);
 	ar("num_beats", myBeatsPerMeasure);

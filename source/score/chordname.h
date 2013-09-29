@@ -128,7 +128,7 @@ private:
 };
 
 template <class Archive>
-void ChordName::serialize(Archive &ar, const FileVersion version)
+void ChordName::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("tonic_key", myTonicKey);
 	ar("tonic_variation", myTonicVariation);

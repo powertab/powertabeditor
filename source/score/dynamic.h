@@ -60,7 +60,7 @@ private:
 };
 
 template <class Archive>
-void Dynamic::serialize(Archive &ar, const FileVersion version)
+void Dynamic::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("position", myPosition);
 	ar("volume", myVolume);

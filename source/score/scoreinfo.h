@@ -45,7 +45,7 @@ public:
         bool operator==(const AudioData &other) const;
 
 		template <class Archive>
-        void serialize(Archive &ar, const FileVersion version)
+        void serialize(Archive &ar, const FileVersion /*version*/)
 		{
 			ar("release_type", myReleaseType);
 			ar("title", myTitle);
@@ -73,7 +73,7 @@ public:
         bool operator==(const VideoData &other) const;
 
 		template <class Archive>
-        void serialize(Archive &ar, const FileVersion version)
+        void serialize(Archive &ar, const FileVersion /*version*/)
 		{
 			ar("title", myTitle);
 			ar("live", myIsLive);
@@ -95,7 +95,7 @@ public:
         bool operator==(const BootlegData &other) const;
 
 		template <class Archive>
-        void serialize(Archive &ar, const FileVersion version)
+        void serialize(Archive &ar, const FileVersion /*version*/)
 		{
 			ar("title", myTitle);
 			ar("date", myDate);
@@ -117,7 +117,7 @@ public:
         bool operator==(const AuthorData &other) const;
 
         template <class Archive>
-        void serialize(Archive &ar, const FileVersion version)
+        void serialize(Archive &ar, const FileVersion /*version*/)
 		{
 			ar("composer", myComposer);
 			ar("lyricist", myLyricist);
@@ -189,7 +189,7 @@ private:
 };
 
 template <class Archive>
-void SongData::serialize(Archive &ar, const FileVersion version)
+void SongData::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("title", myTitle);
 	ar("artist", myArtist);
@@ -276,7 +276,7 @@ private:
 };
 
 template <class Archive>
-void LessonData::serialize(Archive &ar, const FileVersion version)
+void LessonData::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("title", myTitle);
 	ar("subtitle", mySubtitle);
@@ -322,7 +322,7 @@ private:
 };
 
 template <class Archive>
-void ScoreInfo::serialize(Archive &ar, const FileVersion version)
+void ScoreInfo::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("song_data", mySongData);
 	ar("lesson_data", myLessonData);

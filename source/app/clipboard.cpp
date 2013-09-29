@@ -57,7 +57,7 @@ public:
     }
 
     template <class Archive>
-    void serialize(Archive &ar, const FileVersion version)
+    void serialize(Archive &ar, const FileVersion /*version*/)
     {
         ar("num_strings", myNumStrings);
         ar("positions", myPositions);

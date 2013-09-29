@@ -89,7 +89,7 @@ private:
 };
 
 template <class Archive>
-void Tuning::serialize(Archive &ar, const FileVersion version)
+void Tuning::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("name", myName);
 	ar("notes", myNotes);

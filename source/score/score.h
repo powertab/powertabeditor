@@ -97,7 +97,7 @@ private:
 };
 
 template <class Archive>
-void Score::serialize(Archive &ar, const FileVersion version)
+void Score::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("score_info", myScoreInfo);
 	ar("systems", mySystems);

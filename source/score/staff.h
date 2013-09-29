@@ -103,7 +103,7 @@ private:
 };
 
 template <class Archive>
-void Staff::serialize(Archive &ar, const FileVersion version)
+void Staff::serialize(Archive &ar, const FileVersion /*version*/)
 {
 	ar("view_type", myViewType);
 	ar("clef_type", myClefType);
