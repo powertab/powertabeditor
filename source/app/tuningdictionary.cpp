@@ -17,7 +17,6 @@
 
 #include "tuningdictionary.h"
 
-#include <boost/foreach.hpp>
 #include <fstream>
 #include <QCoreApplication>
 #include <QDebug>
@@ -32,12 +31,10 @@ void TuningDictionary::load()
     try
     {
         QByteArray path = tuningFilePath().toLocal8Bit();
-        std::ifstream file(path.constData(), std::ios::in | std::ios::binary);
+        std::ifstream file(path.constData());
 
         QMutexLocker lock(&myMutex);
-#if 0
-        ScoreUtils::load(file, myTunings);
-#endif
+        ScoreUtils::load(file, "tunings", myTunings);
     }
     catch (const std::exception &e)
     {
@@ -60,9 +57,7 @@ void TuningDictionary::save() const
         std::ofstream file(path.constData());
 
         QMutexLocker lock(&myMutex);
-#if 0
-        ScoreUtils::save(file, myTunings);
-#endif
+        ScoreUtils::save(file, "tunings", myTunings);
     }
     catch (const std::exception &e)
     {
@@ -79,7 +74,7 @@ void TuningDictionary::loadInBackground()
 void TuningDictionary::findTunings(int numStrings,
                                    std::vector<Tuning *> &tunings)
 {
-    BOOST_FOREACH(Tuning &tuning, myTunings)
+    for (Tuning &tuning : myTunings)
     {
         if (tuning.getStringCount() == numStrings)
             tunings.push_back(&tuning);
@@ -89,7 +84,7 @@ void TuningDictionary::findTunings(int numStrings,
 void TuningDictionary::findTunings(int numStrings,
                                    std::vector<const Tuning *> &tunings) const
 {
-    BOOST_FOREACH(const Tuning &tuning, myTunings)
+    for (const Tuning &tuning : myTunings)
     {
         if (tuning.getStringCount() == numStrings)
             tunings.push_back(&tuning);
@@ -108,5 +103,5 @@ void TuningDictionary::removeTuning(const Tuning &tuning)
 
 QString TuningDictionary::tuningFilePath()
 {
-    return QCoreApplication::applicationDirPath() + "/data/tunings.dat";
+    return QCoreApplication::applicationDirPath() + "/data/tunings.json";
 }

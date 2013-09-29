@@ -130,7 +130,7 @@
     <!-- Data files
     <ComponentGroup Id="DataFiles" Directory="DataDir">
       <Component Guid="5C770CE4-AF29-447F-8CD5-7F997837CE5C">
-        <File Source="$(var.BuildRootDir)/data/tunings.dat" KeyPath="yes" Checksum="yes" />
+        <File Source="$(var.BuildRootDir)/data/tunings.json" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
      -->

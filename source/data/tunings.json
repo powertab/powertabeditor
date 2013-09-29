@@ -1,0 +1,1142 @@
+{
+    "version": 1,
+    "tunings": [
+        {
+            "name": "Mountain Dulcimer",
+            "notes": [
+                62,
+                57,
+                50
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Mountain Dulcimer",
+            "notes": [
+                62,
+                57,
+                69
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Mountain Dulcimer",
+            "notes": [
+                62,
+                57,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Mountain Dulcimer",
+            "notes": [
+                62,
+                57,
+                60
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Standard",
+            "notes": [
+                43,
+                38,
+                33,
+                28
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Dropped D",
+            "notes": [
+                43,
+                38,
+                33,
+                26
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1/2 Step",
+            "notes": [
+                42,
+                37,
+                32,
+                27
+            ],
+            "offset": 1,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 Step",
+            "notes": [
+                41,
+                36,
+                31,
+                26
+            ],
+            "offset": 2,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 1/2 Steps",
+            "notes": [
+                40,
+                35,
+                30,
+                25
+            ],
+            "offset": 3,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 2 Steps",
+            "notes": [
+                39,
+                34,
+                29,
+                24
+            ],
+            "offset": 4,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Mandolin-Standard",
+            "notes": [
+                88,
+                81,
+                74,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Octave Mandolin-Standard",
+            "notes": [
+                76,
+                69,
+                62,
+                55
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Tenor Banjo-Standard",
+            "notes": [
+                76,
+                69,
+                62,
+                55
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bizzar/Bouzouki-Standard",
+            "notes": [
+                76,
+                69,
+                62,
+                55
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Mandola-Standard",
+            "notes": [
+                81,
+                74,
+                67,
+                60
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Ukulele",
+            "notes": [
+                59,
+                54,
+                50,
+                57
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Ukulele",
+            "notes": [
+                57,
+                64,
+                60,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Standard",
+            "notes": [
+                43,
+                38,
+                33,
+                28,
+                35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open G",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open A",
+            "notes": [
+                64,
+                61,
+                57,
+                52,
+                69
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open E",
+            "notes": [
+                59,
+                56,
+                52,
+                47,
+                64
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open F",
+            "notes": [
+                60,
+                57,
+                53,
+                48,
+                65
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open G",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-G Modal",
+            "notes": [
+                62,
+                60,
+                55,
+                48,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-A Modal",
+            "notes": [
+                64,
+                62,
+                57,
+                52,
+                69
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Cumberland Gap",
+            "notes": [
+                64,
+                62,
+                57,
+                52,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Cumberland Gap",
+            "notes": [
+                64,
+                62,
+                55,
+                50,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-G Minor",
+            "notes": [
+                62,
+                58,
+                55,
+                50,
+                67
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-C Tuning",
+            "notes": [
+                62,
+                59,
+                55,
+                48,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-C Modal",
+            "notes": [
+                62,
+                60,
+                55,
+                48,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Triple C",
+            "notes": [
+                72,
+                60,
+                55,
+                48,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open C",
+            "notes": [
+                64,
+                60,
+                55,
+                48,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open D",
+            "notes": [
+                62,
+                57,
+                54,
+                50,
+                66
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-D Minor",
+            "notes": [
+                62,
+                57,
+                53,
+                50,
+                65
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Cittern-Standard",
+            "notes": [
+                81,
+                76,
+                69,
+                62,
+                55
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Cittern-Standard",
+            "notes": [
+                76,
+                69,
+                62,
+                55,
+                50
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Standard",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Standard",
+            "notes": [
+                48,
+                43,
+                38,
+                33,
+                28,
+                35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dropped-D",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Double Dropped-D",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1/2 Step",
+            "notes": [
+                63,
+                58,
+                54,
+                49,
+                44,
+                39
+            ],
+            "offset": 1,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 Step",
+            "notes": [
+                62,
+                57,
+                53,
+                48,
+                43,
+                38
+            ],
+            "offset": 2,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 1/2 Steps",
+            "notes": [
+                61,
+                56,
+                52,
+                47,
+                42,
+                37
+            ],
+            "offset": 3,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 2 Steps",
+            "notes": [
+                60,
+                55,
+                51,
+                46,
+                41,
+                36
+            ],
+            "offset": 4,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Open D",
+            "notes": [
+                62,
+                57,
+                54,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open G",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open C",
+            "notes": [
+                64,
+                60,
+                55,
+                48,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open C",
+            "notes": [
+                64,
+                60,
+                55,
+                52,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open E",
+            "notes": [
+                64,
+                59,
+                56,
+                52,
+                47,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open A",
+            "notes": [
+                64,
+                61,
+                57,
+                52,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open D Minor",
+            "notes": [
+                62,
+                57,
+                53,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "D Modal",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "D Modal",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "D Modal",
+            "notes": [
+                62,
+                57,
+                55,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Fourths",
+            "notes": [
+                65,
+                60,
+                55,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Lute",
+            "notes": [
+                64,
+                59,
+                54,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Lute",
+            "notes": [
+                64,
+                57,
+                54,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Big City",
+            "notes": [
+                69,
+                57,
+                54,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "D Wahine",
+            "notes": [
+                62,
+                59,
+                54,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "D Minor",
+            "notes": [
+                62,
+                57,
+                53,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "D Modal",
+            "notes": [
+                62,
+                57,
+                50,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "G6",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "G Minor",
+            "notes": [
+                62,
+                58,
+                55,
+                50,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "C6",
+            "notes": [
+                64,
+                57,
+                55,
+                48,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bron-Y-Aur",
+            "notes": [
+                64,
+                60,
+                55,
+                48,
+                45,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Old Spanish",
+            "notes": [
+                64,
+                57,
+                55,
+                50,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Parvardigar",
+            "notes": [
+                62,
+                60,
+                55,
+                48,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bruce Palmer Modal",
+            "notes": [
+                64,
+                59,
+                52,
+                52,
+                47,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "New Standard",
+            "notes": [
+                67,
+                64,
+                57,
+                50,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Low C",
+            "notes": [
+                62,
+                57,
+                55,
+                50,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "G Modal",
+            "notes": [
+                62,
+                60,
+                55,
+                50,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "A Minor",
+            "notes": [
+                64,
+                60,
+                57,
+                52,
+                48,
+                45
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "A Minor",
+            "notes": [
+                64,
+                60,
+                57,
+                52,
+                57,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Low Bass A",
+            "notes": [
+                64,
+                61,
+                57,
+                52,
+                57,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Low Bass G",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                55,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "C6/A7",
+            "notes": [
+                64,
+                60,
+                57,
+                55,
+                40,
+                37
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "C6",
+            "notes": [
+                64,
+                60,
+                55,
+                52,
+                48,
+                45
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "C6",
+            "notes": [
+                64,
+                60,
+                57,
+                55,
+                48,
+                55
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "C6",
+            "notes": [
+                64,
+                60,
+                57,
+                55,
+                48,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "G6",
+            "notes": [
+                62,
+                59,
+                55,
+                52,
+                47,
+                43
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Renaissance G",
+            "notes": [
+                67,
+                62,
+                57,
+                53,
+                48,
+                43
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dobro",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                47,
+                43
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Standard",
+            "notes": [
+                52,
+                47,
+                43,
+                38,
+                33,
+                28,
+                23
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Standard",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                40,
+                35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Standard",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                40,
+                35,
+                28
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        }
+    ]
+}
