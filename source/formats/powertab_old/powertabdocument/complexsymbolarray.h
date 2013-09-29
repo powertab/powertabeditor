@@ -18,7 +18,8 @@
 #ifndef COMPLEXSYMBOLARRAY_H
 #define COMPLEXSYMBOLARRAY_H
 
-#include <boost/array.hpp>
+#include <algorithm>
+#include <array>
 #include <boost/cstdint.hpp>
 #include "macros.h"
 
@@ -49,9 +50,9 @@ namespace ComplexSymbols
     /// @return Index within the array where the symbol was found, or -1 if not
     /// found
     template <size_t N>
-    uint32_t findComplexSymbol(const boost::array<uint32_t, N>& symbolArray, uint8_t type)
+    uint32_t findComplexSymbol(const std::array<uint32_t, N>& symbolArray, uint8_t type)
     {
-        typename boost::array<uint32_t, N>::const_iterator symbol =
+        typename std::array<uint32_t, N>::const_iterator symbol =
                 std::find_if(symbolArray.begin(), symbolArray.end(), CompareComplexSymbolType(type));
 
         if (symbol != symbolArray.end())
@@ -67,7 +68,7 @@ namespace ComplexSymbols
     /// Gets the number of complex symbols used by the note
     /// @return The number of complex symbols used by the note
     template <size_t N>
-    size_t getComplexSymbolCount(const boost::array<uint32_t, N>& symbolArray)
+    size_t getComplexSymbolCount(const std::array<uint32_t, N>& symbolArray)
     {
         return  symbolArray.size() -
                 std::count(symbolArray.begin(), symbolArray.end(), static_cast<uint32_t>(notUsed));
@@ -75,7 +76,7 @@ namespace ComplexSymbols
 
     /// Clears the contents of the symbol array (sets all elements to "not used")
     template <size_t N>
-    void clearComplexSymbols(boost::array<uint32_t, N>& symbolArray)
+    void clearComplexSymbols(std::array<uint32_t, N>& symbolArray)
     {
         std::fill(symbolArray.begin(), symbolArray.end(), static_cast<uint32_t>(notUsed));
     }
@@ -84,7 +85,7 @@ namespace ComplexSymbols
     /// @param type Type of symbol to remove
     /// @return True if the symbol was removed, false if not
     template <size_t N>
-    void removeComplexSymbol(boost::array<uint32_t, N>& symbolArray, uint8_t type)
+    void removeComplexSymbol(std::array<uint32_t, N>& symbolArray, uint8_t type)
     {
         std::replace_if(symbolArray.begin(), symbolArray.end(),
                         CompareComplexSymbolType(type), static_cast<uint32_t>(notUsed));
@@ -93,12 +94,12 @@ namespace ComplexSymbols
     /// Adds a complex symbol to the complex symbol array
     /// @param symbolData Data that makes up the symbol
     template <size_t N>
-    void addComplexSymbol(boost::array<uint32_t, N>& symbolArray, uint32_t symbolData)
+    void addComplexSymbol(std::array<uint32_t, N>& symbolArray, uint32_t symbolData)
     {
         const uint8_t type = HIBYTE(HIWORD(symbolData));
 
         // search for the symbol in the array
-        typename boost::array<uint32_t, N>::iterator symbol =
+        typename std::array<uint32_t, N>::iterator symbol =
                 std::find_if(symbolArray.begin(), symbolArray.end(), CompareComplexSymbolType(type));
 
         // if the symbol was already in the array, update it
@@ -109,7 +110,7 @@ namespace ComplexSymbols
         // otherwise, find the first free array slot and insert it there
         else
         {
-            typename boost::array<uint32_t, N>::iterator firstUnused =
+            typename std::array<uint32_t, N>::iterator firstUnused =
                     std::find(symbolArray.begin(), symbolArray.end(), static_cast<uint32_t>(notUsed));
 
             if (firstUnused != symbolArray.end())

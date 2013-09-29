@@ -15,8 +15,8 @@
 #include "powertabfileheader.h"
 #include "fontsetting.h"
 
+#include <array>
 #include <vector>
-#include <boost/array.hpp>
 
 namespace PowerTabDocument {
 
@@ -52,7 +52,7 @@ private:
     PowerTabFileHeader  m_header;                                   ///< The one and only header (contains file information)
     std::vector<Score*> m_scoreArray;                               ///< List of scores (zeroth element = guitar score, first element = bass score)
 
-    boost::array<FontSetting, NUM_FONT_SETTINGS> m_fontSettings; ///< List of global font settings
+    std::array<FontSetting, NUM_FONT_SETTINGS> m_fontSettings; ///< List of global font settings
     int32_t             m_tablatureStaffLineSpacing;                    ///< Amount of space used between lines on the tablature staff
     uint32_t            m_fadeIn;                                       ///< Amount of fade in at the start of the song (in MIDI units - see generalmidi.h)
     uint32_t            m_fadeOut;                                      ///< Amount of fade out at the end of the song (in MIDI units - see generalmidi.h)

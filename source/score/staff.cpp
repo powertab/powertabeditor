@@ -24,8 +24,6 @@ Staff::Staff()
       myClefType(TrebleClef),
       myStringCount(6)
 {
-    // boost::array does not initialize elements.
-    myVoices.assign(std::vector<Position>());
 }
 
 Staff::Staff(int stringCount)

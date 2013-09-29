@@ -18,7 +18,7 @@
 #ifndef SCORE_SERIALIZATION_H
 #define SCORE_SERIALIZATION_H
 
-#include <boost/array.hpp>
+#include <array>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
@@ -126,7 +126,7 @@ private:
     void read(std::map<K, V, C> &map);
 
     template <typename T, size_t N>
-    void read(boost::array<T, N> &arr);
+    void read(std::array<T, N> &arr);
 
     template <size_t N>
     void read(std::bitset<N> &bits);
@@ -199,7 +199,7 @@ private:
     void write(const std::map<K, V, C> &map);
 
     template <typename T, size_t N>
-    void write(const boost::array<T, N> &arr);
+    void write(const std::array<T, N> &arr);
 
     template <size_t N>
     void write(const std::bitset<N> &bits);
@@ -309,7 +309,7 @@ void InputArchive::read(std::map<K, V, C> &map)
 }
 
 template <typename T, size_t N>
-void InputArchive::read(boost::array<T, N> &arr)
+void InputArchive::read(std::array<T, N> &arr)
 {
     myIterators.push(value().MemberBegin());
 
@@ -389,7 +389,7 @@ void OutputArchive::write(const std::map<K, V, C> &map)
 }
 
 template <typename T, size_t N>
-void OutputArchive::write(const boost::array<T, N> &arr)
+void OutputArchive::write(const std::array<T, N> &arr)
 {
     myStream.StartObject();
 

@@ -18,7 +18,7 @@
 #ifndef SCORE_STAFF_H
 #define SCORE_STAFF_H
 
-#include <boost/array.hpp>
+#include <array>
 #include <boost/range/iterator_range_core.hpp>
 #include "dynamic.h"
 #include "fileversion.h"
@@ -98,7 +98,7 @@ private:
     ViewType myViewType;
     ClefType myClefType;
     int myStringCount;
-    boost::array<Voice, NUM_VOICES> myVoices;
+    std::array<Voice, NUM_VOICES> myVoices;
     std::vector<Dynamic> myDynamics;
 };
 

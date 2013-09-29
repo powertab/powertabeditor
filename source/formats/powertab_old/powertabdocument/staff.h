@@ -12,7 +12,7 @@
 #ifndef STAFF_H
 #define STAFF_H
 
-#include <boost/array.hpp>
+#include <array>
 #include "powertabobject.h"
 #include <vector>
 
@@ -64,7 +64,7 @@ private:
     bool m_isShown;
 
 public:
-    boost::array<std::vector<Position*>, NUM_STAFF_VOICES> positionArrays; ///< collection of position arrays, one per voice
+    std::array<std::vector<Position*>, NUM_STAFF_VOICES> positionArrays; ///< collection of position arrays, one per voice
 
     // Constructor/Destructor
 public:

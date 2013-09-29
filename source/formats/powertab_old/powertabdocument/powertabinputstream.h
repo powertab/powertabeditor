@@ -16,7 +16,7 @@
 #include <memory>
 #include <vector>
 
-#include <boost/array.hpp>
+#include <array>
 #include <boost/cstdint.hpp>
 #include <boost/make_shared.hpp>
 
@@ -84,7 +84,7 @@ public:
     }
 
     template <class T, size_t N>
-    inline void ReadSmallVector(boost::array<T, N>& array)
+    inline void ReadSmallVector(std::array<T, N>& array)
     {
         uint8_t size = 0;
         *this >> size;

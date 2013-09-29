@@ -12,7 +12,7 @@
 #ifndef NOTE_H
 #define NOTE_H
 
-#include <boost/array.hpp>
+#include <array>
 #include "powertabobject.h"
 
 namespace PowerTabDocument {
@@ -142,7 +142,7 @@ public:
 private:
     uint8_t      m_stringData;                                       ///< Top 3 bits = string, bottom 5 bits = fret number
     uint16_t      m_simpleData;						                ///< Contains simple symbol flags
-    boost::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> m_complexSymbolArray;    ///< Complex symbol data (1 symbol per element)
+    std::array<uint32_t, MAX_NOTE_COMPLEX_SYMBOLS> m_complexSymbolArray;    ///< Complex symbol data (1 symbol per element)
 
 public:
     Note();

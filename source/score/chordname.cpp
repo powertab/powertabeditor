@@ -17,8 +17,8 @@
 
 #include "chordname.h"
 
+#include <array>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/array.hpp>
 #include <boost/foreach.hpp>
 #include <iostream>
 
@@ -134,7 +134,7 @@ std::ostream &operator<<(std::ostream &os, const ChordName &chord)
     static std::string theSuffixes[] = { "",   "m",  "+",      "°",    "5",
                                          "6",  "m6", "7",      "maj7", "m7",
                                          "+7", "°7", "m/maj7", "m7b5" };
-    static boost::array<ChordName::FormulaModification, 13> theModifications = {
+    static std::array<ChordName::FormulaModification, 13> theModifications = {
         { ChordName::Suspended2nd, ChordName::Suspended4th,
           ChordName::Added2nd,     ChordName::Added4th,
           ChordName::Added6th,     ChordName::Added9th,

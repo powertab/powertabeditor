@@ -334,9 +334,9 @@ void PowerTabOldImporter::convert(
     time.setBeatsPerMeasure(oldTime.GetBeatsPerMeasure());
     time.setBeatValue(oldTime.GetBeatAmount());
 
-    boost::array<uint8_t, 4> pattern;
+    std::array<uint8_t, 4> pattern;
     oldTime.GetBeamingPattern(pattern[0], pattern[1], pattern[2], pattern[3]);
-    boost::array<int, 4> newPattern;
+    std::array<int, 4> newPattern;
     std::copy(pattern.begin(), pattern.end(), newPattern.begin());
     time.setBeamingPattern(newPattern);
 
@@ -709,7 +709,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
 
 namespace {
 
-typedef boost::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> ActivePlayers;
+typedef std::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> ActivePlayers;
 
 PlayerChange getPlayerChange(const ActivePlayers &activePlayers,
                              int currentPosition)
@@ -736,7 +736,7 @@ void PowerTabOldImporter::convertGuitarIns(
         const PowerTabDocument::Score &oldScore, Score &score)
 {
     // For each guitar, keep track of its current staff.
-    boost::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> activePlayers;
+    std::array<int, PowerTabDocument::Score::MAX_NUM_GUITARS> activePlayers;
     activePlayers.fill(-1);
 
     for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)

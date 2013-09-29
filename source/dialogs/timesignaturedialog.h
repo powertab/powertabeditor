@@ -54,7 +54,7 @@ private:
     void updatePossiblePulseValues();
 
     Ui::TimeSignatureDialog *ui;
-    boost::array<QLineEdit *, 4> myBeamingPatterns;
+    std::array<QLineEdit *, 4> myBeamingPatterns;
     TimeSignature myTimeSignature;
 };
 

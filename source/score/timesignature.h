@@ -18,7 +18,7 @@
 #ifndef SCORE_TIMESIGNATURE_H
 #define SCORE_TIMESIGNATURE_H
 
-#include <boost/array.hpp>
+#include <array>
 #include "fileversion.h"
 
 class TimeSignature
@@ -55,7 +55,7 @@ public:
     /// Sets the beat value for the measure.
     void setBeatValue(int beatValue);
 
-    typedef boost::array<int, 4> BeamingPattern;
+    typedef std::array<int, 4> BeamingPattern;
     /// Returns the beaming pattern for the measure.
     BeamingPattern getBeamingPattern() const;
     /// Sets the beaming pattern for the measure.
