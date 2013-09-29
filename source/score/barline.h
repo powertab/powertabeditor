@@ -19,7 +19,7 @@
 #define SCORE_BARLINE_H
 
 #include <boost/optional/optional.hpp>
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include "keysignature.h"
 #include "rehearsalsign.h"
 #include "timesignature.h"
@@ -41,6 +41,9 @@ public:
     Barline(int position, BarType type, int repeatCount = 0);
 
     bool operator==(const Barline &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the barline is anchored.
     int getPosition() const;
@@ -87,14 +90,17 @@ private:
     KeySignature myKeySignature;
     TimeSignature myTimeSignature;
     boost::optional<RehearsalSign> myRehearsalSign;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & myBarType & myRepeatCount & myKeySignature &
-             myTimeSignature & myRehearsalSign;
-    }
 };
+
+template <class Archive>
+void Barline::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("bar_type", myBarType);
+	ar("num_repeats", myRepeatCount);
+	ar("key_signature", myKeySignature);
+	ar("time_signature", myTimeSignature);
+	ar("rehearsal_sign", myRehearsalSign);
+}
 
 #endif

@@ -38,7 +38,9 @@ TEST_CASE("Score/Barline/Serialization", "")
     barline.setBarType(Barline::RepeatEnd);
     barline.setRepeatCount(42);
     barline.setPosition(23);
-    barline.setRehearsalSign(RehearsalSign("D", "Solo"));
 
-    Serialization::test(barline);
+    Serialization::test("barline", barline);
+
+    barline.setRehearsalSign(RehearsalSign("D", "Solo"));
+	Serialization::test("barline", barline);
 }

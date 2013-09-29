@@ -18,7 +18,6 @@
 #ifndef SCORE_CHORDTEXT_H
 #define SCORE_CHORDTEXT_H
 
-#include <boost/serialization/access.hpp>
 #include "chordname.h"
 
 class ChordText
@@ -29,6 +28,9 @@ public:
 
     bool operator==(const ChordText &other) const;
 
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
+
     int getPosition() const;
     void setPosition(int position);
 
@@ -38,13 +40,13 @@ public:
 private:
     int myPosition;
     ChordName myChordName;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & myChordName;
-    }
 };
+
+template <class Archive>
+void ChordText::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("chord_name", myChordName);
+}
 
 #endif

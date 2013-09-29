@@ -19,7 +19,7 @@
 #define SCORE_DIRECTION_H
 
 #include <boost/range/iterator_range_core.hpp>
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <vector>
 
 class DirectionSymbol
@@ -60,7 +60,11 @@ public:
     DirectionSymbol();
     DirectionSymbol(SymbolType type, ActiveSymbolType activeType = ActiveNone,
                     int repeatNumber = 0);
+
     bool operator==(const DirectionSymbol &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Return the type of this symbol.
     SymbolType getSymbolType() const;
@@ -73,13 +77,6 @@ private:
     SymbolType mySymbolType;
     ActiveSymbolType myActiveSymbolType;
     int myRepeatNumber;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & mySymbolType & myActiveSymbolType & myRepeatNumber;
-    }
 };
 
 class Direction
@@ -92,6 +89,9 @@ public:
     explicit Direction(int position);
 
     bool operator==(const Direction &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the direction is anchored.
     int getPosition() const;
@@ -111,13 +111,21 @@ public:
 private:
     int myPosition;
     std::vector<DirectionSymbol> mySymbols;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & mySymbols;
-    }
 };
+
+template <class Archive>
+void DirectionSymbol::serialize(Archive &ar, const FileVersion version)
+{
+	ar("symbol_type", mySymbolType);
+	ar("active_symbol", myActiveSymbolType);
+	ar("repeat_number", myRepeatNumber);
+}
+
+template <class Archive>
+void Direction::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("symbols", mySymbols);
+}
 
 #endif

@@ -18,7 +18,7 @@
 #ifndef SCORE_REHEARSALSIGN_H
 #define SCORE_REHEARSALSIGN_H
 
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <string>
 
 class RehearsalSign
@@ -28,6 +28,9 @@ public:
     RehearsalSign(const std::string &letters, const std::string &description);
 
     bool operator==(const RehearsalSign &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the letter(s) of the sign (e.g. "A", "B", ... "Z", "AA", ...).
     const std::string &getLetters() const;
@@ -42,13 +45,13 @@ public:
 private:
     std::string myLetters;
     std::string myDescription;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myLetters & myDescription;
-    }
 };
+
+template <class Archive>
+void RehearsalSign::serialize(Archive &ar, const FileVersion version)
+{
+	ar("letters", myLetters);
+	ar("description", myDescription);
+}
 
 #endif

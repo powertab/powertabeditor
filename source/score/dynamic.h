@@ -18,7 +18,7 @@
 #ifndef SCORE_DYNAMIC_H
 #define SCORE_DYNAMIC_H
 
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 
 class Dynamic
 {
@@ -41,6 +41,9 @@ public:
 
     bool operator==(const Dynamic &other) const;
 
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
+
     /// Returns the position within the staff where the dynamic is anchored.
     int getPosition() const;
     /// Sets the position within the staff where the dynamic is anchored.
@@ -54,13 +57,13 @@ public:
 private:
     int myPosition;
     VolumeLevel myVolume;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & myVolume;
-    }
 };
+
+template <class Archive>
+void Dynamic::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("volume", myVolume);
+}
 
 #endif

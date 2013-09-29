@@ -37,7 +37,9 @@ TEST_CASE("Score/ScoreInfo/ChangeType", "")
 TEST_CASE("Score/ScoreInfo/Serialization", "")
 {
     ScoreInfo info;
-    info.setLessonData(LessonData());
+	SongData data;
+	data.setBootlegInfo(SongData::BootlegData());
+    info.setSongData(data);
 
-    Serialization::test(info);
+    Serialization::test("score_info", info);
 }

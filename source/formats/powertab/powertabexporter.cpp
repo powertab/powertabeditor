@@ -21,6 +21,7 @@
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <fstream>
+#include <score/score.h>
 #include <score/serialization.h>
 
 PowerTabExporter::PowerTabExporter()
@@ -37,5 +38,5 @@ void PowerTabExporter::save(const std::string &filename, const Score &score)
     out.push(file);
 
     std::ostream compressed_output(&out);
-    ScoreUtils::save(compressed_output, score);
+    ScoreUtils::save(compressed_output, "score", score);
 }

@@ -75,5 +75,5 @@ TEST_CASE("Score/Tuning/Serialization", "")
     tuning.setSharps(false);
     tuning.setCapo(7);
 
-    Serialization::test(tuning);
+    Serialization::test("tuning", tuning);
 }

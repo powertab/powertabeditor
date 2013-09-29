@@ -42,5 +42,5 @@ TEST_CASE("Score/TempoMarker/Serialization", "")
     tempo.setBeatsPerMinute(140);
     tempo.setDescription("My Tempo");
 
-    Serialization::test(tempo);
+    Serialization::test("tempo_marker", tempo);
 }

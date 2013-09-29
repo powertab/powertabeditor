@@ -38,5 +38,5 @@ TEST_CASE("Score/Player/Serialization", "")
     player.setMaxVolume(42);
     player.setPan(123);
 
-    Serialization::test(player);
+    Serialization::test("player", player);
 }

@@ -18,7 +18,7 @@
 #ifndef SCORE_PLAYERCHANGE_H
 #define SCORE_PLAYERCHANGE_H
 
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <map>
 #include <vector>
 
@@ -29,7 +29,11 @@ class ActivePlayer
 public:
     ActivePlayer();
     ActivePlayer(int player, int instrument);
+
     bool operator==(const ActivePlayer &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the zero-based identifier of the player.
     int getPlayerNumber() const;
@@ -39,13 +43,6 @@ public:
 private:
     int myPlayerNumber;
     int myInstrumentNumber;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPlayerNumber & myInstrumentNumber;
-    }
 };
 
 class PlayerChange
@@ -55,6 +52,9 @@ public:
     explicit PlayerChange(int position);
 
     bool operator==(const PlayerChange &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the change is anchored.
     int getPosition() const;
@@ -73,13 +73,20 @@ private:
     int myPosition;
     /// For each staff, there can be multiple active players (or none).
     std::map< int, std::vector<ActivePlayer> > myActivePlayers;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & myActivePlayers;
-    }
 };
+
+template <class Archive>
+void ActivePlayer::serialize(Archive &ar, const FileVersion version)
+{
+	ar("player", myPlayerNumber);
+	ar("instrument", myInstrumentNumber);
+}
+
+template <class Archive>
+void PlayerChange::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("active_players", myActivePlayers);
+}
 
 #endif

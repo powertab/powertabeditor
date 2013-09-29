@@ -50,6 +50,6 @@ TEST_CASE("Score/KeySignature/Serialization", "")
     key.setVisible(false);
     key.setCancellation(true);
 
-    Serialization::test(key);
+    Serialization::test("key_signature", key);
 }
 

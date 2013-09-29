@@ -18,7 +18,7 @@
 #ifndef SCORE_TEMPOMARKER_H
 #define SCORE_TEMPOMARKER_H
 
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <string>
 
 class TempoMarker
@@ -66,6 +66,9 @@ public:
     explicit TempoMarker(int position);
 
     bool operator==(const TempoMarker &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the marker is anchored.
     int getPosition() const;
@@ -123,15 +126,19 @@ private:
     AlterationOfPaceType myAlterationOfPace;
     int myBeatsPerMinute;
     std::string myDescription;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & myMarkerType & myBeatType & myListessoBeatType
-           & myTripletFeel & myAlterationOfPace & myBeatsPerMinute
-           & myDescription;
-    }
 };
+
+template <class Archive>
+void TempoMarker::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("marker_type", myMarkerType);
+	ar("beat_type", myBeatType);
+	ar("listesso_type", myListessoBeatType);
+	ar("triplet_feel", myTripletFeel);
+	ar("alteration_of_pace", myAlterationOfPace);
+	ar("bpm", myBeatsPerMinute);
+	ar("description", myDescription);
+}
 
 #endif

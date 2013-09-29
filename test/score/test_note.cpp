@@ -104,5 +104,5 @@ TEST_CASE("Score/Note/Serialization", "")
     Note note(3, 12);
     note.setProperty(Note::Octave15ma);
 
-    Serialization::test(note);
+    Serialization::test("note", note);
 }

@@ -77,7 +77,7 @@ TEST_CASE("Score/Staff/Serialization", "")
     staff.insertDynamic(Dynamic(11, Dynamic::pp));
     staff.setStringCount(7);
 
-    Serialization::test(staff);
+    Serialization::test("staff", staff);
 }
 
 TEST_CASE("Score/Staff/GetPositionsInRange", "")

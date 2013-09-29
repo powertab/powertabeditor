@@ -21,6 +21,7 @@
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
 #include <fstream>
+#include <score/score.h>
 #include <score/serialization.h>
 
 PowerTabImporter::PowerTabImporter()
@@ -38,5 +39,5 @@ void PowerTabImporter::load(const std::string &filename, Score &score)
     in.push(file);
 
     std::istream compressed_input(&in);
-    ScoreUtils::load(compressed_input, score);
+    ScoreUtils::load(compressed_input, "score", score);
 }

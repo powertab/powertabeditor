@@ -70,5 +70,5 @@ TEST_CASE("Score/TimeSignature/Serialization", "")
     time.setNumPulses(5);
     time.setVisible(false);
 
-    Serialization::test(time);
+    Serialization::test("time_signature", time);
 }

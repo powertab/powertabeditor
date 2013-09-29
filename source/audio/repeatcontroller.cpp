@@ -18,6 +18,7 @@
 #include "repeatcontroller.h"
 
 #include <boost/foreach.hpp>
+#include <iostream>
 #include <score/score.h>
 
 /// Determines whether a direction should be performed, based on the

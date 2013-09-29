@@ -35,7 +35,9 @@ void TuningDictionary::load()
         std::ifstream file(path.constData(), std::ios::in | std::ios::binary);
 
         QMutexLocker lock(&myMutex);
+#if 0
         ScoreUtils::load(file, myTunings);
+#endif
     }
     catch (const std::exception &e)
     {
@@ -58,7 +60,9 @@ void TuningDictionary::save() const
         std::ofstream file(path.constData());
 
         QMutexLocker lock(&myMutex);
+#if 0
         ScoreUtils::save(file, myTunings);
+#endif
     }
     catch (const std::exception &e)
     {

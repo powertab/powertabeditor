@@ -38,6 +38,8 @@ TEST_CASE("Score/PlayerChange/Serialization", "")
     PlayerChange change;
     change.setPosition(42);
     change.insertActivePlayer(1, ActivePlayer(3, 2));
+	change.insertActivePlayer(1, ActivePlayer(1, 2));
+	change.insertActivePlayer(2, ActivePlayer(4, 3));
 
-    Serialization::test(change);
+    Serialization::test("player_change", change);
 }

@@ -18,15 +18,15 @@
 #ifndef SCORE_SYSTEM_H
 #define SCORE_SYSTEM_H
 
-#include <boost/range/iterator_range_core.hpp>
-#include <boost/serialization/access.hpp>
-#include <vector>
 #include "alternateending.h"
 #include "barline.h"
+#include <boost/range/iterator_range_core.hpp>
 #include "chordtext.h"
 #include "direction.h"
+#include "fileversion.h"
 #include "playerchange.h"
 #include "staff.h"
+#include <vector>
 #include "tempomarker.h"
 
 class System
@@ -48,7 +48,11 @@ public:
     typedef std::vector<ChordText>::const_iterator ChordTextConstIterator;
 
     System();
+
     bool operator==(const System &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the set of staves in the system.
     boost::iterator_range<StaffIterator> getStaves();
@@ -135,15 +139,19 @@ private:
     std::vector<Direction> myDirections;
     std::vector<PlayerChange> myPlayerChanges;
     std::vector<ChordText> myChords;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myStaves & myBarlines & myTempoMarkers & myAlternateEndings &
-             myDirections & myPlayerChanges & myChords;
-    }
 };
+
+template <class Archive>
+void System::serialize(Archive &ar, const FileVersion version)
+{
+	ar("staves", myStaves);
+	ar("barlines", myBarlines);
+	ar("tempo_markers", myTempoMarkers);
+	ar("alternate_endings", myAlternateEndings);
+	ar("directions", myDirections);
+	ar("player_changes", myPlayerChanges);
+	ar("chords", myChords);
+}
 
 namespace SystemUtils {
 

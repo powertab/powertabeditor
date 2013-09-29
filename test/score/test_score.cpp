@@ -18,7 +18,6 @@
 #include <catch.hpp>
 
 #include <score/score.h>
-#include "test_serialization.h"
 
 TEST_CASE("Score/Score/Systems", "")
 {

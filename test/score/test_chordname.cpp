@@ -29,7 +29,7 @@ TEST_CASE("Score/ChordName/Serialization", "")
     name.setTonicVariation(ChordName::DoubleFlat);
     name.setTonicKey(ChordName::D);
 
-    Serialization::test(name);
+    Serialization::test("chord_name", name);
 }
 
 TEST_CASE("Score/ChordName/ToString", "")

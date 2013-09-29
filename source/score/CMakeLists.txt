@@ -27,7 +27,33 @@ add_library(ptescore
     timesignature.cpp
     tuning.cpp
 
-    # Add header-only files here so that they show up in the generated projects
-    # for Visual Studio, QtCreator, etc.
+    # Add header files here so that they show up in the generated projects for
+    # Visual Studio, QtCreator, etc.
+    alternateending.h
+    barline.h
+    chordname.h
+    chordtext.h
+    direction.h
+    dynamic.h
+    fileversion.h
+    generalmidi.h
+    instrument.h
+    keysignature.h
+    note.h
+    player.h
+    playerchange.h
+    position.h
+    rehearsalsign.h
+    score.h
+    scoreinfo.h
+    scorelocation.h
+    serialization.h
+    staff.h
+    staffutils.h
+    system.h
+    systemlocation.h
+    tempomarker.h
+    timesignature.h
+    tuning.h
     utils.h
 )

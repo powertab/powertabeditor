@@ -27,5 +27,5 @@ TEST_CASE("Score/Instrument/Serialization", "")
     instrument.setDescription("Clean Guitar");
     instrument.setMidiPreset(Midi::MIDI_PRESET_ELECTRIC_GUITAR_CLEAN);
 
-    Serialization::test(instrument);
+    Serialization::test("instrument", instrument);
 }

@@ -19,7 +19,7 @@
 #define SCORE_ALTERNATEENDING_H
 
 #include <bitset>
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <iosfwd>
 #include <vector>
 
@@ -38,6 +38,9 @@ public:
     explicit AlternateEnding(int position);
 
     bool operator==(const AlternateEnding &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the ending is anchored.
     int getPosition() const;
@@ -67,14 +70,15 @@ private:
     int myPosition;
     std::vector<int> myNumbers;
     std::bitset<NumSpecialAlternateEndings> mySpecialEndings;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & myNumbers & mySpecialEndings;
-    }
 };
+
+template <class Archive>
+void AlternateEnding::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("numbers", myNumbers);
+	ar("special_endings", mySpecialEndings);
+}
 
 /// Gets the alternate ending text (numbers + D.C./D.S./D.S.S.).
 std::ostream &operator<<(std::ostream &os, const AlternateEnding &ending);

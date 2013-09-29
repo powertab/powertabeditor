@@ -19,11 +19,11 @@
 #define SCORE_STAFF_H
 
 #include <boost/array.hpp>
-#include <boost/serialization/access.hpp>
 #include <boost/range/iterator_range_core.hpp>
-#include <vector>
 #include "dynamic.h"
+#include "fileversion.h"
 #include "position.h"
+#include <vector>
 
 class Staff
 {
@@ -55,6 +55,9 @@ public:
     explicit Staff(int stringCount);
 
     bool operator==(const Staff &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns whether the staff is shown in the guitar view, bass view, etc.
     ViewType getViewType() const;
@@ -97,13 +100,16 @@ private:
     int myStringCount;
     boost::array<Voice, NUM_VOICES> myVoices;
     std::vector<Dynamic> myDynamics;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myViewType & myClefType & myStringCount & myVoices & myDynamics;
-    }
 };
+
+template <class Archive>
+void Staff::serialize(Archive &ar, const FileVersion version)
+{
+	ar("view_type", myViewType);
+	ar("clef_type", myClefType);
+	ar("string_count", myStringCount);
+	ar("voices", myVoices);
+	ar("dynamics", myDynamics);
+}
 
 #endif

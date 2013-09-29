@@ -37,6 +37,7 @@ TEST_CASE("Score/Direction/Serialization", "")
 {
     Direction direction;
     direction.setPosition(42);
+	direction.insertSymbol(DirectionSymbol(DirectionSymbol::DaCapo));
 
-    Serialization::test(direction);
+    Serialization::test("direction", direction);
 }

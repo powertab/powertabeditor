@@ -154,7 +154,7 @@ const std::string &SongData::AuthorData::getLyricist() const
 }
 
 SongData::SongData()
-    : myReleaseInfo(AudioData()),
+	: myAudioReleaseInfo(AudioData()),
       myAuthorInfo(AuthorData())
 {
 }
@@ -163,7 +163,9 @@ bool SongData::operator==(const SongData &other) const
 {
     return myTitle == other.myTitle &&
            myArtist == other.myArtist &&
-           myReleaseInfo == other.myReleaseInfo &&
+		   myAudioReleaseInfo == other.myAudioReleaseInfo &&
+		   myVideoReleaseInfo == other.myVideoReleaseInfo &&
+		   myBootlegReleaseInfo == other.myBootlegReleaseInfo &&
            myAuthorInfo == other.myAuthorInfo &&
            myArranger == other.myArranger &&
            myTranscriber == other.myTranscriber &&
@@ -194,42 +196,47 @@ const std::string &SongData::getArtist() const
 
 bool SongData::isAudioRelease() const
 {
-    return boost::get<AudioData>(&myReleaseInfo);
+	return myAudioReleaseInfo.is_initialized();
 }
 
 void SongData::setAudioReleaseInfo(const SongData::AudioData &info)
 {
-    myReleaseInfo = info;
+	setUnreleased();
+	myAudioReleaseInfo.reset(info);
 }
 
 bool SongData::isVideoRelease() const
 {
-    return boost::get<VideoData>(&myReleaseInfo);
+	return myVideoReleaseInfo.is_initialized();
 }
 
 void SongData::setVideoReleaseInfo(const SongData::VideoData &info)
 {
-    myReleaseInfo = info;
+    setUnreleased();
+	myVideoReleaseInfo.reset(info);
 }
 
 bool SongData::isBootleg() const
 {
-    return boost::get<BootlegData>(&myReleaseInfo);
+	return myBootlegReleaseInfo.is_initialized();
 }
 
 void SongData::setBootlegInfo(const SongData::BootlegData &info)
 {
-    myReleaseInfo = info;
+	setUnreleased();
+	myBootlegReleaseInfo.reset(info);
 }
 
 bool SongData::isUnreleased() const
 {
-    return boost::get<boost::blank>(&myReleaseInfo);
+	return !isAudioRelease() && !isVideoRelease() && !isBootleg();
 }
 
 void SongData::setUnreleased()
 {
-    myReleaseInfo = boost::blank();
+	myAudioReleaseInfo.reset();
+	myVideoReleaseInfo.reset();
+	myBootlegReleaseInfo.reset();
 }
 
 void SongData::setAuthorInfo(const SongData::AuthorData &info)
@@ -384,37 +391,45 @@ const std::string &LessonData::getCopyright() const
 }
 
 ScoreInfo::ScoreInfo()
-    : myData(SongData())
+	: mySongData(SongData())
 {
 }
 
 bool ScoreInfo::operator==(const ScoreInfo &other) const
 {
-    return myData == other.myData;
+    return mySongData == other.mySongData && myLessonData == other.myLessonData;
 }
 
 ScoreInfo::ScoreType ScoreInfo::getScoreType() const
 {
-    return static_cast<ScoreType>(myData.which());
+	return mySongData.is_initialized() ? Song : Lesson;
 }
 
 const SongData &ScoreInfo::getSongData() const
 {
-    return boost::get<SongData>(myData);
+	if (!mySongData.is_initialized())
+		throw std::logic_error("Invalid attempt to read song data");
+
+	return *mySongData;
 }
 
 void ScoreInfo::setSongData(const SongData &data)
 {
-    myData = data;
+	mySongData = data;
+	myLessonData.reset();
 }
 
 const LessonData &ScoreInfo::getLessonData() const
 {
-    return boost::get<LessonData>(myData);
+	if (!myLessonData.is_initialized())
+		throw std::logic_error("Invalid attempt to read lesson data");
+
+	return *myLessonData;
 }
 
 void ScoreInfo::setLessonData(const LessonData &data)
 {
-    myData = data;
+	myLessonData = data;
+	mySongData.reset();
 }
 

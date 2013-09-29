@@ -18,7 +18,7 @@
 #ifndef SCORE_KEYSIGNATURE_H
 #define SCORE_KEYSIGNATURE_H
 
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <iosfwd>
 
 class KeySignature
@@ -34,6 +34,9 @@ public:
     KeySignature(KeyType type, int accidentals, bool usesSharps);
 
     bool operator==(const KeySignature &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the key signature type (major or minor).
     KeyType getKeyType() const;
@@ -71,15 +74,17 @@ private:
     bool myUsesSharps;
     bool myIsVisible;
     bool myIsCancellation;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myKeyType & myNumAccidentals & myUsesSharps & myIsVisible &
-             myIsCancellation;
-    }
 };
+
+template <class Archive>
+void KeySignature::serialize(Archive &ar, const FileVersion version)
+{
+	ar("key_type", myKeyType);
+	ar("num_accidentals", myNumAccidentals);
+	ar("sharps", myUsesSharps);
+	ar("visible", myIsVisible);
+	ar("cancellation", myIsCancellation);
+}
 
 std::ostream& operator<<(std::ostream &os, const KeySignature &key);
 

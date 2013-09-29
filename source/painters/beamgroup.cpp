@@ -217,7 +217,10 @@ void BeamGroup::drawExtraBeams(QPainterPath &path) const
     for (std::vector<NoteStem>::const_iterator stem = myNoteStems.begin();
          stem != myNoteStems.end(); ++stem)
     {
-        std::vector<NoteStem>::const_iterator prevStem = boost::prior(stem);
+        std::vector<NoteStem>::const_iterator prevStem;
+		if (stem != myNoteStems.begin())
+			prevStem = boost::prior(stem);
+
         std::vector<NoteStem>::const_iterator nextStem = boost::next(stem);
         const Position::DurationType duration = stem->getDurationType();
         const Position::DurationType prevDuration = (stem != myNoteStems.begin()) ?

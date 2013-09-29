@@ -19,7 +19,7 @@
 #define SCORE_CHORDNAME_H
 
 #include <bitset>
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <iosfwd>
 
 class ChordName
@@ -89,6 +89,9 @@ public:
 
     bool operator==(const ChordName &other) const;
 
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
+
     Key getTonicKey() const;
     void setTonicKey(Key key);
 
@@ -122,15 +125,20 @@ private:
     std::bitset<NumModifications> myModifications;
     bool myHasBrackets;
     bool myIsNoChord;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myTonicKey & myTonicVariation & myBassKey & myBassVariation &
-             myFormula & myModifications & myHasBrackets & myIsNoChord;
-    }
 };
+
+template <class Archive>
+void ChordName::serialize(Archive &ar, const FileVersion version)
+{
+	ar("tonic_key", myTonicKey);
+	ar("tonic_variation", myTonicVariation);
+	ar("bass_key", myBassKey);
+	ar("bass_variation", myBassVariation);
+	ar("formula", myFormula);
+	ar("modifications", myModifications);
+	ar("brackets", myHasBrackets);
+	ar("no_chord", myIsNoChord);
+}
 
 std::ostream &operator<<(std::ostream &os, const ChordName &chord);
 

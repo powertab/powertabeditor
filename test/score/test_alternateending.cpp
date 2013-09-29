@@ -91,5 +91,5 @@ TEST_CASE("Score/AlternateEnding/Serialization", "")
     ending.addNumber(5);
     ending.setDalSegno(true);
 
-    Serialization::test(ending);
+    Serialization::test("alternate_ending", ending);
 }

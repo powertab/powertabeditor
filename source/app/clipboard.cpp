@@ -14,12 +14,11 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "clipboard.h"
 
 #include <actions/insertnotes.h>
 #include <actions/undomanager.h>
-#include <boost/foreach.hpp>
 #include <QApplication>
 #include <QClipboard>
 #include <QMessageBox>
@@ -33,49 +32,83 @@
 
 static const QString PTB_MIME_TYPE = "application/ptb";
 
+class ClipboardSelection
+{
+public:
+    ClipboardSelection() : myNumStrings(0)
+    {
+    }
+
+    ClipboardSelection(int numStrings, const std::vector<Position *> &positions)
+        : myNumStrings(numStrings)
+    {
+        for (Position *pos : positions)
+            myPositions.push_back(*pos);
+    }
+
+    int getNumStrings() const
+    {
+        return myNumStrings;
+    }
+
+    std::vector<Position> getPositions() const
+    {
+        return myPositions;
+    }
+
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version)
+    {
+        ar("num_strings", myNumStrings);
+        ar("positions", myPositions);
+    }
+
+private:
+    int myNumStrings;
+    std::vector<Position> myPositions;
+};
+
 void Clipboard::copySelection(const std::vector<Position *> &selectedPositions,
                               int numStrings)
 {
     if (selectedPositions.empty())
         return;
 
-    std::vector<Position> positions;
-    BOOST_FOREACH(const Position *pos, selectedPositions)
-    {
-        positions.push_back(*pos);
-    }
+    ClipboardSelection selection(numStrings, selectedPositions);
 
     // Serialize the notes to a string.
     std::ostringstream ss;
-    ScoreUtils::save(ss, numStrings);
-    ScoreUtils::save(ss, positions);
+    ScoreUtils::save(ss, "clipboard_selection", selection);
     const std::string data = ss.str();
 
     // Copy the data to the clipboard.
     QMimeData *mimeData = new QMimeData();
-    mimeData->setData(PTB_MIME_TYPE, QByteArray(data.c_str(), data.length()));
+    mimeData->setData(
+        PTB_MIME_TYPE,
+        QByteArray(data.c_str(), static_cast<int>(data.length())));
 
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setMimeData(mimeData);
 }
 
-void Clipboard::paste(QWidget *parent, UndoManager &undoManager, ScoreLocation &location)
+void Clipboard::paste(QWidget *parent, UndoManager &undoManager,
+                      ScoreLocation &location)
 {
     const int currentStaffSize = location.getStaff().getStringCount();
 
     // Load data from the clipboard and deserialize.
-    const QByteArray rawData = QApplication::clipboard()->mimeData()->data(
-                PTB_MIME_TYPE);
+    const QByteArray rawData =
+        QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE);
     Q_ASSERT(!rawData.isEmpty());
 
     std::istringstream inputData(std::string(rawData.data(), rawData.length()));
 
-    int staffSize = 0;
-    ScoreUtils::load(inputData, staffSize);
+    ClipboardSelection selection;
+    ScoreUtils::load(inputData, "clipboard_selection", selection);
 
     // For safety, prevent pasting into a tuning with a different number of
     // strings.
-    if (currentStaffSize != staffSize)
+    if (currentStaffSize != selection.getNumStrings())
     {
         QMessageBox msg(parent);
         msg.setText(QObject::tr("Cannot paste notes from a different tuning."));
@@ -83,15 +116,14 @@ void Clipboard::paste(QWidget *parent, UndoManager &undoManager, ScoreLocation &
         return;
     }
 
-    std::vector<Position> positions;
-    ScoreUtils::load(inputData, positions);
-    Q_ASSERT(!positions.empty());
-
-    undoManager.push(new InsertNotes(location, positions),
+    undoManager.push(new InsertNotes(location, selection.getPositions()),
                      location.getSystemIndex());
 }
 
 bool Clipboard::hasData()
 {
-    return !QApplication::clipboard()->mimeData()->data(PTB_MIME_TYPE).isEmpty();
+    return !QApplication::clipboard()
+                ->mimeData()
+                ->data(PTB_MIME_TYPE)
+                .isEmpty();
 }

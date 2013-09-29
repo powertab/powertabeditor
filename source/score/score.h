@@ -19,12 +19,12 @@
 #define SCORE_SCORE_H
 
 #include <boost/range/iterator_range_core.hpp>
-#include <boost/serialization/access.hpp>
-#include <vector>
+#include "fileversion.h"
 #include "instrument.h"
 #include "player.h"
 #include "scoreinfo.h"
 #include "system.h"
+#include <vector>
 
 class Score
 {
@@ -37,7 +37,11 @@ public:
     typedef std::vector<Instrument>::const_iterator InstrumentConstIterator;
 
     Score();
-    bool operator==(const Score &other) const;
+    
+	bool operator==(const Score &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns information about the score (e.g. title, author, etc.).
     const ScoreInfo &getScoreInfo() const;
@@ -90,14 +94,17 @@ private:
     std::vector<Instrument> myInstruments;
     /// Spacing between tab lines (in pixels).
     int myLineSpacing;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myScoreInfo & mySystems & myPlayers & myInstruments & myLineSpacing;
-    }
 };
+
+template <class Archive>
+void Score::serialize(Archive &ar, const FileVersion version)
+{
+	ar("score_info", myScoreInfo);
+	ar("systems", mySystems);
+	ar("players", myPlayers);
+	ar("instruments", myInstruments);
+	ar("line_spacing", myLineSpacing);
+}
 
 namespace ScoreUtils {
 /// Get the current player change for the given position.

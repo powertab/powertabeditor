@@ -17,118 +17,31 @@
 
 #include "serialization.h"
 
-#include <boost/date_time/gregorian/formatters_limited.hpp>
-#include <boost/date_time/gregorian/greg_serialize.hpp>
-#include <boost/rational.hpp>
-#include <boost/serialization/bitset.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/optional.hpp>
-#include <boost/serialization/variant.hpp>
-#include <boost/serialization/vector.hpp>
+namespace ScoreUtils
+{
+InputArchive::InputArchive(std::istream &is) : myStream(is)
+{
+    myDocument.ParseStream<0>(myStream);
+    myIterators.push(myDocument.MemberBegin());
 
-#include "score.h"
-#include "staff.h"
-
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
-typedef boost::archive::text_iarchive InputArchive;
-typedef boost::archive::text_oarchive OutputArchive;
-
-namespace boost {
-    namespace serialization {
-
-        /// Implement serialization for boost::rational.
-        template <class Archive, class I>
-        inline void serialize(Archive &ar, boost::rational<I> &num, const unsigned int version)
-        {
-            boost::serialization::split_free(ar, num, version);
-        }
-
-        template <class Archive, class I>
-        void save(Archive &ar, const boost::rational<I> &num, const unsigned int /*version*/)
-        {
-            I numerator = num.numerator();
-            I denominator = num.denominator();
-            ar << numerator << denominator;
-        }
-
-        template <class Archive, class I>
-        void load(Archive &ar, boost::rational<I> &num, const unsigned int /*version*/)
-        {
-            I numerator;
-            I denominator;
-            ar >> numerator >> denominator;
-            num.assign(numerator, denominator);
-        }
-
-        template <class I>
-            struct is_bitwise_serializable< boost::rational<I> >
-            : public is_bitwise_serializable< I > {};
-
-        template <class I>
-            struct implementation_level< boost::rational<I> >
-            : mpl::int_<object_serializable> {} ;
-
-        template <class I>
-            struct tracking_level< boost::rational<I> >
-            : mpl::int_<track_never> {} ;
-
-        /// Implement serialization for boost::blank.
-        template <class Archive>
-        inline void serialize(Archive &, boost::blank &, const unsigned int)
-        {
-        }
-
-        template <>
-        struct tracking_level< boost::blank >
-            : mpl::int_<track_never> {} ;
-    }
+    (*this)("version", myVersion);
 }
 
-namespace ScoreUtils {
+FileVersion InputArchive::version() const
+{
+    return myVersion;
+}
 
-#define SERIALIZE(T) \
-    template <> \
-    void load<T>(std::istream &input, T &obj) \
-    { \
-        InputArchive ia(input); \
-        ia >> obj; \
-    } \
-    template <> \
-    void save<T>(std::ostream &output, const T &obj) \
-    { \
-        OutputArchive oa(output); \
-        oa << obj; \
-    }
+OutputArchive::OutputArchive(std::ostream &os, FileVersion version)
+    : myWriteStream(os), myStream(myWriteStream), myVersion(version)
+{
+    myStream.StartObject();
 
-// Provide explicit instantiations for all of the possible types that
-// can be serialized.
-SERIALIZE(AlternateEnding)
-SERIALIZE(Barline)
-SERIALIZE(ChordName)
-SERIALIZE(ChordText)
-SERIALIZE(Direction)
-SERIALIZE(Dynamic)
-SERIALIZE(Instrument)
-SERIALIZE(KeySignature)
-SERIALIZE(Note)
-SERIALIZE(Player)
-SERIALIZE(PlayerChange)
-SERIALIZE(Position)
-SERIALIZE(RehearsalSign)
-SERIALIZE(Score)
-SERIALIZE(ScoreInfo)
-SERIALIZE(Staff)
-SERIALIZE(System)
-SERIALIZE(TempoMarker)
-SERIALIZE(TimeSignature)
-SERIALIZE(Tuning)
+    (*this)("version", myVersion);
+}
 
-// Used for the clipboard functions.
-SERIALIZE(int)
-SERIALIZE(std::vector<Position>)
-
-// Used for the tuning dictionary.
-SERIALIZE(std::vector<Tuning>)
-
+OutputArchive::~OutputArchive()
+{
+    myStream.EndObject();
+}
 }

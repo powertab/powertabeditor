@@ -19,9 +19,8 @@
 #define SCORE_POSITION_H
 
 #include <boost/range/iterator_range_core.hpp>
-#include <boost/rational.hpp>
-#include <boost/serialization/access.hpp>
 #include <bitset>
+#include "fileversion.h"
 #include <vector>
 #include "note.h"
 
@@ -72,6 +71,9 @@ public:
 
     bool operator==(const Position &other) const;
 
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
+
     /// Returns the position within the staff where the position is anchored.
     int getPosition() const;
     /// Sets the position within the staff where the position is anchored.
@@ -120,21 +122,19 @@ private:
     int myPosition;
     DurationType myDurationType;
     std::bitset<NumSimpleProperties> mySimpleProperties;
-    /// The total irregular group timing (if the object is part of a nested
-    /// group, the timings are multiplied together).
-    // TODO - add an external class for each irregular group.
-    boost::rational<int> myIrregularGroupTiming;
     int myMultiBarRestCount;
     std::vector<Note> myNotes;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myPosition & myDurationType & mySimpleProperties &
-             myIrregularGroupTiming & myMultiBarRestCount & myNotes;
-    }
 };
+
+template <class Archive>
+void Position::serialize(Archive &ar, const FileVersion version)
+{
+	ar("position", myPosition);
+	ar("duration", myDurationType);
+	ar("properties", mySimpleProperties);
+	ar("multibar_rest", myMultiBarRestCount);
+	ar("notes", myNotes);
+}
 
 namespace Utils {
     const Note *findByString(const Position &pos, int string);

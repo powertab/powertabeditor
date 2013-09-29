@@ -19,7 +19,7 @@
 #define SCORE_NOTE_H
 
 #include <bitset>
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <iosfwd>
 #include <vector>
 
@@ -52,6 +52,9 @@ public:
     Note(int string, int fretNumber);
 
     bool operator==(const Note &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the string that the note is located on.
     int getString() const;
@@ -95,15 +98,17 @@ private:
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myTrilledFret;
     int myTappedHarmonicFret;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myString & myFretNumber & mySimpleProperties &
-             myTrilledFret & myTappedHarmonicFret;
-    }
 };
+
+template <class Archive>
+void Note::serialize(Archive &ar, const FileVersion version)
+{
+	ar("string", myString);
+	ar("fret", myFretNumber);
+	ar("properties", mySimpleProperties);
+	ar("trill", myTrilledFret);
+	ar("tapped_harmonic", myTappedHarmonicFret);
+}
 
 /// Useful utility functions for working with natural and tapped harmonics.
 namespace Harmonics {

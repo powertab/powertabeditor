@@ -28,14 +28,14 @@ namespace Serialization {
     /// Basic test for the serialization code - we should be able to serialize
     /// and deserialize and object, and get an equivalent object back.
     template <typename T>
-    void test(const T &original)
+    void test(const char *name, const T &original)
     {
         std::ostringstream output;
-        ScoreUtils::save(output, original);
+        ScoreUtils::save(output, name, original);
 
         T copy;
         std::istringstream input(output.str());
-        ScoreUtils::load(input, copy);
+        ScoreUtils::load(input, name, copy);
 
         REQUIRE(original == copy);
     }

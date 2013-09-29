@@ -19,8 +19,8 @@
 #define SCORE_TUNING_H
 
 #include <boost/cstdint.hpp>
-#include <boost/serialization/access.hpp>
 #include <iosfwd>
+#include "fileversion.h"
 #include <string>
 #include <vector>
 
@@ -30,6 +30,9 @@ public:
     Tuning();
 
     bool operator==(const Tuning &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the tuning name (e.g. "Open G").
     const std::string &getName() const;
@@ -83,14 +86,17 @@ private:
     int8_t myMusicNotationOffset;
     bool myUsesSharps;
     int myCapo;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myName & myNotes & myMusicNotationOffset & myUsesSharps & myCapo;
-    }
 };
+
+template <class Archive>
+void Tuning::serialize(Archive &ar, const FileVersion version)
+{
+	ar("name", myName);
+	ar("notes", myNotes);
+	ar("offset", myMusicNotationOffset);
+	ar("sharps", myUsesSharps);
+	ar("capo", myCapo);
+}
 
 /// Returns a string representation of the tuning from low to
 /// high (e.g. "E A D G B E").

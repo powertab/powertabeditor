@@ -25,7 +25,6 @@
 Position::Position()
     : myPosition(0),
       myDurationType(EighthNote),
-      myIrregularGroupTiming(1, 1),
       myMultiBarRestCount(0)
 {
 }
@@ -33,7 +32,6 @@ Position::Position()
 Position::Position(int position, DurationType duration)
     : myPosition(position),
       myDurationType(duration),
-      myIrregularGroupTiming(1, 1),
       myMultiBarRestCount(0)
 {
 }
@@ -43,7 +41,6 @@ bool Position::operator==(const Position &other) const
     return myPosition == other.myPosition &&
            myDurationType == other.myDurationType &&
            mySimpleProperties == other.mySimpleProperties &&
-           myIrregularGroupTiming == other.myIrregularGroupTiming &&
            myMultiBarRestCount == other.myMultiBarRestCount &&
            myNotes == other.myNotes;
 }

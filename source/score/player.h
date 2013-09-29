@@ -19,7 +19,7 @@
 #define SCORE_PLAYER_H
 
 #include <boost/cstdint.hpp>
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 #include <string>
 #include "tuning.h"
 
@@ -29,6 +29,9 @@ public:
     Player();
 
     bool operator==(const Player &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns a description of the player (e.g. "Rhythm Guitar 1").
     const std::string &getDescription() const;
@@ -60,13 +63,15 @@ private:
     uint8_t myMaxVolume;
     uint8_t myPan;
     Tuning myTuning;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myDescription & myMaxVolume & myPan & myTuning;
-    }
 };
+
+template <class Archive>
+void Player::serialize(Archive &ar, const FileVersion version)
+{
+	ar("description", myDescription);
+	ar("max_volume", myMaxVolume);
+	ar("pan", myPan);
+	ar("tuning", myTuning);
+}
 
 #endif

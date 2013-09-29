@@ -30,5 +30,5 @@ TEST_CASE("Score/ChordText/Serialization", "")
 
     ChordText text(7, name);
 
-    Serialization::test(text);
+    Serialization::test("chord_text", text);
 }

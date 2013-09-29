@@ -19,7 +19,7 @@
 #define SCORE_TIMESIGNATURE_H
 
 #include <boost/array.hpp>
-#include <boost/serialization/access.hpp>
+#include "fileversion.h"
 
 class TimeSignature
 {
@@ -34,6 +34,9 @@ public:
     TimeSignature();
 
     bool operator==(const TimeSignature &other) const;
+
+	template <class Archive>
+	void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the type of meter (normal, cut time, or common time).
     MeterType getMeterType() const;
@@ -86,14 +89,17 @@ private:
     BeamingPattern myBeamingPattern;
     int myNumPulses;
     bool myIsVisible;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive &ar, const unsigned int /*version*/)
-    {
-        ar & myMeterType & myBeatsPerMeasure & myBeatValue & myBeamingPattern &
-             myNumPulses & myIsVisible;
-    }
 };
+
+template <class Archive>
+void TimeSignature::serialize(Archive &ar, const FileVersion version)
+{
+	ar("meter_type", myMeterType);
+	ar("num_beats", myBeatsPerMeasure);
+	ar("beat_value", myBeatValue);
+	ar("pattern", myBeamingPattern);
+	ar("num_pulses", myNumPulses);
+	ar("visible", myIsVisible);
+}
 
 #endif

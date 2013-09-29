@@ -138,5 +138,5 @@ TEST_CASE("Score/Position/Serialization", "")
     position.setProperty(Position::WideVibrato, true);
     position.setMultiBarRest(7);
 
-    Serialization::test(position);
+    Serialization::test("position", position);
 }
