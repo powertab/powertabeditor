@@ -222,17 +222,14 @@ std::vector<int> Harmonics::getValidFretOffsets()
 {
     std::vector<int> frets;
 
-    for (std::map<int, int>::const_iterator i = theHarmonicOffsets.begin();
-         i != theHarmonicOffsets.end(); ++i)
-    {
-        frets.push_back(i->first);
-    }
+    for (const auto &pair : theHarmonicOffsets)
+        frets.push_back(pair.first);
 
     return frets;
 }
 
 int Harmonics::getPitchOffset(int fretOffset)
 {
-    std::map<int, int>::const_iterator it = theHarmonicOffsets.find(fretOffset);
+    auto it = theHarmonicOffsets.find(fretOffset);
     return (it != theHarmonicOffsets.end()) ? it->second : 0;
 }

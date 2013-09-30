@@ -17,14 +17,14 @@
 
 #include "staffutils.h"
 
-#include <boost/foreach.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 
 namespace StaffUtils {
 
 FilteredVoiceConstIterator getPositionsInRange(const Staff &staff, int voice,
                                                int left, int right)
 {
-    boost::iterator_range<Staff::VoiceConstIterator> range = staff.getVoice(voice);
+    auto range = staff.getVoice(voice);
     return boost::adaptors::filter(range, InPositionRange(left, right));
 }
 
@@ -40,7 +40,7 @@ bool InPositionRange::operator ()(const Position &pos) const
 
 const Position *getNextPosition(const Staff &staff, int voice, int position)
 {
-    BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+    for (const Position &pos : staff.getVoice(voice))
     {
         if (pos.getPosition() > position)
             return &pos;
@@ -61,7 +61,7 @@ const Note *getPreviousNote(const Staff &staff, int voice, int position,
 {
     const Note *note = 0;
 
-    BOOST_REVERSE_FOREACH(const Position &pos, staff.getVoice(voice))
+    for (const Position &pos : boost::adaptors::reverse(staff.getVoice(voice)))
     {
         if (pos.getPosition() < position)
         {
@@ -89,7 +89,7 @@ bool canHammerOnOrPullOff(const Staff &staff, int voice, int position,
 
 bool hasNoteWithHammerOn(const Staff &staff, int voice, const Position &pos)
 {
-    BOOST_FOREACH(const Note &note, pos.getNotes())
+    for (const Note &note : pos.getNotes())
     {
         if (note.hasProperty(Note::HammerOnOrPullOff))
         {

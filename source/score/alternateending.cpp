@@ -18,7 +18,6 @@
 #include "alternateending.h"
 
 #include <algorithm>
-#include <boost/lexical_cast.hpp>
 #include <ostream>
 #include <stdexcept>
 
@@ -104,16 +103,14 @@ void AlternateEnding::setDalSegnoSegno(bool set)
     mySpecialEndings[DalSegnoSegno] = set;
 }
 
-std::ostream &operator <<(std::ostream &os, const AlternateEnding &ending)
+std::ostream &operator<<(std::ostream &os, const AlternateEnding &ending)
 {
     const std::vector<int> &numbers = ending.getNumbers();
     std::vector<std::string> text;
 
     // Construct the numbers.
-    for (size_t i = 0; i < numbers.size(); ++i)
-    {
-        text.push_back(boost::lexical_cast<std::string>(numbers[i]) + ".");
-    }
+    for (int n : numbers)
+        text.push_back(std::to_string(n) + ".");
 
     // Construct the special symbols
     if (ending.hasDaCapo())

@@ -18,9 +18,9 @@
 #ifndef SCORE_TUNING_H
 #define SCORE_TUNING_H
 
-#include <boost/cstdint.hpp>
-#include <iosfwd>
+#include <cstdint>
 #include "fileversion.h"
+#include <iosfwd>
 #include <string>
 #include <vector>
 

@@ -115,5 +115,5 @@ void Barline::setRehearsalSign(const RehearsalSign &sign)
 
 void Barline::clearRehearsalSign()
 {
-    myRehearsalSign = boost::none;
+    myRehearsalSign.reset();
 }

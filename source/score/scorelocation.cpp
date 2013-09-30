@@ -17,7 +17,6 @@
 
 #include "scorelocation.h"
 
-#include <boost/foreach.hpp>
 #include <score/score.h>
 #include <score/utils.h>
 
@@ -69,7 +68,7 @@ void ScoreLocation::setPositionIndex(int position)
 
 const Position *ScoreLocation::getPosition() const
 {
-    BOOST_FOREACH(const Position &pos, getStaff().getVoice(myVoice))
+    for (const Position &pos : getStaff().getVoice(myVoice))
     {
         if (pos.getPosition() == myPositionIndex)
             return &pos;
@@ -105,7 +104,7 @@ std::vector<Position *> ScoreLocation::getSelectedPositions()
     const int min = std::min(myPositionIndex, mySelectionStart);
     const int max = std::max(myPositionIndex, mySelectionStart);
 
-    BOOST_FOREACH(Position &pos, getStaff().getVoice(myVoice))
+    for (Position &pos : getStaff().getVoice(myVoice))
     {
         if (pos.getPosition() >= min && pos.getPosition() <= max)
             positions.push_back(&pos);
@@ -175,7 +174,7 @@ std::vector<Barline *> ScoreLocation::getSelectedBarlines()
     const int min = std::min(myPositionIndex, mySelectionStart);
     const int max = std::max(myPositionIndex, mySelectionStart);
 
-    BOOST_FOREACH(Barline &bar, getSystem().getBarlines())
+    for (Barline &bar : getSystem().getBarlines())
     {
         const int position = bar.getPosition();
         if (position > 0 && position >= min && position <= max)
@@ -219,12 +218,10 @@ std::vector<Note *> ScoreLocation::getSelectedNotes()
     else
     {
         std::vector<Position *> selectedPositions(getSelectedPositions());
-        BOOST_FOREACH(Position *pos, selectedPositions)
+        for (Position *pos : selectedPositions)
         {
-            BOOST_FOREACH(Note &note, pos->getNotes())
-            {
+            for (Note &note : pos->getNotes())
                 notes.push_back(&note);
-            }
         }
     }
 

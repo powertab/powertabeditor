@@ -17,8 +17,6 @@
 
 #include "direction.h"
 
-#include <algorithm>
-
 Direction::Direction()
     : myPosition(0)
 {

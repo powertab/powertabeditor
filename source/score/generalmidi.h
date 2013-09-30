@@ -18,7 +18,7 @@
 #ifndef SCORE_GENERALMIDI_H
 #define SCORE_GENERALMIDI_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <string>
 #include <vector>
 

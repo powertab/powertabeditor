@@ -18,7 +18,7 @@
 #include "system.h"
 
 #include <algorithm>
-#include <boost/foreach.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <cstddef>
 #include "utils.h"
 
@@ -87,7 +87,7 @@ void System::removeBarline(const Barline &barline)
 
 const Barline *System::getPreviousBarline(int position) const
 {
-    BOOST_REVERSE_FOREACH(const Barline &barline, myBarlines)
+    for (const Barline &barline : boost::adaptors::reverse(myBarlines))
     {
         if (barline.getPosition() < position)
             return &barline;
@@ -98,7 +98,7 @@ const Barline *System::getPreviousBarline(int position) const
 
 const Barline *System::getNextBarline(int position) const
 {
-    BOOST_FOREACH(const Barline &barline, myBarlines)
+    for (const Barline &barline : myBarlines)
     {
         if (barline.getPosition() > position)
             return &barline;
@@ -208,10 +208,10 @@ void System::removeChord(const ChordText &chord)
 }
 
 template <typename T>
-static void shift(const boost::iterator_range<T> &range, int position,
+static void shift(const T &range, int position,
                   int offset)
 {
-    BOOST_FOREACH(typename T::value_type &obj, range)
+    for (auto &obj : range)
     {
         if (obj.getPosition() >= position)
             obj.setPosition(obj.getPosition() + offset);
@@ -230,7 +230,7 @@ static void shift(System &system, int position, int offset)
     shift(system.getDirections(), position, offset);
     shift(system.getPlayerChanges(), position, offset);
 
-    BOOST_FOREACH(Staff &staff, system.getStaves())
+    for (Staff &staff : system.getStaves())
     {
         shift(staff.getDynamics(), position, offset);
 

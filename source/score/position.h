@@ -21,8 +21,8 @@
 #include <boost/range/iterator_range_core.hpp>
 #include <bitset>
 #include "fileversion.h"
-#include <vector>
 #include "note.h"
+#include <vector>
 
 class Position
 {

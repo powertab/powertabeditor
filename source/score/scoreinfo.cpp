@@ -19,7 +19,6 @@
 
 #include <boost/date_time/date.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
-#include <boost/variant/get.hpp>
 
 SongData::AudioData::AudioData()
     : myReleaseType(Album),
@@ -251,7 +250,7 @@ const SongData::AuthorData &SongData::getAuthorInfo() const
 
 void SongData::setTraditionalAuthor()
 {
-    myAuthorInfo = boost::none;
+    myAuthorInfo.reset();
 }
 
 bool SongData::isTraditionalAuthor() const

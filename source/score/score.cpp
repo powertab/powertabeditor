@@ -17,8 +17,6 @@
 
 #include "score.h"
 
-#include <boost/foreach.hpp>
-
 const int Score::MIN_LINE_SPACING = 6;
 const int Score::MAX_LINE_SPACING = 14;
 
@@ -131,12 +129,12 @@ const PlayerChange *ScoreUtils::getCurrentPlayers(const Score &score,
     const PlayerChange *lastChange = NULL;
 
     int i = 0;
-    BOOST_FOREACH(const System &system, score.getSystems())
+    for (const System &system : score.getSystems())
     {
         if (i > systemIndex)
             break;
 
-        BOOST_FOREACH(const PlayerChange &change, system.getPlayerChanges())
+        for (const PlayerChange &change : system.getPlayerChanges())
         {
             if (i < systemIndex ||
                (i == systemIndex && change.getPosition() <= positionIndex))
@@ -156,9 +154,9 @@ void ScoreUtils::adjustRehearsalSigns(Score &score)
     std::string letters;
     char letter = 'Z';
 
-    BOOST_FOREACH(System &system, score.getSystems())
+    for (System &system : score.getSystems())
     {
-        BOOST_FOREACH(Barline &barline, system.getBarlines())
+        for (Barline &barline : system.getBarlines())
         {
             if (barline.hasRehearsalSign())
             {

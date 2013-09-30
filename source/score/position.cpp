@@ -18,7 +18,6 @@
 #include "position.h"
 
 #include <algorithm>
-#include <boost/foreach.hpp>
 #include <cstddef>
 #include <stdexcept>
 
@@ -181,19 +180,14 @@ boost::iterator_range<Position::NoteConstIterator> Position::getNotes() const
     return boost::make_iterator_range(myNotes);
 }
 
-/// Functor for sorting notes by their string.
-struct OrderByString
-{
-    bool operator()(const Note &note1, const Note &note2) const
-    {
-        return note1.getString() < note2.getString();
-    }
-};
-
 void Position::insertNote(const Note &note)
 {
     myNotes.push_back(note);
-    std::sort(myNotes.begin(), myNotes.end(), OrderByString());
+
+    // Sort notes by string.
+    std::sort(myNotes.begin(), myNotes.end(), [](const Note &note1, const Note &note2) {
+        return note1.getString() < note2.getString();
+    });
 }
 
 void Position::removeNote(const Note &note)
@@ -204,7 +198,7 @@ void Position::removeNote(const Note &note)
 
 const Note *Utils::findByString(const Position &pos, int string)
 {
-    BOOST_FOREACH(const Note &note, pos.getNotes())
+    for (const Note &note : pos.getNotes())
     {
         if (note.getString() == string)
             return &note;
@@ -215,7 +209,7 @@ const Note *Utils::findByString(const Position &pos, int string)
 
 bool Utils::hasNoteWithTappedHarmonic(const Position &pos)
 {
-    BOOST_FOREACH(const Note &note, pos.getNotes())
+    for (const Note &note : pos.getNotes())
     {
         if (note.hasTappedHarmonic())
             return true;
@@ -227,7 +221,7 @@ bool Utils::hasNoteWithTappedHarmonic(const Position &pos)
 bool Utils::hasNoteWithProperty(const Position &pos,
                                 Note::SimpleProperty property)
 {
-    BOOST_FOREACH(const Note &note, pos.getNotes())
+    for (const Note &note : pos.getNotes())
     {
         if (note.hasProperty(property))
             return true;
@@ -236,10 +230,9 @@ bool Utils::hasNoteWithProperty(const Position &pos,
     return false;
 }
 
-
 bool Utils::hasNoteWithTrill(const Position &pos)
 {
-    BOOST_FOREACH(const Note &note, pos.getNotes())
+    for (const Note &note : pos.getNotes())
     {
         if (note.hasTrill())
             return true;
