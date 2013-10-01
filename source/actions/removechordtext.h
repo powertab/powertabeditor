@@ -14,29 +14,25 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef REMOVECHORDTEXT_H
-#define REMOVECHORDTEXT_H
+
+#ifndef ACTIONS_REMOVECHORDTEXT_H
+#define ACTIONS_REMOVECHORDTEXT_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-
-class ChordText;
-class System;
-
-// Removes chord text
+#include <score/chordtext.h>
+#include <score/scorelocation.h>
 
 class RemoveChordText : public QUndoCommand
 {
 public:
-    RemoveChordText(boost::shared_ptr<System> system, quint32 index);
-    virtual void undo();
+    RemoveChordText(const ScoreLocation &location);
+
     virtual void redo();
+    virtual void undo();
 
 private:
-    boost::shared_ptr<ChordText> chordText;
-    boost::shared_ptr<System> system;
-    const quint32 index;
+    ScoreLocation myLocation;
+    const ChordText myOriginalChord;
 };
 
-#endif // REMOVECHORDTEXT_H
+#endif

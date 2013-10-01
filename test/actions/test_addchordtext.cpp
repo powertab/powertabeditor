@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,25 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#include "addchordtext.h"
+#include <actions/addchordtext.h>
+#include <score/score.h>
 
-#include <score/system.h>
-
-AddChordText::AddChordText(const ScoreLocation &location,
-                           const ChordText &text)
-    : QUndoCommand(QObject::tr("Add Chord Text")),
-      myLocation(location),
-      myText(text)
+TEST_CASE("Actions/AddChordText", "")
 {
-}
+    Score score;
+    score.insertSystem(System());
 
-void AddChordText::redo()
-{
-    myLocation.getSystem().insertChord(myText);
-}
+    ChordText text(6, ChordName());
+    ScoreLocation location(score, 0, 0, 6);
+    AddChordText action(location, text);
 
-void AddChordText::undo()
-{
-    myLocation.getSystem().removeChord(myText);
+    action.redo();
+    REQUIRE(location.getSystem().getChords().size() == 1);
+    REQUIRE(location.getSystem().getChords()[0] == text);
+
+    action.undo();
+    REQUIRE(location.getSystem().getChords().size() == 0);
 }

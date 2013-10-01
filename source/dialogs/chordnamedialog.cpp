@@ -100,6 +100,11 @@ ChordNameDialog::~ChordNameDialog()
     delete ui;
 }
 
+const ChordName &ChordNameDialog::getChordName() const
+{
+    return myChord;
+}
+
 void ChordNameDialog::updateState()
 {
     myChord.setNoChord(ui->noChordCheckBox->isChecked());

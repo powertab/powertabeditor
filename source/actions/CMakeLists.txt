@@ -4,7 +4,7 @@ add_library(pteactions
     addalternateending.cpp
     #addartificialharmonic.cpp
     addbarline.cpp
-    #addchordtext.cpp
+    addchordtext.cpp
     adddirection.cpp
     adddynamic.cpp
     #addguitar.cpp
@@ -35,7 +35,7 @@ add_library(pteactions
     removealternateending.cpp
     #removeartificialharmonic.cpp
     removebarline.cpp
-    #removechordtext.cpp
+    removechordtext.cpp
     removedirection.cpp
     removedynamic.cpp
     #removeirregulargrouping.cpp

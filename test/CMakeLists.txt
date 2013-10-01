@@ -6,6 +6,7 @@ add_executable(pte_tests
     actions/test_addalternateending.cpp
     #actions/test_addartificialharmonic.cpp
     actions/test_addbarline.cpp
+    actions/test_addchordtext.cpp
     actions/test_adddirection.cpp
     actions/test_adddynamic.cpp
     #actions/test_addirregulargrouping.cpp
@@ -30,6 +31,7 @@ add_executable(pte_tests
     actions/test_removealternateending.cpp
     #actions/test_removeartificialharmonic.cpp
     actions/test_removebarline.cpp
+    actions/test_removechordtext.cpp
     actions/test_removedirection.cpp
     actions/test_removedynamic.cpp
     #actions/test_removeirregulargrouping.cpp

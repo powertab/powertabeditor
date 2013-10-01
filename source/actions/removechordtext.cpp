@@ -14,28 +14,27 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "removechordtext.h"
 
-#include <powertabdocument/system.h>
+#include <score/system.h>
+#include <score/utils.h>
 
-using boost::shared_ptr;
-
-RemoveChordText::RemoveChordText(shared_ptr<System> system, quint32 index) :
-    system(system),
-    index(index)
+RemoveChordText::RemoveChordText(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Chord Text")),
+      myLocation(location),
+      myOriginalChord(*ScoreUtils::findByPosition(
+                          location.getSystem().getChords(),
+                          location.getPositionIndex()))
 {
-    setText(QObject::tr("Remove Chord Text"));
-
-    chordText = system->GetChordText(index);
 }
 
 void RemoveChordText::redo()
 {
-    system->RemoveChordText(index);
+    myLocation.getSystem().removeChord(myOriginalChord);
 }
 
 void RemoveChordText::undo()
 {
-    system->InsertChordText(chordText, index);
+    myLocation.getSystem().insertChord(myOriginalChord);
 }

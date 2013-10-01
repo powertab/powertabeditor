@@ -14,27 +14,25 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef ADDCHORDTEXT_H
-#define ADDCHORDTEXT_H
+
+#ifndef ACTIONS_ADDCHORDTEXT_H
+#define ACTIONS_ADDCHORDTEXT_H
 
 #include <QUndoCommand>
-#include <boost/shared_ptr.hpp>
-
-class ChordText;
-class System;
+#include <score/chordtext.h>
+#include <score/scorelocation.h>
 
 class AddChordText : public QUndoCommand
 {
 public:
-    AddChordText(boost::shared_ptr<System> system, boost::shared_ptr<ChordText> chordText, quint32 index);
-    virtual void undo();
+    AddChordText(const ScoreLocation &location, const ChordText &text);
+
     virtual void redo();
+    virtual void undo();
 
 private:
-    boost::shared_ptr<ChordText> chordText;
-    boost::shared_ptr<System> system;
-    const quint32 index;
+    ScoreLocation myLocation;
+    const ChordText myText;
 };
 
-#endif // ADDCHORDTEXT_H
+#endif

@@ -19,6 +19,7 @@
 
 #include <actions/addalternateending.h>
 #include <actions/addbarline.h>
+#include <actions/addchordtext.h>
 #include <actions/adddirection.h>
 #include <actions/adddynamic.h>
 #include <actions/addnote.h>
@@ -40,6 +41,7 @@
 #include <actions/edittimesignature.h>
 #include <actions/removealternateending.h>
 #include <actions/removebarline.h>
+#include <actions/removechordtext.h>
 #include <actions/removedirection.h>
 #include <actions/removedynamic.h>
 #include <actions/removenote.h>
@@ -666,14 +668,19 @@ void PowerTabEditor::editChordName()
         ChordNameDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted)
         {
-            // TODO - add chord name.
+            ChordText text(location.getPositionIndex(),
+                           dialog.getChordName());
+
+            myUndoManager->push(new AddChordText(location, text),
+                                location.getSystemIndex());
         }
         else
             myChordNameCommand->setChecked(false);
     }
     else
     {
-        // TODO - remove chord name.
+        myUndoManager->push(new RemoveChordText(location),
+                            location.getSystemIndex());
     }
 }
 
