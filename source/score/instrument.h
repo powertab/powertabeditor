@@ -18,7 +18,7 @@
 #ifndef SCORE_INSTRUMENT_H
 #define SCORE_INSTRUMENT_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include "fileversion.h"
 #include <string>
 

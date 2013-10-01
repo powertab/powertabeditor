@@ -32,50 +32,6 @@ class Tuning;
 
 namespace Gpx
 {
-struct Automation;
-struct Bar;
-struct Beat;
-struct TabNote;
-struct Rhythm;
-struct Voice;
-
-class DocumentReader
-{
-public:
-    DocumentReader(const std::string &xml);
-
-    void readScore(Score &score);
-
-private:
-    /// Loads the header information (song title, artist, etc).
-    void readHeader(Score &score);
-    void readTracks(Score &score);
-    void readBars();
-    void readVoices();
-    void readBeats();
-    void readRhythms();
-    void readNotes();
-    void readAutomations();
-
-    /// Assembles the bars from the previously-read data.
-    void readMasterBars(Score &score);
-
-    void readBarlineType(const pugi::xml_node &masterBar, Barline &barline);
-    void readKeySignature(const pugi::xml_node &masterBar, KeySignature &key);
-    void readTimeSignature(const pugi::xml_node &masterBar,
-                           TimeSignature &timeSignature);
-    Note convertNote(int noteId, Position &position, const Tuning &tuning) const;
-
-    pugi::xml_document myXmlData;
-    pugi::xml_node myFile;
-
-    std::map<int, Gpx::Bar> myBars;
-    std::map<int, Gpx::Voice> myVoices;
-    std::map<int, Gpx::Beat> myBeats;
-    std::map<int, Gpx::Rhythm> myRhythms;
-    std::map<int, Gpx::TabNote> myNotes;
-    std::map<int, Gpx::Automation> myAutomations;
-};
 
 struct Bar
 {
@@ -128,6 +84,44 @@ struct Automation
     double position;
     bool visible;
     std::vector<int> value;
+};
+
+class DocumentReader
+{
+public:
+    DocumentReader(const std::string &xml);
+
+    void readScore(Score &score);
+
+private:
+    /// Loads the header information (song title, artist, etc).
+    void readHeader(Score &score);
+    void readTracks(Score &score);
+    void readBars();
+    void readVoices();
+    void readBeats();
+    void readRhythms();
+    void readNotes();
+    void readAutomations();
+
+    /// Assembles the bars from the previously-read data.
+    void readMasterBars(Score &score);
+
+    void readBarlineType(const pugi::xml_node &masterBar, Barline &barline);
+    void readKeySignature(const pugi::xml_node &masterBar, KeySignature &key);
+    void readTimeSignature(const pugi::xml_node &masterBar,
+                           TimeSignature &timeSignature);
+    Note convertNote(int noteId, Position &position, const Tuning &tuning) const;
+
+    pugi::xml_document myXmlData;
+    pugi::xml_node myFile;
+
+    std::map<int, Gpx::Bar> myBars;
+    std::map<int, Gpx::Voice> myVoices;
+    std::map<int, Gpx::Beat> myBeats;
+    std::map<int, Gpx::Rhythm> myRhythms;
+    std::map<int, Gpx::TabNote> myNotes;
+    std::map<int, Gpx::Automation> myAutomations;
 };
 }
 
