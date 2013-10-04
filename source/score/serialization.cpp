@@ -21,6 +21,9 @@ namespace ScoreUtils
 {
 InputArchive::InputArchive(std::istream &is) : myStream(is)
 {
+    if (!is)
+        throw std::runtime_error("Could not open stream");
+
     myDocument.ParseStream<0>(myStream);
     myIterators.push(myDocument.MemberBegin());
 
