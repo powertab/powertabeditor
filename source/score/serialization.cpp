@@ -28,8 +28,9 @@ InputArchive::InputArchive(std::istream &is) : myStream(is)
 
     if (myDocument.HasParseError())
     {
-        throw std::runtime_error(std::string("Parse error: ") +
-                                 myDocument.GetParseError());
+        throw std::runtime_error("Parse error at offset " +
+                                 std::to_string(myDocument.GetErrorOffset()) +
+                                 ": " + myDocument.GetParseError());
     }
 
     myIterators.push(myDocument.MemberBegin());
