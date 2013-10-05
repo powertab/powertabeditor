@@ -25,6 +25,13 @@ InputArchive::InputArchive(std::istream &is) : myStream(is)
         throw std::runtime_error("Could not open stream");
 
     myDocument.ParseStream<0>(myStream);
+
+    if (myDocument.HasParseError())
+    {
+        throw std::runtime_error(std::string("Parse error: ") +
+                                 myDocument.GetParseError());
+    }
+
     myIterators.push(myDocument.MemberBegin());
 
     (*this)("version", myVersion);
