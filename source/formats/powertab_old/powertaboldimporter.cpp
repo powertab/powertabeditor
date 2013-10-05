@@ -666,6 +666,22 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
         note.setTrilledFret(fret);
     }
 
+    if (oldNote.HasArtificialHarmonic())
+    {
+        uint8_t oldKey = 0;
+        uint8_t oldVariation = 0;
+        uint8_t octave = 0;
+        oldNote.GetArtificialHarmonic(oldKey, oldVariation, octave);
+
+        ChordName::Key newKey;
+        ChordName::Variation newVariation;
+        convertKey(oldKey, oldVariation, newKey, newVariation);
+
+        note.setArtificialHarmonic(ArtificialHarmonic(
+            newKey, newVariation,
+            static_cast<ArtificialHarmonic::Octave>(octave)));
+    }
+
     // Import simple properties.
     if (oldNote.IsTied())
         note.setProperty(Note::Tied);

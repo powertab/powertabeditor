@@ -56,7 +56,8 @@ bool Note::operator==(const Note &other) const
            myFretNumber == other.myFretNumber &&
            mySimpleProperties == other.mySimpleProperties &&
            myTrilledFret == other.myTrilledFret &&
-           myTappedHarmonicFret == other.myTappedHarmonicFret;
+           myTappedHarmonicFret == other.myTappedHarmonicFret &&
+           myArtificialHarmonic == other.myArtificialHarmonic;
 }
 
 int Note::getString() const
@@ -171,6 +172,26 @@ void Note::clearTappedHarmonic()
     myTappedHarmonicFret = -1;
 }
 
+bool Note::hasArtificialHarmonic() const
+{
+    return myArtificialHarmonic.is_initialized();
+}
+
+const ArtificialHarmonic &Note::getArtificialHarmonic() const
+{
+    return myArtificialHarmonic.get();
+}
+
+void Note::setArtificialHarmonic(const ArtificialHarmonic &harmonic)
+{
+    myArtificialHarmonic = harmonic;
+}
+
+void Note::clearArtificialHarmonic()
+{
+    myArtificialHarmonic.reset();
+}
+
 std::ostream &operator<<(std::ostream &os, const Note &note)
 {
     // For muted notes, display 'x'.
@@ -232,4 +253,42 @@ int Harmonics::getPitchOffset(int fretOffset)
 {
     auto it = theHarmonicOffsets.find(fretOffset);
     return (it != theHarmonicOffsets.end()) ? it->second : 0;
+}
+
+ArtificialHarmonic::ArtificialHarmonic()
+    : myKey(ChordName::C),
+      myVariation(ChordName::NoVariation),
+      myOctave(Octave::Loco)
+{
+}
+
+ArtificialHarmonic::ArtificialHarmonic(ChordName::Key key,
+                                       ChordName::Variation variation,
+                                       ArtificialHarmonic::Octave octave)
+    : myKey(key),
+      myVariation(variation),
+      myOctave(octave)
+{
+}
+
+bool ArtificialHarmonic::operator==(const ArtificialHarmonic &other) const
+{
+    return myKey == other.myKey &&
+           myVariation == other.myVariation &&
+           myOctave == other.myOctave;
+}
+
+ChordName::Key ArtificialHarmonic::getKey() const
+{
+    return myKey;
+}
+
+ChordName::Variation ArtificialHarmonic::getVariation() const
+{
+    return myVariation;
+}
+
+ArtificialHarmonic::Octave ArtificialHarmonic::getOctave()
+{
+    return myOctave;
 }

@@ -19,9 +19,45 @@
 #define SCORE_NOTE_H
 
 #include <bitset>
+#include <boost/optional.hpp>
+#include "chordname.h"
 #include "fileversion.h"
 #include <iosfwd>
 #include <vector>
+
+class ArtificialHarmonic
+{
+public:
+    enum class Octave
+    {
+        Loco,
+        Octave8va,
+        Octave15ma
+    };
+
+    ArtificialHarmonic();
+    ArtificialHarmonic(ChordName::Key key, ChordName::Variation variation,
+                       Octave octave);
+
+    bool operator==(const ArtificialHarmonic &other) const;
+
+    ChordName::Key getKey() const;
+    ChordName::Variation getVariation() const;
+    Octave getOctave();
+
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion /*version*/)
+    {
+        ar("key", myKey);
+        ar("variation", myVariation);
+        ar("octave", myOctave);
+    }
+
+private:
+    ChordName::Key myKey;
+    ChordName::Variation myVariation;
+    Octave myOctave;
+};
 
 class Note
 {
@@ -89,6 +125,15 @@ public:
     /// Removes the tapped harmonic for this note.
     void clearTappedHarmonic();
 
+    /// Returns whether the note has an artificial harmonic.
+    bool hasArtificialHarmonic() const;
+    /// Returns the artificial harmonic for this note.
+    const ArtificialHarmonic &getArtificialHarmonic() const;
+    /// Adds an artificial harmonic to this note.
+    void setArtificialHarmonic(const ArtificialHarmonic &harmonic);
+    /// Removes the artificial harmonic for this note.
+    void clearArtificialHarmonic();
+
     static const int MIN_FRET_NUMBER;
     static const int MAX_FRET_NUMBER;
 
@@ -98,6 +143,7 @@ private:
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myTrilledFret;
     int myTappedHarmonicFret;
+    boost::optional<ArtificialHarmonic> myArtificialHarmonic;
 };
 
 template <class Archive>
@@ -108,6 +154,7 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
 	ar("properties", mySimpleProperties);
 	ar("trill", myTrilledFret);
 	ar("tapped_harmonic", myTappedHarmonicFret);
+    ar("artificial_harmonic", myArtificialHarmonic);
 }
 
 /// Useful utility functions for working with natural and tapped harmonics.

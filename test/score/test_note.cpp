@@ -62,6 +62,21 @@ TEST_CASE("Score/Note/TappedHarmonic", "")
     REQUIRE_THROWS(note.getTappedHarmonicFret());
 }
 
+TEST_CASE("Score/Note/ArtificialHarmonic", "")
+{
+    Note note;
+
+    REQUIRE(!note.hasArtificialHarmonic());
+
+    note.setArtificialHarmonic(ArtificialHarmonic(ChordName::D, ChordName::Flat,
+            ArtificialHarmonic::Octave::Octave15ma));
+    REQUIRE(note.hasArtificialHarmonic());
+    REQUIRE(note.getArtificialHarmonic().getKey() == ChordName::D);
+
+    note.clearArtificialHarmonic();
+    REQUIRE(!note.hasArtificialHarmonic());
+}
+
 TEST_CASE("Score/Note/ToString", "")
 {
     Note note(3, 12);
@@ -103,6 +118,8 @@ TEST_CASE("Score/Note/Serialization", "")
 {
     Note note(3, 12);
     note.setProperty(Note::Octave15ma);
+    note.setArtificialHarmonic(ArtificialHarmonic(ChordName::D, ChordName::Flat,
+            ArtificialHarmonic::Octave::Octave15ma));
 
     Serialization::test("note", note);
 }
