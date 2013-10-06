@@ -19,9 +19,6 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
-#include <boost/unordered_map.hpp>
-#include <map>
 #include <numeric>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
@@ -30,11 +27,12 @@
 #include <score/score.h>
 #include <score/staffutils.h>
 #include <score/tuning.h>
+#include <unordered_map>
 
 /// Maps notes to their position on the staff (relative to the top line),
 /// using units of 0.5 * STD_NOTATION_LINE_SPACING.
 /// This is for treble clef, but can easily be adjusted for bass clef.
-static const boost::unordered_map<char, int> theNotePositions =
+static const std::unordered_map<char, int> theNotePositions =
         boost::assign::map_list_of('F', 0) ('E', 1) ('D', 2) ('C', 3) ('B', -3)
                                   ('A', -2) ('G', -1);
 
@@ -92,7 +90,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
 
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        BOOST_FOREACH(const Barline &bar, system.getBarlines())
+        for (const Barline &bar : system.getBarlines())
         {
             const Barline *nextBar = system.getNextBarline(bar.getPosition());
             if (!nextBar)
@@ -103,9 +101,8 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
             // Store the current accidental for each line/space in the staff.
             std::map<int, AccidentalType> accidentals;
 
-            BOOST_FOREACH(const Position &pos, StaffUtils::getPositionsInRange(
-                              staff, voice, bar.getPosition(),
-                              nextBar->getPosition()))
+            for (const Position &pos : StaffUtils::getPositionsInRange(
+                     staff, voice, bar.getPosition(), nextBar->getPosition()))
             {
                 Q_ASSERT(pos.getPosition() == 0 ||
                          pos.getPosition() != bar.getPosition());
@@ -136,7 +133,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
 
                 double noteHeadWidth = 0;
 
-                BOOST_FOREACH(const Note &note, pos.getNotes())
+                for (const Note &note : pos.getNotes())
                 {
                     const Tuning tuning = player ? player->getTuning() :
                                                    fallbackTuning;

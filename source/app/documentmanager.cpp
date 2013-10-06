@@ -102,7 +102,7 @@ void DocumentManager::removeDocument(int index)
     myDocumentList.erase(myDocumentList.begin() + index);
 
     if (myDocumentList.empty())
-        myCurrentIndex = boost::none;
+        myCurrentIndex.reset();
     else if (myDocumentList.size() >= myCurrentIndex)
         myCurrentIndex = myDocumentList.size() - 1;
 }
@@ -117,7 +117,7 @@ void DocumentManager::setCurrentDocumentIndex(int index)
     if (index < 0)
     {
         Q_ASSERT(myDocumentList.empty());
-        myCurrentIndex = boost::none;
+        myCurrentIndex.reset();
     }
     else
         myCurrentIndex = index;

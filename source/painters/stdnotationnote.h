@@ -18,7 +18,6 @@
 #ifndef PAINTERS_STDNOTATIONNOTE_H
 #define PAINTERS_STDNOTATIONNOTE_H
 
-#include <boost/cstdint.hpp>
 #include <painters/beamgroup.h>
 #include <painters/notestem.h>
 #include <QChar>

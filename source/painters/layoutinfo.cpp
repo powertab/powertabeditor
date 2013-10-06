@@ -17,7 +17,6 @@
   
 #include "layoutinfo.h"
 
-#include <boost/foreach.hpp>
 #include <score/keysignature.h>
 #include <score/score.h>
 #include <score/staff.h>
@@ -62,10 +61,8 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex
     calculateStdNotationStaffBelowLayout();
 
     // Update the locations of the stems based on the spacing we just computed.
-    BOOST_FOREACH(BeamGroup &group, myBeamGroups)
-    {
+    for (BeamGroup &group : myBeamGroups)
         group.adjustToStaff(*this);
-    }
 }
 
 int LayoutInfo::getStringCount() const
@@ -77,7 +74,7 @@ double LayoutInfo::getSystemSymbolSpacing() const
 {
     double height = 0;
 
-    BOOST_FOREACH(const Barline &barline, mySystem.getBarlines())
+    for (const Barline &barline : mySystem.getBarlines())
     {
         if (barline.hasRehearsalSign())
         {
@@ -96,7 +93,7 @@ double LayoutInfo::getSystemSymbolSpacing() const
         height += SYSTEM_SYMBOL_SPACING;
 
     double directionHeight = 0;
-    BOOST_FOREACH(const Direction &direction, mySystem.getDirections())
+    for (const Direction &direction : mySystem.getDirections())
     {
         directionHeight = std::max(directionHeight,
                                    direction.getSymbols().size() *
@@ -286,7 +283,7 @@ double LayoutInfo::getCumulativeBarlineWidths(int position) const
 
     const bool allBarlines = (position == -1);
 
-    BOOST_FOREACH(const Barline &barline, mySystem.getBarlines())
+    for (const Barline &barline : mySystem.getBarlines())
     {
         if (barline == mySystem.getBarlines().front() ||
             barline == mySystem.getBarlines().back())
@@ -306,11 +303,11 @@ void LayoutInfo::computePositionSpacing()
     const double width = getFirstPositionX() + getCumulativeBarlineWidths();
 
     // Find the number of positions needed for the system.
-    BOOST_FOREACH(const Staff &staff, mySystem.getStaves())
+    for (const Staff &staff : mySystem.getStaves())
     {
         for (int i = 0; i < Staff::NUM_VOICES; ++i)
         {
-            BOOST_FOREACH(const Position &position, staff.getVoice(i))
+            for (const Position &position : staff.getVoice(i))
             {
                 myNumPositions = std::max(myNumPositions,
                                           position.getPosition());
@@ -319,10 +316,8 @@ void LayoutInfo::computePositionSpacing()
     }
 
     // TODO - include chord text, tempo markers, etc.
-    BOOST_FOREACH(const Barline &barline, mySystem.getBarlines())
-    {
+    for (const Barline &barline : mySystem.getBarlines())
         myNumPositions = std::max(myNumPositions, barline.getPosition());
-    }
 
     const double availableSpace = STAFF_WIDTH - width;
     myPositionSpacing = availableSpace / (myNumPositions + 2);
@@ -332,7 +327,7 @@ void LayoutInfo::calculateTabStaffBelowLayout()
 {
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        BOOST_FOREACH(const Position &pos, myStaff.getVoice(voice))
+        for (const Position &pos : myStaff.getVoice(voice))
         {
             int height = 1;
             const int position = pos.getPosition();
@@ -411,10 +406,8 @@ void LayoutInfo::calculateStdNotationStaffAboveLayout()
 
     // Reserve space for notes and their stems.
     double minLocation = std::numeric_limits<double>::max();
-    BOOST_FOREACH(const BeamGroup &group, myBeamGroups)
-    {
+    for (const BeamGroup &group : myBeamGroups)
         minLocation = std::min(minLocation, group.getTop());
-    }
 
     myStdNotationStaffAboveSpacing += -std::min(0.0, minLocation);
 }
@@ -428,7 +421,7 @@ void LayoutInfo::calculateStdNotationStaffBelowLayout()
 
     // Reserve space for notes and their stems.
     double maxLocation = -std::numeric_limits<double>::max();
-    BOOST_FOREACH(const BeamGroup &group, myBeamGroups)
+    for (const BeamGroup &group : myBeamGroups)
     {
         maxLocation = std::max(maxLocation, group.getBottom());
     }
@@ -446,7 +439,7 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
         SymbolGroup::SymbolType currentType = SymbolGroup::NoSymbol;
         int leftPos = 0;
 
-        BOOST_FOREACH(const Position &pos, myStaff.getVoice(voice))
+        for (const Position &pos : myStaff.getVoice(voice))
         {
             SymbolGroup::SymbolType type = SymbolGroup::NoSymbol;
 
@@ -510,7 +503,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
                                       mySystem.getStaves().end(), myStaff) -
                            mySystem.getStaves().begin();
 
-    BOOST_FOREACH(const PlayerChange &change, mySystem.getPlayerChanges())
+    for (const PlayerChange &change : mySystem.getPlayerChanges())
     {
         if (!change.getActivePlayers(staffIndex).empty())
         {
@@ -526,7 +519,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // Add symbols from each position.
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        BOOST_FOREACH(const Position &pos, myStaff.getVoice(voice))
+        for (const Position &pos : myStaff.getVoice(voice))
         {
             SymbolSet &set = symbolSets.at(pos.getPosition());
 
@@ -564,10 +557,8 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     }
 
     // Add dynamic symbols.
-    BOOST_FOREACH(const Dynamic &dynamic, myStaff.getDynamics())
-    {
+    for (const Dynamic &dynamic : myStaff.getDynamics())
         symbolSets.at(dynamic.getPosition()).insert(SymbolGroup::Dynamic);
-    }
 
     // Now, we need to form symbol groups for symbols such as vibrato or let
     // ring that are used by multiple consecutive notes.
@@ -653,10 +644,8 @@ int LayoutInfo::getMaxHeight(const std::vector<SymbolGroup> &groups)
 {
     int maxHeight = 0;
 
-    BOOST_FOREACH(const SymbolGroup &group, groups)
-    {
+    for (const SymbolGroup &group : groups)
         maxHeight = std::max(maxHeight, group.getHeight());
-    }
 
     return maxHeight;
 }

@@ -21,10 +21,9 @@
 #include <QSettings>
 
 #include <app/settings.h>
-#include <boost/bind.hpp>
 #include <sigfwd/sigfwd.hpp>
 
-RecentFiles::RecentFiles(QMenu* recentFilesMenu, QObject* parent) :
+RecentFiles::RecentFiles(QMenu *recentFilesMenu, QObject *parent) :
     QObject(parent),
     myRecentFilesMenu(recentFilesMenu)
 {
@@ -69,19 +68,19 @@ void RecentFiles::updateMenu()
 
     foreach (const QString& fileName, myRecentFiles)
     {
-        QAction* fileAction = new QAction(fileName, myRecentFilesMenu);
+        QAction *fileAction = new QAction(fileName, myRecentFilesMenu);
         myRecentFilesMenu->addAction(fileAction);
 
-        sigfwd::connect(fileAction, SIGNAL(triggered()),
-                        boost::bind(&RecentFiles::handleFileSelection, this,
-                                    fileName));
+        sigfwd::connect(fileAction, SIGNAL(triggered()), [=]() {
+            handleFileSelection(fileName);
+        });
     }
 
     if (!myRecentFiles.isEmpty())
     {
         myRecentFilesMenu->addSeparator();
 
-        QAction* clearRecentFiles = new QAction(tr("Clear Recent Files"),
+        QAction *clearRecentFiles = new QAction(tr("Clear Recent Files"),
                                                 myRecentFilesMenu);
         connect(clearRecentFiles, SIGNAL(triggered()), this, SLOT(clear()));
         myRecentFilesMenu->addAction(clearRecentFiles);

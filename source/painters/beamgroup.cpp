@@ -17,7 +17,6 @@
   
 #include "beamgroup.h"
 
-#include <boost/foreach.hpp>
 #include <cmath>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
@@ -28,36 +27,7 @@
 
 static const double FRACTIONAL_BEAM_WIDTH = 5.0;
 
-static bool compareStemTopPositions(const NoteStem &stem1,
-                                    const NoteStem &stem2)
-{
-    return stem1.getTop() < stem2.getTop();
-}
-
-static bool compareStemBottomPositions(const NoteStem &stem1,
-                                       const NoteStem &stem2)
-{
-    return stem1.getBottom() < stem2.getBottom();
-}
-
-/// Functor to compare a NoteStem's stem direction for equality.
-struct CompareStemType
-{
-    CompareStemType(NoteStem::StemType type)
-        : myStemType(type)
-    {
-    }
-
-    bool operator()(const NoteStem& stem) const
-    {
-        return stem.getStemType() == myStemType;
-    }
-
-private:
-    NoteStem::StemType myStemType;
-};
-
-BeamGroup::BeamGroup(const std::vector<NoteStem>& stems)
+BeamGroup::BeamGroup(const std::vector<NoteStem> &stems)
     : myNoteStems(stems)
 {
     assert(!myNoteStems.empty());
@@ -68,7 +38,7 @@ BeamGroup::BeamGroup(const std::vector<NoteStem>& stems)
 
 void BeamGroup::adjustToStaff(const LayoutInfo &layout)
 {
-    BOOST_FOREACH(NoteStem &stem, myNoteStems)
+    for (NoteStem &stem : myNoteStems)
     {
         stem.setTop(stem.getTop() + layout.getTopStdNotationLine());
         stem.setBottom(stem.getBottom() + layout.getTopStdNotationLine());
@@ -81,7 +51,7 @@ void BeamGroup::adjustStemHeights()
     {
         NoteStem highestStem = findHighestStem(myNoteStems);
 
-        BOOST_FOREACH(NoteStem &stem, myNoteStems)
+        for (NoteStem &stem : myNoteStems)
         {
             stem.setX(stem.getNoteHeadRightEdge() - 1);
             stem.setTop(highestStem.getTop() - highestStem.getStemHeight());
@@ -91,7 +61,7 @@ void BeamGroup::adjustStemHeights()
     {
         NoteStem lowestStem = findLowestStem(myNoteStems);
 
-        BOOST_FOREACH(NoteStem &stem, myNoteStems)
+        for (NoteStem &stem : myNoteStems)
         {
             stem.setBottom(lowestStem.getBottom() + lowestStem.getStemHeight());
         }
@@ -105,7 +75,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
     QPainterPath stemPath;
 
     // Draw each stem.
-    BOOST_FOREACH(const NoteStem &stem, myNoteStems)
+    for (const NoteStem &stem : myNoteStems)
     {
         stemPath.moveTo(stem.getX(), stem.getTop());
         stemPath.lineTo(stem.getX(), stem.getBottom());
@@ -121,7 +91,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
         if (stem.hasSforzando() || stem.hasMarcato())
             symbols << createAccent(stem, musicFont, layout);
 
-        BOOST_FOREACH(QGraphicsItem *symbol, symbols)
+        for (QGraphicsItem *symbol : symbols)
             symbol->setParentItem(parent);
 
         symbols.clear();
@@ -159,10 +129,8 @@ double BeamGroup::getTop() const
 {
     double top = std::numeric_limits<double>::max();
 
-    BOOST_FOREACH(const NoteStem &stem, myNoteStems)
-    {
+    for (const NoteStem &stem : myNoteStems)
         top = std::min(top, stem.getTop());
-    }
 
     return top;
 }
@@ -171,10 +139,8 @@ double BeamGroup::getBottom() const
 {
     double bottom = -std::numeric_limits<double>::max();
 
-    BOOST_FOREACH(const NoteStem &stem, myNoteStems)
-    {
+    for (const NoteStem &stem : myNoteStems)
         bottom = std::max(bottom, stem.getBottom());
-    }
 
     return bottom;
 }
@@ -183,19 +149,21 @@ NoteStem::StemType BeamGroup::computeStemDirection(std::vector<NoteStem> &stems)
 {
     // Find how many stem directions of each type we have.
     const size_t stemsUp = std::count_if(stems.begin(), stems.end(),
-                                         CompareStemType(NoteStem::StemUp));
+                                         [](const NoteStem &stem) {
+        return stem.getStemType() == NoteStem::StemUp;
+    });
 
     const size_t stemsDown = std::count_if(stems.begin(), stems.end(),
-                                           CompareStemType(NoteStem::StemDown));
+                                           [](const NoteStem &stem) {
+        return stem.getStemType() == NoteStem::StemDown;
+    });
 
     NoteStem::StemType stemType = (stemsDown >= stemsUp) ? NoteStem::StemDown :
                                                            NoteStem::StemUp;
 
     // Assign the new stem direction to each stem.
-    BOOST_FOREACH(NoteStem &stem, stems)
-    {
+    for (NoteStem &stem : stems)
         stem.setStemType(stemType);
-    }
 
     return stemType;
 }
@@ -203,13 +171,17 @@ NoteStem::StemType BeamGroup::computeStemDirection(std::vector<NoteStem> &stems)
 NoteStem BeamGroup::findHighestStem(const std::vector<NoteStem> &stems)
 {
     return *std::min_element(stems.begin(), stems.end(),
-                             &compareStemTopPositions);
+                             [](const NoteStem & stem1, const NoteStem & stem2) {
+        return stem1.getTop() < stem2.getTop();
+    });
 }
 
 NoteStem BeamGroup::findLowestStem(const std::vector<NoteStem> &stems)
 {
     return *std::max_element(stems.begin(), stems.end(),
-                             &compareStemBottomPositions);
+                             [](const NoteStem & stem1, const NoteStem & stem2) {
+        return stem1.getBottom() < stem2.getBottom();
+    });
 }
 
 void BeamGroup::drawExtraBeams(QPainterPath &path) const

@@ -28,8 +28,9 @@ Caret::Caret(Score &score)
       myInPlaybackMode(false),
       mySelectionPubSub(boost::make_shared<ScoreLocationPubSub>())
 {
-    mySelectionPubSub->subscribe(
-                boost::bind(&Caret::handleSelectionChanged, this, _1));
+    mySelectionPubSub->subscribe([this](const ScoreLocation &loc) {
+        handleSelectionChanged(loc);
+    });
 }
 
 ScoreLocation &Caret::getLocation()
