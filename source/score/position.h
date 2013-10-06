@@ -139,6 +139,7 @@ void Position::serialize(Archive &ar, const FileVersion /*version*/)
 namespace Utils {
     const Note *findByString(const Position &pos, int string);
     bool hasNoteWithTappedHarmonic(const Position &pos);
+    bool hasNoteWithArtificialHarmonic(const Position &pos);
     bool hasNoteWithTrill(const Position &pos);
     bool hasNoteWithProperty(const Position &pos, Note::SimpleProperty property);
 }

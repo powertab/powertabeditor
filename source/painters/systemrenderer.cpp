@@ -23,6 +23,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/range/adaptor/map.hpp>
+#include <boost/range/algorithm/find_if.hpp>
 #include <painters/barlinepainter.h>
 #include <painters/clefpainter.h>
 #include <painters/directionpainter.h>
@@ -110,7 +111,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
         drawSymbolsAboveTabStaff(staff, *layout);
-        drawSymbolsBelowTabStaff(*layout);
+        drawSymbolsBelowTabStaff(staff, *layout);
 
         drawPlayerChanges(system, i, *layout);
         drawStdNotation(system, staff, *layout);
@@ -724,7 +725,8 @@ void SystemRenderer::drawSlide(const LayoutInfo &layout, int string,
                   y + height / 2);
 }
 
-void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo& layout)
+void SystemRenderer::drawSymbolsBelowTabStaff(const Staff &staff,
+                                              const LayoutInfo &layout)
 {
     BOOST_FOREACH(const SymbolGroup &symbolGroup, layout.getTabStaffBelowSymbols())
     {
@@ -750,22 +752,22 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo& layout)
         case SymbolGroup::Slide:
             renderedSymbol = createPlainTextSymbol("sl.", QFont::StyleItalic);
             break;
-        // TODO - handle harmonics.
+        case SymbolGroup::ArtificialHarmonic:
+        {
+            const Position *pos =
+                ScoreUtils::findByPosition(staff.getVoice(symbolGroup.getVoice()),
+                                           symbolGroup.getPosition());
+            Q_ASSERT(pos);
+            renderedSymbol = createArtificialHarmonicText(*pos);
+            break;
+        }
         default:
             Q_ASSERT(false);
             break;
         }
 
-#if 0
-        case Layout::SymbolArtificialHarmonic:
-            renderedSymbol = createArtificialHarmonicText(
-                        staff->GetPositionByPosition(symbolGroup.voice,
-                                                     symbolGroup.leftPosIndex));
-            break;
-#endif
-
-        centerItem(renderedSymbol, symbolGroup.getX(),
-                   symbolGroup.getX() + symbolGroup.getWidth(),
+        const double x = layout.getPositionX(symbolGroup.getPosition());
+        centerItem(renderedSymbol, x, x + symbolGroup.getWidth(),
                    layout.getBottomTabLine() +
                    symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
 
@@ -803,33 +805,29 @@ QGraphicsItem *SystemRenderer::createPlainTextSymbol(const QString &text,
     return group;
 }
 
-#if 0
-/// Creates the text portion of an artificial harmonic - displaying the note value
-QGraphicsItem* SystemRenderer::createArtificialHarmonicText(const Position* position)
+/// Creates the text portion of an artificial harmonic, which displays the note.
+QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
+        const Position &position)
 {
-    std::vector<const Note*> notes;
-    position->GetNotes(notes);
+    // Find the note that has the harmonic.
+    auto it = boost::range::find_if(position.getNotes(), [] (const Note &note) {
+        return note.hasArtificialHarmonic();
+    });
 
-    // find the note with an artificial harmonic
-    std::vector<const Note*>::const_iterator location = std::find_if(notes.begin(), notes.end(),
-                                                               std::mem_fun(&Note::HasArtificialHarmonic));
+    Q_ASSERT(it != position.getNotes().end());
 
-     // this function should not even be executed if there is no note with an artificial harmonic
-    Q_ASSERT(location != notes.end());
+    // Build the text representation of the harmonic.
+    const ArtificialHarmonic &harmonic = it->getArtificialHarmonic();
+    ChordName name;
+    name.setTonicKey(harmonic.getKey());
+    name.setTonicVariation(harmonic.getVariation());
+    name.setBassKey(harmonic.getKey());
+    name.setBassVariation(harmonic.getVariation());
 
-    const Note* note = *location;
-
-    quint8 key = 0, variation = 0, octave = 0;
-    note->GetArtificialHarmonic(key, variation, octave);
-
-    // use the ChordName class to convert the key/variation data to a text representation
-    ChordName name(key, variation, ChordName::DEFAULT_FORMULA, ChordName::DEFAULT_FORMULA_MODIFICATIONS);
-
-    const QString text = QString().fromStdString(name.GetKeyText(false));
-
-    return createPlainText(text, QFont::StyleNormal);
+    return createPlainTextSymbol(
+                QString::fromStdString(boost::lexical_cast<std::string>(name)),
+                QFont::StyleNormal);
 }
-#endif
 
 void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
                                               const LayoutInfo& layout)
@@ -873,14 +871,18 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             break;
         case SymbolGroup::Dynamic:
         {
-            const int position = layout.getPositionFromX(symbolGroup.getX() + 1);
             const Dynamic *dynamic = ScoreUtils::findByPosition(
-                        staff.getDynamics(), position);
+                staff.getDynamics(), symbolGroup.getPosition());
             Q_ASSERT(dynamic);
 
             renderedSymbol = createDynamic(*dynamic);
             break;
         }
+        case SymbolGroup::ArtificialHarmonic:
+            renderedSymbol = createConnectedSymbolGroup("A.H.",
+                                                        QFont::StyleNormal,
+                                                        width, layout);
+            break;
 #if 0
         case Layout::SymbolVolumeSwell:
         {
@@ -895,10 +897,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
         case Layout::SymbolTremoloBar:
             renderedSymbol = new TremoloBarPainter(staff->GetPosition(0, symbolGroup.leftPosIndex),
                                                    width);
-            break;
-        case Layout::SymbolArtificialHarmonic:
-            renderedSymbol = createConnectedSymbolGroup("A.H.", QFont::StyleNormal, width, staffInfo);
-            break;
+            break;        
         case Layout::SymbolBend:
         {
             renderedSymbol = createBend(staff->GetPosition(0, symbolGroup.leftPosIndex), staffInfo);
@@ -911,9 +910,10 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             break;
         }
 
-        renderedSymbol->setPos(symbolGroup.getX(),
-                layout.getTopTabLine() - LayoutInfo::STAFF_BORDER_SPACING -
-                symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
+        const double x = layout.getPositionX(symbolGroup.getPosition());
+        renderedSymbol->setPos(
+            x, layout.getTopTabLine() - LayoutInfo::STAFF_BORDER_SPACING -
+                   symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
         // TODO - position bends differently.
 
         renderedSymbol->setParentItem(myParentStaff);
@@ -947,7 +947,7 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
             break;
         }
 
-        renderedSymbol->setPos(symbolGroup.getX(), 0);
+        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getPosition()), 0);
         renderedSymbol->setParentItem(myParentStaff);
     }
 }
@@ -979,7 +979,7 @@ void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo& layout)
             break;
         }
 
-        renderedSymbol->setPos(symbolGroup.getX(),
+        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getPosition()),
                                layout.getBottomStdNotationLine() +
                                layout.getStdNotationStaffBelowSpacing());
         renderedSymbol->setParentItem(myParentStaff);

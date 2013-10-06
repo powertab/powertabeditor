@@ -81,7 +81,7 @@ private:
 
     /// Draws the text symbols that appear below the tab staff
     /// (hammerons, slides, etc).
-    void drawSymbolsBelowTabStaff(const LayoutInfo &layout);
+    void drawSymbolsBelowTabStaff(const Staff &staff, const LayoutInfo &layout);
 
     /// Creates a pick stroke symbol using the given character.
     QGraphicsItem *createPickStroke(const QString &text);
@@ -121,6 +121,9 @@ private:
 
     /// Creates a trill symbol.
     QGraphicsItem *createTrill(const LayoutInfo &layout);
+
+    /// Creates an artificial harmonic symbol.
+    QGraphicsItem *createArtificialHarmonicText(const Position &position);
 
     /// Creates a dynamic symbol.
     QGraphicsItem *createDynamic(const Dynamic &dynamic);

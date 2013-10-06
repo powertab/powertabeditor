@@ -240,3 +240,15 @@ bool Utils::hasNoteWithTrill(const Position &pos)
 
     return false;
 }
+
+
+bool Utils::hasNoteWithArtificialHarmonic(const Position &pos)
+{
+    for (const Note &note : pos.getNotes())
+    {
+        if (note.hasArtificialHarmonic())
+            return true;
+    }
+
+    return false;
+}

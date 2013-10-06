@@ -62,21 +62,26 @@ public:
         TremoloPicking,
         Trill,
         NaturalHarmonic,
-        Dynamic
+        Dynamic,
+        ArtificialHarmonic // Note that this also appears below the tab staff.
     };
 
-    SymbolGroup(SymbolType symbol, double x, double width, int height);
+    SymbolGroup(SymbolType symbol, int position, int voice,
+                double width, int height);
 
     SymbolType getSymbolType() const;
-    double getX() const;
+    int getPosition() const;
+    int getVoice() const;
     double getWidth() const;
     int getHeight() const;
 
 private:
     /// The type of symbol.
     SymbolType mySymbolType;
-    /// x-coordinate of the start of the symbol group.
-    double myX;
+    /// First position of the symbol group.
+    int myPosition;
+    /// Source voice of the symbol.
+    int myVoice;
     /// Width of the symbol group.
     double myWidth;
     /// Offset from the staff.

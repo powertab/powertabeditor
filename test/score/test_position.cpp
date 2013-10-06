@@ -87,6 +87,18 @@ TEST_CASE("Score/Position/HasNoteWithTappedHarmonic", "")
     REQUIRE(Utils::hasNoteWithTappedHarmonic(position));
 }
 
+TEST_CASE("Score/Position/HasNoteWithArtificialHarmonic", "")
+{
+    Position position;
+    REQUIRE(!Utils::hasNoteWithArtificialHarmonic(position));
+
+    Note note;
+    note.setArtificialHarmonic(ArtificialHarmonic(ChordName::D, ChordName::Flat,
+            ArtificialHarmonic::Octave::Octave15ma));
+    position.insertNote(note);
+    REQUIRE(Utils::hasNoteWithArtificialHarmonic(position));
+}
+
 TEST_CASE("Score/Position/HasNoteWithTrill", "")
 {
     Position position;
