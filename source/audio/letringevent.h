@@ -31,9 +31,9 @@ public:
 
     LetRingEvent(int channel, double startTime, int position, int system,
                  EventType eventType);
-    
-    void performEvent(MidiOutputDevice &device) const;
-    
+
+    virtual void performEvent(MidiOutputDevice &device) const override;
+
 private:
     const EventType myEventType;
 };

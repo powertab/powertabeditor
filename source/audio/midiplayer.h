@@ -53,7 +53,7 @@ public slots:
 #endif
 
 private:
-    void run();
+    virtual void run() override;
     void setIsPlaying(bool set);
     bool isPlaying() const;
 

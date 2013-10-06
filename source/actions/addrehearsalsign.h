@@ -27,8 +27,8 @@ public:
     AddRehearsalSign(const ScoreLocation &location,
                      const std::string &description);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

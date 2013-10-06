@@ -56,16 +56,16 @@ public:
     Score(const char* name);
 
 // Serialization Functions
-    bool Serialize(PowerTabOutputStream& stream) const;
-    bool Deserialize(PowerTabInputStream& stream, uint16_t version);
+    bool Serialize(PowerTabOutputStream &stream) const override;
+    bool Deserialize(PowerTabInputStream &stream, uint16_t version) override;
 
     // TODO - these should probably not be here, since this class was not part
     // of the original power tab file format
-    std::string GetMFCClassName() const
+    std::string GetMFCClassName() const override
     {
         return "Score";
     }
-    uint16_t GetMFCClassSchema() const
+    uint16_t GetMFCClassSchema() const override
     {
         return 1;
     }

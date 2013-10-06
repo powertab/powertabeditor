@@ -32,8 +32,8 @@ public:
 
     ShiftPositions(const ScoreLocation &location, ShiftType type);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

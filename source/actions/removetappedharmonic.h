@@ -26,8 +26,8 @@ class RemoveTappedHarmonic : public QUndoCommand
 public:
     RemoveTappedHarmonic(const ScoreLocation &location);
 
-    virtual void undo();
-    virtual void redo();
+    virtual void undo() override;
+    virtual void redo() override;
 
 private:
     ScoreLocation myLocation;

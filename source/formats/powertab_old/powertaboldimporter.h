@@ -61,7 +61,7 @@ class PowerTabOldImporter : public FileFormatImporter
 {
 public:
     PowerTabOldImporter();
-    virtual void load(const std::string &filename, Score &score);
+    virtual void load(const std::string &filename, Score &score) override;
 
 private:
     static void convert(const PowerTabDocument::PowerTabFileHeader &header,

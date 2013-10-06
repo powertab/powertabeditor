@@ -34,19 +34,19 @@ public:
     AlternateEnding();
     
     // Serialization Functions
-    bool Serialize(PowerTabOutputStream& stream) const;
-    bool Deserialize(PowerTabInputStream& stream, uint16_t version);
+    bool Serialize(PowerTabOutputStream &stream) const override;
+    bool Deserialize(PowerTabInputStream &stream, uint16_t version) override;
 
     // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    std::string GetMFCClassName() const
+    std::string GetMFCClassName() const override
     {
         return "CSectionSymbol";
     }
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
-    uint16_t GetMFCClassSchema() const                            
+    uint16_t GetMFCClassSchema() const override
     {
         return 1;
     }

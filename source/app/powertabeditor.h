@@ -208,10 +208,10 @@ private slots:
 
 protected:
     /// Handle key presses for 0-9 when entering tab numbers.
-    virtual bool eventFilter(QObject *object, QEvent *event);
+    virtual bool eventFilter(QObject *object, QEvent *event) override;
 
     /// Performs some final actions before exiting.
-    virtual void closeEvent(QCloseEvent*);
+    virtual void closeEvent(QCloseEvent*) override;
 
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').

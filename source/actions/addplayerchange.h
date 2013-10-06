@@ -27,8 +27,8 @@ class AddPlayerChange : public QUndoCommand
 public:
     AddPlayerChange(const ScoreLocation &location, const PlayerChange &change);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

@@ -34,14 +34,18 @@ public:
                 boost::shared_ptr<StaffPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                       QWidget *);
-    virtual QRectF boundingRect() const { return myBounds; }
+                       QWidget *) override;
+
+    virtual QRectF boundingRect() const override
+    {
+        return myBounds;
+    }
 
 private:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
     const Staff::ClefType myClefType;
     const QFont myMusicFont;

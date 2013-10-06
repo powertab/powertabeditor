@@ -27,8 +27,8 @@ class AddTempoMarker : public QUndoCommand
 public:
     AddTempoMarker(const ScoreLocation &location, const TempoMarker &marker);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

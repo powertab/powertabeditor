@@ -34,7 +34,7 @@ public:
     AlternateEnding getAlternateEnding() const;
 
 private slots:
-    void accept();
+    virtual void accept() override;
 
 private:
     std::vector<QCheckBox *> myCheckBoxes;

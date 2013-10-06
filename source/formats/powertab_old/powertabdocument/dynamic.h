@@ -78,18 +78,18 @@ public:
     bool operator!=(const Dynamic& dynamic) const;
     
 // Serialization functions
-    bool Serialize(PowerTabOutputStream& stream) const;
-    bool Deserialize(PowerTabInputStream& stream, uint16_t version);
+    bool Serialize(PowerTabOutputStream &stream) const override;
+    bool Deserialize(PowerTabInputStream &stream, uint16_t version) override;
 
 // MFC Class Functions
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    std::string GetMFCClassName() const
+    std::string GetMFCClassName() const override
         {return "CDynamic";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
-    uint16_t GetMFCClassSchema() const                            
+        uint16_t GetMFCClassSchema() const override
         {return ((uint16_t)1);}
     
 // System Functions

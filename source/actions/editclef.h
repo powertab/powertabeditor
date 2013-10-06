@@ -26,8 +26,8 @@ class EditClef : public QUndoCommand
 public:
     EditClef(const ScoreLocation &location);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     void toggleClefType();

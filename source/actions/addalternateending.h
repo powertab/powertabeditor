@@ -28,8 +28,8 @@ public:
     AddAlternateEnding(const ScoreLocation &location,
                        const AlternateEnding &ending);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

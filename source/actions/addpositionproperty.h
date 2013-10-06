@@ -30,8 +30,8 @@ public:
                         Position::SimpleProperty property,
                         const QString &positionDescription);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

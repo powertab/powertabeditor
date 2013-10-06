@@ -26,8 +26,8 @@ class AddTappedHarmonic : public QUndoCommand
 public:
     AddTappedHarmonic(const ScoreLocation &location, int tappedFret);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

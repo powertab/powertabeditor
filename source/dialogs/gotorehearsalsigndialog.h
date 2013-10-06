@@ -22,7 +22,7 @@ public:
     ScoreLocation getLocation() const;
 
 public slots:
-    void accept();
+    virtual void accept() override;
 
 private:
     Ui::GoToRehearsalSignDialog *ui;

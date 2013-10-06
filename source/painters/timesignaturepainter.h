@@ -34,14 +34,18 @@ public:
                          boost::shared_ptr<ScoreLocationPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                       QWidget *);
-    virtual QRectF boundingRect() const { return myBounds; }
+                       QWidget *) override;
+
+    virtual QRectF boundingRect() const override
+    {
+        return myBounds;
+    }
 
 protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *) override;
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override;
 
 private:
     void drawNumber(QPainter* painter, const double y, const int number) const;

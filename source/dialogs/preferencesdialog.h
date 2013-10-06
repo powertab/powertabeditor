@@ -41,7 +41,7 @@ public:
     ~PreferencesDialog();
 
 private slots:
-    void accept();
+    virtual void accept() override;
     void editTuning();
 
 private:

@@ -35,7 +35,7 @@ public:
 
     Direction getDirection() const;
 
-    virtual void accept();
+    virtual void accept() override;
 
 private slots:
     /// Adds a new direction symbol.

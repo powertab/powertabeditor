@@ -28,8 +28,8 @@ public:
     EditBarline(const ScoreLocation &location, Barline::BarType type,
                 int repeats);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

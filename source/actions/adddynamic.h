@@ -27,8 +27,8 @@ class AddDynamic : public QUndoCommand
 public:
     AddDynamic(const ScoreLocation &location, const Dynamic &dynamic);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

@@ -28,7 +28,9 @@ public:
     {
     }
 
-    void performEvent(MidiOutputDevice &) const {}
+    void performEvent(MidiOutputDevice &) const override
+    {
+    }
 };
 
 TEST_CASE("Audio/Ordering/StartTime", "Events should be ordered by timestamp.")

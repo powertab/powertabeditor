@@ -29,8 +29,8 @@ public:
     AddNote(const ScoreLocation &location, const Note &note,
             Position::DurationType duration);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

@@ -27,8 +27,8 @@ class AddSystem : public QUndoCommand
 public:
     AddSystem(Score &score, int index);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     Score &myScore;

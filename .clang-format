@@ -34,7 +34,7 @@ SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
-Standard:        Cpp03
+Standard:        Cpp11
 UseTab:          false
 ...
 

@@ -62,15 +62,16 @@ public:
 	bool operator!=(const GuitarIn& guitarIn) const;
 
 // Serialize Functions
-        bool Serialize(PowerTabOutputStream& stream) const;
-	bool Deserialize(PowerTabInputStream& stream, uint16_t version);
+        bool Serialize(PowerTabOutputStream &stream) const override;
+        bool Deserialize(PowerTabInputStream &stream,
+                         uint16_t version) override;
 
 // MFC Class Functions
 public:
-        std::string GetMFCClassName() const
-		{return "CGuitarIn";}
-	uint16_t GetMFCClassSchema() const                            
-		{return ((uint16_t)1);}
+    std::string GetMFCClassName() const override
+                {return "CGuitarIn";}
+                uint16_t GetMFCClassSchema() const override
+                {return ((uint16_t)1);}
 	
 // System Functions
 	/// Determines whether a system is valid

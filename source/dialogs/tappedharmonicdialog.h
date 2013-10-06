@@ -35,7 +35,7 @@ public:
     int getTappedFret() const;
 
 public slots:
-    void accept();
+    virtual void accept() override;
 
 private:
     Ui::TappedHarmonicDialog *ui;

@@ -26,8 +26,8 @@ class AddTrill : public QUndoCommand
 public:
     AddTrill(const ScoreLocation &location, int trillFret);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

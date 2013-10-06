@@ -28,8 +28,8 @@ public:
     EditTimeSignature(const ScoreLocation &location,
                       const TimeSignature &newTimeSig);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     /// Updates all of the time signatures following myLocation until a

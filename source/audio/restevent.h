@@ -28,7 +28,7 @@ public:
     RestEvent(int channel, double startTime, double duration,
               int position, int system);
 
-    virtual void performEvent(MidiOutputDevice &device) const;
+    virtual void performEvent(MidiOutputDevice &device) const override;
 };
 
 #endif

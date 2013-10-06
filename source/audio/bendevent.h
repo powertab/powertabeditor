@@ -31,7 +31,7 @@ public:
     BendEvent(int channel, double startTime, int position, int system,
               uint8_t myBendAmount);
 
-    void performEvent(MidiOutputDevice &device) const;
+    virtual void performEvent(MidiOutputDevice &device) const override;
 
 private:
     const uint8_t myBendAmount;

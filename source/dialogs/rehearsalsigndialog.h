@@ -37,7 +37,7 @@ public:
     std::string getDescription() const;
 
 public slots:
-    void accept();
+    virtual void accept() override;
 
 private:
     void populateDescriptionChoices();

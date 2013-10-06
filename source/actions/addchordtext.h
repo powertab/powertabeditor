@@ -27,8 +27,8 @@ class AddChordText : public QUndoCommand
 public:
     AddChordText(const ScoreLocation &location, const ChordText &text);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

@@ -27,8 +27,8 @@ class EditKeySignature : public QUndoCommand
 public:
     EditKeySignature(const ScoreLocation &location, const KeySignature &newKey);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     /// Updates all of the key signatures following myLocation until a different

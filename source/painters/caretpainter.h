@@ -31,8 +31,9 @@ public:
     CaretPainter(const Caret &caret);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                       QWidget *);
-    virtual QRectF boundingRect() const;
+                       QWidget *) override;
+
+    virtual QRectF boundingRect() const override;
 
     void addSystemRect(const QRectF &rect);
     void setSystemRect(int index, const QRectF &rect);

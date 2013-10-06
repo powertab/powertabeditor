@@ -57,18 +57,19 @@ public:
     bool operator<(const SystemSymbol& systemSymbol) const;
 
 // Serialization Functions
-    virtual bool Serialize(PowerTabOutputStream& stream) const;
-    virtual bool Deserialize(PowerTabInputStream& stream, uint16_t version);
+    virtual bool Serialize(PowerTabOutputStream &stream) const override;
+    virtual bool Deserialize(PowerTabInputStream &stream,
+                             uint16_t version) override;
 
 // MFC Class Functions
 public:
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    std::string GetMFCClassName() const
+    std::string GetMFCClassName() const override
         {return "CSectionSymbol";}
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
-    uint16_t GetMFCClassSchema() const                            
+        uint16_t GetMFCClassSchema() const override
         {return ((uint16_t)1);}
     
 // System Functions

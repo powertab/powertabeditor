@@ -36,7 +36,7 @@ public:
     MetronomeEvent(int channel, double startTime, double duration,
                    int position, int system, VelocityType myVelocity);
 
-    void performEvent(MidiOutputDevice &device) const;
+    virtual void performEvent(MidiOutputDevice &device) const override;
 
 private:
     const VelocityType myVelocity;

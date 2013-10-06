@@ -40,7 +40,7 @@ public:
                   const Instrument &instrument, bool isMuted,
                   VelocityType velocity);
 
-    void performEvent(MidiOutputDevice &device) const;
+    virtual void performEvent(MidiOutputDevice &device) const override;
 
 private:
     const uint8_t myPitch;

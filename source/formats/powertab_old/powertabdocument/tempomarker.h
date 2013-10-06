@@ -94,16 +94,22 @@ public:
     bool operator!=(const TempoMarker& tempoMarker) const;
 
     // Serialize Functions
-    bool Serialize(PowerTabOutputStream& stream) const;
-    bool Deserialize(PowerTabInputStream& stream, uint16_t version);
+    bool Serialize(PowerTabOutputStream &stream) const override;
+    bool Deserialize(PowerTabInputStream &stream, uint16_t version) override;
 
     // MFC Class Functions
     /// Gets the MFC Class Name for the object
     /// @return The MFC Class Name
-    std::string GetMFCClassName() const { return "CTempoMarker"; }
+    std::string GetMFCClassName() const override
+    {
+        return "CTempoMarker";
+    }
     /// Gets the MFC Class Schema for the object
     /// @return The MFC Class Schema
-    uint16_t GetMFCClassSchema() const { return 1; }
+    uint16_t GetMFCClassSchema() const override
+    {
+        return 1;
+    }
 
     // Type Functions
     static bool IsValidType(uint8_t type);

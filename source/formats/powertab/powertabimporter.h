@@ -25,7 +25,7 @@ class PowerTabImporter : public FileFormatImporter
 public:
     PowerTabImporter();
 
-    virtual void load(const std::string &filename, Score &score);
+    virtual void load(const std::string &filename, Score &score) override;
 };
 
 #endif

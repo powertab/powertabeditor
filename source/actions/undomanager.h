@@ -64,7 +64,7 @@ class SignalOnRedo : public QObject, public QUndoCommand
     Q_OBJECT
 
 public:
-    virtual void redo();
+    virtual void redo() override;
 
 signals:
     void triggered();
@@ -75,7 +75,7 @@ class SignalOnUndo: public QObject, public QUndoCommand
     Q_OBJECT
 
 public:
-    virtual void undo();
+    virtual void undo() override;
 
 signals:
     void triggered();

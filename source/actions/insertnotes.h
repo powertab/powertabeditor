@@ -29,8 +29,8 @@ public:
     InsertNotes(const ScoreLocation &location,
                 const std::vector<Position> &positions);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     ScoreLocation myLocation;

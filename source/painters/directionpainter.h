@@ -30,8 +30,12 @@ public:
     DirectionPainter(const DirectionSymbol &symbol);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                       QWidget *);
-    virtual QRectF boundingRect() const { return myBounds; }
+                       QWidget *) override;
+
+    virtual QRectF boundingRect() const override
+    {
+        return myBounds;
+    }
 
 private:
     const DirectionSymbol &mySymbol;

@@ -33,14 +33,20 @@ public:
                    const ScoreLocation& location,
                    boost::shared_ptr<ScoreLocationPubSub> pubsub);
 
-    QRectF boundingRect() const { return myBounds; }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+
+    virtual QRectF boundingRect() const override
+    {
+        return myBounds;
+    }
 
 private:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *) override;
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override;
 
     bool isInStdNotationStaff(double y);
     void drawVerticalLines(QPainter *painter, double myX);

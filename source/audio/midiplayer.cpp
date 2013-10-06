@@ -51,7 +51,7 @@ public:
     {
     }
 
-    virtual void performEvent(MidiOutputDevice &) const
+    virtual void performEvent(MidiOutputDevice &) const override
     {
     }
 };

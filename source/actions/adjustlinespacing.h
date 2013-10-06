@@ -27,8 +27,8 @@ class AdjustLineSpacing : public QUndoCommand
 public:
     AdjustLineSpacing(Score &score, int amount);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
     Score &myScore;

@@ -48,7 +48,7 @@ private slots:
                               QTreeWidgetItem *previous);
 
     /// Save the shortcuts and close the dialog.
-    void accept();
+    virtual void accept() override;
 
 private:
     /// Performs setup such as loading the commands into the table widget, etc.
@@ -56,7 +56,7 @@ private:
 
     /// Capture the key presses as they are typed, in order to get the
     /// key sequence.
-    bool eventFilter(QObject *o, QEvent *e);
+    virtual bool eventFilter(QObject *o, QEvent *e) override;
 
     /// Process the key press and update the key sequence.
     void processKeyPress(QKeyEvent *e);
