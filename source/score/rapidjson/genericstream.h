@@ -11,6 +11,7 @@ namespace rapidjson {
   class GenericReadStream {
     public:
       typedef char Ch;    //!< Character type (byte).
+      typedef std::istream::traits_type traits_type;
 
       //! Constructor.
       /*!
@@ -21,8 +22,9 @@ namespace rapidjson {
 
 
       Ch Peek() const {
-        if(is_->eof()) return '\0';
-        return static_cast<char>(is_->peek());
+        // We cannot check is_->eof() due to a bug in earlier versions of libc++.
+        const char ch = is_->peek();
+        return traits_type::eq_int_type(ch, traits_type::eof()) ? '\0' : ch;
       }
 
       Ch Take() {
