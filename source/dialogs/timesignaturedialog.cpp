@@ -44,7 +44,7 @@ TimeSignatureDialog::TimeSignatureDialog(
 
     for (auto &pattern : myBeamingPatterns)
     {
-        pattern->setValidator(new QIntValidator(0, 64, 0));
+        pattern->setValidator(new QIntValidator(0, 64, nullptr));
     }
 
     ui->showTimeSignature->setChecked(myTimeSignature.isVisible());

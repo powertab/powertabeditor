@@ -654,7 +654,7 @@ double MidiPlayer::getCurrentTempo(int system, int position) const
 const TempoMarker *MidiPlayer::getCurrentTempoMarker(int systemIndex,
                                                      int position) const
 {
-    const TempoMarker *lastMarker = NULL;
+    const TempoMarker *lastMarker = nullptr;
 
     int i = 0;
     BOOST_FOREACH(const System &system, myScore.getSystems())

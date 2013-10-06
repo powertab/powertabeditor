@@ -109,19 +109,21 @@
 #include <score/utils.h>
 #include <sigfwd/sigfwd.hpp>
 
-PowerTabEditor::PowerTabEditor() :
-    QMainWindow(0),
-    myDocumentManager(new DocumentManager()),
-    myFileFormatManager(new FileFormatManager()),
-    myUndoManager(new UndoManager()),
-    myTuningDictionary(new TuningDictionary()),
-    mySettingsPubSub(boost::make_shared<SettingsPubSub>()),
-    myIsPlaying(false),
-    myPreviousDirectory(QSettings().value(Settings::APP_PREVIOUS_DIRECTORY,
-                                          QDir::homePath()).toString()),
-    myRecentFiles(NULL),
-    myActiveDurationType(Position::EighthNote),
-    myTabWidget(NULL)
+PowerTabEditor::PowerTabEditor()
+    : QMainWindow(nullptr),
+      myDocumentManager(new DocumentManager()),
+      myFileFormatManager(new FileFormatManager()),
+      myUndoManager(new UndoManager()),
+      myTuningDictionary(new TuningDictionary()),
+      mySettingsPubSub(boost::make_shared<SettingsPubSub>()),
+      myIsPlaying(false),
+      myPreviousDirectory(
+          QSettings()
+              .value(Settings::APP_PREVIOUS_DIRECTORY, QDir::homePath())
+              .toString()),
+      myRecentFiles(nullptr),
+      myActiveDurationType(Position::EighthNote),
+      myTabWidget(nullptr)
 #if 0
     mixerList(new QStackedWidget),
     playbackToolbarList(new QStackedWidget),
@@ -2240,14 +2242,14 @@ void PowerTabEditor::updateCommands()
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
-    myTempoMarkerCommand->setChecked(tempoMarker != NULL);
+    myTempoMarkerCommand->setChecked(tempoMarker != nullptr);
     myKeySignatureCommand->setEnabled(barline);
     myTimeSignatureCommand->setEnabled(barline);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
     myDirectionCommand->setChecked(
         ScoreUtils::findByPosition(system.getDirections(), position));
     myRepeatEndingCommand->setChecked(altEnding);
-    myDynamicCommand->setChecked(dynamic != NULL);
+    myDynamicCommand->setChecked(dynamic != nullptr);
 
     if (barline) // Current position is bar.
     {

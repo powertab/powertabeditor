@@ -23,7 +23,7 @@
 ScoreLocation::ScoreLocation(const Score &score, int system, int staff,
                              int position, int voice, int string)
     : myScore(score),
-      myWriteableScore(0),
+      myWriteableScore(nullptr),
       mySystemIndex(system),
       myStaffIndex(staff),
       myPositionIndex(position),
@@ -74,7 +74,7 @@ const Position *ScoreLocation::getPosition() const
             return &pos;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 Position *ScoreLocation::getPosition()
@@ -197,7 +197,7 @@ void ScoreLocation::setString(int string)
 const Note *ScoreLocation::getNote() const
 {
     const Position *position = getPosition();
-    return position ? Utils::findByString(*position, myString) : NULL;
+    return position ? Utils::findByString(*position, myString) : nullptr;
 }
 
 Note *ScoreLocation::getNote()

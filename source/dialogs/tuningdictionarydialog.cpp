@@ -107,8 +107,8 @@ void TuningDictionaryDialog::onDeleteTuning()
 void TuningDictionaryDialog::onCurrentTuningChanged(QTreeWidgetItem *current,
                                                     QTreeWidgetItem *)
 {
-    ui->deleteTuningButton->setEnabled(current != NULL);
-    ui->editTuningButton->setEnabled(current != NULL);
+    ui->deleteTuningButton->setEnabled(current != nullptr);
+    ui->editTuningButton->setEnabled(current != nullptr);
 }
 
 void TuningDictionaryDialog::onEditTuning()

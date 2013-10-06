@@ -41,7 +41,7 @@ boost::optional<FileFormat> FileFormatManager::findFormat(
             return importer->first;
     }
 
-    return 0;
+    return nullptr;
 }
 
 std::string FileFormatManager::importFileFilter() const

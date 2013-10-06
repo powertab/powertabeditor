@@ -46,20 +46,20 @@ const Position *getNextPosition(const Staff &staff, int voice, int position)
             return &pos;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const Note *getNextNote(const Staff &staff, int voice, int position,
                         int string)
 {
     const Position *nextPos = getNextPosition(staff, voice, position);
-    return nextPos ? Utils::findByString(*nextPos, string) : NULL;
+    return nextPos ? Utils::findByString(*nextPos, string) : nullptr;
 }
 
 const Note *getPreviousNote(const Staff &staff, int voice, int position,
                             int string)
 {
-    const Note *note = 0;
+    const Note *note = nullptr;
 
     for (const Position &pos : boost::adaptors::reverse(staff.getVoice(voice)))
     {

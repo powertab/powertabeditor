@@ -55,7 +55,7 @@ FontSetting::FontSetting(const char* faceName, int32_t pointSize,
 {
     //------Last Checked------//
     // - Dec 6, 2004
-    assert(faceName != NULL);
+    assert(faceName != nullptr);
     assert(IsValidPointSize(pointSize));
     assert(IsValidWeight(weight));
 }

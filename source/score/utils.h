@@ -35,7 +35,7 @@ namespace ScoreUtils {
                 return &range[i];
         }
 
-        return NULL;
+        return nullptr;
     }
 
     // Some helper methods to reduce code duplication.

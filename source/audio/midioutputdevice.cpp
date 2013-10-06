@@ -19,8 +19,7 @@
 
 #include "rtmidi/RtMidi.h"
 
-MidiOutputDevice::MidiOutputDevice() :
-    myMidiOut(NULL)
+MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 {
     for (int i = 0; i < NUM_CHANNELS; ++i)
     {

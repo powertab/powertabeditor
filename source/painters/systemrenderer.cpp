@@ -45,8 +45,8 @@
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
     : myScoreArea(scoreArea),
       myScore(score),
-      myParentSystem(NULL),
-      myParentStaff(NULL),
+      myParentSystem(nullptr),
+      myParentStaff(nullptr),
       myMusicNotationFont(myMusicFont.getFont()),
       myMusicFontMetrics(myMusicNotationFont),
       myPlainTextFont("Liberation Sans"),
@@ -730,7 +730,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const Staff &staff,
 {
     BOOST_FOREACH(const SymbolGroup &symbolGroup, layout.getTabStaffBelowSymbols())
     {
-        QGraphicsItem *renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = nullptr;
 
         switch (symbolGroup.getSymbolType())
         {
@@ -835,7 +835,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
     BOOST_FOREACH(const SymbolGroup &symbolGroup,
                   layout.getTabStaffAboveSymbols())
     {
-        QGraphicsItem *renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = nullptr;
         const double width = symbolGroup.getWidth();
 
         switch(symbolGroup.getSymbolType())
@@ -925,7 +925,7 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
     BOOST_FOREACH(const SymbolGroup &symbolGroup,
                   layout.getStdNotationStaffAboveSymbols())
     {
-        QGraphicsItem *renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = nullptr;
 
         switch (symbolGroup.getSymbolType())
         {
@@ -957,7 +957,7 @@ void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo& layout)
     BOOST_FOREACH(const SymbolGroup &symbolGroup,
                   layout.getStdNotationStaffBelowSymbols())
     {
-        QGraphicsItem *renderedSymbol = NULL;
+        QGraphicsItem *renderedSymbol = nullptr;
 
         switch (symbolGroup.getSymbolType())
         {
@@ -1182,7 +1182,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
         const double y = note.getY() + layout.getTopStdNotationLine() -
                 myMusicFontMetrics.ascent();
 
-        QGraphicsItemGroup *group = 0;
+        QGraphicsItemGroup *group = nullptr;
         QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
                     accidentalText + noteHead);
         text->setFont(myMusicNotationFont);

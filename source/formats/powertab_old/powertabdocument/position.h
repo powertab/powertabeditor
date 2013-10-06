@@ -357,7 +357,7 @@ public:
     /// @return The nth note in the position
     Note* GetNote(uint32_t index) const
     {
-        PTB_CHECK_THAT(IsValidNoteIndex(index), NULL);
+        PTB_CHECK_THAT(IsValidNoteIndex(index), nullptr);
         return (m_noteArray[index]);
     }
 };

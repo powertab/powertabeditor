@@ -124,7 +124,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
                 if (players)
                     activePlayers = players->getActivePlayers(staffIndex);
 
-                const Player *player = 0;
+                const Player *player = nullptr;
                 if (!activePlayers.empty())
                 {
                     player = &score.getPlayers()[

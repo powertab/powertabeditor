@@ -108,7 +108,7 @@ public:
     /// @return True if the face name was set, false if not
     bool SetFaceName(const char* faceName)                
     {
-        PTB_CHECK_THAT(faceName != NULL, false);
+        PTB_CHECK_THAT(faceName != nullptr, false);
         m_faceName = faceName;
         return (true);
     }

@@ -126,7 +126,7 @@ const PlayerChange *ScoreUtils::getCurrentPlayers(const Score &score,
                                                   int systemIndex,
                                                   int positionIndex)
 {
-    const PlayerChange *lastChange = NULL;
+    const PlayerChange *lastChange = nullptr;
 
     int i = 0;
     for (const System &system : score.getSystems())

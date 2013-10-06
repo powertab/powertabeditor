@@ -35,7 +35,7 @@ static const double SYSTEM_SPACING = 50;
 ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myViewType(Staff::GuitarView),
-      myCaretPainter(NULL),
+      myCaretPainter(nullptr),
       myKeySignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
       myTimeSignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
       myBarlineClicked(boost::make_shared<ScoreLocationPubSub>()),
@@ -56,7 +56,7 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
     boost::timer timer;
     QProgressDialog progressDialog(tr("Rendering ..."), "", 0,
                                    score.getSystems().size());
-    progressDialog.setCancelButton(0);
+    progressDialog.setCancelButton(nullptr);
     progressDialog.setWindowModality(Qt::WindowModal);
     progressDialog.show();
 

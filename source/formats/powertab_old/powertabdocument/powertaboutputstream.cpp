@@ -132,11 +132,11 @@ bool PowerTabOutputStream::WriteObject(const PowerTabObject* object)
     // object can be NULL
 
     // Make sure maps are initialized
-    if (!MapObject(NULL))
+    if (!MapObject(nullptr))
         return (false);
 
     // Save out NULL tag to represent NULL pointer
-    if (object == NULL)
+    if (object == nullptr)
         *this << NULL_TAG;
     else
     {
@@ -179,14 +179,14 @@ bool PowerTabOutputStream::WriteObject(const PowerTabObject* object)
 /// @return True if the class information was written, false if not
 bool PowerTabOutputStream::WriteClassInformation(const PowerTabObject* object)
 {
-    if (object == NULL)
+    if (object == nullptr)
     {
         m_lastPowerTabError = POWERTABSTREAM_BAD_CLASS;
         return (false);
     }
 
     // Make sure the maps are initialized
-    MapObject(NULL);
+    MapObject(nullptr);
 
     // Write out class id of object, with high bit set to indicate
     // new object follows
@@ -295,12 +295,12 @@ bool PowerTabOutputStream::MapObject(const PowerTabObject* object)
     {
         m_mapsInitialized = true;
 
-        m_objectHashMap[NULL] = (uint32_t)NULL_TAG;
+        m_objectHashMap[nullptr] = (uint32_t)NULL_TAG;
         m_mapCount = 1;
     }
 
     // Map the object
-    if (object != NULL)
+    if (object != nullptr)
     {
         if (!CheckCount())
             return false;

@@ -93,7 +93,7 @@ const Barline *System::getPreviousBarline(int position) const
             return &barline;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const Barline *System::getNextBarline(int position) const
@@ -104,7 +104,7 @@ const Barline *System::getNextBarline(int position) const
             return &barline;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 boost::iterator_range<System::TempoMarkerIterator> System::getTempoMarkers()

@@ -204,7 +204,7 @@ const Note *Utils::findByString(const Position &pos, int string)
             return &note;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 bool Utils::hasNoteWithTappedHarmonic(const Position &pos)

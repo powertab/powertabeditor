@@ -30,7 +30,7 @@ class UndoManager : public QUndoGroup
     Q_OBJECT
 
 public:
-    explicit UndoManager(QObject *parent = 0);
+    explicit UndoManager(QObject *parent = nullptr);
 
     void addNewUndoStack();
     void setActiveStackIndex(int index);

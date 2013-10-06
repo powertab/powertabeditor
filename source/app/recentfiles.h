@@ -27,7 +27,7 @@ class RecentFiles : public QObject
     Q_OBJECT
 
 public:
-    RecentFiles(QMenu *myRecentFilesMenu, QObject *parent = 0);
+    RecentFiles(QMenu *myRecentFilesMenu, QObject *parent = nullptr);
     ~RecentFiles();
 
     /// Adds a file to the recent documents list.

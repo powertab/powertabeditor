@@ -171,7 +171,7 @@ size_t Document::GetNumberOfScores() const
 /// @return A pointer to thescore
 Score* Document::GetScore(size_t index) const
 {
-    PTB_CHECK_THAT(index < m_scoreArray.size(), NULL);
+    PTB_CHECK_THAT(index < m_scoreArray.size(), nullptr);
     return m_scoreArray[index];
 }
 
@@ -179,7 +179,7 @@ Score* Document::GetScore(size_t index) const
 /// @return A pointer to the player score
 Score* Document::GetPlayerScore() const
 {
-    PTB_CHECK_THAT(!m_scoreArray.empty(), NULL);
+    PTB_CHECK_THAT(!m_scoreArray.empty(), nullptr);
     return m_scoreArray[0];
 }
 // Save Functions

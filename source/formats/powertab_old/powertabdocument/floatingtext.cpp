@@ -42,7 +42,7 @@ FloatingText::FloatingText(const char* text, Rect rect, uint8_t flags,
 {
     //------Last Checked------//
     // - Dec 7, 2004
-    assert(text != NULL);
+    assert(text != nullptr);
 }
 
 /// Copy Constructor
