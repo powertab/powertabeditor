@@ -196,6 +196,8 @@ private slots:
 
     /// Adds or removes a hammeron/pulloff for the current note.
     void editHammerPull();
+    /// Adds or removes an artificial harmonic for the current note.
+    void editArtificialHarmonic();
     /// Adds or removes a tapped harmonic for the current note.
     void editTappedHarmonic();
     /// Adds or removes a trill for the current note.
@@ -418,6 +420,7 @@ private:
     Command *myPullOffToNowhereCommand;
 
     Command *myNaturalHarmonicCommand;
+    Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
 
     QMenu *mySlideIntoMenu;
@@ -493,8 +496,6 @@ private:
     Command* irregularGroupingAct;
 
     Command* volumeSwellAct;
-
-    Command* artificialHarmonicAct;
 
     QMenu* guitarMenu;
     Command* addGuitarAct;

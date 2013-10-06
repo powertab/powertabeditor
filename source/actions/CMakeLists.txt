@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.8)
 
 add_library(pteactions
     addalternateending.cpp
-    #addartificialharmonic.cpp
+    addartificialharmonic.cpp
     addbarline.cpp
     addchordtext.cpp
     adddirection.cpp
@@ -33,7 +33,7 @@ add_library(pteactions
     #edittuning.cpp
     insertnotes.cpp
     removealternateending.cpp
-    #removeartificialharmonic.cpp
+    removeartificialharmonic.cpp
     removebarline.cpp
     removechordtext.cpp
     removedirection.cpp

@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,23 @@
 #include <catch.hpp>
 
 #include <actions/addartificialharmonic.h>
-#include <powertabdocument/chordname.h>
-#include <powertabdocument/note.h>
+#include <score/note.h>
+#include "actionfixture.h"
 
-TEST_CASE("Actions/AddArtificialHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddArtificialHarmonic", "")
 {
     Note note;
-    const uint8_t requestedKey = ChordName::D;
-    const uint8_t requestedKeyVariation = ChordName::variationUp;
-    const uint8_t requestedOctave = Note::artificialHarmonicOctave8va;
-    uint8_t key = 0;
-    uint8_t keyVariation = 0;
-    uint8_t octave = 0;
+    myLocation.getPosition()->insertNote(note);
 
-    AddArtificialHarmonic action(&note, requestedKey, requestedKeyVariation,
-                                 requestedOctave);
+    ArtificialHarmonic harmonic(ChordName::D, ChordName::Flat,
+                                ArtificialHarmonic::Octave::Octave15ma);
+
+    AddArtificialHarmonic action(myLocation, harmonic);
 
     action.redo();
-    REQUIRE(note.HasArtificialHarmonic());
-    note.GetArtificialHarmonic(key, keyVariation, octave);
-    REQUIRE(key == requestedKey);
-    REQUIRE(keyVariation == requestedKeyVariation);
-    REQUIRE(octave == requestedOctave);
+    REQUIRE(myLocation.getNote()->hasArtificialHarmonic());
+    REQUIRE(myLocation.getNote()->getArtificialHarmonic() == harmonic);
 
     action.undo();
-    REQUIRE(!note.HasArtificialHarmonic());
+    REQUIRE(!myLocation.getNote()->hasArtificialHarmonic());
 }

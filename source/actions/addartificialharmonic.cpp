@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2011 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -17,22 +17,20 @@
 
 #include "addartificialharmonic.h"
 
-#include <powertabdocument/note.h>
-
-AddArtificialHarmonic::AddArtificialHarmonic(Note *note, uint8_t key,
-                                             uint8_t keyVariation,
-                                             uint8_t octave) :
-    QUndoCommand(QObject::tr("Add Artificial Harmonic")),
-    note(note), key(key), keyVariation(keyVariation), octave(octave)
+AddArtificialHarmonic::AddArtificialHarmonic(const ScoreLocation &location,
+                                             const ArtificialHarmonic &harmonic)
+    : QUndoCommand(QObject::tr("Add Artificial Harmonic")),
+      myLocation(location),
+      myHarmonic(harmonic)
 {
 }
 
 void AddArtificialHarmonic::redo()
 {
-    note->SetArtificialHarmonic(key, keyVariation, octave);
+    myLocation.getNote()->setArtificialHarmonic(myHarmonic);
 }
 
 void AddArtificialHarmonic::undo()
 {
-    note->ClearArtificialHarmonic();
+    myLocation.getNote()->clearArtificialHarmonic();
 }

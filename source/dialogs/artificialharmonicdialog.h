@@ -15,13 +15,14 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ARTIFICIALHARMONICDIALOG_H
-#define ARTIFICIALHARMONICDIALOG_H
+#ifndef DIALOGS_ARTIFICIALHARMONICDIALOG_H
+#define DIALOGS_ARTIFICIALHARMONICDIALOG_H
 
 #include <QDialog>
-#include <boost/cstdint.hpp>
+#include <score/note.h>
 
-namespace Ui {
+namespace Ui
+{
 class ArtificialHarmonicDialog;
 }
 
@@ -31,24 +32,22 @@ class QButtonGroup;
 class ArtificialHarmonicDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     explicit ArtificialHarmonicDialog(QWidget *parent);
     ~ArtificialHarmonicDialog();
 
-    uint8_t getKey() const;
-    uint8_t getKeyVariation() const;
-    uint8_t getOctave() const;
+    ArtificialHarmonic getHarmonic() const;
 
 private slots:
-    void onAccidentalButtonClicked(QAbstractButton*);
-    
+    void onAccidentalButtonClicked(QAbstractButton *);
+
 private:
     Ui::ArtificialHarmonicDialog *ui;
 
-    QButtonGroup* keyGroup;
-    QButtonGroup* accidentalGroup;
-    QButtonGroup* octaveGroup;
+    QButtonGroup *myKeyGroup;
+    QButtonGroup *myAccidentalGroup;
+    QButtonGroup *myOctaveGroup;
 };
 
-#endif // ARTIFICIALHARMONICDIALOG_H
+#endif

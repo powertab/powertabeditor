@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -17,21 +17,20 @@
 
 #include "removeartificialharmonic.h"
 
-#include <powertabdocument/note.h>
-
-RemoveArtificialHarmonic::RemoveArtificialHarmonic(Note *note) :
-    QUndoCommand(QObject::tr("Remove Artificial Harmonic")),
-    note(note)
+RemoveArtificialHarmonic::RemoveArtificialHarmonic(
+    const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Remove Artificial Harmonic")),
+      myLocation(location),
+      myHarmonic(location.getNote()->getArtificialHarmonic())
 {
-    note->GetArtificialHarmonic(key, keyVariation, octave);
 }
 
 void RemoveArtificialHarmonic::redo()
 {
-    note->ClearArtificialHarmonic();
+    myLocation.getNote()->clearArtificialHarmonic();
 }
 
 void RemoveArtificialHarmonic::undo()
 {
-    note->SetArtificialHarmonic(key, keyVariation, octave);
+    myLocation.getNote()->setArtificialHarmonic(myHarmonic);
 }

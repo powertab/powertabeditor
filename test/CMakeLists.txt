@@ -4,7 +4,7 @@ add_executable(pte_tests
     test_main.cpp
 
     actions/test_addalternateending.cpp
-    #actions/test_addartificialharmonic.cpp
+    actions/test_addartificialharmonic.cpp
     actions/test_addbarline.cpp
     actions/test_addchordtext.cpp
     actions/test_adddirection.cpp
@@ -29,7 +29,7 @@ add_executable(pte_tests
     actions/test_edittabnumber.cpp
     actions/test_edittimesignature.cpp
     actions/test_removealternateending.cpp
-    #actions/test_removeartificialharmonic.cpp
+    actions/test_removeartificialharmonic.cpp
     actions/test_removebarline.cpp
     actions/test_removechordtext.cpp
     actions/test_removedirection.cpp

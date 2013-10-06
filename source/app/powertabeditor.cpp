@@ -18,6 +18,7 @@
 #include "powertabeditor.h"
 
 #include <actions/addalternateending.h>
+#include <actions/addartificialharmonic.h>
 #include <actions/addbarline.h>
 #include <actions/addchordtext.h>
 #include <actions/adddirection.h>
@@ -40,6 +41,7 @@
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
 #include <actions/removealternateending.h>
+#include <actions/removeartificialharmonic.h>
 #include <actions/removebarline.h>
 #include <actions/removechordtext.h>
 #include <actions/removedirection.h>
@@ -77,6 +79,7 @@
 #include <boost/timer.hpp>
 
 #include <dialogs/alternateendingdialog.h>
+#include <dialogs/artificialharmonicdialog.h>
 #include <dialogs/barlinedialog.h>
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/directiondialog.h>
@@ -1011,6 +1014,30 @@ void PowerTabEditor::editHammerPull()
         myHammerPullCommand->setChecked(false);
 }
 
+void PowerTabEditor::editArtificialHarmonic()
+{
+    auto &location = getLocation();
+
+    if (!location.getNote()->hasArtificialHarmonic())
+    {
+        ArtificialHarmonicDialog dialog(this);
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(
+                new AddArtificialHarmonic(location, dialog.getHarmonic()),
+                location.getSystemIndex());
+        }
+        else
+            myArtificialHarmonicCommand->setChecked(false);
+    }
+    else
+    {
+        myUndoManager->push(new RemoveArtificialHarmonic(location),
+                            location.getSystemIndex());
+    }
+}
+
 void PowerTabEditor::editTappedHarmonic()
 {
     const ScoreLocation &location = getLocation();
@@ -1642,13 +1669,14 @@ void PowerTabEditor::createCommands()
     createNotePropertyCommand(myNaturalHarmonicCommand, tr("Natural Harmonic"),
                               "TabSymbols.NaturalHarmonic", QKeySequence(),
                               Note::NaturalHarmonic);
-#if 0
-    artificialHarmonicAct = new Command(tr("Artificial Harmonic..."),
-            "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
-    artificialHarmonicAct->setCheckable(true);
-    connect(artificialHarmonicAct, SIGNAL(triggered()),
-            this, SLOT(editArtificialHarmonic()));
-#endif
+
+    myArtificialHarmonicCommand =
+        new Command(tr("Artificial Harmonic..."),
+                    "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
+    myArtificialHarmonicCommand->setCheckable(true);
+    connect(myArtificialHarmonicCommand, SIGNAL(triggered()), this,
+            SLOT(editArtificialHarmonic()));
+
     myTappedHarmonicCommand = new Command(tr("Tapped Harmonic..."),
                                           "TabSymbols.TappedHarmonic",
                                           QKeySequence(), this);
@@ -1959,9 +1987,7 @@ void PowerTabEditor::createMenus()
     myHammerOnMenu->addAction(myPullOffToNowhereCommand);
 
     myTabSymbolsMenu->addAction(myNaturalHarmonicCommand);
-#if 0
-    tabSymbolsMenu->addAction(artificialHarmonicAct);
-#endif
+    myTabSymbolsMenu->addAction(myArtificialHarmonicCommand);
     myTabSymbolsMenu->addAction(myTappedHarmonicCommand);
     myTabSymbolsMenu->addSeparator();
 
@@ -2275,6 +2301,9 @@ void PowerTabEditor::updateCommands()
                        Note::HammerOnFromNowhere);
     updateNoteProperty(myPullOffToNowhereCommand, note, Note::PullOffToNowhere);
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
+    myArtificialHarmonicCommand->setEnabled(note);
+    myArtificialHarmonicCommand->setChecked(note &&
+                                            note->hasArtificialHarmonic());
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
 
@@ -2595,73 +2624,12 @@ void PowerTabEditor::shiftTabNumber(int direction)
     caret->moveCaretVertical(direction == 1 ? direction : -1);
 }
 
-void PowerTabEditor::changePositionSpacing(int offset)
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    shared_ptr<System> currentSystem = caret->getCurrentSystem();
-
-    const int newSpacing = currentSystem->GetPositionSpacing() + offset;
-    if (currentSystem->IsValidPositionSpacing(newSpacing))
-    {
-        undoManager->push(new ChangePositionSpacing(currentSystem, newSpacing),
-                          caret->getCurrentSystemIndex());
-    }
-}
-
 void PowerTabEditor::addGuitar()
 {
     Score* score = getCurrentScoreArea()->getCaret()->getCurrentScore();
 
     AddGuitar* addGuitar = new AddGuitar(score, getCurrentMixer());
     undoManager->push(addGuitar, UndoManager::AFFECTS_ALL_SYSTEMS);
-}
-
-void PowerTabEditor::editArtificialHarmonic()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Note* currentNote = caret->getCurrentNote();
-
-    if (currentNote->HasArtificialHarmonic())
-    {
-        undoManager->push(new RemoveArtificialHarmonic(currentNote),
-                          caret->getCurrentSystemIndex());
-    }
-    else
-    {
-        ArtificialHarmonicDialog dialog(this);
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            undoManager->push(new AddArtificialHarmonic(currentNote,
-                    dialog.getKey(), dialog.getKeyVariation(),
-                    dialog.getOctave()),
-                              caret->getCurrentSystemIndex());
-        }
-        else
-        {
-            artificialHarmonicAct->setChecked(false);
-        }
-    }
-}
-
-// Updates the given Command to be checked and/or enabled, based on the results of calling
-// the predicate member function of the provided object
-namespace
-{
-    template<class T>
-    void updatePropertyStatus(Command* action, const T* object, bool (T::*predicate)(void) const)
-    {
-        if (object == NULL)
-        {
-            action->setChecked(false);
-            action->setEnabled(false);
-        }
-        else
-        {
-            action->setEnabled(true);
-            const bool propertySet = (object->*predicate)();
-            action->setChecked(propertySet);
-        }
-    }
 }
 
 void PowerTabEditor::updateLocationLabel()

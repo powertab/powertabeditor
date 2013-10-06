@@ -20,46 +20,43 @@
 
 #include <QButtonGroup>
 
-#include <powertabdocument/chordname.h>
-#include <powertabdocument/note.h>
-
-ArtificialHarmonicDialog::ArtificialHarmonicDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::ArtificialHarmonicDialog),
-    keyGroup(new QButtonGroup(this)),
-    accidentalGroup(new QButtonGroup(this)),
-    octaveGroup(new QButtonGroup(this))
+ArtificialHarmonicDialog::ArtificialHarmonicDialog(QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::ArtificialHarmonicDialog),
+      myKeyGroup(new QButtonGroup(this)),
+      myAccidentalGroup(new QButtonGroup(this)),
+      myOctaveGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
 
-    keyGroup->addButton(ui->keyCButton, ChordName::C);
-    keyGroup->addButton(ui->keyDButton, ChordName::D);
-    keyGroup->addButton(ui->keyEButton, ChordName::E);
-    keyGroup->addButton(ui->keyFButton, ChordName::F);
-    keyGroup->addButton(ui->keyGButton, ChordName::G);
-    keyGroup->addButton(ui->keyAButton, ChordName::A);
-    keyGroup->addButton(ui->keyBButton, ChordName::B);
+    myKeyGroup->addButton(ui->keyCButton, ChordName::C);
+    myKeyGroup->addButton(ui->keyDButton, ChordName::D);
+    myKeyGroup->addButton(ui->keyEButton, ChordName::E);
+    myKeyGroup->addButton(ui->keyFButton, ChordName::F);
+    myKeyGroup->addButton(ui->keyGButton, ChordName::G);
+    myKeyGroup->addButton(ui->keyAButton, ChordName::A);
+    myKeyGroup->addButton(ui->keyBButton, ChordName::B);
 
-    accidentalGroup->addButton(ui->sharpButton);
-    accidentalGroup->addButton(ui->flatButton);
-    accidentalGroup->addButton(ui->doubleSharpButton);
-    accidentalGroup->addButton(ui->doubleFlatButton);
+    myAccidentalGroup->addButton(ui->sharpButton);
+    myAccidentalGroup->addButton(ui->flatButton);
+    myAccidentalGroup->addButton(ui->doubleSharpButton);
+    myAccidentalGroup->addButton(ui->doubleFlatButton);
 
-    octaveGroup->addButton(ui->octaveLocoButton,
-                           Note::artificialHarmonicOctaveLoco);
-    octaveGroup->addButton(ui->octave8vaButton,
-                           Note::artificialHarmonicOctave8va);
-    octaveGroup->addButton(ui->octave15maButton,
-                           Note::artificialHarmonicOctave15ma);
+    myOctaveGroup->addButton(ui->octaveLocoButton,
+        static_cast<int>(ArtificialHarmonic::Octave::Loco));
+    myOctaveGroup->addButton(ui->octave8vaButton,
+        static_cast<int>(ArtificialHarmonic::Octave::Octave8va));
+    myOctaveGroup->addButton(ui->octave15maButton,
+        static_cast<int>(ArtificialHarmonic::Octave::Octave15ma));
 
     ui->keyCButton->setChecked(true);
     ui->octave8vaButton->setChecked(true);
 
     // Since we want only 0 or 1 of the buttons to be checked at any time, we
     // need to handle this ourselves.
-    accidentalGroup->setExclusive(false);
-    connect(accidentalGroup, SIGNAL(buttonClicked(QAbstractButton*)),
-            this, SLOT(onAccidentalButtonClicked(QAbstractButton*)));
+    myAccidentalGroup->setExclusive(false);
+    connect(myAccidentalGroup, SIGNAL(buttonClicked(QAbstractButton *)), this,
+            SLOT(onAccidentalButtonClicked(QAbstractButton *)));
 }
 
 ArtificialHarmonicDialog::~ArtificialHarmonicDialog()
@@ -67,39 +64,31 @@ ArtificialHarmonicDialog::~ArtificialHarmonicDialog()
     delete ui;
 }
 
-uint8_t ArtificialHarmonicDialog::getKey() const
+ArtificialHarmonic ArtificialHarmonicDialog::getHarmonic() const
 {
-    uint8_t key = 0;
-    uint8_t keyVariation = 0;
-    ChordName::ComputeKeyAndVariation(key, keyVariation, keyGroup->checkedId(),
-            ui->sharpButton->isChecked(), ui->doubleSharpButton->isChecked(),
-            ui->flatButton->isChecked(), ui->doubleFlatButton->isChecked());
-    return key;
-}
+    // QButtonGroup doesn't like having button ids of -1, so we can't easily
+    // use checkedId() here.
+    auto variation = ChordName::NoVariation;
+    if (myAccidentalGroup->checkedButton() == ui->sharpButton)
+        variation = ChordName::Sharp;
+    else if (myAccidentalGroup->checkedButton() == ui->doubleSharpButton)
+        variation = ChordName::DoubleSharp;
+    else if (myAccidentalGroup->checkedButton() == ui->flatButton)
+        variation = ChordName::Flat;
+    else if (myAccidentalGroup->checkedButton() == ui->doubleFlatButton)
+        variation = ChordName::DoubleFlat;
 
-uint8_t ArtificialHarmonicDialog::getKeyVariation() const
-{
-    uint8_t key = 0;
-    uint8_t keyVariation = 0;
-    ChordName::ComputeKeyAndVariation(key, keyVariation, keyGroup->checkedId(),
-            ui->sharpButton->isChecked(), ui->doubleSharpButton->isChecked(),
-            ui->flatButton->isChecked(), ui->doubleFlatButton->isChecked());
-    return keyVariation;
-}
-
-uint8_t ArtificialHarmonicDialog::getOctave() const
-{
-    return octaveGroup->checkedId();
+    return ArtificialHarmonic(
+        static_cast<ChordName::Key>(myKeyGroup->checkedId()), variation,
+        static_cast<ArtificialHarmonic::Octave>(myOctaveGroup->checkedId()));
 }
 
 void ArtificialHarmonicDialog::onAccidentalButtonClicked(
-        QAbstractButton *clickedButton)
+    QAbstractButton *clickedButton)
 {
-    foreach (QAbstractButton *button, accidentalGroup->buttons())
+    for (auto button : myAccidentalGroup->buttons())
     {
         if (button != clickedButton)
-        {
             button->setChecked(false);
-        }
     }
 }

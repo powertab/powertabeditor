@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.8)
 
 set(FORMS
-    #artificialharmonicdialog.ui
+    artificialharmonicdialog.ui
     barlinedialog.ui
     chordnamedialog.ui
     directiondialog.ui
@@ -29,7 +29,7 @@ qt5_wrap_ui(FORMS_HEADERS ${FORMS})
 add_library(ptedialogs
     ${FORMS_HEADERS}
     alternateendingdialog.cpp
-    #artificialharmonicdialog.cpp
+    artificialharmonicdialog.cpp
     barlinedialog.cpp
     chordnamedialog.cpp
     directiondialog.cpp

@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,27 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef REMOVEARTIFICIALHARMONIC_H
-#define REMOVEARTIFICIALHARMONIC_H
+#ifndef ACTIONS_REMOVEARTIFICIALHARMONIC_H
+#define ACTIONS_REMOVEARTIFICIALHARMONIC_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-
-class Note;
+#include <score/note.h>
+#include <score/scorelocation.h>
 
 class RemoveArtificialHarmonic : public QUndoCommand
 {
 public:
-    RemoveArtificialHarmonic(Note *note);
+    RemoveArtificialHarmonic(const ScoreLocation &location);
 
-    virtual void redo();
-    virtual void undo();
+    virtual void undo() override;
+    virtual void redo() override;
 
 private:
-    Note *note;
-    uint8_t key;
-    uint8_t keyVariation;
-    uint8_t octave;
+    ScoreLocation myLocation;
+    const ArtificialHarmonic myHarmonic;
 };
 
-#endif // REMOVEARTIFICIALHARMONIC_H
+#endif

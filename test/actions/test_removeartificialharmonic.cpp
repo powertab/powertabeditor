@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,32 +18,22 @@
 #include <catch.hpp>
 
 #include <actions/removeartificialharmonic.h>
-#include <powertabdocument/chordname.h>
-#include <powertabdocument/note.h>
+#include <score/note.h>
+#include "actionfixture.h"
 
-TEST_CASE("Actions/RemoveArtificialHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveArtificialHarmonic", "")
 {
-    Note note;
-    const uint8_t originalKey = ChordName::D;
-    const uint8_t originalKeyVariation = ChordName::variationUp;
-    const uint8_t originalOctave = Note::artificialHarmonicOctave8va;
-    note.SetArtificialHarmonic(originalKey, originalKeyVariation,
-                               originalOctave);
+    ArtificialHarmonic harmonic(ChordName::D, ChordName::Flat,
+                                ArtificialHarmonic::Octave::Octave15ma);
+    myLocation.getNote()->setArtificialHarmonic(harmonic);
 
-    uint8_t key = 0;
-    uint8_t keyVariation = 0;
-    uint8_t octave = 0;
-
-    RemoveArtificialHarmonic action(&note);
+    RemoveArtificialHarmonic action(myLocation);
 
     action.redo();
-    REQUIRE(!note.HasArtificialHarmonic());
+    REQUIRE(!myLocation.getNote()->hasArtificialHarmonic());
 
     action.undo();
-    REQUIRE(note.HasArtificialHarmonic());
-
-    note.GetArtificialHarmonic(key, keyVariation, octave);
-    REQUIRE(key == originalKey);
-    REQUIRE(keyVariation == originalKeyVariation);
-    REQUIRE(octave == originalOctave);
+    REQUIRE(myLocation.getNote()->hasArtificialHarmonic());
+    REQUIRE(myLocation.getNote()->getArtificialHarmonic() == harmonic);
 }
+
