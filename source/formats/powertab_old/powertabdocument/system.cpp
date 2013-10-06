@@ -154,9 +154,9 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
         // Update key signs that aren't show to match active key sign
         KeySignature& activeKeySignature = m_startBar->GetKeySignature();
 
-        for (size_t i = 0; i < m_barlineArray.size(); i++)
+        for (auto &bar : m_barlineArray)
         {
-            KeySignature& keySignature = m_barlineArray[i]->GetKeySignature();
+            KeySignature &keySignature = bar->GetKeySignature();
 
             // Key on bar doesn't match active
             if (keySignature != activeKeySignature)
@@ -170,7 +170,7 @@ bool System::Deserialize(PowerTabInputStream& stream, uint16_t version)
                 }
 
                 // Update active key
-                activeKeySignature = m_barlineArray[i]->GetKeySignature();
+                activeKeySignature = bar->GetKeySignature();
             }
         }
     }

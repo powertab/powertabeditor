@@ -2035,7 +2035,7 @@ void PowerTabEditor::setupNewTab()
     doc.getCaret().subscribeToChanges(
                 boost::bind(&PowerTabEditor::updateCommands, this));
 
-    ScoreArea *scorearea = new ScoreArea(this);
+    auto scorearea = new ScoreArea(this);
     scorearea->renderDocument(doc, Staff::GuitarView);
     scorearea->installEventFilter(this);
 

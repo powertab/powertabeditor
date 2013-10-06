@@ -32,7 +32,7 @@ AlternateEndingDialog::AlternateEndingDialog(QWidget *parent)
     setWindowTitle(tr("Repeat Ending"));
     setModal(true);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    auto mainLayout = new QVBoxLayout(this);
 
     std::vector<QHBoxLayout *> rowLayouts;
     for (int i = AlternateEnding::MIN_NUMBER; i <= AlternateEnding::MAX_NUMBER; ++i)
@@ -50,7 +50,7 @@ AlternateEndingDialog::AlternateEndingDialog(QWidget *parent)
     myDaCapoCheckbox = new QCheckBox(tr("D.C."), this);
     myDalSegnoCheckbox = new QCheckBox(tr("D.S."), this);
     myDalSegnoSegnoCheckbox = new QCheckBox(tr("D.S.S."), this);
-    QHBoxLayout *layout = new QHBoxLayout();
+    auto layout = new QHBoxLayout();
     layout->addWidget(myDaCapoCheckbox);
     layout->addWidget(myDalSegnoCheckbox);
     layout->addWidget(myDalSegnoSegnoCheckbox);
@@ -62,8 +62,8 @@ AlternateEndingDialog::AlternateEndingDialog(QWidget *parent)
         mainLayout->addLayout(layout);
     }
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(
-                QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+    auto buttonBox =
+        new QDialogButtonBox(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 

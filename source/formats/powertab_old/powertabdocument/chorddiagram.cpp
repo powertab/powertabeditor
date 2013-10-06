@@ -176,9 +176,9 @@ bool ChordDiagram::AddFretNumbers(const std::vector<uint8_t>& fretNumbers)
 {
     PTB_CHECK_THAT(Tuning::IsValidStringCount(fretNumbers.size()), false);
 
-    for (size_t i = 0; i < fretNumbers.size(); i++)
+    for (auto &fretNumber : fretNumbers)
     {
-        PTB_CHECK_THAT(IsValidFretNumber(fretNumbers[i]), false);
+        PTB_CHECK_THAT(IsValidFretNumber(fretNumber), false);
     }
 
     m_fretNumberArray = fretNumbers;

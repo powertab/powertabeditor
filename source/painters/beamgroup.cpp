@@ -97,7 +97,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
         symbols.clear();
     }
 
-    QGraphicsPathItem *stems = new QGraphicsPathItem(stemPath);
+    auto stems = new QGraphicsPathItem(stemPath);
     stems->setParentItem(parent);
 
     QPainterPath beamPath;
@@ -113,7 +113,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
 
     drawExtraBeams(beamPath);
 
-    QGraphicsPathItem *beams = new QGraphicsPathItem(beamPath);
+    auto beams = new QGraphicsPathItem(beamPath);
     beams->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
     beams->setParentItem(parent);
 
@@ -186,14 +186,13 @@ NoteStem BeamGroup::findLowestStem(const std::vector<NoteStem> &stems)
 
 void BeamGroup::drawExtraBeams(QPainterPath &path) const
 {
-    for (std::vector<NoteStem>::const_iterator stem = myNoteStems.begin();
-         stem != myNoteStems.end(); ++stem)
+    for (auto stem = myNoteStems.begin(); stem != myNoteStems.end(); ++stem)
     {
         std::vector<NoteStem>::const_iterator prevStem;
 		if (stem != myNoteStems.begin())
 			prevStem = boost::prior(stem);
 
-        std::vector<NoteStem>::const_iterator nextStem = boost::next(stem);
+	auto nextStem = boost::next(stem);
         const Position::DurationType duration = stem->getDurationType();
         const Position::DurationType prevDuration = (stem != myNoteStems.begin()) ?
                     prevStem->getDurationType() : Position::SixtyFourthNote;

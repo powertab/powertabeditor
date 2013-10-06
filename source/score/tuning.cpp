@@ -104,9 +104,9 @@ void Tuning::setNotes(const std::vector<uint8_t> &notes)
     if (!isValidStringCount(notes.size()))
         throw std::out_of_range("Invalid string count");
 
-    for (size_t i = 0; i < notes.size(); ++i)
+    for (auto &note : notes)
     {
-        if (!Midi::isValidMidiNote(notes[i]))
+        if (!Midi::isValidMidiNote(note))
             throw std::out_of_range("Invalid MIDI note");
     }
 

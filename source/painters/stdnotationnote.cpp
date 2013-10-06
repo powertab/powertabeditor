@@ -282,9 +282,9 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
     std::partial_sum(durations.begin(), durations.end(), durations.begin());
 
     double groupBeginTime = 0;
-    std::vector<uint8_t>::const_iterator groupSize = beamingPatterns.begin();
-    std::vector<double>::iterator groupStart = durations.begin();
-    std::vector<double>::iterator groupEnd = durations.begin();
+    auto groupSize = beamingPatterns.begin();
+    auto groupStart = durations.begin();
+    auto groupEnd = durations.begin();
 
     while (groupEnd != durations.end())
     {
@@ -316,8 +316,8 @@ void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
     // Rests and notes greater than eighth notes will break apart a beam group,
     // so we need to find all of the subgroups of consecutive positions that
     // can be beamed, and then create beaming groups with those notes.
-    std::vector<NoteStem>::const_iterator beamableGroupStart = stems.begin();
-    std::vector<NoteStem>::const_iterator beamableGroupEnd = stems.begin();
+    auto beamableGroupStart = stems.begin();
+    auto beamableGroupEnd = stems.begin();
 
     // Find all subgroups of beamable notes (i.e. consecutive notes that aren't
     // quarter notes, rests, etc).
@@ -330,8 +330,7 @@ void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
         // If there were any notes that aren't beamed but need stems (like a
         // half note or a quarter note), create a single-item beam group for
         // each.
-        for (std::vector<NoteStem>::const_iterator it = beamableGroupEnd;
-             it != beamableGroupStart; ++it)
+        for (auto it = beamableGroupEnd; it != beamableGroupStart; ++it)
         {
             if (NoteStem::needsStem(*it))
             {

@@ -106,8 +106,7 @@ void RepeatController::indexDirections(int systemIndex, const System &system)
 
 Repeat &RepeatController::getPreviousRepeatGroup(const SystemLocation &location)
 {
-    std::map<SystemLocation, Repeat>::iterator repeatGroup =
-            myRepeats.upper_bound(location);
+    auto repeatGroup = myRepeats.upper_bound(location);
     if (repeatGroup != myRepeats.begin())
     {
         --repeatGroup;
@@ -129,8 +128,8 @@ bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
 
     // Check for directions between the previous playback location and the
     // current location.
-    DirectionMap::iterator leftIt = myDirections.lower_bound(prevLocation);
-    DirectionMap::iterator rightIt = myDirections.upper_bound(currentLocation);
+    auto leftIt = myDirections.lower_bound(prevLocation);
+    auto rightIt = myDirections.upper_bound(currentLocation);
 
     if (leftIt != myDirections.end() && leftIt != rightIt)
     {

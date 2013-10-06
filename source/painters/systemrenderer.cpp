@@ -125,7 +125,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
 void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout)
 {
-    QGraphicsSimpleTextItem *tabClef = new QGraphicsSimpleTextItem();
+    auto tabClef = new QGraphicsSimpleTextItem();
 
     // Determine the size of the clef symbol based on the number of strings and
     // the line spacing.
@@ -217,12 +217,12 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             const RehearsalSign &sign = barline.getRehearsalSign();
             const int y = 1;
 
-            QGraphicsSimpleTextItem *signLetters = new QGraphicsSimpleTextItem();
+            auto signLetters = new QGraphicsSimpleTextItem();
             signLetters->setText(QString::fromStdString(sign.getLetters()));
             signLetters->setPos(rehearsalSignX, y);
             signLetters->setFont(myRehearsalSignFont);
 
-            QGraphicsSimpleTextItem *signText = new QGraphicsSimpleTextItem();
+            auto signText = new QGraphicsSimpleTextItem();
             signText->setText(QString::fromStdString(sign.getDescription()));
             signText->setFont(myRehearsalSignFont);
             signText->setPos(rehearsalSignX +
@@ -232,7 +232,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             QRectF boundingRect = signLetters->boundingRect();
             boundingRect.setWidth(boundingRect.width() + 7);
             boundingRect.translate(-4, 0);
-            QGraphicsRectItem *rect = new QGraphicsRectItem(boundingRect);
+            auto rect = new QGraphicsRectItem(boundingRect);
             rect->setPos(rehearsalSignX, y);
 
             rect->setParentItem(myParentSystem);
@@ -259,7 +259,7 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
 
-                QGraphicsSimpleTextItem *tabNote = new QGraphicsSimpleTextItem(text);
+                auto tabNote = new QGraphicsSimpleTextItem(text);
                 tabNote->setFont(myPlainTextFont);
                 tabNote->setPen(QPen(note.hasProperty(Note::Tied) ?
                                          Qt::lightGray : Qt::black));
@@ -371,7 +371,7 @@ void SystemRenderer::drawSystemSymbols(const System &system,
 
 void SystemRenderer::drawDividerLine(double y)
 {
-    QGraphicsLineItem *line = new QGraphicsLineItem();
+    auto line = new QGraphicsLineItem();
     line->setLine(0, y, LayoutInfo::STAFF_WIDTH, y);
     line->setOpacity(0.5);
     line->setPen(QPen(Qt::black, 0.5, Qt::DashLine));
@@ -391,7 +391,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         const double location = layout.getPositionX(ending.getPosition());
 
         // Draw the vertical line.
-        QGraphicsLineItem *vertLine = new QGraphicsLineItem();
+        auto vertLine = new QGraphicsLineItem();
         vertLine->setLine(0, TOP_LINE_OFFSET, 0,
                           LayoutInfo::SYSTEM_SYMBOL_SPACING - TOP_LINE_OFFSET);
         vertLine->setPos(location, height);
@@ -427,7 +427,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         // Ensure that the line doesn't extend past the edge of the system.
         endX = boost::algorithm::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
 
-        QGraphicsLineItem *horizLine = new QGraphicsLineItem();
+        auto horizLine = new QGraphicsLineItem();
         horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
         horizLine->setPos(location, height);
         horizLine->setParentItem(myParentSystem);
@@ -442,7 +442,7 @@ void SystemRenderer::drawTempoMarkers(const System &system,
     {
         const double location = layout.getPositionX(tempo.getPosition());
 
-        TempoMarkerPainter *painter = new TempoMarkerPainter(tempo);
+        auto painter = new TempoMarkerPainter(tempo);
         painter->setPos(location, height + 4);
         painter->setParentItem(myParentSystem);
     }
@@ -461,7 +461,7 @@ double SystemRenderer::drawDirections(const System &system,
 
         BOOST_FOREACH(const DirectionSymbol &symbol, direction.getSymbols())
         {
-            DirectionPainter *painter = new DirectionPainter(symbol);
+            auto painter = new DirectionPainter(symbol);
             centerItem(painter, location,
                        location + layout.getPositionSpacing(),
                        height + localHeight + 4);
@@ -581,7 +581,7 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                     path.moveTo(width, height / 2);
                     path.arcTo(0, 0, width, height, 0, 180);
 
-                    QGraphicsPathItem *arc = new QGraphicsPathItem(path);
+                    auto arc = new QGraphicsPathItem(path);
                     arc->setPos(left + layout.getPositionSpacing() / 2, y);
                     arc->setParentItem(myParentStaff);
 
@@ -599,7 +599,7 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                     path.moveTo(width, height / 2);
                     path.arcTo(0, 0, width, height, 0, 180);
 
-                    QGraphicsPathItem *arc = new QGraphicsPathItem(path);
+                    auto arc = new QGraphicsPathItem(path);
                     arc->setPos(layout.getPositionX(position) + 2,
                                 layout.getTabLine(string) - 2);
                     arc->setParentItem(myParentStaff);
@@ -719,7 +719,7 @@ void SystemRenderer::drawSlide(const LayoutInfo &layout, int string,
         y += layout.getTabLineSpacing() + 1;
     }
 
-    QGraphicsLineItem *slide = new QGraphicsLineItem(myParentStaff);
+    auto slide = new QGraphicsLineItem(myParentStaff);
     slide->setLine(0, 0, width - layout.getPositionSpacing() / 2, height);
     slide->setPos(left + layout.getPositionSpacing() / 1.5 + 1,
                   y + height / 2);
@@ -777,13 +777,13 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const Staff &staff,
 
 QGraphicsItem *SystemRenderer::createPickStroke(const QString &text)
 {
-    QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+    auto textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(myMusicNotationFont);
     textItem->setPos(2, 2 - myMusicFontMetrics.ascent());
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
     group->addToGroup(textItem);
     return group;
 }
@@ -793,11 +793,11 @@ QGraphicsItem *SystemRenderer::createPlainTextSymbol(const QString &text,
 {
     myPlainTextFont.setStyle(style);
 
-    QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+    auto textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(myPlainTextFont);
     textItem->setPos(0, -8);
 
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
     group->addToGroup(textItem);
 
     myPlainTextFont.setStyle(QFont::StyleNormal);
@@ -994,11 +994,11 @@ QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(const QString &text,
     mySymbolTextFont.setStyle(style);
 
     // Render the description (i.e. "let ring").
-    QGraphicsSimpleTextItem *description = new QGraphicsSimpleTextItem ();
+    auto description = new QGraphicsSimpleTextItem();
     description->setText(text);
     description->setFont(mySymbolTextFont);
 
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
     group->addToGroup(description);
 
     // Draw dashed line across the remaining positions in the group.
@@ -1008,16 +1008,15 @@ QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(const QString &text,
         const double leftEdge = description->boundingRect().right();
         const double middleHeight = LayoutInfo::TAB_SYMBOL_SPACING / 2.0;
 
-        QGraphicsLineItem *line = new QGraphicsLineItem(leftEdge, middleHeight,
-                                                        rightEdge, middleHeight);
+        auto line = new QGraphicsLineItem(leftEdge, middleHeight, rightEdge,
+                                          middleHeight);
         line->setPen(QPen(Qt::black, 1, Qt::DashLine));
         group->addToGroup(line);
 
         // Draw a vertical line at the end of the dotted lines.
-        QGraphicsLineItem *lineEnd = new QGraphicsLineItem(
-                    line->boundingRect().right(), 1,
-                    line->boundingRect().right(),
-                    LayoutInfo::TAB_SYMBOL_SPACING - 1);
+        auto lineEnd = new QGraphicsLineItem(
+            line->boundingRect().right(), 1, line->boundingRect().right(),
+            LayoutInfo::TAB_SYMBOL_SPACING - 1);
         group->addToGroup(lineEnd);
     }
 
@@ -1064,7 +1063,7 @@ QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
 
     // A bit of a hack for getting around the height offset caused by the
     // music font.
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
     group->addToGroup(text);
     return group;
 }
@@ -1073,7 +1072,7 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
 {
     const double offset = LayoutInfo::TAB_SYMBOL_SPACING / 3;
 
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
 
     for (int i = 0; i < 3; i++)
     {
@@ -1098,7 +1097,7 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
     text->setFont(font);
     centerItem(text, 0, layout.getPositionSpacing(), -18);
 
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
     group->addToGroup(text);
     return group;
 }
@@ -1125,13 +1124,13 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
     else if (volume <= Dynamic::ff)
         text = "ff";
 
-    QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+    auto textItem = new QGraphicsSimpleTextItem(text);
     textItem->setFont(myMusicNotationFont);
     textItem->setPos(0, -myMusicFontMetrics.ascent() + 10);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location.
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
     group->addToGroup(textItem);
     return group;
 }
@@ -1256,7 +1255,7 @@ void SystemRenderer::drawMultiBarRest(const System &system,
                 LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
 
     // Draw the measure count.
-    QGraphicsSimpleTextItem *measureCountText = new QGraphicsSimpleTextItem();
+    auto measureCountText = new QGraphicsSimpleTextItem();
     measureCountText->setText(QString::number(measureCount));
     measureCountText->setFont(myMusicNotationFont);
 
@@ -1265,20 +1264,20 @@ void SystemRenderer::drawMultiBarRest(const System &system,
     measureCountText->setParentItem(myParentStaff);
 
     // Draw symbol across std. notation staff.
-    QGraphicsLineItem *vertLineLeft = new QGraphicsLineItem(
-                leftX, layout.getStdNotationLine(2), leftX,
-                layout.getStdNotationLine(4));
+    auto vertLineLeft =
+        new QGraphicsLineItem(leftX, layout.getStdNotationLine(2), leftX,
+                              layout.getStdNotationLine(4));
     vertLineLeft->setParentItem(myParentStaff);
 
-    QGraphicsLineItem *vertLineRight = new QGraphicsLineItem(
-                rightX, layout.getStdNotationLine(2), rightX,
-                layout.getStdNotationLine(4));
+    auto vertLineRight =
+        new QGraphicsLineItem(rightX, layout.getStdNotationLine(2), rightX,
+                              layout.getStdNotationLine(4));
     vertLineRight->setParentItem(myParentStaff);
 
-    QGraphicsRectItem *horizontalLine = new QGraphicsRectItem(
-                leftX, layout.getStdNotationLine(2) +
-                0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
-                rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
+    auto horizontalLine = new QGraphicsRectItem(
+        leftX, layout.getStdNotationLine(2) +
+                   0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
+        rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
 
     horizontalLine->setBrush(QBrush(Qt::black));
     horizontalLine->setParentItem(myParentStaff);
@@ -1318,7 +1317,7 @@ void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &l
         break;
     }
 
-    QGraphicsItemGroup *group = new QGraphicsItemGroup();
+    auto group = new QGraphicsItemGroup();
     QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(symbol);
     text->setFont(myMusicNotationFont);
     text->setPos(0, y);
@@ -1406,7 +1405,7 @@ void SystemRenderer::drawLedgerLines(
         }
     }
 
-    QGraphicsPathItem *ledgerlines = new QGraphicsPathItem(path);
+    auto ledgerlines = new QGraphicsPathItem(path);
     ledgerlines->setParentItem(myParentStaff);
 }
 

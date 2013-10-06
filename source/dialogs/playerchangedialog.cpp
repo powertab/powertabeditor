@@ -34,7 +34,7 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
     const int spacing = 12;
 
     // Set up title row.
-    QHBoxLayout *titleLayout = new QHBoxLayout();
+    auto titleLayout = new QHBoxLayout();
     titleLayout->addWidget(new QLabel(tr("Staff")));
     titleLayout->addWidget(new QLabel(tr("Instrument")));
     titleLayout->setSpacing(spacing * 4);
@@ -44,7 +44,7 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
     {
         const int numStrings = player.getTuning().getStringCount();
 
-        QHBoxLayout *layout = new QHBoxLayout();
+        auto layout = new QHBoxLayout();
         layout->setSpacing(spacing);
         layout->addWidget(getStaffComboBox(numStrings, system));
         layout->addWidget(getInstrumentComboBox(score));
@@ -101,7 +101,7 @@ PlayerChange PlayerChangeDialog::getPlayerChange() const
 QComboBox *PlayerChangeDialog::getStaffComboBox(int numStrings,
                                                 const System &system)
 {
-    QComboBox *list = new QComboBox(this);
+    auto list = new QComboBox(this);
     myStaffComboBoxes.push_back(list);
 
     list->addItem(tr("None"), -1);
@@ -119,7 +119,7 @@ QComboBox *PlayerChangeDialog::getStaffComboBox(int numStrings,
 
 QComboBox *PlayerChangeDialog::getInstrumentComboBox(const Score &score)
 {
-    QComboBox *list = new QComboBox(this);
+    auto list = new QComboBox(this);
     myInstrumentComboBoxes.push_back(list);
 
     int i = 0;

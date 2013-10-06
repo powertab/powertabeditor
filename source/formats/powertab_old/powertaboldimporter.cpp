@@ -224,21 +224,21 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     // Import tempo markers.
     std::vector<boost::shared_ptr<PowerTabDocument::TempoMarker> > tempos;
     oldScore.GetTempoMarkersInSystem(tempos, oldSystem);
-    for (size_t i = 0; i < tempos.size(); ++i)
+    for (auto &tempo : tempos)
     {
         TempoMarker marker;
-        convert(*tempos[i], marker);
+        convert(*tempo, marker);
         system.insertTempoMarker(marker);
     }
 
     // Import alternate endings.
     std::vector<boost::shared_ptr<PowerTabDocument::AlternateEnding> > endings;
     oldScore.GetAlternateEndingsInSystem(endings, oldSystem);
-    for (size_t i = 0; i < endings.size(); ++i)
+    for (auto &endings : endings)
     {
-        AlternateEnding ending;
-        convert(*endings[i], ending);
-        system.insertAlternateEnding(ending);
+        AlternateEnding newEnding;
+        convert(*endings, newEnding);
+        system.insertAlternateEnding(newEnding);
     }
 
     // Import directions.
@@ -265,10 +265,10 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     {
         // Dynamics are now stored in the staff instead of the system.
         std::vector<PowerTabDocument::Score::DynamicPtr> dynamicsInStaff;
-        for (size_t j = 0; j < dynamics.size(); ++j)
+        for (auto &dynamic : dynamics)
         {
-            if (dynamics[j]->GetStaff() == i)
-                dynamicsInStaff.push_back(dynamics[j]);
+            if (dynamic->GetStaff() == i)
+                dynamicsInStaff.push_back(dynamic);
         }
 
         Staff staff;
@@ -375,8 +375,8 @@ void PowerTabOldImporter::convert(
     ending.setPosition(oldEnding.GetPosition());
 
     std::vector<uint8_t> numbers = oldEnding.GetListOfNumbers();
-    for (size_t i = 0; i < numbers.size(); ++i)
-        ending.addNumber(numbers[i]);
+    for (auto &number : numbers)
+        ending.addNumber(number);
 
     ending.setDaCapo(oldEnding.IsDaCapoSet());
     ending.setDalSegno(oldEnding.IsDalSegnoSet());
@@ -549,12 +549,12 @@ int PowerTabOldImporter::convert(
     staff.setViewType(Staff::GuitarView);
 
     // Import dynamics.
-    for (size_t i = 0; i < dynamics.size(); ++i)
+    for (auto &dynamic : dynamics)
     {
-        Dynamic dynamic;
-        convert(*dynamics[i], dynamic);
-        staff.insertDynamic(dynamic);
-        lastPosition = std::max(lastPosition, dynamic.getPosition());
+        Dynamic newDynamic;
+        convert(*dynamic, newDynamic);
+        staff.insertDynamic(newDynamic);
+        lastPosition = std::max(lastPosition, newDynamic.getPosition());
     }
 
     // Import positions.
@@ -767,10 +767,8 @@ void PowerTabOldImporter::convertGuitarIns(
         // In v1.7, each staff has separate guitar ins. In the new format,
         // player changes occur at the system level so we need to combine
         // the guitar ins from several staves.
-        for (size_t j = 0; j < guitarIns.size(); ++j)
+        for (auto &guitarIn : guitarIns)
         {
-            PowerTabDocument::Score::GuitarInPtr guitarIn = guitarIns[j];
-
             // After combining all guitar in's at a position, write out a player
             // change.
             if (guitarIn->GetPosition() != currentPosition)
@@ -781,10 +779,10 @@ void PowerTabOldImporter::convertGuitarIns(
 
             // Clear out any players that are currently active for this staff.
             const int staff = guitarIn->GetStaff();
-            for (size_t k = 0; k < activePlayers.size(); ++k)
+            for (auto &activePlayer : activePlayers)
             {
-                if (activePlayers[k] == staff)
-                    activePlayers[k] = -1;
+                if (activePlayer == staff)
+                    activePlayer = -1;
             }
 
             // Set the active players for this staff.

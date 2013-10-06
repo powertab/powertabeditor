@@ -68,7 +68,7 @@ void RecentFiles::updateMenu()
 
     foreach (const QString& fileName, myRecentFiles)
     {
-        QAction *fileAction = new QAction(fileName, myRecentFilesMenu);
+        auto fileAction = new QAction(fileName, myRecentFilesMenu);
         myRecentFilesMenu->addAction(fileAction);
 
         sigfwd::connect(fileAction, SIGNAL(triggered()), [=]() {

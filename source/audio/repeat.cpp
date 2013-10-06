@@ -89,9 +89,9 @@ void Repeat::reset()
 {
     myActiveRepeat = 1;
 
-    for (EndBarsMap::iterator i = myEndBars.begin(); i != myEndBars.end(); ++i)
+    for (auto &bar : myEndBars)
     {
-        i->second.reset();
+        bar.second.reset();
     }
 }
 

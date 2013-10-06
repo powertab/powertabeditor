@@ -46,7 +46,7 @@ void RehearsalSignDialog::populateDescriptionChoices()
     ui->descriptionComboBox->addItems(descriptions);
 
     // Autocompletion for description choices.
-    QCompleter *completer = new QCompleter(descriptions);
+    auto completer = new QCompleter(descriptions);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->descriptionComboBox->setCompleter(completer);
 }

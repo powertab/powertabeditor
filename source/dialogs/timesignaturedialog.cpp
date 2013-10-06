@@ -42,9 +42,9 @@ TimeSignatureDialog::TimeSignatureDialog(
     myBeamingPatterns[2] = ui->beamingPattern3;
     myBeamingPatterns[3] = ui->beamingPattern4;
 
-    for (size_t i = 0; i < myBeamingPatterns.size(); i++)
+    for (auto &pattern : myBeamingPatterns)
     {
-        myBeamingPatterns[i]->setValidator(new QIntValidator(0, 64, 0));
+        pattern->setValidator(new QIntValidator(0, 64, 0));
     }
 
     ui->showTimeSignature->setChecked(myTimeSignature.isVisible());

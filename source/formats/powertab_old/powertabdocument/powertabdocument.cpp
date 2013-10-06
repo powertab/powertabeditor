@@ -198,9 +198,9 @@ bool Document::Save(const string& fileName) const
     if (m_header.GetVersion() <= PowerTabFileHeader::Version_1_7)
     {
         // Write the scores
-        for (size_t i = 0; i < m_scoreArray.size(); i++)
+        for (auto &score : m_scoreArray)
         {
-            m_scoreArray[i]->Serialize(stream);
+            score->Serialize(stream);
             PTB_CHECK_THAT(stream.CheckState(), false);
         }
     }

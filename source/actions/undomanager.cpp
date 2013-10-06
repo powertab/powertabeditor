@@ -54,7 +54,7 @@ void UndoManager::push(QUndoCommand *cmd, int affectedSystem)
 {
     beginMacro(cmd->actionText());
 
-    SignalOnUndo *onUndo = new SignalOnUndo();
+    auto onUndo = new SignalOnUndo();
     if (affectedSystem >= 0)
     {
         sigfwd::connect(onUndo, SIGNAL(triggered()),
@@ -69,7 +69,7 @@ void UndoManager::push(QUndoCommand *cmd, int affectedSystem)
     push(onUndo);
     push(cmd);
 
-    SignalOnRedo *onRedo = new SignalOnRedo();
+    auto onRedo = new SignalOnRedo();
     if (affectedSystem >= 0)
     {
         sigfwd::connect(onRedo, SIGNAL(triggered()),

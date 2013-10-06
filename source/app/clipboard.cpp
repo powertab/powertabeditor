@@ -82,7 +82,7 @@ void Clipboard::copySelection(const std::vector<Position *> &selectedPositions,
     const std::string data = ss.str();
 
     // Copy the data to the clipboard.
-    QMimeData *mimeData = new QMimeData();
+    auto mimeData = new QMimeData();
     mimeData->setData(
         PTB_MIME_TYPE,
         QByteArray(data.c_str(), static_cast<int>(data.length())));

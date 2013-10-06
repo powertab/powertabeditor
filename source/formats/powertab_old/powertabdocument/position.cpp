@@ -55,9 +55,9 @@ Position::Position() :
 /// Destructor
 Position::~Position()
 {
-    for (uint32_t i = 0; i < m_noteArray.size(); i++)
+    for (auto &note : m_noteArray)
     {
-        delete m_noteArray[i];
+        delete note;
     }
 }
 

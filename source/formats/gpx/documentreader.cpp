@@ -277,11 +277,8 @@ void Gpx::DocumentReader::readAutomations()
 void Gpx::DocumentReader::readMasterBars(Score &score)
 {
     System system;
-    for (int i = 0; i < score.getPlayers().size(); ++i)
-    {
-        const Player &player = score.getPlayers()[i];
+    for (auto &player : score.getPlayers())
         system.insertStaff(Staff(player.getTuning().getStringCount()));
-    }
 
     // Set up an initial player change.
     PlayerChange change;
@@ -302,11 +299,10 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
             system.getBarlines().back().setPosition(startPos + 1);
             score.insertSystem(system);
             system = System();
-            for (int i = 0; i < score.getPlayers().size(); ++i)
-            {
-                const Player &player = score.getPlayers()[i];
+
+            for (auto &player : score.getPlayers())
                 system.insertStaff(Staff(player.getTuning().getStringCount()));
-            }
+
             startPos = 0;
         }
 

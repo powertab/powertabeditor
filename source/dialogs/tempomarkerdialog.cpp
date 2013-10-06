@@ -38,7 +38,7 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
     ui->descriptionComboBox->addItems(descriptions);
 
     // Autocomplete for description choices.
-    QCompleter *completer = new QCompleter(descriptions, this);
+    auto completer = new QCompleter(descriptions, this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     ui->descriptionComboBox->setCompleter(completer);
     ui->descriptionComboBox->clearEditText();
