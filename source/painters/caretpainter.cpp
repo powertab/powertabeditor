@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QPainter>
 #include <score/scorelocation.h>
+#include <score/score.h>
 #include <score/system.h>
 
 const double CaretPainter::PEN_WIDTH = 0.75;
@@ -140,6 +141,9 @@ boost::signals2::connection CaretPainter::subscribeToMovement(
 void CaretPainter::onLocationChanged()
 {
     const ScoreLocation &location = myCaret.getLocation();
+    if (location.getScore().getSystems().empty())
+        return;
+
     const System &system = location.getSystem();
     myLayout.reset(new LayoutInfo(location.getScore(), system,
                                   location.getSystemIndex(), location.getStaff(),
