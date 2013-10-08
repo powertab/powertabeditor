@@ -2182,6 +2182,9 @@ void PowerTabEditor::updateCommands()
 
     ScoreLocation location = getLocation();
     const Score &score = location.getScore();
+    if (score.getSystems().empty())
+        return;
+
     const System &system = location.getSystem();
     const Staff &staff = location.getStaff();
     const Position *pos = location.getPosition();
