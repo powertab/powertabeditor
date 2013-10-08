@@ -19,10 +19,7 @@
 
 		<Feature Id="Complete" Level="1">
 			<ComponentGroupRef Id="Binaries" />
-      <!--
       <ComponentGroupRef Id="DataFiles" />
-      <ComponentGroupRef Id="Skins" />
-      -->
 		</Feature>
 
     <Icon Id="powertabeditor.ico" SourceFile="$(var.SourceDir)/icons/app_icon.ico" />
@@ -34,12 +31,7 @@
 			<Directory Id="ProgramFilesFolder">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
           <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
-            <!-- TODO - re-enable this when the tuning dictionary and skins are added back.
             <Directory Id="DataDir" Name="data" />
-            <Directory Id="SkinsDir" Name="skins">
-              <Directory Id="DefaultSkinsDir" Name="default" />
-            </Directory>
-            -->
           </Directory>
         </Directory>
 			</Directory>
@@ -64,10 +56,10 @@
           <Extension Id="pt2" ContentType="audio/x-pt2">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
-          <!-- TODO - restore support for importing these formats.
           <Extension Id="gpx" ContentType="audio/x-gtp">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
+          <!-- TODO - restore support for importing these formats.
           <Extension Id="gp3" ContentType="audio/x-gtp">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
@@ -127,26 +119,12 @@
       </Component>
     </ComponentGroup>
     
-    <!-- Data files
+    <!-- Data files -->
     <ComponentGroup Id="DataFiles" Directory="DataDir">
       <Component Guid="5C770CE4-AF29-447F-8CD5-7F997837CE5C">
-        <File Source="$(var.BuildRootDir)/data/tunings.json" KeyPath="yes" Checksum="yes" />
+        <File Source="$(var.SourceDir)/data/tunings.json" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
-     -->
 
-    <!-- Skins
-    <ComponentGroup Id="Skins" Directory="DefaultSkinsDir">
-      <Component Guid="AAC7EC82-E3C8-420A-ACC9-57BD3A6E1E43">
-        <File Source="$(var.BuildRootDir)/skins/default/document_tab.txt" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Guid="A2269995-E21F-4334-9B4B-0C0DB3B19717">
-        <File Source="$(var.BuildRootDir)/skins/default/toolbox_page.txt" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Guid="198018FF-857D-4D4B-9D6B-F7DD0EB40A39">
-        <File Source="$(var.BuildRootDir)/skins/default/toolbox_tab.txt" KeyPath="yes" Checksum="yes" />
-      </Component>
-    </ComponentGroup>
-     -->
 	</Fragment>
 </Wix>
