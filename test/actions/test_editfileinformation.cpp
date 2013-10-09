@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_EDITFILEINFORMATION_H
-#define ACTIONS_EDITFILEINFORMATION_H
+#include <catch.hpp>
 
-#include <QUndoCommand>
-#include <score/scoreinfo.h>
-#include <score/scorelocation.h>
+#include <actions/editfileinformation.h>
+#include <score/score.h>
 
-class EditFileInformation : public QUndoCommand
+TEST_CASE("Actions/EditFileInformation", "")
 {
-public:
-    EditFileInformation(const ScoreLocation &location,
-                        const ScoreInfo &scoreInfo);
+    Score score;
 
-    virtual void redo() override;
-    virtual void undo() override;
+    ScoreInfo info;
+    info.setLessonData(LessonData());
 
-private:
-    ScoreLocation myLocation;
-    const ScoreInfo myScoreInfo;
-    const ScoreInfo myOriginalScoreInfo;
-};
+    ScoreLocation location(score);
+    EditFileInformation action(location, info);
 
-#endif
+    action.redo();
+    REQUIRE(score.getScoreInfo() == info);
+
+    action.undo();
+    REQUIRE_FALSE(score.getScoreInfo() == info);
+}

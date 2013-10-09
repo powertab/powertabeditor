@@ -6,7 +6,7 @@ set(FORMS
     chordnamedialog.ui
     directiondialog.ui
     dynamicdialog.ui
-    #fileinformationdialog.ui
+    fileinformationdialog.ui
     gotobarlinedialog.ui
     gotorehearsalsigndialog.ui
     #irregulargroupingdialog.ui
@@ -34,7 +34,7 @@ add_library(ptedialogs
     chordnamedialog.cpp
     directiondialog.cpp
     dynamicdialog.cpp
-    #fileinformationdialog.cpp
+    fileinformationdialog.cpp
     gotobarlinedialog.cpp
     gotorehearsalsigndialog.cpp
     #irregulargroupingdialog.cpp

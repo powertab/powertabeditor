@@ -84,12 +84,12 @@ void Gpx::DocumentReader::readHeader(Score &score)
     data.setTitle(header.child_value("Title"));
     data.setArtist(header.child_value("Artist"));
 
-    data.setAudioReleaseInfo(
-                SongData::AudioData(SongData::AudioData::Album,
-                                    header.child_value("Album"),
-                                    boost::gregorian::day_clock::local_day().year(),
-                                    false));
-    data.setAuthorInfo(SongData::AuthorData(header.child_value("Music"),
+    data.setAudioReleaseInfo(SongData::AudioReleaseInfo(
+        SongData::AudioReleaseInfo::ReleaseType::Album,
+        header.child_value("Album"),
+        boost::gregorian::day_clock::local_day().year(), false));
+
+    data.setAuthorInfo(SongData::AuthorInfo(header.child_value("Music"),
                                             header.child_value("Words")));
     data.setCopyright(header.child_value("Copyright"));
     data.setTranscriber(header.child_value("Tabber"));

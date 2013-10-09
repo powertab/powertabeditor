@@ -18,101 +18,156 @@
 #include "fileinformationdialog.h"
 #include "ui_fileinformationdialog.h"
 
+#include <app/documentmanager.h>
 #include <QFileInfo>
-#include <QDateTime>
 
-#include <powertabdocument/powertabdocument.h>
-
-FileInformationDialog::FileInformationDialog(QWidget *parent,
-                                             boost::shared_ptr<PowerTabDocument> doc) :
-    QDialog(parent),
-    ui(new Ui::FileInformationDialog),
-    contentType(doc->GetHeader().GetSongContentType())
+FileInformationDialog::FileInformationDialog(
+    QWidget *parent, const Document &doc)
+    : QDialog(parent), ui(new Ui::FileInformationDialog)
 {
     ui->setupUi(this);
 
-    ui->songTypeButtonGroup->setId(ui->songButton, PowerTabFileHeader::FILETYPE_SONG);
-    ui->songTypeButtonGroup->setId(ui->lessonButton, PowerTabFileHeader::FILETYPE_LESSON);
-    connect(ui->songTypeButtonGroup, SIGNAL(buttonClicked(QAbstractButton*)),
-            this, SLOT(handleSongTypeButtonClick(QAbstractButton*)));
+    ui->songTypeButtonGroup->setId(
+        ui->songButton, static_cast<int>(ScoreInfo::ScoreType::Song));
+    ui->songTypeButtonGroup->setId(
+        ui->lessonButton, static_cast<int>(ScoreInfo::ScoreType::Lesson));
 
-    connect(ui->releaseTypeList, SIGNAL(currentRowChanged(int)),
-            this, SLOT(handleReleaseTypeChanged(int)));
+    connect(ui->songTypeButtonGroup, SIGNAL(buttonClicked(QAbstractButton *)),
+            this, SLOT(handleSongTypeButtonClick(QAbstractButton *)));
 
-    connect(ui->traditionalSongValue, SIGNAL(toggled(bool)),
-            this, SLOT(handleAuthorTypeChanged(bool)));
+    connect(ui->releaseTypeList, SIGNAL(currentRowChanged(int)), this,
+            SLOT(handleReleaseTypeChanged(int)));
 
-    ui->lessonLevelButtonGroup->setId(ui->beginnerLevelButton,
-                                      PowerTabFileHeader::LESSONLEVEL_BEGINNER);
-    ui->lessonLevelButtonGroup->setId(ui->intermediateLevelButton,
-                                      PowerTabFileHeader::LESSONLEVEL_INTERMEDIATE);
-    ui->lessonLevelButtonGroup->setId(ui->advancedLevelButton,
-                                      PowerTabFileHeader::LESSONLEVEL_ADVANCED);
+    connect(ui->traditionalSongValue, SIGNAL(toggled(bool)), this,
+            SLOT(handleAuthorTypeChanged(bool)));
 
-    const PowerTabFileHeader& header = doc->GetHeader();
+    ui->lessonLevelButtonGroup->setId(
+        ui->beginnerLevelButton,
+        static_cast<int>(LessonData::DifficultyLevel::Beginner));
+    ui->lessonLevelButtonGroup->setId(
+        ui->intermediateLevelButton,
+        static_cast<int>(LessonData::DifficultyLevel::Intermediate));
+    ui->lessonLevelButtonGroup->setId(
+        ui->advancedLevelButton,
+        static_cast<int>(LessonData::DifficultyLevel::Advanced));
+
+    const ScoreInfo &info = doc.getScore().getScoreInfo();
 
     // Select either the song or lesson button.
-    QAbstractButton *button = ui->songTypeButtonGroup->button(header.GetFileType());
+    QAbstractButton *button =
+        ui->songTypeButtonGroup->button(static_cast<int>(info.getScoreType()));
     Q_ASSERT(button != NULL);
     button->click();
 
-    // Initialize song information.
-    ui->songTitleValue->setText(QString::fromStdString(header.GetSongTitle()));
-    ui->songArtistValue->setText(QString::fromStdString(header.GetSongArtist()));
+    if (info.getScoreType() == ScoreInfo::ScoreType::Song)
+    {
+        const SongData &song = info.getSongData();
+        // Initialize song information.
+        ui->songTitleValue->setText(QString::fromStdString(song.getTitle()));
+        ui->songArtistValue->setText(
+            QString::fromStdString(song.getArtist()));
 
-    ui->releaseTypeList->setCurrentRow(header.GetSongReleaseType());
+        if (song.isAudioRelease())
+        {
+            ui->releaseTypeList->setCurrentRow(0);
+            const SongData::AudioReleaseInfo &audioRelease =
+                song.getAudioReleaseInfo();
 
-    ui->albumTitleValue->setText(QString::fromStdString(header.GetSongAudioReleaseTitle()));
-    ui->albumTypeValue->setCurrentIndex(header.GetSongAudioReleaseType());
-    ui->albumYearValue->setValue(header.GetSongAudioReleaseYear());
-    ui->audioLiveRecordingValue->setChecked(header.IsSongAudioReleaseLive());
+            ui->albumTitleValue->setText(
+                QString::fromStdString(audioRelease.getTitle()));
+            ui->albumTypeValue->setCurrentIndex(
+                static_cast<int>(audioRelease.getReleaseType()));
+            ui->albumYearValue->setValue(audioRelease.getYear());
+            ui->audioLiveRecordingValue->setChecked(audioRelease.isLive());
+        }
+        else if (song.isVideoRelease())
+        {
+            ui->releaseTypeList->setCurrentRow(1);
+            const SongData::VideoReleaseInfo &videoRelease =
+                song.getVideoReleaseInfo();
 
-    ui->videoTitleValue->setText(QString::fromStdString(header.GetSongVideoReleaseTitle()));
-    ui->videoLiveRecordingValue->setChecked(header.IsSongVideoReleaseLive());
+            ui->videoTitleValue->setText(
+                QString::fromStdString(videoRelease.getTitle()));
+            ui->videoLiveRecordingValue->setChecked(videoRelease.isLive());
+        }
+        else if (song.isBootleg())
+        {
+            ui->releaseTypeList->setCurrentRow(2);
+            const SongData::BootlegInfo &bootleg = song.getBootlegInfo();
 
-    ui->bootlegTitleValue->setText(QString::fromStdString(header.GetSongBootlegTitle()));
+            ui->bootlegTitleValue->setText(
+                QString::fromStdString(bootleg.getTitle()));
 
-    const boost::gregorian::date bootlegDate = header.GetSongBootlegDate();
-    ui->bootlegDateValue->setDate(QDate(bootlegDate.year(), bootlegDate.month(), bootlegDate.day()));
+            const boost::gregorian::date date = bootleg.getDate();
+            ui->bootlegDateValue->setDate(
+                QDate(date.year(), date.month(), date.day()));
+        }
+        else if (song.isUnreleased())
+            ui->releaseTypeList->setCurrentRow(3);
 
-    ui->traditionalSongValue->setChecked(header.GetSongAuthorType() == PowerTabFileHeader::AUTHORTYPE_TRADITIONAL);
-    ui->composerValue->setText(QString::fromStdString(header.GetSongComposer()));
-    ui->lyricistValue->setText(QString::fromStdString(header.GetSongLyricist()));
-    ui->arrangerValue->setText(QString::fromStdString(header.GetSongArranger()));
-    ui->guitarTranscriberValue->setText(QString::fromStdString(header.GetSongGuitarScoreTranscriber()));
-    ui->bassTranscriberValue->setText(QString::fromStdString(header.GetSongBassScoreTranscriber()));
-    ui->songCopyrightValue->setText(QString::fromStdString(header.GetSongCopyright()));
+        ui->traditionalSongValue->setChecked(song.isTraditionalAuthor());
 
-    ui->lessonTitleValue->setText(QString::fromStdString(header.GetLessonTitle()));
-    ui->lessonSubtitleValue->setText(QString::fromStdString(header.GetLessonSubtitle()));
+        if (!song.isTraditionalAuthor())
+        {
+            const SongData::AuthorInfo &authorInfo = song.getAuthorInfo();
 
-    ui->lessonStyleValue->setCurrentIndex(header.GetLessonMusicStyle());
+            ui->composerValue->setText(
+                QString::fromStdString(authorInfo.getComposer()));
+            ui->lyricistValue->setText(
+                QString::fromStdString(authorInfo.getLyricist()));
+        }
 
-    QAbstractButton *levelButton = ui->lessonLevelButtonGroup->button(header.GetLessonLevel());
-    Q_ASSERT(levelButton != NULL);
-    levelButton->click();
+        ui->arrangerValue->setText(QString::fromStdString(song.getArranger()));
+        ui->transcriberValue->setText(
+            QString::fromStdString(song.getTranscriber()));
+        ui->songCopyrightValue->setText(
+            QString::fromStdString(song.getCopyright()));
 
-    ui->lessonAuthorValue->setText(QString::fromStdString(header.GetLessonAuthor()));
-    ui->lessonCopyrightValue->setText(QString::fromStdString(header.GetLessonCopyright()));
+        // Initialize performance notes.
+        ui->notesValue->setPlainText(
+            QString::fromStdString(song.getPerformanceNotes()));
 
-    // Initialize performance notes.
-    ui->guitarNotesValue->setPlainText(QString::fromStdString(header.GetSongGuitarScoreNotes()));
-    ui->bassNotesValue->setPlainText(QString::fromStdString(header.GetSongBassScoreNotes()));
+        // Initialize lyrics.
+        ui->lyricsValue->setPlainText(QString::fromStdString(song.getLyrics()));
+    }
+    else
+    {
+        const LessonData &lesson = info.getLessonData();
 
-    // Initialize lyrics.
-    ui->lyricsValue->setPlainText(QString::fromStdString(header.GetSongLyrics()));
+        ui->lessonTitleValue->setText(
+            QString::fromStdString(lesson.getTitle()));
+        ui->lessonSubtitleValue->setText(
+            QString::fromStdString(lesson.getSubtitle()));
+
+        ui->lessonStyleValue->setCurrentIndex(
+            static_cast<int>(lesson.getMusicStyle()));
+
+        QAbstractButton *levelButton = ui->lessonLevelButtonGroup->button(
+            static_cast<int>(lesson.getDifficultyLevel()));
+        Q_ASSERT(levelButton != NULL);
+        levelButton->click();
+
+        ui->lessonAuthorValue->setText(
+            QString::fromStdString(lesson.getAuthor()));
+        ui->lessonCopyrightValue->setText(
+            QString::fromStdString(lesson.getCopyright()));
+    }
+
+    if (!doc.hasFilename())
+    {
+        ui->fileNameValue->setText(tr("Untitled"));
+        return;
+    }
 
     // Initialize file properties.
-    const QString filePath = QString::fromStdString(doc->GetFileName());
+    const QString filePath = QString::fromStdString(doc.getFilename());
     const QFileInfo fileInfo(filePath);
     QLocale locale;
 
     ui->fileNameValue->setText(fileInfo.fileName());
-    ui->fileTypeValue->setText(tr("Power Tab Version %1").arg(
-                                   getFileVersionString(header)));
     ui->fileLocationValue->setText(filePath);
-    ui->fileSizeValue->setText(tr("%1 bytes").arg(
-                                   locale.toString(fileInfo.size())));
+    ui->fileSizeValue->setText(
+        tr("%1 bytes").arg(locale.toString(fileInfo.size())));
     ui->fileCreatedValue->setText(locale.toString(fileInfo.created()));
     ui->fileModifiedValue->setText(locale.toString(fileInfo.lastModified()));
     ui->fileAccessedValue->setText(locale.toString(fileInfo.lastRead()));
@@ -123,79 +178,80 @@ FileInformationDialog::~FileInformationDialog()
     delete ui;
 }
 
-PowerTabFileHeader FileInformationDialog::getNewFileHeader() const
+ScoreInfo FileInformationDialog::getScoreInfo() const
 {
-    PowerTabFileHeader header;
+    ScoreInfo info;
 
-    header.SetFileType(ui->songTypeButtonGroup->checkedId());
-    header.SetSongTitle(ui->songTitleValue->text().toStdString());
-    header.SetSongArtist(ui->songArtistValue->text().toStdString());
-    header.SetSongReleaseType(ui->releaseTypeList->currentRow());
-    header.SetSongContentType(contentType);
-    header.SetSongAudioReleaseTitle(ui->albumTitleValue->text().toStdString());
-    header.SetSongAudioReleaseType(ui->albumTypeValue->currentIndex());
-    header.SetSongAudioReleaseYear(ui->albumYearValue->value());
-    header.SetSongAudioReleaseLive(ui->audioLiveRecordingValue->isChecked());
-    header.SetSongVideoReleaseTitle(ui->videoTitleValue->text().toStdString());
-    header.SetSongVideoReleaseLive(ui->videoLiveRecordingValue->isChecked());
-    header.SetSongBootlegTitle(ui->bootlegTitleValue->text().toStdString());
+    if (ui->songTypeStack->currentIndex() == 0) // Song
+    {
+        SongData song;
 
-    QDate bootlegDate = ui->bootlegDateValue->date();
-    header.SetSongBootlegDate(boost::gregorian::date(bootlegDate.year(),
-                                                     bootlegDate.month(),
-                                                     bootlegDate.day()));
+        song.setTitle(ui->songTitleValue->text().toStdString());
+        song.setArtist(ui->songArtistValue->text().toStdString());
 
-    header.SetSongAuthorType(ui->traditionalSongValue->isChecked() ?
-                                 PowerTabFileHeader::AUTHORTYPE_TRADITIONAL :
-                                 PowerTabFileHeader::AUTHORTYPE_AUTHORKNOWN);
-    header.SetSongComposer(ui->composerValue->text().toStdString());
-    header.SetSongLyricist(ui->lyricistValue->text().toStdString());
-    header.SetSongArranger(ui->arrangerValue->text().toStdString());
-    header.SetSongGuitarScoreTranscriber(ui->guitarTranscriberValue->text().toStdString());
-    header.SetSongBassScoreTranscriber(ui->bassTranscriberValue->text().toStdString());
-    header.SetSongCopyright(ui->songCopyrightValue->text().toStdString());
+        switch (ui->releaseInfoStack->currentIndex())
+        {
+            case 0:
+                song.setAudioReleaseInfo(SongData::AudioReleaseInfo(
+                    static_cast<SongData::AudioReleaseInfo::ReleaseType>(
+                        ui->releaseTypeList->currentRow()),
+                    ui->albumTitleValue->text().toStdString(),
+                    ui->albumYearValue->value(),
+                    ui->audioLiveRecordingValue->isChecked()));
+                break;
+            case 1:
+                song.setVideoReleaseInfo(SongData::VideoReleaseInfo(
+                    ui->videoTitleValue->text().toStdString(),
+                    ui->videoLiveRecordingValue->isChecked()));
+                break;
+            case 2:
+            {
+                const QDate date = ui->bootlegDateValue->date();
+                song.setBootlegInfo(SongData::BootlegInfo(
+                    ui->bootlegTitleValue->text().toStdString(),
+                    boost::gregorian::date(date.year(), date.month(),
+                                           date.day())));
+                break;
+            }
+            case 3:
+                song.setUnreleased();
+                break;
+        }
 
-    header.SetLessonTitle(ui->lessonTitleValue->text().toStdString());
-    header.SetLessonSubtitle(ui->lessonSubtitleValue->text().toStdString());
-    header.SetLessonMusicStyle(ui->lessonStyleValue->currentIndex());
-    header.SetLessonLevel(ui->lessonLevelButtonGroup->checkedId());
-    header.SetLessonAuthor(ui->lessonAuthorValue->text().toStdString());
-    header.SetLessonCopyright(ui->lessonCopyrightValue->text().toStdString());
+        if (ui->traditionalSongValue->isChecked())
+            song.setTraditionalAuthor();
+        else
+        {
+            song.setAuthorInfo(
+                SongData::AuthorInfo(ui->composerValue->text().toStdString(),
+                                     ui->lyricistValue->text().toStdString()));
+        }
 
-    header.SetSongGuitarScoreNotes(ui->guitarNotesValue->toPlainText().toStdString());
-    header.SetSongBassScoreNotes(ui->bassNotesValue->toPlainText().toStdString());
+        song.setArranger(ui->arrangerValue->text().toStdString());
+        song.setTranscriber(ui->transcriberValue->text().toStdString());
+        song.setCopyright(ui->songCopyrightValue->text().toStdString());
+        song.setPerformanceNotes(ui->notesValue->toPlainText().toStdString());
+        song.setLyrics(ui->lyricsValue->toPlainText().toStdString());
 
-    header.SetSongLyrics(ui->lyricsValue->toPlainText().toStdString());
+        info.setSongData(song);
+    }
+    else // Lesson
+    {
+        LessonData lesson;
 
-    return header;
-}
+        lesson.setTitle(ui->lessonTitleValue->text().toStdString());
+        lesson.setSubtitle(ui->lessonSubtitleValue->text().toStdString());
+        lesson.setMusicStyle(static_cast<LessonData::MusicStyle>(
+            ui->lessonStyleValue->currentIndex()));
+        lesson.setDifficultyLevel(static_cast<LessonData::DifficultyLevel>(
+            ui->lessonLevelButtonGroup->checkedId()));
+        lesson.setAuthor(ui->lessonAuthorValue->text().toStdString());
+        lesson.setCopyright(ui->lessonCopyrightValue->text().toStdString());
 
-QString FileInformationDialog::getFileVersionString(const PowerTabFileHeader& header)
-{
-    QString fileVersion;
-
-    switch (header.GetVersion()) {
-    case PowerTabFileHeader::Version_1_0:
-        fileVersion = tr("1.0");
-        break;
-    case PowerTabFileHeader::Version_1_0_2:
-        fileVersion = tr("1.0.2");
-        break;
-    case PowerTabFileHeader::Version_1_5:
-        fileVersion = tr("1.5");
-        break;
-    case PowerTabFileHeader::Version_1_7:
-        fileVersion = tr("1.7");
-        break;
-    case PowerTabFileHeader::Version_2_0:
-        fileVersion = tr("2.0");
-        break;
-    default:
-        fileVersion = "??";
-        break;
+        info.setLessonData(lesson);
     }
 
-    return fileVersion;
+    return info;
 }
 
 void FileInformationDialog::handleSongTypeButtonClick(QAbstractButton *button)

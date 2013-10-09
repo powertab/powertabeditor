@@ -15,42 +15,37 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FILEINFORMATIONDIALOG_H
-#define FILEINFORMATIONDIALOG_H
+#ifndef DIALOGS_FILEINFORMATIONDIALOG_H
+#define DIALOGS_FILEINFORMATIONDIALOG_H
 
 #include <QDialog>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-#include <powertabdocument/powertabfileheader.h>
+#include <score/scoreinfo.h>
 
-class PowerTabDocument;
+class Document;
 class QAbstractButton;
 
-namespace Ui {
+namespace Ui
+{
 class FileInformationDialog;
 }
 
 class FileInformationDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
-    explicit FileInformationDialog(QWidget* parent,
-                                   boost::shared_ptr<PowerTabDocument> doc);
+    explicit FileInformationDialog(QWidget *parent, const Document &doc);
     ~FileInformationDialog();
 
-    PowerTabFileHeader getNewFileHeader() const;
-    
-private:
-    Ui::FileInformationDialog *ui;
-    const uint8_t contentType;
-
-    QString getFileVersionString(const PowerTabFileHeader& header);
+    ScoreInfo getScoreInfo() const;
 
 private slots:
-    void handleSongTypeButtonClick(QAbstractButton* button);
+    void handleSongTypeButtonClick(QAbstractButton *button);
     void handleReleaseTypeChanged(int index);
     void handleAuthorTypeChanged(bool traditional);
+
+private:
+    Ui::FileInformationDialog *ui;
 };
 
-#endif // FILEINFORMATIONDIALOG_H
+#endif

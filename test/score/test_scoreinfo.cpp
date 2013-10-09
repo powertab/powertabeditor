@@ -24,12 +24,12 @@ TEST_CASE("Score/ScoreInfo/ChangeType", "")
 {
     ScoreInfo info;
 
-    REQUIRE(info.getScoreType() == ScoreInfo::Song);
+    REQUIRE(info.getScoreType() == ScoreInfo::ScoreType::Song);
     REQUIRE_NOTHROW(info.getSongData());
     REQUIRE_THROWS(info.getLessonData());
 
     info.setLessonData(LessonData());
-    REQUIRE(info.getScoreType() == ScoreInfo::Lesson);
+    REQUIRE(info.getScoreType() == ScoreInfo::ScoreType::Lesson);
     REQUIRE_THROWS(info.getSongData());
     REQUIRE_NOTHROW(info.getLessonData());
 }
@@ -38,7 +38,7 @@ TEST_CASE("Score/ScoreInfo/Serialization", "")
 {
     ScoreInfo info;
 	SongData data;
-	data.setBootlegInfo(SongData::BootlegData());
+    data.setBootlegInfo(SongData::BootlegInfo());
     info.setSongData(data);
 
     Serialization::test("score_info", info);

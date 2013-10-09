@@ -17,23 +17,23 @@
 
 #include "editfileinformation.h"
 
-#include <powertabdocument/powertabdocument.h>
+#include <score/score.h>
 
-EditFileInformation::EditFileInformation(boost::shared_ptr<PowerTabDocument> doc,
-                                         const PowerTabFileHeader& newHeader) :
-    doc(doc),
-    oldHeader(doc->GetHeader()),
-    newHeader(newHeader)
+EditFileInformation::EditFileInformation(const ScoreLocation &location,
+                                         const ScoreInfo &scoreInfo)
+    : QUndoCommand(QObject::tr("Edit File Information")),
+      myLocation(location),
+      myScoreInfo(scoreInfo),
+      myOriginalScoreInfo(location.getScore().getScoreInfo())
 {
-    setText(QObject::tr("Edit File Information"));
-}
-
-void EditFileInformation::undo()
-{
-    doc->SetHeader(oldHeader);
 }
 
 void EditFileInformation::redo()
 {
-    doc->SetHeader(newHeader);
+    myLocation.getScore().setScoreInfo(myScoreInfo);
+}
+
+void EditFileInformation::undo()
+{
+    myLocation.getScore().setScoreInfo(myOriginalScoreInfo);
 }

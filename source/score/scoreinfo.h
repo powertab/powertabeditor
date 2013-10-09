@@ -26,10 +26,10 @@
 class SongData
 {
 public:
-    class AudioData
+    class AudioReleaseInfo
     {
     public:
-        enum AudioReleaseType
+        enum class ReleaseType
         {
             Single,
             Ep,
@@ -39,45 +39,45 @@ public:
             Boxset
         };
 
-        AudioData();
-        AudioData(AudioReleaseType type, const std::string &title,
-                  int year, bool live);
-        bool operator==(const AudioData &other) const;
+        AudioReleaseInfo();
+        AudioReleaseInfo(ReleaseType type, const std::string &title, int year,
+                         bool live);
+        bool operator==(const AudioReleaseInfo &other) const;
 
-		template <class Archive>
+        template <class Archive>
         void serialize(Archive &ar, const FileVersion /*version*/)
-		{
-			ar("release_type", myReleaseType);
-			ar("title", myTitle);
-			ar("year", myYear);
-			ar("live", myIsLive);
-		}
+        {
+            ar("release_type", myReleaseType);
+            ar("title", myTitle);
+            ar("year", myYear);
+            ar("live", myIsLive);
+        }
 
-        AudioReleaseType getReleaseType() const;
-        const std::string &getTitle();
+        ReleaseType getReleaseType() const;
+        const std::string &getTitle() const;
         int getYear() const;
         bool isLive() const;
 
     private:
-        AudioReleaseType myReleaseType;
+        ReleaseType myReleaseType;
         std::string myTitle;
         int myYear;
         bool myIsLive;
     };
 
-    class VideoData
+    class VideoReleaseInfo
     {
     public:
-        VideoData();
-        VideoData(const std::string &title, bool live);
-        bool operator==(const VideoData &other) const;
+        VideoReleaseInfo();
+        VideoReleaseInfo(const std::string &title, bool live);
+        bool operator==(const VideoReleaseInfo &other) const;
 
-		template <class Archive>
+        template <class Archive>
         void serialize(Archive &ar, const FileVersion /*version*/)
-		{
-			ar("title", myTitle);
-			ar("live", myIsLive);
-		}
+        {
+            ar("title", myTitle);
+            ar("live", myIsLive);
+        }
 
         const std::string &getTitle() const;
         bool isLive() const;
@@ -87,19 +87,20 @@ public:
         bool myIsLive;
     };
 
-    class BootlegData
+    class BootlegInfo
     {
     public:
-        BootlegData();
-        BootlegData(const std::string &title, const boost::gregorian::date &date);
-        bool operator==(const BootlegData &other) const;
+        BootlegInfo();
+        BootlegInfo(const std::string &title,
+                    const boost::gregorian::date &date);
+        bool operator==(const BootlegInfo &other) const;
 
-		template <class Archive>
+        template <class Archive>
         void serialize(Archive &ar, const FileVersion /*version*/)
-		{
-			ar("title", myTitle);
-			ar("date", myDate);
-		}
+        {
+            ar("title", myTitle);
+            ar("date", myDate);
+        }
 
         const std::string &getTitle() const;
         const boost::gregorian::date &getDate() const;
@@ -109,12 +110,12 @@ public:
         boost::gregorian::date myDate;
     };
 
-    class AuthorData
+    class AuthorInfo
     {
     public:
-        AuthorData();
-        AuthorData(const std::string &composer, const std::string &lyricist);
-        bool operator==(const AuthorData &other) const;
+        AuthorInfo();
+        AuthorInfo(const std::string &composer, const std::string &lyricist);
+        bool operator==(const AuthorInfo &other) const;
 
         template <class Archive>
         void serialize(Archive &ar, const FileVersion /*version*/)
@@ -132,11 +133,10 @@ public:
     };
 
     SongData();
-
     bool operator==(const SongData &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     void setTitle(const std::string &title);
     const std::string &getTitle() const;
@@ -145,16 +145,22 @@ public:
     const std::string &getArtist() const;
 
     bool isAudioRelease() const;
-    void setAudioReleaseInfo(const AudioData &info);
+    const AudioReleaseInfo &getAudioReleaseInfo() const;
+    void setAudioReleaseInfo(const AudioReleaseInfo &info);
+
     bool isVideoRelease() const;
-    void setVideoReleaseInfo(const VideoData &info);
+    const VideoReleaseInfo &getVideoReleaseInfo() const;
+    void setVideoReleaseInfo(const VideoReleaseInfo &info);
+
     bool isBootleg() const;
-    void setBootlegInfo(const BootlegData &info);
+    const BootlegInfo &getBootlegInfo() const;
+    void setBootlegInfo(const BootlegInfo &info);
+
     bool isUnreleased() const;
     void setUnreleased();
 
-    void setAuthorInfo(const AuthorData &info);
-    const AuthorData &getAuthorInfo() const;
+    void setAuthorInfo(const AuthorInfo &info);
+    const AuthorInfo &getAuthorInfo() const;
     void setTraditionalAuthor();
     bool isTraditionalAuthor() const;
 
@@ -176,10 +182,10 @@ public:
 private:
     std::string myTitle;
     std::string myArtist;
-	boost::optional<AudioData> myAudioReleaseInfo;
-	boost::optional<VideoData> myVideoReleaseInfo;
-	boost::optional<BootlegData> myBootlegReleaseInfo;
-    boost::optional<AuthorData> myAuthorInfo;
+    boost::optional<AudioReleaseInfo> myAudioReleaseInfo;
+    boost::optional<VideoReleaseInfo> myVideoReleaseInfo;
+    boost::optional<BootlegInfo> myBootlegReleaseInfo;
+    boost::optional<AuthorInfo> myAuthorInfo;
     std::string myArranger;
     std::string myTranscriber;
     std::string myCopyright;
@@ -191,23 +197,23 @@ private:
 template <class Archive>
 void SongData::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("title", myTitle);
-	ar("artist", myArtist);
-	ar("audio_release_info", myAudioReleaseInfo);
-	ar("video_release_info", myVideoReleaseInfo);
-	ar("bootleg_relaese_info", myBootlegReleaseInfo);
-	ar("author_info", myAuthorInfo);
-	ar("arranger", myArranger);
-	ar("transcriber", myTranscriber);
-	ar("copyright", myCopyright);
-	ar("lyrics", myLyrics);
-	ar("performance_notes", myPerformanceNotes);
+    ar("title", myTitle);
+    ar("artist", myArtist);
+    ar("audio_release_info", myAudioReleaseInfo);
+    ar("video_release_info", myVideoReleaseInfo);
+    ar("bootleg_relaese_info", myBootlegReleaseInfo);
+    ar("author_info", myAuthorInfo);
+    ar("arranger", myArranger);
+    ar("transcriber", myTranscriber);
+    ar("copyright", myCopyright);
+    ar("lyrics", myLyrics);
+    ar("performance_notes", myPerformanceNotes);
 }
 
 class LessonData
 {
 public:
-    enum MusicStyle
+    enum class MusicStyle
     {
         Alternative,
         Bluegrass,
@@ -230,7 +236,7 @@ public:
         Swing
     };
 
-    enum DifficultyLevel
+    enum class DifficultyLevel
     {
         Beginner,
         Intermediate,
@@ -241,8 +247,8 @@ public:
 
     bool operator==(const LessonData &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     void setTitle(const std::string &title);
     const std::string &getTitle() const;
@@ -278,19 +284,19 @@ private:
 template <class Archive>
 void LessonData::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("title", myTitle);
-	ar("subtitle", mySubtitle);
-	ar("style", myMusicStyle);
-	ar("difficulty", myDifficultyLevel);
-	ar("author", myAuthor);
-	ar("notes", myNotes);
-	ar("copyright", myCopyright);
+    ar("title", myTitle);
+    ar("subtitle", mySubtitle);
+    ar("style", myMusicStyle);
+    ar("difficulty", myDifficultyLevel);
+    ar("author", myAuthor);
+    ar("notes", myNotes);
+    ar("copyright", myCopyright);
 }
 
 class ScoreInfo
 {
 public:
-    enum ScoreType
+    enum class ScoreType
     {
         Song,
         Lesson
@@ -300,8 +306,8 @@ public:
 
     bool operator==(const ScoreInfo &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the type of score (song or lesson).
     ScoreType getScoreType() const;
@@ -317,15 +323,15 @@ public:
     void setLessonData(const LessonData &data);
 
 private:
-	boost::optional<SongData> mySongData;
-	boost::optional<LessonData> myLessonData;
+    boost::optional<SongData> mySongData;
+    boost::optional<LessonData> myLessonData;
 };
 
 template <class Archive>
 void ScoreInfo::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("song_data", mySongData);
-	ar("lesson_data", myLessonData);
+    ar("song_data", mySongData);
+    ar("lesson_data", myLessonData);
 }
 
 #endif

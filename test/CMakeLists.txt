@@ -24,6 +24,7 @@ add_executable(pte_tests
     actions/test_adjustlinespacing.cpp
     actions/test_editbarline.cpp
     actions/test_editclef.cpp
+    actions/test_editfileinformation.cpp
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
     actions/test_edittabnumber.cpp

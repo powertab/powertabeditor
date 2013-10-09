@@ -20,141 +20,132 @@
 #include <boost/date_time/date.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 
-SongData::AudioData::AudioData()
-    : myReleaseType(Album),
+SongData::AudioReleaseInfo::AudioReleaseInfo()
+    : myReleaseType(ReleaseType::Album),
       myYear(boost::gregorian::day_clock::local_day().year()),
       myIsLive(false)
 {
 }
 
-SongData::AudioData::AudioData(SongData::AudioData::AudioReleaseType type,
-                               const std::string &title, int year, bool live)
-    : myReleaseType(type),
-      myTitle(title),
-      myYear(year),
-      myIsLive(live)
+SongData::AudioReleaseInfo::AudioReleaseInfo(ReleaseType type,
+                                             const std::string &title, int year,
+                                             bool live)
+    : myReleaseType(type), myTitle(title), myYear(year), myIsLive(live)
 {
 }
 
-bool SongData::AudioData::operator==(const AudioData &other) const
+bool SongData::AudioReleaseInfo::operator==(const AudioReleaseInfo &other) const
 {
-    return myReleaseType == other.myReleaseType &&
-           myTitle == other.myTitle &&
-           myYear == other.myYear &&
-            myIsLive == other.myIsLive;
+    return myReleaseType == other.myReleaseType && myTitle == other.myTitle &&
+           myYear == other.myYear && myIsLive == other.myIsLive;
 }
 
-SongData::AudioData::AudioReleaseType SongData::AudioData::getReleaseType() const
+SongData::AudioReleaseInfo::ReleaseType
+SongData::AudioReleaseInfo::getReleaseType() const
 {
     return myReleaseType;
 }
 
-const std::string &SongData::AudioData::getTitle()
+const std::string &SongData::AudioReleaseInfo::getTitle() const
 {
     return myTitle;
 }
 
-int SongData::AudioData::getYear() const
+int SongData::AudioReleaseInfo::getYear() const
 {
     return myYear;
 }
 
-bool SongData::AudioData::isLive() const
+bool SongData::AudioReleaseInfo::isLive() const
 {
     return myIsLive;
 }
 
-SongData::VideoData::VideoData()
-    : myIsLive(false)
+SongData::VideoReleaseInfo::VideoReleaseInfo() : myIsLive(false)
 {
 }
 
-SongData::VideoData::VideoData(const std::string &title, bool live)
-    : myTitle(title),
-      myIsLive(live)
+SongData::VideoReleaseInfo::VideoReleaseInfo(const std::string &title,
+                                             bool live)
+    : myTitle(title), myIsLive(live)
 {
 }
 
-bool SongData::VideoData::operator==(const VideoData &other) const
+bool SongData::VideoReleaseInfo::operator==(const VideoReleaseInfo &other) const
 {
-    return myTitle == other.myTitle &&
-            myIsLive == other.myIsLive;
+    return myTitle == other.myTitle && myIsLive == other.myIsLive;
 }
 
-const std::string &SongData::VideoData::getTitle() const
+const std::string &SongData::VideoReleaseInfo::getTitle() const
 {
     return myTitle;
 }
 
-bool SongData::VideoData::isLive() const
+bool SongData::VideoReleaseInfo::isLive() const
 {
     return myIsLive;
 }
 
-SongData::BootlegData::BootlegData()
+SongData::BootlegInfo::BootlegInfo()
     : myDate(boost::gregorian::day_clock::local_day())
 {
 }
 
-SongData::BootlegData::BootlegData(const std::string &title,
+SongData::BootlegInfo::BootlegInfo(const std::string &title,
                                    const boost::gregorian::date &date)
-    : myTitle(title),
-      myDate(date)
+    : myTitle(title), myDate(date)
 {
 }
 
-bool SongData::BootlegData::operator==(const BootlegData &other) const
+bool SongData::BootlegInfo::operator==(const BootlegInfo &other) const
 {
-    return myTitle == other.myTitle &&
-            myDate == other.myDate;
+    return myTitle == other.myTitle && myDate == other.myDate;
 }
 
-const std::string &SongData::BootlegData::getTitle() const
+const std::string &SongData::BootlegInfo::getTitle() const
 {
     return myTitle;
 }
 
-const boost::gregorian::date &SongData::BootlegData::getDate() const
+const boost::gregorian::date &SongData::BootlegInfo::getDate() const
 {
     return myDate;
 }
 
 LessonData::LessonData()
-    : myMusicStyle(General),
-      myDifficultyLevel(Intermediate)
+    : myMusicStyle(MusicStyle::General),
+      myDifficultyLevel(DifficultyLevel::Intermediate)
 {
 }
 
-SongData::AuthorData::AuthorData()
+SongData::AuthorInfo::AuthorInfo()
 {
 }
 
-SongData::AuthorData::AuthorData(const std::string &composer,
+SongData::AuthorInfo::AuthorInfo(const std::string &composer,
                                  const std::string &lyricist)
-    : myComposer(composer),
-      myLyricist(lyricist)
+    : myComposer(composer), myLyricist(lyricist)
 {
 }
 
-bool SongData::AuthorData::operator==(const AuthorData &other) const
+bool SongData::AuthorInfo::operator==(const AuthorInfo &other) const
 {
-    return myComposer == other.myComposer &&
-            myLyricist == other.myLyricist;
+    return myComposer == other.myComposer && myLyricist == other.myLyricist;
 }
 
-const std::string &SongData::AuthorData::getComposer() const
+const std::string &SongData::AuthorInfo::getComposer() const
 {
     return myComposer;
 }
 
-const std::string &SongData::AuthorData::getLyricist() const
+const std::string &SongData::AuthorInfo::getLyricist() const
 {
     return myLyricist;
 }
 
 SongData::SongData()
-	: myAudioReleaseInfo(AudioData()),
-      myAuthorInfo(AuthorData())
+    : myAudioReleaseInfo(AudioReleaseInfo()),
+      myAuthorInfo(AuthorInfo())
 {
 }
 
@@ -195,10 +186,15 @@ const std::string &SongData::getArtist() const
 
 bool SongData::isAudioRelease() const
 {
-	return myAudioReleaseInfo.is_initialized();
+    return myAudioReleaseInfo.is_initialized();
 }
 
-void SongData::setAudioReleaseInfo(const SongData::AudioData &info)
+const SongData::AudioReleaseInfo &SongData::getAudioReleaseInfo() const
+{
+    return myAudioReleaseInfo.get();
+}
+
+void SongData::setAudioReleaseInfo(const SongData::AudioReleaseInfo &info)
 {
 	setUnreleased();
 	myAudioReleaseInfo.reset(info);
@@ -206,10 +202,15 @@ void SongData::setAudioReleaseInfo(const SongData::AudioData &info)
 
 bool SongData::isVideoRelease() const
 {
-	return myVideoReleaseInfo.is_initialized();
+    return myVideoReleaseInfo.is_initialized();
 }
 
-void SongData::setVideoReleaseInfo(const SongData::VideoData &info)
+const SongData::VideoReleaseInfo &SongData::getVideoReleaseInfo() const
+{
+    return myVideoReleaseInfo.get();
+}
+
+void SongData::setVideoReleaseInfo(const SongData::VideoReleaseInfo &info)
 {
     setUnreleased();
 	myVideoReleaseInfo.reset(info);
@@ -217,10 +218,15 @@ void SongData::setVideoReleaseInfo(const SongData::VideoData &info)
 
 bool SongData::isBootleg() const
 {
-	return myBootlegReleaseInfo.is_initialized();
+    return myBootlegReleaseInfo.is_initialized();
 }
 
-void SongData::setBootlegInfo(const SongData::BootlegData &info)
+const SongData::BootlegInfo &SongData::getBootlegInfo() const
+{
+    return myBootlegReleaseInfo.get();
+}
+
+void SongData::setBootlegInfo(const SongData::BootlegInfo &info)
 {
 	setUnreleased();
 	myBootlegReleaseInfo.reset(info);
@@ -238,12 +244,12 @@ void SongData::setUnreleased()
 	myBootlegReleaseInfo.reset();
 }
 
-void SongData::setAuthorInfo(const SongData::AuthorData &info)
+void SongData::setAuthorInfo(const SongData::AuthorInfo &info)
 {
     myAuthorInfo = info;
 }
 
-const SongData::AuthorData &SongData::getAuthorInfo() const
+const SongData::AuthorInfo &SongData::getAuthorInfo() const
 {
     return myAuthorInfo.get();
 }
@@ -255,7 +261,7 @@ void SongData::setTraditionalAuthor()
 
 bool SongData::isTraditionalAuthor() const
 {
-    return myAuthorInfo;
+    return !myAuthorInfo.is_initialized();
 }
 
 void SongData::setArranger(const std::string &arranger)
@@ -401,7 +407,7 @@ bool ScoreInfo::operator==(const ScoreInfo &other) const
 
 ScoreInfo::ScoreType ScoreInfo::getScoreType() const
 {
-	return mySongData.is_initialized() ? Song : Lesson;
+    return mySongData.is_initialized() ? ScoreType::Song : ScoreType::Lesson;
 }
 
 const SongData &ScoreInfo::getSongData() const

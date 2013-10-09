@@ -18,6 +18,7 @@
 #ifndef SCORE_SCORE_H
 #define SCORE_SCORE_H
 
+#include <boost/noncopyable.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include "instrument.h"
@@ -26,7 +27,7 @@
 #include "system.h"
 #include <vector>
 
-class Score
+class Score : boost::noncopyable
 {
 public:
     typedef std::vector<System>::iterator SystemIterator;
@@ -37,11 +38,10 @@ public:
     typedef std::vector<Instrument>::const_iterator InstrumentConstIterator;
 
     Score();
-    
-	bool operator==(const Score &other) const;
+    bool operator==(const Score &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns information about the score (e.g. title, author, etc.).
     const ScoreInfo &getScoreInfo() const;

@@ -95,6 +95,9 @@ private slots:
     /// Paste notes from the clipboard at the current location.
     void pasteNotes();
 
+    /// Opens the file information dialog.
+    void editFileInformation();
+
     /// Starts or stops playback of the score.
     void startStopPlayback();
 
@@ -319,6 +322,7 @@ private:
     Command *myCutCommand;
     Command *myCopyCommand;
     Command *myPasteCommand;
+    Command *myFileInfoCommand;
 
     QMenu *myPlaybackMenu;
     Command *myPlayPauseCommand;
@@ -465,17 +469,10 @@ private:
     Mixer* getCurrentMixer();
 
 private slots:
-    void updateActions();
     void updateLocationLabel();
     void updateActiveVoice(int);
-    void openFileInformation();
-    void performFullRedraw();
     void rewindPlaybackToStart();
-    bool moveCaretLeft();
-    void moveCaretDown();
-    void moveCaretUp();
 
-    void editArtificialHarmonic();
     void editVolumeSwell();
     void editIrregularGrouping(bool setAsTriplet = false);
 
@@ -486,8 +483,6 @@ private:
     Toolbox* toolBox;
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
-
-    Command* fileInfoAct;
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
     Command* shiftTabNumDown;

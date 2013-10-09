@@ -24,7 +24,7 @@ add_library(pteactions
     #changepositionspacing.cpp
     editbarline.cpp
     editclef.cpp
-    #editfileinformation.cpp
+    editfileinformation.cpp
     editkeysignature.cpp
     editnoteduration.cpp
     edittabnumber.cpp

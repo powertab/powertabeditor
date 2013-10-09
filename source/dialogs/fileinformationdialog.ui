@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>537</width>
-    <height>651</height>
+    <height>624</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -374,10 +374,13 @@
             <x>10</x>
             <y>30</y>
             <width>471</width>
-            <height>221</height>
+            <height>201</height>
            </rect>
           </property>
           <layout class="QFormLayout" name="formLayout_7">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="traditionalSongLabel">
              <property name="text">
@@ -419,33 +422,23 @@
             <widget class="QLineEdit" name="arrangerValue"/>
            </item>
            <item row="4" column="0">
-            <widget class="QLabel" name="guitarTranscriberLabel">
+            <widget class="QLabel" name="transcriberLabel">
              <property name="text">
-              <string>Guitar Score Transcribed By:</string>
+              <string>Transcribed By:</string>
              </property>
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="QLineEdit" name="guitarTranscriberValue"/>
+            <widget class="QLineEdit" name="transcriberValue"/>
            </item>
            <item row="5" column="0">
-            <widget class="QLabel" name="bassTranscriberLabel">
-             <property name="text">
-              <string>Bass Score Transcribed By:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="1">
-            <widget class="QLineEdit" name="bassTranscriberValue"/>
-           </item>
-           <item row="6" column="0">
             <widget class="QLabel" name="songCopyrightLabel">
              <property name="text">
               <string>Copyright:</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="1">
+           <item row="5" column="1">
             <widget class="QLineEdit" name="songCopyrightValue"/>
            </item>
           </layout>
@@ -697,6 +690,9 @@
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_10">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+        </property>
         <property name="horizontalSpacing">
          <number>6</number>
         </property>
@@ -704,28 +700,14 @@
          <number>16</number>
         </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="guitarNotesLabel">
+         <widget class="QLabel" name="notesLabel">
           <property name="text">
-           <string>Guitar Notes:</string>
+           <string>Notes:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QPlainTextEdit" name="guitarNotesValue">
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="bassNotesLabel">
-          <property name="text">
-           <string>Bass Notes:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QPlainTextEdit" name="bassNotesValue">
+         <widget class="QPlainTextEdit" name="notesValue">
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
@@ -807,91 +789,77 @@
         <item row="0" column="1">
          <widget class="QLabel" name="fileNameValue">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="fileTypeLabel">
-          <property name="text">
-           <string>Type:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="fileTypeValue">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
          <widget class="QLabel" name="fileLocationLabel">
           <property name="text">
            <string>Location:</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="1" column="1">
          <widget class="QLabel" name="fileLocationValue">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="fileSizeLabel">
           <property name="text">
            <string>Size:</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="2" column="1">
          <widget class="QLabel" name="fileSizeValue">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="fileCreatedLabel">
           <property name="text">
            <string>Created:</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QLabel" name="fileCreatedValue">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="fileModifiedLabel">
           <property name="text">
            <string>Modified:</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QLabel" name="fileModifiedValue">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
+        <item row="5" column="0">
          <widget class="QLabel" name="fileAccessedLabel">
           <property name="text">
            <string>Accessed:</string>
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="5" column="1">
          <widget class="QLabel" name="fileAccessedValue">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
          </widget>
         </item>

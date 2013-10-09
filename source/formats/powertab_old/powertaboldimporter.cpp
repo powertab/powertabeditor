@@ -73,8 +73,8 @@ void PowerTabOldImporter::convert(
         const uint8_t releaseType = header.GetSongReleaseType();
         if (releaseType == PowerTabFileHeader::RELEASETYPE_PUBLIC_AUDIO)
         {
-            data.setAudioReleaseInfo(SongData::AudioData(
-                static_cast<SongData::AudioData::AudioReleaseType>(
+            data.setAudioReleaseInfo(SongData::AudioReleaseInfo(
+                static_cast<SongData::AudioReleaseInfo::ReleaseType>(
                                              header.GetSongAudioReleaseType()),
                 header.GetSongAudioReleaseTitle(),
                 header.GetSongAudioReleaseYear(),
@@ -82,13 +82,13 @@ void PowerTabOldImporter::convert(
         }
         else if (releaseType == PowerTabFileHeader::RELEASETYPE_PUBLIC_VIDEO)
         {
-            data.setVideoReleaseInfo(SongData::VideoData(
+            data.setVideoReleaseInfo(SongData::VideoReleaseInfo(
                 header.GetSongVideoReleaseTitle(),
                 header.IsSongVideoReleaseLive()));
         }
         else if (releaseType == PowerTabFileHeader::RELEASETYPE_BOOTLEG)
         {
-            data.setBootlegInfo(SongData::BootlegData(
+            data.setBootlegInfo(SongData::BootlegInfo(
                 header.GetSongBootlegTitle(),
                 header.GetSongBootlegDate()));
         }
@@ -101,7 +101,7 @@ void PowerTabOldImporter::convert(
             data.setTraditionalAuthor();
         else
         {
-            data.setAuthorInfo(SongData::AuthorData(header.GetSongComposer(),
+            data.setAuthorInfo(SongData::AuthorInfo(header.GetSongComposer(),
                                                     header.GetSongLyricist()));
         }
 

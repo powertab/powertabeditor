@@ -36,6 +36,7 @@
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
 #include <actions/editclef.h>
+#include <actions/editfileinformation.h>
 #include <actions/editkeysignature.h>
 #include <actions/editnoteduration.h>
 #include <actions/edittabnumber.h>
@@ -84,6 +85,7 @@
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
+#include <dialogs/fileinformationdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
@@ -430,6 +432,17 @@ void PowerTabEditor::pasteNotes()
 
     Clipboard::paste(this, *myUndoManager, getLocation());
     myUndoManager->endMacro();
+}
+
+void PowerTabEditor::editFileInformation()
+{
+    FileInformationDialog dialog(this, myDocumentManager->getCurrentDocument());
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->push(
+            new EditFileInformation(getLocation(), dialog.getScoreInfo()),
+            getLocation().getSystemIndex());
+    }
 }
 
 void PowerTabEditor::startStopPlayback()
@@ -1264,12 +1277,12 @@ void PowerTabEditor::createCommands()
                                  QKeySequence::Paste, this);
     connect(myPasteCommand, SIGNAL(triggered()), this, SLOT(pasteNotes()));
 
-#if 0
     // File Information
-    fileInfoAct = new Command(tr("File Information..."), "Edit.FileInformation",
-                              QKeySequence(), this);
-    connect(fileInfoAct, SIGNAL(triggered()), this, SLOT(openFileInformation()));
-#endif
+    myFileInfoCommand =
+        new Command(tr("File Information..."), "Edit.FileInformation",
+                    QKeySequence(), this);
+    connect(myFileInfoCommand, SIGNAL(triggered()), this,
+            SLOT(editFileInformation()));
 
     // Playback-related actions.
     myPlayPauseCommand = new Command(tr("Play"), "Play.PlayPause",
@@ -1847,10 +1860,8 @@ void PowerTabEditor::createMenus()
     myEditMenu->addAction(myCutCommand);
     myEditMenu->addAction(myCopyCommand);
     myEditMenu->addAction(myPasteCommand);
-#if 0
-    editMenu->addSeparator();
-    editMenu->addAction(fileInfoAct);
-#endif
+    myEditMenu->addSeparator();
+    myEditMenu->addAction(myFileInfoCommand);
     // Playback Menu.
     myPlaybackMenu = menuBar()->addMenu(tr("Play&back"));
     myPlaybackMenu->addAction(myPlayPauseCommand);
@@ -2345,7 +2356,8 @@ void PowerTabEditor::enableEditing(bool enable)
     menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu
              << myTextMenu << mySectionMenu << myLineSpacingMenu << myNotesMenu
              << myOctaveMenu << myRestsMenu << myMusicSymbolsMenu
-             << myTabSymbolsMenu << myWindowMenu << myPlaybackMenu;
+             << myTabSymbolsMenu << myWindowMenu << myPlaybackMenu
+             << myEditMenu;
 
     foreach(QMenu *menu, menuList)
     {
@@ -2741,22 +2753,6 @@ void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
         mixer->update();
     }
 
-}
-
-void PowerTabEditor::openFileInformation()
-{
-    boost::shared_ptr<PowerTabDocument> doc = documentManager->getCurrentDocument();
-    FileInformationDialog dialog(this, doc);
-
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        const PowerTabFileHeader newHeader = dialog.getNewFileHeader();
-        if (newHeader != doc->GetHeader())
-        {
-            undoManager->push(new EditFileInformation(doc, newHeader),
-                              UndoManager::AFFECTS_ALL_SYSTEMS);
-        }
-    }
 }
 
 #endif
