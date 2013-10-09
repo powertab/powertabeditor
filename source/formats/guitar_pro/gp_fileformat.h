@@ -14,12 +14,11 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef FILEFORMAT_H
-#define FILEFORMAT_H
+
+#ifndef FORMATS_GP_FILEFORMAT_H
+#define FORMATS_GP_FILEFORMAT_H
 
 /// Contains common code such as flags for use when reading Guitar Pro files
-
 namespace Gp
 {
 
@@ -76,7 +75,8 @@ enum NoteTypes
 
 enum PositionEffectFlags1
 {
-    VibratoGp3_1, // TODO - not sure what the difference is (perhaps strong vs normal vibrato?)
+    VibratoGp3_1, // TODO - not sure what the difference is (perhaps strong vs
+                  // normal vibrato?)
     VibratoGp3_2,
     NaturalHarmonicGp3,
     ArtificialHarmonicGp3,
@@ -166,8 +166,9 @@ enum BeatStatus
 enum MiscConstants
 {
     NumberOfStrings = 7, ///< Max number of strings for an instrument
-    NumberOfBarres = 5,   ///< Max number of barres in a chord
-    NumberOfMidiChannels = 64, ///< Used for reading/writing the table of MIDI channels
+    NumberOfBarres = 5, ///< Max number of barres in a chord
+    NumberOfMidiChannels =
+        64, ///< Used for reading/writing the table of MIDI channels
     NumberOfStringsGp3 = 6, ///< Max number of strings for an instrument in GP3
     NumberOfLinesOfLyrics = 5 ///< Number of lines of lyrics stored
 };
@@ -182,7 +183,6 @@ enum ChordDiagramFlags
 {
     Gp4ChordFormat ///< Indicates that the chord diagram is in the Gp4 format
 };
-
 }
 
-#endif // FILEFORMAT_H
+#endif

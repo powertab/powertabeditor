@@ -18,17 +18,13 @@
 #include "gp_channel.h"
 
 #include "inputstream.h"
-
-#include <powertabdocument/guitar.h>
+#include <score/instrument.h>
+#include <score/player.h>
 
 Gp::Channel::Channel() :
-    instrument(Guitar::DEFAULT_PRESET),
-    volume(Guitar::DEFAULT_INITIAL_VOLUME),
-    balance(Guitar::DEFAULT_PAN),
-    chorus(Guitar::DEFAULT_CHORUS),
-    reverb(Guitar::DEFAULT_REVERB),
-    phaser(Guitar::DEFAULT_PHASER),
-    tremolo(Guitar::DEFAULT_TREMOLO)
+    instrument(Instrument().getMidiPreset()),
+    volume(Player().getMaxVolume()),
+    balance(Player().getPan())
 {
 }
 

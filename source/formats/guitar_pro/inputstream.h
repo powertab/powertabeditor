@@ -14,18 +14,14 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef GP_STREAM_H
-#define GP_STREAM_H
 
+#ifndef FORMATS_GP_STREAM_H
+#define FORMATS_GP_STREAM_H
+
+#include <bitset>
+#include <cstdint>
 #include <istream>
 #include <vector>
-#include <boost/cstdint.hpp>
-#include <cassert>
-#include <boost/type_traits/is_arithmetic.hpp>
-#include <boost/type_traits/is_integral.hpp>
-#include <boost/static_assert.hpp>
-#include <bitset>
 
 #include "gp_fileformat.h"
 
@@ -37,7 +33,7 @@ typedef std::bitset<8> Flags;
 class InputStream
 {
 public:
-    InputStream(std::istream& stream);
+    InputStream(std::istream &stream);
 
     template <class T>
     T read();
@@ -56,42 +52,42 @@ private:
     template <class LengthPrefixType>
     std::string readCharacterString();
 
-    std::istream& stream_;
+    std::istream &stream_;
 };
 
 /// Reads simple data (e.g. uint32_t, int16_t) from the input stream
 template <class T>
 inline T InputStream::read()
 {
-    BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value); // T must be an arithmetic type
+    static_assert(std::is_arithmetic<T>::value, "T must be an arithmetic type");
     T data;
-    stream_.read((char*)&data, sizeof(data));
+    stream_.read((char *)&data, sizeof(data));
     return data;
 }
 
 /// Reads a character string.
-/// The string consists of some number of bytes (encoding the length of the string, n)
+/// The string consists of some number of bytes (encoding the length of the
+/// string, n)
 /// followed by n characters
-/// This is templated on the length prefix type, to allow for strings prefixed with a 2-byte length value,
+/// This is templated on the length prefix type, to allow for strings prefixed
+/// with a 2-byte length value,
 /// 4-byte length value, etc
 template <typename LengthPrefixType>
 inline std::string InputStream::readCharacterString()
 {
-    BOOST_STATIC_ASSERT(boost::is_integral<LengthPrefixType>::value); // LengthPrefix must be an integral type
+    static_assert(std::is_integral<LengthPrefixType>::value,
+                  "LengthPrefixType must be an integral type");
 
     const LengthPrefixType length = read<LengthPrefixType>();
 
     std::string str;
     str.resize(length);
 
-	if (length != 0)
-	{
-		stream_.read(&str[0], length);
-	}
+    if (length != 0)
+        stream_.read(&str[0], length);
 
     return str;
 }
-
 }
 
-#endif // GP_STREAM_H
+#endif

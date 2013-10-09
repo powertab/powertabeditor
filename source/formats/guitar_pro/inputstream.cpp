@@ -14,15 +14,15 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "inputstream.h"
 
 #include <cassert>
 
-Gp::InputStream::InputStream(std::istream& stream) :
-    stream_(stream)
+Gp::InputStream::InputStream(std::istream &stream) : stream_(stream)
 {
-    stream_.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
+    stream_.exceptions(std::istream::failbit | std::istream::badbit |
+                       std::istream::eofbit);
 }
 
 /// Reads the file version
@@ -40,8 +40,10 @@ std::string Gp::InputStream::readVersionString()
     return version;
 }
 
-/// Reads a string in the most common format for Guitar Pro - an integer representing the
-/// size of the stored information + 1, followed by the length-prefixed string of characters
+/// Reads a string in the most common format for Guitar Pro - an integer
+/// representing the
+/// size of the stored information + 1, followed by the length-prefixed string
+/// of characters
 /// representing the data
 std::string Gp::InputStream::readString()
 {
@@ -59,7 +61,8 @@ std::string Gp::InputStream::readIntString()
     return readCharacterString<uint32_t>();
 }
 
-/// Reads a fixed length string (any unused characters trailing the string are skipped)
+/// Reads a fixed length string (any unused characters trailing the string are
+/// skipped)
 std::string Gp::InputStream::readFixedLengthString(uint32_t maxLength)
 {
     const uint8_t actualLength = read<uint8_t>();
@@ -75,10 +78,10 @@ std::string Gp::InputStream::readFixedLengthString(uint32_t maxLength)
         str.resize(actualLength);
     }
 
-	if (str.size() != 0)
-	{
-		stream_.read(&str[0], str.size());
-	}
+    if (str.size() != 0)
+    {
+        stream_.read(&str[0], str.size());
+    }
 
     str.resize(actualLength);
 
