@@ -2197,6 +2197,9 @@ void PowerTabEditor::updateCommands()
         return;
 
     const System &system = location.getSystem();
+    if (system.getStaves().empty())
+        return;
+
     const Staff &staff = location.getStaff();
     const Position *pos = location.getPosition();
     const int position = location.getPositionIndex();

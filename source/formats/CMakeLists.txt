@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 2.8.8)
 add_library(pteformats
     fileformat.cpp
     fileformatmanager.cpp
-    #scorearranger.cpp
 
     gpx/bitstream.cpp
     gpx/documentreader.cpp

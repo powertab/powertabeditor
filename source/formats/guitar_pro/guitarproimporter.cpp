@@ -17,10 +17,12 @@
   
 #include "guitarproimporter.h"
 
+#include <boost/algorithm/clamp.hpp>
 #include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <fstream>
 #include "inputstream.h"
+#include <score/generalmidi.h>
 #include <score/score.h>
 
 const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = boost::assign::map_list_of
@@ -47,50 +49,37 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
     ScoreInfo info;
     readHeader(stream, info);
     score.setScoreInfo(info);
-#if 0
 
+    score.insertSystem(System());
     readStartTempo(stream, score);
 
     if (stream.version == Gp::Version5_1)
-    {
         stream.skip(1);
-    }
 
-    stream.skip(4); // initial key -- ignore
+    stream.skip(4); // Initial key -- ignore.
 
     if (stream.version >= Gp::Version4)
-    {
-        stream.skip(1); // octave 8va -- ignore
-    }
+        stream.skip(1); // Octave 8va -- ignore.
 
     const std::vector<Gp::Channel> channels = readChannels(stream);
 
     if (stream.version > Gp::Version4)
-    {
         stream.skip(42); // RSE data?
-    }
 
     const uint32_t numMeasures = stream.read<uint32_t>();
     const uint32_t numTracks = stream.read<uint32_t>();
 
-    if (numTracks >= Score::MAX_NUM_GUITARS)
-    {
-        throw std::out_of_range("Score contains too many guitars.");
-    }
-
-    std::vector<BarData> bars;
+    std::vector<Gp::Bar> bars;
     readBarlines(stream, numMeasures, bars);
 
     readTracks(stream, score, numTracks, channels);
+#if 0
     readSystems(stream, score, bars);
 
     return ptbDoc;
 #endif
 }
 
-/// Check that the file version string is valid, and set the version flag for
-/// the input stream
-/// @throw FileFormatException
 void GuitarProImporter::findFileVersion(Gp::InputStream &stream)
 {
     const std::string versionString = stream.readVersionString();
@@ -102,11 +91,10 @@ void GuitarProImporter::findFileVersion(Gp::InputStream &stream)
         throw FileFormatException("Unsupported file version: " + versionString);
 }
 
-/// Read the song information (title, artist, etc).
 void GuitarProImporter::readHeader(Gp::InputStream &stream, ScoreInfo &info)
 {
     SongData song;
-    
+
     song.setTitle(stream.readString());
     stream.readString(); // Ignore subtitle.
 
@@ -142,7 +130,7 @@ void GuitarProImporter::readHeader(Gp::InputStream &stream, ScoreInfo &info)
         std::string lyrics;
         // Track number that the lyrics are associated with -- ignore.
         stream.skip(4);
-        
+
         // Read several lines of lyrics.
         for (int i = 0; i < Gp::NumberOfLinesOfLyrics; ++i)
         {
@@ -172,23 +160,26 @@ void GuitarProImporter::readHeader(Gp::InputStream &stream, ScoreInfo &info)
     info.setSongData(song);
 }
 
-#if 0
+void GuitarProImporter::readStartTempo(Gp::InputStream &stream, Score &score)
+{
+    const uint32_t bpm = stream.read<uint32_t>();
 
-/// Read the midi channels (i.e. mixer settings)
-/// We store them into a temporary structure (Gp::Channel) since they must be
-/// referenced later when importing the tracks. Eventually, the data is used
-/// by the Guitar class
+    TempoMarker marker(0);
+    marker.setBeatsPerMinute(static_cast<int>(bpm));
+    score.getSystems().front().insertTempoMarker(marker);
+}
+
 std::vector<Gp::Channel> GuitarProImporter::readChannels(
     Gp::InputStream &stream)
 {
     std::vector<Gp::Channel> channels;
 
-    for (int i = 0; i < Gp::NumberOfMidiChannels; i++) // 64 MIDI channels
+    for (int i = 0; i < Gp::NumberOfMidiChannels; ++i)
     {
         Gp::Channel channel;
 
-        channel.instrument = Common::clamp<int32_t>(stream.read<int32_t>(), 0,
-                                                    midi::NUM_MIDI_PRESETS);
+        channel.instrument = boost::algorithm::clamp<int32_t>(
+            stream.read<int32_t>(), 0, Midi::NUM_MIDI_PRESETS);
         channel.volume = Gp::Channel::readChannelProperty(stream);
         channel.balance = Gp::Channel::readChannelProperty(stream);
         channel.chorus = Gp::Channel::readChannelProperty(stream);
@@ -196,7 +187,7 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(
         channel.phaser = Gp::Channel::readChannelProperty(stream);
         channel.tremolo = Gp::Channel::readChannelProperty(stream);
 
-        // ignored (compatibility with older versions
+        // Ignored (compatibility with older versions).
         stream.skip(2);
 
         channels.push_back(channel);
@@ -205,141 +196,137 @@ std::vector<Gp::Channel> GuitarProImporter::readChannels(
     return channels;
 }
 
-/// Reads all of the measures in the score, and any alternate endings that occur
 void GuitarProImporter::readBarlines(Gp::InputStream &stream,
                                      uint32_t numMeasures,
-                                     std::vector<BarData> &bars)
+                                     std::vector<Gp::Bar> &bars)
 {
-    for (uint32_t measure = 0; measure < numMeasures; measure++)
+    for (uint32_t measure = 0; measure < numMeasures; ++measure)
     {
         if (stream.version > Gp::Version4 && measure > 0)
-        {
             stream.skip(1);
-        }
 
-        BarData bar;
-        boost::shared_ptr<Barline> barline = boost::make_shared<Barline>();
+        Gp::Bar bar;
+        Barline &barline = bar.myBarline;
 
-        // clone time signature, key signature from previous barline if possible
+        // Clone time/key signature from previous barline if possible.
         if (measure != 0)
         {
-            const BarData &prevBar = bars.back();
+            const Barline &prevBar = bars.back().myBarline;
 
-            barline->SetTimeSignature(prevBar.barline->GetTimeSignature());
-            barline->GetTimeSignature().SetShown(false);
+            TimeSignature timeSig = prevBar.getTimeSignature();
+            timeSig.setVisible(false);
+            barline.setTimeSignature(timeSig);
 
-            barline->SetKeySignature(prevBar.barline->GetKeySignature());
-            barline->GetKeySignature().SetShown(false);
+            KeySignature keySig = prevBar.getKeySignature();
+            keySig.setVisible(false);
+            barline.setKeySignature(keySig);
         }
 
-        TimeSignature &timeSignature = barline->GetTimeSignature();
+        TimeSignature timeSignature = barline.getTimeSignature();
 
         const Gp::Flags flags = stream.read<uint8_t>();
 
         if (flags.test(Gp::Numerator))
         {
-            timeSignature.SetShown(true);
-            timeSignature.SetBeatsPerMeasure(stream.read<uint8_t>());
-            timeSignature.SetPulses(timeSignature.GetBeatsPerMeasure());
+            timeSignature.setVisible(true);
+            timeSignature.setBeatsPerMeasure(stream.read<uint8_t>());
+            timeSignature.setNumPulses(timeSignature.getBeatsPerMeasure());
         }
         if (flags.test(Gp::Denominator))
         {
-            timeSignature.SetShown(true);
-            timeSignature.SetBeatAmount(stream.read<uint8_t>());
+            timeSignature.setVisible(true);
+            timeSignature.setBeatValue(stream.read<uint8_t>());
         }
+
+        barline.setTimeSignature(timeSignature);
 
         if (flags.test(Gp::RepeatBegin))
-        {
-            barline->SetType(Barline::repeatStart);
-        }
+            barline.setBarType(Barline::RepeatStart);
 
+        // TODO - handle this.
         if (flags.test(Gp::RepeatEnd))
         {
+#if 0
             // we don't set the repeatEnd type here - see the 'fixRepeatEnds'
             // function for details
             barline->SetRepeatCount(stream.read<uint8_t>() + 1);
+#endif
         }
 
         if (flags.test(Gp::Marker) && stream.version == Gp::Version5_1)
+            barline.setRehearsalSign(readRehearsalSign(stream));
+
+        if (flags.test(Gp::AltEnding))
         {
-            readRehearsalSign(stream, barline->GetRehearsalSign());
+            AlternateEnding ending;
+            ending.addNumber(stream.read<uint8_t>());
+            bar.myAlternateEnding = ending;
         }
 
-        if (flags.test(Gp::AlternateEnding))
-        {
-            boost::shared_ptr<AlternateEnding> altEnding =
-                boost::make_shared<AlternateEnding>();
-            altEnding->SetNumber(stream.read<uint8_t>());
-
-            bar.altEnding = altEnding;
-        }
-
-        if (flags.test(Gp::Marker) &&
-            stream.version != Gp::Version5_1) // import rehearsal sign
-        {
-            readRehearsalSign(stream, barline->GetRehearsalSign());
-        }
+        if (flags.test(Gp::Marker) && stream.version != Gp::Version5_1)
+            barline.setRehearsalSign(readRehearsalSign(stream));
 
         if (flags.test(Gp::KeySignatureChange))
         {
-            KeySignature &keySignature = barline->GetKeySignature();
-            keySignature.SetShown(true);
+            KeySignature keySignature = barline.getKeySignature();
+            keySignature.setVisible(true);
 
-            keySignature.SetKeyAccidentals(convertKeyAccidentals(
-                stream.read<int8_t>())); // key accidentals
-            keySignature.SetKeyType(
-                stream.read<uint8_t>()); // tonality type (minor/major)
+            keySignature.setNumAccidentals(
+                convertKeyAccidentals(stream.read<int8_t>()));
+            keySignature.setKeyType(
+                static_cast<KeySignature::KeyType>(stream.read<uint8_t>()));
+            barline.setKeySignature(keySignature);
         }
 
         if (flags.test(Gp::DoubleBar))
-        {
-            barline->SetType(Barline::doubleBar);
-        }
+            barline.setBarType(Barline::DoubleBar);
 
-        // more unknown GP5 data ...
+        // More unknown GP5 data ...
         if (stream.version > Gp::Version4)
         {
             if (flags.test(Gp::Numerator) || flags.test(Gp::Denominator))
-            {
                 stream.skip(4);
-            }
-            if (!flags.test(Gp::AlternateEnding))
-            {
+            if (!flags.test(Gp::AltEnding))
                 stream.skip(1);
-            }
 
-            stream.skip(1); // triplet feel -- ignore
+            stream.skip(1); // Triplet feel -- ignore.
         }
 
-        bar.barline = barline;
         bars.push_back(bar);
     }
 }
 
+RehearsalSign GuitarProImporter::readRehearsalSign(Gp::InputStream &stream)
+{
+    RehearsalSign sign;
+
+    const std::string description = stream.readString();
+    sign.setDescription(description);
+
+    // Set the letter to A for now - the proper letter will be set after
+    // importing the whole document.
+    sign.setLetters("A");
+
+    readColor(stream);
+
+    return sign;
+}
+
 void GuitarProImporter::readColor(Gp::InputStream &stream)
 {
-    // ignore, since PowerTab doesn't currently have any use for the colors in
-    // GP files
-    stream.skip(4); // 4 bytes - red, green, blue, white
+    // Ignore, since PowerTab doesn't currently have any use for the colors in
+    // GP files.
+    stream.skip(4);
 }
 
-/// Converts key accidentals from the Guitar Pro format to Power Tab
-uint8_t GuitarProImporter::convertKeyAccidentals(int8_t gpKey)
+int GuitarProImporter::convertKeyAccidentals(int8_t gpKey)
 {
     // Guitar Pro uses 0 for C, 1 for G, ..., -1 for F, -2 for Bb, ..., whereas
-    // Power Tab uses 0 for 1, 1 for G, ..., 8 for F, 9 for Bb, etc
-    if (gpKey < 0)
-    {
-        return KeySignature::sevenSharps + std::abs(gpKey);
-    }
-    else
-    {
-        return gpKey;
-    }
+    // Power Tab uses 0 for 1, 1 for G, 1 for F, etc.
+    return std::abs(gpKey);
 }
 
-/// Read and convert all tracks (guitars)
-void GuitarProImporter::readTracks(Gp::InputStream &stream, Score *score,
+void GuitarProImporter::readTracks(Gp::InputStream &stream, Score &score,
                                    uint32_t numTracks,
                                    const std::vector<Gp::Channel> &channels)
 {
@@ -348,61 +335,57 @@ void GuitarProImporter::readTracks(Gp::InputStream &stream, Score *score,
         if (stream.version > Gp::Version4)
         {
             if (i == 0 || stream.version == Gp::Version5_0)
-            {
                 stream.skip(1);
-            }
         }
 
-        Score::GuitarPtr guitar = boost::make_shared<Guitar>();
-        guitar->SetNumber(score->GetGuitarCount());
+        // Ignore flags used for indicating drum tracks, banjo tracks, etc.
+        stream.skip(1);
 
-        stream.skip(1); // flags used for indicating drum tracks, banjo tracks,
-                        // etc -- ignore
+        Player player;
+        Instrument instrument;
+        player.setDescription(stream.readFixedLengthString(
+                                  Gp::TrackDescriptionLength));
+        instrument.setDescription(player.getDescription());
+        Tuning tuning = readTuning(stream);
 
-        guitar->SetDescription(
-            stream.readFixedLengthString(Gp::TrackDescriptionLength));
+        // MIDI port used -- ignore (Power Tab handles this automatically).
+        stream.skip(4);
 
-        guitar->SetTuning(readTuning(stream));
+        // Index of MIDI channel used.
+        const uint32_t channelIndex = stream.read<uint32_t>();
 
-        stream.skip(4); // MIDI port used -- ignore (Power Tab handles this)
-
-        const uint32_t channelIndex =
-            stream.read<uint32_t>(); // Index of MIDI channel used
-
-        // find the specified channel and copy its information (in Power Tab,
-        // the Guitar class
-        // stores the MIDI information along with tuning, etc)
+        // Find the specified channel and copy its information into an
+        // instrument.
         if (channelIndex < channels.size())
         {
             const Gp::Channel &channel = channels[channelIndex];
 
-            guitar->SetPreset(channel.instrument);
-            guitar->SetInitialVolume(channel.volume);
-            guitar->SetPan(channel.balance);
-            guitar->SetChorus(channel.chorus);
-            guitar->SetReverb(channel.reverb);
-            guitar->SetPhaser(channel.phaser);
-            guitar->SetTremolo(channel.tremolo);
+            instrument.setMidiPreset(channel.instrument);
+            player.setMaxVolume(channel.volume);
+            player.setPan(channel.balance);
         }
         else
         {
-            std::cerr << "Invalid channel index: " << channelIndex
-                      << " for track: " << i << std::endl;
+            throw FileFormatException("Invalid channel index: " +
+                                      std::to_string(channelIndex) +
+                                      " for track: " + std::to_string(i));
         }
 
-        stream.skip(4); // MIDI channel used for effects -- ignore
+        // MIDI channel used for effects -- ignore.
+        stream.skip(4);
 
-        stream.skip(4); // number of frets -- ignore
+        // Number of frets -- ignore.
+        stream.skip(4);
 
-        guitar->SetCapo(stream.read<uint32_t>());
+        tuning.setCapo(stream.read<uint32_t>());
+        player.setTuning(tuning);
 
-        readColor(stream); // ignore track color
+        // Ignore track color.
+        readColor(stream);
 
         // RSE data???
         if (stream.version == Gp::Version5_0)
-        {
             stream.skip(44);
-        }
         else if (stream.version == Gp::Version5_1)
         {
             stream.skip(49);
@@ -410,21 +393,17 @@ void GuitarProImporter::readTracks(Gp::InputStream &stream, Score *score,
             std::cerr << stream.readString() << std::endl;
         }
 
-        score->InsertGuitar(guitar);
+        score.insertPlayer(player);
+        score.insertInstrument(instrument);
     }
 
-    // not sure what this data is used for ...
+    // Not sure what this data is used for ...
     if (stream.version == Gp::Version5_0)
-    {
         stream.skip(2);
-    }
     else if (stream.version == Gp::Version5_1)
-    {
         stream.skip(1);
-    }
 }
 
-/// Imports a Guitar Pro tuning and converts it into a Power Tab tuning
 Tuning GuitarProImporter::readTuning(Gp::InputStream &stream)
 {
     Tuning tuning;
@@ -432,25 +411,21 @@ Tuning GuitarProImporter::readTuning(Gp::InputStream &stream)
     const uint32_t numStrings = stream.read<uint32_t>();
 
     std::vector<uint8_t> tuningNotes;
-
-    /// Gp::NumberOfStrings integers are in the file, but only the first
-    /// "numStrings" are actually used
+    // Gp::NumberOfStrings integers are in the file, but only the first
+    // "numStrings" are actually used
     for (uint32_t i = 0; i < Gp::NumberOfStrings; i++)
     {
         const uint32_t tuningNote = stream.read<uint32_t>();
 
         if (i < numStrings)
-        {
             tuningNotes.push_back(tuningNote);
-        }
     }
 
-    tuning.SetTuningNotes(tuningNotes);
-    assert(tuning.IsValid());
-
+    tuning.setNotes(tuningNotes);
     return tuning;
 }
 
+#if 0
 void GuitarProImporter::readSystems(Gp::InputStream &stream, Score *score,
                                     std::vector<BarData> bars)
 {
@@ -1217,32 +1192,5 @@ void GuitarProImporter::readOldStyleChord(Gp::InputStream &stream,
             diagram.SetFretNumber(i, stream.read<uint32_t>());
         }
     }
-}
-
-/// Read the initial tempo in the score
-void GuitarProImporter::readStartTempo(Gp::InputStream &stream, Score *score)
-{
-    const uint32_t bpm = stream.read<uint32_t>();
-    Score::TempoMarkerPtr tempo = boost::make_shared<TempoMarker>(
-        0, 0, TempoMarker::quarter, bpm, "", TempoMarker::noTripletFeel);
-
-    score->InsertTempoMarker(tempo);
-}
-
-void GuitarProImporter::readRehearsalSign(Gp::InputStream &stream,
-                                          RehearsalSign &sign)
-{
-    const std::string description = stream.readString();
-
-    if (!description.empty())
-    {
-        sign.SetDescription(description);
-    }
-
-    // Set the letter to A for now - the proper letter will be set after
-    // importing the whole document.
-    sign.SetLetter('A');
-
-    readColor(stream);
 }
 #endif

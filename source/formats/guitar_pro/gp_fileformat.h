@@ -37,7 +37,7 @@ enum MeasureHeaderFlags
     Denominator,
     RepeatBegin,
     RepeatEnd,
-    AlternateEnding,
+    AltEnding,
     Marker,
     KeySignatureChange,
     DoubleBar

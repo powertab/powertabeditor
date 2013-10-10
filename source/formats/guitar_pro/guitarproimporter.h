@@ -18,16 +18,25 @@
 #ifndef FORMATS_GUITARPROIMPORTER_H
 #define FORMATS_GUITARPROIMPORTER_H
 
+#include <boost/optional.hpp>
 #include <formats/fileformat.h>
-#include <formats/scorearranger.h>
+#include "gp_channel.h"
 #include "gp_fileformat.h"
 #include <map>
+#include <score/alternateending.h>
+#include <score/barline.h>
+#include <score/tuning.h>
 #include <vector>
 
 namespace Gp
 {
 class InputStream;
-class Channel;
+
+struct Bar
+{
+    Barline myBarline;
+    boost::optional<AlternateEnding> myAlternateEnding;
+};
 }
 
 class ScoreInfo;
@@ -41,32 +50,48 @@ public:
     virtual void load(const std::string &filename, Score &score) override;
 
 private:
+    /// Check that the file version string is valid, and set the version flag
+    /// for the input stream.
+    /// @throw FileFormatException
     void findFileVersion(Gp::InputStream &stream);
-    void readHeader(Gp::InputStream &stream, ScoreInfo &info);
-#if 0
 
+    /// Read the song information (title, artist, etc).
+    void readHeader(Gp::InputStream &stream, ScoreInfo &info);
+
+    /// Read the initial tempo for the score.
+    void readStartTempo(Gp::InputStream &stream, Score &score);
+
+    /// Read the midi channels (i.e. mixer settings).
+    /// We store them into a temporary structure (Gp::Channel) since they must
+    /// be referenced later when importing the tracks.
     std::vector<Gp::Channel> readChannels(Gp::InputStream &stream);
+
+    /// Reads all of the measures in the score, and any alternate endings that
+    /// occur.
+    void readBarlines(Gp::InputStream &stream, uint32_t numMeasures,
+                      std::vector<Gp::Bar> &bars);
+
+    RehearsalSign readRehearsalSign(Gp::InputStream &stream);
 
     void readColor(Gp::InputStream &stream);
 
-    void readBarlines(Gp::InputStream &stream, uint32_t numMeasures,
-                      std::vector<BarData> &bars);
+    /// Converts key accidentals from the Guitar Pro format to Power Tab.
+    int convertKeyAccidentals(int8_t gpKey);
 
-    void readTracks(Gp::InputStream &stream, Score *score, uint32_t numTracks,
+    /// Read and convert all tracks (players).
+    void readTracks(Gp::InputStream &stream, Score &score, uint32_t numTracks,
                     const std::vector<Gp::Channel> &channels);
 
-    uint8_t convertKeyAccidentals(int8_t gpKey);
-
+    /// Imports a Guitar Pro tuning and converts it into a Power Tab tuning.
     Tuning readTuning(Gp::InputStream &stream);
 
+#if 0
     void readSystems(Gp::InputStream &stream, Score *score,
                      std::vector<BarData> bars);
 
     PositionData readBeat(Gp::InputStream &stream, const Tuning &tuning);
 
     uint8_t readDuration(Gp::InputStream &stream);
-
-    void readRehearsalSign(Gp::InputStream &stream, RehearsalSign &sign);
 
     void readNotes(Gp::InputStream &stream, Position &position);
 
@@ -85,8 +110,6 @@ private:
 
     void readChordDiagram(Gp::InputStream &stream, const Tuning &tuning);
     void readOldStyleChord(Gp::InputStream &stream, const Tuning &tuning);
-
-    void readStartTempo(Gp::InputStream &stream, Score *score);
 
     static uint8_t convertTremoloEventType(uint8_t gpEventType);
     static uint8_t convertBendPitch(int32_t gpBendPitch);

@@ -38,6 +38,10 @@ public:
     int32_t instrument;
     uint8_t volume;
     uint8_t balance;
+    uint8_t chorus;
+    uint8_t reverb;
+    uint8_t phaser;
+    uint8_t tremolo;
 };
 }
 

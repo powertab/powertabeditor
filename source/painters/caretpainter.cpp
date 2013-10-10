@@ -145,6 +145,9 @@ void CaretPainter::onLocationChanged()
         return;
 
     const System &system = location.getSystem();
+    if (system.getStaves().empty())
+        return;
+
     myLayout.reset(new LayoutInfo(location.getScore(), system,
                                   location.getSystemIndex(), location.getStaff(),
                                   location.getStaffIndex()));

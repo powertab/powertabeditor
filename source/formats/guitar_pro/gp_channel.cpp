@@ -24,13 +24,17 @@
 Gp::Channel::Channel() :
     instrument(Instrument().getMidiPreset()),
     volume(Player().getMaxVolume()),
-    balance(Player().getPan())
+    balance(Player().getPan()),
+    chorus(0),
+    reverb(0),
+    phaser(0),
+    tremolo(0)
 {
 }
 
-/// For some reason, channel properties (except instrument type) are stored in a different format,
-/// where 1 -> 7, 2 -> 15, ... , and 16 -> 127.
-/// This function reads the data and performs the necessary conversion
+/// For some reason, channel properties (except instrument type) are stored in
+/// a different format, where 1 -> 7, 2 -> 15, ... , and 16 -> 127.
+/// This function reads the data and performs the necessary conversion.
 uint8_t Gp::Channel::readChannelProperty(Gp::InputStream& stream)
 {
     uint8_t value = stream.read<uint8_t>();
