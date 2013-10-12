@@ -17,21 +17,9 @@
 
 #include <catch.hpp>
 
-#include <boost/assign.hpp>
-
 #include <formats/guitar_pro/guitarproimporter.h>
-
-#include <powertabdocument/powertabdocument.h>
-#include <powertabdocument/powertabfileheader.h>
-#include <powertabdocument/score.h>
-#include <powertabdocument/guitar.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/generalmidi.h>
-#include <powertabdocument/tempomarker.h>
-#include <powertabdocument/system.h>
-#include <powertabdocument/barline.h>
-#include <powertabdocument/position.h>
-#include <powertabdocument/note.h>
+#include <score/generalmidi.h>
+#include <score/score.h>
 
 const std::string FILE_TEST1 = "data/test1.gp4";
 
@@ -39,133 +27,103 @@ struct Gp4Fixture
 {
     Gp4Fixture()
     {
-        REQUIRE_NOTHROW(importer.load(FILE_TEST1));
-        doc = importer.load(FILE_TEST1);
-        score = doc->GetScore(0);
+        REQUIRE_NOTHROW(importer.load(FILE_TEST1, score));
     }
 
     GuitarProImporter importer;
-    boost::shared_ptr<PowerTabDocument> doc;
-    Score* score;
+    Score score;
 };
 
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/HeaderConversion",
-                 "The header and song information should be imported correctly.")
+TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/HeaderConversion")
 {
-    const PowerTabFileHeader& header = doc->GetHeader();
+    const ScoreInfo &info = score.getScoreInfo();
+    const SongData &song = info.getSongData();
 
-    REQUIRE(header.GetSongTitle() == "FileName");
-    REQUIRE(header.GetSongArtist() == "Artist");
-    REQUIRE(header.GetSongAudioReleaseTitle() == "Album");
-    REQUIRE(header.GetSongComposer() == "Author");
-    REQUIRE(header.GetSongCopyright() == "Copyright 2011");
-    REQUIRE(header.GetSongGuitarScoreTranscriber() == "Tab Creator");
-    REQUIRE(header.GetSongGuitarScoreNotes()  == "Some Comments");
+    REQUIRE(song.getTitle() == "FileName");
+    REQUIRE(song.getArtist() == "Artist");
+    REQUIRE(song.getAudioReleaseInfo().getTitle() == "Album");
+    REQUIRE(song.getAuthorInfo().getComposer() == "Author");
+    REQUIRE(song.getCopyright() == "Copyright 2011");
+    REQUIRE(song.getTranscriber() == "Tab Creator");
+    REQUIRE(song.getPerformanceNotes()  == "Some Comments");
 }
 
 TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/TrackImport",
-                 "The guitars should be imported correctly.")
+                 "The players/instruments should be imported correctly.")
 {
-    REQUIRE(score->GetGuitarCount() == 2u);
+    REQUIRE(score.getPlayers().size() == 2);
+    REQUIRE(score.getInstruments().size() == 2);
 
-    Score::GuitarConstPtr guitar1 = score->GetGuitar(0);
+    const Player &player1 = score.getPlayers()[0];
+    REQUIRE(player1.getDescription() == "First Track");
+    REQUIRE(player1.getTuning().getCapo() == 1);
+    REQUIRE(player1.getTuning().getStringCount() == 7);
 
-    // track information
-    REQUIRE(guitar1->GetDescription() == "First Track");
-    REQUIRE(guitar1->GetNumber() == 0u);
-    REQUIRE(guitar1->GetCapo() == 1u);
-
-    using namespace midi;
-    using namespace boost::assign;
-    std::vector<uint8_t> notes;
-    notes += MIDI_NOTE_E4, MIDI_NOTE_B3, MIDI_NOTE_G3,
-            MIDI_NOTE_D3, MIDI_NOTE_A2, MIDI_NOTE_E2, MIDI_NOTE_B1;
-    // 7-string tuning
-    REQUIRE(guitar1->GetTuning() == Tuning("", 0, false, notes));
-
-    // midi settings
-    REQUIRE(guitar1->GetPreset() == midi::MIDI_PRESET_OVERDRIVEN_GUITAR);
-    REQUIRE(guitar1->GetInitialVolume() == 95u);
+    const Instrument guitar1 = score.getInstruments()[0];
+    REQUIRE(guitar1.getMidiPreset() == Midi::MIDI_PRESET_OVERDRIVEN_GUITAR);
+    REQUIRE(player1.getMaxVolume() == 95);
 }
 
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/ReadBarline/BarlineProperties", "")
+TEST_CASE_METHOD(Gp4Fixture,
+                 "Formats/GuitarPro4Import/ReadBarline/BarlineProperties", "")
 {
-    System::BarlineConstPtr barline1 = score->GetSystem(0)->GetStartBar();
-    REQUIRE(barline1->IsRepeatStart());
+    const Barline &bar = score.getSystems()[0].getBarlines()[0];
+    REQUIRE(bar.getBarType() == Barline::RepeatStart);
 }
 
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/ReadBarline/TimeSignature", "")
+TEST_CASE_METHOD(Gp4Fixture,
+                 "Formats/GuitarPro4Import/ReadBarline/TimeSignature", "")
 {
-    const TimeSignature& timeSig1 = score->GetSystem(0)->GetStartBar()->GetTimeSignature();
+    const Barline &bar = score.getSystems()[0].getBarlines()[0];
+    const TimeSignature &time = bar.getTimeSignature();
 
-    REQUIRE(timeSig1.IsSameMeter(TimeSignature(5, 4)));
-    REQUIRE(timeSig1.IsShown());
+    REQUIRE(time.getBeatsPerMeasure() == 5);
+    REQUIRE(time.getBeatValue() == 4);
+    REQUIRE(time.isVisible());
 }
 
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/ReadBarline/KeySignature", "")
+TEST_CASE_METHOD(Gp4Fixture,
+                 "Formats/GuitarPro4Import/ReadBarline/RehearsalSigns", "")
 {
-    /*System::BarlineConstPtr barline1 = score->GetSystem(0)->GetStartBar();
+    const System &system = score.getSystems()[0];
 
-    // TODO - generate appropriate test case for key signatures (TuxGuitar export seems to be broken??)
-    REQUIRE(barline1->GetKeySignature().IsSameKey(
-                KeySignature(KeySignature::majorKey, KeySignature::twoSharps)));*/
+    // Check that rehearsal sign letters are set in sequential
+    // order (A, B, C, etc), and that data is read correctly.
+    const RehearsalSign &sign1 = system.getBarlines()[0].getRehearsalSign();
+    REQUIRE(sign1.getDescription() == "Section 1");
+    REQUIRE(sign1.getLetters() == "A");
+
+    const RehearsalSign &sign2 = system.getBarlines()[1].getRehearsalSign();
+    REQUIRE(sign2.getDescription() == "Section 2");
+    REQUIRE(sign2.getLetters() == "B");
 }
 
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/ReadBarline/RehearsalSigns", "")
+TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/TempoMarkers", "")
 {
-    // Check that rehearsal sign letters are set in sequential order (A, B, C, etc),
-    // and that data is read correctly
-    const RehearsalSign& sign1 = score->GetSystem(0)->GetStartBar()->GetRehearsalSign();
-
-    REQUIRE(sign1.GetDescription() == "Section 1");
-    REQUIRE(sign1.IsSet());
-    REQUIRE(sign1.GetLetter() == 'A');
-
-    const RehearsalSign& sign2 = score->GetSystem(0)->GetBarline(0)->GetRehearsalSign();
-
-    REQUIRE(sign2.GetDescription() == "Section 2");
-    REQUIRE(sign2.IsSet());
-    REQUIRE(sign2.GetLetter() == 'B');
+    // Currently, only the initial tempo marker is imported.
+    REQUIRE(score.getSystems()[0].getTempoMarkers().size() == 1);
 }
 
-TEST_CASE("Formats/GuitarPro4Import/ReadBarline/AlternateEndings", "")
+TEST_CASE_METHOD(Gp4Fixture,
+                 "Formats/GuitarPro4Import/NoteProperties/PositionEffects", "")
 {
-    // TODO - create test cases (TuxGuitar cannot export alternate endings to gp4)
+    // Check that the first position is tremolo picked and is tapped.
+    const Position &pos = score.getSystems()[0].getStaves()[0].getVoice(0)[0];
+
+    REQUIRE(pos.hasProperty(Position::TremoloPicking));
+    REQUIRE(pos.hasProperty(Position::Tap));
+    REQUIRE(pos.hasProperty(Position::PickStrokeDown));
+    REQUIRE(pos.hasProperty(Position::PalmMuting));
 }
 
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/TempoMarkers",
-                 "Currently, only the initial tempo marker is imported.")
+TEST_CASE_METHOD(Gp4Fixture,
+                 "Formats/GuitarPro4Import/NoteProperties/NoteEffects", "")
 {
-    REQUIRE(score->GetTempoMarkerCount() == 1u);
-}
+    const Staff &staff = score.getSystems()[0].getStaves()[0];
+    const Note &note1 = staff.getVoice(0)[1].getNotes()[0];
 
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/NoteProperties/PositionEffects", "")
-{
-    /// Check that the first position is tremolo picked and is tapped
-    const Position* pos = score->GetSystem(0)->GetStaff(0)->GetPosition(0, 0);
-    REQUIRE(pos->HasTremoloPicking());
-    REQUIRE(pos->HasTap());
+    REQUIRE(note1.getTrilledFret() == 1);
 
-    REQUIRE(pos->HasPickStrokeDown());
-
-    REQUIRE(pos->HasPalmMuting());
-
-    // TODO - test tremolo bar
-    // TODO - test arpeggios
-    // TODO - test vibrato
-    // TODO - test staccato
-    // TODO - test let ring
-}
-
-TEST_CASE_METHOD(Gp4Fixture, "Formats/GuitarPro4Import/NoteProperties/NoteEffects", "")
-{
-    const Note* note = score->GetSystem(0)->GetStaff(0)->GetPosition(0, 1)->GetNote(0);
-
-    // should have trill with fret 1
-    uint8_t trilledFret = 0;
-    note->GetTrill(trilledFret);
-    REQUIRE(trilledFret == 1);
-
-    note = score->GetSystem(0)->GetStaff(0)->GetPosition(0, 3)->GetNote(0);
-    REQUIRE(note->HasPullOff());
+    const Note &note2 = staff.getVoice(0)[3].getNotes()[0];
+    REQUIRE(note2.hasProperty(Note::HammerOnOrPullOff));
 }

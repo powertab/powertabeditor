@@ -54,7 +54,7 @@ add_executable(pte_tests
     audio/test_midievent.cpp
 
     formats/test_fileformat.cpp
-    #formats/guitar_pro/test_gp4.cpp
+    formats/guitar_pro/test_gp4.cpp
     formats/powertab_old/test_powertabold.cpp
 
     score/test_alternateending.cpp
@@ -98,8 +98,12 @@ target_link_libraries(pte_tests
 )
 
 # Copy the test files to the build directory.
-#file(COPY formats/guitar_pro/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_command(TARGET pte_tests POST_BUILD COMMAND
     ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/formats/powertab_old/data
+    ${CMAKE_CURRENT_BINARY_DIR}/data)
+
+add_custom_command(TARGET pte_tests POST_BUILD COMMAND
+    ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/formats/guitar_pro/data
     ${CMAKE_CURRENT_BINARY_DIR}/data)

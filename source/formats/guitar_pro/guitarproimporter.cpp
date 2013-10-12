@@ -76,6 +76,8 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
 
     readTracks(stream, score, numTracks, channels);
     readSystems(stream, score, bars);
+
+    ScoreUtils::adjustRehearsalSigns(score);
 }
 
 void GuitarProImporter::findFileVersion(Gp::InputStream &stream)
@@ -248,6 +250,8 @@ void GuitarProImporter::readBarlines(Gp::InputStream &stream,
             // we don't set the repeatEnd type here - see the 'fixRepeatEnds'
             // function for details
             barline->SetRepeatCount(stream.read<uint8_t>() + 1);
+#else
+            stream.read<uint8_t>();
 #endif
         }
 
