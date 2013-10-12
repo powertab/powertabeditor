@@ -18,9 +18,9 @@
 #ifndef PAINTERS_CARETPAINTER_H
 #define PAINTERS_CARETPAINTER_H
 
-#include <boost/scoped_ptr.hpp>
-#include <QGraphicsItem>
 #include <boost/signals2/signal.hpp>
+#include <memory>
+#include <QGraphicsItem>
 
 class Caret;
 struct LayoutInfo;
@@ -48,7 +48,7 @@ private:
     void onLocationChanged();
 
     const Caret &myCaret;
-    boost::scoped_ptr<LayoutInfo> myLayout;
+    std::unique_ptr<LayoutInfo> myLayout;
     std::vector<QRectF> mySystemRects;
     boost::signals2::scoped_connection myCaretConnection;
     LocationChangedSlot onMyLocationChanged;

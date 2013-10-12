@@ -20,8 +20,8 @@
 
 #include <QMainWindow>
 
-#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+#include <memory>
 #include <score/position.h>
 #include <string>
 #include <vector>
@@ -291,11 +291,11 @@ private:
     /// Returns the location of the caret within the active document.
     ScoreLocation &getLocation();
 
-    boost::scoped_ptr<DocumentManager> myDocumentManager;
-    boost::scoped_ptr<FileFormatManager> myFileFormatManager;
-    boost::scoped_ptr<UndoManager> myUndoManager;
-    boost::scoped_ptr<MidiPlayer> myMidiPlayer;
-    boost::scoped_ptr<TuningDictionary> myTuningDictionary;
+    std::unique_ptr<DocumentManager> myDocumentManager;
+    std::unique_ptr<FileFormatManager> myFileFormatManager;
+    std::unique_ptr<UndoManager> myUndoManager;
+    std::unique_ptr<MidiPlayer> myMidiPlayer;
+    std::unique_ptr<TuningDictionary> myTuningDictionary;
     boost::shared_ptr<SettingsPubSub> mySettingsPubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
@@ -495,8 +495,8 @@ private:
     QMenu* guitarMenu;
     Command* addGuitarAct;
 
-    boost::scoped_ptr<QStackedWidget> mixerList;
-    boost::scoped_ptr<QStackedWidget> playbackToolbarList;
+    std::unique_ptr<QStackedWidget> mixerList;
+    std::unique_ptr<QStackedWidget> playbackToolbarList;
 
 #endif
 };
