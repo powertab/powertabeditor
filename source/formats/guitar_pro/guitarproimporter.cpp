@@ -25,6 +25,8 @@
 #include <score/generalmidi.h>
 #include <score/score.h>
 
+static const int POSITIONS_PER_SYSTEM = 35;
+
 const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = boost::assign::map_list_of
     ("FICHIER GUITAR PRO v3.00", Gp::Version3)
     ("FICHIER GUITAR PRO v4.00", Gp::Version4)
@@ -422,38 +424,79 @@ Tuning GuitarProImporter::readTuning(Gp::InputStream &stream)
 }
 
 void GuitarProImporter::readSystems(Gp::InputStream &stream, Score &score,
-                                    const std::vector<Gp::Bar> &bars)
+                                    std::vector<Gp::Bar> bars)
 {
-    System &system = score.getSystems().front();
+    System *system = &score.getSystems().front();
+    int startPos = 0;
 
-    for (const Player &player : score.getPlayers())
-        system.insertStaff(Staff(player.getTuning().getStringCount()));
+    for (auto &player : score.getPlayers())
+        system->insertStaff(Staff(player.getTuning().getStringCount()));
 
-    for (const Gp::Bar &bar : bars)
+    // Set up an initial player change.
+    PlayerChange change;
+    for (int i = 0; i < score.getPlayers().size(); ++i)
+        change.insertActivePlayer(i, ActivePlayer(i, i));
+    system->insertPlayerChange(change);
+
+    for (Gp::Bar &bar : bars)
     {
-        for (const Player &player : score.getPlayers())
+        // Try to create a new system every so often.
+        if (startPos > POSITIONS_PER_SYSTEM)
         {
-            const Tuning &tuning = player.getTuning();
+            system->getBarlines().back().setPosition(startPos + 1);
+            score.insertSystem(System());
+            system = &score.getSystems().back();
+
+            for (auto &player : score.getPlayers())
+                system->insertStaff(Staff(player.getTuning().getStringCount()));
+
+            startPos = 0;
+        }
+
+        int nextPos = startPos;
+
+        const int n = score.getPlayers().size();
+        for (int i = 0; i < n; ++i)
+        {
+            const Tuning &tuning = score.getPlayers()[i].getTuning();
+            Staff &staff = system->getStaves()[i];
+
+            int currentPos = (startPos != 0) ? startPos + 1 : 0;
 
             const uint32_t numBeats = stream.read<uint32_t>();
 
-            // TODO - store the positions.
-            for (uint32_t i = 0; i < numBeats; i++)
-                readBeat(stream, tuning);
+            for (uint32_t j = 0; j < numBeats; ++j)
+            {
+                Position pos = readBeat(stream, tuning);
+                pos.setPosition(currentPos++);
+                staff.insertPosition(0, pos);
+            }
 
             // TODO - support second voice for GP5.
             if (stream.version > Gp::Version4)
             {
                 const uint32_t beats = stream.read<uint32_t>();
-                for (uint32_t i = 0; i < beats; i++)
+                for (uint32_t j = 0; j < beats; ++j)
                     readBeat(stream, tuning);
             }
 
             // Not sure what this is used for ...
             if (stream.version > Gp::Version4)
                 stream.skip(1);
+
+            nextPos = std::max(nextPos, currentPos);
         }
+
+        bar.myBarline.setPosition(startPos);
+        if (startPos == 0)
+            system->getBarlines().front() = bar.myBarline;
+        else
+            system->insertBarline(bar.myBarline);
+
+        startPos = nextPos;
     }
+
+    system->getBarlines().back().setPosition(startPos + 1);
 }
 
 Position GuitarProImporter::readBeat(Gp::InputStream &stream,

@@ -87,7 +87,7 @@ private:
     Tuning readTuning(Gp::InputStream &stream);
 
     void readSystems(Gp::InputStream &stream, Score &score,
-                     const std::vector<Gp::Bar> &bars);
+                     std::vector<Gp::Bar> bars);
 
     /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab).
     Position readBeat(Gp::InputStream &stream, const Tuning &tuning);
