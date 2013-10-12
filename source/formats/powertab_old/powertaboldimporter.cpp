@@ -234,10 +234,10 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     // Import alternate endings.
     std::vector<boost::shared_ptr<PowerTabDocument::AlternateEnding> > endings;
     oldScore.GetAlternateEndingsInSystem(endings, oldSystem);
-    for (auto &endings : endings)
+    for (auto &ending : endings)
     {
         AlternateEnding newEnding;
-        convert(*endings, newEnding);
+        convert(*ending, newEnding);
         system.insertAlternateEnding(newEnding);
     }
 

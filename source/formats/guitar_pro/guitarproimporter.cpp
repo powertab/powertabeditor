@@ -21,6 +21,7 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <fstream>
+#include <iostream>
 #include "inputstream.h"
 #include <score/generalmidi.h>
 #include <score/score.h>
