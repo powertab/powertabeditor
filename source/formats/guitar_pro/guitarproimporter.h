@@ -25,6 +25,7 @@
 #include <map>
 #include <score/alternateending.h>
 #include <score/barline.h>
+#include <score/position.h>
 #include <score/tuning.h>
 #include <vector>
 
@@ -85,13 +86,30 @@ private:
     /// Imports a Guitar Pro tuning and converts it into a Power Tab tuning.
     Tuning readTuning(Gp::InputStream &stream);
 
+    void readSystems(Gp::InputStream &stream, Score &score,
+                     const std::vector<Gp::Bar> &bars);
+
+    /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab).
+    Position readBeat(Gp::InputStream &stream, const Tuning &tuning);
+
+    /// Reads a duration value and converts it into PTB format.
+    Position::DurationType readDuration(Gp::InputStream &stream);
+
+    void readChordDiagram(Gp::InputStream &stream, const Tuning &tuning);
+
+    /// Reads an old-style "simple" chord from earlier versions.
+    void readOldStyleChord(Gp::InputStream &stream, const Tuning &tuning);
+
+    void readPositionEffects(Gp::InputStream &stream, Position &position);
+
+    void readTremoloBar(Gp::InputStream &stream, Position &position);
+
+    void readMixTableChangeEvent(Gp::InputStream &stream);
+
 #if 0
-    void readSystems(Gp::InputStream &stream, Score *score,
-                     std::vector<BarData> bars);
-
-    PositionData readBeat(Gp::InputStream &stream, const Tuning &tuning);
-
-    uint8_t readDuration(Gp::InputStream &stream);
+    static uint8_t convertTremoloEventType(uint8_t gpEventType);
+    static uint8_t convertBendPitch(int32_t gpBendPitch);
+#endif
 
     void readNotes(Gp::InputStream &stream, Position &position);
 
@@ -103,17 +121,6 @@ private:
     void readSlide(Gp::InputStream &stream, Note &note);
     void readHarmonic(Gp::InputStream &stream, Note &note);
     void readBend(Gp::InputStream &stream, Note &note);
-    void readTremoloBar(Gp::InputStream &stream, Position &position);
-    void readMixTableChangeEvent(Gp::InputStream &stream,
-                                 PositionData &position);
-    void readPositionEffects(Gp::InputStream &stream, Position &position);
-
-    void readChordDiagram(Gp::InputStream &stream, const Tuning &tuning);
-    void readOldStyleChord(Gp::InputStream &stream, const Tuning &tuning);
-
-    static uint8_t convertTremoloEventType(uint8_t gpEventType);
-    static uint8_t convertBendPitch(int32_t gpBendPitch);
-#endif
 
     /// Supported version strings for Guitar Pro files (maps version strings to
     /// version number)
