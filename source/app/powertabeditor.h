@@ -31,6 +31,7 @@ class Command;
 class DocumentManager;
 class FileFormatManager;
 class MidiPlayer;
+class Mixer;
 class QActionGroup;
 class RecentFiles;
 class ScoreArea;
@@ -226,6 +227,8 @@ private:
 
     /// Create all of the commands for the application.
     void createCommands();
+    /// Build the mixer widget.
+    void createMixer();
     /// Helper function to create a note duration command.
     void createNoteDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
@@ -305,6 +308,8 @@ private:
     Position::DurationType myActiveDurationType;
 
     QTabWidget *myTabWidget;
+    Mixer *myMixer;
+    QDockWidget *myMixerDockWidget;
 
     QMenu *myFileMenu;
     Command *myNewDocumentCommand;
@@ -466,7 +471,6 @@ private:
     void shiftTabNumber(int direction);
 
     PlaybackWidget* getCurrentPlaybackWidget() const;
-    Mixer* getCurrentMixer();
 
 private slots:
     void updateLocationLabel();
@@ -495,7 +499,6 @@ private:
     QMenu* guitarMenu;
     Command* addGuitarAct;
 
-    std::unique_ptr<QStackedWidget> mixerList;
     std::unique_ptr<QStackedWidget> playbackToolbarList;
 
 #endif

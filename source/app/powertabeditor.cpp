@@ -103,16 +103,20 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QFontDatabase>
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QScrollArea>
 #include <QSettings>
 
 #include <score/staffutils.h>
 #include <score/utils.h>
 #include <sigfwd/sigfwd.hpp>
+
+#include <widgets/mixer/mixer.h>
 
 PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
@@ -128,12 +132,9 @@ PowerTabEditor::PowerTabEditor()
               .toString()),
       myRecentFiles(nullptr),
       myActiveDurationType(Position::EighthNote),
-      myTabWidget(nullptr)
-#if 0
-    mixerList(new QStackedWidget),
-    playbackToolbarList(new QStackedWidget),
-    settingsPubSub(new SettingsPubSub()),
-#endif
+      myTabWidget(nullptr),
+      myMixer(nullptr),
+      myMixerDockWidget(nullptr)
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
@@ -149,44 +150,23 @@ PowerTabEditor::PowerTabEditor()
     connect(myUndoManager.get(), SIGNAL(cleanChanged(bool)), this,
             SLOT(updateModified(bool)));
 
+    myTuningDictionary->loadInBackground();
+
+    createMixer();
     createCommands();
     createMenus();
+
+    // Set up the recent files menu.
     myRecentFiles = new RecentFiles(myRecentFilesMenu, this);
     connect(myRecentFiles, SIGNAL(fileSelected(QString)), this,
             SLOT(openFile(QString)));
+
     createTabArea();
 
+    setCentralWidget(myTabWidget);
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
     setWindowTitle(getApplicationName());
-
-#if 0
-    QSplitter* playbackArea = new QSplitter(Qt::Vertical);
-    playbackArea->addWidget(tabWidget);
-    playbackArea->addWidget(playbackToolbarList.get());
-
-    horSplitter = new QSplitter();
-    horSplitter->setOrientation(Qt::Horizontal);
-
-    toolBox = new Toolbox(this);
-    horSplitter->addWidget(toolBox);
-    horSplitter->addWidget(playbackArea);
-
-    vertSplitter = new QSplitter();
-    vertSplitter->setOrientation(Qt::Vertical);
-
-    vertSplitter->addWidget(horSplitter);
-
-    mixerList->setMinimumHeight(150);
-    vertSplitter->addWidget(mixerList.get());
-
-    setCentralWidget(vertSplitter);
-
-    tuningDictionary->loadInBackground();
-#else
-    myTuningDictionary->loadInBackground();
-    setCentralWidget(myTabWidget);
-#endif
 }
 
 PowerTabEditor::~PowerTabEditor()
@@ -254,8 +234,13 @@ void PowerTabEditor::openFile(QString filename)
 void PowerTabEditor::switchTab(int index)
 {
     myDocumentManager->setCurrentDocumentIndex(index);
+
+    if (index != -1)
+        myMixer->update(myDocumentManager->getCurrentDocument().getScore());
+    else
+        myMixer->clear();
+
 #if 0
-    mixerList->setCurrentIndex(index);
     playbackToolbarList->setCurrentIndex(index);
 #endif
     myUndoManager->setActiveStackIndex(index);
@@ -296,8 +281,8 @@ bool PowerTabEditor::closeTab(int index)
     myUndoManager->removeStack(index);
     myDocumentManager->removeDocument(index);
     delete myTabWidget->widget(index);
+
 #if 0
-    mixerList->removeWidget(mixerList->widget(index));
     playbackToolbarList->removeWidget(playbackToolbarList->widget(index));
 #endif
     // Get the index of the tab that we will now switch to.
@@ -305,7 +290,6 @@ bool PowerTabEditor::closeTab(int index)
 
     myUndoManager->setActiveStackIndex(currentIndex);
 #if 0
-    mixerList->setCurrentIndex(currentIndex);
     playbackToolbarList->setCurrentIndex(currentIndex);
 #endif
     myDocumentManager->setCurrentDocumentIndex(currentIndex);
@@ -1790,6 +1774,22 @@ void PowerTabEditor::createCommands()
                     boost::bind(&PowerTabEditor::cycleTab, this, -1));
 }
 
+void PowerTabEditor::createMixer()
+{
+    myMixerDockWidget = new QDockWidget(tr("Mixer"), this);
+    myMixerDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    myMixerDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
+
+    QScrollArea *scroll = new QScrollArea(this);
+    scroll->setMinimumSize(0, 150);
+
+    myMixer = new Mixer(scroll);
+
+    scroll->setWidget(myMixer);
+    myMixerDockWidget->setWidget(scroll);
+    addDockWidget(Qt::BottomDockWidgetArea, myMixerDockWidget);
+}
+
 void PowerTabEditor::createNoteDurationCommand(
         Command *&command, const QString &menuName, const QString &commandName,
         Position::DurationType durationType)
@@ -2040,6 +2040,8 @@ void PowerTabEditor::createMenus()
     myWindowMenu = menuBar()->addMenu(tr("&Window"));
     myWindowMenu->addAction(myNextTabCommand);
     myWindowMenu->addAction(myPrevTabCommand);
+    myWindowMenu->addSeparator();
+    myWindowMenu->addAction(myMixerDockWidget->toggleViewAction());
 }
 
 void PowerTabEditor::createTabArea()
@@ -2116,21 +2118,8 @@ void PowerTabEditor::setupNewTab()
     const int tabIndex = myTabWidget->addTab(scorearea, title);
     myTabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
 
+    myMixer->update(doc.getScore());
 #if 0
-    // add the guitars to a new mixer
-    Mixer* mixer = new Mixer(doc->GetPlayerScore(), tuningDictionary);
-    connect(mixer, SIGNAL(visibilityToggled(uint32_t,bool)),
-            this, SLOT(toggleGuitarVisible(uint32_t,bool)));
-
-    QScrollArea* scrollArea = new QScrollArea;
-    // show all players
-    for (quint32 i=0; i < doc->GetPlayerScore()->GetGuitarCount(); i++)
-    {
-        mixer->addInstrument(doc->GetPlayerScore()->GetGuitar(i));
-    }
-    scrollArea->setWidget(mixer);
-    mixerList->addWidget(scrollArea);
-
     PlaybackWidget* playback = new PlaybackWidget(settingsPubSub);
     connect(playback, SIGNAL(playbackButtonToggled()),
             this, SLOT(startStopPlayback()));
@@ -2359,8 +2348,7 @@ void PowerTabEditor::enableEditing(bool enable)
     menuList << myPositionMenu << myPositionSectionMenu << myPositionStaffMenu
              << myTextMenu << mySectionMenu << myLineSpacingMenu << myNotesMenu
              << myOctaveMenu << myRestsMenu << myMusicSymbolsMenu
-             << myTabSymbolsMenu << myWindowMenu << myPlaybackMenu
-             << myEditMenu;
+             << myTabSymbolsMenu << myPlaybackMenu << myEditMenu;
 
     foreach(QMenu *menu, menuList)
     {
@@ -2373,6 +2361,8 @@ void PowerTabEditor::enableEditing(bool enable)
     myCloseTabCommand->setEnabled(enable);
     mySaveAsCommand->setEnabled(enable);
     myPlayerChangeCommand->setEnabled(enable);
+    myNextTabCommand->setEnabled(enable);
+    myPrevTabCommand->setEnabled(enable);
 #if 0
     addGuitarAct->setEnabled(enable);
 #endif
@@ -2579,14 +2569,6 @@ ScoreLocation &PowerTabEditor::getLocation()
 void PowerTabEditor::updateActiveVoice(int voice)
 {
     getCurrentScoreArea()->getCaret()->setCurrentVoice(voice);
-}
-
-Mixer* PowerTabEditor::getCurrentMixer()
-{
-    QScrollArea* scrollArea = dynamic_cast<QScrollArea*>(mixerList->currentWidget());
-    Mixer* currentMixer = dynamic_cast<Mixer*>(scrollArea->widget());
-    Q_ASSERT(currentMixer != NULL);
-    return currentMixer;
 }
 
 PlaybackWidget* PowerTabEditor::getCurrentPlaybackWidget() const

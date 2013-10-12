@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.8)
 
 set(FORMS
+    mixer/mixeritem.ui
     #playback/playbackwidget.ui
 )
 
@@ -11,8 +12,8 @@ add_library(ptewidgets
     clickablelabel.cpp
     #common.cpp
 
-    #mixer/mixer.cpp
-    #mixer/mixerinstrument.cpp
+    mixer/mixer.cpp
+    mixer/mixeritem.cpp
 
     #playback/playbackwidget.cpp
 

@@ -15,33 +15,29 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "mixer.h"
-
 #include "mixeritem.h"
-#include <QVBoxLayout>
-#include <score/score.h>
+#include "ui_mixeritem.h"
 
-Mixer::Mixer(QWidget *parent) : QWidget(parent)
+#include <boost/lexical_cast.hpp>
+#include <score/player.h>
+
+MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player)
+    : QWidget(parent), ui(new Ui::MixerItem)
 {
-    myLayout = new QVBoxLayout(this);
-    myLayout->setSpacing(0);
-    myLayout->setSizeConstraint(QLayout::SetFixedSize);
-    setLayout(myLayout);
+    ui->setupUi(this);
+
+    ui->playerIndexLabel->setText(QString("%1.").arg(playerIndex + 1));
+    ui->playerNameLabel->setText(
+        QString::fromStdString(player.getDescription()));
+    ui->playerVolume->setValue(player.getMaxVolume());
+    ui->playerPan->setValue(player.getPan());
+    ui->playerTuning->setText(QString::fromStdString(
+        boost::lexical_cast<std::string>(player.getTuning())));
+
+    ui->playerNameEdit->hide();
 }
 
-void Mixer::update(const Score &score)
+MixerItem::~MixerItem()
 {
-    clear();
-
-    for (int i = 0; i < score.getPlayers().size(); ++i)
-        myLayout->addWidget(new MixerItem(this, i, score.getPlayers()[i]));
-}
-
-void Mixer::clear()
-{
-    while (QLayoutItem *item = myLayout->takeAt(0))
-    {
-        delete item->widget();
-        delete item;
-    }
+    delete ui;
 }

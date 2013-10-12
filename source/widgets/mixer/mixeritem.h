@@ -15,29 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#ifndef WIDGETS_MIXERITEM_H
+#define WIDGETS_MIXERITEM_H
 
 #include <QWidget>
 
-class QVBoxLayout;
-class Score;
+namespace Ui
+{
+class MixerItem;
+}
 
-class Mixer : public QWidget
+class Player;
+
+class MixerItem : public QWidget
 {
     Q_OBJECT
 
 public:
-    Mixer(QWidget *parent);
-
-    /// Update the mixer to display all of the players in the score.
-    void update(const Score &score);
-
-    /// Removes all items from the mixer.
-    void clear();
+    explicit MixerItem(QWidget *parent, int playerIndex, const Player &player);
+    ~MixerItem();
 
 private:
-    QVBoxLayout *myLayout;
+    Ui::MixerItem *ui;
 };
 
 #endif
