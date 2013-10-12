@@ -507,6 +507,7 @@ Position GuitarProImporter::readBeat(Gp::InputStream &stream,
                                      const Tuning &tuning)
 {
     const Gp::Flags flags = stream.read<uint8_t>();
+    bool wholeRest = false;
 
     Position pos;
     pos.setProperty(Position::Dotted, flags.test(Gp::Dotted));
@@ -517,13 +518,18 @@ Position GuitarProImporter::readBeat(Gp::InputStream &stream,
 
         if (status == Gp::BeatEmpty)
         {
-            // TODO - handle empty position?
+            // Whole rest.
+            pos.setRest();
+            pos.setDurationType(Position::WholeNote);
+            wholeRest = true;
         }
         else if (status == Gp::BeatRest)
-            pos.setRest(true);
+            pos.setRest();
     }
 
-    pos.setDurationType(readDuration(stream));
+    Position::DurationType duration = readDuration(stream);
+    if (!wholeRest)
+        pos.setDurationType(duration);
 
     if (flags.test(Gp::IrregularGrouping))
     {
