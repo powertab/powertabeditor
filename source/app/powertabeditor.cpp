@@ -163,6 +163,10 @@ PowerTabEditor::PowerTabEditor()
 
     createTabArea();
 
+    // Restore the state of any dock widgets.
+    QSettings settings;
+    restoreState(settings.value(Settings::APP_WINDOW_STATE).toByteArray());
+
     setCentralWidget(myTabWidget);
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
@@ -1158,7 +1162,7 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
     return QMainWindow::eventFilter(object, event);
 }
 
-void PowerTabEditor::closeEvent(QCloseEvent *)
+void PowerTabEditor::closeEvent(QCloseEvent *event)
 {
 #if 0
     while (tabWidget->currentIndex() != -1)
@@ -1174,6 +1178,11 @@ void PowerTabEditor::closeEvent(QCloseEvent *)
 #endif
 
     myTuningDictionary->save();
+
+    QSettings settings;
+    settings.setValue(Settings::APP_WINDOW_STATE, saveState());
+
+    QMainWindow::closeEvent(event);
 }
 
 QString PowerTabEditor::getApplicationName() const
@@ -1779,6 +1788,8 @@ void PowerTabEditor::createMixer()
     myMixerDockWidget = new QDockWidget(tr("Mixer"), this);
     myMixerDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
     myMixerDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
+    // The object name is used by QMainWindow::saveState().
+    myMixerDockWidget->setObjectName("Mixer");
 
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
