@@ -19,6 +19,7 @@
 #define WIDGETS_MIXERITEM_H
 
 #include <QWidget>
+#include <score/tuning.h>
 
 namespace Ui
 {
@@ -26,17 +27,27 @@ class MixerItem;
 }
 
 class Player;
+class PlayerPubSub;
 
 class MixerItem : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MixerItem(QWidget *parent, int playerIndex, const Player &player);
+    explicit MixerItem(QWidget *parent, int playerIndex, const Player &player,
+                       const PlayerPubSub &pubsub);
     ~MixerItem();
 
+private slots:
+    void onPlayerNameEdited();
+
 private:
+    void onEdited(bool undoable);
+
     Ui::MixerItem *ui;
+    const PlayerPubSub &myPubSub;
+    const int myPlayerIndex;
+    Tuning myTuning;
 };
 
 #endif

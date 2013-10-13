@@ -20,6 +20,7 @@
 
 #include <QMainWindow>
 
+#include <app/pubsub/playerpubsub.h>
 #include <boost/shared_ptr.hpp>
 #include <memory>
 #include <score/position.h>
@@ -209,6 +210,8 @@ private slots:
 
     /// Adds or removes a player change at the current location.
     void editPlayerChange();
+    /// Edits the properties of a player.
+    void editPlayer(int playerIndex, const Player &player, bool undoable);
     /// Shows a dialog to view or edit the tuning dictionary.
     void showTuningDictionary();
 
@@ -300,6 +303,7 @@ private:
     std::unique_ptr<MidiPlayer> myMidiPlayer;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
     boost::shared_ptr<SettingsPubSub> mySettingsPubSub;
+    PlayerPubSub myPlayerPubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.

@@ -27,10 +27,9 @@ add_library(pteactions
     editfileinformation.cpp
     editkeysignature.cpp
     editnoteduration.cpp
+    editplayer.cpp
     edittabnumber.cpp
     edittimesignature.cpp
-    #edittrackshown.cpp
-    #edittuning.cpp
     insertnotes.cpp
     removealternateending.cpp
     removeartificialharmonic.cpp

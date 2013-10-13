@@ -21,7 +21,8 @@
 #include <QVBoxLayout>
 #include <score/score.h>
 
-Mixer::Mixer(QWidget *parent) : QWidget(parent)
+Mixer::Mixer(QWidget *parent, const PlayerPubSub &pubsub)
+    : QWidget(parent), myPubSub(pubsub)
 {
     myLayout = new QVBoxLayout(this);
     myLayout->setSpacing(0);
@@ -34,7 +35,10 @@ void Mixer::update(const Score &score)
     clear();
 
     for (int i = 0; i < score.getPlayers().size(); ++i)
-        myLayout->addWidget(new MixerItem(this, i, score.getPlayers()[i]));
+    {
+        myLayout->addWidget(
+            new MixerItem(this, i, score.getPlayers()[i], myPubSub));
+    }
 }
 
 void Mixer::clear()

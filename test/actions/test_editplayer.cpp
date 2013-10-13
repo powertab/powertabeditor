@@ -14,32 +14,29 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#include <actions/editplayer.h>
+#include <score/score.h>
 
-#include <QWidget>
-
-class PlayerPubSub;
-class QVBoxLayout;
-class Score;
-
-class Mixer : public QWidget
+TEST_CASE("Actions/EditPlayer", "")
 {
-    Q_OBJECT
+    Score score;
+    Player oldPlayer;
+    oldPlayer.setDescription("Description 1");
+    oldPlayer.setMaxVolume(90);
 
-public:
-    Mixer(QWidget *parent, const PlayerPubSub &pubsub);
+    score.insertPlayer(oldPlayer);
 
-    /// Update the mixer to display all of the players in the score.
-    void update(const Score &score);
+    Player newPlayer(oldPlayer);
+    newPlayer.setDescription("Description 2");
 
-    /// Removes all items from the mixer.
-    void clear();
+    EditPlayer action(score, 0, newPlayer);
 
-private:
-    QVBoxLayout *myLayout;
-    const PlayerPubSub &myPubSub;
-};
+    action.redo();
+    REQUIRE(score.getPlayers()[0] == newPlayer);
 
-#endif
+    action.undo();
+    REQUIRE(score.getPlayers()[0] == oldPlayer);
+}

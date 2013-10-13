@@ -15,31 +15,26 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#ifndef ACTIONS_EDITPLAYER_H
+#define ACTIONS_EDITPLAYER_H
 
-#include <QWidget>
+#include <QUndoCommand>
+#include <score/player.h>
+#include <score/score.h>
 
-class PlayerPubSub;
-class QVBoxLayout;
-class Score;
-
-class Mixer : public QWidget
+class EditPlayer : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
-    Mixer(QWidget *parent, const PlayerPubSub &pubsub);
+    EditPlayer(Score &score, int playerIndex, const Player &player);
 
-    /// Update the mixer to display all of the players in the score.
-    void update(const Score &score);
-
-    /// Removes all items from the mixer.
-    void clear();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
-    QVBoxLayout *myLayout;
-    const PlayerPubSub &myPubSub;
+    Score &myScore;
+    const int myPlayerIndex;
+    const Player myNewPlayer;
+    const Player myOriginalPlayer;
 };
 
 #endif

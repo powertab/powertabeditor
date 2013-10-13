@@ -15,31 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#include "editplayer.h"
 
-#include <QWidget>
+#include <score/score.h>
 
-class PlayerPubSub;
-class QVBoxLayout;
-class Score;
-
-class Mixer : public QWidget
+EditPlayer::EditPlayer(Score &score, int playerIndex, const Player &player)
+    : QUndoCommand(QObject::tr("Edit Player")),
+      myScore(score),
+      myPlayerIndex(playerIndex),
+      myNewPlayer(player),
+      myOriginalPlayer(score.getPlayers()[playerIndex])
 {
-    Q_OBJECT
+}
 
-public:
-    Mixer(QWidget *parent, const PlayerPubSub &pubsub);
+void EditPlayer::redo()
+{
+    myScore.getPlayers()[myPlayerIndex] = myNewPlayer;
+}
 
-    /// Update the mixer to display all of the players in the score.
-    void update(const Score &score);
-
-    /// Removes all items from the mixer.
-    void clear();
-
-private:
-    QVBoxLayout *myLayout;
-    const PlayerPubSub &myPubSub;
-};
-
-#endif
+void EditPlayer::undo()
+{
+    myScore.getPlayers()[myPlayerIndex] = myOriginalPlayer;
+}

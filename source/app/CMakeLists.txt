@@ -20,6 +20,7 @@ add_library(pteapp
     tuningdictionary.cpp
 
     # Header-only files
+    pubsub/playerpubsub.h
     pubsub/pubsub.h
     pubsub/scorelocationpubsub.h
     pubsub/settingspubsub.h

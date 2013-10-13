@@ -15,31 +15,17 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#ifndef APP_PLAYERPUBSUB_H
+#define APP_PLAYERPUBSUB_H
 
-#include <QWidget>
+#include <app/pubsub/pubsub.h>
 
-class PlayerPubSub;
-class QVBoxLayout;
-class Score;
+class Player;
 
-class Mixer : public QWidget
+/// Provides a way to subscribe to or publish notifications about changes
+/// to a particular player.
+class PlayerPubSub : public PubSub<void (int, const Player &, bool)>
 {
-    Q_OBJECT
-
-public:
-    Mixer(QWidget *parent, const PlayerPubSub &pubsub);
-
-    /// Update the mixer to display all of the players in the score.
-    void update(const Score &score);
-
-    /// Removes all items from the mixer.
-    void clear();
-
-private:
-    QVBoxLayout *myLayout;
-    const PlayerPubSub &myPubSub;
 };
 
 #endif

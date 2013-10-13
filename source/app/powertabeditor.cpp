@@ -39,6 +39,7 @@
 #include <actions/editfileinformation.h>
 #include <actions/editkeysignature.h>
 #include <actions/editnoteduration.h>
+#include <actions/editplayer.h>
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
 #include <actions/removealternateending.h>
@@ -74,7 +75,6 @@
 
 #include <audio/midiplayer.h>
 
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
@@ -497,6 +497,7 @@ void PowerTabEditor::redrawScore()
     getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument(),
                                    Staff::GuitarView);
     updateCommands();
+    myMixer->update(myDocumentManager->getCurrentDocument().getScore());
 }
 
 void PowerTabEditor::moveCaretToStart()
@@ -1115,6 +1116,21 @@ void PowerTabEditor::editPlayerChange()
         }
         else
             myPlayerChangeCommand->setChecked(false);
+    }
+}
+
+void PowerTabEditor::editPlayer(int playerIndex, const Player &player,
+                                bool undoable)
+{
+    ScoreLocation &location = getLocation();
+
+    if (!undoable)
+        location.getScore().getPlayers()[playerIndex] = player;
+    else
+    {
+        myUndoManager->push(
+            new EditPlayer(location.getScore(), playerIndex, player),
+            UndoManager::AFFECTS_ALL_SYSTEMS);
     }
 }
 
@@ -1794,11 +1810,15 @@ void PowerTabEditor::createMixer()
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
 
-    myMixer = new Mixer(scroll);
+    myMixer = new Mixer(scroll, myPlayerPubSub);
 
     scroll->setWidget(myMixer);
     myMixerDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myMixerDockWidget);
+
+    myPlayerPubSub.subscribe(
+        std::bind(&PowerTabEditor::editPlayer, this, std::placeholders::_1,
+                  std::placeholders::_2, std::placeholders::_3));
 }
 
 void PowerTabEditor::createNoteDurationCommand(
