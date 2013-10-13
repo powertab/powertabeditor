@@ -114,7 +114,6 @@
 
 #include <score/staffutils.h>
 #include <score/utils.h>
-#include <sigfwd/sigfwd.hpp>
 
 #include <widgets/mixer/mixer.h>
 
@@ -1477,14 +1476,16 @@ void PowerTabEditor::createCommands()
     myIncreaseLineSpacingCommand = new Command(tr("Increase"),
                                                "Section.IncreaseLineSpacing",
                                                QKeySequence(), this);
-    sigfwd::connect(myIncreaseLineSpacingCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::adjustLineSpacing, this, 1));
+    connect(myIncreaseLineSpacingCommand, &QAction::triggered, [=]() {
+        adjustLineSpacing(1);
+    });
 
     myDecreaseLineSpacingCommand = new Command(tr("Decrease"),
                                                "Section.DecreaseLineSpacing",
                                                QKeySequence(), this);
-    sigfwd::connect(myDecreaseLineSpacingCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::adjustLineSpacing, this, -1));
+    connect(myDecreaseLineSpacingCommand, &QAction::triggered, [=]() {
+        adjustLineSpacing(-1);
+    });
 
     // Note-related actions.
     myNoteDurationGroup = new QActionGroup(this);
@@ -1508,14 +1509,16 @@ void PowerTabEditor::createCommands()
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
                                             "Note.IncreaseDuration",
                                             Qt::SHIFT + Qt::Key_Up, this);
-    sigfwd::connect(myIncreaseDurationCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::changeNoteDuration, this, true));
+    connect(myIncreaseDurationCommand, &QAction::triggered, [=]() {
+        changeNoteDuration(true);
+    });
 
     myDecreaseDurationCommand = new Command(tr("Decrease Duration"),
                                             "Note.DecreaseDuration",
                                             Qt::SHIFT + Qt::Key_Down, this);
-    sigfwd::connect(myDecreaseDurationCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::changeNoteDuration, this, false));
+    connect(myDecreaseDurationCommand, &QAction::triggered, [=]() {
+        changeNoteDuration(false);
+    });
 
     createPositionPropertyCommand(myDottedCommand, tr("Dotted"), "Note.Dotted",
                                   QKeySequence(), Position::Dotted);
@@ -1791,13 +1794,15 @@ void PowerTabEditor::createCommands()
     // Window Menu commands.
     myNextTabCommand = new Command(tr("Next Tab"), "Window.NextTab",
                                    Qt::CTRL + Qt::Key_Tab, this);
-    sigfwd::connect(myNextTabCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::cycleTab, this, 1));
+    connect(myNextTabCommand, &QAction::triggered, [=]() {
+        cycleTab(1);
+    });
 
     myPrevTabCommand = new Command(tr("Previous Tab"), "Window.PreviousTab",
                                    Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
-    sigfwd::connect(myPrevTabCommand, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::cycleTab, this, -1));
+    connect(myPrevTabCommand, &QAction::triggered, [=]() {
+        cycleTab(-1);
+    });
 }
 
 void PowerTabEditor::createMixer()
@@ -1842,9 +1847,9 @@ void PowerTabEditor::createNoteDurationCommand(
 {
     command = new Command(menuName, commandName, QKeySequence(), this);
     command->setCheckable(true);
-    sigfwd::connect(command, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::updateNoteDuration, this,
-                                durationType));
+    connect(command, &QAction::triggered, [=]() {
+        updateNoteDuration(durationType);
+    });
     myNoteDurationGroup->addAction(command);
 }
 
@@ -1854,8 +1859,9 @@ void PowerTabEditor::createRestDurationCommand(
 {
     command = new Command(menuName, commandName, QKeySequence(), this);
     command->setCheckable(true);
-    sigfwd::connect(command, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editRest, this, durationType));
+    connect(command, &QAction::triggered, [=]() {
+        editRest(durationType);
+    });
     myRestDurationGroup->addAction(command);
 }
 
@@ -1865,9 +1871,9 @@ void PowerTabEditor::createNotePropertyCommand(
 {
     command = new Command(menuName, commandName, shortcut, this);
     command->setCheckable(true);
-    sigfwd::connect(command, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimpleNoteProperty,
-                                this, command, property));
+    connect(command, &QAction::triggered, [=]() {
+        editSimpleNoteProperty(command, property);
+    });
 }
 
 void PowerTabEditor::createPositionPropertyCommand(
@@ -1876,9 +1882,9 @@ void PowerTabEditor::createPositionPropertyCommand(
 {
     command = new Command(menuName, commandName, shortcut, this);
     command->setCheckable(true);
-    sigfwd::connect(command, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editSimplePositionProperty,
-                                this, command, property));
+    connect(command, &QAction::triggered, [=]() {
+        editSimplePositionProperty(command, property);
+    });
 }
 
 void PowerTabEditor::createMenus()

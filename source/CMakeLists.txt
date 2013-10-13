@@ -7,7 +7,6 @@ add_subdirectory(dialogs)
 add_subdirectory(formats)
 add_subdirectory(painters)
 add_subdirectory(score)
-add_subdirectory(sigfwd)
 add_subdirectory(widgets)
 
 qt5_add_resources(RESOURCES build/resources.qrc)
@@ -32,7 +31,6 @@ target_link_libraries(powertabeditor
     pteaudio
     rtmidi
     ptepainters
-    sigfwd
     pteformats
     ptescore
     ${Boost_LIBRARIES}

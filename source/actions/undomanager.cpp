@@ -17,9 +17,6 @@
 
 #include "undomanager.h"
 
-#include <boost/bind.hpp>
-#include <sigfwd/sigfwd.hpp>
-
 UndoManager::UndoManager(QObject *parent) :
     QUndoGroup(parent)
 {
@@ -57,13 +54,14 @@ void UndoManager::push(QUndoCommand *cmd, int affectedSystem)
     auto onUndo = new SignalOnUndo();
     if (affectedSystem >= 0)
     {
-        sigfwd::connect(onUndo, SIGNAL(triggered()),
-                        boost::bind(&UndoManager::onSystemChanged, this,
-                                    affectedSystem));
+        connect(onUndo, &SignalOnUndo::triggered, [=]() {
+            onSystemChanged(affectedSystem);
+        });
     }
     else
     {
-        connect(onUndo, SIGNAL(triggered()), this, SIGNAL(fullRedrawNeeded()));
+        connect(onUndo, &SignalOnUndo::triggered, this,
+                &UndoManager::fullRedrawNeeded);
     }
 
     push(onUndo);
@@ -72,13 +70,14 @@ void UndoManager::push(QUndoCommand *cmd, int affectedSystem)
     auto onRedo = new SignalOnRedo();
     if (affectedSystem >= 0)
     {
-        sigfwd::connect(onRedo, SIGNAL(triggered()),
-                        boost::bind(&UndoManager::onSystemChanged, this,
-                                    affectedSystem));
+        connect(onRedo, &SignalOnRedo::triggered, [=]() {
+            onSystemChanged(affectedSystem);
+        });
     }
     else
     {
-        connect(onRedo, SIGNAL(triggered()), this, SIGNAL(fullRedrawNeeded()));
+        connect(onRedo, &SignalOnRedo::triggered, this,
+                &UndoManager::fullRedrawNeeded);
     }
 
     push(onRedo);

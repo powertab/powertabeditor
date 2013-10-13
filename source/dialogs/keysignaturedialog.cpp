@@ -18,10 +18,8 @@
 #include "keysignaturedialog.h"
 #include "ui_keysignaturedialog.h"
 
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <score/keysignature.h>
-#include <sigfwd/sigfwd.hpp>
 
 KeySignatureDialog::KeySignatureDialog(QWidget *parent,
                                        const KeySignature &currentKey)
@@ -39,12 +37,12 @@ KeySignatureDialog::KeySignatureDialog(QWidget *parent,
     else
         ui->minorKeyButton->setChecked(true);
 
-    sigfwd::connect(ui->majorKeyButton, SIGNAL(clicked()),
-                    boost::bind(&KeySignatureDialog::populateKeyTypes, this,
-                                KeySignature::Major));
-    sigfwd::connect(ui->minorKeyButton, SIGNAL(clicked()),
-                    boost::bind(&KeySignatureDialog::populateKeyTypes, this,
-                                KeySignature::Minor));
+    connect(ui->majorKeyButton, &QAbstractButton::clicked, [=]() {
+        populateKeyTypes(KeySignature::Major);
+    });
+    connect(ui->minorKeyButton, &QAbstractButton::clicked, [=]() {
+        populateKeyTypes(KeySignature::Minor);
+    });
 
     populateKeyTypes(currentKey.getKeyType());
 
@@ -56,12 +54,13 @@ KeySignatureDialog::KeySignatureDialog(QWidget *parent,
 
     ui->visibilityCheckBox->setChecked(currentKey.isVisible());
 
-    connect(ui->majorKeyButton, SIGNAL(clicked()), this,
-            SLOT(handleModification()));
-    connect(ui->minorKeyButton, SIGNAL(clicked()), this,
-            SLOT(handleModification()));
-    connect(ui->keysComboBox, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(handleModification()));
+    connect(ui->majorKeyButton, &QAbstractButton::clicked, this,
+            &KeySignatureDialog::handleModification);
+    connect(ui->minorKeyButton, &QAbstractButton::clicked, this,
+            &KeySignatureDialog::handleModification);
+    connect(ui->keysComboBox, static_cast<void (QComboBox::*)(int)>(
+                                  &QComboBox::currentIndexChanged),
+            this, &KeySignatureDialog::handleModification);
 }
 
 KeySignatureDialog::~KeySignatureDialog()

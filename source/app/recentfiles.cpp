@@ -17,11 +17,9 @@
 
 #include "recentfiles.h"
 
+#include <app/settings.h>
 #include <QMenu>
 #include <QSettings>
-
-#include <app/settings.h>
-#include <sigfwd/sigfwd.hpp>
 
 RecentFiles::RecentFiles(QMenu *recentFilesMenu, QObject *parent) :
     QObject(parent),
@@ -71,7 +69,7 @@ void RecentFiles::updateMenu()
         auto fileAction = new QAction(fileName, myRecentFilesMenu);
         myRecentFilesMenu->addAction(fileAction);
 
-        sigfwd::connect(fileAction, SIGNAL(triggered()), [=]() {
+        connect(fileAction, &QAction::triggered, [=]() {
             handleFileSelection(fileName);
         });
     }
@@ -82,7 +80,8 @@ void RecentFiles::updateMenu()
 
         QAction *clearRecentFiles = new QAction(tr("Clear Recent Files"),
                                                 myRecentFilesMenu);
-        connect(clearRecentFiles, SIGNAL(triggered()), this, SLOT(clear()));
+        connect(clearRecentFiles, &QAction::triggered, this,
+                &RecentFiles::clear);
         myRecentFilesMenu->addAction(clearRecentFiles);
     }
 }
