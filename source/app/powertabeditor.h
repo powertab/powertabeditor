@@ -232,6 +232,9 @@ private:
     void createCommands();
     /// Build the mixer widget.
     void createMixer();
+    /// Build the instrument panel.
+    void createInstrumentPanel();
+
     /// Helper function to create a note duration command.
     void createNoteDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
@@ -314,6 +317,7 @@ private:
     QTabWidget *myTabWidget;
     Mixer *myMixer;
     QDockWidget *myMixerDockWidget;
+    QDockWidget *myInstrumentDockWidget;
 
     QMenu *myFileMenu;
     Command *myNewDocumentCommand;

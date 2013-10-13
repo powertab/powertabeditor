@@ -153,6 +153,7 @@ PowerTabEditor::PowerTabEditor()
     myTuningDictionary->loadInBackground();
 
     createMixer();
+    createInstrumentPanel();
     createCommands();
     createMenus();
 
@@ -1821,6 +1822,20 @@ void PowerTabEditor::createMixer()
                   std::placeholders::_2, std::placeholders::_3));
 }
 
+void PowerTabEditor::createInstrumentPanel()
+{
+    myInstrumentDockWidget = new QDockWidget(tr("Instruments"), this);
+    myInstrumentDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    myInstrumentDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
+    myInstrumentDockWidget->setObjectName("Instruments");
+
+    QScrollArea *scroll = new QScrollArea(this);
+    scroll->setMinimumSize(0, 150);
+
+    myInstrumentDockWidget->setWidget(scroll);
+    addDockWidget(Qt::BottomDockWidgetArea, myInstrumentDockWidget);
+}
+
 void PowerTabEditor::createNoteDurationCommand(
         Command *&command, const QString &menuName, const QString &commandName,
         Position::DurationType durationType)
@@ -2073,6 +2088,7 @@ void PowerTabEditor::createMenus()
     myWindowMenu->addAction(myPrevTabCommand);
     myWindowMenu->addSeparator();
     myWindowMenu->addAction(myMixerDockWidget->toggleViewAction());
+    myWindowMenu->addAction(myInstrumentDockWidget->toggleViewAction());
 }
 
 void PowerTabEditor::createTabArea()
