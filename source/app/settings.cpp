@@ -17,7 +17,6 @@
 
 #include "settings.h"
 
-#include <boost/lexical_cast.hpp>
 #include <QDataStream>
 #include <QString>
 #include <QVector>
@@ -60,7 +59,7 @@ namespace Settings
 
 QDataStream &operator<<(QDataStream &out, const Tuning &tuning)
 {
-    out << QString::fromStdString(boost::lexical_cast<std::string>(tuning));
+    out << QString::fromStdString(tuning.getName());
     out << tuning.getMusicNotationOffset();
     out << tuning.usesSharps();
     out << QVector<uint8_t>::fromStdVector(tuning.getNotes());

@@ -20,13 +20,15 @@
 
 #include <app/pubsub/playerpubsub.h>
 #include <boost/lexical_cast.hpp>
+#include <dialogs/tuningdialog.h>
 #include <score/player.h>
-#include <sigfwd/sigfwd.hpp>
 
 MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
+                     const TuningDictionary &dictionary,
                      const PlayerPubSub &pubsub)
     : QWidget(parent),
       ui(new Ui::MixerItem),
+      myDictionary(dictionary),
       myPubSub(pubsub),
       myPlayerIndex(playerIndex),
       myTuning(player.getTuning())
@@ -44,20 +46,26 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
 
     ui->playerNameEdit->hide();
 
-    connect(ui->playerNameLabel, SIGNAL(clicked()), ui->playerNameLabel,
-            SLOT(hide()));
-    connect(ui->playerNameLabel, SIGNAL(clicked()), ui->playerNameEdit,
-            SLOT(show()));
-    connect(ui->playerNameLabel, SIGNAL(clicked()), ui->playerNameEdit,
-            SLOT(setFocus()));
+    connect(ui->playerNameLabel, &ClickableLabel::clicked, ui->playerNameLabel,
+            &QWidget::hide);
+    connect(ui->playerNameLabel, &ClickableLabel::clicked, ui->playerNameEdit,
+            &QWidget::show);
+    connect(ui->playerNameLabel, &ClickableLabel::clicked, [=]() {
+        ui->playerNameEdit->setFocus();
+    });
 
-    connect(ui->playerNameEdit, SIGNAL(editingFinished()), this,
-            SLOT(onPlayerNameEdited()));
+    connect(ui->playerNameEdit, &QLineEdit::editingFinished, this,
+            &MixerItem::onPlayerNameEdited);
 
-    sigfwd::connect(ui->playerVolume, SIGNAL(valueChanged(int)),
-                    boost::bind(&MixerItem::onEdited, this, false));
-    sigfwd::connect(ui->playerPan, SIGNAL(valueChanged(int)),
-                    boost::bind(&MixerItem::onEdited, this, false));
+    connect(ui->playerVolume, &QSlider::valueChanged, [=]() {
+        onEdited(false);
+    });
+    connect(ui->playerPan, &QDial::valueChanged, [=]() {
+        onEdited(false);
+    });
+
+    connect(ui->playerTuning, &ClickableLabel::clicked, this,
+            &MixerItem::editTuning);
 }
 
 MixerItem::~MixerItem()
@@ -76,6 +84,21 @@ void MixerItem::onPlayerNameEdited()
     ui->playerNameLabel->show();
 
     onEdited(true);
+}
+
+void MixerItem::editTuning()
+{
+    // We need to make sure that the TuningDialog is deleted before we call
+    // onEdited, otherwise it will get deleted twice.
+    std::unique_ptr<TuningDialog> dialog(
+        new TuningDialog(this, myTuning, myDictionary));
+
+    if (dialog->exec() == QDialog::Accepted)
+    {
+        myTuning = dialog->getTuning();
+        dialog.reset();
+        onEdited(true);
+    }
 }
 
 void MixerItem::onEdited(bool undoable)

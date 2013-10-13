@@ -23,13 +23,15 @@
 class PlayerPubSub;
 class QVBoxLayout;
 class Score;
+class TuningDictionary;
 
 class Mixer : public QWidget
 {
     Q_OBJECT
 
 public:
-    Mixer(QWidget *parent, const PlayerPubSub &pubsub);
+    Mixer(QWidget *parent, const TuningDictionary &dictionry,
+          const PlayerPubSub &pubsub);
 
     /// Update the mixer to display all of the players in the score.
     void update(const Score &score);
@@ -39,6 +41,7 @@ public:
 
 private:
     QVBoxLayout *myLayout;
+    const TuningDictionary &myDictionary;
     const PlayerPubSub &myPubSub;
 };
 

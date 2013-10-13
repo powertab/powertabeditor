@@ -1810,7 +1810,7 @@ void PowerTabEditor::createMixer()
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
 
-    myMixer = new Mixer(scroll, myPlayerPubSub);
+    myMixer = new Mixer(scroll, *myTuningDictionary, myPlayerPubSub);
 
     scroll->setWidget(myMixer);
     myMixerDockWidget->setWidget(scroll);

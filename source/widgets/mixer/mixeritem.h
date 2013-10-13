@@ -28,23 +28,23 @@ class MixerItem;
 
 class Player;
 class PlayerPubSub;
+class TuningDictionary;
 
 class MixerItem : public QWidget
 {
-    Q_OBJECT
-
 public:
     explicit MixerItem(QWidget *parent, int playerIndex, const Player &player,
+                       const TuningDictionary &dictionary,
                        const PlayerPubSub &pubsub);
     ~MixerItem();
 
-private slots:
-    void onPlayerNameEdited();
-
 private:
+    void onPlayerNameEdited();
+    void editTuning();
     void onEdited(bool undoable);
 
     Ui::MixerItem *ui;
+    const TuningDictionary &myDictionary;
     const PlayerPubSub &myPubSub;
     const int myPlayerIndex;
     Tuning myTuning;
