@@ -25,6 +25,7 @@ add_library(pteactions
     editbarline.cpp
     editclef.cpp
     editfileinformation.cpp
+    editinstrument.cpp
     editkeysignature.cpp
     editnoteduration.cpp
     editplayer.cpp

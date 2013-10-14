@@ -15,32 +15,32 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#ifndef WIDGETS_INSTRUMENTPANEL_H
+#define WIDGETS_INSTRUMENTPANEL_H
 
 #include <QWidget>
 
-class PlayerPubSub;
+class InstrumentPubSub;
 class QVBoxLayout;
 class Score;
-class TuningDictionary;
 
-class Mixer : public QWidget
+class InstrumentPanel : public QWidget
 {
 public:
-    Mixer(QWidget *parent, const TuningDictionary &dictionary,
-          const PlayerPubSub &pubsub);
+    InstrumentPanel(QWidget *parent, const InstrumentPubSub &pubsub);
 
-    /// Clear and then populate the mixer.
+    /// Clear and then populate the instrument panel.
     void reset(const Score &score);
 
-    /// Removes all items from the mixer.
+    /// Update the instrument panel.
+    void update(const Score &score);
+
+    /// Removes all items from the panel.
     void clear();
 
 private:
     QVBoxLayout *myLayout;
-    const TuningDictionary &myDictionary;
-    const PlayerPubSub &myPubSub;
+    const InstrumentPubSub &myPubSub;
 };
 
 #endif

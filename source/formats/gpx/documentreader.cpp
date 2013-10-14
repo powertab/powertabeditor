@@ -102,8 +102,7 @@ void Gpx::DocumentReader::readHeader(Score &score)
 /// Imports the tracks and performs a conversion to the PowerTab Guitar class.
 void Gpx::DocumentReader::readTracks(Score &score)
 {
-    std::vector<std::string> presetNames;
-    Midi::getMidiPresetNames(presetNames);
+    const std::vector<std::string> presetNames = Midi::getPresetNames();
 
     BOOST_FOREACH(xml_node track, myFile.child("Tracks"))
     {

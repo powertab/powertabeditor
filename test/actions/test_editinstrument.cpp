@@ -14,33 +14,29 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#include <actions/editinstrument.h>
+#include <score/score.h>
 
-#include <QWidget>
-
-class PlayerPubSub;
-class QVBoxLayout;
-class Score;
-class TuningDictionary;
-
-class Mixer : public QWidget
+TEST_CASE("Actions/EditInstrument", "")
 {
-public:
-    Mixer(QWidget *parent, const TuningDictionary &dictionary,
-          const PlayerPubSub &pubsub);
+    Score score;
+    Instrument oldInstrument;
+    oldInstrument.setDescription("Description 1");
+    oldInstrument.setMidiPreset(90);
 
-    /// Clear and then populate the mixer.
-    void reset(const Score &score);
+    score.insertInstrument(oldInstrument);
 
-    /// Removes all items from the mixer.
-    void clear();
+    Instrument newInstrument(oldInstrument);
+    newInstrument.setDescription("Description 2");
 
-private:
-    QVBoxLayout *myLayout;
-    const TuningDictionary &myDictionary;
-    const PlayerPubSub &myPubSub;
-};
+    EditInstrument action(score, nullptr, 0, newInstrument);
 
-#endif
+    action.redo();
+    REQUIRE(score.getInstruments()[0] == newInstrument);
+
+    action.undo();
+    REQUIRE(score.getInstruments()[0] == oldInstrument);
+}

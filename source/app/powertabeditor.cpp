@@ -37,6 +37,7 @@
 #include <actions/editbarline.h>
 #include <actions/editclef.h>
 #include <actions/editfileinformation.h>
+#include <actions/editinstrument.h>
 #include <actions/editkeysignature.h>
 #include <actions/editnoteduration.h>
 #include <actions/editplayer.h>
@@ -115,6 +116,7 @@
 #include <score/staffutils.h>
 #include <score/utils.h>
 
+#include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
 
 PowerTabEditor::PowerTabEditor()
@@ -133,7 +135,9 @@ PowerTabEditor::PowerTabEditor()
       myActiveDurationType(Position::EighthNote),
       myTabWidget(nullptr),
       myMixer(nullptr),
-      myMixerDockWidget(nullptr)
+      myMixerDockWidget(nullptr),
+      myInstrumentPanel(nullptr),
+      myInstrumentDockWidget(nullptr)
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
@@ -240,9 +244,16 @@ void PowerTabEditor::switchTab(int index)
     myDocumentManager->setCurrentDocumentIndex(index);
 
     if (index != -1)
-        myMixer->update(myDocumentManager->getCurrentDocument().getScore());
+    {
+        const Score &score = myDocumentManager->getCurrentDocument().getScore();
+        myMixer->reset(score);
+        myInstrumentPanel->reset(score);
+    }
     else
+    {
         myMixer->clear();
+        myInstrumentPanel->clear();
+    }
 
 #if 0
     playbackToolbarList->setCurrentIndex(index);
@@ -497,7 +508,9 @@ void PowerTabEditor::redrawScore()
     getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument(),
                                    Staff::GuitarView);
     updateCommands();
-    myMixer->update(myDocumentManager->getCurrentDocument().getScore());
+
+    const Score &score = myDocumentManager->getCurrentDocument().getScore();
+    myMixer->reset(score);
 }
 
 void PowerTabEditor::moveCaretToStart()
@@ -1132,6 +1145,16 @@ void PowerTabEditor::editPlayer(int playerIndex, const Player &player,
             new EditPlayer(location.getScore(), playerIndex, player),
             UndoManager::AFFECTS_ALL_SYSTEMS);
     }
+}
+
+void PowerTabEditor::editInstrument(int index, const Instrument &instrument)
+{
+    ScoreLocation &location = getLocation();
+
+    myUndoManager->push(
+        new EditInstrument(location.getScore(), myInstrumentPanel, index,
+                           instrument),
+        location.getSystemIndex());
 }
 
 void PowerTabEditor::showTuningDictionary()
@@ -1837,8 +1860,15 @@ void PowerTabEditor::createInstrumentPanel()
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
 
+    myInstrumentPanel = new InstrumentPanel(scroll, myInstrumentPubSub);
+
+    scroll->setWidget(myInstrumentPanel);
     myInstrumentDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myInstrumentDockWidget);
+
+    myInstrumentPubSub.subscribe(std::bind(&PowerTabEditor::editInstrument,
+                                           this, std::placeholders::_1,
+                                           std::placeholders::_2));
 }
 
 void PowerTabEditor::createNoteDurationCommand(
@@ -2171,7 +2201,8 @@ void PowerTabEditor::setupNewTab()
     const int tabIndex = myTabWidget->addTab(scorearea, title);
     myTabWidget->setTabToolTip(tabIndex, fileInfo.fileName());
 
-    myMixer->update(doc.getScore());
+    myMixer->reset(doc.getScore());
+    myInstrumentPanel->reset(doc.getScore());
 #if 0
     PlaybackWidget* playback = new PlaybackWidget(settingsPubSub);
     connect(playback, SIGNAL(playbackButtonToggled()),

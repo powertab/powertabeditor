@@ -21,7 +21,6 @@
 #include <app/pubsub/settingspubsub.h>
 #include <app/settings.h>
 #include <audio/midioutputdevice.h>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
 #include <QSettings>
@@ -52,9 +51,7 @@ PreferencesDialog::PreferencesDialog(
         }
     }
 
-    std::vector<std::string> presetNames;
-    Midi::getMidiPresetNames(presetNames);
-    BOOST_FOREACH(const std::string &name, presetNames)
+    for (const std::string &name : Midi::getPresetNames())
     {
         ui->metronomePresetComboBox->addItem(QString::fromStdString(name));
         ui->defaultPresetComboBox->addItem(QString::fromStdString(name));

@@ -15,15 +15,15 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "mixer.h"
+#include "instrumentpanel.h"
 
-#include "mixeritem.h"
+#include "instrumentpanelitem.h"
 #include <QVBoxLayout>
 #include <score/score.h>
 
-Mixer::Mixer(QWidget *parent, const TuningDictionary &dictionary,
-             const PlayerPubSub &pubsub)
-    : QWidget(parent), myDictionary(dictionary), myPubSub(pubsub)
+InstrumentPanel::InstrumentPanel(QWidget *parent,
+                                 const InstrumentPubSub &pubsub)
+    : QWidget(parent), myPubSub(pubsub)
 {
     myLayout = new QVBoxLayout(this);
     myLayout->setSpacing(0);
@@ -31,18 +31,29 @@ Mixer::Mixer(QWidget *parent, const TuningDictionary &dictionary,
     setLayout(myLayout);
 }
 
-void Mixer::reset(const Score &score)
+void InstrumentPanel::reset(const Score &score)
 {
     clear();
 
-    for (int i = 0; i < score.getPlayers().size(); ++i)
+    for (int i = 0; i < score.getInstruments().size(); ++i)
     {
-        myLayout->addWidget(new MixerItem(this, i, score.getPlayers()[i],
-                                          myDictionary, myPubSub));
+        myLayout->addWidget(new InstrumentPanelItem(
+            this, i, score.getInstruments()[i], myPubSub));
     }
 }
 
-void Mixer::clear()
+void InstrumentPanel::update(const Score &score)
+{
+    Q_ASSERT(score.getInstruments().size() == myLayout->count());
+
+    for (int i = 0; i < score.getInstruments().size(); ++i)
+    {
+        static_cast<InstrumentPanelItem *>(myLayout->itemAt(i)->widget())
+            ->update(score.getInstruments()[i]);
+    }
+}
+
+void InstrumentPanel::clear()
 {
     while (QLayoutItem *item = myLayout->takeAt(0))
     {

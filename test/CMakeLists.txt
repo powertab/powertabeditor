@@ -25,6 +25,7 @@ add_executable(pte_tests
     actions/test_editbarline.cpp
     actions/test_editclef.cpp
     actions/test_editfileinformation.cpp
+    actions/test_editinstrument.cpp
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
     actions/test_editplayer.cpp
@@ -91,6 +92,7 @@ qt5_use_modules(pte_tests Widgets)
 target_link_libraries(pte_tests
     pteapp
     pteactions
+    ptewidgets
     pteaudio
     rtmidi
     pteformats

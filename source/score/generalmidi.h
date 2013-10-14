@@ -510,7 +510,7 @@ namespace Midi
     /// Determines if a MIDI percussion preset is valid.
     bool isValidMidiPercussionPreset(uint8_t preset);
     /// Returns a list of all MIDI preset names.
-    void getMidiPresetNames(std::vector<std::string>& names);
+    std::vector<std::string> getPresetNames();
 }
 
 #endif

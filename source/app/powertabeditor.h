@@ -20,6 +20,7 @@
 
 #include <QMainWindow>
 
+#include <app/pubsub/instrumentpubsub.h>
 #include <app/pubsub/playerpubsub.h>
 #include <boost/shared_ptr.hpp>
 #include <memory>
@@ -31,6 +32,7 @@ class Caret;
 class Command;
 class DocumentManager;
 class FileFormatManager;
+class InstrumentPanel;
 class MidiPlayer;
 class Mixer;
 class QActionGroup;
@@ -212,6 +214,8 @@ private slots:
     void editPlayerChange();
     /// Edits the properties of a player.
     void editPlayer(int playerIndex, const Player &player, bool undoable);
+    /// Edits the properties of an instrument.
+    void editInstrument(int index, const Instrument &instrument);
     /// Shows a dialog to view or edit the tuning dictionary.
     void showTuningDictionary();
 
@@ -307,6 +311,7 @@ private:
     std::unique_ptr<TuningDictionary> myTuningDictionary;
     boost::shared_ptr<SettingsPubSub> mySettingsPubSub;
     PlayerPubSub myPlayerPubSub;
+    InstrumentPubSub myInstrumentPubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.
@@ -317,6 +322,7 @@ private:
     QTabWidget *myTabWidget;
     Mixer *myMixer;
     QDockWidget *myMixerDockWidget;
+    InstrumentPanel *myInstrumentPanel;
     QDockWidget *myInstrumentDockWidget;
 
     QMenu *myFileMenu;

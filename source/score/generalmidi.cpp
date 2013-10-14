@@ -219,8 +219,10 @@ namespace Midi {
         return preset <= LAST_MIDI_PERCUSSION_PRESET;
     }
 
-    void getMidiPresetNames(std::vector<std::string>& names)
+    std::vector<std::string> getPresetNames()
     {
+        std::vector<std::string> names;
+
         names.push_back("Acoustic Grand Piano");
         names.push_back("Bright Acoustic Piano");
         names.push_back("Electric Grand Piano");
@@ -349,5 +351,7 @@ namespace Midi {
         names.push_back("Helicopter");
         names.push_back("Applause");
         names.push_back("Gunshot");
+
+        return names;
     }
 }

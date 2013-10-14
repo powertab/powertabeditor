@@ -15,32 +15,30 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#ifndef ACTIONS_EDITINSTRUMENT_H
+#define ACTIONS_EDITINSTRUMENT_H
 
-#include <QWidget>
+#include <QUndoCommand>
+#include <score/player.h>
+#include <score/score.h>
 
-class PlayerPubSub;
-class QVBoxLayout;
-class Score;
-class TuningDictionary;
+class InstrumentPanel;
 
-class Mixer : public QWidget
+class EditInstrument : public QUndoCommand
 {
 public:
-    Mixer(QWidget *parent, const TuningDictionary &dictionary,
-          const PlayerPubSub &pubsub);
+    EditInstrument(Score &score, InstrumentPanel *panel, int index,
+                   const Instrument &instrument);
 
-    /// Clear and then populate the mixer.
-    void reset(const Score &score);
-
-    /// Removes all items from the mixer.
-    void clear();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
-    QVBoxLayout *myLayout;
-    const TuningDictionary &myDictionary;
-    const PlayerPubSub &myPubSub;
+    Score &myScore;
+    InstrumentPanel *myInstrumentPanel;
+    const int myInstrumentIndex;
+    const Instrument myNewInstrument;
+    const Instrument myOriginalInstrument;
 };
 
 #endif

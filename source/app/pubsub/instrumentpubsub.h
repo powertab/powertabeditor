@@ -15,32 +15,17 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WIDGETS_MIXER_H
-#define WIDGETS_MIXER_H
+#ifndef APP_INSTRUMENTPUBSUB_H
+#define APP_INSTRUMENTPUBSUB_H
 
-#include <QWidget>
+#include <app/pubsub/pubsub.h>
 
-class PlayerPubSub;
-class QVBoxLayout;
-class Score;
-class TuningDictionary;
+class Instrument;
 
-class Mixer : public QWidget
+/// Provides a way to subscribe to or publish notifications about changes
+/// to a particular instrument.
+class InstrumentPubSub : public PubSub<void (int, const Instrument &)>
 {
-public:
-    Mixer(QWidget *parent, const TuningDictionary &dictionary,
-          const PlayerPubSub &pubsub);
-
-    /// Clear and then populate the mixer.
-    void reset(const Score &score);
-
-    /// Removes all items from the mixer.
-    void clear();
-
-private:
-    QVBoxLayout *myLayout;
-    const TuningDictionary &myDictionary;
-    const PlayerPubSub &myPubSub;
 };
 
 #endif
