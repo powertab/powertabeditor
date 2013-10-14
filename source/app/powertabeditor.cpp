@@ -76,7 +76,6 @@
 
 #include <audio/midiplayer.h>
 
-#include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 
@@ -183,10 +182,8 @@ PowerTabEditor::~PowerTabEditor()
 
 void PowerTabEditor::openFiles(const std::vector<std::string> &files)
 {
-    BOOST_FOREACH(const std::string &file, files)
-    {
-        openFile(QString::fromStdString(file));
-    }
+    for (auto &filename : files)
+        openFile(QString::fromStdString(filename));
 }
 
 void PowerTabEditor::createNewDocument()
@@ -632,7 +629,7 @@ void PowerTabEditor::removeSelectedPositions()
                    std::mem_fun(&Position::getPosition));
 
     // Remove each of the selected positions.
-    BOOST_FOREACH(int position, positions)
+    for (int position : positions)
     {
         location.setPositionIndex(position);
         myUndoManager->push(new RemovePosition(location),
@@ -644,7 +641,7 @@ void PowerTabEditor::removeSelectedPositions()
                    std::mem_fun(&Barline::getPosition));
 
     // Remove each of the selected barlines.
-    BOOST_FOREACH(int position, barPositions)
+    for (int position : barPositions)
     {
         location.setPositionIndex(position);
         myUndoManager->push(new RemoveBarline(location),
@@ -757,7 +754,7 @@ void PowerTabEditor::changeNoteDuration(bool increase)
     myUndoManager->beginMacro(tr("Edit Note Duration"));
 
     // Increase the duration of each selected position.
-    BOOST_FOREACH(const Position *pos, getLocation().getSelectedPositions())
+    for (const Position *pos : getLocation().getSelectedPositions())
     {
         ScoreLocation location(getLocation());
         location.setPositionIndex(pos->getPosition());
@@ -831,9 +828,9 @@ void PowerTabEditor::editTiedNote()
     std::vector<Position *> positions = location.getSelectedPositions();
 
     // Check that all selected notes can be tied.
-    BOOST_FOREACH(const Position *pos, positions)
+    for (const Position *pos : positions)
     {
-        BOOST_FOREACH(const Note &note, pos->getNotes())
+        for (const Note &note : pos->getNotes())
         {
             if (!StaffUtils::canTieNote(staff, voice, pos->getPosition(), note))
             {
@@ -2434,12 +2431,10 @@ void PowerTabEditor::enableEditing(bool enable)
              << myOctaveMenu << myRestsMenu << myMusicSymbolsMenu
              << myTabSymbolsMenu << myPlaybackMenu << myEditMenu;
 
-    foreach(QMenu *menu, menuList)
+    for (QMenu *menu : menuList)
     {
-        foreach(QAction *action, menu->actions())
-        {
+        for (QAction *action : menu->actions())
             action->setEnabled(enable);
-        }
     }
 
     myCloseTabCommand->setEnabled(enable);
@@ -2570,7 +2565,7 @@ void PowerTabEditor::editSimplePositionProperty(Command *command,
     // If at least one position doesn't have the property set, enable it for
     // all of them.
     bool enableProperty = false;
-    BOOST_FOREACH(const Position *pos, selectedPositions)
+    for (const Position *pos : selectedPositions)
     {
         if (!pos->hasProperty(property))
             enableProperty = true;
@@ -2601,7 +2596,7 @@ void PowerTabEditor::editSimpleNoteProperty(Command *command,
     // If at least one note doesn't have the property set, enable it for
     // all of them.
     bool enableProperty = false;
-    BOOST_FOREACH(const Note *note, selectedNotes)
+    for (const Note *note : selectedNotes)
     {
         if (!note->hasProperty(property))
             enableProperty = true;

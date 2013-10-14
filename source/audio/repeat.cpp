@@ -17,7 +17,6 @@
   
 #include "repeat.h"
 
-#include <boost/foreach.hpp>
 #include <score/alternateending.h>
 
 Repeat::Repeat(const SystemLocation &startBarLocation)
@@ -39,10 +38,8 @@ void Repeat::addAlternateEnding(int system, const AlternateEnding &altEnding)
 
     // For each repeat that the ending is active, add it to the alternate
     // endings map along with the location of the ending.
-    BOOST_FOREACH(int num, numbers)
-    {
+    for (int num : numbers)
         myAlternateEndings[num] = location;
-    }
 }
 
 SystemLocation Repeat::performRepeat(const SystemLocation &currentLocation)

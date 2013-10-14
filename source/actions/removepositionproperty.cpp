@@ -17,8 +17,6 @@
 
 #include "removepositionproperty.h"
 
-#include <boost/foreach.hpp>
-
 RemovePositionProperty::RemovePositionProperty(const ScoreLocation &location,
                                                Position::SimpleProperty property,
                                                const QString &positionDescription)
@@ -30,16 +28,12 @@ RemovePositionProperty::RemovePositionProperty(const ScoreLocation &location,
 
 void RemovePositionProperty::redo()
 {
-    BOOST_FOREACH(Position *pos, myLocation.getSelectedPositions())
-    {
+    for (Position *pos : myLocation.getSelectedPositions())
         pos->setProperty(myProperty, false);
-    }
 }
 
 void RemovePositionProperty::undo()
 {
-    BOOST_FOREACH(Position *pos, myLocation.getSelectedPositions())
-    {
+    for (Position *pos : myLocation.getSelectedPositions())
         pos->setProperty(myProperty, true);
-    }
 }

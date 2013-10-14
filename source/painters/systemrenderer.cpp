@@ -19,7 +19,6 @@
 
 #include <app/scorearea.h>
 #include <boost/algorithm/clamp.hpp>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/range/adaptor/map.hpp>
@@ -69,7 +68,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
     // Draw each staff.
     double height = 0;
     int i = 0;
-    BOOST_FOREACH(const Staff &staff, system.getStaves())
+    for (const Staff &staff : system.getStaves())
     {
         if (staff.getViewType() != view)
         {
@@ -142,7 +141,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
                                   const LayoutConstPtr &layout,
                                   bool isFirstStaff)
 {
-    BOOST_FOREACH(const Barline &barline, system.getBarlines())
+    for (const Barline &barline : system.getBarlines())
     {
         const ScoreLocation location(myScore, systemIndex, -1,
                                      barline.getPosition());
@@ -247,14 +246,14 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
 {
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+        for (const Position &pos : staff.getVoice(voice))
         {
             if (pos.isRest() || pos.getNotes().empty())
                 continue;
 
             const double location = layout->getPositionX(pos.getPosition());
 
-            BOOST_FOREACH(const Note &note, pos.getNotes())
+            for (const Note &note : pos.getNotes())
             {
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
@@ -331,7 +330,7 @@ void SystemRenderer::drawSystemSymbols(const System &system,
 
     // Allocate space for any rehearsal signs - they are drawn at the same
     // time as barlines.
-    BOOST_FOREACH(const Barline &barline, system.getBarlines())
+    for (const Barline &barline : system.getBarlines())
     {
         if (barline.hasRehearsalSign())
         {
@@ -386,7 +385,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
     const double TOP_LINE_OFFSET = 2;
     const double TEXT_PADDING = 5;
 
-    BOOST_FOREACH(const AlternateEnding &ending, system.getAlternateEndings())
+    for (const AlternateEnding &ending : system.getAlternateEndings())
     {
         const double location = layout.getPositionX(ending.getPosition());
 
@@ -407,7 +406,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         // The horizontal line either stretches to the next repeat end bar
         // in the system, or just to the next bar.
         double endX = 0;
-        BOOST_FOREACH(const Barline &barline, system.getBarlines())
+        for (const Barline &barline : system.getBarlines())
         {
             // Look for the next repeat end bar.
             if (barline.getPosition() > ending.getPosition() &&
@@ -438,7 +437,7 @@ void SystemRenderer::drawTempoMarkers(const System &system,
                                       const LayoutInfo &layout,
                                       double height)
 {
-    BOOST_FOREACH(const TempoMarker &tempo, system.getTempoMarkers())
+    for (const TempoMarker &tempo : system.getTempoMarkers())
     {
         const double location = layout.getPositionX(tempo.getPosition());
 
@@ -454,12 +453,12 @@ double SystemRenderer::drawDirections(const System &system,
 {
     double maxHeight = 0;
 
-    BOOST_FOREACH(const Direction &direction, system.getDirections())
+    for (const Direction &direction : system.getDirections())
     {
         double localHeight = 0;
         const double location = layout.getPositionX(direction.getPosition());
 
-        BOOST_FOREACH(const DirectionSymbol &symbol, direction.getSymbols())
+        for (const DirectionSymbol &symbol : direction.getSymbols())
         {
             auto painter = new DirectionPainter(symbol);
             centerItem(painter, location,
@@ -479,7 +478,7 @@ double SystemRenderer::drawDirections(const System &system,
 void SystemRenderer::drawChordText(const System &system,
                                    const LayoutInfo &layout, double height)
 {
-    BOOST_FOREACH(const ChordText & chord, system.getChords())
+    for (const ChordText & chord : system.getChords())
     {
         const double x = layout.getPositionX(chord.getPosition());
         const std::string text =
@@ -529,7 +528,7 @@ void SystemRenderer::drawRhythmSlashes()
     }
 
     // add each rhythm slash to the scene
-    BOOST_FOREACH(RhythmSlashPainter* painter, slashPainters)
+    for (RhythmSlashPainter* painter, slashPainters)
     {
         painter->setParentItem(parentSystem);
     }
@@ -543,11 +542,11 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
     {
         std::map<int, int> arcs;
 
-        BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+        for (const Position &pos : staff.getVoice(voice))
         {
             const int position = pos.getPosition();
 
-            BOOST_FOREACH(const Note &note, pos.getNotes())
+            for (const Note &note : pos.getNotes())
             {
                 const int string = note.getString();
 
@@ -615,7 +614,7 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
 void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
                                        const LayoutInfo &layout)
 {
-    BOOST_FOREACH(const PlayerChange &change, system.getPlayerChanges())
+    for (const PlayerChange &change : system.getPlayerChanges())
     {
         const std::vector<ActivePlayer> activePlayers =
                 change.getActivePlayers(staffIndex);
@@ -623,7 +622,7 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
             continue;
 
         QString description;
-        BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+        for (const ActivePlayer &player : activePlayers)
         {
             if (!description.isEmpty())
                 description += ", ";
@@ -647,7 +646,7 @@ void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
     {
         for (int string = 0; string < staff.getStringCount(); ++string)
         {
-            BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+            for (const Position &pos : staff.getVoice(voice))
             {
                 const Note *note = Utils::findByString(pos, string);
                 if (!note)
@@ -728,7 +727,7 @@ void SystemRenderer::drawSlide(const LayoutInfo &layout, int string,
 void SystemRenderer::drawSymbolsBelowTabStaff(const Staff &staff,
                                               const LayoutInfo &layout)
 {
-    BOOST_FOREACH(const SymbolGroup &symbolGroup, layout.getTabStaffBelowSymbols())
+    for (const SymbolGroup &symbolGroup : layout.getTabStaffBelowSymbols())
     {
         QGraphicsItem *renderedSymbol = nullptr;
 
@@ -832,8 +831,7 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
 void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
                                               const LayoutInfo& layout)
 {
-    BOOST_FOREACH(const SymbolGroup &symbolGroup,
-                  layout.getTabStaffAboveSymbols())
+    for (const SymbolGroup &symbolGroup : layout.getTabStaffAboveSymbols())
     {
         QGraphicsItem *renderedSymbol = nullptr;
         const double width = symbolGroup.getWidth();
@@ -922,8 +920,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
 
 void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
 {
-    BOOST_FOREACH(const SymbolGroup &symbolGroup,
-                  layout.getStdNotationStaffAboveSymbols())
+    for (const SymbolGroup &symbolGroup : layout.getStdNotationStaffAboveSymbols())
     {
         QGraphicsItem *renderedSymbol = nullptr;
 
@@ -952,10 +949,10 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
     }
 }
 
-void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo& layout)
+void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo &layout)
 {
-    BOOST_FOREACH(const SymbolGroup &symbolGroup,
-                  layout.getStdNotationStaffBelowSymbols())
+    for (const SymbolGroup &symbolGroup :
+         layout.getStdNotationStaffBelowSymbols())
     {
         QGraphicsItem *renderedSymbol = nullptr;
 
@@ -1141,7 +1138,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
     // Draw rests.
     for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        BOOST_FOREACH(const Position &pos, staff.getVoice(voice))
+        for (const Position &pos : staff.getVoice(voice))
         {
             const double x = layout.getPositionX(pos.getPosition());
 
@@ -1168,7 +1165,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
     std::map<int, double> maxNoteLocations;
     std::map<int, double> noteHeadWidths;
 
-    BOOST_FOREACH(const StdNotationNote &note, notes)
+    for (const StdNotationNote &note : notes)
     {
         const QChar noteHead = note.getNoteHeadSymbol();
         const double noteHeadWidth = myMusicFontMetrics.width(noteHead);
@@ -1229,7 +1226,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
     drawLedgerLines(layout, minNoteLocations, maxNoteLocations, noteHeadWidths);
 
-    BOOST_FOREACH(const BeamGroup &group, beamGroups)
+    for (const BeamGroup &group : beamGroups)
     {
         group.drawStems(myParentStaff, myMusicNotationFont, myMusicFontMetrics,
                         layout);
@@ -1360,8 +1357,7 @@ void SystemRenderer::drawLedgerLines(
 {
     QPainterPath path;
 
-    BOOST_FOREACH(const int position,
-                  minNoteLocations | boost::adaptors::map_keys)
+    for (const int position : minNoteLocations | boost::adaptors::map_keys)
     {
         const double highestNote = minNoteLocations.at(position);
         const double lowestNote = maxNoteLocations.at(position);
@@ -1398,7 +1394,7 @@ void SystemRenderer::drawLedgerLines(
         const double x = layout.getPositionX(position) +
                 0.5 * (layout.getPositionSpacing() - ledgerLineWidth);
 
-        BOOST_FOREACH(double location, ledgerLineLocations)
+        for (double location : ledgerLineLocations)
         {
             path.moveTo(x, location);
             path.lineTo(x + ledgerLineWidth, location);

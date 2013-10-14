@@ -137,7 +137,7 @@ TempoMarker TempoMarkerDialog::getTempoMarker() const
 
 void TempoMarkerDialog::onListessoChanged(bool enabled)
 {
-    foreach (QAbstractButton *button, myListessoBeatTypes->buttons())
+    for (QAbstractButton *button : myListessoBeatTypes->buttons())
         button->setEnabled(enabled);
 
     ui->bpmSpinBox->setEnabled(!enabled);
@@ -148,7 +148,7 @@ void TempoMarkerDialog::onShowMetronomeMarkerChanged(bool enabled)
     QList<QAbstractButton *> buttons;
     buttons << myBeatTypes->buttons() << myListessoBeatTypes->buttons();
 
-    foreach (QAbstractButton *button, buttons)
+    for (QAbstractButton *button : buttons)
         button->setEnabled(enabled);
 
     ui->bpmSpinBox->setEnabled(enabled);

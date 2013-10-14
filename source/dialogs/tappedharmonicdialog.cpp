@@ -18,7 +18,6 @@
 #include "tappedharmonicdialog.h"
 #include "ui_tappedharmonicdialog.h"
 
-#include <boost/foreach.hpp>
 #include <score/note.h>
 
 TappedHarmonicDialog::TappedHarmonicDialog(QWidget *parent, int originalFret)
@@ -31,7 +30,7 @@ TappedHarmonicDialog::TappedHarmonicDialog(QWidget *parent, int originalFret)
     ui->currentFretSpinBox->setValue(myOriginalFret);
 
     // Populate the list of available frets.
-    BOOST_FOREACH(int offset, Harmonics::getValidFretOffsets())
+    for (int offset : Harmonics::getValidFretOffsets())
     {
         const int tappedFret = myOriginalFret + offset;
 

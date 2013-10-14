@@ -18,7 +18,6 @@
 #include "playerchangedialog.h"
 #include "ui_playerchangedialog.h"
 
-#include <boost/foreach.hpp>
 #include <QComboBox>
 #include <QLabel>
 #include <score/score.h>
@@ -40,7 +39,7 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
     titleLayout->setSpacing(spacing * 4);
     ui->formLayout->addRow(tr("Player"), titleLayout);
 
-    BOOST_FOREACH(const Player &player, score.getPlayers())
+    for (const Player &player : score.getPlayers())
     {
         const int numStrings = player.getTuning().getStringCount();
 
@@ -62,7 +61,7 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
             std::vector<ActivePlayer> players =
                     currentPlayers->getActivePlayers(staff);
 
-            BOOST_FOREACH(const ActivePlayer &player, players)
+            for (const ActivePlayer &player : players)
             {
                 const int i = player.getPlayerNumber();
                 myStaffComboBoxes.at(i)->setCurrentIndex(staff + 1);
@@ -107,7 +106,7 @@ QComboBox *PlayerChangeDialog::getStaffComboBox(int numStrings,
     list->addItem(tr("None"), -1);
 
     int i = 0;
-    BOOST_FOREACH(const Staff &staff, system.getStaves())
+    for (const Staff &staff : system.getStaves())
     {
         if (staff.getStringCount() == numStrings)
             list->addItem(QString::number(i + 1), i);
@@ -123,7 +122,7 @@ QComboBox *PlayerChangeDialog::getInstrumentComboBox(const Score &score)
     myInstrumentComboBoxes.push_back(list);
 
     int i = 0;
-    BOOST_FOREACH(const Instrument &instrument, score.getInstruments())
+    for (const Instrument &instrument : score.getInstruments())
     {
         list->addItem(QString::fromStdString(instrument.getDescription()), i);
         ++i;

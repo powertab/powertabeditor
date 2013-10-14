@@ -17,8 +17,6 @@
   
 #include "editnoteduration.h"
 
-#include <boost/foreach.hpp>
-
 EditNoteDuration::EditNoteDuration(const ScoreLocation &location,
                                    Position::DurationType duration,
                                    bool forRests)
@@ -27,18 +25,14 @@ EditNoteDuration::EditNoteDuration(const ScoreLocation &location,
       myLocation(location),
       myNewDuration(duration)
 {
-    BOOST_FOREACH(const Position *pos, myLocation.getSelectedPositions())
-    {
+    for (const Position *pos : myLocation.getSelectedPositions())
         myOriginalDurations.push_back(pos->getDurationType());
-    }
 }
 
 void EditNoteDuration::redo()
 {
-    BOOST_FOREACH(Position *pos, myLocation.getSelectedPositions())
-    {
+    for (Position *pos : myLocation.getSelectedPositions())
         pos->setDurationType(myNewDuration);
-    }
 }
 
 void EditNoteDuration::undo()

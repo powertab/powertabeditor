@@ -20,7 +20,6 @@
 #include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
 #include <app/pubsub/staffpubsub.h>
-#include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 #include <painters/caretpainter.h>
@@ -68,7 +67,7 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
     // Render each system.
     int i = 0;
     double height = 0;
-    BOOST_FOREACH(const System &system, score.getSystems())
+    for (const System &system : score.getSystems())
     {
         progressDialog.setValue(i);
         SystemRenderer render(this, score);

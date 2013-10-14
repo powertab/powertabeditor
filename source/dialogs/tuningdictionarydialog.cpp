@@ -19,7 +19,6 @@
 #include "ui_tuningdictionarydialog.h"
 
 #include <app/tuningdictionary.h>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
 
@@ -75,7 +74,7 @@ void TuningDictionaryDialog::onNumStringsChanged(int index)
     std::vector<Tuning *> tunings;
     myDictionary.findTunings(numStrings, tunings);
 
-    BOOST_FOREACH(Tuning *tuning, tunings)
+    for (Tuning *tuning : tunings)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(QStringList() <<
             QString::fromStdString(tuning->getName()) <<

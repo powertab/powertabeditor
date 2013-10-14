@@ -69,7 +69,7 @@ void KeyboardSettingsDialog::initializeCommandTable()
                                       << tr("Label") << tr("Shortcut"));
 
     // Populate list of commands.
-    foreach(Command *command, myCommands)
+    for (Command *command : myCommands)
     {
         // NOTE: QAction::toolTip() is called to avoid getting ampersands from
         //       mnemonics (which would appear in QAction::text)

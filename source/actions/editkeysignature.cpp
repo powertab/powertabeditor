@@ -17,7 +17,6 @@
   
 #include "editkeysignature.h"
 
-#include <boost/foreach.hpp>
 #include <score/barline.h>
 #include <score/score.h>
 
@@ -50,7 +49,7 @@ void EditKeySignature::updateFollowingKeySignatures(const KeySignature &oldKey,
 
     for (int i = startSystem; i < score.getSystems().size(); ++i)
     {
-        BOOST_FOREACH(Barline &bar, score.getSystems()[i].getBarlines())
+        for (Barline &bar : score.getSystems()[i].getBarlines())
         {
             if (i == startSystem &&
                 bar.getPosition() <= myLocation.getPositionIndex())

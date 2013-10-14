@@ -17,8 +17,6 @@
 
 #include "addpositionproperty.h"
 
-#include <boost/foreach.hpp>
-
 AddPositionProperty::AddPositionProperty(const ScoreLocation &location,
                                          Position::SimpleProperty property,
                                          const QString &positionDescription)
@@ -26,18 +24,14 @@ AddPositionProperty::AddPositionProperty(const ScoreLocation &location,
       myLocation(location),
       myProperty(property)
 {
-    BOOST_FOREACH(const Position *pos, myLocation.getSelectedPositions())
-    {
+    for (const Position *pos : myLocation.getSelectedPositions())
         myOriginalPositions.push_back(*pos);
-    }
 }
 
 void AddPositionProperty::redo()
 {
-    BOOST_FOREACH(Position *pos, myLocation.getSelectedPositions())
-    {
+    for (Position *pos : myLocation.getSelectedPositions())
         pos->setProperty(myProperty, true);
-    }
 }
 
 void AddPositionProperty::undo()

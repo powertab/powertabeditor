@@ -29,7 +29,6 @@
 #include <audio/stopnoteevent.h>
 #include <audio/vibratoevent.h>
 #include <audio/volumechangeevent.h>
-#include <boost/foreach.hpp>
 #include <QDebug>
 #include <QSettings>
 #include <score/generalmidi.h>
@@ -102,9 +101,9 @@ void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
     double time = 0;
 
     int systemIndex = 0;
-    BOOST_FOREACH(const System &system, myScore.getSystems())
+    for (const System &system : myScore.getSystems())
     {
-        BOOST_FOREACH(const Barline &leftBar, system.getBarlines())
+        for (const Barline &leftBar : system.getBarlines())
         {
             const Barline *rightBar = system.getNextBarline(
                         leftBar.getPosition());
@@ -114,7 +113,7 @@ void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
             const double barStartTime = time;
 
             int staffIndex = 0;
-            BOOST_FOREACH(const Staff &staff, system.getStaves())
+            for (const Staff &staff : system.getStaves())
             {
                 for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
                 {
@@ -181,8 +180,8 @@ double MidiPlayer::generateEventsForBar(
     double startTime = barStartTime;
     bool letRingActive = false;
 
-    BOOST_FOREACH(const Position &pos, StaffUtils::getPositionsInRange(
-                      staff, voice, leftPos, rightPos))
+    for (const Position &pos :
+         StaffUtils::getPositionsInRange(staff, voice, leftPos, rightPos))
     {
         const int position = pos.getPosition();
         const double currentTempo = getCurrentTempo(systemIndex, position);
@@ -214,7 +213,7 @@ double MidiPlayer::generateEventsForBar(
                     duration *= pos.getMultiBarRestCount();
             }
 
-            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            for (const ActivePlayer &player : activePlayers)
             {
                 eventList.push_back(
                             new RestEvent(player.getPlayerNumber(), startTime,
@@ -252,7 +251,7 @@ double MidiPlayer::generateEventsForBar(
             VibratoEvent::VibratoType type = pos.hasProperty(Position::Vibrato)
                     ? VibratoEvent::NormalVibrato : VibratoEvent::WideVibrato;
 
-            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            for (const ActivePlayer &player : activePlayers)
             {
                 const int channel = player.getPlayerNumber();
 
@@ -276,7 +275,7 @@ double MidiPlayer::generateEventsForBar(
                         staff.getDynamics(), position);
             if (dynamic)
             {
-                BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+                for (const ActivePlayer &player : activePlayers)
                 {
                     eventList.push_back(
                         new VolumeChangeEvent(player.getPlayerNumber(),
@@ -289,24 +288,22 @@ double MidiPlayer::generateEventsForBar(
         // Let ring events (applied to all notes in the position).
         if (pos.hasProperty(Position::LetRing) && !letRingActive)
         {
-            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            for (const ActivePlayer &player : activePlayers)
             {
-                eventList.push_back(
-                            new LetRingEvent(player.getPlayerNumber(),
-                                             startTime, position, systemIndex,
-                                             LetRingEvent::LetRingOn));
+                eventList.push_back(new LetRingEvent(
+                    player.getPlayerNumber(), startTime, position, systemIndex,
+                    LetRingEvent::LetRingOn));
             }
 
             letRingActive = true;
         }
         else if (!pos.hasProperty(Position::LetRing) && letRingActive)
         {
-            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            for (const ActivePlayer &player : activePlayers)
             {
-                eventList.push_back(
-                            new LetRingEvent(player.getPlayerNumber(),
-                                             startTime, position, systemIndex,
-                                             LetRingEvent::LetRingOff));
+                eventList.push_back(new LetRingEvent(
+                    player.getPlayerNumber(), startTime, position, systemIndex,
+                    LetRingEvent::LetRingOff));
             }
 
             letRingActive = false;
@@ -316,19 +313,17 @@ double MidiPlayer::generateEventsForBar(
                  (&pos == &StaffUtils::getPositionsInRange(staff, voice, leftPos,
                                                            rightPos).back()))
         {
-            BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+            for (const ActivePlayer &player : activePlayers)
             {
-                eventList.push_back(
-                            new LetRingEvent(player.getPlayerNumber(),
-                                             startTime + duration, position,
-                                             systemIndex,
-                                             LetRingEvent::LetRingOff));
+                eventList.push_back(new LetRingEvent(
+                    player.getPlayerNumber(), startTime + duration, position,
+                    systemIndex, LetRingEvent::LetRingOff));
             }
 
             letRingActive = false;
         }
 
-        BOOST_FOREACH(const Note &note, pos.getNotes())
+        for (const Note &note : pos.getNotes())
         {
             // For arpeggios, delay the start of each note a small amount from
             // the last, and also adjust the duration correspondingly.
@@ -351,7 +346,7 @@ double MidiPlayer::generateEventsForBar(
             // If this note is not tied to the previous note, play the note.
             if (!note.hasProperty(Note::Tied))
             {
-                BOOST_FOREACH(const ActivePlayer &activePlayer, activePlayers)
+                for (const ActivePlayer &activePlayer : activePlayers)
                 {
                     const Player &player = myScore.getPlayers()[
                             activePlayer.getPlayerNumber()];
@@ -401,7 +396,7 @@ double MidiPlayer::generateEventsForBar(
                     generateTremoloBar(bendEvents, startTime, duration, currentTempo, position);
                 }
 
-                BOOST_FOREACH(const BendEventInfo& event, bendEvents)
+                for (const BendEventInfo& event : bendEvents)
                 {
                     eventList.push_back(new BendEvent(channel, event.timestamp, positionIndex,
                                                       systemIndex, event.pitchBendAmount));
@@ -430,19 +425,18 @@ double MidiPlayer::generateEventsForBar(
                     const double currentStartTime = startTime +
                             i * tremPickNoteDuration;
 
-                    BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+                    for (const ActivePlayer &player : activePlayers)
                     {
-                        eventList.push_back(
-                            new StopNoteEvent(player.getPlayerNumber(),
-                                              currentStartTime, position,
-                                              systemIndex, pitch));
+                        eventList.push_back(new StopNoteEvent(
+                            player.getPlayerNumber(), currentStartTime,
+                            position, systemIndex, pitch));
                     }
 
                     // Alternate to the other pitch (this has no effect for
                     // tremolo picking).
                     std::swap(pitch, otherPitch);
 
-                    BOOST_FOREACH(const ActivePlayer &activePlayer, activePlayers)
+                    for (const ActivePlayer &activePlayer : activePlayers)
                     {
                         const Player &player = myScore.getPlayers()[
                                 activePlayer.getPlayerNumber()];
@@ -480,12 +474,11 @@ double MidiPlayer::generateEventsForBar(
                 else if (pos.hasProperty(Position::PalmMuting))
                     noteLength /= 1.15;
 
-                BOOST_FOREACH(const ActivePlayer &player, activePlayers)
+                for (const ActivePlayer &player : activePlayers)
                 {
-                    eventList.push_back(
-                                new StopNoteEvent(player.getPlayerNumber(),
-                                                  startTime + noteLength,
-                                                  position, systemIndex, pitch));
+                    eventList.push_back(new StopNoteEvent(
+                        player.getPlayerNumber(), startTime + noteLength,
+                        position, systemIndex, pitch));
                 }
             }
         }
@@ -657,12 +650,12 @@ const TempoMarker *MidiPlayer::getCurrentTempoMarker(int systemIndex,
     const TempoMarker *lastMarker = nullptr;
 
     int i = 0;
-    BOOST_FOREACH(const System &system, myScore.getSystems())
+    for (const System &system : myScore.getSystems())
     {
         if (i > systemIndex)
             break;
 
-        BOOST_FOREACH(const TempoMarker &marker, system.getTempoMarkers())
+        for (const TempoMarker &marker : system.getTempoMarkers())
         {
             if (i < systemIndex ||
                (i == systemIndex && marker.getPosition() <= position))
@@ -741,18 +734,19 @@ double MidiPlayer::generateMetronome(const System &system, int systemIndex,
     // to fill the extra bars.
     int repeatCount = 1;
     const Barline *nextBar = system.getNextBarline(barline.getPosition());
-    BOOST_FOREACH(const Staff &staff, system.getStaves())
+    for (const Staff &staff : system.getStaves())
     {
         for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
         {
-            BOOST_FOREACH(const Position &pos,
-                          StaffUtils::getPositionsInRange(staff, voice,
-                                                          barline.getPosition(),
-                                                          nextBar->getPosition()))
+            for (const Position &pos : StaffUtils::getPositionsInRange(
+                     staff, voice, barline.getPosition(),
+                     nextBar->getPosition()))
             {
                 if (pos.hasMultiBarRest())
+                {
                     repeatCount = std::max(repeatCount,
                                            pos.getMultiBarRestCount());
+                }
             }
         }
     }

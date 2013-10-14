@@ -17,7 +17,6 @@
   
 #include "insertnotes.h"
 
-#include <boost/foreach.hpp>
 #include <score/staffutils.h>
 #include <score/system.h>
 
@@ -32,10 +31,8 @@ InsertNotes::InsertNotes(const ScoreLocation &location,
 
     // Adjust the locations of the new notes.
     const int offset = insertionPos - myNewPositions.front().getPosition();
-    BOOST_FOREACH(Position &pos, myNewPositions)
-    {
+    for (Position &pos: myNewPositions)
         pos.setPosition(pos.getPosition() + offset);
-    }
 
     const int startPos = myNewPositions.front().getPosition();
     const int endPos = myNewPositions.back().getPosition();
@@ -84,19 +81,15 @@ void InsertNotes::redo()
     }
 
     // Insert the new notes.
-    BOOST_FOREACH(const Position &pos, myNewPositions)
-    {
+    for (const Position &pos : myNewPositions)
         myLocation.getStaff().insertPosition(myLocation.getVoice(), pos);
-    }
 }
 
 void InsertNotes::undo()
 {
     // Remove the notes that were added.
-    BOOST_FOREACH(const Position &pos, myNewPositions)
-    {
+    for (const Position &pos : myNewPositions)
         myLocation.getStaff().removePosition(myLocation.getVoice(), pos);
-    }
 
     // Undo any shifting that was performed.
     for (int i = 0; i < myShiftAmount; ++i)

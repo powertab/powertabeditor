@@ -17,7 +17,6 @@
   
 #include "alternateendingdialog.h"
 
-#include <boost/foreach.hpp>
 #include <functional>
 #include <QCheckBox>
 #include <QDialogButtonBox>
@@ -56,7 +55,7 @@ AlternateEndingDialog::AlternateEndingDialog(QWidget *parent)
     layout->addWidget(myDalSegnoSegnoCheckbox);
     rowLayouts.push_back(layout);
 
-    BOOST_FOREACH(QHBoxLayout *layout, rowLayouts)
+    for (QHBoxLayout *layout : rowLayouts)
     {
         layout->setSpacing(LAYOUT_SPACING);
         mainLayout->addLayout(layout);

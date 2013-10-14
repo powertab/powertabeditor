@@ -18,7 +18,6 @@
 #include "chordnamedialog.h"
 #include "ui_chordnamedialog.h"
 
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 ChordNameDialog::ChordNameDialog(QWidget *parent)
@@ -168,7 +167,7 @@ void ChordNameDialog::updateState()
 
 void ChordNameDialog::onTonicVariationClicked(QAbstractButton *clickedButton)
 {
-    BOOST_FOREACH(QAbstractButton *button, myTonicVariations->buttons())
+    for (QAbstractButton *button : myTonicVariations->buttons())
     {
         if (button != clickedButton)
             button->setChecked(false);
@@ -179,7 +178,7 @@ void ChordNameDialog::onTonicVariationClicked(QAbstractButton *clickedButton)
 
 void ChordNameDialog::onBassVariationClicked(QAbstractButton *clickedButton)
 {
-    BOOST_FOREACH(QAbstractButton *button, myBassVariations->buttons())
+    for (QAbstractButton *button : myBassVariations->buttons())
     {
         if (button != clickedButton)
             button->setChecked(false);

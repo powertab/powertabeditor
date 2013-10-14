@@ -18,7 +18,6 @@
 #include "gotobarlinedialog.h"
 #include "ui_gotobarlinedialog.h"
 
-#include <boost/foreach.hpp>
 #include <score/score.h>
 
 GoToBarlineDialog::GoToBarlineDialog(QWidget *parent, const Score &score)

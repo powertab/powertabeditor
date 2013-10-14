@@ -17,7 +17,6 @@
   
 #include "repeatcontroller.h"
 
-#include <boost/foreach.hpp>
 #include <iostream>
 #include <score/score.h>
 
@@ -49,9 +48,9 @@ void RepeatController::indexRepeats()
     myRepeats.insert(std::make_pair(scoreStart, Repeat(scoreStart)));
 
     int systemIndex = 0;
-    BOOST_FOREACH(const System &system, myScore.getSystems())
+    for (const System &system : myScore.getSystems())
     {
-        BOOST_FOREACH(const Barline &bar, system.getBarlines())
+        for (const Barline &bar : system.getBarlines())
         {
             if (bar.getBarType() == Barline::RepeatStart)
             {
@@ -73,10 +72,9 @@ void RepeatController::indexRepeats()
 
     // Add alternate endings.
     systemIndex = 0;
-    BOOST_FOREACH(const System &system, myScore.getSystems())
+    for (const System &system : myScore.getSystems())
     {
-        BOOST_FOREACH(const AlternateEnding &ending,
-                      system.getAlternateEndings())
+        for (const AlternateEnding &ending : system.getAlternateEndings())
         {
             const SystemLocation altEndingLocation(systemIndex,
                                                    ending.getPosition());
@@ -91,11 +89,11 @@ void RepeatController::indexRepeats()
 
 void RepeatController::indexDirections(int systemIndex, const System &system)
 {
-    BOOST_FOREACH(const Direction &direction, system.getDirections())
+    for (const Direction &direction : system.getDirections())
     {
         const SystemLocation location(systemIndex, direction.getPosition());
 
-        BOOST_FOREACH(const DirectionSymbol &symbol, direction.getSymbols())
+        for (const DirectionSymbol &symbol : direction.getSymbols())
         {
             myDirections.insert(std::make_pair(location, symbol));
             mySymbolLocations.insert(std::make_pair(symbol.getSymbolType(),

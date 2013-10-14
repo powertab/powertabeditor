@@ -18,7 +18,6 @@
 #include "harmonics.h"
 
 #include <map>
-#include <boost/foreach.hpp>
 
 namespace Harmonics
 {

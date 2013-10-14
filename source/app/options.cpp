@@ -65,10 +65,8 @@ std::vector<std::string> Options::toStdStringList(const QStringList &list)
     std::vector<std::string> vec;
     vec.reserve(list.length());
 
-    foreach (const QString &str, list)
-    {
+    for (const QString &str : list)
         vec.push_back(str.toStdString());
-    }
 
     return vec;
 }

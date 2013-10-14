@@ -64,7 +64,7 @@ void RecentFiles::updateMenu()
 {
     myRecentFilesMenu->clear();
 
-    foreach (const QString& fileName, myRecentFiles)
+    for (const QString& fileName : myRecentFiles)
     {
         auto fileAction = new QAction(fileName, myRecentFilesMenu);
         myRecentFilesMenu->addAction(fileAction);

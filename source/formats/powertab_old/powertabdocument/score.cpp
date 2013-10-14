@@ -31,7 +31,6 @@
 #include <map>
 #include <bitset>
 #include <algorithm>
-#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
 namespace PowerTabDocument {
@@ -141,7 +140,7 @@ void RemoveSymbolsInSystem(std::vector<Symbol>& symbolList, const uint32_t syste
                      symbolList.end());
 
     // Shift following symbols up by one system.
-    BOOST_FOREACH(const Symbol& symbol, symbolList)
+    for (const Symbol &symbol : symbolList)
     {
         if (symbol->GetSystem() > systemIndex)
         {
@@ -155,7 +154,7 @@ void RemoveSymbolsInSystem(std::vector<Symbol>& symbolList, const uint32_t syste
 template <class Symbol>
 void ShiftFollowingSymbols(std::vector<Symbol>& symbolList, const uint32_t systemIndex)
 {
-    BOOST_FOREACH(const Symbol& symbol, symbolList)
+    for (const Symbol &symbol : symbolList)
     {
         if (symbol->GetSystem() >= systemIndex)
         {

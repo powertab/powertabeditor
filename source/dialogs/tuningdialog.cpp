@@ -20,7 +20,6 @@
 
 #include <app/tuningdictionary.h>
 #include <boost/bind.hpp>
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <score/generalmidi.h>
 #include <score/tuning.h>
@@ -137,7 +136,7 @@ void TuningDialog::updateTuningDictionary(int numStrings)
 
     ui->presetComboBox->clear();
 
-    BOOST_FOREACH(const Tuning *tuning, tunings)
+    for (const Tuning *tuning : tunings)
     {
         ui->presetComboBox->addItem(QString("%1 - %2").arg(
             QString::fromStdString(tuning->getName()),

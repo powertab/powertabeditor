@@ -18,10 +18,8 @@
 #include "documentreader.h"
 
 #include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <iostream>
-#include "pugixml/foreach.hpp"
 #include "pugixml/pugixml.hpp"
 #include <score/generalmidi.h>
 #include <score/score.h>
@@ -104,7 +102,7 @@ void Gpx::DocumentReader::readTracks(Score &score)
 {
     const std::vector<std::string> presetNames = Midi::getPresetNames();
 
-    BOOST_FOREACH(xml_node track, myFile.child("Tracks"))
+    for (xml_node track : myFile.child("Tracks"))
     {
         Player player;
         Instrument instrument;
@@ -149,7 +147,7 @@ void Gpx::DocumentReader::readTracks(Score &score)
 
 void Gpx::DocumentReader::readBars()
 {
-    BOOST_FOREACH(xml_node currentBar, myFile.child("Bars"))
+    for (xml_node currentBar : myFile.child("Bars"))
     {
         Gpx::Bar bar;
         bar.id = currentBar.attribute("id").as_int();
@@ -161,7 +159,7 @@ void Gpx::DocumentReader::readBars()
 
 void Gpx::DocumentReader::readVoices()
 {
-    BOOST_FOREACH(xml_node currentVoice, myFile.child("Voices"))
+    for (xml_node currentVoice : myFile.child("Voices"))
     {
         Gpx::Voice voice;
         voice.id = currentVoice.attribute("id").as_int();
@@ -173,7 +171,7 @@ void Gpx::DocumentReader::readVoices()
 
 void Gpx::DocumentReader::readBeats()
 {
-    BOOST_FOREACH(xml_node currentBeat, myFile.child("Beats"))
+    for (xml_node currentBeat : myFile.child("Beats"))
     {
         Gpx::Beat beat;
         beat.id = currentBeat.attribute("id").as_int();
@@ -202,7 +200,7 @@ void Gpx::DocumentReader::readBeats()
 
 void Gpx::DocumentReader::readRhythms()
 {
-    BOOST_FOREACH(xml_node currentRhythm, myFile.child("Rhythms"))
+    for (xml_node currentRhythm : myFile.child("Rhythms"))
     {
         Gpx::Rhythm rhythm;
         rhythm.id = currentRhythm.attribute("id").as_int();
@@ -230,7 +228,7 @@ void Gpx::DocumentReader::readRhythms()
 
 void Gpx::DocumentReader::readNotes()
 {
-    BOOST_FOREACH(xml_node currentNote, myFile.child("Notes"))
+    for (xml_node currentNote : myFile.child("Notes"))
     {
         Gpx::TabNote note;
         note.id = currentNote.attribute("id").as_int();
@@ -251,8 +249,8 @@ void Gpx::DocumentReader::readNotes()
 
 void Gpx::DocumentReader::readAutomations()
 {
-    BOOST_FOREACH(xpath_node node,
-                  myFile.select_nodes("./MasterTrack/Automations/Automation"))
+    for (xpath_node node :
+         myFile.select_nodes("./MasterTrack/Automations/Automation"))
     {
         xml_node currentAutomation = node.node();
         Gpx::Automation gpxAutomation;
@@ -287,7 +285,7 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
 
     int barIndex = 0;
     int startPos = 0;
-    BOOST_FOREACH(xml_node masterBar, myFile.child("MasterBars"))
+    for (xml_node masterBar : myFile.child("MasterBars"))
     {
         if (masterBar.name() != std::string("MasterBar"))
             continue;
@@ -344,8 +342,8 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
             int currentPos = (startPos != 0) ? startPos + 1 : 0;
 
             // TODO - import multiple voices.
-            BOOST_FOREACH(int beatId,
-                          myVoices[myBars[barIds[i]].voiceIds.at(0)].beatIds)
+            for (int beatId :
+                 myVoices[myBars[barIds[i]].voiceIds.at(0)].beatIds)
             {
                 const Gpx::Beat &beat = myBeats[beatId];
 
@@ -368,7 +366,7 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
                 pos.setProperty(Position::Dotted, rhythm.dotted);
                 pos.setProperty(Position::DoubleDotted, rhythm.doubleDotted);
 
-                BOOST_FOREACH(int noteId, beat.noteIds)
+                for (int noteId : beat.noteIds)
                 {
                     Note note = convertNote(noteId, pos,
                                             score.getPlayers()[i].getTuning());
@@ -494,7 +492,7 @@ Note Gpx::DocumentReader::convertNote(int noteId, Position &position,
                                tuning.getNote(ptbNote.getString(), false));
     }
 
-    BOOST_FOREACH(xml_node property, gpxNote.properties)
+    for (xml_node property : gpxNote.properties)
     {
         const std::string propertyName = property.attribute("name").as_string();
 

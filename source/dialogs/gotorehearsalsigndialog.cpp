@@ -1,7 +1,6 @@
 #include "gotorehearsalsigndialog.h"
 #include "ui_gotorehearsalsigndialog.h"
 
-#include <boost/foreach.hpp>
 #include <score/score.h>
 #include <score/scorelocation.h>
 
@@ -21,9 +20,9 @@ GoToRehearsalSignDialog::GoToRehearsalSignDialog(QWidget *parent,
 
     // Add all of the rehearsal signs in the score to the list.
     int systemIndex = 0;
-    BOOST_FOREACH(const System &system, score.getSystems())
+    for (const System &system : score.getSystems())
     {
-        BOOST_FOREACH(const Barline &barline, system.getBarlines())
+        for (const Barline &barline : system.getBarlines())
         {
             if (barline.hasRehearsalSign())
             {

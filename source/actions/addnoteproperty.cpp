@@ -17,8 +17,6 @@
 
 #include "addnoteproperty.h"
 
-#include <boost/foreach.hpp>
-
 AddNoteProperty::AddNoteProperty(const ScoreLocation &location,
                                  Note::SimpleProperty property,
                                  const QString &description)
@@ -26,18 +24,14 @@ AddNoteProperty::AddNoteProperty(const ScoreLocation &location,
       myLocation(location),
       myProperty(property)
 {
-    BOOST_FOREACH(const Note *note, myLocation.getSelectedNotes())
-    {
+    for (const Note *note : myLocation.getSelectedNotes())
         myOriginalNotes.push_back(*note);
-    }
 }
 
 void AddNoteProperty::redo()
 {
-    BOOST_FOREACH(Note *note, myLocation.getSelectedNotes())
-    {
+    for (Note *note : myLocation.getSelectedNotes())
         note->setProperty(myProperty, true);
-    }
 }
 
 void AddNoteProperty::undo()

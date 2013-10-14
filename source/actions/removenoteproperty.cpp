@@ -17,8 +17,6 @@
 
 #include "removenoteproperty.h"
 
-#include <boost/foreach.hpp>
-
 RemoveNoteProperty::RemoveNoteProperty(const ScoreLocation &location,
                                        Note::SimpleProperty property,
                                        const QString &description)
@@ -30,16 +28,12 @@ RemoveNoteProperty::RemoveNoteProperty(const ScoreLocation &location,
 
 void RemoveNoteProperty::redo()
 {
-    BOOST_FOREACH(Note *note, myLocation.getSelectedNotes())
-    {
+    for (Note *note : myLocation.getSelectedNotes())
         note->setProperty(myProperty, false);
-    }
 }
 
 void RemoveNoteProperty::undo()
 {
-    BOOST_FOREACH(Note *note, myLocation.getSelectedNotes())
-    {
+    for (Note *note : myLocation.getSelectedNotes())
         note->setProperty(myProperty, true);
-    }
 }
