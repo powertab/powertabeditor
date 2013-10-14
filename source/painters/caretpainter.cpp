@@ -31,8 +31,7 @@ const double CaretPainter::CARET_NOTE_SPACING = 6;
 
 CaretPainter::CaretPainter(const Caret &caret)
     : myCaret(caret),
-      myCaretConnection(caret.subscribeToChanges(
-                            boost::bind(&CaretPainter::onLocationChanged, this)))
+      myCaretConnection(caret.subscribeToChanges([=]() { onLocationChanged(); }))
 {
 }
 

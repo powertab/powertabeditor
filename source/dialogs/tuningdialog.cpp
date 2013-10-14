@@ -19,7 +19,6 @@
 #include "ui_tuningdialog.h"
 
 #include <app/tuningdictionary.h>
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <score/generalmidi.h>
 #include <score/tuning.h>
@@ -121,12 +120,14 @@ void TuningDialog::toggleSharps(bool usesSharps)
 void TuningDialog::updateEnabledStrings(int numStrings)
 {
     Q_ASSERT(numStrings <= (int)Tuning::MAX_STRING_COUNT && numStrings >= 0);
-    
-    std::for_each(myStringSelectors.begin(), myStringSelectors.begin() + numStrings,
-                  boost::bind(&QComboBox::setEnabled, _1, true));
-    
-    std::for_each(myStringSelectors.begin() + numStrings, myStringSelectors.end(),
-                  boost::bind(&QComboBox::setEnabled, _1, false));
+
+    std::for_each(myStringSelectors.begin(),
+                  myStringSelectors.begin() + numStrings, [](QComboBox * c)
+    { c->setEnabled(true); });
+
+    std::for_each(myStringSelectors.begin() + numStrings,
+                  myStringSelectors.end(), [](QComboBox * c)
+    { c->setEnabled(false); });
 }
 
 void TuningDialog::updateTuningDictionary(int numStrings)

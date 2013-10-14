@@ -31,7 +31,6 @@
 #include <map>
 #include <bitset>
 #include <algorithm>
-#include <boost/bind.hpp>
 
 namespace PowerTabDocument {
 

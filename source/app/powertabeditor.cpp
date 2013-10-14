@@ -1842,9 +1842,10 @@ void PowerTabEditor::createMixer()
     myMixerDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myMixerDockWidget);
 
-    myPlayerPubSub.subscribe(
-        std::bind(&PowerTabEditor::editPlayer, this, std::placeholders::_1,
-                  std::placeholders::_2, std::placeholders::_3));
+    myPlayerPubSub.subscribe([=](int index, const Player & player,
+                                 bool undoable) {
+        editPlayer(index, player, undoable);
+    });
 }
 
 void PowerTabEditor::createInstrumentPanel()
@@ -1863,9 +1864,9 @@ void PowerTabEditor::createInstrumentPanel()
     myInstrumentDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myInstrumentDockWidget);
 
-    myInstrumentPubSub.subscribe(std::bind(&PowerTabEditor::editInstrument,
-                                           this, std::placeholders::_1,
-                                           std::placeholders::_2));
+    myInstrumentPubSub.subscribe([=](int index, const Instrument &instrument) {
+        editInstrument(index, instrument);
+    });
 }
 
 void PowerTabEditor::createNoteDurationCommand(
@@ -2153,8 +2154,9 @@ void PowerTabEditor::setupNewTab()
     Q_ASSERT(myDocumentManager->hasOpenDocuments());
     Document &doc = myDocumentManager->getCurrentDocument();
 
-    doc.getCaret().subscribeToChanges(
-                boost::bind(&PowerTabEditor::updateCommands, this));
+    doc.getCaret().subscribeToChanges([=]() {
+        updateCommands();
+    });
 
     auto scorearea = new ScoreArea(this);
     scorearea->renderDocument(doc, Staff::GuitarView);
@@ -2162,14 +2164,18 @@ void PowerTabEditor::setupNewTab()
 
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
-    scorearea->getTimeSignaturePubSub()->subscribe(
-                boost::bind(&PowerTabEditor::editTimeSignature, this, _1));
-    scorearea->getKeySignaturePubSub()->subscribe(
-                boost::bind(&PowerTabEditor::editKeySignature, this, _1));
-    scorearea->getBarlinePubSub()->subscribe(
-                boost::bind(&PowerTabEditor::editBarline, this, _1));
-    scorearea->getClefPubSub()->subscribe(
-                boost::bind(&PowerTabEditor::editClef, this, _1, _2));
+    scorearea->getTimeSignaturePubSub()->subscribe([=](const ScoreLocation &location) {
+        editTimeSignature(location);
+    });
+    scorearea->getKeySignaturePubSub()->subscribe([=](const ScoreLocation &location) {
+        editKeySignature(location);
+    });
+    scorearea->getBarlinePubSub()->subscribe([=](const ScoreLocation &location) {
+        editBarline(location);
+    });
+    scorearea->getClefPubSub()->subscribe([=](int system, int staff) {
+        editClef(system, staff);
+    });
 
     myUndoManager->addNewUndoStack();
 

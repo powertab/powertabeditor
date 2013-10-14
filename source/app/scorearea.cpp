@@ -61,8 +61,9 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
 
     myCaretPainter = new CaretPainter(document.getCaret());
 
-    myCaretPainter->subscribeToMovement(boost::bind(&ScoreArea::adjustScroll,
-                                                    this));
+    myCaretPainter->subscribeToMovement([=]() {
+        adjustScroll();
+    });
 
     // Render each system.
     int i = 0;
