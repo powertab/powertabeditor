@@ -260,8 +260,8 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
 
                 auto tabNote = new QGraphicsSimpleTextItem(text);
                 tabNote->setFont(myPlainTextFont);
-                tabNote->setPen(QPen(note.hasProperty(Note::Tied) ?
-                                         Qt::lightGray : Qt::black));
+                tabNote->setBrush(note.hasProperty(Note::Tied) ?
+                                      Qt::lightGray : Qt::black);
 
                 centerItem(tabNote, location,
                            location + layout->getPositionSpacing(),
