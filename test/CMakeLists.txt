@@ -66,6 +66,7 @@ add_executable(pte_tests
     score/test_direction.cpp
     score/test_dynamic.cpp
     score/test_instrument.cpp
+    score/test_irregulargrouping.cpp
     score/test_keysignature.cpp
     score/test_note.cpp
     score/test_player.cpp

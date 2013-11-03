@@ -235,7 +235,10 @@ static void shift(System &system, int position, int offset)
         shift(staff.getDynamics(), position, offset);
 
         for (Voice &voice : staff.getVoices())
+        {
             shift(voice.getPositions(), position, offset);
+            shift(voice.getIrregularGroupings(), position, offset);
+        }
     }
 }
 

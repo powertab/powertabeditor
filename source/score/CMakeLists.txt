@@ -9,6 +9,7 @@ add_library(ptescore
     dynamic.cpp
     generalmidi.cpp
     instrument.cpp
+    irregulargrouping.cpp
     keysignature.cpp
     note.cpp
     player.cpp
@@ -39,6 +40,7 @@ add_library(ptescore
     fileversion.h
     generalmidi.h
     instrument.h
+    irregulargrouping.h
     keysignature.h
     note.h
     player.h

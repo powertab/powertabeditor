@@ -20,6 +20,7 @@
 
 #include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
+#include "irregulargrouping.h"
 #include "position.h"
 #include <vector>
 
@@ -30,6 +31,9 @@ public:
 
     typedef std::vector<Position>::iterator PositionIterator;
     typedef std::vector<Position>::const_iterator PositionConstIterator;
+    typedef std::vector<IrregularGrouping>::iterator IrregularGroupingIterator;
+    typedef std::vector<IrregularGrouping>::const_iterator
+    IrregularGroupingConstIterator;
 
     bool operator==(const Voice &other) const;
 
@@ -46,14 +50,22 @@ public:
     /// Removes the specified position from the voice.
     void removePosition(const Position &position);
 
+    /// Returns the set of irregular groupings in the voice.
+    boost::iterator_range<IrregularGroupingIterator> getIrregularGroupings();
+    /// Returns the set of irregular groupings in the voice.
+    boost::iterator_range<IrregularGroupingConstIterator>
+    getIrregularGroupings() const;
+
 private:
     std::vector<Position> myPositions;
+    std::vector<IrregularGrouping> myIrregularGroupings;
 };
 
 template <class Archive>
 void Voice::serialize(Archive &ar, const FileVersion /*version*/)
 {
     ar("positions", myPositions);
+    ar("irregular_groupings", myIrregularGroupings);
 }
 
 #endif
