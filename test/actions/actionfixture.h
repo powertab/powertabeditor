@@ -31,7 +31,7 @@ struct ActionFixture
         Position position(42);
         position.insertNote(Note(2, 3));
         position.insertNote(Note(5, 1));
-        staff.insertPosition(0, position);
+        staff.getVoices().front().insertPosition(position);
 
         system.insertStaff(staff);
         myScore.insertSystem(system);

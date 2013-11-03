@@ -18,7 +18,7 @@
 #include <catch.hpp>
 
 #include <score/staff.h>
-#include <score/staffutils.h>
+#include <score/voiceutils.h>
 #include "test_serialization.h"
 
 TEST_CASE("Score/Staff/Clef", "")
@@ -33,23 +33,24 @@ TEST_CASE("Score/Staff/Clef", "")
 TEST_CASE("Score/Staff/Positions", "")
 {
     Staff staff;
+    Voice &voice0 = staff.getVoices()[0];
+    Voice &voice1 = staff.getVoices()[1];
 
-    REQUIRE(staff.getVoice(0).size() == 0);
-    REQUIRE(staff.getVoice(1).size() == 0);
-    REQUIRE_THROWS(staff.getVoice(2));
+    REQUIRE(voice0.getPositions().size() == 0);
+    REQUIRE(voice1.getPositions().size() == 0);
 
     Position pos1(3), pos2(5), pos3(1);
 
-    staff.insertPosition(1, pos1);
-    staff.insertPosition(1, pos2);
-    staff.insertPosition(1, pos3);
+    voice1.insertPosition(pos1);
+    voice1.insertPosition(pos2);
+    voice1.insertPosition(pos3);
 
-    REQUIRE(staff.getVoice(1).size() == 3);
-    staff.removePosition(1, pos1);
+    REQUIRE(voice1.getPositions().size() == 3);
+    voice1.removePosition(pos1);
 
-    REQUIRE(staff.getVoice(1).size() == 2);
-    REQUIRE(staff.getVoice(1)[0] == pos3);
-    REQUIRE(staff.getVoice(1)[1] == pos2);
+    REQUIRE(voice1.getPositions().size() == 2);
+    REQUIRE(voice1.getPositions()[0] == pos3);
+    REQUIRE(voice1.getPositions()[1] == pos2);
 }
 
 TEST_CASE("Score/Staff/Dynamics", "")
@@ -73,7 +74,7 @@ TEST_CASE("Score/Staff/Serialization", "")
     Staff staff;
     staff.setViewType(Staff::BassView);
     staff.setClefType(Staff::BassClef);
-    staff.insertPosition(1, Position(42));
+    staff.getVoices()[1].insertPosition(Position(42));
     staff.insertDynamic(Dynamic(11, Dynamic::pp));
     staff.setStringCount(7);
 
@@ -84,18 +85,21 @@ TEST_CASE("Score/Staff/GetPositionsInRange", "")
 {
     Staff staff;
     Position pos1(1), pos4(4), pos6(6), pos7(7), pos8(8);
-    staff.insertPosition(0, pos1);
-    staff.insertPosition(0, pos4);
-    staff.insertPosition(0, pos6);
-    staff.insertPosition(0, pos7);
-    staff.insertPosition(0, pos8);
+    Voice &voice = staff.getVoices()[0];
+    voice.insertPosition(pos1);
+    voice.insertPosition(pos4);
+    voice.insertPosition(pos6);
+    voice.insertPosition(pos7);
+    voice.insertPosition(pos8);
 
-    REQUIRE(std::distance(StaffUtils::getPositionsInRange(staff, 0, 9, 15).begin(),
-                          StaffUtils::getPositionsInRange(staff, 0, 9, 15).end()) == 0);
-    REQUIRE(std::distance(StaffUtils::getPositionsInRange(staff, 0, 8, 10).begin(),
-                          StaffUtils::getPositionsInRange(staff, 0, 8, 10).end()) == 1);
-    REQUIRE(std::distance(StaffUtils::getPositionsInRange(staff, 0, 4, 7).begin(),
-                          StaffUtils::getPositionsInRange(staff, 0, 4, 7).end()) == 3);
+    REQUIRE(std::distance(
+                VoiceUtils::getPositionsInRange(voice, 9, 15).begin(),
+                VoiceUtils::getPositionsInRange(voice, 9, 15).end()) == 0);
+    REQUIRE(std::distance(
+                VoiceUtils::getPositionsInRange(voice, 8, 10).begin(),
+                VoiceUtils::getPositionsInRange(voice, 8, 10).end()) == 1);
+    REQUIRE(std::distance(VoiceUtils::getPositionsInRange(voice, 4, 7).begin(),
+                          VoiceUtils::getPositionsInRange(voice, 4, 7).end()) == 3);
 }
 
 TEST_CASE("Score/Staff/GetNextNote", "")
@@ -107,16 +111,18 @@ TEST_CASE("Score/Staff/GetNextNote", "")
     pos6.insertNote(Note(3, 0));
     pos7.insertNote(Note(4, 2));
     pos8.insertNote(Note(3, 2));
-    staff.insertPosition(0, pos1);
-    staff.insertPosition(0, pos4);
-    staff.insertPosition(0, pos6);
-    staff.insertPosition(0, pos7);
-    staff.insertPosition(0, pos8);
 
-    REQUIRE(!StaffUtils::getNextNote(staff, 0, 6, 5));
-    REQUIRE(StaffUtils::getNextNote(staff, 0, 6, 4));
-    REQUIRE(!StaffUtils::getNextNote(staff, 0, 6, 3));
+    Voice &voice = staff.getVoices()[0];
+    voice.insertPosition(pos1);
+    voice.insertPosition(pos4);
+    voice.insertPosition(pos6);
+    voice.insertPosition(pos7);
+    voice.insertPosition(pos8);
 
-    REQUIRE(!StaffUtils::getPreviousNote(staff, 0, 6, 2));
-    REQUIRE(StaffUtils::getPreviousNote(staff, 0, 6, 3));
+    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 5));
+    REQUIRE(VoiceUtils::getNextNote(voice, 6, 4));
+    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 3));
+
+    REQUIRE(!VoiceUtils::getPreviousNote(voice, 6, 2));
+    REQUIRE(VoiceUtils::getPreviousNote(voice, 6, 3));
 }

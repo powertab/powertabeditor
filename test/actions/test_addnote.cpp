@@ -25,14 +25,15 @@ TEST_CASE("Actions/AddNote", "")
     Score score;
     System system;
     Staff staff;
+    Voice &voice = staff.getVoices().front();
 
     Position rest(7);
     rest.setRest(true);
-    staff.insertPosition(0, rest);
+    voice.insertPosition(rest);
 
     Position pos(8);
     pos.insertNote(Note(1, 13));
-    staff.insertPosition(0, pos);
+    voice.insertPosition(pos);
 
     system.insertStaff(staff);
     score.insertSystem(system);

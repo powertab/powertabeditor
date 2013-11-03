@@ -27,7 +27,7 @@ TEST_CASE("Actions/AddRest", "")
     Staff staff;
     Position pos(7, Position::EighthNote);
     pos.insertNote(Note(1, 2));
-    staff.insertPosition(0, pos);
+    staff.getVoices()[0].insertPosition(pos);
     system.insertStaff(staff);
     score.insertSystem(system);
 

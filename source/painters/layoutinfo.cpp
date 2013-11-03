@@ -20,10 +20,10 @@
 #include <score/keysignature.h>
 #include <score/score.h>
 #include <score/staff.h>
-#include <score/staffutils.h>
 #include <score/system.h>
 #include <score/timesignature.h>
 #include <score/utils.h>
+#include <score/voiceutils.h>
 #include <set>
 
 const double LayoutInfo::STAFF_WIDTH = 750;
@@ -305,9 +305,9 @@ void LayoutInfo::computePositionSpacing()
     // Find the number of positions needed for the system.
     for (const Staff &staff : mySystem.getStaves())
     {
-        for (int i = 0; i < Staff::NUM_VOICES; ++i)
+        for (const Voice &voice : staff.getVoices())
         {
-            for (const Position &position : staff.getVoice(i))
+            for (const Position &position : voice.getPositions())
             {
                 myNumPositions = std::max(myNumPositions,
                                           position.getPosition());
@@ -325,9 +325,9 @@ void LayoutInfo::computePositionSpacing()
 
 void LayoutInfo::calculateTabStaffBelowLayout()
 {
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : myStaff.getVoices())
     {
-        for (const Position &pos : myStaff.getVoice(voice))
+        for (const Position &pos : voice.getPositions())
         {
             int height = 1;
             const int position = pos.getPosition();
@@ -362,7 +362,7 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                                         position, voice, width, height++));
             }
 
-            if (StaffUtils::hasNoteWithHammerOn(myStaff, voice, pos) ||
+            if (VoiceUtils::hasNoteWithHammerOn(voice, pos) ||
                 Utils::hasNoteWithProperty(pos, Note::HammerOnFromNowhere))
             {
                 myTabStaffBelowSymbols.push_back(
@@ -370,7 +370,7 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                                         voice, width, height++));
             }
             else if ((Utils::hasNoteWithProperty(pos, Note::HammerOnOrPullOff) &&
-                      !StaffUtils::hasNoteWithHammerOn(myStaff, voice, pos)) ||
+                      !VoiceUtils::hasNoteWithHammerOn(voice, pos)) ||
                      Utils::hasNoteWithProperty(pos, Note::PullOffToNowhere))
             {
                 myTabStaffBelowSymbols.push_back(
@@ -434,12 +434,12 @@ void LayoutInfo::calculateStdNotationStaffBelowLayout()
 void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
                                              bool aboveStaff)
 {
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : myStaff.getVoices())
     {
         SymbolGroup::SymbolType currentType = SymbolGroup::NoSymbol;
         int leftPos = 0;
 
-        for (const Position &pos : myStaff.getVoice(voice))
+        for (const Position &pos : voice.getPositions())
         {
             SymbolGroup::SymbolType type = SymbolGroup::NoSymbol;
 
@@ -458,7 +458,7 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
                     type = SymbolGroup::Octave15mb;
             }
 
-            const bool endOfStaff = (pos == myStaff.getVoice(voice).back());
+            const bool endOfStaff = (pos == voice.getPositions().back());
 
             // If we've reached the end of a group or the end of the staff,
             // record the group.
@@ -517,9 +517,9 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     std::vector<SymbolSet> symbolSets(getNumPositions() + 1);
 
     // Add symbols from each position.
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : myStaff.getVoices())
     {
-        for (const Position &pos : myStaff.getVoice(voice))
+        for (const Position &pos : voice.getPositions())
         {
             SymbolSet &set = symbolSets.at(pos.getPosition());
 
@@ -612,7 +612,8 @@ void LayoutInfo::calculateTabStaffAboveLayout()
                 // swells.
 
                 myTabStaffAboveSymbols.push_back(
-                    SymbolGroup(symbol, leftPos, 0, rightX - leftX, height));
+                    SymbolGroup(symbol, leftPos, myStaff.getVoices()[0],
+                                rightX - leftX, height));
             }
             // Start a new group.
             else if (hasSymbol && !inGroup)
@@ -631,7 +632,8 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             const double rightX = getPositionX(rightPos);
             const int height = addToHeightMap(heightMap, leftPos, rightPos, 1);
             myTabStaffAboveSymbols.push_back(
-                        SymbolGroup(symbol, leftPos, 0, rightX - leftX, height));
+                SymbolGroup(symbol, leftPos, myStaff.getVoices()[0],
+                            rightX - leftX, height));
         }
     }
 
@@ -651,7 +653,7 @@ int LayoutInfo::getMaxHeight(const std::vector<SymbolGroup> &groups)
 }
 
 SymbolGroup::SymbolGroup(SymbolGroup::SymbolType symbol, int position,
-                         int voice, double width, int height)
+                         const Voice &voice, double width, int height)
     : mySymbolType(symbol),
       myPosition(position),
       myVoice(voice),
@@ -705,7 +707,7 @@ int SymbolGroup::getPosition() const
     return myPosition;
 }
 
-int SymbolGroup::getVoice() const
+const Voice &SymbolGroup::getVoice() const
 {
     return myVoice;
 }

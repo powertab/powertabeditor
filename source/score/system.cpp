@@ -234,8 +234,8 @@ static void shift(System &system, int position, int offset)
     {
         shift(staff.getDynamics(), position, offset);
 
-        for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
-            shift(staff.getVoice(voice), position, offset);
+        for (Voice &voice : staff.getVoices())
+            shift(voice.getPositions(), position, offset);
     }
 }
 

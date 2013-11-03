@@ -33,9 +33,9 @@
 #include <QSettings>
 #include <score/generalmidi.h>
 #include <score/score.h>
-#include <score/staffutils.h>
 #include <score/systemlocation.h>
 #include <score/utils.h>
+#include <score/voiceutils.h>
 
 static const int METRONOME_CHANNEL = 15;
 
@@ -115,12 +115,12 @@ void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
             int staffIndex = 0;
             for (const Staff &staff : system.getStaves())
             {
-                for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+                for (const Voice &voice : staff.getVoices())
                 {
-                    const double endTime = generateEventsForBar(system,
-                                systemIndex, staff, staffIndex, voice,
-                                leftBar.getPosition(), rightBar->getPosition(),
-                                barStartTime, eventList);
+                    const double endTime = generateEventsForBar(
+                        system, systemIndex, staff, staffIndex, voice,
+                        leftBar.getPosition(), rightBar->getPosition(),
+                        barStartTime, eventList);
 
                     // Force playback to be synchronized at each bar in case
                     // some staves have too many or too few notes.
@@ -171,17 +171,18 @@ static PlayNoteEvent::VelocityType getNoteVelocity(const Position &pos,
         return PlayNoteEvent::DefaultVelocity;
 }
 
-double MidiPlayer::generateEventsForBar(
-        const System &system, int systemIndex, const Staff &staff,
-        int staffIndex, int voice, int leftPos, int rightPos,
-        const double barStartTime, boost::ptr_list<MidiEvent> &eventList)
+double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
+                                        const Staff &staff, int staffIndex,
+                                        const Voice &voice, int leftPos,
+                                        int rightPos, const double barStartTime,
+                                        boost::ptr_list<MidiEvent> &eventList)
 {
     myActivePitchBend = BendEvent::DEFAULT_BEND;
     double startTime = barStartTime;
     bool letRingActive = false;
 
     for (const Position &pos :
-         StaffUtils::getPositionsInRange(staff, voice, leftPos, rightPos))
+         VoiceUtils::getPositionsInRange(voice, leftPos, rightPos))
     {
         const int position = pos.getPosition();
         const double currentTempo = getCurrentTempo(systemIndex, position);
@@ -205,8 +206,8 @@ double MidiPlayer::generateEventsForBar(
             // of time signature.
             if (pos.getDurationType() == Position::WholeNote)
             {
-                duration = getWholeRestDuration(system, systemIndex, staff,
-                                                voice, pos, duration);
+                duration = getWholeRestDuration(system, systemIndex, voice, pos,
+                                                duration);
 
                 // Extend for multi-bar rests.
                 if (pos.hasMultiBarRest())
@@ -310,7 +311,7 @@ double MidiPlayer::generateEventsForBar(
         }
         // Make sure that we end the let ring after the last position in the bar.
         else if (letRingActive &&
-                 (&pos == &StaffUtils::getPositionsInRange(staff, voice, leftPos,
+                 (&pos == &VoiceUtils::getPositionsInRange(voice, leftPos,
                                                            rightPos).back()))
         {
             for (const ActivePlayer &player : activePlayers)
@@ -367,8 +368,8 @@ double MidiPlayer::generateEventsForBar(
             // harmonics.
             else
             {
-                const Note *prev = StaffUtils::getPreviousNote(
-                            staff, voice, position, note.getString());
+                const Note *prev = VoiceUtils::getPreviousNote(
+                    voice, position, note.getString());
 
                 if (prev)
                     pitch = getActualNotePitch(*prev, tuning);
@@ -456,8 +457,8 @@ double MidiPlayer::generateEventsForBar(
             bool tiedToNextNote = false;
             // Check if this note is tied to the next note.
             {
-                const Note *next = StaffUtils::getNextNote(
-                            staff, voice, position, note.getString());
+                const Note *next =
+                    VoiceUtils::getNextNote(voice, position, note.getString());
 
                 if (next && next->hasProperty(Note::Tied))
                     tiedToNextNote = true;
@@ -677,8 +678,7 @@ double MidiPlayer::calculateNoteDuration(int system, const Position &pos) const
 }
 
 double MidiPlayer::getWholeRestDuration(const System &system, int systemIndex,
-                                        const Staff &staff, int voice,
-                                        const Position &pos,
+                                        const Voice &voice, const Position &pos,
                                         double originalDuration) const
 {
     const Barline *prevBar = system.getPreviousBarline(pos.getPosition());
@@ -693,8 +693,8 @@ double MidiPlayer::getWholeRestDuration(const System &system, int systemIndex,
     // regular rest.
     for (int i = prevBar->getPosition(); i < nextBar->getPosition(); ++i)
     {
-        const Position *otherPos = ScoreUtils::findByPosition(
-                    staff.getVoice(voice), i);
+        const Position *otherPos =
+            ScoreUtils::findByPosition(voice.getPositions(), i);
 
         if (otherPos && otherPos != &pos)
             return originalDuration;
@@ -736,11 +736,10 @@ double MidiPlayer::generateMetronome(const System &system, int systemIndex,
     const Barline *nextBar = system.getNextBarline(barline.getPosition());
     for (const Staff &staff : system.getStaves())
     {
-        for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+        for (const Voice &voice : staff.getVoices())
         {
-            for (const Position &pos : StaffUtils::getPositionsInRange(
-                     staff, voice, barline.getPosition(),
-                     nextBar->getPosition()))
+            for (const Position &pos : VoiceUtils::getPositionsInRange(
+                     voice, barline.getPosition(), nextBar->getPosition()))
             {
                 if (pos.hasMultiBarRest())
                 {

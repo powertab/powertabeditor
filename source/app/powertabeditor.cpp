@@ -112,8 +112,8 @@
 #include <QScrollArea>
 #include <QSettings>
 
-#include <score/staffutils.h>
 #include <score/utils.h>
+#include <score/voiceutils.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
@@ -823,8 +823,7 @@ void PowerTabEditor::removeDot()
 void PowerTabEditor::editTiedNote()
 {
     ScoreLocation &location = getLocation();
-    const Staff &staff = location.getStaff();
-    const int voice = location.getVoice();
+    const Voice &voice = location.getVoice();
     std::vector<Position *> positions = location.getSelectedPositions();
 
     // Check that all selected notes can be tied.
@@ -832,7 +831,7 @@ void PowerTabEditor::editTiedNote()
     {
         for (const Note &note : pos->getNotes())
         {
-            if (!StaffUtils::canTieNote(staff, voice, pos->getPosition(), note))
+            if (!VoiceUtils::canTieNote(voice, pos->getPosition(), note))
             {
                 myTieCommand->setChecked(false);
                 return;
@@ -1012,15 +1011,14 @@ void PowerTabEditor::editDynamic()
 void PowerTabEditor::editHammerPull()
 {
     ScoreLocation &location = getLocation();
-    const Staff &staff = location.getStaff();
-    const int voice = location.getVoice();
+    const Voice &voice = location.getVoice();
     const int position = location.getPositionIndex();
     const Note *note = location.getNote();
     if (!note)
         return;
 
     // TODO - support editing groups of notes.
-    if (StaffUtils::canHammerOnOrPullOff(staff, voice, position, *note))
+    if (VoiceUtils::canHammerOnOrPullOff(voice, position, *note))
         editSimpleNoteProperty(myHammerPullCommand, Note::HammerOnOrPullOff);
     else
         myHammerPullCommand->setChecked(false);

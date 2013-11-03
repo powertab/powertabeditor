@@ -37,8 +37,8 @@ void AddNote::redo()
     // Add a new position if necessary.
     if (!pos)
     {
-        myLocation.getStaff().insertPosition(myLocation.getVoice(),
-                Position(myLocation.getPositionIndex(), myDuration));
+        myLocation.getVoice().insertPosition(
+            Position(myLocation.getPositionIndex(), myDuration));
         pos = myLocation.getPosition();
     }
 
@@ -49,12 +49,7 @@ void AddNote::redo()
 void AddNote::undo()
 {
     if (!myOriginalPosition)
-    {
-        myLocation.getStaff().removePosition(myLocation.getVoice(),
-                                             *myLocation.getPosition());
-    }
+        myLocation.getVoice().removePosition(*myLocation.getPosition());
     else
-    {
         *myLocation.getPosition() = *myOriginalPosition;
-    }
 }

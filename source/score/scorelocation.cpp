@@ -28,7 +28,7 @@ ScoreLocation::ScoreLocation(const Score &score, int system, int staff,
       myStaffIndex(staff),
       myPositionIndex(position),
       mySelectionStart(position),
-      myVoice(voice),
+      myVoiceIndex(voice),
       myString(string)
 {
 }
@@ -41,7 +41,7 @@ ScoreLocation::ScoreLocation(Score &score, int system, int staff, int position,
       myStaffIndex(staff),
       myPositionIndex(position),
       mySelectionStart(position),
-      myVoice(voice),
+      myVoiceIndex(voice),
       myString(string)
 {
 }
@@ -68,7 +68,7 @@ void ScoreLocation::setPositionIndex(int position)
 
 const Position *ScoreLocation::getPosition() const
 {
-    for (const Position &pos : getStaff().getVoice(myVoice))
+    for (const Position &pos : getVoice().getPositions())
     {
         if (pos.getPosition() == myPositionIndex)
             return &pos;
@@ -104,13 +104,23 @@ std::vector<Position *> ScoreLocation::getSelectedPositions()
     const int min = std::min(myPositionIndex, mySelectionStart);
     const int max = std::max(myPositionIndex, mySelectionStart);
 
-    for (Position &pos : getStaff().getVoice(myVoice))
+    for (Position &pos : getVoice().getPositions())
     {
         if (pos.getPosition() >= min && pos.getPosition() <= max)
             positions.push_back(&pos);
     }
 
     return positions;
+}
+
+const Voice &ScoreLocation::getVoice() const
+{
+    return getStaff().getVoices()[myVoiceIndex];
+}
+
+Voice &ScoreLocation::getVoice()
+{
+    return getStaff().getVoices()[myVoiceIndex];
 }
 
 int ScoreLocation::getStaffIndex() const
@@ -228,14 +238,9 @@ std::vector<Note *> ScoreLocation::getSelectedNotes()
     return notes;
 }
 
-int ScoreLocation::getVoice() const
+void ScoreLocation::setVoiceIndex(int voice)
 {
-    return myVoice;
-}
-
-void ScoreLocation::setVoice(int voice)
-{
-    myVoice = voice;
+    myVoiceIndex = voice;
 }
 
 std::ostream &operator <<(std::ostream &os, const ScoreLocation &location)

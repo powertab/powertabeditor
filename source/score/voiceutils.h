@@ -15,13 +15,14 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SCORE_STAFFUTILS_H
-#define SCORE_STAFFUTILS_H
+#ifndef SCORE_VOICEUTILS_H
+#define SCORE_VOICEUTILS_H
 
 #include <boost/range/adaptor/filtered.hpp>
-#include "staff.h"
+#include "voice.h"
 
-namespace StaffUtils {
+namespace VoiceUtils
+{
 
 struct InPositionRange
 {
@@ -34,36 +35,33 @@ private:
     const int myRight;
 };
 
-typedef boost::filtered_range<InPositionRange,
-                              boost::iterator_range<Staff::VoiceConstIterator> >
-        FilteredVoiceConstIterator;
+typedef boost::filtered_range<
+    InPositionRange, boost::iterator_range<Voice::PositionConstIterator>>
+FilteredPositionConstIterator;
 
 /// Returns the specified range of positions in a voice.
-FilteredVoiceConstIterator getPositionsInRange(const Staff &staff, int voice,
-                                               int left, int right);
+FilteredPositionConstIterator getPositionsInRange(const Voice &voice, int left,
+                                                  int right);
 
 /// Returns the next position in the staff, if it exists.
-const Position *getNextPosition(const Staff &staff, int voice, int position);
+const Position *getNextPosition(const Voice &voice, int position);
 
 /// Finds the next note in the staff on the given string.
-const Note *getNextNote(const Staff &staff, int voice, int position,
-                        int string);
+const Note *getNextNote(const Voice &voice, int position, int string);
 
 /// Finds the previous note in the staff on the given string.
-const Note *getPreviousNote(const Staff &staff, int voice, int position,
-                            int string);
+const Note *getPreviousNote(const Voice &voice, int position, int string);
 
 /// Determines whether the specified note can be tied to the previous note.
 /// The previous position must have a note at the same string and fret.
-bool canTieNote(const Staff &staff, int voice, int position, const Note &note);
+bool canTieNote(const Voice &voice, int position, const Note &note);
 
 /// Determines whether the specified note can have a hammeron or pulloff.
 /// The next position must have a note at the same string and a different fret.
-bool canHammerOnOrPullOff(const Staff &staff, int voice, int position,
-                          const Note &note);
+bool canHammerOnOrPullOff(const Voice &voice, int position, const Note &note);
 
 /// Determines whether the position contains a note with a hammeron.
-bool hasNoteWithHammerOn(const Staff &staff, int voice, const Position &pos);
+bool hasNoteWithHammerOn(const Voice &voice, const Position &pos);
 }
 
 #endif

@@ -383,7 +383,7 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
                     pos.setRest();
 
                 pos.setPosition(currentPos++);
-                staff.insertPosition(0, pos);
+                staff.getVoices()[0].insertPosition(pos);
             }
 
             nextPos = std::max(nextPos, currentPos);

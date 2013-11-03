@@ -203,12 +203,12 @@ TEST_CASE("Formats/PowerTabOldImport/Positions", "")
 
     const System &system = score.getSystems()[0];
     const Staff &staff = system.getStaves()[0];
-    const int voice = 0;
+    const Voice &voice = staff.getVoices().front();
 
-    REQUIRE(staff.getVoice(voice).size() == 3);
-    const Position &pos1 = staff.getVoice(voice)[0];
-    const Position &pos2 = staff.getVoice(voice)[1];
-    const Position &pos3 = staff.getVoice(voice)[2];
+    REQUIRE(voice.getPositions().size() == 3);
+    const Position &pos1 = voice.getPositions()[0];
+    const Position &pos2 = voice.getPositions()[1];
+    const Position &pos3 = voice.getPositions()[2];
 
     REQUIRE(pos1.getPosition() == 2);
     REQUIRE(pos1.getDurationType() == Position::HalfNote);
@@ -234,8 +234,9 @@ TEST_CASE("Formats/PowerTabOldImport/Notes", "")
 
     const System &system = score.getSystems()[0];
     const Staff &staff = system.getStaves()[0];
-    const Note &note1 = staff.getVoice(0)[0].getNotes()[0];
-    const Note &note2 = staff.getVoice(0)[1].getNotes()[0];
+    const Voice &voice = staff.getVoices().front();
+    const Note &note1 = voice.getPositions()[0].getNotes()[0];
+    const Note &note2 = voice.getPositions()[1].getNotes()[0];
 
     REQUIRE(note1.getFretNumber() == 3);
     REQUIRE(note1.getString() == 3);

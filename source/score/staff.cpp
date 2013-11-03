@@ -72,25 +72,14 @@ void Staff::setStringCount(int count)
     myStringCount = count;
 }
 
-boost::iterator_range<Staff::VoiceIterator> Staff::getVoice(int voice)
+boost::iterator_range<Staff::VoiceIterator> Staff::getVoices()
 {
-    return boost::make_iterator_range(myVoices.at(voice));
+    return boost::make_iterator_range(myVoices);
 }
 
-boost::iterator_range<Staff::VoiceConstIterator> Staff::getVoice(
-        int voice) const
+boost::iterator_range<Staff::VoiceConstIterator> Staff::getVoices() const
 {
-    return boost::make_iterator_range(myVoices.at(voice));
-}
-
-void Staff::insertPosition(int voice, const Position &position)
-{
-    ScoreUtils::insertObject(myVoices.at(voice), position);
-}
-
-void Staff::removePosition(int voice, const Position &position)
-{
-    ScoreUtils::removeObject(myVoices.at(voice), position);
+    return boost::make_iterator_range(myVoices);
 }
 
 boost::iterator_range<Staff::DynamicIterator> Staff::getDynamics()

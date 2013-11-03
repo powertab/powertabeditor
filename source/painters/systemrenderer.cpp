@@ -37,9 +37,9 @@
 #include <QGraphicsItem>
 #include <QPen>
 #include <score/scorelocation.h>
-#include <score/staffutils.h>
 #include <score/system.h>
 #include <score/utils.h>
+#include <score/voiceutils.h>
 
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
     : myScoreArea(scoreArea),
@@ -110,7 +110,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
         drawSymbolsAboveTabStaff(staff, *layout);
-        drawSymbolsBelowTabStaff(staff, *layout);
+        drawSymbolsBelowTabStaff(*layout);
 
         drawPlayerChanges(system, i, *layout);
         drawStdNotation(system, staff, *layout);
@@ -244,9 +244,9 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 void SystemRenderer::drawTabNotes(const Staff &staff,
                                   const LayoutConstPtr &layout)
 {
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : staff.getVoices())
     {
-        for (const Position &pos : staff.getVoice(voice))
+        for (const Position &pos : voice.getPositions())
         {
             if (pos.isRest() || pos.getNotes().empty())
                 continue;
@@ -538,11 +538,11 @@ void SystemRenderer::drawRhythmSlashes()
 
 void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
 {
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : staff.getVoices())
     {
         std::map<int, int> arcs;
 
-        for (const Position &pos : staff.getVoice(voice))
+        for (const Position &pos : voice.getPositions())
         {
             const int position = pos.getPosition();
 
@@ -642,11 +642,11 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
 
 void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
 {
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : staff.getVoices())
     {
         for (int string = 0; string < staff.getStringCount(); ++string)
         {
-            for (const Position &pos : staff.getVoice(voice))
+            for (const Position &pos : voice.getPositions())
             {
                 const Note *note = Utils::findByString(pos, string);
                 if (!note)
@@ -664,14 +664,14 @@ void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
                     if (note->hasProperty(Note::ShiftSlide) ||
                             note->hasProperty(Note::LegatoSlide))
                     {
-                        const Note *nextNote = StaffUtils::getNextNote(
-                                    staff, voice, pos.getPosition(), string);
+                        const Note *nextNote = VoiceUtils::getNextNote(
+                            voice, pos.getPosition(), string);
                         slideUp = nextNote && nextNote->getFretNumber() >
                                 note->getFretNumber();
                     }
 
-                    const Position *nextPos = StaffUtils::getNextPosition(
-                                staff, voice, pos.getPosition());
+                    const Position *nextPos =
+                        VoiceUtils::getNextPosition(voice, pos.getPosition());
 
                     drawSlide(layout, string, slideUp, pos.getPosition(),
                               nextPos ? nextPos->getPosition() :
@@ -724,8 +724,7 @@ void SystemRenderer::drawSlide(const LayoutInfo &layout, int string,
                   y + height / 2);
 }
 
-void SystemRenderer::drawSymbolsBelowTabStaff(const Staff &staff,
-                                              const LayoutInfo &layout)
+void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
 {
     for (const SymbolGroup &symbolGroup : layout.getTabStaffBelowSymbols())
     {
@@ -753,9 +752,9 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const Staff &staff,
             break;
         case SymbolGroup::ArtificialHarmonic:
         {
-            const Position *pos =
-                ScoreUtils::findByPosition(staff.getVoice(symbolGroup.getVoice()),
-                                           symbolGroup.getPosition());
+            const Position *pos = ScoreUtils::findByPosition(
+                symbolGroup.getVoice().getPositions(),
+                symbolGroup.getPosition());
             Q_ASSERT(pos);
             renderedSymbol = createArtificialHarmonicText(*pos);
             break;
@@ -1136,9 +1135,9 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                                      const LayoutInfo &layout)
 {
     // Draw rests.
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : staff.getVoices())
     {
-        for (const Position &pos : staff.getVoice(voice))
+        for (const Position &pos : voice.getPositions())
         {
             const double x = layout.getPositionX(pos.getPosition());
 

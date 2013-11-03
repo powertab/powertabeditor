@@ -108,7 +108,8 @@ TEST_CASE_METHOD(Gp4Fixture,
                  "Formats/GuitarPro4Import/NoteProperties/PositionEffects", "")
 {
     // Check that the first position is tremolo picked and is tapped.
-    const Position &pos = score.getSystems()[0].getStaves()[0].getVoice(0)[0];
+    const Staff &staff = score.getSystems()[0].getStaves()[0];
+    const Position &pos = staff.getVoices()[0].getPositions()[0];
 
     REQUIRE(pos.hasProperty(Position::TremoloPicking));
     REQUIRE(pos.hasProperty(Position::Tap));
@@ -119,11 +120,11 @@ TEST_CASE_METHOD(Gp4Fixture,
 TEST_CASE_METHOD(Gp4Fixture,
                  "Formats/GuitarPro4Import/NoteProperties/NoteEffects", "")
 {
-    const Staff &staff = score.getSystems()[0].getStaves()[0];
-    const Note &note1 = staff.getVoice(0)[1].getNotes()[0];
+    const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
+    const Note &note1 = voice.getPositions()[1].getNotes()[0];
 
     REQUIRE(note1.getTrilledFret() == 1);
 
-    const Note &note2 = staff.getVoice(0)[3].getNotes()[0];
+    const Note &note2 = voice.getPositions()[3].getNotes()[0];
     REQUIRE(note2.hasProperty(Note::HammerOnOrPullOff));
 }

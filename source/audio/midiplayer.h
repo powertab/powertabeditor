@@ -32,6 +32,7 @@ class Staff;
 class System;
 class TempoMarker;
 class Tuning;
+class Voice;
 
 class MidiPlayer : public QThread
 {
@@ -63,10 +64,10 @@ private:
     /// Generates a list of all notes in the given bar.
     /// @returns The timestamp of the end of the last event in the bar.
     double generateEventsForBar(const System &system, int systemIndex,
-                                const Staff &staff, int staffIndex, int voice,
-                                int leftPos, int rightPos,
+                                const Staff &staff, int staffIndex,
+                                const Voice &voice, int leftPos, int rightPos,
                                 const double barStartTime,
-                                boost::ptr_list<MidiEvent>& eventList);
+                                boost::ptr_list<MidiEvent> &eventList);
 
     /// Returns the current tempo (duration of a quarter note in milliseconds).
     double getCurrentTempo(int system, int position) const;
@@ -80,8 +81,7 @@ private:
     /// Computes the duration of a whole rest. If it's the only rest/note in the
     /// bar, then it lasts for the entire bar instead of 4 beats.
     double getWholeRestDuration(const System &system, int systemIndex,
-                                const Staff &staff, int voice,
-                                const Position &pos,
+                                const Voice &voice, const Position &pos,
                                 double originalDuration) const;
 
     /// Computes the pitch of a note, including things like harmonics.

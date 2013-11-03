@@ -25,8 +25,8 @@
 #include <QFontMetricsF>
 #include <score/generalmidi.h>
 #include <score/score.h>
-#include <score/staffutils.h>
 #include <score/tuning.h>
+#include <score/voiceutils.h>
 #include <unordered_map>
 
 /// Maps notes to their position on the staff (relative to the top line),
@@ -88,7 +88,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
     QFont musicFont(MusicFont().getFont());
     QFontMetricsF fm(musicFont);
 
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (const Voice &voice : staff.getVoices())
     {
         for (const Barline &bar : system.getBarlines())
         {
@@ -101,8 +101,8 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
             // Store the current accidental for each line/space in the staff.
             std::map<int, AccidentalType> accidentals;
 
-            for (const Position &pos : StaffUtils::getPositionsInRange(
-                     staff, voice, bar.getPosition(), nextBar->getPosition()))
+            for (const Position &pos : VoiceUtils::getPositionsInRange(
+                     voice, bar.getPosition(), nextBar->getPosition()))
             {
                 Q_ASSERT(pos.getPosition() == 0 ||
                          pos.getPosition() != bar.getPosition());

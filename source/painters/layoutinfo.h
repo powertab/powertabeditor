@@ -30,6 +30,7 @@ class Score;
 class Staff;
 class System;
 class TimeSignature;
+class Voice;
 
 class SymbolGroup
 {
@@ -66,12 +67,12 @@ public:
         ArtificialHarmonic // Note that this also appears below the tab staff.
     };
 
-    SymbolGroup(SymbolType symbol, int position, int voice,
+    SymbolGroup(SymbolType symbol, int position, const Voice &voice,
                 double width, int height);
 
     SymbolType getSymbolType() const;
     int getPosition() const;
-    int getVoice() const;
+    const Voice &getVoice() const;
     double getWidth() const;
     int getHeight() const;
 
@@ -81,7 +82,7 @@ private:
     /// First position of the symbol group.
     int myPosition;
     /// Source voice of the symbol.
-    int myVoice;
+    const Voice &myVoice;
     /// Width of the symbol group.
     double myWidth;
     /// Offset from the staff.

@@ -20,12 +20,13 @@ add_library(ptescore
     scorelocation.cpp
     serialization.cpp
     staff.cpp
-    staffutils.cpp
     system.cpp
     systemlocation.cpp
     tempomarker.cpp
     timesignature.cpp
     tuning.cpp
+    voice.cpp
+    voiceutils.cpp
 
     # Add header files here so that they show up in the generated projects for
     # Visual Studio, QtCreator, etc.
@@ -49,11 +50,12 @@ add_library(ptescore
     scorelocation.h
     serialization.h
     staff.h
-    staffutils.h
     system.h
     systemlocation.h
     tempomarker.h
     timesignature.h
     tuning.h
     utils.h
+    voice.h
+    voiceutils.h
 )

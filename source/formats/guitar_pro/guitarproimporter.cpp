@@ -474,7 +474,7 @@ void GuitarProImporter::readSystems(Gp::InputStream &stream, Score &score,
             {
                 Position pos = readBeat(stream, tuning);
                 pos.setPosition(currentPos++);
-                staff.insertPosition(0, pos);
+                staff.getVoices()[0].insertPosition(pos);
             }
 
             // TODO - support second voice for GP5.

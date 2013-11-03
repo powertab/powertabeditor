@@ -27,6 +27,7 @@ class Position;
 class Score;
 class Staff;
 class System;
+class Voice;
 
 class ScoreLocation
 {
@@ -66,8 +67,9 @@ public:
     bool hasSelection() const;
     std::vector<Position *> getSelectedPositions();
 
-    int getVoice() const;
-    void setVoice(int voice);
+    const Voice &getVoice() const;
+    Voice &getVoice();
+    void setVoiceIndex(int voice);
 
     int getString() const;
     void setString(int string);
@@ -86,7 +88,7 @@ private:
     /// The initial location of the selection. This isn't necessarily less than
     /// the myPositionIndex value.
     int mySelectionStart;
-    int myVoice;
+    int myVoiceIndex;
     int myString;
 };
 

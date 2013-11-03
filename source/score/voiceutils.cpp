@@ -15,16 +15,17 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "staffutils.h"
+#include "voiceutils.h"
 
 #include <boost/range/adaptor/reversed.hpp>
 
-namespace StaffUtils {
-
-FilteredVoiceConstIterator getPositionsInRange(const Staff &staff, int voice,
-                                               int left, int right)
+namespace VoiceUtils
 {
-    auto range = staff.getVoice(voice);
+
+FilteredPositionConstIterator getPositionsInRange(const Voice &voice, int left,
+                                                  int right)
+{
+    auto range = voice.getPositions();
     return boost::adaptors::filter(range, InPositionRange(left, right));
 }
 
@@ -33,14 +34,14 @@ InPositionRange::InPositionRange(int left, int right)
 {
 }
 
-bool InPositionRange::operator ()(const Position &pos) const
+bool InPositionRange::operator()(const Position &pos) const
 {
     return pos.getPosition() >= myLeft && pos.getPosition() <= myRight;
 }
 
-const Position *getNextPosition(const Staff &staff, int voice, int position)
+const Position *getNextPosition(const Voice &voice, int position)
 {
-    for (const Position &pos : staff.getVoice(voice))
+    for (const Position &pos : voice.getPositions())
     {
         if (pos.getPosition() > position)
             return &pos;
@@ -49,19 +50,17 @@ const Position *getNextPosition(const Staff &staff, int voice, int position)
     return nullptr;
 }
 
-const Note *getNextNote(const Staff &staff, int voice, int position,
-                        int string)
+const Note *getNextNote(const Voice &voice, int position, int string)
 {
-    const Position *nextPos = getNextPosition(staff, voice, position);
+    const Position *nextPos = getNextPosition(voice, position);
     return nextPos ? Utils::findByString(*nextPos, string) : nullptr;
 }
 
-const Note *getPreviousNote(const Staff &staff, int voice, int position,
-                            int string)
+const Note *getPreviousNote(const Voice &voice, int position, int string)
 {
     const Note *note = nullptr;
 
-    for (const Position &pos : boost::adaptors::reverse(staff.getVoice(voice)))
+    for (const Position &pos : boost::adaptors::reverse(voice.getPositions()))
     {
         if (pos.getPosition() < position)
         {
@@ -73,33 +72,30 @@ const Note *getPreviousNote(const Staff &staff, int voice, int position,
     return note;
 }
 
-bool canTieNote(const Staff &staff, int voice, int position, const Note &note)
+bool canTieNote(const Voice &voice, int position, const Note &note)
 {
-    const Note *prevNote = getPreviousNote(staff, voice, position,
-                                           note.getString());
+    const Note *prevNote = getPreviousNote(voice, position, note.getString());
     return prevNote && prevNote->getFretNumber() == note.getFretNumber();
 }
 
-bool canHammerOnOrPullOff(const Staff &staff, int voice, int position,
-                          const Note &note)
+bool canHammerOnOrPullOff(const Voice &voice, int position, const Note &note)
 {
-    const Note *nextNote = getNextNote(staff, voice, position, note.getString());
+    const Note *nextNote = getNextNote(voice, position, note.getString());
     return nextNote && nextNote->getFretNumber() != note.getFretNumber();
 }
 
-bool hasNoteWithHammerOn(const Staff &staff, int voice, const Position &pos)
+bool hasNoteWithHammerOn(const Voice &voice, const Position &pos)
 {
     for (const Note &note : pos.getNotes())
     {
         if (note.hasProperty(Note::HammerOnOrPullOff))
         {
-            const Note *nextNote = getNextNote(staff, voice, pos.getPosition(),
-                                               note.getString());
+            const Note *nextNote =
+                getNextNote(voice, pos.getPosition(), note.getString());
             return nextNote && nextNote->getFretNumber() > note.getFretNumber();
         }
     }
 
     return false;
 }
-
 }

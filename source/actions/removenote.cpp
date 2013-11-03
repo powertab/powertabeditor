@@ -35,18 +35,13 @@ void RemoveNote::redo()
     pos->removeNote(*myLocation.getNote());
 
     if (pos->getNotes().empty())
-        myLocation.getStaff().removePosition(myLocation.getVoice(), *pos);
+        myLocation.getVoice().removePosition(*pos);
 }
 
 void RemoveNote::undo()
 {
     if (!myLocation.getPosition())
-    {
-        myLocation.getStaff().insertPosition(myLocation.getVoice(),
-                                             myOriginalPosition);
-    }
+        myLocation.getVoice().insertPosition(myOriginalPosition);
     else
-    {
         *myLocation.getPosition() = myOriginalPosition;
-    }
 }

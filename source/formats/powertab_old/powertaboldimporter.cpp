@@ -564,7 +564,7 @@ int PowerTabOldImporter::convert(
         {
             Position position;
             convert(*oldStaff.GetPosition(voice, i), position);
-            staff.insertPosition(voice, position);
+            staff.getVoices()[voice].insertPosition(position);
             lastPosition = std::max(position.getPosition(), lastPosition);
         }
     }

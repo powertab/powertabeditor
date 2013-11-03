@@ -81,7 +81,7 @@ private:
 
     /// Draws the text symbols that appear below the tab staff
     /// (hammerons, slides, etc).
-    void drawSymbolsBelowTabStaff(const Staff &staff, const LayoutInfo &layout);
+    void drawSymbolsBelowTabStaff(const LayoutInfo &layout);
 
     /// Creates a pick stroke symbol using the given character.
     QGraphicsItem *createPickStroke(const QString &text);

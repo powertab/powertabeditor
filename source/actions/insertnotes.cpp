@@ -17,8 +17,8 @@
   
 #include "insertnotes.h"
 
-#include <score/staffutils.h>
 #include <score/system.h>
+#include <score/voiceutils.h>
 
 InsertNotes::InsertNotes(const ScoreLocation &location,
                          const std::vector<Position> &positions)
@@ -38,10 +38,8 @@ InsertNotes::InsertNotes(const ScoreLocation &location,
     const int endPos = myNewPositions.back().getPosition();
 
     const System &system = location.getSystem();
-    const Staff &staff = location.getStaff();
-    const int voice = location.getVoice();
-
-    const Position *nextPos = StaffUtils::getNextPosition(staff, voice, startPos - 1);
+    const Position *nextPos =
+        VoiceUtils::getNextPosition(location.getVoice(), startPos - 1);
     const Barline *nextBar = system.getNextBarline(startPos - 1);
 
     // Check for any existing notes or barlines that will conflict with the
@@ -82,14 +80,14 @@ void InsertNotes::redo()
 
     // Insert the new notes.
     for (const Position &pos : myNewPositions)
-        myLocation.getStaff().insertPosition(myLocation.getVoice(), pos);
+        myLocation.getVoice().insertPosition(pos);
 }
 
 void InsertNotes::undo()
 {
     // Remove the notes that were added.
     for (const Position &pos : myNewPositions)
-        myLocation.getStaff().removePosition(myLocation.getVoice(), pos);
+        myLocation.getVoice().removePosition(pos);
 
     // Undo any shifting that was performed.
     for (int i = 0; i < myShiftAmount; ++i)

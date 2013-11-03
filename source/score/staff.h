@@ -22,8 +22,8 @@
 #include <boost/range/iterator_range_core.hpp>
 #include "dynamic.h"
 #include "fileversion.h"
-#include "position.h"
 #include <vector>
+#include "voice.h"
 
 class Staff
 {
@@ -45,9 +45,9 @@ public:
         BassView
     };
 
-    typedef std::vector<Position> Voice;
-    typedef Voice::iterator VoiceIterator;
-    typedef Voice::const_iterator VoiceConstIterator;
+    typedef std::array<Voice, NUM_VOICES> VoiceList;
+    typedef VoiceList::iterator VoiceIterator;
+    typedef VoiceList::const_iterator VoiceConstIterator;
     typedef std::vector<Dynamic>::iterator DynamicIterator;
     typedef std::vector<Dynamic>::const_iterator DynamicConstIterator;
 
@@ -74,15 +74,10 @@ public:
     /// Sets the number of strings in the tab staff.
     void setStringCount(int count);
 
-    /// Returns the set of positions in a voice.
-    boost::iterator_range<VoiceIterator> getVoice(int voice);
-    /// Returns the set of positions in a voice.
-    boost::iterator_range<VoiceConstIterator> getVoice(int voice) const;
-
-    /// Adds a new position to the specified voice.
-    void insertPosition(int voice, const Position &position);
-    /// Removes the specified position from a voice.
-    void removePosition(int voice, const Position &position);
+    /// Returns the voices in the staff.
+    boost::iterator_range<VoiceIterator> getVoices();
+    /// Returns the voices in the staff.
+    boost::iterator_range<VoiceConstIterator> getVoices() const;
 
     /// Returns the set of dynamics in the staff.
     boost::iterator_range<DynamicIterator> getDynamics();

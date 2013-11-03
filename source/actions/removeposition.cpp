@@ -28,12 +28,10 @@ RemovePosition::RemovePosition(const ScoreLocation &location)
 
 void RemovePosition::redo()
 {
-    myLocation.getStaff().removePosition(myLocation.getVoice(),
-                                         myOriginalPosition);
+    myLocation.getVoice().removePosition(myOriginalPosition);
 }
 
 void RemovePosition::undo()
 {
-    myLocation.getStaff().insertPosition(myLocation.getVoice(),
-                                         myOriginalPosition);
+    myLocation.getVoice().insertPosition(myOriginalPosition);
 }
