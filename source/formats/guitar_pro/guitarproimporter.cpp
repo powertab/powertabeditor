@@ -586,7 +586,8 @@ Position::DurationType GuitarProImporter::readDuration(Gp::InputStream &stream)
     // note, 1 -> eight note, etc
     // We need to convert to 1 = whole note, 2 = half note, 4 = quarter note,
     // etc
-    return static_cast<Position::DurationType>(std::pow(2.0, gpDuration + 2));
+    return static_cast<Position::DurationType>(
+        static_cast<int>(std::pow(2.0, gpDuration + 2)));
 }
 
 void GuitarProImporter::readChordDiagram(Gp::InputStream &stream,
