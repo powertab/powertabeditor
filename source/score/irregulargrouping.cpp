@@ -47,3 +47,34 @@ void IrregularGrouping::setPosition(int position)
 {
     myPosition = position;
 }
+
+int IrregularGrouping::getLength() const
+{
+    return myLength;
+}
+
+void IrregularGrouping::setLength(int length)
+{
+    myLength = length;
+}
+
+int IrregularGrouping::getNotesPlayed() const
+{
+    return myNotesPlayed;
+}
+
+void IrregularGrouping::setNotesPlayed(int notes)
+{
+    myNotesPlayed = notes;
+}
+
+int IrregularGrouping::getNotesPlayedOver() const
+{
+    return myNotesPlayedOver;
+}
+
+void IrregularGrouping::setNotesPlayedOver(int notes)
+{
+    myNotesPlayedOver = notes;
+}
+

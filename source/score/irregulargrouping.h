@@ -37,6 +37,21 @@ public:
     /// Sets the start position of the group.
     void setPosition(int position);
 
+    /// Returns the number of positions in the group.
+    int getLength() const;
+    /// Sets the number of positions in the group.
+    void setLength(int length);
+
+    /// Returns the numerator of the irregular group (i.e. 3 for a triplet).
+    int getNotesPlayed() const;
+    /// Sets the numerator of the irregular group (i.e. 3 for a triplet).
+    void setNotesPlayed(int notes);
+
+    /// Return the denominator of the irregular group (i.e. 2 for a triplet).
+    int getNotesPlayedOver() const;
+    /// Sets the denominator of the irregular group (i.e. 2 for a triplet).
+    void setNotesPlayedOver(int notes);
+
 private:
     int myPosition;
     int myLength;

@@ -56,6 +56,11 @@ public:
     boost::iterator_range<IrregularGroupingConstIterator>
     getIrregularGroupings() const;
 
+    /// Adds a new irregular grouping to the voice.
+    void insertIrregularGrouping(const IrregularGrouping &group);
+    /// Removes the specified irregular grouping from the voice.
+    void removeIrregularGrouping(const IrregularGrouping &group);
+
 private:
     std::vector<Position> myPositions;
     std::vector<IrregularGrouping> myIrregularGroupings;

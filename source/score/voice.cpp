@@ -60,3 +60,13 @@ Voice:: getIrregularGroupings() const
 {
     return boost::make_iterator_range(myIrregularGroupings);
 }
+
+void Voice::insertIrregularGrouping(const IrregularGrouping &group)
+{
+    ScoreUtils::insertObject(myIrregularGroupings, group);
+}
+
+void Voice::removeIrregularGrouping(const IrregularGrouping &group)
+{
+    ScoreUtils::removeObject(myIrregularGroupings, group);
+}

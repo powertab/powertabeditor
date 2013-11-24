@@ -569,6 +569,41 @@ int PowerTabOldImporter::convert(
         }
     }
 
+    // Import irregular groups.
+    for (size_t voice = 0; voice < PowerTabDocument::Staff::NUM_STAFF_VOICES;
+         ++voice)
+    {
+        Voice &v = staff.getVoices()[voice];
+        int startPos = 0;
+        int positionCount = 0;
+        uint8_t notesPlayed = 0;
+        uint8_t notesPlayedOver = 0;
+
+        for (size_t i = 0; i < oldStaff.GetPositionCount(voice); ++i)
+        {
+            const auto &position = *oldStaff.GetPosition(voice, i);
+            if (position.IsIrregularGroupingStart())
+            {
+                startPos = position.GetPosition();
+                positionCount = 1;
+                position.GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
+            }
+            else if (position.IsIrregularGroupingMiddle())
+                positionCount++;
+            else if (position.IsIrregularGroupingEnd())
+            {
+                positionCount++;
+                v.insertIrregularGrouping(IrregularGrouping(
+                    startPos, positionCount, notesPlayed, notesPlayedOver));
+
+                startPos = 0;
+                positionCount = 0;
+                notesPlayed = 0;
+                notesPlayedOver = 0;
+            }
+        }
+    }
+
     return lastPosition;
 }
 
