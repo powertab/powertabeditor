@@ -75,6 +75,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
                                       int systemIndex, const Staff &staff,
                                       int staffIndex, const LayoutInfo &layout,
                                       std::vector<StdNotationNote> &notes,
+                                      std::vector<NoteStem> &stems,
                                       std::vector<BeamGroup> &groups)
 {
     // If there is no active player, use standard 8-string tuning as a default
@@ -96,7 +97,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
             if (!nextBar)
                 break;
 
-            std::vector<NoteStem> stems;
+            const size_t firstStem = stems.size();
 
             // Store the current accidental for each line/space in the staff.
             std::map<int, AccidentalType> accidentals;
@@ -177,7 +178,7 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
                 stems.push_back(NoteStem(pos, x, noteHeadWidth, noteLocations));
             }
 
-            computeBeaming(bar.getTimeSignature(), stems, groups);
+            computeBeaming(bar.getTimeSignature(), stems, firstStem, groups);
         }
     }
 }
@@ -269,13 +270,14 @@ std::vector<uint8_t> StdNotationNote::getBeamingPatterns(
 
 void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
                                      const std::vector<NoteStem> &stems,
+                                     size_t firstStemIndex,
                                      std::vector<BeamGroup> &groups)
 {
     const std::vector<uint8_t> beamingPatterns(getBeamingPatterns(timeSig));
 
     // Create a list of the durations for each stem.
-    std::vector<double> durations(stems.size());
-    std::transform(stems.begin(), stems.end(), durations.begin(),
+    std::vector<double> durations(stems.size() - firstStemIndex);
+    std::transform(stems.begin() + firstStemIndex, stems.end(), durations.begin(),
                    std::mem_fun_ref(&NoteStem::getDurationTime));
     // Convert the duration list to a list of timestamps relative to the
     // beginning of the bar.
@@ -296,10 +298,12 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
         groupEnd = std::upper_bound(groupStart, durations.end(), groupEndTime);
 
         std::vector<NoteStem> patternGroup(
-                    stems.begin() + (groupStart - durations.begin()),
-                    stems.begin() + (groupEnd - durations.begin()));
+                    stems.begin() + firstStemIndex + (groupStart - durations.begin()),
+                    stems.begin() + firstStemIndex + (groupEnd - durations.begin()));
 
-        computeBeamingGroups(patternGroup, groups);
+        computeBeamingGroups(
+            stems, firstStemIndex + (groupStart - durations.begin()),
+            firstStemIndex + (groupEnd - durations.begin()), groups);
 
         // Move on to the next beaming pattern, looping around if necessary.
         ++groupSize;
@@ -311,20 +315,23 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
 }
 
 void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
+                                           size_t firstStemIndex,
+                                           size_t lastStemIndex,
                                            std::vector<BeamGroup> &groups)
 {
     // Rests and notes greater than eighth notes will break apart a beam group,
     // so we need to find all of the subgroups of consecutive positions that
     // can be beamed, and then create beaming groups with those notes.
-    auto beamableGroupStart = stems.begin();
-    auto beamableGroupEnd = stems.begin();
+    auto beamableGroupStart = stems.begin() + firstStemIndex;
+    auto beamableGroupEnd = beamableGroupStart;
+    auto lastStem = stems.begin() + lastStemIndex;
 
     // Find all subgroups of beamable notes (i.e. consecutive notes that aren't
     // quarter notes, rests, etc).
-    while (beamableGroupEnd != stems.end())
+    while (beamableGroupEnd != lastStem)
     {
         // Find the next range of consecutive stems that are beamable.
-        beamableGroupStart = std::find_if(beamableGroupEnd, stems.end(),
+        beamableGroupStart = std::find_if(beamableGroupEnd, lastStem,
                                           &NoteStem::isBeamable);
 
         // If there were any notes that aren't beamed but need stems (like a
@@ -333,13 +340,11 @@ void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
         for (auto it = beamableGroupEnd; it != beamableGroupStart; ++it)
         {
             if (NoteStem::needsStem(*it))
-            {
                 groups.push_back(BeamGroup(std::vector<NoteStem>(1, *it)));
-            }
         }
 
         // Find the end of the beam group.
-        beamableGroupEnd = std::find_if(beamableGroupStart, stems.end(),
+        beamableGroupEnd = std::find_if(beamableGroupStart, lastStem,
                                         std::not1(std::ptr_fun(&NoteStem::isBeamable)));
 
         if (beamableGroupStart != beamableGroupEnd)

@@ -207,6 +207,7 @@ private:
 
     std::vector<StdNotationNote> myNotes;
     std::vector<BeamGroup> myBeamGroups;
+    std::vector<NoteStem> myStems;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;

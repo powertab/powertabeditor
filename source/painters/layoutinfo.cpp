@@ -55,7 +55,8 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex
     calculateTabStaffAboveLayout();
 
     StdNotationNote::getNotesInStaff(score, system, systemIndex, staff,
-                                     staffIndex, *this, myNotes, myBeamGroups);
+                                     staffIndex, *this, myNotes, myStems,
+                                     myBeamGroups);
 
     calculateStdNotationStaffAboveLayout();
     calculateStdNotationStaffBelowLayout();
