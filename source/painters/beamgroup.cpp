@@ -32,8 +32,8 @@ BeamGroup::BeamGroup(const std::vector<NoteStem> &stems)
 {
     assert(!myNoteStems.empty());
 
-    myStemDirection = computeStemDirection(myNoteStems);
-    adjustStemHeights();
+    myStemDirection =
+        NoteStem::formatGroup(myNoteStems.begin(), myNoteStems.end());
 }
 
 void BeamGroup::adjustToStaff(const LayoutInfo &layout)
@@ -42,29 +42,6 @@ void BeamGroup::adjustToStaff(const LayoutInfo &layout)
     {
         stem.setTop(stem.getTop() + layout.getTopStdNotationLine());
         stem.setBottom(stem.getBottom() + layout.getTopStdNotationLine());
-    }
-}
-
-void BeamGroup::adjustStemHeights()
-{
-    if (myStemDirection == NoteStem::StemUp)
-    {
-        NoteStem highestStem = findHighestStem(myNoteStems);
-
-        for (NoteStem &stem : myNoteStems)
-        {
-            stem.setX(stem.getNoteHeadRightEdge() - 1);
-            stem.setTop(highestStem.getTop() - highestStem.getStemHeight());
-        }
-    }
-    else // Stem down.
-    {
-        NoteStem lowestStem = findLowestStem(myNoteStems);
-
-        for (NoteStem &stem : myNoteStems)
-        {
-            stem.setBottom(lowestStem.getBottom() + lowestStem.getStemHeight());
-        }
     }
 }
 
@@ -143,45 +120,6 @@ double BeamGroup::getBottom() const
         bottom = std::max(bottom, stem.getBottom());
 
     return bottom;
-}
-
-NoteStem::StemType BeamGroup::computeStemDirection(std::vector<NoteStem> &stems)
-{
-    // Find how many stem directions of each type we have.
-    const size_t stemsUp = std::count_if(stems.begin(), stems.end(),
-                                         [](const NoteStem &stem) {
-        return stem.getStemType() == NoteStem::StemUp;
-    });
-
-    const size_t stemsDown = std::count_if(stems.begin(), stems.end(),
-                                           [](const NoteStem &stem) {
-        return stem.getStemType() == NoteStem::StemDown;
-    });
-
-    NoteStem::StemType stemType = (stemsDown >= stemsUp) ? NoteStem::StemDown :
-                                                           NoteStem::StemUp;
-
-    // Assign the new stem direction to each stem.
-    for (NoteStem &stem : stems)
-        stem.setStemType(stemType);
-
-    return stemType;
-}
-
-NoteStem BeamGroup::findHighestStem(const std::vector<NoteStem> &stems)
-{
-    return *std::min_element(stems.begin(), stems.end(),
-                             [](const NoteStem & stem1, const NoteStem & stem2) {
-        return stem1.getTop() < stem2.getTop();
-    });
-}
-
-NoteStem BeamGroup::findLowestStem(const std::vector<NoteStem> &stems)
-{
-    return *std::max_element(stems.begin(), stems.end(),
-                             [](const NoteStem & stem1, const NoteStem & stem2) {
-        return stem1.getBottom() < stem2.getBottom();
-    });
 }
 
 void BeamGroup::drawExtraBeams(QPainterPath &path) const

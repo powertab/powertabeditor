@@ -63,7 +63,22 @@ public:
     StemType getStemType() const;
     void setStemType(StemType type);
 
+    /// Sets a common direction for the stems, and stretches the beams to
+    /// a common high/low height.
+    template <typename Iterator>
+    static StemType formatGroup(Iterator begin, Iterator end);
+
 private:
+    /// Sets a common direction for the stems, and returns that direction.
+    template <typename Iterator>
+    static StemType computeStemDirection(Iterator begin, Iterator end);
+
+    template <typename Iterator>
+    static const NoteStem &findHighestStem(Iterator begin, Iterator end);
+
+    template <typename Iterator>
+    static const NoteStem &findLowestStem(Iterator begin, Iterator end);
+
     const Position *myPosition;
     double myX;
     double myNoteHeadWidth;
@@ -71,5 +86,74 @@ private:
     double myBottom;
     StemType myStemType;
 };
+
+template <typename Iterator>
+NoteStem::StemType NoteStem::formatGroup(Iterator begin, Iterator end)
+{
+    const StemType direction = computeStemDirection(begin, end);
+
+    if (direction == StemUp)
+    {
+        NoteStem highestStem = NoteStem::findHighestStem(begin, end);
+
+        for (auto stem = begin; stem != end; ++stem)
+        {
+            stem->setX(stem->getNoteHeadRightEdge() - 1);
+            stem->setTop(highestStem.getTop() - highestStem.getStemHeight());
+        }
+    }
+    else // Stem down.
+    {
+        NoteStem lowestStem = NoteStem::findLowestStem(begin, end);
+
+        for (auto stem = begin; stem != end; ++stem)
+        {
+            stem->setBottom(lowestStem.getBottom() +
+                            lowestStem.getStemHeight());
+        }
+    }
+
+    return direction;
+}
+
+template <typename Iterator>
+NoteStem::StemType NoteStem::computeStemDirection(Iterator begin, Iterator end)
+{
+    // Find how many stem directions of each type we have.
+    const size_t stemsUp = std::count_if(begin, end, [](const NoteStem &stem) {
+        return stem.getStemType() == NoteStem::StemUp;
+    });
+
+    const size_t stemsDown = std::count_if(begin, end, [](const NoteStem &stem) {
+        return stem.getStemType() == NoteStem::StemDown;
+    });
+
+    NoteStem::StemType stemType =
+        (stemsDown >= stemsUp) ? NoteStem::StemDown : NoteStem::StemUp;
+
+    // Assign the new stem direction to each stem.
+    for (auto stem = begin; stem != end; ++stem)
+        stem->setStemType(stemType);
+
+    return stemType;
+}
+
+template <typename Iterator>
+const NoteStem &NoteStem::findHighestStem(Iterator begin, Iterator end)
+{
+    return *std::min_element(begin, end,
+                             [](const NoteStem & stem1, const NoteStem & stem2) {
+         return stem1.getTop() < stem2.getTop();
+    });
+}
+
+template <typename Iterator>
+const NoteStem &NoteStem::findLowestStem(Iterator begin, Iterator end)
+{
+    return *std::max_element(begin, end,
+                             [](const NoteStem & stem1, const NoteStem & stem2) {
+         return stem1.getBottom() < stem2.getBottom();
+    });
+}
 
 #endif

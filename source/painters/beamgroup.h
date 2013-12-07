@@ -43,16 +43,6 @@ public:
     double getBottom() const;
 
 private:
-    /// Compute a common direction for the stems.
-    static NoteStem::StemType computeStemDirection(std::vector<NoteStem> &stems);
-
-    static NoteStem findHighestStem(const std::vector<NoteStem> &stems);
-    static NoteStem findLowestStem(const std::vector<NoteStem> &stems);
-
-    /// Stretches the beams to a common high/low height, depending on stem
-    /// direction.
-    void adjustStemHeights();
-
     /// Draws the extra beams required for sixteenth notes, etc.
     void drawExtraBeams(QPainterPath &path) const;
 

@@ -297,10 +297,6 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
         groupStart = std::lower_bound(groupEnd, durations.end(), groupBeginTime);
         groupEnd = std::upper_bound(groupStart, durations.end(), groupEndTime);
 
-        std::vector<NoteStem> patternGroup(
-                    stems.begin() + firstStemIndex + (groupStart - durations.begin()),
-                    stems.begin() + firstStemIndex + (groupEnd - durations.begin()));
-
         computeBeamingGroups(
             stems, firstStemIndex + (groupStart - durations.begin()),
             firstStemIndex + (groupEnd - durations.begin()), groups);
