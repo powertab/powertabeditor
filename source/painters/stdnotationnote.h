@@ -87,13 +87,13 @@ private:
 
     /// Calculates the beaming for a set of note stems.
     static void computeBeaming(const TimeSignature &timeSig,
-                               const std::vector<NoteStem> &stems,
+                               std::vector<NoteStem> &stems,
                                size_t firstStemIndex,
                                std::vector<BeamGroup> &groups);
 
     /// A group may be split into several beam groups if there are rests,
     /// whole notes, etc.
-    static void computeBeamingGroups(const std::vector<NoteStem> &stems,
+    static void computeBeamingGroups(std::vector<NoteStem> &stems,
                                      size_t firstStemIndex,
                                      size_t lastStemIndex,
                                      std::vector<BeamGroup> &groups);

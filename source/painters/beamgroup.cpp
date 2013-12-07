@@ -27,13 +27,11 @@
 
 static const double FRACTIONAL_BEAM_WIDTH = 5.0;
 
-BeamGroup::BeamGroup(const std::vector<NoteStem> &stems)
-    : myNoteStems(stems)
+BeamGroup::BeamGroup(NoteStem::StemType direction,
+                     const std::vector<NoteStem> &stems)
+    : myStemDirection(direction), myNoteStems(stems)
 {
     assert(!myNoteStems.empty());
-
-    myStemDirection =
-        NoteStem::formatGroup(myNoteStems.begin(), myNoteStems.end());
 }
 
 void BeamGroup::adjustToStaff(const LayoutInfo &layout)

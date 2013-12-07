@@ -30,7 +30,8 @@ class QPainterPath;
 class BeamGroup
 {
 public:
-    BeamGroup(const std::vector<NoteStem> &stems);
+    BeamGroup(NoteStem::StemType direction,
+              const std::vector<NoteStem> &stems);
 
     /// Adjust the top/bottom of stems to use absolute coordianates.
     void adjustToStaff(const LayoutInfo &layout);
@@ -64,8 +65,8 @@ private:
                                          const QFont &musicFont,
                                          const QFontMetricsF &fm);
 
+    const NoteStem::StemType myStemDirection;
     std::vector<NoteStem> myNoteStems;
-    NoteStem::StemType myStemDirection;
 };
 
 #endif

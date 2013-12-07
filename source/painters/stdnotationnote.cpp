@@ -269,7 +269,7 @@ std::vector<uint8_t> StdNotationNote::getBeamingPatterns(
 }
 
 void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
-                                     const std::vector<NoteStem> &stems,
+                                     std::vector<NoteStem> &stems,
                                      size_t firstStemIndex,
                                      std::vector<BeamGroup> &groups)
 {
@@ -310,7 +310,7 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
     }
 }
 
-void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
+void StdNotationNote::computeBeamingGroups(std::vector<NoteStem> &stems,
                                            size_t firstStemIndex,
                                            size_t lastStemIndex,
                                            std::vector<BeamGroup> &groups)
@@ -336,7 +336,11 @@ void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
         for (auto it = beamableGroupEnd; it != beamableGroupStart; ++it)
         {
             if (NoteStem::needsStem(*it))
-                groups.push_back(BeamGroup(std::vector<NoteStem>(1, *it)));
+            {
+                auto direction = NoteStem::formatGroup(it, it + 1);
+                groups.push_back(
+                    BeamGroup(direction, std::vector<NoteStem>(1, *it)));
+            }
         }
 
         // Find the end of the beam group.
@@ -345,8 +349,9 @@ void StdNotationNote::computeBeamingGroups(const std::vector<NoteStem> &stems,
 
         if (beamableGroupStart != beamableGroupEnd)
         {
+            auto direction = NoteStem::formatGroup(beamableGroupStart, beamableGroupEnd);
             std::vector<NoteStem> stems(beamableGroupStart, beamableGroupEnd);
-            groups.push_back(BeamGroup(stems));
+            groups.push_back(BeamGroup(direction, stems));
         }
     }
 }
