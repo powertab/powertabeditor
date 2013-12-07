@@ -338,8 +338,8 @@ void StdNotationNote::computeBeamingGroups(std::vector<NoteStem> &stems,
             if (NoteStem::needsStem(*it))
             {
                 auto direction = NoteStem::formatGroup(it, it + 1);
-                groups.push_back(
-                    BeamGroup(direction, std::vector<NoteStem>(1, *it)));
+                groups.push_back(BeamGroup(direction, it - stems.begin(),
+                                           it + 1 - stems.begin()));
             }
         }
 
@@ -349,9 +349,11 @@ void StdNotationNote::computeBeamingGroups(std::vector<NoteStem> &stems,
 
         if (beamableGroupStart != beamableGroupEnd)
         {
-            auto direction = NoteStem::formatGroup(beamableGroupStart, beamableGroupEnd);
-            std::vector<NoteStem> stems(beamableGroupStart, beamableGroupEnd);
-            groups.push_back(BeamGroup(direction, stems));
+            auto direction = NoteStem::formatGroup(beamableGroupStart,
+                                                   beamableGroupEnd);
+            groups.push_back(BeamGroup(direction,
+                                       beamableGroupStart - stems.begin(),
+                                       beamableGroupEnd - stems.begin()));
         }
     }
 }

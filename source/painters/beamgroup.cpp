@@ -27,31 +27,30 @@
 
 static const double FRACTIONAL_BEAM_WIDTH = 5.0;
 
-BeamGroup::BeamGroup(NoteStem::StemType direction,
-                     const std::vector<NoteStem> &stems)
-    : myStemDirection(direction), myNoteStems(stems)
+BeamGroup::BeamGroup(NoteStem::StemType direction, size_t start, size_t end)
+    : myStemDirection(direction), myStartIndex(start), myEndIndex(end)
 {
-    assert(!myNoteStems.empty());
 }
 
-void BeamGroup::adjustToStaff(const LayoutInfo &layout)
-{
-    for (NoteStem &stem : myNoteStems)
-    {
-        stem.setTop(stem.getTop() + layout.getTopStdNotationLine());
-        stem.setBottom(stem.getBottom() + layout.getTopStdNotationLine());
-    }
-}
-
-void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
-                          const QFontMetricsF &fm, const LayoutInfo &layout) const
+void BeamGroup::drawStems(QGraphicsItem *parent,
+                          const std::vector<NoteStem> &stems,
+                          const QFont &musicFont, const QFontMetricsF &fm,
+                          const LayoutInfo &layout) const
 {
     QList<QGraphicsItem *> symbols;
     QPainterPath stemPath;
 
+    auto begin = stems.begin() + myStartIndex;
+    auto end = stems.begin() + myEndIndex;
+    const NoteStem &firstStem = *begin;
+    const NoteStem &lastStem = *(end - 1);
+    auto numStems = std::distance(begin, end);
+
     // Draw each stem.
-    for (const NoteStem &stem : myNoteStems)
+    for (auto it = begin; it != end; ++it)
     {
+        const NoteStem &stem = *it;
+
         stemPath.moveTo(stem.getX(), stem.getTop());
         stemPath.lineTo(stem.getX(), stem.getBottom());
 
@@ -72,67 +71,49 @@ void BeamGroup::drawStems(QGraphicsItem *parent, const QFont &musicFont,
         symbols.clear();
     }
 
-    auto stems = new QGraphicsPathItem(stemPath);
-    stems->setParentItem(parent);
+    auto stemPathItem = new QGraphicsPathItem(stemPath);
+    stemPathItem->setParentItem(parent);
 
     QPainterPath beamPath;
 
     // Draw connecting line.
-    if (myNoteStems.size() > 1)
+    if (numStems > 1)
     {
-        const double connectorHeight = myNoteStems.front().getStemEdge();
+        const double connectorHeight = firstStem.getStemEdge();
 
-        beamPath.moveTo(myNoteStems.front().getX() + 0.5, connectorHeight);
-        beamPath.lineTo(myNoteStems.back().getX(), connectorHeight);
+        beamPath.moveTo(firstStem.getX() + 0.5, connectorHeight);
+        beamPath.lineTo(lastStem.getX(), connectorHeight);
     }
 
-    drawExtraBeams(beamPath);
+    drawExtraBeams(beamPath, begin, end);
 
     auto beams = new QGraphicsPathItem(beamPath);
     beams->setPen(QPen(Qt::black, 2.0, Qt::SolidLine, Qt::RoundCap));
     beams->setParentItem(parent);
 
     // Draw a note flag for single notes (eighth notes or less) or grace notes.
-    if (myNoteStems.size() == 1 && NoteStem::canHaveFlag(myNoteStems.front()))
+    if (numStems == 1 && NoteStem::canHaveFlag(firstStem))
     {
-        QGraphicsItem *flag = createNoteFlag(myNoteStems.front(), musicFont, fm);
+        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont, fm);
         flag->setParentItem(parent);
     }
 }
 
-double BeamGroup::getTop() const
+void BeamGroup::drawExtraBeams(QPainterPath &path,
+                               std::vector<NoteStem>::const_iterator begin,
+                               std::vector<NoteStem>::const_iterator end) const
 {
-    double top = std::numeric_limits<double>::max();
-
-    for (const NoteStem &stem : myNoteStems)
-        top = std::min(top, stem.getTop());
-
-    return top;
-}
-
-double BeamGroup::getBottom() const
-{
-    double bottom = -std::numeric_limits<double>::max();
-
-    for (const NoteStem &stem : myNoteStems)
-        bottom = std::max(bottom, stem.getBottom());
-
-    return bottom;
-}
-
-void BeamGroup::drawExtraBeams(QPainterPath &path) const
-{
-    for (auto stem = myNoteStems.begin(); stem != myNoteStems.end(); ++stem)
+    for (auto stem = begin; stem != end; ++stem)
     {
         std::vector<NoteStem>::const_iterator prevStem;
-		if (stem != myNoteStems.begin())
+        if (stem != begin)
 			prevStem = boost::prior(stem);
 
-	auto nextStem = boost::next(stem);
+        auto nextStem = boost::next(stem);
         const Position::DurationType duration = stem->getDurationType();
-        const Position::DurationType prevDuration = (stem != myNoteStems.begin()) ?
+        const Position::DurationType prevDuration = (stem != begin) ?
                     prevStem->getDurationType() : Position::SixtyFourthNote;
-        const Position::DurationType nextDuration = (nextStem != myNoteStems.end()) ?
+        const Position::DurationType nextDuration = (nextStem != end) ?
                     nextStem->getDurationType() : Position::SixtyFourthNote;
 
         // 16th note gets 1 extra beam, 32nd gets two, etc
@@ -142,8 +123,7 @@ void BeamGroup::drawExtraBeams(QPainterPath &path) const
 
         // The note only has a full beam to the previous note if they have the
         // same duration type (and if a previous note exists).
-        const bool hasFullBeaming = (prevDuration == duration) &&
-                stem != myNoteStems.begin();
+        const bool hasFullBeaming = (prevDuration == duration) && stem != begin;
 
         const bool hasFractionalLeft = (duration > prevDuration);
         const bool hasFractionalRight = !hasFractionalLeft && duration > nextDuration;
@@ -160,7 +140,7 @@ void BeamGroup::drawExtraBeams(QPainterPath &path) const
                 if (hasFullBeaming)
                 {
                     // Verify that the prevStem iterator is valid.
-                    Q_ASSERT(stem != myNoteStems.begin());
+                    Q_ASSERT(stem != begin);
 
                     xStart = prevStem->getX() + 0.5;
                     xEnd = stem->getX() - 1;

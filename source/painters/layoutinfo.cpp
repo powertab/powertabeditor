@@ -62,8 +62,12 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex
     calculateStdNotationStaffBelowLayout();
 
     // Update the locations of the stems based on the spacing we just computed.
-    for (BeamGroup &group : myBeamGroups)
-        group.adjustToStaff(*this);
+    const double offset = getTopStdNotationLine();
+    for (NoteStem &stem : myStems)
+    {
+        stem.setTop(stem.getTop() + offset);
+        stem.setBottom(stem.getBottom() + offset);
+    }
 }
 
 int LayoutInfo::getStringCount() const
@@ -407,8 +411,8 @@ void LayoutInfo::calculateStdNotationStaffAboveLayout()
 
     // Reserve space for notes and their stems.
     double minLocation = std::numeric_limits<double>::max();
-    for (const BeamGroup &group : myBeamGroups)
-        minLocation = std::min(minLocation, group.getTop());
+    for (const NoteStem &stem: myStems)
+        minLocation = std::min(minLocation, stem.getTop());
 
     myStdNotationStaffAboveSpacing += -std::min(0.0, minLocation);
 }
@@ -422,10 +426,8 @@ void LayoutInfo::calculateStdNotationStaffBelowLayout()
 
     // Reserve space for notes and their stems.
     double maxLocation = -std::numeric_limits<double>::max();
-    for (const BeamGroup &group : myBeamGroups)
-    {
-        maxLocation = std::max(maxLocation, group.getBottom());
-    }
+    for (const NoteStem &stem : myStems)
+        maxLocation = std::max(maxLocation, stem.getBottom());
 
     const double bottomBoundary = 5 * STD_NOTATION_LINE_SPACING;
     myStdNotationStaffBelowSpacing +=
@@ -696,6 +698,11 @@ const std::vector<StdNotationNote> &LayoutInfo::getStdNotationNotes() const
 const std::vector<BeamGroup> &LayoutInfo::getBeamGroups() const
 {
     return myBeamGroups;
+}
+
+const std::vector<NoteStem> &LayoutInfo::getNoteStems() const
+{
+    return myStems;
 }
 
 SymbolGroup::SymbolType SymbolGroup::getSymbolType() const

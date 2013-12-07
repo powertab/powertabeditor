@@ -1159,6 +1159,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
     const std::vector<StdNotationNote> &notes = layout.getStdNotationNotes();
     const std::vector<BeamGroup> &beamGroups = layout.getBeamGroups();
+    const std::vector<NoteStem> &stems = layout.getNoteStems();
 
     std::map<int, double> minNoteLocations;
     std::map<int, double> maxNoteLocations;
@@ -1227,8 +1228,8 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
     for (const BeamGroup &group : beamGroups)
     {
-        group.drawStems(myParentStaff, myMusicNotationFont, myMusicFontMetrics,
-                        layout);
+        group.drawStems(myParentStaff, stems, myMusicNotationFont,
+                        myMusicFontMetrics, layout);
     }
 
     // TODO - draw irregular groupings.

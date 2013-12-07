@@ -19,10 +19,10 @@
 #define PAINTERS_BEAMGROUP_H
 
 #include <painters/notestem.h>
-#include <QFont>
 #include <vector>
 
 struct LayoutInfo;
+class QFont;
 class QFontMetricsF;
 class QGraphicsItem;
 class QPainterPath;
@@ -30,22 +30,18 @@ class QPainterPath;
 class BeamGroup
 {
 public:
-    BeamGroup(NoteStem::StemType direction,
-              const std::vector<NoteStem> &stems);
-
-    /// Adjust the top/bottom of stems to use absolute coordianates.
-    void adjustToStaff(const LayoutInfo &layout);
+    BeamGroup(NoteStem::StemType direction, size_t start, size_t end);
 
     /// Draws the stems for each note in the group.
-    void drawStems(QGraphicsItem *parent, const QFont &musicFont,
-                   const QFontMetricsF &fm, const LayoutInfo &layout) const;
-
-    double getTop() const;
-    double getBottom() const;
+    void drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
+                   const QFont &musicFont, const QFontMetricsF &fm,
+                   const LayoutInfo &layout) const;
 
 private:
     /// Draws the extra beams required for sixteenth notes, etc.
-    void drawExtraBeams(QPainterPath &path) const;
+    void drawExtraBeams(QPainterPath &path,
+                        std::vector<NoteStem>::const_iterator begin,
+                        std::vector<NoteStem>::const_iterator end) const;
 
     /// Creates and positions a staccato symbol.
     static QGraphicsItem *createStaccato(const NoteStem& stem,
@@ -66,7 +62,8 @@ private:
                                          const QFontMetricsF &fm);
 
     const NoteStem::StemType myStemDirection;
-    std::vector<NoteStem> myNoteStems;
+    const size_t myStartIndex;
+    const size_t myEndIndex;
 };
 
 #endif

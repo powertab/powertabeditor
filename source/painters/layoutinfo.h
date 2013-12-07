@@ -154,6 +154,7 @@ struct LayoutInfo
 
     const std::vector<StdNotationNote> &getStdNotationNotes() const;
     const std::vector<BeamGroup> &getBeamGroups() const;
+    const std::vector<NoteStem> &getNoteStems() const;
 
 private:
     static const double MIN_POSITION_SPACING;
