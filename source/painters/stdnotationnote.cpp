@@ -71,12 +71,12 @@ StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
     computeAccidentalType(false);
 }
 
-void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
-                                      int systemIndex, const Staff &staff,
-                                      int staffIndex, const LayoutInfo &layout,
-                                      std::vector<StdNotationNote> &notes,
-                                      std::vector<NoteStem> &stems,
-                                      std::vector<BeamGroup> &groups)
+void StdNotationNote::getNotesInStaff(
+    const Score &score, const System &system, int systemIndex,
+    const Staff &staff, int staffIndex, const LayoutInfo &layout,
+    std::vector<StdNotationNote> &notes,
+    std::array<std::vector<NoteStem>, Staff::NUM_VOICES> &stemsByVoice,
+    std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> &groupsByVoice)
 {
     // If there is no active player, use standard 8-string tuning as a default
     // for calculating the music notation.
@@ -89,8 +89,12 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
     QFont musicFont(MusicFont().getFont());
     QFontMetricsF fm(musicFont);
 
+    int voiceIndex = 0;
     for (const Voice &voice : staff.getVoices())
     {
+        std::vector<NoteStem> &stems = stemsByVoice[voiceIndex];
+        std::vector<BeamGroup> &groups = groupsByVoice[voiceIndex];
+
         for (const Barline &bar : system.getBarlines())
         {
             const Barline *nextBar = system.getNextBarline(bar.getPosition());
@@ -180,6 +184,8 @@ void StdNotationNote::getNotesInStaff(const Score &score, const System &system,
 
             computeBeaming(bar.getTimeSignature(), stems, firstStem, groups);
         }
+
+        voiceIndex++;
     }
 }
 

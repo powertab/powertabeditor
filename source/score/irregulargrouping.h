@@ -19,6 +19,7 @@
 #define SCORE_IRREGULARGROUPING_H
 
 #include "fileversion.h"
+#include <iosfwd>
 
 class IrregularGrouping
 {
@@ -32,9 +33,9 @@ public:
     template <class Archive>
     void serialize(Archive &ar, const FileVersion version);
 
-    /// Returns the start position of the group.
+    /// Returns the index of the start position of the group.
     int getPosition() const;
-    /// Sets the start position of the group.
+    /// Sets the index of start position of the group.
     void setPosition(int position);
 
     /// Returns the number of positions in the group.
@@ -67,5 +68,7 @@ void IrregularGrouping::serialize(Archive &ar, const FileVersion /*version*/)
     ar("notes_played", myNotesPlayed);
     ar("notes_played_over", myNotesPlayedOver);
 }
+
+std::ostream &operator<<(std::ostream &os, const IrregularGrouping &group);
 
 #endif

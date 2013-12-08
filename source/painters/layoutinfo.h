@@ -18,19 +18,18 @@
 #ifndef PAINTERS_LAYOUTINFO_H
 #define PAINTERS_LAYOUTINFO_H
 
+#include <array>
 #include <boost/shared_ptr.hpp>
 #include <painters/beamgroup.h>
 #include <painters/stdnotationnote.h>
+#include <score/staff.h>
 #include <vector>
 
 class Barline;
 class KeySignature;
-class Position;
 class Score;
-class Staff;
 class System;
 class TimeSignature;
-class Voice;
 
 class SymbolGroup
 {
@@ -134,6 +133,10 @@ struct LayoutInfo
     static const double TAB_SYMBOL_SPACING;
     /// Default position spacing.
     static const double DEFAULT_POSITION_SPACING;
+    /// Distance between the note stem and the irregular group's first beam.
+    static const double IRREGULAR_GROUP_HEIGHT_OFFSET;
+    /// Spacing between the two horizontal beams of an irregular group.
+    static const double IRREGULAR_GROUP_BEAM_SPACING;
 
     static double centerItem(double xmin, double xmax, double width)
     {
@@ -153,8 +156,8 @@ struct LayoutInfo
     const std::vector<SymbolGroup> &getStdNotationStaffBelowSymbols() const;
 
     const std::vector<StdNotationNote> &getStdNotationNotes() const;
-    const std::vector<BeamGroup> &getBeamGroups() const;
-    const std::vector<NoteStem> &getNoteStems() const;
+    const std::vector<BeamGroup> &getBeamGroups(int voice) const;
+    const std::vector<NoteStem> &getNoteStems(int voice) const;
 
 private:
     static const double MIN_POSITION_SPACING;
@@ -207,8 +210,9 @@ private:
     double myStdNotationStaffBelowSpacing;
 
     std::vector<StdNotationNote> myNotes;
-    std::vector<BeamGroup> myBeamGroups;
-    std::vector<NoteStem> myStems;
+    // Build a separate list of stems and beam groups for each voice.
+    std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> myBeamGroups;
+    std::array<std::vector<NoteStem>, Staff::NUM_VOICES> myStems;
 };
 
 typedef boost::shared_ptr<LayoutInfo> LayoutPtr;

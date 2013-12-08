@@ -18,17 +18,16 @@
 #ifndef PAINTERS_STDNOTATIONNOTE_H
 #define PAINTERS_STDNOTATIONNOTE_H
 
+#include <array>
 #include <painters/beamgroup.h>
 #include <painters/notestem.h>
 #include <QChar>
+#include <score/staff.h>
 #include <vector>
 
 struct LayoutInfo;
 class KeySignature;
-class Note;
-class Position;
 class Score;
-class Staff;
 class System;
 class TimeSignature;
 class Tuning;
@@ -49,12 +48,12 @@ public:
     StdNotationNote(const Position &pos, const Note &note,
                     const KeySignature &key, const Tuning &tuning, double y);
 
-    static void getNotesInStaff(const Score &score, const System &system,
-                                int systemIndex, const Staff &staff,
-                                int staffIndex, const LayoutInfo &layout,
-                                std::vector<StdNotationNote> &notes,
-                                std::vector<NoteStem> &stems,
-                                std::vector<BeamGroup> &groups);
+    static void getNotesInStaff(
+        const Score &score, const System &system, int systemIndex,
+        const Staff &staff, int staffIndex, const LayoutInfo &layout,
+        std::vector<StdNotationNote> &notes,
+        std::array<std::vector<NoteStem>, Staff::NUM_VOICES> &stemsByVoice,
+        std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> &groupsByVoice);
 
     double getY() const;
     QChar getNoteHeadSymbol() const;

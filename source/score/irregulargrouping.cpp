@@ -17,6 +17,8 @@
 
 #include "irregulargrouping.h"
 
+#include <ostream>
+
 IrregularGrouping::IrregularGrouping()
     : myPosition(0), myLength(0), myNotesPlayed(0), myNotesPlayedOver(0)
 {
@@ -78,3 +80,17 @@ void IrregularGrouping::setNotesPlayedOver(int notes)
     myNotesPlayedOver = notes;
 }
 
+std::ostream &operator<<(std::ostream &os, const IrregularGrouping &group)
+{
+    os << group.getNotesPlayed();
+
+    const int playedOver = group.getNotesPlayedOver();
+    // Check for a power of 2.
+    const bool isNormalGrouping = (playedOver & (playedOver - 1)) == 0;
+
+    // Display the ratio if there is an irregular or non-standard ratio.
+    if (!isNormalGrouping || group.getNotesPlayed() < playedOver)
+        os << ":" << playedOver;
+
+    return os;
+}

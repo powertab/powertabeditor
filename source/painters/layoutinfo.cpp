@@ -37,6 +37,8 @@ const double LayoutInfo::SYSTEM_SYMBOL_SPACING = 18;
 const double LayoutInfo::MIN_POSITION_SPACING = 3;
 const double LayoutInfo::TAB_SYMBOL_SPACING = 10;
 const double LayoutInfo::DEFAULT_POSITION_SPACING = 20;
+const double LayoutInfo::IRREGULAR_GROUP_HEIGHT_OFFSET = 6;
+const double LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING = 3;
 
 LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex,
                        const Staff &staff, int staffIndex)
@@ -63,10 +65,13 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex
 
     // Update the locations of the stems based on the spacing we just computed.
     const double offset = getTopStdNotationLine();
-    for (NoteStem &stem : myStems)
+    for (auto &stems : myStems)
     {
-        stem.setTop(stem.getTop() + offset);
-        stem.setBottom(stem.getBottom() + offset);
+        for (NoteStem &stem : stems)
+        {
+            stem.setTop(stem.getTop() + offset);
+            stem.setBottom(stem.getBottom() + offset);
+        }
     }
 }
 
@@ -411,8 +416,11 @@ void LayoutInfo::calculateStdNotationStaffAboveLayout()
 
     // Reserve space for notes and their stems.
     double minLocation = std::numeric_limits<double>::max();
-    for (const NoteStem &stem: myStems)
-        minLocation = std::min(minLocation, stem.getTop());
+    for (auto &stems : myStems)
+    {
+        for (const NoteStem &stem : stems)
+            minLocation = std::min(minLocation, stem.getTop());
+    }
 
     myStdNotationStaffAboveSpacing += -std::min(0.0, minLocation);
 }
@@ -426,8 +434,11 @@ void LayoutInfo::calculateStdNotationStaffBelowLayout()
 
     // Reserve space for notes and their stems.
     double maxLocation = -std::numeric_limits<double>::max();
-    for (const NoteStem &stem : myStems)
-        maxLocation = std::max(maxLocation, stem.getBottom());
+    for (auto &stems : myStems)
+    {
+        for (const NoteStem &stem : stems)
+            maxLocation = std::max(maxLocation, stem.getBottom());
+    }
 
     const double bottomBoundary = 5 * STD_NOTATION_LINE_SPACING;
     myStdNotationStaffBelowSpacing +=
@@ -695,14 +706,14 @@ const std::vector<StdNotationNote> &LayoutInfo::getStdNotationNotes() const
     return myNotes;
 }
 
-const std::vector<BeamGroup> &LayoutInfo::getBeamGroups() const
+const std::vector<BeamGroup> &LayoutInfo::getBeamGroups(int voice) const
 {
-    return myBeamGroups;
+    return myBeamGroups.at(voice);
 }
 
-const std::vector<NoteStem> &LayoutInfo::getNoteStems() const
+const std::vector<NoteStem> &LayoutInfo::getNoteStems(int voice) const
 {
-    return myStems;
+    return myStems.at(voice);
 }
 
 SymbolGroup::SymbolType SymbolGroup::getSymbolType() const

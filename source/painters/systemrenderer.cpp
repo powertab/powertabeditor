@@ -1158,8 +1158,6 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
     }
 
     const std::vector<StdNotationNote> &notes = layout.getStdNotationNotes();
-    const std::vector<BeamGroup> &beamGroups = layout.getBeamGroups();
-    const std::vector<NoteStem> &stems = layout.getNoteStems();
 
     std::map<int, double> minNoteLocations;
     std::map<int, double> maxNoteLocations;
@@ -1226,13 +1224,91 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
     drawLedgerLines(layout, minNoteLocations, maxNoteLocations, noteHeadWidths);
 
-    for (const BeamGroup &group : beamGroups)
+    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
     {
-        group.drawStems(myParentStaff, stems, myMusicNotationFont,
-                        myMusicFontMetrics, layout);
-    }
+        const std::vector<BeamGroup> &beamGroups = layout.getBeamGroups(voice);
+        const std::vector<NoteStem> &stems = layout.getNoteStems(voice);
 
-    // TODO - draw irregular groupings.
+        for (const BeamGroup &group : beamGroups)
+        {
+            group.drawStems(myParentStaff, stems, myMusicNotationFont,
+                            myMusicFontMetrics, layout);
+        }
+
+        drawIrregularGroups(staff.getVoices()[voice], stems);
+    }
+}
+
+void SystemRenderer::drawIrregularGroups(const Voice &voice,
+                                         const std::vector<NoteStem> &stems)
+{
+    for (const IrregularGrouping &group : voice.getIrregularGroupings())
+    {
+        NoteStem::StemType direction =
+            stems.at(group.getPosition()).getStemType();
+
+        auto begin = stems.begin() + group.getPosition();
+        auto end = begin + group.getLength();
+
+        double y1 = 0;
+        double y2 = 0;
+
+        if (direction == NoteStem::StemUp)
+        {
+            NoteStem highestStem = NoteStem::findHighestStem(begin, end);
+
+            y1 = y2 = highestStem.getTop() - LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
+            y2 -= LayoutInfo::IRREGULAR_GROUP_HEIGHT_OFFSET;
+        }
+        else
+        {
+            NoteStem lowestStem = NoteStem::findLowestStem(begin, end);
+
+            y1 = y2 = lowestStem.getBottom() + LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
+            y2 += LayoutInfo::IRREGULAR_GROUP_HEIGHT_OFFSET;
+        }
+
+        const double leftX = begin->getX();
+        const double rightX = (end - 1)->getX();
+
+        // Draw the value of the irregular grouping.
+        const QString text = QString::fromStdString(
+                    boost::lexical_cast<std::string>(group));
+
+        QFont font = myMusicNotationFont;
+        font.setItalic(true);
+        font.setPixelSize(18);
+
+        QFontMetricsF fm(font);
+        const double textWidth = fm.width(text);
+        const double centreX = leftX + (rightX - (leftX + textWidth)) / 2.0;
+
+        QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+        textItem->setPos(centreX, y2 - font.pixelSize());
+        textItem->setFont(font);
+        textItem->setParentItem(myParentStaff);
+
+        const double lineWidth =
+            std::max(0.0, 0.5 * (rightX - leftX - textWidth - 10));
+
+        // Draw the two horizontal line segments across the group, and the two
+        // vertical lines on either end.
+        QGraphicsLineItem *horizLine1 = new QGraphicsLineItem();
+        horizLine1->setLine(leftX, y2, leftX + lineWidth, y2);
+        horizLine1->setParentItem(myParentStaff);
+
+        QGraphicsLineItem *horizLine2 = new QGraphicsLineItem();
+        horizLine2->setLine(rightX - lineWidth, y2, rightX, y2);
+        horizLine2->setParentItem(myParentStaff);
+
+        QGraphicsLineItem *vertLine1 = new QGraphicsLineItem();
+        vertLine1->setLine(leftX, y1, leftX, y2);
+        vertLine1->setParentItem(myParentStaff);
+
+        QGraphicsLineItem *vertLine2 = new QGraphicsLineItem();
+        vertLine2->setLine(rightX, y1, rightX, y2);
+        vertLine2->setParentItem(myParentStaff);
+    }
 }
 
 void SystemRenderer::drawMultiBarRest(const System &system,

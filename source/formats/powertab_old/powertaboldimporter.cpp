@@ -584,7 +584,7 @@ int PowerTabOldImporter::convert(
             const auto &position = *oldStaff.GetPosition(voice, i);
             if (position.IsIrregularGroupingStart())
             {
-                startPos = position.GetPosition();
+                startPos = i;
                 positionCount = 1;
                 position.GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
             }

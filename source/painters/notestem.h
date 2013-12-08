@@ -68,16 +68,16 @@ public:
     template <typename Iterator>
     static StemType formatGroup(Iterator begin, Iterator end);
 
-private:
-    /// Sets a common direction for the stems, and returns that direction.
-    template <typename Iterator>
-    static StemType computeStemDirection(Iterator begin, Iterator end);
-
     template <typename Iterator>
     static const NoteStem &findHighestStem(Iterator begin, Iterator end);
 
     template <typename Iterator>
     static const NoteStem &findLowestStem(Iterator begin, Iterator end);
+
+private:
+    /// Sets a common direction for the stems, and returns that direction.
+    template <typename Iterator>
+    static StemType computeStemDirection(Iterator begin, Iterator end);
 
     const Position *myPosition;
     double myX;

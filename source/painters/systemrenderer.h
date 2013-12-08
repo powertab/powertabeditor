@@ -132,6 +132,10 @@ private:
     void drawStdNotation(const System &system, const Staff &staff,
                          const LayoutInfo &layout);
 
+    /// Draws all irregular groups in the voice.
+    void drawIrregularGroups(const Voice &voice,
+                             const std::vector<NoteStem> &stems);
+
     /// Draws a multi-bar rest symbol.
     void drawMultiBarRest(const System &system, const Barline &leftBar,
                           const LayoutInfo &layout, int measureCount);
