@@ -38,6 +38,19 @@ namespace ScoreUtils {
         return nullptr;
     }
 
+    template <typename T>
+    int findIndexByPosition(const boost::iterator_range<T> &range, int position)
+    {
+        size_t n = range.size();
+        for (size_t i = 0; i < n; ++i)
+        {
+            if (range[i].getPosition() == position)
+                return i;
+        }
+
+        return -1;
+    }
+
     // Some helper methods to reduce code duplication.
 
     /// Sorts objects by their positions in the system.

@@ -1244,10 +1244,12 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
 {
     for (const IrregularGrouping &group : voice.getIrregularGroupings())
     {
-        NoteStem::StemType direction =
-            stems.at(group.getPosition()).getStemType();
+        const int index = ScoreUtils::findIndexByPosition(voice.getPositions(),
+                                                          group.getPosition());
 
-        auto begin = stems.begin() + group.getPosition();
+        NoteStem::StemType direction = stems.at(index).getStemType();
+
+        auto begin = stems.begin() + index;
         auto end = begin + group.getLength();
 
         double y1 = 0;

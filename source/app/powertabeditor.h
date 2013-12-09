@@ -178,6 +178,8 @@ private slots:
     void removeDot();
     /// Toggles whether the current note is tied.
     void editTiedNote();
+    /// Adds or removes an irregular grouping for the selected notes.
+    void editIrregularGrouping(bool setAsTriplet = false);
 
     /// Inserts a rest at the current location.
     void addRest();
@@ -411,7 +413,9 @@ private:
     Command *myOctave8vaCommand;
     Command *myOctave15maCommand;
     Command *myOctave8vbCommand;
-    Command *myOctave15mbCommand;    
+    Command *myOctave15mbCommand;
+    Command *myTripletCommand;
+    Command *myIrregularGroupingCommand;
 
     QMenu *myRestsMenu;
     /// Used to ensure that only one duration option is checked at a time.
@@ -492,7 +496,6 @@ private slots:
     void rewindPlaybackToStart();
 
     void editVolumeSwell();
-    void editIrregularGrouping(bool setAsTriplet = false);
 
     void addGuitar();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
@@ -504,9 +507,6 @@ private:
 
     Command* shiftTabNumUp; // shift tab numbers up/down by a string
     Command* shiftTabNumDown;
-
-    Command* tripletAct;
-    Command* irregularGroupingAct;
 
     Command* volumeSwellAct;
 

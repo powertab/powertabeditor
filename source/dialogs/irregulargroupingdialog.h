@@ -15,11 +15,10 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef IRREGULARGROUPINGDIALOG_H
-#define IRREGULARGROUPINGDIALOG_H
+#ifndef DIALOGS_IRREGULARGROUPINGDIALOG_H
+#define DIALOGS_IRREGULARGROUPINGDIALOG_H
 
 #include <QDialog>
-#include <boost/cstdint.hpp>
 
 namespace Ui {
     class IrregularGroupingDialog;
@@ -27,17 +26,15 @@ namespace Ui {
 
 class IrregularGroupingDialog : public QDialog
 {
-    Q_OBJECT
-
 public:
     explicit IrregularGroupingDialog(QWidget *parent);
     ~IrregularGroupingDialog();
 
-    uint8_t notesPlayed() const;
-    uint8_t notesPlayedOver() const;
+    int getNotesPlayed() const;
+    int getNotesPlayedOver() const;
 
 private:
     Ui::IrregularGroupingDialog *ui;
 };
 
-#endif // IRREGULARGROUPINGDIALOG_H
+#endif

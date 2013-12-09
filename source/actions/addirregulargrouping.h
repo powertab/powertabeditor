@@ -15,28 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ADDIRREGULARGROUPING_H
-#define ADDIRREGULARGROUPING_H
+#ifndef ACTIONS_ADDIRREGULARGROUPING_H
+#define ACTIONS_ADDIRREGULARGROUPING_H
 
 #include <QUndoCommand>
-#include <vector>
-#include <boost/cstdint.hpp>
-
-class Position;
+#include <score/irregulargrouping.h>
+#include <score/scorelocation.h>
 
 class AddIrregularGrouping : public QUndoCommand
 {
 public:
-    AddIrregularGrouping(const std::vector<Position*>& positions,
-                         uint8_t notesPlayed, uint8_t notesPlayedOver);
+    AddIrregularGrouping(const ScoreLocation &location,
+                         const IrregularGrouping &group);
 
-    void redo();
-    void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
-    const std::vector<Position*> positions;
-    const uint8_t notesPlayed;
-    const uint8_t notesPlayedOver;
+    ScoreLocation myLocation;
+    const IrregularGrouping myGroup;
 };
 
-#endif // ADDIRREGULARGROUPING_H
+#endif

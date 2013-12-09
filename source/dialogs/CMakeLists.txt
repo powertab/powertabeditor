@@ -9,7 +9,7 @@ set(FORMS
     fileinformationdialog.ui
     gotobarlinedialog.ui
     gotorehearsalsigndialog.ui
-    #irregulargroupingdialog.ui
+    irregulargroupingdialog.ui
     keyboardsettingsdialog.ui
     keysignaturedialog.ui
     playerchangedialog.ui
@@ -37,7 +37,7 @@ add_library(ptedialogs
     fileinformationdialog.cpp
     gotobarlinedialog.cpp
     gotorehearsalsigndialog.cpp
-    #irregulargroupingdialog.cpp
+    irregulargroupingdialog.cpp
     keyboardsettingsdialog.cpp
     keysignaturedialog.cpp
     playerchangedialog.cpp

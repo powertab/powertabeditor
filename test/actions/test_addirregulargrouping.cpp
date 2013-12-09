@@ -16,40 +16,25 @@
 */
 
 #include <catch.hpp>
-#include <boost/foreach.hpp>
 
 #include <actions/addirregulargrouping.h>
-#include <powertabdocument/position.h>
+#include <score/score.h>
 
 TEST_CASE("Actions/AddIrregularGrouping", "")
 {
-    std::vector<Position*> positions;
+    Score score;
+    System system;
+    Staff staff;
+    system.insertStaff(staff);
+    score.insertSystem(system);
 
-    Position pos1(0, 1, 0), pos2(1, 1, 0), pos3(2, 1, 0), pos4(3, 1, 0);
-    positions.push_back(&pos1);
-    positions.push_back(&pos2);
-    positions.push_back(&pos3);
-    positions.push_back(&pos4);
-
-    AddIrregularGrouping action(positions, 3, 2);
+    IrregularGrouping group(17, 5, 3, 2);
+    ScoreLocation location(score, 0, 0, 6);
+    AddIrregularGrouping action(location, group);
 
     action.redo();
-    BOOST_FOREACH(const Position* pos, positions)
-    {
-        REQUIRE(pos->HasIrregularGroupingTiming());
-    }
-
-    REQUIRE(pos1.IsIrregularGroupingStart());
-    REQUIRE(pos2.IsIrregularGroupingMiddle());
-    REQUIRE(pos3.IsIrregularGroupingMiddle());
-    REQUIRE(pos4.IsIrregularGroupingEnd());
+    REQUIRE(location.getVoice().getIrregularGroupings().size() == 1);
 
     action.undo();
-    BOOST_FOREACH(const Position* pos, positions)
-    {
-        REQUIRE(!pos->HasIrregularGroupingTiming());
-        REQUIRE(!pos->IsIrregularGroupingStart());
-        REQUIRE(!pos->IsIrregularGroupingMiddle());
-        REQUIRE(!pos->IsIrregularGroupingEnd());
-    }
+    REQUIRE(location.getVoice().getIrregularGroupings().size() == 0);
 }

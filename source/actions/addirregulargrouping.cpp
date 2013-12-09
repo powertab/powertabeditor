@@ -17,58 +17,24 @@
 
 #include "addirregulargrouping.h"
 
-#include <powertabdocument/position.h>
+#include <score/voice.h>
 
-AddIrregularGrouping::AddIrregularGrouping(const std::vector<Position*>& positions,
-                                           uint8_t notesPlayed, uint8_t notesPlayedOver) :
-    positions(positions),
-    notesPlayed(notesPlayed),
-    notesPlayedOver(notesPlayedOver)
+AddIrregularGrouping::AddIrregularGrouping(const ScoreLocation &location,
+                                           const IrregularGrouping &group)
+    : myLocation(location), myGroup(group)
 {
-    if (notesPlayed == 3 && notesPlayedOver == 2)
-    {
+    if (group.getNotesPlayed() == 3 && group.getNotesPlayed() == 2)
         setText(QObject::tr("Add Triplet"));
-    }
     else
-    {
         setText(QObject::tr("Add Irregular Grouping"));
-    }
 }
 
-/// Set all notes to have the irregular grouping, and flag each note as
-/// the beginning/middle/end of the group
 void AddIrregularGrouping::redo()
 {
-    for (size_t i = 0; i < positions.size(); i++)
-    {
-        Position* pos = positions[i];
-        pos->SetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
-
-        if (i == 0)
-        {
-            pos->SetIrregularGroupingStart();
-        }
-        else if (i == positions.size() - 1)
-        {
-            pos->SetIrregularGroupingEnd();
-        }
-        else
-        {
-            pos->SetIrregularGroupingMiddle();
-        }
-    }
+    myLocation.getVoice().insertIrregularGrouping(myGroup);
 }
 
-/// Clear all properties related to irregular groupings
 void AddIrregularGrouping::undo()
 {
-    for (size_t i = 0; i < positions.size(); i++)
-    {
-        Position* pos = positions[i];
-
-        pos->ClearIrregularGroupingTiming();
-        pos->SetIrregularGroupingStart(false);
-        pos->SetIrregularGroupingMiddle(false);
-        pos->SetIrregularGroupingEnd(false);
-    }
+    myLocation.getVoice().removeIrregularGrouping(myGroup);
 }

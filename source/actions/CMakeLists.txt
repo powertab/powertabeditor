@@ -8,7 +8,7 @@ add_library(pteactions
     adddirection.cpp
     adddynamic.cpp
     #addguitar.cpp
-    #addirregulargrouping.cpp
+    addirregulargrouping.cpp
     addnote.cpp
     addnoteproperty.cpp
     addplayerchange.cpp

@@ -18,19 +18,16 @@
 #include "irregulargroupingdialog.h"
 #include "ui_irregulargroupingdialog.h"
 
-#include <powertabdocument/position.h>
-
-IrregularGroupingDialog::IrregularGroupingDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::IrregularGroupingDialog)
+IrregularGroupingDialog::IrregularGroupingDialog(QWidget *parent)
+    : QDialog(parent), ui(new Ui::IrregularGroupingDialog)
 {
     ui->setupUi(this);
 
-    ui->notesPlayedSpinBox->setMinimum(Position::MIN_IRREGULAR_GROUPING_NOTES_PLAYED);
-    ui->notesPlayedSpinBox->setMaximum(Position::MAX_IRREGULAR_GROUPING_NOTES_PLAYED);
+    ui->notesPlayedSpinBox->setMinimum(2);
+    ui->notesPlayedSpinBox->setMaximum(16);
 
-    ui->notesPlayedOverSpinBox->setMinimum(Position::MIN_IRREGULAR_GROUPING_NOTES_PLAYED_OVER);
-    ui->notesPlayedOverSpinBox->setMaximum(Position::MAX_IRREGULAR_GROUPING_NOTES_PLAYED_OVER);
+    ui->notesPlayedOverSpinBox->setMinimum(2);
+    ui->notesPlayedOverSpinBox->setMaximum(8);
 
     ui->notesPlayedSpinBox->setValue(6);
     ui->notesPlayedOverSpinBox->setValue(4);
@@ -41,12 +38,12 @@ IrregularGroupingDialog::~IrregularGroupingDialog()
     delete ui;
 }
 
-uint8_t IrregularGroupingDialog::notesPlayed() const
+int IrregularGroupingDialog::getNotesPlayed() const
 {
     return ui->notesPlayedSpinBox->value();
 }
 
-uint8_t IrregularGroupingDialog::notesPlayedOver() const
+int IrregularGroupingDialog::getNotesPlayedOver() const
 {
     return ui->notesPlayedOverSpinBox->value();
 }

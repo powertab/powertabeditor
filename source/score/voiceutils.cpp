@@ -18,6 +18,7 @@
 #include "voiceutils.h"
 
 #include <boost/range/adaptor/reversed.hpp>
+#include "utils.h"
 
 namespace VoiceUtils
 {
@@ -98,4 +99,25 @@ bool hasNoteWithHammerOn(const Voice &voice, const Position &pos)
 
     return false;
 }
+
+std::vector<const IrregularGrouping *> getIrregularGroupsInRange(
+    const Voice &voice, int left, int right)
+{
+    std::vector<const IrregularGrouping *> groups;
+
+    for (const IrregularGrouping &group : voice.getIrregularGroupings())
+    {
+        const int groupLeft = group.getPosition();
+        const int groupRight =
+            voice.getPositions()[ScoreUtils::findIndexByPosition(
+                                     voice.getPositions(), groupLeft) +
+                                 group.getLength() - 1].getPosition();
+
+        if (groupLeft <= right && groupRight >= left)
+            groups.push_back(&group);
+    }
+
+    return groups;
+}
+
 }

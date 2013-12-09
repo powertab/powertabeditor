@@ -23,6 +23,7 @@
 #include <actions/addchordtext.h>
 #include <actions/adddirection.h>
 #include <actions/adddynamic.h>
+#include <actions/addirregulargrouping.h>
 #include <actions/addnote.h>
 #include <actions/addnoteproperty.h>
 #include <actions/addplayerchange.h>
@@ -88,6 +89,7 @@
 #include <dialogs/fileinformationdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
+#include <dialogs/irregulargroupingdialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/keysignaturedialog.h>
 #include <dialogs/playerchangedialog.h>
@@ -843,6 +845,42 @@ void PowerTabEditor::editTiedNote()
     editSimpleNoteProperty(myTieCommand, Note::Tied);
 }
 
+void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
+{
+    ScoreLocation &location = getLocation();
+    std::vector<Position *> selectedPositions = location.getSelectedPositions();
+    Q_ASSERT(!selectedPositions.empty());
+
+    if (selectedPositions.size() == 1)
+    {
+        // TODO - remove any irregular groupings.
+        return;
+    }
+    else
+    {
+        IrregularGrouping group(selectedPositions.front()->getPosition(),
+                                selectedPositions.size(), 3, 2);
+
+        if (setAsTriplet)
+        {
+            myUndoManager->push(new AddIrregularGrouping(location, group),
+                                location.getSystemIndex());
+        }
+        else
+        {
+            IrregularGroupingDialog dialog(this);
+
+            if (dialog.exec() == QDialog::Accepted)
+            {
+                group.setNotesPlayed(dialog.getNotesPlayed());
+                group.setNotesPlayedOver(dialog.getNotesPlayedOver());
+                myUndoManager->push(new AddIrregularGrouping(location, group),
+                                    location.getSystemIndex());
+            }
+        }
+    }
+}
+
 void PowerTabEditor::addRest()
 {
     editRest(myActiveDurationType);
@@ -1594,17 +1632,19 @@ void PowerTabEditor::createCommands()
     createNotePropertyCommand(myOctave15mbCommand, tr("15mb"),
                               "Octave15mb.Octave8va", QKeySequence(),
                               Note::Octave15mb);
-#if 0
-    tripletAct = new Command(tr("Triplet"), "Note.Triplet", Qt::Key_E, this);
-    tripletAct->setCheckable(true);
-    sigfwd::connect(tripletAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::editIrregularGrouping, this, true));
 
-    irregularGroupingAct = new Command(tr("Irregular Grouping"), "Note.IrregularGrouping",
-                                       Qt::Key_I, this);
-    irregularGroupingAct->setCheckable(true);
-    connect(irregularGroupingAct, SIGNAL(triggered()), this, SLOT(editIrregularGrouping()));
-#endif
+    myTripletCommand = new Command(tr("Triplet"), "Note.Triplet", Qt::Key_E, this);
+    myTripletCommand->setCheckable(true);
+    connect(myTripletCommand, &QAction::triggered, [=]() {
+        editIrregularGrouping(true);
+    });
+
+    myIrregularGroupingCommand = new Command(
+        tr("Irregular Grouping"), "Note.IrregularGrouping", Qt::Key_I, this);
+    myIrregularGroupingCommand->setCheckable(true);
+    connect(myIrregularGroupingCommand, &QAction::triggered, [=]() {
+        editIrregularGrouping(false);
+    });
 
     // Rest Actions.
     myRestDurationGroup = new QActionGroup(this);
@@ -2036,10 +2076,9 @@ void PowerTabEditor::createMenus()
     myOctaveMenu->addAction(myOctave15maCommand);
     myOctaveMenu->addAction(myOctave8vbCommand);
     myOctaveMenu->addAction(myOctave15mbCommand);
-#if 0
-    myNotesMenu->addAction(tripletAct);
-    myNotesMenu->addAction(irregularGroupingAct);
-#endif
+
+    myNotesMenu->addAction(myTripletCommand);
+    myNotesMenu->addAction(myIrregularGroupingCommand);
 
     // Rests Menu.
     myRestsMenu = menuBar()->addMenu(tr("Rests"));
@@ -2741,55 +2780,6 @@ void PowerTabEditor::editVolumeSwell()
     {
         undoManager->push(new RemoveVolumeSwell(position),
                           caret->getCurrentSystemIndex());
-    }
-}
-
-void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
-{
-    const Caret* caret = getCurrentScoreArea()->getCaret();
-    Position* selectedPosition = caret->getCurrentPosition();
-
-    if (selectedPosition->HasIrregularGroupingTiming())
-    {
-        undoManager->push(new RemoveIrregularGrouping(caret->getCurrentStaff(),
-                                                      selectedPosition,
-                                                      caret->getCurrentVoice()),
-                          caret->getCurrentSystemIndex());
-    }
-    else
-    {
-        std::vector<Position*> selectedPositions = getSelectedPositions();
-
-        // check if we are going to be adding or removing an irregular grouping
-        // - if one of the selected notes is part of an irregular group, remove the group
-        for (size_t i = 0; i < selectedPositions.size(); i++)
-        {
-            if (selectedPositions[i]->HasIrregularGroupingTiming())
-            {
-                QMessageBox msgBox;
-                msgBox.setText(tr("One or more notes is already part of an irregular group!!!"));
-                msgBox.exec();
-                return;
-            }
-        }
-
-        if (setAsTriplet)
-        {
-            undoManager->push(new AddIrregularGrouping(selectedPositions, 3, 2),
-                              caret->getCurrentSystemIndex());
-        }
-        else
-        {
-            IrregularGroupingDialog dialog(this);
-
-            if (dialog.exec() == QDialog::Accepted)
-            {
-                undoManager->push(new AddIrregularGrouping(selectedPositions,
-                                                           dialog.notesPlayed(),
-                                                           dialog.notesPlayedOver()),
-                                  caret->getCurrentSystemIndex());
-            }
-        }
     }
 }
 

@@ -62,6 +62,10 @@ bool canHammerOnOrPullOff(const Voice &voice, int position, const Note &note);
 
 /// Determines whether the position contains a note with a hammeron.
 bool hasNoteWithHammerOn(const Voice &voice, const Position &pos);
+
+/// Finds all irregular groups that overlap with the given range of positions.
+std::vector<const IrregularGrouping *> getIrregularGroupsInRange(
+    const Voice &voice, int left, int right);
 }
 
 #endif
