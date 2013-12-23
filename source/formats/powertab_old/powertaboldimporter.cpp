@@ -385,7 +385,7 @@ void PowerTabOldImporter::convert(
 void PowerTabOldImporter::convert(
         const PowerTabDocument::Direction &oldDirection, Direction &direction)
 {
-    direction.setPosition(oldDirection.GetPosition());
+    direction.setPosition(static_cast<int>(oldDirection.GetPosition()));
 
     for (size_t i = 0; i < oldDirection.GetSymbolCount(); ++i)
     {
@@ -550,10 +550,14 @@ int PowerTabOldImporter::convert(
     // Import dynamics.
     for (auto &dynamic : dynamics)
     {
-        Dynamic newDynamic;
-        convert(*dynamic, newDynamic);
-        staff.insertDynamic(newDynamic);
-        lastPosition = std::max(lastPosition, newDynamic.getPosition());
+        // Ignore dynamics for rhythm slashes.
+        if (dynamic->IsStaffVolumeSet())
+        {
+            Dynamic newDynamic;
+            convert(*dynamic, newDynamic);
+            staff.insertDynamic(newDynamic);
+            lastPosition = std::max(lastPosition, newDynamic.getPosition());
+        }
     }
 
     // Import positions.
@@ -767,7 +771,8 @@ PlayerChange getPlayerChange(const ActivePlayers &activePlayers,
     PlayerChange change;
     change.setPosition(currentPosition);
 
-    for (size_t player = 0; player < activePlayers.size(); ++player)
+    for (int player = 0; player < static_cast<int>(activePlayers.size());
+         ++player)
     {
         const int staff = activePlayers[player];
         if (staff >= 0)
@@ -803,12 +808,16 @@ void PowerTabOldImporter::convertGuitarIns(
         // the guitar ins from several staves.
         for (auto &guitarIn : guitarIns)
         {
+            // For now, ignore guitar ins that only affect rhythm slashes.
+            if (!guitarIn->HasStaffGuitarsSet())
+                continue;
+
             // After combining all guitar in's at a position, write out a player
             // change.
             if (guitarIn->GetPosition() != currentPosition)
             {
-                score.getSystems()[i].insertPlayerChange(
-                            getPlayerChange(activePlayers, currentPosition));
+                score.getSystems()[i].insertPlayerChange(getPlayerChange(
+                    activePlayers, static_cast<int>(currentPosition)));
             }
 
             // Clear out any players that are currently active for this staff.
@@ -833,6 +842,6 @@ void PowerTabOldImporter::convertGuitarIns(
         // After processing all of the guitar ins in the system, write out a
         // final player change.
         score.getSystems()[i].insertPlayerChange(
-                    getPlayerChange(activePlayers, currentPosition));
+            getPlayerChange(activePlayers, static_cast<int>(currentPosition)));
     }
 }
