@@ -50,6 +50,7 @@
 #include <actions/removechordtext.h>
 #include <actions/removedirection.h>
 #include <actions/removedynamic.h>
+#include <actions/removeirregulargrouping.h>
 #include <actions/removenote.h>
 #include <actions/removenoteproperty.h>
 #include <actions/removeplayerchange.h>
@@ -853,13 +854,23 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
 
     if (selectedPositions.size() == 1)
     {
-        // TODO - remove any irregular groupings.
+        // Remove an irregular group from this position.
+        const int position = selectedPositions[0]->getPosition();
+        auto groups = VoiceUtils::getIrregularGroupsInRange(location.getVoice(),
+                                                            position, position);
+        if (!groups.empty())
+        {
+            myUndoManager->push(
+                new RemoveIrregularGrouping(location, *groups.back()),
+                location.getSystemIndex());
+        }
         return;
     }
     else
     {
         IrregularGrouping group(selectedPositions.front()->getPosition(),
-                                selectedPositions.size(), 3, 2);
+                                static_cast<int>(selectedPositions.size()), 3,
+                                2);
 
         if (setAsTriplet)
         {
@@ -1634,14 +1645,12 @@ void PowerTabEditor::createCommands()
                               Note::Octave15mb);
 
     myTripletCommand = new Command(tr("Triplet"), "Note.Triplet", Qt::Key_E, this);
-    myTripletCommand->setCheckable(true);
     connect(myTripletCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(true);
     });
 
     myIrregularGroupingCommand = new Command(
         tr("Irregular Grouping"), "Note.IrregularGrouping", Qt::Key_I, this);
-    myIrregularGroupingCommand->setCheckable(true);
     connect(myIrregularGroupingCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(false);
     });
@@ -2395,6 +2404,9 @@ void PowerTabEditor::updateCommands()
     updateNoteProperty(myOctave8vbCommand, note, Note::Octave8vb);
     updateNoteProperty(myOctave15maCommand, note, Note::Octave15ma);
     updateNoteProperty(myOctave15mbCommand, note, Note::Octave15mb);
+
+    myTripletCommand->setEnabled(pos);
+    myIrregularGroupingCommand->setEnabled(pos);
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());

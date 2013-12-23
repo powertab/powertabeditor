@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -17,54 +17,26 @@
 
 #include <catch.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <actions/removeirregulargrouping.h>
-#include <powertabdocument/staff.h>
-#include <powertabdocument/position.h>
+#include <score/score.h>
 
 TEST_CASE("Actions/RemoveIrregularGrouping", "")
 {
-    boost::shared_ptr<Staff> staff(new Staff);
+    Score score;
+    System system;
+    Staff staff;
+    system.insertStaff(staff);
+    score.insertSystem(system);
 
-    staff->InsertPosition(0, new Position(0, 1, 0));
-    staff->InsertPosition(0, new Position(1, 1, 0));
-    staff->InsertPosition(0, new Position(2, 1, 0));
-    staff->InsertPosition(0, new Position(3, 1, 0));
-    staff->InsertPosition(0, new Position(4, 1, 0));
-    staff->InsertPosition(0, new Position(5, 1, 0));
+    IrregularGrouping group(17, 5, 3, 2);
+    ScoreLocation location(score, 0, 0, 6);
+    location.getVoice().insertIrregularGrouping(group);
 
-    for (size_t i = 1; i <= 4; i++)
-    {
-        staff->GetPosition(0, i)->SetIrregularGroupingTiming(3, 2);
-    }
-
-    staff->GetPosition(0, 1)->SetIrregularGroupingStart();
-    staff->GetPosition(0, 2)->SetIrregularGroupingMiddle();
-    staff->GetPosition(0, 3)->SetIrregularGroupingMiddle();
-    staff->GetPosition(0, 4)->SetIrregularGroupingEnd();
-
-    RemoveIrregularGrouping action(staff, staff->GetPosition(0, 3), 0);
+    RemoveIrregularGrouping action(location, group);
 
     action.redo();
-
-    for (size_t i = 0; i < staff->GetPositionCount(0); i++)
-    {
-        REQUIRE(!staff->GetPosition(0, i)->HasIrregularGroupingTiming());
-        REQUIRE(!staff->GetPosition(0, i)->IsIrregularGroupingStart());
-        REQUIRE(!staff->GetPosition(0, i)->IsIrregularGroupingMiddle());
-        REQUIRE(!staff->GetPosition(0, i)->IsIrregularGroupingEnd());
-    }
+    REQUIRE(location.getVoice().getIrregularGroupings().size() == 0);
 
     action.undo();
-
-    for (size_t i = 1; i <= 4; i++)
-    {
-        REQUIRE(staff->GetPosition(0, i)->HasIrregularGroupingTiming());
-    }
-
-    REQUIRE(staff->GetPosition(0, 1)->IsIrregularGroupingStart());
-    REQUIRE(staff->GetPosition(0, 2)->IsIrregularGroupingMiddle());
-    REQUIRE(staff->GetPosition(0, 3)->IsIrregularGroupingMiddle());
-    REQUIRE(staff->GetPosition(0, 4)->IsIrregularGroupingEnd());
+    REQUIRE(location.getVoice().getIrregularGroupings().size() == 1);
 }

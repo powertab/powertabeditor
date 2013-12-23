@@ -38,7 +38,7 @@ add_library(pteactions
     removechordtext.cpp
     removedirection.cpp
     removedynamic.cpp
-    #removeirregulargrouping.cpp
+    removeirregulargrouping.cpp
     removenote.cpp
     removenoteproperty.cpp
     removeplayerchange.cpp

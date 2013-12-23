@@ -15,35 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef REMOVEIRREGULARGROUPING_H
-#define REMOVEIRREGULARGROUPING_H
+#ifndef ACTIONS_REMOVEIRREGULARGROUPING_H
+#define ACTIONS_REMOVEIRREGULARGROUPING_H
 
 #include <QUndoCommand>
-#include <boost/cstdint.hpp>
-#include <boost/shared_ptr.hpp>
-
-class Staff;
-class Position;
+#include <score/irregulargrouping.h>
+#include <score/scorelocation.h>
 
 class RemoveIrregularGrouping : public QUndoCommand
 {
 public:
-    RemoveIrregularGrouping(boost::shared_ptr<Staff> staff, Position* position,
-                            uint32_t voice);
+    RemoveIrregularGrouping(const ScoreLocation &location,
+                            const IrregularGrouping &group);
 
-    void redo();
-    void undo();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
-    boost::shared_ptr<Staff> staff;
-    Position* position;
-    const uint32_t voice;
-    const std::pair<size_t, size_t> irregularGroupBounds;
-    uint8_t notesPlayed, notesPlayedOver;
-
-    std::pair<size_t, size_t> findIrregularGroup() const;
-    size_t findGroupEnd(size_t startIndex) const;
-    size_t findGroupStart(size_t startIndex) const;
+    ScoreLocation myLocation;
+    const IrregularGrouping myGroup;
 };
 
-#endif // REMOVEIRREGULARGROUPING_H
+#endif
