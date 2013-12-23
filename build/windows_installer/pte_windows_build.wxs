@@ -85,9 +85,6 @@
       <Component Id="boost_iostreams" Guid="3224E977-9137-43A1-B7EC-6AA6F276BA5C">
         <File Source="$(var.BinDir)/boost_iostreams-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_serialization" Guid="F19DF809-23D0-4A92-A35E-FB0ED9280247">
-        <File Source="$(var.BinDir)/boost_serialization-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
       <Component Id="boost_zlib" Guid="47D475EF-FF77-43A2-9225-1BF1040BC15B">
         <File Source="$(var.BinDir)/boost_zlib-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
       </Component>
