@@ -59,6 +59,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(DEBUG_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/Debug)
     set(RELEASE_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/Release)
     set(QT_BIN_DIR ${Qt5Core_DIR}/../../../bin)
+    set(QT_PLATFORM_PLUGINS_DIR ${Qt5Core_DIR}/../../../plugins/platforms)
     get_filename_component(BOOST_LIB_DIR ${Boost_DATE_TIME_LIBRARY_DEBUG} PATH)
     get_filename_component(DT_NAME_DEBUG ${Boost_DATE_TIME_LIBRARY_DEBUG} NAME_WE)
     get_filename_component(IO_NAME_DEBUG ${Boost_IOSTREAMS_LIBRARY_DEBUG} NAME_WE)
@@ -77,6 +78,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuin51.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuuc51.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icudt51.dll ${DEBUG_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E make_directory ${DEBUG_BIN_DIR}/platforms
+	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_PLATFORM_PLUGINS_DIR}/qwindowsd.dll ${DEBUG_BIN_DIR}/platforms
 
 	    COMMAND ${CMAKE_COMMAND} -E make_directory ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Widgets.dll ${RELEASE_BIN_DIR}
@@ -87,6 +90,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuin51.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuuc51.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icudt51.dll ${RELEASE_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E make_directory ${RELEASE_BIN_DIR}/platforms
+	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_PLATFORM_PLUGINS_DIR}/qwindows.dll ${RELEASE_BIN_DIR}/platforms
 
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${DT_NAME_DEBUG}.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${IO_NAME_DEBUG}.dll ${DEBUG_BIN_DIR}

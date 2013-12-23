@@ -19,6 +19,7 @@
 
 		<Feature Id="Complete" Level="1">
 			<ComponentGroupRef Id="Binaries" />
+      <ComponentGroupRef Id="PlatformBinaries" />
       <ComponentGroupRef Id="DataFiles" />
 		</Feature>
 
@@ -31,6 +32,7 @@
 			<Directory Id="ProgramFilesFolder">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
           <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+            <Directory Id="PlatformBinariesDir" Name="platforms" />
             <Directory Id="DataDir" Name="data" />
           </Directory>
         </Directory>
@@ -113,6 +115,13 @@
       </Component>
       <Component Id="Qt5Widgets" Guid="00FBE86A-91AA-4E90-A99F-9C7CE76F1874">
         <File Source="$(var.BinDir)/Qt5Widgets.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+    </ComponentGroup>
+    
+    <!-- Platform plugins -->
+    <ComponentGroup Id="PlatformBinaries" Directory="PlatformBinariesDir">
+      <Component Guid="8DB2373E-9319-475E-897E-47F2BE4CCA30">
+        <File Source="$(var.BinDir)/platforms/qwindows.dll" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
     
