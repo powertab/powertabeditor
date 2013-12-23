@@ -76,27 +76,28 @@ void MidiPlayer::run()
 {
     setIsPlaying(true);
 
-    boost::ptr_list<MidiEvent> eventList;
+    EventList eventList;
     generateEvents(eventList);
 
     // Sort the events by their start time, and play them in order.
-    eventList.sort();
+    std::stable_sort(
+        eventList.begin(), eventList.end(),
+        [](const std::unique_ptr<MidiEvent> & e1,
+           const std::unique_ptr<MidiEvent> & e2) { return *e1 < *e2; });
     playMidiEvents(eventList);
 }
 
 void MidiPlayer::setIsPlaying(bool set)
 {
-    QMutexLocker lock(&myMutex);
     myIsPlaying = set;
 }
 
 bool MidiPlayer::isPlaying() const
 {
-    QMutexLocker lock(&myMutex);
     return myIsPlaying;
 }
 
-void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
+void MidiPlayer::generateEvents(EventList &eventList)
 {
     double time = 0;
 
@@ -134,9 +135,9 @@ void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
             // for the left bar so that repeats, etc. are triggered.
             if (time == barStartTime)
             {
-                eventList.push_back(new DummyEvent(METRONOME_CHANNEL, time, 0,
-                                                   leftBar.getPosition(),
-                                                   systemIndex));
+                eventList.emplace_back(new DummyEvent(METRONOME_CHANNEL, time,
+                                                      0, leftBar.getPosition(),
+                                                      systemIndex));
                 continue;
             }
 
@@ -148,10 +149,9 @@ void MidiPlayer::generateEvents(boost::ptr_list<MidiEvent> &eventList)
         // Add event at the end bar's position in order to trigger any
         // repeats or alternate endings. We don't need this for any other bars
         // since there are metronome events at the other bars.
-        eventList.push_back(
-                    new DummyEvent(METRONOME_CHANNEL, time, 0,
-                                   system.getBarlines().back().getPosition(),
-                                   systemIndex));
+        eventList.emplace_back(new DummyEvent(
+            METRONOME_CHANNEL, time, 0,
+            system.getBarlines().back().getPosition(), systemIndex));
 
         ++systemIndex;
     }
@@ -175,7 +175,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                                         const Staff &staff, int staffIndex,
                                         const Voice &voice, int leftPos,
                                         int rightPos, const double barStartTime,
-                                        boost::ptr_list<MidiEvent> &eventList)
+                                        EventList &eventList)
 {
     myActivePitchBend = BendEvent::DEFAULT_BEND;
     double startTime = barStartTime;
@@ -188,7 +188,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         const double currentTempo = getCurrentTempo(systemIndex, position);
 
         // Each note at a position has the same duration.
-        double duration = calculateNoteDuration(systemIndex, pos);
+        double duration = calculateNoteDuration(systemIndex, voice, pos);
 
         const PlayerChange *currentPlayers = ScoreUtils::getCurrentPlayers(
                     myScore, systemIndex, pos.getPosition());
@@ -216,9 +216,9 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
 
             for (const ActivePlayer &player : activePlayers)
             {
-                eventList.push_back(
-                            new RestEvent(player.getPlayerNumber(), startTime,
-                                          duration, position, systemIndex));
+                eventList.emplace_back(new RestEvent(player.getPlayerNumber(),
+                                                     startTime, duration,
+                                                     position, systemIndex));
             }
 
             startTime += duration;
@@ -258,15 +258,13 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
 
                 // Add vibrato event, and an event to turn off the vibrato after
                 // the note is done.
-                eventList.push_back(
-                            new VibratoEvent(channel, startTime, position,
-                                             systemIndex,
-                                             VibratoEvent::VibratoOn, type));
+                eventList.emplace_back(
+                    new VibratoEvent(channel, startTime, position, systemIndex,
+                                     VibratoEvent::VibratoOn, type));
 
-                eventList.push_back(
-                            new VibratoEvent(channel, startTime + duration,
-                                             position, systemIndex,
-                                             VibratoEvent::VibratoOff));
+                eventList.emplace_back(
+                    new VibratoEvent(channel, startTime + duration, position,
+                                     systemIndex, VibratoEvent::VibratoOff));
             }
         }
 
@@ -278,10 +276,9 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
             {
                 for (const ActivePlayer &player : activePlayers)
                 {
-                    eventList.push_back(
-                        new VolumeChangeEvent(player.getPlayerNumber(),
-                                              startTime, position, systemIndex,
-                                              dynamic->getVolume()));
+                    eventList.emplace_back(new VolumeChangeEvent(
+                        player.getPlayerNumber(), startTime, position,
+                        systemIndex, dynamic->getVolume()));
                 }
             }
         }
@@ -291,7 +288,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         {
             for (const ActivePlayer &player : activePlayers)
             {
-                eventList.push_back(new LetRingEvent(
+                eventList.emplace_back(new LetRingEvent(
                     player.getPlayerNumber(), startTime, position, systemIndex,
                     LetRingEvent::LetRingOn));
             }
@@ -302,7 +299,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         {
             for (const ActivePlayer &player : activePlayers)
             {
-                eventList.push_back(new LetRingEvent(
+                eventList.emplace_back(new LetRingEvent(
                     player.getPlayerNumber(), startTime, position, systemIndex,
                     LetRingEvent::LetRingOff));
             }
@@ -316,7 +313,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         {
             for (const ActivePlayer &player : activePlayers)
             {
-                eventList.push_back(new LetRingEvent(
+                eventList.emplace_back(new LetRingEvent(
                     player.getPlayerNumber(), startTime + duration, position,
                     systemIndex, LetRingEvent::LetRingOff));
             }
@@ -354,37 +351,53 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                     const Instrument &instrument = myScore.getInstruments()[
                             activePlayer.getInstrumentNumber()];
 
-                    eventList.push_back(
-                            new PlayNoteEvent(activePlayer.getPlayerNumber(),
-                                              startTime, duration, pitch,
-                                              position, systemIndex, player,
-                                              instrument,
-                                              note.hasProperty(Note::Muted),
-                                              velocity));
+                    eventList.emplace_back(new PlayNoteEvent(
+                        activePlayer.getPlayerNumber(), startTime, duration,
+                        pitch, position, systemIndex, player, instrument,
+                        note.hasProperty(Note::Muted), velocity));
                 }
             }
             // If the note is tied, make sure that the pitch is the same as the
             // previous note, so that the Stop Note event works correctly with
-            // harmonics.
+            // harmonics. There may be multiple notes tied together, though, so
+            // we need to find the first note in the sequence.
             else
             {
-                const Note *prev = VoiceUtils::getPreviousNote(
-                    voice, position, note.getString());
+                const Note *prevNote = &note;
+                const Position *prevPos = &pos;
 
-                if (prev)
-                    pitch = getActualNotePitch(*prev, tuning);
+                while (prevNote && prevNote->hasProperty(Note::Tied))
+                {
+                    prevPos = VoiceUtils::getPreviousPosition(
+                        voice, prevPos->getPosition());
+                    if (!prevPos)
+                        break;
+
+                    prevNote = Utils::findByString(*prevPos, note.getString());
+                }
+
+                if (prevNote)
+                    pitch = getActualNotePitch(*prevNote, tuning);
             }
 
-#if 0
-            // generate all events that involve pitch bends
+            // Generate all events that involve pitch bends.
             {
                 std::vector<BendEventInfo> bendEvents;
 
-                if (note->HasSlide())
+                if (note.hasProperty(Note::SlideIntoFromAbove) ||
+                    note.hasProperty(Note::SlideIntoFromBelow) ||
+                    note.hasProperty(Note::ShiftSlide) ||
+                    note.hasProperty(Note::LegatoSlide) ||
+                    note.hasProperty(Note::SlideOutOfDownwards) ||
+                    note.hasProperty(Note::SlideOutOfUpwards))
                 {
-                    generateSlides(bendEvents, startTime, duration, currentTempo, note);
+                    generateSlides(bendEvents, startTime, duration,
+                                   currentTempo, note,
+                                   VoiceUtils::getNextNote(voice, position,
+                                                           note.getString()));
                 }
 
+#if 0
                 if (note->HasBend())
                 {
                     generateBends(bendEvents, startTime, duration, currentTempo, note);
@@ -396,14 +409,18 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                 {
                     generateTremoloBar(bendEvents, startTime, duration, currentTempo, position);
                 }
+#endif
 
                 for (const BendEventInfo& event : bendEvents)
                 {
-                    eventList.push_back(new BendEvent(channel, event.timestamp, positionIndex,
-                                                      systemIndex, event.pitchBendAmount));
+                    for (const ActivePlayer &player : activePlayers)
+                    {
+                        eventList.emplace_back(new BendEvent(
+                            player.getPlayerNumber(), event.timestamp, position,
+                            systemIndex, event.pitchBendAmount));
+                    }
                 }
             }
-#endif
             // Perform tremolo picking or trills - they work identically, except
             // trills alternate between two pitches.
             if (pos.hasProperty(Position::TremoloPicking) || note.hasTrill())
@@ -428,7 +445,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
 
                     for (const ActivePlayer &player : activePlayers)
                     {
-                        eventList.push_back(new StopNoteEvent(
+                        eventList.emplace_back(new StopNoteEvent(
                             player.getPlayerNumber(), currentStartTime,
                             position, systemIndex, pitch));
                     }
@@ -444,12 +461,11 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                         const Instrument &instrument = myScore.getInstruments()[
                                 activePlayer.getInstrumentNumber()];
 
-                        eventList.push_back(
-                            new PlayNoteEvent(activePlayer.getPlayerNumber(),
-                                    currentStartTime, tremPickNoteDuration,
-                                    pitch, position, systemIndex, player,
-                                    instrument, note.hasProperty(Note::Muted),
-                                    velocity));
+                        eventList.emplace_back(new PlayNoteEvent(
+                            activePlayer.getPlayerNumber(), currentStartTime,
+                            tremPickNoteDuration, pitch, position, systemIndex,
+                            player, instrument, note.hasProperty(Note::Muted),
+                            velocity));
                     }
                 }
             }
@@ -477,7 +493,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
 
                 for (const ActivePlayer &player : activePlayers)
                 {
-                    eventList.push_back(new StopNoteEvent(
+                    eventList.emplace_back(new StopNoteEvent(
                         player.getPlayerNumber(), startTime + noteLength,
                         position, systemIndex, pitch));
                 }
@@ -490,7 +506,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
     return startTime;
 }
 
-void MidiPlayer::playMidiEvents(const boost::ptr_list<MidiEvent> &eventList)
+void MidiPlayer::playMidiEvents(const EventList &eventList)
 {
     SystemLocation startLocation(myStartSystem, myStartPosition);
 
@@ -512,7 +528,7 @@ void MidiPlayer::playMidiEvents(const boost::ptr_list<MidiEvent> &eventList)
     SystemLocation currentLocation;
     SystemLocation prevLocation;
 
-    typedef boost::ptr_list<MidiEvent>::const_iterator MidiEventIterator;
+    typedef EventList::const_iterator MidiEventIterator;
     MidiEventIterator activeEvent = eventList.begin();
 
     while (activeEvent != eventList.end())
@@ -520,8 +536,8 @@ void MidiPlayer::playMidiEvents(const boost::ptr_list<MidiEvent> &eventList)
         if (!isPlaying())
             return;
 
-        const SystemLocation eventLocation(activeEvent->getSystem(),
-                                           activeEvent->getPosition());
+        const SystemLocation eventLocation((*activeEvent)->getSystem(),
+                                           (*activeEvent)->getPosition());
 
 #if defined(LOG_MIDI_EVENTS)
         qDebug() << "Playback location: " << eventLocation.getSystem() << ", "
@@ -582,19 +598,17 @@ void MidiPlayer::playMidiEvents(const boost::ptr_list<MidiEvent> &eventList)
             continue;
         }
 
-        activeEvent->performEvent(device);
+        (*activeEvent)->performEvent(device);
 
         // Add delay between this event and the next one.
         MidiEventIterator nextEvent = boost::next(activeEvent);
         if (nextEvent != eventList.end())
         {
-            const int sleepDuration = abs(nextEvent->getStartTime() -
-                                          activeEvent->getStartTime());
+            const int sleepDuration = abs((*nextEvent)->getStartTime() -
+                                          (*activeEvent)->getStartTime());
 
-            myMutex.lock();
             // Slow down or speed up playback.
             const double speedShiftFactor = 100.0 / myPlaybackSpeed;
-            myMutex.unlock();
 
             if (sleepDuration)
             {
@@ -603,7 +617,7 @@ void MidiPlayer::playMidiEvents(const boost::ptr_list<MidiEvent> &eventList)
         }
         else // last note
         {
-            usleep(1000 * activeEvent->getDuration());
+            usleep(1000 * (*activeEvent)->getDuration());
         }
 
         ++activeEvent;
@@ -671,10 +685,11 @@ const TempoMarker *MidiPlayer::getCurrentTempoMarker(int systemIndex,
     return lastMarker;
 }
 
-double MidiPlayer::calculateNoteDuration(int system, const Position &pos) const
+double MidiPlayer::calculateNoteDuration(int system, const Voice &voice,
+                                         const Position &pos) const
 {
     const double tempo = getCurrentTempo(system, pos.getPosition());
-    return pos.getDurationTime() * tempo;
+    return VoiceUtils::getDurationTime(voice, pos) * tempo;
 }
 
 double MidiPlayer::getWholeRestDuration(const System &system, int systemIndex,
@@ -715,7 +730,7 @@ double MidiPlayer::getWholeRestDuration(const System &system, int systemIndex,
 double MidiPlayer::generateMetronome(const System &system, int systemIndex,
                                      const Barline &barline, double startTime,
                                      const double notesEndTime,
-                                     boost::ptr_list<MidiEvent> &eventList) const
+                                     EventList &eventList) const
 {
     const TimeSignature& timeSig = barline.getTimeSignature();
 
@@ -766,15 +781,13 @@ double MidiPlayer::generateMetronome(const System &system, int systemIndex,
                         MetronomeEvent::StrongAccent :
                         MetronomeEvent::WeakAccent;
 
-            eventList.push_back(
-                        new MetronomeEvent(METRONOME_CHANNEL, startTime,
-                                           duration, position, systemIndex,
-                                           velocity));
+            eventList.emplace_back(
+                new MetronomeEvent(METRONOME_CHANNEL, startTime, duration,
+                                   position, systemIndex, velocity));
             startTime += duration;
-            eventList.push_back(
-                        new StopNoteEvent(METRONOME_CHANNEL, startTime,
-                                          position, systemIndex,
-                                          MetronomeEvent::METRONOME_PITCH));
+            eventList.emplace_back(new StopNoteEvent(
+                METRONOME_CHANNEL, startTime, position, systemIndex,
+                MetronomeEvent::METRONOME_PITCH));
         }
     }
 
@@ -797,16 +810,15 @@ int MidiPlayer::getActualNotePitch(const Note &note, const Tuning &tuning) const
                                            note.getFretNumber());
     }
 
-    // TODO - implement this for the new file format.
-#if 0
-    if (note->HasArtificialHarmonic())
+    if (note.hasArtificialHarmonic())
     {
-        uint8_t key = 0, keyVariation = 0, octaveDiff = 0;
-        note->GetArtificialHarmonic(key, keyVariation, octaveDiff);
+        static const int theKeyOffsets[] = { 0, 2, 4, 5, 7, 9, 10 };
         
-        pitch = (midi::GetMidiNoteOctave(pitch) + octaveDiff + 2) * 12 + key;
+        ArtificialHarmonic harmonic = note.getArtificialHarmonic();
+        pitch = (Midi::getMidiNoteOctave(pitch) +
+                 static_cast<int>(harmonic.getOctave()) + 2) * 12 +
+                theKeyOffsets[harmonic.getKey()] + harmonic.getVariation();
     }
-#endif
     
     return pitch;
 }
@@ -877,11 +889,12 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTi
         activePitchBend = releaseAmount;
     }
 }
+#endif
 
-/// Generates a series of BendEvents to perform a gradual bend over the given duration
-/// Bends the note from the startBendAmount to the releaseBendAmount over the note duration
-void MidiPlayer::generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration,
-                                     int startBendAmount, int releaseBendAmount) const
+void MidiPlayer::generateGradualBend(std::vector<BendEventInfo> &bends,
+                                     double startTime, double duration,
+                                     int startBendAmount,
+                                     int releaseBendAmount) const
 {
     const int numBendEvents = abs(startBendAmount - releaseBendAmount);
     const double bendEventDuration = duration / numBendEvents;
@@ -890,22 +903,19 @@ void MidiPlayer::generateGradualBend(std::vector<BendEventInfo>& bends, double s
     {
         const double timestamp = startTime + bendEventDuration * i;
         if (startBendAmount < releaseBendAmount)
-        {
             bends.push_back(BendEventInfo(timestamp, startBendAmount + i));
-        }
         else
-        {
             bends.push_back(BendEventInfo(timestamp, startBendAmount - i));
-        }
     }
 }
 
-MidiPlayer::BendEventInfo::BendEventInfo(double timestamp, uint8_t pitchBendAmount) :
-    timestamp(timestamp),
-    pitchBendAmount(pitchBendAmount)
+MidiPlayer::BendEventInfo::BendEventInfo(double timestamp,
+                                         uint8_t pitchBendAmount)
+    : timestamp(timestamp), pitchBendAmount(pitchBendAmount)
 {
 }
 
+#if 0
 void MidiPlayer::changePlaybackSpeed(int newPlaybackSpeed)
 {
     // playback speed may be changed via the main thread during playback
@@ -913,85 +923,77 @@ void MidiPlayer::changePlaybackSpeed(int newPlaybackSpeed)
     playbackSpeed = newPlaybackSpeed;
     myMutex.unlock();
 }
+#endif
 
 /// Generates slides for the given note
-void MidiPlayer::generateSlides(std::vector<BendEventInfo>& bends, double startTime,
-                               double noteDuration, double currentTempo, const Note* note)
+void MidiPlayer::generateSlides(std::vector<BendEventInfo> &bends,
+                                double startTime, double noteDuration,
+                                double currentTempo, const Note &note,
+                                const Note *nextNote)
 {
     const int SLIDE_OUT_OF_STEPS = 5;
 
-    const double SLIDE_BELOW_BEND = floor(BendEvent::DEFAULT_BEND -
-                                               SLIDE_OUT_OF_STEPS * 2 * BendEvent::BEND_QUARTER_TONE);
+    const double SLIDE_BELOW_BEND =
+        floor(BendEvent::DEFAULT_BEND -
+              SLIDE_OUT_OF_STEPS * 2 * BendEvent::BEND_QUARTER_TONE);
 
-    const double SLIDE_ABOVE_BEND = floor(BendEvent::DEFAULT_BEND +
-                                          SLIDE_OUT_OF_STEPS * 2 * BendEvent::BEND_QUARTER_TONE);
+    const double SLIDE_ABOVE_BEND =
+        floor(BendEvent::DEFAULT_BEND +
+              SLIDE_OUT_OF_STEPS * 2 * BendEvent::BEND_QUARTER_TONE);
 
-    if (note->HasSlideOutOf())
+    if (note.hasProperty(Note::ShiftSlide) ||
+        note.hasProperty(Note::LegatoSlide) ||
+        note.hasProperty(Note::SlideOutOfDownwards) ||
+        note.hasProperty(Note::SlideOutOfUpwards))
     {
-        int8_t steps = 0;
-        uint8_t type = 0;
-        note->GetSlideOutOf(type, steps);
-
         uint8_t bendAmount = BendEvent::DEFAULT_BEND;
 
-        switch(type)
+        if (note.hasProperty(Note::ShiftSlide) || note.hasProperty(Note::LegatoSlide))
         {
-        case Note::slideOutOfLegatoSlide:
-        case Note::slideOutOfShiftSlide:
-            bendAmount = floor(BendEvent::DEFAULT_BEND +
-                               steps * 2 * BendEvent::BEND_QUARTER_TONE);
-            break;
-
-        case Note::slideOutOfDownwards:
-            bendAmount = SLIDE_BELOW_BEND;
-            break;
-
-        case Note::slideOutOfUpwards:
-            bendAmount = SLIDE_ABOVE_BEND;
-            break;
-
-        default:
-            Q_ASSERT("Unexpected slide type");
-            break;
+            if (nextNote)
+            {
+                bendAmount =
+                    floor(BendEvent::DEFAULT_BEND +
+                          (nextNote->getFretNumber() - note.getFretNumber()) *
+                              2 * BendEvent::BEND_QUARTER_TONE);
+            }
+            else
+            {
+                // Treat as a slide out of downwards.
+                bendAmount = SLIDE_BELOW_BEND;
+            }
         }
+        else if (note.hasProperty(Note::SlideOutOfDownwards))
+            bendAmount = SLIDE_BELOW_BEND;
+        else if (note.hasProperty(Note::SlideOutOfUpwards))
+            bendAmount = SLIDE_ABOVE_BEND;
 
-        // start the slide in the last half of the note duration, to make it somewhat more realistic-sounding
-        const double slideDuration = noteDuration / 2.0;
-        generateGradualBend(bends, startTime + slideDuration, slideDuration,
-                            BendEvent::DEFAULT_BEND, bendAmount);
+        // Start the slide in the last part of the note duration, to make it
+        // somewhat more realistic-sounding.
+        const double slideDuration = noteDuration / 3.0;
+        generateGradualBend(bends, startTime + noteDuration - slideDuration,
+                            slideDuration, BendEvent::DEFAULT_BEND, bendAmount);
 
-        // reset pitch wheel after note
-        bends.push_back(BendEventInfo(startTime + noteDuration, BendEvent::DEFAULT_BEND));
+        // Reset pitch wheel after note is played.
+        bends.push_back(
+            BendEventInfo(startTime + noteDuration, BendEvent::DEFAULT_BEND));
     }
 
-    if (note->HasSlideInto())
+    if (note.hasProperty(Note::SlideIntoFromAbove) ||
+        note.hasProperty(Note::SlideIntoFromBelow))
     {
-        uint8_t type = 0;
-        note->GetSlideInto(type);
+        uint8_t bendAmount = note.hasProperty(Note::SlideIntoFromAbove)
+                                 ? SLIDE_ABOVE_BEND
+                                 : SLIDE_BELOW_BEND;
 
-        uint8_t bendAmount = BendEvent::DEFAULT_BEND;
-
-        switch(type)
-        {
-        case Note::slideIntoFromBelow:
-            bendAmount = SLIDE_BELOW_BEND;
-            break;
-
-        case Note::slideIntoFromAbove:
-            bendAmount = SLIDE_ABOVE_BEND;
-            break;
-
-        default:
-            qDebug() << "Unsupported Slide Into type";
-            break;
-        }
-
-        // slide over a 16th note
+        // Slide over a 16th note.
         const double slideDuration = currentTempo / 4.0;
-        generateGradualBend(bends, startTime, slideDuration, bendAmount, BendEvent::DEFAULT_BEND);
+        generateGradualBend(bends, startTime, slideDuration, bendAmount,
+                            BendEvent::DEFAULT_BEND);
     }
 }
 
+#if 0
 void MidiPlayer::generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
                                     double noteDuration, double currentTempo, const Position* position)
 {

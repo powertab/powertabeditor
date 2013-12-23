@@ -64,29 +64,6 @@ void Position::setDurationType(DurationType type)
     myDurationType = type;
 }
 
-double Position::getDurationTime() const
-{
-    double duration = 4.0 / getDurationType();
-
-    duration += hasProperty(Dotted) * 0.5 * duration;
-    duration += hasProperty(DoubleDotted) * 0.75 * duration;
-
-    // TODO - adjust for irregular groupings (triplets, etc).
-#if 0
-    if (HasIrregularGroupingTiming())
-    {
-        uint8_t notesPlayed = 0, notesPlayedOver = 0;
-        GetIrregularGroupingTiming(notesPlayed, notesPlayedOver);
-
-        // for example, with triplets we have 3 notes played in the time of 2,
-        // so each note is 2/3 of its normal duration
-        duration *= static_cast<double>(notesPlayedOver) / static_cast<double>(notesPlayed);
-    }
-#endif
-
-    return duration;
-}
-
 bool Position::hasProperty(SimpleProperty property) const
 {
     return mySimpleProperties.test(property);

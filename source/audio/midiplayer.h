@@ -18,10 +18,10 @@
 #ifndef AUDIO_MIDIPLAYER_H
 #define AUDIO_MIDIPLAYER_H
 
+#include <atomic>
+#include <memory>
 #include <QThread>
 #include <boost/cstdint.hpp>
-#include <boost/ptr_container/ptr_list.hpp>
-#include <QMutex>
 
 class Barline;
 class MidiEvent;
@@ -54,12 +54,14 @@ public slots:
 #endif
 
 private:
+    typedef std::vector<std::unique_ptr<MidiEvent>> EventList;
+
     virtual void run() override;
     void setIsPlaying(bool set);
     bool isPlaying() const;
 
-    void generateEvents(boost::ptr_list<MidiEvent> &eventList);
-    void playMidiEvents(const boost::ptr_list<MidiEvent> &eventList);
+    void generateEvents(EventList &eventList);
+    void playMidiEvents(const EventList &eventList);
 
     /// Generates a list of all notes in the given bar.
     /// @returns The timestamp of the end of the last event in the bar.
@@ -67,7 +69,7 @@ private:
                                 const Staff &staff, int staffIndex,
                                 const Voice &voice, int leftPos, int rightPos,
                                 const double barStartTime,
-                                boost::ptr_list<MidiEvent> &eventList);
+                                EventList &eventList);
 
     /// Returns the current tempo (duration of a quarter note in milliseconds).
     double getCurrentTempo(int system, int position) const;
@@ -76,7 +78,8 @@ private:
     const TempoMarker *getCurrentTempoMarker(int systemIndex, int position) const;
 
     /// Calculates the duration of a note in the given position.
-    double calculateNoteDuration(int system, const Position &pos) const;
+    double calculateNoteDuration(int system, const Voice &voice,
+                                 const Position &pos) const;
 
     /// Computes the duration of a whole rest. If it's the only rest/note in the
     /// bar, then it lasts for the entire bar instead of 4 beats.
@@ -92,17 +95,16 @@ private:
     double generateMetronome(const System &system, int systemIndex,
                              const Barline &barline, double startTime,
                              const double notesEndTime,
-                             boost::ptr_list<MidiEvent> &eventList) const;
+                             EventList &eventList) const;
 
     const Score &myScore;
     const int myStartSystem;
     const int myStartPosition;
-    bool myIsPlaying;
+    std::atomic<bool> myIsPlaying;
     /// Tracks the active pitch bend (used for "bend and hold"-type events).
     uint8_t myActivePitchBend;
     /// The current playback speed (percent).
-    int myPlaybackSpeed;
-    mutable QMutex myMutex;
+    std::atomic<int> myPlaybackSpeed;
 
     enum Durations
     {
@@ -110,7 +112,6 @@ private:
         ArpeggioOffset = 30
     };
 
-#if 0
     /// Holds basic information about a bend - used to simplify the generateBends function
     struct BendEventInfo
     {
@@ -120,12 +121,21 @@ private:
         uint8_t pitchBendAmount;
     };
 
+#if 0
     void generateBends(std::vector<BendEventInfo>& bends, double startTime, double duration,
                        double currentTempo, const Note* note);
-    void generateSlides(std::vector<BendEventInfo>& bends, double startTime, double noteDuration,
-                       double currentTempo, const Note* note);
-    void generateGradualBend(std::vector<BendEventInfo>& bends, double startTime, double duration, int startBendAmount,
-                             int releaseBendAmount) const;
+#endif
+    void generateSlides(std::vector<BendEventInfo> &bends, double startTime,
+                        double noteDuration, double currentTempo,
+                        const Note &note, const Note *nextNote);
+
+    /// Generates a series of BendEvents to perform a gradual bend over the
+    /// given duration. Bends the note from the startBendAmount to the
+    /// releaseBendAmount over the note duration.
+    void generateGradualBend(std::vector<BendEventInfo> &bends,
+                             double startTime, double duration,
+                             int startBendAmount, int releaseBendAmount) const;
+#if 0
     void generateTremoloBar(std::vector<BendEventInfo>& bends, double startTime,
                             double noteDuration, double currentTempo, const Position* position);
 #endif

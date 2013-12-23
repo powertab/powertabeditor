@@ -46,6 +46,9 @@ FilteredPositionConstIterator getPositionsInRange(const Voice &voice, int left,
 /// Returns the next position in the staff, if it exists.
 const Position *getNextPosition(const Voice &voice, int position);
 
+/// Returns the previous position in the staff, if it exists.
+const Position *getPreviousPosition(const Voice &voice, int position);
+
 /// Finds the next note in the staff on the given string.
 const Note *getNextNote(const Voice &voice, int position, int string);
 
@@ -66,6 +69,12 @@ bool hasNoteWithHammerOn(const Voice &voice, const Position &pos);
 /// Finds all irregular groups that overlap with the given range of positions.
 std::vector<const IrregularGrouping *> getIrregularGroupsInRange(
     const Voice &voice, int left, int right);
+
+/// Returns the note duration, including dots, irregular groupings, etc.
+/// This does not include tempo, and the durations are relative to a
+/// quarter note (i.e. a quarter note is 1.0, eighth note is 0.5, etc).
+double getDurationTime(const Voice &voice, const Position &pos);
+
 }
 
 #endif

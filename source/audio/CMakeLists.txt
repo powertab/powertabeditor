@@ -14,6 +14,20 @@ add_library(pteaudio
     stopnoteevent.cpp
     vibratoevent.cpp
     volumechangeevent.cpp
+
+    bendevent.h
+    letringevent.h
+    metronomeevent.h
+    midievent.h
+    midioutputdevice.h
+    midiplayer.h
+    playnoteevent.h
+    repeatcontroller.h
+    repeat.h
+    restevent.h
+    stopnoteevent.h
+    vibratoevent.h
+    volumechangeevent.h
 )
 
 qt5_use_modules(pteaudio Widgets) 

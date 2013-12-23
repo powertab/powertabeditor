@@ -51,6 +51,17 @@ const Position *getNextPosition(const Voice &voice, int position)
     return nullptr;
 }
 
+const Position *getPreviousPosition(const Voice &voice, int position)
+{
+    for (const Position &pos : boost::adaptors::reverse(voice.getPositions()))
+    {
+        if (pos.getPosition() < position)
+            return &pos;
+    }
+
+    return nullptr;
+}
+
 const Note *getNextNote(const Voice &voice, int position, int string)
 {
     const Position *nextPos = getNextPosition(voice, position);
@@ -59,18 +70,8 @@ const Note *getNextNote(const Voice &voice, int position, int string)
 
 const Note *getPreviousNote(const Voice &voice, int position, int string)
 {
-    const Note *note = nullptr;
-
-    for (const Position &pos : boost::adaptors::reverse(voice.getPositions()))
-    {
-        if (pos.getPosition() < position)
-        {
-            note = Utils::findByString(pos, string);
-            break;
-        }
-    }
-
-    return note;
+    const Position *prevPos = getPreviousPosition(voice, position);
+    return prevPos ? Utils::findByString(*prevPos, string) : nullptr;
 }
 
 bool canTieNote(const Voice &voice, int position, const Note &note)
@@ -120,4 +121,24 @@ std::vector<const IrregularGrouping *> getIrregularGroupsInRange(
     return groups;
 }
 
+double getDurationTime(const Voice &voice, const Position &pos)
+{
+    double duration = 4.0 / pos.getDurationType();
+
+    // Adjust for dotted notes.
+    duration += pos.hasProperty(Position::Dotted) * 0.5 * duration;
+    duration += pos.hasProperty(Position::DoubleDotted) * 0.75 * duration;
+
+    // Adjust for irregular groups.
+    for (const IrregularGrouping *group :
+         getIrregularGroupsInRange(voice, pos.getPosition(), pos.getPosition()))
+    {
+        // As an example, with triplets we have 3 notes played in the time of 2,
+        // so each note is 2/3 of its normal duration.
+        duration *= static_cast<double>(group->getNotesPlayedOver()) /
+                    static_cast<double>(group->getNotesPlayed());
+    }
+
+    return duration;
+}
 }

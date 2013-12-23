@@ -21,9 +21,9 @@
 #include <score/generalmidi.h>
 
 /// Pitch bend amount to bend a note by a quarter tone.
-static const double BEND_QUARTER_TONE =
-        (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - BendEvent::DEFAULT_BEND) /
-        (2.0 * BendEvent::PITCH_BEND_RANGE);
+const double BendEvent::BEND_QUARTER_TONE =
+    (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - BendEvent::DEFAULT_BEND) /
+    (2.0 * BendEvent::PITCH_BEND_RANGE);
 
 BendEvent::BendEvent(int channel, double startTime, int position,
                      int system, uint8_t bendAmount)

@@ -20,6 +20,8 @@
 
 #include <score/position.h>
 
+class Voice;
+
 class NoteStem
 {
 public:
@@ -29,8 +31,8 @@ public:
         StemDown
     };
 
-    NoteStem(const Position &pos, double x, double noteHeadWidth,
-             const std::vector<double> &noteLocations);
+    NoteStem(const Voice &voice, const Position &pos, double x,
+             double noteHeadWidth, const std::vector<double> &noteLocations);
 
     double getX() const;
     void setX(double x);
@@ -79,7 +81,8 @@ private:
     template <typename Iterator>
     static StemType computeStemDirection(Iterator begin, Iterator end);
 
-    const Position *myPosition;
+    const Voice &myVoice;
+    const Position &myPosition;
     double myX;
     double myNoteHeadWidth;
     double myTop;
