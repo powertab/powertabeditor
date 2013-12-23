@@ -62,8 +62,7 @@ StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
 
     if (note.hasProperty(Note::NaturalHarmonic))
         myNoteHeadSymbol = MusicFont::NaturalHarmonicNoteHead;
-    // TODO - handle artificial harmonics.
-    else if (note.hasTappedHarmonic())
+    else if (note.hasTappedHarmonic() || note.hasArtificialHarmonic())
         myNoteHeadSymbol = MusicFont::ArtificialHarmonicNoteHead;
     else if (note.hasProperty(Note::Muted))
         myNoteHeadSymbol = MusicFont::MutedNoteHead;
@@ -118,7 +117,9 @@ void StdNotationNote::getNotesInStaff(
 
                 if (pos.isRest() || pos.hasMultiBarRest())
                 {
-                    stems.push_back(NoteStem(pos, 0, 0, noteLocations));
+                    const double x = layout.getPositionX(pos.getPosition()) +
+                                     0.5 * layout.getPositionSpacing();
+                    stems.push_back(NoteStem(voice, pos, x, 0, noteLocations));
                     continue;
                 }
 
@@ -179,7 +180,8 @@ void StdNotationNote::getNotesInStaff(
 
                 const double x = layout.getPositionX(pos.getPosition()) +
                         0.5 * (layout.getPositionSpacing() - noteHeadWidth);
-                stems.push_back(NoteStem(pos, x, noteHeadWidth, noteLocations));
+                stems.push_back(
+                    NoteStem(voice, pos, x, noteHeadWidth, noteLocations));
             }
 
             computeBeaming(bar.getTimeSignature(), stems, firstStem, groups);
