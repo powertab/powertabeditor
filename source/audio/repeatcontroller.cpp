@@ -165,8 +165,8 @@ SystemLocation RepeatController::performMusicalDirection(
     // Go to the end of the score.
     if (directionType == DirectionSymbol::Fine)
     {
-        const int lastSystemIndex = myScore.getSystems().size() - 1;
-        return SystemLocation(lastSystemIndex,
+        const auto lastSystemIndex = myScore.getSystems().size() - 1;
+        return SystemLocation(static_cast<int>(lastSystemIndex),
                     myScore.getSystems()[lastSystemIndex].getBarlines()
                               .back().getPosition());
     }

@@ -460,8 +460,7 @@ void GuitarProImporter::readSystems(Gp::InputStream &stream, Score &score,
 
         int nextPos = startPos;
 
-        const int n = score.getPlayers().size();
-        for (int i = 0; i < n; ++i)
+        for (int i = 0; i < score.getPlayers().size(); ++i)
         {
             const Tuning &tuning = score.getPlayers()[i].getTuning();
             Staff &staff = system->getStaves()[i];

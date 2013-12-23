@@ -98,7 +98,7 @@ namespace
 template <class Symbol>
 struct IsSymbolInSystem : std::unary_function<const Symbol&, bool>
 {
-    IsSymbolInSystem(uint32_t systemIndex) :
+    IsSymbolInSystem(size_t systemIndex) :
         systemIndex(systemIndex)
     {
     }
@@ -108,12 +108,12 @@ struct IsSymbolInSystem : std::unary_function<const Symbol&, bool>
         return symbol->GetSystem() == systemIndex;
     }
 
-    const uint32_t systemIndex;
+    const size_t systemIndex;
 };
 
 /// Helper for GetAlternateEndingsInSystem, GetTempoMarkersInSystem, etc.
 template <class Symbol>
-void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& symbolList, const uint32_t systemIndex)
+void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& symbolList, const size_t systemIndex)
 {
     output.clear();
 
@@ -132,7 +132,7 @@ void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& 
 /// Removes the symbols in the specified system, and moves lower symbols up by
 /// one system.
 template <class Symbol>
-void RemoveSymbolsInSystem(std::vector<Symbol>& symbolList, const uint32_t systemIndex)
+void RemoveSymbolsInSystem(std::vector<Symbol>& symbolList, const size_t systemIndex)
 {
     symbolList.erase(std::remove_if(symbolList.begin(), symbolList.end(),
                                     IsSymbolInSystem<Symbol>(systemIndex)),
@@ -151,7 +151,7 @@ void RemoveSymbolsInSystem(std::vector<Symbol>& symbolList, const uint32_t syste
 /// Shifts symbols down by one system if they are either in or are below the
 /// specified system.
 template <class Symbol>
-void ShiftFollowingSymbols(std::vector<Symbol>& symbolList, const uint32_t systemIndex)
+void ShiftFollowingSymbols(std::vector<Symbol>& symbolList, const size_t systemIndex)
 {
     for (const Symbol &symbol : symbolList)
     {
@@ -168,7 +168,7 @@ int Score::FindSystemIndex(const SystemConstPtr& system) const
 {
     std::vector<SystemPtr>::const_iterator result = std::find(m_systemArray.begin(),
                                                                    m_systemArray.end(), system);
-    return std::distance(m_systemArray.begin(), result);
+    return static_cast<int>(std::distance(m_systemArray.begin(), result));
 }
 
 
@@ -192,7 +192,7 @@ void Score::GetDynamicsInSystem(std::vector<Score::DynamicPtr> &dynamics, Score:
 /// Determines if a alternate ending index is valid
 /// @param index alternate ending index to validate
 /// @return True if the alternate ending index is valid, false if not
-bool Score::IsValidAlternateEndingIndex(uint32_t index) const
+bool Score::IsValidAlternateEndingIndex(size_t index) const
 {
     return index < GetAlternateEndingCount();
 }
@@ -207,7 +207,7 @@ size_t Score::GetAlternateEndingCount() const
 /// Gets the nth alternate ending in the score
 /// @param index Index of the alternate ending to get
 /// @return The nth alternate ending in the score
-Score::AlternateEndingPtr Score::GetAlternateEnding(uint32_t index) const
+Score::AlternateEndingPtr Score::GetAlternateEnding(size_t index) const
 {
     PTB_CHECK_THAT(IsValidAlternateEndingIndex(index), AlternateEndingPtr());
     return m_alternateEndingArray[index];
@@ -216,7 +216,7 @@ Score::AlternateEndingPtr Score::GetAlternateEnding(uint32_t index) const
 /// Determines if a chord diagram index is valid
 /// @param index ChordDiagram index to validate
 /// @return True if the chord diagram index is valid, false if not
-bool Score::IsValidChordDiagramIndex(uint32_t index) const
+bool Score::IsValidChordDiagramIndex(size_t index) const
 {
     return index < GetChordDiagramCount();
 }
@@ -231,7 +231,7 @@ size_t Score::GetChordDiagramCount() const
 /// Gets the nth chord diagram in the score
 /// @param index Index of the chord diagram to get
 /// @return The nth chord diagram in the score
-Score::ChordDiagramPtr Score::GetChordDiagram(uint32_t index) const
+Score::ChordDiagramPtr Score::GetChordDiagram(size_t index) const
 {
     PTB_CHECK_THAT(IsValidChordDiagramIndex(index), ChordDiagramPtr());
     return m_chordDiagramArray[index];
@@ -266,7 +266,7 @@ Score::GuitarPtr Score::GetGuitar(size_t index) const
 /// Determines if a system index is valid
 /// @param index system index to validate
 /// @return True if the system index is valid, false if not
-bool Score::IsValidSystemIndex(uint32_t index) const
+bool Score::IsValidSystemIndex(size_t index) const
 {
     return index < GetSystemCount();
 }
@@ -281,7 +281,7 @@ size_t Score::GetSystemCount() const
 /// Gets the nth system in the score
 /// @param index Index of the system to get
 /// @return The nth system in the score
-Score::SystemPtr Score::GetSystem(uint32_t index) const
+Score::SystemPtr Score::GetSystem(size_t index) const
 {
     PTB_CHECK_THAT(IsValidSystemIndex(index), SystemPtr());
     return m_systemArray[index];
@@ -291,7 +291,7 @@ Score::SystemPtr Score::GetSystem(uint32_t index) const
 /// Determines if a dynamic index is valid
 /// @param index dynamic index to validate
 /// @return True if the dynamic index is valid, false if not
-bool Score::IsValidDynamicIndex(uint32_t index) const
+bool Score::IsValidDynamicIndex(size_t index) const
 {
     return index < GetDynamicCount();
 }
@@ -306,7 +306,7 @@ size_t Score::GetDynamicCount() const
 /// Gets the nth dynamic in the score
 /// @param index Index of the dynamic to get
 /// @return The nth dynamic in the score
-Score::DynamicPtr Score::GetDynamic(uint32_t index) const
+Score::DynamicPtr Score::GetDynamic(size_t index) const
 {
     PTB_CHECK_THAT(IsValidDynamicIndex(index), DynamicPtr());
     return m_dynamicArray[index];
@@ -316,7 +316,7 @@ Score::DynamicPtr Score::GetDynamic(uint32_t index) const
 /// Determines if a floating text index is valid
 /// @param index floating text index to validate
 /// @return True if the floating text index is valid, false if not
-bool Score::IsValidFloatingTextIndex(uint32_t index) const
+bool Score::IsValidFloatingTextIndex(size_t index) const
 {
     return index < GetFloatingTextCount();
 }
@@ -331,7 +331,7 @@ size_t Score::GetFloatingTextCount() const
 /// Gets the nth floating text in the score
 /// @param index Index of the floating text to get
 /// @return The nth floating text in the score
-Score::FloatingTextPtr Score::GetFloatingText(uint32_t index) const
+Score::FloatingTextPtr Score::GetFloatingText(size_t index) const
 {
     PTB_CHECK_THAT(IsValidFloatingTextIndex(index), FloatingTextPtr());
     return m_floatingTextArray[index];
@@ -341,7 +341,7 @@ Score::FloatingTextPtr Score::GetFloatingText(uint32_t index) const
 /// Determines if a guitar in index is valid
 /// @param index guitar in index to validate
 /// @return True if the guitar in index is valid, false if not
-bool Score::IsValidGuitarInIndex(uint32_t index) const
+bool Score::IsValidGuitarInIndex(size_t index) const
 {
     return index < GetGuitarInCount();
 }
@@ -356,7 +356,7 @@ size_t Score::GetGuitarInCount() const
 /// Gets the nth guitar in in the score
 /// @param index Index of the guitar in to get
 /// @return The nth guitar in in the score
-Score::GuitarInPtr Score::GetGuitarIn(uint32_t index) const
+Score::GuitarInPtr Score::GetGuitarIn(size_t index) const
 {
     PTB_CHECK_THAT(IsValidGuitarInIndex(index), GuitarInPtr());
     return m_guitarInArray[index];
@@ -372,7 +372,7 @@ void Score::GetGuitarInsInSystem(std::vector<Score::GuitarInPtr> &guitarIns,
 /// Determines if a tempo marker index is valid
 /// @param index tempo marker index to validate
 /// @return True if the tempo marker index is valid, false if not
-bool Score::IsValidTempoMarkerIndex(uint32_t index) const
+bool Score::IsValidTempoMarkerIndex(size_t index) const
 {
     return index < GetTempoMarkerCount();
 }
@@ -387,7 +387,7 @@ size_t Score::GetTempoMarkerCount() const
 /// Gets the nth tempo marker in the score
 /// @param index Index of the tempo marker to get
 /// @return The nth tempo marker in the score
-Score::TempoMarkerPtr Score::GetTempoMarker(uint32_t index) const
+Score::TempoMarkerPtr Score::GetTempoMarker(size_t index) const
 {
     PTB_CHECK_THAT(IsValidTempoMarkerIndex(index), TempoMarkerPtr());
     return m_tempoMarkerArray[index];

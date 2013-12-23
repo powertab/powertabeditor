@@ -78,7 +78,7 @@ AlternateEnding AlternateEndingDialog::getAlternateEnding() const
     for (size_t i = 0; i < myCheckBoxes.size(); ++i)
     {
         if (myCheckBoxes[i]->isChecked())
-            ending.addNumber(i + 1);
+            ending.addNumber(static_cast<int>(i) + 1);
     }
 
     ending.setDaCapo(myDaCapoCheckbox->isChecked());

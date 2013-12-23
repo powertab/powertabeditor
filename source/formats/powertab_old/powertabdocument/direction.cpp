@@ -66,9 +66,9 @@ Direction::Direction() :
 /// triggered (see activeSymbols enum for values)
 /// @param repeatNumber Repeat number that must be active for the symbol to be
 /// triggered (0 = none)
-Direction::Direction(uint32_t position, uint8_t symbolType, uint8_t activeSymbol,
-    uint8_t repeatNumber) : 
-    m_position(position)
+Direction::Direction(uint32_t position, uint8_t symbolType,
+                     uint8_t activeSymbol, uint8_t repeatNumber)
+    : m_position(position)
 {
     assert(IsValidPosition(position));
     AddSymbol(symbolType, activeSymbol, repeatNumber);   
@@ -134,7 +134,7 @@ bool Direction::Deserialize(PowerTabInputStream& stream, uint16_t)
 /// Determines whether a position is valid
 /// @param position Position to validate
 /// @return True if the position is valid, false if not
-bool Direction::IsValidPosition(uint32_t position)
+bool Direction::IsValidPosition(size_t position)
 {
     return position <= MAX_POSITION;
 }
@@ -143,7 +143,7 @@ bool Direction::IsValidPosition(uint32_t position)
 /// @param position Zero-based index within the system where the direction
 /// is anchored
 /// @return True if the position was set, false if not
-bool Direction::SetPosition(uint32_t position)
+bool Direction::SetPosition(size_t position)
 {
     PTB_CHECK_THAT(IsValidPosition(position), false);
     m_position = static_cast<uint8_t>(position);
@@ -152,7 +152,7 @@ bool Direction::SetPosition(uint32_t position)
 
 /// Gets the position within the system where the direction is anchored
 /// @return The position within the system where the direction is anchored
-uint32_t Direction::GetPosition() const                           
+size_t Direction::GetPosition() const                           
 {
     return m_position;
 }
@@ -214,7 +214,7 @@ bool Direction::AddSymbol(uint8_t symbolType, uint8_t activeSymbol,
 /// @param repeatNumber Repeat number that must be active for the symbol to be
 /// triggered (0 = none)
 /// @return True if the symbol data was set, false if not
-bool Direction::SetSymbol(uint32_t index, uint8_t symbolType,
+bool Direction::SetSymbol(size_t index, uint8_t symbolType,
     uint8_t activeSymbol, uint8_t repeatNumber)
 {
     PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
@@ -237,7 +237,7 @@ bool Direction::SetSymbol(uint32_t index, uint8_t symbolType,
 /// @param activeSymbol Holds the active symbol return value
 /// @param repeatNumber Holds the repeat number return value
 /// @return True if the direction data was retrieved, false if not
-bool Direction::GetSymbol(uint32_t index, uint8_t& symbolType,
+bool Direction::GetSymbol(size_t index, uint8_t& symbolType,
     uint8_t& activeSymbol, uint8_t& repeatNumber) const
 {
     PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
@@ -255,7 +255,7 @@ bool Direction::GetSymbol(uint32_t index, uint8_t& symbolType,
 /// @param index Index of the symbol
 /// @param symbolType Type of symbol to test against
 /// @return True if the symbol is of the type, false if not
-bool Direction::IsSymbolType(uint32_t index, uint8_t symbolType) const
+bool Direction::IsSymbolType(size_t index, uint8_t symbolType) const
 {
     PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
     PTB_CHECK_THAT(IsValidSymbolType(symbolType), false);
@@ -275,7 +275,7 @@ bool Direction::IsSymbolType(uint32_t index, uint8_t symbolType) const
 /// Removes a symbol from the symbol array
 /// @param index Index of the symbol to remove
 /// @return True if the symbol was removed, false if not
-bool Direction::RemoveSymbolAtIndex(uint32_t index)
+bool Direction::RemoveSymbolAtIndex(size_t index)
 {
     PTB_CHECK_THAT(IsValidSymbolIndex(index), false);
  
@@ -287,7 +287,7 @@ bool Direction::RemoveSymbolAtIndex(uint32_t index)
 /// Gets a text representation of a symbol, such as "D.S.S. al Fine".
 /// @param index Index of the symbol to get the text for
 /// @return Text representation of the symbol
-std::string Direction::GetText(uint32_t index) const
+std::string Direction::GetText(size_t index) const
 {
     uint8_t symbolType = 0;
     uint8_t activeSymbol = 0;
@@ -314,7 +314,7 @@ std::string Direction::GetDetailedText(uint8_t symbolType)
 /// Determines if a symbol index is valid
 /// @param index Index to validate
 /// @return True if the symbol index is valid, false if not
-bool Direction::IsValidSymbolIndex(uint32_t index) const         
+bool Direction::IsValidSymbolIndex(size_t index) const         
 {
     return index < GetSymbolCount();
 }

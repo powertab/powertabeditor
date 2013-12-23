@@ -144,8 +144,9 @@ bool MidiOutputDevice::setVolume (int channel, uint8_t volume)
 
     channelActiveVolumes[channel] = volume;
 
-    return sendMidiMessage(ControlChange + channel, ChannelVolume,
-                           (volume / 127.0) * channelMaxVolumes[channel]);
+    return sendMidiMessage(
+        ControlChange + channel, ChannelVolume,
+        static_cast<int>((volume / 127.0) * channelMaxVolumes[channel]));
 }
 
 bool MidiOutputDevice::setPan(int channel, uint8_t pan)

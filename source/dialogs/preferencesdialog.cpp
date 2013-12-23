@@ -46,8 +46,10 @@ PreferencesDialog::PreferencesDialog(
         for(unsigned int j = 0; j < device.getPortCount(i); ++j)
         {
             std::string portName = device.getPortName(i, j);
-            ui->midiPortComboBox->addItem(QString::fromStdString(portName),
-                    QVariant::fromValue(std::pair<int, int>(i, j)));
+            ui->midiPortComboBox->addItem(
+                QString::fromStdString(portName),
+                QVariant::fromValue(
+                    std::make_pair(static_cast<int>(i), static_cast<int>(j))));
         }
     }
 

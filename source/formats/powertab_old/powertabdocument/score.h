@@ -76,47 +76,47 @@ public:
     GuitarPtr GetGuitar(size_t index) const;
 
 // Chord Diagram Functions
-    bool IsValidChordDiagramIndex(uint32_t index) const;
+    bool IsValidChordDiagramIndex(size_t index) const;
     size_t GetChordDiagramCount() const;
-    ChordDiagramPtr GetChordDiagram(uint32_t index) const;
+    ChordDiagramPtr GetChordDiagram(size_t index) const;
 
 // Floating Text Functions
-    bool IsValidFloatingTextIndex(uint32_t index) const;
+    bool IsValidFloatingTextIndex(size_t index) const;
     size_t GetFloatingTextCount() const;
-    FloatingTextPtr GetFloatingText(uint32_t index) const;
+    FloatingTextPtr GetFloatingText(size_t index) const;
 
 // Guitar In Functions
-    bool IsValidGuitarInIndex(uint32_t index) const;
+    bool IsValidGuitarInIndex(size_t index) const;
     size_t GetGuitarInCount() const;
-    GuitarInPtr GetGuitarIn(uint32_t index) const;
+    GuitarInPtr GetGuitarIn(size_t index) const;
     void GetGuitarInsInSystem(std::vector<GuitarInPtr>& guitarIns,
                               SystemConstPtr system) const;
 
 // Tempo Marker Functions
-    bool IsValidTempoMarkerIndex(uint32_t index) const;
+    bool IsValidTempoMarkerIndex(size_t index) const;
     size_t GetTempoMarkerCount() const;
-    TempoMarkerPtr GetTempoMarker(uint32_t index) const;
+    TempoMarkerPtr GetTempoMarker(size_t index) const;
 
     void GetTempoMarkersInSystem(std::vector<TempoMarkerPtr>& tempoMarkers,
                                  SystemConstPtr system) const;
 
 // Dynamic Functions
-    bool IsValidDynamicIndex(uint32_t index) const;
+    bool IsValidDynamicIndex(size_t index) const;
     size_t GetDynamicCount() const;
-    DynamicPtr GetDynamic(uint32_t index) const;
+    DynamicPtr GetDynamic(size_t index) const;
     void GetDynamicsInSystem(std::vector<DynamicPtr>& dynamics, SystemConstPtr system) const;
 
 // Alternate Ending Functions
-    bool IsValidAlternateEndingIndex(uint32_t index) const;
+    bool IsValidAlternateEndingIndex(size_t index) const;
     size_t GetAlternateEndingCount() const;
-    AlternateEndingPtr GetAlternateEnding(uint32_t index) const;
+    AlternateEndingPtr GetAlternateEnding(size_t index) const;
 
     void GetAlternateEndingsInSystem(std::vector<AlternateEndingPtr>& endings, SystemConstPtr system) const;
 
 // System Functions
-    bool IsValidSystemIndex(uint32_t index) const;
+    bool IsValidSystemIndex(size_t index) const;
     size_t GetSystemCount() const;
-    SystemPtr GetSystem(uint32_t index) const;
+    SystemPtr GetSystem(size_t index) const;
 
     int FindSystemIndex(const SystemConstPtr& system) const;
 

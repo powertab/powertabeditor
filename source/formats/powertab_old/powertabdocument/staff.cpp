@@ -205,7 +205,7 @@ uint8_t Staff::GetTablatureStaffType() const
 /// Determines if a voice is valid
 /// @param voice Voice to validate
 /// @return True if the voice is valid, false if not
-bool Staff::IsValidVoice(uint32_t voice)
+bool Staff::IsValidVoice(size_t voice)
 {
     return voice < NUM_STAFF_VOICES;
 }
@@ -214,7 +214,7 @@ bool Staff::IsValidVoice(uint32_t voice)
 /// @param voice Voice the position belongs to
 /// @param index position index to validate
 /// @return True if the position index is valid, false if not
-bool Staff::IsValidPositionIndex(uint32_t voice, uint32_t index) const
+bool Staff::IsValidPositionIndex(size_t voice, size_t index) const
 {
     PTB_CHECK_THAT(IsValidVoice(voice), false);
     return (index < GetPositionCount(voice));
@@ -223,7 +223,7 @@ bool Staff::IsValidPositionIndex(uint32_t voice, uint32_t index) const
 /// Gets the number of positions in the staff
 /// @param voice Voice of the positions to get the count of
 /// @throw std::out_of_range if the voice is invalid
-size_t Staff::GetPositionCount(uint32_t voice) const
+size_t Staff::GetPositionCount(size_t voice) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");
@@ -235,7 +235,7 @@ size_t Staff::GetPositionCount(uint32_t voice) const
 /// @param voice Voice the position belongs to
 /// @param index Index of the position to get
 /// @throw std::out_of_range if the voice or index are invalid
-Position* Staff::GetPosition(uint32_t voice, uint32_t index) const
+Position* Staff::GetPosition(size_t voice, size_t index) const
 {
     if (!IsValidVoice(voice))
         throw std::out_of_range("Invalid voice");

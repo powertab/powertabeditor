@@ -291,10 +291,10 @@ template <typename K, typename V, typename C>
 void InputArchive::read(std::map<K, V, C> &map)
 {
     auto it = value().MemberBegin();
-    const long size = std::distance(it, value().MemberEnd());
+    const long long size = std::distance(it, value().MemberEnd());
     myIterators.push(it);
 
-    for (long i = 0; i < size; ++i)
+    for (long long i = 0; i < size; ++i)
     {
         const K key = boost::lexical_cast<K>(name());
 

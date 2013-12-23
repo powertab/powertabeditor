@@ -97,8 +97,8 @@ void Caret::moveToLastSystem()
 void Caret::moveStaff(int offset)
 {
     myLocation.setStaffIndex(boost::algorithm::clamp(
-            myLocation.getStaffIndex() + offset, 0,
-            myLocation.getSystem().getStaves().size() - 1));
+        myLocation.getStaffIndex() + offset, 0,
+        static_cast<int>(myLocation.getSystem().getStaves().size() - 1)));
 
     onLocationChanged();
 }
@@ -164,7 +164,7 @@ int Caret::getLastPosition() const
 
 int Caret::getLastSystemIndex() const
 {
-    return myLocation.getScore().getSystems().size() - 1;
+    return static_cast<int>(myLocation.getScore().getSystems().size() - 1);
 }
 
 void Caret::moveToPosition(int position)
@@ -189,8 +189,8 @@ void Caret::moveToSystem(int system, bool keepStaff)
         else
         {
             myLocation.setStaffIndex(boost::algorithm::clamp(
-                    myLocation.getStaffIndex(), 0,
-                    myLocation.getSystem().getStaves().size()));
+                myLocation.getStaffIndex(), 0,
+                static_cast<int>(myLocation.getSystem().getStaves().size())));
         }
 
         myLocation.setPositionIndex(0);

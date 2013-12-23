@@ -314,8 +314,9 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
                     throw std::runtime_error("Invalid tempo");
 
                 TempoMarker marker(startPos);
-                marker.setBeatsPerMinute(automation.value[0] *
-                        automation.value[1] / 2.0);
+                marker.setBeatsPerMinute(
+                    automation.value[0] *
+                    static_cast<int>(automation.value[1] / 2.0));
                 system.insertTempoMarker(marker);
             }
         }

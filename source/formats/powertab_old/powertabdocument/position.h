@@ -346,7 +346,7 @@ public:
     /// Determines if a note index is valid
     /// @param index note index to validate
     /// @return True if the note index is valid, false if not
-    bool IsValidNoteIndex(uint32_t index) const
+    bool IsValidNoteIndex(size_t index) const
     {return (index < GetNoteCount());}
     /// Gets the number of notes in the position
     /// @return The number of notes in the position
@@ -355,7 +355,7 @@ public:
     /// Gets the nth note in the position
     /// @param index Index of the note to get
     /// @return The nth note in the position
-    Note* GetNote(uint32_t index) const
+    Note* GetNote(size_t index) const
     {
         PTB_CHECK_THAT(IsValidNoteIndex(index), nullptr);
         return (m_noteArray[index]);

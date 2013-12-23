@@ -66,7 +66,7 @@ public:
 
 private:
     boost::ptr_vector<Document> myDocumentList;
-    boost::optional<size_t> myCurrentIndex;
+    boost::optional<int> myCurrentIndex;
 };
 
 #endif

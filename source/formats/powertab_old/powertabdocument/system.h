@@ -92,29 +92,29 @@ public:
     BarlinePtr GetEndBar() const;
 
     // Direction Functions
-    bool IsValidDirectionIndex(uint32_t index) const;
+    bool IsValidDirectionIndex(size_t index) const;
     size_t GetDirectionCount() const;
-    DirectionPtr GetDirection(uint32_t index) const;
+    DirectionPtr GetDirection(size_t index) const;
 
     // Chord Text Functions
-    bool IsValidChordTextIndex(uint32_t index) const;
+    bool IsValidChordTextIndex(size_t index) const;
     size_t GetChordTextCount() const;
-    ChordTextPtr GetChordText(uint32_t index) const;
+    ChordTextPtr GetChordText(size_t index) const;
 
     // Rhythm Slash Functions
-    bool IsValidRhythmSlashIndex(uint32_t index) const;
+    bool IsValidRhythmSlashIndex(size_t index) const;
     size_t GetRhythmSlashCount() const;
-    RhythmSlashPtr GetRhythmSlash(uint32_t index) const;
+    RhythmSlashPtr GetRhythmSlash(size_t index) const;
 
     // Staff Functions
-    bool IsValidStaffIndex(uint32_t index) const;
+    bool IsValidStaffIndex(size_t index) const;
     size_t GetStaffCount() const;
-    StaffPtr GetStaff(uint32_t index) const;
+    StaffPtr GetStaff(size_t index) const;
 
     // Barline Functions
-    bool IsValidBarlineIndex(uint32_t index) const;
+    bool IsValidBarlineIndex(size_t index) const;
     size_t GetBarlineCount() const;
-    BarlinePtr GetBarline(uint32_t index) const;
+    BarlinePtr GetBarline(size_t index) const;
 };
 
 }

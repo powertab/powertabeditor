@@ -102,12 +102,12 @@ public:
     bool SetTablatureStaffType(uint8_t type);
     uint8_t GetTablatureStaffType() const;
 
-    static bool IsValidVoice(uint32_t voice);
+    static bool IsValidVoice(size_t voice);
 
     // Position Functions
-    bool IsValidPositionIndex(uint32_t voice, uint32_t index) const;
-    size_t GetPositionCount(uint32_t voice) const;
-    Position* GetPosition(uint32_t voice, uint32_t index) const;
+    bool IsValidPositionIndex(size_t voice, size_t index) const;
+    size_t GetPositionCount(size_t voice) const;
+    Position* GetPosition(size_t voice, size_t index) const;
 };
 
 }

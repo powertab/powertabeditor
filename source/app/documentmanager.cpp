@@ -29,23 +29,7 @@ DocumentManager::DocumentManager()
 Document &DocumentManager::addDocument()
 {
     myDocumentList.push_back(new Document());
-
-    // TODO - set up a default document.
-#if 0
-    QSettings settings;
-    Guitar defaultGuitar;
-    defaultGuitar.SetDescription(settings.value(
-            Settings::DEFAULT_INSTRUMENT_NAME,
-            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString());
-    defaultGuitar.SetPreset(settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
-            Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
-    defaultGuitar.SetTuning(settings.value(
-            Settings::DEFAULT_INSTRUMENT_TUNING,
-            QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)).value<Tuning>());
-    doc->Init(defaultGuitar);
-#endif
-
-    myCurrentIndex = myDocumentList.size() - 1;
+    myCurrentIndex = static_cast<int>(myDocumentList.size()) - 1;
     return myDocumentList.back();
 }
 
@@ -103,8 +87,8 @@ void DocumentManager::removeDocument(int index)
 
     if (myDocumentList.empty())
         myCurrentIndex.reset();
-    else if (myDocumentList.size() >= myCurrentIndex)
-        myCurrentIndex = myDocumentList.size() - 1;
+    else if (myDocumentList.size() >= *myCurrentIndex)
+        myCurrentIndex = static_cast<int>(myDocumentList.size()) - 1;
 }
 
 bool DocumentManager::hasOpenDocuments() const

@@ -71,11 +71,10 @@ Gpx::FileSystem::FileSystem(std::istream &stream)
         {
             const int32_t p = input.readBits(4);
             const int32_t offset = input.readBits(p, Gpx::BitStream::Reversed);
-            const uint32_t startPos = output.size() - offset;
+            const size_t startPos = output.size() - offset;
 
             const int32_t length = boost::algorithm::clamp<int32_t>(
-                        input.readBits(p, Gpx::BitStream::Reversed), 0,
-                        output.size() - startPos);
+                input.readBits(p, Gpx::BitStream::Reversed), 0, offset);
 
             std::copy(output.begin() + startPos,
                       output.begin() + startPos + length,

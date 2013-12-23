@@ -41,8 +41,8 @@ namespace ScoreUtils {
     template <typename T>
     int findIndexByPosition(const boost::iterator_range<T> &range, int position)
     {
-        size_t n = range.size();
-        for (size_t i = 0; i < n; ++i)
+        const boost::iterator_range<T>::difference_type n = range.size();
+        for (int i = 0; i < n; ++i)
         {
             if (range[i].getPosition() == position)
                 return i;

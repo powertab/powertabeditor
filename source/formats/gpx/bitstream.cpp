@@ -55,7 +55,7 @@ bool Gpx::BitStream::readBit()
 
     ++myPosition;
 
-    return byte;
+    return byte != 0;
 }
 
 int32_t Gpx::BitStream::readBits(int n, BitOrder order)

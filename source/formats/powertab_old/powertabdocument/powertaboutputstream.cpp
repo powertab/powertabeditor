@@ -53,7 +53,7 @@ bool PowerTabOutputStream::WriteCount(uint32_t count)
 /// @return True if the string was written, false if not
 bool PowerTabOutputStream::WriteMFCString(const string& str)
 {
-    const uint32_t length = str.length();
+    const uint32_t length = static_cast<uint32_t>(str.length());
     // Write the string length
     if (!WriteMFCStringLength(length, false))
         return (false);
@@ -225,7 +225,7 @@ bool PowerTabOutputStream::WriteClassInformation(const PowerTabObject* object)
         PTB_CHECK_THAT(CheckState(), false);
 
         const string className = object->GetMFCClassName();
-        const uint16_t length = className.length();
+        const uint16_t length = static_cast<uint16_t>(className.length());
         *this << length;
         m_stream.write(className.data(), length);
 

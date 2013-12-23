@@ -590,7 +590,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
         bool inGroup = false;
         int leftPos = 0;
 
-        for (size_t i = 0; i < symbolSets.size(); ++i)
+        for (int i = 0; i < static_cast<int>(symbolSets.size()); ++i)
         {
             const SymbolSet &set = symbolSets[i];
 
@@ -642,7 +642,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
         if (inGroup)
         {
             const double leftX = getPositionX(leftPos);
-            const int rightPos = symbolSets.size() - 1;
+            const int rightPos = static_cast<int>(symbolSets.size()) - 1;
             const double rightX = getPositionX(rightPos);
             const int height = addToHeightMap(heightMap, leftPos, rightPos, 1);
             myTabStaffAboveSymbols.push_back(

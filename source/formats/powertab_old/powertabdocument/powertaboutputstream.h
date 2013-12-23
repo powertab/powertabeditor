@@ -87,10 +87,10 @@ public:
     bool WriteVector(const std::vector<T>& vect)
     {
         const size_t count = vect.size();
-        WriteCount(count);
+        WriteCount(static_cast<uint32_t>(count));
 
         PTB_CHECK_THAT(CheckState(), false);
-        for (uint32_t i = 0; i < count; i++)
+        for (size_t i = 0; i < count; i++)
         {
             assert(vect[i]);
 
@@ -116,7 +116,7 @@ public:
     template <class T>
     void WriteSmallVector(const T& container)
     {
-        const uint8_t count = container.size();
+        const uint8_t count = static_cast<uint8_t>(container.size());
         *this << count;
 
         m_stream.write((char*)&container[0], count * sizeof(typename T::value_type));

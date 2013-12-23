@@ -89,8 +89,9 @@ PlayerChange PlayerChangeDialog::getPlayerChange() const
                     myStaffComboBoxes[i]->currentIndex()).toInt();
         if (staff >= 0)
         {
-            change.insertActivePlayer(staff,
-                    ActivePlayer(i, myInstrumentComboBoxes[i]->currentIndex()));
+            change.insertActivePlayer(
+                staff, ActivePlayer(static_cast<int>(i),
+                                    myInstrumentComboBoxes[i]->currentIndex()));
         }
     }
 

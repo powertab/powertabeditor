@@ -57,7 +57,7 @@ namespace ComplexSymbols
 
         if (symbol != symbolArray.end())
         {
-            return symbol - symbolArray.begin();
+            return static_cast<uint32_t>(symbol - symbolArray.begin());
         }
         else
         {

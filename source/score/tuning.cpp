@@ -69,7 +69,7 @@ bool Tuning::isValidStringCount(int count)
 
 int Tuning::getStringCount() const
 {
-    return myNotes.size();
+    return static_cast<int>(myNotes.size());
 }
 
 uint8_t Tuning::getNote(int string, bool includeMusicNotationOffset) const
@@ -101,7 +101,7 @@ void Tuning::setNote(int string, uint8_t note)
 
 void Tuning::setNotes(const std::vector<uint8_t> &notes)
 {
-    if (!isValidStringCount(notes.size()))
+    if (!isValidStringCount(static_cast<int>(notes.size())))
         throw std::out_of_range("Invalid string count");
 
     for (auto &note : notes)

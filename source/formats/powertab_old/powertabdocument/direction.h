@@ -115,33 +115,33 @@ public:
     }
     
 // Position Functions
-    static bool IsValidPosition(uint32_t position);
-    bool SetPosition(uint32_t position);
-    uint32_t GetPosition() const;
+    static bool IsValidPosition(size_t position);
+    bool SetPosition(size_t position);
+    size_t GetPosition() const;
     
     static bool IsValidSymbolType(uint8_t symbolType);
     static bool IsValidActiveSymbol(uint8_t activeSymbol);
     static bool IsValidRepeatNumber(uint8_t repeatNumber);
         
 // Symbol Array Functions
-    bool IsValidSymbolIndex(uint32_t index) const;
+    bool IsValidSymbolIndex(size_t index) const;
     
     bool AddSymbol(uint8_t symbolType, uint8_t activeSymbol = activeNone,
         uint8_t repeatNumber = 0);
     
     size_t GetSymbolCount() const;
     
-    bool SetSymbol(uint32_t index, uint8_t symbolType, uint8_t activeSymbol,
+    bool SetSymbol(size_t index, uint8_t symbolType, uint8_t activeSymbol,
         uint8_t repeatNumber);
     
-    bool GetSymbol(uint32_t index, uint8_t& symbolType, uint8_t& activeSymbol,
+    bool GetSymbol(size_t index, uint8_t& symbolType, uint8_t& activeSymbol,
         uint8_t& repeatNumber) const;
     
-    bool IsSymbolType(uint32_t index, uint8_t symbolType) const;
+    bool IsSymbolType(size_t index, uint8_t symbolType) const;
     
-    bool RemoveSymbolAtIndex(uint32_t index);
+    bool RemoveSymbolAtIndex(size_t index);
     
-    std::string GetText(uint32_t index) const;
+    std::string GetText(size_t index) const;
     static std::string GetDetailedText(uint8_t symbolType);
 };
 

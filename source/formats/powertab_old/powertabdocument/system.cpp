@@ -208,7 +208,7 @@ System::BarlinePtr System::GetStartBar() const
 /// Determines if a barline index is valid
 /// @param index barline index to validate
 /// @return True if the barline index is valid, false if not
-bool System::IsValidBarlineIndex(uint32_t index) const
+bool System::IsValidBarlineIndex(size_t index) const
 {
     return index < GetBarlineCount();
 }
@@ -223,7 +223,7 @@ size_t System::GetBarlineCount() const
 /// Gets the nth barline in the system
 /// @param index Index of the barline to get
 /// @return The nth barline in the system
-System::BarlinePtr System::GetBarline(uint32_t index) const
+System::BarlinePtr System::GetBarline(size_t index) const
 {
     PTB_CHECK_THAT(IsValidBarlineIndex(index), BarlinePtr());
     return m_barlineArray[index];
@@ -239,7 +239,7 @@ System::BarlinePtr System::GetEndBar() const
 /// Determines if a chord text index is valid
 /// @param index chord text index to validate
 /// @return True if the chord text index is valid, false if not
-bool System::IsValidChordTextIndex(uint32_t index) const
+bool System::IsValidChordTextIndex(size_t index) const
 {
     return index < GetChordTextCount();
 }
@@ -254,7 +254,7 @@ size_t System::GetChordTextCount() const
 /// Gets the nth chord text item in the system
 /// @param index Index of the chord text to get
 /// @return The nth chord text item in the system
-System::ChordTextPtr System::GetChordText(uint32_t index) const
+System::ChordTextPtr System::GetChordText(size_t index) const
 {
     PTB_CHECK_THAT(IsValidChordTextIndex(index), ChordTextPtr());
     return m_chordTextArray[index];
@@ -264,7 +264,7 @@ System::ChordTextPtr System::GetChordText(uint32_t index) const
 /// Determines if a staff index is valid
 /// @param index staff index to validate
 /// @return True if the staff index is valid, false if not
-bool System::IsValidStaffIndex(uint32_t index) const
+bool System::IsValidStaffIndex(size_t index) const
 {
     return index < GetStaffCount();
 }
@@ -279,7 +279,7 @@ size_t System::GetStaffCount() const
 /// Gets the nth staff in the system
 /// @param index Index of the staff to get
 /// @return The nth staff in the system
-System::StaffPtr System::GetStaff(uint32_t index) const
+System::StaffPtr System::GetStaff(size_t index) const
 {
     PTB_CHECK_THAT(IsValidStaffIndex(index), StaffPtr());
     return m_staffArray[index];
@@ -289,7 +289,7 @@ System::StaffPtr System::GetStaff(uint32_t index) const
 /// Determines if a staff index is valid
 /// @param index staff index to validate
 /// @return True if the staff index is valid, false if not
-bool System::IsValidDirectionIndex(uint32_t index) const
+bool System::IsValidDirectionIndex(size_t index) const
 {
     return index < GetDirectionCount();
 }
@@ -304,7 +304,7 @@ size_t System::GetDirectionCount() const
 /// Gets the nth direction in the system.
 /// @param index Index of the direction to get.
 /// @return The nth direction in the system.
-System::DirectionPtr System::GetDirection(uint32_t index) const
+System::DirectionPtr System::GetDirection(size_t index) const
 {
     PTB_CHECK_THAT(IsValidDirectionIndex(index), DirectionPtr());
     return m_directionArray[index];
@@ -314,7 +314,7 @@ System::DirectionPtr System::GetDirection(uint32_t index) const
 /// Determines if a rhythm slash index is valid
 /// @param index rhythm slash index to validate
 /// @return True if the rhythm slash index is valid, false if not
-bool System::IsValidRhythmSlashIndex(uint32_t index) const
+bool System::IsValidRhythmSlashIndex(size_t index) const
 {
     return index < GetRhythmSlashCount();
 }
@@ -329,7 +329,7 @@ size_t System::GetRhythmSlashCount() const
 /// Gets the nth rhythm slash in the system
 /// @param index Index of the rhythm slash to get
 /// @return The nth rhythm slash in the system
-System::RhythmSlashPtr System::GetRhythmSlash(uint32_t index) const
+System::RhythmSlashPtr System::GetRhythmSlash(size_t index) const
 {
     PTB_CHECK_THAT(IsValidRhythmSlashIndex(index), RhythmSlashPtr());
     return m_rhythmSlashArray[index];
