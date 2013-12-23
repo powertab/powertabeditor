@@ -550,8 +550,8 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
             {
                 const int string = note.getString();
 
-                // TODO - include legato slides here.
-                if (note.hasProperty(Note::HammerOnOrPullOff))
+                if (note.hasProperty(Note::HammerOnOrPullOff) ||
+                    note.hasProperty(Note::LegatoSlide))
                 {
                     // Set the start position of an arc, if necessary.
                     if (arcs.find(string) == arcs.end())
@@ -662,7 +662,7 @@ void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
                     bool slideUp = note->hasProperty(Note::SlideOutOfUpwards);
 
                     if (note->hasProperty(Note::ShiftSlide) ||
-                            note->hasProperty(Note::LegatoSlide))
+                        note->hasProperty(Note::LegatoSlide))
                     {
                         const Note *nextNote = VoiceUtils::getNextNote(
                             voice, pos.getPosition(), string);
