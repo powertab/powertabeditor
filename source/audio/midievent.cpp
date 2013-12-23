@@ -55,7 +55,7 @@ double MidiEvent::getDuration() const
 bool MidiEvent::operator<(const MidiEvent &event) const
 {
     // Compare timestamps using a floating point comparison.
-    if (std::abs(myStartTime - event.myStartTime) <= 0.001 * std::abs(myStartTime))
+    if (std::abs(myStartTime - event.myStartTime) <= 0.001)
     {
         if (mySystem == event.mySystem)
             return myPosition < event.myPosition;
