@@ -326,7 +326,7 @@ std::string ChordName::GetFormulaText() const
         "maj",
         "m",
         "+",
-        std::string(1, 176), // degree symbol
+        std::string(1, 176u), // degree symbol
         "5",
         "add",
         "sus2",
