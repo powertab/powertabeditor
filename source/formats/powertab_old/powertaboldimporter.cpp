@@ -221,7 +221,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     }
 
     // Import tempo markers.
-    std::vector<boost::shared_ptr<PowerTabDocument::TempoMarker> > tempos;
+    std::vector<std::shared_ptr<PowerTabDocument::TempoMarker>> tempos;
     oldScore.GetTempoMarkersInSystem(tempos, oldSystem);
     for (auto &tempo : tempos)
     {
@@ -231,7 +231,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
     }
 
     // Import alternate endings.
-    std::vector<boost::shared_ptr<PowerTabDocument::AlternateEnding> > endings;
+    std::vector<std::shared_ptr<PowerTabDocument::AlternateEnding>> endings;
     oldScore.GetAlternateEndingsInSystem(endings, oldSystem);
     for (auto &ending : endings)
     {

@@ -26,7 +26,7 @@
 TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
                                            const TimeSignature &time,
                                            const ScoreLocation &location,
-                                           boost::shared_ptr<ScoreLocationPubSub> pubsub)
+                                           std::shared_ptr<ScoreLocationPubSub> pubsub)
     : myLayout(layout),
       myTimeSignature(time),
       myLocation(location),

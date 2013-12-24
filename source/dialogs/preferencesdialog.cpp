@@ -30,8 +30,8 @@ typedef std::pair<int, int> MidiApiAndPort;
 Q_DECLARE_METATYPE(MidiApiAndPort)
 
 PreferencesDialog::PreferencesDialog(
-        QWidget *parent, boost::shared_ptr<SettingsPubSub> settingsPubsub,
-        const TuningDictionary &dictionary)
+    QWidget *parent, std::shared_ptr<SettingsPubSub> settingsPubsub,
+    const TuningDictionary &dictionary)
     : QDialog(parent),
       ui(new Ui::PreferencesDialog),
       mySettingsPubsub(settingsPubsub),

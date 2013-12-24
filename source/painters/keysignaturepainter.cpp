@@ -23,10 +23,9 @@
 #include <QPainter>
 #include <score/keysignature.h>
 
-KeySignaturePainter::KeySignaturePainter(const LayoutConstPtr &layout,
-                                         const KeySignature &key,
-                                         const ScoreLocation &location,
-                                         boost::shared_ptr<ScoreLocationPubSub> pubsub)
+KeySignaturePainter::KeySignaturePainter(
+    const LayoutConstPtr &layout, const KeySignature &key,
+    const ScoreLocation &location, std::shared_ptr<ScoreLocationPubSub> pubsub)
     : myLayout(layout),
       myKeySignature(key),
       myLocation(location),

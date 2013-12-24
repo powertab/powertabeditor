@@ -78,7 +78,6 @@
 
 #include <audio/midiplayer.h>
 
-#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 
 #include <dialogs/alternateendingdialog.h>
@@ -127,7 +126,7 @@ PowerTabEditor::PowerTabEditor()
       myFileFormatManager(new FileFormatManager()),
       myUndoManager(new UndoManager()),
       myTuningDictionary(new TuningDictionary()),
-      mySettingsPubSub(boost::make_shared<SettingsPubSub>()),
+      mySettingsPubSub(std::make_shared<SettingsPubSub>()),
       myIsPlaying(false),
       myPreviousDirectory(
           QSettings()

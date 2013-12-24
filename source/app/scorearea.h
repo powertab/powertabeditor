@@ -19,7 +19,7 @@
 #define APP_SCOREAREA_H
 
 #include <boost/optional.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <score/staff.h>
@@ -41,11 +41,11 @@ public:
     /// necessary.
     void redrawSystem(int index);
 
-    boost::shared_ptr<ScoreLocationPubSub> getKeySignaturePubSub() const;
-    boost::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
-    boost::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
-    boost::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
-    boost::shared_ptr<StaffPubSub> getClefPubSub() const;
+    std::shared_ptr<ScoreLocationPubSub> getKeySignaturePubSub() const;
+    std::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
+    std::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
+    std::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
+    std::shared_ptr<StaffPubSub> getClefPubSub() const;
 
 private:
     /// Adjusts the scroll location whenever the caret moves.
@@ -57,10 +57,10 @@ private:
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
 
-    boost::shared_ptr<ScoreLocationPubSub> myKeySignatureClicked;
-    boost::shared_ptr<ScoreLocationPubSub> myTimeSignatureClicked;
-    boost::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
-    boost::shared_ptr<StaffPubSub> myClefClicked;
+    std::shared_ptr<ScoreLocationPubSub> myKeySignatureClicked;
+    std::shared_ptr<ScoreLocationPubSub> myTimeSignatureClicked;
+    std::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
+    std::shared_ptr<StaffPubSub> myClefClicked;
 };
 
 #endif

@@ -20,7 +20,6 @@
 #include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
 #include <app/pubsub/staffpubsub.h>
-#include <boost/make_shared.hpp>
 #include <boost/timer.hpp>
 #include <painters/caretpainter.h>
 #include <painters/systemrenderer.h>
@@ -35,10 +34,10 @@ ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myViewType(Staff::GuitarView),
       myCaretPainter(nullptr),
-      myKeySignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
-      myTimeSignatureClicked(boost::make_shared<ScoreLocationPubSub>()),
-      myBarlineClicked(boost::make_shared<ScoreLocationPubSub>()),
-      myClefClicked(boost::make_shared<StaffPubSub>())
+      myKeySignatureClicked(std::make_shared<ScoreLocationPubSub>()),
+      myTimeSignatureClicked(std::make_shared<ScoreLocationPubSub>()),
+      myBarlineClicked(std::make_shared<ScoreLocationPubSub>()),
+      myClefClicked(std::make_shared<StaffPubSub>())
 {
     setScene(&myScene);
 }
@@ -125,27 +124,27 @@ void ScoreArea::redrawSystem(int index)
     }
 }
 
-boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getKeySignaturePubSub() const
+std::shared_ptr<ScoreLocationPubSub> ScoreArea::getKeySignaturePubSub() const
 {
     return myKeySignatureClicked;
 }
 
-boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getTimeSignaturePubSub() const
+std::shared_ptr<ScoreLocationPubSub> ScoreArea::getTimeSignaturePubSub() const
 {
     return myTimeSignatureClicked;
 }
 
-boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getBarlinePubSub() const
+std::shared_ptr<ScoreLocationPubSub> ScoreArea::getBarlinePubSub() const
 {
     return myBarlineClicked;
 }
 
-boost::shared_ptr<ScoreLocationPubSub> ScoreArea::getSelectionPubSub() const
+std::shared_ptr<ScoreLocationPubSub> ScoreArea::getSelectionPubSub() const
 {
     return myDocument->getCaret().getSelectionPubSub();
 }
 
-boost::shared_ptr<StaffPubSub> ScoreArea::getClefPubSub() const
+std::shared_ptr<StaffPubSub> ScoreArea::getClefPubSub() const
 {
     return myClefClicked;
 }

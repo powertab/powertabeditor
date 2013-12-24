@@ -28,7 +28,7 @@ const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
                                const Barline &barline,
                                const ScoreLocation &location,
-                               boost::shared_ptr<ScoreLocationPubSub> pubsub)
+                               std::shared_ptr<ScoreLocationPubSub> pubsub)
     : myLayout(layout),
       myBarline(barline),
       myLocation(location),

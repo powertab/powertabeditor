@@ -20,7 +20,6 @@
 #include <app/scorearea.h>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <painters/barlinepainter.h>
@@ -77,8 +76,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         }
 
         const bool isFirstStaff = (height == 0);
-        LayoutConstPtr layout = boost::make_shared<LayoutInfo>(
-                    myScore, system, systemIndex, staff, i);
+        LayoutConstPtr layout = std::make_shared<LayoutInfo>(
+            myScore, system, systemIndex, staff, i);
 
         if (isFirstStaff)
         {
@@ -1538,28 +1537,6 @@ QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffD
 
     itemGroup->addToGroup(new QGraphicsPathItem(path));
     return itemGroup;
-}
-
-QGraphicsItem* SystemRenderer::operator()(boost::shared_ptr<const System> system)
-{
-    bool isFirstVisibleStaff = true;
-
-    // Draw each staff
-    for (uint32_t i = 0; i < system->GetStaffCount(); i++)
-    {
-        staff = system->GetStaff(i);
-        if (!staff->IsShown())
-        {
-            continue;
-        }
-
-        drawStdNotation(currentStaffInfo);
-
-        drawSlides(currentStaffInfo);
-        drawSymbols(currentStaffInfo);
-    }
-
-    return parentSystem;
 }
 
 #endif

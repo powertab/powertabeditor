@@ -18,8 +18,8 @@
 #ifndef FORMATS_POWERTABOLDIMPORTER_H
 #define FORMATS_POWERTABOLDIMPORTER_H
 
-#include <boost/shared_ptr.hpp>
 #include <formats/fileformat.h>
+#include <memory>
 
 namespace PowerTabDocument {
 class AlternateEnding;
@@ -74,7 +74,7 @@ private:
                         Tuning &tuning);
 
     static void convert(const PowerTabDocument::Score &oldScore,
-                        boost::shared_ptr<const PowerTabDocument::System> oldSystem,
+                        std::shared_ptr<const PowerTabDocument::System> oldSystem,
                         System &system);
 
     static void convert(const PowerTabDocument::Barline &oldBar, Barline &bar);
@@ -94,7 +94,7 @@ private:
     static void convert(const PowerTabDocument::ChordText &oldChord,
                         ChordText &chord);
 
-    typedef boost::shared_ptr<PowerTabDocument::Dynamic> DynamicPtr;
+    typedef std::shared_ptr<PowerTabDocument::Dynamic> DynamicPtr;
     static int convert(const PowerTabDocument::Staff &oldStaff,
                         const std::vector<DynamicPtr> &dynamics,
                         Staff &staff);

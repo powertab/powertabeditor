@@ -19,14 +19,13 @@
 
 #include <app/pubsub/scorelocationpubsub.h>
 #include <boost/algorithm/clamp.hpp>
-#include <boost/make_shared.hpp>
 #include <score/score.h>
 #include <score/system.h>
 
 Caret::Caret(Score &score)
     : myLocation(score),
       myInPlaybackMode(false),
-      mySelectionPubSub(boost::make_shared<ScoreLocationPubSub>())
+      mySelectionPubSub(std::make_shared<ScoreLocationPubSub>())
 {
     mySelectionPubSub->subscribe([this](const ScoreLocation &loc) {
         handleSelectionChanged(loc);
@@ -151,7 +150,7 @@ boost::signals2::connection Caret::subscribeToChanges(
     return onLocationChanged.connect(subscriber);
 }
 
-boost::shared_ptr<ScoreLocationPubSub> Caret::getSelectionPubSub() const
+std::shared_ptr<ScoreLocationPubSub> Caret::getSelectionPubSub() const
 {
     return mySelectionPubSub;
 }

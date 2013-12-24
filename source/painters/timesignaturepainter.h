@@ -18,6 +18,7 @@
 #ifndef PAINTERS_TIMESIGNATUREPAINTER_H
 #define PAINTERS_TIMESIGNATUREPAINTER_H
 
+#include <memory>
 #include <painters/layoutinfo.h>
 #include <QGraphicsItem>
 #include <score/scorelocation.h>
@@ -31,7 +32,7 @@ public:
     TimeSignaturePainter(const LayoutConstPtr &layout,
                          const TimeSignature &time,
                          const ScoreLocation &location,
-                         boost::shared_ptr<ScoreLocationPubSub> pubsub);
+                         std::shared_ptr<ScoreLocationPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -53,7 +54,7 @@ private:
     LayoutConstPtr myLayout;
     const TimeSignature &myTimeSignature;
     const ScoreLocation myLocation;
-    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    std::shared_ptr<ScoreLocationPubSub> myPubSub;
     const QRectF myBounds;
 };
 

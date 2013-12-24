@@ -80,7 +80,7 @@ public:
     boost::signals2::connection subscribeToChanges(
             const LocationChangedSlot::slot_type &subscriber) const;
 
-    boost::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
+    std::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
 
 private:
     /// Returns the last valid position in the system.
@@ -97,7 +97,7 @@ private:
     mutable LocationChangedSlot onLocationChanged;
 
     /// Used to listen for signals about the selection / position changing.
-    boost::shared_ptr<ScoreLocationPubSub> mySelectionPubSub;
+    std::shared_ptr<ScoreLocationPubSub> mySelectionPubSub;
 };
 
 #endif

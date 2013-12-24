@@ -850,7 +850,7 @@ void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream &stream)
     {
 // TODO - record the tempo marker.
 #if 0
-        position.tempoMarker = boost::make_shared<TempoMarker>();
+        position.tempoMarker = std::make_shared<TempoMarker>();
         position.tempoMarker->SetBeatsPerMinute(tempo);
 #endif
     }

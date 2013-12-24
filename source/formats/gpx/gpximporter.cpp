@@ -21,7 +21,6 @@
 #include "documentreader.h"
 #include <fstream>
 #include <boost/assign/list_of.hpp>
-#include <boost/make_shared.hpp>
 
 GpxImporter::GpxImporter() :
     FileFormatImporter(FileFormat("Guitar Pro 6",

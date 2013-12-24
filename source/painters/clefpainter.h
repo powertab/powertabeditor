@@ -18,7 +18,7 @@
 #ifndef PAINTERS_CLEFPAINTER_H
 #define PAINTERS_CLEFPAINTER_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QFont>
 #include <QGraphicsItem>
 #include <QStaticText>
@@ -29,9 +29,8 @@ class StaffPubSub;
 class ClefPainter : public QGraphicsItem
 {
 public:
-    ClefPainter(Staff::ClefType clefType, const QFont &musicFont,
-                int system, int staff,
-                boost::shared_ptr<StaffPubSub> pubsub);
+    ClefPainter(Staff::ClefType clefType, const QFont &musicFont, int system,
+                int staff, std::shared_ptr<StaffPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -53,7 +52,7 @@ private:
     QRectF myBounds;
     const int mySystemIndex;
     const int myStaffIndex;
-    boost::shared_ptr<StaffPubSub> myPubSub;
+    std::shared_ptr<StaffPubSub> myPubSub;
 };
 
 #endif

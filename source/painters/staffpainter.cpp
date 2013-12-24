@@ -24,7 +24,7 @@
 
 StaffPainter::StaffPainter(const LayoutConstPtr &layout,
                            const ScoreLocation &location,
-                           boost::shared_ptr<ScoreLocationPubSub> pubsub)
+                           std::shared_ptr<ScoreLocationPubSub> pubsub)
     : myLayout(layout),
       myPubSub(pubsub),
       myLocation(location),

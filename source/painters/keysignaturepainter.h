@@ -18,6 +18,7 @@
 #ifndef PAINTERS_KEYSIGNATUREPAINTER_H
 #define PAINTERS_KEYSIGNATUREPAINTER_H
 
+#include <memory>
 #include <QFont>
 #include <QGraphicsItem>
 #include <painters/layoutinfo.h>
@@ -28,10 +29,9 @@ class ScoreLocationPubSub;
 class KeySignaturePainter : public QGraphicsItem
 {
 public:
-    KeySignaturePainter(const LayoutConstPtr &layout,
-                        const KeySignature &key,
+    KeySignaturePainter(const LayoutConstPtr &layout, const KeySignature &key,
                         const ScoreLocation &location,
-                        boost::shared_ptr<ScoreLocationPubSub> pubsub);
+                        std::shared_ptr<ScoreLocationPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -49,7 +49,7 @@ private:
     LayoutConstPtr myLayout;
     const KeySignature &myKeySignature;
     const ScoreLocation myLocation;
-    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    std::shared_ptr<ScoreLocationPubSub> myPubSub;
     QFont myMusicFont;
     const QRectF myBounds;
     QVector<double> myFlatPositions;

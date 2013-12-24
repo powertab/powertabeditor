@@ -19,7 +19,7 @@
 #define PAINTERS_BARLINEPAINTER_H
 
 #include <QGraphicsItem>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <painters/layoutinfo.h>
 #include <score/scorelocation.h>
 
@@ -31,7 +31,7 @@ class BarlinePainter : public QGraphicsItem
 public:
     BarlinePainter(const LayoutConstPtr& layout, const Barline &barline,
                    const ScoreLocation& location,
-                   boost::shared_ptr<ScoreLocationPubSub> pubsub);
+                   std::shared_ptr<ScoreLocationPubSub> pubsub);
 
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
@@ -55,7 +55,7 @@ private:
     const Barline &myBarline;
     QRectF myBounds;
     ScoreLocation myLocation;
-    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    std::shared_ptr<ScoreLocationPubSub> myPubSub;
     double myX;
     double myWidth;
 

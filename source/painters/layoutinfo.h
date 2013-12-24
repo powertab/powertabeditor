@@ -19,7 +19,7 @@
 #define PAINTERS_LAYOUTINFO_H
 
 #include <array>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <painters/beamgroup.h>
 #include <painters/stdnotationnote.h>
 #include <score/staff.h>
@@ -215,7 +215,7 @@ private:
     std::array<std::vector<NoteStem>, Staff::NUM_VOICES> myStems;
 };
 
-typedef boost::shared_ptr<LayoutInfo> LayoutPtr;
-typedef boost::shared_ptr<const LayoutInfo> LayoutConstPtr;
+typedef std::shared_ptr<LayoutInfo> LayoutPtr;
+typedef std::shared_ptr<const LayoutInfo> LayoutConstPtr;
 
-#endif // STAFFDATA_H
+#endif

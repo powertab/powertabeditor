@@ -24,7 +24,7 @@
 
 ClefPainter::ClefPainter(Staff::ClefType clefType, const QFont &musicFont,
                          int system, int staff,
-                         boost::shared_ptr<StaffPubSub> pubsub)
+                         std::shared_ptr<StaffPubSub> pubsub)
     : myClefType(clefType),
       myMusicFont(musicFont),
       mySystemIndex(system),

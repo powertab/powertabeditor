@@ -22,7 +22,6 @@
 
 #include <app/pubsub/instrumentpubsub.h>
 #include <app/pubsub/playerpubsub.h>
-#include <boost/shared_ptr.hpp>
 #include <memory>
 #include <score/position.h>
 #include <string>
@@ -311,7 +310,7 @@ private:
     std::unique_ptr<UndoManager> myUndoManager;
     std::unique_ptr<MidiPlayer> myMidiPlayer;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
-    boost::shared_ptr<SettingsPubSub> mySettingsPubSub;
+    std::shared_ptr<SettingsPubSub> mySettingsPubSub;
     PlayerPubSub myPlayerPubSub;
     InstrumentPubSub myInstrumentPubSub;
     /// Tracks whether we are currently in playback mode.

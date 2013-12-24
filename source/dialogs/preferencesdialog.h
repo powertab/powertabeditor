@@ -18,7 +18,7 @@
 #ifndef DIALOGS_PREFERENCESDIALOG_H
 #define DIALOGS_PREFERENCESDIALOG_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QDialog>
 #include <score/tuning.h>
 
@@ -36,7 +36,7 @@ class PreferencesDialog : public QDialog
 
 public:
     explicit PreferencesDialog(QWidget *parent,
-                               boost::shared_ptr<SettingsPubSub> settingsPubsub,
+                               std::shared_ptr<SettingsPubSub> settingsPubsub,
                                const TuningDictionary &dictionary);
     ~PreferencesDialog();
 
@@ -50,7 +50,7 @@ private:
     void loadCurrentSettings();
 
     Ui::PreferencesDialog *ui;
-    boost::shared_ptr<SettingsPubSub> mySettingsPubsub;
+    std::shared_ptr<SettingsPubSub> mySettingsPubsub;
     const TuningDictionary &myDictionary;
     Tuning myDefaultTuning;
 };

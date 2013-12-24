@@ -18,7 +18,7 @@
 #ifndef PAINTERS_STAFFPAINTER_H
 #define PAINTERS_STAFFPAINTER_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <painters/layoutinfo.h>
 #include <QGraphicsItem>
 #include <score/scorelocation.h>
@@ -30,9 +30,8 @@ class Staff;
 class StaffPainter : public QGraphicsItem
 {
 public:
-    StaffPainter(const LayoutConstPtr &layout,
-                 const ScoreLocation &location,
-                 boost::shared_ptr<ScoreLocationPubSub> pubsub);
+    StaffPainter(const LayoutConstPtr &layout, const ScoreLocation &location,
+                 std::shared_ptr<ScoreLocationPubSub> pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -52,7 +51,7 @@ private:
     int getPositionFromX(double x) const;
 
     LayoutConstPtr myLayout;
-    boost::shared_ptr<ScoreLocationPubSub> myPubSub;
+    std::shared_ptr<ScoreLocationPubSub> myPubSub;
     ScoreLocation myLocation;
     const QRectF myBounds;
 };

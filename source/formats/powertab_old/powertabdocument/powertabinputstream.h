@@ -18,7 +18,6 @@
 
 #include <array>
 #include <boost/cstdint.hpp>
-#include <boost/make_shared.hpp>
 
 namespace PowerTabDocument {
 
@@ -102,10 +101,10 @@ private:
     }
 
     template <class T>
-    inline void ReadObject(std::vector<boost::shared_ptr<T> >& vect,
+    inline void ReadObject(std::vector<std::shared_ptr<T> >& vect,
                            uint16_t version)
     {
-        boost::shared_ptr<T> object(boost::make_shared<T>());
+        std::shared_ptr<T> object(std::make_shared<T>());
         object->Deserialize(*this, version);
         vect.push_back(object);
     }
