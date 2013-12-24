@@ -1361,34 +1361,33 @@ void PowerTabEditor::createCommands()
             SLOT(editFileInformation()));
 
     // Playback-related actions.
-    myPlayPauseCommand = new Command(tr("Play"), "Play.PlayPause",
+    myPlayPauseCommand = new Command(tr("Play"), "Playback.PlayPause",
                                      Qt::Key_Space, this);
     connect(myPlayPauseCommand, SIGNAL(triggered()), this,
             SLOT(startStopPlayback()));
 
     // Section navigation actions.
-    myFirstSectionCommand = new Command(tr("First Section"),
-                                        "Section.FirstSection",
-                                        QKeySequence::MoveToStartOfDocument,
-                                        this);
+    myFirstSectionCommand =
+        new Command(tr("First Section"), "Position.Section.FirstSection",
+                    QKeySequence::MoveToStartOfDocument, this);
     connect(myFirstSectionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToFirstSection()));
 
-    myNextSectionCommand = new Command(tr("Next Section"),
-                                       "Section.NextSection",
-                                       QKeySequence::MoveToNextPage, this);
+    myNextSectionCommand =
+        new Command(tr("Next Section"), "Position.Section.NextSection",
+                    QKeySequence::MoveToNextPage, this);
     connect(myNextSectionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToNextSection()));
 
-    myPrevSectionCommand = new Command(tr("Previous Section"),
-                                       "Section.PreviousSection",
-                                       QKeySequence::MoveToPreviousPage, this);
+    myPrevSectionCommand =
+        new Command(tr("Previous Section"), "Position.Section.PreviousSection",
+                    QKeySequence::MoveToPreviousPage, this);
     connect(myPrevSectionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToPrevSection()));
 
-    myLastSectionCommand = new Command(tr("Last Section"),
-                                       "Section.LastSection",
-                                       QKeySequence::MoveToEndOfDocument, this);
+    myLastSectionCommand =
+        new Command(tr("Last Section"), "Position.Section.LastSection",
+                    QKeySequence::MoveToEndOfDocument, this);
     connect(myLastSectionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToLastSection()));
 
@@ -1406,57 +1405,62 @@ void PowerTabEditor::createCommands()
             SLOT(shiftBackward()));
 
     // Position-related actions.
-    myStartPositionCommand = new Command(tr("Move to &Start"),
-                                         "Staff.MoveToStart",
-                                         QKeySequence::MoveToStartOfLine, this);
+    myStartPositionCommand =
+        new Command(tr("Move to &Start"), "Position.Staff.MoveToStart",
+                    QKeySequence::MoveToStartOfLine, this);
     connect(myStartPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToStart()));
 
-    myNextPositionCommand = new Command(tr("&Next Position"),
-                                        "Staff.NextPosition",
-                                        QKeySequence::MoveToNextChar, this);
+    myNextPositionCommand =
+        new Command(tr("&Next Position"), "Position.Staff.NextPosition",
+                    QKeySequence::MoveToNextChar, this);
     connect(myNextPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretRight()));
 
-    myPrevPositionCommand = new Command(tr("&Previous Position"),
-                                        "Staff.PreviousPosition",
-                                        QKeySequence::MoveToPreviousChar, this);
+    myPrevPositionCommand =
+        new Command(tr("&Previous Position"), "Position.Staff.PreviousPosition",
+                    QKeySequence::MoveToPreviousChar, this);
     connect(myPrevPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretLeft()));
 
-    myNextStringCommand = new Command(tr("Next String"), "Staff.NextString",
-                                      QKeySequence::MoveToNextLine, this);
+    myNextStringCommand =
+        new Command(tr("Next String"), "Position.Staff.NextString",
+                    QKeySequence::MoveToNextLine, this);
     connect(myNextStringCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretDown()));
 
-    myPrevStringCommand = new Command(tr("Previous String"),
-                                      "Staff.PreviousString",
-                                      QKeySequence::MoveToPreviousLine, this);
+    myPrevStringCommand =
+        new Command(tr("Previous String"), "Position.Staff.PreviousString",
+                    QKeySequence::MoveToPreviousLine, this);
     connect(myPrevStringCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretUp()));
 
-    myLastPositionCommand = new Command(tr("Move to &End"), "Staff.MoveToEnd",
-                                        QKeySequence::MoveToEndOfLine, this);
+    myLastPositionCommand =
+        new Command(tr("Move to &End"), "Position.Staff.MoveToEnd",
+                    QKeySequence::MoveToEndOfLine, this);
     connect(myLastPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToEnd()));
 
-    myNextStaffCommand = new Command(tr("Next Staff"), "Staff.NextStaff",
-                                     Qt::ALT + Qt::Key_Down, this);
+    myNextStaffCommand =
+        new Command(tr("Next Staff"), "Position.Staff.NextStaff",
+                    Qt::ALT + Qt::Key_Down, this);
     connect(myNextStaffCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToNextStaff()));
 
-    myPrevStaffCommand = new Command(tr("Previous Staff"), "Staff.PreviousStaff",
-                                     Qt::ALT + Qt::Key_Up, this);
+    myPrevStaffCommand =
+        new Command(tr("Previous Staff"), "Position.Staff.PreviousStaff",
+                    Qt::ALT + Qt::Key_Up, this);
     connect(myPrevStaffCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToPrevStaff()));
 
-    myNextBarCommand = new Command(tr("Next Bar"), "Staff.NextBar",
+    myNextBarCommand = new Command(tr("Next Bar"), "Position.Staff.NextBar",
                                    Qt::Key_Tab, this);
     connect(myNextBarCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToNextBar()));
 
-    myPrevBarCommand = new Command(tr("Previous Bar"), "Staff.PreviousBar",
-                                   Qt::SHIFT + Qt::Key_Tab, this);
+    myPrevBarCommand =
+        new Command(tr("Previous Bar"), "Position.Staff.PreviousBar",
+                    Qt::SHIFT + Qt::Key_Tab, this);
     connect(myPrevBarCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToPrevBar()));
 #if 0
@@ -1541,14 +1545,14 @@ void PowerTabEditor::createCommands()
             SLOT(removeCurrentSystem()));
 
     myIncreaseLineSpacingCommand = new Command(tr("Increase"),
-                                               "Section.IncreaseLineSpacing",
+                                               "Section.LineSpacing.Increase",
                                                QKeySequence(), this);
     connect(myIncreaseLineSpacingCommand, &QAction::triggered, [=]() {
         adjustLineSpacing(1);
     });
 
     myDecreaseLineSpacingCommand = new Command(tr("Decrease"),
-                                               "Section.DecreaseLineSpacing",
+                                               "Section.LineSpacing.Decrease",
                                                QKeySequence(), this);
     connect(myDecreaseLineSpacingCommand, &QAction::triggered, [=]() {
         adjustLineSpacing(-1);
@@ -1556,101 +1560,101 @@ void PowerTabEditor::createCommands()
 
     // Note-related actions.
     myNoteDurationGroup = new QActionGroup(this);
-    createNoteDurationCommand(myWholeNoteCommand, tr("Whole"), "Note.WholeNote",
+    createNoteDurationCommand(myWholeNoteCommand, tr("Whole"), "Notes.WholeNote",
                               Position::WholeNote);
-    createNoteDurationCommand(myHalfNoteCommand, tr("Half"), "Note.HalfNote",
+    createNoteDurationCommand(myHalfNoteCommand, tr("Half"), "Notes.HalfNote",
                               Position::HalfNote);
     createNoteDurationCommand(myQuarterNoteCommand, tr("Quarter"),
-                              "Note.QuarterNote", Position::QuarterNote);
+                              "Notes.QuarterNote", Position::QuarterNote);
     createNoteDurationCommand(myEighthNoteCommand, tr("8th"),
-                              "Note.EighthNote", Position::EighthNote);
+                              "Notes.EighthNote", Position::EighthNote);
     createNoteDurationCommand(mySixteenthNoteCommand, tr("16th"),
-                              "Note.SixteenthNote", Position::SixteenthNote);
+                              "Notes.SixteenthNote", Position::SixteenthNote);
     createNoteDurationCommand(myThirtySecondNoteCommand, tr("32nd"),
-                              "Note.ThirtySecondNote",
+                              "Notes.ThirtySecondNote",
                               Position::ThirtySecondNote);
     createNoteDurationCommand(mySixtyFourthNoteCommand, tr("64th"),
-                              "Note.SixtyFourthNote",
+                              "Notes.SixtyFourthNote",
                               Position::SixtyFourthNote);
 
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
-                                            "Note.IncreaseDuration",
+                                            "Notes.IncreaseDuration",
                                             Qt::SHIFT + Qt::Key_Up, this);
     connect(myIncreaseDurationCommand, &QAction::triggered, [=]() {
         changeNoteDuration(true);
     });
 
     myDecreaseDurationCommand = new Command(tr("Decrease Duration"),
-                                            "Note.DecreaseDuration",
+                                            "Notes.DecreaseDuration",
                                             Qt::SHIFT + Qt::Key_Down, this);
     connect(myDecreaseDurationCommand, &QAction::triggered, [=]() {
         changeNoteDuration(false);
     });
 
-    createPositionPropertyCommand(myDottedCommand, tr("Dotted"), "Note.Dotted",
+    createPositionPropertyCommand(myDottedCommand, tr("Dotted"), "Notes.Dotted",
                                   QKeySequence(), Position::Dotted);
 
     createPositionPropertyCommand(myDoubleDottedCommand, tr("Double Dotted"),
-                                  "Note.DoubleDotted", QKeySequence(),
+                                  "Notes.DoubleDotted", QKeySequence(),
                                   Position::DoubleDotted);
 
-    myAddDotCommand = new Command(tr("Add Dot"), "Note.AddDot",
+    myAddDotCommand = new Command(tr("Add Dot"), "Notes.AddDot",
                             Qt::SHIFT + Qt::Key_Right, this);
     connect(myAddDotCommand, SIGNAL(triggered()), this, SLOT(addDot()));
 
-    myRemoveDotCommand = new Command(tr("Remove Dot"), "Note.RemoveDot",
+    myRemoveDotCommand = new Command(tr("Remove Dot"), "Notes.RemoveDot",
                                Qt::SHIFT + Qt::Key_Left, this);
     connect(myRemoveDotCommand, SIGNAL(triggered()), this, SLOT(removeDot()));
 
-    myTieCommand = new Command(tr("Tied"), "Note.Tied", Qt::Key_Y, this);
+    myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
     myTieCommand->setCheckable(true);
     connect(myTieCommand, SIGNAL(triggered()), this, SLOT(editTiedNote()));
 
-    createNotePropertyCommand(myMutedCommand, tr("Muted"), "Note.Muted",
+    createNotePropertyCommand(myMutedCommand, tr("Muted"), "Notes.Muted",
                               Qt::Key_X, Note::Muted);
     createNotePropertyCommand(myGhostNoteCommand, tr("Ghost Note"),
-                              "Note.GhostNote", Qt::Key_G, Note::GhostNote);
+                              "Notes.GhostNote", Qt::Key_G, Note::GhostNote);
 
     createPositionPropertyCommand(myFermataCommand, tr("Fermata"),
-                                  "Note.Fermata", Qt::Key_F, Position::Fermata);
+                                  "Notes.Fermata", Qt::Key_F, Position::Fermata);
 
     createPositionPropertyCommand(myLetRingCommand, tr("Let Ring"),
-                                  "Note.LetRing", QKeySequence(),
+                                  "Notes.LetRing", QKeySequence(),
                                   Position::LetRing);
 
     createPositionPropertyCommand(myGraceNoteCommand, tr("Grace Note"),
-                                  "Note.GraceNote", QKeySequence(),
+                                  "Notes.GraceNote", QKeySequence(),
                                   Position::Acciaccatura);
 
     createPositionPropertyCommand(myStaccatoCommand, tr("Staccato"),
-                                  "Note.Staccato", Qt::Key_Z,
+                                  "Notes.Staccato", Qt::Key_Z,
                                   Position::Staccato);
 
-    createPositionPropertyCommand(myMarcatoCommand, tr("Accent"), "Note.Accent",
+    createPositionPropertyCommand(myMarcatoCommand, tr("Accent"), "Notes.Accent",
                                   Qt::Key_A, Position::Marcato);
 
     createPositionPropertyCommand(mySforzandoCommand, tr("Heavy Accent"),
-                                  "Note.HeavyAccent", QKeySequence(),
+                                  "Notes.HeavyAccent", QKeySequence(),
                                   Position::Sforzando);
 
     // Octave actions
-    createNotePropertyCommand(myOctave8vaCommand, tr("8va"), "Note.Octave8va",
+    createNotePropertyCommand(myOctave8vaCommand, tr("8va"), "Notes.Octave.8va",
                               QKeySequence(), Note::Octave8va);
-    createNotePropertyCommand(myOctave15maCommand, tr("15ma"), "Note.Octave15ma",
+    createNotePropertyCommand(myOctave15maCommand, tr("15ma"), "Notes.Octave.15ma",
                               QKeySequence(), Note::Octave15ma);
-    createNotePropertyCommand(myOctave8vbCommand, tr("8vb"), "Note.Octave8vb",
+    createNotePropertyCommand(myOctave8vbCommand, tr("8vb"), "Notes.Octave.8vb",
                               QKeySequence(), Note::Octave8vb);
     createNotePropertyCommand(myOctave15mbCommand, tr("15mb"),
-                              "Octave15mb.Octave8va", QKeySequence(),
+                              "Notes.Octave.15mb", QKeySequence(),
                               Note::Octave15mb);
 
-    myTripletCommand = new Command(tr("Triplet"), "Note.Triplet", Qt::Key_E, this);
+    myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this);
     connect(myTripletCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(true);
     });
 
     myIrregularGroupingCommand = new Command(
-        tr("Irregular Grouping"), "Note.IrregularGrouping", Qt::Key_I, this);
+        tr("Irregular Grouping"), "Notes.IrregularGrouping", Qt::Key_I, this);
     connect(myIrregularGroupingCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(false);
     });
@@ -1665,14 +1669,14 @@ void PowerTabEditor::createCommands()
     createRestDurationCommand(myQuarterRestCommand, tr("Quarter"),
                               "Rests.Quarter", Position::QuarterNote);
     createRestDurationCommand(myEighthRestCommand, tr("8th"),
-                              "Rest.Eighth", Position::EighthNote);
+                              "Rests.Eighth", Position::EighthNote);
     createRestDurationCommand(mySixteenthRestCommand, tr("16th"),
-                              "Rest.Sixteenth", Position::SixteenthNote);
+                              "Rests.Sixteenth", Position::SixteenthNote);
     createRestDurationCommand(myThirtySecondRestCommand, tr("32nd"),
-                              "Rest.ThirtySecond",
+                              "Rests.ThirtySecond",
                               Position::ThirtySecondNote);
     createRestDurationCommand(mySixtyFourthRestCommand, tr("64th"),
-                              "Rest.SixtyFourth",
+                              "Rests.SixtyFourth",
                               Position::SixtyFourthNote);
 
     myAddRestCommand = new Command(tr("Add Rest"), "Rests.AddRest", Qt::Key_R,
@@ -1818,11 +1822,13 @@ void PowerTabEditor::createCommands()
                                   Position::PickStrokeDown);
 
     createNotePropertyCommand(mySlideIntoFromAboveCommand,
-                              tr("Slide Into From Above"), "SlideInto.FromAbove",
-                              QKeySequence(), Note::SlideIntoFromAbove);
+                              tr("Slide Into From Above"),
+                              "TabSymbols.SlideInto.FromAbove", QKeySequence(),
+                              Note::SlideIntoFromAbove);
     createNotePropertyCommand(mySlideIntoFromBelowCommand,
-                              tr("Slide Into From Below"), "SlideInto.FromBelow",
-                              QKeySequence(), Note::SlideIntoFromBelow);
+                              tr("Slide Into From Below"),
+                              "TabSymbols.SlideInto.FromBelow", QKeySequence(),
+                              Note::SlideIntoFromBelow);
 
     createNotePropertyCommand(myShiftSlideCommand, tr("Shift Slide"),
                               "TabSymbols.ShiftSlide", Qt::Key_S,
@@ -1832,11 +1838,13 @@ void PowerTabEditor::createCommands()
                               Note::LegatoSlide);
 
     createNotePropertyCommand(mySlideOutOfDownwardsCommand,
-                              tr("Slide Out Of Downwards"),"SlideOut.Downwards",
-                              QKeySequence(), Note::SlideOutOfDownwards);
+                              tr("Slide Out Of Downwards"),
+                              "TabSymbols.SlideOutOf.Downwards", QKeySequence(),
+                              Note::SlideOutOfDownwards);
     createNotePropertyCommand(mySlideOutOfUpwardsCommand,
-                              tr("Slide Out Of Upwards"),"SlideOut.Upwards",
-                              QKeySequence(), Note::SlideOutOfUpwards);
+                              tr("Slide Out Of Upwards"),
+                              "TabSymbols.SlideOutOf.Upwards", QKeySequence(),
+                              Note::SlideOutOfUpwards);
 
     // Player menu.
     myPlayerChangeCommand = new Command("Player Change...",
