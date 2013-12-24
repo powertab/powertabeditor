@@ -256,51 +256,20 @@ bool Document::Deserialize(PowerTabInputStream& stream)
     // Set the version
     const uint16_t version = m_header.GetVersion();
 
-    // TODO - remove all of the player view code from here.
-#if 1
     m_scoreArray.push_back(new Score("Guitar Score"));
     m_scoreArray.push_back(new Score("Bass Score"));
     m_scoreArray[0]->Deserialize(stream, version);
     m_scoreArray[1]->Deserialize(stream, version);
-#else
-
-    // the Player view
-    m_scoreArray.push_back(new Score("Player View"));
-
-    // Read the guitar score and add to the Player view
-    m_scoreArray.push_back(new Score("Guitar Score"));
-    m_scoreArray[1]->Deserialize(stream, version);
-    m_scoreArray[0]->MergeScore(*(m_scoreArray[1]));
-
-    if (version <= PowerTabFileHeader::Version_1_7)
-    {
-        // Read the bass score and add to the Player view (TODO)
-        m_scoreArray.push_back(new Score("Bass Score"));
-        m_scoreArray[2]->Deserialize(stream, version);
-        //m_scoreArray[0]->MergeScore(*(m_scoreArray[2]));
-    }
-#endif
 
     // Read the document font settings
-    for (size_t fontSettingIndex = 0; fontSettingIndex < NUM_FONT_SETTINGS; fontSettingIndex++)
+    for (size_t fontSettingIndex = 0; fontSettingIndex < NUM_FONT_SETTINGS;
+         fontSettingIndex++)
     {
         FontSetting fontSetting;
         fontSetting.Deserialize(stream, version);
 
         m_fontSettings[fontSettingIndex] = fontSetting;
     }
-
-#if 0
-    // make the Player view look like the player view
-    if (version == PowerTabFileHeader::Version_1_7)
-    {
-        m_scoreArray[0]->UpdateToVer2Structure();
-    }
-
-    // TODO - this should eventually be done for the other scores as well. The
-    // layout code currently only handles the v2.0 structure.
-    m_scoreArray[0]->UpdateAllSystemHeights();
-#endif
 
     // Read the line spacing and fade values
     stream >> m_tablatureStaffLineSpacing >> m_fadeIn >> m_fadeOut;

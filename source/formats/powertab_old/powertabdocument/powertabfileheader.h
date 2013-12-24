@@ -35,8 +35,7 @@ public:
         Version_1_0 = 1,    ///< Version 1.0        Feb. 6, 2000
         Version_1_0_2,      ///< Version 1.0.2      Feb. 21, 2000
         Version_1_5,        ///< Version 1.5        May. 22, 2000
-        Version_1_7,        ///< Version 1.7        Aug. 30, 2000
-        Version_2_0         ///< Version 2.0
+        Version_1_7         ///< Version 1.7        Aug. 30, 2000
     };
 
     static const uint16_t NUM_FILEVERSIONS;             ///< Number of power tab file formats.

@@ -21,7 +21,7 @@ namespace PowerTabDocument {
 // Constants (see .h for details)
 const uint32_t PowerTabFileHeader::POWERTABFILE_MARKER              = 0x62617470;
 
-const uint16_t PowerTabFileHeader::FILEVERSION_CURRENT                = PowerTabFileHeader::Version_2_0;
+const uint16_t PowerTabFileHeader::FILEVERSION_CURRENT                = PowerTabFileHeader::Version_1_7;
 const uint16_t PowerTabFileHeader::NUM_FILEVERSIONS                   = 5;
 
 const uint8_t PowerTabFileHeader::NUM_FILETYPES                      = 2;
