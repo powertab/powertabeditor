@@ -11,4 +11,7 @@ endif()
 
 add_library(rtmidi
     RtMidi.cpp
+
+    RtError.h
+    RtMidi.h
 )

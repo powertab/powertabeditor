@@ -19,7 +19,16 @@ add_library(pteapp
     settings.cpp
     tuningdictionary.cpp
 
-    # Header-only files
+    caret.h
+    clipboard.h
+    command.h
+    documentmanager.h
+    options.h
+    powertabeditor.h
+    recentfiles.h
+    scorearea.h
+    settings.h
+    tuningdictionary.h
     pubsub/playerpubsub.h
     pubsub/pubsub.h
     pubsub/scorelocationpubsub.h

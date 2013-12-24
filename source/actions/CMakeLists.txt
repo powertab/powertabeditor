@@ -53,6 +53,59 @@ add_library(pteactions
     shiftpositions.cpp
     #shifttabnumber.cpp
     undomanager.cpp
+
+    addalternateending.h
+    addartificialharmonic.h
+    addbarline.h
+    addchordtext.h
+    adddirection.h
+    adddynamic.h
+    #addguitar.h
+    addirregulargrouping.h
+    addnote.h
+    addnoteproperty.h
+    addplayerchange.h
+    addpositionproperty.h
+    addrehearsalsign.h
+    addrest.h
+    addsystem.h
+    addtappedharmonic.h
+    addtempomarker.h
+    addtrill.h
+    #addvolumeswell.h
+    adjustlinespacing.h
+    #changepositionspacing.h
+    editbarline.h
+    editclef.h
+    editfileinformation.h
+    editinstrument.h
+    editkeysignature.h
+    editnoteduration.h
+    editplayer.h
+    edittabnumber.h
+    edittimesignature.h
+    insertnotes.h
+    removealternateending.h
+    removeartificialharmonic.h
+    removebarline.h
+    removechordtext.h
+    removedirection.h
+    removedynamic.h
+    removeirregulargrouping.h
+    removenote.h
+    removenoteproperty.h
+    removeplayerchange.h
+    removeposition.h
+    removepositionproperty.h
+    removerehearsalsign.h
+    removesystem.h
+    removetappedharmonic.h
+    removetempomarker.h
+    removetrill.h
+    #removevolumeswell.h
+    shiftpositions.h
+    #shifttabnumber.h
+    undomanager.h
 )
 
 qt5_use_modules(pteactions Widgets)

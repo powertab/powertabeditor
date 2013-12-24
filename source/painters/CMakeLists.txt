@@ -18,6 +18,24 @@ add_library(ptepainters
     tempomarkerpainter.cpp
     timesignaturepainter.cpp
     #tremolobarpainter.cpp
+
+    barlinepainter.h
+    beamgroup.h
+    caretpainter.h
+    clefpainter.h
+    directionpainter.h
+    #irregularnotegroup.h
+    keysignaturepainter.h
+    layoutinfo.h
+    musicfont.h
+    notestem.h
+    #rhythmslashpainter.h
+    staffpainter.h
+    stdnotationnote.h
+    systemrenderer.h
+    tempomarkerpainter.h
+    timesignaturepainter.h
+    #tremolobarpainter.h
 )
 
 qt5_use_modules(ptepainters Widgets) 

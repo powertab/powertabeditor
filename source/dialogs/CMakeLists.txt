@@ -50,6 +50,29 @@ add_library(ptedialogs
     tuningdialog.cpp
     tuningdictionarydialog.cpp
     #volumeswelldialog.cpp
+
+    alternateendingdialog.h
+    artificialharmonicdialog.h
+    barlinedialog.h
+    chordnamedialog.h
+    directiondialog.h
+    dynamicdialog.h
+    fileinformationdialog.h
+    gotobarlinedialog.h
+    gotorehearsalsigndialog.h
+    irregulargroupingdialog.h
+    keyboardsettingsdialog.h
+    keysignaturedialog.h
+    playerchangedialog.h
+    preferencesdialog.h
+    rehearsalsigndialog.h
+    tappedharmonicdialog.h
+    tempomarkerdialog.h
+    timesignaturedialog.h
+    trilldialog.h
+    tuningdialog.h
+    tuningdictionarydialog.h
+    #volumeswelldialog.h
 )
 
 qt5_use_modules(ptedialogs Widgets) 
