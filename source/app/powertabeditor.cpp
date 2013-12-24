@@ -113,6 +113,7 @@
 #include <QMessageBox>
 #include <QScrollArea>
 #include <QSettings>
+#include <QTabBar>
 
 #include <score/utils.h>
 #include <score/voiceutils.h>
@@ -1204,6 +1205,10 @@ void PowerTabEditor::showTuningDictionary()
 
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
+    // Don't handle key presses during playback.
+    if (myIsPlaying)
+        return QMainWindow::eventFilter(object, event);
+
     ScoreArea *scorearea = getScoreArea();
     if (scorearea && event->type() == QEvent::KeyPress)
     {
@@ -2503,6 +2508,9 @@ void PowerTabEditor::enableEditing(bool enable)
 #if 0
     addGuitarAct->setEnabled(enable);
 #endif
+
+    // Prevent the user from changing tabs during playback.
+    myTabWidget->tabBar()->setEnabled(enable);
 }
 
 void PowerTabEditor::editRest(Position::DurationType duration)
