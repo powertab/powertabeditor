@@ -44,7 +44,8 @@ namespace Settings
     const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
 
     const char *MIDI_METRONOME_PRESET = "midi/metronomePreset";
-    const int MIDI_METRONOME_PRESET_DEFAULT = Midi::MIDI_PRESET_WOODBLOCK;
+    const int MIDI_METRONOME_PRESET_DEFAULT =
+        Midi::MIDI_PERCUSSION_PRESET_HI_WOOD_BLOCK;
 
     const char *MIDI_METRONOME_STRONG_ACCENT = "midi/metronomeStrongAccent";
     const int MIDI_METRONOME_STRONG_ACCENT_DEFAULT = 127;

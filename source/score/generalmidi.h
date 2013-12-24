@@ -456,6 +456,8 @@ namespace Midi
     const uint8_t MIDI_PERCUSSION_PRESET_OPEN_TRIANGLE = 46;
     const uint8_t FIRST_MIDI_PERCUSSION_PRESET = MIDI_PERCUSSION_PRESET_ACOUSTIC_BASS_DRUM;
     const uint8_t LAST_MIDI_PERCUSSION_PRESET = MIDI_PERCUSSION_PRESET_OPEN_TRIANGLE;
+    /// The first percussion preset starts at 35.
+    const uint8_t MIDI_PERCUSSION_PRESET_OFFSET = 35;
 
     /// Determines if a MIDI channel is valid.
     bool isValidMidiChannel(uint8_t channel);
@@ -505,12 +507,11 @@ namespace Midi
     /// e.g. GetKeyText(true, false, 1) -> F
     std::string getKeyText(bool minor, bool usesSharps, uint8_t numAccidentals);
 
-    /// Determines if a MIDI preset is valid.
-    bool isValidMidiPreset(uint8_t preset);
-    /// Determines if a MIDI percussion preset is valid.
-    bool isValidMidiPercussionPreset(uint8_t preset);
     /// Returns a list of all MIDI preset names.
     std::vector<std::string> getPresetNames();
+
+    /// Returns a list of all MIDI percussion preset names.
+    std::vector<std::string> getPercussionPresetNames();
 }
 
 #endif

@@ -26,13 +26,19 @@
 #include <QDebug>
 #endif
 
-const uint8_t MetronomeEvent::METRONOME_PITCH = Midi::MIDI_NOTE_MIDDLE_C;
-
 MetronomeEvent::MetronomeEvent(int channel, double startTime, double duration,
                                int position, int system, VelocityType velocity)
     : MidiEvent(channel, startTime, duration, position, system),
       myVelocity(velocity)
 {
+}
+
+uint8_t MetronomeEvent::getMetronomePreset()
+{
+    QSettings settings;
+    return Midi::MIDI_PERCUSSION_PRESET_OFFSET +
+           settings.value(Settings::MIDI_METRONOME_PRESET,
+                          Settings::MIDI_METRONOME_PRESET_DEFAULT).toUInt();
 }
 
 void MetronomeEvent::performEvent(MidiOutputDevice &device) const
@@ -63,8 +69,8 @@ void MetronomeEvent::performEvent(MidiOutputDevice &device) const
                            Settings::MIDI_METRONOME_STRONG_ACCENT_DEFAULT).toUInt();
     }
 
-    device.setPatch(myChannel, settings.value(Settings::MIDI_METRONOME_PRESET,
-            Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
+    // The metronome events use the percussion channel, so we don't need to perform
+    // a patch change. The note determines whether we hear a cymbal, snare, etc.
     device.setChannelMaxVolume(myChannel, Midi::MAX_MIDI_CHANNEL_VOLUME);
-    device.playNote(myChannel, METRONOME_PITCH, velocity);
+    device.playNote(myChannel, getMetronomePreset(), velocity);
 }

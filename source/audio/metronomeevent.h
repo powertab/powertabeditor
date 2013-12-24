@@ -30,12 +30,12 @@ public:
         WeakAccent
     };
 
-    static const uint8_t METRONOME_PITCH;
-
     MetronomeEvent(int channel, double startTime, double duration,
                    int position, int system, VelocityType myVelocity);
 
     virtual void performEvent(MidiOutputDevice &device) const override;
+
+    static uint8_t getMetronomePreset();
 
 private:
     const VelocityType myVelocity;

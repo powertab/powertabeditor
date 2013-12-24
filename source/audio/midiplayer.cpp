@@ -37,7 +37,9 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
-static const int METRONOME_CHANNEL = 15;
+// Channel 10 is used for percussion in General MIDI.
+static const int PERCUSSION_CHANNEL = 9;
+static const int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
 
 /// A MIDI event that does nothing, but is useful for triggering a position
 /// change.
@@ -171,6 +173,17 @@ static PlayNoteEvent::VelocityType getNoteVelocity(const Position &pos,
         return PlayNoteEvent::DefaultVelocity;
 }
 
+/// Returns the MIDI channel that should be used for the player.
+/// Since channel 10 is reserved for percussion, we can't use that
+/// channel for regular instruments.
+static int getChannel(const ActivePlayer &player)
+{
+    int channel = player.getPlayerNumber();
+    if (channel >= PERCUSSION_CHANNEL)
+        channel++;
+    return channel;
+}
+
 double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                                         const Staff &staff, int staffIndex,
                                         const Voice &voice, int leftPos,
@@ -216,7 +229,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
 
             for (const ActivePlayer &player : activePlayers)
             {
-                eventList.emplace_back(new RestEvent(player.getPlayerNumber(),
+                eventList.emplace_back(new RestEvent(getChannel(player),
                                                      startTime, duration,
                                                      position, systemIndex));
             }
@@ -254,7 +267,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
 
             for (const ActivePlayer &player : activePlayers)
             {
-                const int channel = player.getPlayerNumber();
+                const int channel = getChannel(player);
 
                 // Add vibrato event, and an event to turn off the vibrato after
                 // the note is done.
@@ -277,8 +290,8 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                 for (const ActivePlayer &player : activePlayers)
                 {
                     eventList.emplace_back(new VolumeChangeEvent(
-                        player.getPlayerNumber(), startTime, position,
-                        systemIndex, dynamic->getVolume()));
+                        getChannel(player), startTime, position, systemIndex,
+                        dynamic->getVolume()));
                 }
             }
         }
@@ -288,9 +301,9 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         {
             for (const ActivePlayer &player : activePlayers)
             {
-                eventList.emplace_back(new LetRingEvent(
-                    player.getPlayerNumber(), startTime, position, systemIndex,
-                    LetRingEvent::LetRingOn));
+                eventList.emplace_back(
+                    new LetRingEvent(getChannel(player), startTime, position,
+                                     systemIndex, LetRingEvent::LetRingOn));
             }
 
             letRingActive = true;
@@ -299,9 +312,9 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         {
             for (const ActivePlayer &player : activePlayers)
             {
-                eventList.emplace_back(new LetRingEvent(
-                    player.getPlayerNumber(), startTime, position, systemIndex,
-                    LetRingEvent::LetRingOff));
+                eventList.emplace_back(
+                    new LetRingEvent(getChannel(player), startTime, position,
+                                     systemIndex, LetRingEvent::LetRingOff));
             }
 
             letRingActive = false;
@@ -314,7 +327,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
             for (const ActivePlayer &player : activePlayers)
             {
                 eventList.emplace_back(new LetRingEvent(
-                    player.getPlayerNumber(), startTime + duration, position,
+                    getChannel(player), startTime + duration, position,
                     systemIndex, LetRingEvent::LetRingOff));
             }
 
@@ -352,8 +365,8 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                             activePlayer.getInstrumentNumber()];
 
                     eventList.emplace_back(new PlayNoteEvent(
-                        activePlayer.getPlayerNumber(), startTime, duration,
-                        pitch, position, systemIndex, player, instrument,
+                        getChannel(activePlayer), startTime, duration, pitch,
+                        position, systemIndex, player, instrument,
                         note.hasProperty(Note::Muted), velocity));
                 }
             }
@@ -416,7 +429,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                     for (const ActivePlayer &player : activePlayers)
                     {
                         eventList.emplace_back(new BendEvent(
-                            player.getPlayerNumber(), event.timestamp, position,
+                            getChannel(player), event.timestamp, position,
                             systemIndex, event.pitchBendAmount));
                     }
                 }
@@ -446,8 +459,8 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                     for (const ActivePlayer &player : activePlayers)
                     {
                         eventList.emplace_back(new StopNoteEvent(
-                            player.getPlayerNumber(), currentStartTime,
-                            position, systemIndex, pitch));
+                            getChannel(player), currentStartTime, position,
+                            systemIndex, pitch));
                     }
 
                     // Alternate to the other pitch (this has no effect for
@@ -462,7 +475,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                                 activePlayer.getInstrumentNumber()];
 
                         eventList.emplace_back(new PlayNoteEvent(
-                            activePlayer.getPlayerNumber(), currentStartTime,
+                            getChannel(activePlayer), currentStartTime,
                             tremPickNoteDuration, pitch, position, systemIndex,
                             player, instrument, note.hasProperty(Note::Muted),
                             velocity));
@@ -494,8 +507,8 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                 for (const ActivePlayer &player : activePlayers)
                 {
                     eventList.emplace_back(new StopNoteEvent(
-                        player.getPlayerNumber(), startTime + noteLength,
-                        position, systemIndex, pitch));
+                        getChannel(player), startTime + noteLength, position,
+                        systemIndex, pitch));
                 }
             }
         }
@@ -787,7 +800,7 @@ double MidiPlayer::generateMetronome(const System &system, int systemIndex,
             startTime += duration;
             eventList.emplace_back(new StopNoteEvent(
                 METRONOME_CHANNEL, startTime, position, systemIndex,
-                MetronomeEvent::METRONOME_PITCH));
+                MetronomeEvent::getMetronomePreset()));
         }
     }
 

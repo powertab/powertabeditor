@@ -54,10 +54,10 @@ PreferencesDialog::PreferencesDialog(
     }
 
     for (const std::string &name : Midi::getPresetNames())
-    {
-        ui->metronomePresetComboBox->addItem(QString::fromStdString(name));
         ui->defaultPresetComboBox->addItem(QString::fromStdString(name));
-    }
+
+    for (const std::string &name : Midi::getPercussionPresetNames())
+        ui->metronomePresetComboBox->addItem(QString::fromStdString(name));
 
     ui->vibratoStrengthSpinBox->setRange(1, 127);
     ui->wideVibratoStrengthSpinBox->setRange(1, 127);
@@ -99,9 +99,9 @@ void PreferencesDialog::loadCurrentSettings()
         settings.value(Settings::MIDI_METRONOME_ENABLED,
                        Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
 
-    ui->metronomePresetComboBox->setCurrentIndex(settings.value(
-            Settings::MIDI_METRONOME_PRESET,
-            Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
+    ui->metronomePresetComboBox->setCurrentIndex(
+        settings.value(Settings::MIDI_METRONOME_PRESET,
+                       Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
 
     ui->strongAccentVolumeSpinBox->setValue(
         settings.value(Settings::MIDI_METRONOME_STRONG_ACCENT,
