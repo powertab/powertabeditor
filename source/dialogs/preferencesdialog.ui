@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>366</width>
-    <height>331</height>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,6 +63,12 @@
             </item>
             <item row="2" column="0">
              <widget class="QLabel" name="wideVibratoStrengthLabel">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string>Wide Vibrato Strength:</string>
               </property>
@@ -109,6 +115,12 @@
             </item>
             <item row="2" column="0">
              <widget class="QLabel" name="strongAccentVolumeLabel">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string>Strong Accent Volume:</string>
               </property>
@@ -126,6 +138,58 @@
             </item>
             <item row="3" column="1">
              <widget class="QSpinBox" name="weakAccentVolumeSpinBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Count-In Before Playback</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <layout class="QFormLayout" name="formLayout_4">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="countInEnabledLabel">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Enabled:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QCheckBox" name="countInEnabledCheckBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="countInPresetLabel">
+              <property name="text">
+               <string>Preset:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="countInPresetComboBox"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="countInVolumeLabel">
+              <property name="text">
+               <string>Volume:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="countInVolumeSpinBox"/>
             </item>
            </layout>
           </item>

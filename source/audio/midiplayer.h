@@ -25,9 +25,11 @@
 
 class Barline;
 class MidiEvent;
+class MidiOutputDevice;
 class Note;
 class Position;
 class Score;
+class SystemLocation;
 class Staff;
 class System;
 class TempoMarker;
@@ -62,6 +64,8 @@ private:
 
     void generateEvents(EventList &eventList);
     void playMidiEvents(const EventList &eventList);
+    void performCountIn(MidiOutputDevice &device,
+                        const SystemLocation &location);
 
     /// Generates a list of all notes in the given bar.
     /// @returns The timestamp of the end of the last event in the bar.

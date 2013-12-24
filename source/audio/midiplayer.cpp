@@ -519,6 +519,50 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
     return startTime;
 }
 
+void MidiPlayer::performCountIn(MidiOutputDevice &device,
+                                const SystemLocation &location)
+{
+    QSettings settings;
+
+    const System &system = myScore.getSystems()[location.getSystem()];
+    const Barline *barline = system.getPreviousBarline(location.getPosition());
+    // Use the start bar if necessary.
+    if (!barline)
+        barline = &system.getBarlines().front();
+
+    // Figure out the time signature and tempo where the playback is starting.
+    const TimeSignature &timeSig = barline->getTimeSignature();
+    const uint8_t numPulses = timeSig.getNumPulses();
+    const uint8_t beatsPerMeasure = timeSig.getBeatsPerMeasure();
+    const uint8_t beatValue = timeSig.getBeatValue();
+
+    // Figure out the duration of a pulse.
+    const double tempo = getCurrentTempo(location.getSystem(), location.getPosition());
+    const double duration = (tempo * 4.0 / beatValue) * beatsPerMeasure / numPulses;
+
+    const uint8_t velocity =
+        settings.value(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
+                       Settings::MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT).toUInt();
+    const uint8_t preset =
+        Midi::MIDI_PERCUSSION_PRESET_OFFSET +
+        settings.value(Settings::MIDI_METRONOME_COUNTIN_PRESET,
+                       Settings::MIDI_METRONOME_COUNTIN_PRESET_DEFAULT).toUInt();
+
+    const double speedShiftFactor = 100.0 / myPlaybackSpeed;
+
+    device.setChannelMaxVolume(METRONOME_CHANNEL, Midi::MAX_MIDI_CHANNEL_VOLUME);
+    // Play the count-in.
+    for (uint8_t i = 0; i < numPulses; ++i)
+    {
+        if (!isPlaying())
+            break;
+
+        device.playNote(METRONOME_CHANNEL, preset, velocity);
+        usleep(1000 * duration * speedShiftFactor);
+        device.stopNote(METRONOME_CHANNEL, preset);
+    }
+}
+
 void MidiPlayer::playMidiEvents(const EventList &eventList)
 {
     SystemLocation startLocation(myStartSystem, myStartPosition);
@@ -535,6 +579,12 @@ void MidiPlayer::playMidiEvents(const EventList &eventList)
     // Set pitch bend settings for each channel to one octave.
     for (int i = 0; i < Midi::NUM_MIDI_CHANNELS_PER_PORT; ++i)
         device.setPitchBendRange(i, BendEvent::PITCH_BEND_RANGE);
+
+    if (settings.value(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
+                       Settings::MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT).toBool())
+    {
+        performCountIn(device, startLocation);
+    }
 
     RepeatController repeatController(myScore);
 

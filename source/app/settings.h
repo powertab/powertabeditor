@@ -53,6 +53,15 @@ namespace Settings
     extern const char *MIDI_METRONOME_WEAK_ACCENT;
     extern const int MIDI_METRONOME_WEAK_ACCENT_DEFAULT;
 
+    extern const char *MIDI_METRONOME_ENABLE_COUNTIN;
+    extern const bool MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT;
+
+    extern const char *MIDI_METRONOME_COUNTIN_PRESET;
+    extern const int MIDI_METRONOME_COUNTIN_PRESET_DEFAULT;
+
+    extern const char *MIDI_METRONOME_COUNTIN_VOLUME;
+    extern const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT;
+
     extern const char *DEFAULT_INSTRUMENT_NAME;
     extern const char *DEFAULT_INSTRUMENT_NAME_DEFAULT;
 

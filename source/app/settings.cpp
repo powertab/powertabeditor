@@ -53,6 +53,16 @@ namespace Settings
     const char *MIDI_METRONOME_WEAK_ACCENT = "midi/metronomeWeakAccent";
     const int MIDI_METRONOME_WEAK_ACCENT_DEFAULT = 80;
 
+    const char *MIDI_METRONOME_ENABLE_COUNTIN = "midi/metronomeEnableCountIn";
+    const bool MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT = true;
+
+    const char *MIDI_METRONOME_COUNTIN_PRESET = "midi/metronomeCountInPreset";
+    const int MIDI_METRONOME_COUNTIN_PRESET_DEFAULT =
+        Midi::MIDI_PERCUSSION_PRESET_RIDE_CYMBAL2;
+
+    const char *MIDI_METRONOME_COUNTIN_VOLUME = "midi/metronomeCountInVolume";
+    const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT = 127;
+
     const char *DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
     const char *DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";
 

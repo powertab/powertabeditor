@@ -57,13 +57,18 @@ PreferencesDialog::PreferencesDialog(
         ui->defaultPresetComboBox->addItem(QString::fromStdString(name));
 
     for (const std::string &name : Midi::getPercussionPresetNames())
+    {
         ui->metronomePresetComboBox->addItem(QString::fromStdString(name));
+        ui->countInPresetComboBox->addItem(QString::fromStdString(name));
+    }
 
     ui->vibratoStrengthSpinBox->setRange(1, 127);
     ui->wideVibratoStrengthSpinBox->setRange(1, 127);
 
     ui->strongAccentVolumeSpinBox->setRange(0, 127);
     ui->weakAccentVolumeSpinBox->setRange(0, 127);
+
+    ui->countInVolumeSpinBox->setRange(0, 127);
 
     loadCurrentSettings();
 }
@@ -111,6 +116,18 @@ void PreferencesDialog::loadCurrentSettings()
         settings.value(Settings::MIDI_METRONOME_WEAK_ACCENT,
                        Settings::MIDI_METRONOME_WEAK_ACCENT_DEFAULT).toInt());
 
+    ui->countInEnabledCheckBox->setChecked(
+        settings.value(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
+                       Settings::MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT).toBool());
+
+    ui->countInPresetComboBox->setCurrentIndex(
+        settings.value(Settings::MIDI_METRONOME_COUNTIN_PRESET,
+                       Settings::MIDI_METRONOME_COUNTIN_PRESET_DEFAULT).toInt());
+
+    ui->countInVolumeSpinBox->setValue(
+        settings.value(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
+                       Settings::MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT).toInt());
+
     ui->defaultInstrumentNameLineEdit->setText(
         settings.value(Settings::DEFAULT_INSTRUMENT_NAME,
                        Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString());
@@ -154,6 +171,15 @@ void PreferencesDialog::accept()
 
     settings.setValue(Settings::MIDI_METRONOME_WEAK_ACCENT,
                       ui->weakAccentVolumeSpinBox->value());
+
+    settings.setValue(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
+                      ui->countInEnabledCheckBox->isChecked());
+
+    settings.setValue(Settings::MIDI_METRONOME_COUNTIN_PRESET,
+                      ui->countInPresetComboBox->currentIndex());
+
+    settings.setValue(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
+                      ui->countInVolumeSpinBox->value());
 
     settings.setValue(Settings::DEFAULT_INSTRUMENT_NAME,
                       ui->defaultInstrumentNameLineEdit->text());
