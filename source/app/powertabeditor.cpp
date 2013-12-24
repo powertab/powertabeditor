@@ -286,12 +286,8 @@ bool PowerTabEditor::closeTab(int index)
             return false;
     }
 
-#if 0
-    if (getScoreArea(index)->getCaret()->isInPlaybackMode())
-    {
+    if (myDocumentManager->getDocument(index).getCaret().isInPlaybackMode())
         startStopPlayback();
-    }
-#endif
 
     myUndoManager->removeStack(index);
     myDocumentManager->removeDocument(index);

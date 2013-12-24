@@ -81,6 +81,11 @@ Document &DocumentManager::getCurrentDocument()
     return myDocumentList.at(*myCurrentIndex);
 }
 
+Document &DocumentManager::getDocument(int i)
+{
+    return myDocumentList.at(i);
+}
+
 void DocumentManager::removeDocument(int index)
 {
     myDocumentList.erase(myDocumentList.begin() + index);

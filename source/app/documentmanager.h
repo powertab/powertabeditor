@@ -56,7 +56,9 @@ public:
     Document &addDocument();
     /// Add a new document, and initialize it with a staff, player, etc.
     Document &addDefaultDocument();
+
     Document &getCurrentDocument();
+    Document &getDocument(int i);
 
     void removeDocument(int index);
 
