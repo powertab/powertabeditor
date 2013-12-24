@@ -62,6 +62,9 @@ PreferencesDialog::PreferencesDialog(
     ui->vibratoStrengthSpinBox->setRange(1, 127);
     ui->wideVibratoStrengthSpinBox->setRange(1, 127);
 
+    ui->strongAccentVolumeSpinBox->setRange(0, 127);
+    ui->weakAccentVolumeSpinBox->setRange(0, 127);
+
     loadCurrentSettings();
 }
 
@@ -84,25 +87,36 @@ void PreferencesDialog::loadCurrentSettings()
     ui->midiPortComboBox->setCurrentIndex(ui->midiPortComboBox->findText(
                 QString::fromStdString(device.getPortName(api, port))));
 
-    ui->metronomeEnabledCheckBox->setChecked(settings.value(Settings::MIDI_METRONOME_ENABLED,
-                                                            Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
+    ui->vibratoStrengthSpinBox->setValue(
+        settings.value(Settings::MIDI_VIBRATO_LEVEL,
+                       Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt());
+
+    ui->wideVibratoStrengthSpinBox->setValue(
+        settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
+                       Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt());
+
+    ui->metronomeEnabledCheckBox->setChecked(
+        settings.value(Settings::MIDI_METRONOME_ENABLED,
+                       Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
 
     ui->metronomePresetComboBox->setCurrentIndex(settings.value(
             Settings::MIDI_METRONOME_PRESET,
             Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
 
-    ui->vibratoStrengthSpinBox->setValue(settings.value(Settings::MIDI_VIBRATO_LEVEL,
-                                                        Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt());
+    ui->strongAccentVolumeSpinBox->setValue(
+        settings.value(Settings::MIDI_METRONOME_STRONG_ACCENT,
+                       Settings::MIDI_METRONOME_STRONG_ACCENT_DEFAULT).toInt());
 
-    ui->wideVibratoStrengthSpinBox->setValue(settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
-                                                            Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt());
+    ui->weakAccentVolumeSpinBox->setValue(
+        settings.value(Settings::MIDI_METRONOME_WEAK_ACCENT,
+                       Settings::MIDI_METRONOME_WEAK_ACCENT_DEFAULT).toInt());
 
-    ui->defaultInstrumentNameLineEdit->setText(settings.value(
-            Settings::DEFAULT_INSTRUMENT_NAME,
-            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString());
-    ui->defaultPresetComboBox->setCurrentIndex(settings.value(
-            Settings::DEFAULT_INSTRUMENT_PRESET,
-            Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
+    ui->defaultInstrumentNameLineEdit->setText(
+        settings.value(Settings::DEFAULT_INSTRUMENT_NAME,
+                       Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString());
+    ui->defaultPresetComboBox->setCurrentIndex(
+        settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
+                       Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
 
     ui->defaultTuningClickButton->setToolTip(tr("Click to adjust tuning."));
     myDefaultTuning = settings.value(
@@ -123,17 +137,23 @@ void PreferencesDialog::accept()
     settings.setValue(Settings::MIDI_PREFERRED_API, apiAndPort.first);
     settings.setValue(Settings::MIDI_PREFERRED_PORT, apiAndPort.second);
 
+    settings.setValue(Settings::MIDI_VIBRATO_LEVEL,
+                      ui->vibratoStrengthSpinBox->value());
+
+    settings.setValue(Settings::MIDI_WIDE_VIBRATO_LEVEL,
+                      ui->wideVibratoStrengthSpinBox->value());
+
     settings.setValue(Settings::MIDI_METRONOME_ENABLED,
                       ui->metronomeEnabledCheckBox->isChecked());
 
     settings.setValue(Settings::MIDI_METRONOME_PRESET,
                       ui->metronomePresetComboBox->currentIndex());
 
-    settings.setValue(Settings::MIDI_VIBRATO_LEVEL,
-                      ui->vibratoStrengthSpinBox->value());
+    settings.setValue(Settings::MIDI_METRONOME_STRONG_ACCENT,
+                      ui->strongAccentVolumeSpinBox->value());
 
-    settings.setValue(Settings::MIDI_WIDE_VIBRATO_LEVEL,
-                      ui->wideVibratoStrengthSpinBox->value());
+    settings.setValue(Settings::MIDI_METRONOME_WEAK_ACCENT,
+                      ui->weakAccentVolumeSpinBox->value());
 
     settings.setValue(Settings::DEFAULT_INSTRUMENT_NAME,
                       ui->defaultInstrumentNameLineEdit->text());

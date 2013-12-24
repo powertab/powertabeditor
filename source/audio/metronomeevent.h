@@ -26,9 +26,8 @@ class MetronomeEvent : public MidiEvent
 public:
     enum VelocityType
     {
-        StrongAccent = 127,
-        WeakAccent = 80,
-        MetronomeOff = 0
+        StrongAccent,
+        WeakAccent
     };
 
     static const uint8_t METRONOME_PITCH;

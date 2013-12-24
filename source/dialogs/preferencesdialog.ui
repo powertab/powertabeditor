@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>366</width>
-    <height>257</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,71 +29,110 @@
       <attribute name="title">
        <string>MIDI</string>
       </attribute>
-      <widget class="QWidget" name="formLayoutWidget">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>321</width>
-         <height>155</height>
-        </rect>
-       </property>
-       <layout class="QFormLayout" name="formLayout">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::ExpandingFieldsGrow</enum>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="midiOutputDeviceLabel">
-          <property name="text">
-           <string>MIDI Output Device:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="midiPortComboBox"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="metronomeEnabledLabel">
-          <property name="text">
-           <string>Metronome Enabled:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QCheckBox" name="metronomeEnabledCheckBox"/>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="vibratoStrengthLabel">
-          <property name="text">
-           <string>Vibrato Strength:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QSpinBox" name="vibratoStrengthSpinBox"/>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="wideVibratoStrengthLabel">
-          <property name="text">
-           <string>Wide Vibrato Strength:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QSpinBox" name="wideVibratoStrengthSpinBox"/>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="metronomePresetLabel">
-          <property name="text">
-           <string>Metronome Preset:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="metronomePresetComboBox"/>
-        </item>
-       </layout>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Playback</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QFormLayout" name="formLayout">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="midiOutputDeviceLabel">
+              <property name="text">
+               <string>MIDI Output Device:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="midiPortComboBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="vibratoStrengthLabel">
+              <property name="text">
+               <string>Vibrato Strength:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="vibratoStrengthSpinBox"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="wideVibratoStrengthLabel">
+              <property name="text">
+               <string>Wide Vibrato Strength:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="wideVibratoStrengthSpinBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Metronome</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="metronomeEnabledLabel">
+              <property name="text">
+               <string>Enabled:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QCheckBox" name="metronomeEnabledCheckBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="metronomePresetLabel">
+              <property name="text">
+               <string>Preset:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="metronomePresetComboBox"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="strongAccentVolumeLabel">
+              <property name="text">
+               <string>Strong Accent Volume:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="strongAccentVolumeSpinBox"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="weakAccentVolumeLabel">
+              <property name="text">
+               <string>Weak Accent Volume:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="weakAccentVolumeSpinBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="defaultsTab">
       <attribute name="title">

@@ -34,17 +34,23 @@ namespace Settings
     const char *MIDI_PREFERRED_PORT = "midi/preferredPort";
     const int MIDI_PREFERRED_PORT_DEFAULT = 0;
 
+    const char *MIDI_VIBRATO_LEVEL = "midi/vibrato";
+    const int MIDI_VIBRATO_LEVEL_DEFAULT = 85;
+
+    const char *MIDI_WIDE_VIBRATO_LEVEL = "midi/wideVibrato";
+    const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT = 127;
+
     const char *MIDI_METRONOME_ENABLED = "midi/metronomeEnabled";
     const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
 
     const char *MIDI_METRONOME_PRESET = "midi/metronomePreset";
     const int MIDI_METRONOME_PRESET_DEFAULT = Midi::MIDI_PRESET_WOODBLOCK;
 
-    const char *MIDI_VIBRATO_LEVEL = "midi/vibrato";
-    const int MIDI_VIBRATO_LEVEL_DEFAULT = 85;
+    const char *MIDI_METRONOME_STRONG_ACCENT = "midi/metronomeStrongAccent";
+    const int MIDI_METRONOME_STRONG_ACCENT_DEFAULT = 127;
 
-    const char *MIDI_WIDE_VIBRATO_LEVEL = "midi/wide_vibrato";
-    const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT = 127;
+    const char *MIDI_METRONOME_WEAK_ACCENT = "midi/metronomeWeakAccent";
+    const int MIDI_METRONOME_WEAK_ACCENT_DEFAULT = 80;
 
     const char *DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
     const char *DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";

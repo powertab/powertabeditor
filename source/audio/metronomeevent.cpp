@@ -42,18 +42,29 @@ void MetronomeEvent::performEvent(MidiOutputDevice &device) const
                 myStartTime;
 #endif
 
-    // Check if the metronome has been disabled.
     QSettings settings;
+    uint8_t velocity;
 
-    VelocityType actualVelocity = myVelocity;
+    // Check if the metronome has been disabled.
     if (!settings.value(Settings::MIDI_METRONOME_ENABLED,
                         Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool())
     {
-        actualVelocity = MetronomeOff;
+        velocity = 0;
+    }
+    else if (myVelocity == WeakAccent)
+    {
+        velocity = settings.value(Settings::MIDI_METRONOME_WEAK_ACCENT,
+                                  Settings::MIDI_METRONOME_WEAK_ACCENT_DEFAULT).toUInt();
+    }
+    else if (myVelocity == StrongAccent)
+    {
+        velocity =
+            settings.value(Settings::MIDI_METRONOME_STRONG_ACCENT,
+                           Settings::MIDI_METRONOME_STRONG_ACCENT_DEFAULT).toUInt();
     }
 
     device.setPatch(myChannel, settings.value(Settings::MIDI_METRONOME_PRESET,
             Settings::MIDI_METRONOME_PRESET_DEFAULT).toInt());
     device.setChannelMaxVolume(myChannel, Midi::MAX_MIDI_CHANNEL_VOLUME);
-    device.playNote(myChannel, METRONOME_PITCH, actualVelocity);
+    device.playNote(myChannel, METRONOME_PITCH, velocity);
 }
