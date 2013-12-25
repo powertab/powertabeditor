@@ -18,6 +18,7 @@
 #include <catch.hpp>
 
 #include <actions/removesystem.h>
+#include <app/caret.h>
 #include <score/score.h>
 
 TEST_CASE("Actions/RemoveSystem", "")
@@ -27,11 +28,14 @@ TEST_CASE("Actions/RemoveSystem", "")
     score.insertSystem(system);
     score.insertSystem(system);
 
-    RemoveSystem action(score, 1);
+    Caret caret(score);
+    RemoveSystem action(score, 1, caret);
 
     action.redo();
     REQUIRE(score.getSystems().size() == 1);
+    REQUIRE(caret.getLocation().getSystemIndex() == 0);
 
     action.undo();
     REQUIRE(score.getSystems().size() == 2);
+    REQUIRE(caret.getLocation().getSystemIndex() == 1);
 }

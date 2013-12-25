@@ -17,12 +17,14 @@
   
 #include "removesystem.h"
 
+#include <app/caret.h>
 #include <score/score.h>
 
-RemoveSystem::RemoveSystem(Score &score, int index)
+RemoveSystem::RemoveSystem(Score &score, int index, Caret &caret)
     : QUndoCommand(QObject::tr("Remove System")),
       myScore(score),
       myIndex(index),
+      myCaret(caret),
       myOriginalSystem(score.getSystems()[index])
 {
 }
@@ -30,9 +32,13 @@ RemoveSystem::RemoveSystem(Score &score, int index)
 void RemoveSystem::redo()
 {
     myScore.removeSystem(myIndex);
+    // Move the caret to a valid system.
+    myCaret.moveToSystem(std::min<int>(myIndex, myScore.getSystems().size()),
+                         true);
 }
 
 void RemoveSystem::undo()
 {
     myScore.insertSystem(myOriginalSystem, myIndex);
+    myCaret.moveToSystem(myIndex, true);
 }

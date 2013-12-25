@@ -719,7 +719,7 @@ void PowerTabEditor::removeCurrentSystem()
 {
     ScoreLocation &location = getLocation();
     myUndoManager->push(new RemoveSystem(location.getScore(),
-                                         location.getSystemIndex()),
+                                         location.getSystemIndex(), getCaret()),
                         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 

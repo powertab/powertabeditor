@@ -21,12 +21,13 @@
 #include <QUndoCommand>
 #include <score/system.h>
 
+class Caret;
 class Score;
 
 class RemoveSystem : public QUndoCommand
 {
 public:
-    RemoveSystem(Score &score, int index);
+    RemoveSystem(Score &score, int index, Caret &caret);
 
     virtual void redo() override;
     virtual void undo() override;
@@ -34,6 +35,7 @@ public:
 private:
     Score &myScore;
     const int myIndex;
+    Caret &myCaret;
     const System myOriginalSystem;
 };
 
