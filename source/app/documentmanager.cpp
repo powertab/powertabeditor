@@ -90,10 +90,11 @@ void DocumentManager::removeDocument(int index)
 {
     myDocumentList.erase(myDocumentList.begin() + index);
 
+    const int n = static_cast<int>(myDocumentList.size());
     if (myDocumentList.empty())
         myCurrentIndex.reset();
-    else if (myDocumentList.size() >= *myCurrentIndex)
-        myCurrentIndex = static_cast<int>(myDocumentList.size()) - 1;
+    else if (n >= *myCurrentIndex)
+        myCurrentIndex = n - 1;
 }
 
 bool DocumentManager::hasOpenDocuments() const
