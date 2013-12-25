@@ -21,7 +21,7 @@ add_executable(powertabeditor WIN32
     ${RESOURCES}
 )
 
-qt5_use_modules(powertabeditor Widgets)
+qt5_use_modules(powertabeditor Widgets Network)
 
 target_link_libraries(powertabeditor
     pteapp
@@ -73,6 +73,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Widgetsd.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Guid.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Cored.dll ${DEBUG_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Networkd.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libEGLd.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libGLESv2d.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuin51.dll ${DEBUG_BIN_DIR}
@@ -85,6 +86,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Widgets.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Gui.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Core.dll ${RELEASE_BIN_DIR}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Network.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libEGL.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libGLESv2.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuin51.dll ${RELEASE_BIN_DIR}

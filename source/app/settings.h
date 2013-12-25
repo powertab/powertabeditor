@@ -62,6 +62,9 @@ namespace Settings
     extern const char *MIDI_METRONOME_COUNTIN_VOLUME;
     extern const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT;
 
+    extern const char *GENERAL_OPEN_IN_NEW_WINDOW;
+    extern const bool GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT;
+
     extern const char *DEFAULT_INSTRUMENT_NAME;
     extern const char *DEFAULT_INSTRUMENT_NAME_DEFAULT;
 

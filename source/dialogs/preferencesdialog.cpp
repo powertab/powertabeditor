@@ -128,6 +128,10 @@ void PreferencesDialog::loadCurrentSettings()
         settings.value(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
                        Settings::MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT).toInt());
 
+    ui->openInNewWindowCheckBox->setChecked(
+        settings.value(Settings::GENERAL_OPEN_IN_NEW_WINDOW,
+                       Settings::GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT).toBool());
+
     ui->defaultInstrumentNameLineEdit->setText(
         settings.value(Settings::DEFAULT_INSTRUMENT_NAME,
                        Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString());
@@ -180,6 +184,9 @@ void PreferencesDialog::accept()
 
     settings.setValue(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
                       ui->countInVolumeSpinBox->value());
+
+    settings.setValue(Settings::GENERAL_OPEN_IN_NEW_WINDOW,
+                      ui->openInNewWindowCheckBox->isChecked());
 
     settings.setValue(Settings::DEFAULT_INSTRUMENT_NAME,
                       ui->defaultInstrumentNameLineEdit->text());
