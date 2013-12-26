@@ -108,6 +108,11 @@ add_library(pteactions
     shiftpositions.h
     #shifttabnumber.h
     undomanager.h
+
+    # Precompiled header.
+    precompiled.h
+    precompiled.cpp
 )
 
 qt5_use_modules(pteactions Widgets)
+add_precompiled_header(pteactions precompiled.h FORCEINCLUDE)

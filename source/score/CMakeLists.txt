@@ -60,4 +60,10 @@ add_library(ptescore
     utils.h
     voice.h
     voiceutils.h
+
+    # Precompiled header.
+    precompiled.h
+    precompiled.cpp
 )
+
+add_precompiled_header(ptescore precompiled.h FORCEINCLUDE)

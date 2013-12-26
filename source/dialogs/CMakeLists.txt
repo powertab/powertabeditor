@@ -76,6 +76,11 @@ add_library(ptedialogs
     tuningdialog.h
     tuningdictionarydialog.h
     #volumeswelldialog.h
+
+    # Precompiled header.
+    precompiled.h
+    precompiled.cpp
 )
 
 qt5_use_modules(ptedialogs Widgets) 
+add_precompiled_header(ptedialogs precompiled.h FORCEINCLUDE)

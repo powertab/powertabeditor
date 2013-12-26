@@ -4,9 +4,13 @@ project(powertabeditor)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
 
+include(cmake/PrecompiledHeader.cmake)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-DBOOST_ALL_DYN_LINK)
     add_definitions(-DBOOST_ALL_NO_LIB)
+    # Increase the virtual memory limit for precompiled headers.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm200")
 else()
     # Set -Wno-ignored-qualifiers for boost::ptr_container (see https://svn.boost.org/trac/boost/ticket/4276).
     # Set -Wno-deprecated to silence noisy warnings from Qt headers that use the 'register' keyword.
