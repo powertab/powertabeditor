@@ -26,6 +26,7 @@
 #include <score/alternateending.h>
 #include <score/barline.h>
 #include <score/position.h>
+#include <score/tempomarker.h>
 #include <score/tuning.h>
 #include <vector>
 
@@ -90,7 +91,8 @@ private:
                      std::vector<Gp::Bar> bars);
 
     /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab).
-    Position readBeat(Gp::InputStream &stream, const Tuning &tuning);
+    void readBeat(Gp::InputStream &stream, const Tuning &tuning, Position &pos,
+                  boost::optional<TempoMarker> &tempoMarker);
 
     /// Reads a duration value and converts it into PTB format.
     Position::DurationType readDuration(Gp::InputStream &stream);
@@ -104,7 +106,8 @@ private:
 
     void readTremoloBar(Gp::InputStream &stream, Position &position);
 
-    void readMixTableChangeEvent(Gp::InputStream &stream);
+    void readMixTableChangeEvent(Gp::InputStream &stream,
+                                 boost::optional<TempoMarker> &tempoMarker);
 
 #if 0
     static uint8_t convertTremoloEventType(uint8_t gpEventType);

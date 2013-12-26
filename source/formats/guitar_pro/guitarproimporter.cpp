@@ -25,6 +25,7 @@
 #include "inputstream.h"
 #include <score/generalmidi.h>
 #include <score/score.h>
+#include <score/utils.h>
 
 static const int POSITIONS_PER_SYSTEM = 35;
 
@@ -471,17 +472,34 @@ void GuitarProImporter::readSystems(Gp::InputStream &stream, Score &score,
 
             for (uint32_t j = 0; j < numBeats; ++j)
             {
-                Position pos = readBeat(stream, tuning);
-                pos.setPosition(currentPos++);
+                Position pos;
+                boost::optional<TempoMarker> tempoMarker;
+                readBeat(stream, tuning, pos, tempoMarker);
+
+                // Tempo markers are stored at the beat level, not at the system
+                // level, so we need to ensure that we don't insert duplicate
+                // tempo markers.
+                if (tempoMarker && !ScoreUtils::findByPosition(
+                                        system->getTempoMarkers(), currentPos))
+                {
+                    tempoMarker->setPosition(currentPos);
+                    system->insertTempoMarker(*tempoMarker);
+                }
+
+                pos.setPosition(currentPos);
                 staff.getVoices()[0].insertPosition(pos);
+                currentPos++;
             }
 
             // TODO - support second voice for GP5.
             if (stream.version > Gp::Version4)
             {
                 const uint32_t beats = stream.read<uint32_t>();
+                Position pos;
+                boost::optional<TempoMarker> tempoMarker;
+
                 for (uint32_t j = 0; j < beats; ++j)
-                    readBeat(stream, tuning);
+                    readBeat(stream, tuning, pos, tempoMarker);
             }
 
             // Not sure what this is used for ...
@@ -503,13 +521,13 @@ void GuitarProImporter::readSystems(Gp::InputStream &stream, Score &score,
     system->getBarlines().back().setPosition(startPos + 1);
 }
 
-Position GuitarProImporter::readBeat(Gp::InputStream &stream,
-                                     const Tuning &tuning)
+void GuitarProImporter::readBeat(Gp::InputStream &stream, const Tuning &tuning,
+                                 Position &pos,
+                                 boost::optional<TempoMarker> &tempoMarker)
 {
     const Gp::Flags flags = stream.read<uint8_t>();
     bool wholeRest = false;
 
-    Position pos;
     pos.setProperty(Position::Dotted, flags.test(Gp::Dotted));
 
     if (flags.test(Gp::BeatStatus))
@@ -561,7 +579,7 @@ Position GuitarProImporter::readBeat(Gp::InputStream &stream,
         readPositionEffects(stream, pos);
 
     if (flags.test(Gp::MixTableChangeEvent))
-        readMixTableChangeEvent(stream);
+        readMixTableChangeEvent(stream, tempoMarker);
 
     readNotes(stream, pos);
 
@@ -573,8 +591,6 @@ Position GuitarProImporter::readBeat(Gp::InputStream &stream,
         if ((x & 0x08) != 0)
             stream.skip(1);
     }
-
-    return pos;
 }
 
 Position::DurationType GuitarProImporter::readDuration(Gp::InputStream &stream)
@@ -825,7 +841,8 @@ void GuitarProImporter::readTremoloBar(Gp::InputStream &stream,
 #endif
 }
 
-void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream &stream)
+void GuitarProImporter::readMixTableChangeEvent(
+    Gp::InputStream &stream, boost::optional<TempoMarker> &tempoMarker)
 {
     // TODO - implement conversions for this.
 
@@ -848,11 +865,8 @@ void GuitarProImporter::readMixTableChangeEvent(Gp::InputStream &stream)
     int32_t tempo = stream.read<int32_t>();
     if (tempo > 0)
     {
-// TODO - record the tempo marker.
-#if 0
-        position.tempoMarker = std::make_shared<TempoMarker>();
-        position.tempoMarker->SetBeatsPerMinute(tempo);
-#endif
+        tempoMarker = TempoMarker();
+        tempoMarker->setBeatsPerMinute(tempo);
     }
 
     if (volume >= 0)
