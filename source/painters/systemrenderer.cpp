@@ -1245,6 +1245,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
     {
         const int index = ScoreUtils::findIndexByPosition(voice.getPositions(),
                                                           group.getPosition());
+        Q_ASSERT(index >= 0);
 
         NoteStem::StemType direction = stems.at(index).getStemType();
 
