@@ -414,6 +414,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QCheckBox" name="add2CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>add2</string>
          </property>
@@ -421,6 +427,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="add4CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>add4</string>
          </property>
@@ -428,6 +440,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="add6CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>add6</string>
          </property>
@@ -435,6 +453,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="add9CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>add9</string>
          </property>
@@ -442,6 +466,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="add11CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>add11</string>
          </property>
@@ -466,6 +496,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QCheckBox" name="extend9CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>9</string>
          </property>
@@ -473,6 +509,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="extend11CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>11</string>
          </property>
@@ -480,6 +522,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="extend13CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>13</string>
          </property>
@@ -504,6 +552,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QCheckBox" name="flat5CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>b5</string>
          </property>
@@ -511,6 +565,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="raised5CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>+5</string>
          </property>
@@ -518,6 +578,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="flat9CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>b9</string>
          </property>
@@ -525,6 +591,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="raised9CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>+9</string>
          </property>
@@ -532,6 +604,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="raised11CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>+11</string>
          </property>
@@ -539,6 +617,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="flat13CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>b13</string>
          </property>
@@ -546,6 +630,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="sus2CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>sus2</string>
          </property>
@@ -553,6 +643,12 @@
        </item>
        <item>
         <widget class="QCheckBox" name="sus4CheckBox">
+         <property name="minimumSize">
+          <size>
+           <width>55</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="text">
           <string>sus4</string>
          </property>
