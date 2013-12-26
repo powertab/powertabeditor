@@ -9,6 +9,7 @@ add_library(pteactions
     adddynamic.cpp
     #addguitar.cpp
     addirregulargrouping.cpp
+    addmultibarrest.cpp
     addnote.cpp
     addnoteproperty.cpp
     addplayerchange.cpp
@@ -62,6 +63,7 @@ add_library(pteactions
     adddynamic.h
     #addguitar.h
     addirregulargrouping.h
+    addmultibarrest.h
     addnote.h
     addnoteproperty.h
     addplayerchange.h

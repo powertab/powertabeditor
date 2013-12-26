@@ -24,6 +24,7 @@
 #include <actions/adddirection.h>
 #include <actions/adddynamic.h>
 #include <actions/addirregulargrouping.h>
+#include <actions/addmultibarrest.h>
 #include <actions/addnote.h>
 #include <actions/addnoteproperty.h>
 #include <actions/addplayerchange.h>
@@ -92,6 +93,7 @@
 #include <dialogs/irregulargroupingdialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/keysignaturedialog.h>
+#include <dialogs/multibarrestdialog.h>
 #include <dialogs/playerchangedialog.h>
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/rehearsalsigndialog.h>
@@ -893,6 +895,55 @@ void PowerTabEditor::addRest()
     editRest(myActiveDurationType);
 }
 
+void PowerTabEditor::editMultiBarRest()
+{
+    const ScoreLocation &location = getLocation();
+
+    if (location.getPosition() && location.getPosition()->hasMultiBarRest())
+    {
+        myUndoManager->push(
+            new RemovePosition(location, tr("Remove Multi-Bar Rest")),
+            location.getSystemIndex());
+    }
+    else
+    {
+        // Verify that the bar is empty.
+        {
+            const System &system = location.getSystem();
+            const Barline *prevBar =
+                system.getPreviousBarline(location.getPositionIndex());
+            if (!prevBar)
+                prevBar = &system.getBarlines().front();
+            const Barline *nextBar =
+                system.getNextBarline(location.getPositionIndex());
+
+            if (!VoiceUtils::getPositionsInRange(
+                     location.getVoice(), prevBar->getPosition(),
+                     nextBar->getPosition()).empty())
+            {
+                QMessageBox message(this);
+                message.setText(
+                    tr("Cannot add a multi-bar rest to a non-empty measure."));
+                message.exec();
+
+                myMultibarRestCommand->setChecked(false);
+                return;
+            }
+        }
+
+        MultiBarRestDialog dialog(this);
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(
+                new AddMultiBarRest(location, dialog.getBarCount()),
+                location.getSystemIndex());
+        }
+        else
+            myMultibarRestCommand->setChecked(false);
+    }
+}
+
 void PowerTabEditor::editRehearsalSign()
 {
     const ScoreLocation &location = getLocation();
@@ -1683,6 +1734,12 @@ void PowerTabEditor::createCommands()
                                    this);
     connect(myAddRestCommand, SIGNAL(triggered()), this, SLOT(addRest()));
 
+    myMultibarRestCommand = new Command(
+        tr("Multi-Bar Rest..."), "Rests.MultibarRest", QKeySequence(), this);
+    myMultibarRestCommand->setCheckable(true);
+    connect(myMultibarRestCommand, SIGNAL(triggered()), this,
+            SLOT(editMultiBarRest()));
+
     // Music Symbol Actions
     myRehearsalSignCommand = new Command(tr("Rehearsal Sign..."),
                                          "MusicSymbols.EditRehearsalSign",
@@ -2108,6 +2165,7 @@ void PowerTabEditor::createMenus()
     myRestsMenu->addAction(mySixtyFourthRestCommand);
     myRestsMenu->addSeparator();
     myRestsMenu->addAction(myAddRestCommand);
+    myRestsMenu->addAction(myMultibarRestCommand);
 
     // Music Symbols Menu.
     myMusicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
@@ -2415,6 +2473,9 @@ void PowerTabEditor::updateCommands()
 
     myTripletCommand->setEnabled(pos);
     myIrregularGroupingCommand->setEnabled(pos);
+
+    myMultibarRestCommand->setEnabled(!barline || position == 0);
+    myMultibarRestCommand->setChecked(pos && pos->hasMultiBarRest());
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());

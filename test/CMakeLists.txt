@@ -10,6 +10,7 @@ add_executable(pte_tests
     actions/test_adddirection.cpp
     actions/test_adddynamic.cpp
     actions/test_addirregulargrouping.cpp
+    actions/test_addmultibarrest.cpp
     actions/test_addnote.cpp
     actions/test_addnoteproperty.cpp
     actions/test_addplayerchange.cpp

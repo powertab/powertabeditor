@@ -12,6 +12,7 @@ set(FORMS
     irregulargroupingdialog.ui
     keyboardsettingsdialog.ui
     keysignaturedialog.ui
+    multibarrestdialog.ui
     playerchangedialog.ui
     preferencesdialog.ui
     rehearsalsigndialog.ui
@@ -40,6 +41,7 @@ add_library(ptedialogs
     irregulargroupingdialog.cpp
     keyboardsettingsdialog.cpp
     keysignaturedialog.cpp
+    multibarrestdialog.cpp
     playerchangedialog.cpp
     preferencesdialog.cpp
     rehearsalsigndialog.cpp
@@ -63,6 +65,7 @@ add_library(ptedialogs
     irregulargroupingdialog.h
     keyboardsettingsdialog.h
     keysignaturedialog.h
+    multibarrestdialog.h
     playerchangedialog.h
     preferencesdialog.h
     rehearsalsigndialog.h

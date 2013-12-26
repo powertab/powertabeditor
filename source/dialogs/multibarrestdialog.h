@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,25 +15,27 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_REMOVEPOSITION_H
-#define ACTIONS_REMOVEPOSITION_H
+#ifndef DIALOGS_MULTIBARRESTDIALOG_H
+#define DIALOGS_MULTIBARRESTDIALOG_H
 
-#include <QUndoCommand>
-#include <score/position.h>
-#include <score/scorelocation.h>
+#include <QDialog>
 
-class RemovePosition : public QUndoCommand
+namespace Ui {
+class MultiBarRestDialog;
+}
+
+class MultiBarRestDialog : public QDialog
 {
-public:
-    RemovePosition(const ScoreLocation &location,
-                   const QString &text = QObject::tr("Remove Position"));
+    Q_OBJECT
 
-    virtual void redo() override;
-    virtual void undo() override;
+public:
+    explicit MultiBarRestDialog(QWidget *parent);
+    ~MultiBarRestDialog();
+
+    int getBarCount() const;
 
 private:
-    ScoreLocation myLocation;
-    const Position myOriginalPosition;
+    Ui::MultiBarRestDialog *ui;
 };
 
 #endif

@@ -182,6 +182,8 @@ private slots:
 
     /// Inserts a rest at the current location.
     void addRest();
+    /// Adds or removes a multibar rest at the current location.
+    void editMultiBarRest();
 
     /// Adds or removes a rehearsal sign at the current barline.
     void editRehearsalSign();
@@ -427,6 +429,7 @@ private:
     Command *myThirtySecondRestCommand;
     Command *mySixtyFourthRestCommand;
     Command *myAddRestCommand;
+    Command *myMultibarRestCommand;
 
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;

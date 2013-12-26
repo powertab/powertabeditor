@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,25 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_REMOVEPOSITION_H
-#define ACTIONS_REMOVEPOSITION_H
+#include <catch.hpp>
 
-#include <QUndoCommand>
-#include <score/position.h>
-#include <score/scorelocation.h>
+#include <actions/addmultibarrest.h>
+#include <score/score.h>
 
-class RemovePosition : public QUndoCommand
+TEST_CASE("Actions/AddMultiBarRest", "")
 {
-public:
-    RemovePosition(const ScoreLocation &location,
-                   const QString &text = QObject::tr("Remove Position"));
+    Score score;
+    System system;
+    Staff staff;
+    system.insertStaff(staff);
+    score.insertSystem(system);
 
-    virtual void redo() override;
-    virtual void undo() override;
+    ScoreLocation location(score, 0, 0, 6);
 
-private:
-    ScoreLocation myLocation;
-    const Position myOriginalPosition;
-};
+    AddMultiBarRest action(location, 3);
 
-#endif
+    action.redo();
+    REQUIRE(location.getPosition());
+    REQUIRE(location.getPosition()->hasMultiBarRest());
+    REQUIRE(location.getPosition()->getMultiBarRestCount() == 3);
+
+    action.undo();
+    REQUIRE(!location.getPosition());
+}

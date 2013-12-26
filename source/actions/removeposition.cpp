@@ -19,8 +19,9 @@
 
 #include <score/staff.h>
 
-RemovePosition::RemovePosition(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Position")),
+RemovePosition::RemovePosition(const ScoreLocation &location,
+                               const QString &text)
+    : QUndoCommand(text),
       myLocation(location),
       myOriginalPosition(*location.getPosition())
 {
