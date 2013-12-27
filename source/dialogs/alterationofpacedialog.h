@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "addtempomarker.h"
+#ifndef DIALOGS_ALTERATIONOFPACEDIALOG_H
+#define DIALOGS_ALTERATIONOFPACEDIALOG_H
 
-#include <score/system.h>
+#include <QDialog>
+#include <score/tempomarker.h>
 
-AddTempoMarker::AddTempoMarker(const ScoreLocation &location,
-                               const TempoMarker &marker)
-    : QUndoCommand(marker.getMarkerType() == TempoMarker::AlterationOfPace
-                       ? QObject::tr("Add Alteration of Pace")
-                       : QObject::tr("Add Tempo Marker")),
-      myLocation(location),
-      myMarker(marker)
-{
+namespace Ui {
+class AlterationOfPaceDialog;
 }
 
-void AddTempoMarker::redo()
+class AlterationOfPaceDialog : public QDialog
 {
-    myLocation.getSystem().insertTempoMarker(myMarker);
-}
+    Q_OBJECT
 
-void AddTempoMarker::undo()
-{
-    myLocation.getSystem().removeTempoMarker(myMarker);
-}
+public:
+    explicit AlterationOfPaceDialog(QWidget *parent);
+    ~AlterationOfPaceDialog();
+
+    TempoMarker::AlterationOfPaceType getAlterationOfPaceType() const;
+
+private:
+    Ui::AlterationOfPaceDialog *ui;
+};
+
+#endif

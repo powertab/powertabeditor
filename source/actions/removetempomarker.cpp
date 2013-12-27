@@ -21,12 +21,14 @@
 #include <score/utils.h>
 
 RemoveTempoMarker::RemoveTempoMarker(const ScoreLocation &location)
-    : QUndoCommand(QObject::tr("Remove Tempo Marker")),
-      myLocation(location),
-      myOriginalTempo(*ScoreUtils::findByPosition(
-                          location.getSystem().getTempoMarkers(),
-                          location.getPositionIndex()))
+    : myLocation(location),
+      myOriginalTempo(
+          *ScoreUtils::findByPosition(location.getSystem().getTempoMarkers(),
+                                      location.getPositionIndex()))
 {
+    setText(myOriginalTempo.getMarkerType() == TempoMarker::AlterationOfPace
+                ? QObject::tr("Remove Alteration of Pace")
+                : QObject::tr("Remove Tempo Marker"));
 }
 
 void RemoveTempoMarker::redo()

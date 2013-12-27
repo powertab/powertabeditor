@@ -189,6 +189,8 @@ private slots:
     void editRehearsalSign();
     /// Adds or removes a tempo marker at the current position.
     void editTempoMarker();
+    /// Adds or removes an accel/rit symbol at the current position.
+    void editAlterationOfPace();
     /// Edits the key signature at the caret's current location.
     void editKeySignatureFromCaret();
     /// Edits the time signature at the caret's current location.
@@ -434,6 +436,7 @@ private:
     QMenu *myMusicSymbolsMenu;
     Command *myRehearsalSignCommand;
     Command *myTempoMarkerCommand;
+    Command *myAlterationOfPaceCommand;
     Command *myKeySignatureCommand;
     Command *myTimeSignatureCommand;
     Command *myStandardBarlineCommand;

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.8)
 
 set(FORMS
+    alterationofpacedialog.ui
     artificialharmonicdialog.ui
     barlinedialog.ui
     chordnamedialog.ui
@@ -29,6 +30,7 @@ qt5_wrap_ui(FORMS_HEADERS ${FORMS})
 
 add_library(ptedialogs
     ${FORMS_HEADERS}
+    alterationofpacedialog.cpp
     alternateendingdialog.cpp
     artificialharmonicdialog.cpp
     barlinedialog.cpp
@@ -53,6 +55,7 @@ add_library(ptedialogs
     tuningdictionarydialog.cpp
     #volumeswelldialog.cpp
 
+    alterationofpacedialog.h
     alternateendingdialog.h
     artificialharmonicdialog.h
     barlinedialog.h

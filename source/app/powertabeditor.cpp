@@ -81,6 +81,7 @@
 
 #include <boost/timer.hpp>
 
+#include <dialogs/alterationofpacedialog.h>
 #include <dialogs/alternateendingdialog.h>
 #include <dialogs/artificialharmonicdialog.h>
 #include <dialogs/barlinedialog.h>
@@ -998,6 +999,35 @@ void PowerTabEditor::editTempoMarker()
     }
 }
 
+void PowerTabEditor::editAlterationOfPace()
+{
+    const ScoreLocation &location = getLocation();
+    const TempoMarker *marker = ScoreUtils::findByPosition(
+        location.getSystem().getTempoMarkers(), location.getPositionIndex());
+
+    if (marker)
+    {
+        Q_ASSERT(marker->getMarkerType() == TempoMarker::AlterationOfPace);
+        myUndoManager->push(new RemoveTempoMarker(location),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        AlterationOfPaceDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            TempoMarker marker(location.getPositionIndex());
+            marker.setMarkerType(TempoMarker::AlterationOfPace);
+            marker.setAlterationOfPace(dialog.getAlterationOfPaceType());
+
+            myUndoManager->push(new AddTempoMarker(location, marker),
+                                location.getSystemIndex());
+        }
+        else
+            myAlterationOfPaceCommand->setChecked(false);
+    }
+}
+
 void PowerTabEditor::editKeySignatureFromCaret()
 {
     editKeySignature(getLocation());
@@ -1741,19 +1771,25 @@ void PowerTabEditor::createCommands()
             SLOT(editMultiBarRest()));
 
     // Music Symbol Actions
-    myRehearsalSignCommand = new Command(tr("Rehearsal Sign..."),
-                                         "MusicSymbols.EditRehearsalSign",
-                                         Qt::SHIFT + Qt::Key_R, this);
+    myRehearsalSignCommand =
+        new Command(tr("Rehearsal Sign..."), "MusicSymbols.RehearsalSign",
+                    Qt::SHIFT + Qt::Key_R, this);
     myRehearsalSignCommand->setCheckable(true);
     connect(myRehearsalSignCommand, SIGNAL(triggered()), this,
             SLOT(editRehearsalSign()));
 
-    myTempoMarkerCommand = new Command(tr("Tempo Marker..."),
-                                 "MusicSymbols.EditTempoMarker",
-                                 Qt::Key_O, this);
+    myTempoMarkerCommand = new Command(
+        tr("Tempo Marker..."), "MusicSymbols.TempoMarker", Qt::Key_O, this);
     myTempoMarkerCommand->setCheckable(true);
     connect(myTempoMarkerCommand, SIGNAL(triggered()), this,
             SLOT(editTempoMarker()));
+
+    myAlterationOfPaceCommand =
+        new Command(tr("Alteration of Pace..."),
+                    "MusicSymbols.AlterationOfPace", QKeySequence(), this);
+    myAlterationOfPaceCommand->setCheckable(true);
+    connect(myAlterationOfPaceCommand, SIGNAL(triggered()), this,
+            SLOT(editAlterationOfPace()));
 
     myKeySignatureCommand = new Command(tr("Edit Key Signature..."),
                                         "MusicSymbols.EditKeySignature",
@@ -1773,27 +1809,27 @@ void PowerTabEditor::createCommands()
     connect(myStandardBarlineCommand, SIGNAL(triggered()), this,
             SLOT(insertStandardBarline()));
 
-    myBarlineCommand = new Command(tr("Barline..."), "MusicSymbols.EditBarline",
-                             Qt::SHIFT + Qt::Key_B, this);
+    myBarlineCommand = new Command(tr("Barline..."), "MusicSymbols.Barline",
+                                   Qt::SHIFT + Qt::Key_B, this);
     connect(myBarlineCommand, SIGNAL(triggered()), this,
             SLOT(editBarlineFromCaret()));
 
-    myDirectionCommand = new Command(tr("Musical Direction..."),
-                                      "MusicSymbols.EditMusicalDirection",
-                                      Qt::SHIFT + Qt::Key_D, this);
+    myDirectionCommand =
+        new Command(tr("Musical Direction..."), "MusicSymbols.MusicalDirection",
+                    Qt::SHIFT + Qt::Key_D, this);
     myDirectionCommand->setCheckable(true);
     connect(myDirectionCommand, SIGNAL(triggered()), this,
             SLOT(editMusicalDirection()));
 
-    myRepeatEndingCommand = new Command(tr("Repeat Ending..."),
-                                        "MusicSymbols.EditRepeatEnding",
-                                        Qt::SHIFT + Qt::Key_E, this);
+    myRepeatEndingCommand =
+        new Command(tr("Repeat Ending..."), "MusicSymbols.RepeatEnding",
+                    Qt::SHIFT + Qt::Key_E, this);
     myRepeatEndingCommand->setCheckable(true);
     connect(myRepeatEndingCommand, SIGNAL(triggered()), this,
             SLOT(editRepeatEnding()));
 
-    myDynamicCommand = new Command(tr("Dynamic..."), "MusicSymbols.EditDynamic",
-                                   Qt::Key_D, this);
+    myDynamicCommand =
+        new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
     connect(myDynamicCommand, SIGNAL(triggered()), this, SLOT(editDynamic()));
 #if 0
@@ -2171,6 +2207,7 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu = menuBar()->addMenu(tr("&Music Symbols"));
     myMusicSymbolsMenu->addAction(myRehearsalSignCommand);
     myMusicSymbolsMenu->addAction(myTempoMarkerCommand);
+    myMusicSymbolsMenu->addAction(myAlterationOfPaceCommand);
     myMusicSymbolsMenu->addAction(myKeySignatureCommand);
     myMusicSymbolsMenu->addAction(myTimeSignatureCommand);
     myMusicSymbolsMenu->addAction(myStandardBarlineCommand);
@@ -2479,7 +2516,15 @@ void PowerTabEditor::updateCommands()
 
     myRehearsalSignCommand->setEnabled(barline);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
-    myTempoMarkerCommand->setChecked(tempoMarker != nullptr);
+
+    const bool isAlterationOfPace =
+        (tempoMarker &&
+         tempoMarker->getMarkerType() == TempoMarker::AlterationOfPace);
+    myTempoMarkerCommand->setEnabled(!tempoMarker || !isAlterationOfPace);
+    myTempoMarkerCommand->setChecked(tempoMarker && !isAlterationOfPace);
+    myAlterationOfPaceCommand->setEnabled(!tempoMarker || isAlterationOfPace);
+    myAlterationOfPaceCommand->setChecked(isAlterationOfPace);
+
     myKeySignatureCommand->setEnabled(barline);
     myTimeSignatureCommand->setEnabled(barline);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
