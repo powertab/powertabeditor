@@ -57,7 +57,10 @@ void InstrumentPanel::clear()
 {
     while (QLayoutItem *item = myLayout->takeAt(0))
     {
-        delete item->widget();
+        // We might be clearing the instrument panel in response to a signal
+        // from one of its widgets, so it's not safe to delete the widget until
+        // control returns to the event loop.
+        item->widget()->deleteLater();
         delete item;
     }
 }
