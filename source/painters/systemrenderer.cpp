@@ -438,6 +438,9 @@ void SystemRenderer::drawTempoMarkers(const System &system,
 {
     for (const TempoMarker &tempo : system.getTempoMarkers())
     {
+        if (tempo.getMarkerType() == TempoMarker::NotShown)
+            continue;
+
         const double location = layout.getPositionX(tempo.getPosition());
 
         auto painter = new TempoMarkerPainter(tempo);

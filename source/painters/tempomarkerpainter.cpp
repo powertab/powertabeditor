@@ -24,22 +24,38 @@ TempoMarkerPainter::TempoMarkerPainter(const TempoMarker &tempo)
     : myTempoMarker(tempo),
       myDisplayFont("Liberation Sans")
 {
+    Q_ASSERT(myTempoMarker.getMarkerType() != TempoMarker::NotShown);
+
     myDisplayFont.setPixelSize(10);
-    myDisplayFont.setBold(true);
+    if (myTempoMarker.getMarkerType() == TempoMarker::AlterationOfPace)
+        myDisplayFont.setItalic(true);
+    else
+        myDisplayFont.setBold(true);
 
     QFontMetricsF fm(myDisplayFont);
     const double fontHeight = fm.height();
 
     QString text;
-    text += QString::fromStdString(myTempoMarker.getDescription()) + " ";
+    if (myTempoMarker.getMarkerType() == TempoMarker::AlterationOfPace)
+    {
+        if (myTempoMarker.getAlterationOfPace() == TempoMarker::Accelerando)
+            text = "accel.";
+        else
+            text = "rit.";
+    }
+    else
+    {
+        text += QString::fromStdString(myTempoMarker.getDescription()) + " ";
 
-    const QString imageSpacing(3, ' ');
-    // Reserve space for the beat type image.
-    myBeatTypeRect = QRectF(fm.width(text), -HEIGHT_OFFSET,
-                            fm.width(imageSpacing), fontHeight + HEIGHT_OFFSET);
-    text += imageSpacing;
-    text += " = ";
-    text += QString::number(myTempoMarker.getBeatsPerMinute());
+        const QString imageSpacing(3, ' ');
+        // Reserve space for the beat type image.
+        myBeatTypeRect =
+            QRectF(fm.width(text), -HEIGHT_OFFSET, fm.width(imageSpacing),
+                   fontHeight + HEIGHT_OFFSET);
+        text += imageSpacing;
+        text += " = ";
+        text += QString::number(myTempoMarker.getBeatsPerMinute());
+    }
 
     myDisplayText.setText(text);
     myDisplayText.prepare(QTransform(), myDisplayFont);
@@ -54,8 +70,11 @@ void TempoMarkerPainter::paint(QPainter *painter,
     painter->setFont(myDisplayFont);
     painter->drawStaticText(0, HEIGHT_OFFSET, myDisplayText);
 
-    QPixmap image(getBeatTypeImage());
-    painter->drawPixmap(myBeatTypeRect, image, image.rect());
+    if (myTempoMarker.getMarkerType() == TempoMarker::StandardMarker)
+    {
+        QPixmap image(getBeatTypeImage());
+        painter->drawPixmap(myBeatTypeRect, image, image.rect());
+    }
 }
 
 QString TempoMarkerPainter::getBeatTypeImage() const

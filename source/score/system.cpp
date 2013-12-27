@@ -229,6 +229,7 @@ static void shift(System &system, int position, int offset)
     shift(system.getTempoMarkers(), position, offset);
     shift(system.getDirections(), position, offset);
     shift(system.getPlayerChanges(), position, offset);
+    shift(system.getChords(), position, offset);
 
     for (Staff &staff : system.getStaves())
     {

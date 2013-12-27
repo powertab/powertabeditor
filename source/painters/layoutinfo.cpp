@@ -308,6 +308,13 @@ double LayoutInfo::getCumulativeBarlineWidths(int position) const
     return width;
 }
 
+template <typename Range>
+static void updateMaxPosition(int &max, const Range &range)
+{
+    for (auto &obj : range)
+        max = std::max(max, obj.getPosition());
+}
+
 void LayoutInfo::computePositionSpacing()
 {
     const double width = getFirstPositionX() + getCumulativeBarlineWidths();
@@ -325,9 +332,12 @@ void LayoutInfo::computePositionSpacing()
         }
     }
 
-    // TODO - include chord text, tempo markers, etc.
-    for (const Barline &barline : mySystem.getBarlines())
-        myNumPositions = std::max(myNumPositions, barline.getPosition());
+    updateMaxPosition(myNumPositions, mySystem.getBarlines());
+    updateMaxPosition(myNumPositions, mySystem.getTempoMarkers());
+    updateMaxPosition(myNumPositions, mySystem.getAlternateEndings());
+    updateMaxPosition(myNumPositions, mySystem.getChords());
+    updateMaxPosition(myNumPositions, mySystem.getDirections());
+    updateMaxPosition(myNumPositions, mySystem.getPlayerChanges());
 
     const double availableSpace = STAFF_WIDTH - width;
     myPositionSpacing = availableSpace / (myNumPositions + 2);
