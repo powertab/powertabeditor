@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PLAYBACKWIDGET_H
-#define PLAYBACKWIDGET_H
+#ifndef WIDGETS_PLAYBACKWIDGET_H
+#define WIDGETS_PLAYBACKWIDGET_H
 
-#include <QWidget>
-#include <boost/shared_ptr.hpp>
 #include <boost/signals2/connection.hpp>
+#include <memory>
+#include <QWidget>
 
 namespace Ui {
 class PlaybackWidget;
@@ -32,36 +32,38 @@ class SettingsPubSub;
 class PlaybackWidget : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit PlaybackWidget(boost::shared_ptr<SettingsPubSub> pubsub,
-                            QWidget* parent = 0);
+    explicit PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
+                            QWidget *parent);
     ~PlaybackWidget();
 
-    int playbackSpeed() const;
+    /// Get the current playback speed.
+    int getPlaybackSpeed() const;
+
+    /// Toggles the play/pause button.
     void setPlaybackMode(bool isPlaying);
-    void onDocumentUpdated(QStringList& scores);
+
+    /// Updates the text containing the caret's location.
+    void updateLocationLabel(const std::string &location);
 
 signals:
     void playbackSpeedChanged(int speed);
     void playbackButtonToggled();
     void rewindToStartClicked();
-    void scoreSelected(int scoreIndex);
     void activeVoiceChanged(int voice);
-
-public slots:
-    void updateLocationLabel(const QString& location);
 
 private slots:
     void onMetronomeButtonToggled(bool enable);
 
 private:
     void updateMetronomeButton();
-    void onSettingChanged(const std::string& setting);
+    void onSettingChanged(const std::string &setting);
 
     Ui::PlaybackWidget *ui;
-    QButtonGroup *voices;
-    boost::shared_ptr<SettingsPubSub> pubsub;
-    boost::signals2::connection connection;
+    QButtonGroup *myVoices;
+    std::shared_ptr<SettingsPubSub> myPubsub;
+    boost::signals2::connection myConnection;
 };
 
-#endif // PLAYBACKWIDGET_H
+#endif

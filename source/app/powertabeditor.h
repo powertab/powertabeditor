@@ -34,6 +34,7 @@ class FileFormatManager;
 class InstrumentPanel;
 class MidiPlayer;
 class Mixer;
+class PlaybackWidget;
 class QActionGroup;
 class RecentFiles;
 class ScoreArea;
@@ -279,6 +280,13 @@ private:
     /// Enables or disables all editing commands.
     void enableEditing(bool enable);
 
+    /// Moves the caret back to the start, and restarts playback if necessary.
+    void rewindPlaybackToStart();
+    /// Sets the current voice that is being edited.
+    void updateActiveVoice(int);
+    /// Updates the playback widget with the caret's current location.
+    void updateLocationLabel();
+
     /// Adds or removes a rest at the current location.
     void editRest(Position::DurationType duration);
 
@@ -329,6 +337,8 @@ private:
     QDockWidget *myMixerDockWidget;
     InstrumentPanel *myInstrumentPanel;
     QDockWidget *myInstrumentDockWidget;
+    PlaybackWidget *myPlaybackWidget;
+    QWidget *myPlaybackArea;
 
     QMenu *myFileMenu;
     Command *myNewDocumentCommand;
@@ -489,17 +499,9 @@ private:
 
 private:
     void changePositionSpacing(int offset);
-    int getCurrentPlaybackSpeed() const;
-
     void shiftTabNumber(int direction);
 
-    PlaybackWidget* getCurrentPlaybackWidget() const;
-
 private slots:
-    void updateLocationLabel();
-    void updateActiveVoice(int);
-    void rewindPlaybackToStart();
-
     void editVolumeSwell();
 
     void addGuitar();
@@ -517,8 +519,6 @@ private:
 
     QMenu* guitarMenu;
     Command* addGuitarAct;
-
-    std::unique_ptr<QStackedWidget> playbackToolbarList;
 
 #endif
 };

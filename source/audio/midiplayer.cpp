@@ -978,15 +978,10 @@ MidiPlayer::BendEventInfo::BendEventInfo(double timestamp,
 {
 }
 
-#if 0
 void MidiPlayer::changePlaybackSpeed(int newPlaybackSpeed)
 {
-    // playback speed may be changed via the main thread during playback
-    myMutex.lock();
-    playbackSpeed = newPlaybackSpeed;
-    myMutex.unlock();
+    myPlaybackSpeed = newPlaybackSpeed;
 }
-#endif
 
 /// Generates slides for the given note
 void MidiPlayer::generateSlides(std::vector<BendEventInfo> &bends,

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.8)
 set(FORMS
     instruments/instrumentpanelitem.ui
     mixer/mixeritem.ui
-    #playback/playbackwidget.ui
+    playback/playbackwidget.ui
 )
 
 qt5_wrap_ui(FORMS_HEADERS ${FORMS})
@@ -25,7 +25,8 @@ add_library(ptewidgets
     mixer/mixeritem.h
     mixer/mixeritem.cpp
 
-    #playback/playbackwidget.cpp
+    playback/playbackwidget.h
+    playback/playbackwidget.cpp
 
     #toolbox/notepage.cpp
     #toolbox/scorepage.cpp

@@ -79,6 +79,7 @@
 
 #include <audio/midiplayer.h>
 
+#include <boost/lexical_cast.hpp>
 #include <boost/timer.hpp>
 
 #include <dialogs/alterationofpacedialog.h>
@@ -117,12 +118,14 @@
 #include <QScrollArea>
 #include <QSettings>
 #include <QTabBar>
+#include <QVBoxLayout>
 
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
+#include <widgets/playback/playbackwidget.h>
 
 PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
@@ -142,7 +145,9 @@ PowerTabEditor::PowerTabEditor()
       myMixer(nullptr),
       myMixerDockWidget(nullptr),
       myInstrumentPanel(nullptr),
-      myInstrumentDockWidget(nullptr)
+      myInstrumentDockWidget(nullptr),
+      myPlaybackWidget(nullptr),
+      myPlaybackArea(nullptr)
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
 
@@ -176,7 +181,7 @@ PowerTabEditor::PowerTabEditor()
     QSettings settings;
     restoreState(settings.value(Settings::APP_WINDOW_STATE).toByteArray());
 
-    setCentralWidget(myTabWidget);
+    setCentralWidget(myPlaybackArea);
     setMinimumSize(800, 600);
     setWindowState(Qt::WindowMaximized);
     setWindowTitle(getApplicationName());
@@ -251,6 +256,7 @@ void PowerTabEditor::switchTab(int index)
         const Score &score = myDocumentManager->getCurrentDocument().getScore();
         myMixer->reset(score);
         myInstrumentPanel->reset(score);
+        updateLocationLabel();
     }
     else
     {
@@ -258,9 +264,6 @@ void PowerTabEditor::switchTab(int index)
         myInstrumentPanel->clear();
     }
 
-#if 0
-    playbackToolbarList->setCurrentIndex(index);
-#endif
     myUndoManager->setActiveStackIndex(index);
 
     updateWindowTitle();
@@ -296,19 +299,15 @@ bool PowerTabEditor::closeTab(int index)
     myDocumentManager->removeDocument(index);
     delete myTabWidget->widget(index);
 
-#if 0
-    playbackToolbarList->removeWidget(playbackToolbarList->widget(index));
-#endif
     // Get the index of the tab that we will now switch to.
     const int currentIndex = myTabWidget->currentIndex();
 
     myUndoManager->setActiveStackIndex(currentIndex);
-#if 0
-    playbackToolbarList->setCurrentIndex(currentIndex);
-#endif
     myDocumentManager->setCurrentDocumentIndex(currentIndex);
 
     enableEditing(currentIndex != -1);
+    myPlaybackWidget->setEnabled(currentIndex != -1);
+
     return true;
 }
 
@@ -453,15 +452,12 @@ void PowerTabEditor::startStopPlayback()
         myPlayPauseCommand->setText(tr("Pause"));
 
         getCaret().setIsInPlaybackMode(true);
-#if 0
-        getCurrentPlaybackWidget()->setPlaybackMode(true);
-#endif
+        myPlaybackWidget->setPlaybackMode(true);
 
         const ScoreLocation &location = getLocation();
-        // TODO - allow playback speed to be adjusted.
-        myMidiPlayer.reset(new MidiPlayer(location.getScore(),
-                                          location.getSystemIndex(),
-                                          location.getPositionIndex(), 100));
+        myMidiPlayer.reset(new MidiPlayer(
+            location.getScore(), location.getSystemIndex(),
+            location.getPositionIndex(), myPlaybackWidget->getPlaybackSpeed()));
 
         connect(myMidiPlayer.get(), SIGNAL(playbackSystemChanged(int)), this,
                 SLOT(moveCaretToSystem(int)));
@@ -469,9 +465,8 @@ void PowerTabEditor::startStopPlayback()
                 SLOT(moveCaretToPosition(int)));
         connect(myMidiPlayer.get(), SIGNAL(finished()), this,
                 SLOT(startStopPlayback()));
-#if 0
-        connect(playbackToolbarList->currentWidget(), SIGNAL(playbackSpeedChanged(int)), midiPlayer.get(), SLOT(changePlaybackSpeed(int)));
-#endif
+        connect(myPlaybackWidget, &PlaybackWidget::playbackSpeedChanged,
+                myMidiPlayer.get(), &MidiPlayer::changePlaybackSpeed);
 
         myMidiPlayer->start();
     }
@@ -487,9 +482,7 @@ void PowerTabEditor::startStopPlayback()
 
         myPlayPauseCommand->setText(tr("Play"));
         getCaret().setIsInPlaybackMode(false);
-#if 0
-        getCurrentPlaybackWidget()->setPlaybackMode(false);
-#endif
+        myPlaybackWidget->setPlaybackMode(false);
 
         enableEditing(true);
         updateCommands();
@@ -2284,7 +2277,24 @@ void PowerTabEditor::createTabArea()
     connect(myTabWidget, SIGNAL(currentChanged(int)), this,
             SLOT(switchTab(int)));
 
+    myPlaybackWidget = new PlaybackWidget(mySettingsPubSub, this);
+
+    connect(myPlaybackWidget, &PlaybackWidget::playbackButtonToggled, this,
+            &PowerTabEditor::startStopPlayback);
+    connect(myPlaybackWidget, &PlaybackWidget::rewindToStartClicked, this,
+            &PowerTabEditor::rewindPlaybackToStart);
+    connect(myPlaybackWidget, &PlaybackWidget::activeVoiceChanged, this,
+            &PowerTabEditor::updateActiveVoice);
+
+    myPlaybackArea = new QWidget(this);
+    QVBoxLayout *layout = new QVBoxLayout(myPlaybackArea);
+    layout->addWidget(myTabWidget);
+    layout->addWidget(myPlaybackWidget, 0, Qt::AlignHCenter);
+    layout->setMargin(0);
+    layout->setSpacing(0);
+
     enableEditing(false);
+    myPlaybackWidget->setEnabled(false);
 }
 
 void PowerTabEditor::setPreviousDirectory(const QString &fileName)
@@ -2305,6 +2315,7 @@ void PowerTabEditor::setupNewTab()
 
     doc.getCaret().subscribeToChanges([=]() {
         updateCommands();
+        updateLocationLabel();
     });
 
     auto scorearea = new ScoreArea(this);
@@ -2355,32 +2366,10 @@ void PowerTabEditor::setupNewTab()
 
     myMixer->reset(doc.getScore());
     myInstrumentPanel->reset(doc.getScore());
-#if 0
-    PlaybackWidget* playback = new PlaybackWidget(settingsPubSub);
-    connect(playback, SIGNAL(playbackButtonToggled()),
-            this, SLOT(startStopPlayback()));
-    connect(playback, SIGNAL(rewindToStartClicked()),
-            this, SLOT(rewindPlaybackToStart()));
-    connect(playback, SIGNAL(scoreSelected(int)),
-            score, SLOT(setScoreIndex(int)));
-    connect(playback, SIGNAL(activeVoiceChanged(int)),
-            this, SLOT(updateActiveVoice(int)));
 
-    playbackToolbarList->addWidget(playback);
-
-    // ensure all the scores are visible to select
-    QStringList scores;
-    for (size_t i = 0; i < doc->GetNumberOfScores(); ++i)
-    {
-        scores.append(doc->GetScore(i)->GetScoreName().c_str());
-    }
-    playback->onDocumentUpdated(scores);
-
-    connect(undoManager.get(), SIGNAL(indexChanged(int)), mixer, SLOT(update()));
-
-#endif
     // Switch to the new document.
     myTabWidget->setCurrentIndex(myDocumentManager->getCurrentDocumentIndex());
+    myPlaybackWidget->setEnabled(true);
 
     enableEditing(true);
     updateCommands();
@@ -2644,6 +2633,31 @@ void PowerTabEditor::editRest(Position::DurationType duration)
     }
 }
 
+void PowerTabEditor::rewindPlaybackToStart()
+{
+    const bool wasPlaying = myIsPlaying;
+
+    if (wasPlaying)
+        startStopPlayback();
+
+    moveCaretToFirstSection();
+    moveCaretToStart();
+
+    if (wasPlaying)
+        startStopPlayback();
+}
+
+void PowerTabEditor::updateActiveVoice(int voice)
+{
+    getLocation().setVoiceIndex(voice);
+}
+
+void PowerTabEditor::updateLocationLabel()
+{
+    myPlaybackWidget->updateLocationLabel(
+        boost::lexical_cast<std::string>(getCaret().getLocation()));
+}
+
 void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)
 {
     ScoreLocation location(getLocation());
@@ -2817,44 +2831,6 @@ ScoreLocation &PowerTabEditor::getLocation()
 
 #if 0
 
-void PowerTabEditor::updateActiveVoice(int voice)
-{
-    getCurrentScoreArea()->getCaret()->setCurrentVoice(voice);
-}
-
-PlaybackWidget* PowerTabEditor::getCurrentPlaybackWidget() const
-{
-    return dynamic_cast<PlaybackWidget*>(playbackToolbarList->currentWidget());
-}
-
-/// Returns the current playback speed
-int PowerTabEditor::getCurrentPlaybackSpeed() const
-{
-    if (playbackToolbarList->count() == 0)
-    {
-        return 0;
-    }
-
-    return getCurrentPlaybackWidget()->playbackSpeed();
-}
-
-/// Move the caret back to the start, and restart playback if necessary.
-void PowerTabEditor::rewindPlaybackToStart()
-{
-    const bool wasPlaying = isPlaying;
-    if (wasPlaying)
-    {
-        startStopPlayback();
-    }
-
-    getCurrentScoreArea()->getCaret()->moveCaretToFirstSection();
-
-    if (wasPlaying)
-    {
-        startStopPlayback();
-    }
-}
-
 void PowerTabEditor::shiftTabNumber(int direction)
 {
     const Position::ShiftType shiftType = static_cast<Position::ShiftType>(direction);
@@ -2881,12 +2857,6 @@ void PowerTabEditor::addGuitar()
 
     AddGuitar* addGuitar = new AddGuitar(score, getCurrentMixer());
     undoManager->push(addGuitar, UndoManager::AFFECTS_ALL_SYSTEMS);
-}
-
-void PowerTabEditor::updateLocationLabel()
-{
-    getCurrentPlaybackWidget()->updateLocationLabel(
-                getCurrentScoreArea()->getCaret()->toString());
 }
 
 void PowerTabEditor::editVolumeSwell()

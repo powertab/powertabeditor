@@ -45,15 +45,13 @@ public:
                int speed);
     ~MidiPlayer();
 
+    void changePlaybackSpeed(int newPlaybackSpeed);
+
 signals:
     // These signals are used to move the caret when a position change is
     // necessary
     void playbackSystemChanged(int system);
     void playbackPositionChanged(int position);
-#if 0
-public slots:
-    void changePlaybackSpeed(int newPlaybackSpeed);
-#endif
 
 private:
     typedef std::vector<std::unique_ptr<MidiEvent>> EventList;
