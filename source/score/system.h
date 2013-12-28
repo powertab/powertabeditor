@@ -61,8 +61,9 @@ public:
 
     /// Adds a new staff to the system.
     void insertStaff(const Staff &staff);
+    void insertStaff(const Staff &staff, int index);
     /// Removes the specified staff from the system.
-    void removeStaff(const Staff &staff);
+    void removeStaff(int index);
 
     /// Returns the set of barlines in the system.
     boost::iterator_range<BarlineIterator> getBarlines();

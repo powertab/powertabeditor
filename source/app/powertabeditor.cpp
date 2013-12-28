@@ -31,6 +31,7 @@
 #include <actions/addpositionproperty.h>
 #include <actions/addrehearsalsign.h>
 #include <actions/addrest.h>
+#include <actions/addstaff.h>
 #include <actions/addsystem.h>
 #include <actions/addtappedharmonic.h>
 #include <actions/addtempomarker.h>
@@ -99,6 +100,7 @@
 #include <dialogs/playerchangedialog.h>
 #include <dialogs/preferencesdialog.h>
 #include <dialogs/rehearsalsigndialog.h>
+#include <dialogs/staffdialog.h>
 #include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/tempomarkerdialog.h>
 #include <dialogs/timesignaturedialog.h>
@@ -717,6 +719,16 @@ void PowerTabEditor::removeCurrentSystem()
     myUndoManager->push(new RemoveSystem(location.getScore(),
                                          location.getSystemIndex(), getCaret()),
                         UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
+void PowerTabEditor::insertStaffBefore()
+{
+    insertStaff(getLocation().getStaffIndex());
+}
+
+void PowerTabEditor::insertStaffAfter()
+{
+    insertStaff(getLocation().getStaffIndex() + 1);
 }
 
 void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
@@ -1618,6 +1630,18 @@ void PowerTabEditor::createCommands()
     connect(myRemoveCurrentSystemCommand, SIGNAL(triggered()), this,
             SLOT(removeCurrentSystem()));
 
+    myInsertStaffBeforeCommand =
+        new Command(tr("Insert Staff Before"), "Section.InsertStaffBefore",
+                    QKeySequence(), this);
+    connect(myInsertStaffBeforeCommand, &QAction::triggered, this,
+            &PowerTabEditor::insertStaffBefore);
+
+    myInsertStaffAfterCommand =
+        new Command(tr("Insert Staff After"), "Section.InsertStaffAfter",
+                    QKeySequence(), this);
+    connect(myInsertStaffAfterCommand, &QAction::triggered, this,
+            &PowerTabEditor::insertStaffAfter);
+
     myIncreaseLineSpacingCommand = new Command(tr("Increase"),
                                                "Section.LineSpacing.Increase",
                                                QKeySequence(), this);
@@ -2136,8 +2160,10 @@ void PowerTabEditor::createMenus()
     mySectionMenu->addAction(myInsertSystemAtEndCommand);
     mySectionMenu->addAction(myInsertSystemBeforeCommand);
     mySectionMenu->addAction(myInsertSystemAfterCommand);
-    mySectionMenu->addSeparator();
     mySectionMenu->addAction(myRemoveCurrentSystemCommand);
+    mySectionMenu->addSeparator();
+    mySectionMenu->addAction(myInsertStaffBeforeCommand);
+    mySectionMenu->addAction(myInsertStaffAfterCommand);
     mySectionMenu->addSeparator();
     myLineSpacingMenu = mySectionMenu->addMenu(tr("&Line Spacing"));
     myLineSpacingMenu->addAction(myIncreaseLineSpacingCommand);
@@ -2806,6 +2832,21 @@ void PowerTabEditor::insertSystem(int index)
 {
     myUndoManager->push(new AddSystem(getLocation().getScore(), index),
                         UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
+void PowerTabEditor::insertStaff(int index)
+{
+    StaffDialog dialog(this);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        Staff staff;
+        staff.setStringCount(dialog.getStringCount());
+        staff.setClefType(dialog.getClefType());
+
+        myUndoManager->push(new AddStaff(getLocation(), staff, index),
+                            getLocation().getSystemIndex());
+    }
 }
 
 void PowerTabEditor::adjustLineSpacing(int amount)

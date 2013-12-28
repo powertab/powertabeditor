@@ -17,6 +17,7 @@ add_executable(pte_tests
     actions/test_addpositionproperty.cpp
     actions/test_addrehearsalsign.cpp
     actions/test_addrest.cpp
+    actions/test_addstaff.cpp
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
     actions/test_addtempomarker.cpp

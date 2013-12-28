@@ -56,10 +56,14 @@ void System::insertStaff(const Staff &staff)
     myStaves.push_back(staff);
 }
 
-void System::removeStaff(const Staff &staff)
+void System::insertStaff(const Staff &staff, int index)
 {
-    myStaves.erase(std::remove(myStaves.begin(), myStaves.end(), staff),
-                   myStaves.end());
+    myStaves.insert(myStaves.begin() + index, staff);
+}
+
+void System::removeStaff(int index)
+{
+    myStaves.erase(myStaves.begin() + index);
 }
 
 boost::iterator_range<System::BarlineIterator> System::getBarlines()

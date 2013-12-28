@@ -166,6 +166,10 @@ private slots:
     void insertSystemAfter();
     /// Deletes the current system.
     void removeCurrentSystem();
+    /// Inserts a new staff before the current staff.
+    void insertStaffBefore();
+    /// Inserts a new staff after the current staff.
+    void insertStaffAfter();
 
     /// Updates the duration of the current note and sets the default duration
     /// for new notes.
@@ -307,6 +311,8 @@ private:
 
     /// Helper function to insert a system at the given index.
     void insertSystem(int index);
+    /// Helper function to insert a staff at the given index in a system.
+    void insertStaff(int index);
     /// Increases or decreases the line spacing by the given amount.
     void adjustLineSpacing(int amount);
 
@@ -393,6 +399,8 @@ private:
     Command *myInsertSystemBeforeCommand;
     Command *myInsertSystemAfterCommand;
     Command *myRemoveCurrentSystemCommand;
+    Command *myInsertStaffBeforeCommand;
+    Command *myInsertStaffAfterCommand;
     QMenu *myLineSpacingMenu;
     Command *myIncreaseLineSpacingCommand;
     Command *myDecreaseLineSpacingCommand;

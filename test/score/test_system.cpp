@@ -29,7 +29,7 @@ TEST_CASE("Score/System/Staves", "")
     system.insertStaff(staff);
     REQUIRE(system.getStaves().size() == 1);
 
-    system.removeStaff(staff);
+    system.removeStaff(0);
     REQUIRE(system.getStaves().size() == 0);
 }
 

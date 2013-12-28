@@ -16,6 +16,7 @@ add_library(pteactions
     addpositionproperty.cpp
     addrehearsalsign.cpp
     addrest.cpp
+    addstaff.cpp
     addsystem.cpp
     addtappedharmonic.cpp
     addtempomarker.cpp
@@ -70,6 +71,7 @@ add_library(pteactions
     addpositionproperty.h
     addrehearsalsign.h
     addrest.h
+    addstaff.h
     addsystem.h
     addtappedharmonic.h
     addtempomarker.h
