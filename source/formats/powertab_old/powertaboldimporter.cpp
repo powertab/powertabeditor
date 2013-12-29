@@ -605,6 +605,10 @@ int PowerTabOldImporter::convert(
                 notesPlayed = 0;
                 notesPlayedOver = 0;
             }
+            // If there is a grace note in the middle of the irregular grouping,
+            // it won't have the irregularGroupingMiddle flag set.
+            else if (position.IsAcciaccatura())
+                positionCount++;
         }
     }
 
