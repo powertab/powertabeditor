@@ -77,6 +77,21 @@ TEST_CASE("Score/Note/ArtificialHarmonic", "")
     REQUIRE(!note.hasArtificialHarmonic());
 }
 
+TEST_CASE("Score/Note/Bend", "")
+{
+    Note note;
+
+    REQUIRE(!note.hasBend());
+
+    note.setBend(
+        Bend(Bend::BendAndHold, 2, 0, 0, Bend::LowPoint, Bend::MidPoint));
+    REQUIRE(note.hasBend());
+    REQUIRE(note.getBend().getType() == Bend::BendAndHold);
+
+    note.clearBend();
+    REQUIRE(!note.hasBend());
+}
+
 TEST_CASE("Score/Note/ToString", "")
 {
     Note note(3, 12);

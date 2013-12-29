@@ -59,6 +59,61 @@ private:
     Octave myOctave;
 };
 
+class Bend
+{
+public:
+    enum BendType
+    {
+        NormalBend,
+        BendAndRelease,
+        BendAndHold,
+        PreBend,
+        PreBendAndRelease,
+        PreBendAndHold,
+        GradualRelease,
+        ImmediateRelease
+    };
+
+    enum DrawPoint
+    {
+        LowPoint,
+        MidPoint,
+        HighPoint
+    };
+
+    Bend();
+    Bend(BendType type, int bentPitch, int releasePitch, int duration,
+         DrawPoint startPoint, DrawPoint endPoint);
+
+    bool operator==(const Bend &other) const;
+
+    BendType getType() const;
+    int getBentPitch() const;
+    int getReleasePitch() const;
+    int getDuration() const;
+    DrawPoint getStartPoint() const;
+    DrawPoint getEndPoint() const;
+
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion /*version*/)
+    {
+        ar("type", myBendType);
+        ar("bent_pitch", myBentPitch);
+        ar("release_pitch", myReleasePitch);
+        ar("duration", myDuration);
+        ar("start_point", myStartPoint);
+        ar("end_point", myEndPoint);
+    }
+
+private:
+    BendType myBendType;
+    int myBentPitch;
+    int myReleasePitch;
+    int myDuration;
+    DrawPoint myStartPoint;
+    DrawPoint myEndPoint;
+};
+
 class Note
 {
 public:
@@ -134,6 +189,15 @@ public:
     /// Removes the artificial harmonic for this note.
     void clearArtificialHarmonic();
 
+    /// Returns whether the note has a bend.
+    bool hasBend() const;
+    /// Returns the bend for this note.
+    const Bend &getBend() const;
+    /// Adds a bend to this note.
+    void setBend(const Bend &bend);
+    /// Removes the bend for this note.
+    void clearBend();
+
     static const int MIN_FRET_NUMBER;
     static const int MAX_FRET_NUMBER;
 
@@ -144,6 +208,7 @@ private:
     int myTrilledFret;
     int myTappedHarmonicFret;
     boost::optional<ArtificialHarmonic> myArtificialHarmonic;
+    boost::optional<Bend> myBend;
 };
 
 template <class Archive>
@@ -155,6 +220,7 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
 	ar("trill", myTrilledFret);
 	ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
+    ar("bend", myBend);
 }
 
 /// Useful utility functions for working with natural and tapped harmonics.

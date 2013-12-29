@@ -52,12 +52,12 @@ Note::Note(int string, int fretNumber)
 
 bool Note::operator==(const Note &other) const
 {
-    return myString == other.myString &&
-           myFretNumber == other.myFretNumber &&
+    return myString == other.myString && myFretNumber == other.myFretNumber &&
            mySimpleProperties == other.mySimpleProperties &&
            myTrilledFret == other.myTrilledFret &&
            myTappedHarmonicFret == other.myTappedHarmonicFret &&
-           myArtificialHarmonic == other.myArtificialHarmonic;
+           myArtificialHarmonic == other.myArtificialHarmonic &&
+           myBend == other.myBend;
 }
 
 int Note::getString() const
@@ -192,6 +192,26 @@ void Note::clearArtificialHarmonic()
     myArtificialHarmonic.reset();
 }
 
+bool Note::hasBend() const
+{
+    return myBend.is_initialized();
+}
+
+const Bend &Note::getBend() const
+{
+    return myBend.get();
+}
+
+void Note::setBend(const Bend &bend)
+{
+    myBend = bend;
+}
+
+void Note::clearBend()
+{
+    myBend.reset();
+}
+
 std::ostream &operator<<(std::ostream &os, const Note &note)
 {
     // For muted notes, display 'x'.
@@ -291,4 +311,63 @@ ChordName::Variation ArtificialHarmonic::getVariation() const
 ArtificialHarmonic::Octave ArtificialHarmonic::getOctave()
 {
     return myOctave;
+}
+
+Bend::Bend()
+    : myBendType(NormalBend),
+      myBentPitch(4),
+      myReleasePitch(0),
+      myDuration(0),
+      myStartPoint(LowPoint),
+      myEndPoint(MidPoint)
+{
+}
+
+Bend::Bend(BendType type, int bentPitch, int releasePitch, int duration,
+           DrawPoint startPoint, DrawPoint endPoint)
+    : myBendType(type),
+      myBentPitch(bentPitch),
+      myReleasePitch(releasePitch),
+      myDuration(duration),
+      myStartPoint(startPoint),
+      myEndPoint(endPoint)
+{
+}
+
+bool Bend::operator==(const Bend &other) const
+{
+    return myBendType == other.myBendType && myBentPitch == other.myBentPitch &&
+           myReleasePitch == other.myReleasePitch &&
+           myDuration == other.myDuration &&
+           myStartPoint == other.myStartPoint && myEndPoint == other.myEndPoint;
+}
+
+Bend::BendType Bend::getType() const
+{
+    return myBendType;
+}
+
+int Bend::getBentPitch() const
+{
+    return myBentPitch;
+}
+
+int Bend::getReleasePitch() const
+{
+    return myReleasePitch;
+}
+
+int Bend::getDuration() const
+{
+    return myDuration;
+}
+
+Bend::DrawPoint Bend::getStartPoint() const
+{
+    return myStartPoint;
+}
+
+Bend::DrawPoint Bend::getEndPoint() const
+{
+    return myEndPoint;
 }
