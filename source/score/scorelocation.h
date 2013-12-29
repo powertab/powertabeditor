@@ -32,10 +32,10 @@ class Voice;
 class ScoreLocation
 {
 public:
-    ScoreLocation(const Score &score, int system = 0, int staff = 0,
-                  int position = 0, int voice = 0, int string = 0);
-    ScoreLocation(Score &score, int system = 0, int staff = 0,
-                  int position = 0, int voice = 0, int string = 0);
+    explicit ScoreLocation(const Score &score, int system = 0, int staff = 0,
+                           int position = 0, int voice = 0, int string = 0);
+    explicit ScoreLocation(Score &score, int system = 0, int staff = 0,
+                           int position = 0, int voice = 0, int string = 0);
 
     Score &getScore();
     const Score &getScore() const;

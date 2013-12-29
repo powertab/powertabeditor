@@ -46,6 +46,7 @@ add_executable(pte_tests
     actions/test_removeposition.cpp
     actions/test_removepositionproperty.cpp
     actions/test_removerehearsalsign.cpp
+    actions/test_removestaff.cpp
     actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp
     actions/test_removetempomarker.cpp

@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,30 +15,30 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include "removesystem.h"
+#include "removestaff.h"
 
 #include <app/caret.h>
-#include <score/score.h>
+#include <score/system.h>
 
-RemoveSystem::RemoveSystem(Score &score, int index, Caret &caret)
-    : QUndoCommand(QObject::tr("Remove System")),
-      myScore(score),
-      myIndex(index),
+RemoveStaff::RemoveStaff(const ScoreLocation &location, Caret &caret)
+    : QUndoCommand(QObject::tr("Remove Staff")),
+      myLocation(location),
       myCaret(caret),
-      myOriginalSystem(score.getSystems()[index])
+      myOriginalStaff(location.getStaff()),
+      myIndex(location.getStaffIndex())
 {
 }
 
-void RemoveSystem::redo()
+void RemoveStaff::redo()
 {
-    myScore.removeSystem(myIndex);
-    // Move the caret to a valid system.
-    myCaret.moveToSystem(
-        std::min<int>(myIndex, myScore.getSystems().size() - 1), true);
+    myLocation.getSystem().removeStaff(myIndex);
+    // Ensure the caret is in a valid staff.
+    myCaret.moveToStaff(
+        std::min<int>(myIndex, myLocation.getSystem().getStaves().size() - 1));
 }
 
-void RemoveSystem::undo()
+void RemoveStaff::undo()
 {
-    myScore.insertSystem(myOriginalSystem, myIndex);
-    myCaret.moveToSystem(myIndex, true);
+    myLocation.getSystem().insertStaff(myOriginalStaff, myIndex);
+    myCaret.moveToStaff(myIndex);
 }

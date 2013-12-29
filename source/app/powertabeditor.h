@@ -170,6 +170,8 @@ private slots:
     void insertStaffBefore();
     /// Inserts a new staff after the current staff.
     void insertStaffAfter();
+    /// Deletes the current staff.
+    void removeCurrentStaff();
 
     /// Updates the duration of the current note and sets the default duration
     /// for new notes.
@@ -401,6 +403,7 @@ private:
     Command *myRemoveCurrentSystemCommand;
     Command *myInsertStaffBeforeCommand;
     Command *myInsertStaffAfterCommand;
+    Command *myRemoveCurrentStaffCommand;
     QMenu *myLineSpacingMenu;
     Command *myIncreaseLineSpacingCommand;
     Command *myDecreaseLineSpacingCommand;

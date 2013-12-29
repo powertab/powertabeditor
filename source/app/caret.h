@@ -68,6 +68,9 @@ public:
     /// Moves up or down by the given number of staves.
     void moveStaff(int offset);
 
+    /// Move to the specified staff.
+    void moveToStaff(int staff);
+
     /// Moves the caret to the next bar after the current position, or to the
     /// next system if necessary.
     void moveToNextBar();

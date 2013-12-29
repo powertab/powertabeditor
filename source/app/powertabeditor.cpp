@@ -59,6 +59,7 @@
 #include <actions/removeposition.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removerehearsalsign.h>
+#include <actions/removestaff.h>
 #include <actions/removesystem.h>
 #include <actions/removetappedharmonic.h>
 #include <actions/removetempomarker.h>
@@ -729,6 +730,13 @@ void PowerTabEditor::insertStaffBefore()
 void PowerTabEditor::insertStaffAfter()
 {
     insertStaff(getLocation().getStaffIndex() + 1);
+}
+
+void PowerTabEditor::removeCurrentStaff()
+{
+    const ScoreLocation &location = getLocation();
+    myUndoManager->push(new RemoveStaff(location, getCaret()),
+                        location.getSystemIndex());
 }
 
 void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
@@ -1642,6 +1650,12 @@ void PowerTabEditor::createCommands()
     connect(myInsertStaffAfterCommand, &QAction::triggered, this,
             &PowerTabEditor::insertStaffAfter);
 
+    myRemoveCurrentStaffCommand =
+        new Command(tr("Remove Current Staff"), "Section.RemoveCurrentStaff",
+                    QKeySequence(), this);
+    connect(myRemoveCurrentStaffCommand, &QAction::triggered, this,
+            &PowerTabEditor::removeCurrentStaff);
+
     myIncreaseLineSpacingCommand = new Command(tr("Increase"),
                                                "Section.LineSpacing.Increase",
                                                QKeySequence(), this);
@@ -2152,11 +2166,6 @@ void PowerTabEditor::createMenus()
 
     // Section Menu.
     mySectionMenu = menuBar()->addMenu(tr("&Section"));
-#if 0
-    mySectionMenu->addAction(increasePositionSpacingAct);
-    mySectionMenu->addAction(decreasePositionSpacingAct);
-    mySectionMenu->addSeparator();
-#endif
     mySectionMenu->addAction(myInsertSystemAtEndCommand);
     mySectionMenu->addAction(myInsertSystemBeforeCommand);
     mySectionMenu->addAction(myInsertSystemAfterCommand);
@@ -2164,6 +2173,7 @@ void PowerTabEditor::createMenus()
     mySectionMenu->addSeparator();
     mySectionMenu->addAction(myInsertStaffBeforeCommand);
     mySectionMenu->addAction(myInsertStaffAfterCommand);
+    mySectionMenu->addAction(myRemoveCurrentStaffCommand);
     mySectionMenu->addSeparator();
     myLineSpacingMenu = mySectionMenu->addMenu(tr("&Line Spacing"));
     myLineSpacingMenu->addAction(myIncreaseLineSpacingCommand);
@@ -2454,6 +2464,7 @@ void PowerTabEditor::updateCommands()
     const bool hasSelection = !location.getSelectedPositions().empty();
 
     myRemoveCurrentSystemCommand->setEnabled(score.getSystems().size() > 1);
+    myRemoveCurrentStaffCommand->setEnabled(system.getStaves().size() > 1);
     myIncreaseLineSpacingCommand->setEnabled(score.getLineSpacing() <
                                              Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(score.getLineSpacing() >

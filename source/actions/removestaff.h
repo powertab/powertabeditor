@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,30 +15,28 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include "removesystem.h"
+#ifndef ACTIONS_REMOVESTAFF_H
+#define ACTIONS_REMOVESTAFF_H
 
-#include <app/caret.h>
-#include <score/score.h>
+#include <QUndoCommand>
+#include <score/scorelocation.h>
+#include <score/staff.h>
 
-RemoveSystem::RemoveSystem(Score &score, int index, Caret &caret)
-    : QUndoCommand(QObject::tr("Remove System")),
-      myScore(score),
-      myIndex(index),
-      myCaret(caret),
-      myOriginalSystem(score.getSystems()[index])
+class Caret;
+
+class RemoveStaff : public QUndoCommand
 {
-}
+public:
+    RemoveStaff(const ScoreLocation &location, Caret &caret);
 
-void RemoveSystem::redo()
-{
-    myScore.removeSystem(myIndex);
-    // Move the caret to a valid system.
-    myCaret.moveToSystem(
-        std::min<int>(myIndex, myScore.getSystems().size() - 1), true);
-}
+    virtual void redo() override;
+    virtual void undo() override;
 
-void RemoveSystem::undo()
-{
-    myScore.insertSystem(myOriginalSystem, myIndex);
-    myCaret.moveToSystem(myIndex, true);
-}
+private:
+    ScoreLocation myLocation;
+    Caret &myCaret;
+    const Staff myOriginalStaff;
+    const int myIndex;
+};
+
+#endif

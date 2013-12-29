@@ -47,6 +47,7 @@ add_library(pteactions
     removeposition.cpp
     removepositionproperty.cpp
     removerehearsalsign.cpp
+    removestaff.cpp
     removesystem.cpp
     removetappedharmonic.cpp
     removetempomarker.cpp
@@ -102,6 +103,7 @@ add_library(pteactions
     removeposition.h
     removepositionproperty.h
     removerehearsalsign.h
+    removestaff.h
     removesystem.h
     removetappedharmonic.h
     removetempomarker.h
