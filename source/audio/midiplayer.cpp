@@ -63,7 +63,6 @@ MidiPlayer::MidiPlayer(const Score &score, int startSystem, int startPosition,
       myStartSystem(startSystem),
       myStartPosition(startPosition),
       myIsPlaying(false),
-      myActivePitchBend(BendEvent::DEFAULT_BEND),
       myPlaybackSpeed(speed)
 {
 }
@@ -190,7 +189,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                                         int rightPos, const double barStartTime,
                                         EventList &eventList)
 {
-    myActivePitchBend = BendEvent::DEFAULT_BEND;
+    uint8_t activePitchBend = BendEvent::DEFAULT_BEND;
     double startTime = barStartTime;
     bool letRingActive = false;
 
@@ -410,12 +409,13 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                                                            note.getString()));
                 }
 
-#if 0
-                if (note->HasBend())
+                if (note.hasBend())
                 {
-                    generateBends(bendEvents, startTime, duration, currentTempo, note);
+                    generateBends(bendEvents, activePitchBend, startTime,
+                                  duration, currentTempo, note);
                 }
 
+#if 0
                 // only generate tremolo bar events once, since they apply to all notes in
                 // the position
                 if (position->HasTremoloBar() && j == 0)
@@ -886,73 +886,88 @@ int MidiPlayer::getActualNotePitch(const Note &note, const Tuning &tuning) const
     return pitch;
 }
 
-#if 0
-/// Generates bend events for the given note
-void MidiPlayer::generateBends(std::vector<BendEventInfo>& bends, double startTime,
-                               double duration, double currentTempo, const Note* note)
+void MidiPlayer::generateBends(std::vector<BendEventInfo> &bends,
+                               uint8_t &activePitchBend, double startTime,
+                               double duration, double currentTempo,
+                               const Note &note)
 {
-    uint8_t type = 0, bentPitch = 0, releasePitch = 0, bendDuration = 0, drawStartPoint = 0, drawEndPoint = 0;
-    note->GetBend(type, bentPitch, releasePitch, bendDuration, drawStartPoint, drawEndPoint);
+    const Bend &bend = note.getBend();
 
-    const uint8_t bendAmount = floor(BendEvent::DEFAULT_BEND + bentPitch * BendEvent::BEND_QUARTER_TONE);
-    const uint8_t releaseAmount = floor(BendEvent::DEFAULT_BEND + releasePitch * BendEvent::BEND_QUARTER_TONE);
+    const uint8_t bendAmount =
+        std::floor(BendEvent::DEFAULT_BEND +
+                   bend.getBentPitch() * BendEvent::BEND_QUARTER_TONE);
+    const uint8_t releaseAmount =
+        std::floor(BendEvent::DEFAULT_BEND +
+                   bend.getReleasePitch() * BendEvent::BEND_QUARTER_TONE);
 
-    // perform a pre-bend
-    if (type == Note::preBend || type == Note::preBendAndRelease || type == Note::preBendAndHold)
+    switch (bend.getType())
     {
+    case Bend::PreBend:
+    case Bend::PreBendAndRelease:
+    case Bend::PreBendAndHold:
         bends.push_back(BendEventInfo(startTime, bendAmount));
-    }
+        break;
 
-    // perform a normal (gradual) bend
-    if (type == Note::normalBend || type == Note::bendAndHold)
-    {
-        if (bendDuration == 0) // default - bend over 32nd note
+    case Bend::NormalBend:
+    case Bend::BendAndHold:
+        // Perform a normal (gradual) bend.
+        if (bend.getDuration() == 0)
         {
-            generateGradualBend(bends, startTime, currentTempo / 8.0, BendEvent::DEFAULT_BEND, bendAmount);
+            // Bend over a 32nd note.
+            generateGradualBend(bends, startTime, currentTempo / 8.0,
+                                BendEvent::DEFAULT_BEND, bendAmount);
         }
-        else if (bendDuration == 1) // bend over current note duration
+        else if (bend.getDuration() == 1)
         {
-            generateGradualBend(bends, startTime, duration, BendEvent::DEFAULT_BEND, bendAmount);
+            // Bend over the current note duration.
+            generateGradualBend(bends, startTime, duration,
+                                BendEvent::DEFAULT_BEND, bendAmount);
         }
-        // TODO - implement bends that stretch over multiple notes
+        // TODO - implement bends that stretch over multiple notes.
+        break;
+
+    case Bend::BendAndRelease:
+        // Bend up to the bent pitch for half of the note duration.
+        generateGradualBend(bends, startTime, duration / 2,
+                            BendEvent::DEFAULT_BEND, bendAmount);
+        break;
+    default:
+        break;
     }
 
-    // for a "bend and release", bend up to bent pitch, for half the note duration
-    if (type == Note::bendAndRelease)
+    // Bend back down.
+    switch (bend.getType())
     {
-        generateGradualBend(bends, startTime, duration / 2, BendEvent::DEFAULT_BEND, bendAmount);
-    }
-
-    // bend back down to the release pitch
-    if (type == Note::preBendAndRelease)
-    {
-        generateGradualBend(bends, startTime, duration, bendAmount, releaseAmount);
-    }
-    else if (type == Note::bendAndRelease)
-    {
-        generateGradualBend(bends, startTime + duration / 2, duration / 2, bendAmount, releaseAmount);
-    }
-    else if (type == Note::gradualRelease)
-    {
-        generateGradualBend(bends, startTime, duration, activePitchBend, releaseAmount);
-    }
-
-    // reset to the release pitch bend value
-    if (type == Note::preBend || type == Note::immediateRelease || type == Note::normalBend)
-    {
+    case Bend::PreBend:
+    case Bend::ImmediateRelease:
+    case Bend::NormalBend:
         bends.push_back(BendEventInfo(startTime + duration, releaseAmount));
+        break;
+
+    case Bend::PreBendAndRelease:
+        generateGradualBend(bends, startTime, duration, bendAmount, releaseAmount);
+        break;
+
+    case Bend::BendAndRelease:
+        generateGradualBend(bends, startTime + duration / 2, duration / 2,
+                            bendAmount, releaseAmount);
+        break;
+
+    case Bend::GradualRelease:
+        generateGradualBend(bends, startTime, duration, activePitchBend,
+                            releaseAmount);
+        break;
+    default:
+        break;
     }
 
-    if (type == Note::bendAndHold || type == Note::preBendAndHold)
+    if (bend.getType() == Bend::BendAndHold || bend.getType() == Bend::PreBendAndHold)
     {
         activePitchBend = bendAmount;
     }
     else
-    {
         activePitchBend = releaseAmount;
-    }
 }
-#endif
 
 void MidiPlayer::generateGradualBend(std::vector<BendEventInfo> &bends,
                                      double startTime, double duration,

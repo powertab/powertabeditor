@@ -103,8 +103,6 @@ private:
     const int myStartSystem;
     const int myStartPosition;
     std::atomic<bool> myIsPlaying;
-    /// Tracks the active pitch bend (used for "bend and hold"-type events).
-    uint8_t myActivePitchBend;
     /// The current playback speed (percent).
     std::atomic<int> myPlaybackSpeed;
 
@@ -123,10 +121,10 @@ private:
         uint8_t pitchBendAmount;
     };
 
-#if 0
-    void generateBends(std::vector<BendEventInfo>& bends, double startTime, double duration,
-                       double currentTempo, const Note* note);
-#endif
+    void generateBends(std::vector<BendEventInfo> &bends,
+                       uint8_t &activePitchBend, double startTime,
+                       double duration, double currentTempo, const Note &note);
+
     void generateSlides(std::vector<BendEventInfo> &bends, double startTime,
                         double noteDuration, double currentTempo,
                         const Note &note, const Note *nextNote);
