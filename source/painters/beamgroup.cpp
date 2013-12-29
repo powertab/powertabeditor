@@ -118,8 +118,8 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
 
         // 16th note gets 1 extra beam, 32nd gets two, etc
         // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1).
-        const int extraBeams = std::log(static_cast<double>(stem->getDurationType())) /
-                std::log(2.0) - 3;
+        const int extraBeams =
+            std::log(static_cast<double>(duration)) / std::log(2.0) - 3;
 
         // The note only has a full beam to the previous note if they have the
         // same duration type (and if a previous note exists).
@@ -128,7 +128,7 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
         const bool hasFractionalLeft = (duration > prevDuration);
         const bool hasFractionalRight = !hasFractionalLeft && duration > nextDuration;
 
-        if (hasFullBeaming || hasFractionalRight || hasFractionalRight)
+        if (hasFullBeaming || hasFractionalLeft || hasFractionalRight)
         {
             for (int i = 1; i <= extraBeams; i++)
             {
@@ -150,9 +150,9 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
                     xStart = stem->getX() + 0.5;
                     xEnd = xStart + FRACTIONAL_BEAM_WIDTH;
                 }
-                else if (hasFractionalRight)
+                else if (hasFractionalLeft)
                 {
-                    xEnd = stem->getX() - 1;
+                    xEnd = stem->getX();
                     xStart = xEnd - FRACTIONAL_BEAM_WIDTH;
                 }
 
