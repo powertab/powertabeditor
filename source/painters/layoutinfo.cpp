@@ -224,9 +224,9 @@ int LayoutInfo::getPositionFromX(double x) const
     if (getPositionX(0) >= x)
         return 0;
 
-    const int maxPosition = getNumPositions() - 2;
+    const int maxPosition = getNumPositions() - 1;
 
-    for (int i = 1; i < maxPosition; ++i)
+    for (int i = 1; i <= maxPosition; ++i)
     {
         if (getPositionX(i) >= x)
             return i - 1;

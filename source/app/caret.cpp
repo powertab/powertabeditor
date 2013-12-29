@@ -163,7 +163,7 @@ std::shared_ptr<ScoreLocationPubSub> Caret::getSelectionPubSub() const
 int Caret::getLastPosition() const
 {
     // There must be at least one position space to the left of the last bar.
-    return myLocation.getSystem().getBarlines().back().getPosition() - 2;
+    return myLocation.getSystem().getBarlines().back().getPosition() - 1;
 }
 
 int Caret::getLastSystemIndex() const
