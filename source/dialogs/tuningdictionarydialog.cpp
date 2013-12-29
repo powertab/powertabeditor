@@ -35,12 +35,7 @@ TuningDictionaryDialog::TuningDictionaryDialog(QWidget *parent,
     ui->tuningsList->setColumnCount(2);
     ui->tuningsList->setHeaderLabels(QStringList() <<
                                      tr("Name") << tr("Tuning (Low to High)"));
-
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     ui->tuningsList->header()->sectionResizeMode(QHeaderView::ResizeToContents);
-#else
-    ui->tuningsList->header()->setResizeMode(QHeaderView::ResizeToContents);
-#endif
 
     for (int i = Tuning::MIN_STRING_COUNT; i <= Tuning::MAX_STRING_COUNT; ++i)
         ui->stringsComboBox->addItem(QString::number(i), i);

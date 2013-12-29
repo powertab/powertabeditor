@@ -81,11 +81,7 @@ void KeyboardSettingsDialog::initializeCommandTable()
         ui->commandsList->addTopLevelItem(item);
     }
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     ui->commandsList->header()->sectionResizeMode(QHeaderView::ResizeToContents);
-#else
-    ui->commandsList->header()->setResizeMode(QHeaderView::ResizeToContents);
-#endif
 
     // resize dialog to avoid horizontal scrollbars
     int totalWidth = 0;
