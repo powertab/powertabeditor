@@ -70,8 +70,8 @@ private:
     double generateEventsForBar(const System &system, int systemIndex,
                                 const Staff &staff, int staffIndex,
                                 const Voice &voice, int leftPos, int rightPos,
-                                const double barStartTime,
-                                EventList &eventList);
+                                const double barStartTime, EventList &eventList,
+                                uint8_t &activePitchBend);
 
     /// Returns the current tempo (duration of a quarter note in milliseconds).
     double getCurrentTempo(int system, int position) const;
@@ -105,12 +105,6 @@ private:
     std::atomic<bool> myIsPlaying;
     /// The current playback speed (percent).
     std::atomic<int> myPlaybackSpeed;
-
-    enum Durations
-    {
-        GraceNoteDuration = 60,
-        ArpeggioOffset = 30
-    };
 
     /// Holds basic information about a bend - used to simplify the generateBends function
     struct BendEventInfo

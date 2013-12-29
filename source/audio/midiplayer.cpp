@@ -41,6 +41,12 @@
 static const int PERCUSSION_CHANNEL = 9;
 static const int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
 
+/// For grace notes, use the duration of 32nd note at 120bpm, which is fairly
+/// fast.
+static const double GRACE_NOTE_DURATION = 62.5;
+
+static const double ARPEGGIO_OFFSET = 30.0;
+
 /// A MIDI event that does nothing, but is useful for triggering a position
 /// change.
 class DummyEvent : public MidiEvent
@@ -105,6 +111,9 @@ void MidiPlayer::generateEvents(EventList &eventList)
     int systemIndex = 0;
     for (const System &system : myScore.getSystems())
     {
+        std::vector<uint8_t> activePitchBends(system.getStaves().size(),
+                                              BendEvent::DEFAULT_BEND);
+
         for (const Barline &leftBar : system.getBarlines())
         {
             const Barline *rightBar = system.getNextBarline(
@@ -122,7 +131,7 @@ void MidiPlayer::generateEvents(EventList &eventList)
                     const double endTime = generateEventsForBar(
                         system, systemIndex, staff, staffIndex, voice,
                         leftBar.getPosition(), rightBar->getPosition(),
-                        barStartTime, eventList);
+                        barStartTime, eventList, activePitchBends[staffIndex]);
 
                     // Force playback to be synchronized at each bar in case
                     // some staves have too many or too few notes.
@@ -187,9 +196,9 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                                         const Staff &staff, int staffIndex,
                                         const Voice &voice, int leftPos,
                                         int rightPos, const double barStartTime,
-                                        EventList &eventList)
+                                        EventList &eventList,
+                                        uint8_t &activePitchBend)
 {
-    uint8_t activePitchBend = BendEvent::DEFAULT_BEND;
     double startTime = barStartTime;
     bool letRingActive = false;
 
@@ -240,7 +249,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         // Handle grace notes.
         if (pos.hasProperty(Position::Acciaccatura))
         {
-            duration = GraceNoteDuration;
+            duration = GRACE_NOTE_DURATION;
             startTime -= duration;
         }
 
@@ -340,8 +349,8 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
             if (pos.hasProperty(Position::ArpeggioDown) ||
                 pos.hasProperty(Position::ArpeggioUp))
             {
-                startTime += ArpeggioOffset;
-                duration -= ArpeggioOffset;
+                startTime += ARPEGGIO_OFFSET;
+                duration -= ARPEGGIO_OFFSET;
             }
 
             // Pick a tuning from one of the active players.
@@ -424,7 +433,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
                 }
 #endif
 
-                for (const BendEventInfo& event : bendEvents)
+                for (const BendEventInfo &event : bendEvents)
                 {
                     for (const ActivePlayer &player : activePlayers)
                     {
@@ -438,8 +447,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
             // trills alternate between two pitches.
             if (pos.hasProperty(Position::TremoloPicking) || note.hasTrill())
             {
-                // Each note is a 32nd note.
-                const double tremPickNoteDuration = currentTempo / 8.0;
+                const double tremPickNoteDuration = GRACE_NOTE_DURATION;
                 const int numNotes = duration / tremPickNoteDuration;
 
                 // Find the other pitch to alternate with (this is just the same
@@ -961,7 +969,8 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo> &bends,
         break;
     }
 
-    if (bend.getType() == Bend::BendAndHold || bend.getType() == Bend::PreBendAndHold)
+    if (bend.getType() == Bend::BendAndHold ||
+        bend.getType() == Bend::PreBendAndHold)
     {
         activePitchBend = bendAmount;
     }
