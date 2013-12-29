@@ -720,6 +720,18 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
             static_cast<ArtificialHarmonic::Octave>(octave)));
     }
 
+    if (oldNote.HasBend())
+    {
+        uint8_t type = 0, bentPitch = 0, releasePitch = 0, duration = 0,
+                drawStartPoint = 0, drawEndPoint = 0;
+        oldNote.GetBend(type, bentPitch, releasePitch, duration, drawStartPoint, drawEndPoint);
+
+        note.setBend(Bend(static_cast<Bend::BendType>(type), bentPitch,
+                          releasePitch, duration,
+                          static_cast<Bend::DrawPoint>(drawStartPoint),
+                          static_cast<Bend::DrawPoint>(drawEndPoint)));
+    }
+
     // Import simple properties.
     if (oldNote.IsTied())
         note.setProperty(Note::Tied);

@@ -315,3 +315,31 @@ TEST_CASE("Formats/PowerTabOldImport/ChordText", "")
     REQUIRE(chord2.getBassKey() == ChordName::F);
     REQUIRE(chord2.getBassVariation() == ChordName::NoVariation);
 }
+
+TEST_CASE("Formats/PowerTabOldImport/Bends", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    importer.load("data/bends.ptb", score);
+
+    const System &system = score.getSystems()[0];
+    const Staff &staff = system.getStaves()[0];
+    const Voice &voice = staff.getVoices().front();
+    const Note &note1 = voice.getPositions()[0].getNotes()[0];
+    const Note &note2 = voice.getPositions()[1].getNotes()[0];
+
+    REQUIRE(note1.hasBend());
+    const Bend &bend1 = note1.getBend();
+    REQUIRE(bend1.getType() == Bend::BendAndHold);
+    REQUIRE(bend1.getBentPitch() == 3);
+    REQUIRE(bend1.getReleasePitch() == 0);
+    REQUIRE(bend1.getDuration() == 1);
+    REQUIRE(bend1.getStartPoint() == Bend::MidPoint);
+    REQUIRE(bend1.getEndPoint() == Bend::HighPoint);
+
+    REQUIRE(note2.hasBend());
+    const Bend &bend2 = note2.getBend();
+    REQUIRE(bend2.getType() == Bend::ImmediateRelease);
+    REQUIRE(bend2.getStartPoint() == Bend::MidPoint);
+    REQUIRE(bend2.getEndPoint() == Bend::MidPoint);
+}
