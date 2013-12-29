@@ -64,7 +64,8 @@ int SystemLocation::getSystem() const
     return mySystem;
 }
 
-size_t hash_value(const SystemLocation &location)
+size_t std::hash<SystemLocation>::operator()(
+    const SystemLocation &location) const
 {
     size_t seed = 0;
     boost::hash_combine(seed, location.getSystem());

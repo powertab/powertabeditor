@@ -18,8 +18,8 @@
 #ifndef AUDIO_REPEAT_H
 #define AUDIO_REPEAT_H
 
-#include <boost/unordered_map.hpp>
 #include <score/systemlocation.h>
+#include <unordered_map>
 
 class AlternateEnding;
 
@@ -65,11 +65,10 @@ public:
     SystemLocation performRepeat(const SystemLocation &location);
 
 private:
-    typedef boost::unordered_map< SystemLocation, RepeatEnd,
-                                  boost::hash<SystemLocation> > EndBarsMap;
+    typedef std::unordered_map<SystemLocation, RepeatEnd> EndBarsMap;
     EndBarsMap myEndBars;
 
-    typedef boost::unordered_map<int, SystemLocation> AltEndingsMap;
+    typedef std::unordered_map<int, SystemLocation> AltEndingsMap;
     AltEndingsMap myAlternateEndings;
 
     const SystemLocation myStartBarLocation;

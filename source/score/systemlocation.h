@@ -45,7 +45,14 @@ private:
     int myPosition;
 };
 
-/// Enable the use of SystemLocation as a key for boost::unorded_map, etc.
-extern size_t hash_value(const SystemLocation &location);
+namespace std
+{
+    /// Enable the use of SystemLocation as a key for std::unordered_map, etc.
+    template<>
+    struct hash<SystemLocation>
+    {
+        size_t operator()(const SystemLocation &location) const;
+    };
+}
 
 #endif

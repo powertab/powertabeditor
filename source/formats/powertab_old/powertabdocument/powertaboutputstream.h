@@ -12,10 +12,10 @@
 #ifndef POWERTABOUTPUTSTREAM_H
 #define POWERTABOUTPUTSTREAM_H
 
-#include <boost/unordered_map.hpp>
 #include <cstdint>
 #include <ostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "powertabstream.h"
@@ -33,8 +33,8 @@ class PowerTabOutputStream
     // Member Variables
 private:
     bool                                        m_mapsInitialized;              ///< Determines whether or not the maps have been initialized
-    boost::unordered_map<std::string, uint32_t>   m_classInfoHashMap;             ///< Map of class Ids to object index
-    boost::unordered_map<const PowerTabObject*, uint32_t>        m_objectHashMap;      ///< Map of object pointers to object index
+    std::unordered_map<std::string, uint32_t>   m_classInfoHashMap;             ///< Map of class Ids to object index
+    std::unordered_map<const PowerTabObject*, uint32_t>   m_objectHashMap;      ///< Map of object pointers to object index
     uint32_t                                    m_mapCount;                     ///< Internal count of mapped objects
     PowerTabStreamError                         m_lastPowerTabError;            ///< Last Power Tab specific error
     std::ostream& m_stream;
