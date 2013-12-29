@@ -19,7 +19,7 @@
 #define MACROS_H
 
 #include <cassert>
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <string>
 
 // Little-endian based LONG/WORD/BYTE macros

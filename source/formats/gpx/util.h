@@ -18,9 +18,9 @@
 #ifndef FORMATS_GPX_UTIL_H
 #define FORMATS_GPX_UTIL_H
 
-#include <vector>
-#include <boost/cstdint.hpp>
 #include <cstddef>
+#include <cstdint>
+#include <vector>
 
 namespace Gpx {
 namespace Util {

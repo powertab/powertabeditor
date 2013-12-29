@@ -12,11 +12,9 @@
 #ifndef POWERTABOUTPUTSTREAM_H
 #define POWERTABOUTPUTSTREAM_H
 
-#include <boost/cstdint.hpp>
-#include <ostream>
-
 #include <boost/unordered_map.hpp>
-
+#include <cstdint>
+#include <ostream>
 #include <string>
 #include <vector>
 

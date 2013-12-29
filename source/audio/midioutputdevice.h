@@ -25,8 +25,8 @@
 // third parameter is the new value (0-127)
 **/
 
-#include <boost/cstdint.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <cstdint>
 #include <map>
 
 class RtMidiOut;

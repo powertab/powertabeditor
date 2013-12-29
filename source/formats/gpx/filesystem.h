@@ -18,7 +18,7 @@
 #ifndef FORMATS_GPX_FILESYSTEM_H
 #define FORMATS_GPX_FILESYSTEM_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <iosfwd>
 #include <map>
 #include <string>

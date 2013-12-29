@@ -12,7 +12,7 @@
 #ifndef POWERTABFILEHEADER_H
 #define POWERTABFILEHEADER_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <boost/date_time/gregorian/greg_date.hpp>
 #include <string>
 

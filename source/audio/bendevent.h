@@ -18,8 +18,8 @@
 #ifndef AUDIO_BENDEVENT_H
 #define AUDIO_BENDEVENT_H
 
+#include <cstdint>
 #include "midievent.h"
-#include <boost/cstdint.hpp>
 
 class BendEvent : public MidiEvent
 {

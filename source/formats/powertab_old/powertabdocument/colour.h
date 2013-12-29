@@ -18,7 +18,7 @@
 #ifndef COLOUR_H
 #define COLOUR_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 
 namespace PowerTabDocument {
 

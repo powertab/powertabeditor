@@ -18,7 +18,7 @@
 #ifndef RECT_H
 #define RECT_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 
 namespace PowerTabDocument {
 

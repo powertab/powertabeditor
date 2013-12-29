@@ -18,8 +18,8 @@
 #ifndef AUDIO_VOLUMECHANGEEVENT_H
 #define AUDIO_VOLUMECHANGEEVENT_H
 
+#include <cstdint>
 #include "midievent.h"
-#include <boost/cstdint.hpp>
 
 class VolumeChangeEvent : public MidiEvent
 {

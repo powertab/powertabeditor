@@ -12,12 +12,11 @@
 #ifndef POWERTABINPUTSTREAM_H
 #define POWERTABINPUTSTREAM_H
 
+#include <array>
+#include <cstdint>
 #include <istream>
 #include <memory>
 #include <vector>
-
-#include <array>
-#include <boost/cstdint.hpp>
 
 namespace PowerTabDocument {
 

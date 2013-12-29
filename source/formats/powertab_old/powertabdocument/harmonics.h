@@ -18,7 +18,7 @@
 #ifndef HARMONICS_H
 #define HARMONICS_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <vector>
 
 /// Contains useful utility functions for working with

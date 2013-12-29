@@ -19,9 +19,9 @@
 #define AUDIO_MIDIPLAYER_H
 
 #include <atomic>
+#include <cstdint>
 #include <memory>
 #include <QThread>
-#include <boost/cstdint.hpp>
 
 class Barline;
 class MidiEvent;

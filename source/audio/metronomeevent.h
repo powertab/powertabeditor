@@ -18,8 +18,8 @@
 #ifndef AUDIO_METRONOMEEVENT_H
 #define AUDIO_METRONOMEEVENT_H
 
+#include <cstdint>
 #include "midievent.h"
-#include <boost/cstdint.hpp>
 
 class MetronomeEvent : public MidiEvent
 {

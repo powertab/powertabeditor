@@ -18,8 +18,8 @@
 #ifndef AUDIO_STOPNOTEEVENT_H
 #define AUDIO_STOPNOTEEVENT_H
 
+#include <cstdint>
 #include "midievent.h"
-#include <boost/cstdint.hpp>
 
 class StopNoteEvent : public MidiEvent
 {

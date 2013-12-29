@@ -18,7 +18,7 @@
 #ifndef FORMATS_GPX_BITSTREAM_H
 #define FORMATS_GPX_BITSTREAM_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <iosfwd>
 #include <vector>
 

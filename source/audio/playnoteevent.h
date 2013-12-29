@@ -18,8 +18,8 @@
 #ifndef AUDIO_PLAYNOTEEVENT_H
 #define AUDIO_PLAYNOTEEVENT_H
 
+#include <cstdint>
 #include "midievent.h"
-#include <boost/cstdint.hpp>
 
 class Instrument;
 class Player;
