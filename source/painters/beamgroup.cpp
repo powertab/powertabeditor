@@ -27,6 +27,14 @@
 
 static const double FRACTIONAL_BEAM_WIDTH = 5.0;
 
+static int getNumExtraBeams(const NoteStem &stem)
+{
+    // 16th note gets 1 extra beam, 32nd gets two, etc.
+    // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1).
+    return std::log(static_cast<double>(stem.getDurationType())) /
+               std::log(2.0) - 3;
+}
+
 BeamGroup::BeamGroup(NoteStem::StemType direction, size_t start, size_t end)
     : myStemDirection(direction), myStartIndex(start), myEndIndex(end)
 {
@@ -116,16 +124,12 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
         const Position::DurationType nextDuration = (nextStem != end) ?
                     nextStem->getDurationType() : Position::SixtyFourthNote;
 
-        // 16th note gets 1 extra beam, 32nd gets two, etc
-        // Calculate log_2 of the note duration, and subtract three (so log_2(16) - 3 = 1).
-        const int extraBeams =
-            std::log(static_cast<double>(duration)) / std::log(2.0) - 3;
+        const int extraBeams = getNumExtraBeams(*stem);
 
-        // The note only has a full beam to the previous note if they have the
-        // same duration type (and if a previous note exists).
-        const bool hasFullBeaming = (prevDuration == duration) && stem != begin;
-
-        const bool hasFractionalLeft = (duration > prevDuration);
+        const bool hasFullBeaming = stem != begin;
+        const bool hasFractionalLeft =
+            (duration > prevDuration) &&
+            (nextStem == end || duration > nextDuration);
         const bool hasFractionalRight = !hasFractionalLeft && duration > nextDuration;
 
         if (hasFullBeaming || hasFractionalLeft || hasFractionalRight)
@@ -137,11 +141,8 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
 
                 double xStart = 0, xEnd = 0;
 
-                if (hasFullBeaming)
+                if (hasFullBeaming && i <= getNumExtraBeams(*prevStem))
                 {
-                    // Verify that the prevStem iterator is valid.
-                    Q_ASSERT(stem != begin);
-
                     xStart = prevStem->getX() + 0.5;
                     xEnd = stem->getX() - 1;
                 }
