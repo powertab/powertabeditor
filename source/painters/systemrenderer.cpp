@@ -756,7 +756,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
         {
             const Position *pos = ScoreUtils::findByPosition(
                 symbolGroup.getVoice().getPositions(),
-                symbolGroup.getPosition());
+                symbolGroup.getLeftPosition());
             Q_ASSERT(pos);
             renderedSymbol = createArtificialHarmonicText(*pos);
             break;
@@ -766,7 +766,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
             break;
         }
 
-        const double x = layout.getPositionX(symbolGroup.getPosition());
+        const double x = layout.getPositionX(symbolGroup.getLeftPosition());
         centerItem(renderedSymbol, x, x + symbolGroup.getWidth(),
                    layout.getBottomTabLine() +
                    symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
@@ -840,13 +840,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
         switch(symbolGroup.getSymbolType())
         {
         case SymbolGroup::Bend:
-            {
-                const Position *pos = ScoreUtils::findByPosition(
-                    symbolGroup.getVoice().getPositions(),
-                    symbolGroup.getPosition());
-                Q_ASSERT(pos);
-                renderedSymbol = createBend(*pos, layout);
-            }
+            renderedSymbol = createBendGroup(symbolGroup, layout);
             break;
         case SymbolGroup::LetRing:
             renderedSymbol = createConnectedSymbolGroup("let ring",
@@ -880,7 +874,7 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
         case SymbolGroup::Dynamic:
         {
             const Dynamic *dynamic = ScoreUtils::findByPosition(
-                staff.getDynamics(), symbolGroup.getPosition());
+                staff.getDynamics(), symbolGroup.getLeftPosition());
             Q_ASSERT(dynamic);
 
             renderedSymbol = createDynamic(*dynamic);
@@ -913,16 +907,14 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             break;
         }
 
-        const double x = layout.getPositionX(symbolGroup.getPosition());
+        const double x = layout.getPositionX(symbolGroup.getLeftPosition());
 
         // Bends are positioned differently, since they overlap with the
         // standard notation staff.
-        if (symbolGroup.getSymbolType() == SymbolGroup::Bend)
-            renderedSymbol->setPos(x, 0);
-        else
+        if (symbolGroup.getSymbolType() != SymbolGroup::Bend)
         {
             renderedSymbol->setPos(
-                x,
+                layout.getPositionX(symbolGroup.getLeftPosition()),
                 layout.getTopTabLine() - LayoutInfo::STAFF_BORDER_SPACING -
                     symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
         }
@@ -957,7 +949,7 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
             break;
         }
 
-        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getPosition()), 0);
+        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getLeftPosition()), 0);
         renderedSymbol->setParentItem(myParentStaff);
     }
 }
@@ -989,7 +981,7 @@ void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo &layout)
             break;
         }
 
-        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getPosition()),
+        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getLeftPosition()),
                                layout.getBottomStdNotationLine() +
                                layout.getStdNotationStaffBelowSpacing());
         renderedSymbol->setParentItem(myParentStaff);
@@ -1016,21 +1008,26 @@ QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(const QString &text,
     {
         const double rightEdge = width - 0.5 * layout.getPositionSpacing();
         const double leftEdge = description->boundingRect().right();
-        const double middleHeight = LayoutInfo::TAB_SYMBOL_SPACING / 2.0;
+        const double y = LayoutInfo::TAB_SYMBOL_SPACING / 2.0;
 
-        auto line = new QGraphicsLineItem(leftEdge, middleHeight, rightEdge,
-                                          middleHeight);
-        line->setPen(QPen(Qt::black, 1, Qt::DashLine));
-        group->addToGroup(line);
-
-        // Draw a vertical line at the end of the dotted lines.
-        auto lineEnd = new QGraphicsLineItem(
-            line->boundingRect().right(), 1, line->boundingRect().right(),
-            LayoutInfo::TAB_SYMBOL_SPACING - 1);
-        group->addToGroup(lineEnd);
+        createDashedLine(group, leftEdge, rightEdge, y);
     }
 
     return group;
+}
+
+void SystemRenderer::createDashedLine(QGraphicsItemGroup *group, double left,
+                                      double right, double y)
+{
+    auto line = new QGraphicsLineItem(left, y, right, y);
+    line->setPen(QPen(Qt::black, 1, Qt::DashLine));
+    group->addToGroup(line);
+
+    // Draw a vertical line at the end of the dotted lines.
+    auto lineEnd = new QGraphicsLineItem(
+        line->boundingRect().right(), y, line->boundingRect().right(),
+        y + 0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
+    group->addToGroup(lineEnd);
 }
 
 #if 0
@@ -1498,58 +1495,72 @@ void SystemRenderer::drawLedgerLines(
     ledgerlines->setParentItem(myParentStaff);
 }
 
-QGraphicsItem *SystemRenderer::createBend(const Position &position,
-                                          const LayoutInfo &layout)
+QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
+                                               const LayoutInfo &layout)
 {
-    QGraphicsItemGroup *itemGroup = new QGraphicsItemGroup();
-    QPainterPath path;
+    auto itemGroup = new QGraphicsItemGroup();
+    double prevX = 0.0;
 
-    const double leftX = 0.75 * layout.getPositionSpacing();
-    const double rightX = layout.getPositionSpacing();
-
-    for (const Note &note : position.getNotes())
+    for (int i = group.getLeftPosition(); i < group.getRightPosition(); ++i)
     {
-        if (!note.hasBend())
+        const Position *pos =
+            ScoreUtils::findByPosition(group.getVoice().getPositions(), i);
+        if (!pos)
             continue;
 
-        const double yBottom = layout.getTabLine(note.getString()) +
-                               0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING;
-        const double yTop =
-            layout.getTopTabLine() - LayoutInfo::TAB_SYMBOL_SPACING * 1.5;
-
-        // Draw arc for bend.
-        // TODO - support drawing different bend types.
-        path.moveTo(leftX, yBottom);
-        path.cubicTo(leftX, yBottom, rightX, yBottom, rightX, yTop);
-
-        // Draw arrow head.
-        static const double ARROW_WIDTH = 5.0;
-        QPolygonF arrowShape;
-        arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yTop)
-                   << QPointF(rightX + ARROW_WIDTH / 2, yTop)
-                   << QPointF(rightX, yTop - ARROW_WIDTH);
-
-        QGraphicsPolygonItem *arrow = new QGraphicsPolygonItem(arrowShape);
-        arrow->setBrush(QBrush(Qt::black));
-        itemGroup->addToGroup(arrow);
-
-        // Draw text for bend (e.g. "Full", "3/4", etc).
-        const Bend &bend = note.getBend();
-
-        if (bend.getType() != Bend::GradualRelease &&
-            bend.getType() != Bend::ImmediateRelease)
+        for (const Note &note : pos->getNotes())
         {
-            QGraphicsTextItem *bendText =
-                new QGraphicsTextItem(QString::fromStdString(
+            if (!note.hasBend())
+                continue;
+
+            const double x = layout.getPositionX(i);
+            const double leftX = x + 0.75 * layout.getPositionSpacing();
+            const double rightX = x + layout.getPositionSpacing();
+
+            const double yBottom = layout.getTabLine(note.getString()) +
+                                   0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING;
+            const double yTop =
+                layout.getTopTabLine() - LayoutInfo::TAB_SYMBOL_SPACING * 1.5;
+            
+            const Bend &bend = note.getBend();
+            const Bend::BendType type = bend.getType();
+
+            if (type == Bend::NormalBend || type == Bend::BendAndHold)
+            {
+                // Draw arc for bend.
+                // TODO - support the different bend positions.
+                QPainterPath path;
+                path.moveTo(leftX, yBottom);
+                path.cubicTo(leftX, yBottom, rightX, yBottom, rightX, yTop);
+                itemGroup->addToGroup(new QGraphicsPathItem(path));
+
+                // Draw arrow head.
+                static const double ARROW_WIDTH = 5.0;
+                QPolygonF arrowShape;
+                arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yTop)
+                           << QPointF(rightX + ARROW_WIDTH / 2, yTop)
+                           << QPointF(rightX, yTop - ARROW_WIDTH);
+
+                auto *arrow = new QGraphicsPolygonItem(arrowShape);
+                arrow->setBrush(QBrush(Qt::black));
+                itemGroup->addToGroup(arrow);
+
+                // Draw text for the bent pitch (e.g. "Full", "3/4", etc).
+                auto bendText = new QGraphicsTextItem(QString::fromStdString(
                     Bend::getPitchText(bend.getBentPitch())));
-            mySymbolTextFont.setStyle(QFont::StyleNormal);
-            bendText->setFont(mySymbolTextFont);
-            centerItem(bendText, leftX, rightX,
-                       yTop - 2 * mySymbolTextFont.pixelSize());
-            itemGroup->addToGroup(bendText);
+                mySymbolTextFont.setStyle(QFont::StyleNormal);
+                bendText->setFont(mySymbolTextFont);
+                centerItem(bendText, leftX, rightX,
+                           yTop - 2 * mySymbolTextFont.pixelSize());
+                itemGroup->addToGroup(bendText);
+            }
+            else if (type == Bend::ImmediateRelease)
+                createDashedLine(itemGroup, prevX, rightX, yTop);
+
+            prevX = rightX;
+            break;
         }
     }
 
-    itemGroup->addToGroup(new QGraphicsPathItem(path));
     return itemGroup;
 }

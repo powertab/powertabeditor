@@ -350,52 +350,53 @@ void LayoutInfo::calculateTabStaffBelowLayout()
         for (const Position &pos : voice.getPositions())
         {
             int height = 1;
-            const int position = pos.getPosition();
+            const int leftPosition = pos.getPosition();
+            const int rightPosition = leftPosition + 1;
             const double width = getPositionSpacing();
 
             if (pos.hasProperty(Position::PickStrokeUp))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(SymbolGroup::PickStrokeUp, position,
-                                        voice, width, height++));
+                    SymbolGroup(SymbolGroup::PickStrokeUp, leftPosition,
+                                rightPosition, voice, width, height++));
             }
 
             if (pos.hasProperty(Position::PickStrokeDown))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(SymbolGroup::PickStrokeDown, position,
-                                        voice, width, height++));
+                    SymbolGroup(SymbolGroup::PickStrokeDown, leftPosition,
+                                rightPosition, voice, width, height++));
             }
 
             if (pos.hasProperty(Position::Tap) ||
                 Utils::hasNoteWithTappedHarmonic(pos))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(SymbolGroup::Tap, position,
-                                        voice, width, height++));
+                    SymbolGroup(SymbolGroup::Tap, leftPosition, rightPosition,
+                                voice, width, height++));
             }
 
             if (Utils::hasNoteWithArtificialHarmonic(pos))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(SymbolGroup::ArtificialHarmonic,
-                                        position, voice, width, height++));
+                    SymbolGroup(SymbolGroup::ArtificialHarmonic, leftPosition,
+                                rightPosition, voice, width, height++));
             }
 
             if (VoiceUtils::hasNoteWithHammerOn(voice, pos) ||
                 Utils::hasNoteWithProperty(pos, Note::HammerOnFromNowhere))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(SymbolGroup::Hammeron, position,
-                                        voice, width, height++));
+                    SymbolGroup(SymbolGroup::Hammeron, leftPosition,
+                                rightPosition, voice, width, height++));
             }
             else if ((Utils::hasNoteWithProperty(pos, Note::HammerOnOrPullOff) &&
                       !VoiceUtils::hasNoteWithHammerOn(voice, pos)) ||
                      Utils::hasNoteWithProperty(pos, Note::PullOffToNowhere))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(SymbolGroup::Pulloff, position, voice,
-                                        width, height++));
+                    SymbolGroup(SymbolGroup::Pulloff, leftPosition,
+                                rightPosition, voice, width, height++));
             }
 
             if (Utils::hasNoteWithProperty(pos, Note::SlideIntoFromAbove) ||
@@ -406,8 +407,8 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                 Utils::hasNoteWithProperty(pos, Note::SlideOutOfUpwards))
             {
                 myTabStaffBelowSymbols.push_back(
-                            SymbolGroup(SymbolGroup::Slide, position, voice,
-                                        width, height++));
+                    SymbolGroup(SymbolGroup::Slide, leftPosition, rightPosition,
+                                voice, width, height++));
             }
         }
     }
@@ -497,8 +498,9 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
                         rightPos++;
                     const double right = getPositionX(rightPos);
 
-                    symbols.push_back(SymbolGroup(currentType, leftPos, voice,
-                                                  right - left, 1));
+                    symbols.push_back(SymbolGroup(currentType, leftPos,
+                                                  rightPos, voice, right - left,
+                                                  1));
                 }
 
                 leftPos = pos.getPosition();
@@ -517,11 +519,6 @@ static int addToHeightMap(std::vector<int> &heightMap, int left, int right,
                                             heightMap.begin() + right) + height;
     std::fill_n(heightMap.begin() + left, right - left, newHeight);
     return newHeight;
-}
-
-static int getSymbolHeight(SymbolGroup::SymbolType symbol)
-{
-    return symbol == SymbolGroup::Bend ? 3 : 1;
 }
 
 void LayoutInfo::calculateTabStaffAboveLayout()
@@ -550,9 +547,6 @@ void LayoutInfo::calculateTabStaffAboveLayout()
         for (const Position &pos : voice.getPositions())
         {
             SymbolSet &set = symbolSets.at(pos.getPosition());
-
-            if (Utils::hasNoteWithBend(pos))
-                set.insert(SymbolGroup::Bend);
 
             if (pos.hasProperty(Position::LetRing))
                 set.insert(SymbolGroup::LetRing);
@@ -597,7 +591,11 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // Stores the highest occupied slot at each position.
     std::vector<int> heightMap(symbolSets.size(), 0);
 
-    for (int symbolIndex = SymbolGroup::Bend;
+    // Handle bends separately, since they have different rules for determining
+    // how nearby bends are grouped together.
+    calculateBendLayout(heightMap);
+
+    for (int symbolIndex = SymbolGroup::LetRing;
          symbolIndex <= SymbolGroup::ArtificialHarmonic; ++symbolIndex)
     {
         SymbolGroup::SymbolType symbol = static_cast<SymbolGroup::SymbolType>(
@@ -632,17 +630,17 @@ void LayoutInfo::calculateTabStaffAboveLayout()
 
                 inGroup = false;
 
-                const int height = addToHeightMap(heightMap, leftPos, rightPos,
-                                                  getSymbolHeight(symbol));
+                const int height =
+                    addToHeightMap(heightMap, leftPos, rightPos, 1);
                 const double leftX = getPositionX(leftPos);
                 const double rightX = getPositionX(rightPos);
 
                 // TODO - handle special cases for tremolo bars and volume
                 // swells.
 
-                myTabStaffAboveSymbols.push_back(
-                    SymbolGroup(symbol, leftPos, myStaff.getVoices()[0],
-                                rightX - leftX, height));
+                myTabStaffAboveSymbols.push_back(SymbolGroup(
+                    symbol, leftPos, rightPos, myStaff.getVoices()[0],
+                    rightX - leftX, height));
             }
             // Start a new group.
             else if (hasSymbol && !inGroup)
@@ -659,10 +657,9 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             const double leftX = getPositionX(leftPos);
             const int rightPos = static_cast<int>(symbolSets.size()) - 1;
             const double rightX = getPositionX(rightPos);
-            const int height = addToHeightMap(heightMap, leftPos, rightPos,
-                                              getSymbolHeight(symbol));
+            const int height = addToHeightMap(heightMap, leftPos, rightPos, 1);
             myTabStaffAboveSymbols.push_back(
-                SymbolGroup(symbol, leftPos, myStaff.getVoices()[0],
+                SymbolGroup(symbol, leftPos, rightPos, myStaff.getVoices()[0],
                             rightX - leftX, height));
         }
     }
@@ -670,6 +667,68 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // Compute the overall spacing needed below the tab staff.
     myTabStaffAboveSpacing +=
             getMaxHeight(myTabStaffAboveSymbols) * TAB_SYMBOL_SPACING;
+}
+
+void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
+{
+    static const int BEND_HEIGHT = 3;
+
+    for (const Voice &voice : myStaff.getVoices())
+    {
+        int leftPos = 0;
+        bool inGroup = false;
+
+        for (const Position &pos : voice.getPositions())
+        {
+            const Bend *bend = nullptr;
+            for (const Note &note : pos.getNotes())
+            {
+                if (note.hasBend())
+                {
+                    bend = &note.getBend();
+                    break;
+                }
+            }
+
+            if (!bend)
+                continue;
+            
+            const Bend::BendType type = bend->getType();
+            if (type == Bend::NormalBend || type == Bend::BendAndRelease ||
+                type == Bend::PreBend || type == Bend::PreBendAndRelease ||
+                type == Bend::GradualRelease || type == Bend::ImmediateRelease)
+            {
+                int rightPos = pos.getPosition();
+
+                if (!inGroup)
+                    leftPos = rightPos;
+
+                rightPos++;
+
+                inGroup = false;
+
+                const int height =
+                    addToHeightMap(heightMap, leftPos, rightPos, BEND_HEIGHT);
+
+                myTabStaffAboveSymbols.push_back(SymbolGroup(
+                    SymbolGroup::Bend, leftPos, rightPos, voice, 0, height));
+            }
+            else if (!inGroup)
+            {
+                leftPos = pos.getPosition();
+                inGroup = true;
+            }
+        }
+
+        // If a bend group stretched to the end of the staff, add it.
+        if (inGroup)
+        {
+            const int rightPos = static_cast<int>(heightMap.size()) - 1;
+            const int height = addToHeightMap(heightMap, leftPos, rightPos, BEND_HEIGHT);
+            myTabStaffAboveSymbols.push_back(SymbolGroup(
+                SymbolGroup::Bend, leftPos, rightPos, voice, 0, height));
+        }
+    }
 }
 
 int LayoutInfo::getMaxHeight(const std::vector<SymbolGroup> &groups)
@@ -682,10 +741,12 @@ int LayoutInfo::getMaxHeight(const std::vector<SymbolGroup> &groups)
     return maxHeight;
 }
 
-SymbolGroup::SymbolGroup(SymbolGroup::SymbolType symbol, int position,
-                         const Voice &voice, double width, int height)
+SymbolGroup::SymbolGroup(SymbolGroup::SymbolType symbol, int leftPosition,
+                         int rightPosition, const Voice &voice, double width,
+                         int height)
     : mySymbolType(symbol),
-      myPosition(position),
+      myLeftPosition(leftPosition),
+      myRightPosition(rightPosition),
       myVoice(voice),
       myWidth(width),
       myHeight(height)
@@ -737,9 +798,14 @@ SymbolGroup::SymbolType SymbolGroup::getSymbolType() const
     return mySymbolType;
 }
 
-int SymbolGroup::getPosition() const
+int SymbolGroup::getLeftPosition() const
 {
-    return myPosition;
+    return myLeftPosition;
+}
+
+int SymbolGroup::getRightPosition() const
+{
+    return myRightPosition;
 }
 
 const Voice &SymbolGroup::getVoice() const

@@ -100,6 +100,10 @@ private:
                                               QFont::Style style, double width,
                                               const LayoutInfo &layout);
 
+    /// Create a dashed line in the given location.
+    void createDashedLine(QGraphicsItemGroup *group, double left, double right,
+                          double y);
+
     /// Draws symbols that appear below the standard notation staff (e.g. 8vb).
     void drawSymbolsBelowStdNotationStaff(const LayoutInfo &layout);
 
@@ -129,8 +133,8 @@ private:
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
     /// Creates a bend symbol.
-    QGraphicsItem *createBend(const Position &position,
-                              const LayoutInfo &layout);
+    QGraphicsItem *createBendGroup(const SymbolGroup &group,
+                                   const LayoutInfo &layout);
 
     /// Draws notes, beams, and rests.
     void drawStdNotation(const System &system, const Staff &staff,

@@ -67,11 +67,12 @@ public:
         ArtificialHarmonic // Note that this also appears below the tab staff.
     };
 
-    SymbolGroup(SymbolType symbol, int position, const Voice &voice,
-                double width, int height);
+    SymbolGroup(SymbolType symbol, int leftPosition, int rightPosition,
+                const Voice &voice, double width, int height);
 
     SymbolType getSymbolType() const;
-    int getPosition() const;
+    int getLeftPosition() const;
+    int getRightPosition() const;
     const Voice &getVoice() const;
     double getWidth() const;
     int getHeight() const;
@@ -80,7 +81,9 @@ private:
     /// The type of symbol.
     SymbolType mySymbolType;
     /// First position of the symbol group.
-    int myPosition;
+    int myLeftPosition;
+    /// Last position of the symbol group.
+    int myRightPosition;
     /// Source voice of the symbol.
     const Voice &myVoice;
     /// Width of the symbol group.
@@ -191,6 +194,9 @@ private:
     /// Calculate the layout of symbols between the standard notation and
     /// tab staves.
     void calculateTabStaffAboveLayout();
+
+    /// Computes the layout for bends in the staff.
+    void calculateBendLayout(std::vector<int> &heightMap);
 
     /// Returns the largest height of any symbol group.
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);
