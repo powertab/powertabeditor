@@ -218,6 +218,16 @@ bool Utils::hasNoteWithTrill(const Position &pos)
     return false;
 }
 
+bool Utils::hasNoteWithBend(const Position &pos)
+{
+    for (const Note &note : pos.getNotes())
+    {
+        if (note.hasBend())
+            return true;
+    }
+
+    return false;
+}
 
 bool Utils::hasNoteWithArtificialHarmonic(const Position &pos)
 {

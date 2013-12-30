@@ -110,6 +110,18 @@ TEST_CASE("Score/Position/HasNoteWithTrill", "")
     REQUIRE(Utils::hasNoteWithTrill(position));
 }
 
+TEST_CASE("Score/Position/HasNoteWithBend", "")
+{
+    Position position;
+    REQUIRE(!Utils::hasNoteWithBend(position));
+
+    Note note;
+    note.setBend(
+        Bend(Bend::BendAndHold, 2, 0, 0, Bend::LowPoint, Bend::MidPoint));
+    position.insertNote(note);
+    REQUIRE(Utils::hasNoteWithBend(position));
+}
+
 TEST_CASE("Score/Position/HasNoteWithProperty", "")
 {
     Position position;

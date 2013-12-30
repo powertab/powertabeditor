@@ -92,6 +92,16 @@ TEST_CASE("Score/Note/Bend", "")
     REQUIRE(!note.hasBend());
 }
 
+TEST_CASE("Score/Note/Bend/GetPitchText", "")
+{
+    REQUIRE(Bend::getPitchText(0) == "Standard");
+    REQUIRE(Bend::getPitchText(4) == "Full");
+    REQUIRE(Bend::getPitchText(2) == "1/2");
+    REQUIRE(Bend::getPitchText(3) == "3/4");
+    REQUIRE(Bend::getPitchText(7) == "1 3/4");
+    REQUIRE(Bend::getPitchText(8) == "2");
+}
+
 TEST_CASE("Score/Note/ToString", "")
 {
     Note note(3, 12);

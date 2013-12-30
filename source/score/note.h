@@ -82,8 +82,8 @@ public:
     };
 
     Bend();
-    Bend(BendType type, int bentPitch, int releasePitch, int duration,
-         DrawPoint startPoint, DrawPoint endPoint);
+    Bend(BendType type, int bentPitch, int releasePitch = 0, int duration = 0,
+         DrawPoint startPoint = LowPoint, DrawPoint endPoint = MidPoint);
 
     bool operator==(const Bend &other) const;
 
@@ -104,6 +104,9 @@ public:
         ar("start_point", myStartPoint);
         ar("end_point", myEndPoint);
     }
+
+    /// Returns a text version of the bend pitch (e.g. "Full" or "1 1/2").
+    static std::string getPitchText(int pitch);
 
 private:
     BendType myBendType;

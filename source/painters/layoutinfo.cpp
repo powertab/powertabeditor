@@ -508,16 +508,20 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
     }
 }
 
-namespace {
 /// Insert a symbol group spanning the given positions. All of the symbols will
 /// be given the same y location.
-int addToHeightMap(std::vector<int> &heightMap, int left, int right, int height)
+static int addToHeightMap(std::vector<int> &heightMap, int left, int right,
+                          int height)
 {
     const int newHeight = *std::max_element(heightMap.begin() + left,
                                             heightMap.begin() + right) + height;
     std::fill_n(heightMap.begin() + left, right - left, newHeight);
     return newHeight;
 }
+
+static int getSymbolHeight(SymbolGroup::SymbolType symbol)
+{
+    return symbol == SymbolGroup::Bend ? 3 : 1;
 }
 
 void LayoutInfo::calculateTabStaffAboveLayout()
@@ -547,7 +551,8 @@ void LayoutInfo::calculateTabStaffAboveLayout()
         {
             SymbolSet &set = symbolSets.at(pos.getPosition());
 
-            // TODO - handle bends.
+            if (Utils::hasNoteWithBend(pos))
+                set.insert(SymbolGroup::Bend);
 
             if (pos.hasProperty(Position::LetRing))
                 set.insert(SymbolGroup::LetRing);
@@ -592,7 +597,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // Stores the highest occupied slot at each position.
     std::vector<int> heightMap(symbolSets.size(), 0);
 
-    for (int symbolIndex = SymbolGroup::LetRing;
+    for (int symbolIndex = SymbolGroup::Bend;
          symbolIndex <= SymbolGroup::ArtificialHarmonic; ++symbolIndex)
     {
         SymbolGroup::SymbolType symbol = static_cast<SymbolGroup::SymbolType>(
@@ -627,8 +632,8 @@ void LayoutInfo::calculateTabStaffAboveLayout()
 
                 inGroup = false;
 
-                const int height = addToHeightMap(heightMap, leftPos,
-                                                  rightPos, 1);
+                const int height = addToHeightMap(heightMap, leftPos, rightPos,
+                                                  getSymbolHeight(symbol));
                 const double leftX = getPositionX(leftPos);
                 const double rightX = getPositionX(rightPos);
 
@@ -654,7 +659,8 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             const double leftX = getPositionX(leftPos);
             const int rightPos = static_cast<int>(symbolSets.size()) - 1;
             const double rightX = getPositionX(rightPos);
-            const int height = addToHeightMap(heightMap, leftPos, rightPos, 1);
+            const int height = addToHeightMap(heightMap, leftPos, rightPos,
+                                              getSymbolHeight(symbol));
             myTabStaffAboveSymbols.push_back(
                 SymbolGroup(symbol, leftPos, myStaff.getVoices()[0],
                             rightX - leftX, height));

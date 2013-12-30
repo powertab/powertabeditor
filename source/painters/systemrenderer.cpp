@@ -839,6 +839,15 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
 
         switch(symbolGroup.getSymbolType())
         {
+        case SymbolGroup::Bend:
+            {
+                const Position *pos = ScoreUtils::findByPosition(
+                    symbolGroup.getVoice().getPositions(),
+                    symbolGroup.getPosition());
+                Q_ASSERT(pos);
+                renderedSymbol = createBend(*pos, layout);
+            }
+            break;
         case SymbolGroup::LetRing:
             renderedSymbol = createConnectedSymbolGroup("let ring",
                                                         QFont::StyleItalic,
@@ -897,11 +906,6 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             renderedSymbol = new TremoloBarPainter(staff->GetPosition(0, symbolGroup.leftPosIndex),
                                                    width);
             break;        
-        case Layout::SymbolBend:
-        {
-            renderedSymbol = createBend(staff->GetPosition(0, symbolGroup.leftPosIndex), staffInfo);
-            break;
-        }
 #endif
 
         default:
@@ -910,10 +914,18 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
         }
 
         const double x = layout.getPositionX(symbolGroup.getPosition());
-        renderedSymbol->setPos(
-            x, layout.getTopTabLine() - LayoutInfo::STAFF_BORDER_SPACING -
-                   symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
-        // TODO - position bends differently.
+
+        // Bends are positioned differently, since they overlap with the
+        // standard notation staff.
+        if (symbolGroup.getSymbolType() == SymbolGroup::Bend)
+            renderedSymbol->setPos(x, 0);
+        else
+        {
+            renderedSymbol->setPos(
+                x,
+                layout.getTopTabLine() - LayoutInfo::STAFF_BORDER_SPACING -
+                    symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
+        }
 
         renderedSymbol->setParentItem(myParentStaff);
     }
@@ -1486,61 +1498,58 @@ void SystemRenderer::drawLedgerLines(
     ledgerlines->setParentItem(myParentStaff);
 }
 
-#if 0
-QGraphicsItem* SystemRenderer::createBend(const Position* position, const StaffData& staffInfo)
+QGraphicsItem *SystemRenderer::createBend(const Position &position,
+                                          const LayoutInfo &layout)
 {
-    QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup;
-
+    QGraphicsItemGroup *itemGroup = new QGraphicsItemGroup();
     QPainterPath path;
 
-    const double leftX = 0.75 * staffInfo.positionWidth;
-    const double rightX = staffInfo.positionWidth;
+    const double leftX = 0.75 * layout.getPositionSpacing();
+    const double rightX = layout.getPositionSpacing();
 
-    for (size_t i = 0; i < position->GetNoteCount(); ++i)
+    for (const Note &note : position.getNotes())
     {
-        const Note* note = position->GetNote(i);
+        if (!note.hasBend())
+            continue;
 
-        if (note->HasBend())
+        const double yBottom = layout.getTabLine(note.getString()) +
+                               0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING;
+        const double yTop =
+            layout.getTopTabLine() - LayoutInfo::TAB_SYMBOL_SPACING * 1.5;
+
+        // Draw arc for bend.
+        // TODO - support drawing different bend types.
+        path.moveTo(leftX, yBottom);
+        path.cubicTo(leftX, yBottom, rightX, yBottom, rightX, yTop);
+
+        // Draw arrow head.
+        static const double ARROW_WIDTH = 5.0;
+        QPolygonF arrowShape;
+        arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yTop)
+                   << QPointF(rightX + ARROW_WIDTH / 2, yTop)
+                   << QPointF(rightX, yTop - ARROW_WIDTH);
+
+        QGraphicsPolygonItem *arrow = new QGraphicsPolygonItem(arrowShape);
+        arrow->setBrush(QBrush(Qt::black));
+        itemGroup->addToGroup(arrow);
+
+        // Draw text for bend (e.g. "Full", "3/4", etc).
+        const Bend &bend = note.getBend();
+
+        if (bend.getType() != Bend::GradualRelease &&
+            bend.getType() != Bend::ImmediateRelease)
         {
-            const double yBottom = staffInfo.getTabLineHeight(note->GetString()) + 0.5 * Staff::STD_NOTATION_LINE_SPACING;
-            const double yTop = staffInfo.getTopTabLine() - Staff::TAB_SYMBOL_HEIGHT * 1.5;
-
-            // draw arc for bend
-            // TODO - support drawing different bend types
-            path.moveTo(leftX, yBottom);
-            path.cubicTo(leftX, yBottom, rightX, yBottom,
-                         rightX, yTop);
-
-            // draw arrow head
-            const double ARROW_WIDTH = 5;
-
-            QPolygonF arrowShape;
-            arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yTop)
-                       << QPointF(rightX + ARROW_WIDTH / 2, yTop)
-                       << QPointF(rightX, yTop - ARROW_WIDTH);
-
-            QGraphicsPolygonItem* arrow = new QGraphicsPolygonItem(arrowShape);
-            arrow->setBrush(QBrush(Qt::black));
-            itemGroup->addToGroup(arrow);
-
-            // draw text for bend (e.g. "Full", "3/4", etc)
-            uint8_t bendType = 0, bentPitch = 0, releasePitch = 0,
-                    duration = 0, drawStartPoint = 0, drawEndPoint = 0;
-            note->GetBend(bendType, bentPitch, releasePitch, duration, drawStartPoint, drawEndPoint);
-
-            if (bendType != Note::gradualRelease && bendType != Note::immediateRelease)
-            {
-                QGraphicsTextItem* bendText = new QGraphicsTextItem(QString::fromStdString(Note::GetBendText(bentPitch)));
-                symbolTextFont.setStyle(QFont::StyleNormal);
-                bendText->setFont(symbolTextFont);
-                centerItem(bendText, leftX, rightX, yTop - 2 * symbolTextFont.pixelSize());
-                itemGroup->addToGroup(bendText);
-            }
+            QGraphicsTextItem *bendText =
+                new QGraphicsTextItem(QString::fromStdString(
+                    Bend::getPitchText(bend.getBentPitch())));
+            mySymbolTextFont.setStyle(QFont::StyleNormal);
+            bendText->setFont(mySymbolTextFont);
+            centerItem(bendText, leftX, rightX,
+                       yTop - 2 * mySymbolTextFont.pixelSize());
+            itemGroup->addToGroup(bendText);
         }
     }
 
     itemGroup->addToGroup(new QGraphicsPathItem(path));
     return itemGroup;
 }
-
-#endif

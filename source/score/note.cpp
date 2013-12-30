@@ -20,6 +20,7 @@
 #include <boost/assign/list_of.hpp>
 #include <map>
 #include <ostream>
+#include <sstream>
 #include <stdexcept>
 
 const int Note::MIN_FRET_NUMBER = 0;
@@ -370,4 +371,41 @@ Bend::DrawPoint Bend::getStartPoint() const
 Bend::DrawPoint Bend::getEndPoint() const
 {
     return myEndPoint;
+}
+
+std::string Bend::getPitchText(int pitch)
+{
+    std::ostringstream text;
+
+    if (pitch == 0)
+        text << "Standard";
+    else if (pitch == 4)
+        text << "Full";
+    else
+    {
+        // Display a fraction.
+        const int quotient = pitch / 4;
+        const int remainder = pitch % 4;
+
+        // Handle whole numbers.
+        if (quotient != 0)
+        {
+            text << quotient;
+
+            if (remainder != 0)
+                text << " ";
+        }
+
+        // Fractional part.
+        if (remainder != 0)
+        {
+            // Reduce the fraction.
+            if (remainder == 1 || remainder == 3)
+                text << remainder << "/" << 4;
+            else
+                text << "1/2";
+        }
+    }
+
+    return text.str();
 }

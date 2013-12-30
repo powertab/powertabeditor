@@ -55,6 +55,7 @@ public:
         Octave15mb,
 
         // Above tab staff.
+        Bend,
         LetRing,
         Vibrato,
         WideVibrato,
