@@ -1532,8 +1532,24 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
             
             const double x = layout.getPositionX(i);
             const double leftX = x + 0.75 * layout.getPositionSpacing();
-            // TODO - handle bends that stretch over 1 or more notes.
-            const double rightX = x + layout.getPositionSpacing();
+
+            // Normally, the bend extends to the end of our position.
+            double rightX = x + layout.getPositionSpacing();
+
+            // If the bend stretches over the current note or additional notes,
+            // figure out how far the bend extends.
+            if (bend.getDuration() > 0)
+            {
+                const Position *nextPos = pos;
+                for (int j = 0; j < bend.getDuration() && nextPos; ++j)
+                {
+                    nextPos = VoiceUtils::getNextPosition(
+                        group.getVoice(), nextPos->getPosition());
+                }
+
+                rightX = nextPos ? layout.getPositionX(nextPos->getPosition())
+                                 : LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing();
+            }
 
             const double yStart = getBendHeight(bend.getStartPoint(), note, layout);
             const double yEnd = getBendHeight(bend.getEndPoint(), note, layout);

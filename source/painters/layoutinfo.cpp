@@ -17,6 +17,7 @@
   
 #include "layoutinfo.h"
 
+#include <boost/algorithm/clamp.hpp>
 #include <score/keysignature.h>
 #include <score/score.h>
 #include <score/staff.h>
@@ -680,16 +681,27 @@ static int getBendHeight(const Bend &bend)
         return 2;
 }
 
+static int getBendEndPosition(const Voice &voice, const Bend &bend, int index)
+{
+    // Move forward by the appropriate number of positions.
+    index = boost::algorithm::clamp(index + bend.getDuration(), 0,
+                                    voice.getPositions().size() - 1);
+    return voice.getPositions()[index].getPosition();
+}
+
 void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
 {
     for (const Voice &voice : myStaff.getVoices())
     {
         int leftPos = 0;
+        int rightPos = 0;
         bool inGroup = false;
         int groupHeight = 0;
 
-        for (const Position &pos : voice.getPositions())
+        for (int i = 0; i < voice.getPositions().size(); ++i)
         {
+            const Position &pos = voice.getPositions()[i];
+
             const Bend *bend = nullptr;
             for (const Note &note : pos.getNotes())
             {
@@ -704,15 +716,15 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
                 continue;
 
             groupHeight = std::max(groupHeight, getBendHeight(*bend));
+            rightPos = std::max(rightPos, getBendEndPosition(voice, *bend, i));
             
             const Bend::BendType type = bend->getType();
             if (type == Bend::NormalBend || type == Bend::BendAndRelease ||
                 type == Bend::PreBend || type == Bend::PreBendAndRelease ||
                 type == Bend::GradualRelease || type == Bend::ImmediateRelease)
             {
-                int rightPos = pos.getPosition();
                 if (!inGroup)
-                    leftPos = rightPos;
+                    leftPos = pos.getPosition();
                 rightPos++;
 
                 const int height =
@@ -722,6 +734,7 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
                     SymbolGroup::Bend, leftPos, rightPos, voice, 0, height));
                 inGroup = false;
                 groupHeight = 0;
+                rightPos = 0;
             }
             else if (!inGroup)
             {
@@ -733,7 +746,7 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
         // If a bend group stretched to the end of the staff, add it.
         if (inGroup)
         {
-            const int rightPos = static_cast<int>(heightMap.size()) - 1;
+            rightPos = static_cast<int>(heightMap.size()) - 1;
             const int height =
                 addToHeightMap(heightMap, leftPos, rightPos, groupHeight);
             myTabStaffAboveSymbols.push_back(SymbolGroup(
