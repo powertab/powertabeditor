@@ -1585,12 +1585,17 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
             // Normally, the bend extends to the end of our position.
             double rightX = x + layout.getPositionSpacing();
 
+            int duration = bend.getDuration();
+            // Bend-and-releases always last for the duration of the note.
+            if (type == Bend::BendAndRelease || type == Bend::PreBendAndRelease)
+                duration = 1;
+
             // If the bend stretches over the current note or additional notes,
             // figure out how far the bend extends.
-            if (bend.getDuration() > 0)
+            if (duration > 0)
             {
                 const Position *nextPos = pos;
-                for (int j = 0; j < bend.getDuration() && nextPos; ++j)
+                for (int j = 0; j < duration && nextPos; ++j)
                 {
                     nextPos = VoiceUtils::getNextPosition(
                         group.getVoice(), nextPos->getPosition());
@@ -1602,15 +1607,8 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
 
             const double yStart = getBendHeight(bend.getStartPoint(), note, layout);
             const double yEnd = getBendHeight(bend.getEndPoint(), note, layout);
-
-            if (type == Bend::NormalBend || type == Bend::BendAndHold ||
-                type == Bend::PreBend || type == Bend::PreBendAndHold)
-            {
-                createBend(
-                    itemGroup, leftX, rightX, yStart, yEnd, bend.getBentPitch(),
-                    type == Bend::PreBend || type == Bend::PreBendAndHold);
-            }
-            else if (type == Bend::ImmediateRelease)
+            
+            if (type == Bend::ImmediateRelease)
                 createDashedLine(itemGroup, prevX, rightX, yStart);
             else if (type == Bend::GradualRelease)
             {
@@ -1623,6 +1621,37 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
                 // Draw the bend down to the new pitch.
                 createBend(itemGroup, x + layout.getPositionSpacing(), rightX,
                            yStart, yEnd, bend.getReleasePitch(), false);
+            }
+            else if (type == Bend::NormalBend || type == Bend::BendAndHold ||
+                     type == Bend::PreBend || type == Bend::PreBendAndHold)
+            {
+                createBend(
+                    itemGroup, leftX, rightX, yStart, yEnd, bend.getBentPitch(),
+                    type == Bend::PreBend || type == Bend::PreBendAndHold);
+            }
+            else if (type == Bend::BendAndRelease ||
+                     type == Bend::PreBendAndRelease)
+            {
+                const double middleX = (type == Bend::BendAndRelease)
+                                           ? 0.5 * (leftX + rightX)
+                                           : x + layout.getPositionSpacing();
+
+                // Figure out where to draw the first part of the bend.
+                Bend::DrawPoint drawPoint = Bend::MidPoint;
+                if (bend.getStartPoint() == Bend::MidPoint ||
+                    bend.getEndPoint() == Bend::MidPoint)
+                {
+                    drawPoint = Bend::HighPoint;
+                }
+
+                const double yMiddle = getBendHeight(drawPoint, note, layout);
+                createBend(itemGroup, leftX, middleX, yStart, yMiddle,
+                           bend.getBentPitch(),
+                           type == Bend::PreBendAndRelease);
+
+                // Draw the second part of the bend.
+                createBend(itemGroup, middleX, rightX, yMiddle, yEnd,
+                           bend.getReleasePitch(), false);
             }
 
             prevX = rightX;
