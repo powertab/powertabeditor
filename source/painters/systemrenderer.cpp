@@ -1587,12 +1587,14 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
                 itemGroup->addToGroup(arrow);
 
                 // Draw text for the bent pitch (e.g. "Full", "3/4", etc).
-                auto bendText = new QGraphicsTextItem(QString::fromStdString(
-                    Bend::getPitchText(bend.getBentPitch())));
+                auto bendText =
+                    new QGraphicsSimpleTextItem(QString::fromStdString(
+                        Bend::getPitchText(bend.getBentPitch())));
                 mySymbolTextFont.setStyle(QFont::StyleNormal);
                 bendText->setFont(mySymbolTextFont);
-                centerItem(bendText, leftX, rightX,
-                           yEnd - 2 * mySymbolTextFont.pixelSize());
+                bendText->setPos(
+                    rightX - 0.5 * bendText->boundingRect().width(),
+                    yEnd - 1.75 * mySymbolTextFont.pixelSize());
                 itemGroup->addToGroup(bendText);
             }
             else if (type == Bend::ImmediateRelease)
