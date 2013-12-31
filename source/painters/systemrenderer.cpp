@@ -1603,10 +1603,15 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
 
                 rightX = nextPos ? layout.getPositionX(nextPos->getPosition())
                                  : LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing();
+                // Move to the middle of the position.
+                rightX += 0.5 * layout.getPositionSpacing();
             }
 
             const double yStart = getBendHeight(bend.getStartPoint(), note, layout);
             const double yEnd = getBendHeight(bend.getEndPoint(), note, layout);
+            // If the bend has a release, move the final position up a bit to
+            // make room for the tab note.
+            const double yRelease = yEnd - 0.5 * layout.getTabLineSpacing();
             
             if (type == Bend::ImmediateRelease)
                 createDashedLine(itemGroup, prevX, rightX, yStart);
@@ -1620,7 +1625,7 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
 
                 // Draw the bend down to the new pitch.
                 createBend(itemGroup, x + layout.getPositionSpacing(), rightX,
-                           yStart, yEnd, bend.getReleasePitch(), false);
+                           yStart, yRelease, bend.getReleasePitch(), false);
             }
             else if (type == Bend::NormalBend || type == Bend::BendAndHold ||
                      type == Bend::PreBend || type == Bend::PreBendAndHold)
@@ -1650,7 +1655,7 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
                            type == Bend::PreBendAndRelease);
 
                 // Draw the second part of the bend.
-                createBend(itemGroup, middleX, rightX, yMiddle, yEnd,
+                createBend(itemGroup, middleX, rightX, yMiddle, yRelease,
                            bend.getReleasePitch(), false);
             }
 
