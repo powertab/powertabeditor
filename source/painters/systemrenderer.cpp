@@ -1538,13 +1538,25 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
             const double yStart = getBendHeight(bend.getStartPoint(), note, layout);
             const double yEnd = getBendHeight(bend.getEndPoint(), note, layout);
 
-            if (type == Bend::NormalBend || type == Bend::BendAndHold)
+            if (type == Bend::NormalBend || type == Bend::BendAndHold ||
+                type == Bend::PreBend || type == Bend::PreBendAndHold)
             {
-                // Draw arc for bend.
-                // TODO - support the different bend positions.
                 QPainterPath path;
-                path.moveTo(leftX, yStart);
-                path.cubicTo(leftX, yStart, rightX, yStart, rightX, yEnd);
+
+                // Draw an arc for the bend.                
+                if (type == Bend::NormalBend || type == Bend::BendAndHold)
+                {
+                    path.moveTo(leftX, yStart);
+                    path.cubicTo(leftX, yStart, rightX, yStart, rightX, yEnd);
+                }
+                // Draw a straight line up for the bend.
+                else if (type == Bend::PreBend || type == Bend::PreBendAndHold)
+                {
+                    path.moveTo(leftX, yStart);
+                    path.lineTo(rightX, yStart);
+                    path.lineTo(rightX, yEnd);
+                }
+                
                 itemGroup->addToGroup(new QGraphicsPathItem(path));
 
                 // Draw arrow head.
