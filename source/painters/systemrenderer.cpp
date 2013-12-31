@@ -1495,6 +1495,20 @@ void SystemRenderer::drawLedgerLines(
     ledgerlines->setParentItem(myParentStaff);
 }
 
+static double getBendHeight(Bend::DrawPoint point, const Note &note,
+                            const LayoutInfo &layout)
+{
+    if (point == Bend::LowPoint)
+    {
+        return layout.getTabLine(note.getString()) +
+               0.5 * layout.getTabLineSpacing();
+    }
+    else if (point == Bend::MidPoint)
+        return layout.getTopTabLine() - LayoutInfo::TAB_SYMBOL_SPACING * 1.5;
+    else
+        return layout.getTopTabLine() - LayoutInfo::TAB_SYMBOL_SPACING * 2.5;
+}
+
 QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
                                                const LayoutInfo &layout)
 {
@@ -1512,34 +1526,33 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
         {
             if (!note.hasBend())
                 continue;
-
-            const double x = layout.getPositionX(i);
-            const double leftX = x + 0.75 * layout.getPositionSpacing();
-            const double rightX = x + layout.getPositionSpacing();
-
-            const double yBottom = layout.getTabLine(note.getString()) +
-                                   0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING;
-            const double yTop =
-                layout.getTopTabLine() - LayoutInfo::TAB_SYMBOL_SPACING * 1.5;
             
             const Bend &bend = note.getBend();
             const Bend::BendType type = bend.getType();
+            
+            const double x = layout.getPositionX(i);
+            const double leftX = x + 0.75 * layout.getPositionSpacing();
+            // TODO - handle bends that stretch over 1 or more notes.
+            const double rightX = x + layout.getPositionSpacing();
+
+            const double yStart = getBendHeight(bend.getStartPoint(), note, layout);
+            const double yEnd = getBendHeight(bend.getEndPoint(), note, layout);
 
             if (type == Bend::NormalBend || type == Bend::BendAndHold)
             {
                 // Draw arc for bend.
                 // TODO - support the different bend positions.
                 QPainterPath path;
-                path.moveTo(leftX, yBottom);
-                path.cubicTo(leftX, yBottom, rightX, yBottom, rightX, yTop);
+                path.moveTo(leftX, yStart);
+                path.cubicTo(leftX, yStart, rightX, yStart, rightX, yEnd);
                 itemGroup->addToGroup(new QGraphicsPathItem(path));
 
                 // Draw arrow head.
                 static const double ARROW_WIDTH = 5.0;
                 QPolygonF arrowShape;
-                arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yTop)
-                           << QPointF(rightX + ARROW_WIDTH / 2, yTop)
-                           << QPointF(rightX, yTop - ARROW_WIDTH);
+                arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yEnd)
+                           << QPointF(rightX + ARROW_WIDTH / 2, yEnd)
+                           << QPointF(rightX, yEnd - ARROW_WIDTH);
 
                 auto *arrow = new QGraphicsPolygonItem(arrowShape);
                 arrow->setBrush(QBrush(Qt::black));
@@ -1551,11 +1564,11 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
                 mySymbolTextFont.setStyle(QFont::StyleNormal);
                 bendText->setFont(mySymbolTextFont);
                 centerItem(bendText, leftX, rightX,
-                           yTop - 2 * mySymbolTextFont.pixelSize());
+                           yEnd - 2 * mySymbolTextFont.pixelSize());
                 itemGroup->addToGroup(bendText);
             }
             else if (type == Bend::ImmediateRelease)
-                createDashedLine(itemGroup, prevX, rightX, yTop);
+                createDashedLine(itemGroup, prevX, rightX, yEnd);
 
             prevX = rightX;
             break;

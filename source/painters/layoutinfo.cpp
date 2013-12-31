@@ -669,14 +669,24 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             getMaxHeight(myTabStaffAboveSymbols) * TAB_SYMBOL_SPACING;
 }
 
+static int getBendHeight(const Bend &bend)
+{
+    if (bend.getStartPoint() == Bend::HighPoint ||
+        bend.getEndPoint() == Bend::HighPoint)
+    {
+        return 3;
+    }
+    else
+        return 2;
+}
+
 void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
 {
-    static const int BEND_HEIGHT = 3;
-
     for (const Voice &voice : myStaff.getVoices())
     {
         int leftPos = 0;
         bool inGroup = false;
+        int groupHeight = 0;
 
         for (const Position &pos : voice.getPositions())
         {
@@ -692,6 +702,8 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
 
             if (!bend)
                 continue;
+
+            groupHeight = std::max(groupHeight, getBendHeight(*bend));
             
             const Bend::BendType type = bend->getType();
             if (type == Bend::NormalBend || type == Bend::BendAndRelease ||
@@ -699,19 +711,17 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
                 type == Bend::GradualRelease || type == Bend::ImmediateRelease)
             {
                 int rightPos = pos.getPosition();
-
                 if (!inGroup)
                     leftPos = rightPos;
-
                 rightPos++;
 
-                inGroup = false;
-
                 const int height =
-                    addToHeightMap(heightMap, leftPos, rightPos, BEND_HEIGHT);
+                    addToHeightMap(heightMap, leftPos, rightPos, groupHeight);
 
                 myTabStaffAboveSymbols.push_back(SymbolGroup(
                     SymbolGroup::Bend, leftPos, rightPos, voice, 0, height));
+                inGroup = false;
+                groupHeight = 0;
             }
             else if (!inGroup)
             {
@@ -724,7 +734,8 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
         if (inGroup)
         {
             const int rightPos = static_cast<int>(heightMap.size()) - 1;
-            const int height = addToHeightMap(heightMap, leftPos, rightPos, BEND_HEIGHT);
+            const int height =
+                addToHeightMap(heightMap, leftPos, rightPos, groupHeight);
             myTabStaffAboveSymbols.push_back(SymbolGroup(
                 SymbolGroup::Bend, leftPos, rightPos, voice, 0, height));
         }
