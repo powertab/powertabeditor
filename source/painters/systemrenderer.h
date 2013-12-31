@@ -132,9 +132,13 @@ private:
     /// Creates a dynamic symbol.
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
-    /// Creates a bend symbol.
+    /// Draws a group of bends.
     QGraphicsItem *createBendGroup(const SymbolGroup &group,
                                    const LayoutInfo &layout);
+    
+    /// Draws a single bend.
+    void createBend(QGraphicsItemGroup *group, double left, double right,
+                    double yStart, double yEnd, int pitch, bool prebend);
 
     /// Draws notes, beams, and rests.
     void drawStdNotation(const System &system, const Staff &staff,

@@ -1509,6 +1509,55 @@ static double getBendHeight(Bend::DrawPoint point, const Note &note,
         return layout.getTopTabLine() - LayoutInfo::TAB_SYMBOL_SPACING * 2.5;
 }
 
+void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
+                                double right, double yStart, double yEnd,
+                                int pitch, bool prebend)
+{
+    QPainterPath path;
+
+    // Draw an arc for the bend.
+    if (!prebend)
+    {
+        path.moveTo(left, yStart);
+        path.cubicTo(left, yStart, right, yStart, right, yEnd);
+    }
+    // Draw a straight line up for the bend.
+    else
+    {
+        path.moveTo(left, yStart);
+        path.lineTo(right, yStart);
+        path.lineTo(right, yEnd);
+    }
+
+    group->addToGroup(new QGraphicsPathItem(path));
+
+    // Draw arrow head, and choose the correct orientation depending on whether
+    // the bend is going up or down.
+    static const double ARROW_WIDTH = 5.0;
+    QPolygonF arrowShape;
+    arrowShape << QPointF(right - ARROW_WIDTH / 2, yEnd)
+               << QPointF(right + ARROW_WIDTH / 2, yEnd)
+               << QPointF(right, (yEnd < yStart) ? yEnd - ARROW_WIDTH
+                                                 : yEnd + ARROW_WIDTH);
+
+    auto *arrow = new QGraphicsPolygonItem(arrowShape);
+    arrow->setBrush(QBrush(Qt::black));
+    group->addToGroup(arrow);
+
+    // Draw text for the bent pitch (e.g. "Full", "3/4", etc). Don't draw the
+    // text if the bend is returning to standard pitch.
+    if (pitch != 0)
+    {
+        auto bendText = new QGraphicsSimpleTextItem(
+            QString::fromStdString(Bend::getPitchText(pitch)));
+        mySymbolTextFont.setStyle(QFont::StyleNormal);
+        bendText->setFont(mySymbolTextFont);
+        bendText->setPos(right - 0.5 * bendText->boundingRect().width(),
+                         yEnd - 1.75 * mySymbolTextFont.pixelSize());
+        group->addToGroup(bendText);
+    }
+}
+
 QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
                                                const LayoutInfo &layout)
 {
@@ -1557,48 +1606,24 @@ QGraphicsItem *SystemRenderer::createBendGroup(const SymbolGroup &group,
             if (type == Bend::NormalBend || type == Bend::BendAndHold ||
                 type == Bend::PreBend || type == Bend::PreBendAndHold)
             {
-                QPainterPath path;
-
-                // Draw an arc for the bend.                
-                if (type == Bend::NormalBend || type == Bend::BendAndHold)
-                {
-                    path.moveTo(leftX, yStart);
-                    path.cubicTo(leftX, yStart, rightX, yStart, rightX, yEnd);
-                }
-                // Draw a straight line up for the bend.
-                else if (type == Bend::PreBend || type == Bend::PreBendAndHold)
-                {
-                    path.moveTo(leftX, yStart);
-                    path.lineTo(rightX, yStart);
-                    path.lineTo(rightX, yEnd);
-                }
-                
-                itemGroup->addToGroup(new QGraphicsPathItem(path));
-
-                // Draw arrow head.
-                static const double ARROW_WIDTH = 5.0;
-                QPolygonF arrowShape;
-                arrowShape << QPointF(rightX - ARROW_WIDTH / 2, yEnd)
-                           << QPointF(rightX + ARROW_WIDTH / 2, yEnd)
-                           << QPointF(rightX, yEnd - ARROW_WIDTH);
-
-                auto *arrow = new QGraphicsPolygonItem(arrowShape);
-                arrow->setBrush(QBrush(Qt::black));
-                itemGroup->addToGroup(arrow);
-
-                // Draw text for the bent pitch (e.g. "Full", "3/4", etc).
-                auto bendText =
-                    new QGraphicsSimpleTextItem(QString::fromStdString(
-                        Bend::getPitchText(bend.getBentPitch())));
-                mySymbolTextFont.setStyle(QFont::StyleNormal);
-                bendText->setFont(mySymbolTextFont);
-                bendText->setPos(
-                    rightX - 0.5 * bendText->boundingRect().width(),
-                    yEnd - 1.75 * mySymbolTextFont.pixelSize());
-                itemGroup->addToGroup(bendText);
+                createBend(
+                    itemGroup, leftX, rightX, yStart, yEnd, bend.getBentPitch(),
+                    type == Bend::PreBend || type == Bend::PreBendAndHold);
             }
             else if (type == Bend::ImmediateRelease)
-                createDashedLine(itemGroup, prevX, rightX, yEnd);
+                createDashedLine(itemGroup, prevX, rightX, yStart);
+            else if (type == Bend::GradualRelease)
+            {
+                // Draw a dashed line to the original bend.
+                auto line = new QGraphicsLineItem(
+                    prevX, yStart, x + layout.getPositionSpacing(), yStart);
+                line->setPen(QPen(Qt::black, 1, Qt::DashLine));
+                itemGroup->addToGroup(line);
+
+                // Draw the bend down to the new pitch.
+                createBend(itemGroup, x + layout.getPositionSpacing(), rightX,
+                           yStart, yEnd, bend.getReleasePitch(), false);
+            }
 
             prevX = rightX;
             break;
