@@ -1525,6 +1525,7 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
     else
     {
         path.moveTo(left, yStart);
+        right = boost::algorithm::clamp(right, left, left + 3.0);
         path.lineTo(right, yStart);
         path.lineTo(right, yEnd);
     }
