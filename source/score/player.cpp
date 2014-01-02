@@ -25,18 +25,14 @@ const uint8_t Player::MAX_VOLUME = Midi::MAX_MIDI_CHANNEL_VOLUME;
 const uint8_t Player::MIN_PAN = Midi::MIN_MIDI_CHANNEL_EFFECT_LEVEL;
 const uint8_t Player::MAX_PAN = Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL;
 
-Player::Player()
-    : myDescription("Untitled"),
-      myMaxVolume(104),
-      myPan(64)
+Player::Player() : myDescription("Untitled"), myMaxVolume(MAX_VOLUME), myPan(64)
 {
 }
 
 bool Player::operator==(const Player &other) const
 {
     return myDescription == other.myDescription &&
-           myMaxVolume == other.myMaxVolume &&
-           myPan == other.myPan &&
+           myMaxVolume == other.myMaxVolume && myPan == other.myPan &&
            myTuning == other.myTuning;
 }
 

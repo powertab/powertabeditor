@@ -108,6 +108,8 @@ private:
 
     static void convertGuitarIns(const PowerTabDocument::Score &oldScore,
                                  Score &score);
+    static void convertInitialVolumes(const PowerTabDocument::Score &oldScore,
+                                      Score &score);
 };
 
 #endif

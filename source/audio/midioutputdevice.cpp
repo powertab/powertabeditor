@@ -18,13 +18,15 @@
 #include "midioutputdevice.h"
 
 #include "rtmidi/RtMidi.h"
+#include <score/dynamic.h>
+#include <score/generalmidi.h>
 
 MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 {
     for (int i = 0; i < NUM_CHANNELS; ++i)
     {
-        channelMaxVolumes[i] = 127;
-        channelActiveVolumes[i] = 127;
+        channelMaxVolumes[i] = Midi::MAX_MIDI_CHANNEL_VOLUME;
+        channelActiveVolumes[i] = Dynamic::fff;
     }
 
     // Create all MIDI APIs supported on this platform.

@@ -33,8 +33,9 @@
 #include "powertabdocument/staff.h"
 #include "powertabdocument/system.h"
 #include "powertabdocument/tempomarker.h"
-#include <score/score.h>
 #include <score/generalmidi.h>
+#include <score/score.h>
+#include <score/systemlocation.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab Document (v1.7)",
@@ -136,9 +137,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
 {
     // Convert guitars to players and instruments.
     for (size_t i = 0; i < oldScore.GetGuitarCount(); ++i)
-    {
         convert(*oldScore.GetGuitar(i), score);
-    }
 
     for (size_t i = 0; i < oldScore.GetSystemCount(); ++i)
     {
@@ -149,6 +148,9 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
 
     // Convert Guitar In's to player changes.
     convertGuitarIns(oldScore, score);
+
+    // Set up an initial dynamic for each guitar's initial volumes.
+    convertInitialVolumes(oldScore, score);
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
@@ -156,7 +158,6 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
 {
     Player player;
     player.setDescription(guitar.GetDescription());
-    player.setMaxVolume(guitar.GetInitialVolume());
     player.setPan(guitar.GetPan());
 
     Tuning tuning;
@@ -859,5 +860,55 @@ void PowerTabOldImporter::convertGuitarIns(
         // final player change.
         score.getSystems()[i].insertPlayerChange(
             getPlayerChange(activePlayers, static_cast<int>(currentPosition)));
+    }
+}
+
+void PowerTabOldImporter::convertInitialVolumes(
+    const PowerTabDocument::Score &oldScore, Score &score)
+{
+    if (oldScore.GetGuitarInCount() > 0)
+    {
+        auto firstIn = oldScore.GetGuitarIn(0);
+        const SystemLocation startPos(firstIn->GetSystem(), firstIn->GetPosition());
+        System &system = score.getSystems()[firstIn->GetSystem()];
+
+        // If there was a dynamic at or before the first guitar in, then that
+        // dynamic is used.
+        if (oldScore.GetDynamicCount() > 0)
+        {
+            auto firstDynamic = oldScore.GetDynamic(0);
+            if (SystemLocation(firstDynamic->GetSystem(),
+                               firstDynamic->GetPosition()) <= startPos)
+            {
+                return;
+            }
+        }
+
+        for (size_t i = 0; i < oldScore.GetGuitarInCount(); ++i)
+        {
+            // Import guitar ins from every staff at the first location.
+            auto guitarIn = oldScore.GetGuitarIn(i);
+            const SystemLocation pos(guitarIn->GetSystem(),
+                                     guitarIn->GetPosition());
+            if (pos != startPos)
+                continue;
+            else if (!guitarIn->HasStaffGuitarsSet())
+                continue;
+
+            std::bitset<8> activeGuitars(guitarIn->GetStaffGuitars());
+            for (size_t j = 0; j < oldScore.GetGuitarCount(); ++j)
+            {
+                if (activeGuitars[j])
+                {
+                    Dynamic dynamic(
+                        guitarIn->GetPosition(),
+                        static_cast<Dynamic::VolumeLevel>(
+                            oldScore.GetGuitar(j)->GetInitialVolume()));
+
+                    system.getStaves()[guitarIn->GetStaff()].insertDynamic(dynamic);
+                    break;
+                }
+            }
+        }
     }
 }
