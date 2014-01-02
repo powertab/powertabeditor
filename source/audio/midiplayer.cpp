@@ -574,7 +574,8 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
 
 void MidiPlayer::playMidiEvents(const EventList &eventList)
 {
-    SystemLocation startLocation(myStartSystem, myStartPosition);
+    boost::optional<SystemLocation> startLocation =
+        SystemLocation(myStartSystem, myStartPosition);
 
     MidiOutputDevice device;
     // Set the port for RtMidi.
@@ -592,7 +593,7 @@ void MidiPlayer::playMidiEvents(const EventList &eventList)
     if (settings.value(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
                        Settings::MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT).toBool())
     {
-        performCountIn(device, startLocation);
+        performCountIn(device, *startLocation);
     }
 
     RepeatController repeatController(myScore);
@@ -616,21 +617,24 @@ void MidiPlayer::playMidiEvents(const EventList &eventList)
                  << eventLocation.getPosition();
 #endif
 
-        // If we haven't reached the starting position yet, keep going.
-        if (eventLocation < startLocation)
+        if (startLocation)
         {
-            ++activeEvent;
-            continue;
-        }
-        // If we just reached the starting position, update the system index
-        // explicitly to avoid the "currentPosition = 0" effect of a normal
-        // system change.
-        else if (eventLocation == startLocation)
-        {
-            emit playbackSystemChanged(startLocation.getSystem());
-            currentLocation.setSystem(startLocation.getSystem());
-            prevLocation = currentLocation;
-            startLocation = SystemLocation(0, 0);
+            // If we haven't reached the starting position yet, keep going.
+            if (eventLocation < *startLocation)
+            {
+                ++activeEvent;
+                continue;
+            }
+            // If we just reached the starting position, update the system index
+            // explicitly to avoid the "currentPosition = 0" effect of a normal
+            // system change.
+            else
+            {
+                emit playbackSystemChanged(startLocation->getSystem());
+                currentLocation.setSystem(startLocation->getSystem());
+                prevLocation = currentLocation;
+                startLocation.reset();
+            }
         }
 
         // If we've moved to a new position, move the caret.
@@ -664,8 +668,8 @@ void MidiPlayer::playMidiEvents(const EventList &eventList)
 #endif
             startLocation = newLocation;
             currentLocation = prevLocation = SystemLocation(0, 0);
-            emit playbackSystemChanged(startLocation.getSystem());
-            emit playbackPositionChanged(startLocation.getPosition());
+            emit playbackSystemChanged(startLocation->getSystem());
+            emit playbackPositionChanged(startLocation->getPosition());
             activeEvent = eventList.begin();
             continue;
         }
