@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8.9)
 project(powertabeditor)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
 
-include(cmake/PrecompiledHeader.cmake)
+include(cmake/cotire.cmake)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-DBOOST_ALL_DYN_LINK)

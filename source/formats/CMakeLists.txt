@@ -107,3 +107,4 @@ add_library(pteformats
 )
 
 qt5_use_modules(pteformats Widgets) 
+cotire(pteformats)

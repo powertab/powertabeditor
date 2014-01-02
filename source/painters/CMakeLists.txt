@@ -36,11 +36,7 @@ add_library(ptepainters
     tempomarkerpainter.h
     timesignaturepainter.h
     #tremolobarpainter.h
-
-    # Precompiled header
-    precompiled.h
-    precompiled.cpp
 )
 
 qt5_use_modules(ptepainters Widgets)
-add_precompiled_header(ptepainters precompiled.h FORCEINCLUDE)
+cotire(ptepainters)

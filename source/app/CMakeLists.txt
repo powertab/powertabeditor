@@ -37,3 +37,4 @@ add_library(pteapp
 )
 
 qt5_use_modules(pteapp Widgets Concurrent)
+cotire(pteapp)

@@ -34,3 +34,4 @@ add_library(ptewidgets
 )
 
 qt5_use_modules(ptewidgets Widgets) 
+cotire(ptewidgets)

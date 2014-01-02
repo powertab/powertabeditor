@@ -31,5 +31,6 @@ add_library(pteaudio
 )
 
 qt5_use_modules(pteaudio Widgets) 
+cotire(pteaudio)
 
 add_subdirectory(rtmidi)

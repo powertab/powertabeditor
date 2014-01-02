@@ -90,14 +90,10 @@ add_executable(pte_tests
     catch.hpp
     actions/actionfixture.h
     score/test_serialization.h
-
-    # Precompiled header.
-    precompiled.h
-    precompiled.cpp
 )
 
 qt5_use_modules(pte_tests Widgets)
-add_precompiled_header(pte_tests precompiled.h FORCEINCLUDE)
+cotire(pte_tests)
 
 target_link_libraries(pte_tests
     pteapp

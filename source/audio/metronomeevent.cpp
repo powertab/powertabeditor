@@ -62,7 +62,7 @@ void MetronomeEvent::performEvent(MidiOutputDevice &device) const
         velocity = settings.value(Settings::MIDI_METRONOME_WEAK_ACCENT,
                                   Settings::MIDI_METRONOME_WEAK_ACCENT_DEFAULT).toUInt();
     }
-    else if (myVelocity == StrongAccent)
+    else
     {
         velocity =
             settings.value(Settings::MIDI_METRONOME_STRONG_ACCENT,
