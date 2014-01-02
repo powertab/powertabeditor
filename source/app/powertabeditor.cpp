@@ -2002,6 +2002,13 @@ void PowerTabEditor::createCommands()
     connect(myPrevTabCommand, &QAction::triggered, [=]() {
         cycleTab(-1);
     });
+
+    myMixerDockWidgetCommand =
+        createCommandWrapper(myMixerDockWidget->toggleViewAction(),
+                             "Window.Mixer", QKeySequence(), this);
+    myInstrumentDockWidgetCommand =
+        createCommandWrapper(myInstrumentDockWidget->toggleViewAction(),
+                             "Window.Instruments", QKeySequence(), this);
 }
 
 void PowerTabEditor::createMixer()
@@ -2046,6 +2053,21 @@ void PowerTabEditor::createInstrumentPanel()
     myInstrumentPubSub.subscribe([=](int index, const Instrument &instrument) {
         editInstrument(index, instrument);
     });
+}
+
+Command *PowerTabEditor::createCommandWrapper(
+    QAction *action, const QString &id, const QKeySequence &defaultShortcut,
+    QObject *parent)
+{
+    Command *command = new Command(action->text(), id, defaultShortcut, parent);
+    command->setCheckable(action->isCheckable());
+    command->setChecked(action->isChecked());
+
+    // Keep the two actions in sync with each other.
+    connect(command, &QAction::triggered, action, &QAction::triggered);
+    connect(action, &QAction::toggled, command, &QAction::setChecked);
+    
+    return command;
 }
 
 void PowerTabEditor::createNoteDurationCommand(
@@ -2299,8 +2321,8 @@ void PowerTabEditor::createMenus()
     myWindowMenu->addAction(myNextTabCommand);
     myWindowMenu->addAction(myPrevTabCommand);
     myWindowMenu->addSeparator();
-    myWindowMenu->addAction(myMixerDockWidget->toggleViewAction());
-    myWindowMenu->addAction(myInstrumentDockWidget->toggleViewAction());
+    myWindowMenu->addAction(myMixerDockWidgetCommand);
+    myWindowMenu->addAction(myInstrumentDockWidgetCommand);
 }
 
 void PowerTabEditor::createTabArea()

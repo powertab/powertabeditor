@@ -251,6 +251,11 @@ private:
     /// Build the instrument panel.
     void createInstrumentPanel();
 
+    /// Helper function to create a wrapper around QAction that supports
+    /// customizable shortcuts.
+    static Command *createCommandWrapper(QAction *action, const QString &id,
+                                         const QKeySequence &defaultShortcut,
+                                         QObject *parent);
     /// Helper function to create a note duration command.
     void createNoteDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
@@ -505,6 +510,8 @@ private:
     QMenu *myWindowMenu;
     Command *myNextTabCommand;
     Command *myPrevTabCommand;
+    Command *myMixerDockWidgetCommand;
+    Command *myInstrumentDockWidgetCommand;
 
 #if 0
 
