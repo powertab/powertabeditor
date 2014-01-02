@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
+    <width>750</width>
     <height>37</height>
    </rect>
   </property>
@@ -135,6 +135,12 @@
    </item>
    <item>
     <widget class="QLabel" name="locationLabel">
+     <property name="minimumSize">
+      <size>
+       <width>250</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>System: 1, Staff: 1, Position: 1, String: 1</string>
      </property>
