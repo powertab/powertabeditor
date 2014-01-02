@@ -62,7 +62,7 @@ private:
     /// Stores each musical direction in the system.
     DirectionMap myDirections;
 
-    typedef std::unordered_map<DirectionSymbol::SymbolType, SystemLocation> SymbolLocationsMap;
+    typedef std::map<DirectionSymbol::SymbolType, SystemLocation> SymbolLocationsMap;
     /// Stores the location of each music symbol (coda, etc).
     SymbolLocationsMap mySymbolLocations;
 };

@@ -907,8 +907,6 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             break;
         }
 
-        const double x = layout.getPositionX(symbolGroup.getLeftPosition());
-
         // Bends are positioned differently, since they overlap with the
         // standard notation staff.
         if (symbolGroup.getSymbolType() != SymbolGroup::Bend)

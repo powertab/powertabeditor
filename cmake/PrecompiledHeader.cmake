@@ -75,16 +75,20 @@ MACRO(ADD_PRECOMPILED_HEADER _targetName _input)
     MAKE_DIRECTORY(${_outdir})
     SET(_output "${_outdir}/.c++")
     
-    STRING(TOUPPER "CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}" _flags_var_name)
-    SET(_compiler_FLAGS ${${_flags_var_name}})
+    SET(_compiler_FLAGS ${CMAKE_CXX_FLAGS})
     
-    GET_DIRECTORY_PROPERTY(_directory_flags INCLUDE_DIRECTORIES)
-    FOREACH(item ${_directory_flags})
+    GET_PROPERTY(_target_flags TARGET ${_targetName} PROPERTY INCLUDE_DIRECTORIES)
+    FOREACH(item ${_target_flags})
       LIST(APPEND _compiler_FLAGS "-I${item}")
     ENDFOREACH(item)
 
-    GET_DIRECTORY_PROPERTY(_directory_flags DEFINITIONS)
-    LIST(APPEND _compiler_FLAGS ${_directory_flags})
+    GET_PROPERTY(_target_flags TARGET ${_targetName} PROPERTY DEFINITIONS)
+    LIST(APPEND _compiler_FLAGS ${_target_flags})
+
+    GET_PROPERTY(_pic TARGET ${_targetName} PROPERTY POSITION_INDEPENDENT_CODE)
+    if(${_pic})
+        LIST(APPEND _compiler_FLAGS "-fPIC")
+    endif()
 
     SEPARATE_ARGUMENTS(_compiler_FLAGS)
     MESSAGE("${CMAKE_CXX_COMPILER} -DPCHCOMPILE ${_compiler_FLAGS} -x c++-header -o {_output} ${_source}")
