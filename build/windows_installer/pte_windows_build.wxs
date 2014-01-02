@@ -61,7 +61,6 @@
           <Extension Id="gpx" ContentType="audio/x-gtp">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
-          <!-- TODO - restore support for importing these formats.
           <Extension Id="gp3" ContentType="audio/x-gtp">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
@@ -71,7 +70,6 @@
           <Extension Id="gp5" ContentType="audio/x-gtp">
             <Verb Id="open" Command="Open" Argument='"%1"' />
           </Extension>
-          -->
         </ProgId>
       </Component>
       

@@ -20,6 +20,10 @@
 #include <app/settings.h>
 #include <QMenu>
 #include <QSettings>
+#ifdef _WIN32
+#include <QDir>
+#include <shlobj.h>
+#endif
 
 RecentFiles::RecentFiles(QMenu *recentFilesMenu, QObject *parent) :
     QObject(parent),
@@ -46,18 +50,21 @@ void RecentFiles::save()
 
 void RecentFiles::add(const QString &fileName)
 {
-    // if the filename is already in the list, move it to the front
+    // If the filename is already in the list, move it to the front.
     myRecentFiles.removeOne(fileName);
 
     myRecentFiles.prepend(fileName);
 
     if (myRecentFiles.length() > MAX_RECENT_FILES)
-    {
         myRecentFiles.pop_back();
-    }
 
     save();
     updateMenu();
+
+    // Add the file to the recent files jump list.
+#ifdef _WIN32
+    SHAddToRecentDocs(SHARD_PATHW, QDir::toNativeSeparators(fileName).utf16());
+#endif
 }
 
 void RecentFiles::updateMenu()
