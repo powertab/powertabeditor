@@ -29,6 +29,7 @@
 #include <audio/stopnoteevent.h>
 #include <audio/vibratoevent.h>
 #include <audio/volumechangeevent.h>
+#include <boost/math/special_functions/round.hpp>
 #include <QDebug>
 #include <QSettings>
 #include <score/generalmidi.h>
@@ -902,11 +903,11 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo> &bends,
     const Bend &bend = note.getBend();
 
     const uint8_t bendAmount =
-        std::floor(BendEvent::DEFAULT_BEND +
-                   bend.getBentPitch() * BendEvent::BEND_QUARTER_TONE);
-    const uint8_t releaseAmount =
-        std::floor(BendEvent::DEFAULT_BEND +
-                   bend.getReleasePitch() * BendEvent::BEND_QUARTER_TONE);
+        boost::math::round(BendEvent::DEFAULT_BEND +
+                           bend.getBentPitch() * BendEvent::BEND_QUARTER_TONE);
+    const uint8_t releaseAmount = boost::math::round(
+        BendEvent::DEFAULT_BEND +
+        bend.getReleasePitch() * BendEvent::BEND_QUARTER_TONE);
 
     switch (bend.getType())
     {
