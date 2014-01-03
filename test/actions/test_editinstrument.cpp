@@ -32,7 +32,7 @@ TEST_CASE("Actions/EditInstrument", "")
     Instrument newInstrument(oldInstrument);
     newInstrument.setDescription("Description 2");
 
-    EditInstrument action(score, nullptr, 0, newInstrument);
+    EditInstrument action(score, 0, newInstrument);
 
     action.redo();
     REQUIRE(score.getInstruments()[0] == newInstrument);

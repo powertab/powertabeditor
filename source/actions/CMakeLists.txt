@@ -7,7 +7,7 @@ add_library(pteactions
     addchordtext.cpp
     adddirection.cpp
     adddynamic.cpp
-    #addguitar.cpp
+    addinstrument.cpp
     addirregulargrouping.cpp
     addmultibarrest.cpp
     addnote.cpp
@@ -65,7 +65,7 @@ add_library(pteactions
     addchordtext.h
     adddirection.h
     adddynamic.h
-    #addguitar.h
+    addinstrument.h
     addirregulargrouping.h
     addmultibarrest.h
     addnote.h

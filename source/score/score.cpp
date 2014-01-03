@@ -107,10 +107,9 @@ void Score::insertInstrument(const Instrument &instrument)
     myInstruments.push_back(instrument);
 }
 
-void Score::removeInstrument(const Instrument &instrument)
+void Score::removeInstrument(int index)
 {
-    myInstruments.erase(std::remove(myInstruments.begin(), myInstruments.end(), instrument),
-                    myInstruments.end());
+    myInstruments.erase(myInstruments.begin() + index);
 }
 
 int Score::getLineSpacing() const

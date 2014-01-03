@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_EDITINSTRUMENT_H
-#define ACTIONS_EDITINSTRUMENT_H
+#include "addinstrument.h"
 
-#include <QUndoCommand>
-#include <score/player.h>
 #include <score/score.h>
 
-class EditInstrument : public QUndoCommand
+AddInstrument::AddInstrument(Score &score, const Instrument &instrument)
+    : QUndoCommand(QObject::tr("Add Instrument")),
+      myScore(score),
+      myInstrument(instrument),
+      myIndex(score.getInstruments().size())
 {
-public:
-    EditInstrument(Score &score, int index, const Instrument &instrument);
+}
 
-    virtual void redo() override;
-    virtual void undo() override;
+void AddInstrument::redo()
+{
+    myScore.insertInstrument(myInstrument);
+}
 
-private:
-    Score &myScore;
-    const int myInstrumentIndex;
-    const Instrument myNewInstrument;
-    const Instrument myOriginalInstrument;
-};
-
-#endif
+void AddInstrument::undo()
+{
+    myScore.removeInstrument(myIndex);
+}

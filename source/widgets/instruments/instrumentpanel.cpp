@@ -42,17 +42,6 @@ void InstrumentPanel::reset(const Score &score)
     }
 }
 
-void InstrumentPanel::update(const Score &score)
-{
-    Q_ASSERT(score.getInstruments().size() == myLayout->count());
-
-    for (int i = 0; i < score.getInstruments().size(); ++i)
-    {
-        static_cast<InstrumentPanelItem *>(myLayout->itemAt(i)->widget())
-            ->update(score.getInstruments()[i]);
-    }
-}
-
 void InstrumentPanel::clear()
 {
     while (QLayoutItem *item = myLayout->takeAt(0))

@@ -23,6 +23,7 @@
 #include <actions/addchordtext.h>
 #include <actions/adddirection.h>
 #include <actions/adddynamic.h>
+#include <actions/addinstrument.h>
 #include <actions/addirregulargrouping.h>
 #include <actions/addmultibarrest.h>
 #include <actions/addnote.h>
@@ -508,6 +509,7 @@ void PowerTabEditor::redrawScore()
 
     const Score &score = myDocumentManager->getCurrentDocument().getScore();
     myMixer->reset(score);
+    myInstrumentPanel->reset(score);
 }
 
 void PowerTabEditor::moveCaretToStart()
@@ -1251,6 +1253,24 @@ void PowerTabEditor::addPlayer()
                         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
+void PowerTabEditor::addInstrument()
+{
+    ScoreLocation &location = getLocation();
+    Score &score = location.getScore();
+    QSettings settings;
+
+    Instrument instrument;
+    instrument.setDescription(settings.value(
+            Settings::DEFAULT_INSTRUMENT_NAME,
+            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString());
+    instrument.setMidiPreset(
+        settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
+                       Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
+
+    myUndoManager->push(new AddInstrument(location.getScore(), instrument),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
 void PowerTabEditor::editPlayerChange()
 {
     const ScoreLocation &location = getLocation();
@@ -1314,9 +1334,8 @@ void PowerTabEditor::editInstrument(int index, const Instrument &instrument)
     ScoreLocation &location = getLocation();
 
     myUndoManager->push(
-        new EditInstrument(location.getScore(), myInstrumentPanel, index,
-                           instrument),
-        location.getSystemIndex());
+        new EditInstrument(location.getScore(), index, instrument),
+        UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::showTuningDictionary()
@@ -2004,6 +2023,11 @@ void PowerTabEditor::createCommands()
     connect(myAddPlayerCommand, &QAction::triggered, this,
             &PowerTabEditor::addPlayer);
 
+    myAddInstrumentCommand = new Command(
+        tr("Add Instrument"), "Player.AddInstrument", QKeySequence(), this);
+    connect(myAddInstrumentCommand, &QAction::triggered, this,
+            &PowerTabEditor::addInstrument);
+
     myPlayerChangeCommand = new Command(tr("Player Change..."),
                                         "Player.PlayerChange", QKeySequence(),
                                         this);
@@ -2342,6 +2366,7 @@ void PowerTabEditor::createMenus()
     // Player Menu.
     myPlayerMenu = menuBar()->addMenu(tr("&Player"));
     myPlayerMenu->addAction(myAddPlayerCommand);
+    myPlayerMenu->addAction(myAddInstrumentCommand);
     myPlayerMenu->addAction(myPlayerChangeCommand);
     myPlayerMenu->addAction(myShowTuningDictionaryCommand);
 
@@ -2686,6 +2711,7 @@ void PowerTabEditor::enableEditing(bool enable)
     myCloseTabCommand->setEnabled(enable);
     mySaveAsCommand->setEnabled(enable);
     myAddPlayerCommand->setEnabled(enable);
+    myAddInstrumentCommand->setEnabled(enable);
     myPlayerChangeCommand->setEnabled(enable);
     myNextTabCommand->setEnabled(enable);
     myPrevTabCommand->setEnabled(enable);

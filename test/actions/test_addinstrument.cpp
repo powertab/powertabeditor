@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -17,43 +17,21 @@
   
 #include <catch.hpp>
 
+#include <actions/addinstrument.h>
 #include <score/score.h>
 
-TEST_CASE("Score/Score/Systems", "")
+TEST_CASE("Actions/AddInstrument", "")
 {
     Score score;
-
-    REQUIRE(score.getSystems().size() == 0);
-
-    System system;
-    score.insertSystem(system);
-    REQUIRE(score.getSystems().size() == 1);
-    score.removeSystem(0);
-    REQUIRE(score.getSystems().size() == 0);
-}
-
-TEST_CASE("Score/Score/Players", "")
-{
-    Score score;
-
-    REQUIRE(score.getPlayers().size() == 0);
-
-    Player player;
-    score.insertPlayer(player);
-    REQUIRE(score.getPlayers().size() == 1);
-    score.removePlayer(0);
-    REQUIRE(score.getPlayers().size() == 0);
-}
-
-TEST_CASE("Score/Score/Instruments", "")
-{
-    Score score;
-
-    REQUIRE(score.getInstruments().size() == 0);
-
     Instrument instrument;
-    score.insertInstrument(instrument);
+    instrument.setDescription("Test");
+
+    AddInstrument action(score, instrument);
+
+    action.redo();
     REQUIRE(score.getInstruments().size() == 1);
-    score.removeInstrument(0);
+    REQUIRE(score.getInstruments()[0] == instrument);
+
+    action.undo();
     REQUIRE(score.getInstruments().size() == 0);
 }

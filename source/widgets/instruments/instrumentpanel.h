@@ -32,9 +32,6 @@ public:
     /// Clear and then populate the instrument panel.
     void reset(const Score &score);
 
-    /// Update the instrument panel.
-    void update(const Score &score);
-
     /// Removes all items from the panel.
     void clear();
 

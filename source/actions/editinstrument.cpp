@@ -18,13 +18,11 @@
 #include "editinstrument.h"
 
 #include <score/score.h>
-#include <widgets/instruments/instrumentpanel.h>
 
-EditInstrument::EditInstrument(Score &score, InstrumentPanel *panel, int index,
+EditInstrument::EditInstrument(Score &score, int index,
                                const Instrument &instrument)
     : QUndoCommand(QObject::tr("Edit Instrument")),
       myScore(score),
-      myInstrumentPanel(panel),
       myInstrumentIndex(index),
       myNewInstrument(instrument),
       myOriginalInstrument(score.getInstruments()[index])
@@ -34,13 +32,9 @@ EditInstrument::EditInstrument(Score &score, InstrumentPanel *panel, int index,
 void EditInstrument::redo()
 {
     myScore.getInstruments()[myInstrumentIndex] = myNewInstrument;
-    if (myInstrumentPanel)
-        myInstrumentPanel->update(myScore);
 }
 
 void EditInstrument::undo()
 {
     myScore.getInstruments()[myInstrumentIndex] = myOriginalInstrument;
-    if (myInstrumentPanel)
-        myInstrumentPanel->update(myScore);
 }

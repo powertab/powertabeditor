@@ -224,6 +224,8 @@ private slots:
 
     /// Adds a new player to the score.
     void addPlayer();
+    /// Adds a new instrument to the score.
+    void addInstrument();
     /// Adds or removes a player change at the current location.
     void editPlayerChange();
     /// Edits the properties of a player.
@@ -510,6 +512,7 @@ private:
 
     QMenu *myPlayerMenu;
     Command *myAddPlayerCommand;
+    Command *myAddInstrumentCommand;
     Command *myPlayerChangeCommand;
     Command *myShowTuningDictionaryCommand;
 

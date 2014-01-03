@@ -77,7 +77,7 @@ public:
     /// Adds a new instrument to the score.
     void insertInstrument(const Instrument &instrument);
     /// Removes the specified instrument from the score.
-    void removeInstrument(const Instrument &instrument);
+    void removeInstrument(int index);
 
     /// Returns the spacing between tabulature lines for the score.
     int getLineSpacing() const;
