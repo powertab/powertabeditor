@@ -9,6 +9,7 @@ include(cmake/cotire.cmake)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-DBOOST_ALL_DYN_LINK)
     add_definitions(-DBOOST_ALL_NO_LIB)
+    add_definitions(-DNOMINMAX)
     # Increase the virtual memory limit for precompiled headers.
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm200")
 else()

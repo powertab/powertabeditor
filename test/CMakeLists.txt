@@ -94,7 +94,6 @@ add_executable(pte_tests
 )
 
 qt5_use_modules(pte_tests Widgets)
-cotire(pte_tests)
 
 target_link_libraries(pte_tests
     pteapp
@@ -106,6 +105,12 @@ target_link_libraries(pte_tests
     ptescore
     ${Boost_LIBRARIES}
 )
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    target_link_libraries(pte_tests winmm)
+endif()
+
+cotire(pte_tests)
 
 # Copy the test files to the build directory.
 add_custom_command(TARGET pte_tests POST_BUILD COMMAND
