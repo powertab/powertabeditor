@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,27 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACTIONS_EDITPLAYER_H
-#define ACTIONS_EDITPLAYER_H
+#ifndef ACTIONS_ADDPLAYER_H
+#define ACTIONS_ADDPLAYER_H
 
 #include <QUndoCommand>
 #include <score/player.h>
 
 class Score;
 
-class EditPlayer : public QUndoCommand
+class AddPlayer : public QUndoCommand
 {
 public:
-    EditPlayer(Score &score, int playerIndex, const Player &player);
+    AddPlayer(Score &score, const Player &player);
 
     virtual void redo() override;
     virtual void undo() override;
 
 private:
     Score &myScore;
-    const int myPlayerIndex;
-    const Player myNewPlayer;
-    const Player myOriginalPlayer;
+    const Player myPlayer;
 };
 
 #endif

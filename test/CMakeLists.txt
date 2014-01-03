@@ -13,6 +13,7 @@ add_executable(pte_tests
     actions/test_addmultibarrest.cpp
     actions/test_addnote.cpp
     actions/test_addnoteproperty.cpp
+    actions/test_addplayer.cpp
     actions/test_addplayerchange.cpp
     actions/test_addpositionproperty.cpp
     actions/test_addrehearsalsign.cpp

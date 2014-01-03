@@ -27,6 +27,7 @@
 #include <actions/addmultibarrest.h>
 #include <actions/addnote.h>
 #include <actions/addnoteproperty.h>
+#include <actions/addplayer.h>
 #include <actions/addplayerchange.h>
 #include <actions/addpositionproperty.h>
 #include <actions/addrehearsalsign.h>
@@ -1231,6 +1232,24 @@ void PowerTabEditor::editTrill()
     }
 }
 
+void PowerTabEditor::addPlayer()
+{
+    ScoreLocation &location = getLocation();
+    Score &score = location.getScore();
+
+    Player player;
+    player.setDescription("Player " +
+                          std::to_string(score.getPlayers().size() + 1));
+    QSettings settings;
+    player.setTuning(settings.value(
+            Settings::DEFAULT_INSTRUMENT_TUNING,
+            QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)
+        ).value<Tuning>());
+
+    myUndoManager->push(new AddPlayer(score, player),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
 void PowerTabEditor::editPlayerChange()
 {
     const ScoreLocation &location = getLocation();
@@ -1971,7 +1990,12 @@ void PowerTabEditor::createCommands()
                               Note::SlideOutOfUpwards);
 
     // Player menu.
-    myPlayerChangeCommand = new Command("Player Change...",
+    myAddPlayerCommand =
+        new Command(tr("Add Player"), "Player.AddPlayer", QKeySequence(), this);
+    connect(myAddPlayerCommand, &QAction::triggered, this,
+            &PowerTabEditor::addPlayer);
+
+    myPlayerChangeCommand = new Command(tr("Player Change..."),
                                         "Player.PlayerChange", QKeySequence(),
                                         this);
     myPlayerChangeCommand->setCheckable(true);
@@ -1983,12 +2007,6 @@ void PowerTabEditor::createCommands()
                                                 QKeySequence(), this);
     connect(myShowTuningDictionaryCommand, SIGNAL(triggered()),
             this, SLOT(showTuningDictionary()));
-
-#if 0
-    // Guitar Menu
-    addGuitarAct = new Command(tr("Add Guitar"), "Guitar.AddGuitar", QKeySequence(), this);
-    connect(addGuitarAct, SIGNAL(triggered()), this, SLOT(addGuitar()));
-#endif
 
     // Window Menu commands.
     myNextTabCommand = new Command(tr("Next Tab"), "Window.NextTab",
@@ -2310,11 +2328,9 @@ void PowerTabEditor::createMenus()
 
     // Player Menu.
     myPlayerMenu = menuBar()->addMenu(tr("&Player"));
+    myPlayerMenu->addAction(myAddPlayerCommand);
     myPlayerMenu->addAction(myPlayerChangeCommand);
     myPlayerMenu->addAction(myShowTuningDictionaryCommand);
-#if 0
-    guitarMenu->addAction(addGuitarAct);
-#endif
 
     // Window Menu.
     myWindowMenu = menuBar()->addMenu(tr("&Window"));
@@ -2656,12 +2672,10 @@ void PowerTabEditor::enableEditing(bool enable)
 
     myCloseTabCommand->setEnabled(enable);
     mySaveAsCommand->setEnabled(enable);
+    myAddPlayerCommand->setEnabled(enable);
     myPlayerChangeCommand->setEnabled(enable);
     myNextTabCommand->setEnabled(enable);
     myPrevTabCommand->setEnabled(enable);
-#if 0
-    addGuitarAct->setEnabled(enable);
-#endif
 
     // Prevent the user from changing tabs during playback.
     myTabWidget->tabBar()->setEnabled(enable);
@@ -2923,14 +2937,6 @@ void PowerTabEditor::shiftTabNumber(int direction)
                                          shiftType, tuning),
                       caret->getCurrentSystemIndex());
     caret->moveCaretVertical(direction == 1 ? direction : -1);
-}
-
-void PowerTabEditor::addGuitar()
-{
-    Score* score = getCurrentScoreArea()->getCaret()->getCurrentScore();
-
-    AddGuitar* addGuitar = new AddGuitar(score, getCurrentMixer());
-    undoManager->push(addGuitar, UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::editVolumeSwell()

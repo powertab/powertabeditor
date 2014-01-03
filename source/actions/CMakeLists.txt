@@ -12,6 +12,7 @@ add_library(pteactions
     addmultibarrest.cpp
     addnote.cpp
     addnoteproperty.cpp
+    addplayer.cpp
     addplayerchange.cpp
     addpositionproperty.cpp
     addrehearsalsign.cpp

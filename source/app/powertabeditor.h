@@ -222,6 +222,8 @@ private slots:
     /// Adds or removes a trill for the current note.
     void editTrill();
 
+    /// Adds a new player to the score.
+    void addPlayer();
     /// Adds or removes a player change at the current location.
     void editPlayerChange();
     /// Edits the properties of a player.
@@ -504,6 +506,7 @@ private:
     Command *myArpeggioDownCommand;
 
     QMenu *myPlayerMenu;
+    Command *myAddPlayerCommand;
     Command *myPlayerChangeCommand;
     Command *myShowTuningDictionaryCommand;
 
@@ -521,8 +524,6 @@ private:
 
 private slots:
     void editVolumeSwell();
-
-    void addGuitar();
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
 private:
@@ -534,9 +535,6 @@ private:
     Command* shiftTabNumDown;
 
     Command* volumeSwellAct;
-
-    QMenu* guitarMenu;
-    Command* addGuitarAct;
 
 #endif
 };

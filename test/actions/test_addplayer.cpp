@@ -14,28 +14,24 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef ACTIONS_EDITPLAYER_H
-#define ACTIONS_EDITPLAYER_H
+#include <actions/addplayer.h>
+#include <score/score.h>
 
-#include <QUndoCommand>
-#include <score/player.h>
-
-class Score;
-
-class EditPlayer : public QUndoCommand
+TEST_CASE("Actions/AddPlayer", "")
 {
-public:
-    EditPlayer(Score &score, int playerIndex, const Player &player);
+    Score score;
+    Player player;
+    player.setDescription("Test Player");
 
-    virtual void redo() override;
-    virtual void undo() override;
+    AddPlayer action(score, player);
 
-private:
-    Score &myScore;
-    const int myPlayerIndex;
-    const Player myNewPlayer;
-    const Player myOriginalPlayer;
-};
+    action.redo();
+    REQUIRE(score.getPlayers().size() == 1);
+    REQUIRE(score.getPlayers()[0] == player);
 
-#endif
+    action.undo();
+    REQUIRE(score.getPlayers().size() == 0);
+}
