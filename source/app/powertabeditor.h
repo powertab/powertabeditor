@@ -234,6 +234,8 @@ private slots:
     void removePlayer(int index);
     /// Edits the properties of an instrument.
     void editInstrument(int index, const Instrument &instrument);
+    /// Removes the specified instrument.
+    void removeInstrument(int index);
     /// Shows a dialog to view or edit the tuning dictionary.
     void showTuningDictionary();
 
@@ -344,7 +346,8 @@ private:
     std::shared_ptr<SettingsPubSub> mySettingsPubSub;
     PlayerEditPubSub myPlayerEditPubSub;
     PlayerRemovePubSub myPlayerRemovePubSub;
-    InstrumentPubSub myInstrumentPubSub;
+    InstrumentEditPubSub myInstrumentEditPubSub;
+    InstrumentRemovePubSub myInstrumentRemovePubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;
     /// Tracks the last directory that a file was opened from.

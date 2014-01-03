@@ -22,13 +22,15 @@
 #include <score/generalmidi.h>
 #include <score/instrument.h>
 
-InstrumentPanelItem::InstrumentPanelItem(QWidget *parent, int instrumentIndex,
-                                         const Instrument &instrument,
-                                         const InstrumentPubSub &pubsub)
+InstrumentPanelItem::InstrumentPanelItem(
+    QWidget *parent, int instrumentIndex, const Instrument &instrument,
+    const InstrumentEditPubSub &editPubSub,
+    const InstrumentRemovePubSub &removePubSub)
     : QWidget(parent),
       ui(new Ui::InstrumentPanelItem),
       myInstrumentIndex(instrumentIndex),
-      myPubSub(pubsub)
+      myEditPubSub(editPubSub),
+      myRemovePubSub(removePubSub)
 {
     ui->setupUi(this);
 
@@ -43,6 +45,9 @@ InstrumentPanelItem::InstrumentPanelItem(QWidget *parent, int instrumentIndex,
 
     ui->instrumentNameEdit->hide();
 
+    ui->removeButton->setIcon(
+        style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+
     connect(ui->instrumentNameLabel, &ClickableLabel::clicked,
             ui->instrumentNameLabel, &QWidget::hide);
     connect(ui->instrumentNameLabel, &ClickableLabel::clicked,
@@ -56,6 +61,10 @@ InstrumentPanelItem::InstrumentPanelItem(QWidget *parent, int instrumentIndex,
     connect(ui->midiInstrument, static_cast<void (QComboBox::*)(int)>(
                                     &QComboBox::activated),
             this, &InstrumentPanelItem::onEdited);
+
+    connect(ui->removeButton, &QPushButton::clicked, [&]() {
+        myRemovePubSub.publish(myInstrumentIndex);
+    });
 }
 
 InstrumentPanelItem::~InstrumentPanelItem()
@@ -90,5 +99,5 @@ void InstrumentPanelItem::onEdited()
     instrument.setDescription(ui->instrumentNameLabel->text().toStdString());
     instrument.setMidiPreset(ui->midiInstrument->currentIndex());
 
-    myPubSub.publish(myInstrumentIndex, instrument);
+    myEditPubSub.publish(myInstrumentIndex, instrument);
 }

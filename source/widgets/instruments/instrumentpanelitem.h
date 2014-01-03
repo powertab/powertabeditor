@@ -26,14 +26,16 @@ class InstrumentPanelItem;
 }
 
 class Instrument;
-class InstrumentPubSub;
+class InstrumentEditPubSub;
+class InstrumentRemovePubSub;
 
 class InstrumentPanelItem : public QWidget
 {
 public:
     explicit InstrumentPanelItem(QWidget *parent, int instrumentIndex,
                                  const Instrument &instrument,
-                                 const InstrumentPubSub &pubsub);
+                                 const InstrumentEditPubSub &editPubSub,
+                                 const InstrumentRemovePubSub &removePubSub);
     ~InstrumentPanelItem();
 
     void update(const Instrument &instrument);
@@ -44,7 +46,8 @@ private:
 
     Ui::InstrumentPanelItem *ui;
     const int myInstrumentIndex;
-    const InstrumentPubSub &myPubSub;
+    const InstrumentEditPubSub &myEditPubSub;
+    const InstrumentRemovePubSub &myRemovePubSub;
 };
 
 #endif

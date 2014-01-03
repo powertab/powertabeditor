@@ -41,6 +41,7 @@ add_library(pteactions
     removechordtext.cpp
     removedirection.cpp
     removedynamic.cpp
+    removeinstrument.cpp
     removeirregulargrouping.cpp
     removenote.cpp
     removenoteproperty.cpp
@@ -99,6 +100,7 @@ add_library(pteactions
     removechordtext.h
     removedirection.h
     removedynamic.h
+    removeinstrument.h
     removeirregulargrouping.h
     removenote.h
     removenoteproperty.h

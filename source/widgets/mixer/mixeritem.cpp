@@ -72,7 +72,7 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
     connect(ui->playerTuning, &ClickableLabel::clicked, this,
             &MixerItem::editTuning);
 
-    connect(ui->removeButton, &QPushButton::clicked, [=]() {
+    connect(ui->removeButton, &QPushButton::clicked, [&]() {
         myRemovePubSub.publish(myPlayerIndex);
     });
 }

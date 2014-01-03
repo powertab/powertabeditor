@@ -41,6 +41,7 @@ add_executable(pte_tests
     actions/test_removechordtext.cpp
     actions/test_removedirection.cpp
     actions/test_removedynamic.cpp
+    actions/test_removeinstrument.cpp
     actions/test_removeirregulargrouping.cpp
     actions/test_removenote.cpp
     actions/test_removenoteproperty.cpp

@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,33 +14,30 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#ifndef ACTIONS_REMOVEINSTRUMENT_H
+#define ACTIONS_REMOVEINSTRUMENT_H
 
-#ifndef WIDGETS_INSTRUMENTPANEL_H
-#define WIDGETS_INSTRUMENTPANEL_H
+#include <QUndoCommand>
+#include <score/instrument.h>
+#include <score/playerchange.h>
+#include <vector>
 
-#include <QWidget>
-
-class InstrumentEditPubSub;
-class InstrumentRemovePubSub;
-class QVBoxLayout;
 class Score;
 
-class InstrumentPanel : public QWidget
+class RemoveInstrument : public QUndoCommand
 {
 public:
-    InstrumentPanel(QWidget *parent, const InstrumentEditPubSub &editPubSub,
-                    const InstrumentRemovePubSub &removePubSub);
+    RemoveInstrument(Score &score, int index);
 
-    /// Clear and then populate the instrument panel.
-    void reset(const Score &score);
-
-    /// Removes all items from the panel.
-    void clear();
+    virtual void redo() override;
+    virtual void undo() override;
 
 private:
-    QVBoxLayout *myLayout;
-    const InstrumentEditPubSub &myEditPubSub;
-    const InstrumentRemovePubSub &myRemovePubSub;
+    Score &myScore;
+    const Instrument myInstrument;
+    const int myInstrumentIndex;
+    std::vector<PlayerChange> myOriginalChanges;
 };
 
 #endif

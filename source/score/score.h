@@ -76,6 +76,7 @@ public:
 
     /// Adds a new instrument to the score.
     void insertInstrument(const Instrument &instrument);
+    void insertInstrument(const Instrument &instrument, int index);
     /// Removes the specified instrument from the score.
     void removeInstrument(int index);
 

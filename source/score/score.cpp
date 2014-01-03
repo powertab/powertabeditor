@@ -107,6 +107,11 @@ void Score::insertInstrument(const Instrument &instrument)
     myInstruments.push_back(instrument);
 }
 
+void Score::insertInstrument(const Instrument &instrument, int index)
+{
+    myInstruments.insert(myInstruments.begin() + index, instrument);
+}
+
 void Score::removeInstrument(int index)
 {
     myInstruments.erase(myInstruments.begin() + index);

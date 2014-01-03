@@ -54,6 +54,7 @@
 #include <actions/removechordtext.h>
 #include <actions/removedirection.h>
 #include <actions/removedynamic.h>
+#include <actions/removeinstrument.h>
 #include <actions/removeirregulargrouping.h>
 #include <actions/removenote.h>
 #include <actions/removenoteproperty.h>
@@ -1338,6 +1339,12 @@ void PowerTabEditor::editInstrument(int index, const Instrument &instrument)
         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
+void PowerTabEditor::removeInstrument(int index)
+{
+    myUndoManager->push(new RemoveInstrument(getLocation().getScore(), index),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
 void PowerTabEditor::showTuningDictionary()
 {
     TuningDictionaryDialog dialog(this, *myTuningDictionary);
@@ -2099,14 +2106,18 @@ void PowerTabEditor::createInstrumentPanel()
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
 
-    myInstrumentPanel = new InstrumentPanel(scroll, myInstrumentPubSub);
+    myInstrumentPanel = new InstrumentPanel(scroll, myInstrumentEditPubSub,
+                                            myInstrumentRemovePubSub);
 
     scroll->setWidget(myInstrumentPanel);
     myInstrumentDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myInstrumentDockWidget);
 
-    myInstrumentPubSub.subscribe([=](int index, const Instrument &instrument) {
+    myInstrumentEditPubSub.subscribe([=](int index, const Instrument &instrument) {
         editInstrument(index, instrument);
+    });
+    myInstrumentRemovePubSub.subscribe([=](int index) {
+        removeInstrument(index);
     });
 }
 
