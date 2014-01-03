@@ -14,25 +14,30 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#ifndef ACTIONS_REMOVEPLAYER_H
+#define ACTIONS_REMOVEPLAYER_H
 
-#include "addplayer.h"
+#include <QUndoCommand>
+#include <score/player.h>
+#include <score/playerchange.h>
+#include <vector>
 
-#include <score/score.h>
+class Score;
 
-AddPlayer::AddPlayer(Score &score, const Player &player)
-    : QUndoCommand(QObject::tr("Add Player")),
-      myScore(score),
-      myPlayer(player),
-      myPlayerIndex(score.getPlayers().size())
+class RemovePlayer : public QUndoCommand
 {
-}
+public:
+    RemovePlayer(Score &score, int index);
 
-void AddPlayer::redo()
-{
-    myScore.insertPlayer(myPlayer);
-}
+    virtual void redo() override;
+    virtual void undo() override;
 
-void AddPlayer::undo()
-{
-    myScore.removePlayer(myPlayerIndex);
-}
+private:
+    Score &myScore;
+    const Player myPlayer;
+    const int myPlayerIndex;
+    std::vector<PlayerChange> myOriginalChanges;
+};
+
+#endif

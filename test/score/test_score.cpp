@@ -41,7 +41,7 @@ TEST_CASE("Score/Score/Players", "")
     Player player;
     score.insertPlayer(player);
     REQUIRE(score.getPlayers().size() == 1);
-    score.removePlayer(player);
+    score.removePlayer(0);
     REQUIRE(score.getPlayers().size() == 0);
 }
 

@@ -43,6 +43,7 @@ add_executable(pte_tests
     actions/test_removeirregulargrouping.cpp
     actions/test_removenote.cpp
     actions/test_removenoteproperty.cpp
+    actions/test_removeplayer.cpp
     actions/test_removeplayerchange.cpp
     actions/test_removeposition.cpp
     actions/test_removepositionproperty.cpp

@@ -228,6 +228,8 @@ private slots:
     void editPlayerChange();
     /// Edits the properties of a player.
     void editPlayer(int playerIndex, const Player &player, bool undoable);
+    /// Removes the specified player.
+    void removePlayer(int index);
     /// Edits the properties of an instrument.
     void editInstrument(int index, const Instrument &instrument);
     /// Shows a dialog to view or edit the tuning dictionary.
@@ -338,7 +340,8 @@ private:
     std::unique_ptr<MidiPlayer> myMidiPlayer;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
     std::shared_ptr<SettingsPubSub> mySettingsPubSub;
-    PlayerPubSub myPlayerPubSub;
+    PlayerEditPubSub myPlayerEditPubSub;
+    PlayerRemovePubSub myPlayerRemovePubSub;
     InstrumentPubSub myInstrumentPubSub;
     /// Tracks whether we are currently in playback mode.
     bool myIsPlaying;

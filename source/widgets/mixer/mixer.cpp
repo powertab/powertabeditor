@@ -22,8 +22,12 @@
 #include <score/score.h>
 
 Mixer::Mixer(QWidget *parent, const TuningDictionary &dictionary,
-             const PlayerPubSub &pubsub)
-    : QWidget(parent), myDictionary(dictionary), myPubSub(pubsub)
+             const PlayerEditPubSub &editPubSub,
+             const PlayerRemovePubSub &removePubSub)
+    : QWidget(parent),
+      myDictionary(dictionary),
+      myEditPubSub(editPubSub),
+      myRemovePubSub(removePubSub)
 {
     myLayout = new QVBoxLayout(this);
     myLayout->setSpacing(0);
@@ -38,7 +42,8 @@ void Mixer::reset(const Score &score)
     for (int i = 0; i < score.getPlayers().size(); ++i)
     {
         myLayout->addWidget(new MixerItem(this, i, score.getPlayers()[i],
-                                          myDictionary, myPubSub));
+                                          myDictionary, myEditPubSub,
+                                          myRemovePubSub));
     }
 }
 

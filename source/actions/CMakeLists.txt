@@ -44,6 +44,7 @@ add_library(pteactions
     removeirregulargrouping.cpp
     removenote.cpp
     removenoteproperty.cpp
+    removeplayer.cpp
     removeplayerchange.cpp
     removeposition.cpp
     removepositionproperty.cpp
@@ -69,6 +70,7 @@ add_library(pteactions
     addmultibarrest.h
     addnote.h
     addnoteproperty.h
+    addplayer.h
     addplayerchange.h
     addpositionproperty.h
     addrehearsalsign.h
@@ -100,6 +102,7 @@ add_library(pteactions
     removeirregulargrouping.h
     removenote.h
     removenoteproperty.h
+    removeplayer.h
     removeplayerchange.h
     removeposition.h
     removepositionproperty.h

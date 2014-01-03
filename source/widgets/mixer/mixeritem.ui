@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
+    <width>601</width>
     <height>33</height>
    </rect>
   </property>
@@ -17,9 +17,6 @@
    <string>Click to change player name.</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
-   <property name="sizeConstraint">
-    <enum>QLayout::SetFixedSize</enum>
-   </property>
    <property name="topMargin">
     <number>2</number>
    </property>
@@ -129,11 +126,36 @@
    </item>
    <item>
     <widget class="ClickableLabel" name="playerTuning">
+     <property name="minimumSize">
+      <size>
+       <width>90</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="toolTip">
       <string>Click to adjust tuning.</string>
      </property>
      <property name="text">
       <string>Tuning</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="removeButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Remove Player</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

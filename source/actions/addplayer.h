@@ -34,6 +34,7 @@ public:
 private:
     Score &myScore;
     const Player myPlayer;
+    const int myPlayerIndex;
 };
 
 #endif

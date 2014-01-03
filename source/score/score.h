@@ -65,8 +65,9 @@ public:
 
     /// Adds a new player to the score.
     void insertPlayer(const Player &player);
+    void insertPlayer(const Player &player, int index);
     /// Removes the specified player from the score.
-    void removePlayer(const Player &player);
+    void removePlayer(int index);
 
     /// Returns the set of instruments in the score.
     boost::iterator_range<InstrumentIterator> getInstruments();

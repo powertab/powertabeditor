@@ -82,10 +82,14 @@ void Score::insertPlayer(const Player &player)
     myPlayers.push_back(player);
 }
 
-void Score::removePlayer(const Player &player)
+void Score::insertPlayer(const Player &player, int index)
 {
-    myPlayers.erase(std::remove(myPlayers.begin(), myPlayers.end(), player),
-                    myPlayers.end());
+    myPlayers.insert(myPlayers.begin() + index, player);
+}
+
+void Score::removePlayer(int index)
+{
+    myPlayers.erase(myPlayers.begin() + index);
 }
 
 boost::iterator_range<Score::InstrumentIterator> Score::getInstruments()

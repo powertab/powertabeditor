@@ -25,11 +25,13 @@
 
 MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
                      const TuningDictionary &dictionary,
-                     const PlayerPubSub &pubsub)
+                     const PlayerEditPubSub &editPubSub,
+                     const PlayerRemovePubSub &removePubSub)
     : QWidget(parent),
       ui(new Ui::MixerItem),
       myDictionary(dictionary),
-      myPubSub(pubsub),
+      myEditPubSub(editPubSub),
+      myRemovePubSub(removePubSub),
       myPlayerIndex(playerIndex),
       myTuning(player.getTuning())
 {
@@ -43,6 +45,9 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
     ui->playerPan->setValue(player.getPan());
     ui->playerTuning->setText(QString::fromStdString(
         boost::lexical_cast<std::string>(player.getTuning())));
+
+    ui->removeButton->setIcon(
+        style()->standardIcon(QStyle::SP_TitleBarCloseButton));
 
     ui->playerNameEdit->hide();
 
@@ -66,6 +71,10 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
 
     connect(ui->playerTuning, &ClickableLabel::clicked, this,
             &MixerItem::editTuning);
+
+    connect(ui->removeButton, &QPushButton::clicked, [=]() {
+        myRemovePubSub.publish(myPlayerIndex);
+    });
 }
 
 MixerItem::~MixerItem()
@@ -109,5 +118,5 @@ void MixerItem::onEdited(bool undoable)
     player.setPan(ui->playerPan->value());
     player.setTuning(myTuning);
 
-    myPubSub.publish(myPlayerIndex, player, undoable);
+    myEditPubSub.publish(myPlayerIndex, player, undoable);
 }

@@ -56,6 +56,7 @@
 #include <actions/removeirregulargrouping.h>
 #include <actions/removenote.h>
 #include <actions/removenoteproperty.h>
+#include <actions/removeplayer.h>
 #include <actions/removeplayerchange.h>
 #include <actions/removeposition.h>
 #include <actions/removepositionproperty.h>
@@ -1300,6 +1301,14 @@ void PowerTabEditor::editPlayer(int playerIndex, const Player &player,
     }
 }
 
+void PowerTabEditor::removePlayer(int index)
+{
+    ScoreLocation &location = getLocation();
+
+    myUndoManager->push(new RemovePlayer(location.getScore(), index),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
 void PowerTabEditor::editInstrument(int index, const Instrument &instrument)
 {
     ScoreLocation &location = getLocation();
@@ -2040,15 +2049,19 @@ void PowerTabEditor::createMixer()
     QScrollArea *scroll = new QScrollArea(this);
     scroll->setMinimumSize(0, 150);
 
-    myMixer = new Mixer(scroll, *myTuningDictionary, myPlayerPubSub);
+    myMixer = new Mixer(scroll, *myTuningDictionary, myPlayerEditPubSub,
+                        myPlayerRemovePubSub);
 
     scroll->setWidget(myMixer);
     myMixerDockWidget->setWidget(scroll);
     addDockWidget(Qt::BottomDockWidgetArea, myMixerDockWidget);
 
-    myPlayerPubSub.subscribe([=](int index, const Player & player,
+    myPlayerEditPubSub.subscribe([=](int index, const Player & player,
                                  bool undoable) {
         editPlayer(index, player, undoable);
+    });
+    myPlayerRemovePubSub.subscribe([=](int index) {
+        removePlayer(index);
     });
 }
 
