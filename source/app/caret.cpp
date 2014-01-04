@@ -107,18 +107,21 @@ void Caret::moveToStaff(int staff)
     onLocationChanged();
 }
 
-void Caret::moveToNextBar()
+bool Caret::moveToNextBar()
 {
     const Barline *nextBar = myLocation.getSystem().getNextBarline(
                 myLocation.getPositionIndex());
     if (!nextBar)
-        return;
+        return false;
 
     // Move into the next system if necessary.
     if (*nextBar == myLocation.getSystem().getBarlines().back())
-        moveToSystem(myLocation.getSystemIndex() + 1, true);
+        return moveToSystem(myLocation.getSystemIndex() + 1, true);
     else
-        moveToPosition(nextBar->getPosition() + 1);
+    {
+        moveToPosition(nextBar->getPosition());
+        return true;
+    }
 }
 
 void Caret::moveToPrevBar()
@@ -130,22 +133,17 @@ void Caret::moveToPrevBar()
         prevBar = system.getPreviousBarline(prevBar->getPosition());
 
     if (prevBar)
-    {
-        if (*prevBar == system.getBarlines().front())
-            moveToStartPosition();
-        else
-            moveToPosition(prevBar->getPosition() + 1);
-    }
-    // Move up by a system if we're at the start of our current system.
+        moveToPosition(prevBar->getPosition());
     else if (myLocation.getSystemIndex() > 0)
     {
+        // Move up by a system if we're at the start of our current system.
         moveToSystem(myLocation.getSystemIndex() - 1, true);
 
         // Move to the last barline if possible.
         const System &newSystem = myLocation.getSystem();
         const size_t count = newSystem.getBarlines().size();
         if (count > 2)
-            moveToPosition(newSystem.getBarlines()[count - 2].getPosition() + 1);
+            moveToPosition(newSystem.getBarlines()[count - 2].getPosition());
     }
 }
 
@@ -180,7 +178,7 @@ void Caret::moveToPosition(int position)
     onLocationChanged();
 }
 
-void Caret::moveToSystem(int system, bool keepStaff)
+bool Caret::moveToSystem(int system, bool keepStaff)
 {
     const int prevSystem = myLocation.getSystemIndex();
     myLocation.setSystemIndex(boost::algorithm::clamp(system, 0,
@@ -202,7 +200,10 @@ void Caret::moveToSystem(int system, bool keepStaff)
         myLocation.setString(0);
 
         onLocationChanged();
+        return true;
     }
+    else
+        return false;
 }
 
 void Caret::handleSelectionChanged(const ScoreLocation &location)

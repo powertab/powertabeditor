@@ -39,7 +39,6 @@ Document::Document() :
     m_tablatureStaffLineSpacing(DEFAULT_TABLATURE_STAFF_LINE_SPACING),
     m_fadeIn(DEFAULT_FADE_IN), m_fadeOut(DEFAULT_FADE_OUT)
 {
-    m_scoreArray.push_back(new Score("Player View"));
     m_scoreArray.push_back(new Score("Guitar Score"));
     m_scoreArray.push_back(new Score("Bass Score"));
 }
@@ -175,13 +174,6 @@ Score* Document::GetScore(size_t index) const
     return m_scoreArray[index];
 }
 
-/// Gets a pointer to the player score
-/// @return A pointer to the player score
-Score* Document::GetPlayerScore() const
-{
-    PTB_CHECK_THAT(!m_scoreArray.empty(), nullptr);
-    return m_scoreArray[0];
-}
 // Save Functions
 /// Serializes the document to an output stream
 /// @param stream Output stream to save to

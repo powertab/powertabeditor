@@ -40,32 +40,26 @@ InsertNotes::InsertNotes(const ScoreLocation &location,
     const System &system = location.getSystem();
     const Position *nextPos =
         VoiceUtils::getNextPosition(location.getVoice(), startPos - 1);
-    const Barline *nextBar = system.getNextBarline(startPos - 1);
+    const Barline *nextBar =
+        system.getNextBarline(startPos == 0 ? startPos : startPos - 1);
 
     // Check for any existing notes or barlines that will conflict with the
     // new notes.
-    if ((nextPos && nextPos->getPosition() <= endPos) ||
-        (nextBar && nextBar->getPosition() <= endPos))
+    boost::optional<int> position;
+    if (nextPos && nextPos->getPosition() <= endPos)
+        position = nextPos->getPosition();
+    if (nextBar && nextBar->getPosition() <= endPos)
     {
-        const int firstPosition = (nextPos && nextPos->getPosition() <= endPos)
-                ? nextPos->getPosition() : -1;
-        const int firstBarPos = (nextBar && nextBar->getPosition() <= endPos)
-                ? nextBar->getPosition() : -1;
+        if (position)
+            position = std::min(*position, nextBar->getPosition());
+        else
+            position = nextBar->getPosition();
+    }
 
-        // Take the smallest positive number, ignoring the start barline.
-        int position = -1;
-        if (firstPosition >= 0 && firstBarPos > 0)
-            position = std::min(firstPosition, firstBarPos);
-        else if (firstPosition >= 0)
-            position = firstPosition;
-        else if (firstBarPos > 0)
-            position = firstBarPos;
-
-        if (position >= 0)
-        {
-            myShiftAmount = myNewPositions.back().getPosition() - position + 1;
-            assert(myShiftAmount > 0);
-        }
+    if (position)
+    {
+        myShiftAmount = myNewPositions.back().getPosition() - *position + 1;
+        assert(myShiftAmount > 0);
     }
 }
 

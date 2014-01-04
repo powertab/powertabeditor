@@ -586,11 +586,17 @@ void PowerTabEditor::moveCaretToPrevStaff()
 void PowerTabEditor::moveCaretToNextBar()
 {
     getCaret().moveToNextBar();
+    // Move to the first position after the barline.
+    if (getCaret().getLocation().getPositionIndex() != 0)
+        getCaret().moveHorizontal(1);
 }
 
 void PowerTabEditor::moveCaretToPrevBar()
 {
     getCaret().moveToPrevBar();
+    // Move to the first position after the barline.
+    if (getCaret().getLocation().getPositionIndex() != 0)
+        getCaret().moveHorizontal(1);
 }
 
 void PowerTabEditor::shiftForward()

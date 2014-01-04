@@ -17,6 +17,8 @@
 
 #include "powertaboldimporter.h"
 
+#include <actions/insertnotes.h>
+#include <app/caret.h>
 #include <boost/assign/list_of.hpp>
 #include <cmath>
 #include "powertabdocument/alternateending.h"
@@ -36,6 +38,7 @@
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/systemlocation.h>
+#include <score/voiceutils.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab Document (v1.7)",
@@ -54,9 +57,17 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     score.setScoreInfo(info);
 
     score.setLineSpacing(document.GetTablatureStaffLineSpacing());
+    
+    assert(document.GetNumberOfScores() == 2);
 
-    // TODO - merge bass score.
+    // Convert the guitar score.
     convert(*document.GetScore(0), score);
+
+    // Convert and then merge the bass score.
+    Score bassScore;
+    convert(*document.GetScore(1), bassScore);
+
+    merge(score, bassScore);
 }
 
 void PowerTabOldImporter::convert(
@@ -911,4 +922,71 @@ void PowerTabOldImporter::convertInitialVolumes(
             }
         }
     }
+}
+
+void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
+{
+    Caret destCaret(destScore);
+    Caret srcCaret(srcScore);
+    ScoreLocation &destLoc = destCaret.getLocation();
+    ScoreLocation &srcLoc = srcCaret.getLocation();
+
+    // If it looks like the bass score was unused, don't do anything.
+    if (srcLoc.getVoice().getPositions().empty())
+        return;
+
+    // Merge players and instruments.
+    for (const Player &player : srcScore.getPlayers())
+        destScore.insertPlayer(player);
+
+    for (const Instrument &instrument : srcScore.getInstruments())
+        destScore.insertInstrument(instrument);
+
+    int currentSystemIndex = -1;
+    int staffOffset = 0;
+    do
+    {
+        const Barline *srcBar = srcLoc.getBarline();
+        assert(srcBar);
+
+        System &destSystem = destLoc.getSystem();
+        const System &srcSystem = srcLoc.getSystem();
+
+        // We've moved to a new system - figure out how many staves are already
+        // in this system.
+        if (destLoc.getSystemIndex() != currentSystemIndex)
+        {
+            currentSystemIndex++;
+            staffOffset = destSystem.getStaves().size();
+        }
+
+        // Insert the notes at the first position after the barline.
+        if (destLoc.getPositionIndex() != 0)
+            destCaret.moveHorizontal(1);
+
+        const Barline *nextSrcBar =
+            srcSystem.getNextBarline(srcBar->getPosition());
+        assert(nextSrcBar);
+
+        for (int i = 0; i < srcSystem.getStaves().size(); ++i)
+        {
+            if (destSystem.getStaves().size() <= staffOffset + i)
+            {
+                destSystem.insertStaff(
+                    Staff(srcSystem.getStaves()[i].getStringCount()));
+            }
+            
+            destLoc.setStaffIndex(staffOffset + i);
+            srcLoc.setStaffIndex(i);
+
+            auto positions = VoiceUtils::getPositionsInRange(
+                srcLoc.getVoice(), srcBar->getPosition(),
+                nextSrcBar->getPosition());
+
+            InsertNotes action(destLoc, std::vector<Position>(positions.begin(),
+                                                              positions.end()));
+            action.redo();
+        }
+
+    } while (destCaret.moveToNextBar() && srcCaret.moveToNextBar());
 }

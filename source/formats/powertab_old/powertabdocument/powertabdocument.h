@@ -78,7 +78,6 @@ public:
 
     // Score Functions
     size_t GetNumberOfScores() const;
-    Score* GetPlayerScore() const;
     Score* GetScore(size_t index) const;
     void DeleteScoreArrayContents();
 

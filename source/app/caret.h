@@ -63,7 +63,7 @@ public:
     void moveToLastSystem();
 
     /// Move to the given system index, optionally keeping the same staff index.
-    void moveToSystem(int system, bool keepStaff);
+    bool moveToSystem(int system, bool keepStaff);
 
     /// Moves up or down by the given number of staves.
     void moveStaff(int offset);
@@ -73,7 +73,7 @@ public:
 
     /// Moves the caret to the next bar after the current position, or to the
     /// next system if necessary.
-    void moveToNextBar();
+    bool moveToNextBar();
 
     /// Moves the caret to the bar before the current position, or to the
     /// previous system if necessary.
