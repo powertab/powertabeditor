@@ -18,6 +18,7 @@
 #include <catch.hpp>
 
 #include <score/staff.h>
+#include <score/utils.h>
 #include <score/voiceutils.h>
 #include "test_serialization.h"
 
@@ -93,13 +94,17 @@ TEST_CASE("Score/Staff/GetPositionsInRange", "")
     voice.insertPosition(pos8);
 
     REQUIRE(std::distance(
-                VoiceUtils::getPositionsInRange(voice, 9, 15).begin(),
-                VoiceUtils::getPositionsInRange(voice, 9, 15).end()) == 0);
+                ScoreUtils::findInRange(voice.getPositions(), 9, 15).begin(),
+                ScoreUtils::findInRange(voice.getPositions(), 9, 15).end()) ==
+            0);
     REQUIRE(std::distance(
-                VoiceUtils::getPositionsInRange(voice, 8, 10).begin(),
-                VoiceUtils::getPositionsInRange(voice, 8, 10).end()) == 1);
-    REQUIRE(std::distance(VoiceUtils::getPositionsInRange(voice, 4, 7).begin(),
-                          VoiceUtils::getPositionsInRange(voice, 4, 7).end()) == 3);
+                ScoreUtils::findInRange(voice.getPositions(), 8, 10).begin(),
+                ScoreUtils::findInRange(voice.getPositions(), 8, 10).end()) ==
+            1);
+    REQUIRE(std::distance(
+                ScoreUtils::findInRange(voice.getPositions(), 4, 7).begin(),
+                ScoreUtils::findInRange(voice.getPositions(), 4, 7).end()) ==
+            3);
 }
 
 TEST_CASE("Score/Staff/GetNextNote", "")

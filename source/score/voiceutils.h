@@ -18,31 +18,10 @@
 #ifndef SCORE_VOICEUTILS_H
 #define SCORE_VOICEUTILS_H
 
-#include <boost/range/adaptor/filtered.hpp>
 #include "voice.h"
 
 namespace VoiceUtils
 {
-
-struct InPositionRange
-{
-    InPositionRange(int left, int right);
-
-    bool operator()(const Position &pos) const;
-
-private:
-    const int myLeft;
-    const int myRight;
-};
-
-typedef boost::filtered_range<
-    InPositionRange, boost::iterator_range<Voice::PositionConstIterator>>
-FilteredPositionConstIterator;
-
-/// Returns the specified range of positions in a voice.
-FilteredPositionConstIterator getPositionsInRange(const Voice &voice, int left,
-                                                  int right);
-
 /// Returns the next position in the staff, if it exists.
 const Position *getNextPosition(const Voice &voice, int position);
 

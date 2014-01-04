@@ -26,7 +26,7 @@
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/tuning.h>
-#include <score/voiceutils.h>
+#include <score/utils.h>
 #include <unordered_map>
 
 /// Maps notes to their position on the staff (relative to the top line),
@@ -105,8 +105,9 @@ void StdNotationNote::getNotesInStaff(
             // Store the current accidental for each line/space in the staff.
             std::map<int, AccidentalType> accidentals;
 
-            for (const Position &pos : VoiceUtils::getPositionsInRange(
-                     voice, bar.getPosition(), nextBar->getPosition()))
+            for (const Position &pos : ScoreUtils::findInRange(
+                     voice.getPositions(), bar.getPosition(),
+                     nextBar->getPosition()))
             {
                 Q_ASSERT(pos.getPosition() == 0 ||
                          pos.getPosition() != bar.getPosition());

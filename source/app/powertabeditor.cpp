@@ -942,9 +942,9 @@ void PowerTabEditor::editMultiBarRest()
             const Barline *nextBar =
                 system.getNextBarline(location.getPositionIndex());
 
-            if (!VoiceUtils::getPositionsInRange(
-                     location.getVoice(), prevBar->getPosition(),
-                     nextBar->getPosition()).empty())
+            if (!ScoreUtils::findInRange(location.getVoice().getPositions(),
+                                         prevBar->getPosition(),
+                                         nextBar->getPosition()).empty())
             {
                 QMessageBox message(this);
                 message.setText(

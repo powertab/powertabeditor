@@ -38,7 +38,7 @@
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/systemlocation.h>
-#include <score/voiceutils.h>
+#include <score/utils.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab Document (v1.7)",
@@ -935,6 +935,9 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
     if (srcLoc.getVoice().getPositions().empty())
         return;
 
+    const int numDestPlayers = destScore.getPlayers().size();
+    const int numDestInstruments = destScore.getInstruments().size();
+
     // Merge players and instruments.
     for (const Player &player : srcScore.getPlayers())
         destScore.insertPlayer(player);
@@ -943,9 +946,11 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
         destScore.insertInstrument(instrument);
 
     int currentSystemIndex = -1;
-    int staffOffset = 0;
+    int numDestStaves = 0;
     do
     {
+        const Barline *destBar = destLoc.getBarline();
+        assert(destBar);
         const Barline *srcBar = srcLoc.getBarline();
         assert(srcBar);
 
@@ -957,7 +962,7 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
         if (destLoc.getSystemIndex() != currentSystemIndex)
         {
             currentSystemIndex++;
-            staffOffset = destSystem.getStaves().size();
+            numDestStaves = destSystem.getStaves().size();
         }
 
         // Insert the notes at the first position after the barline.
@@ -967,25 +972,57 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
         const Barline *nextSrcBar =
             srcSystem.getNextBarline(srcBar->getPosition());
         assert(nextSrcBar);
+        const Barline *nextDestBar =
+            destSystem.getNextBarline(destBar->getPosition());
+        assert(nextDestBar);
 
         for (int i = 0; i < srcSystem.getStaves().size(); ++i)
         {
-            if (destSystem.getStaves().size() <= staffOffset + i)
+            // Ensure that there are enough staves in the destination system.
+            if (destSystem.getStaves().size() <= numDestStaves + i)
             {
                 destSystem.insertStaff(
                     Staff(srcSystem.getStaves()[i].getStringCount()));
             }
             
-            destLoc.setStaffIndex(staffOffset + i);
+            // Copy the positions from the source bar to the destination bar.
+            destLoc.setStaffIndex(numDestStaves + i);
             srcLoc.setStaffIndex(i);
 
-            auto positions = VoiceUtils::getPositionsInRange(
-                srcLoc.getVoice(), srcBar->getPosition(),
+            auto positions = ScoreUtils::findInRange(
+                srcLoc.getVoice().getPositions(), srcBar->getPosition(),
                 nextSrcBar->getPosition());
 
             InsertNotes action(destLoc, std::vector<Position>(positions.begin(),
                                                               positions.end()));
             action.redo();
+        }
+
+        // Merge player changes.
+        auto srcChanges = ScoreUtils::findInRange(
+            srcSystem.getPlayerChanges(), srcBar->getPosition(),
+            nextSrcBar->getPosition() - 1);
+        auto destChanges = ScoreUtils::findInRange(
+            destSystem.getPlayerChanges(), destBar->getPosition(),
+            nextDestBar->getPosition() - 1);
+
+        if (!srcChanges.empty() && !destChanges.empty())
+        {
+            // For now, assume only 1 guitar-in per bar.
+            PlayerChange &destChange = destChanges.front();
+            const PlayerChange &srcChange = srcChanges.front();
+
+            for (int i = 0; i < srcSystem.getStaves().size(); ++i)
+            {
+                for (const ActivePlayer &player : srcChange.getActivePlayers(i))
+                {
+                    destChange.insertActivePlayer(
+                        numDestStaves + i,
+                        ActivePlayer(
+                            numDestPlayers + player.getPlayerNumber(),
+                            numDestInstruments + player.getInstrumentNumber()));
+                }
+            }
         }
 
     } while (destCaret.moveToNextBar() && srcCaret.moveToNextBar());

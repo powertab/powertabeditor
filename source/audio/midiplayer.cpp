@@ -204,7 +204,7 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
     bool letRingActive = false;
 
     for (const Position &pos :
-         VoiceUtils::getPositionsInRange(voice, leftPos, rightPos))
+         ScoreUtils::findInRange(voice.getPositions(), leftPos, rightPos))
     {
         const int position = pos.getPosition();
         const double currentTempo = getCurrentTempo(systemIndex, position);
@@ -330,8 +330,8 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         }
         // Make sure that we end the let ring after the last position in the bar.
         else if (letRingActive &&
-                 (&pos == &VoiceUtils::getPositionsInRange(voice, leftPos,
-                                                           rightPos).back()))
+                 (&pos == &ScoreUtils::findInRange(voice.getPositions(),
+                                                   leftPos, rightPos).back()))
         {
             for (const ActivePlayer &player : activePlayers)
             {
@@ -829,8 +829,9 @@ double MidiPlayer::generateMetronome(const System &system, int systemIndex,
     {
         for (const Voice &voice : staff.getVoices())
         {
-            for (const Position &pos : VoiceUtils::getPositionsInRange(
-                     voice, barline.getPosition(), nextBar->getPosition()))
+            for (const Position &pos : ScoreUtils::findInRange(
+                     voice.getPositions(), barline.getPosition(),
+                     nextBar->getPosition()))
             {
                 if (pos.hasMultiBarRest())
                 {

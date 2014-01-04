@@ -23,23 +23,6 @@
 namespace VoiceUtils
 {
 
-FilteredPositionConstIterator getPositionsInRange(const Voice &voice, int left,
-                                                  int right)
-{
-    auto range = voice.getPositions();
-    return boost::adaptors::filter(range, InPositionRange(left, right));
-}
-
-InPositionRange::InPositionRange(int left, int right)
-    : myLeft(left), myRight(right)
-{
-}
-
-bool InPositionRange::operator()(const Position &pos) const
-{
-    return pos.getPosition() >= myLeft && pos.getPosition() <= myRight;
-}
-
 const Position *getNextPosition(const Voice &voice, int position)
 {
     for (const Position &pos : voice.getPositions())

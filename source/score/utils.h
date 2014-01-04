@@ -19,6 +19,7 @@
 #define SCORE_UTILS_H
 
 #include <algorithm>
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
 namespace ScoreUtils {
@@ -49,6 +50,32 @@ namespace ScoreUtils {
         }
 
         return -1;
+    }
+
+    struct InPositionRange
+    {
+        InPositionRange(int left, int right) : myLeft(left), myRight(right)
+        {
+        }
+
+        template <typename T>
+        bool operator()(const T &obj) const
+        {
+            return obj.getPosition() >= myLeft && obj.getPosition() <= myRight;
+        }
+
+    private:
+        const int myLeft;
+        const int myRight;
+    };
+
+    template <typename Range>
+    boost::filtered_range<InPositionRange, Range> findInRange(Range range,
+                                                              int left,
+                                                              int right)
+    {
+        return boost::adaptors::filter(
+            range, InPositionRange(left, right));
     }
 
     // Some helper methods to reduce code duplication.
