@@ -981,8 +981,11 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
             // Ensure that there are enough staves in the destination system.
             if (destSystem.getStaves().size() <= numDestStaves + i)
             {
-                destSystem.insertStaff(
-                    Staff(srcSystem.getStaves()[i].getStringCount()));
+                const Staff &srcStaff = srcSystem.getStaves()[i];
+                Staff destStaff(srcStaff.getStringCount());
+                destStaff.setClefType(srcStaff.getClefType());
+                destStaff.setViewType(Staff::BassView);
+                destSystem.insertStaff(destStaff);
             }
             
             // Copy the positions from the source bar to the destination bar.

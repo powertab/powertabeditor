@@ -69,11 +69,14 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
     int i = 0;
     for (const Staff &staff : system.getStaves())
     {
+        // TODO - re-enable this once there is a UI for switching the score view.
+#if 0
         if (staff.getViewType() != view)
         {
             ++i;
             continue;
         }
+#endif
 
         const bool isFirstStaff = (height == 0);
         LayoutConstPtr layout = std::make_shared<LayoutInfo>(
