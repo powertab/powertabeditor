@@ -1009,17 +1009,30 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
             destSystem.getPlayerChanges(), destBar->getPosition(),
             nextDestBar->getPosition() - 1);
 
-        if (!srcChanges.empty() && !destChanges.empty())
+        if (!srcChanges.empty())
         {
+            // Either add to an existing player change in the destination
+            // system, or create one if necessary.
+            PlayerChange *destChange = nullptr;
+            if (!destChanges.empty())
+                destChange = &destChanges.front();
+            else
+            {
+                PlayerChange change(destLoc.getPositionIndex());
+                destSystem.insertPlayerChange(change);
+                destChange = ScoreUtils::findByPosition(
+                    destSystem.getPlayerChanges(), destLoc.getPositionIndex());
+            }
+            assert(destChange);
+
             // For now, assume only 1 guitar-in per bar.
-            PlayerChange &destChange = destChanges.front();
             const PlayerChange &srcChange = srcChanges.front();
 
             for (int i = 0; i < srcSystem.getStaves().size(); ++i)
             {
                 for (const ActivePlayer &player : srcChange.getActivePlayers(i))
                 {
-                    destChange.insertActivePlayer(
+                    destChange->insertActivePlayer(
                         numDestStaves + i,
                         ActivePlayer(
                             numDestPlayers + player.getPlayerNumber(),
