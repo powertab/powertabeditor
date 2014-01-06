@@ -58,7 +58,7 @@ file(COPY data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(DEBUG_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/Debug)
     set(RELEASE_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/Release)
-    set(QT_BIN_DIR ${Qt5Core_DIR}/../../../bin)
+    set(QT_BIN_DIR ${Qt5Core_DIR}/../../../lib)
     set(QT_PLATFORM_PLUGINS_DIR ${Qt5Core_DIR}/../../../plugins/platforms)
     get_filename_component(BOOST_LIB_DIR ${Boost_DATE_TIME_LIBRARY_DEBUG} PATH)
     get_filename_component(DT_NAME_DEBUG ${Boost_DATE_TIME_LIBRARY_DEBUG} NAME_WE)
@@ -80,9 +80,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Networkd.pdb ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libEGLd.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libGLESv2d.dll ${DEBUG_BIN_DIR}
-	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuin51.dll ${DEBUG_BIN_DIR}
-	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuuc51.dll ${DEBUG_BIN_DIR}
-	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icudt51.dll ${DEBUG_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E make_directory ${DEBUG_BIN_DIR}/platforms
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_PLATFORM_PLUGINS_DIR}/qwindowsd.dll ${DEBUG_BIN_DIR}/platforms
 
@@ -93,9 +90,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/Qt5Network.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libEGL.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/libGLESv2.dll ${RELEASE_BIN_DIR}
-	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuin51.dll ${RELEASE_BIN_DIR}
-	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icuuc51.dll ${RELEASE_BIN_DIR}
-	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_BIN_DIR}/icudt51.dll ${RELEASE_BIN_DIR}
 	    COMMAND ${CMAKE_COMMAND} -E make_directory ${RELEASE_BIN_DIR}/platforms
 	    COMMAND ${CMAKE_COMMAND} -E copy ${QT_PLATFORM_PLUGINS_DIR}/qwindows.dll ${RELEASE_BIN_DIR}/platforms
 

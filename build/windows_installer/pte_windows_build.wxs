@@ -8,7 +8,7 @@
   <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
   
   <?define SourceDir="../../source"?>
-  <?define BinDir="../../build_cmake/source/Release"?>
+  <?define BinDir="../../../build/source/Release"?>
   
 	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)"
            Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
@@ -80,24 +80,13 @@
       </Component>
 
       <Component Id="boost_date_time" Guid="0EEFDDF6-44AC-4AF2-9B73-6B5FA7DE0BA7">
-        <File Source="$(var.BinDir)/boost_date_time-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
+        <File Source="$(var.BinDir)/boost_date_time-vc120-mt-1_55.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="boost_iostreams" Guid="3224E977-9137-43A1-B7EC-6AA6F276BA5C">
-        <File Source="$(var.BinDir)/boost_iostreams-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
+        <File Source="$(var.BinDir)/boost_iostreams-vc120-mt-1_55.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="boost_zlib" Guid="47D475EF-FF77-43A2-9225-1BF1040BC15B">
-        <File Source="$(var.BinDir)/boost_zlib-vc110-mt-1_53.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <!-- TODO - build Qt without ANGLE and possibly ICU to avoid bundling these massive dlls
-           (see http://qt-project.org/doc/qt-5.1/qtdoc/deployment-windows.html) -->
-      <Component Id="icudt51" Guid="EE3D84C2-DBBF-465F-8368-B3C7082564BA">
-        <File Source="$(var.BinDir)/icudt51.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="icuin51" Guid="7A999290-D202-4775-A875-DE1EBE05852D">
-        <File Source="$(var.BinDir)/icuin51.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="icuuc51" Guid="ACD4C0D3-9E0B-4809-8BD8-17295E3C021C">
-        <File Source="$(var.BinDir)/icuuc51.dll" KeyPath="yes" Checksum="yes" />
+        <File Source="$(var.BinDir)/boost_zlib-vc120-mt-1_55.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="libEGL" Guid="060B6468-B66B-4B9F-AFE4-8016428ABE9D">
         <File Source="$(var.BinDir)/libEGL.dll" KeyPath="yes" Checksum="yes" />
