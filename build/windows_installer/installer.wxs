@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?include common.wxi ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+	<Bundle Name="$(var.ProductName)" Version="$(var.Version)"
+          Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)"
+          IconSourceFile="$(var.SourceDir)/icons/app_icon.ico">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication LicenseFile="license.rtf" LogoFile="logo.png"/>
+    </BootstrapperApplicationRef>
+
+    <Variable Name="InstallFolder" Type="string" Value="[ProgramFiles64Folder]$(var.ProductShortName)\$(var.ProductName)" />
+
+    <!-- Allow the program to be launched after installation. -->
+    <Variable Name="LaunchTarget" Value="[InstallFolder]\powertabeditor.exe"/>
+
+		<Chain>
+      <MsiPackage SourceFile="$(var.powertabeditor.TargetPath)" Id="PowerTabEditorSetup"
+                  Vital="yes" ForcePerMachine="yes" Compressed="yes">
+        <MsiProperty Name="INSTALLLOCATION" Value="[InstallFolder]" />
+      </MsiPackage>
+		</Chain>
+	</Bundle>
+</Wix>

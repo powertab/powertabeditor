@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?include common.wxi ?>
+<?define CRTMergeModule = "C:\Program Files (x86)\Common Files\Merge Modules\Microsoft_VC120_CRT_x64.msm" ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  
-  <?define ProductName="Power Tab Editor"?>
-  <?define ProductShortName="Power Tab"?>
-  <?define Manufacturer="Power Tab Community"?>
-  <?define Version="2.0.0.0"?>
-  <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
-  
-  <?define SourceDir="../../source"?>
-  <?define BinDir="../../../build/source/Release"?>
   
 	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)"
            Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+		<Package InstallerVersion="405" Compressed="yes" />
     <MediaTemplate EmbedCab="yes" />
     
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -22,6 +15,9 @@
       <ComponentGroupRef Id="PlatformBinaries" />
       <ComponentGroupRef Id="DataFiles" />
 		</Feature>
+    <Feature Id="CRT" Level="1">
+      <MergeRef Id="CRT" />
+    </Feature>
 
     <Icon Id="powertabeditor.ico" SourceFile="$(var.SourceDir)/icons/app_icon.ico" />
     <Property Id="ARPPRODUCTICON" Value="powertabeditor.ico" />
@@ -29,7 +25,10 @@
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
+      <!-- Install the C runtime -->
+      <Merge Id="CRT" Language="0" SourceFile="$(var.CRTMergeModule)" DiskId="1" />
+      
+			<Directory Id="ProgramFiles64Folder">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
           <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
             <Directory Id="PlatformBinariesDir" Name="platforms" />
