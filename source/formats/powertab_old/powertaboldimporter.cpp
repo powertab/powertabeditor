@@ -924,6 +924,76 @@ void PowerTabOldImporter::convertInitialVolumes(
     }
 }
 
+static void mergePlayerChanges(const ScoreLocation &srcLoc,
+                               ScoreLocation &destLoc,
+                               boost::optional<PlayerChange> &prevPlayerChange,
+                               const int numDestPlayers,
+                               const int numDestInstruments,
+                               const int numDestStaves)
+{
+    const System &srcSystem = srcLoc.getSystem();
+    System &destSystem = destLoc.getSystem();
+
+    const Barline *srcBar = srcLoc.getBarline();
+    const Barline *nextSrcBar = srcSystem.getNextBarline(srcBar->getPosition());
+    const Barline *destBar = destLoc.getBarline();
+    const Barline *nextDestBar =
+        destSystem.getNextBarline(destBar->getPosition());
+
+    auto srcChanges = ScoreUtils::findInRange(srcSystem.getPlayerChanges(),
+                                              srcBar->getPosition(),
+                                              nextSrcBar->getPosition() - 1);
+    auto destChanges = ScoreUtils::findInRange(destSystem.getPlayerChanges(),
+                                               destBar->getPosition(),
+                                               nextDestBar->getPosition() - 1);
+
+    if (!srcChanges.empty() || !destChanges.empty())
+    {
+        // Either add to an existing player change in the destination
+        // system, or create one if necessary.
+        PlayerChange *destChange = nullptr;
+        if (!destChanges.empty())
+            destChange = &destChanges.front();
+        else
+        {
+            // Copy the current set of active players.
+            PlayerChange change;
+            if (prevPlayerChange)
+                change = *prevPlayerChange;
+
+            change.setPosition(destLoc.getPositionIndex());
+            destSystem.insertPlayerChange(change);
+            destChange = ScoreUtils::findByPosition(
+                destSystem.getPlayerChanges(), destLoc.getPositionIndex());
+        }
+        assert(destChange);
+        prevPlayerChange = *destChange;
+
+        // If there is a player change at this bar in the destination
+        // but not in the source, we still need to merge in the active
+        // player change.
+        const PlayerChange *srcChange = ScoreUtils::getCurrentPlayers(
+            srcLoc.getScore(), srcLoc.getSystemIndex(),
+            srcLoc.getPositionIndex());
+
+        if (srcChange)
+        {
+            for (int i = 0; i < srcSystem.getStaves().size(); ++i)
+            {
+                for (const ActivePlayer &player :
+                     srcChange->getActivePlayers(i))
+                {
+                    destChange->insertActivePlayer(
+                        numDestStaves + i,
+                        ActivePlayer(numDestPlayers + player.getPlayerNumber(),
+                                     numDestInstruments +
+                                         player.getInstrumentNumber()));
+                }
+            }
+        }
+    }
+}
+
 void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
 {
     Caret destCaret(destScore);
@@ -952,13 +1022,16 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
     
     while (true)
     {
-        const Barline *destBar = destLoc.getBarline();
+		System &destSystem = destLoc.getSystem();
+		const System &srcSystem = srcLoc.getSystem();
+
+		const Barline *destBar = destLoc.getBarline();
         assert(destBar);
         const Barline *srcBar = srcLoc.getBarline();
         assert(srcBar);
-
-        System &destSystem = destLoc.getSystem();
-        const System &srcSystem = srcLoc.getSystem();
+		const Barline *nextSrcBar =
+			srcSystem.getNextBarline(srcBar->getPosition());
+		assert(nextSrcBar);
 
         // We've moved to a new system - figure out how many staves are already
         // in this system.
@@ -968,76 +1041,18 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
             numDestStaves = destSystem.getStaves().size();
         }
 
-        // Insert the notes at the first position after the barline.
-        if (destLoc.getPositionIndex() != 0)
-            destCaret.moveHorizontal(1);
-
-        const Barline *nextSrcBar =
-            srcSystem.getNextBarline(srcBar->getPosition());
-        assert(nextSrcBar);
-        const Barline *nextDestBar =
-            destSystem.getNextBarline(destBar->getPosition());
-        assert(nextDestBar);
-
         // Merge player changes. We need to ensure that this isn't done
         // repeatedly in the case of multi-bar rests.
         if (!multibarRestCount)
         {
-            auto srcChanges = ScoreUtils::findInRange(
-                srcSystem.getPlayerChanges(), srcBar->getPosition(),
-                nextSrcBar->getPosition() - 1);
-            auto destChanges = ScoreUtils::findInRange(
-                destSystem.getPlayerChanges(), destBar->getPosition(),
-                nextDestBar->getPosition() - 1);
-
-            if (!srcChanges.empty() || !destChanges.empty())
-            {
-                // Either add to an existing player change in the destination
-                // system, or create one if necessary.
-                PlayerChange *destChange = nullptr;
-                if (!destChanges.empty())
-                    destChange = &destChanges.front();
-                else
-                {
-                    // Copy the current set of active players.
-                    PlayerChange change;
-                    if (prevPlayerChange)
-                        change = *prevPlayerChange;
-
-                    change.setPosition(destLoc.getPositionIndex());
-                    destSystem.insertPlayerChange(change);
-                    destChange = ScoreUtils::findByPosition(
-                        destSystem.getPlayerChanges(),
-                        destLoc.getPositionIndex());
-                }
-                assert(destChange);
-                prevPlayerChange = *destChange;
-
-                // If there is a player change at this bar in the destination
-                // but not in the source, we still need to merge in the active
-                // player change.
-                const PlayerChange *srcChange = ScoreUtils::getCurrentPlayers(
-                    srcScore, srcLoc.getSystemIndex(),
-                    srcLoc.getPositionIndex());
-
-                if (srcChange)
-                {
-                    for (int i = 0; i < srcSystem.getStaves().size(); ++i)
-                    {
-                        for (const ActivePlayer &player :
-                             srcChange->getActivePlayers(i))
-                        {
-                            destChange->insertActivePlayer(
-                                numDestStaves + i,
-                                ActivePlayer(
-                                    numDestPlayers + player.getPlayerNumber(),
-                                    numDestInstruments +
-                                        player.getInstrumentNumber()));
-                        }
-                    }
-                }
-            }
+            mergePlayerChanges(srcLoc, destLoc, prevPlayerChange,
+                               numDestPlayers, numDestInstruments,
+                               numDestStaves);
         }
+
+        // Insert the notes at the first position after the barline.
+		if (destLoc.getPositionIndex() != 0)
+			destCaret.moveHorizontal(1);
 
         // Merge the notes.
         for (int i = 0; i < srcSystem.getStaves().size(); ++i)
@@ -1056,35 +1071,45 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
             destLoc.setStaffIndex(numDestStaves + i);
             srcLoc.setStaffIndex(i);
 
-            auto positions = ScoreUtils::findInRange(
-                srcLoc.getVoice().getPositions(), srcBar->getPosition(),
-                nextSrcBar->getPosition());
-
-            // Check for a multibar rest.
-            if (!multibarRestCount)
+			// Import each voice.
+            for (int v = 0; v < Staff::NUM_VOICES; ++v)
             {
-                for (const Position &pos : positions)
+                destLoc.setVoiceIndex(v);
+                srcLoc.setVoiceIndex(v);
+
+                auto positions = ScoreUtils::findInRange(
+                    srcLoc.getVoice().getPositions(), srcBar->getPosition(),
+                    nextSrcBar->getPosition());
+				if (positions.empty())
+					continue;
+
+                // Check for a multibar rest.
+                if (!multibarRestCount)
                 {
-                    if (pos.hasMultiBarRest())
+                    for (const Position &pos : positions)
                     {
-                        multibarRestCount = pos.getMultiBarRestCount();
-                        break;
+                        if (pos.hasMultiBarRest())
+                        {
+                            multibarRestCount = pos.getMultiBarRestCount();
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (multibarRestCount)
-            {
-                Position wholeRest(destBar->getPosition() + 1, Position::WholeNote);
-                wholeRest.setRest();
-                destLoc.getVoice().insertPosition(wholeRest);
-            }
-            else
-            {
-                InsertNotes action(
-                    destLoc,
-                    std::vector<Position>(positions.begin(), positions.end()));
-                action.redo();
+                if (multibarRestCount)
+                {
+                    Position wholeRest(destBar->getPosition() + 1,
+                                       Position::WholeNote);
+                    wholeRest.setRest();
+                    destLoc.getVoice().insertPosition(wholeRest);
+                }
+                else
+                {
+                    InsertNotes action(destLoc,
+                                       std::vector<Position>(positions.begin(),
+                                                             positions.end()));
+                    action.redo();
+                }
             }
         }
 
