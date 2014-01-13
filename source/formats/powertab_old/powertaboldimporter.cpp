@@ -1095,15 +1095,16 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
                 }
 
                 // If there is a multi-bar rest, or the bass score doesn't have
-                // more notes, insert a whole rest.
-                if (multibarRestCount || positions.empty())
+                // more notes, insert a whole rest. We don't want to do that if
+                // the second voice is empty, though.
+                if (multibarRestCount || (positions.empty() && v == 0))
                 {
                     Position wholeRest(destBar->getPosition() + 1,
                                        Position::WholeNote);
                     wholeRest.setRest();
                     destLoc.getVoice().insertPosition(wholeRest);
                 }
-                else
+				else if (!positions.empty())
                 {
                     InsertNotes action(destLoc,
                                        std::vector<Position>(positions.begin(),
