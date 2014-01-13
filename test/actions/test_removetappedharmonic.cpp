@@ -17,7 +17,7 @@
   
 #include <catch.hpp>
 
-#include <actions/removetappedharmonic.h>
+#include <actions/removespecialnoteproperty.h>
 #include <score/note.h>
 #include "actionfixture.h"
 

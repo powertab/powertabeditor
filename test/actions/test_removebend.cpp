@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,24 +14,25 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
-#ifndef ACTIONS_REMOVETRILL_H
-#define ACTIONS_REMOVETRILL_H
 
-#include <QUndoCommand>
-#include <score/scorelocation.h>
+#include <catch.hpp>
 
-class RemoveTrill : public QUndoCommand
+#include <actions/removespecialnoteproperty.h>
+#include <score/note.h>
+#include "actionfixture.h"
+
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveBend", "")
 {
-public:
-    RemoveTrill(const ScoreLocation &location);
+	Bend bend(Bend::BendAndHold, 3, 2, 5, Bend::MidPoint, Bend::HighPoint);
+    myLocation.getNote()->setBend(bend);
 
-    virtual void undo() override;
-    virtual void redo() override;
+    RemoveBend action(myLocation);
 
-private:
-    ScoreLocation myLocation;
-    const int myTrilledFret;
-};
+    action.redo();
+    REQUIRE(!myLocation.getNote()->hasBend());
 
-#endif
+    action.undo();
+    REQUIRE(myLocation.getNote()->hasBend());
+    REQUIRE(myLocation.getNote()->getBend() == bend);
+}
+

@@ -219,6 +219,8 @@ private slots:
     void editArtificialHarmonic();
     /// Adds or removes a tapped harmonic for the current note.
     void editTappedHarmonic();
+	/// Adds or removes a bend for the current note.
+	void editBend();
     /// Adds or removes a trill for the current note.
     void editTrill();
 
@@ -490,6 +492,7 @@ private:
     Command *myNaturalHarmonicCommand;
     Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
+	Command *myBendCommand;
 
     QMenu *mySlideIntoMenu;
     Command *mySlideIntoFromAboveCommand;

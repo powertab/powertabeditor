@@ -38,6 +38,7 @@ add_executable(pte_tests
     actions/test_removealternateending.cpp
     actions/test_removeartificialharmonic.cpp
     actions/test_removebarline.cpp
+    actions/test_removebend.cpp
     actions/test_removechordtext.cpp
     actions/test_removedirection.cpp
     actions/test_removedynamic.cpp

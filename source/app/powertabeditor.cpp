@@ -49,7 +49,6 @@
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
 #include <actions/removealternateending.h>
-#include <actions/removeartificialharmonic.h>
 #include <actions/removebarline.h>
 #include <actions/removechordtext.h>
 #include <actions/removedirection.h>
@@ -63,11 +62,10 @@
 #include <actions/removeposition.h>
 #include <actions/removepositionproperty.h>
 #include <actions/removerehearsalsign.h>
+#include <actions/removespecialnoteproperty.h>
 #include <actions/removestaff.h>
 #include <actions/removesystem.h>
-#include <actions/removetappedharmonic.h>
 #include <actions/removetempomarker.h>
-#include <actions/removetrill.h>
 #include <actions/shiftpositions.h>
 #include <actions/undomanager.h>
 
@@ -1221,6 +1219,30 @@ void PowerTabEditor::editTappedHarmonic()
     }
 }
 
+void PowerTabEditor::editBend()
+{
+    const ScoreLocation &location = getLocation();
+    const Note *note = location.getNote();
+    Q_ASSERT(note);
+
+	if (note->hasBend())
+        myUndoManager->push(new RemoveBend(location),
+                            location.getSystemIndex());
+#if 0
+	else
+    {
+        BendDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(new AddBend(location, dialog.getBend()),
+                                location.getSystemIndex());
+        }
+        else
+            myBendCommand->setChecked(false);
+    }
+#endif
+}
+
 void PowerTabEditor::editTrill()
 {
     const ScoreLocation &location = getLocation();
@@ -1965,6 +1987,12 @@ void PowerTabEditor::createCommands()
     connect(myTappedHarmonicCommand, SIGNAL(triggered()), this,
             SLOT(editTappedHarmonic()));
 
+    myBendCommand =
+        new Command(tr("Bend..."), "TabSymbols.Bend", QKeySequence(), this);
+    myBendCommand->setCheckable(true);
+    connect(myBendCommand, &QAction::triggered, this,
+            &PowerTabEditor::editBend);
+
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
                                   Position::Vibrato);
@@ -2354,6 +2382,9 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addAction(myTappedHarmonicCommand);
     myTabSymbolsMenu->addSeparator();
 
+	myTabSymbolsMenu->addAction(myBendCommand);
+	myTabSymbolsMenu->addSeparator();
+
     mySlideIntoMenu = myTabSymbolsMenu->addMenu(tr("Slide Into"));
     mySlideIntoMenu->addAction(mySlideIntoFromBelowCommand);
     mySlideIntoMenu->addAction(mySlideIntoFromAboveCommand);
@@ -2681,6 +2712,9 @@ void PowerTabEditor::updateCommands()
                                             note->hasArtificialHarmonic());
     myTappedHarmonicCommand->setEnabled(note);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
+
+    myBendCommand->setEnabled(note);
+    myBendCommand->setChecked(note && note->hasBend());
 
     updateNoteProperty(mySlideIntoFromAboveCommand, note,
                        Note::SlideIntoFromAbove);

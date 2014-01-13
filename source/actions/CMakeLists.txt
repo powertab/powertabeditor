@@ -36,7 +36,6 @@ add_library(pteactions
     edittimesignature.cpp
     insertnotes.cpp
     removealternateending.cpp
-    removeartificialharmonic.cpp
     removebarline.cpp
     removechordtext.cpp
     removedirection.cpp
@@ -52,9 +51,7 @@ add_library(pteactions
     removerehearsalsign.cpp
     removestaff.cpp
     removesystem.cpp
-    removetappedharmonic.cpp
     removetempomarker.cpp
-    removetrill.cpp
     #removevolumeswell.cpp
     shiftpositions.cpp
     #shifttabnumber.cpp
@@ -95,7 +92,6 @@ add_library(pteactions
     edittimesignature.h
     insertnotes.h
     removealternateending.h
-    removeartificialharmonic.h
     removebarline.h
     removechordtext.h
     removedirection.h
@@ -109,11 +105,10 @@ add_library(pteactions
     removeposition.h
     removepositionproperty.h
     removerehearsalsign.h
+    removespecialnoteproperty.h
     removestaff.h
     removesystem.h
-    removetappedharmonic.h
     removetempomarker.h
-    removetrill.h
     #removevolumeswell.h
     shiftpositions.h
     #shifttabnumber.h
