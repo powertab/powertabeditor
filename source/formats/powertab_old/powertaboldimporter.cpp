@@ -1080,8 +1080,6 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
                 auto positions = ScoreUtils::findInRange(
                     srcLoc.getVoice().getPositions(), srcBar->getPosition(),
                     nextSrcBar->getPosition());
-				if (positions.empty())
-					continue;
 
                 // Check for a multibar rest.
                 if (!multibarRestCount)
@@ -1096,7 +1094,9 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
                     }
                 }
 
-                if (multibarRestCount)
+                // If there is a multi-bar rest, or the bass score doesn't have
+                // more notes, insert a whole rest.
+                if (multibarRestCount || positions.empty())
                 {
                     Position wholeRest(destBar->getPosition() + 1,
                                        Position::WholeNote);
@@ -1119,8 +1119,14 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
 
         if (multibarRestCount)
             --multibarRestCount;
-        
-        if (!multibarRestCount && !srcCaret.moveToNextBar())
-            break;
+
+        // If we can't move to the next bar in the bass score, we still need to
+        // keep going so that any remaining measures in the current system are
+        // filled with rests.
+        if (!multibarRestCount && !srcCaret.moveToNextBar() &&
+            destLoc.getSystemIndex() != currentSystemIndex)
+		{
+			break;
+		}
     }
 }
