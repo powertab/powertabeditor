@@ -52,7 +52,7 @@ public:
     ~PowerTabEditor();
 
     /// Opens the given list of files.
-    void openFiles(const std::vector<std::string> &files);
+    void openFiles(const QStringList &files);
 
 private slots:
     /// Creates a new (blank) document.

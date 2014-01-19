@@ -196,10 +196,10 @@ PowerTabEditor::~PowerTabEditor()
 {
 }
 
-void PowerTabEditor::openFiles(const std::vector<std::string> &files)
+void PowerTabEditor::openFiles(const QStringList &files)
 {
     for (auto &filename : files)
-        openFile(QString::fromStdString(filename));
+        openFile(filename);
 }
 
 void PowerTabEditor::createNewDocument()

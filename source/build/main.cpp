@@ -16,9 +16,9 @@
 */
  
 #include <app/powertabeditor.h>
-#include <app/options.h>
 #include <app/settings.h>
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QSettings>
@@ -37,70 +37,71 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Power Tab Editor");
     QCoreApplication::setApplicationVersion("2.0");
 
-    // Allow QWidget::activateWindow() to bring the application into the
-    // foreground when running on Windows.
+	// Allow QWidget::activateWindow() to bring the application into the
+	// foreground when running on Windows.
 #ifdef _WIN32
     AllowSetForegroundWindow(ASFW_ANY);
 #endif
 
-    Options options;
-    if (options.parse(QCoreApplication::arguments()))
-    {
-        QSettings settings;
+    QCommandLineParser parser;
+    parser.setApplicationDescription("A guitar tablature editor.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+	parser.addPositionalArgument("files", "The files to be opened, optionally.", "[files...]");
+    parser.process(a);
 
-        // If an instance of the program is already running and we're in
-        // single-window mode, tell the running instance to open the files in
-        // new tabs.
-        if (!options.filesToOpen().empty() &&
-            !settings.value(Settings::GENERAL_OPEN_IN_NEW_WINDOW,
-                            Settings::GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT).toBool())
+	QStringList filesToOpen = parser.positionalArguments();
+
+    QSettings settings;
+    // If an instance of the program is already running and we're in
+    // single-window mode, tell the running instance to open the files in
+    // new tabs.
+    if (!filesToOpen.empty() &&
+        !settings.value(Settings::GENERAL_OPEN_IN_NEW_WINDOW,
+                        Settings::GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT).toBool())
+    {
+        QLocalSocket socket;
+        socket.connectToServer(QCoreApplication::applicationFilePath(),
+                               QIODevice::WriteOnly);
+        if (socket.waitForConnected(500))
         {
-            QLocalSocket socket;
-            socket.connectToServer(QCoreApplication::applicationFilePath(),
-                                   QIODevice::WriteOnly);
-            if (socket.waitForConnected(500))
-            {
-                QTextStream out(&socket);
-                for (const std::string &file : options.filesToOpen())
-                    out << QString::fromStdString(file) << "\n";
-                socket.waitForBytesWritten();
-                return EXIT_SUCCESS;
-            }
+            QTextStream out(&socket);
+            for (const QString &file : filesToOpen)
+                out << file << "\n";
+            socket.waitForBytesWritten();
+            return EXIT_SUCCESS;
         }
-
-        // Otherwise, launch a new window.
-        PowerTabEditor program;
-
-        // Set up a server to listen for messages about new files being opened.
-        QLocalServer server;
-        QObject::connect(&server, &QLocalServer::newConnection, [&]() {
-            QLocalSocket *socket = server.nextPendingConnection();
-            if (!socket->canReadLine())
-                socket->waitForReadyRead();
-
-            QTextStream in(socket);
-            std::vector<std::string> files;
-
-            while (!in.atEnd())
-                files.push_back(in.readLine().toStdString());
-
-            program.openFiles(files);
-            program.showNormal();
-            program.activateWindow();
-
-            delete socket;
-        });
-
-        server.listen(QCoreApplication::applicationFilePath());
-
-        // Launch the application.
-        program.show();
-        program.openFiles(options.filesToOpen());
-
-        return a.exec();
     }
-    else
-    {
-        return EXIT_FAILURE;
-    }
+
+    // Otherwise, launch a new window.
+    PowerTabEditor program;
+
+    // Set up a server to listen for messages about new files being opened.
+    QLocalServer server;
+    QObject::connect(&server, &QLocalServer::newConnection, [&]()
+                     {
+        QLocalSocket *socket = server.nextPendingConnection();
+        if (!socket->canReadLine())
+            socket->waitForReadyRead();
+
+        QTextStream in(socket);
+        QStringList files;
+
+		while (!in.atEnd())
+			files.push_back(in.readLine());
+
+        program.openFiles(files);
+        program.showNormal();
+        program.activateWindow();
+
+        delete socket;
+    });
+
+    server.listen(QCoreApplication::applicationFilePath());
+
+    // Launch the application.
+    program.show();
+    program.openFiles(filesToOpen);
+
+    return a.exec();
 }

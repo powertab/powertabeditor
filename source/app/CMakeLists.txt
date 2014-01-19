@@ -12,7 +12,6 @@ add_library(pteapp
     clipboard.cpp
     command.cpp
     documentmanager.cpp
-    options.cpp
     powertabeditor.cpp
     recentfiles.cpp
     scorearea.cpp
@@ -23,7 +22,6 @@ add_library(pteapp
     clipboard.h
     command.h
     documentmanager.h
-    options.h
     powertabeditor.h
     recentfiles.h
     scorearea.h
