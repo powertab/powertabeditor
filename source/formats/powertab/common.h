@@ -18,12 +18,11 @@
 #ifndef FORMATS_POWERTAB_COMMON_H
 #define FORMATS_POWERTAB_COMMON_H
 
-#include <boost/assign/list_of.hpp>
 #include <formats/fileformat.h>
 
 inline FileFormat getPowerTabFileFormat()
 {
-    return FileFormat("Power Tab Document", boost::assign::list_of("pt2"));
+	return FileFormat("Power Tab Document", { "pt2" });
 }
 
 #endif // COMMON_H

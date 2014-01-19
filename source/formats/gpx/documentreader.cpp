@@ -17,7 +17,6 @@
   
 #include "documentreader.h"
 
-#include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <iostream>
 #include "pugixml/pugixml.hpp"
@@ -208,9 +207,11 @@ void Gpx::DocumentReader::readRhythms()
         // Convert duration to PowerTab format.
         const std::string noteValueStr = currentRhythm.child_value("NoteValue");
 
-        std::map<std::string, int> noteValuesToInt = boost::assign::map_list_of
-                ("Whole", 1) ("Half", 2) ("Quarter", 4) ("Eighth", 8)
-                ("16th", 16) ("32nd", 32) ("64th", 64);
+        std::map<std::string, int> noteValuesToInt = {
+			{ "Whole", 1 }, { "Half", 2 }, { "Quarter", 4 },
+			{ "Eighth", 8 }, { "16th", 16 }, { "32nd", 32 },
+			{ "64th", 64 }
+		};
 
         assert(noteValuesToInt.find(noteValueStr) != noteValuesToInt.end());
         rhythm.noteValue = noteValuesToInt.find(noteValueStr)->second;

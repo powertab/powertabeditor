@@ -18,7 +18,6 @@
 #include "guitarproimporter.h"
 
 #include <boost/algorithm/clamp.hpp>
-#include <boost/assign/list_of.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <fstream>
 #include <iostream>
@@ -29,17 +28,18 @@
 
 static const int POSITIONS_PER_SYSTEM = 35;
 
-const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = boost::assign::map_list_of
-    ("FICHIER GUITAR PRO v3.00", Gp::Version3)
-    ("FICHIER GUITAR PRO v4.00", Gp::Version4)
-    ("FICHIER GUITAR PRO v4.06", Gp::Version4)
-    ("FICHIER GUITAR PRO L4.06", Gp::Version4)
-    ("FICHIER GUITAR PRO v5.00", Gp::Version5_0)
-    ("FICHIER GUITAR PRO v5.10", Gp::Version5_1);
+const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
+	{"FICHIER GUITAR PRO v3.00", Gp::Version3},
+	{"FICHIER GUITAR PRO v4.00", Gp::Version4},
+	{"FICHIER GUITAR PRO v4.06", Gp::Version4},
+	{"FICHIER GUITAR PRO L4.06", Gp::Version4},
+	{"FICHIER GUITAR PRO v5.00", Gp::Version5_0},
+	{"FICHIER GUITAR PRO v5.10", Gp::Version5_1}
+};
 
 GuitarProImporter::GuitarProImporter()
-    : FileFormatImporter(FileFormat(
-          "Guitar Pro 3, 4, 5", boost::assign::list_of("gp3")("gp4")("gp5")))
+    : FileFormatImporter(
+          FileFormat("Guitar Pro 3, 4, 5", { "gp3", "gp4", "gp5" }))
 {
 }
 

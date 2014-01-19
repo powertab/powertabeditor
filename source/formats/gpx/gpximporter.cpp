@@ -20,11 +20,9 @@
 #include "filesystem.h"
 #include "documentreader.h"
 #include <fstream>
-#include <boost/assign/list_of.hpp>
 
-GpxImporter::GpxImporter() :
-    FileFormatImporter(FileFormat("Guitar Pro 6",
-                                  boost::assign::list_of("gpx")))
+GpxImporter::GpxImporter()
+    : FileFormatImporter(FileFormat("Guitar Pro 6", { "gpx" }))
 {
 }
 

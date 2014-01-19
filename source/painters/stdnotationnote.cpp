@@ -18,7 +18,6 @@
 #include "stdnotationnote.h"
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/assign/list_of.hpp>
 #include <numeric>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
@@ -32,9 +31,10 @@
 /// Maps notes to their position on the staff (relative to the top line),
 /// using units of 0.5 * STD_NOTATION_LINE_SPACING.
 /// This is for treble clef, but can easily be adjusted for bass clef.
-static const std::unordered_map<char, int> theNotePositions =
-        boost::assign::map_list_of('F', 0) ('E', 1) ('D', 2) ('C', 3) ('B', -3)
-                                  ('A', -2) ('G', -1);
+static const std::unordered_map<char, int> theNotePositions = {
+	{ 'F', 0 }, { 'E', 1 }, { 'D', 2 }, { 'C', 3 }, { 'B', -3 },
+	{ 'A', -2 }, { 'G', -1 }
+};
 
 StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
                                  const KeySignature &key, const Tuning &tuning,

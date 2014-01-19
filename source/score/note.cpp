@@ -17,7 +17,6 @@
 
 #include "note.h"
 
-#include <boost/assign/list_of.hpp>
 #include <map>
 #include <ostream>
 #include <sstream>
@@ -30,9 +29,9 @@ namespace {
 /// Mapping of frets to pitch offsets (counted in half-steps or frets).
 /// For example, the natural harmonic at the 7th fret is an octave and
 /// a fifth (19 frets) above the pitch of the open string.
-const std::map<int, int> theHarmonicOffsets = boost::assign::map_list_of
-        (3, 31) (4, 28) (5, 24) (7, 19) (9, 28) (12, 12) (16, 28)
-        (19, 19) (24, 24) (28, 28);
+	const std::map<int, int> theHarmonicOffsets = {
+		{3, 31}, {4, 28}, {5, 24}, {7, 19}, {9, 28}, {12, 12}, {16, 28},
+		{19, 19}, {24, 24}, {28, 28} };
 }
 
 Note::Note()

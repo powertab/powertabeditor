@@ -19,7 +19,6 @@
 
 #include <actions/insertnotes.h>
 #include <app/caret.h>
-#include <boost/assign/list_of.hpp>
 #include <cmath>
 #include "powertabdocument/alternateending.h"
 #include "powertabdocument/barline.h"
@@ -41,8 +40,7 @@
 #include <score/utils.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
-    : FileFormatImporter(FileFormat("Power Tab Document (v1.7)",
-                                    boost::assign::list_of("ptb")))
+    : FileFormatImporter(FileFormat("Power Tab Document (v1.7)", { "ptb" }))
 {
 }
 

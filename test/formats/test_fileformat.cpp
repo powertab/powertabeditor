@@ -18,7 +18,6 @@
 #include <catch.hpp>
 
 #include <formats/fileformat.h>
-#include <boost/assign/list_of.hpp>
 
 TEST_CASE("Formats/FileFormat/FileFilterSingle", "Single Extension")
 {
@@ -29,7 +28,7 @@ TEST_CASE("Formats/FileFormat/FileFilterSingle", "Single Extension")
 
 TEST_CASE("Formats/FileFormat/FileFilterMulti", "Multiple Extensions")
 {
-    FileFormat format("Test Format", boost::assign::list_of("gp3")("gp4")("gp5"));
+    FileFormat format("Test Format", { "gp3", "gp4", "gp5" });
 
     CHECK(format.fileFilter() == "Test Format (*.gp3 *.gp4 *.gp5)");
 }
