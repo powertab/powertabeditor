@@ -151,14 +151,13 @@ void CaretPainter::onLocationChanged()
                                   location.getSystemIndex(), location.getStaff(),
                                   location.getStaffIndex()));
 
-    // Compute the offset due to the previous systems.
+    // Compute the offset due to the previous staves.
     double offset = 0;
     for (int i = 0; i < location.getStaffIndex(); ++i)
     {
         offset += LayoutInfo(location.getScore(), system,
                              location.getSystemIndex(),
-                             system.getStaves()[i], location.getStaffIndex()
-                             ).getStaffHeight();
+                             system.getStaves()[i], i).getStaffHeight();
     }
 
     update(boundingRect());
