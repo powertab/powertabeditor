@@ -357,47 +357,47 @@ void LayoutInfo::calculateTabStaffBelowLayout()
 
             if (pos.hasProperty(Position::PickStrokeUp))
             {
-                myTabStaffBelowSymbols.push_back(
-                    SymbolGroup(SymbolGroup::PickStrokeUp, leftPosition,
-                                rightPosition, voice, width, height++));
+                myTabStaffBelowSymbols.emplace_back(SymbolGroup::PickStrokeUp,
+                                                    leftPosition, rightPosition,
+                                                    voice, width, height++);
             }
 
             if (pos.hasProperty(Position::PickStrokeDown))
             {
-                myTabStaffBelowSymbols.push_back(
-                    SymbolGroup(SymbolGroup::PickStrokeDown, leftPosition,
-                                rightPosition, voice, width, height++));
+                myTabStaffBelowSymbols.emplace_back(SymbolGroup::PickStrokeDown,
+                                                    leftPosition, rightPosition,
+                                                    voice, width, height++);
             }
 
             if (pos.hasProperty(Position::Tap) ||
                 Utils::hasNoteWithTappedHarmonic(pos))
             {
-                myTabStaffBelowSymbols.push_back(
-                    SymbolGroup(SymbolGroup::Tap, leftPosition, rightPosition,
-                                voice, width, height++));
+                myTabStaffBelowSymbols.emplace_back(SymbolGroup::Tap,
+                                                    leftPosition, rightPosition,
+                                                    voice, width, height++);
             }
 
             if (Utils::hasNoteWithArtificialHarmonic(pos))
             {
-                myTabStaffBelowSymbols.push_back(
-                    SymbolGroup(SymbolGroup::ArtificialHarmonic, leftPosition,
-                                rightPosition, voice, width, height++));
+                myTabStaffBelowSymbols.emplace_back(
+                    SymbolGroup::ArtificialHarmonic, leftPosition,
+                    rightPosition, voice, width, height++);
             }
 
             if (VoiceUtils::hasNoteWithHammerOn(voice, pos) ||
                 Utils::hasNoteWithProperty(pos, Note::HammerOnFromNowhere))
             {
-                myTabStaffBelowSymbols.push_back(
-                    SymbolGroup(SymbolGroup::Hammeron, leftPosition,
-                                rightPosition, voice, width, height++));
+                myTabStaffBelowSymbols.emplace_back(SymbolGroup::Hammeron,
+                                                    leftPosition, rightPosition,
+                                                    voice, width, height++);
             }
             else if ((Utils::hasNoteWithProperty(pos, Note::HammerOnOrPullOff) &&
                       !VoiceUtils::hasNoteWithHammerOn(voice, pos)) ||
                      Utils::hasNoteWithProperty(pos, Note::PullOffToNowhere))
             {
-                myTabStaffBelowSymbols.push_back(
-                    SymbolGroup(SymbolGroup::Pulloff, leftPosition,
-                                rightPosition, voice, width, height++));
+                myTabStaffBelowSymbols.emplace_back(SymbolGroup::Pulloff,
+                                                    leftPosition, rightPosition,
+                                                    voice, width, height++);
             }
 
             if (Utils::hasNoteWithProperty(pos, Note::SlideIntoFromAbove) ||
@@ -407,9 +407,9 @@ void LayoutInfo::calculateTabStaffBelowLayout()
                 Utils::hasNoteWithProperty(pos, Note::SlideOutOfDownwards) ||
                 Utils::hasNoteWithProperty(pos, Note::SlideOutOfUpwards))
             {
-                myTabStaffBelowSymbols.push_back(
-                    SymbolGroup(SymbolGroup::Slide, leftPosition, rightPosition,
-                                voice, width, height++));
+                myTabStaffBelowSymbols.emplace_back(SymbolGroup::Slide,
+                                                    leftPosition, rightPosition,
+                                                    voice, width, height++);
             }
         }
     }
@@ -499,9 +499,8 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
                         rightPos++;
                     const double right = getPositionX(rightPos);
 
-                    symbols.push_back(SymbolGroup(currentType, leftPos,
-                                                  rightPos, voice, right - left,
-                                                  1));
+                    symbols.emplace_back(currentType, leftPos, rightPos, voice,
+                                         right - left, 1);
                 }
 
                 leftPos = pos.getPosition();
@@ -639,9 +638,9 @@ void LayoutInfo::calculateTabStaffAboveLayout()
                 // TODO - handle special cases for tremolo bars and volume
                 // swells.
 
-                myTabStaffAboveSymbols.push_back(SymbolGroup(
-                    symbol, leftPos, rightPos, myStaff.getVoices()[0],
-                    rightX - leftX, height));
+                myTabStaffAboveSymbols.emplace_back(symbol, leftPos, rightPos,
+                                                    myStaff.getVoices()[0],
+                                                    rightX - leftX, height);
             }
             // Start a new group.
             else if (hasSymbol && !inGroup)
@@ -659,9 +658,9 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             const int rightPos = static_cast<int>(symbolSets.size()) - 1;
             const double rightX = getPositionX(rightPos);
             const int height = addToHeightMap(heightMap, leftPos, rightPos, 1);
-            myTabStaffAboveSymbols.push_back(
-                SymbolGroup(symbol, leftPos, rightPos, myStaff.getVoices()[0],
-                            rightX - leftX, height));
+            myTabStaffAboveSymbols.emplace_back(symbol, leftPos, rightPos,
+                                                myStaff.getVoices()[0],
+                                                rightX - leftX, height);
         }
     }
 
@@ -730,8 +729,8 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
                 const int height =
                     addToHeightMap(heightMap, leftPos, rightPos, groupHeight);
 
-                myTabStaffAboveSymbols.push_back(SymbolGroup(
-                    SymbolGroup::Bend, leftPos, rightPos, voice, 0, height));
+                myTabStaffAboveSymbols.emplace_back(SymbolGroup::Bend, leftPos,
+                                                    rightPos, voice, 0, height);
                 inGroup = false;
                 groupHeight = 0;
                 rightPos = 0;
@@ -749,8 +748,8 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
             rightPos = static_cast<int>(heightMap.size()) - 1;
             const int height =
                 addToHeightMap(heightMap, leftPos, rightPos, groupHeight);
-            myTabStaffAboveSymbols.push_back(SymbolGroup(
-                SymbolGroup::Bend, leftPos, rightPos, voice, 0, height));
+            myTabStaffAboveSymbols.emplace_back(SymbolGroup::Bend, leftPos,
+                                                rightPos, voice, 0, height);
         }
     }
 }
