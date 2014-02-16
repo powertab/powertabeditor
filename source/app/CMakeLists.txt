@@ -2,9 +2,17 @@ cmake_minimum_required(VERSION 2.8.9)
 
 include_directories(.)
 
-# Get the current SVN revision number
+# Get the current SVN revision number, and also handle git-svn repositories.
 include(FindSubversion)
-Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} MY)
+include(FindGit)
+if (EXISTS ${CMAKE_SOURCE_DIR}/.svn/)
+    Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} MY)
+else()
+    execute_process(COMMAND ${GIT_EXECUTABLE} --no-pager svn log --oneline --limit 1
+        OUTPUT_VARIABLE GIT_REVISION_LOG)
+    string(REGEX MATCH "[0-9]+" MY_WC_REVISION "${GIT_REVISION_LOG}")
+endif()
+
 add_definitions(-DSVN_REVISION=${MY_WC_REVISION})
 
 add_library(pteapp
