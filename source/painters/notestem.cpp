@@ -24,7 +24,7 @@
 NoteStem::NoteStem(const Voice &voice, const Position &pos, double x,
                    double noteHeadWidth,
                    const std::vector<double> &noteLocations)
-    : myVoice(voice),
+    : myVoice(&voice),
       myPosition(pos),
       myX(x),
       myNoteHeadWidth(noteHeadWidth),
@@ -102,7 +102,7 @@ double NoteStem::getNoteHeadWidth() const
 
 double NoteStem::getDurationTime() const
 {
-    return VoiceUtils::getDurationTime(myVoice, myPosition);
+    return VoiceUtils::getDurationTime(*myVoice, myPosition);
 }
 
 Position::DurationType NoteStem::getDurationType() const

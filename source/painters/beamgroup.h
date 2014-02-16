@@ -61,9 +61,9 @@ private:
                                          const QFont &musicFont,
                                          const QFontMetricsF &fm);
 
-    const NoteStem::StemType myStemDirection;
-    const size_t myStartIndex;
-    const size_t myEndIndex;
+    NoteStem::StemType myStemDirection;
+    size_t myStartIndex;
+    size_t myEndIndex;
 };
 
 #endif
