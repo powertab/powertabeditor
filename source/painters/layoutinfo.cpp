@@ -770,7 +770,7 @@ SymbolGroup::SymbolGroup(SymbolGroup::SymbolType symbol, int leftPosition,
     : mySymbolType(symbol),
       myLeftPosition(leftPosition),
       myRightPosition(rightPosition),
-      myVoice(voice),
+      myVoice(&voice),
       myWidth(width),
       myHeight(height)
 {
@@ -833,7 +833,7 @@ int SymbolGroup::getRightPosition() const
 
 const Voice &SymbolGroup::getVoice() const
 {
-    return myVoice;
+    return *myVoice;
 }
 
 double SymbolGroup::getWidth() const

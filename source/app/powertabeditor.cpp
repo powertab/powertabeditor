@@ -1285,7 +1285,6 @@ void PowerTabEditor::addPlayer()
 void PowerTabEditor::addInstrument()
 {
     ScoreLocation &location = getLocation();
-    Score &score = location.getScore();
     QSettings settings;
 
     Instrument instrument;

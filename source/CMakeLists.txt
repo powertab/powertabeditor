@@ -27,11 +27,11 @@ target_link_libraries(powertabeditor
     pteapp
     ptedialogs
     ptewidgets
-    pteactions
     pteaudio
     rtmidi
     ptepainters
     pteformats
+    pteactions
     ptescore
     ${Boost_LIBRARIES}
 )

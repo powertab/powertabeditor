@@ -101,11 +101,11 @@ qt5_use_modules(pte_tests Widgets)
 
 target_link_libraries(pte_tests
     pteapp
-    pteactions
     ptewidgets
     pteaudio
     rtmidi
     pteformats
+    pteactions
     ptescore
     ${Boost_LIBRARIES}
 )

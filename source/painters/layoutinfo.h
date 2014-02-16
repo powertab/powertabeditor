@@ -85,7 +85,7 @@ private:
     /// Last position of the symbol group.
     int myRightPosition;
     /// Source voice of the symbol.
-    const Voice &myVoice;
+    const Voice *myVoice;
     /// Width of the symbol group.
     double myWidth;
     /// Offset from the staff.
