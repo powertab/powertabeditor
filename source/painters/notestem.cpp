@@ -25,7 +25,7 @@ NoteStem::NoteStem(const Voice &voice, const Position &pos, double x,
                    double noteHeadWidth,
                    const std::vector<double> &noteLocations)
     : myVoice(&voice),
-      myPosition(pos),
+      myPosition(&pos),
       myX(x),
       myNoteHeadWidth(noteHeadWidth),
       myTop(0),
@@ -102,34 +102,34 @@ double NoteStem::getNoteHeadWidth() const
 
 double NoteStem::getDurationTime() const
 {
-    return VoiceUtils::getDurationTime(*myVoice, myPosition);
+    return VoiceUtils::getDurationTime(*myVoice, *myPosition);
 }
 
 Position::DurationType NoteStem::getDurationType() const
 {
-    return myPosition.getDurationType();
+    return myPosition->getDurationType();
 }
 
 bool NoteStem::isStaccato() const
 {
-    return myPosition.hasProperty(Position::Staccato);
+    return myPosition->hasProperty(Position::Staccato);
 }
 
 bool NoteStem::isBeamable(const NoteStem &stem)
 {
-    return !stem.myPosition.isRest() && !stem.myPosition.hasMultiBarRest() &&
-            stem.myPosition.getDurationType() >= Position::EighthNote;
+    return !stem.myPosition->isRest() && !stem.myPosition->hasMultiBarRest() &&
+            stem.myPosition->getDurationType() >= Position::EighthNote;
 }
 
 bool NoteStem::needsStem(const NoteStem &stem)
 {
-    return !stem.myPosition.isRest() && !stem.myPosition.hasMultiBarRest() &&
-            stem.myPosition.getDurationType() != Position::WholeNote;
+    return !stem.myPosition->isRest() && !stem.myPosition->hasMultiBarRest() &&
+            stem.myPosition->getDurationType() != Position::WholeNote;
 }
 
 bool NoteStem::canHaveFlag(const NoteStem &stem)
 {
-    return stem.myPosition.getDurationType() > Position::QuarterNote ||
+    return stem.myPosition->getDurationType() > Position::QuarterNote ||
             stem.isGraceNote();
 }
 
@@ -145,20 +145,20 @@ void NoteStem::setStemType(StemType type)
 
 bool NoteStem::isGraceNote() const
 {
-    return myPosition.hasProperty(Position::Acciaccatura);
+    return myPosition->hasProperty(Position::Acciaccatura);
 }
 
 bool NoteStem::hasFermata() const
 {
-    return myPosition.hasProperty(Position::Fermata);
+    return myPosition->hasProperty(Position::Fermata);
 }
 
 bool NoteStem::hasSforzando() const
 {
-    return myPosition.hasProperty(Position::Sforzando);
+    return myPosition->hasProperty(Position::Sforzando);
 }
 
 bool NoteStem::hasMarcato() const
 {
-    return myPosition.hasProperty(Position::Marcato);
+    return myPosition->hasProperty(Position::Marcato);
 }

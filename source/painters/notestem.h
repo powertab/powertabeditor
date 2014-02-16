@@ -82,7 +82,7 @@ private:
     static StemType computeStemDirection(Iterator begin, Iterator end);
 
     const Voice *myVoice;
-    const Position &myPosition;
+    const Position *myPosition;
     double myX;
     double myNoteHeadWidth;
     double myTop;
