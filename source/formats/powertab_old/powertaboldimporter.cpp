@@ -200,7 +200,9 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
                                   PowerTabDocument::Score::SystemConstPtr oldSystem,
                                   System &system)
 {
-    int lastPosition = 0;
+    // Ensure that there are a reasonable number of positions in the staff
+    // so that things aren't too stretched out.
+    int lastPosition = 30;
 
     // Import barlines.
     Barline &startBar = system.getBarlines()[0];
