@@ -5,7 +5,7 @@ include_directories(.)
 # Get the current SVN revision number, and also handle git-svn repositories.
 include(FindSubversion)
 include(FindGit)
-if (EXISTS ${CMAKE_SOURCE_DIR}/.svn/)
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../../../.svn/)
     Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} MY)
 else()
     execute_process(COMMAND ${GIT_EXECUTABLE} --no-pager svn log --oneline --limit 1
