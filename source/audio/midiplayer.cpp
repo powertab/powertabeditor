@@ -214,13 +214,10 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
 
         const PlayerChange *currentPlayers = ScoreUtils::getCurrentPlayers(
                     myScore, systemIndex, pos.getPosition());
-        if (!currentPlayers)
-            continue;
 
-        const std::vector<ActivePlayer> activePlayers =
-                currentPlayers->getActivePlayers(staffIndex);
-        if (activePlayers.empty())
-            continue;
+        std::vector<ActivePlayer> activePlayers;
+        if (currentPlayers)
+            activePlayers = currentPlayers->getActivePlayers(staffIndex);
 
         if (pos.isRest())
         {
@@ -252,6 +249,13 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
         {
             duration = GRACE_NOTE_DURATION;
             startTime -= duration;
+        }
+
+        // If there aren't any active players, treat as a rest.
+        if (activePlayers.empty())
+        {
+            startTime += duration;
+            continue;
         }
 
 #if 0
