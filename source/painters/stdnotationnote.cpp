@@ -66,6 +66,8 @@ StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
         myNoteHeadSymbol = MusicFont::ArtificialHarmonicNoteHead;
     else if (note.hasProperty(Note::Muted))
         myNoteHeadSymbol = MusicFont::MutedNoteHead;
+    else if (pos.hasProperty(Position::Acciaccatura))
+        myNoteHeadSymbol = MusicFont::QuarterNoteOrLess;
 
     computeAccidentalType(false);
 }

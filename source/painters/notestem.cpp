@@ -124,7 +124,8 @@ bool NoteStem::isBeamable(const NoteStem &stem)
 bool NoteStem::needsStem(const NoteStem &stem)
 {
     return !stem.myPosition->isRest() && !stem.myPosition->hasMultiBarRest() &&
-            stem.myPosition->getDurationType() != Position::WholeNote;
+           (stem.isGraceNote() ||
+            stem.myPosition->getDurationType() != Position::WholeNote);
 }
 
 bool NoteStem::canHaveFlag(const NoteStem &stem)
