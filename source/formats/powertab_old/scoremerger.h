@@ -46,9 +46,12 @@ private:
         bool isBass;
         bool inMultibarRest;
         int multibarRestCount;
+
         bool done;
+        bool finishing;
 
         void advance();
+        void finishIfPossible();
         void checkForMultibarRest();
     };
 

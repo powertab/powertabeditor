@@ -193,19 +193,21 @@ void ScoreMerger::merge()
         {
             for (State *state : {&myGuitarState, &myBassState})
             {
-                // TODO - when one score is finished, we should keep inserting whole rests
-                // until we move onto the next system in the destination score.
                 if (state->done)
                     continue;
 
                 int length = 0;
-                if (state->inMultibarRest)
+                // If one state is a multibar rest, but the other is not, keep
+                // inserting whole rests. If we've reached the end of a score,
+                // keep inserting whole rests until we move onto the next
+                // system in the destination score.
+                if (state->inMultibarRest || state->finishing)
                 {
-                    // If one state is a multibar rest, but the other is not, keep
-                    // inserting whole rests.
                     length = importNotes(myDestLoc, state->loc, state->isBass,
                                          insertWholeRest);
-                    --state->multibarRestCount;
+
+                    if (state->inMultibarRest)
+                        --state->multibarRestCount;
                 }
                 else
                 {
@@ -221,10 +223,21 @@ void ScoreMerger::merge()
         myGuitarState.advance();
         myBassState.advance();
 
-        if (myGuitarState.done && myBassState.done)
-            break;
-
         const int nextBarPos = destBar->getPosition() + barLength + 1;
+
+        // If we're about to move to a new system, transition from finishing to
+        // done.
+        if (nextBarPos > POSITION_LIMIT)
+        {
+            myGuitarState.finishIfPossible();
+            myBassState.finishIfPossible();
+        }
+
+        if ((myGuitarState.done || myGuitarState.finishing) &&
+            (myBassState.done || myBassState.finishing))
+        {
+            break;
+        }
 
         // Create the next bar or move to the next system.
         if (nextBarPos > POSITION_LIMIT)
@@ -252,7 +265,8 @@ ScoreMerger::State::State(Score &score, bool isBass)
       isBass(isBass),
       inMultibarRest(false),
       multibarRestCount(0),
-      done(false)
+      done(false),
+      finishing(false)
 {
 }
 
@@ -262,7 +276,16 @@ void ScoreMerger::State::advance()
         inMultibarRest = false;
 
     if (!inMultibarRest && !caret.moveToNextBar())
+        finishing = true;
+}
+
+void ScoreMerger::State::finishIfPossible()
+{
+    if (finishing)
+    {
+        finishing = false;
         done = true;
+    }
 }
 
 void ScoreMerger::State::checkForMultibarRest()
