@@ -1002,8 +1002,19 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
     ScoreLocation &srcLoc = srcCaret.getLocation();
 
     // If it looks like the bass score was unused, don't do anything.
-    if (srcLoc.getVoice().getPositions().empty())
-        return;
+    {
+        bool empty = true;
+        const System &system = srcLoc.getSystem();
+
+        for (const Staff &staff : system.getStaves())
+        {
+            for (const Voice &voice : staff.getVoices())
+                empty &= voice.getPositions().empty();
+        }
+
+        if (empty)
+            return;
+    }
 
     const int numDestPlayers = destScore.getPlayers().size();
     const int numDestInstruments = destScore.getInstruments().size();
