@@ -38,8 +38,10 @@ add_library(pteformats
     powertab/powertabimporter.h
 
     powertab_old/powertaboldimporter.cpp
+    powertab_old/scoremerger.cpp
 
     powertab_old/powertaboldimporter.h
+    powertab_old/scoremerger.h
 
     powertab_old/powertabdocument/alternateending.cpp
     powertab_old/powertabdocument/barline.cpp

@@ -17,9 +17,6 @@
 
 #include "powertaboldimporter.h"
 
-#include <actions/insertnotes.h>
-#include <app/caret.h>
-#include <cmath>
 #include "powertabdocument/alternateending.h"
 #include "powertabdocument/barline.h"
 #include "powertabdocument/chordtext.h"
@@ -37,8 +34,7 @@
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/systemlocation.h>
-#include <score/utils.h>
-#include <score/voiceutils.h>
+#include "scoremerger.h"
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab Document (v1.7)", { "ptb" }))
@@ -54,19 +50,25 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     ScoreInfo info;
     convert(document.GetHeader(), info);
     score.setScoreInfo(info);
-
     score.setLineSpacing(document.GetTablatureStaffLineSpacing());
     
     assert(document.GetNumberOfScores() == 2);
 
     // Convert the guitar score.
-    convert(*document.GetScore(0), score);
+    Score guitarScore;
+    convert(*document.GetScore(0), guitarScore);
 
     // Convert and then merge the bass score.
     Score bassScore;
     convert(*document.GetScore(1), bassScore);
 
-    merge(score, bassScore);
+    // TODO - switch to the score merger once it is more stable.
+#if 0
+    ScoreMerger merger(score, guitarScore, bassScore);
+    merger.merge();
+#else
+    convert(*document.GetScore(0), score);
+#endif
 }
 
 void PowerTabOldImporter::convert(
@@ -925,6 +927,8 @@ void PowerTabOldImporter::convertInitialVolumes(
     }
 }
 
+// TODO - move this into the ScoreMerger class.
+#if 0
 static void mergePlayerChanges(const ScoreLocation &srcLoc,
                                ScoreLocation &destLoc,
                                boost::optional<PlayerChange> &prevPlayerChange,
@@ -994,162 +998,4 @@ static void mergePlayerChanges(const ScoreLocation &srcLoc,
         }
     }
 }
-
-void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
-{
-    Caret destCaret(destScore);
-    Caret srcCaret(srcScore);
-    ScoreLocation &destLoc = destCaret.getLocation();
-    ScoreLocation &srcLoc = srcCaret.getLocation();
-
-    // If it looks like the bass score was unused, don't do anything.
-    {
-        bool empty = true;
-        const System &system = srcLoc.getSystem();
-
-        for (const Staff &staff : system.getStaves())
-        {
-            for (const Voice &voice : staff.getVoices())
-                empty &= voice.getPositions().empty();
-        }
-
-        if (empty)
-            return;
-    }
-
-    const int numDestPlayers = destScore.getPlayers().size();
-    const int numDestInstruments = destScore.getInstruments().size();
-
-    // Merge players and instruments.
-    for (const Player &player : srcScore.getPlayers())
-        destScore.insertPlayer(player);
-
-    for (const Instrument &instrument : srcScore.getInstruments())
-        destScore.insertInstrument(instrument);
-
-    int currentSystemIndex = -1;
-    int numDestStaves = 0;
-    int multibarRestCount = 0;
-    boost::optional<PlayerChange> prevPlayerChange;
-
-    while (true)
-    {
-        System &destSystem = destLoc.getSystem();
-        const System &srcSystem = srcLoc.getSystem();
-
-        const Barline *destBar = destLoc.getBarline();
-        assert(destBar);
-        const Barline *srcBar = srcLoc.getBarline();
-        assert(srcBar);
-        const Barline *nextSrcBar =
-            srcSystem.getNextBarline(srcBar->getPosition());
-        assert(nextSrcBar);
-
-        // We've moved to a new system - figure out how many staves are already
-        // in this system.
-        if (destLoc.getSystemIndex() != currentSystemIndex)
-        {
-            currentSystemIndex++;
-            numDestStaves = destSystem.getStaves().size();
-        }
-
-        // Merge player changes. We need to ensure that this isn't done
-        // repeatedly in the case of multi-bar rests.
-        if (!multibarRestCount)
-        {
-            mergePlayerChanges(srcLoc, destLoc, prevPlayerChange,
-                               numDestPlayers, numDestInstruments,
-                               numDestStaves);
-        }
-
-        // Insert the notes at the first position after the barline.
-        if (destLoc.getPositionIndex() != 0)
-            destCaret.moveHorizontal(1);
-
-        // Merge the notes.
-        for (int i = 0; i < srcSystem.getStaves().size(); ++i)
-        {
-            // Ensure that there are enough staves in the destination system.
-            if (destSystem.getStaves().size() <= numDestStaves + i)
-            {
-                const Staff &srcStaff = srcSystem.getStaves()[i];
-                Staff destStaff(srcStaff.getStringCount());
-                destStaff.setClefType(srcStaff.getClefType());
-                destStaff.setViewType(Staff::BassView);
-                destSystem.insertStaff(destStaff);
-            }
-
-            // Copy the positions from the source bar to the destination bar.
-            destLoc.setStaffIndex(numDestStaves + i);
-            srcLoc.setStaffIndex(i);
-
-            // Import each voice.
-            for (int v = 0; v < Staff::NUM_VOICES; ++v)
-            {
-                destLoc.setVoiceIndex(v);
-                srcLoc.setVoiceIndex(v);
-
-                auto positions = ScoreUtils::findInRange(
-                    srcLoc.getVoice().getPositions(), srcBar->getPosition(),
-                    nextSrcBar->getPosition());
-
-                std::vector<IrregularGrouping> groups;
-                for (const IrregularGrouping *group :
-                     VoiceUtils::getIrregularGroupsInRange(
-                         srcLoc.getVoice(), srcBar->getPosition(),
-                         nextSrcBar->getPosition()))
-                {
-                    groups.push_back(*group);
-                }
-
-                // Check for a multibar rest.
-                if (!multibarRestCount)
-                {
-                    for (const Position &pos : positions)
-                    {
-                        if (pos.hasMultiBarRest())
-                        {
-                            multibarRestCount = pos.getMultiBarRestCount();
-                            break;
-                        }
-                    }
-                }
-
-                // If there is a multi-bar rest, or the bass score doesn't have
-                // more notes, insert a whole rest. We don't want to do that if
-                // the second voice is empty, though.
-                if (multibarRestCount || (positions.empty() && v == 0))
-                {
-                    Position wholeRest(destBar->getPosition() + 1,
-                                       Position::WholeNote);
-                    wholeRest.setRest();
-                    destLoc.getVoice().insertPosition(wholeRest);
-                }
-                else if (!positions.empty())
-                {
-                    InsertNotes action(destLoc,
-                                       std::vector<Position>(positions.begin(),
-                                                             positions.end()),
-                                       groups);
-                    action.redo();
-                }
-            }
-        }
-
-        // Move to the next bar in the source and destination scores.
-        if (!destCaret.moveToNextBar())
-            break;
-
-        if (multibarRestCount)
-            --multibarRestCount;
-
-        // If we can't move to the next bar in the bass score, we still need to
-        // keep going so that any remaining measures in the current system are
-        // filled with rests.
-        if (!multibarRestCount && !srcCaret.moveToNextBar() &&
-            destLoc.getSystemIndex() != currentSystemIndex)
-        {
-            break;
-        }
-    }
-}
+#endif
