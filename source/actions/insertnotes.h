@@ -19,6 +19,7 @@
 #define ACTIONS_INSERTNOTES_H
 
 #include <QUndoCommand>
+#include <score/irregulargrouping.h>
 #include <score/position.h>
 #include <score/scorelocation.h>
 #include <vector>
@@ -27,7 +28,8 @@ class InsertNotes : public QUndoCommand
 {
 public:
     InsertNotes(const ScoreLocation &location,
-                const std::vector<Position> &positions);
+                const std::vector<Position> &positions,
+                const std::vector<IrregularGrouping> &groups);
 
     virtual void redo() override;
     virtual void undo() override;
@@ -35,6 +37,7 @@ public:
 private:
     ScoreLocation myLocation;
     std::vector<Position> myNewPositions;
+    std::vector<IrregularGrouping> myNewGroups;
     int myShiftAmount;
 };
 

@@ -409,11 +409,7 @@ void PowerTabEditor::cutSelectedNotes()
 
 void PowerTabEditor::copySelectedNotes()
 {
-    ScoreLocation &location = getLocation();
-    const std::vector<Position *> positions = location.getSelectedPositions();
-    const int numStrings = location.getStaff().getStringCount();
-
-    Clipboard::copySelection(positions, numStrings);
+    Clipboard::copySelection(getLocation());
 }
 
 void PowerTabEditor::pasteNotes()

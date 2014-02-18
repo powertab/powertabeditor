@@ -38,6 +38,7 @@
 #include <score/score.h>
 #include <score/systemlocation.h>
 #include <score/utils.h>
+#include <score/voiceutils.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab Document (v1.7)", { "ptb" }))
@@ -1092,6 +1093,15 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
                     srcLoc.getVoice().getPositions(), srcBar->getPosition(),
                     nextSrcBar->getPosition());
 
+                std::vector<IrregularGrouping> groups;
+                for (const IrregularGrouping *group :
+                     VoiceUtils::getIrregularGroupsInRange(
+                         srcLoc.getVoice(), srcBar->getPosition(),
+                         nextSrcBar->getPosition()))
+                {
+                    groups.push_back(*group);
+                }
+
                 // Check for a multibar rest.
                 if (!multibarRestCount)
                 {
@@ -1119,7 +1129,8 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
                 {
                     InsertNotes action(destLoc,
                                        std::vector<Position>(positions.begin(),
-                                                             positions.end()));
+                                                             positions.end()),
+                                       groups);
                     action.redo();
                 }
             }

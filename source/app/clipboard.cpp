@@ -39,11 +39,15 @@ public:
     {
     }
 
-    ClipboardSelection(int numStrings, const std::vector<Position *> &positions)
+    ClipboardSelection(int numStrings,
+                       const std::vector<const Position *> &positions,
+                       const std::vector<const IrregularGrouping *> &groups)
         : myNumStrings(numStrings)
     {
-        for (Position *pos : positions)
+        for (const Position *pos : positions)
             myPositions.push_back(*pos);
+        for (const IrregularGrouping *group : groups)
+            myGroups.push_back(*group);
     }
 
     int getNumStrings() const
@@ -51,9 +55,14 @@ public:
         return myNumStrings;
     }
 
-    std::vector<Position> getPositions() const
+    const std::vector<Position> &getPositions() const
     {
         return myPositions;
+    }
+
+    const std::vector<IrregularGrouping> &getIrregularGroupings() const
+    {
+        return myGroups;
     }
 
     template <class Archive>
@@ -61,20 +70,25 @@ public:
     {
         ar("num_strings", myNumStrings);
         ar("positions", myPositions);
+        ar("irregular_groupings", myGroups);
     }
 
 private:
     int myNumStrings;
     std::vector<Position> myPositions;
+    std::vector<IrregularGrouping> myGroups;
 };
 
-void Clipboard::copySelection(const std::vector<Position *> &selectedPositions,
-                              int numStrings)
+void Clipboard::copySelection(const ScoreLocation &location)
 {
+    const auto selectedPositions = location.getSelectedPositions();
+    const int numStrings = location.getStaff().getStringCount();
+
     if (selectedPositions.empty())
         return;
 
-    ClipboardSelection selection(numStrings, selectedPositions);
+    ClipboardSelection selection(numStrings, selectedPositions,
+                                 location.getSelectedIrregularGroupings());
 
     // Serialize the notes to a string.
     std::ostringstream ss;
@@ -116,7 +130,8 @@ void Clipboard::paste(QWidget *parent, UndoManager &undoManager,
         return;
     }
 
-    undoManager.push(new InsertNotes(location, selection.getPositions()),
+    undoManager.push(new InsertNotes(location, selection.getPositions(),
+                                     selection.getIrregularGroupings()),
                      location.getSystemIndex());
 }
 

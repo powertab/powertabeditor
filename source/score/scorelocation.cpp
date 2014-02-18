@@ -100,11 +100,22 @@ bool ScoreLocation::hasSelection() const
 
 std::vector<Position *> ScoreLocation::getSelectedPositions()
 {
-    std::vector<Position *> positions;
+    // Avoid duplicate logic between const and non-const versions.
+    auto positions = const_cast<const ScoreLocation *>(this)->getSelectedPositions();
+    std::vector<Position *> nc_positions;
+    for (const Position *pos : positions)
+        nc_positions.push_back(const_cast<Position *>(pos));
+
+    return nc_positions;
+}
+
+std::vector<const Position *> ScoreLocation::getSelectedPositions() const
+{
+    std::vector<const Position *> positions;
     const int min = std::min(myPositionIndex, mySelectionStart);
     const int max = std::max(myPositionIndex, mySelectionStart);
 
-    for (Position &pos : getVoice().getPositions())
+    for (const Position &pos : getVoice().getPositions())
     {
         if (pos.getPosition() >= min && pos.getPosition() <= max)
             positions.push_back(&pos);
@@ -241,6 +252,32 @@ std::vector<Note *> ScoreLocation::getSelectedNotes()
 void ScoreLocation::setVoiceIndex(int voice)
 {
     myVoiceIndex = voice;
+}
+
+std::vector<const IrregularGrouping *>
+ScoreLocation::getSelectedIrregularGroupings() const
+{
+    std::vector<const IrregularGrouping *> groups;
+    const int min = std::min(myPositionIndex, mySelectionStart);
+    const int max = std::max(myPositionIndex, mySelectionStart);
+    const Voice &voice = getVoice();
+
+    if (!hasSelection())
+        return groups;
+
+    for (const IrregularGrouping &group : voice.getIrregularGroupings())
+    {
+        const int groupLeft = group.getPosition();
+        const int groupRight =
+            voice.getPositions()[ScoreUtils::findIndexByPosition(
+                                     voice.getPositions(), groupLeft) +
+                                 group.getLength() - 1].getPosition();
+
+        if (groupLeft >= min && groupRight <= max)
+            groups.push_back(&group);
+    }
+
+    return groups;
 }
 
 std::ostream &operator <<(std::ostream &os, const ScoreLocation &location)

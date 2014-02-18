@@ -18,9 +18,6 @@
 #ifndef APP_CLIPBOARD_H
 #define APP_CLIPBOARD_H
 
-#include <vector>
-
-class Position;
 class QWidget;
 class ScoreLocation;
 class UndoManager;
@@ -29,8 +26,7 @@ namespace Clipboard
 {
 
 /// Stores the selected data on the clipboard.
-void copySelection(const std::vector<Position *>& selectedPositions,
-                   int numStrings);
+void copySelection(const ScoreLocation &location);
 
 /// Pastes notes from the clipboard at the current position.
 void paste(QWidget *parent, UndoManager &undoManager, ScoreLocation &location);

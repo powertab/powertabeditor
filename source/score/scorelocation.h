@@ -22,6 +22,7 @@
 #include <vector>
 
 class Barline;
+class IrregularGrouping;
 class Note;
 class Position;
 class Score;
@@ -66,10 +67,15 @@ public:
     void setSelectionStart(int position);
     bool hasSelection() const;
     std::vector<Position *> getSelectedPositions();
+    std::vector<const Position *> getSelectedPositions() const;
 
     const Voice &getVoice() const;
     Voice &getVoice();
     void setVoiceIndex(int voice);
+
+    /// Returns any irregular groupings that are *entirely* contained within
+    /// the selection.
+    std::vector<const IrregularGrouping *> getSelectedIrregularGroupings() const;
 
     int getString() const;
     void setString(int string);
