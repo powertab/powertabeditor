@@ -1019,19 +1019,19 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
     int numDestStaves = 0;
     int multibarRestCount = 0;
     boost::optional<PlayerChange> prevPlayerChange;
-    
+
     while (true)
     {
-		System &destSystem = destLoc.getSystem();
-		const System &srcSystem = srcLoc.getSystem();
+        System &destSystem = destLoc.getSystem();
+        const System &srcSystem = srcLoc.getSystem();
 
-		const Barline *destBar = destLoc.getBarline();
+        const Barline *destBar = destLoc.getBarline();
         assert(destBar);
         const Barline *srcBar = srcLoc.getBarline();
         assert(srcBar);
-		const Barline *nextSrcBar =
-			srcSystem.getNextBarline(srcBar->getPosition());
-		assert(nextSrcBar);
+        const Barline *nextSrcBar =
+            srcSystem.getNextBarline(srcBar->getPosition());
+        assert(nextSrcBar);
 
         // We've moved to a new system - figure out how many staves are already
         // in this system.
@@ -1051,8 +1051,8 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
         }
 
         // Insert the notes at the first position after the barline.
-		if (destLoc.getPositionIndex() != 0)
-			destCaret.moveHorizontal(1);
+        if (destLoc.getPositionIndex() != 0)
+            destCaret.moveHorizontal(1);
 
         // Merge the notes.
         for (int i = 0; i < srcSystem.getStaves().size(); ++i)
@@ -1066,12 +1066,12 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
                 destStaff.setViewType(Staff::BassView);
                 destSystem.insertStaff(destStaff);
             }
-            
+
             // Copy the positions from the source bar to the destination bar.
             destLoc.setStaffIndex(numDestStaves + i);
             srcLoc.setStaffIndex(i);
 
-			// Import each voice.
+            // Import each voice.
             for (int v = 0; v < Staff::NUM_VOICES; ++v)
             {
                 destLoc.setVoiceIndex(v);
@@ -1104,7 +1104,7 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
                     wholeRest.setRest();
                     destLoc.getVoice().insertPosition(wholeRest);
                 }
-				else if (!positions.empty())
+                else if (!positions.empty())
                 {
                     InsertNotes action(destLoc,
                                        std::vector<Position>(positions.begin(),
@@ -1126,8 +1126,8 @@ void PowerTabOldImporter::merge(Score &destScore, Score &srcScore)
         // filled with rests.
         if (!multibarRestCount && !srcCaret.moveToNextBar() &&
             destLoc.getSystemIndex() != currentSystemIndex)
-		{
-			break;
-		}
+        {
+            break;
+        }
     }
 }
