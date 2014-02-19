@@ -157,6 +157,7 @@ int ScoreMerger::importNotes(
         srcLoc.setStaffIndex(i);
 
         // Import dynamics.
+        // TODO - this should only be done once when expanding multibar rests.
         for (const Dynamic &dynamic : ScoreUtils::findInRange(
                  srcLoc.getStaff().getDynamics(), left, right - 1))
         {
@@ -211,8 +212,81 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
     nextDestBar.setPosition(destPosition);
 }
 
+const PlayerChange *ScoreMerger::findPlayerChange(const State &state)
+{
+    if (state.done || state.finishing)
+        return nullptr;
+
+    Score tempScore;
+    ScoreLocation temp(tempScore);
+    int offset, left, right;
+
+    getPositionRange(temp, state.loc, offset, left, right);
+    auto changes = ScoreUtils::findInRange(
+        state.loc.getSystem().getPlayerChanges(), left, right - 1);
+
+    return changes.empty() ? nullptr : &changes.front();
+}
+
+void ScoreMerger::mergePlayerChanges()
+{
+    const PlayerChange *guitarChange = findPlayerChange(myGuitarState);
+    const PlayerChange *bassChange = findPlayerChange(myBassState);
+
+    if (guitarChange || bassChange)
+    {
+        PlayerChange change;
+        change.setPosition(myDestLoc.getPositionIndex());
+
+        if (guitarChange)
+            change = *guitarChange;
+        else
+        {
+            // If there is only a player change in the bass score, carry over
+            // the current active players from the guitar score.
+            const PlayerChange *activeGuitars = ScoreUtils::getCurrentPlayers(
+                myGuitarScore, myGuitarState.loc.getSystemIndex(),
+                myGuitarState.loc.getPositionIndex());
+            if (activeGuitars)
+                change = *activeGuitars;
+        }
+
+        if (!bassChange)
+        {
+            // If there is only a player change in the guitar score, carry over
+            // the current active players from the bass score.
+            bassChange = ScoreUtils::getCurrentPlayers(
+                myBassScore, myBassState.loc.getSystemIndex(),
+                myBassState.loc.getPositionIndex());
+        }
+
+        // Merge in the bass score's player change and adjust
+        // staff/player/instrument numbers.
+        if (bassChange)
+        {
+            for (int i = 0; i < myBassState.loc.getSystem().getStaves().size();
+                 ++i)
+            {
+                for (const ActivePlayer &player :
+                     bassChange->getActivePlayers(i))
+                {
+                    change.insertActivePlayer(
+                        myNumGuitarStaves + i,
+                        ActivePlayer(myGuitarScore.getPlayers().size() +
+                                         player.getPlayerNumber(),
+                                     myGuitarScore.getInstruments().size() +
+                                         player.getInstrumentNumber()));
+                }
+            }
+        }
+
+        myDestLoc.getSystem().insertPlayerChange(change);
+    }
+}
+
 void ScoreMerger::merge()
 {
+    mergePlayers();
     myDestScore.insertSystem(System());
 
     while (true)
@@ -225,7 +299,7 @@ void ScoreMerger::merge()
         // Copy a bar from one of the scores into the destination bar.
         copyBarsFromSource(*destBar, nextDestBar);
 
-        // Insert the notes at the first position after the barline.
+        // We will insert the notes at the first position after the barline.
         if (myDestLoc.getPositionIndex() != 0)
             myDestCaret.moveHorizontal(1);
 
@@ -284,6 +358,10 @@ void ScoreMerger::merge()
                 barLength = std::max(barLength, length);
             }
         }
+
+        // Merge any player changes from the scores.
+        // TODO - only do this once when expanding multi-bar rests.
+        mergePlayerChanges();
 
         myGuitarState.advance();
         myBassState.advance();

@@ -20,6 +20,8 @@
 
 #include <app/caret.h>
 
+class PlayerChange;
+
 class ScoreMerger
 {
     struct State;
@@ -39,6 +41,12 @@ private:
 
     /// Fetch the current pair of barlines from one of the source scores.
     void copyBarsFromSource(Barline &destBar, Barline &nextDestBar);
+
+    /// Combine player changes from the two scores.
+    void mergePlayerChanges();
+
+    /// Check for a player change in the current bar.
+    static const PlayerChange *findPlayerChange(const State &state);
 
     struct State
     {
