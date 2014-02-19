@@ -37,6 +37,9 @@ private:
         ScoreLocation &dest, ScoreLocation &srcLoc, bool bass,
         std::function<int(ScoreLocation &, ScoreLocation &)> action);
 
+    /// Fetch the current pair of barlines from one of the source scores.
+    void copyBarsFromSource(Barline &destBar, Barline &nextDestBar);
+
     struct State
     {
         State(Score &score, bool isBass);

@@ -178,6 +178,39 @@ int ScoreMerger::importNotes(
     return length;
 }
 
+void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
+{
+    // Copy a bar from one of the source scores.
+    const Barline *srcBar;
+    const System *srcSystem;
+
+    if (!myGuitarState.done && !myGuitarState.finishing)
+    {
+        srcBar = myGuitarState.loc.getBarline();
+        srcSystem = &myGuitarState.loc.getSystem();
+    }
+    else
+    {
+        srcBar = myBassState.loc.getBarline();
+        srcSystem = &myBassState.loc.getSystem();
+    }
+
+    assert(srcBar);
+    const Barline *nextSrcBar = srcSystem->getNextBarline(srcBar->getPosition());
+    assert(nextSrcBar);
+
+    int destPosition = destBar.getPosition();
+    destBar = *srcBar;
+    // The first bar cannot be the end of a repeat.
+    if (destPosition == 0 && destBar.getBarType() == Barline::RepeatEnd)
+        destBar.setBarType(Barline::SingleBar);
+    destBar.setPosition(destPosition);
+
+    destPosition = nextDestBar.getPosition();
+    nextDestBar = *nextSrcBar;
+    nextDestBar.setPosition(destPosition);
+}
+
 void ScoreMerger::merge()
 {
     myDestScore.insertSystem(System());
@@ -185,8 +218,12 @@ void ScoreMerger::merge()
     while (true)
     {
         System &destSystem = myDestLoc.getSystem();
-        const Barline *destBar = myDestLoc.getBarline();
+        Barline *destBar = myDestLoc.getBarline();
         assert(destBar);
+        Barline nextDestBar;
+
+        // Copy a bar from one of the scores into the destination bar.
+        copyBarsFromSource(*destBar, nextDestBar);
 
         // Insert the notes at the first position after the barline.
         if (myDestLoc.getPositionIndex() != 0)
@@ -270,17 +307,33 @@ void ScoreMerger::merge()
         // Create the next bar or move to the next system.
         if (nextBarPos > POSITION_LIMIT)
         {
-            destSystem.getBarlines().back().setPosition(nextBarPos);
+            Barline &endBar = destSystem.getBarlines().back();
+
+            // Copy over some of the next bar's properties to the end bar.
+            if (nextDestBar.getBarType() != Barline::RepeatStart)
+                endBar.setBarType(nextDestBar.getBarType());
+            endBar.setRepeatCount(nextDestBar.getRepeatCount());
+            endBar.setPosition(nextBarPos);
+
+            KeySignature key = nextDestBar.getKeySignature();
+            key.setVisible(false);
+            endBar.setKeySignature(key);
+
+            TimeSignature time = nextDestBar.getTimeSignature();
+            time.setVisible(false);
+            endBar.setTimeSignature(time);
+
             myDestScore.insertSystem(System());
             myNumGuitarStaves = 0;
             myDestCaret.moveSystem(1);
         }
         else
         {
-            // TODO - correctly copy over barline, key signatures, etc.
+            // On the next iteration we will properly set up the bar.
             Barline barline(nextBarPos, Barline::FreeTimeBar);
             barline.setPosition(nextBarPos);
             destSystem.insertBarline(barline);
+
             myDestCaret.moveToNextBar();
             destSystem.getBarlines().back().setPosition(nextBarPos + 10);
         }
