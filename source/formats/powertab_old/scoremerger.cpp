@@ -124,46 +124,51 @@ static int copyNotes(ScoreLocation &dest, ScoreLocation &src)
 }
 
 int ScoreMerger::importNotes(
-    ScoreLocation &dest, ScoreLocation &srcLoc, bool bass,
+    ScoreLocation &dest, State &srcState,
     std::function<int(ScoreLocation &, ScoreLocation &)> action)
 {
+    ScoreLocation &srcLoc = srcState.loc;
+
     System &destSystem = dest.getSystem();
     const System &srcSystem = srcLoc.getSystem();
 
     int offset, left, right;
     getPositionRange(dest, srcLoc, offset, left, right);
 
-    const int staffOffset = bass ? myNumGuitarStaves : 0;
+    const int staffOffset = srcState.isBass ? myNumGuitarStaves : 0;
     int length = 0;
 
     // Merge the notes for each staff.
     for (int i = 0; i < srcSystem.getStaves().size(); ++i)
     {
         // Ensure that there are enough staves in the destination system.
-        if ((!bass && myNumGuitarStaves <= i) ||
+        if ((!srcState.isBass && myNumGuitarStaves <= i) ||
             destSystem.getStaves().size() <= i + staffOffset)
         {
             const Staff &srcStaff = srcSystem.getStaves()[i];
             Staff destStaff(srcStaff.getStringCount());
             destStaff.setClefType(srcStaff.getClefType());
-            destStaff.setViewType(bass ? Staff::BassView : Staff::GuitarView);
+            destStaff.setViewType(srcState.isBass ? Staff::BassView : Staff::GuitarView);
             destSystem.insertStaff(destStaff);
 
-            if (!bass)
+            if (!srcState.isBass)
                 ++myNumGuitarStaves;
         }
 
         myDestLoc.setStaffIndex(i + staffOffset);
         srcLoc.setStaffIndex(i);
 
-        // Import dynamics.
-        // TODO - this should only be done once when expanding multibar rests.
-        for (const Dynamic &dynamic : ScoreUtils::findInRange(
-                 srcLoc.getStaff().getDynamics(), left, right - 1))
+        // Import dynamics, but don't repeatedly do so when expanding a
+        // multi-bar rest.
+        if (!srcState.expandingMultibarRest)
         {
-            Dynamic newDynamic(dynamic);
-            newDynamic.setPosition(newDynamic.getPosition() + offset);
-            dest.getStaff().insertDynamic(newDynamic);
+            for (const Dynamic &dynamic : ScoreUtils::findInRange(
+                        srcLoc.getStaff().getDynamics(), left, right - 1))
+            {
+                Dynamic newDynamic(dynamic);
+                newDynamic.setPosition(newDynamic.getPosition() + offset);
+                dest.getStaff().insertDynamic(newDynamic);
+            }
         }
 
         // Import each voice.
@@ -214,7 +219,7 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
 
 const PlayerChange *ScoreMerger::findPlayerChange(const State &state)
 {
-    if (state.done || state.finishing)
+    if (state.done || state.finishing || state.expandingMultibarRest)
         return nullptr;
 
     Score tempScore;
@@ -321,9 +326,9 @@ void ScoreMerger::merge()
 
             auto action = std::bind(insertMultiBarRest, std::placeholders::_1,
                                     std::placeholders::_2, count);
-            barLength = importNotes(myDestLoc, myGuitarState.loc, false, action);
-            barLength = std::max(barLength,
-                                 importNotes(myDestLoc, myBassState.loc, true, action));
+            barLength = importNotes(myDestLoc, myGuitarState, action);
+            barLength = std::max(
+                barLength, importNotes(myDestLoc, myBassState, action));
 
             myGuitarState.multibarRestCount -= count;
             myBassState.multibarRestCount -= count;
@@ -342,8 +347,7 @@ void ScoreMerger::merge()
                 // system in the destination score.
                 if (state->inMultibarRest || state->finishing)
                 {
-                    length = importNotes(myDestLoc, state->loc, state->isBass,
-                                         insertWholeRest);
+                    length = importNotes(myDestLoc, *state, insertWholeRest);
 
                     if (state->inMultibarRest)
                         --state->multibarRestCount;
@@ -351,8 +355,7 @@ void ScoreMerger::merge()
                 else
                 {
                     // TODO - this also should copy time signatures, dynamics, etc.
-                    length = importNotes(myDestLoc, state->loc, state->isBass,
-                                         copyNotes);
+                    length = importNotes(myDestLoc, *state, copyNotes);
                 }
 
                 barLength = std::max(barLength, length);
@@ -360,7 +363,6 @@ void ScoreMerger::merge()
         }
 
         // Merge any player changes from the scores.
-        // TODO - only do this once when expanding multi-bar rests.
         mergePlayerChanges();
 
         myGuitarState.advance();
@@ -423,6 +425,7 @@ ScoreMerger::State::State(Score &score, bool isBass)
       loc(caret.getLocation()),
       isBass(isBass),
       inMultibarRest(false),
+      expandingMultibarRest(false),
       multibarRestCount(0),
       done(false),
       finishing(false)
@@ -432,7 +435,12 @@ ScoreMerger::State::State(Score &score, bool isBass)
 void ScoreMerger::State::advance()
 {
     if (inMultibarRest && multibarRestCount == 0)
+    {
         inMultibarRest = false;
+        expandingMultibarRest = false;
+    }
+    else if (inMultibarRest)
+        expandingMultibarRest = true;
 
     if (!inMultibarRest && !caret.moveToNextBar())
         finishing = true;

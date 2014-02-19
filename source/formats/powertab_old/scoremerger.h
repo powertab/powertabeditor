@@ -36,7 +36,7 @@ private:
     void mergePlayers();
 
     int importNotes(
-        ScoreLocation &dest, ScoreLocation &srcLoc, bool bass,
+        ScoreLocation &dest, State &srcState,
         std::function<int(ScoreLocation &, ScoreLocation &)> action);
 
     /// Fetch the current pair of barlines from one of the source scores.
@@ -55,7 +55,9 @@ private:
         Caret caret;
         ScoreLocation &loc;
         bool isBass;
+
         bool inMultibarRest;
+        bool expandingMultibarRest;
         int multibarRestCount;
 
         bool done;
