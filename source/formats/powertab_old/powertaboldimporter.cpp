@@ -62,13 +62,8 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     Score bassScore;
     convert(*document.GetScore(1), bassScore);
 
-    // TODO - switch to the score merger once it is more stable.
-#if 0
     ScoreMerger merger(score, guitarScore, bassScore);
     merger.merge();
-#else
-    convert(*document.GetScore(0), score);
-#endif
 }
 
 void PowerTabOldImporter::convert(

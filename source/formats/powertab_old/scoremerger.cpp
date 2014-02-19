@@ -349,6 +349,9 @@ void ScoreMerger::merge()
         if (myDestLoc.getPositionIndex() != 0)
             myDestCaret.moveHorizontal(1);
 
+        // TODO - this also needs to handle mismatched repeats, alternate
+        // endings, and directions.
+
         // We only need special handling for multi-bar rests if both staves are active.
         if (!myGuitarState.done && !myBassState.done)
         {
@@ -394,10 +397,7 @@ void ScoreMerger::merge()
                         --state->multibarRestCount;
                 }
                 else
-                {
-                    // TODO - this also should copy time signatures, dynamics, etc.
                     length = importNotes(myDestLoc, *state, copyNotes);
-                }
 
                 barLength = std::max(barLength, length);
             }
