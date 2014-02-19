@@ -17,7 +17,6 @@
 
 #include "scoremerger.h"
 
-#include <actions/insertnotes.h>
 #include <score/score.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
@@ -71,8 +70,8 @@ static int insertMultiBarRest(ScoreLocation &dest, ScoreLocation &, int count)
     return 16;
 }
 
-/// Copy notes from the source bar to the destination.
-static int copyNotes(ScoreLocation &dest, ScoreLocation &src)
+static void getPositionRange(const ScoreLocation &dest, const ScoreLocation &src,
+        int &offset, int &left, int &right)
 {
     const System &srcSystem = src.getSystem();
     const Barline *srcBar = src.getBarline();
@@ -80,26 +79,43 @@ static int copyNotes(ScoreLocation &dest, ScoreLocation &src)
     const Barline *nextSrcBar = srcSystem.getNextBarline(srcBar->getPosition());
     assert(nextSrcBar);
 
+    offset = dest.getPositionIndex() - srcBar->getPosition();
+    if (srcBar->getPosition() != 0)
+        --offset;
+
+    left = srcBar->getPosition();
+    right = nextSrcBar->getPosition();
+}
+
+/// Copy notes from the source bar to the destination.
+static int copyNotes(ScoreLocation &dest, ScoreLocation &src)
+{
+    int offset, left, right;
+    getPositionRange(dest, src, offset, left, right);
+
     auto positions = ScoreUtils::findInRange(src.getVoice().getPositions(),
-                                             srcBar->getPosition(),
-                                             nextSrcBar->getPosition());
-    std::vector<IrregularGrouping> groups;
-    for (const IrregularGrouping *group : VoiceUtils::getIrregularGroupsInRange(
-             src.getVoice(), srcBar->getPosition(), nextSrcBar->getPosition()))
-    {
-        groups.push_back(*group);
-    }
+                                             left, right);
 
     if (!positions.empty())
     {
-        int length = positions.back().getPosition() - srcBar->getPosition();
-        if (srcBar->getPosition() == 0)
+        int length = positions.back().getPosition() - left;
+        if (left == 0)
             ++length;
 
-        InsertNotes action(
-            dest, std::vector<Position>(positions.begin(), positions.end()),
-            groups);
-        action.redo();
+        for (const Position &pos : positions)
+        {
+            Position newPos(pos);
+            newPos.setPosition(newPos.getPosition() + offset);
+            dest.getVoice().insertPosition(newPos);
+        }
+
+        for (const IrregularGrouping *group :
+             VoiceUtils::getIrregularGroupsInRange(src.getVoice(), left, right))
+        {
+            IrregularGrouping newGroup(*group);
+            newGroup.setPosition(newGroup.getPosition() + offset);
+            dest.getVoice().insertIrregularGrouping(newGroup);
+        }
 
         return length;
     }
@@ -113,6 +129,9 @@ int ScoreMerger::importNotes(
 {
     System &destSystem = dest.getSystem();
     const System &srcSystem = srcLoc.getSystem();
+
+    int offset, left, right;
+    getPositionRange(dest, srcLoc, offset, left, right);
 
     const int staffOffset = bass ? myNumGuitarStaves : 0;
     int length = 0;
@@ -136,6 +155,15 @@ int ScoreMerger::importNotes(
 
         myDestLoc.setStaffIndex(i + staffOffset);
         srcLoc.setStaffIndex(i);
+
+        // Import dynamics.
+        for (const Dynamic &dynamic : ScoreUtils::findInRange(
+                 srcLoc.getStaff().getDynamics(), left, right - 1))
+        {
+            Dynamic newDynamic(dynamic);
+            newDynamic.setPosition(newDynamic.getPosition() + offset);
+            dest.getStaff().insertDynamic(newDynamic);
+        }
 
         // Import each voice.
         for (int v = 0; v < Staff::NUM_VOICES; ++v)
