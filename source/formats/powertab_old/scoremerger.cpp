@@ -222,11 +222,9 @@ const PlayerChange *ScoreMerger::findPlayerChange(const State &state)
     if (state.done || state.finishing || state.expandingMultibarRest)
         return nullptr;
 
-    Score tempScore;
-    ScoreLocation temp(tempScore);
     int offset, left, right;
+    getPositionRange(myDestLoc, state.loc, offset, left, right);
 
-    getPositionRange(temp, state.loc, offset, left, right);
     auto changes = ScoreUtils::findInRange(
         state.loc.getSystem().getPlayerChanges(), left, right - 1);
 
@@ -286,6 +284,49 @@ void ScoreMerger::mergePlayerChanges()
         }
 
         myDestLoc.getSystem().insertPlayerChange(change);
+    }
+}
+
+void ScoreMerger::mergeSystemSymbols()
+{
+    for (State *state : {&myGuitarState, &myBassState})
+    {
+        if (state->done || state->finishing || state->expandingMultibarRest)
+            continue;
+
+        int offset, left, right;
+        getPositionRange(myDestLoc, state->loc, offset, left, right);
+
+        const System &srcSystem = state->loc.getSystem();
+        System &destSystem = myDestLoc.getSystem();
+
+        for (const TempoMarker &srcMarker : ScoreUtils::findInRange(
+                 srcSystem.getTempoMarkers(), left, right - 1))
+        {
+            TempoMarker marker(srcMarker);
+            marker.setPosition(srcMarker.getPosition() + offset);
+
+            // We might get duplicate tempo markers from the two scores.
+            if (ScoreUtils::findByPosition(destSystem.getTempoMarkers(),
+                                           marker.getPosition()))
+                continue;
+
+            destSystem.insertTempoMarker(marker);
+        }
+
+        for (const ChordText &srcChord :
+             ScoreUtils::findInRange(srcSystem.getChords(), left, right - 1))
+        {
+            ChordText chord(srcChord);
+            chord.setPosition(srcChord.getPosition() + offset);
+
+            // We might get duplicate items from the two scores.
+            if (ScoreUtils::findByPosition(destSystem.getChords(),
+                                           chord.getPosition()))
+                continue;
+
+            destSystem.insertChord(chord);
+        }
     }
 }
 
@@ -364,6 +405,9 @@ void ScoreMerger::merge()
 
         // Merge any player changes from the scores.
         mergePlayerChanges();
+
+        // Merge any tempo markers or chord symbols from the scores.
+        mergeSystemSymbols();
 
         myGuitarState.advance();
         myBassState.advance();

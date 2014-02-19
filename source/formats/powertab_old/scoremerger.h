@@ -45,8 +45,11 @@ private:
     /// Combine player changes from the two scores.
     void mergePlayerChanges();
 
+    /// Merge in tempo markers, etc. from the scores.
+    void mergeSystemSymbols();
+
     /// Check for a player change in the current bar.
-    static const PlayerChange *findPlayerChange(const State &state);
+    const PlayerChange *findPlayerChange(const State &state);
 
     struct State
     {
