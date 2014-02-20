@@ -29,6 +29,8 @@ add_library(ptescore
     voice.cpp
     voiceutils.cpp
 
+    utils/scoremerger.cpp
+
     # Add header files here so that they show up in the generated projects for
     # Visual Studio, QtCreator, etc.
     alternateending.h
@@ -60,6 +62,8 @@ add_library(ptescore
     utils.h
     voice.h
     voiceutils.h
+
+    utils/scoremerger.h
 )
 
 cotire(ptescore)
