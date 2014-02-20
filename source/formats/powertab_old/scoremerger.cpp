@@ -49,6 +49,19 @@ void ScoreMerger::mergePlayers()
         myDestScore.insertInstrument(instrument);
 }
 
+static void hideSignaturesAndRehearsalSign(Barline &bar)
+{
+    bar.clearRehearsalSign();
+
+    KeySignature key = bar.getKeySignature();
+    key.setVisible(false);
+    bar.setKeySignature(key);
+
+    TimeSignature time = bar.getTimeSignature();
+    time.setVisible(false);
+    bar.setTimeSignature(time);
+}
+
 static int insertWholeRest(ScoreLocation &dest, ScoreLocation &)
 {
     Position wholeRest(dest.getPositionIndex(), Position::WholeNote);
@@ -189,16 +202,19 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
     // Copy a bar from one of the source scores.
     const Barline *srcBar;
     const System *srcSystem;
+    bool isCopied = false;
 
     if (!myGuitarState.done && !myGuitarState.finishing)
     {
         srcBar = myGuitarState.loc.getBarline();
         srcSystem = &myGuitarState.loc.getSystem();
+        isCopied = myGuitarState.expandingMultibarRest;
     }
     else
     {
         srcBar = myBassState.loc.getBarline();
         srcSystem = &myBassState.loc.getSystem();
+        isCopied = myBassState.expandingMultibarRest;
     }
 
     assert(srcBar);
@@ -211,6 +227,9 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
     if (destPosition == 0 && destBar.getBarType() == Barline::RepeatEnd)
         destBar.setBarType(Barline::SingleBar);
     destBar.setPosition(destPosition);
+
+    if (isCopied)
+        hideSignaturesAndRehearsalSign(destBar);
 
     destPosition = nextDestBar.getPosition();
     nextDestBar = *nextSrcBar;
@@ -243,7 +262,7 @@ void ScoreMerger::mergePlayerChanges()
 
         if (guitarChange)
             change = *guitarChange;
-        else
+        else if (!myGuitarState.done)
         {
             // If there is only a player change in the bass score, carry over
             // the current active players from the guitar score.
@@ -254,7 +273,7 @@ void ScoreMerger::mergePlayerChanges()
                 change = *activeGuitars;
         }
 
-        if (!bassChange)
+        if (!bassChange && !myBassState.done)
         {
             // If there is only a player change in the guitar score, carry over
             // the current active players from the bass score.
@@ -438,14 +457,7 @@ void ScoreMerger::merge()
                 endBar.setBarType(nextDestBar.getBarType());
             endBar.setRepeatCount(nextDestBar.getRepeatCount());
             endBar.setPosition(nextBarPos);
-
-            KeySignature key = nextDestBar.getKeySignature();
-            key.setVisible(false);
-            endBar.setKeySignature(key);
-
-            TimeSignature time = nextDestBar.getTimeSignature();
-            time.setVisible(false);
-            endBar.setTimeSignature(time);
+            hideSignaturesAndRehearsalSign(endBar);
 
             myDestScore.insertSystem(System());
             myNumGuitarStaves = 0;
@@ -474,6 +486,16 @@ ScoreMerger::State::State(Score &score, bool isBass)
       done(false),
       finishing(false)
 {
+    bool empty = true;
+    for (const Staff &staff : loc.getSystem().getStaves())
+    {
+        for (const Voice &voice : staff.getVoices())
+            empty &= voice.getPositions().empty();
+    }
+
+    // If it looks like the score is unused, don't do anything.
+    if (empty)
+        done = true;
 }
 
 void ScoreMerger::State::advance()
