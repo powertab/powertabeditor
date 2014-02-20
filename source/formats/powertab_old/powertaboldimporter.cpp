@@ -34,7 +34,7 @@
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/systemlocation.h>
-#include "scoremerger.h"
+#include <score/utils/scoremerger.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab Document (v1.7)", { "ptb" }))
