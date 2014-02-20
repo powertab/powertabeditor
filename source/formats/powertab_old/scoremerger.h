@@ -66,6 +66,7 @@ private:
         bool done;
         bool finishing;
 
+        bool outOfNotes() const;
         void advance();
         void finishIfPossible();
         void checkForMultibarRest();

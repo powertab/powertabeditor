@@ -111,10 +111,6 @@ static int copyNotes(ScoreLocation &dest, ScoreLocation &src)
 
     if (!positions.empty())
     {
-        int length = positions.back().getPosition() - left;
-        if (left == 0)
-            ++length;
-
         for (const Position &pos : positions)
         {
             Position newPos(pos);
@@ -129,6 +125,10 @@ static int copyNotes(ScoreLocation &dest, ScoreLocation &src)
             newGroup.setPosition(newGroup.getPosition() + offset);
             dest.getVoice().insertIrregularGrouping(newGroup);
         }
+
+        int length = right - left;
+        if (left == 0)
+            ++length;
 
         return length;
     }
@@ -204,7 +204,7 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
     const System *srcSystem;
     bool isCopied = false;
 
-    if (!myGuitarState.done && !myGuitarState.finishing)
+    if (!myGuitarState.outOfNotes())
     {
         srcBar = myGuitarState.loc.getBarline();
         srcSystem = &myGuitarState.loc.getSystem();
@@ -238,7 +238,7 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
 
 const PlayerChange *ScoreMerger::findPlayerChange(const State &state)
 {
-    if (state.done || state.finishing || state.expandingMultibarRest)
+    if (state.outOfNotes() || state.expandingMultibarRest)
         return nullptr;
 
     int offset, left, right;
@@ -310,7 +310,7 @@ void ScoreMerger::mergeSystemSymbols()
 {
     for (State *state : {&myGuitarState, &myBassState})
     {
-        if (state->done || state->finishing || state->expandingMultibarRest)
+        if (state->outOfNotes() || state->expandingMultibarRest)
             continue;
 
         int offset, left, right;
@@ -431,7 +431,7 @@ void ScoreMerger::merge()
         myGuitarState.advance();
         myBassState.advance();
 
-        const int nextBarPos = destBar->getPosition() + barLength + 1;
+        const int nextBarPos = destBar->getPosition() + barLength;
 
         // If we're about to move to a new system, transition from finishing to
         // done.
@@ -441,14 +441,11 @@ void ScoreMerger::merge()
             myBassState.finishIfPossible();
         }
 
-        if ((myGuitarState.done || myGuitarState.finishing) &&
-            (myBassState.done || myBassState.finishing))
-        {
-            break;
-        }
+        const bool exiting =
+            myGuitarState.outOfNotes() && myBassState.outOfNotes();
 
         // Create the next bar or move to the next system.
-        if (nextBarPos > POSITION_LIMIT)
+        if (exiting || nextBarPos > POSITION_LIMIT)
         {
             Barline &endBar = destSystem.getBarlines().back();
 
@@ -459,9 +456,18 @@ void ScoreMerger::merge()
             endBar.setPosition(nextBarPos);
             hideSignaturesAndRehearsalSign(endBar);
 
-            myDestScore.insertSystem(System());
-            myNumGuitarStaves = 0;
-            myDestCaret.moveSystem(1);
+            if (exiting)
+            {
+                // Ensure that we have a double bar at the end.
+                endBar.setBarType(Barline::DoubleBarFine);
+                break;
+            }
+            else
+            {
+                myDestScore.insertSystem(System());
+                myNumGuitarStaves = 0;
+                myDestCaret.moveSystem(1);
+            }
         }
         else
         {
@@ -496,6 +502,11 @@ ScoreMerger::State::State(Score &score, bool isBass)
     // If it looks like the score is unused, don't do anything.
     if (empty)
         done = true;
+}
+
+bool ScoreMerger::State::outOfNotes() const
+{
+    return done || finishing;
 }
 
 void ScoreMerger::State::advance()
