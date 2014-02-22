@@ -48,9 +48,8 @@ private:
     SystemLocation performMusicalDirection(
             DirectionSymbol::SymbolType directionType);
 
-    /// Returns the active repeat - the last repeat with a start bar before the
-    /// given position.
-    Repeat &getPreviousRepeatGroup(const SystemLocation &location);
+    /// Returns the repeat section that surrounds the given position, if possible.
+    Repeat *findActiveRepeat(const SystemLocation &location);
 
     const Score &myScore;
     /// The active musical direction symbol during playback.

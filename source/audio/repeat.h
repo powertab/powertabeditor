@@ -37,6 +37,8 @@ public:
     /// Adjusts the number of remaining repeats.
     bool performRepeat();
 
+    int getRepeatCount() const;
+
 private:
     int myRepeatCount;
     int myRemainingRepeats;
@@ -49,13 +51,19 @@ class Repeat
 public:
     Repeat(const SystemLocation &myStartBarLocation);
 
+    const SystemLocation &getStartLocation() const;
+    const SystemLocation &getLastEndBarLocation() const;
+
     /// Adds a new end bar to the repeat.
     void addRepeatEnd(const SystemLocation &location, const RepeatEnd &endBar);
 
     /// Adds an alternate ending to the repeat group.
     void addAlternateEnding(int system, const AlternateEnding &altEnding);
 
-    int getActiveRepeat() const;
+    int getTotalRepeatCount() const;
+    int getAlternateEndingCount() const;
+
+    int getActiveRepeatNumber() const;
 
     /// Resets the repeat group to its original state (restores counters, etc).
     void reset();

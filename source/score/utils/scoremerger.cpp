@@ -458,8 +458,9 @@ void ScoreMerger::merge()
 
             if (exiting)
             {
-                // Ensure that we have a double bar at the end.
-                endBar.setBarType(Barline::DoubleBarFine);
+                // Ensure that we have a double bar or a repeat at the end.
+                if (endBar.getBarType() != Barline::RepeatEnd)
+                    endBar.setBarType(Barline::DoubleBarFine);
                 break;
             }
             else

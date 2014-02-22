@@ -25,6 +25,17 @@ Repeat::Repeat(const SystemLocation &startBarLocation)
 {
 }
 
+const SystemLocation &Repeat::getStartLocation() const
+{
+    return myStartBarLocation;
+}
+
+const SystemLocation &Repeat::getLastEndBarLocation() const
+{
+    Q_ASSERT(!myEndBars.empty());
+    return myEndBars.rbegin()->first;
+}
+
 void Repeat::addRepeatEnd(const SystemLocation &location,
                           const RepeatEnd &endBar)
 {
@@ -40,6 +51,21 @@ void Repeat::addAlternateEnding(int system, const AlternateEnding &altEnding)
     // endings map along with the location of the ending.
     for (int num : numbers)
         myAlternateEndings[num] = location;
+}
+
+int Repeat::getTotalRepeatCount() const
+{
+    int count = 0;
+
+    for (auto &bar : myEndBars)
+        count += bar.second.getRepeatCount();
+
+    return count;
+}
+
+int Repeat::getAlternateEndingCount() const
+{
+    return static_cast<int>(myAlternateEndings.size());
 }
 
 SystemLocation Repeat::performRepeat(const SystemLocation &currentLocation)
@@ -77,7 +103,7 @@ SystemLocation Repeat::performRepeat(const SystemLocation &currentLocation)
         return currentLocation;
 }
 
-int Repeat::getActiveRepeat() const
+int Repeat::getActiveRepeatNumber() const
 {
     return myActiveRepeat;
 }
@@ -121,4 +147,9 @@ bool RepeatEnd::performRepeat()
 void RepeatEnd::reset()
 {
     myRemainingRepeats = myRepeatCount - 1;
+}
+
+int RepeatEnd::getRepeatCount() const
+{
+    return myRepeatCount;
 }
