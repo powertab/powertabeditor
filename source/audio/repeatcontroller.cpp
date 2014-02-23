@@ -22,6 +22,64 @@
 #include <score/utils.h>
 #include <stack>
 
+RepeatState::RepeatState(const RepeatedSection &repeat)
+    : myRepeatedSection(repeat), myActiveRepeat(1)
+{
+    reset();
+}
+
+int RepeatState::getCurrentRepeatNumber() const
+{
+    return myActiveRepeat;
+}
+
+void RepeatState::reset()
+{
+    myActiveRepeat = 1;
+
+    // Reset the number of remaining repeats to the original values.
+    for (auto &repeat : myRepeatedSection.getRepeatEndBars())
+        myRemainingRepeats[repeat.first] = repeat.second - 1;
+}
+
+SystemLocation RepeatState::performRepeat(const SystemLocation &loc)
+{
+    // Deal with alternate endings - if we are at the start of the first
+    // alternate ending, we can branch off to other alternate endings depending
+    // on the active repeat.
+    boost::optional<SystemLocation> firstAltEnding =
+        myRepeatedSection.findAlternateEnding(1);
+    if (firstAltEnding && *firstAltEnding == loc)
+    {
+        // Branch off to the next alternate ending, if it exists.
+        boost::optional<SystemLocation> nextAltEnding =
+            myRepeatedSection.findAlternateEnding(myActiveRepeat);
+        if (nextAltEnding)
+            return *nextAltEnding;
+    }
+
+    // Now, we can look for repeat end bars.
+    auto remainingRepeatCount = myRemainingRepeats.find(loc);
+
+    // No repeat bar.
+    if (remainingRepeatCount == myRemainingRepeats.end())
+        return loc;
+    // Perform the repeat event.
+    else if (remainingRepeatCount->second != 0)
+    {
+        --remainingRepeatCount->second;
+        ++myActiveRepeat;
+        return myRepeatedSection.getStartBarLocation();
+    }
+    // Otherwise, the repeat is not performed and is reset.
+    else
+    {
+        remainingRepeatCount->second = myRepeatedSection.getRepeatEndBars().at(
+            remainingRepeatCount->first);
+        return loc;
+    }
+}
+
 /// Determines whether a direction should be performed, based on the
 /// active symbol and repeat number.
 /// If the direction's activation symbol is None, it will always be able to
@@ -37,126 +95,45 @@ static bool shouldPerformDirection(const DirectionSymbol &symbol,
 }
 
 RepeatController::RepeatController(const Score &score)
-    : myScore(score),
+    : myIndex(score),
+      myScore(score),
       myActiveSymbol(DirectionSymbol::ActiveNone)
 {
-    indexRepeats();
+    for (const RepeatedSection &repeat : myIndex.getRepeats())
+        myRepeatStates.emplace(&repeat, RepeatState(repeat));
+
+    indexDirections();
 }
 
-void RepeatController::indexRepeats()
+void RepeatController::indexDirections()
 {
-    // There may be nested repeats, so maintain a stack of the active repeats
-    // as we go through the score.
-    std::stack<Repeat> repeats;
-
-    // The start of the score can always act as a repeat start bar.
-    repeats.push(Repeat(SystemLocation(0, 0)));
-
     int systemIndex = 0;
     for (const System &system : myScore.getSystems())
     {
-        for (const Barline &bar : system.getBarlines())
+        for (const Direction &direction : system.getDirections())
         {
-            // If we've seen the last alternate ending of the repeat,
-            // we are done.
-            if (!repeats.empty())
-            {
-                Repeat &activeRepeat = repeats.top();
-                if (activeRepeat.getAlternateEndingCount() &&
-                    activeRepeat.getAlternateEndingCount() ==
-                        activeRepeat.getTotalRepeatCount())
-                {
-                    myRepeats.emplace(activeRepeat.getStartLocation(),
-                                      repeats.top());
-                    repeats.pop();
-                }
-            }
+            const SystemLocation location(systemIndex, direction.getPosition());
 
-            // Record any start bars that we see.
-            if (bar.getBarType() == Barline::RepeatStart)
+            for (const DirectionSymbol &symbol : direction.getSymbols())
             {
-                const SystemLocation location(systemIndex, bar.getPosition());
-                repeats.push(Repeat(location));
-            }
-            else if (bar.getBarType() == Barline::RepeatEnd)
-            {
-                // TODO - do a better job of handling mismatched repeats.
-                Q_ASSERT(!repeats.empty());
-
-                // Add this end bar to the active repeat.
-                Repeat &activeRepeat = repeats.top();
-                activeRepeat.addRepeatEnd(
-                    SystemLocation(systemIndex, bar.getPosition()),
-                    RepeatEnd(bar.getRepeatCount()));
-
-                // If we don't have any alternate endings, we must be
-                // done with this repeat.
-                if (repeats.top().getAlternateEndingCount() == 0)
-                {
-                    myRepeats.emplace(repeats.top().getStartLocation(), repeats.top());
-                    repeats.pop();
-                }
-            }
-
-            // Process repeat endings in this bar, unless we're at the end bar.
-            const Barline *nextBar = system.getNextBarline(bar.getPosition());
-            if (nextBar)
-            {
-                for (const AlternateEnding &ending : ScoreUtils::findInRange(
-                         system.getAlternateEndings(), bar.getPosition(),
-                         nextBar->getPosition() - 1))
-                {
-                    // TODO - do a better job of handling this error.
-                    Q_ASSERT(!repeats.empty());
-                    repeats.top().addAlternateEnding(systemIndex, ending);
-                }
+                myDirections.insert(std::make_pair(location, symbol));
+                mySymbolLocations.insert(
+                    std::make_pair(symbol.getSymbolType(), location));
             }
         }
-
-        indexDirections(systemIndex, system);
         ++systemIndex;
     }
-}
-
-void RepeatController::indexDirections(int systemIndex, const System &system)
-{
-    for (const Direction &direction : system.getDirections())
-    {
-        const SystemLocation location(systemIndex, direction.getPosition());
-
-        for (const DirectionSymbol &symbol : direction.getSymbols())
-        {
-            myDirections.insert(std::make_pair(location, symbol));
-            mySymbolLocations.insert(std::make_pair(symbol.getSymbolType(),
-                                                    location));
-        }
-    }
-}
-
-Repeat *RepeatController::findActiveRepeat(const SystemLocation &location)
-{
-    auto repeatGroup = myRepeats.lower_bound(location);
-
-    // Search for a pair of start and end bars that surrounds this location.
-    while (repeatGroup != myRepeats.begin())
-    {
-        --repeatGroup;
-        if (repeatGroup->second.getLastEndBarLocation() >= location)
-            return &repeatGroup->second;
-    }
-
-    return nullptr;
 }
 
 bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
                                       const SystemLocation &currentLocation,
                                       SystemLocation &newLocation)
 {
-    // No repeat events in the score.
-    if (myRepeats.empty())
-        return false;
+    const RepeatedSection *activeRepeat = myIndex.findRepeat(currentLocation);
+    RepeatState *repeatState = nullptr;
+    if (activeRepeat)
+        repeatState = &myRepeatStates.at(activeRepeat);
 
-    Repeat *activeRepeat = findActiveRepeat(currentLocation);
     newLocation = currentLocation;
 
     // Check for directions between the previous playback location and the
@@ -170,7 +147,7 @@ bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
 
         if (shouldPerformDirection(
                 direction, myActiveSymbol,
-                activeRepeat ? activeRepeat->getActiveRepeatNumber() : 1))
+                activeRepeat ? repeatState->getCurrentRepeatNumber() : 1))
         {
             newLocation = performMusicalDirection(direction.getSymbolType());
 
@@ -181,14 +158,14 @@ bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
                 // Reset the repeat count for the active repeat, since we may
                 // end up returning to it later (e.g. D.C. al Fine).
                 if (activeRepeat)
-                    activeRepeat->reset();
+                    repeatState->reset();
             }
         }
     }
 
     // If no musical direction was performed, try to perform a repeat.
     if (newLocation == currentLocation && activeRepeat)
-        newLocation = activeRepeat->performRepeat(currentLocation);
+        newLocation = repeatState->performRepeat(currentLocation);
 
     // Return true if a position shift occurred.
     return newLocation != currentLocation;

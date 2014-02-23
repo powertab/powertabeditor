@@ -29,6 +29,7 @@ add_library(ptescore
     voice.cpp
     voiceutils.cpp
 
+    utils/repeatindexer.cpp
     utils/scoremerger.cpp
 
     # Add header files here so that they show up in the generated projects for
@@ -63,6 +64,7 @@ add_library(ptescore
     voice.h
     voiceutils.h
 
+    utils/repeatindexer.h
     utils/scoremerger.h
 )
 

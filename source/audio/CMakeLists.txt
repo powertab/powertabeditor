@@ -9,7 +9,6 @@ add_library(pteaudio
     midiplayer.cpp
     playnoteevent.cpp
     repeatcontroller.cpp
-    repeat.cpp
     restevent.cpp
     stopnoteevent.cpp
     vibratoevent.cpp
@@ -23,7 +22,6 @@ add_library(pteaudio
     midiplayer.h
     playnoteevent.h
     repeatcontroller.h
-    repeat.h
     restevent.h
     stopnoteevent.h
     vibratoevent.h

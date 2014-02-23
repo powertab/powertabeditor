@@ -19,12 +19,27 @@
 #define AUDIO_REPEATCONTROLLER_H
 
 #include <map>
-#include "repeat.h"
 #include <score/direction.h>
 #include <score/systemlocation.h>
+#include <score/utils/repeatindexer.h>
 
 class Score;
 class System;
+
+class RepeatState
+{
+public:
+    RepeatState(const RepeatedSection &section);
+
+    int getCurrentRepeatNumber() const;
+    void reset();
+    SystemLocation performRepeat(const SystemLocation &loc);
+
+private:
+    const RepeatedSection &myRepeatedSection;
+    std::unordered_map<SystemLocation, int> myRemainingRepeats;
+    int myActiveRepeat;
+};
 
 /// Keeps track of repeat events during playback.
 class RepeatController
@@ -40,22 +55,19 @@ public:
                         SystemLocation &newLocation);
 
 private:
-    /// Scans through the entire score and finds all pairs of repeat bars.
-    void indexRepeats();
     /// Scan through all of the musical directions in the system.
-    void indexDirections(int systemIndex, const System &system);
+    void indexDirections();
 
     SystemLocation performMusicalDirection(
             DirectionSymbol::SymbolType directionType);
 
-    /// Returns the repeat section that surrounds the given position, if possible.
-    Repeat *findActiveRepeat(const SystemLocation &location);
-
+    RepeatIndexer myIndex;
     const Score &myScore;
+
     /// The active musical direction symbol during playback.
     DirectionSymbol::ActiveSymbolType myActiveSymbol;
-    /// Holds all repeats in the score.
-    std::map<SystemLocation, Repeat> myRepeats;
+
+    std::unordered_map<const RepeatedSection *, RepeatState> myRepeatStates;
 
     typedef std::multimap<SystemLocation, DirectionSymbol> DirectionMap;
     /// Stores each musical direction in the system.

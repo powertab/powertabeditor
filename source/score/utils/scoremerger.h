@@ -15,8 +15,8 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef FORMATS_SCOREMERGER_H
-#define FORMATS_SCOREMERGER_H
+#ifndef SCORE_UTILS_SCOREMERGER_H
+#define SCORE_UTILS_SCOREMERGER_H
 
 #include <app/caret.h>
 
