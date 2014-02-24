@@ -51,7 +51,7 @@ public:
 
     /// Returns a list of repeat end bars in the section, along with
     /// their repeat counts.
-    const std::unordered_map<SystemLocation, int> &getRepeatEndBars() const
+    const std::map<SystemLocation, int> &getRepeatEndBars() const
     {
         return myRepeatEndBars;
     }
@@ -61,7 +61,7 @@ public:
 
 private:
     SystemLocation myStartBarLocation;
-    std::unordered_map<SystemLocation, int> myRepeatEndBars;
+    std::map<SystemLocation, int> myRepeatEndBars;
     std::unordered_map<int, SystemLocation> myAlternateEndings;
 };
 
