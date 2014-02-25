@@ -258,7 +258,6 @@ void ScoreMerger::mergePlayerChanges()
     if (guitarChange || bassChange)
     {
         PlayerChange change;
-        change.setPosition(myDestLoc.getPositionIndex());
 
         if (guitarChange)
             change = *guitarChange;
@@ -302,6 +301,7 @@ void ScoreMerger::mergePlayerChanges()
             }
         }
 
+        change.setPosition(myDestLoc.getPositionIndex());
         myDestLoc.getSystem().insertPlayerChange(change);
     }
 }
