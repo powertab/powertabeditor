@@ -82,6 +82,7 @@ private:
     State myBassState;
 
     int myNumGuitarStaves;
+    int myPrevNumGuitarStaves;
 };
 
 #endif

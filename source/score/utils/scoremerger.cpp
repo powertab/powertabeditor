@@ -32,7 +32,8 @@ ScoreMerger::ScoreMerger(Score &dest, Score &guitarScore, Score &bassScore)
       myBassScore(bassScore),
       myGuitarState(guitarScore, false),
       myBassState(bassScore, true),
-      myNumGuitarStaves(0)
+      myNumGuitarStaves(0),
+      myPrevNumGuitarStaves(0)
 {
 }
 
@@ -255,7 +256,13 @@ void ScoreMerger::mergePlayerChanges()
     const PlayerChange *guitarChange = findPlayerChange(myGuitarState);
     const PlayerChange *bassChange = findPlayerChange(myBassState);
 
-    if (guitarChange || bassChange)
+    // If either the guitar or bass score has a player change, or we're at the
+    // start of a new system that has a different number of guitar staves,
+    // insert a player change to ensure that player are assigned to the correct
+    // staves.
+    if (guitarChange || bassChange ||
+        (myNumGuitarStaves != myPrevNumGuitarStaves &&
+         myDestLoc.getPositionIndex() == 0))
     {
         PlayerChange change;
 
@@ -475,6 +482,7 @@ void ScoreMerger::merge()
             else
             {
                 myDestScore.insertSystem(System());
+                myPrevNumGuitarStaves = myNumGuitarStaves;
                 myNumGuitarStaves = 0;
                 myDestCaret.moveSystem(1);
             }
