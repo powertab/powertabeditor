@@ -259,17 +259,13 @@ void ScoreMerger::mergePlayerChanges()
     {
         PlayerChange change;
 
-        if (guitarChange)
-            change = *guitarChange;
-        else if (!myGuitarState.done)
+        if (!guitarChange && !myGuitarState.done)
         {
             // If there is only a player change in the bass score, carry over
             // the current active players from the guitar score.
-            const PlayerChange *activeGuitars = ScoreUtils::getCurrentPlayers(
+            guitarChange = ScoreUtils::getCurrentPlayers(
                 myGuitarScore, myGuitarState.loc.getSystemIndex(),
                 myGuitarState.loc.getPositionIndex());
-            if (activeGuitars)
-                change = *activeGuitars;
         }
 
         if (!bassChange && !myBassState.done)
@@ -279,6 +275,19 @@ void ScoreMerger::mergePlayerChanges()
             bassChange = ScoreUtils::getCurrentPlayers(
                 myBassScore, myBassState.loc.getSystemIndex(),
                 myBassState.loc.getPositionIndex());
+        }
+
+        // Merge in data from only the active staves.
+        if (guitarChange)
+        {
+            for (int i = 0; i < myNumGuitarStaves; ++i)
+            {
+                for (const ActivePlayer &player :
+                     guitarChange->getActivePlayers(i))
+                {
+                    change.insertActivePlayer(i, player);
+                }
+            }
         }
 
         // Merge in the bass score's player change and adjust
