@@ -100,7 +100,7 @@ RepeatController::RepeatController(const Score &score)
       myActiveSymbol(DirectionSymbol::ActiveNone)
 {
     for (const RepeatedSection &repeat : myIndex.getRepeats())
-        myRepeatStates.emplace(&repeat, RepeatState(repeat));
+        myRepeatStates.insert(std::make_pair(&repeat, RepeatState(repeat)));
 
     indexDirections();
 }
