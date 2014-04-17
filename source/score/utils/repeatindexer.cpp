@@ -89,7 +89,7 @@ RepeatIndexer::RepeatIndexer(const Score &score)
     std::stack<RepeatedSection> repeats;
 
     // The start of the score can always act as a repeat start bar.
-    repeats.emplace(SystemLocation(0, 0));
+    repeats.push(SystemLocation(0, 0));
 
     int systemIndex = 0;
     for (const System &system : score.getSystems())
@@ -105,7 +105,7 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                     activeRepeat.getAlternateEndingCount() ==
                         activeRepeat.getTotalRepeatCount())
                 {
-                    myRepeats.emplace(activeRepeat);
+                    myRepeats.insert(activeRepeat);
                     repeats.pop();
                 }
             }
@@ -131,7 +131,7 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                 // done with this repeat.
                 if (activeRepeat.getAlternateEndingCount() == 0)
                 {
-                    myRepeats.emplace(activeRepeat);
+                    myRepeats.insert(activeRepeat);
                     repeats.pop();
                 }
             }
