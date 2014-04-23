@@ -34,6 +34,7 @@ target_link_libraries(powertabeditor
     pteactions
     ptescore
     ${Boost_LIBRARIES}
+    ${ZLIB_LIBRARIES}
 )
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")

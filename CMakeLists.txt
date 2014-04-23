@@ -34,6 +34,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     find_package(Boost REQUIRED COMPONENTS date_time iostreams zlib)
 else()
     find_package(Boost REQUIRED COMPONENTS date_time iostreams)
+    find_package(ZLIB REQUIRED)
 endif()
 
 # Find the ALSA package for Linux.
