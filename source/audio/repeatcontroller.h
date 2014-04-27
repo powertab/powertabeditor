@@ -18,9 +18,7 @@
 #ifndef AUDIO_REPEATCONTROLLER_H
 #define AUDIO_REPEATCONTROLLER_H
 
-#include <map>
-#include <score/direction.h>
-#include <score/systemlocation.h>
+#include <score/utils/directionindex.h>
 #include <score/utils/repeatindexer.h>
 
 class Score;
@@ -55,27 +53,9 @@ public:
                         SystemLocation &newLocation);
 
 private:
-    /// Scan through all of the musical directions in the system.
-    void indexDirections();
-
-    SystemLocation performMusicalDirection(
-            DirectionSymbol::SymbolType directionType);
-
-    RepeatIndexer myIndex;
-    const Score &myScore;
-
-    /// The active musical direction symbol during playback.
-    DirectionSymbol::ActiveSymbolType myActiveSymbol;
-
+    DirectionIndex myDirectionIndex;
+    RepeatIndexer myRepeatIndex;
     std::unordered_map<const RepeatedSection *, RepeatState> myRepeatStates;
-
-    typedef std::multimap<SystemLocation, DirectionSymbol> DirectionMap;
-    /// Stores each musical direction in the system.
-    DirectionMap myDirections;
-
-    typedef std::map<DirectionSymbol::SymbolType, SystemLocation> SymbolLocationsMap;
-    /// Stores the location of each music symbol (coda, etc).
-    SymbolLocationsMap mySymbolLocations;
 };
 
 #endif

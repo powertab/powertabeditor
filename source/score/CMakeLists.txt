@@ -29,6 +29,7 @@ add_library(ptescore
     voice.cpp
     voiceutils.cpp
 
+    utils/directionindex.cpp
     utils/repeatindexer.cpp
     utils/scoremerger.cpp
 
@@ -64,6 +65,7 @@ add_library(ptescore
     voice.h
     voiceutils.h
 
+    utils/directionindex.h
     utils/repeatindexer.h
     utils/scoremerger.h
 )

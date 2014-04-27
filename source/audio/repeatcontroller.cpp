@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "repeatcontroller.h"
 
 #include <iostream>
@@ -28,10 +28,7 @@ RepeatState::RepeatState(const RepeatedSection &repeat)
     reset();
 }
 
-int RepeatState::getCurrentRepeatNumber() const
-{
-    return myActiveRepeat;
-}
+int RepeatState::getCurrentRepeatNumber() const { return myActiveRepeat; }
 
 void RepeatState::reset()
 {
@@ -80,166 +77,39 @@ SystemLocation RepeatState::performRepeat(const SystemLocation &loc)
     }
 }
 
-/// Determines whether a direction should be performed, based on the
-/// active symbol and repeat number.
-/// If the direction's activation symbol is None, it will always be able to
-/// activate regardless of the currently active symbol.
-static bool shouldPerformDirection(const DirectionSymbol &symbol,
-        DirectionSymbol::ActiveSymbolType activeSymbol, int activeRepeat)
-{
-    return (symbol.getActiveSymbolType() == DirectionSymbol::ActiveNone ||
-            symbol.getActiveSymbolType() == activeSymbol) &&
-            symbol.getSymbolType() >= DirectionSymbol::Fine &&
-            (symbol.getRepeatNumber() == 0 ||
-             symbol.getRepeatNumber() == activeRepeat);
-}
-
 RepeatController::RepeatController(const Score &score)
-    : myIndex(score),
-      myScore(score),
-      myActiveSymbol(DirectionSymbol::ActiveNone)
+    : myDirectionIndex(score),
+      myRepeatIndex(score)
 {
-    for (const RepeatedSection &repeat : myIndex.getRepeats())
+    for (const RepeatedSection &repeat : myRepeatIndex.getRepeats())
         myRepeatStates.insert(std::make_pair(&repeat, RepeatState(repeat)));
-
-    indexDirections();
-}
-
-void RepeatController::indexDirections()
-{
-    int systemIndex = 0;
-    for (const System &system : myScore.getSystems())
-    {
-        for (const Direction &direction : system.getDirections())
-        {
-            const SystemLocation location(systemIndex, direction.getPosition());
-
-            for (const DirectionSymbol &symbol : direction.getSymbols())
-            {
-                myDirections.insert(std::make_pair(location, symbol));
-                mySymbolLocations.insert(
-                    std::make_pair(symbol.getSymbolType(), location));
-            }
-        }
-        ++systemIndex;
-    }
 }
 
 bool RepeatController::checkForRepeat(const SystemLocation &prevLocation,
                                       const SystemLocation &currentLocation,
                                       SystemLocation &newLocation)
 {
-    const RepeatedSection *activeRepeat = myIndex.findRepeat(currentLocation);
+    const RepeatedSection *activeRepeat = myRepeatIndex.findRepeat(currentLocation);
     RepeatState *repeatState = nullptr;
     if (activeRepeat)
         repeatState = &myRepeatStates.at(activeRepeat);
 
-    newLocation = currentLocation;
+    newLocation = myDirectionIndex.performDirection(
+        prevLocation, currentLocation,
+        activeRepeat ? repeatState->getCurrentRepeatNumber() : 1);
 
-    // Check for directions between the previous playback location and the
-    // current location.
-    auto leftIt = myDirections.lower_bound(prevLocation);
-    auto rightIt = myDirections.upper_bound(currentLocation);
-
-    if (leftIt != myDirections.end() && leftIt != rightIt)
+    if (newLocation != currentLocation)
     {
-        DirectionSymbol &direction = leftIt->second;
-
-        if (shouldPerformDirection(
-                direction, myActiveSymbol,
-                activeRepeat ? repeatState->getCurrentRepeatNumber() : 1))
-        {
-            newLocation = performMusicalDirection(direction.getSymbolType());
-
-            if (newLocation != currentLocation)
-            {
-                // Remove the direction if it was performed.
-                myDirections.erase(leftIt);
-                // Reset the repeat count for the active repeat, since we may
-                // end up returning to it later (e.g. D.C. al Fine).
-                if (activeRepeat)
-                    repeatState->reset();
-            }
-        }
+        // If a direction was performed, reset the repeat count for the active
+        // repeat, since we may end up returning to it later (e.g. D.C. al
+        // Fine).
+        if (activeRepeat)
+            repeatState->reset();
     }
-
     // If no musical direction was performed, try to perform a repeat.
-    if (newLocation == currentLocation && activeRepeat)
+    else if (activeRepeat)
         newLocation = repeatState->performRepeat(currentLocation);
 
     // Return true if a position shift occurred.
     return newLocation != currentLocation;
-}
-
-SystemLocation RepeatController::performMusicalDirection(
-        DirectionSymbol::SymbolType directionType)
-{
-    // Go to the end of the score.
-    if (directionType == DirectionSymbol::Fine)
-    {
-        const auto lastSystemIndex = myScore.getSystems().size() - 1;
-        return SystemLocation(static_cast<int>(lastSystemIndex),
-                    myScore.getSystems()[lastSystemIndex].getBarlines()
-                              .back().getPosition());
-    }
-
-    DirectionSymbol::SymbolType nextSymbol = DirectionSymbol::Coda;
-
-    switch (directionType)
-    {
-    // Return to beginning of score.
-    case DirectionSymbol::DaCapo:
-    case DirectionSymbol::DaCapoAlCoda:
-    case DirectionSymbol::DaCapoAlDoubleCoda:
-    case DirectionSymbol::DaCapoAlFine:
-        myActiveSymbol = DirectionSymbol::ActiveDaCapo;
-        return SystemLocation(0, 0);
-        break;
-
-    // Return to Segno sign.
-    case DirectionSymbol::DalSegno:
-    case DirectionSymbol::DalSegnoAlCoda:
-    case DirectionSymbol::DalSegnoAlDoubleCoda:
-    case DirectionSymbol::DalSegnoAlFine:
-        myActiveSymbol = DirectionSymbol::ActiveDalSegno;
-        nextSymbol = DirectionSymbol::Segno;
-        break;
-
-    // Return to SegnoSegno sign.
-    case DirectionSymbol::DalSegnoSegno:
-    case DirectionSymbol::DalSegnoSegnoAlCoda:
-    case DirectionSymbol::DalSegnoSegnoAlDoubleCoda:
-    case DirectionSymbol::DalSegnoSegnoAlFine:
-        myActiveSymbol = DirectionSymbol::ActiveDalSegnoSegno;
-        nextSymbol = DirectionSymbol::SegnoSegno;
-        break;
-
-    // Jump to coda.
-    case DirectionSymbol::ToCoda:
-        nextSymbol = DirectionSymbol::Coda;
-        break;
-
-    // Jump to double coda.
-    case DirectionSymbol::ToDoubleCoda:
-        nextSymbol = DirectionSymbol::DoubleCoda;
-        break;
-
-    default:
-        break;
-    }
-
-    // Now, find the location of the symbol to jump to.
-    SymbolLocationsMap::iterator symbolLocation = mySymbolLocations.find(
-                nextSymbol);
-    if (symbolLocation != mySymbolLocations.end())
-    {
-        return symbolLocation->second;
-    }
-    else
-    {
-        // This should not happen if the score is properly written.
-        std::cerr << "Could not find the symbol " <<
-                     static_cast<int>(nextSymbol) << std::endl;
-        return SystemLocation(0, 0);
-    }
 }
