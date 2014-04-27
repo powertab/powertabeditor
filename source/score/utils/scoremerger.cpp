@@ -394,7 +394,10 @@ void ScoreMerger::merge()
             myBassState.checkForMultibarRest();
         }
 
-        int barLength = 0;
+        // The minimum bar length is 1, so that the barlines for an empty bar
+        // (e.g. a repeat end that is immediately followed by a repeat start)
+        // are not on top of each other.
+        int barLength = 1;
 
         if (myGuitarState.inMultibarRest && myBassState.inMultibarRest)
         {
