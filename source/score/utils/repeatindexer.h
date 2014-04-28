@@ -34,10 +34,6 @@ public:
     /// Repeated sections are ordered by the position of their start bar.
     bool operator<(const RepeatedSection &other) const;
 
-    /// Determines whether the sections have similar structure (e.g. same number
-    /// of bars, alternate endings, etc).
-    bool hasSameStructure(const RepeatedSection &other) const;
-
     /// Adds a new end bar to the repeated section.
     void addRepeatEndBar(const SystemLocation &location, int repeatCount);
     /// Adds a new alternate ending to the repeated section.

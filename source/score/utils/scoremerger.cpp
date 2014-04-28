@@ -234,7 +234,8 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
     // duplicate repeat ends if a multi-bar rest appears directly before a
     // repeat end bar).
     int destPosition = destBar.getPosition();
-    if (destPosition == 0 || isCopied)
+    if (destPosition == 0 || isCopied ||
+        state->repeatState == State::EXPANDING_REPEAT)
     {
         destBar = *srcBar;
         removeRepeatsWhenExpanding(isExpanding, destBar);
@@ -626,12 +627,15 @@ void ScoreMerger::State::checkForRepeatedSection()
     // The +1 offset is important - the bar after a repeat end barline shouldn't
     // be considered part of that repeat section, so we need to move off of that
     // barline.
+    auto oldSection = repeatedSection;
     repeatedSection = repeatIndex.findRepeat(
         SystemLocation(caret.getLocation().getSystemIndex(),
                        caret.getLocation().getPositionIndex() + 1));
     if (repeatedSection)
     {
-        if (repeatState == NO_REPEAT)
+        // Detect when we've entered a new repeat section, and if we just
+        // previously finished a previous repeat section.
+        if (repeatState == NO_REPEAT || repeatedSection != oldSection)
         {
             remainingRepeats = repeatedSection->getTotalRepeatCount() - 1;
             numMergedRepeats = 0;
@@ -641,6 +645,44 @@ void ScoreMerger::State::checkForRepeatedSection()
     }
     else
         repeatState = NO_REPEAT;
+}
+
+static int getRepeatedSectionWidth(Score &score, const RepeatedSection &sec)
+{
+    auto &startLoc = sec.getStartBarLocation();
+    auto &endLoc = sec.getLastEndBarLocation();
+
+    Caret caret(score);
+    caret.moveToSystem(startLoc.getSystem(), true);
+    caret.moveToPosition(startLoc.getPosition());
+
+    int count = 0;
+    do
+    {
+        if (SystemLocation(caret.getLocation().getSystemIndex(),
+                           caret.getLocation().getPositionIndex()) >= endLoc)
+        {
+            break;
+        }
+
+        const Position *multiRest = caret.getLocation().findMultiBarRest();
+        if (multiRest)
+            count += multiRest->getMultiBarRestCount();
+        else
+            ++count;
+
+    } while (caret.moveToNextBar());
+
+    return count;
+}
+
+static bool haveSameStructure(Score &score1, const RepeatedSection &sec1,
+                              Score &score2, const RepeatedSection &sec2)
+{
+    // For now, just check whether they contain the same number of bars.
+    // TODO - handle alternate endings, nested repeats, etc.
+    return getRepeatedSectionWidth(score1, sec1) ==
+           getRepeatedSectionWidth(score2, sec2);
 }
 
 void ScoreMerger::State::compareRepeatedSection(State &other)
@@ -654,7 +696,9 @@ void ScoreMerger::State::compareRepeatedSection(State &other)
 
         // If the two sections have the same number of bars, etc., then we don't
         // need to expand the repeats.
-        if (repeatedSection->hasSameStructure(*other.repeatedSection))
+        if (haveSameStructure(caret.getLocation().getScore(), *repeatedSection,
+                              other.caret.getLocation().getScore(),
+                              *other.repeatedSection))
         {
             // The repeated sections might have a different number of repeats,
             // so we need to compute how many repetitions we can merge them for.
