@@ -211,46 +211,53 @@ static void removeRepeatsWhenExpanding(bool isExpanding, Barline &bar)
 
 void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
 {
-    // Copy a bar from one of the source scores.
-    const Barline *srcBar;
-    const System *srcSystem;
-    bool isCopied = false;
     const bool isExpanding =
-        (myGuitarState.repeat == State::EXPANDING_REPEAT) ||
-        (myBassState.repeat == State::EXPANDING_REPEAT);
+        (myGuitarState.repeatState == State::EXPANDING_REPEAT) ||
+        (myBassState.repeatState == State::EXPANDING_REPEAT);
 
+    const State *state;
     if (!myGuitarState.outOfNotes())
-    {
-        srcBar = myGuitarState.loc.getBarline();
-        srcSystem = &myGuitarState.loc.getSystem();
-        isCopied = myGuitarState.expandingMultibarRest;
-    }
+        state = &myGuitarState;
     else
-    {
-        srcBar = myBassState.loc.getBarline();
-        srcSystem = &myBassState.loc.getSystem();
-        isCopied = myBassState.expandingMultibarRest;
-    }
+        state = &myBassState;
+
+    const Barline *srcBar = state->loc.getBarline();
+    const System *srcSystem = &state->loc.getSystem();
+    const bool isCopied = state->expandingMultibarRest;
 
     assert(srcBar);
     const Barline *nextSrcBar = srcSystem->getNextBarline(srcBar->getPosition());
     assert(nextSrcBar);
 
+    // Only set the left bar's properties when we're at the start of the system,
+    // or after we've detected that bars are being copied (i.e. we want to clear
+    // duplicate repeat ends if a multi-bar rest appears directly before a
+    // repeat end bar).
     int destPosition = destBar.getPosition();
-    destBar = *srcBar;
-    removeRepeatsWhenExpanding(isExpanding, destBar);
-    // The first bar cannot be the end of a repeat.
-    if (destPosition == 0 && destBar.getBarType() == Barline::RepeatEnd)
-        destBar.setBarType(Barline::SingleBar);
-    destBar.setPosition(destPosition);
+    if (destPosition == 0 || isCopied)
+    {
+        destBar = *srcBar;
+        removeRepeatsWhenExpanding(isExpanding, destBar);
+        // The first bar cannot be the end of a repeat.
+        if (destPosition == 0 && destBar.getBarType() == Barline::RepeatEnd)
+            destBar.setBarType(Barline::SingleBar);
+        destBar.setPosition(destPosition);
+    }
 
     if (isCopied)
         hideSignaturesAndRehearsalSign(destBar);
 
+    // Set the right bar's properties.
     destPosition = nextDestBar.getPosition();
     nextDestBar = *nextSrcBar;
     nextDestBar.setPosition(destPosition);
     removeRepeatsWhenExpanding(isExpanding, nextDestBar);
+
+    if (nextDestBar.getBarType() == Barline::RepeatEnd &&
+        state->repeatState == State::MERGING_REPEAT)
+    {
+        nextDestBar.setRepeatCount(state->numMergedRepeats + 1);
+    }
 }
 
 const PlayerChange *ScoreMerger::findPlayerChange(const State &state)
@@ -403,6 +410,10 @@ void ScoreMerger::merge()
             myBassState.checkForRepeatedSection();
         }
 
+        // Decide whether to merge or expand repeated sections from either
+        // score.
+        myGuitarState.compareRepeatedSection(myBassState);
+
         // Copy a bar from one of the scores into the destination bar.
         copyBarsFromSource(*destBar, nextDestBar);
 
@@ -511,10 +522,8 @@ void ScoreMerger::merge()
         }
         else
         {
-            // On the next iteration we will properly set up the bar.
-            Barline barline(nextBarPos, Barline::FreeTimeBar);
-            barline.setPosition(nextBarPos);
-            destSystem.insertBarline(barline);
+            nextDestBar.setPosition(nextBarPos);
+            destSystem.insertBarline(nextDestBar);
 
             myDestCaret.moveToNextBar();
             destSystem.getBarlines().back().setPosition(nextBarPos + 10);
@@ -530,8 +539,9 @@ ScoreMerger::State::State(Score &score, bool isBass)
       inMultibarRest(false),
       expandingMultibarRest(false),
       multibarRestCount(0),
-      repeat(NO_REPEAT),
+      repeatState(NO_REPEAT),
       remainingRepeats(0),
+      numMergedRepeats(0),
       done(false),
       finishing(false)
 {
@@ -565,22 +575,20 @@ void ScoreMerger::State::advance()
     // If we're expanding a repeated section, jump back to the start bar when we
     // reach the end bar of the source. If the last bar is a multi-bar rest, we
     // need to first finish expanding that.
-    if (!inMultibarRest && repeat == EXPANDING_REPEAT && remainingRepeats)
+    if (!inMultibarRest && repeatState != NO_REPEAT && remainingRepeats)
     {
         const Barline *nextBar = caret.getLocation().getSystem().getNextBarline(
             caret.getLocation().getPositionIndex());
         SystemLocation endBarLoc(caret.getLocation().getSystemIndex(),
                                  nextBar->getPosition());
-        auto repeatSection = repeatIndex.findRepeat(endBarLoc);
-        assert(repeatSection);
 
-        if (repeatSection->getRepeatEndBars().find(endBarLoc) !=
-            repeatSection->getRepeatEndBars().end())
+        if (repeatedSection->getRepeatEndBars().find(endBarLoc) !=
+            repeatedSection->getRepeatEndBars().end())
         {
-            caret.moveToSystem(repeatSection->getStartBarLocation().getSystem(),
-                               true);
+            caret.moveToSystem(
+                repeatedSection->getStartBarLocation().getSystem(), true);
             caret.moveToPosition(
-                repeatSection->getStartBarLocation().getPosition());
+                repeatedSection->getStartBarLocation().getPosition());
             --remainingRepeats;
             return;
         }
@@ -605,41 +613,62 @@ void ScoreMerger::State::checkForMultibarRest()
     if (inMultibarRest)
         return;
 
-    const System &system = loc.getSystem();
-    const Barline *bar = loc.getBarline();
-    const Barline *nextBar = system.getNextBarline(bar->getPosition());
-
-    for (const Staff &staff : system.getStaves())
+    const Position *rest = loc.findMultiBarRest();
+    if (rest)
     {
-        for (const Voice &voice : staff.getVoices())
-        {
-            for (const Position &pos : ScoreUtils::findInRange(
-                     voice.getPositions(), bar->getPosition(),
-                     nextBar->getPosition()))
-            {
-                if (pos.hasMultiBarRest())
-                {
-                    inMultibarRest = true;
-                    multibarRestCount = pos.getMultiBarRestCount();
-                    return;
-                }
-            }
-        }
+        inMultibarRest = true;
+        multibarRestCount = rest->getMultiBarRestCount();
     }
 }
 
 void ScoreMerger::State::checkForRepeatedSection()
 {
-    auto section = repeatIndex.findRepeat(
+    // The +1 offset is important - the bar after a repeat end barline shouldn't
+    // be considered part of that repeat section, so we need to move off of that
+    // barline.
+    repeatedSection = repeatIndex.findRepeat(
         SystemLocation(caret.getLocation().getSystemIndex(),
-                       caret.getLocation().getPositionIndex()));
-    if (section)
+                       caret.getLocation().getPositionIndex() + 1));
+    if (repeatedSection)
     {
-        if (repeat == NO_REPEAT)
-            remainingRepeats = section->getTotalRepeatCount() - 1;
-
-        repeat = EXPANDING_REPEAT;
+        if (repeatState == NO_REPEAT)
+        {
+            remainingRepeats = repeatedSection->getTotalRepeatCount() - 1;
+            numMergedRepeats = 0;
+            // Initially, try to merge the repeat with another repeat.
+            repeatState = MERGING_REPEAT;
+        }
     }
     else
-        repeat = NO_REPEAT;
+        repeatState = NO_REPEAT;
+}
+
+void ScoreMerger::State::compareRepeatedSection(State &other)
+{
+    // Check if we can actually merge these sections.
+    if (repeatState == MERGING_REPEAT && other.repeatState == MERGING_REPEAT)
+    {
+        // Don't redo this on subsequent bars.
+        if (numMergedRepeats)
+            return;
+
+        // If the two sections have the same number of bars, etc., then we don't
+        // need to expand the repeats.
+        if (repeatedSection->hasSameStructure(*other.repeatedSection))
+        {
+            // The repeated sections might have a different number of repeats,
+            // so we need to compute how many repetitions we can merge them for.
+            numMergedRepeats = std::min(remainingRepeats, other.remainingRepeats);
+            remainingRepeats -= numMergedRepeats;
+            other.remainingRepeats -= numMergedRepeats;
+            other.numMergedRepeats = numMergedRepeats;
+            return;
+        }
+    }
+
+    // Otherwise, expand the repeats.
+    if (repeatState == MERGING_REPEAT)
+        repeatState = EXPANDING_REPEAT;
+    if (other.repeatState == MERGING_REPEAT)
+        other.repeatState = EXPANDING_REPEAT;
 }

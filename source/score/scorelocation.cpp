@@ -83,6 +83,29 @@ Position *ScoreLocation::getPosition()
                 const_cast<const ScoreLocation &>(*this).getPosition());
 }
 
+const Position *ScoreLocation::findMultiBarRest() const
+{
+    const System &system = getSystem();
+    const Barline *bar = getBarline();
+    const Barline *nextBar = system.getNextBarline(bar->getPosition());
+
+    for (const Staff &staff : system.getStaves())
+    {
+        for (const Voice &voice : staff.getVoices())
+        {
+            for (const Position &pos : ScoreUtils::findInRange(
+                     voice.getPositions(), bar->getPosition(),
+                     nextBar->getPosition()))
+            {
+                if (pos.hasMultiBarRest())
+                    return &pos;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 int ScoreLocation::getSelectionStart() const
 {
     return mySelectionStart;

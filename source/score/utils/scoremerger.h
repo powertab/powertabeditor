@@ -57,6 +57,7 @@ private:
     {
         enum RepeatStatus {
             NO_REPEAT,
+            MERGING_REPEAT,
             EXPANDING_REPEAT
         };
 
@@ -71,8 +72,10 @@ private:
         bool expandingMultibarRest;
         int multibarRestCount;
 
-        RepeatStatus repeat;
+        RepeatStatus repeatState;
         int remainingRepeats;
+        int numMergedRepeats;
+        const RepeatedSection *repeatedSection;
 
         bool done;
         bool finishing;
@@ -82,6 +85,7 @@ private:
         void finishIfPossible();
         void checkForMultibarRest();
         void checkForRepeatedSection();
+        void compareRepeatedSection(State &other);
     };
 
     Score &myDestScore;

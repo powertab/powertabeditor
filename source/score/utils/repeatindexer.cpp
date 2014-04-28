@@ -31,6 +31,12 @@ bool RepeatedSection::operator<(const RepeatedSection &other) const
     return myStartBarLocation < other.myStartBarLocation;
 }
 
+bool RepeatedSection::hasSameStructure(const RepeatedSection &other) const
+{
+    // TODO - implement.
+    return false;
+}
+
 void RepeatedSection::addRepeatEndBar(const SystemLocation &location,
                                       int repeatCount)
 {
