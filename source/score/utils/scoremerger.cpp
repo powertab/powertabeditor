@@ -198,12 +198,26 @@ int ScoreMerger::importNotes(
     return length;
 }
 
+/// When expanding a repeated section, we need to replace start/end bars with
+/// regular barlines.
+static void removeRepeatsWhenExpanding(bool isExpanding, Barline &bar)
+{
+    if (isExpanding && ((bar.getBarType() == Barline::RepeatStart) ||
+                        (bar.getBarType() == Barline::RepeatEnd)))
+    {
+        bar.setBarType(Barline::SingleBar);
+    }
+}
+
 void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
 {
     // Copy a bar from one of the source scores.
     const Barline *srcBar;
     const System *srcSystem;
     bool isCopied = false;
+    const bool isExpanding =
+        (myGuitarState.repeat == State::EXPANDING_REPEAT) ||
+        (myBassState.repeat == State::EXPANDING_REPEAT);
 
     if (!myGuitarState.outOfNotes())
     {
@@ -224,6 +238,7 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
 
     int destPosition = destBar.getPosition();
     destBar = *srcBar;
+    removeRepeatsWhenExpanding(isExpanding, destBar);
     // The first bar cannot be the end of a repeat.
     if (destPosition == 0 && destBar.getBarType() == Barline::RepeatEnd)
         destBar.setBarType(Barline::SingleBar);
@@ -235,6 +250,7 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
     destPosition = nextDestBar.getPosition();
     nextDestBar = *nextSrcBar;
     nextDestBar.setPosition(destPosition);
+    removeRepeatsWhenExpanding(isExpanding, nextDestBar);
 }
 
 const PlayerChange *ScoreMerger::findPlayerChange(const State &state)
@@ -377,6 +393,16 @@ void ScoreMerger::merge()
         assert(destBar);
         Barline nextDestBar;
 
+        // We only need special handling for multi-bar rests and repeated
+        // sections if both staves are active.
+        if (!myGuitarState.done && !myBassState.done)
+        {
+            myGuitarState.checkForRepeatedSection();
+            myGuitarState.checkForMultibarRest();
+            myBassState.checkForMultibarRest();
+            myBassState.checkForRepeatedSection();
+        }
+
         // Copy a bar from one of the scores into the destination bar.
         copyBarsFromSource(*destBar, nextDestBar);
 
@@ -386,13 +412,6 @@ void ScoreMerger::merge()
 
         // TODO - this also needs to handle mismatched repeats, alternate
         // endings, and directions.
-
-        // We only need special handling for multi-bar rests if both staves are active.
-        if (!myGuitarState.done && !myBassState.done)
-        {
-            myGuitarState.checkForMultibarRest();
-            myBassState.checkForMultibarRest();
-        }
 
         // The minimum bar length is 1, so that the barlines for an empty bar
         // (e.g. a repeat end that is immediately followed by a repeat start)
@@ -505,11 +524,14 @@ void ScoreMerger::merge()
 
 ScoreMerger::State::State(Score &score, bool isBass)
     : caret(score),
+      repeatIndex(score),
       loc(caret.getLocation()),
       isBass(isBass),
       inMultibarRest(false),
       expandingMultibarRest(false),
       multibarRestCount(0),
+      repeat(NO_REPEAT),
+      remainingRepeats(0),
       done(false),
       finishing(false)
 {
@@ -540,6 +562,31 @@ void ScoreMerger::State::advance()
     else if (inMultibarRest)
         expandingMultibarRest = true;
 
+    // If we're expanding a repeated section, jump back to the start bar when we
+    // reach the end bar of the source. If the last bar is a multi-bar rest, we
+    // need to first finish expanding that.
+    if (!inMultibarRest && repeat == EXPANDING_REPEAT && remainingRepeats)
+    {
+        const Barline *nextBar = caret.getLocation().getSystem().getNextBarline(
+            caret.getLocation().getPositionIndex());
+        SystemLocation endBarLoc(caret.getLocation().getSystemIndex(),
+                                 nextBar->getPosition());
+        auto repeatSection = repeatIndex.findRepeat(endBarLoc);
+        assert(repeatSection);
+
+        if (repeatSection->getRepeatEndBars().find(endBarLoc) !=
+            repeatSection->getRepeatEndBars().end())
+        {
+            caret.moveToSystem(repeatSection->getStartBarLocation().getSystem(),
+                               true);
+            caret.moveToPosition(
+                repeatSection->getStartBarLocation().getPosition());
+            --remainingRepeats;
+            return;
+        }
+    }
+
+    // Otherwise, just move on to the next bar.
     if (!inMultibarRest && !caret.moveToNextBar())
         finishing = true;
 }
@@ -579,4 +626,20 @@ void ScoreMerger::State::checkForMultibarRest()
             }
         }
     }
+}
+
+void ScoreMerger::State::checkForRepeatedSection()
+{
+    auto section = repeatIndex.findRepeat(
+        SystemLocation(caret.getLocation().getSystemIndex(),
+                       caret.getLocation().getPositionIndex()));
+    if (section)
+    {
+        if (repeat == NO_REPEAT)
+            remainingRepeats = section->getTotalRepeatCount() - 1;
+
+        repeat = EXPANDING_REPEAT;
+    }
+    else
+        repeat = NO_REPEAT;
 }

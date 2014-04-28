@@ -19,6 +19,7 @@
 #define SCORE_UTILS_SCOREMERGER_H
 
 #include <app/caret.h>
+#include <score/utils/repeatindexer.h>
 
 class PlayerChange;
 
@@ -51,17 +52,27 @@ private:
     /// Check for a player change in the current bar.
     const PlayerChange *findPlayerChange(const State &state);
 
+    /// The state of one of the source scores being merged.
     struct State
     {
+        enum RepeatStatus {
+            NO_REPEAT,
+            EXPANDING_REPEAT
+        };
+
         State(Score &score, bool isBass);
 
         Caret caret;
+        RepeatIndexer repeatIndex;
         ScoreLocation &loc;
         bool isBass;
 
         bool inMultibarRest;
         bool expandingMultibarRest;
         int multibarRestCount;
+
+        RepeatStatus repeat;
+        int remainingRepeats;
 
         bool done;
         bool finishing;
@@ -70,6 +81,7 @@ private:
         void advance();
         void finishIfPossible();
         void checkForMultibarRest();
+        void checkForRepeatedSection();
     };
 
     Score &myDestScore;

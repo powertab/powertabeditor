@@ -158,7 +158,7 @@ RepeatIndexer::RepeatIndexer(const Score &score)
 const RepeatedSection *RepeatIndexer::findRepeat(
     const SystemLocation &loc) const
 {
-    auto repeat = myRepeats.lower_bound(loc);
+    auto repeat = myRepeats.upper_bound(loc);
 
     // Search for a pair of start and end bars that surrounds this location.
     while (repeat != myRepeats.begin())
