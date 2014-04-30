@@ -1268,6 +1268,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
 
         auto begin = stems.begin() + index;
         auto end = begin + group.getLength();
+        auto last = end - 1;
 
         double y1 = 0;
         double y2 = 0;
@@ -1279,7 +1280,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
             y1 = highestStem.getTop() - LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
             y2 = highestStem.getTop() -
                  topLayout.addBox(begin->getPositionIndex(),
-                                  end->getPositionIndex(), 1) *
+                                  last->getPositionIndex(), 1) *
                      LayoutInfo::IRREGULAR_GROUP_HEIGHT;
         }
         else
@@ -1289,12 +1290,12 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
             y1 = lowestStem.getBottom() + LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
             y2 = lowestStem.getBottom() +
                  bottomLayout.addBox(begin->getPositionIndex(),
-                                  end->getPositionIndex(), 1) *
+                                     last->getPositionIndex(), 1) *
                      LayoutInfo::IRREGULAR_GROUP_HEIGHT;
         }
 
         const double leftX = begin->getX();
-        const double rightX = (end - 1)->getX();
+        const double rightX = last->getX();
 
         // Draw the value of the irregular grouping.
         const QString text = QString::fromStdString(
