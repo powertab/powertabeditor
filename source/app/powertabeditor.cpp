@@ -90,6 +90,7 @@
 #include <dialogs/alternateendingdialog.h>
 #include <dialogs/artificialharmonicdialog.h>
 #include <dialogs/barlinedialog.h>
+#include <dialogs/benddialog.h>
 #include <dialogs/chordnamedialog.h>
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
@@ -1224,10 +1225,12 @@ void PowerTabEditor::editBend()
 	if (note->hasBend())
         myUndoManager->push(new RemoveBend(location),
                             location.getSystemIndex());
-#if 0
 	else
     {
         BendDialog dialog(this);
+#if 1
+        dialog.exec();
+#else
         if (dialog.exec() == QDialog::Accepted)
         {
             myUndoManager->push(new AddBend(location, dialog.getBend()),
@@ -1235,8 +1238,8 @@ void PowerTabEditor::editBend()
         }
         else
             myBendCommand->setChecked(false);
-    }
 #endif
+    }
 }
 
 void PowerTabEditor::editTrill()

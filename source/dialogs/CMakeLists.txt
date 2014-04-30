@@ -4,6 +4,7 @@ set(FORMS
     alterationofpacedialog.ui
     artificialharmonicdialog.ui
     barlinedialog.ui
+    benddialog.ui
     chordnamedialog.ui
     directiondialog.ui
     dynamicdialog.ui
@@ -35,6 +36,7 @@ add_library(ptedialogs
     alternateendingdialog.cpp
     artificialharmonicdialog.cpp
     barlinedialog.cpp
+    benddialog.cpp
     chordnamedialog.cpp
     directiondialog.cpp
     dynamicdialog.cpp
@@ -61,6 +63,7 @@ add_library(ptedialogs
     alternateendingdialog.h
     artificialharmonicdialog.h
     barlinedialog.h
+    benddialog.h
     chordnamedialog.h
     directiondialog.h
     dynamicdialog.h
