@@ -18,6 +18,7 @@
 #include "layoutinfo.h"
 
 #include <boost/algorithm/clamp.hpp>
+#include <painters/verticallayout.h>
 #include <score/keysignature.h>
 #include <score/score.h>
 #include <score/staff.h>
@@ -38,7 +39,7 @@ const double LayoutInfo::SYSTEM_SYMBOL_SPACING = 18;
 const double LayoutInfo::MIN_POSITION_SPACING = 3;
 const double LayoutInfo::TAB_SYMBOL_SPACING = 10;
 const double LayoutInfo::DEFAULT_POSITION_SPACING = 20;
-const double LayoutInfo::IRREGULAR_GROUP_HEIGHT_OFFSET = 6;
+const double LayoutInfo::IRREGULAR_GROUP_HEIGHT = 9;
 const double LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING = 3;
 
 LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex,
@@ -510,17 +511,6 @@ void LayoutInfo::calculateOctaveSymbolLayout(std::vector<SymbolGroup> &symbols,
     }
 }
 
-/// Insert a symbol group spanning the given positions. All of the symbols will
-/// be given the same y location.
-static int addToHeightMap(std::vector<int> &heightMap, int left, int right,
-                          int height)
-{
-    const int newHeight = *std::max_element(heightMap.begin() + left,
-                                            heightMap.begin() + right) + height;
-    std::fill_n(heightMap.begin() + left, right - left, newHeight);
-    return newHeight;
-}
-
 void LayoutInfo::calculateTabStaffAboveLayout()
 {
     // First, allocate spacing for player changes in the system.
@@ -589,11 +579,11 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // overlap.
 
     // Stores the highest occupied slot at each position.
-    std::vector<int> heightMap(symbolSets.size(), 0);
+    VerticalLayout layout;
 
     // Handle bends separately, since they have different rules for determining
     // how nearby bends are grouped together.
-    calculateBendLayout(heightMap);
+    calculateBendLayout(layout);
 
     for (int symbolIndex = SymbolGroup::LetRing;
          symbolIndex <= SymbolGroup::ArtificialHarmonic; ++symbolIndex)
@@ -630,8 +620,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
 
                 inGroup = false;
 
-                const int height =
-                    addToHeightMap(heightMap, leftPos, rightPos, 1);
+                const int y = layout.addBox(leftPos, rightPos, 1);
                 const double leftX = getPositionX(leftPos);
                 const double rightX = getPositionX(rightPos);
 
@@ -640,7 +629,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
 
                 myTabStaffAboveSymbols.emplace_back(symbol, leftPos, rightPos,
                                                     myStaff.getVoices()[0],
-                                                    rightX - leftX, height);
+                                                    rightX - leftX, y);
             }
             // Start a new group.
             else if (hasSymbol && !inGroup)
@@ -657,10 +646,10 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             const double leftX = getPositionX(leftPos);
             const int rightPos = static_cast<int>(symbolSets.size()) - 1;
             const double rightX = getPositionX(rightPos);
-            const int height = addToHeightMap(heightMap, leftPos, rightPos, 1);
+            const int y = layout.addBox(leftPos, rightPos, 1);
             myTabStaffAboveSymbols.emplace_back(symbol, leftPos, rightPos,
                                                 myStaff.getVoices()[0],
-                                                rightX - leftX, height);
+                                                rightX - leftX, y);
         }
     }
 
@@ -688,7 +677,7 @@ static int getBendEndPosition(const Voice &voice, const Bend &bend, int index)
     return voice.getPositions()[index].getPosition();
 }
 
-void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
+void LayoutInfo::calculateBendLayout(VerticalLayout &layout)
 {
     for (const Voice &voice : myStaff.getVoices())
     {
@@ -726,11 +715,9 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
                     leftPos = pos.getPosition();
                 rightPos++;
 
-                const int height =
-                    addToHeightMap(heightMap, leftPos, rightPos, groupHeight);
-
+                const int y = layout.addBox(leftPos, rightPos, groupHeight);
                 myTabStaffAboveSymbols.emplace_back(SymbolGroup::Bend, leftPos,
-                                                    rightPos, voice, 0, height);
+                                                    rightPos, voice, 0, y);
                 inGroup = false;
                 groupHeight = 0;
                 rightPos = 0;
@@ -745,11 +732,10 @@ void LayoutInfo::calculateBendLayout(std::vector<int> &heightMap)
         // If a bend group stretched to the end of the staff, add it.
         if (inGroup)
         {
-            rightPos = static_cast<int>(heightMap.size()) - 1;
-            const int height =
-                addToHeightMap(heightMap, leftPos, rightPos, groupHeight);
+            rightPos = mySystem.getBarlines().back().getPosition() - 1;
+            const int y = layout.addBox(leftPos, rightPos, groupHeight);
             myTabStaffAboveSymbols.emplace_back(SymbolGroup::Bend, leftPos,
-                                                rightPos, voice, 0, height);
+                                                rightPos, voice, 0, y);
         }
     }
 }

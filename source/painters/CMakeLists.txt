@@ -18,6 +18,7 @@ add_library(ptepainters
     tempomarkerpainter.cpp
     timesignaturepainter.cpp
     #tremolobarpainter.cpp
+    verticallayout.cpp
 
     barlinepainter.h
     beamgroup.h
@@ -36,6 +37,7 @@ add_library(ptepainters
     tempomarkerpainter.h
     timesignaturepainter.h
     #tremolobarpainter.h
+    verticallayout.h
 )
 
 qt5_use_modules(ptepainters Widgets)

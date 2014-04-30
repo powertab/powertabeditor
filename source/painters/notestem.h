@@ -47,6 +47,7 @@ public:
     double getNoteHeadWidth() const;
 
     double getDurationTime() const;
+    int getPositionIndex() const;
     Position::DurationType getDurationType() const;
     bool isStaccato() const;
     bool isGraceNote() const;

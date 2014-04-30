@@ -31,6 +31,7 @@
 #include <painters/stdnotationnote.h>
 #include <painters/tempomarkerpainter.h>
 #include <painters/timesignaturepainter.h>
+#include <painters/verticallayout.h>
 #include <QBrush>
 #include <QDebug>
 #include <QGraphicsItem>
@@ -1254,6 +1255,9 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 void SystemRenderer::drawIrregularGroups(const Voice &voice,
                                          const std::vector<NoteStem> &stems)
 {
+    VerticalLayout topLayout;
+    VerticalLayout bottomLayout;
+
     for (const IrregularGrouping &group : voice.getIrregularGroupings())
     {
         const int index = ScoreUtils::findIndexByPosition(voice.getPositions(),
@@ -1272,15 +1276,21 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
         {
             NoteStem highestStem = NoteStem::findHighestStem(begin, end);
 
-            y1 = y2 = highestStem.getTop() - LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
-            y2 -= LayoutInfo::IRREGULAR_GROUP_HEIGHT_OFFSET;
+            y1 = highestStem.getTop() - LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
+            y2 = highestStem.getTop() -
+                 topLayout.addBox(begin->getPositionIndex(),
+                                  end->getPositionIndex(), 1) *
+                     LayoutInfo::IRREGULAR_GROUP_HEIGHT;
         }
         else
         {
             NoteStem lowestStem = NoteStem::findLowestStem(begin, end);
 
-            y1 = y2 = lowestStem.getBottom() + LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
-            y2 += LayoutInfo::IRREGULAR_GROUP_HEIGHT_OFFSET;
+            y1 = lowestStem.getBottom() + LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING;
+            y2 = lowestStem.getBottom() +
+                 bottomLayout.addBox(begin->getPositionIndex(),
+                                  end->getPositionIndex(), 1) *
+                     LayoutInfo::IRREGULAR_GROUP_HEIGHT;
         }
 
         const double leftX = begin->getX();

@@ -105,6 +105,11 @@ double NoteStem::getDurationTime() const
     return VoiceUtils::getDurationTime(*myVoice, *myPosition);
 }
 
+int NoteStem::getPositionIndex() const
+{
+    return myPosition->getPosition();
+}
+
 Position::DurationType NoteStem::getDurationType() const
 {
     return myPosition->getDurationType();

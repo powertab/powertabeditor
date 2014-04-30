@@ -30,6 +30,7 @@ class KeySignature;
 class Score;
 class System;
 class TimeSignature;
+class VerticalLayout;
 
 class SymbolGroup
 {
@@ -137,9 +138,11 @@ struct LayoutInfo
     static const double TAB_SYMBOL_SPACING;
     /// Default position spacing.
     static const double DEFAULT_POSITION_SPACING;
-    /// Distance between the note stem and the irregular group's first beam.
-    static const double IRREGULAR_GROUP_HEIGHT_OFFSET;
-    /// Spacing between the two horizontal beams of an irregular group.
+    /// Distance between the note stem and the horizontal line of an irregular
+    /// group.
+    static const double IRREGULAR_GROUP_HEIGHT;
+    /// Distance between the note stem and the vertical lines of an irregular
+    /// group.
     static const double IRREGULAR_GROUP_BEAM_SPACING;
 
     static double centerItem(double xmin, double xmax, double width)
@@ -196,7 +199,7 @@ private:
     void calculateTabStaffAboveLayout();
 
     /// Computes the layout for bends in the staff.
-    void calculateBendLayout(std::vector<int> &heightMap);
+    void calculateBendLayout(VerticalLayout &layout);
 
     /// Returns the largest height of any symbol group.
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);
