@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <score/generalmidi.h>
 #include <score/score.h>
+#include <score/scorelocation.h>
 #include <score/systemlocation.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
@@ -127,16 +128,20 @@ void MidiPlayer::generateEvents(EventList &eventList)
             int staffIndex = 0;
             for (const Staff &staff : system.getStaves())
             {
+                int voiceIndex = 0;
                 for (const Voice &voice : staff.getVoices())
                 {
                     const double endTime = generateEventsForBar(
                         system, systemIndex, staff, staffIndex, voice,
-                        leftBar.getPosition(), rightBar->getPosition(),
-                        barStartTime, eventList, activePitchBends[staffIndex]);
+                        voiceIndex, leftBar.getPosition(),
+                        rightBar->getPosition(), barStartTime, eventList,
+                        activePitchBends[staffIndex]);
 
                     // Force playback to be synchronized at each bar in case
                     // some staves have too many or too few notes.
                     time = std::max(time, endTime);
+
+                    ++voiceIndex;
                 }
 
                 ++staffIndex;
@@ -193,13 +198,15 @@ static int getChannel(const ActivePlayer &player)
     return channel;
 }
 
-double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
-                                        const Staff &staff, int staffIndex,
-                                        const Voice &voice, int leftPos,
-                                        int rightPos, const double barStartTime,
-                                        EventList &eventList,
-                                        uint8_t &activePitchBend)
+double MidiPlayer::generateEventsForBar(
+    const System &system, int systemIndex, const Staff &staff, int staffIndex,
+    const Voice &voice, int voiceIndex, int leftPos, int rightPos,
+    const double barStartTime, EventList &eventList, uint8_t &activePitchBend)
 {
+    ScoreLocation location(myScore, systemIndex, staffIndex, voiceIndex);
+    const Voice *prevVoice = VoiceUtils::getAdjacentVoice(location, -1);
+    const Voice *nextVoice = VoiceUtils::getAdjacentVoice(location, 1);
+
     double startTime = barStartTime;
     bool letRingActive = false;
 
@@ -391,13 +398,26 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
             {
                 const Note *prevNote = &note;
                 const Position *prevPos = &pos;
+                const Voice *currentVoice = &voice;
 
                 while (prevNote && prevNote->hasProperty(Note::Tied))
                 {
                     prevPos = VoiceUtils::getPreviousPosition(
-                        voice, prevPos->getPosition());
+                        *currentVoice, prevPos->getPosition());
                     if (!prevPos)
-                        break;
+                    {
+                        if (currentVoice != prevVoice && prevVoice)
+                        {
+                            // Continue back to the previous system to handle
+                            // ties between systems.
+                            // TODO - handle ties that stretch across > 2 systems?
+                            currentVoice = prevVoice;
+                            prevPos = VoiceUtils::getPreviousPosition(
+                                *prevVoice, std::numeric_limits<int>::max());
+                        }
+                        else
+                            break;
+                    }
 
                     prevNote = Utils::findByString(*prevPos, note.getString());
                 }
@@ -499,8 +519,8 @@ double MidiPlayer::generateEventsForBar(const System &system, int systemIndex,
             bool tiedToNextNote = false;
             // Check if this note is tied to the next note.
             {
-                const Note *next =
-                    VoiceUtils::getNextNote(voice, position, note.getString());
+                const Note *next = VoiceUtils::getNextNote(
+                    voice, position, note.getString(), nextVoice);
 
                 if (next && next->hasProperty(Note::Tied))
                     tiedToNextNote = true;

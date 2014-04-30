@@ -18,10 +18,31 @@
 #include "voiceutils.h"
 
 #include <boost/range/adaptor/reversed.hpp>
+#include "score.h"
+#include "scorelocation.h"
 #include "utils.h"
 
 namespace VoiceUtils
 {
+
+const Voice *getAdjacentVoice(const ScoreLocation &location, int offset)
+{
+    const int systemIndex = location.getSystemIndex() + offset;
+    const int staffIndex = location.getStaffIndex();
+    const int voiceIndex = location.getVoiceIndex();
+
+    if (systemIndex >= 0 && systemIndex < location.getScore().getSystems().size())
+    {
+        const System &nextSystem = location.getScore().getSystems()[systemIndex];
+        if (staffIndex < nextSystem.getStaves().size())
+        {
+            const Staff &nextStaff = nextSystem.getStaves()[staffIndex];
+            return &nextStaff.getVoices()[voiceIndex];
+        }
+    }
+
+    return nullptr;
+}
 
 const Position *getNextPosition(const Voice &voice, int position)
 {
@@ -45,15 +66,21 @@ const Position *getPreviousPosition(const Voice &voice, int position)
     return nullptr;
 }
 
-const Note *getNextNote(const Voice &voice, int position, int string)
+const Note *getNextNote(const Voice &voice, int position, int string,
+                        const Voice *nextVoice)
 {
     const Position *nextPos = getNextPosition(voice, position);
+    if (!nextPos && nextVoice)
+        nextPos = getNextPosition(*nextVoice, -1);
     return nextPos ? Utils::findByString(*nextPos, string) : nullptr;
 }
 
-const Note *getPreviousNote(const Voice &voice, int position, int string)
+const Note *getPreviousNote(const Voice &voice, int position, int string,
+                            const Voice *prevVoice)
 {
     const Position *prevPos = getPreviousPosition(voice, position);
+    if (!prevPos && prevVoice)
+        prevPos = getPreviousPosition(*prevVoice, std::numeric_limits<int>::max());
     return prevPos ? Utils::findByString(*prevPos, string) : nullptr;
 }
 

@@ -72,6 +72,7 @@ public:
 
     const Voice &getVoice() const;
     Voice &getVoice();
+    int getVoiceIndex() const;
     void setVoiceIndex(int voice);
 
     /// Returns any irregular groupings that are *entirely* contained within

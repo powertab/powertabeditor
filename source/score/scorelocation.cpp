@@ -272,6 +272,11 @@ std::vector<Note *> ScoreLocation::getSelectedNotes()
     return notes;
 }
 
+int ScoreLocation::getVoiceIndex() const
+{
+    return myVoiceIndex;
+}
+
 void ScoreLocation::setVoiceIndex(int voice)
 {
     myVoiceIndex = voice;

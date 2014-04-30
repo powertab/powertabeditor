@@ -20,19 +20,28 @@
 
 #include "voice.h"
 
+class ScoreLocation;
+class System;
+
 namespace VoiceUtils
 {
+/// Finds the corresponding voice in a following (or preceding) system.
+const Voice *getAdjacentVoice(const ScoreLocation &location, int offset);
+
 /// Returns the next position in the staff, if it exists.
 const Position *getNextPosition(const Voice &voice, int position);
 
 /// Returns the previous position in the staff, if it exists.
 const Position *getPreviousPosition(const Voice &voice, int position);
 
-/// Finds the next note in the staff on the given string.
-const Note *getNextNote(const Voice &voice, int position, int string);
+/// Finds the next note in the staff on the given string. Optionally, the next
+/// system can be checked.
+const Note *getNextNote(const Voice &voice, int position, int string,
+                        const Voice *nextVoice = nullptr);
 
 /// Finds the previous note in the staff on the given string.
-const Note *getPreviousNote(const Voice &voice, int position, int string);
+const Note *getPreviousNote(const Voice &voice, int position, int string,
+                            const Voice *prevVoice = nullptr);
 
 /// Determines whether the specified note can be tied to the previous note.
 /// The previous position must have a note at the same string and fret.
