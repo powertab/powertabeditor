@@ -50,14 +50,17 @@ TEST_CASE("Formats/PowerTabOldImport/Guitars", "")
     PowerTabOldImporter importer;
     importer.load("data/guitars.ptb", score);
 
-    REQUIRE(score.getPlayers().size() == 2);
-    REQUIRE(score.getInstruments().size() == 2);
+    // Should contain two players from the guitar score and one from the bass score.
+    REQUIRE(score.getPlayers().size() == 3);
+    REQUIRE(score.getInstruments().size() == 3);
 
     const Player &player1 = score.getPlayers()[0];
     const Player &player2 = score.getPlayers()[1];
+    const Player &player3 = score.getPlayers()[2];
     REQUIRE(player1.getDescription() == "First Player");
     REQUIRE(player2.getDescription() == "Second Player");
     REQUIRE(player2.getTuning().getStringCount() == 7);
+    REQUIRE(player3.getTuning().getStringCount() == 4);
 
     REQUIRE(score.getInstruments()[0].getDescription() == "Electric Guitar (clean)");
 }
@@ -176,7 +179,7 @@ TEST_CASE("Formats/PowerTabOldImport/Staves", "")
 
     const System &system = score.getSystems()[0];
 
-    REQUIRE(system.getStaves().size() == 2);
+    REQUIRE(system.getStaves().size() == 3);
     const Staff &staff1 = system.getStaves()[0];
     const Staff &staff2 = system.getStaves()[1];
 
