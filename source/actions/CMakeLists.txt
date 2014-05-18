@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.9)
 
 add_library(pteactions
     addalternateending.cpp
-    addartificialharmonic.cpp
     addbarline.cpp
     addchordtext.cpp
     adddirection.cpp
@@ -19,9 +18,7 @@ add_library(pteactions
     addrest.cpp
     addstaff.cpp
     addsystem.cpp
-    addtappedharmonic.cpp
     addtempomarker.cpp
-    addtrill.cpp
     #addvolumeswell.cpp
     adjustlinespacing.cpp
     #changepositionspacing.cpp
@@ -58,7 +55,6 @@ add_library(pteactions
     undomanager.cpp
 
     addalternateending.h
-    addartificialharmonic.h
     addbarline.h
     addchordtext.h
     adddirection.h
@@ -73,11 +69,10 @@ add_library(pteactions
     addpositionproperty.h
     addrehearsalsign.h
     addrest.h
+    addspecialnoteproperty.h
     addstaff.h
     addsystem.h
-    addtappedharmonic.h
     addtempomarker.h
-    addtrill.h
     #addvolumeswell.h
     adjustlinespacing.h
     #changepositionspacing.h

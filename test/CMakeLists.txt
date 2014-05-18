@@ -6,6 +6,7 @@ add_executable(pte_tests
     actions/test_addalternateending.cpp
     actions/test_addartificialharmonic.cpp
     actions/test_addbarline.cpp
+    actions/test_addbend.cpp
     actions/test_addchordtext.cpp
     actions/test_adddirection.cpp
     actions/test_adddynamic.cpp

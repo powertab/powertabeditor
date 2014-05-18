@@ -17,7 +17,7 @@
   
 #include <catch.hpp>
 
-#include <actions/addtrill.h>
+#include <actions/addspecialnoteproperty.h>
 #include <score/note.h>
 #include "actionfixture.h"
 

@@ -18,7 +18,6 @@
 #include "powertabeditor.h"
 
 #include <actions/addalternateending.h>
-#include <actions/addartificialharmonic.h>
 #include <actions/addbarline.h>
 #include <actions/addchordtext.h>
 #include <actions/adddirection.h>
@@ -33,11 +32,10 @@
 #include <actions/addpositionproperty.h>
 #include <actions/addrehearsalsign.h>
 #include <actions/addrest.h>
+#include <actions/addspecialnoteproperty.h>
 #include <actions/addstaff.h>
 #include <actions/addsystem.h>
-#include <actions/addtappedharmonic.h>
 #include <actions/addtempomarker.h>
-#include <actions/addtrill.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
 #include <actions/editclef.h>
@@ -1228,9 +1226,6 @@ void PowerTabEditor::editBend()
 	else
     {
         BendDialog dialog(this);
-#if 1
-        dialog.exec();
-#else
         if (dialog.exec() == QDialog::Accepted)
         {
             myUndoManager->push(new AddBend(location, dialog.getBend()),
@@ -1238,7 +1233,6 @@ void PowerTabEditor::editBend()
         }
         else
             myBendCommand->setChecked(false);
-#endif
     }
 }
 

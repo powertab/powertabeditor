@@ -19,6 +19,7 @@
 #define DIALOGS_BENDDIALOG_H
 
 #include <QDialog>
+#include <score/note.h>
 
 class QComboBox;
 
@@ -32,12 +33,15 @@ class BendDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit BendDialog(QWidget *parent = 0);
+    BendDialog(QWidget *parent);
     ~BendDialog();
+
+    Bend getBend() const;
 
 private:
     void initBendPitches();
     void initDrawPoints(QComboBox *c);
+    void handleBendTypeChanged();
 
     Ui::BendDialog *ui;
 };

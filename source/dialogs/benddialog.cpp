@@ -45,10 +45,26 @@ BendDialog::BendDialog(QWidget *parent)
     initDrawPoints(ui->vertStartingPointComboBox);
     initDrawPoints(ui->vertEndingPointComboBox);
 
-    // TODO - enable/disable fields based on current bend type.
+    connect(ui->bendTypeComboBox, static_cast<void (QComboBox::*)(int)>(
+                                         &QComboBox::currentIndexChanged),
+            this, &BendDialog::handleBendTypeChanged);
+    handleBendTypeChanged();
 }
 
 BendDialog::~BendDialog() { delete ui; }
+
+Bend BendDialog::getBend() const
+{
+    return Bend(
+        static_cast<Bend::BendType>(ui->bendTypeComboBox->currentIndex()),
+        ui->bentPitchComboBox->itemData(ui->bentPitchComboBox->currentIndex()).toInt(),
+        ui->releasePitchComboBox->itemData(ui->bentPitchComboBox->currentIndex()).toInt(),
+        ui->bendDurationComboBox->currentIndex(),
+        static_cast<Bend::DrawPoint>(
+            ui->vertStartingPointComboBox->currentIndex()),
+        static_cast<Bend::DrawPoint>(
+            ui->vertEndingPointComboBox->currentIndex()));
+}
 
 void BendDialog::initBendPitches()
 {
@@ -67,7 +83,50 @@ void BendDialog::initBendPitches()
 
 void BendDialog::initDrawPoints(QComboBox *c)
 {
-    c->addItem(tr("High"));
-    c->addItem(tr("Middle"));
     c->addItem(tr("Low (Tablature Staff Line)"));
+    c->addItem(tr("Middle"));
+    c->addItem(tr("High"));
+}
+
+void BendDialog::handleBendTypeChanged()
+{
+    const Bend::BendType bendType =
+        static_cast<Bend::BendType>(ui->bendTypeComboBox->currentIndex());
+
+    // First, reset everything.
+    ui->bentPitchComboBox->setEnabled(true);
+    ui->releasePitchComboBox->setEnabled(true);
+    ui->bendDurationComboBox->setEnabled(true);
+
+    // Enable or disable some of the options depending on the active bend type.
+    switch (bendType)
+    {
+        case Bend::PreBend:
+        case Bend::PreBendAndHold:
+            ui->bendDurationComboBox->setDisabled(true);
+        // FALL THROUGH
+        case Bend::NormalBend:
+        case Bend::BendAndHold:
+            ui->releasePitchComboBox->setDisabled(true);
+            ui->vertStartingPointComboBox->setCurrentIndex(Bend::LowPoint);
+            ui->vertEndingPointComboBox->setCurrentIndex(Bend::MidPoint);
+            break;
+
+        case Bend::PreBendAndRelease:
+        case Bend::BendAndRelease:
+            ui->bendDurationComboBox->setDisabled(true);
+            ui->vertStartingPointComboBox->setCurrentIndex(Bend::LowPoint);
+            ui->vertEndingPointComboBox->setCurrentIndex(Bend::LowPoint);
+            break;
+
+        case Bend::ImmediateRelease:
+            ui->bendDurationComboBox->setDisabled(true);
+            ui->releasePitchComboBox->setDisabled(true);
+        // FALL THROUGH
+        case Bend::GradualRelease:
+            ui->bentPitchComboBox->setDisabled(true);
+            ui->vertStartingPointComboBox->setCurrentIndex(Bend::MidPoint);
+            ui->vertEndingPointComboBox->setCurrentIndex(Bend::LowPoint);
+            break;
+    }
 }
