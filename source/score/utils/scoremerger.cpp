@@ -547,19 +547,17 @@ ScoreMerger::State::State(Score &score, bool isBass)
       finishing(false)
 {
     bool empty = true;
-    for (const Staff &staff : loc.getSystem().getStaves())
+    for (const System &system : score.getSystems())
     {
-        empty &= staff.getDynamics().empty();
+        for (const Staff &staff : system.getStaves())
+        {
+            for (const Voice &voice : staff.getVoices())
+                empty &= voice.getPositions().empty();
+        }
 
-        for (const Voice &voice : staff.getVoices())
-            empty &= voice.getPositions().empty();
+        if (!empty)
+            break;
     }
-
-    empty &= loc.getSystem().getTempoMarkers().empty();
-    empty &= loc.getSystem().getAlternateEndings().empty();
-    empty &= loc.getSystem().getChords().empty();
-    empty &= loc.getSystem().getDirections().empty();
-    empty &= loc.getSystem().getPlayerChanges().empty();
 
     // If it looks like the score is unused, don't do anything.
     if (empty)
