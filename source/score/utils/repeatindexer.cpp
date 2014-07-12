@@ -116,11 +116,9 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                 const SystemLocation location(systemIndex, bar.getPosition());
                 repeats.push(RepeatedSection(location));
             }
-            else if (bar.getBarType() == Barline::RepeatEnd)
+            // TODO - report unexpected repeat end bars.
+            else if (bar.getBarType() == Barline::RepeatEnd && !repeats.empty())
             {
-                // TODO - do a better job of handling mismatched repeats.
-                assert(!repeats.empty());
-
                 // Add this end bar to the active section.
                 RepeatedSection &activeRepeat = repeats.top();
                 activeRepeat.addRepeatEndBar(
@@ -144,15 +142,18 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                          system.getAlternateEndings(), bar.getPosition(),
                          nextBar->getPosition() - 1))
                 {
-                    // TODO - do a better job of handling this error.
-                    assert(!repeats.empty());
-                    repeats.top().addAlternateEnding(systemIndex, ending);
+                    // TODO - report unexpected alternate endings.
+                    if (!repeats.empty())
+                        repeats.top().addAlternateEnding(systemIndex, ending);
                 }
             }
         }
 
         ++systemIndex;
     }
+
+    // TODO - report mismatched repeat start bars.
+    // TODO - report missing / extra alternate endings.
 }
 
 const RepeatedSection *RepeatIndexer::findRepeat(
