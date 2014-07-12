@@ -72,7 +72,7 @@ SystemLocation RepeatState::performRepeat(const SystemLocation &loc)
     else
     {
         remainingRepeatCount->second = myRepeatedSection.getRepeatEndBars().at(
-            remainingRepeatCount->first);
+                                           remainingRepeatCount->first) - 1;
         return loc;
     }
 }
