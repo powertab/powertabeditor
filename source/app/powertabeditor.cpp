@@ -1220,10 +1220,12 @@ void PowerTabEditor::editBend()
     const Note *note = location.getNote();
     Q_ASSERT(note);
 
-	if (note->hasBend())
+    if (note->hasBend())
+    {
         myUndoManager->push(new RemoveBend(location),
                             location.getSystemIndex());
-	else
+    }
+    else
     {
         BendDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted)
