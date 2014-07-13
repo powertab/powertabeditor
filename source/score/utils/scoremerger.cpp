@@ -346,6 +346,27 @@ void ScoreMerger::mergePlayerChanges()
     }
 }
 
+template <typename Symbol>
+static void copySymbols(
+    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &srcSymbols,
+    System &destSystem,
+    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &destSymbols,
+    void (System::*addSymbol)(const Symbol &), int offset, int left, int right)
+{
+    for (const Symbol &srcSymbol :
+         ScoreUtils::findInRange(srcSymbols, left, right - 1))
+    {
+        Symbol symbol(srcSymbol);
+        symbol.setPosition(srcSymbol.getPosition() + offset);
+
+        // We might get duplicate symbols from the two scores.
+        if (ScoreUtils::findByPosition(destSymbols, symbol.getPosition()))
+            continue;
+
+        (destSystem.*addSymbol)(symbol);
+    }
+}
+
 void ScoreMerger::mergeSystemSymbols()
 {
     for (State *state : {&myGuitarState, &myBassState})
@@ -359,32 +380,18 @@ void ScoreMerger::mergeSystemSymbols()
         const System &srcSystem = state->loc.getSystem();
         System &destSystem = myDestLoc.getSystem();
 
-        for (const TempoMarker &srcMarker : ScoreUtils::findInRange(
-                 srcSystem.getTempoMarkers(), left, right - 1))
+        copySymbols(srcSystem.getTempoMarkers(), destSystem,
+                    destSystem.getTempoMarkers(), &System::insertTempoMarker,
+                    offset, left, right);
+
+        copySymbols(srcSystem.getChords(), destSystem, destSystem.getChords(),
+                    &System::insertChord, offset, left, right);
+
+        if (state->repeatState != State::EXPANDING_REPEAT)
         {
-            TempoMarker marker(srcMarker);
-            marker.setPosition(srcMarker.getPosition() + offset);
-
-            // We might get duplicate tempo markers from the two scores.
-            if (ScoreUtils::findByPosition(destSystem.getTempoMarkers(),
-                                           marker.getPosition()))
-                continue;
-
-            destSystem.insertTempoMarker(marker);
-        }
-
-        for (const ChordText &srcChord :
-             ScoreUtils::findInRange(srcSystem.getChords(), left, right - 1))
-        {
-            ChordText chord(srcChord);
-            chord.setPosition(srcChord.getPosition() + offset);
-
-            // We might get duplicate items from the two scores.
-            if (ScoreUtils::findByPosition(destSystem.getChords(),
-                                           chord.getPosition()))
-                continue;
-
-            destSystem.insertChord(chord);
+            copySymbols(srcSystem.getAlternateEndings(), destSystem,
+                        destSystem.getAlternateEndings(),
+                        &System::insertAlternateEnding, offset, left, right);
         }
     }
 }
