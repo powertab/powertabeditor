@@ -41,7 +41,10 @@ private:
         std::function<int(ScoreLocation &, ScoreLocation &)> action);
 
     /// Fetch the current pair of barlines from one of the source scores.
-    void copyBarsFromSource(Barline &destBar, Barline &nextDestBar);
+    /// If the next bar is the last bar of the source system, the start bar from
+    /// the next system is also returned.
+    void copyBarsFromSource(Barline &destBar, Barline &nextDestBar,
+                            boost::optional<Barline> &nextSystemStartBar);
 
     /// Combine player changes from the two scores.
     void mergePlayerChanges();

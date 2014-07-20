@@ -20,6 +20,7 @@
 #include <score/score.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
+#include <unordered_set>
 
 /// Approximate upper limit on the number of positions in a system.
 static const int POSITION_LIMIT = 30;
@@ -209,7 +210,9 @@ static void removeRepeatsWhenExpanding(bool isExpanding, Barline &bar)
     }
 }
 
-void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
+void ScoreMerger::copyBarsFromSource(
+    Barline &destBar, Barline &nextDestBar,
+    boost::optional<Barline> &nextSystemStartBar)
 {
     const bool isExpanding =
         (myGuitarState.repeatState == State::EXPANDING_REPEAT) ||
@@ -234,8 +237,9 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
     // duplicate repeat ends if a multi-bar rest appears directly before a
     // repeat end bar).
     int destPosition = destBar.getPosition();
-    if (destPosition == 0 || isCopied ||
-        state->repeatState == State::EXPANDING_REPEAT)
+    if (destPosition == 0 || (srcBar->getPosition() == 0 &&
+                              srcBar->getBarType() != Barline::SingleBar) ||
+        isCopied || state->repeatState == State::EXPANDING_REPEAT)
     {
         destBar = *srcBar;
         removeRepeatsWhenExpanding(isExpanding, destBar);
@@ -249,15 +253,27 @@ void ScoreMerger::copyBarsFromSource(Barline &destBar, Barline &nextDestBar)
         hideSignaturesAndRehearsalSign(destBar);
 
     // Set the right bar's properties.
-    destPosition = nextDestBar.getPosition();
     nextDestBar = *nextSrcBar;
-    nextDestBar.setPosition(destPosition);
     removeRepeatsWhenExpanding(isExpanding, nextDestBar);
 
     if (nextDestBar.getBarType() == Barline::RepeatEnd &&
         state->repeatState == State::MERGING_REPEAT)
     {
         nextDestBar.setRepeatCount(state->numMergedRepeats + 1);
+    }
+
+    // If the next bar is at the end of the source system, return the start bar
+    // of the next system.
+    if (nextSrcBar == &srcSystem->getBarlines().back())
+    {
+        const Score &srcScore = state->loc.getScore();
+        const int systemIndex = state->loc.getSystemIndex();
+        if (srcScore.getSystems().size() > systemIndex + 1)
+        {
+            const System &nextSrcSystem = srcScore.getSystems()[systemIndex + 1];
+            nextSystemStartBar = nextSrcSystem.getBarlines().front();
+            removeRepeatsWhenExpanding(isExpanding, *nextSystemStartBar);
+        }
     }
 }
 
@@ -353,6 +369,10 @@ static void copySymbols(
     const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &destSymbols,
     void (System::*addSymbol)(const Symbol &), int offset, int left, int right)
 {
+    std::unordered_set<int> filledPositions;
+    for (const Symbol &destSymbol : destSymbols)
+        filledPositions.insert(destSymbol.getPosition());
+
     for (const Symbol &srcSymbol :
          ScoreUtils::findInRange(srcSymbols, left, right - 1))
     {
@@ -360,7 +380,7 @@ static void copySymbols(
         symbol.setPosition(srcSymbol.getPosition() + offset);
 
         // We might get duplicate symbols from the two scores.
-        if (ScoreUtils::findByPosition(destSymbols, symbol.getPosition()))
+        if (filledPositions.find(symbol.getPosition()) != filledPositions.end())
             continue;
 
         (destSystem.*addSymbol)(symbol);
@@ -407,6 +427,7 @@ void ScoreMerger::merge()
         Barline *destBar = myDestLoc.getBarline();
         assert(destBar);
         Barline nextDestBar;
+        boost::optional<Barline> nextSystemStartBar;
 
         // We only need special handling for multi-bar rests and repeated
         // sections if both staves are active.
@@ -423,7 +444,7 @@ void ScoreMerger::merge()
         myGuitarState.compareRepeatedSection(myBassState);
 
         // Copy a bar from one of the scores into the destination bar.
-        copyBarsFromSource(*destBar, nextDestBar);
+        copyBarsFromSource(*destBar, nextDestBar, nextSystemStartBar);
 
         // We will insert the notes at the first position after the barline.
         if (myDestLoc.getPositionIndex() != 0)
@@ -488,7 +509,7 @@ void ScoreMerger::merge()
         myGuitarState.advance();
         myBassState.advance();
 
-        const int nextBarPos = destBar->getPosition() + barLength;
+        int nextBarPos = destBar->getPosition() + barLength;
 
         // If we're about to move to a new system, transition from finishing to
         // done.
@@ -530,10 +551,29 @@ void ScoreMerger::merge()
         }
         else
         {
-            nextDestBar.setPosition(nextBarPos);
-            destSystem.insertBarline(nextDestBar);
+            // Handle cases where, for example, there is an end repeat at the
+            // end of the system and a repeat start at the first bar of the next
+            // system - there should be two adjacent barlines inserted.
+            // But, if there is e.g. an end repeat followed by a single barline
+            // in the next system, only the end repeat should be inserted.
+            if (!nextSystemStartBar ||
+                nextSystemStartBar->getBarType() == Barline::SingleBar ||
+                nextDestBar.getBarType() != Barline::SingleBar)
+            {
+                nextDestBar.setPosition(nextBarPos);
+                destSystem.insertBarline(nextDestBar);
+                myDestCaret.moveToNextBar();
+                ++nextBarPos;
+            }
 
-            myDestCaret.moveToNextBar();
+            if (nextSystemStartBar &&
+                nextSystemStartBar->getBarType() != Barline::SingleBar)
+            {
+                nextSystemStartBar->setPosition(nextBarPos);
+                destSystem.insertBarline(*nextSystemStartBar);
+                myDestCaret.moveToNextBar();
+            }
+
             destSystem.getBarlines().back().setPosition(nextBarPos + 10);
         }
     }
