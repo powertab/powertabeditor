@@ -6,7 +6,7 @@ install:
   - sudo add-apt-repository --yes ppa:kalakris/cmake # For cmake 2.8.9+
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa # For Qt5
   - sudo apt-get update -yqq
-  - sudo apt-get install -yqq cmake qtbase5-dev libboost-dev libasound2-dev
+  - sudo apt-get install -yqq cmake qtbase5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev libasound2-dev
 script:
   - cmake . -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
   - make -j4
