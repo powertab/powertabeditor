@@ -134,8 +134,6 @@ TEST_CASE("Formats/PowerTabOldImport/AlternateEndings", "")
     REQUIRE(system.getAlternateEndings().size() == 1);
     const AlternateEnding &ending = system.getAlternateEndings()[0];
 
-    REQUIRE(ending.getPosition() == 12);
-
     std::vector<int> numbers;
     numbers.push_back(2);
     numbers.push_back(3);
