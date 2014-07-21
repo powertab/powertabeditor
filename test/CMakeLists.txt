@@ -121,9 +121,9 @@ cotire(pte_tests)
 add_custom_command(TARGET pte_tests POST_BUILD COMMAND
     ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/formats/powertab_old/data
-    ${CMAKE_CURRENT_BINARY_DIR}/data)
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
 
 add_custom_command(TARGET pte_tests POST_BUILD COMMAND
     ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/formats/guitar_pro/data
-    ${CMAKE_CURRENT_BINARY_DIR}/data)
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
