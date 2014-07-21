@@ -4,7 +4,6 @@ compiler:
   - clang
 install:
   - sudo apt-get update -qq
-  - sudo apt-get install ninja-build -qq
 script:
   - cmake . -G Ninja -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
-  - ninja
+  - make -j4
