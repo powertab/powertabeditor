@@ -1444,8 +1444,8 @@ QString PowerTabEditor::getApplicationName() const
                 QCoreApplication::applicationName(),
                 QCoreApplication::applicationVersion());
 
-#ifdef SVN_REVISION
-    name += QString(" r") + BOOST_STRINGIZE(SVN_REVISION);
+#ifdef VERSION
+    name += QString(" (v") + BOOST_STRINGIZE(VERSION) + ")";
 #endif
 
     return name;
