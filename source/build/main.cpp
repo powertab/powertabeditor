@@ -17,8 +17,8 @@
  
 #include <app/powertabeditor.h>
 #include <app/settings.h>
+#include <boost/program_options.hpp>
 #include <QApplication>
-#include <QCommandLineParser>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QSettings>
@@ -43,14 +43,52 @@ int main(int argc, char *argv[])
     AllowSetForegroundWindow(ASFW_ANY);
 #endif
 
-    QCommandLineParser parser;
-    parser.setApplicationDescription("A guitar tablature editor.");
-    parser.addHelpOption();
-    parser.addVersionOption();
-	parser.addPositionalArgument("files", "The files to be opened, optionally.", "[files...]");
-    parser.process(a);
+    QStringList filesToOpen;
 
-	QStringList filesToOpen = parser.positionalArguments();
+    namespace po = boost::program_options;
+    po::options_description desc("Usage: powertabeditor [options] [files...] "
+                                 "\nA guitar tablature editor.\n\nOptions");
+    try
+    {
+        desc.add_options()
+            ("help,h", "Displays this help.")
+            ("version,v", "Displays version information.")
+            ("files", po::value<std::vector<std::string>>(),
+             "The files to be opened, optionally.");
+        po::positional_options_description p;
+        p.add("files", -1);
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc, argv)
+                      .options(desc)
+                      .positional(p)
+                      .run(),
+                  vm);
+        po::notify(vm);
+
+        if (vm.count("help"))
+        {
+            std::cout << desc << std::endl;
+            return EXIT_SUCCESS;
+        }
+        if (vm.count("version"))
+        {
+            std::cout << QCoreApplication::applicationName().toStdString()
+                      << " "
+                      << QCoreApplication::applicationVersion().toStdString()
+                      << std::endl;
+            return EXIT_SUCCESS;
+        }
+
+        auto files = vm["files"].as<std::vector<std::string>>();
+        for (auto &file : files)
+            filesToOpen.push_back(QString::fromStdString(file));
+    }
+    catch(po::error &e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl << std::endl;
+        std::cerr << desc << std::endl;
+        return EXIT_FAILURE;
+    }
 
     QSettings settings;
     // If an instance of the program is already running and we're in

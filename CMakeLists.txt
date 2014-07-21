@@ -41,9 +41,9 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Widgets REQUIRED) 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    find_package(Boost REQUIRED COMPONENTS date_time iostreams zlib)
+    find_package(Boost REQUIRED COMPONENTS date_time iostreams zlib program_options)
 else()
-    find_package(Boost REQUIRED COMPONENTS date_time iostreams)
+    find_package(Boost REQUIRED COMPONENTS date_time iostreams program_options)
     find_package(ZLIB REQUIRED)
 endif()
 
