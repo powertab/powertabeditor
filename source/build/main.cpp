@@ -79,9 +79,12 @@ int main(int argc, char *argv[])
             return EXIT_SUCCESS;
         }
 
-        auto files = vm["files"].as<std::vector<std::string>>();
-        for (auto &file : files)
-            filesToOpen.push_back(QString::fromStdString(file));
+        if (vm.count("files"))
+        {
+            auto files = vm["files"].as<std::vector<std::string>>();
+            for (auto &file : files)
+                filesToOpen.push_back(QString::fromStdString(file));
+        }
     }
     catch(po::error &e)
     {
