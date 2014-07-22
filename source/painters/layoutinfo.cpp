@@ -732,7 +732,7 @@ void LayoutInfo::calculateBendLayout(VerticalLayout &layout)
         // If a bend group stretched to the end of the staff, add it.
         if (inGroup)
         {
-            rightPos = mySystem.getBarlines().back().getPosition() - 1;
+            rightPos = mySystem.getBarlines().back().getPosition();
             const int y = layout.addBox(leftPos, rightPos, groupHeight);
             myTabStaffAboveSymbols.emplace_back(SymbolGroup::Bend, leftPos,
                                                 rightPos, voice, 0, y);

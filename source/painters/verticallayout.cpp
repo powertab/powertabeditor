@@ -19,7 +19,7 @@
 
 int VerticalLayout::addBox(int left, int right, int height)
 {
-    heights.resize(std::max<size_t>(heights.size(), right));
+    heights.resize(std::max<size_t>(heights.size(), right + 1));
     const int newHeight =
         *std::max_element(heights.begin() + left, heights.begin() + right) +
         height;
