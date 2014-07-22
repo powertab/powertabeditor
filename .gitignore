@@ -1,3 +1,7 @@
 *.swp
 build_cmake
 *.user
+*~
+build/windows_installer/bin
+build/windows_installer/obj
+*.suo

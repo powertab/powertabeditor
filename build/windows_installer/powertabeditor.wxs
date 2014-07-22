@@ -84,6 +84,9 @@
       <Component Id="boost_iostreams" Guid="3224E977-9137-43A1-B7EC-6AA6F276BA5C">
         <File Source="$(var.BinDir)/boost_iostreams-vc120-mt-1_55.dll" KeyPath="yes" Checksum="yes" />
       </Component>
+      <Component Id="boost_program_options" Guid="B803884D-5F46-4B91-95A4-6FEEEFD0A15D">
+        <File Source="$(var.BinDir)/boost_program_options-vc120-mt-1_55.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
       <Component Id="boost_zlib" Guid="47D475EF-FF77-43A2-9225-1BF1040BC15B">
         <File Source="$(var.BinDir)/boost_zlib-vc120-mt-1_55.dll" KeyPath="yes" Checksum="yes" />
       </Component>

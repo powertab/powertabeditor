@@ -18,6 +18,7 @@
 #include <app/powertabeditor.h>
 #include <app/settings.h>
 #include <boost/program_options.hpp>
+#include <iostream>
 #include <QApplication>
 #include <QLocalServer>
 #include <QLocalSocket>
