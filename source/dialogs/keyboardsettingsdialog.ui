@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>328</width>
-    <height>278</height>
+    <width>560</width>
+    <height>498</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,6 +25,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTreeWidget" name="commandsList">
+     <attribute name="headerDefaultSectionSize">
+      <number>200</number>
+     </attribute>
      <column>
       <property name="text">
        <string notr="true">1</string>
