@@ -19,13 +19,24 @@
 
 #include <formats/powertab_old/powertaboldimporter.h>
 #include <formats/powertab_old/powertabdocument/powertabdocument.h>
+#include <QCoreApplication>
 #include <score/score.h>
+
+static void loadTest(PowerTabOldImporter &importer, const char *filename,
+                     Score &score)
+{
+    QString path = QCoreApplication::applicationDirPath();
+    path += "/";
+    path += filename;
+
+    importer.load(path.toStdString(), score);
+}
 
 TEST_CASE("Formats/PowerTabOldImport/SongHeader", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/song_header.ptb", score);
+    loadTest(importer, "data/song_header.ptb", score);
 
     const SongData &data = score.getScoreInfo().getSongData();
 
@@ -48,7 +59,7 @@ TEST_CASE("Formats/PowerTabOldImport/Guitars", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/guitars.ptb", score);
+    loadTest(importer, "data/guitars.ptb", score);
 
     // Should contain two players from the guitar score and one from the bass score.
     REQUIRE(score.getPlayers().size() == 3);
@@ -69,7 +80,7 @@ TEST_CASE("Formats/PowerTabOldImport/Barlines", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/barlines.ptb", score);
+    loadTest(importer, "data/barlines.ptb", score);
 
     const System &system = score.getSystems()[0];
 
@@ -106,7 +117,7 @@ TEST_CASE("Formats/PowerTabOldImport/TempoMarkers", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/tempo_markers.ptb", score);
+    loadTest(importer, "data/tempo_markers.ptb", score);
 
     const System &system = score.getSystems()[0];
 
@@ -127,7 +138,7 @@ TEST_CASE("Formats/PowerTabOldImport/AlternateEndings", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/alternate_endings.ptb", score);
+    loadTest(importer, "data/alternate_endings.ptb", score);
 
     const System &system = score.getSystems()[0];
 
@@ -148,7 +159,7 @@ TEST_CASE("Formats/PowerTabOldImport/Directions", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/directions.ptb", score);
+    loadTest(importer, "data/directions.ptb", score);
 
     const System &system = score.getSystems()[0];
 
@@ -173,7 +184,7 @@ TEST_CASE("Formats/PowerTabOldImport/Staves", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/staves.ptb", score);
+    loadTest(importer, "data/staves.ptb", score);
 
     const System &system = score.getSystems()[0];
 
@@ -200,7 +211,7 @@ TEST_CASE("Formats/PowerTabOldImport/Positions", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/positions.ptb", score);
+    loadTest(importer, "data/positions.ptb", score);
 
     const System &system = score.getSystems()[0];
     const Staff &staff = system.getStaves()[0];
@@ -231,7 +242,7 @@ TEST_CASE("Formats/PowerTabOldImport/Notes", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/notes.ptb", score);
+    loadTest(importer, "data/notes.ptb", score);
 
     const System &system = score.getSystems()[0];
     const Staff &staff = system.getStaves()[0];
@@ -259,7 +270,7 @@ TEST_CASE("Formats/PowerTabOldImport/GuitarIns", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/guitar_ins.ptb", score);
+    loadTest(importer, "data/guitar_ins.ptb", score);
 
     const System &system = score.getSystems()[0];
 
@@ -289,7 +300,7 @@ TEST_CASE("Formats/PowerTabOldImport/ChordText", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/chordtext.ptb", score);
+    loadTest(importer, "data/chordtext.ptb", score);
 
     const System &system = score.getSystems()[0];
 
@@ -321,7 +332,7 @@ TEST_CASE("Formats/PowerTabOldImport/Bends", "")
 {
     Score score;
     PowerTabOldImporter importer;
-    importer.load("data/bends.ptb", score);
+    loadTest(importer, "data/bends.ptb", score);
 
     const System &system = score.getSystems()[0];
     const Staff &staff = system.getStaves()[0];

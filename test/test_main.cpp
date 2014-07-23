@@ -15,5 +15,15 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
+#include <QCoreApplication>
+
+int main(int argc, char *argv[])
+{
+    // Initialize QCoreApplication for any tests that use
+    // QCoreApplication::applicationDirPath().
+    QCoreApplication app(argc, argv);
+
+    return Catch::Session().run(argc, argv);
+}

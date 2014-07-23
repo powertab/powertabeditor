@@ -18,16 +18,17 @@
 #include <catch.hpp>
 
 #include <formats/guitar_pro/guitarproimporter.h>
+#include <QCoreApplication>
 #include <score/generalmidi.h>
 #include <score/score.h>
-
-const std::string FILE_TEST1 = "data/test1.gp4";
 
 struct Gp4Fixture
 {
     Gp4Fixture()
     {
-        REQUIRE_NOTHROW(importer.load(FILE_TEST1, score));
+        QString test_file =
+            QCoreApplication::applicationDirPath() + "/data/test1.gp4";
+        REQUIRE_NOTHROW(importer.load(test_file.toStdString(), score));
     }
 
     GuitarProImporter importer;
