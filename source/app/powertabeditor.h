@@ -385,6 +385,7 @@ private:
 
     QMenu *myPlaybackMenu;
     Command *myPlayPauseCommand;
+    Command *myRewindCommand;
 
     QMenu *myPositionMenu;
     QMenu *myPositionSectionMenu;

@@ -1536,6 +1536,11 @@ void PowerTabEditor::createCommands()
     connect(myPlayPauseCommand, SIGNAL(triggered()), this,
             SLOT(startStopPlayback()));
 
+    myRewindCommand = new Command(tr("Rewind"), "Playback.Rewind",
+                                  Qt::CTRL + Qt::Key_Left, this);
+    connect(myRewindCommand, &QAction::triggered, this,
+            &PowerTabEditor::rewindPlaybackToStart);
+
     // Section navigation actions.
     myFirstSectionCommand =
         new Command(tr("First Section"), "Position.Section.FirstSection",
@@ -2240,6 +2245,7 @@ void PowerTabEditor::createMenus()
     // Playback Menu.
     myPlaybackMenu = menuBar()->addMenu(tr("Play&back"));
     myPlaybackMenu->addAction(myPlayPauseCommand);
+    myPlaybackMenu->addAction(myRewindCommand);
 
     // Position Menu.
     myPositionMenu = menuBar()->addMenu(tr("&Position"));
