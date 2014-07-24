@@ -218,6 +218,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         {
             const RehearsalSign &sign = barline.getRehearsalSign();
             const int y = 1;
+            const int RECTANGLE_OFFSET = 4;
 
             auto signLetters = new QGraphicsSimpleTextItem();
             signLetters->setText(QString::fromStdString(sign.getLetters()));
@@ -225,15 +226,26 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             signLetters->setFont(myRehearsalSignFont);
 
             auto signText = new QGraphicsSimpleTextItem();
-            signText->setText(QString::fromStdString(sign.getDescription()));
-            signText->setFont(myRehearsalSignFont);
             signText->setPos(rehearsalSignX +
                              signLetters->boundingRect().width() + 7, y);
+            signText->setFont(myRehearsalSignFont);
+
+            QFontMetricsF metrics(myRehearsalSignFont);
+            const Barline *nextBar = system.getNextBarline(barline.getPosition());
+            Q_ASSERT(nextBar);
+
+            // If the description is too wide, cut it off with an ellipsis.
+            signText->setText(metrics.elidedText(
+                QString::fromStdString(sign.getDescription()), Qt::ElideRight,
+                layout->getPositionX(nextBar->getPosition()) - signText->x() -
+                    RECTANGLE_OFFSET));
+            // The tooltip should contain the full description.
+            signText->setToolTip(QString::fromStdString(sign.getDescription()));
 
             // Draw rectangle around rehearsal sign letters.
             QRectF boundingRect = signLetters->boundingRect();
             boundingRect.setWidth(boundingRect.width() + 7);
-            boundingRect.translate(-4, 0);
+            boundingRect.translate(-RECTANGLE_OFFSET, 0);
             auto rect = new QGraphicsRectItem(boundingRect);
             rect->setPos(rehearsalSignX, y);
 
