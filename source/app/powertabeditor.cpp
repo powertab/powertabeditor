@@ -360,6 +360,9 @@ bool PowerTabEditor::saveFileAs()
             myTabWidget->setTabText(myTabWidget->currentIndex(), fileName);
             myTabWidget->setTabToolTip(myTabWidget->currentIndex(), fileName);
 
+            // Add to the recent files list.
+            myRecentFiles->add(path);
+
             return true;
         }
     }
