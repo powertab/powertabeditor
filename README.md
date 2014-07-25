@@ -2,17 +2,19 @@
 
 [![Build Status](https://travis-ci.org/powertab/powertabeditor.svg?branch=master)](https://travis-ci.org/powertab/powertabeditor)
 
-#### Compiling
-Dependencies:
+### Compiling
+####Dependencies:
 * [CMake](http://www.cmake.org/) >= 2.8.9
-* [Boost 1.55](http://www.boost.org/) (earlier versions may work, but are currently untested)
+* [Boost 1.55](http://www.boost.org/)
+  * Earlier versions may work, but are currently untested
 * [Qt 5.x](http://qt-project.org/)
+  * If you are compiling with Clang, Qt 5.2 or higher is required.
 * [zlib](http://www.zlib.net/)
 * (Linux only) - ALSA library (e.g. `libasound2-dev`)
 * (Linux only) - MIDI sequencer (e.g. `timidity`)
-* A compiler with C++11 support (gcc 4.8, Clang, VS 2013)
+* A compiler with C++11 support (gcc 4.8+, Clang, VS 2013)
 
-Windows:
+####Windows:
 * Install Git - see https://help.github.com/articles/set-up-git
 * Building Boost:
   * Download and extract [Boost 1.55](http://www.boost.org/users/history/version_1_55_0.html) to `C:\Program Files\boost\boost_1_55_0`.
@@ -28,3 +30,21 @@ Windows:
 * Press `Configure` and select your compiler version (e.g. `Visual Studio 12 Win64`) and then press `Generate`
 * Open the resulting solution (`powertabeditor.sln`) and select `Build Solution` from the `Build` menu.
 * Right-click on the `powertabeditor` project and select "Set as Startup Project" before running.
+
+####Linux:
+* These instructions assume a recent Ubuntu/Debian-based system, but the package names should be similar for other package managers.
+  * For older Ubuntu systems (such as Ubuntu 12.04) - you may need to [add some PPAs](https://github.com/powertab/powertabeditor/blob/master/.travis.yml) to get updated versions of the dependencies.
+* Install dependencies:
+  * `sudo apt-get update`
+  * `sudo apt-get install cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libasound2-dev timidity`
+  * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt-get install ninja-build`)
+* Build:
+  * `mkdir cmake_build && cd cmake_build`
+  * `cmake ..`
+    * Add `-DCMAKE_BUILD_TYPE=Debug` for a debug build instead of a `Release` build.
+    * Add `-DCMAKE_CXX_COMPILER=clang++` to compile with Clang.
+    * Add `-G Ninja` to generate [Ninja](http://martine.github.io/ninja/) build files.
+  * `make -j8` or `ninja`
+* Run:
+  * `./bin/powertabeditor`
+  * `./bin/pte_tests` to run the unit tests.
