@@ -37,7 +37,7 @@
 #include <score/utils/scoremerger.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
-    : FileFormatImporter(FileFormat("Power Tab Document (v1.7)", { "ptb" }))
+    : FileFormatImporter(FileFormat("Power Tab 1.7 Document", { "ptb" }))
 {
 }
 
