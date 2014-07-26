@@ -3,6 +3,12 @@
 [![Build Status](https://travis-ci.org/powertab/powertabeditor.svg?branch=master)](https://travis-ci.org/powertab/powertabeditor)
 
 ### Compiling
+####Getting the code:
+
+Use `git clone --recursive` to initialize submodules in the `external` folder:
+
+`git clone --recursive git://github.com/powertab/powertabeditor.git`
+
 ####Dependencies:
 * [CMake](http://www.cmake.org/) >= 2.8.9
 * [Boost 1.55](http://www.boost.org/)

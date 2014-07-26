@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
+include_directories(${PROJECT_SOURCE_DIR}/external/Catch/include)
+
 add_executable(pte_tests
     test_main.cpp
 
@@ -93,7 +95,6 @@ add_executable(pte_tests
     score/test_voiceutils.cpp
 
     # Header-only files.
-    catch.hpp
     actions/actionfixture.h
     score/test_serialization.h
 )
@@ -108,6 +109,7 @@ target_link_libraries(pte_tests
     pteformats
     pteactions
     ptescore
+    pugixml
     ${Boost_LIBRARIES}
 )
 

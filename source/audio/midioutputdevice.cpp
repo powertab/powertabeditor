@@ -17,7 +17,7 @@
   
 #include "midioutputdevice.h"
 
-#include "rtmidi/RtMidi.h"
+#include <RtMidi.h>
 #include <score/dynamic.h>
 #include <score/generalmidi.h>
 
