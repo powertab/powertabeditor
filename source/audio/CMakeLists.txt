@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
+include_directories(${PROJECT_SOURCE_DIR}/external/rtmidi)
+
 add_library(pteaudio
     bendevent.cpp
     letringevent.cpp
@@ -30,5 +32,3 @@ add_library(pteaudio
 
 qt5_use_modules(pteaudio Widgets) 
 cotire(pteaudio)
-
-add_subdirectory(rtmidi)

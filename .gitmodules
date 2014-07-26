@@ -1,3 +1,6 @@
 [submodule "external/Catch"]
 	path = external/Catch
 	url = git://github.com/philsquared/Catch.git
+[submodule "external/rtmidi"]
+	path = external/rtmidi
+	url = git://github.com/thestk/rtmidi.git

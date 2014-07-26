@@ -35,6 +35,16 @@ else()
     endif()
 endif()
 
+# Configure backends for RtMidi.
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    add_definitions(-D__LINUX_ALSA__)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    add_definitions(-D__MACOSX_AU__)
+    add_definitions(-D__MACOSX_CORE__)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    add_definitions(-D__WINDOWS_MM__)
+endif()
+
 # Run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
@@ -55,5 +65,6 @@ endif()
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/source)
 
+add_subdirectory(external)
 add_subdirectory(source)
 add_subdirectory(test)
