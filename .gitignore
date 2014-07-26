@@ -2,6 +2,6 @@
 build
 *.user
 *~
-build/windows_installer/bin
-build/windows_installer/obj
+windows/bin
+windows/obj
 *.suo

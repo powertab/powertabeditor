@@ -42,7 +42,7 @@
     <Content Include="common.wxi" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\windows_installer\powertabeditor.wixproj">
+    <ProjectReference Include="powertabeditor.wixproj">
       <Name>powertabeditor</Name>
       <Project>{a4314d6b-de92-4f2e-8888-a04c224bac93}</Project>
       <Private>True</Private>
