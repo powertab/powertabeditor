@@ -48,3 +48,24 @@
 * Run:
   * `./bin/powertabeditor`
   * `./bin/pte_tests` to run the unit tests.
+
+####OS X:
+* Currently tested with Mac OS X 10.9.2 only.
+* Install Xcode along with its Command Line Tools.
+* Install CMake, Qt 5.2+ and Boost
+  * Boost: Install [Homebrew](http://brew.sh/) and type `brew install boost` on the shell.
+  * See above where to download [Qt 5.2+](http://qt-project.org/) and [CMake](http://www.cmake.org/).
+* Build (adapt paths to your setup) in `source/` directory
+  * `export CC=/usr/bin/clang`
+  * `export CXX=/usr/bin/clang++`
+  * `export Qt5Widgets_DIR=<PATH_TO_Qt>/clang_64/lib/cmake/Qt5Widgets`
+  * `export Qt5Core_DIR=<PATH_TO_Qt>/clang_64/lib/cmake/Qt5Core`
+  * `export BOOST_ROOT=/usr/local/Cellar/boost/1.55.0_1`
+  * `export BOOST_LIBRARY_DIR=/usr/local/Cellar/boost/1.55.0_1/lib`
+  * `export CMAKE_LIBRARY_PATH="/usr/local/Cellar/boost/1.55.0_1/lib:$CMAKE_LIBRARY_PATH"` 
+  * `cmake ..`
+  * `make`
+* Run:
+  * `./bin/powertabeditor`
+  * `./bin/pte_tests` to run the unit tests.
+  
