@@ -10,11 +10,13 @@
 ### Developers
 #### Getting the code:
 
-Use `git clone --recursive` to initialize submodules in the `external` folder:
+If you're using [GitHub for Windows](https://windows.github.com/), just use the "Clone in Desktop" button.
+
+Otherwise, make sure to use `git clone --recursive` to initialize submodules in the `external` folder:
 
 `git clone --recursive git://github.com/powertab/powertabeditor.git`
 
-If you've already cloned the repository, run `git submodule init && git submodule update`.
+If you've already cloned the repository, you can run `git submodule init && git submodule update`.
 
 #### Dependencies:
 * [CMake](http://www.cmake.org/) >= 2.8.9
