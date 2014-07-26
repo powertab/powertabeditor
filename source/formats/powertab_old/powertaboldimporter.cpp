@@ -413,8 +413,9 @@ void PowerTabOldImporter::convert(
 
 /// Convert between the old key format and the new key format. This is fairly
 /// awkward to do.
-static void convertKey(uint8_t oldKey, uint8_t oldVariation,
-                       ChordName::Key &key, ChordName::Variation &variation)
+static void convertKey(PowerTabDocument::ChordName::Key oldKey,
+                       uint8_t oldVariation, ChordName::Key &key,
+                       ChordName::Variation &variation)
 {
     // Convert keys to the new format.
     switch (oldKey)
@@ -515,7 +516,8 @@ void PowerTabOldImporter::convert(const PowerTabDocument::ChordText &oldChord,
     oldName.GetTonic(oldTonic, oldTonicVariation);
     ChordName::Key tonic;
     ChordName::Variation tonicVariation;
-    convertKey(oldTonic, oldTonicVariation, tonic, tonicVariation);
+    convertKey(static_cast<PowerTabDocument::ChordName::Key>(oldTonic),
+               oldTonicVariation, tonic, tonicVariation);
 
     name.setTonicKey(tonic);
     name.setTonicVariation(tonicVariation);
@@ -524,7 +526,8 @@ void PowerTabOldImporter::convert(const PowerTabDocument::ChordText &oldChord,
     oldName.GetBassNote(oldBassKey, oldBassVariation);
     ChordName::Key bassKey;
     ChordName::Variation bassVariation;
-    convertKey(oldBassKey, oldBassVariation, bassKey, bassVariation);
+    convertKey(static_cast<PowerTabDocument::ChordName::Key>(oldBassKey),
+               oldBassVariation, bassKey, bassVariation);
 
     name.setBassKey(bassKey);
     name.setBassVariation(bassVariation);
@@ -727,7 +730,8 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Note &oldNote,
 
         ChordName::Key newKey;
         ChordName::Variation newVariation;
-        convertKey(oldKey, oldVariation, newKey, newVariation);
+        convertKey(static_cast<PowerTabDocument::ChordName::Key>(oldKey),
+                   oldVariation, newKey, newVariation);
 
         note.setArtificialHarmonic(ArtificialHarmonic(
             newKey, newVariation,

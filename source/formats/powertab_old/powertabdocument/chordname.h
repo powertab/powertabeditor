@@ -33,7 +33,7 @@ public:
     static const uint8_t MIN_FRET_POSITION;                  ///< Minimum allowed value for the fret position
     static const uint8_t MAX_FRET_POSITION;                  ///< Maximum allowed value for the fret position
 
-    enum keys
+    enum Key
     {
         C                   = (uint8_t)0x00,
         CSharp              = (uint8_t)0x01,
