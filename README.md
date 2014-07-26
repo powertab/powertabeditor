@@ -2,8 +2,13 @@
 
 [![Build Status](https://travis-ci.org/powertab/powertabeditor.svg?branch=master)](https://travis-ci.org/powertab/powertabeditor)
 
-### Compiling
-####Getting the code:
+### Users
+* New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
+* You can get the latest releases from our [downloads page](https://github.com/powertab/powertabeditor/releases).
+* You can report bugs or suggest features on our [issue tracker](https://github.com/powertab/powertabeditor/issues).
+
+### Developers
+#### Getting the code:
 
 Use `git clone --recursive` to initialize submodules in the `external` folder:
 
@@ -11,7 +16,7 @@ Use `git clone --recursive` to initialize submodules in the `external` folder:
 
 If you've already cloned the repository, run `git submodule init && git submodule update`.
 
-####Dependencies:
+#### Dependencies:
 * [CMake](http://www.cmake.org/) >= 2.8.9
 * [Boost 1.55](http://www.boost.org/)
   * Earlier versions may work, but are currently untested
@@ -22,7 +27,7 @@ If you've already cloned the repository, run `git submodule init && git submodul
 * (Linux only) - MIDI sequencer (e.g. `timidity`)
 * A compiler with C++11 support (gcc 4.8+, Clang, VS 2013)
 
-####Windows:
+#### Windows:
 * Install Git - see https://help.github.com/articles/set-up-git
 * Building Boost:
   * Download and extract [Boost 1.55](http://www.boost.org/users/history/version_1_55_0.html) to `C:\Program Files\boost\boost_1_55_0`.
@@ -39,7 +44,7 @@ If you've already cloned the repository, run `git submodule init && git submodul
 * Open the resulting solution (`powertabeditor.sln`) and select `Build Solution` from the `Build` menu.
 * Right-click on the `powertabeditor` project and select "Set as Startup Project" before running.
 
-####Linux:
+#### Linux:
 * These instructions assume a recent Ubuntu/Debian-based system, but the package names should be similar for other package managers.
   * For older Ubuntu systems (such as Ubuntu 12.04) - you may need to [add some PPAs](https://github.com/powertab/powertabeditor/blob/master/.travis.yml) to get updated versions of the dependencies.
 * Install dependencies:
@@ -57,7 +62,7 @@ If you've already cloned the repository, run `git submodule init && git submodul
   * `./bin/powertabeditor`
   * `./bin/pte_tests` to run the unit tests.
 
-####OS X:
+#### OS X:
 * Currently tested with Mac OS X 10.9.2 only.
 * Install Xcode along with its Command Line Tools.
 * Install CMake, Qt 5.2+ and Boost
