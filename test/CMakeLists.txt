@@ -109,6 +109,7 @@ target_link_libraries(pte_tests
     pteformats
     pteactions
     ptescore
+    pugixml
     ${Boost_LIBRARIES}
 )
 

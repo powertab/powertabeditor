@@ -19,7 +19,7 @@
 #define FORMATS_GPX_DOCUMENTREADER_H
 
 #include <map>
-#include "pugixml/pugixml.hpp"
+#include <pugixml.hpp>
 #include <score/note.h>
 #include <vector>
 

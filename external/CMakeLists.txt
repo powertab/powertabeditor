@@ -6,3 +6,9 @@ add_library(rtmidi
     rtmidi/RtError.h
     rtmidi/RtMidi.h
 )
+
+add_library(pugixml
+    pugixml/src/pugixml.cpp
+
+    pugixml/src/pugixml.hpp
+)

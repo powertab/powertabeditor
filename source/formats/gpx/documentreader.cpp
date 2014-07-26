@@ -19,7 +19,6 @@
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <iostream>
-#include "pugixml/pugixml.hpp"
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <sstream>

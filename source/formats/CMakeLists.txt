@@ -12,14 +12,12 @@ add_library(pteformats
     gpx/filesystem.cpp
     gpx/gpximporter.cpp
     gpx/util.cpp
-    gpx/pugixml/pugixml.cpp
 
     gpx/bitstream.h
     gpx/documentreader.h
     gpx/filesystem.h
     gpx/gpximporter.h
     gpx/util.h
-    gpx/pugixml/pugixml.hpp
 
     guitar_pro/gp_channel.cpp
     guitar_pro/guitarproimporter.cpp

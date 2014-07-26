@@ -33,6 +33,7 @@ target_link_libraries(powertabeditor
     pteformats
     pteactions
     ptescore
+    pugixml
     ${Boost_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )

@@ -7,3 +7,6 @@
 [submodule "external/rapidjson"]
 	path = external/rapidjson
 	url = git://github.com/miloyip/rapidjson.git
+[submodule "external/pugixml"]
+	path = external/pugixml
+	url = git://github.com/zeux/pugixml.git
