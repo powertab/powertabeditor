@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 2.8.9)
 
-include_directories(.)
-
 # Get a version number.
 include(FindGit)
 execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags --long OUTPUT_VARIABLE MY_WC_REVISION)

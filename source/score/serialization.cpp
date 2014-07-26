@@ -17,6 +17,8 @@
 
 #include "serialization.h"
 
+#include <rapidjson/error/en.h>
+
 namespace ScoreUtils
 {
 InputArchive::InputArchive(std::istream &is) : myStream(is)
@@ -30,7 +32,8 @@ InputArchive::InputArchive(std::istream &is) : myStream(is)
     {
         throw std::runtime_error("Parse error at offset " +
                                  std::to_string(myDocument.GetErrorOffset()) +
-                                 ": " + myDocument.GetParseError());
+                                 ": " +
+                                 GetParseError_En(myDocument.GetParseError()));
     }
 
     myIterators.push(myDocument.MemberBegin());

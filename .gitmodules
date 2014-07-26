@@ -4,3 +4,6 @@
 [submodule "external/rtmidi"]
 	path = external/rtmidi
 	url = git://github.com/thestk/rtmidi.git
+[submodule "external/rapidjson"]
+	path = external/rapidjson
+	url = git://github.com/miloyip/rapidjson.git

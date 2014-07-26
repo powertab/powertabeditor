@@ -64,6 +64,7 @@ endif()
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/source)
+include_directories(${PROJECT_SOURCE_DIR}/external/rapidjson/include)
 
 add_subdirectory(external)
 add_subdirectory(source)
