@@ -6,5 +6,5 @@
   <?define Version="2.0.5"?>
   <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
   <?define SourceDir="../source"?>
-  <?define BinDir="../build_cmake/bin"?>
+  <?define BinDir="../build/bin"?>
 </Include>

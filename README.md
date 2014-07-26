@@ -38,7 +38,7 @@ If you've already cloned the repository, run `git submodule init && git submodul
   * Download the online installer from http://qt-project.org/downloads.
   * Install the `msvc2013 64-bit` component.
 * Install and open CMake, and browse to select the location of the root directory (e.g. `$HOME/Documents/GitHub/powertabeditor`).
-* Set the build directory to something like `$HOME/Documents/GitHub/powertabeditor/build_cmake`.
+* Set the build directory to `$HOME/Documents/GitHub/powertabeditor/build`.
 * Use the "Add Entry" button to set the `STRING` `CMAKE_PREFIX_PATH` to the `cmake` directory inside Qt's installation directory (e.g. `C:\Qt\5.2.0\qtbase\lib\cmake`)
 * Press `Configure` and select your compiler version (e.g. `Visual Studio 12 Win64`) and then press `Generate`
 * Open the resulting solution (`powertabeditor.sln`) and select `Build Solution` from the `Build` menu.
@@ -52,7 +52,7 @@ If you've already cloned the repository, run `git submodule init && git submodul
   * `sudo apt-get install cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libasound2-dev timidity`
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt-get install ninja-build`)
 * Build:
-  * `mkdir cmake_build && cd cmake_build`
+  * `mkdir build && cd build`
   * `cmake ..`
     * Add `-DCMAKE_BUILD_TYPE=Debug` for a debug build instead of a `Release` build.
     * Add `-DCMAKE_CXX_COMPILER=clang++` to compile with Clang.

@@ -1,5 +1,5 @@
 *.swp
-build_cmake
+build
 *.user
 *~
 build/windows_installer/bin
