@@ -44,8 +44,6 @@ private:
     QString myDisplayText;
     QRectF myBeatTypeRect;
     QRectF myBounds;
-
-    static const int HEIGHT_OFFSET = 10;
 };
 
 #endif
