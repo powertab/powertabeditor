@@ -20,6 +20,7 @@
 #include <cmath>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
+#include <painters/simpletextitem.h>
 #include <QFontMetricsF>
 #include <QGraphicsItem>
 #include <QPainterPath>
@@ -65,7 +66,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent,
         // Draw any symbols that use information about the stem, like staccato,
         // fermata, etc.
         if (stem.isStaccato())
-            symbols << createStaccato(stem, musicFont);
+            symbols << createStaccato(stem, musicFont, fm);
 
         if (stem.hasFermata())
             symbols << createFermata(stem, musicFont, layout);
@@ -166,18 +167,22 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
 }
 
 QGraphicsItem *BeamGroup::createStaccato(const NoteStem &stem,
-                                         const QFont &musicFont)
+                                         const QFont &musicFont,
+                                         const QFontMetricsF &fm)
 {
     // Draw the dot near either the top or bottom note of the position,
     // depending on stem direction.
-    const double yPos = (stem.getStemType() == NoteStem::StemUp) ?
-                stem.getBottom() - 25 : stem.getTop() - 43;
+    const double VERTICAL_SPACING = 8;
+    const double yPos = (stem.getStemType() == NoteStem::StemUp)
+                            ? stem.getBottom() - fm.ascent() + VERTICAL_SPACING
+                            : stem.getTop() - fm.ascent() - VERTICAL_SPACING;
 
-    const double xPos = (stem.getStemType() == NoteStem::StemUp) ?
-                stem.getX() - 8 : stem.getX() - 2;
+    const double HORIZONTAL_OFFSET = 3;
+    const double xPos = (stem.getStemType() == NoteStem::StemUp)
+                            ? stem.getX() - HORIZONTAL_OFFSET
+                            : stem.getX() + HORIZONTAL_OFFSET;
 
-    QGraphicsTextItem *dot = new QGraphicsTextItem(QChar(MusicFont::Dot));
-    dot->setFont(musicFont);
+    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont);
     dot->setPos(xPos, yPos);
     return dot;
 }
@@ -205,8 +210,7 @@ QGraphicsItem *BeamGroup::createFermata(const NoteStem &stem,
 
     const QChar symbol = (stem.getStemType() == NoteStem::StemUp) ?
                 MusicFont::FermataUp : MusicFont::FermataDown;
-    QGraphicsSimpleTextItem *fermata = new QGraphicsSimpleTextItem(symbol);
-    fermata->setFont(musicFont);
+    auto fermata = new SimpleTextItem(symbol, musicFont);
     fermata->setPos(stem.getX(), y);
 
     return fermata;
@@ -246,8 +250,7 @@ QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
     if (stem.isStaccato())
         y += (stem.getStemType() == NoteStem::StemUp) ? 7 : -7;
 
-    QGraphicsSimpleTextItem *accent = new QGraphicsSimpleTextItem(symbol);
-    accent->setFont(musicFont);
+    auto accent = new SimpleTextItem(symbol, musicFont);
     accent->setPos(stem.getX(), y);
 
     return accent;
@@ -310,10 +313,9 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
     }
 
     // Draw the symbol.
-    const double y = stem.getStemEdge() - fm.ascent() - 5;
-    QGraphicsTextItem *flag = new QGraphicsTextItem(symbol);
-    flag->setFont(musicFont);
-    flag->setPos(stem.getX() - 3, y);
+    const double y = stem.getStemEdge() - fm.ascent();
+    auto flag = new SimpleTextItem(symbol, musicFont);
+    flag->setPos(stem.getX() + 2, y);
 
     return flag;
 }

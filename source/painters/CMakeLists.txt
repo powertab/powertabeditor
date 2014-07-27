@@ -31,6 +31,7 @@ add_library(ptepainters
     musicfont.h
     notestem.h
     #rhythmslashpainter.h
+	simpletextitem.h
     staffpainter.h
     stdnotationnote.h
     systemrenderer.h

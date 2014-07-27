@@ -27,6 +27,7 @@
 #include <painters/directionpainter.h>
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
+#include <painters/simpletextitem.h>
 #include <painters/staffpainter.h>
 #include <painters/stdnotationnote.h>
 #include <painters/tempomarkerpainter.h>
@@ -40,19 +41,6 @@
 #include <score/system.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
-
-/// Simple wrapper around QGraphicsSimpleTextItem. This constructor ensures that
-/// setFont() is called before setText(), which significantly improves
-/// performance.
-class SimpleTextItem : public QGraphicsSimpleTextItem
-{
-public:
-    SimpleTextItem(const QString &text, const QFont &font)
-    {
-        setFont(font);
-        setText(text);
-    }
-};
 
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
     : myScoreArea(scoreArea),
