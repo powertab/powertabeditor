@@ -20,7 +20,6 @@
 
 #include <QFont>
 #include <QGraphicsItem>
-#include <QStaticText>
 
 class TempoMarker;
 
@@ -42,11 +41,11 @@ private:
 
     const TempoMarker &myTempoMarker;
     QFont myDisplayFont;
-    QStaticText myDisplayText;
+    QString myDisplayText;
     QRectF myBeatTypeRect;
     QRectF myBounds;
 
-    static const int HEIGHT_OFFSET = 2;
+    static const int HEIGHT_OFFSET = 10;
 };
 
 #endif

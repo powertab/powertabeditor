@@ -70,7 +70,7 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
 
     std::vector<std::thread> workers;
     const int workSize = myRenderedSystems.size() / numThreads;
-    qDebug() << "Using " << numThreads << " worker thread(s)";
+    qDebug() << "Using" << numThreads << "worker thread(s)";
 
     for (int i = 0; i < numThreads; ++i)
     {

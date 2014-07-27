@@ -49,6 +49,7 @@ TempoMarkerPainter::TempoMarkerPainter(const TempoMarker &tempo)
 
         const QString imageSpacing(3, ' ');
         // Reserve space for the beat type image.
+        const int HEIGHT_OFFSET = 2;
         myBeatTypeRect =
             QRectF(fm.width(text), -HEIGHT_OFFSET, fm.width(imageSpacing),
                    fontHeight + HEIGHT_OFFSET);
@@ -57,8 +58,7 @@ TempoMarkerPainter::TempoMarkerPainter(const TempoMarker &tempo)
         text += QString::number(myTempoMarker.getBeatsPerMinute());
     }
 
-    myDisplayText.setText(text);
-    myDisplayText.prepare(QTransform(), myDisplayFont);
+    myDisplayText = text;
 
     myBounds = QRectF(0, 0, fm.width(text), fontHeight);
 }
@@ -68,7 +68,7 @@ void TempoMarkerPainter::paint(QPainter *painter,
 {
     painter->setRenderHints(QPainter::SmoothPixmapTransform);
     painter->setFont(myDisplayFont);
-    painter->drawStaticText(0, HEIGHT_OFFSET, myDisplayText);
+    painter->drawText(0, 10, myDisplayText);
 
     if (myTempoMarker.getMarkerType() == TempoMarker::StandardMarker)
     {
