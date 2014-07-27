@@ -41,6 +41,19 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
+/// Simple wrapper around QGraphicsSimpleTextItem. This constructor ensures that
+/// setFont() is called before setText(), which significantly improves
+/// performance.
+class SimpleTextItem : public QGraphicsSimpleTextItem
+{
+public:
+    SimpleTextItem(const QString &text, const QFont &font)
+    {
+        setFont(font);
+        setText(text);
+    }
+};
+
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
     : myScoreArea(scoreArea),
       myScore(score),
@@ -220,10 +233,9 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             const int y = 1;
             const int RECTANGLE_OFFSET = 4;
 
-            auto signLetters = new QGraphicsSimpleTextItem();
-            signLetters->setText(QString::fromStdString(sign.getLetters()));
+            auto signLetters = new SimpleTextItem(
+                QString::fromStdString(sign.getLetters()), myRehearsalSignFont);
             signLetters->setPos(rehearsalSignX, y);
-            signLetters->setFont(myRehearsalSignFont);
 
             auto signText = new QGraphicsSimpleTextItem();
             signText->setPos(rehearsalSignX +
@@ -273,10 +285,9 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
 
-                auto tabNote = new QGraphicsSimpleTextItem(text);
-                tabNote->setFont(myPlainTextFont);
-                tabNote->setBrush(note.hasProperty(Note::Tied) ?
-                                      Qt::lightGray : Qt::black);
+                auto tabNote = new SimpleTextItem(text, myPlainTextFont);
+                tabNote->setBrush(note.hasProperty(Note::Tied) ? Qt::lightGray
+                                                               : Qt::black);
 
                 centerItem(tabNote, location,
                            location + layout->getPositionSpacing(),
@@ -320,9 +331,8 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
     const double symbolWidth = myMusicFontMetrics.width(arpeggioSymbol);
     const int numSymbols = height / symbolWidth;
 
-    QGraphicsSimpleTextItem *arpeggio = new QGraphicsSimpleTextItem(
-                QString(numSymbols, arpeggioSymbol));
-    arpeggio->setFont(myMusicNotationFont);
+    auto arpeggio = new SimpleTextItem(QString(numSymbols, arpeggioSymbol),
+                                       myMusicNotationFont);
     arpeggio->setPos(x + arpeggio->boundingRect().height() / 2.0 - 3.0, top);
     arpeggio->setRotation(90);
     arpeggio->setParentItem(myParentStaff);
@@ -331,9 +341,8 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
     const QChar arpeggioEnd = position.hasProperty(Position::ArpeggioUp) ?
                 MusicFont::ArpeggioUp : MusicFont::ArpeggioDown;
 
-    QGraphicsSimpleTextItem *endPoint = new QGraphicsSimpleTextItem(arpeggioEnd);
+    auto endPoint = new SimpleTextItem(arpeggioEnd, myMusicNotationFont);
     const double y = position.hasProperty(Position::ArpeggioUp) ? top : bottom;
-    endPoint->setFont(myMusicNotationFont);
     endPoint->setPos(x, y - 1.45 * myMusicNotationFont.pixelSize());
     endPoint->setParentItem(myParentStaff);
 }
@@ -412,9 +421,9 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         vertLine->setParentItem(myParentSystem);
 
         // Draw the text indicating the repeat numbers.
-        QGraphicsSimpleTextItem* text = new QGraphicsSimpleTextItem(
-                QString::fromStdString(boost::lexical_cast<std::string>(ending)));
-        text->setFont(myPlainTextFont);
+        auto text = new SimpleTextItem(
+            QString::fromStdString(boost::lexical_cast<std::string>(ending)),
+            myPlainTextFont);
         text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
         text->setParentItem(myParentSystem);
 
@@ -502,9 +511,8 @@ void SystemRenderer::drawChordText(const System &system,
         const std::string text =
             boost::lexical_cast<std::string>(chord.getChordName());
 
-        QGraphicsSimpleTextItem *textItem =
-            new QGraphicsSimpleTextItem(QString::fromStdString(text));
-        textItem->setFont(myPlainTextFont);
+        auto textItem =
+            new SimpleTextItem(QString::fromStdString(text), myPlainTextFont);
         textItem->setPos(x, height + 4);
         textItem->setParentItem(myParentSystem);
     }
@@ -647,9 +655,8 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
             description += QString::number(player.getPlayerNumber() + 1);
         }
 
-        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
-                    "Player " + description);
-        text->setFont(myPlainTextFont);
+        auto text =
+            new SimpleTextItem("Player " + description, myPlainTextFont);
         text->setPos(layout.getPositionX(change.getPosition()),
                      layout.getBottomStdNotationLine() +
                      LayoutInfo::STAFF_BORDER_SPACING +
@@ -793,8 +800,7 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
 
 QGraphicsItem *SystemRenderer::createPickStroke(const QString &text)
 {
-    auto textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(myMusicNotationFont);
+    auto textItem = new SimpleTextItem(text, myMusicNotationFont);
     textItem->setPos(2, 2 - myMusicFontMetrics.ascent());
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
@@ -809,8 +815,7 @@ QGraphicsItem *SystemRenderer::createPlainTextSymbol(const QString &text,
 {
     myPlainTextFont.setStyle(style);
 
-    auto textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(myPlainTextFont);
+    auto textItem = new SimpleTextItem(text, myPlainTextFont);
     textItem->setPos(0, -8);
 
     auto group = new QGraphicsItemGroup();
@@ -1010,9 +1015,7 @@ QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(const QString &text,
     mySymbolTextFont.setStyle(style);
 
     // Render the description (i.e. "let ring").
-    auto description = new QGraphicsSimpleTextItem();
-    description->setText(text);
-    description->setFont(mySymbolTextFont);
+    auto description = new SimpleTextItem(text, mySymbolTextFont);
 
     auto group = new QGraphicsItemGroup();
     group->addToGroup(description);
@@ -1077,9 +1080,7 @@ QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
 
     const double symbolWidth = QFontMetricsF(font).width(symbol);
     const int numSymbols = width / symbolWidth;
-    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
-                QString(numSymbols, symbol));
-    text->setFont(font);
+    auto text = new SimpleTextItem(QString(numSymbols, symbol), font);
     text->setPos(0, -25);
 
     // A bit of a hack for getting around the height offset caused by the
@@ -1097,9 +1098,8 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
 
     for (int i = 0; i < 3; i++)
     {
-        QGraphicsSimpleTextItem *line = new QGraphicsSimpleTextItem(
-                    QChar(MusicFont::TremoloPicking));
-        line->setFont(myMusicNotationFont);
+        auto line = new SimpleTextItem(QChar(MusicFont::TremoloPicking),
+                                       myMusicNotationFont);
         centerItem(line, 0, layout.getPositionSpacing() * 1.25,
                    -myMusicFontMetrics.ascent() - 7 + i * offset);
         group->addToGroup(line);
@@ -1113,9 +1113,7 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
     QFont font(myMusicFont.getFont());
     font.setPixelSize(21);
 
-    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
-                QChar(MusicFont::Trill));
-    text->setFont(font);
+    auto text = new SimpleTextItem(QChar(MusicFont::Trill), font);
     centerItem(text, 0, layout.getPositionSpacing(), -18);
 
     auto group = new QGraphicsItemGroup();
@@ -1145,8 +1143,7 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
     else if (volume <= Dynamic::ff)
         text = "ff";
 
-    auto textItem = new QGraphicsSimpleTextItem(text);
-    textItem->setFont(myMusicNotationFont);
+    auto textItem = new SimpleTextItem(text, myMusicNotationFont);
     textItem->setPos(0, -myMusicFontMetrics.ascent() + 10);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
@@ -1203,9 +1200,8 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                 myMusicFontMetrics.ascent();
 
         QGraphicsItemGroup *group = nullptr;
-        QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(
-                    accidentalText + noteHead);
-        text->setFont(myMusicNotationFont);
+        auto text =
+            new SimpleTextItem(accidentalText + noteHead, myMusicNotationFont);
 
         if (note.isDotted() || note.isDoubleDotted())
         {
@@ -1213,16 +1209,14 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             const double dotX = noteHeadWidth + 2;
 
             const QChar dot(MusicFont::Dot);
-            QGraphicsSimpleTextItem *dotText = new QGraphicsSimpleTextItem(dot);
+            auto dotText = new SimpleTextItem(dot, myMusicNotationFont);
             dotText->setPos(dotX, 0);
-            dotText->setFont(myMusicNotationFont);
             group->addToGroup(dotText);
 
             if (note.isDoubleDotted())
             {
-                QGraphicsSimpleTextItem *dotText2 = new QGraphicsSimpleTextItem(dot);
+                auto dotText2 = new SimpleTextItem(dot, myMusicNotationFont);
                 dotText2->setPos(dotX + 4, 0);
-                dotText2->setFont(myMusicNotationFont);
                 group->addToGroup(dotText2);
             }
         }
@@ -1321,9 +1315,8 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
         const double textWidth = fm.width(text);
         const double centreX = leftX + (rightX - (leftX + textWidth)) / 2.0;
 
-        QGraphicsSimpleTextItem *textItem = new QGraphicsSimpleTextItem(text);
+        auto textItem = new SimpleTextItem(text, font);
         textItem->setPos(centreX, y2 - font.pixelSize());
-        textItem->setFont(font);
         textItem->setParentItem(myParentStaff);
 
         const double lineWidth =
@@ -1366,9 +1359,8 @@ void SystemRenderer::drawMultiBarRest(const System &system,
                 LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
 
     // Draw the measure count.
-    auto measureCountText = new QGraphicsSimpleTextItem();
-    measureCountText->setText(QString::number(measureCount));
-    measureCountText->setFont(myMusicNotationFont);
+    auto measureCountText =
+        new SimpleTextItem(QString::number(measureCount), myMusicNotationFont);
 
     centerItem(measureCountText, leftX, rightX,
                layout.getTopStdNotationLine() - myMusicFontMetrics.ascent());
@@ -1429,8 +1421,7 @@ void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &l
     }
 
     auto group = new QGraphicsItemGroup();
-    QGraphicsSimpleTextItem *text = new QGraphicsSimpleTextItem(symbol);
-    text->setFont(myMusicNotationFont);
+    auto text = new SimpleTextItem(symbol, myMusicNotationFont);
     text->setPos(0, y);
     group->addToGroup(text);
 
@@ -1444,16 +1435,14 @@ void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &l
     if (pos.hasProperty(Position::Dotted) ||
         pos.hasProperty(Position::DoubleDotted))
     {
-        QGraphicsSimpleTextItem *dotText = new QGraphicsSimpleTextItem(dot);
+        auto dotText = new SimpleTextItem(dot, myMusicNotationFont);
         dotText->setPos(dotX, dotY);
-        dotText->setFont(myMusicNotationFont);
         group->addToGroup(dotText);
 
         if (pos.hasProperty(Position::DoubleDotted))
         {
-            QGraphicsSimpleTextItem *dotText2 = new QGraphicsSimpleTextItem(dot);
+            auto dotText2 = new SimpleTextItem(dot, myMusicNotationFont);
             dotText2->setPos(dotX + 4, dotY);
-            dotText2->setFont(myMusicNotationFont);
             group->addToGroup(dotText2);
         }
     }
@@ -1573,10 +1562,10 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
     // text if the bend is returning to standard pitch.
     if (pitch != 0)
     {
-        auto bendText = new QGraphicsSimpleTextItem(
-            QString::fromStdString(Bend::getPitchText(pitch)));
         mySymbolTextFont.setStyle(QFont::StyleNormal);
-        bendText->setFont(mySymbolTextFont);
+        auto bendText = new SimpleTextItem(
+            QString::fromStdString(Bend::getPitchText(pitch)),
+            mySymbolTextFont);
         bendText->setPos(right - 0.5 * bendText->boundingRect().width(),
                          yEnd - 1.75 * mySymbolTextFont.pixelSize());
         group->addToGroup(bendText);
