@@ -12,6 +12,7 @@ add_library(ptepainters
     musicfont.cpp
     notestem.cpp
     #rhythmslashpainter.cpp
+	simpletextitem.cpp
     staffpainter.cpp
     stdnotationnote.cpp
     systemrenderer.cpp

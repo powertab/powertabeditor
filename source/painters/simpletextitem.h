@@ -18,19 +18,28 @@
 #ifndef PAINTERS_SIMPLETEXTITEM_H
 #define PAINTERS_SIMPLETEXTITEM_H
 
-#include <QGraphicsSimpleTextItem>
+#include <QGraphicsItem>
 
-/// Simple wrapper around QGraphicsSimpleTextItem. This constructor ensures that
-/// setFont() is called before setText(), which significantly improves
-/// performance.
-class SimpleTextItem : public QGraphicsSimpleTextItem
+/// Replacement for QGraphicsSimpleTextItem, which is significantly faster but
+/// doesn't handle things like multi-line text.
+class SimpleTextItem : public QGraphicsItem
 {
 public:
-    SimpleTextItem(const QString &text, const QFont &font)
-    {
-        setFont(font);
-        setText(text);
-    }
+    SimpleTextItem(const QString &text, const QFont &font,
+                   const QBrush &brush = QBrush());
+
+    virtual QRectF boundingRect() const override { return myBoundingRect; }
+
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+
+private:
+    const QString myText;
+    const QFont myFont;
+    const QBrush myBrush;
+    QRectF myBoundingRect;
+    double myAscent;
 };
 
 #endif

@@ -275,9 +275,9 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
 
-                auto tabNote = new SimpleTextItem(text, myPlainTextFont);
-                tabNote->setBrush(note.hasProperty(Note::Tied) ? Qt::lightGray
-                                                               : Qt::black);
+                auto tabNote = new SimpleTextItem(
+                    text, myPlainTextFont,
+                    note.hasProperty(Note::Tied) ? Qt::lightGray : Qt::black);
 
                 centerItem(tabNote, location,
                            location + layout->getPositionSpacing(),
