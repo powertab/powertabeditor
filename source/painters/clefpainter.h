@@ -19,26 +19,16 @@
 #define PAINTERS_CLEFPAINTER_H
 
 #include <memory>
-#include <QFont>
-#include <QGraphicsItem>
-#include <QStaticText>
+#include <painters/simpletextitem.h>
 #include <score/staff.h>
 
 class StaffPubSub;
 
-class ClefPainter : public QGraphicsItem
+class ClefPainter : public SimpleTextItem
 {
 public:
     ClefPainter(Staff::ClefType clefType, const QFont &musicFont, int system,
                 int staff, std::shared_ptr<StaffPubSub> pubsub);
-
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                       QWidget *) override;
-
-    virtual QRectF boundingRect() const override
-    {
-        return myBounds;
-    }
 
 private:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -46,10 +36,6 @@ private:
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
-    const Staff::ClefType myClefType;
-    const QFont myMusicFont;
-    QStaticText myDisplayText;
-    QRectF myBounds;
     const int mySystemIndex;
     const int myStaffIndex;
     std::shared_ptr<StaffPubSub> myPubSub;

@@ -98,10 +98,12 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         height += layout->getStaffHeight();
 
         // Draw the clefs.
-        ClefPainter* clef = new ClefPainter(staff.getClefType(),
-                                            myMusicNotationFont, systemIndex, i,
-                                            myScoreArea->getClefPubSub());
-        clef->setPos(LayoutInfo::CLEF_PADDING, layout->getTopStdNotationLine());
+        const double CLEF_OFFSET =
+            (staff.getClefType() == Staff::TrebleClef) ? -6 : -21;
+        auto clef = new ClefPainter(staff.getClefType(), myMusicNotationFont,
+                                    systemIndex, i, myScoreArea->getClefPubSub());
+        clef->setPos(LayoutInfo::CLEF_PADDING,
+                     layout->getTopStdNotationLine() + CLEF_OFFSET);
         clef->setParentItem(myParentStaff);
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout);

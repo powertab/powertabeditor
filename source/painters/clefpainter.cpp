@@ -19,39 +19,19 @@
 
 #include <app/pubsub/staffpubsub.h>
 #include <painters/musicfont.h>
-#include <QCursor>
-#include <QPainter>
 
 ClefPainter::ClefPainter(Staff::ClefType clefType, const QFont &musicFont,
                          int system, int staff,
                          std::shared_ptr<StaffPubSub> pubsub)
-    : myClefType(clefType),
-      myMusicFont(musicFont),
+    : SimpleTextItem(clefType == Staff::TrebleClef
+                         ? QChar(MusicFont::TrebleClef)
+                         : QChar(MusicFont::BassClef),
+                     musicFont),
       mySystemIndex(system),
       myStaffIndex(staff),
       myPubSub(pubsub)
 {
     setAcceptHoverEvents(true);
-
-    if (myClefType == Staff::TrebleClef)
-        myDisplayText.setText(QChar(MusicFont::TrebleClef));
-    else
-        myDisplayText.setText(QChar(MusicFont::BassClef));
-
-    myDisplayText.prepare(QTransform(), myMusicFont);
-    QFontMetricsF fm(myMusicFont);
-    myBounds = QRectF(0, -5, fm.width(MusicFont::TrebleClef), fm.height());
-}
-
-void ClefPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem*,
-                        QWidget*)
-{
-    painter->setFont(myMusicFont);
-
-    if (myClefType == Staff::TrebleClef)
-        painter->drawStaticText(0, -6, myDisplayText);
-    else
-        painter->drawStaticText(0, -21, myDisplayText);
 }
 
 void ClefPainter::mousePressEvent(QGraphicsSceneMouseEvent *)
