@@ -82,7 +82,7 @@
 #include <audio/midiplayer.h>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/timer.hpp>
+#include <chrono>
 
 #include <dialogs/alterationofpacedialog.h>
 #include <dialogs/alternateendingdialog.h>
@@ -219,7 +219,7 @@ void PowerTabEditor::openFile(QString filename)
     if (filename.isEmpty())
         return;
 
-    boost::timer timer;
+    auto start = std::chrono::high_resolution_clock::now();
     qDebug() << "Opening file: " << filename;
 
     QFileInfo fileInfo(filename);
@@ -237,7 +237,10 @@ void PowerTabEditor::openFile(QString filename)
     if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
                                         *format, this))
     {
-        qDebug() << "File loaded in" << timer.elapsed() << "seconds";
+        auto end = std::chrono::high_resolution_clock::now();
+        qDebug() << "File loaded in"
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(
+                        end - start).count() << "ms";
 
         doc.setFilename(filename.toStdString());
         setPreviousDirectory(filename);
@@ -2470,7 +2473,7 @@ void PowerTabEditor::setPreviousDirectory(const QString &fileName)
 
 void PowerTabEditor::setupNewTab()
 {
-    boost::timer timer;
+    auto start = std::chrono::high_resolution_clock::now();
     qDebug() << "Tab creation started ...";
 
     Q_ASSERT(myDocumentManager->hasOpenDocuments());
@@ -2538,7 +2541,10 @@ void PowerTabEditor::setupNewTab()
     updateCommands();
     scorearea->setFocus();
 
-    qDebug() << "Tab opened in" << timer.elapsed() << "seconds";
+    auto end = std::chrono::high_resolution_clock::now();
+    qDebug() << "Tap opened in"
+             << std::chrono::duration_cast<std::chrono::milliseconds>(
+                    end - start).count() << "ms";
 }
 
 namespace

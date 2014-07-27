@@ -20,13 +20,13 @@
 #include <app/documentmanager.h>
 #include <app/pubsub/scorelocationpubsub.h>
 #include <app/pubsub/staffpubsub.h>
-#include <boost/timer.hpp>
+#include <chrono>
 #include <painters/caretpainter.h>
 #include <painters/systemrenderer.h>
 #include <QDebug>
 #include <QGraphicsItem>
-#include <QProgressDialog>
 #include <score/score.h>
+#include <thread>
 
 static const double SYSTEM_SPACING = 50;
 
@@ -51,42 +51,65 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
 
     const Score &score = document.getScore();
 
-    boost::timer timer;
-    QProgressDialog progressDialog(tr("Rendering ..."), "", 0,
-                                   score.getSystems().size());
-    progressDialog.setCancelButton(nullptr);
-    progressDialog.setWindowModality(Qt::WindowModal);
-    progressDialog.show();
+    auto start = std::chrono::high_resolution_clock::now();
 
     myCaretPainter = new CaretPainter(document.getCaret());
-
     myCaretPainter->subscribeToMovement([=]() {
         adjustScroll();
     });
 
-    // Render each system.
+    myRenderedSystems.reserve(score.getSystems().size());
+    for (const System &system : score.getSystems())
+        myRenderedSystems.append(nullptr);
+
+#if 0
+    const int numThreads = std::thread::hardware_concurrency();
+#else
+    const int numThreads = 1;
+#endif
+
+    std::vector<std::thread> workers;
+    const int workSize = myRenderedSystems.size() / numThreads;
+    qDebug() << "Using " << numThreads << " worker thread(s)";
+
+    for (int i = 0; i < numThreads; ++i)
+    {
+        const int left = i * workSize;
+        const int right = (i == numThreads - 1) ? myRenderedSystems.size()
+                                                : (i + 1) * workSize;
+
+        workers.emplace_back([&](int left, int right)
+        {
+            for (int i = left; i < right; ++i)
+            {
+                SystemRenderer render(this, score);
+                myRenderedSystems[i] = render(score.getSystems()[i], i, myViewType);
+            }
+        }, left, right);
+    }
+
+    for (std::thread &worker : workers)
+        worker.join();
+
     int i = 0;
     double height = 0;
-    for (const System &system : score.getSystems())
+    // Layout the systems.
+    for (QGraphicsItem *system : myRenderedSystems)
     {
-        progressDialog.setValue(i);
-        SystemRenderer render(this, score);
-
-        QGraphicsItem *renderedSystem = render(system, i, myViewType);
-        renderedSystem->setPos(0, height);
-        myRenderedSystems << renderedSystem;
-        myScene.addItem(renderedSystem);
-        height += renderedSystem->boundingRect().height() + SYSTEM_SPACING;
+        system->setPos(0, height);
+        myScene.addItem(system);
+        height += system->boundingRect().height() + SYSTEM_SPACING;
         ++i;
 
-        myCaretPainter->addSystemRect(renderedSystem->sceneBoundingRect());
+        myCaretPainter->addSystemRect(system->sceneBoundingRect());
     }
 
     myScene.addItem(myCaretPainter);
 
-    progressDialog.setValue(i);
-
-    qDebug() << "Score rendered in" << timer.elapsed() << "seconds";
+    auto end = std::chrono::high_resolution_clock::now();
+    qDebug() << "Score rendered in"
+             << std::chrono::duration_cast<std::chrono::milliseconds>(
+                    end - start).count() << "ms";
     qDebug() << "Rendered " << myScene.items().size() << "items";
 }
 
@@ -97,8 +120,7 @@ void ScoreArea::redrawSystem(int index)
 
     const Score &score = myDocument->getScore();
     SystemRenderer render(this, score);
-    QGraphicsItem *newSystem = render(score.getSystems()[index], index,
-                                        myViewType);
+    QGraphicsItem *newSystem = render(score.getSystems()[index], index, myViewType);
 
     double height = 0;
     if (index > 0)
