@@ -69,8 +69,7 @@ DirectionPainter::DirectionPainter(const DirectionSymbol &symbol)
         break;
     }
 
-    myDisplayText.setText(text);
-    myDisplayText.prepare(QTransform(), myDisplayFont);
+    myDisplayText = text;
 
     QFontMetricsF fm(myDisplayFont);
     myBounds = QRectF(0, 0, fm.width(text), fm.height());
@@ -83,7 +82,7 @@ void DirectionPainter::paint(QPainter *painter,
     
     // Need to offset the text if we're using the music font.
     if (myUsingMusicFont)
-        painter->drawStaticText(0, -(myDisplayFont.pixelSize()), myDisplayText);
+        painter->drawText(0, myDisplayFont.pixelSize() / 2, myDisplayText);
     else
-        painter->drawStaticText(0, 0, myDisplayText);
+        painter->drawText(0, myDisplayFont.pixelSize() + 4, myDisplayText);
 }

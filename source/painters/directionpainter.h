@@ -40,7 +40,7 @@ public:
 private:
     const DirectionSymbol &mySymbol;
     QFont myDisplayFont;
-    QStaticText myDisplayText;
+    QString myDisplayText;
     bool myUsingMusicFont;
     QRectF myBounds;
 };

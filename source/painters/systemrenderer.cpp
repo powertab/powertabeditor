@@ -480,7 +480,7 @@ double SystemRenderer::drawDirections(const System &system,
             auto painter = new DirectionPainter(symbol);
             centerItem(painter, location,
                        location + layout.getPositionSpacing(),
-                       height + localHeight + 4);
+                       height + localHeight);
             painter->setParentItem(myParentSystem);
 
             localHeight += LayoutInfo::SYSTEM_SYMBOL_SPACING;
