@@ -18,19 +18,19 @@
 #include "systemrenderer.h"
 
 #include <app/scorearea.h>
+#include <app/pubsub/staffpubsub.h>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <painters/barlinepainter.h>
-#include <painters/clefpainter.h>
+#include <painters/clickablegroup.h>
 #include <painters/directionpainter.h>
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/simpletextitem.h>
 #include <painters/staffpainter.h>
 #include <painters/stdnotationnote.h>
-#include <painters/tempomarkerpainter.h>
 #include <painters/timesignaturepainter.h>
 #include <painters/verticallayout.h>
 #include <QBrush>
@@ -100,11 +100,18 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         // Draw the clefs.
         const double CLEF_OFFSET =
             (staff.getClefType() == Staff::TrebleClef) ? -6 : -21;
-        auto clef = new ClefPainter(staff.getClefType(), myMusicNotationFont,
-                                    systemIndex, i, myScoreArea->getClefPubSub());
-        clef->setPos(LayoutInfo::CLEF_PADDING,
-                     layout->getTopStdNotationLine() + CLEF_OFFSET);
-        clef->setParentItem(myParentStaff);
+        auto pubsub = myScoreArea->getClefPubSub();
+        auto clef = new SimpleTextItem(staff.getClefType() == Staff::TrebleClef
+                                           ? QChar(MusicFont::TrebleClef)
+                                           : QChar(MusicFont::BassClef),
+                                       myMusicNotationFont);
+        auto group = new ClickableGroup([=]() {
+            pubsub->publish(systemIndex, i);
+        });
+        group->addToGroup(clef);
+        group->setPos(LayoutInfo::CLEF_PADDING,
+                      layout->getTopStdNotationLine() + CLEF_OFFSET);
+        group->setParentItem(myParentStaff);
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout);
 
@@ -447,6 +454,47 @@ void SystemRenderer::drawAlternateEndings(const System &system,
     }
 }
 
+static QString getBeatTypeImage(const TempoMarker &tempo)
+{
+    QString file;
+
+    switch (tempo.getBeatType())
+    {
+        case TempoMarker::Half:
+            file = ":images/half_note";
+            break;
+        case TempoMarker::HalfDotted:
+            file = ":images/half_note_dotted";
+            break;
+        case TempoMarker::Quarter:
+            file = ":images/quarter_note";
+            break;
+        case TempoMarker::QuarterDotted:
+            file = ":images/dotted_note";
+            break;
+        case TempoMarker::Eighth:
+            file = ":images/8th_note";
+            break;
+        case TempoMarker::EighthDotted:
+            file = ":images/8th_note_dotted";
+            break;
+        case TempoMarker::Sixteenth:
+            file = ":images/16th_note";
+            break;
+        case TempoMarker::SixteenthDotted:
+            file = ":images/16th_note_dotted";
+            break;
+        case TempoMarker::ThirtySecond:
+            file = ":images/32nd_note";
+            break;
+        case TempoMarker::ThirtySecondDotted:
+            file = ":images/32nd_note_dotted";
+            break;
+    }
+
+    return file;
+}
+
 void SystemRenderer::drawTempoMarkers(const System &system,
                                       const LayoutInfo &layout,
                                       double height)
@@ -458,9 +506,49 @@ void SystemRenderer::drawTempoMarkers(const System &system,
 
         const double location = layout.getPositionX(tempo.getPosition());
 
-        auto painter = new TempoMarkerPainter(tempo);
-        painter->setPos(location, height + 4);
-        painter->setParentItem(myParentSystem);
+        auto group = new ClickableGroup([]() {
+            // TODO - allow editing a tempo marker by clicking on it.
+        });
+
+        QFont font = myPlainTextFont;
+        if (tempo.getMarkerType() == TempoMarker::AlterationOfPace)
+            font.setItalic(true);
+        else
+            font.setBold(true);
+
+        QString text;
+        if (tempo.getMarkerType() == TempoMarker::AlterationOfPace)
+        {
+            text = (tempo.getAlterationOfPace() == TempoMarker::Accelerando)
+                       ? "accel."
+                       : "rit.";
+        }
+        else
+        {
+            text += QString::fromStdString(tempo.getDescription()) + " ";
+
+            const QString imageSpacing(3, ' ');
+
+            // Add the beat type image.
+            const int HEIGHT_OFFSET = 2;
+            QFontMetricsF fm(font);
+            QPixmap image(getBeatTypeImage(tempo));
+            auto pixmap = new QGraphicsPixmapItem(image.scaled(
+                fm.width(imageSpacing), fm.height() + HEIGHT_OFFSET,
+                Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            pixmap->setPos(fm.width(text), -HEIGHT_OFFSET);
+            group->addToGroup(pixmap);
+
+            text += imageSpacing;
+            text += " = ";
+            text += QString::number(tempo.getBeatsPerMinute());
+        }
+
+        group->addToGroup(new SimpleTextItem(text, font));
+
+        const int PADDING = 4;
+        group->setPos(location, height + PADDING);
+        group->setParentItem(myParentSystem);
     }
 }
 

@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,30 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef PAINTERS_CLEFPAINTER_H
-#define PAINTERS_CLEFPAINTER_H
+#ifndef PAINTERS_CLICKABLEGROUP_H
+#define PAINTERS_CLICKABLEGROUP_H
 
-#include <memory>
-#include <painters/simpletextitem.h>
-#include <score/staff.h>
+#include <functional>
+#include <QGraphicsItemGroup>
 
-class StaffPubSub;
-
-class ClefPainter : public SimpleTextItem
+class ClickableGroup : public QGraphicsItemGroup
 {
 public:
-    ClefPainter(Staff::ClefType clefType, const QFont &musicFont, int system,
-                int staff, std::shared_ptr<StaffPubSub> pubsub);
+    typedef std::function<void()> Callback;
+    ClickableGroup(const Callback &callback);
 
-private:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *) override;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
-    const int mySystemIndex;
-    const int myStaffIndex;
-    std::shared_ptr<StaffPubSub> myPubSub;
+private:
+    Callback myCallback;
 };
 
 #endif

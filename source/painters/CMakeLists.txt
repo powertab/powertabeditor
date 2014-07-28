@@ -4,7 +4,7 @@ add_library(ptepainters
     barlinepainter.cpp
     beamgroup.cpp
     caretpainter.cpp
-    clefpainter.cpp
+    clickablegroup.cpp
     directionpainter.cpp
     #irregularnotegroup.cpp
     keysignaturepainter.cpp
@@ -12,11 +12,10 @@ add_library(ptepainters
     musicfont.cpp
     notestem.cpp
     #rhythmslashpainter.cpp
-	simpletextitem.cpp
+    simpletextitem.cpp
     staffpainter.cpp
     stdnotationnote.cpp
     systemrenderer.cpp
-    tempomarkerpainter.cpp
     timesignaturepainter.cpp
     #tremolobarpainter.cpp
     verticallayout.cpp
@@ -24,7 +23,7 @@ add_library(ptepainters
     barlinepainter.h
     beamgroup.h
     caretpainter.h
-    clefpainter.h
+    clickablegroup.h
     directionpainter.h
     #irregularnotegroup.h
     keysignaturepainter.h
@@ -32,11 +31,10 @@ add_library(ptepainters
     musicfont.h
     notestem.h
     #rhythmslashpainter.h
-	simpletextitem.h
+    simpletextitem.h
     staffpainter.h
     stdnotationnote.h
     systemrenderer.h
-    tempomarkerpainter.h
     timesignaturepainter.h
     #tremolobarpainter.h
     verticallayout.h
