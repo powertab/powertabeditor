@@ -29,12 +29,11 @@
 PlayNoteEvent::PlayNoteEvent(int channel, double startTime, double duration,
                              uint8_t pitch, int position, int system,
                              const Player &player, const Instrument &instrument,
-                             bool isMuted, PlayNoteEvent::VelocityType velocity)
+                             PlayNoteEvent::VelocityType velocity)
     : MidiEvent(channel, startTime, duration, position, system),
       myPitch(pitch),
       myPlayer(player),
       myInstrument(instrument),
-      myIsMuted(isMuted),
       myVelocity(velocity)
 {
 }
@@ -48,10 +47,7 @@ void PlayNoteEvent::performEvent(MidiOutputDevice &device) const
 
     // Grab the patch/pan/volume immediately before playback to allow for
     // real-time mixing.
-    if (myIsMuted)
-        device.setPatch(myChannel, Midi::MIDI_PRESET_ELECTRIC_GUITAR_MUTED);
-    else
-        device.setPatch(myChannel, myInstrument.getMidiPreset());
+    device.setPatch(myChannel, myInstrument.getMidiPreset());
 
     device.setPan(myChannel, myPlayer.getPan());
     device.setChannelMaxVolume(myChannel, myPlayer.getMaxVolume());

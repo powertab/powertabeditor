@@ -30,15 +30,14 @@ public:
     enum VelocityType
     {
         DefaultVelocity = 127,
-        MutedVelocity = 60,
+        MutedVelocity = 75,
         GhostVelocity = 50,
         PalmMutedVelocity = 112
     };
 
     PlayNoteEvent(int channel, double startTime, double duration, uint8_t pitch,
                   int position, int systemIndex, const Player &player,
-                  const Instrument &instrument, bool isMuted,
-                  VelocityType velocity);
+                  const Instrument &instrument, VelocityType velocity);
 
     virtual void performEvent(MidiOutputDevice &device) const override;
 
@@ -46,7 +45,6 @@ private:
     const uint8_t myPitch;
     const Player &myPlayer;
     const Instrument &myInstrument;
-    const bool myIsMuted;
     const VelocityType myVelocity;
 };
 

@@ -386,8 +386,7 @@ double MidiPlayer::generateEventsForBar(
 
                     eventList.emplace_back(new PlayNoteEvent(
                         getChannel(activePlayer), startTime, duration, pitch,
-                        position, systemIndex, player, instrument,
-                        note.hasProperty(Note::Muted), velocity));
+                        position, systemIndex, player, instrument, velocity));
                 }
             }
             // If the note is tied, make sure that the pitch is the same as the
@@ -510,8 +509,7 @@ double MidiPlayer::generateEventsForBar(
                         eventList.emplace_back(new PlayNoteEvent(
                             getChannel(activePlayer), currentStartTime,
                             tremPickNoteDuration, pitch, position, systemIndex,
-                            player, instrument, note.hasProperty(Note::Muted),
-                            velocity));
+                            player, instrument, velocity));
                     }
                 }
             }
@@ -536,6 +534,8 @@ double MidiPlayer::generateEventsForBar(
                     noteLength /= 2.0;
                 else if (pos.hasProperty(Position::PalmMuting))
                     noteLength /= 1.15;
+                else if (note.hasProperty(Note::Muted))
+                    noteLength /= 8.0;
 
                 for (const ActivePlayer &player : activePlayers)
                 {
