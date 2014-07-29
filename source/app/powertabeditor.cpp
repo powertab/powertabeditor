@@ -2443,12 +2443,9 @@ void PowerTabEditor::createTabArea()
     connect(myTabWidget, SIGNAL(currentChanged(int)), this,
             SLOT(switchTab(int)));
 
-    myPlaybackWidget = new PlaybackWidget(mySettingsPubSub, this);
+    myPlaybackWidget = new PlaybackWidget(mySettingsPubSub, *myPlayPauseCommand,
+                                          *myRewindCommand, this);
 
-    connect(myPlaybackWidget, &PlaybackWidget::playbackButtonToggled, this,
-            &PowerTabEditor::startStopPlayback);
-    connect(myPlaybackWidget, &PlaybackWidget::rewindToStartClicked, this,
-            &PowerTabEditor::rewindPlaybackToStart);
     connect(myPlaybackWidget, &PlaybackWidget::activeVoiceChanged, this,
             &PowerTabEditor::updateActiveVoice);
 

@@ -35,7 +35,8 @@ class PlaybackWidget : public QWidget
 
 public:
     explicit PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
-                            QWidget *parent);
+                            const QAction &playPauseCommand,
+                            const QAction &rewindCommand, QWidget *parent);
     ~PlaybackWidget();
 
     /// Get the current playback speed.
@@ -49,8 +50,6 @@ public:
 
 signals:
     void playbackSpeedChanged(int speed);
-    void playbackButtonToggled();
-    void rewindToStartClicked();
     void activeVoiceChanged(int voice);
 
 private slots:

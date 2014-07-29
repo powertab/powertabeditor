@@ -99,9 +99,6 @@
    </item>
    <item>
     <widget class="QPushButton" name="rewindToStartButton">
-     <property name="toolTip">
-      <string>Click to move playback to the beginning of the score.</string>
-     </property>
      <property name="text">
       <string/>
      </property>
@@ -109,9 +106,6 @@
    </item>
    <item>
     <widget class="QPushButton" name="playPauseButton">
-     <property name="toolTip">
-      <string>Click to start or stop playback.</string>
-     </property>
      <property name="text">
       <string/>
      </property>

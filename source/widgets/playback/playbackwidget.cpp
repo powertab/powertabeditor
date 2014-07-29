@@ -24,7 +24,8 @@
 #include <score/staff.h>
 
 PlaybackWidget::PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
-                               QWidget *parent)
+                               const QAction &playPauseCommand,
+                               const QAction &rewindCommand, QWidget *parent)
     : QWidget(parent),
       ui(new Ui::PlaybackWidget),
       myVoices(new QButtonGroup(this)),
@@ -44,7 +45,15 @@ PlaybackWidget::PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
 
     ui->rewindToStartButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaSkipBackward));
+    ui->rewindToStartButton->setToolTip(
+        tr("Click to move playback to the beginning of the score (%1).")
+            .arg(rewindCommand.shortcut().toString()));
+
     ui->playPauseButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    ui->playPauseButton->setToolTip(
+        tr("Click to start or stop playback (%1).")
+            .arg(playPauseCommand.shortcut().toString()));
+
     ui->metronomeToggleButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaVolumeMuted));
 
@@ -54,12 +63,12 @@ PlaybackWidget::PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
             SIGNAL(activeVoiceChanged(int)));
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)), this,
             SIGNAL(playbackSpeedChanged(int)));
-    connect(ui->playPauseButton, SIGNAL(clicked()), this,
-            SIGNAL(playbackButtonToggled()));
-    connect(ui->metronomeToggleButton, SIGNAL(toggled(bool)), this,
-            SLOT(onMetronomeButtonToggled(bool)));
-    connect(ui->rewindToStartButton, SIGNAL(clicked()), this,
-            SIGNAL(rewindToStartClicked()));
+    connect(ui->playPauseButton, &QAbstractButton::clicked, &playPauseCommand,
+            &QAction::trigger);
+    connect(ui->metronomeToggleButton, &QAbstractButton::toggled, this,
+            &PlaybackWidget::onMetronomeButtonToggled);
+    connect(ui->rewindToStartButton, &QAbstractButton::clicked, &rewindCommand,
+            &QAction::trigger);
 
     myConnection = myPubsub->subscribe(
         boost::bind(&PlaybackWidget::onSettingChanged, this, _1));
