@@ -18,18 +18,23 @@
 #include "playbackwidget.h"
 #include "ui_playbackwidget.h"
 
-#include <app/pubsub/settingspubsub.h>
-#include <app/settings.h>
-#include <QSettings>
 #include <score/staff.h>
+#include <widgets/common.h>
 
-PlaybackWidget::PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
-                               const QAction &playPauseCommand,
-                               const QAction &rewindCommand, QWidget *parent)
+static QString getShortcutHint(const QAction &action)
+{
+    if (!action.shortcut().isEmpty())
+        return QString(" (%1)").arg(action.shortcut().toString());
+    else
+        return "";
+}
+
+PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
+                               const QAction &rewindCommand,
+                               const QAction &metronomeCommand, QWidget *parent)
     : QWidget(parent),
       ui(new Ui::PlaybackWidget),
-      myVoices(new QButtonGroup(this)),
-      myPubsub(pubsub)
+      myVoices(new QButtonGroup(this))
 {
     ui->setupUi(this);
 
@@ -46,18 +51,19 @@ PlaybackWidget::PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
     ui->rewindToStartButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaSkipBackward));
     ui->rewindToStartButton->setToolTip(
-        tr("Click to move playback to the beginning of the score (%1).")
-            .arg(rewindCommand.shortcut().toString()));
+        tr("Click to move playback to the beginning of the score%1.")
+            .arg(getShortcutHint(rewindCommand)));
 
     ui->playPauseButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     ui->playPauseButton->setToolTip(
-        tr("Click to start or stop playback (%1).")
-            .arg(playPauseCommand.shortcut().toString()));
+        tr("Click to start or stop playback%1.")
+            .arg(getShortcutHint(playPauseCommand)));
 
     ui->metronomeToggleButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaVolumeMuted));
-
-    updateMetronomeButton();
+    ui->metronomeToggleButton->setToolTip(
+        tr("Click to toggle whether the metronome is turned on%1.")
+            .arg(getShortcutHint(metronomeCommand)));
 
     connect(myVoices, SIGNAL(buttonClicked(int)), this,
             SIGNAL(activeVoiceChanged(int)));
@@ -65,19 +71,14 @@ PlaybackWidget::PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
             SIGNAL(playbackSpeedChanged(int)));
     connect(ui->playPauseButton, &QAbstractButton::clicked, &playPauseCommand,
             &QAction::trigger);
-    connect(ui->metronomeToggleButton, &QAbstractButton::toggled, this,
-            &PlaybackWidget::onMetronomeButtonToggled);
+    connectButtonToAction(ui->metronomeToggleButton, &metronomeCommand);
     connect(ui->rewindToStartButton, &QAbstractButton::clicked, &rewindCommand,
             &QAction::trigger);
-
-    myConnection = myPubsub->subscribe(
-        boost::bind(&PlaybackWidget::onSettingChanged, this, _1));
 }
 
 PlaybackWidget::~PlaybackWidget()
 {
     delete ui;
-    myConnection.disconnect();
 }
 
 int PlaybackWidget::getPlaybackSpeed() const
@@ -97,29 +98,6 @@ void PlaybackWidget::setPlaybackMode(bool isPlaying)
         ui->playPauseButton->setIcon(
             style()->standardIcon(QStyle::SP_MediaPlay));
     }
-}
-
-void PlaybackWidget::updateMetronomeButton()
-{
-    QSettings settings;
-    ui->metronomeToggleButton->setChecked(
-        settings.value(Settings::MIDI_METRONOME_ENABLED,
-                       Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
-}
-
-/// When the metronome button is toggled, update the setting.
-void PlaybackWidget::onMetronomeButtonToggled(bool enable)
-{
-    QSettings settings;
-    settings.setValue(Settings::MIDI_METRONOME_ENABLED, enable);
-    myPubsub->publish(Settings::MIDI_METRONOME_ENABLED);
-}
-
-/// Listens for changes to the metronome setting.
-void PlaybackWidget::onSettingChanged(const std::string &setting)
-{
-    if (setting == Settings::MIDI_METRONOME_ENABLED)
-        updateMetronomeButton();
 }
 
 void PlaybackWidget::updateLocationLabel(const std::string &location)

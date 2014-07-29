@@ -116,9 +116,6 @@
    </item>
    <item>
     <widget class="QPushButton" name="metronomeToggleButton">
-     <property name="toolTip">
-      <string>Click to toggle whether the metronome is turned on.</string>
-     </property>
      <property name="text">
       <string/>
      </property>

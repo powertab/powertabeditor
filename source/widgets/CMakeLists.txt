@@ -13,7 +13,7 @@ add_library(ptewidgets
 
     clickablelabel.h
     clickablelabel.cpp
-    #common.cpp
+    common.cpp
 
     instruments/instrumentpanel.h
     instruments/instrumentpanel.cpp

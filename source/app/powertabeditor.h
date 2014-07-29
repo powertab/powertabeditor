@@ -303,6 +303,8 @@ private:
 
     /// Moves the caret back to the start, and restarts playback if necessary.
     void rewindPlaybackToStart();
+    /// Toggles the metronome on or off.
+    void toggleMetronome();
     /// Sets the current voice that is being edited.
     void updateActiveVoice(int);
     /// Updates the playback widget with the caret's current location.
@@ -386,6 +388,7 @@ private:
     QMenu *myPlaybackMenu;
     Command *myPlayPauseCommand;
     Command *myRewindCommand;
+    Command *myMetronomeCommand;
 
     QMenu *myPositionMenu;
     QMenu *myPositionSectionMenu;

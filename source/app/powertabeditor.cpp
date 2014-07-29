@@ -1547,6 +1547,12 @@ void PowerTabEditor::createCommands()
     connect(myRewindCommand, &QAction::triggered, this,
             &PowerTabEditor::rewindPlaybackToStart);
 
+    myMetronomeCommand = new Command(tr("Metronome"), "Playback.Metronome",
+                                     QKeySequence(), this);
+    myMetronomeCommand->setCheckable(true);
+    connect(myMetronomeCommand, &QAction::triggered, this,
+            &PowerTabEditor::toggleMetronome);
+
     // Section navigation actions.
     myFirstSectionCommand =
         new Command(tr("First Section"), "Position.Section.FirstSection",
@@ -2252,6 +2258,7 @@ void PowerTabEditor::createMenus()
     myPlaybackMenu = menuBar()->addMenu(tr("Play&back"));
     myPlaybackMenu->addAction(myPlayPauseCommand);
     myPlaybackMenu->addAction(myRewindCommand);
+    myPlaybackMenu->addAction(myMetronomeCommand);
 
     // Position Menu.
     myPositionMenu = menuBar()->addMenu(tr("&Position"));
@@ -2443,11 +2450,26 @@ void PowerTabEditor::createTabArea()
     connect(myTabWidget, SIGNAL(currentChanged(int)), this,
             SLOT(switchTab(int)));
 
-    myPlaybackWidget = new PlaybackWidget(mySettingsPubSub, *myPlayPauseCommand,
-                                          *myRewindCommand, this);
+    myPlaybackWidget = new PlaybackWidget(*myPlayPauseCommand, *myRewindCommand,
+                                          *myMetronomeCommand, this);
 
     connect(myPlaybackWidget, &PlaybackWidget::activeVoiceChanged, this,
             &PowerTabEditor::updateActiveVoice);
+
+    QSettings settings;
+    myMetronomeCommand->setChecked(
+        settings.value(Settings::MIDI_METRONOME_ENABLED,
+                       Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
+
+    mySettingsPubSub->subscribe([=](const std::string &setting) {
+        if (setting == Settings::MIDI_METRONOME_ENABLED)
+        {
+            QSettings settings;
+            myMetronomeCommand->setChecked(
+                settings.value(Settings::MIDI_METRONOME_ENABLED,
+                Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
+        }
+    });
 
     myPlaybackArea = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(myPlaybackArea);
@@ -2814,6 +2836,14 @@ void PowerTabEditor::rewindPlaybackToStart()
 
     if (wasPlaying)
         startStopPlayback();
+}
+
+void PowerTabEditor::toggleMetronome()
+{
+    QSettings settings;
+    settings.setValue(Settings::MIDI_METRONOME_ENABLED,
+                      myMetronomeCommand->isChecked());
+    mySettingsPubSub->publish(Settings::MIDI_METRONOME_ENABLED);
 }
 
 void PowerTabEditor::updateActiveVoice(int voice)

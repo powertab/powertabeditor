@@ -23,6 +23,7 @@
 class QAbstractButton;
 class QAction;
 
-void connectButtonToAction(QAbstractButton* button, QAction* action);
+void connectButtonToAction(QAbstractButton *button,
+                           const QAction *action);
 
 #endif // COMMON_H

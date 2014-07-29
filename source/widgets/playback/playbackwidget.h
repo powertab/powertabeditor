@@ -18,8 +18,6 @@
 #ifndef WIDGETS_PLAYBACKWIDGET_H
 #define WIDGETS_PLAYBACKWIDGET_H
 
-#include <boost/signals2/connection.hpp>
-#include <memory>
 #include <QWidget>
 
 namespace Ui {
@@ -27,16 +25,15 @@ class PlaybackWidget;
 }
 
 class QButtonGroup;
-class SettingsPubSub;
 
 class PlaybackWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit PlaybackWidget(std::shared_ptr<SettingsPubSub> pubsub,
-                            const QAction &playPauseCommand,
-                            const QAction &rewindCommand, QWidget *parent);
+    explicit PlaybackWidget(const QAction &playPauseCommand,
+                            const QAction &rewindCommand,
+                            const QAction &metronomeCommand, QWidget *parent);
     ~PlaybackWidget();
 
     /// Get the current playback speed.
@@ -52,17 +49,11 @@ signals:
     void playbackSpeedChanged(int speed);
     void activeVoiceChanged(int voice);
 
-private slots:
-    void onMetronomeButtonToggled(bool enable);
-
 private:
-    void updateMetronomeButton();
     void onSettingChanged(const std::string &setting);
 
     Ui::PlaybackWidget *ui;
     QButtonGroup *myVoices;
-    std::shared_ptr<SettingsPubSub> myPubsub;
-    boost::signals2::connection myConnection;
 };
 
 #endif
