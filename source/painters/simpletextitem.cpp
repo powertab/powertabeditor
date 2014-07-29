@@ -28,9 +28,8 @@ SimpleTextItem::SimpleTextItem(const QString &text, const QFont &font,
     myBoundingRect = QRectF(0, 0, fm.width(myText), fm.height());
 }
 
-void SimpleTextItem::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget)
+void SimpleTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                           QWidget *)
 {
     painter->setBrush(myBrush);
     painter->setFont(myFont);

@@ -28,17 +28,17 @@ void ClickableGroup::mousePressEvent(QGraphicsSceneMouseEvent *)
     // order to get the mouse release event.
 }
 
-void ClickableGroup::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void ClickableGroup::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     myCallback();
 }
 
-void ClickableGroup::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void ClickableGroup::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 {
     setCursor(Qt::PointingHandCursor);
 }
 
-void ClickableGroup::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void ClickableGroup::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
     unsetCursor();
 }
