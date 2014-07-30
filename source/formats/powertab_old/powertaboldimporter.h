@@ -110,6 +110,8 @@ private:
                                  Score &score);
     static void convertInitialVolumes(const PowerTabDocument::Score &oldScore,
                                       Score &score);
+    static void convertFloatingText(const PowerTabDocument::Score &oldScore,
+                                    Score &score);
 
     static void merge(Score &score1, Score &score2);
 };

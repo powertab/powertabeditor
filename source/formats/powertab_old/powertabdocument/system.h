@@ -115,6 +115,15 @@ public:
     bool IsValidBarlineIndex(size_t index) const;
     size_t GetBarlineCount() const;
     BarlinePtr GetBarline(size_t index) const;
+
+    // Layout Functions.
+    const Rect &GetRect() const;
+    int CalculatePositionCount(int positionSpacing) const;
+    int GetCumulativeInternalKeyAndTimeSignatureWidth(int position = -1) const;
+    int GetPositionCount() const;
+    int GetFirstPositionX() const;
+    int GetPositionX(int position) const;
+    size_t GetPositionFromX(int x) const;
 };
 
 }

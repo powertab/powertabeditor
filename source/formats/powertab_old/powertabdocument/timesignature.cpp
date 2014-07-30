@@ -131,4 +131,13 @@ uint8_t TimeSignature::GetPulses() const
     return m_pulses;
 }
 
+/// Gets the width of the time signature, in drawing units
+/// @return the width of the time signature
+int TimeSignature::GetWidth() const
+{
+    // Time signature must be shown to have width
+    // All time signatures are 18 units wide
+    return IsShown() ? 18 : 0;
+}
+
 }

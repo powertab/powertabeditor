@@ -136,6 +136,8 @@ public:
     const KeySignature& GetKeySignature() const;
     const TimeSignature& GetTimeSignature() const;
     const RehearsalSign& GetRehearsalSign() const;
+
+    int GetKeyAndTimeSignatureWidth() const;
 };
 
 }

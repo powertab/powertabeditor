@@ -118,6 +118,8 @@ public:
     /// @return True if the flag is set, false if not
     bool IsFlagSet(uint32_t flag) const             
         {PTB_CHECK_THAT(IsValidFlag(flag), false); return ((m_data & flag) == flag);}
+
+    int GetWidth() const;
 };
 
 }

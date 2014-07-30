@@ -22,6 +22,7 @@
 #include "powertabdocument/chordtext.h"
 #include "powertabdocument/direction.h"
 #include "powertabdocument/dynamic.h"
+#include "powertabdocument/floatingtext.h"
 #include "powertabdocument/guitar.h"
 #include "powertabdocument/guitarin.h"
 #include "powertabdocument/note.h"
@@ -158,6 +159,9 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Score &oldScore,
 
     // Set up an initial dynamic for each guitar's initial volumes.
     convertInitialVolumes(oldScore, score);
+
+    // Convert floating text to the new text items.
+    convertFloatingText(oldScore, score);
 }
 
 void PowerTabOldImporter::convert(const PowerTabDocument::Guitar &guitar,
@@ -923,5 +927,37 @@ void PowerTabOldImporter::convertInitialVolumes(
                 }
             }
         }
+    }
+}
+
+void PowerTabOldImporter::convertFloatingText(
+    const PowerTabDocument::Score &oldScore, Score &score)
+{
+    for (size_t i = 0, n = oldScore.GetFloatingTextCount(); i < n; ++i)
+    {
+        // Convert from an absolute (x,y) position to a (system,position)
+        // location.
+        auto floatingText = oldScore.GetFloatingText(i);
+        PowerTabDocument::Rect location = floatingText->GetRect();
+
+        // Figure out which system to attach to.
+        size_t attachedSystemIdx = oldScore.GetSystemCount() - 1;
+        for (size_t j = 0, n = oldScore.GetSystemCount(); j < n; ++j)
+        {
+            auto system = oldScore.GetSystem(j);
+            if (system->GetRect().GetBottom() > location.GetTop())
+            {
+                attachedSystemIdx = j;
+                break;
+            }
+        }
+
+        // Figure out what position in the system to use.
+        auto system = oldScore.GetSystem(attachedSystemIdx);
+        const int position = system->GetPositionFromX(location.GetX());
+
+        // Create the text item in the new score.
+        TextItem item(position, floatingText->GetText());
+        score.getSystems()[attachedSystemIdx].insertTextItem(item);
     }
 }
