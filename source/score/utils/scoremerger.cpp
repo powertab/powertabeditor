@@ -407,6 +407,10 @@ void ScoreMerger::mergeSystemSymbols()
         copySymbols(srcSystem.getChords(), destSystem, destSystem.getChords(),
                     &System::insertChord, offset, left, right);
 
+        copySymbols(srcSystem.getTextItems(), destSystem,
+                    destSystem.getTextItems(), &System::insertTextItem, offset,
+                    left, right);
+
         if (state->repeatState != State::EXPANDING_REPEAT)
         {
             copySymbols(srcSystem.getAlternateEndings(), destSystem,
