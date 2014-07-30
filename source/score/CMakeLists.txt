@@ -24,6 +24,7 @@ add_library(ptescore
     system.cpp
     systemlocation.cpp
     tempomarker.cpp
+    textitem.cpp
     timesignature.cpp
     tuning.cpp
     voice.cpp
@@ -59,6 +60,7 @@ add_library(ptescore
     system.h
     systemlocation.h
     tempomarker.h
+    textitem.h
     timesignature.h
     tuning.h
     utils.h

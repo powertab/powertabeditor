@@ -251,8 +251,8 @@ template <typename T>
 void load(std::istream &input, const std::string &name, T &obj)
 {
     InputArchive archive(input);
-    if (archive.version() >= FileVersion::NUM_VERSIONS ||
-        archive.version() < FileVersion::POWERTAB_2_0)
+    if (archive.version() > FileVersion::LATEST_VERSION ||
+        archive.version() < FileVersion::INITIAL_VERSION)
     {
         throw std::runtime_error("Invalid file version");
     }
@@ -318,7 +318,7 @@ private:
 template <typename T>
 void save(std::ostream &output, const std::string &name, const T &obj)
 {
-    OutputArchive ar(output, FileVersion::POWERTAB_2_0);
+    OutputArchive ar(output, FileVersion::LATEST_VERSION);
     ar(name, obj);
 }
 

@@ -26,8 +26,9 @@
 #include "fileversion.h"
 #include "playerchange.h"
 #include "staff.h"
-#include <vector>
 #include "tempomarker.h"
+#include "textitem.h"
+#include <vector>
 
 class System
 {
@@ -46,13 +47,15 @@ public:
     typedef std::vector<PlayerChange>::const_iterator PlayerChangeConstIterator;
     typedef std::vector<ChordText>::iterator ChordTextIterator;
     typedef std::vector<ChordText>::const_iterator ChordTextConstIterator;
+    typedef std::vector<TextItem>::iterator TextItemIterator;
+    typedef std::vector<TextItem>::const_iterator TextItemConstIterator;
 
     System();
 
     bool operator==(const System &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the set of staves in the system.
     boost::iterator_range<StaffIterator> getStaves();
@@ -130,6 +133,16 @@ public:
     /// Removes the specified chord symbol from the system.
     void removeChord(const ChordText &chord);
 
+    /// Returns the set of text items in the system.
+    boost::iterator_range<TextItemIterator> getTextItems();
+    /// Returns the set of text items in system.
+    boost::iterator_range<TextItemConstIterator> getTextItems() const;
+
+    /// Adds a new text item to the system.
+    void insertTextItem(const TextItem &text);
+    /// Removes the specified text item from the system.
+    void removeTextItem(const TextItem &text);
+
 private:
     std::vector<Staff> myStaves;
     /// List of the barlines in the system. This will always contain at least
@@ -140,18 +153,21 @@ private:
     std::vector<Direction> myDirections;
     std::vector<PlayerChange> myPlayerChanges;
     std::vector<ChordText> myChords;
+    std::vector<TextItem> myTextItems;
 };
 
 template <class Archive>
-void System::serialize(Archive &ar, const FileVersion /*version*/)
+void System::serialize(Archive &ar, const FileVersion version)
 {
-	ar("staves", myStaves);
-	ar("barlines", myBarlines);
-	ar("tempo_markers", myTempoMarkers);
-	ar("alternate_endings", myAlternateEndings);
-	ar("directions", myDirections);
-	ar("player_changes", myPlayerChanges);
-	ar("chords", myChords);
+    ar("staves", myStaves);
+    ar("barlines", myBarlines);
+    ar("tempo_markers", myTempoMarkers);
+    ar("alternate_endings", myAlternateEndings);
+    ar("directions", myDirections);
+    ar("player_changes", myPlayerChanges);
+    ar("chords", myChords);
+    if (version >= FileVersion::TEXT_ITEMS)
+        ar("text_items", myTextItems);
 }
 
 namespace SystemUtils {

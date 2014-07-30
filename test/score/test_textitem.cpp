@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,16 +14,17 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include <catch.hpp>
 
-#ifndef SCORE_FILEVERSION_H
-#define SCORE_FILEVERSION_H
+#include <score/textitem.h>
+#include "test_serialization.h"
 
-#include <cstdint>
+TEST_CASE("Score/TextItem/Serialization", "")
+{
+    TextItem text;
+    text.setPosition(7);
+    text.setContents("foo");
 
-enum class FileVersion : int {
-    INITIAL_VERSION = 1, ///< Initial version from the beginning of development.
-    TEXT_ITEMS = 2, ///< Added floating text items.
-    LATEST_VERSION = TEXT_ITEMS
-};
-
-#endif
+    Serialization::test("text_item", text);
+}

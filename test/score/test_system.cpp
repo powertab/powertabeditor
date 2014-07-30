@@ -183,3 +183,23 @@ TEST_CASE("Score/System/Chords", "")
     REQUIRE(system.getChords().size() == 1);
     REQUIRE(system.getChords()[0] == chord2);
 }
+
+TEST_CASE("Score/System/TextItems", "")
+{
+    System system;
+
+    REQUIRE(system.getTextItems().size() == 0);
+
+    TextItem text1(3, "foo");
+    TextItem text2(1, "bar");
+
+    system.insertTextItem(text1);
+    system.insertTextItem(text2);
+    REQUIRE(system.getTextItems().size() == 2);
+    REQUIRE(system.getTextItems()[0] == text2);
+    REQUIRE(system.getTextItems()[1] == text1);
+
+    system.removeTextItem(text2);
+    REQUIRE(system.getTextItems().size() == 1);
+    REQUIRE(system.getTextItems()[0] == text1);
+}

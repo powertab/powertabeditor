@@ -38,7 +38,8 @@ bool System::operator==(const System &other) const
            myAlternateEndings == other.myAlternateEndings &&
            myDirections == other.myDirections &&
            myPlayerChanges == other.myPlayerChanges &&
-           myChords == other.myChords;
+           myChords == other.myChords &&
+           myTextItems == other.myTextItems;
 }
 
 boost::iterator_range<System::StaffIterator> System::getStaves()
@@ -211,6 +212,26 @@ void System::removeChord(const ChordText &chord)
     ScoreUtils::removeObject(myChords, chord);
 }
 
+boost::iterator_range<System::TextItemIterator> System::getTextItems()
+{
+    return boost::make_iterator_range(myTextItems);
+}
+
+boost::iterator_range<System::TextItemConstIterator> System::getTextItems() const
+{
+    return boost::make_iterator_range(myTextItems);
+}
+
+void System::insertTextItem(const TextItem &text)
+{
+    ScoreUtils::insertObject(myTextItems, text);
+}
+
+void System::removeTextItem(const TextItem &text)
+{
+    ScoreUtils::removeObject(myTextItems, text);
+}
+
 template <typename T>
 static void shift(const T &range, int position,
                   int offset)
@@ -234,6 +255,7 @@ static void shift(System &system, int position, int offset)
     shift(system.getDirections(), position, offset);
     shift(system.getPlayerChanges(), position, offset);
     shift(system.getChords(), position, offset);
+    shift(system.getTextItems(), position, offset);
 
     for (Staff &staff : system.getStaves())
     {

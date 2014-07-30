@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,15 +15,38 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SCORE_FILEVERSION_H
-#define SCORE_FILEVERSION_H
+#include "textitem.h"
 
-#include <cstdint>
+TextItem::TextItem() : myPosition(0)
+{
+}
 
-enum class FileVersion : int {
-    INITIAL_VERSION = 1, ///< Initial version from the beginning of development.
-    TEXT_ITEMS = 2, ///< Added floating text items.
-    LATEST_VERSION = TEXT_ITEMS
-};
+TextItem::TextItem(int position, const std::string &contents)
+    : myPosition(position), myContents(contents)
+{
+}
 
-#endif
+bool TextItem::operator==(const TextItem &other) const
+{
+    return myPosition == other.myPosition && myContents == other.myContents;
+}
+
+int TextItem::getPosition() const
+{
+    return myPosition;
+}
+
+void TextItem::setPosition(int position)
+{
+    myPosition = position;
+}
+
+const std::string &TextItem::getContents() const
+{
+    return myContents;
+}
+
+void TextItem::setContents(const std::string &contents)
+{
+    myContents = contents;
+}
