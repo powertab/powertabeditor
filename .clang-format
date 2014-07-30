@@ -5,6 +5,7 @@ AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
 BinPackParameters: true
