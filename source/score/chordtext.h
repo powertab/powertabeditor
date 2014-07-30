@@ -28,8 +28,8 @@ public:
 
     bool operator==(const ChordText &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     int getPosition() const;
     void setPosition(int position);
@@ -45,8 +45,8 @@ private:
 template <class Archive>
 void ChordText::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("position", myPosition);
-	ar("chord_name", myChordName);
+    ar("position", myPosition);
+    ar("chord_name", myChordName);
 }
 
 #endif

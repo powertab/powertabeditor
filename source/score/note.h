@@ -147,8 +147,8 @@ public:
 
     bool operator==(const Note &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the string that the note is located on.
     int getString() const;
@@ -217,11 +217,11 @@ private:
 template <class Archive>
 void Note::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("string", myString);
-	ar("fret", myFretNumber);
-	ar("properties", mySimpleProperties);
-	ar("trill", myTrilledFret);
-	ar("tapped_harmonic", myTappedHarmonicFret);
+    ar("string", myString);
+    ar("fret", myFretNumber);
+    ar("properties", mySimpleProperties);
+    ar("trill", myTrilledFret);
+    ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);
 }

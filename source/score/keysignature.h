@@ -35,8 +35,8 @@ public:
 
     bool operator==(const KeySignature &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the key signature type (major or minor).
     KeyType getKeyType() const;
@@ -79,11 +79,11 @@ private:
 template <class Archive>
 void KeySignature::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("key_type", myKeyType);
-	ar("num_accidentals", myNumAccidentals);
-	ar("sharps", myUsesSharps);
-	ar("visible", myIsVisible);
-	ar("cancellation", myIsCancellation);
+    ar("key_type", myKeyType);
+    ar("num_accidentals", myNumAccidentals);
+    ar("sharps", myUsesSharps);
+    ar("visible", myIsVisible);
+    ar("cancellation", myIsCancellation);
 }
 
 std::ostream& operator<<(std::ostream &os, const KeySignature &key);

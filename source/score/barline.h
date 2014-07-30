@@ -42,8 +42,8 @@ public:
 
     bool operator==(const Barline &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the barline is anchored.
     int getPosition() const;
@@ -95,12 +95,12 @@ private:
 template <class Archive>
 void Barline::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("position", myPosition);
-	ar("bar_type", myBarType);
-	ar("num_repeats", myRepeatCount);
-	ar("key_signature", myKeySignature);
-	ar("time_signature", myTimeSignature);
-	ar("rehearsal_sign", myRehearsalSign);
+    ar("position", myPosition);
+    ar("bar_type", myBarType);
+    ar("num_repeats", myRepeatCount);
+    ar("key_signature", myKeySignature);
+    ar("time_signature", myTimeSignature);
+    ar("rehearsal_sign", myRehearsalSign);
 }
 
 #endif

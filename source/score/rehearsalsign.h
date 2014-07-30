@@ -29,8 +29,8 @@ public:
 
     bool operator==(const RehearsalSign &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the letter(s) of the sign (e.g. "A", "B", ... "Z", "AA", ...).
     const std::string &getLetters() const;
@@ -50,8 +50,8 @@ private:
 template <class Archive>
 void RehearsalSign::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("letters", myLetters);
-	ar("description", myDescription);
+    ar("letters", myLetters);
+    ar("description", myDescription);
 }
 
 #endif

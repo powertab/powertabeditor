@@ -101,11 +101,11 @@ private:
 template <class Archive>
 void Score::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("score_info", myScoreInfo);
-	ar("systems", mySystems);
-	ar("players", myPlayers);
-	ar("instruments", myInstruments);
-	ar("line_spacing", myLineSpacing);
+    ar("score_info", myScoreInfo);
+    ar("systems", mySystems);
+    ar("players", myPlayers);
+    ar("instruments", myInstruments);
+    ar("line_spacing", myLineSpacing);
 }
 
 namespace ScoreUtils {

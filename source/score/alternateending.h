@@ -39,8 +39,8 @@ public:
 
     bool operator==(const AlternateEnding &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the ending is anchored.
     int getPosition() const;
@@ -75,9 +75,9 @@ private:
 template <class Archive>
 void AlternateEnding::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("position", myPosition);
-	ar("numbers", myNumbers);
-	ar("special_endings", mySpecialEndings);
+    ar("position", myPosition);
+    ar("numbers", myNumbers);
+    ar("special_endings", mySpecialEndings);
 }
 
 /// Gets the alternate ending text (numbers + D.C./D.S./D.S.S.).

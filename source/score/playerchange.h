@@ -32,8 +32,8 @@ public:
 
     bool operator==(const ActivePlayer &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the zero-based identifier of the player.
     int getPlayerNumber() const;
@@ -53,8 +53,8 @@ public:
 
     bool operator==(const PlayerChange &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the change is anchored.
     int getPosition() const;
@@ -78,15 +78,15 @@ private:
 template <class Archive>
 void ActivePlayer::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("player", myPlayerNumber);
-	ar("instrument", myInstrumentNumber);
+    ar("player", myPlayerNumber);
+    ar("instrument", myInstrumentNumber);
 }
 
 template <class Archive>
 void PlayerChange::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("position", myPosition);
-	ar("active_players", myActivePlayers);
+    ar("position", myPosition);
+    ar("active_players", myActivePlayers);
 }
 
 #endif

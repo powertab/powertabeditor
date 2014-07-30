@@ -56,8 +56,8 @@ public:
 
     bool operator==(const Staff &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns whether the staff is shown in the guitar view, bass view, etc.
     ViewType getViewType() const;
@@ -100,11 +100,11 @@ private:
 template <class Archive>
 void Staff::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("view_type", myViewType);
-	ar("clef_type", myClefType);
-	ar("string_count", myStringCount);
-	ar("voices", myVoices);
-	ar("dynamics", myDynamics);
+    ar("view_type", myViewType);
+    ar("clef_type", myClefType);
+    ar("string_count", myStringCount);
+    ar("voices", myVoices);
+    ar("dynamics", myDynamics);
 }
 
 #endif

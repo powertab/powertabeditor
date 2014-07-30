@@ -89,8 +89,8 @@ public:
 
     bool operator==(const ChordName &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     Key getTonicKey() const;
     void setTonicKey(Key key);
@@ -130,14 +130,14 @@ private:
 template <class Archive>
 void ChordName::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("tonic_key", myTonicKey);
-	ar("tonic_variation", myTonicVariation);
-	ar("bass_key", myBassKey);
-	ar("bass_variation", myBassVariation);
-	ar("formula", myFormula);
-	ar("modifications", myModifications);
-	ar("brackets", myHasBrackets);
-	ar("no_chord", myIsNoChord);
+    ar("tonic_key", myTonicKey);
+    ar("tonic_variation", myTonicVariation);
+    ar("bass_key", myBassKey);
+    ar("bass_variation", myBassVariation);
+    ar("formula", myFormula);
+    ar("modifications", myModifications);
+    ar("brackets", myHasBrackets);
+    ar("no_chord", myIsNoChord);
 }
 
 std::ostream &operator<<(std::ostream &os, const ChordName &chord);

@@ -41,8 +41,8 @@ public:
 
     bool operator==(const Dynamic &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the staff where the dynamic is anchored.
     int getPosition() const;
@@ -62,8 +62,8 @@ private:
 template <class Archive>
 void Dynamic::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("position", myPosition);
-	ar("volume", myVolume);
+    ar("position", myPosition);
+    ar("volume", myVolume);
 }
 
 #endif

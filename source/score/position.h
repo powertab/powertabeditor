@@ -71,8 +71,8 @@ public:
 
     bool operator==(const Position &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the staff where the position is anchored.
     int getPosition() const;
@@ -125,11 +125,11 @@ private:
 template <class Archive>
 void Position::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("position", myPosition);
-	ar("duration", myDurationType);
-	ar("properties", mySimpleProperties);
-	ar("multibar_rest", myMultiBarRestCount);
-	ar("notes", myNotes);
+    ar("position", myPosition);
+    ar("duration", myDurationType);
+    ar("properties", mySimpleProperties);
+    ar("multibar_rest", myMultiBarRestCount);
+    ar("notes", myNotes);
 }
 
 namespace Utils {

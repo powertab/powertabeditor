@@ -63,8 +63,8 @@ public:
 
     bool operator==(const DirectionSymbol &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Return the type of this symbol.
     SymbolType getSymbolType() const;
@@ -90,8 +90,8 @@ public:
 
     bool operator==(const Direction &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the position within the system where the direction is anchored.
     int getPosition() const;
@@ -116,16 +116,16 @@ private:
 template <class Archive>
 void DirectionSymbol::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("symbol_type", mySymbolType);
-	ar("active_symbol", myActiveSymbolType);
-	ar("repeat_number", myRepeatNumber);
+    ar("symbol_type", mySymbolType);
+    ar("active_symbol", myActiveSymbolType);
+    ar("repeat_number", myRepeatNumber);
 }
 
 template <class Archive>
 void Direction::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("position", myPosition);
-	ar("symbols", mySymbols);
+    ar("position", myPosition);
+    ar("symbols", mySymbols);
 }
 
 #endif

@@ -30,8 +30,8 @@ public:
 
     bool operator==(const Player &other) const;
 
-	template <class Archive>
-	void serialize(Archive &ar, const FileVersion version);
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion version);
 
     /// Returns a description of the player (e.g. "Rhythm Guitar 1").
     const std::string &getDescription() const;
@@ -68,10 +68,10 @@ private:
 template <class Archive>
 void Player::serialize(Archive &ar, const FileVersion /*version*/)
 {
-	ar("description", myDescription);
-	ar("max_volume", myMaxVolume);
-	ar("pan", myPan);
-	ar("tuning", myTuning);
+    ar("description", myDescription);
+    ar("max_volume", myMaxVolume);
+    ar("pan", myPan);
+    ar("tuning", myTuning);
 }
 
 #endif
