@@ -79,6 +79,10 @@ private:
     void drawChordText(const System &system, const LayoutInfo &layout,
                        double height);
 
+    /// Draws all of the text items in the system.
+    void drawTextItems(const System &system, const LayoutInfo &layout,
+                       double height);
+
     /// Draws the text symbols that appear below the tab staff
     /// (hammerons, slides, etc).
     void drawSymbolsBelowTabStaff(const LayoutInfo &layout);

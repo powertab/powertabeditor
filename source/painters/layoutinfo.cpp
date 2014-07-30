@@ -104,6 +104,9 @@ double LayoutInfo::getSystemSymbolSpacing() const
     if (!mySystem.getChords().empty())
         height += SYSTEM_SYMBOL_SPACING;
 
+    if (!mySystem.getTextItems().empty())
+        height += SYSTEM_SYMBOL_SPACING;
+
     double directionHeight = 0;
     for (const Direction &direction : mySystem.getDirections())
     {
@@ -338,6 +341,7 @@ void LayoutInfo::computePositionSpacing()
     updateMaxPosition(myNumPositions, mySystem.getTempoMarkers());
     updateMaxPosition(myNumPositions, mySystem.getAlternateEndings());
     updateMaxPosition(myNumPositions, mySystem.getChords());
+    updateMaxPosition(myNumPositions, mySystem.getTextItems());
     updateMaxPosition(myNumPositions, mySystem.getDirections());
     updateMaxPosition(myNumPositions, mySystem.getPlayerChanges());
 

@@ -387,6 +387,13 @@ void SystemRenderer::drawSystemSymbols(const System &system,
         height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
         drawDividerLine(height);
     }
+
+    if (!system.getTextItems().empty())
+    {
+        drawTextItems(system, layout, height);
+        height += LayoutInfo::SYSTEM_SYMBOL_SPACING;
+        drawDividerLine(height);
+    }
 }
 
 void SystemRenderer::drawDividerLine(double y)
@@ -583,7 +590,7 @@ double SystemRenderer::drawDirections(const System &system,
 void SystemRenderer::drawChordText(const System &system,
                                    const LayoutInfo &layout, double height)
 {
-    for (const ChordText & chord : system.getChords())
+    for (const ChordText &chord : system.getChords())
     {
         const double x = layout.getPositionX(chord.getPosition());
         const std::string text =
@@ -592,6 +599,20 @@ void SystemRenderer::drawChordText(const System &system,
         auto textItem =
             new SimpleTextItem(QString::fromStdString(text), myPlainTextFont);
         textItem->setPos(x, height + 4);
+        textItem->setParentItem(myParentSystem);
+    }
+}
+
+void SystemRenderer::drawTextItems(const System &system,
+                                   const LayoutInfo &layout, double height)
+{
+    for (const TextItem &text : system.getTextItems())
+    {
+        const double x = layout.getPositionX(text.getPosition());
+        const QString &contents = QString::fromStdString(text.getContents());
+
+        auto textItem = new SimpleTextItem(contents, myPlainTextFont);
+        textItem->setPos(x, height + 2);
         textItem->setParentItem(myParentSystem);
     }
 }
