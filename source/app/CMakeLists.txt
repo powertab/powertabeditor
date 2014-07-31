@@ -31,9 +31,8 @@ add_library(pteapp
     tuningdictionary.h
     pubsub/playerpubsub.h
     pubsub/pubsub.h
-    pubsub/scorelocationpubsub.h
+    pubsub/clickpubsub.h
     pubsub/settingspubsub.h
-    pubsub/staffpubsub.h
 )
 
 qt5_use_modules(pteapp Widgets Concurrent)
