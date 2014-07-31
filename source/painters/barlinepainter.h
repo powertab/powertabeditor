@@ -24,14 +24,14 @@
 #include <score/scorelocation.h>
 
 class Barline;
-class ScoreLocationPubSub;
+class ClickPubSub;
 
 class BarlinePainter : public QGraphicsItem
 {
 public:
     BarlinePainter(const LayoutConstPtr& layout, const Barline &barline,
                    const ScoreLocation& location,
-                   std::shared_ptr<ScoreLocationPubSub> pubsub);
+                   const std::shared_ptr<ClickPubSub> &pubsub);
 
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
@@ -55,7 +55,7 @@ private:
     const Barline &myBarline;
     QRectF myBounds;
     ScoreLocation myLocation;
-    std::shared_ptr<ScoreLocationPubSub> myPubSub;
+    std::shared_ptr<ClickPubSub> myPubSub;
     double myX;
     double myWidth;
 

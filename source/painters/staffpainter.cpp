@@ -17,14 +17,14 @@
   
 #include "staffpainter.h"
 
-#include <app/pubsub/scorelocationpubsub.h>
+#include <app/pubsub/clickpubsub.h>
 #include <cmath>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 
 StaffPainter::StaffPainter(const LayoutConstPtr &layout,
                            const ScoreLocation &location,
-                           std::shared_ptr<ScoreLocationPubSub> pubsub)
+                           const std::shared_ptr<ClickPubSub> &pubsub)
     : myLayout(layout),
       myPubSub(pubsub),
       myLocation(location),
@@ -51,7 +51,7 @@ void StaffPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
         myLocation.setSelectionStart(position);
         myLocation.setString(string);
 
-        myPubSub->publish(myLocation);
+        myPubSub->publish(ClickType::Selection, myLocation);
     }
 }
 
@@ -59,7 +59,7 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     const double x = event->pos().x();
     myLocation.setPositionIndex(myLayout->getPositionFromX(x));
-    myPubSub->publish(myLocation);
+    myPubSub->publish(ClickType::Selection, myLocation);
 }
 
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,

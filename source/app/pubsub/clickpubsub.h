@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2013 Cameron White
+  * Copyright (C) 2012 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,15 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_STAFFPUBSUB_H
-#define APP_STAFFPUBSUB_H
+#ifndef APP_CLICKPUBSUB_H
+#define APP_CLICKPUBSUB_H
 
 #include <app/pubsub/pubsub.h>
+#include <score/scorelocation.h>
 
-/// Provides a way to subscribe to or publish notifications about events
-/// from a particular staff in a system.
-class StaffPubSub : public PubSub<void (int, int)>
+enum class ClickType
+{
+    Barline,
+    KeySignature,
+    TimeSignature,
+    Clef,
+    Selection
+};
+
+/// Provides a way to subscribe to or publish notifications about events at
+/// a score location (e.g. a mouse click on a particular symbol).
+class ClickPubSub : public PubSub<void (ClickType, const ScoreLocation&)>
 {
 };
 
-#endif // STAFFPUBSUB_H
+#endif

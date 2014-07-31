@@ -18,7 +18,7 @@
 #include "systemrenderer.h"
 
 #include <app/scorearea.h>
-#include <app/pubsub/staffpubsub.h>
+#include <app/pubsub/clickpubsub.h>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/map.hpp>
@@ -92,7 +92,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         myParentStaff = new StaffPainter(layout,
                                          ScoreLocation(myScore, systemIndex, i),
-                                         myScoreArea->getSelectionPubSub());
+                                         myScoreArea->getClickPubSub());
         myParentStaff->setPos(0, height);
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
@@ -100,13 +100,14 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         // Draw the clefs.
         const double CLEF_OFFSET =
             (staff.getClefType() == Staff::TrebleClef) ? -6 : -21;
-        auto pubsub = myScoreArea->getClefPubSub();
+        auto pubsub = myScoreArea->getClickPubSub();
+        const ScoreLocation location(myScore, systemIndex, i);
         auto clef = new SimpleTextItem(staff.getClefType() == Staff::TrebleClef
                                            ? QChar(MusicFont::TrebleClef)
                                            : QChar(MusicFont::BassClef),
                                        myMusicNotationFont);
         auto group = new ClickableGroup([=]() {
-            pubsub->publish(systemIndex, i);
+            pubsub->publish(ClickType::Clef, location);
         });
         group->addToGroup(clef);
         group->setPos(LayoutInfo::CLEF_PADDING,
@@ -163,7 +164,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         const TimeSignature &timeSig = barline.getTimeSignature();
 
         BarlinePainter *barlinePainter = new BarlinePainter(layout, barline,
-                location, myScoreArea->getBarlinePubSub());
+                location, myScoreArea->getClickPubSub());
 
         double x = layout->getPositionX(barline.getPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
@@ -208,7 +209,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         {
             KeySignaturePainter *keySigPainter = new KeySignaturePainter(
                         layout, keySig, location,
-                        myScoreArea->getKeySignaturePubSub());
+                        myScoreArea->getClickPubSub());
 
             keySigPainter->setPos(keySigX, layout->getTopStdNotationLine());
             keySigPainter->setParentItem(myParentStaff);
@@ -218,7 +219,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         {
             TimeSignaturePainter *timeSigPainter = new TimeSignaturePainter(
                         layout, timeSig, location,
-                        myScoreArea->getTimeSignaturePubSub());
+                        myScoreArea->getClickPubSub());
 
             timeSigPainter->setPos(timeSigX, layout->getTopStdNotationLine());
             timeSigPainter->setParentItem(myParentStaff);

@@ -18,8 +18,7 @@
 #include "scorearea.h"
 
 #include <app/documentmanager.h>
-#include <app/pubsub/scorelocationpubsub.h>
-#include <app/pubsub/staffpubsub.h>
+#include <app/pubsub/clickpubsub.h>
 #include <chrono>
 #include <painters/caretpainter.h>
 #include <painters/systemrenderer.h>
@@ -34,10 +33,7 @@ ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myViewType(Staff::GuitarView),
       myCaretPainter(nullptr),
-      myKeySignatureClicked(std::make_shared<ScoreLocationPubSub>()),
-      myTimeSignatureClicked(std::make_shared<ScoreLocationPubSub>()),
-      myBarlineClicked(std::make_shared<ScoreLocationPubSub>()),
-      myClefClicked(std::make_shared<StaffPubSub>())
+      myClickPubSub(std::make_shared<ClickPubSub>())
 {
     setScene(&myScene);
 }
@@ -146,29 +142,9 @@ void ScoreArea::redrawSystem(int index)
     }
 }
 
-std::shared_ptr<ScoreLocationPubSub> ScoreArea::getKeySignaturePubSub() const
+std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
 {
-    return myKeySignatureClicked;
-}
-
-std::shared_ptr<ScoreLocationPubSub> ScoreArea::getTimeSignaturePubSub() const
-{
-    return myTimeSignatureClicked;
-}
-
-std::shared_ptr<ScoreLocationPubSub> ScoreArea::getBarlinePubSub() const
-{
-    return myBarlineClicked;
-}
-
-std::shared_ptr<ScoreLocationPubSub> ScoreArea::getSelectionPubSub() const
-{
-    return myDocument->getCaret().getSelectionPubSub();
-}
-
-std::shared_ptr<StaffPubSub> ScoreArea::getClefPubSub() const
-{
-    return myClefClicked;
+    return myClickPubSub;
 }
 
 void ScoreArea::adjustScroll()

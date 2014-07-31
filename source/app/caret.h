@@ -21,8 +21,6 @@
 #include <boost/signals2/signal.hpp>
 #include <score/scorelocation.h>
 
-class ScoreLocationPubSub;
-
 /// Tracks the current location within the score.
 class Caret
 {
@@ -79,11 +77,12 @@ public:
     /// previous system if necessary.
     void moveToPrevBar();
 
+    /// Moves to the specified location.
+    void moveToLocation(const ScoreLocation &location);
+
     typedef boost::signals2::signal<void ()> LocationChangedSlot;
     boost::signals2::connection subscribeToChanges(
             const LocationChangedSlot::slot_type &subscriber) const;
-
-    std::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
 
 private:
     /// Returns the last valid position in the system.
@@ -91,16 +90,11 @@ private:
     /// Returns the last valid system index in the score.
     int getLastSystemIndex() const;
 
-    void handleSelectionChanged(const ScoreLocation &location);
-
     ScoreLocation myLocation;
     bool myInPlaybackMode;
 
     /// Send out signals to subscribers whenever the location changes.
     mutable LocationChangedSlot onLocationChanged;
-
-    /// Used to listen for signals about the selection / position changing.
-    std::shared_ptr<ScoreLocationPubSub> mySelectionPubSub;
 };
 
 #endif

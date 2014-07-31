@@ -17,19 +17,14 @@
 
 #include "caret.h"
 
-#include <app/pubsub/scorelocationpubsub.h>
 #include <boost/algorithm/clamp.hpp>
 #include <score/score.h>
 #include <score/system.h>
 
 Caret::Caret(Score &score)
     : myLocation(score),
-      myInPlaybackMode(false),
-      mySelectionPubSub(std::make_shared<ScoreLocationPubSub>())
+      myInPlaybackMode(false)
 {
-    mySelectionPubSub->subscribe([this](const ScoreLocation &loc) {
-        handleSelectionChanged(loc);
-    });
 }
 
 ScoreLocation &Caret::getLocation()
@@ -153,11 +148,6 @@ boost::signals2::connection Caret::subscribeToChanges(
     return onLocationChanged.connect(subscriber);
 }
 
-std::shared_ptr<ScoreLocationPubSub> Caret::getSelectionPubSub() const
-{
-    return mySelectionPubSub;
-}
-
 int Caret::getLastPosition() const
 {
     // There must be at least one position space to the left of the last bar.
@@ -206,12 +196,8 @@ bool Caret::moveToSystem(int system, bool keepStaff)
         return false;
 }
 
-void Caret::handleSelectionChanged(const ScoreLocation &location)
+void Caret::moveToLocation(const ScoreLocation &location)
 {
-    // Ignore mouse clicks while in playback mode.
-    if (myInPlaybackMode)
-        return;
-
     myLocation.setSystemIndex(location.getSystemIndex());
     myLocation.setStaffIndex(location.getStaffIndex());
     myLocation.setPositionIndex(location.getPositionIndex());

@@ -17,7 +17,7 @@
   
 #include "barlinepainter.h"
 
-#include <app/pubsub/scorelocationpubsub.h>
+#include <app/pubsub/clickpubsub.h>
 #include <QCursor>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -28,7 +28,7 @@ const double BarlinePainter::DOUBLE_BAR_WIDTH = 4;
 BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
                                const Barline &barline,
                                const ScoreLocation &location,
-                               std::shared_ptr<ScoreLocationPubSub> pubsub)
+                               const std::shared_ptr<ClickPubSub> &pubsub)
     : myLayout(layout),
       myBarline(barline),
       myLocation(location),
@@ -80,7 +80,7 @@ void BarlinePainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void BarlinePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    myPubSub->publish(myLocation);
+    myPubSub->publish(ClickType::Barline, myLocation);
 }
 
 void BarlinePainter::hoverMoveEvent(QGraphicsSceneHoverEvent *event)

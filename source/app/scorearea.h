@@ -20,14 +20,13 @@
 
 #include <boost/optional.hpp>
 #include <memory>
-#include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QGraphicsView>
 #include <score/staff.h>
 
 class CaretPainter;
+class ClickPubSub;
 class Document;
-class ScoreLocationPubSub;
-class StaffPubSub;
 
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
@@ -41,11 +40,7 @@ public:
     /// necessary.
     void redrawSystem(int index);
 
-    std::shared_ptr<ScoreLocationPubSub> getKeySignaturePubSub() const;
-    std::shared_ptr<ScoreLocationPubSub> getTimeSignaturePubSub() const;
-    std::shared_ptr<ScoreLocationPubSub> getBarlinePubSub() const;
-    std::shared_ptr<ScoreLocationPubSub> getSelectionPubSub() const;
-    std::shared_ptr<StaffPubSub> getClefPubSub() const;
+    std::shared_ptr<ClickPubSub> getClickPubSub() const;
 
 private:
     /// Adjusts the scroll location whenever the caret moves.
@@ -57,10 +52,7 @@ private:
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
 
-    std::shared_ptr<ScoreLocationPubSub> myKeySignatureClicked;
-    std::shared_ptr<ScoreLocationPubSub> myTimeSignatureClicked;
-    std::shared_ptr<ScoreLocationPubSub> myBarlineClicked;
-    std::shared_ptr<StaffPubSub> myClefClicked;
+    std::shared_ptr<ClickPubSub> myClickPubSub;
 };
 
 #endif

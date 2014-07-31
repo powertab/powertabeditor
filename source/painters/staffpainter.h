@@ -24,14 +24,14 @@
 #include <score/scorelocation.h>
 
 class ScoreLocation;
-class ScoreLocationPubSub;
+class ClickPubSub;
 class Staff;
 
 class StaffPainter : public QGraphicsItem
 {
 public:
     StaffPainter(const LayoutConstPtr &layout, const ScoreLocation &location,
-                 std::shared_ptr<ScoreLocationPubSub> pubsub);
+                 const std::shared_ptr<ClickPubSub> &pubsub);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -51,7 +51,7 @@ private:
     int getPositionFromX(double x) const;
 
     LayoutConstPtr myLayout;
-    std::shared_ptr<ScoreLocationPubSub> myPubSub;
+    std::shared_ptr<ClickPubSub> myPubSub;
     ScoreLocation myLocation;
     const QRectF myBounds;
 };

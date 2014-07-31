@@ -17,7 +17,7 @@
   
 #include "keysignaturepainter.h"
 
-#include <app/pubsub/scorelocationpubsub.h>
+#include <app/pubsub/clickpubsub.h>
 #include <painters/musicfont.h>
 #include <QCursor>
 #include <QPainter>
@@ -25,7 +25,7 @@
 
 KeySignaturePainter::KeySignaturePainter(
     const LayoutConstPtr &layout, const KeySignature &key,
-    const ScoreLocation &location, std::shared_ptr<ScoreLocationPubSub> pubsub)
+    const ScoreLocation &location, const std::shared_ptr<ClickPubSub> &pubsub)
     : myLayout(layout),
       myKeySignature(key),
       myLocation(location),
@@ -45,7 +45,7 @@ void KeySignaturePainter::mousePressEvent(QGraphicsSceneMouseEvent *)
 
 void KeySignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-    myPubSub->publish(myLocation);
+    myPubSub->publish(ClickType::KeySignature, myLocation);
 }
 
 void KeySignaturePainter::hoverEnterEvent(QGraphicsSceneHoverEvent *)

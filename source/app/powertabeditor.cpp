@@ -71,9 +71,8 @@
 #include <app/clipboard.h>
 #include <app/command.h>
 #include <app/documentmanager.h>
-#include <app/pubsub/scorelocationpubsub.h>
+#include <app/pubsub/clickpubsub.h>
 #include <app/pubsub/settingspubsub.h>
-#include <app/pubsub/staffpubsub.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
@@ -2509,17 +2508,29 @@ void PowerTabEditor::setupNewTab()
 
     // Connect the signals for mouse clicks on time signatures, barlines, etc.
     // to the appropriate event handlers.
-    scorearea->getTimeSignaturePubSub()->subscribe([=](const ScoreLocation &location) {
-        editTimeSignature(location);
-    });
-    scorearea->getKeySignaturePubSub()->subscribe([=](const ScoreLocation &location) {
-        editKeySignature(location);
-    });
-    scorearea->getBarlinePubSub()->subscribe([=](const ScoreLocation &location) {
-        editBarline(location);
-    });
-    scorearea->getClefPubSub()->subscribe([=](int system, int staff) {
-        editClef(system, staff);
+    scorearea->getClickPubSub()->subscribe([=](ClickType type,
+                                               const ScoreLocation &location) {
+        switch (type)
+        {
+            case ClickType::Barline:
+                editBarline(location);
+                break;
+            case ClickType::TimeSignature:
+                editTimeSignature(location);
+                break;
+            case ClickType::KeySignature:
+                editKeySignature(location);
+                break;
+            case ClickType::Clef:
+                editClef(location.getSystemIndex(), location.getStaffIndex());
+                break;
+            case ClickType::Selection:
+                if (!getCaret().isInPlaybackMode())
+                    getCaret().moveToLocation(location);
+                break;
+            default:
+                break;
+        }
     });
 
     myUndoManager->addNewUndoStack();
