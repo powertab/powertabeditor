@@ -26,6 +26,7 @@ add_executable(pte_tests
     actions/test_addsystem.cpp
     actions/test_addtappedharmonic.cpp
     actions/test_addtempomarker.cpp
+    actions/test_addtextitem.cpp
     actions/test_addtrill.cpp
     #actions/test_addvolumeswell.cpp
     actions/test_adjustlinespacing.cpp
@@ -58,6 +59,7 @@ add_executable(pte_tests
     actions/test_removesystem.cpp
     actions/test_removetappedharmonic.cpp
     actions/test_removetempomarker.cpp
+    actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
     #actions/test_removevolumeswell.cpp
     #actions/test_shifttabnumber.cpp

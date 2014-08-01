@@ -21,6 +21,7 @@ set(FORMS
     staffdialog.ui
     tappedharmonicdialog.ui
     tempomarkerdialog.ui
+    textitemdialog.ui
     timesignaturedialog.ui
     trilldialog.ui
     tuningdialog.ui
@@ -53,6 +54,7 @@ add_library(ptedialogs
     staffdialog.cpp
     tappedharmonicdialog.cpp
     tempomarkerdialog.cpp
+    textitemdialog.cpp
     timesignaturedialog.cpp
     trilldialog.cpp
     tuningdialog.cpp
@@ -80,6 +82,7 @@ add_library(ptedialogs
     staffdialog.h
     tappedharmonicdialog.h
     tempomarkerdialog.h
+    textitemdialog.h
     timesignaturedialog.h
     trilldialog.h
     tuningdialog.h

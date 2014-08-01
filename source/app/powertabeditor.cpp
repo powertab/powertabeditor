@@ -36,6 +36,7 @@
 #include <actions/addstaff.h>
 #include <actions/addsystem.h>
 #include <actions/addtempomarker.h>
+#include <actions/addtextitem.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
 #include <actions/editclef.h>
@@ -64,6 +65,7 @@
 #include <actions/removestaff.h>
 #include <actions/removesystem.h>
 #include <actions/removetempomarker.h>
+#include <actions/removetextitem.h>
 #include <actions/shiftpositions.h>
 #include <actions/undomanager.h>
 
@@ -104,6 +106,7 @@
 #include <dialogs/staffdialog.h>
 #include <dialogs/tappedharmonicdialog.h>
 #include <dialogs/tempomarkerdialog.h>
+#include <dialogs/textitemdialog.h>
 #include <dialogs/timesignaturedialog.h>
 #include <dialogs/trilldialog.h>
 #include <dialogs/tuningdictionarydialog.h>
@@ -704,6 +707,31 @@ void PowerTabEditor::editChordName()
     else
     {
         myUndoManager->push(new RemoveChordText(location),
+                            location.getSystemIndex());
+    }
+}
+
+void PowerTabEditor::editTextItem()
+{
+    ScoreLocation &location(getLocation());
+
+    if (!ScoreUtils::findByPosition(location.getSystem().getTextItems(),
+                                    location.getPositionIndex()))
+    {
+        TextItemDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            TextItem text(location.getPositionIndex(), dialog.getContents());
+
+            myUndoManager->push(new AddTextItem(location, text),
+                                location.getSystemIndex());
+        }
+        else
+            myTextCommand->setChecked(false);
+    }
+    else
+    {
+        myUndoManager->push(new RemoveTextItem(location),
                             location.getSystemIndex());
     }
 }
@@ -1690,6 +1718,12 @@ void PowerTabEditor::createCommands()
     connect(myChordNameCommand, SIGNAL(triggered()), this,
             SLOT(editChordName()));
 
+    myTextCommand = new Command(tr("Text..."), "Text.TextItem",
+                                QKeySequence(), this);
+    myTextCommand->setCheckable(true);
+    connect(myTextCommand, &QAction::triggered, this,
+            &PowerTabEditor::editTextItem);
+
 #if 0
     // Section-related actions
     increasePositionSpacingAct = new Command(tr("Increase Position Spacing"),
@@ -2297,6 +2331,7 @@ void PowerTabEditor::createMenus()
     // Text Menu.
     myTextMenu = menuBar()->addMenu(tr("&Text"));
     myTextMenu->addAction(myChordNameCommand);
+    myTextMenu->addAction(myTextCommand);
 
     // Section Menu.
     mySectionMenu = menuBar()->addMenu(tr("&Section"));
@@ -2639,6 +2674,8 @@ void PowerTabEditor::updateCommands()
 
     myChordNameCommand->setChecked(
         ScoreUtils::findByPosition(system.getChords(), position));
+    myTextCommand->setChecked(
+        ScoreUtils::findByPosition(system.getTextItems(), position));
 
     // Note durations
     Position::DurationType durationType = myActiveDurationType;

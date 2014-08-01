@@ -613,7 +613,7 @@ void SystemRenderer::drawTextItems(const System &system,
         const QString &contents = QString::fromStdString(text.getContents());
 
         auto textItem = new SimpleTextItem(contents, myPlainTextFont);
-        textItem->setPos(x, height + 2);
+        textItem->setPos(x, height + 4);
         textItem->setParentItem(myParentSystem);
     }
 }

@@ -19,6 +19,7 @@ add_library(pteactions
     addstaff.cpp
     addsystem.cpp
     addtempomarker.cpp
+    addtextitem.cpp
     #addvolumeswell.cpp
     adjustlinespacing.cpp
     #changepositionspacing.cpp
@@ -49,6 +50,7 @@ add_library(pteactions
     removestaff.cpp
     removesystem.cpp
     removetempomarker.cpp
+    removetextitem.cpp
     #removevolumeswell.cpp
     shiftpositions.cpp
     #shifttabnumber.cpp
@@ -73,6 +75,7 @@ add_library(pteactions
     addstaff.h
     addsystem.h
     addtempomarker.h
+    addtextitem.h
     #addvolumeswell.h
     adjustlinespacing.h
     #changepositionspacing.h
@@ -104,6 +107,7 @@ add_library(pteactions
     removestaff.h
     removesystem.h
     removetempomarker.h
+    removetextitem.h
     #removevolumeswell.h
     shiftpositions.h
     #shifttabnumber.h
