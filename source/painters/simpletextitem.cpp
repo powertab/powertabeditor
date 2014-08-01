@@ -20,8 +20,8 @@
 #include <QPainter>
 
 SimpleTextItem::SimpleTextItem(const QString &text, const QFont &font,
-                               const QBrush &brush)
-    : myText(text), myFont(font), myBrush(brush)
+                               const QBrush &brush, const QBrush &background)
+    : myText(text), myFont(font), myBrush(brush), myBackground(background)
 {
     QFontMetricsF fm(myFont);
     myAscent = fm.ascent();
@@ -31,6 +31,10 @@ SimpleTextItem::SimpleTextItem(const QString &text, const QFont &font,
 void SimpleTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                            QWidget *)
 {
+
+    // Draw the background rectangle
+    painter->fillRect(myBoundingRect, myBackground);
+
     painter->setBrush(myBrush);
     painter->setFont(myFont);
     // Match the way that QSimpleTextItem aligns text.
