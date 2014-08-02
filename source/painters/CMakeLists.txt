@@ -5,7 +5,7 @@ add_library(ptepainters
     beamgroup.cpp
     caretpainter.cpp
     clickablegroup.cpp
-    directionpainter.cpp
+    directions.cpp
     #irregularnotegroup.cpp
     keysignaturepainter.cpp
     layoutinfo.cpp
@@ -24,7 +24,6 @@ add_library(ptepainters
     beamgroup.h
     caretpainter.h
     clickablegroup.h
-    directionpainter.h
     #irregularnotegroup.h
     keysignaturepainter.h
     layoutinfo.h

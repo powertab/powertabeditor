@@ -51,7 +51,12 @@ private:
 
     /// Centers an item, by using its width to calculate the necessary
     /// offset from xmin.
-    void centerItem(QGraphicsItem *item, double xmin, double xmax, double y);
+    static void centerHorizontally(QGraphicsItem &item, double xmin,
+                                   double xmax);
+
+    /// Vertically centers a system symbol between y and y +
+    /// LayoutInfo::SYSTEM_SYMBOL_SPACING.
+    static void centerSymbolVertically(QGraphicsItem &item, double y);
 
     /// Draws a arpeggio up/down at the given position.
     void drawArpeggio(const Position &position, double x,

@@ -25,7 +25,6 @@
 #include <boost/range/algorithm/find_if.hpp>
 #include <painters/barlinepainter.h>
 #include <painters/clickablegroup.h>
-#include <painters/directionpainter.h>
 #include <painters/keysignaturepainter.h>
 #include <painters/layoutinfo.h>
 #include <painters/simpletextitem.h>
@@ -42,11 +41,18 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
-static inline void centerSymbolVertically(QGraphicsItem &item, double x,
-                                          double y_top)
+void SystemRenderer::centerHorizontally(QGraphicsItem &item, double xmin,
+                                        double xmax)
 {
-    item.setPos(x, y_top + 0.5 * (LayoutInfo::SYSTEM_SYMBOL_SPACING -
-                                  item.boundingRect().height()));
+    double itemWidth = item.boundingRect().width();
+    double centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
+    item.setX(centredX);
+}
+
+void SystemRenderer::centerSymbolVertically(QGraphicsItem &item, double y)
+{
+    item.setY(y + 0.5 * (LayoutInfo::SYSTEM_SYMBOL_SPACING -
+                         item.boundingRect().height()));
 }
 
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
@@ -239,7 +245,8 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
             auto signLetters = new SimpleTextItem(
                 QString::fromStdString(sign.getLetters()), myRehearsalSignFont);
-            centerSymbolVertically(*signLetters, rehearsalSignX, 0);
+            signLetters->setX(rehearsalSignX);
+            centerSymbolVertically(*signLetters, 0);
 
             QFontMetricsF metrics(myRehearsalSignFont);
             const Barline *nextBar = system.getNextBarline(barline.getPosition());
@@ -254,7 +261,8 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
             auto signText =
                 new SimpleTextItem(shortenedSignText, myRehearsalSignFont);
-            centerSymbolVertically(*signText, signTextX, 0);
+            signText->setX(signTextX);
+            centerSymbolVertically(*signText, 0);
             // The tooltip should contain the full description.
             signText->setToolTip(QString::fromStdString(sign.getDescription()));
 
@@ -263,7 +271,8 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             boundingRect.setWidth(boundingRect.width() + 7);
             boundingRect.translate(-RECTANGLE_OFFSET, 0);
             auto rect = new QGraphicsRectItem(boundingRect);
-            centerSymbolVertically(*rect, rehearsalSignX, 0);
+            rect->setX(rehearsalSignX);
+            centerSymbolVertically(*rect, 0);
 
             rect->setParentItem(myParentSystem);
             signText->setParentItem(myParentSystem);
@@ -294,10 +303,10 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                     note.hasProperty(Note::Tied) ? Qt::lightGray : Qt::black,
                     QBrush(QColor(255,255,255)));
 
-                centerItem(tabNote, location,
-                           location + layout->getPositionSpacing(),
-                           layout->getTabLine(note.getString() + 1) -
-                           0.6 * myPlainTextFont.pixelSize());
+                centerHorizontally(*tabNote, location,
+                                   location + layout->getPositionSpacing());
+                tabNote->setY(layout->getTabLine(note.getString() + 1) -
+                              0.6 * myPlainTextFont.pixelSize());
                 tabNote->setParentItem(myParentStaff);
             }
 
@@ -309,14 +318,6 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
             }
         }
     }
-}
-
-void SystemRenderer::centerItem(QGraphicsItem *item, double xmin,
-                                double xmax, double y)
-{
-    double itemWidth = item->boundingRect().width();
-    double centredX = xmin + ((xmax - (xmin + itemWidth)) / 2);
-    item->setPos(centredX, y);
 }
 
 void SystemRenderer::drawArpeggio(const Position &position, double x,
@@ -569,7 +570,8 @@ void SystemRenderer::drawTempoMarkers(const System &system,
             auto pixmap = new QGraphicsPixmapItem(image.scaled(
                 fm.width(imageSpacing), NOTE_HEIGHT,
                 Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            centerSymbolVertically(*pixmap, fm.width(text), height);
+            pixmap->setX(fm.width(text));
+            centerSymbolVertically(*pixmap, height);
             group->addToGroup(pixmap);
 
             text += imageSpacing;
@@ -582,7 +584,8 @@ void SystemRenderer::drawTempoMarkers(const System &system,
                 auto pixmap = new QGraphicsPixmapItem(image.scaled(
                     fm.width(imageSpacing), NOTE_HEIGHT,
                     Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-                centerSymbolVertically(*pixmap, fm.width(text), height);
+                pixmap->setX(fm.width(text));
+                centerSymbolVertically(*pixmap, height);
                 group->addToGroup(pixmap);
 
                 text += imageSpacing;
@@ -600,7 +603,8 @@ void SystemRenderer::drawTempoMarkers(const System &system,
                 pixmap = new QGraphicsPixmapItem(image.scaled(
                     fm.width(imageSpacing), 21,
                     Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-                centerSymbolVertically(*pixmap, fm.width(text), height);
+                pixmap->setX(fm.width(text));
+                centerSymbolVertically(*pixmap, height);
                 group->addToGroup(pixmap);
 
                 text += imageSpacing + " )";
@@ -608,40 +612,12 @@ void SystemRenderer::drawTempoMarkers(const System &system,
         }
 
         auto textItem = new SimpleTextItem(text, font);
-        centerSymbolVertically(*textItem, 0, height);
+        centerSymbolVertically(*textItem, height);
         group->addToGroup(textItem);
 
         group->setX(x);
         group->setParentItem(myParentSystem);
     }
-}
-
-double SystemRenderer::drawDirections(const System &system,
-                                      const LayoutInfo &layout,
-                                      double height)
-{
-    double maxHeight = 0;
-
-    for (const Direction &direction : system.getDirections())
-    {
-        double localHeight = 0;
-        const double location = layout.getPositionX(direction.getPosition());
-
-        for (const DirectionSymbol &symbol : direction.getSymbols())
-        {
-            auto painter = new DirectionPainter(symbol);
-            centerItem(painter, location,
-                       location + layout.getPositionSpacing(),
-                       height + localHeight);
-            painter->setParentItem(myParentSystem);
-
-            localHeight += LayoutInfo::SYSTEM_SYMBOL_SPACING;
-        }
-
-        maxHeight = std::max(maxHeight, localHeight);
-    }
-
-    return maxHeight;
 }
 
 void SystemRenderer::drawChordText(const System &system,
@@ -655,7 +631,8 @@ void SystemRenderer::drawChordText(const System &system,
 
         auto textItem =
             new SimpleTextItem(QString::fromStdString(text), myPlainTextFont);
-        centerSymbolVertically(*textItem, x, height);
+        textItem->setX(x);
+        centerSymbolVertically(*textItem, height);
         textItem->setParentItem(myParentSystem);
     }
 }
@@ -668,8 +645,8 @@ void SystemRenderer::drawTextItems(const System &system,
         const QString &contents = QString::fromStdString(text.getContents());
 
         auto textItem = new SimpleTextItem(contents, myPlainTextFont);
-        centerSymbolVertically(*textItem,
-                               layout.getPositionX(text.getPosition()), height);
+        textItem->setX(layout.getPositionX(text.getPosition()));
+        centerSymbolVertically(*textItem, height);
         textItem->setParentItem(myParentSystem);
     }
 }
@@ -946,9 +923,10 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
         }
 
         const double x = layout.getPositionX(symbolGroup.getLeftPosition());
-        centerItem(renderedSymbol, x, x + symbolGroup.getWidth(),
-                   layout.getBottomTabLine() +
-                   symbolGroup.getHeight() * LayoutInfo::TAB_SYMBOL_SPACING);
+        centerHorizontally(*renderedSymbol, x, x + symbolGroup.getWidth());
+        renderedSymbol->setY(layout.getBottomTabLine() +
+                             symbolGroup.getHeight() *
+                                 LayoutInfo::TAB_SYMBOL_SPACING);
 
         renderedSymbol->setParentItem(myParentStaff);
     }
@@ -1256,8 +1234,8 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
     {
         auto line = new SimpleTextItem(QChar(MusicFont::TremoloPicking),
                                        myMusicNotationFont);
-        centerItem(line, 0, layout.getPositionSpacing() * 1.25,
-                   -myMusicFontMetrics.ascent() - 7 + i * offset);
+        centerHorizontally(*line, 0, layout.getPositionSpacing() * 1.25);
+        line->setY(-myMusicFontMetrics.ascent() - 7 + i * offset);
         group->addToGroup(line);
     }
 
@@ -1270,7 +1248,8 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
     font.setPixelSize(21);
 
     auto text = new SimpleTextItem(QChar(MusicFont::Trill), font);
-    centerItem(text, 0, layout.getPositionSpacing(), -18);
+    centerHorizontally(*text, 0, layout.getPositionSpacing());
+    text->setY(-18);
 
     auto group = new QGraphicsItemGroup();
     group->addToGroup(text);
@@ -1518,8 +1497,9 @@ void SystemRenderer::drawMultiBarRest(const System &system,
     auto measureCountText =
         new SimpleTextItem(QString::number(measureCount), myMusicNotationFont);
 
-    centerItem(measureCountText, leftX, rightX,
-               layout.getTopStdNotationLine() - myMusicFontMetrics.ascent());
+    centerHorizontally(*measureCountText, leftX, rightX);
+    measureCountText->setY(layout.getTopStdNotationLine() -
+                           myMusicFontMetrics.ascent());
     measureCountText->setParentItem(myParentStaff);
 
     // Draw symbol across std. notation staff.
@@ -1603,8 +1583,8 @@ void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &l
         }
     }
 
-    centerItem(group, x, x + layout.getPositionSpacing() * 1.25,
-               layout.getTopStdNotationLine());
+    centerHorizontally(*group, x, x + layout.getPositionSpacing() * 1.25);
+    group->setY(layout.getTopStdNotationLine());
     group->setParentItem(myParentStaff);
 }
 
