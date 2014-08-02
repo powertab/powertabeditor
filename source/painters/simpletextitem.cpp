@@ -32,8 +32,14 @@ void SimpleTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                            QWidget *)
 {
 
-    // Draw the background rectangle
-    painter->fillRect(myBoundingRect, myBackground);
+    // Draw the background rectangle. Avoid to cover other elements
+    // by drawing only 1/3 of the rectangle, vertically centered.
+    painter->fillRect(
+                myBoundingRect.x(),
+                myBoundingRect.y() + myBoundingRect.height() / 3,
+                myBoundingRect.width(),
+                myBoundingRect.height() / 3,
+                myBackground);
 
     painter->setBrush(myBrush);
     painter->setFont(myFont);
