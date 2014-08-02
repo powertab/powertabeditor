@@ -17,21 +17,21 @@
 
 #include "powertaboldimporter.h"
 
-#include "powertabdocument/alternateending.h"
-#include "powertabdocument/barline.h"
-#include "powertabdocument/chordtext.h"
-#include "powertabdocument/direction.h"
-#include "powertabdocument/dynamic.h"
-#include "powertabdocument/floatingtext.h"
-#include "powertabdocument/guitar.h"
-#include "powertabdocument/guitarin.h"
-#include "powertabdocument/note.h"
-#include "powertabdocument/position.h"
-#include "powertabdocument/powertabdocument.h"
-#include "powertabdocument/score.h"
-#include "powertabdocument/staff.h"
-#include "powertabdocument/system.h"
-#include "powertabdocument/tempomarker.h"
+#include <formats/powertab_old/powertabdocument/alternateending.h>
+#include <formats/powertab_old/powertabdocument/barline.h>
+#include <formats/powertab_old/powertabdocument/chordtext.h>
+#include <formats/powertab_old/powertabdocument/direction.h>
+#include <formats/powertab_old/powertabdocument/dynamic.h>
+#include <formats/powertab_old/powertabdocument/floatingtext.h>
+#include <formats/powertab_old/powertabdocument/guitar.h>
+#include <formats/powertab_old/powertabdocument/guitarin.h>
+#include <formats/powertab_old/powertabdocument/note.h>
+#include <formats/powertab_old/powertabdocument/position.h>
+#include <formats/powertab_old/powertabdocument/powertabdocument.h>
+#include <formats/powertab_old/powertabdocument/score.h>
+#include <formats/powertab_old/powertabdocument/staff.h>
+#include <formats/powertab_old/powertabdocument/system.h>
+#include <formats/powertab_old/powertabdocument/tempomarker.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/systemlocation.h>
