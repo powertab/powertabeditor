@@ -20,6 +20,6 @@ script:
   # Exclude any tests that are expected to fail.
   - ./bin/pte_tests exclude:Formats/PowerTabOldImport/Directions
 after_success:
-  - lcov --gcov-tool gcov-4.8 --capture --directory . --output-file coverage.info
+  - lcov --compat split_crc=on --gcov-tool gcov-4.8 --capture --directory . --output-file coverage.info
   - lcov --gcov-tool gcov-4.8 --remove coverage.info '/usr*' '*external*' '*_automoc.cpp' -o coverage.info
   - coveralls-lcov coverage.info
