@@ -65,7 +65,7 @@ void StaffPainter::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void StaffPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                          QWidget *)
 {
-    painter->setPen(QPen(QBrush(QColor(0,0,0)), 0.75));
+    painter->setPen(QPen(QBrush(QColor(213,213,213)), 0.75));
 
     // Draw standard notation staff.
     drawStaffLines(painter, LayoutInfo::NUM_STD_NOTATION_LINES,
