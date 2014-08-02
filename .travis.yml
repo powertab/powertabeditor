@@ -19,4 +19,4 @@ script:
   # Exclude any tests that are expected to fail.
   - ./bin/pte_tests exclude:Formats/PowerTabOldImport/Directions
 after_success:
-  - coveralls --exclude CMakeFiles --exclude-pattern ".*_automoc\.cpp" --exclude-pattern ".*\.moc" --exclude-pattern "/usr/.*" --exclude-pattern ".*moc_.*" --exclude-pattern ".*ui_.*" --exclude-pattern ".*qrc_.*" | grep -vP "^File '.*'$" | grep -vP "^Creating '.*'$" | grep -vP "^Lines executed:.*" | sed '/^$/d'
+  - coveralls --gcov gcov-4.8 --exclude CMakeFiles --exclude-pattern ".*_automoc\.cpp" --exclude-pattern ".*\.moc" --exclude-pattern "/usr/.*" --exclude-pattern ".*moc_.*" --exclude-pattern ".*ui_.*" --exclude-pattern ".*qrc_.*" | grep -vP "^File '.*'$" | grep -vP "^Creating '.*'$" | grep -vP "^Lines executed:.*" | sed '/^$/d'
