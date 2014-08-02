@@ -468,11 +468,11 @@ void SystemRenderer::drawAlternateEndings(const System &system,
     }
 }
 
-static QString getBeatTypeImage(const TempoMarker &tempo)
+static QString getBeatTypeImage(TempoMarker::BeatType type)
 {
     QString file;
 
-    switch (tempo.getBeatType())
+    switch (type)
     {
         case TempoMarker::Half:
             file = ":images/half_note";
@@ -560,19 +560,34 @@ void SystemRenderer::drawTempoMarkers(const System &system,
             text += QString::fromStdString(tempo.getDescription()) + " ";
 
             const QString imageSpacing(3, ' ');
+            const double NOTE_HEIGHT = 16;
 
             // Add the beat type image.
             QFontMetricsF fm(font);
-            QPixmap image(getBeatTypeImage(tempo));
+            QPixmap image(getBeatTypeImage(tempo.getBeatType()));
             auto pixmap = new QGraphicsPixmapItem(image.scaled(
-                fm.width(imageSpacing), 14,
+                fm.width(imageSpacing), NOTE_HEIGHT,
                 Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             centerSymbolVertically(*pixmap, fm.width(text), height);
             group->addToGroup(pixmap);
 
             text += imageSpacing;
             text += " = ";
-            text += QString::number(tempo.getBeatsPerMinute());
+
+            if (tempo.getMarkerType() == TempoMarker::ListessoMarker)
+            {
+                // Add the second beat type image.
+                QPixmap image(getBeatTypeImage(tempo.getListessoBeatType()));
+                auto pixmap = new QGraphicsPixmapItem(image.scaled(
+                    fm.width(imageSpacing), NOTE_HEIGHT,
+                    Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+                centerSymbolVertically(*pixmap, fm.width(text), height);
+                group->addToGroup(pixmap);
+
+                text += imageSpacing;
+            }
+            else
+                text += QString::number(tempo.getBeatsPerMinute());
 
             // Add the triplet feel image if necessary.
             if (tempo.getTripletFeel() != TempoMarker::NoTripletFeel)
