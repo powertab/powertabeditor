@@ -12,8 +12,11 @@ install:
   - sudo apt-get install -yqq cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libasound2-dev g++-4.8
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
+  - sudo pip install cpp-coveralls # code coverage
 script:
-  - cmake . -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug
+  - cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON .
   - make -j4
   # Exclude any tests that are expected to fail.
   - ./bin/pte_tests exclude:Formats/PowerTabOldImport/Directions
+after_success:
+  - coveralls --exclude CMakeFiles --exclude-pattern ".*_automoc\.cpp" --exclude-pattern ".*\.moc" --exclude-pattern "/usr/.*" --exclude-pattern ".*moc_.*" --exclude-pattern ".*ui_.*" --exclude-pattern ".*qrc_.*" | grep -vP "^File '.*'$" | grep -vP "^Creating '.*'$" | grep -vP "^Lines executed:.*" | sed '/^$/d'

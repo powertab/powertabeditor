@@ -11,6 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
+option(ENABLE_COVERAGE "Enable code coverage." OFF)
 
 include(cmake/cotire.cmake)
 
@@ -38,6 +39,10 @@ else()
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_GENERATOR STREQUAL "Ninja")
         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
+    endif()
+
+    if (ENABLE_COVERAGE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
     endif()
 endif()
 

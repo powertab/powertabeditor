@@ -1,6 +1,7 @@
 # Power Tab Editor
 
 [![Build Status](https://travis-ci.org/powertab/powertabeditor.svg?branch=master)](https://travis-ci.org/powertab/powertabeditor)
+[![Coverage Status](https://img.shields.io/coveralls/powertab/powertabeditor.svg)](https://coveralls.io/r/powertab/powertabeditor)
 
 ### Users
 * New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
