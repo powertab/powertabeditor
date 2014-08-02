@@ -42,6 +42,13 @@
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
+static inline void centerSymbolVertically(QGraphicsItem &item, double x,
+                                          double y_top)
+{
+    item.setPos(x, y_top + 0.5 * (LayoutInfo::SYSTEM_SYMBOL_SPACING -
+                                  item.boundingRect().height()));
+}
+
 SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
     : myScoreArea(scoreArea),
       myScore(score),
@@ -228,27 +235,26 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         if (barline.hasRehearsalSign() && isFirstStaff)
         {
             const RehearsalSign &sign = barline.getRehearsalSign();
-            const int y = 1;
             const int RECTANGLE_OFFSET = 4;
 
             auto signLetters = new SimpleTextItem(
                 QString::fromStdString(sign.getLetters()), myRehearsalSignFont);
-            signLetters->setPos(rehearsalSignX, y);
-
-            auto signText = new QGraphicsSimpleTextItem();
-            signText->setPos(rehearsalSignX +
-                             signLetters->boundingRect().width() + 7, y);
-            signText->setFont(myRehearsalSignFont);
+            centerSymbolVertically(*signLetters, rehearsalSignX, 0);
 
             QFontMetricsF metrics(myRehearsalSignFont);
             const Barline *nextBar = system.getNextBarline(barline.getPosition());
             Q_ASSERT(nextBar);
-
+            const double signTextX =
+                rehearsalSignX + signLetters->boundingRect().width() + 7;
             // If the description is too wide, cut it off with an ellipsis.
-            signText->setText(metrics.elidedText(
+            QString shortenedSignText = metrics.elidedText(
                 QString::fromStdString(sign.getDescription()), Qt::ElideRight,
-                layout->getPositionX(nextBar->getPosition()) - signText->x() -
-                    RECTANGLE_OFFSET));
+                layout->getPositionX(nextBar->getPosition()) - signTextX -
+                    RECTANGLE_OFFSET);
+
+            auto signText =
+                new SimpleTextItem(shortenedSignText, myRehearsalSignFont);
+            centerSymbolVertically(*signText, signTextX, 0);
             // The tooltip should contain the full description.
             signText->setToolTip(QString::fromStdString(sign.getDescription()));
 
@@ -257,7 +263,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             boundingRect.setWidth(boundingRect.width() + 7);
             boundingRect.translate(-RECTANGLE_OFFSET, 0);
             auto rect = new QGraphicsRectItem(boundingRect);
-            rect->setPos(rehearsalSignX, y);
+            centerSymbolVertically(*rect, rehearsalSignX, 0);
 
             rect->setParentItem(myParentSystem);
             signText->setParentItem(myParentSystem);
@@ -503,6 +509,24 @@ static QString getBeatTypeImage(const TempoMarker &tempo)
     return file;
 }
 
+static QString getTripletFeelImage(const TempoMarker &tempo)
+{
+    switch (tempo.getTripletFeel())
+    {
+        case TempoMarker::TripletFeelEighth:
+            return QStringLiteral(":/images/triplet_feel_eighth.png");
+        case TempoMarker::TripletFeelEighthOff:
+            return QStringLiteral(":/images/triplet_feel_eighth_off.png");
+        case TempoMarker::TripletFeelSixteenth:
+            return QStringLiteral(":/images/triplet_feel_sixteenth.png");
+        case TempoMarker::TripletFeelSixteenthOff:
+            return QStringLiteral(":/images/triplet_feel_sixteenth_off.png");
+        default:
+            Q_ASSERT(false);
+            return "";
+    }
+}
+
 void SystemRenderer::drawTempoMarkers(const System &system,
                                       const LayoutInfo &layout,
                                       double height)
@@ -512,7 +536,7 @@ void SystemRenderer::drawTempoMarkers(const System &system,
         if (tempo.getMarkerType() == TempoMarker::NotShown)
             continue;
 
-        const double location = layout.getPositionX(tempo.getPosition());
+        const double x = layout.getPositionX(tempo.getPosition());
 
         auto group = new ClickableGroup([]() {
             // TODO - allow editing a tempo marker by clicking on it.
@@ -538,24 +562,40 @@ void SystemRenderer::drawTempoMarkers(const System &system,
             const QString imageSpacing(3, ' ');
 
             // Add the beat type image.
-            const int HEIGHT_OFFSET = 2;
             QFontMetricsF fm(font);
             QPixmap image(getBeatTypeImage(tempo));
             auto pixmap = new QGraphicsPixmapItem(image.scaled(
-                fm.width(imageSpacing), fm.height() + HEIGHT_OFFSET,
+                fm.width(imageSpacing), 14,
                 Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            pixmap->setPos(fm.width(text), -HEIGHT_OFFSET);
+            centerSymbolVertically(*pixmap, fm.width(text), height);
             group->addToGroup(pixmap);
 
             text += imageSpacing;
             text += " = ";
             text += QString::number(tempo.getBeatsPerMinute());
+
+            // Add the triplet feel image if necessary.
+            if (tempo.getTripletFeel() != TempoMarker::NoTripletFeel)
+            {
+                text += " ( ";
+
+                const QString imageSpacing(12, ' ');
+                QPixmap image(getTripletFeelImage(tempo));
+                pixmap = new QGraphicsPixmapItem(image.scaled(
+                    fm.width(imageSpacing), 21,
+                    Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+                centerSymbolVertically(*pixmap, fm.width(text), height);
+                group->addToGroup(pixmap);
+
+                text += imageSpacing + " )";
+            }
         }
 
-        group->addToGroup(new SimpleTextItem(text, font));
+        auto textItem = new SimpleTextItem(text, font);
+        centerSymbolVertically(*textItem, 0, height);
+        group->addToGroup(textItem);
 
-        const int PADDING = 4;
-        group->setPos(location, height + PADDING);
+        group->setX(x);
         group->setParentItem(myParentSystem);
     }
 }
@@ -599,7 +639,7 @@ void SystemRenderer::drawChordText(const System &system,
 
         auto textItem =
             new SimpleTextItem(QString::fromStdString(text), myPlainTextFont);
-        textItem->setPos(x, height + 4);
+        centerSymbolVertically(*textItem, x, height);
         textItem->setParentItem(myParentSystem);
     }
 }
@@ -609,11 +649,11 @@ void SystemRenderer::drawTextItems(const System &system,
 {
     for (const TextItem &text : system.getTextItems())
     {
-        const double x = layout.getPositionX(text.getPosition());
         const QString &contents = QString::fromStdString(text.getContents());
 
         auto textItem = new SimpleTextItem(contents, myPlainTextFont);
-        textItem->setPos(x, height + 4);
+        centerSymbolVertically(*textItem,
+                               layout.getPositionX(text.getPosition()), height);
         textItem->setParentItem(myParentSystem);
     }
 }
