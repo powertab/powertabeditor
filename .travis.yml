@@ -9,17 +9,14 @@ install:
   - sudo add-apt-repository --yes ppa:boost-latest/ppa # Updated Boost
   - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test # gcc 4.8
   - sudo apt-get update -yqq
-  - sudo apt-get install -yqq cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libasound2-dev g++-4.8 lcov ruby1.9.3
+  - sudo apt-get install -yqq cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libasound2-dev g++-4.8
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
-  - sudo gem install coveralls-lcov # code coverage
+  - sudo pip install cpp-coveralls pyyaml # code coverage
 script:
-  - mkdir -p build && cd build
-  - cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON ..
+  - cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON .
   - make -j4
   # Exclude any tests that are expected to fail.
   - ./bin/pte_tests exclude:Formats/PowerTabOldImport/Directions
 after_success:
-  - lcov --compat split_crc=on --gcov-tool gcov-4.8 --capture --directory . --output-file coverage.info
-  - lcov --gcov-tool gcov-4.8 --remove coverage.info '/usr*' '*external*' '*_automoc.cpp' -o coverage.info
-  - coveralls-lcov coverage.info
+  - coveralls --gcov gcov-4.8 --root . --build-root . --exclude CMakeFiles --exclude-pattern ".*_automoc\.cpp" --exclude-pattern ".*\.moc" --exclude-pattern "/usr/.*" --exclude-pattern ".*moc_.*" --exclude-pattern ".*ui_.*" --exclude-pattern ".*qrc_.*" --exclude-pattern ".*_prefix.*" --exclude-pattern ".*_unity.*" --exclude external | grep -vP "^File '.*'$" | grep -vP "^Creating '.*'$" | grep -vP "^Lines executed:.*" | sed '/^$/d'
