@@ -1,7 +1,7 @@
 language: cpp
 compiler:
   - gcc
-  #- clang
+  - clang
 cache: apt
 install:
   - sudo add-apt-repository --yes ppa:kalakris/cmake # For cmake 2.8.9+
