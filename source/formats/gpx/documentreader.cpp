@@ -177,6 +177,7 @@ void Gpx::DocumentReader::readBeats()
         convertStringToList(currentBeat.child_value("Notes"), beat.noteIds);
 
         beat.arpeggioType = currentBeat.child_value("Arpeggio");
+        beat.freeText = currentBeat.child_value("FreeText");
         beat.tremoloPicking = !currentBeat.child("Tremolo").empty();
         beat.graceNote = !currentBeat.child("GraceNotes").empty();
 
@@ -347,6 +348,10 @@ void Gpx::DocumentReader::readMasterBars(Score &score)
                  myVoices[myBars[barIds[i]].voiceIds.at(0)].beatIds)
             {
                 const Gpx::Beat &beat = myBeats[beatId];
+
+                // Create text item at this position if necessary.
+                if (!beat.freeText.empty())
+                    system.insertTextItem(TextItem(currentPos, beat.freeText));
 
                 Position pos;
                 if (beat.arpeggioType == "Up")

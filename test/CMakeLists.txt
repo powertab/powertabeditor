@@ -69,6 +69,7 @@ add_executable(pte_tests
     audio/test_midievent.cpp
 
     formats/test_fileformat.cpp
+    formats/gpx/test_gpx.cpp
     formats/guitar_pro/test_gp4.cpp
     formats/powertab_old/test_powertabold.cpp
 
@@ -131,4 +132,9 @@ add_custom_command(TARGET pte_tests POST_BUILD COMMAND
 add_custom_command(TARGET pte_tests POST_BUILD COMMAND
     ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/formats/guitar_pro/data
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
+
+add_custom_command(TARGET pte_tests POST_BUILD COMMAND
+    ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/formats/gpx/data
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)

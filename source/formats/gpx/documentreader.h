@@ -51,6 +51,7 @@ struct Beat
     int rhythmId;
     std::string arpeggioType;
     std::string brushDirection;
+    std::string freeText;
     bool tremoloPicking;
     bool graceNote;
     std::vector<int> noteIds;
