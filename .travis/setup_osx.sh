@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+set -e # Exit immediately if an error occurs.
+set -x # Echo commands.
 
 brew update
 brew install qt5
