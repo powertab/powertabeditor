@@ -18,27 +18,11 @@
 #ifndef FORMATS_GUITARPROIMPORTER_H
 #define FORMATS_GUITARPROIMPORTER_H
 
-#include <boost/optional.hpp>
 #include <formats/fileformat.h>
-#include "gp_channel.h"
-#include "gp_fileformat.h"
-#include <map>
-#include <score/alternateending.h>
-#include <score/barline.h>
-#include <score/position.h>
-#include <score/tempomarker.h>
-#include <score/tuning.h>
-#include <vector>
 
 namespace Gp
 {
-class InputStream;
-
-struct Bar
-{
-    Barline myBarline;
-    boost::optional<AlternateEnding> myAlternateEnding;
-};
+    struct Header;
 }
 
 class ScoreInfo;
@@ -52,11 +36,9 @@ public:
     virtual void load(const std::string &filename, Score &score) override;
 
 private:
-    /// Check that the file version string is valid, and set the version flag
-    /// for the input stream.
-    /// @throw FileFormatException
-    void findFileVersion(Gp::InputStream &stream);
+    static void convert(Gp::Header &header, ScoreInfo &info);
 
+#if 0
     /// Read the song information (title, artist, etc).
     void readHeader(Gp::InputStream &stream, ScoreInfo &info);
 
@@ -124,10 +106,7 @@ private:
     void readSlide(Gp::InputStream &stream, Note &note);
     void readHarmonic(Gp::InputStream &stream, Note &note);
     void readBend(Gp::InputStream &stream, Note &note);
-
-    /// Supported version strings for Guitar Pro files (maps version strings to
-    /// version number)
-    static const std::map<std::string, Gp::Version> versionStrings;
+#endif
 };
 
 #endif

@@ -17,25 +17,11 @@
   
 #include "guitarproimporter.h"
 
-#include <boost/algorithm/clamp.hpp>
-#include <boost/date_time/gregorian/gregorian_types.hpp>
-#include <fstream>
-#include <iostream>
-#include "inputstream.h"
-#include <score/generalmidi.h>
+#include <formats/guitar_pro/document.h>
+#include <formats/guitar_pro/inputstream.h>
 #include <score/score.h>
-#include <score/utils.h>
 
 static const int POSITIONS_PER_SYSTEM = 35;
-
-const std::map<std::string, Gp::Version> GuitarProImporter::versionStrings = {
-	{"FICHIER GUITAR PRO v3.00", Gp::Version3},
-	{"FICHIER GUITAR PRO v4.00", Gp::Version4},
-	{"FICHIER GUITAR PRO v4.06", Gp::Version4},
-	{"FICHIER GUITAR PRO L4.06", Gp::Version4},
-	{"FICHIER GUITAR PRO v5.00", Gp::Version5_0},
-	{"FICHIER GUITAR PRO v5.10", Gp::Version5_1}
-};
 
 GuitarProImporter::GuitarProImporter()
     : FileFormatImporter(
@@ -48,8 +34,14 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
     std::ifstream in(filename, std::ios::binary | std::ios::in);
     Gp::InputStream stream(in);
 
-    findFileVersion(stream);
+#if 1
+    Gp::Document document;
+    document.load(stream);
 
+    ScoreInfo info;
+    convert(document.myHeader, info);
+    score.setScoreInfo(info);
+#else
     ScoreInfo info;
     readHeader(stream, info);
     score.setScoreInfo(info);
@@ -80,87 +72,40 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
     readSystems(stream, score, bars);
 
     ScoreUtils::adjustRehearsalSigns(score);
+#endif
 }
 
-void GuitarProImporter::findFileVersion(Gp::InputStream &stream)
-{
-    const std::string versionString = stream.readVersionString();
-
-    auto it = versionStrings.find(versionString);
-    if (it != versionStrings.end())
-        stream.version = it->second;
-    else
-        throw FileFormatException("Unsupported file version: " + versionString);
-}
-
-void GuitarProImporter::readHeader(Gp::InputStream &stream, ScoreInfo &info)
+void GuitarProImporter::convert(Gp::Header &header, ScoreInfo &info)
 {
     SongData song;
 
-    song.setTitle(stream.readString());
-    stream.readString(); // Ignore subtitle.
-
-    song.setArtist(stream.readString());
+    song.setTitle(header.myTitle);
+    song.setArtist(header.myArtist);
     song.setAudioReleaseInfo(SongData::AudioReleaseInfo(
-        SongData::AudioReleaseInfo::ReleaseType::Single, stream.readString(),
+        SongData::AudioReleaseInfo::ReleaseType::Single, header.myAlbum,
         boost::gregorian::day_clock::local_day().year(), false));
-    song.setAuthorInfo(SongData::AuthorInfo(stream.readString(), ""));
+    song.setAuthorInfo(
+        SongData::AuthorInfo(header.myComposer, header.myLyricist));
+    song.setCopyright(header.myCopyright);
+    song.setTranscriber(header.myTranscriber);
 
-    if (stream.version > Gp::Version4)
-        stream.readString();
-
-    song.setCopyright(stream.readString());
-    song.setTranscriber(stream.readString());
-
-    const std::string instructions = stream.readString();
+    // Merge the instructions and comments into the performance notes.
     std::string comments;
-    if (!instructions.empty())
-        comments += instructions + "\n";
-
-    // Read several lines of comments.
-    const uint32_t numComments = stream.read<uint32_t>();
-    for (uint32_t i = 0; i < numComments; ++i)
-        comments += stream.readString();
+    if (!header.myInstructions.empty())
+        comments += header.myInstructions + "\n";
+    for (const std::string &comment : header.myNotices)
+        comments += comment;
     song.setPerformanceNotes(comments);
 
-    if (stream.version <= Gp::Version4)
-        stream.skip(1); // triplet feel attribute -- ignore.
-
-    if (stream.version >= Gp::Version4)
-    {
-        // Read lyrics.
-        std::string lyrics;
-        // Track number that the lyrics are associated with -- ignore.
-        stream.skip(4);
-
-        // Read several lines of lyrics.
-        for (int i = 0; i < Gp::NumberOfLinesOfLyrics; ++i)
-        {
-            // Measure associated with the line -- ignore.
-            stream.skip(4);
-            lyrics += stream.readIntString();
-        }
-
-        song.setLyrics(lyrics);
-    }
-
-    // Read page setup (ignore).
-    if (stream.version > Gp::Version4)
-    {
-        if (stream.version == Gp::Version5_0)
-            stream.skip(30);
-        else if (stream.version == Gp::Version5_1)
-            stream.skip(49);
-
-        for (int i = 0; i < 11; ++i)
-        {
-            stream.skip(4);
-            stream.readFixedLengthString(0);
-        }
-    }
+    // Merge lyrics together.
+    std::string lyrics;
+    for (const Gp::Header::LyricLine &line : header.myLyrics)
+        lyrics += line.myContents;
+    song.setLyrics(lyrics);
 
     info.setSongData(song);
 }
+#if 0
 
 void GuitarProImporter::readStartTempo(Gp::InputStream &stream, Score &score)
 {
@@ -1220,4 +1165,5 @@ uint8_t GuitarProImporter::convertBendPitch(int32_t gpBendPitch)
 {
     return std::abs(gpBendPitch / 25);
 }
+#endif
 #endif

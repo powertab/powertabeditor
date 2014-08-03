@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,49 @@
 #ifndef FORMATS_GP_FILEFORMAT_H
 #define FORMATS_GP_FILEFORMAT_H
 
+#include <string>
+#include <vector>
+
 /// Contains common code such as flags for use when reading Guitar Pro files
 namespace Gp
 {
+
+class InputStream;
+
+struct Header
+{
+    Header();
+    void load(InputStream &stream);
+
+    struct LyricLine
+    {
+        LyricLine(int measure, const std::string &contents);
+
+        int myMeasure;
+        std::string myContents;
+    };
+
+    std::string myTitle;
+    std::string mySubtitle;
+    std::string myArtist;
+    std::string myAlbum;
+    std::string myLyricist;
+    std::string myComposer;
+    std::string myCopyright;
+    std::string myTranscriber;
+    std::string myInstructions;
+    std::vector<std::string> myNotices;
+    bool myTripletFeel;
+    int myLyricTrack;
+    std::vector<LyricLine> myLyrics;
+};
+
+struct Document
+{
+    void load(InputStream &stream);
+
+    Header myHeader;
+};
 
 /// Supported Guitar Pro file versions
 enum Version
@@ -31,6 +71,7 @@ enum Version
     Version5_1
 };
 
+#if 0
 enum MeasureHeaderFlags
 {
     Numerator,
@@ -169,8 +210,7 @@ enum MiscConstants
     NumberOfBarres = 5, ///< Max number of barres in a chord
     NumberOfMidiChannels =
         64, ///< Used for reading/writing the table of MIDI channels
-    NumberOfStringsGp3 = 6, ///< Max number of strings for an instrument in GP3
-    NumberOfLinesOfLyrics = 5 ///< Number of lines of lyrics stored
+    NumberOfStringsGp3 = 6 ///< Max number of strings for an instrument in GP3
 };
 
 enum FixedLengthStrings
@@ -183,6 +223,7 @@ enum ChordDiagramFlags
 {
     Gp4ChordFormat ///< Indicates that the chord diagram is in the Gp4 format
 };
+#endif
 }
 
 #endif

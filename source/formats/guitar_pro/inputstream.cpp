@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,33 +18,45 @@
 #include "inputstream.h"
 
 #include <cassert>
+#include <formats/fileformat.h>
 
-Gp::InputStream::InputStream(std::istream &stream) : stream_(stream)
+const std::map<std::string, Gp::Version> theVersionStrings = {
+    { "FICHIER GUITAR PRO v3.00", Gp::Version3 },
+    { "FICHIER GUITAR PRO v4.00", Gp::Version4 },
+    { "FICHIER GUITAR PRO v4.06", Gp::Version4 },
+    { "FICHIER GUITAR PRO L4.06", Gp::Version4 },
+    { "FICHIER GUITAR PRO v5.00", Gp::Version5_0 },
+    { "FICHIER GUITAR PRO v5.10", Gp::Version5_1 }
+};
+
+Gp::InputStream::InputStream(std::istream &stream) : myStream(stream)
 {
-    stream_.exceptions(std::istream::failbit | std::istream::badbit |
+    myStream.exceptions(std::istream::failbit | std::istream::badbit |
                        std::istream::eofbit);
+
+    const std::string versionString = readVersionString();
+
+    auto it = theVersionStrings.find(versionString);
+    if (it != theVersionStrings.end())
+        this->version = it->second;
+    else
+        throw FileFormatException("Unsupported file version: " + versionString);
 }
 
-/// Reads the file version
 std::string Gp::InputStream::readVersionString()
 {
-    stream_.seekg(std::ios_base::beg);
+    myStream.seekg(std::ios_base::beg);
 
-    // the version consists of a 30 character string, although not all 30
-    // characters may be used
+    // THe version consists of a 30 character string, although not all 30
+    // characters may be used.
     std::string version = readCharacterString<uint8_t>();
 
-    // skip past any unread characters to land at position 0x1f
-    stream_.seekg(31, std::ios_base::beg);
+    // Skip past any unread characters to land at position 0x1f.
+    myStream.seekg(31, std::ios_base::beg);
 
     return version;
 }
 
-/// Reads a string in the most common format for Guitar Pro - an integer
-/// representing the
-/// size of the stored information + 1, followed by the length-prefixed string
-/// of characters
-/// representing the data
 std::string Gp::InputStream::readString()
 {
     const uint32_t size = read<uint32_t>();
@@ -55,14 +67,11 @@ std::string Gp::InputStream::readString()
     return str;
 }
 
-/// Reads a string prefixed with 4 bytes indicating the length
 std::string Gp::InputStream::readIntString()
 {
     return readCharacterString<uint32_t>();
 }
 
-/// Reads a fixed length string (any unused characters trailing the string are
-/// skipped)
 std::string Gp::InputStream::readFixedLengthString(uint32_t maxLength)
 {
     const uint8_t actualLength = read<uint8_t>();
@@ -70,25 +79,18 @@ std::string Gp::InputStream::readFixedLengthString(uint32_t maxLength)
     std::string str;
 
     if (maxLength != 0)
-    {
         str.resize(maxLength);
-    }
     else
-    {
         str.resize(actualLength);
-    }
 
     if (str.size() != 0)
-    {
-        stream_.read(&str[0], str.size());
-    }
+        myStream.read(&str[0], str.size());
 
     str.resize(actualLength);
-
     return str;
 }
 
 void Gp::InputStream::skip(int numBytes)
 {
-    stream_.seekg(numBytes, std::ios_base::cur);
+    myStream.seekg(numBytes, std::ios_base::cur);
 }

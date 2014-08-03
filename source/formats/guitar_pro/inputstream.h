@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2011 Cameron White
+  * Copyright (C) 2014 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #include <istream>
 #include <vector>
 
-#include "gp_fileformat.h"
+#include "document.h"
 
 namespace Gp
 {
@@ -35,43 +35,53 @@ class InputStream
 public:
     InputStream(std::istream &stream);
 
+    /// Reads simple data (e.g. uint32_t, int16_t) from the input stream.
     template <class T>
     T read();
 
+    /// Reads a string in the most common format for Guitar Pro - an integer
+    /// representing the size of the stored information + 1, followed by the
+    /// length-prefixed string of characters representing the data
     std::string readString();
+
+    /// Reads a string prefixed with 4 bytes that indicate the length.
     std::string readIntString();
+
+    /// Reads a fixed length string (any unused characters trailing the string
+    /// are skipped).
     std::string readFixedLengthString(uint32_t maxLength);
 
     std::string readVersionString();
 
     void skip(int numBytes);
 
-    Gp::Version version;
+    Gp::Version version; // TODO - make private.
+    Gp::Version getVersion() const
+    {
+        return version;
+    }
 
 private:
+    /// Reads a character string.
+    /// The string consists of some number of bytes (encoding the length of the
+    /// string, n) followed by n characters.  This is templated on the length
+    /// prefix type, to allow for strings prefixed with a 2-byte length value,
+    /// 4-byte length value, etc
     template <class LengthPrefixType>
     std::string readCharacterString();
 
-    std::istream &stream_;
+    std::istream &myStream;
 };
 
-/// Reads simple data (e.g. uint32_t, int16_t) from the input stream
 template <class T>
 inline T InputStream::read()
 {
     static_assert(std::is_arithmetic<T>::value, "T must be an arithmetic type");
     T data;
-    stream_.read((char *)&data, sizeof(data));
+    myStream.read((char *)&data, sizeof(data));
     return data;
 }
 
-/// Reads a character string.
-/// The string consists of some number of bytes (encoding the length of the
-/// string, n)
-/// followed by n characters
-/// This is templated on the length prefix type, to allow for strings prefixed
-/// with a 2-byte length value,
-/// 4-byte length value, etc
 template <typename LengthPrefixType>
 inline std::string InputStream::readCharacterString()
 {
@@ -84,7 +94,7 @@ inline std::string InputStream::readCharacterString()
     str.resize(length);
 
     if (length != 0)
-        stream_.read(&str[0], length);
+        myStream.read(&str[0], length);
 
     return str;
 }
