@@ -355,3 +355,18 @@ TEST_CASE("Formats/PowerTabOldImport/Bends", "")
     REQUIRE(bend2.getStartPoint() == Bend::MidPoint);
     REQUIRE(bend2.getEndPoint() == Bend::MidPoint);
 }
+
+TEST_CASE("Formats/PowerTabOldImport/FloatingText", "")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    loadTest(importer, "data/floating_text.ptb", score);
+
+    REQUIRE(score.getSystems()[0].getTextItems().empty());
+    REQUIRE(score.getSystems()[2].getTextItems().empty());
+
+    const System &system1 = score.getSystems()[1];
+    REQUIRE(system1.getTextItems().size() == 1);
+    REQUIRE(system1.getTextItems()[0].getPosition() == 11);
+    REQUIRE(system1.getTextItems()[0].getContents() == "foo");
+}
