@@ -99,6 +99,19 @@ private:
     void loadMarker(InputStream &stream);
 };
 
+struct Track
+{
+    Track();
+    void load(InputStream &stream);
+
+    bool myIsDrumTrack;
+    std::string myName;
+    int myNumStrings;
+    std::vector<int> myTuning;
+    int myChannelIndex; ///< Index into the list of channels.
+    int myCapo;
+};
+
 struct Document
 {
     Document();
@@ -110,6 +123,7 @@ struct Document
     bool myOctave8va;
     std::vector<Channel> myChannels;
     std::vector<Measure> myMeasures;
+    std::vector<Track> myTracks;
 };
 
 /// Supported Guitar Pro file versions

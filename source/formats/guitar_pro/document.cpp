@@ -22,6 +22,8 @@
 
 static const int NUM_LYRIC_LINES = 5;
 static const int NUM_MIDI_CHANNELS = 64;
+static const int TRACK_DESCRIPTION_LENGTH = 40;
+static const int NUMBER_OF_STRINGS = 7;
 
 enum MeasureHeader
 {
@@ -33,6 +35,13 @@ enum MeasureHeader
     Marker,
     KeySignatureChange,
     DoubleBar
+};
+
+enum TrackHeader
+{
+    DrumTrack,
+    TwelveString,
+    BanjoTrack
 };
 
 namespace Gp
@@ -198,6 +207,55 @@ void Measure::loadMarker(InputStream &stream)
     stream.skip(4);
 }
 
+Track::Track()
+    : myIsDrumTrack(false), myNumStrings(0), myChannelIndex(0), myCapo(0)
+{
+}
+
+void Track::load(InputStream &stream)
+{
+    const Flags flags = stream.read<uint8_t>();
+
+    // Ignore 12-string and banjo tracks, but record whether this is a drum
+    // track.
+    myIsDrumTrack = flags.test(TrackHeader::DrumTrack);
+
+    myName = stream.readFixedLengthString(TRACK_DESCRIPTION_LENGTH);
+    myNumStrings = stream.read<int32_t>();
+
+    for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
+    {
+        int note = stream.read<int32_t>();
+        if (i < myNumStrings)
+            myTuning.push_back(note);
+    }
+
+    // MIDI port - not needed.
+    stream.skip(4);
+
+    myChannelIndex = stream.read<int32_t>();
+
+    // MIDI channel used for effects.
+    stream.skip(4);
+    // Number of frets.
+    stream.skip(4);
+
+    myCapo = stream.read<int32_t>();
+
+    // Track color.
+    stream.skip(4);
+
+    // TODO - is this RSE data???
+    if (stream.version == Gp::Version5_0)
+        stream.skip(44);
+    else if (stream.version == Gp::Version5_1)
+    {
+        stream.skip(49);
+        stream.readString();
+        stream.readString();
+    }
+}
+
 Document::Document() : myStartTempo(0), myInitialKey(0), myOctave8va(false)
 {
 }
@@ -240,6 +298,23 @@ void Document::load(InputStream &stream)
         measure.load(stream);
         myMeasures.push_back(measure);
     }
+
+    for (int i = 0; i < numTracks; ++i)
+    {
+        // TODO - figure out what this byte is used for.
+        if (i == 0 || stream.version == Gp::Version5_0)
+            stream.skip(1);
+
+        Track track;
+        track.load(stream);
+        myTracks.push_back(track);
+    }
+
+    // TODO - figure out what these bytes are used for.
+    if (stream.version == Gp::Version5_0)
+        stream.skip(2);
+    else if (stream.version == Gp::Version5_1)
+        stream.skip(1);
 }
 
 }
