@@ -44,6 +44,9 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
 
     convertPlayers(document, score);
     convertScore(document, score);
+
+    // Automatically set the rehearsal sign letters to "A", "B", etc.
+    ScoreUtils::adjustRehearsalSigns(score);
 #else
     ScoreInfo info;
     readHeader(stream, info);
@@ -146,6 +149,10 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
     else if (measure.myIsRepeatBegin)
         bar.setBarType(Barline::RepeatStart);
 
+    if (measure.myMarker)
+        bar.setRehearsalSign(RehearsalSign("", *measure.myMarker));
+
+    // Insert at the correct location.
     if (start == 0)
         system.getBarlines().front() = bar;
     else
@@ -162,6 +169,7 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
             bar.setRepeatCount(measure.myRepeatEnd.get());
         }
 
+        // Insert at the correct location.
         if (end > POSITIONS_PER_SYSTEM)
             system.getBarlines().back() = bar;
         else

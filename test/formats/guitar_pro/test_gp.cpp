@@ -49,3 +49,23 @@ TEST_CASE("Formats/GuitarPro/Barlines", "")
     REQUIRE(barlines[5].getBarType() == Barline::RepeatEnd);
     REQUIRE(barlines[5].getRepeatCount() == 4);
 }
+
+TEST_CASE("Formats/GuitarPro/RehearsalSigns", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/rehearsal_signs.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto barlines = system.getBarlines();
+
+    const Barline &barline1 = barlines[2];
+    const Barline &barline2 = barlines[3];
+
+    REQUIRE(barline1.hasRehearsalSign());
+    REQUIRE(barline1.getRehearsalSign().getDescription() == "Chorus");
+    REQUIRE(barline1.getRehearsalSign().getLetters() == "A");
+    REQUIRE(barline2.hasRehearsalSign());
+    REQUIRE(barline2.getRehearsalSign().getDescription() == "Solo");
+    REQUIRE(barline2.getRehearsalSign().getLetters() == "B");
+}
