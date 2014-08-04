@@ -29,6 +29,8 @@ static const int NUMBER_OF_STRINGS = 7;
 static const int GP3_NUMBER_OF_STRINGS = 6;
 static const int NUMBER_OF_BARRES = 5;
 
+namespace MeasureHeader
+{
 enum MeasureHeader
 {
     Numerator,
@@ -40,14 +42,20 @@ enum MeasureHeader
     KeySignatureChange,
     DoubleBar
 };
+}
 
+namespace TrackHeader
+{
 enum TrackHeader
 {
     DrumTrack,
     TwelveString,
     BanjoTrack
 };
+}
 
+namespace BeatHeader
+{
 enum BeatHeader
 {
     Dotted,
@@ -58,13 +66,19 @@ enum BeatHeader
     IrregularGrouping,
     BeatStatus
 };
+}
 
+namespace BeatStatus
+{
 enum BeatStatus
 {
     Empty = 0x00,
     Rest = 0x02
 };
+}
 
+namespace BeatEffects
+{
 enum BeatEffects
 {
     VibratoGp3_1 = 0,
@@ -78,14 +92,20 @@ enum BeatEffects
     HasTapping = 5,
     HasStrokeEffect = 6
 };
+}
 
+namespace PickstrokeType
+{
 enum PickstrokeType
 {
     None,
     Up,
     Down
 };
+}
 
+namespace TapType
+{
 enum TapType
 {
     TremoloBarGp3 = 0,
@@ -94,7 +114,10 @@ enum TapType
     Slapping,
     Popping
 };
+}
 
+namespace NoteHeader
+{
 enum NoteHeader
 {
     TimeIndependentDuration,
@@ -106,14 +129,20 @@ enum NoteHeader
     Accented,
     FingeringType
 };
+}
 
+namespace NoteType
+{
 enum NoteType
 {
     Normal = 0x01,
     Tied = 0x02,
     Muted = 0x03
 };
+}
 
+namespace NoteEffects
+{
 enum NoteEffects
 {
     HasBend = 0,
@@ -129,7 +158,10 @@ enum NoteEffects
     HasTrill = 5,
     HasVibrato = 6
 };
+}
 
+namespace HarmonicType
+{
 enum HarmonicType
 {
     NaturalHarmonic = 1,
@@ -141,6 +173,7 @@ enum HarmonicType
     Artificial7 = 17,
     Artificial12 = 22
 };
+}
 
 namespace Gp
 {
