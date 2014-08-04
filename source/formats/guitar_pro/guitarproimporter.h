@@ -45,11 +45,6 @@ private:
     /// Read the initial tempo for the score.
     void readStartTempo(Gp::InputStream &stream, Score &score);
 
-    /// Read the midi channels (i.e. mixer settings).
-    /// We store them into a temporary structure (Gp::Channel) since they must
-    /// be referenced later when importing the tracks.
-    std::vector<Gp::Channel> readChannels(Gp::InputStream &stream);
-
     /// Reads all of the measures in the score, and any alternate endings that
     /// occur.
     void readBarlines(Gp::InputStream &stream, uint32_t numMeasures,

@@ -116,33 +116,6 @@ void GuitarProImporter::readStartTempo(Gp::InputStream &stream, Score &score)
     score.getSystems().front().insertTempoMarker(marker);
 }
 
-std::vector<Gp::Channel> GuitarProImporter::readChannels(
-    Gp::InputStream &stream)
-{
-    std::vector<Gp::Channel> channels;
-
-    for (int i = 0; i < Gp::NumberOfMidiChannels; ++i)
-    {
-        Gp::Channel channel;
-
-        channel.instrument = boost::algorithm::clamp<int32_t>(
-            stream.read<int32_t>(), 0, Midi::NUM_MIDI_PRESETS);
-        channel.volume = Gp::Channel::readChannelProperty(stream);
-        channel.balance = Gp::Channel::readChannelProperty(stream);
-        channel.chorus = Gp::Channel::readChannelProperty(stream);
-        channel.reverb = Gp::Channel::readChannelProperty(stream);
-        channel.phaser = Gp::Channel::readChannelProperty(stream);
-        channel.tremolo = Gp::Channel::readChannelProperty(stream);
-
-        // Ignored (compatibility with older versions).
-        stream.skip(2);
-
-        channels.push_back(channel);
-    }
-
-    return channels;
-}
-
 void GuitarProImporter::readBarlines(Gp::InputStream &stream,
                                      uint32_t numMeasures,
                                      std::vector<Gp::Bar> &bars)

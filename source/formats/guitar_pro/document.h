@@ -55,11 +55,36 @@ struct Header
     std::vector<LyricLine> myLyrics;
 };
 
+struct Channel
+{
+    Channel();
+    void load(InputStream &stream);
+
+    int myInstrument;
+    int myVolume;
+    int myBalance;
+    int myChorus;
+    int myReverb;
+    int myPhaser;
+    int myTremolo;
+
+private:
+    /// For some reason, channel properties (except instrument type) are stored
+    /// in a different format, where 1 -> 7, 2 -> 15, ... , and 16 -> 127. This
+    /// function reads the data and performs the necessary conversion.
+    static uint8_t readChannelProperty(InputStream &stream);
+};
+
 struct Document
 {
+    Document::Document();
     void load(InputStream &stream);
 
     Header myHeader;
+    int myStartTempo;
+    int myInitialKey;
+    bool myOctave8va;
+    std::vector<Channel> myChannels;
 };
 
 /// Supported Guitar Pro file versions
@@ -208,8 +233,6 @@ enum MiscConstants
 {
     NumberOfStrings = 7, ///< Max number of strings for an instrument
     NumberOfBarres = 5, ///< Max number of barres in a chord
-    NumberOfMidiChannels =
-        64, ///< Used for reading/writing the table of MIDI channels
     NumberOfStringsGp3 = 6 ///< Max number of strings for an instrument in GP3
 };
 

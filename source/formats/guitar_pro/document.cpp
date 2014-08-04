@@ -18,8 +18,10 @@
 #include "document.h"
 
 #include <formats/guitar_pro/inputstream.h>
+#include <score/generalmidi.h>
 
 static const int NUM_LYRIC_LINES = 5;
+static const int NUM_MIDI_CHANNELS = 64;
 
 namespace Gp
 {
@@ -69,6 +71,7 @@ void Header::load(InputStream &stream)
     }
 
     // Ignore page setup information.
+    // TODO - figure out if there is any useful information in here.
     if (stream.version > Version4)
     {
         if (stream.version == Version5_0)
@@ -84,9 +87,72 @@ void Header::load(InputStream &stream)
     }
 }
 
+Channel::Channel()
+    : myInstrument(0),
+      myVolume(0),
+      myBalance(0),
+      myChorus(0),
+      myReverb(0),
+      myPhaser(0),
+      myTremolo(0)
+{
+}
+
+void Channel::load(InputStream &stream)
+{
+    myInstrument = boost::algorithm::clamp<int32_t>(stream.read<int32_t>(), 0,
+                                                    Midi::NUM_MIDI_PRESETS);
+    myVolume = readChannelProperty(stream);
+    myBalance = readChannelProperty(stream);
+    myChorus = readChannelProperty(stream);
+    myReverb = readChannelProperty(stream);
+    myPhaser = readChannelProperty(stream);
+    myTremolo = readChannelProperty(stream);
+
+    // TODO - figure out what these bytes are used for.
+    stream.skip(2);
+}
+
+uint8_t Channel::readChannelProperty(InputStream &stream)
+{
+    uint8_t value = stream.read<uint8_t>();
+    if (value != 0)
+        value = (value * 8) - 1;
+
+    return value;
+}
+
+Document::Document() : myStartTempo(0), myInitialKey(0), myOctave8va(false)
+{
+}
+
 void Document::load(InputStream &stream)
 {
     myHeader.load(stream);
+    myStartTempo = stream.read<int32_t>();
+
+    // TODO - figure out the meaning of this byte.
+    if (stream.version == Version5_1)
+        stream.skip(1);
+
+    myInitialKey = stream.read<int32_t>();
+
+    if (stream.version >= Version4)
+        myOctave8va = stream.read<int8_t>();
+
+    for (int i = 0; i < NUM_MIDI_CHANNELS; ++i)
+    {
+        Channel channel;
+        channel.load(stream);
+        myChannels.push_back(channel);
+    }
+
+    // TODO - is this RSE data?
+    if (stream.version > Version4)
+        stream.skip(42);
+
+    const int numMeasures = stream.read<int32_t>();
+    const int numTracks = stream.read<int32_t>();
 }
 
 }
