@@ -22,10 +22,13 @@
 
 namespace Gp
 {
+    struct Document;
     struct Header;
+    struct Measure;
 }
 
 class ScoreInfo;
+class System;
 
 /// Imports Guitar Pro files.
 class GuitarProImporter : public FileFormatImporter
@@ -36,15 +39,14 @@ public:
     virtual void load(const std::string &filename, Score &score) override;
 
 private:
-    static void convert(Gp::Header &header, ScoreInfo &info);
+    static void convertHeader(Gp::Header &header, ScoreInfo &info);
+    static void convertPlayers(Gp::Document &doc, Score &score);
+    static int convertBarline(const Gp::Measure &measure,
+                              const Gp::Measure *prevMeasure, System &system,
+                              int start, int end);
+    static void convertScore(Gp::Document &doc, Score &score);
 
 #if 0
-    /// Read the song information (title, artist, etc).
-    void readHeader(Gp::InputStream &stream, ScoreInfo &info);
-
-    /// Read the initial tempo for the score.
-    void readStartTempo(Gp::InputStream &stream, Score &score);
-
     /// Reads all of the measures in the score, and any alternate endings that
     /// occur.
     void readBarlines(Gp::InputStream &stream, uint32_t numMeasures,
@@ -56,13 +58,6 @@ private:
 
     /// Converts key accidentals from the Guitar Pro format to Power Tab.
     int convertKeyAccidentals(int8_t gpKey);
-
-    /// Read and convert all tracks (players).
-    void readTracks(Gp::InputStream &stream, Score &score, uint32_t numTracks,
-                    const std::vector<Gp::Channel> &channels);
-
-    /// Imports a Guitar Pro tuning and converts it into a Power Tab tuning.
-    Tuning readTuning(Gp::InputStream &stream);
 
     void readSystems(Gp::InputStream &stream, Score &score,
                      std::vector<Gp::Bar> bars);

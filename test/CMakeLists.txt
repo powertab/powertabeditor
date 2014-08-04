@@ -70,7 +70,7 @@ add_executable(pte_tests
 
     formats/test_fileformat.cpp
     formats/gpx/test_gpx.cpp
-    formats/guitar_pro/test_gp4.cpp
+    formats/guitar_pro/test_gp.cpp
     formats/powertab_old/test_powertabold.cpp
 
     score/test_alternateending.cpp

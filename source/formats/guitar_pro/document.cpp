@@ -761,7 +761,7 @@ void Staff::load(InputStream &stream)
     {
         Beat beat;
         beat.load(stream);
-        myFirstVoice.push_back(beat);
+        myVoices[0].push_back(beat);
     }
 
     if (stream.version > Version4)
@@ -771,7 +771,7 @@ void Staff::load(InputStream &stream)
         {
             Beat beat;
             beat.load(stream);
-            mySecondVoice.push_back(beat);
+            myVoices[1].push_back(beat);
         }
     }
 
