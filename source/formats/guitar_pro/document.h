@@ -18,6 +18,7 @@
 #ifndef FORMATS_GP_FILEFORMAT_H
 #define FORMATS_GP_FILEFORMAT_H
 
+#include <boost/optional/optional.hpp>
 #include <string>
 #include <vector>
 
@@ -75,9 +76,32 @@ private:
     static uint8_t readChannelProperty(InputStream &stream);
 };
 
+struct Measure
+{
+    Measure();
+    void load(InputStream &stream);
+
+    bool myIsDoubleBar;
+    bool myIsRepeatBegin;
+    /// The numerator and denominator if there is a time signature change,
+    boost::optional<std::pair<int, int>> myTimeSignatureChange;
+    /// If there is a repeat end, this contains the repeat count.
+    boost::optional<int> myRepeatEnd;
+    /// If there is a key change, this contains the key and whether it is
+    /// minor.
+    boost::optional<std::pair<int, bool>> myKeyChange;
+    /// Optional rehearsal sign.
+    boost::optional<std::string> myMarker;
+    /// Optional alternate ending number.
+    boost::optional<int> myAlternateEnding;
+
+private:
+    void loadMarker(InputStream &stream);
+};
+
 struct Document
 {
-    Document::Document();
+    Document();
     void load(InputStream &stream);
 
     Header myHeader;
@@ -85,6 +109,7 @@ struct Document
     int myInitialKey;
     bool myOctave8va;
     std::vector<Channel> myChannels;
+    std::vector<Measure> myMeasures;
 };
 
 /// Supported Guitar Pro file versions

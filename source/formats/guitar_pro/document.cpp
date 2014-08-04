@@ -23,6 +23,18 @@
 static const int NUM_LYRIC_LINES = 5;
 static const int NUM_MIDI_CHANNELS = 64;
 
+enum MeasureHeader
+{
+    Numerator,
+    Denominator,
+    RepeatBegin,
+    RepeatEnd,
+    AltEnding,
+    Marker,
+    KeySignatureChange,
+    DoubleBar
+};
+
 namespace Gp
 {
 Header::Header() : myTripletFeel(false), myLyricTrack(0)
@@ -42,7 +54,7 @@ void Header::load(InputStream &stream)
     myAlbum = stream.readString();
 
     myLyricist = stream.readString();
-    if (stream.version > Gp::Version4)
+    if (stream.version > Version4)
         myComposer = stream.readString();
     else
         myComposer = myLyricist;
@@ -122,6 +134,70 @@ uint8_t Channel::readChannelProperty(InputStream &stream)
     return value;
 }
 
+Measure::Measure() : myIsDoubleBar(false), myIsRepeatBegin(false)
+{
+}
+
+void Measure::load(InputStream &stream)
+{
+    const Flags flags = stream.read<uint8_t>();
+
+    if (flags.test(MeasureHeader::Numerator) ||
+        flags.test(MeasureHeader::Denominator))
+    {
+        std::pair<int, int> time;
+        if (flags.test(MeasureHeader::Numerator))
+            time.first = stream.read<int8_t>();
+
+        if (flags.test(MeasureHeader::Denominator))
+            time.second = stream.read<int8_t>();
+
+        myTimeSignatureChange = time;
+    }
+
+    myIsDoubleBar = flags.test(MeasureHeader::DoubleBar);
+    myIsRepeatBegin = flags.test(MeasureHeader::RepeatBegin);
+    if (flags.test(MeasureHeader::RepeatEnd))
+        myRepeatEnd = stream.read<int8_t>();
+
+    if (flags.test(MeasureHeader::Marker) && stream.version == Version5_1)
+        loadMarker(stream);
+
+    if (flags.test(MeasureHeader::AltEnding))
+        myAlternateEnding = stream.read<int8_t>();
+
+    if (flags.test(MeasureHeader::Marker) && stream.version != Version5_1)
+        loadMarker(stream);
+
+    if (flags.test(MeasureHeader::KeySignatureChange))
+    {
+        myKeyChange = std::make_pair(stream.read<int8_t>(),
+                                     static_cast<bool>(stream.read<int8_t>()));
+    }
+
+    // TODO - more unknown GP5 data ...
+    if (stream.version > Version4)
+    {
+        if (flags.test(MeasureHeader::Numerator) ||
+            flags.test(MeasureHeader::Denominator))
+        {
+            stream.skip(4);
+        }
+
+        if (!flags.test(MeasureHeader::AltEnding))
+            stream.skip(1);
+
+        stream.skip(1);
+    }
+}
+
+void Measure::loadMarker(InputStream &stream)
+{
+    myMarker = stream.readString();
+    // Ignore the marker's color.
+    stream.skip(4);
+}
+
 Document::Document() : myStartTempo(0), myInitialKey(0), myOctave8va(false)
 {
 }
@@ -153,6 +229,17 @@ void Document::load(InputStream &stream)
 
     const int numMeasures = stream.read<int32_t>();
     const int numTracks = stream.read<int32_t>();
+
+    for (int i = 0; i < numMeasures; ++i)
+    {
+        // TODO - figure out what this byte is used for.
+        if (stream.version > Version4 && i > 0)
+            stream.skip(1);
+
+        Measure measure;
+        measure.load(stream);
+        myMeasures.push_back(measure);
+    }
 }
 
 }
