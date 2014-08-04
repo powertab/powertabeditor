@@ -92,6 +92,53 @@ enum TapType
     Popping
 };
 
+enum NoteHeader
+{
+    TimeIndependentDuration,
+    HeavyAccent,
+    GhostNote,
+    HasNoteEffects,
+    Dynamic,
+    NoteType,
+    Accented,
+    FingeringType
+};
+
+enum NoteType
+{
+    Normal = 0x01,
+    Tied = 0x02,
+    Muted = 0x03
+};
+
+enum NoteEffects
+{
+    HasBend = 0,
+    HasStaccato = 0,
+    HasHammerOnOrPullOff = 1,
+    HasPalmMute = 1,
+    HasSlideOutVer3 = 2,
+    HasTremoloPicking = 2,
+    HasLetRing = 3,
+    HasSlide = 3,
+    HasGraceNote = 4,
+    HasHarmonic = 4,
+    HasTrill = 5,
+    HasVibrato = 6
+};
+
+enum HarmonicType
+{
+    NaturalHarmonic = 1,
+    ArtificalHarmonicGp5 = 2,
+    TappedHarmonic = 3,
+    PinchHarmonic = 4,
+    SemiHarmonic = 5,
+    Artificial5 = 15,
+    Artificial7 = 17,
+    Artificial12 = 22
+};
+
 namespace Gp
 {
 Header::Header() : myTripletFeel(false), myLyricTrack(0)
@@ -189,6 +236,198 @@ uint8_t Channel::readChannelProperty(InputStream &stream)
         value = (value * 8) - 1;
 
     return value;
+}
+
+Note::Note(int string)
+    : myString(string),
+      myFret(0),
+      myHasAccent(false),
+      myHasHeavyAccent(false),
+      myIsGhostNote(false),
+      myIsTied(false),
+      myIsMuted(false),
+      myIsLetRing(false),
+      myIsHammerOnOrPullOff(false),
+      myHasPalmMute(false),
+      myIsStaccato(false),
+      myIsNaturalHarmonic(false)
+{
+}
+
+void Note::load(InputStream &stream)
+{
+    const Flags flags = stream.read<uint8_t>();
+
+    myHasAccent = flags.test(NoteHeader::Accented);
+
+    if (stream.version > Version4)
+        myHasHeavyAccent = flags.test(NoteHeader::HeavyAccent);
+
+    myIsGhostNote = flags.test(NoteHeader::GhostNote);
+
+    if (flags.test(NoteHeader::NoteType))
+    {
+        const uint8_t noteType = stream.read<uint8_t>();
+        if (noteType == NoteType::Tied)
+            myIsTied = true;
+        if (noteType == NoteType::Muted)
+            myIsMuted = true;
+    }
+
+    if (stream.version <= Version4 &&
+        flags.test(NoteHeader::TimeIndependentDuration))
+    {
+        // Ignore - I think this repeats the Beat duration?
+        stream.skip(1);
+        stream.skip(1);
+    }
+
+    if (flags.test(NoteHeader::Dynamic))
+        myDynamic = stream.read<int8_t>();
+
+    // If there is a non-empty note, read the fret number.
+    if (flags.test(NoteHeader::NoteType))
+        myFret = stream.read<int8_t>();
+
+    if (flags.test(NoteHeader::FingeringType))
+    {
+        // Left and right hand fingerings - ignore.
+        stream.skip(1);
+        stream.skip(1);
+    }
+
+    if (stream.version > Version4)
+    {
+        // TODO - figure out what this data is used for in GP5.
+        if (flags.test(NoteHeader::TimeIndependentDuration))
+            stream.skip(8);
+
+        stream.skip(1);
+    }
+
+    if (flags.test(NoteHeader::HasNoteEffects))
+    {
+        if (stream.version >= Version4)
+            loadNoteEffects(stream);
+        else if (stream.version == Version3)
+            loadNoteEffectsGp3(stream);
+    }
+}
+
+void Note::loadNoteEffects(InputStream &stream)
+{
+    const Flags header1 = stream.read<uint8_t>();
+    const Flags header2 = stream.read<uint8_t>();
+
+    if (header1.test(NoteEffects::HasBend))
+        loadBend(stream);
+
+    if (header1.test(NoteEffects::HasGraceNote))
+    {
+        // TODO - handle grace notes.
+        stream.skip(1); // fret number grace note is made from
+        stream.skip(1); // grace note dynamic
+        stream.skip(1); // transition type
+        stream.skip(1); // duration
+        if (stream.version > Version4)
+            stream.skip(1); // flags for GP5
+    }
+
+    if (header2.test(NoteEffects::HasTremoloPicking))
+    {
+        // Ignore - Power Tab does not allow different values for the tremolo
+        // picking duration (e.g. eighth notes).
+        stream.skip(1);
+    }
+
+    if (header2.test(NoteEffects::HasSlide))
+        loadSlide(stream);
+
+    if (header2.test(NoteEffects::HasHarmonic))
+        loadHarmonic(stream);
+
+    if (header2.test(NoteEffects::HasTrill))
+    {
+        myTrilledFret = stream.read<int8_t>();
+        // Trill duration - not supported in Power Tab.
+        stream.skip(1);
+    }
+
+    if (header1.test(NoteEffects::HasLetRing))
+        myIsLetRing = true;
+    if (header1.test(NoteEffects::HasHammerOnOrPullOff))
+        myIsHammerOnOrPullOff = true;
+    if (header1.test(NoteEffects::HasPalmMute))
+        myHasPalmMute = true;
+    if (header1.test(NoteEffects::HasStaccato))
+        myIsStaccato = true;
+}
+
+void Note::loadNoteEffectsGp3(InputStream &stream)
+{
+    const Flags flags = stream.read<uint8_t>();
+
+    myIsLetRing = flags.test(NoteEffects::HasLetRing);
+    myIsHammerOnOrPullOff = flags.test(NoteEffects::HasHammerOnOrPullOff);
+
+    // TODO - implement slides.
+#if 0
+    if (flags.test(NoteEffects::HasSlideOutVer3))
+        note.setProperty(Note::SlideOutOfDownwards);
+#endif
+
+    if (flags.test(NoteEffects::HasBend))
+        loadBend(stream);
+
+    if (flags.test(NoteEffects::HasGraceNote))
+    {
+        // TODO - implement.
+        stream.read<uint8_t>(); // fret number grace note is made from
+        stream.read<uint8_t>(); // grace note dynamic
+        stream.read<uint8_t>(); // transition type
+        stream.read<uint8_t>(); // duration
+    }
+}
+
+void Note::loadBend(InputStream &stream)
+{
+    // TODO - perform conversion for bends
+
+    stream.read<uint8_t>(); // bend type
+    stream.read<uint32_t>(); // bend height
+
+    const uint32_t numPoints = stream.read<uint32_t>(); // number of bend points
+
+    for (uint32_t i = 0; i < numPoints; i++)
+    {
+        stream.skip(4); // time relative to the previous point
+        stream.skip(4); // bend position
+        stream.skip(1); // bend vibrato
+    }
+}
+
+void Note::loadSlide(InputStream &stream)
+{
+    // TODO - perform conversion.
+    stream.read<int8_t>();
+}
+
+void Note::loadHarmonic(InputStream &stream)
+{
+    const uint8_t harmonic = stream.read<uint8_t>();
+
+    if (harmonic == HarmonicType::NaturalHarmonic)
+        myIsNaturalHarmonic = true;
+    else if (harmonic == HarmonicType::TappedHarmonic)
+    {
+        // TODO - implement this.
+        stream.read<uint8_t>();
+    }
+    else if (harmonic == HarmonicType::ArtificalHarmonicGp5)
+    {
+        // TODO - implement this.
+        stream.skip(3);
+    }
 }
 
 Beat::Beat()
@@ -365,7 +604,17 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
 
 void Beat::loadNotes(InputStream &stream)
 {
-    throw FileFormatException("Notes are not yet supported");
+    const Flags stringsPlayed = stream.read<uint8_t>();
+
+    for (int i = NUMBER_OF_STRINGS - 1; i >= 0; --i)
+    {
+        if (stringsPlayed.test(i))
+        {
+            Note note(NUMBER_OF_STRINGS - i - 1);
+            note.load(stream);
+            myNotes.push_back(note);
+        }
+    }
 }
 
 Staff::Staff()

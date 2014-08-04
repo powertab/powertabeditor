@@ -76,6 +76,35 @@ private:
     static uint8_t readChannelProperty(InputStream &stream);
 };
 
+struct Note
+{
+    Note(int string);
+    void load(InputStream &stream);
+
+    int myString;
+    int myFret;
+    bool myHasAccent;
+    bool myHasHeavyAccent;
+    bool myIsGhostNote;
+    bool myIsTied;
+    bool myIsMuted;
+    /// Optional dynamic, where 1 = ppp, ... 9 = fff.
+    boost::optional<int> myDynamic;
+    boost::optional<int> myTrilledFret;
+    bool myIsLetRing;
+    bool myIsHammerOnOrPullOff;
+    bool myHasPalmMute;
+    bool myIsStaccato;
+    bool myIsNaturalHarmonic;
+
+private:
+    void loadNoteEffects(InputStream &stream);
+    void loadNoteEffectsGp3(InputStream &stream);
+    void loadBend(InputStream &stream);
+    void loadSlide(InputStream &stream);
+    void loadHarmonic(InputStream &stream);
+};
+
 struct Beat
 {
     Beat();
@@ -95,6 +124,7 @@ struct Beat
     bool myPickstrokeUp;
     bool myPickstrokeDown;
     bool myIsTapped;
+    std::vector<Note> myNotes;
 
 private:
     void loadChordDiagram(InputStream &stream);
