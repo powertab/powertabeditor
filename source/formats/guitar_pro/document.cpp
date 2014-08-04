@@ -18,6 +18,7 @@
 #include "document.h"
 
 #include <formats/guitar_pro/inputstream.h>
+#include <formats/fileformat.h>
 #include <score/generalmidi.h>
 
 static const int NUM_LYRIC_LINES = 5;
@@ -42,6 +43,53 @@ enum TrackHeader
     DrumTrack,
     TwelveString,
     BanjoTrack
+};
+
+enum BeatHeader
+{
+    Dotted,
+    ChordDiagram,
+    Text,
+    NoteEffects,
+    MixTableChangeEvent,
+    IrregularGrouping,
+    BeatStatus
+};
+
+enum BeatStatus
+{
+    Empty = 0x00,
+    Rest = 0x02
+};
+
+enum BeatEffects
+{
+    VibratoGp3_1 = 0,
+    HasRasguedo = 0,
+    VibratoGp3_2 = 1,
+    Pickstroke = 1,
+    NaturalHarmonicGp3 = 2,
+    HasTremoloBarEvent = 2,
+    ArtificialHarmonicGp3 = 3,
+    FadeInGp3 = 4,
+    HasTapping = 5,
+    HasStrokeEffect = 6
+};
+
+enum PickstrokeType
+{
+    None,
+    Up,
+    Down
+};
+
+enum TapType
+{
+    TremoloBarGp3 = 0,
+    TappingNone = 0,
+    Tapping,
+    Slapping,
+    Popping
 };
 
 namespace Gp
@@ -143,6 +191,213 @@ uint8_t Channel::readChannelProperty(InputStream &stream)
     return value;
 }
 
+Beat::Beat()
+    : myIsDotted(false),
+      myIsRest(false),
+      myDuration(1),
+      myIsVibrato(false),
+      myIsNaturalHarmonic(false),
+      myIsArtificialHarmonic(false),
+      myArpeggioUp(false),
+      myArpeggioDown(false),
+      myIsTremoloPicked(false),
+      myPickstrokeUp(false),
+      myPickstrokeDown(false),
+      myIsTapped(false)
+{
+}
+
+void Beat::load(InputStream &stream)
+{
+    const Flags flags = stream.read<uint8_t>();
+
+    myIsDotted = flags.test(BeatHeader::Dotted);
+
+    bool isWholeRest = false;
+    if (flags.test(BeatHeader::BeatStatus))
+    {
+        const uint8_t status = stream.read<uint8_t>();
+
+        if (status == BeatStatus::Empty)
+        {
+            isWholeRest = true;
+            myIsRest = true;
+        }
+        else if (status == BeatStatus::Rest)
+            myIsRest = true;
+    }
+
+    // Read the duration.
+    {
+        const int8_t duration = stream.read<int8_t>();
+
+        // Durations are stored as 0 -> quarter note, -1 -> half note, 1 ->
+        // eight note, etc. We need to convert to 1 = whole note, 2 = half note,
+        // 4 = quarter note, etc.
+        if (isWholeRest)
+            myDuration = 1;
+        else
+            myDuration = static_cast<int>(std::pow(2.0, duration + 2));
+    }
+
+    if (flags.test(BeatHeader::IrregularGrouping))
+        myIrregularGrouping = stream.read<int32_t>();
+
+    if (flags.test(BeatHeader::ChordDiagram))
+        loadChordDiagram(stream);
+
+    if (flags.test(BeatHeader::Text))
+        myText = stream.readString();
+
+    if (flags.test(BeatHeader::NoteEffects))
+        loadBeatEffects(stream);
+
+    if (flags.test(BeatHeader::MixTableChangeEvent))
+        loadMixTableChangeEvent(stream);
+
+    loadNotes(stream);
+
+    // TODO - figure out the meaning of these bytes.
+    if (stream.version > Version4)
+    {
+        stream.skip(1);
+        const int x = stream.read<uint8_t>();
+        if ((x & 0x08) != 0)
+            stream.skip(1);
+    }
+}
+
+void Beat::loadChordDiagram(InputStream &stream)
+{
+    throw FileFormatException("Chord diagrams are not yet supported");
+}
+
+void Beat::loadBeatEffects(InputStream &stream)
+{
+    const Flags flags1 = stream.read<uint8_t>();
+    Flags flags2;
+
+    // GP3 effect decoding.
+    if (stream.version == Version3)
+    {
+        myIsVibrato = flags1.test(BeatEffects::VibratoGp3_1) ||
+                      flags1.test(BeatEffects::VibratoGp3_2);
+        myIsNaturalHarmonic = flags1.test(BeatEffects::NaturalHarmonicGp3);
+        myIsArtificialHarmonic =
+            flags1.test(BeatEffects::ArtificialHarmonicGp3);
+    }
+    else
+        flags2 = stream.read<uint8_t>();
+
+    if (flags1.test(BeatEffects::HasTapping))
+    {
+        const uint8_t type = stream.read<uint8_t>();
+
+        // In GP3, a value of 0 indicates a tremolo bar.
+        if (type == TapType::TremoloBarGp3 && stream.version == Version3)
+            loadTremoloBar(stream);
+        else
+        {
+            // Ignore slapping and popping.
+            if (type == TapType::Tapping)
+                myIsTapped = true;
+
+            // TODO - figure out the meaning of this data.
+            if (stream.version == Version3)
+                stream.read<uint32_t>();
+        }
+    }
+
+    if (stream.version >= Version4 &&
+        flags2.test(BeatEffects::HasTremoloBarEvent))
+    {
+        loadTremoloBar(stream);
+    }
+
+    if (flags1.test(BeatEffects::HasStrokeEffect))
+    {
+        // Upstroke and downstroke duration values - we will just use these for
+        // toggling pickstroke up/down.
+        if (stream.read<uint8_t>() > 0)
+            myPickstrokeDown = true;
+        if (stream.read<uint8_t>() > 0)
+            myPickstrokeUp = true;
+    }
+
+    if (stream.version >= Version4)
+        myIsTremoloPicked = flags2.test(BeatEffects::HasRasguedo);
+
+    if (stream.version >= Version4 && flags2.test(BeatEffects::Pickstroke))
+    {
+        const uint8_t pickstrokeType = stream.read<uint8_t>();
+
+        if (pickstrokeType == PickstrokeType::Up)
+            myArpeggioUp = true;
+        else if (pickstrokeType == PickstrokeType::Down)
+            myArpeggioDown = true;
+    }
+}
+
+void Beat::loadTremoloBar(InputStream &stream)
+{
+    // TODO - implement tremolo bar support.
+    if (stream.version != Version3)
+        stream.read<uint8_t>();
+
+    stream.read<int32_t>();
+
+    if (stream.version >= Version4)
+    {
+        const int numPoints = stream.read<int32_t>();
+        for (int i = 0; i < numPoints; i++)
+        {
+            stream.skip(4); // time relative to the previous point
+            stream.skip(4); // bend value
+            stream.skip(1); // vibrato (used for bend, not for tremolo bar)
+        }
+    }
+}
+
+void Beat::loadMixTableChangeEvent(InputStream &stream)
+{
+    throw FileFormatException("Mix table change events are not yet supported");
+}
+
+void Beat::loadNotes(InputStream &stream)
+{
+    throw FileFormatException("Notes are not yet supported");
+}
+
+Staff::Staff()
+{
+}
+
+void Staff::load(InputStream &stream)
+{
+    int numBeats = stream.read<int32_t>();
+    for (int i = 0; i < numBeats; ++i)
+    {
+        Beat beat;
+        beat.load(stream);
+        myFirstVoice.push_back(beat);
+    }
+
+    if (stream.version > Version4)
+    {
+        numBeats = stream.read<int32_t>();
+        for (int i = 0; i < numBeats; ++i)
+        {
+            Beat beat;
+            beat.load(stream);
+            mySecondVoice.push_back(beat);
+        }
+    }
+
+    // TODO - figure out what this byte means.
+    if (stream.version > Version4)
+        stream.skip(1);
+}
+
 Measure::Measure() : myIsDoubleBar(false), myIsRepeatBegin(false)
 {
 }
@@ -207,6 +462,16 @@ void Measure::loadMarker(InputStream &stream)
     stream.skip(4);
 }
 
+void Measure::loadStaves(InputStream &stream, int numTracks)
+{
+    for (int i = 0; i < numTracks; ++i)
+    {
+        Staff staff;
+        staff.load(stream);
+        myStaves.push_back(staff);
+    }
+}
+
 Track::Track()
     : myIsDrumTrack(false), myNumStrings(0), myChannelIndex(0), myCapo(0)
 {
@@ -246,9 +511,9 @@ void Track::load(InputStream &stream)
     stream.skip(4);
 
     // TODO - is this RSE data???
-    if (stream.version == Gp::Version5_0)
+    if (stream.version == Version5_0)
         stream.skip(44);
-    else if (stream.version == Gp::Version5_1)
+    else if (stream.version == Version5_1)
     {
         stream.skip(49);
         stream.readString();
@@ -302,7 +567,7 @@ void Document::load(InputStream &stream)
     for (int i = 0; i < numTracks; ++i)
     {
         // TODO - figure out what this byte is used for.
-        if (i == 0 || stream.version == Gp::Version5_0)
+        if (i == 0 || stream.version == Version5_0)
             stream.skip(1);
 
         Track track;
@@ -311,10 +576,13 @@ void Document::load(InputStream &stream)
     }
 
     // TODO - figure out what these bytes are used for.
-    if (stream.version == Gp::Version5_0)
+    if (stream.version == Version5_0)
         stream.skip(2);
-    else if (stream.version == Gp::Version5_1)
+    else if (stream.version == Version5_1)
         stream.skip(1);
+
+    for (int i = 0; i < numMeasures; ++i)
+        myMeasures[i].loadStaves(stream, numTracks);
 }
 
 }

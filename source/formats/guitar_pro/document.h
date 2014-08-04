@@ -76,10 +76,48 @@ private:
     static uint8_t readChannelProperty(InputStream &stream);
 };
 
+struct Beat
+{
+    Beat();
+    void load(InputStream &stream);
+
+    bool myIsDotted;
+    bool myIsRest;
+    int myDuration; ///< 4 -> quarter note, 8 -> eighth note, etc.
+    boost::optional<int> myIrregularGrouping;
+    boost::optional<std::string> myText;
+    bool myIsVibrato;
+    bool myIsNaturalHarmonic;
+    bool myIsArtificialHarmonic;
+    bool myArpeggioUp;
+    bool myArpeggioDown;
+    bool myIsTremoloPicked;
+    bool myPickstrokeUp;
+    bool myPickstrokeDown;
+    bool myIsTapped;
+
+private:
+    void loadChordDiagram(InputStream &stream);
+    void loadBeatEffects(InputStream &stream);
+    void loadTremoloBar(InputStream &stream);
+    void loadMixTableChangeEvent(InputStream &stream);
+    void loadNotes(InputStream &stream);
+};
+
+struct Staff
+{
+    Staff();
+    void load(InputStream &stream);
+
+    std::vector<Beat> myFirstVoice;
+    std::vector<Beat> mySecondVoice;
+};
+
 struct Measure
 {
     Measure();
     void load(InputStream &stream);
+    void loadStaves(InputStream &stream, int numTracks);
 
     bool myIsDoubleBar;
     bool myIsRepeatBegin;
@@ -94,6 +132,9 @@ struct Measure
     boost::optional<std::string> myMarker;
     /// Optional alternate ending number.
     boost::optional<int> myAlternateEnding;
+
+    /// One staff per track.
+    std::vector<Staff> myStaves;
 
 private:
     void loadMarker(InputStream &stream);
