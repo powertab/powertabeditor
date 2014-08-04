@@ -24,7 +24,10 @@
 static const int NUM_LYRIC_LINES = 5;
 static const int NUM_MIDI_CHANNELS = 64;
 static const int TRACK_DESCRIPTION_LENGTH = 40;
+static const int DIAGRAM_DESCRIPTION_LENGTH = 20;
 static const int NUMBER_OF_STRINGS = 7;
+static const int GP3_NUMBER_OF_STRINGS = 6;
+static const int NUMBER_OF_BARRES = 5;
 
 enum MeasureHeader
 {
@@ -508,7 +511,78 @@ void Beat::load(InputStream &stream)
 
 void Beat::loadChordDiagram(InputStream &stream)
 {
-    throw FileFormatException("Chord diagrams are not yet supported");
+    if (stream.version > Version4)
+        throw FileFormatException("Chord Diagrams not supported yet for GP5");
+
+    if (stream.read<uint8_t>() == 0)
+    {
+        throw FileFormatException("Old-style chord diagrams not supported yet");
+#if 0
+        readOldStyleChord(stream);
+#endif
+        return;
+    }
+
+    if (stream.version == Version3)
+    {
+        stream.skip(25);
+        stream.readFixedLengthString(34); // Chord name.
+        stream.read<uint32_t>(); // Top fret of chord.
+
+        // Strings that are used.
+        for (int i = 0; i < GP3_NUMBER_OF_STRINGS; ++i)
+            stream.read<uint32_t>();
+        stream.skip(36);
+        return;
+    }
+
+    stream.read<bool>(); // Sharps/flats.
+
+    // Blank bytes for backwards compatibility with gp3.
+    stream.skip(3);
+
+    stream.read<uint8_t>(); // root of chord
+    stream.read<uint8_t>(); // chord type
+    stream.read<uint8_t>(); // extension (9, 11, 13)
+    stream.read<uint32_t>(); // bass note of chord
+    stream.read<uint32_t>(); // diminished/augmented
+    stream.read<uint8_t>(); // "add" chord
+
+    stream.readFixedLengthString(DIAGRAM_DESCRIPTION_LENGTH);
+
+    // more blank bytes for backwards compatibility
+    stream.skip(2);
+
+    stream.read<uint8_t>(); // tonality of the 5th
+    stream.read<uint8_t>(); // tonality of the 9th
+    stream.read<uint8_t>(); // tonality of the 11th
+
+    stream.read<int32_t>(); // base fret of the chord
+
+    // fret numbers for each string
+    for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
+        stream.read<int32_t>();
+
+    stream.read<uint8_t>(); // number of barres in the chord
+
+    for (int i = 0; i < NUMBER_OF_BARRES; ++i)
+        stream.read<uint8_t>(); // fret of the barre
+
+    for (int i = 0; i < NUMBER_OF_BARRES; ++i)
+        stream.read<uint8_t>(); // barre start
+
+    for (int i = 0; i < NUMBER_OF_BARRES; ++i)
+        stream.read<uint8_t>(); // barre end
+
+    // Omission1, Omission3, Omission5, Omission7, Omission9,
+    // Omission11, Omission13, and another blank byte
+    stream.skip(8);
+
+    // fingering of chord
+    for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
+        stream.read<int8_t>();
+
+    stream.read<bool>(); // show fingering
 }
 
 void Beat::loadBeatEffects(InputStream &stream)
@@ -599,7 +673,66 @@ void Beat::loadTremoloBar(InputStream &stream)
 
 void Beat::loadMixTableChangeEvent(InputStream &stream)
 {
-    throw FileFormatException("Mix table change events are not yet supported");
+    // TODO - implement conversions for this.
+    stream.read<int8_t>(); // instrument
+
+    if (stream.version > Version4)
+        stream.skip(16); // RSE Info???
+
+    int8_t volume = stream.read<int8_t>(); // volume
+    int8_t pan = stream.read<uint8_t>(); // pan
+    int8_t chorus = stream.read<uint8_t>(); // chorus
+    int8_t reverb = stream.read<uint8_t>(); // reverb
+    int8_t phaser = stream.read<uint8_t>(); // phaser
+    int8_t tremolo = stream.read<uint8_t>(); // tremolo
+
+    if (stream.version > Version4)
+        std::cerr << stream.readString() << std::endl; // tempo name???
+
+    // New tempo.
+    int32_t tempo = stream.read<int32_t>();
+
+    if (volume >= 0)
+        stream.read<uint8_t>(); // volume change duration
+
+    if (pan >= 0)
+        stream.read<uint8_t>(); // pan change duration
+
+    if (chorus >= 0)
+        stream.read<uint8_t>(); // chorus change duration
+
+    if (reverb >= 0)
+        stream.read<uint8_t>(); // reverb change duration
+
+    if (phaser >= 0)
+        stream.read<uint8_t>(); // phaser change duration
+
+    if (tremolo >= 0)
+        stream.read<uint8_t>(); // tremolo change duration
+
+    if (tempo >= 0)
+    {
+        stream.skip(1); // tempo change duration
+
+        if (stream.version == Version5_1)
+            stream.skip(1);
+    }
+
+    if (stream.version >= Version4)
+    {
+        // Details of score-wide or track-specific changes.
+        stream.read<uint8_t>();
+    }
+
+    if (stream.version > Version4)
+    {
+        stream.skip(1);
+        if (stream.version == Version5_1)
+        {
+            std::cerr << stream.readString() << std::endl;
+            std::cerr << stream.readString() << std::endl;
+        }
+    }
 }
 
 void Beat::loadNotes(InputStream &stream)
@@ -816,8 +949,11 @@ void Document::load(InputStream &stream)
     for (int i = 0; i < numTracks; ++i)
     {
         // TODO - figure out what this byte is used for.
-        if (i == 0 || stream.version == Version5_0)
-            stream.skip(1);
+        if (stream.version > Version4)
+        {
+            if (i == 0 || stream.version == Version5_0)
+                stream.skip(1);
+        }
 
         Track track;
         track.load(stream);
