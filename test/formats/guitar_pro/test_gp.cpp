@@ -100,3 +100,35 @@ TEST_CASE("Formats/GuitarPro/KeySignatures", "")
 
     REQUIRE(!barlines[4].getKeySignature().isVisible());
 }
+
+TEST_CASE("Formats/GuitarPro/TimeSignatures", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/time_signatures.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto barlines = system.getBarlines();
+
+    REQUIRE(barlines[0].getTimeSignature().getBeatsPerMeasure() == 3);
+    REQUIRE(barlines[0].getTimeSignature().getNumPulses() == 3);
+    REQUIRE(barlines[0].getTimeSignature().getBeatValue() == 4);
+    REQUIRE(barlines[0].getTimeSignature().getMeterType() ==
+            TimeSignature::Normal);
+    REQUIRE(barlines[0].getTimeSignature().isVisible());
+
+    REQUIRE(barlines[1].getTimeSignature().getBeatsPerMeasure() == 2);
+    REQUIRE(barlines[1].getTimeSignature().getNumPulses() == 2);
+    REQUIRE(barlines[1].getTimeSignature().getBeatValue() == 4);
+    REQUIRE(barlines[1].getTimeSignature().isVisible());
+
+    REQUIRE(barlines[2].getTimeSignature().getBeatsPerMeasure() == 4);
+    REQUIRE(barlines[2].getTimeSignature().getNumPulses() == 4);
+    REQUIRE(barlines[2].getTimeSignature().getBeatValue() == 4);
+    REQUIRE(barlines[2].getTimeSignature().isVisible());
+
+    REQUIRE(barlines[3].getTimeSignature().getBeatsPerMeasure() == 4);
+    REQUIRE(barlines[3].getTimeSignature().getNumPulses() == 4);
+    REQUIRE(barlines[3].getTimeSignature().getBeatValue() == 4);
+    REQUIRE(barlines[3].getTimeSignature().isVisible() == false);
+}

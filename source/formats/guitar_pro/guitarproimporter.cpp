@@ -189,6 +189,17 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
 
     if (measure.myTimeSignatureChange)
     {
+        TimeSignature time;
+        time.setVisible(true);
+
+        time.setBeatsPerMeasure(measure.myTimeSignatureChange->first);
+        time.setNumPulses(measure.myTimeSignatureChange->first);
+        time.setBeatValue(measure.myTimeSignatureChange->second);
+        bar.setTimeSignature(time);
+
+        // Future copies of this time signature should not be shown.
+        time.setVisible(false);
+        lastTimeSig = time;
     }
     else
         bar.setTimeSignature(lastTimeSig);

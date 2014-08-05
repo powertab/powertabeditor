@@ -824,7 +824,7 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::Numerator) ||
         flags.test(MeasureHeader::Denominator))
     {
-        std::pair<int, int> time;
+        auto time = std::make_pair(4, 4);
         if (flags.test(MeasureHeader::Numerator))
             time.first = stream.read<int8_t>();
 
