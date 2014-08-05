@@ -41,13 +41,15 @@ public:
     virtual void load(const std::string &filename, Score &score) override;
 
 private:
-    static void convertHeader(Gp::Header &header, ScoreInfo &info);
-    static void convertPlayers(Gp::Document &doc, Score &score);
+    static void convertHeader(const Gp::Header &header, ScoreInfo &info);
+    static void convertPlayers(const Gp::Document &doc, Score &score);
     static int convertBarline(const Gp::Measure &measure,
                               const Gp::Measure *prevMeasure, System &system,
                               int start, int end, KeySignature &lastKeySig,
                               TimeSignature &lastTimeSig);
-    static void convertScore(Gp::Document &doc, Score &score);
+    static void convertAlternateEndings(const Gp::Measure &measure,
+                                        System &system, int position);
+    static void convertScore(const Gp::Document &doc, Score &score);
 
 #if 0
     /// Reads all of the measures in the score, and any alternate endings that

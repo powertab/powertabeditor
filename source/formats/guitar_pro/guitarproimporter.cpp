@@ -81,7 +81,7 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
 #endif
 }
 
-void GuitarProImporter::convertHeader(Gp::Header &header, ScoreInfo &info)
+void GuitarProImporter::convertHeader(const Gp::Header &header, ScoreInfo &info)
 {
     SongData song;
 
@@ -112,7 +112,7 @@ void GuitarProImporter::convertHeader(Gp::Header &header, ScoreInfo &info)
     info.setSongData(song);
 }
 
-void GuitarProImporter::convertPlayers(Gp::Document &doc, Score &score)
+void GuitarProImporter::convertPlayers(const Gp::Document &doc, Score &score)
 {
     for (const Gp::Track &track : doc.myTracks)
     {
@@ -236,7 +236,26 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
     return end;
 }
 
-void GuitarProImporter::convertScore(Gp::Document &doc, Score &score)
+void GuitarProImporter::convertAlternateEndings(const Gp::Measure &measure,
+                                                System &system, int position)
+{
+    // Each bit represent an alternate ending from 1 to 8.
+    if (measure.myAlternateEnding)
+    {
+        AlternateEnding ending(position);;
+
+        std::bitset<8> bits(measure.myAlternateEnding.get());
+        for (int i = 0; i < 8; ++i)
+        {
+            if (bits.test(i))
+                ending.addNumber(i + 1);
+        }
+
+        system.insertAlternateEnding(ending);
+    }
+}
+
+void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
 {
     System system;
     KeySignature lastKeySig;
@@ -316,6 +335,9 @@ void GuitarProImporter::convertScore(Gp::Document &doc, Score &score)
             (m > 0) ? &doc.myMeasures[m - 1] : nullptr;
         nextPos = convertBarline(measure, prevMeasure, system, startPos,
                                  nextPos, lastKeySig, lastTimeSig);
+
+        // Check for alternate endings.
+        convertAlternateEndings(measure, system, startPos);
 
         startPos = nextPos;
     }

@@ -132,3 +132,20 @@ TEST_CASE("Formats/GuitarPro/TimeSignatures", "")
     REQUIRE(barlines[3].getTimeSignature().getBeatValue() == 4);
     REQUIRE(barlines[3].getTimeSignature().isVisible() == false);
 }
+
+TEST_CASE("Formats/GuitarPro/AlternateEndings", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/alt_endings.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto endings = system.getAlternateEndings();
+
+    REQUIRE(endings.size() == 2);
+    REQUIRE(endings[0].getNumbers().size() == 2);
+    REQUIRE(endings[0].getNumbers()[0] == 1);
+    REQUIRE(endings[0].getNumbers()[1] == 2);
+    REQUIRE(endings[1].getNumbers().size() == 1);
+    REQUIRE(endings[1].getNumbers()[0] == 3);
+}
