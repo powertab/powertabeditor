@@ -56,9 +56,6 @@ private:
     static void convertScore(const Gp::Document &doc, Score &score);
 
 #if 0
-    void readSystems(Gp::InputStream &stream, Score &score,
-                     std::vector<Gp::Bar> bars);
-
     /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab).
     void readBeat(Gp::InputStream &stream, const Tuning &tuning, Position &pos,
                   boost::optional<TempoMarker> &tempoMarker);

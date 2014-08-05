@@ -301,6 +301,8 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
         // Check for alternate endings.
         convertAlternateEndings(measure, system, startPos);
 
+        // TODO - import tempo markers.
+
         startPos = nextPos;
     }
 
@@ -319,107 +321,61 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
         system.insertTextItem(text);
     }
 
+    if (beat.myIsEmpty)
+        return position + 1;
+
+    // TODO - handle grace notes.
+
     Position pos(position);
-    pos.insertNote(Note(0, 0));
+    pos.setRest(beat.myIsRest);
+    pos.setDurationType(static_cast<Position::DurationType>(beat.myDuration));
+    pos.setProperty(Position::Dotted, beat.myIsDotted);
+    pos.setProperty(Position::PickStrokeUp, beat.myPickstrokeUp);
+    pos.setProperty(Position::PickStrokeDown, beat.myPickstrokeDown);
+    pos.setProperty(Position::Tap, beat.myIsTapped);
+
+    bool hasVibratoNote = beat.myIsVibrato;
+    bool hasTremoloPickedNote = beat.myIsTremoloPicked;
+    bool hasStaccatoNote = false;
+    bool hasMarcatoNote = false;
+    bool hasSforzandoNote = false;
+    bool hasPalmMutedNote = false;
+    bool hasLetRingNote = false;
+
+    for (const Gp::Note &gp_note : beat.myNotes)
+    {
+        Note note;
+        note.setString(gp_note.myString);
+        note.setFretNumber(gp_note.myFret);
+
+        // TODO - copy harmonics from the beat.
+        // TODO - import other note properties.
+
+        hasVibratoNote |= gp_note.myIsVibrato;
+        hasTremoloPickedNote |= gp_note.myIsTremoloPicked;
+        hasStaccatoNote |= gp_note.myIsStaccato;
+        hasMarcatoNote |= gp_note.myHasAccent;
+        hasSforzandoNote |= gp_note.myHasHeavyAccent;
+        hasPalmMutedNote |= gp_note.myHasPalmMute;
+        hasLetRingNote |= gp_note.myIsLetRing;
+
+        pos.insertNote(note);
+    }
+
+    pos.setProperty(Position::Vibrato, hasVibratoNote);
+    pos.setProperty(Position::TremoloPicking, hasTremoloPickedNote);
+    pos.setProperty(Position::Staccato, hasStaccatoNote);
+    pos.setProperty(Position::Marcato, hasMarcatoNote);
+    pos.setProperty(Position::Sforzando, hasSforzandoNote);
+    pos.setProperty(Position::PalmMuting, hasPalmMutedNote);
+    pos.setProperty(Position::LetRing, hasLetRingNote);
+
     voice.insertPosition(pos);
     ++position;
-
     return position;
 }
 
 #if 0
-void GuitarProImporter::readSystems(Gp::InputStream &stream, Score &score,
-                                    std::vector<Gp::Bar> bars)
-{
-    System *system = &score.getSystems().front();
-    int startPos = 0;
-
-    for (auto &player : score.getPlayers())
-        system->insertStaff(Staff(player.getTuning().getStringCount()));
-
-    // Set up an initial player change.
-    PlayerChange change;
-    for (int i = 0; i < score.getPlayers().size(); ++i)
-        change.insertActivePlayer(i, ActivePlayer(i, i));
-    system->insertPlayerChange(change);
-
-    for (Gp::Bar &bar : bars)
-    {
-        // Try to create a new system every so often.
-        if (startPos > POSITIONS_PER_SYSTEM)
-        {
-            system->getBarlines().back().setPosition(startPos + 1);
-            score.insertSystem(System());
-            system = &score.getSystems().back();
-
-            for (auto &player : score.getPlayers())
-                system->insertStaff(Staff(player.getTuning().getStringCount()));
-
-            startPos = 0;
-        }
-
-        int nextPos = startPos;
-
-        for (int i = 0; i < score.getPlayers().size(); ++i)
-        {
-            const Tuning &tuning = score.getPlayers()[i].getTuning();
-            Staff &staff = system->getStaves()[i];
-
-            int currentPos = (startPos != 0) ? startPos + 1 : 0;
-
-            const uint32_t numBeats = stream.read<uint32_t>();
-
-            for (uint32_t j = 0; j < numBeats; ++j)
-            {
-                Position pos;
-                boost::optional<TempoMarker> tempoMarker;
-                readBeat(stream, tuning, pos, tempoMarker);
-
-                // Tempo markers are stored at the beat level, not at the system
-                // level, so we need to ensure that we don't insert duplicate
-                // tempo markers.
-                if (tempoMarker && !ScoreUtils::findByPosition(
-                                        system->getTempoMarkers(), currentPos))
-                {
-                    tempoMarker->setPosition(currentPos);
-                    system->insertTempoMarker(*tempoMarker);
-                }
-
-                pos.setPosition(currentPos);
-                staff.getVoices()[0].insertPosition(pos);
-                currentPos++;
-            }
-
-            // TODO - support second voice for GP5.
-            if (stream.version > Gp::Version4)
-            {
-                const uint32_t beats = stream.read<uint32_t>();
-                Position pos;
-                boost::optional<TempoMarker> tempoMarker;
-
-                for (uint32_t j = 0; j < beats; ++j)
-                    readBeat(stream, tuning, pos, tempoMarker);
-            }
-
-            // Not sure what this is used for ...
-            if (stream.version > Gp::Version4)
-                stream.skip(1);
-
-            nextPos = std::max(nextPos, currentPos);
-        }
-
-        bar.myBarline.setPosition(startPos);
-        if (startPos == 0)
-            system->getBarlines().front() = bar.myBarline;
-        else
-            system->insertBarline(bar.myBarline);
-
-        startPos = nextPos;
-    }
-
-    system->getBarlines().back().setPosition(startPos + 1);
-}
-
 void GuitarProImporter::readBeat(Gp::InputStream &stream, const Tuning &tuning,
                                  Position &pos,
                                  boost::optional<TempoMarker> &tempoMarker)

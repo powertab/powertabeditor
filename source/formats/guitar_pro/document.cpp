@@ -286,7 +286,9 @@ Note::Note(int string)
       myIsHammerOnOrPullOff(false),
       myHasPalmMute(false),
       myIsStaccato(false),
-      myIsNaturalHarmonic(false)
+      myIsNaturalHarmonic(false),
+      myIsVibrato(false),
+      myIsTremoloPicked(false)
 {
 }
 
@@ -374,6 +376,7 @@ void Note::loadNoteEffects(InputStream &stream)
         // Ignore - Power Tab does not allow different values for the tremolo
         // picking duration (e.g. eighth notes).
         stream.skip(1);
+        myIsTremoloPicked = true;
     }
 
     if (header2.test(NoteEffects::HasSlide))
@@ -393,10 +396,12 @@ void Note::loadNoteEffects(InputStream &stream)
         myIsLetRing = true;
     if (header1.test(NoteEffects::HasHammerOnOrPullOff))
         myIsHammerOnOrPullOff = true;
-    if (header1.test(NoteEffects::HasPalmMute))
+    if (header2.test(NoteEffects::HasPalmMute))
         myHasPalmMute = true;
-    if (header1.test(NoteEffects::HasStaccato))
+    if (header2.test(NoteEffects::HasStaccato))
         myIsStaccato = true;
+    if (header2.test(NoteEffects::HasVibrato))
+        myIsVibrato = true;
 }
 
 void Note::loadNoteEffectsGp3(InputStream &stream)
@@ -467,14 +472,13 @@ void Note::loadHarmonic(InputStream &stream)
 }
 
 Beat::Beat()
-    : myIsDotted(false),
+    : myIsEmpty(false),
+      myIsDotted(false),
       myIsRest(false),
       myDuration(1),
       myIsVibrato(false),
       myIsNaturalHarmonic(false),
       myIsArtificialHarmonic(false),
-      myArpeggioUp(false),
-      myArpeggioDown(false),
       myIsTremoloPicked(false),
       myPickstrokeUp(false),
       myPickstrokeDown(false),
@@ -488,16 +492,12 @@ void Beat::load(InputStream &stream)
 
     myIsDotted = flags.test(BeatHeader::Dotted);
 
-    bool isWholeRest = false;
     if (flags.test(BeatHeader::BeatStatus))
     {
         const uint8_t status = stream.read<uint8_t>();
 
         if (status == BeatStatus::Empty)
-        {
-            isWholeRest = true;
-            myIsRest = true;
-        }
+            myIsEmpty = true;
         else if (status == BeatStatus::Rest)
             myIsRest = true;
     }
@@ -509,10 +509,7 @@ void Beat::load(InputStream &stream)
         // Durations are stored as 0 -> quarter note, -1 -> half note, 1 ->
         // eight note, etc. We need to convert to 1 = whole note, 2 = half note,
         // 4 = quarter note, etc.
-        if (isWholeRest)
-            myDuration = 1;
-        else
-            myDuration = static_cast<int>(std::pow(2.0, duration + 2));
+        myDuration = static_cast<int>(std::pow(2.0, duration + 2));
     }
 
     if (flags.test(BeatHeader::IrregularGrouping))
@@ -678,9 +675,9 @@ void Beat::loadBeatEffects(InputStream &stream)
         const uint8_t pickstrokeType = stream.read<uint8_t>();
 
         if (pickstrokeType == PickstrokeType::Up)
-            myArpeggioUp = true;
+            myPickstrokeUp = true;
         else if (pickstrokeType == PickstrokeType::Down)
-            myArpeggioDown = true;
+            myPickstrokeDown = true;
     }
 }
 

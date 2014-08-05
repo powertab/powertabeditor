@@ -97,6 +97,8 @@ struct Note
     bool myHasPalmMute;
     bool myIsStaccato;
     bool myIsNaturalHarmonic;
+    bool myIsVibrato;
+    bool myIsTremoloPicked;
 
 private:
     void loadNoteEffects(InputStream &stream);
@@ -111,6 +113,7 @@ struct Beat
     Beat();
     void load(InputStream &stream);
 
+    bool myIsEmpty;
     bool myIsDotted;
     bool myIsRest;
     int myDuration; ///< 4 -> quarter note, 8 -> eighth note, etc.
@@ -119,8 +122,6 @@ struct Beat
     bool myIsVibrato;
     bool myIsNaturalHarmonic;
     bool myIsArtificialHarmonic;
-    bool myArpeggioUp;
-    bool myArpeggioDown;
     bool myIsTremoloPicked;
     bool myPickstrokeUp;
     bool myPickstrokeDown;

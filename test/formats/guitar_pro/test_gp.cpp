@@ -163,3 +163,46 @@ TEST_CASE("Formats/GuitarPro/Text", "")
     REQUIRE(texts[0].getContents() == "foo");
     REQUIRE(texts[1].getContents() == "bar");
 }
+
+TEST_CASE("Formats/GuitarPro/Positions", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/positions.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto positions = system.getStaves()[0].getVoices()[0].getPositions();
+    REQUIRE(positions.size() == 11);
+
+    REQUIRE(positions[0].getDurationType() == Position::QuarterNote);
+    REQUIRE(positions[0].hasProperty(Position::LetRing));
+
+    REQUIRE(positions[1].getDurationType() == Position::QuarterNote);
+    REQUIRE(positions[1].isRest());
+
+    REQUIRE(positions[2].getDurationType() == Position::QuarterNote);
+    REQUIRE(positions[2].hasProperty(Position::Staccato));
+
+    REQUIRE(positions[3].getDurationType() == Position::QuarterNote);
+    REQUIRE(positions[3].hasProperty(Position::Tap));
+
+    REQUIRE(positions[4].getDurationType() == Position::HalfNote);
+    REQUIRE(positions[4].hasProperty(Position::Vibrato));
+
+    REQUIRE(positions[5].getDurationType() == Position::EighthNote);
+    REQUIRE(positions[5].hasProperty(Position::Dotted));
+    REQUIRE(positions[5].hasProperty(Position::PickStrokeDown));
+
+    REQUIRE(positions[6].getDurationType() == Position::SixteenthNote);
+    REQUIRE(positions[6].hasProperty(Position::PickStrokeUp));
+
+    REQUIRE(positions[7].getDurationType() == Position::EighthNote);
+    REQUIRE(positions[7].hasProperty(Position::Marcato));
+    REQUIRE(positions[7].hasProperty(Position::PalmMuting));
+
+    REQUIRE(positions[8].getDurationType() == Position::EighthNote);
+    REQUIRE(positions[8].hasProperty(Position::Sforzando));
+
+    REQUIRE(positions[10].getDurationType() == Position::WholeNote);
+    REQUIRE(positions[10].hasProperty(Position::TremoloPicking));
+}
