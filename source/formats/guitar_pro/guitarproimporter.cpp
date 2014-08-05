@@ -352,16 +352,21 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
         note.setProperty(Note::Muted, gp_note.myIsMuted);
         note.setProperty(Note::HammerOnOrPullOff,
                          gp_note.myIsHammerOnOrPullOff);
-        note.setProperty(Note::NaturalHarmonic, gp_note.myIsNaturalHarmonic);
+        note.setProperty(Note::NaturalHarmonic, gp_note.myIsNaturalHarmonic ||
+                                                    beat.myIsNaturalHarmonic);
         note.setProperty(Note::GhostNote, gp_note.myIsGhostNote);
-        note.setProperty(Note::GhostNote, gp_note.myIsGhostNote);
+        note.setProperty(Note::ShiftSlide, gp_note.myIsShiftSlide);
+        note.setProperty(Note::LegatoSlide, gp_note.myIsLegatoSlide);
+        note.setProperty(Note::SlideIntoFromAbove, gp_note.myIsSlideInAbove);
+        note.setProperty(Note::SlideIntoFromBelow, gp_note.myIsSlideInBelow);
+        note.setProperty(Note::SlideOutOfUpwards, gp_note.myIsSlideOutUp);
+        note.setProperty(Note::SlideOutOfDownwards, gp_note.myIsSlideOutDown);
 
         if (gp_note.myTrilledFret)
             note.setTrilledFret(*gp_note.myTrilledFret);
 
         // TODO - copy harmonics from the beat.
         // TODO - import bends.
-        // TODO - import slides.
         // TODO - import dynamics.
         // TODO - figure out how to import octave (8va) symbols.
 
@@ -732,69 +737,6 @@ void GuitarProImporter::readNoteEffectsGp3(Gp::InputStream &stream,
         stream.read<uint8_t>(); // transition type
         stream.read<uint8_t>(); // duration
         // TODO - will need to add an extra note to be the grace note
-    }
-}
-
-void GuitarProImporter::readSlide(Gp::InputStream &stream, Note &note)
-{
-    int8_t slideValue = stream.read<int8_t>();
-
-    if (stream.version <= Gp::Version4)
-    {
-        /* Slide values are as follows:
-            -2 : slide into from above
-            -1 : slide into from below
-            0  : no slide
-            1  : shift slide
-            2  : legato slide
-            3  : slide out of downwards
-            4  : slide out of upwards
-        */
-        switch (slideValue)
-        {
-            case -2:
-                note.setProperty(Note::SlideIntoFromAbove);
-                break;
-            case -1:
-                note.setProperty(Note::SlideIntoFromBelow);
-                break;
-            case 1:
-                note.setProperty(Note::ShiftSlide);
-                break;
-            case 2:
-                note.setProperty(Note::LegatoSlide);
-                break;
-            case 3:
-                note.setProperty(Note::SlideOutOfDownwards);
-                break;
-            case 4:
-                note.setProperty(Note::SlideOutOfUpwards);
-                break;
-        }
-    }
-    else
-    {
-        switch (slideValue)
-        {
-            case 1:
-                note.setProperty(Note::ShiftSlide);
-                break;
-            case 2:
-                note.setProperty(Note::LegatoSlide);
-                break;
-            case 4:
-                note.setProperty(Note::SlideOutOfDownwards);
-                break;
-            case 8:
-                note.setProperty(Note::SlideOutOfUpwards);
-                break;
-            case 16:
-                note.setProperty(Note::SlideIntoFromBelow);
-                break;
-            case 32:
-                note.setProperty(Note::SlideIntoFromAbove);
-                break;
-        }
     }
 }
 

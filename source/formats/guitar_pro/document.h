@@ -100,6 +100,13 @@ struct Note
     bool myIsVibrato;
     bool myIsTremoloPicked;
 
+    bool myIsShiftSlide;
+    bool myIsLegatoSlide;
+    bool myIsSlideInAbove;
+    bool myIsSlideInBelow;
+    bool myIsSlideOutUp;
+    bool myIsSlideOutDown;
+
 private:
     void loadNoteEffects(InputStream &stream);
     void loadNoteEffectsGp3(InputStream &stream);

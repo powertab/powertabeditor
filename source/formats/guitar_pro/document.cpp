@@ -288,7 +288,14 @@ Note::Note(int string)
       myIsStaccato(false),
       myIsNaturalHarmonic(false),
       myIsVibrato(false),
-      myIsTremoloPicked(false)
+      myIsTremoloPicked(false),
+      myIsShiftSlide(false),
+      myIsLegatoSlide(false),
+      myIsSlideInAbove(false),
+      myIsSlideInBelow(false),
+      myIsSlideOutUp(false),
+      myIsSlideOutDown(false)
+
 {
 }
 
@@ -411,11 +418,8 @@ void Note::loadNoteEffectsGp3(InputStream &stream)
     myIsLetRing = flags.test(NoteEffects::HasLetRing);
     myIsHammerOnOrPullOff = flags.test(NoteEffects::HasHammerOnOrPullOff);
 
-    // TODO - implement slides.
-#if 0
     if (flags.test(NoteEffects::HasSlideOutVer3))
-        note.setProperty(Note::SlideOutOfDownwards);
-#endif
+        myIsSlideOutDown = true;
 
     if (flags.test(NoteEffects::HasBend))
         loadBend(stream);
@@ -449,8 +453,52 @@ void Note::loadBend(InputStream &stream)
 
 void Note::loadSlide(InputStream &stream)
 {
-    // TODO - perform conversion.
-    stream.read<int8_t>();
+    const int slideValue = stream.read<int8_t>();
+
+    if (stream.version <= Gp::Version4)
+    {
+        /* Slide values are as follows:
+            -2 : slide into from above
+            -1 : slide into from below
+            0  : no slide
+            1  : shift slide
+            2  : legato slide
+            3  : slide out of downwards
+            4  : slide out of upwards
+        */
+        switch (slideValue)
+        {
+            case -2:
+                myIsSlideInAbove = true;
+                break;
+            case -1:
+                myIsSlideInBelow = true;
+                break;
+            case 1:
+                myIsShiftSlide = true;
+                break;
+            case 2:
+                myIsLegatoSlide = true;
+                break;
+            case 3:
+                myIsSlideOutDown = true;
+                break;
+            case 4:
+                myIsSlideOutUp = true;
+                break;
+        }
+    }
+    else
+    {
+        std::bitset<8> flags(slideValue);
+
+        myIsShiftSlide = flags.test(0);
+        myIsLegatoSlide = flags.test(1);
+        myIsSlideOutDown = flags.test(2);
+        myIsSlideOutUp = flags.test(3);
+        myIsSlideInBelow = flags.test(4);
+        myIsSlideInAbove = flags.test(5);
+    }
 }
 
 void Note::loadHarmonic(InputStream &stream)

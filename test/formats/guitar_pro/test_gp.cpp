@@ -233,4 +233,7 @@ TEST_CASE("Formats/GuitarPro/Notes", "")
 
     REQUIRE(positions[11].getNotes()[0].hasTrill());
     REQUIRE(positions[11].getNotes()[0].getTrilledFret() == 2);
+
+    REQUIRE(positions[12].getNotes()[0].hasProperty(Note::SlideIntoFromBelow));
+    REQUIRE(positions[12].getNotes()[0].hasProperty(Note::ShiftSlide));
 }
