@@ -22,6 +22,7 @@
 
 namespace Gp
 {
+    struct Beat;
     struct Document;
     struct Header;
     struct Measure;
@@ -31,6 +32,7 @@ class KeySignature;
 class ScoreInfo;
 class System;
 class TimeSignature;
+class Voice;
 
 /// Imports Guitar Pro files.
 class GuitarProImporter : public FileFormatImporter
@@ -49,21 +51,11 @@ private:
                               TimeSignature &lastTimeSig);
     static void convertAlternateEndings(const Gp::Measure &measure,
                                         System &system, int position);
+    static int convertBeat(const Gp::Beat &beat, System &system, Voice &voice,
+                           int position);
     static void convertScore(const Gp::Document &doc, Score &score);
 
 #if 0
-    /// Reads all of the measures in the score, and any alternate endings that
-    /// occur.
-    void readBarlines(Gp::InputStream &stream, uint32_t numMeasures,
-                      std::vector<Gp::Bar> &bars);
-
-    RehearsalSign readRehearsalSign(Gp::InputStream &stream);
-
-    void readColor(Gp::InputStream &stream);
-
-    /// Converts key accidentals from the Guitar Pro format to Power Tab.
-    int convertKeyAccidentals(int8_t gpKey);
-
     void readSystems(Gp::InputStream &stream, Score &score,
                      std::vector<Gp::Bar> bars);
 

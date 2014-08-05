@@ -20,6 +20,7 @@
 #include <formats/guitar_pro/document.h>
 #include <formats/guitar_pro/inputstream.h>
 #include <score/score.h>
+#include <score/utils.h>
 
 static const int POSITIONS_PER_SYSTEM = 35;
 
@@ -34,7 +35,6 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
     std::ifstream in(filename, std::ios::binary | std::ios::in);
     Gp::InputStream stream(in);
 
-#if 1
     Gp::Document document;
     document.load(stream);
 
@@ -47,38 +47,6 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
 
     // Automatically set the rehearsal sign letters to "A", "B", etc.
     ScoreUtils::adjustRehearsalSigns(score);
-#else
-    ScoreInfo info;
-    readHeader(stream, info);
-    score.setScoreInfo(info);
-
-    score.insertSystem(System());
-    readStartTempo(stream, score);
-
-    if (stream.version == Gp::Version5_1)
-        stream.skip(1);
-
-    stream.skip(4); // Initial key -- ignore.
-
-    if (stream.version >= Gp::Version4)
-        stream.skip(1); // Octave 8va -- ignore.
-
-    const std::vector<Gp::Channel> channels = readChannels(stream);
-
-    if (stream.version > Gp::Version4)
-        stream.skip(42); // RSE data?
-
-    const uint32_t numMeasures = stream.read<uint32_t>();
-    const uint32_t numTracks = stream.read<uint32_t>();
-
-    std::vector<Gp::Bar> bars;
-    readBarlines(stream, numMeasures, bars);
-
-    readTracks(stream, score, numTracks, channels);
-    readSystems(stream, score, bars);
-
-    ScoreUtils::adjustRehearsalSigns(score);
-#endif
 }
 
 void GuitarProImporter::convertHeader(const Gp::Header &header, ScoreInfo &info)
@@ -309,25 +277,19 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
             Staff &staff = system.getStaves()[i];
             const Gp::Staff &gp_staff = measure.myStaves[i];
 
-            // Start inserting notes after the barline.
-            int currentPos = (startPos != 0) ? startPos + 1 : 0;
-
             for (int v = 0; v < gp_staff.myVoices.size(); ++v)
             {
+                // Start inserting notes after the barline.
+                int currentPos = (startPos != 0) ? startPos + 1 : 0;
                 Voice &voice = staff.getVoices()[v];
 
                 for (const Gp::Beat &beat : gp_staff.myVoices[v])
-                {
-                    Position pos;
-                    pos.setPosition(currentPos);
-                    pos.insertNote(Note(0, 0));
+                    currentPos = convertBeat(beat, system, voice, currentPos);
 
-                    voice.insertPosition(pos);
-                    ++currentPos;
-                }
+                // TODO - convert irregular groups.
+
+                nextPos = std::max(nextPos, currentPos);
             }
-
-            nextPos = std::max(nextPos, currentPos);
         }
 
         // Import the barline, key signature, etc.
@@ -347,133 +309,25 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
     score.insertSystem(system);
 }
 
-#if 0
-
-void GuitarProImporter::readBarlines(Gp::InputStream &stream,
-                                     uint32_t numMeasures,
-                                     std::vector<Gp::Bar> &bars)
+int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
+                                   Voice &voice, int position)
 {
-    for (uint32_t measure = 0; measure < numMeasures; ++measure)
+    if (beat.myText &&
+        !ScoreUtils::findByPosition(system.getTextItems(), position))
     {
-        if (stream.version > Gp::Version4 && measure > 0)
-            stream.skip(1);
-
-        Gp::Bar bar;
-        Barline &barline = bar.myBarline;
-
-        // Clone time/key signature from previous barline if possible.
-        if (measure != 0)
-        {
-            const Barline &prevBar = bars.back().myBarline;
-
-            TimeSignature timeSig = prevBar.getTimeSignature();
-            timeSig.setVisible(false);
-            barline.setTimeSignature(timeSig);
-
-            KeySignature keySig = prevBar.getKeySignature();
-            keySig.setVisible(false);
-            barline.setKeySignature(keySig);
-        }
-
-        TimeSignature timeSignature = barline.getTimeSignature();
-
-        const Gp::Flags flags = stream.read<uint8_t>();
-
-        if (flags.test(Gp::Numerator))
-        {
-            timeSignature.setVisible(true);
-            timeSignature.setBeatsPerMeasure(stream.read<uint8_t>());
-            timeSignature.setNumPulses(timeSignature.getBeatsPerMeasure());
-        }
-        if (flags.test(Gp::Denominator))
-        {
-            timeSignature.setVisible(true);
-            timeSignature.setBeatValue(stream.read<uint8_t>());
-        }
-
-        barline.setTimeSignature(timeSignature);
-
-        if (flags.test(Gp::RepeatBegin))
-            barline.setBarType(Barline::RepeatStart);
-
-        // TODO - handle this.
-        if (flags.test(Gp::RepeatEnd))
-        {
-#if 0
-            // we don't set the repeatEnd type here - see the 'fixRepeatEnds'
-            // function for details
-            barline->SetRepeatCount(stream.read<uint8_t>() + 1);
-#else
-            stream.read<uint8_t>();
-#endif
-        }
-
-        if (flags.test(Gp::Marker) && stream.version == Gp::Version5_1)
-            barline.setRehearsalSign(readRehearsalSign(stream));
-
-        if (flags.test(Gp::AltEnding))
-        {
-            AlternateEnding ending;
-            ending.addNumber(stream.read<uint8_t>());
-            bar.myAlternateEnding = ending;
-        }
-
-        if (flags.test(Gp::Marker) && stream.version != Gp::Version5_1)
-            barline.setRehearsalSign(readRehearsalSign(stream));
-
-        if (flags.test(Gp::KeySignatureChange))
-        {
-            KeySignature keySignature = barline.getKeySignature();
-            keySignature.setVisible(true);
-
-            keySignature.setNumAccidentals(
-                convertKeyAccidentals(stream.read<int8_t>()));
-            keySignature.setKeyType(
-                static_cast<KeySignature::KeyType>(stream.read<uint8_t>()));
-            barline.setKeySignature(keySignature);
-        }
-
-        if (flags.test(Gp::DoubleBar))
-            barline.setBarType(Barline::DoubleBar);
-
-        // More unknown GP5 data ...
-        if (stream.version > Gp::Version4)
-        {
-            if (flags.test(Gp::Numerator) || flags.test(Gp::Denominator))
-                stream.skip(4);
-            if (!flags.test(Gp::AltEnding))
-                stream.skip(1);
-
-            stream.skip(1); // Triplet feel -- ignore.
-        }
-
-        bars.push_back(bar);
+        TextItem text(position, *beat.myText);
+        system.insertTextItem(text);
     }
+
+    Position pos(position);
+    pos.insertNote(Note(0, 0));
+    voice.insertPosition(pos);
+    ++position;
+
+    return position;
 }
 
-RehearsalSign GuitarProImporter::readRehearsalSign(Gp::InputStream &stream)
-{
-    RehearsalSign sign;
-
-    const std::string description = stream.readString();
-    sign.setDescription(description);
-
-    // Set the letter to A for now - the proper letter will be set after
-    // importing the whole document.
-    sign.setLetters("A");
-
-    readColor(stream);
-
-    return sign;
-}
-
-int GuitarProImporter::convertKeyAccidentals(int8_t gpKey)
-{
-    // Guitar Pro uses 0 for C, 1 for G, ..., -1 for F, -2 for Bb, ..., whereas
-    // Power Tab uses 0 for 1, 1 for G, 1 for F, etc.
-    return std::abs(gpKey);
-}
-
+#if 0
 void GuitarProImporter::readSystems(Gp::InputStream &stream, Score &score,
                                     std::vector<Gp::Bar> bars)
 {

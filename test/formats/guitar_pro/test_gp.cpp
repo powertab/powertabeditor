@@ -40,7 +40,7 @@ TEST_CASE("Formats/GuitarPro/Barlines", "")
     const System &system = score.getSystems()[0];
     auto barlines = system.getBarlines();
 
-    REQUIRE(barlines.size() == 6);
+    REQUIRE(barlines.size() == 7);
     REQUIRE(barlines[1].getBarType() == Barline::RepeatStart);
     REQUIRE(barlines[2].getBarType() == Barline::RepeatEnd);
     REQUIRE(barlines[2].getRepeatCount() == 2);
@@ -148,4 +148,18 @@ TEST_CASE("Formats/GuitarPro/AlternateEndings", "")
     REQUIRE(endings[0].getNumbers()[1] == 2);
     REQUIRE(endings[1].getNumbers().size() == 1);
     REQUIRE(endings[1].getNumbers()[0] == 3);
+}
+
+TEST_CASE("Formats/GuitarPro/Text", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/text.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto texts = system.getTextItems();
+
+    REQUIRE(texts.size() == 2);
+    REQUIRE(texts[0].getContents() == "foo");
+    REQUIRE(texts[1].getContents() == "bar");
 }
