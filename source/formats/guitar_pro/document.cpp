@@ -850,8 +850,9 @@ void Measure::load(InputStream &stream)
 
     if (flags.test(MeasureHeader::KeySignatureChange))
     {
-        myKeyChange = std::make_pair(stream.read<int8_t>(),
-                                     static_cast<bool>(stream.read<int8_t>()));
+        const int accidentals = stream.read<int8_t>();
+        const bool isMinor = static_cast<bool>(stream.read<int8_t>());
+        myKeyChange = std::make_pair(accidentals, isMinor);
     }
 
     // TODO - more unknown GP5 data ...

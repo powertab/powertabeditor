@@ -157,7 +157,7 @@ struct Measure
     boost::optional<int> myRepeatEnd;
     /// If there is a key change, this contains the key and whether it is
     /// minor.
-    boost::optional<std::pair<int, bool>> myKeyChange;
+    boost::optional<std::pair<int8_t, bool>> myKeyChange;
     /// Optional rehearsal sign.
     boost::optional<std::string> myMarker;
     /// Optional alternate ending number.

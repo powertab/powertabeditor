@@ -27,8 +27,10 @@ namespace Gp
     struct Measure;
 }
 
+class KeySignature;
 class ScoreInfo;
 class System;
+class TimeSignature;
 
 /// Imports Guitar Pro files.
 class GuitarProImporter : public FileFormatImporter
@@ -43,7 +45,8 @@ private:
     static void convertPlayers(Gp::Document &doc, Score &score);
     static int convertBarline(const Gp::Measure &measure,
                               const Gp::Measure *prevMeasure, System &system,
-                              int start, int end);
+                              int start, int end, KeySignature &lastKeySig,
+                              TimeSignature &lastTimeSig);
     static void convertScore(Gp::Document &doc, Score &score);
 
 #if 0

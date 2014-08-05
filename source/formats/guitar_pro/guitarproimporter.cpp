@@ -139,7 +139,9 @@ void GuitarProImporter::convertPlayers(Gp::Document &doc, Score &score)
 
 int GuitarProImporter::convertBarline(const Gp::Measure &measure,
                                       const Gp::Measure *prevMeasure,
-                                      System &system, int start, int end)
+                                      System &system, int start, int end,
+                                      KeySignature &lastKeySig,
+                                      TimeSignature &lastTimeSig)
 {
     Barline bar;
     bar.setPosition(start);
@@ -152,6 +154,45 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
     if (measure.myMarker)
         bar.setRehearsalSign(RehearsalSign("", *measure.myMarker));
 
+    if (measure.myKeyChange)
+    {
+        KeySignature key;
+        key.setVisible(true);
+
+        // Guitar Pro uses 0 for C, 1 for G, ..., -1 for F, -2 for Bb, ...,
+        // whereas Power Tab uses 0 for 1, 1 for G, 1 for F, etc.
+        const int numAccidentals = measure.myKeyChange.get().first;
+
+        // Create a cancellation if necessary.
+        if (numAccidentals == 0 && lastKeySig.getNumAccidentals() > 0)
+        {
+            key.setCancellation();
+            key.setNumAccidentals(lastKeySig.getNumAccidentals());
+            key.setSharps(lastKeySig.usesSharps());
+        }
+        else
+        {
+            key.setSharps(numAccidentals >= 0);
+            key.setNumAccidentals(std::abs(measure.myKeyChange->first));
+        }
+
+        key.setKeyType(
+            static_cast<KeySignature::KeyType>(measure.myKeyChange->second));
+        bar.setKeySignature(key);
+
+        // Future copies of this key signature should not be shown.
+        key.setVisible(false);
+        lastKeySig = key;
+    }
+    else
+        bar.setKeySignature(lastKeySig);
+
+    if (measure.myTimeSignatureChange)
+    {
+    }
+    else
+        bar.setTimeSignature(lastTimeSig);
+
     // Insert at the correct location.
     if (start == 0)
         system.getBarlines().front() = bar;
@@ -160,14 +201,17 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
 
     if (measure.myRepeatEnd)
     {
-        Barline bar;
         bar.setPosition(end);
+        bar.setBarType(Barline::RepeatEnd);
+        bar.setRepeatCount(measure.myRepeatEnd.get());
 
-        if (measure.myRepeatEnd)
-        {
-            bar.setBarType(Barline::RepeatEnd);
-            bar.setRepeatCount(measure.myRepeatEnd.get());
-        }
+        // Hide key signatures and time signatures.
+        KeySignature key(bar.getKeySignature());
+        key.setVisible(false);
+        bar.setKeySignature(key);
+        TimeSignature time(bar.getTimeSignature());
+        time.setVisible(false);
+        bar.setTimeSignature(time);
 
         // Insert at the correct location.
         if (end > POSITIONS_PER_SYSTEM)
@@ -184,6 +228,8 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
 void GuitarProImporter::convertScore(Gp::Document &doc, Score &score)
 {
     System system;
+    KeySignature lastKeySig;
+    TimeSignature lastTimeSig;
 
     // Add a staff for each player.
     for (const Player &player : score.getPlayers())
@@ -258,7 +304,7 @@ void GuitarProImporter::convertScore(Gp::Document &doc, Score &score)
         const Gp::Measure *prevMeasure =
             (m > 0) ? &doc.myMeasures[m - 1] : nullptr;
         nextPos = convertBarline(measure, prevMeasure, system, startPos,
-                                 nextPos);
+                                 nextPos, lastKeySig, lastTimeSig);
 
         startPos = nextPos;
     }
