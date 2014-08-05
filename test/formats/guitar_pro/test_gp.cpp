@@ -206,3 +206,31 @@ TEST_CASE("Formats/GuitarPro/Positions", "")
     REQUIRE(positions[10].getDurationType() == Position::WholeNote);
     REQUIRE(positions[10].hasProperty(Position::TremoloPicking));
 }
+
+TEST_CASE("Formats/GuitarPro/Notes", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/notes.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto positions = system.getStaves()[0].getVoices()[0].getPositions();
+    REQUIRE(positions.size() == 16);
+
+    REQUIRE(positions[1].getNotes()[0].hasProperty(Note::Tied));
+    REQUIRE(positions[2].getNotes()[0].hasProperty(Note::Muted));
+    REQUIRE(positions[3].getNotes()[0].hasProperty(Note::HammerOnOrPullOff));
+    REQUIRE(positions[5].getNotes()[0].hasProperty(Note::NaturalHarmonic));
+    REQUIRE(positions[6].getNotes()[0].hasProperty(Note::GhostNote));
+
+    // TODO - figure out where octaves are stored in .gp5 files.
+#if 0
+    REQUIRE(positions[7].getNotes()[0].hasProperty(Note::Octave8va));
+    REQUIRE(positions[8].getNotes()[0].hasProperty(Note::Octave8vb));
+    REQUIRE(positions[9].getNotes()[0].hasProperty(Note::Octave15ma));
+    REQUIRE(positions[10].getNotes()[0].hasProperty(Note::Octave15mb));
+#endif
+
+    REQUIRE(positions[11].getNotes()[0].hasTrill());
+    REQUIRE(positions[11].getNotes()[0].getTrilledFret() == 2);
+}

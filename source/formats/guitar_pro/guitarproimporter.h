@@ -54,43 +54,6 @@ private:
     static int convertBeat(const Gp::Beat &beat, System &system, Voice &voice,
                            int position);
     static void convertScore(const Gp::Document &doc, Score &score);
-
-#if 0
-    /// Reads a beat (Guitar Pro equivalent of a Position in Power Tab).
-    void readBeat(Gp::InputStream &stream, const Tuning &tuning, Position &pos,
-                  boost::optional<TempoMarker> &tempoMarker);
-
-    /// Reads a duration value and converts it into PTB format.
-    Position::DurationType readDuration(Gp::InputStream &stream);
-
-    void readChordDiagram(Gp::InputStream &stream, const Tuning &tuning);
-
-    /// Reads an old-style "simple" chord from earlier versions.
-    void readOldStyleChord(Gp::InputStream &stream, const Tuning &tuning);
-
-    void readPositionEffects(Gp::InputStream &stream, Position &position);
-
-    void readTremoloBar(Gp::InputStream &stream, Position &position);
-
-    void readMixTableChangeEvent(Gp::InputStream &stream,
-                                 boost::optional<TempoMarker> &tempoMarker);
-
-#if 0
-    static uint8_t convertTremoloEventType(uint8_t gpEventType);
-    static uint8_t convertBendPitch(int32_t gpBendPitch);
-#endif
-
-    void readNotes(Gp::InputStream &stream, Position &position);
-
-    void readNoteEffects(Gp::InputStream &stream, Position &position,
-                         Note &note);
-    void readNoteEffectsGp3(Gp::InputStream &stream, Position &position,
-                            Note &note);
-
-    void readSlide(Gp::InputStream &stream, Note &note);
-    void readHarmonic(Gp::InputStream &stream, Note &note);
-    void readBend(Gp::InputStream &stream, Note &note);
-#endif
 };
 
 #endif

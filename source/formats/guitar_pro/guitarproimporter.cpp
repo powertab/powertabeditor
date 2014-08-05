@@ -348,8 +348,22 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
         note.setString(gp_note.myString);
         note.setFretNumber(gp_note.myFret);
 
+        note.setProperty(Note::Tied, gp_note.myIsTied);
+        note.setProperty(Note::Muted, gp_note.myIsMuted);
+        note.setProperty(Note::HammerOnOrPullOff,
+                         gp_note.myIsHammerOnOrPullOff);
+        note.setProperty(Note::NaturalHarmonic, gp_note.myIsNaturalHarmonic);
+        note.setProperty(Note::GhostNote, gp_note.myIsGhostNote);
+        note.setProperty(Note::GhostNote, gp_note.myIsGhostNote);
+
+        if (gp_note.myTrilledFret)
+            note.setTrilledFret(*gp_note.myTrilledFret);
+
         // TODO - copy harmonics from the beat.
-        // TODO - import other note properties.
+        // TODO - import bends.
+        // TODO - import slides.
+        // TODO - import dynamics.
+        // TODO - figure out how to import octave (8va) symbols.
 
         hasVibratoNote |= gp_note.myIsVibrato;
         hasTremoloPickedNote |= gp_note.myIsTremoloPicked;
@@ -376,166 +390,6 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
 }
 
 #if 0
-void GuitarProImporter::readBeat(Gp::InputStream &stream, const Tuning &tuning,
-                                 Position &pos,
-                                 boost::optional<TempoMarker> &tempoMarker)
-{
-    const Gp::Flags flags = stream.read<uint8_t>();
-    bool wholeRest = false;
-
-    pos.setProperty(Position::Dotted, flags.test(Gp::Dotted));
-
-    if (flags.test(Gp::BeatStatus))
-    {
-        const uint8_t status = stream.read<uint8_t>();
-
-        if (status == Gp::BeatEmpty)
-        {
-            // Whole rest.
-            pos.setRest();
-            pos.setDurationType(Position::WholeNote);
-            wholeRest = true;
-        }
-        else if (status == Gp::BeatRest)
-            pos.setRest();
-    }
-
-    Position::DurationType duration = readDuration(stream);
-    if (!wholeRest)
-        pos.setDurationType(duration);
-
-    if (flags.test(Gp::IrregularGrouping))
-    {
-// TODO - we don't yet support irregular groups in the new file format.
-#if 0
-        // Notes played in the irregular grouping.
-        const uint32_t notesPlayed = stream.read<uint32_t>();
-
-        // The "denominator" of the irregular grouping is the nearest power of 2
-        // (from below)
-        const uint32_t notesOver = std::pow(2, std::floor(std::log(notesPlayed) / std::log(2.0)));
-
-        pos->SetIrregularGroupingTiming(notesPlayed, notesOver);
-        pos->SetIrregularGroupingStart(
-            true); // TODO - need to group with other notes properly
-#else
-        stream.read<uint32_t>();
-#endif
-    }
-
-    if (flags.test(Gp::ChordDiagram))
-        readChordDiagram(stream, tuning);
-
-    // Floating text - not handled yet.
-    if (flags.test(Gp::Text))
-        stream.readString();
-
-    if (flags.test(Gp::NoteEffects))
-        readPositionEffects(stream, pos);
-
-    if (flags.test(Gp::MixTableChangeEvent))
-        readMixTableChangeEvent(stream, tempoMarker);
-
-    readNotes(stream, pos);
-
-    // Unknown GP5 data ...
-    if (stream.version > Gp::Version4)
-    {
-        stream.skip(1);
-        const int x = stream.read<uint8_t>();
-        if ((x & 0x08) != 0)
-            stream.skip(1);
-    }
-}
-
-Position::DurationType GuitarProImporter::readDuration(Gp::InputStream &stream)
-{
-    const int8_t gpDuration = stream.read<int8_t>();
-
-    // Durations for Guitar Pro are stored as 0 -> quarter note, -1 -> half
-    // note, 1 -> eight note, etc
-    // We need to convert to 1 = whole note, 2 = half note, 4 = quarter note,
-    // etc
-    return static_cast<Position::DurationType>(
-        static_cast<int>(std::pow(2.0, gpDuration + 2)));
-}
-
-void GuitarProImporter::readChordDiagram(Gp::InputStream &stream,
-                                         const Tuning &tuning)
-{
-    if (stream.version > Gp::Version4)
-        throw FileFormatException("Chord Diagrams not supported yet for GP5");
-
-    const Gp::Flags header = stream.read<uint8_t>();
-
-    if (!header.test(Gp::Gp4ChordFormat))
-    {
-        readOldStyleChord(stream, tuning);
-        return;
-    }
-
-    if (stream.version == Gp::Version3)
-    {
-        stream.skip(25);
-        stream.readFixedLengthString(34); // Chord name.
-        stream.read<uint32_t>(); // Top fret of chord.
-
-        // Strings that are used.
-        for (int i = 0; i < Gp::NumberOfStringsGp3; i++)
-            stream.read<uint32_t>();
-        stream.skip(36);
-        return;
-    }
-
-    stream.read<bool>(); // Sharps/flats.
-
-    // Blank bytes for backwards compatibility with gp3.
-    stream.skip(3);
-
-    stream.read<uint8_t>(); // root of chord
-    stream.read<uint8_t>(); // chord type
-    stream.read<uint8_t>(); // extension (9, 11, 13)
-    stream.read<uint32_t>(); // bass note of chord
-    stream.read<uint32_t>(); // diminished/augmented
-    stream.read<uint8_t>(); // "add" chord
-
-    stream.readFixedLengthString(Gp::ChordDiagramDescriptionLength);
-
-    // more blank bytes for backwards compatibility
-    stream.skip(2);
-
-    stream.read<uint8_t>(); // tonality of the 5th
-    stream.read<uint8_t>(); // tonality of the 9th
-    stream.read<uint8_t>(); // tonality of the 11th
-
-    stream.read<int32_t>(); // base fret of the chord
-
-    // fret numbers for each string
-    for (int i = 0; i < Gp::NumberOfStrings; i++)
-        stream.read<int32_t>();
-
-    stream.read<uint8_t>(); // number of barres in the chord
-
-    for (int i = 0; i < Gp::NumberOfBarres; i++)
-        stream.read<uint8_t>(); // fret of the barre
-
-    for (int i = 0; i < Gp::NumberOfBarres; i++)
-        stream.read<uint8_t>(); // barre start
-
-    for (int i = 0; i < Gp::NumberOfBarres; i++)
-        stream.read<uint8_t>(); // barre end
-
-    // Omission1, Omission3, Omission5, Omission7, Omission9,
-    // Omission11, Omission13, and another blank byte
-    stream.skip(8);
-
-    // fingering of chord
-    for (int i = 0; i < Gp::NumberOfStrings; i++)
-        stream.read<int8_t>();
-
-    stream.read<bool>(); // show fingering
-}
-
 void GuitarProImporter::readOldStyleChord(Gp::InputStream &stream,
                                           const Tuning & /*tuning*/)
 {
@@ -563,87 +417,6 @@ void GuitarProImporter::readOldStyleChord(Gp::InputStream &stream,
             stream.read<uint32_t>();
 #endif
         }
-    }
-}
-
-void GuitarProImporter::readPositionEffects(Gp::InputStream &stream,
-                                            Position &position)
-{
-    const Gp::Flags flags1 = stream.read<uint8_t>();
-
-    Gp::Flags flags2; // Only read this if we are in GP4 or higher.
-
-    // GP3 effect decoding
-    if (stream.version == Gp::Version3)
-    {
-        position.setProperty(
-            Position::Vibrato,
-            flags1.test(Gp::VibratoGp3_1) || flags1.test(Gp::VibratoGp3_2));
-
-        // FIXME - in Power Tab, harmonic correspond to notes, not to positions
-        // (beats)
-        // However, when the Position effects are being read, the notes haven't
-        // been read yet ...
-        if (flags1.test(Gp::NaturalHarmonicGp3))
-        {
-            // TODO - set natural harmonic
-        }
-        if (flags1.test(Gp::ArtificialHarmonicGp3))
-        {
-            // TODO - set artificial harmonic
-        }
-
-        // ignore fade-in effect
-    }
-    else
-    {
-        flags2 = stream.read<uint8_t>();
-    }
-
-    if (flags1.test(Gp::HasTapping))
-    {
-        const uint8_t type = stream.read<uint8_t>();
-
-        // In GP3, a value of 0 indicates a tremolo bar.
-        if (type == Gp::TremoloBarGp3 && stream.version == Gp::Version3)
-            readTremoloBar(stream, position);
-        else
-        {
-            // Ignore slapping and popping.
-            position.setProperty(Position::Tap, type == Gp::Tapping);
-
-            if (stream.version == Gp::Version3)
-                stream.read<uint32_t>(); // TODO - decipher this data.
-        }
-    }
-
-    if (stream.version >= Gp::Version4 && flags2.test(Gp::HasTremoloBarEvent))
-        readTremoloBar(stream, position);
-
-    if (flags1.test(Gp::HasStrokeEffect))
-    {
-        // Upstroke and downstroke duration values - we will just use these for
-        // toggling pickstroke up/down.
-        if (stream.read<uint8_t>() > 0)
-            position.setProperty(Position::PickStrokeDown);
-        if (stream.read<uint8_t>() > 0)
-            position.setProperty(Position::PickStrokeUp);
-    }
-
-    if (stream.version >= Gp::Version4)
-    {
-        position.setProperty(Position::TremoloPicking,
-                             flags2.test(Gp::HasRasguedo));
-    }
-
-    if (stream.version >= Gp::Version4 && flags2.test(Gp::Pickstroke))
-    {
-        const uint8_t pickstrokeType = stream.read<uint8_t>();
-
-        if (pickstrokeType == Gp::PickstrokeUp)
-            position.setProperty(Position::ArpeggioUp);
-        else if (pickstrokeType == Gp::PickstrokeDown)
-            position.setProperty(Position::ArpeggioDown);
     }
 }
 
