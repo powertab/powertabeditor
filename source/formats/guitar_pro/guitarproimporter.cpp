@@ -312,6 +312,43 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
 int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
                                    Voice &voice, int position)
 {
+    // Check for grace notes.
+    {
+        Position gracePos(position);
+        for (const Gp::Note &gpNote : beat.myNotes)
+        {
+            if (gpNote.myGraceNote)
+            {
+                Note note;
+                note.setString(gpNote.myString);
+                note.setFretNumber(gpNote.myGraceNote->myFret);
+
+                switch (gpNote.myGraceNote->myTransition)
+                {
+                case Gp::GraceNote::HammerTransition:
+                    note.setProperty(Note::HammerOnOrPullOff);
+                    break;
+                case Gp::GraceNote::SlideTransition:
+                    note.setProperty(Note::ShiftSlide);
+                    break;
+                default:
+                    break;
+                }
+
+                gracePos.insertNote(note);
+                gracePos.setDurationType(static_cast<Position::DurationType>(
+                    gpNote.myGraceNote->myDuration));
+            }
+        }
+
+        if (!gracePos.getNotes().empty())
+        {
+            gracePos.setProperty(Position::Acciaccatura);
+            voice.insertPosition(gracePos);
+            ++position;
+        }
+    }
+
     if (beat.myText &&
         !ScoreUtils::findByPosition(system.getTextItems(), position))
     {
@@ -329,8 +366,6 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
 
     if (beat.myIsEmpty)
         return position + 1;
-
-    // TODO - handle grace notes.
 
     Position pos(position);
     pos.setRest(beat.myIsRest);
@@ -396,8 +431,7 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
     pos.setProperty(Position::LetRing, hasLetRingNote);
 
     voice.insertPosition(pos);
-    ++position;
-    return position;
+    return position + 1;
 }
 
 #if 0

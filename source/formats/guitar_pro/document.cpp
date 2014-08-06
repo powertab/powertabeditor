@@ -274,6 +274,36 @@ uint8_t Channel::readChannelProperty(InputStream &stream)
     return value;
 }
 
+GraceNote::GraceNote()
+{
+}
+
+void GraceNote::load(InputStream &stream)
+{
+    myFret = stream.read<int8_t>();
+    myDynamic = stream.read<int8_t>();
+    myTransition = static_cast<Transition>(stream.read<int8_t>());
+
+    int duration = stream.read<int8_t>();
+    switch (duration)
+    {
+    case 3:
+        myDuration = 64;
+        break;
+    case 2:
+        myDuration = 32;
+        break;
+    case 1:
+    default:
+        myDuration = 16;
+        break;
+    }
+
+    // TODO - figure out the meaning of this byte.
+    if (stream.version > Version4)
+        stream.skip(1);
+}
+
 Note::Note(int string)
     : myString(string),
       myFret(0),
@@ -369,13 +399,9 @@ void Note::loadNoteEffects(InputStream &stream)
 
     if (header1.test(NoteEffects::HasGraceNote))
     {
-        // TODO - handle grace notes.
-        stream.skip(1); // fret number grace note is made from
-        stream.skip(1); // grace note dynamic
-        stream.skip(1); // transition type
-        stream.skip(1); // duration
-        if (stream.version > Version4)
-            stream.skip(1); // flags for GP5
+        GraceNote note;
+        note.load(stream);
+        myGraceNote = note;
     }
 
     if (header2.test(NoteEffects::HasTremoloPicking))

@@ -77,6 +77,25 @@ private:
     static uint8_t readChannelProperty(InputStream &stream);
 };
 
+struct GraceNote
+{
+    GraceNote();
+    void load(InputStream &stream);
+
+    enum Transition
+    {
+        NoTransition,
+        SlideTransition,
+        BendTransition,
+        HammerTransition
+    };
+
+    int myFret;
+    int myDynamic;
+    Transition myTransition;
+    int myDuration;
+};
+
 struct Note
 {
     Note(int string);
@@ -92,6 +111,7 @@ struct Note
     /// Optional dynamic, where 1 = ppp, ... 9 = fff.
     boost::optional<int> myDynamic;
     boost::optional<int> myTrilledFret;
+    boost::optional<GraceNote> myGraceNote;
     bool myIsLetRing;
     bool myIsHammerOnOrPullOff;
     bool myHasPalmMute;

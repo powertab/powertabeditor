@@ -249,3 +249,29 @@ TEST_CASE("Formats/GuitarPro/Tempos", "")
     REQUIRE(system.getTempoMarkers().size() == 2);
     REQUIRE(system.getTempoMarkers()[1].getBeatsPerMinute() == 110);
 }
+
+TEST_CASE("Formats/GuitarPro/GraceNotes", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/gracenote.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto positions = system.getStaves()[0].getVoices()[0].getPositions();
+
+    REQUIRE(positions[1].hasProperty(Position::Acciaccatura));
+    REQUIRE(positions[1].getNotes()[0].getFretNumber() == 6);
+    REQUIRE(positions[1].getNotes()[0].getString() == 1);
+    REQUIRE(positions[1].getDurationType() == Position::ThirtySecondNote);
+
+    // TODO - GP6 apparently doesn't export this ...
+#if 0
+    REQUIRE(positions[1].getNotes()[0].hasProperty(Note::HammerOnOrPullOff));
+#endif
+
+    REQUIRE(positions[3].hasProperty(Position::Acciaccatura));
+    REQUIRE(positions[3].getDurationType() == Position::SixtyFourthNote);
+
+    REQUIRE(positions[5].hasProperty(Position::Acciaccatura));
+    REQUIRE(positions[5].getDurationType() == Position::SixteenthNote);
+}
