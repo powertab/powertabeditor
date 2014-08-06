@@ -237,3 +237,15 @@ TEST_CASE("Formats/GuitarPro/Notes", "")
     REQUIRE(positions[12].getNotes()[0].hasProperty(Note::SlideIntoFromBelow));
     REQUIRE(positions[12].getNotes()[0].hasProperty(Note::ShiftSlide));
 }
+
+TEST_CASE("Formats/GuitarPro/Tempos", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/tempos.gp5", score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getTempoMarkers().size() == 2);
+    REQUIRE(system.getTempoMarkers()[1].getBeatsPerMinute() == 110);
+}

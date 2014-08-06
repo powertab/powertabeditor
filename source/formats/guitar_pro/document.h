@@ -126,6 +126,7 @@ struct Beat
     int myDuration; ///< 4 -> quarter note, 8 -> eighth note, etc.
     boost::optional<int> myIrregularGrouping;
     boost::optional<std::string> myText;
+    boost::optional<int> myTempoChange;
     bool myIsVibrato;
     bool myIsNaturalHarmonic;
     bool myIsArtificialHarmonic;
@@ -137,6 +138,7 @@ struct Beat
 
 private:
     void loadChordDiagram(InputStream &stream);
+    void loadOldChordDiagram(InputStream &stream);
     void loadBeatEffects(InputStream &stream);
     void loadTremoloBar(InputStream &stream);
     void loadMixTableChangeEvent(InputStream &stream);

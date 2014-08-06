@@ -301,8 +301,6 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
         // Check for alternate endings.
         convertAlternateEndings(measure, system, startPos);
 
-        // TODO - import tempo markers.
-
         startPos = nextPos;
     }
 
@@ -319,6 +317,14 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
     {
         TextItem text(position, *beat.myText);
         system.insertTextItem(text);
+    }
+
+    if (beat.myTempoChange &&
+        !ScoreUtils::findByPosition(system.getTempoMarkers(), position))
+    {
+        TempoMarker marker(position);
+        marker.setBeatsPerMinute(*beat.myTempoChange);
+        system.insertTempoMarker(marker);
     }
 
     if (beat.myIsEmpty)
@@ -395,35 +401,6 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
 }
 
 #if 0
-void GuitarProImporter::readOldStyleChord(Gp::InputStream &stream,
-                                          const Tuning & /*tuning*/)
-{
-// TODO - chord diagrams are not yet supported for the new file format.
-#if 0
-    std::vector<uint8_t> fretNumbers(tuning.getStringCount(),
-                                     ChordDiagram::stringMuted);
-
-    ChordDiagram diagram(0, fretNumbers);
-#endif
-    stream.readString(); // chord diagram name
-
-    const uint32_t baseFret = stream.read<uint32_t>();
-#if 0
-    diagram.SetTopFret(baseFret);
-#endif
-
-    if (baseFret != 0)
-    {
-        for (int i = 0; i < Gp::NumberOfStringsGp3; ++i)
-        {
-#if 0
-            diagram.SetFretNumber(i, stream.read<uint32_t>());
-#else
-            stream.read<uint32_t>();
-#endif
-        }
-    }
-}
 
 void GuitarProImporter::readTremoloBar(Gp::InputStream &stream,
                                        Position & /*position*/)
@@ -472,77 +449,6 @@ void GuitarProImporter::readTremoloBar(Gp::InputStream &stream,
         }
     }
 #endif
-}
-
-void GuitarProImporter::readMixTableChangeEvent(
-    Gp::InputStream &stream, boost::optional<TempoMarker> &tempoMarker)
-{
-    // TODO - implement conversions for this.
-
-    stream.read<int8_t>(); // instrument
-
-    if (stream.version > Gp::Version4)
-        stream.skip(16); // RSE Info???
-
-    int8_t volume = stream.read<int8_t>(); // volume
-    int8_t pan = stream.read<uint8_t>(); // pan
-    int8_t chorus = stream.read<uint8_t>(); // chorus
-    int8_t reverb = stream.read<uint8_t>(); // reverb
-    int8_t phaser = stream.read<uint8_t>(); // phaser
-    int8_t tremolo = stream.read<uint8_t>(); // tremolo
-
-    if (stream.version > Gp::Version4)
-        std::cerr << stream.readString() << std::endl; // tempo name???
-
-    // New tempo.
-    int32_t tempo = stream.read<int32_t>();
-    if (tempo > 0)
-    {
-        tempoMarker = TempoMarker();
-        tempoMarker->setBeatsPerMinute(tempo);
-    }
-
-    if (volume >= 0)
-        stream.read<uint8_t>(); // volume change duration
-
-    if (pan >= 0)
-        stream.read<uint8_t>(); // pan change duration
-
-    if (chorus >= 0)
-        stream.read<uint8_t>(); // chorus change duration
-
-    if (reverb >= 0)
-        stream.read<uint8_t>(); // reverb change duration
-
-    if (phaser >= 0)
-        stream.read<uint8_t>(); // phaser change duration
-
-    if (tremolo >= 0)
-        stream.read<uint8_t>(); // tremolo change duration
-
-    if (tempo >= 0)
-    {
-        stream.skip(1); // tempo change duration
-
-        if (stream.version == Gp::Version5_1)
-            stream.skip(1);
-    }
-
-    if (stream.version >= Gp::Version4)
-    {
-        // Details of score-wide or track-specific changes.
-        stream.read<uint8_t>();
-    }
-
-    if (stream.version > Gp::Version4)
-    {
-        stream.skip(1);
-        if (stream.version == Gp::Version5_1)
-        {
-            std::cerr << stream.readString() << std::endl;
-            std::cerr << stream.readString() << std::endl;
-        }
-    }
 }
 
 // TODO - implement tremolo bar support.

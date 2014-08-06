@@ -590,14 +590,11 @@ void Beat::load(InputStream &stream)
 void Beat::loadChordDiagram(InputStream &stream)
 {
     if (stream.version > Version4)
-        throw FileFormatException("Chord Diagrams not supported yet for GP5");
+        throw FileFormatException("Chord diagrams are not supported yet for GP5");
 
     if (stream.read<uint8_t>() == 0)
     {
-        throw FileFormatException("Old-style chord diagrams not supported yet");
-#if 0
-        readOldStyleChord(stream);
-#endif
+        loadOldChordDiagram(stream);
         return;
     }
 
@@ -661,6 +658,19 @@ void Beat::loadChordDiagram(InputStream &stream)
         stream.read<int8_t>();
 
     stream.read<bool>(); // show fingering
+}
+
+void Beat::loadOldChordDiagram(InputStream &stream)
+{
+    stream.readString(); // chord diagram name
+
+    const uint32_t baseFret = stream.read<uint32_t>();
+
+    if (baseFret != 0)
+    {
+        for (int i = 0; i < GP3_NUMBER_OF_STRINGS; ++i)
+            stream.read<uint32_t>(); // fret number
+    }
 }
 
 void Beat::loadBeatEffects(InputStream &stream)
@@ -769,6 +779,8 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
 
     // New tempo.
     int32_t tempo = stream.read<int32_t>();
+    if (tempo > 0)
+        myTempoChange = tempo;
 
     if (volume >= 0)
         stream.read<uint8_t>(); // volume change duration
