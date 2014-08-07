@@ -302,7 +302,9 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
     while (groupEnd != durations.end())
     {
         // Find the timestamp where the end of the current pattern group will be.
-        const double groupEndTime = *groupSize * 0.5 + groupBeginTime;
+        const double groupEndTime =
+            *groupSize * std::min(0.5, 4.0 / timeSig.getBeatValue()) +
+            groupBeginTime;
 
         // Get the stems in the pattern group.
         groupStart = std::lower_bound(groupEnd, durations.end(), groupBeginTime);
