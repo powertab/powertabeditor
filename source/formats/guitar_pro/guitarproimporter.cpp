@@ -223,6 +223,59 @@ void GuitarProImporter::convertAlternateEndings(const Gp::Measure &measure,
     }
 }
 
+void GuitarProImporter::convertIrregularGroupings(
+    const std::vector<Gp::Beat> &beats, const std::vector<int> &positions,
+    Voice &voice)
+{
+    boost::optional<int> currentGroup;
+    int startPos = -1;
+    int numerator = -1;
+    int denominator = -1;
+    int count = -1;
+    for (int i = 0; i < beats.size(); ++i)
+    {
+        const Gp::Beat &beat = beats[i];
+
+        if (beat.myIrregularGrouping)
+        {
+            if (!currentGroup || *currentGroup != *beat.myIrregularGrouping)
+            {
+                currentGroup = beat.myIrregularGrouping;
+                startPos = positions[i];
+                numerator = 1;
+                denominator = beat.myDuration;
+                count = 1;
+            }
+            else
+            {
+                // Add up the note durations until the numerator is divisble by
+                // the group size.
+                if (beat.myDuration >= denominator)
+                    numerator = numerator * (beat.myDuration / denominator) + 1;
+                else
+                    numerator += denominator / beat.myDuration;
+                ++count;
+
+                if ((numerator % *currentGroup) == 0)
+                {
+                    // The denominator of the irregular grouping is the nearest
+                    // power of 2 (from below).
+                    const int notesPlayedOver = std::pow(
+                        2, std::floor(std::log(*currentGroup) / std::log(2.0)));
+
+                    IrregularGrouping group(startPos, count, *currentGroup,
+                                            notesPlayedOver);
+                    voice.insertIrregularGrouping(group);
+
+                    currentGroup.reset();
+                }
+            }
+        }
+        else
+            currentGroup.reset();
+    }
+}
+
 void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
 {
     System system;
@@ -282,11 +335,16 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
                 // Start inserting notes after the barline.
                 int currentPos = (startPos != 0) ? startPos + 1 : 0;
                 Voice &voice = staff.getVoices()[v];
+                std::vector<int> positions;
 
                 for (const Gp::Beat &beat : gp_staff.myVoices[v])
+                {
                     currentPos = convertBeat(beat, system, voice, currentPos);
+                    positions.push_back(currentPos - 1);
+                }
 
-                // TODO - convert irregular groups.
+                convertIrregularGroupings(gp_staff.myVoices[v], positions,
+                                          voice);
 
                 nextPos = std::max(nextPos, currentPos);
             }

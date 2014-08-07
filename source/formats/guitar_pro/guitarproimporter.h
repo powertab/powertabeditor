@@ -53,6 +53,9 @@ private:
                                         System &system, int position);
     static int convertBeat(const Gp::Beat &beat, System &system, Voice &voice,
                            int position);
+    static void convertIrregularGroupings(const std::vector<Gp::Beat> &beats,
+                                          const std::vector<int> &positions,
+                                          Voice &voice);
     static void convertScore(const Gp::Document &doc, Score &score);
 };
 

@@ -275,3 +275,24 @@ TEST_CASE("Formats/GuitarPro/GraceNotes", "")
     REQUIRE(positions[5].hasProperty(Position::Acciaccatura));
     REQUIRE(positions[5].getDurationType() == Position::SixteenthNote);
 }
+
+TEST_CASE("Formats/GuitarPro/IrregularGroups", "")
+{
+    Score score;
+    GuitarProImporter importer;
+    loadTest(importer, "data/irregular.gp5", score);
+
+    const System &system = score.getSystems()[0];
+    auto groups = system.getStaves()[0].getVoices()[0].getIrregularGroupings();
+
+    REQUIRE(groups.size() == 3);
+    REQUIRE(groups[0].getLength() == 2);
+    REQUIRE(groups[0].getNotesPlayed() == 3);
+    REQUIRE(groups[0].getNotesPlayedOver() == 2);
+    REQUIRE(groups[1].getLength() == 2);
+    REQUIRE(groups[1].getNotesPlayed() == 3);
+    REQUIRE(groups[1].getNotesPlayedOver() == 2);
+    REQUIRE(groups[2].getLength() == 6);
+    REQUIRE(groups[2].getNotesPlayed() == 6);
+    REQUIRE(groups[2].getNotesPlayedOver() == 4);
+}
