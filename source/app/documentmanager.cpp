@@ -99,7 +99,7 @@ void DocumentManager::removeDocument(int index)
 
 bool DocumentManager::hasOpenDocuments() const
 {
-    return myCurrentIndex;
+    return myCurrentIndex.is_initialized();
 }
 
 void DocumentManager::setCurrentDocumentIndex(int index)
@@ -125,7 +125,7 @@ Document::Document()
 
 bool Document::hasFilename() const
 {
-    return myFilename;
+    return myFilename.is_initialized();
 }
 
 const std::string &Document::getFilename() const

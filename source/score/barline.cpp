@@ -95,7 +95,7 @@ void Barline::setTimeSignature(const TimeSignature &time)
 
 bool Barline::hasRehearsalSign() const
 {
-    return myRehearsalSign;
+    return myRehearsalSign.is_initialized();
 }
 
 const RehearsalSign &Barline::getRehearsalSign() const
