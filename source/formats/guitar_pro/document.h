@@ -154,6 +154,10 @@ struct Beat
     bool myPickstrokeUp;
     bool myPickstrokeDown;
     bool myIsTapped;
+    bool myOctave8va;
+    bool myOctave8vb;
+    bool myOctave15ma;
+    bool myOctave15mb;
     std::vector<Note> myNotes;
 
 private:

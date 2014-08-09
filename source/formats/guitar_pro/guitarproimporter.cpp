@@ -460,6 +460,10 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
         note.setProperty(Note::SlideIntoFromBelow, gp_note.myIsSlideInBelow);
         note.setProperty(Note::SlideOutOfUpwards, gp_note.myIsSlideOutUp);
         note.setProperty(Note::SlideOutOfDownwards, gp_note.myIsSlideOutDown);
+        note.setProperty(Note::Octave8va, beat.myOctave8va);
+        note.setProperty(Note::Octave8vb, beat.myOctave8vb);
+        note.setProperty(Note::Octave15ma, beat.myOctave15ma);
+        note.setProperty(Note::Octave15mb, beat.myOctave15mb);
 
         if (gp_note.myTrilledFret)
             note.setTrilledFret(*gp_note.myTrilledFret);
@@ -467,7 +471,6 @@ int GuitarProImporter::convertBeat(const Gp::Beat &beat, System &system,
         // TODO - copy harmonics from the beat.
         // TODO - import bends.
         // TODO - import dynamics.
-        // TODO - figure out how to import octave (8va) symbols.
 
         hasVibratoNote |= gp_note.myIsVibrato;
         hasTremoloPickedNote |= gp_note.myIsTremoloPicked;

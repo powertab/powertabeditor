@@ -89,8 +89,12 @@ enum BeatEffects
     HasTremoloBarEvent = 2,
     ArtificialHarmonicGp3 = 3,
     FadeInGp3 = 4,
+    Octave8va = 4,
     HasTapping = 5,
-    HasStrokeEffect = 6
+    Octave8vb = 5,
+    HasStrokeEffect = 6,
+    Octave15ma = 6,
+    Octave15mb = 8
 };
 }
 
@@ -556,7 +560,11 @@ Beat::Beat()
       myIsTremoloPicked(false),
       myPickstrokeUp(false),
       myPickstrokeDown(false),
-      myIsTapped(false)
+      myIsTapped(false),
+      myOctave8va(false),
+      myOctave8vb(false),
+      myOctave15ma(false),
+      myOctave15mb(false)
 {
 }
 
@@ -603,12 +611,17 @@ void Beat::load(InputStream &stream)
 
     loadNotes(stream);
 
-    // TODO - figure out the meaning of these bytes.
+    // Handle octave symbols.
+    // TODO - figure out what the other bits are used for.
     if (stream.version > Version4)
     {
-        stream.skip(1);
-        const int x = stream.read<uint8_t>();
-        if ((x & 0x08) != 0)
+        std::bitset<16> flags = stream.read<uint16_t>();
+        myOctave8va = flags.test(BeatEffects::Octave8va);
+        myOctave8vb = flags.test(BeatEffects::Octave8vb);
+        myOctave15ma = flags.test(BeatEffects::Octave15ma);
+        myOctave15mb = flags.test(BeatEffects::Octave15mb);
+
+        if (flags.test(3) != 0)
             stream.skip(1);
     }
 }

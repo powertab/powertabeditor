@@ -223,13 +223,10 @@ TEST_CASE("Formats/GuitarPro/Notes", "")
     REQUIRE(positions[5].getNotes()[0].hasProperty(Note::NaturalHarmonic));
     REQUIRE(positions[6].getNotes()[0].hasProperty(Note::GhostNote));
 
-    // TODO - figure out where octaves are stored in .gp5 files.
-#if 0
     REQUIRE(positions[7].getNotes()[0].hasProperty(Note::Octave8va));
     REQUIRE(positions[8].getNotes()[0].hasProperty(Note::Octave8vb));
     REQUIRE(positions[9].getNotes()[0].hasProperty(Note::Octave15ma));
     REQUIRE(positions[10].getNotes()[0].hasProperty(Note::Octave15mb));
-#endif
 
     REQUIRE(positions[11].getNotes()[0].hasTrill());
     REQUIRE(positions[11].getNotes()[0].getTrilledFret() == 2);
