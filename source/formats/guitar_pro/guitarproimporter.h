@@ -46,7 +46,8 @@ private:
     static void convertHeader(const Gp::Header &header, ScoreInfo &info);
     static void convertPlayers(const Gp::Document &doc, Score &score);
     static int convertBarline(const Gp::Measure &measure,
-                              const Gp::Measure *prevMeasure, System &system,
+                              const Gp::Measure *prevMeasure,
+                              const Gp::Measure *nextMeasure, System &system,
                               int start, int end, KeySignature &lastKeySig,
                               TimeSignature &lastTimeSig);
     static void convertAlternateEndings(const Gp::Measure &measure,

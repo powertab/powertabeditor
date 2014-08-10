@@ -107,6 +107,7 @@ void GuitarProImporter::convertPlayers(const Gp::Document &doc, Score &score)
 
 int GuitarProImporter::convertBarline(const Gp::Measure &measure,
                                       const Gp::Measure *prevMeasure,
+                                      const Gp::Measure *nextMeasure,
                                       System &system, int start, int end,
                                       KeySignature &lastKeySig,
                                       TimeSignature &lastTimeSig)
@@ -118,6 +119,11 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
         bar.setBarType(Barline::DoubleBar);
     else if (measure.myIsRepeatBegin)
         bar.setBarType(Barline::RepeatStart);
+    else if (!measure.myIsRepeatBegin && prevMeasure &&
+             prevMeasure->myRepeatEnd)
+    {
+        bar.setBarType(Barline::RepeatEnd);
+    }
 
     if (measure.myMarker)
         bar.setRehearsalSign(RehearsalSign("", *measure.myMarker));
@@ -178,7 +184,8 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
     else
         system.insertBarline(bar);
 
-    if (measure.myRepeatEnd)
+    // Split adjacent repeat start/end bars into separate barlines.
+    if (measure.myRepeatEnd && (!nextMeasure || nextMeasure->myIsRepeatBegin))
     {
         bar.setPosition(end);
         bar.setBarType(Barline::RepeatEnd);
@@ -193,7 +200,7 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
         bar.setTimeSignature(time);
 
         // Insert at the correct location.
-        if (end > POSITIONS_PER_SYSTEM)
+        if (end > POSITIONS_PER_SYSTEM || !nextMeasure)
             system.getBarlines().back() = bar;
         else
             system.insertBarline(bar);
@@ -353,8 +360,10 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
         // Import the barline, key signature, etc.
         const Gp::Measure *prevMeasure =
             (m > 0) ? &doc.myMeasures[m - 1] : nullptr;
-        nextPos = convertBarline(measure, prevMeasure, system, startPos,
-                                 nextPos, lastKeySig, lastTimeSig);
+        const Gp::Measure *nextMeasure =
+            (m < doc.myMeasures.size() - 1) ? &doc.myMeasures[m + 1] : nullptr;
+        nextPos = convertBarline(measure, prevMeasure, nextMeasure, system,
+                                 startPos, nextPos, lastKeySig, lastTimeSig);
 
         // Check for alternate endings.
         convertAlternateEndings(measure, system, startPos);
@@ -363,7 +372,11 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
     }
 
     // Insert the final system.
-    system.getBarlines().back().setPosition(startPos + 1);
+    Barline &lastBar = system.getBarlines().back();
+    lastBar.setPosition(startPos + 1);
+    if (lastBar.getBarType() != Barline::RepeatEnd)
+        lastBar.setBarType(Barline::DoubleBarFine);
+
     score.insertSystem(system);
 }
 

@@ -40,7 +40,7 @@ TEST_CASE("Formats/GuitarPro/Barlines", "")
     const System &system = score.getSystems()[0];
     auto barlines = system.getBarlines();
 
-    REQUIRE(barlines.size() == 7);
+    REQUIRE(barlines.size() == 6);
     REQUIRE(barlines[1].getBarType() == Barline::RepeatStart);
     REQUIRE(barlines[2].getBarType() == Barline::RepeatEnd);
     REQUIRE(barlines[2].getRepeatCount() == 2);
