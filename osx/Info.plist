@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>UTExportedTypeDeclarations</key>
+        <array>
+            <dict>
+	        <key>UTTypeIdentifier</key>
+		<string>org.powertab.pt2</string>
+		<key>UTTypeDescription</key>
+		<string>Power Tab 2.0 Document</string>
+		<key>UTTypeConformsTo</key>
+		<array>
+		    <string>public.data</string>
+		    <string>public.content</string>
+		</array>
+		<key>UTTypeTagSpecification</key>
+		<dict>
+		    <key>public.filename-extension</key>
+		    <array>
+		        <string>pt2</string>
+		    </array>
+		    <key>public.mime-type</key>
+                    <string>application/x-pt2</string>
+		</dict>
+            </dict>
+        </array>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+            <dict>
+                <key>CFBundleTypeIconFile</key>
+                <string>powertabeditor.icns</string>
+                <key>CFBundleTypeName</key>
+                <string>Power Tab 2.0 Document</string>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>pt2</string>
+                </array>
+                <key>CFBundleTypeMIMETypes</key>
+                <array>
+                    <string>application/x-pt2</string>
+                </array>
+                <key>LSTypeIsPackage</key>
+                <false/>
+                <key>LSIsAppleDefaultForType</key>
+                <true/>
+                <key>LSHandlerRank</key>
+                <string>Owner</string>
+            </dict>
+            <dict>
+                <key>CFBundleTypeIconFile</key>
+                <string>powertabeditor.icns</string>
+                <key>CFBundleTypeName</key>
+                <string>Power Tab 1.7 Document</string>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>ptb</string>
+                </array>
+            </dict>
+            <dict>
+                <key>CFBundleTypeIconFile</key>
+                <string>powertabeditor.icns</string>
+                <key>CFBundleTypeName</key>
+                <string>Guitar Pro 3 File</string>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>gp3</string>
+                </array>
+            </dict>
+            <dict>
+                <key>CFBundleTypeIconFile</key>
+                <string>powertabeditor.icns</string>
+                <key>CFBundleTypeName</key>
+                <string>Guitar Pro 4 File</string>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>gp4</string>
+                </array>
+            </dict>
+            <dict>
+                <key>CFBundleTypeIconFile</key>
+                <string>powertabeditor.icns</string>
+                <key>CFBundleTypeName</key>
+                <string>Guitar Pro 5 File</string>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>gp5</string>
+                </array>
+            </dict>
+            <dict>
+                <key>CFBundleTypeIconFile</key>
+                <string>powertabeditor.icns</string>
+                <key>CFBundleTypeName</key>
+                <string>Guitar Pro 6 File</string>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>gpx</string>
+                </array>
+            </dict>
+        </array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>powertabeditor</string>
+	<key>CFBundleIconFile</key>
+	<string>powertabeditor.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.powertab.PowerTabEditor</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Power Tab Editor</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.0</string>
+	<key>CFBundleSignature</key>
+	<string>xmmd</string>
+	<key>CFBundleVersion</key>
+	<string>2.0.0-alpha1</string>
+	<key>NSAppleScriptEnabled</key>
+	<string>NO</string>
+</dict>
+</plist>
