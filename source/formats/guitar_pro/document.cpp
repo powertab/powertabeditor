@@ -621,7 +621,7 @@ void Beat::load(InputStream &stream)
         myOctave15ma = flags.test(BeatEffects::Octave15ma);
         myOctave15mb = flags.test(BeatEffects::Octave15mb);
 
-        if (flags.test(3) != 0)
+        if (flags.test(11) != 0)
             stream.skip(1);
     }
 }
