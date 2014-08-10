@@ -628,9 +628,6 @@ void Beat::load(InputStream &stream)
 
 void Beat::loadChordDiagram(InputStream &stream)
 {
-    if (stream.version > Version4)
-        throw FileFormatException("Chord diagrams are not supported yet for GP5");
-
     if (stream.read<uint8_t>() == 0)
     {
         loadOldChordDiagram(stream);
