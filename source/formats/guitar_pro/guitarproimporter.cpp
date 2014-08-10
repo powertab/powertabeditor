@@ -239,7 +239,7 @@ void GuitarProImporter::convertIrregularGroupings(
     int numerator = -1;
     int denominator = -1;
     int count = -1;
-    for (int i = 0; i < beats.size(); ++i)
+    for (size_t i = 0; i < beats.size(); ++i)
     {
         const Gp::Beat &beat = beats[i];
 
@@ -311,7 +311,7 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
     }
 
     int startPos = 0;
-    for (int m = 0; m < doc.myMeasures.size(); ++m)
+    for (size_t m = 0; m < doc.myMeasures.size(); ++m)
     {
         const Gp::Measure &measure = doc.myMeasures[m];
 
@@ -333,11 +333,10 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
         int nextPos = startPos;
         for (int i = 0; i < score.getPlayers().size(); ++i)
         {
-            const Tuning &tuning = score.getPlayers()[i].getTuning();
             Staff &staff = system.getStaves()[i];
             const Gp::Staff &gp_staff = measure.myStaves[i];
 
-            for (int v = 0; v < gp_staff.myVoices.size(); ++v)
+            for (size_t v = 0; v < gp_staff.myVoices.size(); ++v)
             {
                 // Start inserting notes after the barline.
                 int currentPos = (startPos != 0) ? startPos + 1 : 0;
