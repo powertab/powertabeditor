@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 
+# Run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
+
 add_subdirectory(actions)
 add_subdirectory(app)
 add_subdirectory(audio)

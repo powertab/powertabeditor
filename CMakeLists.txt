@@ -56,9 +56,6 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-D__WINDOWS_MM__)
 endif()
 
-# Run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
-
 find_package(Qt5Widgets REQUIRED) 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
