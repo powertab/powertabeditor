@@ -311,7 +311,8 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
         groupEnd = std::upper_bound(groupStart, durations.end(), groupEndTime);
 
         computeBeamingGroups(
-            stems, firstStemIndex + (groupStart - durations.begin()),
+            stems, durations, 4.0 / timeSig.getBeatValue(), firstStemIndex,
+            firstStemIndex + (groupStart - durations.begin()),
             firstStemIndex + (groupEnd - durations.begin()), groups);
 
         // Move on to the next beaming pattern, looping around if necessary.
@@ -324,6 +325,9 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
 }
 
 void StdNotationNote::computeBeamingGroups(std::vector<NoteStem> &stems,
+                                           const std::vector<double> &durations,
+                                           double beatLength,
+                                           size_t firstStemIndexInBar,
                                            size_t firstStemIndex,
                                            size_t lastStemIndex,
                                            std::vector<BeamGroup> &groups)
@@ -362,6 +366,18 @@ void StdNotationNote::computeBeamingGroups(std::vector<NoteStem> &stems,
 
         if (beamableGroupStart != beamableGroupEnd)
         {
+            // Set up divisions within the beam group at each beat. For example,
+            // with a group of 8 16th notes in 4/4 time, the 5th note should not
+            // be fully beamed to the previous note.
+            for (auto it = boost::next(beamableGroupStart);
+                 it != beamableGroupEnd; ++it)
+            {
+                const int i = std::distance(stems.begin() + firstStemIndexInBar,
+                                            boost::prior(it));
+                if (std::abs(std::fmod(durations[i], beatLength)) >= 0.001)
+                    it->setFullBeaming(true);
+            }
+
             auto direction = NoteStem::formatGroup(beamableGroupStart,
                                                    beamableGroupEnd);
             groups.push_back(BeamGroup(direction,

@@ -92,10 +92,10 @@ private:
 
     /// A group may be split into several beam groups if there are rests,
     /// whole notes, etc.
-    static void computeBeamingGroups(std::vector<NoteStem> &stems,
-                                     size_t firstStemIndex,
-                                     size_t lastStemIndex,
-                                     std::vector<BeamGroup> &groups);
+    static void computeBeamingGroups(
+        std::vector<NoteStem> &stems, const std::vector<double> &durations,
+        double beatLength, size_t firstStemIndexInBar, size_t firstStemIndex,
+        size_t lastStemIndex, std::vector<BeamGroup> &groups);
 
     double myY;
     QChar myNoteHeadSymbol;

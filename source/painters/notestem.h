@@ -66,6 +66,9 @@ public:
     StemType getStemType() const;
     void setStemType(StemType type);
 
+    bool hasFullBeaming() const;
+    void setFullBeaming(bool set);
+
     /// Sets a common direction for the stems, and stretches the beams to
     /// a common high/low height.
     template <typename Iterator>
@@ -89,6 +92,7 @@ private:
     double myTop;
     double myBottom;
     StemType myStemType;
+    bool myFullBeaming;
 };
 
 template <typename Iterator>

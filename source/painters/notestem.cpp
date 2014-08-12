@@ -29,7 +29,8 @@ NoteStem::NoteStem(const Voice &voice, const Position &pos, double x,
       myX(x),
       myNoteHeadWidth(noteHeadWidth),
       myTop(0),
-      myBottom(0)
+      myBottom(0),
+      myFullBeaming(false)
 {
     std::vector<double>::const_iterator it;
 
@@ -147,6 +148,16 @@ NoteStem::StemType NoteStem::getStemType() const
 void NoteStem::setStemType(StemType type)
 {
     myStemType = type;
+}
+
+bool NoteStem::hasFullBeaming() const
+{
+    return myFullBeaming;
+}
+
+void NoteStem::setFullBeaming(bool set)
+{
+    myFullBeaming = set;
 }
 
 bool NoteStem::isGraceNote() const

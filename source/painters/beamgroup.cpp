@@ -127,13 +127,16 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
 
         const int extraBeams = getNumExtraBeams(*stem);
 
-        const bool hasFullBeaming = stem != begin;
         const bool hasFractionalLeft =
-            (duration > prevDuration) &&
-            (nextStem == end || duration > nextDuration);
-        const bool hasFractionalRight = !hasFractionalLeft && duration > nextDuration;
+            ((duration > prevDuration) &&
+             (nextStem == end || duration > nextDuration)) ||
+            (nextStem != end && !nextStem->hasFullBeaming());
+        const bool hasFractionalRight =
+            !hasFractionalLeft &&
+            (duration > nextDuration ||
+             (nextStem != end && !stem->hasFullBeaming()));
 
-        if (hasFullBeaming || hasFractionalLeft || hasFractionalRight)
+        if (stem->hasFullBeaming() || hasFractionalLeft || hasFractionalRight)
         {
             for (int i = 1; i <= extraBeams; i++)
             {
@@ -142,7 +145,7 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
 
                 double xStart = 0, xEnd = 0;
 
-                if (hasFullBeaming && i <= getNumExtraBeams(*prevStem))
+                if (stem->hasFullBeaming() && i <= getNumExtraBeams(*prevStem))
                 {
                     xStart = prevStem->getX() + 0.5;
                     xEnd = stem->getX() - 1;
