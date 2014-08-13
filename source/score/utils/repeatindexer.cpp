@@ -100,9 +100,14 @@ RepeatIndexer::RepeatIndexer(const Score &score)
             // we are done.
             if (!repeats.empty())
             {
+                // TODO - currently, this allows a greater number of alternate
+                // endings than the total repeat count so that repeats aren't
+                // silently dropped. This should be reported
+                // by a score checker-type feature when that is implemented.
                 RepeatedSection &activeRepeat = repeats.top();
                 if (activeRepeat.getAlternateEndingCount() &&
-                    activeRepeat.getAlternateEndingCount() ==
+                    activeRepeat.getTotalRepeatCount() &&
+                    activeRepeat.getAlternateEndingCount() >=
                         activeRepeat.getTotalRepeatCount())
                 {
                     myRepeats.insert(activeRepeat);
