@@ -131,6 +131,11 @@ void CaretPainter::setSystemRect(int index, const QRectF &rect)
     mySystemRects.at(index) = rect;
 }
 
+QRectF CaretPainter::getCurrentSystemRect() const
+{
+    return mySystemRects.at(myCaret.getLocation().getSystemIndex());
+}
+
 boost::signals2::connection CaretPainter::subscribeToMovement(
         const LocationChangedSlot::slot_type &subscriber)
 {

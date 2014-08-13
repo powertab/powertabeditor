@@ -37,6 +37,7 @@ public:
 
     void addSystemRect(const QRectF &rect);
     void setSystemRect(int index, const QRectF &rect);
+    QRectF getCurrentSystemRect() const;
 
     typedef boost::signals2::signal<void ()> LocationChangedSlot;
     /// Register a listener for when the caret painter is updated.

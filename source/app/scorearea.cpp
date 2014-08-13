@@ -24,6 +24,7 @@
 #include <painters/systemrenderer.h>
 #include <QDebug>
 #include <QGraphicsItem>
+#include <QScrollBar>
 #include <score/score.h>
 #include <thread>
 
@@ -149,5 +150,5 @@ std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
 
 void ScoreArea::adjustScroll()
 {
-    ensureVisible(myCaretPainter->sceneBoundingRect(), 0, 100);
+    verticalScrollBar()->setValue(myCaretPainter->getCurrentSystemRect().y());
 }
