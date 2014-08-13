@@ -424,7 +424,8 @@ void SystemRenderer::drawAlternateEndings(const System &system,
 
     for (const AlternateEnding &ending : system.getAlternateEndings())
     {
-        const double location = layout.getPositionX(ending.getPosition());
+        const double location = layout.getPositionX(ending.getPosition()) +
+                                0.5 * layout.getPositionSpacing();
 
         // Draw the vertical line.
         auto vertLine = new QGraphicsLineItem();
@@ -459,6 +460,9 @@ void SystemRenderer::drawAlternateEndings(const System &system,
             endX = layout.getPositionX(system.getNextBarline(
                                     ending.getPosition())->getPosition());
         }
+
+        // Draw to the center of the barline's position.
+        endX += 0.5 * layout.getPositionSpacing();
 
         // Ensure that the line doesn't extend past the edge of the system.
         endX = boost::algorithm::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
