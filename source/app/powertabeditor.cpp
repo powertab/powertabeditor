@@ -2607,7 +2607,7 @@ void PowerTabEditor::setupNewTab()
     scorearea->setFocus();
 
     auto end = std::chrono::high_resolution_clock::now();
-    qDebug() << "Tap opened in"
+    qDebug() << "Tab opened in"
              << std::chrono::duration_cast<std::chrono::milliseconds>(
                     end - start).count() << "ms";
 }
