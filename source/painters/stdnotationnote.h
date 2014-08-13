@@ -94,8 +94,9 @@ private:
     /// whole notes, etc.
     static void computeBeamingGroups(
         std::vector<NoteStem> &stems, const std::vector<double> &durations,
-        double beatLength, size_t firstStemIndexInBar, size_t firstStemIndex,
-        size_t lastStemIndex, std::vector<BeamGroup> &groups);
+        const boost::optional<double> &subgroupLength,
+        size_t firstStemIndexInBar, size_t firstStemIndex, size_t lastStemIndex,
+        std::vector<BeamGroup> &groups);
 
     double myY;
     QChar myNoteHeadSymbol;

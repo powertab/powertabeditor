@@ -310,10 +310,15 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
         groupStart = std::lower_bound(groupEnd, durations.end(), groupBeginTime);
         groupEnd = std::upper_bound(groupStart, durations.end(), groupEndTime);
 
-        computeBeamingGroups(
-            stems, durations, 4.0 / timeSig.getBeatValue(), firstStemIndex,
-            firstStemIndex + (groupStart - durations.begin()),
-            firstStemIndex + (groupEnd - durations.begin()), groups);
+        // Only create subgroups if the beat length is an 8th note or greater.
+        boost::optional<double> subgroupLength;
+        if (timeSig.getBeatValue() <= 8)
+            subgroupLength = 4.0 / timeSig.getBeatValue();
+
+        computeBeamingGroups(stems, durations, subgroupLength, firstStemIndex,
+                             firstStemIndex + (groupStart - durations.begin()),
+                             firstStemIndex + (groupEnd - durations.begin()),
+                             groups);
 
         // Move on to the next beaming pattern, looping around if necessary.
         ++groupSize;
@@ -324,13 +329,10 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
     }
 }
 
-void StdNotationNote::computeBeamingGroups(std::vector<NoteStem> &stems,
-                                           const std::vector<double> &durations,
-                                           double beatLength,
-                                           size_t firstStemIndexInBar,
-                                           size_t firstStemIndex,
-                                           size_t lastStemIndex,
-                                           std::vector<BeamGroup> &groups)
+void StdNotationNote::computeBeamingGroups(
+    std::vector<NoteStem> &stems, const std::vector<double> &durations,
+    const boost::optional<double> &subgroupLength, size_t firstStemIndexInBar,
+    size_t firstStemIndex, size_t lastStemIndex, std::vector<BeamGroup> &groups)
 {
     // Rests and notes greater than eighth notes will break apart a beam group,
     // so we need to find all of the subgroups of consecutive positions that
@@ -372,9 +374,18 @@ void StdNotationNote::computeBeamingGroups(std::vector<NoteStem> &stems,
             for (auto it = boost::next(beamableGroupStart);
                  it != beamableGroupEnd; ++it)
             {
-                const int i = std::distance(stems.begin() + firstStemIndexInBar,
-                                            boost::prior(it));
-                if (std::abs(std::fmod(durations[i], beatLength)) >= 0.001)
+                if (subgroupLength)
+                {
+                    const int i = std::distance(
+                        stems.begin() + firstStemIndexInBar, boost::prior(it));
+
+                    if (std::abs(std::fmod(durations[i], *subgroupLength)) >=
+                        0.001)
+                    {
+                        it->setFullBeaming(true);
+                    }
+                }
+                else
                     it->setFullBeaming(true);
             }
 
