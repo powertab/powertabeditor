@@ -3,7 +3,7 @@ set -e # Exit immediately if an error occurs.
 set -x # Echo commands.
 
 APP_DIR="powertabeditor.app"
-BUILD_DIR="../build"
+BUILD_DIR=$1
 
 # Set up the directory structure.
 rm -rf ${APP_DIR}
