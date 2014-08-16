@@ -4,5 +4,6 @@ build
 *~
 windows/bin
 windows/obj
+windows/redist
 *.suo
 *.app*
