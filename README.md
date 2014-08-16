@@ -21,7 +21,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
 
 #### Dependencies:
 * [CMake](http://www.cmake.org/) >= 2.8.9
-* [Boost 1.55](http://www.boost.org/)
+* [Boost 1.55](http://www.boost.org/) or greater
   * Earlier versions may work, but are currently untested
 * [Qt 5.x](http://qt-project.org/)
   * If you are compiling with Clang, Qt 5.2 or higher is required.
@@ -33,17 +33,25 @@ If you've already cloned the repository, you can run `git submodule init && git 
 #### Windows:
 * Install Git - see https://help.github.com/articles/set-up-git
 * Building Boost:
-  * Download and extract [Boost 1.55](http://www.boost.org/users/history/version_1_55_0.html) to `C:\Program Files\boost\boost_1_55_0`.
+  * Download and extract [Boost 1.56](http://www.boost.org/users/history/version_1_56_0.html) to `C:\Program Files\boost\boost_1_56_0`.
   * Download and extract [zlib](http://www.zlib.net/) to any directory. However, the path must *not* contain any spaces.
-  * Open a command prompt (VS2013 x64 Native Tools Command Prompt) and navigate to the Boost directory.
+  * Open a command prompt (e.g. VS2013 x64 Native Tools Command Prompt) and navigate to the Boost directory.
   * Run `bootstrap` and then `b2 -s ZLIB_SOURCE=/path/to/zlib link=shared address-model=64`.
+    * Use `address-model=32` for a 32-bit build.
 * Installing Qt:
   * Download the online installer from http://qt-project.org/downloads.
-  * Install the `msvc2013 64-bit` component.
+  * Install the `msvc2013 64-bit` component (or `msvc2013 32-bit` for a 32-bit build)
+* Compiling Qt (optional):
+  * You may want to do this instead if you intend on building the installer so that Qt can be built without dependencies on huge libraries such as `icu`.
+  * [Download](http://qt-project.org/downloads) and extract the source code to a directory such as `C:\Qt\5.2.0`.
+  * If necessary, install [Python 2.7.x](https://www.python.org/downloads/) and add it to your PATH.
+  * Open a command prompt (e.g. VS2013 x64 Native Tools Command Prompt) and navigate to the Qt directory.
+  * Run `configure -opensource -nomake examples -debug-and-release -mp -no-icu -c++11` and accept the license agreement.
+  * Run `nmake` and grab a cup of coffee ...
 * Install and open CMake, and browse to select the location of the root directory (e.g. `$HOME/Documents/GitHub/powertabeditor`).
 * Set the build directory to `$HOME/Documents/GitHub/powertabeditor/build`.
 * Use the "Add Entry" button to set the `STRING` `CMAKE_PREFIX_PATH` to the `cmake` directory inside Qt's installation directory (e.g. `C:\Qt\5.2.0\qtbase\lib\cmake`)
-* Press `Configure` and select your compiler version (e.g. `Visual Studio 12 Win64`) and then press `Generate`
+* Press `Configure` and select your compiler version (e.g. `Visual Studio 12 Win64`, or `Visual Studio 12` for a 32-bit build) and then press `Generate`
 * Open the resulting solution (`powertabeditor.sln`) and select `Build Solution` from the `Build` menu.
 * Right-click on the `powertabeditor` project and select "Set as Startup Project" before running.
 
