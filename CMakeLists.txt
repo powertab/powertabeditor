@@ -24,9 +24,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     # Increase the virtual memory limit for precompiled headers.
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm200")
 else()
-    # Set -Wno-ignored-qualifiers for boost::ptr_container (see https://svn.boost.org/trac/boost/ticket/4276).
     # Set -Wno-deprecated to silence noisy warnings from Qt headers that use the 'register' keyword.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wnon-virtual-dtor -Wextra -Wno-ignored-qualifiers -Wno-deprecated")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wnon-virtual-dtor -Wextra -Wno-deprecated")
     if (ENABLE_WERROR)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
     endif()

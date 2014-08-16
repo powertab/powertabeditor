@@ -25,9 +25,10 @@
 // third parameter is the new value (0-127)
 **/
 
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <cstdint>
 #include <map>
+#include <memory>
+#include <vector>
 
 class RtMidiOut;
 
@@ -82,7 +83,7 @@ public:
     };
 
 private:
-    boost::ptr_vector<RtMidiOut> myMidiOuts;
+    std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
     RtMidiOut* myMidiOut;
     bool sendMidiMessage(unsigned char a, unsigned char b, unsigned char c);
 

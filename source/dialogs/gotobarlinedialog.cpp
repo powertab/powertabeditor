@@ -33,9 +33,8 @@ GoToBarlineDialog::GoToBarlineDialog(QWidget *parent, const Score &score)
         // Index all barlines except for the end bar.
         for (long i = 0; i < system.getBarlines().size() - 1; ++i)
         {
-            myLocations.push_back(new ScoreLocation(score, systemIndex, 0,
-                                      system.getBarlines()[i].getPosition()));
-
+            myLocations.push_back(ScoreLocation(
+                score, systemIndex, 0, system.getBarlines()[i].getPosition()));
         }
     }
 

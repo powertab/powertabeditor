@@ -24,8 +24,8 @@ UndoManager::UndoManager(QObject *parent) :
 
 void UndoManager::addNewUndoStack()
 {
-    undoStacks.push_back(new QUndoStack);
-    addStack(&undoStacks.back());
+    undoStacks.emplace_back(new QUndoStack);
+    addStack(undoStacks.back().get());
 }
 
 void UndoManager::setActiveStackIndex(int index)
@@ -33,7 +33,7 @@ void UndoManager::setActiveStackIndex(int index)
     if (index == -1) // When there are no open documents, the index is -1.
         return;
 
-    setActiveStack(&undoStacks.at(index));
+    setActiveStack(undoStacks.at(index).get());
 }
 
 void UndoManager::removeStack(int index)

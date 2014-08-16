@@ -18,9 +18,9 @@
 #ifndef DIALOGS_GOTOBARLINEDIALOG_H
 #define DIALOGS_GOTOBARLINEDIALOG_H
 
-#include <boost/ptr_container/ptr_vector.hpp>
 #include <QDialog>
 #include <score/scorelocation.h>
+#include <vector>
 
 namespace Ui {
 class GoToBarlineDialog;
@@ -39,9 +39,7 @@ public:
 
 private:
     Ui::GoToBarlineDialog *ui;
-    // ScoreLocation doesn't have a copy assignment operator, so this is the
-    // simplest alternative until C++11.
-    boost::ptr_vector<ScoreLocation> myLocations;
+    std::vector<ScoreLocation> myLocations;
 };
 
 #endif

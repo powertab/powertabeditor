@@ -18,10 +18,10 @@
 #ifndef ACTIONS_UNDOMANAGER_H
 #define ACTIONS_UNDOMANAGER_H
 
+#include <memory>
 #include <QUndoGroup>
 #include <QUndoStack>
-
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <vector>
 
 class QUndoCommand;
 
@@ -56,7 +56,7 @@ private:
 
     void onSystemChanged(int affectedSystem);
 
-    boost::ptr_vector<QUndoStack> undoStacks;
+    std::vector<std::unique_ptr<QUndoStack>> undoStacks;
 };
 
 class SignalOnRedo : public QObject, public QUndoCommand

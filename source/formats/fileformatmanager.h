@@ -19,7 +19,8 @@
 #define FORMATS_FILEFORMATMANAGER_H
 
 #include <boost/optional/optional.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
+#include <map>
+#include <memory>
 #include "fileformat.h"
 
 class FileFormatImporter;
@@ -58,24 +59,22 @@ private:
     template <typename Exporter>
     void registerExporter();
 
-    typedef boost::ptr_map<FileFormat, FileFormatImporter> ImporterMap;
-    typedef boost::ptr_map<FileFormat, FileFormatExporter> ExporterMap;
-    ImporterMap myImporters;
-    ExporterMap myExporters;
+    std::map<FileFormat, std::unique_ptr<FileFormatImporter>> myImporters;
+    std::map<FileFormat, std::unique_ptr<FileFormatExporter>> myExporters;
 };
 
 template <typename Importer>
 void FileFormatManager::registerImporter()
 {
     FileFormat format = Importer().fileFormat();
-    myImporters.insert(format, new Importer());
+    myImporters[format].reset(new Importer());
 }
 
 template <typename Exporter>
 void FileFormatManager::registerExporter()
 {
     FileFormat format = Exporter().fileFormat();
-    myExporters.insert(format, new Exporter());
+    myExporters[format].reset(new Exporter());
 }
 
 #endif

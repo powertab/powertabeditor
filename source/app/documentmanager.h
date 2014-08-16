@@ -21,8 +21,9 @@
 #include <app/caret.h>
 #include <boost/noncopyable.hpp>
 #include <boost/optional/optional.hpp>
-#include <boost/ptr_container/ptr_vector.hpp>
+#include <memory>
 #include <score/score.h>
+#include <vector>
 
 /// A document is a score that is either associated with a file or unsaved.
 class Document : boost::noncopyable
@@ -67,7 +68,7 @@ public:
     int getCurrentDocumentIndex() const;
 
 private:
-    boost::ptr_vector<Document> myDocumentList;
+    std::vector<std::unique_ptr<Document>> myDocumentList;
     boost::optional<int> myCurrentIndex;
 };
 

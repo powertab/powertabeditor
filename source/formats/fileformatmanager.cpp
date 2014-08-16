@@ -36,8 +36,8 @@ FileFormatManager::FileFormatManager()
 boost::optional<FileFormat> FileFormatManager::findFormat(
         const std::string &extension) const
 {
-    for (ImporterMap::const_iterator importer = myImporters.begin();
-         importer != myImporters.end(); ++importer)
+    for (auto importer = myImporters.begin(); importer != myImporters.end();
+         ++importer)
     {
         if (importer->first.contains(extension))
             return importer->first;
@@ -51,8 +51,8 @@ std::string FileFormatManager::importFileFilter() const
     std::string filterAll = "All Supported Formats (";
     std::string filterOther;
 
-    for (ImporterMap::const_iterator importer = myImporters.begin();
-         importer != myImporters.end(); ++importer)
+    for (auto importer = myImporters.begin(); importer != myImporters.end();
+         ++importer)
     {
         if (importer != myImporters.begin())
             filterAll += " ";
@@ -73,7 +73,7 @@ bool FileFormatManager::importFile(Score &score, const std::string &filename,
     {
         try
         {
-            myImporters.at(format).load(filename, score);
+            myImporters.at(format)->load(filename, score);
             return true;
         }
         catch (const std::exception &e)
@@ -92,8 +92,8 @@ std::string FileFormatManager::exportFileFilter() const
 {
     std::string filter;
 
-    for (ExporterMap::const_iterator exporter = myExporters.begin();
-         exporter != myExporters.end(); ++exporter)
+    for (auto exporter = myExporters.begin(); exporter != myExporters.end();
+         ++exporter)
     {
         if (exporter != myExporters.begin())
             filter += ";;";
@@ -111,7 +111,7 @@ bool FileFormatManager::exportFile(const Score &score, const std::string &filena
     {
         try
         {
-            myExporters.at(format).save(filename, score);
+            myExporters.at(format)->save(filename, score);
             return true;
         }
         catch (const std::exception &e)

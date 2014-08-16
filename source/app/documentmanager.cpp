@@ -28,9 +28,9 @@ DocumentManager::DocumentManager()
 
 Document &DocumentManager::addDocument()
 {
-    myDocumentList.push_back(new Document());
+    myDocumentList.emplace_back(new Document());
     myCurrentIndex = static_cast<int>(myDocumentList.size()) - 1;
-    return myDocumentList.back();
+    return *myDocumentList.back();
 }
 
 Document &DocumentManager::addDefaultDocument()
@@ -78,12 +78,12 @@ Document &DocumentManager::getCurrentDocument()
     if (!myCurrentIndex)
         throw std::logic_error("No documents are currently open");
 
-    return myDocumentList.at(*myCurrentIndex);
+    return *myDocumentList.at(*myCurrentIndex);
 }
 
 Document &DocumentManager::getDocument(int i)
 {
-    return myDocumentList.at(i);
+    return *myDocumentList.at(i);
 }
 
 void DocumentManager::removeDocument(int index)

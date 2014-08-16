@@ -38,7 +38,7 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
     {
         try
         {
-            myMidiOuts.push_back(new RtMidiOut(*it));
+            myMidiOuts.emplace_back(new RtMidiOut(*it));
         }
         catch (...)
         {
@@ -51,7 +51,7 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 
     // Select a default midiout.
     assert(!myMidiOuts.empty() && "No MIDI APIs compiled");
-    myMidiOut = &myMidiOuts[0];
+    myMidiOut = myMidiOuts[0].get();
 }
 
 MidiOutputDevice::~MidiOutputDevice()
@@ -91,7 +91,7 @@ bool MidiOutputDevice::initialize(size_t preferredApi,
     if (preferredApi >= myMidiOuts.size())
         return false;
 
-    myMidiOut = &myMidiOuts[preferredApi];
+    myMidiOut = myMidiOuts[preferredApi].get();
     unsigned int num_ports = myMidiOut->getPortCount();
 
     if (num_ports == 0)
@@ -117,13 +117,13 @@ size_t MidiOutputDevice::getApiCount()
 unsigned int MidiOutputDevice::getPortCount(size_t api)
 {
     assert(api < myMidiOuts.size() && "Programming error, api doesn't exist");
-    return myMidiOuts[api].getPortCount();
+    return myMidiOuts[api]->getPortCount();
 }
 
 std::string MidiOutputDevice::getPortName(size_t api, unsigned int port)
 {
     assert(api < myMidiOuts.size() && "Programming error, api doesn't exist");
-    return myMidiOuts[api].getPortName(port);
+    return myMidiOuts[api]->getPortName(port);
 }
 
 bool MidiOutputDevice::setPatch(int channel, uint8_t patch)
