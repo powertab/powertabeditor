@@ -279,6 +279,7 @@ uint8_t Channel::readChannelProperty(InputStream &stream)
 }
 
 GraceNote::GraceNote()
+    : myFret(0), myDynamic(0), myTransition(NoTransition), myDuration(0)
 {
 }
 

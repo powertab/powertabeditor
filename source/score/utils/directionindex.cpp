@@ -19,7 +19,8 @@
 
 #include <score/score.h>
 
-DirectionIndex::DirectionIndex(const Score &score) : myScore(score)
+DirectionIndex::DirectionIndex(const Score &score)
+    : myScore(score), myActiveSymbol(DirectionSymbol::ActiveNone)
 {
     int i = 0;
     for (const System &system : score.getSystems())

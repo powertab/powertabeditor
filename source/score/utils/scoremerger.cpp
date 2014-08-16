@@ -594,6 +594,7 @@ ScoreMerger::State::State(Score &score, bool isBass)
       repeatState(NO_REPEAT),
       remainingRepeats(0),
       numMergedRepeats(0),
+      repeatedSection(nullptr),
       done(false),
       finishing(false)
 {
