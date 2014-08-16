@@ -38,6 +38,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * Open a command prompt (e.g. VS2013 x64 Native Tools Command Prompt) and navigate to the Boost directory.
   * Run `bootstrap` and then `b2 -s ZLIB_SOURCE=/path/to/zlib link=shared address-model=64`.
     * Use `address-model=32` for a 32-bit build.
+    * If building both 32-bit and 64-bit versions, use `--stagedir=stage32` to place the 32-bit versions under a different directory (`stage32/lib` instead of `stage/lib`), and set `BOOST_LIBRARYDIR` accordingly when running CMake.
 * Installing Qt:
   * Download the online installer from http://qt-project.org/downloads.
   * Install the `msvc2013 64-bit` component (or `msvc2013 32-bit` for a 32-bit build)
