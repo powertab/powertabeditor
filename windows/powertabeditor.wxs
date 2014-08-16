@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?include common.wxi ?>
-<?define CRTMergeModule = "C:\Program Files (x86)\Common Files\Merge Modules\Microsoft_VC120_CRT_x64.msm" ?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   
 	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)"
@@ -28,7 +28,7 @@
       <!-- Install the C runtime -->
       <Merge Id="CRT" Language="0" SourceFile="$(var.CRTMergeModule)" DiskId="1" />
       
-			<Directory Id="ProgramFiles64Folder">
+			<Directory Id="$(var.ProgramFilesFolder)">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
           <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
             <Directory Id="PlatformBinariesDir" Name="platforms" />

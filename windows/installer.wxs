@@ -9,7 +9,7 @@
       <bal:WixStandardBootstrapperApplication LicenseFile="license.rtf" LogoFile="logo.png"/>
     </BootstrapperApplicationRef>
 
-    <Variable Name="InstallFolder" Type="string" Value="[ProgramFiles64Folder]$(var.ProductShortName)\$(var.ProductName)" />
+    <Variable Name="InstallFolder" Type="string" Value="[$(var.ProgramFilesFolder)]$(var.ProductShortName)\$(var.ProductName)" />
 
     <!-- Allow the program to be launched after installation. -->
     <Variable Name="LaunchTarget" Value="[InstallFolder]\powertabeditor.exe"/>

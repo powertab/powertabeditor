@@ -7,4 +7,12 @@
   <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
   <?define SourceDir="../source"?>
   <?define BinDir="../build/bin"?>
+
+  <?if $(var.Platform) = x64?>
+    <?define CRTMergeModule="C:\Program Files (x86)\Common Files\Merge Modules\Microsoft_VC120_CRT_x64.msm" ?>
+    <?define ProgramFilesFolder="ProgramFiles64Folder"?>
+  <?else?>
+    <?define CRTMergeModule="C:\Program Files (x86)\Common Files\Merge Modules\Microsoft_VC120_CRT_x86.msm" ?>
+    <?define ProgramFilesFolder="ProgramFilesFolder"?>
+  <?endif?>
 </Include>
