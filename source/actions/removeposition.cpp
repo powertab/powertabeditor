@@ -18,6 +18,7 @@
 #include "removeposition.h"
 
 #include <score/staff.h>
+#include <score/voiceutils.h>
 
 RemovePosition::RemovePosition(const ScoreLocation &location,
                                const QString &text)
@@ -29,10 +30,26 @@ RemovePosition::RemovePosition(const ScoreLocation &location,
 
 void RemovePosition::redo()
 {
+    for (const IrregularGrouping *group : VoiceUtils::getIrregularGroupsInRange(
+             myLocation.getVoice(), myLocation.getPositionIndex(),
+             myLocation.getPositionIndex()))
+    {
+        myIrregularGroups.push_back(*group);
+    }
+
     myLocation.getVoice().removePosition(myOriginalPosition);
+
+    // Remove any irregular groups that involved this position.
+    for (auto &group : myIrregularGroups)
+        myLocation.getVoice().removeIrregularGrouping(group);
 }
 
 void RemovePosition::undo()
 {
     myLocation.getVoice().insertPosition(myOriginalPosition);
+
+    for (auto &group : myIrregularGroups)
+        myLocation.getVoice().insertIrregularGrouping(group);
+
+    myIrregularGroups.clear();
 }

@@ -22,7 +22,7 @@
 RemoveNote::RemoveNote(const ScoreLocation &location)
     : QUndoCommand(QObject::tr("Clear Note")),
       myLocation(location),
-      myOriginalPosition(*location.getPosition())
+      myNote(*location.getNote())
 {
     Q_ASSERT(myLocation.getNote());
 }
@@ -32,16 +32,22 @@ void RemoveNote::redo()
     Position *pos = myLocation.getPosition();
     Q_ASSERT(pos);
 
-    pos->removeNote(*myLocation.getNote());
+    pos->removeNote(myNote);
 
     if (pos->getNotes().empty())
-        myLocation.getVoice().removePosition(*pos);
+    {
+        myRemovePosAction.reset(new RemovePosition(myLocation));
+        myRemovePosAction->redo();
+    }
 }
 
 void RemoveNote::undo()
 {
-    if (!myLocation.getPosition())
-        myLocation.getVoice().insertPosition(myOriginalPosition);
-    else
-        *myLocation.getPosition() = myOriginalPosition;
+    if (myRemovePosAction)
+    {
+        myRemovePosAction->undo();
+        myRemovePosAction.reset();
+    }
+
+    myLocation.getPosition()->insertNote(myNote);
 }

@@ -19,6 +19,7 @@
 #define ACTIONS_REMOVEPOSITION_H
 
 #include <QUndoCommand>
+#include <score/irregulargrouping.h>
 #include <score/position.h>
 #include <score/scorelocation.h>
 
@@ -34,6 +35,7 @@ public:
 private:
     ScoreLocation myLocation;
     const Position myOriginalPosition;
+    std::vector<IrregularGrouping> myIrregularGroups;
 };
 
 #endif

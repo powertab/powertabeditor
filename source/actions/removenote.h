@@ -18,8 +18,10 @@
 #ifndef ACTIONS_REMOVENOTE_H
 #define ACTIONS_REMOVENOTE_H
 
+#include <memory>
 #include <QUndoCommand>
-#include <score/position.h>
+#include "removeposition.h"
+#include <score/note.h>
 #include <score/scorelocation.h>
 
 class RemoveNote : public QUndoCommand
@@ -32,7 +34,8 @@ public:
 
 private:
     ScoreLocation myLocation;
-    const Position myOriginalPosition;
+    const Note myNote;
+    std::unique_ptr<RemovePosition> myRemovePosAction;
 };
 
 #endif
