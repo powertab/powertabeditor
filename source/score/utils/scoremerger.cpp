@@ -78,7 +78,8 @@ static int insertMultiBarRest(ScoreLocation &dest, ScoreLocation &, int count)
 {
     Position rest(dest.getPositionIndex(), Position::WholeNote);
     rest.setRest();
-    rest.setMultiBarRest(count);
+    if (count >= 2)
+        rest.setMultiBarRest(count);
     dest.getVoice().insertPosition(rest);
 
     // A multi-bar rest should probably span at least a few positions.
