@@ -4,6 +4,7 @@ set -x # Echo commands.
 
 APP_DIR="powertabeditor.app"
 BUILD_DIR=$1
+MACDEPLOYQT="/usr/local/opt/qt5/bin/macdeployqt"
 
 # Set up the directory structure.
 rm -rf ${APP_DIR}
@@ -19,7 +20,7 @@ cp powertabeditor.icns ${APP_DIR}/Contents/Resources
 # Debugging.
 otool -L ${APP_DIR}/Contents/MacOS/powertabeditor
 # Deal with dependencies.
-macdeployqt -verbose=3 ${APP_DIR}
+${MACDEPLOYQT} -verbose=3 ${APP_DIR}
 # Debugging.
 otool -L ${APP_DIR}/Contents/MacOS/powertabeditor
 
