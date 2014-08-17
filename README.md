@@ -36,7 +36,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * Download and extract [Boost 1.56](http://www.boost.org/users/history/version_1_56_0.html) to `C:\Program Files\boost\boost_1_56_0`.
   * Download and extract [zlib](http://www.zlib.net/) to any directory. However, the path must *not* contain any spaces.
   * Open a command prompt (e.g. VS2013 x64 Native Tools Command Prompt) and navigate to the Boost directory.
-  * Run `bootstrap` and then `b2 -s ZLIB_SOURCE=/path/to/zlib link=shared address-model=64`.
+  * Run `bootstrap` and then `b2 -s ZLIB_SOURCE=/path/to/zlib link=shared address-model=64 variant=debug,release`.
     * Use `address-model=32` for a 32-bit build.
     * If building both 32-bit and 64-bit versions, use `--stagedir=stage32` to place the 32-bit versions under a different directory (`stage32/lib` instead of `stage/lib`), and set `BOOST_LIBRARYDIR` accordingly when running CMake.
 * Installing Qt:
