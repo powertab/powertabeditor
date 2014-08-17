@@ -20,7 +20,7 @@ cp powertabeditor.icns ${APP_DIR}/Contents/Resources
 # Debugging.
 otool -L ${APP_DIR}/Contents/MacOS/powertabeditor
 # Deal with dependencies.
-${MACDEPLOYQT} -verbose=3 ${APP_DIR}
+${MACDEPLOYQT} ${APP_DIR} -verbose=3
 # Debugging.
 otool -L ${APP_DIR}/Contents/MacOS/powertabeditor
 
