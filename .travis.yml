@@ -23,7 +23,7 @@ after_success:
   # Upload code coverage results.
   - if [ "$TRAVIS_OS_NAME" = "linux" ] ; then coveralls --gcov gcov-4.8 --root . --build-root . --exclude CMakeFiles --exclude-pattern ".*_automoc\.cpp" --exclude-pattern ".*\.moc" --exclude-pattern "/usr/.*" --exclude-pattern ".*moc_.*" --exclude-pattern ".*ui_.*" --exclude-pattern ".*qrc_.*" --exclude-pattern ".*_prefix.*" --exclude-pattern ".*_unity.*" --exclude external | grep -vP "^File '.*'$" | grep -vP "^Creating '.*'$" | grep -vP "^Lines executed:.*" | sed '/^$/d' ; fi
   # Build the OS X installer.
-  - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then cd osx && ./createbundle.sh .. ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then cd osx && ./createbundle.sh .. && cd .. ; fi
 # Update OS X installer to Github when building a tag.
 deploy:
   provider: releases
