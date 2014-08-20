@@ -82,6 +82,7 @@ public:
     const Barline *getPreviousBarline(int position) const;
     /// Returns the first barline after the given position.
     const Barline *getNextBarline(int position) const;
+    Barline *getNextBarline(int position);
 
     /// Returns the set of tempo markers in the system.
     boost::iterator_range<TempoMarkerIterator> getTempoMarkers();
@@ -176,6 +177,8 @@ namespace SystemUtils {
 void shiftForward(System &system, int position);
 /// Shifts everything backward starting from the given position.
 void shiftBackward(System &system, int position);
+/// Shifts everything by the given offset.
+void shift(System &system, int position, int offset);
 
 }
 

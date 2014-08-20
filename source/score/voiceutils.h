@@ -20,6 +20,8 @@
 
 #include "voice.h"
 
+#include <boost/rational.hpp>
+
 class ScoreLocation;
 class System;
 
@@ -60,9 +62,8 @@ std::vector<const IrregularGrouping *> getIrregularGroupsInRange(
 
 /// Returns the note duration, including dots, irregular groupings, etc.
 /// This does not include tempo, and the durations are relative to a
-/// quarter note (i.e. a quarter note is 1.0, eighth note is 0.5, etc).
-double getDurationTime(const Voice &voice, const Position &pos);
-
+/// quarter note (i.e. a quarter note is 1, eighth note is 1/2, etc).
+boost::rational<int> getDurationTime(const Voice &voice, const Position &pos);
 }
 
 #endif

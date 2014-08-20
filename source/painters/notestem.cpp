@@ -103,7 +103,8 @@ double NoteStem::getNoteHeadWidth() const
 
 double NoteStem::getDurationTime() const
 {
-    return VoiceUtils::getDurationTime(*myVoice, *myPosition);
+    return boost::rational_cast<double>(
+        VoiceUtils::getDurationTime(*myVoice, *myPosition));
 }
 
 int NoteStem::getPositionIndex() const

@@ -112,6 +112,17 @@ const Barline *System::getNextBarline(int position) const
     return nullptr;
 }
 
+Barline *System::getNextBarline(int position)
+{
+    for (Barline &barline : myBarlines)
+    {
+        if (barline.getPosition() > position)
+            return &barline;
+    }
+
+    return nullptr;
+}
+
 boost::iterator_range<System::TempoMarkerIterator> System::getTempoMarkers()
 {
     return boost::make_iterator_range(myTempoMarkers);
@@ -243,8 +254,7 @@ static void shift(const T &range, int position,
     }
 }
 
-/// Helper function for the shiftForward and shiftBackward functions.
-static void shift(System &system, int position, int offset)
+void SystemUtils::shift(System &system, int position, int offset)
 {
     shift(system.getBarlines(), position, offset);
     // Always keep the first bar at position 0.

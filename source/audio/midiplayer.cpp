@@ -789,7 +789,9 @@ double MidiPlayer::calculateNoteDuration(int system, const Voice &voice,
                                          const Position &pos) const
 {
     const double tempo = getCurrentTempo(system, pos.getPosition());
-    return VoiceUtils::getDurationTime(voice, pos) * tempo;
+    return boost::rational_cast<double>(
+               VoiceUtils::getDurationTime(voice, pos)) *
+           tempo;
 }
 
 double MidiPlayer::getWholeRestDuration(const System &system, int systemIndex,

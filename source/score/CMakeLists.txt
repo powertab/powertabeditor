@@ -33,6 +33,7 @@ add_library(ptescore
     utils/directionindex.cpp
     utils/repeatindexer.cpp
     utils/scoremerger.cpp
+    utils/scorepolisher.cpp
 
     # Add header files here so that they show up in the generated projects for
     # Visual Studio, QtCreator, etc.
@@ -70,6 +71,7 @@ add_library(ptescore
     utils/directionindex.h
     utils/repeatindexer.h
     utils/scoremerger.h
+    utils/scorepolisher.h
 )
 
 cotire(ptescore)

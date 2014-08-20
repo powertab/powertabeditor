@@ -99,6 +99,8 @@ private slots:
     /// Paste notes from the clipboard at the current location.
     void pasteNotes();
 
+    /// Runs the score polisher.
+    void polishScore();
     /// Opens the file information dialog.
     void editFileInformation();
 
@@ -385,6 +387,7 @@ private:
     Command *myCutCommand;
     Command *myCopyCommand;
     Command *myPasteCommand;
+    Command *myPolishCommand;
     Command *myFileInfoCommand;
 
     QMenu *myPlaybackMenu;

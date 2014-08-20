@@ -127,6 +127,7 @@
 #include <QVBoxLayout>
 
 #include <score/utils.h>
+#include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
 
 #include <widgets/instruments/instrumentpanel.h>
@@ -437,6 +438,13 @@ void PowerTabEditor::pasteNotes()
 
     Clipboard::paste(this, *myUndoManager, getLocation());
     myUndoManager->endMacro();
+}
+
+void PowerTabEditor::polishScore()
+{
+    ScoreUtils::polishScore(getLocation().getScore());
+    // TODO - add a history item.
+    redrawScore();
 }
 
 void PowerTabEditor::editFileInformation()
@@ -1556,6 +1564,11 @@ void PowerTabEditor::createCommands()
                                  QKeySequence::Paste, this);
     connect(myPasteCommand, SIGNAL(triggered()), this, SLOT(pasteNotes()));
 
+    myPolishCommand = new Command(tr("Polish Score"), "Edit.PolishScore",
+                                  QKeySequence(), this);
+    connect(myPolishCommand, &QAction::triggered, this,
+            &PowerTabEditor::polishScore);
+
     // File Information
     myFileInfoCommand =
         new Command(tr("File Information..."), "Edit.FileInformation",
@@ -2285,6 +2298,8 @@ void PowerTabEditor::createMenus()
     myEditMenu->addAction(myCutCommand);
     myEditMenu->addAction(myCopyCommand);
     myEditMenu->addAction(myPasteCommand);
+    myEditMenu->addSeparator();
+    myEditMenu->addAction(myPolishCommand);
     myEditMenu->addSeparator();
     myEditMenu->addAction(myFileInfoCommand);
     // Playback Menu.

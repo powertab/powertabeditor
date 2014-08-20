@@ -26,17 +26,18 @@ TEST_CASE("Score/VoiceUtils/GetDurationTime", "")
     Position &position = voice.getPositions().front();
 
     position.setDurationType(Position::QuarterNote);
-    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 1.0);
+    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 1);
 
     position.setDurationType(Position::EighthNote);
-    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 0.5);
+    REQUIRE(VoiceUtils::getDurationTime(voice, position) ==
+            boost::rational<int>(1, 2));
 
     position.setDurationType(Position::WholeNote);
-    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 4.0);
+    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 4);
 
     position.setProperty(Position::Dotted);
-    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 6.0);
+    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 6);
 
     voice.insertIrregularGrouping(IrregularGrouping(7, 1, 3, 2));
-    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 4.0);
+    REQUIRE(VoiceUtils::getDurationTime(voice, position) == 4);
 }

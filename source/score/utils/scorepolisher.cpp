@@ -1,0 +1,105 @@
+/*
+  * Copyright (C) 2014 Cameron White
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  *
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "scorepolisher.h"
+
+#include <map>
+#include <score/score.h>
+#include <score/voiceutils.h>
+#include <score/utils.h>
+
+static int getDefaultNoteSpacing(const boost::rational<int> &duration)
+{
+    return std::max(2 * boost::rational_cast<int>(duration), 1);
+}
+
+static void polishSystem(System &system)
+{
+    // Format each bar separately.
+    for (Barline &leftBar : system.getBarlines())
+    {
+        Barline *rightBar = system.getNextBarline(leftBar.getPosition());
+        if (!rightBar)
+            break;
+
+        std::map<boost::rational<int>, int> timestampPositions;
+        int maxPosition = 0;
+
+        // For each timestamp, compute the maximum position at that timestamp
+        // for any staff.
+        for (const Staff &staff : system.getStaves())
+        {
+            for (const Voice &voice : staff.getVoices())
+            {
+                boost::rational<int> timestamp;
+                int currentPosition = 0;
+
+                for (const Position &position : ScoreUtils::findInRange(
+                         voice.getPositions(), leftBar.getPosition(),
+                         rightBar->getPosition()))
+                {
+                    boost::rational<int> duration =
+                        VoiceUtils::getDurationTime(voice, position);
+
+                    timestampPositions[timestamp] = std::max(
+                        timestampPositions[timestamp], currentPosition);
+
+                    currentPosition = timestampPositions[timestamp] +
+                                      getDefaultNoteSpacing(duration);
+                    timestamp += duration;
+                }
+
+                maxPosition = std::max(maxPosition, currentPosition);
+            }
+        }
+
+        // Adjust!
+        const int startPos =
+            (leftBar.getPosition() == 0) ? 0 : leftBar.getPosition() + 1;
+        const int endPos = startPos + maxPosition;
+        SystemUtils::shift(system, rightBar->getPosition(),
+                           endPos - rightBar->getPosition());
+
+        for (Staff &staff : system.getStaves())
+        {
+            for (Voice &voice : staff.getVoices())
+            {
+                boost::rational<int> timestamp;
+
+                for (Position &position : ScoreUtils::findInRange(
+                         voice.getPositions(), leftBar.getPosition(),
+                         rightBar->getPosition()))
+                {
+                    boost::rational<int> duration =
+                        VoiceUtils::getDurationTime(voice, position);
+
+                    // TODO - irregular groups also need to be adjusted.
+                    position.setPosition(startPos +
+                                         timestampPositions[timestamp]);
+
+                    timestamp += duration;
+                }
+            }
+        }
+    }
+}
+
+void ScoreUtils::polishScore(Score &score)
+{
+    for (System &system : score.getSystems())
+        polishSystem(system);
+}

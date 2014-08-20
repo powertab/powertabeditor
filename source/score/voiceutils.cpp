@@ -131,13 +131,15 @@ std::vector<const IrregularGrouping *> getIrregularGroupsInRange(
     return groups;
 }
 
-double getDurationTime(const Voice &voice, const Position &pos)
+boost::rational<int> getDurationTime(const Voice &voice, const Position &pos)
 {
-    double duration = 4.0 / pos.getDurationType();
+    boost::rational<int> duration(4, pos.getDurationType());
 
     // Adjust for dotted notes.
-    duration += pos.hasProperty(Position::Dotted) * 0.5 * duration;
-    duration += pos.hasProperty(Position::DoubleDotted) * 0.75 * duration;
+    if (pos.hasProperty(Position::Dotted))
+        duration += (duration / 2);
+    if (pos.hasProperty(Position::DoubleDotted))
+        duration += duration * boost::rational<int>(3, 4);
 
     // Adjust for irregular groups.
     for (const IrregularGrouping *group :
@@ -145,8 +147,8 @@ double getDurationTime(const Voice &voice, const Position &pos)
     {
         // As an example, with triplets we have 3 notes played in the time of 2,
         // so each note is 2/3 of its normal duration.
-        duration *= static_cast<double>(group->getNotesPlayedOver()) /
-                    static_cast<double>(group->getNotesPlayed());
+        duration *= boost::rational<int>(group->getNotesPlayedOver(),
+                                         group->getNotesPlayed());
     }
 
     return duration;
