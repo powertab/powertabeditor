@@ -33,6 +33,7 @@ add_library(pteactions
     edittabnumber.cpp
     edittimesignature.cpp
     insertnotes.cpp
+    polishscore.cpp
     removealternateending.cpp
     removebarline.cpp
     removechordtext.cpp
@@ -89,6 +90,7 @@ add_library(pteactions
     edittabnumber.h
     edittimesignature.h
     insertnotes.h
+    polishscore.h
     removealternateending.h
     removebarline.h
     removechordtext.h

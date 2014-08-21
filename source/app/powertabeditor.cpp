@@ -47,6 +47,7 @@
 #include <actions/editplayer.h>
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
+#include <actions/polishscore.h>
 #include <actions/removealternateending.h>
 #include <actions/removebarline.h>
 #include <actions/removechordtext.h>
@@ -127,7 +128,6 @@
 #include <QVBoxLayout>
 
 #include <score/utils.h>
-#include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
 
 #include <widgets/instruments/instrumentpanel.h>
@@ -442,9 +442,8 @@ void PowerTabEditor::pasteNotes()
 
 void PowerTabEditor::polishScore()
 {
-    ScoreUtils::polishScore(getLocation().getScore());
-    // TODO - add a history item.
-    redrawScore();
+    myUndoManager->push(new PolishScore(getLocation().getScore()),
+                        UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::editFileInformation()
