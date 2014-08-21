@@ -36,6 +36,7 @@
 #include <score/score.h>
 #include <score/systemlocation.h>
 #include <score/utils/scoremerger.h>
+#include <score/utils/scorepolisher.h>
 
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab 1.7 Document", { "ptb" }))
@@ -65,6 +66,10 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
 
     ScoreMerger merger(score, guitarScore, bassScore);
     merger.merge();
+
+    // Reformat the score, since the guitar and bass score from v1.7 may have
+    // had different spacing.
+    ScoreUtils::polishScore(score);
 }
 
 void PowerTabOldImporter::convert(
