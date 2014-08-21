@@ -79,6 +79,7 @@ static void polishSystem(System &system)
             for (Voice &voice : staff.getVoices())
             {
                 boost::rational<int> timestamp;
+                std::unordered_set<IrregularGrouping *> knownGroups;
 
                 for (Position &position : ScoreUtils::findInRange(
                          voice.getPositions(), leftBar.getPosition(),
@@ -86,8 +87,23 @@ static void polishSystem(System &system)
                 {
                     boost::rational<int> duration =
                         VoiceUtils::getDurationTime(voice, position);
+                    const int newPosition =
+                        startPos + timestampPositions[timestamp];
 
-                    // TODO - irregular groups also need to be adjusted.
+                    // Move any irregular groups that start at this position.
+                    // If the group moves forward, we need to be careful not to
+                    // try to move it again on a later iteration.
+                    for (IrregularGrouping &group : ScoreUtils::findInRange(
+                             voice.getIrregularGroupings(),
+                             position.getPosition(), position.getPosition()))
+                    {
+                        if (knownGroups.find(&group) != knownGroups.end())
+                            continue;
+
+                        knownGroups.insert(&group);
+                        group.setPosition(newPosition);
+                    }
+
                     position.setPosition(startPos +
                                          timestampPositions[timestamp]);
 
