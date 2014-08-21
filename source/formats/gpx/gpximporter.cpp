@@ -20,6 +20,7 @@
 #include "filesystem.h"
 #include "documentreader.h"
 #include <fstream>
+#include <score/utils/scorepolisher.h>
 
 GpxImporter::GpxImporter()
     : FileFormatImporter(FileFormat("Guitar Pro 6", { "gpx" }))
@@ -34,4 +35,6 @@ void GpxImporter::load(const std::string &filename, Score &score)
 
     Gpx::DocumentReader reader(fs.getFileContents("score.gpif"));
     reader.readScore(score);
+
+    ScoreUtils::polishScore(score);
 }

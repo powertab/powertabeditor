@@ -21,6 +21,7 @@
 #include <formats/guitar_pro/inputstream.h>
 #include <score/score.h>
 #include <score/utils.h>
+#include <score/utils/scorepolisher.h>
 
 static const int POSITIONS_PER_SYSTEM = 35;
 
@@ -47,6 +48,9 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
 
     // Automatically set the rehearsal sign letters to "A", "B", etc.
     ScoreUtils::adjustRehearsalSigns(score);
+
+    // Format the score.
+    ScoreUtils::polishScore(score);
 }
 
 void GuitarProImporter::convertHeader(const Gp::Header &header, ScoreInfo &info)
