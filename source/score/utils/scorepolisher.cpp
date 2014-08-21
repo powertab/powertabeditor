@@ -36,6 +36,7 @@ static void polishSystem(System &system)
         if (!rightBar)
             break;
 
+        std::unordered_map<const Position *, boost::rational<int>> timestamps;
         std::map<boost::rational<int>, int> timestampPositions;
         int maxPosition = 0;
 
@@ -60,6 +61,7 @@ static void polishSystem(System &system)
 
                     currentPosition = timestampPositions[timestamp] +
                                       getDefaultNoteSpacing(duration);
+                    timestamps[&position] = timestamp;
                     timestamp += duration;
                 }
 
@@ -70,6 +72,7 @@ static void polishSystem(System &system)
         // Adjust!
         const int startPos =
             (leftBar.getPosition() == 0) ? 0 : leftBar.getPosition() + 1;
+        const int oldEndPos = rightBar->getPosition();
         const int endPos = startPos + maxPosition;
         SystemUtils::shift(system, rightBar->getPosition(),
                            endPos - rightBar->getPosition());
@@ -78,15 +81,15 @@ static void polishSystem(System &system)
         {
             for (Voice &voice : staff.getVoices())
             {
-                boost::rational<int> timestamp;
                 std::unordered_set<IrregularGrouping *> knownGroups;
 
-                for (Position &position : ScoreUtils::findInRange(
-                         voice.getPositions(), leftBar.getPosition(),
-                         rightBar->getPosition()))
+                for (Position &position :
+                     ScoreUtils::findInRange(voice.getPositions(),
+                                             leftBar.getPosition(), oldEndPos))
                 {
-                    boost::rational<int> duration =
-                        VoiceUtils::getDurationTime(voice, position);
+                    // Since we're moving around irregular groups, we need to
+                    // have precomputed the durations of each position.
+                    boost::rational<int> timestamp = timestamps[&position];
                     const int newPosition =
                         startPos + timestampPositions[timestamp];
 
@@ -104,10 +107,7 @@ static void polishSystem(System &system)
                         group.setPosition(newPosition);
                     }
 
-                    position.setPosition(startPos +
-                                         timestampPositions[timestamp]);
-
-                    timestamp += duration;
+                    position.setPosition(newPosition);
                 }
             }
         }
