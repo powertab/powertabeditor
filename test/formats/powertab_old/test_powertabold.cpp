@@ -222,7 +222,7 @@ TEST_CASE("Formats/PowerTabOldImport/Positions", "")
     const Position &pos2 = voice.getPositions()[1];
     const Position &pos3 = voice.getPositions()[2];
 
-    REQUIRE(pos1.getPosition() == 2);
+    REQUIRE(pos1.getPosition() == 0);
     REQUIRE(pos1.getDurationType() == Position::HalfNote);
     REQUIRE(!pos1.hasMultiBarRest());
     REQUIRE(pos1.hasProperty(Position::DoubleDotted));

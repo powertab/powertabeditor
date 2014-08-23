@@ -39,6 +39,6 @@ TEST_CASE("Formats/GpxImport/Text", "")
     const System &system = score.getSystems()[0];
 
     REQUIRE(system.getTextItems().size() == 1);
-    REQUIRE(system.getTextItems()[0].getPosition() == 2);
+    REQUIRE(system.getTextItems()[0].getPosition() == 9);
     REQUIRE(system.getTextItems()[0].getContents() == "foo");
 }
