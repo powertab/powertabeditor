@@ -27,6 +27,20 @@ static int getDefaultNoteSpacing(const boost::rational<int> &duration)
     return std::max(2 * boost::rational_cast<int>(duration), 1);
 }
 
+template <typename T>
+static void shiftItemsAtPosition(const T &items, int position, int newPosition,
+                                 std::unordered_set<const void *> &knownItems)
+{
+    for (auto &item : ScoreUtils::findInRange(items, position, position))
+    {
+        if (knownItems.find(&item) != knownItems.end())
+            continue;
+
+        knownItems.insert(&item);
+        item.setPosition(newPosition);
+    }
+}
+
 static void polishSystem(System &system)
 {
     // Format each bar separately.
@@ -74,40 +88,54 @@ static void polishSystem(System &system)
             (leftBar.getPosition() == 0) ? 0 : leftBar.getPosition() + 1;
         const int oldEndPos = rightBar->getPosition();
         const int endPos = startPos + maxPosition;
-        SystemUtils::shift(system, rightBar->getPosition(),
-                           endPos - rightBar->getPosition());
 
+        if (endPos > oldEndPos)
+        {
+            SystemUtils::shift(system, rightBar->getPosition(),
+                               endPos - rightBar->getPosition());
+        }
+        else
+            rightBar->setPosition(endPos);
+
+        std::unordered_set<const void *> knownItems;
         for (Staff &staff : system.getStaves())
         {
             for (Voice &voice : staff.getVoices())
             {
-                std::unordered_set<IrregularGrouping *> knownGroups;
-
-                for (Position &position :
+                for (Position &pos :
                      ScoreUtils::findInRange(voice.getPositions(),
                                              leftBar.getPosition(), oldEndPos))
                 {
                     // Since we're moving around irregular groups, we need to
                     // have precomputed the durations of each position.
-                    boost::rational<int> timestamp = timestamps[&position];
+                    boost::rational<int> timestamp = timestamps[&pos];
+                    const int currentPosition = pos.getPosition();
                     const int newPosition =
                         startPos + timestampPositions[timestamp];
 
-                    // Move any irregular groups that start at this position.
-                    // If the group moves forward, we need to be careful not to
-                    // try to move it again on a later iteration.
-                    for (IrregularGrouping &group : ScoreUtils::findInRange(
-                             voice.getIrregularGroupings(),
-                             position.getPosition(), position.getPosition()))
-                    {
-                        if (knownGroups.find(&group) != knownGroups.end())
-                            continue;
+                    // Move any irregular groups, etc that start at this
+                    // position. If the group moves forward, we need to be
+                    // careful not to try to move it again on a later iteration.
+                    shiftItemsAtPosition(voice.getIrregularGroupings(),
+                                         currentPosition, newPosition,
+                                         knownItems);
+                    shiftItemsAtPosition(staff.getDynamics(), currentPosition,
+                                         newPosition, knownItems);
+                    shiftItemsAtPosition(system.getTextItems(), currentPosition,
+                                         newPosition, knownItems);
+                    shiftItemsAtPosition(system.getChords(), currentPosition,
+                                         newPosition, knownItems);
+                    shiftItemsAtPosition(system.getTempoMarkers(),
+                                         currentPosition, newPosition,
+                                         knownItems);
+                    shiftItemsAtPosition(system.getDirections(),
+                                         currentPosition, newPosition,
+                                         knownItems);
+                    shiftItemsAtPosition(system.getPlayerChanges(),
+                                         currentPosition, newPosition,
+                                         knownItems);
 
-                        knownGroups.insert(&group);
-                        group.setPosition(newPosition);
-                    }
-
-                    position.setPosition(newPosition);
+                    pos.setPosition(newPosition);
                 }
             }
         }
