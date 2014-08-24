@@ -69,11 +69,9 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
             SIGNAL(activeVoiceChanged(int)));
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)), this,
             SIGNAL(playbackSpeedChanged(int)));
-    connect(ui->playPauseButton, &QAbstractButton::clicked, &playPauseCommand,
-            &QAction::trigger);
+    connectButtonToAction(ui->playPauseButton, &playPauseCommand);
     connectButtonToAction(ui->metronomeToggleButton, &metronomeCommand);
-    connect(ui->rewindToStartButton, &QAbstractButton::clicked, &rewindCommand,
-            &QAction::trigger);
+    connectButtonToAction(ui->rewindToStartButton, &rewindCommand);
 }
 
 PlaybackWidget::~PlaybackWidget()

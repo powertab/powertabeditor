@@ -2650,6 +2650,8 @@ void PowerTabEditor::updateCommands()
     {
         enableEditing(false);
         myPlayPauseCommand->setEnabled(true);
+        myRewindCommand->setEnabled(true);
+        myMetronomeCommand->setEnabled(true);
         return;
     }
 
