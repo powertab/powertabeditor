@@ -26,7 +26,7 @@ class SimpleTextItem : public QGraphicsItem
 {
 public:
     SimpleTextItem(const QString &text, const QFont &font,
-                   const QBrush &brush = QBrush(),
+                   const QPen &pen = QPen(),
                    const QBrush &background = QBrush(QColor(0,0,0,0)));
 
     virtual QRectF boundingRect() const override { return myBoundingRect; }
@@ -38,7 +38,7 @@ public:
 private:
     const QString myText;
     const QFont myFont;
-    const QBrush myBrush;
+    const QPen myPen;
     const QBrush myBackground;
     QRectF myBoundingRect;
     double myAscent;
