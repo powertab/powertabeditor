@@ -36,6 +36,7 @@
 #include <QDebug>
 #include <QGraphicsItem>
 #include <QPen>
+#include <score/score.h>
 #include <score/scorelocation.h>
 #include <score/system.h>
 #include <score/utils.h>
@@ -110,6 +111,9 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
 
+        if (isFirstStaff)
+            drawBarNumber(systemIndex, *layout);
+
         // Draw the clefs.
         const double CLEF_OFFSET =
             (staff.getClefType() == Staff::TrebleClef) ? -6 : -21;
@@ -162,6 +166,21 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout)
     tabClef->setPos(x, layout.getTopTabLine() - pixelSize / 2.1);
     myMusicFont.setSymbol(tabClef, MusicFont::TabClef, pixelSize);
     tabClef->setParentItem(myParentStaff);
+}
+
+void SystemRenderer::drawBarNumber(int systemIndex, const LayoutInfo &layout)
+{
+    int number = 1;
+    for (int i = 0; i < systemIndex; ++i)
+    {
+        const System &system = myScore.getSystems()[i];
+        number += static_cast<int>(system.getBarlines().size()) - 1;
+    }
+
+    auto text = new SimpleTextItem(QString::number(number), myPlainTextFont);
+    text->setPos(-text->boundingRect().width() - LayoutInfo::BAR_NUMBER_PADDING,
+                 layout.getTopStdNotationLine());
+    text->setParentItem(myParentStaff);
 }
 
 void SystemRenderer::drawBarlines(const System &system, int systemIndex,

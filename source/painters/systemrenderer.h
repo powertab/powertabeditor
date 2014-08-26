@@ -65,6 +65,9 @@ private:
     /// Draws system-level symbols such as alternate endings and tempo markers.
     void drawSystemSymbols(const System &system, const LayoutInfo &layout);
 
+    /// Draws the bar number for the first bar in the system.
+    void drawBarNumber(int systemIndex, const LayoutInfo &layout);
+
     /// Draws a divider line between system symbols.
     void drawDividerLine(double y);
 

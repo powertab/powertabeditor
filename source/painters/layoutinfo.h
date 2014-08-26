@@ -128,6 +128,8 @@ struct LayoutInfo
     static const double STAFF_BORDER_SPACING;
     /// Padding surrounding a clef.
     static const double CLEF_PADDING;
+    /// Padding between the bar number and the system.
+    static const double BAR_NUMBER_PADDING;
     /// Space given to an accidental in a key signature;
     static const double ACCIDENTAL_WIDTH;
     /// Space given to the treble/bass clef.

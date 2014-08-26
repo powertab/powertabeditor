@@ -33,6 +33,7 @@ const int LayoutInfo::NUM_STD_NOTATION_LINES = 5;
 const double LayoutInfo::STD_NOTATION_LINE_SPACING = 7;
 const double LayoutInfo::STAFF_BORDER_SPACING = 12;
 const double LayoutInfo::CLEF_PADDING = 3;
+const double LayoutInfo::BAR_NUMBER_PADDING = 4;
 const double LayoutInfo::ACCIDENTAL_WIDTH = 6;
 const double LayoutInfo::CLEF_WIDTH = 22;
 const double LayoutInfo::SYSTEM_SYMBOL_SPACING = 22;
