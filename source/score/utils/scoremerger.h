@@ -77,6 +77,7 @@ private:
 
         RepeatStatus repeatState;
         int remainingRepeats;
+        int totalRepeats;
         int numMergedRepeats;
         const RepeatedSection *repeatedSection;
 
@@ -84,6 +85,7 @@ private:
         bool finishing;
 
         bool outOfNotes() const;
+        bool isCopying() const;
         void advance();
         void finishIfPossible();
         void checkForMultibarRest();

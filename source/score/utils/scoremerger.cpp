@@ -227,7 +227,6 @@ void ScoreMerger::copyBarsFromSource(
 
     const Barline *srcBar = state->loc.getBarline();
     const System *srcSystem = &state->loc.getSystem();
-    const bool isCopied = state->expandingMultibarRest;
 
     assert(srcBar);
     const Barline *nextSrcBar = srcSystem->getNextBarline(srcBar->getPosition());
@@ -240,7 +239,7 @@ void ScoreMerger::copyBarsFromSource(
     int destPosition = destBar.getPosition();
     if (destPosition == 0 || (srcBar->getPosition() == 0 &&
                               srcBar->getBarType() != Barline::SingleBar) ||
-        isCopied || state->repeatState == State::EXPANDING_REPEAT)
+        state->isCopying() || state->repeatState == State::EXPANDING_REPEAT)
     {
         destBar = *srcBar;
         removeRepeatsWhenExpanding(isExpanding, destBar);
@@ -250,7 +249,7 @@ void ScoreMerger::copyBarsFromSource(
         destBar.setPosition(destPosition);
     }
 
-    if (isCopied)
+    if (state->isCopying())
         hideSignaturesAndRehearsalSign(destBar);
 
     // Set the right bar's properties.
@@ -392,7 +391,7 @@ void ScoreMerger::mergeSystemSymbols()
 {
     for (State *state : {&myGuitarState, &myBassState})
     {
-        if (state->outOfNotes() || state->expandingMultibarRest)
+        if (state->outOfNotes())
             continue;
 
         int offset, left, right;
@@ -401,16 +400,19 @@ void ScoreMerger::mergeSystemSymbols()
         const System &srcSystem = state->loc.getSystem();
         System &destSystem = myDestLoc.getSystem();
 
-        copySymbols(srcSystem.getTempoMarkers(), destSystem,
-                    destSystem.getTempoMarkers(), &System::insertTempoMarker,
-                    offset, left, right);
+        if (!state->isCopying())
+        {
+            copySymbols(srcSystem.getTempoMarkers(), destSystem,
+                        destSystem.getTempoMarkers(),
+                        &System::insertTempoMarker, offset, left, right);
+
+            copySymbols(srcSystem.getTextItems(), destSystem,
+                        destSystem.getTextItems(), &System::insertTextItem,
+                        offset, left, right);
+        }
 
         copySymbols(srcSystem.getChords(), destSystem, destSystem.getChords(),
                     &System::insertChord, offset, left, right);
-
-        copySymbols(srcSystem.getTextItems(), destSystem,
-                    destSystem.getTextItems(), &System::insertTextItem, offset,
-                    left, right);
 
         if (state->repeatState != State::EXPANDING_REPEAT)
         {
@@ -594,6 +596,7 @@ ScoreMerger::State::State(Score &score, bool isBass)
       multibarRestCount(0),
       repeatState(NO_REPEAT),
       remainingRepeats(0),
+      totalRepeats(0),
       numMergedRepeats(0),
       repeatedSection(nullptr),
       done(false),
@@ -620,6 +623,12 @@ ScoreMerger::State::State(Score &score, bool isBass)
 bool ScoreMerger::State::outOfNotes() const
 {
     return done || finishing;
+}
+
+bool ScoreMerger::State::isCopying() const
+{
+    return expandingMultibarRest || (repeatState == EXPANDING_REPEAT &&
+                                     remainingRepeats < (totalRepeats - 1));
 }
 
 void ScoreMerger::State::advance()
@@ -697,6 +706,7 @@ void ScoreMerger::State::checkForRepeatedSection()
         if (repeatState == NO_REPEAT || repeatedSection != oldSection)
         {
             remainingRepeats = repeatedSection->getTotalRepeatCount() - 1;
+            totalRepeats = repeatedSection->getTotalRepeatCount();
             numMergedRepeats = 0;
             // Initially, try to merge the repeat with another repeat.
             repeatState = MERGING_REPEAT;
