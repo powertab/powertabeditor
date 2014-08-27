@@ -136,6 +136,12 @@ QRectF CaretPainter::getCurrentSystemRect() const
     return mySystemRects.at(myCaret.getLocation().getSystemIndex());
 }
 
+void CaretPainter::updatePosition()
+{
+    // Force an update of the caret.
+    onLocationChanged();
+}
+
 boost::signals2::connection CaretPainter::subscribeToMovement(
         const LocationChangedSlot::slot_type &subscriber)
 {

@@ -141,6 +141,10 @@ void ScoreArea::redrawSystem(int index)
         height += system->boundingRect().height() + SYSTEM_SPACING;
         myCaretPainter->setSystemRect(i, system->sceneBoundingRect());
     }
+
+    // The spacing may have changed, so update the caret's position and redraw
+    // it.
+    myCaretPainter->updatePosition();
 }
 
 std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
