@@ -883,23 +883,58 @@ void PowerTabEditor::editTiedNote()
 {
     ScoreLocation &location = getLocation();
     const Voice &voice = location.getVoice();
-    std::vector<Position *> positions = location.getSelectedPositions();
 
-    // Check that all selected notes can be tied.
-    for (const Position *pos : positions)
+    // If at an empty position, try to insert a new note that's tied to the
+    // previous note.
+    if (!location.hasSelection() && !location.getNote())
     {
-        for (const Note &note : pos->getNotes())
+        const int string = location.getString();
+        const Note *prevNote = VoiceUtils::getPreviousNote(
+            voice, location.getPositionIndex(), string);
+        if (prevNote)
         {
-            if (!VoiceUtils::canTieNote(voice, pos->getPosition(), note))
+            Note newNote(*prevNote);
+            newNote.setProperty(Note::Tied);
+            myUndoManager->push(
+                new AddNote(location, newNote, myActiveDurationType),
+                location.getSystemIndex());
+        }
+        else
+            myTieCommand->setChecked(false);
+    }
+    else
+    {
+        if (!location.hasSelection())
+        {
+            const Note *note = location.getNote();
+            if (!VoiceUtils::canTieNote(voice, location.getPositionIndex(),
+                                        *note))
             {
                 myTieCommand->setChecked(false);
                 return;
             }
         }
-    }
+        else
+        {
+            std::vector<Position *> positions = location.getSelectedPositions();
+            // Check that all selected notes can be tied.
+            for (const Position *pos : positions)
+            {
+                for (const Note &note : pos->getNotes())
+                {
+                    if (!VoiceUtils::canTieNote(voice, pos->getPosition(),
+                                                note))
+                    {
+                        myTieCommand->setChecked(false);
+                        return;
+                    }
+                }
+            }
+        }
 
-    // Now, we can go ahead and add/remove a tie.
-    editSimpleNoteProperty(myTieCommand, Note::Tied);
+        // Now, we can go ahead and add/remove a tie.
+        editSimpleNoteProperty(myTieCommand, Note::Tied);
+    }
 }
 
 void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
@@ -2735,7 +2770,21 @@ void PowerTabEditor::updateCommands()
                                    (pos->hasProperty(Position::Dotted) ||
                                     pos->hasProperty(Position::DoubleDotted)));
 
-    updateNoteProperty(myTieCommand, note, Note::Tied);
+    if (note)
+    {
+        myTieCommand->setText(tr("Tied"));
+        myTieCommand->setChecked(note->hasProperty(Note::Tied));
+        myTieCommand->setEnabled(true);
+    }
+    else if (!barline)
+    {
+        myTieCommand->setText(tr("Insert Tied Note"));
+        myTieCommand->setChecked(false);
+        myTieCommand->setEnabled(true);
+    }
+    else
+        myTieCommand->setEnabled(false);
+
     updateNoteProperty(myMutedCommand, note, Note::Muted);
     updateNoteProperty(myGhostNoteCommand, note, Note::GhostNote);
     updatePositionProperty(myLetRingCommand, pos, Position::LetRing);
