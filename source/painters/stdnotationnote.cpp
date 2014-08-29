@@ -26,6 +26,7 @@
 #include <score/score.h>
 #include <score/tuning.h>
 #include <score/utils.h>
+#include <score/voiceutils.h>
 #include <unordered_map>
 
 /// Maps notes to their position on the staff (relative to the top line),
@@ -38,13 +39,14 @@ static const std::unordered_map<char, int> theNotePositions = {
 
 StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
                                  const KeySignature &key, const Tuning &tuning,
-                                 double y)
+                                 double y, const boost::optional<int> &tie)
     : myY(y),
       myAccidentalType(NoAccidental),
       myPosition(&pos),
       myNote(&note),
       myKey(&key),
-      myTuning(&tuning)
+      myTuning(&tuning),
+      myTie(tie)
 {
     // Choose the note head symbol.
     switch (pos.getDurationType())
@@ -142,6 +144,9 @@ void StdNotationNote::getNotesInStaff(
 
                 double noteHeadWidth = 0;
 
+                const Position *prevPos =
+                    VoiceUtils::getPreviousPosition(voice, pos.getPosition());
+
                 for (const Note &note : pos.getNotes())
                 {
                     const Tuning tuning = player ? player->getTuning() :
@@ -151,9 +156,13 @@ void StdNotationNote::getNotesInStaff(
 
                     noteLocations.push_back(y);
 
+                    boost::optional<int> tiedPos;
+                    if (note.hasProperty(Note::Tied) && prevPos)
+                        tiedPos = prevPos->getPosition();
+
                     notes.push_back(StdNotationNote(
                                         pos, note, bar.getKeySignature(),
-                                        tuning, y));
+                                        tuning, y, tiedPos));
                     StdNotationNote &stdNote = notes.back();
 
                     // Don't show accidentals if there are consecutive
@@ -460,4 +469,9 @@ void StdNotationNote::showAccidental()
 bool StdNotationNote::isDoubleDotted() const
 {
     return myPosition->hasProperty(Position::DoubleDotted);
+}
+
+const boost::optional<int> &StdNotationNote::getTie() const
+{
+    return myTie;
 }

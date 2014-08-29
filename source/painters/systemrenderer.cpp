@@ -1343,6 +1343,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
     std::map<int, double> minNoteLocations;
     std::map<int, double> maxNoteLocations;
     std::map<int, double> noteHeadWidths;
+    std::map<int, double> noteHeadCenters;
 
     for (const StdNotationNote &note : notes)
     {
@@ -1380,6 +1381,29 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             }
         }
 
+        // Draw ties.
+        if (note.getTie())
+        {
+            const int tiedPos = *note.getTie();
+            // Draw to the centre of each position.
+            const double curX = layout.getPositionX(note.getPosition()) +
+                                0.5 * layout.getPositionSpacing();
+            const double prevX = layout.getPositionX(tiedPos) +
+                                 0.5 * layout.getPositionSpacing();
+            const double width = curX - prevX;
+            const double height = 7;
+
+            QPainterPath path;
+            path.moveTo(width, height);
+            path.arcTo(0, height * 0.75, width, height, 0, 180);
+
+            if (!group)
+                group = new QGraphicsItemGroup();
+            auto arc = new QGraphicsPathItem(path);
+            arc->setPos(curX - x - width, 0.5 * myMusicFontMetrics.ascent());
+            group->addToGroup(arc);
+        }
+
         if (group)
         {
             group->addToGroup(text);
@@ -1398,6 +1422,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
         maxNoteLocations[position] = std::max(maxNoteLocations[position],
                                               note.getY());
         noteHeadWidths[position] = noteHeadWidth;
+        noteHeadCenters[position] = x;
     }
 
     drawLedgerLines(layout, minNoteLocations, maxNoteLocations, noteHeadWidths);

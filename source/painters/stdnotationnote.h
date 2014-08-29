@@ -46,7 +46,8 @@ public:
     };
 
     StdNotationNote(const Position &pos, const Note &note,
-                    const KeySignature &key, const Tuning &tuning, double y);
+                    const KeySignature &key, const Tuning &tuning, double y,
+                    const boost::optional<int> &tie);
 
     static void getNotesInStaff(
         const Score &score, const System &system, int systemIndex,
@@ -67,6 +68,8 @@ public:
     void clearAccidental();
     /// Force the accidental to be shown, even if it's part of the key signature.
     void showAccidental();
+
+    const boost::optional<int> &getTie() const;
 
 private:
     /// Return the offset of the note from the top of the staff.
@@ -106,6 +109,7 @@ private:
     const Note *myNote;
     const KeySignature *myKey;
     const Tuning *myTuning;
+    const boost::optional<int> myTie;
 };
 
 #endif
