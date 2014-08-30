@@ -45,7 +45,7 @@ public:
         DoubleFlat
     };
 
-    StdNotationNote(const Position &pos, const Note &note,
+    StdNotationNote(const Voice &voice, const Position &pos, const Note &note,
                     const KeySignature &key, const Tuning &tuning, double y,
                     const boost::optional<int> &tie);
 
@@ -70,6 +70,7 @@ public:
     void showAccidental();
 
     const boost::optional<int> &getTie() const;
+    const Voice &getVoice() const;
 
 private:
     /// Return the offset of the note from the top of the staff.
@@ -105,6 +106,7 @@ private:
     QChar myNoteHeadSymbol;
     AccidentalType myAccidentalType;
 
+    const Voice &myVoice;
     const Position *myPosition;
     const Note *myNote;
     const KeySignature *myKey;

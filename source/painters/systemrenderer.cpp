@@ -1381,29 +1381,6 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             }
         }
 
-        // Draw ties.
-        if (note.getTie())
-        {
-            const int tiedPos = *note.getTie();
-            // Draw to the centre of each position.
-            const double curX = layout.getPositionX(note.getPosition()) +
-                                0.5 * layout.getPositionSpacing();
-            const double prevX = layout.getPositionX(tiedPos) +
-                                 0.5 * layout.getPositionSpacing();
-            const double width = curX - prevX;
-            const double height = 7;
-
-            QPainterPath path;
-            path.moveTo(width, height);
-            path.arcTo(0, height * 0.75, width, height, 0, 180);
-
-            if (!group)
-                group = new QGraphicsItemGroup();
-            auto arc = new QGraphicsPathItem(path);
-            arc->setPos(curX - x - width, 0.5 * myMusicFontMetrics.ascent());
-            group->addToGroup(arc);
-        }
-
         if (group)
         {
             group->addToGroup(text);
@@ -1427,10 +1404,10 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
     drawLedgerLines(layout, minNoteLocations, maxNoteLocations, noteHeadWidths);
 
-    for (int voice = 0; voice < Staff::NUM_VOICES; ++voice)
+    for (int v = 0; v < Staff::NUM_VOICES; ++v)
     {
-        const std::vector<BeamGroup> &beamGroups = layout.getBeamGroups(voice);
-        const std::vector<NoteStem> &stems = layout.getNoteStems(voice);
+        const std::vector<BeamGroup> &beamGroups = layout.getBeamGroups(v);
+        const std::vector<NoteStem> &stems = layout.getNoteStems(v);
 
         for (const BeamGroup &group : beamGroups)
         {
@@ -1438,7 +1415,50 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                             myMusicFontMetrics, layout);
         }
 
-        drawIrregularGroups(staff.getVoices()[voice], stems);
+        const Voice &voice = staff.getVoices()[v];
+        drawIrregularGroups(voice, stems);
+        drawTies(voice, notes, stems, layout);
+    }
+}
+
+void SystemRenderer::drawTies(const Voice &voice,
+                              const std::vector<StdNotationNote> &notes,
+                              const std::vector<NoteStem> &stems,
+                              const LayoutInfo &layout)
+{
+    const double height = 7;
+
+    for (const StdNotationNote &note : notes)
+    {
+        if (&note.getVoice() != &voice || !note.getTie())
+            continue;
+
+        const int pos = note.getPosition();
+        const NoteStem &stem = stems.at(
+            ScoreUtils::findIndexByPosition(voice.getPositions(), pos));
+        const int prevPos = *note.getTie();
+
+        // Draw to the centre of each position.
+        const double x = layout.getPositionX(note.getPosition()) +
+                         0.5 * layout.getPositionSpacing();
+        const double prevX =
+            layout.getPositionX(prevPos) + 0.5 * layout.getPositionSpacing();
+        const double width = x - prevX;
+
+        // Adjust the orientation depending on the stem direction.
+        QPainterPath path;
+        path.moveTo(width, height / 2);
+        path.arcTo(0, 0, width, height, 0,
+                   stem.getStemType() == NoteStem::StemDown ? 180 : -180);
+
+        const double y = note.getY() + layout.getTopStdNotationLine() +
+                         (stem.getStemType() == NoteStem::StemDown
+                              ? -1.25 * LayoutInfo::STD_NOTATION_LINE_SPACING
+                              : 0.25 * LayoutInfo::STD_NOTATION_LINE_SPACING);
+
+        auto arc = new QGraphicsPathItem(path);
+        arc->setPos(prevX, y);
+        arc->setParentItem(myParentStaff);
     }
 }
 

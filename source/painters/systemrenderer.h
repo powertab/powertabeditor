@@ -156,6 +156,10 @@ private:
     void drawStdNotation(const System &system, const Staff &staff,
                          const LayoutInfo &layout);
 
+    /// Draws all ties in the voice.
+    void drawTies(const Voice &voice, const std::vector<StdNotationNote> &notes,
+                  const std::vector<NoteStem> &stems, const LayoutInfo &layout);
+
     /// Draws all irregular groups in the voice.
     void drawIrregularGroups(const Voice &voice,
                              const std::vector<NoteStem> &stems);

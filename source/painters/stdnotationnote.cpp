@@ -37,11 +37,13 @@ static const std::unordered_map<char, int> theNotePositions = {
 	{ 'A', -2 }, { 'G', -1 }
 };
 
-StdNotationNote::StdNotationNote(const Position &pos, const Note &note,
-                                 const KeySignature &key, const Tuning &tuning,
-                                 double y, const boost::optional<int> &tie)
+StdNotationNote::StdNotationNote(const Voice &voice, const Position &pos,
+                                 const Note &note, const KeySignature &key,
+                                 const Tuning &tuning, double y,
+                                 const boost::optional<int> &tie)
     : myY(y),
       myAccidentalType(NoAccidental),
+      myVoice(voice),
       myPosition(&pos),
       myNote(&note),
       myKey(&key),
@@ -160,9 +162,9 @@ void StdNotationNote::getNotesInStaff(
                     if (note.hasProperty(Note::Tied) && prevPos)
                         tiedPos = prevPos->getPosition();
 
-                    notes.push_back(StdNotationNote(
-                                        pos, note, bar.getKeySignature(),
-                                        tuning, y, tiedPos));
+                    notes.push_back(StdNotationNote(voice, pos, note,
+                                                    bar.getKeySignature(),
+                                                    tuning, y, tiedPos));
                     StdNotationNote &stdNote = notes.back();
 
                     // Don't show accidentals if there are consecutive
@@ -474,4 +476,8 @@ bool StdNotationNote::isDoubleDotted() const
 const boost::optional<int> &StdNotationNote::getTie() const
 {
     return myTie;
+}
+const Voice &StdNotationNote::getVoice() const
+{
+    return myVoice;
 }
