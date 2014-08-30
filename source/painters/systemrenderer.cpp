@@ -23,6 +23,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm/find_if.hpp>
+#include <painters/antialiasedpathitem.h>
 #include <painters/barlinepainter.h>
 #include <painters/clickablegroup.h>
 #include <painters/keysignaturepainter.h>
@@ -763,7 +764,7 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                     path.moveTo(width, height / 2);
                     path.arcTo(0, 0, width, height, 0, 180);
 
-                    auto arc = new QGraphicsPathItem(path);
+                    auto arc = new AntialiasedPathItem(path);
                     arc->setPos(left + layout.getPositionSpacing() / 2, y);
                     arc->setParentItem(myParentStaff);
 
@@ -781,7 +782,7 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                     path.moveTo(width, height / 2);
                     path.arcTo(0, 0, width, height, 0, 180);
 
-                    auto arc = new QGraphicsPathItem(path);
+                    auto arc = new AntialiasedPathItem(path);
                     arc->setPos(layout.getPositionX(position) + 2,
                                 layout.getTabLine(string) - 2);
                     arc->setParentItem(myParentStaff);
@@ -900,10 +901,14 @@ void SystemRenderer::drawSlide(const LayoutInfo &layout, int string,
         y += layout.getTabLineSpacing() + 1;
     }
 
-    auto slide = new QGraphicsLineItem(myParentStaff);
-    slide->setLine(0, 0, width - layout.getPositionSpacing() / 2, height);
+    QPainterPath path;
+    path.moveTo(0, 0);
+    path.lineTo(width - layout.getPositionSpacing() / 2, height);
+
+    auto slide = new AntialiasedPathItem(path);
     slide->setPos(left + layout.getPositionSpacing() / 1.5 + 1,
                   y + height / 2);
+    slide->setParentItem(myParentStaff);
 }
 
 void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
@@ -1456,7 +1461,7 @@ void SystemRenderer::drawTies(const Voice &voice,
                               ? -1.25 * LayoutInfo::STD_NOTATION_LINE_SPACING
                               : 0.25 * LayoutInfo::STD_NOTATION_LINE_SPACING);
 
-        auto arc = new QGraphicsPathItem(path);
+        auto arc = new AntialiasedPathItem(path);
         arc->setPos(prevX, y);
         arc->setParentItem(myParentStaff);
     }
@@ -1748,7 +1753,7 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
         path.lineTo(right, yEnd);
     }
 
-    group->addToGroup(new QGraphicsPathItem(path));
+    group->addToGroup(new AntialiasedPathItem(path));
 
     // Draw arrow head, and choose the correct orientation depending on whether
     // the bend is going up or down.

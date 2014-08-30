@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 add_library(ptepainters
+    antialiasedpathitem.cpp
     barlinepainter.cpp
     beamgroup.cpp
     caretpainter.cpp
@@ -20,6 +21,7 @@ add_library(ptepainters
     #tremolobarpainter.cpp
     verticallayout.cpp
 
+    antialiasedpathitem.h
     barlinepainter.h
     beamgroup.h
     caretpainter.h
