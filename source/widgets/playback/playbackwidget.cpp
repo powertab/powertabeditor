@@ -50,20 +50,26 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
 
     ui->rewindToStartButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaSkipBackward));
-    ui->rewindToStartButton->setToolTip(
-        tr("Click to move playback to the beginning of the score%1.")
-            .arg(getShortcutHint(rewindCommand)));
+    connect(&rewindCommand, &QAction::changed, [&]() {
+        ui->rewindToStartButton->setToolTip(
+            tr("Click to move playback to the beginning of the score%1.")
+                .arg(getShortcutHint(rewindCommand)));
+    });
 
     ui->playPauseButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
-    ui->playPauseButton->setToolTip(
-        tr("Click to start or stop playback%1.")
-            .arg(getShortcutHint(playPauseCommand)));
+    connect(&playPauseCommand, &QAction::changed, [&]() {
+        ui->playPauseButton->setToolTip(
+            tr("Click to start or stop playback%1.")
+                .arg(getShortcutHint(playPauseCommand)));
+    });
 
     ui->metronomeToggleButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaVolumeMuted));
-    ui->metronomeToggleButton->setToolTip(
-        tr("Click to toggle whether the metronome is turned on%1.")
-            .arg(getShortcutHint(metronomeCommand)));
+    connect(&metronomeCommand, &QAction::changed, [&]() {
+        ui->metronomeToggleButton->setToolTip(
+            tr("Click to toggle whether the metronome is turned on%1.")
+                .arg(getShortcutHint(metronomeCommand)));
+    });
 
     connect(myVoices, SIGNAL(buttonClicked(int)), this,
             SIGNAL(activeVoiceChanged(int)));
