@@ -14,19 +14,24 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#include "polishsystem.h"
 
-#ifndef SCORE_UTILS_SCOREPOLISHER_H
-#define SCORE_UTILS_SCOREPOLISHER_H
+#include <score/utils/scorepolisher.h>
 
-class Score;
-class System;
-
-namespace ScoreUtils
+PolishSystem::PolishSystem(const ScoreLocation &location)
+    : QUndoCommand(QObject::tr("Polish System")), myLocation(location)
 {
-/// Reformats the score.
-void polishScore(Score &score);
-/// Reformats a single system.
-void polishSystem(System &system);
 }
 
-#endif
+void PolishSystem::redo()
+{
+    myOriginalSystem = myLocation.getSystem();
+    ScoreUtils::polishSystem(myLocation.getSystem());
+}
+
+void PolishSystem::undo()
+{
+    myLocation.getSystem() = *myOriginalSystem;
+    myOriginalSystem.reset();
+}

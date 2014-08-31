@@ -14,19 +14,27 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#ifndef ACTIONS_POLISHSYSTEM_H
+#define ACTIONS_POLISHSYSTEM_H
 
-#ifndef SCORE_UTILS_SCOREPOLISHER_H
-#define SCORE_UTILS_SCOREPOLISHER_H
+#include <QUndoCommand>
 
-class Score;
-class System;
+#include <boost/optional/optional.hpp>
+#include <score/scorelocation.h>
+#include <score/system.h>
 
-namespace ScoreUtils
+class PolishSystem : public QUndoCommand
 {
-/// Reformats the score.
-void polishScore(Score &score);
-/// Reformats a single system.
-void polishSystem(System &system);
-}
+public:
+    PolishSystem(const ScoreLocation &location);
+
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    ScoreLocation myLocation;
+    boost::optional<System> myOriginalSystem;
+};
 
 #endif

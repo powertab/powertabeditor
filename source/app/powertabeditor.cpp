@@ -48,6 +48,7 @@
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
 #include <actions/polishscore.h>
+#include <actions/polishsystem.h>
 #include <actions/removealternateending.h>
 #include <actions/removebarline.h>
 #include <actions/removechordtext.h>
@@ -444,6 +445,12 @@ void PowerTabEditor::polishScore()
 {
     myUndoManager->push(new PolishScore(getLocation().getScore()),
                         UndoManager::AFFECTS_ALL_SYSTEMS);
+}
+
+void PowerTabEditor::polishSystem()
+{
+    myUndoManager->push(new PolishSystem(getLocation()),
+                        getLocation().getSystemIndex());
 }
 
 void PowerTabEditor::editFileInformation()
@@ -1829,6 +1836,11 @@ void PowerTabEditor::createCommands()
     connect(myRemoveCurrentStaffCommand, &QAction::triggered, this,
             &PowerTabEditor::removeCurrentStaff);
 
+    myPolishSystemCommand = new Command(tr("Polish System"), "Section.Polish",
+                                        QKeySequence(Qt::Key_J), this);
+    connect(myPolishSystemCommand, &QAction::triggered, this,
+            &PowerTabEditor::polishSystem);
+
     myIncreaseLineSpacingCommand = new Command(tr("Increase"),
                                                "Section.LineSpacing.Increase",
                                                QKeySequence(), this);
@@ -2392,6 +2404,8 @@ void PowerTabEditor::createMenus()
     mySectionMenu->addAction(myInsertStaffBeforeCommand);
     mySectionMenu->addAction(myInsertStaffAfterCommand);
     mySectionMenu->addAction(myRemoveCurrentStaffCommand);
+    mySectionMenu->addSeparator();
+    mySectionMenu->addAction(myPolishSystemCommand);
     mySectionMenu->addSeparator();
     myLineSpacingMenu = mySectionMenu->addMenu(tr("&Line Spacing"));
     myLineSpacingMenu->addAction(myIncreaseLineSpacingCommand);

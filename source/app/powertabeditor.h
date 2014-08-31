@@ -101,6 +101,8 @@ private slots:
 
     /// Runs the score polisher.
     void polishScore();
+    /// Runs the score polisher on the current system.
+    void polishSystem();
     /// Opens the file information dialog.
     void editFileInformation();
 
@@ -431,6 +433,7 @@ private:
     Command *myInsertStaffBeforeCommand;
     Command *myInsertStaffAfterCommand;
     Command *myRemoveCurrentStaffCommand;
+    Command *myPolishSystemCommand;
     QMenu *myLineSpacingMenu;
     Command *myIncreaseLineSpacingCommand;
     Command *myDecreaseLineSpacingCommand;

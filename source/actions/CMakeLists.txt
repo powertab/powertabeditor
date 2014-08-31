@@ -34,6 +34,7 @@ add_library(pteactions
     edittimesignature.cpp
     insertnotes.cpp
     polishscore.cpp
+    polishsystem.cpp
     removealternateending.cpp
     removebarline.cpp
     removechordtext.cpp
@@ -91,6 +92,7 @@ add_library(pteactions
     edittimesignature.h
     insertnotes.h
     polishscore.h
+    polishsystem.h
     removealternateending.h
     removebarline.h
     removechordtext.h

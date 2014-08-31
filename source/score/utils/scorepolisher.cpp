@@ -41,7 +41,7 @@ static void shiftItemsAtPosition(const T &items, int position, int newPosition,
     }
 }
 
-static void polishSystem(System &system)
+void ScoreUtils::polishSystem(System &system)
 {
     // Format each bar separately.
     for (Barline &leftBar : system.getBarlines())
