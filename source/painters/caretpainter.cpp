@@ -171,11 +171,14 @@ void CaretPainter::onLocationChanged()
                              system.getStaves()[i], i).getStaffHeight();
     }
 
-    update(boundingRect());
+    const QRectF oldRect = sceneBoundingRect();
     setPos(0, mySystemRects.at(location.getSystemIndex()).top() + offset +
            myLayout->getSystemSymbolSpacing() + myLayout->getStaffHeight() -
            myLayout->getTabStaffBelowSpacing() - myLayout->STAFF_BORDER_SPACING -
            myLayout->getTabStaffHeight());
+    update(boundingRect());
+    // Ensure that a redraw always occurs at the old location.
+    scene()->update(oldRect);
 
     setToolTip(QString::fromStdString(
                    boost::lexical_cast<std::string>(location)));
