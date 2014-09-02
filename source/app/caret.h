@@ -80,6 +80,9 @@ public:
     /// Moves to the specified location.
     void moveToLocation(const ScoreLocation &location);
 
+    /// Ensures that the caret is still at a valid position.
+    void moveToValidPosition();
+
     typedef boost::signals2::signal<void ()> LocationChangedSlot;
     boost::signals2::connection subscribeToChanges(
             const LocationChangedSlot::slot_type &subscriber) const;

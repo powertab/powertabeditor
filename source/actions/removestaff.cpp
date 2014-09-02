@@ -20,10 +20,9 @@
 #include <app/caret.h>
 #include <score/system.h>
 
-RemoveStaff::RemoveStaff(const ScoreLocation &location, Caret &caret)
+RemoveStaff::RemoveStaff(const ScoreLocation &location)
     : QUndoCommand(QObject::tr("Remove Staff")),
       myLocation(location),
-      myCaret(caret),
       myOriginalStaff(location.getStaff()),
       myIndex(location.getStaffIndex())
 {
@@ -32,13 +31,9 @@ RemoveStaff::RemoveStaff(const ScoreLocation &location, Caret &caret)
 void RemoveStaff::redo()
 {
     myLocation.getSystem().removeStaff(myIndex);
-    // Ensure the caret is in a valid staff.
-    myCaret.moveToStaff(
-        std::min<int>(myIndex, myLocation.getSystem().getStaves().size() - 1));
 }
 
 void RemoveStaff::undo()
 {
     myLocation.getSystem().insertStaff(myOriginalStaff, myIndex);
-    myCaret.moveToStaff(myIndex);
 }

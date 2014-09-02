@@ -29,15 +29,12 @@ TEST_CASE("Actions/RemoveStaff", "")
     system.insertStaff(Staff(7));
     score.insertSystem(system);
 
-    Caret caret(score);
     ScoreLocation location(score, 0, 1);
-    RemoveStaff action(location, caret);
+    RemoveStaff action(location);
 
     action.redo();
     REQUIRE(location.getSystem().getStaves().size() == 1);
-    REQUIRE(caret.getLocation().getStaffIndex() == 0);
 
     action.undo();
     REQUIRE(location.getSystem().getStaves().size() == 2);
-    REQUIRE(caret.getLocation().getStaffIndex() == 1);
 }

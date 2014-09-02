@@ -206,3 +206,10 @@ void Caret::moveToLocation(const ScoreLocation &location)
 
     onLocationChanged();
 }
+
+void Caret::moveToValidPosition()
+{
+    moveToSystem(myLocation.getSystemIndex(), true);
+    moveToStaff(myLocation.getStaffIndex());
+    moveToPosition(myLocation.getPositionIndex());
+}

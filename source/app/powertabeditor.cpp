@@ -513,12 +513,14 @@ void PowerTabEditor::startStopPlayback()
 
 void PowerTabEditor::redrawSystem(int index)
 {
+    getCaret().moveToValidPosition();
     getScoreArea()->redrawSystem(index);
     updateCommands();
 }
 
 void PowerTabEditor::redrawScore()
 {
+    getCaret().moveToValidPosition();
     getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument(),
                                    Staff::GuitarView);
     updateCommands();
@@ -768,9 +770,9 @@ void PowerTabEditor::insertSystemAfter()
 void PowerTabEditor::removeCurrentSystem()
 {
     ScoreLocation &location = getLocation();
-    myUndoManager->push(new RemoveSystem(location.getScore(),
-                                         location.getSystemIndex(), getCaret()),
-                        UndoManager::AFFECTS_ALL_SYSTEMS);
+    myUndoManager->push(
+        new RemoveSystem(location.getScore(), location.getSystemIndex()),
+        UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
 void PowerTabEditor::insertStaffBefore()
@@ -786,8 +788,7 @@ void PowerTabEditor::insertStaffAfter()
 void PowerTabEditor::removeCurrentStaff()
 {
     const ScoreLocation &location = getLocation();
-    myUndoManager->push(new RemoveStaff(location, getCaret()),
-                        location.getSystemIndex());
+    myUndoManager->push(new RemoveStaff(location), location.getSystemIndex());
 }
 
 void PowerTabEditor::updateNoteDuration(Position::DurationType duration)

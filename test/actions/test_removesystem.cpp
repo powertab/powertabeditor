@@ -28,14 +28,11 @@ TEST_CASE("Actions/RemoveSystem", "")
     score.insertSystem(system);
     score.insertSystem(system);
 
-    Caret caret(score);
-    RemoveSystem action(score, 1, caret);
+    RemoveSystem action(score, 1);
 
     action.redo();
     REQUIRE(score.getSystems().size() == 1);
-    REQUIRE(caret.getLocation().getSystemIndex() == 0);
 
     action.undo();
     REQUIRE(score.getSystems().size() == 2);
-    REQUIRE(caret.getLocation().getSystemIndex() == 1);
 }

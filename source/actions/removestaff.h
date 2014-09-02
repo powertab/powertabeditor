@@ -22,19 +22,16 @@
 #include <score/scorelocation.h>
 #include <score/staff.h>
 
-class Caret;
-
 class RemoveStaff : public QUndoCommand
 {
 public:
-    RemoveStaff(const ScoreLocation &location, Caret &caret);
+    RemoveStaff(const ScoreLocation &location);
 
     virtual void redo() override;
     virtual void undo() override;
 
 private:
     ScoreLocation myLocation;
-    Caret &myCaret;
     const Staff myOriginalStaff;
     const int myIndex;
 };
