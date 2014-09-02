@@ -516,7 +516,9 @@ void ScoreMerger::merge()
         myGuitarState.advance();
         myBassState.advance();
 
-        int nextBarPos = destBar->getPosition() + barLength;
+        int nextBarPos =
+            destBar->getPosition() +
+            (destBar->getPosition() == 0 ? barLength - 1 : barLength);
 
         // If we're about to move to a new system, transition from finishing to
         // done.

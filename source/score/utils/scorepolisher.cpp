@@ -41,6 +41,28 @@ static void shiftItemsAtPosition(const T &items, int position, int newPosition,
     }
 }
 
+static void shiftAllItemsAtPosition(
+    System &system, Staff &staff, Voice &voice, int currentPosition,
+    int newPosition, std::unordered_set<const void *> &knownItems)
+{
+    shiftItemsAtPosition(voice.getIrregularGroupings(), currentPosition,
+                         newPosition, knownItems);
+    shiftItemsAtPosition(staff.getDynamics(), currentPosition, newPosition,
+                         knownItems);
+    shiftItemsAtPosition(system.getTextItems(), currentPosition, newPosition,
+                         knownItems);
+    shiftItemsAtPosition(system.getChords(), currentPosition, newPosition,
+                         knownItems);
+    shiftItemsAtPosition(system.getTempoMarkers(), currentPosition, newPosition,
+                         knownItems);
+    shiftItemsAtPosition(system.getDirections(), currentPosition, newPosition,
+                         knownItems);
+    shiftItemsAtPosition(system.getPlayerChanges(), currentPosition,
+                         newPosition, knownItems);
+    shiftItemsAtPosition(system.getAlternateEndings(), currentPosition,
+                         newPosition, knownItems);
+}
+
 void ScoreUtils::polishSystem(System &system)
 {
     // Format each bar separately.
@@ -88,6 +110,7 @@ void ScoreUtils::polishSystem(System &system)
             (leftBar.getPosition() == 0) ? 0 : leftBar.getPosition() + 1;
         const int oldEndPos = rightBar->getPosition();
         const int endPos = startPos + maxPosition;
+        std::unordered_set<const void *> knownItems;
 
         if (endPos > oldEndPos)
         {
@@ -95,9 +118,18 @@ void ScoreUtils::polishSystem(System &system)
                                endPos - rightBar->getPosition());
         }
         else
+        {
+            for (Staff &staff : system.getStaves())
+            {
+                for (Voice &voice : staff.getVoices())
+                {
+                    shiftAllItemsAtPosition(system, staff, voice, oldEndPos,
+                                            endPos, knownItems);
+                }
+            }
             rightBar->setPosition(endPos);
+        }
 
-        std::unordered_set<const void *> knownItems;
         for (Staff &staff : system.getStaves())
         {
             for (Voice &voice : staff.getVoices())
@@ -116,24 +148,9 @@ void ScoreUtils::polishSystem(System &system)
                     // Move any irregular groups, etc that start at this
                     // position. If the group moves forward, we need to be
                     // careful not to try to move it again on a later iteration.
-                    shiftItemsAtPosition(voice.getIrregularGroupings(),
-                                         currentPosition, newPosition,
-                                         knownItems);
-                    shiftItemsAtPosition(staff.getDynamics(), currentPosition,
-                                         newPosition, knownItems);
-                    shiftItemsAtPosition(system.getTextItems(), currentPosition,
-                                         newPosition, knownItems);
-                    shiftItemsAtPosition(system.getChords(), currentPosition,
-                                         newPosition, knownItems);
-                    shiftItemsAtPosition(system.getTempoMarkers(),
-                                         currentPosition, newPosition,
-                                         knownItems);
-                    shiftItemsAtPosition(system.getDirections(),
-                                         currentPosition, newPosition,
-                                         knownItems);
-                    shiftItemsAtPosition(system.getPlayerChanges(),
-                                         currentPosition, newPosition,
-                                         knownItems);
+                    shiftAllItemsAtPosition(system, staff, voice,
+                                            currentPosition, newPosition,
+                                            knownItems);
 
                     pos.setPosition(newPosition);
                 }
