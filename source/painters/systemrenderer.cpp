@@ -203,7 +203,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
         double timeSigX = x + barlinePainter->boundingRect().width() +
                 layout->getWidth(keySig);
-        double rehearsalSignX = x;
+        double rehearsalSignX = x + 0.5 * layout->getPositionSpacing();
 
         if (barline == system.getBarlines().front()) // Start bar of system.
         {
@@ -211,12 +211,14 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             if (barline.getBarType() == Barline::SingleBar)
             {
                 x = 0 - barlinePainter->boundingRect().width() / 2 - 0.5;
+                rehearsalSignX = 0;
             }
             else
             {
                 // Otherwise, display the bar after the clef, etc, and to the
                 // left of the first note.
                 x = layout->getFirstPositionX() - layout->getPositionSpacing();
+                rehearsalSignX = x + 0.5 * layout->getPositionSpacing();
             }
 
             keySigX = LayoutInfo::CLEF_WIDTH;
@@ -265,14 +267,14 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
 
             auto signLetters = new SimpleTextItem(
                 QString::fromStdString(sign.getLetters()), myRehearsalSignFont);
-            signLetters->setX(rehearsalSignX);
+            signLetters->setX(rehearsalSignX + RECTANGLE_OFFSET);
             centerSymbolVertically(*signLetters, 0);
 
             QFontMetricsF metrics(myRehearsalSignFont);
             const Barline *nextBar = system.getNextBarline(barline.getPosition());
             Q_ASSERT(nextBar);
             const double signTextX =
-                rehearsalSignX + signLetters->boundingRect().width() + 7;
+                signLetters->x() + signLetters->boundingRect().width() + 7;
             // If the description is too wide, cut it off with an ellipsis.
             QString shortenedSignText = metrics.elidedText(
                 QString::fromStdString(sign.getDescription()), Qt::ElideRight,
@@ -289,7 +291,6 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             // Draw rectangle around rehearsal sign letters.
             QRectF boundingRect = signLetters->boundingRect();
             boundingRect.setWidth(boundingRect.width() + 7);
-            boundingRect.translate(-RECTANGLE_OFFSET, 0);
             auto rect = new QGraphicsRectItem(boundingRect);
             rect->setX(rehearsalSignX);
             centerSymbolVertically(*rect, 0);
