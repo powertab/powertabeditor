@@ -370,6 +370,9 @@ bool PowerTabEditor::saveFileAs()
             // Add to the recent files list.
             myRecentFiles->add(path);
 
+            // Mark the file as being in an unmodified state.
+            myUndoManager->setClean();
+
             return true;
         }
     }

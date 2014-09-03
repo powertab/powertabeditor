@@ -84,6 +84,11 @@ void UndoManager::push(QUndoCommand *cmd, int affectedSystem)
     endMacro();
 }
 
+void UndoManager::setClean()
+{
+    activeStack()->setClean();
+}
+
 void UndoManager::onSystemChanged(int affectedSystem)
 {
     emit redrawNeeded(affectedSystem);

@@ -41,6 +41,8 @@ public:
     /// Use -1 for actions that affect all systems.
     void push(QUndoCommand *cmd, int affectedSystem);
 
+    void setClean();
+
     void beginMacro(const QString &text);
     void endMacro();
 
