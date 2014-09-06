@@ -126,11 +126,14 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
                     nextStem->getDurationType() : Position::SixtyFourthNote;
 
         const int extraBeams = getNumExtraBeams(*stem);
+        if (extraBeams < 1)
+            continue;
 
         const bool hasFractionalLeft =
-            ((duration > prevDuration) &&
-             (nextStem == end || duration > nextDuration)) ||
-            (nextStem != end && !nextStem->hasFullBeaming());
+            stem != begin &&
+            ((duration > prevDuration &&
+              (nextStem == end || nextDuration == Position::EighthNote)) ||
+             nextStem == end || !nextStem->hasFullBeaming());
         const bool hasFractionalRight =
             !hasFractionalLeft &&
             (duration > nextDuration ||
