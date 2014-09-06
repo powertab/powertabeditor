@@ -105,7 +105,6 @@ void ScoreUtils::polishSystem(System &system)
 
         std::unordered_map<const Position *, boost::rational<int>> timestamps;
         std::map<boost::rational<int>, int> timestampPositions;
-        int maxPosition = 0;
 
         // For each timestamp, compute the maximum position at that timestamp
         // for any staff.
@@ -132,9 +131,15 @@ void ScoreUtils::polishSystem(System &system)
                     timestamp += duration;
                 }
 
-                maxPosition = std::max(maxPosition, currentPosition);
+                // Track where the right barline should be.
+                computeTimestampPosition(timestamp, currentPosition,
+                                         timestampPositions);
             }
         }
+
+        int maxPosition = 0;
+        if (!timestampPositions.empty())
+            maxPosition = boost::prior(timestampPositions.end())->second;
 
         // Adjust!
         const int startPos =
