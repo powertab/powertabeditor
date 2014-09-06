@@ -63,6 +63,37 @@ static void shiftAllItemsAtPosition(
                          newPosition, knownItems);
 }
 
+static void computeTimestampPosition(
+    const boost::rational<int> &timestamp, int minPosition,
+    std::map<boost::rational<int>, int> &timestampPositions)
+{
+    int position = 0;
+
+    // If another voice has a note at this timestamp, use that position.
+    auto it = timestampPositions.find(timestamp);
+    if (it != timestampPositions.end())
+        position = it->second;
+    else
+    {
+        // If this timestamp falls in between two timestamps from another voice,
+        // insert it and shift the following timestamps over if necessary.
+        it = timestampPositions.lower_bound(timestamp);
+        if (it != timestampPositions.begin())
+        {
+            position = boost::prior(it)->second + 1;
+
+            if (it != timestampPositions.end() && it->second == position)
+            {
+                for (; it != timestampPositions.end(); ++it)
+                    it->second++;
+            }
+        }
+    }
+
+    position = std::max(position, minPosition);
+    timestampPositions[timestamp] = position;
+}
+
 void ScoreUtils::polishSystem(System &system)
 {
     // Format each bar separately.
@@ -92,8 +123,8 @@ void ScoreUtils::polishSystem(System &system)
                     boost::rational<int> duration =
                         VoiceUtils::getDurationTime(voice, position);
 
-                    timestampPositions[timestamp] = std::max(
-                        timestampPositions[timestamp], currentPosition);
+                    computeTimestampPosition(timestamp, currentPosition,
+                                             timestampPositions);
 
                     currentPosition = timestampPositions[timestamp] +
                                       getDefaultNoteSpacing(duration);
