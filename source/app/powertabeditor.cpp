@@ -1503,18 +1503,15 @@ bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 
 void PowerTabEditor::closeEvent(QCloseEvent *event)
 {
-#if 0
-    while (tabWidget->currentIndex() != -1)
+    while (myTabWidget->currentIndex() != -1)
     {
-        bool closed = closeCurrentTab();
-        if (!closed)
+        if (!closeCurrentTab())
         {
             // Don't close if the user pressed Cancel.
             event->ignore();
             return;
         }
     }
-#endif
 
     myTuningDictionary->save();
 
@@ -1539,17 +1536,25 @@ QString PowerTabEditor::getApplicationName() const
 
 void PowerTabEditor::updateWindowTitle()
 {
-    if (myDocumentManager->hasOpenDocuments() &&
-        myDocumentManager->getCurrentDocument().hasFilename())
+    QString name;
+
+    if (myDocumentManager->hasOpenDocuments())
     {
-        const Document &doc = myDocumentManager->getCurrentDocument();
-        const QString path = QString::fromStdString(doc.getFilename());
-        const QString docName = QFileInfo(path).fileName();
-        // Need the [*] for using setWindowModified.
-        setWindowTitle(docName + "[*] - " + getApplicationName());
+        if (myDocumentManager->getCurrentDocument().hasFilename())
+        {
+            const Document &doc = myDocumentManager->getCurrentDocument();
+            const QString path = QString::fromStdString(doc.getFilename());
+            name = QFileInfo(path).fileName();
+        }
+        else
+            name = tr("Untitled");
+
+        // Need the [*] for using setWindowModified().
+        name += "[*] - ";
     }
-    else
-        setWindowTitle(getApplicationName());
+
+    name += getApplicationName();
+    setWindowTitle(name);
 }
 
 void PowerTabEditor::createCommands()
