@@ -58,7 +58,7 @@ Bend BendDialog::getBend() const
     return Bend(
         static_cast<Bend::BendType>(ui->bendTypeComboBox->currentIndex()),
         ui->bentPitchComboBox->itemData(ui->bentPitchComboBox->currentIndex()).toInt(),
-        ui->releasePitchComboBox->itemData(ui->bentPitchComboBox->currentIndex()).toInt(),
+        ui->releasePitchComboBox->itemData(ui->releasePitchComboBox->currentIndex()).toInt(),
         ui->bendDurationComboBox->currentIndex(),
         static_cast<Bend::DrawPoint>(
             ui->vertStartingPointComboBox->currentIndex()),

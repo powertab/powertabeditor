@@ -1007,7 +1007,11 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo> &bends,
         activePitchBend = bendAmount;
     }
     else
-        activePitchBend = releaseAmount;
+    {
+        // Always return to the default bend, regardless of the release pitch.
+        bends.back().pitchBendAmount = BendEvent::DEFAULT_BEND;
+        activePitchBend = BendEvent::DEFAULT_BEND;
+    }
 }
 
 void MidiPlayer::generateGradualBend(std::vector<BendEventInfo> &bends,
