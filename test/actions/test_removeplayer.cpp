@@ -39,11 +39,11 @@ TEST_CASE("Actions/RemovePlayer", "")
     score.insertPlayer(player1);
     score.insertPlayer(player2);
 
-    RemovePlayer action(score, 1);
+    RemovePlayer action(score, 0);
 
     action.redo();
     REQUIRE(score.getPlayers().size() == 1);
-    REQUIRE(score.getPlayers()[0] == player1);
+    REQUIRE(score.getPlayers()[0] == player2);
     {
         const PlayerChange &newChange =
             score.getSystems()[0].getPlayerChanges()[0];

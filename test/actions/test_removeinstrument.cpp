@@ -39,11 +39,11 @@ TEST_CASE("Actions/RemoveInstrument", "")
     score.insertInstrument(instrument1);
     score.insertInstrument(instrument2);
 
-    RemoveInstrument action(score, 1);
+    RemoveInstrument action(score, 0);
 
     action.redo();
     REQUIRE(score.getInstruments().size() == 1);
-    REQUIRE(score.getInstruments()[0] == instrument1);
+    REQUIRE(score.getInstruments()[0] == instrument2);
     {
         const PlayerChange &newChange =
             score.getSystems()[0].getPlayerChanges()[0];

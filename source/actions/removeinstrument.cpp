@@ -44,8 +44,19 @@ void RemoveInstrument::redo()
                 for (const ActivePlayer &activePlayer :
                      change.getActivePlayers(i))
                 {
-                    if (activePlayer.getInstrumentNumber() == myInstrumentIndex)
+                    if (activePlayer.getInstrumentNumber() >= myInstrumentIndex)
+                    {
                         change.removeActivePlayer(i, activePlayer);
+
+                        // Shift instrument numbers.
+                        if (activePlayer.getInstrumentNumber() > myInstrumentIndex)
+                        {
+                            change.insertActivePlayer(
+                                i, ActivePlayer(
+                                       activePlayer.getPlayerNumber(),
+                                       activePlayer.getInstrumentNumber() - 1));
+                        }
+                    }
                 }
             }
         }
