@@ -1132,7 +1132,55 @@
                 45,
                 40,
                 35,
+                30
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dropped E",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                40,
+                35,
                 28
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Standard",
+            "notes": [
+                65,
+                60,
+                55,
+                50,
+                45,
+                40,
+                35,
+                30
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "All Fourths",
+            "notes": [
+                65,
+                60,
+                55,
+                50,
+                45,
+                40,
+                35,
+                30
             ],
             "offset": 0,
             "sharps": true,
