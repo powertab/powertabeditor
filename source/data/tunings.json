@@ -1,5 +1,5 @@
 {
-    "version": 1,
+    "version": 2,
     "tunings": [
         {
             "name": "Mountain Dulcimer",
@@ -470,7 +470,7 @@
                 38,
                 33,
                 28,
-                35
+                23
             ],
             "offset": 0,
             "sharps": true,
