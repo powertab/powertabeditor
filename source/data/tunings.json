@@ -1093,21 +1093,6 @@
             "capo": 0
         },
         {
-            "name": "Bass-Standard",
-            "notes": [
-                52,
-                47,
-                43,
-                38,
-                33,
-                28,
-                23
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
             "name": "Standard",
             "notes": [
                 64,
@@ -1117,6 +1102,21 @@
                 45,
                 40,
                 35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Standard",
+            "notes": [
+                53,
+                48,
+                43,
+                38,
+                33,
+                28,
+                23
             ],
             "offset": 0,
             "sharps": true,
@@ -1181,6 +1181,276 @@
                 40,
                 35,
                 30
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Higher A",
+            "notes": [
+                69,
+                64,
+                59,
+                55,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dropped-A",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                40,
+                33
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1/2 Step Dropped-Ab",
+            "notes": [
+                63,
+                58,
+                54,
+                49,
+                44,
+                39,
+                32
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 Step Dropped-G",
+            "notes": [
+                62,
+                57,
+                53,
+                48,
+                43,
+                38,
+                31
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dropped-D&A",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                38,
+                33
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "B+Dropped-D",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                38,
+                35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dropped-D&G",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                38,
+                31
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dropped-C&G",
+            "notes": [
+                62,
+                57,
+                53,
+                48,
+                43,
+                36,
+                31
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1/2 Step",
+            "notes": [
+                63,
+                58,
+                54,
+                49,
+                44,
+                39,
+                34
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 Step",
+            "notes": [
+                62,
+                57,
+                53,
+                48,
+                43,
+                38,
+                33
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 1/2 Step",
+            "notes": [
+                61,
+                56,
+                52,
+                47,
+                42,
+                37,
+                32
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 2 Steps",
+            "notes": [
+                60,
+                55,
+                51,
+                46,
+                41,
+                36,
+                31
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Open G",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                47,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open C",
+            "notes": [
+                64,
+                60,
+                55,
+                48,
+                43,
+                36,
+                31
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Choro",
+            "notes": [
+                64,
+                59,
+                55,
+                50,
+                45,
+                40,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Major Thirds",
+            "notes": [
+                64,
+                60,
+                56,
+                52,
+                48,
+                44,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "All Fourths",
+            "notes": [
+                65,
+                60,
+                55,
+                50,
+                45,
+                40,
+                35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Baritone",
+            "notes": [
+                64,
+                59,
+                54,
+                50,
+                45,
+                40,
+                35
             ],
             "offset": 0,
             "sharps": true,
