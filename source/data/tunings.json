@@ -70,6 +70,54 @@
             "capo": 0
         },
         {
+            "name": "Bass-Down 1/2 Step Dropped Db",
+            "notes": [
+                42,
+                37,
+                32,
+                25
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 Step Dropped C",
+            "notes": [
+                41,
+                36,
+                31,
+                24
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 1/2 Step Dropped B",
+            "notes": [
+                40,
+                35,
+                30,
+                23
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 2 Steps Dropped Db",
+            "notes": [
+                39,
+                34,
+                29,
+                22
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
             "name": "Bass-Down 1/2 Step",
             "notes": [
                 42,
@@ -115,6 +163,66 @@
             ],
             "offset": 4,
             "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-E7sus4",
+            "notes": [
+                38,
+                33,
+                28,
+                23
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Open A5",
+            "notes": [
+                45,
+                40,
+                33,
+                28
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Open E",
+            "notes": [
+                44,
+                40,
+                35,
+                28
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Tenor Tuning",
+            "notes": [
+                48,
+                43,
+                38,
+                33
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Piccolo Bass",
+            "notes": [
+                55,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
             "capo": 0
         },
         {
