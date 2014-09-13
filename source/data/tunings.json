@@ -316,14 +316,209 @@
                 38,
                 33,
                 28,
-                35
+                23
             ],
             "offset": 0,
             "sharps": true,
             "capo": 0
         },
         {
-            "name": "Banjo-Open G",
+            "name": "Bass-Standard C",
+            "notes": [
+                48,
+                43,
+                38,
+                33,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Dropped A",
+            "notes": [
+                43,
+                38,
+                33,
+                28,
+                21
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1/2 Step Dropped Ab",
+            "notes": [
+                42,
+                37,
+                32,
+                27,
+                20
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 Step Dropped G",
+            "notes": [
+                41,
+                36,
+                31,
+                26,
+                19
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 1/2 Steps Dropped Gb",
+            "notes": [
+                40,
+                35,
+                30,
+                25,
+                18
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 2 Steps Dropped F",
+            "notes": [
+                39,
+                34,
+                29,
+                24,
+                17
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1/2 Step",
+            "notes": [
+                42,
+                37,
+                32,
+                27,
+                22
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 Step",
+            "notes": [
+                41,
+                36,
+                31,
+                26,
+                21
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 1 1/2 Steps",
+            "notes": [
+                40,
+                35,
+                30,
+                25,
+                20
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Down 2 Steps",
+            "notes": [
+                39,
+                34,
+                29,
+                24,
+                19
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Open A5",
+            "notes": [
+                45,
+                40,
+                33,
+                28,
+                21
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Open E",
+            "notes": [
+                44,
+                40,
+                35,
+                28,
+                23
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bass-Tenor Tuning",
+            "notes": [
+                53,
+                48,
+                43,
+                38,
+                33
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Guitar-Open G",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                43
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Guitar-Open A",
+            "notes": [
+                64,
+                61,
+                57,
+                52,
+                45
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Standard (Open G)",
             "notes": [
                 62,
                 59,
@@ -375,7 +570,124 @@
             "capo": 0
         },
         {
-            "name": "Banjo-Open G",
+            "name": "Banjo-Open C",
+            "notes": [
+                64,
+                60,
+                55,
+                48,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open D",
+            "notes": [
+                62,
+                57,
+                54,
+                50,
+                66
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open D",
+            "notes": [
+                62,
+                57,
+                54,
+                50,
+                67
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open G Minor",
+            "notes": [
+                62,
+                58,
+                55,
+                50,
+                67
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open A Minor",
+            "notes": [
+                64,
+                60,
+                57,
+                52,
+                69
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open E Minor",
+            "notes": [
+                71,
+                55,
+                52,
+                47,
+                64
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open F Minor",
+            "notes": [
+                60,
+                56,
+                53,
+                48,
+                65
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open C Minor",
+            "notes": [
+                63,
+                60,
+                55,
+                48,
+                67
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-Open D Minor",
+            "notes": [
+                62,
+                57,
+                53,
+                50,
+                65
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Banjo-G6",
             "notes": [
                 64,
                 59,
@@ -388,7 +700,7 @@
             "capo": 0
         },
         {
-            "name": "Banjo-G Modal",
+            "name": "Banjo-Gsus4",
             "notes": [
                 62,
                 60,
@@ -401,7 +713,7 @@
             "capo": 0
         },
         {
-            "name": "Banjo-A Modal",
+            "name": "Banjo-Asus4",
             "notes": [
                 64,
                 62,
@@ -440,20 +752,7 @@
             "capo": 0
         },
         {
-            "name": "Banjo-G Minor",
-            "notes": [
-                62,
-                58,
-                55,
-                50,
-                67
-            ],
-            "offset": 0,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Banjo-C Tuning",
+            "name": "Banjo-Cmaj9",
             "notes": [
                 62,
                 59,
@@ -466,7 +765,7 @@
             "capo": 0
         },
         {
-            "name": "Banjo-C Modal",
+            "name": "Banjo-Csus2",
             "notes": [
                 62,
                 60,
@@ -486,45 +785,6 @@
                 55,
                 48,
                 67
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Banjo-Open C",
-            "notes": [
-                64,
-                60,
-                55,
-                48,
-                67
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Banjo-Open D",
-            "notes": [
-                62,
-                57,
-                54,
-                50,
-                66
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Banjo-D Minor",
-            "notes": [
-                62,
-                57,
-                53,
-                50,
-                65
             ],
             "offset": 0,
             "sharps": true,
