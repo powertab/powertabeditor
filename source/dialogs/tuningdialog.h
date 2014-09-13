@@ -53,6 +53,9 @@ private slots:
     /// Loads the currently-selected tuning preset.
     void loadPreset();
 
+    /// Once a change is made to the tuning, update the preset combobox.
+    void invalidatePreset();
+
 private:
     Ui::TuningDialog *ui;
     const TuningDictionary &myDictionary;

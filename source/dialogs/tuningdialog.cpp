@@ -42,10 +42,14 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     ui->capoSpinBox->setMinimum(Tuning::MIN_CAPO);
     ui->capoSpinBox->setMaximum(Tuning::MAX_CAPO);
     ui->capoSpinBox->setValue(currentTuning.getCapo());
-    
+    connect(ui->capoSpinBox, SIGNAL(valueChanged(int)), this,
+            SLOT(invalidatePreset()));
+
     ui->notationOffsetSpinBox->setMinimum(Tuning::MIN_MUSIC_NOTATION_OFFSET);
     ui->notationOffsetSpinBox->setMaximum(Tuning::MAX_MUSIC_NOTATION_OFFSET);
     ui->notationOffsetSpinBox->setValue(currentTuning.getMusicNotationOffset());
+    connect(ui->notationOffsetSpinBox, SIGNAL(valueChanged(int)), this,
+            SLOT(invalidatePreset()));
 
     ui->numStringsSpinBox->setMinimum(Tuning::MIN_STRING_COUNT);
     ui->numStringsSpinBox->setMaximum(Tuning::MAX_STRING_COUNT);
@@ -63,6 +67,12 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     myStringSelectors.push_back(ui->string6);
     myStringSelectors.push_back(ui->string7);
     myStringSelectors.push_back(ui->string8);
+
+    for (QComboBox *selector : myStringSelectors)
+    {
+        connect(selector, SIGNAL(activated(int)), this,
+                SLOT(invalidatePreset()));
+    }
 
     updateTuningDictionary(currentTuning.getStringCount());
     generateNoteNames(currentTuning.usesSharps());
@@ -115,6 +125,8 @@ void TuningDialog::toggleSharps(bool usesSharps)
         selector->addItems(myNoteNames);
         selector->setCurrentIndex(selectedIndex);
     }
+
+    invalidatePreset();
 }
 
 void TuningDialog::updateEnabledStrings(int numStrings)
@@ -176,4 +188,9 @@ Tuning TuningDialog::getTuning() const
     newTuning.setNotes(tuningNotes);
 
     return newTuning;
+}
+
+void TuningDialog::invalidatePreset()
+{
+    ui->presetComboBox->setCurrentIndex(-1);
 }
