@@ -106,7 +106,7 @@
             "capo": 0
         },
         {
-            "name": "Bass-Down 2 Steps Dropped Db",
+            "name": "Bass-Down 2 Steps Dropped Bb",
             "notes": [
                 39,
                 34,
@@ -114,7 +114,7 @@
                 22
             ],
             "offset": 0,
-            "sharps": true,
+            "sharps": false,
             "capo": 0
         },
         {
