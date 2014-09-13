@@ -767,21 +767,7 @@
             "capo": 0
         },
         {
-            "name": "D Modal",
-            "notes": [
-                64,
-                59,
-                55,
-                50,
-                43,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "D Modal",
+            "name": "Cmaj9",
             "notes": [
                 64,
                 59,
@@ -809,7 +795,7 @@
             "capo": 0
         },
         {
-            "name": "Fourths",
+            "name": "Perfect Fourths",
             "notes": [
                 65,
                 60,
@@ -1075,7 +1061,7 @@
             "capo": 0
         },
         {
-            "name": "C6",
+            "name": "Am7",
             "notes": [
                 64,
                 60,
@@ -1096,7 +1082,7 @@
                 57,
                 55,
                 48,
-                55
+                43
             ],
             "offset": 0,
             "sharps": true,
