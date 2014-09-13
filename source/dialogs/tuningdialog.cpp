@@ -55,9 +55,6 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     connect(ui->numStringsSpinBox, SIGNAL(valueChanged(int)), this,
             SLOT(updateTuningDictionary(int)));
 
-    connect(ui->presetComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(loadPreset()));
-
     myStringSelectors.push_back(ui->string1);
     myStringSelectors.push_back(ui->string2);
     myStringSelectors.push_back(ui->string3);
@@ -71,6 +68,9 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     generateNoteNames(currentTuning.usesSharps());
     initStringSelectors(currentTuning);
     updateEnabledStrings(currentTuning.getStringCount());
+
+    connect(ui->presetComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(loadPreset()));
 }
 
 TuningDialog::~TuningDialog()
