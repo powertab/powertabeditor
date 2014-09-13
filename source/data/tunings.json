@@ -1075,34 +1075,6 @@
             "capo": 0
         },
         {
-            "name": "Low Bass A",
-            "notes": [
-                64,
-                61,
-                57,
-                52,
-                57,
-                40
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Low Bass G",
-            "notes": [
-                62,
-                59,
-                55,
-                50,
-                55,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
             "name": "C6/A7",
             "notes": [
                 64,
