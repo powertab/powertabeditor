@@ -879,20 +879,6 @@
             "capo": 0
         },
         {
-            "name": "D Minor",
-            "notes": [
-                62,
-                57,
-                53,
-                50,
-                45,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
             "name": "Double DAD",
             "notes": [
                 62,
