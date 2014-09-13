@@ -2985,6 +2985,7 @@ void PowerTabEditor::toggleMetronome()
 void PowerTabEditor::updateActiveVoice(int voice)
 {
     getLocation().setVoiceIndex(voice);
+    updateCommands();
 }
 
 void PowerTabEditor::updateLocationLabel()
