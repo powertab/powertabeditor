@@ -58,7 +58,7 @@
             "capo": 0
         },
         {
-            "name": "Bass-Dropped D",
+            "name": "Bass-Dropped-D",
             "notes": [
                 43,
                 38,
@@ -70,7 +70,7 @@
             "capo": 0
         },
         {
-            "name": "Bass-Down 1/2 Step Dropped Db",
+            "name": "Bass-Down 1/2 Step Dropped-Db",
             "notes": [
                 42,
                 37,
@@ -82,7 +82,7 @@
             "capo": 0
         },
         {
-            "name": "Bass-Down 1 Step Dropped C",
+            "name": "Bass-Down 1 Step Dropped-C",
             "notes": [
                 41,
                 36,
@@ -94,7 +94,7 @@
             "capo": 0
         },
         {
-            "name": "Bass-Down 1 1/2 Step Dropped B",
+            "name": "Bass-Down 1 1/2 Step Dropped-B",
             "notes": [
                 40,
                 35,
@@ -106,7 +106,7 @@
             "capo": 0
         },
         {
-            "name": "Bass-Down 2 Steps Dropped Bb",
+            "name": "Bass-Down 2 Steps Dropped-Bb",
             "notes": [
                 39,
                 34,
@@ -613,6 +613,62 @@
             "capo": 0
         },
         {
+            "name": "Down 1/2 Step Dropped-Db",
+            "notes": [
+                63,
+                58,
+                54,
+                49,
+                44,
+                37
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 Step Dropped-C",
+            "notes": [
+                62,
+                57,
+                53,
+                48,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 1 1/2 Step Dropped-B",
+            "notes": [
+                61,
+                56,
+                52,
+                47,
+                42,
+                35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 2 Steps Dropped-Bb",
+            "notes": [
+                60,
+                55,
+                51,
+                46,
+                41,
+                34
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
             "name": "Down 1/2 Step",
             "notes": [
                 63,
@@ -669,6 +725,48 @@
             "capo": 0
         },
         {
+            "name": "Down 2 1/2 Steps",
+            "notes": [
+                59,
+                54,
+                50,
+                45,
+                40,
+                35
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Down 3 Steps",
+            "notes": [
+                58,
+                53,
+                49,
+                44,
+                39,
+                34
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Down 3 1/2 Steps",
+            "notes": [
+                57,
+                52,
+                48,
+                43,
+                38,
+                33
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
             "name": "Open D (Vestapol Tuning)",
             "notes": [
                 62,
@@ -691,6 +789,20 @@
                 50,
                 43,
                 38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open G (Dobro)",
+            "notes": [
+                62,
+                59,
+                55,
+                50,
+                47,
+                43
             ],
             "offset": 0,
             "sharps": true,
@@ -767,55 +879,41 @@
             "capo": 0
         },
         {
-            "name": "Cmaj9",
+            "name": "Open G Minor",
             "notes": [
-                64,
-                59,
+                62,
+                58,
                 55,
                 50,
+                43,
+                38
+            ],
+            "offset": 0,
+            "sharps": false,
+            "capo": 0
+        },
+        {
+            "name": "Open C Minor",
+            "notes": [
+                63,
+                60,
+                55,
+                48,
                 43,
                 36
             ],
             "offset": 0,
-            "sharps": true,
+            "sharps": false,
             "capo": 0
         },
         {
-            "name": "DADGAD (Dsus4)",
-            "notes": [
-                62,
-                57,
-                55,
-                50,
-                45,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Perfect Fourths",
-            "notes": [
-                65,
-                60,
-                55,
-                50,
-                45,
-                40
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Lute",
+            "name": "Open E Minor",
             "notes": [
                 64,
                 59,
-                54,
-                50,
-                45,
+                55,
+                52,
+                47,
                 40
             ],
             "offset": 0,
@@ -823,12 +921,26 @@
             "capo": 0
         },
         {
-            "name": "Lute",
+            "name": "Open A Minor",
             "notes": [
                 64,
+                60,
                 57,
-                54,
-                50,
+                52,
+                48,
+                45
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Open A Minor",
+            "notes": [
+                64,
+                60,
+                57,
+                52,
                 45,
                 40
             ],
@@ -865,6 +977,34 @@
             "capo": 0
         },
         {
+            "name": "DADGAD (Dsus4)",
+            "notes": [
+                62,
+                57,
+                55,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Dsus2",
+            "notes": [
+                62,
+                57,
+                52,
+                50,
+                45,
+                38
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
             "name": "Double DAD",
             "notes": [
                 62,
@@ -873,62 +1013,6 @@
                 50,
                 45,
                 38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "G6",
-            "notes": [
-                64,
-                59,
-                55,
-                50,
-                43,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "G Minor",
-            "notes": [
-                62,
-                58,
-                55,
-                50,
-                43,
-                38
-            ],
-            "offset": 0,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "C6",
-            "notes": [
-                64,
-                57,
-                55,
-                48,
-                43,
-                36
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Bron-Y-Aur",
-            "notes": [
-                64,
-                60,
-                55,
-                48,
-                45,
-                36
             ],
             "offset": 0,
             "sharps": true,
@@ -949,56 +1033,28 @@
             "capo": 0
         },
         {
-            "name": "Parvardigar",
+            "name": "G6",
             "notes": [
                 62,
-                60,
+                59,
                 55,
-                48,
-                43,
-                36
+                52,
+                47,
+                43
             ],
             "offset": 0,
             "sharps": true,
             "capo": 0
         },
         {
-            "name": "Bruce Palmer Modal",
+            "name": "G6",
             "notes": [
                 64,
                 59,
-                52,
-                52,
-                47,
-                40
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "New Standard",
-            "notes": [
-                67,
-                64,
-                57,
-                50,
-                43,
-                36
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Low C",
-            "notes": [
-                62,
-                57,
                 55,
                 50,
                 43,
-                36
+                38
             ],
             "offset": 0,
             "sharps": true,
@@ -1019,42 +1075,14 @@
             "capo": 0
         },
         {
-            "name": "A Minor",
+            "name": "Gsus2",
             "notes": [
-                64,
-                60,
-                57,
-                52,
-                48,
-                45
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "A Minor",
-            "notes": [
-                64,
-                60,
-                57,
-                52,
-                45,
-                40
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "C6/A7",
-            "notes": [
-                64,
-                60,
+                62,
                 57,
                 55,
-                40,
-                37
+                50,
+                43,
+                38
             ],
             "offset": 0,
             "sharps": true,
@@ -1078,6 +1106,20 @@
             "name": "C6",
             "notes": [
                 64,
+                57,
+                55,
+                48,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "C6",
+            "notes": [
+                64,
                 60,
                 57,
                 55,
@@ -1103,41 +1145,167 @@
             "capo": 0
         },
         {
-            "name": "G6",
+            "name": "Cmaj9",
             "notes": [
-                62,
+                64,
                 59,
                 55,
-                52,
-                47,
-                43
+                50,
+                43,
+                36
             ],
             "offset": 0,
             "sharps": true,
             "capo": 0
         },
         {
-            "name": "Renaissance G",
+            "name": "C6/A7",
+            "notes": [
+                64,
+                60,
+                57,
+                55,
+                40,
+                37
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bron-Y-Aur",
+            "notes": [
+                64,
+                60,
+                55,
+                48,
+                45,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Parvardigar",
+            "notes": [
+                62,
+                60,
+                55,
+                48,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Low C",
+            "notes": [
+                62,
+                57,
+                55,
+                50,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "New Standard",
+            "notes": [
+                67,
+                64,
+                57,
+                50,
+                43,
+                36
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Perfect Fourths",
+            "notes": [
+                65,
+                60,
+                55,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Bruce Palmer Modal",
+            "notes": [
+                64,
+                59,
+                52,
+                52,
+                47,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Nashville Tuning",
+            "notes": [
+                64,
+                59,
+                67,
+                62,
+                57,
+                52
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Lute",
+            "notes": [
+                64,
+                59,
+                54,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Lute",
+            "notes": [
+                64,
+                57,
+                54,
+                50,
+                45,
+                40
+            ],
+            "offset": 0,
+            "sharps": true,
+            "capo": 0
+        },
+        {
+            "name": "Renaissance Lute G",
             "notes": [
                 67,
                 62,
                 57,
                 53,
                 48,
-                43
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Open G (Dobro)",
-            "notes": [
-                62,
-                59,
-                55,
-                50,
-                47,
                 43
             ],
             "offset": 0,
@@ -1191,7 +1359,7 @@
             "capo": 0
         },
         {
-            "name": "Dropped E",
+            "name": "Dropped-E",
             "notes": [
                 64,
                 59,
@@ -1506,174 +1674,6 @@
             ],
             "offset": 0,
             "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Nashville Tuning",
-            "notes": [
-                64,
-                59,
-                67,
-                62,
-                57,
-                52
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Gsus2",
-            "notes": [
-                62,
-                57,
-                55,
-                50,
-                43,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Dsus2",
-            "notes": [
-                62,
-                57,
-                52,
-                50,
-                45,
-                38
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Open E Minor",
-            "notes": [
-                64,
-                59,
-                55,
-                52,
-                47,
-                40
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Open C Minor",
-            "notes": [
-                63,
-                60,
-                55,
-                48,
-                43,
-                36
-            ],
-            "offset": 0,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Down 2 1/2 Steps",
-            "notes": [
-                59,
-                54,
-                50,
-                45,
-                40,
-                35
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 3 Steps",
-            "notes": [
-                58,
-                53,
-                49,
-                44,
-                39,
-                34
-            ],
-            "offset": 0,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Down 3 1/2 Steps",
-            "notes": [
-                57,
-                52,
-                48,
-                43,
-                38,
-                33
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 1/2 Step Dropped Db",
-            "notes": [
-                63,
-                58,
-                54,
-                49,
-                44,
-                37
-            ],
-            "offset": 0,
-            "sharps": false,
-            "capo": 0
-        },
-        {
-            "name": "Down 1 Step Dropped C",
-            "notes": [
-                62,
-                57,
-                53,
-                48,
-                43,
-                36
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 1 1/2 Step Dropped B",
-            "notes": [
-                61,
-                56,
-                52,
-                47,
-                42,
-                35
-            ],
-            "offset": 0,
-            "sharps": true,
-            "capo": 0
-        },
-        {
-            "name": "Down 2 Steps Dropped Bb",
-            "notes": [
-                60,
-                55,
-                51,
-                46,
-                41,
-                34
-            ],
-            "offset": 0,
-            "sharps": false,
             "capo": 0
         }
     ]
