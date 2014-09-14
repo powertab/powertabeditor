@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QMutexLocker>
+#include <QStandardPaths>
 #include <QtConcurrentRun>
 #include <score/serialization.h>
 #include <stdexcept>
@@ -30,11 +31,18 @@ void TuningDictionary::load()
 {
     try
     {
-        QByteArray path = tuningFilePath().toLocal8Bit();
-        std::ifstream file(path.constData());
+        QStringList paths = availablePaths();
+        for (const QString &path : paths)
+        {
+            if (!QFile(path).exists())
+                continue;
 
-        QMutexLocker lock(&myMutex);
-        ScoreUtils::load(file, "tunings", myTunings);
+            std::ifstream file(path.toLocal8Bit().constData());
+
+            QMutexLocker lock(&myMutex);
+            ScoreUtils::load(file, "tunings", myTunings);
+            break;
+        }
     }
     catch (const std::exception &e)
     {
@@ -47,17 +55,23 @@ void TuningDictionary::save() const
 {
     try
     {
-        // Ensure the directory exists first.
-        if (!QDir().mkpath(QFileInfo(tuningFilePath()).path()))
+        QStringList paths = availablePaths();
+        for (int i = paths.size() - 1; i >= 0; --i)
         {
-            throw std::runtime_error("Could not create data directory");
+            const QString &path = paths[i];
+
+            // Ensure the directory exists first.
+            if (!QDir().mkpath(QFileInfo(path).path()))
+                continue;
+
+            std::ofstream file(path.toLocal8Bit().constData());
+            if (!file)
+                continue;
+
+            QMutexLocker lock(&myMutex);
+            ScoreUtils::save(file, "tunings", myTunings);
+            break;
         }
-
-        QByteArray path = tuningFilePath().toLocal8Bit();
-        std::ofstream file(path.constData());
-
-        QMutexLocker lock(&myMutex);
-        ScoreUtils::save(file, "tunings", myTunings);
     }
     catch (const std::exception &e)
     {
@@ -101,7 +115,13 @@ void TuningDictionary::removeTuning(const Tuning &tuning)
     myTunings.erase(std::remove(myTunings.begin(), myTunings.end(), tuning));
 }
 
-QString TuningDictionary::tuningFilePath()
+QStringList TuningDictionary::availablePaths()
 {
-    return QCoreApplication::applicationDirPath() + "/data/tunings.json";
+    QStringList paths = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    paths.append(QCoreApplication::applicationDirPath() + "/data");
+
+    for (QString &path : paths)
+        path.append("/tunings.json");
+
+    return paths;
 }

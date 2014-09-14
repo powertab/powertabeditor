@@ -46,7 +46,8 @@ private:
     /// Loads the tuning dictionary from a file.
     void load();
 
-    static QString tuningFilePath();
+    /// Possible locations for the tuning dictionary, from high to low priority.
+    static QStringList availablePaths();
 
     mutable QMutex myMutex;
     std::vector<Tuning> myTunings;
