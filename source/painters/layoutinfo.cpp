@@ -597,6 +597,7 @@ void LayoutInfo::calculateTabStaffAboveLayout()
                     symbolIndex);
         bool inGroup = false;
         int leftPos = 0;
+        int rightPos = 0;
 
         for (int i = 0; i < static_cast<int>(symbolSets.size()); ++i)
         {
@@ -640,8 +641,11 @@ void LayoutInfo::calculateTabStaffAboveLayout()
             else if (hasSymbol && !inGroup)
             {
                 leftPos = i;
+                rightPos = i + 1;
                 inGroup = true;
             }
+            else if (hasSymbol && inGroup)
+                rightPos = i + 1;
         }
 
         // If we were in a symbol group that stretched to the end of the staff,
@@ -649,7 +653,6 @@ void LayoutInfo::calculateTabStaffAboveLayout()
         if (inGroup)
         {
             const double leftX = getPositionX(leftPos);
-            const int rightPos = static_cast<int>(symbolSets.size()) - 1;
             const double rightX = getPositionX(rightPos);
             const int y = layout.addBox(leftPos, rightPos, 1);
             myTabStaffAboveSymbols.emplace_back(symbol, leftPos, rightPos,
