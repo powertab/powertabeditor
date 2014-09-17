@@ -367,8 +367,9 @@ bool PowerTabEditor::saveFileAs()
             myTabWidget->setTabText(myTabWidget->currentIndex(), fileName);
             myTabWidget->setTabToolTip(myTabWidget->currentIndex(), fileName);
 
-            // Add to the recent files list.
+            // Add to the recent files list and update the last used directory.
             myRecentFiles->add(path);
+            setPreviousDirectory(path);
 
             // Mark the file as being in an unmodified state.
             myUndoManager->setClean();
