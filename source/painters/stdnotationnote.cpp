@@ -64,10 +64,13 @@ StdNotationNote::StdNotationNote(const Voice &voice, const Position &pos,
         break;
     }
 
-    if (note.hasProperty(Note::NaturalHarmonic))
-        myNoteHeadSymbol = MusicFont::NaturalHarmonicNoteHead;
-    else if (note.hasTappedHarmonic() || note.hasArtificialHarmonic())
-        myNoteHeadSymbol = MusicFont::ArtificialHarmonicNoteHead;
+    if (note.hasProperty(Note::NaturalHarmonic) || note.hasTappedHarmonic() ||
+        note.hasArtificialHarmonic())
+    {
+        myNoteHeadSymbol = (pos.getDurationType() <= Position::HalfNote)
+                               ? MusicFont::HarmonicNoteHeadOpen
+                               : MusicFont::HarmonicNoteHeadFull;
+    }
     else if (note.hasProperty(Note::Muted))
         myNoteHeadSymbol = MusicFont::MutedNoteHead;
     else if (pos.hasProperty(Position::Acciaccatura))
