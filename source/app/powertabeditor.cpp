@@ -85,7 +85,7 @@
 #include <audio/midiplayer.h>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/transform.hpp>
 #include <chrono>
 
 #include <dialogs/alterationofpacedialog.h>
@@ -1355,16 +1355,18 @@ void PowerTabEditor::addPlayer()
 
     // Create a unique name for the player.
     {
+        std::vector<std::string> names;
+        boost::range::transform(score.getPlayers(), std::back_inserter(names),
+                                [](const Player &player) {
+            return player.getDescription();
+        });
+
         size_t i = score.getPlayers().size() + 1;
         while (true)
         {
             const std::string name = "Player " + std::to_string(i);
-            auto it = boost::range::find_if(
-                score.getPlayers(), [&](const Player &player) {
-                return player.getDescription() == name;
-            });
 
-            if (it == score.getPlayers().end())
+            if (std::find(names.begin(), names.end(), name) == names.end())
             {
                 player.setDescription(name);
                 break;
@@ -1387,12 +1389,44 @@ void PowerTabEditor::addPlayer()
 void PowerTabEditor::addInstrument()
 {
     ScoreLocation &location = getLocation();
+    Score &score = location.getScore();
     QSettings settings;
-
     Instrument instrument;
-    instrument.setDescription(settings.value(
+
+    // Create a unique name for the instrument.
+    {
+        std::vector<std::string> names;
+        boost::range::transform(score.getInstruments(),
+                                std::back_inserter(names),
+                                [](const Instrument &instrument) {
+            return instrument.getDescription();
+        });
+
+        const std::string defaultName = settings.value(
             Settings::DEFAULT_INSTRUMENT_NAME,
-            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString());
+            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString();
+
+        // Try to directly use the default name if possible.
+        if (std::find(names.begin(), names.end(), defaultName) == names.end())
+            instrument.setDescription(defaultName);
+        else
+        {
+            size_t i = score.getInstruments().size() + 1;
+            while (true)
+            {
+                const std::string name = defaultName + " " + std::to_string(i);
+
+                if (std::find(names.begin(), names.end(), name) == names.end())
+                {
+                    instrument.setDescription(name);
+                    break;
+                }
+                else
+                    ++i;
+            }
+        }
+    }
+
     instrument.setMidiPreset(
         settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
                        Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
