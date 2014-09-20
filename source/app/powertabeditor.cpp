@@ -85,6 +85,7 @@
 #include <audio/midiplayer.h>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/range/algorithm/find_if.hpp>
 #include <chrono>
 
 #include <dialogs/alterationofpacedialog.h>
@@ -1350,10 +1351,29 @@ void PowerTabEditor::addPlayer()
 {
     ScoreLocation &location = getLocation();
     Score &score = location.getScore();
-
     Player player;
-    player.setDescription("Player " +
-                          std::to_string(score.getPlayers().size() + 1));
+
+    // Create a unique name for the player.
+    {
+        size_t i = score.getPlayers().size() + 1;
+        while (true)
+        {
+            const std::string name = "Player " + std::to_string(i);
+            auto it = boost::range::find_if(
+                score.getPlayers(), [&](const Player &player) {
+                return player.getDescription() == name;
+            });
+
+            if (it == score.getPlayers().end())
+            {
+                player.setDescription(name);
+                break;
+            }
+            else
+                ++i;
+        }
+    }
+
     QSettings settings;
     player.setTuning(settings.value(
             Settings::DEFAULT_INSTRUMENT_TUNING,
