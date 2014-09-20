@@ -44,6 +44,7 @@ private:
     void handleBendTypeChanged();
 
     Ui::BendDialog *ui;
+    QButtonGroup *myDurationButtonGroup;
 };
 
 #endif
