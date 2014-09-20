@@ -42,6 +42,10 @@ public:
 
     std::shared_ptr<ClickPubSub> getClickPubSub() const;
 
+protected:
+    virtual void focusInEvent(QFocusEvent *event) override;
+    virtual void focusOutEvent(QFocusEvent *event) override;
+
 private:
     /// Adjusts the scroll location whenever the caret moves.
     void adjustScroll();

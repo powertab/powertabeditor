@@ -156,3 +156,14 @@ void ScoreArea::adjustScroll()
 {
     verticalScrollBar()->setValue(myCaretPainter->getCurrentSystemRect().y());
 }
+
+void ScoreArea::focusInEvent(QFocusEvent *event)
+{
+    myScene.update(myCaretPainter->sceneBoundingRect());
+}
+
+void ScoreArea::focusOutEvent(QFocusEvent *event)
+{
+    // Redraw the caret to indicate that the score has lost focus.
+    myScene.update(myCaretPainter->sceneBoundingRect());
+}

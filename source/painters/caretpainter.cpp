@@ -45,9 +45,12 @@ void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     }
 
     const ScoreLocation &location = myCaret.getLocation();
+    const bool hasFocus = scene()->views().first()->hasFocus();
 
     // Set color.
-    if (myCaret.isInPlaybackMode())
+    if (!hasFocus)
+        painter->setPen(QPen(Qt::darkGray, PEN_WIDTH));
+    else if (myCaret.isInPlaybackMode())
         painter->setPen(QPen(Qt::red, PEN_WIDTH));
     else
         painter->setPen(QPen(Qt::blue, PEN_WIDTH));
