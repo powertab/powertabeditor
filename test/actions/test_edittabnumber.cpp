@@ -24,12 +24,31 @@
 TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber", "")
 {
     myLocation.getNote()->setFretNumber(5);
+    myLocation.getNote()->setTappedHarmonicFret(8);
 
     EditTabNumber action(myLocation, 8);
 
     action.redo();
     REQUIRE(myLocation.getNote()->getFretNumber() == 8);
+    REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == 11);
 
     action.undo();
     REQUIRE(myLocation.getNote()->getFretNumber() == 5);
+    REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == 8);
+}
+
+TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber/HighTappedHarmonic", "")
+{
+    myLocation.getNote()->setFretNumber(5);
+    myLocation.getNote()->setTappedHarmonicFret(29);
+
+    EditTabNumber action(myLocation, 8);
+
+    action.redo();
+    REQUIRE(myLocation.getNote()->getFretNumber() == 8);
+    REQUIRE(!myLocation.getNote()->hasTappedHarmonic());
+
+    action.undo();
+    REQUIRE(myLocation.getNote()->getFretNumber() == 5);
+    REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == 29);
 }

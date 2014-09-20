@@ -20,7 +20,11 @@
 EditTabNumber::EditTabNumber(const ScoreLocation &location, int typedNumber)
     : QUndoCommand(QObject::tr("Edit Tab Number")),
       myLocation(location),
-      myOriginalNumber(location.getNote()->getFretNumber())
+      myOriginalNumber(location.getNote()->getFretNumber()),
+      myTappedHarmonicOffset(location.getNote()->hasTappedHarmonic()
+                                 ? location.getNote()->getTappedHarmonicFret() -
+                                       myOriginalNumber
+                                 : 0)
 {
     const int prevNumber = location.getNote()->getFretNumber();
     // If the old fret number was a 1 or 2 then we are typing a double digit
@@ -35,9 +39,26 @@ void EditTabNumber::redo()
 {
     // TODO - update the previous and next notes if there are slides, etc.
     myLocation.getNote()->setFretNumber(myNewNumber);
+
+    // Update tapped harmonics.
+    if (myTappedHarmonicOffset)
+    {
+        const int tappedFret = myNewNumber + myTappedHarmonicOffset;
+
+        if (tappedFret <= Note::MAX_FRET_NUMBER)
+            myLocation.getNote()->setTappedHarmonicFret(tappedFret);
+        else
+            myLocation.getNote()->clearTappedHarmonic();
+    }
 }
 
 void EditTabNumber::undo()
 {
     myLocation.getNote()->setFretNumber(myOriginalNumber);
+
+    if (myTappedHarmonicOffset)
+    {
+        myLocation.getNote()->setTappedHarmonicFret(myOriginalNumber +
+                                                    myTappedHarmonicOffset);
+    }
 }

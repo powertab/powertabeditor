@@ -33,6 +33,7 @@ public:
 private:
     ScoreLocation myLocation;
     const int myOriginalNumber;
+    const int myTappedHarmonicOffset;
     int myNewNumber;
 };
 
