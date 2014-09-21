@@ -38,6 +38,8 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     ui->sharpsCheckBox->setChecked(currentTuning.usesSharps());
     connect(ui->sharpsCheckBox, SIGNAL(toggled(bool)), this,
             SLOT(toggleSharps(bool)));
+    connect(ui->sharpsCheckBox, SIGNAL(clicked(bool)), this,
+            SLOT(invalidatePreset()));
 
     ui->capoSpinBox->setMinimum(Tuning::MIN_CAPO);
     ui->capoSpinBox->setMaximum(Tuning::MAX_CAPO);
@@ -125,8 +127,6 @@ void TuningDialog::toggleSharps(bool usesSharps)
         selector->addItems(myNoteNames);
         selector->setCurrentIndex(selectedIndex);
     }
-
-    invalidatePreset();
 }
 
 void TuningDialog::updateEnabledStrings(int numStrings)
@@ -167,6 +167,16 @@ void TuningDialog::loadPreset()
                 ui->presetComboBox->currentIndex()).value<const Tuning *>();
 
     ui->sharpsCheckBox->setChecked(tuning->usesSharps());
+
+    // Don't invalidate the preset.
+    ui->capoSpinBox->blockSignals(true);
+    ui->capoSpinBox->setValue(tuning->getCapo());
+    ui->capoSpinBox->blockSignals(false);
+
+    ui->notationOffsetSpinBox->blockSignals(true);
+    ui->notationOffsetSpinBox->setValue(tuning->getMusicNotationOffset());
+    ui->notationOffsetSpinBox->blockSignals(false);
+
     initStringSelectors(*tuning);
 }
 
