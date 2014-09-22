@@ -64,8 +64,8 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
             for (const ActivePlayer &player : players)
             {
                 const int i = player.getPlayerNumber();
-                myStaffComboBoxes.at(i)->setCurrentIndex(
-                            myStaffComboBoxes.at(i)->findData(staff));
+                const int idx = myStaffComboBoxes.at(i)->findData(staff);
+                myStaffComboBoxes.at(i)->setCurrentIndex(idx < 0 ? 0 : idx);
                 myInstrumentComboBoxes.at(i)->setCurrentIndex(
                             player.getInstrumentNumber());
             }
@@ -86,6 +86,9 @@ PlayerChange PlayerChangeDialog::getPlayerChange() const
 
     for (size_t i = 0; i < myStaffComboBoxes.size(); ++i)
     {
+        if (myStaffComboBoxes[i]->currentIndex() < 0)
+            continue;
+
         const int staff = myStaffComboBoxes[i]->itemData(
                     myStaffComboBoxes[i]->currentIndex()).toInt();
         if (staff >= 0)
