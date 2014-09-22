@@ -35,6 +35,7 @@ TimeSignaturePainter::TimeSignaturePainter(const LayoutConstPtr &layout,
                myLayout->getStdNotationStaffHeight())
 {
     setAcceptHoverEvents(true);
+    setToolTip(QObject::tr("Click to edit time signature."));
 }
 
 void TimeSignaturePainter::mouseReleaseEvent(QGraphicsSceneMouseEvent *)

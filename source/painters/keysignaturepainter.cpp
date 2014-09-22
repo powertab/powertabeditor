@@ -35,6 +35,7 @@ KeySignaturePainter::KeySignaturePainter(
                layout->getStdNotationStaffHeight())
 {
     setAcceptHoverEvents(true);
+    setToolTip(QObject::tr("Click to edit key signature."));
     initAccidentalPositions();
 }
 

@@ -37,6 +37,7 @@ BarlinePainter::BarlinePainter(const LayoutConstPtr &layout,
       myWidth(0)
 {
     setAcceptHoverEvents(true);
+    setToolTip(QObject::tr("Click to edit barline."));
 
     switch (barline.getBarType())
     {

@@ -124,7 +124,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                                            ? QChar(MusicFont::TrebleClef)
                                            : QChar(MusicFont::BassClef),
                                        myMusicNotationFont);
-        auto group = new ClickableGroup([=]() {
+        auto group = new ClickableGroup(
+            QObject::tr("Click to change clef type."), [=]() {
             pubsub->publish(ClickType::Clef, location);
         });
         group->addToGroup(clef);
@@ -566,9 +567,13 @@ void SystemRenderer::drawTempoMarkers(const System &system,
 
         const double x = layout.getPositionX(tempo.getPosition());
 
+#if 0
         auto group = new ClickableGroup([]() {
             // TODO - allow editing a tempo marker by clicking on it.
         });
+#else
+        auto group = new QGraphicsItemGroup();
+#endif
 
         QFont font = myPlainTextFont;
         if (tempo.getMarkerType() == TempoMarker::AlterationOfPace)

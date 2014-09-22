@@ -17,8 +17,10 @@
   
 #include "clickablegroup.h"
 
-ClickableGroup::ClickableGroup(const Callback &callback) : myCallback(callback)
+ClickableGroup::ClickableGroup(const QString &tooltip, const Callback &callback)
+    : myCallback(callback)
 {
+    setToolTip(tooltip);
     setAcceptHoverEvents(true);
 }
 
