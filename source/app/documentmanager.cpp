@@ -51,7 +51,7 @@ Document &DocumentManager::addDefaultDocument()
     Instrument instrument;
     instrument.setDescription(settings.value(
             Settings::DEFAULT_INSTRUMENT_NAME,
-            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString());
+            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString() + " 1");
     instrument.setMidiPreset(settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
             Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
     score.insertInstrument(instrument);

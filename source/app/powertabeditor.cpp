@@ -1406,24 +1406,18 @@ void PowerTabEditor::addInstrument()
             Settings::DEFAULT_INSTRUMENT_NAME,
             Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString();
 
-        // Try to directly use the default name if possible.
-        if (std::find(names.begin(), names.end(), defaultName) == names.end())
-            instrument.setDescription(defaultName);
-        else
+        size_t i = score.getInstruments().size() + 1;
+        while (true)
         {
-            size_t i = score.getInstruments().size() + 1;
-            while (true)
-            {
-                const std::string name = defaultName + " " + std::to_string(i);
+            const std::string name = defaultName + " " + std::to_string(i);
 
-                if (std::find(names.begin(), names.end(), name) == names.end())
-                {
-                    instrument.setDescription(name);
-                    break;
-                }
-                else
-                    ++i;
+            if (std::find(names.begin(), names.end(), name) == names.end())
+            {
+                instrument.setDescription(name);
+                break;
             }
+            else
+                ++i;
         }
     }
 
