@@ -221,8 +221,8 @@ void Header::load(InputStream &stream)
 
         for (int i = 0; i < NUM_LYRIC_LINES; ++i)
         {
-            myLyrics.emplace_back(stream.read<int32_t>(),
-                                  stream.readIntString());
+            const int32_t n = stream.read<int32_t>();
+            myLyrics.emplace_back(n, stream.readIntString());
         }
     }
 
