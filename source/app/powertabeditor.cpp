@@ -1664,7 +1664,7 @@ void PowerTabEditor::createCommands()
     connect(myPasteCommand, SIGNAL(triggered()), this, SLOT(pasteNotes()));
 
     myPolishCommand = new Command(tr("Polish Score"), "Edit.PolishScore",
-                                  QKeySequence(), this);
+                                  QKeySequence(Qt::SHIFT + Qt::Key_J), this);
     connect(myPolishCommand, &QAction::triggered, this,
             &PowerTabEditor::polishScore);
 
@@ -1933,14 +1933,14 @@ void PowerTabEditor::createCommands()
                               Position::SixtyFourthNote);
 
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
-                                            "Notes.IncreaseDuration",
+                                            "Notes.Duration.IncreaseDuration",
                                             Qt::SHIFT + Qt::Key_Up, this);
     connect(myIncreaseDurationCommand, &QAction::triggered, [=]() {
         changeNoteDuration(true);
     });
 
     myDecreaseDurationCommand = new Command(tr("Decrease Duration"),
-                                            "Notes.DecreaseDuration",
+                                            "Notes.Duration.Decrease",
                                             Qt::SHIFT + Qt::Key_Down, this);
     connect(myDecreaseDurationCommand, &QAction::triggered, [=]() {
         changeNoteDuration(false);
@@ -1953,11 +1953,11 @@ void PowerTabEditor::createCommands()
                                   "Notes.DoubleDotted", QKeySequence(),
                                   Position::DoubleDotted);
 
-    myAddDotCommand = new Command(tr("Add Dot"), "Notes.AddDot",
+    myAddDotCommand = new Command(tr("Add Dot"), "Notes.Dot.Add",
                             Qt::SHIFT + Qt::Key_Right, this);
     connect(myAddDotCommand, SIGNAL(triggered()), this, SLOT(addDot()));
 
-    myRemoveDotCommand = new Command(tr("Remove Dot"), "Notes.RemoveDot",
+    myRemoveDotCommand = new Command(tr("Remove Dot"), "Notes.Dot.Remove",
                                Qt::SHIFT + Qt::Key_Left, this);
     connect(myRemoveDotCommand, SIGNAL(triggered()), this, SLOT(removeDot()));
 
