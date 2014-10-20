@@ -957,7 +957,15 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
             break;
         }
 
-        const double x = layout.getPositionX(symbolGroup.getLeftPosition());
+        double x = layout.getPositionX(symbolGroup.getLeftPosition());
+        // Center symbols that apply to this note and the next adjacent note.
+        if (symbolGroup.getSymbolType() == SymbolGroup::Hammeron ||
+            symbolGroup.getSymbolType() == SymbolGroup::Pulloff ||
+            symbolGroup.getSymbolType() == SymbolGroup::Slide)
+        {
+            x += 0.5 * (layout.getPositionX(symbolGroup.getRightPosition()) - x);
+        }
+
         centerHorizontally(*renderedSymbol, x, x + symbolGroup.getWidth());
         renderedSymbol->setY(layout.getBottomTabLine() +
                              symbolGroup.getHeight() *

@@ -358,7 +358,10 @@ void LayoutInfo::calculateTabStaffBelowLayout()
         {
             int height = 1;
             const int leftPosition = pos.getPosition();
-            const int rightPosition = leftPosition + 1;
+            const Position *nextPos =
+                VoiceUtils::getNextPosition(voice, leftPosition);
+            const int rightPosition =
+                nextPos ? nextPos->getPosition() : leftPosition + 1;
             const double width = getPositionSpacing();
 
             if (pos.hasProperty(Position::PickStrokeUp))
