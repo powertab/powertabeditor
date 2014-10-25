@@ -72,7 +72,7 @@ static void computeTimestampPosition(
     // If another voice has a note at this timestamp, use that position.
     auto it = timestampPositions.find(timestamp);
     if (it != timestampPositions.end())
-        position = it->second;
+        position = std::max(it->second, position);
     else
     {
         // If this timestamp falls in between two timestamps from another voice,
@@ -80,17 +80,17 @@ static void computeTimestampPosition(
         it = timestampPositions.lower_bound(timestamp);
         if (it != timestampPositions.begin())
         {
-            position = boost::prior(it)->second + 1;
+            position = std::max(boost::prior(it)->second + 1, minPosition);
 
-            if (it != timestampPositions.end() && it->second == position)
+            if (it != timestampPositions.end() && it->second <= position)
             {
+                const int shiftAmount = (position - it->second) + 1;
                 for (; it != timestampPositions.end(); ++it)
-                    it->second++;
+                    it->second += shiftAmount;
             }
         }
     }
 
-    position = std::max(position, minPosition);
     timestampPositions[timestamp] = position;
 }
 
