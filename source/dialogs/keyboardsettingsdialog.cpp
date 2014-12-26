@@ -58,17 +58,17 @@ void KeyboardSettingsDialog::initializeCommandTable()
 
     ui->commandsList->setColumnCount(3);
 
-    ui->commandsList->setHeaderLabels(QStringList() << tr("Command")
-                                      << tr("Label") << tr("Shortcut"));
+    ui->commandsList->setHeaderLabels(
+        { tr("Command"), tr("Label"), tr("Shortcut") });
 
     // Populate list of commands.
     for (Command *command : myCommands)
     {
         // NOTE: QAction::toolTip() is called to avoid getting ampersands from
         //       mnemonics (which would appear in QAction::text)
-        QTreeWidgetItem* item = new QTreeWidgetItem(
-                    QStringList() << command->id() << command->toolTip()
-                    << command->shortcut().toString());
+        auto item = new QTreeWidgetItem(
+            QStringList({ command->id(), command->toolTip(),
+                          command->shortcut().toString() }));
 
         item->setData(0, Qt::UserRole, qVariantFromValue(command));
         ui->commandsList->addTopLevelItem(item);

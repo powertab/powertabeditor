@@ -33,8 +33,8 @@ TuningDictionaryDialog::TuningDictionaryDialog(QWidget *parent,
     ui->setupUi(this);
 
     ui->tuningsList->setColumnCount(2);
-    ui->tuningsList->setHeaderLabels(QStringList() <<
-                                     tr("Name") << tr("Tuning (Low to High)"));
+    ui->tuningsList->setHeaderLabels(
+        { tr("Name"), tr("Tuning (Low to High)") });
     ui->tuningsList->header()->sectionResizeMode(QHeaderView::ResizeToContents);
 
     for (int i = Tuning::MIN_STRING_COUNT; i <= Tuning::MAX_STRING_COUNT; ++i)
@@ -71,9 +71,10 @@ void TuningDictionaryDialog::onNumStringsChanged(int index)
 
     for (Tuning *tuning : tunings)
     {
-        QTreeWidgetItem *item = new QTreeWidgetItem(QStringList() <<
-            QString::fromStdString(tuning->getName()) <<
-            QString::fromStdString(boost::lexical_cast<std::string>(*tuning)));
+        auto item = new QTreeWidgetItem(
+            QStringList({ QString::fromStdString(tuning->getName()),
+                          QString::fromStdString(
+                              boost::lexical_cast<std::string>(*tuning)) }));
 
         item->setData(0, Qt::UserRole, QVariant::fromValue(tuning));
         ui->tuningsList->addTopLevelItem(item);
