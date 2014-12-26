@@ -19,6 +19,7 @@
 #define DIALOGS_KEYBOARDSETTINGSDIALOG_H
 
 #include <QDialog>
+#include <vector>
 
 namespace Ui {
     class KeyboardSettingsDialog;
@@ -32,7 +33,8 @@ class KeyboardSettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    KeyboardSettingsDialog(QWidget *parent, const QList<Command *> &myCommands);
+    KeyboardSettingsDialog(QWidget *parent,
+                           const std::vector<Command *> &myCommands);
     ~KeyboardSettingsDialog();
 
 private slots:
@@ -71,7 +73,7 @@ private:
     Command *activeCommand() const;
 
     Ui::KeyboardSettingsDialog *ui;
-    QList<Command*> myCommands;
+    std::vector<Command*> myCommands;
 
     /// Corresponds to the columns used in the QTreeWidget for dealing
     /// with the data.

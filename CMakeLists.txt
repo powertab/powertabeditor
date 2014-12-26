@@ -55,6 +55,9 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-D__WINDOWS_MM__)
 endif()
 
+# Warn about using deprecated Qt functions.
+add_definitions(-DQT_DEPRECATED_WARNINGS)
+
 find_package(Qt5Widgets REQUIRED) 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")

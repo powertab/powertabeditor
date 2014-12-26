@@ -401,9 +401,8 @@ void PowerTabEditor::cycleTab(int offset)
 
 void PowerTabEditor::editKeyboardShortcuts()
 {
-    QList<Command *> registeredCommands = findChildren<Command *>();
-
-    KeyboardSettingsDialog dialog(this, registeredCommands);
+    KeyboardSettingsDialog dialog(
+        this, findChildren<Command *>().toVector().toStdVector());
     dialog.exec();
 }
 

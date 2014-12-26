@@ -23,11 +23,9 @@
 
 Q_DECLARE_METATYPE(Command *)
 
-KeyboardSettingsDialog::KeyboardSettingsDialog(QWidget *parent,
-                                               const QList<Command *> &commands)
-    : QDialog(parent),
-      ui(new Ui::KeyboardSettingsDialog),
-      myCommands(commands)
+KeyboardSettingsDialog::KeyboardSettingsDialog(
+    QWidget *parent, const std::vector<Command *> &commands)
+    : QDialog(parent), ui(new Ui::KeyboardSettingsDialog), myCommands(commands)
 {
     ui->setupUi(this);
 
@@ -51,17 +49,12 @@ KeyboardSettingsDialog::~KeyboardSettingsDialog()
     delete ui;
 }
 
-namespace
-{
-bool compareCommands(const Command *cmd1, const Command *cmd2)
-{
-    return cmd1->id() < cmd2->id();
-}
-}
-
 void KeyboardSettingsDialog::initializeCommandTable()
 {
-    qSort(myCommands.begin(), myCommands.end(), compareCommands);
+    std::sort(myCommands.begin(), myCommands.end(),
+              [](const Command *a, const Command *b) {
+        return a->id() < b->id();
+    });
 
     ui->commandsList->setColumnCount(3);
 
