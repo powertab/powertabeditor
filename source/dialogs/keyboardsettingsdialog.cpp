@@ -64,6 +64,17 @@ void KeyboardSettingsDialog::initializeCommandTable()
     // Populate list of commands.
     for (Command *command : myCommands)
     {
+        // Build up a set of the known shortcuts.
+        if (!command->shortcut().isEmpty())
+        {
+            auto result = myKnownShortcuts.emplace(
+                command->shortcut().toString().toStdString(),
+                ui->commandsList->topLevelItemCount());
+            // We shouldn't have duplicate shortcuts.
+            Q_ASSERT_X(result.second, "Import Keyboard Settings",
+                       "Duplicate Shortcut");
+        }
+
         // NOTE: QAction::toolTip() is called to avoid getting ampersands from
         //       mnemonics (which would appear in QAction::text)
         auto item = new QTreeWidgetItem(
@@ -145,10 +156,45 @@ void KeyboardSettingsDialog::resetToDefaultShortcut()
     setShortcut(activeCommand()->defaultShortcut().toString());
 }
 
-void KeyboardSettingsDialog::setShortcut(const QString& shortcut)
+void KeyboardSettingsDialog::setShortcut(const QString &shortcut,
+                                         QTreeWidgetItem *item)
 {
-    ui->commandsList->currentItem()->setText(CommandShortcut, shortcut);
-    ui->shortcutEdit->setText(shortcut);
+    if (!item)
+        item = ui->commandsList->currentItem();
+
+    // Check whether this shortcut is already in use.
+    auto it = myKnownShortcuts.find(shortcut.toStdString());
+    if (it != myKnownShortcuts.end())
+    {
+        QTreeWidgetItem *conflictItem = ui->commandsList->topLevelItem(it->second);
+        auto conflict = conflictItem->data(0, Qt::UserRole).value<Command *>();
+
+        QMessageBox msg;
+        msg.setIcon(QMessageBox::Question);
+        msg.setText(tr("The shortcut %1 is already in use.").arg(shortcut));
+        msg.setInformativeText(
+            tr("Do you want to use this shortcut and remove the shortcut of "
+               "the %1 command?").arg(conflict->id()));
+        msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msg.setDefaultButton(QMessageBox::Yes);
+
+        if (msg.exec() == QMessageBox::Yes)
+            setShortcut("", conflictItem);
+        else
+            return;
+    }
+
+    // Update the hash table of shortcuts.
+    myKnownShortcuts.erase(item->text(CommandShortcut).toStdString());
+    if (!shortcut.isEmpty())
+    {
+        myKnownShortcuts.emplace(shortcut.toStdString(),
+                                 ui->commandsList->indexOfTopLevelItem(item));
+    }
+
+    item->setText(CommandShortcut, shortcut);
+    if (item == ui->commandsList->currentItem())
+        ui->shortcutEdit->setText(shortcut);
 }
 
 void KeyboardSettingsDialog::activeCommandChanged(QTreeWidgetItem* current,

@@ -19,7 +19,9 @@
 #define DIALOGS_KEYBOARDSETTINGSDIALOG_H
 
 #include <QDialog>
+#include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace Ui {
     class KeyboardSettingsDialog;
@@ -67,13 +69,16 @@ private:
     void saveShortcuts();
 
     /// Updates the shortcut in the commands list and the shortcut editor.
-    void setShortcut(const QString &shortcut);
+    /// If 'item' is not specified, the currently selected item will be used.
+    void setShortcut(const QString &shortcut, QTreeWidgetItem *item = 0);
 
     /// Get the Command corresponding to the currently selected row.
     Command *activeCommand() const;
 
     Ui::KeyboardSettingsDialog *ui;
     std::vector<Command*> myCommands;
+    /// The known shortcuts (used when checking for duplicates).
+    std::unordered_map<std::string, int> myKnownShortcuts;
 
     /// Corresponds to the columns used in the QTreeWidget for dealing
     /// with the data.
