@@ -54,7 +54,7 @@ private slots:
     void loadPreset();
 
     /// Once a change is made to the tuning, update the preset combobox.
-    void invalidatePreset();
+    void updateCurrentPreset();
 
 private:
     Ui::TuningDialog *ui;

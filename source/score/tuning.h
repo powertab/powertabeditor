@@ -30,6 +30,8 @@ public:
     Tuning();
 
     bool operator==(const Tuning &other) const;
+    /// This is like operator==, but ignores the name of the tuning.
+    bool isSameTuning(const Tuning &other) const;
 
 	template <class Archive>
 	void serialize(Archive &ar, const FileVersion version);

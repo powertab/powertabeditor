@@ -45,11 +45,14 @@ Tuning::Tuning()
 
 bool Tuning::operator==(const Tuning &other) const
 {
-    return myName == other.myName &&
-           myNotes == other.myNotes &&
+    return myName == other.myName && isSameTuning(other);
+}
+
+bool Tuning::isSameTuning(const Tuning &other) const
+{
+    return myNotes == other.myNotes &&
            myMusicNotationOffset == other.myMusicNotationOffset &&
-           myUsesSharps == other.myUsesSharps &&
-           myCapo == other.myCapo;
+           myUsesSharps == other.myUsesSharps && myCapo == other.myCapo;
 }
 
 const std::string &Tuning::getName() const

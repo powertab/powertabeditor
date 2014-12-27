@@ -39,19 +39,19 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     connect(ui->sharpsCheckBox, SIGNAL(toggled(bool)), this,
             SLOT(toggleSharps(bool)));
     connect(ui->sharpsCheckBox, SIGNAL(clicked(bool)), this,
-            SLOT(invalidatePreset()));
+            SLOT(updateCurrentPreset()));
 
     ui->capoSpinBox->setMinimum(Tuning::MIN_CAPO);
     ui->capoSpinBox->setMaximum(Tuning::MAX_CAPO);
     ui->capoSpinBox->setValue(currentTuning.getCapo());
     connect(ui->capoSpinBox, SIGNAL(valueChanged(int)), this,
-            SLOT(invalidatePreset()));
+            SLOT(updateCurrentPreset()));
 
     ui->notationOffsetSpinBox->setMinimum(Tuning::MIN_MUSIC_NOTATION_OFFSET);
     ui->notationOffsetSpinBox->setMaximum(Tuning::MAX_MUSIC_NOTATION_OFFSET);
     ui->notationOffsetSpinBox->setValue(currentTuning.getMusicNotationOffset());
     connect(ui->notationOffsetSpinBox, SIGNAL(valueChanged(int)), this,
-            SLOT(invalidatePreset()));
+            SLOT(updateCurrentPreset()));
 
     ui->numStringsSpinBox->setMinimum(Tuning::MIN_STRING_COUNT);
     ui->numStringsSpinBox->setMaximum(Tuning::MAX_STRING_COUNT);
@@ -73,7 +73,7 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
     for (QComboBox *selector : myStringSelectors)
     {
         connect(selector, SIGNAL(activated(int)), this,
-                SLOT(invalidatePreset()));
+                SLOT(updateCurrentPreset()));
     }
 
     updateTuningDictionary(currentTuning.getStringCount());
@@ -83,6 +83,8 @@ TuningDialog::TuningDialog(QWidget *parent, const Tuning &currentTuning,
 
     connect(ui->presetComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(loadPreset()));
+
+    updateCurrentPreset();
 }
 
 TuningDialog::~TuningDialog()
@@ -200,7 +202,22 @@ Tuning TuningDialog::getTuning() const
     return newTuning;
 }
 
-void TuningDialog::invalidatePreset()
+void TuningDialog::updateCurrentPreset()
 {
+    const Tuning currentTuning = getTuning();
+
+    // Check if the current tuning matches one of the available presets.
+    for (int i = 0; i < ui->presetComboBox->count(); ++i)
+    {
+        auto tuning = ui->presetComboBox->itemData(i).value<const Tuning *>();
+
+        if (tuning->isSameTuning(currentTuning))
+        {
+            ui->presetComboBox->setCurrentIndex(i);
+            return;
+        }
+    }
+
+    // Otherwise, the tuning currently doesn't match any presets.
     ui->presetComboBox->setCurrentIndex(-1);
 }
