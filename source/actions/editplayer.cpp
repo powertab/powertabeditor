@@ -30,10 +30,50 @@ EditPlayer::EditPlayer(Score &score, int playerIndex, const Player &player)
 
 void EditPlayer::redo()
 {
+    if (myScore.getPlayers()[myPlayerIndex].getTuning().getStringCount() !=
+        myNewPlayer.getTuning().getStringCount())
+    {
+        // If the number of strings changed, remove the player from any staves
+        // it was assigned to.
+        for (System &system : myScore.getSystems())
+        {
+            for (PlayerChange &change : system.getPlayerChanges())
+            {
+                myOriginalChanges.push_back(change);
+
+                for (int i = 0; i < system.getStaves().size(); ++i)
+                {
+                    for (const ActivePlayer &activePlayer :
+                         change.getActivePlayers(i))
+                    {
+                        if (activePlayer.getPlayerNumber() == myPlayerIndex)
+                            change.removeActivePlayer(i, activePlayer);
+                    }
+                }
+            }
+        }
+    }
+
     myScore.getPlayers()[myPlayerIndex] = myNewPlayer;
 }
 
 void EditPlayer::undo()
 {
     myScore.getPlayers()[myPlayerIndex] = myOriginalPlayer;
+
+    // Restore the original player changes.
+    if (!myOriginalChanges.empty())
+    {
+        int i = 0;
+        for (System &system : myScore.getSystems())
+        {
+            for (PlayerChange &change : system.getPlayerChanges())
+            {
+                change = myOriginalChanges[i];
+                ++i;
+            }
+        }
+
+        myOriginalChanges.clear();
+    }
 }

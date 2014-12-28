@@ -20,6 +20,8 @@
 
 #include <QUndoCommand>
 #include <score/player.h>
+#include <score/playerchange.h>
+#include <vector>
 
 class Score;
 
@@ -36,6 +38,7 @@ private:
     const int myPlayerIndex;
     const Player myNewPlayer;
     const Player myOriginalPlayer;
+    std::vector<PlayerChange> myOriginalChanges;
 };
 
 #endif

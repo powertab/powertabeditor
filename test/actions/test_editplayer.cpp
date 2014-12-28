@@ -40,3 +40,42 @@ TEST_CASE("Actions/EditPlayer", "")
     action.undo();
     REQUIRE(score.getPlayers()[0] == oldPlayer);
 }
+
+TEST_CASE("Actions/EditTuning", "")
+{
+    Score score;
+    Player player1;
+    player1.setDescription("Player 1");
+    Player player2;
+    player2.setDescription("Player 2");
+
+    PlayerChange change;
+    change.insertActivePlayer(0, ActivePlayer(0, 0));
+    change.insertActivePlayer(0, ActivePlayer(1, 0));
+    System system;
+    system.insertPlayerChange(change);
+    system.insertStaff(Staff());
+
+    score.insertSystem(system);
+    score.insertPlayer(player1);
+    score.insertPlayer(player2);
+
+    // Change the tuning.
+    Player newPlayer(player1);
+    Tuning tuning(newPlayer.getTuning());
+    auto notes = tuning.getNotes();
+    notes.pop_back();
+    tuning.setNotes(notes);
+    newPlayer.setTuning(tuning);
+
+    EditPlayer action(score, 0, newPlayer);
+
+    action.redo();
+    const PlayerChange &newChange = score.getSystems()[0].getPlayerChanges()[0];
+    REQUIRE(newChange.getActivePlayers(0).size() == 1);
+    REQUIRE(newChange.getActivePlayers(0)[0].getPlayerNumber() == 1);
+
+    action.undo();
+    const PlayerChange &reverted = score.getSystems()[0].getPlayerChanges()[0];
+    REQUIRE(reverted.getActivePlayers(0).size() == 2);
+}
