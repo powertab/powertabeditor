@@ -28,6 +28,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
 * [zlib](http://www.zlib.net/)
 * (Linux only) - ALSA library (e.g. `libasound2-dev`)
 * (Linux only) - MIDI sequencer (e.g. `timidity`)
+* (Linux only) - libbfd (e.g. `binutils-dev`)
 * A compiler with C++11 support (gcc 4.8+, Clang, VS 2013)
 
 #### Windows:

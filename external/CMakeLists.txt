@@ -11,3 +11,7 @@ add_library(pugixml
 
     pugixml/src/pugixml.hpp
 )
+
+# Don't bother building unit tests for this library.
+set(WITHERSHINS_BUILD_TESTS OFF CACHE BOOL "Build unit tests.")
+add_subdirectory(withershins)
