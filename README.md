@@ -79,9 +79,9 @@ If you've already cloned the repository, you can run `git submodule init && git 
 #### OS X:
 * Currently tested with Mac OS X 10.9.2 only.
 * Install Xcode along with its Command Line Tools.
-* Install CMake, Qt 5.2+ and Boost
-  * Boost: Install [Homebrew](http://brew.sh/) and type `brew install boost` on the shell.
-  * See above where to download [Qt 5.2+](http://qt-project.org/) and [CMake](http://www.cmake.org/).
+* Install CMake, Qt 5.2+, libbfd, and Boost
+  * Install [Homebrew](http://brew.sh/) and run `brew install boost binutils qt5`.
+  * Install [CMake](http://www.cmake.org/).
 * Build (adapt paths to your setup) in `source/` directory
   * `export CC=/usr/bin/clang`
   * `export CXX=/usr/bin/clang++`
