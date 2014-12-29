@@ -15,13 +15,11 @@ install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] ; then .travis/setup_linux.sh ; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then .travis/setup_osx.sh ; fi
 script:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ] ; then cmake -DCMAKE_PREFIX_PATH=/opt/qt52/lib/cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON . && make ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ] ; then cmake -DCMAKE_PREFIX_PATH=/opt/qt52/lib/cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug . && make ; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Release . && make -j4 ; fi
     # Exclude any tests that are expected to fail.
   - ./bin/pte_tests exclude:Formats/PowerTabOldImport/Directions
 after_success:
-  # Upload code coverage results.
-  - if [ "$TRAVIS_OS_NAME" = "linux" ] ; then coveralls --gcov gcov-4.8 --root . --build-root . --exclude CMakeFiles --exclude-pattern ".*_automoc\.cpp" --exclude-pattern ".*\.moc" --exclude-pattern "/usr/.*" --exclude-pattern ".*moc_.*" --exclude-pattern ".*ui_.*" --exclude-pattern ".*qrc_.*" --exclude-pattern ".*_prefix.*" --exclude-pattern ".*_unity.*" --exclude external | grep -vP "^File '.*'$" | grep -vP "^Creating '.*'$" | grep -vP "^Lines executed:.*" | sed '/^$/d' ; fi
   # Build the OS X installer.
   - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then cd osx && ./createbundle.sh .. && cd .. ; fi
 # Update OS X installer to Github when building a tag.
