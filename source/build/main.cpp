@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Power Tab Editor");
     QCoreApplication::setApplicationVersion("2.0");
 
-	// Allow QWidget::activateWindow() to bring the application into the
-	// foreground when running on Windows.
+    // Allow QWidget::activateWindow() to bring the application into the
+    // foreground when running on Windows.
 #ifdef _WIN32
     AllowSetForegroundWindow(ASFW_ANY);
 #endif
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
             std::cout << desc << std::endl;
             return EXIT_SUCCESS;
         }
+
         if (vm.count("version"))
         {
             std::cout << QCoreApplication::applicationName().toStdString()
@@ -120,8 +121,7 @@ int main(int argc, char *argv[])
 
     // Set up a server to listen for messages about new files being opened.
     QLocalServer server;
-    QObject::connect(&server, &QLocalServer::newConnection, [&]()
-                     {
+    QObject::connect(&server, &QLocalServer::newConnection, [&]() {
         QLocalSocket *socket = server.nextPendingConnection();
         if (!socket->canReadLine())
             socket->waitForReadyRead();
