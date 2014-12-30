@@ -7,5 +7,5 @@ brew update
 brew install qt5 external/withershins/osx/binutils.rb
 
 # Debugging.
-ls /usr/local/Cellar/binutils/2.24/include
-ls /usr/local/Cellar/binutils/2.24/lib
+ls -lhR /usr/local/Cellar/binutils/2.24/include
+ls -lhR /usr/local/Cellar/binutils/2.24/lib
