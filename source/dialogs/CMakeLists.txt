@@ -6,6 +6,7 @@ set(FORMS
     barlinedialog.ui
     benddialog.ui
     chordnamedialog.ui
+    crashdialog.ui
     directiondialog.ui
     dynamicdialog.ui
     fileinformationdialog.ui
@@ -39,6 +40,7 @@ add_library(ptedialogs
     barlinedialog.cpp
     benddialog.cpp
     chordnamedialog.cpp
+    crashdialog.cpp
     directiondialog.cpp
     dynamicdialog.cpp
     fileinformationdialog.cpp
@@ -67,6 +69,7 @@ add_library(ptedialogs
     barlinedialog.h
     benddialog.h
     chordnamedialog.h
+    crashdialog.h
     directiondialog.h
     dynamicdialog.h
     fileinformationdialog.h

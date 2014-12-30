@@ -71,6 +71,7 @@
 #include <actions/shiftpositions.h>
 #include <actions/undomanager.h>
 
+#include <app/appinfo.h>
 #include <app/caret.h>
 #include <app/clipboard.h>
 #include <app/command.h>
@@ -118,6 +119,7 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDesktopServices>
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QFontDatabase>
@@ -2255,6 +2257,13 @@ void PowerTabEditor::createCommands()
         cycleTab(-1);
     });
 
+    // Help menu commands.
+    myReportBugCommand = new Command(tr("Report Bug..."), "Help.ReportBug",
+                                     QKeySequence(), this);
+    connect(myReportBugCommand, &QAction::triggered, [=]() {
+        QDesktopServices::openUrl(QUrl(AppInfo::BUG_TRACKER_URL));
+    });
+
     myMixerDockWidgetCommand =
         createCommandWrapper(myMixerDockWidget->toggleViewAction(),
                              "Window.Mixer", QKeySequence(), this);
@@ -2592,6 +2601,10 @@ void PowerTabEditor::createMenus()
     myWindowMenu->addSeparator();
     myWindowMenu->addAction(myMixerDockWidgetCommand);
     myWindowMenu->addAction(myInstrumentDockWidgetCommand);
+
+    // Help menu.
+    myHelpMenu = menuBar()->addMenu(tr("&Help"));
+    myHelpMenu->addAction(myReportBugCommand);
 }
 
 void PowerTabEditor::createTabArea()

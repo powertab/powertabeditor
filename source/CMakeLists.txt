@@ -37,6 +37,7 @@ target_link_libraries(powertabeditor
     pteactions
     ptescore
     pugixml
+    withershins
     ${Boost_LIBRARIES}
     ${ZLIB_LIBRARIES}
 )

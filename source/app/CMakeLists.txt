@@ -10,6 +10,7 @@ string(STRIP "${MY_WC_REVISION}" MY_WC_REVISION)
 add_definitions(-DVERSION=${MY_WC_REVISION})
 
 add_library(pteapp
+    appinfo.cpp
     caret.cpp
     clipboard.cpp
     command.cpp
@@ -20,6 +21,7 @@ add_library(pteapp
     settings.cpp
     tuningdictionary.cpp
 
+    appinfo.h
     caret.h
     clipboard.h
     command.h

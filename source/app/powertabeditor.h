@@ -541,6 +541,9 @@ private:
     Command *myMixerDockWidgetCommand;
     Command *myInstrumentDockWidgetCommand;
 
+    QMenu *myHelpMenu;
+    Command *myReportBugCommand;
+
 #if 0
 
 private:

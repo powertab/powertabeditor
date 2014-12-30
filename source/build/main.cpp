@@ -15,28 +15,109 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
  
+#include <app/appinfo.h>
 #include <app/powertabeditor.h>
 #include <app/settings.h>
 #include <boost/program_options.hpp>
+#include <csignal>
+#include <dialogs/crashdialog.h>
+#include <exception>
 #include <iostream>
 #include <QApplication>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QSettings>
+#include <string>
+#include <withershins.hpp>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
+static void displayError(const std::string &reason)
+{
+    std::string message = reason;
+
+    // Generate a stack trace.
+    std::vector<withershins::frame> trace = withershins::trace();
+    for (const withershins::frame &frame : trace)
+    {
+        message += '\n';
+        message += frame.module_name();
+
+        if (!frame.file_name().empty())
+        {
+            message += " (";
+            message += frame.file_name();
+            message += ':';
+            message += std::to_string(frame.line_number());
+            message += ')';
+        }
+
+        message += " [";
+        if (!frame.function_name().empty())
+            message += frame.function_name();
+        else
+            message += "???";
+        message += ']';
+    }
+
+    // If there is no QApplication instance, something went seriously wrong
+    // during startup - just dump the error to the console.
+    if (!QApplication::instance())
+        std::cerr << message << std::endl;
+    else
+    {
+        CrashDialog dialog(QString::fromStdString(message),
+                           QApplication::activeWindow());
+        dialog.exec();
+    }
+
+    std::exit(EXIT_FAILURE);
+}
+
+static void terminateHandler()
+{
+    std::string message;
+
+    // If an exception was thrown, grab its message.
+    std::exception_ptr eptr = std::current_exception();
+    if (eptr)
+    {
+        message = "Unhandled exception: ";
+        try
+        {
+            std::rethrow_exception(eptr);
+        }
+        catch (const std::exception &e)
+        {
+            message += e.what();
+        }
+    }
+    else
+        message = "Program terminated unexpectedly";
+
+    displayError(message);
+}
+
+static void signalHandler(int /*signal*/)
+{
+    displayError("Segmentation fault");
+}
+
 int main(int argc, char *argv[])
 {
+    // Register handlers for unhandled exceptions and segmentation faults.
+    std::set_terminate(terminateHandler);
+    std::signal(SIGSEGV, signalHandler);
+
     QApplication a(argc, argv);
 
     // Set the app information (used by e.g. QSettings).
-    QCoreApplication::setOrganizationName("Power Tab");
-    QCoreApplication::setApplicationName("Power Tab Editor");
-    QCoreApplication::setApplicationVersion("2.0");
+    QCoreApplication::setOrganizationName(AppInfo::ORGANIZATION_NAME);
+    QCoreApplication::setApplicationName(AppInfo::APPLICATION_NAME);
+    QCoreApplication::setApplicationVersion(AppInfo::APPLICATION_VERSION);
 
     // Allow QWidget::activateWindow() to bring the application into the
     // foreground when running on Windows.
