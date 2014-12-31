@@ -1669,6 +1669,11 @@ void PowerTabEditor::createCommands()
     connect(myPolishCommand, &QAction::triggered, this,
             &PowerTabEditor::polishScore);
 
+    myPolishSystemCommand = new Command(tr("Polish System"), "Edit.PolishSystem",
+                                        QKeySequence(Qt::Key_J), this);
+    connect(myPolishSystemCommand, &QAction::triggered, this,
+            &PowerTabEditor::polishSystem);
+
     // File Information
     myFileInfoCommand =
         new Command(tr("File Information..."), "Edit.FileInformation",
@@ -1895,11 +1900,6 @@ void PowerTabEditor::createCommands()
     connect(myRemoveCurrentStaffCommand, &QAction::triggered, this,
             &PowerTabEditor::removeCurrentStaff);
 
-    myPolishSystemCommand = new Command(tr("Polish System"), "Section.Polish",
-                                        QKeySequence(Qt::Key_J), this);
-    connect(myPolishSystemCommand, &QAction::triggered, this,
-            &PowerTabEditor::polishSystem);
-
     myIncreaseLineSpacingCommand = new Command(tr("Increase"),
                                                "Section.LineSpacing.Increase",
                                                QKeySequence(), this);
@@ -1934,7 +1934,7 @@ void PowerTabEditor::createCommands()
                               Position::SixtyFourthNote);
 
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
-                                            "Notes.Duration.IncreaseDuration",
+                                            "Notes.Duration.Increase",
                                             Qt::SHIFT + Qt::Key_Up, this);
     connect(myIncreaseDurationCommand, &QAction::triggered, [=]() {
         changeNoteDuration(true);
@@ -2412,6 +2412,7 @@ void PowerTabEditor::createMenus()
     myEditMenu->addAction(myPasteCommand);
     myEditMenu->addSeparator();
     myEditMenu->addAction(myPolishCommand);
+    myEditMenu->addAction(myPolishSystemCommand);
     myEditMenu->addSeparator();
     myEditMenu->addAction(myFileInfoCommand);
     // Playback Menu.
@@ -2470,8 +2471,6 @@ void PowerTabEditor::createMenus()
     mySectionMenu->addAction(myInsertStaffBeforeCommand);
     mySectionMenu->addAction(myInsertStaffAfterCommand);
     mySectionMenu->addAction(myRemoveCurrentStaffCommand);
-    mySectionMenu->addSeparator();
-    mySectionMenu->addAction(myPolishSystemCommand);
     mySectionMenu->addSeparator();
     myLineSpacingMenu = mySectionMenu->addMenu(tr("&Line Spacing"));
     myLineSpacingMenu->addAction(myIncreaseLineSpacingCommand);

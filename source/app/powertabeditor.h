@@ -390,6 +390,7 @@ private:
     Command *myCopyCommand;
     Command *myPasteCommand;
     Command *myPolishCommand;
+    Command *myPolishSystemCommand;
     Command *myFileInfoCommand;
 
     QMenu *myPlaybackMenu;
@@ -433,7 +434,6 @@ private:
     Command *myInsertStaffBeforeCommand;
     Command *myInsertStaffAfterCommand;
     Command *myRemoveCurrentStaffCommand;
-    Command *myPolishSystemCommand;
     QMenu *myLineSpacingMenu;
     Command *myIncreaseLineSpacingCommand;
     Command *myDecreaseLineSpacingCommand;
