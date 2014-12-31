@@ -808,19 +808,24 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
     {
         const std::vector<ActivePlayer> activePlayers =
                 change.getActivePlayers(staffIndex);
-        if (activePlayers.empty())
-            continue;
 
         QString description;
-        for (const ActivePlayer &player : activePlayers)
+        if (!activePlayers.empty())
         {
-            if (!description.isEmpty())
-                description += ", ";
-            description += QString::number(player.getPlayerNumber() + 1);
-        }
+            description = "Player ";
+            for (size_t i = 0, n = activePlayers.size(); i < n; ++i)
+            {
+                if (i != 0)
+                    description += ", ";
 
-        auto text =
-            new SimpleTextItem("Player " + description, myPlainTextFont);
+                description +=
+                    QString::number(activePlayers[i].getPlayerNumber() + 1);
+            }
+        }
+        else
+            description = "(No Players)";
+
+        auto text = new SimpleTextItem(description, myPlainTextFont);
         text->setPos(layout.getPositionX(change.getPosition()),
                      layout.getBottomStdNotationLine() +
                      LayoutInfo::STAFF_BORDER_SPACING +
