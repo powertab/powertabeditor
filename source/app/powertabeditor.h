@@ -77,6 +77,9 @@ private slots:
     /// @return True if the file was successfully saved.
     bool saveFileAs();
 
+    /// Prints the current document.
+    void printDocument();
+
     /// Update the titlebar to show whether the current document has been
     /// modified.
     void updateModified(bool);
@@ -378,6 +381,7 @@ private:
     Command *myOpenFileCommand;
     Command *myCloseTabCommand;
     Command *mySaveAsCommand;
+    Command *myPrintCommand;
     QMenu *myRecentFilesMenu;
     Command *myEditShortcutsCommand;
     Command *myEditPreferencesCommand;

@@ -27,6 +27,7 @@
 class CaretPainter;
 class ClickPubSub;
 class Document;
+class QPrinter;
 
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
@@ -35,6 +36,8 @@ public:
     explicit ScoreArea(QWidget *parent);
 
     void renderDocument(const Document &document, Staff::ViewType view);
+
+    void print(QPrinter &printer);
 
     /// Redraws the specified system, and shifts the following systems as
     /// necessary.

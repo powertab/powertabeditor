@@ -126,6 +126,7 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPrintDialog>
 #include <QScrollArea>
 #include <QSettings>
 #include <QTabBar>
@@ -412,6 +413,17 @@ void PowerTabEditor::editPreferences()
 {
     PreferencesDialog dialog(this, mySettingsPubSub, *myTuningDictionary);
     dialog.exec();
+}
+
+void PowerTabEditor::printDocument()
+{
+    QPrinter printer(QPrinter::HighResolution);
+
+    QPrintDialog dialog(&printer, this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    getScoreArea()->print(printer);
 }
 
 void PowerTabEditor::cutSelectedNotes()
@@ -1628,6 +1640,10 @@ void PowerTabEditor::createCommands()
                                   QKeySequence::SaveAs, this);
     connect(mySaveAsCommand, SIGNAL(triggered()), this, SLOT(saveFileAs()));
 
+    myPrintCommand = new Command(tr("Print..."), "File.Print",
+                                 QKeySequence::Print, this);
+    connect(myPrintCommand, SIGNAL(triggered()), this, SLOT(printDocument()));
+
     myEditShortcutsCommand = new Command(tr("Customize Shortcuts..."),
                                          "File.CustomizeShortcuts",
                                          QKeySequence(), this);
@@ -2394,6 +2410,7 @@ void PowerTabEditor::createMenus()
     myFileMenu->addAction(myCloseTabCommand);
     myFileMenu->addSeparator();
     myFileMenu->addAction(mySaveAsCommand);
+    myFileMenu->addAction(myPrintCommand);
     myFileMenu->addSeparator();
     myRecentFilesMenu = myFileMenu->addMenu(tr("Recent Files"));
     myFileMenu->addSeparator();
@@ -2985,6 +3002,7 @@ void PowerTabEditor::enableEditing(bool enable)
 
     myCloseTabCommand->setEnabled(enable);
     mySaveAsCommand->setEnabled(enable);
+    myPrintCommand->setEnabled(enable);
     myAddPlayerCommand->setEnabled(enable);
     myAddInstrumentCommand->setEnabled(enable);
     myPlayerChangeCommand->setEnabled(enable);

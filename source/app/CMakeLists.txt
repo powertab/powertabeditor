@@ -37,5 +37,5 @@ add_library(pteapp
     pubsub/settingspubsub.h
 )
 
-qt5_use_modules(pteapp Widgets Concurrent)
+qt5_use_modules(pteapp Widgets Concurrent PrintSupport)
 cotire(pteapp)

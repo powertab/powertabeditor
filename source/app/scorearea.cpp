@@ -24,6 +24,7 @@
 #include <painters/systemrenderer.h>
 #include <QDebug>
 #include <QGraphicsItem>
+#include <QPrinter>
 #include <QScrollBar>
 #include <score/score.h>
 #include <thread>
@@ -145,6 +146,39 @@ void ScoreArea::redrawSystem(int index)
     // The spacing may have changed, so update the caret's position and redraw
     // it.
     myCaretPainter->updatePosition();
+}
+
+void ScoreArea::print(QPrinter &printer)
+{
+    QPainter painter;
+    painter.begin(&printer);
+
+    QRectF target(0, 0, painter.device()->width(), painter.device()->height());
+
+    for (QGraphicsItem *system : myRenderedSystems)
+    {
+        const QRectF source = system->sceneBoundingRect();
+
+        // Figure out how much space the system will take up on the page, and
+        // determine if we need a page break.
+        const float ratio = std::min(target.width() / source.width(),
+                                     target.height() / source.height());
+        const float systemHeight = source.height() * ratio;
+        if (target.y() + systemHeight > target.height())
+        {
+            printer.newPage();
+            target.moveTop(0);
+        }
+
+        // Draw the system on the page.
+        scene()->render(&painter, target, source);
+
+        // Set the location for the next system, and include some padding
+        // between systems.
+        target.moveTop(target.y() + systemHeight + SYSTEM_SPACING * ratio);
+    }
+
+    painter.end();
 }
 
 std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
