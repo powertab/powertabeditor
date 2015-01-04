@@ -127,6 +127,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPrintDialog>
+#include <QPrintPreviewDialog>
 #include <QScrollArea>
 #include <QSettings>
 #include <QTabBar>
@@ -424,6 +425,18 @@ void PowerTabEditor::printDocument()
         return;
 
     getScoreArea()->print(printer);
+}
+
+void PowerTabEditor::printPreview()
+{
+    QPrintPreviewDialog dialog(this);
+
+    connect(&dialog, &QPrintPreviewDialog::paintRequested, this,
+            [=](QPrinter *printer) {
+        getScoreArea()->print(*printer);
+    });
+
+    dialog.exec();
 }
 
 void PowerTabEditor::cutSelectedNotes()
@@ -1644,6 +1657,11 @@ void PowerTabEditor::createCommands()
                                  QKeySequence::Print, this);
     connect(myPrintCommand, SIGNAL(triggered()), this, SLOT(printDocument()));
 
+    myPrintPreviewCommand = new Command(
+        tr("Print Preview..."), "File.PrintPreview", QKeySequence(), this);
+    connect(myPrintPreviewCommand, SIGNAL(triggered()), this,
+            SLOT(printPreview()));
+
     myEditShortcutsCommand = new Command(tr("Customize Shortcuts..."),
                                          "File.CustomizeShortcuts",
                                          QKeySequence(), this);
@@ -2410,7 +2428,9 @@ void PowerTabEditor::createMenus()
     myFileMenu->addAction(myCloseTabCommand);
     myFileMenu->addSeparator();
     myFileMenu->addAction(mySaveAsCommand);
+    myFileMenu->addSeparator();
     myFileMenu->addAction(myPrintCommand);
+    myFileMenu->addAction(myPrintPreviewCommand);
     myFileMenu->addSeparator();
     myRecentFilesMenu = myFileMenu->addMenu(tr("Recent Files"));
     myFileMenu->addSeparator();
@@ -3003,6 +3023,7 @@ void PowerTabEditor::enableEditing(bool enable)
     myCloseTabCommand->setEnabled(enable);
     mySaveAsCommand->setEnabled(enable);
     myPrintCommand->setEnabled(enable);
+    myPrintPreviewCommand->setEnabled(enable);
     myAddPlayerCommand->setEnabled(enable);
     myAddInstrumentCommand->setEnabled(enable);
     myPlayerChangeCommand->setEnabled(enable);

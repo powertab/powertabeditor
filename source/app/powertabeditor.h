@@ -80,6 +80,9 @@ private slots:
     /// Prints the current document.
     void printDocument();
 
+    /// Displays a preview of the current document.
+    void printPreview();
+
     /// Update the titlebar to show whether the current document has been
     /// modified.
     void updateModified(bool);
@@ -382,6 +385,7 @@ private:
     Command *myCloseTabCommand;
     Command *mySaveAsCommand;
     Command *myPrintCommand;
+    Command *myPrintPreviewCommand;
     QMenu *myRecentFilesMenu;
     Command *myEditShortcutsCommand;
     Command *myEditPreferencesCommand;
