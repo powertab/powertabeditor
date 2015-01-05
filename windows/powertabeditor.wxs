@@ -105,8 +105,11 @@
       <Component Id="Qt5Widgets" Guid="00FBE86A-91AA-4E90-A99F-9C7CE76F1874">
         <File Source="$(var.BinDir)/Qt5Widgets.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-    <Component Id="Qt5Network" Guid="008AD676-89C6-4FEC-9233-B03F26291BF5">
+      <Component Id="Qt5Network" Guid="008AD676-89C6-4FEC-9233-B03F26291BF5">
         <File Source="$(var.BinDir)/Qt5Network.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="Qt5PrintSupport" Guid="D5DC1F60-3396-445F-A4AA-70ACF0E26F8D">
+        <File Source="$(var.BinDir)/Qt5PrintSupport.dll" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
     
