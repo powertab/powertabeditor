@@ -153,6 +153,9 @@ void ScoreArea::print(QPrinter &printer)
     QPainter painter;
     painter.begin(&printer);
 
+    // Hide the caret when printing.
+    myCaretPainter->hide();
+
     QRectF target(0, 0, painter.device()->width(), painter.device()->height());
 
     for (QGraphicsItem *system : myRenderedSystems)
@@ -178,6 +181,7 @@ void ScoreArea::print(QPrinter &printer)
         target.moveTop(target.y() + systemHeight + SYSTEM_SPACING * ratio);
     }
 
+    myCaretPainter->show();
     painter.end();
 }
 
