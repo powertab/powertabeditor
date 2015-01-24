@@ -37,6 +37,7 @@ add_executable(pte_tests
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
     actions/test_editplayer.cpp
+	actions/test_editstaff.cpp
     actions/test_edittabnumber.cpp
     actions/test_edittimesignature.cpp
     actions/test_removealternateending.cpp
@@ -124,6 +125,11 @@ endif()
 cotire(pte_tests)
 
 # Copy the test files to the build directory.
+add_custom_command(TARGET pte_tests POST_BUILD COMMAND
+    ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_CURRENT_SOURCE_DIR}/actions/data
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
+
 add_custom_command(TARGET pte_tests POST_BUILD COMMAND
     ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/formats/powertab_old/data

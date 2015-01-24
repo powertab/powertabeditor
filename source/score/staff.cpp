@@ -70,6 +70,21 @@ int Staff::getStringCount() const
 void Staff::setStringCount(int count)
 {
     myStringCount = count;
+
+    // Clean up notes / positions that are no longer valid.
+    for (Voice &voice : myVoices)
+    {
+        for (Position &pos : voice.getPositions())
+        {
+            pos.removeNotes([=](const Note &note) {
+                return note.getString() >= count;
+            });
+        }
+
+        voice.removePositions([](const Position &pos) {
+            return pos.getNotes().empty();
+        });
+    }
 }
 
 boost::iterator_range<Staff::VoiceIterator> Staff::getVoices()

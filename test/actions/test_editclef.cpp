@@ -17,7 +17,7 @@
   
 #include <catch.hpp>
 
-#include <actions/editclef.h>
+#include <actions/editstaff.h>
 #include <score/score.h>
 
 TEST_CASE("Actions/EditClef", "")
@@ -33,7 +33,7 @@ TEST_CASE("Actions/EditClef", "")
     ScoreLocation location(score, 0, 0);
 
     {
-        EditClef action(location);
+        EditStaff action(location, Staff::BassClef, 6);
 
         action.redo();
         REQUIRE(location.getStaff().getClefType() == Staff::BassClef);
@@ -44,7 +44,7 @@ TEST_CASE("Actions/EditClef", "")
 
     location.setStaffIndex(1);
     {
-        EditClef action(location);
+        EditStaff action(location, Staff::TrebleClef, 6);
 
         action.redo();
         REQUIRE(location.getStaff().getClefType() == Staff::TrebleClef);

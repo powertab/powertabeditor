@@ -72,6 +72,7 @@ public:
     /// Returns the number of strings in the tab staff.
     int getStringCount() const;
     /// Sets the number of strings in the tab staff.
+    /// If the number of strings is being reduced, some notes may be removed.
     void setStringCount(int count);
 
     /// Returns the voices in the staff.

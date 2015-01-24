@@ -32,7 +32,10 @@ public:
     ~StaffDialog();
 
     int getStringCount() const;
+    void setStringCount(int strings);
+
     Staff::ClefType getClefType() const;
+    void setClefType(Staff::ClefType type);
 
 private:
     Ui::StaffDialog *ui;

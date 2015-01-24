@@ -169,8 +169,7 @@ void Position::insertNote(const Note &note)
 
 void Position::removeNote(const Note &note)
 {
-    myNotes.erase(std::remove(myNotes.begin(), myNotes.end(), note),
-                  myNotes.end());
+    removeNotes([=](const Note &other) { return other == note; });
 }
 
 const Note *Utils::findByString(const Position &pos, int string)

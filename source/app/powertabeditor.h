@@ -344,6 +344,8 @@ private:
     void insertSystem(int index);
     /// Helper function to insert a staff at the given index in a system.
     void insertStaff(int index);
+    /// Edits the number of strings for the current staff.
+    void editStaff(int system, int staff);
     /// Increases or decreases the line spacing by the given amount.
     void adjustLineSpacing(int amount);
 

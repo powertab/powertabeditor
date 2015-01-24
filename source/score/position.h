@@ -111,6 +111,9 @@ public:
 
     /// Adds a new note to the position.
     void insertNote(const Note &note);
+    /// Removes any notes that satisfy the given predicate.
+    template <class Predicate>
+    void removeNotes(Predicate p);
     /// Removes the specified note from the position.
     void removeNote(const Note &note);
 
@@ -130,6 +133,13 @@ void Position::serialize(Archive &ar, const FileVersion /*version*/)
     ar("properties", mySimpleProperties);
     ar("multibar_rest", myMultiBarRestCount);
     ar("notes", myNotes);
+}
+
+template <class Predicate>
+void Position::removeNotes(Predicate p)
+{
+    myNotes.erase(std::remove_if(myNotes.begin(), myNotes.end(), p),
+                  myNotes.end());
 }
 
 namespace Utils {

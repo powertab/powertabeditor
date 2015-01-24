@@ -17,6 +17,8 @@
 
 #include "appinfo.h"
 
+#include <QCoreApplication>
+
 namespace AppInfo
 {
     const char *BUG_TRACKER_URL =
@@ -24,4 +26,12 @@ namespace AppInfo
     const char *ORGANIZATION_NAME = "Power Tab";
     const char *APPLICATION_NAME = "Power Tab Editor";
     const char *APPLICATION_VERSION = "2.0";
+
+    std::string getFullPath(const char *relative_path)
+    {
+        std::string path = QCoreApplication::applicationDirPath().toStdString();
+        path += "/";
+        path += relative_path;
+        return path;
+    }
 }

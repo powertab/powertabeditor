@@ -133,7 +133,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                       layout->getTopStdNotationLine() + CLEF_OFFSET);
         group->setParentItem(myParentStaff);
 
-        drawTabClef(LayoutInfo::CLEF_PADDING, *layout);
+        drawTabClef(LayoutInfo::CLEF_PADDING, *layout, location);
 
         drawBarlines(system, systemIndex, layout, isFirstStaff);
         drawTabNotes(staff, layout);
@@ -155,19 +155,27 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
     return myParentSystem;
 }
 
-void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout)
+void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
+                                 const ScoreLocation &location)
 {
     auto tabClef = new QGraphicsSimpleTextItem();
 
     // Determine the size of the clef symbol based on the number of strings and
     // the line spacing.
-    const int pixelSize = (layout.getStringCount() - 1) *
-            layout.getTabLineSpacing() * 0.6;
+    const int pixelSize =
+        (layout.getStringCount() - 1) * layout.getTabLineSpacing() * 0.6;
+    myMusicFont.setSymbol(tabClef, MusicFont::TabClef, pixelSize);
+
+    auto pubsub = myScoreArea->getClickPubSub();
+    auto group = new ClickableGroup(
+        QObject::tr("Click to edit the number of strings."), [=]() {
+        pubsub->publish(ClickType::TabClef, location);
+    });
+    group->addToGroup(tabClef);
 
     // Position the clef symbol.
-    tabClef->setPos(x, layout.getTopTabLine() - pixelSize / 2.1);
-    myMusicFont.setSymbol(tabClef, MusicFont::TabClef, pixelSize);
-    tabClef->setParentItem(myParentStaff);
+    group->setPos(x, layout.getTopTabLine() - pixelSize / 2.1);
+    group->setParentItem(myParentStaff);
 }
 
 void SystemRenderer::drawBarNumber(int systemIndex, const LayoutInfo &layout)

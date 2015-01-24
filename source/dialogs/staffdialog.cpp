@@ -43,7 +43,17 @@ int StaffDialog::getStringCount() const
     return ui->numberOfStringsSpinBox->value();
 }
 
+void StaffDialog::setStringCount(int strings)
+{
+    ui->numberOfStringsSpinBox->setValue(strings);
+}
+
 Staff::ClefType StaffDialog::getClefType() const
 {
     return static_cast<Staff::ClefType>(ui->clefTypeComboBox->currentIndex());
+}
+
+void StaffDialog::setClefType(Staff::ClefType type)
+{
+    ui->clefTypeComboBox->setCurrentIndex(static_cast<int>(type));
 }

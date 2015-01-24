@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2012 Cameron White
+  * Copyright (C) 2013 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,30 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef APP_CLICKPUBSUB_H
-#define APP_CLICKPUBSUB_H
+#ifndef ACTIONS_EDITCLEF_H
+#define ACTIONS_EDITCLEF_H
 
-#include <app/pubsub/pubsub.h>
+#include <boost/optional.hpp>
+#include <QUndoCommand>
 #include <score/scorelocation.h>
+#include <score/system.h>
 
-enum class ClickType
+class EditStaff : public QUndoCommand
 {
-    Barline,
-    KeySignature,
-    TimeSignature,
-    TabClef,
-    Clef,
-    Selection
-};
+public:
+    EditStaff(const ScoreLocation &location, Staff::ClefType clef, int strings);
 
-/// Provides a way to subscribe to or publish notifications about events at
-/// a score location (e.g. a mouse click on a particular symbol).
-class ClickPubSub : public PubSub<void (ClickType, const ScoreLocation&)>
-{
+    virtual void redo() override;
+    virtual void undo() override;
+
+private:
+    static void addPlayerChangeAtStart(Score &score, int system_index);
+
+    ScoreLocation myLocation;
+    System myOriginalSystem;
+    boost::optional<System> myOriginalNextSystem;
+    Staff::ClefType myClef;
+    int myNumStrings;
 };
 
 #endif

@@ -18,12 +18,18 @@
 #ifndef APP_APPINFO_H
 #define APP_APPINFO_H
 
+#include <string>
+
 namespace AppInfo
 {
     extern const char *BUG_TRACKER_URL;
     extern const char *ORGANIZATION_NAME;
     extern const char *APPLICATION_NAME;
     extern const char *APPLICATION_VERSION;
+
+    /// Given a path relative to the location of the executable, return the full
+    /// path.
+    std::string getFullPath(const char *relative_path);
 }
 
 #endif

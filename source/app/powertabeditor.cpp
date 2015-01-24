@@ -39,12 +39,12 @@
 #include <actions/addtextitem.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
-#include <actions/editclef.h>
 #include <actions/editfileinformation.h>
 #include <actions/editinstrument.h>
 #include <actions/editkeysignature.h>
 #include <actions/editnoteduration.h>
 #include <actions/editplayer.h>
+#include <actions/editstaff.h>
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
 #include <actions/polishscore.h>
@@ -126,6 +126,7 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPrinter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QScrollArea>
@@ -2725,6 +2726,9 @@ void PowerTabEditor::setupNewTab()
             case ClickType::KeySignature:
                 editKeySignature(location);
                 break;
+            case ClickType::TabClef:
+                editStaff(location.getSystemIndex(), location.getStaffIndex());
+                break;
             case ClickType::Clef:
                 editClef(location.getSystemIndex(), location.getStaffIndex());
                 break;
@@ -2733,6 +2737,7 @@ void PowerTabEditor::setupNewTab()
                     getCaret().moveToLocation(location);
                 break;
             default:
+                Q_ASSERT(false);
                 break;
         }
     });
@@ -3172,7 +3177,14 @@ void PowerTabEditor::editClef(int system, int staff)
     location.setSystemIndex(system);
     location.setStaffIndex(staff);
 
-    myUndoManager->push(new EditClef(location), location.getSystemIndex());
+    const Staff &currentStaff = location.getStaff();
+    Staff::ClefType newClef = currentStaff.getClefType() == Staff::TrebleClef
+                                  ? Staff::BassClef
+                                  : Staff::TrebleClef;
+
+    myUndoManager->push(
+        new EditStaff(location, newClef, currentStaff.getStringCount()),
+        location.getSystemIndex());
 }
 
 void PowerTabEditor::editSimplePositionProperty(Command *command,
@@ -3255,6 +3267,26 @@ void PowerTabEditor::insertStaff(int index)
 
         myUndoManager->push(new AddStaff(getLocation(), staff, index),
                             getLocation().getSystemIndex());
+    }
+}
+
+void PowerTabEditor::editStaff(int system, int staff)
+{
+    ScoreLocation location = getLocation();
+    location.setSystemIndex(system);
+    location.setStaffIndex(staff);
+
+    StaffDialog dialog(this);
+
+    const Staff &currentStaff = location.getStaff();
+    dialog.setStringCount(currentStaff.getStringCount());
+    dialog.setClefType(currentStaff.getClefType());
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->push(new EditStaff(location, dialog.getClefType(),
+                                          dialog.getStringCount()),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
     }
 }
 

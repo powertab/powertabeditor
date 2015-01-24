@@ -24,12 +24,12 @@ add_library(pteactions
     adjustlinespacing.cpp
     #changepositionspacing.cpp
     editbarline.cpp
-    editclef.cpp
     editfileinformation.cpp
     editinstrument.cpp
     editkeysignature.cpp
     editnoteduration.cpp
     editplayer.cpp
+    editstaff.cpp
     edittabnumber.cpp
     edittimesignature.cpp
     insertnotes.cpp
@@ -82,12 +82,12 @@ add_library(pteactions
     adjustlinespacing.h
     #changepositionspacing.h
     editbarline.h
-    editclef.h
     editfileinformation.h
     editinstrument.h
     editkeysignature.h
     editnoteduration.h
     editplayer.h
+    editstaff.h
     edittabnumber.h
     edittimesignature.h
     insertnotes.h

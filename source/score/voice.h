@@ -47,6 +47,9 @@ public:
 
     /// Adds a new position to the voice.
     void insertPosition(const Position &position);
+    /// Removes any positions that satisfy the given predicate.
+    template <typename Predicate>
+    void removePositions(Predicate p);
     /// Removes the specified position from the voice.
     void removePosition(const Position &position);
 
@@ -71,6 +74,13 @@ void Voice::serialize(Archive &ar, const FileVersion /*version*/)
 {
     ar("positions", myPositions);
     ar("irregular_groupings", myIrregularGroupings);
+}
+
+template <typename Predicate>
+void Voice::removePositions(Predicate p)
+{
+    myPositions.erase(std::remove_if(myPositions.begin(), myPositions.end(), p),
+                      myPositions.end());
 }
 
 #endif

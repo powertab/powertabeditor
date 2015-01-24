@@ -28,6 +28,7 @@ class QGraphicsItem;
 class QGraphicsRectItem;
 class Score;
 class ScoreArea;
+class ScoreLocation;
 class System;
 
 class SystemRenderer
@@ -40,7 +41,8 @@ public:
 
 private:
     /// Draws the tab clef.
-    void drawTabClef(double x, const LayoutInfo &layout);
+    void drawTabClef(double x, const LayoutInfo &layout,
+                     const ScoreLocation &location);
 
     /// Draws barlines, along with time signatures, rehearsal signs, etc.
     void drawBarlines(const System &system, int systemIndex,
