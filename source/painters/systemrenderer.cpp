@@ -75,7 +75,7 @@ SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
 }
 
 QGraphicsItem *SystemRenderer::operator()(const System &system,
-                                          int systemIndex, Staff::ViewType view)
+                                          int systemIndex)
 {
     // Draw the bounding rectangle for the system.
     myParentSystem = new QGraphicsRectItem();

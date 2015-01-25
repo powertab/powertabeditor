@@ -36,8 +36,7 @@ class SystemRenderer
 public:
     SystemRenderer(const ScoreArea *myScoreArea, const Score &myScore);
 
-    QGraphicsItem *operator()(const System &system, int systemIndex,
-                              Staff::ViewType view);
+    QGraphicsItem *operator()(const System &system, int systemIndex);
 
 private:
     /// Draws the tab clef.

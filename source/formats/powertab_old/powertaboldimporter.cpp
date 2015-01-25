@@ -567,7 +567,6 @@ int PowerTabOldImporter::convert(
     int lastPosition = 0;
     staff.setClefType(static_cast<Staff::ClefType>(oldStaff.GetClef()));
     staff.setStringCount(oldStaff.GetTablatureStaffType());
-    staff.setViewType(Staff::GuitarView);
 
     // Import dynamics.
     for (auto &dynamic : dynamics)

@@ -164,7 +164,6 @@ int ScoreMerger::importNotes(
             const Staff &srcStaff = srcSystem.getStaves()[i];
             Staff destStaff(srcStaff.getStringCount());
             destStaff.setClefType(srcStaff.getClefType());
-            destStaff.setViewType(srcState.isBass ? Staff::BassView : Staff::GuitarView);
             destSystem.insertStaff(destStaff);
 
             if (!srcState.isBass)

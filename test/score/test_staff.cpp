@@ -73,7 +73,6 @@ TEST_CASE("Score/Staff/Dynamics", "")
 TEST_CASE("Score/Staff/Serialization", "")
 {
     Staff staff;
-    staff.setViewType(Staff::BassView);
     staff.setClefType(Staff::BassClef);
     staff.getVoices()[1].insertPosition(Position(42));
     staff.insertDynamic(Dynamic(11, Dynamic::pp));

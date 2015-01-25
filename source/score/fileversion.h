@@ -23,7 +23,8 @@
 enum class FileVersion : int {
     INITIAL_VERSION = 1, ///< Initial version from the beginning of development.
     TEXT_ITEMS = 2, ///< Added floating text items.
-    LATEST_VERSION = TEXT_ITEMS
+    REMOVE_VIEWTYPE = 3, ///< Removed the Staff::myViewType member.
+    LATEST_VERSION = REMOVE_VIEWTYPE
 };
 
 #endif

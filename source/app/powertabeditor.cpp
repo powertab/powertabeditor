@@ -553,8 +553,7 @@ void PowerTabEditor::redrawSystem(int index)
 void PowerTabEditor::redrawScore()
 {
     getCaret().moveToValidPosition();
-    getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument(),
-                                   Staff::GuitarView);
+    getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument());
     updateCommands();
 
     const Score &score = myDocumentManager->getCurrentDocument().getScore();
@@ -2708,7 +2707,7 @@ void PowerTabEditor::setupNewTab()
     });
 
     auto scorearea = new ScoreArea(this);
-    scorearea->renderDocument(doc, Staff::GuitarView);
+    scorearea->renderDocument(doc);
     scorearea->installEventFilter(this);
 
     // Connect the signals for mouse clicks on time signatures, barlines, etc.

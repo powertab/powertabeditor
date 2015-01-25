@@ -35,7 +35,7 @@ class ScoreArea : public QGraphicsView
 public:
     explicit ScoreArea(QWidget *parent);
 
-    void renderDocument(const Document &document, Staff::ViewType view);
+    void renderDocument(const Document &document);
 
     void print(QPrinter &printer);
 
@@ -55,7 +55,6 @@ private:
 
     QGraphicsScene myScene;
     boost::optional<const Document &> myDocument;
-    Staff::ViewType myViewType;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
 

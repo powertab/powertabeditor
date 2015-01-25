@@ -39,12 +39,6 @@ public:
         BassClef
     };
 
-    enum ViewType
-    {
-        GuitarView,
-        BassView
-    };
-
     typedef std::array<Voice, NUM_VOICES> VoiceList;
     typedef VoiceList::iterator VoiceIterator;
     typedef VoiceList::const_iterator VoiceConstIterator;
@@ -58,11 +52,6 @@ public:
 
     template <class Archive>
     void serialize(Archive &ar, const FileVersion version);
-
-    /// Returns whether the staff is shown in the guitar view, bass view, etc.
-    ViewType getViewType() const;
-    /// Sets which the view the staff appears in.
-    void setViewType(ViewType type);
 
     /// Returns whether the staff is a treble or bass clef.
     ClefType getClefType() const;
@@ -91,7 +80,6 @@ public:
     void removeDynamic(const Dynamic &dynamic);
 
 private:
-    ViewType myViewType;
     ClefType myClefType;
     int myStringCount;
     std::array<Voice, NUM_VOICES> myVoices;
@@ -99,9 +87,14 @@ private:
 };
 
 template <class Archive>
-void Staff::serialize(Archive &ar, const FileVersion /*version*/)
+void Staff::serialize(Archive &ar, const FileVersion version)
 {
-    ar("view_type", myViewType);
+    if (version < FileVersion::REMOVE_VIEWTYPE)
+    {
+        int view_type = 0;
+        ar("view_type", view_type);
+    }
+
     ar("clef_type", myClefType);
     ar("string_count", myStringCount);
     ar("voices", myVoices);

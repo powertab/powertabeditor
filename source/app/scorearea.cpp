@@ -33,19 +33,17 @@ static const double SYSTEM_SPACING = 50;
 
 ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
-      myViewType(Staff::GuitarView),
       myCaretPainter(nullptr),
       myClickPubSub(std::make_shared<ClickPubSub>())
 {
     setScene(&myScene);
 }
 
-void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
+void ScoreArea::renderDocument(const Document &document)
 {
     myScene.clear();
     myRenderedSystems.clear();
     myDocument = document;
-    myViewType = view;
 
     const Score &score = document.getScore();
 
@@ -81,7 +79,7 @@ void ScoreArea::renderDocument(const Document &document, Staff::ViewType view)
             for (int i = left; i < right; ++i)
             {
                 SystemRenderer render(this, score);
-                myRenderedSystems[i] = render(score.getSystems()[i], i, myViewType);
+                myRenderedSystems[i] = render(score.getSystems()[i], i);
             }
         }, left, right);
     }
@@ -118,7 +116,7 @@ void ScoreArea::redrawSystem(int index)
 
     const Score &score = myDocument->getScore();
     SystemRenderer render(this, score);
-    QGraphicsItem *newSystem = render(score.getSystems()[index], index, myViewType);
+    QGraphicsItem *newSystem = render(score.getSystems()[index], index);
 
     double height = 0;
     if (index > 0)

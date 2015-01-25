@@ -19,37 +19,20 @@
 
 #include "utils.h"
 
-Staff::Staff()
-    : myViewType(GuitarView),
-      myClefType(TrebleClef),
-      myStringCount(6)
+Staff::Staff() : myClefType(TrebleClef), myStringCount(6)
 {
 }
 
 Staff::Staff(int stringCount)
-    : myViewType(GuitarView),
-      myClefType(TrebleClef),
-      myStringCount(stringCount)
+    : myClefType(TrebleClef), myStringCount(stringCount)
 {
 }
 
 bool Staff::operator==(const Staff &other) const
 {
-    return myViewType == other.myViewType &&
-           myClefType == other.myClefType &&
-           myStringCount == other.myStringCount &&
-           myVoices == other.myVoices &&
+    return myClefType == other.myClefType &&
+           myStringCount == other.myStringCount && myVoices == other.myVoices &&
            myDynamics == other.myDynamics;
-}
-
-Staff::ViewType Staff::getViewType() const
-{
-    return myViewType;
-}
-
-void Staff::setViewType(ViewType type)
-{
-    myViewType = type;
 }
 
 Staff::ClefType Staff::getClefType() const
