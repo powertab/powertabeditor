@@ -27,6 +27,7 @@ add_library(ptescore
     textitem.cpp
     timesignature.cpp
     tuning.cpp
+	viewfilter.cpp
     voice.cpp
     voiceutils.cpp
 
@@ -65,6 +66,7 @@ add_library(ptescore
     timesignature.h
     tuning.h
     utils.h
+	viewfilter.h
     voice.h
     voiceutils.h
 
