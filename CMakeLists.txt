@@ -56,9 +56,9 @@ add_definitions(-DQT_DEPRECATED_WARNINGS)
 find_package(Qt5Widgets REQUIRED) 
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    find_package(Boost REQUIRED COMPONENTS date_time iostreams zlib program_options)
+    find_package(Boost REQUIRED COMPONENTS date_time iostreams zlib program_options regex)
 else()
-    find_package(Boost REQUIRED COMPONENTS date_time iostreams program_options)
+    find_package(Boost REQUIRED COMPONENTS date_time iostreams program_options regex)
     find_package(ZLIB REQUIRED)
 endif()
 

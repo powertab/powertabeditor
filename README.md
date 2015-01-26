@@ -63,7 +63,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * For older Ubuntu systems (such as Ubuntu 12.04) - you may need to [add some PPAs](https://github.com/powertab/powertabeditor/blob/master/.travis.yml) to get updated versions of the dependencies.
 * Install dependencies:
   * `sudo apt-get update`
-  * `sudo apt-get install cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libasound2-dev timidity`
+  * `sudo apt-get install cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libboost-regex1.55-dev libasound2-dev timidity`
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt-get install ninja-build`)
 * Build:
   * `mkdir build && cd build`

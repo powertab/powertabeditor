@@ -18,9 +18,9 @@
 #ifndef SCORE_VIEWFILTER_H
 #define SCORE_VIEWFILTER_H
 
+#include <boost/regex.hpp>
 #include <cassert>
 #include "fileversion.h"
-#include <regex>
 #include <string>
 #include <vector>
 
@@ -67,7 +67,7 @@ private:
     Operation myOperation;
     int myIntValue;
     std::string myStrValue;
-    std::regex myRegex;
+    boost::regex myRegex;
 };
 
 /// A filter that specifies which staves are visible.
