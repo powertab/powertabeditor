@@ -430,7 +430,8 @@ void PowerTabEditor::printDocument()
 
 void PowerTabEditor::printPreview()
 {
-    QPrintPreviewDialog dialog(this);
+    // Set the window flags to Qt::Window so that the dialog can be maximized.
+    QPrintPreviewDialog dialog(this, Qt::Window);
 
     connect(&dialog, &QPrintPreviewDialog::paintRequested, this,
             [=](QPrinter *printer) {
