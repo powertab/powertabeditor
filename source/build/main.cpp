@@ -24,6 +24,7 @@
 #include <exception>
 #include <iostream>
 #include <QApplication>
+#include <QFileOpenEvent>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QSettings>
@@ -106,13 +107,43 @@ static void signalHandler(int /*signal*/)
     displayError("Segmentation fault");
 }
 
+class Application : public QApplication
+{
+public:
+    Application(int &argc, char **argv) : QApplication(argc, argv)
+    {
+    }
+
+protected:
+    virtual bool event(QEvent *event) override
+    {
+        switch (event->type())
+        {
+            // Forward file open requests to the application (e.g. double
+            // clicking a file on OSX).
+            case QEvent::FileOpen:
+            {
+                auto app = dynamic_cast<PowerTabEditor *>(activeWindow());
+                Q_ASSERT(app);
+
+                app->openFiles({
+                    static_cast<QFileOpenEvent *>(event)->file()
+                });
+                return true;
+            }
+            default:
+                return QApplication::event(event);
+        }
+    }
+};
+
 int main(int argc, char *argv[])
 {
     // Register handlers for unhandled exceptions and segmentation faults.
     std::set_terminate(terminateHandler);
     std::signal(SIGSEGV, signalHandler);
 
-    QApplication a(argc, argv);
+    Application a(argc, argv);
 
     // Set the app information (used by e.g. QSettings).
     QCoreApplication::setOrganizationName(AppInfo::ORGANIZATION_NAME);
