@@ -89,7 +89,7 @@ private:
 template <class Archive>
 void Staff::serialize(Archive &ar, const FileVersion version)
 {
-    if (version < FileVersion::REMOVE_VIEWTYPE)
+    if (version < FileVersion::VIEW_FILTERS)
     {
         int view_type = 0;
         ar("view_type", view_type);

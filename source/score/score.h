@@ -25,6 +25,7 @@
 #include "player.h"
 #include "scoreinfo.h"
 #include "system.h"
+#include "viewfilter.h"
 #include <vector>
 
 class Score : boost::noncopyable
@@ -36,6 +37,8 @@ public:
     typedef std::vector<Player>::const_iterator PlayerConstIterator;
     typedef std::vector<Instrument>::iterator InstrumentIterator;
     typedef std::vector<Instrument>::const_iterator InstrumentConstIterator;
+    typedef std::vector<ViewFilter>::iterator ViewFilterIterator;
+    typedef std::vector<ViewFilter>::const_iterator ViewFilterConstIterator;
 
     Score();
     bool operator==(const Score &other) const;
@@ -80,6 +83,16 @@ public:
     /// Removes the specified instrument from the score.
     void removeInstrument(int index);
 
+    /// Returns the set of view filters in the score.
+    boost::iterator_range<ViewFilterIterator> getViewFilters();
+    /// Returns the set of view filters in the score.
+    boost::iterator_range<ViewFilterConstIterator> getViewFilters() const;
+
+    /// Adds a new filter to the score.
+    void insertViewFilter(const ViewFilter &filter);
+    /// Removes the specified filter from the score.
+    void removeViewFilter(int index);
+
     /// Returns the spacing between tabulature lines for the score.
     int getLineSpacing() const;
     /// Sets the spacing between tabulature lines for the score.
@@ -94,18 +107,21 @@ private:
     std::vector<System> mySystems;
     std::vector<Player> myPlayers;
     std::vector<Instrument> myInstruments;
-    /// Spacing between tab lines (in pixels).
-    int myLineSpacing;
+    int myLineSpacing; ///< Spacing between tab lines (in pixels).
+    std::vector<ViewFilter> myViewFilters;
 };
 
 template <class Archive>
-void Score::serialize(Archive &ar, const FileVersion /*version*/)
+void Score::serialize(Archive &ar, const FileVersion version)
 {
     ar("score_info", myScoreInfo);
     ar("systems", mySystems);
     ar("players", myPlayers);
     ar("instruments", myInstruments);
     ar("line_spacing", myLineSpacing);
+
+    if (version >= FileVersion::VIEW_FILTERS)
+        ar("view_filters", myViewFilters);
 }
 
 namespace ScoreUtils {

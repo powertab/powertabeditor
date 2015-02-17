@@ -27,11 +27,11 @@ Score::Score()
 
 bool Score::operator==(const Score &other) const
 {
-    return myScoreInfo == other.myScoreInfo &&
-           mySystems == other.mySystems &&
+    return myScoreInfo == other.myScoreInfo && mySystems == other.mySystems &&
            myPlayers == other.myPlayers &&
            myInstruments == other.myInstruments &&
-           myLineSpacing == other.myLineSpacing;
+           myLineSpacing == other.myLineSpacing &&
+           myViewFilters == other.myViewFilters;
 }
 
 const ScoreInfo &Score::getScoreInfo() const
@@ -115,6 +115,26 @@ void Score::insertInstrument(const Instrument &instrument, int index)
 void Score::removeInstrument(int index)
 {
     myInstruments.erase(myInstruments.begin() + index);
+}
+
+boost::iterator_range<Score::ViewFilterIterator> Score::getViewFilters()
+{
+    return boost::make_iterator_range(myViewFilters);
+}
+
+boost::iterator_range<Score::ViewFilterConstIterator> Score::getViewFilters() const
+{
+    return boost::make_iterator_range(myViewFilters);
+}
+
+void Score::insertViewFilter(const ViewFilter &filter)
+{
+    myViewFilters.push_back(filter);
+}
+
+void Score::removeViewFilter(int index)
+{
+    myViewFilters.erase(myViewFilters.begin() + index);
 }
 
 int Score::getLineSpacing() const
