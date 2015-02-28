@@ -44,16 +44,14 @@ void EditStaff::redo()
 
         // If the following system doesn't start with a player change, it will
         // need one so that it has players with the correct number of strings.
-        if (myLocation.getSystemIndex() < score.getSystems().size())
+        const int next_system_index = myLocation.getSystemIndex() + 1;
+        if (next_system_index < score.getSystems().size())
         {
-            int next_system_index = myLocation.getSystemIndex() + 1;
             System &next_system = score.getSystems()[next_system_index];
             myOriginalNextSystem = next_system;
 
             if (next_system.getStaves().size() >= staff_index)
-            {
                 addPlayerChangeAtStart(score, next_system_index);
-            }
         }
 
         // Ensure that there's a player change at the start of the system.
