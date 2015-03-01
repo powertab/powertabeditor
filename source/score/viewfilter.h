@@ -80,6 +80,11 @@ public:
     template <class Archive>
     void serialize(Archive &ar, const FileVersion version);
 
+    /// Returns the label for the filter.
+    const std::string &getDescription() const;
+    /// Sets the label for the filter.
+    void setDescription(const std::string &description);
+
     /// Adds a new rule to the filter.
     void addRule(const FilterRule &rule);
 
@@ -87,6 +92,7 @@ public:
     bool accept(const Score &score, int system_index, int staff_index) const;
 
 private:
+    std::string myDescription;
     std::vector<FilterRule> myRules;
 };
 
@@ -113,6 +119,7 @@ void FilterRule::serialize(Archive &ar, const FileVersion /*version*/)
 template <class Archive>
 void ViewFilter::serialize(Archive &ar, const FileVersion /*version*/)
 {
+    ar("description", myDescription);
     ar("rules", myRules);
 }
 

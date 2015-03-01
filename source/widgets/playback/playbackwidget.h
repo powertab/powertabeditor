@@ -25,6 +25,7 @@ class PlaybackWidget;
 }
 
 class QButtonGroup;
+class Score;
 
 class PlaybackWidget : public QWidget
 {
@@ -35,6 +36,9 @@ public:
                             const QAction &rewindCommand,
                             const QAction &metronomeCommand, QWidget *parent);
     ~PlaybackWidget();
+
+    /// Reload any settings for the given score.
+    void reset(const Score &score);
 
     /// Get the current playback speed.
     int getPlaybackSpeed() const;

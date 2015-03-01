@@ -112,7 +112,17 @@ ViewFilter::ViewFilter()
 
 bool ViewFilter::operator==(const ViewFilter &other) const
 {
-    return myRules == other.myRules;
+    return myDescription == other.myDescription && myRules == other.myRules;
+}
+
+const std::string &ViewFilter::getDescription() const
+{
+    return myDescription;
+}
+
+void ViewFilter::setDescription(const std::string &description)
+{
+    myDescription = description;
 }
 
 void ViewFilter::addRule(const FilterRule &rule)
@@ -123,6 +133,9 @@ void ViewFilter::addRule(const FilterRule &rule)
 bool ViewFilter::accept(const Score &score, int system_index,
                         int staff_index) const
 {
+    if (myRules.empty())
+        return true;
+
     for (const FilterRule &rule : myRules)
     {
         if (rule.accept(score, system_index, staff_index))

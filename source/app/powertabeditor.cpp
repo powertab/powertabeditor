@@ -273,6 +273,7 @@ void PowerTabEditor::switchTab(int index)
         const Score &score = myDocumentManager->getCurrentDocument().getScore();
         myMixer->reset(score);
         myInstrumentPanel->reset(score);
+        myPlaybackWidget->reset(score);
         updateLocationLabel();
     }
     else
@@ -560,6 +561,7 @@ void PowerTabEditor::redrawScore()
     const Score &score = myDocumentManager->getCurrentDocument().getScore();
     myMixer->reset(score);
     myInstrumentPanel->reset(score);
+    myPlaybackWidget->reset(score);
 }
 
 void PowerTabEditor::moveCaretToStart()
@@ -2771,6 +2773,7 @@ void PowerTabEditor::setupNewTab()
 
     myMixer->reset(doc.getScore());
     myInstrumentPanel->reset(doc.getScore());
+    myPlaybackWidget->reset(doc.getScore());
 
     // Switch to the new document.
     myTabWidget->setCurrentIndex(myDocumentManager->getCurrentDocumentIndex());

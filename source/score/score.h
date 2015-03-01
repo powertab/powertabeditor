@@ -132,6 +132,9 @@ const PlayerChange *getCurrentPlayers(const Score &score, int systemIndex,
 /// Readjust the letters for the rehearsal signs in the score
 /// (i.e. assigning rehearsal signs the letters "A", "B", and so on).
 void adjustRehearsalSigns(Score &score);
+
+/// Add the standard view filters (guitar and bass) to the score.
+void addStandardFilters(Score &score);
 }
 
 #endif

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
-    <height>37</height>
+    <width>756</width>
+    <height>38</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +27,27 @@
     <number>5</number>
    </property>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="filterLabel">
+       <property name="text">
+        <string>View:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="filterComboBox"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="voiceLabel">
      <property name="text">
       <string>Voice:</string>
@@ -36,9 +57,6 @@
    <item>
     <layout class="QHBoxLayout" name="voiceButtonLayout">
      <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
       <number>0</number>
      </property>
      <item>

@@ -20,6 +20,7 @@
 #include "filesystem.h"
 #include "documentreader.h"
 #include <fstream>
+#include <score/score.h>
 #include <score/utils/scorepolisher.h>
 
 GpxImporter::GpxImporter()
@@ -37,4 +38,5 @@ void GpxImporter::load(const std::string &filename, Score &score)
     reader.readScore(score);
 
     ScoreUtils::polishScore(score);
+    ScoreUtils::addStandardFilters(score);
 }

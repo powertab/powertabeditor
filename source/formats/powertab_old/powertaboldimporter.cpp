@@ -53,6 +53,7 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     convert(document.GetHeader(), info);
     score.setScoreInfo(info);
     score.setLineSpacing(document.GetTablatureStaffLineSpacing());
+    ScoreUtils::addStandardFilters(score);
     
     assert(document.GetNumberOfScores() == 2);
 

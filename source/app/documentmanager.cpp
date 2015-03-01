@@ -56,6 +56,8 @@ Document &DocumentManager::addDefaultDocument()
             Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
     score.insertInstrument(instrument);
 
+    ScoreUtils::addStandardFilters(score);
+
     // Add an initial staff, player change, and tempo marker.
     System system;
     system.insertStaff(Staff(player.getTuning().getStringCount()));

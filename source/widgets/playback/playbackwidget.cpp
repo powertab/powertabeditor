@@ -19,6 +19,7 @@
 #include "ui_playbackwidget.h"
 
 #include <score/staff.h>
+#include <score/score.h>
 #include <widgets/common.h>
 
 static QString getShortcutHint(const QAction &action)
@@ -83,6 +84,17 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
 PlaybackWidget::~PlaybackWidget()
 {
     delete ui;
+}
+
+void PlaybackWidget::reset(const Score &score)
+{
+    ui->filterComboBox->clear();
+
+    for (const ViewFilter &filter : score.getViewFilters())
+    {
+        ui->filterComboBox->addItem(
+            QString::fromStdString(filter.getDescription()));
+    }
 }
 
 int PlaybackWidget::getPlaybackSpeed() const

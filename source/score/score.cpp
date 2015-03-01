@@ -209,3 +209,22 @@ void ScoreUtils::adjustRehearsalSigns(Score &score)
         }
     }
 }
+
+void ScoreUtils::addStandardFilters(Score &score)
+{
+    ViewFilter filter_all;
+    filter_all.setDescription("All");
+    score.insertViewFilter(filter_all);
+
+    ViewFilter filter_guitars;
+    filter_guitars.setDescription("Guitars");
+    filter_guitars.addRule(
+        FilterRule(FilterRule::NUM_STRINGS, FilterRule::GREATER_THAN_EQUAL, 6));
+    score.insertViewFilter(filter_guitars);
+
+    ViewFilter filter_basses;
+    filter_basses.setDescription("Basses");
+    filter_guitars.addRule(
+        FilterRule(FilterRule::NUM_STRINGS, FilterRule::LESS_THAN_EQUAL, 5));
+    score.insertViewFilter(filter_basses);
+}

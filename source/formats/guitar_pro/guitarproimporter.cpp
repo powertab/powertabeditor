@@ -45,6 +45,7 @@ void GuitarProImporter::load(const std::string &filename, Score &score)
 
     convertPlayers(document, score);
     convertScore(document, score);
+    ScoreUtils::addStandardFilters(score);
 
     // Automatically set the rehearsal sign letters to "A", "B", etc.
     ScoreUtils::adjustRehearsalSigns(score);
