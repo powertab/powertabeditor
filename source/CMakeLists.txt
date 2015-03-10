@@ -62,7 +62,8 @@ file(COPY data DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 # Copy the Qt and Boost dlls to the build folder on Windows.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set(QT_BIN_DIR ${Qt5Core_DIR}/../../../lib)
+    set(QT_BIN_DIR ${Qt5Core_DIR}/../../../bin)
+    set(QT_LIB_DIR ${Qt5Core_DIR}/../../../lib)
     set(QT_PLATFORM_PLUGINS_DIR ${Qt5Core_DIR}/../../../plugins/platforms)
     get_filename_component(BOOST_LIB_DIR ${Boost_DATE_TIME_LIBRARY_DEBUG} PATH)
     get_filename_component(DT_NAME_DEBUG ${Boost_DATE_TIME_LIBRARY_DEBUG} NAME_WE)
@@ -76,6 +77,11 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     get_filename_component(ZLIB_NAME_RELEASE ${Boost_ZLIB_LIBRARY_RELEASE} NAME_WE)
     get_filename_component(REGEX_NAME_RELEASE ${Boost_REGEX_LIBRARY_RELEASE} NAME_WE)
 
+    file(GLOB files ${QT_LIB_DIR}/Qt*.pdb)
+    foreach(file ${files})
+        file(COPY ${file} DESTINATION ${QT_BIN_DIR})
+    endforeach()
+    
     add_custom_command(TARGET powertabeditor POST_BUILD
 	    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/platforms
 
@@ -106,12 +112,19 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${PO_NAME_DEBUG}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${IO_NAME_DEBUG}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${ZLIB_NAME_DEBUG}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${REGEX_NAME_DEBUG}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${REGEX_NAME_DEBUG}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${DT_NAME_RELEASE}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${PO_NAME_RELEASE}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${IO_NAME_RELEASE}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
 	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${ZLIB_NAME_RELEASE}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-            COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${REGEX_NAME_RELEASE}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+	    COMMAND ${CMAKE_COMMAND} -E copy ${BOOST_LIB_DIR}/${REGEX_NAME_RELEASE}.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     )
+    
+    file(GLOB files ${QT_BIN_DIR}/icu*.dll)
+    foreach(file ${files})
+        add_custom_command(TARGET powertabeditor POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${file} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        )
+    endforeach()
 endif()
