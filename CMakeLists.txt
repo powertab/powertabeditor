@@ -13,6 +13,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
 
 include(cmake/cotire.cmake)
+set_directory_properties(PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_DEBUG_POSTFIX "d")
@@ -20,9 +21,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-DBOOST_ALL_DYN_LINK)
     add_definitions(-DBOOST_ALL_NO_LIB)
     add_definitions(-DNOMINMAX)
-	add_definitions(-DQ_COMPILER_INITIALIZER_LISTS)
-    # Increase the virtual memory limit for precompiled headers.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm200")
+    add_definitions(-DQ_COMPILER_INITIALIZER_LISTS)
 else()
     # Set -Wno-deprecated to silence noisy warnings from Qt headers that use the 'register' keyword.
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wnon-virtual-dtor -Wextra -Wno-deprecated")
