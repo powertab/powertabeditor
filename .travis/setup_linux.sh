@@ -2,7 +2,7 @@
 set -e # Exit immediately if an error occurs.
 set -x # Echo commands.
 
-sudo add-apt-repository --yes ppa:kalakris/cmake # For cmake 2.8.9+
+sudo add-apt-repository --yes ppa:smspillaz/cmake-2.8.12 # For updated CMake
 sudo add-apt-repository --yes ppa:beineri/opt-qt521 # For Qt 5.2.1
 sudo add-apt-repository --yes ppa:boost-latest/ppa # Updated Boost
 sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test # gcc 4.8
