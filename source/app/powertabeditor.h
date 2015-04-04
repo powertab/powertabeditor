@@ -319,6 +319,8 @@ private:
     void toggleMetronome();
     /// Sets the current voice that is being edited.
     void updateActiveVoice(int);
+    /// Sets the current score filter.
+    void updateActiveFilter(int);
     /// Updates the playback widget with the caret's current location.
     void updateLocationLabel();
 

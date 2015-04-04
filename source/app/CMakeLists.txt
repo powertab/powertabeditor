@@ -20,6 +20,7 @@ add_library(pteapp
     scorearea.cpp
     settings.cpp
     tuningdictionary.cpp
+	viewoptions.cpp
 
     appinfo.h
     caret.h
@@ -31,6 +32,7 @@ add_library(pteapp
     scorearea.h
     settings.h
     tuningdictionary.h
+	viewoptions.h
     pubsub/playerpubsub.h
     pubsub/pubsub.h
     pubsub/clickpubsub.h

@@ -18,6 +18,7 @@
 #ifndef APP_DOCUMENTMANAGER_H
 #define APP_DOCUMENTMANAGER_H
 
+#include <app/viewoptions.h>
 #include <app/caret.h>
 #include <boost/noncopyable.hpp>
 #include <boost/optional/optional.hpp>
@@ -38,12 +39,16 @@ public:
     const Score &getScore() const;
     Score &getScore();
 
+    const ViewOptions &getViewOptions() const { return myViewOptions; }
+    ViewOptions &getViewOptions() { return myViewOptions; }
+
     const Caret &getCaret() const;
     Caret &getCaret();
 
 private:
     boost::optional<std::string> myFilename;
     Score myScore;
+    ViewOptions myViewOptions;
     Caret myCaret;
 };
 

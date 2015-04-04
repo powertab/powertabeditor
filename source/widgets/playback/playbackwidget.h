@@ -24,8 +24,8 @@ namespace Ui {
 class PlaybackWidget;
 }
 
+class Document;
 class QButtonGroup;
-class Score;
 
 class PlaybackWidget : public QWidget
 {
@@ -38,7 +38,7 @@ public:
     ~PlaybackWidget();
 
     /// Reload any settings for the given score.
-    void reset(const Score &score);
+    void reset(const Document &doc);
 
     /// Get the current playback speed.
     int getPlaybackSpeed() const;
@@ -52,6 +52,7 @@ public:
 signals:
     void playbackSpeedChanged(int speed);
     void activeVoiceChanged(int voice);
+    void activeFilterChanged(int filter);
 
 private:
     void onSettingChanged(const std::string &setting);

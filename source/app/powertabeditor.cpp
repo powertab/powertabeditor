@@ -270,10 +270,10 @@ void PowerTabEditor::switchTab(int index)
 
     if (index != -1)
     {
-        const Score &score = myDocumentManager->getCurrentDocument().getScore();
-        myMixer->reset(score);
-        myInstrumentPanel->reset(score);
-        myPlaybackWidget->reset(score);
+        const Document &doc = myDocumentManager->getCurrentDocument();
+        myMixer->reset(doc.getScore());
+        myInstrumentPanel->reset(doc.getScore());
+        myPlaybackWidget->reset(doc);
         updateLocationLabel();
     }
     else
@@ -554,14 +554,14 @@ void PowerTabEditor::redrawSystem(int index)
 
 void PowerTabEditor::redrawScore()
 {
+    const Document &doc = myDocumentManager->getCurrentDocument();
     getCaret().moveToValidPosition();
-    getScoreArea()->renderDocument(myDocumentManager->getCurrentDocument());
+    getScoreArea()->renderDocument(doc);
     updateCommands();
 
-    const Score &score = myDocumentManager->getCurrentDocument().getScore();
-    myMixer->reset(score);
-    myInstrumentPanel->reset(score);
-    myPlaybackWidget->reset(score);
+    myMixer->reset(doc.getScore());
+    myInstrumentPanel->reset(doc.getScore());
+    myPlaybackWidget->reset(doc);
 }
 
 void PowerTabEditor::moveCaretToStart()
@@ -2662,6 +2662,9 @@ void PowerTabEditor::createTabArea()
     connect(myPlaybackWidget, &PlaybackWidget::activeVoiceChanged, this,
             &PowerTabEditor::updateActiveVoice);
 
+    connect(myPlaybackWidget, &PlaybackWidget::activeFilterChanged, this,
+            &PowerTabEditor::updateActiveFilter);
+
     QSettings settings;
     myMetronomeCommand->setChecked(
         settings.value(Settings::MIDI_METRONOME_ENABLED,
@@ -2773,7 +2776,7 @@ void PowerTabEditor::setupNewTab()
 
     myMixer->reset(doc.getScore());
     myInstrumentPanel->reset(doc.getScore());
-    myPlaybackWidget->reset(doc.getScore());
+    myPlaybackWidget->reset(doc);
 
     // Switch to the new document.
     myTabWidget->setCurrentIndex(myDocumentManager->getCurrentDocumentIndex());
@@ -3093,6 +3096,12 @@ void PowerTabEditor::updateActiveVoice(int voice)
 {
     getLocation().setVoiceIndex(voice);
     updateCommands();
+}
+
+void PowerTabEditor::updateActiveFilter(int filter)
+{
+    myDocumentManager->getCurrentDocument().getViewOptions().setFilter(filter);
+    redrawScore();
 }
 
 void PowerTabEditor::updateLocationLabel()

@@ -18,6 +18,7 @@
 #include "playbackwidget.h"
 #include "ui_playbackwidget.h"
 
+#include <app/documentmanager.h>
 #include <score/staff.h>
 #include <score/score.h>
 #include <widgets/common.h>
@@ -76,6 +77,8 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
             SIGNAL(activeVoiceChanged(int)));
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)), this,
             SIGNAL(playbackSpeedChanged(int)));
+    connect(ui->filterComboBox, SIGNAL(currentIndexChanged(int)), this,
+            SIGNAL(activeFilterChanged(int)));
     connectButtonToAction(ui->playPauseButton, &playPauseCommand);
     connectButtonToAction(ui->metronomeToggleButton, &metronomeCommand);
     connectButtonToAction(ui->rewindToStartButton, &rewindCommand);
@@ -86,15 +89,26 @@ PlaybackWidget::~PlaybackWidget()
     delete ui;
 }
 
-void PlaybackWidget::reset(const Score &score)
+void PlaybackWidget::reset(const Document &doc)
 {
-    ui->filterComboBox->clear();
+    ui->filterComboBox->blockSignals(true);
 
-    for (const ViewFilter &filter : score.getViewFilters())
+    // Rebuild the filter list.
+    ui->filterComboBox->clear();
+    for (const ViewFilter &filter : doc.getScore().getViewFilters())
     {
         ui->filterComboBox->addItem(
             QString::fromStdString(filter.getDescription()));
     }
+
+    // Update the selected filter.
+    if (doc.getViewOptions().getFilter())
+        ui->filterComboBox->setCurrentIndex(*doc.getViewOptions().getFilter());
+
+    // Update the selected voice.
+    myVoices->button(doc.getCaret().getLocation().getVoiceIndex())->setChecked(true);
+
+    ui->filterComboBox->blockSignals(false);
 }
 
 int PlaybackWidget::getPlaybackSpeed() const
