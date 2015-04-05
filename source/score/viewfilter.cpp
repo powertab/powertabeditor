@@ -62,16 +62,20 @@ bool FilterRule::accept(const Score &score, int system_index,
         player_changes.push_back(&change);
     }
 
+    bool has_active_players = false;
     for (const PlayerChange *change : player_changes)
     {
         for (const ActivePlayer &player : change->getActivePlayers(staff_index))
         {
+            has_active_players = true;
+
             if (accept(score, player))
                 return true;
         }
     }
 
-    return false;
+    // The filter should always accept empty staves.
+    return !has_active_players;
 }
 
 bool FilterRule::accept(const Score &score, const ActivePlayer &p) const
