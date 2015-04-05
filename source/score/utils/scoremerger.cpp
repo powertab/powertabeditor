@@ -17,6 +17,7 @@
 
 #include "scoremerger.h"
 
+#include <app/viewoptions.h>
 #include <score/score.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
@@ -24,10 +25,11 @@
 
 /// Approximate upper limit on the number of positions in a system.
 static const int POSITION_LIMIT = 30;
+static const ViewOptions theDefaultViewOptions;
 
 ScoreMerger::ScoreMerger(Score &dest, Score &guitarScore, Score &bassScore)
     : myDestScore(dest),
-      myDestCaret(dest),
+      myDestCaret(dest, theDefaultViewOptions),
       myDestLoc(myDestCaret.getLocation()),
       myGuitarScore(guitarScore),
       myBassScore(bassScore),
@@ -588,7 +590,7 @@ void ScoreMerger::merge()
 }
 
 ScoreMerger::State::State(Score &score, bool isBass)
-    : caret(score),
+    : caret(score, theDefaultViewOptions),
       repeatIndex(score),
       loc(caret.getLocation()),
       isBass(isBass),
@@ -722,7 +724,8 @@ static int getRepeatedSectionWidth(Score &score, const RepeatedSection &sec)
     auto &startLoc = sec.getStartBarLocation();
     auto &endLoc = sec.getLastEndBarLocation();
 
-    Caret caret(score);
+    ViewOptions view_options;
+    Caret caret(score, view_options);
     caret.moveToSystem(startLoc.getSystem(), true);
     caret.moveToPosition(startLoc.getPosition());
 

@@ -17,13 +17,13 @@
 
 #include "caret.h"
 
+#include <app/viewoptions.h>
 #include <boost/algorithm/clamp.hpp>
 #include <score/score.h>
 #include <score/system.h>
 
-Caret::Caret(Score &score)
-    : myLocation(score),
-      myInPlaybackMode(false)
+Caret::Caret(Score &score, const ViewOptions &options)
+    : myLocation(score), myViewOptions(options), myInPlaybackMode(false)
 {
 }
 
@@ -95,11 +95,28 @@ void Caret::moveStaff(int offset)
 
 void Caret::moveToStaff(int staff)
 {
-    myLocation.setStaffIndex(boost::algorithm::clamp(
-        staff, 0,
-        static_cast<int>(myLocation.getSystem().getStaves().size()) - 1));
+    const bool is_increasing = staff >= myLocation.getStaffIndex();
+    const int increment = is_increasing ? 1 : -1;
+    const int end =
+        is_increasing ? myLocation.getSystem().getStaves().size() : -1;
 
-    onLocationChanged();
+    const Score &score = myLocation.getScore();
+    const ViewFilter *filter =
+        myViewOptions.getFilter()
+            ? &score.getViewFilters()[*myViewOptions.getFilter()]
+            : nullptr;
+
+    // If the specified staff is hidden by the current filter, try the staves
+    // before or after in that direction.
+    for (int i = staff; i != end; i += increment)
+    {
+        if (!filter || filter->accept(score, myLocation.getSystemIndex(), i))
+        {
+            myLocation.setStaffIndex(i);
+            onLocationChanged();
+            return;
+        }
+    }
 }
 
 bool Caret::moveToNextBar()

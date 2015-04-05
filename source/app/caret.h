@@ -21,11 +21,13 @@
 #include <boost/signals2/signal.hpp>
 #include <score/scorelocation.h>
 
+class ViewOptions;
+
 /// Tracks the current location within the score.
 class Caret
 {
 public:
-    Caret(Score &score);
+    Caret(Score &score, const ViewOptions &options);
 
     ScoreLocation &getLocation();
     const ScoreLocation &getLocation() const;
@@ -66,9 +68,6 @@ public:
     /// Moves up or down by the given number of staves.
     void moveStaff(int offset);
 
-    /// Move to the specified staff.
-    void moveToStaff(int staff);
-
     /// Moves the caret to the next bar after the current position, or to the
     /// next system if necessary.
     bool moveToNextBar();
@@ -88,12 +87,16 @@ public:
             const LocationChangedSlot::slot_type &subscriber) const;
 
 private:
+    /// Move to the specified staff.
+    void moveToStaff(int staff);
+
     /// Returns the last valid position in the system.
     int getLastPosition() const;
     /// Returns the last valid system index in the score.
     int getLastSystemIndex() const;
 
     ScoreLocation myLocation;
+    const ViewOptions &myViewOptions;
     bool myInPlaybackMode;
 
     /// Send out signals to subscribers whenever the location changes.

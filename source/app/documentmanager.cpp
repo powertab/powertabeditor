@@ -121,7 +121,7 @@ int DocumentManager::getCurrentDocumentIndex() const
 }
 
 Document::Document()
-    : myCaret(myScore)
+    : myCaret(myScore, myViewOptions)
 {
 }
 
