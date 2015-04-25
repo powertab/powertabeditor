@@ -820,14 +820,14 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
         QString description;
         if (!activePlayers.empty())
         {
-            description = "Player ";
             for (size_t i = 0, n = activePlayers.size(); i < n; ++i)
             {
                 if (i != 0)
                     description += ", ";
 
-                description +=
-                    QString::number(activePlayers[i].getPlayerNumber() + 1);
+                const int player_index = activePlayers[i].getPlayerNumber();
+                description += QString::fromStdString(
+                    myScore.getPlayers()[player_index].getDescription());
             }
         }
         else
