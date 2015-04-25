@@ -13,7 +13,7 @@ add_library(pugixml
 )
 
 # Don't bother building unit tests for this library.
-set(WITHERSHINS_BUILD_TESTS OFF CACHE BOOL "Build unit tests.")
+set(BUILD_TESTS OFF CACHE BOOL "Build unit tests.")
 # Propagate our -Werror setting downwards.
-set(WITHERSHINS_ENABLE_WERROR ${ENABLE_WERROR} CACHE BOOL "Fail and stop if a warning is triggered.")
+set(ENABLE_WERROR ${ENABLE_WERROR} CACHE BOOL "Fail and stop if a warning is triggered.")
 add_subdirectory(withershins)
