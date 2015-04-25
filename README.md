@@ -79,7 +79,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
 #### OS X:
 * Currently tested with Mac OS X 10.9.2 only.
 * Install Xcode along with its Command Line Tools.
-* Install CMake, Qt 5.2+, libbfd, and Boost
+* Install CMake, Qt 5.2+, and Boost
   * Install [Homebrew](http://brew.sh/) and run `./osx/setup.sh`.
   * Install [CMake](http://www.cmake.org/).
 * Build (adapt paths to your setup) in `source/` directory
