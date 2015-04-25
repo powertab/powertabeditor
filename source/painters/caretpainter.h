@@ -24,11 +24,12 @@
 
 class Caret;
 struct LayoutInfo;
+class ViewOptions;
 
 class CaretPainter : public QGraphicsItem
 {
 public:
-    CaretPainter(const Caret &caret);
+    CaretPainter(const Caret &caret, const ViewOptions &view_options);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                        QWidget *) override;
@@ -51,6 +52,7 @@ private:
     void onLocationChanged();
 
     const Caret &myCaret;
+    const ViewOptions &myViewOptions;
     std::unique_ptr<LayoutInfo> myLayout;
     std::vector<QRectF> mySystemRects;
     boost::signals2::scoped_connection myCaretConnection;

@@ -18,6 +18,7 @@
 #include "caretpainter.h"
 
 #include <app/caret.h>
+#include <app/viewoptions.h>
 #include <boost/lexical_cast.hpp>
 #include <painters/layoutinfo.h>
 #include <QDebug>
@@ -29,14 +30,17 @@
 const double CaretPainter::PEN_WIDTH = 0.75;
 const double CaretPainter::CARET_NOTE_SPACING = 6;
 
-CaretPainter::CaretPainter(const Caret &caret)
+CaretPainter::CaretPainter(const Caret &caret, const ViewOptions &view_options)
     : myCaret(caret),
-      myCaretConnection(caret.subscribeToChanges([=]() { onLocationChanged(); }))
+      myViewOptions(view_options),
+      myCaretConnection(caret.subscribeToChanges([=]() {
+          onLocationChanged();
+      }))
 {
 }
 
 void CaretPainter::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-                  QWidget *)
+                         QWidget *)
 {
     if (!myLayout)
     {
@@ -165,13 +169,22 @@ void CaretPainter::onLocationChanged()
                                   location.getSystemIndex(), location.getStaff(),
                                   location.getStaffIndex()));
 
-    // Compute the offset due to the previous staves.
+    const ViewFilter *filter =
+        myViewOptions.getFilter()
+            ? &location.getScore().getViewFilters()[*myViewOptions.getFilter()]
+            : nullptr;
+
+    // Compute the offset due to the previous (visible) staves.
     double offset = 0;
     for (int i = 0; i < location.getStaffIndex(); ++i)
     {
-        offset += LayoutInfo(location.getScore(), system,
-                             location.getSystemIndex(),
-                             system.getStaves()[i], i).getStaffHeight();
+        if (!filter ||
+            filter->accept(location.getScore(), location.getSystemIndex(), i))
+        {
+            offset += LayoutInfo(location.getScore(), system,
+                                 location.getSystemIndex(),
+                                 system.getStaves()[i], i).getStaffHeight();
+        }
     }
 
     const QRectF oldRect = sceneBoundingRect();

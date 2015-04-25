@@ -49,7 +49,8 @@ void ScoreArea::renderDocument(const Document &document)
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    myCaretPainter = new CaretPainter(document.getCaret());
+    myCaretPainter =
+        new CaretPainter(document.getCaret(), document.getViewOptions());
     myCaretPainter->subscribeToMovement([=]() {
         adjustScroll();
     });
@@ -78,7 +79,7 @@ void ScoreArea::renderDocument(const Document &document)
         {
             for (int i = left; i < right; ++i)
             {
-                SystemRenderer render(this, score);
+                SystemRenderer render(this, score, document.getViewOptions());
                 myRenderedSystems[i] = render(score.getSystems()[i], i);
             }
         }, left, right);
@@ -115,7 +116,7 @@ void ScoreArea::redrawSystem(int index)
     delete myRenderedSystems.takeAt(index);
 
     const Score &score = myDocument->getScore();
-    SystemRenderer render(this, score);
+    SystemRenderer render(this, score, myDocument->getViewOptions());
     QGraphicsItem *newSystem = render(score.getSystems()[index], index);
 
     double height = 0;

@@ -17,8 +17,9 @@
 
 #include "systemrenderer.h"
 
-#include <app/scorearea.h>
 #include <app/pubsub/clickpubsub.h>
+#include <app/scorearea.h>
+#include <app/viewoptions.h>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/map.hpp>
@@ -57,9 +58,11 @@ void SystemRenderer::centerSymbolVertically(QGraphicsItem &item, double y)
                          item.boundingRect().height()));
 }
 
-SystemRenderer::SystemRenderer(const ScoreArea *scoreArea, const Score &score)
-    : myScoreArea(scoreArea),
+SystemRenderer::SystemRenderer(const ScoreArea *score_area, const Score &score,
+                               const ViewOptions &view_options)
+    : myScoreArea(score_area),
       myScore(score),
+      myViewOptions(view_options),
       myParentSystem(nullptr),
       myParentStaff(nullptr),
       myMusicNotationFont(myMusicFont.getFont()),
@@ -81,19 +84,21 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
     myParentSystem = new QGraphicsRectItem();
     myParentSystem->setPen(QPen(QBrush(QColor(0, 0, 0, 127)), 0.5));
 
+    const ViewFilter *filter =
+        myViewOptions.getFilter()
+            ? &myScore.getViewFilters()[*myViewOptions.getFilter()]
+            : nullptr;
+
     // Draw each staff.
     double height = 0;
     int i = 0;
     for (const Staff &staff : system.getStaves())
     {
-        // TODO - re-enable this once there is a UI for switching the score view.
-#if 0
-        if (staff.getViewType() != view)
+        if (filter && !filter->accept(myScore, systemIndex, i))
         {
             ++i;
             continue;
         }
-#endif
 
         const bool isFirstStaff = (height == 0);
         LayoutConstPtr layout = std::make_shared<LayoutInfo>(
