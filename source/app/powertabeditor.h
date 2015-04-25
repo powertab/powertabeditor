@@ -113,7 +113,7 @@ private slots:
     void editFileInformation();
 
     /// Starts or stops playback of the score.
-    void startStopPlayback();
+    void startStopPlayback(bool from_measure_start = false);
 
     /// Redraws only the given system.
     void redrawSystem(int);
@@ -407,6 +407,7 @@ private:
 
     QMenu *myPlaybackMenu;
     Command *myPlayPauseCommand;
+    Command *myPlayFromStartOfMeasureCommand;
     Command *myRewindCommand;
     Command *myMetronomeCommand;
 

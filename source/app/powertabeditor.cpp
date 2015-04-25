@@ -498,7 +498,7 @@ void PowerTabEditor::editFileInformation()
     }
 }
 
-void PowerTabEditor::startStopPlayback()
+void PowerTabEditor::startStopPlayback(bool from_measure_start)
 {
     myIsPlaying = !myIsPlaying;
 
@@ -506,6 +506,13 @@ void PowerTabEditor::startStopPlayback()
     {
         // Start up the midi player.
         myPlayPauseCommand->setText(tr("Pause"));
+
+        // Move the caret to the start of the current bar if necessary.
+        if (from_measure_start)
+        {
+            moveCaretToPrevBar();
+            moveCaretToNextBar();
+        }
 
         getCaret().setIsInPlaybackMode(true);
         myPlaybackWidget->setPlaybackMode(true);
@@ -1724,6 +1731,13 @@ void PowerTabEditor::createCommands()
     connect(myPlayPauseCommand, SIGNAL(triggered()), this,
             SLOT(startStopPlayback()));
 
+    myPlayFromStartOfMeasureCommand = new Command(
+        tr("Play From Start Of Measure"), "Playback.PlayFromStartOfMeasure",
+        Qt::CTRL + Qt::Key_Space, this);
+    connect(myPlayFromStartOfMeasureCommand, &QAction::triggered, [this]() {
+        startStopPlayback(/* from_measure_start */ true);
+    });
+
     myRewindCommand = new Command(tr("Rewind"), "Playback.Rewind",
                                   Qt::CTRL + Qt::Key_Left, this);
     connect(myRewindCommand, &QAction::triggered, this,
@@ -2458,6 +2472,7 @@ void PowerTabEditor::createMenus()
     // Playback Menu.
     myPlaybackMenu = menuBar()->addMenu(tr("Play&back"));
     myPlaybackMenu->addAction(myPlayPauseCommand);
+    myPlaybackMenu->addAction(myPlayFromStartOfMeasureCommand);
     myPlaybackMenu->addAction(myRewindCommand);
     myPlaybackMenu->addAction(myMetronomeCommand);
 
@@ -3035,6 +3050,7 @@ void PowerTabEditor::enableEditing(bool enable)
     mySaveAsCommand->setEnabled(enable);
     myPrintCommand->setEnabled(enable);
     myPrintPreviewCommand->setEnabled(enable);
+    myPlayFromStartOfMeasureCommand->setEnabled(enable);
     myAddPlayerCommand->setEnabled(enable);
     myAddInstrumentCommand->setEnabled(enable);
     myPlayerChangeCommand->setEnabled(enable);
