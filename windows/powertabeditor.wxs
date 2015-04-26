@@ -87,6 +87,9 @@
       <Component Id="boost_program_options" Guid="95D95616-CDF8-4653-87BD-B936AD2BDFA8">
         <File Source="$(var.BinDir)/boost_program_options-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
       </Component>
+      <Component Id="boost_regex" Guid="B1ECB61B-50EA-4CA7-B980-CB37593EA93E">
+        <File Source="$(var.BinDir)/boost_regex-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
       <Component Id="boost_zlib" Guid="F004D3B4-A96D-40DB-A370-5FBCD0C9E4DE">
         <File Source="$(var.BinDir)/boost_zlib-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
       </Component>
