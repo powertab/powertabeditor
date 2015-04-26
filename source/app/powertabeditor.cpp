@@ -303,7 +303,7 @@ bool PowerTabEditor::closeTab(int index)
         const int ret = msg.exec();
         if (ret == QMessageBox::Save)
         {
-            if (!saveFileAs())
+            if (!saveFile())
                 return false;
         }
         else if (ret == QMessageBox::Cancel)
@@ -334,58 +334,73 @@ bool PowerTabEditor::closeCurrentTab()
     return closeTab(myDocumentManager->getCurrentDocumentIndex());
 }
 
+bool PowerTabEditor::saveFile()
+{
+    const Document &doc = myDocumentManager->getCurrentDocument();
+    if (!doc.hasFilename())
+        return saveFileAs();
+
+    const QString filename = QString::fromStdString(doc.getFilename());
+    return QFileInfo(filename).suffix() == "pt2" ? saveFile(filename)
+                                                 : saveFileAs();
+}
+
+bool PowerTabEditor::saveFile(QString path)
+{
+    QFileInfo info(path);
+    QString extension = info.suffix();
+    Q_ASSERT(extension == "pt2");
+
+    boost::optional<FileFormat> format =
+        myFileFormatManager->findFormat(extension.toStdString());
+    if (!format)
+    {
+        QMessageBox::warning(this, tr("Error Saving File"),
+                             tr("Unsupported file type."));
+        return false;
+    }
+
+    const std::string path_str = path.toStdString();
+    Document &doc = myDocumentManager->getCurrentDocument();
+
+    if (!myFileFormatManager->exportFile(doc.getScore(), path_str, *format))
+        return false;
+
+    doc.setFilename(path_str);
+
+    // Update window title and tab bar.
+    updateWindowTitle();
+    const QString filename = info.fileName();
+    myTabWidget->setTabText(myTabWidget->currentIndex(), filename);
+    myTabWidget->setTabToolTip(myTabWidget->currentIndex(), filename);
+
+    // Add to the recent files list and update the last used directory.
+    myRecentFiles->add(path);
+    setPreviousDirectory(path);
+
+    // Mark the file as being in an unmodified state.
+    myUndoManager->setClean();
+
+    return true;
+}
+
 bool PowerTabEditor::saveFileAs()
 {
-    const QString filter(QString::fromStdString(
-                             myFileFormatManager->exportFileFilter()));
+    const QString filter =
+        QString::fromStdString(myFileFormatManager->exportFileFilter());
     QString path = QFileDialog::getSaveFileName(this, tr("Save As"),
                                                 myPreviousDirectory, filter);
 
-    if (!path.isEmpty())
-    {
-        // If the user didn't type the extension, add it in.
-        QFileInfo info(path);
-        QString extension = info.suffix();
-        if (extension.isEmpty())
-        {
-            extension = "pt2";
-            path += "." + extension;
-        }
+    if (path.isEmpty())
+        return false;
 
-        boost::optional<FileFormat> format = myFileFormatManager->findFormat(
-                    extension.toStdString());
-        if (!format)
-        {
-            QMessageBox::warning(this, tr("Error Saving File"),
-                                 tr("Unsupported file type."));
-            return false;
-        }
+    // If the user didn't type the extension, add it in.
+    QFileInfo info(path);
+    QString extension = info.suffix();
+    if (extension.isEmpty())
+        path += "." + extension;
 
-        const std::string newPath = path.toStdString();
-        Document &doc = myDocumentManager->getCurrentDocument();
-
-        if (myFileFormatManager->exportFile(doc.getScore(), newPath, *format))
-        {
-            doc.setFilename(newPath);
-
-            // Update window title and tab bar.
-            updateWindowTitle();
-            const QString fileName = QFileInfo(path).fileName();
-            myTabWidget->setTabText(myTabWidget->currentIndex(), fileName);
-            myTabWidget->setTabToolTip(myTabWidget->currentIndex(), fileName);
-
-            // Add to the recent files list and update the last used directory.
-            myRecentFiles->add(path);
-            setPreviousDirectory(path);
-
-            // Mark the file as being in an unmodified state.
-            myUndoManager->setClean();
-
-            return true;
-        }
-    }
-
-    return false;
+    return saveFile(path);
 }
 
 void PowerTabEditor::updateModified(bool clean)
@@ -1659,6 +1674,10 @@ void PowerTabEditor::createCommands()
     connect(myCloseTabCommand, SIGNAL(triggered()), this,
             SLOT(closeCurrentTab()));
 
+    mySaveCommand = new Command(tr("Save"), "File.Save",
+                                QKeySequence::Save, this);
+    connect(mySaveCommand, SIGNAL(triggered()), this, SLOT(saveFile()));
+
     mySaveAsCommand = new Command(tr("Save As..."), "File.SaveAs",
                                   QKeySequence::SaveAs, this);
     connect(mySaveAsCommand, SIGNAL(triggered()), this, SLOT(saveFileAs()));
@@ -2444,6 +2463,7 @@ void PowerTabEditor::createMenus()
     myFileMenu->addAction(myOpenFileCommand);
     myFileMenu->addAction(myCloseTabCommand);
     myFileMenu->addSeparator();
+    myFileMenu->addAction(mySaveCommand);
     myFileMenu->addAction(mySaveAsCommand);
     myFileMenu->addSeparator();
     myFileMenu->addAction(myPrintCommand);
@@ -3047,6 +3067,7 @@ void PowerTabEditor::enableEditing(bool enable)
     }
 
     myCloseTabCommand->setEnabled(enable);
+    mySaveCommand->setEnabled(enable);
     mySaveAsCommand->setEnabled(enable);
     myPrintCommand->setEnabled(enable);
     myPrintPreviewCommand->setEnabled(enable);

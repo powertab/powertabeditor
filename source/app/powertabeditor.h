@@ -73,6 +73,10 @@ private slots:
     /// @return True if the document was closed successfully.
     bool closeCurrentTab();
 
+    /// Saves the current document.
+    /// @return True if the file was successfully saved.
+    bool saveFile();
+
     /// Saves the current document to a new filename.
     /// @return True if the file was successfully saved.
     bool saveFileAs();
@@ -324,6 +328,10 @@ private:
     /// Updates the playback widget with the caret's current location.
     void updateLocationLabel();
 
+    /// Saves the current document to the specified path.
+    /// @return True if the file was successfully saved.
+    bool saveFile(QString path);
+
     /// Adds or removes a rest at the current location.
     void editRest(Position::DurationType duration);
 
@@ -387,6 +395,7 @@ private:
     Command *myNewDocumentCommand;
     Command *myOpenFileCommand;
     Command *myCloseTabCommand;
+    Command *mySaveCommand;
     Command *mySaveAsCommand;
     Command *myPrintCommand;
     Command *myPrintPreviewCommand;
