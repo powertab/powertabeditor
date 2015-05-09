@@ -1049,7 +1049,13 @@ void PowerTabEditor::editIrregularGrouping(bool setAsTriplet)
 
 void PowerTabEditor::addRest()
 {
-    editRest(myActiveDurationType);
+    ScoreLocation &location = getLocation();
+    const Position *pos = location.getPosition();
+    const Position::DurationType duration =
+        pos ? pos->getDurationType() : myActiveDurationType;
+
+    myUndoManager->push(new AddRest(location, duration),
+                        location.getSystemIndex());
 }
 
 void PowerTabEditor::editMultiBarRest()
@@ -2964,6 +2970,8 @@ void PowerTabEditor::updateCommands()
     updateNoteProperty(myOctave8vbCommand, note, Note::Octave8vb);
     updateNoteProperty(myOctave15maCommand, note, Note::Octave15ma);
     updateNoteProperty(myOctave15mbCommand, note, Note::Octave15mb);
+
+    myAddRestCommand->setEnabled(!pos || !pos->isRest());
 
     myTripletCommand->setEnabled(pos);
     myIrregularGroupingCommand->setEnabled(pos);
