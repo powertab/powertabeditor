@@ -864,6 +864,7 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
 }
 
 static Position::DurationType changeDuration(Position::DurationType duration,
+                                             bool increase)
 {
     if ((increase && duration == Position::WholeNote) ||
         (!increase && duration == Position::SixtyFourthNote))
