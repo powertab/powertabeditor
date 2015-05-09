@@ -863,44 +863,60 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
         updateCommands();
 }
 
+static Position::DurationType changeDuration(Position::DurationType duration,
+{
+    if ((increase && duration == Position::WholeNote) ||
+        (!increase && duration == Position::SixtyFourthNote))
+    {
+        return duration;
+    }
+
+    return static_cast<Position::DurationType>(increase ? duration / 2
+                                                        : duration * 2);
+}
+
 void PowerTabEditor::changeNoteDuration(bool increase)
 {
-    if (getLocation().getSelectedPositions().empty())
+    std::vector<Position *> selected_positions =
+        getLocation().getSelectedPositions();
+
+    if (selected_positions.empty())
     {
         if (increase && myActiveDurationType == Position::WholeNote)
             return;
         if (!increase && myActiveDurationType == Position::SixtyFourthNote)
             return;
 
-        updateNoteDuration(static_cast<Position::DurationType>(
-                               increase ? myActiveDurationType >> 1 :
-                                          myActiveDurationType << 1));
-        return;
+        updateNoteDuration(changeDuration(myActiveDurationType, increase));
     }
-
-    myUndoManager->beginMacro(tr("Edit Note Duration"));
-
-    // Increase the duration of each selected position.
-    for (const Position *pos : getLocation().getSelectedPositions())
+    else
     {
-        ScoreLocation location(getLocation());
-        location.setPositionIndex(pos->getPosition());
-        location.setSelectionStart(pos->getPosition());
+        myUndoManager->beginMacro(tr("Edit Note Duration"));
 
-        Position::DurationType duration = pos->getDurationType();
-        if (increase && duration == Position::WholeNote)
-            continue;
-        if (!increase && duration == Position::SixtyFourthNote)
-            continue;
+        // Increase the duration of each selected position.
+        for (const Position *pos : selected_positions)
+        {
+            ScoreLocation location(getLocation());
+            location.setPositionIndex(pos->getPosition());
+            location.setSelectionStart(pos->getPosition());
 
-        myUndoManager->push(new EditNoteDuration(location,
-                static_cast<Position::DurationType>(increase ? duration >> 1 :
-                                                               duration << 1),
-                                                 false),
-                            location.getSystemIndex());
+            Position::DurationType new_duration =
+                changeDuration(pos->getDurationType(), increase);
+
+            if (new_duration == pos->getDurationType())
+                continue;
+
+            // Update the active note duration to match the last selected note.
+            if (pos == selected_positions.back())
+                updateNoteDuration(new_duration);
+
+            myUndoManager->push(
+                new EditNoteDuration(location, new_duration, false),
+                location.getSystemIndex());
+        }
+
+        myUndoManager->endMacro();
     }
-
-    myUndoManager->endMacro();
 }
 
 void PowerTabEditor::addDot()
