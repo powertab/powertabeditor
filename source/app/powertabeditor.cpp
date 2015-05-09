@@ -810,7 +810,8 @@ void PowerTabEditor::editTextItem()
 
 void PowerTabEditor::insertSystemAtEnd()
 {
-    insertSystem(getLocation().getScore().getSystems().size());
+    insertSystem(
+        static_cast<int>(getLocation().getScore().getSystems().size()));
 }
 
 void PowerTabEditor::insertSystemBefore()
@@ -2841,14 +2842,14 @@ namespace
 inline void updatePositionProperty(Command *command, const Position *pos,
                                    Position::SimpleProperty property)
 {
-    command->setEnabled(pos);
+    command->setEnabled(pos != nullptr);
     command->setChecked(pos && pos->hasProperty(property));
 }
 
 inline void updateNoteProperty(Command *command, const Note *note,
                                Note::SimpleProperty property)
 {
-    command->setEnabled(note);
+    command->setEnabled(note != nullptr);
     command->setChecked(note && note->hasProperty(property));
 }
 }
@@ -2895,13 +2896,13 @@ void PowerTabEditor::updateCommands()
                                              Score::MIN_LINE_SPACING);
     myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                        !tempoMarker && !altEnding && !dynamic);
-    myRemoveNoteCommand->setEnabled(note);
+    myRemoveNoteCommand->setEnabled(note != nullptr);
     myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
 
     myChordNameCommand->setChecked(
-        ScoreUtils::findByPosition(system.getChords(), position));
+        ScoreUtils::findByPosition(system.getChords(), position) != nullptr);
     myTextCommand->setChecked(
-        ScoreUtils::findByPosition(system.getTextItems(), position));
+        ScoreUtils::findByPosition(system.getTextItems(), position) != nullptr);
 
     // Note durations
     Position::DurationType durationType = myActiveDurationType;
@@ -2976,13 +2977,13 @@ void PowerTabEditor::updateCommands()
 
     myAddRestCommand->setEnabled(!pos || !pos->isRest());
 
-    myTripletCommand->setEnabled(pos);
-    myIrregularGroupingCommand->setEnabled(pos);
+    myTripletCommand->setEnabled(pos != nullptr);
+    myIrregularGroupingCommand->setEnabled(pos != nullptr);
 
     myMultibarRestCommand->setEnabled(!barline || position == 0);
     myMultibarRestCommand->setChecked(pos && pos->hasMultiBarRest());
 
-    myRehearsalSignCommand->setEnabled(barline);
+    myRehearsalSignCommand->setEnabled(barline != nullptr);
     myRehearsalSignCommand->setChecked(barline && barline->hasRehearsalSign());
 
     const bool isAlterationOfPace =
@@ -2993,12 +2994,13 @@ void PowerTabEditor::updateCommands()
     myAlterationOfPaceCommand->setEnabled(!tempoMarker || isAlterationOfPace);
     myAlterationOfPaceCommand->setChecked(isAlterationOfPace);
 
-    myKeySignatureCommand->setEnabled(barline);
-    myTimeSignatureCommand->setEnabled(barline);
+    myKeySignatureCommand->setEnabled(barline != nullptr);
+    myTimeSignatureCommand->setEnabled(barline != nullptr);
     myStandardBarlineCommand->setEnabled(!pos && !barline);
     myDirectionCommand->setChecked(
-        ScoreUtils::findByPosition(system.getDirections(), position));
-    myRepeatEndingCommand->setChecked(altEnding);
+        ScoreUtils::findByPosition(system.getDirections(), position) !=
+        nullptr);
+    myRepeatEndingCommand->setChecked(altEnding != nullptr);
     myDynamicCommand->setChecked(dynamic != nullptr);
 
     if (barline) // Current position is bar.
@@ -3017,7 +3019,7 @@ void PowerTabEditor::updateCommands()
         myBarlineCommand->setText(tr("Barline"));
     }
 
-    myHammerPullCommand->setEnabled(note);
+    myHammerPullCommand->setEnabled(note != nullptr);
     myHammerPullCommand->setChecked(note &&
                                     note->hasProperty(Note::HammerOnOrPullOff));
 
@@ -3025,13 +3027,13 @@ void PowerTabEditor::updateCommands()
                        Note::HammerOnFromNowhere);
     updateNoteProperty(myPullOffToNowhereCommand, note, Note::PullOffToNowhere);
     updateNoteProperty(myNaturalHarmonicCommand, note, Note::NaturalHarmonic);
-    myArtificialHarmonicCommand->setEnabled(note);
+    myArtificialHarmonicCommand->setEnabled(note != nullptr);
     myArtificialHarmonicCommand->setChecked(note &&
                                             note->hasArtificialHarmonic());
-    myTappedHarmonicCommand->setEnabled(note);
+    myTappedHarmonicCommand->setEnabled(note != nullptr);
     myTappedHarmonicCommand->setChecked(note && note->hasTappedHarmonic());
 
-    myBendCommand->setEnabled(note);
+    myBendCommand->setEnabled(note != nullptr);
     myBendCommand->setChecked(note && note->hasBend());
 
     updateNoteProperty(mySlideIntoFromAboveCommand, note,
@@ -3050,7 +3052,7 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myPalmMuteCommand, pos, Position::PalmMuting);
     updatePositionProperty(myTremoloPickingCommand, pos,
                            Position::TremoloPicking);
-    myTrillCommand->setEnabled(note);
+    myTrillCommand->setEnabled(note != nullptr);
     myTrillCommand->setChecked(note && note->hasTrill());
     updatePositionProperty(myTapCommand, pos, Position::Tap);
     updatePositionProperty(myArpeggioUpCommand, pos, Position::ArpeggioUp);
@@ -3060,7 +3062,8 @@ void PowerTabEditor::updateCommands()
                            Position::PickStrokeDown);
 
     myPlayerChangeCommand->setChecked(
-        ScoreUtils::findByPosition(system.getPlayerChanges(), position));
+        ScoreUtils::findByPosition(system.getPlayerChanges(), position) !=
+        nullptr);
 }
 
 void PowerTabEditor::enableEditing(bool enable)
