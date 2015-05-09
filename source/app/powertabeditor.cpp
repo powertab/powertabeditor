@@ -854,9 +854,12 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
 
     if (!getLocation().getSelectedPositions().empty())
     {
-        myUndoManager->push(new EditNoteDuration(getLocation(), duration, false),
-                            getLocation().getSystemIndex());
+        myUndoManager->push(
+            new EditNoteDuration(getLocation(), duration, false),
+            getLocation().getSystemIndex());
     }
+    else
+        updateCommands();
 }
 
 void PowerTabEditor::changeNoteDuration(bool increase)
