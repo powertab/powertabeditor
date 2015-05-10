@@ -235,6 +235,71 @@ static int importNotes(
     return length;
 }
 
+template <typename Symbol>
+static void copySymbols(
+    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &
+        src_symbols,
+    System &dest_system,
+    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &
+        dest_symbols,
+    void (System::*add_symbol)(const Symbol &), int offset, int left, int right)
+{
+    std::unordered_set<int> filled_positions;
+    for (const Symbol &dest_symbol : dest_symbols)
+        filled_positions.insert(dest_symbol.getPosition());
+
+    for (const Symbol &src_symbol :
+         ScoreUtils::findInRange(src_symbols, left, right - 1))
+    {
+        Symbol symbol(src_symbol);
+        symbol.setPosition(src_symbol.getPosition() + offset);
+
+        // We might get duplicate symbols from the guitar and bass scores.
+        if (filled_positions.find(symbol.getPosition()) !=
+            filled_positions.end())
+        {
+            continue;
+        }
+
+        (dest_system.*add_symbol)(symbol);
+    }
+}
+
+static void mergeSystemSymbols(ScoreLocation &dest_loc,
+                               const ScoreLocation &src_loc,
+                               bool is_expanded_bar)
+{
+    int offset, left, right;
+    getPositionRange(dest_loc, src_loc, offset, left, right);
+
+    System &dest_system = dest_loc.getSystem();
+    const System &src_system = src_loc.getSystem();
+
+    if (!is_expanded_bar)
+    {
+        copySymbols(src_system.getTempoMarkers(), dest_system,
+                    dest_system.getTempoMarkers(), &System::insertTempoMarker,
+                    offset, left, right);
+
+        copySymbols(src_system.getTextItems(), dest_system,
+                    dest_system.getTextItems(), &System::insertTextItem, offset,
+                    left, right);
+    }
+
+    copySymbols(src_system.getChords(), dest_system, dest_system.getChords(),
+                &System::insertChord, offset, left, right);
+
+    // TODO - handle alternate endings.
+#if 0
+    if (state->repeatState != State::EXPANDING_REPEAT)
+    {
+        copySymbols(src_system.getAlternateEndings(), dest_system,
+                    dest_system.getAlternateEndings(),
+                    &System::insertAlternateEnding, offset, left, right);
+    }
+#endif
+}
+
 static int copyContent(ScoreLocation &dest_loc, int &num_guitar_staves,
                        Caret &src_caret, const ExpandedBar &src_bar,
                        bool is_bass)
@@ -242,6 +307,8 @@ static int copyContent(ScoreLocation &dest_loc, int &num_guitar_staves,
     src_caret.moveToSystem(src_bar.getLocation().getSystem(), false);
     src_caret.moveToPosition(src_bar.getLocation().getPosition());
     ScoreLocation &src_loc = src_caret.getLocation();
+
+    mergeSystemSymbols(dest_loc, src_loc, src_bar.isExpanded());
 
     if (src_bar.getMultiBarRestCount() > 0)
     {
@@ -305,7 +372,7 @@ static void combineScores(Score &dest_score, Score &guitar_score,
                                                  bass_caret, *bass_bar, true));
         }
 
-        // TODO - merge player changes and system symbols.
+        // TODO - merge player changes.
 
         // Advance to the next bar in the source scores.
         if (guitar_bar != end_guitar_bar)
