@@ -18,92 +18,11 @@
 #ifndef SCORE_UTILS_SCOREMERGER_H
 #define SCORE_UTILS_SCOREMERGER_H
 
-#include <app/caret.h>
-#include <score/utils/repeatindexer.h>
+class Score;
 
-class PlayerChange;
-
-class ScoreMerger
+namespace ScoreMerger
 {
-    struct State;
-
-public:
-    ScoreMerger(Score &dest, Score &guitarScore, Score &bassScore);
-
-    void merge();
-
-private:
-    /// Merge players and instruments.
-    void mergePlayers();
-
-    int importNotes(
-        ScoreLocation &dest, State &srcState,
-        std::function<int(ScoreLocation &, ScoreLocation &)> action);
-
-    /// Fetch the current pair of barlines from one of the source scores.
-    /// If the next bar is the last bar of the source system, the start bar from
-    /// the next system is also returned.
-    void copyBarsFromSource(Barline &destBar, Barline &nextDestBar,
-                            boost::optional<Barline> &nextSystemStartBar);
-
-    /// Combine player changes from the two scores.
-    void mergePlayerChanges();
-
-    /// Merge in tempo markers, etc. from the scores.
-    void mergeSystemSymbols();
-
-    /// Check for a player change in the current bar.
-    const PlayerChange *findPlayerChange(const State &state);
-
-    /// The state of one of the source scores being merged.
-    struct State
-    {
-        enum RepeatStatus {
-            NO_REPEAT,
-            MERGING_REPEAT,
-            EXPANDING_REPEAT
-        };
-
-        State(Score &score, bool isBass);
-
-        Caret caret;
-        RepeatIndexer repeatIndex;
-        ScoreLocation &loc;
-        bool isBass;
-
-        bool inMultibarRest;
-        bool expandingMultibarRest;
-        int multibarRestCount;
-
-        RepeatStatus repeatState;
-        int remainingRepeats;
-        int totalRepeats;
-        int numMergedRepeats;
-        const RepeatedSection *repeatedSection;
-
-        bool done;
-        bool finishing;
-
-        bool outOfNotes() const;
-        bool isCopying() const;
-        void advance();
-        void finishIfPossible();
-        void checkForMultibarRest();
-        void checkForRepeatedSection();
-        void compareRepeatedSection(State &other);
-    };
-
-    Score &myDestScore;
-    Caret myDestCaret;
-    ScoreLocation &myDestLoc;
-
-    Score &myGuitarScore;
-    Score &myBassScore;
-    State myGuitarState;
-    State myBassState;
-
-    int myNumGuitarStaves;
-    int myPrevNumGuitarStaves;
-};
+void merge(Score &dest, Score &guitar_score, Score &bass_score);
+}
 
 #endif

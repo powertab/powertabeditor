@@ -17,12 +17,13 @@
 
 #include <catch.hpp>
 
+#include <formats/powertab/powertabimporter.h>
 #include <formats/powertab_old/powertaboldimporter.h>
 #include <formats/powertab_old/powertabdocument/powertabdocument.h>
 #include <QCoreApplication>
 #include <score/score.h>
 
-static void loadTest(PowerTabOldImporter &importer, const char *filename,
+static void loadTest(FileFormatImporter &importer, const char *filename,
                      Score &score)
 {
     QString path = QCoreApplication::applicationDirPath();
@@ -367,4 +368,17 @@ TEST_CASE("Formats/PowerTabOldImport/FloatingText", "")
     REQUIRE(system1.getTextItems().size() == 1);
     REQUIRE(system1.getTextItems()[0].getPosition() == 11);
     REQUIRE(system1.getTextItems()[0].getContents() == "foo");
+}
+
+TEST_CASE("Formats/PowerTabOldImport/MergeMultiBarRests", "")
+{
+    Score score;
+    Score expected_score;
+
+    PowerTabOldImporter old_importer;
+    PowerTabImporter importer;
+    loadTest(old_importer, "data/merge_multibar_rests.ptb", score);
+    loadTest(importer, "data/merge_multibar_rests_correct.pt2", expected_score);
+
+    REQUIRE(score == expected_score);
 }
