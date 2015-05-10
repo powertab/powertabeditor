@@ -325,6 +325,106 @@ static int copyContent(ScoreLocation &dest_loc, int &num_guitar_staves,
     }
 }
 
+static const PlayerChange *findPlayerChange(
+    const ScoreLocation &dest_loc, const ScoreLocation &src_loc,
+    ExpandedBarList::const_iterator src_bar,
+    ExpandedBarList::const_iterator end_src_bar)
+{
+    if (src_bar == end_src_bar || src_bar->isExpanded())
+        return nullptr;
+
+    int offset, left, right;
+    getPositionRange(dest_loc, src_loc, offset, left, right);
+
+    auto changes = ScoreUtils::findInRange(
+        src_loc.getSystem().getPlayerChanges(), left, right - 1);
+
+    return changes.empty() ? nullptr : &changes.front();
+}
+
+static void mergePlayerChanges(ScoreLocation &dest_loc,
+                               const ScoreLocation &guitar_loc,
+                               const ScoreLocation &bass_loc,
+                               ExpandedBarList::const_iterator guitar_bar,
+                               ExpandedBarList::const_iterator end_guitar_bar,
+                               ExpandedBarList::const_iterator bass_bar,
+                               ExpandedBarList::const_iterator end_bass_bar,
+                               int num_guitar_staves,
+                               int prev_num_guitar_staves)
+{
+    const PlayerChange *guitar_change =
+        findPlayerChange(dest_loc, guitar_loc, guitar_bar, end_guitar_bar);
+    const PlayerChange *bass_change =
+        findPlayerChange(dest_loc, bass_loc, bass_bar, end_bass_bar);
+
+    // If either the guitar or bass score has a player change, or we're at the
+    // start of a new system that has a different number of guitar staves,
+    // insert a player change to ensure that player are assigned to the correct
+    // staves.
+    if (guitar_change || guitar_change ||
+        (num_guitar_staves != prev_num_guitar_staves &&
+         dest_loc.getPositionIndex() == 0))
+    {
+        PlayerChange change;
+
+        if (!guitar_change && guitar_bar != end_guitar_bar)
+        {
+            // If there is only a player change in the bass score, carry over
+            // the current active players from the guitar score.
+            guitar_change = ScoreUtils::getCurrentPlayers(
+                guitar_loc.getScore(), guitar_loc.getSystemIndex(),
+                guitar_loc.getPositionIndex());
+        }
+
+        if (!bass_change && bass_bar != end_bass_bar)
+        {
+            // If there is only a player change in the guitar score, carry over
+            // the current active players from the bass score.
+            bass_change = ScoreUtils::getCurrentPlayers(
+                bass_loc.getScore(), bass_loc.getSystemIndex(),
+                bass_loc.getPositionIndex());
+        }
+
+        // Merge in data from only the active staves.
+        if (guitar_change)
+        {
+            for (int i = 0; i < num_guitar_staves; ++i)
+            {
+                for (const ActivePlayer &player :
+                     guitar_change->getActivePlayers(i))
+                {
+                    change.insertActivePlayer(i, player);
+                }
+            }
+        }
+
+        // Merge in the bass score's player change and adjust
+        // staff/player/instrument numbers.
+        if (bass_change)
+        {
+            for (int i = 0; i < bass_loc.getSystem().getStaves().size(); ++i)
+            {
+                for (const ActivePlayer &player :
+                     bass_change->getActivePlayers(i))
+                {
+                    change.insertActivePlayer(
+                        num_guitar_staves + i,
+                        ActivePlayer(
+                            static_cast<int>(
+                                guitar_loc.getScore().getPlayers().size()) +
+                                player.getPlayerNumber(),
+                            static_cast<int>(
+                                guitar_loc.getScore().getInstruments().size()) +
+                                player.getInstrumentNumber()));
+                }
+            }
+        }
+
+        change.setPosition(dest_loc.getPositionIndex());
+        dest_loc.getSystem().insertPlayerChange(change);
+    }
+}
+
 static void combineScores(Score &dest_score, Score &guitar_score,
                           const ExpandedBarList &guitar_bars, Score &bass_score,
                           const ExpandedBarList &bass_bars)
@@ -332,13 +432,16 @@ static void combineScores(Score &dest_score, Score &guitar_score,
     mergePlayers(dest_score, guitar_score, bass_score);
 
     int num_guitar_staves = 0;
+    int prev_num_guitar_staves = 0;
 
     dest_score.insertSystem(System());
     Caret dest_caret(dest_score, theDefaultViewOptions);
     ScoreLocation &dest_loc = dest_caret.getLocation();
 
     Caret guitar_caret(guitar_score, theDefaultViewOptions);
+    const ScoreLocation &guitar_loc = guitar_caret.getLocation();
     Caret bass_caret(bass_score, theDefaultViewOptions);
+    const ScoreLocation &bass_loc = bass_caret.getLocation();
 
     auto guitar_bar = guitar_bars.begin();
     const auto end_guitar_bar = guitar_bars.end();
@@ -372,7 +475,9 @@ static void combineScores(Score &dest_score, Score &guitar_score,
                                                  bass_caret, *bass_bar, true));
         }
 
-        // TODO - merge player changes.
+        mergePlayerChanges(dest_loc, guitar_loc, bass_loc, guitar_bar,
+                           end_guitar_bar, bass_bar, end_bass_bar,
+                           num_guitar_staves, prev_num_guitar_staves);
 
         // Advance to the next bar in the source scores.
         if (guitar_bar != end_guitar_bar)
@@ -397,6 +502,7 @@ static void combineScores(Score &dest_score, Score &guitar_score,
             {
                 dest_score.insertSystem(System());
                 dest_caret.moveSystem(1);
+                prev_num_guitar_staves = num_guitar_staves;
                 num_guitar_staves = 0;
             }
         }
