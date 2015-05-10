@@ -264,9 +264,7 @@ static void combineScores(Score &dest_score, Score &guitar_score,
     ScoreLocation &dest_loc = dest_caret.getLocation();
 
     Caret guitar_caret(guitar_score, theDefaultViewOptions);
-    ScoreLocation &guitar_loc = guitar_caret.getLocation();
     Caret bass_caret(bass_score, theDefaultViewOptions);
-    ScoreLocation &bass_loc = bass_caret.getLocation();
 
     auto guitar_bar = guitar_bars.begin();
     const auto end_guitar_bar = guitar_bars.end();

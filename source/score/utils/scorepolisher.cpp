@@ -21,6 +21,8 @@
 #include <score/score.h>
 #include <score/voiceutils.h>
 #include <score/utils.h>
+#include <unordered_map>
+#include <unordered_set>
 
 static int getDefaultNoteSpacing(const boost::rational<int> &duration)
 {
