@@ -32,8 +32,11 @@ static const ViewOptions theDefaultViewOptions;
 class ExpandedBar
 {
 public:
-    ExpandedBar(const SystemLocation &location, int rest_count)
-        : myLocation(location), myMultiBarRestCount(rest_count)
+    ExpandedBar(const SystemLocation &location, int rest_count,
+                bool is_expanded)
+        : myLocation(location),
+          myMultiBarRestCount(rest_count),
+          myIsExpanded(is_expanded)
     {
     }
 
@@ -45,11 +48,17 @@ public:
         myMultiBarRestCount = count;
     }
 
+    const bool isExpanded() const { return myIsExpanded; }
+
 private:
     SystemLocation myLocation;
 
     /// Multi-bar rest count from the source bar.
     int myMultiBarRestCount;
+
+    /// Whether this bar was expanded from e.g. a multi-bar rest or a repeated
+    /// section.
+    bool myIsExpanded;
 };
 
 typedef std::list<ExpandedBar> ExpandedBarList;
@@ -67,12 +76,13 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
         if (multibar_rest)
         {
             for (int i = multibar_rest->getMultiBarRestCount(); i > 0; --i)
-                expanded_bars.emplace_back(location, i);
+            {
+                expanded_bars.emplace_back(
+                    location, i, i != multibar_rest->getMultiBarRestCount());
+            }
         }
         else
-        {
-            expanded_bars.emplace_back(location, 0);
-        }
+            expanded_bars.emplace_back(location, 0, false);
 
         // TODO - handle repeats.
         // TODO - handle directions.
@@ -168,7 +178,7 @@ static int copyNotes(ScoreLocation &dest, const ScoreLocation &src)
 
 static int importNotes(
     ScoreLocation &dest_loc, ScoreLocation &src_loc, bool is_bass,
-    int &num_guitar_staves,
+    bool is_expanded_bar, int &num_guitar_staves,
     std::function<int(ScoreLocation &, ScoreLocation &)> action)
 {
     System &dest_system = dest_loc.getSystem();
@@ -187,10 +197,10 @@ static int importNotes(
         if ((!is_bass && num_guitar_staves <= i) ||
             dest_system.getStaves().size() <= i + staff_offset)
         {
-            const Staff &srcStaff = src_system.getStaves()[i];
-            Staff destStaff(srcStaff.getStringCount());
-            destStaff.setClefType(srcStaff.getClefType());
-            dest_system.insertStaff(destStaff);
+            const Staff &src_staff = src_system.getStaves()[i];
+            Staff dest_staff(src_staff.getStringCount());
+            dest_staff.setClefType(src_staff.getClefType());
+            dest_system.insertStaff(dest_staff);
 
             if (!is_bass)
                 ++num_guitar_staves;
@@ -199,21 +209,18 @@ static int importNotes(
         dest_loc.setStaffIndex(i + staff_offset);
         src_loc.setStaffIndex(i);
 
-// Import dynamics, but don't repeatedly do so when expanding a
-// multi-bar rest.
-        // TODO - implement this once multi-bar rests are supported.
-#if 0
-        if (!srcState.expandingMultibarRest)
+        // Import dynamics, but don't repeatedly do so when e.g. a multi-bar
+        // rest was expanded.
+        if (!is_expanded_bar)
         {
             for (const Dynamic &dynamic : ScoreUtils::findInRange(
                      src_loc.getStaff().getDynamics(), left, right - 1))
             {
-                Dynamic newDynamic(dynamic);
-                newDynamic.setPosition(newDynamic.getPosition() + offset);
-                dest_loc.getStaff().insertDynamic(newDynamic);
+                Dynamic new_dynamic(dynamic);
+                new_dynamic.setPosition(dynamic.getPosition() + offset);
+                dest_loc.getStaff().insertDynamic(new_dynamic);
             }
         }
-#endif
 
         // Import each voice.
         for (int v = 0; v < Staff::NUM_VOICES; ++v)
@@ -241,13 +248,13 @@ static int copyContent(ScoreLocation &dest_loc, int &num_guitar_staves,
         auto insert_rest =
             std::bind(insertMultiBarRest, std::placeholders::_1,
                       std::placeholders::_2, src_bar.getMultiBarRestCount());
-        return importNotes(dest_loc, src_loc, is_bass, num_guitar_staves,
-                           insert_rest);
+        return importNotes(dest_loc, src_loc, is_bass, src_bar.isExpanded(),
+                           num_guitar_staves, insert_rest);
     }
     else
     {
-        return importNotes(dest_loc, src_loc, is_bass, num_guitar_staves,
-                           copyNotes);
+        return importNotes(dest_loc, src_loc, is_bass, src_bar.isExpanded(),
+                           num_guitar_staves, copyNotes);
     }
 }
 
