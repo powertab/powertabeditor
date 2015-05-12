@@ -1009,7 +1009,8 @@ void MidiPlayer::generateBends(std::vector<BendEventInfo> &bends,
     else
     {
         // Always return to the default bend, regardless of the release pitch.
-        bends.back().pitchBendAmount = BendEvent::DEFAULT_BEND;
+        if (!bends.empty())
+            bends.back().pitchBendAmount = BendEvent::DEFAULT_BEND;
         activePitchBend = BendEvent::DEFAULT_BEND;
     }
 }
