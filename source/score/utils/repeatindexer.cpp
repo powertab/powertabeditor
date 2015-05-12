@@ -22,7 +22,7 @@
 #include <stack>
 
 RepeatedSection::RepeatedSection(const SystemLocation &startBar)
-    : myStartBarLocation(startBar)
+    : myStartBarLocation(startBar), myActiveRepeat(1)
 {
 }
 
@@ -35,6 +35,7 @@ void RepeatedSection::addRepeatEndBar(const SystemLocation &location,
                                       int repeatCount)
 {
     myRepeatEndBars[location] = repeatCount;
+    myRemainingRepeats[location] = repeatCount - 1;
 }
 
 void RepeatedSection::addAlternateEnding(int system,
