@@ -24,6 +24,7 @@
 #include <score/score.h>
 #include <score/systemlocation.h>
 #include <score/utils.h>
+#include <score/utils/repeatindexer.h>
 #include <score/voiceutils.h>
 
 static const int thePositionLimit = 30;
@@ -66,6 +67,7 @@ typedef std::list<ExpandedBar> ExpandedBarList;
 static void expandScore(Score &score, ExpandedBarList &expanded_bars)
 {
     Caret caret(score, theDefaultViewOptions);
+    RepeatIndexer repeat_index(score);
 
     while (true)
     {
@@ -88,6 +90,25 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
         // TODO - handle directions.
         // TODO - skip empty bars?
 
+        // Follow repeats.
+        const Barline *next_bar =
+            caret.getLocation().getSystem().getNextBarline(
+                location.getPosition());
+        const SystemLocation next_bar_loc(location.getSystem(),
+                                          next_bar->getPosition());
+        RepeatedSection *active_repeat = repeat_index.findRepeat(next_bar_loc);
+        if (active_repeat)
+        {
+            SystemLocation new_loc = active_repeat->performRepeat(next_bar_loc);
+            if (new_loc != next_bar_loc)
+            {
+                caret.moveToSystem(new_loc.getSystem(), false);
+                caret.moveToPosition(new_loc.getPosition());
+                continue;
+            }
+        }
+
+        // Otherwise, advance to the next bar.
         if (!caret.moveToNextBar())
             break;
     }
