@@ -33,11 +33,15 @@ static const ViewOptions theDefaultViewOptions;
 class ExpandedBar
 {
 public:
-    ExpandedBar(const SystemLocation &location, int rest_count,
-                bool is_expanded)
+    ExpandedBar(const SystemLocation &location, bool is_expanded,
+                int rest_count, const Barline &start_bar, int remaining_repeats,
+                bool is_repeat_end)
         : myLocation(location),
+          myIsExpanded(is_expanded),
           myMultiBarRestCount(rest_count),
-          myIsExpanded(is_expanded)
+          myStartBar(start_bar),
+          myRemainingRepeats(remaining_repeats),
+          myRepeatEnd(is_repeat_end)
     {
     }
 
@@ -49,7 +53,11 @@ public:
         myMultiBarRestCount = count;
     }
 
-    const bool isExpanded() const { return myIsExpanded; }
+    bool isExpanded() const { return myIsExpanded; }
+
+    const Barline &getStartBar() const { return myStartBar; }
+    int getRemainingRepeats() const { return myRemainingRepeats; }
+    bool isRepeatEnd() const { return myRepeatEnd; }
 
 private:
     SystemLocation myLocation;
@@ -60,6 +68,16 @@ private:
     /// Whether this bar was expanded from e.g. a multi-bar rest or a repeated
     /// section.
     bool myIsExpanded;
+
+    /// Original barline (including key signature, etc).
+    Barline myStartBar;
+
+    /// For an expanded repeated section, the current number of remaining
+    /// repeats.
+    int myRemainingRepeats;
+
+    /// Whether the bar is the end of a repeated section.
+    bool myRepeatEnd;
 };
 
 typedef std::list<ExpandedBar> ExpandedBarList;
@@ -68,45 +86,63 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
 {
     Caret caret(score, theDefaultViewOptions);
     RepeatIndexer repeat_index(score);
+    int remaining_repeats = 0;
 
     while (true)
     {
-        const SystemLocation location(caret.getLocation().getSystemIndex(),
-                                      caret.getLocation().getPositionIndex());
+        const ScoreLocation &score_loc = caret.getLocation();
+        const Barline *prev_bar = ScoreUtils::findByPosition(
+            score_loc.getSystem().getBarlines(), score_loc.getPositionIndex());
+        assert(prev_bar);
+        const Barline *next_bar =
+            score_loc.getSystem().getNextBarline(score_loc.getPositionIndex());
 
-        const Position *multibar_rest = caret.getLocation().findMultiBarRest();
+        const SystemLocation location(score_loc.getSystemIndex(),
+                                      score_loc.getPositionIndex());
+
+        const Position *multibar_rest = score_loc.findMultiBarRest();
         if (multibar_rest)
         {
             for (int i = multibar_rest->getMultiBarRestCount(); i > 0; --i)
             {
                 expanded_bars.emplace_back(
-                    location, i, i != multibar_rest->getMultiBarRestCount());
+                    location, i != multibar_rest->getMultiBarRestCount(), i,
+                    *prev_bar, remaining_repeats,
+                    next_bar->getBarType() == Barline::RepeatEnd);
             }
         }
         else
-            expanded_bars.emplace_back(location, 0, false);
+        {
+            expanded_bars.emplace_back(location, remaining_repeats > 0, 0,
+                                       *prev_bar, remaining_repeats,
+                                       next_bar->getBarType() ==
+                                           Barline::RepeatEnd);
+        }
 
         // TODO - handle repeats.
         // TODO - handle directions.
         // TODO - skip empty bars?
 
         // Follow repeats.
-        const Barline *next_bar =
-            caret.getLocation().getSystem().getNextBarline(
-                location.getPosition());
         const SystemLocation next_bar_loc(location.getSystem(),
                                           next_bar->getPosition());
         RepeatedSection *active_repeat = repeat_index.findRepeat(next_bar_loc);
         if (active_repeat)
         {
+            if (!remaining_repeats)
+                remaining_repeats = active_repeat->getTotalRepeatCount();
+
             SystemLocation new_loc = active_repeat->performRepeat(next_bar_loc);
             if (new_loc != next_bar_loc)
             {
                 caret.moveToSystem(new_loc.getSystem(), false);
                 caret.moveToPosition(new_loc.getPosition());
+                --remaining_repeats;
                 continue;
             }
         }
+        else
+            remaining_repeats = 0;
 
         // Otherwise, advance to the next bar.
         if (!caret.moveToNextBar())
@@ -446,6 +482,19 @@ static void mergePlayerChanges(ScoreLocation &dest_loc,
     }
 }
 
+static void hideSignaturesAndRehearsalSign(Barline &bar)
+{
+    bar.clearRehearsalSign();
+
+    KeySignature key = bar.getKeySignature();
+    key.setVisible(false);
+    bar.setKeySignature(key);
+
+    TimeSignature time = bar.getTimeSignature();
+    time.setVisible(false);
+    bar.setTimeSignature(time);
+}
+
 static void combineScores(Score &dest_score, Score &guitar_score,
                           const ExpandedBarList &guitar_bars, Score &bass_score,
                           const ExpandedBarList &bass_bars)
@@ -473,12 +522,28 @@ static void combineScores(Score &dest_score, Score &guitar_score,
     {
         System &dest_system = dest_loc.getSystem();
 
-        // Insert notes at the first position after the barline, except when
-        // we're at the start of the system.
+        const ExpandedBar &current_bar =
+            (guitar_bar != end_guitar_bar) ? *guitar_bar : *bass_bar;
+
+        // Add a barline if necessary.
         if (dest_loc.getPositionIndex() > 0)
         {
-            Barline barline(dest_loc.getPositionIndex(), Barline::SingleBar);
-            dest_system.insertBarline(barline);
+            dest_system.insertBarline(
+                Barline(dest_loc.getPositionIndex(), Barline::SingleBar));
+        }
+
+        // Set the barline's properties, key signature, etc.
+        Barline *barline = ScoreUtils::findByPosition(
+            dest_system.getBarlines(), dest_loc.getPositionIndex());
+        *barline = current_bar.getStartBar();
+        barline->setPosition(dest_loc.getPositionIndex());
+        if (current_bar.isExpanded())
+            hideSignaturesAndRehearsalSign(*barline);
+
+        if (dest_loc.getPositionIndex() > 0)
+        {
+            // Insert notes at the first position after the barline, except when
+            // we're at the start of the system.
             dest_caret.moveHorizontal(1);
         }
 
