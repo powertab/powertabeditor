@@ -692,6 +692,32 @@ static ExpandedBarList::iterator clearRepeatedSection(
     return bar;
 }
 
+static ExpandedBarList::iterator collapseRepeatedSection(
+    ExpandedBarList &bars, ExpandedBarList::iterator bar, int num_repeats)
+{
+    // Collapse any non-degenerate repeated sections.
+    bool repeat_end = false;
+
+    // Skip the first repeated section.
+    do
+    {
+        repeat_end = bar->isRepeatEnd();
+        ++bar;
+    } while (!repeat_end);
+
+    // Remove the following expanded repeats.
+    for (int i = num_repeats - 1; i > 0; --i)
+    {
+        do
+        {
+            repeat_end = bar->isRepeatEnd();
+            bar = bars.erase(bar);
+        } while (!repeat_end);
+    }
+
+    return bar;
+}
+
 // If one score is longer than another, we can trivially collapse any repeated
 // sections in the longer score.
 static void trivialMergeRepeats(ExpandedBarList &bars,
@@ -708,24 +734,7 @@ static void trivialMergeRepeats(ExpandedBarList &bars,
         else if (remaining_repeats > 0)
         {
             // Collapse any non-degenerate repeated sections.
-            bool repeat_end = false;
-
-            // Skip the first repeated section.
-            do
-            {
-                repeat_end = bar->isRepeatEnd();
-                ++bar;
-            } while (!repeat_end);
-
-            // Remove the following expanded repeats.
-            for (int i = remaining_repeats - 1; i > 0; --i)
-            {
-                do
-                {
-                    repeat_end = bar->isRepeatEnd();
-                    bar = bars.erase(bar);
-                } while (!repeat_end);
-            }
+            bar = collapseRepeatedSection(bars, bar, remaining_repeats);
         }
         else
             ++bar;
@@ -746,10 +755,9 @@ static void mergeRepeats(ExpandedBarList &guitar_bars,
             bass_bar->getStartBar().getBarType() == Barline::RepeatStart)
         {
             auto guitar_section_start = guitar_bar;
-            auto guitar_section_end = guitar_bar;
             auto bass_section_start = bass_bar;
-            auto bass_section_end = bass_bar;
-            int num_repeats = 0;
+            const int num_repeats = std::min(guitar_bar->getRemainingRepeats(),
+                                             bass_bar->getRemainingRepeats());
 
             while (!guitar_bar->isRepeatEnd() || !bass_bar->isRepeatEnd())
             {
@@ -757,23 +765,35 @@ static void mergeRepeats(ExpandedBarList &guitar_bars,
                 ++bass_bar;
             }
 
+            // The repeated sections are identical in length, and so can be
+            // collapsed.
+            // TODO - deal with alternate endings.
             if (guitar_bar->isRepeatEnd() && bass_bar->isRepeatEnd())
             {
-                guitar_section_end = guitar_bar;
-                bass_section_end = bass_bar;
-                // TODO - collapse repeated sections.
+                auto guitar_section_end = guitar_bar;
+                auto bass_section_end = bass_bar;
+
+                guitar_bar = collapseRepeatedSection(
+                    guitar_bars, guitar_section_start, num_repeats);
+                bass_bar = collapseRepeatedSection(
+                    bass_bars, bass_section_start, num_repeats);
             }
             else
             {
-                // TODO - handle mismatched repeats.
+                // Otherwise, clear the repeat bars from the first expanded
+                // repeat.
+                clearRepeatedSection(guitar_section_start);
+                clearRepeatedSection(bass_section_start);
             }
+
+            guitar_bar = guitar_section_start;
+            bass_bar = bass_section_start;
         }
         else if (guitar_bar->getStartBar().getBarType() == Barline::RepeatStart)
             clearRepeatedSection(guitar_bar);
         else if (bass_bar->getStartBar().getBarType() == Barline::RepeatStart)
             clearRepeatedSection(bass_bar);
 
-        // TODO - handle mismatched repeats.
         ++guitar_bar;
         ++bass_bar;
     }
