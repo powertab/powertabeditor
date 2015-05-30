@@ -596,9 +596,15 @@ static void combineScores(Score &dest_score, Score &guitar_score,
             Barline &end_bar = dest_system.getBarlines().back();
             end_bar.setPosition(next_bar_pos);
 
-            if (finishing)
+            if (current_bar.isRepeatEnd())
+            {
+                end_bar.setBarType(Barline::RepeatEnd);
+                end_bar.setRepeatCount(current_bar.getRemainingRepeats());
+            }
+            else if (finishing)
                 end_bar.setBarType(Barline::DoubleBarFine);
-            else
+
+            if (!finishing)
             {
                 dest_score.insertSystem(System());
                 dest_caret.moveSystem(1);
