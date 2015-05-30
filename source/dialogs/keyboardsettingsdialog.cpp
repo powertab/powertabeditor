@@ -20,6 +20,7 @@
 
 #include <app/command.h>
 #include <QKeyEvent>
+#include <QMessageBox>
 
 Q_DECLARE_METATYPE(Command *)
 

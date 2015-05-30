@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <score/note.h>
 
+class QButtonGroup;
 class QComboBox;
 
 namespace Ui
