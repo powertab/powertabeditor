@@ -11,6 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
+option(BUILD_TESTS "Build unit tests." ON)
 
 include(cmake/cotire.cmake)
 set_directory_properties(PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
@@ -75,4 +76,6 @@ include_directories(${PROJECT_SOURCE_DIR}/external/withershins/src)
 
 add_subdirectory(external)
 add_subdirectory(source)
-add_subdirectory(test)
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif()
