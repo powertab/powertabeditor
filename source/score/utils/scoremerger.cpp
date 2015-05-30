@@ -664,6 +664,53 @@ void mergeMultiBarRests(ExpandedBarList &guitar_bars,
     }
 }
 
+void mergeRepeats(ExpandedBarList &guitar_bars,
+                        ExpandedBarList &bass_bars)
+{
+    auto guitar_bar = guitar_bars.begin();
+    auto guitar_end_bar = guitar_bars.end();
+    auto bass_bar = bass_bars.begin();
+    auto bass_end_bar = bass_bars.end();
+
+    while (guitar_bar != guitar_end_bar && bass_bar != bass_end_bar)
+    {
+        if (guitar_bar->getStartBar().getBarType() == Barline::RepeatStart &&
+            bass_bar->getStartBar().getBarType() == Barline::RepeatStart)
+        {
+            auto guitar_section_start = guitar_bar;
+            auto guitar_section_end = guitar_bar;
+            auto bass_section_start = bass_bar;
+            auto bass_section_end = bass_bar;
+            int num_repeats = 0;
+
+            while (!guitar_bar->isRepeatEnd() || !bass_bar->isRepeatEnd())
+            {
+                ++guitar_bar;
+                ++bass_bar;
+            }
+
+            if (guitar_bar->isRepeatEnd() && bass_bar->isRepeatEnd())
+            {
+                auto guitar_section_end = guitar_bar;
+                auto bass_section_end = bass_bar;
+            }
+            else
+            {
+                // TODO - handle mismatched repeats.
+            }
+        }
+        else
+        {
+            // TODO - handle mismatched repeats.
+            ++guitar_bar;
+            ++bass_bar;
+        }
+    }
+
+    // TODO - collapse any remaining repeats if the scores have different
+    // lengths.
+}
+
 void ScoreMerger::merge(Score &dest_score, Score &guitar_score,
                         Score &bass_score)
 {
@@ -673,8 +720,7 @@ void ScoreMerger::merge(Score &dest_score, Score &guitar_score,
     expandScore(bass_score, bass_bars);
 
     mergeMultiBarRests(guitar_bars, bass_bars);
-
-    // TODO - merge repeats.
+    mergeRepeats(guitar_bars, bass_bars);
 
     combineScores(dest_score, guitar_score, guitar_bars, bass_score, bass_bars);
 }
