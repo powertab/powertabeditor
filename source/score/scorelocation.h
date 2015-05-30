@@ -63,6 +63,7 @@ public:
     const Position *getPosition() const;
     Position *getPosition();
     const Position *findMultiBarRest() const;
+    bool isEmptyBar() const;
 
     int getSelectionStart() const;
     void setSelectionStart(int position);

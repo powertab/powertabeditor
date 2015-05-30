@@ -59,6 +59,14 @@ public:
     int getRemainingRepeats() const { return myRemainingRepeats; }
     bool isRepeatEnd() const { return myRepeatEnd; }
 
+    void clearRepeat()
+    {
+        if (myStartBar.getBarType() == Barline::RepeatStart)
+            myStartBar.setBarType(Barline::SingleBar);
+        myRemainingRepeats = 0;
+        myRepeatEnd = false;
+    }
+
 private:
     SystemLocation myLocation;
 
@@ -99,6 +107,17 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
 
         const SystemLocation location(score_loc.getSystemIndex(),
                                       score_loc.getPositionIndex());
+        const SystemLocation next_bar_loc(location.getSystem(),
+                                          next_bar->getPosition());
+
+        RepeatedSection *active_repeat = repeat_index.findRepeat(next_bar_loc);
+        if (active_repeat)
+        {
+            if (!remaining_repeats)
+                remaining_repeats = active_repeat->getTotalRepeatCount();
+        }
+        else
+            remaining_repeats = 0;
 
         const Position *multibar_rest = score_loc.findMultiBarRest();
         if (multibar_rest)
@@ -111,7 +130,7 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
                     next_bar->getBarType() == Barline::RepeatEnd);
             }
         }
-        else
+        else if (!score_loc.isEmptyBar())
         {
             expanded_bars.emplace_back(location, remaining_repeats > 0, 0,
                                        *prev_bar, remaining_repeats,
@@ -119,19 +138,11 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
                                            Barline::RepeatEnd);
         }
 
-        // TODO - handle repeats.
         // TODO - handle directions.
-        // TODO - skip empty bars?
 
         // Follow repeats.
-        const SystemLocation next_bar_loc(location.getSystem(),
-                                          next_bar->getPosition());
-        RepeatedSection *active_repeat = repeat_index.findRepeat(next_bar_loc);
         if (active_repeat)
         {
-            if (!remaining_repeats)
-                remaining_repeats = active_repeat->getTotalRepeatCount();
-
             SystemLocation new_loc = active_repeat->performRepeat(next_bar_loc);
             if (new_loc != next_bar_loc)
             {
@@ -140,9 +151,12 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
                 --remaining_repeats;
                 continue;
             }
+            else if (remaining_repeats == 1 &&
+                     next_bar->getBarType() == Barline::RepeatEnd)
+            {
+                remaining_repeats = 0;
+            }
         }
-        else
-            remaining_repeats = 0;
 
         // Otherwise, advance to the next bar.
         if (!caret.moveToNextBar())
@@ -598,9 +612,8 @@ static void combineScores(Score &dest_score, Score &guitar_score,
 }
 
 /// Merge the expanded bars from a multi-bar rest.
-ExpandedBarList::iterator mergeMultiBarRest(ExpandedBarList &bars,
-                                            ExpandedBarList::iterator bar,
-                                            int count)
+static ExpandedBarList::iterator mergeMultiBarRest(
+    ExpandedBarList &bars, ExpandedBarList::iterator bar, int count)
 {
     bar->setMultiBarRestCount(count);
 
@@ -612,8 +625,8 @@ ExpandedBarList::iterator mergeMultiBarRest(ExpandedBarList &bars,
     return bars.erase(range_begin, range_end);
 }
 
-void mergeMultiBarRests(ExpandedBarList &guitar_bars,
-                        ExpandedBarList &bass_bars)
+static void mergeMultiBarRests(ExpandedBarList &guitar_bars,
+                               ExpandedBarList &bass_bars)
 {
     auto guitar_bar = guitar_bars.begin();
     auto guitar_end_bar = guitar_bars.end();
@@ -664,8 +677,63 @@ void mergeMultiBarRests(ExpandedBarList &guitar_bars,
     }
 }
 
-void mergeRepeats(ExpandedBarList &guitar_bars,
-                        ExpandedBarList &bass_bars)
+static ExpandedBarList::iterator clearRepeatedSection(
+    ExpandedBarList::iterator bar)
+{
+    bool repeat_end = false;
+
+    do
+    {
+        repeat_end = bar->isRepeatEnd();
+        bar->clearRepeat();
+        ++bar;
+    } while (!repeat_end);
+
+    return bar;
+}
+
+// If one score is longer than another, we can trivially collapse any repeated
+// sections in the longer score.
+static void trivialMergeRepeats(ExpandedBarList &bars,
+                                ExpandedBarList::iterator bar)
+{
+    while (bar != bars.end())
+    {
+        int remaining_repeats = bar->getRemainingRepeats();
+        if (remaining_repeats == 1)
+        {
+            // Clear degenerate repeated sections.
+            bar = clearRepeatedSection(bar);
+        }
+        else if (remaining_repeats > 0)
+        {
+            // Collapse any non-degenerate repeated sections.
+            bool repeat_end = false;
+
+            // Skip the first repeated section.
+            do
+            {
+                repeat_end = bar->isRepeatEnd();
+                ++bar;
+            } while (!repeat_end);
+
+            // Remove the following expanded repeats.
+            for (int i = remaining_repeats - 1; i > 0; --i)
+            {
+                do
+                {
+                    repeat_end = bar->isRepeatEnd();
+                    bar = bars.erase(bar);
+                } while (!repeat_end);
+            }
+        }
+        else
+            ++bar;
+    }
+}
+
+static void mergeRepeats(ExpandedBarList &guitar_bars,
+                         ExpandedBarList &bass_bars)
 {
     auto guitar_bar = guitar_bars.begin();
     auto guitar_end_bar = guitar_bars.end();
@@ -691,24 +759,31 @@ void mergeRepeats(ExpandedBarList &guitar_bars,
 
             if (guitar_bar->isRepeatEnd() && bass_bar->isRepeatEnd())
             {
-                auto guitar_section_end = guitar_bar;
-                auto bass_section_end = bass_bar;
+                guitar_section_end = guitar_bar;
+                bass_section_end = bass_bar;
+                // TODO - collapse repeated sections.
             }
             else
             {
                 // TODO - handle mismatched repeats.
             }
         }
-        else
-        {
-            // TODO - handle mismatched repeats.
-            ++guitar_bar;
-            ++bass_bar;
-        }
+        else if (guitar_bar->getStartBar().getBarType() == Barline::RepeatStart)
+            clearRepeatedSection(guitar_bar);
+        else if (bass_bar->getStartBar().getBarType() == Barline::RepeatStart)
+            clearRepeatedSection(bass_bar);
+
+        // TODO - handle mismatched repeats.
+        ++guitar_bar;
+        ++bass_bar;
     }
 
-    // TODO - collapse any remaining repeats if the scores have different
-    // lengths.
+    // If the scores have different lengths, deal with the remaining repeated
+    // sections.
+    if (guitar_bar != guitar_end_bar)
+        trivialMergeRepeats(guitar_bars, guitar_bar);
+    else if (bass_bar != bass_end_bar)
+        trivialMergeRepeats(bass_bars, bass_bar);
 }
 
 void ScoreMerger::merge(Score &dest_score, Score &guitar_score,

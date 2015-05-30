@@ -106,6 +106,28 @@ const Position *ScoreLocation::findMultiBarRest() const
     return nullptr;
 }
 
+bool ScoreLocation::isEmptyBar() const
+{
+    const System &system = getSystem();
+    const Barline *bar = getBarline();
+    const Barline *nextBar = system.getNextBarline(bar->getPosition());
+
+    for (const Staff &staff : system.getStaves())
+    {
+        for (const Voice &voice : staff.getVoices())
+        {
+            if (!ScoreUtils::findInRange(voice.getPositions(),
+                                         bar->getPosition(),
+                                         nextBar->getPosition()).empty())
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 int ScoreLocation::getSelectionStart() const
 {
     return mySelectionStart;
