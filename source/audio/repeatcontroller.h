@@ -22,22 +22,6 @@
 #include <score/utils/repeatindexer.h>
 
 class Score;
-class System;
-
-class RepeatState
-{
-public:
-    RepeatState(const RepeatedSection &section);
-
-    int getCurrentRepeatNumber() const;
-    void reset();
-    SystemLocation performRepeat(const SystemLocation &loc);
-
-private:
-    const RepeatedSection &myRepeatedSection;
-    std::unordered_map<SystemLocation, int> myRemainingRepeats;
-    int myActiveRepeat;
-};
 
 /// Keeps track of repeat events during playback.
 class RepeatController
@@ -55,7 +39,6 @@ public:
 private:
     DirectionIndex myDirectionIndex;
     RepeatIndexer myRepeatIndex;
-    std::unordered_map<const RepeatedSection *, RepeatState> myRepeatStates;
 };
 
 #endif

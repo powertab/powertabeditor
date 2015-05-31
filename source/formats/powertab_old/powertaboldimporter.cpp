@@ -64,9 +64,7 @@ void PowerTabOldImporter::load(const std::string &filename, Score &score)
     // Convert and then merge the bass score.
     Score bassScore;
     convert(*document.GetScore(1), bassScore);
-
-    ScoreMerger merger(score, guitarScore, bassScore);
-    merger.merge();
+    ScoreMerger::merge(score, guitarScore, bassScore);
 
     // Reformat the score, since the guitar and bass score from v1.7 may have
     // had different spacing.
@@ -959,7 +957,8 @@ void PowerTabOldImporter::convertFloatingText(
 
         // Figure out what position in the system to use.
         auto system = oldScore.GetSystem(attachedSystemIdx);
-        const int position = system->GetPositionFromX(location.GetX());
+        const int position =
+            static_cast<int>(system->GetPositionFromX(location.GetX()));
 
         // Create the text item in the new score.
         TextItem item(position, floatingText->GetText());

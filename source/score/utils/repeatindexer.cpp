@@ -22,7 +22,7 @@
 #include <stack>
 
 RepeatedSection::RepeatedSection(const SystemLocation &startBar)
-    : myStartBarLocation(startBar)
+    : myStartBarLocation(startBar), myActiveRepeat(1)
 {
 }
 
@@ -35,6 +35,7 @@ void RepeatedSection::addRepeatEndBar(const SystemLocation &location,
                                       int repeatCount)
 {
     myRepeatEndBars[location] = repeatCount;
+    myRemainingRepeats[location] = repeatCount - 1;
 }
 
 void RepeatedSection::addAlternateEnding(int system,
@@ -80,6 +81,52 @@ boost::optional<SystemLocation> RepeatedSection::findAlternateEnding(int number)
         return myAlternateEndings.find(number)->second;
     else
         return boost::optional<SystemLocation>();
+}
+
+void RepeatedSection::reset()
+{
+    myActiveRepeat = 1;
+
+    // Reset the number of remaining repeats to the original values.
+    for (auto &repeat : myRepeatEndBars)
+        myRemainingRepeats[repeat.first] = repeat.second - 1;
+}
+
+SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
+{
+    // Deal with alternate endings - if we are at the start of the first
+    // alternate ending, we can branch off to other alternate endings depending
+    // on the active repeat.
+    boost::optional<SystemLocation> firstAltEnding = findAlternateEnding(1);
+    if (firstAltEnding && *firstAltEnding == loc)
+    {
+        // Branch off to the next alternate ending, if it exists.
+        boost::optional<SystemLocation> nextAltEnding =
+            findAlternateEnding(myActiveRepeat);
+        if (nextAltEnding)
+            return *nextAltEnding;
+    }
+
+    // Now, we can look for repeat end bars.
+    auto remainingRepeatCount = myRemainingRepeats.find(loc);
+
+    // No repeat bar.
+    if (remainingRepeatCount == myRemainingRepeats.end())
+        return loc;
+    // Perform the repeat event.
+    else if (remainingRepeatCount->second != 0)
+    {
+        --remainingRepeatCount->second;
+        ++myActiveRepeat;
+        return myStartBarLocation;
+    }
+    // Otherwise, the repeat is not performed and is reset.
+    else
+    {
+        remainingRepeatCount->second =
+            myRepeatEndBars.at(remainingRepeatCount->first) - 1;
+        return loc;
+    }
 }
 
 RepeatIndexer::RepeatIndexer(const Score &score)
@@ -175,6 +222,13 @@ const RepeatedSection *RepeatIndexer::findRepeat(
     }
 
     return nullptr;
+}
+
+RepeatedSection *RepeatIndexer::findRepeat(
+    const SystemLocation &loc)
+{
+    return const_cast<RepeatedSection *>(
+        const_cast<const RepeatIndexer *>(this)->findRepeat(loc));
 }
 
 boost::iterator_range<RepeatIndexer::RepeatedSectionIterator>
