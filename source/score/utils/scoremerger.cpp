@@ -107,11 +107,13 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
     {
         const ScoreLocation &score_loc = caret.getLocation();
         const System &system = score_loc.getSystem();
-        const Barline *prev_bar = ScoreUtils::findByPosition(
-            system.getBarlines(), score_loc.getPositionIndex());
-        assert(prev_bar);
+        const Barline *prev_bar =
+            system.getPreviousBarline(score_loc.getPositionIndex() + 1);
         const Barline *next_bar =
             system.getNextBarline(score_loc.getPositionIndex());
+
+        // Ensure that the caret is actually at the start of the bar.
+        caret.moveToPosition(prev_bar->getPosition());
 
         const SystemLocation location(score_loc.getSystemIndex(),
                                       score_loc.getPositionIndex());
