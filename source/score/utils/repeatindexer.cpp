@@ -67,10 +67,12 @@ int RepeatedSection::getAlternateEndingCount() const
 
 int RepeatedSection::getTotalRepeatCount() const
 {
-    int count = 0;
+    // Take the maximum of the number of alternate ending and the number of
+    // repeats specified by a repeat end bar.
+    int count = getAlternateEndingCount();
 
     for (auto &bar : myRepeatEndBars)
-        count += bar.second;
+        count = std::max(count, bar.second);
 
     return count;
 }
@@ -153,7 +155,7 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                 // by a score checker-type feature when that is implemented.
                 RepeatedSection &activeRepeat = repeats.top();
                 if (activeRepeat.getAlternateEndingCount() &&
-                    activeRepeat.getTotalRepeatCount() &&
+                    !activeRepeat.getRepeatEndBars().empty() &&
                     activeRepeat.getAlternateEndingCount() >=
                         activeRepeat.getTotalRepeatCount())
                 {

@@ -35,13 +35,14 @@ class ExpandedBar
 public:
     ExpandedBar(const SystemLocation &location, bool is_expanded,
                 int rest_count, const Barline &start_bar, int remaining_repeats,
-                bool is_repeat_end)
+                bool is_repeat_end, bool is_alt_ending)
         : myLocation(location),
           myIsExpanded(is_expanded),
           myMultiBarRestCount(rest_count),
           myStartBar(start_bar),
           myRemainingRepeats(remaining_repeats),
-          myRepeatEnd(is_repeat_end)
+          myRepeatEnd(is_repeat_end),
+          myAlternateEnding(is_alt_ending)
     {
     }
 
@@ -58,6 +59,7 @@ public:
     const Barline &getStartBar() const { return myStartBar; }
     int getRemainingRepeats() const { return myRemainingRepeats; }
     bool isRepeatEnd() const { return myRepeatEnd; }
+    bool isAlternateEnding() const { return myAlternateEnding; }
 
     void clearRepeat()
     {
@@ -65,6 +67,7 @@ public:
             myStartBar.setBarType(Barline::SingleBar);
         myRemainingRepeats = 0;
         myRepeatEnd = false;
+        myAlternateEnding = false;
     }
 
 private:
@@ -86,6 +89,9 @@ private:
 
     /// Whether the bar is the end of a repeated section.
     bool myRepeatEnd;
+
+    /// Whether the bar is part of an alternate ending.
+    bool myAlternateEnding;
 };
 
 typedef std::list<ExpandedBar> ExpandedBarList;
@@ -95,15 +101,17 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
     Caret caret(score, theDefaultViewOptions);
     RepeatIndexer repeat_index(score);
     int remaining_repeats = 0;
+    bool alternate_ending = false;
 
     while (true)
     {
         const ScoreLocation &score_loc = caret.getLocation();
+        const System &system = score_loc.getSystem();
         const Barline *prev_bar = ScoreUtils::findByPosition(
-            score_loc.getSystem().getBarlines(), score_loc.getPositionIndex());
+            system.getBarlines(), score_loc.getPositionIndex());
         assert(prev_bar);
         const Barline *next_bar =
-            score_loc.getSystem().getNextBarline(score_loc.getPositionIndex());
+            system.getNextBarline(score_loc.getPositionIndex());
 
         const SystemLocation location(score_loc.getSystemIndex(),
                                       score_loc.getPositionIndex());
@@ -117,7 +125,17 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
                 remaining_repeats = active_repeat->getTotalRepeatCount();
         }
         else
+        {
             remaining_repeats = 0;
+            alternate_ending = false;
+        }
+
+        if (!ScoreUtils::findInRange(system.getAlternateEndings(),
+                                     prev_bar->getPosition(),
+                                     next_bar->getPosition() - 1).empty())
+        {
+            alternate_ending = true;
+        }
 
         const Position *multibar_rest = score_loc.findMultiBarRest();
         if (multibar_rest)
@@ -127,15 +145,16 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
                 expanded_bars.emplace_back(
                     location, i != multibar_rest->getMultiBarRestCount(), i,
                     *prev_bar, remaining_repeats,
-                    next_bar->getBarType() == Barline::RepeatEnd);
+                    next_bar->getBarType() == Barline::RepeatEnd,
+                    alternate_ending);
             }
         }
         else if (!score_loc.isEmptyBar())
         {
-            expanded_bars.emplace_back(location, remaining_repeats > 0, 0,
-                                       *prev_bar, remaining_repeats,
-                                       next_bar->getBarType() ==
-                                           Barline::RepeatEnd);
+            expanded_bars.emplace_back(
+                location, remaining_repeats > 0, 0, *prev_bar,
+                remaining_repeats, next_bar->getBarType() == Barline::RepeatEnd,
+                alternate_ending);
         }
 
         // TODO - handle directions.
@@ -148,7 +167,13 @@ static void expandScore(Score &score, ExpandedBarList &expanded_bars)
             {
                 caret.moveToSystem(new_loc.getSystem(), false);
                 caret.moveToPosition(new_loc.getPosition());
-                --remaining_repeats;
+
+                if (next_bar->getBarType() == Barline::RepeatEnd)
+                {
+                    --remaining_repeats;
+                    alternate_ending = false;
+                }
+
                 continue;
             }
             else if (remaining_repeats == 1 &&
@@ -338,7 +363,7 @@ static void copySymbols(
 
 static void mergeSystemSymbols(ScoreLocation &dest_loc,
                                const ScoreLocation &src_loc,
-                               bool is_expanded_bar)
+                               const ExpandedBar &src_bar)
 {
     int offset, left, right;
     getPositionRange(dest_loc, src_loc, offset, left, right);
@@ -346,7 +371,7 @@ static void mergeSystemSymbols(ScoreLocation &dest_loc,
     System &dest_system = dest_loc.getSystem();
     const System &src_system = src_loc.getSystem();
 
-    if (!is_expanded_bar)
+    if (!src_bar.isExpanded())
     {
         copySymbols(src_system.getTempoMarkers(), dest_system,
                     dest_system.getTempoMarkers(), &System::insertTempoMarker,
@@ -360,15 +385,12 @@ static void mergeSystemSymbols(ScoreLocation &dest_loc,
     copySymbols(src_system.getChords(), dest_system, dest_system.getChords(),
                 &System::insertChord, offset, left, right);
 
-    // TODO - handle alternate endings.
-#if 0
-    if (state->repeatState != State::EXPANDING_REPEAT)
+    if (src_bar.isAlternateEnding())
     {
         copySymbols(src_system.getAlternateEndings(), dest_system,
                     dest_system.getAlternateEndings(),
                     &System::insertAlternateEnding, offset, left, right);
     }
-#endif
 }
 
 static int copyContent(ScoreLocation &dest_loc, int &num_guitar_staves,
@@ -379,7 +401,7 @@ static int copyContent(ScoreLocation &dest_loc, int &num_guitar_staves,
     src_caret.moveToPosition(src_bar.getLocation().getPosition());
     ScoreLocation &src_loc = src_caret.getLocation();
 
-    mergeSystemSymbols(dest_loc, src_loc, src_bar.isExpanded());
+    mergeSystemSymbols(dest_loc, src_loc, src_bar);
 
     if (src_bar.getMultiBarRestCount() > 0)
     {
@@ -724,22 +746,31 @@ static ExpandedBarList::iterator collapseRepeatedSection(
 {
     // Collapse any non-degenerate repeated sections.
     bool repeat_end = false;
+    std::unordered_set<SystemLocation> known_bars;
 
     // Skip the first repeated section.
-    do
+    int first_repeat = bar->getRemainingRepeats();
+    while (bar->getRemainingRepeats() == first_repeat)
     {
-        repeat_end = bar->isRepeatEnd();
+        known_bars.insert(bar->getLocation());
         ++bar;
-    } while (!repeat_end);
+    }
 
-    // Remove the following expanded repeats.
-    for (int i = num_repeats - 1; i > 0; --i)
+    // Remove the following expanded repeats. However, we need to keep any bars
+    // that are part of an alternate ending.
+    for (int i = first_repeat - 1; i > first_repeat - num_repeats; --i)
     {
-        do
+        while (bar != bars.end() && bar->getRemainingRepeats() == i)
         {
-            repeat_end = bar->isRepeatEnd();
-            bar = bars.erase(bar);
-        } while (!repeat_end);
+            if (bar->isAlternateEnding() &&
+                known_bars.find(bar->getLocation()) == known_bars.end())
+            {
+                known_bars.insert(bar->getLocation());
+                ++bar;
+            }
+            else
+                bar = bars.erase(bar);
+        }
     }
 
     return bar;
@@ -794,7 +825,7 @@ static void mergeRepeats(ExpandedBarList &guitar_bars,
 
             // The repeated sections are identical in length, and so can be
             // collapsed.
-            // TODO - deal with alternate endings.
+            // TODO - check that alternate endings match.
             if (guitar_bar->isRepeatEnd() && bass_bar->isRepeatEnd())
             {
                 auto guitar_section_end = guitar_bar;
