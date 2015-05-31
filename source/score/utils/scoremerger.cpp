@@ -575,6 +575,12 @@ static void combineScores(Score &dest_score, Score &guitar_score,
             // we're at the start of the system.
             dest_caret.moveHorizontal(1);
         }
+        else if (barline->getBarType() == Barline::RepeatEnd)
+        {
+            // If we just entered a new system, there is already a repeat end
+            // bar at the end of the previous system.
+            barline->setBarType(Barline::SingleBar);
+        }
 
         int bar_length = 0;
         if (guitar_bar != end_guitar_bar)
