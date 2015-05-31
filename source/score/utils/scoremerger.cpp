@@ -536,12 +536,27 @@ static void combineScores(Score &dest_score, Score &guitar_score,
     {
         System &dest_system = dest_loc.getSystem();
 
-        const ExpandedBar &current_bar =
-            (guitar_bar != end_guitar_bar) ? *guitar_bar : *bass_bar;
+        const ExpandedBarList::const_iterator current_bar =
+            (guitar_bar != end_guitar_bar) ? guitar_bar : bass_bar;
+
+        const ExpandedBar *prev_bar = (guitar_bar != guitar_bars.begin())
+                                          ? &*boost::prior(current_bar)
+                                          : nullptr;
 
         // Add a barline if necessary.
         if (dest_loc.getPositionIndex() > 0)
         {
+            // If a repeated section starts immediately after another, we need
+            // an extra barline.
+            if (prev_bar && prev_bar->isRepeatEnd() &&
+                current_bar->getStartBar().getBarType() == Barline::RepeatStart)
+            {
+                dest_system.insertBarline(
+                    Barline(dest_loc.getPositionIndex(), Barline::RepeatEnd,
+                            prev_bar->getRemainingRepeats()));
+                dest_caret.moveHorizontal(1);
+            }
+
             dest_system.insertBarline(
                 Barline(dest_loc.getPositionIndex(), Barline::SingleBar));
         }
@@ -549,9 +564,9 @@ static void combineScores(Score &dest_score, Score &guitar_score,
         // Set the barline's properties, key signature, etc.
         Barline *barline = ScoreUtils::findByPosition(
             dest_system.getBarlines(), dest_loc.getPositionIndex());
-        *barline = current_bar.getStartBar();
+        *barline = current_bar->getStartBar();
         barline->setPosition(dest_loc.getPositionIndex());
-        if (current_bar.isExpanded())
+        if (current_bar->isExpanded())
             hideSignaturesAndRehearsalSign(*barline);
 
         if (dest_loc.getPositionIndex() > 0)
@@ -596,10 +611,10 @@ static void combineScores(Score &dest_score, Score &guitar_score,
             Barline &end_bar = dest_system.getBarlines().back();
             end_bar.setPosition(next_bar_pos);
 
-            if (current_bar.isRepeatEnd())
+            if (current_bar->isRepeatEnd())
             {
                 end_bar.setBarType(Barline::RepeatEnd);
-                end_bar.setRepeatCount(current_bar.getRemainingRepeats());
+                end_bar.setRepeatCount(current_bar->getRemainingRepeats());
             }
             else if (finishing)
                 end_bar.setBarType(Barline::DoubleBarFine);
