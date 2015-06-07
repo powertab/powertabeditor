@@ -186,17 +186,17 @@ private:
 
     void advance()
     {
-        boost::apply_visitor(AdvanceVisitor(), myIterators.top());
+		myIterators.top().apply_visitor(AdvanceVisitor());
     }
 
     std::string name() const
     {
-        return boost::apply_visitor(NameVisitor(), myIterators.top());
+		return myIterators.top().apply_visitor(NameVisitor());
     }
 
     const JSONValue &value() const
     {
-        return boost::apply_visitor(ValueVisitor(), myIterators.top());
+		return myIterators.top().apply_visitor(ValueVisitor());
     }
 
     inline void read(int &val);
