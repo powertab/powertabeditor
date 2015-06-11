@@ -533,6 +533,16 @@ static void hideSignaturesAndRehearsalSign(Barline &bar)
     bar.setTimeSignature(time);
 }
 
+static void insertNewSystem(Score &score)
+{
+    // Initially move the end bar very far away - it will be set to the correct
+    // position after the system is filled in.
+    System system;
+    system.getBarlines().back().setPosition(std::numeric_limits<int>::max());
+
+    score.insertSystem(system);
+}
+
 static void combineScores(Score &dest_score, Score &guitar_score,
                           const ExpandedBarList &guitar_bars, Score &bass_score,
                           const ExpandedBarList &bass_bars)
@@ -542,7 +552,7 @@ static void combineScores(Score &dest_score, Score &guitar_score,
     int num_guitar_staves = 0;
     int prev_num_guitar_staves = 0;
 
-    dest_score.insertSystem(System());
+    insertNewSystem(dest_score);
     Caret dest_caret(dest_score, theDefaultViewOptions);
     ScoreLocation &dest_loc = dest_caret.getLocation();
 
@@ -651,7 +661,7 @@ static void combineScores(Score &dest_score, Score &guitar_score,
 
             if (!finishing)
             {
-                dest_score.insertSystem(System());
+                insertNewSystem(dest_score);
                 dest_caret.moveSystem(1);
                 prev_num_guitar_staves = num_guitar_staves;
                 num_guitar_staves = 0;
