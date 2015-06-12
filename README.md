@@ -48,7 +48,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * [Download](http://qt-project.org/downloads) and extract the source code.
   * If necessary, install [Python 2.7.x](https://www.python.org/downloads/) and add it to your PATH.
   * Open a command prompt (e.g. VS2013 x64 Native Tools Command Prompt) and navigate to the Qt source directory.
-  * Run `configure -opensource -nomake examples -nomake tests -skip qtwebkit -skip qtwebengine -skip qtconnectivity -skip qtandroidextras -skip qtlocation -debug-and-release -mp -no-icu -c++11 -prefix C:\Qt\5.4.1` and accept the license agreement.
+  * Run `configure -opensource -nomake examples -nomake tests -skip qtwebkit -skip qtwebengine -skip qtconnectivity -skip qtandroidextras -skip qtlocation -skip qtscript -opengl desktop -debug-and-release -mp -no-icu -c++11 -prefix C:\Qt\5.4.1` and accept the license agreement.
   * Run `nmake` and `nmake install` and grab a cup of coffee ...
 * Install and open CMake, and browse to select the location of the root directory (e.g. `$HOME/Documents/GitHub/powertabeditor`).
 * Set the build directory to `$HOME/Documents/GitHub/powertabeditor/build`.
