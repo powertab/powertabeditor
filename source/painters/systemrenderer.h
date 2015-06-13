@@ -194,7 +194,6 @@ private:
     QGraphicsRectItem *myParentSystem;
     QGraphicsItem *myParentStaff;
 
-    MusicFont myMusicFont;
     QFont myMusicNotationFont;
     QFontMetricsF myMusicFontMetrics;
     QFont myPlainTextFont;

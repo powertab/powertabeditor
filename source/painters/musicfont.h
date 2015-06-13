@@ -28,8 +28,6 @@ class QGraphicsSimpleTextItem;
 class MusicFont
 {
 public:
-    MusicFont();
-
     /// All of the available music symbols.
     enum MusicSymbol
     {
@@ -85,13 +83,9 @@ public:
     };
 
     static const int DEFAULT_FONT_SIZE = 22;
+    static const int GRACE_NOTE_SIZE = 15;
 
-    void setSymbol(QGraphicsSimpleTextItem *text, MusicSymbol identifier,
-                   int size = DEFAULT_FONT_SIZE);
-    const QFont& getFont() const;
-
-private:
-    QFont musicNotationFont;
+    static QFont getFont(int pixel_size);
 };
 
 #endif

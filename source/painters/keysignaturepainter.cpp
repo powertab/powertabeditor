@@ -30,7 +30,7 @@ KeySignaturePainter::KeySignaturePainter(
       myKeySignature(key),
       myLocation(location),
       myPubSub(pubsub),
-      myMusicFont(MusicFont().getFont()),
+      myMusicFont(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE)),
       myBounds(0, -10, LayoutInfo::getWidth(myKeySignature),
                layout->getStdNotationStaffHeight())
 {

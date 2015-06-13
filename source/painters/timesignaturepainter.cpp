@@ -50,10 +50,7 @@ void TimeSignaturePainter::paint(QPainter *painter,
     if (meterType == TimeSignature::CommonTime ||
         meterType == TimeSignature::CutTime)
     {
-        MusicFont musicFont;
-        QFont displayFont = musicFont.getFont();
-        displayFont.setPixelSize(25);
-        painter->setFont(displayFont);
+        painter->setFont(MusicFont::getFont(25));
 
         const QChar symbol = (meterType == TimeSignature::CommonTime) ?
                     MusicFont::CommonTime : MusicFont::CutTime;
@@ -87,15 +84,12 @@ void TimeSignaturePainter::drawNumber(QPainter* painter, const double y,
                                       const int number) const
 {
     QString text = QString::number(number);
+    QFont font = MusicFont::getFont(27);
 
-    MusicFont musicFont;
-    QFont displayFont = musicFont.getFont();
-    displayFont.setPixelSize(27);
-
-    const double width = QFontMetricsF(displayFont).width(text);
+    const double width = QFontMetricsF(font).width(text);
     const double x = LayoutInfo::centerItem(0, LayoutInfo::getWidth(myTimeSignature),
                                             width);
 
-    painter->setFont(displayFont);
+    painter->setFont(font);
     painter->drawText(x, y, text);
 }

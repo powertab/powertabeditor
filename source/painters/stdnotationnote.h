@@ -58,6 +58,7 @@ public:
 
     double getY() const;
     QChar getNoteHeadSymbol() const;
+    bool isGraceNote() const;
     int getPosition() const;
     AccidentalType getAccidentalType() const;
     QString getAccidentalText() const;

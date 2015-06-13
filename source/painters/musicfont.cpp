@@ -21,23 +21,9 @@
 #include <QFontDatabase>
 #include <QString>
 
-MusicFont::MusicFont()
+QFont MusicFont::getFont(int pixel_size)
 {
-    musicNotationFont = QFont("Emmentaler");
-    musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
-}
-
-/// Sets the text of the QGraphicsSimpleTextItem to the given music symbol
-void MusicFont::setSymbol(QGraphicsSimpleTextItem* text, MusicSymbol identifier, int size)
-{
-    musicNotationFont.setPixelSize(size);
-    text->setFont(musicNotationFont);
-    musicNotationFont.setPixelSize(DEFAULT_FONT_SIZE);
-    text->setText(QChar(identifier));
-}
-
-/// Returns a reference to the font
-const QFont& MusicFont::getFont() const
-{
-    return musicNotationFont;
+    QFont font("Emmentaler");
+    font.setPixelSize(pixel_size);
+    return font;
 }

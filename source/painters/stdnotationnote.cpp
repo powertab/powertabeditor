@@ -94,8 +94,10 @@ void StdNotationNote::getNotesInStaff(
     tuningNotes.push_back(Midi::MIDI_NOTE_E1);
     fallbackTuning.setNotes(tuningNotes);
 
-    QFont musicFont(MusicFont().getFont());
-    QFontMetricsF fm(musicFont);
+    QFont default_font(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE));
+    QFont grace_font(MusicFont::getFont(MusicFont::GRACE_NOTE_SIZE));
+    QFontMetricsF default_fm(default_font);
+    QFontMetricsF grace_fm(grace_font);
 
     int voiceIndex = 0;
     for (const Voice &voice : staff.getVoices())
@@ -192,7 +194,9 @@ void StdNotationNote::getNotesInStaff(
                         accidentals[y] = accidental;
                     }
 
-                    noteHeadWidth = fm.width(stdNote.getNoteHeadSymbol());
+                    const QFontMetricsF *fm =
+                        stdNote.isGraceNote() ? &grace_fm : &default_fm;
+                    noteHeadWidth = fm->width(stdNote.getNoteHeadSymbol());
                 }
 
                 const double x = layout.getPositionX(pos.getPosition()) +
@@ -415,6 +419,11 @@ void StdNotationNote::computeBeamingGroups(
 QChar StdNotationNote::getNoteHeadSymbol() const
 {
     return myNoteHeadSymbol;
+}
+
+bool StdNotationNote::isGraceNote() const
+{
+    return myPosition->hasProperty(Position::Acciaccatura);
 }
 
 int StdNotationNote::getPosition() const

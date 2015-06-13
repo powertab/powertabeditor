@@ -65,7 +65,7 @@ SystemRenderer::SystemRenderer(const ScoreArea *score_area, const Score &score,
       myViewOptions(view_options),
       myParentSystem(nullptr),
       myParentStaff(nullptr),
-      myMusicNotationFont(myMusicFont.getFont()),
+      myMusicNotationFont(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE)),
       myMusicFontMetrics(myMusicNotationFont),
       myPlainTextFont("Liberation Sans"),
       mySymbolTextFont("Liberation Sans"),
@@ -163,23 +163,23 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
                                  const ScoreLocation &location)
 {
-    auto tabClef = new QGraphicsSimpleTextItem();
-
     // Determine the size of the clef symbol based on the number of strings and
     // the line spacing.
-    const int pixelSize =
+    const int pixel_size =
         (layout.getStringCount() - 1) * layout.getTabLineSpacing() * 0.6;
-    myMusicFont.setSymbol(tabClef, MusicFont::TabClef, pixelSize);
+    QFont font = MusicFont::getFont(pixel_size);
+
+    auto clef = new SimpleTextItem(QChar(MusicFont::TabClef), font);
 
     auto pubsub = myScoreArea->getClickPubSub();
     auto group = new ClickableGroup(
         QObject::tr("Click to edit the number of strings."), [=]() {
         pubsub->publish(ClickType::TabClef, location);
     });
-    group->addToGroup(tabClef);
+    group->addToGroup(clef);
 
     // Position the clef symbol.
-    group->setPos(x, layout.getTopTabLine() - pixelSize / 2.1);
+    group->setPos(x, layout.getTopTabLine() - pixel_size / 2.1);
     group->setParentItem(myParentStaff);
 }
 
@@ -1270,8 +1270,7 @@ QGraphicsItem* SystemRenderer::createVolumeSwell(uint8_t width, const StaffData&
 QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
                                                          int width)
 {
-    QFont font = myMusicFont.getFont();
-    font.setPixelSize(25);
+    QFont font = MusicFont::getFont(25);
 
     const double symbolWidth = QFontMetricsF(font).width(symbol);
     const int numSymbols = width / symbolWidth;
@@ -1305,8 +1304,7 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
 
 QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
 {
-    QFont font(myMusicFont.getFont());
-    font.setPixelSize(21);
+    QFont font(MusicFont::getFont(21));
 
     auto text = new SimpleTextItem(QChar(MusicFont::Trill), font);
     centerHorizontally(*text, 0, layout.getPositionSpacing());
@@ -1382,23 +1380,30 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
     std::map<int, double> noteHeadWidths;
     std::map<int, double> noteHeadCenters;
 
+    QFont default_font(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE));
+    QFont grace_font(MusicFont::getFont(MusicFont::GRACE_NOTE_SIZE));
+    QFontMetricsF default_fm(default_font);
+    QFontMetricsF grace_fm(grace_font);
+
     for (const StdNotationNote &note : notes)
     {
+        const QFont *font = note.isGraceNote() ? &grace_font : &default_font;
+        const QFontMetricsF *fm = note.isGraceNote() ? &grace_fm : &default_fm;
+
         const QChar noteHead = note.getNoteHeadSymbol();
-        const double noteHeadWidth = myMusicFontMetrics.width(noteHead);
+        const double noteHeadWidth = fm->width(noteHead);
 
         const QString accidentalText = note.getAccidentalText();
-        const double accidentalWidth = myMusicFontMetrics.width(accidentalText);
+        const double accidentalWidth = fm->width(accidentalText);
 
         const double x = layout.getPositionX(note.getPosition()) +
                 0.5 * (layout.getPositionSpacing() - noteHeadWidth) -
                 accidentalWidth;
-        const double y = note.getY() + layout.getTopStdNotationLine() -
-                myMusicFontMetrics.ascent();
+        const double y =
+            note.getY() + layout.getTopStdNotationLine() - fm->ascent();
 
         QGraphicsItemGroup *group = nullptr;
-        auto text =
-            new SimpleTextItem(accidentalText + noteHead, myMusicNotationFont);
+        auto text = new SimpleTextItem(accidentalText + noteHead, *font);
 
         if (note.isDotted() || note.isDoubleDotted())
         {
@@ -1406,13 +1411,13 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             const double dotX = noteHeadWidth + 2;
 
             const QChar dot(MusicFont::Dot);
-            auto dotText = new SimpleTextItem(dot, myMusicNotationFont);
+            auto dotText = new SimpleTextItem(dot, *font);
             dotText->setPos(dotX, 0);
             group->addToGroup(dotText);
 
             if (note.isDoubleDotted())
             {
-                auto dotText2 = new SimpleTextItem(dot, myMusicNotationFont);
+                auto dotText2 = new SimpleTextItem(dot, *font);
                 dotText2->setPos(dotX + 4, 0);
                 group->addToGroup(dotText2);
             }
