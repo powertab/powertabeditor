@@ -601,14 +601,19 @@ void MidiPlayer::playMidiEvents(const EventList &eventList)
     boost::optional<SystemLocation> startLocation =
         SystemLocation(myStartSystem, myStartPosition);
 
-    MidiOutputDevice device;
-    // Set the port for RtMidi.
     QSettings settings;
-    device.initialize(
-                settings.value(Settings::MIDI_PREFERRED_API,
-                               Settings::MIDI_PREFERRED_API_DEFAULT).toInt(),
-                settings.value(Settings::MIDI_PREFERRED_PORT,
-                               Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt());
+    const int api = settings.value(Settings::MIDI_PREFERRED_API,
+                                   Settings::MIDI_PREFERRED_API_DEFAULT).toInt();
+    const int port = settings.value(Settings::MIDI_PREFERRED_PORT,
+                                    Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt();
+
+    // Set the port for RtMidi.
+    MidiOutputDevice device;
+    if (!device.initialize(api, port))
+    {
+        emit error(tr("Error initializing MIDI output device."));
+        return;
+    }
 
     // Set pitch bend settings for each channel to one octave.
     for (int i = 0; i < Midi::NUM_MIDI_CHANNELS_PER_PORT; ++i)

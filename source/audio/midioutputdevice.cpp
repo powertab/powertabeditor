@@ -30,15 +30,14 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
     }
 
     // Create all MIDI APIs supported on this platform.
-    std::vector<RtMidi::Api> rtMidiApis;
-    RtMidi::getCompiledApi(rtMidiApis);
+    std::vector<RtMidi::Api> apis;
+    RtMidi::getCompiledApi(apis);
 
-    std::vector<RtMidi::Api>::const_iterator it;
-    for (it = rtMidiApis.begin(); it != rtMidiApis.end(); ++it)
+    for (const RtMidi::Api &api : apis)
     {
         try
         {
-            myMidiOuts.emplace_back(new RtMidiOut(*it));
+            myMidiOuts.emplace_back(new RtMidiOut(api));
         }
         catch (...)
         {
@@ -48,10 +47,6 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
             // TODO investigate why.
         }
     }
-
-    // Select a default midiout.
-    assert(!myMidiOuts.empty() && "No MIDI APIs compiled");
-    myMidiOut = myMidiOuts[0].get();
 }
 
 MidiOutputDevice::~MidiOutputDevice()
@@ -86,7 +81,8 @@ bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
 bool MidiOutputDevice::initialize(size_t preferredApi,
                                   unsigned int preferredPort)
 {
-    myMidiOut->closePort(); // Close any open ports.
+    if (myMidiOut)
+        myMidiOut->closePort(); // Close any open ports.
 
     if (preferredApi >= myMidiOuts.size())
         return false;

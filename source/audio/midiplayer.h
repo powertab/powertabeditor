@@ -52,6 +52,7 @@ signals:
     // necessary
     void playbackSystemChanged(int system);
     void playbackPositionChanged(int position);
+    void error(const QString &msg);
 
 private:
     typedef std::vector<std::unique_ptr<MidiEvent>> EventList;

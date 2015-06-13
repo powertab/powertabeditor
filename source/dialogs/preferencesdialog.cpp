@@ -89,8 +89,11 @@ void PreferencesDialog::loadCurrentSettings()
 
     // Find the preferred midi port in the combo box.
     MidiOutputDevice device;
-    ui->midiPortComboBox->setCurrentIndex(ui->midiPortComboBox->findText(
-                QString::fromStdString(device.getPortName(api, port))));
+    if (api < device.getApiCount() && port < device.getPortCount(api))
+    {
+        ui->midiPortComboBox->setCurrentIndex(ui->midiPortComboBox->findText(
+            QString::fromStdString(device.getPortName(api, port))));
+    }
 
     ui->vibratoStrengthSpinBox->setValue(
         settings.value(Settings::MIDI_VIBRATO_LEVEL,

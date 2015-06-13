@@ -546,6 +546,10 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
         connect(myPlaybackWidget, &PlaybackWidget::playbackSpeedChanged,
                 myMidiPlayer.get(), &MidiPlayer::changePlaybackSpeed);
 
+        connect(myMidiPlayer.get(), &MidiPlayer::error, this, [=](const QString &msg) {
+            QMessageBox::critical(this, tr("Midi Error"), msg);
+        });
+
         myMidiPlayer->start();
     }
     else

@@ -84,7 +84,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
-    RtMidiOut* myMidiOut;
+    RtMidiOut *myMidiOut;
     bool sendMidiMessage(unsigned char a, unsigned char b, unsigned char c);
 
     /// Maximum volume for each channel (as set in the mixer).
