@@ -23,8 +23,8 @@
 
 MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 {
-    myMaxVolumes.assign(Midi::MAX_MIDI_CHANNEL_VOLUME);
-    myActiveVolumes.assign(Dynamic::fff);
+    myMaxVolumes.fill(Midi::MAX_MIDI_CHANNEL_VOLUME);
+    myActiveVolumes.fill(Dynamic::fff);
 
     // Create all MIDI APIs supported on this platform.
     std::vector<RtMidi::Api> apis;
