@@ -25,8 +25,8 @@
 // third parameter is the new value (0-127)
 **/
 
+#include <array>
 #include <cstdint>
-#include <map>
 #include <memory>
 #include <vector>
 
@@ -83,14 +83,14 @@ public:
     };
 
 private:
-    std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
-    RtMidiOut *myMidiOut;
     bool sendMidiMessage(unsigned char a, unsigned char b, unsigned char c);
 
+    std::vector<std::unique_ptr<RtMidiOut>> myMidiOuts;
+    RtMidiOut *myMidiOut;
     /// Maximum volume for each channel (as set in the mixer).
-    std::map<int, int> channelMaxVolumes;
+    std::array<uint8_t, NUM_CHANNELS> myMaxVolumes;
     /// Volume of last active dynamic for each channel.
-    std::map<int, int> channelActiveVolumes;
+    std::array<uint8_t, NUM_CHANNELS> myActiveVolumes;
 };
 
 #endif

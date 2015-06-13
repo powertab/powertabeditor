@@ -23,11 +23,8 @@
 
 MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 {
-    for (int i = 0; i < NUM_CHANNELS; ++i)
-    {
-        channelMaxVolumes[i] = Midi::MAX_MIDI_CHANNEL_VOLUME;
-        channelActiveVolumes[i] = Dynamic::fff;
-    }
+    myMaxVolumes.assign(Midi::MAX_MIDI_CHANNEL_VOLUME);
+    myActiveVolumes.assign(Dynamic::fff);
 
     // Create all MIDI APIs supported on this platform.
     std::vector<RtMidi::Api> apis;
@@ -140,19 +137,17 @@ bool MidiOutputDevice::setVolume (int channel, uint8_t volume)
 {
     assert(volume <= 127);
 
-    channelActiveVolumes[channel] = volume;
+    myActiveVolumes[channel] = volume;
 
     return sendMidiMessage(
         ControlChange + channel, ChannelVolume,
-        static_cast<int>((volume / 127.0) * channelMaxVolumes[channel]));
+        static_cast<int>((volume / 127.0) * myMaxVolumes[channel]));
 }
 
 bool MidiOutputDevice::setPan(int channel, uint8_t pan)
 {
     if (pan > 127)
-    { 
         pan = 127;
-    }
 
     // MIDI control change
     // first parameter is 0xB0-0xBF with B being the id and 0-F being the channel (0-15)
@@ -230,13 +225,10 @@ void MidiOutputDevice::setChannelMaxVolume(int channel, uint8_t newMaxVolume)
 {
     assert(newMaxVolume <= 127);
 
-    const bool maxVolumeChanged = channelMaxVolumes[channel] != newMaxVolume;
-
-    channelMaxVolumes[channel] = newMaxVolume;
+    const bool maxVolumeChanged = myMaxVolumes[channel] != newMaxVolume;
+    myMaxVolumes[channel] = newMaxVolume;
 
     // If the new volume is different from the existing volume, send out a MIDI message
     if (maxVolumeChanged)
-    {
-        setVolume(channel, channelActiveVolumes[channel]);
-    }
+        setVolume(channel, myActiveVolumes[channel]);
 }
