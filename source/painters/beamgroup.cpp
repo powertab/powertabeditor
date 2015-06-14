@@ -323,5 +323,22 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
     auto flag = new SimpleTextItem(symbol, musicFont);
     flag->setPos(stem.getX() + 2, y);
 
-    return flag;
+    // For grace notes, add a slash through the stem.
+    if (stem.isGraceNote())
+    {
+        auto group = new QGraphicsItemGroup();
+        group->addToGroup(flag);
+
+        const QChar slash_symbol = stem.getStemType() == NoteStem::StemUp
+                                       ? MusicFont::GraceNoteSlashUp
+                                       : MusicFont::GraceNoteSlashDown;
+
+        auto slash = new SimpleTextItem(slash_symbol, musicFont);
+        slash->setPos(stem.getX() + 1, y);
+        group->addToGroup(slash);
+
+        return group;
+    }
+    else
+        return flag;
 }

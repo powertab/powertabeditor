@@ -73,6 +73,8 @@ public:
         FlagDown2 = 0xe1a1,
         FlagDown3 = 0xe1a2,
         FlagDown4 = 0xe1a3,
+        GraceNoteSlashUp = 0xe19f,
+        GraceNoteSlashDown = 0xe1a0,
         HarmonicNoteHeadOpen = 0xe1d4,
         HarmonicNoteHeadFull = 0xe1d5,
         Coda = 0xe181,
