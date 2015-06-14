@@ -24,6 +24,41 @@
 #include <unordered_map>
 #include <unordered_set>
 
+class TimeStamp
+{
+public:
+    bool operator<(const TimeStamp &other) const
+    {
+        if (myTime == other.myTime)
+        {
+            // Order the timestamps so that grace notes appear before the actual
+            // note.
+            return myGraceNoteNumber.value_or(std::numeric_limits<int>::max()) <
+                   other.myGraceNoteNumber.value_or(
+                       std::numeric_limits<int>::max());
+        }
+        else
+            return myTime < other.myTime;
+    }
+
+    void advance(const boost::rational<int> &duration)
+    {
+        myTime += duration;
+    }
+
+    void setGraceNoteNumber(boost::optional<int> count)
+    {
+        myGraceNoteNumber = count;
+    }
+
+private:
+    /// The time from the start of the bar.
+    boost::rational<int> myTime;
+    /// Grace notes occur at the same timestamp as the note that they precede,
+    /// but need to appear before the actual note.
+    boost::optional<int> myGraceNoteNumber;
+};
+
 static int getDefaultNoteSpacing(const boost::rational<int> &duration)
 {
     return std::max(2 * boost::rational_cast<int>(duration), 1);
@@ -66,15 +101,15 @@ static void shiftAllItemsAtPosition(
 }
 
 static void computeTimestampPosition(
-    const boost::rational<int> &timestamp, int minPosition,
-    std::map<boost::rational<int>, int> &timestampPositions)
+    const TimeStamp &timestamp, int minPosition,
+    std::map<TimeStamp, int> &timestampPositions)
 {
     int position = 0;
 
     // If another voice has a note at this timestamp, use that position.
     auto it = timestampPositions.find(timestamp);
     if (it != timestampPositions.end())
-        position = std::max(it->second, position);
+        position = std::max(it->second, minPosition);
     else
     {
         // If this timestamp falls in between two timestamps from another voice,
@@ -105,8 +140,8 @@ void ScoreUtils::polishSystem(System &system)
         if (!rightBar)
             break;
 
-        std::unordered_map<const Position *, boost::rational<int>> timestamps;
-        std::map<boost::rational<int>, int> timestampPositions;
+        std::unordered_map<const Position *, TimeStamp> timestamps;
+        std::map<TimeStamp, int> timestampPositions;
 
         // For each timestamp, compute the maximum position at that timestamp
         // for any staff.
@@ -114,23 +149,30 @@ void ScoreUtils::polishSystem(System &system)
         {
             for (const Voice &voice : staff.getVoices())
             {
-                boost::rational<int> timestamp;
+                TimeStamp timestamp;
+                boost::optional<int> grace_note;
                 int currentPosition = 0;
 
                 for (const Position &position : ScoreUtils::findInRange(
                          voice.getPositions(), leftBar.getPosition(),
                          rightBar->getPosition()))
                 {
-                    boost::rational<int> duration =
-                        VoiceUtils::getDurationTime(voice, position);
+                    if (position.hasProperty(Position::Acciaccatura))
+                        grace_note = grace_note.value_or(0) + 1;
+                    else
+                        grace_note.reset();
+
+                    timestamp.setGraceNoteNumber(grace_note);
 
                     computeTimestampPosition(timestamp, currentPosition,
                                              timestampPositions);
+                    boost::rational<int> duration =
+                        VoiceUtils::getDurationTime(voice, position);
 
                     currentPosition = timestampPositions[timestamp] +
                                       getDefaultNoteSpacing(duration);
                     timestamps[&position] = timestamp;
-                    timestamp += duration;
+                    timestamp.advance(duration);
                 }
 
                 // Track where the right barline should be.
@@ -178,7 +220,7 @@ void ScoreUtils::polishSystem(System &system)
                 {
                     // Since we're moving around irregular groups, we need to
                     // have precomputed the durations of each position.
-                    boost::rational<int> timestamp = timestamps[&pos];
+                    TimeStamp timestamp = timestamps[&pos];
                     const int currentPosition = pos.getPosition();
                     const int newPosition =
                         startPos + timestampPositions[timestamp];
