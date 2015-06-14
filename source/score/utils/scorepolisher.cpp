@@ -33,8 +33,9 @@ public:
         {
             // Order the timestamps so that grace notes appear before the actual
             // note.
-            return myGraceNoteNumber.value_or(std::numeric_limits<int>::max()) <
-                   other.myGraceNoteNumber.value_or(
+            return myGraceNoteNumber.get_value_or(
+                       std::numeric_limits<int>::max()) <
+                   other.myGraceNoteNumber.get_value_or(
                        std::numeric_limits<int>::max());
         }
         else
@@ -158,7 +159,7 @@ void ScoreUtils::polishSystem(System &system)
                          rightBar->getPosition()))
                 {
                     if (position.hasProperty(Position::Acciaccatura))
-                        grace_note = grace_note.value_or(0) + 1;
+                        grace_note = grace_note.get_value_or(0) + 1;
                     else
                         grace_note.reset();
 
