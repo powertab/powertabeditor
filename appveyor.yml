@@ -1,5 +1,7 @@
 version: 1.0.{build}
 
+os: unstable
+
 environment:
   BOOST_ROOT: C:\Libraries\boost
   BOOST_LIBRARYDIR: C:\Libraries\boost\stage\lib
