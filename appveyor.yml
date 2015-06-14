@@ -2,6 +2,7 @@ version: 1.0.{build}
 
 environment:
   BOOST_ROOT: C:\Libraries\boost
+  BOOST_LIBRARYDIR: C:\Libraries\boost\stage\lib
   matrix:
     - GENERATOR: "Visual Studio 12 Win64"
       QT_DIR: C:\Qt\5.4\msvc2013_64_opengl
@@ -17,7 +18,7 @@ install:
   - git submodule update
 
 build_script:
-  - cmake -G "%GENERATOR%" -DBOOST_ROOT="%BOOST_ROOT%" -DBOOST_LIBRARYDIR="%BOOST_ROOT%\stage\lib" -DCMAKE_PREFIX_PATH="%QT_DIR%" -H. -Bbuild
+  - cmake -G "%GENERATOR%" -DBOOST_ROOT="%BOOST_ROOT%" -DBOOST_LIBRARYDIR="%BOOST_LIBRARYDIR%" -DCMAKE_PREFIX_PATH="%QT_DIR%" -H. -Bbuild
   - cmake --build build --config "%CONFIGURATION%"
 
 test_script:
