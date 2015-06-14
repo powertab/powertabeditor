@@ -19,6 +19,10 @@ install:
   - git submodule init
   - git submodule update
 
+before_build:
+  - cmd: dir %BOOST_ROOT%
+  - cmd: dir %BOOST_LIBRARYDIR%
+
 build_script:
   - cmake -G "%GENERATOR%" -DBOOST_ROOT="%BOOST_ROOT%" -DBOOST_LIBRARYDIR="%BOOST_LIBRARYDIR%" -DCMAKE_PREFIX_PATH="%QT_DIR%" -H. -Bbuild
   - cmake --build build --config "%CONFIGURATION%"
