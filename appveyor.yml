@@ -4,13 +4,12 @@ os: unstable
 
 environment:
   BOOST_ROOT: C:\Libraries\boost
+  GENERATOR: "Visual Studio 12 Win64"
+  QT_DIR: C:\Qt\5.4\msvc2013_64_opengl
   BOOST_LIBRARYDIR: C:\Libraries\boost\lib64-msvc-12.0
-  matrix:
-    - GENERATOR: "Visual Studio 12 Win64"
-      QT_DIR: C:\Qt\5.4\msvc2013_64_opengl
 
 configuration:
-  - Debug
+  - Release
 
 matrix:
   fast_finish: true
