@@ -3,18 +3,17 @@ version: 1.0.{build}
 environment:
   BOOST_ROOT: C:\Libraries\boost
   matrix:
-    - GENERATOR: "Visual Studio 12"
     - GENERATOR: "Visual Studio 12 Win64"
+      QT_DIR: C:\Qt\5.4\msvc2013_64_opengl
 
 configuration:
   - Debug
-  - Release
 
 matrix:
   fast_finish: true
 
 build_script:
-  - cmake -G "%GENERATOR%" -DBOOST_ROOT="%BOOST_ROOT%" -H. -Bbuild
+  - cmake -G "%GENERATOR%" -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_PREFIX_PATH="%QT_DIR%" -H. -Bbuild
   - cmake --build build --config "%CONFIGURATION%"
 
 test_script:
