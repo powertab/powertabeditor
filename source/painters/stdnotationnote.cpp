@@ -377,25 +377,36 @@ void StdNotationNote::computeBeamingGroups(
         std::vector<size_t> group_stems;
         while (i < lastStemIndex && NoteStem::isBeamable(stems[i]))
         {
-            // Set up divisions within the beam group at each beat. For example,
-            // with a group of 8 16th notes in 4/4 time, the 5th note should not
-            // be fully beamed to the previous note.
-            if (!group_stems.empty())
+            // Grace notes don't become part of the beam group, but also don't
+            // split apart the group like a rest.
+            if (stems[i].isGraceNote())
             {
-                if (subgroupLength)
+                groups.push_back(
+                    BeamGroup(NoteStem::formatGroup(stems, { i }), { i }));
+            }
+            else
+            {
+                // Set up divisions within the beam group at each beat. For
+                // example, with a group of 8 16th notes in 4/4 time, the 5th
+                // note should not be fully beamed to the previous note.
+                if (!group_stems.empty())
                 {
-                    if (std::abs(
-                            std::fmod(durations[i - firstStemIndexInBar - 1],
-                                      *subgroupLength)) >= 0.001)
+                    if (subgroupLength)
                     {
-                        stems[i].setFullBeaming(true);
+                        if (std::abs(std::fmod(
+                                durations[i - firstStemIndexInBar - 1],
+                                *subgroupLength)) >= 0.001)
+                        {
+                            stems[i].setFullBeaming(true);
+                        }
                     }
+                    else
+                        stems[i].setFullBeaming(true);
                 }
-                else
-                    stems[i].setFullBeaming(true);
+
+                group_stems.push_back(i);
             }
 
-            group_stems.push_back(i);
             ++i;
         }
 
