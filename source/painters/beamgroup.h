@@ -30,7 +30,7 @@ class QPainterPath;
 class BeamGroup
 {
 public:
-    BeamGroup(NoteStem::StemType direction, size_t start, size_t end);
+    BeamGroup(NoteStem::StemType direction, const std::vector<size_t> &stems);
 
     /// Draws the stems for each note in the group.
     void drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
@@ -63,8 +63,7 @@ private:
                                          const QFontMetricsF &fm);
 
     NoteStem::StemType myStemDirection;
-    size_t myStartIndex;
-    size_t myEndIndex;
+    std::vector<size_t> myStems;
 };
 
 #endif

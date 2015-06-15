@@ -36,8 +36,9 @@ static int getNumExtraBeams(const NoteStem &stem)
                std::log(2.0) - 3;
 }
 
-BeamGroup::BeamGroup(NoteStem::StemType direction, size_t start, size_t end)
-    : myStemDirection(direction), myStartIndex(start), myEndIndex(end)
+BeamGroup::BeamGroup(NoteStem::StemType direction,
+                     const std::vector<size_t> &stems)
+    : myStemDirection(direction), myStems(stems)
 {
 }
 
@@ -49,17 +50,18 @@ void BeamGroup::drawStems(QGraphicsItem *parent,
     QList<QGraphicsItem *> symbols;
     QPainterPath stemPath;
 
-    auto begin = stems.begin() + myStartIndex;
-    auto end = stems.begin() + myEndIndex;
+    std::vector<NoteStem> group_stems;
+    for (size_t i : myStems)
+        group_stems.push_back(stems[i]);
+
+    auto begin = group_stems.begin();
+    auto end = group_stems.end();
     const NoteStem &firstStem = *begin;
     const NoteStem &lastStem = *(end - 1);
-    auto numStems = std::distance(begin, end);
 
     // Draw each stem.
-    for (auto it = begin; it != end; ++it)
+    for (const NoteStem &stem : group_stems)
     {
-        const NoteStem &stem = *it;
-
         stemPath.moveTo(stem.getX(), stem.getTop());
         stemPath.lineTo(stem.getX(), stem.getBottom());
 
@@ -86,7 +88,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent,
     QPainterPath beamPath;
 
     // Draw connecting line.
-    if (numStems > 1)
+    if (group_stems.size() > 1)
     {
         const double connectorHeight = firstStem.getStemEdge();
 
@@ -101,7 +103,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent,
     beams->setParentItem(parent);
 
     // Draw a note flag for single notes (eighth notes or less) or grace notes.
-    if (numStems == 1 && NoteStem::canHaveFlag(firstStem))
+    if (group_stems.size() == 1 && NoteStem::canHaveFlag(firstStem))
     {
         QGraphicsItem *flag = createNoteFlag(firstStem, musicFont, fm);
         flag->setParentItem(parent);

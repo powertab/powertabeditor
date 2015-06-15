@@ -180,3 +180,73 @@ bool NoteStem::hasMarcato() const
 {
     return myPosition->hasProperty(Position::Marcato);
 }
+
+NoteStem::StemType NoteStem::formatGroup(std::vector<NoteStem> &stems,
+                                         const std::vector<size_t> &group)
+{
+    const StemType direction = computeStemDirection(stems, group);
+
+    if (direction == StemUp)
+    {
+        NoteStem highestStem = NoteStem::findHighestStem(stems, group);
+
+        for (size_t i : group)
+        {
+            NoteStem &stem = stems[i];
+            stem.setX(stem.getNoteHeadRightEdge() - 1);
+            stem.setTop(highestStem.getTop() - highestStem.getStemHeight());
+        }
+    }
+    else // Stem down.
+    {
+        NoteStem lowestStem = NoteStem::findLowestStem(stems, group);
+
+        for (size_t i : group)
+        {
+            NoteStem &stem = stems[i];
+            stem.setBottom(lowestStem.getBottom() + lowestStem.getStemHeight());
+        }
+    }
+
+    return direction;
+}
+
+NoteStem::StemType NoteStem::computeStemDirection(
+    std::vector<NoteStem> &stems, const std::vector<size_t> &group)
+{
+    // Find how many stem directions of each type we have.
+    const size_t stemsUp = std::count_if(group.begin(), group.end(), [&](size_t i) {
+        return stems[i].getStemType() == NoteStem::StemUp;
+    });
+
+    const size_t stemsDown = std::count_if(group.begin(), group.end(), [&](size_t i) {
+        return stems[i].getStemType() == NoteStem::StemDown;
+    });
+
+    NoteStem::StemType stemType =
+        (stemsDown >= stemsUp) ? NoteStem::StemDown : NoteStem::StemUp;
+
+    // Assign the new stem direction to each stem.
+    for (size_t i : group)
+        stems[i].setStemType(stemType);
+
+    return stemType;
+}
+
+const NoteStem &NoteStem::findHighestStem(const std::vector<NoteStem> &stems,
+                                          const std::vector<size_t> &group)
+{
+    return stems[*std::min_element(
+                     group.begin(), group.end(), [&](size_t i, size_t j) {
+                         return stems[i].getTop() < stems[j].getTop();
+                     })];
+}
+
+const NoteStem &NoteStem::findLowestStem(const std::vector<NoteStem> &stems,
+                                         const std::vector<size_t> &group)
+{
+    return stems[*std::max_element(
+                     group.begin(), group.end(), [&](size_t i, size_t j) {
+                         return stems[i].getBottom() < stems[j].getBottom();
+                     })];
+}
