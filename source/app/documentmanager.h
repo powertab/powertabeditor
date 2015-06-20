@@ -20,17 +20,18 @@
 
 #include <app/viewoptions.h>
 #include <app/caret.h>
-#include <boost/noncopyable.hpp>
 #include <boost/optional/optional.hpp>
 #include <memory>
 #include <score/score.h>
 #include <vector>
 
 /// A document is a score that is either associated with a file or unsaved.
-class Document : boost::noncopyable
+class Document
 {
 public:
     Document();
+    Document(const Document &) = delete;
+    Document &operator=(const Document &) = delete;
 
     bool hasFilename() const;
     const std::string &getFilename() const;

@@ -18,7 +18,6 @@
 #ifndef SCORE_SCORE_H
 #define SCORE_SCORE_H
 
-#include <boost/noncopyable.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include "instrument.h"
@@ -28,7 +27,7 @@
 #include "viewfilter.h"
 #include <vector>
 
-class Score : boost::noncopyable
+class Score
 {
 public:
     typedef std::vector<System>::iterator SystemIterator;
@@ -41,6 +40,8 @@ public:
     typedef std::vector<ViewFilter>::const_iterator ViewFilterConstIterator;
 
     Score();
+    Score(const Score &other) = delete;
+    Score &operator=(const Score &other) = delete;
     bool operator==(const Score &other) const;
 
     template <class Archive>
