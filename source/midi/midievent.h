@@ -34,9 +34,6 @@ enum class MetaType : uint8_t
 class MidiEvent
 {
 public:
-    MidiEvent(const MidiEvent &) = default;
-    MidiEvent(MidiEvent &&) = default;
-
     int getTicks() const { return myTick; }
     StatusByte getStatusByte() const { return myStatusByte; }
     const std::vector<uint8_t> &getData() const { return myData; }
