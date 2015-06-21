@@ -30,7 +30,7 @@ public:
     FileFormat(const std::string &myName,
                const std::vector<std::string> &myFileExtensions);
 
-    bool operator<(const FileFormat &format) const;
+    bool operator==(const FileFormat &format) const;
 
     /// Returns a correctly formatted file filter for a Qt file dialog.
     /// e.g. "FileType (*.ext1 *.ext2)".

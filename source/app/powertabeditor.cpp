@@ -349,7 +349,7 @@ bool PowerTabEditor::saveFile(QString path)
 {
     QFileInfo info(path);
     QString extension = info.suffix();
-    Q_ASSERT(extension == "pt2");
+    Q_ASSERT(!extension.isEmpty());
 
     boost::optional<FileFormat> format =
         myFileFormatManager->findFormat(extension.toStdString());
@@ -363,23 +363,29 @@ bool PowerTabEditor::saveFile(QString path)
     const std::string path_str = path.toStdString();
     Document &doc = myDocumentManager->getCurrentDocument();
 
-    if (!myFileFormatManager->exportFile(doc.getScore(), path_str, *format))
+    if (!myFileFormatManager->exportFile(doc.getScore(), path_str, *format,
+                                         this))
+    {
         return false;
+    }
 
-    doc.setFilename(path_str);
+    if (extension == "pt2")
+    {
+        doc.setFilename(path_str);
 
-    // Update window title and tab bar.
-    updateWindowTitle();
-    const QString filename = info.fileName();
-    myTabWidget->setTabText(myTabWidget->currentIndex(), filename);
-    myTabWidget->setTabToolTip(myTabWidget->currentIndex(), filename);
+        // Update window title and tab bar.
+        updateWindowTitle();
+        const QString filename = info.fileName();
+        myTabWidget->setTabText(myTabWidget->currentIndex(), filename);
+        myTabWidget->setTabToolTip(myTabWidget->currentIndex(), filename);
 
-    // Add to the recent files list and update the last used directory.
-    myRecentFiles->add(path);
-    setPreviousDirectory(path);
+        // Add to the recent files list and update the last used directory.
+        myRecentFiles->add(path);
+        setPreviousDirectory(path);
 
-    // Mark the file as being in an unmodified state.
-    myUndoManager->setClean();
+        // Mark the file as being in an unmodified state.
+        myUndoManager->setClean();
+    }
 
     return true;
 }
@@ -393,12 +399,6 @@ bool PowerTabEditor::saveFileAs()
 
     if (path.isEmpty())
         return false;
-
-    // If the user didn't type the extension, add it in.
-    QFileInfo info(path);
-    QString extension = info.suffix();
-    if (extension.isEmpty())
-        path += "." + extension;
 
     return saveFile(path);
 }

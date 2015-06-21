@@ -26,9 +26,10 @@ FileFormat::FileFormat(const std::string &name,
 {
 }
 
-bool FileFormat::operator<(const FileFormat &format) const
+bool FileFormat::operator==(const FileFormat &format) const
 {
-    return myName < format.myName;
+    return myName == format.myName &&
+           myFileExtensions == format.myFileExtensions;
 }
 
 std::string FileFormat::fileFilter() const

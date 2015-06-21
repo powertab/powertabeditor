@@ -27,6 +27,9 @@ add_library(pteformats
     guitar_pro/guitarproimporter.h
     guitar_pro/inputstream.h
 
+	midi/midiexporter.cpp
+	midi/midiexporter.h
+
     powertab/powertabexporter.cpp
     powertab/powertabimporter.cpp
 
