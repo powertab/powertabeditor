@@ -19,30 +19,16 @@
 
 #include <midi/midifile.h>
 
+#include <QtEndian>
+
 #include <array>
 #include <cstdint>
-#include <boost/detail/endian.hpp>
 #include <fstream>
-
-static uint8_t bswap(uint8_t val)
-{
-    return val;
-}
-
-static uint16_t bswap(uint16_t val)
-{
-    return _byteswap_ushort(val);
-}
-
-static uint32_t bswap(uint32_t val)
-{
-    return _byteswap_ulong(val);
-}
 
 template <typename T>
 static void write(std::ostream &os, T val)
 {
-    val = bswap(val);
+    val = qToBigEndian(val);
     os.write(reinterpret_cast<const char *>(&val), sizeof(T));
 }
 
