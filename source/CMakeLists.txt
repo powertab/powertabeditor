@@ -32,11 +32,11 @@ target_link_libraries(powertabeditor
     ptedialogs
     ptewidgets
     pteaudio
-    ptemidi
     rtmidi
     ptepainters
     pteformats
     pteactions
+    ptemidi
     ptescore
     pugixml
     withershins
