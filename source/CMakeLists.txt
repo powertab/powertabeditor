@@ -8,6 +8,7 @@ add_subdirectory(app)
 add_subdirectory(audio)
 add_subdirectory(dialogs)
 add_subdirectory(formats)
+add_subdirectory(midi)
 add_subdirectory(painters)
 add_subdirectory(score)
 add_subdirectory(widgets)
@@ -31,6 +32,7 @@ target_link_libraries(powertabeditor
     ptedialogs
     ptewidgets
     pteaudio
+    ptemidi
     rtmidi
     ptepainters
     pteformats
