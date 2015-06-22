@@ -66,7 +66,8 @@ void MidiExporter::save(const std::string &filename, const Score &score)
     std::ofstream os(filename, std::ios::out | std::ios::binary);
     os.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
-    MidiFile file(score);
+    MidiFile file;
+    file.load(score);
     writeHeader(os, file);
 
     for (const MidiEventList &track : file.getTracks())

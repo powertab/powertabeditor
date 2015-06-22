@@ -17,21 +17,41 @@
   
 #include "midievent.h"
 
-MidiEvent::MidiEvent(int tick, StatusByte status, std::vector<uint8_t> data,
-                     int system, int position, int player, int instrument)
-    : myTick(tick),
+enum StatusByte : uint8_t
+{
+    NoteOff = 0x80,
+    NoteOn = 0x90,
+    MetaMessage = 0xff
+};
+
+MidiEvent::MidiEvent(int ticks, uint8_t status, std::vector<uint8_t> data,
+                     const SystemLocation &location, int player, int instrument)
+    : myTicks(ticks),
       myStatusByte(status),
       myData(std::move(data)),
-      mySystem(system),
-      myPosition(position),
+      myLocation(location),
       myPlayer(player),
       myInstrument(instrument)
 {
 }
 
-MidiEvent MidiEvent::endOfTrack(int tick)
+MidiEvent MidiEvent::endOfTrack(int ticks)
 {
-    return MidiEvent(tick, StatusByte::MetaMessage,
-                     { static_cast<uint8_t>(MetaType::TrackEnd), 0 }, -1, -1,
-                     -1, -1);
+    return MidiEvent(ticks, StatusByte::MetaMessage,
+                     { static_cast<uint8_t>(MetaType::TrackEnd), 0 },
+                     SystemLocation(), -1, -1);
+}
+
+MidiEvent MidiEvent::noteOn(int ticks, uint8_t channel, uint8_t pitch,
+                            uint8_t velocity, const SystemLocation &location)
+{
+    return MidiEvent(ticks, StatusByte::NoteOn + channel, { pitch, velocity },
+                     location, -1, -1);
+}
+
+MidiEvent MidiEvent::noteOff(int ticks, uint8_t channel, uint8_t pitch,
+                             const SystemLocation &location)
+{
+    return MidiEvent(ticks, StatusByte::NoteOff + channel, { pitch, 127 },
+                     location, -1, -1);
 }

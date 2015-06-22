@@ -10,4 +10,6 @@ add_library(ptemidi
 	midifile.h
 )
 
+qt5_use_modules(ptemidi Core)
+
 cotire(ptemidi)

@@ -18,13 +18,10 @@
 #ifndef MIDI_MIDIEVENT_H
 #define MIDI_MIDIEVENT_H
 
+#include <score/systemlocation.h>
+
 #include <cstdint>
 #include <vector>
-
-enum class StatusByte : uint8_t
-{
-    MetaMessage = 0xff
-};
 
 enum class MetaType : uint8_t
 {
@@ -34,22 +31,26 @@ enum class MetaType : uint8_t
 class MidiEvent
 {
 public:
-    int getTicks() const { return myTick; }
-    StatusByte getStatusByte() const { return myStatusByte; }
+    int getTicks() const { return myTicks; }
+    void setTicks(int ticks) { myTicks = ticks; }
+    uint8_t getStatusByte() const { return myStatusByte; }
     const std::vector<uint8_t> &getData() const { return myData; }
 
-    static MidiEvent endOfTrack(int tick);
+    static MidiEvent endOfTrack(int ticks);
+    static MidiEvent noteOn(int ticks, uint8_t channel, uint8_t pitch,
+                            uint8_t velocity, const SystemLocation &location);
+    static MidiEvent noteOff(int ticks, uint8_t channel, uint8_t pitch,
+                             const SystemLocation &location);
 
 private:
-    MidiEvent(int tick, StatusByte status, std::vector<uint8_t> data,
-              int system, int position, int player, int instrument);
+    MidiEvent(int ticks, uint8_t status, std::vector<uint8_t> data,
+              const SystemLocation &location, int player, int instrument);
 
-    int myTick; // TODO - does this need to be 64-bit for absolute times?
-    StatusByte myStatusByte;
+    int myTicks; // TODO - does this need to be 64-bit for absolute times?
+    uint8_t myStatusByte;
     std::vector<uint8_t> myData;
 
-    int mySystem;
-    int myPosition;
+    SystemLocation myLocation;
     int myPlayer;
     int myInstrument;
 };

@@ -16,3 +16,24 @@
 */
   
 #include "midieventlist.h"
+
+MidiEventList::MidiEventList(bool absolute_ticks)
+    : myAbsoluteTicks(absolute_ticks)
+{
+}
+
+void MidiEventList::convertToDeltaTicks()
+{
+    assert(myAbsoluteTicks);
+    myAbsoluteTicks = false;
+
+    if (myEvents.size() <= 1)
+        return;
+
+    for (size_t i = myEvents.size() - 1; i >= 1; --i)
+    {
+        MidiEvent &event = myEvents[i];
+        const MidiEvent &prev_event = myEvents[i - 1];
+        event.setTicks(event.getTicks() - prev_event.getTicks());
+    }
+}
