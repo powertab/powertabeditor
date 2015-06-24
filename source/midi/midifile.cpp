@@ -38,6 +38,7 @@ void MidiFile::load(const Score &score)
 {
     myTicksPerBeat = DEFAULT_PPQ;
 
+    MidiEventList master_track;
     MidiEventList metronome_track;
     // TODO - set channel volume at start of track.
 
@@ -50,9 +51,11 @@ void MidiFile::load(const Score &score)
             system.getBarlines(), location.getPosition());
         const Barline *next_bar = system.getNextBarline(location.getPosition());
 
-        current_tick =
-            generateMetronome(system, *current_bar, *next_bar, location,
-                              current_tick, metronome_track);
+        addTempoEvent(master_track, current_tick, system, current_bar->getPosition(),
+                      next_bar->getPosition());
+
+        current_tick = generateMetronome(metronome_track, current_tick, system,
+                                         *current_bar, *next_bar, location);
 
         // Move to the next bar.
         // TODO - handle repeats.
@@ -65,19 +68,21 @@ void MidiFile::load(const Score &score)
             location.setPosition(next_bar->getPosition());
     }
 
-
-    metronome_track.append(MidiEvent::endOfTrack(current_tick));
+    myTracks.push_back(master_track);
     myTracks.push_back(metronome_track);
 
     for (MidiEventList &track : myTracks)
+    {
+        track.append(MidiEvent::endOfTrack(current_tick));
         track.convertToDeltaTicks();
+    }
 }
 
-int MidiFile::generateMetronome(const System &system,
+int MidiFile::generateMetronome(MidiEventList &event_list, int current_tick,
+                                const System &system,
                                 const Barline &current_bar,
                                 const Barline &next_bar,
-                                const SystemLocation &location,
-                                int current_tick, MidiEventList &event_list)
+                                const SystemLocation &location)
 {
     QSettings settings;
     const uint8_t strong_vel =
@@ -140,4 +145,28 @@ int MidiFile::generateMetronome(const System &system,
     }
 
     return current_tick;
+}
+
+void MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
+                             const System &system, int bar_start, int bar_end)
+{
+    auto markers = ScoreUtils::findInRange(system.getTempoMarkers(), bar_start,
+                                           bar_end - 1);
+    // If multiple tempo markers occur in a bar, just choose the last one.
+    if (!markers.empty())
+    {
+        const TempoMarker &marker = markers.back();
+
+        // Convert the values in the TempoMarker::BeatType enum to a factor that
+        // will scale the bpm value to be in terms of quarter notes.
+        boost::rational<int> scale(2, 1 << (marker.getBeatType() / 2));
+        if (marker.getBeatType() % 2 != 0)
+            scale *= boost::rational<int>(3, 2);
+
+        // Compute the number of microseconds per quarter note.
+        int tick_duration = boost::rational_cast<int>(
+            60000000 / (scale * marker.getBeatsPerMinute()));
+
+        event_list.append(MidiEvent::setTempo(current_tick, tick_duration));
+    }
 }

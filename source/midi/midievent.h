@@ -23,11 +23,6 @@
 #include <cstdint>
 #include <vector>
 
-enum class MetaType : uint8_t
-{
-    TrackEnd = 0x2f
-};
-
 class MidiEvent
 {
 public:
@@ -37,6 +32,7 @@ public:
     const std::vector<uint8_t> &getData() const { return myData; }
 
     static MidiEvent endOfTrack(int ticks);
+    static MidiEvent setTempo(int ticks, int microseconds);
     static MidiEvent noteOn(int ticks, uint8_t channel, uint8_t pitch,
                             uint8_t velocity, const SystemLocation &location);
     static MidiEvent noteOff(int ticks, uint8_t channel, uint8_t pitch,

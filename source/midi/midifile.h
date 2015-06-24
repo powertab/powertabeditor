@@ -37,10 +37,13 @@ public:
     const std::vector<MidiEventList> &getTracks() const { return myTracks; }
 
 private:
-    int generateMetronome(const System &system, const Barline &current_bar,
+    int generateMetronome(MidiEventList &event_list, int current_tick,
+                          const System &system, const Barline &current_bar,
                           const Barline &next_bar,
-                          const SystemLocation &location, int current_tick,
-                          MidiEventList &event_list);
+                          const SystemLocation &location);
+
+    void addTempoEvent(MidiEventList &event_list, int current_tick,
+                       const System &system, int bar_start, int bar_end);
 
     int myTicksPerBeat;
     std::vector<MidiEventList> myTracks;
