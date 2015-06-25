@@ -52,7 +52,9 @@ MidiEvent MidiEvent::setTempo(int ticks, int microseconds)
     const uint32_t val = microseconds;
     return MidiEvent(ticks, StatusByte::MetaMessage,
                      { static_cast<uint8_t>(MetaType::SetTempo), 3,
-                       (val >> 16) & 0xff, (val >> 8) & 0xff, val & 0xff },
+                       static_cast<uint8_t>((val >> 16) & 0xff),
+                       static_cast<uint8_t>((val >> 8) & 0xff),
+                       static_cast<uint8_t>(val & 0xff) },
                      SystemLocation(), -1, -1);
 }
 
