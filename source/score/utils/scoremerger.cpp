@@ -37,8 +37,8 @@ public:
                 int rest_count, const Barline &start_bar, int remaining_repeats,
                 bool is_repeat_end, bool is_alt_ending)
         : myLocation(location),
-          myIsExpanded(is_expanded),
           myMultiBarRestCount(rest_count),
+          myIsExpanded(is_expanded),
           myStartBar(start_bar),
           myRemainingRepeats(remaining_repeats),
           myRepeatEnd(is_repeat_end),
@@ -757,7 +757,6 @@ static ExpandedBarList::iterator collapseRepeatedSection(
     ExpandedBarList &bars, ExpandedBarList::iterator bar, int num_repeats)
 {
     // Collapse any non-degenerate repeated sections.
-    bool repeat_end = false;
     std::unordered_set<SystemLocation> known_bars;
 
     // Skip the first repeated section.
@@ -840,9 +839,6 @@ static void mergeRepeats(ExpandedBarList &guitar_bars,
             // TODO - check that alternate endings match.
             if (guitar_bar->isRepeatEnd() && bass_bar->isRepeatEnd())
             {
-                auto guitar_section_end = guitar_bar;
-                auto bass_section_end = bass_bar;
-
                 guitar_bar = collapseRepeatedSection(
                     guitar_bars, guitar_section_start, num_repeats);
                 bass_bar = collapseRepeatedSection(

@@ -56,7 +56,7 @@ void ScoreArea::renderDocument(const Document &document)
     });
 
     myRenderedSystems.reserve(score.getSystems().size());
-    for (const System &system : score.getSystems())
+    for (int i = 0; i < score.getSystems().size(); ++i)
         myRenderedSystems.append(nullptr);
 
 #if 0

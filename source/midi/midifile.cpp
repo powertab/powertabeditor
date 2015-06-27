@@ -182,7 +182,6 @@ int MidiFile::generateMetronome(MidiEventList &event_list, int current_tick,
     const int num_pulses = time_sig.getNumPulses();
     const int beats_per_measure = time_sig.getBeatsPerMeasure();
     const int beat_value = time_sig.getBeatValue();
-    const int position = current_bar.getPosition();
 
     // Figure out the duration of a pulse.
     const int duration = boost::rational_cast<int>(
@@ -255,9 +254,8 @@ int MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
     return current_tempo;
 }
 
-static int getWholeRestDuration(const System &system, int system_index,
-                                const Voice &voice, const Position &pos,
-                                int bar_start, int bar_end,
+static int getWholeRestDuration(const System &system, const Voice &voice,
+                                const Position &pos, int bar_start, int bar_end,
                                 int original_duration)
 {
     // If the whole rest is not the only item in the bar, treat it like a
@@ -599,9 +597,8 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
             // of time signature.
             if (pos->getDurationType() == Position::WholeNote)
             {
-                duration =
-                    getWholeRestDuration(system, system_index, voice, *pos,
-                                         bar_start, bar_end, duration);
+                duration = getWholeRestDuration(system, voice, *pos, bar_start,
+                                                bar_end, duration);
 
                 // Extend for multi-bar rests.
                 if (pos->hasMultiBarRest())

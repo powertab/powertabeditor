@@ -82,10 +82,12 @@ void PreferencesDialog::loadCurrentSettings()
 {
     QSettings settings;
 
-    const int api = settings.value(Settings::MIDI_PREFERRED_API,
-                              Settings::MIDI_PREFERRED_API_DEFAULT).toInt();
-    const int port = settings.value(Settings::MIDI_PREFERRED_PORT,
-                              Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt();
+    const unsigned int api =
+        settings.value(Settings::MIDI_PREFERRED_API,
+                       Settings::MIDI_PREFERRED_API_DEFAULT).toUInt();
+    const unsigned int port =
+        settings.value(Settings::MIDI_PREFERRED_PORT,
+                       Settings::MIDI_PREFERRED_PORT_DEFAULT).toUInt();
 
     // Find the preferred midi port in the combo box.
     MidiOutputDevice device;
