@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.9)
 
-include_directories(${PROJECT_SOURCE_DIR}/external/Catch/include)
+include_directories(${PROJECT_SOURCE_DIR}/external/Catch/single_include)
 
 add_executable(pte_tests
     test_main.cpp
