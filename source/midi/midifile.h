@@ -44,14 +44,15 @@ private:
                           const Barline &next_bar,
                           const SystemLocation &location);
 
-    void addTempoEvent(MidiEventList &event_list, int current_tick,
-                       const System &system, int bar_start, int bar_end);
+    int addTempoEvent(MidiEventList &event_list, int current_tick,
+                      int current_tempo, const System &system, int bar_start,
+                      int bar_end);
 
     int addEventsForBar(std::vector<MidiEventList> &tracks, int current_tick,
-                        const Score &score, const System &system,
-                        int system_index, const Staff &staff, int staff_index,
-                        const Voice &voice, int voice_index, int bar_start,
-                        int bar_end);
+                        int current_tempo, const Score &score,
+                        const System &system, int system_index,
+                        const Staff &staff, int staff_index, const Voice &voice,
+                        int voice_index, int bar_start, int bar_end);
 
     int myTicksPerBeat;
     std::vector<MidiEventList> myTracks;

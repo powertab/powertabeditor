@@ -31,6 +31,7 @@
 static const int PERCUSSION_CHANNEL = 9;
 static const int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
 static const int DEFAULT_PPQ = 480;
+static const int BPM_120 = 500000; // in microseconds.
 
 enum Velocity : uint8_t
 {
@@ -76,6 +77,7 @@ void MidiFile::load(const Score &score)
 
     SystemLocation location(0, 0);
     int current_tick = 0;
+    int current_tempo = BPM_120;
     while (location.getSystem() < score.getSystems().size())
     {
         const System &system = score.getSystems()[location.getSystem()];
@@ -85,8 +87,9 @@ void MidiFile::load(const Score &score)
 
         const int start_tick = current_tick;
 
-        addTempoEvent(master_track, start_tick, system,
-                      current_bar->getPosition(), next_bar->getPosition());
+        current_tempo =
+            addTempoEvent(master_track, start_tick, current_tempo, system,
+                          current_bar->getPosition(), next_bar->getPosition());
 
         for (int staff_index = 0; staff_index < system.getStaves().size();
              ++staff_index)
@@ -97,7 +100,7 @@ void MidiFile::load(const Score &score)
                  ++voice_index)
             {
                 const int end_tick = addEventsForBar(
-                    regular_tracks, start_tick, score, system,
+                    regular_tracks, start_tick, current_tempo, score, system,
                     location.getSystem(), staff, staff_index,
                     staff.getVoices()[voice_index], voice_index,
                     current_bar->getPosition(), next_bar->getPosition());
@@ -202,8 +205,9 @@ int MidiFile::generateMetronome(MidiEventList &event_list, int current_tick,
     return current_tick;
 }
 
-void MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
-                             const System &system, int bar_start, int bar_end)
+int MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
+                            int current_tempo, const System &system,
+                            int bar_start, int bar_end)
 {
     auto markers = ScoreUtils::findInRange(system.getTempoMarkers(), bar_start,
                                            bar_end - 1);
@@ -219,11 +223,13 @@ void MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
             scale *= boost::rational<int>(3, 2);
 
         // Compute the number of microseconds per quarter note.
-        int tick_duration = boost::rational_cast<int>(
+        current_tempo = boost::rational_cast<int>(
             60000000 / (scale * marker.getBeatsPerMinute()));
 
-        event_list.append(MidiEvent::setTempo(current_tick, tick_duration));
+        event_list.append(MidiEvent::setTempo(current_tick, current_tempo));
     }
+
+    return current_tempo;
 }
 
 static int getWholeRestDuration(const System &system, int system_index,
@@ -312,12 +318,26 @@ static uint8_t getVibratoWidth(const Position &pos)
     }
 }
 
+/// Compute the number of ticks for a grace note - it should correspond to about
+/// a 32nd note at 120bpm.
+static int getGraceNoteTicks(int ppq, int current_tempo)
+{
+    return boost::rational_cast<int>(boost::rational<int>(BPM_120, 8) /
+                                     boost::rational<int>(current_tempo, ppq));
+}
+
+static int getArpeggioOffset(int ppq, int current_tempo)
+{
+    return boost::rational_cast<int>(boost::rational<int>(BPM_120, 16) /
+                                     boost::rational<int>(current_tempo, ppq));
+}
+
 int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
-                              int current_tick, const Score &score,
-                              const System &system, int system_index,
-                              const Staff &staff, int staff_index,
-                              const Voice &voice, int voice_index,
-                              int bar_start, int bar_end)
+                              int current_tick, int current_tempo,
+                              const Score &score, const System &system,
+                              int system_index, const Staff &staff,
+                              int staff_index, const Voice &voice,
+                              int voice_index, int bar_start, int bar_end)
 {
     ScoreLocation location(score, system_index, staff_index, voice_index);
     const Voice *prev_voice = VoiceUtils::getAdjacentVoice(location, -1);
@@ -393,14 +413,12 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
             continue;
         }
 
-#if 0
         // Handle grace notes.
-        if (pos.hasProperty(Position::Acciaccatura))
+        if (pos->hasProperty(Position::Acciaccatura))
         {
-            duration = GRACE_NOTE_DURATION;
-            startTime -= duration;
+            duration = getGraceNoteTicks(myTicksPerBeat, current_tempo);
+            current_tick -= duration;
         }
-#endif
 
         // If there aren't any active players, treat as a rest.
         if (active_players.empty())
@@ -467,16 +485,16 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
 
         for (const Note &note : pos->getNotes())
         {
-#if 0
             // For arpeggios, delay the start of each note a small amount from
             // the last, and also adjust the duration correspondingly.
-            if (pos.hasProperty(Position::ArpeggioDown) ||
-                pos.hasProperty(Position::ArpeggioUp))
+            if (pos->hasProperty(Position::ArpeggioDown) ||
+                pos->hasProperty(Position::ArpeggioUp))
             {
-                current_tick += ARPEGGIO_OFFSET;
-                duration -= ARPEGGIO_OFFSET;
+                const int offset =
+                    getArpeggioOffset(myTicksPerBeat, current_tempo);
+                current_tick += offset;
+                duration -= offset;
             }
-#endif
 
             // Pick a tuning from one of the active players.
             // TODO - should we handle cases where different tunings are used
@@ -558,15 +576,6 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
                                   duration, currentTempo, note);
                 }
 
-#if 0
-                // only generate tremolo bar events once, since they apply to all notes in
-                // the position
-                if (position->HasTremoloBar() && j == 0)
-                {
-                    generateTremoloBar(bendEvents, startTime, duration, currentTempo, position);
-                }
-#endif
-
                 for (const BendEventInfo &event : bendEvents)
                 {
                     for (const active_player &player : active_players)
@@ -579,54 +588,47 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
             }
 #endif
 
-#if 0
             // Perform tremolo picking or trills - they work identically, except
             // trills alternate between two pitches.
-            if (pos.hasProperty(Position::TremoloPicking) || note.hasTrill())
+            if (pos->hasProperty(Position::TremoloPicking) || note.hasTrill())
             {
-                const double tremPickNoteDuration = GRACE_NOTE_DURATION;
-                const int numNotes = duration / tremPickNoteDuration;
+                const int trem_pick_duration =
+                    getGraceNoteTicks(myTicksPerBeat, current_tempo);
+                const int num_notes = duration / trem_pick_duration;
 
                 // Find the other pitch to alternate with (this is just the same
                 // pitch for tremolo picking).
-                int otherPitch = pitch;
+                int other_pitch = pitch;
                 if (note.hasTrill())
                 {
-                    otherPitch = pitch + (note.getTrilledFret() -
-                                          note.getFretNumber());
+                    other_pitch =
+                        pitch + (note.getTrilledFret() - note.getFretNumber());
                 }
 
-                for (int i = 0; i < numNotes; ++i)
+                for (int i = 0; i < num_notes; ++i)
                 {
-                    const double currentStartTime = startTime +
-                            i * tremPickNoteDuration;
+                    const int tick = current_tick + i * trem_pick_duration;
 
-                    for (const active_player &player : active_players)
+                    for (const ActivePlayer &player : active_players)
                     {
-                        eventList.emplace_back(new StopNoteEvent(
-                            getChannel(player), currentStartTime, position,
-                            system_index, pitch));
+                        tracks[player.getPlayerNumber()].append(
+                            MidiEvent::noteOff(tick,
+                                               getChannel(player), pitch,
+                                               system_location));
                     }
 
                     // Alternate to the other pitch (this has no effect for
                     // tremolo picking).
-                    std::swap(pitch, otherPitch);
+                    std::swap(pitch, other_pitch);
 
-                    for (const ActivePlayer &active_player : active_players)
+                    for (const ActivePlayer &player : active_players)
                     {
-                        const Player &player = myScore.getPlayers()[
-                                active_player.getPlayerNumber()];
-                        const Instrument &instrument = myScore.getInstruments()[
-                                active_player.getInstrumentNumber()];
-
-                        eventList.emplace_back(new PlayNoteEvent(
-                            getChannel(active_player), currentStartTime,
-                            tremPickNoteDuration, pitch, position, system_index,
-                            player, instrument, velocity));
+                        tracks[player.getPlayerNumber()].append(
+                            MidiEvent::noteOn(tick, getChannel(player), pitch,
+                                              velocity, system_location));
                     }
                 }
             }
-#endif
 
             bool tied_to_next_note = false;
             // Check if this note is tied to the next note.
