@@ -37,6 +37,8 @@ public:
                             uint8_t velocity, const SystemLocation &location);
     static MidiEvent noteOff(int ticks, uint8_t channel, uint8_t pitch,
                              const SystemLocation &location);
+    static MidiEvent volumeChange(int ticks, uint8_t channel, uint8_t level);
+    static MidiEvent programChange(int ticks, uint8_t channel, uint8_t preset);
 
 private:
     MidiEvent(int ticks, uint8_t status, std::vector<uint8_t> data,

@@ -30,6 +30,14 @@ void MidiEventList::convertToDeltaTicks()
     if (myEvents.size() <= 1)
         return;
 
+    // First, sort by timestamp. Events for different voices may have been added
+    // out of order.
+    std::stable_sort(myEvents.begin(), myEvents.end(),
+                     [](const MidiEvent &a, const MidiEvent &b)
+                     {
+                         return a.getTicks() < b.getTicks();
+                     });
+
     for (size_t i = myEvents.size() - 1; i >= 1; --i)
     {
         MidiEvent &event = myEvents[i];

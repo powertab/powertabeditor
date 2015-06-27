@@ -23,8 +23,10 @@
 
 class Barline;
 class Score;
+class Staff;
 class System;
 class SystemLocation;
+class Voice;
 
 class MidiFile
 {
@@ -44,6 +46,12 @@ private:
 
     void addTempoEvent(MidiEventList &event_list, int current_tick,
                        const System &system, int bar_start, int bar_end);
+
+    int addEventsForBar(std::vector<MidiEventList> &tracks, int current_tick,
+                        const Score &score, const System &system,
+                        int system_index, const Staff &staff, int staff_index,
+                        const Voice &voice, int voice_index, int bar_start,
+                        int bar_end);
 
     int myTicksPerBeat;
     std::vector<MidiEventList> myTracks;

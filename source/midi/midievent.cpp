@@ -21,7 +21,14 @@ enum StatusByte : uint8_t
 {
     NoteOff = 0x80,
     NoteOn = 0x90,
+    ControlChange = 0xb0,
+    ProgramChange = 0xc0,
     MetaMessage = 0xff
+};
+
+enum Controller : uint8_t
+{
+    ChannelVolume = 0x07
 };
 
 enum MetaType : uint8_t
@@ -70,4 +77,17 @@ MidiEvent MidiEvent::noteOff(int ticks, uint8_t channel, uint8_t pitch,
 {
     return MidiEvent(ticks, StatusByte::NoteOff + channel, { pitch, 127 },
                      location, -1, -1);
+}
+
+MidiEvent MidiEvent::volumeChange(int ticks, uint8_t channel, uint8_t level)
+{
+    return MidiEvent(ticks, StatusByte::ControlChange + channel,
+                     { Controller::ChannelVolume, level }, SystemLocation(), -1,
+                     -1);
+}
+
+MidiEvent MidiEvent::programChange(int ticks, uint8_t channel, uint8_t preset)
+{
+    return MidiEvent(ticks, StatusByte::ProgramChange + channel, { preset },
+                     SystemLocation(), -1, -1);
 }
