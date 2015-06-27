@@ -394,13 +394,34 @@ bool PowerTabEditor::saveFileAs()
 {
     const QString filter =
         QString::fromStdString(myFileFormatManager->exportFileFilter());
-    QString path = QFileDialog::getSaveFileName(this, tr("Save As"),
-                                                myPreviousDirectory, filter);
 
-    if (path.isEmpty())
+    QFileDialog dialog(this, tr("Save As"), myPreviousDirectory, filter);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        QString path = dialog.selectedFiles().first();
+        if (path.isEmpty())
+            return false;
+
+        // Add a suitable file extension if necessary.
+        QFileInfo info(path);
+        if (info.suffix().isEmpty())
+        {
+            const QString file_filter = dialog.selectedNameFilter();
+            QRegExp regex("\\*.(\\w+)");
+            if (regex.indexIn(file_filter, 0) < 0)
+                return false;
+
+            const QString extension = regex.cap(1);
+            path += ".";
+            path += extension;
+        }
+
+        return saveFile(path);
+    }
+    else
         return false;
-
-    return saveFile(path);
 }
 
 void PowerTabEditor::updateModified(bool clean)
