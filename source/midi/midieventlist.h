@@ -29,6 +29,7 @@ public:
     // Convert the MIDI events from absolute to delta ticks.
     void convertToDeltaTicks();
 
+    void append(const MidiEvent &event) { myEvents.push_back(event); }
     void append(MidiEvent &&event)
     {
         myEvents.push_back(std::forward<MidiEvent>(event));

@@ -48,7 +48,8 @@ private:
                       int current_tempo, const System &system, int bar_start,
                       int bar_end);
 
-    int addEventsForBar(std::vector<MidiEventList> &tracks, int current_tick,
+    int addEventsForBar(std::vector<MidiEventList> &tracks,
+                        uint8_t &active_bend, int current_tick,
                         int current_tempo, const Score &score,
                         const System &system, int system_index,
                         const Staff &staff, int staff_index, const Voice &voice,

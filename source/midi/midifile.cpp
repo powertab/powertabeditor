@@ -33,6 +33,19 @@ static const int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
 static const int DEFAULT_PPQ = 480;
 static const int BPM_120 = 500000; // in microseconds.
 
+static const int PITCH_BEND_RANGE = 24;
+static const int DEFAULT_BEND = 64;
+static const int SLIDE_OUT_STEPS = 5;
+
+/// Pitch bend amount to bend a note by a quarter tone.
+static const boost::rational<int> BEND_QUARTER_TONE(
+    (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - DEFAULT_BEND), 2 * PITCH_BEND_RANGE);
+
+static const int SLIDE_BELOW_BEND = boost::rational_cast<int>(
+    DEFAULT_BEND - SLIDE_OUT_STEPS * 2 * BEND_QUARTER_TONE);
+static const int SLIDE_ABOVE_BEND = boost::rational_cast<int>(
+    DEFAULT_BEND + SLIDE_OUT_STEPS * 2 * BEND_QUARTER_TONE);
+
 enum Velocity : uint8_t
 {
     DefaultVelocity = 127,
@@ -67,12 +80,19 @@ void MidiFile::load(const Score &score)
     MidiEventList master_track;
     MidiEventList metronome_track;
 
-    // Set the initial channel volume.
+    // Set the initial channel volume and pitch bend range..
     std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
     for (int i = 0; i < score.getPlayers().size(); ++i)
     {
         regular_tracks[i].append(
             MidiEvent::volumeChange(0, getChannel(i), Dynamic::fff));
+
+        for (const MidiEvent &event :
+             MidiEvent::pitchWheelRange(0, getChannel(i), PITCH_BEND_RANGE))
+        {
+            regular_tracks[i].append(event);
+        }
+
     }
 
     SystemLocation location(0, 0);
@@ -84,6 +104,9 @@ void MidiFile::load(const Score &score)
         const Barline *current_bar = ScoreUtils::findByPosition(
             system.getBarlines(), location.getPosition());
         const Barline *next_bar = system.getNextBarline(location.getPosition());
+
+        std::vector<uint8_t> active_bends(system.getStaves().size(),
+                                          DEFAULT_BEND);
 
         const int start_tick = current_tick;
 
@@ -100,9 +123,9 @@ void MidiFile::load(const Score &score)
                  ++voice_index)
             {
                 const int end_tick = addEventsForBar(
-                    regular_tracks, start_tick, current_tempo, score, system,
-                    location.getSystem(), staff, staff_index,
-                    staff.getVoices()[voice_index], voice_index,
+                    regular_tracks, active_bends[staff_index], start_tick,
+                    current_tempo, score, system, location.getSystem(), staff,
+                    staff_index, staff.getVoices()[voice_index], voice_index,
                     current_bar->getPosition(), next_bar->getPosition());
 
                 current_tick = std::max(current_tick, end_tick);
@@ -332,12 +355,188 @@ static int getArpeggioOffset(int ppq, int current_tempo)
                                      boost::rational<int>(current_tempo, ppq));
 }
 
+/// Holds basic information about a bend - used to simplify the generateBends
+/// function.
+struct BendEventInfo
+{
+    BendEventInfo(int tick, uint8_t bend_amount)
+        : myTick(tick), myBendAmount(bend_amount)
+    {
+    }
+
+    int myTick;
+    uint8_t myBendAmount;
+};
+
+static void generateGradualBend(std::vector<BendEventInfo> &bends,
+                                int start_tick, int duration, int start_bend,
+                                int release_bend)
+{
+    const int num_events = std::abs(start_bend - release_bend);
+    const int event_duration = duration / num_events;
+
+    for (int i = 1; i <= num_events; ++i)
+    {
+        const int tick = start_tick + i * event_duration;
+        if (start_bend < release_bend)
+            bends.push_back(BendEventInfo(tick, start_bend + i));
+        else
+            bends.push_back(BendEventInfo(tick, start_bend - i));
+    }
+}
+
+static void generateBends(std::vector<BendEventInfo> &bends,
+                          uint8_t &active_bend, int start_tick, int duration,
+                          int ppq, const Note &note)
+{
+    const Bend &bend = note.getBend();
+
+    const int bend_amount = boost::rational_cast<int>(
+        DEFAULT_BEND + bend.getBentPitch() * BEND_QUARTER_TONE);
+    const int release_amount = boost::rational_cast<int>(
+        DEFAULT_BEND + bend.getReleasePitch() * BEND_QUARTER_TONE);
+
+    switch (bend.getType())
+    {
+        case Bend::PreBend:
+        case Bend::PreBendAndRelease:
+        case Bend::PreBendAndHold:
+            bends.push_back(BendEventInfo(start_tick, bend_amount));
+            break;
+
+        case Bend::NormalBend:
+        case Bend::BendAndHold:
+            // Perform a normal (gradual) bend.
+            if (bend.getDuration() == 0)
+            {
+                // Bend over a 32nd note.
+                generateGradualBend(bends, start_tick, ppq / 8, DEFAULT_BEND,
+                                    bend_amount);
+            }
+            else if (bend.getDuration() == 1)
+            {
+                // Bend over the current note duration.
+                generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
+                                    bend_amount);
+            }
+            // TODO - implement bends that stretch over multiple notes.
+            break;
+
+        case Bend::BendAndRelease:
+            // Bend up to the bent pitch for half of the note duration.
+            generateGradualBend(bends, start_tick, duration / 2, DEFAULT_BEND,
+                                bend_amount);
+            break;
+        default:
+            break;
+    }
+
+    // Bend back down.
+    switch (bend.getType())
+    {
+        case Bend::PreBend:
+        case Bend::ImmediateRelease:
+        case Bend::NormalBend:
+            bends.push_back(
+                BendEventInfo(start_tick + duration, release_amount));
+            break;
+
+        case Bend::PreBendAndRelease:
+            generateGradualBend(bends, start_tick, duration, bend_amount,
+                                release_amount);
+            break;
+
+        case Bend::BendAndRelease:
+            generateGradualBend(bends, start_tick + duration / 2, duration / 2,
+                                bend_amount, release_amount);
+            break;
+
+        case Bend::GradualRelease:
+            generateGradualBend(bends, start_tick, duration, active_bend,
+                                release_amount);
+            break;
+        default:
+            break;
+    }
+
+    if (bend.getType() == Bend::BendAndHold ||
+        bend.getType() == Bend::PreBendAndHold)
+    {
+        active_bend = bend_amount;
+    }
+    else
+    {
+        // Always return to the default bend, regardless of the release pitch.
+        if (!bends.empty())
+            bends.back().myBendAmount = DEFAULT_BEND;
+        active_bend = DEFAULT_BEND;
+    }
+}
+
+static void generateSlides(std::vector<BendEventInfo> &bends, int start_tick,
+                           int note_duration, int ppq, const Note &note,
+                           const Note *next_note)
+{
+    if (note.hasProperty(Note::ShiftSlide) ||
+        note.hasProperty(Note::LegatoSlide) ||
+        note.hasProperty(Note::SlideOutOfDownwards) ||
+        note.hasProperty(Note::SlideOutOfUpwards))
+    {
+        int bend_amount = DEFAULT_BEND;
+
+        if (note.hasProperty(Note::ShiftSlide) ||
+            note.hasProperty(Note::LegatoSlide))
+        {
+            if (next_note)
+            {
+                bend_amount = boost::rational_cast<int>(
+                    DEFAULT_BEND +
+                    (next_note->getFretNumber() - note.getFretNumber()) * 2 *
+                        BEND_QUARTER_TONE);
+            }
+            else
+            {
+                // Treat as a slide out of downwards.
+                bend_amount = SLIDE_BELOW_BEND;
+            }
+        }
+        else if (note.hasProperty(Note::SlideOutOfDownwards))
+            bend_amount = SLIDE_BELOW_BEND;
+        else if (note.hasProperty(Note::SlideOutOfUpwards))
+            bend_amount = SLIDE_ABOVE_BEND;
+
+        // Start the slide in the last part of the note duration, to make it
+        // somewhat more realistic-sounding.
+        const int slide_duration = note_duration / 3;
+        generateGradualBend(bends, start_tick + note_duration - slide_duration,
+                            slide_duration, DEFAULT_BEND, bend_amount);
+
+        // Reset pitch wheel after note is played.
+        bends.push_back(
+            BendEventInfo(start_tick + note_duration, DEFAULT_BEND));
+    }
+
+    if (note.hasProperty(Note::SlideIntoFromAbove) ||
+        note.hasProperty(Note::SlideIntoFromBelow))
+    {
+        int bend_amount = note.hasProperty(Note::SlideIntoFromAbove)
+                              ? SLIDE_ABOVE_BEND
+                              : SLIDE_BELOW_BEND;
+
+        // Slide over a 16th note.
+        const int slide_duration = ppq / 4;
+        generateGradualBend(bends, start_tick, slide_duration, bend_amount,
+                            DEFAULT_BEND);
+    }
+}
+
 int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
-                              int current_tick, int current_tempo,
-                              const Score &score, const System &system,
-                              int system_index, const Staff &staff,
-                              int staff_index, const Voice &voice,
-                              int voice_index, int bar_start, int bar_end)
+                              uint8_t &active_bend, int current_tick,
+                              int current_tempo, const Score &score,
+                              const System &system, int system_index,
+                              const Staff &staff, int staff_index,
+                              const Voice &voice, int voice_index,
+                              int bar_start, int bar_end)
 {
     ScoreLocation location(score, system_index, staff_index, voice_index);
     const Voice *prev_voice = VoiceUtils::getAdjacentVoice(location, -1);
@@ -553,9 +752,8 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
             }
 
             // Generate all events that involve pitch bends.
-#if 0
             {
-                std::vector<BendEventInfo> bendEvents;
+                std::vector<BendEventInfo> bend_events;
 
                 if (note.hasProperty(Note::SlideIntoFromAbove) ||
                     note.hasProperty(Note::SlideIntoFromBelow) ||
@@ -564,29 +762,29 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
                     note.hasProperty(Note::SlideOutOfDownwards) ||
                     note.hasProperty(Note::SlideOutOfUpwards))
                 {
-                    generateSlides(bendEvents, startTime, duration,
-                                   currentTempo, note,
+                    generateSlides(bend_events, current_tick, duration,
+                                   myTicksPerBeat, note,
                                    VoiceUtils::getNextNote(voice, position,
                                                            note.getString()));
                 }
 
                 if (note.hasBend())
                 {
-                    generateBends(bendEvents, activePitchBend, startTime,
-                                  duration, currentTempo, note);
+                    generateBends(bend_events, active_bend, current_tick,
+                                  duration, myTicksPerBeat, note);
                 }
 
-                for (const BendEventInfo &event : bendEvents)
+                for (const BendEventInfo &event : bend_events)
                 {
-                    for (const active_player &player : active_players)
+                    for (const ActivePlayer &player : active_players)
                     {
-                        eventList.emplace_back(new BendEvent(
-                            getChannel(player), event.timestamp, position,
-                            system_index, event.pitchBendAmount));
+                        tracks[player.getPlayerNumber()].append(
+                            MidiEvent::pitchWheel(event.myTick,
+                                                  getChannel(player),
+                                                  event.myBendAmount));
                     }
                 }
             }
-#endif
 
             // Perform tremolo picking or trills - they work identically, except
             // trills alternate between two pitches.

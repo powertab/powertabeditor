@@ -23,14 +23,19 @@ enum StatusByte : uint8_t
     NoteOn = 0x90,
     ControlChange = 0xb0,
     ProgramChange = 0xc0,
+    PitchWheel = 0xe0,
     MetaMessage = 0xff
 };
 
 enum Controller : uint8_t
 {
     ModWheel = 0x01,
+    DataEntryCoarse = 0x06,
     ChannelVolume = 0x07,
-    HoldPedal = 0x40
+    DataEntryFine = 0x26,
+    HoldPedal = 0x40,
+    RpnLsb = 0x64,
+    RpnMsb = 0x65
 };
 
 enum MetaType : uint8_t
@@ -106,4 +111,26 @@ MidiEvent MidiEvent::holdPedal(int ticks, uint8_t channel, bool enabled)
         ticks, StatusByte::ControlChange + channel,
         { Controller::HoldPedal, static_cast<uint8_t>(enabled ? 127 : 0) },
         SystemLocation(), -1, -1);
+}
+
+MidiEvent MidiEvent::pitchWheel(int ticks, uint8_t channel, uint8_t amount)
+{
+    return MidiEvent(ticks, StatusByte::PitchWheel + channel, { 0, amount },
+                     SystemLocation(), -1, -1);
+}
+
+std::vector<MidiEvent> MidiEvent::pitchWheelRange(int ticks, uint8_t channel,
+                                                  uint8_t semitones)
+{
+    return {
+        MidiEvent(ticks, StatusByte::ControlChange + channel,
+                  { Controller::RpnMsb, 0 }, SystemLocation(), -1, -1),
+        MidiEvent(ticks, StatusByte::ControlChange + channel,
+                  { Controller::RpnLsb, 0 }, SystemLocation(), -1, -1),
+        MidiEvent(ticks, StatusByte::ControlChange + channel,
+                  { Controller::DataEntryCoarse, semitones }, SystemLocation(),
+                  -1, -1),
+        MidiEvent(ticks, StatusByte::ControlChange + channel,
+                  { Controller::DataEntryFine, 0 }, SystemLocation(), -1, -1),
+    };
 }
