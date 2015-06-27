@@ -28,7 +28,9 @@ enum StatusByte : uint8_t
 
 enum Controller : uint8_t
 {
-    ChannelVolume = 0x07
+    ModWheel = 0x01,
+    ChannelVolume = 0x07,
+    HoldPedal = 0x40
 };
 
 enum MetaType : uint8_t
@@ -90,4 +92,18 @@ MidiEvent MidiEvent::programChange(int ticks, uint8_t channel, uint8_t preset)
 {
     return MidiEvent(ticks, StatusByte::ProgramChange + channel, { preset },
                      SystemLocation(), -1, -1);
+}
+
+MidiEvent MidiEvent::modWheel(int ticks, uint8_t channel, uint8_t width)
+{
+    return MidiEvent(ticks, StatusByte::ControlChange + channel,
+                     { Controller::ModWheel, width }, SystemLocation(), -1, -1);
+}
+
+MidiEvent MidiEvent::holdPedal(int ticks, uint8_t channel, bool enabled)
+{
+    return MidiEvent(
+        ticks, StatusByte::ControlChange + channel,
+        { Controller::HoldPedal, static_cast<uint8_t>(enabled ? 127 : 0) },
+        SystemLocation(), -1, -1);
 }

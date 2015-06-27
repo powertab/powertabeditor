@@ -39,6 +39,8 @@ public:
                              const SystemLocation &location);
     static MidiEvent volumeChange(int ticks, uint8_t channel, uint8_t level);
     static MidiEvent programChange(int ticks, uint8_t channel, uint8_t preset);
+    static MidiEvent modWheel(int ticks, uint8_t channel, uint8_t width);
+    static MidiEvent holdPedal(int ticks, uint8_t channel, bool enabled);
 
 private:
     MidiEvent(int ticks, uint8_t status, std::vector<uint8_t> data,

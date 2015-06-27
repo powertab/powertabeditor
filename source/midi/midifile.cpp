@@ -296,6 +296,22 @@ static Velocity getNoteVelocity(const Position &pos, const Note &note)
         return Velocity::DefaultVelocity;
 }
 
+static uint8_t getVibratoWidth(const Position &pos)
+{
+    QSettings settings;
+
+    if (pos.hasProperty(Position::Vibrato))
+    {
+        return settings.value(Settings::MIDI_VIBRATO_LEVEL,
+                              Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt();
+    }
+    else
+    {
+        return settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
+                              Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt();
+    }
+}
+
 int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
                               int current_tick, const Score &score,
                               const System &system, int system_index,
@@ -393,13 +409,11 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
             continue;
         }
 
-#if 0
         // Vibrato events (these apply to all notes in the position).
-        if (pos.hasProperty(Position::Vibrato) ||
-            pos.hasProperty(Position::WideVibrato))
+        if (pos->hasProperty(Position::Vibrato) ||
+            pos->hasProperty(Position::WideVibrato))
         {
-            VibratoEvent::VibratoType type = pos.hasProperty(Position::Vibrato)
-                    ? VibratoEvent::NormalVibrato : VibratoEvent::WideVibrato;
+            const uint8_t width = getVibratoWidth(*pos);
 
             for (const ActivePlayer &player : active_players)
             {
@@ -407,54 +421,49 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
 
                 // Add vibrato event, and an event to turn off the vibrato after
                 // the note is done.
-                eventList.emplace_back(
-                    new VibratoEvent(channel, startTime, position, system_index,
-                                     VibratoEvent::VibratoOn, type));
+                tracks[player.getPlayerNumber()].append(
+                    MidiEvent::modWheel(current_tick, channel, width));
 
-                eventList.emplace_back(
-                    new VibratoEvent(channel, startTime + duration, position,
-                                     system_index, VibratoEvent::VibratoOff));
+                tracks[player.getPlayerNumber()].append(
+                    MidiEvent::modWheel(current_tick + duration, channel, 0));
             }
         }
 
         // Let ring events (applied to all notes in the position).
-        if (pos.hasProperty(Position::LetRing) && !letRingActive)
+        if (pos->hasProperty(Position::LetRing) && !let_ring_active)
         {
             for (const ActivePlayer &player : active_players)
             {
-                eventList.emplace_back(
-                    new LetRingEvent(getChannel(player), startTime, position,
-                                     system_index, LetRingEvent::LetRingOn));
+                tracks[player.getPlayerNumber()].append(MidiEvent::holdPedal(
+                    current_tick, getChannel(player), true));
             }
 
-            letRingActive = true;
+            let_ring_active = true;
         }
-        else if (!pos.hasProperty(Position::LetRing) && letRingActive)
+        else if (!pos->hasProperty(Position::LetRing) && let_ring_active)
         {
             for (const ActivePlayer &player : active_players)
             {
-                eventList.emplace_back(
-                    new LetRingEvent(getChannel(player), startTime, position,
-                                     system_index, LetRingEvent::LetRingOff));
+                tracks[player.getPlayerNumber()].append(MidiEvent::holdPedal(
+                    current_tick, getChannel(player), false));
             }
 
-            letRingActive = false;
+            let_ring_active = false;
         }
         // Make sure that we end the let ring after the last position in the bar.
-        else if (letRingActive &&
-                 (&pos == &ScoreUtils::findInRange(voice.getPositions(),
-                                                   bar_start, bar_end).back()))
+        else if (let_ring_active &&
+                 (pos ==
+                  &ScoreUtils::findInRange(voice.getPositions(), bar_start,
+                                           bar_end) .back()))
         {
             for (const ActivePlayer &player : active_players)
             {
-                eventList.emplace_back(new LetRingEvent(
-                    getChannel(player), startTime + duration, position,
-                    system_index, LetRingEvent::LetRingOff));
+                tracks[player.getPlayerNumber()].append(MidiEvent::holdPedal(
+                    current_tick + duration, getChannel(player), false));
             }
 
-            letRingActive = false;
+            let_ring_active = false;
         }
-#endif
 
         for (const Note &note : pos->getNotes())
         {
