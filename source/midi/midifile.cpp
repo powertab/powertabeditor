@@ -21,6 +21,7 @@
 #include <QSettings>
 
 #include <app/settings.h>
+#include <audio/repeatcontroller.h>>
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/scorelocation.h>
@@ -69,6 +70,38 @@ static int getChannel(const ActivePlayer &player)
     return getChannel(player.getPlayerNumber());
 }
 
+static SystemLocation moveToNextBar(const System &system,
+                                    SystemLocation location, int next_bar_pos,
+                                    RepeatController &repeat_controller)
+{
+    // Follow any repeats / directions in the bar.
+    SystemLocation prev_location = location;
+    SystemLocation new_location;
+    for (int i = location.getPosition() + 1; i <= next_bar_pos; ++i)
+    {
+        location.setPosition(i);
+
+        if (repeat_controller.checkForRepeat(prev_location, location,
+                                             new_location))
+        {
+            return new_location;
+        }
+        else
+            prev_location = location;
+    }
+
+    // Otherwise, move to the next bar.
+    if (next_bar_pos == system.getBarlines().back().getPosition())
+    {
+        location.setSystem(location.getSystem() + 1);
+        location.setPosition(0);
+    }
+    else
+        location.setPosition(next_bar_pos);
+
+    return location;
+}
+
 MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
@@ -76,6 +109,8 @@ MidiFile::MidiFile() : myTicksPerBeat(0)
 void MidiFile::load(const Score &score, bool enable_metronome)
 {
     myTicksPerBeat = DEFAULT_PPQ;
+
+    RepeatController repeat_controller(score);
 
     MidiEventList master_track;
     MidiEventList metronome_track;
@@ -137,15 +172,8 @@ void MidiFile::load(const Score &score, bool enable_metronome)
             current_tick, generateMetronome(metronome_track, start_tick, system,
                                             *current_bar, *next_bar, location));
 
-        // Move to the next bar.
-        // TODO - handle repeats.
-        if (next_bar == &system.getBarlines().back())
-        {
-            location.setSystem(location.getSystem() + 1);
-            location.setPosition(0);
-        }
-        else
-            location.setPosition(next_bar->getPosition());
+        location = moveToNextBar(system, location, next_bar->getPosition(),
+                                 repeat_controller);
     }
 
     myTracks.push_back(master_track);
