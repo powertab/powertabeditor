@@ -73,7 +73,7 @@ MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
 
-void MidiFile::load(const Score &score)
+void MidiFile::load(const Score &score, bool enable_metronome)
 {
     myTicksPerBeat = DEFAULT_PPQ;
 
@@ -150,7 +150,8 @@ void MidiFile::load(const Score &score)
 
     myTracks.push_back(master_track);
     myTracks.insert(myTracks.end(), regular_tracks.begin(), regular_tracks.end());
-    myTracks.push_back(metronome_track);
+    if (enable_metronome)
+        myTracks.push_back(metronome_track);
 
     for (MidiEventList &track : myTracks)
     {
