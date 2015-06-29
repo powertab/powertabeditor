@@ -78,20 +78,20 @@
         <RegistryValue Root="HKCU" Key="Software\Power Tab\Power Tab Editor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
 
-      <Component Id="boost_date_time" Guid="8D5C1AB0-AD48-4E22-B12A-375226C4147D">
-        <File Source="$(var.BinDir)/boost_date_time-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_date_time" Guid="FAEEF27B-4899-4A64-AF74-3F5446B5E8AE">
+        <File Source="$(var.BinDir)/boost_date_time-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_iostreams" Guid="C5409740-0B1C-4BCF-8413-CA69FF64354D">
-        <File Source="$(var.BinDir)/boost_iostreams-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_iostreams" Guid="85C7EEB1-69ED-4511-B2E9-CDA0BA82B96D">
+        <File Source="$(var.BinDir)/boost_iostreams-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_program_options" Guid="95D95616-CDF8-4653-87BD-B936AD2BDFA8">
-        <File Source="$(var.BinDir)/boost_program_options-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_program_options" Guid="E813AFF5-37CE-44B8-B2DD-789556D9B617">
+        <File Source="$(var.BinDir)/boost_program_options-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_regex" Guid="B1ECB61B-50EA-4CA7-B980-CB37593EA93E">
-        <File Source="$(var.BinDir)/boost_regex-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_regex" Guid="3DE0F57F-F6DC-4BBD-B649-64C51B17FA5B">
+        <File Source="$(var.BinDir)/boost_regex-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_zlib" Guid="F004D3B4-A96D-40DB-A370-5FBCD0C9E4DE">
-        <File Source="$(var.BinDir)/boost_zlib-vc120-mt-1_57.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_zlib" Guid="58B5C145-F4D9-457D-8DFD-4EA2AFE175C3">
+        <File Source="$(var.BinDir)/boost_zlib-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="libEGL" Guid="060B6468-B66B-4B9F-AFE4-8016428ABE9D">
         <File Source="$(var.BinDir)/libEGL.dll" KeyPath="yes" Checksum="yes" />
