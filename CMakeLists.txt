@@ -12,7 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
 option(BUILD_TESTS "Build unit tests." ON)
-option(ENABLE_PRECOMPILED_HEADERS "Enable building with precompiled headers." OFF)
+option(ENABLE_PRECOMPILED_HEADERS "Enable building with precompiled headers." ON)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_DEBUG_POSTFIX "d")
