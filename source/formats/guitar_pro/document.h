@@ -19,6 +19,7 @@
 #define FORMATS_GP_FILEFORMAT_H
 
 #include <array>
+#include <cstdint>
 #include <boost/optional/optional.hpp>
 #include <string>
 #include <vector>
