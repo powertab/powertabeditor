@@ -12,9 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 option(ENABLE_WERROR "Fail and stop if a warning is triggered." OFF)
 option(BUILD_TESTS "Build unit tests." ON)
-
-include(cmake/cotire.cmake)
-set_directory_properties(PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+option(ENABLE_PRECOMPILED_HEADERS "Enable building with precompiled headers." OFF)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(CMAKE_DEBUG_POSTFIX "d")
@@ -73,6 +71,18 @@ include_directories(${PROJECT_SOURCE_DIR}/source)
 include_directories(${PROJECT_SOURCE_DIR}/external/rapidjson/include)
 include_directories(${PROJECT_SOURCE_DIR}/external/pugixml/src)
 include_directories(${PROJECT_SOURCE_DIR}/external/withershins/src)
+
+if (ENABLE_PRECOMPILED_HEADERS)
+    include(cmake/cotire.cmake)
+    set_directory_properties(PROPERTIES COTIRE_ADD_UNITY_BUILD FALSE)
+endif ()
+
+function (add_precompiled_header library)
+    if (ENABLE_PRECOMPILED_HEADERS)
+        cotire(${library})
+    endif ()
+endfunction ()
+
 
 add_subdirectory(external)
 add_subdirectory(source)

@@ -76,4 +76,4 @@ add_library(ptescore
     utils/scorepolisher.h
 )
 
-cotire(ptescore)
+add_precompiled_header(ptescore)

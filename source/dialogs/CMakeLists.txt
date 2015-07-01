@@ -94,4 +94,4 @@ add_library(ptedialogs
 )
 
 qt5_use_modules(ptedialogs Widgets) 
-cotire(ptedialogs)
+add_precompiled_header(ptedialogs)

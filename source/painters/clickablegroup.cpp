@@ -17,6 +17,8 @@
   
 #include "clickablegroup.h"
 
+#include <QCursor>
+
 ClickableGroup::ClickableGroup(const QString &tooltip, const Callback &callback)
     : myCallback(callback)
 {

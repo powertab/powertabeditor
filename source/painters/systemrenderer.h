@@ -25,6 +25,7 @@
 #include <score/staff.h>
 
 class QGraphicsItem;
+class QGraphicsItemGroup;
 class QGraphicsRectItem;
 class Score;
 class ScoreArea;

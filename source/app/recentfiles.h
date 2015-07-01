@@ -18,6 +18,7 @@
 #ifndef APP_RECENTFILES_H
 #define APP_RECENTFILES_H
 
+#include <QObject>
 #include <QStringList>
 
 class QMenu;

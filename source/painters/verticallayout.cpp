@@ -17,6 +17,8 @@
 
 #include "verticallayout.h"
 
+#include <algorithm>
+
 int VerticalLayout::addBox(int left, int right, int height)
 {
     heights.resize(std::max<size_t>(heights.size(), right + 1));

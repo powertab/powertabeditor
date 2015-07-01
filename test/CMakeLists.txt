@@ -123,7 +123,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     target_link_libraries(pte_tests winmm)
 endif()
 
-cotire(pte_tests)
+add_precompiled_header(pte_tests)
 
 # Copy the test files to the build directory.
 add_custom_command(TARGET pte_tests POST_BUILD COMMAND

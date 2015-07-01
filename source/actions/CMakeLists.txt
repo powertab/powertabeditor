@@ -119,4 +119,4 @@ add_library(pteactions
 )
 
 qt5_use_modules(pteactions Widgets)
-cotire(pteactions)
+add_precompiled_header(pteactions)

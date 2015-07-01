@@ -17,6 +17,8 @@
 
 #include "antialiasedpathitem.h"
 
+#include <QPainter>
+
 AntialiasedPathItem::AntialiasedPathItem(const QPainterPath &path)
     : QGraphicsPathItem(path)
 {

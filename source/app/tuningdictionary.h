@@ -19,6 +19,7 @@
 #define APP_TUNINGDICTIONARY_H
 
 #include <QMutex>
+#include <QStringList>
 #include <score/tuning.h>
 #include <vector>
 

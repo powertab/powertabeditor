@@ -42,4 +42,4 @@ add_library(ptepainters
 )
 
 qt5_use_modules(ptepainters Widgets)
-cotire(ptepainters)
+add_precompiled_header(ptepainters)

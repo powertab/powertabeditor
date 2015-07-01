@@ -106,4 +106,4 @@ add_library(pteformats
 )
 
 qt5_use_modules(pteformats Widgets) 
-cotire(pteformats)
+add_precompiled_header(pteformats)

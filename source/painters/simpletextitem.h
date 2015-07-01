@@ -18,7 +18,10 @@
 #ifndef PAINTERS_SIMPLETEXTITEM_H
 #define PAINTERS_SIMPLETEXTITEM_H
 
+#include <QBrush>
+#include <QFont>
 #include <QGraphicsItem>
+#include <QPen>
 
 /// Replacement for QGraphicsSimpleTextItem, which is significantly faster but
 /// doesn't handle things like multi-line text.

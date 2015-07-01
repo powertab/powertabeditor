@@ -18,6 +18,7 @@
 #include "scoremerger.h"
 
 #include <list>
+#include <unordered_set>
 
 #include <app/caret.h>
 #include <app/viewoptions.h>

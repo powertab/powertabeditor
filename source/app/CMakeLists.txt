@@ -40,4 +40,4 @@ add_library(pteapp
 )
 
 qt5_use_modules(pteapp Widgets Concurrent PrintSupport)
-cotire(pteapp)
+add_precompiled_header(pteapp)

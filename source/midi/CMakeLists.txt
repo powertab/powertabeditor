@@ -11,5 +11,4 @@ add_library(ptemidi
 )
 
 qt5_use_modules(ptemidi Core)
-
-cotire(ptemidi)
+add_precompiled_header(ptemidi)

@@ -17,6 +17,9 @@
   
 #include "midieventlist.h"
 
+#include <algorithm>
+#include <cassert>
+
 MidiEventList::MidiEventList(bool absolute_ticks)
     : myAbsoluteTicks(absolute_ticks)
 {

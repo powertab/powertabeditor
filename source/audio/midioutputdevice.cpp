@@ -20,6 +20,7 @@
 #include <RtMidi.h>
 #include <score/dynamic.h>
 #include <score/generalmidi.h>
+#include <cassert>
 
 MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 {

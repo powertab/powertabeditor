@@ -17,6 +17,7 @@
 
 #include "directionindex.h"
 
+#include <iostream>
 #include <score/score.h>
 
 DirectionIndex::DirectionIndex(const Score &score)

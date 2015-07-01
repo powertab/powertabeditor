@@ -17,6 +17,9 @@
 
 #include "document.h"
 
+#include <boost/algorithm/clamp.hpp>
+#include <iostream>
+
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/fileformat.h>
 #include <score/generalmidi.h>

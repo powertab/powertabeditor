@@ -18,6 +18,8 @@
 #include "inputstream.h"
 
 #include <cassert>
+#include <map>
+
 #include <formats/fileformat.h>
 
 const std::map<std::string, Gp::Version> theVersionStrings = {

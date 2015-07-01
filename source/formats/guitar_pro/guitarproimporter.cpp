@@ -17,6 +17,9 @@
   
 #include "guitarproimporter.h"
 
+#include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <fstream>
+
 #include <formats/guitar_pro/document.h>
 #include <formats/guitar_pro/inputstream.h>
 #include <score/score.h>
