@@ -17,6 +17,7 @@
 
 #include "document.h"
 
+#include <cmath>
 #include <boost/algorithm/clamp.hpp>
 #include <iostream>
 
