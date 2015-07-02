@@ -299,7 +299,7 @@ static int importNotes(
             const Staff &src_staff = src_system.getStaves()[i];
             Staff dest_staff(src_staff.getStringCount());
             dest_staff.setClefType(src_staff.getClefType());
-            dest_system.insertStaff(dest_staff);
+            dest_system.insertStaff(dest_staff, i + staff_offset);
 
             if (!is_bass)
                 ++num_guitar_staves;
@@ -448,18 +448,18 @@ static void mergePlayerChanges(ScoreLocation &dest_loc,
                                int num_guitar_staves,
                                int prev_num_guitar_staves)
 {
+    System &dest_system = dest_loc.getSystem();
     const PlayerChange *guitar_change =
         findPlayerChange(dest_loc, guitar_loc, guitar_bar, end_guitar_bar);
     const PlayerChange *bass_change =
         findPlayerChange(dest_loc, bass_loc, bass_bar, end_bass_bar);
 
-    // If either the guitar or bass score has a player change, or we're at the
-    // start of a new system that has a different number of guitar staves,
-    // insert a player change to ensure that player are assigned to the correct
-    // staves.
-    if (guitar_change || guitar_change ||
+    // If either the guitar or bass score has a player change, or we're in a
+    // system that has a different number of guitar staves, insert a player
+    // change to ensure that player are assigned to the correct staves.
+    if (guitar_change || bass_change ||
         (num_guitar_staves != prev_num_guitar_staves &&
-         dest_loc.getPositionIndex() == 0))
+         !ScoreUtils::findByPosition(dest_system.getPlayerChanges(), 0)))
     {
         PlayerChange change;
 
@@ -516,8 +516,14 @@ static void mergePlayerChanges(ScoreLocation &dest_loc,
             }
         }
 
-        change.setPosition(dest_loc.getPositionIndex());
-        dest_loc.getSystem().insertPlayerChange(change);
+        // If the number of staves changed, insert the player change at the
+        // start of the system.
+        if (num_guitar_staves != prev_num_guitar_staves)
+            change.setPosition(0);
+        else
+            change.setPosition(dest_loc.getPositionIndex());
+
+        dest_system.insertPlayerChange(change);
     }
 }
 
