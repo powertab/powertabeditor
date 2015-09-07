@@ -5,11 +5,9 @@ include_directories(${PROJECT_SOURCE_DIR}/external/rtmidi)
 add_library(pteaudio
     midioutputdevice.cpp
     midiplayer.cpp
-    repeatcontroller.cpp
 
     midioutputdevice.h
     midiplayer.h
-    repeatcontroller.h
 )
 
 qt5_use_modules(pteaudio Widgets) 

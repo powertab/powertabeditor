@@ -17,11 +17,12 @@
   
 #include "midifile.h"
 
+#include "repeatcontroller.h"
+
 #include <boost/rational.hpp>
 #include <QSettings>
 
 #include <app/settings.h>
-#include <audio/repeatcontroller.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/scorelocation.h>
