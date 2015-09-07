@@ -21,7 +21,7 @@
 #include <QSettings>
 
 #include <app/settings.h>
-#include <audio/repeatcontroller.h>>
+#include <audio/repeatcontroller.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/scorelocation.h>
