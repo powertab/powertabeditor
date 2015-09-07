@@ -51,6 +51,13 @@ MidiOutputDevice::~MidiOutputDevice()
 {
 }
 
+void
+MidiOutputDevice::sendMessage(const std::vector<uint8_t> &data)
+{
+    // FIXME - fix const correctness in RtMidi api.
+    myMidiOut->sendMessage(const_cast<std::vector<uint8_t> *>(&data));
+}
+
 bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
                                        unsigned char c)
 {

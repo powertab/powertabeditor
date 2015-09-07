@@ -67,8 +67,6 @@ add_executable(pte_tests
 
     app/test_documentmanager.cpp
 
-    audio/test_midievent.cpp
-
     formats/test_fileformat.cpp
     formats/gpx/test_gpx.cpp
     formats/guitar_pro/test_gp.cpp

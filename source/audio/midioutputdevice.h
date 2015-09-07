@@ -82,6 +82,8 @@ public:
         RpnMsb = 101
     };
 
+    void sendMessage(const std::vector<uint8_t> &data);
+
 private:
     bool sendMidiMessage(unsigned char a, unsigned char b, unsigned char c);
 
