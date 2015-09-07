@@ -26,9 +26,14 @@
 class MidiEvent
 {
 public:
+    inline bool operator<(const MidiEvent &other) const
+    {
+        return myTicks < other.myTicks;
+    }
+
     int getTicks() const { return myTicks; }
     void setTicks(int ticks) { myTicks = ticks; }
-    uint8_t getStatusByte() const { return myStatusByte; }
+    uint8_t getStatusByte() const { return myData[0]; }
     const std::vector<uint8_t> &getData() const { return myData; }
 
     static MidiEvent endOfTrack(int ticks);
@@ -46,11 +51,10 @@ public:
                                                   uint8_t semitones);
 
 private:
-    MidiEvent(int ticks, uint8_t status, std::vector<uint8_t> data,
+    MidiEvent(int ticks, std::vector<uint8_t> data,
               const SystemLocation &location, int player, int instrument);
 
     int myTicks; // TODO - does this need to be 64-bit for absolute times?
-    uint8_t myStatusByte;
     std::vector<uint8_t> myData;
 
     SystemLocation myLocation;

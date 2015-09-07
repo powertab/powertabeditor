@@ -44,10 +44,9 @@ enum MetaType : uint8_t
     SetTempo = 0x51
 };
 
-MidiEvent::MidiEvent(int ticks, uint8_t status, std::vector<uint8_t> data,
+MidiEvent::MidiEvent(int ticks, std::vector<uint8_t> data,
                      const SystemLocation &location, int player, int instrument)
     : myTicks(ticks),
-      myStatusByte(status),
       myData(std::move(data)),
       myLocation(location),
       myPlayer(player),
@@ -57,80 +56,99 @@ MidiEvent::MidiEvent(int ticks, uint8_t status, std::vector<uint8_t> data,
 
 MidiEvent MidiEvent::endOfTrack(int ticks)
 {
-    return MidiEvent(ticks, StatusByte::MetaMessage, { MetaType::TrackEnd, 0 },
+    return MidiEvent(ticks, { StatusByte::MetaMessage, MetaType::TrackEnd, 0 },
                      SystemLocation(), -1, -1);
 }
 
 MidiEvent MidiEvent::setTempo(int ticks, int microseconds)
 {
     const uint32_t val = microseconds;
-    return MidiEvent(ticks, StatusByte::MetaMessage,
-                     { static_cast<uint8_t>(MetaType::SetTempo), 3,
-                       static_cast<uint8_t>((val >> 16) & 0xff),
-                       static_cast<uint8_t>((val >> 8) & 0xff),
-                       static_cast<uint8_t>(val & 0xff) },
+    return MidiEvent(ticks, { StatusByte::MetaMessage,
+                              static_cast<uint8_t>(MetaType::SetTempo), 3,
+                              static_cast<uint8_t>((val >> 16) & 0xff),
+                              static_cast<uint8_t>((val >> 8) & 0xff),
+                              static_cast<uint8_t>(val & 0xff) },
                      SystemLocation(), -1, -1);
 }
 
 MidiEvent MidiEvent::noteOn(int ticks, uint8_t channel, uint8_t pitch,
                             uint8_t velocity, const SystemLocation &location)
 {
-    return MidiEvent(ticks, StatusByte::NoteOn + channel, { pitch, velocity },
-                     location, -1, -1);
+    return MidiEvent(
+        ticks,
+        { static_cast<uint8_t>(StatusByte::NoteOn + channel), pitch, velocity },
+        location, -1, -1);
 }
 
 MidiEvent MidiEvent::noteOff(int ticks, uint8_t channel, uint8_t pitch,
                              const SystemLocation &location)
 {
-    return MidiEvent(ticks, StatusByte::NoteOff + channel, { pitch, 127 },
-                     location, -1, -1);
+    return MidiEvent(
+        ticks,
+        { static_cast<uint8_t>(StatusByte::NoteOff + channel), pitch, 127 },
+        location, -1, -1);
 }
 
 MidiEvent MidiEvent::volumeChange(int ticks, uint8_t channel, uint8_t level)
 {
-    return MidiEvent(ticks, StatusByte::ControlChange + channel,
-                     { Controller::ChannelVolume, level }, SystemLocation(), -1,
-                     -1);
+    return MidiEvent(
+        ticks, { static_cast<uint8_t>(StatusByte::ControlChange + channel),
+                 Controller::ChannelVolume, level },
+        SystemLocation(), -1, -1);
 }
 
 MidiEvent MidiEvent::programChange(int ticks, uint8_t channel, uint8_t preset)
 {
-    return MidiEvent(ticks, StatusByte::ProgramChange + channel, { preset },
-                     SystemLocation(), -1, -1);
+    return MidiEvent(
+        ticks,
+        { static_cast<uint8_t>(StatusByte::ProgramChange + channel), preset },
+        SystemLocation(), -1, -1);
 }
 
 MidiEvent MidiEvent::modWheel(int ticks, uint8_t channel, uint8_t width)
 {
-    return MidiEvent(ticks, StatusByte::ControlChange + channel,
-                     { Controller::ModWheel, width }, SystemLocation(), -1, -1);
+    return MidiEvent(
+        ticks, { static_cast<uint8_t>(StatusByte::ControlChange + channel),
+                 Controller::ModWheel, width },
+        SystemLocation(), -1, -1);
 }
 
 MidiEvent MidiEvent::holdPedal(int ticks, uint8_t channel, bool enabled)
 {
     return MidiEvent(
-        ticks, StatusByte::ControlChange + channel,
-        { Controller::HoldPedal, static_cast<uint8_t>(enabled ? 127 : 0) },
+        ticks,
+        { static_cast<uint8_t>(StatusByte::ControlChange + channel),
+          Controller::HoldPedal, static_cast<uint8_t>(enabled ? 127 : 0) },
         SystemLocation(), -1, -1);
 }
 
 MidiEvent MidiEvent::pitchWheel(int ticks, uint8_t channel, uint8_t amount)
 {
-    return MidiEvent(ticks, StatusByte::PitchWheel + channel, { 0, amount },
-                     SystemLocation(), -1, -1);
+    return MidiEvent(
+        ticks,
+        { static_cast<uint8_t>(StatusByte::PitchWheel + channel), 0, amount },
+        SystemLocation(), -1, -1);
 }
 
 std::vector<MidiEvent> MidiEvent::pitchWheelRange(int ticks, uint8_t channel,
                                                   uint8_t semitones)
 {
     return {
-        MidiEvent(ticks, StatusByte::ControlChange + channel,
-                  { Controller::RpnMsb, 0 }, SystemLocation(), -1, -1),
-        MidiEvent(ticks, StatusByte::ControlChange + channel,
-                  { Controller::RpnLsb, 0 }, SystemLocation(), -1, -1),
-        MidiEvent(ticks, StatusByte::ControlChange + channel,
-                  { Controller::DataEntryCoarse, semitones }, SystemLocation(),
-                  -1, -1),
-        MidiEvent(ticks, StatusByte::ControlChange + channel,
-                  { Controller::DataEntryFine, 0 }, SystemLocation(), -1, -1),
+        MidiEvent(ticks,
+                  { static_cast<uint8_t>(StatusByte::ControlChange + channel),
+                    Controller::RpnMsb, 0 },
+                  SystemLocation(), -1, -1),
+        MidiEvent(ticks,
+                  { static_cast<uint8_t>(StatusByte::ControlChange + channel),
+                    Controller::RpnLsb, 0 },
+                  SystemLocation(), -1, -1),
+        MidiEvent(ticks,
+                  { static_cast<uint8_t>(StatusByte::ControlChange + channel),
+                    Controller::DataEntryCoarse, semitones },
+                  SystemLocation(), -1, -1),
+        MidiEvent(ticks,
+                  { static_cast<uint8_t>(StatusByte::ControlChange + channel),
+                    Controller::DataEntryFine, 0 },
+                  SystemLocation(), -1, -1),
     };
 }

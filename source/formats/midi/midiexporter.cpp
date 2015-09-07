@@ -104,7 +104,6 @@ void MidiExporter::writeTrack(std::ostream & os, const MidiEventList & events)
     for (const MidiEvent &event : events)
     {
         writeVariableLength(os, event.getTicks());
-        write(os, static_cast<uint8_t>(event.getStatusByte()));
         os.write(reinterpret_cast<const char *>(event.getData().data()),
                  event.getData().size());
     }
