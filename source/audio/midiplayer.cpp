@@ -20,6 +20,7 @@
 #include <app/settings.h>
 #include <audio/midioutputdevice.h>
 #include <boost/rational.hpp>
+#include <cassert>
 #include <midi/midifile.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
