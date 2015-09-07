@@ -17,6 +17,8 @@
   
 #include "midievent.h"
 
+#include <cassert>
+
 enum Controller : uint8_t
 {
     ModWheel = 0x01,
