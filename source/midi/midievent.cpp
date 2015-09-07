@@ -17,16 +17,6 @@
   
 #include "midievent.h"
 
-enum StatusByte : uint8_t
-{
-    NoteOff = 0x80,
-    NoteOn = 0x90,
-    ControlChange = 0xb0,
-    ProgramChange = 0xc0,
-    PitchWheel = 0xe0,
-    MetaMessage = 0xff
-};
-
 enum Controller : uint8_t
 {
     ModWheel = 0x01,
@@ -58,6 +48,19 @@ MidiEvent MidiEvent::endOfTrack(int ticks)
 {
     return MidiEvent(ticks, { StatusByte::MetaMessage, MetaType::TrackEnd, 0 },
                      SystemLocation(), -1, -1);
+}
+
+bool MidiEvent::isTempoChange() const
+{
+    return getStatusByte() == StatusByte::MetaMessage &&
+           myData[1] == MetaType::SetTempo;
+}
+
+int MidiEvent::getTempo() const
+{
+    assert(isTempoChange());
+    assert(myData[2] == 3);
+    return myData[5] + (myData[4] << 8) + (myData[3] << 16);
 }
 
 MidiEvent MidiEvent::setTempo(int ticks, int microseconds)

@@ -40,6 +40,9 @@ namespace Midi
     /// MIDI PPQN = amount of "MIDI time" per quarter note.
     const uint32_t MIDI_PPQN = MIDI_QUARTER;
 
+    /// Time in microseconds for a beat at 120bpm.
+    const int BEAT_DURATION_120_BPM = 500000;
+
     /// Number of MIDI channels per port.
     const uint8_t NUM_MIDI_CHANNELS_PER_PORT = 16;
     /// First MIDI channel.

@@ -33,7 +33,6 @@
 static const int PERCUSSION_CHANNEL = 9;
 static const int METRONOME_CHANNEL = PERCUSSION_CHANNEL;
 static const int DEFAULT_PPQ = 480;
-static const int BPM_120 = 500000; // in microseconds.
 
 static const int PITCH_BEND_RANGE = 24;
 static const int DEFAULT_BEND = 64;
@@ -133,7 +132,7 @@ void MidiFile::load(const Score &score, bool enable_metronome)
 
     SystemLocation location(0, 0);
     int current_tick = 0;
-    int current_tempo = BPM_120;
+    int current_tempo = Midi::BEAT_DURATION_120_BPM;
     while (location.getSystem() < score.getSystems().size())
     {
         const System &system = score.getSystems()[location.getSystem()];
@@ -373,14 +372,16 @@ static uint8_t getVibratoWidth(const Position &pos)
 /// a 32nd note at 120bpm.
 static int getGraceNoteTicks(int ppq, int current_tempo)
 {
-    return boost::rational_cast<int>(boost::rational<int>(BPM_120, 8) /
-                                     boost::rational<int>(current_tempo, ppq));
+    return boost::rational_cast<int>(
+        boost::rational<int>(Midi::BEAT_DURATION_120_BPM, 8) /
+        boost::rational<int>(current_tempo, ppq));
 }
 
 static int getArpeggioOffset(int ppq, int current_tempo)
 {
-    return boost::rational_cast<int>(boost::rational<int>(BPM_120, 16) /
-                                     boost::rational<int>(current_tempo, ppq));
+    return boost::rational_cast<int>(
+        boost::rational<int>(Midi::BEAT_DURATION_120_BPM, 16) /
+        boost::rational<int>(current_tempo, ppq));
 }
 
 /// Holds basic information about a bend - used to simplify the generateBends

@@ -26,6 +26,16 @@
 class MidiEvent
 {
 public:
+    enum StatusByte : uint8_t
+    {
+        NoteOff = 0x80,
+        NoteOn = 0x90,
+        ControlChange = 0xb0,
+        ProgramChange = 0xc0,
+        PitchWheel = 0xe0,
+        MetaMessage = 0xff
+    };
+
     inline bool operator<(const MidiEvent &other) const
     {
         return myTicks < other.myTicks;
@@ -35,6 +45,9 @@ public:
     void setTicks(int ticks) { myTicks = ticks; }
     uint8_t getStatusByte() const { return myData[0]; }
     const std::vector<uint8_t> &getData() const { return myData; }
+
+    bool isTempoChange() const;
+    int getTempo() const;
 
     static MidiEvent endOfTrack(int ticks);
     static MidiEvent setTempo(int ticks, int microseconds);

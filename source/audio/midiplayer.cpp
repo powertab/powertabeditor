@@ -86,17 +86,20 @@ void MidiPlayer::run()
     }
 #endif
 
+    int beat_duration = Midi::BEAT_DURATION_120_BPM;
     for (auto event = events.begin(); event != events.end(); ++event)
     {
         if (!isPlaying())
             break;
 
+        if (event->isTempoChange())
+            beat_duration = event->getTempo();
+
         const int delta = event->getTicks();
         assert(delta >= 0);
-        const int bpm = 500000; // for 120 bpm, TODO - track current tempo
 
         const int duration_us = boost::rational_cast<int>(
-            boost::rational<int>(delta, ticks_per_beat) * bpm);
+            boost::rational<int>(delta, ticks_per_beat) * beat_duration);
 
         // TODO - include speed shift factor.
         usleep(duration_us);
