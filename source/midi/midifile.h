@@ -36,6 +36,7 @@ public:
     void load(const Score &score, bool enable_metronome);
 
     int getTicksPerBeat() const { return myTicksPerBeat; }
+    std::vector<MidiEventList> &getTracks() { return myTracks; }
     const std::vector<MidiEventList> &getTracks() const { return myTracks; }
 
 private:

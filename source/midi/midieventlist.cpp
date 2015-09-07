@@ -48,3 +48,22 @@ void MidiEventList::convertToDeltaTicks()
         event.setTicks(event.getTicks() - prev_event.getTicks());
     }
 }
+
+void MidiEventList::convertToAbsoluteTicks()
+{
+    assert(!myAbsoluteTicks);
+    myAbsoluteTicks = true;
+
+    for (size_t i = 1; i < myEvents.size(); ++i)
+    {
+        myEvents[i].setTicks(myEvents[i].getTicks() +
+                             myEvents[i - 1].getTicks());
+    }
+}
+
+void MidiEventList::concat(const MidiEventList &other)
+{
+    myEvents.reserve(myEvents.size() + other.myEvents.size());
+    myEvents.insert(myEvents.end(), other.myEvents.begin(),
+                    other.myEvents.end());
+}

@@ -26,14 +26,18 @@ class MidiEventList
 public:
     MidiEventList(bool absolute_ticks = true);
 
-    // Convert the MIDI events from absolute to delta ticks.
+    /// Convert the MIDI events from absolute to delta ticks.
     void convertToDeltaTicks();
+    /// Convert the MIDI events from delta to absolute ticks.
+    void convertToAbsoluteTicks();
 
     void append(const MidiEvent &event) { myEvents.push_back(event); }
     void append(MidiEvent &&event)
     {
         myEvents.push_back(std::forward<MidiEvent>(event));
     }
+
+    void concat(const MidiEventList &other);
 
     typedef std::vector<MidiEvent>::iterator iterator;
     typedef std::vector<MidiEvent>::const_iterator const_iterator;
