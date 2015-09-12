@@ -65,6 +65,11 @@ int MidiEvent::getTempo() const
     return myData[5] + (myData[4] << 8) + (myData[3] << 16);
 }
 
+bool MidiEvent::isProgramChange() const
+{
+    return (getStatusByte() & ~0x0f) == StatusByte::ProgramChange;
+}
+
 MidiEvent MidiEvent::setTempo(int ticks, int microseconds)
 {
     const uint32_t val = microseconds;

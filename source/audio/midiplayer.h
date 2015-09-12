@@ -20,6 +20,7 @@
 
 #include <atomic>
 #include <QThread>
+#include <score/systemlocation.h>
 
 class MidiFile;
 class Score;
@@ -49,8 +50,7 @@ private:
     bool isPlaying() const;
 
     const Score &myScore;
-    const int myStartSystem;
-    const int myStartPosition;
+    SystemLocation myStartLocation;
     std::atomic<bool> myIsPlaying;
     /// The current playback speed (percent).
     std::atomic<int> myPlaybackSpeed;

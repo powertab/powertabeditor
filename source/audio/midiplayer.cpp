@@ -31,8 +31,7 @@ static const int METRONOME_CHANNEL = 9;
 MidiPlayer::MidiPlayer(const Score &score, int start_system, int start_pos,
                        int speed)
     : myScore(score),
-      myStartSystem(start_system),
-      myStartPosition(start_pos),
+      myStartLocation(start_system, start_pos),
       myIsPlaying(false),
       myPlaybackSpeed(speed)
 {
@@ -78,15 +77,7 @@ void MidiPlayer::run()
         return;
     }
 
-    // TODO - perform count-in
-#if 0
-    if (settings.value(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
-                       Settings::MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT).toBool())
-    {
-        performCountIn(device, SystemLocation(myStartSystem, myStartPosition));
-    }
-#endif
-
+    bool started = false;
     int beat_duration = Midi::BEAT_DURATION_120_BPM;
     for (auto event = events.begin(); event != events.end(); ++event)
     {
@@ -95,6 +86,31 @@ void MidiPlayer::run()
 
         if (event->isTempoChange())
             beat_duration = event->getTempo();
+
+        // Skip events before the start location, except for events such as
+        // instrument changes. Tempo changes are tracked above.
+        if (!started)
+        {
+            if (event->getLocation() < myStartLocation)
+            {
+                if (event->isProgramChange())
+                    device.sendMessage(event->getData());
+
+                continue;
+            }
+            else
+            {
+                // TODO - perform count in.
+#if 0
+                if (settings.value(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
+                                   Settings::MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT).toBool())
+                {
+                    performCountIn(device, SystemLocation(myStartSystem, myStartPosition));
+                }
+#endif
+                started = true;
+            }
+        }
 
         const int delta = event->getTicks();
         assert(delta >= 0);

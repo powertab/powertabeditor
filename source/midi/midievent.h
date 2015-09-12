@@ -45,9 +45,11 @@ public:
     void setTicks(int ticks) { myTicks = ticks; }
     uint8_t getStatusByte() const { return myData[0]; }
     const std::vector<uint8_t> &getData() const { return myData; }
+    const SystemLocation &getLocation() const { return myLocation; }
 
     bool isTempoChange() const;
     int getTempo() const;
+    bool isProgramChange() const;
 
     static MidiEvent endOfTrack(int ticks);
     static MidiEvent setTempo(int ticks, int microseconds);
