@@ -79,6 +79,8 @@ void MidiPlayer::run()
 
     bool started = false;
     int beat_duration = Midi::BEAT_DURATION_120_BPM;
+    SystemLocation current_location = myStartLocation;
+
     for (auto event = events.begin(); event != events.end(); ++event)
     {
         if (!isPlaying())
@@ -118,10 +120,25 @@ void MidiPlayer::run()
         const int duration_us = boost::rational_cast<int>(
             boost::rational<int>(delta, ticks_per_beat) * beat_duration);
 
-        // TODO - include speed shift factor.
-        usleep(duration_us);
+        usleep(duration_us * (100.0 / myPlaybackSpeed));
 
         device.sendMessage(event->getData());
+
+        // Notify listeners of the current playback position.
+        // TODO - enable this once the jumping around glitches are resolved.
+        if (event->getLocation() != current_location)
+        {
+            const SystemLocation &new_location = event->getLocation();
+
+#if 0
+            if (new_location.getSystem() != current_location.getSystem())
+                emit playbackSystemChanged(new_location.getSystem());
+
+            emit playbackPositionChanged(new_location.getPosition());
+#endif
+
+            current_location = new_location;
+        }
     }
 }
 
