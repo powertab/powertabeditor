@@ -26,6 +26,11 @@
 #include <score/score.h>
 #include <QSettings>
 
+#ifdef _WIN32
+#include <boost/scope_exit.hpp>
+#include <objbase.h>
+#endif
+
 static const int METRONOME_CHANNEL = 9;
 
 MidiPlayer::MidiPlayer(const Score &score, int start_system, int start_pos,
@@ -45,6 +50,15 @@ MidiPlayer::~MidiPlayer()
 
 void MidiPlayer::run()
 {
+    // Workaround to fix errors with the Microsoft GS Wavetable Synth on
+    // Windows 10 - see http://stackoverflow.com/a/32553208/586978
+#ifdef _WIN32
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    BOOST_SCOPE_EXIT(this_) {
+        CoUninitialize();
+    } BOOST_SCOPE_EXIT_END
+#endif
+
     setIsPlaying(true);
 
     MidiFile file;
