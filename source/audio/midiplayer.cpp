@@ -62,7 +62,8 @@ void MidiPlayer::run()
     setIsPlaying(true);
 
     MidiFile file;
-    file.load(myScore, /* enable_metronome */ true);
+    file.load(myScore, /* enable_metronome */ true,
+              /* record_position_changes */ true);
     const int ticks_per_beat = file.getTicksPerBeat();
 
     // Merge the MIDI evvents for each track.
@@ -139,17 +140,18 @@ void MidiPlayer::run()
         device.sendMessage(event->getData());
 
         // Notify listeners of the current playback position.
-        // TODO - enable this once the jumping around glitches are resolved.
         if (event->getLocation() != current_location)
         {
             const SystemLocation &new_location = event->getLocation();
 
-#if 0
+            // Don't move backwards unless a repeat occurred.
+            if (new_location < current_location && !event->isPositionChange())
+                    continue;
+
             if (new_location.getSystem() != current_location.getSystem())
                 emit playbackSystemChanged(new_location.getSystem());
 
             emit playbackPositionChanged(new_location.getPosition());
-#endif
 
             current_location = new_location;
         }

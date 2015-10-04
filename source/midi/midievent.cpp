@@ -36,6 +36,9 @@ enum MetaType : uint8_t
     SetTempo = 0x51
 };
 
+static const uint8_t theSysExMsgEnd = 0xf7;
+static const uint8_t theSysExManufacturerId = 0x7d;
+
 MidiEvent::MidiEvent(int ticks, std::vector<uint8_t> data,
                      const SystemLocation &location, int player, int instrument)
     : myTicks(ticks),
@@ -138,6 +141,19 @@ MidiEvent MidiEvent::pitchWheel(int ticks, uint8_t channel, uint8_t amount)
         ticks,
         { static_cast<uint8_t>(StatusByte::PitchWheel + channel), 0, amount },
         SystemLocation(), -1, -1);
+}
+
+MidiEvent MidiEvent::positionChange(int ticks, const SystemLocation &location)
+{
+    return MidiEvent(
+        ticks, { StatusByte::SysEx, theSysExManufacturerId, theSysExMsgEnd },
+        location, -1, -1);
+}
+
+bool MidiEvent::isPositionChange() const
+{
+    return getStatusByte() == StatusByte::SysEx &&
+           myData[1] == theSysExManufacturerId;
 }
 
 std::vector<MidiEvent> MidiEvent::pitchWheelRange(int ticks, uint8_t channel,

@@ -33,6 +33,7 @@ public:
         ControlChange = 0xb0,
         ProgramChange = 0xc0,
         PitchWheel = 0xe0,
+        SysEx = 0xf0,
         MetaMessage = 0xff
     };
 
@@ -50,6 +51,7 @@ public:
     bool isTempoChange() const;
     int getTempo() const;
     bool isProgramChange() const;
+    bool isPositionChange() const;
 
     static MidiEvent endOfTrack(int ticks);
     static MidiEvent setTempo(int ticks, int microseconds);
@@ -62,6 +64,7 @@ public:
     static MidiEvent modWheel(int ticks, uint8_t channel, uint8_t width);
     static MidiEvent holdPedal(int ticks, uint8_t channel, bool enabled);
     static MidiEvent pitchWheel(int ticks, uint8_t channel, uint8_t amount);
+    static MidiEvent positionChange(int ticks, const SystemLocation &location);
     static std::vector<MidiEvent> pitchWheelRange(int ticks, uint8_t channel,
                                                   uint8_t semitones);
 

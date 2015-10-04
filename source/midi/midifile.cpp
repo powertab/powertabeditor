@@ -70,7 +70,9 @@ static int getChannel(const ActivePlayer &player)
     return getChannel(player.getPlayerNumber());
 }
 
-static SystemLocation moveToNextBar(const System &system,
+static SystemLocation moveToNextBar(MidiEventList &event_list, int ticks,
+                                    bool record_position_changes,
+                                    const System &system,
                                     SystemLocation location, int next_bar_pos,
                                     RepeatController &repeat_controller)
 {
@@ -84,6 +86,12 @@ static SystemLocation moveToNextBar(const System &system,
         if (repeat_controller.checkForRepeat(prev_location, location,
                                              new_location))
         {
+            if (record_position_changes)
+            {
+                event_list.append(
+                    MidiEvent::positionChange(ticks, new_location));
+            }
+
             return new_location;
         }
         else
@@ -106,7 +114,8 @@ MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
 
-void MidiFile::load(const Score &score, bool enable_metronome)
+void MidiFile::load(const Score &score, bool enable_metronome,
+                    bool record_position_changes)
 {
     myTicksPerBeat = DEFAULT_PPQ;
 
@@ -172,8 +181,9 @@ void MidiFile::load(const Score &score, bool enable_metronome)
             current_tick, generateMetronome(metronome_track, start_tick, system,
                                             *current_bar, *next_bar, location));
 
-        location = moveToNextBar(system, location, next_bar->getPosition(),
-                                 repeat_controller);
+        location = moveToNextBar(metronome_track, current_tick,
+                                 record_position_changes, system, location,
+                                 next_bar->getPosition(), repeat_controller);
     }
 
     myTracks.push_back(master_track);

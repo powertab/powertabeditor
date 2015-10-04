@@ -33,7 +33,8 @@ class MidiFile
 public:
     MidiFile();
 
-    void load(const Score &score, bool enable_metronome);
+    void load(const Score &score, bool enable_metronome,
+              bool record_position_changes);
 
     int getTicksPerBeat() const { return myTicksPerBeat; }
     std::vector<MidiEventList> &getTracks() { return myTracks; }
