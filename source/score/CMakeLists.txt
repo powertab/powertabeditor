@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8.9)
+project( ptescore )
 
-add_library(ptescore
+set( srcs
     alternateending.cpp
     barline.cpp
     chordname.cpp
@@ -27,7 +27,7 @@ add_library(ptescore
     textitem.cpp
     timesignature.cpp
     tuning.cpp
-	viewfilter.cpp
+    viewfilter.cpp
     voice.cpp
     voiceutils.cpp
 
@@ -35,9 +35,9 @@ add_library(ptescore
     utils/repeatindexer.cpp
     utils/scoremerger.cpp
     utils/scorepolisher.cpp
+)
 
-    # Add header files here so that they show up in the generated projects for
-    # Visual Studio, QtCreator, etc.
+set( headers
     alternateending.h
     barline.h
     chordname.h
@@ -66,7 +66,7 @@ add_library(ptescore
     timesignature.h
     tuning.h
     utils.h
-	viewfilter.h
+    viewfilter.h
     voice.h
     voiceutils.h
 
@@ -76,4 +76,13 @@ add_library(ptescore
     utils/scorepolisher.h
 )
 
-add_precompiled_header(ptescore)
+pte_library(
+    NAME ptescore
+    SOURCES ${srcs}
+    HEADERS ${headers}
+    DEPENDS
+        boost
+        boost_date_time
+        boost_regex
+        rapidjson
+)

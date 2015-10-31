@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8.9)
+project( pteactions )
 
-add_library(pteactions
+set( srcs
     addalternateending.cpp
     addbarline.cpp
     addchordtext.cpp
@@ -20,9 +20,7 @@ add_library(pteactions
     addsystem.cpp
     addtempomarker.cpp
     addtextitem.cpp
-    #addvolumeswell.cpp
     adjustlinespacing.cpp
-    #changepositionspacing.cpp
     editbarline.cpp
     editfileinformation.cpp
     editinstrument.cpp
@@ -53,11 +51,11 @@ add_library(pteactions
     removesystem.cpp
     removetempomarker.cpp
     removetextitem.cpp
-    #removevolumeswell.cpp
     shiftpositions.cpp
-    #shifttabnumber.cpp
     undomanager.cpp
+)
 
+set( headers
     addalternateending.h
     addbarline.h
     addchordtext.h
@@ -78,9 +76,7 @@ add_library(pteactions
     addsystem.h
     addtempomarker.h
     addtextitem.h
-    #addvolumeswell.h
     adjustlinespacing.h
-    #changepositionspacing.h
     editbarline.h
     editfileinformation.h
     editinstrument.h
@@ -112,11 +108,20 @@ add_library(pteactions
     removesystem.h
     removetempomarker.h
     removetextitem.h
-    #removevolumeswell.h
     shiftpositions.h
-    #shifttabnumber.h
     undomanager.h
 )
 
-qt5_use_modules(pteactions Widgets)
-add_precompiled_header(pteactions)
+set( moc_headers
+    undomanager.h
+)
+
+pte_library(
+    NAME pteactions
+    SOURCES ${srcs}
+    HEADERS ${headers}
+    MOC_HEADERS ${moc_headers}
+    DEPENDS
+        ptescore
+        Qt5::Widgets
+)

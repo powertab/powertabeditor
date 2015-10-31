@@ -1,14 +1,26 @@
-cmake_minimum_required(VERSION 2.8.9)
+project( pteaudio )
 
-include_directories(${PROJECT_SOURCE_DIR}/external/rtmidi)
-
-add_library(pteaudio
+set( srcs
     midioutputdevice.cpp
     midiplayer.cpp
+)
 
+set( headers
     midioutputdevice.h
     midiplayer.h
 )
 
-qt5_use_modules(pteaudio Widgets) 
-add_precompiled_header(pteaudio)
+set( moc_headers
+    midiplayer.h
+)
+
+pte_library(
+    NAME pteaudio
+    SOURCES ${srcs}
+    HEADERS ${headers}
+    MOC_HEADERS ${moc_headers}
+    DEPENDS
+        ptescore
+        Qt5::Core
+        rtmidi
+)

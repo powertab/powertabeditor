@@ -1,11 +1,8 @@
-cmake_minimum_required(VERSION 2.8.9)
+project ( pteformats )
 
-add_library(pteformats
+set( srcs
     fileformat.cpp
     fileformatmanager.cpp
-
-    fileformat.h
-    fileformatmanager.h
 
     gpx/bitstream.cpp
     gpx/documentreader.cpp
@@ -13,33 +10,16 @@ add_library(pteformats
     gpx/gpximporter.cpp
     gpx/util.cpp
 
-    gpx/bitstream.h
-    gpx/documentreader.h
-    gpx/filesystem.h
-    gpx/gpximporter.h
-    gpx/util.h
-
     guitar_pro/document.cpp
     guitar_pro/guitarproimporter.cpp
     guitar_pro/inputstream.cpp
 
-    guitar_pro/document.h
-    guitar_pro/guitarproimporter.h
-    guitar_pro/inputstream.h
-
-	midi/midiexporter.cpp
-	midi/midiexporter.h
+    midi/midiexporter.cpp
 
     powertab/powertabexporter.cpp
     powertab/powertabimporter.cpp
 
-    powertab/common.h
-    powertab/powertabexporter.h
-    powertab/powertabimporter.h
-
     powertab_old/powertaboldimporter.cpp
-    powertab_old/powertaboldimporter.h
-
     powertab_old/powertabdocument/alternateending.cpp
     powertab_old/powertabdocument/barline.cpp
     powertab_old/powertabdocument/chorddiagram.cpp
@@ -71,7 +51,29 @@ add_library(pteformats
     powertab_old/powertabdocument/tempomarker.cpp
     powertab_old/powertabdocument/timesignature.cpp
     powertab_old/powertabdocument/tuning.cpp
+)
 
+set( headers
+    fileformat.h
+    fileformatmanager.h
+
+    gpx/bitstream.h
+    gpx/documentreader.h
+    gpx/filesystem.h
+    gpx/gpximporter.h
+    gpx/util.h
+
+    guitar_pro/document.h
+    guitar_pro/guitarproimporter.h
+    guitar_pro/inputstream.h
+
+    midi/midiexporter.h
+
+    powertab/common.h
+    powertab/powertabexporter.h
+    powertab/powertabimporter.h
+
+    powertab_old/powertaboldimporter.h
     powertab_old/powertabdocument/alternateending.h
     powertab_old/powertabdocument/barline.h
     powertab_old/powertabdocument/chorddiagram.h
@@ -105,5 +107,16 @@ add_library(pteformats
     powertab_old/powertabdocument/tuning.h
 )
 
-qt5_use_modules(pteformats Widgets) 
-add_precompiled_header(pteformats)
+pte_library(
+    NAME pteformats
+    SOURCES ${srcs}
+    HEADERS ${headers}
+    DEPENDS
+        boost_date_time
+        boost_iostreams
+        boost_zlib
+        ptemidi
+        ptescore
+        pugixml
+        Qt5::Widgets
+)

@@ -1,45 +1,47 @@
-cmake_minimum_required(VERSION 2.8.9)
+project( ptepainters )
 
-add_library(ptepainters
+set( srcs
     antialiasedpathitem.cpp
     barlinepainter.cpp
     beamgroup.cpp
     caretpainter.cpp
     clickablegroup.cpp
     directions.cpp
-    #irregularnotegroup.cpp
     keysignaturepainter.cpp
     layoutinfo.cpp
     musicfont.cpp
     notestem.cpp
-    #rhythmslashpainter.cpp
     simpletextitem.cpp
     staffpainter.cpp
     stdnotationnote.cpp
     systemrenderer.cpp
     timesignaturepainter.cpp
-    #tremolobarpainter.cpp
     verticallayout.cpp
+)
 
+set( headers
     antialiasedpathitem.h
     barlinepainter.h
     beamgroup.h
     caretpainter.h
     clickablegroup.h
-    #irregularnotegroup.h
     keysignaturepainter.h
     layoutinfo.h
     musicfont.h
     notestem.h
-    #rhythmslashpainter.h
     simpletextitem.h
     staffpainter.h
     stdnotationnote.h
     systemrenderer.h
     timesignaturepainter.h
-    #tremolobarpainter.h
     verticallayout.h
 )
 
-qt5_use_modules(ptepainters Widgets)
-add_precompiled_header(ptepainters)
+pte_library(
+    NAME ptepainters
+    SOURCES ${srcs}
+    HEADERS ${headers} 
+    DEPENDS
+        ptescore
+        Qt5::Widgets
+)

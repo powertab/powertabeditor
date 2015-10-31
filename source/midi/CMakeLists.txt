@@ -1,16 +1,24 @@
-cmake_minimum_required(VERSION 2.8.9)
+project ( ptemidi )
 
-add_library(ptemidi
+set( srcs
     midievent.cpp
     midieventlist.cpp
     midifile.cpp
     repeatcontroller.cpp
+)
 
+set( headers
     midievent.h
     midieventlist.h
     midifile.h
     repeatcontroller.h
 )
 
-qt5_use_modules(ptemidi Core)
-add_precompiled_header(ptemidi)
+pte_library(
+    NAME ptemidi
+    SOURCES ${srcs}
+    HEADERS ${headers}
+    DEPENDS
+        ptescore
+        Qt5::Core
+)

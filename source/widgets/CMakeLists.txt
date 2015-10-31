@@ -1,37 +1,42 @@
-cmake_minimum_required(VERSION 2.8.9)
+project( ptewidgets )
 
-set(FORMS
+set( srcs
+    clickablelabel.cpp
+    common.cpp
+    instruments/instrumentpanel.cpp
+    instruments/instrumentpanelitem.cpp
+    mixer/mixer.cpp
+    mixer/mixeritem.cpp
+    playback/playbackwidget.cpp
+)
+
+set( headers
+    clickablelabel.h
+    instruments/instrumentpanel.h
+    instruments/instrumentpanelitem.h
+    mixer/mixer.h
+    mixer/mixeritem.h
+    playback/playbackwidget.h
+)
+
+set( moc_headers
+    clickablelabel.h
+    playback/playbackwidget.h
+)
+
+set( forms
     instruments/instrumentpanelitem.ui
     mixer/mixeritem.ui
     playback/playbackwidget.ui
 )
 
-qt5_wrap_ui(FORMS_HEADERS ${FORMS})
-
-add_library(ptewidgets
-    ${FORMS_HEADERS}
-
-    clickablelabel.h
-    clickablelabel.cpp
-    common.cpp
-
-    instruments/instrumentpanel.h
-    instruments/instrumentpanel.cpp
-    instruments/instrumentpanelitem.h
-    instruments/instrumentpanelitem.cpp
-
-    mixer/mixer.h
-    mixer/mixer.cpp
-    mixer/mixeritem.h
-    mixer/mixeritem.cpp
-
-    playback/playbackwidget.h
-    playback/playbackwidget.cpp
-
-    #toolbox/notepage.cpp
-    #toolbox/scorepage.cpp
-    #toolbox/toolbox.cpp
+pte_library(
+    NAME ptewidgets
+    SOURCES ${srcs}
+    HEADERS ${headers}
+    MOC_HEADERS ${moc_headers}
+    FORMS ${forms}
+    DEPENDS
+        ptescore
+        Qt5::Widgets
 )
-
-qt5_use_modules(ptewidgets Widgets) 
-add_precompiled_header(ptewidgets)
