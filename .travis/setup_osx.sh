@@ -4,4 +4,4 @@ set -x # Echo commands.
 
 brew update
 # Install Qt. Boost is already installed on the travis environment.
-brew install qt5
+brew install qt5 cmake
