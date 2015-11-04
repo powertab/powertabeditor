@@ -107,6 +107,12 @@ set( headers
     powertab_old/powertabdocument/tuning.h
 )
 
+if ( PLATFORM_WIN )
+    set( zlib_depends boost_zlib )
+else ()
+    set( zlib_depends )
+endif ()
+
 pte_library(
     NAME pteformats
     SOURCES ${srcs}
@@ -114,7 +120,7 @@ pte_library(
     DEPENDS
         boost_date_time
         boost_iostreams
-        boost_zlib
+        ${zlib_depends}
         ptemidi
         ptescore
         pugixml

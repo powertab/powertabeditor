@@ -38,6 +38,7 @@ function ( pte_boost_library libname )
     set_target_properties(
         boost_${libname} PROPERTIES
         INTERFACE_LINK_LIBRARIES boost
+        IMPORTED_LOCATION ${Boost_${libname_upper}_LIBRARY}
         IMPORTED_LOCATION_DEBUG ${lib_debug}
         IMPORTED_LOCATION_RELEASE ${lib_release}
         IMPORTED_IMPLIB_DEBUG ${implib_debug}
