@@ -22,7 +22,7 @@ elseif ( PLATFORM_OSX )
 elseif ( PLATFORM_LINUX )
     find_package( ALSA REQUIRED )
 
-    set( _midi_libs ${ALSA_LIBRARY} )
+    set( _midi_libs ${ALSA_LIBRARY} pthread )
     set( _midi_defs __LINUX_ALSA__ )
 endif ()
 
