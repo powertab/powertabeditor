@@ -19,6 +19,7 @@
 #define SCORE_SYSTEMLOCATION_H
 
 #include <boost/operators.hpp>
+#include <functional>
 
 /// Convenience class to represent a location in a system.
 class SystemLocation :
