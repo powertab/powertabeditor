@@ -1,8 +1,6 @@
-cmake_minimum_required(VERSION 2.8.9)
+project( pte_tests )
 
-include_directories(${PROJECT_SOURCE_DIR}/external/Catch/single_include)
-
-add_executable(pte_tests
+set( srcs
     test_main.cpp
 
     actions/test_addalternateending.cpp
@@ -28,7 +26,6 @@ add_executable(pte_tests
     actions/test_addtempomarker.cpp
     actions/test_addtextitem.cpp
     actions/test_addtrill.cpp
-    #actions/test_addvolumeswell.cpp
     actions/test_adjustlinespacing.cpp
     actions/test_editbarline.cpp
     actions/test_editclef.cpp
@@ -37,7 +34,7 @@ add_executable(pte_tests
     actions/test_editkeysignature.cpp
     actions/test_editnoteduration.cpp
     actions/test_editplayer.cpp
-	actions/test_editstaff.cpp
+    actions/test_editstaff.cpp
     actions/test_edittabnumber.cpp
     actions/test_edittimesignature.cpp
     actions/test_removealternateending.cpp
@@ -62,8 +59,6 @@ add_executable(pte_tests
     actions/test_removetempomarker.cpp
     actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
-    #actions/test_removevolumeswell.cpp
-    #actions/test_shifttabnumber.cpp
 
     app/test_documentmanager.cpp
 
@@ -97,54 +92,60 @@ add_executable(pte_tests
     score/test_utils.cpp
     score/test_viewfilter.cpp
     score/test_voiceutils.cpp
+)
 
-    # Header-only files.
+set( headers
     actions/actionfixture.h
     score/test_serialization.h
 )
 
-qt5_use_modules(pte_tests Widgets)
+set( data_files
+    actions/data/test_editstaff.pt2
 
-target_link_libraries(pte_tests
-    pteapp
-    ptewidgets
-    pteaudio
-    rtmidi
-    pteformats
-    pteactions
-    ptescore
-    pugixml
-    ${Boost_LIBRARIES}
+    formats/powertab_old/data/alternate_endings.ptb
+    formats/powertab_old/data/barlines.ptb
+    formats/powertab_old/data/bends.ptb
+    formats/powertab_old/data/chordtext.ptb
+    formats/powertab_old/data/directions.ptb
+    formats/powertab_old/data/floating_text.ptb
+    formats/powertab_old/data/guitar_ins.ptb
+    formats/powertab_old/data/guitars.ptb
+    formats/powertab_old/data/merge_multibar_rests_correct.pt2
+    formats/powertab_old/data/merge_multibar_rests.ptb
+    formats/powertab_old/data/notes.ptb
+    formats/powertab_old/data/positions.ptb
+    formats/powertab_old/data/song_header.ptb
+    formats/powertab_old/data/staves.ptb
+    formats/powertab_old/data/tempo_markers.ptb
+
+    formats/guitar_pro/data/alt_endings.gp5
+    formats/guitar_pro/data/barlines.gp5
+    formats/guitar_pro/data/gracenote.gp5
+    formats/guitar_pro/data/irregular.gp5
+    formats/guitar_pro/data/keys.gp5
+    formats/guitar_pro/data/notes.gp5
+    formats/guitar_pro/data/positions.gp5
+    formats/guitar_pro/data/rehearsal_signs.gp5
+    formats/guitar_pro/data/tempos.gp5
+    formats/guitar_pro/data/text.gp5
+    formats/guitar_pro/data/time_signatures.gp5
+
+    formats/gpx/data/text.gpx
+
+    score/data/test_viewfilter.pt2
 )
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    target_link_libraries(pte_tests winmm)
-endif()
+pte_executable(
+    NAME pte_tests
+    SOURCES ${srcs}
+    HEADERS ${headers}
+    DEPENDS
+        Catch
+        pteapp
+)
 
-add_precompiled_header(pte_tests)
-
-# Copy the test files to the build directory.
-add_custom_command(TARGET pte_tests POST_BUILD COMMAND
-    ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/actions/data
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
-
-add_custom_command(TARGET pte_tests POST_BUILD COMMAND
-    ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/formats/powertab_old/data
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
-
-add_custom_command(TARGET pte_tests POST_BUILD COMMAND
-    ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/formats/guitar_pro/data
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
-
-add_custom_command(TARGET pte_tests POST_BUILD COMMAND
-    ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/formats/gpx/data
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
-
-add_custom_command(TARGET pte_tests POST_BUILD COMMAND
-    ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_CURRENT_SOURCE_DIR}/score/data
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data)
+pte_copyfiles(
+    NAME pte_tests_data
+    DESTINATION ${PTE_DATA_DIR}
+    FILES ${data_files}
+)

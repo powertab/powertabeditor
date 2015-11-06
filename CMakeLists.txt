@@ -7,9 +7,9 @@ include( PTE_Platform )
 include( PTE_CompilerFlags )
 include( PTE_Paths )
 include( PTE_ThirdParty )
+include( PTE_CopyFiles )
 include( PTE_Executable )
 include( PTE_Library )
 
 add_subdirectory( source )
-# TODO
-#add_subdirectory( test )
+add_subdirectory( test )

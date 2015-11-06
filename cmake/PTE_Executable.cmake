@@ -1,7 +1,7 @@
 include( CMakeParseArguments )
 
 function( pte_executable )
-    cmake_parse_arguments( PTE_EXE "" "NAME" "SOURCES;RESOURCES;DEPENDS" ${ARGN} )
+    cmake_parse_arguments( PTE_EXE "" "NAME" "SOURCES;HEADERS;RESOURCES;DEPENDS" ${ARGN} )
 
     set( generated_files )
     if ( PTE_EXE_RESOURCES )
@@ -11,13 +11,14 @@ function( pte_executable )
     add_executable( ${PTE_EXE_NAME}
         WIN32
         ${PTE_EXE_SOURCES}
+        ${PTE_EXE_HEADERS}
         ${generated_files}
     )
 
     target_link_libraries( ${PTE_EXE_NAME} ${PTE_EXE_DEPENDS} )
 
     # Set output directory for executables.
-    set_target_properties( powertabeditor PROPERTIES
+    set_target_properties( ${PTE_EXE_NAME} PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${PTE_BIN_DIR}
         RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PTE_BIN_DIR}
         RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PTE_BIN_DIR}
