@@ -14,7 +14,7 @@ elseif ( PLATFORM_OSX )
     set( _midi_libs
         ${coreaudio_lib}
         ${coremidi_lib}
-        $[corefoundation_lib}
+        ${corefoundation_lib}
         ${audiotoolbox_lib}
         ${audiounit_lib}
     )
