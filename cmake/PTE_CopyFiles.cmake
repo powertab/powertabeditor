@@ -12,6 +12,7 @@ function ( pte_copyfiles )
         add_custom_command(
             OUTPUT ${output_file}
             DEPENDS ${src_file}
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${PTE_DATA_DESTINATION}
             COMMAND ${CMAKE_COMMAND} -E copy ${src_file} ${PTE_DATA_DESTINATION}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         )
