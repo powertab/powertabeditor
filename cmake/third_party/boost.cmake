@@ -24,24 +24,28 @@ set_target_properties(
 
 function ( pte_boost_library libname )
     string( TOUPPER ${libname} libname_upper )
-
+    
     # Figure out the .dll paths.
+    
     set( implib_debug ${Boost_${libname_upper}_LIBRARY_DEBUG} )
     set( implib_release ${Boost_${libname_upper}_LIBRARY_RELEASE} )
+    
     get_filename_component( boost_dir ${implib_debug} DIRECTORY )
     get_filename_component( basename_debug ${implib_debug} NAME_WE )
     get_filename_component( basename_release ${implib_release} NAME_WE )
+
     set( lib_debug ${boost_dir}/${basename_debug}${CMAKE_SHARED_LIBRARY_SUFFIX} )
     set( lib_release ${boost_dir}/${basename_release}${CMAKE_SHARED_LIBRARY_SUFFIX} )
+    set( boost_lib ${Boost_${libname_upper}_LIBRARY})
 
     add_library( boost_${libname} SHARED IMPORTED )
     set_target_properties(
-        boost_${libname} PROPERTIES
+        boost_${libname} 
+        PROPERTIES 
         INTERFACE_LINK_LIBRARIES boost
-        IMPORTED_LOCATION ${Boost_${libname_upper}_LIBRARY}
-        IMPORTED_LOCATION_DEBUG ${lib_debug}
-        IMPORTED_LOCATION_RELEASE ${lib_release}
-        IMPORTED_IMPLIB_DEBUG ${implib_debug}
+        IMPORTED_LOCATION_DEBUG ${lib_debug} 
+        IMPORTED_LOCATION_RELEASE ${lib_release} 
+        IMPORTED_IMPLIB_DEBUG ${implib_debug} 
         IMPORTED_IMPLIB_RELEASE ${implib_release}
     )
 endfunction ()
