@@ -71,7 +71,9 @@ public:
 
     bool hasOpenDocuments() const;
     void setCurrentDocumentIndex(int index);
+
     int getCurrentDocumentIndex() const;
+	size_t getDocumentListSize() const;
 
 private:
     std::vector<std::unique_ptr<Document>> myDocumentList;

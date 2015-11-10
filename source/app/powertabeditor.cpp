@@ -243,6 +243,15 @@ void PowerTabEditor::openFile(QString filename)
         return;
     }
 
+	for(size_t i = 0; i < myDocumentManager->getDocumentListSize(); ++i) 
+	{
+		if(filename.toStdString() == myDocumentManager->getDocument(i).getFilename()) 
+		{
+			return;
+		}
+	}
+
+
     Document &doc = myDocumentManager->addDocument();
     if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
                                         *format, this))
@@ -3240,6 +3249,7 @@ void PowerTabEditor::editTimeSignature(const ScoreLocation &timeLocation)
 
 void PowerTabEditor::editBarline(const ScoreLocation &barLocation)
 {
+	QMessageBox::warning(this, "Warning", tr("Dave!!"));
     ScoreLocation location(getLocation());
     location.setSystemIndex(barLocation.getSystemIndex());
     location.setPositionIndex(barLocation.getPositionIndex());

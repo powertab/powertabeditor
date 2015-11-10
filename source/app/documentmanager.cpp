@@ -120,6 +120,11 @@ int DocumentManager::getCurrentDocumentIndex() const
     return *myCurrentIndex;
 }
 
+size_t DocumentManager::getDocumentListSize() const 
+{
+	return myDocumentList.size();
+}
+
 Document::Document()
     : myCaret(myScore, myViewOptions)
 {

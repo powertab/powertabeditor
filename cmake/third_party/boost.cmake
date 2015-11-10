@@ -36,7 +36,6 @@ function ( pte_boost_library libname )
 
     set( lib_debug ${boost_dir}/${basename_debug}${CMAKE_SHARED_LIBRARY_SUFFIX} )
     set( lib_release ${boost_dir}/${basename_release}${CMAKE_SHARED_LIBRARY_SUFFIX} )
-    set( boost_lib ${Boost_${libname_upper}_LIBRARY})
 
     add_library( boost_${libname} SHARED IMPORTED )
     set_target_properties(
