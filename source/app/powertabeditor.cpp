@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "powertabeditor.h"
 
 #include <actions/addalternateending.h>
@@ -187,7 +187,7 @@ PowerTabEditor::PowerTabEditor()
     // Set up the recent files menu.
     myRecentFiles = new RecentFiles(myRecentFilesMenu, this);
     connect(myRecentFiles, SIGNAL(fileSelected(QString)), this,
-            SLOT(openFile(QString)));
+            SLOT((QString)));
 
     createTabArea();
 
@@ -243,9 +243,9 @@ void PowerTabEditor::openFile(QString filename)
         return;
     }
 
-	for(size_t i = 0; i < myDocumentManager->getDocumentListSize(); ++i) 
+	for(size_t i = 0; i < myDocumentManager->getDocumentListSize(); ++i)
 	{
-		if(filename.toStdString() == myDocumentManager->getDocument(i).getFilename()) 
+		if(filename.toStdString() == myDocumentManager->getDocument(i).getFilename())
 		{
 			return;
 		}
@@ -2466,7 +2466,7 @@ Command *PowerTabEditor::createCommandWrapper(
     // Keep the two actions in sync with each other.
     connect(command, &QAction::triggered, action, &QAction::triggered);
     connect(action, &QAction::toggled, command, &QAction::setChecked);
-    
+
     return command;
 }
 
