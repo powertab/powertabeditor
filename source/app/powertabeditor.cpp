@@ -243,34 +243,41 @@ void PowerTabEditor::openFile(QString filename)
         return;
     }
 
+	bool isAlreadyOpen = false;
 	for(size_t i = 0; i < myDocumentManager->getDocumentListSize(); ++i)
 	{
 		if(filename.toStdString() == myDocumentManager->getDocument(i).getFilename())
 		{
-			return;
+			isAlreadyOpen = true;
 		}
 	}
 
+	if (!isAlreadyOpen)
+	{
+		Document &doc = myDocumentManager->addDocument();
+		if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
+			*format, this))
+		{
+			auto end = std::chrono::high_resolution_clock::now();
+			qDebug() << "File loaded in"
+				<< std::chrono::duration_cast<std::chrono::milliseconds>(
+				end - start).count() << "ms";
 
-    Document &doc = myDocumentManager->addDocument();
-    if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
-                                        *format, this))
-    {
-        auto end = std::chrono::high_resolution_clock::now();
-        qDebug() << "File loaded in"
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(
-                        end - start).count() << "ms";
-
-        doc.setFilename(filename.toStdString());
-        setPreviousDirectory(filename);
-        myRecentFiles->add(filename);
-        setupNewTab();
-    }
-    else
-    {
-        myDocumentManager->removeDocument(
-                    myDocumentManager->getCurrentDocumentIndex());
-    }
+			doc.setFilename(filename.toStdString());
+			setPreviousDirectory(filename);
+			myRecentFiles->add(filename);
+			setupNewTab();
+		}
+		else
+		{
+			myDocumentManager->removeDocument(
+				myDocumentManager->getCurrentDocumentIndex());
+		}
+	}
+	else{
+		QMessageBox::warning(this, "Dave", "Yes do thui,,,");
+		myDocumentManager->setCurrentDocumentIndex(myDocumentManager->);
+	}
 }
 
 void PowerTabEditor::switchTab(int index)
