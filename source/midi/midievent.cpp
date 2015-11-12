@@ -38,6 +38,8 @@ enum MetaType : uint8_t
 
 static const uint8_t theSysExMsgEnd = 0xf7;
 static const uint8_t theSysExManufacturerId = 0x7d;
+static const uint8_t theChannelMask = 0x0f;
+static const uint8_t theStatusByteMask = ~theChannelMask;
 
 MidiEvent::MidiEvent(int ticks, std::vector<uint8_t> data,
                      const SystemLocation &location, int player, int instrument)
@@ -70,7 +72,7 @@ int MidiEvent::getTempo() const
 
 bool MidiEvent::isProgramChange() const
 {
-    return (getStatusByte() & ~0x0f) == StatusByte::ProgramChange;
+    return (getStatusByte() & theStatusByteMask) == StatusByte::ProgramChange;
 }
 
 MidiEvent MidiEvent::setTempo(int ticks, int microseconds)
@@ -154,6 +156,17 @@ bool MidiEvent::isPositionChange() const
 {
     return getStatusByte() == StatusByte::SysEx &&
            myData[1] == theSysExManufacturerId;
+}
+
+bool MidiEvent::isNoteOnOff() const
+{
+    return (getStatusByte() & theStatusByteMask) == StatusByte::NoteOn ||
+           (getStatusByte() & theStatusByteMask) == StatusByte::NoteOff;
+}
+
+uint8_t MidiEvent::getChannel() const
+{
+    return getStatusByte() & theChannelMask;
 }
 
 std::vector<MidiEvent> MidiEvent::pitchWheelRange(int ticks, uint8_t channel,

@@ -52,6 +52,8 @@ public:
     int getTempo() const;
     bool isProgramChange() const;
     bool isPositionChange() const;
+    bool isNoteOnOff() const;
+    uint8_t getChannel() const;
 
     static MidiEvent endOfTrack(int ticks);
     static MidiEvent setTempo(int ticks, int microseconds);
