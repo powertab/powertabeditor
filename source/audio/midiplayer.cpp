@@ -33,6 +33,13 @@
 
 static const int METRONOME_CHANNEL = 9;
 
+static bool isMetronomeEnabled()
+{
+    QSettings settings;
+    return settings.value(Settings::MIDI_METRONOME_ENABLED,
+                          Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool();
+}
+
 MidiPlayer::MidiPlayer(const Score &score, int start_system, int start_pos,
                        int speed)
     : myScore(score),
@@ -127,6 +134,13 @@ void MidiPlayer::run()
 #endif
                 started = true;
             }
+        }
+
+        // Skip metronome events if necessary.
+        if (event->isNoteOnOff() && event->getChannel() == METRONOME_CHANNEL &&
+            !isMetronomeEnabled())
+        {
+            continue;
         }
 
         const int delta = event->getTicks();

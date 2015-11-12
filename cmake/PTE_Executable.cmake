@@ -1,15 +1,21 @@
 include( CMakeParseArguments )
 
 function( pte_executable )
-    cmake_parse_arguments( PTE_EXE "" "NAME" "SOURCES;HEADERS;RESOURCES;DEPENDS" ${ARGN} )
+    cmake_parse_arguments( PTE_EXE "CONSOLE" "NAME" "SOURCES;HEADERS;RESOURCES;DEPENDS" ${ARGN} )
 
     set( generated_files )
     if ( PTE_EXE_RESOURCES )
         qt5_add_resources( generated_files ${PTE_EXE_RESOURCES} )
     endif ()
 
+    if ( PTE_EXE_CONSOLE )
+        set( win32_flag )
+    else ()
+        set( win32_flag WIN32 )
+    endif ()
+
     add_executable( ${PTE_EXE_NAME}
-        WIN32
+        ${win32_flag}
         ${PTE_EXE_SOURCES}
         ${PTE_EXE_HEADERS}
         ${generated_files}

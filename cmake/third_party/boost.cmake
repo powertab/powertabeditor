@@ -47,6 +47,14 @@ function ( pte_boost_library libname )
         IMPORTED_IMPLIB_DEBUG ${implib_debug} 
         IMPORTED_IMPLIB_RELEASE ${implib_release}
     )
+
+    if ( NOT PLATFORM_WIN )
+        set_target_properties(
+            boost_${libname}
+            PROPERTIES
+            IMPORTED_LOCATION ${Boost_${libname_upper}_LIBRARY}
+        )
+    endif ()
 endfunction ()
 
 foreach ( lib ${_boost_libs} )
