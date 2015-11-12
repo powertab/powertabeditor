@@ -136,6 +136,7 @@ set( data_files
 )
 
 pte_executable(
+    CONSOLE
     NAME pte_tests
     SOURCES ${srcs}
     HEADERS ${headers}
