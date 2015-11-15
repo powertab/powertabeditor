@@ -31,7 +31,7 @@ function( pte_executable )
     )
 
     # Add to the install step.
-    set( install_dir ${CMAKE_INSTALL_PREFIX} )
+    set( install_dir . )
     if ( PTE_EXE_INSTALL )
         install(
             TARGETS ${PTE_EXE_NAME}
