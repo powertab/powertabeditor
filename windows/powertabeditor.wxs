@@ -78,26 +78,20 @@
         <RegistryValue Root="HKCU" Key="Software\Power Tab\Power Tab Editor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
 
-      <Component Id="boost_date_time" Guid="FAEEF27B-4899-4A64-AF74-3F5446B5E8AE">
-        <File Source="$(var.BinDir)/boost_date_time-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_date_time" Guid="A7CA0E64-5F96-4457-8084-7AA2697AB552">
+        <File Source="$(var.BinDir)/boost_date_time-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_iostreams" Guid="85C7EEB1-69ED-4511-B2E9-CDA0BA82B96D">
-        <File Source="$(var.BinDir)/boost_iostreams-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_iostreams" Guid="D7CC00A3-D0F4-46EB-8C52-3C8611078DE1">
+        <File Source="$(var.BinDir)/boost_iostreams-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_program_options" Guid="E813AFF5-37CE-44B8-B2DD-789556D9B617">
-        <File Source="$(var.BinDir)/boost_program_options-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_program_options" Guid="EE8E115F-C14F-4A2D-89D0-7C226B606279">
+        <File Source="$(var.BinDir)/boost_program_options-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_regex" Guid="3DE0F57F-F6DC-4BBD-B649-64C51B17FA5B">
-        <File Source="$(var.BinDir)/boost_regex-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_regex" Guid="4DE196DC-2078-4B0A-AA3B-B449E0782E88">
+        <File Source="$(var.BinDir)/boost_regex-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_zlib" Guid="58B5C145-F4D9-457D-8DFD-4EA2AFE175C3">
+      <Component Id="boost_zlib" Guid="D942287A-F31F-4DDD-8F36-6E03F42DB131">
         <File Source="$(var.BinDir)/boost_zlib-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="libEGL" Guid="060B6468-B66B-4B9F-AFE4-8016428ABE9D">
-        <File Source="$(var.BinDir)/libEGL.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-      <Component Id="libGLESv2" Guid="14C3744E-4608-4A7A-9C17-3F9085EAF3D5">
-        <File Source="$(var.BinDir)/libGLESv2.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="Qt5Core" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
         <File Source="$(var.BinDir)/Qt5Core.dll" KeyPath="yes" Checksum="yes" />
@@ -113,13 +107,6 @@
       </Component>
       <Component Id="Qt5PrintSupport" Guid="D5DC1F60-3396-445F-A4AA-70ACF0E26F8D">
         <File Source="$(var.BinDir)/Qt5PrintSupport.dll" KeyPath="yes" Checksum="yes" />
-      </Component>
-    </ComponentGroup>
-    
-    <!-- Platform plugins -->
-    <ComponentGroup Id="PlatformBinaries" Directory="PlatformBinariesDir">
-      <Component Guid="8DB2373E-9319-475E-897E-47F2BE4CCA30">
-        <File Source="$(var.BinDir)/platforms/qwindows.dll" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
     
