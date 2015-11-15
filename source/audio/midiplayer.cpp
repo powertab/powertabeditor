@@ -124,14 +124,12 @@ void MidiPlayer::run()
             }
             else
             {
-                // TODO - perform count in.
-#if 0
                 if (settings.value(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
                                    Settings::MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT).toBool())
                 {
-                    performCountIn(device, SystemLocation(myStartSystem, myStartPosition));
+                    performCountIn(device, event->getLocation(), beat_duration);
                 }
-#endif
+
                 started = true;
             }
         }
@@ -169,6 +167,47 @@ void MidiPlayer::run()
 
             current_location = new_location;
         }
+    }
+}
+
+void MidiPlayer::performCountIn(MidiOutputDevice &device,
+                                const SystemLocation &location,
+                                int beat_duration)
+{
+    // Figure out the time signature where playback is starting.
+    const System &system = myScore.getSystems()[location.getSystem()];
+    const Barline *barline = system.getPreviousBarline(location.getPosition());
+    if (!barline)
+        barline = &system.getBarlines().front();
+
+    const TimeSignature &time_sig = barline->getTimeSignature();
+
+    const int tick_duration = boost::rational_cast<int>(
+        boost::rational<int>(4, time_sig.getBeatValue()) *
+        boost::rational<int>(time_sig.getBeatsPerMeasure(),
+                             time_sig.getNumPulses()) * beat_duration);
+
+    QSettings settings;
+    const uint8_t velocity =
+        settings.value(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
+                       Settings::MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT).toUInt();
+    const uint8_t preset =
+        Midi::MIDI_PERCUSSION_PRESET_OFFSET +
+        settings.value(Settings::MIDI_METRONOME_COUNTIN_PRESET,
+                       Settings::MIDI_METRONOME_COUNTIN_PRESET_DEFAULT).toUInt();
+
+    // Play the count-in.
+    device.setChannelMaxVolume(METRONOME_CHANNEL,
+                               Midi::MAX_MIDI_CHANNEL_VOLUME);
+
+    for (int i = 0; i < time_sig.getNumPulses(); ++i)
+    {
+        if (!isPlaying())
+            break;
+
+        device.playNote(METRONOME_CHANNEL, preset, velocity);
+        usleep(tick_duration * (100.0 / myPlaybackSpeed));
+        device.stopNote(METRONOME_CHANNEL, preset);
     }
 }
 

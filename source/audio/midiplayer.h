@@ -23,6 +23,7 @@
 #include <score/systemlocation.h>
 
 class MidiFile;
+class MidiOutputDevice;
 class Score;
 
 class MidiPlayer : public QThread
@@ -45,6 +46,9 @@ signals:
 
 private:
     virtual void run() override;
+
+    void performCountIn(MidiOutputDevice &device,
+                        const SystemLocation &location, int beat_duration);
 
     void setIsPlaying(bool set);
     bool isPlaying() const;
