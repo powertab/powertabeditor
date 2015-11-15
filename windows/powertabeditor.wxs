@@ -12,7 +12,6 @@
 
 		<Feature Id="Complete" Level="1">
 			<ComponentGroupRef Id="Binaries" />
-      <ComponentGroupRef Id="PlatformBinaries" />
       <ComponentGroupRef Id="DataFiles" />
 		</Feature>
     <Feature Id="CRT" Level="1">
@@ -91,7 +90,7 @@
         <File Source="$(var.BinDir)/boost_regex-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="boost_zlib" Guid="D942287A-F31F-4DDD-8F36-6E03F42DB131">
-        <File Source="$(var.BinDir)/boost_zlib-vc120-mt-1_58.dll" KeyPath="yes" Checksum="yes" />
+        <File Source="$(var.BinDir)/boost_zlib-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="Qt5Core" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
         <File Source="$(var.BinDir)/Qt5Core.dll" KeyPath="yes" Checksum="yes" />
