@@ -187,7 +187,7 @@ PowerTabEditor::PowerTabEditor()
     // Set up the recent files menu.
     myRecentFiles = new RecentFiles(myRecentFilesMenu, this);
     connect(myRecentFiles, SIGNAL(fileSelected(QString)), this,
-            SLOT((QString)));
+            SLOT(openFile(QString)));
 
     createTabArea();
 
@@ -3250,8 +3250,7 @@ void PowerTabEditor::editTimeSignature(const ScoreLocation &timeLocation)
 
 void PowerTabEditor::editBarline(const ScoreLocation &barLocation)
 {
-	QMessageBox::warning(this, "Warning", tr("Dave!!"));
-    ScoreLocation location(getLocation());
+	ScoreLocation location(getLocation());
     location.setSystemIndex(barLocation.getSystemIndex());
     location.setPositionIndex(barLocation.getPositionIndex());
     System &system = location.getSystem();
