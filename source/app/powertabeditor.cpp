@@ -229,7 +229,16 @@ void PowerTabEditor::openFile(QString filename)
     if (filename.isEmpty())
         return;
 
+	int validationResult = myDocumentManager->containsDocument(filename.toStdString());
+	if (validationResult > -1)
+	{
+		qDebug() << "File: " << filename << " is already open";
+		myTabWidget->setCurrentIndex(validationResult);
+		return;
+	}
+
     auto start = std::chrono::high_resolution_clock::now();
+
     qDebug() << "Opening file: " << filename;
 
     QFileInfo fileInfo(filename);
@@ -243,15 +252,6 @@ void PowerTabEditor::openFile(QString filename)
         return;
     }
 
-	for(size_t i = 0; i < myDocumentManager->getDocumentListSize(); ++i)
-	{
-		if(filename.toStdString() == myDocumentManager->getDocument(i).getFilename())
-		{
-			myTabWidget->setCurrentIndex(i);
-			QMessageBox::warning(this, "W", QString::number(myDocumentManager->getCurrentDocumentIndex()));
-			return;
-		}
-	}
 
 	Document &doc = myDocumentManager->addDocument();
 	if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),

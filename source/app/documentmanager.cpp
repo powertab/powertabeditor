@@ -18,9 +18,8 @@
 #include "documentmanager.h"
 
 #include <QSettings>
-#include <QString>
-
 #include <app/settings.h>
+#include <qstring.h>
 
 DocumentManager::DocumentManager()
 {
@@ -123,6 +122,17 @@ int DocumentManager::getCurrentDocumentIndex() const
 size_t DocumentManager::getDocumentListSize() const 
 {
 	return myDocumentList.size();
+}
+
+int DocumentManager::containsDocument(const std::string& filepath)
+{
+	for (int i = 0; i < getDocumentListSize(); ++i)
+	{
+		Document& doc = getDocument(i);
+		if (filepath == doc.getFilename())
+			return i;
+	}
+	return -1;
 }
 
 Document::Document()

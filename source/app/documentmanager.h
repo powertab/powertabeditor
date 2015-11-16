@@ -25,6 +25,7 @@
 #include <score/score.h>
 #include <vector>
 
+
 /// A document is a score that is either associated with a file or unsaved.
 class Document
 {
@@ -74,6 +75,8 @@ public:
 
     int getCurrentDocumentIndex() const;
 	size_t getDocumentListSize() const;
+	
+	int containsDocument(const std::string& filepath);
 
 private:
     std::vector<std::unique_ptr<Document>> myDocumentList;
