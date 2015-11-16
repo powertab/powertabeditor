@@ -76,6 +76,7 @@ public:
     int getCurrentDocumentIndex() const;
 	size_t getDocumentListSize() const;
 	
+	/// Returns -1 if the file at filepath is not open, else it returns the index at which the already open file is at
 	int containsDocument(const std::string& filepath);
 
 private:
