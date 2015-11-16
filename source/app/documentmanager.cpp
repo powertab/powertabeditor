@@ -18,8 +18,9 @@
 #include "documentmanager.h"
 
 #include <QSettings>
+#include <QString.h>
+
 #include <app/settings.h>
-#include <qstring.h>
 
 DocumentManager::DocumentManager()
 {
