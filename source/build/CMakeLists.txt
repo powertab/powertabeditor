@@ -15,6 +15,7 @@ endif ()
 
 pte_executable(
     NAME powertabeditor
+    INSTALL
     SOURCES ${srcs} ${rc_file}
     RESOURCES ${resources}
     DEPENDS

@@ -1,7 +1,7 @@
 include( CMakeParseArguments )
 
 function( pte_executable )
-    cmake_parse_arguments( PTE_EXE "CONSOLE" "NAME" "SOURCES;HEADERS;RESOURCES;DEPENDS" ${ARGN} )
+    cmake_parse_arguments( PTE_EXE "CONSOLE;INSTALL" "NAME" "SOURCES;HEADERS;RESOURCES;DEPENDS" ${ARGN} )
 
     set( generated_files )
     if ( PTE_EXE_RESOURCES )
@@ -25,10 +25,19 @@ function( pte_executable )
 
     # Set output directory for executables.
     set_target_properties( ${PTE_EXE_NAME} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${PTE_BIN_DIR}
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PTE_BIN_DIR}
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PTE_BIN_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PTE_DEV_BIN_DIR}
+        RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PTE_DEV_BIN_DIR}
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PTE_DEV_BIN_DIR}
     )
+
+    # Add to the install step.
+    set( install_dir . )
+    if ( PTE_EXE_INSTALL )
+        install(
+            TARGETS ${PTE_EXE_NAME}
+            DESTINATION ${install_dir}
+        )
+    endif ()
 
     # Copy dlls to the bin directory.
     if ( PLATFORM_WIN )
@@ -38,9 +47,16 @@ function( pte_executable )
             add_custom_command(
                 TARGET ${PTE_EXE_NAME}
                 POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${lib} ${PTE_BIN_DIR}
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different ${lib} ${PTE_DEV_BIN_DIR}
             )
         endforeach ()
+
+        if ( PTE_EXE_INSTALL )
+            install(
+                FILES ${shared_libs}
+                DESTINATION ${install_dir}
+            )
+        endif ()
     endif ()
 endfunction ()
 

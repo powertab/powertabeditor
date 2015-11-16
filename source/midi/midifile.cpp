@@ -140,8 +140,11 @@ void MidiFile::load(const Score &score, bool enable_metronome,
     }
 
     SystemLocation location(0, 0);
+    std::vector<uint8_t> active_bends;
+    int system_index = -1;
     int current_tick = 0;
     int current_tempo = Midi::BEAT_DURATION_120_BPM;
+
     while (location.getSystem() < score.getSystems().size())
     {
         const System &system = score.getSystems()[location.getSystem()];
@@ -149,11 +152,13 @@ void MidiFile::load(const Score &score, bool enable_metronome,
             system.getBarlines(), location.getPosition());
         const Barline *next_bar = system.getNextBarline(location.getPosition());
 
-        std::vector<uint8_t> active_bends(system.getStaves().size(),
-                                          DEFAULT_BEND);
+        if (location.getSystem() != system_index)
+        {
+            active_bends.resize(system.getStaves().size(), DEFAULT_BEND);
+            system_index = location.getSystem();
+        }
 
         const int start_tick = current_tick;
-
         current_tempo =
             addTempoEvent(master_track, start_tick, current_tempo, system,
                           current_bar->getPosition(), next_bar->getPosition());
@@ -412,8 +417,10 @@ static void generateGradualBend(std::vector<BendEventInfo> &bends,
                                 int release_bend)
 {
     const int num_events = std::abs(start_bend - release_bend);
-    const int event_duration = duration / num_events;
+    if (!num_events)
+        return;
 
+    const int event_duration = duration / num_events;
     for (int i = 1; i <= num_events; ++i)
     {
         const int tick = start_tick + i * event_duration;

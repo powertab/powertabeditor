@@ -13,3 +13,4 @@ include( PTE_Library )
 
 add_subdirectory( source )
 add_subdirectory( test )
+add_subdirectory( installer )
