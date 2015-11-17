@@ -229,7 +229,7 @@ void PowerTabEditor::openFile(QString filename)
     if (filename.isEmpty())
         return;
 
-	int validationResult = myDocumentManager->containsDocument(filename.toStdString());
+	int validationResult = myDocumentManager->findDocument(filename.toStdString());
 	if (validationResult > -1)
 	{
 		qDebug() << "File: " << filename << " is already open";

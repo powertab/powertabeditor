@@ -77,7 +77,7 @@ public:
 	size_t getDocumentListSize() const;
 	
 	/// Returns -1 if the file at filepath is not open, else it returns the index at which the already open file is at
-	int containsDocument(const std::string& filepath);
+	int findDocument(const std::string& filepath);
 
 private:
     std::vector<std::unique_ptr<Document>> myDocumentList;
