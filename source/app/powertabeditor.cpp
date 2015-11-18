@@ -229,13 +229,13 @@ void PowerTabEditor::openFile(QString filename)
     if (filename.isEmpty())
         return;
 
-	int validationResult = myDocumentManager->findDocument(filename.toStdString());
-	if (validationResult > -1)
-	{
-		qDebug() << "File: " << filename << " is already open";
-		myTabWidget->setCurrentIndex(validationResult);
-		return;
-	}
+    int validationResult = myDocumentManager->findDocument(filename.toStdString());
+    if (validationResult > -1)
+    {
+        qDebug() << "File: " << filename << " is already open";
+        myTabWidget->setCurrentIndex(validationResult);
+        return;
+    }
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -253,25 +253,25 @@ void PowerTabEditor::openFile(QString filename)
     }
 
 
-	Document &doc = myDocumentManager->addDocument();
-	if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
-		*format, this))
-	{
-		auto end = std::chrono::high_resolution_clock::now();
-		qDebug() << "File loaded in"
-			<< std::chrono::duration_cast<std::chrono::milliseconds>(
-			end - start).count() << "ms";
+    Document &doc = myDocumentManager->addDocument();
+    if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
+        *format, this))
+    {
+        auto end = std::chrono::high_resolution_clock::now();
+        qDebug() << "File loaded in"
+            << std::chrono::duration_cast<std::chrono::milliseconds>(
+            end - start).count() << "ms";
 
-		doc.setFilename(filename.toStdString());
-		setPreviousDirectory(filename);
-		myRecentFiles->add(filename);
-		setupNewTab();
-	}
-	else
-	{
-		myDocumentManager->removeDocument(
-			myDocumentManager->getCurrentDocumentIndex());
-	}
+        doc.setFilename(filename.toStdString());
+        setPreviousDirectory(filename);
+        myRecentFiles->add(filename);
+        setupNewTab();
+    }
+    else
+    {
+        myDocumentManager->removeDocument(
+            myDocumentManager->getCurrentDocumentIndex());
+    }
 }
 
 void PowerTabEditor::switchTab(int index)

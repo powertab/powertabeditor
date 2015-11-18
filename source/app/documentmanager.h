@@ -74,10 +74,10 @@ public:
     void setCurrentDocumentIndex(int index);
 
     int getCurrentDocumentIndex() const;
-	size_t getDocumentListSize() const;
-	
-	/// Returns -1 if the file at filepath is not open, else it returns the index at which the already open file is at
-	int findDocument(const std::string& filepath);
+    size_t getDocumentListSize() const;
+    
+    /// Returns -1 if the file at filepath is not open, else it returns the index at which the already open file is at
+    int findDocument(const std::string& filepath);
 
 private:
     std::vector<std::unique_ptr<Document>> myDocumentList;
