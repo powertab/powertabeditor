@@ -14,7 +14,7 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #include "powertabeditor.h"
 
 #include <actions/addalternateending.h>
@@ -229,7 +229,16 @@ void PowerTabEditor::openFile(QString filename)
     if (filename.isEmpty())
         return;
 
+    int validationResult = myDocumentManager->findDocument(filename.toStdString());
+    if (validationResult > -1)
+    {
+        qDebug() << "File: " << filename << " is already open";
+        myTabWidget->setCurrentIndex(validationResult);
+        return;
+    }
+
     auto start = std::chrono::high_resolution_clock::now();
+
     qDebug() << "Opening file: " << filename;
 
     QFileInfo fileInfo(filename);
@@ -243,14 +252,15 @@ void PowerTabEditor::openFile(QString filename)
         return;
     }
 
+
     Document &doc = myDocumentManager->addDocument();
     if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
-                                        *format, this))
+        *format, this))
     {
         auto end = std::chrono::high_resolution_clock::now();
         qDebug() << "File loaded in"
-                 << std::chrono::duration_cast<std::chrono::milliseconds>(
-                        end - start).count() << "ms";
+            << std::chrono::duration_cast<std::chrono::milliseconds>(
+            end - start).count() << "ms";
 
         doc.setFilename(filename.toStdString());
         setPreviousDirectory(filename);
@@ -260,7 +270,7 @@ void PowerTabEditor::openFile(QString filename)
     else
     {
         myDocumentManager->removeDocument(
-                    myDocumentManager->getCurrentDocumentIndex());
+            myDocumentManager->getCurrentDocumentIndex());
     }
 }
 
@@ -2457,7 +2467,7 @@ Command *PowerTabEditor::createCommandWrapper(
     // Keep the two actions in sync with each other.
     connect(command, &QAction::triggered, action, &QAction::triggered);
     connect(action, &QAction::toggled, command, &QAction::setChecked);
-    
+
     return command;
 }
 
@@ -3240,7 +3250,7 @@ void PowerTabEditor::editTimeSignature(const ScoreLocation &timeLocation)
 
 void PowerTabEditor::editBarline(const ScoreLocation &barLocation)
 {
-    ScoreLocation location(getLocation());
+	ScoreLocation location(getLocation());
     location.setSystemIndex(barLocation.getSystemIndex());
     location.setPositionIndex(barLocation.getPositionIndex());
     System &system = location.getSystem();

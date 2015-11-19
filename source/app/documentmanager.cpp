@@ -120,6 +120,27 @@ int DocumentManager::getCurrentDocumentIndex() const
     return *myCurrentIndex;
 }
 
+size_t DocumentManager::getDocumentListSize() const 
+{
+    return myDocumentList.size();
+}
+
+int DocumentManager::findDocument(const std::string& filepath)
+{
+    for (int i = 0; i < getDocumentListSize(); ++i)
+    {
+        Document& doc = getDocument(i);
+        
+        if (!doc.hasFilename())
+            continue;
+
+        if (filepath == doc.getFilename())
+            return i;
+        
+    }
+    return -1;
+}
+
 Document::Document()
     : myCaret(myScore, myViewOptions)
 {
