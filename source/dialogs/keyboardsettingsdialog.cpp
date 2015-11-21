@@ -43,6 +43,7 @@ KeyboardSettingsDialog::KeyboardSettingsDialog(
 
     connect(ui->defaultButton, SIGNAL(clicked()), this,
             SLOT(resetToDefaultShortcut()));
+    ui->shortcutEdit->setFocus();
 }
 
 KeyboardSettingsDialog::~KeyboardSettingsDialog()
@@ -129,9 +130,12 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
         return;
     }
 
-    // Allow the use of backspace to clear the shortcut.
-    if (key == Qt::Key_Backspace)
+    QTreeWidgetItem *item = ui->commandsList->currentItem();
+    QString text = item->text(CommandShortcut);
+    
+    if (key == Qt::Key_Backspace && !text.isEmpty())
     {
+        // Remove if there is a shortcut already present (and backspace is pressed)
         setShortcut("");
     }
     else
@@ -202,6 +206,7 @@ void KeyboardSettingsDialog::activeCommandChanged(QTreeWidgetItem* current,
                                                   QTreeWidgetItem* /*previous*/)
 {
     ui->shortcutEdit->setText(current->text(CommandShortcut));
+    ui->shortcutEdit->setFocus();
 }
 
 void KeyboardSettingsDialog::saveShortcuts()
