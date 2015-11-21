@@ -135,11 +135,13 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
     
     if (key == Qt::Key_Backspace && !text.isEmpty())
     {
-        // Remove shortcut if there is a shortcut already present  (and backspace is pressed)
+        // Remove if there is a shortcut already present (and backspace is pressed)
         setShortcut("");
     }
     else
     {
+        // Add in any modifers like Shift or Ctrl, but remove the keypad modifer
+        // since QKeySequence doesn't handle that well.
         key |= (e->modifiers() & ~Qt::KeypadModifier);
 
         QKeySequence newKeySequence(key);
