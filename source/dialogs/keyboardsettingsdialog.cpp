@@ -129,15 +129,15 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
         return;
     }
 
-    // Allow the use of backspace to clear the shortcut.
-    if (key == Qt::Key_Backspace)
+    QTreeWidgetItem *item = ui->commandsList->currentItem();
+    QString text = item->text(CommandShortcut);
+    
+    if (key == Qt::Key_Backspace && !text.isEmpty())
     {
         setShortcut("");
     }
     else
     {
-        // Add in any modifers like Shift or Ctrl, but remove the keypad modifer
-        // since QKeySequence doesn't handle that well.
         key |= (e->modifiers() & ~Qt::KeypadModifier);
 
         QKeySequence newKeySequence(key);
