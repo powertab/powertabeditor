@@ -3374,6 +3374,9 @@ void PowerTabEditor::insertStaff(int index)
 {
     StaffDialog dialog(this);
 
+    const Staff &current_staff = getLocation().getStaff();
+    dialog.setStringCount(current_staff.getStringCount());
+
     if (dialog.exec() == QDialog::Accepted)
     {
         Staff staff;
