@@ -2,7 +2,7 @@
 <?include common.wxi ?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
-	<Bundle Name="$(var.ProductName)" Version="$(var.Version)"
+  <Bundle Name="$(var.ProductName)" Version="$(var.Version)"
           Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)"
           IconSourceFile="$(var.SourceDir)/icons/app_icon.ico">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
@@ -14,7 +14,7 @@
     <!-- Allow the program to be launched after installation. -->
     <Variable Name="LaunchTarget" Value="[InstallFolder]\powertabeditor.exe"/>
 
-		<Chain>
+    <Chain>
       <!-- Windows Installer 4.5 -->
       <ExePackage
           Cache="no"
@@ -76,5 +76,5 @@
         <MsiProperty Name="INSTALLLOCATION" Value="[InstallFolder]" />
       </MsiPackage>
     </Chain>
-	</Bundle>
+  </Bundle>
 </Wix>

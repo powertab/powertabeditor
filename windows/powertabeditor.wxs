@@ -2,47 +2,47 @@
 <?include common.wxi ?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  
-	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)"
+
+  <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version)"
            Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
-		<Package InstallerVersion="405" Compressed="yes" />
+    <Package InstallerVersion="405" Compressed="yes" />
     <MediaTemplate EmbedCab="yes" />
     
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
-		<Feature Id="Complete" Level="1">
-			<ComponentGroupRef Id="Binaries" />
+    <Feature Id="Complete" Level="1">
+      <ComponentGroupRef Id="Binaries" />
       <ComponentGroupRef Id="DataFiles" />
-		</Feature>
+    </Feature>
     <Feature Id="CRT" Level="1">
       <MergeRef Id="CRT" />
     </Feature>
 
     <Icon Id="powertabeditor.ico" SourceFile="$(var.SourceDir)/icons/app_icon.ico" />
     <Property Id="ARPPRODUCTICON" Value="powertabeditor.ico" />
-	</Product>
+  </Product>
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
       <!-- Install the C runtime -->
       <Merge Id="CRT" Language="0" SourceFile="$(var.CRTMergeModule)" DiskId="1" />
-      
-			<Directory Id="$(var.ProgramFilesFolder)">
+
+      <Directory Id="$(var.ProgramFilesFolder)">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
           <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
             <Directory Id="PlatformBinariesDir" Name="platforms" />
             <Directory Id="DataDir" Name="data" />
           </Directory>
         </Directory>
-			</Directory>
+      </Directory>
 
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ProgramMenuDir" Name="$(var.ProductShortName)" />
       </Directory>
-		</Directory>
-	</Fragment>
+    </Directory>
+  </Fragment>
 
-	<Fragment>
+  <Fragment>
     <!-- Main executable and required dlls (e.g. Qt and Boost) -->
     <ComponentGroup Id="Binaries" Directory="INSTALLFOLDER">
       <Component Id="Executable" Guid="2DA29761-7F65-42FF-ADF6-374A67C80C8C">
@@ -116,5 +116,5 @@
       </Component>
     </ComponentGroup>
 
-	</Fragment>
+  </Fragment>
 </Wix>
