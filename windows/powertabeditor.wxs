@@ -12,10 +12,8 @@
 
     <Feature Id="Complete" Level="1">
       <ComponentGroupRef Id="Binaries" />
+      <ComponentGroupRef Id="PlatformBinaries" />
       <ComponentGroupRef Id="DataFiles" />
-    </Feature>
-    <Feature Id="CRT" Level="1">
-      <MergeRef Id="CRT" />
     </Feature>
 
     <Icon Id="powertabeditor.ico" SourceFile="$(var.SourceDir)/icons/app_icon.ico" />
@@ -24,8 +22,6 @@
 
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <!-- Install the C runtime -->
-      <Merge Id="CRT" Language="0" SourceFile="$(var.CRTMergeModule)" DiskId="1" />
 
       <Directory Id="$(var.ProgramFilesFolder)">
         <Directory Id="PowerTab" Name="$(var.ProductShortName)">
@@ -106,6 +102,13 @@
       </Component>
       <Component Id="Qt5PrintSupport" Guid="D5DC1F60-3396-445F-A4AA-70ACF0E26F8D">
         <File Source="$(var.BinDir)/Qt5PrintSupport.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Qt Plugins. -->
+    <ComponentGroup Id="PlatformBinaries" Directory="PlatformBinariesDir">
+      <Component Guid="8DB2373E-9319-475E-897E-47F2BE4CCA30">
+        <File Source="$(var.BinDir)/platforms/qwindows.dll" KeyPath="yes" Checksum="yes" />
       </Component>
     </ComponentGroup>
     

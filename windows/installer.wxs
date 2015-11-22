@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?include common.wxi ?>
 
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
   <Bundle Name="$(var.ProductName)" Version="$(var.Version)"
           Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)"
           IconSourceFile="$(var.SourceDir)/icons/app_icon.ico">
@@ -14,8 +16,11 @@
     <!-- Allow the program to be launched after installation. -->
     <Variable Name="LaunchTarget" Value="[InstallFolder]\powertabeditor.exe"/>
 
+    <!-- Check for the VS2015 redistributable. -->
+    <util:RegistrySearch Root="HKLM" Key="SOFTWARE\Microsoft\DevDiv\vc\Servicing\14.0\RuntimeMinimum" Value="Version" Variable="vcredist" />
+
     <Chain>
-      <!-- Windows Installer 4.5 -->
+      <!-- Windows Installer 4.5. Needed for installation on Windows XP. -->
       <ExePackage
           Cache="no"
           Compressed="no"
@@ -71,6 +76,21 @@
           DownloadUrl="http://download.microsoft.com/download/2/6/1/261fca42-22c0-4f91-9451-0e0f2e08356d/Windows6.0-KB942288-v2-x64.msu"
           InstallCondition="VersionNT=v6.0 AND VersionNT64 AND VersionMsi &lt; v4.5"/>
 
+      <!-- VS2015 Redistributable. -->
+      <ExePackage Id="vcredist"
+          DisplayName="$(var.VCRedistName)"
+          Cache="no"
+          Compressed="no"
+          PerMachine="yes"
+          Permanent="yes"
+          Vital="yes"
+          SourceFile="$(var.VCRedistFile)"
+          DownloadUrl="$(var.VCRedistURL)"
+          InstallCommand="/quiet /norestart"
+          DetectCondition="vcredist AND (vcredist &gt;= &quot;14.0.23026&quot;)">
+      </ExePackage>
+
+      <!-- Main installer. -->
       <MsiPackage SourceFile="$(var.powertabeditor.TargetPath)" Id="PowerTabEditorSetup"
                   Vital="yes" ForcePerMachine="yes" Compressed="yes">
         <MsiProperty Name="INSTALLLOCATION" Value="[InstallFolder]" />
