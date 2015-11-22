@@ -28,12 +28,10 @@ AddSystem::AddSystem(Score &score, int index)
 
 void AddSystem::redo()
 {
-    // Set up a default staff.
     System system;
-    system.insertStaff(Staff());
 
-    // Carry over the time signature and key signature from the previous system
-    // if possible.
+    // Carry over the staves, time signature, and key signature from the
+    // previous system if possible.
     if (myIndex > 0)
     {
         const System &prevSystem = myScore.getSystems()[myIndex - 1];
@@ -49,7 +47,18 @@ void AddSystem::redo()
         key.setVisible(true);
         startBar.setKeySignature(key);
         startBar.setTimeSignature(time);
+
+        for (const Staff &old_staff : prevSystem.getStaves())
+        {
+            Staff new_staff;
+            new_staff.setClefType(old_staff.getClefType());
+            new_staff.setStringCount(old_staff.getStringCount());
+
+            system.insertStaff(new_staff);
+        }
     }
+    else
+        system.insertStaff(Staff());
 
     myScore.insertSystem(system, myIndex);
 }

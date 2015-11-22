@@ -24,6 +24,8 @@ TEST_CASE("Actions/AddSystem", "")
 {
     Score score;
     System system;
+    system.insertStaff(Staff(7));
+    system.insertStaff(Staff(5));
     score.insertSystem(system);
     score.insertSystem(system);
 
@@ -31,9 +33,11 @@ TEST_CASE("Actions/AddSystem", "")
 
     action.redo();
     REQUIRE(score.getSystems().size() == 3);
-    REQUIRE(score.getSystems()[0].getStaves().size() == 0);
-    REQUIRE(score.getSystems()[1].getStaves().size() == 1);
-    REQUIRE(score.getSystems()[2].getStaves().size() == 0);
+    REQUIRE(score.getSystems()[0].getStaves().size() == 2);
+    REQUIRE(score.getSystems()[1].getStaves().size() == 2);
+    REQUIRE(score.getSystems()[1].getStaves()[0].getStringCount() == 7);
+    REQUIRE(score.getSystems()[1].getStaves()[1].getStringCount() == 5);
+    REQUIRE(score.getSystems()[2].getStaves().size() == 2);
 
     action.undo();
     REQUIRE(score.getSystems().size() == 2);
