@@ -31,7 +31,12 @@ function( pte_executable )
     )
 
     # Add to the install step.
-    set( install_dir . )
+    if ( PLATFORM_WIN )
+        set( install_dir . )
+    else ()
+        set( install_dir bin )
+    endif ()
+
     if ( PTE_EXE_INSTALL )
         install(
             TARGETS ${PTE_EXE_NAME}

@@ -1,7 +1,7 @@
 include( CMakeParseArguments )
 
 function ( pte_copyfiles )
-    cmake_parse_arguments( PTE_DATA "INSTALL" "NAME;DESTINATION" "FILES" ${ARGN} )
+    cmake_parse_arguments( PTE_DATA "" "NAME;DESTINATION;INSTALL" "FILES" ${ARGN} )
 
     set( dest_dir ${PTE_DEV_BIN_DIR}/${PTE_DATA_DESTINATION} )
 
@@ -32,7 +32,7 @@ function ( pte_copyfiles )
     if ( PTE_DATA_INSTALL )
         install(
             FILES ${PTE_DATA_FILES}
-            DESTINATION ${PTE_DATA_DESTINATION}
+            DESTINATION ${PTE_DATA_INSTALL}
         )
     endif ()
 endfunction ()

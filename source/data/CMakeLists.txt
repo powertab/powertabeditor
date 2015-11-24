@@ -6,7 +6,7 @@ set( files
 
 pte_copyfiles(
     NAME ptedata
-    INSTALL
     DESTINATION ${PTE_DATA_DIR}
+    INSTALL ${PTE_DATA_INSTALL_DIR}
     FILES ${files}
 )

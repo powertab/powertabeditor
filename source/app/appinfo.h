@@ -23,7 +23,11 @@
 namespace AppInfo
 {
     extern const char *BUG_TRACKER_URL;
+    /// Organization name used by QSettings.
     extern const char *ORGANIZATION_NAME;
+    /// Application name used by QSettings.
+    extern const char *APPLICATION_ID;
+    /// Application name that should be displayed to the user.
     extern const char *APPLICATION_NAME;
     extern const char *APPLICATION_VERSION;
 

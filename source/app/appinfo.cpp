@@ -18,14 +18,22 @@
 #include "appinfo.h"
 
 #include <QCoreApplication>
+#include <QtGlobal>
 
 namespace AppInfo
 {
     const char *BUG_TRACKER_URL =
         "https://github.com/powertab/powertabeditor/issues/";
-    const char *ORGANIZATION_NAME = "Power Tab";
     const char *APPLICATION_NAME = "Power Tab Editor";
     const char *APPLICATION_VERSION = "2.0";
+
+#if defined(Q_OS_WIN) or defined(Q_OS_MAC)
+    const char *ORGANIZATION_NAME = "Power Tab";
+    const char *APPLICATION_ID = "Power Tab Editor";
+#else
+    const char *ORGANIZATION_NAME = "powertab";
+    const char *APPLICATION_ID = "powertabeditor";
+#endif
 
     std::string getFullPath(const char *relative_path)
     {

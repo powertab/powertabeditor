@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 
     // Set the app information (used by e.g. QSettings).
     QCoreApplication::setOrganizationName(AppInfo::ORGANIZATION_NAME);
-    QCoreApplication::setApplicationName(AppInfo::APPLICATION_NAME);
+    QCoreApplication::setApplicationName(AppInfo::APPLICATION_ID);
     QCoreApplication::setApplicationVersion(AppInfo::APPLICATION_VERSION);
 
     // Allow QWidget::activateWindow() to bring the application into the

@@ -1686,8 +1686,8 @@ void PowerTabEditor::closeEvent(QCloseEvent *event)
 QString PowerTabEditor::getApplicationName() const
 {
     QString name = QString("%1 %2 Beta").arg(
-                QCoreApplication::applicationName(),
-                QCoreApplication::applicationVersion());
+                AppInfo::APPLICATION_NAME,
+                AppInfo::APPLICATION_VERSION);
 
 #ifdef VERSION
     name += QString(" (v") + BOOST_STRINGIZE(VERSION) + ")";
