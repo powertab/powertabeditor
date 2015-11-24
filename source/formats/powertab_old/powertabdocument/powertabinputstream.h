@@ -94,7 +94,7 @@ private:
     template <class T>
     inline void ReadObject(std::vector<T*>& vect, uint16_t version)
     {
-        std::auto_ptr<T> object(new T());
+        std::unique_ptr<T> object(new T());
         object->Deserialize(*this, version);
         vect.push_back(object.release());
     }
