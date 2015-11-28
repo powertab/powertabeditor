@@ -1,6 +1,6 @@
 include( FindPackageHandleStandardArgs )
 
-find_path( PUGIXML_INCLUDE_DIR NAMES pugixml.hpp)
+find_path( PUGIXML_INCLUDE_DIR NAMES pugixml.hpp )
 find_library( PUGIXML_LIBRARY pugixml )
 
 set( pugixml_INCLUDE_DIRS ${PUGIXML_INCLUDE_DIR} )
