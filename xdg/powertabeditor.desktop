@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Power Tab Editor
+Type=Application
+Comment=View and edit guitar tablature
+Categories=AudioVideo;Audio
+Exec=powertabeditor %F
+Icon=powertabeditor

@@ -8,3 +8,5 @@ if ( PLATFORM_LINUX )
 else ()
     set( PTE_DATA_INSTALL_DIR data )
 endif ()
+
+set( PTE_XDG_APPS_INSTALL_DIR share/applications )
