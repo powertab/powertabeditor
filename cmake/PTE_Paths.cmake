@@ -10,3 +10,4 @@ else ()
 endif ()
 
 set( PTE_XDG_APPS_INSTALL_DIR share/applications )
+set( PTE_XDG_ICONS_INSTALL_DIR share/icons/hicolor )
