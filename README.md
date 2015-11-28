@@ -64,7 +64,7 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * For older Ubuntu systems (such as Ubuntu 12.04) - you may need to [add some PPAs](https://github.com/powertab/powertabeditor/blob/master/.travis/setup_linux.sh) to get updated versions of the dependencies.
 * Install dependencies:
   * `sudo apt-get update`
-  * `sudo apt-get install cmake qtbase5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev libboost-program-options-dev libboost-regex-dev libasound2-dev libiberty-dev binutils-dev rapidjson-dev`
+  * `sudo apt-get install cmake qtbase5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev libboost-program-options-dev libboost-regex-dev libasound2-dev libiberty-dev binutils-dev rapidjson-dev libpugixml-dev`
   * `sudo apt-get install timidity` - timidity is not required for building, but is a good sequencer for MIDI playback.
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt-get install ninja-build`)
 * Build:
