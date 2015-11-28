@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="audio/x-pt2">
+        <comment>Power Tab 2.0 Document</comment>
+        <glob pattern="*.pt2" />
+    </mime-type>
+    <mime-type type="audio/x-ptb">
+        <comment>Power Tab 1.7 Document</comment>
+        <glob pattern="*.ptb" />
+    </mime-type>
+    <mime-type type="audio/x-gtp">
+        <comment>Guitar Pro File</comment>
+        <glob pattern="*.gp3" />
+        <glob pattern="*.gp4" />
+        <glob pattern="*.gp5" />
+        <glob pattern="*.gpx" />
+    </mime-type>
+</mime-info>

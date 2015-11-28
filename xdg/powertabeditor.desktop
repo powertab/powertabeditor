@@ -5,3 +5,4 @@ Comment=View and edit guitar tablature
 Categories=AudioVideo;Audio
 Exec=powertabeditor %F
 Icon=powertabeditor
+MimeType=audio/x-pt2;audio/x-ptb;audio/x-gtp
