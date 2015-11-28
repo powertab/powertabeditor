@@ -6,7 +6,6 @@ set( CPACK_PACKAGE_VENDOR "Power Tab" )
 set( CPACK_PACKAGE_VERSION_MAJOR "1" )
 set( CPACK_PACKAGE_VERSION_MINOR "98" )
 set( CPACK_PACKAGE_VERSION_PATCH "9" )
-set( pretty_version 2.0.0-alpha9 )
 
 set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/license.rtf" )
 
@@ -19,7 +18,7 @@ if ( PLATFORM_WIN )
     endif ()
 endif ()
 
-set( CPACK_PACKAGE_FILE_NAME powertabeditor-${pretty_version}${system_name} )
+set( CPACK_PACKAGE_FILE_NAME powertabeditor-${PTE_VERSION}${system_name} )
 
 if ( PLATFORM_WIN )
     set( CPACK_PACKAGE_INSTALL_DIRECTORY "Power Tab/Power Tab Editor" )

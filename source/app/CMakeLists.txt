@@ -1,15 +1,26 @@
 project( pteapp )
 
-# Get a version number.
-include( FindGit )
-execute_process(
-    COMMAND ${GIT_EXECUTABLE} describe --tags --long --always
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    OUTPUT_VARIABLE MY_WC_REVISION
-)
-string( STRIP "${MY_WC_REVISION}" MY_WC_REVISION )
+set( _version ${PTE_VERSION} )
 
-add_definitions( -DVERSION=${MY_WC_REVISION} )
+# Get a version number for development builds.
+include( FindGit )
+if ( GIT_FOUND )
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} describe --tags --long --always
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        OUTPUT_VARIABLE git_revision
+        ERROR_VARIABLE error_var
+        RESULT_VARIABLE result_var
+    )
+
+    if ( result_var EQUAL 0 )
+        string( STRIP "${git_revision}" git_revision )
+        set( _version ${git_revision} )
+    endif ()
+endif ()
+
+message( STATUS "Version number: ${_version}" )
+add_definitions( -DVERSION=${_version} )
 
 set( srcs
     appinfo.cpp
