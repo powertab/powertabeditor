@@ -61,14 +61,16 @@ If you've already cloned the repository, you can run `git submodule init && git 
 
 #### Linux:
 * These instructions assume a recent Ubuntu/Debian-based system, but the package names should be similar for other package managers.
-  * For older Ubuntu systems (such as Ubuntu 12.04) - you may need to [add some PPAs](https://github.com/powertab/powertabeditor/blob/master/.travis.yml) to get updated versions of the dependencies.
+  * For older Ubuntu systems (such as Ubuntu 12.04) - you may need to [add some PPAs](https://github.com/powertab/powertabeditor/blob/master/.travis/setup_linux.sh) to get updated versions of the dependencies.
 * Install dependencies:
   * `sudo apt-get update`
-  * `sudo apt-get install cmake qtbase5-dev libboost1.55-dev libboost-date-time1.55-dev libboost-iostreams1.55-dev libboost-program-options1.55-dev libboost-regex1.55-dev libasound2-dev timidity`
+  * `sudo apt-get install cmake qtbase5-dev libboost-dev libboost-date-time-dev libboost-iostreams-dev libboost-program-options-dev libboost-regex-dev libasound2-dev libiberty-dev binutils-dev`
+  * `sudo apt-get install timidity` Timidity is not required for building, but is a good sequencer for MIDI playback.
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt-get install ninja-build`)
 * Build:
   * `mkdir build && cd build`
   * `cmake ..`
+    * Add `-DCMAKE_INSTALL_PREFIX=/some/path` to customize the install directory.
     * Add `-DCMAKE_BUILD_TYPE=Debug` for a debug build instead of a `Release` build.
     * Add `-DCMAKE_CXX_COMPILER=clang++` to compile with Clang.
     * Add `-G Ninja` to generate [Ninja](http://martine.github.io/ninja/) build files.
@@ -76,6 +78,8 @@ If you've already cloned the repository, you can run `git submodule init && git 
 * Run:
   * `./bin/powertabeditor`
   * `./bin/pte_tests` to run the unit tests.
+* Install:
+  * `make install` or `ninja install`
 
 #### OS X:
 * Currently tested with Mac OS X 10.9.2 only.
