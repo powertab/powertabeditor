@@ -81,22 +81,19 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * `make install` or `ninja install`
 
 #### OS X:
-* Currently tested with Mac OS X 10.9.2 only.
+* Tested with Mac OS X 10.9 and above.
 * Install Xcode along with its Command Line Tools.
-* Install CMake, Qt 5.2+, and Boost
-  * Install [Homebrew](http://brew.sh/) and run `./osx/setup.sh`.
-  * Install [CMake](http://www.cmake.org/).
-* Build (adapt paths to your setup) in `source/` directory
-  * `export CC=/usr/bin/clang`
-  * `export CXX=/usr/bin/clang++`
-  * `export Qt5Widgets_DIR=<PATH_TO_Qt>/clang_64/lib/cmake/Qt5Widgets`
-  * `export Qt5Core_DIR=<PATH_TO_Qt>/clang_64/lib/cmake/Qt5Core`
-  * `export BOOST_ROOT=/usr/local/Cellar/boost/1.55.0_1`
-  * `export BOOST_LIBRARY_DIR=/usr/local/Cellar/boost/1.55.0_1/lib`
-  * `export CMAKE_LIBRARY_PATH="/usr/local/Cellar/boost/1.55.0_1/lib:$CMAKE_LIBRARY_PATH"` 
-  * `cmake ..`
-  * `make`
+* Install CMake:
+  * If you prefer a GUI, download the [CMake installer](http://www.cmake.org).
+  * Otherwise, run `brew install cmake`
+* Install dependencies:
+  * `brew install boost qt5`
+* Build (using `make`):
+  * `mkdir build && cd build`
+  * `cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake ..`
+    * If necessary, define `BOOST_ROOT` to point to the root directory where Boost was installed (e.g. `/usr/local/opt/boost`).
+  * `make -j4`
 * Run:
   * `./bin/powertabeditor`
-  * `./bin/pte_tests` to run the unit tests.
+  * `./bin/pte_tests` or `make test` to run the unit tests.
   
