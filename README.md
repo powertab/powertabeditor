@@ -88,11 +88,13 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * Otherwise, run `brew install cmake`
 * Install dependencies:
   * `brew install boost qt5`
-* Build (using `make`):
+* Build:
   * `mkdir build && cd build`
   * `cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake ..`
     * If necessary, define `BOOST_ROOT` to point to the root directory where Boost was installed (e.g. `/usr/local/opt/boost`).
-  * `make -j4`
+    * To generate an Xcode project, add `-G Xcode`.
+  * For a Makefile build, run `make -j4`.
+  * For Xcode, open and build `build/powertabeditor.xcodeproj`.
 * Run:
   * `./bin/powertabeditor`
   * `./bin/pte_tests` or `make test` to run the unit tests.
