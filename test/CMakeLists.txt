@@ -145,8 +145,14 @@ pte_executable(
         pteapp
 )
 
+add_test(
+    NAME all_tests
+    COMMAND pte_tests exclude:Formats/PowerTabOldImport/Directions
+)
+
 pte_copyfiles(
     NAME pte_tests_data
     DESTINATION ${PTE_DATA_DIR}
     FILES ${data_files}
 )
+add_dependencies( pte_tests pte_tests_data )

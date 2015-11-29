@@ -29,6 +29,11 @@ function( pte_executable )
         RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PTE_DEV_BIN_DIR}
         RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PTE_DEV_BIN_DIR}
     )
+    
+    # Set folder name for Visual Studio projects.
+    set_target_properties( ${PTE_EXE_NAME} PROPERTIES
+        FOLDER executables
+    )
 
     # Add to the install step.
     if ( PLATFORM_WIN )

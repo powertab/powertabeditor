@@ -1,6 +1,8 @@
 cmake_minimum_required( VERSION 3.1 )
 project( powertabeditor )
 
+enable_testing()
+
 set( CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
     ${CMAKE_SOURCE_DIR}/cmake/third_party/modules
