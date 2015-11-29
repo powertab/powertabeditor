@@ -98,4 +98,5 @@ If you've already cloned the repository, you can run `git submodule init && git 
 * Run:
   * `./bin/powertabeditor`
   * `./bin/pte_tests` or `make test` to run the unit tests.
+  * For Xcode, select `Product/Scheme/powertabeditor` and then `Product/Run`.
   
