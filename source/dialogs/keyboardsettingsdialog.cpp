@@ -66,12 +66,15 @@ void KeyboardSettingsDialog::initializeCommandTable()
     // Populate list of commands.
     for (Command *command : myCommands)
     {
+        QString shortcut_text =
+            command->shortcut().toString(QKeySequence::NativeText);
+
         // Build up a set of the known shortcuts.
         if (!command->shortcut().isEmpty())
         {
-            auto result = myKnownShortcuts.emplace(
-                command->shortcut().toString().toStdString(),
-                ui->commandsList->topLevelItemCount());
+            auto result =
+                myKnownShortcuts.emplace(shortcut_text.toStdString(),
+                                         ui->commandsList->topLevelItemCount());
             // We shouldn't have duplicate shortcuts.
             Q_ASSERT_X(result.second, "Import Keyboard Settings",
                        "Duplicate Shortcut");
@@ -79,9 +82,8 @@ void KeyboardSettingsDialog::initializeCommandTable()
 
         // NOTE: QAction::toolTip() is called to avoid getting ampersands from
         //       mnemonics (which would appear in QAction::text)
-        auto item = new QTreeWidgetItem(QStringList(
-            { command->id(), command->toolTip(),
-              command->shortcut().toString(QKeySequence::NativeText) }));
+        auto item = new QTreeWidgetItem(
+            QStringList({ command->id(), command->toolTip(), shortcut_text }));
 
         item->setData(0, Qt::UserRole, qVariantFromValue(command));
         ui->commandsList->addTopLevelItem(item);
@@ -166,21 +168,23 @@ void KeyboardSettingsDialog::setShortcut(const QKeySequence &shortcut,
     if (!item)
         item = ui->commandsList->currentItem();
     
-    const QString shortcut_native = shortcut.toString(QKeySequence::NativeText);
-    const QString shortcut_portable = shortcut.toString();
-
-    // Check whether this shortcut is already in use.
-    auto it = myKnownShortcuts.find(shortcut_portable.toStdString());
+    const QString shortcut_text = shortcut.toString(QKeySequence::NativeText);
+    
+    // Check whether this shortcut is already in use by a different command.
+    auto it = myKnownShortcuts.find(shortcut_text.toStdString());
     if (it != myKnownShortcuts.end())
     {
-        QTreeWidgetItem *conflictItem =
+        QTreeWidgetItem *conflict_item =
             ui->commandsList->topLevelItem(it->second);
-        auto conflict = conflictItem->data(0, Qt::UserRole).value<Command *>();
+        if (item == conflict_item)
+            return;
+        
+        auto conflict = conflict_item->data(0, Qt::UserRole).value<Command *>();
 
         QMessageBox msg;
         msg.setIcon(QMessageBox::Question);
         msg.setText(
-            tr("The shortcut %1 is already in use.").arg(shortcut_portable));
+            tr("The shortcut %1 is already in use.").arg(shortcut_text));
         msg.setInformativeText(
             tr("Do you want to use this shortcut and remove the shortcut of "
                "the %1 command?").arg(conflict->id()));
@@ -188,7 +192,7 @@ void KeyboardSettingsDialog::setShortcut(const QKeySequence &shortcut,
         msg.setDefaultButton(QMessageBox::Yes);
 
         if (msg.exec() == QMessageBox::Yes)
-            setShortcut(QKeySequence(), conflictItem);
+            setShortcut(QKeySequence(), conflict_item);
         else
             return;
     }
@@ -197,14 +201,13 @@ void KeyboardSettingsDialog::setShortcut(const QKeySequence &shortcut,
     myKnownShortcuts.erase(item->text(CommandShortcut).toStdString());
     if (!shortcut.isEmpty())
     {
-        myKnownShortcuts.emplace(shortcut_portable.toStdString(),
+        myKnownShortcuts.emplace(shortcut_text.toStdString(),
                                  ui->commandsList->indexOfTopLevelItem(item));
     }
-
     
-    item->setText(CommandShortcut, shortcut_native);
+    item->setText(CommandShortcut, shortcut_text);
     if (item == ui->commandsList->currentItem())
-        ui->shortcutEdit->setText(shortcut_native);
+        ui->shortcutEdit->setText(shortcut_text);
 }
 
 void KeyboardSettingsDialog::activeCommandChanged(QTreeWidgetItem* current,
