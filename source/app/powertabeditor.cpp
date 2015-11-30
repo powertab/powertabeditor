@@ -2746,6 +2746,7 @@ void PowerTabEditor::createMenus()
 void PowerTabEditor::createTabArea()
 {
     myTabWidget = new QTabWidget(this);
+    myTabWidget->setDocumentMode(true);
     myTabWidget->setTabsClosable(true);
 
     connect(myTabWidget, SIGNAL(tabCloseRequested(int)), this,
