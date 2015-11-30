@@ -70,7 +70,7 @@ private:
 
     /// Updates the shortcut in the commands list and the shortcut editor.
     /// If 'item' is not specified, the currently selected item will be used.
-    void setShortcut(const QString &shortcut, QTreeWidgetItem *item = 0);
+    void setShortcut(const QKeySequence &shortcut, QTreeWidgetItem *item = 0);
 
     /// Get the Command corresponding to the currently selected row.
     Command *activeCommand() const;

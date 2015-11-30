@@ -79,9 +79,9 @@ void KeyboardSettingsDialog::initializeCommandTable()
 
         // NOTE: QAction::toolTip() is called to avoid getting ampersands from
         //       mnemonics (which would appear in QAction::text)
-        auto item = new QTreeWidgetItem(
-            QStringList({ command->id(), command->toolTip(),
-                          command->shortcut().toString() }));
+        auto item = new QTreeWidgetItem(QStringList(
+            { command->id(), command->toolTip(),
+              command->shortcut().toString(QKeySequence::NativeText) }));
 
         item->setData(0, Qt::UserRole, qVariantFromValue(command));
         ui->commandsList->addTopLevelItem(item);
@@ -136,16 +136,15 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
     if (key == Qt::Key_Backspace && !text.isEmpty())
     {
         // Remove if there is a shortcut already present (and backspace is pressed)
-        setShortcut("");
+        setShortcut(QKeySequence());
     }
     else
     {
         // Add in any modifers like Shift or Ctrl, but remove the keypad modifer
         // since QKeySequence doesn't handle that well.
         key |= (e->modifiers() & ~Qt::KeypadModifier);
-
-        QKeySequence newKeySequence(key);
-        setShortcut(newKeySequence.toString());
+        
+        setShortcut(key);
     }
 
     e->accept();
@@ -153,30 +152,35 @@ void KeyboardSettingsDialog::processKeyPress(QKeyEvent *e)
 
 void KeyboardSettingsDialog::resetShortcut()
 {
-    setShortcut(activeCommand()->shortcut().toString());
+    setShortcut(activeCommand()->shortcut());
 }
 
 void KeyboardSettingsDialog::resetToDefaultShortcut()
 {
-    setShortcut(activeCommand()->defaultShortcut().toString());
+    setShortcut(activeCommand()->defaultShortcut());
 }
 
-void KeyboardSettingsDialog::setShortcut(const QString &shortcut,
+void KeyboardSettingsDialog::setShortcut(const QKeySequence &shortcut,
                                          QTreeWidgetItem *item)
 {
     if (!item)
         item = ui->commandsList->currentItem();
+    
+    const QString shortcut_native = shortcut.toString(QKeySequence::NativeText);
+    const QString shortcut_portable = shortcut.toString();
 
     // Check whether this shortcut is already in use.
-    auto it = myKnownShortcuts.find(shortcut.toStdString());
+    auto it = myKnownShortcuts.find(shortcut_portable.toStdString());
     if (it != myKnownShortcuts.end())
     {
-        QTreeWidgetItem *conflictItem = ui->commandsList->topLevelItem(it->second);
+        QTreeWidgetItem *conflictItem =
+            ui->commandsList->topLevelItem(it->second);
         auto conflict = conflictItem->data(0, Qt::UserRole).value<Command *>();
 
         QMessageBox msg;
         msg.setIcon(QMessageBox::Question);
-        msg.setText(tr("The shortcut %1 is already in use.").arg(shortcut));
+        msg.setText(
+            tr("The shortcut %1 is already in use.").arg(shortcut_portable));
         msg.setInformativeText(
             tr("Do you want to use this shortcut and remove the shortcut of "
                "the %1 command?").arg(conflict->id()));
@@ -184,7 +188,7 @@ void KeyboardSettingsDialog::setShortcut(const QString &shortcut,
         msg.setDefaultButton(QMessageBox::Yes);
 
         if (msg.exec() == QMessageBox::Yes)
-            setShortcut("", conflictItem);
+            setShortcut(QKeySequence(), conflictItem);
         else
             return;
     }
@@ -193,13 +197,14 @@ void KeyboardSettingsDialog::setShortcut(const QString &shortcut,
     myKnownShortcuts.erase(item->text(CommandShortcut).toStdString());
     if (!shortcut.isEmpty())
     {
-        myKnownShortcuts.emplace(shortcut.toStdString(),
+        myKnownShortcuts.emplace(shortcut_portable.toStdString(),
                                  ui->commandsList->indexOfTopLevelItem(item));
     }
 
-    item->setText(CommandShortcut, shortcut);
+    
+    item->setText(CommandShortcut, shortcut_native);
     if (item == ui->commandsList->currentItem())
-        ui->shortcutEdit->setText(shortcut);
+        ui->shortcutEdit->setText(shortcut_native);
 }
 
 void KeyboardSettingsDialog::activeCommandChanged(QTreeWidgetItem* current,
