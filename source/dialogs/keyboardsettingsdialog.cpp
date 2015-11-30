@@ -187,7 +187,7 @@ void KeyboardSettingsDialog::setShortcut(const QKeySequence &shortcut,
             tr("The shortcut %1 is already in use.").arg(shortcut_text));
         msg.setInformativeText(
             tr("Do you want to use this shortcut and remove the shortcut of "
-               "the %1 command?").arg(conflict->id()));
+               "the <b>%1</b> command?").arg(conflict->id()));
         msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msg.setDefaultButton(QMessageBox::Yes);
 
