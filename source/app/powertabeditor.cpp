@@ -1812,15 +1812,21 @@ void PowerTabEditor::createCommands()
     connect(myPlayPauseCommand, SIGNAL(triggered()), this,
             SLOT(startStopPlayback()));
 
+#ifdef Q_OS_MAC
+    // Command-Space is used by Spotlight.
+    QKeySequence play_start_seq = Qt::META + Qt::Key_Space;
+#else
+    QKeySequence play_start_seq = Qt::CTRL + Qt::Key_Space;
+#endif
     myPlayFromStartOfMeasureCommand = new Command(
         tr("Play From Start Of Measure"), "Playback.PlayFromStartOfMeasure",
-        Qt::CTRL + Qt::Key_Space, this);
+        play_start_seq, this);
     connect(myPlayFromStartOfMeasureCommand, &QAction::triggered, [this]() {
         startStopPlayback(/* from_measure_start */ true);
     });
 
     myRewindCommand = new Command(tr("Rewind"), "Playback.Rewind",
-                                  Qt::CTRL + Qt::Key_Left, this);
+                                  Qt::ALT + Qt::Key_Left, this);
     connect(myRewindCommand, &QAction::triggered, this,
             &PowerTabEditor::rewindPlaybackToStart);
 
@@ -1869,9 +1875,18 @@ void PowerTabEditor::createCommands()
             SLOT(shiftBackward()));
 
     // Position-related actions.
+#ifdef Q_OS_MAC
+    // Use Command-Left instead of Control-Left, which is used for changing
+    // desktops.
+    QKeySequence move_start_seq = Qt::CTRL + Qt::Key_Left;
+    QKeySequence move_end_seq = Qt::CTRL + Qt::Key_Right;
+#else
+    QKeySequence move_start_seq = QKeySequence::MoveToStartOfLine;
+    QKeySequence move_end_seq = QKeySequence::MoveToEndOfLine;
+#endif
     myStartPositionCommand =
         new Command(tr("Move to &Start"), "Position.Staff.MoveToStart",
-                    QKeySequence::MoveToStartOfLine, this);
+                    move_start_seq, this);
     connect(myStartPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToStart()));
 
@@ -1901,7 +1916,7 @@ void PowerTabEditor::createCommands()
 
     myLastPositionCommand =
         new Command(tr("Move to &End"), "Position.Staff.MoveToEnd",
-                    QKeySequence::MoveToEndOfLine, this);
+                    move_end_seq, this);
     connect(myLastPositionCommand, SIGNAL(triggered()), this,
             SLOT(moveCaretToEnd()));
 
@@ -2377,14 +2392,25 @@ void PowerTabEditor::createCommands()
             this, SLOT(showTuningDictionary()));
 
     // Window Menu commands.
+    
+#ifdef Q_OS_MAC
+    // NextChild is Command-{ on OS X, so use the more conventional Control-Tab
+    // to match Safari, Finder, etc.
+    QKeySequence next_tab_seq = Qt::META + Qt::Key_Tab;
+    QKeySequence prev_tab_seq = Qt::META + Qt::SHIFT + Qt::Key_Tab;
+#else
+    QKeySequence next_tab_seq = QKeySequence::NextChild;
+    QKeySequence prev_tab_seq = QKeySequence::PreviousChild;
+#endif
+    
     myNextTabCommand = new Command(tr("Next Tab"), "Window.NextTab",
-                                   Qt::CTRL + Qt::Key_Tab, this);
+                                   next_tab_seq, this);
     connect(myNextTabCommand, &QAction::triggered, [=]() {
         cycleTab(1);
     });
 
     myPrevTabCommand = new Command(tr("Previous Tab"), "Window.PreviousTab",
-                                   Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
+                                   prev_tab_seq, this);
     connect(myPrevTabCommand, &QAction::triggered, [=]() {
         cycleTab(-1);
     });
