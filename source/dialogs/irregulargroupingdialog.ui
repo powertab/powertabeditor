@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>IrregularGroupingDialog</class>
  <widget class="QDialog" name="IrregularGroupingDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>216</width>
-    <height>113</height>
+    <height>124</height>
    </rect>
   </property>
   <property name="windowTitle">

@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>DirectionDialog</class>
  <widget class="QDialog" name="DirectionDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>344</width>
-    <height>162</height>
+    <width>412</width>
+    <height>192</height>
    </rect>
   </property>
   <property name="windowTitle">

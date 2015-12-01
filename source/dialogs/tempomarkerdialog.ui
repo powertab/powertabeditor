@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>TempoMarkerDialog</class>
  <widget class="QDialog" name="TempoMarkerDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>297</height>
+    <width>668</width>
+    <height>323</height>
    </rect>
   </property>
   <property name="windowTitle">

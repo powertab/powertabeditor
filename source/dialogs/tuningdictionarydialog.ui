@@ -3,7 +3,7 @@
  <class>TuningDictionaryDialog</class>
  <widget class="QDialog" name="TuningDictionaryDialog">
   <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
+   <enum>Qt::ApplicationModal</enum>
   </property>
   <property name="geometry">
    <rect>

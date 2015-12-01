@@ -3,7 +3,7 @@
  <class>CrashDialog</class>
  <widget class="QDialog" name="CrashDialog">
   <property name="windowModality">
-   <enum>Qt::ApplicationModal</enum>
+   <enum>Qt::WindowModal</enum>
   </property>
   <property name="geometry">
    <rect>

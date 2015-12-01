@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>FileInformationDialog</class>
  <widget class="QDialog" name="FileInformationDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -916,7 +919,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="songTypeButtonGroup"/>
   <buttongroup name="lessonLevelButtonGroup"/>
+  <buttongroup name="songTypeButtonGroup"/>
  </buttongroups>
 </ui>

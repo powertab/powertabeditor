@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>RehearsalSignDialog</class>
  <widget class="QDialog" name="RehearsalSignDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>197</width>
-    <height>80</height>
+    <width>207</width>
+    <height>88</height>
    </rect>
   </property>
   <property name="windowTitle">

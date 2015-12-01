@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>BendDialog</class>
  <widget class="QDialog" name="BendDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>384</width>
-    <height>255</height>
+    <width>459</width>
+    <height>263</height>
    </rect>
   </property>
   <property name="windowTitle">
