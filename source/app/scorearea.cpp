@@ -24,12 +24,18 @@
 #include <painters/systemrenderer.h>
 #include <QDebug>
 #include <QGraphicsItem>
+#include <QGraphicsSceneDragDropEvent>
 #include <QPrinter>
 #include <QScrollBar>
 #include <score/score.h>
 #include <thread>
 
 static const double SYSTEM_SPACING = 50;
+
+void ScoreArea::Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
+{
+    event->ignore();
+}
 
 ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),

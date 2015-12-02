@@ -264,6 +264,12 @@ protected:
     /// Performs some final actions before exiting.
     virtual void closeEvent(QCloseEvent*) override;
 
+    /// Accept drag events.
+    virtual void dragEnterEvent(QDragEnterEvent *event) override;
+
+    /// Open files that have been dropped.
+    virtual void dropEvent(QDropEvent *event) override;
+
 private:
     /// Returns the application name & version (e.g. 'Power Tab Editor 2.0').
     QString getApplicationName() const;

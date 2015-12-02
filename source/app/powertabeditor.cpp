@@ -126,12 +126,14 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QScrollArea>
 #include <QSettings>
 #include <QTabBar>
+#include <QUrl>
 #include <QVBoxLayout>
 
 #include <score/utils.h>
@@ -164,6 +166,8 @@ PowerTabEditor::PowerTabEditor()
       myPlaybackArea(nullptr)
 {
     this->setWindowIcon(QIcon(":icons/app_icon.png"));
+
+    setAcceptDrops(true);
 
     // Load the music notation font.
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf");
@@ -1681,6 +1685,27 @@ void PowerTabEditor::closeEvent(QCloseEvent *event)
     settings.setValue(Settings::APP_WINDOW_STATE, saveState());
 
     QMainWindow::closeEvent(event);
+}
+
+void PowerTabEditor::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls())
+    {
+        for (const QUrl &url : event->mimeData()->urls())
+        {
+            if (!url.isLocalFile())
+                return;
+        }
+
+        event->acceptProposedAction();
+    }
+}
+
+void PowerTabEditor::dropEvent(QDropEvent *event)
+{
+    Q_ASSERT(event->mimeData()->hasUrls());
+    for (const QUrl &url : event->mimeData()->urls())
+        openFile(url.toLocalFile());
 }
 
 QString PowerTabEditor::getApplicationName() const

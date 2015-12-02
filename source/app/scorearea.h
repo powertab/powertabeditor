@@ -32,6 +32,15 @@ class QPrinter;
 /// The visual display of the score.
 class ScoreArea : public QGraphicsView
 {
+    class Scene : public QGraphicsScene
+    {
+    protected:
+        /// The default implementation accepts the event, preventing it from
+        /// propagating up to the main window (which is Where we want to handle
+        /// drag events).
+        void dragEnterEvent(QGraphicsSceneDragDropEvent *event) override;
+    };
+
 public:
     explicit ScoreArea(QWidget *parent);
 
@@ -53,7 +62,7 @@ private:
     /// Adjusts the scroll location whenever the caret moves.
     void adjustScroll();
 
-    QGraphicsScene myScene;
+    Scene myScene;
     boost::optional<const Document &> myDocument;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
