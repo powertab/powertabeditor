@@ -21,7 +21,7 @@
 		        <string>pt2</string>
 		    </array>
 		    <key>public.mime-type</key>
-                    <string>application/x-pt2</string>
+                    <string>audio/x-pt2</string>
 		</dict>
             </dict>
         </array>
@@ -40,7 +40,7 @@
                 </array>
                 <key>CFBundleTypeMIMETypes</key>
                 <array>
-                    <string>application/x-pt2</string>
+                    <string>audio/x-pt2</string>
                 </array>
                 <key>LSTypeIsPackage</key>
                 <false/>
