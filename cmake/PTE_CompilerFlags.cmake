@@ -13,3 +13,8 @@ else ()
         set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++" )
     endif ()
 endif ()
+
+# Print coloured error messages when compiling with Clang and Ninja.
+if ( COMPILER_CLANG AND CMAKE_GENERATOR STREQUAL "Ninja" )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics" )
+endif ()
