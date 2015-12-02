@@ -36,7 +36,7 @@ function( pte_executable )
     )
 
     # Add to the install step.
-    if ( PLATFORM_WIN )
+    if ( PLATFORM_WIN OR PLATFORM_OSX )
         set( install_dir . )
     else ()
         set( install_dir bin )
