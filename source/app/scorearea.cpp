@@ -191,7 +191,13 @@ std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
 
 void ScoreArea::adjustScroll()
 {
-    verticalScrollBar()->setValue(myCaretPainter->getCurrentSystemRect().y());
+    if (myDocument->getCaret().isInPlaybackMode())
+    {
+        verticalScrollBar()->setValue(
+            myCaretPainter->getCurrentSystemRect().y());
+    }
+    else
+        ensureVisible(myCaretPainter->sceneBoundingRect(), 0, 0);
 }
 
 void ScoreArea::focusInEvent(QFocusEvent *)
