@@ -23,7 +23,6 @@
 #include <formats/powertab/powertabimporter.h>
 #include <formats/powertab/powertabexporter.h>
 #include <formats/powertab_old/powertaboldimporter.h>
-#include <QMessageBox>
 
 FileFormatManager::FileFormatManager()
 {
@@ -74,31 +73,19 @@ std::string FileFormatManager::importFileFilter() const
     return filterAll + filterOther;
 }
 
-bool FileFormatManager::importFile(Score &score, const std::string &filename,
-                                   const FileFormat &format,
-                                   QWidget *parent_window)
+void FileFormatManager::importFile(Score &score, const std::string &filename,
+                                   const FileFormat &format)
 {
     for (auto &importer : myImporters)
     {
         if (importer->fileFormat() == format)
         {
-            try
-            {
-                importer->load(filename, score);
-                return true;
-            }
-            catch (const std::exception &e)
-            {
-                QMessageBox msg(parent_window);
-                msg.setText(QObject::tr("Error importing file - ") +
-                            QString(e.what()));
-                msg.exec();
-                return false;
-            }
+            importer->load(filename, score);
+            return;
         }
     }
 
-    return false;
+    throw std::runtime_error("Unknown file format");
 }
 
 std::string FileFormatManager::exportFileFilter() const
@@ -116,30 +103,18 @@ std::string FileFormatManager::exportFileFilter() const
     return filter;
 }
 
-bool FileFormatManager::exportFile(const Score &score,
+void FileFormatManager::exportFile(const Score &score,
                                    const std::string &filename,
-                                   const FileFormat &format,
-                                   QWidget *parent_window)
+                                   const FileFormat &format)
 {
     for (auto &exporter : myExporters)
     {
         if (exporter->fileFormat() == format)
         {
-            try
-            {
-                exporter->save(filename, score);
-                return true;
-            }
-            catch (const std::exception &e)
-            {
-                QMessageBox msg(parent_window);
-                msg.setText(QObject::tr("Error saving file - ") +
-                            QString(e.what()));
-                msg.exec();
-                return false;
-            }
+            exporter->save(filename, score);
+            return;
         }
     }
 
-    return false;
+    throw std::runtime_error("Unknown file format");
 }

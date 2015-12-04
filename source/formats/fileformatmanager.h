@@ -25,7 +25,6 @@
 
 class FileFormatImporter;
 class FileFormatExporter;
-class QWidget;
 class Score;
 
 /// An interface for import/export of various file formats.
@@ -42,15 +41,17 @@ public:
     std::string importFileFilter() const;
 
     /// Imports a file into the given score.
-    bool importFile(Score &score, const std::string &filename,
-                    const FileFormat &format, QWidget *parent_window);
+    /// @throws std::exception
+    void importFile(Score &score, const std::string &filename,
+                    const FileFormat &format);
 
     /// Returns a correctly formatted file filter for a Qt file dialog.
     std::string exportFileFilter() const;
 
     /// Exports the given score to a file.
-    bool exportFile(const Score &score, const std::string &filename,
-                    const FileFormat &format, QWidget *parent_window);
+    /// @throws std::exception
+    void exportFile(const Score &score, const std::string &filename,
+                    const FileFormat &format);
 
 private:
     template <typename Importer>

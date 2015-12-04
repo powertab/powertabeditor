@@ -124,5 +124,4 @@ pte_library(
         ptemidi
         ptescore
         pugixml
-        Qt5::Widgets
 )

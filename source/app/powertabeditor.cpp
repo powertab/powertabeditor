@@ -256,25 +256,29 @@ void PowerTabEditor::openFile(QString filename)
         return;
     }
 
-
-    Document &doc = myDocumentManager->addDocument();
-    if (myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
-        *format, this))
+    try
     {
+        Document &doc = myDocumentManager->addDocument();
+        myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
+                                        *format);
         auto end = std::chrono::high_resolution_clock::now();
         qDebug() << "File loaded in"
-            << std::chrono::duration_cast<std::chrono::milliseconds>(
-            end - start).count() << "ms";
+                 << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) .count()
+                 << "ms";
 
         doc.setFilename(filename.toStdString());
         setPreviousDirectory(filename);
         myRecentFiles->add(filename);
         setupNewTab();
     }
-    else
+    catch (const std::exception &e)
     {
         myDocumentManager->removeDocument(
             myDocumentManager->getCurrentDocumentIndex());
+
+        QMessageBox::warning(
+            this, tr("Error Opening File"),
+            tr("Error opening file: %1").arg(QString(e.what())));
     }
 }
 
@@ -377,9 +381,16 @@ bool PowerTabEditor::saveFile(QString path)
     const std::string path_str = path.toStdString();
     Document &doc = myDocumentManager->getCurrentDocument();
 
-    if (!myFileFormatManager->exportFile(doc.getScore(), path_str, *format,
-                                         this))
+    try
     {
+        myFileFormatManager->exportFile(doc.getScore(), path_str, *format);
+    }
+    catch (const std::exception &e)
+    {
+        QMessageBox::warning(
+            this, tr("Error Saving File"),
+            tr("Error saving file: %1").arg(QString(e.what())));
+
         return false;
     }
 
