@@ -19,6 +19,8 @@
 #define MIDI_MIDIFILE_H
 
 #include <midi/midieventlist.h>
+
+#include <cstdint>
 #include <vector>
 
 class Barline;
@@ -31,10 +33,31 @@ class Voice;
 class MidiFile
 {
 public:
+    struct LoadOptions
+    {
+        LoadOptions()
+            : myVibratoStrength(0),
+              myWideVibratoStrength(0),
+              myEnableMetronome(false),
+              myStrongAccentVel(0),
+              myWeakAccentVel(0),
+              myMetronomePreset(0),
+              myRecordPositionChanges(false)
+        {
+        }
+
+        uint8_t myVibratoStrength;
+        uint8_t myWideVibratoStrength;
+        bool myEnableMetronome;
+        uint8_t myStrongAccentVel;
+        uint8_t myWeakAccentVel;
+        uint8_t myMetronomePreset;
+        bool myRecordPositionChanges;
+    };
+
     MidiFile();
 
-    void load(const Score &score, bool enable_metronome,
-              bool record_position_changes);
+    void load(const Score &score, const LoadOptions &options);
 
     int getTicksPerBeat() const { return myTicksPerBeat; }
     std::vector<MidiEventList> &getTracks() { return myTracks; }
@@ -44,7 +67,8 @@ private:
     int generateMetronome(MidiEventList &event_list, int current_tick,
                           const System &system, const Barline &current_bar,
                           const Barline &next_bar,
-                          const SystemLocation &location);
+                          const SystemLocation &location,
+                          const LoadOptions &options);
 
     int addTempoEvent(MidiEventList &event_list, int current_tick,
                       int current_tempo, const System &system, int bar_start,
@@ -55,7 +79,8 @@ private:
                         int current_tempo, const Score &score,
                         const System &system, int system_index,
                         const Staff &staff, int staff_index, const Voice &voice,
-                        int voice_index, int bar_start, int bar_end);
+                        int voice_index, int bar_start, int bar_end,
+                        const LoadOptions &options);
 
     int myTicksPerBeat;
     std::vector<MidiEventList> myTracks;

@@ -68,9 +68,13 @@ void MidiPlayer::run()
 
     setIsPlaying(true);
 
+    MidiFile::LoadOptions options;
+    options.myEnableMetronome = true;
+    options.myRecordPositionChanges = true;
+
     MidiFile file;
-    file.load(myScore, /* enable_metronome */ true,
-              /* record_position_changes */ true);
+    file.load(myScore, options);
+
     const int ticks_per_beat = file.getTicksPerBeat();
 
     // Merge the MIDI evvents for each track.

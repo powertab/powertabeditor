@@ -20,9 +20,7 @@
 #include "repeatcontroller.h"
 
 #include <boost/rational.hpp>
-#include <QSettings>
 
-#include <app/settings.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
 #include <score/scorelocation.h>
@@ -114,8 +112,7 @@ MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
 
-void MidiFile::load(const Score &score, bool enable_metronome,
-                    bool record_position_changes)
+void MidiFile::load(const Score &score, const LoadOptions &options)
 {
     myTicksPerBeat = DEFAULT_PPQ;
 
@@ -175,7 +172,8 @@ void MidiFile::load(const Score &score, bool enable_metronome,
                     regular_tracks, active_bends[staff_index], start_tick,
                     current_tempo, score, system, location.getSystem(), staff,
                     staff_index, staff.getVoices()[voice_index], voice_index,
-                    current_bar->getPosition(), next_bar->getPosition());
+                    current_bar->getPosition(), next_bar->getPosition(),
+                    options);
 
                 current_tick = std::max(current_tick, end_tick);
             }
@@ -183,17 +181,18 @@ void MidiFile::load(const Score &score, bool enable_metronome,
 
         // Generate metronome events.
         current_tick = std::max(
-            current_tick, generateMetronome(metronome_track, start_tick, system,
-                                            *current_bar, *next_bar, location));
+            current_tick,
+            generateMetronome(metronome_track, start_tick, system, *current_bar,
+                              *next_bar, location, options));
 
-        location = moveToNextBar(metronome_track, current_tick,
-                                 record_position_changes, system, location,
-                                 next_bar->getPosition(), repeat_controller);
+        location = moveToNextBar(
+            metronome_track, current_tick, options.myRecordPositionChanges,
+            system, location, next_bar->getPosition(), repeat_controller);
     }
 
     myTracks.push_back(master_track);
     myTracks.insert(myTracks.end(), regular_tracks.begin(), regular_tracks.end());
-    if (enable_metronome)
+    if (options.myEnableMetronome)
         myTracks.push_back(metronome_track);
 
     for (MidiEventList &track : myTracks)
@@ -207,20 +206,9 @@ int MidiFile::generateMetronome(MidiEventList &event_list, int current_tick,
                                 const System &system,
                                 const Barline &current_bar,
                                 const Barline &next_bar,
-                                const SystemLocation &location)
+                                const SystemLocation &location,
+                                const LoadOptions &options)
 {
-    QSettings settings;
-    const uint8_t strong_vel =
-        settings.value(Settings::MIDI_METRONOME_STRONG_ACCENT,
-                       Settings::MIDI_METRONOME_STRONG_ACCENT_DEFAULT).toUInt();
-    const uint8_t weak_vel =
-        settings.value(Settings::MIDI_METRONOME_WEAK_ACCENT,
-                       Settings::MIDI_METRONOME_WEAK_ACCENT_DEFAULT).toUInt();
-    const uint8_t preset =
-        Midi::MIDI_PERCUSSION_PRESET_OFFSET +
-        settings.value(Settings::MIDI_METRONOME_PRESET,
-                       Settings::MIDI_METRONOME_PRESET_DEFAULT).toUInt();
-
     const TimeSignature &time_sig = current_bar.getTimeSignature();
 
     const int num_pulses = time_sig.getNumPulses();
@@ -256,15 +244,18 @@ int MidiFile::generateMetronome(MidiEventList &event_list, int current_tick,
     {
         for (int i = 0; i < num_pulses; ++i)
         {
-            const uint8_t velocity = (i == 0) ? strong_vel : weak_vel;
+            const uint8_t velocity =
+                (i == 0) ? options.myStrongAccentVel : options.myWeakAccentVel;
 
             event_list.append(MidiEvent::noteOn(current_tick, METRONOME_CHANNEL,
-                                                preset, velocity, location));
+                                                options.myMetronomePreset,
+                                                velocity, location));
 
             current_tick += duration;
 
-            event_list.append(MidiEvent::noteOff(
-                current_tick, METRONOME_CHANNEL, preset, location));
+            event_list.append(
+                MidiEvent::noteOff(current_tick, METRONOME_CHANNEL,
+                                   options.myMetronomePreset, location));
         }
     }
 
@@ -365,22 +356,6 @@ static Velocity getNoteVelocity(const Position &pos, const Note &note)
         return Velocity::PalmMutedVelocity;
     else
         return Velocity::DefaultVelocity;
-}
-
-static uint8_t getVibratoWidth(const Position &pos)
-{
-    QSettings settings;
-
-    if (pos.hasProperty(Position::Vibrato))
-    {
-        return settings.value(Settings::MIDI_VIBRATO_LEVEL,
-                              Settings::MIDI_VIBRATO_LEVEL_DEFAULT).toUInt();
-    }
-    else
-    {
-        return settings.value(Settings::MIDI_WIDE_VIBRATO_LEVEL,
-                              Settings::MIDI_WIDE_VIBRATO_LEVEL_DEFAULT).toUInt();
-    }
 }
 
 /// Compute the number of ticks for a grace note - it should correspond to about
@@ -576,13 +551,11 @@ static void generateSlides(std::vector<BendEventInfo> &bends, int start_tick,
     }
 }
 
-int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
-                              uint8_t &active_bend, int current_tick,
-                              int current_tempo, const Score &score,
-                              const System &system, int system_index,
-                              const Staff &staff, int staff_index,
-                              const Voice &voice, int voice_index,
-                              int bar_start, int bar_end)
+int MidiFile::addEventsForBar(
+    std::vector<MidiEventList> &tracks, uint8_t &active_bend, int current_tick,
+    int current_tempo, const Score &score, const System &system,
+    int system_index, const Staff &staff, int staff_index, const Voice &voice,
+    int voice_index, int bar_start, int bar_end, const LoadOptions &options)
 {
     ScoreLocation location(score, system_index, staff_index, voice_index);
     const Voice *prev_voice = VoiceUtils::getAdjacentVoice(location, -1);
@@ -675,7 +648,9 @@ int MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
         if (pos->hasProperty(Position::Vibrato) ||
             pos->hasProperty(Position::WideVibrato))
         {
-            const uint8_t width = getVibratoWidth(*pos);
+            const uint8_t width = pos->hasProperty(Position::Vibrato)
+                                      ? options.myVibratoStrength
+                                      : options.myWideVibratoStrength;
 
             for (const ActivePlayer &player : active_players)
             {

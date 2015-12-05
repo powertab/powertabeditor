@@ -20,5 +20,4 @@ pte_library(
     HEADERS ${headers}
     DEPENDS
         ptescore
-        Qt5::Core
 )

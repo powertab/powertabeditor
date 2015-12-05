@@ -19,16 +19,26 @@
 
 #include <midi/midifile.h>
 
-#include <QtEndian>
-
 #include <array>
 #include <cstdint>
 #include <fstream>
 
 template <typename T>
+static T toBigEndian(T val)
+{
+    return htonl(val);
+}
+
+template <>
+uint8_t toBigEndian<uint8_t>(uint8_t val)
+{
+    return val;
+}
+
+template <typename T>
 static void write(std::ostream &os, T val)
 {
-    val = qToBigEndian(val);
+    val = toBigEndian(val);
     os.write(reinterpret_cast<const char *>(&val), sizeof(T));
 }
 
@@ -66,9 +76,13 @@ void MidiExporter::save(const std::string &filename, const Score &score)
     std::ofstream os(filename, std::ios::out | std::ios::binary);
     os.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
+    MidiFile::LoadOptions options;
+    options.myEnableMetronome = false;
+    options.myRecordPositionChanges = false;
+    // FIXME - need to initialize based on QSettings!
+
     MidiFile file;
-    file.load(score, /* metronome */ false,
-              /* record_posiiton_changes */ false);
+    file.load(score, options);
     writeHeader(os, file);
 
     for (const MidiEventList &track : file.getTracks())
