@@ -20,6 +20,7 @@
 #include <app/documentmanager.h>
 #include <app/pubsub/clickpubsub.h>
 #include <chrono>
+#include <future>
 #include <painters/caretpainter.h>
 #include <painters/systemrenderer.h>
 #include <QDebug>
@@ -28,7 +29,6 @@
 #include <QPrinter>
 #include <QScrollBar>
 #include <score/score.h>
-#include <thread>
 
 static const double SYSTEM_SPACING = 50;
 
@@ -66,33 +66,32 @@ void ScoreArea::renderDocument(const Document &document)
         myRenderedSystems.append(nullptr);
 
 #if 0
-    const int numThreads = std::thread::hardware_concurrency();
+    const int num_threads = std::thread::hardware_concurrency();
 #else
-    const int numThreads = 1;
+    const int num_threads = 1;
 #endif
+    std::vector<std::future<void>> tasks;
+    const int work_size = myRenderedSystems.size() / num_threads;
+    qDebug() << "Using" << num_threads << "worker thread(s)";
 
-    std::vector<std::thread> workers;
-    const int workSize = myRenderedSystems.size() / numThreads;
-    qDebug() << "Using" << numThreads << "worker thread(s)";
-
-    for (int i = 0; i < numThreads; ++i)
+    for (int i = 0; i < num_threads; ++i)
     {
-        const int left = i * workSize;
-        const int right = (i == numThreads - 1) ? myRenderedSystems.size()
-                                                : (i + 1) * workSize;
+        const int left = i * work_size;
+        const int right = (i == num_threads - 1) ? myRenderedSystems.size()
+                                                 : (i + 1) * work_size;
 
-        workers.emplace_back([&](int left, int right)
+        tasks.push_back(std::async(std::launch::async, [&](int left, int right)
         {
             for (int i = left; i < right; ++i)
             {
                 SystemRenderer render(this, score, document.getViewOptions());
                 myRenderedSystems[i] = render(score.getSystems()[i], i);
             }
-        }, left, right);
+        }, left, right));
     }
 
-    for (std::thread &worker : workers)
-        worker.join();
+    for (auto &&task : tasks)
+        task.get();
 
     int i = 0;
     double height = 0;
