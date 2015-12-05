@@ -58,9 +58,9 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
     ui->note4Button->setChecked(true);
 
     // Set the bpm range.
-    ui->bpmSpinBox->setMinimum(40);
-    ui->bpmSpinBox->setMaximum(300);
-    ui->bpmSpinBox->setValue(120);
+    ui->bpmSpinBox->setMinimum(TempoMarker::MIN_BEATS_PER_MINUTE);
+    ui->bpmSpinBox->setMaximum(TempoMarker::MAX_BEATS_PER_MINUTE);
+    ui->bpmSpinBox->setValue(TempoMarker::DEFAULT_BEATS_PER_MINUTE);
 
     // Prevent multiple listesso beat types from being selected at once.
     myListessoBeatTypes->addButton(ui->listessoNote2Button, TempoMarker::Half);

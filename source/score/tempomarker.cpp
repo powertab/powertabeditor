@@ -19,7 +19,7 @@
 
 #include <stdexcept>
 
-const int TempoMarker::MIN_BEATS_PER_MINUTE = 40;
+const int TempoMarker::MIN_BEATS_PER_MINUTE = 1;
 const int TempoMarker::MAX_BEATS_PER_MINUTE = 300;
 const int TempoMarker::DEFAULT_BEATS_PER_MINUTE = 120;
 
