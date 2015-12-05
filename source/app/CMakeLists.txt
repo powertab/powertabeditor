@@ -32,6 +32,7 @@ set( srcs
     recentfiles.cpp
     scorearea.cpp
     settings.cpp
+    settingsmanager.cpp
     tuningdictionary.cpp
     viewoptions.cpp
 )
@@ -46,6 +47,7 @@ set( headers
     recentfiles.h
     scorearea.h
     settings.h
+    settingsmanager.h
     tuningdictionary.h
     viewoptions.h
 
