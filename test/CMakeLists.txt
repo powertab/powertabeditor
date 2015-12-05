@@ -156,3 +156,8 @@ pte_copyfiles(
     FILES ${data_files}
 )
 add_dependencies( pte_tests pte_tests_data )
+
+add_custom_target( check
+    ${CMAKE_COMMAND} -E env CTEST_OUTPUT_ON_FAILURE=1
+    ${CMAKE_CTEST_COMMAND} --verbose
+)

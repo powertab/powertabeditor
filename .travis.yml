@@ -17,7 +17,7 @@ install:
 script:
   - if [ "$TRAVIS_OS_NAME" = "linux" ] ; then cmake -DCMAKE_PREFIX_PATH=/opt/qt52/lib/cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Debug . && make -j4 ; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Release . && make -j4 ; fi
-  - make test
+  - make check
 after_success:
   # Build the OS X installer.
   - if [ "$TRAVIS_OS_NAME" = "osx" ] ; then cd osx && ./createbundle.sh .. && cd .. ; fi

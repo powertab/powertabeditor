@@ -27,7 +27,8 @@ TEST_CASE("Score/TempoMarker/BeatsPerMinute", "")
     tempo.setBeatsPerMinute(140);
     REQUIRE(tempo.getBeatsPerMinute() == 140);
 
-    REQUIRE_THROWS(tempo.setBeatsPerMinute(20));
+    REQUIRE_THROWS(tempo.setBeatsPerMinute(0));
+    REQUIRE_THROWS(tempo.setBeatsPerMinute(-2));
     REQUIRE_THROWS(tempo.setBeatsPerMinute(400));
 }
 
