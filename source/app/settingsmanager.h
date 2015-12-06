@@ -23,6 +23,7 @@
 #include <boost/variant/recursive_variant.hpp>
 #include <boost/variant/variant.hpp>
 
+#include <iosfwd>
 #include <unordered_map>
 #include <vector>
 
@@ -57,6 +58,8 @@ public:
     /// Set the value associated with the key to a list of values.
     template <typename T>
     void setList(const std::string &key, const std::vector<T> &values);
+
+    void save(std::ostream &os) const;
 
 private:
     boost::optional<SettingValue> find(const std::string &key) const;

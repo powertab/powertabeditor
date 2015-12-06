@@ -20,12 +20,12 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-using SettingValue = SettingsManager::SettingValue;
-using SettingMap = SettingsManager::SettingMap;
+#include <rapidjson/prettywriter.h>
+#include <util/rapidjson_iostreams.h>
 
-SettingsManager::SettingsManager() : myTree(SettingMap())
-{
-}
+using SettingValue = SettingsManager::SettingValue;
+using SettingList = SettingsManager::SettingList;
+using SettingMap = SettingsManager::SettingMap;
 
 struct IsMap : public boost::static_visitor<bool>
 {
@@ -115,6 +115,65 @@ private:
     mutable size_t myIndex;
 };
 
+struct JSONSerializer : public boost::static_visitor<void>
+{
+    JSONSerializer(std::ostream &os) : myStream(os), myWriter(myStream)
+    {
+    }
+
+    void operator()(int x)
+    {
+        myWriter.Int(x);
+    }
+
+    void operator()(unsigned int x)
+    {
+        myWriter.Uint(x);
+    }
+
+    void operator()(const std::string &s)
+    {
+        myWriter.String(s.c_str(), s.length());
+    }
+
+    void operator()(const SettingList &list)
+    {
+        myWriter.StartArray();
+        for (auto &&value : list)
+            boost::apply_visitor(*this, value);
+        myWriter.EndArray();
+    }
+
+    void operator()(const SettingMap &map)
+    {
+        myWriter.StartObject();
+
+        // Output in sorted order.
+        std::vector<std::string> keys;
+        keys.reserve(map.size());
+        for (auto &&pair : map)
+            keys.push_back(pair.first);
+
+        std::sort(keys.begin(), keys.end());
+
+        for (auto &&key : keys)
+        {
+            myWriter.Key(key.c_str());
+            boost::apply_visitor(*this, map.at(key));
+        }
+
+        myWriter.EndObject();
+    }
+
+private:
+    Util::RapidJSON::OStreamWrapper myStream;
+    rapidjson::PrettyWriter<decltype(myStream)> myWriter;
+};
+
+SettingsManager::SettingsManager() : myTree(SettingMap())
+{
+}
+
 void SettingsManager::set(const std::string &key, const SettingValue &value)
 {
     Inserter inserter(key, value);
@@ -125,4 +184,10 @@ boost::optional<SettingValue> SettingsManager::find(
     const std::string &key) const
 {
     return boost::apply_visitor(Finder(key), myTree);
+}
+
+void SettingsManager::save(std::ostream &os) const
+{
+    JSONSerializer serializer(os);
+    boost::apply_visitor(serializer, myTree);
 }

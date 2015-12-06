@@ -24,105 +24,17 @@
 #include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include <bitset>
-#include <iosfwd>
 #include "fileversion.h"
 #include <map>
 #include <rapidjson/document.h>
 #include <rapidjson/prettywriter.h>
 #include <stack>
 #include <stdexcept>
+#include <util/rapidjson_iostreams.h>
 #include <vector>
 
 namespace ScoreUtils
 {
-/// Wrapper class to use a std::istream with RapidJSON.
-class IStreamWrapper
-{
-public:
-    typedef char Ch;
-    typedef std::istream::traits_type traits_type;
-
-    IStreamWrapper(std::istream &stream) : myStream(stream) {}
-
-    Ch Peek() const
-    {
-        // We cannot check eof() here due to a bug in earlier versions of
-        // libc++ (http://stackoverflow.com/a/14150918).
-        const char ch = myStream.peek();
-        return traits_type::eq_int_type(ch, traits_type::eof()) ? '\0' : ch;
-    }
-
-    Ch Take()
-    {
-        if (myStream.eof())
-            return '\0';
-        return static_cast<Ch>(myStream.get());
-    }
-
-    size_t Tell() const { return static_cast<size_t>(myStream.tellg()); }
-
-    Ch *PutBegin()
-    {
-        assert(false);
-        return 0;
-    }
-
-    void Put(Ch) { assert(false); }
-
-    void Flush() { assert(false); }
-
-    size_t PutEnd(Ch *)
-    {
-        assert(false);
-        return 0;
-    }
-
-private:
-    std::istream &myStream;
-};
-
-/// Wrapper class to use a std::ostream with RapidJSON.
-class OStreamWrapper
-{
-public:
-    typedef char Ch;
-
-    OStreamWrapper(std::ostream &stream) : myStream(stream) {}
-
-    Ch Peek() const
-    {
-        assert(false);
-        return '\0';
-    }
-
-    Ch Take() const
-    {
-        assert(false);
-        return '\0';
-    }
-
-    size_t Tell() const { return static_cast<size_t>(myStream.tellp()); }
-
-    Ch *PutBegin()
-    {
-        assert(false);
-        return 0;
-    }
-
-    void Put(Ch c) { myStream.put(c); }
-
-    void Flush() { myStream.flush(); }
-
-    size_t PutEnd(Ch *)
-    {
-        assert(false);
-        return 0;
-    }
-
-private:
-    std::ostream &myStream;
-};
-
 class InputArchive
 {
 public:
@@ -240,7 +152,7 @@ private:
         myIterators.pop();
     }
 
-    IStreamWrapper myStream;
+    Util::RapidJSON::IStreamWrapper myStream;
     rapidjson::Document myDocument;
     FileVersion myVersion;
 
@@ -313,8 +225,8 @@ private:
         myStream.EndObject();
     }
 
-    OStreamWrapper myWriteStream;
-    rapidjson::PrettyWriter<OStreamWrapper> myStream;
+    Util::RapidJSON::OStreamWrapper myWriteStream;
+    rapidjson::PrettyWriter<Util::RapidJSON::OStreamWrapper> myStream;
     const FileVersion myVersion;
 };
 

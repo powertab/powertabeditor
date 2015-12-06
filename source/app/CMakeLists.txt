@@ -76,6 +76,7 @@ pte_library(
         pteformats
         ptepainters
         ptewidgets
+        pteutil
         Qt5::Widgets
         Qt5::PrintSupport
         Qt5::Concurrent

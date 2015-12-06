@@ -76,3 +76,36 @@ TEST_CASE("App/SettingsManager/Paths")
     REQUIRE(settings.get<std::string>("foo/baz") == "asdf");
     REQUIRE_THROWS(settings.get("foo", -1));
 }
+
+TEST_CASE("App/SettingsManager/JSON")
+{
+    SettingsManager settings;
+
+    settings.set("key_a", -123);
+    settings.setList("key_b", std::vector<int>({1, 2, 3}));
+    settings.setList(
+        "key_c", std::vector<std::string>({ "string1", "string2", "string3" }));
+    settings.set("parent/child_a", 234);
+    settings.set("parent/child_b", "asdf");
+
+    std::ostringstream output;
+    settings.save(output);
+    REQUIRE(output.str() ==
+R"({
+    "key_a": -123,
+    "key_b": [
+        1,
+        2,
+        3
+    ],
+    "key_c": [
+        "string1",
+        "string2",
+        "string3"
+    ],
+    "parent": {
+        "child_a": 234,
+        "child_b": "asdf"
+    }
+})");
+}

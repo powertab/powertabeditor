@@ -84,5 +84,6 @@ pte_library(
         boost
         boost_date_time
         boost_regex
+        pteutil
         rapidjson
 )
