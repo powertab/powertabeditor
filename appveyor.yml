@@ -1,12 +1,12 @@
 version: 1.0.{build}
 
-os: unstable
+os: Visual Studio 2015
 
 environment:
-  BOOST_ROOT: C:\Libraries\boost
-  GENERATOR: "Visual Studio 12 Win64"
-  QT_DIR: C:\Qt\5.4\msvc2013_64_opengl
-  BOOST_LIBRARYDIR: C:\Libraries\boost\lib64-msvc-12.0
+  BOOST_ROOT: C:\Libraries\boost_1_59_0
+  GENERATOR: "Visual Studio 14 Win64"
+  QT_DIR: C:\Qt\5.5\msvc2015_64
+  BOOST_LIBRARYDIR: C:\Libraries\boost_1_59_0\lib64-msvc-14.0
 
 configuration:
   - Release
@@ -19,6 +19,7 @@ install:
   - git submodule update
 
 before_build:
+  - cmd: dir C:\Qt
   - cmd: dir %BOOST_ROOT%
   - cmd: dir %BOOST_LIBRARYDIR%
 
