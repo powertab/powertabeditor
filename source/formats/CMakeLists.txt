@@ -108,9 +108,9 @@ set( headers
 )
 
 if ( PLATFORM_WIN )
-    set( zlib_depends boost_zlib )
+    set( platform_depends boost_zlib Ws2_32 )
 else ()
-    set( zlib_depends )
+    set( platform_depends )
 endif ()
 
 pte_library(
@@ -120,7 +120,7 @@ pte_library(
     DEPENDS
         boost_date_time
         boost_iostreams
-        ${zlib_depends}
+        ${platform_depends}
         ptemidi
         ptescore
         pugixml

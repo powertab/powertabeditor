@@ -23,6 +23,13 @@
 #include <cstdint>
 #include <fstream>
 
+// For htonl.
+#ifdef _WIN32
+#include <WinSock2.h>
+#else
+#include <arpa/inet.h>
+#endif
+
 template <typename T>
 static T toBigEndian(T val)
 {
