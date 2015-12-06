@@ -816,7 +816,7 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     int8_t tremolo = stream.read<uint8_t>(); // tremolo
 
     if (stream.version > Version4)
-        std::cerr << stream.readString() << std::endl; // tempo name???
+        stream.readString(); // TODO - tempo name?
 
     // New tempo.
     int32_t tempo = stream.read<int32_t>();
@@ -860,8 +860,9 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
         stream.skip(1);
         if (stream.version == Version5_1)
         {
-            std::cerr << stream.readString() << std::endl;
-            std::cerr << stream.readString() << std::endl;
+            // TODO - determine what these strings represent.
+            stream.readString();
+            stream.readString();
         }
     }
 }
