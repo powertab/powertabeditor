@@ -25,6 +25,7 @@
 
 #include <iosfwd>
 #include <unordered_map>
+#include <string>
 #include <vector>
 
 class SettingsTree
