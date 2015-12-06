@@ -27,7 +27,7 @@ TEST_CASE("Actions/EditStaff", "")
     Score score;
 
     PowerTabImporter importer;
-    importer.load(AppInfo::getFullPath("data/test_editstaff.pt2"), score);
+    importer.load(AppInfo::getAbsolutePath("data/test_editstaff.pt2"), score);
 
     ScoreLocation location(score, 0, 0);
     EditStaff action(location, Staff::TrebleClef, 5);

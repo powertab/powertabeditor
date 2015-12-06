@@ -94,7 +94,7 @@ TEST_CASE("Util/SettingsTree/JSON")
     settings.save(output);
 
     std::ifstream expected_file(
-        AppInfo::getFullPath("data/test_settingstree_expected.json"));
+        AppInfo::getAbsolutePath("data/test_settingstree_expected.json"));
     std::stringstream expected;
     expected << expected_file.rdbuf();
 

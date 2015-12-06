@@ -17,20 +17,16 @@
 
 #include <catch.hpp>
 
+#include <app/appinfo.h>
 #include <formats/powertab/powertabimporter.h>
 #include <formats/powertab_old/powertaboldimporter.h>
 #include <formats/powertab_old/powertabdocument/powertabdocument.h>
-#include <QCoreApplication>
 #include <score/score.h>
 
 static void loadTest(FileFormatImporter &importer, const char *filename,
                      Score &score)
 {
-    QString path = QCoreApplication::applicationDirPath();
-    path += "/";
-    path += filename;
-
-    importer.load(path.toStdString(), score);
+    importer.load(AppInfo::getAbsolutePath(filename), score);
 }
 
 TEST_CASE("Formats/PowerTabOldImport/SongHeader", "")

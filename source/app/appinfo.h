@@ -33,7 +33,7 @@ namespace AppInfo
 
     /// Given a path relative to the location of the executable, return the full
     /// path.
-    std::string getFullPath(const char *relative_path);
+    std::string getAbsolutePath(const char *relative_path);
 }
 
 #endif

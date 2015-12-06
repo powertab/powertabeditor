@@ -17,8 +17,8 @@
 
 #include "tuningdictionary.h"
 
+#include <app/appinfo.h>
 #include <fstream>
-#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QMutexLocker>
@@ -118,7 +118,7 @@ void TuningDictionary::removeTuning(const Tuning &tuning)
 QStringList TuningDictionary::availablePaths()
 {
     QStringList paths = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
-    paths.append(QCoreApplication::applicationDirPath() + "/data");
+    paths.append(QString::fromStdString(AppInfo::getAbsolutePath("data")));
 
     for (QString &path : paths)
         path.append("/tunings.json");

@@ -17,18 +17,14 @@
 
 #include <catch.hpp>
 
+#include <app/appinfo.h>
 #include <formats/guitar_pro/guitarproimporter.h>
-#include <QCoreApplication>
 #include <score/score.h>
 
 static void loadTest(GuitarProImporter &importer, const char *filename,
                      Score &score)
 {
-    QString path = QCoreApplication::applicationDirPath();
-    path += "/";
-    path += filename;
-
-    importer.load(path.toStdString(), score);
+    importer.load(AppInfo::getAbsolutePath(filename), score);
 }
 
 TEST_CASE("Formats/GuitarPro/Barlines", "")

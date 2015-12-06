@@ -17,24 +17,15 @@
 
 #include <catch.hpp>
 
+#include <app/appinfo.h>
 #include <formats/gpx/gpximporter.h>
-#include <QCoreApplication>
 #include <score/score.h>
-
-static void loadTest(GpxImporter &importer, const char *filename, Score &score)
-{
-    QString path = QCoreApplication::applicationDirPath();
-    path += "/";
-    path += filename;
-
-    importer.load(path.toStdString(), score);
-}
 
 TEST_CASE("Formats/GpxImport/Text", "")
 {
     Score score;
     GpxImporter importer;
-    loadTest(importer, "data/text.gpx", score);
+    importer.load(AppInfo::getAbsolutePath("data/text.gpx"), score);
 
     const System &system = score.getSystems()[0];
 

@@ -28,7 +28,7 @@ TEST_CASE("Score/ViewFilter/FilterRule", "")
     Score score;
 
     PowerTabImporter importer;
-    importer.load(AppInfo::getFullPath("data/test_viewfilter.pt2"), score);
+    importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
 
     FilterRule rule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7);
     REQUIRE(!rule.accept(score, 0, 0));
@@ -46,7 +46,7 @@ TEST_CASE("Score/ViewFilter/ViewFilter", "")
     Score score;
 
     PowerTabImporter importer;
-    importer.load(AppInfo::getFullPath("data/test_viewfilter.pt2"), score);
+    importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
 
     ViewFilter filter;
     filter.addRule(FilterRule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7));

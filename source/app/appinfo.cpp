@@ -35,7 +35,7 @@ namespace AppInfo
     const char *APPLICATION_ID = "powertabeditor";
 #endif
 
-    std::string getFullPath(const char *relative_path)
+    std::string getAbsolutePath(const char *relative_path)
     {
         std::string path = QCoreApplication::applicationDirPath().toStdString();
         path += "/";
