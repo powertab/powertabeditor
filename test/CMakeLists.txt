@@ -135,6 +135,8 @@ set( data_files
     formats/gpx/data/text.gpx
 
     score/data/test_viewfilter.pt2
+    
+    util/test_settingstree_expected.json
 )
 
 pte_executable(

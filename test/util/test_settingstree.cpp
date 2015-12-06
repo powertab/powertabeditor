@@ -17,6 +17,8 @@
   
 #include <catch.hpp>
 
+#include <app/appinfo.h>
+#include <fstream>
 #include <util/settingstree.h>
 
 static const std::string theKey = "foo/bar";
@@ -90,22 +92,11 @@ TEST_CASE("Util/SettingsTree/JSON")
 
     std::ostringstream output;
     settings.save(output);
-    REQUIRE(output.str() ==
-R"({
-    "key_a": -123,
-    "key_b": [
-        1,
-        2,
-        3
-    ],
-    "key_c": [
-        "string1",
-        "string2",
-        "string3"
-    ],
-    "parent": {
-        "child_a": 234,
-        "child_b": "asdf"
-    }
-})");
+
+    std::ifstream expected_file(
+        AppInfo::getFullPath("data/test_settingstree_expected.json"));
+    std::stringstream expected;
+    expected << expected_file.rdbuf();
+
+    REQUIRE(output.str() == expected.str());
 }

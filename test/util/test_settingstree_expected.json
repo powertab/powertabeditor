@@ -1,0 +1,17 @@
+{
+    "key_a": -123,
+    "key_b": [
+        1,
+        2,
+        3
+    ],
+    "key_c": [
+        "string1",
+        "string2",
+        "string3"
+    ],
+    "parent": {
+        "child_a": 234,
+        "child_b": "asdf"
+    }
+}
