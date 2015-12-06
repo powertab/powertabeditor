@@ -17,13 +17,13 @@
   
 #include <catch.hpp>
 
-#include <app/settingsmanager.h>
+#include <util/settingstree.h>
 
 static const std::string theKey = "foo/bar";
 
-TEST_CASE("App/SettingsManager/Int")
+TEST_CASE("Util/SettingsTree/Int")
 {
-    SettingsManager settings;
+    SettingsTree settings;
 
     REQUIRE(settings.get(theKey, -1) == -1);
     settings.set(theKey, 1);
@@ -33,18 +33,18 @@ TEST_CASE("App/SettingsManager/Int")
     REQUIRE_THROWS(settings.get<std::string>(theKey));
 }
 
-TEST_CASE("App/SettingsManager/String")
+TEST_CASE("Util/SettingsTree/String")
 {
-    SettingsManager settings;
+    SettingsTree settings;
 
     settings.set(theKey, "asdf");
     REQUIRE(settings.get<std::string>(theKey) == "asdf");
     REQUIRE_THROWS(settings.get<int>(theKey, -1));
 }
 
-TEST_CASE("App/SettingsManager/StringList")
+TEST_CASE("Util/SettingsTree/StringList")
 {
-    SettingsManager settings;
+    SettingsTree settings;
 
     std::vector<std::string> strings = {"abc", "def"};
 
@@ -54,9 +54,9 @@ TEST_CASE("App/SettingsManager/StringList")
     REQUIRE(settings.getList<std::string>(theKey) == strings);
 }
 
-TEST_CASE("App/SettingsManager/IntList")
+TEST_CASE("Util/SettingsTree/IntList")
 {
-    SettingsManager settings;
+    SettingsTree settings;
 
     std::vector<int> vals = {1, 2, 3};
     settings.setList(theKey, vals);
@@ -64,9 +64,9 @@ TEST_CASE("App/SettingsManager/IntList")
     REQUIRE(settings.getList<int>(theKey) == vals);
 }
 
-TEST_CASE("App/SettingsManager/Paths")
+TEST_CASE("Util/SettingsTree/Paths")
 {
-    SettingsManager settings;
+    SettingsTree settings;
 
     settings.set("foo", 1);
     REQUIRE(settings.get("foo", -1) == 1);
@@ -77,9 +77,9 @@ TEST_CASE("App/SettingsManager/Paths")
     REQUIRE_THROWS(settings.get("foo", -1));
 }
 
-TEST_CASE("App/SettingsManager/JSON")
+TEST_CASE("Util/SettingsTree/JSON")
 {
-    SettingsManager settings;
+    SettingsTree settings;
 
     settings.set("key_a", -123);
     settings.setList("key_b", std::vector<int>({1, 2, 3}));

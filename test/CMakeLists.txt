@@ -61,7 +61,6 @@ set( srcs
     actions/test_removetrill.cpp
 
     app/test_documentmanager.cpp
-    app/test_settingsmanager.cpp
 
     formats/test_fileformat.cpp
     formats/gpx/test_gpx.cpp
@@ -93,6 +92,8 @@ set( srcs
     score/test_utils.cpp
     score/test_viewfilter.cpp
     score/test_voiceutils.cpp
+
+    util/test_settingstree.cpp
 )
 
 set( headers
