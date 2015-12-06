@@ -41,6 +41,8 @@ GoToBarlineDialog::GoToBarlineDialog(QWidget *parent, const Score &score)
     ui->barlineSpinBox->setValue(1);
     ui->barlineSpinBox->setMinimum(1);
     ui->barlineSpinBox->setMaximum(static_cast<int>(myLocations.size()));
+
+    ui->barlineSpinBox->selectAll();
 }
 
 GoToBarlineDialog::~GoToBarlineDialog()
