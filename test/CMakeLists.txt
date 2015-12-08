@@ -140,6 +140,8 @@ pte_executable(
     NAME pte_tests
     SOURCES ${srcs}
     HEADERS ${headers}
+    PCH precompiled.h
+    PCH_EXCLUDE test_main.cpp
     DEPENDS
         Catch
         pteapp

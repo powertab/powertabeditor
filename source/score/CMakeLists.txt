@@ -80,6 +80,7 @@ pte_library(
     NAME ptescore
     SOURCES ${srcs}
     HEADERS ${headers}
+    PCH precompiled.h
     DEPENDS
         boost
         boost_date_time

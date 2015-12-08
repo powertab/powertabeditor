@@ -18,7 +18,7 @@
 #ifndef SCORE_UTILS_REPEATINDEXER_H
 #define SCORE_UTILS_REPEATINDEXER_H
 
-#include <boost/optional/optional.hpp>
+#include <boost/optional.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <map>
 #include <score/systemlocation.h>

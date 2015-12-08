@@ -18,7 +18,7 @@
 #ifndef SCORE_BARLINE_H
 #define SCORE_BARLINE_H
 
-#include <boost/optional/optional.hpp>
+#include <boost/optional.hpp>
 #include "fileversion.h"
 #include "keysignature.h"
 #include "rehearsalsign.h"

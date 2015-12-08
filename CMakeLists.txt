@@ -15,6 +15,7 @@ include( PTE_CompilerFlags )
 include( PTE_Paths )
 include( PTE_ThirdParty )
 include( PTE_CopyFiles )
+include( PTE_PrecompiledHeader )
 include( PTE_Executable )
 include( PTE_Library )
 

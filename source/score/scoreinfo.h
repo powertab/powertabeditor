@@ -19,7 +19,7 @@
 #define SCORE_SCOREINFO_H
 
 #include <boost/date_time/gregorian/greg_date.hpp>
-#include <boost/optional/optional.hpp>
+#include <boost/optional.hpp>
 #include "fileversion.h"
 #include <string>
 

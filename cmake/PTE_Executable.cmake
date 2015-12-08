@@ -1,7 +1,12 @@
 include( CMakeParseArguments )
 
 function( pte_executable )
-    cmake_parse_arguments( PTE_EXE "CONSOLE;INSTALL" "NAME" "SOURCES;HEADERS;RESOURCES;DEPENDS" ${ARGN} )
+    cmake_parse_arguments( PTE_EXE
+        "CONSOLE;INSTALL"
+        "NAME;PCH"
+        "SOURCES;HEADERS;RESOURCES;DEPENDS;PCH_EXCLUDE"
+        ${ARGN}
+    )
 
     set( generated_files )
     if ( PTE_EXE_RESOURCES )
@@ -67,6 +72,15 @@ function( pte_executable )
                 DESTINATION ${install_dir}
             )
         endif ()
+    endif ()
+    
+    # Set up precompiled header.
+    if ( PTE_EXE_PCH )
+        pte_precompiled_header(
+            TARGET ${PTE_EXE_NAME}
+            HEADER ${PTE_EXE_PCH}
+            EXCLUDE_FILES ${PTE_EXE_PCH_EXCLUDE}
+        )
     endif ()
 endfunction ()
 
