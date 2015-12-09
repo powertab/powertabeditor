@@ -1,7 +1,11 @@
 include( CMakeParseArguments )
 
 function( pte_library )
-    cmake_parse_arguments( PTE_LIB "" "NAME" "SOURCES;HEADERS;MOC_HEADERS;FORMS;DEPENDS" ${ARGN} )
+    cmake_parse_arguments( PTE_LIB ""
+        "NAME;PCH"
+        "SOURCES;HEADERS;MOC_HEADERS;FORMS;DEPENDS;PCH_EXCLUDE"
+        ${ARGN}
+    )
 
     set( generated_headers )
     set( moc_files )
@@ -30,4 +34,13 @@ function( pte_library )
     set_target_properties( ${PTE_LIB_NAME} PROPERTIES
         FOLDER libraries
     )
+    
+    # Set up precompiled header.
+    if ( PTE_LIB_PCH )
+        pte_precompiled_header(
+            TARGET ${PTE_LIB_NAME}
+            HEADER ${PTE_LIB_PCH}
+            EXCLUDE_FILES ${PTE_LIB_PCH_EXCLUDE}
+        )
+    endif ()
 endfunction ()

@@ -308,6 +308,9 @@ static int importNotes(
         dest_loc.setStaffIndex(i + staff_offset);
         src_loc.setStaffIndex(i);
 
+        assert(src_loc.getStaff().getStringCount() ==
+               dest_loc.getStaff().getStringCount());
+
         // Import dynamics, but don't repeatedly do so when e.g. a multi-bar
         // rest was expanded.
         if (!is_expanded_bar)
@@ -540,6 +543,54 @@ static void hideSignaturesAndRehearsalSign(Barline &bar)
     bar.setTimeSignature(time);
 }
 
+/// After moving to the next bar, inspects the source system to determine if it
+/// is significantly different from the current system in the destination score
+/// (e.g. some of the staves have different numbers of strings and/or are
+/// reordered). In such cases it is preferable to just move to a new system in
+/// the destination score.
+static bool areStavesIncompatible(const ScoreLocation &dest_loc,
+                                  Caret &src_caret,
+                                  ExpandedBarList::const_iterator src_bar,
+                                  ExpandedBarList::const_iterator end_src_bar,
+                                  int staff_begin, int staff_end)
+{
+    if (src_bar == end_src_bar)
+        return false;
+
+    src_caret.moveToSystem(src_bar->getLocation().getSystem(), false);
+    src_caret.moveToPosition(src_bar->getLocation().getPosition());
+    const ScoreLocation &src_loc = src_caret.getLocation();
+
+    const System &dest_system = dest_loc.getSystem();
+    const System &src_system = src_loc.getSystem();
+
+    for (int i = staff_begin; i < staff_end; ++i)
+    {
+        if ((i - staff_begin) < src_system.getStaves().size() &&
+            dest_system.getStaves()[i].getStringCount() !=
+                src_system.getStaves()[i - staff_begin].getStringCount())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static bool areStavesIncompatible(
+    const ScoreLocation &dest_loc, Caret &guitar_caret, Caret &bass_caret,
+    ExpandedBarList::const_iterator guitar_bar,
+    ExpandedBarList::const_iterator end_guitar_bar,
+    ExpandedBarList::const_iterator bass_bar,
+    ExpandedBarList::const_iterator end_bass_bar, int num_guitar_staves)
+{
+    return areStavesIncompatible(dest_loc, guitar_caret, guitar_bar,
+                                 end_guitar_bar, 0, num_guitar_staves) ||
+           areStavesIncompatible(dest_loc, bass_caret, bass_bar, end_bass_bar,
+                                 num_guitar_staves,
+                                 dest_loc.getSystem().getStaves().size());
+}
+
 static void insertNewSystem(Score &score)
 {
     // Initially move the end bar very far away - it will be set to the correct
@@ -650,10 +701,15 @@ static void combineScores(Score &dest_score, Score &guitar_score,
         const int next_bar_pos =
             dest_caret.getLocation().getPositionIndex() + bar_length;
 
+        bool need_new_system = next_bar_pos > thePositionLimit;
+        need_new_system |= areStavesIncompatible(
+            dest_loc, guitar_caret, bass_caret, guitar_bar, end_guitar_bar,
+            bass_bar, end_bass_bar, num_guitar_staves);
+
         const bool finishing =
             (guitar_bar == end_guitar_bar && bass_bar == end_bass_bar);
 
-        if (finishing || next_bar_pos > thePositionLimit)
+        if (finishing || need_new_system)
         {
             Barline &end_bar = dest_system.getBarlines().back();
             end_bar.setPosition(next_bar_pos);
