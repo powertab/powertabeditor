@@ -61,6 +61,7 @@ set( srcs
     actions/test_removetrill.cpp
 
     app/test_documentmanager.cpp
+    app/test_settingsmanager.cpp
 
     formats/test_fileformat.cpp
     formats/gpx/test_gpx.cpp

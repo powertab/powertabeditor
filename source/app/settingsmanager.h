@@ -18,16 +18,95 @@
 #ifndef APP_SETTINGSMANAGER_H
 #define APP_SETTINGSMANAGER_H
 
+#include <boost/signals2/signal.hpp>
+#include <mutex>
 #include <util/settingstree.h>
 
 class SettingsManager
 {
 public:
+    typedef boost::signals2::signal<void()> SettingsChangedSignal;
+
+    /// Handle to ensure the settings aren't modified while being accessed by
+    /// another thread (e.g. the MIDI thread).
+    template <typename T>
+    class Handle
+    {
+    public:
+        Handle(const Handle &) = delete;
+        Handle(Handle &&) = default;
+        Handle& operator=(const Handle &) = delete;
+
+        T *operator->() const
+        {
+            return &mySettings;
+        }
+
+    private:
+        Handle(T &settings, std::mutex &mutex)
+            : mySettings(settings), myLock(mutex)
+        {
+        }
+
+        friend class SettingsManager;
+
+        T &mySettings;
+        std::unique_lock<std::mutex> myLock;
+    };
+
+    using ReadHandle = Handle<const SettingsTree>;
+
+    class WriteHandle : public Handle<SettingsTree>
+    {
+    public:
+        WriteHandle(SettingsManager &manager)
+            : Handle(manager.mySettings, manager.myMutex),
+              mySignal(manager.mySettingsChangedSignal)
+        {
+        }
+
+        ~WriteHandle()
+        {
+            mySignal();
+        }
+
+        WriteHandle(WriteHandle &&) = default;
+
+    private:
+        SettingsChangedSignal &mySignal;
+    };
+
+    SettingsManager() = default;
     SettingsManager(const SettingsManager &) = delete;
     SettingsManager &operator=(const SettingsManager &) = delete;
 
+    /// Obtain read access to the settings.
+    ReadHandle getReadHandle() const
+    {
+        return ReadHandle(mySettings, myMutex);
+    }
+
+    /// Obtain write access to the settings.
+    WriteHandle getWriteHandle()
+    {
+        return WriteHandle(*this);
+    }
+
+    /// Register a callback when a setting is changed.
+    boost::signals2::connection subscribeToChanges(
+        const SettingsChangedSignal::slot_type &slot)
+    {
+        return mySettingsChangedSignal.connect(slot);
+    }
+
 private:
+    template <typename T>
+    friend class Handle;
+
     SettingsTree mySettings;
+    mutable std::mutex myMutex;
+
+    SettingsChangedSignal mySettingsChangedSignal;
 };
 
 #endif
