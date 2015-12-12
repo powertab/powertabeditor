@@ -31,7 +31,7 @@ static boost::filesystem::path fromQString(const QString &str)
 
 namespace Paths
 {
-path Paths::getConfigDir()
+path getConfigDir()
 {
     return fromQString(
         QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
