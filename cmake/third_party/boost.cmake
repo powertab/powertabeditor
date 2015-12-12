@@ -1,8 +1,10 @@
 set( _boost_libs
     date_time
+    filesystem
     iostreams
     program_options
     regex
+    system
 )
 
 if ( PLATFORM_WIN )
@@ -60,5 +62,12 @@ endfunction ()
 foreach ( lib ${_boost_libs} )
     pte_boost_library( ${lib} )
 endforeach ()
+
+# boost_filesystem depends on boost_system
+set_target_properties(
+    boost_filesystem
+    PROPERTIES 
+    INTERFACE_LINK_LIBRARIES boost_system
+)
 
 unset( _boost_libs )

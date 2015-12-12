@@ -76,6 +76,9 @@
       <Component Id="boost_date_time" Guid="A7CA0E64-5F96-4457-8084-7AA2697AB552">
         <File Source="$(var.BinDir)/boost_date_time-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
+      <Component Id="boost_filesystem" Guid="08C4B62D-6FB6-4647-AB9A-7CF2C927D749">
+        <File Source="$(var.BinDir)/boost_filesystem-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
       <Component Id="boost_iostreams" Guid="D7CC00A3-D0F4-46EB-8C52-3C8611078DE1">
         <File Source="$(var.BinDir)/boost_iostreams-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
@@ -84,6 +87,9 @@
       </Component>
       <Component Id="boost_regex" Guid="4DE196DC-2078-4B0A-AA3B-B449E0782E88">
         <File Source="$(var.BinDir)/boost_regex-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      </Component>
+      <Component Id="boost_system" Guid="08237373-A16F-4101-9F53-E4772AD875BB">
+        <File Source="$(var.BinDir)/boost_system-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="boost_zlib" Guid="D942287A-F31F-4DDD-8F36-6E03F42DB131">
         <File Source="$(var.BinDir)/boost_zlib-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />

@@ -15,22 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "settingsmanager.h"
+#include <boost/filesystem/path.hpp>
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
+class QString;
 
-static const char *theSettingsFilename = "settings.json";
+namespace Paths {
+    using path = boost::filesystem::path;
 
-void SettingsManager::save(const boost::filesystem::path &dir) const
-{
-    // Ensure the directory exists.
-    boost::filesystem::create_directories(dir);
-
-    // Save the settings to disk.
-    auto path = dir / theSettingsFilename;
-    boost::filesystem::ofstream os(path);
-    os.exceptions(std::ios::failbit | std::ios::badbit);
-
-    mySettings.save(os);
+    /// Return a path to a directory where config files should be written to.
+    path getConfigDir();
 }

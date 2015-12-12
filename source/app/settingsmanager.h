@@ -18,6 +18,7 @@
 #ifndef APP_SETTINGSMANAGER_H
 #define APP_SETTINGSMANAGER_H
 
+#include <boost/filesystem/path.hpp>
 #include <boost/signals2/signal.hpp>
 #include <mutex>
 #include <util/settingstree.h>
@@ -98,6 +99,9 @@ public:
     {
         return mySettingsChangedSignal.connect(slot);
     }
+
+    /// Save the settings to the specified directory.
+    void save(const boost::filesystem::path &dir) const;
 
 private:
     template <typename T>

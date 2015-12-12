@@ -28,6 +28,7 @@ set( srcs
     clipboard.cpp
     command.cpp
     documentmanager.cpp
+    paths.cpp
     powertabeditor.cpp
     recentfiles.cpp
     scorearea.cpp
@@ -43,6 +44,7 @@ set( headers
     clipboard.h
     command.h
     documentmanager.h
+    paths.h
     powertabeditor.h
     recentfiles.h
     scorearea.h
@@ -77,6 +79,7 @@ pte_library(
         ptepainters
         ptewidgets
         pteutil
+        boost_filesystem
         Qt5::Widgets
         Qt5::PrintSupport
         Qt5::Concurrent

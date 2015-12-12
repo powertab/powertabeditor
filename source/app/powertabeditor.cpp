@@ -76,11 +76,13 @@
 #include <app/clipboard.h>
 #include <app/command.h>
 #include <app/documentmanager.h>
+#include <app/paths.h>
 #include <app/pubsub/clickpubsub.h>
 #include <app/pubsub/settingspubsub.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
+#include <app/settingsmanager.h>
 #include <app/tuningdictionary.h>
 
 #include <audio/midiplayer.h>
@@ -149,6 +151,7 @@ PowerTabEditor::PowerTabEditor()
       myFileFormatManager(new FileFormatManager()),
       myUndoManager(new UndoManager()),
       myTuningDictionary(new TuningDictionary()),
+      mySettingsManager(new SettingsManager()),
       mySettingsPubSub(std::make_shared<SettingsPubSub>()),
       myIsPlaying(false),
       myPreviousDirectory(
@@ -1694,6 +1697,8 @@ void PowerTabEditor::closeEvent(QCloseEvent *event)
 
     QSettings settings;
     settings.setValue(Settings::APP_WINDOW_STATE, saveState());
+
+    mySettingsManager->save(Paths::getConfigDir());
 
     QMainWindow::closeEvent(event);
 }

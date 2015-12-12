@@ -15,22 +15,25 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "settingsmanager.h"
+#include "paths.h"
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
+#include <QString>
+#include <QStandardPaths>
 
-static const char *theSettingsFilename = "settings.json";
+static boost::filesystem::detail::utf8_codecvt_facet theUTF8;
 
-void SettingsManager::save(const boost::filesystem::path &dir) const
+/// Convert a QString to a boost::filesystem::path.
+static boost::filesystem::path fromQString(const QString &str)
 {
-    // Ensure the directory exists.
-    boost::filesystem::create_directories(dir);
+    return boost::filesystem::path(str.toStdString(), theUTF8);
+}
 
-    // Save the settings to disk.
-    auto path = dir / theSettingsFilename;
-    boost::filesystem::ofstream os(path);
-    os.exceptions(std::ios::failbit | std::ios::badbit);
-
-    mySettings.save(os);
+namespace Paths
+{
+path Paths::getConfigDir()
+{
+    return fromQString(
+        QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+}
 }
