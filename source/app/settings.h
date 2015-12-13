@@ -20,16 +20,17 @@
 
 #include <util/settingstree.h>
 
-#include <QMetaType>
-#include <score/tuning.h>
+class QByteArray;
+class Tuning;
 
 /// Contains constants for keys used with the QSettings class,
 /// as well as default values for those settings where appropriate
 namespace Settings
 {
     extern const Setting<std::string> PreviousDirectory;
-    extern const Setting<std::string> WindowState;
+    extern const Setting<QByteArray> WindowState;
     extern const Setting<std::vector<std::string>> RecentFiles;
+    extern const Setting<bool> OpenFilesInNewWindow;
 
     extern const char *MIDI_PREFERRED_API;
     extern const int MIDI_PREFERRED_API_DEFAULT;
@@ -64,21 +65,23 @@ namespace Settings
     extern const char *MIDI_METRONOME_COUNTIN_VOLUME;
     extern const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT;
 
-    extern const Setting<bool> OpenFilesInNewWindow;
-
-    extern const char *DEFAULT_INSTRUMENT_NAME;
-    extern const char *DEFAULT_INSTRUMENT_NAME_DEFAULT;
-
-    extern const char *DEFAULT_INSTRUMENT_PRESET;
-    extern const int DEFAULT_INSTRUMENT_PRESET_DEFAULT;
-
-    extern const char *DEFAULT_INSTRUMENT_TUNING;
-    extern const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT;
+    extern const Setting<std::string> DefaultInstrumentName;
+    extern const Setting<int> DefaultInstrumentPreset;
+    extern const Setting<Tuning> DefaultTuning;
 }
 
-Q_DECLARE_METATYPE(Tuning);
+template <>
+struct SettingValueConverter<Tuning>
+{
+    static Tuning from(const SettingsTree::SettingValue &v);
+    static SettingsTree::SettingValue to(const Tuning &t);
+};
 
-QDataStream &operator<<(QDataStream &out, const Tuning &tuning);
-QDataStream &operator>>(QDataStream &in, Tuning &tuning);
+template <>
+struct SettingValueConverter<QByteArray>
+{
+    static QByteArray from(const SettingsTree::SettingValue &v);
+    static SettingsTree::SettingValue to(const QByteArray &array);
+};
 
 #endif

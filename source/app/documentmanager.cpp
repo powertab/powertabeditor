@@ -17,10 +17,8 @@
   
 #include "documentmanager.h"
 
-#include <QSettings>
-#include <QString>
-
 #include <app/settings.h>
+#include <app/settingsmanager.h>
 
 DocumentManager::DocumentManager()
 {
@@ -33,27 +31,24 @@ Document &DocumentManager::addDocument()
     return *myDocumentList.back();
 }
 
-Document &DocumentManager::addDefaultDocument()
+Document &DocumentManager::addDefaultDocument(
+    const SettingsManager &settings_manager)
 {
     Document &doc = addDocument();
     Score &score = doc.getScore();
-    QSettings settings;
+
+    auto settings = settings_manager.getReadHandle();
 
     // Add an initial player and instrument.
     Player player;
     player.setDescription("Player 1");
-    player.setTuning(settings.value(
-            Settings::DEFAULT_INSTRUMENT_TUNING,
-            QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)
-        ).value<Tuning>());
+    player.setTuning(settings->get(Settings::DefaultTuning));
     score.insertPlayer(player);
 
     Instrument instrument;
-    instrument.setDescription(settings.value(
-            Settings::DEFAULT_INSTRUMENT_NAME,
-            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString() + " 1");
-    instrument.setMidiPreset(settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
-            Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
+    instrument.setDescription(settings->get(Settings::DefaultInstrumentName) +
+                              " 1");
+    instrument.setMidiPreset(settings->get(Settings::DefaultInstrumentPreset));
     score.insertInstrument(instrument);
 
     ScoreUtils::addStandardFilters(score);
@@ -108,7 +103,7 @@ void DocumentManager::setCurrentDocumentIndex(int index)
 {
     if (index < 0)
     {
-        Q_ASSERT(myDocumentList.empty());
+        assert(myDocumentList.empty());
         myCurrentIndex.reset();
     }
     else

@@ -80,7 +80,8 @@ public:
     }
 
     /// Set the value associated with the key.
-    void set(const std::string &key, const SettingValue &value);
+    template <typename T>
+    void set(const std::string &key, const T &value);
 
     /// Since the implicit conversion from const char * to bool takes
     /// precedence over the implicit std::string constructor, add an explicit
@@ -111,16 +112,32 @@ public:
     void save(std::ostream &os) const;
 
 private:
+    void set(const std::string &key, const SettingValue &value);
     boost::optional<SettingValue> find(const std::string &key) const;
 
     SettingValue myTree;
+};
+
+/// Specialize to support custom types as setting values.
+template <typename T>
+struct SettingValueConverter
+{
+    static SettingsTree::SettingValue to(const T &t)
+    {
+        return t;
+    }
+
+    static T from(const SettingsTree::SettingValue &v)
+    {
+        return boost::get<T>(v);
+    }
 };
 
 template <typename T>
 T SettingsTree::get(const std::string &key, const T &default_val) const
 {
     boost::optional<SettingValue> val = find(key);
-    return val ? boost::get<T>(*val) : default_val;
+    return val ? SettingValueConverter<T>::from(*val) : default_val;
 }
 
 template <typename T>
@@ -131,9 +148,15 @@ std::vector<T> SettingsTree::getList(const std::string &key) const
     std::vector<T> ts;
     ts.reserve(values.size());
     for (auto &&val : values)
-        ts.push_back(boost::get<T>(val));
+        ts.push_back(SettingValueConverter<T>::from(val));
 
     return ts;
+}
+
+template <typename T>
+void SettingsTree::set(const std::string &key, const T &val)
+{
+    set(key, SettingValueConverter<T>::to(val));
 }
 
 template <typename T>

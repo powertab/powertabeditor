@@ -18,17 +18,18 @@
 #include "settings.h"
 
 #include <app/paths.h>
-#include <QDataStream>
-#include <QString>
-#include <QVector>
 #include <score/generalmidi.h>
+#include <score/tuning.h>
+#include <sstream>
+
+#include <QByteArray>
 
 namespace Settings
 {
 const Setting<std::string> PreviousDirectory(
     "app/previous_directory", Paths::getHomeDir().generic_string());
 
-const Setting<std::string> WindowState("app/window_state", "");
+const Setting<QByteArray> WindowState("app/window_state", QByteArray());
 
 const Setting<std::vector<std::string>> RecentFiles("app/recent_files", {});
 
@@ -70,48 +71,64 @@ const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT = 127;
 const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
                                          false);
 
-const char *DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
-const char *DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";
+const Setting<std::string> DefaultInstrumentName("app/default_instrument_name",
+                                                 "Untitled");
 
-const char *DEFAULT_INSTRUMENT_PRESET = "app/defaultInstrumentPreset";
-const int DEFAULT_INSTRUMENT_PRESET_DEFAULT =
-    Midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL;
+const Setting<int> DefaultInstrumentPreset(
+    "app/default_instrument_preset", Midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL);
 
-const char *DEFAULT_INSTRUMENT_TUNING = "app/defaultInstrumentTuning";
-const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT = Tuning();
+const Setting<Tuning> DefaultTuning("app/default_tuning", Tuning());
 }
 
-QDataStream &operator<<(QDataStream &out, const Tuning &tuning)
+Tuning SettingValueConverter<Tuning>::from(const SettingsTree::SettingValue &v)
 {
-    out << QString::fromStdString(tuning.getName());
-    out << tuning.getMusicNotationOffset();
-    out << tuning.usesSharps();
-    out << QVector<uint8_t>::fromStdVector(tuning.getNotes());
-    return out;
-}
-
-QDataStream &operator>>(QDataStream &in, Tuning &tuning)
-{
-    QString name;
-    int8_t offset = 0;
+    std::string name;
+    int offset = 0;
     bool sharps = false;
-    QVector<uint8_t> notes;
+    size_t num_notes = 0;
+    std::vector<uint8_t> notes;
 
-    in >> name >> offset >> sharps >> notes;
-    tuning.setName(name.toStdString());
+    std::stringstream input(boost::get<std::string>(v));
+    input >> name >> offset >> sharps >> num_notes;
+
+    for (size_t i = 0; i < num_notes; ++i)
+    {
+        int note = 0;
+        input >> note;
+        notes.push_back(note);
+    }
+
+    Tuning tuning;
+    tuning.setName(name);
     tuning.setMusicNotationOffset(offset);
     tuning.setSharps(sharps);
-    tuning.setNotes(notes.toStdVector());
-
-    return in;
+    tuning.setNotes(notes);
+    return tuning;
 }
 
-// Register the above stream operators so that Tuning objects
-// can be used with QSettings.
-static struct RegisterMetaTypes
+SettingsTree::SettingValue SettingValueConverter<Tuning>::to(
+    const Tuning &tuning)
 {
-    RegisterMetaTypes()
-    {
-        qRegisterMetaTypeStreamOperators<Tuning>("Tuning");
-    }
-} RegisterMetaTypesAtStart;
+    std::ostringstream ss;
+    ss << tuning.getName() << " "
+       << static_cast<int>(tuning.getMusicNotationOffset()) << " "
+       << tuning.usesSharps() << " ";
+    ss << tuning.getNotes().size();
+    for (int n : tuning.getNotes())
+        ss << " " << n;
+
+    return ss.str();
+}
+
+QByteArray SettingValueConverter<QByteArray>::from(
+    const SettingsTree::SettingValue &v)
+{
+    return QByteArray::fromBase64(
+        QByteArray::fromStdString(boost::get<std::string>(v)));
+}
+
+SettingsTree::SettingValue SettingValueConverter<QByteArray>::to(
+    const QByteArray &array)
+{
+    return array.toBase64().toStdString();
+}

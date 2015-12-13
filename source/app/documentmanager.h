@@ -25,6 +25,7 @@
 #include <score/score.h>
 #include <vector>
 
+class SettingsManager;
 
 /// A document is a score that is either associated with a file or unsaved.
 class Document
@@ -63,7 +64,7 @@ public:
     /// Add a new, blank document.
     Document &addDocument();
     /// Add a new document, and initialize it with a staff, player, etc.
-    Document &addDefaultDocument();
+    Document &addDefaultDocument(const SettingsManager &settings_manager);
 
     Document &getCurrentDocument();
     Document &getDocument(int i);

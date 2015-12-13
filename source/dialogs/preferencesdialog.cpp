@@ -141,17 +141,13 @@ void PreferencesDialog::loadCurrentSettings()
     ui->openInNewWindowCheckBox->setChecked(
         new_settings->get(Settings::OpenFilesInNewWindow));
 
-    ui->defaultInstrumentNameLineEdit->setText(
-        settings.value(Settings::DEFAULT_INSTRUMENT_NAME,
-                       Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString());
+    ui->defaultInstrumentNameLineEdit->setText(QString::fromStdString(
+        new_settings->get(Settings::DefaultInstrumentName)));
     ui->defaultPresetComboBox->setCurrentIndex(
-        settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
-                       Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
+        new_settings->get(Settings::DefaultInstrumentPreset));
 
     ui->defaultTuningClickButton->setToolTip(tr("Click to adjust tuning."));
-    myDefaultTuning = settings.value(
-            Settings::DEFAULT_INSTRUMENT_TUNING,
-            QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)).value<Tuning>();
+    myDefaultTuning = new_settings->get(Settings::DefaultTuning);
     ui->defaultTuningClickButton->setText(QString::fromStdString(
             boost::lexical_cast<std::string>(myDefaultTuning)));
     connect(ui->defaultTuningClickButton, SIGNAL(clicked()), this, SLOT(editTuning()));
@@ -199,14 +195,13 @@ void PreferencesDialog::accept()
     new_settings->set(Settings::OpenFilesInNewWindow,
                       ui->openInNewWindowCheckBox->isChecked());
 
-    settings.setValue(Settings::DEFAULT_INSTRUMENT_NAME,
-                      ui->defaultInstrumentNameLineEdit->text());
+    new_settings->set(Settings::DefaultInstrumentName,
+                      ui->defaultInstrumentNameLineEdit->text().toStdString());
 
-    settings.setValue(Settings::DEFAULT_INSTRUMENT_PRESET,
+    new_settings->set(Settings::DefaultInstrumentPreset,
                       ui->defaultPresetComboBox->currentIndex());
 
-    settings.setValue(Settings::DEFAULT_INSTRUMENT_TUNING,
-                      QVariant::fromValue(myDefaultTuning));
+    new_settings->set(Settings::DefaultTuning, myDefaultTuning);
 
     settings.sync();
 

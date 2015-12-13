@@ -201,8 +201,7 @@ PowerTabEditor::PowerTabEditor()
         QString::fromStdString(settings->get(Settings::PreviousDirectory));
 
     // Restore the state of any dock widgets.
-    restoreState(QByteArray::fromBase64(
-        QByteArray::fromStdString(settings->get(Settings::WindowState))));
+    restoreState(settings->get(Settings::WindowState));
 
     setCentralWidget(myPlaybackArea);
     setMinimumSize(800, 600);
@@ -222,7 +221,7 @@ void PowerTabEditor::openFiles(const QStringList &files)
 
 void PowerTabEditor::createNewDocument()
 {
-    myDocumentManager->addDefaultDocument();
+    myDocumentManager->addDefaultDocument(*mySettingsManager);
     setupNewTab();
 }
 
@@ -1510,11 +1509,8 @@ void PowerTabEditor::addPlayer()
         }
     }
 
-    QSettings settings;
-    player.setTuning(settings.value(
-            Settings::DEFAULT_INSTRUMENT_TUNING,
-            QVariant::fromValue(Settings::DEFAULT_INSTRUMENT_TUNING_DEFAULT)
-        ).value<Tuning>());
+    auto settings = mySettingsManager->getReadHandle();
+    player.setTuning(settings->get(Settings::DefaultTuning));
 
     myUndoManager->push(new AddPlayer(score, player),
                         UndoManager::AFFECTS_ALL_SYSTEMS);
@@ -1524,8 +1520,9 @@ void PowerTabEditor::addInstrument()
 {
     ScoreLocation &location = getLocation();
     Score &score = location.getScore();
-    QSettings settings;
     Instrument instrument;
+
+    auto settings = mySettingsManager->getReadHandle();
 
     // Create a unique name for the instrument.
     {
@@ -1536,14 +1533,13 @@ void PowerTabEditor::addInstrument()
             return instrument.getDescription();
         });
 
-        const std::string defaultName = settings.value(
-            Settings::DEFAULT_INSTRUMENT_NAME,
-            Settings::DEFAULT_INSTRUMENT_NAME_DEFAULT).toString().toStdString();
+        const std::string default_name =
+            settings->get(Settings::DefaultInstrumentName);
 
         size_t i = score.getInstruments().size() + 1;
         while (true)
         {
-            const std::string name = defaultName + " " + std::to_string(i);
+            const std::string name = default_name + " " + std::to_string(i);
 
             if (std::find(names.begin(), names.end(), name) == names.end())
             {
@@ -1555,9 +1551,7 @@ void PowerTabEditor::addInstrument()
         }
     }
 
-    instrument.setMidiPreset(
-        settings.value(Settings::DEFAULT_INSTRUMENT_PRESET,
-                       Settings::DEFAULT_INSTRUMENT_PRESET_DEFAULT).toInt());
+    instrument.setMidiPreset(settings->get(Settings::DefaultInstrumentPreset));
 
     myUndoManager->push(new AddInstrument(location.getScore(), instrument),
                         UndoManager::AFFECTS_ALL_SYSTEMS);
@@ -1700,8 +1694,7 @@ void PowerTabEditor::closeEvent(QCloseEvent *event)
 
     {
         auto settings = mySettingsManager->getWriteHandle();
-        settings->set(Settings::WindowState,
-                      saveState().toBase64().toStdString());
+        settings->set(Settings::WindowState, saveState());
     }
 
     mySettingsManager->save(Paths::getConfigDir());
