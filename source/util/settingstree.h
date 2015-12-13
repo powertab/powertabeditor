@@ -46,7 +46,6 @@ class SettingsTree
 public:
     using SettingValue = boost::make_recursive_variant<
         int,
-        unsigned int,
         std::string,
         bool,
         std::vector<boost::recursive_variant_>,
@@ -112,7 +111,7 @@ public:
     void save(std::ostream &os) const;
 
 private:
-    void set(const std::string &key, const SettingValue &value);
+    void setImpl(const std::string &key, const SettingValue &value);
     boost::optional<SettingValue> find(const std::string &key) const;
 
     SettingValue myTree;
@@ -156,14 +155,14 @@ std::vector<T> SettingsTree::getList(const std::string &key) const
 template <typename T>
 void SettingsTree::set(const std::string &key, const T &val)
 {
-    set(key, SettingValueConverter<T>::to(val));
+    setImpl(key, SettingValueConverter<T>::to(val));
 }
 
 template <typename T>
 void SettingsTree::setList(const std::string &key, const std::vector<T> &values)
 {
     std::vector<SettingValue> tmp(values.begin(), values.end());
-    set(key, SettingValue(tmp));
+    setImpl(key, SettingValue(tmp));
 }
 
 #endif

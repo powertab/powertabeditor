@@ -25,14 +25,15 @@
 class MidiFile;
 class MidiOutputDevice;
 class Score;
+class SettingsManager;
 
 class MidiPlayer : public QThread
 {
     Q_OBJECT
 
 public:
-    MidiPlayer(const Score &score, int start_system, int start_pos,
-               int speed);
+    MidiPlayer(SettingsManager &settings_manager, const Score &score,
+               int start_system, int start_pos, int speed);
     ~MidiPlayer();
 
     void changePlaybackSpeed(int new_speed);
@@ -53,9 +54,11 @@ private:
     void setIsPlaying(bool set);
     bool isPlaying() const;
 
+    SettingsManager &mySettingsManager;
     const Score &myScore;
     SystemLocation myStartLocation;
     std::atomic<bool> myIsPlaying;
+    std::atomic<bool> myMetronomeEnabled;
     /// The current playback speed (percent).
     std::atomic<int> myPlaybackSpeed;
 };

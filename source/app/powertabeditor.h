@@ -40,7 +40,6 @@ class RecentFiles;
 class ScoreArea;
 class ScoreLocation;
 class SettingsManager;
-class SettingsPubSub;
 class TuningDictionary;
 class UndoManager;
 
@@ -379,7 +378,6 @@ private:
     std::unique_ptr<MidiPlayer> myMidiPlayer;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
     std::unique_ptr<SettingsManager> mySettingsManager;
-    std::shared_ptr<SettingsPubSub> mySettingsPubSub;
     PlayerEditPubSub myPlayerEditPubSub;
     PlayerRemovePubSub myPlayerRemovePubSub;
     InstrumentEditPubSub myInstrumentEditPubSub;

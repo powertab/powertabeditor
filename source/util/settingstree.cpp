@@ -121,8 +121,6 @@ static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
 {
     if (json_val.IsInt())
         value = json_val.GetInt();
-    else if (json_val.IsUint())
-        value = json_val.GetUint();
     else if (json_val.IsString())
         value = std::string(json_val.GetString(), json_val.GetStringLength());
     else if (json_val.IsBool())
@@ -166,11 +164,6 @@ struct JSONSerializer : public boost::static_visitor<void>
     void operator()(int x)
     {
         myWriter.Int(x);
-    }
-
-    void operator()(unsigned int x)
-    {
-        myWriter.Uint(x);
     }
 
     void operator()(bool x)
@@ -221,7 +214,7 @@ SettingsTree::SettingsTree() : myTree(SettingMap())
 {
 }
 
-void SettingsTree::set(const std::string &key, const SettingValue &value)
+void SettingsTree::setImpl(const std::string &key, const SettingValue &value)
 {
     Inserter inserter(key, value);
     boost::apply_visitor(inserter, myTree);

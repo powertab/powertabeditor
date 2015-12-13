@@ -18,13 +18,13 @@
 #include "midiplayer.h"
 
 #include <app/settings.h>
+#include <app/settingsmanager.h>
 #include <audio/midioutputdevice.h>
 #include <boost/rational.hpp>
 #include <cassert>
 #include <midi/midifile.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
-#include <QSettings>
 
 #ifdef _WIN32
 #include <boost/scope_exit.hpp>
@@ -33,16 +33,10 @@
 
 static const int METRONOME_CHANNEL = 9;
 
-static bool isMetronomeEnabled()
-{
-    QSettings settings;
-    return settings.value(Settings::MIDI_METRONOME_ENABLED,
-                          Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool();
-}
-
-MidiPlayer::MidiPlayer(const Score &score, int start_system, int start_pos,
-                       int speed)
-    : myScore(score),
+MidiPlayer::MidiPlayer(SettingsManager &settings_manager, const Score &score,
+                       int start_system, int start_pos, int speed)
+    : mySettingsManager(settings_manager),
+      myScore(score),
       myStartLocation(start_system, start_pos),
       myIsPlaying(false),
       myPlaybackSpeed(speed)
@@ -66,11 +60,29 @@ void MidiPlayer::run()
     } BOOST_SCOPE_EXIT_END
 #endif
 
+    boost::signals2::scoped_connection connection =
+        mySettingsManager.subscribeToChanges([&]() {
+            auto settings = mySettingsManager.getReadHandle();
+            myMetronomeEnabled = settings->get(Settings::MetronomeEnabled);
+        });
+
     setIsPlaying(true);
+
+    // Load MIDI settings.
+    int api;
+    int port;
+    {
+        auto settings = mySettingsManager.getReadHandle();
+        myMetronomeEnabled = settings->get(Settings::MetronomeEnabled);
+
+        api = settings->get(Settings::MidiApi);
+        port = settings->get(Settings::MidiPort);
+    }
 
     MidiFile::LoadOptions options;
     options.myEnableMetronome = true;
     options.myRecordPositionChanges = true;
+    // TODO - load other settings and replace QSettings.
 
     MidiFile file;
     file.load(myScore, options);
@@ -88,12 +100,6 @@ void MidiPlayer::run()
     // TODO - since each track is already sorted, an n-way merge should be faster.
     std::stable_sort(events.begin(), events.end());
     events.convertToDeltaTicks();
-
-    QSettings settings;
-    const int api = settings.value(Settings::MIDI_PREFERRED_API,
-                                   Settings::MIDI_PREFERRED_API_DEFAULT).toInt();
-    const int port = settings.value(Settings::MIDI_PREFERRED_PORT,
-                                    Settings::MIDI_PREFERRED_PORT_DEFAULT).toInt();
 
     // Initialize RtMidi and set the port.
     MidiOutputDevice device;
@@ -128,11 +134,7 @@ void MidiPlayer::run()
             }
             else
             {
-                if (settings.value(Settings::MIDI_METRONOME_ENABLE_COUNTIN,
-                                   Settings::MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT).toBool())
-                {
-                    performCountIn(device, event->getLocation(), beat_duration);
-                }
+                performCountIn(device, event->getLocation(), beat_duration);
 
                 started = true;
             }
@@ -140,7 +142,7 @@ void MidiPlayer::run()
 
         // Skip metronome events if necessary.
         if (event->isNoteOnOff() && event->getChannel() == METRONOME_CHANNEL &&
-            !isMetronomeEnabled())
+            !myMetronomeEnabled)
         {
             continue;
         }
@@ -178,6 +180,19 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
                                 const SystemLocation &location,
                                 int beat_duration)
 {
+    // Load preferences.
+    uint8_t velocity;
+    uint8_t preset;
+    {
+        auto settings = mySettingsManager.getReadHandle();
+
+        if (!settings->get(Settings::CountInEnabled))
+            return;
+
+        velocity = settings->get(Settings::CountInVolume);
+        preset = settings->get(Settings::CountInPreset);
+    }
+
     // Figure out the time signature where playback is starting.
     const System &system = myScore.getSystems()[location.getSystem()];
     const Barline *barline = system.getPreviousBarline(location.getPosition());
@@ -190,15 +205,6 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
         boost::rational<int>(4, time_sig.getBeatValue()) *
         boost::rational<int>(time_sig.getBeatsPerMeasure(),
                              time_sig.getNumPulses()) * beat_duration);
-
-    QSettings settings;
-    const uint8_t velocity =
-        settings.value(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
-                       Settings::MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT).toUInt();
-    const uint8_t preset =
-        Midi::MIDI_PERCUSSION_PRESET_OFFSET +
-        settings.value(Settings::MIDI_METRONOME_COUNTIN_PRESET,
-                       Settings::MIDI_METRONOME_COUNTIN_PRESET_DEFAULT).toUInt();
 
     // Play the count-in.
     device.setChannelMaxVolume(METRONOME_CHANNEL,

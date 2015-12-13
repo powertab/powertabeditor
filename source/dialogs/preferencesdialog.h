@@ -18,7 +18,6 @@
 #ifndef DIALOGS_PREFERENCESDIALOG_H
 #define DIALOGS_PREFERENCESDIALOG_H
 
-#include <memory>
 #include <QDialog>
 #include <score/tuning.h>
 
@@ -27,7 +26,6 @@ namespace Ui {
 }
 
 class SettingsManager;
-class SettingsPubSub;
 class TuningDictionary;
 
 /// Dialog that allows the user to modify general editor-wide settings.
@@ -38,7 +36,6 @@ class PreferencesDialog : public QDialog
 public:
     explicit PreferencesDialog(QWidget *parent,
                                SettingsManager &settings_manager,
-                               std::shared_ptr<SettingsPubSub> settingsPubsub,
                                const TuningDictionary &dictionary);
     ~PreferencesDialog();
 
@@ -53,7 +50,6 @@ private:
 
     Ui::PreferencesDialog *ui;
     SettingsManager &mySettingsManager;
-    std::shared_ptr<SettingsPubSub> mySettingsPubsub;
     const TuningDictionary &myDictionary;
     Tuning myDefaultTuning;
 };

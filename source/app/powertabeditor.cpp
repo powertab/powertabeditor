@@ -78,7 +78,6 @@
 #include <app/documentmanager.h>
 #include <app/paths.h>
 #include <app/pubsub/clickpubsub.h>
-#include <app/pubsub/settingspubsub.h>
 #include <app/recentfiles.h>
 #include <app/scorearea.h>
 #include <app/settings.h>
@@ -133,7 +132,6 @@
 #include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QScrollArea>
-#include <QSettings>
 #include <QTabBar>
 #include <QUrl>
 #include <QVBoxLayout>
@@ -152,7 +150,6 @@ PowerTabEditor::PowerTabEditor()
       myUndoManager(new UndoManager()),
       myTuningDictionary(new TuningDictionary()),
       mySettingsManager(new SettingsManager()),
-      mySettingsPubSub(std::make_shared<SettingsPubSub>()),
       myIsPlaying(false),
       myRecentFiles(nullptr),
       myActiveDurationType(Position::EighthNote),
@@ -479,8 +476,7 @@ void PowerTabEditor::editKeyboardShortcuts()
 
 void PowerTabEditor::editPreferences()
 {
-    PreferencesDialog dialog(this, *mySettingsManager, mySettingsPubSub,
-                             *myTuningDictionary);
+    PreferencesDialog dialog(this, *mySettingsManager, *myTuningDictionary);
     dialog.exec();
 }
 
@@ -585,7 +581,7 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
 
         const ScoreLocation &location = getLocation();
         myMidiPlayer.reset(new MidiPlayer(
-            location.getScore(), location.getSystemIndex(),
+            *mySettingsManager, location.getScore(), location.getSystemIndex(),
             location.getPositionIndex(), myPlaybackWidget->getPlaybackSpeed()));
 
         connect(myMidiPlayer.get(), SIGNAL(playbackSystemChanged(int)), this,
@@ -2829,20 +2825,14 @@ void PowerTabEditor::createTabArea()
     connect(myPlaybackWidget, &PlaybackWidget::activeFilterChanged, this,
             &PowerTabEditor::updateActiveFilter);
 
-    QSettings settings;
-    myMetronomeCommand->setChecked(
-        settings.value(Settings::MIDI_METRONOME_ENABLED,
-                       Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
+    auto update_metronome_state = [&]() {
+        auto settings = mySettingsManager->getReadHandle();
+        myMetronomeCommand->setChecked(
+            settings->get(Settings::MetronomeEnabled));
+    };
 
-    mySettingsPubSub->subscribe([=](const std::string &setting) {
-        if (setting == Settings::MIDI_METRONOME_ENABLED)
-        {
-            QSettings settings;
-            myMetronomeCommand->setChecked(
-                settings.value(Settings::MIDI_METRONOME_ENABLED,
-                Settings::MIDI_METRONOME_ENABLED_DEFAULT).toBool());
-        }
-    });
+    update_metronome_state();
+    mySettingsManager->subscribeToChanges(update_metronome_state);
 
     myPlaybackArea = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(myPlaybackArea);
@@ -3258,10 +3248,8 @@ void PowerTabEditor::rewindPlaybackToStart()
 
 void PowerTabEditor::toggleMetronome()
 {
-    QSettings settings;
-    settings.setValue(Settings::MIDI_METRONOME_ENABLED,
-                      myMetronomeCommand->isChecked());
-    mySettingsPubSub->publish(Settings::MIDI_METRONOME_ENABLED);
+    auto settings = mySettingsManager->getWriteHandle();
+    settings->set(Settings::MetronomeEnabled, myMetronomeCommand->isChecked());
 }
 
 void PowerTabEditor::updateActiveVoice(int voice)

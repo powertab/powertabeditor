@@ -33,40 +33,29 @@ const Setting<QByteArray> WindowState("app/window_state", QByteArray());
 
 const Setting<std::vector<std::string>> RecentFiles("app/recent_files", {});
 
-const char *MIDI_PREFERRED_API = "midi/preferredApi";
-const int MIDI_PREFERRED_API_DEFAULT = 0;
+const Setting<int> MidiApi("midi/api", 0);
 
-const char *MIDI_PREFERRED_PORT = "midi/preferredPort";
-const int MIDI_PREFERRED_PORT_DEFAULT = 0;
+const Setting<int> MidiPort("midi/port", 0);
 
-const char *MIDI_VIBRATO_LEVEL = "midi/vibrato";
-const int MIDI_VIBRATO_LEVEL_DEFAULT = 85;
+const Setting<int> MidiVibratoLevel("midi/vibrato_level", 85);
 
-const char *MIDI_WIDE_VIBRATO_LEVEL = "midi/wideVibrato";
-const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT = 127;
+const Setting<int> MidiWideVibratoLevel("midi/wide_vibrato_level", 127);
 
-const char *MIDI_METRONOME_ENABLED = "midi/metronomeEnabled";
-const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
+const Setting<bool> MetronomeEnabled("midi/metronome_enabled", true);
 
-const char *MIDI_METRONOME_PRESET = "midi/metronomePreset";
-const int MIDI_METRONOME_PRESET_DEFAULT =
-    Midi::MIDI_PERCUSSION_PRESET_HI_WOOD_BLOCK;
+const Setting<int> MetronomePreset("midi/metronome_preset",
+                                   Midi::MIDI_PERCUSSION_PRESET_HI_WOOD_BLOCK);
 
-const char *MIDI_METRONOME_STRONG_ACCENT = "midi/metronomeStrongAccent";
-const int MIDI_METRONOME_STRONG_ACCENT_DEFAULT = 127;
+const Setting<int> MetronomeStrongAccent("midi/metronome_strong_accent", 127);
 
-const char *MIDI_METRONOME_WEAK_ACCENT = "midi/metronomeWeakAccent";
-const int MIDI_METRONOME_WEAK_ACCENT_DEFAULT = 80;
+const Setting<int> MetronomeWeakAccent("midi/metronome_weak_accent", 80);
 
-const char *MIDI_METRONOME_ENABLE_COUNTIN = "midi/metronomeEnableCountIn";
-const bool MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT = true;
+const Setting<bool> CountInEnabled("midi/count_in_enabled", true);
 
-const char *MIDI_METRONOME_COUNTIN_PRESET = "midi/metronomeCountInPreset";
-const int MIDI_METRONOME_COUNTIN_PRESET_DEFAULT =
-    Midi::MIDI_PERCUSSION_PRESET_RIDE_CYMBAL2;
+const Setting<int> CountInPreset("midi/count_in_preset",
+                                 Midi::MIDI_PERCUSSION_PRESET_RIDE_CYMBAL2);
 
-const char *MIDI_METRONOME_COUNTIN_VOLUME = "midi/metronomeCountInVolume";
-const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT = 127;
+const Setting<int> CountInVolume("midi/count_in_volume", 127);
 
 const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
                                          false);

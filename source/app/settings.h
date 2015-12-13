@@ -23,8 +23,7 @@
 class QByteArray;
 class Tuning;
 
-/// Contains constants for keys used with the QSettings class,
-/// as well as default values for those settings where appropriate
+/// All predefined settings and their default values.
 namespace Settings
 {
     extern const Setting<std::string> PreviousDirectory;
@@ -32,38 +31,20 @@ namespace Settings
     extern const Setting<std::vector<std::string>> RecentFiles;
     extern const Setting<bool> OpenFilesInNewWindow;
 
-    extern const char *MIDI_PREFERRED_API;
-    extern const int MIDI_PREFERRED_API_DEFAULT;
+    extern const Setting<int> MidiApi;
+    extern const Setting<int> MidiPort;
 
-    extern const char *MIDI_PREFERRED_PORT;
-    extern const int MIDI_PREFERRED_PORT_DEFAULT;
+    extern const Setting<int> MidiVibratoLevel;
+    extern const Setting<int> MidiWideVibratoLevel;
 
-    extern const char *MIDI_VIBRATO_LEVEL;
-    extern const int MIDI_VIBRATO_LEVEL_DEFAULT;
+    extern const Setting<bool> MetronomeEnabled;
+    extern const Setting<int> MetronomePreset;
+    extern const Setting<int> MetronomeStrongAccent;
+    extern const Setting<int> MetronomeWeakAccent;
 
-    extern const char *MIDI_WIDE_VIBRATO_LEVEL;
-    extern const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT;
-
-    extern const char *MIDI_METRONOME_ENABLED;
-    extern const bool MIDI_METRONOME_ENABLED_DEFAULT;
-
-    extern const char *MIDI_METRONOME_PRESET;
-    extern const int MIDI_METRONOME_PRESET_DEFAULT;
-
-    extern const char *MIDI_METRONOME_STRONG_ACCENT;
-    extern const int MIDI_METRONOME_STRONG_ACCENT_DEFAULT;
-
-    extern const char *MIDI_METRONOME_WEAK_ACCENT;
-    extern const int MIDI_METRONOME_WEAK_ACCENT_DEFAULT;
-
-    extern const char *MIDI_METRONOME_ENABLE_COUNTIN;
-    extern const bool MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT;
-
-    extern const char *MIDI_METRONOME_COUNTIN_PRESET;
-    extern const int MIDI_METRONOME_COUNTIN_PRESET_DEFAULT;
-
-    extern const char *MIDI_METRONOME_COUNTIN_VOLUME;
-    extern const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT;
+    extern const Setting<bool> CountInEnabled;
+    extern const Setting<int> CountInPreset;
+    extern const Setting<int> CountInVolume;
 
     extern const Setting<std::string> DefaultInstrumentName;
     extern const Setting<int> DefaultInstrumentPreset;

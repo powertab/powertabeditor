@@ -43,7 +43,7 @@ public:
             return &mySettings;
         }
 
-    private:
+    protected:
         Handle(T &settings, std::mutex &mutex)
             : mySettings(settings), myLock(mutex)
         {
@@ -68,6 +68,9 @@ public:
 
         ~WriteHandle()
         {
+            // Unlock before signalling to avoid deadlocks if callbacks read the
+            // settings.
+            myLock.unlock();
             mySignal();
         }
 
