@@ -79,7 +79,7 @@ TEST_CASE("Util/SettingsTree/Paths")
     REQUIRE_THROWS(settings.get("foo", -1));
 }
 
-TEST_CASE("Util/SettingsTree/JSON")
+TEST_CASE("Util/SettingsTree/JSON/Export")
 {
     SettingsTree settings;
 
@@ -99,4 +99,20 @@ TEST_CASE("Util/SettingsTree/JSON")
     expected << expected_file.rdbuf();
 
     REQUIRE(output.str() == expected.str());
+}
+
+TEST_CASE("Util/SettingsTree/JSON/Import")
+{
+    std::ifstream input_file(
+        AppInfo::getAbsolutePath("data/test_settingstree_expected.json"));
+
+    SettingsTree settings;
+    settings.load(input_file);
+
+    REQUIRE(settings.get<int>("key_a", 0) == -123);
+    REQUIRE(settings.getList<int>("key_b") == std::vector<int>({ 1, 2, 3 }));
+    REQUIRE(settings.getList<std::string>("key_c") ==
+            std::vector<std::string>({ "string1", "string2", "string3" }));
+    REQUIRE(settings.get<int>("parent/child_a", 0) == 234);
+    REQUIRE(settings.get<std::string>("parent/child_b") == "asdf");
 }

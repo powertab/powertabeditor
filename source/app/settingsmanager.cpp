@@ -19,8 +19,29 @@
 
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <iostream>
 
 static const char *theSettingsFilename = "settings.json";
+
+void SettingsManager::load(const boost::filesystem::path &dir)
+{
+    auto path = dir / theSettingsFilename;
+
+    if (!boost::filesystem::exists(path))
+        return;
+
+    try
+    {
+        boost::filesystem::ifstream is(path);
+
+        auto settings = getWriteHandle();
+        settings->load(is);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Error loading " << path << ": " << e.what() << std::endl;
+    }
+}
 
 void SettingsManager::save(const boost::filesystem::path &dir) const
 {

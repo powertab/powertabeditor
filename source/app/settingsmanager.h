@@ -100,6 +100,9 @@ public:
         return mySettingsChangedSignal.connect(slot);
     }
 
+    /// Load the settings from the specified directory.
+    void load(const boost::filesystem::path &dir);
+
     /// Save the settings to the specified directory.
     void save(const boost::filesystem::path &dir) const;
 

@@ -20,6 +20,8 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
+#include <rapidjson/document.h>
+#include <rapidjson/error/en.h>
 #include <rapidjson/prettywriter.h>
 #include <util/rapidjson_iostreams.h>
 
@@ -115,6 +117,44 @@ private:
     mutable size_t myIndex;
 };
 
+static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
+{
+    if (json_val.IsInt())
+        value = json_val.GetInt();
+    else if (json_val.IsUint())
+        value = json_val.GetUint();
+    else if (json_val.IsString())
+        value = json_val.GetString();
+    else if (json_val.IsArray())
+    {
+        SettingList value_list;
+
+        for (auto it = json_val.Begin(); it != json_val.End(); ++it)
+        {
+            SettingValue child_val;
+            parseValue(child_val, *it);
+            value_list.push_back(child_val);
+        }
+
+        value = value_list;
+    }
+    else if (json_val.IsObject())
+    {
+        SettingMap value_map;
+
+        for (auto it = json_val.MemberBegin(); it != json_val.MemberEnd(); ++it)
+        {
+            SettingValue child_val;
+            parseValue(child_val, it->value);
+            value_map[it->name.GetString()] = child_val;
+        }
+
+        value = value_map;
+    }
+    else
+        throw std::runtime_error("Unexpected JSON value type.");
+}
+
 struct JSONSerializer : public boost::static_visitor<void>
 {
     JSONSerializer(std::ostream &os) : myStream(os), myWriter(myStream)
@@ -184,6 +224,24 @@ boost::optional<SettingValue> SettingsTree::find(
     const std::string &key) const
 {
     return boost::apply_visitor(Finder(key), myTree);
+}
+
+void SettingsTree::load(std::istream &is)
+{
+    Util::RapidJSON::IStreamWrapper stream(is);
+
+    rapidjson::Document document;
+    document.ParseStream(stream);
+
+    if (document.HasParseError())
+    {
+        throw std::runtime_error("Parse error at offset " +
+                                 std::to_string(document.GetErrorOffset()) +
+                                 ": " +
+                                 GetParseError_En(document.GetParseError()));
+    }
+
+    parseValue(myTree, document);
 }
 
 void SettingsTree::save(std::ostream &os) const

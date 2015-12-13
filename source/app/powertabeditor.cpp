@@ -181,6 +181,7 @@ PowerTabEditor::PowerTabEditor()
             SLOT(updateModified(bool)));
 
     myTuningDictionary->loadInBackground();
+    mySettingsManager->load(Paths::getConfigDir());
 
     createMixer();
     createInstrumentPanel();
@@ -200,8 +201,8 @@ PowerTabEditor::PowerTabEditor()
         QString::fromStdString(settings->get(Settings::PreviousDirectory));
 
     // Restore the state of any dock widgets.
-    restoreState(
-        QByteArray::fromStdString(settings->get(Settings::WindowState)));
+    restoreState(QByteArray::fromBase64(
+        QByteArray::fromStdString(settings->get(Settings::WindowState))));
 
     setCentralWidget(myPlaybackArea);
     setMinimumSize(800, 600);
@@ -1698,7 +1699,8 @@ void PowerTabEditor::closeEvent(QCloseEvent *event)
 
     {
         auto settings = mySettingsManager->getWriteHandle();
-        settings->set(Settings::WindowState, saveState().toStdString());
+        settings->set(Settings::WindowState,
+                      saveState().toBase64().toStdString());
     }
 
     mySettingsManager->save(Paths::getConfigDir());

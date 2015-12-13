@@ -98,6 +98,7 @@ public:
         setList(setting.myKey, value);
     }
 
+    void load(std::istream &is);
     void save(std::ostream &os) const;
 
 private:
