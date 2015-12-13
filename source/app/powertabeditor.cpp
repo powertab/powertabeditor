@@ -154,10 +154,6 @@ PowerTabEditor::PowerTabEditor()
       mySettingsManager(new SettingsManager()),
       mySettingsPubSub(std::make_shared<SettingsPubSub>()),
       myIsPlaying(false),
-      myPreviousDirectory(
-          QSettings()
-              .value(Settings::APP_PREVIOUS_DIRECTORY, QDir::homePath())
-              .toString()),
       myRecentFiles(nullptr),
       myActiveDurationType(Position::EighthNote),
       myTabWidget(nullptr),
@@ -192,15 +188,20 @@ PowerTabEditor::PowerTabEditor()
     createMenus();
 
     // Set up the recent files menu.
-    myRecentFiles = new RecentFiles(myRecentFilesMenu, this);
+    myRecentFiles =
+        new RecentFiles(*mySettingsManager, myRecentFilesMenu, this);
     connect(myRecentFiles, SIGNAL(fileSelected(QString)), this,
             SLOT(openFile(QString)));
 
     createTabArea();
 
+    auto settings = mySettingsManager->getReadHandle();
+    myPreviousDirectory =
+        QString::fromStdString(settings->get(Settings::PreviousDirectory));
+
     // Restore the state of any dock widgets.
-    QSettings settings;
-    restoreState(settings.value(Settings::APP_WINDOW_STATE).toByteArray());
+    restoreState(
+        QByteArray::fromStdString(settings->get(Settings::WindowState)));
 
     setCentralWidget(myPlaybackArea);
     setMinimumSize(800, 600);
@@ -1695,8 +1696,10 @@ void PowerTabEditor::closeEvent(QCloseEvent *event)
 
     myTuningDictionary->save();
 
-    QSettings settings;
-    settings.setValue(Settings::APP_WINDOW_STATE, saveState());
+    {
+        auto settings = mySettingsManager->getWriteHandle();
+        settings->set(Settings::WindowState, saveState().toStdString());
+    }
 
     mySettingsManager->save(Paths::getConfigDir());
 
@@ -2860,8 +2863,10 @@ void PowerTabEditor::setPreviousDirectory(const QString &fileName)
 {
     QFileInfo fileInfo(fileName);
     myPreviousDirectory = fileInfo.absolutePath();
-    QSettings settings;
-    settings.setValue(Settings::APP_PREVIOUS_DIRECTORY, myPreviousDirectory);
+
+    auto settings = mySettingsManager->getWriteHandle();
+    settings->set(Settings::PreviousDirectory,
+                  myPreviousDirectory.toStdString());
 }
 
 void PowerTabEditor::setupNewTab()

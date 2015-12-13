@@ -24,4 +24,7 @@ namespace Paths {
 
     /// Return a path to a directory where config files should be written to.
     path getConfigDir();
+
+    /// Return a path to the user's home directory.
+    path getHomeDir();
 }

@@ -21,11 +21,11 @@
 #include <QString>
 #include <QStandardPaths>
 
-static boost::filesystem::detail::utf8_codecvt_facet theUTF8;
-
 /// Convert a QString to a boost::filesystem::path.
 static boost::filesystem::path fromQString(const QString &str)
 {
+    static boost::filesystem::detail::utf8_codecvt_facet theUTF8;
+
     return boost::filesystem::path(str.toStdString(), theUTF8);
 }
 
@@ -35,5 +35,11 @@ path getConfigDir()
 {
     return fromQString(
         QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+}
+
+path getHomeDir()
+{
+    return fromQString(
+        QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
 }
 }

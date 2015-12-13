@@ -15,19 +15,21 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QMetaType>
-#include <score/tuning.h>
-
 #ifndef APP_SETTINGS_H
 #define APP_SETTINGS_H
+
+#include <util/settingstree.h>
+
+#include <QMetaType>
+#include <score/tuning.h>
 
 /// Contains constants for keys used with the QSettings class,
 /// as well as default values for those settings where appropriate
 namespace Settings
 {
-    extern const char *APP_PREVIOUS_DIRECTORY;
-    extern const char *APP_RECENT_FILES;
-    extern const char *APP_WINDOW_STATE;
+    extern const Setting<std::string> PreviousDirectory;
+    extern const Setting<std::string> WindowState;
+    extern const Setting<std::vector<std::string>> RecentFiles;
 
     extern const char *MIDI_PREFERRED_API;
     extern const int MIDI_PREFERRED_API_DEFAULT;

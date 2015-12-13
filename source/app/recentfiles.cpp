@@ -18,34 +18,42 @@
 #include "recentfiles.h"
 
 #include <app/settings.h>
+#include <app/settingsmanager.h>
 #include <QMenu>
-#include <QSettings>
 #ifdef _WIN32
 #include <QDir>
 #include <shlobj.h>
 #endif
 
-RecentFiles::RecentFiles(QMenu *recentFilesMenu, QObject *parent) :
-    QObject(parent),
-    myRecentFilesMenu(recentFilesMenu)
+RecentFiles::RecentFiles(SettingsManager &settings_manager,
+                         QMenu *recent_files_menu, QObject *parent)
+    : QObject(parent),
+      mySettingsManager(settings_manager),
+      myRecentFilesMenu(recent_files_menu)
 {
-    Q_ASSERT(recentFilesMenu);
+    Q_ASSERT(recent_files_menu);
 
-    // load recently used files from previous sessions
-    QSettings settings;
-    myRecentFiles = settings.value(Settings::APP_RECENT_FILES).toStringList();
+    /// Load recently used files from previous sessions.
+    auto settings = mySettingsManager.getReadHandle();
+    auto recent_files = settings->get(Settings::RecentFiles);
+    for (const std::string &file : recent_files)
+        myRecentFiles.append(QString::fromStdString(file));
+
     updateMenu();
 }
 
 RecentFiles::~RecentFiles()
 {
-    save();
 }
 
 void RecentFiles::save()
 {
-    QSettings settings;
-    settings.setValue(Settings::APP_RECENT_FILES, myRecentFiles);
+    auto settings = mySettingsManager.getWriteHandle();
+    std::vector<std::string> recent_files;
+    for (const QString &file : myRecentFiles)
+        recent_files.push_back(file.toStdString());
+
+    settings->set(Settings::RecentFiles, recent_files);
 }
 
 void RecentFiles::add(const QString &fileName)

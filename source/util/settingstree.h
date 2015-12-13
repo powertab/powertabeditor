@@ -28,6 +28,19 @@
 #include <string>
 #include <vector>
 
+template <typename T>
+class Setting
+{
+public:
+    Setting(std::string key, T default_value)
+        : myKey(std::move(key)), myDefaultValue(std::move(default_value))
+    {
+    }
+
+    const std::string myKey;
+    const T myDefaultValue;
+};
+
 class SettingsTree
 {
 public:
@@ -53,12 +66,37 @@ public:
     template <typename T>
     std::vector<T> getList(const std::string &key) const;
 
+    template <typename T>
+    T get(const Setting<T> &setting) const
+    {
+        return get<T>(setting.myKey, setting.myDefaultValue);
+    }
+
+    template <typename T>
+    std::vector<T> get(const Setting<std::vector<T>> &setting) const
+    {
+        return getList<T>(setting.myKey);
+    }
+
     /// Set the value associated with the key.
     void set(const std::string &key, const SettingValue &value);
 
     /// Set the value associated with the key to a list of values.
     template <typename T>
     void setList(const std::string &key, const std::vector<T> &values);
+
+    template <typename T>
+    void set(const Setting<T> &setting, const T &value)
+    {
+        set(setting.myKey, value);
+    }
+
+    template <typename T>
+    void set(const Setting<std::vector<T>> &setting,
+             const std::vector<T> &value)
+    {
+        setList(setting.myKey, value);
+    }
 
     void save(std::ostream &os) const;
 

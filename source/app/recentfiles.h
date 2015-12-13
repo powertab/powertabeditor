@@ -22,13 +22,15 @@
 #include <QStringList>
 
 class QMenu;
+class SettingsManager;
 
 class RecentFiles : public QObject
 {
     Q_OBJECT
 
 public:
-    RecentFiles(QMenu *myRecentFilesMenu, QObject *parent = nullptr);
+    RecentFiles(SettingsManager &settings_manager, QMenu *recent_files_menu,
+                QObject *parent = nullptr);
     ~RecentFiles();
 
     /// Adds a file to the recent documents list.
@@ -43,14 +45,15 @@ private slots:
     void handleFileSelection(const QString& fileName);
 
 private:
-    QMenu *myRecentFilesMenu;
-    QStringList myRecentFiles;
-    static const int MAX_RECENT_FILES = 10;
-
     void updateMenu();
 
     /// Save the recent files list to disk.
     void save();
+
+    static const int MAX_RECENT_FILES = 10;
+    SettingsManager &mySettingsManager;
+    QMenu *myRecentFilesMenu;
+    QStringList myRecentFiles;
 };
 
 #endif

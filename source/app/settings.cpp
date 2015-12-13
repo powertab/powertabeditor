@@ -17,6 +17,7 @@
 
 #include "settings.h"
 
+#include <app/paths.h>
 #include <QDataStream>
 #include <QString>
 #include <QVector>
@@ -24,57 +25,60 @@
 
 namespace Settings
 {
-    const char *APP_PREVIOUS_DIRECTORY = "app/previousDirectory";
-    const char *APP_RECENT_FILES = "app/recentFiles";
-    const char *APP_WINDOW_STATE = "app/windowState";
+const Setting<std::string> PreviousDirectory(
+    "app/previous_directory", Paths::getHomeDir().generic_string());
 
-    const char *MIDI_PREFERRED_API = "midi/preferredApi";
-    const int MIDI_PREFERRED_API_DEFAULT = 0;
+const Setting<std::string> WindowState("app/window_state", "");
 
-    const char *MIDI_PREFERRED_PORT = "midi/preferredPort";
-    const int MIDI_PREFERRED_PORT_DEFAULT = 0;
+const Setting<std::vector<std::string>> RecentFiles("app/recent_files", {});
 
-    const char *MIDI_VIBRATO_LEVEL = "midi/vibrato";
-    const int MIDI_VIBRATO_LEVEL_DEFAULT = 85;
+const char *MIDI_PREFERRED_API = "midi/preferredApi";
+const int MIDI_PREFERRED_API_DEFAULT = 0;
 
-    const char *MIDI_WIDE_VIBRATO_LEVEL = "midi/wideVibrato";
-    const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT = 127;
+const char *MIDI_PREFERRED_PORT = "midi/preferredPort";
+const int MIDI_PREFERRED_PORT_DEFAULT = 0;
 
-    const char *MIDI_METRONOME_ENABLED = "midi/metronomeEnabled";
-    const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
+const char *MIDI_VIBRATO_LEVEL = "midi/vibrato";
+const int MIDI_VIBRATO_LEVEL_DEFAULT = 85;
 
-    const char *MIDI_METRONOME_PRESET = "midi/metronomePreset";
-    const int MIDI_METRONOME_PRESET_DEFAULT =
-        Midi::MIDI_PERCUSSION_PRESET_HI_WOOD_BLOCK;
+const char *MIDI_WIDE_VIBRATO_LEVEL = "midi/wideVibrato";
+const int MIDI_WIDE_VIBRATO_LEVEL_DEFAULT = 127;
 
-    const char *MIDI_METRONOME_STRONG_ACCENT = "midi/metronomeStrongAccent";
-    const int MIDI_METRONOME_STRONG_ACCENT_DEFAULT = 127;
+const char *MIDI_METRONOME_ENABLED = "midi/metronomeEnabled";
+const bool MIDI_METRONOME_ENABLED_DEFAULT = true;
 
-    const char *MIDI_METRONOME_WEAK_ACCENT = "midi/metronomeWeakAccent";
-    const int MIDI_METRONOME_WEAK_ACCENT_DEFAULT = 80;
+const char *MIDI_METRONOME_PRESET = "midi/metronomePreset";
+const int MIDI_METRONOME_PRESET_DEFAULT =
+    Midi::MIDI_PERCUSSION_PRESET_HI_WOOD_BLOCK;
 
-    const char *MIDI_METRONOME_ENABLE_COUNTIN = "midi/metronomeEnableCountIn";
-    const bool MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT = true;
+const char *MIDI_METRONOME_STRONG_ACCENT = "midi/metronomeStrongAccent";
+const int MIDI_METRONOME_STRONG_ACCENT_DEFAULT = 127;
 
-    const char *MIDI_METRONOME_COUNTIN_PRESET = "midi/metronomeCountInPreset";
-    const int MIDI_METRONOME_COUNTIN_PRESET_DEFAULT =
-        Midi::MIDI_PERCUSSION_PRESET_RIDE_CYMBAL2;
+const char *MIDI_METRONOME_WEAK_ACCENT = "midi/metronomeWeakAccent";
+const int MIDI_METRONOME_WEAK_ACCENT_DEFAULT = 80;
 
-    const char *MIDI_METRONOME_COUNTIN_VOLUME = "midi/metronomeCountInVolume";
-    const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT = 127;
+const char *MIDI_METRONOME_ENABLE_COUNTIN = "midi/metronomeEnableCountIn";
+const bool MIDI_METRONOME_ENABLE_COUNTIN_DEFAULT = true;
 
-    const char *GENERAL_OPEN_IN_NEW_WINDOW = "general/openFilesInNewWindow";
-    const bool GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT = false;
+const char *MIDI_METRONOME_COUNTIN_PRESET = "midi/metronomeCountInPreset";
+const int MIDI_METRONOME_COUNTIN_PRESET_DEFAULT =
+    Midi::MIDI_PERCUSSION_PRESET_RIDE_CYMBAL2;
 
-    const char *DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
-    const char *DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";
+const char *MIDI_METRONOME_COUNTIN_VOLUME = "midi/metronomeCountInVolume";
+const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT = 127;
 
-    const char *DEFAULT_INSTRUMENT_PRESET = "app/defaultInstrumentPreset";
-    const int DEFAULT_INSTRUMENT_PRESET_DEFAULT =
-        Midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL;
+const char *GENERAL_OPEN_IN_NEW_WINDOW = "general/openFilesInNewWindow";
+const bool GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT = false;
 
-    const char *DEFAULT_INSTRUMENT_TUNING = "app/defaultInstrumentTuning";
-    const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT = Tuning();
+const char *DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
+const char *DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";
+
+const char *DEFAULT_INSTRUMENT_PRESET = "app/defaultInstrumentPreset";
+const int DEFAULT_INSTRUMENT_PRESET_DEFAULT =
+    Midi::MIDI_PRESET_ACOUSTIC_GUITAR_STEEL;
+
+const char *DEFAULT_INSTRUMENT_TUNING = "app/defaultInstrumentTuning";
+const Tuning DEFAULT_INSTRUMENT_TUNING_DEFAULT = Tuning();
 }
 
 QDataStream &operator<<(QDataStream &out, const Tuning &tuning)

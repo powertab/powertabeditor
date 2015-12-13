@@ -32,5 +32,6 @@ void SettingsManager::save(const boost::filesystem::path &dir) const
     boost::filesystem::ofstream os(path);
     os.exceptions(std::ios::failbit | std::ios::badbit);
 
-    mySettings.save(os);
+    auto settings = getReadHandle();
+    settings->save(os);
 }
