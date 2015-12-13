@@ -68,6 +68,10 @@ void MidiPlayer::run()
 
     setIsPlaying(true);
 
+    MidiFile::LoadOptions options;
+    options.myEnableMetronome = true;
+    options.myRecordPositionChanges = true;
+
     // Load MIDI settings.
     int api;
     int port;
@@ -77,12 +81,16 @@ void MidiPlayer::run()
 
         api = settings->get(Settings::MidiApi);
         port = settings->get(Settings::MidiPort);
-    }
 
-    MidiFile::LoadOptions options;
-    options.myEnableMetronome = true;
-    options.myRecordPositionChanges = true;
-    // TODO - load other settings and replace QSettings.
+        options.myMetronomePreset = settings->get(Settings::MetronomePreset) +
+                                    Midi::MIDI_PERCUSSION_PRESET_OFFSET;
+        options.myStrongAccentVel =
+            settings->get(Settings::MetronomeStrongAccent);
+        options.myWeakAccentVel = settings->get(Settings::MetronomeWeakAccent);
+        options.myVibratoStrength = settings->get(Settings::MidiVibratoLevel);
+        options.myWideVibratoStrength =
+            settings->get(Settings::MidiWideVibratoLevel);
+    }
 
     MidiFile file;
     file.load(myScore, options);
@@ -190,7 +198,8 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
             return;
 
         velocity = settings->get(Settings::CountInVolume);
-        preset = settings->get(Settings::CountInPreset);
+        preset = settings->get(Settings::CountInPreset) +
+                 Midi::MIDI_PERCUSSION_PRESET_OFFSET;
     }
 
     // Figure out the time signature where playback is starting.
