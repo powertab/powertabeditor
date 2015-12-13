@@ -56,7 +56,6 @@ set( headers
     pubsub/playerpubsub.h
     pubsub/pubsub.h
     pubsub/clickpubsub.h
-    pubsub/settingspubsub.h
 )
 
 
