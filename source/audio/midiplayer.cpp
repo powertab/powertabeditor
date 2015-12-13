@@ -60,11 +60,11 @@ void MidiPlayer::run()
     } BOOST_SCOPE_EXIT_END
 #endif
 
-    boost::signals2::scoped_connection connection =
+    boost::signals2::scoped_connection connection(
         mySettingsManager.subscribeToChanges([&]() {
             auto settings = mySettingsManager.getReadHandle();
             myMetronomeEnabled = settings->get(Settings::MetronomeEnabled);
-        });
+        }));
 
     setIsPlaying(true);
 
