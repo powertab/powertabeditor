@@ -124,7 +124,9 @@ static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
     else if (json_val.IsUint())
         value = json_val.GetUint();
     else if (json_val.IsString())
-        value = json_val.GetString();
+        value = std::string(json_val.GetString(), json_val.GetStringLength());
+    else if (json_val.IsBool())
+        value = json_val.GetBool();
     else if (json_val.IsArray())
     {
         SettingList value_list;
@@ -169,6 +171,11 @@ struct JSONSerializer : public boost::static_visitor<void>
     void operator()(unsigned int x)
     {
         myWriter.Uint(x);
+    }
+
+    void operator()(bool x)
+    {
+        myWriter.Bool(x);
     }
 
     void operator()(const std::string &s)

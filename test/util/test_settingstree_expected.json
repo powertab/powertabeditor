@@ -12,6 +12,8 @@
     ],
     "parent": {
         "child_a": 234,
-        "child_b": "asdf"
+        "child_b": "asdf",
+        "child_c": true,
+        "child_d": false
     }
 }

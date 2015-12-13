@@ -20,6 +20,7 @@
 
 #include <app/pubsub/settingspubsub.h>
 #include <app/settings.h>
+#include <app/settingsmanager.h>
 #include <audio/midioutputdevice.h>
 #include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
@@ -30,10 +31,12 @@ typedef std::pair<int, int> MidiApiAndPort;
 Q_DECLARE_METATYPE(MidiApiAndPort)
 
 PreferencesDialog::PreferencesDialog(
-    QWidget *parent, std::shared_ptr<SettingsPubSub> settingsPubsub,
+    QWidget *parent, SettingsManager &settings_manager,
+    std::shared_ptr<SettingsPubSub> settingsPubsub,
     const TuningDictionary &dictionary)
     : QDialog(parent),
       ui(new Ui::PreferencesDialog),
+      mySettingsManager(settings_manager),
       mySettingsPubsub(settingsPubsub),
       myDictionary(dictionary)
 {
@@ -81,6 +84,8 @@ PreferencesDialog::~PreferencesDialog()
 void PreferencesDialog::loadCurrentSettings()
 {
     QSettings settings;
+    // TODO - fully replace QSettings
+    auto new_settings = mySettingsManager.getReadHandle();
 
     const unsigned int api =
         settings.value(Settings::MIDI_PREFERRED_API,
@@ -134,8 +139,7 @@ void PreferencesDialog::loadCurrentSettings()
                        Settings::MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT).toInt());
 
     ui->openInNewWindowCheckBox->setChecked(
-        settings.value(Settings::GENERAL_OPEN_IN_NEW_WINDOW,
-                       Settings::GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT).toBool());
+        new_settings->get(Settings::OpenFilesInNewWindow));
 
     ui->defaultInstrumentNameLineEdit->setText(
         settings.value(Settings::DEFAULT_INSTRUMENT_NAME,
@@ -157,6 +161,8 @@ void PreferencesDialog::loadCurrentSettings()
 void PreferencesDialog::accept()
 {
     QSettings settings;
+    // TODO - fully remove QSettings.
+    auto new_settings = mySettingsManager.getWriteHandle();
 
     MidiApiAndPort apiAndPort = ui->midiPortComboBox->itemData(
                 ui->midiPortComboBox->currentIndex()).value<MidiApiAndPort>();
@@ -190,7 +196,7 @@ void PreferencesDialog::accept()
     settings.setValue(Settings::MIDI_METRONOME_COUNTIN_VOLUME,
                       ui->countInVolumeSpinBox->value());
 
-    settings.setValue(Settings::GENERAL_OPEN_IN_NEW_WINDOW,
+    new_settings->set(Settings::OpenFilesInNewWindow,
                       ui->openInNewWindowCheckBox->isChecked());
 
     settings.setValue(Settings::DEFAULT_INSTRUMENT_NAME,

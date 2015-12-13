@@ -16,8 +16,10 @@
 */
  
 #include <app/appinfo.h>
+#include <app/paths.h>
 #include <app/powertabeditor.h>
 #include <app/settings.h>
+#include <app/settingsmanager.h>
 #include <boost/program_options.hpp>
 #include <csignal>
 #include <dialogs/crashdialog.h>
@@ -27,7 +29,6 @@
 #include <QFileOpenEvent>
 #include <QLocalServer>
 #include <QLocalSocket>
-#include <QSettings>
 #include <string>
 #include <withershins.hpp>
 
@@ -207,24 +208,29 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    QSettings settings;
-    // If an instance of the program is already running and we're in
-    // single-window mode, tell the running instance to open the files in
-    // new tabs.
-    if (!filesToOpen.empty() &&
-        !settings.value(Settings::GENERAL_OPEN_IN_NEW_WINDOW,
-                        Settings::GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT).toBool())
     {
-        QLocalSocket socket;
-        socket.connectToServer(QCoreApplication::applicationFilePath(),
-                               QIODevice::WriteOnly);
-        if (socket.waitForConnected(500))
+        SettingsManager settings_manager;
+        settings_manager.load(Paths::getConfigDir());
+
+        auto settings = settings_manager.getReadHandle();
+        bool single_window_mode = !settings->get(Settings::OpenFilesInNewWindow);
+
+        // If an instance of the program is already running and we're in
+        // single-window mode, tell the running instance to open the files in
+        // new tabs.
+        if (!filesToOpen.empty() && single_window_mode)
         {
-            QTextStream out(&socket);
-            for (const QString &file : filesToOpen)
-                out << file << "\n";
-            socket.waitForBytesWritten();
-            return EXIT_SUCCESS;
+            QLocalSocket socket;
+            socket.connectToServer(QCoreApplication::applicationFilePath(),
+                                   QIODevice::WriteOnly);
+            if (socket.waitForConnected(500))
+            {
+                QTextStream out(&socket);
+                for (const QString &file : filesToOpen)
+                    out << file << "\n";
+                socket.waitForBytesWritten();
+                return EXIT_SUCCESS;
+            }
         }
     }
 

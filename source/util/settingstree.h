@@ -48,6 +48,7 @@ public:
         int,
         unsigned int,
         std::string,
+        bool,
         std::vector<boost::recursive_variant_>,
         std::unordered_map<std::string, boost::recursive_variant_>>::type;
 
@@ -80,6 +81,14 @@ public:
 
     /// Set the value associated with the key.
     void set(const std::string &key, const SettingValue &value);
+
+    /// Since the implicit conversion from const char * to bool takes
+    /// precedence over the implicit std::string constructor, add an explicit
+    /// overload that does the right thing.
+    void set(const std::string &key, const char *value)
+    {
+        set(key, std::string(value));
+    }
 
     /// Set the value associated with the key to a list of values.
     template <typename T>

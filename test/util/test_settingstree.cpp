@@ -35,6 +35,16 @@ TEST_CASE("Util/SettingsTree/Int")
     REQUIRE_THROWS(settings.get<std::string>(theKey));
 }
 
+TEST_CASE("Util/SettingsTree/Bool")
+{
+    SettingsTree settings;
+
+    REQUIRE(settings.get(theKey, true) == true);
+    settings.set(theKey, false);
+    REQUIRE(settings.get(theKey, true) == false);
+    REQUIRE_THROWS(settings.get<int>(theKey));
+}
+
 TEST_CASE("Util/SettingsTree/String")
 {
     SettingsTree settings;
@@ -89,6 +99,8 @@ TEST_CASE("Util/SettingsTree/JSON/Export")
         "key_c", std::vector<std::string>({ "string1", "string2", "string3" }));
     settings.set("parent/child_a", 234);
     settings.set("parent/child_b", "asdf");
+    settings.set("parent/child_c", true);
+    settings.set("parent/child_d", false);
 
     std::ostringstream output;
     settings.save(output);
@@ -115,4 +127,6 @@ TEST_CASE("Util/SettingsTree/JSON/Import")
             std::vector<std::string>({ "string1", "string2", "string3" }));
     REQUIRE(settings.get<int>("parent/child_a", 0) == 234);
     REQUIRE(settings.get<std::string>("parent/child_b") == "asdf");
+    REQUIRE(settings.get<bool>("parent/child_c") == true);
+    REQUIRE(settings.get<bool>("parent/child_d") == false);
 }

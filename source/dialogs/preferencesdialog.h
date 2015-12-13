@@ -26,6 +26,7 @@ namespace Ui {
     class PreferencesDialog;
 }
 
+class SettingsManager;
 class SettingsPubSub;
 class TuningDictionary;
 
@@ -36,6 +37,7 @@ class PreferencesDialog : public QDialog
 
 public:
     explicit PreferencesDialog(QWidget *parent,
+                               SettingsManager &settings_manager,
                                std::shared_ptr<SettingsPubSub> settingsPubsub,
                                const TuningDictionary &dictionary);
     ~PreferencesDialog();
@@ -50,6 +52,7 @@ private:
     void loadCurrentSettings();
 
     Ui::PreferencesDialog *ui;
+    SettingsManager &mySettingsManager;
     std::shared_ptr<SettingsPubSub> mySettingsPubsub;
     const TuningDictionary &myDictionary;
     Tuning myDefaultTuning;

@@ -67,8 +67,8 @@ const int MIDI_METRONOME_COUNTIN_PRESET_DEFAULT =
 const char *MIDI_METRONOME_COUNTIN_VOLUME = "midi/metronomeCountInVolume";
 const int MIDI_METRONOME_COUNTIN_VOLUME_DEFAULT = 127;
 
-const char *GENERAL_OPEN_IN_NEW_WINDOW = "general/openFilesInNewWindow";
-const bool GENERAL_OPEN_IN_NEW_WINDOW_DEFAULT = false;
+const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
+                                         false);
 
 const char *DEFAULT_INSTRUMENT_NAME = "app/defaultInstrumentName";
 const char *DEFAULT_INSTRUMENT_NAME_DEFAULT = "Untitled";

@@ -480,7 +480,8 @@ void PowerTabEditor::editKeyboardShortcuts()
 
 void PowerTabEditor::editPreferences()
 {
-    PreferencesDialog dialog(this, mySettingsPubSub, *myTuningDictionary);
+    PreferencesDialog dialog(this, *mySettingsManager, mySettingsPubSub,
+                             *myTuningDictionary);
     dialog.exec();
 }
 
