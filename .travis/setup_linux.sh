@@ -3,7 +3,7 @@ set -e # Exit immediately if an error occurs.
 set -x # Echo commands.
 
 sudo add-apt-repository --yes ppa:george-edison55/precise-backports # For updated CMake
-sudo add-apt-repository --yes ppa:beineri/opt-qt521 # For Qt 5.2.1
+sudo add-apt-repository --yes ppa:beineri/opt-qt542 # For Qt 5.4.2
 sudo add-apt-repository --yes ppa:boost-latest/ppa # Updated Boost
 sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test # gcc 4.8
 sudo apt-get update -yqq
