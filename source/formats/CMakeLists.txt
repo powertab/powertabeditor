@@ -123,5 +123,6 @@ pte_library(
         ${platform_depends}
         ptemidi
         ptescore
+        pteutil
         pugixml
 )

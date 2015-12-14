@@ -17,7 +17,10 @@
 
 #include "midiexporter.h"
 
+#include <app/settings.h>
+#include <app/settingsmanager.h>
 #include <midi/midifile.h>
+#include <score/generalmidi.h>
 
 #include <array>
 #include <cstdint>
@@ -73,8 +76,9 @@ static void writeVariableLength(std::ostream &os, uint32_t val)
     }
 }
 
-MidiExporter::MidiExporter()
-    : FileFormatExporter(FileFormat("MIDI File", { "mid" }))
+MidiExporter::MidiExporter(const SettingsManager &settings_manager)
+    : FileFormatExporter(FileFormat("MIDI File", { "mid" })),
+      mySettingsManager(settings_manager)
 {
 }
 
@@ -86,7 +90,17 @@ void MidiExporter::save(const std::string &filename, const Score &score)
     MidiFile::LoadOptions options;
     options.myEnableMetronome = false;
     options.myRecordPositionChanges = false;
-    // FIXME - need to initialize based on QSettings!
+    {
+        auto settings = mySettingsManager.getReadHandle();
+        options.myMetronomePreset = settings->get(Settings::MetronomePreset) +
+                                    Midi::MIDI_PERCUSSION_PRESET_OFFSET;
+        options.myStrongAccentVel =
+            settings->get(Settings::MetronomeStrongAccent);
+        options.myWeakAccentVel = settings->get(Settings::MetronomeWeakAccent);
+        options.myVibratoStrength = settings->get(Settings::MidiVibratoLevel);
+        options.myWideVibratoStrength =
+            settings->get(Settings::MidiWideVibratoLevel);
+    }
 
     MidiFile file;
     file.load(score, options);

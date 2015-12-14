@@ -380,12 +380,12 @@ private:
     /// Returns the location of the caret within the active document.
     ScoreLocation &getLocation();
 
+    std::unique_ptr<SettingsManager> mySettingsManager;
     std::unique_ptr<DocumentManager> myDocumentManager;
     std::unique_ptr<FileFormatManager> myFileFormatManager;
     std::unique_ptr<UndoManager> myUndoManager;
     std::unique_ptr<MidiPlayer> myMidiPlayer;
     std::unique_ptr<TuningDictionary> myTuningDictionary;
-    std::unique_ptr<SettingsManager> mySettingsManager;
     PlayerEditPubSub myPlayerEditPubSub;
     PlayerRemovePubSub myPlayerRemovePubSub;
     InstrumentEditPubSub myInstrumentEditPubSub;

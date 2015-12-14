@@ -26,12 +26,13 @@
 class FileFormatImporter;
 class FileFormatExporter;
 class Score;
+class SettingsManager;
 
 /// An interface for import/export of various file formats.
 class FileFormatManager
 {
 public:
-    FileFormatManager();
+    FileFormatManager(const SettingsManager &settings_manager);
 
     /// Returns the file format corresponding to the given extension.
     boost::optional<FileFormat> findFormat(const std::string &extension) const;

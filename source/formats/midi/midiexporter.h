@@ -26,13 +26,15 @@ class MidiFile;
 class MidiExporter : public FileFormatExporter
 {
 public:
-    MidiExporter();
+    MidiExporter(const SettingsManager &settings_manager);
 
     virtual void save(const std::string &filename, const Score &score) override;
 
 private:
     static void writeHeader(std::ostream &os, const MidiFile &file);
     static void writeTrack(std::ostream &os, const MidiEventList &events);
+
+    const SettingsManager &mySettingsManager;
 };
 
 #endif

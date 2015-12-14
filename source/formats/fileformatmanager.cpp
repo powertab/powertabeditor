@@ -24,7 +24,7 @@
 #include <formats/powertab/powertabexporter.h>
 #include <formats/powertab_old/powertaboldimporter.h>
 
-FileFormatManager::FileFormatManager()
+FileFormatManager::FileFormatManager(const SettingsManager &settings_manager)
 {
     myImporters.emplace_back(new PowerTabImporter());
     myImporters.emplace_back(new PowerTabOldImporter());
@@ -32,7 +32,7 @@ FileFormatManager::FileFormatManager()
     myImporters.emplace_back(new GpxImporter());
 
     myExporters.emplace_back(new PowerTabExporter());
-    myExporters.emplace_back(new MidiExporter());
+    myExporters.emplace_back(new MidiExporter(settings_manager));
 }
 
 boost::optional<FileFormat> FileFormatManager::findFormat(

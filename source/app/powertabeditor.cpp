@@ -145,11 +145,11 @@
 
 PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
+      mySettingsManager(new SettingsManager()),
       myDocumentManager(new DocumentManager()),
-      myFileFormatManager(new FileFormatManager()),
+      myFileFormatManager(new FileFormatManager(*mySettingsManager)),
       myUndoManager(new UndoManager()),
       myTuningDictionary(new TuningDictionary()),
-      mySettingsManager(new SettingsManager()),
       myIsPlaying(false),
       myRecentFiles(nullptr),
       myActiveDurationType(Position::EighthNote),
