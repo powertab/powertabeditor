@@ -17,6 +17,7 @@
 
 #include "paths.h"
 
+#include <app/appinfo.h>
 #include <boost/filesystem/detail/utf8_codecvt_facet.hpp>
 #include <QString>
 #include <QStandardPaths>
@@ -33,8 +34,15 @@ namespace Paths
 {
 path getConfigDir()
 {
-    return fromQString(
+    auto p = fromQString(
         QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+
+    // On Linux, ConfigLocation is ~/.config, so append the application name.
+#ifdef Q_OS_LINUX
+    return p / AppInfo::APPLICATION_ID;
+#else
+    return p;
+#endif
 }
 
 path getHomeDir()
