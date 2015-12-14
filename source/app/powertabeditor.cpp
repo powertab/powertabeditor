@@ -183,6 +183,7 @@ PowerTabEditor::PowerTabEditor()
     createMixer();
     createInstrumentPanel();
     createCommands();
+    loadKeyboardShortcuts();
     createMenus();
 
     // Set up the recent files menu.
@@ -469,9 +470,10 @@ void PowerTabEditor::cycleTab(int offset)
 
 void PowerTabEditor::editKeyboardShortcuts()
 {
-    KeyboardSettingsDialog dialog(
-        this, findChildren<Command *>().toVector().toStdVector());
+    KeyboardSettingsDialog dialog(this, getCommands());
     dialog.exec();
+
+    saveKeyboardShortcuts();
 }
 
 void PowerTabEditor::editPreferences()
@@ -2464,6 +2466,30 @@ void PowerTabEditor::createCommands()
     myInstrumentDockWidgetCommand =
         createCommandWrapper(myInstrumentDockWidget->toggleViewAction(),
                              "Window.Instruments", QKeySequence(), this);
+}
+
+void PowerTabEditor::loadKeyboardShortcuts()
+{
+    auto settings = mySettingsManager->getReadHandle();
+    for (auto command : getCommands())
+        command->load(*settings);
+}
+
+void PowerTabEditor::saveKeyboardShortcuts() const
+{
+    auto settings = mySettingsManager->getWriteHandle();
+    for (auto command : getCommands())
+        command->save(*settings);
+}
+
+std::vector<const Command *> PowerTabEditor::getCommands() const
+{
+    return findChildren<const Command *>().toVector().toStdVector();
+}
+
+std::vector<Command *> PowerTabEditor::getCommands()
+{
+    return findChildren<Command *>().toVector().toStdVector();
 }
 
 void PowerTabEditor::createMixer()

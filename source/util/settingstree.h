@@ -107,6 +107,9 @@ public:
         setList(setting.myKey, value);
     }
 
+    /// Removes a setting.
+    void remove(const std::string &key);
+
     void load(std::istream &is);
     void save(std::ostream &os) const;
 

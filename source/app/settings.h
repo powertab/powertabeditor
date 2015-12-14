@@ -21,6 +21,7 @@
 #include <util/settingstree.h>
 
 class QByteArray;
+class QKeySequence;
 class Tuning;
 
 /// All predefined settings and their default values.
@@ -63,6 +64,13 @@ struct SettingValueConverter<QByteArray>
 {
     static QByteArray from(const SettingsTree::SettingValue &v);
     static SettingsTree::SettingValue to(const QByteArray &array);
+};
+
+template <>
+struct SettingValueConverter<QKeySequence>
+{
+    static QKeySequence from(const SettingsTree::SettingValue &v);
+    static SettingsTree::SettingValue to(const QKeySequence &seq);
 };
 
 #endif

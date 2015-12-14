@@ -20,6 +20,8 @@
 
 #include <QAction>
 
+class SettingsTree;
+
 /// An extension of QAction, supporting customizable shortcuts, default key
 /// sequences, etc.
 class Command : public QAction
@@ -33,24 +35,20 @@ public:
     QString id() const;
     QKeySequence defaultShortcut() const;
 
-    /// Set the shortcut for the command, and save it externally so that the
-    /// setting will persist.
-    void setShortcut(const QKeySequence& shortcut);
-
-private:
     /// Loads the shortcut for the command - if there is not a customized
     /// shortcut in the settings file, then the default shortcut is used.
-    void loadShortcut();
+    void load(const SettingsTree &settings);
 
+    /// Saves the command's shortcut.
+    void save(SettingsTree &settings) const;
+
+private:
     /// Returns the name of the key used for storing the customized shortcut.
-    QString settingsKey() const;
+    std::string getSettingsKey() const;
 
     /// Unique identifer (used when storing a customized key sequence).
     const QString myId;
     const QKeySequence myDefaultShortcut;
-
-    /// Prefix for all keys used with QSetting.
-    static const QString KEY_PREFIX;
 };
 
 #endif

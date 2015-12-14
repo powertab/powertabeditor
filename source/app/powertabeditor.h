@@ -283,6 +283,14 @@ private:
     /// Build the instrument panel.
     void createInstrumentPanel();
 
+    /// Load any custom keyboard shortcuts.
+    void loadKeyboardShortcuts();
+    /// Save any custom keyboard shortcuts.
+    void saveKeyboardShortcuts() const;
+    /// Return a list of all actions.
+    std::vector<const Command *> getCommands() const;
+    std::vector<Command *> getCommands();
+
     /// Helper function to create a wrapper around QAction that supports
     /// customizable shortcuts.
     static Command *createCommandWrapper(QAction *action, const QString &id,

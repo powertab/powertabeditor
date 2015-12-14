@@ -117,6 +117,39 @@ private:
     mutable size_t myIndex;
 };
 
+struct Remover : public boost::static_visitor<void>
+{
+    Remover(const std::string &key)
+        : myIndex(0)
+    {
+        boost::algorithm::split(myComponents, key, boost::is_any_of("/"));
+    }
+
+    template <typename T>
+    void operator()(T &)
+    {
+    }
+
+    void operator()(SettingMap &map)
+    {
+        auto it = map.find(myComponents[myIndex]);
+        if (it != map.end())
+        {
+            if (myIndex == myComponents.size() - 1)
+                map.erase(it);
+            else
+            {
+                ++myIndex;
+                boost::apply_visitor(*this, it->second);
+            }
+        }
+    }
+
+private:
+    std::vector<std::string> myComponents;
+    size_t myIndex;
+};
+
 static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
 {
     if (json_val.IsInt())
@@ -224,6 +257,12 @@ boost::optional<SettingValue> SettingsTree::find(
     const std::string &key) const
 {
     return boost::apply_visitor(Finder(key), myTree);
+}
+
+void SettingsTree::remove(const std::string &key)
+{
+    Remover visitor(key);
+    return boost::apply_visitor(visitor, myTree);
 }
 
 void SettingsTree::load(std::istream &is)

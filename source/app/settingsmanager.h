@@ -38,10 +38,8 @@ public:
         Handle(Handle &&) = default;
         Handle& operator=(const Handle &) = delete;
 
-        T *operator->() const
-        {
-            return &mySettings;
-        }
+        T *operator->() const { return &mySettings; }
+        T &operator*() const { return mySettings; }
 
     protected:
         Handle(T &settings, std::mutex &mutex)

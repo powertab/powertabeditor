@@ -23,6 +23,7 @@
 #include <sstream>
 
 #include <QByteArray>
+#include <QKeySequence>
 
 namespace Settings
 {
@@ -120,4 +121,17 @@ SettingsTree::SettingValue SettingValueConverter<QByteArray>::to(
     const QByteArray &array)
 {
     return array.toBase64().toStdString();
+}
+
+QKeySequence SettingValueConverter<QKeySequence>::from(
+    const SettingsTree::SettingValue &v)
+{
+    return QKeySequence::fromString(
+        QString::fromStdString(boost::get<std::string>(v)));
+}
+
+SettingsTree::SettingValue SettingValueConverter<QKeySequence>::to(
+    const QKeySequence &seq)
+{
+    return seq.toString().toStdString();
 }

@@ -130,3 +130,13 @@ TEST_CASE("Util/SettingsTree/JSON/Import")
     REQUIRE(settings.get<bool>("parent/child_c") == true);
     REQUIRE(settings.get<bool>("parent/child_d") == false);
 }
+
+TEST_CASE("Util/SettingsTree/Remove")
+{
+    SettingsTree settings;
+
+    settings.set(theKey, 1);
+    REQUIRE(settings.get(theKey, -1) == 1);
+    settings.remove(theKey);
+    REQUIRE(settings.get(theKey, -1) == -1);
+}
