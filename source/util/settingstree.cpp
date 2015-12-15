@@ -265,7 +265,7 @@ void SettingsTree::remove(const std::string &key)
     return boost::apply_visitor(visitor, myTree);
 }
 
-void SettingsTree::load(std::istream &is)
+void SettingsTree::loadFromJSON(std::istream &is)
 {
     Util::RapidJSON::IStreamWrapper stream(is);
 
@@ -283,7 +283,7 @@ void SettingsTree::load(std::istream &is)
     parseValue(myTree, document);
 }
 
-void SettingsTree::save(std::ostream &os) const
+void SettingsTree::saveToJSON(std::ostream &os) const
 {
     JSONSerializer serializer(os);
     boost::apply_visitor(serializer, myTree);

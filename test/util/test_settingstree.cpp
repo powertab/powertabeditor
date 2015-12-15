@@ -103,7 +103,7 @@ TEST_CASE("Util/SettingsTree/JSON/Export")
     settings.set("parent/child_d", false);
 
     std::ostringstream output;
-    settings.save(output);
+    settings.saveToJSON(output);
 
     std::ifstream expected_file(
         AppInfo::getAbsolutePath("data/test_settingstree_expected.json"));
@@ -119,7 +119,7 @@ TEST_CASE("Util/SettingsTree/JSON/Import")
         AppInfo::getAbsolutePath("data/test_settingstree_expected.json"));
 
     SettingsTree settings;
-    settings.load(input_file);
+    settings.loadFromJSON(input_file);
 
     REQUIRE(settings.get<int>("key_a", 0) == -123);
     REQUIRE(settings.getList<int>("key_b") == std::vector<int>({ 1, 2, 3 }));

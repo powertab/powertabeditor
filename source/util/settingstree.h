@@ -110,8 +110,11 @@ public:
     /// Removes a setting.
     void remove(const std::string &key);
 
-    void load(std::istream &is);
-    void save(std::ostream &os) const;
+    void loadFromJSON(std::istream &is);
+    void saveToJSON(std::ostream &os) const;
+
+    /// On OSX only, saves the settings using NSUserDefaults.
+    void saveToPlist() const;
 
 private:
     void setImpl(const std::string &key, const SettingValue &value);

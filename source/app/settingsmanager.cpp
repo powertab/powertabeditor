@@ -35,7 +35,7 @@ void SettingsManager::load(const boost::filesystem::path &dir)
         boost::filesystem::ifstream is(path);
 
         auto settings = getWriteHandle();
-        settings->load(is);
+        settings->loadFromJSON(is);
     }
     catch (const std::exception &e)
     {
@@ -48,11 +48,16 @@ void SettingsManager::save(const boost::filesystem::path &dir) const
     // Ensure the directory exists.
     boost::filesystem::create_directories(dir);
 
-    // Save the settings to disk.
+    auto settings = getReadHandle();
+
+#ifdef __APPLE__
+    settings->saveToPlist();
+#else
+    // Save the settings to disk in JSON format.
     auto path = dir / theSettingsFilename;
     boost::filesystem::ofstream os(path);
     os.exceptions(std::ios::failbit | std::ios::badbit);
 
-    auto settings = getReadHandle();
-    settings->save(os);
+    settings->saveToJSON(os);
+#endif
 }

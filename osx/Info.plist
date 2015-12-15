@@ -117,7 +117,7 @@
 	<key>CFBundleIconFile</key>
 	<string>powertabeditor.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.powertab.PowerTabEditor</string>
+	<string>org.powertab.powertabeditor</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
