@@ -27,7 +27,7 @@ namespace AppInfo
     const char *APPLICATION_NAME = "Power Tab Editor";
     const char *APPLICATION_VERSION = "2.0";
 
-#if defined(Q_OS_WIN) or defined(Q_OS_MAC)
+#if defined(Q_OS_WIN)
     const char *ORGANIZATION_NAME = "Power Tab";
     const char *APPLICATION_ID = "Power Tab Editor";
 #else

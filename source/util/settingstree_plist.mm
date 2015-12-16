@@ -17,8 +17,14 @@
 
 #include "settingstree.h"
 
+#include <app/appinfo.h>
+#include <boost/algorithm/string/replace.hpp>
+
 #import <Foundation/Foundation.h>
 
+#include <iostream>
+
+using SettingValue = SettingsTree::SettingValue;
 using SettingList = SettingsTree::SettingList;
 using SettingMap = SettingsTree::SettingMap;
 
@@ -110,4 +116,55 @@ void SettingsTree::saveToPlist() const
 {
     PListSerializer serializer;
     boost::apply_visitor(serializer, myTree);
+}
+
+static SettingValue converToSettingValue(NSObject *obj)
+{
+    if ([obj isKindOfClass:[NSArray class]])
+    {
+        auto list = (NSArray *)obj;
+        SettingList settings;
+
+        for (NSObject *child in list)
+            settings.push_back(converToSettingValue(child));
+
+        return settings;
+    }
+    else if ([obj isKindOfClass:[NSString class]])
+    {
+        auto str = (NSString *)obj;
+        return std::string([str UTF8String]);
+    }
+    else if ([obj isKindOfClass:[NSNumber class]])
+    {
+        auto num = (NSNumber *)obj;
+
+        // Determine whether we have a boolean value.
+        if ([num isEqualToValue:@YES] || [num isEqualToValue:@NO])
+            return static_cast<bool>([num intValue]);
+        else
+            return [num intValue];
+    }
+    else
+        throw std::runtime_error("Unknown object type.");
+}
+
+void SettingsTree::loadFromPlist()
+{
+    // Only load settings from the application's domain.
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *domain = [bundle bundleIdentifier];
+    if (!domain)
+        domain = [NSString stringWithUTF8String:AppInfo::APPLICATION_ID];
+
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    auto dict = [prefs persistentDomainForName:domain];
+    for (NSString *key in [dict allKeys])
+    {
+        std::string key_str([key UTF8String]);
+        boost::replace_all(key_str, ".", "/");
+
+        NSObject *obj = [prefs objectForKey:key];
+        setImpl(key_str, converToSettingValue(obj));
+    }
 }

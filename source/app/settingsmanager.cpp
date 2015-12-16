@@ -25,6 +25,13 @@ static const char *theSettingsFilename = "settings.json";
 
 void SettingsManager::load(const boost::filesystem::path &dir)
 {
+#ifdef __APPLE__
+    if (!boost::filesystem::exists(dir))
+        return;
+
+    auto settings = getWriteHandle();
+    settings->loadFromPlist();
+#else
     auto path = dir / theSettingsFilename;
 
     if (!boost::filesystem::exists(path))
@@ -41,6 +48,7 @@ void SettingsManager::load(const boost::filesystem::path &dir)
     {
         std::cerr << "Error loading " << path << ": " << e.what() << std::endl;
     }
+#endif
 }
 
 void SettingsManager::save(const boost::filesystem::path &dir) const

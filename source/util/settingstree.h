@@ -115,6 +115,7 @@ public:
 
     /// On OSX only, saves the settings using NSUserDefaults.
     void saveToPlist() const;
+    void loadFromPlist();
 
 private:
     void setImpl(const std::string &key, const SettingValue &value);
