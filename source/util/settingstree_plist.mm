@@ -22,8 +22,6 @@
 
 #import <Foundation/Foundation.h>
 
-#include <iostream>
-
 using SettingValue = SettingsTree::SettingValue;
 using SettingList = SettingsTree::SettingList;
 using SettingMap = SettingsTree::SettingMap;
