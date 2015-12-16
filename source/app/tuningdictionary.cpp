@@ -55,23 +55,20 @@ void TuningDictionary::save() const
 {
     try
     {
-        QStringList paths = availablePaths();
-        for (int i = paths.size() - 1; i >= 0; --i)
-        {
-            const QString &path = paths[i];
+        QString path =
+            QStandardPaths::writableLocation(QStandardPaths::DataLocation) +
+            "/tunings.json";
 
-            // Ensure the directory exists first.
-            if (!QDir().mkpath(QFileInfo(path).path()))
-                continue;
+        // Ensure the directory exists first.
+        if (!QDir().mkpath(QFileInfo(path).path()))
+            throw std::runtime_error("Error creating data directory.");
 
-            std::ofstream file(path.toLocal8Bit().constData());
-            if (!file)
-                continue;
+        std::ofstream file(path.toLocal8Bit().constData());
+        if (!file)
+            throw std::runtime_error("Error opening file for writing.");
 
-            QMutexLocker lock(&myMutex);
-            ScoreUtils::save(file, "tunings", myTunings);
-            break;
-        }
+        QMutexLocker lock(&myMutex);
+        ScoreUtils::save(file, "tunings", myTunings);
     }
     catch (const std::exception &e)
     {
