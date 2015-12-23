@@ -18,11 +18,10 @@
 #ifndef APP_SETTINGS_H
 #define APP_SETTINGS_H
 
+#include <QByteArray>
+#include <QKeySequence>
+#include <score/tuning.h>
 #include <util/settingstree.h>
-
-class QByteArray;
-class QKeySequence;
-class Tuning;
 
 /// All predefined settings and their default values.
 namespace Settings
@@ -31,21 +30,6 @@ namespace Settings
     extern const Setting<QByteArray> WindowState;
     extern const Setting<std::vector<std::string>> RecentFiles;
     extern const Setting<bool> OpenFilesInNewWindow;
-
-    extern const Setting<int> MidiApi;
-    extern const Setting<int> MidiPort;
-
-    extern const Setting<int> MidiVibratoLevel;
-    extern const Setting<int> MidiWideVibratoLevel;
-
-    extern const Setting<bool> MetronomeEnabled;
-    extern const Setting<int> MetronomePreset;
-    extern const Setting<int> MetronomeStrongAccent;
-    extern const Setting<int> MetronomeWeakAccent;
-
-    extern const Setting<bool> CountInEnabled;
-    extern const Setting<int> CountInPreset;
-    extern const Setting<int> CountInVolume;
 
     extern const Setting<std::string> DefaultInstrumentName;
     extern const Setting<int> DefaultInstrumentPreset;

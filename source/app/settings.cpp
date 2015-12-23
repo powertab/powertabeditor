@@ -19,11 +19,7 @@
 
 #include <app/paths.h>
 #include <score/generalmidi.h>
-#include <score/tuning.h>
 #include <sstream>
-
-#include <QByteArray>
-#include <QKeySequence>
 
 namespace Settings
 {
@@ -33,30 +29,6 @@ const Setting<std::string> PreviousDirectory(
 const Setting<QByteArray> WindowState("app/window_state", QByteArray());
 
 const Setting<std::vector<std::string>> RecentFiles("app/recent_files", {});
-
-const Setting<int> MidiApi("midi/api", 0);
-
-const Setting<int> MidiPort("midi/port", 0);
-
-const Setting<int> MidiVibratoLevel("midi/vibrato_level", 85);
-
-const Setting<int> MidiWideVibratoLevel("midi/wide_vibrato_level", 127);
-
-const Setting<bool> MetronomeEnabled("midi/metronome_enabled", true);
-
-const Setting<int> MetronomePreset("midi/metronome_preset",
-                                   Midi::MIDI_PERCUSSION_PRESET_HI_WOOD_BLOCK);
-
-const Setting<int> MetronomeStrongAccent("midi/metronome_strong_accent", 127);
-
-const Setting<int> MetronomeWeakAccent("midi/metronome_weak_accent", 80);
-
-const Setting<bool> CountInEnabled("midi/count_in_enabled", true);
-
-const Setting<int> CountInPreset("midi/count_in_preset",
-                                 Midi::MIDI_PERCUSSION_PRESET_RIDE_CYMBAL2);
-
-const Setting<int> CountInVolume("midi/count_in_volume", 127);
 
 const Setting<bool> OpenFilesInNewWindow("app/open_files_in_new_window",
                                          false);

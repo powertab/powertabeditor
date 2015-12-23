@@ -17,8 +17,8 @@
 
 #include "midiexporter.h"
 
-#include <app/settings.h>
 #include <app/settingsmanager.h>
+#include <audio/settings.h>
 #include <midi/midifile.h>
 #include <score/generalmidi.h>
 

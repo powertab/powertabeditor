@@ -21,6 +21,7 @@
 #include <app/settings.h>
 #include <app/settingsmanager.h>
 #include <audio/midioutputdevice.h>
+#include <audio/settings.h>
 #include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
 #include <score/generalmidi.h>

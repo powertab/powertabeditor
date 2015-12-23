@@ -17,9 +17,9 @@
   
 #include "midiplayer.h"
 
-#include <app/settings.h>
 #include <app/settingsmanager.h>
 #include <audio/midioutputdevice.h>
+#include <audio/settings.h>
 #include <boost/rational.hpp>
 #include <cassert>
 #include <midi/midifile.h>

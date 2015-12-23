@@ -85,6 +85,7 @@
 #include <app/tuningdictionary.h>
 
 #include <audio/midiplayer.h>
+#include <audio/settings.h>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/range/algorithm/transform.hpp>
