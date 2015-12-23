@@ -35,8 +35,15 @@ public:
     {
     public:
         Handle(const Handle &) = delete;
-        Handle(Handle &&) = default;
         Handle& operator=(const Handle &) = delete;
+
+        // TODO - change to a defaulted move constructor when VS2013 is no
+        // longer supported.
+        Handle(Handle &&other)
+            : mySettings(other.mySettings), myLock(std::move(other.myLock))
+        {
+
+        }
 
         T *operator->() const { return &mySettings; }
         T &operator*() const { return mySettings; }
@@ -72,7 +79,12 @@ public:
             mySignal();
         }
 
-        WriteHandle(WriteHandle &&) = default;
+        // TODO - change to a defaulted move constructor when VS2013 is no
+        // longer supported.
+        WriteHandle(WriteHandle &&other)
+            : Handle<SettingsTree>(std::move(other)), mySignal(other.mySignal)
+        {
+        }
 
     private:
         SettingsChangedSignal &mySignal;
