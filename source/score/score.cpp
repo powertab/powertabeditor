@@ -213,7 +213,7 @@ void ScoreUtils::adjustRehearsalSigns(Score &score)
 void ScoreUtils::addStandardFilters(Score &score)
 {
     ViewFilter filter_all;
-    filter_all.setDescription("All");
+    filter_all.setDescription("All Instruments");
     score.insertViewFilter(filter_all);
 
     ViewFilter filter_guitars;
