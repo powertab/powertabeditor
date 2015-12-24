@@ -148,13 +148,6 @@ void MidiPlayer::run()
             }
         }
 
-        // Skip metronome events if necessary.
-        if (event->isNoteOnOff() && event->getChannel() == METRONOME_CHANNEL &&
-            !myMetronomeEnabled)
-        {
-            continue;
-        }
-
         const int delta = event->getTicks();
         assert(delta >= 0);
 
@@ -162,6 +155,13 @@ void MidiPlayer::run()
             boost::rational<int>(delta, ticks_per_beat) * beat_duration);
 
         usleep(duration_us * (100.0 / myPlaybackSpeed));
+
+        // Don't play metronome events if the metronome is disabled.
+        if (event->isNoteOnOff() && event->getChannel() == METRONOME_CHANNEL &&
+            !myMetronomeEnabled)
+        {
+            continue;
+        }
 
         device.sendMessage(event->getData());
 
