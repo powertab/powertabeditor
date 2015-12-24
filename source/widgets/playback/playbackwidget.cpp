@@ -66,7 +66,7 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
     });
 
     ui->metronomeToggleButton->setIcon(
-        style()->standardIcon(QStyle::SP_MediaVolumeMuted));
+        style()->standardIcon(QStyle::SP_MediaVolume));
     connect(&metronomeCommand, &QAction::changed, [&]() {
         ui->metronomeToggleButton->setToolTip(
             tr("Click to toggle whether the metronome is turned on%1.")
