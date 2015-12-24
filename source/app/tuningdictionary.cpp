@@ -21,34 +21,25 @@
 #include <fstream>
 #include <QDebug>
 #include <QDir>
-#include <QMutexLocker>
 #include <QStandardPaths>
-#include <QtConcurrentRun>
 #include <score/serialization.h>
 #include <stdexcept>
 
-void TuningDictionary::load()
+std::vector<Tuning> TuningDictionary::load()
 {
-    try
+    QStringList paths = availablePaths();
+    for (const QString &path : paths)
     {
-        QStringList paths = availablePaths();
-        for (const QString &path : paths)
-        {
-            if (!QFile(path).exists())
-                continue;
+        if (!QFile(path).exists())
+            continue;
 
-            std::ifstream file(path.toLocal8Bit().constData());
+        std::ifstream file(path.toLocal8Bit().constData());
+        std::vector<Tuning> tunings;
+        ScoreUtils::load(file, "tunings", tunings);
+        return tunings;
+    }
 
-            QMutexLocker lock(&myMutex);
-            ScoreUtils::load(file, "tunings", myTunings);
-            break;
-        }
-    }
-    catch (const std::exception &e)
-    {
-        qDebug() << "Error loading tuning dictionary.";
-        qDebug() << "Exception: " << e.what();
-    }
+    throw std::runtime_error("Could not locate tuning dictionary.");
 }
 
 void TuningDictionary::save() const
@@ -67,7 +58,7 @@ void TuningDictionary::save() const
         if (!file)
             throw std::runtime_error("Error opening file for writing.");
 
-        QMutexLocker lock(&myMutex);
+        ensureLoaded();
         ScoreUtils::save(file, "tunings", myTunings);
     }
     catch (const std::exception &e)
@@ -79,12 +70,13 @@ void TuningDictionary::save() const
 
 void TuningDictionary::loadInBackground()
 {
-    QtConcurrent::run(this, &TuningDictionary::load);
+    myFuture = std::async(std::launch::async, &TuningDictionary::load);
 }
 
 void TuningDictionary::findTunings(int numStrings,
                                    std::vector<Tuning *> &tunings)
 {
+    ensureLoaded();
     for (Tuning &tuning : myTunings)
     {
         if (tuning.getStringCount() == numStrings)
@@ -95,6 +87,7 @@ void TuningDictionary::findTunings(int numStrings,
 void TuningDictionary::findTunings(int numStrings,
                                    std::vector<const Tuning *> &tunings) const
 {
+    ensureLoaded();
     for (const Tuning &tuning : myTunings)
     {
         if (tuning.getStringCount() == numStrings)
@@ -104,11 +97,13 @@ void TuningDictionary::findTunings(int numStrings,
 
 void TuningDictionary::addTuning(const Tuning &tuning)
 {
+    ensureLoaded();
     myTunings.push_back(tuning);
 }
 
 void TuningDictionary::removeTuning(const Tuning &tuning)
 {
+    ensureLoaded();
     myTunings.erase(std::remove(myTunings.begin(), myTunings.end(), tuning));
 }
 
@@ -121,4 +116,14 @@ QStringList TuningDictionary::availablePaths()
         path.append("/tunings.json");
 
     return paths;
+}
+
+void TuningDictionary::ensureLoaded() const
+{
+    if (myFuture.valid())
+    {
+        // myTunings shouldn't be mutable in general.
+        auto me = const_cast<TuningDictionary *>(this);
+        me->myTunings = myFuture.get();
+    }
 }

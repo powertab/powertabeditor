@@ -18,7 +18,7 @@
 #ifndef APP_TUNINGDICTIONARY_H
 #define APP_TUNINGDICTIONARY_H
 
-#include <QMutex>
+#include <future>
 #include <QStringList>
 #include <score/tuning.h>
 #include <vector>
@@ -45,12 +45,14 @@ public:
 
 private:
     /// Loads the tuning dictionary from a file.
-    void load();
+    static std::vector<Tuning> load();
+
+    void ensureLoaded() const;
 
     /// Possible locations for the tuning dictionary, from high to low priority.
     static QStringList availablePaths();
 
-    mutable QMutex myMutex;
+    mutable std::future<std::vector<Tuning>> myFuture;
     std::vector<Tuning> myTunings;
 };
 

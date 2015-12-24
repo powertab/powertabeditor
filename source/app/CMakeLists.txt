@@ -81,5 +81,4 @@ pte_library(
         boost_filesystem
         Qt5::Widgets
         Qt5::PrintSupport
-        Qt5::Concurrent
 )
