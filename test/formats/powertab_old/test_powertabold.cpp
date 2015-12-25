@@ -152,7 +152,8 @@ TEST_CASE("Formats/PowerTabOldImport/AlternateEndings", "")
     REQUIRE(!ending.hasDalSegnoSegno());
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Directions", "")
+// TODO - re-enable this test when merging of directions is implemented.
+TEST_CASE("Formats/PowerTabOldImport/Directions", "[!hide]")
 {
     Score score;
     PowerTabOldImporter importer;
