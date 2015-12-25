@@ -45,6 +45,25 @@ path getConfigDir()
 #endif
 }
 
+path getUserDataDir()
+{
+    return fromQString(
+        QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+}
+
+std::vector<path> getDataDirs()
+{
+    QStringList q_paths =
+        QStandardPaths::standardLocations(QStandardPaths::DataLocation);
+    q_paths.append(QString::fromStdString(AppInfo::getAbsolutePath("data")));
+
+    std::vector<path> paths;
+    for (const QString &p : q_paths)
+        paths.push_back(fromQString(p));
+
+    return paths;
+}
+
 path getHomeDir()
 {
     return fromQString(

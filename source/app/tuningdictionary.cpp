@@ -18,22 +18,24 @@
 #include "tuningdictionary.h"
 
 #include <app/appinfo.h>
-#include <fstream>
-#include <QDebug>
-#include <QDir>
-#include <QStandardPaths>
+#include <app/paths.h>
+#include <boost/filesystem/fstream.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <score/serialization.h>
 #include <stdexcept>
 
+static const char *theTuningDictFilename = "tunings.json";
+
 std::vector<Tuning> TuningDictionary::load()
 {
-    QStringList paths = availablePaths();
-    for (const QString &path : paths)
+    for (boost::filesystem::path dir : Paths::getDataDirs())
     {
-        if (!QFile(path).exists())
+        auto path = dir / theTuningDictFilename;
+        if (!boost::filesystem::exists(path))
             continue;
 
-        std::ifstream file(path.toLocal8Bit().constData());
+        boost::filesystem::ifstream file(path);
+
         std::vector<Tuning> tunings;
         ScoreUtils::load(file, "tunings", tunings);
         return tunings;
@@ -44,28 +46,16 @@ std::vector<Tuning> TuningDictionary::load()
 
 void TuningDictionary::save() const
 {
-    try
-    {
-        QString path =
-            QStandardPaths::writableLocation(QStandardPaths::DataLocation) +
-            "/tunings.json";
+    auto dir = Paths::getUserDataDir();
+    boost::filesystem::create_directories(dir);
 
-        // Ensure the directory exists first.
-        if (!QDir().mkpath(QFileInfo(path).path()))
-            throw std::runtime_error("Error creating data directory.");
+    auto path = dir / theTuningDictFilename;
+    boost::filesystem::ofstream file(path);
+    if (!file)
+        throw std::runtime_error("Error opening file for writing.");
 
-        std::ofstream file(path.toLocal8Bit().constData());
-        if (!file)
-            throw std::runtime_error("Error opening file for writing.");
-
-        ensureLoaded();
-        ScoreUtils::save(file, "tunings", myTunings);
-    }
-    catch (const std::exception &e)
-    {
-        qDebug() << "Error saving tuning dictionary.";
-        qDebug() << "Exception: " << e.what();
-    }
+    ensureLoaded();
+    ScoreUtils::save(file, "tunings", myTunings);
 }
 
 void TuningDictionary::loadInBackground()
@@ -105,17 +95,6 @@ void TuningDictionary::removeTuning(const Tuning &tuning)
 {
     ensureLoaded();
     myTunings.erase(std::remove(myTunings.begin(), myTunings.end(), tuning));
-}
-
-QStringList TuningDictionary::availablePaths()
-{
-    QStringList paths = QStandardPaths::standardLocations(QStandardPaths::DataLocation);
-    paths.append(QString::fromStdString(AppInfo::getAbsolutePath("data")));
-
-    for (QString &path : paths)
-        path.append("/tunings.json");
-
-    return paths;
 }
 
 void TuningDictionary::ensureLoaded() const

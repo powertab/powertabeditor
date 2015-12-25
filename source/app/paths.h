@@ -16,14 +16,21 @@
 */
 
 #include <boost/filesystem/path.hpp>
-
-class QString;
+#include <vector>
 
 namespace Paths {
     using path = boost::filesystem::path;
 
     /// Return a path to a directory where config files should be written to.
     path getConfigDir();
+
+    /// Return a path to a directory where persistent application data should
+    /// be written to.
+    path getUserDataDir();
+
+    /// Return a list of paths where persistent application data should be read
+    /// from, ordered from highest to lowest priority.
+    std::vector<path> getDataDirs();
 
     /// Return a path to the user's home directory.
     path getHomeDir();
