@@ -63,6 +63,8 @@ set( srcs
     app/test_documentmanager.cpp
     app/test_settingsmanager.cpp
 
+    dialogs/test_viewfilterdialog.cpp
+
     formats/test_fileformat.cpp
     formats/gpx/test_gpx.cpp
     formats/guitar_pro/test_gp.cpp

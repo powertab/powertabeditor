@@ -28,6 +28,8 @@ set( srcs
     trilldialog.cpp
     tuningdialog.cpp
     tuningdictionarydialog.cpp
+    viewfilterdialog.cpp
+    viewfilterpresenter.cpp
 )
 
 set( headers
@@ -58,6 +60,8 @@ set( headers
     trilldialog.h
     tuningdialog.h
     tuningdictionarydialog.h
+    viewfilterdialog.h
+    viewfilterpresenter.h
 )
 
 set( moc_headers
@@ -84,6 +88,7 @@ set( moc_headers
     trilldialog.h
     tuningdialog.h
     tuningdictionarydialog.h
+    viewfilterdialog.h
 )
 
 set( forms
@@ -113,6 +118,7 @@ set( forms
     trilldialog.ui
     tuningdialog.ui
     tuningdictionarydialog.ui
+    viewfilterdialog.ui
 )
 
 pte_library(

@@ -256,6 +256,8 @@ private slots:
     void removeInstrument(int index);
     /// Shows a dialog to view or edit the tuning dictionary.
     void showTuningDictionary();
+    /// Shows a dialog to edit the score's view filters.
+    void editViewFilters();
 
 protected:
     /// Handle key presses for 0-9 when entering tab numbers.
@@ -570,6 +572,7 @@ private:
     Command *myAddInstrumentCommand;
     Command *myPlayerChangeCommand;
     Command *myShowTuningDictionaryCommand;
+    Command *myEditViewFiltersCommand;
 
     QMenu *myWindowMenu;
     Command *myNextTabCommand;

@@ -116,6 +116,7 @@
 #include <dialogs/timesignaturedialog.h>
 #include <dialogs/trilldialog.h>
 #include <dialogs/tuningdictionarydialog.h>
+#include <dialogs/viewfilterdialog.h>
 
 #include <formats/fileformatmanager.h>
 
@@ -1635,6 +1636,13 @@ void PowerTabEditor::showTuningDictionary()
     dialog.exec();
 }
 
+void PowerTabEditor::editViewFilters()
+{
+    ViewFilterDialog dialog(this);
+    ViewFilterPresenter presenter(dialog, getLocation().getScore());
+    dialog.exec();
+}
+
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)
 {
     // Don't handle key presses during playback.
@@ -2430,6 +2438,12 @@ void PowerTabEditor::createCommands()
     connect(myShowTuningDictionaryCommand, SIGNAL(triggered()),
             this, SLOT(showTuningDictionary()));
 
+    myEditViewFiltersCommand =
+        new Command(tr("Edit View Filters..."), "Player.EditViewFilters",
+                    QKeySequence(), this);
+    connect(myEditViewFiltersCommand, &QAction::triggered, this,
+            &PowerTabEditor::editViewFilters);
+
     // Window Menu commands.
     
 #ifdef Q_OS_MAC
@@ -2817,7 +2831,9 @@ void PowerTabEditor::createMenus()
     myPlayerMenu->addAction(myAddPlayerCommand);
     myPlayerMenu->addAction(myAddInstrumentCommand);
     myPlayerMenu->addAction(myPlayerChangeCommand);
+    myPlayerMenu->addSeparator();
     myPlayerMenu->addAction(myShowTuningDictionaryCommand);
+    myPlayerMenu->addAction(myEditViewFiltersCommand);
 
     // Window Menu.
     myWindowMenu = menuBar()->addMenu(tr("&Window"));
@@ -3227,6 +3243,7 @@ void PowerTabEditor::enableEditing(bool enable)
     myAddPlayerCommand->setEnabled(enable);
     myAddInstrumentCommand->setEnabled(enable);
     myPlayerChangeCommand->setEnabled(enable);
+    myEditViewFiltersCommand->setEnabled(enable);
     myNextTabCommand->setEnabled(enable);
     myPrevTabCommand->setEnabled(enable);
 
