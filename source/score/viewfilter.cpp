@@ -134,6 +134,22 @@ void ViewFilter::addRule(const FilterRule &rule)
     myRules.push_back(rule);
 }
 
+void ViewFilter::removeRule(int index)
+{
+    myRules.erase(myRules.begin() + index);
+}
+
+boost::iterator_range<ViewFilter::RuleIterator> ViewFilter::getRules()
+{
+    return boost::make_iterator_range(myRules);
+}
+
+boost::iterator_range<ViewFilter::RuleConstIterator>
+ViewFilter::getRules() const
+{
+    return boost::make_iterator_range(myRules);
+}
+
 bool ViewFilter::accept(const Score &score, int system_index,
                         int staff_index) const
 {

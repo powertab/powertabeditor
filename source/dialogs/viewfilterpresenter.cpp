@@ -22,7 +22,6 @@
 ViewFilterPresenter::ViewFilterPresenter(ViewFilterView &view,
                                          const Score &score)
     : myView(view),
-      myScore(score),
       myFilters(score.getViewFilters().begin(), score.getViewFilters().end())
 {
     myView.setPresenter(this);
@@ -69,11 +68,43 @@ void ViewFilterPresenter::selectFilter(int index)
     }
 }
 
+void ViewFilterPresenter::editFilterDescription(const std::string &description)
+{
+    myFilters[*mySelection].setDescription(description);
+    updateView();
+}
+
+void ViewFilterPresenter::addRule()
+{
+    myFilters[*mySelection].addRule(FilterRule());
+    updateView();
+}
+
+void ViewFilterPresenter::removeRule(int index)
+{
+    myFilters[*mySelection].removeRule(index);
+    updateView();
+}
+
+void ViewFilterPresenter::editRule(int index, const FilterRule &rule)
+{
+    myFilters[*mySelection].getRules()[index] = rule;
+    updateView();
+}
+
 void ViewFilterPresenter::updateView()
 {
     std::vector<std::string> filter_names;
     for (auto &&filter : myFilters)
         filter_names.push_back(filter.getDescription());
 
-    myView.setFilterNames(filter_names, mySelection);
+    std::vector<FilterRule> rules;
+    if (mySelection)
+    {
+        auto &filter = myFilters[*mySelection];
+        rules.insert(rules.begin(), filter.getRules().begin(),
+                     filter.getRules().end());
+    }
+
+    myView.update(filter_names, mySelection, rules);
 }

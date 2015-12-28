@@ -32,16 +32,19 @@ public:
         myPresenter = presenter;
     }
 
-    void setFilterNames(const std::vector<std::string> &names,
-                        const boost::optional<int> &selection) override
+    void update(const std::vector<std::string> &names,
+                const boost::optional<int> &selection,
+                const std::vector<FilterRule> &rules) override
     {
         myFilterNames = names;
         mySelection = selection;
+        myRules = rules;
     }
 
     ViewFilterPresenter *myPresenter;
     std::vector<std::string> myFilterNames;
     boost::optional<int> mySelection;
+    std::vector<FilterRule> myRules;
 };
 
 TEST_CASE("Dialogs/ViewFilter")
@@ -92,5 +95,39 @@ TEST_CASE("Dialogs/ViewFilter")
         presenter.addFilter();
         presenter.selectFilter(0);
         REQUIRE(*view.mySelection == 0);
+    }
+
+    SECTION("Edit Filter Description")
+    {
+        presenter.addFilter();
+        presenter.editFilterDescription("New Filter Name");
+        REQUIRE(view.myFilterNames ==
+                std::vector<std::string>({ "Filter 1", "New Filter Name" }));
+    }
+
+    SECTION("Add Rule")
+    {
+        REQUIRE(view.myRules.empty());
+        presenter.addRule();
+        REQUIRE(view.myRules.size() == 1);
+        REQUIRE(view.myRules[0] == FilterRule());
+    }
+
+    SECTION("Remove Rule")
+    {
+        presenter.addRule();
+        presenter.addRule();
+        presenter.addRule();
+        presenter.removeRule(1);
+        REQUIRE(view.myRules.size() == 2);
+    }
+
+    SECTION("Edit Rule")
+    {
+        presenter.addRule();
+
+        FilterRule new_rule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 4);
+        presenter.editRule(0, new_rule);
+        REQUIRE(view.myRules[0] == new_rule);
     }
 }

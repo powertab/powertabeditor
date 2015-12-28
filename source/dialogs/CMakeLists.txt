@@ -11,6 +11,7 @@ set( srcs
     directiondialog.cpp
     dynamicdialog.cpp
     fileinformationdialog.cpp
+    filterrulewidget.cpp
     gotobarlinedialog.cpp
     gotorehearsalsigndialog.cpp
     irregulargroupingdialog.cpp
@@ -43,6 +44,7 @@ set( headers
     directiondialog.h
     dynamicdialog.h
     fileinformationdialog.h
+    filterrulewidget.h
     gotobarlinedialog.h
     gotorehearsalsigndialog.h
     irregulargroupingdialog.h
@@ -74,6 +76,7 @@ set( moc_headers
     crashdialog.h
     directiondialog.h
     fileinformationdialog.h
+    filterrulewidget.h
     gotorehearsalsigndialog.h
     keyboardsettingsdialog.h
     keysignaturedialog.h
@@ -101,6 +104,7 @@ set( forms
     directiondialog.ui
     dynamicdialog.ui
     fileinformationdialog.ui
+    filterrulewidget.ui
     gotobarlinedialog.ui
     gotorehearsalsigndialog.ui
     irregulargroupingdialog.ui

@@ -35,8 +35,9 @@ public:
 
     virtual void setPresenter(ViewFilterPresenter *presenter) = 0;
 
-    virtual void setFilterNames(const std::vector<std::string> &names,
-                                const boost::optional<int> &selection) = 0;
+    virtual void update(const std::vector<std::string> &names,
+                        const boost::optional<int> &selection,
+                        const std::vector<FilterRule> &rules) = 0;
 };
 
 class ViewFilterPresenter
@@ -47,13 +48,16 @@ public:
     void addFilter();
     void removeSelectedFilter();
     void selectFilter(int index);
+    void editFilterDescription(const std::string &description);
+
+    void addRule();
+    void removeRule(int index);
+    void editRule(int index, const FilterRule &rule);
 
 private:
     void updateView();
 
     ViewFilterView &myView;
-    const Score &myScore;
-
     std::vector<ViewFilter> myFilters;
     boost::optional<int> mySelection;
 };

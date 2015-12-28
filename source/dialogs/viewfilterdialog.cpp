@@ -18,6 +18,8 @@
 #include "viewfilterdialog.h"
 #include "ui_viewfilterdialog.h"
 
+#include <dialogs/filterrulewidget.h>
+
 ViewFilterDialog::ViewFilterDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::ViewFilterDialog)
 {
@@ -41,10 +43,18 @@ void ViewFilterDialog::setPresenter(ViewFilterPresenter *presenter)
     connect(ui->filterList, &QListWidget::itemClicked, [&](QListWidgetItem *) {
         myPresenter->selectFilter(ui->filterList->currentRow());
     });
+
+    connect(ui->nameLineEdit, &QLineEdit::textEdited, [&](const QString &s) {
+        myPresenter->editFilterDescription(s.toStdString());
+    });
+    connect(ui->addRuleButton, &QToolButton::clicked, [&]() {
+        myPresenter->addRule();
+    });
 }
 
-void ViewFilterDialog::setFilterNames(const std::vector<std::string> &names,
-                                      const boost::optional<int> &selection)
+void ViewFilterDialog::update(const std::vector<std::string> &names,
+                              const boost::optional<int> &selection,
+                              const std::vector<FilterRule> &rules)
 {
     ui->filterList->clear();
 
@@ -55,4 +65,51 @@ void ViewFilterDialog::setFilterNames(const std::vector<std::string> &names,
     ui->filterList->addItems(q_names);
     ui->filterList->setCurrentRow(selection ? *selection : -1);
     ui->removeFilterButton->setEnabled(!names.empty());
+
+    ui->nameLineEdit->setEnabled((bool)selection);
+    ui->addRuleButton->setEnabled((bool)selection);
+
+    // Remove old widgets.
+    while (ui->filterRuleLayout->count() > static_cast<int>(rules.size()))
+    {
+        auto item =
+            ui->filterRuleLayout->takeAt(ui->filterRuleLayout->count() - 1);
+        item->widget()->deleteLater();
+        delete item;
+    }
+
+    if (selection)
+    {
+        ui->nameLineEdit->setText(QString::fromStdString(names[*selection]));
+
+        // Add new widgets if necessary.
+        for (size_t i = ui->filterRuleLayout->count(), n = rules.size(); i < n;
+             ++i)
+        {
+            auto widget = new FilterRuleWidget(this);
+            ui->filterRuleLayout->addWidget(widget);
+
+            connect(widget, &FilterRuleWidget::changed,
+                    [=](const FilterRule &rule) {
+                myPresenter->editRule(i, rule);
+            });
+            connect(widget, &FilterRuleWidget::removeRequested, [=]() {
+                myPresenter->removeRule(i);
+            });
+        }
+
+        // Update widgets.
+        for (size_t i = 0, n = rules.size(); i < n; ++i)
+        {
+            auto widget = dynamic_cast<FilterRuleWidget *>(
+                ui->filterRuleLayout->itemAt(i)->widget());
+            assert(widget);
+
+            widget->update(rules[i]);
+        }
+    }
+    else
+    {
+        ui->nameLineEdit->clear();
+    }
 }

@@ -15,32 +15,35 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DIALOGS_VIEWFILTERDIALOG_H
-#define DIALOGS_VIEWFILTERDIALOG_H
+#ifndef DIALOGS_FILTERRULEWIDGET_H
+#define DIALOGS_FILTERRULEWIDGET_H
 
-#include <QDialog>
-#include "viewfilterpresenter.h"
+#include <QWidget>
+
+class FilterRule;
 
 namespace Ui {
-    class ViewFilterDialog;
+    class FilterRuleWidget;
 }
 
-class ViewFilterDialog : public QDialog, public ViewFilterView
+class FilterRuleWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ViewFilterDialog(QWidget *parent = 0);
-    ~ViewFilterDialog();
+    explicit FilterRuleWidget(QWidget *parent);
+    ~FilterRuleWidget();
 
-    void setPresenter(ViewFilterPresenter *presenter) override;
-    void update(const std::vector<std::string> &names,
-                const boost::optional<int> &selection,
-                const std::vector<FilterRule> &rules) override;
+    void update(const FilterRule &filter);
+
+signals:
+    void changed(const FilterRule &);
+    void removeRequested();
 
 private:
-    std::unique_ptr<Ui::ViewFilterDialog> ui;
-    ViewFilterPresenter *myPresenter;
+    void updateRule();
+
+    std::unique_ptr<Ui::FilterRuleWidget> ui;
 };
 
 #endif

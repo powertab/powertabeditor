@@ -18,6 +18,7 @@
 #ifndef SCORE_VIEWFILTER_H
 #define SCORE_VIEWFILTER_H
 
+#include <boost/range/iterator_range_core.hpp>
 #include <boost/regex.hpp>
 #include <cassert>
 #include "fileversion.h"
@@ -54,6 +55,11 @@ public:
 
     bool operator==(const FilterRule &other) const;
 
+    Subject getSubject() const { return mySubject; }
+    Operation getOperation() const { return myOperation; }
+    int getIntValue() const { return myIntValue; }
+    const std::string &getStringValue() const { return myStrValue; }
+
     template <class Archive>
     void serialize(Archive &ar, const FileVersion version);
 
@@ -74,6 +80,9 @@ private:
 class ViewFilter
 {
 public:
+    typedef std::vector<FilterRule>::iterator RuleIterator;
+    typedef std::vector<FilterRule>::const_iterator RuleConstIterator;
+
     ViewFilter();
     bool operator==(const ViewFilter &other) const;
 
@@ -87,6 +96,13 @@ public:
 
     /// Adds a new rule to the filter.
     void addRule(const FilterRule &rule);
+    /// Removes the specified rule from the filter.
+    void removeRule(int index);
+
+    /// Returns the list of rules in the filter.
+    boost::iterator_range<RuleIterator> getRules();
+    /// Returns the list of rules in the filter.
+    boost::iterator_range<RuleConstIterator> getRules() const;
 
     /// Returns whether the given staff is visible.
     bool accept(const Score &score, int system_index, int staff_index) const;
