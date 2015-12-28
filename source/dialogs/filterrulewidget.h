@@ -18,6 +18,7 @@
 #ifndef DIALOGS_FILTERRULEWIDGET_H
 #define DIALOGS_FILTERRULEWIDGET_H
 
+#include <memory>
 #include <QWidget>
 
 class FilterRule;
