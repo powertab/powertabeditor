@@ -83,10 +83,11 @@ void Clipboard::copySelection(const ScoreLocation &location)
 {
     const auto selectedPositions = location.getSelectedPositions();
     const int numStrings = location.getStaff().getStringCount();
-
+    
     if (selectedPositions.empty())
         return;
 
+    
     ClipboardSelection selection(numStrings, selectedPositions,
                                  location.getSelectedIrregularGroupings());
 
