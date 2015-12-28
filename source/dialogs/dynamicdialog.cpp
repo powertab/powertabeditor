@@ -39,7 +39,6 @@ DynamicDialog::DynamicDialog(QWidget *parent)
     myVolumeLevels->addButton(ui->fffButton, Dynamic::fff);
 
     myVolumeLevels->button(Dynamic::f)->setChecked(true);
-    ui->buttonBox->setFocus();
 }
 
 DynamicDialog::~DynamicDialog()
