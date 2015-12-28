@@ -2650,6 +2650,9 @@ void PowerTabEditor::createMenus()
     myEditMenu->addAction(myCopyCommand);
     myEditMenu->addAction(myPasteCommand);
     myEditMenu->addSeparator();
+    myEditMenu->addAction(myRemoveNoteCommand);
+    myEditMenu->addAction(myRemovePositionCommand);
+    myEditMenu->addSeparator();
     myEditMenu->addAction(myPolishCommand);
     myEditMenu->addAction(myPolishSystemCommand);
     myEditMenu->addSeparator();
