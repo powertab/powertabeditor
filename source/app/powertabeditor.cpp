@@ -47,6 +47,7 @@
 #include <actions/editstaff.h>
 #include <actions/edittabnumber.h>
 #include <actions/edittimesignature.h>
+#include <actions/editviewfilters.h>
 #include <actions/polishscore.h>
 #include <actions/polishsystem.h>
 #include <actions/removealternateending.h>
@@ -631,7 +632,8 @@ void PowerTabEditor::redrawSystem(int index)
 
 void PowerTabEditor::redrawScore()
 {
-    const Document &doc = myDocumentManager->getCurrentDocument();
+    Document &doc = myDocumentManager->getCurrentDocument();
+    doc.validateViewOptions();
     getCaret().moveToValidPosition();
     getScoreArea()->renderDocument(doc);
     updateCommands();
@@ -1640,7 +1642,12 @@ void PowerTabEditor::editViewFilters()
 {
     ViewFilterDialog dialog(this);
     ViewFilterPresenter presenter(dialog, getLocation().getScore());
-    dialog.exec();
+    if (presenter.exec())
+    {
+        myUndoManager->push(new EditViewFilters(getLocation().getScore(),
+                                                presenter.getFilters()),
+                            UndoManager::AFFECTS_ALL_SYSTEMS);
+    }
 }
 
 bool PowerTabEditor::eventFilter(QObject *object, QEvent *event)

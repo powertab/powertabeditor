@@ -32,6 +32,8 @@ public:
         myPresenter = presenter;
     }
 
+    bool launch() override { return false; }
+
     void update(const std::vector<std::string> &names,
                 const boost::optional<int> &selection,
                 const std::vector<FilterRule> &rules) override

@@ -52,6 +52,11 @@ void ViewFilterDialog::setPresenter(ViewFilterPresenter *presenter)
     });
 }
 
+bool ViewFilterDialog::launch()
+{
+    return exec() == QDialog::Accepted;
+}
+
 void ViewFilterDialog::update(const std::vector<std::string> &names,
                               const boost::optional<int> &selection,
                               const std::vector<FilterRule> &rules)

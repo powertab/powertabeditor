@@ -32,6 +32,11 @@ ViewFilterPresenter::ViewFilterPresenter(ViewFilterView &view,
     updateView();
 }
 
+bool ViewFilterPresenter::exec()
+{
+    return myView.launch();
+}
+
 void ViewFilterPresenter::addFilter()
 {
     ViewFilter filter;

@@ -166,6 +166,17 @@ Score &Document::getScore()
     return myScore;
 }
 
+void Document::validateViewOptions()
+{
+    if (myScore.getViewFilters().empty())
+        myViewOptions.clearFilter();
+    else if (myViewOptions.getFilter() &&
+             *myViewOptions.getFilter() >= myScore.getViewFilters().size())
+    {
+        myViewOptions.setFilter(0);
+    }
+}
+
 const Caret &Document::getCaret() const
 {
     return myCaret;

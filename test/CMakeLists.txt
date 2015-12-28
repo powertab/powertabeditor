@@ -37,6 +37,7 @@ set( srcs
     actions/test_editstaff.cpp
     actions/test_edittabnumber.cpp
     actions/test_edittimesignature.cpp
+    actions/test_editviewfilters.cpp
     actions/test_removealternateending.cpp
     actions/test_removeartificialharmonic.cpp
     actions/test_removebarline.cpp

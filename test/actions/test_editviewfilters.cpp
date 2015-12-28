@@ -15,24 +15,30 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#ifndef APP_VIEWOPTIONS_H
-#define APP_VIEWOPTIONS_H
+#include <catch.hpp>
 
-#include <boost/optional/optional.hpp>
+#include <actions/editviewfilters.h>
+#include <score/score.h>
 
-/// Stores any view options that are not saved with the score (e.g. the current
-/// zoom level or the active score filter).
-class ViewOptions
+TEST_CASE("Actions/EditViewFilters", "")
 {
-public:
-    ViewOptions();
+    Score score;
 
-    const boost::optional<int> &getFilter() const { return myFilter; }
-    void setFilter(int filter) { myFilter = filter; }
-    void clearFilter() { myFilter.reset(); }
+    ViewFilter filter1;
+    filter1.addRule(FilterRule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7));
+    ViewFilter filter2;
+    filter2.addRule(
+        FilterRule(FilterRule::NUM_STRINGS, FilterRule::LESS_THAN_EQUAL, 5));
 
-private:
-    boost::optional<int> myFilter;
-};
+    score.insertViewFilter(filter2);
 
-#endif
+    std::vector<ViewFilter> old_filters = {filter2};
+    std::vector<ViewFilter> new_filters = {filter1, filter2};
+    EditViewFilters action(score, new_filters);
+
+    action.redo();
+    REQUIRE(score.getViewFilters() == new_filters);
+
+    action.undo();
+    REQUIRE(score.getViewFilters() == old_filters);
+}

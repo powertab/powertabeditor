@@ -30,6 +30,7 @@ set( srcs
     editstaff.cpp
     edittabnumber.cpp
     edittimesignature.cpp
+    editviewfilters.cpp
     insertnotes.cpp
     polishscore.cpp
     polishsystem.cpp
@@ -86,6 +87,7 @@ set( headers
     editstaff.h
     edittabnumber.h
     edittimesignature.h
+    editviewfilters.h
     insertnotes.h
     polishscore.h
     polishsystem.h

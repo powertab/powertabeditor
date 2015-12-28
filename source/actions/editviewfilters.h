@@ -14,34 +14,30 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+  
+#ifndef ACTIONS_EDITVIEWFILTERS_H
+#define ACTIONS_EDITVIEWFILTERS_H
 
-#ifndef DIALOGS_VIEWFILTERDIALOG_H
-#define DIALOGS_VIEWFILTERDIALOG_H
+#include <QUndoCommand>
+#include <score/viewfilter.h>
+#include <vector>
 
-#include <QDialog>
-#include "viewfilterpresenter.h"
+class Score;
 
-namespace Ui {
-    class ViewFilterDialog;
-}
-
-class ViewFilterDialog : public QDialog, public ViewFilterView
+class EditViewFilters : public QUndoCommand
 {
-    Q_OBJECT
-
 public:
-    explicit ViewFilterDialog(QWidget *parent = 0);
-    ~ViewFilterDialog();
+    EditViewFilters(Score &score, std::vector<ViewFilter> new_filters);
 
-    void setPresenter(ViewFilterPresenter *presenter) override;
-    bool launch() override;
-    void update(const std::vector<std::string> &names,
-                const boost::optional<int> &selection,
-                const std::vector<FilterRule> &rules) override;
+    void redo() override;
+    void undo() override;
 
 private:
-    std::unique_ptr<Ui::ViewFilterDialog> ui;
-    ViewFilterPresenter *myPresenter;
+    void setViewFilters(const std::vector<ViewFilter> &filters);
+
+    Score &myScore;
+    std::vector<ViewFilter> myOriginalFilters;
+    std::vector<ViewFilter> myNewFilters;
 };
 
 #endif

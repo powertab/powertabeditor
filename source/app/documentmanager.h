@@ -45,6 +45,9 @@ public:
     const ViewOptions &getViewOptions() const { return myViewOptions; }
     ViewOptions &getViewOptions() { return myViewOptions; }
 
+    /// Ensure that e.g. the active view filter is valid.
+    void validateViewOptions();
+
     const Caret &getCaret() const;
     Caret &getCaret();
 
