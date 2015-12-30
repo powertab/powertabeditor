@@ -33,12 +33,12 @@ TextItemDialog::~TextItemDialog()
 
 std::string TextItemDialog::getContents() const
 {
-    return ui->contentsLineEdit->text().toStdString();
+    return ui->contentsTextEdit->toPlainText().toStdString();
 }
 
 void TextItemDialog::accept()
 {
-    if (ui->contentsLineEdit->text().isEmpty())
+    if (ui->contentsTextEdit->toPlainText().isEmpty())
     {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);

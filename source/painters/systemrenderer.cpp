@@ -688,10 +688,15 @@ void SystemRenderer::drawTextItems(const System &system,
     {
         const QString &contents = QString::fromStdString(text.getContents());
 
-        auto textItem = new SimpleTextItem(contents, myPlainTextFont);
-        textItem->setX(layout.getPositionX(text.getPosition()));
-        centerSymbolVertically(*textItem, height);
-        textItem->setParentItem(myParentSystem);
+        // Note: the SimpleTextItem class is not used here since multi-line
+        // support is needed.
+        auto text_item = new QGraphicsSimpleTextItem();
+        text_item->setFont(myPlainTextFont);
+        text_item->setText(contents);
+
+        text_item->setX(layout.getPositionX(text.getPosition()));
+        centerSymbolVertically(*text_item, height);
+        text_item->setParentItem(myParentSystem);
     }
 }
 
