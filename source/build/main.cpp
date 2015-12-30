@@ -247,8 +247,8 @@ int main(int argc, char *argv[])
         QTextStream in(socket);
         QStringList files;
 
-		while (!in.atEnd())
-			files.push_back(in.readLine());
+        while (!in.atEnd())
+            files.push_back(in.readLine());
 
         program.openFiles(files);
         program.showNormal();
