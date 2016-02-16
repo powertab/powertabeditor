@@ -2878,6 +2878,9 @@ void PowerTabEditor::createTabArea()
     connect(myPlaybackWidget, &PlaybackWidget::activeFilterChanged, this,
             &PowerTabEditor::updateActiveFilter);
 
+    connect(myPlaybackWidget, &PlaybackWidget::zoomChanged,
+            [&](double percent) { getScoreArea()->zoomTo(percent); });
+
     auto update_metronome_state = [&]() {
         auto settings = mySettingsManager->getReadHandle();
         myMetronomeCommand->setChecked(

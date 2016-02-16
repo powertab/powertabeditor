@@ -31,6 +31,30 @@ static QString getShortcutHint(const QAction &action)
         return "";
 }
 
+static QString extractPercent(const QString &text, const QLocale &locale)
+{
+    QString number_only(text);
+    number_only.remove(locale.percent());
+    return number_only;
+}
+
+class PercentageValidator : public QValidator
+{
+public:
+    PercentageValidator(QObject *parent)
+        : QValidator(parent), myNumberValidator(1, 500, 2)
+    {
+    }
+
+    State validate(QString &input, int &pos) const override
+    {
+        return myNumberValidator.validate(extractPercent(input, locale()), pos);
+    }
+
+private:
+    QDoubleValidator myNumberValidator;
+};
+
 PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
                                const QAction &rewindCommand,
                                const QAction &metronomeCommand, QWidget *parent)
@@ -73,6 +97,8 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
                 .arg(getShortcutHint(metronomeCommand)));
     });
 
+    ui->zoomComboBox->setValidator(new PercentageValidator(this));
+
     connect(myVoices, SIGNAL(buttonClicked(int)), this,
             SIGNAL(activeVoiceChanged(int)));
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)), this,
@@ -82,6 +108,12 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
     connectButtonToAction(ui->playPauseButton, &playPauseCommand);
     connectButtonToAction(ui->metronomeToggleButton, &metronomeCommand);
     connectButtonToAction(ui->rewindToStartButton, &rewindCommand);
+
+    connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
+            [=](const QString &text) {
+        QLocale locale;
+        zoomChanged(locale.toDouble(extractPercent(text, locale)));
+    });
 }
 
 PlaybackWidget::~PlaybackWidget()

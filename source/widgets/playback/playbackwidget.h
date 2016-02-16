@@ -53,6 +53,7 @@ signals:
     void playbackSpeedChanged(int speed);
     void activeVoiceChanged(int voice);
     void activeFilterChanged(int filter);
+    void zoomChanged(double zoom);
 
 private:
     void onSettingChanged(const std::string &setting);

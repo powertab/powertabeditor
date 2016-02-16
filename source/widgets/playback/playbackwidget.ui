@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>PlaybackWidget</class>
  <widget class="QWidget" name="PlaybackWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>907</width>
+    <height>38</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -97,7 +105,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line1">
+    <widget class="Line" name="line_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -139,6 +147,100 @@
    </item>
    <item>
     <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="zoomLabel">
+     <property name="text">
+      <string>Zoom:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="zoomComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>75</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>6</number>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+     </property>
+     <item>
+      <property name="text">
+       <string>25%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>50%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>60%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>70%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>80%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>90%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>100%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>110%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>125%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>150%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>200%</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line1">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>

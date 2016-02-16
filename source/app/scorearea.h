@@ -46,6 +46,8 @@ public:
 
     void renderDocument(const Document &document);
 
+    void zoomTo(double percent);
+
     void print(QPrinter &printer);
 
     /// Redraws the specified system, and shifts the following systems as

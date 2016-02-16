@@ -215,3 +215,12 @@ void ScoreArea::focusOutEvent(QFocusEvent *)
     // Redraw the caret to indicate that the score has lost focus.
     myScene.update(myCaretPainter->sceneBoundingRect());
 }
+
+void ScoreArea::zoomTo(double percent)
+{
+    double scale_factor = percent / 100.0;
+
+    QTransform xform;
+    xform.scale(scale_factor, scale_factor);
+    setTransform(xform);
+}
