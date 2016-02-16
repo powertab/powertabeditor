@@ -48,7 +48,8 @@ public:
 
     State validate(QString &input, int &pos) const override
     {
-        return myNumberValidator.validate(extractPercent(input, locale()), pos);
+        QString number = extractPercent(input, locale());
+        return myNumberValidator.validate(number, pos);
     }
 
 private:
