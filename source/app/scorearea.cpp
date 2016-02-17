@@ -198,8 +198,9 @@ void ScoreArea::adjustScroll()
 {
     if (myDocument->getCaret().isInPlaybackMode())
     {
-        verticalScrollBar()->setValue(
-            myCaretPainter->getCurrentSystemRect().y());
+        QPoint point(0, myCaretPainter->getCurrentSystemRect().y());
+        point = transform().map(point);
+        verticalScrollBar()->setValue(point.y());
     }
     else
         ensureVisible(myCaretPainter->sceneBoundingRect(), 0, 0);
