@@ -95,10 +95,13 @@ void Caret::moveStaff(int offset)
 
 void Caret::moveToStaff(int staff)
 {
+    const int num_staves =
+        static_cast<int>(myLocation.getSystem().getStaves().size());
+    staff = boost::algorithm::clamp(staff, 0, num_staves - 1);
+
     const bool is_increasing = staff >= myLocation.getStaffIndex();
     const int increment = is_increasing ? 1 : -1;
-    const int end =
-        is_increasing ? myLocation.getSystem().getStaves().size() : -1;
+    const int end = is_increasing ? num_staves : -1;
 
     const Score &score = myLocation.getScore();
     const ViewFilter *filter =
