@@ -122,7 +122,7 @@ size_t DocumentManager::getDocumentListSize() const
 
 int DocumentManager::findDocument(const std::string& filepath)
 {
-    for (int i = 0; i < getDocumentListSize(); ++i)
+    for (unsigned int i = 0; i < getDocumentListSize(); ++i)
     {
         Document& doc = getDocument(i);
         

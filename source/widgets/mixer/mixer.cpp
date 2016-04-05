@@ -39,7 +39,7 @@ void Mixer::reset(const Score &score)
 {
     clear();
 
-    for (int i = 0; i < score.getPlayers().size(); ++i)
+    for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
     {
         myLayout->addWidget(new MixerItem(this, i, score.getPlayers()[i],
                                           myDictionary, myEditPubSub,

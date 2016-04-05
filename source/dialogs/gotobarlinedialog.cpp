@@ -26,12 +26,12 @@ GoToBarlineDialog::GoToBarlineDialog(QWidget *parent, const Score &score)
 {
     ui->setupUi(this);
 
-    for (long systemIndex = 0; systemIndex < score.getSystems().size();
+    for (unsigned long systemIndex = 0; systemIndex < score.getSystems().size();
          ++systemIndex)
     {
         const System &system = score.getSystems()[systemIndex];
         // Index all barlines except for the end bar.
-        for (long i = 0; i < system.getBarlines().size() - 1; ++i)
+        for (unsigned long i = 0; i < system.getBarlines().size() - 1; ++i)
         {
             myLocations.push_back(ScoreLocation(
                 score, systemIndex, 0, system.getBarlines()[i].getPosition()));

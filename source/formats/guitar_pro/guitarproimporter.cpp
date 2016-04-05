@@ -313,7 +313,7 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
     {
         // Set up an initial player change.
         PlayerChange change;
-        for (int i = 0; i < score.getPlayers().size(); ++i)
+        for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
             change.insertActivePlayer(i, ActivePlayer(i, i));
         system.insertPlayerChange(change);
     }
@@ -339,7 +339,7 @@ void GuitarProImporter::convertScore(const Gp::Document &doc, Score &score)
 
         // For each player, import the notes from the current measure.
         int nextPos = startPos;
-        for (int i = 0; i < score.getPlayers().size(); ++i)
+        for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
         {
             Staff &staff = system.getStaves()[i];
             const Gp::Staff &gp_staff = measure.myStaves[i];

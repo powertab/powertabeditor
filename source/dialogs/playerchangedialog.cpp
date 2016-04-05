@@ -56,7 +56,7 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
     // Initialize the dialog with the current staff/instrument for each player.
     if (currentPlayers)
     {
-        for (int staff = 0; staff < system.getStaves().size(); ++staff)
+        for (unsigned int staff = 0; staff < system.getStaves().size(); ++staff)
         {
             std::vector<ActivePlayer> players =
                     currentPlayers->getActivePlayers(staff);
