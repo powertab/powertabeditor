@@ -290,7 +290,7 @@ static int importNotes(
     int length = 0;
 
     // Merge the notes for each staff.
-    for (int i = 0; i < src_system.getStaves().size(); ++i)
+    for (unsigned int i = 0; i < src_system.getStaves().size(); ++i)
     {
         // Ensure that there are enough staves in the destination system.
         if ((!is_bass && num_guitar_staves <= i) ||
@@ -501,7 +501,7 @@ static void mergePlayerChanges(ScoreLocation &dest_loc,
         // staff/player/instrument numbers.
         if (bass_change)
         {
-            for (int i = 0; i < bass_loc.getSystem().getStaves().size(); ++i)
+            for (unsigned int i = 0; i < bass_loc.getSystem().getStaves().size(); ++i)
             {
                 for (const ActivePlayer &player :
                      bass_change->getActivePlayers(i))
