@@ -217,7 +217,7 @@ void Header::load(InputStream &stream)
         myNotices.push_back(stream.readString());
 
     if (stream.getVersion() <= Version4)
-        myTripletFeel = stream.read<uint8_t>();
+        myTripletFeel = (stream.read<uint8_t>() > 0);
 
     if (stream.version >= Version4)
     {
@@ -950,7 +950,7 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::KeySignatureChange))
     {
         const int accidentals = stream.read<int8_t>();
-        const bool isMinor = static_cast<bool>(stream.read<int8_t>());
+        const bool isMinor = (stream.read<int8_t>() > 0);
         myKeyChange = std::make_pair(accidentals, isMinor);
     }
 
@@ -1052,7 +1052,7 @@ void Document::load(InputStream &stream)
     myInitialKey = stream.read<int32_t>();
 
     if (stream.version >= Version4)
-        myOctave8va = stream.read<int8_t>();
+        myOctave8va = (stream.read<int8_t>() > 0);
 
     for (int i = 0; i < NUM_MIDI_CHANNELS; ++i)
     {
