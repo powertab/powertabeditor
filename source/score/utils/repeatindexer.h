@@ -27,6 +27,7 @@
 
 class AlternateEnding;
 class Score;
+class System;
 
 class RepeatedSection
 {
@@ -39,7 +40,8 @@ public:
     /// Adds a new end bar to the repeated section.
     void addRepeatEndBar(const SystemLocation &location, int repeatCount);
     /// Adds a new alternate ending to the repeated section.
-    void addAlternateEnding(int system, const AlternateEnding &ending);
+    void addAlternateEnding(const System &system, int system_index,
+                            const AlternateEnding &ending);
 
     /// Returns the location of the start bar.
     const SystemLocation &getStartBarLocation() const;

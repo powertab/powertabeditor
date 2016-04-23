@@ -38,13 +38,15 @@ void RepeatedSection::addRepeatEndBar(const SystemLocation &location,
     myRemainingRepeats[location] = repeatCount - 1;
 }
 
-void RepeatedSection::addAlternateEnding(int system,
+void RepeatedSection::addAlternateEnding(const System &system, int system_index,
                                          const AlternateEnding &ending)
 {
-    const SystemLocation location(system, ending.getPosition());
+    const Barline *bar = system.getPreviousBarline(ending.getPosition() + 1);
+    assert(bar);
 
     // For each repeat that the ending is active, record the position
     // that should be jumped to.
+    const SystemLocation location(system_index, bar->getPosition());
     for (int num : ending.getNumbers())
         myAlternateEndings[num] = location;
 }
@@ -198,7 +200,10 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                 {
                     // TODO - report unexpected alternate endings.
                     if (!repeats.empty())
-                        repeats.top().addAlternateEnding(systemIndex, ending);
+                    {
+                        repeats.top().addAlternateEnding(system, systemIndex,
+                                                         ending);
+                    }
                 }
             }
         }
