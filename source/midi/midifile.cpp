@@ -68,42 +68,59 @@ static int getChannel(const ActivePlayer &player)
     return getChannel(player.getPlayerNumber());
 }
 
+static bool findPositionChange(MidiEventList &event_list, int ticks,
+                               bool record_position_changes,
+                               RepeatController &repeat_controller,
+                               const SystemLocation &prev_location,
+                               SystemLocation &location)
+{
+    SystemLocation new_location;
+    if (repeat_controller.checkForRepeat(prev_location, location, new_location))
+    {
+        if (record_position_changes)
+        {
+            event_list.append(MidiEvent::positionChange(ticks, new_location));
+        }
+
+        location = new_location;
+        return true;
+    }
+
+    return false;
+}
+
 static SystemLocation moveToNextBar(MidiEventList &event_list, int ticks,
                                     bool record_position_changes,
                                     const System &system,
                                     SystemLocation location, int next_bar_pos,
                                     RepeatController &repeat_controller)
 {
-    // Follow any repeats / directions in the bar.
     SystemLocation prev_location = location;
     SystemLocation new_location;
-    for (int i = location.getPosition() + 1; i <= next_bar_pos; ++i)
+
+    // Move to the next barline and follow any directions / repeats / alternate
+    // endings.
+    location.setPosition(next_bar_pos);
+
+    if (findPositionChange(event_list, ticks, record_position_changes,
+                           repeat_controller, prev_location, location))
     {
-        location.setPosition(i);
-
-        if (repeat_controller.checkForRepeat(prev_location, location,
-                                             new_location))
-        {
-            if (record_position_changes)
-            {
-                event_list.append(
-                    MidiEvent::positionChange(ticks, new_location));
-            }
-
-            return new_location;
-        }
-        else
-            prev_location = location;
+        return location;
     }
 
-    // Otherwise, move to the next bar.
+    // If we're at the end of the system, shift to the next system and also
+    // check for a position change there.
     if (next_bar_pos == system.getBarlines().back().getPosition())
     {
         location.setSystem(location.getSystem() + 1);
         location.setPosition(0);
+
+        if (findPositionChange(event_list, ticks, record_position_changes,
+                               repeat_controller, prev_location, location))
+        {
+            return location;
+        }
     }
-    else
-        location.setPosition(next_bar_pos);
 
     return location;
 }
