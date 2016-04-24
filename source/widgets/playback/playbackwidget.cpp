@@ -26,7 +26,10 @@
 static QString getShortcutHint(const QAction &action)
 {
     if (!action.shortcut().isEmpty())
-        return QString(" (%1)").arg(action.shortcut().toString());
+    {
+        QString shortcut = action.shortcut().toString(QKeySequence::NativeText);
+        return QString(" (%1)").arg(shortcut);
+    }
     else
         return "";
 }
