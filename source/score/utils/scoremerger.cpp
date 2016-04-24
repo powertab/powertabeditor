@@ -802,7 +802,7 @@ static void mergeMultiBarRests(ExpandedBarList &guitar_bars,
 }
 
 static ExpandedBarList::iterator clearRepeatedSection(
-    ExpandedBarList::iterator bar)
+    ExpandedBarList::iterator bar, ExpandedBarList::iterator end_bar)
 {
     bool repeat_end = false;
 
@@ -811,7 +811,7 @@ static ExpandedBarList::iterator clearRepeatedSection(
         repeat_end = bar->isRepeatEnd();
         bar->clearRepeat();
         ++bar;
-    } while (!repeat_end);
+    } while (!repeat_end && bar != end_bar);
 
     return bar;
 }
@@ -861,7 +861,7 @@ static void trivialMergeRepeats(ExpandedBarList &bars,
         if (remaining_repeats == 1)
         {
             // Clear degenerate repeated sections.
-            bar = clearRepeatedSection(bar);
+            bar = clearRepeatedSection(bar, bars.end());
         }
         else if (remaining_repeats > 0)
         {
@@ -911,17 +911,17 @@ static void mergeRepeats(ExpandedBarList &guitar_bars,
             {
                 // Otherwise, clear the repeat bars from the first expanded
                 // repeat.
-                clearRepeatedSection(guitar_section_start);
-                clearRepeatedSection(bass_section_start);
+                clearRepeatedSection(guitar_section_start, guitar_end_bar);
+                clearRepeatedSection(bass_section_start, bass_end_bar);
             }
 
             guitar_bar = guitar_section_start;
             bass_bar = bass_section_start;
         }
         else if (guitar_bar->getStartBar().getBarType() == Barline::RepeatStart)
-            clearRepeatedSection(guitar_bar);
+            clearRepeatedSection(guitar_bar, guitar_end_bar);
         else if (bass_bar->getStartBar().getBarType() == Barline::RepeatStart)
-            clearRepeatedSection(bass_bar);
+            clearRepeatedSection(bass_bar, bass_end_bar);
 
         ++guitar_bar;
         ++bass_bar;
