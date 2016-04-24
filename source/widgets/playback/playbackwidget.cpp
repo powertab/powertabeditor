@@ -56,9 +56,11 @@ private:
     QDoubleValidator myNumberValidator;
 };
 
-PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
-                               const QAction &rewindCommand,
-                               const QAction &metronomeCommand, QWidget *parent)
+PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
+                               const QAction &rewind_command,
+                               const QAction &stop_command,
+                               const QAction &metronome_command,
+                               QWidget *parent)
     : QWidget(parent),
       ui(new Ui::PlaybackWidget),
       myVoices(new QButtonGroup(this))
@@ -77,25 +79,32 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
 
     ui->rewindToStartButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaSkipBackward));
-    connect(&rewindCommand, &QAction::changed, [&]() {
+    connect(&rewind_command, &QAction::changed, [&]() {
         ui->rewindToStartButton->setToolTip(
             tr("Click to move playback to the beginning of the score%1.")
-                .arg(getShortcutHint(rewindCommand)));
+                .arg(getShortcutHint(rewind_command)));
     });
 
     ui->playPauseButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
-    connect(&playPauseCommand, &QAction::changed, [&]() {
+    connect(&play_pause_command, &QAction::changed, [&]() {
         ui->playPauseButton->setToolTip(
-            tr("Click to start or stop playback%1.")
-                .arg(getShortcutHint(playPauseCommand)));
+            tr("Click to start or pause playback%1.")
+                .arg(getShortcutHint(play_pause_command)));
+    });
+
+    ui->stopButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
+    connect(&stop_command, &QAction::changed, [&]() {
+        ui->stopButton->setToolTip(
+            tr("Click to stop playback and return to the initial "
+               "location%1.").arg(getShortcutHint(stop_command)));
     });
 
     ui->metronomeToggleButton->setIcon(
         style()->standardIcon(QStyle::SP_MediaVolume));
-    connect(&metronomeCommand, &QAction::changed, [&]() {
+    connect(&metronome_command, &QAction::changed, [&]() {
         ui->metronomeToggleButton->setToolTip(
             tr("Click to toggle whether the metronome is turned on%1.")
-                .arg(getShortcutHint(metronomeCommand)));
+                .arg(getShortcutHint(metronome_command)));
     });
 
     ui->zoomComboBox->setValidator(new PercentageValidator(this));
@@ -106,9 +115,10 @@ PlaybackWidget::PlaybackWidget(const QAction &playPauseCommand,
             SIGNAL(playbackSpeedChanged(int)));
     connect(ui->filterComboBox, SIGNAL(currentIndexChanged(int)), this,
             SIGNAL(activeFilterChanged(int)));
-    connectButtonToAction(ui->playPauseButton, &playPauseCommand);
-    connectButtonToAction(ui->metronomeToggleButton, &metronomeCommand);
-    connectButtonToAction(ui->rewindToStartButton, &rewindCommand);
+    connectButtonToAction(ui->playPauseButton, &play_pause_command);
+    connectButtonToAction(ui->metronomeToggleButton, &metronome_command);
+    connectButtonToAction(ui->rewindToStartButton, &rewind_command);
+    connectButtonToAction(ui->stopButton, &stop_command);
 
     connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
             [=](const QString &text) {

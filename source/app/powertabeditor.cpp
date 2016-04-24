@@ -585,9 +585,9 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
         myPlaybackWidget->setPlaybackMode(true);
 
         const ScoreLocation &location = getLocation();
-        myMidiPlayer.reset(new MidiPlayer(
-            *mySettingsManager, location.getScore(), location.getSystemIndex(),
-            location.getPositionIndex(), myPlaybackWidget->getPlaybackSpeed()));
+        myMidiPlayer.reset(
+            new MidiPlayer(*mySettingsManager, location,
+                           myPlaybackWidget->getPlaybackSpeed()));
 
         connect(myMidiPlayer.get(), SIGNAL(playbackSystemChanged(int)), this,
                 SLOT(moveCaretToSystem(int)));
@@ -1879,6 +1879,11 @@ void PowerTabEditor::createCommands()
         startStopPlayback(/* from_measure_start */ true);
     });
 
+    myStopCommand =
+        new Command(tr("Stop"), "Playback.Stop", Qt::ALT + Qt::Key_Space, this);
+    connect(myStopCommand, &QAction::triggered, this,
+            &PowerTabEditor::stopPlayback);
+
     myRewindCommand = new Command(tr("Rewind"), "Playback.Rewind",
                                   Qt::ALT + Qt::Key_Left, this);
     connect(myRewindCommand, &QAction::triggered, this,
@@ -2668,6 +2673,7 @@ void PowerTabEditor::createMenus()
     myPlaybackMenu = menuBar()->addMenu(tr("Play&back"));
     myPlaybackMenu->addAction(myPlayPauseCommand);
     myPlaybackMenu->addAction(myPlayFromStartOfMeasureCommand);
+    myPlaybackMenu->addAction(myStopCommand);
     myPlaybackMenu->addAction(myRewindCommand);
     myPlaybackMenu->addAction(myMetronomeCommand);
 
@@ -2869,8 +2875,9 @@ void PowerTabEditor::createTabArea()
     connect(myTabWidget, SIGNAL(currentChanged(int)), this,
             SLOT(switchTab(int)));
 
-    myPlaybackWidget = new PlaybackWidget(*myPlayPauseCommand, *myRewindCommand,
-                                          *myMetronomeCommand, this);
+    myPlaybackWidget =
+        new PlaybackWidget(*myPlayPauseCommand, *myRewindCommand,
+                           *myStopCommand, *myMetronomeCommand, this);
 
     connect(myPlaybackWidget, &PlaybackWidget::activeVoiceChanged, this,
             &PowerTabEditor::updateActiveVoice);
@@ -3025,13 +3032,15 @@ void PowerTabEditor::updateCommands()
 {
     // Disable editing during playback.
     if (myIsPlaying)
-    {
         enableEditing(false);
-        myPlayPauseCommand->setEnabled(true);
-        myRewindCommand->setEnabled(true);
-        myMetronomeCommand->setEnabled(true);
+
+    myPlayPauseCommand->setEnabled(true);
+    myRewindCommand->setEnabled(true);
+    myMetronomeCommand->setEnabled(true);
+    myStopCommand->setEnabled(myIsPlaying);
+
+    if (myIsPlaying)
         return;
-    }
 
     ScoreLocation location = getLocation();
     const Score &score = location.getScore();
@@ -3301,6 +3310,15 @@ void PowerTabEditor::rewindPlaybackToStart()
 
     if (wasPlaying)
         startStopPlayback();
+}
+
+void PowerTabEditor::stopPlayback()
+{
+    assert(myIsPlaying);
+    const ScoreLocation start_location = myMidiPlayer->getStartLocation();
+
+    startStopPlayback();
+    getCaret().moveToLocation(start_location);
 }
 
 void PowerTabEditor::toggleMetronome()

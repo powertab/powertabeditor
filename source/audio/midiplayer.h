@@ -20,23 +20,26 @@
 
 #include <atomic>
 #include <QThread>
-#include <score/systemlocation.h>
+#include <score/scorelocation.h>
 
 class MidiFile;
 class MidiOutputDevice;
 class Score;
 class SettingsManager;
+class SystemLocation;
 
 class MidiPlayer : public QThread
 {
     Q_OBJECT
 
 public:
-    MidiPlayer(SettingsManager &settings_manager, const Score &score,
-               int start_system, int start_pos, int speed);
+    MidiPlayer(SettingsManager &settings_manager,
+               const ScoreLocation &start_location, int speed);
     ~MidiPlayer();
 
     void changePlaybackSpeed(int new_speed);
+
+    const ScoreLocation &getStartLocation() const { return myStartLocation; }
 
 signals:
     // These signals are used to move the caret when a position change is
@@ -56,7 +59,7 @@ private:
 
     SettingsManager &mySettingsManager;
     const Score &myScore;
-    SystemLocation myStartLocation;
+    ScoreLocation myStartLocation;
     std::atomic<bool> myIsPlaying;
     std::atomic<bool> myMetronomeEnabled;
     /// The current playback speed (percent).

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>907</width>
+    <width>933</width>
     <height>38</height>
    </rect>
   </property>
@@ -130,6 +130,13 @@
        </property>
        <property name="checkable">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="stopButton">
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </item>

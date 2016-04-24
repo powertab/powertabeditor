@@ -33,11 +33,11 @@
 
 static const int METRONOME_CHANNEL = 9;
 
-MidiPlayer::MidiPlayer(SettingsManager &settings_manager, const Score &score,
-                       int start_system, int start_pos, int speed)
+MidiPlayer::MidiPlayer(SettingsManager &settings_manager,
+                       const ScoreLocation &start_location, int speed)
     : mySettingsManager(settings_manager),
-      myScore(score),
-      myStartLocation(start_system, start_pos),
+      myScore(start_location.getScore()),
+      myStartLocation(start_location),
       myIsPlaying(false),
       myPlaybackSpeed(speed)
 {
@@ -119,7 +119,9 @@ void MidiPlayer::run()
 
     bool started = false;
     int beat_duration = Midi::BEAT_DURATION_120_BPM;
-    SystemLocation current_location = myStartLocation;
+    const SystemLocation start_location(myStartLocation.getSystemIndex(),
+                                        myStartLocation.getPositionIndex());
+    SystemLocation current_location = start_location;
 
     for (auto event = events.begin(); event != events.end(); ++event)
     {
@@ -133,7 +135,7 @@ void MidiPlayer::run()
         // instrument changes. Tempo changes are tracked above.
         if (!started)
         {
-            if (event->getLocation() < myStartLocation)
+            if (event->getLocation() < start_location)
             {
                 if (event->isProgramChange())
                     device.sendMessage(event->getData());

@@ -32,9 +32,10 @@ class PlaybackWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit PlaybackWidget(const QAction &playPauseCommand,
-                            const QAction &rewindCommand,
-                            const QAction &metronomeCommand, QWidget *parent);
+    explicit PlaybackWidget(const QAction &play_pause_command,
+                            const QAction &rewind_command,
+                            const QAction &stop_command,
+                            const QAction &metronome_command, QWidget *parent);
     ~PlaybackWidget();
 
     /// Reload any settings for the given score.

@@ -335,6 +335,8 @@ private:
 
     /// Moves the caret back to the start, and restarts playback if necessary.
     void rewindPlaybackToStart();
+    /// Stops playback and returns to the initial position.
+    void stopPlayback();
     /// Toggles the metronome on or off.
     void toggleMetronome();
     /// Sets the current voice that is being edited.
@@ -433,6 +435,7 @@ private:
     QMenu *myPlaybackMenu;
     Command *myPlayPauseCommand;
     Command *myPlayFromStartOfMeasureCommand;
+    Command *myStopCommand;
     Command *myRewindCommand;
     Command *myMetronomeCommand;
 
