@@ -22,6 +22,7 @@
 #include <score/staff.h>
 #include <score/score.h>
 #include <widgets/common.h>
+#include<boost/algorithm/clamp.hpp>
 
 static QString getShortcutHint(const QAction &action)
 {
@@ -111,7 +112,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     });
 
     ui->zoomComboBox->setValidator(new PercentageValidator(this));
-
+    
     connect(myVoices, SIGNAL(buttonClicked(int)), this,
             SIGNAL(activeVoiceChanged(int)));
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)), this,
@@ -126,13 +127,26 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
             [=](const QString &text) {
         QLocale locale;
-        zoomChanged(locale.toDouble(extractPercent(text, locale)));
+        double percentage = locale.toDouble(extractPercent(text, locale));
+        percentage = validateZoom(percentage);
+        zoomChanged(percentage);
     });
 }
 
 PlaybackWidget::~PlaybackWidget()
 {
     delete ui;
+}
+
+double PlaybackWidget::validateZoom(double percent) 
+{
+    if(percent < MIN_ZOOM || percent > MAX_ZOOM) {
+        ui->zoomComboBox->setStyleSheet("QComboBox { color : red; }");
+    } else {
+        ui->zoomComboBox->setStyleSheet("QComboBox { color : black; }");
+    }
+
+    return boost::algorithm::clamp(percent, MIN_ZOOM, MAX_ZOOM);
 }
 
 void PlaybackWidget::reset(const Document &doc)

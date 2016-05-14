@@ -58,9 +58,11 @@ signals:
 
 private:
     void onSettingChanged(const std::string &setting);
-
+    double validateZoom(double percent);
     Ui::PlaybackWidget *ui;
     QButtonGroup *myVoices;
+
+    const float MAX_ZOOM = 200, MIN_ZOOM = 25;
 };
 
 #endif
