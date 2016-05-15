@@ -24,6 +24,8 @@
 #include <widgets/common.h>
 #include<boost/algorithm/clamp.hpp>
 
+#include<qdebug.h>
+
 static QString getShortcutHint(const QAction &action)
 {
     if (!action.shortcut().isEmpty())
@@ -140,9 +142,26 @@ PlaybackWidget::~PlaybackWidget()
 
 double PlaybackWidget::validateZoom(double percent) 
 {
-    if(percent < MIN_ZOOM || percent > MAX_ZOOM) {
+    std::vector<double> options = std::vector<double>();
+
+    QLocale locale;
+    for(int i = 0; i < ui->zoomComboBox->count(); ++i) {
+        QString stringRep = ui->zoomComboBox->itemData(i).to()
+            ;
+        qDebug() << stringRep;
+        stringRep = extractPercent(stringRep, locale);
+        double percentage = locale.toDouble(stringRep);
+        
+        options.push_back(percentage);
+    }
+
+    double min = *std::min_element(options.begin(), options.end());
+    double max = *std::max_element(options.begin(), options.end());
+    if(percent < min || percent > max) 
+    {
         ui->zoomComboBox->setStyleSheet("QComboBox { color : red; }");
-    } else {
+    } else 
+    {
         ui->zoomComboBox->setStyleSheet("QComboBox { color : black; }");
     }
 
