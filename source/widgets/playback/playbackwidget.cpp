@@ -142,22 +142,8 @@ PlaybackWidget::~PlaybackWidget()
 
 double PlaybackWidget::validateZoom(double percent) 
 {
-    std::vector<double> options = std::vector<double>();
-
-    QLocale locale;
-    for(int i = 0; i < ui->zoomComboBox->count(); ++i) {
-        QString stringRep = ui->zoomComboBox->itemData(i).to()
-            ;
-        qDebug() << stringRep;
-        stringRep = extractPercent(stringRep, locale);
-        double percentage = locale.toDouble(stringRep);
-        
-        options.push_back(percentage);
-    }
-
-    double min = *std::min_element(options.begin(), options.end());
-    double max = *std::max_element(options.begin(), options.end());
-    if(percent < min || percent > max) 
+    
+    if(percent < MIN_ZOOM || percent > MAX_ZOOM) 
     {
         ui->zoomComboBox->setStyleSheet("QComboBox { color : red; }");
     } else 
