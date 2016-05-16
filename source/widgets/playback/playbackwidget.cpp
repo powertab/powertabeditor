@@ -153,6 +153,7 @@ double PlaybackWidget::validateZoom(double percent)
     return boost::algorithm::clamp(percent, MIN_ZOOM, MAX_ZOOM);
 }
 
+
 void PlaybackWidget::reset(const Document &doc)
 {
     ui->filterComboBox->blockSignals(true);
