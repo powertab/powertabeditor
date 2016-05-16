@@ -22,9 +22,8 @@
 #include <score/staff.h>
 #include <score/score.h>
 #include <widgets/common.h>
-#include<boost/algorithm/clamp.hpp>
 
-#include<qdebug.h>
+#include <boost/algorithm/clamp.hpp>
 
 static QString getShortcutHint(const QAction &action)
 {
@@ -142,11 +141,11 @@ PlaybackWidget::~PlaybackWidget()
 
 double PlaybackWidget::validateZoom(double percent) 
 {
-    
     if(percent < MIN_ZOOM || percent > MAX_ZOOM) 
     {
         ui->zoomComboBox->setStyleSheet("QComboBox { color : red; }");
-    } else 
+    } 
+    else 
     {
         ui->zoomComboBox->setStyleSheet("QComboBox { color : black; }");
     }
