@@ -920,6 +920,19 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
         updateCommands();
 }
 
+void PowerTabEditor::updateNoteDurationForBend(const ScoreLocation &location, const Note *note)
+{
+    const Bend &bend = note->getBend();
+    int bend_duration = bend.getDuration();
+    // Get beat value from time signature.
+    const Barline *barline = location.getBarline();
+    const TimeSignature &ts = barline->getTimeSignature();
+    int beatvalue = ts.getBeatValue();
+    int newduration = (int) beatvalue / bend_duration;
+    Position::DurationType newdt = (Position::DurationType) newduration;
+    updateNoteDuration(newdt);
+}
+
 static Position::DurationType changeDuration(Position::DurationType duration,
                                              bool increase)
 {
@@ -1455,6 +1468,7 @@ void PowerTabEditor::editBend()
         {
             myUndoManager->push(new AddBend(location, dialog.getBend()),
                                 location.getSystemIndex());
+			updateNoteDurationForBend(location, note);
         }
         else
             myBendCommand->setChecked(false);
