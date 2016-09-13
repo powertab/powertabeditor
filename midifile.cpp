@@ -457,10 +457,10 @@ static void generateBends(std::vector<BendEventInfo> &bends,
                 generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
                                     bend_amount);
             }
-			else {
-				generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
-					bend_amount);
-			}
+            else {
+                generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
+                                    bend_amount);
+            }
             break;
 
         case Bend::BendAndRelease:
