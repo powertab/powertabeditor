@@ -922,16 +922,15 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
 
 void PowerTabEditor::updateNoteDurationForBend(const ScoreLocation &location, const Note *note)
 {
-	const Bend &bend = note->getBend();
-	int bend_duration = bend.getDuration();
-	const Position *pos = location.getPosition();
-	// Get beat value from time signature.
-	const Barline *barline = location.getBarline();
-	const TimeSignature &ts = barline->getTimeSignature();
-	int beatvalue = ts.getBeatValue();
-	int newduration = (int) beatvalue / bend_duration;
-	Position::DurationType newdt = (Position::DurationType) newduration;
-	updateNoteDuration(newdt);
+    const Bend &bend = note->getBend();
+    int bend_duration = bend.getDuration();
+    // Get beat value from time signature.
+    const Barline *barline = location.getBarline();
+    const TimeSignature &ts = barline->getTimeSignature();
+    int beatvalue = ts.getBeatValue();
+    int newduration = (int) beatvalue / bend_duration;
+    Position::DurationType newdt = (Position::DurationType) newduration;
+    updateNoteDuration(newdt);
 }
 
 static Position::DurationType changeDuration(Position::DurationType duration,
