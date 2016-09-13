@@ -451,14 +451,9 @@ static void generateBends(std::vector<BendEventInfo> &bends,
                 generateGradualBend(bends, start_tick, ppq / 8, DEFAULT_BEND,
                                     bend_amount);
             }
-            else if (bend.getDuration() == 1)
-            {
-                // Bend over the current note duration.
-                generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
-                                    bend_amount);
-            }
 			else {
-				generateGradualBend(bends, start_tick, bend.getDuration() * duration, DEFAULT_BEND,
+				// Bend over the current note duration.
+				generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
 					bend_amount);
 			}
             break;
