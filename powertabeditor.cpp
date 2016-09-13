@@ -1460,8 +1460,6 @@ void PowerTabEditor::editBend()
     {
         myUndoManager->push(new RemoveBend(location),
                             location.getSystemIndex());
-		// How can I put back the old duration?  Must put the code for this
-		// in RemoveBend.
     }
     else
     {
