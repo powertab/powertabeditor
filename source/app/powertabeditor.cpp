@@ -920,19 +920,6 @@ void PowerTabEditor::updateNoteDuration(Position::DurationType duration)
         updateCommands();
 }
 
-void PowerTabEditor::updateNoteDurationForBend(const ScoreLocation &location, const Note *note)
-{
-    const Bend &bend = note->getBend();
-    int bend_duration = bend.getDuration();
-    // Get beat value from time signature.
-    const Barline *barline = location.getBarline();
-    const TimeSignature &ts = barline->getTimeSignature();
-    int beatvalue = ts.getBeatValue();
-    int newduration = (int) beatvalue / bend_duration;
-    Position::DurationType newdt = (Position::DurationType) newduration;
-    updateNoteDuration(newdt);
-}
-
 static Position::DurationType changeDuration(Position::DurationType duration,
                                              bool increase)
 {
@@ -1466,9 +1453,30 @@ void PowerTabEditor::editBend()
         BendDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted)
         {
+            // Add the bend ...
             myUndoManager->push(new AddBend(location, dialog.getBend()),
-                                location.getSystemIndex());
-			updateNoteDurationForBend(location, note);
+               location.getSystemIndex());
+
+            // Add as many notes as needed for the bend's hold time,
+            // and tie the notes together.
+            ScoreLocation &loc = getLocation();
+            const Bend &bend = dialog.getBend();
+            int bend_duration = bend.getDuration();
+            int string = note->getString();
+            int fret = note->getFretNumber();
+            int sysindex = loc.getSystemIndex();
+            int posindex = loc.getPositionIndex();
+            Note *newnote = NULL;
+            for (int i = 1; i < bend_duration; i++)
+            {
+                posindex++;
+                loc.setPositionIndex(posindex);
+                myUndoManager->push(new AddNote(loc,
+                    Note(string, fret), myActiveDurationType),
+                    sysindex);
+                myUndoManager->push(new AddNoteProperty(loc, Note::Tied,
+                    "Tie"), loc.getSystemIndex());
+            }
         }
         else
             myBendCommand->setChecked(false);
