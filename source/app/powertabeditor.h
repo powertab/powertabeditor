@@ -192,6 +192,8 @@ private slots:
     /// Updates the duration of the current note and sets the default duration
     /// for new notes.
     void updateNoteDuration(Position::DurationType duration);
+	/// Update note duration for a bend (for future purposes).
+	void updateNoteDurationForBend(const ScoreLocation &location, const Note *note);
 	/// Increase or decrease the current note duration.
     void changeNoteDuration(bool increase);
     /// Adds a dot to the current position's duration.
