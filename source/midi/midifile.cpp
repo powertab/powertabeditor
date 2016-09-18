@@ -423,6 +423,16 @@ static void generateGradualBend(std::vector<BendEventInfo> &bends,
     }
 }
 
+// When we hold a bend, if rather than using ties, we want to pitchwheel it,
+// call something like this.
+static void generate0Bend(std::vector<BendEventInfo> &bends,
+    int start_tick, int duration, int start_bend,
+    int release_bend)
+{
+    const int tick = start_tick + duration;
+    bends.push_back(BendEventInfo(tick, start_bend));
+}
+
 static void generateBends(std::vector<BendEventInfo> &bends,
                           uint8_t &active_bend, int start_tick, int duration,
                           int ppq, const Note &note)
@@ -454,7 +464,7 @@ static void generateBends(std::vector<BendEventInfo> &bends,
 			else {
 				// Bend over the current note duration.
 				generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
-					bend_amount);
+				                    bend_amount);
 			}
             break;
 
