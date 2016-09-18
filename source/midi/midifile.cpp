@@ -426,8 +426,7 @@ static void generateGradualBend(std::vector<BendEventInfo> &bends,
 // When we hold a bend, if rather than using ties, we want to pitchwheel it,
 // call something like this.
 static void generate0Bend(std::vector<BendEventInfo> &bends,
-    int start_tick, int duration, int start_bend,
-    int release_bend)
+    int start_tick, int duration, int start_bend)
 {
     const int tick = start_tick + duration;
     bends.push_back(BendEventInfo(tick, start_bend));
@@ -453,6 +452,31 @@ static void generateBends(std::vector<BendEventInfo> &bends,
             break;
 
         case Bend::NormalBend:
+			// Perform a normal (gradual) bend.
+			if (bend.getDuration() == 0)
+			{
+				// Bend over a 32nd note.
+				generateGradualBend(bends, start_tick, ppq / 8, DEFAULT_BEND,
+					bend_amount);
+			}
+			else {
+				// Bend over the current note duration.
+				int bend_duration = bend.getDuration();
+				int start_bend = DEFAULT_BEND;
+				int bendamountpernote = 0;
+				bendamountpernote = (bend_amount - start_bend) / bend_duration;
+				int end_bend = start_bend + bendamountpernote;
+				for (int i = 1; i < bend_duration; i++)
+				{
+					generateGradualBend(bends, start_tick, duration, start_bend,
+						end_bend);
+					start_tick += duration;
+					start_bend += bendamountpernote;
+					end_bend += bendamountpernote;
+				}
+			}
+			break;
+
         case Bend::BendAndHold:
             // Perform a normal (gradual) bend.
             if (bend.getDuration() == 0)
