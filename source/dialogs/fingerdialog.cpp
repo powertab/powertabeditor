@@ -43,21 +43,21 @@ FingerDialog::~FingerDialog()
     delete ui;
 }
 
-int fingerDialog::getFinger() const
+int FingerDialog::getFinger() const
 {
     return ui->fingerSpinBox->value();
 }
 
 void FingerDialog::accept()
 {
-    if (getFinger() == myOriginalFinger)
+    if (getFinger() == myFinger)
     {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setWindowTitle(tr("Finger"));
         msgBox.setText(tr("The trilled fret number cannot be the same as the original fret number."));
         msgBox.exec();
-        ui->FingerSpinBox->setFocus();
+        ui->fingerSpinBox->setFocus();
     }
     else
     {
