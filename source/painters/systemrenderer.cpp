@@ -333,24 +333,35 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
 
-//                auto tabNote = new SimpleTextItem(
-//                    text, myPlainTextFont,
-//                    QPen(note.hasProperty(Note::Tied) ? Qt::lightGray
-//                                                      : Qt::black),
-//                    QBrush(QColor(255, 255, 255)));
-                
-                
                 
                 
                 
                 // need to handle multiple colors here.  maybe array?
+                QColor myColor;
+                myColor = QColor(0,0,0);
+                switch (note.getFinger()) {
+                    case 1:
+                        myColor = QColor(192,47,29);
+                        break;
+                    case 2:
+                        myColor = QColor(16,120,150);
+                        break;
+                    case 3:
+                        myColor = QColor(124,164,73);
+                        break;
+                    case 4:
+                        myColor = QColor(188,161,54);
+                        break;
+                    default:
+                        myColor = QColor(0,0,0);
+                        break;
+                }
+
                 auto tabNote = new SimpleTextItem(
                     text, myPlainTextFont,
-                    QPen((note.getFinger()%2 == 0) ? Qt::red
-                                                   : Qt::blue),
-
+                    QPen(note.hasProperty(Note::Tied) ? Qt::lightGray
+                                                      : myColor),
                     QBrush(QColor(255, 255, 255)));
-                
                 
                 
                 
