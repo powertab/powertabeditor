@@ -162,8 +162,9 @@ bool Note::hasFinger() const
 int Note::getFinger() const
 {
     if (!hasFinger())
-        throw std::logic_error("Note does not have finger");
-
+//        throw std::logic_error("Note does not have finger");
+        return 0;
+        
     return myFinger;
 }
 
