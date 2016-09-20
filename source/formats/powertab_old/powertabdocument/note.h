@@ -71,6 +71,9 @@ public:
         bend                    = 'e',
         tappedHarmonic          = 'f',
         trill                   = 'g',
+        
+        finger                  = 'i',
+        
         artificialHarmonic      = 'h',
         notUsed                 = 0
     };
@@ -216,6 +219,19 @@ public:
     bool GetTrill(uint8_t& trilledFretNumber) const;
     bool HasTrill() const;
 
+    
+    
+    
+    
+    
+    bool GetFinger(uint8_t& fingerNumber) const;
+    bool HasFinger() const;
+    
+    
+    
+    
+    
+    
 // Artificial Harmonic Functions
     bool GetArtificialHarmonic(uint8_t& key, uint8_t& keyVariation,
                                uint8_t& octave) const;

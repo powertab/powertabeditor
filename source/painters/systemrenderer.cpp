@@ -333,11 +333,29 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
 
+//                auto tabNote = new SimpleTextItem(
+//                    text, myPlainTextFont,
+//                    QPen(note.hasProperty(Note::Tied) ? Qt::lightGray
+//                                                      : Qt::black),
+//                    QBrush(QColor(255, 255, 255)));
+                
+                
+                
+                
+                
+                // need to handle multiple colors here.  maybe array?
                 auto tabNote = new SimpleTextItem(
                     text, myPlainTextFont,
-                    QPen(note.hasProperty(Note::Tied) ? Qt::lightGray
-                                                      : Qt::black),
+                    QPen((note.getFinger()%2 == 0) ? Qt::red
+                                                   : Qt::blue),
+
                     QBrush(QColor(255, 255, 255)));
+                
+                
+                
+                
+                
+                
 
                 centerHorizontally(*tabNote, location,
                                    location + layout->getPositionSpacing());

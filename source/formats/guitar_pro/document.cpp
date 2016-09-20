@@ -164,7 +164,8 @@ enum NoteEffects
     HasGraceNote = 4,
     HasHarmonic = 4,
     HasTrill = 5,
-    HasVibrato = 6
+    HasVibrato = 6,
+    HasFinger = 7
 };
 }
 

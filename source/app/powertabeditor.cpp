@@ -101,6 +101,7 @@
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/fileinformationdialog.h>
+#include <dialogs/fingerdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/irregulargroupingdialog.h>
@@ -1482,6 +1483,45 @@ void PowerTabEditor::editTrill()
     }
 }
 
+
+
+
+
+
+
+
+
+void PowerTabEditor::editFinger()
+{
+    const ScoreLocation &location = getLocation();
+    const Note *note = location.getNote();
+    Q_ASSERT(note);
+    
+    if (note->hasFinger())
+        myUndoManager->push(new RemoveFinger(location), location.getSystemIndex());
+    else
+    {
+        FingerDialog dialog(this, note->getFretNumber());
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(new AddFinger(location, dialog.getFinger()),
+                                location.getSystemIndex());
+        }
+        else
+            myFingerCommand->setChecked(false);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 void PowerTabEditor::addPlayer()
 {
     ScoreLocation &location = getLocation();
@@ -2393,6 +2433,49 @@ void PowerTabEditor::createCommands()
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, SIGNAL(triggered()), this, SLOT(editTrill()));
 
+    
+    
+    
+
+    
+    
+    
+    
+    myFingerCommand = new Command(tr("Finger..."), "TabSymbols.Finger",
+                                 QKeySequence(tr("Shift+F")), this);
+    myFingerCommand->setCheckable(true);
+    connect(myFingerCommand, SIGNAL(triggered()), this, SLOT(editFinger()));
+    
+    
+    
+    
+//    createNotePropertyCommand(myFingerNoneCommand, tr("None"),
+//                                  "TabSymbols.FingerNone", QKeySequence(),
+//                                  Note::FingerNone);
+//    createNotePropertyCommand(myFinger1Command, tr("Finger 1"),
+//                                  "TabSymbols.Finger1", QKeySequence(),
+//                                  Note::Finger1);
+//    createNotePropertyCommand(myFinger2Command, tr("Finger 2"),
+//                                  "TabSymbols.Finger2", QKeySequence(),
+//                                  Note::Finger2);
+//    createNotePropertyCommand(myFinger3Command, tr("Finger 3"),
+//                                  "TabSymbols.Finger3", QKeySequence(),
+//                                  Note::Finger3);
+//    createNotePropertyCommand(myFinger4Command, tr("Finger 4"),
+//                                  "TabSymbols.Finger4", QKeySequence(),
+//                                  Note::Finger4);
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     createPositionPropertyCommand(myPickStrokeUpCommand, tr("Pickstroke Up"),
                                   "TabSymbols.PickStrokeUp", QKeySequence(),
                                   Position::PickStrokeUp);
@@ -2834,6 +2917,15 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addAction(myPalmMuteCommand);
     myTabSymbolsMenu->addAction(myTremoloPickingCommand);
     myTabSymbolsMenu->addAction(myTrillCommand);
+    
+    
+    
+    
+    myTabSymbolsMenu->addAction(myFingerCommand);
+    
+    
+    
+    
     myTabSymbolsMenu->addAction(myTapCommand);
     myTabSymbolsMenu->addSeparator();
     myTabSymbolsMenu->addAction(myArpeggioUpCommand);
@@ -3230,6 +3322,16 @@ void PowerTabEditor::updateCommands()
                            Position::TremoloPicking);
     myTrillCommand->setEnabled(note != nullptr);
     myTrillCommand->setChecked(note && note->hasTrill());
+
+    
+
+    
+    myFingerCommand->setEnabled(note != nullptr);
+    myFingerCommand->setChecked(note && note->hasFinger());
+
+    
+    
+    
     updatePositionProperty(myTapCommand, pos, Position::Tap);
     updatePositionProperty(myArpeggioUpCommand, pos, Position::ArpeggioUp);
     updatePositionProperty(myArpeggioDownCommand, pos, Position::ArpeggioDown);

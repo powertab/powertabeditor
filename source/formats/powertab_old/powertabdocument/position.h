@@ -343,6 +343,19 @@ public:
     bool GetMultibarRest(uint8_t& measureCount) const;
     bool HasMultibarRest() const;
 
+    
+    
+    
+    
+    bool GetFinger() const;
+    bool SetFinger(int finger);
+    
+    
+    
+    
+    
+    
+    
     /// Determines if a note index is valid
     /// @param index note index to validate
     /// @return True if the note index is valid, false if not

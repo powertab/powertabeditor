@@ -40,6 +40,7 @@ Note::Note()
     : myString(0),
       myFretNumber(0),
       myTrilledFret(-1),
+      myFinger(0),
       myTappedHarmonicFret(-1)
 {
 }
@@ -48,6 +49,7 @@ Note::Note(int string, int fretNumber)
     : myString(string),
       myFretNumber(fretNumber),
       myTrilledFret(-1),
+      myFinger(0),
       myTappedHarmonicFret(-1)
 {
 }
@@ -57,6 +59,7 @@ bool Note::operator==(const Note &other) const
     return myString == other.myString && myFretNumber == other.myFretNumber &&
            mySimpleProperties == other.mySimpleProperties &&
            myTrilledFret == other.myTrilledFret &&
+           myFinger == other.myFinger &&
            myTappedHarmonicFret == other.myTappedHarmonicFret &&
            myArtificialHarmonic == other.myArtificialHarmonic &&
            myBend == other.myBend;
@@ -147,6 +150,37 @@ void Note::clearTrill()
 {
     myTrilledFret = -1;
 }
+
+
+
+
+
+bool Note::hasFinger() const
+{
+    return myFinger != 0;
+}
+int Note::getFinger() const
+{
+    if (!hasFinger())
+        throw std::logic_error("Note does not have finger");
+
+    return myFinger;
+}
+
+void Note::setFinger(int finger)
+{
+    myFinger = finger;
+}
+
+void Note::clearFinger()
+{
+    myFinger = 0;
+}
+
+
+
+
+
 
 bool Note::hasTappedHarmonic() const
 {

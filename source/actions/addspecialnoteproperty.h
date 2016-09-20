@@ -77,6 +77,36 @@ public:
     }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+class AddFinger : public AddSpecialNoteProperty<int>
+{
+public:
+    AddFinger(const ScoreLocation &location, int fret)
+    : AddSpecialNoteProperty<int>(location, QObject::tr("Add Finger"), fret,
+                                  std::mem_fn(&Note::setFinger),
+                                  std::mem_fn(&Note::clearFinger))
+    {
+    }
+};
+
+
+
+
+
+
+
+
+
 class AddArtificialHarmonic : public AddSpecialNoteProperty<ArtificialHarmonic>
 {
 public:

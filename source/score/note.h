@@ -173,6 +173,26 @@ public:
     void setTrilledFret(int fret);
     /// Removes the trill for this note.
     void clearTrill();
+    
+    
+    
+    
+    
+    
+    
+    
+    bool hasFinger() const;
+    /// Returns the finger to fret the note.
+    int getFinger() const;
+    /// Sets the finger to fret the note.
+    void setFinger(int finger);
+    /// Removes the finger for this note.
+    void clearFinger();
+
+    
+    
+    
+    
 
     /// Returns whether the note has a tapped harmonic.
     bool hasTappedHarmonic() const;
@@ -209,6 +229,7 @@ private:
     int myFretNumber;
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myTrilledFret;
+    int myFinger;
     int myTappedHarmonicFret;
     boost::optional<ArtificialHarmonic> myArtificialHarmonic;
     boost::optional<Bend> myBend;
@@ -221,6 +242,7 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
     ar("fret", myFretNumber);
     ar("properties", mySimpleProperties);
     ar("trill", myTrilledFret);
+    ar("finger", myFinger);
     ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);
