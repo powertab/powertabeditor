@@ -74,6 +74,7 @@ struct TabNote
     std::string vibratoType;
     bool letRing;
     int trillNote; ///< Note value is stored in MIDI format (0-127)
+    int finger;
     pugi::xml_node properties;
 };
 

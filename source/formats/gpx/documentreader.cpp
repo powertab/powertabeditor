@@ -243,6 +243,8 @@ void Gpx::DocumentReader::readNotes()
         note.vibratoType = currentNote.child_value("Vibrato");
         note.letRing = !currentNote.child("LetRing").empty();
         note.trillNote = currentNote.child("Trill").text().as_int(-1);
+        
+        note.finger = currentNote.child("Finger").text().as_int(-1);
 
         myNotes[note.id] = note;
     }
