@@ -423,16 +423,63 @@ static void generateGradualBend(std::vector<BendEventInfo> &bends,
     }
 }
 
-static void generateBends(std::vector<BendEventInfo> &bends,
+// When we hold a bend, if rather than using ties, we want to pitchwheel it,
+// call something like this.
+static void generate0Bend(std::vector<BendEventInfo> &bends,
+    int start_tick, int duration, int start_bend)
+{
+    const int tick = start_tick + duration;
+    bends.push_back(BendEventInfo(tick, start_bend));
+}
+
+static void resetPitchWheel(const Score &score, int range)
+{
+	// Set the initial channel volume and pitch bend range ...
+	std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
+	for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
+	{
+		for (const MidiEvent &event :
+			MidiEvent::pitchWheelRange(0, getChannel(i), range))
+		{
+			regular_tracks[i].append(event);
+		}
+	}
+}
+
+static void setPitchWheel(std::vector<BendEventInfo> &bends, std::vector<ActivePlayer> active_players, std::vector<MidiEventList> &tracks, int current_tick, int range)
+{
+	for (const BendEventInfo &event : bends)
+	{
+		for (const ActivePlayer &player : active_players)
+		{
+			for (const MidiEvent &event :
+				MidiEvent::pitchWheelRange(current_tick, getChannel(player), range))
+			{
+				tracks[player.getPlayerNumber()].append(event);
+			}
+
+			tracks[player.getPlayerNumber()].append(
+				MidiEvent::pitchWheel(event.myTick,
+					getChannel(player),
+					event.myBendAmount));
+		}
+	}
+}
+
+static int generateBends(std::vector<BendEventInfo> &bends,
                           uint8_t &active_bend, int start_tick, int duration,
                           int ppq, const Note &note)
 {
+	int range = PITCH_BEND_RANGE;
     const Bend &bend = note.getBend();
 
-    const int bend_amount = boost::rational_cast<int>(
-        DEFAULT_BEND + bend.getBentPitch() * BEND_QUARTER_TONE);
-    const int release_amount = boost::rational_cast<int>(
-        DEFAULT_BEND + bend.getReleasePitch() * BEND_QUARTER_TONE);
+	// JDB Test bend ranging on the pitch wheel.
+	static boost::rational<int> BQT(
+		(Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - DEFAULT_BEND), 2 * range);
+    int bend_amount = boost::rational_cast<int>(
+		DEFAULT_BEND + bend.getBentPitch() * BQT);
+    int release_amount = boost::rational_cast<int>(
+		DEFAULT_BEND + bend.getReleasePitch() * BQT);
 
     switch (bend.getType())
     {
@@ -443,6 +490,46 @@ static void generateBends(std::vector<BendEventInfo> &bends,
             break;
 
         case Bend::NormalBend:
+			// Perform a normal (gradual) bend.
+			if (bend.getDuration() == 0)
+			{
+				// Bend over a 32nd note.
+				generateGradualBend(bends, start_tick, ppq / 8, DEFAULT_BEND,
+					bend_amount);
+			}
+			else {
+				// Bend over the sequence of tied notes.
+				// If we change the pitch range, we should return it.
+				int bendamountpernote = 0;
+				int bend_duration = bend.getDuration();
+				int start_bend = DEFAULT_BEND;
+				while(bendamountpernote < 2)
+				{
+					bendamountpernote = (bend_amount - start_bend) / bend_duration;
+					if (bendamountpernote < 2)
+					{
+                          range /= 2;
+						  boost::rational<int> BQT(
+							  (Midi::MAX_MIDI_CHANNEL_EFFECT_LEVEL - DEFAULT_BEND), 2 * range);
+					      bend_amount = boost::rational_cast<int>(
+                             DEFAULT_BEND + bend.getBentPitch() * BQT);
+                          release_amount = boost::rational_cast<int>(
+                             DEFAULT_BEND + bend.getReleasePitch() * BQT);
+						continue;
+					}
+					int end_bend = start_bend + bendamountpernote;
+					for (int i = 1; i < bend_duration; i++)
+					{
+						generateGradualBend(bends, start_tick, duration, start_bend,
+							end_bend);
+						start_tick += duration;
+						start_bend += bendamountpernote;
+						end_bend += bendamountpernote;
+					}
+				}
+			}
+			break;
+
         case Bend::BendAndHold:
             // Perform a normal (gradual) bend.
             if (bend.getDuration() == 0)
@@ -451,15 +538,10 @@ static void generateBends(std::vector<BendEventInfo> &bends,
                 generateGradualBend(bends, start_tick, ppq / 8, DEFAULT_BEND,
                                     bend_amount);
             }
-            else if (bend.getDuration() == 1)
-            {
-                // Bend over the current note duration.
-                generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
-                                    bend_amount);
-            }
 			else {
+				// Bend over the current note duration.
 				generateGradualBend(bends, start_tick, duration, DEFAULT_BEND,
-					bend_amount);
+				                    bend_amount);
 			}
             break;
 
@@ -512,6 +594,8 @@ static void generateBends(std::vector<BendEventInfo> &bends,
             bends.back().myBendAmount = DEFAULT_BEND;
         active_bend = DEFAULT_BEND;
     }
+
+	return range;
 }
 
 static void generateSlides(std::vector<BendEventInfo> &bends, int start_tick,
@@ -807,24 +891,16 @@ int MidiFile::addEventsForBar(
                                    VoiceUtils::getNextNote(voice, position,
                                                            note.getString()));
                 }
-
+				// JDB - reset all until better code.
+				int range = PITCH_BEND_RANGE;
+				resetPitchWheel(score, range);
                 if (note.hasBend())
                 {
-                    generateBends(bend_events, active_bend, current_tick,
+                    range = generateBends(bend_events, active_bend, current_tick,
                                   duration, myTicksPerBeat, note);
                 }
-
-                for (const BendEventInfo &event : bend_events)
-                {
-                    for (const ActivePlayer &player : active_players)
-                    {
-                        tracks[player.getPlayerNumber()].append(
-                            MidiEvent::pitchWheel(event.myTick,
-                                                  getChannel(player),
-                                                  event.myBendAmount));
-                    }
-                }
-            }
+				setPitchWheel(bend_events, active_players, tracks, current_tick, range);
+			}
 
             // Perform tremolo picking or trills - they work identically, except
             // trills alternate between two pitches.
@@ -906,3 +982,4 @@ int MidiFile::addEventsForBar(
 
     return current_tick;
 }
+
