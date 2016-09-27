@@ -29,7 +29,7 @@ class FingerDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit FingerDialog(QWidget *parent, int originalFinger);
+    explicit FingerDialog(QWidget *parent, int finger);
     ~FingerDialog();
     
     int getFinger() const;

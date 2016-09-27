@@ -112,9 +112,7 @@ struct Note
     /// Optional dynamic, where 1 = ppp, ... 9 = fff.
     boost::optional<int> myDynamic;
     boost::optional<int> myTrilledFret;
-    
     boost::optional<int> myFinger;
-    
     boost::optional<GraceNote> myGraceNote;
     bool myIsLetRing;
     bool myIsHammerOnOrPullOff;

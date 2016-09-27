@@ -1483,14 +1483,6 @@ void PowerTabEditor::editTrill()
     }
 }
 
-
-
-
-
-
-
-
-
 void PowerTabEditor::editFinger()
 {
     const ScoreLocation &location = getLocation();
@@ -1501,7 +1493,7 @@ void PowerTabEditor::editFinger()
         myUndoManager->push(new RemoveFinger(location), location.getSystemIndex());
     else
     {
-        FingerDialog dialog(this, note->getFretNumber());
+        FingerDialog dialog(this, note->getFinger());
         if (dialog.exec() == QDialog::Accepted)
         {
             myUndoManager->push(new AddFinger(location, dialog.getFinger()),
@@ -1511,16 +1503,6 @@ void PowerTabEditor::editFinger()
             myFingerCommand->setChecked(false);
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 void PowerTabEditor::addPlayer()
 {
@@ -2433,21 +2415,10 @@ void PowerTabEditor::createCommands()
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, SIGNAL(triggered()), this, SLOT(editTrill()));
 
-    
-    
-    
-
-    
-    
-    
-    
     myFingerCommand = new Command(tr("Finger..."), "TabSymbols.Finger",
                                  QKeySequence(tr("Shift+F")), this);
     myFingerCommand->setCheckable(true);
     connect(myFingerCommand, SIGNAL(triggered()), this, SLOT(editFinger()));
-    
-    
-    
     
 //    createNotePropertyCommand(myFingerNoneCommand, tr("None"),
 //                                  "TabSymbols.FingerNone", QKeySequence(),
@@ -2465,17 +2436,6 @@ void PowerTabEditor::createCommands()
 //                                  "TabSymbols.Finger4", QKeySequence(),
 //                                  Note::Finger4);
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     createPositionPropertyCommand(myPickStrokeUpCommand, tr("Pickstroke Up"),
                                   "TabSymbols.PickStrokeUp", QKeySequence(),
                                   Position::PickStrokeUp);
@@ -2917,15 +2877,6 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addAction(myPalmMuteCommand);
     myTabSymbolsMenu->addAction(myTremoloPickingCommand);
     myTabSymbolsMenu->addAction(myTrillCommand);
-    
-    
-    
-    
-    myTabSymbolsMenu->addAction(myFingerCommand);
-    
-    
-    
-    
     myTabSymbolsMenu->addAction(myTapCommand);
     myTabSymbolsMenu->addSeparator();
     myTabSymbolsMenu->addAction(myArpeggioUpCommand);
@@ -2933,7 +2884,9 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addSeparator();
     myTabSymbolsMenu->addAction(myPickStrokeUpCommand);
     myTabSymbolsMenu->addAction(myPickStrokeDownCommand);
-
+    myTabSymbolsMenu->addSeparator();
+    myTabSymbolsMenu->addAction(myFingerCommand);
+    
     // Player Menu.
     myPlayerMenu = menuBar()->addMenu(tr("&Player"));
     myPlayerMenu->addAction(myAddPlayerCommand);
@@ -3322,16 +3275,6 @@ void PowerTabEditor::updateCommands()
                            Position::TremoloPicking);
     myTrillCommand->setEnabled(note != nullptr);
     myTrillCommand->setChecked(note && note->hasTrill());
-
-    
-
-    
-    myFingerCommand->setEnabled(note != nullptr);
-    myFingerCommand->setChecked(note && note->hasFinger());
-
-    
-    
-    
     updatePositionProperty(myTapCommand, pos, Position::Tap);
     updatePositionProperty(myArpeggioUpCommand, pos, Position::ArpeggioUp);
     updatePositionProperty(myArpeggioDownCommand, pos, Position::ArpeggioDown);
@@ -3339,6 +3282,9 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myPickStrokeDownCommand, pos,
                            Position::PickStrokeDown);
 
+    myFingerCommand->setEnabled(note != nullptr);
+    myFingerCommand->setChecked(note && note->hasFinger());
+    
     myPlayerChangeCommand->setChecked(
         ScoreUtils::findByPosition(system.getPlayerChanges(), position) !=
         nullptr);

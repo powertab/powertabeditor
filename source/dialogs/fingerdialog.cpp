@@ -50,17 +50,5 @@ int FingerDialog::getFinger() const
 
 void FingerDialog::accept()
 {
-//    if (getFinger() == myFinger)
-//    {
-//        QMessageBox msgBox(this);
-//        msgBox.setIcon(QMessageBox::Warning);
-//        msgBox.setWindowTitle(tr("Finger"));
-//        msgBox.setText(tr("The trilled fret number cannot be the same as the original fret number."));
-//        msgBox.exec();
-//        ui->fingerSpinBox->setFocus();
-//    }
-//    else
-//    {
-        done(Accepted);
-//    }
+    done(Accepted);
 }

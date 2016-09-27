@@ -79,11 +79,6 @@ public:
                                          std::mem_fn(&Note::setTrilledFret)) {}
 };
 
-
-
-
-
-
 class RemoveFinger : public RemoveSpecialNoteProperty<int>
 {
 public:
@@ -93,12 +88,6 @@ public:
                                      std::mem_fn(&Note::clearFinger),
                                      std::mem_fn(&Note::setFinger)) {}
 };
-
-
-
-
-
-
 
 class RemoveArtificialHarmonic
     : public RemoveSpecialNoteProperty<ArtificialHarmonic>
