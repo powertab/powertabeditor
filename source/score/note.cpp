@@ -40,7 +40,7 @@ Note::Note()
     : myString(0),
       myFretNumber(0),
       myTrilledFret(-1),
-      myFinger(0),
+      myFinger(FL_NotSpecified),
       myTappedHarmonicFret(-1)
 {
 }
@@ -49,7 +49,7 @@ Note::Note(int string, int fretNumber)
     : myString(string),
       myFretNumber(fretNumber),
       myTrilledFret(-1),
-      myFinger(0),
+      myFinger(FL_NotSpecified),
       myTappedHarmonicFret(-1)
 {
 }
@@ -151,37 +151,28 @@ void Note::clearTrill()
     myTrilledFret = -1;
 }
 
-
-
-
-
 bool Note::hasFinger() const
 {
-    return myFinger != 0;
+    return myFinger != FL_NotSpecified;
 }
-int Note::getFinger() const
+
+Note::FingerLeft Note::getFinger() const
 {
     if (!hasFinger())
-//        throw std::logic_error("Note does not have finger");
-        return 0;
+        return FL_NotSpecified;
         
     return myFinger;
 }
 
-void Note::setFinger(int finger)
+void Note::setFinger(FingerLeft finger)
 {
     myFinger = finger;
 }
 
 void Note::clearFinger()
 {
-    myFinger = 0;
+    myFinger = FL_NotSpecified;
 }
-
-
-
-
-
 
 bool Note::hasTappedHarmonic() const
 {

@@ -142,6 +142,16 @@ public:
         NumSimpleProperties
     };
 
+    enum FingerLeft
+    {
+        FL_NotSpecified,
+        FL_1,
+        FL_2,
+        FL_3,
+        FL_4,
+        FL_Open
+    };
+    
     Note();
     Note(int string, int fretNumber);
 
@@ -174,25 +184,13 @@ public:
     /// Removes the trill for this note.
     void clearTrill();
     
-    
-    
-    
-    
-    
-    
-    
     bool hasFinger() const;
     /// Returns the finger to fret the note.
-    int getFinger() const;
+    FingerLeft getFinger() const;
     /// Sets the finger to fret the note.
-    void setFinger(int finger);
+    void setFinger(FingerLeft finger);
     /// Removes the finger for this note.
     void clearFinger();
-
-    
-    
-    
-    
 
     /// Returns whether the note has a tapped harmonic.
     bool hasTappedHarmonic() const;
@@ -229,7 +227,7 @@ private:
     int myFretNumber;
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myTrilledFret;
-    int myFinger;
+    FingerLeft myFinger;
     int myTappedHarmonicFret;
     boost::optional<ArtificialHarmonic> myArtificialHarmonic;
     boost::optional<Bend> myBend;

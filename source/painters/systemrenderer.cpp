@@ -340,16 +340,16 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 QColor myColor;
                 myColor = QColor(0,0,0);
                 switch (note.getFinger()) {
-                    case 1:
+                    case Note::FL_1:
                         myColor = QColor(192,47,29);
                         break;
-                    case 2:
+                    case Note::FL_2:
                         myColor = QColor(16,120,150);
                         break;
-                    case 3:
+                    case Note::FL_3:
                         myColor = QColor(124,164,73);
                         break;
-                    case 4:
+                    case Note::FL_4:
                         myColor = QColor(188,161,54);
                         break;
                     default:
