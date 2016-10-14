@@ -149,7 +149,7 @@ public:
         FL_2,
         FL_3,
         FL_4,
-        FL_Open
+        FL_T
     };
     
     Note();

@@ -22,20 +22,13 @@
 
 #include <score/note.h>
 
-FingerDialog::FingerDialog(QWidget *parent, int finger)
+FingerDialog::FingerDialog(QWidget *parent, Note::FingerLeft finger)
 : QDialog(parent),
 ui(new Ui::FingerDialog),
 myFinger(finger)
 {
     ui->setupUi(this);
-    
-    ui->fingerSpinBox->setValue(finger);
-    
-    ui->fingerSpinBox->setMinimum(0);
-    ui->fingerSpinBox->setMaximum(4);
-    ui->fingerSpinBox->setValue(0);
-    
-    ui->fingerSpinBox->selectAll();
+    ui->fingerLeftComboBox->setCurrentIndex(finger);
 }
 
 FingerDialog::~FingerDialog()
@@ -43,9 +36,9 @@ FingerDialog::~FingerDialog()
     delete ui;
 }
 
-int FingerDialog::getFinger() const
+Note::FingerLeft FingerDialog::getFinger() const
 {
-    return ui->fingerSpinBox->value();
+    return (Note::FingerLeft)ui->fingerLeftComboBox->currentIndex();
 }
 
 void FingerDialog::accept()

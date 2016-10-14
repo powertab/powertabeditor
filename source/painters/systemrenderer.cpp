@@ -352,6 +352,9 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                     case Note::FL_4:
                         myColor = QColor(188,161,54);
                         break;
+                    case Note::FL_T:
+                        myColor = QColor(50,50,50);
+                        break;
                     default:
                         myColor = QColor(0,0,0);
                         break;

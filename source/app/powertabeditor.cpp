@@ -1496,8 +1496,8 @@ void PowerTabEditor::editFinger()
         FingerDialog dialog(this, note->getFinger());
         if (dialog.exec() == QDialog::Accepted)
         {
-//            myUndoManager->push(new AddFinger(location, dialog.getFinger()),
-//                                location.getSystemIndex());
+            myUndoManager->push(new AddFinger(location, dialog.getFinger()),
+                                location.getSystemIndex());
         }
         else
             myFingerCommand->setChecked(false);

@@ -19,6 +19,7 @@
 #define DIALOGS_FINGERDIALOG_H
 
 #include <QDialog>
+#include <score/note.h>
 
 namespace Ui {
     class FingerDialog;
@@ -29,17 +30,17 @@ class FingerDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit FingerDialog(QWidget *parent, int finger);
+    explicit FingerDialog(QWidget *parent, Note::FingerLeft finger);
     ~FingerDialog();
     
-    int getFinger() const;
+    Note::FingerLeft getFinger() const;
     
     public slots:
     virtual void accept() override;
     
 private:
     Ui::FingerDialog *ui;
-    const int myFinger;
+    const Note::FingerLeft myFinger;
 };
 
 #endif
