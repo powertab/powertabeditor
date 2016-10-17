@@ -279,39 +279,6 @@ bool Note::HasTrill() const
 {
     return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, trill) != (uint32_t)-1);
 }
-    
-    
-    
-    
-    
-    
-
-bool Note::GetFinger(uint8_t& fingerNumber) const
-{
-    fingerNumber = 0;
-    
-    uint32_t index = ComplexSymbols::findComplexSymbol(m_complexSymbolArray, finger);
-    if (index == (uint32_t)-1)
-        return (false);
-    
-    uint32_t symbolData = m_complexSymbolArray[index];
-    fingerNumber = LOBYTE(HIWORD(symbolData));
-    
-    return (true);
-}
-    
-bool Note::HasFinger() const
-{
-    return (ComplexSymbols::findComplexSymbol(m_complexSymbolArray, finger) != (uint32_t)-1);
-}
-
-    
-    
-    
-    
-    
-    
-    
 
 /// Gets the artificial harmonic data (if any)
 /// @param key Holds the key return value

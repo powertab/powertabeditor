@@ -1489,19 +1489,18 @@ void PowerTabEditor::editFinger()
     const Note *note = location.getNote();
     Q_ASSERT(note);
     
-    if (note->hasFinger())
-        myUndoManager->push(new RemoveFinger(location), location.getSystemIndex());
-    else
+
+    FingerDialog dialog(this, note->getFinger());
+    if (dialog.exec() == QDialog::Accepted)
     {
-        FingerDialog dialog(this, note->getFinger());
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            myUndoManager->push(new AddFinger(location, dialog.getFinger()),
-                                location.getSystemIndex());
-        }
-        else
-            myFingerCommand->setChecked(false);
+        myUndoManager->push(new AddFinger(location, dialog.getFinger()),
+                            location.getSystemIndex());
     }
+
+    if (note->getFinger() == Note::FingerLeft::FL_NotSpecified)
+        myFingerCommand->setChecked(false);
+    else
+        myFingerCommand->setChecked(true);
 }
 
 void PowerTabEditor::addPlayer()
@@ -2415,27 +2414,6 @@ void PowerTabEditor::createCommands()
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, SIGNAL(triggered()), this, SLOT(editTrill()));
 
-    myFingerCommand = new Command(tr("Finger..."), "TabSymbols.Finger",
-                                 QKeySequence(tr("Shift+F")), this);
-    myFingerCommand->setCheckable(true);
-    connect(myFingerCommand, SIGNAL(triggered()), this, SLOT(editFinger()));
-    
-//    createNotePropertyCommand(myFingerNoneCommand, tr("None"),
-//                                  "TabSymbols.FingerNone", QKeySequence(),
-//                                  Note::FingerNone);
-//    createNotePropertyCommand(myFinger1Command, tr("Finger 1"),
-//                                  "TabSymbols.Finger1", QKeySequence(),
-//                                  Note::Finger1);
-//    createNotePropertyCommand(myFinger2Command, tr("Finger 2"),
-//                                  "TabSymbols.Finger2", QKeySequence(),
-//                                  Note::Finger2);
-//    createNotePropertyCommand(myFinger3Command, tr("Finger 3"),
-//                                  "TabSymbols.Finger3", QKeySequence(),
-//                                  Note::Finger3);
-//    createNotePropertyCommand(myFinger4Command, tr("Finger 4"),
-//                                  "TabSymbols.Finger4", QKeySequence(),
-//                                  Note::Finger4);
-
     createPositionPropertyCommand(myPickStrokeUpCommand, tr("Pickstroke Up"),
                                   "TabSymbols.PickStrokeUp", QKeySequence(),
                                   Position::PickStrokeUp);
@@ -2468,6 +2446,11 @@ void PowerTabEditor::createCommands()
                               tr("Slide Out Of Upwards"),
                               "TabSymbols.SlideOutOf.Upwards", QKeySequence(),
                               Note::SlideOutOfUpwards);
+    
+    myFingerCommand = new Command(tr("Finger..."), "TabSymbols.Finger",
+                                  QKeySequence(tr("Shift+F")), this);
+    myFingerCommand->setCheckable(true);
+    connect(myFingerCommand, SIGNAL(triggered()), this, SLOT(editFinger()));
 
     // Player menu.
     myAddPlayerCommand =

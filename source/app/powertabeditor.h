@@ -573,17 +573,6 @@ private:
     Command *myArpeggioDownCommand;
 
     Command *myFingerCommand;
-//    QMenu *myFingerMenu;
-//    Command *myFingerNoneCommand;
-//    Command *myFinger1Command;
-//    Command *myFinger2Command;
-//    Command *myFinger3Command;
-//    Command *myFinger4Command;
-//    Command *myFingerTCommand;
-//    Command *myFingerPCommand;
-//    Command *myFingerICommand;
-//    Command *myFingerMCommand;
-//    Command *myFingerACommand;
 
     QMenu *myPlayerMenu;
     Command *myAddPlayerCommand;

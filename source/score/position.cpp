@@ -217,35 +217,6 @@ bool Utils::hasNoteWithTrill(const Position &pos)
     return false;
 }
 
-
-
-
-
-
-
-
-
-bool Utils::hasNoteWithFinger(const Position &pos)
-{
-    for (const Note &note : pos.getNotes())
-    {
-        if (note.hasFinger())
-            return true;
-    }
-    
-    return false;
-}
-
-
-
-
-
-
-
-
-
-
-
 bool Utils::hasNoteWithBend(const Position &pos)
 {
     for (const Note &note : pos.getNotes())
@@ -265,5 +236,16 @@ bool Utils::hasNoteWithArtificialHarmonic(const Position &pos)
             return true;
     }
 
+    return false;
+}
+
+bool Utils::hasNoteWithFinger(const Position &pos)
+{
+    for (const Note &note : pos.getNotes())
+    {
+        if (note.hasFinger())
+            return true;
+    }
+    
     return false;
 }

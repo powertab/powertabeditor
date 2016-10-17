@@ -151,29 +151,6 @@ void Note::clearTrill()
     myTrilledFret = -1;
 }
 
-bool Note::hasFinger() const
-{
-    return myFinger != FL_NotSpecified;
-}
-
-Note::FingerLeft Note::getFinger() const
-{
-    if (!hasFinger())
-        return FL_NotSpecified;
-        
-    return myFinger;
-}
-
-void Note::setFinger(FingerLeft finger)
-{
-    myFinger = finger;
-}
-
-void Note::clearFinger()
-{
-    myFinger = FL_NotSpecified;
-}
-
 bool Note::hasTappedHarmonic() const
 {
     return myTappedHarmonicFret != -1;
@@ -238,6 +215,29 @@ void Note::setBend(const Bend &bend)
 void Note::clearBend()
 {
     myBend.reset();
+}
+
+bool Note::hasFinger() const
+{
+    return myFinger != FL_NotSpecified;
+}
+
+Note::FingerLeft Note::getFinger() const
+{
+    if (!hasFinger())
+        return FL_NotSpecified;
+    
+    return myFinger;
+}
+
+void Note::setFinger(FingerLeft finger)
+{
+    myFinger = finger;
+}
+
+void Note::clearFinger()
+{
+    myFinger = FL_NotSpecified;
 }
 
 std::ostream &operator<<(std::ostream &os, const Note &note)

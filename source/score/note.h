@@ -184,14 +184,6 @@ public:
     /// Removes the trill for this note.
     void clearTrill();
     
-    bool hasFinger() const;
-    /// Returns the finger to fret the note.
-    FingerLeft getFinger() const;
-    /// Sets the finger to fret the note.
-    void setFinger(FingerLeft finger);
-    /// Removes the finger for this note.
-    void clearFinger();
-
     /// Returns whether the note has a tapped harmonic.
     bool hasTappedHarmonic() const;
     /// Returns the fret that is tapped.
@@ -219,6 +211,14 @@ public:
     /// Removes the bend for this note.
     void clearBend();
 
+    bool hasFinger() const;
+    /// Returns the finger to fret the note.
+    FingerLeft getFinger() const;
+    /// Sets the finger to fret the note.
+    void setFinger(FingerLeft finger);
+    /// Removes the finger for this note.
+    void clearFinger();
+    
     static const int MIN_FRET_NUMBER;
     static const int MAX_FRET_NUMBER;
 
