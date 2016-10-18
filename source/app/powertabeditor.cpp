@@ -1483,21 +1483,21 @@ void PowerTabEditor::editTrill()
     }
 }
 
-void PowerTabEditor::editFinger()
+void PowerTabEditor::editFingerLeft()
 {
     const ScoreLocation &location = getLocation();
     const Note *note = location.getNote();
     Q_ASSERT(note);
     
 
-    FingerDialog dialog(this, note->getFinger());
+    FingerDialog dialog(this, note->getFingerLeft());
     if (dialog.exec() == QDialog::Accepted)
     {
-        myUndoManager->push(new AddFinger(location, dialog.getFinger()),
+        myUndoManager->push(new AddFingerLeft(location, dialog.getFingerLeft()),
                             location.getSystemIndex());
     }
 
-    if (note->getFinger() == Note::FingerLeft::FL_NotSpecified)
+    if (note->getFingerLeft() == Note::FingerLeft::FL_NotSpecified)
         myFingerCommand->setChecked(false);
     else
         myFingerCommand->setChecked(true);
@@ -2450,7 +2450,7 @@ void PowerTabEditor::createCommands()
     myFingerCommand = new Command(tr("Finger..."), "TabSymbols.Finger",
                                   QKeySequence(tr("Shift+F")), this);
     myFingerCommand->setCheckable(true);
-    connect(myFingerCommand, SIGNAL(triggered()), this, SLOT(editFinger()));
+    connect(myFingerCommand, SIGNAL(triggered()), this, SLOT(editFingerLeft()));
 
     // Player menu.
     myAddPlayerCommand =
@@ -3266,7 +3266,7 @@ void PowerTabEditor::updateCommands()
                            Position::PickStrokeDown);
 
     myFingerCommand->setEnabled(note != nullptr);
-    myFingerCommand->setChecked(note && note->hasFinger());
+    myFingerCommand->setChecked(note && note->hasFingerLeft());
     
     myPlayerChangeCommand->setChecked(
         ScoreUtils::findByPosition(system.getPlayerChanges(), position) !=

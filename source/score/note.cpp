@@ -40,7 +40,7 @@ Note::Note()
     : myString(0),
       myFretNumber(0),
       myTrilledFret(-1),
-      myFinger(FL_NotSpecified),
+      myFingerLeft(FL_NotSpecified),
       myTappedHarmonicFret(-1)
 {
 }
@@ -49,7 +49,7 @@ Note::Note(int string, int fretNumber)
     : myString(string),
       myFretNumber(fretNumber),
       myTrilledFret(-1),
-      myFinger(FL_NotSpecified),
+      myFingerLeft(FL_NotSpecified),
       myTappedHarmonicFret(-1)
 {
 }
@@ -59,10 +59,10 @@ bool Note::operator==(const Note &other) const
     return myString == other.myString && myFretNumber == other.myFretNumber &&
            mySimpleProperties == other.mySimpleProperties &&
            myTrilledFret == other.myTrilledFret &&
-           myFinger == other.myFinger &&
            myTappedHarmonicFret == other.myTappedHarmonicFret &&
            myArtificialHarmonic == other.myArtificialHarmonic &&
-           myBend == other.myBend;
+           myBend == other.myBend &&
+           myFingerLeft == other.myFingerLeft;
 }
 
 int Note::getString() const
@@ -217,27 +217,27 @@ void Note::clearBend()
     myBend.reset();
 }
 
-bool Note::hasFinger() const
+bool Note::hasFingerLeft() const
 {
-    return myFinger != FL_NotSpecified;
+    return myFingerLeft != FL_NotSpecified;
 }
 
-Note::FingerLeft Note::getFinger() const
+Note::FingerLeft Note::getFingerLeft() const
 {
-    if (!hasFinger())
+    if (!hasFingerLeft())
         return FL_NotSpecified;
     
-    return myFinger;
+    return myFingerLeft;
 }
 
-void Note::setFinger(FingerLeft finger)
+void Note::setFingerLeft(FingerLeft fingerLeft)
 {
-    myFinger = finger;
+    myFingerLeft = fingerLeft;
 }
 
-void Note::clearFinger()
+void Note::clearFingerLeft()
 {
-    myFinger = FL_NotSpecified;
+    myFingerLeft = FL_NotSpecified;
 }
 
 std::ostream &operator<<(std::ostream &os, const Note &note)

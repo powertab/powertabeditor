@@ -30,17 +30,17 @@ class FingerDialog : public QDialog
     Q_OBJECT
     
 public:
-    explicit FingerDialog(QWidget *parent, Note::FingerLeft finger);
+    explicit FingerDialog(QWidget *parent, Note::FingerLeft fingerLeft);
     ~FingerDialog();
     
-    Note::FingerLeft getFinger() const;
+    Note::FingerLeft getFingerLeft() const;
     
     public slots:
     virtual void accept() override;
     
 private:
     Ui::FingerDialog *ui;
-    const Note::FingerLeft myFinger;
+    const Note::FingerLeft myFingerLeft;
 };
 
 #endif

@@ -333,13 +333,9 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
 
-                
-                
-                
-                // need to handle multiple colors here.  maybe array?
                 QColor myColor;
                 myColor = QColor(0,0,0);
-                switch (note.getFinger()) {
+                switch (note.getFingerLeft()) {
                     case Note::FL_1:
                         myColor = QColor(192,47,29);
                         break;
@@ -366,11 +362,6 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                                                       : myColor),
                     QBrush(QColor(255, 255, 255)));
                 
-                
-                
-                
-                
-
                 centerHorizontally(*tabNote, location,
                                    location + layout->getPositionSpacing());
                 tabNote->setY(layout->getTabLine(note.getString() + 1) -

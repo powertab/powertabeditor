@@ -211,13 +211,13 @@ public:
     /// Removes the bend for this note.
     void clearBend();
 
-    bool hasFinger() const;
-    /// Returns the finger to fret the note.
-    FingerLeft getFinger() const;
-    /// Sets the finger to fret the note.
-    void setFinger(FingerLeft finger);
-    /// Removes the finger for this note.
-    void clearFinger();
+    bool hasFingerLeft() const;
+    /// Returns the left-hand finger to fret the note.
+    FingerLeft getFingerLeft() const;
+    /// Sets the left-hand finger to fret the note.
+    void setFingerLeft(FingerLeft fingerLeft);
+    /// Removes the left-hand finger for this note.
+    void clearFingerLeft();
     
     static const int MIN_FRET_NUMBER;
     static const int MAX_FRET_NUMBER;
@@ -227,7 +227,7 @@ private:
     int myFretNumber;
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myTrilledFret;
-    FingerLeft myFinger;
+    FingerLeft myFingerLeft;
     int myTappedHarmonicFret;
     boost::optional<ArtificialHarmonic> myArtificialHarmonic;
     boost::optional<Bend> myBend;
@@ -240,7 +240,7 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
     ar("fret", myFretNumber);
     ar("properties", mySimpleProperties);
     ar("trill", myTrilledFret);
-    ar("finger", myFinger);
+    ar("fingerLeft", myFingerLeft);
     ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);

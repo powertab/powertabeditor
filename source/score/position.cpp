@@ -239,11 +239,11 @@ bool Utils::hasNoteWithArtificialHarmonic(const Position &pos)
     return false;
 }
 
-bool Utils::hasNoteWithFinger(const Position &pos)
+bool Utils::hasNoteWithFingerLeft(const Position &pos)
 {
     for (const Note &note : pos.getNotes())
     {
-        if (note.hasFinger())
+        if (note.hasFingerLeft())
             return true;
     }
     
