@@ -7,3 +7,4 @@ windows/obj
 windows/redist
 *.suo
 *.app*
+.DS_Store
