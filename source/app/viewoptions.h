@@ -31,8 +31,12 @@ public:
     void setFilter(int filter) { myFilter = filter; }
     void clearFilter() { myFilter.reset(); }
 
+    double getZoom() const { return myZoom; }
+    void setZoom(double percent) { myZoom = percent; }
+
 private:
     boost::optional<int> myFilter;
+    double myZoom;
 };
 
 #endif

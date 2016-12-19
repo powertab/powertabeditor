@@ -46,7 +46,7 @@ public:
 
     void renderDocument(const Document &document);
 
-    void zoomTo(double percent);
+    void refreshZoom();
 
     void print(QPrinter &printer);
 

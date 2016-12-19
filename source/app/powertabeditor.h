@@ -343,6 +343,8 @@ private:
     void updateActiveVoice(int);
     /// Sets the current score filter.
     void updateActiveFilter(int);
+    /// Updates the zoom level.
+    void updateZoom(double percent);
     /// Updates the playback widget with the caret's current location.
     void updateLocationLabel();
 

@@ -173,6 +173,12 @@ void PlaybackWidget::reset(const Document &doc)
     // Update the selected voice.
     myVoices->button(doc.getCaret().getLocation().getVoiceIndex())->setChecked(true);
 
+    // Update zoom.
+    QLocale locale;
+    QString percent("%1%2");
+    percent.arg(doc.getViewOptions().getZoom()).arg(locale.percent());
+    ui->zoomComboBox->setCurrentText(percent);
+
     ui->filterComboBox->blockSignals(false);
 }
 

@@ -2885,8 +2885,8 @@ void PowerTabEditor::createTabArea()
     connect(myPlaybackWidget, &PlaybackWidget::activeFilterChanged, this,
             &PowerTabEditor::updateActiveFilter);
 
-    connect(myPlaybackWidget, &PlaybackWidget::zoomChanged,
-            [&](double percent) { getScoreArea()->zoomTo(percent); });
+    connect(myPlaybackWidget, &PlaybackWidget::zoomChanged, this,
+            &PowerTabEditor::updateZoom);
 
     auto update_metronome_state = [&]() {
         auto settings = mySettingsManager->getReadHandle();
@@ -3337,6 +3337,12 @@ void PowerTabEditor::updateActiveFilter(int filter)
 {
     myDocumentManager->getCurrentDocument().getViewOptions().setFilter(filter);
     redrawScore();
+}
+
+void PowerTabEditor::updateZoom(double percent)
+{
+    myDocumentManager->getCurrentDocument().getViewOptions().setZoom(percent);
+    getScoreArea()->refreshZoom();
 }
 
 void PowerTabEditor::updateLocationLabel()

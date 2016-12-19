@@ -217,9 +217,9 @@ void ScoreArea::focusOutEvent(QFocusEvent *)
     myScene.update(myCaretPainter->sceneBoundingRect());
 }
 
-void ScoreArea::zoomTo(double percent)
+void ScoreArea::refreshZoom()
 {
-    double scale_factor = percent / 100.0;
+    double scale_factor = myDocument->getViewOptions().getZoom() / 100.0;
 
     QTransform xform;
     xform.scale(scale_factor, scale_factor);
