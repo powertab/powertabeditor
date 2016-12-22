@@ -3,7 +3,7 @@
   <?define ProductName="Power Tab Editor"?>
   <?define ProductShortName="Power Tab"?>
   <?define Manufacturer="Power Tab Community"?>
-  <?define Version="1.98.9"?>
+  <?define Version="1.98.10"?>
   <?define UpgradeCode="6cab03ff-a31b-4c76-a4d1-20a37575896a"?>
   <?define SourceDir="../source"?>
   <?define BinDir="../build/bin"?>

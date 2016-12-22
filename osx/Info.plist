@@ -129,7 +129,7 @@
 	<key>CFBundleSignature</key>
 	<string>xmmd</string>
 	<key>CFBundleVersion</key>
-	<string>2.0.0-alpha9</string>
+	<string>2.0.0-alpha10</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>NO</string>
 </dict>

@@ -73,26 +73,26 @@
         <RegistryValue Root="HKCU" Key="Software\Power Tab\Power Tab Editor" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
 
-      <Component Id="boost_date_time" Guid="A7CA0E64-5F96-4457-8084-7AA2697AB552">
-        <File Source="$(var.BinDir)/boost_date_time-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_date_time" Guid="05160EB2-7942-4A0B-A4AA-C32DB3AA6748">
+        <File Source="$(var.BinDir)/boost_date_time-vc140-mt-1_62.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_filesystem" Guid="08C4B62D-6FB6-4647-AB9A-7CF2C927D749">
-        <File Source="$(var.BinDir)/boost_filesystem-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_filesystem" Guid="0A71DDED-B776-4126-A5E8-52C215B26363">
+        <File Source="$(var.BinDir)/boost_filesystem-vc140-mt-1_62.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_iostreams" Guid="D7CC00A3-D0F4-46EB-8C52-3C8611078DE1">
-        <File Source="$(var.BinDir)/boost_iostreams-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_iostreams" Guid="A7802731-FD59-4171-8DF4-3CAA1DAC712F">
+        <File Source="$(var.BinDir)/boost_iostreams-vc140-mt-1_62.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_program_options" Guid="EE8E115F-C14F-4A2D-89D0-7C226B606279">
-        <File Source="$(var.BinDir)/boost_program_options-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_program_options" Guid="DB751E56-8457-4196-B84E-C86A5833FFCC">
+        <File Source="$(var.BinDir)/boost_program_options-vc140-mt-1_62.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_regex" Guid="4DE196DC-2078-4B0A-AA3B-B449E0782E88">
-        <File Source="$(var.BinDir)/boost_regex-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_regex" Guid="BBCB2682-F592-4A83-A566-1AA476CE7A8E">
+        <File Source="$(var.BinDir)/boost_regex-vc140-mt-1_62.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_system" Guid="08237373-A16F-4101-9F53-E4772AD875BB">
-        <File Source="$(var.BinDir)/boost_system-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_system" Guid="7C1E4D1C-C891-4C0D-BE70-9BF5B51F588E">
+        <File Source="$(var.BinDir)/boost_system-vc140-mt-1_62.dll" KeyPath="yes" Checksum="yes" />
       </Component>
-      <Component Id="boost_zlib" Guid="D942287A-F31F-4DDD-8F36-6E03F42DB131">
-        <File Source="$(var.BinDir)/boost_zlib-vc140-mt-1_59.dll" KeyPath="yes" Checksum="yes" />
+      <Component Id="boost_zlib" Guid="BE6C26D7-8429-4F0F-ADC0-60DAAC1E88C7">
+        <File Source="$(var.BinDir)/boost_zlib-vc140-mt-1_62.dll" KeyPath="yes" Checksum="yes" />
       </Component>
       <Component Id="Qt5Core" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
         <File Source="$(var.BinDir)/Qt5Core.dll" KeyPath="yes" Checksum="yes" />
