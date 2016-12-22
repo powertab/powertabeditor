@@ -72,7 +72,6 @@ private:
     SystemLocation myStartBarLocation;
     std::map<SystemLocation, int> myRepeatEndBars;
     std::unordered_map<int, SystemLocation> myAlternateEndings;
-    std::unordered_map<SystemLocation, int> myRemainingRepeats;
     int myActiveRepeat;
 };
 

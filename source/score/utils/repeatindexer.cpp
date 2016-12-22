@@ -35,7 +35,6 @@ void RepeatedSection::addRepeatEndBar(const SystemLocation &location,
                                       int repeatCount)
 {
     myRepeatEndBars[location] = repeatCount;
-    myRemainingRepeats[location] = repeatCount - 1;
 }
 
 void RepeatedSection::addAlternateEnding(const System &system, int system_index,
@@ -90,10 +89,6 @@ boost::optional<SystemLocation> RepeatedSection::findAlternateEnding(int number)
 void RepeatedSection::reset()
 {
     myActiveRepeat = 1;
-
-    // Reset the number of remaining repeats to the original values.
-    for (auto &repeat : myRepeatEndBars)
-        myRemainingRepeats[repeat.first] = repeat.second - 1;
 }
 
 SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
@@ -112,23 +107,22 @@ SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
     }
 
     // Now, we can look for repeat end bars.
-    auto remainingRepeatCount = myRemainingRepeats.find(loc);
+    auto repeat_end = myRepeatEndBars.find(loc);
 
     // No repeat bar.
-    if (remainingRepeatCount == myRemainingRepeats.end())
+    if (repeat_end == myRepeatEndBars.end())
         return loc;
-    // Perform the repeat event.
-    else if (remainingRepeatCount->second != 0)
+
+    int remaining_repeats = getTotalRepeatCount() - myActiveRepeat;
+    if (remaining_repeats > 0)
     {
-        --remainingRepeatCount->second;
+        // Perform the repeat.
         ++myActiveRepeat;
         return myStartBarLocation;
     }
-    // Otherwise, the repeat is not performed and is reset.
     else
     {
-        remainingRepeatCount->second =
-            myRepeatEndBars.at(remainingRepeatCount->first) - 1;
+        // Pass through the repeat.
         return loc;
     }
 }
@@ -147,6 +141,24 @@ RepeatIndexer::RepeatIndexer(const Score &score)
     {
         for (const Barline &bar : system.getBarlines())
         {
+            // Process repeat endings in this bar, unless we're at the last bar
+            // of the system.
+            const Barline *nextBar = system.getNextBarline(bar.getPosition());
+            if (nextBar)
+            {
+                for (const AlternateEnding &ending : ScoreUtils::findInRange(
+                         system.getAlternateEndings(), bar.getPosition(),
+                         nextBar->getPosition() - 1))
+                {
+                    // TODO - report unexpected alternate endings.
+                    if (!repeats.empty())
+                    {
+                        repeats.top().addAlternateEnding(system, systemIndex,
+                                                         ending);
+                    }
+                }
+            }
+
             // If we've seen the last alternate ending of the repeat,
             // we are done.
             if (!repeats.empty())
@@ -187,23 +199,6 @@ RepeatIndexer::RepeatIndexer(const Score &score)
                 {
                     myRepeats.insert(activeRepeat);
                     repeats.pop();
-                }
-            }
-
-            // Process repeat endings in this bar, unless we're at the end bar.
-            const Barline *nextBar = system.getNextBarline(bar.getPosition());
-            if (nextBar)
-            {
-                for (const AlternateEnding &ending : ScoreUtils::findInRange(
-                         system.getAlternateEndings(), bar.getPosition(),
-                         nextBar->getPosition() - 1))
-                {
-                    // TODO - report unexpected alternate endings.
-                    if (!repeats.empty())
-                    {
-                        repeats.top().addAlternateEnding(system, systemIndex,
-                                                         ending);
-                    }
                 }
             }
         }
