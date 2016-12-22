@@ -52,8 +52,8 @@ If you've already cloned the repository, you can run `git submodule init && git 
 * Install and open CMake, and browse to select the location of the root directory (e.g. `$HOME/Documents/GitHub/powertabeditor`).
 * Set the build directory to `$HOME/Documents/GitHub/powertabeditor/build`.
 * Use the "Add Entry" button to set the `STRING` `CMAKE_PREFIX_PATH` to the `cmake` directory inside Qt's installation directory (e.g. `C:\Qt\5.4.1\lib\cmake`)
-* For Windows XP support, set `CMAKE_GENERATOR_TOOLSET` to `v120_xp`.
-* Press `Configure` and select your compiler version (e.g. `Visual Studio 12 Win64`, or `Visual Studio 12` for a 32-bit build) and then press `Generate`
+* For Windows XP support, set `CMAKE_GENERATOR_TOOLSET` to `v140_xp`.
+* Press `Configure` and select your compiler version (e.g. `Visual Studio 14 Win64`, or `Visual Studio 14` for a 32-bit build) and then press `Generate`
 * Open the resulting solution (`powertabeditor.sln`) and select `Build Solution` from the `Build` menu.
 * Right-click on the `powertabeditor` project and select "Set as Startup Project" before running.
 
