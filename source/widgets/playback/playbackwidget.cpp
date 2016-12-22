@@ -175,8 +175,8 @@ void PlaybackWidget::reset(const Document &doc)
 
     // Update zoom.
     QLocale locale;
-    QString percent("%1%2");
-    percent.arg(doc.getViewOptions().getZoom()).arg(locale.percent());
+    const double zoom = doc.getViewOptions().getZoom();
+    QString percent = QString("%1%2").arg(zoom).arg(locale.percent());
     ui->zoomComboBox->setCurrentText(percent);
 
     ui->filterComboBox->blockSignals(false);
