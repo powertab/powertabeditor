@@ -182,9 +182,11 @@ void ScoreUtils::polishSystem(System &system)
             }
         }
 
-        int maxPosition = 0;
-        if (!timestampPositions.empty())
-            maxPosition = boost::prior(timestampPositions.end())->second;
+        // Empty bar - leave as-is.
+        if (timestampPositions.empty())
+            continue;
+
+        int maxPosition = std::max(1, timestampPositions.rbegin()->second);
 
         // Adjust!
         const int startPos =
