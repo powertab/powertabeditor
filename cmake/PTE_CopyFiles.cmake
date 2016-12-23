@@ -3,7 +3,7 @@ include( CMakeParseArguments )
 function ( pte_copyfiles )
     cmake_parse_arguments( PTE_DATA "" "NAME;DESTINATION;INSTALL" "FILES" ${ARGN} )
 
-    set( dest_dir ${PTE_DEV_BIN_DIR}/${PTE_DATA_DESTINATION} )
+    set( dest_dir ${PTE_DATA_DESTINATION} )
 
     set( output_files )
     foreach( src_file ${PTE_DATA_FILES} )
