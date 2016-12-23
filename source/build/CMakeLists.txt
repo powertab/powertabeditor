@@ -25,4 +25,6 @@ pte_executable(
         Qt5::Network
         Qt5::Widgets
         withershins
+    PLUGINS
+        ${QT5_PLUGINS}
 )

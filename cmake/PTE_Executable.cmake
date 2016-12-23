@@ -4,7 +4,7 @@ function( pte_executable )
     cmake_parse_arguments( PTE_EXE
         "CONSOLE;INSTALL"
         "NAME;PCH"
-        "SOURCES;HEADERS;RESOURCES;DEPENDS;PCH_EXCLUDE"
+        "SOURCES;HEADERS;RESOURCES;DEPENDS;PLUGINS;PCH_EXCLUDE"
         ${ARGN}
     )
 
@@ -58,7 +58,7 @@ function( pte_executable )
     if ( PLATFORM_WIN )
         pte_find_dlls( ${PTE_EXE_NAME} shared_libs )
 
-        foreach( lib ${shared_libs} )
+        foreach ( lib ${shared_libs} )
             add_custom_command(
                 TARGET ${PTE_EXE_NAME}
                 POST_BUILD
@@ -72,6 +72,22 @@ function( pte_executable )
                 DESTINATION ${install_dir}
             )
         endif ()
+
+        foreach ( plugin_target ${PTE_EXE_PLUGINS} )
+            get_target_property( src_plugin_path ${plugin_target} IMPORTED_LOCATION_RELEASE )
+            get_filename_component( src_plugin_dir ${src_plugin_path} DIRECTORY )
+            get_filename_component( plugin_type ${src_plugin_dir} NAME )
+            set( plugin_dir ${PTE_DEV_BIN_DIR}/${plugin_type} )
+            
+            add_custom_command(
+                TARGET ${PTE_EXE_NAME}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E make_directory ${plugin_dir}
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    $<TARGET_FILE:${plugin_target}>
+                    ${plugin_dir}
+            )
+        endforeach ()
     endif ()
     
     # Set up precompiled header.
