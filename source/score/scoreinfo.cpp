@@ -153,15 +153,15 @@ bool SongData::operator==(const SongData &other) const
 {
     return myTitle == other.myTitle &&
            myArtist == other.myArtist &&
-		   myAudioReleaseInfo == other.myAudioReleaseInfo &&
-		   myVideoReleaseInfo == other.myVideoReleaseInfo &&
-		   myBootlegReleaseInfo == other.myBootlegReleaseInfo &&
+           myAudioReleaseInfo == other.myAudioReleaseInfo &&
+           myVideoReleaseInfo == other.myVideoReleaseInfo &&
+           myBootlegReleaseInfo == other.myBootlegReleaseInfo &&
            myAuthorInfo == other.myAuthorInfo &&
            myArranger == other.myArranger &&
            myTranscriber == other.myTranscriber &&
            myCopyright == other.myCopyright &&
            myLyrics == other.myLyrics &&
-            myPerformanceNotes == other.myPerformanceNotes;
+           myPerformanceNotes == other.myPerformanceNotes;
 }
 
 void SongData::setTitle(const std::string &title)
@@ -196,8 +196,8 @@ const SongData::AudioReleaseInfo &SongData::getAudioReleaseInfo() const
 
 void SongData::setAudioReleaseInfo(const SongData::AudioReleaseInfo &info)
 {
-	setUnreleased();
-	myAudioReleaseInfo.reset(info);
+    setUnreleased();
+    myAudioReleaseInfo.reset(info);
 }
 
 bool SongData::isVideoRelease() const
@@ -213,7 +213,7 @@ const SongData::VideoReleaseInfo &SongData::getVideoReleaseInfo() const
 void SongData::setVideoReleaseInfo(const SongData::VideoReleaseInfo &info)
 {
     setUnreleased();
-	myVideoReleaseInfo.reset(info);
+    myVideoReleaseInfo.reset(info);
 }
 
 bool SongData::isBootleg() const
@@ -228,20 +228,20 @@ const SongData::BootlegInfo &SongData::getBootlegInfo() const
 
 void SongData::setBootlegInfo(const SongData::BootlegInfo &info)
 {
-	setUnreleased();
-	myBootlegReleaseInfo.reset(info);
+    setUnreleased();
+    myBootlegReleaseInfo.reset(info);
 }
 
 bool SongData::isUnreleased() const
 {
-	return !isAudioRelease() && !isVideoRelease() && !isBootleg();
+    return !isAudioRelease() && !isVideoRelease() && !isBootleg();
 }
 
 void SongData::setUnreleased()
 {
-	myAudioReleaseInfo.reset();
-	myVideoReleaseInfo.reset();
-	myBootlegReleaseInfo.reset();
+    myAudioReleaseInfo.reset();
+    myVideoReleaseInfo.reset();
+    myBootlegReleaseInfo.reset();
 }
 
 void SongData::setAuthorInfo(const SongData::AuthorInfo &info)
@@ -322,7 +322,7 @@ bool LessonData::operator==(const LessonData &other) const
            myDifficultyLevel == other.myDifficultyLevel &&
            myAuthor == other.myAuthor &&
            myNotes == other.myNotes &&
-            myCopyright == other.myCopyright;
+           myCopyright == other.myCopyright;
 }
 
 void LessonData::setTitle(const std::string &title)
@@ -437,4 +437,3 @@ void ScoreInfo::setLessonData(const LessonData &data)
 	myLessonData = data;
 	mySongData.reset();
 }
-

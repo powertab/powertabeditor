@@ -119,10 +119,10 @@ public:
 
         template <class Archive>
         void serialize(Archive &ar, const FileVersion /*version*/)
-		{
-			ar("composer", myComposer);
-			ar("lyricist", myLyricist);
-		}
+        {
+            ar("composer", myComposer);
+            ar("lyricist", myLyricist);
+        }
 
         const std::string &getComposer() const;
         const std::string &getLyricist() const;
