@@ -561,7 +561,7 @@ void PowerTabEditor::editFileInformation()
     {
         myUndoManager->push(
             new EditFileInformation(getLocation(), dialog.getScoreInfo()),
-            getLocation().getSystemIndex());
+            UndoManager::AFFECTS_ALL_SYSTEMS);
     }
 }
 

@@ -11,6 +11,7 @@ set( srcs
     layoutinfo.cpp
     musicfont.cpp
     notestem.cpp
+    scoreinforenderer.cpp
     simpletextitem.cpp
     staffpainter.cpp
     stdnotationnote.cpp
@@ -29,6 +30,7 @@ set( headers
     layoutinfo.h
     musicfont.h
     notestem.h
+    scoreinforenderer.h
     simpletextitem.h
     staffpainter.h
     stdnotationnote.h

@@ -22,6 +22,7 @@
 #include <chrono>
 #include <future>
 #include <painters/caretpainter.h>
+#include <painters/scoreinforenderer.h>
 #include <painters/systemrenderer.h>
 #include <QDebug>
 #include <QGraphicsItem>
@@ -39,6 +40,7 @@ void ScoreArea::Scene::dragEnterEvent(QGraphicsSceneDragDropEvent *event)
 
 ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
+      myScoreInfoBlock(nullptr),
       myCaretPainter(nullptr),
       myClickPubSub(std::make_shared<ClickPubSub>())
 {
@@ -60,6 +62,8 @@ void ScoreArea::renderDocument(const Document &document)
     myCaretPainter->subscribeToMovement([=]() {
         adjustScroll();
     });
+
+    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo());
 
     myRenderedSystems.reserve(score.getSystems().size());
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)
@@ -93,15 +97,17 @@ void ScoreArea::renderDocument(const Document &document)
     for (auto &&task : tasks)
         task.get();
 
-    int i = 0;
     double height = 0;
+    // Score info.
+    myScene.addItem(myScoreInfoBlock);
+    height += myScoreInfoBlock->boundingRect().height() + SYSTEM_SPACING;
+
     // Layout the systems.
     for (QGraphicsItem *system : myRenderedSystems)
     {
         system->setPos(0, height);
         myScene.addItem(system);
         height += system->boundingRect().height() + SYSTEM_SPACING;
-        ++i;
 
         myCaretPainter->addSystemRect(system->sceneBoundingRect());
     }

@@ -66,6 +66,7 @@ private:
 
     Scene myScene;
     boost::optional<const Document &> myDocument;
+    QGraphicsItem *myScoreInfoBlock;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
 
