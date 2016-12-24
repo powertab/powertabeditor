@@ -166,29 +166,44 @@ void ScoreArea::print(QPrinter &printer)
     // Hide the caret when printing.
     myCaretPainter->hide();
 
-    QRectF target(0, 0, painter.device()->width(), painter.device()->height());
+    QRectF target_rect(0, 0, painter.device()->width(),
+                       painter.device()->height());
 
-    for (QGraphicsItem *system : myRenderedSystems)
+    QList<QGraphicsItem*> items;
+    items.append(myScoreInfoBlock);
+    items.append(myRenderedSystems);
+
+    for (int i = 0, n = items.length(); i < n; ++i)
     {
-        const QRectF source = system->sceneBoundingRect();
+        const QGraphicsItem *item = items[i];
 
-        // Figure out how much space the system will take up on the page, and
+        const QRectF source_rect = item->sceneBoundingRect();
+        const float ratio =
+            std::min(target_rect.width() / source_rect.width(),
+                     target_rect.height() / source_rect.height());
+
+        if (i > 0)
+        {
+            const QGraphicsItem *prev_item = items[i - 1];
+            const double spacing =
+                source_rect.y() - prev_item->sceneBoundingRect().bottom();
+            target_rect.moveTop(target_rect.y() + spacing * ratio);
+        }
+
+        // Figure out how much space the item will take up on the page, and
         // determine if we need a page break.
-        const float ratio = std::min(target.width() / source.width(),
-                                     target.height() / source.height());
-        const float systemHeight = source.height() * ratio;
-        if (target.y() + systemHeight > target.height())
+        const float height = source_rect.height() * ratio;
+        if (target_rect.y() + height > painter.device()->height())
         {
             printer.newPage();
-            target.moveTop(0);
+            target_rect.moveTop(0);
         }
 
         // Draw the system on the page.
-        scene()->render(&painter, target, source);
+        scene()->render(&painter, target_rect, source_rect);
 
-        // Set the location for the next system, and include some padding
-        // between systems.
-        target.moveTop(target.y() + systemHeight + SYSTEM_SPACING * ratio);
+        // Set the location for the next item.
+        target_rect.moveTop(target_rect.y() + height);
     }
 
     myCaretPainter->show();
