@@ -194,3 +194,8 @@ All notable changes to this project will be documented in this file.
 [Alpha 8]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha8
 [Alpha 7]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha7
 [Alpha 6]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha6
+[Alpha 5]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha5
+[Alpha 4]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha4
+[Alpha 3]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha3
+[Alpha 2]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha2
+[Alpha 1]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha1
