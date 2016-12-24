@@ -194,7 +194,7 @@ ScoreInfo FileInformationDialog::getScoreInfo() const
             case 0:
                 song.setAudioReleaseInfo(SongData::AudioReleaseInfo(
                     static_cast<SongData::AudioReleaseInfo::ReleaseType>(
-                        ui->releaseTypeList->currentRow()),
+                        ui->albumTypeValue->currentIndex()),
                     ui->albumTitleValue->text().toStdString(),
                     ui->albumYearValue->value(),
                     ui->audioLiveRecordingValue->isChecked()));
