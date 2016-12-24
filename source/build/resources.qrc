@@ -2,6 +2,7 @@
     <qresource prefix="/fonts">
         <file alias="emmentaler-13.otf">../fonts/emmentaler-13.otf</file>
         <file alias="LiberationSans-Regular.ttf">../fonts/LiberationSans-Regular.ttf</file>
+        <file alias="LiberationSerif-Regular.ttf">../fonts/LiberationSerif-Regular.ttf</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="bend">../images/bend.png</file>

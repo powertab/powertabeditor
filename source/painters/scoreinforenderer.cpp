@@ -39,9 +39,10 @@ static double getNextY(const QGraphicsItemGroup &group)
     return bottom;
 }
 
-static void addCenteredText(QGraphicsItemGroup &group, const QFont &font,
-                            const QString &text)
+static void addCenteredText(QGraphicsItemGroup &group, QFont font,
+                            int font_size, const QString &text)
 {
+    font.setPointSize(font_size);
     auto text_item = new SimpleTextItem(text, font);
 
     // Center horizontally.
@@ -100,7 +101,7 @@ static void renderReleaseInfo(QGraphicsItemGroup &group, const QFont &font,
     else
         return;
 
-    addCenteredText(group, font, release_info);
+    addCenteredText(group, font, 15, release_info);
 }
 
 static void addAuthorText(QGraphicsItemGroup &group, const QFont &font,
@@ -114,16 +115,21 @@ static void addAuthorText(QGraphicsItemGroup &group, const QFont &font,
         std::min(AUTHOR_INFO_WIDTH, text_item->boundingRect().width());
     text_item->setTextWidth(text_width);
     if (right_align)
+    {
         text_item->setX(LayoutInfo::STAFF_WIDTH - text_width);
+        text_item->setHtml(QString("<div align=\"right\">%1</div>").arg(text));
+    }
 
     text_item->setY(y);
 
     group.addToGroup(text_item);
 }
 
-static void renderAuthorInfo(QGraphicsItemGroup &group, const QFont &font,
+static void renderAuthorInfo(QGraphicsItemGroup &group, QFont font,
                              const SongData &song_data)
 {
+    font.setPointSize(14);
+
     const double y = getNextY(group);
     QStringList author_lines;
 
@@ -175,7 +181,10 @@ static void renderSongInfo(QGraphicsItemGroup &group, const QFont &font,
                            const SongData &song_data)
 {
     if (!song_data.getTitle().empty())
-        addCenteredText(group, font, QString::fromStdString(song_data.getTitle()));
+    {
+        addCenteredText(group, font, 36,
+                        QString::fromStdString(song_data.getTitle()));
+    }
 
     if (!song_data.getArtist().empty())
     {
@@ -183,7 +192,7 @@ static void renderSongInfo(QGraphicsItemGroup &group, const QFont &font,
         artist_info =
             artist_info.arg(QString::fromStdString(song_data.getArtist()));
 
-        addCenteredText(group, font, artist_info);
+        addCenteredText(group, font, 20, artist_info);
     }
 
     renderReleaseInfo(group, font, song_data);
@@ -194,7 +203,7 @@ static void renderSongInfo(QGraphicsItemGroup &group, const QFont &font,
 QGraphicsItem *
 ScoreInfoRenderer::render(const ScoreInfo &score_info)
 {
-    QFont font("Liberation Sans");
+    QFont font("Liberation Serif");
 
     auto group = new QGraphicsItemGroup();
 

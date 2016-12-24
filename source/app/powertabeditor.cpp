@@ -172,6 +172,7 @@ PowerTabEditor::PowerTabEditor()
     QFontDatabase::addApplicationFont(":fonts/emmentaler-13.otf");
     // Load the tab note font.
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf");
+    QFontDatabase::addApplicationFont(":fonts/LiberationSerif-Regular.ttf");
 
     connect(myUndoManager.get(), SIGNAL(redrawNeeded(int)), this,
             SLOT(redrawSystem(int)));

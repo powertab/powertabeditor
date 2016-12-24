@@ -100,7 +100,7 @@ void ScoreArea::renderDocument(const Document &document)
     double height = 0;
     // Score info.
     myScene.addItem(myScoreInfoBlock);
-    height += myScoreInfoBlock->boundingRect().height() + SYSTEM_SPACING;
+    height += myScoreInfoBlock->boundingRect().height() + 0.5 * SYSTEM_SPACING;
 
     // Layout the systems.
     for (QGraphicsItem *system : myRenderedSystems)
