@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - File information is now displayed at the top of the score (#49).
 
+### Fixed
+- Fixed a bug in the score polisher when there were grace notes at the start of a bar.
+
 ## [Alpha 10] - 2016-12-22
 ### Added
 * An Ubuntu PPA is now available (https://launchpad.net/~powertab-developers/+archive/ubuntu/powertabeditor-stable).
