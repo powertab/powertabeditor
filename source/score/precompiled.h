@@ -5,8 +5,10 @@
 #include <cstdint>
 #include <functional>
 #include <iosfwd>
+#include <iostream>
 #include <map>
 #include <set>
+#include <sstream>
 #include <stack>
 #include <stdexcept>
 #include <string>
@@ -18,6 +20,7 @@
 #include <boost/operators.hpp>
 #include <boost/optional.hpp>
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <boost/rational.hpp>
 #include <boost/regex.hpp>
