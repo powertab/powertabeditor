@@ -26,6 +26,8 @@ function( pte_executable )
         ${generated_files}
     )
 
+    pte_add_compile_flags( ${PTE_EXE_NAME} )
+
     target_link_libraries( ${PTE_EXE_NAME} ${PTE_EXE_DEPENDS} )
 
     # Set output directory for executables.

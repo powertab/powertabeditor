@@ -23,6 +23,8 @@ function( pte_library )
         ${moc_files}
     )
 
+    pte_add_compile_flags( ${PTE_LIB_NAME} )
+
     target_include_directories( ${PTE_LIB_NAME}
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
