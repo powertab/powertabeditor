@@ -164,3 +164,11 @@ bool ViewFilter::accept(const Score &score, int system_index,
 
     return false;
 }
+
+std::ostream &operator<<(std::ostream &os, const ViewFilter &filter)
+{
+    os << filter.getDescription() << ": " << filter.getRules().size()
+       << " rules";
+
+    return os;
+}

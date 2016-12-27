@@ -139,4 +139,6 @@ void ViewFilter::serialize(Archive &ar, const FileVersion /*version*/)
     ar("rules", myRules);
 }
 
+std::ostream &operator<<(std::ostream &os, const ViewFilter &filter);
+
 #endif
