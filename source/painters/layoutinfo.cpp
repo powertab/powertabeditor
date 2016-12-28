@@ -24,7 +24,6 @@
 #include <score/staff.h>
 #include <score/system.h>
 #include <score/timesignature.h>
-#include <score/utils.h>
 #include <score/voiceutils.h>
 #include <set>
 

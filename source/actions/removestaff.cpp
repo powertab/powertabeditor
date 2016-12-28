@@ -17,7 +17,6 @@
   
 #include "removestaff.h"
 
-#include <app/caret.h>
 #include <score/system.h>
 
 RemoveStaff::RemoveStaff(const ScoreLocation &location)

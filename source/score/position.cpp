@@ -18,7 +18,6 @@
 #include "position.h"
 
 #include <algorithm>
-#include <cstddef>
 #include <stdexcept>
 
 Position::Position()

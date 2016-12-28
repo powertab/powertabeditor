@@ -18,8 +18,10 @@
 #include "alternateending.h"
 
 #include <algorithm>
+#include <cstddef>
 #include <ostream>
 #include <stdexcept>
+#include <string>
 
 const int AlternateEnding::MIN_NUMBER = 1;
 const int AlternateEnding::MAX_NUMBER = 8;

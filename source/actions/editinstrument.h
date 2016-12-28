@@ -19,8 +19,9 @@
 #define ACTIONS_EDITINSTRUMENT_H
 
 #include <QUndoCommand>
-#include <score/player.h>
-#include <score/score.h>
+#include <score/instrument.h>
+
+class Score;
 
 class EditInstrument : public QUndoCommand
 {

@@ -21,7 +21,6 @@
 #include <app/viewoptions.h>
 #include <boost/lexical_cast.hpp>
 #include <painters/layoutinfo.h>
-#include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>

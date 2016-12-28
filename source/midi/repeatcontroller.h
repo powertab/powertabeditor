@@ -22,6 +22,7 @@
 #include <score/utils/repeatindexer.h>
 
 class Score;
+class SystemLocation;
 
 /// Keeps track of repeat events during playback.
 class RepeatController

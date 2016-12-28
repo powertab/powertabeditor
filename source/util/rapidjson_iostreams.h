@@ -19,8 +19,9 @@
 #define UTIL_RAPIDJSON_IOSTREAMS_H
 
 #include <cassert>
+#include <cstddef>
 #include <istream>
-#include <ostream>
+#include <string>
 
 namespace Util
 {

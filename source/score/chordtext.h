@@ -19,6 +19,7 @@
 #define SCORE_CHORDTEXT_H
 
 #include "chordname.h"
+#include "fileversion.h"
 
 class ChordText
 {

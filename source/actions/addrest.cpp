@@ -17,7 +17,7 @@
 
 #include "addrest.h"
 
-#include <score/staff.h>
+#include <score/voice.h>
 
 AddRest::AddRest(const ScoreLocation &location, Position::DurationType duration)
     : QUndoCommand(QObject::tr("Add Rest")),

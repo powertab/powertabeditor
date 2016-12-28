@@ -18,12 +18,14 @@
 #ifndef SCORE_VOICEUTILS_H
 #define SCORE_VOICEUTILS_H
 
-#include "voice.h"
-
 #include <boost/rational.hpp>
+#include <vector>
 
 class ScoreLocation;
-class System;
+class IrregularGrouping;
+class Note;
+class Position;
+class Voice;
 
 namespace VoiceUtils
 {

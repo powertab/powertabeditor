@@ -18,6 +18,7 @@
 #ifndef SCORE_POSITION_H
 #define SCORE_POSITION_H
 
+#include <algorithm>
 #include <boost/range/iterator_range_core.hpp>
 #include <bitset>
 #include "fileversion.h"

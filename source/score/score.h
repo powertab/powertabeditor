@@ -27,6 +27,8 @@
 #include "viewfilter.h"
 #include <vector>
 
+class PlayerChange;
+
 class Score
 {
 public:
