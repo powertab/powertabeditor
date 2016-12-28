@@ -18,6 +18,7 @@
 #include <catch.hpp>
 
 #include <score/voiceutils.h>
+#include <score/voice.h>
 
 TEST_CASE("Score/VoiceUtils/GetDurationTime", "")
 {
