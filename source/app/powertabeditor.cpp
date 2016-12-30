@@ -584,6 +584,7 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
 
         getCaret().setIsInPlaybackMode(true);
         myPlaybackWidget->setPlaybackMode(true);
+        enableEditing(false);
 
         const ScoreLocation &location = getLocation();
         myMidiPlayer.reset(
@@ -3031,15 +3032,6 @@ inline void updateNoteProperty(Command *command, const Note *note,
 
 void PowerTabEditor::updateCommands()
 {
-    // Disable editing during playback.
-    if (myIsPlaying)
-        enableEditing(false);
-
-    myPlayPauseCommand->setEnabled(true);
-    myRewindCommand->setEnabled(true);
-    myMetronomeCommand->setEnabled(true);
-    myStopCommand->setEnabled(myIsPlaying);
-
     if (myIsPlaying)
         return;
 
@@ -3269,6 +3261,15 @@ void PowerTabEditor::enableEditing(bool enable)
     myEditViewFiltersCommand->setEnabled(enable);
     myNextTabCommand->setEnabled(enable);
     myPrevTabCommand->setEnabled(enable);
+
+    // MIDI commands are always enabled if documents are open.
+    if (myDocumentManager->hasOpenDocuments())
+    {
+        myPlayPauseCommand->setEnabled(true);
+        myRewindCommand->setEnabled(true);
+        myMetronomeCommand->setEnabled(true);
+        myStopCommand->setEnabled(myIsPlaying);
+    }
 
     // Prevent the user from changing tabs during playback.
     myTabWidget->tabBar()->setEnabled(enable);

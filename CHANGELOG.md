@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed a bug in the score polisher when there were grace notes at the start of a bar.
+- Fixed issues where the pause and stop buttons did not reliably respond to clicks during playback (#237).
 
 ## [Alpha 10] - 2016-12-22
 ### Added
