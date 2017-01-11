@@ -1,4 +1,10 @@
 cmake_minimum_required( VERSION 3.1 )
+
+# Target OS X 10.9 and above. This must be set before the first project() call.
+set( CMAKE_OSX_DEPLOYMENT_TARGET "10.9"
+     CACHE STRING "Minimum OS X deployment version"
+)
+
 project( powertabeditor )
 
 enable_testing()
