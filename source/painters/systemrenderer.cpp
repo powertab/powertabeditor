@@ -1395,25 +1395,26 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
         const QFont *font = note.isGraceNote() ? &grace_font : &default_font;
         const QFontMetricsF *fm = note.isGraceNote() ? &grace_fm : &default_fm;
 
-        const QChar noteHead = note.getNoteHeadSymbol();
-        const double noteHeadWidth = fm->width(noteHead);
+        const QChar note_head_char = note.getNoteHeadSymbol();
+        const double note_head_width = fm->width(note_head_char);
 
-        const QString accidentalText = note.getAccidentalText();
-        const double accidentalWidth = fm->width(accidentalText);
+        const QString accidental_text = note.getAccidentalText();
+        const double accidental_width = fm->width(accidental_text);
 
         const double x = layout.getPositionX(note.getPosition()) +
-                0.5 * (layout.getPositionSpacing() - noteHeadWidth) -
-                accidentalWidth;
+                0.5 * (layout.getPositionSpacing() - note_head_width) -
+                accidental_width;
         const double y =
             note.getY() + layout.getTopStdNotationLine() - fm->ascent();
+        const QString note_text = accidental_text + note_head_char;
 
         QGraphicsItemGroup *group = nullptr;
-        auto text = new SimpleTextItem(accidentalText + noteHead, *font);
+        auto text_item = new SimpleTextItem(note_text, *font);
 
         if (note.isDotted() || note.isDoubleDotted())
         {
             group = new QGraphicsItemGroup();
-            const double dotX = noteHeadWidth + 2;
+            const double dotX = fm->width(note_text) + 2;
 
             const QChar dot(MusicFont::Dot);
             auto dotText = new SimpleTextItem(dot, *font);
@@ -1430,14 +1431,14 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
 
         if (group)
         {
-            group->addToGroup(text);
+            group->addToGroup(text_item);
             group->setPos(x, y);
             group->setParentItem(myParentStaff);
         }
         else
         {
-            text->setPos(x, y);
-            text->setParentItem(myParentStaff);
+            text_item->setPos(x, y);
+            text_item->setParentItem(myParentStaff);
         }
 
         const int position = note.getPosition();
@@ -1445,7 +1446,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                                               note.getY());
         maxNoteLocations[position] = std::max(maxNoteLocations[position],
                                               note.getY());
-        noteHeadWidths[position] = noteHeadWidth;
+        noteHeadWidths[position] = note_head_width;
         noteHeadCenters[position] = x;
     }
 
