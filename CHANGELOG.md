@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fixed a bug in the score polisher when there were grace notes at the start of a bar.
 - Fixed issues where the pause and stop buttons did not reliably respond to clicks during playback (#237).
+- Fixed a bug where dots could be hidden when a note had an accidental (#242).
+- Fixed a bug with the MIDI exporter that caused the file header to be invalid (#241).
 
 ## [Alpha 10] - 2016-12-22
 ### Added

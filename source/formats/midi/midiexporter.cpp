@@ -33,14 +33,17 @@
 #include <arpa/inet.h>
 #endif
 
-template <typename T>
-static T toBigEndian(T val)
+static uint32_t toBigEndian(uint32_t val)
 {
     return htonl(val);
 }
 
-template <>
-uint8_t toBigEndian<uint8_t>(uint8_t val)
+static uint16_t toBigEndian(uint16_t val)
+{
+    return htons(val);
+}
+
+static uint8_t toBigEndian(uint8_t val)
 {
     return val;
 }
