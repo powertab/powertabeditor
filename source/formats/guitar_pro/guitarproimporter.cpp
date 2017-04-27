@@ -18,7 +18,7 @@
 #include "guitarproimporter.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 #include <formats/guitar_pro/document.h>
 #include <formats/guitar_pro/inputstream.h>
@@ -34,9 +34,10 @@ GuitarProImporter::GuitarProImporter()
 {
 }
 
-void GuitarProImporter::load(const std::string &filename, Score &score)
+void GuitarProImporter::load(const boost::filesystem::path &filename,
+                             Score &score)
 {
-    std::ifstream in(filename, std::ios::binary | std::ios::in);
+    boost::filesystem::ifstream in(filename, std::ios::binary | std::ios::in);
     Gp::InputStream stream(in);
 
     Gp::Document document;

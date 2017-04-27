@@ -20,6 +20,7 @@
 
 #include <app/viewoptions.h>
 #include <app/caret.h>
+#include <boost/filesystem/path.hpp>
 #include <boost/optional/optional.hpp>
 #include <memory>
 #include <score/score.h>
@@ -31,13 +32,15 @@ class SettingsManager;
 class Document
 {
 public:
+    using PathType = boost::filesystem::path;
+
     Document();
     Document(const Document &) = delete;
     Document &operator=(const Document &) = delete;
 
     bool hasFilename() const;
-    const std::string &getFilename() const;
-    void setFilename(const std::string &filename);
+    const PathType &getFilename() const;
+    void setFilename(const PathType &filename);
 
     const Score &getScore() const;
     Score &getScore();
@@ -52,7 +55,7 @@ public:
     Caret &getCaret();
 
 private:
-    boost::optional<std::string> myFilename;
+    boost::optional<PathType> myFilename;
     Score myScore;
     ViewOptions myViewOptions;
     Caret myCaret;
@@ -81,7 +84,7 @@ public:
     size_t getDocumentListSize() const;
     
     /// Returns -1 if the file at filepath is not open, else it returns the index at which the already open file is at
-    int findDocument(const std::string& filepath);
+    int findDocument(const Document::PathType &filepath);
 
 private:
     std::vector<std::unique_ptr<Document>> myDocumentList;

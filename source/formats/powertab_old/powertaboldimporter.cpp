@@ -43,7 +43,8 @@ PowerTabOldImporter::PowerTabOldImporter()
 {
 }
 
-void PowerTabOldImporter::load(const std::string &filename, Score &score)
+void PowerTabOldImporter::load(const boost::filesystem::path &filename,
+                               Score &score)
 {
     PowerTabDocument::Document document;
     document.Load(filename);

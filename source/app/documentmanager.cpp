@@ -120,7 +120,7 @@ size_t DocumentManager::getDocumentListSize() const
     return myDocumentList.size();
 }
 
-int DocumentManager::findDocument(const std::string& filepath)
+int DocumentManager::findDocument(const Document::PathType &filepath)
 {
     for (unsigned int i = 0; i < getDocumentListSize(); ++i)
     {
@@ -146,12 +146,12 @@ bool Document::hasFilename() const
     return myFilename.is_initialized();
 }
 
-const std::string &Document::getFilename() const
+const Document::PathType &Document::getFilename() const
 {
     return *myFilename;
 }
 
-void Document::setFilename(const std::string &filename)
+void Document::setFilename(const PathType &filename)
 {
     myFilename = filename;
 }

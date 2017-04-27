@@ -73,7 +73,8 @@ std::string FileFormatManager::importFileFilter() const
     return filterAll + filterOther;
 }
 
-void FileFormatManager::importFile(Score &score, const std::string &filename,
+void FileFormatManager::importFile(Score &score,
+                                   const boost::filesystem::path &filename,
                                    const FileFormat &format)
 {
     for (auto &importer : myImporters)
@@ -104,7 +105,7 @@ std::string FileFormatManager::exportFileFilter() const
 }
 
 void FileFormatManager::exportFile(const Score &score,
-                                   const std::string &filename,
+                                   const boost::filesystem::path &filename,
                                    const FileFormat &format)
 {
     for (auto &exporter : myExporters)

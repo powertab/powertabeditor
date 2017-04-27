@@ -18,6 +18,8 @@
 #include <boost/filesystem/path.hpp>
 #include <vector>
 
+class QString;
+
 namespace Paths {
     using path = boost::filesystem::path;
 
@@ -34,4 +36,10 @@ namespace Paths {
 
     /// Return a path to the user's home directory.
     path getHomeDir();
+
+    /// Convert a QString to a boost::filesystem::path.
+    path fromQString(const QString &str);
+
+    /// Convert a boost::filesystem::path to a QString.
+    QString toQString(const path &str);
 }

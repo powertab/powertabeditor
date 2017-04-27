@@ -28,7 +28,8 @@ class MidiExporter : public FileFormatExporter
 public:
     MidiExporter(const SettingsManager &settings_manager);
 
-    virtual void save(const std::string &filename, const Score &score) override;
+    virtual void save(const boost::filesystem::path &filename,
+                      const Score &score) override;
 
 private:
     static void writeHeader(std::ostream &os, const MidiFile &file);

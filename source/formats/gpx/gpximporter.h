@@ -25,7 +25,8 @@ class GpxImporter : public FileFormatImporter
 public:
     GpxImporter();
 
-    virtual void load(const std::string &filename, Score &score) override;
+    virtual void load(const boost::filesystem::path &filename,
+                      Score &score) override;
 };
 
 #endif

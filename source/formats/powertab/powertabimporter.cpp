@@ -18,9 +18,10 @@
 #include "powertabimporter.h"
 
 #include "common.h"
+
+#include <boost/filesystem/fstream.hpp>
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/filter/gzip.hpp>
-#include <fstream>
 #include <score/score.h>
 #include <score/serialization.h>
 
@@ -29,11 +30,12 @@ PowerTabImporter::PowerTabImporter()
 {
 }
 
-void PowerTabImporter::load(const std::string &filename, Score &score)
+void PowerTabImporter::load(const boost::filesystem::path &filename,
+                            Score &score)
 {
     // The files are compressed by gzip, so we need to uncompress them before
     // loading the data.
-    std::ifstream file(filename.c_str(), std::ios::in | std::ios::binary);
+    boost::filesystem::ifstream file(filename, std::ios::in | std::ios::binary);
     boost::iostreams::filtering_istreambuf in;
     in.push(boost::iostreams::gzip_decompressor());
     in.push(file);

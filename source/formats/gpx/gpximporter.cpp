@@ -19,19 +19,21 @@
 
 #include "filesystem.h"
 #include "documentreader.h"
-#include <fstream>
+
 #include <score/score.h>
 #include <score/utils/scorepolisher.h>
+
+#include <boost/filesystem/fstream.hpp>
 
 GpxImporter::GpxImporter()
     : FileFormatImporter(FileFormat("Guitar Pro 6", { "gpx" }))
 {
 }
 
-void GpxImporter::load(const std::string &filename, Score &score)
+void GpxImporter::load(const boost::filesystem::path &filename, Score &score)
 {
     // Load the data, decompress, and open as XML document.
-    std::ifstream file(filename.c_str(), std::ios::binary | std::ios::in);
+    boost::filesystem::ifstream file(filename, std::ios::binary | std::ios::in);
     Gpx::FileSystem fs(file);
 
     Gpx::DocumentReader reader(fs.getFileContents("score.gpif"));

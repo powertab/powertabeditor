@@ -16,6 +16,7 @@
 #include "fontsetting.h"
 
 #include <array>
+#include <boost/filesystem/path.hpp>
 #include <vector>
 
 namespace PowerTabDocument {
@@ -47,6 +48,8 @@ public:
         NUM_FONT_SETTINGS                  ///< Number of document wide font settings
     };
 
+    using PathType = boost::filesystem::path;
+
     // Member Variables
 private:
     PowerTabFileHeader  m_header;                                   ///< The one and only header (contains file information)
@@ -56,21 +59,21 @@ private:
     int32_t             m_tablatureStaffLineSpacing;                    ///< Amount of space used between lines on the tablature staff
     uint32_t            m_fadeIn;                                       ///< Amount of fade in at the start of the song (in MIDI units - see generalmidi.h)
     uint32_t            m_fadeOut;                                      ///< Amount of fade out at the end of the song (in MIDI units - see generalmidi.h)
-    std::string         m_fileName;                                     ///< Name of the currently open file
+    PathType            m_fileName;                         ///< Name of the currently open file
 
 public:
     Document();
     ~Document();
 
-    bool Save(const std::string& fileName) const;
-    void Load(const std::string& fileName);
+    bool Save(const PathType& fileName) const;
+    void Load(const PathType& fileName);
 
     bool Deserialize(PowerTabInputStream& stream);
 
     void DeleteContents();
 
-    std::string GetFileName() const;
-    void SetFileName(const std::string& fileName);
+    PathType GetFileName() const;
+    void SetFileName(const PathType& fileName);
 
     PowerTabFileHeader& GetHeader();
     const PowerTabFileHeader& GetHeader() const;

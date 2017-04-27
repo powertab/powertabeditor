@@ -239,7 +239,9 @@ void PowerTabEditor::openFile(QString filename)
     if (filename.isEmpty())
         return;
 
-    int validationResult = myDocumentManager->findDocument(filename.toStdString());
+    auto path = Paths::fromQString(filename);
+
+    int validationResult = myDocumentManager->findDocument(path);
     if (validationResult > -1)
     {
         qDebug() << "File: " << filename << " is already open";
@@ -265,14 +267,13 @@ void PowerTabEditor::openFile(QString filename)
     try
     {
         Document &doc = myDocumentManager->addDocument();
-        myFileFormatManager->importFile(doc.getScore(), filename.toStdString(),
-                                        *format);
+        myFileFormatManager->importFile(doc.getScore(), path, *format);
         auto end = std::chrono::high_resolution_clock::now();
         qDebug() << "File loaded in"
                  << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) .count()
                  << "ms";
 
-        doc.setFilename(filename.toStdString());
+        doc.setFilename(path);
         setPreviousDirectory(filename);
         myRecentFiles->add(filename);
         setupNewTab();
@@ -364,7 +365,7 @@ bool PowerTabEditor::saveFile()
     if (!doc.hasFilename())
         return saveFileAs();
 
-    const QString filename = QString::fromStdString(doc.getFilename());
+    const QString filename = Paths::toQString(doc.getFilename());
     return QFileInfo(filename).suffix() == "pt2" ? saveFile(filename)
                                                  : saveFileAs();
 }
@@ -384,7 +385,7 @@ bool PowerTabEditor::saveFile(QString path)
         return false;
     }
 
-    const std::string path_str = path.toStdString();
+    auto path_str = Paths::fromQString(path);
     Document &doc = myDocumentManager->getCurrentDocument();
 
     try
@@ -1761,7 +1762,7 @@ void PowerTabEditor::updateWindowTitle()
         if (myDocumentManager->getCurrentDocument().hasFilename())
         {
             const Document &doc = myDocumentManager->getCurrentDocument();
-            const QString path = QString::fromStdString(doc.getFilename());
+            const QString path = Paths::toQString(doc.getFilename());
             name = QFileInfo(path).fileName();
         }
         else
@@ -2972,7 +2973,7 @@ void PowerTabEditor::setupNewTab()
 
     QString filename = "Untitled";
     if (doc.hasFilename())
-        filename = QString::fromStdString(doc.getFilename());
+        filename = Paths::toQString(doc.getFilename());
 
     QFileInfo fileInfo(filename);
 

@@ -40,7 +40,8 @@ class GuitarProImporter : public FileFormatImporter
 public:
     GuitarProImporter();
 
-    virtual void load(const std::string &filename, Score &score) override;
+    virtual void load(const boost::filesystem::path &filename,
+                      Score &score) override;
 
 private:
     static void convertHeader(const Gp::Header &header, ScoreInfo &info);

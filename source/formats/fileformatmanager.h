@@ -43,7 +43,7 @@ public:
 
     /// Imports a file into the given score.
     /// @throws std::exception
-    void importFile(Score &score, const std::string &filename,
+    void importFile(Score &score, const boost::filesystem::path &filename,
                     const FileFormat &format);
 
     /// Returns a correctly formatted file filter for a Qt file dialog.
@@ -51,7 +51,7 @@ public:
 
     /// Exports the given score to a file.
     /// @throws std::exception
-    void exportFile(const Score &score, const std::string &filename,
+    void exportFile(const Score &score, const boost::filesystem::path &filename,
                     const FileFormat &format);
 
 private:

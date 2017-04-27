@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - File information is now displayed at the top of the score (#49).
 
 ### Fixed
+- Fixed errors when loading or saving files that had non-ASCII characters in their path (#244).
 - Fixed a bug in the score polisher when there were grace notes at the start of a bar.
 - Fixed issues where the pause and stop buttons did not reliably respond to clicks during playback (#237).
 - Fixed a bug where dots could be hidden when a note had an accidental (#242).

@@ -19,6 +19,7 @@
 #include "ui_fileinformationdialog.h"
 
 #include <app/documentmanager.h>
+#include <app/paths.h>
 #include <QFileInfo>
 
 FileInformationDialog::FileInformationDialog(
@@ -160,7 +161,7 @@ FileInformationDialog::FileInformationDialog(
     }
 
     // Initialize file properties.
-    const QString filePath = QString::fromStdString(doc.getFilename());
+    const QString filePath = Paths::toQString(doc.getFilename());
     const QFileInfo fileInfo(filePath);
     QLocale locale;
 

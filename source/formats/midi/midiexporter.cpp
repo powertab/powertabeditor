@@ -23,8 +23,8 @@
 #include <score/generalmidi.h>
 
 #include <array>
+#include <boost/filesystem/fstream.hpp>
 #include <cstdint>
-#include <fstream>
 
 // For htonl.
 #ifdef _WIN32
@@ -85,9 +85,9 @@ MidiExporter::MidiExporter(const SettingsManager &settings_manager)
 {
 }
 
-void MidiExporter::save(const std::string &filename, const Score &score)
+void MidiExporter::save(const boost::filesystem::path &filename, const Score &score)
 {
-    std::ofstream os(filename, std::ios::out | std::ios::binary);
+    boost::filesystem::ofstream os(filename, std::ios::out | std::ios::binary);
     os.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
 
     MidiFile::LoadOptions options;

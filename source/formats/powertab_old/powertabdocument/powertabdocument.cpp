@@ -13,13 +13,11 @@
 #include "powertabinputstream.h"
 #include "powertaboutputstream.h"
 
-#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 #include "score.h"
 
 namespace PowerTabDocument {
-
-using std::string;
 
 // Default Constants
 const int32_t   Document::DEFAULT_TABLATURE_STAFF_LINE_SPACING      = 9;
@@ -49,12 +47,12 @@ Document::~Document()
     DeleteContents();
 }
 
-std::string Document::GetFileName() const
+Document::PathType Document::GetFileName() const
 {
     return m_fileName;
 }
 
-void Document::SetFileName(const std::string& fileName)
+void Document::SetFileName(const PathType& fileName)
 {
     m_fileName = fileName;
 }
@@ -178,9 +176,10 @@ Score* Document::GetScore(size_t index) const
 /// Serializes the document to an output stream
 /// @param stream Output stream to save to
 /// @return The output stream
-bool Document::Save(const string& fileName) const
+bool Document::Save(const PathType& fileName) const
 {
-    std::ofstream fileStream(fileName.c_str(), std::ofstream::out | std::ofstream::binary);
+    boost::filesystem::ofstream fileStream(fileName, std::ofstream::out |
+                                                         std::ofstream::binary);
     PowerTabOutputStream stream(fileStream);
 
     // Write the header
@@ -218,9 +217,10 @@ bool Document::Save(const string& fileName) const
 /// Loads a power tab file.
 /// @param fileName Full path of the file to load.
 /// @throw std::ifstream::failure
-void Document::Load(const string& fileName)
+void Document::Load(const boost::filesystem::path& fileName)
 {
-    std::ifstream fileStream(fileName.c_str(), std::ifstream::in | std::ifstream::binary);
+    boost::filesystem::ifstream fileStream(fileName, std::ifstream::in |
+                                                         std::ifstream::binary);
     PowerTabInputStream stream(fileStream);
 
     DeleteContents();
