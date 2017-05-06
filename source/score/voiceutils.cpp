@@ -136,7 +136,7 @@ boost::rational<int> getDurationTime(const Voice &voice, const Position &pos)
     if (pos.hasProperty(Position::Acciaccatura))
         return 0;
 
-    boost::rational<int> duration(4, pos.getDurationType());
+    boost::rational<int> duration(4, static_cast<int>(pos.getDurationType()));
 
     // Adjust for dotted notes.
     if (pos.hasProperty(Position::Dotted))

@@ -40,8 +40,8 @@ If you've already cloned the repository, you can run `git submodule init && git 
     * Use `address-model=32` for a 32-bit build.
     * If building both 32-bit and 64-bit versions, use `--stagedir=stage32` to place the 32-bit versions under a different directory (`stage32/lib` instead of `stage/lib`), and set `BOOST_LIBRARYDIR` accordingly when running CMake.
 * Installing Qt:
-  * Download the online installer from http://qt-project.org/downloads.
-  * Install the `msvc2013 64-bit` component (or `msvc2013 32-bit` for a 32-bit build)
+  * Download the online installer from https://www.qt.io/download-open-source/.
+  * Install the `msvc2015 64-bit` component (or `msvc2015 32-bit` for a 32-bit build)
 * Compiling Qt (optional):
   * You may want to do this instead if you intend on building the installer so that Qt can be built without dependencies on huge libraries such as `icu`.
   * [Download](http://qt-project.org/downloads) and extract the source code.
