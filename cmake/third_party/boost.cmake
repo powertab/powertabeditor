@@ -12,7 +12,7 @@ if ( PLATFORM_WIN )
 endif ()
 
 find_package(
-    Boost 1.55.0 REQUIRED
+    Boost 1.54.0 REQUIRED
     COMPONENTS ${_boost_libs}
 )
 
