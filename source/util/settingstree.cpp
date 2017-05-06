@@ -206,7 +206,8 @@ struct JSONSerializer : public boost::static_visitor<void>
 
     void operator()(const std::string &s)
     {
-        myWriter.String(s.c_str(), s.length());
+        myWriter.String(s.c_str(),
+                        static_cast<rapidjson::SizeType>(s.length()));
     }
 
     void operator()(const SettingList &list)

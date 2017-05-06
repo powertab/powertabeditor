@@ -45,13 +45,13 @@ void EditKeySignature::updateFollowingKeySignatures(const KeySignature &oldKey,
                                                     const KeySignature &newKey)
 {
     Score &score = myLocation.getScore();
-    const int startSystem = myLocation.getSystemIndex();
+    const size_t start_system_index = myLocation.getSystemIndex();
 
-    for (unsigned int i = startSystem; i < score.getSystems().size(); ++i)
+    for (size_t i = start_system_index; i < score.getSystems().size(); ++i)
     {
         for (Barline &bar : score.getSystems()[i].getBarlines())
         {
-            if (i == startSystem &&
+            if (i == start_system_index &&
                 bar.getPosition() <= myLocation.getPositionIndex())
             {
                 continue;
