@@ -101,6 +101,7 @@
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/fileinformationdialog.h>
+#include <dialogs/fingerdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/irregulargroupingdialog.h>
@@ -1485,6 +1486,26 @@ void PowerTabEditor::editTrill()
     }
 }
 
+void PowerTabEditor::editFingerLeft()
+{
+    const ScoreLocation &location = getLocation();
+    const Note *note = location.getNote();
+    Q_ASSERT(note);
+    
+
+    FingerDialog dialog(this, note->getFingerLeft());
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        myUndoManager->push(new AddFingerLeft(location, dialog.getFingerLeft()),
+                            location.getSystemIndex());
+    }
+
+    if (note->getFingerLeft() == Note::FingerLeft::FL_NotSpecified)
+        myFingerCommand->setChecked(false);
+    else
+        myFingerCommand->setChecked(true);
+}
+
 void PowerTabEditor::addPlayer()
 {
     ScoreLocation &location = getLocation();
@@ -2428,6 +2449,11 @@ void PowerTabEditor::createCommands()
                               tr("Slide Out Of Upwards"),
                               "TabSymbols.SlideOutOf.Upwards", QKeySequence(),
                               Note::SlideOutOfUpwards);
+    
+    myFingerCommand = new Command(tr("Finger..."), "TabSymbols.Finger",
+                                  QKeySequence(tr("Shift+F")), this);
+    myFingerCommand->setCheckable(true);
+    connect(myFingerCommand, SIGNAL(triggered()), this, SLOT(editFingerLeft()));
 
     // Player menu.
     myAddPlayerCommand =
@@ -2844,7 +2870,9 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addSeparator();
     myTabSymbolsMenu->addAction(myPickStrokeUpCommand);
     myTabSymbolsMenu->addAction(myPickStrokeDownCommand);
-
+    myTabSymbolsMenu->addSeparator();
+    myTabSymbolsMenu->addAction(myFingerCommand);
+    
     // Player Menu.
     myPlayerMenu = menuBar()->addMenu(tr("&Player"));
     myPlayerMenu->addAction(myAddPlayerCommand);
@@ -3231,6 +3259,9 @@ void PowerTabEditor::updateCommands()
     updatePositionProperty(myPickStrokeDownCommand, pos,
                            Position::PickStrokeDown);
 
+    myFingerCommand->setEnabled(note != nullptr);
+    myFingerCommand->setChecked(note && note->hasFingerLeft());
+    
     myPlayerChangeCommand->setChecked(
         ScoreUtils::findByPosition(system.getPlayerChanges(), position) !=
         nullptr);

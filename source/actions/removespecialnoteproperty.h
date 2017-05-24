@@ -79,6 +79,16 @@ public:
                                          std::mem_fn(&Note::setTrilledFret)) {}
 };
 
+class RemoveFingerLeft : public RemoveSpecialNoteProperty<Note::FingerLeft>
+{
+public:
+    RemoveFingerLeft(const ScoreLocation &location)
+    : RemoveSpecialNoteProperty<Note::FingerLeft>(location, QObject::tr("Remove Finger Left"),
+                                     location.getNote()->getFingerLeft(),
+                                     std::mem_fn(&Note::clearFingerLeft),
+                                     std::mem_fn(&Note::setFingerLeft)) {}
+};
+
 class RemoveArtificialHarmonic
     : public RemoveSpecialNoteProperty<ArtificialHarmonic>
 {

@@ -333,12 +333,35 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
                 const QString text = QString::fromStdString(
                             boost::lexical_cast<std::string>(note));
 
+                QColor myColor;
+                myColor = QColor(0,0,0);
+                switch (note.getFingerLeft()) {
+                    case Note::FL_1:
+                        myColor = QColor(192,47,29);
+                        break;
+                    case Note::FL_2:
+                        myColor = QColor(16,120,150);
+                        break;
+                    case Note::FL_3:
+                        myColor = QColor(124,164,73);
+                        break;
+                    case Note::FL_4:
+                        myColor = QColor(188,161,54);
+                        break;
+                    case Note::FL_T:
+                        myColor = QColor(50,50,50);
+                        break;
+                    default:
+                        myColor = QColor(0,0,0);
+                        break;
+                }
+
                 auto tabNote = new SimpleTextItem(
                     text, myPlainTextFont,
                     QPen(note.hasProperty(Note::Tied) ? Qt::lightGray
-                                                      : Qt::black),
+                                                      : myColor),
                     QBrush(QColor(255, 255, 255)));
-
+                
                 centerHorizontally(*tabNote, location,
                                    location + layout->getPositionSpacing());
                 tabNote->setY(layout->getTabLine(note.getString() + 1) -

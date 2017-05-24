@@ -142,6 +142,16 @@ public:
         NumSimpleProperties
     };
 
+    enum FingerLeft
+    {
+        FL_NotSpecified,
+        FL_1,
+        FL_2,
+        FL_3,
+        FL_4,
+        FL_T
+    };
+    
     Note();
     Note(int string, int fretNumber);
 
@@ -173,7 +183,7 @@ public:
     void setTrilledFret(int fret);
     /// Removes the trill for this note.
     void clearTrill();
-
+    
     /// Returns whether the note has a tapped harmonic.
     bool hasTappedHarmonic() const;
     /// Returns the fret that is tapped.
@@ -201,6 +211,14 @@ public:
     /// Removes the bend for this note.
     void clearBend();
 
+    bool hasFingerLeft() const;
+    /// Returns the left-hand finger to fret the note.
+    FingerLeft getFingerLeft() const;
+    /// Sets the left-hand finger to fret the note.
+    void setFingerLeft(FingerLeft fingerLeft);
+    /// Removes the left-hand finger for this note.
+    void clearFingerLeft();
+    
     static const int MIN_FRET_NUMBER;
     static const int MAX_FRET_NUMBER;
 
@@ -209,6 +227,7 @@ private:
     int myFretNumber;
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myTrilledFret;
+    FingerLeft myFingerLeft;
     int myTappedHarmonicFret;
     boost::optional<ArtificialHarmonic> myArtificialHarmonic;
     boost::optional<Bend> myBend;
@@ -221,6 +240,7 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
     ar("fret", myFretNumber);
     ar("properties", mySimpleProperties);
     ar("trill", myTrilledFret);
+    ar("fingerLeft", myFingerLeft);
     ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);

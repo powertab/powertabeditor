@@ -149,6 +149,7 @@ namespace Utils {
     bool hasNoteWithArtificialHarmonic(const Position &pos);
     bool hasNoteWithTrill(const Position &pos);
     bool hasNoteWithBend(const Position &pos);
+    bool hasNoteWithFingerLeft(const Position &pos);
     bool hasNoteWithProperty(const Position &pos, Note::SimpleProperty property);
 }
 
