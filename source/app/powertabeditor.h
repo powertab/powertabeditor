@@ -161,7 +161,7 @@ private slots:
     /// Moves all positions after the current location backwards.
     void shiftBackward();
     /// Deletes the current note.
-    void removeNote();
+    void removeCurrentPosition();
     /// Deletes the currently-selected positions.
     void removeSelectedPositions();
     /// Moves the caret to a specific barline.

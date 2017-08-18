@@ -746,7 +746,7 @@ void PowerTabEditor::shiftBackward()
                         location.getSystemIndex());
 }
 
-void PowerTabEditor::removeNote()
+void PowerTabEditor::removeCurrentPosition()
 {
 	auto location = getLocation();
     bool isNote = location.getNote();
@@ -2028,7 +2028,7 @@ void PowerTabEditor::createCommands()
 #endif
     myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
                                       QKeySequence::Delete, this);
-    connect(myRemoveNoteCommand, SIGNAL(triggered()), this, SLOT(removeNote()));
+    connect(myRemoveNoteCommand, SIGNAL(triggered()), this, SLOT(removeCurrentPosition()));
 
     myRemovePositionCommand = new Command(tr("Remove Position"),
                                           "Position.RemovePosition",
