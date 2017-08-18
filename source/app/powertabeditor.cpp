@@ -748,8 +748,18 @@ void PowerTabEditor::shiftBackward()
 
 void PowerTabEditor::removeNote()
 {
-    myUndoManager->push(new RemoveNote(getLocation()),
-                        getLocation().getSystemIndex());
+	auto location = getLocation();
+    bool isNote = location.getNote();
+
+    if(!isNote)
+    {
+    	removeSelectedPositions();
+    }
+    else
+    {
+    	myUndoManager->push(new RemoveNote(location),
+    			location.getSystemIndex());
+    }
 }
 
 void PowerTabEditor::removeSelectedPositions()
@@ -3066,7 +3076,7 @@ void PowerTabEditor::updateCommands()
                                              Score::MIN_LINE_SPACING);
     myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                        !tempoMarker && !altEnding && !dynamic);
-    myRemoveNoteCommand->setEnabled(note != nullptr);
+    myRemoveNoteCommand->setEnabled(pos || barline || hasSelection);
     myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
 
     myChordNameCommand->setChecked(
