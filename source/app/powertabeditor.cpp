@@ -748,7 +748,7 @@ void PowerTabEditor::shiftBackward()
 
 void PowerTabEditor::removeCurrentPosition()
 {
-	auto location = getLocation();
+    auto location = getLocation();
     bool isNote = location.getNote();
 
     if(!isNote)
