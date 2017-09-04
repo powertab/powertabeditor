@@ -20,7 +20,11 @@ function ( pte_add_compile_flags target )
     endif ()
 
     # Print coloured error messages when compiling with Clang and Ninja.
-    if ( COMPILER_CLANG AND CMAKE_GENERATOR STREQUAL "Ninja" )
-        target_compile_options( ${target} PRIVATE -fcolor-diagnostics )
+    if ( CMAKE_GENERATOR STREQUAL "Ninja" )
+        if ( COMPILER_CLANG )
+            target_compile_options( ${target} PRIVATE -fcolor-diagnostics )
+        elseif ( COMPILER_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.8 )
+            target_compile_options( ${target} PRIVATE -fdiagnostics-color=always )
+        endif ()
     endif ()
 endfunction ()

@@ -2,6 +2,7 @@ set( PLATFORM_WIN )
 set( PLATFORM_OSX )
 set( PLATFORM_LINUX )
 set( COMPILER_CLANG )
+set( COMPILER_GCC )
 
 if ( ${CMAKE_SYSTEM_NAME} MATCHES "Windows" )
     set( PLATFORM_WIN TRUE )
@@ -15,6 +16,8 @@ endif ()
 
 if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" )
     set( COMPILER_CLANG TRUE )
+elseif ( CMAKE_COMPILER_IS_GNUCC )
+    set( COMPILER_GCC TRUE )
 endif ()
 
 if ( PLATFORM_WIN )

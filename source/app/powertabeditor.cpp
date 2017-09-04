@@ -746,10 +746,20 @@ void PowerTabEditor::shiftBackward()
                         location.getSystemIndex());
 }
 
-void PowerTabEditor::removeNote()
+void PowerTabEditor::removeCurrentPosition()
 {
-    myUndoManager->push(new RemoveNote(getLocation()),
-                        getLocation().getSystemIndex());
+    auto location = getLocation();
+    bool isNote = location.getNote();
+
+    if(!isNote)
+    {
+    	removeSelectedPositions();
+    }
+    else
+    {
+    	myUndoManager->push(new RemoveNote(location),
+    			location.getSystemIndex());
+    }
 }
 
 void PowerTabEditor::removeSelectedPositions()
@@ -2018,7 +2028,7 @@ void PowerTabEditor::createCommands()
 #endif
     myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
                                       QKeySequence::Delete, this);
-    connect(myRemoveNoteCommand, SIGNAL(triggered()), this, SLOT(removeNote()));
+    connect(myRemoveNoteCommand, SIGNAL(triggered()), this, SLOT(removeCurrentPosition()));
 
     myRemovePositionCommand = new Command(tr("Remove Position"),
                                           "Position.RemovePosition",
@@ -3066,7 +3076,7 @@ void PowerTabEditor::updateCommands()
                                              Score::MIN_LINE_SPACING);
     myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
                                        !tempoMarker && !altEnding && !dynamic);
-    myRemoveNoteCommand->setEnabled(note != nullptr);
+    myRemoveNoteCommand->setEnabled(pos || barline || hasSelection);
     myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
 
     myChordNameCommand->setChecked(
