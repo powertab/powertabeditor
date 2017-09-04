@@ -2,9 +2,8 @@ include( FindPackageHandleStandardArgs )
 
 find_path(
     RTMIDI_INCLUDE_DIR
-    NAMES
-        RtMidi.h
-        rtmidi/RtMidi.h
+    NAMES RtMidi.h
+    PATH_SUFFIXES rtmidi
 )
 find_library( RTMIDI_LIBRARY rtmidi )
 
