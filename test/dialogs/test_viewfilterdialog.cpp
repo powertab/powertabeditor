@@ -17,6 +17,7 @@
 
 #include <catch.hpp>
 
+#include <boost/optional/optional_io.hpp>
 #include <dialogs/viewfilterpresenter.h>
 #include <score/score.h>
 
