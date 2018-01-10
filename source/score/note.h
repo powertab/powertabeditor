@@ -226,8 +226,8 @@ public:
 
     /// Returns whether the note has a finger hint.
     bool hasFingerHint() const;
-    /// Returns the finger number of the finger hint for this note.
-    unsigned int getFingerHintNumber() const;
+    /// Returns the finger hint for this note.
+    const FingerHint &getFingerHint() const;
     /// Adds a finger hint to this note.
     void setFingerHint(const FingerHint &hint);
     /// Removes the finger hint for this note.

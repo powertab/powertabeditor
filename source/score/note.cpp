@@ -219,9 +219,9 @@ bool Note::hasFingerHint() const
     return myFingerHint.is_initialized();
 }
 
-unsigned int Note::getFingerHintNumber() const
+const FingerHint &Note::getFingerHint() const
 {
-    return myFingerHint.get().getFingerNumber();
+    return myFingerHint.get();
 }
 
 void Note::setFingerHint(const FingerHint &hint)
@@ -439,9 +439,4 @@ FingerHint::FingerHint(Finger finger)
 void FingerHint::setFinger(Finger finger)
 {
     myFinger = finger;
-}
-
-unsigned int FingerHint::getFingerNumber() const
-{
-    return myFinger;
 }

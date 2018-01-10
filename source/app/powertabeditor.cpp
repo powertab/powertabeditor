@@ -101,6 +101,7 @@
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/fileinformationdialog.h>
+#include <dialogs/fingerhintdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/irregulargroupingdialog.h>
@@ -1495,6 +1496,30 @@ void PowerTabEditor::editTrill()
     }
 }
 
+void PowerTabEditor::editFingerHint()
+{
+    const ScoreLocation &location = getLocation();
+    const Note *note = location.getNote();
+    Q_ASSERT(note);
+
+    if (note->hasFingerHint())
+    {
+        myUndoManager->push(new RemoveFingerHint(location),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        FingerHintDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(new AddFingerHint(location, dialog.getFingerHint()),
+                                location.getSystemIndex());
+        }
+        else
+            myFingerHintCommand->setChecked(false);
+    }
+}
+
 void PowerTabEditor::addPlayer()
 {
     ScoreLocation &location = getLocation();
@@ -2373,6 +2398,13 @@ void PowerTabEditor::createCommands()
     myBendCommand->setCheckable(true);
     connect(myBendCommand, &QAction::triggered, this,
             &PowerTabEditor::editBend);
+            
+    myFingerHintCommand =
+        new Command(tr("Finger hint..."), "TabSymbols.FingerHint",
+                    QKeySequence(), this);
+    myFingerHintCommand->setCheckable(true);
+    connect(myFingerHintCommand, &QAction::triggered, this,
+            &PowerTabEditor::editFingerHint);
 
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
@@ -2827,6 +2859,7 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addSeparator();
 
 	myTabSymbolsMenu->addAction(myBendCommand);
+    myTabSymbolsMenu->addAction(myFingerHintCommand);
 	myTabSymbolsMenu->addSeparator();
 
     mySlideIntoMenu = myTabSymbolsMenu->addMenu(tr("Slide Into"));
@@ -3215,6 +3248,9 @@ void PowerTabEditor::updateCommands()
 
     myBendCommand->setEnabled(note != nullptr);
     myBendCommand->setChecked(note && note->hasBend());
+    
+    myFingerHintCommand->setEnabled(note != nullptr);
+    myFingerHintCommand->setChecked(note && note->hasFingerHint());
 
     updateNoteProperty(mySlideIntoFromAboveCommand, note,
                        Note::SlideIntoFromAbove);

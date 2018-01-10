@@ -105,7 +105,7 @@ class AddFingerHint : public AddSpecialNoteProperty<FingerHint>
 {
 public:
     AddFingerHint(const ScoreLocation &location, const FingerHint &hint)
-        : AddSpecialNoteProperty<FingerHint>(location, QObject::tr("Add finger hint"), hint,
+        : AddSpecialNoteProperty<FingerHint>(location, QObject::tr("Add Finger Hint"), hint,
                                              std::mem_fn(&Note::setFingerHint),
                                              std::mem_fn(&Note::clearFingerHint))
     {

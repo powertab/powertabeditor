@@ -101,4 +101,14 @@ public:
                                           std::mem_fn(&Note::setBend)) {}
 };
 
+class RemoveFingerHint : public RemoveSpecialNoteProperty<FingerHint>
+{
+public:
+    RemoveFingerHint(const ScoreLocation &location)
+        : RemoveSpecialNoteProperty<FingerHint>(location, QObject::tr("Remove Finger Hint"),
+                                                location.getNote()->getFingerHint(),
+                                                std::mem_fn(&Note::clearFingerHint),
+                                                std::mem_fn(&Note::setFingerHint)) {}
+};
+
 #endif
