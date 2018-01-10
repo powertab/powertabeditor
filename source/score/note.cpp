@@ -221,12 +221,12 @@ bool Note::hasFingerHint() const
 
 unsigned int Note::getFingerHintNumber() const
 {
-    return myFingerHint.getFingerNumber();
+    return myFingerHint.get().getFingerNumber();
 }
 
-void Note::setFingerHint(const Finger &hint)
+void Note::setFingerHint(const FingerHint &hint)
 {
-    myFingerHint = hint
+    myFingerHint = hint;
 }
 
 void Note::clearFingerHint()
