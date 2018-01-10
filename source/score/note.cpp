@@ -440,3 +440,8 @@ void FingerHint::setFinger(Finger finger)
 {
     myFinger = finger;
 }
+
+unsigned int FingerHint::getFingerNumber() const
+{
+    return myFinger;
+}

@@ -1428,6 +1428,23 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                 group->addToGroup(dotText2);
             }
         }
+        
+        if (note.getNote()->hasFingerHint())
+        {
+            if (!group)
+            {
+                group = new QGraphicsItemGroup();
+            }
+            
+            const auto number = note.getNote()->getFingerHint().getFingerNumber();
+            auto numberText = new SimpleTextItem(QString::number(number), myPlainTextFont);
+            
+            const double numberX = 0;
+            const double numberY = 0;
+            
+            numberText->setPos(numberX, numberY);
+            group->addToGroup(numberText);
+        }
 
         if (group)
         {

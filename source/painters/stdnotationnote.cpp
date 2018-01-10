@@ -488,6 +488,11 @@ bool StdNotationNote::isDoubleDotted() const
     return myPosition->hasProperty(Position::DoubleDotted);
 }
 
+const Note *StdNotationNote::getNote() const
+{
+    return myNote;
+}
+
 const boost::optional<int> &StdNotationNote::getTie() const
 {
     return myTie;

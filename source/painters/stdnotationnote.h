@@ -64,6 +64,9 @@ public:
     QString getAccidentalText() const;
     bool isDotted() const;
     bool isDoubleDotted() const;
+    
+    /// Return the score note attached to this note.
+    const Note *getNote() const;
 
     /// Remove the note's accidental.
     void clearAccidental();
