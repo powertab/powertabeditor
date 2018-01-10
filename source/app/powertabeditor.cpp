@@ -2206,6 +2206,12 @@ void PowerTabEditor::createCommands()
                                Qt::SHIFT + Qt::Key_Left, this);
     connect(myRemoveDotCommand, SIGNAL(triggered()), this, SLOT(removeDot()));
 
+    myFingerHintCommand = new Command(tr("Finger Hint..."), "Notes.FingerHint",
+                                QKeySequence(), this);
+    myFingerHintCommand->setCheckable(true);
+    connect(myFingerHintCommand, &QAction::triggered, this,
+            &PowerTabEditor::editFingerHint);
+
     myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
     myTieCommand->setCheckable(true);
     connect(myTieCommand, SIGNAL(triggered()), this, SLOT(editTiedNote()));
@@ -2357,7 +2363,7 @@ void PowerTabEditor::createCommands()
     volumeSwellAct->setCheckable(true);
     connect(volumeSwellAct, SIGNAL(triggered()), this, SLOT(editVolumeSwell()));
 #endif
-
+    
     // Tab Symbol Actions.
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
                                       "TabSymbols.HammerPull", Qt::Key_H, this);
@@ -2398,13 +2404,6 @@ void PowerTabEditor::createCommands()
     myBendCommand->setCheckable(true);
     connect(myBendCommand, &QAction::triggered, this,
             &PowerTabEditor::editBend);
-            
-    myFingerHintCommand =
-        new Command(tr("Finger hint..."), "TabSymbols.FingerHint",
-                    QKeySequence(), this);
-    myFingerHintCommand->setCheckable(true);
-    connect(myFingerHintCommand, &QAction::triggered, this,
-            &PowerTabEditor::editFingerHint);
 
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
@@ -2796,6 +2795,8 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myAddDotCommand);
     myNotesMenu->addAction(myRemoveDotCommand);
     myNotesMenu->addSeparator();
+    myNotesMenu->addAction(myFingerHintCommand);
+    myNotesMenu->addSeparator();
     myNotesMenu->addAction(myTieCommand);
     myNotesMenu->addAction(myMutedCommand);
     myNotesMenu->addAction(myGhostNoteCommand);
@@ -2846,6 +2847,7 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(volumeSwellAct);
 
 #endif
+        
     // Tab Symbols Menu
     myTabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     myHammerOnMenu = myTabSymbolsMenu->addMenu(tr("&Hammer Ons/Pull Offs"));
@@ -2859,7 +2861,6 @@ void PowerTabEditor::createMenus()
     myTabSymbolsMenu->addSeparator();
 
 	myTabSymbolsMenu->addAction(myBendCommand);
-    myTabSymbolsMenu->addAction(myFingerHintCommand);
 	myTabSymbolsMenu->addSeparator();
 
     mySlideIntoMenu = myTabSymbolsMenu->addMenu(tr("Slide Into"));
@@ -3159,6 +3160,9 @@ void PowerTabEditor::updateCommands()
                                    (pos->hasProperty(Position::Dotted) ||
                                     pos->hasProperty(Position::DoubleDotted)));
 
+    myFingerHintCommand->setEnabled(note != nullptr);
+    myFingerHintCommand->setChecked(note && note->hasFingerHint());
+
     if (note)
     {
         myTieCommand->setText(tr("Tied"));
@@ -3248,9 +3252,6 @@ void PowerTabEditor::updateCommands()
 
     myBendCommand->setEnabled(note != nullptr);
     myBendCommand->setChecked(note && note->hasBend());
-    
-    myFingerHintCommand->setEnabled(note != nullptr);
-    myFingerHintCommand->setChecked(note && note->hasFingerHint());
 
     updateNoteProperty(mySlideIntoFromAboveCommand, note,
                        Note::SlideIntoFromAbove);
