@@ -117,6 +117,29 @@ private:
     DrawPoint myEndPoint;
 };
 
+class FingerHint
+{
+public:
+    enum Finger
+    {
+        None = 0,
+        Index = 1,
+        Middle = 2,
+        Ring = 3,
+        Little = 4
+    };
+    
+    FingerHint(Finger finger);
+    
+    /// Sets the finger this hint is showing.
+    void setFinger(Finger finger);
+    /// Gets the finger number this hint is showing.
+    unsigned int getFingerNumber() const;
+    
+private:
+    Finger myFinger;
+};
+
 class Note
 {
 public:
@@ -201,6 +224,15 @@ public:
     /// Removes the bend for this note.
     void clearBend();
 
+    /// Returns whether the note has a finger hint.
+    bool hasFingerHint() const;
+    /// Returns the finger number of the finger hint for this note.
+    unsigned int getFingerHintNumber() const;
+    /// Adds a finger hint to this note.
+    void setFingerHint(const FingerHint &hint);
+    /// Removes the finger hint for this note.
+    void clearFingerHint();
+
     static const int MIN_FRET_NUMBER;
     static const int MAX_FRET_NUMBER;
 
@@ -212,6 +244,7 @@ private:
     int myTappedHarmonicFret;
     boost::optional<ArtificialHarmonic> myArtificialHarmonic;
     boost::optional<Bend> myBend;
+    boost::optional<FingerHint> myFingerHint;
 };
 
 template <class Archive>

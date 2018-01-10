@@ -214,6 +214,26 @@ void Note::clearBend()
     myBend.reset();
 }
 
+bool Note::hasFingerHint() const
+{
+    return myFingerHint.is_initialized();
+}
+
+unsigned int Note::getFingerHintNumber() const
+{
+    return myFingerHint.getFingerNumber();
+}
+
+void Note::setFingerHint(const Finger &hint)
+{
+    myFingerHint = hint
+}
+
+void Note::clearFingerHint()
+{
+    myFingerHint.reset();
+}
+
 std::ostream &operator<<(std::ostream &os, const Note &note)
 {
     // For muted notes, display 'x'.
@@ -409,4 +429,19 @@ std::string Bend::getPitchText(int pitch)
     }
 
     return text.str();
+}
+
+FingerHint::FingerHint(Finger finger)
+    : myFinger(finger)
+{
+}
+
+void FingerHint::setFinger(Finger finger)
+{
+    myFinger = finger;
+}
+
+unsigned int FingerHint::getFingerNumber() const
+{
+    return myFinger;
 }
