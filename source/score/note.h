@@ -129,12 +129,19 @@ public:
         Little = 4
     };
     
+    FingerHint();
     FingerHint(Finger finger);
     
     /// Sets the finger this hint is showing.
     void setFinger(Finger finger);
     /// Gets the finger number this hint is showing.
     unsigned int getFingerNumber() const;
+    
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion /*version*/)
+    {
+        ar("finger", myFinger);
+    }
     
 private:
     Finger myFinger;
@@ -257,6 +264,7 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
     ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);
+    ar("finger_hint", myFingerHint);
 }
 
 /// Useful utility functions for working with natural and tapped harmonics.

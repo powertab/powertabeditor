@@ -431,6 +431,11 @@ std::string Bend::getPitchText(int pitch)
     return text.str();
 }
 
+FingerHint::FingerHint()
+    : myFinger(None)
+{
+}
+
 FingerHint::FingerHint(Finger finger)
     : myFinger(finger)
 {
