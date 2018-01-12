@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>213</width>
+    <width>312</width>
     <height>128</height>
    </rect>
   </property>
@@ -34,6 +34,16 @@
      </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="fingerComboBox"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="positionLabel">
+       <property name="text">
+        <string>Position relative to note head:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="positionComboBox"/>
      </item>
     </layout>
    </item>

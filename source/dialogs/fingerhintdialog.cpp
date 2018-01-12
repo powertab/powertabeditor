@@ -28,11 +28,20 @@ FingerHintDialog::FingerHintDialog(QWidget *parent)
         tr("None (string empty)"), tr("Index finger"), tr("Middle finger"),
         tr("Ring finger"), tr("Little finger")
     });
+
+    ui->positionComboBox->addItems({
+        tr("Above and left"), tr("Above, centered"), tr("Above and right"),
+        tr("Right"), tr("Below and right"), tr("Below, centered"),
+        tr("Below and left"), tr("Left")
+    });
 }
 
 FingerHintDialog::~FingerHintDialog() { delete ui; }
 
 FingerHint FingerHintDialog::getFingerHint() const
 {
-    return FingerHint(static_cast<FingerHint::Finger>(ui->fingerComboBox->currentIndex()));
+    return FingerHint(
+        static_cast<FingerHint::Finger>(ui->fingerComboBox->currentIndex()),
+        static_cast<FingerHint::DisplayPosition>(ui->positionComboBox->currentIndex())
+    );
 }

@@ -129,22 +129,39 @@ public:
         Little = 4
     };
     
+    /// Position relative to note head at which to display number.
+    enum DisplayPosition
+    {
+        AboveLeft,
+        Above,
+        AboveRight,
+        Right,
+        BelowRight,
+        Below,
+        BelowLeft,
+        Left
+    };
+    
     FingerHint();
-    FingerHint(Finger finger);
+    FingerHint(Finger finger, DisplayPosition pos = AboveLeft);
     
     /// Sets the finger this hint is showing.
     void setFinger(Finger finger);
-    /// Gets the finger number this hint is showing.
+    /// Returns the finger number this hint is showing.
     unsigned int getFingerNumber() const;
+    /// Returns the display position relative to the note head.
+    DisplayPosition getDisplayPosition() const;
     
     template <class Archive>
     void serialize(Archive &ar, const FileVersion /*version*/)
     {
         ar("finger", myFinger);
+        ar("display_position", myDisplayPosition);
     }
     
 private:
     Finger myFinger;
+    DisplayPosition myDisplayPosition;
 };
 
 class Note
