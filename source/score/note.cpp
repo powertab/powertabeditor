@@ -432,12 +432,14 @@ std::string Bend::getPitchText(int pitch)
 }
 
 FingerHint::FingerHint()
-    : myFinger(None)
+    : myFinger(None),
+      myDisplayPosition(AboveLeft)
 {
 }
 
-FingerHint::FingerHint(Finger finger)
-    : myFinger(finger)
+FingerHint::FingerHint(Finger finger, DisplayPosition pos)
+    : myFinger(finger),
+      myDisplayPosition(pos)
 {
 }
 
@@ -449,4 +451,9 @@ void FingerHint::setFinger(Finger finger)
 unsigned int FingerHint::getFingerNumber() const
 {
     return myFinger;
+}
+
+FingerHint::DisplayPosition FingerHint::getDisplayPosition() const
+{
+    return myDisplayPosition;
 }

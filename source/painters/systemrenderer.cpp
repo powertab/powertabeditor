@@ -1436,14 +1436,52 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                 group = new QGraphicsItemGroup();
             }
             
-            const auto number = note.getNote()->getFingerHint().getFingerNumber();
+            
+            const auto fingerHint = note.getNote()->getFingerHint();
+            const auto number = fingerHint.getFingerNumber();
             auto numberText = new SimpleTextItem(QString::number(number), myPlainTextFont);
             
-            const double numberX = 0;
-            const double numberY = 0;
+            double numberX;
+            double numberY;
+            switch (fingerHint.getDisplayPosition())
+            {
+            case FingerHint::AboveLeft:
+                numberX = -note_head_width + 1;
+                numberY = 18;
+                break;
+            case FingerHint::Above:
+                numberX = 0;
+                numberY = 17;
+                break;
+            case FingerHint::AboveRight:
+                numberX = note_head_width + 1;
+                numberY = 18;
+                break;
+            case FingerHint::Right:
+                numberX = note_head_width + 3;
+                numberY = 25;
+                break;
+            case FingerHint::BelowRight:
+                numberX = note_head_width + 1;
+                numberY = 32;
+                break;
+            case FingerHint::Below:
+                numberX = 0;
+                numberY = 33;
+                break;
+            case FingerHint::BelowLeft:
+                numberX = -note_head_width + 1;
+                numberY = 32;
+                break;
+            case FingerHint::Left:
+                numberX = -note_head_width - 1;
+                numberY = 25;
+                break;
+            }
             
             numberText->setPos(numberX, numberY);
             group->addToGroup(numberText);
+            
         }
 
         if (group)
