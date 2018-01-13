@@ -443,6 +443,12 @@ FingerHint::FingerHint(Finger finger, DisplayPosition pos)
 {
 }
 
+bool FingerHint::operator==(const FingerHint &other) const
+{
+    return myFinger == other.getFingerNumber() &&
+           myDisplayPosition == other.getDisplayPosition();
+}
+
 void FingerHint::setFinger(Finger finger)
 {
     myFinger = finger;

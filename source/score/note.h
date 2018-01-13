@@ -145,6 +145,8 @@ public:
     FingerHint();
     FingerHint(Finger finger, DisplayPosition pos = AboveLeft);
     
+    bool operator==(const FingerHint &other) const;
+    
     /// Sets the finger this hint is showing.
     void setFinger(Finger finger);
     /// Returns the finger number this hint is showing.

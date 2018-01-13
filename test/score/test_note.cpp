@@ -92,6 +92,21 @@ TEST_CASE("Score/Note/Bend", "")
     REQUIRE(!note.hasBend());
 }
 
+TEST_CASE("Score/Note/FingerHint", "")
+{
+    Note note;
+    
+    REQUIRE(!note.hasFingerHint());
+    
+    note.setFingerHint(FingerHint(FingerHint::Finger::Ring,
+            FingerHint::DisplayPosition::BelowRight));
+    REQUIRE(note.hasFingerHint());
+    REQUIRE(note.getFingerHint().getFingerNumber() == FingerHint::Finger::Ring);
+    
+    note.clearFingerHint();
+    REQUIRE(!note.hasFingerHint());
+}
+
 TEST_CASE("Score/Note/Bend/GetPitchText", "")
 {
     REQUIRE(Bend::getPitchText(0) == "Standard");
