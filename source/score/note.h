@@ -281,7 +281,9 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
     ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);
-    ar("finger_hint", myFingerHint);
+    if (hasFingerHint()) {
+        ar("finger_hint", myFingerHint);
+    }
 }
 
 /// Useful utility functions for working with natural and tapped harmonics.
