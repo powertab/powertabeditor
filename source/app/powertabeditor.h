@@ -239,8 +239,8 @@ private slots:
 	void editBend();
     /// Adds or removes a trill for the current note.
     void editTrill();
-    /// Adds or removes a finger hint for the current note.
-    void editFingerHint();
+    /// Adds or removes left hand fingering for the current note.
+    void editLeftHandFingering();
 
     /// Adds a new player to the score.
     void addPlayer();
@@ -551,7 +551,7 @@ private:
     Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
 	Command *myBendCommand;
-    Command *myFingerHintCommand;
+    Command *myLeftHandFingeringCommand;
 
     QMenu *mySlideIntoMenu;
     Command *mySlideIntoFromAboveCommand;

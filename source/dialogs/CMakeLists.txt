@@ -12,10 +12,10 @@ set( srcs
     dynamicdialog.cpp
     fileinformationdialog.cpp
     filterrulewidget.cpp
-    fingerhintdialog.cpp
     gotobarlinedialog.cpp
     gotorehearsalsigndialog.cpp
     irregulargroupingdialog.cpp
+    lefthandfingeringdialog.cpp
     keyboardsettingsdialog.cpp
     keysignaturedialog.cpp
     multibarrestdialog.cpp
@@ -46,12 +46,12 @@ set( headers
     dynamicdialog.h
     fileinformationdialog.h
     filterrulewidget.h
-    fingerhintdialog.h
     gotobarlinedialog.h
     gotorehearsalsigndialog.h
     irregulargroupingdialog.h
     keyboardsettingsdialog.h
     keysignaturedialog.h
+    lefthandfingeringdialog.h
     multibarrestdialog.h
     playerchangedialog.h
     preferencesdialog.h
@@ -79,10 +79,10 @@ set( moc_headers
     directiondialog.h
     fileinformationdialog.h
     filterrulewidget.h
-    fingerhintdialog.h
     gotorehearsalsigndialog.h
     keyboardsettingsdialog.h
     keysignaturedialog.h
+    lefthandfingeringdialog.h
     multibarrestdialog.h
     playerchangedialog.h
     preferencesdialog.h
@@ -108,12 +108,12 @@ set( forms
     dynamicdialog.ui
     fileinformationdialog.ui
     filterrulewidget.ui
-    fingerhintdialog.ui
     gotobarlinedialog.ui
     gotorehearsalsigndialog.ui
     irregulargroupingdialog.ui
     keyboardsettingsdialog.ui
     keysignaturedialog.ui
+    lefthandfingeringdialog.ui
     multibarrestdialog.ui
     playerchangedialog.ui
     preferencesdialog.ui

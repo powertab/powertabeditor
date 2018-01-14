@@ -101,12 +101,12 @@
 #include <dialogs/directiondialog.h>
 #include <dialogs/dynamicdialog.h>
 #include <dialogs/fileinformationdialog.h>
-#include <dialogs/fingerhintdialog.h>
 #include <dialogs/gotobarlinedialog.h>
 #include <dialogs/gotorehearsalsigndialog.h>
 #include <dialogs/irregulargroupingdialog.h>
 #include <dialogs/keyboardsettingsdialog.h>
 #include <dialogs/keysignaturedialog.h>
+#include <dialogs/lefthandfingeringdialog.h>
 #include <dialogs/multibarrestdialog.h>
 #include <dialogs/playerchangedialog.h>
 #include <dialogs/preferencesdialog.h>
@@ -1496,27 +1496,28 @@ void PowerTabEditor::editTrill()
     }
 }
 
-void PowerTabEditor::editFingerHint()
+void PowerTabEditor::editLeftHandFingering()
 {
     const ScoreLocation &location = getLocation();
     const Note *note = location.getNote();
     Q_ASSERT(note);
 
-    if (note->hasFingerHint())
+    if (note->hasLeftHandFingering())
     {
-        myUndoManager->push(new RemoveFingerHint(location),
+        myUndoManager->push(new RemoveLeftHandFingering(location),
                             location.getSystemIndex());
     }
     else
     {
-        FingerHintDialog dialog(this);
+        LeftHandFingeringDialog dialog(this);
         if (dialog.exec() == QDialog::Accepted)
         {
-            myUndoManager->push(new AddFingerHint(location, dialog.getFingerHint()),
+            myUndoManager->push(new AddLeftHandFingering(location, 
+                                dialog.getLeftHandFingering()),
                                 location.getSystemIndex());
         }
         else
-            myFingerHintCommand->setChecked(false);
+            myLeftHandFingeringCommand->setChecked(false);
     }
 }
 
@@ -2206,11 +2207,12 @@ void PowerTabEditor::createCommands()
                                Qt::SHIFT + Qt::Key_Left, this);
     connect(myRemoveDotCommand, SIGNAL(triggered()), this, SLOT(removeDot()));
 
-    myFingerHintCommand = new Command(tr("Finger Hint..."), "Notes.FingerHint",
-                                QKeySequence(), this);
-    myFingerHintCommand->setCheckable(true);
-    connect(myFingerHintCommand, &QAction::triggered, this,
-            &PowerTabEditor::editFingerHint);
+    myLeftHandFingeringCommand = new Command(tr("Left Hand Fingering..."), 
+                                             "Notes.LeftHandFingering",
+                                             QKeySequence(), this);
+    myLeftHandFingeringCommand->setCheckable(true);
+    connect(myLeftHandFingeringCommand, &QAction::triggered, this,
+            &PowerTabEditor::editLeftHandFingering);
 
     myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
     myTieCommand->setCheckable(true);
@@ -2795,7 +2797,7 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myAddDotCommand);
     myNotesMenu->addAction(myRemoveDotCommand);
     myNotesMenu->addSeparator();
-    myNotesMenu->addAction(myFingerHintCommand);
+    myNotesMenu->addAction(myLeftHandFingeringCommand);
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(myTieCommand);
     myNotesMenu->addAction(myMutedCommand);
@@ -3160,8 +3162,8 @@ void PowerTabEditor::updateCommands()
                                    (pos->hasProperty(Position::Dotted) ||
                                     pos->hasProperty(Position::DoubleDotted)));
 
-    myFingerHintCommand->setEnabled(note != nullptr);
-    myFingerHintCommand->setChecked(note && note->hasFingerHint());
+    myLeftHandFingeringCommand->setEnabled(note != nullptr);
+    myLeftHandFingeringCommand->setChecked(note && note->hasLeftHandFingering());
 
     if (note)
     {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FingerHintDialog</class>
+ <class>LeftHandFingeringDialog</class>
  <widget class="QDialog" name="FingerHintDialog">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Finger hint</string>
+   <string>Left Hand Fingering</string>
   </property>
   <property name="modal">
    <bool>true</bool>

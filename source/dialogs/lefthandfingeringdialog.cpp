@@ -14,13 +14,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "fingerhintdialog.h"
-#include "ui_fingerhintdialog.h"
+#include "lefthandfingeringdialog.h"
+#include "ui_lefthandfingeringdialog.h"
 
 #include <score/note.h>
 
-FingerHintDialog::FingerHintDialog(QWidget *parent)
-    : QDialog(parent), ui(new Ui::FingerHintDialog)
+LeftHandFingeringDialog::LeftHandFingeringDialog(QWidget *parent)
+    : QDialog(parent), ui(new Ui::LeftHandFingeringDialog)
 {
     ui->setupUi(this);
 
@@ -30,18 +30,18 @@ FingerHintDialog::FingerHintDialog(QWidget *parent)
     });
 
     ui->positionComboBox->addItems({
-        tr("Above and left"), tr("Above, centered"), tr("Above and right"),
-        tr("Right"), tr("Below and right"), tr("Below, centered"),
-        tr("Below and left"), tr("Left")
+        tr("Left"), tr("Above and left"), tr("Above, centered"), 
+        tr("Above and right"), tr("Right"), tr("Below and right"),
+        tr("Below, centered"), tr("Below and left")
     });
 }
 
-FingerHintDialog::~FingerHintDialog() { delete ui; }
+LeftHandFingeringDialog::~LeftHandFingeringDialog() { delete ui; }
 
-FingerHint FingerHintDialog::getFingerHint() const
+LeftHandFingering LeftHandFingeringDialog::getLeftHandFingering() const
 {
-    return FingerHint(
-        static_cast<FingerHint::Finger>(ui->fingerComboBox->currentIndex()),
-        static_cast<FingerHint::DisplayPosition>(ui->positionComboBox->currentIndex())
+    return LeftHandFingering(
+        static_cast<LeftHandFingering::Finger>(ui->fingerComboBox->currentIndex()),
+        static_cast<LeftHandFingering::DisplayPosition>(ui->positionComboBox->currentIndex())
     );
 }

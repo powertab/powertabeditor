@@ -13,31 +13,24 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DIALOGS_FINGERHINTDIALOG_H
-#define DIALOGS_FINGERHINTDIALOG_H
+#include <catch.hpp>
 
-#include <QDialog>
+#include <actions/removespecialnoteproperty.h>
 #include <score/note.h>
+#include "actionfixture.h"
 
-class QComboBox;
-
-namespace Ui
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveLeftHandFingering", "")
 {
-class FingerHintDialog;
+    LeftHandFingering fingering(LeftHandFingering::Finger::Middle,
+        LeftHandFingering::DisplayPosition::Below);
+    myLocation.getNote()->setLeftHandFingering(fingering);
+    
+    RemoveLeftHandFingering action(myLocation);
+    
+    action.redo();
+    REQUIRE(!myLocation.getNote()->hasLeftHandFingering());
+    
+    action.undo();
+    REQUIRE(myLocation.getNote()->hasLeftHandFingering());
+    REQUIRE(myLocation.getNote()->getLeftHandFingering() == fingering);
 }
-
-class FingerHintDialog : public QDialog
-{
-    Q_OBJECT
-
-public:
-    FingerHintDialog(QWidget *parent);
-    ~FingerHintDialog();
-
-    FingerHint getFingerHint() const;
-
-private:
-    Ui::FingerHintDialog *ui;
-};
-
-#endif

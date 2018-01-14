@@ -214,24 +214,24 @@ void Note::clearBend()
     myBend.reset();
 }
 
-bool Note::hasFingerHint() const
+bool Note::hasLeftHandFingering() const
 {
-    return myFingerHint.is_initialized();
+    return myLeftHandFingering.is_initialized();
 }
 
-const FingerHint &Note::getFingerHint() const
+const LeftHandFingering &Note::getLeftHandFingering() const
 {
-    return myFingerHint.get();
+    return myLeftHandFingering.get();
 }
 
-void Note::setFingerHint(const FingerHint &hint)
+void Note::setLeftHandFingering(const LeftHandFingering &fingering)
 {
-    myFingerHint = hint;
+    myLeftHandFingering = fingering;
 }
 
-void Note::clearFingerHint()
+void Note::clearLeftHandFingering()
 {
-    myFingerHint.reset();
+    myLeftHandFingering.reset();
 }
 
 std::ostream &operator<<(std::ostream &os, const Note &note)
@@ -431,35 +431,35 @@ std::string Bend::getPitchText(int pitch)
     return text.str();
 }
 
-FingerHint::FingerHint()
+LeftHandFingering::LeftHandFingering()
     : myFinger(None),
       myDisplayPosition(AboveLeft)
 {
 }
 
-FingerHint::FingerHint(Finger finger, DisplayPosition pos)
+LeftHandFingering::LeftHandFingering(Finger finger, DisplayPosition pos)
     : myFinger(finger),
       myDisplayPosition(pos)
 {
 }
 
-bool FingerHint::operator==(const FingerHint &other) const
+bool LeftHandFingering::operator==(const LeftHandFingering &other) const
 {
     return myFinger == other.getFingerNumber() &&
            myDisplayPosition == other.getDisplayPosition();
 }
 
-void FingerHint::setFinger(Finger finger)
+void LeftHandFingering::setFinger(Finger finger)
 {
     myFinger = finger;
 }
 
-unsigned int FingerHint::getFingerNumber() const
+unsigned int LeftHandFingering::getFingerNumber() const
 {
     return myFinger;
 }
 
-FingerHint::DisplayPosition FingerHint::getDisplayPosition() const
+LeftHandFingering::DisplayPosition LeftHandFingering::getDisplayPosition() const
 {
     return myDisplayPosition;
 }

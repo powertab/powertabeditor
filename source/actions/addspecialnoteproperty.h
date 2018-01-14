@@ -101,13 +101,14 @@ public:
     }
 };
 
-class AddFingerHint : public AddSpecialNoteProperty<FingerHint>
+class AddLeftHandFingering : public AddSpecialNoteProperty<LeftHandFingering>
 {
 public:
-    AddFingerHint(const ScoreLocation &location, const FingerHint &hint)
-        : AddSpecialNoteProperty<FingerHint>(location, QObject::tr("Add Finger Hint"), hint,
-                                             std::mem_fn(&Note::setFingerHint),
-                                             std::mem_fn(&Note::clearFingerHint))
+    AddLeftHandFingering(const ScoreLocation &location, const LeftHandFingering &fingering)
+        : AddSpecialNoteProperty<LeftHandFingering>(location,
+            QObject::tr("Add Left Hand Fingering"), fingering,
+            std::mem_fn(&Note::setLeftHandFingering),
+            std::mem_fn(&Note::clearLeftHandFingering))
     {
     }
 };

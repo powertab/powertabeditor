@@ -10,9 +10,9 @@ set( srcs
     actions/test_addchordtext.cpp
     actions/test_adddirection.cpp
     actions/test_adddynamic.cpp
-    actions/test_addfingerhint.cpp
     actions/test_addinstrument.cpp
     actions/test_addirregulargrouping.cpp
+    actions/test_addlefthandfingering.cpp
     actions/test_addmultibarrest.cpp
     actions/test_addnote.cpp
     actions/test_addnoteproperty.cpp
@@ -46,9 +46,9 @@ set( srcs
     actions/test_removechordtext.cpp
     actions/test_removedirection.cpp
     actions/test_removedynamic.cpp
-    actions/test_removefingerhint.cpp
     actions/test_removeinstrument.cpp
     actions/test_removeirregulargrouping.cpp
+    actions/test_removelefthandfingering.cpp
     actions/test_removenote.cpp
     actions/test_removenoteproperty.cpp
     actions/test_removeplayer.cpp
