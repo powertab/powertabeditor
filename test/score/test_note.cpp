@@ -92,19 +92,20 @@ TEST_CASE("Score/Note/Bend", "")
     REQUIRE(!note.hasBend());
 }
 
-TEST_CASE("Score/Note/FingerHint", "")
+TEST_CASE("Score/Note/LeftHandFingering", "")
 {
     Note note;
     
-    REQUIRE(!note.hasFingerHint());
+    REQUIRE(!note.hasLeftHandFingering());
     
-    note.setFingerHint(FingerHint(FingerHint::Finger::Ring,
-            FingerHint::DisplayPosition::BelowRight));
-    REQUIRE(note.hasFingerHint());
-    REQUIRE(note.getFingerHint().getFingerNumber() == FingerHint::Finger::Ring);
+    note.setLeftHandFingering(LeftHandFingering(LeftHandFingering::Finger::Ring,
+        LeftHandFingering::DisplayPosition::BelowRight));
+    REQUIRE(note.hasLeftHandFingering());
+    REQUIRE(note.getLeftHandFingering().getFingerNumber() == 
+        LeftHandFingering::Finger::Ring);
     
-    note.clearFingerHint();
-    REQUIRE(!note.hasFingerHint());
+    note.clearLeftHandFingering();
+    REQUIRE(!note.hasLeftHandFingering());
 }
 
 TEST_CASE("Score/Note/Bend/GetPitchText", "")

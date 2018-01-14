@@ -117,7 +117,7 @@ private:
     DrawPoint myEndPoint;
 };
 
-class FingerHint
+class LeftHandFingering
 {
 public:
     enum Finger
@@ -132,20 +132,20 @@ public:
     /// Position relative to note head at which to display number.
     enum DisplayPosition
     {
+        Left,
         AboveLeft,
         Above,
         AboveRight,
         Right,
         BelowRight,
         Below,
-        BelowLeft,
-        Left
+        BelowLeft
     };
     
-    FingerHint();
-    FingerHint(Finger finger, DisplayPosition pos = AboveLeft);
+    LeftHandFingering();
+    LeftHandFingering(Finger finger, DisplayPosition pos = AboveLeft);
     
-    bool operator==(const FingerHint &other) const;
+    bool operator==(const LeftHandFingering &other) const;
     
     /// Sets the finger this hint is showing.
     void setFinger(Finger finger);
@@ -250,14 +250,14 @@ public:
     /// Removes the bend for this note.
     void clearBend();
 
-    /// Returns whether the note has a finger hint.
-    bool hasFingerHint() const;
-    /// Returns the finger hint for this note.
-    const FingerHint &getFingerHint() const;
-    /// Adds a finger hint to this note.
-    void setFingerHint(const FingerHint &hint);
-    /// Removes the finger hint for this note.
-    void clearFingerHint();
+    /// Returns whether the note has left hand fingering.
+    bool hasLeftHandFingering() const;
+    /// Returns the left hand fingering for this note.
+    const LeftHandFingering &getLeftHandFingering() const;
+    /// Adds left hand fingering to this note.
+    void setLeftHandFingering(const LeftHandFingering &fingering);
+    /// Removes the left hand fingering for this note.
+    void clearLeftHandFingering();
 
     static const int MIN_FRET_NUMBER;
     static const int MAX_FRET_NUMBER;
@@ -270,7 +270,7 @@ private:
     int myTappedHarmonicFret;
     boost::optional<ArtificialHarmonic> myArtificialHarmonic;
     boost::optional<Bend> myBend;
-    boost::optional<FingerHint> myFingerHint;
+    boost::optional<LeftHandFingering> myLeftHandFingering;
 };
 
 template <class Archive>
@@ -284,7 +284,7 @@ void Note::serialize(Archive &ar, const FileVersion version)
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);
     if (version >= FileVersion::LEFT_HAND_FINGERING)
-        ar("finger_hint", myFingerHint);
+        ar("finger_hint", myLeftHandFingering);
 }
 
 /// Useful utility functions for working with natural and tapped harmonics.

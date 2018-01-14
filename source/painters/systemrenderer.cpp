@@ -1429,7 +1429,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             }
         }
         
-        if (note.getNote()->hasFingerHint())
+        if (note.getNote()->hasLeftHandFingering())
         {
             if (!group)
             {
@@ -1437,45 +1437,45 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             }
             
             
-            const auto fingerHint = note.getNote()->getFingerHint();
-            const auto number = fingerHint.getFingerNumber();
+            const auto fingering = note.getNote()->getLeftHandFingering();
+            const auto number = fingering.getFingerNumber();
             auto numberText = new SimpleTextItem(QString::number(number), myPlainTextFont);
             
             double numberX;
             double numberY;
-            switch (fingerHint.getDisplayPosition())
+            switch (fingering.getDisplayPosition())
             {
-            case FingerHint::AboveLeft:
+            case LeftHandFingering::DisplayPosition::Left:
+                numberX = -note_head_width - 1;
+                numberY = 25;
+                break;
+            case LeftHandFingering::DisplayPosition::AboveLeft:
                 numberX = -note_head_width + 1;
                 numberY = 18;
                 break;
-            case FingerHint::Above:
+            case LeftHandFingering::DisplayPosition::Above:
                 numberX = 0;
                 numberY = 17;
                 break;
-            case FingerHint::AboveRight:
+            case LeftHandFingering::DisplayPosition::AboveRight:
                 numberX = note_head_width + 1;
                 numberY = 18;
                 break;
-            case FingerHint::Right:
+            case LeftHandFingering::DisplayPosition::Right:
                 numberX = note_head_width + 3;
                 numberY = 25;
                 break;
-            case FingerHint::BelowRight:
+            case LeftHandFingering::DisplayPosition::BelowRight:
                 numberX = note_head_width + 1;
                 numberY = 32;
                 break;
-            case FingerHint::Below:
+            case LeftHandFingering::DisplayPosition::Below:
                 numberX = 0;
                 numberY = 33;
                 break;
-            case FingerHint::BelowLeft:
+            case LeftHandFingering::DisplayPosition::BelowLeft:
                 numberX = -note_head_width + 1;
                 numberY = 32;
-                break;
-            case FingerHint::Left:
-                numberX = -note_head_width - 1;
-                numberY = 25;
                 break;
             }
             

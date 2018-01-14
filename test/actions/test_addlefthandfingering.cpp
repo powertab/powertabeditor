@@ -15,22 +15,23 @@
 
 #include <catch.hpp>
 
-#include <actions/removespecialnoteproperty.h>
+#include <actions/addspecialnoteproperty.h>
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveFingerHint", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddLeftHandFingering", "")
 {
-    FingerHint hint(FingerHint::Finger::Middle,
-        FingerHint::DisplayPosition::Below);
-    myLocation.getNote()->setFingerHint(hint);
+    Note note;
+    myLocation.getPosition()->insertNote(note);
     
-    RemoveFingerHint action(myLocation);
+    LeftHandFingering fingering(LeftHandFingering::Finger::Index,
+        LeftHandFingering::DisplayPosition::Right);
+    AddLeftHandFingering action(myLocation, fingering);
     
     action.redo();
-    REQUIRE(!myLocation.getNote()->hasFingerHint());
+    REQUIRE(myLocation.getNote()->hasLeftHandFingering());
+    REQUIRE(myLocation.getNote()->getLeftHandFingering() == fingering);
     
     action.undo();
-    REQUIRE(myLocation.getNote()->hasFingerHint());
-    REQUIRE(myLocation.getNote()->getFingerHint() == hint);
+    REQUIRE(!myLocation.getNote()->hasLeftHandFingering());
 }
