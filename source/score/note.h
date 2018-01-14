@@ -274,7 +274,7 @@ private:
 };
 
 template <class Archive>
-void Note::serialize(Archive &ar, const FileVersion /*version*/)
+void Note::serialize(Archive &ar, const FileVersion version)
 {
     ar("string", myString);
     ar("fret", myFretNumber);
@@ -283,9 +283,8 @@ void Note::serialize(Archive &ar, const FileVersion /*version*/)
     ar("tapped_harmonic", myTappedHarmonicFret);
     ar("artificial_harmonic", myArtificialHarmonic);
     ar("bend", myBend);
-    if (hasFingerHint()) {
+    if (version >= FileVersion::LEFT_HAND_FINGERING)
         ar("finger_hint", myFingerHint);
-    }
 }
 
 /// Useful utility functions for working with natural and tapped harmonics.
