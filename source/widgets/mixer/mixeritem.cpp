@@ -23,6 +23,8 @@
 #include <dialogs/tuningdialog.h>
 #include <score/player.h>
 
+#include <QStyle>
+
 MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
                      const TuningDictionary &dictionary,
                      const PlayerEditPubSub &editPubSub,

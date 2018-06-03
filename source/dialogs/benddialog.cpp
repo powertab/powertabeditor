@@ -20,6 +20,8 @@
 
 #include <score/note.h>
 
+#include <QButtonGroup>
+
 BendDialog::BendDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::BendDialog)
 {

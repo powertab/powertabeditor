@@ -15,6 +15,7 @@ matrix:
   fast_finish: true
 
 install:
+  - dir %BOOST_ROOT%
   - git submodule init
   - git submodule update
 

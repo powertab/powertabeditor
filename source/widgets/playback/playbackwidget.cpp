@@ -1,29 +1,32 @@
 /*
-  * Copyright (C) 2012 Cameron White
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2012 Cameron White
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "playbackwidget.h"
 #include "ui_playbackwidget.h"
 
 #include <app/documentmanager.h>
-#include <score/staff.h>
 #include <score/score.h>
+#include <score/staff.h>
 #include <widgets/common.h>
 
 #include <boost/algorithm/clamp.hpp>
+
+#include <QAction>
+#include <QButtonGroup>
 
 static QString getShortcutHint(const QAction &action)
 {
@@ -101,7 +104,8 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     connect(&stop_command, &QAction::changed, [&]() {
         ui->stopButton->setToolTip(
             tr("Click to stop playback and return to the initial "
-               "location%1.").arg(getShortcutHint(stop_command)));
+               "location%1.")
+                .arg(getShortcutHint(stop_command)));
     });
 
     ui->metronomeToggleButton->setIcon(
@@ -113,7 +117,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
     });
 
     ui->zoomComboBox->setValidator(new PercentageValidator(this));
-    
+
     connect(myVoices, SIGNAL(buttonClicked(int)), this,
             SIGNAL(activeVoiceChanged(int)));
     connect(ui->speedSpinner, SIGNAL(valueChanged(int)), this,
@@ -127,11 +131,12 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
 
     connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
             [=](const QString &text) {
-        QLocale locale;
-        double percentage = locale.toDouble(extractPercent(text, locale));
-        percentage = validateZoom(percentage);
-        zoomChanged(percentage);
-    });
+                QLocale locale;
+                double percentage =
+                    locale.toDouble(extractPercent(text, locale));
+                percentage = validateZoom(percentage);
+                zoomChanged(percentage);
+            });
 }
 
 PlaybackWidget::~PlaybackWidget()
@@ -139,20 +144,19 @@ PlaybackWidget::~PlaybackWidget()
     delete ui;
 }
 
-double PlaybackWidget::validateZoom(double percent) 
+double PlaybackWidget::validateZoom(double percent)
 {
-    if(percent < MIN_ZOOM || percent > MAX_ZOOM) 
+    if (percent < MIN_ZOOM || percent > MAX_ZOOM)
     {
         ui->zoomComboBox->setStyleSheet("QComboBox { color : red; }");
-    } 
-    else 
+    }
+    else
     {
         ui->zoomComboBox->setStyleSheet("QComboBox { color : black; }");
     }
 
     return boost::algorithm::clamp(percent, MIN_ZOOM, MAX_ZOOM);
 }
-
 
 void PlaybackWidget::reset(const Document &doc)
 {
@@ -171,7 +175,8 @@ void PlaybackWidget::reset(const Document &doc)
         ui->filterComboBox->setCurrentIndex(*doc.getViewOptions().getFilter());
 
     // Update the selected voice.
-    myVoices->button(doc.getCaret().getLocation().getVoiceIndex())->setChecked(true);
+    myVoices->button(doc.getCaret().getLocation().getVoiceIndex())
+        ->setChecked(true);
 
     // Update zoom.
     QLocale locale;
