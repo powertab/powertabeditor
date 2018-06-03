@@ -6,7 +6,6 @@ environment:
   BOOST_ROOT: C:/Libraries/boost_1_64_0
   GENERATOR: "Visual Studio 14 Win64"
   QT_DIR: C:/Qt/5.11.0/msvc2017_64
-  BOOST_LIBRARYDIR: C:/Libraries/boost_1_64_0/lib64-msvc-14.1
 
 configuration:
   - Release
@@ -15,10 +14,9 @@ matrix:
   fast_finish: true
 
 install:
-  - dir C:\Libraries\boost_1_64_0\lib64-msvc-14.1
   - git submodule init
   - git submodule update
 
 build_script:
-  - cmake -G "%GENERATOR%" -DBOOST_ROOT="%BOOST_ROOT%" -DBOOST_LIBRARYDIR="%BOOST_LIBRARYDIR%" -DCMAKE_PREFIX_PATH="%QT_DIR%" -H. -Bbuild
+  - cmake -G "%GENERATOR%" -DBOOST_ROOT="%BOOST_ROOT%" -DCMAKE_PREFIX_PATH="%QT_DIR%" -H. -Bbuild
   - cmake --build build --config "%CONFIGURATION%"
