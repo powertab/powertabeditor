@@ -15,7 +15,7 @@ matrix:
   fast_finish: true
 
 install:
-  - dir C:\Libraries\boost_1_67_0
+  - dir C:\Libraries\boost_1_67_0\lib64-msvc-14.1
   - git submodule init
   - git submodule update
 
