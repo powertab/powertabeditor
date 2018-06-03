@@ -3,10 +3,10 @@ version: 1.0.{build}
 image: Visual Studio 2017
 
 environment:
-  BOOST_ROOT: C:/Libraries/boost_1_67_0
+  BOOST_ROOT: C:/Libraries/boost_1_64_0
   GENERATOR: "Visual Studio 14 Win64"
   QT_DIR: C:/Qt/5.11.0/msvc2017_64
-  BOOST_LIBRARYDIR: C:/Libraries/boost_1_67_0/lib64-msvc-14.1
+  BOOST_LIBRARYDIR: C:/Libraries/boost_1_64_0/lib64-msvc-14.1
 
 configuration:
   - Release
@@ -15,7 +15,7 @@ matrix:
   fast_finish: true
 
 install:
-  - dir C:\Libraries\boost_1_67_0\lib64-msvc-14.1
+  - dir C:\Libraries\boost_1_64_0\lib64-msvc-14.1
   - git submodule init
   - git submodule update
 
