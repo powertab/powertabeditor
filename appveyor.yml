@@ -6,7 +6,7 @@ environment:
   BOOST_ROOT: C:/Libraries/boost_1_67_0
   GENERATOR: "Visual Studio 14 Win64"
   QT_DIR: C:/Qt/5.11.0/msvc2017_64
-  BOOST_LIBRARYDIR: C:/Libraries/boost_1_67_0/lib64-msvc-14.0
+  BOOST_LIBRARYDIR: C:/Libraries/boost_1_67_0/lib64-msvc-14.1
 
 configuration:
   - Release
