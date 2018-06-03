@@ -18,6 +18,8 @@
 #include "dynamicdialog.h"
 #include "ui_dynamicdialog.h"
 
+#include <QButtonGroup>
+
 DynamicDialog::DynamicDialog(QWidget *parent)
     : QDialog(parent),
       ui(new Ui::DynamicDialog),
