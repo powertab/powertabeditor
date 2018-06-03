@@ -169,7 +169,7 @@ FileInformationDialog::FileInformationDialog(
     ui->fileLocationValue->setText(filePath);
     ui->fileSizeValue->setText(
         tr("%1 bytes").arg(locale.toString(fileInfo.size())));
-    ui->fileCreatedValue->setText(locale.toString(fileInfo.birthTime()));
+    ui->fileCreatedValue->setText(locale.toString(fileInfo.created()));
     ui->fileModifiedValue->setText(locale.toString(fileInfo.lastModified()));
     ui->fileAccessedValue->setText(locale.toString(fileInfo.lastRead()));
 }
