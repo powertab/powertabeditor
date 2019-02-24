@@ -25,6 +25,9 @@ BarlineDialog::BarlineDialog(QWidget *parent, Barline::BarType type,
 {
     ui->setupUi(this);
 
+    connect(ui->barlineTypeComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onBarlineTypeChanged(int)));
+
     ui->barlineTypeComboBox->addItem(tr("Single"), Barline::SingleBar);
     ui->barlineTypeComboBox->addItem(tr("Double"), Barline::DoubleBar);
     ui->barlineTypeComboBox->addItem(tr("Free Time"), Barline::FreeTimeBar);
@@ -40,12 +43,8 @@ BarlineDialog::BarlineDialog(QWidget *parent, Barline::BarType type,
                                          Barline::DoubleBarFine);
     }
 
-    connect(ui->barlineTypeComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onBarlineTypeChanged(int)));
-
     ui->barlineTypeComboBox->setCurrentIndex(
                 ui->barlineTypeComboBox->findData(type));
-    onBarlineTypeChanged(type);
 
     // Set limits for repeat count.
     ui->repeatCountSpinBox->setMinimum(Barline::MIN_REPEAT_COUNT);
