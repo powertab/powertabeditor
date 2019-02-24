@@ -7,6 +7,11 @@ set( CMAKE_OSX_DEPLOYMENT_TARGET "10.9"
 
 project( powertabeditor )
 
+# Allow using BOOST_ROOT.
+if ( POLICY CMP0074 )
+	cmake_policy( SET CMP0074 NEW )
+endif ()
+
 enable_testing()
 
 set( CMAKE_MODULE_PATH
