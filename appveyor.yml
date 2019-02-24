@@ -5,7 +5,7 @@ image: Visual Studio 2017
 environment:
   BOOST_ROOT: "C:/Libraries/boost_1_69_0"
   BOOST_LIBRARYDIR: "C:/Libraries/boost_1_69_0/lib64-msvc-14.1"
-  GENERATOR: "Visual Studio 14 Win64"
+  GENERATOR: "Visual Studio 15 2017 Win64"
   QT_DIR: "C:/Qt/5.12.1/msvc2017_64/lib/cmake"
 
 configuration:
