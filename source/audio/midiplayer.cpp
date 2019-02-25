@@ -1,20 +1,20 @@
 /*
-  * Copyright (C) 2011 Cameron White
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-  
+ * Copyright (C) 2011 Cameron White
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "midiplayer.h"
 
 #include <app/settingsmanager.h>
@@ -22,6 +22,7 @@
 #include <audio/settings.h>
 #include <boost/rational.hpp>
 #include <cassert>
+#include <chrono>
 #include <midi/midifile.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
@@ -32,6 +33,8 @@
 #endif
 
 static const int METRONOME_CHANNEL = 9;
+
+using DurationType = std::chrono::duration<int, std::micro>;
 
 MidiPlayer::MidiPlayer(SettingsManager &settings_manager,
                        const ScoreLocation &start_location, int speed)
@@ -51,8 +54,8 @@ MidiPlayer::~MidiPlayer()
 
 void MidiPlayer::run()
 {
-    // Workaround to fix errors with the Microsoft GS Wavetable Synth on
-    // Windows 10 - see http://stackoverflow.com/a/32553208/586978
+	// Workaround to fix errors with the Microsoft GS Wavetable Synth on
+	// Windows 10 - see http://stackoverflow.com/a/32553208/586978
 #ifdef _WIN32
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     BOOST_SCOPE_EXIT(this_) {
@@ -105,7 +108,8 @@ void MidiPlayer::run()
         events.concat(track);
     }
 
-    // TODO - since each track is already sorted, an n-way merge should be faster.
+    // TODO - since each track is already sorted, an n-way merge should be
+    // faster.
     std::stable_sort(events.begin(), events.end());
     events.convertToDeltaTicks();
 
@@ -122,6 +126,8 @@ void MidiPlayer::run()
     const SystemLocation start_location(myStartLocation.getSystemIndex(),
                                         myStartLocation.getPositionIndex());
     SystemLocation current_location = start_location;
+
+    DurationType clock_drift(0);
 
     for (auto event = events.begin(); event != events.end(); ++event)
     {
@@ -150,22 +156,34 @@ void MidiPlayer::run()
             }
         }
 
+        auto start_timestamp = std::chrono::high_resolution_clock::now();
+
         const int delta = event->getTicks();
         assert(delta >= 0);
 
-        const int duration_us = boost::rational_cast<int>(
-            boost::rational<int>(delta, ticks_per_beat) * beat_duration);
+		// Compute the time in microseconds that we should sleep for, and then
+        // adjust for accumulated timing errors (since sleep_for() is not
+        // perfectly precise).
+        auto sleep_duration = DurationType(
+            static_cast<int>(
+            boost::rational_cast<int>(
+                boost::rational<int>(delta, ticks_per_beat) * beat_duration) *
+            (100.0 / myPlaybackSpeed)));
 
-        usleep(duration_us * (100.0 / myPlaybackSpeed));
+        auto error_correction = std::min(sleep_duration, clock_drift);
+        clock_drift -= error_correction;
+        sleep_duration -= error_correction;
+
+        if (sleep_duration.count() != 0)
+            std::this_thread::sleep_for(sleep_duration);
 
         // Don't play metronome events if the metronome is disabled.
-        if (event->isNoteOnOff() && event->getChannel() == METRONOME_CHANNEL &&
-            !myMetronomeEnabled)
+        if (!(event->isNoteOnOff() &&
+              event->getChannel() == METRONOME_CHANNEL &&
+            !myMetronomeEnabled))
         {
-            continue;
+            device.sendMessage(event->getData());
         }
-
-        device.sendMessage(event->getData());
 
         // Notify listeners of the current playback position.
         if (event->getLocation() != current_location)
@@ -174,7 +192,7 @@ void MidiPlayer::run()
 
             // Don't move backwards unless a repeat occurred.
             if (new_location < current_location && !event->isPositionChange())
-                    continue;
+                continue;
 
             if (new_location.getSystem() != current_location.getSystem())
                 emit playbackSystemChanged(new_location.getSystem());
@@ -183,6 +201,13 @@ void MidiPlayer::run()
 
             current_location = new_location;
         }
+
+        // Accumulate any difference between the desired delta time and what
+        // actually happened.
+        auto end_timestamp = std::chrono::high_resolution_clock::now();
+        auto actual_duration = std::chrono::duration_cast<DurationType>(
+            end_timestamp - start_timestamp);
+        clock_drift += actual_duration - sleep_duration;
     }
 }
 
@@ -212,10 +237,13 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
 
     const TimeSignature &time_sig = barline->getTimeSignature();
 
-    const int tick_duration = boost::rational_cast<int>(
-        boost::rational<int>(4, time_sig.getBeatValue()) *
-        boost::rational<int>(time_sig.getBeatsPerMeasure(),
-                             time_sig.getNumPulses()) * beat_duration);
+    const auto tick_duration = DurationType(
+        static_cast<int>(boost::rational_cast<int>(
+                             boost::rational<int>(4, time_sig.getBeatValue()) *
+                             boost::rational<int>(time_sig.getBeatsPerMeasure(),
+                                                  time_sig.getNumPulses()) *
+                             beat_duration) *
+                         100.0 / myPlaybackSpeed));
 
     // Play the count-in.
     device.setChannelMaxVolume(METRONOME_CHANNEL,
@@ -227,7 +255,7 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
             break;
 
         device.playNote(METRONOME_CHANNEL, preset, velocity);
-        usleep(tick_duration * (100.0 / myPlaybackSpeed));
+        std::this_thread::sleep_for(tick_duration);
         device.stopNote(METRONOME_CHANNEL, preset);
     }
 }
