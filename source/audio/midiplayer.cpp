@@ -26,6 +26,7 @@
 #include <midi/midifile.h>
 #include <score/generalmidi.h>
 #include <score/score.h>
+#include <thread>
 
 #ifdef _WIN32
 #include <boost/scope_exit.hpp>
