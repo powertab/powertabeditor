@@ -28,7 +28,7 @@ pte_library(
     SOURCES ${srcs}
     HEADERS ${headers}
     DEPENDS
-        boost
-        rapidjson
+        Boost::boost
+        rapidjson::rapidjson
         ${platform_depends}
 )

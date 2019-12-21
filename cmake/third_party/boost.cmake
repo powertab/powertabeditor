@@ -12,17 +12,17 @@ if ( PLATFORM_WIN )
 endif ()
 
 find_package(
-    Boost 1.54.0 REQUIRED
+    Boost 1.71.0 REQUIRED
     COMPONENTS ${_boost_libs}
 )
 
 # Set up imported targets.
-add_library( boost INTERFACE IMPORTED )
-set_target_properties(
-    boost PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
-    INTERFACE_COMPILE_DEFINITIONS "BOOST_ALL_DYN_LINK;BOOST_ALL_NO_LIB"
-)
+#add_library( boost INTERFACE IMPORTED )
+#set_target_properties(
+    #boost PROPERTIES
+    #INTERFACE_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
+    #INTERFACE_COMPILE_DEFINITIONS "BOOST_ALL_DYN_LINK;BOOST_ALL_NO_LIB"
+#)
 
 function ( pte_boost_library libname )
     string( TOUPPER ${libname} libname_upper )
@@ -59,15 +59,15 @@ function ( pte_boost_library libname )
     endif ()
 endfunction ()
 
-foreach ( lib ${_boost_libs} )
-    pte_boost_library( ${lib} )
-endforeach ()
+#foreach ( lib ${_boost_libs} )
+    #pte_boost_library( ${lib} )
+#endforeach ()
 
 # boost_filesystem depends on boost_system
-set_target_properties(
-    boost_filesystem
-    PROPERTIES 
-    INTERFACE_LINK_LIBRARIES boost_system
-)
+#set_target_properties(
+    #boost_filesystem
+    #PROPERTIES 
+    #INTERFACE_LINK_LIBRARIES boost_system
+#)
 
 unset( _boost_libs )

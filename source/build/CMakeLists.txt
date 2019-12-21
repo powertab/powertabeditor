@@ -19,12 +19,11 @@ pte_executable(
     SOURCES ${srcs} ${rc_file}
     RESOURCES ${resources}
     DEPENDS
-        boost_program_options
+        Boost::program_options
         pteapp
         ptedialogs
         Qt5::Network
         Qt5::Widgets
-        withershins
     PLUGINS
         ${QT5_PLUGINS}
 )

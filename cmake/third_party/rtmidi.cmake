@@ -24,39 +24,16 @@ elseif ( PLATFORM_LINUX )
     set( _midi_defs __LINUX_ALSA__ )
 endif ()
 
-find_package( rtmidi )
+find_package( rtmidi REQUIRED )
 
-if ( RTMIDI_FOUND )
-    add_library( rtmidi IMPORTED SHARED )
-
-    set_target_properties(
-        rtmidi PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES ${rtmidi_INCLUDE_DIRS}
-        INTERFACE_COMPILE_DEFINITIONS ${_midi_defs}
-        IMPORTED_LOCATION ${rtmidi_LIBRARIES}
-        INTERFACE_LINK_LIBRARIES "${_midi_libs}"
-    )
-else ()
-    set( _src_dir ${PTE_EXTERNAL_DIR}/rtmidi )
-    message( STATUS "Using RtMidi library from ${_src_dir}" )
-
-    add_library( rtmidi
-        ${_src_dir}/RtMidi.cpp
-        ${_src_dir}/RtMidi.h
-    )
-
-    target_link_libraries( rtmidi ${_midi_libs} )
-    target_compile_definitions( rtmidi PUBLIC ${_midi_defs} )
-    target_include_directories( rtmidi INTERFACE ${_src_dir} )
-
-    # Set folder name for Visual Studio projects.
-    set_target_properties(
-        rtmidi PROPERTIES
-        FOLDER ${PTE_EXTERNAL_FOLDER_NAME}
-    )
-
-    unset( _src_dir )
-endif ()
+add_library( rtmidi::rtmidi IMPORTED SHARED )
+target_link_libraries( rtmidi::rtmidi INTERFACE ${_midi_libs} )
+target_compile_definitions( rtmidi::rtmidi INTERFACE ${_midi_defs} )
+target_include_directories( rtmidi::rtmidi INTERFACE ${rtmidi_INCLUDE_DIRS} )
+set_target_properties(
+    rtmidi::rtmidi PROPERTIES
+    IMPORTED_LOCATION ${rtmidi_LIBRARIES}
+)
 
 unset( _midi_libs )
 unset( _midi_defs )
