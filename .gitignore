@@ -8,3 +8,4 @@ windows/redist
 *.suo
 *.app*
 .DS_Store
+compile_commands.json

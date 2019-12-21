@@ -15,7 +15,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <score/generalmidi.h>
 #include <score/player.h>
