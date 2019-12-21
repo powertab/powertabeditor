@@ -80,22 +80,15 @@ If you've already cloned the repository, you can run `git submodule init && git 
   * `make install` or `ninja install`
 
 #### OS X:
-* Tested with Mac OS X 10.9 and above.
 * Install Xcode along with its Command Line Tools.
-* Install CMake:
-  * If you prefer a GUI, download the [CMake installer](http://www.cmake.org).
-  * Otherwise, run `brew install cmake`
 * Install dependencies:
-  * `brew install boost qt5`
+  * `brew install boost cmake catch2 ninja pugixml qt5 pugixml rapidjson rtmidi`
 * Build:
   * `mkdir build && cd build`
-  * `cmake -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake ..`
-    * If necessary, define `BOOST_ROOT` to point to the root directory where Boost was installed (e.g. `/usr/local/opt/boost`).
-    * To generate an Xcode project, add `-G Xcode`.
-  * For a Makefile build, run `make -j4`.
-  * For Xcode, open and build `build/powertabeditor.xcodeproj`.
+  * `cmake -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake ..
+    * To generate an Xcode project, switch to `-G Xcode` and then open and build `build/powertabeditor.xcodeproj`
+  * `ninja`
 * Run:
   * `./bin/powertabeditor`
   * `./bin/pte_tests` or `make test` to run the unit tests.
   * For Xcode, select `Product/Scheme/powertabeditor` and then `Product/Run`.
-  
