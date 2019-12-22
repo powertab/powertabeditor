@@ -1,7 +1,6 @@
 # Power Tab Editor
 
-[![Build Status](https://travis-ci.org/powertab/powertabeditor.svg?branch=master)](https://travis-ci.org/powertab/powertabeditor)
-[![Build status](https://ci.appveyor.com/api/projects/status/9q4cnu1l6rjxg96h?svg=true)](https://ci.appveyor.com/project/cameronwhite/powertabeditor)
+[![Build Status](https://github.com/powertab/powertabeditor/workflows/Build/badge.svg)](https://github.com/powertab/powertabeditor/actions)
 
 ### Users
 * New user? Read the [intro page](https://github.com/powertab/powertabeditor/wiki/Power-Tab-Editor-2.0,-Here-at-last!) to learn more about the project!
