@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev rapidjson-dev libpugixml-dev libasound2-dev librtmidi-dev
+      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev libboost-program-options-dev libboost-regex-dev rapidjson-dev libpugixml-dev libasound2-dev librtmidi-dev
     - name: Install Other Dependencies
       run: vcpkg install catch2
     - name: Create Build Directory
@@ -18,6 +18,6 @@ jobs:
     - name: Generate Project
       working-directory: ${{runner.workspace}}/build
       # We could use the -S and -B options, but we only have CMake 3.12 here.
-      run: cmake $GITHUB_WORKSPACE -G Ninja
+      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_TOOLCHAIN_FILE="../vcpkg/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: ninja
