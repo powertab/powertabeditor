@@ -1,0 +1,15 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build-ubuntu:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Generate Project
+      run: cmake -B ${{runner.workspace}}/build -G Ninja
+    - name: Build
+      run: ninja
