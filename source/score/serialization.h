@@ -27,10 +27,11 @@
 #include "fileversion.h"
 #include <map>
 #include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/ostreamwrapper.h>
 #include <rapidjson/prettywriter.h>
 #include <stack>
 #include <stdexcept>
-#include <util/rapidjson_iostreams.h>
 #include <vector>
 
 namespace ScoreUtils
@@ -152,7 +153,7 @@ private:
         myIterators.pop();
     }
 
-    Util::RapidJSON::IStreamWrapper myStream;
+    rapidjson::IStreamWrapper myStream;
     rapidjson::Document myDocument;
     FileVersion myVersion;
 
@@ -225,8 +226,8 @@ private:
         myStream.EndObject();
     }
 
-    Util::RapidJSON::OStreamWrapper myWriteStream;
-    rapidjson::PrettyWriter<Util::RapidJSON::OStreamWrapper> myStream;
+    rapidjson::OStreamWrapper myWriteStream;
+    rapidjson::PrettyWriter<rapidjson::OStreamWrapper> myStream;
     const FileVersion myVersion;
 };
 

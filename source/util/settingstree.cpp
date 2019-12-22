@@ -22,8 +22,9 @@
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/ostreamwrapper.h>
 #include <rapidjson/prettywriter.h>
-#include <util/rapidjson_iostreams.h>
 
 using SettingValue = SettingsTree::SettingValue;
 using SettingList = SettingsTree::SettingList;
@@ -240,7 +241,7 @@ struct JSONSerializer : public boost::static_visitor<void>
     }
 
 private:
-    Util::RapidJSON::OStreamWrapper myStream;
+    rapidjson::OStreamWrapper myStream;
     rapidjson::PrettyWriter<decltype(myStream)> myWriter;
 };
 
@@ -268,7 +269,7 @@ void SettingsTree::remove(const std::string &key)
 
 void SettingsTree::loadFromJSON(std::istream &is)
 {
-    Util::RapidJSON::IStreamWrapper stream(is);
+    rapidjson::IStreamWrapper stream(is);
 
     rapidjson::Document document;
     document.ParseStream(stream);

@@ -6,14 +6,12 @@ if ( PLATFORM_OSX )
 endif ()
 
 set( srcs
-    rapidjson_iostreams.cpp
     settingstree.cpp
 
     ${platform_srcs}
 )
 
 set( headers
-    rapidjson_iostreams.h
     settingstree.h
 )
 
@@ -28,7 +26,6 @@ pte_library(
     SOURCES ${srcs}
     HEADERS ${headers}
     DEPENDS
-        Boost::boost
-        rapidjson::rapidjson
-        ${platform_depends}
+        PUBLIC Boost::boost
+        PRIVATE rapidjson::rapidjson ${platform_depends}
 )
