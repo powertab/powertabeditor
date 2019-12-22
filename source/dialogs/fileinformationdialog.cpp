@@ -169,7 +169,11 @@ FileInformationDialog::FileInformationDialog(
     ui->fileLocationValue->setText(filePath);
     ui->fileSizeValue->setText(
         tr("%1 bytes").arg(locale.toString(fileInfo.size())));
+#if (QT_VERSION >= QT_VERSION_CHECK(5,10,0))
     ui->fileCreatedValue->setText(locale.toString(fileInfo.birthTime()));
+#else
+    ui->fileCreatedValue->setText(locale.toString(fileInfo.created()));
+#endif
     ui->fileModifiedValue->setText(locale.toString(fileInfo.lastModified()));
     ui->fileAccessedValue->setText(locale.toString(fileInfo.lastRead()));
 }
