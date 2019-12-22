@@ -49,14 +49,14 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install Dependencies
       # Note that we use the preinstalled boost.
-      run: vcpkg install catch2 pugixml pugixml rapidjson rtmidi
+      run: vcpkg install catch2 pugixml rapidjson rtmidi
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Create Build Directory
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Generate Project
-      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -DBOOST_ROOT="${BOOST_ROOT}" -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -S ${env:GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -DBOOST_ROOT="${env:BOOST_ROOT}" -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
