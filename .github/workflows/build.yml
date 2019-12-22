@@ -20,6 +20,6 @@ jobs:
       # We could use the -S and -B options, but we only have CMake 3.12 here.
       run: cmake ${GITHUB_WORKSPACE} -G Ninja -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: ninja -C ${GITHUB_WORKSPACE}
+      run: ninja -C ${{runner.workspace}}
     - name: Test
-      run: ninja -C ${GITHUB_WORKSPACE} test
+      run: ninja -C ${{runner.workspace}} test
