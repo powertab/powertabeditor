@@ -18,6 +18,8 @@ jobs:
     - name: Generate Project
       working-directory: ${{runner.workspace}}/build
       # We could use the -S and -B options, but we only have CMake 3.12 here.
-      run: cmake $GITHUB_WORKSPACE -G Ninja -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake ${GITHUB_WORKSPACE} -G Ninja -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: ninja
+      run: ninja -C ${GITHUB_WORKSPACE}
+    - name: Test
+      run: ninja -C ${GITHUB_WORKSPACE} test
