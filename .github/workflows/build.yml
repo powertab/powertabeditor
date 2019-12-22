@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Generate Project
-      run: cmake -B ${{runner.workspace}}/build -G Ninja
+      run: cmake -S . -B ${{runner.workspace}}/build -G Ninja
     - name: Build
       run: ninja
