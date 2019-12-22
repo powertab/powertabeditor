@@ -20,7 +20,6 @@
 #include <app/pubsub/clickpubsub.h>
 #include <app/scorearea.h>
 #include <app/viewoptions.h>
-#include <boost/algorithm/clamp.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm/find_if.hpp>
@@ -43,6 +42,8 @@
 #include <score/system.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
+
+#include <algorithm>
 
 void SystemRenderer::centerHorizontally(QGraphicsItem &item, double xmin,
                                         double xmax)
@@ -501,7 +502,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         endX += 0.5 * layout.getPositionSpacing();
 
         // Ensure that the line doesn't extend past the edge of the system.
-        endX = boost::algorithm::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
+        endX = std::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
 
         auto horizLine = new QGraphicsLineItem();
         horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
@@ -1661,7 +1662,7 @@ void SystemRenderer::drawMultiBarRest(const System &system,
                 layout.getPositionX(leftBar.getPosition()) :
                 layout.getPositionX(leftBar.getPosition() + 1);
 
-    const double rightX = boost::algorithm::clamp(
+    const double rightX = std::clamp(
                 layout.getPositionX(rightBar->getPosition()), 0.0,
                 LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
 
@@ -1846,7 +1847,7 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
     else
     {
         path.moveTo(left, yStart);
-        right = boost::algorithm::clamp(right, left, left + 3.0);
+        right = std::clamp(right, left, left + 3.0);
         path.lineTo(right, yStart);
         path.lineTo(right, yEnd);
     }

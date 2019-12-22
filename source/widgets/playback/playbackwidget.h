@@ -63,7 +63,7 @@ private:
     Ui::PlaybackWidget *ui;
     QButtonGroup *myVoices;
 
-    const float MAX_ZOOM = 200, MIN_ZOOM = 25;
+    const double MAX_ZOOM = 200, MIN_ZOOM = 25;
 };
 
 #endif

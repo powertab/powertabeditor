@@ -118,7 +118,7 @@ static void computeTimestampPosition(
         it = timestampPositions.lower_bound(timestamp);
 
         if (it != timestampPositions.begin())
-            position = std::max(boost::prior(it)->second + 1, minPosition);
+            position = std::max(std::prev(it)->second + 1, minPosition);
         else
             position = 0;
 

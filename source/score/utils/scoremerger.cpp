@@ -634,7 +634,7 @@ static void combineScores(Score &dest_score, Score &guitar_score,
             (guitar_bar != end_guitar_bar) ? guitar_bar : bass_bar;
 
         const ExpandedBar *prev_bar = (guitar_bar != guitar_bars.begin())
-                                          ? &*boost::prior(current_bar)
+                                          ? &*std::prev(current_bar)
                                           : nullptr;
 
         // Add a barline if necessary.

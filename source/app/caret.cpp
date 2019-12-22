@@ -18,9 +18,10 @@
 #include "caret.h"
 
 #include <app/viewoptions.h>
-#include <boost/algorithm/clamp.hpp>
 #include <score/score.h>
 #include <score/system.h>
+
+#include <algorithm>
 
 Caret::Caret(Score &score, const ViewOptions &options)
     : myLocation(score), myViewOptions(options), myInPlaybackMode(false)
@@ -97,7 +98,7 @@ void Caret::moveToStaff(int staff)
 {
     const int num_staves =
         static_cast<int>(myLocation.getSystem().getStaves().size());
-    staff = boost::algorithm::clamp(staff, 0, num_staves - 1);
+    staff = std::clamp(staff, 0, num_staves - 1);
 
     const bool is_increasing = staff >= myLocation.getStaffIndex();
     const int increment = is_increasing ? 1 : -1;
@@ -181,8 +182,7 @@ int Caret::getLastSystemIndex() const
 
 void Caret::moveToPosition(int position)
 {
-    myLocation.setPositionIndex(boost::algorithm::clamp(position, 0,
-                                                        getLastPosition()));
+    myLocation.setPositionIndex(std::clamp(position, 0, getLastPosition()));
     myLocation.setSelectionStart(myLocation.getPositionIndex());
 
     onLocationChanged();
@@ -191,8 +191,7 @@ void Caret::moveToPosition(int position)
 bool Caret::moveToSystem(int system, bool keepStaff)
 {
     const int prevSystem = myLocation.getSystemIndex();
-    myLocation.setSystemIndex(boost::algorithm::clamp(system, 0,
-                                                      getLastSystemIndex()));
+    myLocation.setSystemIndex(std::clamp(system, 0, getLastSystemIndex()));
 
     if (myLocation.getSystemIndex() != prevSystem)
     {
@@ -200,9 +199,10 @@ bool Caret::moveToSystem(int system, bool keepStaff)
             myLocation.setStaffIndex(0);
         else
         {
-            myLocation.setStaffIndex(boost::algorithm::clamp(
-                myLocation.getStaffIndex(), 0,
-                static_cast<int>(myLocation.getSystem().getStaves().size() - 1)));
+            myLocation.setStaffIndex(
+                std::clamp(myLocation.getStaffIndex(), 0,
+                           static_cast<int>(
+                               myLocation.getSystem().getStaves().size() - 1)));
         }
 
         myLocation.setPositionIndex(0);

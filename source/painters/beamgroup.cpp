@@ -118,9 +118,9 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
     {
         std::vector<NoteStem>::const_iterator prevStem;
         if (stem != begin)
-			prevStem = boost::prior(stem);
+			prevStem = std::prev(stem);
 
-        auto nextStem = boost::next(stem);
+        auto nextStem = std::next(stem);
         const Position::DurationType duration = stem->getDurationType();
         const Position::DurationType prevDuration = (stem != begin) ?
                     prevStem->getDurationType() : Position::SixtyFourthNote;

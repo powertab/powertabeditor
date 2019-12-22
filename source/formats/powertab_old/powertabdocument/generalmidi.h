@@ -12,7 +12,7 @@
 #ifndef GENERALMIDI_H
 #define GENERALMIDI_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 
 namespace midi
 {

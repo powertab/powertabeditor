@@ -13,6 +13,23 @@
 #### Dependencies:
 * [CMake](http://www.cmake.org/) >= 3.12
 * [Boost](http://www.boost.org/) >= 1.65
+  * algorithm
+  * date_time
+  * endian
+  * filesystem
+  * functional
+  * iostreams
+  * lexical_cast
+  * operators
+  * optional
+  * program_options
+  * range
+  * rational
+  * regex
+  * scope_exit
+  * signals2
+  * stacktrace
+  * variant
 * [Qt](http://qt-project.org/) >= 5.9 version or greater
 * [RapidJSON](https://rapidjson.org/)
 * [RtMidi](https://www.music.mcgill.ca/~gary/rtmidi/)
@@ -20,7 +37,7 @@
 * [Catch2](https://github.com/catchorg/Catch2)
 * (Linux only) - ALSA library (e.g. `libasound2-dev`)
 * (Linux only) - MIDI sequencer (e.g. `timidity`)
-* A compiler with C++11 support.
+* A compiler with C++17 support.
 
 #### Windows:
 * Install Git - see https://help.github.com/articles/set-up-git

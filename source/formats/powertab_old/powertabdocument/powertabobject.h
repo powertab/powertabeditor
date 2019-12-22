@@ -12,7 +12,7 @@
 #ifndef POWERTABOBJECT_H
 #define POWERTABOBJECT_H
 
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include <string>
 
 namespace PowerTabDocument {
