@@ -44,8 +44,16 @@
 static void displayError(const std::string &reason)
 {
     std::string message = reason;
+#if BOOST_VERSION >= 106900
     message += boost::stacktrace::to_string(
         boost::stacktrace::stacktrace());
+#else
+    for (auto &&frame : boost::stacktrace::stacktrace())
+    {
+        message += boost::stacktrace::to_string(frame);
+        message += "\n";
+    }
+#endif
 
     // If there is no QApplication instance, something went seriously wrong
     // during startup - just dump the error to the console.

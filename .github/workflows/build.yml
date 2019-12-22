@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: ninja -C ${{runner.workspace}}/build
     - name: Test
-      run: ninja -C ${{runner.workspace}}/build test
+      run: ${{runner.workspace}}/build/bin/pte_tests
