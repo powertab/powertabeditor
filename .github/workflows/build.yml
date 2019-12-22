@@ -6,7 +6,7 @@ jobs:
   build-ubuntu:
 
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v1
     - name: Install Apt Dependencies
@@ -21,5 +21,22 @@ jobs:
       run: cmake ${GITHUB_WORKSPACE} -G Ninja -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: ninja -C ${{runner.workspace}}/build
+    - name: Test
+      run: ${{runner.workspace}}/build/bin/pte_tests
+
+  build-osx:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Dependencies
+      run: brew install boost cmake catch2 ninja pugixml qt5 pugixml rapidjson rtmidi
+    - name: Create Build Directory
+      run: cmake -E make_directory ${{runner.workspace}}/build
+    - name: Generate Project
+      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
+    - name: Build
+      run: cmake --build ${{runner.workspace}}/build
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests
