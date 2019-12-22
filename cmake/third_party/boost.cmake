@@ -7,10 +7,6 @@ set( _boost_libs
     system
 )
 
-if ( PLATFORM_WIN )
-    list (APPEND _boost_libs zlib )
-endif ()
-
 find_package(
     Boost 1.71.0 REQUIRED
     COMPONENTS ${_boost_libs}

@@ -30,10 +30,19 @@ add_library( rtmidi::rtmidi IMPORTED SHARED )
 target_link_libraries( rtmidi::rtmidi INTERFACE ${_midi_libs} )
 target_compile_definitions( rtmidi::rtmidi INTERFACE ${_midi_defs} )
 target_include_directories( rtmidi::rtmidi INTERFACE ${rtmidi_INCLUDE_DIRS} )
-set_target_properties(
-    rtmidi::rtmidi PROPERTIES
-    IMPORTED_LOCATION ${rtmidi_LIBRARIES}
-)
+
+if ( PLATFORM_WIN )
+    set_target_properties(
+        rtmidi::rtmidi PROPERTIES
+        IMPORTED_IMPLIB ${rtmidi_LIBRARIES}
+        IMPORTED_LOCATION ${rtmidi_LIBRARIES}
+    )
+else ()
+    set_target_properties(
+        rtmidi::rtmidi PROPERTIES
+        IMPORTED_LOCATION ${rtmidi_LIBRARIES}
+    )
+endif ()
 
 unset( _midi_libs )
 unset( _midi_defs )

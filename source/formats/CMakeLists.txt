@@ -107,12 +107,6 @@ set( headers
     powertab_old/powertabdocument/tuning.h
 )
 
-if ( PLATFORM_WIN )
-    set( platform_depends Boost::zlib Ws2_32 )
-else ()
-    set( platform_depends )
-endif ()
-
 pte_library(
     NAME pteformats
     SOURCES ${srcs}
@@ -120,7 +114,6 @@ pte_library(
     DEPENDS
         Boost::date_time
         Boost::iostreams
-        ${platform_depends}
         ptemidi
         ptescore
         pteutil

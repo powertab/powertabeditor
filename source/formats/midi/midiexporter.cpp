@@ -23,35 +23,14 @@
 #include <score/generalmidi.h>
 
 #include <array>
+#include <boost/endian/conversion.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <cstdint>
-
-// For htonl.
-#ifdef _WIN32
-#include <WinSock2.h>
-#else
-#include <arpa/inet.h>
-#endif
-
-static uint32_t toBigEndian(uint32_t val)
-{
-    return htonl(val);
-}
-
-static uint16_t toBigEndian(uint16_t val)
-{
-    return htons(val);
-}
-
-static uint8_t toBigEndian(uint8_t val)
-{
-    return val;
-}
 
 template <typename T>
 static void write(std::ostream &os, T val)
 {
-    val = toBigEndian(val);
+    val = boost::endian::native_to_big(val);
     os.write(reinterpret_cast<const char *>(&val), sizeof(T));
 }
 
