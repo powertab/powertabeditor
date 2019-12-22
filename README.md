@@ -41,7 +41,7 @@
 
 #### Windows:
 * Install Git - see https://help.github.com/articles/set-up-git
-* Install [vcpkg](https://github.com/microsoft/vcpkg) and run `vcpkg install boost catch2 qt5-base pugixml rapidjson rtmidi` to install dependencies.
+* Install [vcpkg](https://github.com/microsoft/vcpkg) and run `vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-lexical-cast boost-optional boost-program-options boost-range boost-rational boost-regex boost-scope-exit boost-signals2 boost-stacktrace boost-variant catch2 pugixml rapidjson rtmidi` to install dependencies.
 * Open the project folder in Visual Studio and build.
   * If running CMake manually, set `CMAKE_TOOLCHAIN_FILE` to `[vcpkg root]\scripts\buildsystems\vcpkg.cmake`).
 

@@ -51,7 +51,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Generate Project
-      run: cmake -S ${env:GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A x64 -S ${env:GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
