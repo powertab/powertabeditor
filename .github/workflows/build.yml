@@ -9,7 +9,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: Create Build Directory
+      run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Generate Project
-      run: cmake -S . -B ${{runner.workspace}}/build -G Ninja
+      working-directory: ${{runner.workspace}}/build
+      # We could use the -S and -B options, but we only have CMake 3.12 here.
+      run: cmake $GITHUB_WORKSPACE -G Ninja
     - name: Build
       run: ninja
