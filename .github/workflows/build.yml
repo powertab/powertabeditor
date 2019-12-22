@@ -9,8 +9,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: Install Dependencies
+    - name: Install Apt Dependencies
       run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev rapidjson-dev libpugixml-dev libasound2-dev librtmidi-dev
+    - name: Install Other Dependencies
       run: vcpkg install catch2
     - name: Create Build Directory
       run: cmake -E make_directory ${{runner.workspace}}/build
