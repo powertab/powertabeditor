@@ -3030,7 +3030,11 @@ void PowerTabEditor::setupNewTab()
     // Each tab is 200px wide, so we want to shorten the name if it's wider
     // than 140px.
     bool chopped = false;
+#if (QT_VERSION >= QT_VERSION_CHECK(5,11,0))
     while (fm.horizontalAdvance(title) > 140)
+#else
+    while (fm.width(title) > 140)
+#endif
     {
         title.chop(1);
         chopped = true;
