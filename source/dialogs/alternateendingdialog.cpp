@@ -92,9 +92,11 @@ void AlternateEndingDialog::accept()
 {
     // Check that at least one repeat number was selected.
     if (std::find_if(myCheckBoxes.begin(), myCheckBoxes.end(),
-                     std::mem_fun(&QCheckBox::isChecked)) == myCheckBoxes.end()
-        && !myDaCapoCheckbox->isChecked() && !myDalSegnoCheckbox->isChecked()
-        && !myDalSegnoSegnoCheckbox->isChecked())
+                     [](const QCheckBox *checkbox) {
+                         return checkbox->isChecked();
+                     }) == myCheckBoxes.end() &&
+        !myDaCapoCheckbox->isChecked() && !myDalSegnoCheckbox->isChecked() &&
+        !myDalSegnoSegnoCheckbox->isChecked())
     {
         QMessageBox msgBox(this);
         msgBox.setIcon(QMessageBox::Warning);

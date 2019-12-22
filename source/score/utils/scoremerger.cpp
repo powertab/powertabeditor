@@ -290,11 +290,12 @@ static int importNotes(
     int length = 0;
 
     // Merge the notes for each staff.
-    for (unsigned int i = 0; i < src_system.getStaves().size(); ++i)
+    for (int i = 0; i < static_cast<int>(src_system.getStaves().size()); ++i)
     {
         // Ensure that there are enough staves in the destination system.
         if ((!is_bass && num_guitar_staves <= i) ||
-            dest_system.getStaves().size() <= i + staff_offset)
+            static_cast<int>(dest_system.getStaves().size()) <=
+                i + staff_offset)
         {
             const Staff &src_staff = src_system.getStaves()[i];
             Staff dest_staff(src_staff.getStringCount());
@@ -566,7 +567,8 @@ static bool areStavesIncompatible(const ScoreLocation &dest_loc,
 
     for (int i = staff_begin; i < staff_end; ++i)
     {
-        if ((i - staff_begin) < src_system.getStaves().size() &&
+        if ((i - staff_begin) <
+                static_cast<int>(src_system.getStaves().size()) &&
             dest_system.getStaves()[i].getStringCount() !=
                 src_system.getStaves()[i - staff_begin].getStringCount())
         {

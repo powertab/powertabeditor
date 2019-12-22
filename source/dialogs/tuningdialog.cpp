@@ -195,7 +195,8 @@ Tuning TuningDialog::getTuning() const
     std::vector<uint8_t> tuningNotes(ui->numStringsSpinBox->value());
     std::transform(myStringSelectors.begin(),
                    myStringSelectors.begin() + ui->numStringsSpinBox->value(),
-                   tuningNotes.begin(), std::mem_fun(&QComboBox::currentIndex));
+                   tuningNotes.begin(),
+                   [](const QComboBox *c) { return c->currentIndex(); });
 
     newTuning.setNotes(tuningNotes);
 

@@ -779,7 +779,7 @@ void PowerTabEditor::removeSelectedPositions()
     std::vector<int> positions;
     std::transform(selectedPositions.begin(), selectedPositions.end(),
                    std::back_inserter(positions),
-                   std::mem_fun(&Position::getPosition));
+                   [](const Position *p) { return p->getPosition(); });
 
     // Remove each of the selected positions.
     for (int position : positions)
@@ -791,7 +791,7 @@ void PowerTabEditor::removeSelectedPositions()
 
     std::vector<int> barPositions;
     std::transform(bars.begin(), bars.end(), std::back_inserter(barPositions),
-                   std::mem_fun(&Barline::getPosition));
+                   [](const Barline *b) { return b->getPosition(); });
 
     // Remove each of the selected barlines.
     for (int position : barPositions)
@@ -3030,7 +3030,7 @@ void PowerTabEditor::setupNewTab()
     // Each tab is 200px wide, so we want to shorten the name if it's wider
     // than 140px.
     bool chopped = false;
-    while (fm.width(title) > 140)
+    while (fm.horizontalAdvance(title) > 140)
     {
         title.chop(1);
         chopped = true;

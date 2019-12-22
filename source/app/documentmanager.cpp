@@ -171,7 +171,8 @@ void Document::validateViewOptions()
     if (myScore.getViewFilters().empty())
         myViewOptions.clearFilter();
     else if (myViewOptions.getFilter() &&
-             *myViewOptions.getFilter() >= myScore.getViewFilters().size())
+             *myViewOptions.getFilter() >=
+                 static_cast<int>(myScore.getViewFilters().size()))
     {
         myViewOptions.setFilter(0);
     }

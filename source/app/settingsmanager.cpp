@@ -21,7 +21,9 @@
 #include <boost/filesystem/operations.hpp>
 #include <iostream>
 
+#ifndef __APPLE__
 static const char *theSettingsFilename = "settings.json";
+#endif
 
 void SettingsManager::load(const boost::filesystem::path &dir)
 {

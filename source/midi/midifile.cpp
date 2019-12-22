@@ -159,7 +159,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     int current_tick = 0;
     int current_tempo = Midi::BEAT_DURATION_120_BPM;
 
-    while (location.getSystem() < score.getSystems().size())
+    while (location.getSystem() < static_cast<int>(score.getSystems().size()))
     {
         const System &system = score.getSystems()[location.getSystem()];
         const Barline *current_bar = ScoreUtils::findByPosition(

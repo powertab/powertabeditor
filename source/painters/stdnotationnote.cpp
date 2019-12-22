@@ -306,8 +306,9 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
 
     // Create a list of the durations for each stem.
     std::vector<double> durations(stems.size() - firstStemIndex);
-    std::transform(stems.begin() + firstStemIndex, stems.end(), durations.begin(),
-                   std::mem_fun_ref(&NoteStem::getDurationTime));
+    std::transform(stems.begin() + firstStemIndex, stems.end(),
+                   durations.begin(),
+                   [](const NoteStem &stem) { return stem.getDurationTime(); });
     // Convert the duration list to a list of timestamps relative to the
     // beginning of the bar.
     std::partial_sum(durations.begin(), durations.end(), durations.begin());
