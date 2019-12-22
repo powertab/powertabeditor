@@ -13,6 +13,12 @@ if ( PLATFORM_WIN )
     set( rc_file build.rc )
 endif ()
 
+set( platform_deps )
+if ( PLATFORM_LINUX )
+    # For boost::stacktrace
+    set( platform_deps dl )
+endif ()
+
 pte_executable(
     NAME powertabeditor
     INSTALL
@@ -24,6 +30,7 @@ pte_executable(
         ptedialogs
         Qt5::Network
         Qt5::Widgets
+        ${platform_deps}
     PLUGINS
         ${QT5_PLUGINS}
 )
