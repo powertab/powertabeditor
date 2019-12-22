@@ -9,6 +9,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: Install Dependencies
+      run: sudo apt install ninja-build qtbase5-dev libboost-dev rapidjson-dev libpugixml-dev librtmidi-dev
     - name: Create Build Directory
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Generate Project
