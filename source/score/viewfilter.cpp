@@ -103,6 +103,9 @@ bool FilterRule::accept(const Score &score, const ActivePlayer &p) const
         case GREATER_THAN_EQUAL:
             return value >= myIntValue;
         }
+
+        assert(false);
+        return false;
     }
     default:
         assert(!"Unexpected subject for filter.");
