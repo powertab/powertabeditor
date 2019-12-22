@@ -8,7 +8,7 @@ set( _boost_libs
 )
 
 find_package(
-    Boost 1.71.0 REQUIRED
+    Boost 1.65 REQUIRED
     COMPONENTS ${_boost_libs}
 )
 
