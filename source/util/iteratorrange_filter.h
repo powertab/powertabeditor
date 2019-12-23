@@ -37,7 +37,7 @@ namespace detail
             : myIter(it), myEnd(end), myPredicate(predicate)
         {
             // Ensure that we don't start on an invalid element.
-            if (!myPredicate(*myIter))
+            if (myIter != myEnd && !myPredicate(*myIter))
                 ++(*this);
         }
 
@@ -46,7 +46,7 @@ namespace detail
             do
             {
                 ++myIter;
-            } while (!myPredicate(*myIter) && myIter != myEnd);
+            } while (myIter != myEnd && !myPredicate(*myIter));
             return *this;
         }
 
