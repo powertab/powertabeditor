@@ -18,6 +18,7 @@
 #include "stdnotationnote.h"
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <cmath>
 #include <numeric>
 #include <painters/layoutinfo.h>
 #include <painters/musicfont.h>
