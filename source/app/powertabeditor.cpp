@@ -88,7 +88,6 @@
 #include <audio/midiplayer.h>
 #include <audio/settings.h>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/range/algorithm/transform.hpp>
 #include <chrono>
 
@@ -142,6 +141,8 @@
 
 #include <score/utils.h>
 #include <score/voiceutils.h>
+
+#include <util/tostring.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
@@ -3404,7 +3405,7 @@ void PowerTabEditor::updateZoom(double percent)
 void PowerTabEditor::updateLocationLabel()
 {
     myPlaybackWidget->updateLocationLabel(
-        boost::lexical_cast<std::string>(getCaret().getLocation()));
+        Util::toString(getCaret().getLocation()));
 }
 
 void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)

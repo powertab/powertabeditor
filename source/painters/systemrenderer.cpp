@@ -20,7 +20,6 @@
 #include <app/pubsub/clickpubsub.h>
 #include <app/scorearea.h>
 #include <app/viewoptions.h>
-#include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <painters/antialiasedpathitem.h>
@@ -42,6 +41,7 @@
 #include <score/system.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
+#include <util/tostring.h>
 
 #include <algorithm>
 
@@ -331,8 +331,8 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
 
             for (const Note &note : pos.getNotes())
             {
-                const QString text = QString::fromStdString(
-                            boost::lexical_cast<std::string>(note));
+                const QString text =
+                    QString::fromStdString(Util::toString(note));
 
                 auto tabNote = new SimpleTextItem(
                     text, myPlainTextFont,
@@ -473,8 +473,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
 
         // Draw the text indicating the repeat numbers.
         auto text = new SimpleTextItem(
-            QString::fromStdString(boost::lexical_cast<std::string>(ending)),
-            myPlainTextFont);
+            QString::fromStdString(Util::toString(ending)), myPlainTextFont);
         text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
         text->setParentItem(myParentSystem);
 
@@ -671,8 +670,7 @@ void SystemRenderer::drawChordText(const System &system,
     for (const ChordText &chord : system.getChords())
     {
         const double x = layout.getPositionX(chord.getPosition());
-        const std::string text =
-            boost::lexical_cast<std::string>(chord.getChordName());
+        const std::string text = Util::toString(chord.getChordName());
 
         auto textItem =
             new SimpleTextItem(QString::fromStdString(text), myPlainTextFont);
@@ -1046,9 +1044,8 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
     name.setBassKey(harmonic.getKey());
     name.setBassVariation(harmonic.getVariation());
 
-    return createPlainTextSymbol(
-                QString::fromStdString(boost::lexical_cast<std::string>(name)),
-                QFont::StyleNormal);
+    return createPlainTextSymbol(QString::fromStdString(Util::toString(name)),
+                                 QFont::StyleNormal);
 }
 
 void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
@@ -1612,8 +1609,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
         const double rightX = last->getX();
 
         // Draw the value of the irregular grouping.
-        const QString text = QString::fromStdString(
-                    boost::lexical_cast<std::string>(group));
+        const QString text = QString::fromStdString(Util::toString(group));
 
         QFont font = myMusicNotationFont;
         font.setItalic(true);

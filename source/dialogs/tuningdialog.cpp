@@ -19,9 +19,9 @@
 #include "ui_tuningdialog.h"
 
 #include <app/tuningdictionary.h>
-#include <boost/lexical_cast.hpp>
 #include <score/generalmidi.h>
 #include <score/tuning.h>
+#include <util/tostring.h>
 
 Q_DECLARE_METATYPE(const Tuning *)
 
@@ -153,10 +153,11 @@ void TuningDialog::updateTuningDictionary(int numStrings)
 
     for (const Tuning *tuning : tunings)
     {
-        ui->presetComboBox->addItem(QString("%1 - %2").arg(
-            QString::fromStdString(tuning->getName()),
-            QString::fromStdString(boost::lexical_cast<std::string>(*tuning))),
-                                    QVariant::fromValue(tuning));
+        ui->presetComboBox->addItem(
+            QString("%1 - %2").arg(
+                QString::fromStdString(tuning->getName()),
+                QString::fromStdString(Util::toString(*tuning))),
+            QVariant::fromValue(tuning));
     }
 }
 

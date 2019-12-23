@@ -20,7 +20,6 @@
 
 #include <array>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/lexical_cast.hpp>
 #include <bitset>
 #include "fileversion.h"
 #include <map>
@@ -287,7 +286,9 @@ void InputArchive::read(std::map<K, V, C> &map)
 
     for (long long i = 0; i < size; ++i)
     {
-        const K key = boost::lexical_cast<K>(name());
+        static_assert(std::is_same<K, int>::value,
+                      "Only integer keys are currently supported");
+        const K key = std::stoi(name());
 
         V value;
         read(value);

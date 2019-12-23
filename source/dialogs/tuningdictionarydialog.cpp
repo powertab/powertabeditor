@@ -19,8 +19,8 @@
 #include "ui_tuningdictionarydialog.h"
 
 #include <app/tuningdictionary.h>
-#include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
+#include <util/tostring.h>
 
 Q_DECLARE_METATYPE(Tuning *)
 
@@ -73,8 +73,7 @@ void TuningDictionaryDialog::onNumStringsChanged(int index)
     {
         auto item = new QTreeWidgetItem(
             QStringList({ QString::fromStdString(tuning->getName()),
-                          QString::fromStdString(
-                              boost::lexical_cast<std::string>(*tuning)) }));
+                          QString::fromStdString(Util::toString(*tuning)) }));
 
         item->setData(0, Qt::UserRole, QVariant::fromValue(tuning));
         ui->tuningsList->addTopLevelItem(item);

@@ -17,22 +17,22 @@
   
 #include <catch2/catch.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include <score/keysignature.h>
+#include <util/tostring.h>
 #include "test_serialization.h"
 
 TEST_CASE("Score/KeySignature/ToString", "")
 {
     KeySignature key(KeySignature::Major, 4, false);
-    REQUIRE(boost::lexical_cast<std::string>(key) == "Ab Major - Bb Eb Ab Db");
+    REQUIRE(Util::toString(key) == "Ab Major - Bb Eb Ab Db");
 
     key.setNumAccidentals(0);
-    REQUIRE(boost::lexical_cast<std::string>(key) == "C Major");
+    REQUIRE(Util::toString(key) == "C Major");
 
     key.setKeyType(KeySignature::Minor);
     key.setNumAccidentals(2);
     key.setSharps(true);
-    REQUIRE(boost::lexical_cast<std::string>(key) == "B Minor - F# C#");
+    REQUIRE(Util::toString(key) == "B Minor - F# C#");
 }
 
 TEST_CASE("Score/KeySignature/Cancellation", "")

@@ -13,6 +13,7 @@ set( srcs
 
 set( headers
     settingstree.h
+    tostring.h
 )
 
 set( platform_depends )

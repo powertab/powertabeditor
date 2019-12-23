@@ -22,9 +22,9 @@
 #include <app/settingsmanager.h>
 #include <audio/midioutputdevice.h>
 #include <audio/settings.h>
-#include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
 #include <score/generalmidi.h>
+#include <util/tostring.h>
 
 typedef std::pair<int, int> MidiApiAndPort;
 Q_DECLARE_METATYPE(MidiApiAndPort)
@@ -129,8 +129,8 @@ void PreferencesDialog::loadCurrentSettings()
 
     ui->defaultTuningClickButton->setToolTip(tr("Click to adjust tuning."));
     myDefaultTuning = settings->get(Settings::DefaultTuning);
-    ui->defaultTuningClickButton->setText(QString::fromStdString(
-            boost::lexical_cast<std::string>(myDefaultTuning)));
+    ui->defaultTuningClickButton->setText(
+        QString::fromStdString(Util::toString(myDefaultTuning)));
     connect(ui->defaultTuningClickButton, SIGNAL(clicked()), this, SLOT(editTuning()));
 }
 
@@ -191,7 +191,7 @@ void PreferencesDialog::editTuning()
     if (dialog.exec() == QDialog::Accepted)
     {
         myDefaultTuning = dialog.getTuning();
-        ui->defaultTuningClickButton->setText(QString::fromStdString(
-                boost::lexical_cast<std::string>(myDefaultTuning)));
+        ui->defaultTuningClickButton->setText(
+            QString::fromStdString(Util::toString(myDefaultTuning)));
     }
 }

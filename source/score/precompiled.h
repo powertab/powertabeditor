@@ -18,7 +18,6 @@
 #include <vector>
 
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/operators.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/reversed.hpp>
