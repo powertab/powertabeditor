@@ -85,7 +85,7 @@ bool FilterRule::accept(const Score &score, const ActivePlayer &p) const
     switch (mySubject)
     {
     case PLAYER_NAME:
-        return boost::regex_match(player.getDescription(), myRegex);
+        return std::regex_match(player.getDescription(), myRegex);
     case NUM_STRINGS:
     {
         const int value = player.getTuning().getStringCount();

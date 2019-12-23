@@ -84,6 +84,5 @@ pte_library(
     DEPENDS
         Boost::boost
         Boost::date_time
-        Boost::regex
         rapidjson::rapidjson
 )

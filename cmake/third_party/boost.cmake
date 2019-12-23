@@ -3,7 +3,6 @@ set( _boost_libs
     filesystem
     iostreams
     program_options
-    regex
     system
 )
 

@@ -7,6 +7,7 @@
 #include <iosfwd>
 #include <iostream>
 #include <map>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <stack>
@@ -23,5 +24,3 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <boost/rational.hpp>
-#include <boost/regex.hpp>
-#include <boost/variant.hpp>

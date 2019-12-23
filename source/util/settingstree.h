@@ -19,13 +19,11 @@
 #define APP_SETTINGSTREE_H
 
 #include <boost/optional/optional.hpp>
-#include <boost/variant/get.hpp>
-#include <boost/variant/recursive_variant.hpp>
-#include <boost/variant/variant.hpp>
 
 #include <iosfwd>
 #include <unordered_map>
 #include <string>
+#include <variant>
 #include <vector>
 
 template <typename T>
@@ -44,15 +42,14 @@ public:
 class SettingsTree
 {
 public:
-    using SettingValue = boost::make_recursive_variant<
-        int,
-        std::string,
-        bool,
-        std::vector<boost::recursive_variant_>,
-        std::unordered_map<std::string, boost::recursive_variant_>>::type;
+    struct SettingList;
+    struct SettingMap;
 
-    using SettingList = std::vector<SettingValue>;
-    using SettingMap = std::unordered_map<std::string, SettingValue>;
+    using SettingValue =
+        std::variant<int, std::string, bool, SettingList, SettingMap>;
+
+    struct SettingList { std::vector<SettingValue> values; };
+    struct SettingMap { std::unordered_map<std::string, SettingValue> values; };
 
     SettingsTree();
 
@@ -135,7 +132,7 @@ struct SettingValueConverter
 
     static T from(const SettingsTree::SettingValue &v)
     {
-        return boost::get<T>(v);
+        return std::get<T>(v);
     }
 };
 
@@ -149,11 +146,11 @@ T SettingsTree::get(const std::string &key, const T &default_val) const
 template <typename T>
 std::vector<T> SettingsTree::getList(const std::string &key) const
 {
-    auto values = get<std::vector<SettingValue>>(key);
+    auto list = get<SettingList>(key);
 
     std::vector<T> ts;
-    ts.reserve(values.size());
-    for (auto &&val : values)
+    ts.reserve(list.values.size());
+    for (auto &&val : list.values)
         ts.push_back(SettingValueConverter<T>::from(val));
 
     return ts;
@@ -169,7 +166,7 @@ template <typename T>
 void SettingsTree::setList(const std::string &key, const std::vector<T> &values)
 {
     std::vector<SettingValue> tmp(values.begin(), values.end());
-    setImpl(key, SettingValue(tmp));
+    setImpl(key, SettingList{ tmp });
 }
 
 #endif

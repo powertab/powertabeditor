@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Apt Dependencies
-      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev libboost-program-options-dev libboost-regex-dev rapidjson-dev libasound2-dev librtmidi-dev
+      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev libboost-program-options-dev rapidjson-dev libasound2-dev librtmidi-dev
     - name: Install Other Dependencies
       run: vcpkg install catch2 pugixml
     - name: Create Build Directory
@@ -46,7 +46,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-lexical-cast boost-optional boost-program-options boost-range boost-rational boost-regex boost-scope-exit boost-signals2 boost-stacktrace boost-variant catch2 pugixml rapidjson rtmidi
+      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-lexical-cast boost-optional boost-program-options boost-range boost-rational boost-scope-exit boost-signals2 boost-stacktrace catch2 pugixml rapidjson rtmidi
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v2

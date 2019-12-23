@@ -38,6 +38,8 @@
 #include <score/utils/scoremerger.h>
 #include <score/utils/scorepolisher.h>
 
+#include <cmath>
+
 PowerTabOldImporter::PowerTabOldImporter()
     : FileFormatImporter(FileFormat("Power Tab 1.7 Document", { "ptb" }))
 {

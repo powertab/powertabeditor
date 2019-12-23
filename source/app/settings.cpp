@@ -50,7 +50,7 @@ Tuning SettingValueConverter<Tuning>::from(const SettingsTree::SettingValue &v)
     size_t num_notes = 0;
     std::vector<uint8_t> notes;
 
-    std::stringstream input(boost::get<std::string>(v));
+    std::stringstream input(std::get<std::string>(v));
     input >> name >> offset >> sharps >> num_notes;
 
     for (size_t i = 0; i < num_notes; ++i)
@@ -86,7 +86,7 @@ QByteArray SettingValueConverter<QByteArray>::from(
     const SettingsTree::SettingValue &v)
 {
     return QByteArray::fromBase64(
-        QByteArray::fromStdString(boost::get<std::string>(v)));
+        QByteArray::fromStdString(std::get<std::string>(v)));
 }
 
 SettingsTree::SettingValue SettingValueConverter<QByteArray>::to(
@@ -99,7 +99,7 @@ QKeySequence SettingValueConverter<QKeySequence>::from(
     const SettingsTree::SettingValue &v)
 {
     return QKeySequence::fromString(
-        QString::fromStdString(boost::get<std::string>(v)));
+        QString::fromStdString(std::get<std::string>(v)));
 }
 
 SettingsTree::SettingValue SettingValueConverter<QKeySequence>::to(

@@ -22,7 +22,6 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/optional.hpp>
-#include <boost/variant.hpp>
 #include <bitset>
 #include "fileversion.h"
 #include <map>
@@ -32,6 +31,7 @@
 #include <rapidjson/prettywriter.h>
 #include <stack>
 #include <stdexcept>
+#include <variant>
 #include <vector>
 
 namespace ScoreUtils
@@ -60,7 +60,7 @@ public:
 private:
     typedef rapidjson::GenericValue<rapidjson::UTF8<> > JSONValue;
 
-    struct ValueVisitor : public boost::static_visitor<const JSONValue &>
+    struct ValueVisitor
     {
         const JSONValue &operator()(
             const JSONValue::ConstMemberIterator &it) const
@@ -75,7 +75,7 @@ private:
         }
     };
 
-    struct NameVisitor : public boost::static_visitor<std::string>
+    struct NameVisitor
     {
         std::string operator()(const JSONValue::ConstMemberIterator &it) const
         {
@@ -88,31 +88,19 @@ private:
         }
     };
 
-    struct AdvanceVisitor : public boost::static_visitor<void>
-    {
-        template <typename Iterator>
-        void operator()(Iterator &it) const
-        {
-            ++it;
-        }
-    };
-
     void advance()
     {
-        AdvanceVisitor visitor;
-        myIterators.top().apply_visitor(visitor);
+        std::visit([](auto &&it) { ++it; }, myIterators.top());
     }
 
     std::string name() const
     {
-        NameVisitor visitor;
-        return myIterators.top().apply_visitor(visitor);
+        return std::visit(NameVisitor(), myIterators.top());
     }
 
     const JSONValue &value() const
     {
-        ValueVisitor visitor;
-        return myIterators.top().apply_visitor(visitor);
+        return std::visit(ValueVisitor(), myIterators.top());
     }
 
     inline void read(int &val);
@@ -158,8 +146,8 @@ private:
     FileVersion myVersion;
 
 	// Iterate over both objects and arrays in a uniform manner.
-    typedef boost::variant<JSONValue::ConstMemberIterator,
-                           JSONValue::ConstValueIterator> Iterator;
+    using Iterator = std::variant<JSONValue::ConstMemberIterator,
+                                  JSONValue::ConstValueIterator>;
     std::stack<Iterator> myIterators;
 };
 

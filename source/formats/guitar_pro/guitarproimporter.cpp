@@ -26,6 +26,8 @@
 #include <score/utils.h>
 #include <score/utils/scorepolisher.h>
 
+#include <cmath>
+
 static const int POSITIONS_PER_SYSTEM = 35;
 
 GuitarProImporter::GuitarProImporter()
