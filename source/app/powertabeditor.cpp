@@ -88,7 +88,6 @@
 #include <audio/midiplayer.h>
 #include <audio/settings.h>
 
-#include <boost/range/algorithm/transform.hpp>
 #include <chrono>
 
 #include <dialogs/alterationofpacedialog.h>
@@ -778,9 +777,8 @@ void PowerTabEditor::removeSelectedPositions()
     // RemovePosition actions. So, we build a list of their position indices
     // beforehand and use that instead.
     std::vector<int> positions;
-    std::transform(selectedPositions.begin(), selectedPositions.end(),
-                   std::back_inserter(positions),
-                   [](const Position *p) { return p->getPosition(); });
+    for (const Position *position : selectedPositions)
+        positions.push_back(position->getPosition());
 
     // Remove each of the selected positions.
     for (int position : positions)
@@ -791,8 +789,8 @@ void PowerTabEditor::removeSelectedPositions()
     }
 
     std::vector<int> barPositions;
-    std::transform(bars.begin(), bars.end(), std::back_inserter(barPositions),
-                   [](const Barline *b) { return b->getPosition(); });
+    for (const Barline *bar : bars)
+        barPositions.push_back(bar->getPosition());
 
     // Remove each of the selected barlines.
     for (int position : barPositions)
@@ -1531,10 +1529,8 @@ void PowerTabEditor::addPlayer()
     // Create a unique name for the player.
     {
         std::vector<std::string> names;
-        boost::range::transform(score.getPlayers(), std::back_inserter(names),
-                                [](const Player &player) {
-            return player.getDescription();
-        });
+        for (const Player &player : score.getPlayers())
+            names.emplace_back(player.getDescription());
 
         size_t i = score.getPlayers().size() + 1;
         while (true)
@@ -1569,11 +1565,8 @@ void PowerTabEditor::addInstrument()
     // Create a unique name for the instrument.
     {
         std::vector<std::string> names;
-        boost::range::transform(score.getInstruments(),
-                                std::back_inserter(names),
-                                [](const Instrument &instrument) {
-            return instrument.getDescription();
-        });
+        for (const Instrument &instrument : score.getInstruments())
+            names.emplace_back(instrument.getDescription());
 
         const std::string default_name =
             settings->get(Settings::DefaultInstrumentName);

@@ -12,6 +12,9 @@ set( srcs
 )
 
 set( headers
+    iteratorrange.h
+    iteratorrange_filter.h
+    iteratorrange_reverse.h
     settingstree.h
     tostring.h
 )

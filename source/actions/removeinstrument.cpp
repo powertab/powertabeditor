@@ -39,7 +39,7 @@ void RemoveInstrument::redo()
         {
             myOriginalChanges.push_back(change);
          
-            for (unsigned int i = 0; i < system.getStaves().size(); ++i)
+            for (int i = 0; i < system.getStaves().size(); ++i)
             {
                 for (const ActivePlayer &activePlayer :
                      change.getActivePlayers(i))

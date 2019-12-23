@@ -36,7 +36,7 @@ void InstrumentPanel::reset(const Score &score)
 {
     clear();
 
-    for (unsigned int i = 0; i < score.getInstruments().size(); ++i)
+    for (int i = 0; i < score.getInstruments().size(); ++i)
     {
         myLayout->addWidget(new InstrumentPanelItem(
             this, i, score.getInstruments()[i], myEditPubSub, myRemovePubSub));

@@ -18,11 +18,11 @@
 #ifndef SCORE_VIEWFILTER_H
 #define SCORE_VIEWFILTER_H
 
-#include <boost/range/iterator_range_core.hpp>
 #include <cassert>
 #include "fileversion.h"
 #include <regex>
 #include <string>
+#include <util/iteratorrange.h>
 #include <vector>
 
 class ActivePlayer;
@@ -100,9 +100,9 @@ public:
     void removeRule(int index);
 
     /// Returns the list of rules in the filter.
-    boost::iterator_range<RuleIterator> getRules();
+    Util::IteratorRange<RuleIterator> getRules();
     /// Returns the list of rules in the filter.
-    boost::iterator_range<RuleConstIterator> getRules() const;
+    Util::IteratorRange<RuleConstIterator> getRules() const;
 
     /// Returns whether the given staff is visible.
     bool accept(const Score &score, int system_index, int staff_index) const;

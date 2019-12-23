@@ -17,10 +17,10 @@
 
 #include "voiceutils.h"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include "score.h"
 #include "scorelocation.h"
 #include "utils.h"
+#include <util/iteratorrange_reverse.h>
 
 namespace VoiceUtils
 {
@@ -57,7 +57,7 @@ const Position *getNextPosition(const Voice &voice, int position)
 
 const Position *getPreviousPosition(const Voice &voice, int position)
 {
-    for (const Position &pos : boost::adaptors::reverse(voice.getPositions()))
+    for (const Position &pos : Util::reverseRange(voice.getPositions()))
     {
         if (pos.getPosition() < position)
             return &pos;

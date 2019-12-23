@@ -19,11 +19,11 @@
 #define SCORE_POSITION_H
 
 #include <algorithm>
-#include <boost/range/iterator_range_core.hpp>
 #include <bitset>
 #include "fileversion.h"
 #include "note.h"
 #include <vector>
+#include <util/iteratorrange.h>
 
 class Position
 {
@@ -106,9 +106,9 @@ public:
     void clearMultiBarRest();
 
     /// Returns the set of notes in the position.
-    boost::iterator_range<NoteIterator> getNotes();
+    Util::IteratorRange<NoteIterator> getNotes();
     /// Returns the set of notes in the position.
-    boost::iterator_range<NoteConstIterator> getNotes() const;
+    Util::IteratorRange<NoteConstIterator> getNotes() const;
 
     /// Adds a new note to the position.
     void insertNote(const Note &note);

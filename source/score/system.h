@@ -20,7 +20,6 @@
 
 #include "alternateending.h"
 #include "barline.h"
-#include <boost/range/iterator_range_core.hpp>
 #include "chordtext.h"
 #include "direction.h"
 #include "fileversion.h"
@@ -28,6 +27,7 @@
 #include "staff.h"
 #include "tempomarker.h"
 #include "textitem.h"
+#include <util/iteratorrange.h>
 #include <vector>
 
 class System
@@ -58,9 +58,9 @@ public:
     void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the set of staves in the system.
-    boost::iterator_range<StaffIterator> getStaves();
+    Util::IteratorRange<StaffIterator> getStaves();
     /// Returns the set of staves in the system.
-    boost::iterator_range<StaffConstIterator> getStaves() const;
+    Util::IteratorRange<StaffConstIterator> getStaves() const;
 
     /// Adds a new staff to the system.
     void insertStaff(const Staff &staff);
@@ -69,9 +69,9 @@ public:
     void removeStaff(int index);
 
     /// Returns the set of barlines in the system.
-    boost::iterator_range<BarlineIterator> getBarlines();
+    Util::IteratorRange<BarlineIterator> getBarlines();
     /// Returns the set of barlines in the system.
-    boost::iterator_range<BarlineConstIterator> getBarlines() const;
+    Util::IteratorRange<BarlineConstIterator> getBarlines() const;
 
     /// Adds a new barline to the system.
     void insertBarline(const Barline &barline);
@@ -85,9 +85,9 @@ public:
     Barline *getNextBarline(int position);
 
     /// Returns the set of tempo markers in the system.
-    boost::iterator_range<TempoMarkerIterator> getTempoMarkers();
+    Util::IteratorRange<TempoMarkerIterator> getTempoMarkers();
     /// Returns the set of tempo markers in the system.
-    boost::iterator_range<TempoMarkerConstIterator> getTempoMarkers() const;
+    Util::IteratorRange<TempoMarkerConstIterator> getTempoMarkers() const;
 
     /// Adds a new tempo marker to the system.
     void insertTempoMarker(const TempoMarker &marker);
@@ -95,9 +95,9 @@ public:
     void removeTempoMarker(const TempoMarker &marker);
 
     /// Returns the set of alternate endings in the system.
-    boost::iterator_range<AlternateEndingIterator> getAlternateEndings();
+    Util::IteratorRange<AlternateEndingIterator> getAlternateEndings();
     /// Returns the set of alternate endings in system.
-    boost::iterator_range<AlternateEndingConstIterator> getAlternateEndings() const;
+    Util::IteratorRange<AlternateEndingConstIterator> getAlternateEndings() const;
 
     /// Adds a new alternate ending to the system.
     void insertAlternateEnding(const AlternateEnding &ending);
@@ -105,9 +105,9 @@ public:
     void removeAlternateEnding(const AlternateEnding &ending);
 
     /// Returns the set of musical directions in the system.
-    boost::iterator_range<DirectionIterator> getDirections();
+    Util::IteratorRange<DirectionIterator> getDirections();
     /// Returns the set of musical directions in system.
-    boost::iterator_range<DirectionConstIterator> getDirections() const;
+    Util::IteratorRange<DirectionConstIterator> getDirections() const;
 
     /// Adds a new musical direction to the system.
     void insertDirection(const Direction &direction);
@@ -115,9 +115,9 @@ public:
     void removeDirection(const Direction &direction);
 
     /// Returns the set of player changes in the system.
-    boost::iterator_range<PlayerChangeIterator> getPlayerChanges();
+    Util::IteratorRange<PlayerChangeIterator> getPlayerChanges();
     /// Returns the set of player changes in system.
-    boost::iterator_range<PlayerChangeConstIterator> getPlayerChanges() const;
+    Util::IteratorRange<PlayerChangeConstIterator> getPlayerChanges() const;
 
     /// Adds a new player change to the system.
     void insertPlayerChange(const PlayerChange &change);
@@ -125,9 +125,9 @@ public:
     void removePlayerChange(const PlayerChange &change);
 
     /// Returns the set of chord symbols in the system.
-    boost::iterator_range<ChordTextIterator> getChords();
+    Util::IteratorRange<ChordTextIterator> getChords();
     /// Returns the set of chord symbols in system.
-    boost::iterator_range<ChordTextConstIterator> getChords() const;
+    Util::IteratorRange<ChordTextConstIterator> getChords() const;
 
     /// Adds a new chord symbol to the system.
     void insertChord(const ChordText &chord);
@@ -135,9 +135,9 @@ public:
     void removeChord(const ChordText &chord);
 
     /// Returns the set of text items in the system.
-    boost::iterator_range<TextItemIterator> getTextItems();
+    Util::IteratorRange<TextItemIterator> getTextItems();
     /// Returns the set of text items in system.
-    boost::iterator_range<TextItemConstIterator> getTextItems() const;
+    Util::IteratorRange<TextItemConstIterator> getTextItems() const;
 
     /// Adds a new text item to the system.
     void insertTextItem(const TextItem &text);

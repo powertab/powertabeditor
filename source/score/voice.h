@@ -18,10 +18,10 @@
 #ifndef SCORE_VOICE_H
 #define SCORE_VOICE_H
 
-#include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include "irregulargrouping.h"
 #include "position.h"
+#include <util/iteratorrange.h>
 #include <vector>
 
 class Voice
@@ -41,9 +41,9 @@ public:
     void serialize(Archive &ar, const FileVersion version);
 
     /// Returns the set of positions in the voice.
-    boost::iterator_range<PositionIterator> getPositions();
+    Util::IteratorRange<PositionIterator> getPositions();
     /// Returns the set of positions in the voice.
-    boost::iterator_range<PositionConstIterator> getPositions() const;
+    Util::IteratorRange<PositionConstIterator> getPositions() const;
 
     /// Adds a new position to the voice.
     void insertPosition(const Position &position);
@@ -54,9 +54,9 @@ public:
     void removePosition(const Position &position);
 
     /// Returns the set of irregular groupings in the voice.
-    boost::iterator_range<IrregularGroupingIterator> getIrregularGroupings();
+    Util::IteratorRange<IrregularGroupingIterator> getIrregularGroupings();
     /// Returns the set of irregular groupings in the voice.
-    boost::iterator_range<IrregularGroupingConstIterator>
+    Util::IteratorRange<IrregularGroupingConstIterator>
     getIrregularGroupings() const;
 
     /// Adds a new irregular grouping to the voice.

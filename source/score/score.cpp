@@ -44,14 +44,14 @@ void Score::setScoreInfo(const ScoreInfo &info)
     myScoreInfo = info;
 }
 
-boost::iterator_range<Score::SystemIterator> Score::getSystems()
+Util::IteratorRange<Score::SystemIterator> Score::getSystems()
 {
-    return boost::make_iterator_range(mySystems);
+    return mySystems;
 }
 
-boost::iterator_range<Score::SystemConstIterator> Score::getSystems() const
+Util::IteratorRange<Score::SystemConstIterator> Score::getSystems() const
 {
-    return boost::make_iterator_range(mySystems);
+    return mySystems;
 }
 
 void Score::insertSystem(const System &system, int index)
@@ -67,14 +67,14 @@ void Score::removeSystem(int index)
     mySystems.erase(mySystems.begin() + index);
 }
 
-boost::iterator_range<Score::PlayerIterator> Score::getPlayers()
+Util::IteratorRange<Score::PlayerIterator> Score::getPlayers()
 {
-    return boost::make_iterator_range(myPlayers);
+    return myPlayers;
 }
 
-boost::iterator_range<Score::PlayerConstIterator> Score::getPlayers() const
+Util::IteratorRange<Score::PlayerConstIterator> Score::getPlayers() const
 {
-    return boost::make_iterator_range(myPlayers);
+    return myPlayers;
 }
 
 void Score::insertPlayer(const Player &player)
@@ -92,14 +92,14 @@ void Score::removePlayer(int index)
     myPlayers.erase(myPlayers.begin() + index);
 }
 
-boost::iterator_range<Score::InstrumentIterator> Score::getInstruments()
+Util::IteratorRange<Score::InstrumentIterator> Score::getInstruments()
 {
-    return boost::make_iterator_range(myInstruments);
+    return myInstruments;
 }
 
-boost::iterator_range<Score::InstrumentConstIterator> Score::getInstruments() const
+Util::IteratorRange<Score::InstrumentConstIterator> Score::getInstruments() const
 {
-    return boost::make_iterator_range(myInstruments);
+    return myInstruments;
 }
 
 void Score::insertInstrument(const Instrument &instrument)
@@ -117,14 +117,14 @@ void Score::removeInstrument(int index)
     myInstruments.erase(myInstruments.begin() + index);
 }
 
-boost::iterator_range<Score::ViewFilterIterator> Score::getViewFilters()
+Util::IteratorRange<Score::ViewFilterIterator> Score::getViewFilters()
 {
-    return boost::make_iterator_range(myViewFilters);
+    return myViewFilters;
 }
 
-boost::iterator_range<Score::ViewFilterConstIterator> Score::getViewFilters() const
+Util::IteratorRange<Score::ViewFilterConstIterator> Score::getViewFilters() const
 {
-    return boost::make_iterator_range(myViewFilters);
+    return myViewFilters;
 }
 
 void Score::insertViewFilter(const ViewFilter &filter)
