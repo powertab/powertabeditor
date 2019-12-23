@@ -21,7 +21,7 @@
 #include <app/viewoptions.h>
 #include <app/caret.h>
 #include <boost/filesystem/path.hpp>
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include <memory>
 #include <score/score.h>
 #include <vector>
@@ -55,7 +55,7 @@ public:
     Caret &getCaret();
 
 private:
-    boost::optional<PathType> myFilename;
+    std::optional<PathType> myFilename;
     Score myScore;
     ViewOptions myViewOptions;
     Caret myCaret;
@@ -88,7 +88,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<Document>> myDocumentList;
-    boost::optional<int> myCurrentIndex;
+    std::optional<int> myCurrentIndex;
 };
 
 #endif

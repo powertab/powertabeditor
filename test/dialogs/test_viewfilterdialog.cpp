@@ -17,7 +17,6 @@
 
 #include <catch2/catch.hpp>
 
-#include <boost/optional/optional_io.hpp>
 #include <dialogs/viewfilterpresenter.h>
 #include <score/score.h>
 
@@ -36,7 +35,7 @@ public:
     bool launch() override { return false; }
 
     void update(const std::vector<std::string> &names,
-                const boost::optional<int> &selection,
+                const std::optional<int> &selection,
                 const std::vector<FilterRule> &rules) override
     {
         myFilterNames = names;
@@ -46,7 +45,7 @@ public:
 
     ViewFilterPresenter *myPresenter;
     std::vector<std::string> myFilterNames;
-    boost::optional<int> mySelection;
+    std::optional<int> mySelection;
     std::vector<FilterRule> myRules;
 };
 

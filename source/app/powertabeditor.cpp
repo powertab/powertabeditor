@@ -255,7 +255,7 @@ void PowerTabEditor::openFile(QString filename)
     qDebug() << "Opening file: " << filename;
 
     QFileInfo fileInfo(filename);
-    boost::optional<FileFormat> format = myFileFormatManager->findFormat(
+    std::optional<FileFormat> format = myFileFormatManager->findFormat(
                 fileInfo.suffix().toStdString());
 
     if (!format)
@@ -377,7 +377,7 @@ bool PowerTabEditor::saveFile(QString path)
     QString extension = info.suffix();
     Q_ASSERT(!extension.isEmpty());
 
-    boost::optional<FileFormat> format =
+    std::optional<FileFormat> format =
         myFileFormatManager->findFormat(extension.toStdString());
     if (!format)
     {

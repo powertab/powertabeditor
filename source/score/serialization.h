@@ -21,10 +21,10 @@
 #include <array>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/optional.hpp>
 #include <bitset>
 #include "fileversion.h"
 #include <map>
+#include <optional>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/ostreamwrapper.h>
@@ -123,7 +123,7 @@ private:
     void read(std::bitset<N> &bits);
 
     template <typename T>
-    void read(boost::optional<T> &val);
+    void read(std::optional<T> &val);
 
     inline void read(boost::gregorian::date &date);
 
@@ -196,7 +196,7 @@ private:
     void write(const std::bitset<N> &bits);
 
     template <typename T>
-    void write(const boost::optional<T> &val);
+    void write(const std::optional<T> &val);
 
     inline void write(const boost::gregorian::date &date);
 
@@ -319,7 +319,7 @@ void InputArchive::read(std::bitset<N> &bits)
 }
 
 template <typename T>
-void InputArchive::read(boost::optional<T> &val)
+void InputArchive::read(std::optional<T> &val)
 {
     if (value().IsNull())
         val.reset();
@@ -327,7 +327,7 @@ void InputArchive::read(boost::optional<T> &val)
     {
         T data;
         read(data);
-        val.reset(data);
+        val = data;
     }
 }
 
@@ -397,7 +397,7 @@ void OutputArchive::write(const std::bitset<N> &bits)
 }
 
 template <typename T>
-void OutputArchive::write(const boost::optional<T> &val)
+void OutputArchive::write(const std::optional<T> &val)
 {
     if (val)
         write(*val);

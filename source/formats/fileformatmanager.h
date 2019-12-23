@@ -18,10 +18,11 @@
 #ifndef FORMATS_FILEFORMATMANAGER_H
 #define FORMATS_FILEFORMATMANAGER_H
 
-#include <boost/optional/optional.hpp>
-#include <memory>
-#include <vector>
 #include "fileformat.h"
+
+#include <memory>
+#include <optional>
+#include <vector>
 
 class FileFormatImporter;
 class FileFormatExporter;
@@ -35,7 +36,7 @@ public:
     FileFormatManager(const SettingsManager &settings_manager);
 
     /// Returns the file format corresponding to the given extension.
-    boost::optional<FileFormat> findFormat(const std::string &extension) const;
+    std::optional<FileFormat> findFormat(const std::string &extension) const;
 
     /// Returns a correctly formatted file filter for a Qt file dialog.
     /// e.g. "FileType (*.ext1 *.ext2);;FileType2 (*.ext3)".

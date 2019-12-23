@@ -18,9 +18,9 @@
 #ifndef SCORE_UTILS_REPEATINDEXER_H
 #define SCORE_UTILS_REPEATINDEXER_H
 
-#include <boost/optional.hpp>
 #include <boost/range/iterator_range.hpp>
 #include <map>
+#include <optional>
 #include <score/systemlocation.h>
 #include <set>
 #include <unordered_map>
@@ -61,7 +61,7 @@ public:
     }
 
     /// Attempt to find the location to jump to for the nth alternate ending.
-    boost::optional<SystemLocation> findAlternateEnding(int number) const;
+    std::optional<SystemLocation> findAlternateEnding(int number) const;
 
     /// Reset the repeat counters.
     void reset();

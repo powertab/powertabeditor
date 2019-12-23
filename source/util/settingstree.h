@@ -18,11 +18,10 @@
 #ifndef APP_SETTINGSTREE_H
 #define APP_SETTINGSTREE_H
 
-#include <boost/optional/optional.hpp>
-
 #include <iosfwd>
-#include <unordered_map>
+#include <optional>
 #include <string>
+#include <map>
 #include <variant>
 #include <vector>
 
@@ -49,7 +48,7 @@ public:
         std::variant<int, std::string, bool, SettingList, SettingMap>;
 
     struct SettingList { std::vector<SettingValue> values; };
-    struct SettingMap { std::unordered_map<std::string, SettingValue> values; };
+    struct SettingMap { std::map<std::string, SettingValue> values; };
 
     SettingsTree();
 
@@ -116,7 +115,7 @@ public:
 
 private:
     void setImpl(const std::string &key, const SettingValue &value);
-    boost::optional<SettingValue> find(const std::string &key) const;
+    std::optional<SettingValue> find(const std::string &key) const;
 
     SettingValue myTree;
 };
@@ -139,7 +138,7 @@ struct SettingValueConverter
 template <typename T>
 T SettingsTree::get(const std::string &key, const T &default_val) const
 {
-    boost::optional<SettingValue> val = find(key);
+    std::optional<SettingValue> val = find(key);
     return val ? SettingValueConverter<T>::from(*val) : default_val;
 }
 

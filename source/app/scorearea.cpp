@@ -51,7 +51,7 @@ void ScoreArea::renderDocument(const Document &document)
 {
     myScene.clear();
     myRenderedSystems.clear();
-    myDocument = document;
+    myDocument = &document;
 
     const Score &score = document.getScore();
 

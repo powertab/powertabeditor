@@ -17,6 +17,7 @@
   
 #include "insertnotes.h"
 
+#include <optional>
 #include <score/system.h>
 #include <score/voiceutils.h>
 
@@ -49,7 +50,7 @@ InsertNotes::InsertNotes(const ScoreLocation &location,
 
     // Check for any existing notes or barlines that will conflict with the
     // new notes.
-    boost::optional<int> position;
+    std::optional<int> position;
     if (nextPos && nextPos->getPosition() <= endPos)
         position = nextPos->getPosition();
     if (nextBar && nextBar->getPosition() <= endPos)

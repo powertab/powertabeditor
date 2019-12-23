@@ -40,7 +40,7 @@ static const std::unordered_map<char, int> theNotePositions = {
 StdNotationNote::StdNotationNote(const Voice &voice, const Position &pos,
                                  const Note &note, const KeySignature &key,
                                  const Tuning &tuning, double y,
-                                 const boost::optional<int> &tie)
+                                 const std::optional<int> &tie)
     : myY(y),
       myAccidentalType(NoAccidental),
       myVoice(voice),
@@ -163,7 +163,7 @@ void StdNotationNote::getNotesInStaff(
 
                     noteLocations.push_back(y);
 
-                    boost::optional<int> tiedPos;
+                    std::optional<int> tiedPos;
                     if (note.hasProperty(Note::Tied) && prevPos)
                         tiedPos = prevPos->getPosition();
 
@@ -330,7 +330,7 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
         groupEnd = std::upper_bound(groupStart, durations.end(), groupEndTime);
 
         // Only create subgroups if the beat length is an 8th note or greater.
-        boost::optional<double> subgroupLength;
+        std::optional<double> subgroupLength;
         if (timeSig.getBeatValue() <= 8)
             subgroupLength = 4.0 / timeSig.getBeatValue();
 
@@ -350,7 +350,7 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
 
 void StdNotationNote::computeBeamingGroups(
     std::vector<NoteStem> &stems, const std::vector<double> &durations,
-    const boost::optional<double> &subgroupLength, size_t firstStemIndexInBar,
+    const std::optional<double> &subgroupLength, size_t firstStemIndexInBar,
     size_t firstStemIndex, size_t lastStemIndex, std::vector<BeamGroup> &groups)
 {
     // Rests and notes greater than eighth notes will break apart a beam group,
@@ -494,7 +494,7 @@ const Note *StdNotationNote::getNote() const
     return myNote;
 }
 
-const boost::optional<int> &StdNotationNote::getTie() const
+const std::optional<int> &StdNotationNote::getTie() const
 {
     return myTie;
 }

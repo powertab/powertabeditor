@@ -75,16 +75,16 @@ struct Finder
     }
 
     template <typename T>
-    boost::optional<SettingValue> operator()(const T &) const
+    std::optional<SettingValue> operator()(const T &) const
     {
-        return boost::none;
+        return std::nullopt;
     }
 
-    boost::optional<SettingValue> operator()(const SettingMap &map) const
+    std::optional<SettingValue> operator()(const SettingMap &map) const
     {
         auto it = map.values.find(myComponents[myIndex]);
         if (it == map.values.end())
-            return boost::none;
+            return std::nullopt;
 
         const SettingValue &value = it->second;
         if (myIndex == myComponents.size() - 1)
@@ -92,7 +92,7 @@ struct Finder
         else
         {
             if (!std::holds_alternative<SettingMap>(value))
-                return boost::none;
+                return std::nullopt;
 
             ++myIndex;
             return std::visit(*this, value);
@@ -241,7 +241,7 @@ void SettingsTree::setImpl(const std::string &key, const SettingValue &value)
     std::visit(inserter, myTree);
 }
 
-boost::optional<SettingValue> SettingsTree::find(
+std::optional<SettingValue> SettingsTree::find(
     const std::string &key) const
 {
     return std::visit(Finder(key), myTree);

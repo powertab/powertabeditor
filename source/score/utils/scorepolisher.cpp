@@ -18,6 +18,7 @@
 #include "scorepolisher.h"
 
 #include <map>
+#include <optional>
 #include <score/score.h>
 #include <score/voiceutils.h>
 #include <score/utils.h>
@@ -33,9 +34,9 @@ public:
         {
             // Order the timestamps so that grace notes appear before the actual
             // note.
-            return myGraceNoteNumber.get_value_or(
+            return myGraceNoteNumber.value_or(
                        std::numeric_limits<int>::max()) <
-                   other.myGraceNoteNumber.get_value_or(
+                   other.myGraceNoteNumber.value_or(
                        std::numeric_limits<int>::max());
         }
         else
@@ -47,7 +48,7 @@ public:
         myTime += duration;
     }
 
-    void setGraceNoteNumber(boost::optional<int> count)
+    void setGraceNoteNumber(std::optional<int> count)
     {
         myGraceNoteNumber = count;
     }
@@ -57,7 +58,7 @@ private:
     boost::rational<int> myTime;
     /// Grace notes occur at the same timestamp as the note that they precede,
     /// but need to appear before the actual note.
-    boost::optional<int> myGraceNoteNumber;
+    std::optional<int> myGraceNoteNumber;
 };
 
 static int getDefaultNoteSpacing(const boost::rational<int> &duration)
@@ -152,7 +153,7 @@ void ScoreUtils::polishSystem(System &system)
             for (const Voice &voice : staff.getVoices())
             {
                 TimeStamp timestamp;
-                boost::optional<int> grace_note;
+                std::optional<int> grace_note;
                 int currentPosition = 0;
 
                 for (const Position &position : ScoreUtils::findInRange(
@@ -160,7 +161,7 @@ void ScoreUtils::polishSystem(System &system)
                          rightBar->getPosition()))
                 {
                     if (position.hasProperty(Position::Acciaccatura))
-                        grace_note = grace_note.get_value_or(0) + 1;
+                        grace_note = grace_note.value_or(0) + 1;
                     else
                         grace_note.reset();
 

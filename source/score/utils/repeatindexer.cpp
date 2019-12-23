@@ -17,6 +17,7 @@
 
 #include "repeatindexer.h"
 
+#include <optional>
 #include <score/score.h>
 #include <score/utils.h>
 #include <stack>
@@ -78,12 +79,12 @@ int RepeatedSection::getTotalRepeatCount() const
     return count;
 }
 
-boost::optional<SystemLocation> RepeatedSection::findAlternateEnding(int number) const
+std::optional<SystemLocation> RepeatedSection::findAlternateEnding(int number) const
 {
     if (myAlternateEndings.find(number) != myAlternateEndings.end())
         return myAlternateEndings.find(number)->second;
     else
-        return boost::optional<SystemLocation>();
+        return std::optional<SystemLocation>();
 }
 
 void RepeatedSection::reset()
@@ -96,11 +97,11 @@ SystemLocation RepeatedSection::performRepeat(const SystemLocation &loc)
     // Deal with alternate endings - if we are at the start of the first
     // alternate ending, we can branch off to other alternate endings depending
     // on the active repeat.
-    boost::optional<SystemLocation> firstAltEnding = findAlternateEnding(1);
+    std::optional<SystemLocation> firstAltEnding = findAlternateEnding(1);
     if (firstAltEnding && *firstAltEnding == loc)
     {
         // Branch off to the next alternate ending, if it exists.
-        boost::optional<SystemLocation> nextAltEnding =
+        std::optional<SystemLocation> nextAltEnding =
             findAlternateEnding(myActiveRepeat);
         if (nextAltEnding)
             return *nextAltEnding;

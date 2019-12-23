@@ -20,7 +20,7 @@
 
 #include <QUndoCommand>
 
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include <score/scorelocation.h>
 #include <score/system.h>
 
@@ -34,7 +34,7 @@ public:
 
 private:
     ScoreLocation myLocation;
-    boost::optional<System> myOriginalSystem;
+    std::optional<System> myOriginalSystem;
 };
 
 #endif
