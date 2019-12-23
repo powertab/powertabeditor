@@ -19,7 +19,6 @@
 #define UTIL_ITERATORRANGE_H
 
 #include <cassert>
-#include <cstddef>
 #include <iterator>
 
 namespace Util
@@ -62,12 +61,12 @@ public:
     auto &operator[](int i) { return *(myBegin + i); }
     auto &operator[](int i) const { return *(myBegin + i); }
 
-    ssize_t size() const
+    int size() const
     {
         static_assert(std::is_same<
                       typename std::iterator_traits<IterT>::iterator_category,
                       std::random_access_iterator_tag>::value);
-        return myEnd - myBegin;
+        return static_cast<int>(myEnd - myBegin);
     }
 
     template <typename OtherRange>
