@@ -18,13 +18,13 @@
 #ifndef SCORE_SCORE_H
 #define SCORE_SCORE_H
 
+#include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
 #include "instrument.h"
 #include "player.h"
 #include "scoreinfo.h"
 #include "system.h"
 #include "viewfilter.h"
-#include <util/iteratorrange.h>
 #include <vector>
 
 class PlayerChange;
@@ -55,9 +55,9 @@ public:
     void setScoreInfo(const ScoreInfo &info);
 
     /// Returns the set of systems in the score.
-    Util::IteratorRange<SystemIterator> getSystems();
+    boost::iterator_range<SystemIterator> getSystems();
     /// Returns the set of systems in the score.
-    Util::IteratorRange<SystemConstIterator> getSystems() const;
+    boost::iterator_range<SystemConstIterator> getSystems() const;
 
     /// Adds a new system to the score, optionally at a specific index.
     void insertSystem(const System &system, int index = -1);
@@ -65,9 +65,9 @@ public:
     void removeSystem(int index);
 
     /// Returns the set of players in the score.
-    Util::IteratorRange<PlayerIterator> getPlayers();
+    boost::iterator_range<PlayerIterator> getPlayers();
     /// Returns the set of players in the score.
-    Util::IteratorRange<PlayerConstIterator> getPlayers() const;
+    boost::iterator_range<PlayerConstIterator> getPlayers() const;
 
     /// Adds a new player to the score.
     void insertPlayer(const Player &player);
@@ -76,9 +76,9 @@ public:
     void removePlayer(int index);
 
     /// Returns the set of instruments in the score.
-    Util::IteratorRange<InstrumentIterator> getInstruments();
+    boost::iterator_range<InstrumentIterator> getInstruments();
     /// Returns the set of instruments in the score.
-    Util::IteratorRange<InstrumentConstIterator> getInstruments() const;
+    boost::iterator_range<InstrumentConstIterator> getInstruments() const;
 
     /// Adds a new instrument to the score.
     void insertInstrument(const Instrument &instrument);
@@ -87,9 +87,9 @@ public:
     void removeInstrument(int index);
 
     /// Returns the set of view filters in the score.
-    Util::IteratorRange<ViewFilterIterator> getViewFilters();
+    boost::iterator_range<ViewFilterIterator> getViewFilters();
     /// Returns the set of view filters in the score.
-    Util::IteratorRange<ViewFilterConstIterator> getViewFilters() const;
+    boost::iterator_range<ViewFilterConstIterator> getViewFilters() const;
 
     /// Adds a new filter to the score.
     void insertViewFilter(const ViewFilter &filter);

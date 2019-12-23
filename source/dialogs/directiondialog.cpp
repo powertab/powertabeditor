@@ -109,7 +109,7 @@ void DirectionDialog::onRemoveDirection()
     myDirection.removeSymbol(index);
 
     // Rebuild the list of symbols.
-    for (int i = 0; i < myDirection.getSymbols().size(); ++i)
+    for (unsigned long i = 0; i < myDirection.getSymbols().size(); ++i)
         ui->directionComboBox->addItem(QString::number(i + 1));
 
     ui->directionComboBox->setCurrentIndex(

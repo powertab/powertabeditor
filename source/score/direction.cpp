@@ -43,14 +43,14 @@ void Direction::setPosition(int position)
     myPosition = position;
 }
 
-Util::IteratorRange<Direction::SymbolIterator> Direction::getSymbols()
+boost::iterator_range<Direction::SymbolIterator> Direction::getSymbols()
 {
-    return mySymbols;
+    return boost::make_iterator_range(mySymbols);
 }
 
-Util::IteratorRange<Direction::SymbolConstIterator> Direction::getSymbols() const
+boost::iterator_range<Direction::SymbolConstIterator> Direction::getSymbols() const
 {
-    return mySymbols;
+    return boost::make_iterator_range(mySymbols);
 }
 
 void Direction::insertSymbol(const DirectionSymbol &symbol)

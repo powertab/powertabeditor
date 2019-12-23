@@ -140,7 +140,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
 
     // Set the initial channel volume and pitch bend range..
     std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
-    for (int i = 0; i < score.getPlayers().size(); ++i)
+    for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
     {
         regular_tracks[i].append(
             MidiEvent::volumeChange(0, getChannel(i), Dynamic::fff));
@@ -177,12 +177,12 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
             addTempoEvent(master_track, start_tick, current_tempo, system,
                           current_bar->getPosition(), next_bar->getPosition());
 
-        for (int staff_index = 0; staff_index < system.getStaves().size();
+        for (unsigned int staff_index = 0; staff_index < system.getStaves().size();
              ++staff_index)
         {
             const Staff &staff = system.getStaves()[staff_index];
 
-            for (int voice_index = 0; voice_index < staff.getVoices().size();
+            for (unsigned int voice_index = 0; voice_index < staff.getVoices().size();
                  ++voice_index)
             {
                 const int end_tick = addEventsForBar(

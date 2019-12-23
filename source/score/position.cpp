@@ -146,14 +146,14 @@ void Position::clearMultiBarRest()
     myMultiBarRestCount = 0;
 }
 
-Util::IteratorRange<Position::NoteIterator> Position::getNotes()
+boost::iterator_range<Position::NoteIterator> Position::getNotes()
 {
-    return myNotes;
+    return boost::make_iterator_range(myNotes);
 }
 
-Util::IteratorRange<Position::NoteConstIterator> Position::getNotes() const
+boost::iterator_range<Position::NoteConstIterator> Position::getNotes() const
 {
-    return myNotes;
+    return boost::make_iterator_range(myNotes);
 }
 
 void Position::insertNote(const Note &note)

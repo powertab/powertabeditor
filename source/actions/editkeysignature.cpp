@@ -45,9 +45,9 @@ void EditKeySignature::updateFollowingKeySignatures(const KeySignature &oldKey,
                                                     const KeySignature &newKey)
 {
     Score &score = myLocation.getScore();
-    const int start_system_index = myLocation.getSystemIndex();
+    const size_t start_system_index = myLocation.getSystemIndex();
 
-    for (int i = start_system_index; i < score.getSystems().size(); ++i)
+    for (size_t i = start_system_index; i < score.getSystems().size(); ++i)
     {
         for (Barline &bar : score.getSystems()[i].getBarlines())
         {

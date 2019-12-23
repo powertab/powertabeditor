@@ -66,7 +66,7 @@ void ScoreArea::renderDocument(const Document &document)
     myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo());
 
     myRenderedSystems.reserve(score.getSystems().size());
-    for (int i = 0; i < score.getSystems().size(); ++i)
+    for (unsigned int i = 0; i < score.getSystems().size(); ++i)
         myRenderedSystems.append(nullptr);
 
 #if 0

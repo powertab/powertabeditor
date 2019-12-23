@@ -696,7 +696,7 @@ void LayoutInfo::calculateBendLayout(VerticalLayout &layout)
         bool inGroup = false;
         int groupHeight = 0;
 
-        for (int i = 0; i < voice.getPositions().size(); ++i)
+        for (unsigned int i = 0; i < voice.getPositions().size(); ++i)
         {
             const Position &pos = voice.getPositions()[i];
 

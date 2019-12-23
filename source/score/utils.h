@@ -19,13 +19,14 @@
 #define SCORE_UTILS_H
 
 #include <algorithm>
-#include <util/iteratorrange_filter.h>
+#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace ScoreUtils {
 
     /// Returns the object at the given position index, or null.
     template <typename T>
-    typename T::pointer findByPosition(const Util::IteratorRange<T> &range,
+    typename T::pointer findByPosition(const boost::iterator_range<T> &range,
                                        int position)
     {
         size_t n = range.size();
@@ -39,7 +40,7 @@ namespace ScoreUtils {
     }
 
     template <typename T>
-    int findIndexByPosition(const Util::IteratorRange<T> &range, int position)
+    int findIndexByPosition(const boost::iterator_range<T> &range, int position)
     {
         const int n = static_cast<int>(range.size());
         for (int i = 0; i < n; ++i)
@@ -51,12 +52,30 @@ namespace ScoreUtils {
         return -1;
     }
 
-    template <typename Range>
-    auto findInRange(Range range, int left, int right)
+    struct InPositionRange
     {
-        return Util::filterRange(range, [=](auto &&obj) {
-            return obj.getPosition() >= left && obj.getPosition() <= right;
-        });
+        InPositionRange(int left, int right) : myLeft(left), myRight(right)
+        {
+        }
+
+        template <typename T>
+        bool operator()(const T &obj) const
+        {
+            return obj.getPosition() >= myLeft && obj.getPosition() <= myRight;
+        }
+
+    private:
+        const int myLeft;
+        const int myRight;
+    };
+
+    template <typename Range>
+    boost::filtered_range<InPositionRange, Range> findInRange(Range range,
+                                                              int left,
+                                                              int right)
+    {
+        return boost::adaptors::filter(
+            range, InPositionRange(left, right));
     }
 
     // Some helper methods to reduce code duplication.

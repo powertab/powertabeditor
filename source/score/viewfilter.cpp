@@ -142,15 +142,15 @@ void ViewFilter::removeRule(int index)
     myRules.erase(myRules.begin() + index);
 }
 
-Util::IteratorRange<ViewFilter::RuleIterator> ViewFilter::getRules()
+boost::iterator_range<ViewFilter::RuleIterator> ViewFilter::getRules()
 {
-    return myRules;
+    return boost::make_iterator_range(myRules);
 }
 
-Util::IteratorRange<ViewFilter::RuleConstIterator>
+boost::iterator_range<ViewFilter::RuleConstIterator>
 ViewFilter::getRules() const
 {
-    return myRules;
+    return boost::make_iterator_range(myRules);
 }
 
 bool ViewFilter::accept(const Score &score, int system_index,

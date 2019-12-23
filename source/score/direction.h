@@ -18,8 +18,8 @@
 #ifndef SCORE_DIRECTION_H
 #define SCORE_DIRECTION_H
 
+#include <boost/range/iterator_range_core.hpp>
 #include "fileversion.h"
-#include <util/iteratorrange.h>
 #include <vector>
 
 class DirectionSymbol
@@ -99,9 +99,9 @@ public:
     void setPosition(int position);
 
     /// Returns the set of symbols in the direction.
-    Util::IteratorRange<SymbolIterator> getSymbols();
+    boost::iterator_range<SymbolIterator> getSymbols();
     /// Returns the set of symbols in the direction.
-    Util::IteratorRange<SymbolConstIterator> getSymbols() const;
+    boost::iterator_range<SymbolConstIterator> getSymbols() const;
 
     /// Adds a new symbol to the direction.
     void insertSymbol(const DirectionSymbol &symbol);

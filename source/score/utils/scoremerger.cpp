@@ -340,11 +340,11 @@ static int importNotes(
 
 template <typename Symbol>
 static void copySymbols(
-    const Util::IteratorRange<typename std::vector<Symbol>::const_iterator>
-        &src_symbols,
+    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &
+        src_symbols,
     System &dest_system,
-    const Util::IteratorRange<typename std::vector<Symbol>::const_iterator>
-        &dest_symbols,
+    const boost::iterator_range<typename std::vector<Symbol>::const_iterator> &
+        dest_symbols,
     void (System::*add_symbol)(const Symbol &), int offset, int left, int right)
 {
     std::unordered_set<int> filled_positions;
@@ -502,7 +502,7 @@ static void mergePlayerChanges(ScoreLocation &dest_loc,
         // staff/player/instrument numbers.
         if (bass_change)
         {
-            for (int i = 0; i < bass_loc.getSystem().getStaves().size(); ++i)
+            for (unsigned int i = 0; i < bass_loc.getSystem().getStaves().size(); ++i)
             {
                 for (const ActivePlayer &player :
                      bass_change->getActivePlayers(i))

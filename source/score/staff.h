@@ -19,11 +19,11 @@
 #define SCORE_STAFF_H
 
 #include <array>
+#include <boost/range/iterator_range_core.hpp>
 #include "dynamic.h"
 #include "fileversion.h"
 #include <vector>
 #include "voice.h"
-#include <util/iteratorrange.h>
 
 class Staff
 {
@@ -65,14 +65,14 @@ public:
     void setStringCount(int count);
 
     /// Returns the voices in the staff.
-    Util::IteratorRange<VoiceIterator> getVoices();
+    boost::iterator_range<VoiceIterator> getVoices();
     /// Returns the voices in the staff.
-    Util::IteratorRange<VoiceConstIterator> getVoices() const;
+    boost::iterator_range<VoiceConstIterator> getVoices() const;
 
     /// Returns the set of dynamics in the staff.
-    Util::IteratorRange<DynamicIterator> getDynamics();
+    boost::iterator_range<DynamicIterator> getDynamics();
     /// Returns the set of dynamics in the staff.
-    Util::IteratorRange<DynamicConstIterator> getDynamics() const;
+    boost::iterator_range<DynamicConstIterator> getDynamics() const;
 
     /// Adds a new dynamic to the staff.
     void insertDynamic(const Dynamic &dynamic);

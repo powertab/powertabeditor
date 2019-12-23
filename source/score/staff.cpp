@@ -70,24 +70,24 @@ void Staff::setStringCount(int count)
     }
 }
 
-Util::IteratorRange<Staff::VoiceIterator> Staff::getVoices()
+boost::iterator_range<Staff::VoiceIterator> Staff::getVoices()
 {
-    return myVoices;
+    return boost::make_iterator_range(myVoices);
 }
 
-Util::IteratorRange<Staff::VoiceConstIterator> Staff::getVoices() const
+boost::iterator_range<Staff::VoiceConstIterator> Staff::getVoices() const
 {
-    return myVoices;
+    return boost::make_iterator_range(myVoices);
 }
 
-Util::IteratorRange<Staff::DynamicIterator> Staff::getDynamics()
+boost::iterator_range<Staff::DynamicIterator> Staff::getDynamics()
 {
-    return myDynamics;
+    return boost::make_iterator_range(myDynamics);
 }
 
-Util::IteratorRange<Staff::DynamicConstIterator> Staff::getDynamics() const
+boost::iterator_range<Staff::DynamicConstIterator> Staff::getDynamics() const
 {
-    return myDynamics;
+    return boost::make_iterator_range(myDynamics);
 }
 
 void Staff::insertDynamic(const Dynamic &dynamic)

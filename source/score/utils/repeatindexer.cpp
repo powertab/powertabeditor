@@ -234,8 +234,8 @@ RepeatedSection *RepeatIndexer::findRepeat(
         const_cast<const RepeatIndexer *>(this)->findRepeat(loc));
 }
 
-Util::IteratorRange<RepeatIndexer::RepeatedSectionIterator>
+boost::iterator_range<RepeatIndexer::RepeatedSectionIterator>
 RepeatIndexer::getRepeats() const
 {
-    return myRepeats;
+    return boost::make_iterator_range(myRepeats);
 }
