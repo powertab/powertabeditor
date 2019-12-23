@@ -61,7 +61,7 @@ public:
     auto &operator[](int i) { return *(myBegin + i); }
     auto &operator[](int i) const { return *(myBegin + i); }
 
-    int size() const
+    ssize_t size() const
     {
         static_assert(std::is_same<
                       typename std::iterator_traits<IterT>::iterator_category,
