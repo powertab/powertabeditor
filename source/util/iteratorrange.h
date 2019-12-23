@@ -19,6 +19,7 @@
 #define UTIL_ITERATORRANGE_H
 
 #include <cassert>
+#include <cstddef>
 #include <iterator>
 
 namespace Util
