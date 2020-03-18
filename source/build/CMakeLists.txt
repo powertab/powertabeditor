@@ -28,3 +28,5 @@ pte_executable(
     PLUGINS
         ${QT5_PLUGINS}
 )
+
+add_dependencies(powertabeditor ptedata)
