@@ -48,7 +48,7 @@ private:
 
     /// Draws barlines, along with time signatures, rehearsal signs, etc.
     void drawBarlines(const System &system, int systemIndex,
-                      const LayoutConstPtr &layout, bool isFirstStaff);
+                      const LayoutConstPtr &layout, int staffIndex);
 
     /// Draws the tab notes for all notes in the staff.
     void drawTabNotes(const Staff &staff, const LayoutConstPtr &layout);

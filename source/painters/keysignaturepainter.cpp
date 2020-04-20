@@ -16,6 +16,7 @@
 */
   
 #include "keysignaturepainter.h"
+#include "score/staff.h"
 
 #include <app/pubsub/clickpubsub.h>
 #include <painters/musicfont.h>
@@ -99,22 +100,28 @@ void KeySignaturePainter::initAccidentalPositions()
     myFlatPositions.resize(7);
     mySharpPositions.resize(7);
 
-    // Generate the positions for the key signature accidentals.
-    myFlatPositions.replace(0, myLayout->getStdNotationLine(3));
-    myFlatPositions.replace(1, myLayout->getStdNotationSpace(1));
-    myFlatPositions.replace(2, myLayout->getStdNotationSpace(3));
-    myFlatPositions.replace(3, myLayout->getStdNotationLine(2));
-    myFlatPositions.replace(4, myLayout->getStdNotationLine(4));
-    myFlatPositions.replace(5, myLayout->getStdNotationSpace(2));
-    myFlatPositions.replace(6, myLayout->getStdNotationSpace(4));
+    int clefOffset = 0;
+    if (myLocation.getStaff().getClefType() == Staff::BassClef)
+    {
+        clefOffset = 1;
+    }
 
-    mySharpPositions.replace(0, myLayout->getStdNotationLine(1));
-    mySharpPositions.replace(1, myLayout->getStdNotationSpace(2));
-    mySharpPositions.replace(2, myLayout->getStdNotationSpace(0));
-    mySharpPositions.replace(3, myLayout->getStdNotationLine(2));
-    mySharpPositions.replace(4, myLayout->getStdNotationSpace(3));
-    mySharpPositions.replace(5, myLayout->getStdNotationSpace(1));
-    mySharpPositions.replace(6, myLayout->getStdNotationLine(3));
+    // Generate the positions for the key signature accidentals.
+    myFlatPositions.replace(0, myLayout->getStdNotationLine(3 + clefOffset));
+    myFlatPositions.replace(1, myLayout->getStdNotationSpace(1 + clefOffset));
+    myFlatPositions.replace(2, myLayout->getStdNotationSpace(3 + clefOffset));
+    myFlatPositions.replace(3, myLayout->getStdNotationLine(2 + clefOffset));
+    myFlatPositions.replace(4, myLayout->getStdNotationLine(4 + clefOffset));
+    myFlatPositions.replace(5, myLayout->getStdNotationSpace(2 + clefOffset));
+    myFlatPositions.replace(6, myLayout->getStdNotationSpace(4 + clefOffset));
+
+    mySharpPositions.replace(0, myLayout->getStdNotationLine(1 + clefOffset));
+    mySharpPositions.replace(1, myLayout->getStdNotationSpace(2 + clefOffset));
+    mySharpPositions.replace(2, myLayout->getStdNotationSpace(0 + clefOffset));
+    mySharpPositions.replace(3, myLayout->getStdNotationLine(2 + clefOffset));
+    mySharpPositions.replace(4, myLayout->getStdNotationSpace(3 + clefOffset));
+    mySharpPositions.replace(5, myLayout->getStdNotationSpace(1 + clefOffset));
+    mySharpPositions.replace(6, myLayout->getStdNotationLine(3 + clefOffset));
 
     adjustHeightOffset(myFlatPositions);
     adjustHeightOffset(mySharpPositions);

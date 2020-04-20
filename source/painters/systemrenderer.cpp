@@ -140,7 +140,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout, location);
 
-        drawBarlines(system, systemIndex, layout, isFirstStaff);
+        drawBarlines(system, systemIndex, layout, location.getStaffIndex());
         drawTabNotes(staff, layout);
         drawLegato(staff, *layout);
         drawSlides(staff, *layout);
@@ -200,11 +200,11 @@ void SystemRenderer::drawBarNumber(int systemIndex, const LayoutInfo &layout)
 
 void SystemRenderer::drawBarlines(const System &system, int systemIndex,
                                   const LayoutConstPtr &layout,
-                                  bool isFirstStaff)
+                                  int staffIndex)
 {
     for (const Barline &barline : system.getBarlines())
     {
-        const ScoreLocation location(myScore, systemIndex, -1,
+        const ScoreLocation location(myScore, systemIndex, staffIndex,
                                      barline.getPosition());
 
         const KeySignature &keySig = barline.getKeySignature();
@@ -274,7 +274,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             timeSigPainter->setParentItem(myParentStaff);
         }
 
-        if (barline.hasRehearsalSign() && isFirstStaff)
+        if (barline.hasRehearsalSign() && staffIndex == 0)
         {
             const RehearsalSign &sign = barline.getRehearsalSign();
             const int RECTANGLE_OFFSET = 4;
