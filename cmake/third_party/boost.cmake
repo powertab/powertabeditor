@@ -29,8 +29,11 @@ function ( pte_boost_library libname )
     
     # Figure out the .dll paths.
     
-    set( implib_debug ${Boost_${libname_upper}_LIBRARY_DEBUG} )
     set( implib_release ${Boost_${libname_upper}_LIBRARY_RELEASE} )
+    set( implib_debug ${Boost_${libname_upper}_LIBRARY_DEBUG} )
+    if ( NOT implib_debug )
+        set( implib_debug ${implib_release} )
+    endif ()
     
     get_filename_component( boost_dir ${implib_debug} DIRECTORY )
     get_filename_component( basename_debug ${implib_debug} NAME_WE )
