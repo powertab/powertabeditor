@@ -108,7 +108,7 @@ set( headers
 )
 
 if ( PLATFORM_WIN )
-    set( platform_depends boost_zlib Ws2_32 )
+    set( platform_depends Boost::zlib Ws2_32 )
 else ()
     set( platform_depends )
 endif ()
@@ -118,8 +118,8 @@ pte_library(
     SOURCES ${srcs}
     HEADERS ${headers}
     DEPENDS
-        boost_date_time
-        boost_iostreams
+        Boost::date_time
+        Boost::iostreams
         ${platform_depends}
         ptemidi
         ptescore
