@@ -31,11 +31,11 @@ if ( RTMIDI_FOUND )
 
     set_target_properties(
         rtmidi PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES ${rtmidi_INCLUDE_DIRS}
         IMPORTED_LOCATION ${rtmidi_LIBRARIES}
-        INTERFACE_LINK_LIBRARIES ${_midi_libs}
     )
+    target_include_directories( rtmidi INTERFACE ${rtmidi_INCLUDE_DIRS} )
     target_compile_definitions( rtmidi INTERFACE ${_midi_defs} )
+    target_link_libraries( rtmidi INTERFACE ${_midi_libs} )
 else ()
     set( _src_dir ${PTE_EXTERNAL_DIR}/rtmidi )
     message( STATUS "Using RtMidi library from ${_src_dir}" )
