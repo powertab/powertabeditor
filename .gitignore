@@ -11,3 +11,4 @@ windows/redist
 .DS_Store
 compile_commands.json
 .vs
+.clangd
