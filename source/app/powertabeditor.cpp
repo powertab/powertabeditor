@@ -2559,13 +2559,13 @@ void PowerTabEditor::saveKeyboardShortcuts() const
 std::vector<const Command *> PowerTabEditor::getCommands() const
 {
     auto commands = findChildren<const Command *>();
-    return std::vector(commands.begin(), commands.end());
+    return std::vector<const Command *>(commands.begin(), commands.end());
 }
 
 std::vector<Command *> PowerTabEditor::getCommands()
 {
     auto commands = findChildren<Command *>();
-    return std::vector(commands.begin(), commands.end());
+    return std::vector<Command *>(commands.begin(), commands.end());
 }
 
 void PowerTabEditor::createMixer()
