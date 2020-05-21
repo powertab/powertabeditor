@@ -37,9 +37,6 @@ if ( PLATFORM_WIN )
         IMPORTED_IMPLIB ${rtmidi_LIBRARIES}
         IMPORTED_LOCATION ${rtmidi_LIBRARIES}
     )
-    target_include_directories( rtmidi INTERFACE ${rtmidi_INCLUDE_DIRS} )
-    target_compile_definitions( rtmidi INTERFACE ${_midi_defs} )
-    target_link_libraries( rtmidi INTERFACE ${_midi_libs} )
 else ()
     set_target_properties(
         rtmidi::rtmidi PROPERTIES
