@@ -82,7 +82,7 @@ pte_library(
     HEADERS ${headers}
     PCH precompiled.h
     DEPENDS
-        Boost::boost
+        Boost::headers
         Boost::date_time
         rapidjson::rapidjson
 )

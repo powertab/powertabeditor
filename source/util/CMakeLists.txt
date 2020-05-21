@@ -27,6 +27,6 @@ pte_library(
     SOURCES ${srcs}
     HEADERS ${headers}
     DEPENDS
-        PUBLIC Boost::boost
+        PUBLIC Boost::headers
         PRIVATE rapidjson::rapidjson ${platform_depends}
 )
