@@ -85,7 +85,7 @@ void KeyboardSettingsDialog::initializeCommandTable()
         auto item = new QTreeWidgetItem(
             QStringList({ command->id(), command->toolTip(), shortcut_text }));
 
-        item->setData(0, Qt::UserRole, qVariantFromValue(command));
+        item->setData(0, Qt::UserRole, QVariant::fromValue(command));
         ui->commandsList->addTopLevelItem(item);
     }
 
