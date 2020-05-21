@@ -31,10 +31,10 @@ const Voice *getAdjacentVoice(const ScoreLocation &location, int offset)
     const int staffIndex = location.getStaffIndex();
     const int voiceIndex = location.getVoiceIndex();
 
-    if (systemIndex >= 0 && systemIndex < location.getScore().getSystems().size())
+    if (systemIndex >= 0 && systemIndex < static_cast<int>(location.getScore().getSystems().size()))
     {
         const System &nextSystem = location.getScore().getSystems()[systemIndex];
-        if (staffIndex < nextSystem.getStaves().size())
+        if (staffIndex < static_cast<int>(nextSystem.getStaves().size()))
         {
             const Staff &nextStaff = nextSystem.getStaves()[staffIndex];
             return &nextStaff.getVoices()[voiceIndex];

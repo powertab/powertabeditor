@@ -153,7 +153,7 @@ pte_executable(
     PCH precompiled.h
     PCH_EXCLUDE test_main.cpp
     DEPENDS
-        Catch
+        Catch2::Catch2
         pteapp
 )
 

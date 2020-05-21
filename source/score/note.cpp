@@ -176,12 +176,12 @@ void Note::clearTappedHarmonic()
 
 bool Note::hasArtificialHarmonic() const
 {
-    return myArtificialHarmonic.is_initialized();
+    return myArtificialHarmonic.has_value();
 }
 
 const ArtificialHarmonic &Note::getArtificialHarmonic() const
 {
-    return myArtificialHarmonic.get();
+    return *myArtificialHarmonic;
 }
 
 void Note::setArtificialHarmonic(const ArtificialHarmonic &harmonic)
@@ -196,12 +196,12 @@ void Note::clearArtificialHarmonic()
 
 bool Note::hasBend() const
 {
-    return myBend.is_initialized();
+    return myBend.has_value();
 }
 
 const Bend &Note::getBend() const
 {
-    return myBend.get();
+    return *myBend;
 }
 
 void Note::setBend(const Bend &bend)
@@ -216,12 +216,12 @@ void Note::clearBend()
 
 bool Note::hasLeftHandFingering() const
 {
-    return myLeftHandFingering.is_initialized();
+    return myLeftHandFingering.has_value();
 }
 
 const LeftHandFingering &Note::getLeftHandFingering() const
 {
-    return myLeftHandFingering.get();
+    return *myLeftHandFingering;
 }
 
 void Note::setLeftHandFingering(const LeftHandFingering &fingering)

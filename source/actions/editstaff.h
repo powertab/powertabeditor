@@ -36,7 +36,7 @@ private:
 
     ScoreLocation myLocation;
     System myOriginalSystem;
-    boost::optional<System> myOriginalNextSystem;
+    std::optional<System> myOriginalNextSystem;
     Staff::ClefType myClef;
     int myNumStrings;
 };

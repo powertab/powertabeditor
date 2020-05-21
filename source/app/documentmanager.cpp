@@ -96,7 +96,7 @@ void DocumentManager::removeDocument(int index)
 
 bool DocumentManager::hasOpenDocuments() const
 {
-    return myCurrentIndex.is_initialized();
+    return myCurrentIndex.has_value();
 }
 
 void DocumentManager::setCurrentDocumentIndex(int index)
@@ -143,7 +143,7 @@ Document::Document()
 
 bool Document::hasFilename() const
 {
-    return myFilename.is_initialized();
+    return myFilename.has_value();
 }
 
 const Document::PathType &Document::getFilename() const
@@ -171,7 +171,8 @@ void Document::validateViewOptions()
     if (myScore.getViewFilters().empty())
         myViewOptions.clearFilter();
     else if (myViewOptions.getFilter() &&
-             *myViewOptions.getFilter() >= myScore.getViewFilters().size())
+             *myViewOptions.getFilter() >=
+                 static_cast<int>(myScore.getViewFilters().size()))
     {
         myViewOptions.setFilter(0);
     }

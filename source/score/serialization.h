@@ -20,17 +20,17 @@
 
 #include <array>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/optional.hpp>
-#include <boost/variant.hpp>
 #include <bitset>
 #include "fileversion.h"
 #include <map>
+#include <optional>
 #include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/ostreamwrapper.h>
 #include <rapidjson/prettywriter.h>
 #include <stack>
 #include <stdexcept>
-#include <util/rapidjson_iostreams.h>
+#include <variant>
 #include <vector>
 
 namespace ScoreUtils
@@ -59,7 +59,7 @@ public:
 private:
     typedef rapidjson::GenericValue<rapidjson::UTF8<> > JSONValue;
 
-    struct ValueVisitor : public boost::static_visitor<const JSONValue &>
+    struct ValueVisitor
     {
         const JSONValue &operator()(
             const JSONValue::ConstMemberIterator &it) const
@@ -74,7 +74,7 @@ private:
         }
     };
 
-    struct NameVisitor : public boost::static_visitor<std::string>
+    struct NameVisitor
     {
         std::string operator()(const JSONValue::ConstMemberIterator &it) const
         {
@@ -87,31 +87,19 @@ private:
         }
     };
 
-    struct AdvanceVisitor : public boost::static_visitor<void>
-    {
-        template <typename Iterator>
-        void operator()(Iterator &it) const
-        {
-            ++it;
-        }
-    };
-
     void advance()
     {
-        AdvanceVisitor visitor;
-        myIterators.top().apply_visitor(visitor);
+        std::visit([](auto &&it) { ++it; }, myIterators.top());
     }
 
     std::string name() const
     {
-        NameVisitor visitor;
-        return myIterators.top().apply_visitor(visitor);
+        return std::visit(NameVisitor(), myIterators.top());
     }
 
     const JSONValue &value() const
     {
-        ValueVisitor visitor;
-        return myIterators.top().apply_visitor(visitor);
+        return std::visit(ValueVisitor(), myIterators.top());
     }
 
     inline void read(int &val);
@@ -134,7 +122,7 @@ private:
     void read(std::bitset<N> &bits);
 
     template <typename T>
-    void read(boost::optional<T> &val);
+    void read(std::optional<T> &val);
 
     inline void read(boost::gregorian::date &date);
 
@@ -152,13 +140,13 @@ private:
         myIterators.pop();
     }
 
-    Util::RapidJSON::IStreamWrapper myStream;
+    rapidjson::IStreamWrapper myStream;
     rapidjson::Document myDocument;
     FileVersion myVersion;
 
 	// Iterate over both objects and arrays in a uniform manner.
-    typedef boost::variant<JSONValue::ConstMemberIterator,
-                           JSONValue::ConstValueIterator> Iterator;
+    using Iterator = std::variant<JSONValue::ConstMemberIterator,
+                                  JSONValue::ConstValueIterator>;
     std::stack<Iterator> myIterators;
 };
 
@@ -207,7 +195,7 @@ private:
     void write(const std::bitset<N> &bits);
 
     template <typename T>
-    void write(const boost::optional<T> &val);
+    void write(const std::optional<T> &val);
 
     inline void write(const boost::gregorian::date &date);
 
@@ -225,8 +213,8 @@ private:
         myStream.EndObject();
     }
 
-    Util::RapidJSON::OStreamWrapper myWriteStream;
-    rapidjson::PrettyWriter<Util::RapidJSON::OStreamWrapper> myStream;
+    rapidjson::OStreamWrapper myWriteStream;
+    rapidjson::PrettyWriter<rapidjson::OStreamWrapper> myStream;
     const FileVersion myVersion;
 };
 
@@ -298,7 +286,9 @@ void InputArchive::read(std::map<K, V, C> &map)
 
     for (long long i = 0; i < size; ++i)
     {
-        const K key = boost::lexical_cast<K>(name());
+        static_assert(std::is_same<K, int>::value,
+                      "Only integer keys are currently supported");
+        const K key = std::stoi(name());
 
         V value;
         read(value);
@@ -330,7 +320,7 @@ void InputArchive::read(std::bitset<N> &bits)
 }
 
 template <typename T>
-void InputArchive::read(boost::optional<T> &val)
+void InputArchive::read(std::optional<T> &val)
 {
     if (value().IsNull())
         val.reset();
@@ -338,7 +328,7 @@ void InputArchive::read(boost::optional<T> &val)
     {
         T data;
         read(data);
-        val.reset(data);
+        val = data;
     }
 }
 
@@ -408,7 +398,7 @@ void OutputArchive::write(const std::bitset<N> &bits)
 }
 
 template <typename T>
-void OutputArchive::write(const boost::optional<T> &val)
+void OutputArchive::write(const std::optional<T> &val)
 {
     if (val)
         write(*val);

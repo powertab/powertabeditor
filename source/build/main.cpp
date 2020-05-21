@@ -30,7 +30,11 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <string>
-#include <withershins.hpp>
+
+#ifdef __APPLE__
+#define BOOST_STACKTRACE_GNU_SOURCE_NOT_REQUIRED
+#endif
+#include <boost/stacktrace.hpp>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -40,30 +44,16 @@
 static void displayError(const std::string &reason)
 {
     std::string message = reason;
-
-    // Generate a stack trace.
-    std::vector<withershins::frame> trace = withershins::trace();
-    for (const withershins::frame &frame : trace)
+#if BOOST_VERSION >= 106900
+    message += boost::stacktrace::to_string(
+        boost::stacktrace::stacktrace());
+#else
+    for (auto &&frame : boost::stacktrace::stacktrace())
     {
-        message += '\n';
-        message += frame.module_name();
-
-        if (!frame.file_name().empty())
-        {
-            message += " (";
-            message += frame.file_name();
-            message += ':';
-            message += std::to_string(frame.line_number());
-            message += ')';
-        }
-
-        message += " [";
-        if (!frame.function_name().empty())
-            message += frame.function_name();
-        else
-            message += "???";
-        message += ']';
+        message += boost::stacktrace::to_string(frame);
+        message += "\n";
     }
+#endif
 
     // If there is no QApplication instance, something went seriously wrong
     // during startup - just dump the error to the console.

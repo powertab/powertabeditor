@@ -20,8 +20,6 @@
 #include <app/pubsub/clickpubsub.h>
 #include <app/scorearea.h>
 #include <app/viewoptions.h>
-#include <boost/algorithm/clamp.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <painters/antialiasedpathitem.h>
@@ -43,6 +41,9 @@
 #include <score/system.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
+#include <util/tostring.h>
+
+#include <algorithm>
 
 void SystemRenderer::centerHorizontally(QGraphicsItem &item, double xmin,
                                         double xmax)
@@ -330,8 +331,8 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
 
             for (const Note &note : pos.getNotes())
             {
-                const QString text = QString::fromStdString(
-                            boost::lexical_cast<std::string>(note));
+                const QString text =
+                    QString::fromStdString(Util::toString(note));
 
                 auto tabNote = new SimpleTextItem(
                     text, myPlainTextFont,
@@ -472,8 +473,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
 
         // Draw the text indicating the repeat numbers.
         auto text = new SimpleTextItem(
-            QString::fromStdString(boost::lexical_cast<std::string>(ending)),
-            myPlainTextFont);
+            QString::fromStdString(Util::toString(ending)), myPlainTextFont);
         text->setPos(location + TEXT_PADDING, height + TEXT_PADDING / 2.0);
         text->setParentItem(myParentSystem);
 
@@ -501,7 +501,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         endX += 0.5 * layout.getPositionSpacing();
 
         // Ensure that the line doesn't extend past the edge of the system.
-        endX = boost::algorithm::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
+        endX = std::clamp(endX, 0.0, LayoutInfo::STAFF_WIDTH);
 
         auto horizLine = new QGraphicsLineItem();
         horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
@@ -670,8 +670,7 @@ void SystemRenderer::drawChordText(const System &system,
     for (const ChordText &chord : system.getChords())
     {
         const double x = layout.getPositionX(chord.getPosition());
-        const std::string text =
-            boost::lexical_cast<std::string>(chord.getChordName());
+        const std::string text = Util::toString(chord.getChordName());
 
         auto textItem =
             new SimpleTextItem(QString::fromStdString(text), myPlainTextFont);
@@ -1045,9 +1044,8 @@ QGraphicsItem* SystemRenderer::createArtificialHarmonicText(
     name.setBassKey(harmonic.getKey());
     name.setBassVariation(harmonic.getVariation());
 
-    return createPlainTextSymbol(
-                QString::fromStdString(boost::lexical_cast<std::string>(name)),
-                QFont::StyleNormal);
+    return createPlainTextSymbol(QString::fromStdString(Util::toString(name)),
+                                 QFont::StyleNormal);
 }
 
 void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
@@ -1611,8 +1609,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
         const double rightX = last->getX();
 
         // Draw the value of the irregular grouping.
-        const QString text = QString::fromStdString(
-                    boost::lexical_cast<std::string>(group));
+        const QString text = QString::fromStdString(Util::toString(group));
 
         QFont font = myMusicNotationFont;
         font.setItalic(true);
@@ -1661,7 +1658,7 @@ void SystemRenderer::drawMultiBarRest(const System &system,
                 layout.getPositionX(leftBar.getPosition()) :
                 layout.getPositionX(leftBar.getPosition() + 1);
 
-    const double rightX = boost::algorithm::clamp(
+    const double rightX = std::clamp(
                 layout.getPositionX(rightBar->getPosition()), 0.0,
                 LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
 
@@ -1846,7 +1843,7 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
     else
     {
         path.moveTo(left, yStart);
-        right = boost::algorithm::clamp(right, left, left + 3.0);
+        right = std::clamp(right, left, left + 3.0);
         path.lineTo(right, yStart);
         path.lineTo(right, yEnd);
     }

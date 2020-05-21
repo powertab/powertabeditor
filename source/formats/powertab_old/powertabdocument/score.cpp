@@ -94,38 +94,18 @@ bool Score::Deserialize(PowerTabInputStream& stream, uint16_t version)
 
 namespace
 {
-
-template <class Symbol>
-struct IsSymbolInSystem : std::unary_function<const Symbol&, bool>
-{
-    IsSymbolInSystem(size_t systemIndex) :
-        systemIndex(systemIndex)
-    {
-    }
-
-    bool operator()(const Symbol& symbol) const
-    {
-        return symbol->GetSystem() == systemIndex;
-    }
-
-    const size_t systemIndex;
-};
-
 /// Helper for GetAlternateEndingsInSystem, GetTempoMarkersInSystem, etc.
 template <class Symbol>
-void GetSymbolsInSystem(std::vector<Symbol>& output, const std::vector<Symbol>& symbolList, const size_t systemIndex)
+void GetSymbolsInSystem(std::vector<Symbol> &output,
+                        const std::vector<Symbol> &symbolList,
+                        const size_t systemIndex)
 {
     output.clear();
 
-    // remove_copy_if did not compile on OSX, maybe I could have worked out what
-    // was wrong but this is a lot easier to understand and works
-    typename std::vector<Symbol>::const_iterator it;
-    for (it = symbolList.begin() ; it != symbolList.end(); ++it)
+    for (const Symbol &symbol : symbolList)
     {
-        if ((*it)->GetSystem() == systemIndex)
-        {
-            output.push_back(*it);
-        }
+        if (symbol->GetSystem() == systemIndex)
+            output.push_back(symbol);
     }
 }
 
@@ -135,7 +115,9 @@ template <class Symbol>
 void RemoveSymbolsInSystem(std::vector<Symbol>& symbolList, const size_t systemIndex)
 {
     symbolList.erase(std::remove_if(symbolList.begin(), symbolList.end(),
-                                    IsSymbolInSystem<Symbol>(systemIndex)),
+                                    [=](const Symbol &symbol) {
+                                        return symbol->GetSystem() == systemIndex;
+                                    }),
                      symbolList.end());
 
     // Shift following symbols up by one system.

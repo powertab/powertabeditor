@@ -24,5 +24,5 @@ pte_library(
     DEPENDS
         ptescore
         Qt5::Core
-        rtmidi
+        rtmidi::rtmidi
 )

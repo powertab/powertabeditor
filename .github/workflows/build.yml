@@ -1,0 +1,58 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build-ubuntu:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Apt Dependencies
+      run: sudo apt update && sudo apt install ninja-build qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev libboost-program-options-dev rapidjson-dev libasound2-dev librtmidi-dev
+    - name: Install Other Dependencies
+      run: vcpkg install catch2 pugixml
+    - name: Create Build Directory
+      run: cmake -E make_directory ${{runner.workspace}}/build
+    - name: Generate Project
+      working-directory: ${{runner.workspace}}/build
+      # We could use the -S and -B options, but we only have CMake 3.12 here.
+      run: cmake ${GITHUB_WORKSPACE} -G Ninja -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    - name: Build
+      run: ninja -C ${{runner.workspace}}/build
+    - name: Test
+      run: ${{runner.workspace}}/build/bin/pte_tests
+
+  build-osx:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Dependencies
+      run: brew install boost cmake catch2 ninja pugixml qt5 pugixml rapidjson rtmidi
+    - name: Generate Project
+      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
+    - name: Build
+      run: cmake --build ${{runner.workspace}}/build
+    - name: Test
+      run: ${{runner.workspace}}/build/bin/pte_tests
+
+  build-windows:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Dependencies
+      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-program-options boost-range boost-rational boost-scope-exit boost-signals2 boost-stacktrace catch2 pugixml rapidjson rtmidi
+    # Building Qt via vcpkg would take a while ...
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+    - name: Generate Project
+      run: cmake -A x64 -S ${env:GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+    - name: Build
+      run: cmake --build ${{runner.workspace}}/build
+    - name: Test
+      run: ${{runner.workspace}}/build/bin/pte_tests.exe

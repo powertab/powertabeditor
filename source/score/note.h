@@ -19,10 +19,10 @@
 #define SCORE_NOTE_H
 
 #include <bitset>
-#include <boost/optional.hpp>
 #include "chordname.h"
 #include "fileversion.h"
 #include <iosfwd>
+#include <optional>
 #include <vector>
 
 class ArtificialHarmonic
@@ -268,9 +268,9 @@ private:
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myTrilledFret;
     int myTappedHarmonicFret;
-    boost::optional<ArtificialHarmonic> myArtificialHarmonic;
-    boost::optional<Bend> myBend;
-    boost::optional<LeftHandFingering> myLeftHandFingering;
+    std::optional<ArtificialHarmonic> myArtificialHarmonic;
+    std::optional<Bend> myBend;
+    std::optional<LeftHandFingering> myLeftHandFingering;
 };
 
 template <class Archive>

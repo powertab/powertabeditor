@@ -18,8 +18,8 @@
 #include "chordnamedialog.h"
 #include "ui_chordnamedialog.h"
 
-#include <boost/lexical_cast.hpp>
 #include <QButtonGroup>
+#include <util/tostring.h>
 
 ChordNameDialog::ChordNameDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::ChordNameDialog)
@@ -163,7 +163,7 @@ void ChordNameDialog::updateState()
                             ui->sus4CheckBox->isChecked());
 
     ui->previewLineEdit->setText(
-        QString::fromStdString(boost::lexical_cast<std::string>(myChord)));
+        QString::fromStdString(Util::toString(myChord)));
 }
 
 void ChordNameDialog::onTonicVariationClicked(QAbstractButton *clickedButton)

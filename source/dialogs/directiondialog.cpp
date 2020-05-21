@@ -125,7 +125,7 @@ void DirectionDialog::onRemoveDirection()
 void DirectionDialog::onSymbolIndexChanged(int index)
 {
     if (myCurrentSymbol >= 0 &&
-        myCurrentSymbol < myDirection.getSymbols().size())
+        myCurrentSymbol < static_cast<int>(myDirection.getSymbols().size()))
     {
         myDirection.getSymbols()[myCurrentSymbol] = DirectionSymbol(
                     static_cast<DirectionSymbol::SymbolType>(
@@ -135,7 +135,7 @@ void DirectionDialog::onSymbolIndexChanged(int index)
                     ui->repeatNumberSpinBox->value());
     }
 
-    if (index >= 0 && index < myDirection.getSymbols().size())
+    if (index >= 0 && index < static_cast<int>(myDirection.getSymbols().size()))
     {
         const DirectionSymbol &symbol = myDirection.getSymbols()[index];
 

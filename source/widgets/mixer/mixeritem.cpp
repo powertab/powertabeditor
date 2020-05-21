@@ -19,9 +19,9 @@
 #include "ui_mixeritem.h"
 
 #include <app/pubsub/playerpubsub.h>
-#include <boost/lexical_cast.hpp>
 #include <dialogs/tuningdialog.h>
 #include <score/player.h>
+#include <util/tostring.h>
 
 #include <QStyle>
 
@@ -45,8 +45,8 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
     ui->playerNameEdit->setText(ui->playerNameLabel->text());
     ui->playerVolume->setValue(player.getMaxVolume());
     ui->playerPan->setValue(player.getPan());
-    ui->playerTuning->setText(QString::fromStdString(
-        boost::lexical_cast<std::string>(player.getTuning())));
+    ui->playerTuning->setText(
+        QString::fromStdString(Util::toString(player.getTuning())));
 
     ui->removeButton->setIcon(
         style()->standardIcon(QStyle::SP_TitleBarCloseButton));

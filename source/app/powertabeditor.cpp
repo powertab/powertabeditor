@@ -88,7 +88,6 @@
 #include <audio/midiplayer.h>
 #include <audio/settings.h>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/range/algorithm/transform.hpp>
 #include <chrono>
 
@@ -142,6 +141,8 @@
 
 #include <score/utils.h>
 #include <score/voiceutils.h>
+
+#include <util/tostring.h>
 
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
@@ -255,7 +256,7 @@ void PowerTabEditor::openFile(QString filename)
     qDebug() << "Opening file: " << filename;
 
     QFileInfo fileInfo(filename);
-    boost::optional<FileFormat> format = myFileFormatManager->findFormat(
+    std::optional<FileFormat> format = myFileFormatManager->findFormat(
                 fileInfo.suffix().toStdString());
 
     if (!format)
@@ -377,7 +378,7 @@ bool PowerTabEditor::saveFile(QString path)
     QString extension = info.suffix();
     Q_ASSERT(!extension.isEmpty());
 
-    boost::optional<FileFormat> format =
+    std::optional<FileFormat> format =
         myFileFormatManager->findFormat(extension.toStdString());
     if (!format)
     {
@@ -779,7 +780,7 @@ void PowerTabEditor::removeSelectedPositions()
     std::vector<int> positions;
     std::transform(selectedPositions.begin(), selectedPositions.end(),
                    std::back_inserter(positions),
-                   std::mem_fun(&Position::getPosition));
+                   [](const Position *p) { return p->getPosition(); });
 
     // Remove each of the selected positions.
     for (int position : positions)
@@ -791,7 +792,7 @@ void PowerTabEditor::removeSelectedPositions()
 
     std::vector<int> barPositions;
     std::transform(bars.begin(), bars.end(), std::back_inserter(barPositions),
-                   std::mem_fun(&Barline::getPosition));
+                   [](const Barline *b) { return b->getPosition(); });
 
     // Remove each of the selected barlines.
     for (int position : barPositions)
@@ -2557,12 +2558,14 @@ void PowerTabEditor::saveKeyboardShortcuts() const
 
 std::vector<const Command *> PowerTabEditor::getCommands() const
 {
-    return findChildren<const Command *>().toVector().toStdVector();
+    auto commands = findChildren<const Command *>();
+    return std::vector<const Command *>(commands.begin(), commands.end());
 }
 
 std::vector<Command *> PowerTabEditor::getCommands()
 {
-    return findChildren<Command *>().toVector().toStdVector();
+    auto commands = findChildren<Command *>();
+    return std::vector<Command *>(commands.begin(), commands.end());
 }
 
 void PowerTabEditor::createMixer()
@@ -3030,7 +3033,11 @@ void PowerTabEditor::setupNewTab()
     // Each tab is 200px wide, so we want to shorten the name if it's wider
     // than 140px.
     bool chopped = false;
+#if (QT_VERSION >= QT_VERSION_CHECK(5,11,0))
+    while (fm.horizontalAdvance(title) > 140)
+#else
     while (fm.width(title) > 140)
+#endif
     {
         title.chop(1);
         chopped = true;
@@ -3400,7 +3407,7 @@ void PowerTabEditor::updateZoom(double percent)
 void PowerTabEditor::updateLocationLabel()
 {
     myPlaybackWidget->updateLocationLabel(
-        boost::lexical_cast<std::string>(getCaret().getLocation()));
+        Util::toString(getCaret().getLocation()));
 }
 
 void PowerTabEditor::editKeySignature(const ScoreLocation &keyLocation)

@@ -18,7 +18,7 @@
 #ifndef DIALOGS_VIEWFILTERPRESENTER_H
 #define DIALOGS_VIEWFILTERPRESENTER_H
 
-#include <boost/optional.hpp>
+#include <optional>
 #include <score/viewfilter.h>
 #include <string>
 #include <vector>
@@ -38,7 +38,7 @@ public:
     virtual bool launch() = 0;
 
     virtual void update(const std::vector<std::string> &names,
-                        const boost::optional<int> &selection,
+                        const std::optional<int> &selection,
                         const std::vector<FilterRule> &rules) = 0;
 };
 
@@ -65,7 +65,7 @@ private:
 
     ViewFilterView &myView;
     std::vector<ViewFilter> myFilters;
-    boost::optional<int> mySelection;
+    std::optional<int> mySelection;
 };
 
 #endif

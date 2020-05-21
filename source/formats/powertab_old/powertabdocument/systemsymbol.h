@@ -12,7 +12,7 @@
 #ifndef SYSTEMSYMBOL_H
 #define SYSTEMSYMBOL_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "powertabobject.h"
 #include "macros.h"

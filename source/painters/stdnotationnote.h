@@ -19,6 +19,7 @@
 #define PAINTERS_STDNOTATIONNOTE_H
 
 #include <array>
+#include <optional>
 #include <painters/beamgroup.h>
 #include <painters/notestem.h>
 #include <QChar>
@@ -47,7 +48,7 @@ public:
 
     StdNotationNote(const Voice &voice, const Position &pos, const Note &note,
                     const KeySignature &key, const Tuning &tuning, double y,
-                    const boost::optional<int> &tie);
+                    const std::optional<int> &tie);
 
     static void getNotesInStaff(
         const Score &score, const System &system, int systemIndex,
@@ -73,7 +74,7 @@ public:
     /// Force the accidental to be shown, even if it's part of the key signature.
     void showAccidental();
 
-    const boost::optional<int> &getTie() const;
+    const std::optional<int> &getTie() const;
     const Voice &getVoice() const;
 
 private:
@@ -102,7 +103,7 @@ private:
     /// whole notes, etc.
     static void computeBeamingGroups(
         std::vector<NoteStem> &stems, const std::vector<double> &durations,
-        const boost::optional<double> &subgroupLength,
+        const std::optional<double> &subgroupLength,
         size_t firstStemIndexInBar, size_t firstStemIndex, size_t lastStemIndex,
         std::vector<BeamGroup> &groups);
 
@@ -115,7 +116,7 @@ private:
     const Note *myNote;
     const KeySignature *myKey;
     const Tuning *myTuning;
-    const boost::optional<int> myTie;
+    const std::optional<int> myTie;
 };
 
 #endif

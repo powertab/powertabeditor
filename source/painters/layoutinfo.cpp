@@ -17,7 +17,7 @@
   
 #include "layoutinfo.h"
 
-#include <boost/algorithm/clamp.hpp>
+#include <algorithm>
 #include <painters/verticallayout.h>
 #include <score/keysignature.h>
 #include <score/score.h>
@@ -682,8 +682,8 @@ static int getBendHeight(const Bend &bend)
 static int getBendEndPosition(const Voice &voice, const Bend &bend, int index)
 {
     // Move forward by the appropriate number of positions.
-    index = boost::algorithm::clamp(index + bend.getDuration(), 0,
-                                    voice.getPositions().size() - 1);
+    index = std::clamp(index + bend.getDuration(), 0,
+                       static_cast<int>(voice.getPositions().size()) - 1);
     return voice.getPositions()[index].getPosition();
 }
 

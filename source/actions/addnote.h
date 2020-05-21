@@ -19,7 +19,7 @@
 #define ACTIONS_ADDNOTE_H
 
 #include <QUndoCommand>
-#include <boost/optional.hpp>
+#include <optional>
 #include <score/position.h>
 #include <score/scorelocation.h>
 
@@ -34,7 +34,7 @@ public:
 
 private:
     ScoreLocation myLocation;
-    boost::optional<Position> myOriginalPosition;
+    std::optional<Position> myOriginalPosition;
     const Note myNote;
     const Position::DurationType myDuration;
 };

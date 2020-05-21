@@ -23,7 +23,7 @@
 #include <score/staff.h>
 #include <widgets/common.h>
 
-#include <boost/algorithm/clamp.hpp>
+#include <algorithm>
 
 #include <QAction>
 #include <QButtonGroup>
@@ -155,7 +155,7 @@ double PlaybackWidget::validateZoom(double percent)
         ui->zoomComboBox->setStyleSheet("QComboBox { color : black; }");
     }
 
-    return boost::algorithm::clamp(percent, MIN_ZOOM, MAX_ZOOM);
+    return std::clamp(percent, MIN_ZOOM, MAX_ZOOM);
 }
 
 void PlaybackWidget::reset(const Document &doc)

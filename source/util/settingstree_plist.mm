@@ -26,7 +26,7 @@ using SettingValue = SettingsTree::SettingValue;
 using SettingList = SettingsTree::SettingList;
 using SettingMap = SettingsTree::SettingMap;
 
-struct PListValueVisitor : public boost::static_visitor<NSObject *>
+struct PListValueVisitor
 {
     NSObject *operator()(int x) const
     {
@@ -45,11 +45,11 @@ struct PListValueVisitor : public boost::static_visitor<NSObject *>
 
     NSObject *operator()(const SettingList &list) const
     {
-        auto array = [NSMutableArray arrayWithCapacity:list.size()]; 
+        auto array = [NSMutableArray arrayWithCapacity:list.values.size()]; 
 
-        for (auto &&value : list)
+        for (auto &&value : list.values)
         {
-            auto obj = boost::apply_visitor(*this, value);
+            auto obj = std::visit(*this, value);
             [array addObject:obj];
         }
 
@@ -62,7 +62,7 @@ struct PListValueVisitor : public boost::static_visitor<NSObject *>
     }
 };
 
-struct PListSerializer : public boost::static_visitor<void>
+struct PListSerializer
 {
     PListSerializer() : myPrefs([NSUserDefaults standardUserDefaults])
     {
@@ -84,14 +84,14 @@ struct PListSerializer : public boost::static_visitor<void>
 
     void operator()(const SettingMap &map)
     {
-        for (auto &&pair : map)
+        for (auto &&pair : map.values)
         {
             std::string prev_key = myKey;
             if (!myKey.empty())
                 myKey += ".";
             myKey += pair.first;
 
-            auto obj = boost::apply_visitor(PListValueVisitor(), pair.second);
+            auto obj = std::visit(PListValueVisitor(), pair.second);
             if (obj)
             {
                 NSString *key =
@@ -99,7 +99,7 @@ struct PListSerializer : public boost::static_visitor<void>
                 [myPrefs setObject:obj forKey:key];
             }
             else
-                boost::apply_visitor(*this, pair.second);
+                std::visit(*this, pair.second);
 
             myKey = prev_key;
         }
@@ -113,7 +113,7 @@ private:
 void SettingsTree::saveToPlist() const
 {
     PListSerializer serializer;
-    boost::apply_visitor(serializer, myTree);
+    std::visit(serializer, myTree);
 }
 
 static SettingValue converToSettingValue(NSObject *obj)
@@ -124,7 +124,7 @@ static SettingValue converToSettingValue(NSObject *obj)
         SettingList settings;
 
         for (NSObject *child in list)
-            settings.push_back(converToSettingValue(child));
+            settings.values.push_back(converToSettingValue(child));
 
         return settings;
     }

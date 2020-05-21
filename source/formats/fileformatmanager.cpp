@@ -35,8 +35,8 @@ FileFormatManager::FileFormatManager(const SettingsManager &settings_manager)
     myExporters.emplace_back(new MidiExporter(settings_manager));
 }
 
-boost::optional<FileFormat> FileFormatManager::findFormat(
-        const std::string &extension) const
+std::optional<FileFormat> FileFormatManager::findFormat(
+    const std::string &extension) const
 {
     for (auto &importer : myImporters)
     {
@@ -50,7 +50,7 @@ boost::optional<FileFormat> FileFormatManager::findFormat(
             return exporter->fileFormat();
     }
 
-    return boost::none;
+    return std::nullopt;
 }
 
 std::string FileFormatManager::importFileFilter() const

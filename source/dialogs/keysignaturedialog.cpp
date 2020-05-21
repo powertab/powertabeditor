@@ -18,8 +18,8 @@
 #include "keysignaturedialog.h"
 #include "ui_keysignaturedialog.h"
 
-#include <boost/lexical_cast.hpp>
 #include <score/keysignature.h>
+#include <util/tostring.h>
 
 KeySignatureDialog::KeySignatureDialog(QWidget *parent,
                                        const KeySignature &currentKey)
@@ -113,16 +113,16 @@ void KeySignatureDialog::populateKeyTypes(KeySignature::KeyType type)
     for (uint8_t i = 0; i <= KeySignature::MAX_NUM_ACCIDENTALS; ++i)
     {
         tempKey.setNumAccidentals(i);
-        ui->keysComboBox->addItem(QString::fromStdString(
-                                      boost::lexical_cast<std::string>(tempKey)));
+        ui->keysComboBox->addItem(
+            QString::fromStdString(Util::toString(tempKey)));
     }
 
     tempKey.setSharps(false);
     for (uint8_t i = 1; i <= KeySignature::MAX_NUM_ACCIDENTALS; ++i)
     {
         tempKey.setNumAccidentals(i);
-        ui->keysComboBox->addItem(QString::fromStdString(
-                                      boost::lexical_cast<std::string>(tempKey)));
+        ui->keysComboBox->addItem(
+            QString::fromStdString(Util::toString(tempKey)));
     }
 
     ui->keysComboBox->setCurrentIndex(originalSelection);

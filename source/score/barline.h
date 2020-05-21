@@ -18,11 +18,12 @@
 #ifndef SCORE_BARLINE_H
 #define SCORE_BARLINE_H
 
-#include <boost/optional.hpp>
 #include "fileversion.h"
 #include "keysignature.h"
 #include "rehearsalsign.h"
 #include "timesignature.h"
+
+#include <optional>
 
 class Barline
 {
@@ -89,7 +90,7 @@ private:
     int myRepeatCount;
     KeySignature myKeySignature;
     TimeSignature myTimeSignature;
-    boost::optional<RehearsalSign> myRehearsalSign;
+    std::optional<RehearsalSign> myRehearsalSign;
 };
 
 template <class Archive>

@@ -20,7 +20,7 @@
 
 #include <array>
 #include <cstdint>
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -110,9 +110,9 @@ struct Note
     bool myIsTied;
     bool myIsMuted;
     /// Optional dynamic, where 1 = ppp, ... 9 = fff.
-    boost::optional<int> myDynamic;
-    boost::optional<int> myTrilledFret;
-    boost::optional<GraceNote> myGraceNote;
+    std::optional<int> myDynamic;
+    std::optional<int> myTrilledFret;
+    std::optional<GraceNote> myGraceNote;
     bool myIsLetRing;
     bool myIsHammerOnOrPullOff;
     bool myHasPalmMute;
@@ -145,9 +145,9 @@ struct Beat
     bool myIsDotted;
     bool myIsRest;
     int myDuration; ///< 4 -> quarter note, 8 -> eighth note, etc.
-    boost::optional<int> myIrregularGrouping;
-    boost::optional<std::string> myText;
-    boost::optional<int> myTempoChange;
+    std::optional<int> myIrregularGrouping;
+    std::optional<std::string> myText;
+    std::optional<int> myTempoChange;
     bool myIsVibrato;
     bool myIsNaturalHarmonic;
     bool myIsArtificialHarmonic;
@@ -187,16 +187,16 @@ struct Measure
     bool myIsDoubleBar;
     bool myIsRepeatBegin;
     /// The numerator and denominator if there is a time signature change,
-    boost::optional<std::pair<int, int>> myTimeSignatureChange;
+    std::optional<std::pair<int, int>> myTimeSignatureChange;
     /// If there is a repeat end, this contains the repeat count.
-    boost::optional<int> myRepeatEnd;
+    std::optional<int> myRepeatEnd;
     /// If there is a key change, this contains the key and whether it is
     /// minor.
-    boost::optional<std::pair<int8_t, bool>> myKeyChange;
+    std::optional<std::pair<int8_t, bool>> myKeyChange;
     /// Optional rehearsal sign.
-    boost::optional<std::string> myMarker;
+    std::optional<std::string> myMarker;
     /// Optional alternate ending number.
-    boost::optional<int> myAlternateEnding;
+    std::optional<int> myAlternateEnding;
 
     /// One staff per track.
     std::vector<Staff> myStaves;

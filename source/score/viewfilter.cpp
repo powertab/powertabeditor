@@ -85,7 +85,7 @@ bool FilterRule::accept(const Score &score, const ActivePlayer &p) const
     switch (mySubject)
     {
     case PLAYER_NAME:
-        return boost::regex_match(player.getDescription(), myRegex);
+        return std::regex_match(player.getDescription(), myRegex);
     case NUM_STRINGS:
     {
         const int value = player.getTuning().getStringCount();
@@ -103,6 +103,9 @@ bool FilterRule::accept(const Score &score, const ActivePlayer &p) const
         case GREATER_THAN_EQUAL:
             return value >= myIntValue;
         }
+
+        assert(false);
+        return false;
     }
     default:
         assert(!"Unexpected subject for filter.");

@@ -19,8 +19,8 @@
 #define SCORE_SCOREINFO_H
 
 #include <boost/date_time/gregorian/greg_date.hpp>
-#include <boost/optional.hpp>
 #include "fileversion.h"
+#include <optional>
 #include <string>
 
 class SongData
@@ -182,10 +182,10 @@ public:
 private:
     std::string myTitle;
     std::string myArtist;
-    boost::optional<AudioReleaseInfo> myAudioReleaseInfo;
-    boost::optional<VideoReleaseInfo> myVideoReleaseInfo;
-    boost::optional<BootlegInfo> myBootlegReleaseInfo;
-    boost::optional<AuthorInfo> myAuthorInfo;
+    std::optional<AudioReleaseInfo> myAudioReleaseInfo;
+    std::optional<VideoReleaseInfo> myVideoReleaseInfo;
+    std::optional<BootlegInfo> myBootlegReleaseInfo;
+    std::optional<AuthorInfo> myAuthorInfo;
     std::string myArranger;
     std::string myTranscriber;
     std::string myCopyright;
@@ -323,8 +323,8 @@ public:
     void setLessonData(const LessonData &data);
 
 private:
-    boost::optional<SongData> mySongData;
-    boost::optional<LessonData> myLessonData;
+    std::optional<SongData> mySongData;
+    std::optional<LessonData> myLessonData;
 };
 
 template <class Archive>

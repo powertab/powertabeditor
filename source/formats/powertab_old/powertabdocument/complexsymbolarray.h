@@ -20,7 +20,7 @@
 
 #include <algorithm>
 #include <array>
-#include <boost/cstdint.hpp>
+#include <cstdint>
 #include "macros.h"
 
 /// Provides general functions for dealing with arrays of complex symbols

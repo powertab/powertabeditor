@@ -15,10 +15,10 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include <score/chordname.h>
+#include <util/tostring.h>
 #include "test_serialization.h"
 
 TEST_CASE("Score/ChordName/Serialization", "")
@@ -37,7 +37,7 @@ TEST_CASE("Score/ChordName/ToString", "")
     ChordName chord;
 
     chord.setNoChord(true);
-    REQUIRE(boost::lexical_cast<std::string>(chord) == "N.C.");
+    REQUIRE(Util::toString(chord) == "N.C.");
 
     chord.setBrackets(true);
     chord.setTonicKey(ChordName::F);
@@ -45,10 +45,10 @@ TEST_CASE("Score/ChordName/ToString", "")
     chord.setBassKey(ChordName::F);
     chord.setBassVariation(ChordName::Flat);
     chord.setFormula(ChordName::Major7th);
-    REQUIRE(boost::lexical_cast<std::string>(chord) == "N.C.(Fbmaj7)");
+    REQUIRE(Util::toString(chord) == "N.C.(Fbmaj7)");
 
     chord.setModification(ChordName::Extended11th);
-    REQUIRE(boost::lexical_cast<std::string>(chord) == "N.C.(Fbmaj11)");
+    REQUIRE(Util::toString(chord) == "N.C.(Fbmaj11)");
     chord.setModification(ChordName::Extended11th, false);
 
     chord.setNoChord(false);
@@ -56,5 +56,5 @@ TEST_CASE("Score/ChordName/ToString", "")
     chord.setBassKey(ChordName::C);
     chord.setBassVariation(ChordName::Sharp);
     chord.setModification(ChordName::Flatted9th);
-    REQUIRE(boost::lexical_cast<std::string>(chord) == "(F#maj7b9/C#)");
+    REQUIRE(Util::toString(chord) == "(F#maj7b9/C#)");
 }

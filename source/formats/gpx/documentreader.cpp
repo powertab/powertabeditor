@@ -47,7 +47,7 @@ static void convertStringToList(const std::string &source, std::vector<T> &dest)
 
 Gpx::DocumentReader::DocumentReader(const std::string &xml)
 {
-    xml_parse_result result = myXmlData.load(xml.c_str());
+    xml_parse_result result = myXmlData.load_string(xml.c_str());
 
     if (result.status != pugi::status_ok)
         throw std::runtime_error(result.description());
@@ -119,7 +119,7 @@ void Gpx::DocumentReader::readTracks(Score &score)
             Tuning tuning = player.getTuning();
             // Read the tuning - need to convert from a string of numbers
             // separated by spaces to a vector of integers.
-            xml_node pitches = properties.select_single_node(
+            xml_node pitches = properties.select_node(
                         "./Property/Pitches").node();
             if (pitches)
 			{
@@ -131,7 +131,7 @@ void Gpx::DocumentReader::readTracks(Score &score)
             }
 
             // Read capo
-            xml_node capo = properties.select_single_node(
+            xml_node capo = properties.select_node(
                         "./Property/Fret").node();
             tuning.setCapo(capo.text().as_int());
 
@@ -185,7 +185,7 @@ void Gpx::DocumentReader::readBeats()
         if (properties)
         {
             // Search for brush direction in the properties list.
-            xml_node brush = properties.select_single_node(
+            xml_node brush = properties.select_node(
                         "./Property[@name = 'Brush']/Direction").node();
             if (brush)
             {

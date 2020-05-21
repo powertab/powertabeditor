@@ -18,7 +18,7 @@
 #ifndef APP_VIEWOPTIONS_H
 #define APP_VIEWOPTIONS_H
 
-#include <boost/optional/optional.hpp>
+#include <optional>
 
 /// Stores any view options that are not saved with the score (e.g. the current
 /// zoom level or the active score filter).
@@ -27,7 +27,7 @@ class ViewOptions
 public:
     ViewOptions();
 
-    const boost::optional<int> &getFilter() const { return myFilter; }
+    const std::optional<int> &getFilter() const { return myFilter; }
     void setFilter(int filter) { myFilter = filter; }
     void clearFilter() { myFilter.reset(); }
 
@@ -35,7 +35,7 @@ public:
     void setZoom(double percent) { myZoom = percent; }
 
 private:
-    boost::optional<int> myFilter;
+    std::optional<int> myFilter;
     double myZoom;
 };
 

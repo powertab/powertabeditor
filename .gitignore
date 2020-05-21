@@ -1,5 +1,6 @@
 *.swp
 /build
+/out
 *.user
 *~
 windows/bin
@@ -8,3 +9,6 @@ windows/redist
 *.suo
 *.app*
 .DS_Store
+compile_commands.json
+.vs
+.clangd

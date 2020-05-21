@@ -26,6 +26,9 @@
 #include <score/utils.h>
 #include <score/utils/scorepolisher.h>
 
+#include <cmath>
+#include <optional>
+
 static const int POSITIONS_PER_SYSTEM = 35;
 
 GuitarProImporter::GuitarProImporter()
@@ -144,7 +147,7 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
 
         // Guitar Pro uses 0 for C, 1 for G, ..., -1 for F, -2 for Bb, ...,
         // whereas Power Tab uses 0 for 1, 1 for G, 1 for F, etc.
-        const int numAccidentals = measure.myKeyChange.get().first;
+        const int numAccidentals = measure.myKeyChange.value().first;
 
         // Create a cancellation if necessary.
         if (numAccidentals == 0 && lastKeySig.getNumAccidentals() > 0)
@@ -198,7 +201,7 @@ int GuitarProImporter::convertBarline(const Gp::Measure &measure,
     {
         bar.setPosition(end);
         bar.setBarType(Barline::RepeatEnd);
-        bar.setRepeatCount(measure.myRepeatEnd.get());
+        bar.setRepeatCount(measure.myRepeatEnd.value());
 
         // Hide key signatures and time signatures.
         KeySignature key(bar.getKeySignature());
@@ -228,7 +231,7 @@ void GuitarProImporter::convertAlternateEndings(const Gp::Measure &measure,
     {
         AlternateEnding ending(position);;
 
-        std::bitset<8> bits(measure.myAlternateEnding.get());
+        std::bitset<8> bits(measure.myAlternateEnding.value());
         for (int i = 0; i < 8; ++i)
         {
             if (bits.test(i))
@@ -243,7 +246,7 @@ void GuitarProImporter::convertIrregularGroupings(
     const std::vector<Gp::Beat> &beats, const std::vector<int> &positions,
     Voice &voice)
 {
-    boost::optional<int> currentGroup;
+    std::optional<int> currentGroup;
     int startPos = -1;
     int numerator = -1;
     int denominator = -1;

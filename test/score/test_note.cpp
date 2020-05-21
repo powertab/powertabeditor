@@ -15,10 +15,10 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
-#include <boost/lexical_cast.hpp>
 #include <score/note.h>
+#include <util/tostring.h>
 #include "test_serialization.h"
 
 TEST_CASE("Score/Note/SimpleProperties", "")
@@ -122,26 +122,26 @@ TEST_CASE("Score/Note/ToString", "")
 {
     Note note(3, 12);
 
-    REQUIRE(boost::lexical_cast<std::string>(note) == "12");
+    REQUIRE(Util::toString(note) == "12");
 
     note.setTappedHarmonicFret(15);
-    REQUIRE(boost::lexical_cast<std::string>(note) == "12(15)");
+    REQUIRE(Util::toString(note) == "12(15)");
     note.clearTappedHarmonic();
 
     note.setProperty(Note::NaturalHarmonic);
-    REQUIRE(boost::lexical_cast<std::string>(note) == "[12]");
+    REQUIRE(Util::toString(note) == "[12]");
     note.setProperty(Note::NaturalHarmonic, false);
 
     note.setProperty(Note::GhostNote);
-    REQUIRE(boost::lexical_cast<std::string>(note) == "(12)");
+    REQUIRE(Util::toString(note) == "(12)");
     note.setProperty(Note::GhostNote, false);
 
     note.setTrilledFret(5);
-    REQUIRE(boost::lexical_cast<std::string>(note) == "12(5)");
+    REQUIRE(Util::toString(note) == "12(5)");
 
     Note mutedNote;
     mutedNote.setProperty(Note::Muted);
-    REQUIRE(boost::lexical_cast<std::string>(mutedNote) == "x");
+    REQUIRE(Util::toString(mutedNote) == "x");
 }
 
 TEST_CASE("Score/Note/Harmonics/GetValidFretOffsets", "")

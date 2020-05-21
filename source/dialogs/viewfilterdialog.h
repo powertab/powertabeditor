@@ -36,7 +36,7 @@ public:
     void setPresenter(ViewFilterPresenter *presenter) override;
     bool launch() override;
     void update(const std::vector<std::string> &names,
-                const boost::optional<int> &selection,
+                const std::optional<int> &selection,
                 const std::vector<FilterRule> &rules) override;
 
 private:

@@ -22,28 +22,15 @@
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/ostreamwrapper.h>
 #include <rapidjson/prettywriter.h>
-#include <util/rapidjson_iostreams.h>
 
 using SettingValue = SettingsTree::SettingValue;
 using SettingList = SettingsTree::SettingList;
 using SettingMap = SettingsTree::SettingMap;
 
-struct IsMap : public boost::static_visitor<bool>
-{
-    template <typename T>
-    bool operator()(const T &) const
-    {
-        return false;
-    }
-
-    bool operator()(const SettingMap &) const
-    {
-        return true;
-    }
-};
-
-struct Inserter : public boost::static_visitor<>
+struct Inserter
 {
     Inserter(const std::string &key, SettingValue value)
         : myIndex(0), myNewValue(std::move(value))
@@ -59,17 +46,17 @@ struct Inserter : public boost::static_visitor<>
 
     void operator()(SettingMap &map)
     {
-        SettingValue &value = map[myComponents[myIndex]];
+        SettingValue &value = map.values[myComponents[myIndex]];
 
         if (myIndex == myComponents.size() - 1)
             value = myNewValue;
         else
         {
-            if (!boost::apply_visitor(IsMap(), value))
+            if (!std::holds_alternative<SettingMap>(value))
                 value = SettingMap();
 
             ++myIndex;
-            boost::apply_visitor(*this, value);
+            std::visit(*this, value);
         }
     }
 
@@ -79,7 +66,7 @@ private:
     SettingValue myNewValue;
 };
 
-struct Finder : public boost::static_visitor<boost::optional<SettingValue>>
+struct Finder
 {
     Finder(const std::string &key)
         : myIndex(0)
@@ -88,27 +75,27 @@ struct Finder : public boost::static_visitor<boost::optional<SettingValue>>
     }
 
     template <typename T>
-    boost::optional<SettingValue> operator()(const T &) const
+    std::optional<SettingValue> operator()(const T &) const
     {
-        return boost::none;
+        return std::nullopt;
     }
 
-    boost::optional<SettingValue> operator()(const SettingMap &map) const
+    std::optional<SettingValue> operator()(const SettingMap &map) const
     {
-        auto it = map.find(myComponents[myIndex]);
-        if (it == map.end())
-            return boost::none;
+        auto it = map.values.find(myComponents[myIndex]);
+        if (it == map.values.end())
+            return std::nullopt;
 
         const SettingValue &value = it->second;
         if (myIndex == myComponents.size() - 1)
             return value;
         else
         {
-            if (!boost::apply_visitor(IsMap(), value))
-                return boost::none;
+            if (!std::holds_alternative<SettingMap>(value))
+                return std::nullopt;
 
             ++myIndex;
-            return boost::apply_visitor(*this, value);
+            return std::visit(*this, value);
         }
     }
 
@@ -117,7 +104,7 @@ private:
     mutable size_t myIndex;
 };
 
-struct Remover : public boost::static_visitor<void>
+struct Remover
 {
     Remover(const std::string &key)
         : myIndex(0)
@@ -132,15 +119,15 @@ struct Remover : public boost::static_visitor<void>
 
     void operator()(SettingMap &map)
     {
-        auto it = map.find(myComponents[myIndex]);
-        if (it != map.end())
+        auto it = map.values.find(myComponents[myIndex]);
+        if (it != map.values.end())
         {
             if (myIndex == myComponents.size() - 1)
-                map.erase(it);
+                map.values.erase(it);
             else
             {
                 ++myIndex;
-                boost::apply_visitor(*this, it->second);
+                std::visit(*this, it->second);
             }
         }
     }
@@ -166,7 +153,7 @@ static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
         {
             SettingValue child_val;
             parseValue(child_val, *it);
-            value_list.push_back(child_val);
+            value_list.values.push_back(child_val);
         }
 
         value = value_list;
@@ -179,7 +166,7 @@ static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
         {
             SettingValue child_val;
             parseValue(child_val, it->value);
-            value_map[it->name.GetString()] = child_val;
+            value_map.values[it->name.GetString()] = child_val;
         }
 
         value = value_map;
@@ -188,7 +175,7 @@ static void parseValue(SettingValue &value, const rapidjson::Value &json_val)
         throw std::runtime_error("Unexpected JSON value type.");
 }
 
-struct JSONSerializer : public boost::static_visitor<void>
+struct JSONSerializer
 {
     JSONSerializer(std::ostream &os) : myStream(os), myWriter(myStream)
     {
@@ -213,8 +200,8 @@ struct JSONSerializer : public boost::static_visitor<void>
     void operator()(const SettingList &list)
     {
         myWriter.StartArray();
-        for (auto &&value : list)
-            boost::apply_visitor(*this, value);
+        for (auto &&value : list.values)
+            std::visit(*this, value);
         myWriter.EndArray();
     }
 
@@ -224,8 +211,8 @@ struct JSONSerializer : public boost::static_visitor<void>
 
         // Output in sorted order.
         std::vector<std::string> keys;
-        keys.reserve(map.size());
-        for (auto &&pair : map)
+        keys.reserve(map.values.size());
+        for (auto &&pair : map.values)
             keys.push_back(pair.first);
 
         std::sort(keys.begin(), keys.end());
@@ -233,14 +220,14 @@ struct JSONSerializer : public boost::static_visitor<void>
         for (auto &&key : keys)
         {
             myWriter.Key(key.c_str());
-            boost::apply_visitor(*this, map.at(key));
+            std::visit(*this, map.values.at(key));
         }
 
         myWriter.EndObject();
     }
 
 private:
-    Util::RapidJSON::OStreamWrapper myStream;
+    rapidjson::OStreamWrapper myStream;
     rapidjson::PrettyWriter<decltype(myStream)> myWriter;
 };
 
@@ -251,24 +238,24 @@ SettingsTree::SettingsTree() : myTree(SettingMap())
 void SettingsTree::setImpl(const std::string &key, const SettingValue &value)
 {
     Inserter inserter(key, value);
-    boost::apply_visitor(inserter, myTree);
+    std::visit(inserter, myTree);
 }
 
-boost::optional<SettingValue> SettingsTree::find(
+std::optional<SettingValue> SettingsTree::find(
     const std::string &key) const
 {
-    return boost::apply_visitor(Finder(key), myTree);
+    return std::visit(Finder(key), myTree);
 }
 
 void SettingsTree::remove(const std::string &key)
 {
     Remover visitor(key);
-    return boost::apply_visitor(visitor, myTree);
+    return std::visit(visitor, myTree);
 }
 
 void SettingsTree::loadFromJSON(std::istream &is)
 {
-    Util::RapidJSON::IStreamWrapper stream(is);
+    rapidjson::IStreamWrapper stream(is);
 
     rapidjson::Document document;
     document.ParseStream(stream);
@@ -287,5 +274,5 @@ void SettingsTree::loadFromJSON(std::istream &is)
 void SettingsTree::saveToJSON(std::ostream &os) const
 {
     JSONSerializer serializer(os);
-    boost::apply_visitor(serializer, myTree);
+    std::visit(serializer, myTree);
 }

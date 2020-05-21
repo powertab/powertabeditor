@@ -13,7 +13,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <actions/addspecialnoteproperty.h>
 #include <score/note.h>

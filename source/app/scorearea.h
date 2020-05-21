@@ -18,7 +18,6 @@
 #ifndef APP_SCOREAREA_H
 #define APP_SCOREAREA_H
 
-#include <boost/optional.hpp>
 #include <memory>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -65,7 +64,7 @@ private:
     void adjustScroll();
 
     Scene myScene;
-    boost::optional<const Document &> myDocument;
+    const Document *myDocument;
     QGraphicsItem *myScoreInfoBlock;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;

@@ -18,7 +18,7 @@
 #include "filesystem.h"
 
 #include "bitstream.h"
-#include <boost/algorithm/clamp.hpp>
+#include <algorithm>
 #include <cassert>
 #include <formats/fileformat.h>
 #include "util.h"
@@ -73,7 +73,7 @@ Gpx::FileSystem::FileSystem(std::istream &stream)
             const int32_t offset = input.readBits(p, Gpx::BitStream::Reversed);
             const size_t startPos = output.size() - offset;
 
-            const int32_t length = boost::algorithm::clamp<int32_t>(
+            const int32_t length = std::clamp<int32_t>(
                 input.readBits(p, Gpx::BitStream::Reversed), 0, offset);
 
             std::copy(output.begin() + startPos,
@@ -128,8 +128,8 @@ void Gpx::FileSystem::readUncompressedData(std::vector<uint8_t> &data)
                 offset = block * SECTOR_SIZE;
                 std::copy(data.begin() + offset,
                           data.begin() +
-                          boost::algorithm::clamp<size_t>(offset + SECTOR_SIZE,
-                                                          0, data.size()),
+                              std::clamp<size_t>(offset + SECTOR_SIZE, 0,
+                                                 data.size()),
                           std::back_inserter(fileData));
                 ++blockCount;
             }

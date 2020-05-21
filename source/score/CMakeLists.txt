@@ -84,7 +84,5 @@ pte_library(
     DEPENDS
         Boost::headers
         Boost::date_time
-        Boost::regex
-        pteutil
-        rapidjson
+        rapidjson::rapidjson
 )

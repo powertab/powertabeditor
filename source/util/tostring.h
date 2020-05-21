@@ -1,5 +1,5 @@
 /*
-  * Copyright (C) 2015 Cameron White
+  * Copyright (C) 2019 Cameron White
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -15,18 +15,21 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "rapidjson_iostreams.h"
+#ifndef UTIL_TOSTRING_H
+#define UTIL_TOSTRING_H
+
+#include <string>
+#include <sstream>
 
 namespace Util
 {
-namespace RapidJSON
+template <typename T>
+std::string toString(const T &val)
 {
-    IStreamWrapper::IStreamWrapper(std::istream &stream) : myStream(stream)
-    {
-    }
+    std::ostringstream stream;
+    stream << val;
+    return stream.str();
+}
+} // namespace Util
 
-    OStreamWrapper::OStreamWrapper(std::ostream &stream) : myStream(stream)
-    {
-    }
-}
-}
+#endif

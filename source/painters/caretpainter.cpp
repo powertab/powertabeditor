@@ -19,7 +19,6 @@
 
 #include <app/caret.h>
 #include <app/viewoptions.h>
-#include <boost/lexical_cast.hpp>
 #include <painters/layoutinfo.h>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -27,6 +26,7 @@
 #include <score/scorelocation.h>
 #include <score/score.h>
 #include <score/system.h>
+#include <util/tostring.h>
 
 const double CaretPainter::PEN_WIDTH = 0.75;
 const double CaretPainter::CARET_NOTE_SPACING = 6;
@@ -197,8 +197,7 @@ void CaretPainter::onLocationChanged()
     // Ensure that a redraw always occurs at the old location.
     scene()->update(oldRect);
 
-    setToolTip(QString::fromStdString(
-                   boost::lexical_cast<std::string>(location)));
+    setToolTip(QString::fromStdString(Util::toString(location)));
 
     // Notify anyone interested in the caret being redrawn.
     onMyLocationChanged();

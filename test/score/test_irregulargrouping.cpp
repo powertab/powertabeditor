@@ -15,9 +15,10 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <score/irregulargrouping.h>
+#include <util/tostring.h>
 #include "test_serialization.h"
 
 TEST_CASE("Score/IrregularGrouping/Serialization", "")
@@ -30,9 +31,9 @@ TEST_CASE("Score/IrregularGrouping/ToString")
 {
     IrregularGrouping group(0, 1, 3, 2);
 
-    REQUIRE(boost::lexical_cast<std::string>(group) == "3");
+    REQUIRE(Util::toString(group) == "3");
 
     group.setNotesPlayed(7);
     group.setNotesPlayedOver(5);
-    REQUIRE(boost::lexical_cast<std::string>(group) == "7:5");
+    REQUIRE(Util::toString(group) == "7:5");
 }

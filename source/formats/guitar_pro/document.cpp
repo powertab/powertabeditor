@@ -17,8 +17,8 @@
 
 #include "document.h"
 
+#include <algorithm>
 #include <cmath>
-#include <boost/algorithm/clamp.hpp>
 #include <iostream>
 
 #include <formats/guitar_pro/inputstream.h>
@@ -260,8 +260,8 @@ Channel::Channel()
 
 void Channel::load(InputStream &stream)
 {
-    myInstrument = boost::algorithm::clamp<int32_t>(stream.read<int32_t>(), 0,
-                                                    Midi::NUM_MIDI_PRESETS);
+    myInstrument =
+        std::clamp<int32_t>(stream.read<int32_t>(), 0, Midi::NUM_MIDI_PRESETS);
     myVolume = readChannelProperty(stream);
     myBalance = readChannelProperty(stream);
     myChorus = readChannelProperty(stream);

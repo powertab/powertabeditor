@@ -15,10 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include <app/appinfo.h>
 #include <fstream>
+#include <sstream>
 #include <util/settingstree.h>
 
 static const std::string theKey = "foo/bar";
