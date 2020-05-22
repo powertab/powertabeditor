@@ -18,12 +18,30 @@
 #include "midioutputdevice.h"
 
 #include <RtMidi.h>
+#include <exception>
 #include <score/dynamic.h>
 #include <score/generalmidi.h>
 #include <cassert>
 
+#ifdef __APPLE__
+#include "midisoftwaresynth.h"
+#endif
+
 MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 {
+    // Initialize the OSX software synth.
+#ifdef __APPLE__
+    try
+    {
+        static MidiSoftwareSynth synth;
+        synth.initialize();
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+    };
+#endif
+
     myMaxVolumes.fill(Midi::MAX_MIDI_CHANNEL_VOLUME);
     myActiveVolumes.fill(Dynamic::fff);
 
@@ -37,12 +55,10 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
         {
             myMidiOuts.emplace_back(new RtMidiOut(api));
         }
-        catch (...)
+        catch (RtMidiError &e)
         {
-            // continue anyway, another api might work
-            // found on mac that the Core API kept failing after repeated 
-            // creations and the exceptions weren't caught
-            // TODO investigate why.
+            // Continue anyway, another API might work.
+            e.printMessage();
         }
     }
 }
@@ -54,8 +70,7 @@ MidiOutputDevice::~MidiOutputDevice()
 void
 MidiOutputDevice::sendMessage(const std::vector<uint8_t> &data)
 {
-    // FIXME - fix const correctness in RtMidi api.
-    myMidiOut->sendMessage(const_cast<std::vector<uint8_t> *>(&data));
+    myMidiOut->sendMessage(&data);
 }
 
 bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
@@ -75,9 +90,10 @@ bool MidiOutputDevice::sendMidiMessage(unsigned char a, unsigned char b,
     {
         myMidiOut->sendMessage(&message);
     }
-    catch (...)
+    catch (RtMidiError &e)
     {
-         return false;
+        e.printMessage();
+        return false;
     }
 
     return true;
@@ -102,9 +118,10 @@ bool MidiOutputDevice::initialize(size_t preferredApi,
     {
         myMidiOut->openPort(preferredPort);
     }
-    catch (...)
+    catch (RtMidiError &e)
     {
-         return false;
+        e.printMessage();
+        return false;
     }
 
     return true;

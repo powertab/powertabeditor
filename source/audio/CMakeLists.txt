@@ -16,13 +16,33 @@ set( moc_headers
     midiplayer.h
 )
 
+set( platform_deps )
+if ( PLATFORM_OSX )
+    find_library( audiotoolbox_lib AudioToolbox REQUIRED )
+    find_library( audiounit_lib AudioUnit REQUIRED )
+    set( platform_deps
+        ${audiotoolbox_lib}
+        ${audiounit_lib}
+    )
+
+    list( APPEND srcs
+        midisoftwaresynth.cpp
+    )
+    list( APPEND headers
+        midisoftwaresynth.h
+    )
+endif ()
+
 pte_library(
     NAME pteaudio
     SOURCES ${srcs}
     HEADERS ${headers}
     MOC_HEADERS ${moc_headers}
     DEPENDS
-        ptescore
-        Qt5::Core
-        rtmidi::rtmidi
+        PUBLIC
+            ptescore
+            Qt5::Core
+        PRIVATE
+            rtmidi::rtmidi
+            ${platform_deps}
 )

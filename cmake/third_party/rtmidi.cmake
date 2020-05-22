@@ -6,17 +6,13 @@ elseif ( PLATFORM_OSX )
     find_library( coreaudio_lib CoreAudio )
     find_library( coremidi_lib CoreMIDI )
     find_library( corefoundation_lib CoreFoundation )
-    find_library( audiotoolbox_lib AudioToolbox )
-    find_library( audiounit_lib AudioUnit )
 
     set( _midi_libs
         ${coreaudio_lib}
         ${coremidi_lib}
         ${corefoundation_lib}
-        ${audiotoolbox_lib}
-        ${audiounit_lib}
     )
-    set( _midi_defs __MACOSX_AU__ __MACOSX_CORE__ )
+    set( _midi_defs __MACOSX_CORE__ )
 elseif ( PLATFORM_LINUX )
     find_package( ALSA REQUIRED )
 
