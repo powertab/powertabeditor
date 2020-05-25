@@ -19,7 +19,7 @@ set( CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake/third_party/modules
 )
 
-set( PTE_VERSION 2.0.0-alpha10 )
+set( PTE_VERSION 2.0.0-alpha11 )
 
 include( PTE_Platform )
 include( PTE_CompilerFlags )
