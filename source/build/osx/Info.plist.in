@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
+    <dict>
         <key>UTExportedTypeDeclarations</key>
         <array>
             <dict>
-	        <key>UTTypeIdentifier</key>
-		<string>org.powertab.pt2</string>
-		<key>UTTypeDescription</key>
-		<string>Power Tab 2.0 Document</string>
-		<key>UTTypeConformsTo</key>
-		<array>
-		    <string>public.data</string>
-		    <string>public.content</string>
-		</array>
-		<key>UTTypeTagSpecification</key>
-		<dict>
-		    <key>public.filename-extension</key>
-		    <array>
-		        <string>pt2</string>
-		    </array>
-		    <key>public.mime-type</key>
+                <key>UTTypeIdentifier</key>
+                <string>org.powertab.pt2</string>
+                <key>UTTypeDescription</key>
+                <string>Power Tab 2.0 Document</string>
+                <key>UTTypeConformsTo</key>
+                <array>
+                    <string>public.data</string>
+                    <string>public.content</string>
+                </array>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array>
+                        <string>pt2</string>
+                    </array>
+                    <key>public.mime-type</key>
                     <string>audio/x-pt2</string>
-		</dict>
+                </dict>
             </dict>
         </array>
-	<key>CFBundleDocumentTypes</key>
-	<array>
+        <key>CFBundleDocumentTypes</key>
+        <array>
             <dict>
                 <key>CFBundleTypeIconFile</key>
                 <string>powertabeditor.icns</string>
@@ -110,27 +110,27 @@
                 </array>
             </dict>
         </array>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>powertabeditor</string>
-	<key>CFBundleIconFile</key>
-	<string>powertabeditor.icns</string>
-	<key>CFBundleIdentifier</key>
-	<string>org.powertab.powertabeditor</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>Power Tab Editor</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
-	<key>CFBundleSignature</key>
-	<string>xmmd</string>
-	<key>CFBundleVersion</key>
-	<string>2.0.0-alpha10</string>
-	<key>NSAppleScriptEnabled</key>
-	<string>NO</string>
-</dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+        <key>CFBundleExecutable</key>
+        <string>powertabeditor</string>
+        <key>CFBundleIconFile</key>
+        <string>powertabeditor.icns</string>
+        <key>CFBundleIdentifier</key>
+        <string>org.powertab.powertabeditor</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleName</key>
+        <string>Power Tab Editor</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleShortVersionString</key>
+        <string>2.0</string>
+        <key>CFBundleSignature</key>
+        <string>xmmd</string>
+        <key>CFBundleVersion</key>
+        <string>${PTE_VERSION}</string>
+        <key>NSAppleScriptEnabled</key>
+        <string>NO</string>
+    </dict>
 </plist>

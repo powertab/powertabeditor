@@ -35,4 +35,36 @@ pte_executable(
         ${QT5_PLUGINS}
 )
 
-add_dependencies(powertabeditor ptedata)
+if ( PLATFORM_OSX )
+    # Configure the .app bundle for OSX.
+    set_target_properties( powertabeditor PROPERTIES
+        MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/osx/Info.plist.in
+    )
+
+    set( icon_file ${CMAKE_CURRENT_SOURCE_DIR}/osx/powertabeditor.icns )
+    set( tunings_file ${CMAKE_CURRENT_SOURCE_DIR}//data/tunings.json )
+
+    target_sources( powertabeditor PRIVATE
+        ${icon_file}
+        ${tunings_file}
+    )
+    set_source_files_properties( ${icon_file} ${tunings_file} PROPERTIES
+        MACOSX_PACKAGE_LOCATION Resources
+    )
+else ()
+    # Copy the tuning dictionary into the build directory, and set its install
+    # path.
+    set( files
+        data/tunings.json
+    )
+
+    pte_copyfiles(
+        NAME ptedata
+        DESTINATION ${PTE_DATA_DIR}
+        INSTALL ${PTE_DATA_INSTALL_DIR}
+        FILES ${files}
+    )
+
+    add_dependencies(powertabeditor ptedata)
+endif ()

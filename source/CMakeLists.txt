@@ -1,7 +1,6 @@
 add_subdirectory( actions )
 add_subdirectory( app )
 add_subdirectory( audio )
-add_subdirectory( data )
 add_subdirectory( dialogs )
 add_subdirectory( formats )
 add_subdirectory( midi )
