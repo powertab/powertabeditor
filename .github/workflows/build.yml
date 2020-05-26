@@ -38,6 +38,8 @@ jobs:
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests
+    - name: Build Installer
+      run: cmake --build ${{runner.workspace}}/build --target package
 
   build-windows:
 
