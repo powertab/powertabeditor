@@ -72,6 +72,6 @@
     * To generate an Xcode project, switch to `-G Xcode` and then open and build `build/powertabeditor.xcodeproj`
   * `ninja`
 * Run:
-  * `./bin/powertabeditor`
+  * `open ./bin/Power\ Tab\ Editor.app`
   * `./bin/pte_tests` to run the unit tests.
   * For Xcode, select `Product/Scheme/powertabeditor` and then `Product/Run`.
