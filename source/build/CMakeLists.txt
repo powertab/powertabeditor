@@ -38,6 +38,7 @@ pte_executable(
 if ( PLATFORM_OSX )
     # Configure the .app bundle for OSX.
     set_target_properties( powertabeditor PROPERTIES
+        OUTPUT_NAME "Power Tab Editor"
         MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/osx/Info.plist.in
     )

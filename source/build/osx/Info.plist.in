@@ -113,7 +113,7 @@
         <key>CFBundleDevelopmentRegion</key>
         <string>English</string>
         <key>CFBundleExecutable</key>
-        <string>powertabeditor</string>
+        <string>Power Tab Editor</string>
         <key>CFBundleIconFile</key>
         <string>powertabeditor.icns</string>
         <key>CFBundleIdentifier</key>
