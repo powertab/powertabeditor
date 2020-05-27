@@ -132,5 +132,10 @@
         <string>${PTE_VERSION}</string>
         <key>NSAppleScriptEnabled</key>
         <string>NO</string>
+        <!-- Ensure high-DPI support is enabled -->
+        <key>NSPrincipalClass</key>
+        <string>NSApplication</string>
+        <key>NSHighResolutionCapable</key>
+        <string>True</string>
     </dict>
 </plist>
