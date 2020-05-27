@@ -3,14 +3,41 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- File information is now displayed at the top of the score (#49).
 
 ### Fixed
+
+## [Alpha 11] - 2020-05-28
+
+Thanks to the following contributors who worked on this release:
+- @cameronwhite
+- @DontBelieveMe
+- @iceseyes
+- @jcranney
+- @jlearman
+- @Kadabash
+
+### Added
+- File information is now displayed at the top of the score (#49).
+- The Delete key will now remove rests - previously, Ctrl+Delete was required (#202).
+- Added support for left hand fingering hints (#261, #65).
+
+### Fixed
+- Fixed tempo drift issues during playback (#269).
 - Fixed errors when loading or saving files that had non-ASCII characters in their path (#244).
 - Fixed a bug in the score polisher when there were grace notes at the start of a bar.
 - Fixed issues where the pause and stop buttons did not reliably respond to clicks during playback (#237).
 - Fixed a bug where dots could be hidden when a note had an accidental (#242).
 - Fixed a bug with the MIDI exporter that caused the file header to be invalid (#241).
+- Fixed incorrect key signature position for the bass clef (#275).
+- Fixed a bug where it was impossible to edit the number of repeats at the final barline in the score.
+- Improved how the MIDI output on OSX is implemented (#285).
+- The dark theme on Mac OSX is now supported for all widgets except the score view.
+- Fixed many build system issues (e.g. #255, #282) and updated the required compiler and library versions.
+  - A C++17 compiler is now required.
+  - Third-party dependencies are no longer bundled as submodules, and instead are expected to be provided by the system package manager or a tool such as `vcpkg`. The README has been updated with the recommended build steps.
+  - Moved to Github Actions for CI builds. See `.github/workflows/build.yml`.
+  - Fixed errors when loading .pt2 files with newer versions of `RapidJSON`.
+  - Various improvements to the OSX installer.
 
 ## [Alpha 10] - 2016-12-22
 ### Added
@@ -195,7 +222,8 @@ All notable changes to this project will be documented in this file.
 ## [Alpha 1] - 2014-07-27
 * The first alpha release!
 
-[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha10...HEAD
+[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha11...HEAD
+[Alpha 11]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha11
 [Alpha 10]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha10
 [Alpha 9]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha9
 [Alpha 8]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha8
