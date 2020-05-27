@@ -20,6 +20,11 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 
+// Workaround for RapidJSON on MSVC 2019.
+// vcpkg has an old version since there hasn't been an official release since
+// 2016.
+#include <istream>
+
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 #include <rapidjson/istreamwrapper.h>
