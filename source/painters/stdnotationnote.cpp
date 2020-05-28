@@ -157,8 +157,17 @@ void StdNotationNote::getNotesInStaff(
 
                 for (const Note &note : pos.getNotes())
                 {
-                    const Tuning tuning = player ? player->getTuning() :
-                                                   fallbackTuning;
+                    // No assigned player, so we have no idea what the tuning
+                    // is!
+                    if (!player)
+                        continue;
+
+                    // If a player change is missing, the staff might have more
+                    // strings than the player does.
+                    const Tuning &tuning = player->getTuning();
+                    if (note.getString() >= tuning.getStringCount())
+                        continue;
+
                     const double y = getNoteLocation(
                                 staff, note, bar.getKeySignature(), tuning);
 
