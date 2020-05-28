@@ -28,19 +28,23 @@ FileInformationDialog::FileInformationDialog(
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->songTypeButtonGroup->setId(
         ui->songButton, static_cast<int>(ScoreInfo::ScoreType::Song));
     ui->songTypeButtonGroup->setId(
         ui->lessonButton, static_cast<int>(ScoreInfo::ScoreType::Lesson));
 
-    connect(ui->songTypeButtonGroup, SIGNAL(buttonClicked(QAbstractButton *)),
-            this, SLOT(handleSongTypeButtonClick(QAbstractButton *)));
+    connect(ui->songTypeButtonGroup,
+            qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
+            &FileInformationDialog::handleSongTypeButtonClick);
 
-    connect(ui->releaseTypeList, SIGNAL(currentRowChanged(int)), this,
-            SLOT(handleReleaseTypeChanged(int)));
+    connect(ui->releaseTypeList, &QListWidget::currentRowChanged, this,
+            &FileInformationDialog::handleReleaseTypeChanged);
 
-    connect(ui->traditionalSongValue, SIGNAL(toggled(bool)), this,
-            SLOT(handleAuthorTypeChanged(bool)));
+    connect(ui->traditionalSongValue, &QCheckBox::toggled, this,
+            &FileInformationDialog::handleAuthorTypeChanged);
 
     ui->lessonLevelButtonGroup->setId(
         ui->beginnerLevelButton,

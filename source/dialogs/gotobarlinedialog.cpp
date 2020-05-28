@@ -26,6 +26,9 @@ GoToBarlineDialog::GoToBarlineDialog(QWidget *parent, const Score &score)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     for (int system_index = 0;
          system_index < static_cast<int>(score.getSystems().size());
          ++system_index)

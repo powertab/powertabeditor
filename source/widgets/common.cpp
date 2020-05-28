@@ -22,8 +22,10 @@
 
 void connectButtonToAction(QAbstractButton *button, const QAction *action)
 {
-    QObject::connect(button, SIGNAL(clicked()), action, SLOT(trigger()));
-    QObject::connect(action, SIGNAL(toggled(bool)), button, SLOT(setChecked(bool)));
+    QObject::connect(button, &QAbstractButton::clicked, action,
+                     &QAction::trigger);
+    QObject::connect(action, &QAction::toggled, button,
+                     &QAbstractButton::setChecked);
 
     button->setEnabled(action->isEnabled());
     // ensure that the button is enabled/disabled whenever the QAction is enabled/disabled

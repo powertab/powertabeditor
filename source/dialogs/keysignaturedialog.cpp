@@ -30,6 +30,9 @@ KeySignatureDialog::KeySignatureDialog(QWidget *parent,
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     // Initialize based on the original value of the key signature, and
     // create any signal connections
     if (currentKey.getKeyType() == KeySignature::Major)
@@ -58,8 +61,7 @@ KeySignatureDialog::KeySignatureDialog(QWidget *parent,
             &KeySignatureDialog::handleModification);
     connect(ui->minorKeyButton, &QAbstractButton::clicked, this,
             &KeySignatureDialog::handleModification);
-    connect(ui->keysComboBox, static_cast<void (QComboBox::*)(int)>(
-                                  &QComboBox::currentIndexChanged),
+    connect(ui->keysComboBox, qOverload<int>(&QComboBox::currentIndexChanged),
             this, &KeySignatureDialog::handleModification);
 }
 

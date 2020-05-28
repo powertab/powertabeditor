@@ -29,6 +29,9 @@ ArtificialHarmonicDialog::ArtificialHarmonicDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     myKeyGroup->addButton(ui->keyCButton, ChordName::C);
     myKeyGroup->addButton(ui->keyDButton, ChordName::D);
     myKeyGroup->addButton(ui->keyEButton, ChordName::E);
@@ -55,8 +58,9 @@ ArtificialHarmonicDialog::ArtificialHarmonicDialog(QWidget *parent)
     // Since we want only 0 or 1 of the buttons to be checked at any time, we
     // need to handle this ourselves.
     myAccidentalGroup->setExclusive(false);
-    connect(myAccidentalGroup, SIGNAL(buttonClicked(QAbstractButton *)), this,
-            SLOT(onAccidentalButtonClicked(QAbstractButton *)));
+    connect(myAccidentalGroup,
+            qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
+            &ArtificialHarmonicDialog::onAccidentalButtonClicked);
 }
 
 ArtificialHarmonicDialog::~ArtificialHarmonicDialog()
@@ -86,7 +90,7 @@ ArtificialHarmonic ArtificialHarmonicDialog::getHarmonic() const
 void ArtificialHarmonicDialog::onAccidentalButtonClicked(
     QAbstractButton *clickedButton)
 {
-    for (auto button : myAccidentalGroup->buttons())
+    for (auto &button : myAccidentalGroup->buttons())
     {
         if (button != clickedButton)
             button->setChecked(false);

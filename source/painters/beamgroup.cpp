@@ -76,7 +76,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent,
         if (stem.hasSforzando() || stem.hasMarcato())
             symbols << createAccent(stem, musicFont, layout);
 
-        for (QGraphicsItem *symbol : symbols)
+        for (QGraphicsItem *&symbol : symbols)
             symbol->setParentItem(parent);
 
         symbols.clear();

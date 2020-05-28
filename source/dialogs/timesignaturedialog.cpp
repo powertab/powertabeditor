@@ -28,6 +28,9 @@ TimeSignatureDialog::TimeSignatureDialog(
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->beatsPerMeasure->setMinimum(TimeSignature::MIN_BEATS_PER_MEASURE);
     ui->beatsPerMeasure->setMaximum(TimeSignature::MAX_BEATS_PER_MEASURE);
 
@@ -65,23 +68,24 @@ TimeSignatureDialog::TimeSignatureDialog(
     for (size_t i = 0; i < myBeamingPatterns.size(); i++)
         myBeamingPatterns[i]->setText(QString::number(pattern[i]));
 
-    connect(ui->showTimeSignature, SIGNAL(toggled(bool)),
-            this, SLOT(editTimeSignatureVisible(bool)));
+    connect(ui->showTimeSignature, &QCheckBox::toggled, this,
+            &TimeSignatureDialog::editTimeSignatureVisible);
 
-    connect(ui->metronomePulses, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(editMetronomePulses(int)));
+    connect(ui->metronomePulses,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
+            &TimeSignatureDialog::editMetronomePulses);
 
-    connect(ui->cutTime, SIGNAL(toggled(bool)),
-            this, SLOT(editCutTime(bool)));
+    connect(ui->cutTime, &QCheckBox::toggled, this,
+            &TimeSignatureDialog::editCutTime);
 
-    connect(ui->commonTime, SIGNAL(toggled(bool)),
-            this, SLOT(editCommonTime(bool)));
+    connect(ui->commonTime, &QCheckBox::toggled, this,
+            &TimeSignatureDialog::editCommonTime);
 
-    connect(ui->beatValue, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(editBeatValue(int)));
+    connect(ui->beatValue, qOverload<int>(&QComboBox::currentIndexChanged),
+            this, &TimeSignatureDialog::editBeatValue);
 
-    connect(ui->beatsPerMeasure, SIGNAL(valueChanged(int)),
-            this, SLOT(editBeatsPerMeasure(int)));
+    connect(ui->beatsPerMeasure, qOverload<int>(&QSpinBox::valueChanged), this,
+            &TimeSignatureDialog::editBeatsPerMeasure);
 }
 
 TimeSignatureDialog::~TimeSignatureDialog()

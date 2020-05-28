@@ -24,6 +24,9 @@ TextItemDialog::TextItemDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::TextItemDialog)
 {
     ui->setupUi(this);
+
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 TextItemDialog::~TextItemDialog()

@@ -34,7 +34,8 @@ InstrumentPanelItem::InstrumentPanelItem(
 {
     ui->setupUi(this);
 
-    ui->instrumentNumber->setText(QString("%1.").arg(instrumentIndex + 1));
+    ui->instrumentNumber->setText(
+        QStringLiteral("%1.").arg(instrumentIndex + 1));
     ui->instrumentNameLabel->setText(
         QString::fromStdString(instrument.getDescription()));
     ui->instrumentNameEdit->setText(ui->instrumentNameLabel->text());
@@ -58,9 +59,8 @@ InstrumentPanelItem::InstrumentPanelItem(
     connect(ui->instrumentNameEdit, &QLineEdit::editingFinished, this,
             &InstrumentPanelItem::onInstrumentNameEdited);
 
-    connect(ui->midiInstrument, static_cast<void (QComboBox::*)(int)>(
-                                    &QComboBox::activated),
-            this, &InstrumentPanelItem::onEdited);
+    connect(ui->midiInstrument, qOverload<int>(&QComboBox::activated), this,
+            &InstrumentPanelItem::onEdited);
 
     connect(ui->removeButton, &QPushButton::clicked, [&]() {
         myRemovePubSub.publish(myInstrumentIndex);

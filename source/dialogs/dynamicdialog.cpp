@@ -27,6 +27,9 @@ DynamicDialog::DynamicDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     // Add each button to a QButtonGroup (to ensure that only one is ever
     // checked), and associate each with the corresponding value from the
     // Dynamic class.

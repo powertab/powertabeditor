@@ -37,6 +37,9 @@ DirectionDialog::DirectionDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     // Add the initial symbol.
     myDirection.insertSymbol(DirectionSymbol(DirectionSymbol::Coda));
 
@@ -46,24 +49,25 @@ DirectionDialog::DirectionDialog(QWidget *parent)
         ui->symbolComboBox->addItem(theDirectionText[i]);
     }
 
-    ui->activeSymbolComboBox->addItem("None");
-    ui->activeSymbolComboBox->addItem("D.C.");
-    ui->activeSymbolComboBox->addItem("D.S.");
-    ui->activeSymbolComboBox->addItem("D.S.S.");
+    ui->activeSymbolComboBox->addItem(QStringLiteral("None"));
+    ui->activeSymbolComboBox->addItem(QStringLiteral("D.C."));
+    ui->activeSymbolComboBox->addItem(QStringLiteral("D.S."));
+    ui->activeSymbolComboBox->addItem(QStringLiteral("D.S.S."));
 
     ui->repeatNumberSpinBox->setMinimum(0);
     ui->repeatNumberSpinBox->setValue(0);
 
-    ui->directionComboBox->addItem("1");
+    ui->directionComboBox->addItem(QStringLiteral("1"));
 
     ui->removeDirectionButton->setDisabled(true);
 
-    connect(ui->addDirectionButton, SIGNAL(clicked()),
-            this, SLOT(onAddDirection()));
-    connect(ui->removeDirectionButton, SIGNAL(clicked()),
-            this, SLOT(onRemoveDirection()));
-    connect(ui->directionComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onSymbolIndexChanged(int)));
+    connect(ui->addDirectionButton, &QPushButton::clicked,
+            this, &DirectionDialog::onAddDirection);
+    connect(ui->removeDirectionButton, &QPushButton::clicked,
+            this, &DirectionDialog::onRemoveDirection);
+    connect(ui->directionComboBox,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
+            &DirectionDialog::onSymbolIndexChanged);
 }
 
 DirectionDialog::~DirectionDialog()

@@ -29,6 +29,9 @@ TrillDialog::TrillDialog(QWidget *parent, int originalFret)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->currentFretSpinBox->setValue(originalFret);
 
     ui->trillFretSpinBox->setMinimum(Note::MIN_FRET_NUMBER);

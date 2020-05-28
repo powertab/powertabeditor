@@ -23,8 +23,13 @@ AlterationOfPaceDialog::AlterationOfPaceDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->typeComboBox->addItem("Accelerando (accel.)", TempoMarker::Accelerando);
-    ui->typeComboBox->addItem("Ritardando (rit.)", TempoMarker::Ritardando);
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    ui->typeComboBox->addItem(QStringLiteral("Accelerando (accel.)"),
+                              TempoMarker::Accelerando);
+    ui->typeComboBox->addItem(QStringLiteral("Ritardando (rit.)"),
+                              TempoMarker::Ritardando);
 }
 
 AlterationOfPaceDialog::~AlterationOfPaceDialog()

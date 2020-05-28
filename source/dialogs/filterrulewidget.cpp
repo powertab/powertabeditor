@@ -35,17 +35,16 @@ FilterRuleWidget::FilterRuleWidget(QWidget *parent)
     connect(ui->removeButton, &QPushButton::clicked, this,
             &FilterRuleWidget::removeRequested);
 
-    connect(ui->subjectComboBox, static_cast<void (QComboBox::*)(int)>(
-                                     &QComboBox::currentIndexChanged),
-            this, &FilterRuleWidget::updateRule);
+    connect(ui->subjectComboBox,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
+            &FilterRuleWidget::updateRule);
     connect(ui->regexLineEdit, &QLineEdit::textEdited, this,
             &FilterRuleWidget::updateRule);
-    connect(ui->stringsSpinBox,
-            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this,
+    connect(ui->stringsSpinBox, qOverload<int>(&QSpinBox::valueChanged), this,
             &FilterRuleWidget::updateRule);
-    connect(ui->operationComboBox, static_cast<void (QComboBox::*)(int)>(
-                                       &QComboBox::currentIndexChanged),
-            this, &FilterRuleWidget::updateRule);
+    connect(ui->operationComboBox,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
+            &FilterRuleWidget::updateRule);
 }
 
 FilterRuleWidget::~FilterRuleWidget()

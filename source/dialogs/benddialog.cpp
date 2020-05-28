@@ -27,6 +27,9 @@ BendDialog::BendDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->bendTypeComboBox->addItems({
         tr("Bend"), tr("Bend and Release"), tr("Bend and Hold"),
         tr("Pre-Bend"), tr("Pre-Bend and Release"), tr("Pre-Bend and Hold"),
@@ -43,9 +46,9 @@ BendDialog::BendDialog(QWidget *parent)
     initDrawPoints(ui->vertStartingPointComboBox);
     initDrawPoints(ui->vertEndingPointComboBox);
 
-    connect(ui->bendTypeComboBox, static_cast<void (QComboBox::*)(int)>(
-                                         &QComboBox::currentIndexChanged),
-            this, &BendDialog::handleBendTypeChanged);
+    connect(ui->bendTypeComboBox,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
+            &BendDialog::handleBendTypeChanged);
     handleBendTypeChanged();
 }
 
@@ -94,7 +97,7 @@ void BendDialog::handleBendTypeChanged()
     // First, reset everything.
     ui->bentPitchComboBox->setEnabled(true);
     ui->releasePitchComboBox->setEnabled(true);
-    for (auto button : myDurationButtonGroup->buttons())
+    for (auto &button : myDurationButtonGroup->buttons())
         button->setEnabled(true);
 
     // Enable or disable some of the options depending on the active bend type.
@@ -102,7 +105,7 @@ void BendDialog::handleBendTypeChanged()
     {
         case Bend::PreBend:
         case Bend::PreBendAndHold:
-            for (auto button : myDurationButtonGroup->buttons())
+            for (auto &button : myDurationButtonGroup->buttons())
                 button->setDisabled(true);
         // FALL THROUGH
         case Bend::NormalBend:
@@ -114,14 +117,14 @@ void BendDialog::handleBendTypeChanged()
 
         case Bend::PreBendAndRelease:
         case Bend::BendAndRelease:
-            for (auto button : myDurationButtonGroup->buttons())
+            for (auto &button : myDurationButtonGroup->buttons())
                 button->setDisabled(true);
             ui->vertStartingPointComboBox->setCurrentIndex(Bend::LowPoint);
             ui->vertEndingPointComboBox->setCurrentIndex(Bend::LowPoint);
             break;
 
         case Bend::ImmediateRelease:
-            for (auto button : myDurationButtonGroup->buttons())
+            for (auto &button : myDurationButtonGroup->buttons())
                 button->setDisabled(true);
             ui->releasePitchComboBox->setDisabled(true);
         // FALL THROUGH

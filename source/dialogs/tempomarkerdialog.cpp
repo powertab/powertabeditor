@@ -30,11 +30,20 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QStringList descriptions;
-    descriptions << "Fast Rock" << "Faster" << "Moderate Rock" << "Moderately"
-                 << "Moderately Fast Rock" << "Moderately Slow Funk"
-                 << "Moderately Slow Rock" << "Slow Blues" << "Slow Rock"
-                 << "Slower" << "Slowly";
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    QStringList descriptions = { QStringLiteral("Fast Rock"),
+                                 QStringLiteral("Faster"),
+                                 QStringLiteral("Moderate Rock"),
+                                 QStringLiteral("Moderately"),
+                                 QStringLiteral("Moderately Fast Rock"),
+                                 QStringLiteral("Moderately Slow Funk"),
+                                 QStringLiteral("Moderately Slow Rock"),
+                                 QStringLiteral("Slow Blues"),
+                                 QStringLiteral("Slow Rock"),
+                                 QStringLiteral("Slower"),
+                                 QStringLiteral("Slowly") };
     ui->descriptionComboBox->addItems(descriptions);
 
     // Autocomplete for description choices.
@@ -95,13 +104,13 @@ TempoMarkerDialog::TempoMarkerDialog(QWidget *parent)
                                 TempoMarker::TripletFeelSixteenthOff);
     ui->tripletFeelNoneCheckBox->setChecked(true);
 
-    connect(ui->enableListessoCheckBox, SIGNAL(clicked(bool)),
-            this, SLOT(onListessoChanged(bool)));
+    connect(ui->enableListessoCheckBox, &QCheckBox::clicked, this,
+            &TempoMarkerDialog::onListessoChanged);
     ui->enableListessoCheckBox->setChecked(false);
     onListessoChanged(false);
 
-    connect(ui->showMetronomeMarkerCheckBox, SIGNAL(clicked(bool)),
-            this, SLOT(onShowMetronomeMarkerChanged(bool)));
+    connect(ui->showMetronomeMarkerCheckBox, &QCheckBox::clicked, this,
+            &TempoMarkerDialog::onShowMetronomeMarkerChanged);
     ui->showMetronomeMarkerCheckBox->setChecked(true);
 
     ui->descriptionComboBox->setFocus();
@@ -137,7 +146,7 @@ TempoMarker TempoMarkerDialog::getTempoMarker() const
 
 void TempoMarkerDialog::onListessoChanged(bool enabled)
 {
-    for (QAbstractButton *button : myListessoBeatTypes->buttons())
+    for (auto &button : myListessoBeatTypes->buttons())
         button->setEnabled(enabled);
 
     ui->bpmSpinBox->setEnabled(!enabled);
@@ -148,7 +157,7 @@ void TempoMarkerDialog::onShowMetronomeMarkerChanged(bool enabled)
     QList<QAbstractButton *> buttons;
     buttons << myBeatTypes->buttons() << myListessoBeatTypes->buttons();
 
-    for (QAbstractButton *button : buttons)
+    for (auto &button : buttons)
         button->setEnabled(enabled);
 
     ui->bpmSpinBox->setEnabled(enabled);

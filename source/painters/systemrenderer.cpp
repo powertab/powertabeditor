@@ -68,9 +68,9 @@ SystemRenderer::SystemRenderer(const ScoreArea *score_area, const Score &score,
       myParentStaff(nullptr),
       myMusicNotationFont(MusicFont::getFont(MusicFont::DEFAULT_FONT_SIZE)),
       myMusicFontMetrics(myMusicNotationFont),
-      myPlainTextFont("Liberation Sans"),
-      mySymbolTextFont("Liberation Sans"),
-      myRehearsalSignFont("Helvetica")
+      myPlainTextFont(QStringLiteral("Liberation Sans")),
+      mySymbolTextFont(QStringLiteral("Liberation Sans")),
+      myRehearsalSignFont(QStringLiteral("Helvetica"))
 {
     myPlainTextFont.setPixelSize(10);
     myPlainTextFont.setStyleStrategy(QFont::PreferAntialias);
@@ -517,34 +517,34 @@ static QString getBeatTypeImage(TempoMarker::BeatType type)
     switch (type)
     {
         case TempoMarker::Half:
-            file = ":images/half_note";
+            file = QStringLiteral(":images/half_note");
             break;
         case TempoMarker::HalfDotted:
-            file = ":images/half_note_dotted";
+            file = QStringLiteral(":images/half_note_dotted");
             break;
         case TempoMarker::Quarter:
-            file = ":images/quarter_note";
+            file = QStringLiteral(":images/quarter_note");
             break;
         case TempoMarker::QuarterDotted:
-            file = ":images/dotted_note";
+            file = QStringLiteral(":images/dotted_note");
             break;
         case TempoMarker::Eighth:
-            file = ":images/8th_note";
+            file = QStringLiteral(":images/8th_note");
             break;
         case TempoMarker::EighthDotted:
-            file = ":images/8th_note_dotted";
+            file = QStringLiteral(":images/8th_note_dotted");
             break;
         case TempoMarker::Sixteenth:
-            file = ":images/16th_note";
+            file = QStringLiteral(":images/16th_note");
             break;
         case TempoMarker::SixteenthDotted:
-            file = ":images/16th_note_dotted";
+            file = QStringLiteral(":images/16th_note_dotted");
             break;
         case TempoMarker::ThirtySecond:
-            file = ":images/32nd_note";
+            file = QStringLiteral(":images/32nd_note");
             break;
         case TempoMarker::ThirtySecondDotted:
-            file = ":images/32nd_note_dotted";
+            file = QStringLiteral(":images/32nd_note_dotted");
             break;
     }
 
@@ -565,7 +565,7 @@ static QString getTripletFeelImage(const TempoMarker &tempo)
             return QStringLiteral(":/images/triplet_feel_sixteenth_off.png");
         default:
             Q_ASSERT(false);
-            return "";
+            return QString();
     }
 }
 
@@ -598,8 +598,8 @@ void SystemRenderer::drawTempoMarkers(const System &system,
         if (tempo.getMarkerType() == TempoMarker::AlterationOfPace)
         {
             text = (tempo.getAlterationOfPace() == TempoMarker::Accelerando)
-                       ? "accel."
-                       : "rit.";
+                       ? QStringLiteral("accel.")
+                       : QStringLiteral("rit.");
         }
         else
         {
@@ -619,7 +619,7 @@ void SystemRenderer::drawTempoMarkers(const System &system,
             group->addToGroup(pixmap);
 
             text += imageSpacing;
-            text += " = ";
+            text += QStringLiteral(" = ");
 
             if (tempo.getMarkerType() == TempoMarker::ListessoMarker)
             {
@@ -640,7 +640,7 @@ void SystemRenderer::drawTempoMarkers(const System &system,
             // Add the triplet feel image if necessary.
             if (tempo.getTripletFeel() != TempoMarker::NoTripletFeel)
             {
-                text += " ( ";
+                text += QStringLiteral(" ( ");
 
                 const QString imageSpacing(12, ' ');
                 QPixmap image(getTripletFeelImage(tempo));
@@ -832,7 +832,7 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
             for (size_t i = 0, n = activePlayers.size(); i < n; ++i)
             {
                 if (i != 0)
-                    description += ", ";
+                    description += QStringLiteral(", ");
 
                 const int player_index = activePlayers[i].getPlayerNumber();
                 description += QString::fromStdString(
@@ -840,7 +840,7 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
             }
         }
         else
-            description = "(No Players)";
+            description = QStringLiteral("(No Players)");
 
         auto text = new SimpleTextItem(description, myPlainTextFont);
         text->setPos(layout.getPositionX(change.getPosition()),
@@ -954,16 +954,20 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
             renderedSymbol = createPickStroke(QChar(MusicFont::PickStrokeDown));
             break;
         case SymbolGroup::Tap:
-            renderedSymbol = createPlainTextSymbol("T", QFont::StyleNormal);
+            renderedSymbol =
+                createPlainTextSymbol(QStringLiteral("T"), QFont::StyleNormal);
             break;
         case SymbolGroup::Hammeron:
-            renderedSymbol = createPlainTextSymbol("H", QFont::StyleNormal);
+            renderedSymbol =
+                createPlainTextSymbol(QStringLiteral("H"), QFont::StyleNormal);
             break;
         case SymbolGroup::Pulloff:
-            renderedSymbol = createPlainTextSymbol("P", QFont::StyleNormal);
+            renderedSymbol =
+                createPlainTextSymbol(QStringLiteral("P"), QFont::StyleNormal);
             break;
         case SymbolGroup::Slide:
-            renderedSymbol = createPlainTextSymbol("sl.", QFont::StyleItalic);
+            renderedSymbol = createPlainTextSymbol(QStringLiteral("sl."),
+                                                   QFont::StyleItalic);
             break;
         case SymbolGroup::ArtificialHarmonic:
         {
@@ -1062,9 +1066,8 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             renderedSymbol = createBendGroup(symbolGroup, layout);
             break;
         case SymbolGroup::LetRing:
-            renderedSymbol = createConnectedSymbolGroup("let ring",
-                                                        QFont::StyleItalic,
-                                                        width, layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("let ring"), QFont::StyleItalic, width, layout);
             break;
         case SymbolGroup::Vibrato:
             renderedSymbol = drawContinuousFontSymbols(MusicFont::Vibrato,
@@ -1075,9 +1078,8 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
                                                        width);
             break;
         case SymbolGroup::PalmMuting:
-            renderedSymbol = createConnectedSymbolGroup("P.M.",
-                                                        QFont::StyleNormal,
-                                                        width, layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("P.M."), QFont::StyleNormal, width, layout);
             break;
         case SymbolGroup::TremoloPicking:
             renderedSymbol = createTremoloPicking(layout);
@@ -1086,9 +1088,8 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             renderedSymbol = createTrill(layout);
             break;
         case SymbolGroup::NaturalHarmonic:
-            renderedSymbol = createConnectedSymbolGroup("N.H.",
-                                                        QFont::StyleNormal,
-                                                        width, layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("N.H."), QFont::StyleNormal, width, layout);
             break;
         case SymbolGroup::Dynamic:
         {
@@ -1100,9 +1101,8 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             break;
         }
         case SymbolGroup::ArtificialHarmonic:
-            renderedSymbol = createConnectedSymbolGroup("A.H.",
-                                                        QFont::StyleNormal,
-                                                        width, layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("A.H."), QFont::StyleNormal, width, layout);
             break;
 #if 0
         case Layout::SymbolVolumeSwell:
@@ -1149,16 +1149,14 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
         switch (symbolGroup.getSymbolType())
         {
         case SymbolGroup::Octave8va:
-            renderedSymbol = createConnectedSymbolGroup("8va",
-                                                        QFont::StyleItalic,
-                                                        symbolGroup.getWidth(),
-                                                        layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("8va"), QFont::StyleItalic,
+                symbolGroup.getWidth(), layout);
             break;
         case SymbolGroup::Octave15ma:
-            renderedSymbol = createConnectedSymbolGroup("15ma",
-                                                        QFont::StyleItalic,
-                                                        symbolGroup.getWidth(),
-                                                        layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("15ma"), QFont::StyleItalic,
+                symbolGroup.getWidth(), layout);
             break;
         default:
             // All symbol types should have been dealt with by now.
@@ -1166,7 +1164,8 @@ void SystemRenderer::drawSymbolsAboveStdNotationStaff(const LayoutInfo& layout)
             break;
         }
 
-        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getLeftPosition()), 0);
+        renderedSymbol->setPos(
+            layout.getPositionX(symbolGroup.getLeftPosition()), 0);
         renderedSymbol->setParentItem(myParentStaff);
     }
 }
@@ -1181,16 +1180,14 @@ void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo &layout)
         switch (symbolGroup.getSymbolType())
         {
         case SymbolGroup::Octave8vb:
-            renderedSymbol = createConnectedSymbolGroup("8vb",
-                                                        QFont::StyleItalic,
-                                                        symbolGroup.getWidth(),
-                                                        layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("8vb"), QFont::StyleItalic,
+                symbolGroup.getWidth(), layout);
             break;
         case SymbolGroup::Octave15mb:
-            renderedSymbol = createConnectedSymbolGroup("15mb",
-                                                        QFont::StyleItalic,
-                                                        symbolGroup.getWidth(),
-                                                        layout);
+            renderedSymbol = createConnectedSymbolGroup(
+                QStringLiteral("15mb"), QFont::StyleItalic,
+                symbolGroup.getWidth(), layout);
             break;
         default:
             // All symbol types should have been dealt with by now.
@@ -1198,17 +1195,17 @@ void SystemRenderer::drawSymbolsBelowStdNotationStaff(const LayoutInfo &layout)
             break;
         }
 
-        renderedSymbol->setPos(layout.getPositionX(symbolGroup.getLeftPosition()),
-                               layout.getBottomStdNotationLine() +
-                               layout.getStdNotationStaffBelowSpacing());
+        renderedSymbol->setPos(
+            layout.getPositionX(symbolGroup.getLeftPosition()),
+            layout.getBottomStdNotationLine() +
+                layout.getStdNotationStaffBelowSpacing());
         renderedSymbol->setParentItem(myParentStaff);
     }
 }
 
-QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(const QString &text,
-                                                          QFont::Style style,
-                                                          double width,
-                                                          const LayoutInfo &layout)
+QGraphicsItem *SystemRenderer::createConnectedSymbolGroup(
+    const QString &text, QFont::Style style, double width,
+    const LayoutInfo &layout)
 {
     mySymbolTextFont.setStyle(style);
 
@@ -1320,25 +1317,25 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
 
 QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
 {
-    QString text = "fff";
+    QString text = QStringLiteral("fff");
     Dynamic::VolumeLevel volume = dynamic.getVolume();
 
     if (volume == Dynamic::Off)
-        text = "off";
+        text = QStringLiteral("off");
     else if (volume <= Dynamic::ppp)
-        text = "ppp";
+        text = QStringLiteral("ppp");
     else if (volume <= Dynamic::pp)
-        text = "pp";
+        text = QStringLiteral("pp");
     else if (volume <= Dynamic::p)
-        text = "p";
+        text = QStringLiteral("p");
     else if (volume <= Dynamic::mp)
-        text = "mp";
+        text = QStringLiteral("mp");
     else if (volume <= Dynamic::mf)
-        text = "mf";
+        text = QStringLiteral("mf");
     else if (volume <= Dynamic::f)
-        text = "f";
+        text = QStringLiteral("f");
     else if (volume <= Dynamic::ff)
-        text = "ff";
+        text = QStringLiteral("ff");
 
     auto textItem = new SimpleTextItem(text, myMusicNotationFont);
     textItem->setPos(0, -myMusicFontMetrics.ascent() + 10);

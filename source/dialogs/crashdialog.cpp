@@ -28,9 +28,9 @@ CrashDialog::CrashDialog(const QString &stacktrace, QWidget *parent)
     ui->setupUi(this);
     ui->stacktraceText->setPlainText(stacktrace);
 
-    connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(ui->reportBugButton, SIGNAL(clicked()), this,
-            SLOT(launchBugReport()));
+    connect(ui->closeButton, &QPushButton::clicked, this, &QDialog::accept);
+    connect(ui->reportBugButton, &QPushButton::clicked, this,
+            &CrashDialog::launchBugReport);
 }
 
 CrashDialog::~CrashDialog()

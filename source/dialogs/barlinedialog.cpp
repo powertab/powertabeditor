@@ -25,8 +25,12 @@ BarlineDialog::BarlineDialog(QWidget *parent, Barline::BarType type,
 {
     ui->setupUi(this);
 
-    connect(ui->barlineTypeComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onBarlineTypeChanged(int)));
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
+    connect(ui->barlineTypeComboBox,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
+            &BarlineDialog::onBarlineTypeChanged);
 
     ui->barlineTypeComboBox->addItem(tr("Single"), Barline::SingleBar);
     ui->barlineTypeComboBox->addItem(tr("Double"), Barline::DoubleBar);

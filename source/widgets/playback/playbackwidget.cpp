@@ -33,10 +33,10 @@ static QString getShortcutHint(const QAction &action)
     if (!action.shortcut().isEmpty())
     {
         QString shortcut = action.shortcut().toString(QKeySequence::NativeText);
-        return QString(" (%1)").arg(shortcut);
+        return QStringLiteral(" (%1)").arg(shortcut);
     }
     else
-        return "";
+        return QString();
 }
 
 static QString extractPercent(const QString &text, const QLocale &locale)
@@ -82,7 +82,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
 
     ui->speedSpinner->setMinimum(50);
     ui->speedSpinner->setMaximum(125);
-    ui->speedSpinner->setSuffix("%");
+    ui->speedSpinner->setSuffix(QStringLiteral("%"));
     ui->speedSpinner->setValue(100);
 
     ui->rewindToStartButton->setIcon(
@@ -118,12 +118,12 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
 
     ui->zoomComboBox->setValidator(new PercentageValidator(this));
 
-    connect(myVoices, SIGNAL(buttonClicked(int)), this,
-            SIGNAL(activeVoiceChanged(int)));
-    connect(ui->speedSpinner, SIGNAL(valueChanged(int)), this,
-            SIGNAL(playbackSpeedChanged(int)));
-    connect(ui->filterComboBox, SIGNAL(currentIndexChanged(int)), this,
-            SIGNAL(activeFilterChanged(int)));
+    connect(myVoices, qOverload<int>(&QButtonGroup::buttonClicked), this,
+            &PlaybackWidget::activeVoiceChanged);
+    connect(ui->speedSpinner,qOverload<int>(&QSpinBox::valueChanged), this,
+            &PlaybackWidget::playbackSpeedChanged);
+    connect(ui->filterComboBox, qOverload<int>(&QComboBox::currentIndexChanged),
+            this, &PlaybackWidget::activeFilterChanged);
     connectButtonToAction(ui->playPauseButton, &play_pause_command);
     connectButtonToAction(ui->metronomeToggleButton, &metronome_command);
     connectButtonToAction(ui->rewindToStartButton, &rewind_command);
@@ -135,7 +135,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                 double percentage =
                     locale.toDouble(extractPercent(text, locale));
                 percentage = validateZoom(percentage);
-                zoomChanged(percentage);
+                emit zoomChanged(percentage);
             });
 }
 
@@ -148,11 +148,13 @@ double PlaybackWidget::validateZoom(double percent)
 {
     if (percent < MIN_ZOOM || percent > MAX_ZOOM)
     {
-        ui->zoomComboBox->setStyleSheet("QComboBox { color : red; }");
+        ui->zoomComboBox->setStyleSheet(
+            QStringLiteral("QComboBox { color : red; }"));
     }
     else
     {
-        ui->zoomComboBox->setStyleSheet("QComboBox { color : black; }");
+        ui->zoomComboBox->setStyleSheet(
+            QStringLiteral("QComboBox { color : black; }"));
     }
 
     return std::clamp(percent, MIN_ZOOM, MAX_ZOOM);
@@ -181,7 +183,7 @@ void PlaybackWidget::reset(const Document &doc)
     // Update zoom.
     QLocale locale;
     const double zoom = doc.getViewOptions().getZoom();
-    QString percent = QString("%1%2").arg(zoom).arg(locale.percent());
+    QString percent = QStringLiteral("%1%2").arg(zoom).arg(locale.percent());
     ui->zoomComboBox->setCurrentText(percent);
 
     ui->filterComboBox->blockSignals(false);

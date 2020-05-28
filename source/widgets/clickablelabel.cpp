@@ -20,7 +20,7 @@
 ClickableLabel::ClickableLabel(QWidget *parent)
     : QLabel(parent)
 {
-    setStyleSheet("QLabel { padding: 4px }");
+    setStyleSheet(QStringLiteral("QLabel { padding: 4px }"));
 }
 
 void ClickableLabel::enterEvent(QEvent *)

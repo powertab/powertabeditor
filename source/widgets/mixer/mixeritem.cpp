@@ -39,7 +39,7 @@ MixerItem::MixerItem(QWidget *parent, int playerIndex, const Player &player,
 {
     ui->setupUi(this);
 
-    ui->playerIndexLabel->setText(QString("%1.").arg(playerIndex + 1));
+    ui->playerIndexLabel->setText(QStringLiteral("%1.").arg(playerIndex + 1));
     ui->playerNameLabel->setText(
         QString::fromStdString(player.getDescription()));
     ui->playerNameEdit->setText(ui->playerNameLabel->text());

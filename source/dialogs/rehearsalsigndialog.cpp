@@ -27,6 +27,9 @@ RehearsalSignDialog::RehearsalSignDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     populateDescriptionChoices();
     ui->descriptionComboBox->clearEditText();
 }
@@ -38,10 +41,14 @@ RehearsalSignDialog::~RehearsalSignDialog()
 
 void RehearsalSignDialog::populateDescriptionChoices()
 {
-    QStringList descriptions;
-    descriptions << "Intro" << "Pre-Verse" << "Verse" << "Pre-Chorus"
-                 << "Chorus" << "Interlude" << "Breakdown" << "Bridge"
-                 << "Guitar Break" << "Guitar Solo" << "Out-Chorus" << "Outro";
+    QStringList descriptions = {
+        QStringLiteral("Intro"),        QStringLiteral("Pre-Verse"),
+        QStringLiteral("Verse"),        QStringLiteral("Pre-Chorus"),
+        QStringLiteral("Chorus"),       QStringLiteral("Interlude"),
+        QStringLiteral("Breakdown"),    QStringLiteral("Bridge"),
+        QStringLiteral("Guitar Break"), QStringLiteral("Guitar Solo"),
+        QStringLiteral("Out-Chorus"),   QStringLiteral("Outro")
+    };
 
     ui->descriptionComboBox->addItems(descriptions);
 

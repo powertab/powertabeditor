@@ -24,6 +24,9 @@ LeftHandFingeringDialog::LeftHandFingeringDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->fingerComboBox->addItems({
         tr("None (string empty)"), tr("Index finger"), tr("Middle finger"),
         tr("Ring finger"), tr("Little finger")

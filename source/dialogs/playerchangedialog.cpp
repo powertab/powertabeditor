@@ -30,6 +30,9 @@ PlayerChangeDialog::PlayerChangeDialog(QWidget *parent, const Score &score,
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     const int spacing = 12;
 
     // Set up title row.

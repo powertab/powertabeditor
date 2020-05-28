@@ -18,6 +18,9 @@ GoToRehearsalSignDialog::GoToRehearsalSignDialog(QWidget *parent,
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     // Add all of the rehearsal signs in the score to the list.
     int systemIndex = 0;
     for (const System &system : score.getSystems())
@@ -30,10 +33,11 @@ GoToRehearsalSignDialog::GoToRehearsalSignDialog(QWidget *parent,
                             systemIndex, barline.getPosition());
                 const RehearsalSign &sign = barline.getRehearsalSign();
 
-                ui->rehearsalSignComboBox->addItem(QString("%1 -- %2").arg(
-                                QString::fromStdString(sign.getLetters()),
-                                QString::fromStdString(sign.getDescription())),
-                            QVariant::fromValue(location));
+                ui->rehearsalSignComboBox->addItem(
+                    QStringLiteral("%1 -- %2")
+                        .arg(QString::fromStdString(sign.getLetters()),
+                             QString::fromStdString(sign.getDescription())),
+                    QVariant::fromValue(location));
             }
         }
 

@@ -23,6 +23,9 @@ MultiBarRestDialog::MultiBarRestDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->numberOfBarsSpinBox->setMinimum(2);
 }
 

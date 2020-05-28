@@ -26,6 +26,9 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     initCheckBox(ui->noChordCheckBox);
     initCheckBox(ui->bracketsCheckBox);
 
@@ -35,15 +38,17 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
     // Allow none of the buttons to be clicked, which requires a little extra
     // work.
     myTonicVariations->setExclusive(false);
-    connect(myTonicVariations, SIGNAL(buttonClicked(QAbstractButton *)), this,
-            SLOT(onTonicVariationClicked(QAbstractButton *)));
+    connect(myTonicVariations,
+            qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
+            &ChordNameDialog::onTonicVariationClicked);
 
     myBassVariations = new QButtonGroup(this);
     myBassVariations->addButton(ui->bassFlatButton);
     myBassVariations->addButton(ui->bassSharpButton);
     myBassVariations->setExclusive(false);
-    connect(myBassVariations, SIGNAL(buttonClicked(QAbstractButton *)), this,
-            SLOT(onBassVariationClicked(QAbstractButton *)));
+    connect(myBassVariations,
+            qOverload<QAbstractButton *>(&QButtonGroup::buttonClicked), this,
+            &ChordNameDialog::onBassVariationClicked);
 
     myTonicKeys = new QButtonGroup(this);
     myTonicKeys->addButton(ui->tonicCButton, ChordName::C);
@@ -53,8 +58,8 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
     myTonicKeys->addButton(ui->tonicGButton, ChordName::G);
     myTonicKeys->addButton(ui->tonicAButton, ChordName::A);
     myTonicKeys->addButton(ui->tonicBButton, ChordName::B);
-    connect(myTonicKeys, SIGNAL(buttonClicked(int)), this,
-            SLOT(onTonicChanged()));
+    connect(myTonicKeys, qOverload<int>(&QButtonGroup::buttonClicked), this,
+            &ChordNameDialog::onTonicChanged);
 
     myBassKeys = new QButtonGroup(this);
     myBassKeys->addButton(ui->bassCButton, ChordName::C);
@@ -64,10 +69,11 @@ ChordNameDialog::ChordNameDialog(QWidget *parent)
     myBassKeys->addButton(ui->bassGButton, ChordName::G);
     myBassKeys->addButton(ui->bassAButton, ChordName::A);
     myBassKeys->addButton(ui->bassBButton, ChordName::B);
-    connect(myBassKeys, SIGNAL(buttonClicked(int)), this, SLOT(updateState()));
+    connect(myBassKeys, qOverload<int>(&QButtonGroup::buttonClicked), this,
+            &ChordNameDialog::updateState);
 
-    connect(ui->formulaListWidget, SIGNAL(currentRowChanged(int)), this,
-            SLOT(updateState()));
+    connect(ui->formulaListWidget, &QListWidget::currentRowChanged, this,
+            &ChordNameDialog::updateState);
 
     initCheckBox(ui->add2CheckBox);
     initCheckBox(ui->add4CheckBox);
@@ -168,7 +174,7 @@ void ChordNameDialog::updateState()
 
 void ChordNameDialog::onTonicVariationClicked(QAbstractButton *clickedButton)
 {
-    for (QAbstractButton *button : myTonicVariations->buttons())
+    for (auto &button : myTonicVariations->buttons())
     {
         if (button != clickedButton)
             button->setChecked(false);
@@ -179,7 +185,7 @@ void ChordNameDialog::onTonicVariationClicked(QAbstractButton *clickedButton)
 
 void ChordNameDialog::onBassVariationClicked(QAbstractButton *clickedButton)
 {
-    for (QAbstractButton *button : myBassVariations->buttons())
+    for (auto &button : myBassVariations->buttons())
     {
         if (button != clickedButton)
             button->setChecked(false);
@@ -200,5 +206,5 @@ void ChordNameDialog::onTonicChanged()
 
 void ChordNameDialog::initCheckBox(QCheckBox *checkbox)
 {
-    connect(checkbox, SIGNAL(clicked()), this, SLOT(updateState()));
+    connect(checkbox, &QCheckBox::clicked, this, &ChordNameDialog::updateState);
 }

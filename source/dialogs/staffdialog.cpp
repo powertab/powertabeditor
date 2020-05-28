@@ -25,12 +25,15 @@ StaffDialog::StaffDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->numberOfStringsSpinBox->setMinimum(Tuning::MIN_STRING_COUNT);
     ui->numberOfStringsSpinBox->setMaximum(Tuning::MAX_STRING_COUNT);
     ui->numberOfStringsSpinBox->setValue(6);
 
-    ui->clefTypeComboBox->addItem("Treble");
-    ui->clefTypeComboBox->addItem("Bass");
+    ui->clefTypeComboBox->addItem(QStringLiteral("Treble"));
+    ui->clefTypeComboBox->addItem(QStringLiteral("Bass"));
 }
 
 StaffDialog::~StaffDialog()

@@ -75,7 +75,7 @@ static void renderReleaseInfo(QGraphicsItemGroup &group, const QFont &font,
         const int release_type =
             static_cast<int>(audio_release.getReleaseType());
 
-        release_info = QString("(From the %1 %2 \"%3\")");
+        release_info = QStringLiteral("(From the %1 %2 \"%3\")");
         release_info =
             release_info.arg(QString::number(audio_release.getYear()),
                              theAudioReleaseTypes[release_type],
@@ -89,7 +89,7 @@ static void renderReleaseInfo(QGraphicsItemGroup &group, const QFont &font,
             return;
 
         // TODO - handle live video / audio releases?
-        release_info = QString("(From the Video \"%1\")").arg(
+        release_info = QStringLiteral("(From the Video \"%1\")").arg(
             QString::fromStdString(video_release.getTitle()));
     }
     else if (song_data.isBootleg())
@@ -101,8 +101,8 @@ static void renderReleaseInfo(QGraphicsItemGroup &group, const QFont &font,
         QDate date(bootleg.getDate().year(), bootleg.getDate().month(),
                    bootleg.getDate().day());
 
-        release_info = QString("(From the %1 Bootleg \"%2\")").arg(
-            date.toString("MMM d yyyy"),
+        release_info = QStringLiteral("(From the %1 Bootleg \"%2\")").arg(
+            date.toString(QStringLiteral("MMM d yyyy")),
             QString::fromStdString(bootleg.getTitle()));
     }
     else
@@ -126,7 +126,8 @@ static void addAuthorText(QGraphicsItemGroup &group, QFont font,
     if (right_align)
     {
         text_item->setX(LayoutInfo::STAFF_WIDTH - text_width);
-        text_item->setHtml(QString("<div align=\"right\">%1</div>").arg(text));
+        text_item->setHtml(
+            QStringLiteral("<div align=\"right\">%1</div>").arg(text));
     }
 
     text_item->setY(y);
@@ -134,7 +135,7 @@ static void addAuthorText(QGraphicsItemGroup &group, QFont font,
     group.addToGroup(text_item);
 }
 
-static void renderAuthorInfo(QGraphicsItemGroup &group, QFont font,
+static void renderAuthorInfo(QGraphicsItemGroup &group, const QFont &font,
                              const SongData &song_data)
 {
     const double y = getNextY(group);
@@ -148,22 +149,29 @@ static void renderAuthorInfo(QGraphicsItemGroup &group, QFont font,
 
         if (!composer.isEmpty() && !lyricist.isEmpty() && composer == lyricist)
         {
-            author_lines.append(QString("Words and Music by %1").arg(composer));
+            author_lines.append(
+                QStringLiteral("Words and Music by %1").arg(composer));
         }
         else
         {
             if (!composer.isEmpty())
-                author_lines.append(QString("Music by %1").arg(composer));
+            {
+                author_lines.append(
+                    QStringLiteral("Music by %1").arg(composer));
+            }
 
             if (!lyricist.isEmpty())
-                author_lines.append(QString("Words by %1").arg(lyricist));
+            {
+                author_lines.append(
+                    QStringLiteral("Words by %1").arg(lyricist));
+            }
         }
     }
 
     if (!song_data.getArranger().empty())
     {
         QString arranger = QString::fromStdString(song_data.getArranger());
-        author_lines.append(QString("Arranged by %1").arg(arranger));
+        author_lines.append(QStringLiteral("Arranged by %1").arg(arranger));
     }
 
     if (!author_lines.isEmpty())
@@ -175,9 +183,9 @@ static void renderAuthorInfo(QGraphicsItemGroup &group, QFont font,
     // Transcriber info.
     if (!song_data.getTranscriber().empty())
     {
-        QString transcriber_text("Transcribed by %1");
-        transcriber_text = transcriber_text.arg(
-            QString::fromStdString(song_data.getTranscriber()));
+        QString transcriber_text =
+            QStringLiteral("Transcribed by %1")
+                .arg(QString::fromStdString(song_data.getTranscriber()));
 
         addAuthorText(group, font, transcriber_text, y,
                       /* right_align */ false);
@@ -195,9 +203,9 @@ static void renderSongInfo(QGraphicsItemGroup &group, const QFont &font,
 
     if (!song_data.getArtist().empty())
     {
-        QString artist_info("As recorded by %1");
-        artist_info =
-            artist_info.arg(QString::fromStdString(song_data.getArtist()));
+        QString artist_info =
+            QStringLiteral("As recorded by %1")
+                .arg(QString::fromStdString(song_data.getArtist()));
 
         addCenteredText(group, font, SUBTITLE_SIZE, artist_info);
     }
@@ -226,22 +234,22 @@ static void renderLessonInfo(QGraphicsItemGroup &group, const QFont &font,
 
     if (!lesson_data.getAuthor().empty())
     {
-        QString author_text("Written by %1");
-        author_text = author_text.arg(
-            QString::fromStdString(lesson_data.getAuthor()));
+        QString author_text =
+            QStringLiteral("Written by %1")
+                .arg(QString::fromStdString(lesson_data.getAuthor()));
 
         addAuthorText(group, font, author_text, y, /* right_align */ true);
     }
 
     const int level = static_cast<int>(lesson_data.getDifficultyLevel());
-    QString level_text = QString("Level: %1").arg(theDifficulties[level]);
+    QString level_text = QStringLiteral("Level: %1").arg(theDifficulties[level]);
     addAuthorText(group, font, level_text, y, /* right_align */ false);
 }
 
 QGraphicsItem *
 ScoreInfoRenderer::render(const ScoreInfo &score_info)
 {
-    QFont font("Liberation Serif");
+    QFont font(QStringLiteral("Liberation Serif"));
 
     auto group = new QGraphicsItemGroup();
 

@@ -39,6 +39,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent,
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     // Add available MIDI ports.
     MidiOutputDevice device;
     for (size_t i = 0; i < device.getApiCount(); ++i)
@@ -131,7 +134,8 @@ void PreferencesDialog::loadCurrentSettings()
     myDefaultTuning = settings->get(Settings::DefaultTuning);
     ui->defaultTuningClickButton->setText(
         QString::fromStdString(Util::toString(myDefaultTuning)));
-    connect(ui->defaultTuningClickButton, SIGNAL(clicked()), this, SLOT(editTuning()));
+    connect(ui->defaultTuningClickButton, &ClickableLabel::clicked, this,
+            &PreferencesDialog::editTuning);
 }
 
 /// Save the new settings

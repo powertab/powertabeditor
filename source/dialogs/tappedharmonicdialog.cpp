@@ -27,6 +27,9 @@ TappedHarmonicDialog::TappedHarmonicDialog(QWidget *parent, int originalFret)
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->currentFretSpinBox->setValue(myOriginalFret);
 
     // Populate the list of available frets.

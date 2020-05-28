@@ -24,6 +24,9 @@ ViewFilterDialog::ViewFilterDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::ViewFilterDialog)
 {
     ui->setupUi(this);
+
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 }
 
 ViewFilterDialog::~ViewFilterDialog()

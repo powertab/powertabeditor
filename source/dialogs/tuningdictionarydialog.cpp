@@ -32,6 +32,9 @@ TuningDictionaryDialog::TuningDictionaryDialog(QWidget *parent,
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     ui->tuningsList->setColumnCount(2);
     ui->tuningsList->setHeaderLabels(
         { tr("Name"), tr("Tuning (Low to High)") });
@@ -40,16 +43,17 @@ TuningDictionaryDialog::TuningDictionaryDialog(QWidget *parent,
     for (int i = Tuning::MIN_STRING_COUNT; i <= Tuning::MAX_STRING_COUNT; ++i)
         ui->stringsComboBox->addItem(QString::number(i), i);
 
-    connect(ui->stringsComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onNumStringsChanged(int)));
-    connect(ui->tuningsList,
-            SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), this,
-            SLOT(onCurrentTuningChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
-    connect(ui->newTuningButton, SIGNAL(clicked()), this, SLOT(onNewTuning()));
-    connect(ui->editTuningButton, SIGNAL(clicked()), this,
-            SLOT(onEditTuning()));
-    connect(ui->deleteTuningButton, SIGNAL(clicked()), this,
-            SLOT(onDeleteTuning()));
+    connect(ui->stringsComboBox,
+            qOverload<int>(&QComboBox::currentIndexChanged), this,
+            &TuningDictionaryDialog::onNumStringsChanged);
+    connect(ui->tuningsList, &QTreeWidget::currentItemChanged, this,
+            &TuningDictionaryDialog::onCurrentTuningChanged);
+    connect(ui->newTuningButton, &QPushButton::clicked, this,
+            &TuningDictionaryDialog::onNewTuning);
+    connect(ui->editTuningButton, &QPushButton::clicked, this,
+            &TuningDictionaryDialog::onEditTuning);
+    connect(ui->deleteTuningButton, &QPushButton::clicked, this,
+            &TuningDictionaryDialog::onDeleteTuning);
 
     // Select the "6 Strings" option by default.
     ui->stringsComboBox->setCurrentIndex(3);

@@ -176,12 +176,12 @@ PowerTabEditor::PowerTabEditor()
     QFontDatabase::addApplicationFont(":fonts/LiberationSans-Regular.ttf");
     QFontDatabase::addApplicationFont(":fonts/LiberationSerif-Regular.ttf");
 
-    connect(myUndoManager.get(), SIGNAL(redrawNeeded(int)), this,
-            SLOT(redrawSystem(int)));
-    connect(myUndoManager.get(), SIGNAL(fullRedrawNeeded()), this,
-            SLOT(redrawScore()));
-    connect(myUndoManager.get(), SIGNAL(cleanChanged(bool)), this,
-            SLOT(updateModified(bool)));
+    connect(myUndoManager.get(), &UndoManager::redrawNeeded, this,
+            &PowerTabEditor::redrawSystem);
+    connect(myUndoManager.get(), &UndoManager::fullRedrawNeeded, this,
+            &PowerTabEditor::redrawScore);
+    connect(myUndoManager.get(), &UndoManager::cleanChanged, this,
+            &PowerTabEditor::updateModified);
 
     myTuningDictionary->loadInBackground();
     mySettingsManager->load(Paths::getConfigDir());
@@ -195,8 +195,8 @@ PowerTabEditor::PowerTabEditor()
     // Set up the recent files menu.
     myRecentFiles =
         new RecentFiles(*mySettingsManager, myRecentFilesMenu, this);
-    connect(myRecentFiles, SIGNAL(fileSelected(QString)), this,
-            SLOT(openFile(QString)));
+    connect(myRecentFiles, &RecentFiles::fileSelected, this,
+            &PowerTabEditor::openFile);
 
     createTabArea();
 
@@ -594,12 +594,12 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
             new MidiPlayer(*mySettingsManager, location,
                            myPlaybackWidget->getPlaybackSpeed()));
 
-        connect(myMidiPlayer.get(), SIGNAL(playbackSystemChanged(int)), this,
-                SLOT(moveCaretToSystem(int)));
-        connect(myMidiPlayer.get(), SIGNAL(playbackPositionChanged(int)), this,
-                SLOT(moveCaretToPosition(int)));
-        connect(myMidiPlayer.get(), SIGNAL(finished()), this,
-                SLOT(startStopPlayback()));
+        connect(myMidiPlayer.get(), &MidiPlayer::playbackSystemChanged, this,
+                &PowerTabEditor::moveCaretToSystem);
+        connect(myMidiPlayer.get(), &MidiPlayer::playbackPositionChanged, this,
+                &PowerTabEditor::moveCaretToPosition);
+        connect(myMidiPlayer.get(), &MidiPlayer::finished,
+                [this]() { startStopPlayback(); });
         connect(myPlaybackWidget, &PlaybackWidget::playbackSpeedChanged,
                 myMidiPlayer.get(), &MidiPlayer::changePlaybackSpeed);
 
@@ -1818,50 +1818,52 @@ void PowerTabEditor::createCommands()
     // File-related commands.
     myNewDocumentCommand = new Command(tr("&New"), "File.New",
                                        QKeySequence::New, this);
-    connect(myNewDocumentCommand, SIGNAL(triggered()), this,
-            SLOT(createNewDocument()));
+    connect(myNewDocumentCommand, &QAction::triggered, this,
+            &PowerTabEditor::createNewDocument);
 
     myOpenFileCommand = new Command(tr("&Open..."), "File.Open",
                                     QKeySequence::Open, this);
-    connect(myOpenFileCommand, SIGNAL(triggered()), this, SLOT(openFile()));
+    connect(myOpenFileCommand, &QAction::triggered, [this]() { openFile(); });
 
     myCloseTabCommand = new Command(tr("&Close Tab"), "File.CloseTab",
                                     Qt::CTRL + Qt::Key_W, this);
-    connect(myCloseTabCommand, SIGNAL(triggered()), this,
-            SLOT(closeCurrentTab()));
+    connect(myCloseTabCommand, &QAction::triggered, this,
+            &PowerTabEditor::closeCurrentTab);
 
     mySaveCommand = new Command(tr("Save"), "File.Save",
                                 QKeySequence::Save, this);
-    connect(mySaveCommand, SIGNAL(triggered()), this, SLOT(saveFile()));
+    connect(mySaveCommand, &QAction::triggered, this, [this]() { saveFile(); });
 
     mySaveAsCommand = new Command(tr("Save As..."), "File.SaveAs",
                                   QKeySequence::SaveAs, this);
-    connect(mySaveAsCommand, SIGNAL(triggered()), this, SLOT(saveFileAs()));
+    connect(mySaveAsCommand, &QAction::triggered, this,
+            &PowerTabEditor::saveFileAs);
 
     myPrintCommand = new Command(tr("Print..."), "File.Print",
                                  QKeySequence::Print, this);
-    connect(myPrintCommand, SIGNAL(triggered()), this, SLOT(printDocument()));
+    connect(myPrintCommand, &QAction::triggered, this,
+            &PowerTabEditor::printDocument);
 
     myPrintPreviewCommand = new Command(
         tr("Print Preview..."), "File.PrintPreview", QKeySequence(), this);
-    connect(myPrintPreviewCommand, SIGNAL(triggered()), this,
-            SLOT(printPreview()));
+    connect(myPrintPreviewCommand, &QAction::triggered, this,
+            &PowerTabEditor::printPreview);
 
     myEditShortcutsCommand = new Command(tr("Customize Shortcuts..."),
                                          "File.CustomizeShortcuts",
                                          QKeySequence(), this);
-    connect(myEditShortcutsCommand, SIGNAL(triggered()), this,
-            SLOT(editKeyboardShortcuts()));
+    connect(myEditShortcutsCommand, &QAction::triggered, this,
+            &PowerTabEditor::editKeyboardShortcuts);
 
     myEditPreferencesCommand = new Command(tr("&Preferences..."),
                                            "File.Preferences",
                                            QKeySequence::Preferences, this);
-    connect(myEditPreferencesCommand, SIGNAL(triggered()), this,
-            SLOT(editPreferences()));
+    connect(myEditPreferencesCommand, &QAction::triggered, this,
+            &PowerTabEditor::editPreferences);
 
     myExitCommand = new Command(tr("&Quit"), "File.Quit", QKeySequence::Quit,
                                 this);
-    connect(myExitCommand, SIGNAL(triggered()), this, SLOT(close()));
+    connect(myExitCommand, &QAction::triggered, this, &PowerTabEditor::close);
 
     // Undo / Redo actions.
     myUndoAction = myUndoManager->createUndoAction(this, tr("&Undo"));
@@ -1872,16 +1874,17 @@ void PowerTabEditor::createCommands()
 
     // Copy/Paste actions.
     myCutCommand = new Command(tr("Cut"), "Edit.Cut", QKeySequence::Cut, this);
-    connect(myCutCommand, SIGNAL(triggered()), this, SLOT(cutSelectedNotes()));
+    connect(myCutCommand, &QAction::triggered, this,
+            &PowerTabEditor::cutSelectedNotes);
 
     myCopyCommand = new Command(tr("Copy"), "Edit.Copy", QKeySequence::Copy,
                                 this);
-    connect(myCopyCommand, SIGNAL(triggered()), this,
-            SLOT(copySelectedNotes()));
+    connect(myCopyCommand, &QAction::triggered, this,
+            &PowerTabEditor::copySelectedNotes);
 
     myPasteCommand = new Command(tr("Paste"), "Edit.Paste",
                                  QKeySequence::Paste, this);
-    connect(myPasteCommand, SIGNAL(triggered()), this, SLOT(pasteNotes()));
+    connect(myPasteCommand, &QAction::triggered, this, &PowerTabEditor::pasteNotes);
 
     myPolishCommand = new Command(tr("Polish Score"), "Edit.PolishScore",
                                   QKeySequence(Qt::SHIFT + Qt::Key_J), this);
@@ -1897,14 +1900,14 @@ void PowerTabEditor::createCommands()
     myFileInfoCommand =
         new Command(tr("File Information..."), "Edit.FileInformation",
                     QKeySequence(), this);
-    connect(myFileInfoCommand, SIGNAL(triggered()), this,
-            SLOT(editFileInformation()));
+    connect(myFileInfoCommand, &QAction::triggered, this,
+            &PowerTabEditor::editFileInformation);
 
     // Playback-related actions.
     myPlayPauseCommand = new Command(tr("Play"), "Playback.PlayPause",
                                      Qt::Key_Space, this);
-    connect(myPlayPauseCommand, SIGNAL(triggered()), this,
-            SLOT(startStopPlayback()));
+    connect(myPlayPauseCommand, &QAction::triggered, this,
+            &PowerTabEditor::startStopPlayback);
 
 #ifdef Q_OS_MAC
     // Command-Space is used by Spotlight.
@@ -1939,39 +1942,39 @@ void PowerTabEditor::createCommands()
     myFirstSectionCommand =
         new Command(tr("First Section"), "Position.Section.FirstSection",
                     QKeySequence::MoveToStartOfDocument, this);
-    connect(myFirstSectionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToFirstSection()));
+    connect(myFirstSectionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToFirstSection);
 
     myNextSectionCommand =
         new Command(tr("Next Section"), "Position.Section.NextSection",
                     QKeySequence::MoveToNextPage, this);
-    connect(myNextSectionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToNextSection()));
+    connect(myNextSectionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToNextSection);
 
     myPrevSectionCommand =
         new Command(tr("Previous Section"), "Position.Section.PreviousSection",
                     QKeySequence::MoveToPreviousPage, this);
-    connect(myPrevSectionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToPrevSection()));
+    connect(myPrevSectionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToPrevSection);
 
     myLastSectionCommand =
         new Command(tr("Last Section"), "Position.Section.LastSection",
                     QKeySequence::MoveToEndOfDocument, this);
-    connect(myLastSectionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToLastSection()));
+    connect(myLastSectionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToLastSection);
 
     myShiftForwardCommand = new Command(tr("Shift Forward"),
                                         "Position.ShiftForward",
                                         QKeySequence(Qt::Key_Insert), this);
-    connect(myShiftForwardCommand, SIGNAL(triggered()), this,
-            SLOT(shiftForward()));
+    connect(myShiftForwardCommand, &QAction::triggered, this,
+            &PowerTabEditor::shiftForward);
 
     myShiftBackwardCommand = new Command(tr("Shift Backward"),
                                          "Position.ShiftBackward",
                                          QKeySequence(Qt::SHIFT + Qt::Key_Insert),
                                          this);
-    connect(myShiftBackwardCommand, SIGNAL(triggered()), this,
-            SLOT(shiftBackward()));
+    connect(myShiftBackwardCommand, &QAction::triggered, this,
+            &PowerTabEditor::shiftBackward);
 
     // Position-related actions.
 #ifdef Q_OS_MAC
@@ -1986,61 +1989,61 @@ void PowerTabEditor::createCommands()
     myStartPositionCommand =
         new Command(tr("Move to &Start"), "Position.Staff.MoveToStart",
                     move_start_seq, this);
-    connect(myStartPositionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToStart()));
+    connect(myStartPositionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToStart);
 
     myNextPositionCommand =
         new Command(tr("&Next Position"), "Position.Staff.NextPosition",
                     QKeySequence::MoveToNextChar, this);
-    connect(myNextPositionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretRight()));
+    connect(myNextPositionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretRight);
 
     myPrevPositionCommand =
         new Command(tr("&Previous Position"), "Position.Staff.PreviousPosition",
                     QKeySequence::MoveToPreviousChar, this);
-    connect(myPrevPositionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretLeft()));
+    connect(myPrevPositionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretLeft);
 
     myNextStringCommand =
         new Command(tr("Next String"), "Position.Staff.NextString",
                     QKeySequence::MoveToNextLine, this);
-    connect(myNextStringCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretDown()));
+    connect(myNextStringCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretDown);
 
     myPrevStringCommand =
         new Command(tr("Previous String"), "Position.Staff.PreviousString",
                     QKeySequence::MoveToPreviousLine, this);
-    connect(myPrevStringCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretUp()));
+    connect(myPrevStringCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretUp);
 
     myLastPositionCommand =
         new Command(tr("Move to &End"), "Position.Staff.MoveToEnd",
                     move_end_seq, this);
-    connect(myLastPositionCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToEnd()));
+    connect(myLastPositionCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToEnd);
 
     myNextStaffCommand =
         new Command(tr("Next Staff"), "Position.Staff.NextStaff",
                     Qt::ALT + Qt::Key_Down, this);
-    connect(myNextStaffCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToNextStaff()));
+    connect(myNextStaffCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToNextStaff);
 
     myPrevStaffCommand =
         new Command(tr("Previous Staff"), "Position.Staff.PreviousStaff",
                     Qt::ALT + Qt::Key_Up, this);
-    connect(myPrevStaffCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToPrevStaff()));
+    connect(myPrevStaffCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToPrevStaff);
 
     myNextBarCommand = new Command(tr("Next Bar"), "Position.Staff.NextBar",
                                    Qt::Key_Tab, this);
-    connect(myNextBarCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToNextBar()));
+    connect(myNextBarCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToNextBar);
 
     myPrevBarCommand =
         new Command(tr("Previous Bar"), "Position.Staff.PreviousBar",
                     Qt::SHIFT + Qt::Key_Tab, this);
-    connect(myPrevBarCommand, SIGNAL(triggered()), this,
-            SLOT(moveCaretToPrevBar()));
+    connect(myPrevBarCommand, &QAction::triggered, this,
+            &PowerTabEditor::moveCaretToPrevBar);
 #if 0
     // Actions for shifting tab numbers up/down a string
     shiftTabNumUp = new Command(tr("Shift Tab Number Up"), "Position.ShiftTabNumberUp",
@@ -2055,32 +2058,32 @@ void PowerTabEditor::createCommands()
 #endif
     myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
                                       QKeySequence::Delete, this);
-    connect(myRemoveNoteCommand, SIGNAL(triggered()), this, SLOT(removeCurrentPosition()));
+    connect(myRemoveNoteCommand, &QAction::triggered, this, &PowerTabEditor::removeCurrentPosition);
 
     myRemovePositionCommand = new Command(tr("Remove Position"),
                                           "Position.RemovePosition",
                                           QKeySequence::DeleteEndOfWord, this);
-    connect(myRemovePositionCommand, SIGNAL(triggered()), this,
-            SLOT(removeSelectedPositions()));
+    connect(myRemovePositionCommand, &QAction::triggered, this,
+            &PowerTabEditor::removeSelectedPositions);
 
     myGoToBarlineCommand = new Command(tr("Go To Barline..."),
                                        "Position.GoToBarline",
                                        Qt::CTRL + Qt::Key_G, this);
-    connect(myGoToBarlineCommand, SIGNAL(triggered()), this,
-            SLOT(gotoBarline()));
+    connect(myGoToBarlineCommand, &QAction::triggered, this,
+            &PowerTabEditor::gotoBarline);
 
     myGoToRehearsalSignCommand = new Command(tr("Go To Rehearsal Sign..."),
                                              "Position.GoToRehearsalSign",
                                              Qt::CTRL + Qt::Key_H, this);
-    connect(myGoToRehearsalSignCommand, SIGNAL(triggered()), this,
-            SLOT(gotoRehearsalSign()));
+    connect(myGoToRehearsalSignCommand, &QAction::triggered, this,
+            &PowerTabEditor::gotoRehearsalSign);
 
     // Text-related actions.
     myChordNameCommand = new Command(tr("Chord Name..."), "Text.ChordName",
                                      Qt::Key_C, this);
     myChordNameCommand->setCheckable(true);
-    connect(myChordNameCommand, SIGNAL(triggered()), this,
-            SLOT(editChordName()));
+    connect(myChordNameCommand, &QAction::triggered, this,
+            &PowerTabEditor::editChordName);
 
     myTextCommand = new Command(tr("Text..."), "Text.TextItem",
                                 QKeySequence(), this);
@@ -2104,29 +2107,29 @@ void PowerTabEditor::createCommands()
     myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
                                              "Section.InsertSystemAtEnd",
                                              Qt::Key_N, this);
-    connect(myInsertSystemAtEndCommand, SIGNAL(triggered()), this,
-            SLOT(insertSystemAtEnd()));
+    connect(myInsertSystemAtEndCommand, &QAction::triggered, this,
+            &PowerTabEditor::insertSystemAtEnd);
 
     myInsertSystemBeforeCommand = new Command(tr("Insert System Before"),
                                               "Section.InsertSystemBefore",
                                               QKeySequence(Qt::ALT + Qt::SHIFT +
                                                            Qt::Key_N),this);
-    connect(myInsertSystemBeforeCommand, SIGNAL(triggered()), this,
-            SLOT(insertSystemBefore()));
+    connect(myInsertSystemBeforeCommand, &QAction::triggered, this,
+            &PowerTabEditor::insertSystemBefore);
 
     myInsertSystemAfterCommand = new Command(tr("Insert System After"),
                                              "Section.InsertSystemAfter",
                                              QKeySequence(Qt::SHIFT + Qt::Key_N),
                                              this);
-    connect(myInsertSystemAfterCommand, SIGNAL(triggered()), this,
-            SLOT(insertSystemAfter()));
+    connect(myInsertSystemAfterCommand, &QAction::triggered, this,
+            &PowerTabEditor::insertSystemAfter);
 
     myRemoveCurrentSystemCommand = new Command(tr("Remove Current System"),
                                          "Section.RemoveCurrentSystem",
                                          QKeySequence(Qt::CTRL + Qt::SHIFT +
                                                       Qt::Key_N), this);
-    connect(myRemoveCurrentSystemCommand, SIGNAL(triggered()), this,
-            SLOT(removeCurrentSystem()));
+    connect(myRemoveCurrentSystemCommand, &QAction::triggered, this,
+            &PowerTabEditor::removeCurrentSystem);
 
     myInsertStaffBeforeCommand =
         new Command(tr("Insert Staff Before"), "Section.InsertStaffBefore",
@@ -2202,11 +2205,11 @@ void PowerTabEditor::createCommands()
 
     myAddDotCommand = new Command(tr("Add Dot"), "Notes.Dot.Add",
                             Qt::SHIFT + Qt::Key_Right, this);
-    connect(myAddDotCommand, SIGNAL(triggered()), this, SLOT(addDot()));
+    connect(myAddDotCommand, &QAction::triggered, this, &PowerTabEditor::addDot);
 
     myRemoveDotCommand = new Command(tr("Remove Dot"), "Notes.Dot.Remove",
                                Qt::SHIFT + Qt::Key_Left, this);
-    connect(myRemoveDotCommand, SIGNAL(triggered()), this, SLOT(removeDot()));
+    connect(myRemoveDotCommand, &QAction::triggered, this, &PowerTabEditor::removeDot);
 
     myLeftHandFingeringCommand = new Command(tr("Left Hand Fingering..."), 
                                              "Notes.LeftHandFingering",
@@ -2217,7 +2220,7 @@ void PowerTabEditor::createCommands()
 
     myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
     myTieCommand->setCheckable(true);
-    connect(myTieCommand, SIGNAL(triggered()), this, SLOT(editTiedNote()));
+    connect(myTieCommand, &QAction::triggered, this, &PowerTabEditor::editTiedNote);
 
     createNotePropertyCommand(myMutedCommand, tr("Muted"), "Notes.Muted",
                               Qt::Key_X, Note::Muted);
@@ -2290,76 +2293,77 @@ void PowerTabEditor::createCommands()
 
     myAddRestCommand = new Command(tr("Add Rest"), "Rests.AddRest", Qt::Key_R,
                                    this);
-    connect(myAddRestCommand, SIGNAL(triggered()), this, SLOT(addRest()));
+    connect(myAddRestCommand, &QAction::triggered, this,
+            &PowerTabEditor::addRest);
 
     myMultibarRestCommand = new Command(
         tr("Multi-Bar Rest..."), "Rests.MultibarRest", QKeySequence(), this);
     myMultibarRestCommand->setCheckable(true);
-    connect(myMultibarRestCommand, SIGNAL(triggered()), this,
-            SLOT(editMultiBarRest()));
+    connect(myMultibarRestCommand, &QAction::triggered, this,
+            &PowerTabEditor::editMultiBarRest);
 
     // Music Symbol Actions
     myRehearsalSignCommand =
         new Command(tr("Rehearsal Sign..."), "MusicSymbols.RehearsalSign",
                     Qt::SHIFT + Qt::Key_R, this);
     myRehearsalSignCommand->setCheckable(true);
-    connect(myRehearsalSignCommand, SIGNAL(triggered()), this,
-            SLOT(editRehearsalSign()));
+    connect(myRehearsalSignCommand, &QAction::triggered, this,
+            &PowerTabEditor::editRehearsalSign);
 
     myTempoMarkerCommand = new Command(
         tr("Tempo Marker..."), "MusicSymbols.TempoMarker", Qt::Key_O, this);
     myTempoMarkerCommand->setCheckable(true);
-    connect(myTempoMarkerCommand, SIGNAL(triggered()), this,
-            SLOT(editTempoMarker()));
+    connect(myTempoMarkerCommand, &QAction::triggered, this,
+            &PowerTabEditor::editTempoMarker);
 
     myAlterationOfPaceCommand =
         new Command(tr("Alteration of Pace..."),
                     "MusicSymbols.AlterationOfPace", QKeySequence(), this);
     myAlterationOfPaceCommand->setCheckable(true);
-    connect(myAlterationOfPaceCommand, SIGNAL(triggered()), this,
-            SLOT(editAlterationOfPace()));
+    connect(myAlterationOfPaceCommand, &QAction::triggered, this,
+            &PowerTabEditor::editAlterationOfPace);
 
     myKeySignatureCommand = new Command(tr("Edit Key Signature..."),
                                         "MusicSymbols.EditKeySignature",
                                         Qt::Key_K, this);
-    connect(myKeySignatureCommand, SIGNAL(triggered()), this,
-            SLOT(editKeySignatureFromCaret()));
+    connect(myKeySignatureCommand, &QAction::triggered, this,
+            &PowerTabEditor::editKeySignatureFromCaret);
 
     myTimeSignatureCommand = new Command(tr("Edit Time Signature..."),
                                    "MusicSymbols.EditTimeSignature",
                                    Qt::Key_T, this);
-    connect(myTimeSignatureCommand, SIGNAL(triggered()), this,
-            SLOT(editTimeSignatureFromCaret()));
+    connect(myTimeSignatureCommand, &QAction::triggered, this,
+            &PowerTabEditor::editTimeSignatureFromCaret);
 
     myStandardBarlineCommand = new Command(tr("Insert Standard Barline"),
                                      "MusicSymbols.InsertStandardBarline",
                                      Qt::Key_B, this);
-    connect(myStandardBarlineCommand, SIGNAL(triggered()), this,
-            SLOT(insertStandardBarline()));
+    connect(myStandardBarlineCommand, &QAction::triggered, this,
+            &PowerTabEditor::insertStandardBarline);
 
     myBarlineCommand = new Command(tr("Barline..."), "MusicSymbols.Barline",
                                    Qt::SHIFT + Qt::Key_B, this);
-    connect(myBarlineCommand, SIGNAL(triggered()), this,
-            SLOT(editBarlineFromCaret()));
+    connect(myBarlineCommand, &QAction::triggered, this,
+            &PowerTabEditor::editBarlineFromCaret);
 
     myDirectionCommand =
         new Command(tr("Musical Direction..."), "MusicSymbols.MusicalDirection",
                     Qt::SHIFT + Qt::Key_D, this);
     myDirectionCommand->setCheckable(true);
-    connect(myDirectionCommand, SIGNAL(triggered()), this,
-            SLOT(editMusicalDirection()));
+    connect(myDirectionCommand, &QAction::triggered, this,
+            &PowerTabEditor::editMusicalDirection);
 
     myRepeatEndingCommand =
         new Command(tr("Repeat Ending..."), "MusicSymbols.RepeatEnding",
                     Qt::SHIFT + Qt::Key_E, this);
     myRepeatEndingCommand->setCheckable(true);
-    connect(myRepeatEndingCommand, SIGNAL(triggered()), this,
-            SLOT(editRepeatEnding()));
+    connect(myRepeatEndingCommand, &QAction::triggered, this,
+            &PowerTabEditor::editRepeatEnding);
 
     myDynamicCommand =
         new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
-    connect(myDynamicCommand, SIGNAL(triggered()), this, SLOT(editDynamic()));
+    connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
 #if 0
     volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
                                     QKeySequence(), this);
@@ -2371,8 +2375,8 @@ void PowerTabEditor::createCommands()
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
                                       "TabSymbols.HammerPull", Qt::Key_H, this);
     myHammerPullCommand->setCheckable(true);
-    connect(myHammerPullCommand, SIGNAL(triggered()), this,
-            SLOT(editHammerPull()));
+    connect(myHammerPullCommand, &QAction::triggered, this,
+            &PowerTabEditor::editHammerPull);
 
     createNotePropertyCommand(myHammerOnFromNowhereCommand,
                               tr("Hammer On From Nowhere"),
@@ -2392,15 +2396,15 @@ void PowerTabEditor::createCommands()
         new Command(tr("Artificial Harmonic..."),
                     "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
     myArtificialHarmonicCommand->setCheckable(true);
-    connect(myArtificialHarmonicCommand, SIGNAL(triggered()), this,
-            SLOT(editArtificialHarmonic()));
+    connect(myArtificialHarmonicCommand, &QAction::triggered, this,
+            &PowerTabEditor::editArtificialHarmonic);
 
     myTappedHarmonicCommand = new Command(tr("Tapped Harmonic..."),
                                           "TabSymbols.TappedHarmonic",
                                           QKeySequence(), this);
     myTappedHarmonicCommand->setCheckable(true);
-    connect(myTappedHarmonicCommand, SIGNAL(triggered()), this,
-            SLOT(editTappedHarmonic()));
+    connect(myTappedHarmonicCommand, &QAction::triggered, this,
+            &PowerTabEditor::editTappedHarmonic);
 
     myBendCommand =
         new Command(tr("Bend..."), "TabSymbols.Bend", QKeySequence(), this);
@@ -2438,7 +2442,7 @@ void PowerTabEditor::createCommands()
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
                                  QKeySequence(), this);
     myTrillCommand->setCheckable(true);
-    connect(myTrillCommand, SIGNAL(triggered()), this, SLOT(editTrill()));
+    connect(myTrillCommand, &QAction::triggered, this, &PowerTabEditor::editTrill);
 
     createPositionPropertyCommand(myPickStrokeUpCommand, tr("Pickstroke Up"),
                                   "TabSymbols.PickStrokeUp", QKeySequence(),
@@ -2488,14 +2492,14 @@ void PowerTabEditor::createCommands()
                                         "Player.PlayerChange", QKeySequence(),
                                         this);
     myPlayerChangeCommand->setCheckable(true);
-    connect(myPlayerChangeCommand, SIGNAL(triggered()), this,
-            SLOT(editPlayerChange()));
+    connect(myPlayerChangeCommand, &QAction::triggered, this,
+            &PowerTabEditor::editPlayerChange);
 
     myShowTuningDictionaryCommand = new Command(tr("Tuning Dictionary..."),
                                                 "Player.TuningDictionary",
                                                 QKeySequence(), this);
-    connect(myShowTuningDictionaryCommand, SIGNAL(triggered()),
-            this, SLOT(showTuningDictionary()));
+    connect(myShowTuningDictionaryCommand, &QAction::triggered,
+            this, &PowerTabEditor::showTuningDictionary);
 
     myEditViewFiltersCommand =
         new Command(tr("Edit View Filters..."), "Player.EditViewFilters",
@@ -2922,10 +2926,10 @@ void PowerTabEditor::createTabArea()
     myTabWidget->setDocumentMode(true);
     myTabWidget->setTabsClosable(true);
 
-    connect(myTabWidget, SIGNAL(tabCloseRequested(int)), this,
-            SLOT(closeTab(int)));
-    connect(myTabWidget, SIGNAL(currentChanged(int)), this,
-            SLOT(switchTab(int)));
+    connect(myTabWidget, &QTabWidget::tabCloseRequested, this,
+            &PowerTabEditor::closeTab);
+    connect(myTabWidget, &QTabWidget::currentChanged, this,
+            &PowerTabEditor::switchTab);
 
     myPlaybackWidget =
         new PlaybackWidget(*myPlayPauseCommand, *myRewindCommand,

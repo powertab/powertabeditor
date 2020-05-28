@@ -23,7 +23,7 @@
 
 QFont MusicFont::getFont(int pixel_size)
 {
-    QFont font("Emmentaler");
+    QFont font(QStringLiteral("Emmentaler"));
     font.setPixelSize(pixel_size);
     return font;
 }

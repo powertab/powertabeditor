@@ -30,19 +30,21 @@ KeyboardSettingsDialog::KeyboardSettingsDialog(
 {
     ui->setupUi(this);
 
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     initializeCommandTable();
 
     ui->shortcutEdit->installEventFilter(this);
 
-    connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetShortcut()));
+    connect(ui->resetButton, &QPushButton::clicked, this,
+            &KeyboardSettingsDialog::resetShortcut);
 
-    connect(ui->commandsList,
-            SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
-            this,
-            SLOT(activeCommandChanged(QTreeWidgetItem *,QTreeWidgetItem *)));
+    connect(ui->commandsList, &QTreeWidget::currentItemChanged, this,
+            &KeyboardSettingsDialog::activeCommandChanged);
 
-    connect(ui->defaultButton, SIGNAL(clicked()), this,
-            SLOT(resetToDefaultShortcut()));
+    connect(ui->defaultButton, &QPushButton::clicked, this,
+            &KeyboardSettingsDialog::resetToDefaultShortcut);
     ui->shortcutEdit->setFocus();
 }
 
