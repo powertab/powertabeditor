@@ -3140,24 +3140,31 @@ void PowerTabEditor::updateCommands()
     {
         case Position::WholeNote:
             myWholeNoteCommand->setChecked(true);
+            myWholeRestCommand->setChecked(true);
             break;
         case Position::HalfNote:
             myHalfNoteCommand->setChecked(true);
+            myHalfRestCommand->setChecked(true);
             break;
         case Position::QuarterNote:
             myQuarterNoteCommand->setChecked(true);
+            myQuarterRestCommand->setChecked(true);
             break;
         case Position::EighthNote:
             myEighthNoteCommand->setChecked(true);
+            myEighthRestCommand->setChecked(true);
             break;
         case Position::SixteenthNote:
             mySixteenthNoteCommand->setChecked(true);
+            mySixteenthRestCommand->setChecked(true);
             break;
         case Position::ThirtySecondNote:
             myThirtySecondNoteCommand->setChecked(true);
+            myThirtySecondRestCommand->setChecked(true);
             break;
         case Position::SixtyFourthNote:
             mySixtyFourthNoteCommand->setChecked(true);
+            mySixtyFourthRestCommand->setChecked(true);
             break;
     }
 
@@ -3341,13 +3348,13 @@ void PowerTabEditor::editRest(Position::DurationType duration)
     ScoreLocation &location = getLocation();
     const Position *pos = location.getPosition();
 
+    // Set the duration for future notes / rests that are added.
+    myActiveDurationType = duration;
+
     if (pos && pos->isRest())
     {
-        if (pos->getDurationType() == duration)
-        {
-            // TODO - delete rest using the regular command for deleting positions.
-        }
-        else
+        // Adjust the duration of an existing rest.
+        if (pos->getDurationType() != duration)
         {
             myUndoManager->push(new EditNoteDuration(location, duration, true),
                                 location.getSystemIndex());
@@ -3355,9 +3362,9 @@ void PowerTabEditor::editRest(Position::DurationType duration)
     }
     else
     {
+        // Convert or add a new rest.
         myUndoManager->push(new AddRest(location, duration),
                             location.getSystemIndex());
-
     }
 }
 
