@@ -4,6 +4,8 @@ set( srcs
     fileformat.cpp
     fileformatmanager.cpp
 
+    gp7/gp7importer.cpp
+
     gpx/bitstream.cpp
     gpx/documentreader.cpp
     gpx/filesystem.cpp
@@ -112,10 +114,13 @@ pte_library(
     SOURCES ${srcs}
     HEADERS ${headers}
     DEPENDS
-        Boost::date_time
-        Boost::iostreams
-        ptemidi
-        ptescore
-        pteutil
-        pugixml::pugixml
+        PUBLIC
+            ptescore
+            pteutil
+        PRIVATE
+            Boost::date_time
+            Boost::iostreams
+            minizip::minizip
+            ptemidi
+            pugixml::pugixml
 )
