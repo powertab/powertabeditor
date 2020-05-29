@@ -18,6 +18,9 @@
 #include "gp7importer.h"
 
 #include <minizip/unzip.h>
+#ifdef _WIN32
+#include <minizip/iowin32.h>
+#endif
 
 #include <formats/fileformat.h>
 #include <score/score.h>
@@ -50,9 +53,17 @@ using UnzFileHandle = std::unique_ptr<unzFile, UnzFileCloser>;
 
 void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
 {
+    zlib_filefunc64_def ffunc;
+#ifdef _WIN32
+    // Ensure wide strings are used, matching boost::filesystem::path.
+    fill_win32_filefunc64W(&ffunc);
+#else
+    fill_fopen64_filefunc(&ffunc);
+#endif
+
     // The .gp file format is just a zip file with a different extension.
     UnzFileHandle zip_file;
-    zip_file.reset(unzOpen64(filename.c_str()));
+    zip_file.reset(unzOpen2_64(filename.c_str(), &ffunc));
     if (!zip_file)
         throw FileFormatException("Failed to unzip file.");
 
