@@ -14,6 +14,7 @@ set( srcs
 set( headers
     settingstree.h
     tostring.h
+    scopeexit.h
 )
 
 set( platform_depends )

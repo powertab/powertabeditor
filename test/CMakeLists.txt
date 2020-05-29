@@ -100,6 +100,7 @@ set( srcs
     score/test_viewfilter.cpp
     score/test_voiceutils.cpp
 
+    util/test_scopeexit.cpp
     util/test_settingstree.cpp
 )
 

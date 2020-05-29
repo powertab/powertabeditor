@@ -22,8 +22,7 @@
 #include <formats/fileformat.h>
 #include <score/score.h>
 #include <score/utils/scorepolisher.h>
-
-#include <iostream>
+#include <util/scopeexit.h>
 
 Gp7Importer::Gp7Importer()
     : FileFormatImporter(FileFormat("Guitar Pro 7", { "gp" }))
@@ -65,6 +64,16 @@ void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
     {
         throw FileFormatException("Could not find score.gpif.");
     }
+
+    // Open score.gpif.
+    if (unzOpenCurrentFile(zip_file.get()) != UNZ_OK)
+        throw FileFormatException("Failed to open score.gpif.");
+
+    // Close the file upon going out of scope.
+    Util::ScopeExit close_file([&]() {
+        if (unzCloseCurrentFile(zip_file.get()) != UNZ_OK)
+            throw FileFormatException("Failed to close file.");
+    });
 
     ScoreUtils::polishScore(score);
     ScoreUtils::addStandardFilters(score);
