@@ -48,7 +48,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-program-options boost-range boost-rational boost-scope-exit boost-signals2 boost-stacktrace catch2 pugixml rapidjson rtmidi
+      run: vcpkg install --triplet x64-windows boost-algorithm boost-date-time boost-endian boost-filesystem boost-functional boost-iostreams boost-program-options boost-range boost-rational boost-scope-exit boost-signals2 boost-stacktrace catch2 pugixml rapidjson
     # Building Qt via vcpkg would take a while ...
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
