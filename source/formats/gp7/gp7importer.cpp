@@ -22,6 +22,8 @@
 #include <minizip/iowin32.h>
 #endif
 
+#include <pugixml.hpp>
+
 #include <formats/fileformat.h>
 #include <score/score.h>
 #include <score/utils/scorepolisher.h>
@@ -49,9 +51,8 @@ struct UnzFileCloser
 /// Handle to a unzFile. Calls unzClose() when it goes out of scope.
 using UnzFileHandle = std::unique_ptr<unzFile, UnzFileCloser>;
 
-} // namespace
-
-void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
+/// Opens a zip file.
+UnzFileHandle openZipFile(const boost::filesystem::path &filename)
 {
     zlib_filefunc64_def ffunc;
 #ifdef _WIN32
@@ -61,30 +62,80 @@ void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
     fill_fopen64_filefunc(&ffunc);
 #endif
 
-    // The .gp file format is just a zip file with a different extension.
     UnzFileHandle zip_file;
     zip_file.reset(unzOpen2_64(filename.c_str(), &ffunc));
     if (!zip_file)
         throw FileFormatException("Failed to unzip file.");
 
-    // There are a few files, but Content/score.gpif has the main contents in
-    // XML format. This is very similar to the .gpx file format, but with a
-    // different container.
-    if (unzLocateFile(zip_file.get(), "Content/score.gpif", 1) ==
-        UNZ_END_OF_LIST_OF_FILE)
-    {
-        throw FileFormatException("Could not find score.gpif.");
-    }
+    return zip_file;
+}
 
-    // Open score.gpif.
-    if (unzOpenCurrentFile(zip_file.get()) != UNZ_OK)
-        throw FileFormatException("Failed to open score.gpif.");
+/// Loads a file from the provided zip archive.
+std::vector<std::byte> loadFileFromZip(unzFile zip_file, const char *name)
+{
+    if (unzLocateFile(zip_file, name, 1) == UNZ_END_OF_LIST_OF_FILE)
+        throw FileFormatException("Could not find file in archive.");
+
+    if (unzOpenCurrentFile(zip_file) != UNZ_OK)
+        throw FileFormatException("Failed to open file in archive.");
 
     // Close the file upon going out of scope.
     Util::ScopeExit close_file([&]() {
-        if (unzCloseCurrentFile(zip_file.get()) != UNZ_OK)
+        if (unzCloseCurrentFile(zip_file) != UNZ_OK)
             throw FileFormatException("Failed to close file.");
     });
+
+    // Read the file contents, block by block.
+    std::vector<std::byte> buffer;
+    while (true)
+    {
+        static constexpr int BLOCK_SIZE = 4096;
+
+        const size_t block_start = buffer.size();
+        buffer.resize(buffer.size() + BLOCK_SIZE);
+        const int bytes_read = unzReadCurrentFile(
+            zip_file, buffer.data() + block_start, BLOCK_SIZE);
+
+        if (bytes_read == 0)
+        {
+            // End of file.
+            break;
+        }
+        else if (bytes_read < 0)
+        {
+            throw FileFormatException("Failed to read file.");
+        }
+        else if (bytes_read != BLOCK_SIZE)
+        {
+            // We likely reached the end of the file - trim extra entries that
+            // were allocated.
+            assert(bytes_read < BLOCK_SIZE);
+            buffer.resize(buffer.size() - (BLOCK_SIZE - bytes_read));
+        }
+    };
+
+    return buffer;
+}
+
+} // namespace
+
+void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
+{
+    // The .gp file format is just a zip file with a different extension.
+    UnzFileHandle zip_file = openZipFile(filename);
+
+    // There are a few files, but Content/score.gpif has the main contents in
+    // XML format. This is very similar to the .gpx file format, but with a
+    // different container.
+    std::vector<std::byte> buffer =
+        loadFileFromZip(zip_file.get(), "Content/score.gpif");
+
+    // Parse as an XML file.
+    pugi::xml_document doc;
+    pugi::xml_parse_result result =
+        doc.load_buffer_inplace(buffer.data(), buffer.size());
+    if (!result)
+        throw FileFormatException(result.description());
 
     ScoreUtils::polishScore(score);
     ScoreUtils::addStandardFilters(score);
