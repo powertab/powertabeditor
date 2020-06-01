@@ -43,7 +43,6 @@ public:
 
     bool initialize(size_t preferredApi, unsigned int preferredPort);
     size_t getApiCount();
-    std::string getApiName(size_t api) const;
     unsigned int getPortCount(size_t api);
     std::string getPortName(size_t api, unsigned int port);
 

@@ -132,11 +132,6 @@ size_t MidiOutputDevice::getApiCount()
     return myMidiOuts.size();
 }
 
-std::string MidiOutputDevice::getApiName(size_t i) const
-{
-    return RtMidi::getApiName(myMidiOuts[i]->getCurrentApi());
-}
-
 unsigned int MidiOutputDevice::getPortCount(size_t api)
 {
     assert(api < myMidiOuts.size() && "Programming error, api doesn't exist");

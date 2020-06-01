@@ -18,15 +18,21 @@
 #include <catch2/catch.hpp>
 
 #include <audio/midioutputdevice.h>
+#include <RtMidi.h>
 
 TEST_CASE("Audio/MidiOutputDevice/Basic", "")
 {
     MidiOutputDevice device;
 
-    // Make sure we have at least one API, and it's not the dummy API that is
-    // used when RtMidi was compiled without support for the appropriate
-    // platform-specific API
+    // Make sure we have at least one API and can initialize the output device
+    // without errors.
     REQUIRE(device.getApiCount() > 0);
-    for (int i = 0; i < device.getApiCount(); ++i)
-        REQUIRE(device.getApiName(i) != "dummy");
+
+    // Ensure we aren't using the dummy API that is used when RtMidi was
+    // compiled without support for the appropriate platform-specific API. If
+    // this is the case, MIDI output won't do anything.
+    std::vector<RtMidi::Api> apis;
+    RtMidi::getCompiledApi(apis);
+    for (RtMidi::Api api : apis)
+        REQUIRE(api != RtMidi::RTMIDI_DUMMY);
 }
