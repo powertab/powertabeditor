@@ -63,6 +63,8 @@ set( srcs
     actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
 
+    audio/test_midioutputdevice.cpp
+
     app/test_documentmanager.cpp
     app/test_settingsmanager.cpp
 
