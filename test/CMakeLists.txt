@@ -63,6 +63,8 @@ set( srcs
     actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
 
+    audio/test_midioutputdevice.cpp
+
     app/test_documentmanager.cpp
     app/test_settingsmanager.cpp
 
@@ -155,6 +157,7 @@ pte_executable(
     DEPENDS
         Catch2::Catch2
         pteapp
+        rtmidi::rtmidi
 )
 
 add_test(
