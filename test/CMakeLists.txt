@@ -157,6 +157,7 @@ pte_executable(
     DEPENDS
         Catch2::Catch2
         pteapp
+        rtmidi::rtmidi
 )
 
 add_test(
