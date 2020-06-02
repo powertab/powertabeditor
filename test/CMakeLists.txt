@@ -140,7 +140,8 @@ set( data_files
     formats/guitar_pro/data/text.gp5
     formats/guitar_pro/data/time_signatures.gp5
 
-    formats/gp7/data/test_basic.gp
+    formats/gp7/data/score_info.gp
+    formats/gp7/data/words_and_music.gp
 
     formats/gpx/data/text.gpx
 

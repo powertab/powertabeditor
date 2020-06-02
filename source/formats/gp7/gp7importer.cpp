@@ -17,6 +17,9 @@
 
 #include "gp7importer.h"
 
+#include "converter.h"
+#include "parser.h"
+
 #include <minizip/unzip.h>
 #ifdef _WIN32
 #include <minizip/iowin32.h>
@@ -131,11 +134,14 @@ void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
         loadFileFromZip(zip_file.get(), "Content/score.gpif");
 
     // Parse as an XML file.
-    pugi::xml_document doc;
+    pugi::xml_document xml_doc;
     pugi::xml_parse_result result =
-        doc.load_buffer_inplace(buffer.data(), buffer.size());
+        xml_doc.load_buffer_inplace(buffer.data(), buffer.size());
     if (!result)
         throw FileFormatException(result.description());
+
+    Gp7::Document doc = Gp7::parse(xml_doc);
+    Gp7::convert(doc, score);
 
     ScoreUtils::polishScore(score);
     ScoreUtils::addStandardFilters(score);

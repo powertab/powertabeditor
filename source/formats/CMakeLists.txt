@@ -4,7 +4,9 @@ set( srcs
     fileformat.cpp
     fileformatmanager.cpp
 
+    gp7/converter.cpp
     gp7/gp7importer.cpp
+    gp7/parser.cpp
 
     gpx/bitstream.cpp
     gpx/documentreader.cpp
