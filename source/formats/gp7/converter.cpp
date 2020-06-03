@@ -23,7 +23,9 @@
 #include <score/score.h>
 #include <score/scoreinfo.h>
 
-static void convertScoreInfo(const Gp7::ScoreInfo &gp_info, Score &score)
+/// Convert the Guitar Pro file metadata.
+static void
+convertScoreInfo(const Gp7::ScoreInfo &gp_info, Score &score)
 {
     ScoreInfo info;
     SongData data;
@@ -48,7 +50,39 @@ static void convertScoreInfo(const Gp7::ScoreInfo &gp_info, Score &score)
     score.setScoreInfo(info);
 }
 
-void Gp7::convert(const Gp7::Document &doc, Score &score)
+/// Create players and instruments from the Guitar Pro tracks.
+static void convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score)
+{
+    for (const Gp7::Track &track : tracks)
+    {
+        for (const Gp7::Staff &staff : track.myStaves)
+        {
+            Player player;
+            player.setDescription(track.myName);
+
+            Tuning tuning;
+            tuning.setNotes(std::vector<uint8_t>(staff.myTuning.rbegin(),
+                                                 staff.myTuning.rend()));
+            tuning.setCapo(staff.myCapo);
+            player.setTuning(tuning);
+
+            score.insertPlayer(player);
+        }
+
+        for (const Gp7::Sound &sound : track.mySounds)
+        {
+            Instrument instrument;
+            instrument.setDescription(sound.myLabel);
+            instrument.setMidiPreset(sound.myMidiPreset);
+
+            score.insertInstrument(instrument);
+        }
+    }
+}
+
+void
+Gp7::convert(const Gp7::Document &doc, Score &score)
 {
     convertScoreInfo(doc.myScoreInfo, score);
+    convertPlayers(doc.myTracks, score);
 }

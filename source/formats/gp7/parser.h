@@ -67,11 +67,36 @@ struct TempoChange
     BeatType myBeatType = BeatType::Quarter;
 };
 
+struct Staff
+{
+    std::vector<int> myTuning;
+    int myCapo = 0;
+};
+
+struct Sound
+{
+    std::string myLabel;
+    int myMidiPreset = -1;
+};
+
+struct Track
+{
+    std::string myName;
+    // A track typically has one staff, but can have two staves with different
+    // tunings.
+    std::vector<Staff> myStaves;
+    /// There can be multiple sounds (although every staff in the track uses
+    /// the same active sound). Automations describe when the sounds are
+    /// changed.
+    std::vector<Sound> mySounds;
+};
+
 /// Container for a Guitar Pro 7 document.
 struct Document
 {
     ScoreInfo myScoreInfo;
     std::vector<TempoChange> myTempoChanges;
+    std::vector<Track> myTracks;
 };
 
 /// Parses the score.gpif XML file.
