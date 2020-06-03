@@ -3,8 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Improved the Rest menu's behaviour to be more consistent with the Notes menu (#135).
 
 ### Fixed
+- Fixed a crash when the player assigned to a staff did not have enough strings (#243).
 
 ## [Alpha 11] - 2020-05-28
 

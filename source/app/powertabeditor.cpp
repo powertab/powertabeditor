@@ -598,7 +598,7 @@ void PowerTabEditor::startStopPlayback(bool from_measure_start)
                 &PowerTabEditor::moveCaretToSystem);
         connect(myMidiPlayer.get(), &MidiPlayer::playbackPositionChanged, this,
                 &PowerTabEditor::moveCaretToPosition);
-        connect(myMidiPlayer.get(), &MidiPlayer::finished,
+        connect(myMidiPlayer.get(), &MidiPlayer::finished, this,
                 [this]() { startStopPlayback(); });
         connect(myPlaybackWidget, &PlaybackWidget::playbackSpeedChanged,
                 myMidiPlayer.get(), &MidiPlayer::changePlaybackSpeed);

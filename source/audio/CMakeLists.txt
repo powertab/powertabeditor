@@ -18,9 +18,11 @@ set( moc_headers
 
 set( platform_deps )
 if ( PLATFORM_OSX )
+    find_library( coremidi_lib CoreMIDI )
     find_library( audiotoolbox_lib AudioToolbox REQUIRED )
     find_library( audiounit_lib AudioUnit REQUIRED )
     set( platform_deps
+        ${coremidi_lib}
         ${audiotoolbox_lib}
         ${audiounit_lib}
     )
