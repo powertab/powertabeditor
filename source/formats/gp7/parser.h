@@ -21,6 +21,7 @@
 #include <pugixml.hpp>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace Gp7
 {
@@ -91,12 +92,56 @@ struct Track
     std::vector<Sound> mySounds;
 };
 
+struct MasterBar
+{
+    std::vector<int> myBarIds;
+};
+
+struct Bar
+{
+    enum class ClefType
+    {
+        G2,
+        F4,
+        C3,
+        C4,
+        /// This is the clef type for drums.
+        Neutral
+    };
+
+    ClefType myClefType = ClefType::G2;
+    std::vector<int> myVoiceIds;
+};
+
+struct Voice
+{
+    std::vector<int> myBeatIds;
+};
+
+struct Beat
+{
+};
+
+struct Rhythm
+{
+};
+
+struct Note
+{
+};
+
 /// Container for a Guitar Pro 7 document.
 struct Document
 {
     ScoreInfo myScoreInfo;
     std::vector<TempoChange> myTempoChanges;
     std::vector<Track> myTracks;
+    std::vector<MasterBar> myMasterBars;
+    std::unordered_map<int, Bar> myBars;
+    std::unordered_map<int, Voice> myVoices;
+    std::unordered_map<int, Beat> myBeats;
+    std::unordered_map<int, Note> myNotes;
+    std::unordered_map<int, Rhythm> myRhythms;
 };
 
 /// Parses the score.gpif XML file.

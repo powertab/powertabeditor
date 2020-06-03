@@ -22,11 +22,25 @@
 #include <boost/algorithm/string/split.hpp>
 #include <string>
 
+#include <iostream>
+
 static std::vector<std::string>
 splitString(std::string input)
 {
     std::vector<std::string> output;
     boost::algorithm::split(output, input, [](char c) { return c == ' '; });
+    return output;
+}
+
+static std::vector<int>
+toIntList(const std::vector<std::string> &input)
+{
+    std::vector<int> output;
+    output.reserve(input.size());
+
+    for (auto &&val : input)
+        output.push_back(std::stoi(val));
+
     return output;
 }
 
@@ -136,11 +150,8 @@ parseTracks(const pugi::xml_node &tracks_node)
             // pitches.
             auto tuning_property = properties.find_child_by_attribute(
                 "Property", "name", "Tuning");
-            for (const std::string &val :
-                 splitString(tuning_property.child_value("Pitches")))
-            {
-                staff.myTuning.push_back(std::stoi(val));
-            }
+            staff.myTuning =
+                toIntList(splitString(tuning_property.child_value("Pitches")));
 
             track.myStaves.push_back(staff);
         }
@@ -167,6 +178,117 @@ parseTracks(const pugi::xml_node &tracks_node)
     return tracks;
 }
 
+static std::vector<Gp7::MasterBar>
+parseMasterBars(const pugi::xml_node &master_bars_node)
+{
+    std::vector<Gp7::MasterBar> master_bars;
+    for (const pugi::xml_node &node : master_bars_node.children("MasterBar"))
+    {
+        Gp7::MasterBar master_bar;
+
+        master_bar.myBarIds = toIntList(splitString(node.child_value("Bars")));
+
+        // TODO - read barline info
+        // TODO - read key signature
+        // TODO - read time signature
+
+        master_bars.push_back(master_bar);
+    }
+
+    return master_bars;
+}
+
+static std::unordered_map<int, Gp7::Bar>
+parseBars(const pugi::xml_node &bars_node)
+{
+    std::unordered_map<int, Gp7::Bar> bars;
+    for (const pugi::xml_node &node : bars_node.children("Bar"))
+    {
+        Gp7::Bar bar;
+        bar.myVoiceIds = toIntList(splitString(node.child_value("Voices")));
+
+        using ClefType = Gp7::Bar::ClefType;
+        std::string clef_name = node.child_value("Clef");
+        if (clef_name == "G2")
+            bar.myClefType = ClefType::G2;
+        else if (clef_name == "F4")
+            bar.myClefType = ClefType::F4;
+        else if (clef_name == "C3")
+            bar.myClefType = ClefType::C3;
+        else if (clef_name == "C4")
+            bar.myClefType = ClefType::C4;
+        else if (clef_name == "Neutral")
+            bar.myClefType = ClefType::Neutral;
+        else
+            throw FileFormatException("Unknown clef type");
+
+        const int id = node.attribute("id").as_int();
+        bars.emplace(id, bar);
+    }
+
+    return bars;
+}
+
+static std::unordered_map<int, Gp7::Voice>
+parseVoices(const pugi::xml_node &voices_node)
+{
+    std::unordered_map<int, Gp7::Voice> voices;
+    for (const pugi::xml_node &node : voices_node.children("Voice"))
+    {
+        Gp7::Voice voice;
+        voice.myBeatIds = toIntList(splitString(node.child_value("Beats")));
+        const int id = node.attribute("id").as_int();
+        voices.emplace(id, voice);
+    }
+
+    return voices;
+}
+
+static std::unordered_map<int, Gp7::Beat>
+parseBeats(const pugi::xml_node &beats_node)
+{
+    std::unordered_map<int, Gp7::Beat> beats;
+    for (const pugi::xml_node &node : beats_node.children("Beat"))
+    {
+        Gp7::Beat beat;
+        // TODO
+        const int id = node.attribute("id").as_int();
+        beats.emplace(id, beat);
+    }
+
+    return beats;
+}
+
+static std::unordered_map<int, Gp7::Note>
+parseNotes(const pugi::xml_node &notes_node)
+{
+    std::unordered_map<int, Gp7::Note> notes;
+    for (const pugi::xml_node &node : notes_node.children("Note"))
+    {
+        Gp7::Note note;
+        // TODO
+        const int id = node.attribute("id").as_int();
+        notes.emplace(id, note);
+    }
+
+    return notes;
+}
+
+static std::unordered_map<int, Gp7::Rhythm>
+parseRhythms(const pugi::xml_node &rhythms_node)
+{
+    std::unordered_map<int, Gp7::Rhythm> rhythms;
+    for (const pugi::xml_node &node : rhythms_node.children("Rhythm"))
+    {
+        Gp7::Rhythm rhythm;
+        // TODO
+        const int id = node.attribute("id").as_int();
+        rhythms.emplace(id, rhythm);
+    }
+
+    return rhythms;
+}
+
 Gp7::Document
 Gp7::parse(const pugi::xml_document &root)
 {
@@ -190,6 +312,12 @@ Gp7::parse(const pugi::xml_document &root)
     doc.myTempoChanges = parseTempoChanges(master_track);
 
     doc.myTracks = parseTracks(gpif.child("Tracks"));
+    doc.myMasterBars = parseMasterBars(gpif.child("MasterBars"));
+    doc.myBars = parseBars(gpif.child("Bars"));
+    doc.myVoices = parseVoices(gpif.child("Voices"));
+    doc.myBeats = parseBeats(gpif.child("Beats"));
+    doc.myNotes = parseNotes(gpif.child("Notes"));
+    doc.myRhythms = parseRhythms(gpif.child("Rhythms"));
 
     return doc;
 }
