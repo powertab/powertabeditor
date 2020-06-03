@@ -109,6 +109,18 @@
                     <string>gpx</string>
                 </array>
             </dict>
+            <dict>
+                <key>CFBundleTypeIconFile</key>
+                <string>powertabeditor.icns</string>
+                <key>CFBundleTypeName</key>
+                <string>Guitar Pro 7 File</string>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>gp</string>
+                </array>
+            </dict>
         </array>
         <key>CFBundleDevelopmentRegion</key>
         <string>English</string>
