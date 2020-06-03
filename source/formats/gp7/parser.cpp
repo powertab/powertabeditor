@@ -17,7 +17,20 @@
 
 #include "parser.h"
 
-static Gp7::ScoreInfo parseScoreInfo(const pugi::xml_node &node)
+#include <formats/fileformat.h>
+
+#include <boost/algorithm/string/split.hpp>
+
+static std::vector<std::string>
+splitString(std::string input)
+{
+    std::vector<std::string> output;
+    boost::algorithm::split(output, input, [](char c) { return c == ' '; });
+    return output;
+}
+
+static Gp7::ScoreInfo
+parseScoreInfo(const pugi::xml_node &node)
 {
     Gp7::ScoreInfo info;
     info.myTitle = node.child_value("Title");
@@ -42,7 +55,54 @@ static Gp7::ScoreInfo parseScoreInfo(const pugi::xml_node &node)
     return info;
 }
 
-Gp7::Document Gp7::parse(const pugi::xml_document &root)
+static std::vector<Gp7::TempoChange>
+parseTempoChanges(const pugi::xml_node &master_track)
+{
+    std::vector<Gp7::TempoChange> changes;
+    for (const pugi::xml_node &node :
+         master_track.child("Automations").children("Automation"))
+    {
+        Gp7::TempoChange change;
+        change.myBar = node.child("Bar").text().as_int();
+        change.myPosition = node.child("Position").text().as_double();
+        change.myDescription = node.child_value("Text");
+        change.myIsLinear = node.child("Linear").text().as_bool();
+        change.myIsVisible = node.child("Visible").text().as_bool(true);
+
+        // There should be space-separated string such as "120 2".
+        std::vector<std::string> values =
+            splitString(node.child_value("Value"));
+        if (values.size() != 2)
+            throw FileFormatException("Invalid tempo change values.");
+
+        change.myBeatsPerMinute = std::stoi(values[0]);
+        switch (std::stoi(values[1]))
+        {
+            using BeatType = Gp7::TempoChange::BeatType;
+            case 1:
+                change.myBeatType = BeatType::Eighth;
+                break;
+            case 2:
+                change.myBeatType = BeatType::Quarter;
+                break;
+            case 3:
+                change.myBeatType = BeatType::QuarterDotted;
+                break;
+            case 4:
+                change.myBeatType = BeatType::Half;
+                break;
+            case 5:
+                change.myBeatType = BeatType::HalfDotted;
+                break;
+            default:
+                throw FileFormatException("Invalid tempo change unit.");
+        }
+    }
+    return changes;
+}
+
+Gp7::Document
+Gp7::parse(const pugi::xml_document &root)
 {
     Gp7::Document doc;
 
@@ -55,6 +115,13 @@ Gp7::Document Gp7::parse(const pugi::xml_document &root)
 
     const pugi::xml_node gpif = root.child("GPIF");
     doc.myScoreInfo = parseScoreInfo(gpif.child("Score"));
+
+    // Currently skipping the following children of the MasterTrack node:
+    // - 'Tracks', likely not necessary since tracks are listed elsewhere
+    // - 'RSE'. This is mostly to do with audio playback, but volume / pan
+    // changes do occur as 'Automation' nodes here.
+    const pugi::xml_node master_track = gpif.child("MasterTrack");
+    doc.myTempoChanges = parseTempoChanges(master_track);
 
     return doc;
 }

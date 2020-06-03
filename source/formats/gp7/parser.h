@@ -20,6 +20,7 @@
 
 #include <pugixml.hpp>
 #include <string>
+#include <vector>
 
 namespace Gp7
 {
@@ -38,10 +39,39 @@ struct ScoreInfo
     std::string myNotices;
 };
 
+struct TempoChange
+{
+    enum class BeatType
+    {
+        Eighth,
+        Quarter,
+        QuarterDotted,
+        Half,
+        HalfDotted
+    };
+
+    /// Index of the bar the tempo change occurs in.
+    int myBar = -1;
+    /// Specifies the location within the bar, from 0 to 1. (e.g. if 0.75 and
+    /// in 4/4 time, the tempo change occurs on the last beat).
+    double myPosition = 0;
+    /// Text to be displayed along with the tempo change.
+    std::string myDescription;
+    /// Whether to linearly interpolate speed until the next tempo marker.
+    bool myIsLinear = false;
+    /// Whether the tempo change is visible.
+    bool myIsVisible = true;
+    /// Tempo in beats per minute.
+    int myBeatsPerMinute = -1;
+    /// Unit that the beats are specified in.
+    BeatType myBeatType = BeatType::Quarter;
+};
+
 /// Container for a Guitar Pro 7 document.
 struct Document
 {
     ScoreInfo myScoreInfo;
+    std::vector<TempoChange> myTempoChanges;
 };
 
 /// Parses the score.gpif XML file.
