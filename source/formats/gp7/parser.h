@@ -122,8 +122,16 @@ struct Beat
 {
 };
 
+/// A duration, which is shared across many beats.
 struct Rhythm
 {
+    /// Duration, where a whole note is 1, quarter note is 4, etc.
+    int myDuration = 4;
+    /// Number of dots (0-2).
+    int myDots = 0;
+    /// Numerator and denominator of the tuplet the note belongs to.
+    int myTupletNum = 0;
+    int myTupletDenom = 0;
 };
 
 struct Note

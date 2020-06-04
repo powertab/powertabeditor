@@ -277,11 +277,39 @@ parseNotes(const pugi::xml_node &notes_node)
 static std::unordered_map<int, Gp7::Rhythm>
 parseRhythms(const pugi::xml_node &rhythms_node)
 {
+    static const std::unordered_map<std::string, int> theNoteValuesMap = {
+        { "Whole", 1 }, { "Half", 2 },  { "Quarter", 4 }, { "Eighth", 8 },
+        { "16th", 16 }, { "32nd", 32 }, { "64th", 64 }
+    };
+
     std::unordered_map<int, Gp7::Rhythm> rhythms;
     for (const pugi::xml_node &node : rhythms_node.children("Rhythm"))
     {
         Gp7::Rhythm rhythm;
-        // TODO
+
+        // Import the duration.
+        {
+            const std::string note_value = node.child_value("NoteValue");
+            auto it = theNoteValuesMap.find(note_value);
+            if (it == theNoteValuesMap.end())
+                throw FileFormatException("Unexpected rhythm note value");
+
+            rhythm.myDuration = it->second;
+        }
+
+        // Dots are optional, but this will default to 0 if they're not
+        // present.
+        rhythm.myDots =
+            node.child("AugmentationDot").attribute("count").as_int(0);
+
+        // Import tuplets. Nested tuplets don't seem to be supported.
+        pugi::xml_node tuplet = node.child("PrimaryTuplet");
+        if (tuplet)
+        {
+            rhythm.myTupletNum = tuplet.attribute("num").as_int();
+            rhythm.myTupletDenom = tuplet.attribute("den").as_int();
+        }
+
         const int id = node.attribute("id").as_int();
         rhythms.emplace(id, rhythm);
     }
