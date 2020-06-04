@@ -251,7 +251,11 @@ parseBeats(const pugi::xml_node &beats_node)
     for (const pugi::xml_node &node : beats_node.children("Beat"))
     {
         Gp7::Beat beat;
-        // TODO
+        beat.myRhythmId = node.child("Rhythm").attribute("ref").as_int();
+        beat.myNoteIds = toIntList(splitString(node.child_value("Notes")));
+
+        // TODO - import properties like tremolo picking, dynamics, etc.
+
         const int id = node.attribute("id").as_int();
         beats.emplace(id, beat);
     }
@@ -266,7 +270,21 @@ parseNotes(const pugi::xml_node &notes_node)
     for (const pugi::xml_node &node : notes_node.children("Note"))
     {
         Gp7::Note note;
-        // TODO
+
+        for (const pugi::xml_node property :
+             node.child("Properties").children("Property"))
+        {
+            const std::string_view name =
+                property.attribute("name").as_string();
+
+            if (name == "String")
+                note.myString = property.child("String").text().as_int();
+            else if (name == "Fret")
+                note.myFret = property.child("Fret").text().as_int();
+
+            // TODO - import properties like accents.
+        }
+
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);
     }

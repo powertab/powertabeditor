@@ -120,6 +120,8 @@ struct Voice
 
 struct Beat
 {
+    int myRhythmId = -1;
+    std::vector<int> myNoteIds;
 };
 
 /// A duration, which is shared across many beats.
@@ -136,6 +138,8 @@ struct Rhythm
 
 struct Note
 {
+    int myString = 0;
+    int myFret = 0;
 };
 
 /// Container for a Guitar Pro 7 document.
