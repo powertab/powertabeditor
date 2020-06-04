@@ -17,6 +17,7 @@
 
 #include "converter.h"
 #include "parser.h"
+#include "score/playerchange.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 
@@ -50,11 +51,26 @@ convertScoreInfo(const Gp7::ScoreInfo &gp_info, Score &score)
     score.setScoreInfo(info);
 }
 
-/// Create players and instruments from the Guitar Pro tracks.
-static void convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score)
+/// Create players and instruments from the Guitar Pro tracks, and the initial
+/// staff -> player & instrument assignment.
+static void
+convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score,
+               PlayerChange &player_change)
 {
     for (const Gp7::Track &track : tracks)
     {
+        assert(!track.mySounds.empty());
+        const int instrument_idx = score.getInstruments().size();
+
+        for (const Gp7::Sound &sound : track.mySounds)
+        {
+            Instrument instrument;
+            instrument.setDescription(sound.myLabel);
+            instrument.setMidiPreset(sound.myMidiPreset);
+
+            score.insertInstrument(instrument);
+        }
+
         for (const Gp7::Staff &staff : track.myStaves)
         {
             Player player;
@@ -66,23 +82,53 @@ static void convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score)
             tuning.setCapo(staff.myCapo);
             player.setTuning(tuning);
 
+            const int player_idx = score.getPlayers().size();
             score.insertPlayer(player);
-        }
 
-        for (const Gp7::Sound &sound : track.mySounds)
-        {
-            Instrument instrument;
-            instrument.setDescription(sound.myLabel);
-            instrument.setMidiPreset(sound.myMidiPreset);
-
-            score.insertInstrument(instrument);
+            // Each player will be assigned its own staff, and is initially
+            // assigned to the track's first instrument.
+            // TODO - import track automations.
+            player_change.insertActivePlayer(
+                player_idx, ActivePlayer(player_idx, instrument_idx));
         }
     }
+}
+
+static void
+convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
+              int bar_end)
+{
+    System system;
+
+    // For the first system, create the players and assign them to the staves.
+    if (bar_begin == 0)
+    {
+        PlayerChange initial_player_change;
+        convertPlayers(doc.myTracks, score, initial_player_change);
+        system.insertPlayerChange(initial_player_change);
+    }
+
+    // Create a staff for each player.
+    for (auto &&player : score.getPlayers())
+        system.insertStaff(Staff(player.getTuning().getStringCount()));
+
+    for (int bar_idx = bar_begin; bar_idx < bar_end; ++bar_idx)
+    {
+        // TODO
+    }
+
+    score.insertSystem(system);
 }
 
 void
 Gp7::convert(const Gp7::Document &doc, Score &score)
 {
     convertScoreInfo(doc.myScoreInfo, score);
-    convertPlayers(doc.myTracks, score);
+
+    int bar_idx = 0;
+    for (int num_bars : doc.myScoreInfo.myScoreSystemsLayout)
+    {
+        convertSystem(doc, score, bar_idx, bar_idx + num_bars);
+        bar_idx += num_bars;
+    }
 }

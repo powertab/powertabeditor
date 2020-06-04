@@ -38,6 +38,9 @@ struct ScoreInfo
     std::string myTabber;
     std::string myInstructions;
     std::string myNotices;
+    /// This seems to be the number of bars per system when in multi-track
+    /// view.
+    std::vector<int> myScoreSystemsLayout;
 };
 
 struct TempoChange
@@ -121,6 +124,7 @@ struct Voice
 struct Beat
 {
     int myRhythmId = -1;
+    /// If there aren't any note ids, this is a rest!
     std::vector<int> myNoteIds;
 };
 

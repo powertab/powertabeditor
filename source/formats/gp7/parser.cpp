@@ -27,6 +27,9 @@
 static std::vector<std::string>
 splitString(std::string input)
 {
+    if (input.empty())
+        return {};
+
     std::vector<std::string> output;
     boost::algorithm::split(output, input, [](char c) { return c == ' '; });
     return output;
@@ -63,9 +66,10 @@ parseScoreInfo(const pugi::xml_node &node)
     // Skipping FirstPageHeader, FirstPageFooter, PageHeader, PageFooter
     // These seem to be specific to Guitar Pro's text formatting.
 
-    // Skipping ScoreSystemsDefaultLayout, ScoreSystemsLayout, ScoreZoomPolicy,
+    // Skipping ScoreSystemsDefaultLayout, ScoreZoomPolicy,
     // ScoreZoom, MultiVoice.
-    // TODO - will any of these help to preserve the original file's layout?
+    info.myScoreSystemsLayout =
+        toIntList(splitString(node.child_value("ScoreSystemsLayout")));
 
     return info;
 }

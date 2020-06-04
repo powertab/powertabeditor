@@ -31,7 +31,6 @@ TEST_CASE("Formats/Gp7Import/ScoreInfo/Basic", "")
 
     REQUIRE_NOTHROW(
         importer.load(AppInfo::getAbsolutePath("data/score_info.gp"), score));
-    REQUIRE(score.getSystems().size() == 0);
 
     const ScoreInfo &info = score.getScoreInfo();
     REQUIRE(info.getScoreType() == ScoreInfo::ScoreType::Song);
