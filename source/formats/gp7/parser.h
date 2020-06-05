@@ -144,6 +144,9 @@ struct Note
 {
     int myString = 0;
     int myFret = 0;
+    bool myPalmMuted = false;
+    bool myMuted = false;
+    bool myTied = false;
 };
 
 /// Container for a Guitar Pro 7 document.

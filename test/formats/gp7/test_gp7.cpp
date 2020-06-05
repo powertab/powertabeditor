@@ -20,6 +20,7 @@
 #include <app/appinfo.h>
 #include <formats/gp7/gp7importer.h>
 #include <score/generalmidi.h>
+#include <score/playerchange.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
 #include <util/tostring.h>
@@ -65,7 +66,7 @@ TEST_CASE("Formats/Gp7Import/ScoreInfo/WordsAndMusic", "")
 }
 
 // Verify that players and instruments are imported correctly.
-// This file has two tracks, but the second track has two staves.
+// This file has three tracks, but the second track has two staves.
 TEST_CASE("Formats/Gp7Import/Tracks", "")
 {
     Score score;
@@ -74,8 +75,8 @@ TEST_CASE("Formats/Gp7Import/Tracks", "")
     REQUIRE_NOTHROW(
         importer.load(AppInfo::getAbsolutePath("data/tracks.gp"), score));
 
-    REQUIRE(score.getPlayers().size() == 3);
-    REQUIRE(score.getInstruments().size() == 2);
+    REQUIRE(score.getPlayers().size() == 4);
+    REQUIRE(score.getInstruments().size() == 3);
 
     {
         const Player &player = score.getPlayers()[0];
@@ -111,4 +112,84 @@ TEST_CASE("Formats/Gp7Import/Tracks", "")
         REQUIRE(instrument.getMidiPreset() ==
                 Midi::MIDI_PRESET_DISTORTION_GUITAR);
     }
+
+    {
+        const Player &player = score.getPlayers()[3];
+        REQUIRE(player.getDescription() == "Electric Bass");
+        REQUIRE(player.getTuning().getCapo() == 0);
+        REQUIRE(Util::toString(player.getTuning()) == "E A D G");
+    }
+
+    {
+        const Instrument &instrument = score.getInstruments()[2];
+        REQUIRE(instrument.getDescription() == "Clean Precision");
+        REQUIRE(instrument.getMidiPreset() ==
+                Midi::MIDI_PRESET_ELECTRIC_BASS_FINGER);
+    }
+
+    // There should be a staff for each player.
+    REQUIRE(score.getSystems().size() == 1);
+    const System &system = score.getSystems()[0];
+    REQUIRE(system.getStaves().size() == 4);
+
+    // Clefs should be imported properly.
+    REQUIRE(system.getStaves()[0].getClefType() == Staff::TrebleClef);
+    REQUIRE(system.getStaves()[1].getClefType() == Staff::TrebleClef);
+    REQUIRE(system.getStaves()[2].getClefType() == Staff::BassClef);
+    REQUIRE(system.getStaves()[3].getClefType() == Staff::BassClef);
+
+    // There should be an initial player change to assign the players and
+    // instruments.
+    REQUIRE(system.getPlayerChanges().size() == 1);
+    const PlayerChange &change = system.getPlayerChanges()[0];
+    REQUIRE(change.getPosition() == 0);
+    REQUIRE(change.getActivePlayers(0) == std::vector{ ActivePlayer(0, 0) });
+    REQUIRE(change.getActivePlayers(1) == std::vector{ ActivePlayer(1, 1) });
+    REQUIRE(change.getActivePlayers(2) == std::vector{ ActivePlayer(2, 1) });
+    REQUIRE(change.getActivePlayers(3) == std::vector{ ActivePlayer(3, 2) });
+}
+
+TEST_CASE("Formats/Gp7Import/Notes", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/notes.gp"), score);
+
+    const System &system = score.getSystems()[0];
+    const Staff &staff = system.getStaves()[0];
+    const Voice &voice = staff.getVoices()[0];
+
+    {
+        const Position &pos = voice.getPositions()[0];
+        REQUIRE(pos.getDurationType() == Position::QuarterNote);
+        REQUIRE(!pos.hasProperty(Position::Dotted));
+        REQUIRE(!pos.hasProperty(Position::DoubleDotted));
+        REQUIRE(!pos.hasProperty(Position::PalmMuting));
+        REQUIRE(!pos.isRest());
+    }
+
+    {
+        const Position &pos = voice.getPositions()[1];
+        REQUIRE(pos.getDurationType() == Position::QuarterNote);
+        REQUIRE(pos.hasProperty(Position::Dotted));
+        REQUIRE(!pos.hasProperty(Position::DoubleDotted));
+        {
+            const Note &note = pos.getNotes()[0];
+            REQUIRE(note.getFretNumber() == 3);
+            REQUIRE(note.getString() == 1);
+            REQUIRE(!note.hasProperty(Note::Tied));
+        }
+    }
+
+    REQUIRE(voice.getPositions()[2].getDurationType() == Position::EighthNote);
+
+    REQUIRE(voice.getPositions()[3].getDurationType() == Position::EighthNote);
+    REQUIRE(voice.getPositions()[3].hasProperty(Position::DoubleDotted));
+
+    REQUIRE(voice.getPositions()[4].getNotes()[0].hasProperty(Note::Tied));
+
+    REQUIRE(voice.getPositions()[5].hasProperty(Position::PalmMuting));
+
+    REQUIRE(voice.getPositions()[20].getDurationType() == Position::EighthNote);
+    REQUIRE(voice.getPositions()[20].isRest());
 }

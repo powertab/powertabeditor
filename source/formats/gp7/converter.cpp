@@ -17,10 +17,11 @@
 
 #include "converter.h"
 #include "parser.h"
-#include "score/playerchange.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
-
+#include <formats/fileformat.h>
+#include <score/playerchange.h>
+#include <score/position.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
 
@@ -94,6 +95,49 @@ convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score,
     }
 }
 
+/// Convert from a Guitar Pro clef type to our clef type.
+static Staff::ClefType
+convertClefType(Gp7::Bar::ClefType clef_type)
+{
+    switch (clef_type)
+    {
+        case Gp7::Bar::ClefType::F4:
+            return Staff::BassClef;
+        default:
+            return Staff::TrebleClef;
+    }
+}
+
+static Note
+convertNote(Position &position, const Gp7::Note &gp_note, const Tuning &tuning)
+{
+    Note note;
+    note.setFretNumber(gp_note.myFret);
+    // String numbers are flipped around.
+    note.setString(tuning.getStringCount() - gp_note.myString - 1);
+
+    note.setProperty(Note::Tied, gp_note.myTied);
+    note.setProperty(Note::Muted, gp_note.myMuted);
+
+    if (gp_note.myPalmMuted)
+        position.setProperty(Position::PalmMuting);
+
+    return note;
+}
+
+static Position
+convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
+{
+    Position pos;
+
+    pos.setDurationType(
+        static_cast<Position::DurationType>(gp_rhythm.myDuration));
+    pos.setProperty(Position::Dotted, gp_rhythm.myDots == 1);
+    pos.setProperty(Position::DoubleDotted, gp_rhythm.myDots == 2);
+
+    return pos;
+}
+
 static void
 convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
               int bar_end)
@@ -112,9 +156,82 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
     for (auto &&player : score.getPlayers())
         system.insertStaff(Staff(player.getTuning().getStringCount()));
 
+    int start_pos = 0;
     for (int bar_idx = bar_begin; bar_idx < bar_end; ++bar_idx)
     {
-        // TODO
+        const int num_staves = score.getPlayers().size();
+        const Gp7::MasterBar &master_bar = doc.myMasterBars.at(bar_idx);
+
+        // Go through the bar for each staff.
+        int end_pos = start_pos;
+        for (int staff_idx = 0; staff_idx < num_staves ; ++staff_idx)
+        {
+            Staff &staff = system.getStaves()[staff_idx];
+            const Player &player = score.getPlayers()[staff_idx];
+            const Tuning &tuning = player.getTuning();
+
+            const int gp_bar_idx = master_bar.myBarIds[staff_idx];
+            const Gp7::Bar &gp_bar = doc.myBars.at(gp_bar_idx);
+
+            // For the first bar in the system, set the staff's clefy type.
+            if (bar_idx == bar_begin)
+                staff.setClefType(convertClefType(gp_bar.myClefType));
+
+            assert(gp_bar.myVoiceIds.size() == 4);
+            for (int voice_idx = 0; voice_idx < Staff::NUM_VOICES; ++voice_idx)
+            {
+                const int gp_voice_idx = gp_bar.myVoiceIds[voice_idx];
+                // Voice might not be used.
+                if (gp_voice_idx < 0)
+                    continue;
+
+                const Gp7::Voice &gp_voice = doc.myVoices.at(gp_voice_idx);
+                Voice &voice = staff.getVoices()[voice_idx];
+
+                int voice_pos = start_pos;
+                for (int gp_beat_idx : gp_voice.myBeatIds)
+                {
+                    const Gp7::Beat &gp_beat = doc.myBeats.at(gp_beat_idx);
+                    const Gp7::Rhythm &gp_rhythm =
+                        doc.myRhythms.at(gp_beat.myRhythmId);
+
+                    // TODO - convert irregular groupings.
+
+                    Position pos = convertPosition(gp_beat, gp_rhythm);
+                    pos.setPosition(voice_pos++);
+
+                    // Flag as a rest if there are no notes.
+                    if (gp_beat.myNoteIds.empty())
+                        pos.setRest();
+
+                    // Import notes.
+                    for (int gp_note_id : gp_beat.myNoteIds)
+                    {
+                        const Gp7::Note &gp_note = doc.myNotes.at(gp_note_id);
+
+                        Note note = convertNote(pos, gp_note, tuning);
+                        if (Utils::findByString(pos, note.getString()))
+                            throw FileFormatException("Colliding notes!");
+                        else
+                            pos.insertNote(note);
+                    }
+
+                    voice.insertPosition(pos);
+                }
+
+                end_pos = std::max(voice_pos, end_pos);
+            }
+        }
+
+        // Insert a new barline unless we're finishing the system.
+        if (bar_idx != (bar_end - 1))
+        {
+            Barline barline;
+            barline.setPosition(end_pos);
+            system.insertBarline(barline);
+
+            start_pos = end_pos + 1;
+        }
     }
 
     score.insertSystem(system);
@@ -128,7 +245,9 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
     int bar_idx = 0;
     for (int num_bars : doc.myScoreInfo.myScoreSystemsLayout)
     {
-        convertSystem(doc, score, bar_idx, bar_idx + num_bars);
+        const int bar_end = std::min(bar_idx + num_bars,
+                                     static_cast<int>(doc.myMasterBars.size()));
+        convertSystem(doc, score, bar_idx, bar_end);
         bar_idx += num_bars;
     }
 }

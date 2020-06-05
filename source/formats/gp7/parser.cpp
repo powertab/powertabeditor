@@ -226,6 +226,8 @@ parseBars(const pugi::xml_node &bars_node)
         else
             throw FileFormatException("Unknown clef type");
 
+        // TODO - import the 'Ottavia' key if the clef has 8va, etc
+
         const int id = node.attribute("id").as_int();
         bars.emplace(id, bar);
     }
@@ -285,9 +287,15 @@ parseNotes(const pugi::xml_node &notes_node)
                 note.myString = property.child("String").text().as_int();
             else if (name == "Fret")
                 note.myFret = property.child("Fret").text().as_int();
+            else if (name == "PalmMuted")
+                note.myPalmMuted = true;
+            else if (name == "Muted")
+                note.myMuted = true;
 
             // TODO - import properties like accents.
         }
+
+        note.myTied = node.child("Tie").attribute("destination").as_bool();
 
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);
