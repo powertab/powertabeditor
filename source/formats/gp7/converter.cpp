@@ -131,15 +131,28 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
     if (gp_note.myTapped)
         position.setProperty(Position::Tap);
 
-    // The following values are not supported:
-    // - staccatissimo (bit 1)
-    // - tenuto (bit 4)
-    if (gp_note.myAccentTypes.test(0))
+    // Staccatissimo and tenuto are not supported.
+    using GpAccentType = Gp7::Note::AccentType;
+    if (gp_note.myAccentTypes.test(int(GpAccentType::Staccato)))
         position.setProperty(Position::Staccato);
-    if (gp_note.myAccentTypes.test(2))
+    if (gp_note.myAccentTypes.test(int(GpAccentType::Accent)))
         position.setProperty(Position::Sforzando);
-    if (gp_note.myAccentTypes.test(3))
+    if (gp_note.myAccentTypes.test(int(GpAccentType::HeavyAccent)))
         position.setProperty(Position::Marcato);
+
+    using GpSlideType = Gp7::Note::SlideType;
+    if (gp_note.mySlideTypes.test(int(GpSlideType::Shift)))
+        note.setProperty(Note::ShiftSlide);
+    if (gp_note.mySlideTypes.test(int(GpSlideType::Legato)))
+        note.setProperty(Note::LegatoSlide);
+    if (gp_note.mySlideTypes.test(int(GpSlideType::SlideOutDown)))
+        note.setProperty(Note::SlideOutOfDownwards);
+    if (gp_note.mySlideTypes.test(int(GpSlideType::SlideOutUp)))
+        note.setProperty(Note::SlideOutOfUpwards);
+    if (gp_note.mySlideTypes.test(int(GpSlideType::SlideInAbove)))
+        note.setProperty(Note::SlideIntoFromAbove);
+    if (gp_note.mySlideTypes.test(int(GpSlideType::SlideInBelow)))
+        note.setProperty(Note::SlideIntoFromBelow);
 
     if (gp_beat.myOttavia)
     {

@@ -315,6 +315,8 @@ parseNotes(const pugi::xml_node &notes_node)
                 note.myHarmonicFret =
                     property.child("HFret").text().as_double();
             }
+            else if (name == "Slide")
+                note.mySlideTypes = property.child("Flags").text().as_int();
             else if (name == "HarmonicType")
             {
                 using HarmonicType = Gp7::Note::HarmonicType;

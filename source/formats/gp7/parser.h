@@ -162,6 +162,27 @@ struct Note
         Feedback
     };
 
+    enum class AccentType : int
+    {
+        Staccato,
+        Staccatissimo,
+        Accent,
+        HeavyAccent,
+        Tenuto,
+        NumTypes
+    };
+
+    enum class SlideType : int
+    {
+        Shift,
+        Legato,
+        SlideOutDown,
+        SlideOutUp,
+        SlideInBelow,
+        SlideInAbove,
+        NumTypes
+    };
+
     int myString = 0;
     int myFret = 0;
     bool myPalmMuted = false;
@@ -172,9 +193,11 @@ struct Note
     bool myHammerOn = false;
     bool myLeftHandTapped = false;
     /// Flags for various combinations of accent types.
-    std::bitset<5> myAccentTypes;
+    std::bitset<size_t(AccentType::NumTypes)> myAccentTypes;
     std::optional<HarmonicType> myHarmonic;
     double myHarmonicFret = 0;
+    /// Flags for various combinations of slide types.
+    std::bitset<size_t(SlideType::NumTypes)> mySlideTypes;
 };
 
 /// Container for a Guitar Pro 7 document.

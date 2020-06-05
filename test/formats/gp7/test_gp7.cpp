@@ -184,6 +184,13 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(!note.hasProperty(Note::Octave15ma));
         REQUIRE(!note.hasProperty(Note::Octave8vb));
         REQUIRE(!note.hasProperty(Note::Octave15mb));
+        REQUIRE(!note.hasProperty(Note::SlideIntoFromBelow));
+        REQUIRE(!note.hasProperty(Note::SlideIntoFromAbove));
+        REQUIRE(!note.hasProperty(Note::ShiftSlide));
+        REQUIRE(!note.hasProperty(Note::LegatoSlide));
+        REQUIRE(!note.hasProperty(Note::SlideOutOfDownwards));
+        REQUIRE(!note.hasProperty(Note::SlideOutOfUpwards));
+
         REQUIRE(!note.hasArtificialHarmonic());
         REQUIRE(!note.hasTappedHarmonic());
     }
@@ -235,12 +242,15 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         const Note &note = pos.getNotes()[0];
         REQUIRE(note.hasProperty(Note::GhostNote));
         REQUIRE(note.hasProperty(Note::Octave8va));
+        REQUIRE(note.hasProperty(Note::SlideIntoFromBelow));
+        REQUIRE(note.hasProperty(Note::LegatoSlide));
     }
 
     {
         const Position &pos = voice.getPositions()[7];
         const Note &note = pos.getNotes()[0];
         REQUIRE(note.hasProperty(Note::HammerOnOrPullOff));
+        REQUIRE(note.hasProperty(Note::SlideIntoFromAbove));
     }
 
     {
@@ -249,20 +259,30 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(note.hasProperty(Note::NaturalHarmonic));
     }
 
-    // TODO - import artificial harmonics
-#if 0
     {
-        const Position &pos = voice.getPositions()[9];
-        const Note &note = pos.getNotes()[0];
+        const Note &note = voice.getPositions()[9].getNotes()[0];
+        // TODO - import artificial harmonics
+#if 0
         REQUIRE(note.hasArtificialHarmonic());
-    }
 #endif
+        REQUIRE(note.hasProperty(Note::SlideOutOfDownwards));
+    }
 
     {
-        const Position &pos = voice.getPositions()[10];
-        const Note &note = pos.getNotes()[0];
+        const Note &note = voice.getPositions()[10].getNotes()[0];
         REQUIRE(note.hasTappedHarmonic());
         REQUIRE(note.getTappedHarmonicFret() == 9);
+        REQUIRE(note.hasProperty(Note::SlideOutOfUpwards));
+    }
+
+    {
+        const Note &note = voice.getPositions()[16].getNotes()[0];
+        REQUIRE(note.hasProperty(Note::LegatoSlide));
+    }
+
+    {
+        const Note &note = voice.getPositions()[17].getNotes()[0];
+        REQUIRE(note.hasProperty(Note::ShiftSlide));
     }
 
     REQUIRE(voice.getPositions()[20].getDurationType() == Position::EighthNote);
