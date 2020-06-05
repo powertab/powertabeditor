@@ -260,6 +260,19 @@ parseBeats(const pugi::xml_node &beats_node)
         beat.myRhythmId = node.child("Rhythm").attribute("ref").as_int();
         beat.myNoteIds = toIntList(splitString(node.child_value("Notes")));
 
+        std::string_view ottavia = node.child_value("Ottavia");
+        if (!ottavia.empty())
+        {
+            if (ottavia == "8va")
+                beat.myOttavia = Gp7::Beat::Ottavia::O8va;
+            else if (ottavia == "8vb")
+                beat.myOttavia = Gp7::Beat::Ottavia::O8vb;
+            else if (ottavia == "15ma")
+                beat.myOttavia = Gp7::Beat::Ottavia::O15ma;
+            else if (ottavia == "15mb")
+                beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
+        }
+
         // TODO - import properties like tremolo picking, dynamics, etc.
 
         const int id = node.attribute("id").as_int();
@@ -291,6 +304,12 @@ parseNotes(const pugi::xml_node &notes_node)
                 note.myPalmMuted = true;
             else if (name == "Muted")
                 note.myMuted = true;
+            else if (name == "Tapped")
+                note.myTapped = true;
+            else if (name == "HopoOrigin")
+                note.myHammerOn = true;
+            else if (name == "LeftHandTapped")
+                note.myLeftHandTapped = true;
 
             // TODO - import properties like accents.
         }

@@ -19,6 +19,7 @@
 #define FORMATS_GP7_PARSER_H
 
 #include <bitset>
+#include <optional>
 #include <pugixml.hpp>
 #include <string>
 #include <vector>
@@ -124,9 +125,18 @@ struct Voice
 
 struct Beat
 {
+    enum class Ottavia
+    {
+        O8va,
+        O8vb,
+        O15ma,
+        O15mb
+    };
+
     int myRhythmId = -1;
     /// If there aren't any note ids, this is a rest!
     std::vector<int> myNoteIds;
+    std::optional<Ottavia> myOttavia;
 };
 
 /// A duration, which is shared across many beats.
@@ -149,6 +159,9 @@ struct Note
     bool myMuted = false;
     bool myTied = false;
     bool myGhost = false;
+    bool myTapped = false;
+    bool myHammerOn = false;
+    bool myLeftHandTapped = false;
     /// Flags for various combinations of accent types.
     std::bitset<5> myAccentTypes;
 };

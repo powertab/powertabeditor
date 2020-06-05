@@ -109,7 +109,8 @@ convertClefType(Gp7::Bar::ClefType clef_type)
 }
 
 static Note
-convertNote(Position &position, const Gp7::Note &gp_note, const Tuning &tuning)
+convertNote(Position &position, const Gp7::Beat &gp_beat,
+            const Gp7::Note &gp_note, const Tuning &tuning)
 {
     Note note;
     note.setFretNumber(gp_note.myFret);
@@ -119,9 +120,14 @@ convertNote(Position &position, const Gp7::Note &gp_note, const Tuning &tuning)
     note.setProperty(Note::Tied, gp_note.myTied);
     note.setProperty(Note::GhostNote, gp_note.myGhost);
     note.setProperty(Note::Muted, gp_note.myMuted);
+    note.setProperty(Note::HammerOnOrPullOff, gp_note.myHammerOn);
+    note.setProperty(Note::HammerOnFromNowhere, gp_note.myLeftHandTapped);
 
     if (gp_note.myPalmMuted)
         position.setProperty(Position::PalmMuting);
+
+    if (gp_note.myTapped)
+        position.setProperty(Position::Tap);
 
     // The following values are not supported:
     // - staccatissimo (bit 1)
@@ -132,6 +138,25 @@ convertNote(Position &position, const Gp7::Note &gp_note, const Tuning &tuning)
         position.setProperty(Position::Sforzando);
     if (gp_note.myAccentTypes.test(3))
         position.setProperty(Position::Marcato);
+
+    if (gp_beat.myOttavia)
+    {
+        switch (*gp_beat.myOttavia)
+        {
+            case Gp7::Beat::Ottavia::O8va:
+                note.setProperty(Note::Octave8va);
+                break;
+            case Gp7::Beat::Ottavia::O8vb:
+                note.setProperty(Note::Octave8vb);
+                break;
+            case Gp7::Beat::Ottavia::O15ma:
+                note.setProperty(Note::Octave15ma);
+                break;
+            case Gp7::Beat::Ottavia::O15mb:
+                note.setProperty(Note::Octave15mb);
+                break;
+        }
+    }
 
     return note;
 }
@@ -220,7 +245,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                     {
                         const Gp7::Note &gp_note = doc.myNotes.at(gp_note_id);
 
-                        Note note = convertNote(pos, gp_note, tuning);
+                        Note note = convertNote(pos, gp_beat, gp_note, tuning);
                         if (Utils::findByString(pos, note.getString()))
                             throw FileFormatException("Colliding notes!");
                         else

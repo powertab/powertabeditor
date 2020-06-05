@@ -169,12 +169,20 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(!pos.hasProperty(Position::Staccato));
         REQUIRE(!pos.hasProperty(Position::Marcato));
         REQUIRE(!pos.hasProperty(Position::Sforzando));
+        REQUIRE(!pos.hasProperty(Position::Tap));
         REQUIRE(!pos.isRest());
 
         // This note does not have any special properties.
         const Note &note = pos.getNotes()[0];
         REQUIRE(!note.hasProperty(Note::Tied));
+        REQUIRE(!note.hasProperty(Note::Muted));
+        REQUIRE(!note.hasProperty(Note::HammerOnOrPullOff));
+        REQUIRE(!note.hasProperty(Note::HammerOnFromNowhere));
         REQUIRE(!note.hasProperty(Note::GhostNote));
+        REQUIRE(!note.hasProperty(Note::Octave8va));
+        REQUIRE(!note.hasProperty(Note::Octave15ma));
+        REQUIRE(!note.hasProperty(Note::Octave8vb));
+        REQUIRE(!note.hasProperty(Note::Octave15mb));
     }
 
     {
@@ -183,11 +191,11 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.hasProperty(Position::Dotted));
         REQUIRE(!pos.hasProperty(Position::DoubleDotted));
         REQUIRE(pos.hasProperty(Position::Sforzando));
-        {
-            const Note &note = pos.getNotes()[0];
-            REQUIRE(note.getFretNumber() == 3);
-            REQUIRE(note.getString() == 1);
-        }
+        REQUIRE(pos.hasProperty(Position::Tap));
+
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.getFretNumber() == 3);
+        REQUIRE(note.getString() == 1);
     }
 
     {
@@ -195,6 +203,10 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.getDurationType() == Position::EighthNote);
         REQUIRE(pos.hasProperty(Position::Staccato));
         REQUIRE(pos.hasProperty(Position::Sforzando));
+
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasProperty(Note::Muted));
+        REQUIRE(note.hasProperty(Note::Octave15mb));
     }
 
     {
@@ -202,11 +214,16 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.getDurationType() == Position::EighthNote);
         REQUIRE(pos.hasProperty(Position::DoubleDotted));
         REQUIRE(pos.hasProperty(Position::Marcato));
+
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasProperty(Note::Octave8vb));
+        REQUIRE(note.hasProperty(Note::HammerOnFromNowhere));
     }
 
     {
         const Note &note = voice.getPositions()[4].getNotes()[0];
         REQUIRE(note.hasProperty(Note::Tied));
+        REQUIRE(note.hasProperty(Note::Octave15ma));
     }
 
     {
@@ -214,6 +231,13 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.hasProperty(Position::PalmMuting));
         const Note &note = pos.getNotes()[0];
         REQUIRE(note.hasProperty(Note::GhostNote));
+        REQUIRE(note.hasProperty(Note::Octave8va));
+    }
+
+    {
+        const Position &pos = voice.getPositions()[7];
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasProperty(Note::HammerOnOrPullOff));
     }
 
     REQUIRE(voice.getPositions()[20].getDurationType() == Position::EighthNote);
