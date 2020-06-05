@@ -18,6 +18,7 @@
 #ifndef FORMATS_GP7_PARSER_H
 #define FORMATS_GP7_PARSER_H
 
+#include <bitset>
 #include <pugixml.hpp>
 #include <string>
 #include <vector>
@@ -147,6 +148,9 @@ struct Note
     bool myPalmMuted = false;
     bool myMuted = false;
     bool myTied = false;
+    bool myGhost = false;
+    /// Flags for various combinations of accent types.
+    std::bitset<5> myAccentTypes;
 };
 
 /// Container for a Guitar Pro 7 document.

@@ -160,12 +160,21 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
     const Voice &voice = staff.getVoices()[0];
 
     {
+        // This position does not have any special properties.
         const Position &pos = voice.getPositions()[0];
         REQUIRE(pos.getDurationType() == Position::QuarterNote);
         REQUIRE(!pos.hasProperty(Position::Dotted));
         REQUIRE(!pos.hasProperty(Position::DoubleDotted));
         REQUIRE(!pos.hasProperty(Position::PalmMuting));
+        REQUIRE(!pos.hasProperty(Position::Staccato));
+        REQUIRE(!pos.hasProperty(Position::Marcato));
+        REQUIRE(!pos.hasProperty(Position::Sforzando));
         REQUIRE(!pos.isRest());
+
+        // This note does not have any special properties.
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(!note.hasProperty(Note::Tied));
+        REQUIRE(!note.hasProperty(Note::GhostNote));
     }
 
     {
@@ -173,22 +182,39 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.getDurationType() == Position::QuarterNote);
         REQUIRE(pos.hasProperty(Position::Dotted));
         REQUIRE(!pos.hasProperty(Position::DoubleDotted));
+        REQUIRE(pos.hasProperty(Position::Sforzando));
         {
             const Note &note = pos.getNotes()[0];
             REQUIRE(note.getFretNumber() == 3);
             REQUIRE(note.getString() == 1);
-            REQUIRE(!note.hasProperty(Note::Tied));
         }
     }
 
-    REQUIRE(voice.getPositions()[2].getDurationType() == Position::EighthNote);
+    {
+        const Position &pos = voice.getPositions()[2];
+        REQUIRE(pos.getDurationType() == Position::EighthNote);
+        REQUIRE(pos.hasProperty(Position::Staccato));
+        REQUIRE(pos.hasProperty(Position::Sforzando));
+    }
 
-    REQUIRE(voice.getPositions()[3].getDurationType() == Position::EighthNote);
-    REQUIRE(voice.getPositions()[3].hasProperty(Position::DoubleDotted));
+    {
+        const Position &pos = voice.getPositions()[3];
+        REQUIRE(pos.getDurationType() == Position::EighthNote);
+        REQUIRE(pos.hasProperty(Position::DoubleDotted));
+        REQUIRE(pos.hasProperty(Position::Marcato));
+    }
 
-    REQUIRE(voice.getPositions()[4].getNotes()[0].hasProperty(Note::Tied));
+    {
+        const Note &note = voice.getPositions()[4].getNotes()[0];
+        REQUIRE(note.hasProperty(Note::Tied));
+    }
 
-    REQUIRE(voice.getPositions()[5].hasProperty(Position::PalmMuting));
+    {
+        const Position &pos = voice.getPositions()[5];
+        REQUIRE(pos.hasProperty(Position::PalmMuting));
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasProperty(Note::GhostNote));
+    }
 
     REQUIRE(voice.getPositions()[20].getDurationType() == Position::EighthNote);
     REQUIRE(voice.getPositions()[20].isRest());

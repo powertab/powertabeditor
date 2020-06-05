@@ -296,6 +296,9 @@ parseNotes(const pugi::xml_node &notes_node)
         }
 
         note.myTied = node.child("Tie").attribute("destination").as_bool();
+        note.myGhost =
+            std::string_view(node.child_value("AntiAccent")) == "Normal";
+        note.myAccentTypes = node.child("Accent").text().as_int();
 
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);

@@ -117,10 +117,21 @@ convertNote(Position &position, const Gp7::Note &gp_note, const Tuning &tuning)
     note.setString(tuning.getStringCount() - gp_note.myString - 1);
 
     note.setProperty(Note::Tied, gp_note.myTied);
+    note.setProperty(Note::GhostNote, gp_note.myGhost);
     note.setProperty(Note::Muted, gp_note.myMuted);
 
     if (gp_note.myPalmMuted)
         position.setProperty(Position::PalmMuting);
+
+    // The following values are not supported:
+    // - staccatissimo (bit 1)
+    // - tenuto (bit 4)
+    if (gp_note.myAccentTypes.test(0))
+        position.setProperty(Position::Staccato);
+    if (gp_note.myAccentTypes.test(2))
+        position.setProperty(Position::Sforzando);
+    if (gp_note.myAccentTypes.test(3))
+        position.setProperty(Position::Marcato);
 
     return note;
 }
