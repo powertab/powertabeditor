@@ -178,11 +178,14 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(!note.hasProperty(Note::Muted));
         REQUIRE(!note.hasProperty(Note::HammerOnOrPullOff));
         REQUIRE(!note.hasProperty(Note::HammerOnFromNowhere));
+        REQUIRE(!note.hasProperty(Note::NaturalHarmonic));
         REQUIRE(!note.hasProperty(Note::GhostNote));
         REQUIRE(!note.hasProperty(Note::Octave8va));
         REQUIRE(!note.hasProperty(Note::Octave15ma));
         REQUIRE(!note.hasProperty(Note::Octave8vb));
         REQUIRE(!note.hasProperty(Note::Octave15mb));
+        REQUIRE(!note.hasArtificialHarmonic());
+        REQUIRE(!note.hasTappedHarmonic());
     }
 
     {
@@ -238,6 +241,28 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         const Position &pos = voice.getPositions()[7];
         const Note &note = pos.getNotes()[0];
         REQUIRE(note.hasProperty(Note::HammerOnOrPullOff));
+    }
+
+    {
+        const Position &pos = voice.getPositions()[8];
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasProperty(Note::NaturalHarmonic));
+    }
+
+    // TODO - import artificial harmonics
+#if 0
+    {
+        const Position &pos = voice.getPositions()[9];
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasArtificialHarmonic());
+    }
+#endif
+
+    {
+        const Position &pos = voice.getPositions()[10];
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasTappedHarmonic());
+        REQUIRE(note.getTappedHarmonicFret() == 9);
     }
 
     REQUIRE(voice.getPositions()[20].getDurationType() == Position::EighthNote);

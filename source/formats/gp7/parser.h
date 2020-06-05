@@ -153,6 +153,15 @@ struct Rhythm
 
 struct Note
 {
+    enum HarmonicType
+    {
+        Natural,
+        Artificial,
+        Tap,
+        Semi,
+        Feedback
+    };
+
     int myString = 0;
     int myFret = 0;
     bool myPalmMuted = false;
@@ -164,6 +173,8 @@ struct Note
     bool myLeftHandTapped = false;
     /// Flags for various combinations of accent types.
     std::bitset<5> myAccentTypes;
+    std::optional<HarmonicType> myHarmonic;
+    double myHarmonicFret = 0;
 };
 
 /// Container for a Guitar Pro 7 document.

@@ -310,6 +310,29 @@ parseNotes(const pugi::xml_node &notes_node)
                 note.myHammerOn = true;
             else if (name == "LeftHandTapped")
                 note.myLeftHandTapped = true;
+            else if (name == "HarmonicFret")
+            {
+                note.myHarmonicFret =
+                    property.child("HFret").text().as_double();
+            }
+            else if (name == "HarmonicType")
+            {
+                using HarmonicType = Gp7::Note::HarmonicType;
+
+                std::string_view harmonic_type = property.child_value("HType");
+                if (harmonic_type == "Natural")
+                    note.myHarmonic = HarmonicType::Natural;
+                else if (harmonic_type == "Artificial")
+                    note.myHarmonic = HarmonicType::Artificial;
+                else if (harmonic_type == "Tap")
+                    note.myHarmonic = HarmonicType::Tap;
+                else if (harmonic_type == "Semi")
+                    note.myHarmonic = HarmonicType::Semi;
+                else if (harmonic_type == "Feedback")
+                    note.myHarmonic = HarmonicType::Feedback;
+                else
+                    throw FileFormatException("Unexpected harmonic type");
+            }
 
             // TODO - import properties like accents.
         }

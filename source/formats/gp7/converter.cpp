@@ -112,6 +112,8 @@ static Note
 convertNote(Position &position, const Gp7::Beat &gp_beat,
             const Gp7::Note &gp_note, const Tuning &tuning)
 {
+    using HarmonicType = Gp7::Note::HarmonicType;
+
     Note note;
     note.setFretNumber(gp_note.myFret);
     // String numbers are flipped around.
@@ -156,6 +158,20 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
                 note.setProperty(Note::Octave15mb);
                 break;
         }
+    }
+
+    if (gp_note.myHarmonic)
+    {
+        note.setProperty(Note::NaturalHarmonic,
+                         gp_note.myHarmonic == HarmonicType::Natural);
+
+        if (gp_note.myHarmonic == HarmonicType::Tap)
+        {
+            note.setTappedHarmonicFret(note.getFretNumber() +
+                                       gp_note.myHarmonicFret);
+        }
+
+        // TODO - import artificial harmonics
     }
 
     return note;
