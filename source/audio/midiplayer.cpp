@@ -213,6 +213,15 @@ void MidiPlayer::run()
             end_timestamp - start_timestamp);
         clock_drift += actual_duration - sleep_duration;
     }
+
+    // In case playback was terminated early, send stop events to each channel
+    // to make sure there aren't any lingering notes.
+    for (uint8_t channel = 0; channel < Midi::NUM_MIDI_CHANNELS_PER_PORT;
+         ++channel)
+    {
+        for (uint8_t pitch = 0; pitch < Midi::NUM_MIDI_NOTES; ++pitch)
+            device.stopNote(channel, pitch);
+    }
 }
 
 void MidiPlayer::performCountIn(MidiOutputDevice &device,

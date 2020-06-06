@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed a crash when the player assigned to a staff did not have enough strings (#243).
+- Fixed issues that could cause notes to be held forever after interrupting MIDI playback.
 
 ## [Alpha 11] - 2020-05-28
 
