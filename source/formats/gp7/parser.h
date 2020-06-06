@@ -116,9 +116,20 @@ struct MasterBar
         int myBeatValue = 4;
     };
 
+    struct KeySignature
+    {
+        bool operator==(const KeySignature &other) const;
+        bool operator!=(const KeySignature &other) const;
+
+        int myAccidentalCount = 0;
+        bool myMinor = false;
+        bool mySharps = false;
+    };
+
     std::vector<int> myBarIds;
     std::optional<Section> mySection;
     TimeSignature myTimeSig;
+    KeySignature myKeySig;
     bool myDoubleBar = false;
     bool myFreeTime = false;
     bool myRepeatStart = false;

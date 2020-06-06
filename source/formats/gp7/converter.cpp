@@ -20,6 +20,7 @@
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <formats/fileformat.h>
+#include <score/keysignature.h>
 #include <score/playerchange.h>
 #include <score/position.h>
 #include <score/rehearsalsign.h>
@@ -276,6 +277,39 @@ convertBarline(Barline &start_bar, Barline &end_bar,
         }
 
         start_bar.setTimeSignature(time_sig);
+    }
+
+    {
+        KeySignature key_sig;
+        key_sig.setNumAccidentals(master_bar.myKeySig.myAccidentalCount);
+        key_sig.setKeyType(master_bar.myKeySig.myMinor ? KeySignature::Minor
+                                                       : KeySignature::Major);
+        key_sig.setSharps(master_bar.myKeySig.mySharps);
+
+        // Set the key signature on the end bar, for consistency, but leave it
+        // invisible.
+        end_bar.setKeySignature(key_sig);
+
+        // Display the key signature for the first bar in the system, or if
+        // there was a key signature change.
+        const bool changed = (prev_master_bar &&
+                              prev_master_bar->myKeySig != master_bar.myKeySig);
+        if (start_bar.getPosition() == 0 || changed)
+        {
+            key_sig.setVisible();
+
+            // Set up a cancellation if necessary.
+            if (changed && key_sig.getNumAccidentals() == 0 &&
+                prev_master_bar->myKeySig.myAccidentalCount != 0)
+            {
+                key_sig.setCancellation();
+                key_sig.setNumAccidentals(
+                    prev_master_bar->myKeySig.myAccidentalCount);
+                key_sig.setSharps(prev_master_bar->myKeySig.mySharps);
+            }
+        }
+
+        start_bar.setKeySignature(key_sig);
     }
 }
 

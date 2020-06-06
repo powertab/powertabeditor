@@ -20,6 +20,7 @@
 #include <app/appinfo.h>
 #include <formats/gp7/gp7importer.h>
 #include <score/generalmidi.h>
+#include <score/keysignature.h>
 #include <score/playerchange.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
@@ -362,6 +363,10 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
             time_sig.setVisible();
             REQUIRE(bar.getTimeSignature() == time_sig);
 
+            KeySignature key_sig(KeySignature::Minor, 2, true);
+            key_sig.setVisible();
+            REQUIRE(bar.getKeySignature() == key_sig);
+
             REQUIRE(bar.hasRehearsalSign());
             REQUIRE(bar.getRehearsalSign().getLetters() == "A");
             REQUIRE(bar.getRehearsalSign().getDescription() == "Intro");
@@ -377,6 +382,10 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
             time_sig.setBeatValue(8);
             time_sig.setVisible();
             REQUIRE(bar.getTimeSignature() == time_sig);
+
+            KeySignature key_sig(KeySignature::Major, 4, false);
+            key_sig.setVisible();
+            REQUIRE(bar.getKeySignature() == key_sig);
         }
 
         {
@@ -389,6 +398,13 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
             TimeSignature time_sig;
             time_sig.setVisible();
             REQUIRE(bar.getTimeSignature() == time_sig);
+
+            KeySignature key_sig(KeySignature::Major, 0, true);
+            key_sig.setVisible();
+            key_sig.setCancellation();
+            key_sig.setSharps(false);
+            key_sig.setNumAccidentals(4);
+            REQUIRE(bar.getKeySignature() == key_sig);
         }
     }
 
@@ -400,6 +416,10 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
             const Barline &bar = system.getBarlines()[0];
             REQUIRE(bar.getBarType() == Barline::RepeatStart);
             REQUIRE(!bar.getTimeSignature().isVisible());
+
+            // First key signature in the system should be visible.
+            REQUIRE(bar.getKeySignature().isVisible());
+            REQUIRE(bar.getKeySignature().getNumAccidentals() == 0);
         }
 
         {
@@ -410,6 +430,7 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
         {
             const Barline &bar = system.getBarlines()[2];
             REQUIRE(bar.getBarType() == Barline::FreeTimeBar);
+            REQUIRE(!bar.getKeySignature().isVisible());
         }
 
         {
@@ -426,6 +447,8 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
         {
             const Barline &bar = system.getBarlines()[0];
             REQUIRE(bar.getBarType() == Barline::RepeatStart);
+            // First key signature in the system should be visible.
+            REQUIRE(bar.getKeySignature().isVisible());
         }
 
         {

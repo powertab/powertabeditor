@@ -36,6 +36,19 @@ Gp7::MasterBar::TimeSignature::operator!=(const TimeSignature &other) const
     return !operator==(other);
 }
 
+bool
+Gp7::MasterBar::KeySignature::operator==(const KeySignature &other) const
+{
+    return myAccidentalCount == other.myAccidentalCount &&
+           myMinor == other.myMinor && mySharps == other.mySharps;
+}
+
+bool
+Gp7::MasterBar::KeySignature::operator!=(const KeySignature &other) const
+{
+    return !operator==(other);
+}
+
 static std::vector<std::string>
 splitString(std::string input, char separator = ' ')
 {
@@ -241,7 +254,14 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
         master_bar.myTimeSig.myBeats = time_sig[0];
         master_bar.myTimeSig.myBeatValue = time_sig[1];
 
-        // TODO - read key signature
+        // Key signature. A negative number of accidentals indicates flats.
+        auto key_node = node.child("Key");
+        const int accidentals =
+            key_node.child("AccidentalCount").text().as_int();
+        master_bar.myKeySig.myAccidentalCount = std::abs(accidentals);
+        master_bar.myKeySig.myMinor =
+            std::string_view(key_node.child_value("Mode")) == "Minor";
+        master_bar.myKeySig.mySharps = (accidentals >= 0);
 
         master_bars.push_back(master_bar);
     }
