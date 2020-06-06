@@ -292,52 +292,53 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(note.hasProperty(Note::SlideOutOfUpwards));
     }
 
+    const Voice &voice2 = score.getSystems()[1].getStaves()[0].getVoices()[0];
     {
-        const Note &note = voice.getPositions()[15].getNotes()[0];
+        const Note &note = voice2.getPositions()[0].getNotes()[0];
         REQUIRE(note.hasTrill());
         REQUIRE(note.getTrilledFret() == 4);
     }
 
     {
-        const Note &note = voice.getPositions()[16].getNotes()[0];
+        const Note &note = voice2.getPositions()[1].getNotes()[0];
         REQUIRE(note.hasProperty(Note::LegatoSlide));
     }
 
     {
-        const Note &note = voice.getPositions()[17].getNotes()[0];
+        const Note &note = voice2.getPositions()[2].getNotes()[0];
         REQUIRE(note.hasProperty(Note::ShiftSlide));
     }
 
     {
-        const Position &pos = voice.getPositions()[20];
+        const Position &pos = voice2.getPositions()[5];
         REQUIRE(pos.getDurationType() == Position::EighthNote);
         REQUIRE(pos.isRest());
     }
 
     {
-        const Position &pos = voice.getPositions()[21];
+        const Position &pos = voice2.getPositions()[6];
         REQUIRE(pos.hasProperty(Position::Acciaccatura));
         REQUIRE(pos.hasProperty(Position::PickStrokeDown));
     }
 
     {
-        const Position &pos = voice.getPositions()[22];
+        const Position &pos = voice2.getPositions()[7];
         REQUIRE(pos.hasProperty(Position::TremoloPicking));
     }
 
     {
-        const Position &pos = voice.getPositions()[23];
+        const Position &pos = voice2.getPositions()[8];
         REQUIRE(pos.hasProperty(Position::Acciaccatura));
         REQUIRE(pos.hasProperty(Position::PickStrokeUp));
     }
 
     {
-        const Position &pos = voice.getPositions()[24];
+        const Position &pos = voice2.getPositions()[9];
         REQUIRE(pos.hasProperty(Position::ArpeggioDown));
     }
 
     {
-        const Position &pos = voice.getPositions()[25];
+        const Position &pos = voice2.getPositions()[10];
         REQUIRE(pos.hasProperty(Position::ArpeggioUp));
     }
 }

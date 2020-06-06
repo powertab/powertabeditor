@@ -131,6 +131,8 @@ parseTracks(const pugi::xml_node &tracks_node)
     {
         Gp7::Track track;
         track.myName = node.child_value("Name");
+        track.mySystemsLayout =
+            toIntList(splitString(node.child_value("SystemsLayout")));
 
         // Many fields related to RSE are skipped here.
 

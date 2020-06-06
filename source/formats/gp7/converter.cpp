@@ -344,8 +344,14 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
 {
     convertScoreInfo(doc.myScoreInfo, score);
 
+    // If there is only one track, follow its layout instead of the multi-track
+    // layout.
+    std::vector<int> layout = doc.myScoreInfo.myScoreSystemsLayout;
+    if (doc.myTracks.size() == 1)
+        layout = doc.myTracks[0].mySystemsLayout;
+
     int bar_idx = 0;
-    for (int num_bars : doc.myScoreInfo.myScoreSystemsLayout)
+    for (int num_bars : layout)
     {
         const int bar_end = std::min(bar_idx + num_bars,
                                      static_cast<int>(doc.myMasterBars.size()));

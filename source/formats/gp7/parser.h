@@ -88,6 +88,7 @@ struct Sound
 struct Track
 {
     std::string myName;
+    std::vector<int> mySystemsLayout;
     // A track typically has one staff, but can have two staves with different
     // tunings.
     std::vector<Staff> myStaves;
