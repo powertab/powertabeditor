@@ -1,3 +1,6 @@
+option( ENABLE_ASAN "Enable address sanitizer." OFF )
+option( ENABLE_TSAN "Enable thread sanitizer." OFF )
+
 function ( pte_add_compile_flags target )
     # Always warn about using deprecated Qt functions.
     target_compile_definitions( ${target} PRIVATE -DQT_DEPRECATED_WARNINGS )
@@ -26,5 +29,22 @@ function ( pte_add_compile_flags target )
         elseif ( COMPILER_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.8 )
             target_compile_options( ${target} PRIVATE -fdiagnostics-color=always )
         endif ()
+    endif ()
+
+    if ( ENABLE_ASAN )
+        target_compile_options( ${target} PRIVATE
+            -fsanitize=address
+            -fno-omit-frame-pointer
+        )
+        target_link_options( ${target} PRIVATE
+            -fsanitize=address
+        )
+    elseif ( ENABLE_TSAN )
+        target_compile_options( ${target} PRIVATE
+            -fsanitize=thread
+        )
+        target_link_options( ${target} PRIVATE
+            -fsanitize=thread
+        )
     endif ()
 endfunction ()
