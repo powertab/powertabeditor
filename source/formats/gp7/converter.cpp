@@ -23,6 +23,7 @@
 
 #include <formats/fileformat.h>
 #include <score/keysignature.h>
+#include <score/note.h>
 #include <score/playerchange.h>
 #include <score/position.h>
 #include <score/rehearsalsign.h>
@@ -207,6 +208,37 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
     {
         note.setTrilledFret(*gp_note.myTrillNote -
                             tuning.getNote(note.getString(), false));
+    }
+
+    if (gp_note.myLeftFinger)
+    {
+        using FingerType = Gp7::Note::FingerType;
+        switch (*gp_note.myLeftFinger)
+        {
+            case FingerType::Open:
+                note.setLeftHandFingering(
+                    LeftHandFingering(LeftHandFingering::None));
+                break;
+            case FingerType::C:
+                note.setLeftHandFingering(
+                    LeftHandFingering(LeftHandFingering::Little));
+                break;
+            case FingerType::A:
+                note.setLeftHandFingering(
+                    LeftHandFingering(LeftHandFingering::Ring));
+                break;
+            case FingerType::M:
+                note.setLeftHandFingering(
+                    LeftHandFingering(LeftHandFingering::Middle));
+                break;
+            case FingerType::I:
+                note.setLeftHandFingering(
+                    LeftHandFingering(LeftHandFingering::Index));
+                break;
+            case FingerType::P:
+                // TODO - thumb is not currently support for fingerings.
+                break;
+        }
     }
 
     return note;

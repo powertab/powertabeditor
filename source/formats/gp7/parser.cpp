@@ -471,7 +471,28 @@ parseNotes(const pugi::xml_node &notes_node)
         if (node.child("LetRing"))
             note.myLetRing = true;
 
-        // TODO - import bends and left hand fingerings.
+        if (auto fingering = node.child("LeftFingering"))
+        {
+            using FingerType = Gp7::Note::FingerType;
+
+            std::string_view text = fingering.text().as_string();
+            if (text == "Open")
+                note.myLeftFinger = FingerType::Open;
+            else if (text == "C")
+                note.myLeftFinger = FingerType::C;
+            else if (text == "A")
+                note.myLeftFinger = FingerType::A;
+            else if (text == "M")
+                note.myLeftFinger = FingerType::M;
+            else if (text == "I")
+                note.myLeftFinger = FingerType::I;
+            else if (text == "P")
+                note.myLeftFinger = FingerType::P;
+            else
+                throw FileFormatException("Unexpected finger type.");
+        }
+
+        // TODO - import bends.
 
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);

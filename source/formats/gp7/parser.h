@@ -230,6 +230,16 @@ struct Note
         NumTypes
     };
 
+    enum class FingerType
+    {
+        Open,
+        C,
+        A,
+        M,
+        I,
+        P
+    };
+
     int myString = 0;
     int myFret = 0;
     bool myPalmMuted = false;
@@ -249,6 +259,7 @@ struct Note
     /// Flags for various combinations of slide types.
     std::bitset<size_t(SlideType::NumTypes)> mySlideTypes;
     std::optional<int> myTrillNote;
+    std::optional<FingerType> myLeftFinger;
 };
 
 /// Container for a Guitar Pro 7 document.
