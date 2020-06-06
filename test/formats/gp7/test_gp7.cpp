@@ -349,25 +349,86 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
     Gp7Importer importer;
     importer.load(AppInfo::getAbsolutePath("data/bars.gp"), score);
 
-    const System &system = score.getSystems()[0];
-    REQUIRE(system.getBarlines().size() == 4);
-
     {
-        const Barline &bar = system.getBarlines()[0];
-        REQUIRE(bar.hasRehearsalSign());
-        REQUIRE(bar.getRehearsalSign().getLetters() == "A");
-        REQUIRE(bar.getRehearsalSign().getDescription() == "Intro");
+        const System &system = score.getSystems()[0];
+        REQUIRE(system.getBarlines().size() == 4);
+
+        {
+            const Barline &bar = system.getBarlines()[0];
+            REQUIRE(bar.getBarType() == Barline::SingleBar);
+
+            REQUIRE(bar.hasRehearsalSign());
+            REQUIRE(bar.getRehearsalSign().getLetters() == "A");
+            REQUIRE(bar.getRehearsalSign().getDescription() == "Intro");
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[1];
+            REQUIRE(!bar.hasRehearsalSign());
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[2];
+            REQUIRE(bar.hasRehearsalSign());
+            REQUIRE(bar.getRehearsalSign().getLetters() == "B");
+            REQUIRE(bar.getRehearsalSign().getDescription() ==
+                    "Custom Section");
+        }
     }
 
     {
-        const Barline &bar = system.getBarlines()[1];
-        REQUIRE(!bar.hasRehearsalSign());
+        const System &system = score.getSystems()[1];
+        REQUIRE(system.getBarlines().size() == 4);
+
+        {
+            const Barline &bar = system.getBarlines()[0];
+            REQUIRE(bar.getBarType() == Barline::RepeatStart);
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[1];
+            REQUIRE(bar.getBarType() == Barline::DoubleBar);
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[2];
+            REQUIRE(bar.getBarType() == Barline::FreeTimeBar);
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[3];
+            REQUIRE(bar.getBarType() == Barline::RepeatEnd);
+            REQUIRE(bar.getRepeatCount() == 3);
+        }
     }
 
     {
-        const Barline &bar = system.getBarlines()[2];
-        REQUIRE(bar.hasRehearsalSign());
-        REQUIRE(bar.getRehearsalSign().getLetters() == "B");
-        REQUIRE(bar.getRehearsalSign().getDescription() == "Custom Section");
+        const System &system = score.getSystems()[2];
+        REQUIRE(system.getBarlines().size() == 5);
+
+        {
+            const Barline &bar = system.getBarlines()[0];
+            REQUIRE(bar.getBarType() == Barline::RepeatStart);
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[1];
+            REQUIRE(bar.getBarType() == Barline::RepeatEnd);
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[2];
+            REQUIRE(bar.getBarType() == Barline::RepeatStart);
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[3];
+            REQUIRE(bar.getBarType() == Barline::RepeatEnd);
+        }
+
+        {
+            const Barline &bar = system.getBarlines()[4];
+            REQUIRE(bar.getBarType() == Barline::DoubleBarFine);
+        }
     }
 }

@@ -203,7 +203,22 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
             master_bar.mySection = section;
         }
 
-        // TODO - read barline info
+        if (node.child("DoubleBar"))
+            master_bar.myDoubleBar = true;
+        if (node.child("FreeTime"))
+            master_bar.myFreeTime = true;
+
+        if (auto repeat = node.child("Repeat"))
+        {
+            if (repeat.attribute("start").as_bool())
+                master_bar.myRepeatStart = true;
+            if (repeat.attribute("end").as_bool())
+            {
+                master_bar.myRepeatEnd = true;
+                master_bar.myRepeatCount = repeat.attribute("count").as_int();
+            }
+        }
+
         // TODO - read key signature
         // TODO - read time signature
 

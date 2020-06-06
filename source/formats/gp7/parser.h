@@ -108,6 +108,11 @@ struct MasterBar
 
     std::vector<int> myBarIds;
     std::optional<Section> mySection;
+    bool myDoubleBar = false;
+    bool myFreeTime = false;
+    bool myRepeatStart = false;
+    bool myRepeatEnd = false;
+    int myRepeatCount = 0;
 };
 
 struct Bar

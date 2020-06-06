@@ -25,6 +25,9 @@
 #include <score/rehearsalsign.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
+#include <score/system.h>
+
+#include <iostream>
 
 /// Convert the Guitar Pro file metadata.
 static void
@@ -226,15 +229,31 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
 }
 
 static void
-convertBarline(Barline &barline, const Gp7::MasterBar &master_bar)
+convertBarline(Barline &start_bar, Barline &end_bar,
+               const Gp7::MasterBar &master_bar, bool final_bar)
 {
     if (master_bar.mySection)
     {
         // Note that ScoreUtils::adjustRehearsalSigns() will re-assign the
         // letters later.
-        barline.setRehearsalSign(RehearsalSign(master_bar.mySection->myLetter,
-                                               master_bar.mySection->myText));
+        start_bar.setRehearsalSign(RehearsalSign(master_bar.mySection->myLetter,
+                                                 master_bar.mySection->myText));
     }
+
+    if (master_bar.myRepeatEnd)
+    {
+        end_bar.setBarType(Barline::RepeatEnd);
+        end_bar.setRepeatCount(master_bar.myRepeatCount);
+    }
+    else if (final_bar)
+        end_bar.setBarType(Barline::DoubleBarFine);
+    else if (master_bar.myDoubleBar)
+        end_bar.setBarType(Barline::DoubleBar);
+    else if (master_bar.myFreeTime)
+        end_bar.setBarType(Barline::FreeTimeBar);
+
+    if (master_bar.myRepeatStart)
+        start_bar.setBarType(Barline::RepeatStart);
 }
 
 static void
@@ -256,10 +275,24 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
         system.insertStaff(Staff(player.getTuning().getStringCount()));
 
     int start_pos = 0;
+    int system_bar_idx = 0;
     for (int bar_idx = bar_begin; bar_idx < bar_end; ++bar_idx)
     {
         const int num_staves = score.getPlayers().size();
         const Gp7::MasterBar &master_bar = doc.myMasterBars.at(bar_idx);
+
+        // If the previous bar was a repeat end, and this master bar is a
+        // repeat start, we'll need to create a separate adjacent barline.
+        if (master_bar.myRepeatStart &&
+            system.getBarlines()[system_bar_idx].getBarType() ==
+                Barline::RepeatEnd)
+        {
+            Barline barline;
+            barline.setPosition(start_pos);
+            system.insertBarline(barline);
+            ++system_bar_idx;
+            ++start_pos;
+        }
 
         // Go through the bar for each staff.
         int end_pos = start_pos;
@@ -322,18 +355,22 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
             }
         }
 
-        // Set the barline properties.
-        convertBarline(system.getBarlines()[bar_idx - bar_begin], master_bar);
+        // Get the surrounding barlines and set their properties.
+        const bool final_bar = size_t(bar_idx + 1) == doc.myMasterBars.size();
+        Barline &bar_1 = system.getBarlines()[system_bar_idx];
+        Barline bar_2;
+        bar_2.setPosition(end_pos);
+        convertBarline(bar_1, bar_2, master_bar, final_bar);
 
-        // Insert a new barline unless we're finishing the system.
+        // Insert a new barline unless we're finishing the system, in which
+        // case we just need to modify the end bar.
         if (bar_idx != (bar_end - 1))
-        {
-            Barline barline;
-            barline.setPosition(end_pos);
-            system.insertBarline(barline);
+            system.insertBarline(bar_2);
+        else
+            system.getBarlines().back() = bar_2;
 
-            start_pos = end_pos + 1;
-        }
+        ++system_bar_idx;
+        start_pos = end_pos + 1;
     }
 
     score.insertSystem(system);
