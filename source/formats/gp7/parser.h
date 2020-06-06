@@ -99,7 +99,14 @@ struct Track
 
 struct MasterBar
 {
+    struct Section
+    {
+        std::string myLetter;
+        std::string myText;
+    };
+
     std::vector<int> myBarIds;
+    std::optional<Section> mySection;
 };
 
 struct Bar

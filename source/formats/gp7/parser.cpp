@@ -192,6 +192,15 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
 
         master_bar.myBarIds = toIntList(splitString(node.child_value("Bars")));
 
+        auto section_node = node.child("Section");
+        if (section_node)
+        {
+            Gp7::MasterBar::Section section;
+            section.myLetter = section_node.child_value("Letter");
+            section.myText = section_node.child_value("Text");
+            master_bar.mySection = section;
+        }
+
         // TODO - read barline info
         // TODO - read key signature
         // TODO - read time signature
@@ -388,6 +397,8 @@ parseNotes(const pugi::xml_node &notes_node)
 
         if (node.child("LetRing"))
             note.myLetRing = true;
+
+        // TODO - import bends and left hand fingerings.
 
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);

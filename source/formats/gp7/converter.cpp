@@ -22,6 +22,7 @@
 #include <formats/fileformat.h>
 #include <score/playerchange.h>
 #include <score/position.h>
+#include <score/rehearsalsign.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
 
@@ -225,6 +226,18 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
 }
 
 static void
+convertBarline(Barline &barline, const Gp7::MasterBar &master_bar)
+{
+    if (master_bar.mySection)
+    {
+        // Note that ScoreUtils::adjustRehearsalSigns() will re-assign the
+        // letters later.
+        barline.setRehearsalSign(RehearsalSign(master_bar.mySection->myLetter,
+                                               master_bar.mySection->myText));
+    }
+}
+
+static void
 convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
               int bar_end)
 {
@@ -309,6 +322,9 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
             }
         }
 
+        // Set the barline properties.
+        convertBarline(system.getBarlines()[bar_idx - bar_begin], master_bar);
+
         // Insert a new barline unless we're finishing the system.
         if (bar_idx != (bar_end - 1))
         {
@@ -336,4 +352,6 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
         convertSystem(doc, score, bar_idx, bar_end);
         bar_idx += num_bars;
     }
+
+    ScoreUtils::adjustRehearsalSigns(score);
 }

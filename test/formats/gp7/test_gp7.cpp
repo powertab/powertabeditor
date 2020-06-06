@@ -341,3 +341,32 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.hasProperty(Position::ArpeggioUp));
     }
 }
+
+TEST_CASE("Formats/Gp7Import/Bars", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/bars.gp"), score);
+
+    const System &system = score.getSystems()[0];
+    REQUIRE(system.getBarlines().size() == 4);
+
+    {
+        const Barline &bar = system.getBarlines()[0];
+        REQUIRE(bar.hasRehearsalSign());
+        REQUIRE(bar.getRehearsalSign().getLetters() == "A");
+        REQUIRE(bar.getRehearsalSign().getDescription() == "Intro");
+    }
+
+    {
+        const Barline &bar = system.getBarlines()[1];
+        REQUIRE(!bar.hasRehearsalSign());
+    }
+
+    {
+        const Barline &bar = system.getBarlines()[2];
+        REQUIRE(bar.hasRehearsalSign());
+        REQUIRE(bar.getRehearsalSign().getLetters() == "B");
+        REQUIRE(bar.getRehearsalSign().getDescription() == "Custom Section");
+    }
+}
