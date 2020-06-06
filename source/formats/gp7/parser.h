@@ -57,8 +57,6 @@ struct TempoChange
         HalfDotted
     };
 
-    /// Index of the bar the tempo change occurs in.
-    int myBar = -1;
     /// Specifies the location within the bar, from 0 to 1. (e.g. if 0.75 and
     /// in 4/4 time, the tempo change occurs on the last beat).
     double myPosition = 0;
@@ -135,6 +133,8 @@ struct MasterBar
     bool myRepeatStart = false;
     bool myRepeatEnd = false;
     int myRepeatCount = 0;
+
+    std::vector<TempoChange> myTempoChanges;
 };
 
 struct Bar
@@ -249,7 +249,6 @@ struct Note
 struct Document
 {
     ScoreInfo myScoreInfo;
-    std::vector<TempoChange> myTempoChanges;
     std::vector<Track> myTracks;
     std::vector<MasterBar> myMasterBars;
     std::unordered_map<int, Bar> myBars;

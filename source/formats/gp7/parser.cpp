@@ -100,15 +100,15 @@ parseScoreInfo(const pugi::xml_node &node)
     return info;
 }
 
-static std::vector<Gp7::TempoChange>
-parseTempoChanges(const pugi::xml_node &master_track)
+/// Adds the tempo changes to the appropriate master bars.
+static void
+parseTempoChanges(const pugi::xml_node &master_track,
+                  std::vector<Gp7::MasterBar> &master_bars)
 {
-    std::vector<Gp7::TempoChange> changes;
     for (const pugi::xml_node &node :
          master_track.child("Automations").children("Automation"))
     {
         Gp7::TempoChange change;
-        change.myBar = node.child("Bar").text().as_int();
         change.myPosition = node.child("Position").text().as_double();
         change.myDescription = node.child_value("Text");
         change.myIsLinear = node.child("Linear").text().as_bool();
@@ -143,10 +143,12 @@ parseTempoChanges(const pugi::xml_node &master_track)
                 throw FileFormatException("Invalid tempo change unit.");
         }
 
-        changes.push_back(change);
-    }
+        const int bar_idx = node.child("Bar").text().as_int();
+        if (bar_idx < 0 || bar_idx >= int(master_bars.size()))
+            throw FileFormatException("Invalid bar for tempo change.");
 
-    return changes;
+        master_bars[bar_idx].myTempoChanges.push_back(change);
+    }
 }
 
 static std::vector<Gp7::Track>
@@ -528,7 +530,6 @@ Gp7::parse(const pugi::xml_document &root)
     // - 'RSE'. This is mostly to do with audio playback, but volume / pan
     // changes do occur as 'Automation' nodes here.
     const pugi::xml_node master_track = gpif.child("MasterTrack");
-    doc.myTempoChanges = parseTempoChanges(master_track);
 
     doc.myTracks = parseTracks(gpif.child("Tracks"));
     doc.myMasterBars = parseMasterBars(gpif.child("MasterBars"));
@@ -537,6 +538,8 @@ Gp7::parse(const pugi::xml_document &root)
     doc.myBeats = parseBeats(gpif.child("Beats"));
     doc.myNotes = parseNotes(gpif.child("Notes"));
     doc.myRhythms = parseRhythms(gpif.child("Rhythms"));
+
+    parseTempoChanges(master_track, doc.myMasterBars);
 
     return doc;
 }

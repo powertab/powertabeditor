@@ -24,6 +24,7 @@
 #include <score/playerchange.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
+#include <score/tempomarker.h>
 #include <score/timesignature.h>
 #include <util/tostring.h>
 
@@ -470,5 +471,31 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
             const Barline &bar = system.getBarlines()[4];
             REQUIRE(bar.getBarType() == Barline::DoubleBarFine);
         }
+    }
+}
+
+TEST_CASE("Formats/Gp7Import/TempoChanges", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/bars.gp"), score);
+
+    const System &system = score.getSystems()[0];
+    REQUIRE(system.getTempoMarkers().size() == 2);
+
+    {
+        const TempoMarker &marker = system.getTempoMarkers()[0];
+        REQUIRE(marker.getDescription() == "Fast Rock");
+        REQUIRE(marker.getMarkerType() == TempoMarker::StandardMarker);
+        REQUIRE(marker.getBeatType() == TempoMarker::Eighth);
+        REQUIRE(marker.getBeatsPerMinute() == 80);
+    }
+
+    {
+        const TempoMarker &marker = system.getTempoMarkers()[1];
+        REQUIRE(marker.getDescription() == "Medium Rock");
+        REQUIRE(marker.getMarkerType() == TempoMarker::StandardMarker);
+        REQUIRE(marker.getBeatType() == TempoMarker::Quarter);
+        REQUIRE(marker.getBeatsPerMinute() == 110);
     }
 }

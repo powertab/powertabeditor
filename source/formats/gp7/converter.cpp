@@ -27,6 +27,7 @@
 #include <score/score.h>
 #include <score/scoreinfo.h>
 #include <score/system.h>
+#include <score/tempomarker.h>
 #include <score/timesignature.h>
 
 #include <iostream>
@@ -231,6 +232,48 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
 }
 
 static void
+convertTempoMarkers(System &system, int bar_pos,
+                    const Gp7::MasterBar &master_bar)
+{
+    if (master_bar.myTempoChanges.empty())
+        return;
+
+    // TODO - there can be multiple tempo changes at different locations within
+    // the bar, which don't necessarily correspond to a beat. For now, just
+    // place it at the start of the bar to handle the common cases.
+    // Alterations of pace are also not translated yet.
+    const Gp7::TempoChange &gp_tempo = master_bar.myTempoChanges[0];
+
+    TempoMarker marker;
+    switch (gp_tempo.myBeatType)
+    {
+        using BeatType = Gp7::TempoChange::BeatType;
+
+        case BeatType::Eighth:
+            marker.setBeatType(TempoMarker::Eighth);
+            break;
+        case BeatType::Half:
+            marker.setBeatType(TempoMarker::Half);
+            break;
+        case BeatType::HalfDotted:
+            marker.setBeatType(TempoMarker::HalfDotted);
+            break;
+        case BeatType::Quarter:
+            marker.setBeatType(TempoMarker::Quarter);
+            break;
+        case BeatType::QuarterDotted:
+            marker.setBeatType(TempoMarker::QuarterDotted);
+            break;
+    }
+
+    marker.setBeatsPerMinute(gp_tempo.myBeatsPerMinute);
+    marker.setDescription(gp_tempo.myDescription);
+
+    marker.setPosition(bar_pos);
+    system.insertTempoMarker(marker);
+}
+
+static void
 convertBarline(Barline &start_bar, Barline &end_bar,
                const Gp7::MasterBar &master_bar,
                const Gp7::MasterBar *prev_master_bar, bool final_bar)
@@ -420,6 +463,8 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
         const Gp7::MasterBar *prev_master_bar =
             (bar_idx != 0) ? &doc.myMasterBars[bar_idx - 1] : nullptr;
         convertBarline(bar_1, bar_2, master_bar, prev_master_bar, final_bar);
+
+        convertTempoMarkers(system, bar_1.getPosition(), master_bar);
 
         // Insert a new barline unless we're finishing the system, in which
         // case we just need to modify the end bar.
