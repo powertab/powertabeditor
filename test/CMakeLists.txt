@@ -71,6 +71,7 @@ set( srcs
     dialogs/test_viewfilterdialog.cpp
 
     formats/test_fileformat.cpp
+    formats/gp7/test_gp7.cpp
     formats/gpx/test_gpx.cpp
     formats/guitar_pro/test_gp.cpp
     formats/powertab_old/test_powertabold.cpp
@@ -101,6 +102,7 @@ set( srcs
     score/test_viewfilter.cpp
     score/test_voiceutils.cpp
 
+    util/test_scopeexit.cpp
     util/test_settingstree.cpp
 )
 
@@ -139,6 +141,12 @@ set( data_files
     formats/guitar_pro/data/tempos.gp5
     formats/guitar_pro/data/text.gp5
     formats/guitar_pro/data/time_signatures.gp5
+
+    formats/gp7/data/bars.gp
+    formats/gp7/data/notes.gp
+    formats/gp7/data/score_info.gp
+    formats/gp7/data/tracks.gp
+    formats/gp7/data/words_and_music.gp
 
     formats/gpx/data/text.gpx
 

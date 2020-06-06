@@ -54,6 +54,9 @@
 					<Extension Id="pt2" ContentType="audio/x-pt2">
 						<Verb Id="open" Command="Open" Argument='"%1"' />
 					</Extension>
+					<Extension Id="gp" ContentType="audio/x-gtp">
+						<Verb Id="open" Command="Open" Argument='"%1"' />
+					</Extension>
 					<Extension Id="gpx" ContentType="audio/x-gtp">
 						<Verb Id="open" Command="Open" Argument='"%1"' />
 					</Extension>

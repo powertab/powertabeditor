@@ -29,7 +29,7 @@
 #include <thread>
 
 #ifdef _WIN32
-#include <boost/scope_exit.hpp>
+#include <util/scopeexit.h>
 #include <objbase.h>
 #endif
 
@@ -59,9 +59,9 @@ void MidiPlayer::run()
 	// Windows 10 - see http://stackoverflow.com/a/32553208/586978
 #ifdef _WIN32
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    BOOST_SCOPE_EXIT(this_) {
+    Util::ScopeExit on_exit([]() {
         CoUninitialize();
-    } BOOST_SCOPE_EXIT_END
+    });
 #endif
 
     boost::signals2::scoped_connection connection(
