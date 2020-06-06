@@ -24,14 +24,27 @@
 
 #include <iostream>
 
+bool
+Gp7::MasterBar::TimeSignature::operator==(const TimeSignature &other) const
+{
+    return myBeats == other.myBeats && myBeatValue == other.myBeatValue;
+}
+
+bool
+Gp7::MasterBar::TimeSignature::operator!=(const TimeSignature &other) const
+{
+    return !operator==(other);
+}
+
 static std::vector<std::string>
-splitString(std::string input)
+splitString(std::string input, char separator = ' ')
 {
     if (input.empty())
         return {};
 
     std::vector<std::string> output;
-    boost::algorithm::split(output, input, [](char c) { return c == ' '; });
+    boost::algorithm::split(output, input,
+                            [=](char c) { return c == separator; });
     return output;
 }
 
@@ -219,8 +232,16 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
             }
         }
 
+        // The time signature should be a string like 12/8.
+        std::vector<int> time_sig =
+            toIntList(splitString(node.child_value("Time"), '/'));
+        if (time_sig.size() != 2)
+            throw FileFormatException("Unexpected time signature value");
+
+        master_bar.myTimeSig.myBeats = time_sig[0];
+        master_bar.myTimeSig.myBeatValue = time_sig[1];
+
         // TODO - read key signature
-        // TODO - read time signature
 
         master_bars.push_back(master_bar);
     }

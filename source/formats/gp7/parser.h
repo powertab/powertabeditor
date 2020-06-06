@@ -18,6 +18,7 @@
 #ifndef FORMATS_GP7_PARSER_H
 #define FORMATS_GP7_PARSER_H
 
+#include "score/timesignature.h"
 #include <bitset>
 #include <optional>
 #include <pugixml.hpp>
@@ -106,8 +107,18 @@ struct MasterBar
         std::string myText;
     };
 
+    struct TimeSignature
+    {
+        bool operator==(const TimeSignature &other) const;
+        bool operator!=(const TimeSignature &other) const;
+
+        int myBeats = 4;
+        int myBeatValue = 4;
+    };
+
     std::vector<int> myBarIds;
     std::optional<Section> mySection;
+    TimeSignature myTimeSig;
     bool myDoubleBar = false;
     bool myFreeTime = false;
     bool myRepeatStart = false;

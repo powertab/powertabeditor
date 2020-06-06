@@ -23,6 +23,7 @@
 #include <score/playerchange.h>
 #include <score/score.h>
 #include <score/scoreinfo.h>
+#include <score/timesignature.h>
 #include <util/tostring.h>
 
 TEST_CASE("Formats/Gp7Import/ScoreInfo/Basic", "")
@@ -357,6 +358,10 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
             const Barline &bar = system.getBarlines()[0];
             REQUIRE(bar.getBarType() == Barline::SingleBar);
 
+            TimeSignature time_sig;
+            time_sig.setVisible();
+            REQUIRE(bar.getTimeSignature() == time_sig);
+
             REQUIRE(bar.hasRehearsalSign());
             REQUIRE(bar.getRehearsalSign().getLetters() == "A");
             REQUIRE(bar.getRehearsalSign().getDescription() == "Intro");
@@ -365,6 +370,13 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
         {
             const Barline &bar = system.getBarlines()[1];
             REQUIRE(!bar.hasRehearsalSign());
+
+            TimeSignature time_sig;
+            time_sig.setBeatsPerMeasure(12);
+            time_sig.setNumPulses(12);
+            time_sig.setBeatValue(8);
+            time_sig.setVisible();
+            REQUIRE(bar.getTimeSignature() == time_sig);
         }
 
         {
@@ -373,6 +385,10 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
             REQUIRE(bar.getRehearsalSign().getLetters() == "B");
             REQUIRE(bar.getRehearsalSign().getDescription() ==
                     "Custom Section");
+
+            TimeSignature time_sig;
+            time_sig.setVisible();
+            REQUIRE(bar.getTimeSignature() == time_sig);
         }
     }
 
@@ -383,6 +399,7 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
         {
             const Barline &bar = system.getBarlines()[0];
             REQUIRE(bar.getBarType() == Barline::RepeatStart);
+            REQUIRE(!bar.getTimeSignature().isVisible());
         }
 
         {

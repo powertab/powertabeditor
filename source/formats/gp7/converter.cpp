@@ -26,6 +26,7 @@
 #include <score/score.h>
 #include <score/scoreinfo.h>
 #include <score/system.h>
+#include <score/timesignature.h>
 
 #include <iostream>
 
@@ -230,7 +231,8 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
 
 static void
 convertBarline(Barline &start_bar, Barline &end_bar,
-               const Gp7::MasterBar &master_bar, bool final_bar)
+               const Gp7::MasterBar &master_bar,
+               const Gp7::MasterBar *prev_master_bar, bool final_bar)
 {
     if (master_bar.mySection)
     {
@@ -254,6 +256,27 @@ convertBarline(Barline &start_bar, Barline &end_bar,
 
     if (master_bar.myRepeatStart)
         start_bar.setBarType(Barline::RepeatStart);
+
+    {
+        TimeSignature time_sig;
+        time_sig.setBeatsPerMeasure(master_bar.myTimeSig.myBeats);
+        time_sig.setNumPulses(master_bar.myTimeSig.myBeats);
+        time_sig.setBeatValue(master_bar.myTimeSig.myBeatValue);
+
+        // Set the time signature on the end bar, for consistency, but leave it
+        // invisible.
+        end_bar.setTimeSignature(time_sig);
+
+        // Display the time signature for the first bar in the score, or if
+        // there was a time signature change.
+        if (!prev_master_bar ||
+            (prev_master_bar->myTimeSig != master_bar.myTimeSig))
+        {
+            time_sig.setVisible();
+        }
+
+        start_bar.setTimeSignature(time_sig);
+    }
 }
 
 static void
@@ -360,7 +383,9 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
         Barline &bar_1 = system.getBarlines()[system_bar_idx];
         Barline bar_2;
         bar_2.setPosition(end_pos);
-        convertBarline(bar_1, bar_2, master_bar, final_bar);
+        const Gp7::MasterBar *prev_master_bar =
+            (bar_idx != 0) ? &doc.myMasterBars[bar_idx - 1] : nullptr;
+        convertBarline(bar_1, bar_2, master_bar, prev_master_bar, final_bar);
 
         // Insert a new barline unless we're finishing the system, in which
         // case we just need to modify the end bar.
