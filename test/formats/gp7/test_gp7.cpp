@@ -499,3 +499,26 @@ TEST_CASE("Formats/Gp7Import/TempoChanges", "")
         REQUIRE(marker.getBeatsPerMinute() == 110);
     }
 }
+
+TEST_CASE("Formats/Gp7Import/Fermatas", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/fermatas.gp"), score);
+
+    {
+        const Voice &voice =
+            score.getSystems()[0].getStaves()[0].getVoices()[0];
+        for (int i = 0; i < 5; ++i)
+            REQUIRE(voice.getPositions()[i].hasProperty(Position::Fermata));
+    }
+
+    {
+        const Voice &voice =
+            score.getSystems()[0].getStaves()[1].getVoices()[0];
+        REQUIRE(voice.getPositions()[0].hasProperty(Position::Fermata));
+        REQUIRE(!voice.getPositions()[1].hasProperty(Position::Fermata));
+        REQUIRE(!voice.getPositions()[2].hasProperty(Position::Fermata));
+        REQUIRE(voice.getPositions()[3].hasProperty(Position::Fermata));
+    }
+}

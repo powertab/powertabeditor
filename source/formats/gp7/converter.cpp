@@ -19,6 +19,8 @@
 #include "parser.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <boost/rational.hpp>
+
 #include <formats/fileformat.h>
 #include <score/keysignature.h>
 #include <score/playerchange.h>
@@ -29,6 +31,7 @@
 #include <score/system.h>
 #include <score/tempomarker.h>
 #include <score/timesignature.h>
+#include <score/voiceutils.h>
 
 #include <iostream>
 
@@ -421,16 +424,22 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                 Voice &voice = staff.getVoices()[voice_idx];
 
                 int voice_pos = start_pos;
+                boost::rational<int> time;
                 for (int gp_beat_idx : gp_voice.myBeatIds)
                 {
                     const Gp7::Beat &gp_beat = doc.myBeats.at(gp_beat_idx);
                     const Gp7::Rhythm &gp_rhythm =
                         doc.myRhythms.at(gp_beat.myRhythmId);
 
-                    // TODO - convert irregular groupings.
-
                     Position pos = convertPosition(gp_beat, gp_rhythm);
                     pos.setPosition(voice_pos++);
+
+                    // TODO - convert irregular groupings.
+                    // Note that for fermatas, irregular groups must also be
+                    // taken into account before computing the beat's time.
+
+                    if (master_bar.myFermatas.count(time))
+                        pos.setProperty(Position::Fermata);
 
                     // Flag as a rest if there are no notes.
                     if (gp_beat.myNoteIds.empty())
@@ -449,6 +458,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                     }
 
                     voice.insertPosition(pos);
+                    time += VoiceUtils::getDurationTime(voice, pos);
                 }
 
                 end_pos = std::max(voice_pos, end_pos);

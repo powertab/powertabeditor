@@ -20,11 +20,13 @@
 
 #include "score/timesignature.h"
 #include <bitset>
+#include <boost/rational.hpp>
 #include <optional>
 #include <pugixml.hpp>
+#include <set>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 namespace Gp7
 {
@@ -135,6 +137,10 @@ struct MasterBar
     int myRepeatCount = 0;
 
     std::vector<TempoChange> myTempoChanges;
+
+    /// Fermatas apply to all tracks, and are applied at a specific beat
+    /// fraction.
+    std::set<boost::rational<int>> myFermatas;
 };
 
 struct Bar

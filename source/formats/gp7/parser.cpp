@@ -265,6 +265,19 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
             std::string_view(key_node.child_value("Mode")) == "Minor";
         master_bar.myKeySig.mySharps = (accidentals >= 0);
 
+        // Fermatas.
+        for (const pugi::xml_node fermata :
+             node.child("Fermatas").children("Fermata"))
+        {
+            std::vector<int> offset =
+                toIntList(splitString(fermata.child_value("Offset"), '/'));
+            if (offset.size() != 2)
+                throw FileFormatException("Unexpected fermata offset.");
+
+            master_bar.myFermatas.insert(
+                boost::rational<int>(offset[0], offset[1]));
+        }
+
         master_bars.push_back(master_bar);
     }
 
