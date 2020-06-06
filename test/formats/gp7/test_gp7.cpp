@@ -165,11 +165,20 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.getDurationType() == Position::QuarterNote);
         REQUIRE(!pos.hasProperty(Position::Dotted));
         REQUIRE(!pos.hasProperty(Position::DoubleDotted));
-        REQUIRE(!pos.hasProperty(Position::PalmMuting));
+        REQUIRE(!pos.hasProperty(Position::Vibrato));
+        REQUIRE(!pos.hasProperty(Position::WideVibrato));
+        REQUIRE(!pos.hasProperty(Position::ArpeggioUp));
+        REQUIRE(!pos.hasProperty(Position::ArpeggioDown));
+        REQUIRE(!pos.hasProperty(Position::PickStrokeUp));
+        REQUIRE(!pos.hasProperty(Position::PickStrokeDown));
         REQUIRE(!pos.hasProperty(Position::Staccato));
         REQUIRE(!pos.hasProperty(Position::Marcato));
         REQUIRE(!pos.hasProperty(Position::Sforzando));
+        REQUIRE(!pos.hasProperty(Position::TremoloPicking));
+        REQUIRE(!pos.hasProperty(Position::PalmMuting));
         REQUIRE(!pos.hasProperty(Position::Tap));
+        REQUIRE(!pos.hasProperty(Position::Acciaccatura));
+        REQUIRE(!pos.hasProperty(Position::LetRing));
         REQUIRE(!pos.isRest());
 
         // This note does not have any special properties.
@@ -193,6 +202,7 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
 
         REQUIRE(!note.hasArtificialHarmonic());
         REQUIRE(!note.hasTappedHarmonic());
+        REQUIRE(!note.hasTrill());
     }
 
     {
@@ -224,6 +234,7 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(pos.getDurationType() == Position::EighthNote);
         REQUIRE(pos.hasProperty(Position::DoubleDotted));
         REQUIRE(pos.hasProperty(Position::Marcato));
+        REQUIRE(pos.hasProperty(Position::WideVibrato));
 
         const Note &note = pos.getNotes()[0];
         REQUIRE(note.hasProperty(Note::Octave8vb));
@@ -244,6 +255,12 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(note.hasProperty(Note::Octave8va));
         REQUIRE(note.hasProperty(Note::SlideIntoFromBelow));
         REQUIRE(note.hasProperty(Note::LegatoSlide));
+    }
+
+    {
+        const Position &pos = voice.getPositions()[6];
+        REQUIRE(pos.hasProperty(Position::Vibrato));
+        REQUIRE(pos.hasProperty(Position::LetRing));
     }
 
     {
@@ -276,6 +293,12 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
     }
 
     {
+        const Note &note = voice.getPositions()[15].getNotes()[0];
+        REQUIRE(note.hasTrill());
+        REQUIRE(note.getTrilledFret() == 4);
+    }
+
+    {
         const Note &note = voice.getPositions()[16].getNotes()[0];
         REQUIRE(note.hasProperty(Note::LegatoSlide));
     }
@@ -285,6 +308,36 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         REQUIRE(note.hasProperty(Note::ShiftSlide));
     }
 
-    REQUIRE(voice.getPositions()[20].getDurationType() == Position::EighthNote);
-    REQUIRE(voice.getPositions()[20].isRest());
+    {
+        const Position &pos = voice.getPositions()[20];
+        REQUIRE(pos.getDurationType() == Position::EighthNote);
+        REQUIRE(pos.isRest());
+    }
+
+    {
+        const Position &pos = voice.getPositions()[21];
+        REQUIRE(pos.hasProperty(Position::Acciaccatura));
+        REQUIRE(pos.hasProperty(Position::PickStrokeDown));
+    }
+
+    {
+        const Position &pos = voice.getPositions()[22];
+        REQUIRE(pos.hasProperty(Position::TremoloPicking));
+    }
+
+    {
+        const Position &pos = voice.getPositions()[23];
+        REQUIRE(pos.hasProperty(Position::Acciaccatura));
+        REQUIRE(pos.hasProperty(Position::PickStrokeUp));
+    }
+
+    {
+        const Position &pos = voice.getPositions()[24];
+        REQUIRE(pos.hasProperty(Position::ArpeggioDown));
+    }
+
+    {
+        const Position &pos = voice.getPositions()[25];
+        REQUIRE(pos.hasProperty(Position::ArpeggioUp));
+    }
 }

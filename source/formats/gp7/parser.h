@@ -137,6 +137,12 @@ struct Beat
     /// If there aren't any note ids, this is a rest!
     std::vector<int> myNoteIds;
     std::optional<Ottavia> myOttavia;
+    bool myTremoloPicking = false;
+    bool myGraceNote = false;
+    bool myBrushUp = false;
+    bool myBrushDown = false;
+    bool myArpeggioDown = false;
+    bool myArpeggioUp = false;
 };
 
 /// A duration, which is shared across many beats.
@@ -192,12 +198,16 @@ struct Note
     bool myTapped = false;
     bool myHammerOn = false;
     bool myLeftHandTapped = false;
+    bool myVibrato = false;
+    bool myWideVibrato = false;
+    bool myLetRing = false;
     /// Flags for various combinations of accent types.
     std::bitset<size_t(AccentType::NumTypes)> myAccentTypes;
     std::optional<HarmonicType> myHarmonic;
     double myHarmonicFret = 0;
     /// Flags for various combinations of slide types.
     std::bitset<size_t(SlideType::NumTypes)> mySlideTypes;
+    std::optional<int> myTrillNote;
 };
 
 /// Container for a Guitar Pro 7 document.

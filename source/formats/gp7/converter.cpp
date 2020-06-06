@@ -127,9 +127,14 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
 
     if (gp_note.myPalmMuted)
         position.setProperty(Position::PalmMuting);
-
     if (gp_note.myTapped)
         position.setProperty(Position::Tap);
+    if (gp_note.myVibrato)
+        position.setProperty(Position::Vibrato);
+    if (gp_note.myWideVibrato)
+        position.setProperty(Position::WideVibrato);
+    if (gp_note.myLetRing)
+        position.setProperty(Position::LetRing);
 
     // Staccatissimo and tenuto are not supported.
     using GpAccentType = Gp7::Note::AccentType;
@@ -187,6 +192,13 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
         // TODO - import artificial harmonics
     }
 
+    // The GP7 trill stores the note value, not the fret number.
+    if (gp_note.myTrillNote)
+    {
+        note.setTrilledFret(*gp_note.myTrillNote -
+                            tuning.getNote(note.getString(), false));
+    }
+
     return note;
 }
 
@@ -199,6 +211,15 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
         static_cast<Position::DurationType>(gp_rhythm.myDuration));
     pos.setProperty(Position::Dotted, gp_rhythm.myDots == 1);
     pos.setProperty(Position::DoubleDotted, gp_rhythm.myDots == 2);
+
+    pos.setProperty(Position::Acciaccatura, gp_beat.myGraceNote);
+    pos.setProperty(Position::TremoloPicking, gp_beat.myTremoloPicking);
+
+    pos.setProperty(Position::PickStrokeDown, gp_beat.myBrushDown);
+    pos.setProperty(Position::PickStrokeUp, gp_beat.myBrushUp);
+
+    pos.setProperty(Position::ArpeggioUp, gp_beat.myArpeggioUp);
+    pos.setProperty(Position::ArpeggioDown, gp_beat.myArpeggioDown);
 
     return pos;
 }

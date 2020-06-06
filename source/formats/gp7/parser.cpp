@@ -273,7 +273,42 @@ parseBeats(const pugi::xml_node &beats_node)
                 beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
         }
 
-        // TODO - import properties like tremolo picking, dynamics, etc.
+        // Guitar Pro grace notes can occur before or on the beat, but we only
+        // have one type.
+        if (node.child("GraceNotes"))
+            beat.myGraceNote = true;
+
+        // GP tremolo picking can describe different speeds, but we just have
+        // one type.
+        if (node.child("Tremolo"))
+            beat.myTremoloPicking = true;
+
+        for (const pugi::xml_node property :
+             node.child("Properties").children("Property"))
+        {
+            const std::string_view name =
+                property.attribute("name").as_string();
+
+            if (name == "Brush")
+            {
+                std::string_view direction = property.child_value("Direction");
+                if (direction == "Up")
+                    beat.myBrushUp = true;
+                else if (direction == "Down")
+                    beat.myBrushDown = true;
+                else
+                    throw FileFormatException("Unexpected brush type");
+            }
+        }
+
+        std::string_view arpeggio = node.child_value("Arpeggio");
+        if (!arpeggio.empty())
+        {
+            if (arpeggio == "Down")
+                beat.myArpeggioDown = true;
+            else if (arpeggio == "Up")
+                beat.myArpeggioUp = true;
+        }
 
         const int id = node.attribute("id").as_int();
         beats.emplace(id, beat);
@@ -335,14 +370,24 @@ parseNotes(const pugi::xml_node &notes_node)
                 else
                     throw FileFormatException("Unexpected harmonic type");
             }
-
-            // TODO - import properties like accents.
         }
 
         note.myTied = node.child("Tie").attribute("destination").as_bool();
         note.myGhost =
             std::string_view(node.child_value("AntiAccent")) == "Normal";
         note.myAccentTypes = node.child("Accent").text().as_int();
+
+        if (auto trill = node.child("Trill"))
+            note.myTrillNote = trill.text().as_int();
+
+        std::string_view vibrato = node.child_value("Vibrato");
+        if (vibrato == "Wide")
+            note.myWideVibrato = true;
+        else if (vibrato == "Slight")
+            note.myVibrato = true;
+
+        if (node.child("LetRing"))
+            note.myLetRing = true;
 
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);
