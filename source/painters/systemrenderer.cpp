@@ -83,7 +83,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 {
     // Draw the bounding rectangle for the system.
     myParentSystem = new QGraphicsRectItem();
-    myParentSystem->setPen(QPen(QBrush(QColor(0, 0, 0, 127)), 0.5));
+    myParentSystem->setPen(QPen(myScoreArea->getPalette().text(), 0.5));
 
     const ViewFilter *filter =
         myViewOptions.getFilter()
@@ -336,9 +336,9 @@ void SystemRenderer::drawTabNotes(const Staff &staff,
 
                 auto tabNote = new SimpleTextItem(
                     text, myPlainTextFont,
-                    QPen(note.hasProperty(Note::Tied) ? Qt::lightGray
-                                                      : Qt::black),
-                    QBrush(QColor(255, 255, 255)));
+                    QPen(note.hasProperty(Note::Tied) ? myScoreArea->getPalette().dark().color()
+                                                      : myScoreArea->getPalette().text().color()),
+                    QBrush(myScoreArea->getPalette().light().color()));
 
                 centerHorizontally(*tabNote, location,
                                    location + layout->getPositionSpacing());
@@ -1684,7 +1684,7 @@ void SystemRenderer::drawMultiBarRest(const System &system,
                    0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
         rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
 
-    horizontalLine->setBrush(QBrush(Qt::black));
+    horizontalLine->setBrush(myScoreArea->getPalette().text());
     horizontalLine->setParentItem(myParentStaff);
 }
 
@@ -1857,7 +1857,7 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
                                                  : yEnd + ARROW_WIDTH);
 
     auto *arrow = new QGraphicsPolygonItem(arrowShape);
-    arrow->setBrush(QBrush(Qt::black));
+    arrow->setBrush(myScoreArea->getPalette().text());
     group->addToGroup(arrow);
 
     // Draw text for the bent pitch (e.g. "Full", "3/4", etc). Don't draw the

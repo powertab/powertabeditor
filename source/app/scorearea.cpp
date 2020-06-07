@@ -46,11 +46,10 @@ ScoreArea::ScoreArea(QWidget *parent)
 {
     setScene(&myScene);
 
-    // Ensure that the score has a white background and is legible under dark
-    // themes. A future improvement would be to enhance the score rendering to
-    // support a dark mode (and ensure that printing the score is unaffected).
-    // See https://github.com/powertab/powertabeditor/issues/284
-    setBackgroundBrush(QBrush(Qt::white, Qt::SolidPattern));
+    // store the palette use by the app (currently the default system palette)
+    // for usage in rendering
+    scorePalette = this->palette();
+    setBackgroundBrush(scorePalette.background());
 }
 
 void ScoreArea::renderDocument(const Document &document)
@@ -251,4 +250,9 @@ void ScoreArea::refreshZoom()
     QTransform xform;
     xform.scale(scale_factor, scale_factor);
     setTransform(xform);
+}
+
+QPalette ScoreArea::getPalette() const
+{
+    return scorePalette;
 }

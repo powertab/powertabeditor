@@ -55,6 +55,9 @@ public:
 
     std::shared_ptr<ClickPubSub> getClickPubSub() const;
 
+    /// returns the palette used by scorearea
+    QPalette getPalette() const;
+
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
@@ -67,6 +70,7 @@ private:
     const Document *myDocument;
     QGraphicsItem *myScoreInfoBlock;
     QList<QGraphicsItem *> myRenderedSystems;
+    QPalette scorePalette; // the palette used by scorearea
     CaretPainter *myCaretPainter;
 
     std::shared_ptr<ClickPubSub> myClickPubSub;
