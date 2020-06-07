@@ -247,6 +247,9 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
             }
         }
 
+        master_bar.myAlternateEndings =
+            toIntList(splitString(node.child_value("AlternateEndings")));
+
         // The time signature should be a string like 12/8.
         std::vector<int> time_sig =
             toIntList(splitString(node.child_value("Time"), '/'));

@@ -135,6 +135,7 @@ struct MasterBar
     bool myRepeatStart = false;
     bool myRepeatEnd = false;
     int myRepeatCount = 0;
+    std::vector<int> myAlternateEndings;
 
     std::vector<TempoChange> myTempoChanges;
 

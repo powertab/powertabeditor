@@ -571,3 +571,27 @@ TEST_CASE("Formats/Gp7Import/Text", "")
         REQUIRE(item.getContents() == "My label");
     }
 }
+
+TEST_CASE("Formats/Gp7Import/AlternateEndings", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/alternate_endings.gp"), score);
+
+    const System &system = score.getSystems()[0];
+
+    REQUIRE(system.getBarlines().size() == 4);
+    REQUIRE(system.getAlternateEndings().size() == 2);
+
+    {
+        const AlternateEnding &ending = system.getAlternateEndings()[0];
+        REQUIRE(ending.getPosition() == system.getBarlines()[1].getPosition());
+        REQUIRE(ending.getNumbers() == std::vector({1, 3}));
+    }
+
+    {
+        const AlternateEnding &ending = system.getAlternateEndings()[1];
+        REQUIRE(ending.getPosition() == system.getBarlines()[2].getPosition());
+        REQUIRE(ending.getNumbers() == std::vector({2, 4}));
+    }
+}

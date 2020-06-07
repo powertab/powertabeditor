@@ -267,6 +267,21 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
 }
 
 static void
+convertAlternateEndings(System &system, int bar_pos,
+                        const Gp7::MasterBar &master_bar)
+{
+    if (master_bar.myAlternateEndings.empty())
+        return;
+
+    AlternateEnding ending;
+    for (int number : master_bar.myAlternateEndings)
+        ending.addNumber(number);
+
+    ending.setPosition(bar_pos);
+    system.insertAlternateEnding(ending);
+}
+
+static void
 convertTempoMarkers(System &system, int bar_pos,
                     const Gp7::MasterBar &master_bar)
 {
@@ -514,6 +529,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
         convertBarline(bar_1, bar_2, master_bar, prev_master_bar, final_bar);
 
         convertTempoMarkers(system, bar_1.getPosition(), master_bar);
+        convertAlternateEndings(system, bar_1.getPosition(), master_bar);
 
         // Insert a new barline unless we're finishing the system, in which
         // case we just need to modify the end bar.
