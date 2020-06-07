@@ -281,6 +281,64 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
                 boost::rational<int>(offset[0], offset[1]));
         }
 
+        // Directions.
+        if (auto dirnode = node.child("Directions"))
+        {
+            using DirectionTarget = Gp7::MasterBar::DirectionTarget;
+            using DirectionJump = Gp7::MasterBar::DirectionJump;
+            using namespace std::string_literals;
+
+            static const std::unordered_map<std::string, DirectionTarget>
+                theTargetNames = {
+                    { "Fine"s, DirectionTarget::Fine },
+                    { "Coda"s, DirectionTarget::Coda },
+                    { "DoubleCoda"s, DirectionTarget::DoubleCoda },
+                    { "Segno"s, DirectionTarget::Segno },
+                    { "SegnoSegno"s, DirectionTarget::SegnoSegno },
+                };
+
+            static const std::unordered_map<std::string, DirectionJump>
+                theJumpNames = {
+                    { "DaCapo"s, DirectionJump::DaCapo },
+                    { "DaCapoAlCoda"s, DirectionJump::DaCapoAlCoda },
+                    { "DaCapoAlDoubleCoda"s,
+                      DirectionJump::DaCapoAlDoubleCoda },
+                    { "DaCapoAlFine"s, DirectionJump::DaCapoAlFine },
+                    { "DaSegno"s, DirectionJump::DaSegno },
+                    { "DaSegnoAlCoda"s, DirectionJump::DaSegnoAlCoda },
+                    { "DaSegnoAlDoubleCoda"s,
+                      DirectionJump::DaSegnoAlDoubleCoda },
+                    { "DaSegnoAlFine"s, DirectionJump::DaSegnoAlFine },
+                    { "DaSegnoSegno"s, DirectionJump::DaSegnoSegno },
+                    { "DaSegnoSegnoAlCoda"s,
+                      DirectionJump::DaSegnoSegnoAlCoda },
+                    { "DaSegnoSegnoAlDoubleCoda"s,
+                      DirectionJump::DaSegnoSegnoAlDoubleCoda },
+                    { "DaSegnoSegnoAlFine"s,
+                      DirectionJump::DaSegnoSegnoAlFine },
+                    { "DaCoda"s, DirectionJump::DaCoda },
+                    { "DaDoubleCoda"s, DirectionJump::DaDoubleCoda }
+                };
+
+            for (auto target : dirnode.children("Target"))
+            {
+                auto it = theTargetNames.find(target.text().as_string());
+                if (it == theTargetNames.end())
+                    throw FileFormatException("Invalid direction target type");
+
+                master_bar.myDirectionTargets.push_back(it->second);
+            }
+
+            for (auto jump : dirnode.children("Jump"))
+            {
+                auto it = theJumpNames.find(jump.text().as_string());
+                if (it == theJumpNames.end())
+                    throw FileFormatException("Invalid direction jump type");
+
+                master_bar.myDirectionJumps.push_back(it->second);
+            }
+        }
+
         master_bars.push_back(master_bar);
     }
 

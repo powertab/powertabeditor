@@ -126,6 +126,33 @@ struct MasterBar
         bool mySharps = false;
     };
 
+    enum class DirectionTarget
+    {
+        Fine,
+        Coda,
+        DoubleCoda,
+        Segno,
+        SegnoSegno
+    };
+
+    enum class DirectionJump
+    {
+        DaCapo,
+        DaCapoAlCoda,
+        DaCapoAlDoubleCoda,
+        DaCapoAlFine,
+        DaSegno,
+        DaSegnoAlCoda,
+        DaSegnoAlDoubleCoda,
+        DaSegnoAlFine,
+        DaSegnoSegno,
+        DaSegnoSegnoAlCoda,
+        DaSegnoSegnoAlDoubleCoda,
+        DaSegnoSegnoAlFine,
+        DaCoda,
+        DaDoubleCoda
+    };
+
     std::vector<int> myBarIds;
     std::optional<Section> mySection;
     TimeSignature myTimeSig;
@@ -136,6 +163,9 @@ struct MasterBar
     bool myRepeatEnd = false;
     int myRepeatCount = 0;
     std::vector<int> myAlternateEndings;
+
+    std::vector<DirectionTarget> myDirectionTargets;
+    std::vector<DirectionJump> myDirectionJumps;
 
     std::vector<TempoChange> myTempoChanges;
 

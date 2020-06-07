@@ -267,6 +267,94 @@ convertPosition(const Gp7::Beat &gp_beat, const Gp7::Rhythm &gp_rhythm)
 }
 
 static void
+convertDirections(System &system, int start_pos, int end_bar_pos,
+                  const Gp7::MasterBar &master_bar)
+{
+    using DirectionTarget = Gp7::MasterBar::DirectionTarget;
+    using DirectionJump = Gp7::MasterBar::DirectionJump;
+
+    Direction start_dir{ start_pos };
+    Direction end_dir{ end_bar_pos };
+
+    for (DirectionTarget target : master_bar.myDirectionTargets)
+    {
+        switch (target)
+        {
+            case DirectionTarget::Fine:
+                end_dir.insertSymbol(DirectionSymbol::Fine);
+                break;
+            case DirectionTarget::Coda:
+                start_dir.insertSymbol(DirectionSymbol::Coda);
+                break;
+            case DirectionTarget::DoubleCoda:
+                start_dir.insertSymbol(DirectionSymbol::DoubleCoda);
+                break;
+            case DirectionTarget::Segno:
+                start_dir.insertSymbol(DirectionSymbol::Segno);
+                break;
+            case DirectionTarget::SegnoSegno:
+                start_dir.insertSymbol(DirectionSymbol::SegnoSegno);
+                break;
+        }
+    }
+
+    for (DirectionJump jump : master_bar.myDirectionJumps)
+    {
+        switch (jump)
+        {
+            case DirectionJump::DaCapo:
+                end_dir.insertSymbol(DirectionSymbol::DaCapo);
+                break;
+            case DirectionJump::DaCapoAlCoda:
+                end_dir.insertSymbol(DirectionSymbol::DaCapoAlCoda);
+                break;
+            case DirectionJump::DaCapoAlDoubleCoda:
+                end_dir.insertSymbol(DirectionSymbol::DaCapoAlDoubleCoda);
+                break;
+            case DirectionJump::DaCapoAlFine:
+                end_dir.insertSymbol(DirectionSymbol::DaCapoAlFine);
+                break;
+            case DirectionJump::DaSegno:
+                end_dir.insertSymbol(DirectionSymbol::DalSegno);
+                break;
+            case DirectionJump::DaSegnoAlCoda:
+                end_dir.insertSymbol(DirectionSymbol::DalSegnoAlCoda);
+                break;
+            case DirectionJump::DaSegnoAlDoubleCoda:
+                end_dir.insertSymbol(DirectionSymbol::DalSegnoAlDoubleCoda);
+                break;
+            case DirectionJump::DaSegnoAlFine:
+                end_dir.insertSymbol(DirectionSymbol::DalSegnoAlFine);
+                break;
+            case DirectionJump::DaSegnoSegno:
+                end_dir.insertSymbol(DirectionSymbol::DalSegnoSegno);
+                break;
+            case DirectionJump::DaSegnoSegnoAlCoda:
+                end_dir.insertSymbol(DirectionSymbol::DalSegnoSegnoAlCoda);
+                break;
+            case DirectionJump::DaSegnoSegnoAlDoubleCoda:
+                end_dir.insertSymbol(
+                    DirectionSymbol::DalSegnoSegnoAlDoubleCoda);
+                break;
+            case DirectionJump::DaSegnoSegnoAlFine:
+                end_dir.insertSymbol(DirectionSymbol::DalSegnoSegnoAlFine);
+                break;
+            case DirectionJump::DaCoda:
+                end_dir.insertSymbol(DirectionSymbol::ToCoda);
+                break;
+            case DirectionJump::DaDoubleCoda:
+                end_dir.insertSymbol(DirectionSymbol::ToDoubleCoda);
+                break;
+        }
+    }
+
+    if (!start_dir.getSymbols().empty())
+        system.insertDirection(start_dir);
+    if (!end_dir.getSymbols().empty())
+        system.insertDirection(end_dir);
+}
+
+static void
 convertAlternateEndings(System &system, int bar_pos,
                         const Gp7::MasterBar &master_bar)
 {
@@ -279,7 +367,7 @@ convertAlternateEndings(System &system, int bar_pos,
 
     ending.setPosition(bar_pos);
     system.insertAlternateEnding(ending);
-}
+        }
 
 static void
 convertTempoMarkers(System &system, int bar_pos,
@@ -530,6 +618,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
 
         convertTempoMarkers(system, bar_1.getPosition(), master_bar);
         convertAlternateEndings(system, bar_1.getPosition(), master_bar);
+        convertDirections(system, start_pos, end_pos, master_bar);
 
         // Insert a new barline unless we're finishing the system, in which
         // case we just need to modify the end bar.
