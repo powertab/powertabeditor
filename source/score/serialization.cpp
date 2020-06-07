@@ -36,7 +36,7 @@ InputArchive::InputArchive(std::istream &is) : myStream(is)
                                  GetParseError_En(myDocument.GetParseError()));
     }
 
-    myIterators.push(myDocument.MemberBegin());
+    myValueStack.push(&myDocument);
 
     (*this)("version", myVersion);
 }

@@ -153,8 +153,9 @@ set( data_files
 
     formats/gpx/data/text.gpx
 
+    score/data/reordered.pt2
     score/data/test_viewfilter.pt2
-    
+
     util/test_settingstree_expected.json
 )
 
