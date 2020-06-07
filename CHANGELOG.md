@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Improved the Rest menu's behaviour to be more consistent with the Notes menu (#135).
 
+### Changed
+- Removed dependency on the Boost `program_options` library.
+
 ### Fixed
 - Fixed a crash when the player assigned to a staff did not have enough strings (#243).
 - Fixed issues that could cause notes to be held forever after interrupting MIDI playback.

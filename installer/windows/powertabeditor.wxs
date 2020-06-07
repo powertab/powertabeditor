@@ -84,9 +84,6 @@
 			<Component Id="boost_iostreams" Guid="CFE16A17-A758-4718-83CA-1EF6FB9667E0">
 				<File Source="$(var.BinDir)/boost_iostreams-vc142-mt-x64-1_73.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
-			<Component Id="boost_program_options" Guid="413DF961-4506-4A17-9247-607702E7C3AF">
-				<File Source="$(var.BinDir)/boost_program_options-vc142-mt-x64-1_73.dll" KeyPath="yes" Checksum="yes" />
-			</Component>
 			<Component Id="Qt5Core" Guid="C12EB9A4-E465-4738-BD49-898C4E843A8D">
 				<File Source="$(var.BinDir)/Qt5Core.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
