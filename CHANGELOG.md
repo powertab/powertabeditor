@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Improved the Rest menu's behaviour to be more consistent with the Notes menu (#135).
+- Beginning with this release, `.pt2` files with an unknown newer file format version (e.g. from a future release that adds additional data to the score format) will now be loaded to the best degree possible instead of refusing to load. (#294).
 
 ### Changed
 - Removed dependency on the Boost `program_options` library.

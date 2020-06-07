@@ -50,8 +50,11 @@ public:
 
         const JSONValue *parent = myValueStack.top();
         auto it = parent->FindMember(name_ref);
+
+        // Field does not exist. It might have been removed in a newer file
+        // version.
         if (it == parent->MemberEnd())
-            throw std::runtime_error("Could not find object");
+            return;
 
         myValueStack.push(&it->value);
         read(obj);
@@ -114,12 +117,6 @@ template <typename T>
 void load(std::istream &input, const std::string &name, T &obj)
 {
     InputArchive archive(input);
-    if (archive.version() > FileVersion::LATEST_VERSION ||
-        archive.version() < FileVersion::INITIAL_VERSION)
-    {
-        throw std::runtime_error("Invalid file version");
-    }
-
     archive(name, obj);
 }
 
