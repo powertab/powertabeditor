@@ -355,6 +355,8 @@ parseBeats(const pugi::xml_node &beats_node)
                 beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
         }
 
+        beat.myFreeText = node.child_value("FreeText");
+
         // Guitar Pro grace notes can occur before or on the beat, but we only
         // have one type.
         if (node.child("GraceNotes"))

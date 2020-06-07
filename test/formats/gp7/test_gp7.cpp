@@ -553,3 +553,21 @@ TEST_CASE("Formats/Gp7Import/Fermatas", "")
         REQUIRE(voice.getPositions()[3].hasProperty(Position::Fermata));
     }
 }
+
+TEST_CASE("Formats/Gp7Import/Text", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/text.gp"), score);
+
+    const System &system = score.getSystems()[0];
+    const Staff &staff = system.getStaves()[0];
+    const Voice &voice = staff.getVoices()[0];
+
+    REQUIRE(system.getTextItems().size() == 1);
+    {
+        const TextItem &item = system.getTextItems()[0];
+        REQUIRE(item.getPosition() == voice.getPositions()[4].getPosition());
+        REQUIRE(item.getContents() == "My label");
+    }
+}

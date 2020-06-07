@@ -463,6 +463,13 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                     const Gp7::Rhythm &gp_rhythm =
                         doc.myRhythms.at(gp_beat.myRhythmId);
 
+                    // Create a text item in the system if necessary.
+                    if (!gp_beat.myFreeText.empty())
+                    {
+                        system.insertTextItem(
+                            TextItem(voice_pos, gp_beat.myFreeText));
+                    }
+
                     Position pos = convertPosition(gp_beat, gp_rhythm);
                     pos.setPosition(voice_pos++);
 

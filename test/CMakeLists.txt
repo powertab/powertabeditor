@@ -146,6 +146,7 @@ set( data_files
     formats/gp7/data/fermatas.gp
     formats/gp7/data/notes.gp
     formats/gp7/data/score_info.gp
+    formats/gp7/data/text.gp
     formats/gp7/data/tracks.gp
     formats/gp7/data/words_and_music.gp
 

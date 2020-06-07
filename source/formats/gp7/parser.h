@@ -184,6 +184,7 @@ struct Beat
     bool myBrushDown = false;
     bool myArpeggioDown = false;
     bool myArpeggioUp = false;
+    std::string myFreeText;
 };
 
 /// A duration, which is shared across many beats.
