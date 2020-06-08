@@ -32,6 +32,7 @@
 #include <score/system.h>
 #include <score/tempomarker.h>
 #include <score/timesignature.h>
+#include <score/utils.h>
 #include <score/voiceutils.h>
 
 #include <iostream>
@@ -494,6 +495,66 @@ convertBarline(Barline &start_bar, Barline &end_bar,
     }
 }
 
+/// Convert irregular groups for a single bar.
+static void
+convertIrregularGroupings(Voice &voice, int start_pos, int end_pos,
+                          const Gp7::Document &doc, const Gp7::Voice &gp_voice)
+{
+    std::optional<IrregularGrouping> current_group;
+    boost::rational<int> duration;
+    int division = -1;
+
+    auto positions =
+        ScoreUtils::findInRange(voice.getPositions(), start_pos, end_pos);
+
+    auto it = positions.begin();
+    for (int gp_beat_idx : gp_voice.myBeatIds)
+    {
+        const Gp7::Beat &gp_beat = doc.myBeats.at(gp_beat_idx);
+        const Gp7::Rhythm &gp_rhythm = doc.myRhythms.at(gp_beat.myRhythmId);
+        const Position &pos = *it;
+
+        if (gp_rhythm.myTupletDenom)
+        {
+            // Check if we need to start a new group.
+            if (!current_group ||
+                (current_group->getNotesPlayed() != gp_rhythm.myTupletNum &&
+                 current_group->getNotesPlayedOver() !=
+                     gp_rhythm.myTupletDenom))
+            {
+                current_group = IrregularGrouping(pos.getPosition(), 0,
+                                                  gp_rhythm.myTupletNum,
+                                                  gp_rhythm.myTupletDenom);
+                duration = 0;
+                division = 0;
+            }
+
+            // Accumulate this note's duration, and track which note division
+            // we're using (8, 16, etc).
+            division = std::max(division, gp_rhythm.myDuration);
+            duration += VoiceUtils::getDurationTime(voice, pos);
+            current_group->setLength(current_group->getLength() + 1);
+
+            // The duration is in quarter notes, so figure out if we have
+            // enough notes of the division we're using!
+            const int num_notes =
+                (duration * (division / Position::QuarterNote)).numerator();
+            if ((num_notes % current_group->getNotesPlayed()) == 0)
+            {
+                voice.insertIrregularGrouping(*current_group);
+                current_group.reset();
+            }
+        }
+        else
+        {
+            // Didn't find enough notes?
+            current_group.reset();
+        }
+
+        ++it;
+    }
+}
+
 static void
 convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
               int bar_end)
@@ -600,8 +661,23 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                     }
 
                     voice.insertPosition(pos);
-                    time += VoiceUtils::getDurationTime(voice, pos);
+
+                    // Take irregular groups into account when computing the
+                    // duration time (the groups aren't constructed until all
+                    // notes are created).
+                    boost::rational<int> duration =
+                        VoiceUtils::getDurationTime(voice, pos);
+                    if (gp_rhythm.myTupletNum)
+                    {
+                        duration *= boost::rational<int>(
+                            gp_rhythm.myTupletDenom, gp_rhythm.myTupletNum);
+                    }
+
+                    time += duration;
                 }
+
+                convertIrregularGroupings(voice, start_pos, voice_pos, doc,
+                                          gp_voice);
 
                 end_pos = std::max(voice_pos, end_pos);
             }

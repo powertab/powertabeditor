@@ -657,3 +657,49 @@ TEST_CASE("Formats/Gp7Import/Directions", "")
                 DirectionSymbol::DoubleCoda);
     }
 }
+
+TEST_CASE("Formats/Gp7Import/IrregularGroups", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/irregular_groups.gp"), score);
+
+    const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
+    REQUIRE(voice.getIrregularGroupings().size() == 5);
+
+    {
+        const IrregularGrouping &group = voice.getIrregularGroupings()[0];
+        REQUIRE(group.getPosition() == 0);
+        REQUIRE(group.getLength() == 5);
+        REQUIRE(group.getNotesPlayed() == 6);
+        REQUIRE(group.getNotesPlayedOver() == 4);
+    }
+    {
+        const IrregularGrouping &group = voice.getIrregularGroupings()[1];
+        REQUIRE(group.getPosition() == 5);
+        REQUIRE(group.getLength() == 4);
+        REQUIRE(group.getNotesPlayed() == 3);
+        REQUIRE(group.getNotesPlayedOver() == 2);
+    }
+    {
+        const IrregularGrouping &group = voice.getIrregularGroupings()[2];
+        REQUIRE(group.getPosition() == 9);
+        REQUIRE(group.getLength() == 3);
+        REQUIRE(group.getNotesPlayed() == 3);
+        REQUIRE(group.getNotesPlayedOver() == 2);
+    }
+    {
+        const IrregularGrouping &group = voice.getIrregularGroupings()[3];
+        REQUIRE(group.getPosition() == 12);
+        REQUIRE(group.getLength() == 5);
+        REQUIRE(group.getNotesPlayed() == 6);
+        REQUIRE(group.getNotesPlayedOver() == 4);
+    }
+    {
+        const IrregularGrouping &group = voice.getIrregularGroupings()[4];
+        REQUIRE(group.getPosition() == 18);
+        REQUIRE(group.getLength() == 4);
+        REQUIRE(group.getNotesPlayed() == 6);
+        REQUIRE(group.getNotesPlayedOver() == 4);
+    }
+}

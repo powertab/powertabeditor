@@ -146,6 +146,7 @@ set( data_files
     formats/gp7/data/bars.gp
     formats/gp7/data/directions.gp
     formats/gp7/data/fermatas.gp
+    formats/gp7/data/irregular_groups.gp
     formats/gp7/data/notes.gp
     formats/gp7/data/score_info.gp
     formats/gp7/data/text.gp
