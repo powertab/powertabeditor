@@ -195,15 +195,15 @@ void MidiPlayer::run()
             const SystemLocation &new_location = event->getLocation();
 
             // Don't move backwards unless a repeat occurred.
-            if (new_location < current_location && !event->isPositionChange())
-                continue;
+            if (new_location >= current_location || event->isPositionChange())
+            {
+                if (new_location.getSystem() != current_location.getSystem())
+                    emit playbackSystemChanged(new_location.getSystem());
 
-            if (new_location.getSystem() != current_location.getSystem())
-                emit playbackSystemChanged(new_location.getSystem());
+                emit playbackPositionChanged(new_location.getPosition());
 
-            emit playbackPositionChanged(new_location.getPosition());
-
-            current_location = new_location;
+                current_location = new_location;
+            }
         }
 
         // Accumulate any difference between the desired delta time and what
