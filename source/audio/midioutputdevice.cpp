@@ -65,6 +65,15 @@ MidiOutputDevice::MidiOutputDevice() : myMidiOut(nullptr)
 
 MidiOutputDevice::~MidiOutputDevice()
 {
+    // Make sure there aren't any lingering notes.
+    if (myMidiOut)
+    {
+        for (uint8_t channel = 0; channel < Midi::NUM_MIDI_CHANNELS_PER_PORT;
+             ++channel)
+        {
+            sendMidiMessage(ControlChange + channel, AllNotesOff, 0);
+        }
+    }
 }
 
 void
