@@ -272,11 +272,25 @@ struct Note
         P
     };
 
+    struct Bend
+    {
+        double myOriginValue = 0;
+        double myOriginOffset = 0;
+
+        double myMiddleValue = 0;
+        double myMiddleOffset1 = 0;
+        double myMiddleOffset2 = 0;
+
+        double myDestValue = 0;
+        double myDestOffset = 0;
+    };
+
     int myString = 0;
     int myFret = 0;
     bool myPalmMuted = false;
     bool myMuted = false;
-    bool myTied = false;
+    bool myTieOrigin = false;
+    bool myTieDest = false;
     bool myGhost = false;
     bool myTapped = false;
     bool myHammerOn = false;
@@ -292,6 +306,7 @@ struct Note
     std::bitset<size_t(SlideType::NumTypes)> mySlideTypes;
     std::optional<int> myTrillNote;
     std::optional<FingerType> myLeftFinger;
+    std::optional<Bend> myBend;
 };
 
 /// Container for a Guitar Pro 7 document.

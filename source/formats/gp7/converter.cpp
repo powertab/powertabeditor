@@ -131,7 +131,7 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
     // String numbers are flipped around.
     note.setString(tuning.getStringCount() - gp_note.myString - 1);
 
-    note.setProperty(Note::Tied, gp_note.myTied);
+    note.setProperty(Note::Tied, gp_note.myTieDest);
     note.setProperty(Note::GhostNote, gp_note.myGhost);
     note.setProperty(Note::Muted, gp_note.myMuted);
     note.setProperty(Note::HammerOnOrPullOff, gp_note.myHammerOn);
@@ -240,6 +240,70 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
                 // TODO - thumb is not currently support for fingerings.
                 break;
         }
+    }
+
+    if (gp_note.myBend)
+    {
+        const Gp7::Note::Bend &gp_bend = *gp_note.myBend;
+
+        // Convert Guitar Pro's bend values (a float providing the percentage
+        // of full steps) to our bend values, which just store the number of
+        // quarter steps.
+        auto toQuarterStep = [](double value) {
+            return static_cast<int>(value * 0.04);
+        };
+
+        Bend::BendType bend_type = Bend::NormalBend;
+        int start_pitch = toQuarterStep(gp_bend.myOriginValue);
+        int end_pitch = toQuarterStep(gp_bend.myDestValue);
+        int middle_pitch = toQuarterStep(gp_bend.myMiddleValue);
+        const bool has_middle_pitch =
+            (gp_bend.myMiddleOffset1 != gp_bend.myMiddleOffset2);
+
+        int bent_pitch = -1;
+        int release_pitch = -1;
+
+        if (!has_middle_pitch)
+        {
+            bend_type = Bend::NormalBend;
+            if (start_pitch > 0)
+            {
+                if (gp_note.myTieDest && !gp_note.myTieOrigin)
+                    bend_type = Bend::GradualRelease;
+                else
+                {
+                    bend_type = (end_pitch != start_pitch)
+                                    ? Bend::PreBendAndRelease
+                                    : Bend::PreBend;
+                }
+
+                bent_pitch = start_pitch;
+                release_pitch = end_pitch;
+            }
+            else
+                bent_pitch = end_pitch;
+
+            if (gp_note.myTieOrigin)
+            {
+                if (start_pitch > 0)
+                    bend_type = Bend::PreBendAndHold;
+                else
+                    bend_type = Bend::BendAndHold;
+            }
+        }
+        else
+        {
+            bend_type = Bend::BendAndRelease;
+            bent_pitch = middle_pitch;
+            release_pitch = end_pitch;
+        }
+
+        Bend::DrawPoint start_point =
+            start_pitch <= end_pitch ? Bend::LowPoint : Bend::MidPoint;
+        Bend::DrawPoint end_point =
+            start_pitch <= end_pitch ? Bend::MidPoint : Bend::LowPoint;
+        note.setBend(Bend(bend_type, bent_pitch, release_pitch, 0, start_point,
+                          end_point));
     }
 
     return note;

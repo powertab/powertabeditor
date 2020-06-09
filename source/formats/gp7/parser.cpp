@@ -470,6 +470,8 @@ parseNotes(const pugi::xml_node &notes_node)
     {
         Gp7::Note note;
 
+        Gp7::Note::Bend bend;
+        bool has_bend = false;
         for (const pugi::xml_node property :
              node.child("Properties").children("Property"))
         {
@@ -515,9 +517,42 @@ parseNotes(const pugi::xml_node &notes_node)
                 else
                     throw FileFormatException("Unexpected harmonic type");
             }
+            else if (name == "Bended")
+                has_bend = true;
+            else if (name == "BendOriginValue")
+                bend.myOriginValue = property.child("Float").text().as_double();
+            else if (name == "BendOriginOffset")
+            {
+                bend.myOriginOffset =
+                    property.child("Float").text().as_double();
+            }
+            else if (name == "BendMiddleValue")
+                bend.myMiddleValue = property.child("Float").text().as_double();
+            else if (name == "BendMiddleOffset1")
+            {
+                bend.myMiddleOffset1 =
+                    property.child("Float").text().as_double();
+            }
+            else if (name == "BendMiddleOffset2")
+            {
+                bend.myMiddleOffset2 =
+                    property.child("Float").text().as_double();
+            }
+            else if (name == "BendDestinationValue")
+                bend.myDestValue = property.child("Float").text().as_double();
+            else if (name == "BendDestinationOffset")
+                bend.myDestOffset = property.child("Float").text().as_double();
         }
 
-        note.myTied = node.child("Tie").attribute("destination").as_bool();
+        if (has_bend)
+            note.myBend = bend;
+
+        if (auto tie = node.child("Tie"))
+        {
+            note.myTieOrigin = tie.attribute("origin").as_bool();
+            note.myTieDest = tie.attribute("destination").as_bool();
+        }
+
         note.myGhost =
             std::string_view(node.child_value("AntiAccent")) == "Normal";
         note.myAccentTypes = node.child("Accent").text().as_int();
