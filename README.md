@@ -30,7 +30,7 @@
 * [minizip](https://github.com/madler/zlib)
 * [Catch2](https://github.com/catchorg/Catch2)
 * (Linux only) - ALSA library (e.g. `libasound2-dev`)
-* (Linux only) - MIDI sequencer (e.g. `timidity`)
+* (Linux only) - MIDI sequencer (e.g. `timidity-daemon`)
 * A compiler with C++17 support.
 
 #### Windows:
@@ -46,7 +46,7 @@
   * `sudo apt update`
   * `sudo apt install cmake qtbase5-dev libboost-dev libboost-date-time-dev libboost-filesystem-dev libboost-iostreams-dev rapidjson-dev libasound2-dev librtmidi-dev libpugixml-dev libminizip-dev`
   * Install [Catch2](https://github.com/catchorg/Catch2) if building the tests. Some distributions do not have a package for this yet, but it can be installed manually (single header) or via e.g. `vcpkg`.
-  * `sudo apt-get install timidity` - timidity is not required for building, but is a good sequencer for MIDI playback.
+  * `sudo apt-get install timidity-daemon` - timidity is not required for building, but is a good sequencer for MIDI playback.
   * Optionally, use [Ninja](http://martine.github.io/ninja/) instead of `make` (`sudo apt install ninja-build`)
 * Build:
   * `mkdir build && cd build`
