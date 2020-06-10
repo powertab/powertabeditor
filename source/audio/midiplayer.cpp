@@ -181,10 +181,11 @@ void MidiPlayer::run()
         // Don't play metronome events if the metronome is disabled.
         // Tempo change events also don't need to be sent since they are
         // handled in this loop. CoreMidi on OSX also complains about them.
+        // Similarly, ALSA complains about the meta "track end" events.
         if (!(event->isNoteOnOff() &&
               event->getChannel() == METRONOME_CHANNEL &&
               !myMetronomeEnabled) &&
-            !event->isTempoChange())
+            !event->isTempoChange() && !event->isTrackEnd())
         {
             device.sendMessage(event->getData());
         }

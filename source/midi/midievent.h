@@ -49,6 +49,7 @@ public:
     const SystemLocation &getLocation() const { return myLocation; }
 
     bool isTempoChange() const;
+    bool isTrackEnd() const;
     int getTempo() const;
     bool isProgramChange() const;
     bool isPositionChange() const;
