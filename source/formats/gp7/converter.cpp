@@ -22,6 +22,7 @@
 #include <boost/rational.hpp>
 
 #include <formats/fileformat.h>
+#include <score/generalmidi.h>
 #include <score/keysignature.h>
 #include <score/note.h>
 #include <score/playerchange.h>
@@ -120,6 +121,86 @@ convertClefType(Gp7::Bar::ClefType clef_type)
     }
 }
 
+/// Returns the pitch offset in half steps for a (relative) harmonic fret.
+static int
+getHarmonicPitchOffset(double harmonic_fret)
+{
+    auto approx_equal = [](double a, double b) {
+        return std::abs(b - a) < 1e-5;
+    };
+
+    if (approx_equal(harmonic_fret, 12))
+    {
+        // Octave.
+        return 12;
+    }
+    else if (approx_equal(harmonic_fret, 7) || approx_equal(harmonic_fret, 19))
+    {
+        // Octave + fifth.
+        return 19;
+    }
+    else if (approx_equal(harmonic_fret, 5) || approx_equal(harmonic_fret, 24))
+    {
+        // 2nd octave.
+        return 24;
+    }
+    else if (approx_equal(harmonic_fret, 4) || approx_equal(harmonic_fret, 9) ||
+             approx_equal(harmonic_fret, 16))
+    {
+        // 2nd octave + third.
+        return 28;
+    }
+    else if (approx_equal(harmonic_fret, 3.2))
+    {
+        // 2nd octave + fifth.
+        return 31;
+    }
+    else if (approx_equal(harmonic_fret, 2.7) ||
+             approx_equal(harmonic_fret, 5.8) ||
+             approx_equal(harmonic_fret, 9.6) ||
+             approx_equal(harmonic_fret, 14.7) ||
+             approx_equal(harmonic_fret, 21.7))
+    {
+        // 2nd octave + minor 7th.
+        return 34;
+    }
+    else if (approx_equal(harmonic_fret, 2.4) ||
+             approx_equal(harmonic_fret, 8.2) ||
+             approx_equal(harmonic_fret, 17))
+    {
+        // 3rd octave.
+        return 36;
+    }
+    else
+    {
+        std::cerr << "Unexpected harmonic type" << std::endl;
+        return 0;
+    }
+}
+
+using KeyAndVariation = std::pair<ChordName::Key, ChordName::Variation>;
+
+static KeyAndVariation
+keyAndVariationFromPitch(int midi_pitch) {
+    static const KeyAndVariation theNotes[12] = {
+        { ChordName::C, ChordName::NoVariation },
+        { ChordName::C, ChordName::Sharp },
+        { ChordName::D, ChordName::NoVariation },
+        { ChordName::D, ChordName::Sharp },
+        { ChordName::E, ChordName::NoVariation },
+        { ChordName::F, ChordName::NoVariation },
+        { ChordName::F, ChordName::Sharp },
+        { ChordName::G, ChordName::NoVariation },
+        { ChordName::G, ChordName::Sharp },
+        { ChordName::A, ChordName::NoVariation },
+        { ChordName::A, ChordName::Sharp },
+        { ChordName::B, ChordName::NoVariation }
+    };
+
+    assert(midi_pitch >= 0 && midi_pitch < 12);
+    return theNotes[midi_pitch];
+}
+
 static Note
 convertNote(Position &position, const Gp7::Beat &gp_beat,
             const Gp7::Note &gp_note, const Tuning &tuning)
@@ -197,11 +278,35 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
 
         if (gp_note.myHarmonic == HarmonicType::Tap)
         {
-            note.setTappedHarmonicFret(note.getFretNumber() +
-                                       gp_note.myHarmonicFret);
+            // Note that we don't support harmonics at fractional frets.
+            note.setTappedHarmonicFret(
+                note.getFretNumber() +
+                static_cast<int>(gp_note.myHarmonicFret));
         }
 
-        // TODO - import artificial harmonics
+        if (gp_note.myHarmonic == HarmonicType::Artificial)
+        {
+            // Convert the fret offset into a key/variation plus an octave
+            // offset.
+            int midi_note = tuning.getNote(note.getString(), false) +
+                             tuning.getCapo() + note.getFretNumber();
+            const int offset = getHarmonicPitchOffset(gp_note.myHarmonicFret);
+            midi_note += offset;
+
+            const int pitch = Midi::getMidiNotePitch(midi_note);
+            auto [key, variation] = keyAndVariationFromPitch(pitch);
+
+            const int octave_diff =
+                Midi::getMidiNoteOctave(midi_note) -
+                Midi::getMidiNoteOctave(midi_note - offset) - 1;
+
+            assert(octave_diff >= 0 && octave_diff <= 2);
+            auto octave_type =
+                static_cast<ArtificialHarmonic::Octave>(octave_diff);
+
+            note.setArtificialHarmonic(ArtificialHarmonic(
+                key, variation, octave_type));
+        }
     }
 
     // The GP7 trill stores the note value, not the fret number.

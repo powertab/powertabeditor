@@ -283,10 +283,7 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
 
     {
         const Note &note = voice.getPositions()[9].getNotes()[0];
-        // TODO - import artificial harmonics
-#if 0
         REQUIRE(note.hasArtificialHarmonic());
-#endif
         REQUIRE(note.hasProperty(Note::SlideOutOfDownwards));
     }
 
@@ -770,5 +767,59 @@ TEST_CASE("Formats/Gp7Import/Bends", "")
         REQUIRE(note.hasBend());
         REQUIRE(note.getBend().getType() == Bend::PreBend);
         REQUIRE(note.getBend().getBentPitch() == 4);
+    }
+}
+
+static void
+checkHarmonics(const Voice &voice, int start, int end, ChordName::Key key,
+               ChordName::Variation variation,
+               ArtificialHarmonic::Octave octave)
+{
+    for (int i = start; i <= end; ++i)
+    {
+        const Note &note = voice.getPositions()[i].getNotes()[0];
+        REQUIRE(note.hasArtificialHarmonic());
+
+        const ArtificialHarmonic &harmonic = note.getArtificialHarmonic();
+        REQUIRE(harmonic.getKey() == key);
+        REQUIRE(harmonic.getVariation() == variation);
+        REQUIRE(harmonic.getOctave() == octave);
+    }
+}
+
+TEST_CASE("Formats/Gp7Import/Harmonics", "")
+{
+    Score score;
+    Gp7Importer importer;
+    importer.load(AppInfo::getAbsolutePath("data/harmonics.gp"), score);
+
+    using Octave = ArtificialHarmonic::Octave;
+
+    {
+        const Voice &voice =
+            score.getSystems()[0].getStaves()[0].getVoices()[0];
+
+        checkHarmonics(voice, 1, 1, ChordName::F, ChordName::NoVariation,
+                       Octave::Loco);
+        checkHarmonics(voice, 2, 3, ChordName::C, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkHarmonics(voice, 4, 5, ChordName::F, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkHarmonics(voice, 6, 8, ChordName::A, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkHarmonics(voice, 9, 9, ChordName::C, ChordName::NoVariation,
+                       Octave::Octave15ma);
+        checkHarmonics(voice, 10, 11, ChordName::D, ChordName::Sharp,
+                       Octave::Octave15ma);
+    }
+
+    {
+        const Voice &voice =
+            score.getSystems()[1].getStaves()[0].getVoices()[0];
+
+        checkHarmonics(voice, 0, 2, ChordName::D, ChordName::Sharp,
+                       Octave::Octave15ma);
+        checkHarmonics(voice, 3, 5, ChordName::F, ChordName::NoVariation,
+                       Octave::Octave15ma);
     }
 }

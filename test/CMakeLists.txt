@@ -147,6 +147,7 @@ set( data_files
     formats/gp7/data/bends.gp
     formats/gp7/data/directions.gp
     formats/gp7/data/fermatas.gp
+    formats/gp7/data/harmonics.gp
     formats/gp7/data/irregular_groups.gp
     formats/gp7/data/notes.gp
     formats/gp7/data/score_info.gp
