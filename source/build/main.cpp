@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
         if (!files_to_open.empty() && single_window_mode)
         {
             QLocalSocket socket;
-            socket.connectToServer(QCoreApplication::applicationFilePath(),
+            socket.connectToServer(AppInfo::APPLICATION_ID,
                                    QIODevice::WriteOnly);
             if (socket.waitForConnected(500))
             {
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
         delete socket;
     });
 
-    server.listen(QCoreApplication::applicationFilePath());
+    server.listen(AppInfo::APPLICATION_ID);
 
     // Launch the application.
     program.show();
