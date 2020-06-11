@@ -180,9 +180,12 @@ int main(int argc, char *argv[])
                                    QIODevice::WriteOnly);
             if (socket.waitForConnected(500))
             {
-                QTextStream out(&socket);
-                for (const QString &file : files_to_open)
-                    out << file << "\n";
+                {
+                    QTextStream out(&socket);
+                    for (const QString &file : files_to_open)
+                        out << file << "\n";
+                }
+
                 socket.waitForBytesWritten();
                 return EXIT_SUCCESS;
             }
