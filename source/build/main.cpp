@@ -209,7 +209,8 @@ int main(int argc, char *argv[])
             files.push_back(in.readLine());
 
         program.openFiles(files);
-        program.showNormal();
+        if (program.isMinimized())
+            program.showNormal();
         program.activateWindow();
 
         delete socket;
