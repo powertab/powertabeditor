@@ -151,6 +151,90 @@ parseTempoChanges(const pugi::xml_node &master_track,
     }
 }
 
+static Gp7::Chord::Note
+parseChordNote(const pugi::xml_node &node)
+{
+    using namespace std::string_literals;
+
+    Gp7::Chord::Note note;
+    note.myStep = node.attribute("step").as_string();
+
+    static const std::unordered_map<std::string, int> theAccidentals = {
+        { "Natural"s, 0 },
+        { "Sharp"s, 1 },
+        { "DoubleSharp"s, 2 },
+        { "Flat"s, -1 },
+        { "DoubleFlat"s, -2 }
+    };
+
+    auto it = theAccidentals.find(node.attribute("accidental").as_string());
+    if (it == theAccidentals.end())
+        throw FileFormatException("Unknown accidental type");
+
+    note.myAccidental = it->second;
+
+    return note;
+}
+
+static std::optional<Gp7::Chord::Degree>
+parseChordDegree(const pugi::xml_node &chord_node, const char *name)
+{
+    auto node = chord_node.find_child_by_attribute("Degree", "interval", name);
+    if (!node)
+        return {};
+
+    using namespace std::string_literals;
+    using Alteration = Gp7::Chord::Degree::Alteration;
+
+    Gp7::Chord::Degree degree;
+    degree.myOmitted = node.attribute("omitted").as_bool();
+
+    static const std::unordered_map<std::string, Alteration> theAlterations = {
+        { "Perfect"s, Alteration::Perfect },
+        { "Diminished"s, Alteration::Diminished },
+        { "Augmented"s, Alteration::Augmented },
+        { "Major"s, Alteration::Major },
+        { "Minor"s, Alteration::Minor }
+    };
+
+    auto it = theAlterations.find(node.attribute("alteration").as_string());
+    if (it == theAlterations.end())
+        throw FileFormatException("Unknown alteration type");
+
+    degree.myAlteration = it->second;
+    return degree;
+}
+
+static std::unordered_map<int, Gp7::Chord>
+parseChords(const pugi::xml_node &collection_node)
+{
+    std::unordered_map<int, Gp7::Chord> chords;
+
+    for (auto node : collection_node.child("Items").children("Item"))
+    {
+        Gp7::Chord chord;
+
+        auto chord_node = node.child("Chord");
+        chord.myKeyNote = parseChordNote(chord_node.child("KeyNote"));
+        chord.myBassNote = parseChordNote(chord_node.child("BassNote"));
+
+        chord.mySecond = parseChordDegree(chord_node, "Second");
+        chord.myThird = parseChordDegree(chord_node, "Third");
+        chord.myFourth = parseChordDegree(chord_node, "Fourth");
+        chord.myFifth = parseChordDegree(chord_node, "Fifth");
+        chord.mySixth = parseChordDegree(chord_node, "Sixth");
+        chord.mySeventh = parseChordDegree(chord_node, "Seventh");
+        chord.myNinth = parseChordDegree(chord_node, "Ninth");
+        chord.myEleventh = parseChordDegree(chord_node, "Eleventh");
+        chord.myThirteenth = parseChordDegree(chord_node, "Thirteenth");
+
+        const int id = node.attribute("id").as_int();
+        chords.emplace(id, chord);
+    }
+
+    return chords;
+}
+
 static std::vector<Gp7::Track>
 parseTracks(const pugi::xml_node &tracks_node)
 {
@@ -164,10 +248,6 @@ parseTracks(const pugi::xml_node &tracks_node)
 
         // Many fields related to RSE are skipped here.
 
-        // TODO - there can be two staves in a track with different tunings,
-        // but which are played back using the same instrument.
-        // Currently these are ignored, but we could consider importing them as
-        // separate Player's.
         for (const pugi::xml_node &staff_node :
              node.child("Staves").children("Staff"))
         {
@@ -186,6 +266,11 @@ parseTracks(const pugi::xml_node &tracks_node)
                 "Property", "name", "Tuning");
             staff.myTuning =
                 toIntList(splitString(tuning_property.child_value("Pitches")));
+
+            auto diagram_property = properties.find_child_by_attribute(
+                "Property", "name", "DiagramCollection");
+            if (diagram_property)
+                track.myChords = parseChords(diagram_property);
 
             track.myStaves.push_back(staff);
         }
@@ -402,6 +487,9 @@ parseBeats(const pugi::xml_node &beats_node)
         Gp7::Beat beat;
         beat.myRhythmId = node.child("Rhythm").attribute("ref").as_int();
         beat.myNoteIds = toIntList(splitString(node.child_value("Notes")));
+
+        if (auto chord_id = node.child("Chord"))
+            beat.myChordId = chord_id.text().as_int(-1);
 
         std::string_view ottavia = node.child_value("Ottavia");
         if (!ottavia.empty())

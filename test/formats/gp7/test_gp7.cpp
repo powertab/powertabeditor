@@ -557,15 +557,55 @@ TEST_CASE("Formats/Gp7Import/Text", "")
     Gp7Importer importer;
     importer.load(AppInfo::getAbsolutePath("data/text.gp"), score);
 
-    const System &system = score.getSystems()[0];
-    const Staff &staff = system.getStaves()[0];
-    const Voice &voice = staff.getVoices()[0];
-
-    REQUIRE(system.getTextItems().size() == 1);
     {
-        const TextItem &item = system.getTextItems()[0];
-        REQUIRE(item.getPosition() == voice.getPositions()[4].getPosition());
-        REQUIRE(item.getContents() == "My label");
+        const System &system = score.getSystems()[0];
+        const Voice &voice = system.getStaves()[0].getVoices()[0];
+
+        REQUIRE(system.getTextItems().size() == 1);
+        {
+            const TextItem &item = system.getTextItems()[0];
+            REQUIRE(item.getPosition() ==
+                    voice.getPositions()[4].getPosition());
+            REQUIRE(item.getContents() == "My label");
+        }
+
+        REQUIRE(system.getChords().size() == 3);
+        {
+            const ChordName &chord = system.getChords()[0].getChordName();
+            REQUIRE(Util::toString(chord) == "D7sus4");
+        }
+        {
+            const ChordName &chord = system.getChords()[1].getChordName();
+            REQUIRE(Util::toString(chord) == "F#/Bx");
+        }
+        {
+            const ChordName &chord = system.getChords()[2].getChordName();
+            REQUIRE(Util::toString(chord) == "Bb°add9");
+        }
+    }
+
+    {
+        const System &system = score.getSystems()[1];
+
+        REQUIRE(system.getChords().size() == 24);
+
+        std::vector<std::string> actual_names;
+        for (int i = 0; i < 24; ++i)
+        {
+            actual_names.push_back(
+                Util::toString(system.getChords()[i].getChordName()));
+        }
+
+        // Note: the last one should be D13b11, but we don't currently have
+        // that...
+        const std::vector<std::string> expected_names = {
+            "D",         "Dm",    "D+",    "D°",     "Dsus2",   "Dsus4",
+            "D6",        "Dm6",   "D7",    "Dmaj7",  "Dmaj7+5", "Dm7",
+            "Dm/maj7",   "Dm7b5", "D°7",   "D7sus2", "D7sus4",  "Dmaj7sus2",
+            "Dmaj7sus4", "D5",    "Dadd9", "D+9",    "D9b5",    "D13"
+        };
+
+        REQUIRE(actual_names == expected_names);
     }
 }
 

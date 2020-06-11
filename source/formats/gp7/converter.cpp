@@ -724,6 +724,203 @@ convertIrregularGroupings(Voice &voice, int start_pos, int end_pos,
     }
 }
 
+static ChordName::Key
+convertChordKey(const std::string &name)
+{
+    static const std::unordered_map<std::string, ChordName::Key> theKeyNames = {
+        { "C", ChordName::C }, { "D", ChordName::D }, { "E", ChordName::E },
+        { "F", ChordName::F }, { "G", ChordName::G }, { "A", ChordName::A },
+        { "B", ChordName::B },
+    };
+
+    auto it = theKeyNames.find(name);
+    assert(it != theKeyNames.end());
+    return it->second;
+}
+
+static ChordName
+convertChord(const Gp7::Chord &gp_chord)
+{
+    using Alteration = Gp7::Chord::Degree::Alteration;
+
+    ChordName chord;
+
+    chord.setTonicKey(convertChordKey(gp_chord.myKeyNote.myStep));
+    chord.setTonicVariation(
+        static_cast<ChordName::Variation>(gp_chord.myKeyNote.myAccidental));
+
+    chord.setBassKey(convertChordKey(gp_chord.myBassNote.myStep));
+    chord.setBassVariation(
+        static_cast<ChordName::Variation>(gp_chord.myBassNote.myAccidental));
+
+    if (!gp_chord.myFifth)
+        return chord;
+
+    auto fifth = gp_chord.myFifth->myAlteration;
+    if (gp_chord.mySeventh && gp_chord.myThird)
+    {
+        auto seventh = gp_chord.mySeventh->myAlteration;
+        auto third = gp_chord.myThird->myAlteration;
+
+        if (seventh == Alteration::Minor)
+        {
+            if (third == Alteration::Minor)
+            {
+                if (fifth == Alteration::Perfect)
+                    chord.setFormula(ChordName::Minor7th);
+                else if (fifth == Alteration::Diminished)
+                    chord.setFormula(ChordName::Minor7thFlatted5th);
+            }
+            else if (third == Alteration::Major)
+            {
+                if (fifth == Alteration::Perfect)
+                    chord.setFormula(ChordName::Dominant7th);
+                else if (fifth == Alteration::Augmented)
+                    chord.setFormula(ChordName::Augmented7th);
+                else if (fifth == Alteration::Diminished)
+                {
+                    chord.setFormula(ChordName::Dominant7th);
+                    chord.setModification(ChordName::Flatted5th);
+                }
+            }
+        }
+        else if (seventh == Alteration::Major)
+        {
+            if (third == Alteration::Minor && fifth == Alteration::Perfect)
+            {
+                chord.setFormula(ChordName::MinorMajor7th);
+            }
+            else if (third == Alteration::Major)
+            {
+                chord.setFormula(ChordName::Major7th);
+            }
+        }
+        else if (seventh == Alteration::Diminished &&
+                 fifth == Alteration::Diminished &&
+                 third == Alteration::Minor)
+        {
+            chord.setFormula(ChordName::Diminished7th);
+        }
+    }
+    else if (gp_chord.mySeventh && (gp_chord.mySecond || gp_chord.myFourth))
+    {
+        auto seventh = gp_chord.mySeventh->myAlteration;
+        if (seventh == Alteration::Minor)
+            chord.setFormula(ChordName::Dominant7th);
+        else
+            chord.setFormula(ChordName::Major7th);
+
+        if (gp_chord.mySecond)
+            chord.setModification(ChordName::Suspended2nd);
+        else if (gp_chord.myFourth)
+            chord.setModification(ChordName::Suspended4th);
+    }
+    else if (gp_chord.mySixth &&
+             gp_chord.mySixth->myAlteration == Alteration::Major &&
+             gp_chord.myThird)
+    {
+        auto third = gp_chord.myThird->myAlteration;
+        if (third == Alteration::Major && fifth == Alteration::Perfect)
+            chord.setFormula(ChordName::Major6th);
+        else if (third == Alteration::Minor && fifth == Alteration::Perfect)
+            chord.setFormula(ChordName::Minor6th);
+    }
+    else if (gp_chord.myThird)
+    {
+        auto third = gp_chord.myThird->myAlteration;
+
+        if (third == Alteration::Major)
+        {
+            if (fifth == Alteration::Perfect)
+                chord.setFormula(ChordName::Major);
+            else if (fifth == Alteration::Augmented)
+                chord.setFormula(ChordName::Augmented);
+        }
+        else if (third == Alteration::Minor)
+        {
+            if (fifth == Alteration::Perfect)
+                chord.setFormula(ChordName::Minor);
+            else if (fifth == Alteration::Diminished)
+                chord.setFormula(ChordName::Diminished);
+        }
+    }
+    else if (gp_chord.mySecond)
+    {
+        chord.setFormula(ChordName::Major);
+        chord.setModification(ChordName::Suspended2nd);
+    }
+    else if (gp_chord.myFourth)
+    {
+        chord.setFormula(ChordName::Major);
+        chord.setModification(ChordName::Suspended4th);
+    }
+    else
+    {
+        chord.setFormula(ChordName::PowerChord);
+    }
+
+    if (chord.getFormula() != ChordName::Augmented &&
+        chord.getFormula() != ChordName::Augmented7th &&
+        fifth == Alteration::Augmented)
+    {
+        chord.setModification(ChordName::Raised5th);
+    }
+
+    if (chord.getFormula() != ChordName::Major6th &&
+        chord.getFormula() != ChordName::Minor6th && gp_chord.mySixth)
+    {
+        chord.setModification(ChordName::Added6th);
+    }
+
+    if (gp_chord.myThird && gp_chord.mySecond)
+        chord.setModification(ChordName::Added2nd);
+    if (gp_chord.myThird && gp_chord.myFourth)
+        chord.setModification(ChordName::Added4th);
+
+    const bool is_seventh = chord.getFormula() >= ChordName::Dominant7th;
+
+    if (gp_chord.myNinth)
+    {
+        auto ninth = gp_chord.myNinth->myAlteration;
+        if (ninth == Alteration::Perfect)
+        {
+            if (is_seventh)
+                chord.setModification(ChordName::Extended9th);
+            else
+                chord.setModification(ChordName::Added9th);
+        }
+        else if (ninth == Alteration::Diminished)
+            chord.setModification(ChordName::Flatted9th);
+        else if (ninth == Alteration::Augmented)
+            chord.setModification(ChordName::Raised9th);
+    }
+
+    if (gp_chord.myEleventh)
+    {
+        auto eleventh = gp_chord.myEleventh->myAlteration;
+        if (eleventh == Alteration::Perfect)
+        {
+            if (is_seventh)
+                chord.setModification(ChordName::Extended11th);
+            else
+                chord.setModification(ChordName::Added11th);
+        }
+        else if (eleventh == Alteration::Augmented)
+            chord.setModification(ChordName::Raised11th);
+    }
+
+    if (gp_chord.myThirteenth)
+    {
+        auto thirteenth = gp_chord.myThirteenth->myAlteration;
+        if (thirteenth == Alteration::Perfect && is_seventh)
+            chord.setModification(ChordName::Extended13th);
+        else if (thirteenth == Alteration::Diminished)
+            chord.setModification(ChordName::Flatted13th);
+    }
+
+    return chord;
+}
+
 static void
 convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
               int bar_end)
@@ -803,12 +1000,19 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
                             TextItem(voice_pos, gp_beat.myFreeText));
                     }
 
+                    if (gp_beat.myChordId)
+                    {
+                        // FIXME - doesn't handle dual-staff tracks.
+                        const int track_idx = staff_idx;
+
+                        ChordName chord =
+                            convertChord(doc.myTracks[track_idx].myChords.at(
+                                *gp_beat.myChordId));
+                        system.insertChord(ChordText(voice_pos, chord));
+                    }
+
                     Position pos = convertPosition(gp_beat, gp_rhythm);
                     pos.setPosition(voice_pos++);
-
-                    // TODO - convert irregular groupings.
-                    // Note that for fermatas, irregular groups must also be
-                    // taken into account before computing the beat's time.
 
                     if (master_bar.myFermatas.count(time))
                         pos.setProperty(Position::Fermata);

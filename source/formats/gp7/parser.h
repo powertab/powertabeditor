@@ -86,6 +86,43 @@ struct Sound
     int myMidiPreset = -1;
 };
 
+struct Chord
+{
+    struct Note
+    {
+        std::string myStep;
+        int myAccidental = 0;
+    };
+
+    struct Degree
+    {
+        enum class Alteration
+        {
+            Perfect,
+            Augmented,
+            Diminished,
+            Major,
+            Minor
+        };
+
+        Alteration myAlteration = Alteration::Perfect;
+        bool myOmitted = false;
+    };
+
+    Note myKeyNote;
+    Note myBassNote;
+
+    std::optional<Degree> mySecond;
+    std::optional<Degree> myThird;
+    std::optional<Degree> myFourth;
+    std::optional<Degree> myFifth;
+    std::optional<Degree> mySixth;
+    std::optional<Degree> mySeventh;
+    std::optional<Degree> myNinth;
+    std::optional<Degree> myEleventh;
+    std::optional<Degree> myThirteenth;
+};
+
 struct Track
 {
     std::string myName;
@@ -97,6 +134,8 @@ struct Track
     /// the same active sound). Automations describe when the sounds are
     /// changed.
     std::vector<Sound> mySounds;
+
+    std::unordered_map<int, Chord> myChords;
 };
 
 struct MasterBar
@@ -206,6 +245,7 @@ struct Beat
     };
 
     int myRhythmId = -1;
+    std::optional<int> myChordId;
     /// If there aren't any note ids, this is a rest!
     std::vector<int> myNoteIds;
     std::optional<Ottavia> myOttavia;
