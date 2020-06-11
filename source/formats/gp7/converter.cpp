@@ -181,7 +181,8 @@ getHarmonicPitchOffset(double harmonic_fret)
 using KeyAndVariation = std::pair<ChordName::Key, ChordName::Variation>;
 
 static KeyAndVariation
-keyAndVariationFromPitch(int midi_pitch) {
+keyAndVariationFromPitch(int midi_pitch)
+{
     static const KeyAndVariation theNotes[12] = {
         { ChordName::C, ChordName::NoVariation },
         { ChordName::C, ChordName::Sharp },
@@ -289,7 +290,7 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
             // Convert the fret offset into a key/variation plus an octave
             // offset.
             int midi_note = tuning.getNote(note.getString(), false) +
-                             tuning.getCapo() + note.getFretNumber();
+                            tuning.getCapo() + note.getFretNumber();
             const int offset = getHarmonicPitchOffset(gp_note.myHarmonicFret);
             midi_note += offset;
 
@@ -304,8 +305,8 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
             auto octave_type =
                 static_cast<ArtificialHarmonic::Octave>(octave_diff);
 
-            note.setArtificialHarmonic(ArtificialHarmonic(
-                key, variation, octave_type));
+            note.setArtificialHarmonic(
+                ArtificialHarmonic(key, variation, octave_type));
         }
     }
 
@@ -537,7 +538,7 @@ convertAlternateEndings(System &system, int bar_pos,
 
     ending.setPosition(bar_pos);
     system.insertAlternateEnding(ending);
-        }
+}
 
 static void
 convertTempoMarkers(System &system, int bar_pos,
@@ -796,8 +797,7 @@ convertChord(const Gp7::Chord &gp_chord)
             }
         }
         else if (seventh == Alteration::Diminished &&
-                 fifth == Alteration::Diminished &&
-                 third == Alteration::Minor)
+                 fifth == Alteration::Diminished && third == Alteration::Minor)
         {
             chord.setFormula(ChordName::Diminished7th);
         }
@@ -961,7 +961,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
 
         // Go through the bar for each staff.
         int end_pos = start_pos;
-        for (int staff_idx = 0; staff_idx < num_staves ; ++staff_idx)
+        for (int staff_idx = 0; staff_idx < num_staves; ++staff_idx)
         {
             Staff &staff = system.getStaves()[staff_idx];
             const Player &player = score.getPlayers()[staff_idx];
