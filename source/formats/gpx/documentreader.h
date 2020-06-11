@@ -18,6 +18,7 @@
 #ifndef FORMATS_GPX_DOCUMENTREADER_H
 #define FORMATS_GPX_DOCUMENTREADER_H
 
+#include <cstddef>
 #include <map>
 #include <pugixml.hpp>
 #include <score/note.h>

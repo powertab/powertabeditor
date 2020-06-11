@@ -19,6 +19,7 @@
 #define FORMATS_GPX_BITSTREAM_H
 
 #include <cstdint>
+#include <cstddef>
 #include <iosfwd>
 #include <vector>
 
