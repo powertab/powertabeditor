@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Added support for Guitar Pro 7 (`.gp`) files (#290).
+- The Guitar Pro 6 (`.gpx`) importer has been rewritten and shares most of its code with the GP7 importer. It now has much more complete support for `.gpx` files, and a variety of bugs and missing features have been addressed (#290).
 - Improved the Rest menu's behaviour to be more consistent with the Notes menu (#135).
 - Beginning with this release, `.pt2` files with an unknown newer file format version (e.g. from a future release that adds additional data to the score format) will now be loaded to the best degree possible instead of refusing to load. (#294).
 

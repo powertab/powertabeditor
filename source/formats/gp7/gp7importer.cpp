@@ -140,7 +140,7 @@ void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
     if (!result)
         throw FileFormatException(result.description());
 
-    Gp7::Document doc = Gp7::parse(xml_doc);
+    Gp7::Document doc = Gp7::parse(xml_doc, Gp7::Version::V7);
     Gp7::convert(doc, score);
 
     ScoreUtils::polishScore(score);

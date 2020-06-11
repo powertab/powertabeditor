@@ -30,6 +30,13 @@
 
 namespace Gp7
 {
+/// Guitar Pro 6 files (.gpx) are very similar.
+enum class Version
+{
+    V6,
+    V7
+};
+
 /// Contains metadata about the score.
 struct ScoreInfo
 {
@@ -363,7 +370,7 @@ struct Document
 };
 
 /// Parses the score.gpif XML file.
-Document parse(const pugi::xml_document &root);
+Document parse(const pugi::xml_document &root, Version version);
 
 } // namespace Gp7
 

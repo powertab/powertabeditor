@@ -91,8 +91,14 @@ convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score,
             player.setDescription(track.myName);
 
             Tuning tuning;
-            tuning.setNotes(std::vector<uint8_t>(staff.myTuning.rbegin(),
-                                                 staff.myTuning.rend()));
+
+            // In .gpx files, the drums don't have a tuning, so just leave it
+            // at the default in that case.
+            if (!staff.myTuning.empty())
+            {
+                tuning.setNotes(std::vector<uint8_t>(staff.myTuning.rbegin(),
+                                                     staff.myTuning.rend()));
+            }
             tuning.setCapo(staff.myCapo);
             player.setTuning(tuning);
 
@@ -1028,7 +1034,15 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
 
                         Note note = convertNote(pos, gp_beat, gp_note, tuning);
                         if (Utils::findByString(pos, note.getString()))
-                            throw FileFormatException("Colliding notes!");
+                        {
+                            // This happens for drums in .gpx files, which
+                            // don't specify a string / fret number.
+#if 0
+                            std::cerr << "Colliding notes at string "
+                                      << note.getString() << ", staff "
+                                      << staff_idx << std::endl;
+#endif
+                        }
                         else
                             pos.insertNote(note);
                     }

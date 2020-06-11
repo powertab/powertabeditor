@@ -18,6 +18,7 @@
 #include "parser.h"
 
 #include <formats/fileformat.h>
+#include <score/generalmidi.h>
 
 #include <boost/algorithm/string/split.hpp>
 #include <string>
@@ -235,8 +236,35 @@ parseChords(const pugi::xml_node &collection_node)
     return chords;
 }
 
+static void
+parseStaff(const pugi::xml_node &node, Gp7::Track &track)
+{
+    const pugi::xml_node properties = node.child("Properties");
+
+    Gp7::Staff staff;
+
+    // Import the capo fret.
+    auto capo_property =
+        properties.find_child_by_attribute("Property", "name", "CapoFret");
+    staff.myCapo = capo_property.child("Fret").text().as_int();
+
+    // Import the tuning, which is stored as a space-separate list
+    // of pitches.
+    auto tuning_property =
+        properties.find_child_by_attribute("Property", "name", "Tuning");
+    staff.myTuning =
+        toIntList(splitString(tuning_property.child_value("Pitches")));
+
+    auto diagram_property = properties.find_child_by_attribute(
+        "Property", "name", "DiagramCollection");
+    if (diagram_property)
+        track.myChords = parseChords(diagram_property);
+
+    track.myStaves.push_back(staff);
+}
+
 static std::vector<Gp7::Track>
-parseTracks(const pugi::xml_node &tracks_node)
+parseTracks(const pugi::xml_node &tracks_node, Gp7::Version version)
 {
     std::vector<Gp7::Track> tracks;
     for (const pugi::xml_node &node : tracks_node.children("Track"))
@@ -248,44 +276,37 @@ parseTracks(const pugi::xml_node &tracks_node)
 
         // Many fields related to RSE are skipped here.
 
-        for (const pugi::xml_node &staff_node :
-             node.child("Staves").children("Staff"))
-        {
-            const pugi::xml_node properties = staff_node.child("Properties");
-
-            Gp7::Staff staff;
-
-            // Import the capo fret.
-            auto capo_property = properties.find_child_by_attribute(
-                "Property", "name", "CapoFret");
-            staff.myCapo = capo_property.child("Fret").text().as_int();
-
-            // Import the tuning, which is stored as a space-separate list of
-            // pitches.
-            auto tuning_property = properties.find_child_by_attribute(
-                "Property", "name", "Tuning");
-            staff.myTuning =
-                toIntList(splitString(tuning_property.child_value("Pitches")));
-
-            auto diagram_property = properties.find_child_by_attribute(
-                "Property", "name", "DiagramCollection");
-            if (diagram_property)
-                track.myChords = parseChords(diagram_property);
-
-            track.myStaves.push_back(staff);
-        }
-
-        // Import the sounds (instruments). Many fields related to RSE are
-        // skipped here.
-        for (const pugi::xml_node &sound_node :
-             node.child("Sounds").children("Sound"))
+        // .gpx files can't have multiple staves in a track.
+        if (version == Gp7::Version::V6)
         {
             Gp7::Sound sound;
-            sound.myLabel = sound_node.child_value("Label");
             sound.myMidiPreset =
-                sound_node.child("MIDI").child("Program").text().as_int();
-
+                node.child("GeneralMidi").child("Program").text().as_int();
+            sound.myLabel = Midi::getPresetNames().at(sound.myMidiPreset);
             track.mySounds.push_back(sound);
+
+            parseStaff(node, track);
+        }
+        else
+        {
+            for (const pugi::xml_node &staff_node :
+                 node.child("Staves").children("Staff"))
+            {
+                parseStaff(staff_node, track);
+            }
+
+            // Import the sounds (instruments). Many fields related to RSE are
+            // skipped here.
+            for (const pugi::xml_node &sound_node :
+                 node.child("Sounds").children("Sound"))
+            {
+                Gp7::Sound sound;
+                sound.myLabel = sound_node.child_value("Label");
+                sound.myMidiPreset =
+                    sound_node.child("MIDI").child("Program").text().as_int();
+
+                track.mySounds.push_back(sound);
+            }
         }
 
         // TODO - import sound automations (Guitar Pro's equivalent to player /
@@ -731,7 +752,7 @@ parseRhythms(const pugi::xml_node &rhythms_node)
 }
 
 Gp7::Document
-Gp7::parse(const pugi::xml_document &root)
+Gp7::parse(const pugi::xml_document &root, Version version)
 {
     Gp7::Document doc;
 
@@ -751,7 +772,7 @@ Gp7::parse(const pugi::xml_document &root)
     // changes do occur as 'Automation' nodes here.
     const pugi::xml_node master_track = gpif.child("MasterTrack");
 
-    doc.myTracks = parseTracks(gpif.child("Tracks"));
+    doc.myTracks = parseTracks(gpif.child("Tracks"), version);
     doc.myMasterBars = parseMasterBars(gpif.child("MasterBars"));
     doc.myBars = parseBars(gpif.child("Bars"));
     doc.myVoices = parseVoices(gpif.child("Voices"));

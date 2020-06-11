@@ -9,7 +9,6 @@ set( srcs
     gp7/parser.cpp
 
     gpx/bitstream.cpp
-    gpx/documentreader.cpp
     gpx/filesystem.cpp
     gpx/gpximporter.cpp
     gpx/util.cpp
@@ -61,8 +60,11 @@ set( headers
     fileformat.h
     fileformatmanager.h
 
+    gp7/converter.h
+    gp7/gp7importer.h
+    gp7/parser.h
+
     gpx/bitstream.h
-    gpx/documentreader.h
     gpx/filesystem.h
     gpx/gpximporter.h
     gpx/util.h
