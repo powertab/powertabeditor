@@ -45,9 +45,10 @@ static void convertStringToList(const std::string &source, std::vector<T> &dest)
         std::cerr << "Parsing of list failed!!" << std::endl;
 }
 
-Gpx::DocumentReader::DocumentReader(const std::string &xml)
+Gpx::DocumentReader::DocumentReader(const std::vector<std::byte> &xml_buf)
 {
-    xml_parse_result result = myXmlData.load_string(xml.c_str());
+    xml_parse_result result =
+        myXmlData.load_buffer(xml_buf.data(), xml_buf.size());
 
     if (result.status != pugi::status_ok)
         throw std::runtime_error(result.description());

@@ -90,7 +90,7 @@ struct Automation
 class DocumentReader
 {
 public:
-    DocumentReader(const std::string &xml);
+    DocumentReader(const std::vector<std::byte> &xml_buf);
 
     void readScore(Score &score);
 
