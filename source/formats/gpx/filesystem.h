@@ -18,6 +18,7 @@
 #ifndef FORMATS_GPX_FILESYSTEM_H
 #define FORMATS_GPX_FILESYSTEM_H
 
+#include <cstddef>
 #include <cstdint>
 #include <iosfwd>
 #include <string>
