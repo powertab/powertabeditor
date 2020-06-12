@@ -17,6 +17,7 @@
 
 #include "serialization.h"
 
+#include <iostream>
 #include <rapidjson/error/en.h>
 
 namespace ScoreUtils
@@ -36,9 +37,25 @@ InputArchive::InputArchive(std::istream &is) : myStream(is)
                                  GetParseError_En(myDocument.GetParseError()));
     }
 
-    myIterators.push(myDocument.MemberBegin());
+    myValueStack.push(&myDocument);
 
-    (*this)("version", myVersion);
+    int version = 0;
+    (*this)("version", version);
+
+    if (version >= static_cast<int>(FileVersion::INITIAL_VERSION) &&
+        version <= static_cast<int>(FileVersion::LATEST_VERSION))
+    {
+        myVersion = static_cast<FileVersion>(version);
+    }
+    else
+    {
+        std::cerr << "Warning: Reading an unknown file version - " << version
+                  << std::endl;
+
+        // Reading in a newer version. Just do the best we can with the latest
+        // file version we're aware of.
+        myVersion = FileVersion::LATEST_VERSION;
+    }
 }
 
 FileVersion InputArchive::version() const

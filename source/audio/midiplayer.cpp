@@ -181,10 +181,11 @@ void MidiPlayer::run()
         // Don't play metronome events if the metronome is disabled.
         // Tempo change events also don't need to be sent since they are
         // handled in this loop. CoreMidi on OSX also complains about them.
+        // Similarly, ALSA complains about the meta "track end" events.
         if (!(event->isNoteOnOff() &&
               event->getChannel() == METRONOME_CHANNEL &&
               !myMetronomeEnabled) &&
-            !event->isTempoChange())
+            !event->isTempoChange() && !event->isTrackEnd())
         {
             device.sendMessage(event->getData());
         }
@@ -195,15 +196,15 @@ void MidiPlayer::run()
             const SystemLocation &new_location = event->getLocation();
 
             // Don't move backwards unless a repeat occurred.
-            if (new_location < current_location && !event->isPositionChange())
-                continue;
+            if (new_location >= current_location || event->isPositionChange())
+            {
+                if (new_location.getSystem() != current_location.getSystem())
+                    emit playbackSystemChanged(new_location.getSystem());
 
-            if (new_location.getSystem() != current_location.getSystem())
-                emit playbackSystemChanged(new_location.getSystem());
+                emit playbackPositionChanged(new_location.getPosition());
 
-            emit playbackPositionChanged(new_location.getPosition());
-
-            current_location = new_location;
+                current_location = new_location;
+            }
         }
 
         // Accumulate any difference between the desired delta time and what

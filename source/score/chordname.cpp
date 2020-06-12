@@ -167,12 +167,12 @@ std::ostream &operator<<(std::ostream &os, const ChordName &chord)
         std::string formula = theSuffixes[chord.getFormula()];
 
         // Handle chord extensions.
-        if (chord.hasModification(ChordName::Extended9th))
-            boost::algorithm::replace_first(formula, "7", "9");
+        if (chord.hasModification(ChordName::Extended13th))
+            boost::algorithm::replace_first(formula, "7", "13");
         else if (chord.hasModification(ChordName::Extended11th))
             boost::algorithm::replace_first(formula, "7", "11");
-        else if (chord.hasModification(ChordName::Extended13th))
-            boost::algorithm::replace_first(formula, "7", "13");
+        else if (chord.hasModification(ChordName::Extended9th))
+            boost::algorithm::replace_first(formula, "7", "9");
 
         os << formula;
 

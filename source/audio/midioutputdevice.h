@@ -80,7 +80,8 @@ public:
         DataEntryFine = 38,
         HoldPedal = 64,
         RpnLsb = 100,
-        RpnMsb = 101
+        RpnMsb = 101,
+        AllNotesOff = 123
     };
 
     void sendMessage(const std::vector<uint8_t> &data);

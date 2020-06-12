@@ -20,14 +20,23 @@
 
 #include "score/timesignature.h"
 #include <bitset>
+#include <boost/rational.hpp>
 #include <optional>
 #include <pugixml.hpp>
+#include <set>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 namespace Gp7
 {
+/// Guitar Pro 6 files (.gpx) are very similar.
+enum class Version
+{
+    V6,
+    V7
+};
+
 /// Contains metadata about the score.
 struct ScoreInfo
 {
@@ -57,8 +66,6 @@ struct TempoChange
         HalfDotted
     };
 
-    /// Index of the bar the tempo change occurs in.
-    int myBar = -1;
     /// Specifies the location within the bar, from 0 to 1. (e.g. if 0.75 and
     /// in 4/4 time, the tempo change occurs on the last beat).
     double myPosition = 0;
@@ -86,6 +93,43 @@ struct Sound
     int myMidiPreset = -1;
 };
 
+struct Chord
+{
+    struct Note
+    {
+        std::string myStep;
+        int myAccidental = 0;
+    };
+
+    struct Degree
+    {
+        enum class Alteration
+        {
+            Perfect,
+            Augmented,
+            Diminished,
+            Major,
+            Minor
+        };
+
+        Alteration myAlteration = Alteration::Perfect;
+        bool myOmitted = false;
+    };
+
+    Note myKeyNote;
+    Note myBassNote;
+
+    std::optional<Degree> mySecond;
+    std::optional<Degree> myThird;
+    std::optional<Degree> myFourth;
+    std::optional<Degree> myFifth;
+    std::optional<Degree> mySixth;
+    std::optional<Degree> mySeventh;
+    std::optional<Degree> myNinth;
+    std::optional<Degree> myEleventh;
+    std::optional<Degree> myThirteenth;
+};
+
 struct Track
 {
     std::string myName;
@@ -97,6 +141,8 @@ struct Track
     /// the same active sound). Automations describe when the sounds are
     /// changed.
     std::vector<Sound> mySounds;
+
+    std::unordered_map<int, Chord> myChords;
 };
 
 struct MasterBar
@@ -126,6 +172,33 @@ struct MasterBar
         bool mySharps = false;
     };
 
+    enum class DirectionTarget
+    {
+        Fine,
+        Coda,
+        DoubleCoda,
+        Segno,
+        SegnoSegno
+    };
+
+    enum class DirectionJump
+    {
+        DaCapo,
+        DaCapoAlCoda,
+        DaCapoAlDoubleCoda,
+        DaCapoAlFine,
+        DaSegno,
+        DaSegnoAlCoda,
+        DaSegnoAlDoubleCoda,
+        DaSegnoAlFine,
+        DaSegnoSegno,
+        DaSegnoSegnoAlCoda,
+        DaSegnoSegnoAlDoubleCoda,
+        DaSegnoSegnoAlFine,
+        DaCoda,
+        DaDoubleCoda
+    };
+
     std::vector<int> myBarIds;
     std::optional<Section> mySection;
     TimeSignature myTimeSig;
@@ -135,6 +208,16 @@ struct MasterBar
     bool myRepeatStart = false;
     bool myRepeatEnd = false;
     int myRepeatCount = 0;
+    std::vector<int> myAlternateEndings;
+
+    std::vector<DirectionTarget> myDirectionTargets;
+    std::vector<DirectionJump> myDirectionJumps;
+
+    std::vector<TempoChange> myTempoChanges;
+
+    /// Fermatas apply to all tracks, and are applied at a specific beat
+    /// fraction.
+    std::set<boost::rational<int>> myFermatas;
 };
 
 struct Bar
@@ -169,6 +252,7 @@ struct Beat
     };
 
     int myRhythmId = -1;
+    std::optional<int> myChordId;
     /// If there aren't any note ids, this is a rest!
     std::vector<int> myNoteIds;
     std::optional<Ottavia> myOttavia;
@@ -178,6 +262,7 @@ struct Beat
     bool myBrushDown = false;
     bool myArpeggioDown = false;
     bool myArpeggioUp = false;
+    std::string myFreeText;
 };
 
 /// A duration, which is shared across many beats.
@@ -224,11 +309,35 @@ struct Note
         NumTypes
     };
 
+    enum class FingerType
+    {
+        Open,
+        C,
+        A,
+        M,
+        I,
+        P
+    };
+
+    struct Bend
+    {
+        double myOriginValue = 0;
+        double myOriginOffset = 0;
+
+        double myMiddleValue = 0;
+        double myMiddleOffset1 = 0;
+        double myMiddleOffset2 = 0;
+
+        double myDestValue = 0;
+        double myDestOffset = 0;
+    };
+
     int myString = 0;
     int myFret = 0;
     bool myPalmMuted = false;
     bool myMuted = false;
-    bool myTied = false;
+    bool myTieOrigin = false;
+    bool myTieDest = false;
     bool myGhost = false;
     bool myTapped = false;
     bool myHammerOn = false;
@@ -243,13 +352,14 @@ struct Note
     /// Flags for various combinations of slide types.
     std::bitset<size_t(SlideType::NumTypes)> mySlideTypes;
     std::optional<int> myTrillNote;
+    std::optional<FingerType> myLeftFinger;
+    std::optional<Bend> myBend;
 };
 
 /// Container for a Guitar Pro 7 document.
 struct Document
 {
     ScoreInfo myScoreInfo;
-    std::vector<TempoChange> myTempoChanges;
     std::vector<Track> myTracks;
     std::vector<MasterBar> myMasterBars;
     std::unordered_map<int, Bar> myBars;
@@ -260,7 +370,7 @@ struct Document
 };
 
 /// Parses the score.gpif XML file.
-Document parse(const pugi::xml_document &root);
+Document parse(const pugi::xml_document &root, Version version);
 
 } // namespace Gp7
 

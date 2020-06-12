@@ -18,6 +18,7 @@
 #include "parser.h"
 
 #include <formats/fileformat.h>
+#include <score/generalmidi.h>
 
 #include <boost/algorithm/string/split.hpp>
 #include <string>
@@ -100,15 +101,15 @@ parseScoreInfo(const pugi::xml_node &node)
     return info;
 }
 
-static std::vector<Gp7::TempoChange>
-parseTempoChanges(const pugi::xml_node &master_track)
+/// Adds the tempo changes to the appropriate master bars.
+static void
+parseTempoChanges(const pugi::xml_node &master_track,
+                  std::vector<Gp7::MasterBar> &master_bars)
 {
-    std::vector<Gp7::TempoChange> changes;
     for (const pugi::xml_node &node :
          master_track.child("Automations").children("Automation"))
     {
         Gp7::TempoChange change;
-        change.myBar = node.child("Bar").text().as_int();
         change.myPosition = node.child("Position").text().as_double();
         change.myDescription = node.child_value("Text");
         change.myIsLinear = node.child("Linear").text().as_bool();
@@ -143,14 +144,127 @@ parseTempoChanges(const pugi::xml_node &master_track)
                 throw FileFormatException("Invalid tempo change unit.");
         }
 
-        changes.push_back(change);
+        const int bar_idx = node.child("Bar").text().as_int();
+        if (bar_idx < 0 || bar_idx >= int(master_bars.size()))
+            throw FileFormatException("Invalid bar for tempo change.");
+
+        master_bars[bar_idx].myTempoChanges.push_back(change);
+    }
+}
+
+static Gp7::Chord::Note
+parseChordNote(const pugi::xml_node &node)
+{
+    using namespace std::string_literals;
+
+    Gp7::Chord::Note note;
+    note.myStep = node.attribute("step").as_string();
+
+    static const std::unordered_map<std::string, int> theAccidentals = {
+        { "Natural"s, 0 },
+        { "Sharp"s, 1 },
+        { "DoubleSharp"s, 2 },
+        { "Flat"s, -1 },
+        { "DoubleFlat"s, -2 }
+    };
+
+    auto it = theAccidentals.find(node.attribute("accidental").as_string());
+    if (it == theAccidentals.end())
+        throw FileFormatException("Unknown accidental type");
+
+    note.myAccidental = it->second;
+
+    return note;
+}
+
+static std::optional<Gp7::Chord::Degree>
+parseChordDegree(const pugi::xml_node &chord_node, const char *name)
+{
+    auto node = chord_node.find_child_by_attribute("Degree", "interval", name);
+    if (!node)
+        return {};
+
+    using namespace std::string_literals;
+    using Alteration = Gp7::Chord::Degree::Alteration;
+
+    Gp7::Chord::Degree degree;
+    degree.myOmitted = node.attribute("omitted").as_bool();
+
+    static const std::unordered_map<std::string, Alteration> theAlterations = {
+        { "Perfect"s, Alteration::Perfect },
+        { "Diminished"s, Alteration::Diminished },
+        { "Augmented"s, Alteration::Augmented },
+        { "Major"s, Alteration::Major },
+        { "Minor"s, Alteration::Minor }
+    };
+
+    auto it = theAlterations.find(node.attribute("alteration").as_string());
+    if (it == theAlterations.end())
+        throw FileFormatException("Unknown alteration type");
+
+    degree.myAlteration = it->second;
+    return degree;
+}
+
+static std::unordered_map<int, Gp7::Chord>
+parseChords(const pugi::xml_node &collection_node)
+{
+    std::unordered_map<int, Gp7::Chord> chords;
+
+    for (auto node : collection_node.child("Items").children("Item"))
+    {
+        Gp7::Chord chord;
+
+        auto chord_node = node.child("Chord");
+        chord.myKeyNote = parseChordNote(chord_node.child("KeyNote"));
+        chord.myBassNote = parseChordNote(chord_node.child("BassNote"));
+
+        chord.mySecond = parseChordDegree(chord_node, "Second");
+        chord.myThird = parseChordDegree(chord_node, "Third");
+        chord.myFourth = parseChordDegree(chord_node, "Fourth");
+        chord.myFifth = parseChordDegree(chord_node, "Fifth");
+        chord.mySixth = parseChordDegree(chord_node, "Sixth");
+        chord.mySeventh = parseChordDegree(chord_node, "Seventh");
+        chord.myNinth = parseChordDegree(chord_node, "Ninth");
+        chord.myEleventh = parseChordDegree(chord_node, "Eleventh");
+        chord.myThirteenth = parseChordDegree(chord_node, "Thirteenth");
+
+        const int id = node.attribute("id").as_int();
+        chords.emplace(id, chord);
     }
 
-    return changes;
+    return chords;
+}
+
+static void
+parseStaff(const pugi::xml_node &node, Gp7::Track &track)
+{
+    const pugi::xml_node properties = node.child("Properties");
+
+    Gp7::Staff staff;
+
+    // Import the capo fret.
+    auto capo_property =
+        properties.find_child_by_attribute("Property", "name", "CapoFret");
+    staff.myCapo = capo_property.child("Fret").text().as_int();
+
+    // Import the tuning, which is stored as a space-separate list
+    // of pitches.
+    auto tuning_property =
+        properties.find_child_by_attribute("Property", "name", "Tuning");
+    staff.myTuning =
+        toIntList(splitString(tuning_property.child_value("Pitches")));
+
+    auto diagram_property = properties.find_child_by_attribute(
+        "Property", "name", "DiagramCollection");
+    if (diagram_property)
+        track.myChords = parseChords(diagram_property);
+
+    track.myStaves.push_back(staff);
 }
 
 static std::vector<Gp7::Track>
-parseTracks(const pugi::xml_node &tracks_node)
+parseTracks(const pugi::xml_node &tracks_node, Gp7::Version version)
 {
     std::vector<Gp7::Track> tracks;
     for (const pugi::xml_node &node : tracks_node.children("Track"))
@@ -162,43 +276,37 @@ parseTracks(const pugi::xml_node &tracks_node)
 
         // Many fields related to RSE are skipped here.
 
-        // TODO - there can be two staves in a track with different tunings,
-        // but which are played back using the same instrument.
-        // Currently these are ignored, but we could consider importing them as
-        // separate Player's.
-        for (const pugi::xml_node &staff_node :
-             node.child("Staves").children("Staff"))
-        {
-            const pugi::xml_node properties = staff_node.child("Properties");
-
-            Gp7::Staff staff;
-
-            // Import the capo fret.
-            auto capo_property = properties.find_child_by_attribute(
-                "Property", "name", "CapoFret");
-            staff.myCapo = capo_property.child("Fret").text().as_int();
-
-            // Import the tuning, which is stored as a space-separate list of
-            // pitches.
-            auto tuning_property = properties.find_child_by_attribute(
-                "Property", "name", "Tuning");
-            staff.myTuning =
-                toIntList(splitString(tuning_property.child_value("Pitches")));
-
-            track.myStaves.push_back(staff);
-        }
-
-        // Import the sounds (instruments). Many fields related to RSE are
-        // skipped here.
-        for (const pugi::xml_node &sound_node :
-             node.child("Sounds").children("Sound"))
+        // .gpx files can't have multiple staves in a track.
+        if (version == Gp7::Version::V6)
         {
             Gp7::Sound sound;
-            sound.myLabel = sound_node.child_value("Label");
             sound.myMidiPreset =
-                sound_node.child("MIDI").child("Program").text().as_int();
-
+                node.child("GeneralMidi").child("Program").text().as_int();
+            sound.myLabel = Midi::getPresetNames().at(sound.myMidiPreset);
             track.mySounds.push_back(sound);
+
+            parseStaff(node, track);
+        }
+        else
+        {
+            for (const pugi::xml_node &staff_node :
+                 node.child("Staves").children("Staff"))
+            {
+                parseStaff(staff_node, track);
+            }
+
+            // Import the sounds (instruments). Many fields related to RSE are
+            // skipped here.
+            for (const pugi::xml_node &sound_node :
+                 node.child("Sounds").children("Sound"))
+            {
+                Gp7::Sound sound;
+                sound.myLabel = sound_node.child_value("Label");
+                sound.myMidiPreset =
+                    sound_node.child("MIDI").child("Program").text().as_int();
+
+                track.mySounds.push_back(sound);
+            }
         }
 
         // TODO - import sound automations (Guitar Pro's equivalent to player /
@@ -245,6 +353,9 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
             }
         }
 
+        master_bar.myAlternateEndings =
+            toIntList(splitString(node.child_value("AlternateEndings")));
+
         // The time signature should be a string like 12/8.
         std::vector<int> time_sig =
             toIntList(splitString(node.child_value("Time"), '/'));
@@ -262,6 +373,77 @@ parseMasterBars(const pugi::xml_node &master_bars_node)
         master_bar.myKeySig.myMinor =
             std::string_view(key_node.child_value("Mode")) == "Minor";
         master_bar.myKeySig.mySharps = (accidentals >= 0);
+
+        // Fermatas.
+        for (const pugi::xml_node fermata :
+             node.child("Fermatas").children("Fermata"))
+        {
+            std::vector<int> offset =
+                toIntList(splitString(fermata.child_value("Offset"), '/'));
+            if (offset.size() != 2)
+                throw FileFormatException("Unexpected fermata offset.");
+
+            master_bar.myFermatas.insert(
+                boost::rational<int>(offset[0], offset[1]));
+        }
+
+        // Directions.
+        if (auto dirnode = node.child("Directions"))
+        {
+            using DirectionTarget = Gp7::MasterBar::DirectionTarget;
+            using DirectionJump = Gp7::MasterBar::DirectionJump;
+            using namespace std::string_literals;
+
+            static const std::unordered_map<std::string, DirectionTarget>
+                theTargetNames = {
+                    { "Fine"s, DirectionTarget::Fine },
+                    { "Coda"s, DirectionTarget::Coda },
+                    { "DoubleCoda"s, DirectionTarget::DoubleCoda },
+                    { "Segno"s, DirectionTarget::Segno },
+                    { "SegnoSegno"s, DirectionTarget::SegnoSegno },
+                };
+
+            static const std::unordered_map<std::string, DirectionJump>
+                theJumpNames = {
+                    { "DaCapo"s, DirectionJump::DaCapo },
+                    { "DaCapoAlCoda"s, DirectionJump::DaCapoAlCoda },
+                    { "DaCapoAlDoubleCoda"s,
+                      DirectionJump::DaCapoAlDoubleCoda },
+                    { "DaCapoAlFine"s, DirectionJump::DaCapoAlFine },
+                    { "DaSegno"s, DirectionJump::DaSegno },
+                    { "DaSegnoAlCoda"s, DirectionJump::DaSegnoAlCoda },
+                    { "DaSegnoAlDoubleCoda"s,
+                      DirectionJump::DaSegnoAlDoubleCoda },
+                    { "DaSegnoAlFine"s, DirectionJump::DaSegnoAlFine },
+                    { "DaSegnoSegno"s, DirectionJump::DaSegnoSegno },
+                    { "DaSegnoSegnoAlCoda"s,
+                      DirectionJump::DaSegnoSegnoAlCoda },
+                    { "DaSegnoSegnoAlDoubleCoda"s,
+                      DirectionJump::DaSegnoSegnoAlDoubleCoda },
+                    { "DaSegnoSegnoAlFine"s,
+                      DirectionJump::DaSegnoSegnoAlFine },
+                    { "DaCoda"s, DirectionJump::DaCoda },
+                    { "DaDoubleCoda"s, DirectionJump::DaDoubleCoda }
+                };
+
+            for (auto target : dirnode.children("Target"))
+            {
+                auto it = theTargetNames.find(target.text().as_string());
+                if (it == theTargetNames.end())
+                    throw FileFormatException("Invalid direction target type");
+
+                master_bar.myDirectionTargets.push_back(it->second);
+            }
+
+            for (auto jump : dirnode.children("Jump"))
+            {
+                auto it = theJumpNames.find(jump.text().as_string());
+                if (it == theJumpNames.end())
+                    throw FileFormatException("Invalid direction jump type");
+
+                master_bar.myDirectionJumps.push_back(it->second);
+            }
+        }
 
         master_bars.push_back(master_bar);
     }
@@ -327,6 +509,9 @@ parseBeats(const pugi::xml_node &beats_node)
         beat.myRhythmId = node.child("Rhythm").attribute("ref").as_int();
         beat.myNoteIds = toIntList(splitString(node.child_value("Notes")));
 
+        if (auto chord_id = node.child("Chord"))
+            beat.myChordId = chord_id.text().as_int(-1);
+
         std::string_view ottavia = node.child_value("Ottavia");
         if (!ottavia.empty())
         {
@@ -339,6 +524,8 @@ parseBeats(const pugi::xml_node &beats_node)
             else if (ottavia == "15mb")
                 beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
         }
+
+        beat.myFreeText = node.child_value("FreeText");
 
         // Guitar Pro grace notes can occur before or on the beat, but we only
         // have one type.
@@ -392,6 +579,8 @@ parseNotes(const pugi::xml_node &notes_node)
     {
         Gp7::Note note;
 
+        Gp7::Note::Bend bend;
+        bool has_bend = false;
         for (const pugi::xml_node property :
              node.child("Properties").children("Property"))
         {
@@ -437,9 +626,42 @@ parseNotes(const pugi::xml_node &notes_node)
                 else
                     throw FileFormatException("Unexpected harmonic type");
             }
+            else if (name == "Bended")
+                has_bend = true;
+            else if (name == "BendOriginValue")
+                bend.myOriginValue = property.child("Float").text().as_double();
+            else if (name == "BendOriginOffset")
+            {
+                bend.myOriginOffset =
+                    property.child("Float").text().as_double();
+            }
+            else if (name == "BendMiddleValue")
+                bend.myMiddleValue = property.child("Float").text().as_double();
+            else if (name == "BendMiddleOffset1")
+            {
+                bend.myMiddleOffset1 =
+                    property.child("Float").text().as_double();
+            }
+            else if (name == "BendMiddleOffset2")
+            {
+                bend.myMiddleOffset2 =
+                    property.child("Float").text().as_double();
+            }
+            else if (name == "BendDestinationValue")
+                bend.myDestValue = property.child("Float").text().as_double();
+            else if (name == "BendDestinationOffset")
+                bend.myDestOffset = property.child("Float").text().as_double();
         }
 
-        note.myTied = node.child("Tie").attribute("destination").as_bool();
+        if (has_bend)
+            note.myBend = bend;
+
+        if (auto tie = node.child("Tie"))
+        {
+            note.myTieOrigin = tie.attribute("origin").as_bool();
+            note.myTieDest = tie.attribute("destination").as_bool();
+        }
+
         note.myGhost =
             std::string_view(node.child_value("AntiAccent")) == "Normal";
         note.myAccentTypes = node.child("Accent").text().as_int();
@@ -456,7 +678,28 @@ parseNotes(const pugi::xml_node &notes_node)
         if (node.child("LetRing"))
             note.myLetRing = true;
 
-        // TODO - import bends and left hand fingerings.
+        if (auto fingering = node.child("LeftFingering"))
+        {
+            using FingerType = Gp7::Note::FingerType;
+
+            std::string_view text = fingering.text().as_string();
+            if (text == "Open")
+                note.myLeftFinger = FingerType::Open;
+            else if (text == "C")
+                note.myLeftFinger = FingerType::C;
+            else if (text == "A")
+                note.myLeftFinger = FingerType::A;
+            else if (text == "M")
+                note.myLeftFinger = FingerType::M;
+            else if (text == "I")
+                note.myLeftFinger = FingerType::I;
+            else if (text == "P")
+                note.myLeftFinger = FingerType::P;
+            else
+                throw FileFormatException("Unexpected finger type.");
+        }
+
+        // TODO - import bends.
 
         const int id = node.attribute("id").as_int();
         notes.emplace(id, note);
@@ -509,7 +752,7 @@ parseRhythms(const pugi::xml_node &rhythms_node)
 }
 
 Gp7::Document
-Gp7::parse(const pugi::xml_document &root)
+Gp7::parse(const pugi::xml_document &root, Version version)
 {
     Gp7::Document doc;
 
@@ -528,15 +771,16 @@ Gp7::parse(const pugi::xml_document &root)
     // - 'RSE'. This is mostly to do with audio playback, but volume / pan
     // changes do occur as 'Automation' nodes here.
     const pugi::xml_node master_track = gpif.child("MasterTrack");
-    doc.myTempoChanges = parseTempoChanges(master_track);
 
-    doc.myTracks = parseTracks(gpif.child("Tracks"));
+    doc.myTracks = parseTracks(gpif.child("Tracks"), version);
     doc.myMasterBars = parseMasterBars(gpif.child("MasterBars"));
     doc.myBars = parseBars(gpif.child("Bars"));
     doc.myVoices = parseVoices(gpif.child("Voices"));
     doc.myBeats = parseBeats(gpif.child("Beats"));
     doc.myNotes = parseNotes(gpif.child("Notes"));
     doc.myRhythms = parseRhythms(gpif.child("Rhythms"));
+
+    parseTempoChanges(master_track, doc.myMasterBars);
 
     return doc;
 }

@@ -63,6 +63,12 @@ bool MidiEvent::isTempoChange() const
            myData[1] == MetaType::SetTempo;
 }
 
+bool MidiEvent::isTrackEnd() const
+{
+    return getStatusByte() == StatusByte::MetaMessage &&
+           myData[1] == MetaType::TrackEnd;
+}
+
 int MidiEvent::getTempo() const
 {
     assert(isTempoChange());

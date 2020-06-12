@@ -28,9 +28,9 @@
 class ArtificialHarmonic
 {
 public:
-    enum class Octave
+    enum class Octave : int
     {
-        Loco,
+        Loco = 0,
         Octave8va,
         Octave15ma
     };
@@ -43,7 +43,7 @@ public:
 
     ChordName::Key getKey() const;
     ChordName::Variation getVariation() const;
-    Octave getOctave();
+    Octave getOctave() const;
 
     template <class Archive>
     void serialize(Archive &ar, const FileVersion /*version*/)

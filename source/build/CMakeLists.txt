@@ -25,7 +25,6 @@ pte_executable(
     SOURCES ${srcs} ${rc_file}
     RESOURCES ${resources}
     DEPENDS
-        Boost::program_options
         pteapp
         ptedialogs
         Qt5::Network

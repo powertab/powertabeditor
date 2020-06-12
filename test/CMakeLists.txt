@@ -142,16 +142,24 @@ set( data_files
     formats/guitar_pro/data/text.gp5
     formats/guitar_pro/data/time_signatures.gp5
 
+    formats/gp7/data/alternate_endings.gp
     formats/gp7/data/bars.gp
+    formats/gp7/data/bends.gp
+    formats/gp7/data/directions.gp
+    formats/gp7/data/fermatas.gp
+    formats/gp7/data/harmonics.gp
+    formats/gp7/data/irregular_groups.gp
     formats/gp7/data/notes.gp
     formats/gp7/data/score_info.gp
+    formats/gp7/data/text.gp
     formats/gp7/data/tracks.gp
     formats/gp7/data/words_and_music.gp
 
     formats/gpx/data/text.gpx
 
+    score/data/reordered.pt2
     score/data/test_viewfilter.pt2
-    
+
     util/test_settingstree_expected.json
 )
 

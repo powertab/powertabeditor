@@ -17,6 +17,8 @@
   
 #include <catch2/catch.hpp>
 
+#include <app/appinfo.h>
+#include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 
 TEST_CASE("Score/Score/Systems", "")
@@ -76,4 +78,15 @@ TEST_CASE("Score/Score/ViewFilters", "")
     score.removeViewFilter(1);
     REQUIRE(score.getViewFilters().size() == 1);
     REQUIRE(score.getViewFilters()[0] == filter1);
+}
+
+// Verify that we don't rely on the order of JSON keys (see bug #294).
+TEST_CASE("Score/Score/Deserialization", "")
+{
+    Score score;
+    PowerTabImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/reordered.pt2"), score);
+
+    REQUIRE(score.getSystems().size() == 2);
+    REQUIRE(score.getSystems()[0].getAlternateEndings().size() == 2);
 }

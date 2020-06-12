@@ -30,7 +30,6 @@
 #include <rapidjson/prettywriter.h>
 #include <stack>
 #include <stdexcept>
-#include <variant>
 #include <vector>
 
 namespace ScoreUtils
@@ -40,66 +39,35 @@ class InputArchive
 public:
     InputArchive(std::istream &is);
 
+    /// The version of the file being read.
     FileVersion version() const;
 
+    /// Generic function to read a value with the given name.
     template <typename T>
-    void operator()(const std::string &expectedName, T &obj)
+    void operator()(const std::string_view &name, T &obj)
     {
-        if (expectedName != name())
-        {
-            throw std::runtime_error(
-                std::string("Unexpected or missing JSON data: found ") +
-                name() + ", expected " + expectedName);
-        }
+        auto name_ref = rapidjson::StringRef(name.data(), name.size());
 
+        const JSONValue *parent = myValueStack.top();
+        auto it = parent->FindMember(name_ref);
+
+        // Field does not exist. It might have been removed in a newer file
+        // version.
+        if (it == parent->MemberEnd())
+            return;
+
+        myValueStack.push(&it->value);
         read(obj);
-        advance();
+        myValueStack.pop();
     }
 
 private:
-    typedef rapidjson::GenericValue<rapidjson::UTF8<> > JSONValue;
+    using JSONValue = rapidjson::GenericValue<rapidjson::UTF8<>>;
 
-    struct ValueVisitor
-    {
-        const JSONValue &operator()(
-            const JSONValue::ConstMemberIterator &it) const
-        {
-            return it->value;
-        }
-
-        const JSONValue &operator()(
-            const JSONValue::ConstValueIterator &it) const
-        {
-            return *it;
-        }
-    };
-
-    struct NameVisitor
-    {
-        std::string operator()(const JSONValue::ConstMemberIterator &it) const
-        {
-            return it->name.GetString();
-        }
-
-        std::string operator()(const JSONValue::ConstValueIterator &) const
-        {
-            throw std::logic_error("Cannot read the name of an array element");
-        }
-    };
-
-    void advance()
-    {
-        std::visit([](auto &&it) { ++it; }, myIterators.top());
-    }
-
-    std::string name() const
-    {
-        return std::visit(NameVisitor(), myIterators.top());
-    }
-
+    /// The current JSON value.
     const JSONValue &value() const
     {
-        return std::visit(ValueVisitor(), myIterators.top());
+        return *myValueStack.top();
     }
 
     inline void read(int &val);
@@ -135,31 +103,20 @@ private:
     template <typename T>
     typename std::enable_if<std::is_class<T>::value>::type read(T &obj)
     {
-        myIterators.push(value().MemberBegin());
         obj.serialize(*this, myVersion);
-        myIterators.pop();
     }
 
     rapidjson::IStreamWrapper myStream;
     rapidjson::Document myDocument;
     FileVersion myVersion;
 
-	// Iterate over both objects and arrays in a uniform manner.
-    using Iterator = std::variant<JSONValue::ConstMemberIterator,
-                                  JSONValue::ConstValueIterator>;
-    std::stack<Iterator> myIterators;
+    std::stack<const JSONValue *> myValueStack;
 };
 
 template <typename T>
 void load(std::istream &input, const std::string &name, T &obj)
 {
     InputArchive archive(input);
-    if (archive.version() > FileVersion::LATEST_VERSION ||
-        archive.version() < FileVersion::INITIAL_VERSION)
-    {
-        throw std::runtime_error("Invalid file version");
-    }
-
     archive(name, obj);
 }
 
@@ -264,51 +221,44 @@ void InputArchive::read(std::string &str)
 template <typename T>
 void InputArchive::read(std::vector<T> &vec)
 {
-    auto size = value().Size();
-    myIterators.push(value().Begin());
+    const JSONValue::ConstArray &json_array = value().GetArray();
+    vec.resize(json_array.Size());
 
-    vec.resize(size);
-    for (unsigned int i = 0; i < size; ++i)
+    size_t i = 0;
+    for (const JSONValue &value : json_array)
     {
-        read(vec[i]);
-        advance();
+        myValueStack.push(&value);
+        read(vec[i++]);
+        myValueStack.pop();
     }
-
-    myIterators.pop();
 }
 
 template <typename K, typename V, typename C>
 void InputArchive::read(std::map<K, V, C> &map)
 {
-    auto it = value().MemberBegin();
-    const long long size = std::distance(it, value().MemberEnd());
-    myIterators.push(it);
+    const JSONValue::ConstObject &obj = value().GetObject();
 
-    for (long long i = 0; i < size; ++i)
+    for (auto &&member : obj)
     {
         static_assert(std::is_same<K, int>::value,
                       "Only integer keys are currently supported");
-        const K key = std::stoi(name());
+        const K key = std::stoi(member.name.GetString());
+
+        myValueStack.push(&member.value);
 
         V value;
         read(value);
         map[key] = value;
 
-        advance();
+        myValueStack.pop();
     }
-
-    myIterators.pop();
 }
 
 template <typename T, size_t N>
 void InputArchive::read(std::array<T, N> &arr)
 {
-    myIterators.push(value().MemberBegin());
-
     for (size_t i = 0; i < N; ++i)
         (*this)(std::to_string(i), arr[i]);
-
-    myIterators.pop();
 }
 
 template <size_t N>

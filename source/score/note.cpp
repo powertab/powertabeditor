@@ -330,7 +330,7 @@ ChordName::Variation ArtificialHarmonic::getVariation() const
     return myVariation;
 }
 
-ArtificialHarmonic::Octave ArtificialHarmonic::getOctave()
+ArtificialHarmonic::Octave ArtificialHarmonic::getOctave() const
 {
     return myOctave;
 }

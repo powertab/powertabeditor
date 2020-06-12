@@ -5,6 +5,5 @@ find_package(
         date_time
         filesystem
         iostreams
-        program_options
         system
 )

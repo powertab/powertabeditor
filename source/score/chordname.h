@@ -54,7 +54,7 @@ public:
         Diminished,
         PowerChord,
         Major6th,
-        Minor6h,
+        Minor6th,
         Dominant7th,
         Major7th,
         Minor7th,

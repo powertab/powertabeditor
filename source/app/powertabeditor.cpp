@@ -229,17 +229,18 @@ void PowerTabEditor::createNewDocument()
     setupNewTab();
 }
 
+void PowerTabEditor::openFilesInteractive()
+{
+    auto files = QFileDialog::getOpenFileNames(
+        this, tr("Open"), myPreviousDirectory,
+        QString::fromStdString(myFileFormatManager->importFileFilter()));
+
+    openFiles(files);
+}
+
 void PowerTabEditor::openFile(QString filename)
 {
-    if (filename.isEmpty())
-    {
-        filename = QFileDialog::getOpenFileName(this, tr("Open"),
-                myPreviousDirectory,
-                QString::fromStdString(myFileFormatManager->importFileFilter()));
-    }
-
-    if (filename.isEmpty())
-        return;
+    assert(!filename.isEmpty());
 
     auto path = Paths::fromQString(filename);
 
@@ -1823,7 +1824,8 @@ void PowerTabEditor::createCommands()
 
     myOpenFileCommand = new Command(tr("&Open..."), "File.Open",
                                     QKeySequence::Open, this);
-    connect(myOpenFileCommand, &QAction::triggered, [this]() { openFile(); });
+    connect(myOpenFileCommand, &QAction::triggered,
+            [this]() { openFilesInteractive(); });
 
     myCloseTabCommand = new Command(tr("&Close Tab"), "File.CloseTab",
                                     Qt::CTRL + Qt::Key_W, this);

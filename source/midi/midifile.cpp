@@ -162,8 +162,14 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     while (location.getSystem() < static_cast<int>(score.getSystems().size()))
     {
         const System &system = score.getSystems()[location.getSystem()];
+
+        // We might not be exactly on a barline - a musical direction might
+        // shift us into the middle of bar.
         const Barline *current_bar = ScoreUtils::findByPosition(
             system.getBarlines(), location.getPosition());
+        if (!current_bar)
+            current_bar = system.getPreviousBarline(location.getPosition());
+
         const Barline *next_bar = system.getNextBarline(location.getPosition());
 
         if (location.getSystem() != system_index)
