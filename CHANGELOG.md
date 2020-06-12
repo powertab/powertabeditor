@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Fixed
+
+## [Alpha 12] - 2020-06-11
+### Added
 - Added support for Guitar Pro 7 (`.gp`) files (#290).
 - The Guitar Pro 6 (`.gpx`) importer has been rewritten and shares most of its code with the GP7 importer. It now has much more complete support for `.gpx` files, and a variety of bugs and missing features have been addressed (#290).
 - Improved the Rest menu's behaviour to be more consistent with the Notes menu (#135).
@@ -237,7 +244,8 @@ Thanks to the following contributors who worked on this release:
 ## [Alpha 1] - 2014-07-27
 * The first alpha release!
 
-[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha11...HEAD
+[Unreleased]: https://github.com/powertab/powertabeditor/compare/2.0.0-alpha12...HEAD
+[Alpha 12]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha12
 [Alpha 11]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha11
 [Alpha 10]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha10
 [Alpha 9]: https://github.com/powertab/powertabeditor/releases/tag/2.0.0-alpha9
