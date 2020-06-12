@@ -60,7 +60,7 @@ private slots:
 
     /// Opens a new file. If 'filename' is empty, the user will be prompted
     /// to select a filename.
-    void openFile(QString filename = "");
+    void openFile(QString filename);
 
     /// Handle when the active tab is changed.
     void switchTab(int index);
@@ -349,6 +349,10 @@ private:
     void updateZoom(double percent);
     /// Updates the playback widget with the caret's current location.
     void updateLocationLabel();
+
+    /// Opens a file dialog and asks the user to select one or more files to
+    /// open.
+    void openFilesInteractive();
 
     /// Saves the current document to the specified path.
     /// @return True if the file was successfully saved.
