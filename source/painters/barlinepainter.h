@@ -31,7 +31,8 @@ class BarlinePainter : public QGraphicsItem
 public:
     BarlinePainter(const LayoutConstPtr& layout, const Barline &barline,
                    const ScoreLocation& location,
-                   const std::shared_ptr<ClickPubSub> &pubsub);
+                   const std::shared_ptr<ClickPubSub> &pubsub,
+                   const QColor &barlineColor);
 
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
@@ -58,6 +59,7 @@ private:
     std::shared_ptr<ClickPubSub> myPubSub;
     double myX;
     double myWidth;
+    const QColor &myBarlineColor;
 
     static const double DOUBLE_BAR_WIDTH;
 };

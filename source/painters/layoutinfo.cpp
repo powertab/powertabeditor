@@ -43,7 +43,7 @@ const double LayoutInfo::IRREGULAR_GROUP_HEIGHT = 9;
 const double LayoutInfo::IRREGULAR_GROUP_BEAM_SPACING = 3;
 
 LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex,
-                       const Staff &staff, int staffIndex)
+                       const Staff &staff, int staffIndex, const QColor &notesColor)
     : mySystem(system),
       myStaff(staff),
       myLineSpacing(score.getLineSpacing()),
@@ -52,7 +52,8 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex
       myTabStaffBelowSpacing(0),
       myTabStaffAboveSpacing(0),
       myStdNotationStaffAboveSpacing(0),
-      myStdNotationStaffBelowSpacing(0)
+      myStdNotationStaffBelowSpacing(0),
+      myNotesColor(notesColor)
 {
     computePositionSpacing();
     calculateTabStaffBelowLayout();
@@ -60,7 +61,7 @@ LayoutInfo::LayoutInfo(const Score &score, const System &system, int systemIndex
 
     StdNotationNote::getNotesInStaff(score, system, systemIndex, staff,
                                      staffIndex, *this, myNotes, myStems,
-                                     myBeamGroups);
+                                     myBeamGroups, myNotesColor);
 
     calculateStdNotationStaffAboveLayout();
     calculateStdNotationStaffBelowLayout();

@@ -96,7 +96,7 @@ private:
 struct LayoutInfo
 {
     LayoutInfo(const Score &score, const System& system, int systemIndex,
-               const Staff &staff, int staffIndex);
+               const Staff &staff, int staffIndex, const QColor &notesColor);
 
     int getStringCount() const;
 
@@ -225,6 +225,8 @@ private:
     // Build a separate list of stems and beam groups for each voice.
     std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> myBeamGroups;
     std::array<std::vector<NoteStem>, Staff::NUM_VOICES> myStems;
+
+    const QColor &myNotesColor;
 };
 
 typedef std::shared_ptr<LayoutInfo> LayoutPtr;
