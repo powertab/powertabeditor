@@ -70,8 +70,9 @@ private:
     const Document *myDocument;
     QGraphicsItem *myScoreInfoBlock;
     QList<QGraphicsItem *> myRenderedSystems;
-    QPalette scorePalette; // the palette used by scorearea
     CaretPainter *myCaretPainter;
+    QPalette myScorePalette; // the palette used by scorearea
+    QPalette myPrintPalette; // the palette used by when printing
 
     std::shared_ptr<ClickPubSub> myClickPubSub;
 };

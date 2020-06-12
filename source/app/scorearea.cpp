@@ -42,14 +42,17 @@ ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myScoreInfoBlock(nullptr),
       myCaretPainter(nullptr),
+      myScorePalette(parent->palette()),
       myClickPubSub(std::make_shared<ClickPubSub>())
 {
     setScene(&myScene);
 
-    // store the palette use by the app (currently the default system palette)
-    // for usage in rendering
-    scorePalette = this->palette();
-    setBackgroundBrush(scorePalette.background());
+    // set the palette colors to be used when printing
+    myPrintPalette.setColor(QPalette::Text,Qt::black);
+    myPrintPalette.setColor(QPalette::Light,Qt::white);
+    myPrintPalette.setColor(QPalette::Dark,Qt::lightGray);
+
+    setBackgroundBrush(myScorePalette.light());
 }
 
 void ScoreArea::renderDocument(const Document &document)
@@ -63,7 +66,7 @@ void ScoreArea::renderDocument(const Document &document)
     auto start = std::chrono::high_resolution_clock::now();
 
     myCaretPainter =
-        new CaretPainter(document.getCaret(), document.getViewOptions(), scorePalette.text().color());
+        new CaretPainter(document.getCaret(), document.getViewOptions(), myScorePalette.text().color());
     myCaretPainter->subscribeToMovement([=]() {
         adjustScroll();
     });
@@ -168,8 +171,14 @@ void ScoreArea::print(QPrinter &printer)
     QPainter painter;
     painter.begin(&printer);
 
+    // use the printPalette for rendering
+    myScorePalette = myPrintPalette;
+
     // Hide the caret when printing.
     myCaretPainter->hide();
+
+    //render the document after the palette has been set to print colors
+    this->renderDocument(*myDocument);
 
     QRectF target_rect(0, 0, painter.device()->width(),
                        painter.device()->height());
@@ -181,7 +190,6 @@ void ScoreArea::print(QPrinter &printer)
     for (int i = 0, n = items.length(); i < n; ++i)
     {
         const QGraphicsItem *item = items[i];
-
         const QRectF source_rect = item->sceneBoundingRect();
         const float ratio =
             std::min(target_rect.width() / source_rect.width(),
@@ -213,6 +221,10 @@ void ScoreArea::print(QPrinter &printer)
 
     myCaretPainter->show();
     painter.end();
+
+    // reuse the original app palette and render the document
+    myScorePalette = this->palette();
+    this->renderDocument(*myDocument);    
 }
 
 std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
@@ -254,5 +266,5 @@ void ScoreArea::refreshZoom()
 
 QPalette ScoreArea::getPalette() const
 {
-    return scorePalette;
+    return myScorePalette;
 }
