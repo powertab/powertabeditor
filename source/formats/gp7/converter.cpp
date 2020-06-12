@@ -20,6 +20,7 @@
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <boost/rational.hpp>
+#include <numeric>
 
 #include <formats/fileformat.h>
 #include <score/generalmidi.h>
@@ -1097,16 +1098,26 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
     score.insertSystem(system);
 }
 
+static bool
+isValidLayout(const std::vector<int> &layout, int num_bars)
+{
+    return std::accumulate(layout.begin(), layout.end(), 0) == num_bars;
+}
+
 void
 Gp7::convert(const Gp7::Document &doc, Score &score)
 {
     convertScoreInfo(doc.myScoreInfo, score);
 
-    // If there is only one track, follow its layout instead of the multi-track
-    // layout.
+    // The multi-track layout is sometimes invalid (particularly for .gpx
+    // files). So, fall back to the first track's layout if we need to.
     std::vector<int> layout = doc.myScoreInfo.myScoreSystemsLayout;
-    if (doc.myTracks.size() == 1)
+    if (!isValidLayout(layout, doc.myMasterBars.size()) &&
+        !doc.myTracks.empty())
+    {
         layout = doc.myTracks[0].mySystemsLayout;
+        assert(isValidLayout(layout, doc.myMasterBars.size()));
+    }
 
     int bar_idx = 0;
     for (int num_bars : layout)

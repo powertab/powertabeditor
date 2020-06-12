@@ -301,15 +301,14 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
                 LeftHandFingering::None);
     }
 
-    const Voice &voice2 = score.getSystems()[1].getStaves()[0].getVoices()[0];
     {
-        const Note &note = voice2.getPositions()[0].getNotes()[0];
+        const Note &note = voice.getPositions()[15].getNotes()[0];
         REQUIRE(note.hasTrill());
         REQUIRE(note.getTrilledFret() == 4);
     }
 
     {
-        const Note &note = voice2.getPositions()[1].getNotes()[0];
+        const Note &note = voice.getPositions()[16].getNotes()[0];
         REQUIRE(note.hasProperty(Note::LegatoSlide));
         REQUIRE(note.hasLeftHandFingering());
         REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
@@ -317,7 +316,7 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
     }
 
     {
-        const Note &note = voice2.getPositions()[2].getNotes()[0];
+        const Note &note = voice.getPositions()[17].getNotes()[0];
         REQUIRE(note.hasProperty(Note::ShiftSlide));
         REQUIRE(note.hasLeftHandFingering());
         REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
@@ -325,27 +324,27 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
     }
 
     {
-        const Note &note = voice2.getPositions()[3].getNotes()[0];
+        const Note &note = voice.getPositions()[18].getNotes()[0];
         REQUIRE(note.hasLeftHandFingering());
         REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
                 LeftHandFingering::Middle);
     }
 
     {
-        const Note &note = voice2.getPositions()[4].getNotes()[0];
+        const Note &note = voice.getPositions()[19].getNotes()[0];
         REQUIRE(note.hasLeftHandFingering());
         REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
                 LeftHandFingering::Index);
     }
 
     {
-        const Position &pos = voice2.getPositions()[5];
+        const Position &pos = voice.getPositions()[20];
         REQUIRE(pos.getDurationType() == Position::EighthNote);
         REQUIRE(pos.isRest());
     }
 
     {
-        const Position &pos = voice2.getPositions()[6];
+        const Position &pos = voice.getPositions()[21];
         REQUIRE(pos.hasProperty(Position::Acciaccatura));
         REQUIRE(pos.hasProperty(Position::PickStrokeDown));
         // Left hand fingerings currently don't support thumbs.
@@ -353,23 +352,23 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
     }
 
     {
-        const Position &pos = voice2.getPositions()[7];
+        const Position &pos = voice.getPositions()[22];
         REQUIRE(pos.hasProperty(Position::TremoloPicking));
     }
 
     {
-        const Position &pos = voice2.getPositions()[8];
+        const Position &pos = voice.getPositions()[23];
         REQUIRE(pos.hasProperty(Position::Acciaccatura));
         REQUIRE(pos.hasProperty(Position::PickStrokeUp));
     }
 
     {
-        const Position &pos = voice2.getPositions()[9];
+        const Position &pos = voice.getPositions()[24];
         REQUIRE(pos.hasProperty(Position::ArpeggioDown));
     }
 
     {
-        const Position &pos = voice2.getPositions()[10];
+        const Position &pos = voice.getPositions()[25];
         REQUIRE(pos.hasProperty(Position::ArpeggioUp));
     }
 }
@@ -617,7 +616,7 @@ TEST_CASE("Formats/Gp7Import/AlternateEndings", "")
 
     const System &system = score.getSystems()[0];
 
-    REQUIRE(system.getBarlines().size() == 4);
+    REQUIRE(system.getBarlines().size() == 5);
     REQUIRE(system.getAlternateEndings().size() == 2);
 
     {
