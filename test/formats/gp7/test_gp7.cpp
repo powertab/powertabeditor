@@ -297,8 +297,8 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
     {
         const Note &note = voice.getPositions()[14].getNotes()[0];
         REQUIRE(note.hasLeftHandFingering());
-        REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
-                LeftHandFingering::None);
+        REQUIRE(note.getLeftHandFingering().getFinger() ==
+                LeftHandFingering::Finger::None);
     }
 
     {
@@ -311,30 +311,30 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         const Note &note = voice.getPositions()[16].getNotes()[0];
         REQUIRE(note.hasProperty(Note::LegatoSlide));
         REQUIRE(note.hasLeftHandFingering());
-        REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
-                LeftHandFingering::Little);
+        REQUIRE(note.getLeftHandFingering().getFinger() ==
+                LeftHandFingering::Finger::Little);
     }
 
     {
         const Note &note = voice.getPositions()[17].getNotes()[0];
         REQUIRE(note.hasProperty(Note::ShiftSlide));
         REQUIRE(note.hasLeftHandFingering());
-        REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
-                LeftHandFingering::Ring);
+        REQUIRE(note.getLeftHandFingering().getFinger() ==
+                LeftHandFingering::Finger::Ring);
     }
 
     {
         const Note &note = voice.getPositions()[18].getNotes()[0];
         REQUIRE(note.hasLeftHandFingering());
-        REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
-                LeftHandFingering::Middle);
+        REQUIRE(note.getLeftHandFingering().getFinger() ==
+                LeftHandFingering::Finger::Middle);
     }
 
     {
         const Note &note = voice.getPositions()[19].getNotes()[0];
         REQUIRE(note.hasLeftHandFingering());
-        REQUIRE(note.getLeftHandFingering().getFingerNumber() ==
-                LeftHandFingering::Index);
+        REQUIRE(note.getLeftHandFingering().getFinger() ==
+                LeftHandFingering::Finger::Index);
     }
 
     {
@@ -347,8 +347,10 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
         const Position &pos = voice.getPositions()[21];
         REQUIRE(pos.hasProperty(Position::Acciaccatura));
         REQUIRE(pos.hasProperty(Position::PickStrokeDown));
-        // Left hand fingerings currently don't support thumbs.
-        REQUIRE(!pos.getNotes()[0].hasLeftHandFingering());
+        const Note &note = pos.getNotes()[0];
+        REQUIRE(note.hasLeftHandFingering());
+        REQUIRE(note.getLeftHandFingering().getFinger() ==
+                LeftHandFingering::Finger::Thumb);
     }
 
     {

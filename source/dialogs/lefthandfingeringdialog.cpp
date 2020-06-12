@@ -29,17 +29,19 @@ LeftHandFingeringDialog::LeftHandFingeringDialog(QWidget *parent)
 
     ui->fingerComboBox->addItems({
         tr("None (string empty)"), tr("Index finger"), tr("Middle finger"),
-        tr("Ring finger"), tr("Little finger")
+        tr("Ring finger"), tr("Little finger"), tr("Thumb")
     });
 
     ui->positionComboBox->addItems({
-        tr("Left"), tr("Above and left"), tr("Above, centered"), 
+        tr("Left"), tr("Above and left"), tr("Above, centered"),
         tr("Above and right"), tr("Right"), tr("Below and right"),
         tr("Below, centered"), tr("Below and left")
     });
 }
 
-LeftHandFingeringDialog::~LeftHandFingeringDialog() { delete ui; }
+LeftHandFingeringDialog::~LeftHandFingeringDialog()
+{
+}
 
 LeftHandFingering LeftHandFingeringDialog::getLeftHandFingering() const
 {

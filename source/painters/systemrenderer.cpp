@@ -1423,60 +1423,65 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                 group->addToGroup(dotText2);
             }
         }
-        
+
         if (note.getNote()->hasLeftHandFingering())
         {
             if (!group)
             {
                 group = new QGraphicsItemGroup();
             }
-            
-            
-            const auto fingering = note.getNote()->getLeftHandFingering();
-            const auto number = fingering.getFingerNumber();
-            auto numberText = new SimpleTextItem(QString::number(number), myPlainTextFont);
-            
+
+            const auto &fingering = note.getNote()->getLeftHandFingering();
+            auto finger = fingering.getFinger();
+
+            QString finger_text;
+            if (finger == LeftHandFingering::Finger::Thumb)
+                finger_text = QStringLiteral("t");
+            else
+                finger_text = QString::number(static_cast<int>(finger));
+
+            auto item = new SimpleTextItem(finger_text, myPlainTextFont);
+
             double numberX;
             double numberY;
             switch (fingering.getDisplayPosition())
             {
-            case LeftHandFingering::DisplayPosition::Left:
-                numberX = -note_head_width - 1;
-                numberY = 25;
-                break;
-            case LeftHandFingering::DisplayPosition::AboveLeft:
-                numberX = -note_head_width + 1;
-                numberY = 18;
-                break;
-            case LeftHandFingering::DisplayPosition::Above:
-                numberX = 0;
-                numberY = 17;
-                break;
-            case LeftHandFingering::DisplayPosition::AboveRight:
-                numberX = note_head_width + 1;
-                numberY = 18;
-                break;
-            case LeftHandFingering::DisplayPosition::Right:
-                numberX = note_head_width + 3;
-                numberY = 25;
-                break;
-            case LeftHandFingering::DisplayPosition::BelowRight:
-                numberX = note_head_width + 1;
-                numberY = 32;
-                break;
-            case LeftHandFingering::DisplayPosition::Below:
-                numberX = 0;
-                numberY = 33;
-                break;
-            case LeftHandFingering::DisplayPosition::BelowLeft:
-                numberX = -note_head_width + 1;
-                numberY = 32;
-                break;
+                case LeftHandFingering::DisplayPosition::Left:
+                    numberX = -note_head_width - 1;
+                    numberY = 25;
+                    break;
+                case LeftHandFingering::DisplayPosition::AboveLeft:
+                    numberX = -note_head_width + 1;
+                    numberY = 18;
+                    break;
+                case LeftHandFingering::DisplayPosition::Above:
+                    numberX = 0;
+                    numberY = 17;
+                    break;
+                case LeftHandFingering::DisplayPosition::AboveRight:
+                    numberX = note_head_width + 1;
+                    numberY = 18;
+                    break;
+                case LeftHandFingering::DisplayPosition::Right:
+                    numberX = note_head_width + 3;
+                    numberY = 25;
+                    break;
+                case LeftHandFingering::DisplayPosition::BelowRight:
+                    numberX = note_head_width + 1;
+                    numberY = 32;
+                    break;
+                case LeftHandFingering::DisplayPosition::Below:
+                    numberX = 0;
+                    numberY = 33;
+                    break;
+                case LeftHandFingering::DisplayPosition::BelowLeft:
+                    numberX = -note_head_width + 1;
+                    numberY = 32;
+                    break;
             }
-            
-            numberText->setPos(numberX, numberY);
-            group->addToGroup(numberText);
-            
+
+            item->setPos(numberX, numberY);
+            group->addToGroup(item);
         }
 
         if (group)

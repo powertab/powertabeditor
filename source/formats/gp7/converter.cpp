@@ -326,31 +326,27 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
 
     if (gp_note.myLeftFinger)
     {
+        using Finger = LeftHandFingering::Finger;
         using FingerType = Gp7::Note::FingerType;
         switch (*gp_note.myLeftFinger)
         {
             case FingerType::Open:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::None));
+                note.setLeftHandFingering(LeftHandFingering(Finger::None));
                 break;
             case FingerType::C:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Little));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Little));
                 break;
             case FingerType::A:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Ring));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Ring));
                 break;
             case FingerType::M:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Middle));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Middle));
                 break;
             case FingerType::I:
-                note.setLeftHandFingering(
-                    LeftHandFingering(LeftHandFingering::Index));
+                note.setLeftHandFingering(LeftHandFingering(Finger::Index));
                 break;
             case FingerType::P:
-                // TODO - thumb is not currently support for fingerings.
+                note.setLeftHandFingering(LeftHandFingering(Finger::Thumb));
                 break;
         }
     }
