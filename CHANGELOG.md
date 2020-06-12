@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Fixed an issue on Windows where the Stop button could cause playback to restart again (#296).
 - Fixed an issue where slides and bends could lead to tempo drift during playback (#214).
 - Fixed an issue where double-clicking to open a file could fail to open it in an existing instance of the program (#236).
+- Fixed a potential crash during MIDI playback when musical directions were present.
 
 ## [Alpha 11] - 2020-05-28
 
