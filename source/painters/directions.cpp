@@ -21,14 +21,17 @@
 #include <painters/simpletextitem.h>
 #include <score/system.h>
 
-static QString theDirectionText[] = {
-    "Coda",                "Double Coda",       "Segno",
-    "Segno Segno",         "Fine",              "D.C.",
-    "D.S.",                "D.S.S.",            "To Coda",
-    "To Dbl. Coda",        "D.C. al Coda",      "D.C. al Dbl. Coda",
-    "D.S. al Coda",        "D.S. al Dbl. Coda", "D.S.S. al Coda",
-    "D.S.S. al Dbl. Coda", "D.C. al Fine",      "D.S. al Fine",
-    "D.S.S. al Fine"
+static const QString theDirectionText[] = {
+    QStringLiteral("Coda"),           QStringLiteral("Double Coda"),
+    QStringLiteral("Segno"),          QStringLiteral("Segno Segno"),
+    QStringLiteral("Fine"),           QStringLiteral("D.C."),
+    QStringLiteral("D.S."),           QStringLiteral("D.S.S."),
+    QStringLiteral("To Coda"),        QStringLiteral("To Dbl. Coda"),
+    QStringLiteral("D.C. al Coda"),   QStringLiteral("D.C. al Dbl. Coda"),
+    QStringLiteral("D.S. al Coda"),   QStringLiteral("D.S. al Dbl. Coda"),
+    QStringLiteral("D.S.S. al Coda"), QStringLiteral("D.S.S. al Dbl. Coda"),
+    QStringLiteral("D.C. al Fine"),   QStringLiteral("D.S. al Fine"),
+    QStringLiteral("D.S.S. al Fine")
 };
 
 double SystemRenderer::drawDirections(const System &system,
@@ -43,39 +46,45 @@ double SystemRenderer::drawDirections(const System &system,
 
         for (const DirectionSymbol &symbol : direction.getSymbols())
         {
+            double y =
+                height + localHeight + 0.5 * LayoutInfo::SYSTEM_SYMBOL_SPACING;
             QGraphicsItem *item = nullptr;
             switch (symbol.getSymbolType())
             {
                 case DirectionSymbol::Coda:
-                    item = new SimpleTextItem(QChar(MusicFont::Coda),
+                    item = new SimpleTextItem2(QChar(MusicFont::Coda),
                                               myMusicNotationFont);
                     break;
                 case DirectionSymbol::DoubleCoda:
-                    item = new SimpleTextItem(QString(2, MusicFont::Coda),
+                    item = new SimpleTextItem2(QString(2, MusicFont::Coda),
                                               myMusicNotationFont);
                     break;
                 case DirectionSymbol::Segno:
-                    item = new SimpleTextItem(QChar(MusicFont::Segno),
+                    item = new SimpleTextItem2(QChar(MusicFont::Segno),
                                               myMusicNotationFont);
                     break;
                 case DirectionSymbol::SegnoSegno:
-                    item = new SimpleTextItem(QString(2, MusicFont::Segno),
+                    item = new SimpleTextItem2(QString(2, MusicFont::Segno),
                                               myMusicNotationFont);
                     break;
                 default:
                     // Display plain text.
                     QFont font = myPlainTextFont;
                     font.setItalic(true);
-                    item = new SimpleTextItem(
+                    item = new SimpleTextItem2(
                         theDirectionText[symbol.getSymbolType()], font);
+
+                    // The coda / segno symbols are already aligned so that the
+                    // baseline passes through the middle of the symbol. For
+                    // plain text, adjust by the ascent to vertically center
+                    // the text.
+                    QFontMetrics fm(font);
+                    y += 0.5 * fm.ascent();
                     break;
             }
 
             centerHorizontally(*item, x, x + layout.getPositionSpacing());
-            centerSymbolVertically(*item, height + localHeight);
-            // Compensate a bit for the alignment of the music notation font.
-            if (symbol.getSymbolType() <= DirectionSymbol::SegnoSegno)
-                item->setY(item->y() + 4);
+            item->setY(y);
 
             item->setParentItem(myParentSystem);
             localHeight += LayoutInfo::SYSTEM_SYMBOL_SPACING;
