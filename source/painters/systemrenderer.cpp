@@ -121,22 +121,24 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         if (isFirstStaff)
             drawBarNumber(systemIndex, *layout);
 
-        // Draw the clefs.
-        const double CLEF_OFFSET =
-            (staff.getClefType() == Staff::TrebleClef) ? -6 : -21;
+        // Draw the clefs. The glyphs are already aligned around the baseline
+        // so we just need to shift to the appropriate staff line.
+        QFont clef_font = MusicFont::getFont(26);
+        const double clef_y = (staff.getClefType() == Staff::TrebleClef)
+                                  ? layout->getStdNotationLine(4)
+                                  : layout->getStdNotationLine(2);
         auto pubsub = myScoreArea->getClickPubSub();
         const ScoreLocation location(myScore, systemIndex, i);
-        auto clef = new SimpleTextItem(staff.getClefType() == Staff::TrebleClef
-                                           ? QChar(MusicFont::TrebleClef)
-                                           : QChar(MusicFont::BassClef),
-                                       myMusicNotationFont);
+        auto clef = new SimpleTextItem2(staff.getClefType() == Staff::TrebleClef
+                                            ? QChar(MusicFont::TrebleClef)
+                                            : QChar(MusicFont::BassClef),
+                                        clef_font);
         auto group = new ClickableGroup(
             QObject::tr("Click to change clef type."), [=]() {
             pubsub->publish(ClickType::Clef, location);
         });
         group->addToGroup(clef);
-        group->setPos(LayoutInfo::CLEF_PADDING,
-                      layout->getTopStdNotationLine() + CLEF_OFFSET);
+        group->setPos(LayoutInfo::CLEF_PADDING, clef_y);
         group->setParentItem(myParentStaff);
 
         drawTabClef(LayoutInfo::CLEF_PADDING, *layout, location);
@@ -166,11 +168,12 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
 {
     // Determine the size of the clef symbol based on the number of strings and
     // the line spacing.
-    const int pixel_size =
-        (layout.getStringCount() - 1) * layout.getTabLineSpacing() * 0.6;
-    QFont font = MusicFont::getFont(pixel_size);
+    const double staff_size =
+        (layout.getStringCount() - 1) * layout.getTabLineSpacing();
+    const int pixel_size = staff_size * 0.6;
 
-    auto clef = new SimpleTextItem(QChar(MusicFont::TabClef), font);
+    QFont font = MusicFont::getFont(pixel_size);
+    auto clef = new SimpleTextItem2(QChar(MusicFont::TabClef), font);
 
     auto pubsub = myScoreArea->getClickPubSub();
     auto group = new ClickableGroup(
@@ -179,8 +182,9 @@ void SystemRenderer::drawTabClef(double x, const LayoutInfo &layout,
     });
     group->addToGroup(clef);
 
-    // Position the clef symbol.
-    group->setPos(x, layout.getTopTabLine() - pixel_size / 2.1);
+    // Position the clef symbol. The middle of the 'A' is aligned with the
+    // font's baseline, so it just needs to go in the middle of the tab staff.
+    group->setPos(x, layout.getTopTabLine() + staff_size * 0.5);
     group->setParentItem(myParentStaff);
 }
 

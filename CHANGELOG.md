@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 ### Fixed
+- Improved the size and alignment of the treble and bass clef glyphs.
 
 ## [Alpha 12] - 2020-06-11
 ### Added

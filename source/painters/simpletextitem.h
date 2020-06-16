@@ -47,4 +47,31 @@ private:
     double myAscent;
 };
 
+/// Replacement for SimpleTextItem that aligns positions the font's baseline at
+/// y=0 in local coordinates, unlike QGraphicsSimpleTextItem / SimpleTextItem.
+/// This makes layout much simpler for the glyphs in the Emmentaler font.
+class SimpleTextItem2 : public QGraphicsItem
+{
+public:
+    SimpleTextItem2(const QString &text, const QFont &font,
+                    const QPen &pen = QPen(),
+                    const QBrush &background = QBrush(QColor(0, 0, 0, 0)));
+
+    QRectF boundingRect() const override
+    {
+        return myBoundingRect;
+    }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
+
+private:
+    const QString myText;
+    const QFont myFont;
+    const QPen myPen;
+    const QBrush myBackground;
+    QRectF myBoundingRect;
+    double myAscent;
+};
+
 #endif

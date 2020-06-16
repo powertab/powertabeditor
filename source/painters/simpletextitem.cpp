@@ -46,3 +46,32 @@ void SimpleTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
     // Match the way that QSimpleTextItem aligns text.
     painter->drawText(0, myAscent, myText);
 }
+
+SimpleTextItem2::SimpleTextItem2(const QString &text, const QFont &font,
+                                 const QPen &pen, const QBrush &background)
+    : myText(text), myFont(font), myPen(pen), myBackground(background)
+{
+    QFontMetricsF fm(myFont);
+    myAscent = fm.ascent();
+    myBoundingRect = fm.boundingRect(text);
+}
+
+void
+SimpleTextItem2::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+                       QWidget *)
+{
+    // Draw the background rectangle. Avoid to cover other elements
+    // by drawing only 1/3 of the rectangle, vertically centered.
+#if 0
+    painter->fillRect(
+                myBoundingRect.x(),
+                myBoundingRect.y() + myBoundingRect.height() / 3,
+                myBoundingRect.width(),
+                myBoundingRect.height() / 3,
+                myBackground);
+#endif
+
+    painter->setPen(myPen);
+    painter->setFont(myFont);
+    painter->drawText(0, 0, myText);
+}
