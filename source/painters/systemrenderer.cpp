@@ -1697,69 +1697,68 @@ void SystemRenderer::drawMultiBarRest(const System &system,
     horizontalLine->setParentItem(myParentStaff);
 }
 
-void SystemRenderer::drawRest(const Position &pos, double x, const LayoutInfo &layout)
+void
+SystemRenderer::drawRest(const Position &pos, double x,
+                         const LayoutInfo &layout)
 {
-    // Position it approximately in the middle of the staff.
-    double y = 2 * LayoutInfo::STD_NOTATION_LINE_SPACING -
-            myMusicFontMetrics.ascent();
+    // Position it in the middle of the staff.
+    QFont font = MusicFont::getFont(28);
+    double y = layout.getStdNotationLine(3);
 
     QChar symbol;
     switch (pos.getDurationType())
     {
-    case Position::WholeNote:
-        symbol = MusicFont::WholeRest;
-        y -= LayoutInfo::STD_NOTATION_LINE_SPACING - 1;
-        break;
-    case Position::HalfNote:
-        symbol = MusicFont::HalfRest;
-        break;
-    case Position::QuarterNote:
-        symbol = MusicFont::QuarterRest;
-        break;
-    case Position::EighthNote:
-        symbol = MusicFont::EighthRest;
-        break;
-    case Position::SixteenthNote:
-        symbol = MusicFont::SixteenthRest;
-        break;
-    case Position::ThirtySecondNote:
-        symbol = MusicFont::ThirtySecondRest;
-        break;
-    case Position::SixtyFourthNote:
-        symbol = MusicFont::SixtyFourthRest;
-        y -= 3; // Compensate for the extra height of this symbol.
-        break;
+        case Position::WholeNote:
+            symbol = MusicFont::WholeRest;
+            y = layout.getStdNotationLine(2);
+            break;
+        case Position::HalfNote:
+            symbol = MusicFont::HalfRest;
+            break;
+        case Position::QuarterNote:
+            symbol = MusicFont::QuarterRest;
+            break;
+        case Position::EighthNote:
+            symbol = MusicFont::EighthRest;
+            break;
+        case Position::SixteenthNote:
+            symbol = MusicFont::SixteenthRest;
+            break;
+        case Position::ThirtySecondNote:
+            symbol = MusicFont::ThirtySecondRest;
+            break;
+        case Position::SixtyFourthNote:
+            symbol = MusicFont::SixtyFourthRest;
+            break;
     }
 
     auto group = new QGraphicsItemGroup();
-    auto text = new SimpleTextItem(symbol, myMusicNotationFont);
+    auto text = new SimpleTextItem2(symbol, font);
     text->setPos(0, y);
     group->addToGroup(text);
 
     // Draw dots if necessary.
     const QChar dot = MusicFont::Dot;
-    const double dotX = myMusicNotationFont.pixelSize() / 2.0;
+    const double dotX = 0.4 * font.pixelSize();
     // Position just below second line of staff.
-    const double dotY = 1.6 * LayoutInfo::STD_NOTATION_LINE_SPACING -
-            myMusicFontMetrics.ascent();
+    const double dotY = layout.getStdNotationSpace(2);
 
     if (pos.hasProperty(Position::Dotted) ||
         pos.hasProperty(Position::DoubleDotted))
     {
-        auto dotText = new SimpleTextItem(dot, myMusicNotationFont);
+        auto dotText = new SimpleTextItem2(dot, font);
         dotText->setPos(dotX, dotY);
         group->addToGroup(dotText);
 
         if (pos.hasProperty(Position::DoubleDotted))
         {
-            auto dotText2 = new SimpleTextItem(dot, myMusicNotationFont);
+            auto dotText2 = new SimpleTextItem2(dot, font);
             dotText2->setPos(dotX + 4, dotY);
             group->addToGroup(dotText2);
         }
     }
 
     centerHorizontally(*group, x, x + layout.getPositionSpacing() * 1.25);
-    group->setY(layout.getTopStdNotationLine());
     group->setParentItem(myParentStaff);
 }
 
