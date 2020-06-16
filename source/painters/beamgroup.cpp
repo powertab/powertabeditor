@@ -323,7 +323,7 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
     // Draw the symbol.
     const double y = stem.getStemEdge() - fm.ascent();
     auto flag = new SimpleTextItem(symbol, musicFont);
-    flag->setPos(stem.getX() + 2, y);
+    flag->setPos(stem.getX(), y);
 
     // For grace notes, add a slash through the stem.
     if (stem.isGraceNote())
