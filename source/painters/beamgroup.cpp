@@ -190,7 +190,8 @@ QGraphicsItem *BeamGroup::createStaccato(const NoteStem &stem,
                             ? stem.getX() - HORIZONTAL_OFFSET
                             : stem.getX() + HORIZONTAL_OFFSET;
 
-    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont);
+    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont,
+                                  TextAlignment::Top);
     dot->setPos(xPos, yPos);
     return dot;
 }
@@ -218,7 +219,7 @@ QGraphicsItem *BeamGroup::createFermata(const NoteStem &stem,
 
     const QChar symbol = (stem.getStemType() == NoteStem::StemUp) ?
                 MusicFont::FermataUp : MusicFont::FermataDown;
-    auto fermata = new SimpleTextItem(symbol, musicFont);
+    auto fermata = new SimpleTextItem(symbol, musicFont, TextAlignment::Top);
     fermata->setPos(stem.getX(), y);
 
     return fermata;
@@ -258,7 +259,7 @@ QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
     if (stem.isStaccato())
         y += (stem.getStemType() == NoteStem::StemUp) ? 7 : -7;
 
-    auto accent = new SimpleTextItem(symbol, musicFont);
+    auto accent = new SimpleTextItem(symbol, musicFont, TextAlignment::Top);
     accent->setPos(stem.getX(), y);
 
     return accent;
@@ -322,7 +323,7 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
 
     // Draw the symbol.
     const double y = stem.getStemEdge() - fm.ascent();
-    auto flag = new SimpleTextItem(symbol, musicFont);
+    auto flag = new SimpleTextItem(symbol, musicFont, TextAlignment::Top);
     flag->setPos(stem.getX(), y);
 
     // For grace notes, add a slash through the stem.
@@ -335,7 +336,8 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
                                        ? MusicFont::GraceNoteSlashUp
                                        : MusicFont::GraceNoteSlashDown;
 
-        auto slash = new SimpleTextItem(slash_symbol, musicFont);
+        auto slash =
+            new SimpleTextItem(slash_symbol, musicFont, TextAlignment::Top);
         slash->setPos(stem.getX() + 1, y);
         group->addToGroup(slash);
 

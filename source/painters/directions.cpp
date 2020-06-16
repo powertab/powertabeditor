@@ -52,34 +52,35 @@ double SystemRenderer::drawDirections(const System &system,
             switch (symbol.getSymbolType())
             {
                 case DirectionSymbol::Coda:
-                    item = new SimpleTextItem2(QChar(MusicFont::Coda),
-                                              myMusicNotationFont);
+                    item = new SimpleTextItem(QChar(MusicFont::Coda),
+                                              myMusicNotationFont,
+                                              TextAlignment::Baseline);
                     break;
                 case DirectionSymbol::DoubleCoda:
-                    item = new SimpleTextItem2(QString(2, MusicFont::Coda),
-                                              myMusicNotationFont);
+                    item = new SimpleTextItem(QString(2, MusicFont::Coda),
+                                              myMusicNotationFont,
+                                              TextAlignment::Baseline);
                     break;
                 case DirectionSymbol::Segno:
-                    item = new SimpleTextItem2(QChar(MusicFont::Segno),
-                                              myMusicNotationFont);
+                    item = new SimpleTextItem(QChar(MusicFont::Segno),
+                                              myMusicNotationFont,
+                                              TextAlignment::Baseline);
                     break;
                 case DirectionSymbol::SegnoSegno:
-                    item = new SimpleTextItem2(QString(2, MusicFont::Segno),
-                                              myMusicNotationFont);
+                    item = new SimpleTextItem(QString(2, MusicFont::Segno),
+                                              myMusicNotationFont,
+                                              TextAlignment::Baseline);
                     break;
                 default:
                     // Display plain text.
                     QFont font = myPlainTextFont;
                     font.setItalic(true);
-                    item = new SimpleTextItem2(
-                        theDirectionText[symbol.getSymbolType()], font);
+                    item = new SimpleTextItem(
+                        theDirectionText[symbol.getSymbolType()], font,
+                        TextAlignment::Top);
 
-                    // The coda / segno symbols are already aligned so that the
-                    // baseline passes through the middle of the symbol. For
-                    // plain text, adjust by the ascent to vertically center
-                    // the text.
-                    QFontMetrics fm(font);
-                    y += 0.5 * fm.ascent();
+                    // Vertically center the text.
+                    y -= 0.5 * item->boundingRect().height();
                     break;
             }
 
