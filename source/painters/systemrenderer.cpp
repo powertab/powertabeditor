@@ -394,7 +394,7 @@ void SystemRenderer::drawArpeggio(const Position &position, double x,
                 MusicFont::ArpeggioUp : MusicFont::ArpeggioDown;
 
     auto endPoint = new SimpleTextItem(arpeggioEnd, myMusicNotationFont,
-                                       TextAlignment::Top);
+                                       TextAlignment::Top, QPen(myPalette.text().color()));
     const double y = position.hasProperty(Position::ArpeggioUp) ? top : bottom;
     endPoint->setPos(x, y - 1.45 * myMusicNotationFont.pixelSize());
     endPoint->setParentItem(myParentStaff);
@@ -1324,7 +1324,7 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
     QFont font(MusicFont::getFont(21));
 
     auto text = new SimpleTextItem(QChar(MusicFont::Trill), font,
-                                   TextAlignment::Baseline);
+                                   TextAlignment::Baseline, QPen(myPalette.text().color()));
     centerHorizontally(*text, 0, layout.getPositionSpacing());
     text->setY(0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
 
