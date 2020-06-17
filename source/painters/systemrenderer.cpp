@@ -1416,13 +1416,12 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
         const double x = layout.getPositionX(note.getPosition()) +
                 0.5 * (layout.getPositionSpacing() - note_head_width) -
                 accidental_width;
-        const double y =
-            note.getY() + layout.getTopStdNotationLine() - fm->ascent();
+        const double y = note.getY() + layout.getTopStdNotationLine();
         const QString note_text = accidental_text + note_head_char;
 
         QGraphicsItemGroup *group = nullptr;
         auto text_item =
-            new SimpleTextItem(note_text, *font, TextAlignment::Top);
+            new SimpleTextItem(note_text, *font, TextAlignment::Baseline);
 
         if (note.isDotted() || note.isDoubleDotted())
         {
@@ -1430,14 +1429,15 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
             const double dotX = fm->width(note_text) + 2;
 
             const QChar dot(MusicFont::Dot);
-            auto dotText = new SimpleTextItem(dot, *font, TextAlignment::Top);
+            auto dotText =
+                new SimpleTextItem(dot, *font, TextAlignment::Baseline);
             dotText->setPos(dotX, 0);
             group->addToGroup(dotText);
 
             if (note.isDoubleDotted())
             {
                 auto dotText2 =
-                    new SimpleTextItem(dot, *font, TextAlignment::Top);
+                    new SimpleTextItem(dot, *font, TextAlignment::Baseline);
                 dotText2->setPos(dotX + 4, 0);
                 group->addToGroup(dotText2);
             }
@@ -1460,43 +1460,47 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
                 finger_text = QString::number(static_cast<int>(finger));
 
             auto item = new SimpleTextItem(finger_text, myPlainTextFont,
-                                           TextAlignment::Top);
+                                           TextAlignment::Baseline);
 
+            static const double y_left = -note_head_width - 1;
+            static const double y_right = note_head_width + 3;
+            static constexpr double y_above = -4;
+            static constexpr double y_below = 12;
             double numberX;
             double numberY;
             switch (fingering.getDisplayPosition())
             {
                 case LeftHandFingering::DisplayPosition::Left:
-                    numberX = -note_head_width - 1;
-                    numberY = 25;
+                    numberX = y_left;
+                    numberY = 0;
                     break;
                 case LeftHandFingering::DisplayPosition::AboveLeft:
-                    numberX = -note_head_width + 1;
-                    numberY = 18;
+                    numberX = y_left + 2;
+                    numberY = y_above;
                     break;
                 case LeftHandFingering::DisplayPosition::Above:
                     numberX = 0;
-                    numberY = 17;
+                    numberY = y_above;
                     break;
                 case LeftHandFingering::DisplayPosition::AboveRight:
-                    numberX = note_head_width + 1;
-                    numberY = 18;
+                    numberX = y_right - 2;
+                    numberY = y_above;
                     break;
                 case LeftHandFingering::DisplayPosition::Right:
-                    numberX = note_head_width + 3;
-                    numberY = 25;
+                    numberX = y_right;
+                    numberY = 0;
                     break;
                 case LeftHandFingering::DisplayPosition::BelowRight:
-                    numberX = note_head_width + 1;
-                    numberY = 32;
+                    numberX = y_right - 2;
+                    numberY = y_below;
                     break;
                 case LeftHandFingering::DisplayPosition::Below:
                     numberX = 0;
-                    numberY = 33;
+                    numberY = y_below;
                     break;
                 case LeftHandFingering::DisplayPosition::BelowLeft:
-                    numberX = -note_head_width + 1;
-                    numberY = 32;
+                    numberX = y_left + 2;
+                    numberY = y_below;
                     break;
             }
 
