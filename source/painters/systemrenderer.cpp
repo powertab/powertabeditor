@@ -621,6 +621,20 @@ void SystemRenderer::drawTempoMarkers(const System &system,
             // Add the beat type image.
             QFontMetricsF fm(font);
             QPixmap image(getBeatTypeImage(tempo.getBeatType()));
+
+            //set the color of the beat type image according to theme
+            QImage tmp = image.toImage();
+            QColor color(myPalette.text().color());
+            for(int y = 0; y < tmp.height(); y++)
+            {
+                for(int x= 0; x < tmp.width(); x++)
+                {
+                    color.setAlpha(tmp.pixelColor(x,y).alpha());
+                    tmp.setPixelColor(x,y,color);
+                }
+            }
+            image = QPixmap::fromImage(tmp);
+
             auto pixmap = new QGraphicsPixmapItem(image.scaled(
                 fm.width(imageSpacing), NOTE_HEIGHT,
                 Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
