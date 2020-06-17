@@ -1014,8 +1014,8 @@ void SystemRenderer::drawSymbolsBelowTabStaff(const LayoutInfo &layout)
 QGraphicsItem *SystemRenderer::createPickStroke(const QString &text)
 {
     auto textItem =
-        new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Top);
-    textItem->setPos(2, 2 - myMusicFontMetrics.ascent());
+        new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Baseline);
+    textItem->setPos(2, 2);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location
@@ -1288,8 +1288,8 @@ QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
     const double symbolWidth = QFontMetricsF(font).width(symbol);
     const int numSymbols = width / symbolWidth;
     auto text = new SimpleTextItem(QString(numSymbols, symbol), font,
-                                   TextAlignment::Top);
-    text->setPos(0, -25);
+                                   TextAlignment::Baseline);
+    text->setPos(0, 0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
 
     // A bit of a hack for getting around the height offset caused by the
     // music font.
@@ -1306,10 +1306,11 @@ QGraphicsItem *SystemRenderer::createTremoloPicking(const LayoutInfo& layout)
 
     for (int i = 0; i < 3; i++)
     {
-        auto line = new SimpleTextItem(QChar(MusicFont::TremoloPicking),
-                                       myMusicNotationFont, TextAlignment::Top);
+        auto line =
+            new SimpleTextItem(QChar(MusicFont::TremoloPicking),
+                               myMusicNotationFont, TextAlignment::Baseline);
         centerHorizontally(*line, 0, layout.getPositionSpacing() * 1.25);
-        line->setY(-myMusicFontMetrics.ascent() - 7 + i * offset);
+        line->setY(-7 + i * offset);
         group->addToGroup(line);
     }
 
@@ -1320,10 +1321,10 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
 {
     QFont font(MusicFont::getFont(21));
 
-    auto text =
-        new SimpleTextItem(QChar(MusicFont::Trill), font, TextAlignment::Top);
+    auto text = new SimpleTextItem(QChar(MusicFont::Trill), font,
+                                   TextAlignment::Baseline);
     centerHorizontally(*text, 0, layout.getPositionSpacing());
-    text->setY(-18);
+    text->setY(0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
 
     auto group = new QGraphicsItemGroup();
     group->addToGroup(text);
@@ -1353,8 +1354,8 @@ QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
         text = QStringLiteral("ff");
 
     auto textItem =
-        new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Top);
-    textItem->setPos(0, -myMusicFontMetrics.ascent() + 10);
+        new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Baseline);
+    textItem->setY(0.5 * LayoutInfo::TAB_SYMBOL_SPACING);
 
     // Sticking the text in a QGraphicsItemGroup allows us to offset the
     // position of the text from its default location.
@@ -1681,12 +1682,12 @@ void SystemRenderer::drawMultiBarRest(const System &system,
                 LayoutInfo::STAFF_WIDTH - layout.getPositionSpacing() / 2.0);
 
     // Draw the measure count.
-    auto measureCountText = new SimpleTextItem(
-        QString::number(measureCount), myMusicNotationFont, TextAlignment::Top);
+    auto measureCountText =
+        new SimpleTextItem(QString::number(measureCount), myMusicNotationFont,
+                           TextAlignment::Baseline);
 
     centerHorizontally(*measureCountText, leftX, rightX);
-    measureCountText->setY(layout.getTopStdNotationLine() -
-                           myMusicFontMetrics.ascent());
+    measureCountText->setY(layout.getTopStdNotationLine());
     measureCountText->setParentItem(myParentStaff);
 
     // Draw symbol across std. notation staff.
