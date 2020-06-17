@@ -52,6 +52,8 @@ ScoreArea::ScoreArea(QWidget *parent)
     myPrintPalette.setColor(QPalette::Light,Qt::white);
     myPrintPalette.setColor(QPalette::Dark,Qt::lightGray);
 
+    activePalette = &myScorePalette;
+
     setBackgroundBrush(myScorePalette.light());
 }
 
@@ -172,7 +174,7 @@ void ScoreArea::print(QPrinter &printer)
     painter.begin(&printer);
 
     // use the printPalette for rendering
-    myScorePalette = myPrintPalette;
+    activePalette = &myPrintPalette;
 
     // Hide the caret when printing.
     myCaretPainter->hide();
@@ -223,7 +225,7 @@ void ScoreArea::print(QPrinter &printer)
     painter.end();
 
     // reuse the original app palette and render the document
-    myScorePalette = this->palette();
+    activePalette = &myScorePalette;
     this->renderDocument(*myDocument);    
 }
 
@@ -266,5 +268,5 @@ void ScoreArea::refreshZoom()
 
 QPalette ScoreArea::getPalette() const
 {
-    return myScorePalette;
+    return *activePalette;
 }

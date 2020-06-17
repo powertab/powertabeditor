@@ -116,7 +116,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         myParentStaff = new StaffPainter(layout,
                                          ScoreLocation(myScore, systemIndex, i),
                                          myScoreArea->getClickPubSub(),
-                                         myPalette.text().color());
+                                         myPalette.dark().color());
         myParentStaff->setPos(0, height);
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
@@ -1669,7 +1669,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
         // vertical lines on either end.
         QGraphicsLineItem *horizLine1 = new QGraphicsLineItem();
         horizLine1->setLine(leftX, y2, leftX + lineWidth, y2);
-        horizLine1->setPen(QPen(myPalette.text().color()));
+        horizLine1->setPen(QPen(myPalette.light().color()));
         horizLine1->setParentItem(myParentStaff);
 
         QGraphicsLineItem *horizLine2 = new QGraphicsLineItem();

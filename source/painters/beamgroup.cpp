@@ -84,7 +84,7 @@ BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
     }
 
     auto stemPathItem = new QGraphicsPathItem(stemPath);
-    stemPathItem->setPen(QPen(myBeamColor, 2.0, Qt::SolidLine));
+    stemPathItem->setPen(QPen(myBeamColor, 1.0, Qt::SolidLine));
     stemPathItem->setParentItem(parent);
 
     QPainterPath beamPath;

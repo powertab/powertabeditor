@@ -73,6 +73,7 @@ private:
     CaretPainter *myCaretPainter;
     QPalette myScorePalette; // the palette used by scorearea
     QPalette myPrintPalette; // the palette used by when printing
+    QPalette *activePalette;
 
     std::shared_ptr<ClickPubSub> myClickPubSub;
 };
