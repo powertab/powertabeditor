@@ -1532,10 +1532,7 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
         const std::vector<NoteStem> &stems = layout.getNoteStems(v);
 
         for (const BeamGroup &group : beamGroups)
-        {
-            group.drawStems(myParentStaff, stems, myMusicNotationFont,
-                            myMusicFontMetrics, layout);
-        }
+            group.drawStems(myParentStaff, stems, myMusicNotationFont, layout);
 
         const Voice &voice = staff.getVoices()[v];
         drawIrregularGroups(voice, stems);

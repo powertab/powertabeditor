@@ -43,10 +43,9 @@ BeamGroup::BeamGroup(NoteStem::StemType direction,
 {
 }
 
-void BeamGroup::drawStems(QGraphicsItem *parent,
-                          const std::vector<NoteStem> &stems,
-                          const QFont &musicFont, const QFontMetricsF &fm,
-                          const LayoutInfo &layout) const
+void
+BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
+                     const QFont &musicFont, const LayoutInfo &layout) const
 {
     QList<QGraphicsItem *> symbols;
     QPainterPath stemPath;
@@ -106,7 +105,7 @@ void BeamGroup::drawStems(QGraphicsItem *parent,
     // Draw a note flag for single notes (eighth notes or less) or grace notes.
     if (group_stems.size() == 1 && NoteStem::canHaveFlag(firstStem))
     {
-        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont, fm);
+        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont);
         flag->setParentItem(parent);
     }
 }
@@ -278,9 +277,8 @@ QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
     return accent;
 }
 
-QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
-                                         const QFont &musicFont,
-                                         const QFontMetricsF &fm)
+QGraphicsItem *
+BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont)
 {
     Q_ASSERT(NoteStem::canHaveFlag(stem));
 
@@ -335,8 +333,8 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
     }
 
     // Draw the symbol.
-    const double y = stem.getStemEdge() - fm.ascent();
-    auto flag = new SimpleTextItem(symbol, musicFont, TextAlignment::Top);
+    const double y = stem.getStemEdge();
+    auto flag = new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline);
     flag->setPos(stem.getX(), y);
 
     // For grace notes, add a slash through the stem.
@@ -349,8 +347,8 @@ QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
                                        ? MusicFont::GraceNoteSlashUp
                                        : MusicFont::GraceNoteSlashDown;
 
-        auto slash =
-            new SimpleTextItem(slash_symbol, musicFont, TextAlignment::Top);
+        auto slash = new SimpleTextItem(slash_symbol, musicFont,
+                                        TextAlignment::Baseline);
         slash->setPos(stem.getX() + 1, y);
         group->addToGroup(slash);
 

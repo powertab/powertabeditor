@@ -34,8 +34,7 @@ public:
 
     /// Draws the stems for each note in the group.
     void drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
-                   const QFont &musicFont, const QFontMetricsF &fm,
-                   const LayoutInfo &layout) const;
+                   const QFont &musicFont, const LayoutInfo &layout) const;
 
 private:
     /// Draws the extra beams required for sixteenth notes, etc.
@@ -58,8 +57,7 @@ private:
                                        const LayoutInfo &layout);
 
     static QGraphicsItem *createNoteFlag(const NoteStem& stem,
-                                         const QFont &musicFont,
-                                         const QFontMetricsF &fm);
+                                         const QFont &musicFont);
 
     NoteStem::StemType myStemDirection;
     std::vector<size_t> myStems;
