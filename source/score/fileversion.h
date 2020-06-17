@@ -32,7 +32,9 @@ enum class FileVersion : int
     LEFT_HAND_FINGERING = 4,
     /// Added a thumb option to left hand fingerings.
     LEFT_HAND_FINGERING_THUMB = 5,
-    LATEST_VERSION = LEFT_HAND_FINGERING_THUMB
+    /// Added a subtitle to the score info.
+    SONG_SUBTITLE = 6,
+    LATEST_VERSION = SONG_SUBTITLE
 };
 
 #endif

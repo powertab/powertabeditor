@@ -23,11 +23,11 @@
 #include <score/scoreinfo.h>
 #include <QDate>
 
-static const double VERTICAL_SPACING = 10.0;
+static constexpr double VERTICAL_SPACING = 10.0;
 static const double AUTHOR_INFO_WIDTH = LayoutInfo::STAFF_WIDTH * 0.4;
-static const int TITLE_SIZE = 36;
-static const int SUBTITLE_SIZE = 20;
-static const int AUTHOR_SIZE = 14;
+static constexpr int TITLE_SIZE = 36;
+static constexpr int SUBTITLE_SIZE = 20;
+static constexpr int AUTHOR_SIZE = 14;
 
 static const QString theAudioReleaseTypes[] = {
     "Single", "EP", "Album", "Double Album", "Triple Album", "Boxset"
@@ -199,6 +199,12 @@ static void renderSongInfo(QGraphicsItemGroup &group, const QFont &font,
     {
         addCenteredText(group, font, TITLE_SIZE,
                         QString::fromStdString(song_data.getTitle()));
+    }
+
+    if (!song_data.getSubtitle().empty())
+    {
+        addCenteredText(group, font, SUBTITLE_SIZE,
+                        QString::fromStdString(song_data.getSubtitle()));
     }
 
     if (!song_data.getArtist().empty())

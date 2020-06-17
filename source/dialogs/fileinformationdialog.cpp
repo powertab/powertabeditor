@@ -196,6 +196,7 @@ ScoreInfo FileInformationDialog::getScoreInfo() const
         SongData song;
 
         song.setTitle(ui->songTitleValue->text().toStdString());
+        song.setSubtitle(ui->songSubtitleValue->text().toStdString());
         song.setArtist(ui->songArtistValue->text().toStdString());
 
         switch (ui->releaseInfoStack->currentIndex())

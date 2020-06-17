@@ -46,9 +46,8 @@ convertScoreInfo(const Gp7::ScoreInfo &gp_info, Score &score)
     ScoreInfo info;
     SongData data;
 
-    // No support for subtitle.
-    // TODO - consider adding this to SongData.
     data.setTitle(gp_info.myTitle);
+    data.setSubtitle(gp_info.mySubtitle);
     data.setArtist(gp_info.myArtist);
 
     data.setAudioReleaseInfo(SongData::AudioReleaseInfo(

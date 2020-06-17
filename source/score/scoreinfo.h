@@ -141,6 +141,9 @@ public:
     void setTitle(const std::string &title);
     const std::string &getTitle() const;
 
+    void setSubtitle(const std::string &subtitle);
+    const std::string &getSubtitle() const;
+
     void setArtist(const std::string &artist);
     const std::string &getArtist() const;
 
@@ -181,6 +184,7 @@ public:
 
 private:
     std::string myTitle;
+    std::string mySubtitle;
     std::string myArtist;
     std::optional<AudioReleaseInfo> myAudioReleaseInfo;
     std::optional<VideoReleaseInfo> myVideoReleaseInfo;
@@ -195,9 +199,13 @@ private:
 };
 
 template <class Archive>
-void SongData::serialize(Archive &ar, const FileVersion /*version*/)
+void SongData::serialize(Archive &ar, const FileVersion version)
 {
     ar("title", myTitle);
+
+    if (version >= FileVersion::SONG_SUBTITLE)
+        ar("subtitle", mySubtitle);
+
     ar("artist", myArtist);
     ar("audio_release_info", myAudioReleaseInfo);
     ar("video_release_info", myVideoReleaseInfo);

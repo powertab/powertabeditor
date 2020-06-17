@@ -174,6 +174,16 @@ const std::string &SongData::getTitle() const
     return myTitle;
 }
 
+void SongData::setSubtitle(const std::string &subtitle)
+{
+    mySubtitle = subtitle;
+}
+
+const std::string &SongData::getSubtitle() const
+{
+    return mySubtitle;
+}
+
 void SongData::setArtist(const std::string &artist)
 {
     myArtist = artist;

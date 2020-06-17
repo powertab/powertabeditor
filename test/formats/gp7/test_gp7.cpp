@@ -41,6 +41,7 @@ TEST_CASE("Formats/Gp7Import/ScoreInfo/Basic", "")
     REQUIRE(info.getScoreType() == ScoreInfo::ScoreType::Song);
     const SongData &data = info.getSongData();
     REQUIRE(data.getTitle() == "The title");
+    REQUIRE(data.getSubtitle() == "The subtitle");
     REQUIRE(data.getArtist() == "The artist");
     REQUIRE(data.isAudioRelease());
     REQUIRE(data.getAudioReleaseInfo().getTitle() == "The album");
