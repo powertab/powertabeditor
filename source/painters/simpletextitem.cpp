@@ -20,18 +20,30 @@
 #include <QPainter>
 
 SimpleTextItem::SimpleTextItem(const QString &text, const QFont &font,
-                               const QPen &pen, const QBrush &background)
-    : myText(text), myFont(font), myPen(pen), myBackground(background)
+                               TextAlignment alignment, const QPen &pen,
+                               const QBrush &background)
+    : myText(text),
+      myFont(font),
+      myPen(pen),
+      myBackground(background),
+      myAlignment(alignment)
 {
     QFontMetricsF fm(myFont);
     myAscent = fm.ascent();
-    myBoundingRect = QRectF(0, 0, fm.width(myText), fm.height());
+    switch (myAlignment)
+    {
+        case TextAlignment::Top:
+            myBoundingRect = QRectF(0, 0, fm.width(myText), fm.height());
+            break;
+        case TextAlignment::Baseline:
+            myBoundingRect = fm.boundingRect(text);
+            break;
+    }
 }
 
 void SimpleTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
                            QWidget *)
 {
-
     // Draw the background rectangle. Avoid to cover other elements
     // by drawing only 1/3 of the rectangle, vertically centered.
     painter->fillRect(
@@ -43,6 +55,14 @@ void SimpleTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
     painter->setPen(myPen);
     painter->setFont(myFont);
-    // Match the way that QSimpleTextItem aligns text.
-    painter->drawText(0, myAscent, myText);
+
+    switch (myAlignment)
+    {
+        case TextAlignment::Top:
+            painter->drawText(0, myAscent, myText);
+            break;
+        case TextAlignment::Baseline:
+            painter->drawText(0, 0, myText);
+            break;
+    }
 }

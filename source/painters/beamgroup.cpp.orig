@@ -69,7 +69,11 @@ BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
         // Draw any symbols that use information about the stem, like staccato,
         // fermata, etc.
         if (stem.isStaccato())
-            symbols << createStaccato(stem, musicFont, myBeamColor);
+<<<<<<< HEAD
+            symbols << createStaccato(stem, musicFont, fm, myBeamColor);
+=======
+            symbols << createStaccato(stem, musicFont);
+>>>>>>> master
 
         if (stem.hasFermata())
             symbols << createFermata(stem, musicFont, layout, myBeamColor );
@@ -107,7 +111,11 @@ BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
     // Draw a note flag for single notes (eighth notes or less) or grace notes.
     if (group_stems.size() == 1 && NoteStem::canHaveFlag(firstStem))
     {
-        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont, myBeamColor);
+<<<<<<< HEAD
+        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont, fm, myBeamColor);
+=======
+        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont);
+>>>>>>> master
         flag->setParentItem(parent);
     }
 }
@@ -176,9 +184,29 @@ void BeamGroup::drawExtraBeams(QPainterPath &path,
 
 }
 
+<<<<<<< HEAD
 QGraphicsItem *BeamGroup::createStaccato(const NoteStem &stem,
                                          const QFont &musicFont,
+                                         const QFontMetricsF &fm,
                                          const QColor &color)
+{
+    // Draw the dot near either the top or bottom note of the position,
+    // depending on stem direction.
+    const double VERTICAL_SPACING = 8;
+    const double yPos = (stem.getStemType() == NoteStem::StemUp)
+                            ? stem.getBottom() - fm.ascent() + VERTICAL_SPACING
+                            : stem.getTop() - fm.ascent() - VERTICAL_SPACING;
+
+    const double HORIZONTAL_OFFSET = 3;
+    const double xPos = (stem.getStemType() == NoteStem::StemUp)
+                            ? stem.getX() - HORIZONTAL_OFFSET
+                            : stem.getX() + HORIZONTAL_OFFSET;
+
+    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont, QPen(color));
+    dot->setPos(xPos, yPos);
+=======
+QGraphicsItem *
+BeamGroup::createStaccato(const NoteStem &stem, const QFont &musicFont)
 {
     // Draw the dot near either the top or bottom note of the position,
     // depending on stem direction.
@@ -191,9 +219,10 @@ QGraphicsItem *BeamGroup::createStaccato(const NoteStem &stem,
                          ? stem.getX() - STEM_TO_NOTE_OFFSET
                          : stem.getX() + STEM_TO_NOTE_OFFSET;
 
-    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont, QPen(color),
-                                      TextAlignment::Baseline);
-dot->setPos(xPos, yPos);
+    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont,
+                                  TextAlignment::Baseline);
+    dot->setPos(x, y);
+>>>>>>> master
     return dot;
 }
 
@@ -218,7 +247,12 @@ QGraphicsItem *BeamGroup::createFermata(const NoteStem &stem,
 
     const QChar symbol = (stem.getStemType() == NoteStem::StemUp) ?
                 MusicFont::FermataUp : MusicFont::FermataDown;
-    auto fermata = new SimpleTextItem(symbol, musicFont, QPen(color), TextAlignment::Baseline);
+<<<<<<< HEAD
+    auto fermata = new SimpleTextItem(symbol, musicFont, QPen(color));
+=======
+    auto fermata =
+        new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline);
+>>>>>>> master
     fermata->setPos(stem.getX(), y);
 
     return fermata;
@@ -226,7 +260,8 @@ QGraphicsItem *BeamGroup::createFermata(const NoteStem &stem,
 
 QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
                                        const QFont &musicFont,
-                                       const LayoutInfo &layout)
+                                       const LayoutInfo &layout,
+                                       const QColor &color)
 {
     static constexpr double padding = 7;
     static constexpr double staccato_offset = padding;
@@ -236,8 +271,6 @@ QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
     // Position the accent directly above/below the staff if possible, unless
     // the note stem extends beyond the std. notation staff.
     // - It should be positioned opposite to the fermata symbols.
-    // After positioning, offset the height due to the way that
-    // QGraphicsTextItem positions text.
     if (stem.getStemType() == NoteStem::StemDown)
     {
         y = std::min(stem.getTop(), layout.getTopStdNotationLine()) - padding;
@@ -275,16 +308,30 @@ QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
         x += 1;
     }
 
+<<<<<<< HEAD
+    if (stem.isStaccato())
+        y += (stem.getStemType() == NoteStem::StemUp) ? 7 : -7;
+
+    auto accent = new SimpleTextItem(symbol, musicFont, QPen(color));
+    accent->setPos(stem.getX(), y);
+=======
     auto accent =
-	new SimpleTextItem(symbol, musicFont, QPen(color), TextAlignment::Baseline);
+        new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline);
     accent->setPos(x, y);
+>>>>>>> master
 
     return accent;
 }
 
-QGraphicsItem *
-BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont,
+<<<<<<< HEAD
+QGraphicsItem *BeamGroup::createNoteFlag(const NoteStem &stem,
+                                         const QFont &musicFont,
+                                         const QFontMetricsF &fm,
                                          const QColor &flagColor)
+=======
+QGraphicsItem *
+BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont)
+>>>>>>> master
 {
     Q_ASSERT(NoteStem::canHaveFlag(stem));
 
@@ -339,10 +386,16 @@ BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont,
     }
 
     // Draw the symbol.
-    const double y = stem.getStemEdge();
-    auto flag = new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline,
+<<<<<<< HEAD
+    const double y = stem.getStemEdge() - fm.ascent();
+    auto flag = new SimpleTextItem(symbol, musicFont, 
     QPen(flagColor, 1.0));
+    flag->setPos(stem.getX() + 2, y);
+=======
+    const double y = stem.getStemEdge();
+    auto flag = new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline);
     flag->setPos(stem.getX(), y);
+>>>>>>> master
 
     // For grace notes, add a slash through the stem.
     if (stem.isGraceNote())
@@ -354,8 +407,12 @@ BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont,
                                        ? MusicFont::GraceNoteSlashUp
                                        : MusicFont::GraceNoteSlashDown;
 
-        auto slash = new SimpleTextItem(slash_symbol, musicFont, 
-	QPen(flagColor), TextAlignment::Baseline);;
+<<<<<<< HEAD
+        auto slash = new SimpleTextItem(slash_symbol, musicFont, QPen(flagColor));
+=======
+        auto slash = new SimpleTextItem(slash_symbol, musicFont,
+                                        TextAlignment::Baseline);
+>>>>>>> master
         slash->setPos(stem.getX() + 1, y);
         group->addToGroup(slash);
 

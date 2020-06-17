@@ -46,8 +46,13 @@ private:
 
     /// Creates and positions a staccato symbol.
     static QGraphicsItem *createStaccato(const NoteStem& stem,
+<<<<<<< HEAD
                                          const QFont &musicFont,
+                                         const QFontMetricsF &fm,
                                          const QColor &color);
+=======
+                                         const QFont &musicFont);
+>>>>>>> master
 
     /// Creates and positions a fermata symbol.
     static QGraphicsItem *createFermata(const NoteStem& noteStem,
@@ -62,8 +67,13 @@ private:
                                        const QColor &color);
 
     static QGraphicsItem *createNoteFlag(const NoteStem& stem,
+<<<<<<< HEAD
                                          const QFont &musicFont,
+                                         const QFontMetricsF &fm,
                                          const QColor &color);
+=======
+                                         const QFont &musicFont);
+>>>>>>> master
 
     NoteStem::StemType myStemDirection;
     std::vector<size_t> myStems;

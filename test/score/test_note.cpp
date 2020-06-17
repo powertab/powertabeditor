@@ -1,25 +1,25 @@
 /*
-  * Copyright (C) 2013 Cameron White
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-  
+ * Copyright (C) 2013 Cameron White
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <catch2/catch.hpp>
 
+#include "test_serialization.h"
 #include <score/note.h>
 #include <util/tostring.h>
-#include "test_serialization.h"
 
 TEST_CASE("Score/Note/SimpleProperties", "")
 {
@@ -68,8 +68,8 @@ TEST_CASE("Score/Note/ArtificialHarmonic", "")
 
     REQUIRE(!note.hasArtificialHarmonic());
 
-    note.setArtificialHarmonic(ArtificialHarmonic(ChordName::D, ChordName::Flat,
-            ArtificialHarmonic::Octave::Octave15ma));
+    note.setArtificialHarmonic(ArtificialHarmonic(
+        ChordName::D, ChordName::Flat, ArtificialHarmonic::Octave::Octave15ma));
     REQUIRE(note.hasArtificialHarmonic());
     REQUIRE(note.getArtificialHarmonic().getKey() == ChordName::D);
 
@@ -95,15 +95,16 @@ TEST_CASE("Score/Note/Bend", "")
 TEST_CASE("Score/Note/LeftHandFingering", "")
 {
     Note note;
-    
+
     REQUIRE(!note.hasLeftHandFingering());
-    
-    note.setLeftHandFingering(LeftHandFingering(LeftHandFingering::Finger::Ring,
-        LeftHandFingering::DisplayPosition::BelowRight));
+
+    note.setLeftHandFingering(
+        LeftHandFingering(LeftHandFingering::Finger::Ring,
+                          LeftHandFingering::DisplayPosition::BelowRight));
     REQUIRE(note.hasLeftHandFingering());
-    REQUIRE(note.getLeftHandFingering().getFingerNumber() == 
-        LeftHandFingering::Finger::Ring);
-    
+    REQUIRE(note.getLeftHandFingering().getFinger() ==
+            LeftHandFingering::Finger::Ring);
+
     note.clearLeftHandFingering();
     REQUIRE(!note.hasLeftHandFingering());
 }
@@ -159,8 +160,8 @@ TEST_CASE("Score/Note/Serialization", "")
 {
     Note note(3, 12);
     note.setProperty(Note::Octave15ma);
-    note.setArtificialHarmonic(ArtificialHarmonic(ChordName::D, ChordName::Flat,
-            ArtificialHarmonic::Octave::Octave15ma));
+    note.setArtificialHarmonic(ArtificialHarmonic(
+        ChordName::D, ChordName::Flat, ArtificialHarmonic::Octave::Octave15ma));
 
     Serialization::test("note", note);
 }

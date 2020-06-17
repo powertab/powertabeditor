@@ -50,7 +50,7 @@ static void addCenteredText(QGraphicsItemGroup &group, QFont font,
                             int font_size, const QString &text)
 {
     font.setPointSize(font_size);
-    auto text_item = new SimpleTextItem(text, font);
+    auto text_item = new SimpleTextItem(text, font, TextAlignment::Top);
 
     // Center horizontally.
     text_item->setX(LayoutInfo::centerItem(0.0, LayoutInfo::STAFF_WIDTH,

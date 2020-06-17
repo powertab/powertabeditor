@@ -120,17 +120,18 @@ private:
 class LeftHandFingering
 {
 public:
-    enum Finger
+    enum class Finger : int
     {
         None = 0,
         Index = 1,
         Middle = 2,
         Ring = 3,
-        Little = 4
+        Little = 4,
+        Thumb = 5
     };
-    
+
     /// Position relative to note head at which to display number.
-    enum DisplayPosition
+    enum class DisplayPosition
     {
         Left,
         AboveLeft,
@@ -141,26 +142,27 @@ public:
         Below,
         BelowLeft
     };
-    
+
     LeftHandFingering();
-    LeftHandFingering(Finger finger, DisplayPosition pos = AboveLeft);
-    
+    LeftHandFingering(Finger finger,
+                      DisplayPosition pos = DisplayPosition::AboveLeft);
+
     bool operator==(const LeftHandFingering &other) const;
-    
+
     /// Sets the finger this hint is showing.
     void setFinger(Finger finger);
-    /// Returns the finger number this hint is showing.
-    unsigned int getFingerNumber() const;
+    /// Returns the finger this hint is showing.
+    Finger getFinger() const;
     /// Returns the display position relative to the note head.
     DisplayPosition getDisplayPosition() const;
-    
+
     template <class Archive>
     void serialize(Archive &ar, const FileVersion /*version*/)
     {
         ar("finger", myFinger);
         ar("display_position", myDisplayPosition);
     }
-    
+
 private:
     Finger myFinger;
     DisplayPosition myDisplayPosition;
