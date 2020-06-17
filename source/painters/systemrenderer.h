@@ -23,6 +23,7 @@
 #include <painters/musicfont.h>
 #include <QFontMetricsF>
 #include <score/staff.h>
+#include <QPalette>
 
 class QGraphicsItem;
 class QGraphicsItemGroup;
@@ -200,6 +201,9 @@ private:
     QFont myPlainTextFont;
     QFont mySymbolTextFont;
     QFont myRehearsalSignFont;
+
+    QPalette myPalette;
+
 };
 
 #endif

@@ -191,9 +191,9 @@ QGraphicsItem *BeamGroup::createStaccato(const NoteStem &stem,
                          ? stem.getX() - STEM_TO_NOTE_OFFSET
                          : stem.getX() + STEM_TO_NOTE_OFFSET;
 
-    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont, QPen(color),
-                                      TextAlignment::Baseline);
-dot->setPos(xPos, yPos);
+    auto dot = new SimpleTextItem(QChar(MusicFont::Dot), musicFont, 
+                                    TextAlignment::Baseline,QPen(color));
+    dot->setPos(x, y);
     return dot;
 }
 
@@ -218,7 +218,7 @@ QGraphicsItem *BeamGroup::createFermata(const NoteStem &stem,
 
     const QChar symbol = (stem.getStemType() == NoteStem::StemUp) ?
                 MusicFont::FermataUp : MusicFont::FermataDown;
-    auto fermata = new SimpleTextItem(symbol, musicFont, QPen(color), TextAlignment::Baseline);
+    auto fermata = new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline,QPen(color));
     fermata->setPos(stem.getX(), y);
 
     return fermata;
@@ -226,7 +226,8 @@ QGraphicsItem *BeamGroup::createFermata(const NoteStem &stem,
 
 QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
                                        const QFont &musicFont,
-                                       const LayoutInfo &layout)
+                                       const LayoutInfo &layout,
+                                       const QColor &color)
 {
     static constexpr double padding = 7;
     static constexpr double staccato_offset = padding;
@@ -276,7 +277,7 @@ QGraphicsItem *BeamGroup::createAccent(const NoteStem &stem,
     }
 
     auto accent =
-	new SimpleTextItem(symbol, musicFont, QPen(color), TextAlignment::Baseline);
+	new SimpleTextItem(symbol, musicFont, TextAlignment::Baseline, QPen(color));
     accent->setPos(x, y);
 
     return accent;
@@ -355,7 +356,7 @@ BeamGroup::createNoteFlag(const NoteStem &stem, const QFont &musicFont,
                                        : MusicFont::GraceNoteSlashDown;
 
         auto slash = new SimpleTextItem(slash_symbol, musicFont, 
-	QPen(flagColor), TextAlignment::Baseline);;
+	        TextAlignment::Baseline, QPen(flagColor));
         slash->setPos(stem.getX() + 1, y);
         group->addToGroup(slash);
 
