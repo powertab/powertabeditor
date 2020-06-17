@@ -45,8 +45,7 @@ private:
 
     /// Creates and positions a staccato symbol.
     static QGraphicsItem *createStaccato(const NoteStem& stem,
-                                         const QFont &musicFont,
-                                         const QFontMetricsF &fm);
+                                         const QFont &musicFont);
 
     /// Creates and positions a fermata symbol.
     static QGraphicsItem *createFermata(const NoteStem& noteStem,

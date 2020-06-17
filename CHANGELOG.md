@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Improved the size and alignment of the treble and bass clef glyphs.
+- Improved standard notation layout when a note is staccato and also has an accent.
+- Improved alignment of accents in the standard notation staff.
 
 ## [Alpha 12] - 2020-06-11
 ### Added
