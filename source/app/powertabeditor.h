@@ -323,6 +323,8 @@ private:
                                        Position::SimpleProperty property);
     /// Set up the menus for the application.
     void createMenus();
+    /// Set up the tool bars for the application.
+    void createToolBars();
     /// Create the tab widget and score area.
     void createTabArea();
     /// Updates the last directory that a file was opened from.
@@ -488,6 +490,12 @@ private:
     Command *myDecreaseLineSpacingCommand;
 
     QMenu *myNotesMenu;
+    QToolBar *myNotesToolBar;
+    QToolBar *myDurationModToolBar;
+    QToolBar *myArticulationToolBar;
+    QToolBar *myOctaveToolBar;
+    QToolBar *myGroupingToolBar;
+    QToolBar *myOrnamentToolBar;
     /// Used to ensure that only one duration option is checked at a time.
     QActionGroup *myNoteDurationGroup;
     Command *myWholeNoteCommand;
@@ -547,10 +555,12 @@ private:
 
     QMenu *myTabSymbolsMenu;
     QMenu *myHammerOnMenu;
+    QToolBar *myTabSymbolsToolBar;
     Command *myHammerPullCommand;
     Command *myHammerOnFromNowhereCommand;
     Command *myPullOffToNowhereCommand;
 
+    QToolBar *myHarmonicToolBar;
     Command *myNaturalHarmonicCommand;
     Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
@@ -558,6 +568,7 @@ private:
     Command *myLeftHandFingeringCommand;
 
     QMenu *mySlideIntoMenu;
+    QToolBar *mySlideToolBar;
     Command *mySlideIntoFromAboveCommand;
     Command *mySlideIntoFromBelowCommand;
 
@@ -568,6 +579,7 @@ private:
     Command *mySlideOutOfDownwardsCommand;
     Command *mySlideOutOfUpwardsCommand;
 
+    QToolBar *myPickingToolBar;
     Command *myVibratoCommand;
     Command *myWideVibratoCommand;
     Command *myPalmMuteCommand;

@@ -136,6 +136,7 @@
 #include <QPrintPreviewDialog>
 #include <QScrollArea>
 #include <QTabBar>
+#include <QToolBar>
 #include <QUrl>
 #include <QVBoxLayout>
 
@@ -191,6 +192,7 @@ PowerTabEditor::PowerTabEditor()
     createCommands();
     loadKeyboardShortcuts();
     createMenus();
+    createToolBars();
 
     // Set up the recent files menu.
     myRecentFiles =
@@ -2920,6 +2922,127 @@ void PowerTabEditor::createMenus()
     // Help menu.
     myHelpMenu = menuBar()->addMenu(tr("&Help"));
     myHelpMenu->addAction(myReportBugCommand);
+}
+
+void PowerTabEditor::createToolBars()
+{
+    // Notes Toolbar.
+    myWholeNoteCommand->setIcon(QIcon(":images/whole_note"));
+    myHalfNoteCommand->setIcon(QIcon(":images/half_note"));
+    myQuarterNoteCommand->setIcon(QIcon(":images/quarter_note"));
+    myEighthNoteCommand->setIcon(QIcon(":images/8th_note"));
+    mySixteenthNoteCommand->setIcon(QIcon(":images/16th_note"));
+    myThirtySecondNoteCommand->setIcon(QIcon(":images/32nd_note"));
+    mySixtyFourthNoteCommand->setIcon(QIcon(":images/64th_note"));
+    myNotesToolBar = addToolBar(tr("Notes"));
+    addToolBar(Qt::LeftToolBarArea, myNotesToolBar);
+    myNotesToolBar->addAction(myWholeNoteCommand);
+    myNotesToolBar->addAction(myHalfNoteCommand);
+    myNotesToolBar->addAction(myQuarterNoteCommand);
+    myNotesToolBar->addAction(myEighthNoteCommand);
+    myNotesToolBar->addAction(mySixteenthNoteCommand);
+    myNotesToolBar->addAction(myThirtySecondNoteCommand);
+    myNotesToolBar->addAction(mySixtyFourthNoteCommand);
+    myNotesToolBar->addSeparator();
+
+    myAddRestCommand->setIcon(QIcon(":images/quarter_rest"));
+    myNotesToolBar->addAction(myAddRestCommand);
+    myNotesToolBar->addSeparator();
+
+    myDottedCommand->setIcon(QIcon(":images/dotted_note"));
+    myDoubleDottedCommand->setIcon(QIcon(":images/doubledotted_note"));
+    myNotesToolBar->addAction(myDottedCommand);
+    myNotesToolBar->addAction(myDoubleDottedCommand);
+
+    // Duration Modifiers Toolbar.
+    myTieCommand->setIcon(QIcon(":images/tie_note"));
+    myFermataCommand->setIcon(QIcon(":images/fermata"));
+    myDurationModToolBar = addToolBar(tr("Duration modifiers"));
+    addToolBar(Qt::LeftToolBarArea, myDurationModToolBar);
+    myDurationModToolBar->addAction(myTieCommand);
+    myDurationModToolBar->addAction(myLetRingCommand);
+    myDurationModToolBar->addAction(myFermataCommand);
+
+    // Dynamic Toolbar.
+    // try to get QAction from volume QToolButton and add to a toolbar
+
+    // Articulation Toolbar.
+    myArticulationToolBar = addToolBar(tr("Articulation"));
+    addToolBar(Qt::LeftToolBarArea, myArticulationToolBar);
+    myArticulationToolBar->addAction(myGhostNoteCommand);
+    myArticulationToolBar->addAction(myMutedCommand);
+    myArticulationToolBar->addAction(myStaccatoCommand);
+    myArticulationToolBar->addAction(myPalmMuteCommand);
+    myArticulationToolBar->addAction(myMarcatoCommand); //actually accent
+    myArticulationToolBar->addAction(mySforzandoCommand); //actually marcato
+
+    // Octave Toolbar.
+    myOctaveToolBar = addToolBar(tr("Octave"));
+    addToolBar(Qt::RightToolBarArea, myOctaveToolBar);
+    myOctaveToolBar->addAction(myOctave8vaCommand);
+    myOctaveToolBar->addAction(myOctave15maCommand);
+    myOctaveToolBar->addAction(myOctave8vbCommand);
+    myOctaveToolBar->addAction(myOctave15mbCommand);
+
+    // Grouping Toolbar.
+    myTripletCommand->setIcon(QIcon(":images/group_note"));
+    myGroupingToolBar = addToolBar(tr("Grouping"));
+    addToolBar(Qt::RightToolBarArea, myGroupingToolBar);
+    myGroupingToolBar->addAction(myTripletCommand);
+    myGroupingToolBar->addAction(myIrregularGroupingCommand);
+
+    // Ornament Toolbar.
+    myTrillCommand->setIcon(QIcon(":images/trill.png"));
+    myVibratoCommand->setIcon(QIcon(":images/vibrato.png"));
+    myOrnamentToolBar = addToolBar(tr("Ornament"));
+    addToolBar(Qt::RightToolBarArea, myOrnamentToolBar);
+    myOrnamentToolBar->addAction(myGraceNoteCommand);
+    myOrnamentToolBar->addAction(myTrillCommand);
+    myOrnamentToolBar->addAction(myVibratoCommand);
+    myOrnamentToolBar->addAction(myWideVibratoCommand);
+
+    // Tab Symbols Toolbar.
+    myBendCommand->setIcon(QIcon(":images/bend"));
+    myHammerPullCommand->setIcon(QIcon(":images/legato"));//image name wrong
+    myTabSymbolsToolBar = addToolBar(tr("Tab Symbols"));
+    addToolBar(Qt::RightToolBarArea, myTabSymbolsToolBar);
+    myTabSymbolsToolBar->addAction(myHammerPullCommand);
+    myTabSymbolsToolBar->addAction(myPalmMuteCommand);
+    myTabSymbolsToolBar->addAction(myTapCommand);
+    myTabSymbolsToolBar->addAction(myBendCommand);
+
+    // Harmonic Toolbar.
+    myHarmonicToolBar = addToolBar(tr("Harmonics"));
+    addToolBar(Qt::RightToolBarArea, myHarmonicToolBar);
+    myHarmonicToolBar->addAction(myNaturalHarmonicCommand);
+    myHarmonicToolBar->addAction(myArtificialHarmonicCommand);
+    myHarmonicToolBar->addAction(myTappedHarmonicCommand);
+
+    // Slide Toolbar.
+    myLegatoSlideCommand->setIcon(QIcon(":images/legatoslide"));
+    myShiftSlideCommand->setIcon(QIcon(":images/shiftslide"));
+    mySlideIntoFromAboveCommand->setIcon(QIcon(":images/slideinabove"));
+    mySlideIntoFromBelowCommand->setIcon(QIcon(":images/slideinbelow"));
+    mySlideOutOfDownwardsCommand->setIcon(QIcon(":images/slideoutdown"));
+    mySlideOutOfUpwardsCommand->setIcon(QIcon(":images/slideoutup"));
+    mySlideToolBar = addToolBar(tr("Slides"));
+    addToolBar(Qt::RightToolBarArea, mySlideToolBar);
+    mySlideToolBar->addAction(myLegatoSlideCommand);
+    mySlideToolBar->addAction(myShiftSlideCommand);
+    mySlideToolBar->addAction(mySlideIntoFromAboveCommand);
+    mySlideToolBar->addAction(mySlideIntoFromBelowCommand);
+    mySlideToolBar->addAction(mySlideOutOfDownwardsCommand);
+    mySlideToolBar->addAction(mySlideOutOfUpwardsCommand);
+
+    //Picking Toolbar.
+    myPickingToolBar = addToolBar(tr("Picking"));
+    addToolBar(Qt::RightToolBarArea, myPickingToolBar);
+    myPickingToolBar->addAction(myArpeggioUpCommand);
+    myPickingToolBar->addAction(myArpeggioDownCommand);
+    myPickingToolBar->addSeparator();
+    
+    myPickingToolBar->addAction(myPickStrokeUpCommand);
+    myPickingToolBar->addAction(myPickStrokeDownCommand);
 }
 
 void PowerTabEditor::createTabArea()
