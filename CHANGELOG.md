@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Left hand fingerings now support thumbs. This is also now supported by the Guitar Pro 6/7 importers (#292).
+- The song information can now store a subtitle. This is also now supported by the Guitar Pro 6/7 importers (#297).
 
 ### Changed
 
