@@ -43,8 +43,11 @@ void ViewFilterDialog::setPresenter(ViewFilterPresenter *presenter)
     connect(ui->removeFilterButton, &QToolButton::clicked, [&]() {
         myPresenter->removeSelectedFilter();
     });
-    connect(ui->filterList, &QListWidget::itemClicked, [&](QListWidgetItem *) {
-        myPresenter->selectFilter(ui->filterList->currentRow());
+    connect(ui->filterList, &QListWidget::currentRowChanged, [&](int row) {
+        // Don't send selection events when the filter list is cleared during
+        // update().
+        if (row >= 0)
+            myPresenter->selectFilter(row);
     });
 
     connect(ui->nameLineEdit, &QLineEdit::textEdited, [&](const QString &s) {
