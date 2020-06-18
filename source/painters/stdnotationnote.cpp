@@ -41,8 +41,7 @@ static const std::unordered_map<char, int> theNotePositions = {
 StdNotationNote::StdNotationNote(const Voice &voice, const Position &pos,
                                  const Note &note, const KeySignature &key,
                                  const Tuning &tuning, double y,
-                                 const std::optional<int> &tie,
-                                 const QColor &color)
+                                 const std::optional<int> &tie)
     : myY(y),
       myAccidentalType(NoAccidental),
       myVoice(voice),
@@ -50,8 +49,7 @@ StdNotationNote::StdNotationNote(const Voice &voice, const Position &pos,
       myNote(&note),
       myKey(&key),
       myTuning(&tuning),
-      myTie(tie),
-      myNoteColor(color)
+      myTie(tie)
 {
     // Choose the note head symbol.
     switch (pos.getDurationType())
@@ -182,7 +180,7 @@ void StdNotationNote::getNotesInStaff(
 
                     notes.push_back(StdNotationNote(voice, pos, note,
                                                     bar.getKeySignature(),
-                                                    tuning, y, tiedPos, notesColor));
+                                                    tuning, y, tiedPos));
                     StdNotationNote &stdNote = notes.back();
 
                     // Don't show accidentals if there are consecutive

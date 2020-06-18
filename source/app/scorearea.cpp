@@ -42,7 +42,7 @@ ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myScoreInfoBlock(nullptr),
       myCaretPainter(nullptr),
-      myScorePalette(parent->palette()),
+      myScorePalette(&parent->palette()),
       myClickPubSub(std::make_shared<ClickPubSub>())
 {
     setScene(&myScene);
@@ -52,9 +52,7 @@ ScoreArea::ScoreArea(QWidget *parent)
     myPrintPalette.setColor(QPalette::Light,Qt::white);
     myPrintPalette.setColor(QPalette::Dark,Qt::lightGray);
 
-    activePalette = &myScorePalette;
-
-    setBackgroundBrush(myScorePalette.light());
+    activePalette = myScorePalette;
 }
 
 void ScoreArea::renderDocument(const Document &document)
@@ -68,7 +66,7 @@ void ScoreArea::renderDocument(const Document &document)
     auto start = std::chrono::high_resolution_clock::now();
 
     myCaretPainter =
-        new CaretPainter(document.getCaret(), document.getViewOptions(), myScorePalette.text().color());
+        new CaretPainter(document.getCaret(), document.getViewOptions(), activePalette->text().color());
     myCaretPainter->subscribeToMovement([=]() {
         adjustScroll();
     });
@@ -225,7 +223,7 @@ void ScoreArea::print(QPrinter &printer)
     painter.end();
 
     // reuse the original app palette and render the document
-    activePalette = &myScorePalette;
+    activePalette = myScorePalette;
     this->renderDocument(*myDocument);    
 }
 
@@ -266,7 +264,17 @@ void ScoreArea::refreshZoom()
     setTransform(xform);
 }
 
-QPalette ScoreArea::getPalette() const
+const QPalette *ScoreArea::getPalette() const
 {
-    return *activePalette;
+    return activePalette;
+}
+
+bool ScoreArea::event(QEvent *event)
+{
+
+    QGraphicsView::event(event);
+    if(event->type() == QEvent::PaletteChange)
+    {
+        this->renderDocument(*myDocument);
+    }
 }

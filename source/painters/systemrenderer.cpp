@@ -77,7 +77,7 @@ SystemRenderer::SystemRenderer(const ScoreArea *score_area, const Score &score,
     mySymbolTextFont.setPixelSize(9);
     myRehearsalSignFont.setPixelSize(12);
 
-    myPalette = myScoreArea->getPalette();
+    myPalette = *myScoreArea->getPalette();
 }
 
 QGraphicsItem *SystemRenderer::operator()(const System &system,
@@ -85,7 +85,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 {
     // Draw the bounding rectangle for the system.
     myParentSystem = new QGraphicsRectItem();
-    myParentSystem->setPen(QPen(myScoreArea->getPalette().text(), 0.5));
+    myParentSystem->setPen(QPen(myPalette.text(), 0.5));
 
     const ViewFilter *filter =
         myViewOptions.getFilter()
@@ -221,7 +221,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
         const TimeSignature &timeSig = barline.getTimeSignature();
 
         BarlinePainter *barlinePainter = new BarlinePainter(layout, barline,
-                location, myScoreArea->getClickPubSub(), myScoreArea->getPalette().text().color());
+                location, myScoreArea->getClickPubSub(), myPalette.text().color());
 
         double x = layout->getPositionX(barline.getPosition());
         double keySigX = x + barlinePainter->boundingRect().width() - 1;
@@ -290,7 +290,7 @@ void SystemRenderer::drawBarlines(const System &system, int systemIndex,
             const int RECTANGLE_OFFSET = 4;
 
             auto signLetters = new SimpleTextItem(
-                QString::fromStdString(sign.getLetters()), myRehearsalSignFont, TextAlignment::Top, QPen(myScoreArea->getPalette().text().color()));
+                QString::fromStdString(sign.getLetters()), myRehearsalSignFont, TextAlignment::Top, QPen(myPalette.text().color()));
             signLetters->setX(rehearsalSignX + RECTANGLE_OFFSET);
             centerSymbolVertically(*signLetters, 0);
 
@@ -1669,7 +1669,7 @@ void SystemRenderer::drawIrregularGroups(const Voice &voice,
         // vertical lines on either end.
         QGraphicsLineItem *horizLine1 = new QGraphicsLineItem();
         horizLine1->setLine(leftX, y2, leftX + lineWidth, y2);
-        horizLine1->setPen(QPen(myPalette.light().color()));
+        horizLine1->setPen(QPen(myPalette.text().color()));
         horizLine1->setParentItem(myParentStaff);
 
         QGraphicsLineItem *horizLine2 = new QGraphicsLineItem();
@@ -1905,7 +1905,7 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
                                                  : yEnd + ARROW_WIDTH);
 
     auto *arrow = new QGraphicsPolygonItem(arrowShape);
-    arrow->setBrush(myScoreArea->getPalette().text());
+    arrow->setBrush(myPalette.text());
     group->addToGroup(arrow);
 
     // Draw text for the bent pitch (e.g. "Full", "3/4", etc). Don't draw the

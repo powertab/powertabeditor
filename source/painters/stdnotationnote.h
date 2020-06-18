@@ -48,7 +48,7 @@ public:
 
     StdNotationNote(const Voice &voice, const Position &pos, const Note &note,
                     const KeySignature &key, const Tuning &tuning, double y,
-                    const std::optional<int> &tie, const QColor &color);
+                    const std::optional<int> &tie);
 
     static void getNotesInStaff(
         const Score &score, const System &system, int systemIndex,
@@ -119,7 +119,6 @@ private:
     const KeySignature *myKey;
     const Tuning *myTuning;
     const std::optional<int> myTie;
-    const QColor &myNoteColor;
 };
 
 #endif

@@ -56,11 +56,12 @@ public:
     std::shared_ptr<ClickPubSub> getClickPubSub() const;
 
     /// returns the palette used by scorearea
-    QPalette getPalette() const;
+    const QPalette *getPalette() const;
 
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
+    bool event(QEvent *event);
 
 private:
     /// Adjusts the scroll location whenever the caret moves.
@@ -71,9 +72,9 @@ private:
     QGraphicsItem *myScoreInfoBlock;
     QList<QGraphicsItem *> myRenderedSystems;
     CaretPainter *myCaretPainter;
-    QPalette myScorePalette; // the palette used by scorearea
+    const QPalette *myScorePalette; // the palette used by scorearea
     QPalette myPrintPalette; // the palette used by when printing
-    QPalette *activePalette;
+    const QPalette *activePalette;
 
     std::shared_ptr<ClickPubSub> myClickPubSub;
 };
