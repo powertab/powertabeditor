@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Improved standard notation layout when a note is staccato and also has an accent.
 - Improved alignment of accents in the standard notation staff.
 - Improved vertical positioning of trills and dynamics symbols.
+- Fixed a bug where editing the zoom text caused it to turn black, making it unreadable with a dark system theme.
 
 ## [Alpha 12] - 2020-06-11
 ### Added
