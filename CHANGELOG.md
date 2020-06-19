@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Left hand fingerings now support thumbs. This is also now supported by the Guitar Pro 6/7 importers (#292).
 - The song information can now store a subtitle. This is also now supported by the Guitar Pro 6/7 importers (#297).
+- Several improvements to the view filter dialog. In particular, it now displays a list of the players that will be displayed when the filter is used (#295).
 
 ### Changed
 
@@ -14,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Improved alignment of accents in the standard notation staff.
 - Improved vertical positioning of trills and dynamics symbols.
 - Fixed a bug where editing the zoom text caused it to turn black, making it unreadable with a dark system theme.
+- Fixed a potential crash in the Edit View Filters dialog when a string pattern was invalid (#295).
 
 ## [Alpha 12] - 2020-06-11
 ### Added

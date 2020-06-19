@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-class ActivePlayer;
+class Player;
 class Score;
 
 /// A rule for filtering which staves are viewable. For example, a rule might be
@@ -64,12 +64,10 @@ public:
     template <class Archive>
     void serialize(Archive &ar, const FileVersion version);
 
-    /// Returns whether the given staff is visible.
-    bool accept(const Score &score, int system_index, int staff_index) const;
+    /// Returns whether the given player should be visible.
+    bool accept(const Player &player) const;
 
 private:
-    bool accept(const Score &score, const ActivePlayer &player) const;
-
     Subject mySubject;
     Operation myOperation;
     int myIntValue;
@@ -107,6 +105,9 @@ public:
 
     /// Returns whether the given staff is visible.
     bool accept(const Score &score, int system_index, int staff_index) const;
+    /// Returns whether the given player would be visible if it were in a
+    /// staff.
+    bool accept(const Player &player) const;
 
 private:
     std::string myDescription;

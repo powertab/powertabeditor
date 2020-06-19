@@ -36,22 +36,37 @@ public:
 
     void update(const std::vector<std::string> &names,
                 const std::optional<int> &selection,
-                const std::vector<FilterRule> &rules) override
+                const std::vector<FilterRule> &rules,
+                const std::vector<std::string> &matches) override
     {
         myFilterNames = names;
         mySelection = selection;
         myRules = rules;
+        myMatches = matches;
     }
 
     ViewFilterPresenter *myPresenter;
     std::vector<std::string> myFilterNames;
     std::optional<int> mySelection;
     std::vector<FilterRule> myRules;
+    std::vector<std::string> myMatches;
 };
 
 TEST_CASE("Dialogs/ViewFilter")
 {
     Score score;
+
+    Player guitar;
+    guitar.setDescription("Guitar");
+    score.insertPlayer(guitar);
+
+    Player bass;
+    bass.setDescription("Bass");
+    Tuning tuning;
+    tuning.setNotes({ 1, 2, 3, 4 });
+    bass.setTuning(tuning);
+    score.insertPlayer(bass);
+
     ViewFilter filter_all;
     filter_all.setDescription("Filter 1");
     score.insertViewFilter(filter_all);
@@ -64,6 +79,8 @@ TEST_CASE("Dialogs/ViewFilter")
         REQUIRE(view.myPresenter != nullptr);
         REQUIRE(view.myFilterNames.size() == 1);
         REQUIRE(view.mySelection);
+        REQUIRE(view.myMatches ==
+                std::vector{ guitar.getDescription(), bass.getDescription() });
     }
 
     SECTION("Add Filter")
@@ -113,6 +130,7 @@ TEST_CASE("Dialogs/ViewFilter")
         presenter.addRule();
         REQUIRE(view.myRules.size() == 1);
         REQUIRE(view.myRules[0] == FilterRule());
+        REQUIRE(view.myMatches.empty());
     }
 
     SECTION("Remove Rule")
@@ -131,5 +149,6 @@ TEST_CASE("Dialogs/ViewFilter")
         FilterRule new_rule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 4);
         presenter.editRule(0, new_rule);
         REQUIRE(view.myRules[0] == new_rule);
+        REQUIRE(view.myMatches == std::vector{ bass.getDescription() });
     }
 }

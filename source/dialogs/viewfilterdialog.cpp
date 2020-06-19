@@ -65,7 +65,8 @@ bool ViewFilterDialog::launch()
 
 void ViewFilterDialog::update(const std::vector<std::string> &names,
                               const std::optional<int> &selection,
-                              const std::vector<FilterRule> &rules)
+                              const std::vector<FilterRule> &rules,
+                              const std::vector<std::string> &matches)
 {
     ui->filterList->clear();
 
@@ -76,6 +77,13 @@ void ViewFilterDialog::update(const std::vector<std::string> &names,
     ui->filterList->addItems(q_names);
     ui->filterList->setCurrentRow(selection ? *selection : -1);
     ui->removeFilterButton->setEnabled(!names.empty());
+
+    QStringList q_matches;
+    for (auto &&match : matches)
+        q_matches.append(QString::fromStdString(match));
+
+    ui->matchesList->clear();
+    ui->matchesList->addItems(q_matches);
 
     ui->nameLineEdit->setEnabled((bool)selection);
     ui->addRuleButton->setEnabled((bool)selection);

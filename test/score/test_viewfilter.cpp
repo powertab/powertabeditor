@@ -31,14 +31,14 @@ TEST_CASE("Score/ViewFilter/FilterRule", "")
     importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
 
     FilterRule rule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7);
-    REQUIRE(!rule.accept(score, 0, 0));
-    REQUIRE(rule.accept(score, 0, 1));
-    REQUIRE(!rule.accept(score, 0, 2));
+    REQUIRE(!rule.accept(score.getPlayers()[0]));
+    REQUIRE(rule.accept(score.getPlayers()[1]));
+    REQUIRE(!rule.accept(score.getPlayers()[2]));
 
     rule = FilterRule(FilterRule::PLAYER_NAME, "Player [12]");
-    REQUIRE(rule.accept(score, 0, 0));
-    REQUIRE(rule.accept(score, 0, 1));
-    REQUIRE(!rule.accept(score, 0, 2));
+    REQUIRE(rule.accept(score.getPlayers()[0]));
+    REQUIRE(rule.accept(score.getPlayers()[1]));
+    REQUIRE(!rule.accept(score.getPlayers()[2]));
 }
 
 TEST_CASE("Score/ViewFilter/ViewFilter", "")

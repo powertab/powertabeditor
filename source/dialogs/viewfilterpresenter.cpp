@@ -22,6 +22,7 @@
 ViewFilterPresenter::ViewFilterPresenter(ViewFilterView &view,
                                          const Score &score)
     : myView(view),
+      myScore(score),
       myFilters(score.getViewFilters().begin(), score.getViewFilters().end())
 {
     myView.setPresenter(this);
@@ -41,6 +42,8 @@ void ViewFilterPresenter::addFilter()
 {
     ViewFilter filter;
     filter.setDescription("Untitled");
+    // Add a rule by default so that the user sees something.
+    filter.addRule(FilterRule());
 
     myFilters.push_back(filter);
     mySelection = myFilters.size() - 1;
@@ -111,5 +114,17 @@ void ViewFilterPresenter::updateView()
                      filter.getRules().end());
     }
 
-    myView.update(filter_names, mySelection, rules);
+    // Build a list of the players that match the selected filter.
+    std::vector<std::string> matches;
+    if (mySelection)
+    {
+        auto &filter = myFilters[*mySelection];
+        for (const Player &player : myScore.getPlayers())
+        {
+            if (filter.accept(player))
+                matches.push_back(player.getDescription());
+        }
+    }
+
+    myView.update(filter_names, mySelection, rules, matches);
 }
