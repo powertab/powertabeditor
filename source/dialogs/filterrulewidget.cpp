@@ -18,8 +18,35 @@
 #include "filterrulewidget.h"
 #include "ui_filterrulewidget.h"
 
+#include <QValidator>
+
 #include <score/tuning.h>
 #include <score/viewfilter.h>
+
+namespace
+{
+class StringFilterValidator : public QValidator
+{
+public:
+    StringFilterValidator(QObject *parent) : QValidator(parent)
+    {
+    }
+
+    State validate(QString &input, int &) const override
+    {
+        // Verify that the filter is valid.
+        try
+        {
+            FilterRule rule(FilterRule::PLAYER_NAME, input.toStdString());
+            return State::Acceptable;
+        }
+        catch (const std::exception &e)
+        {
+            return State::Intermediate;
+        }
+    }
+};
+}
 
 FilterRuleWidget::FilterRuleWidget(QWidget *parent)
     : QWidget(parent), ui(new Ui::FilterRuleWidget)
@@ -45,6 +72,19 @@ FilterRuleWidget::FilterRuleWidget(QWidget *parent)
     connect(ui->operationComboBox,
             qOverload<int>(&QComboBox::currentIndexChanged), this,
             &FilterRuleWidget::updateRule);
+
+    // Add a regex validator and update its color to flag invalid patterns.
+    ui->regexLineEdit->setValidator(new StringFilterValidator(this));
+
+    // Highlight invalid text.
+    ui->regexLineEdit->setStyleSheet(
+        QStringLiteral("QLineEdit[acceptableInput=false] { color: red; }"));
+    // Update the style when the input has changed. This is required due to
+    // using the acceptableInput dynamic property.
+    connect(ui->regexLineEdit, &QLineEdit::textEdited, [&]() {
+        ui->regexLineEdit->style()->unpolish(ui->regexLineEdit);
+        ui->regexLineEdit->style()->polish(ui->regexLineEdit);
+    });
 }
 
 FilterRuleWidget::~FilterRuleWidget()
@@ -66,8 +106,11 @@ void FilterRuleWidget::updateRule()
 {
     if (ui->subjectComboBox->currentIndex() == 0)
     {
-        emit changed(FilterRule(FilterRule::PLAYER_NAME,
-                                ui->regexLineEdit->text().toStdString()));
+        if (ui->regexLineEdit->hasAcceptableInput())
+        {
+            emit changed(FilterRule(FilterRule::PLAYER_NAME,
+                                    ui->regexLineEdit->text().toStdString()));
+        }
     }
     else
     {

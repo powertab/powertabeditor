@@ -50,6 +50,7 @@ public:
     };
 
     FilterRule();
+    /// Note - this constructor may throw std::regex_error.
     FilterRule(Subject subject, std::string value);
     FilterRule(Subject subject, Operation op, int value);
 
