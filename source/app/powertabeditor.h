@@ -23,6 +23,7 @@
 #include <app/pubsub/instrumentpubsub.h>
 #include <app/pubsub/playerpubsub.h>
 #include <memory>
+#include <score/dynamic.h>
 #include <score/position.h>
 #include <string>
 #include <vector>
@@ -321,6 +322,11 @@ private:
                                        const QString &commandName,
                                        const QKeySequence &shortcut,
                                        Position::SimpleProperty property);
+    /// Helper function to reate a dynamic command.
+    void createDynamicCommand(Command *&command,
+                              const QString &menuName,
+                              const QString &commandName,
+                              Dynamic::VolumeLevel volume);
     /// Set up the menus for the application.
     void createMenus();
     /// Set up the tool bars for the application.
@@ -542,6 +548,7 @@ private:
     Command *myMultibarRestCommand;
 
     QMenu *myMusicSymbolsMenu;
+    QToolBar *myDynamicsToolBar;
     Command *myRehearsalSignCommand;
     Command *myTempoMarkerCommand;
     Command *myAlterationOfPaceCommand;
@@ -552,6 +559,16 @@ private:
     Command *myDirectionCommand;
     Command *myRepeatEndingCommand;
     Command *myDynamicCommand;
+    Command *myDynamicPPPCommand;
+    Command *myDynamicPPCommand;
+    Command *myDynamicPCommand;
+    Command *myDynamicMPCommand;
+    Command *myDynamicMFCommand;
+    Command *myDynamicFCommand;
+    Command *myDynamicFFCommand;
+    Command *myDynamicFFFCommand;
+    /// Used to ensure that only one dynamic option is checked at a time.
+    QActionGroup *myDynamicGroup;
 
     QMenu *myTabSymbolsMenu;
     QMenu *myHammerOnMenu;

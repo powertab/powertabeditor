@@ -140,6 +140,7 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
+#include <score/dynamic.h>
 #include <score/utils.h>
 #include <score/voiceutils.h>
 
@@ -2368,6 +2369,25 @@ void PowerTabEditor::createCommands()
         new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
     connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
+
+    myDynamicGroup = new QActionGroup(this);
+
+    createDynamicCommand(myDynamicPPPCommand, tr("Dynamics"),
+                         "Dynamics.ppp", Dynamic::ppp);
+    createDynamicCommand(myDynamicPPCommand, tr("Dynamics"),
+                         "Dynamics.pp", Dynamic::pp);
+    createDynamicCommand(myDynamicPCommand, tr("Dynamics"),
+                         "Dynamics.p", Dynamic::pp);
+    createDynamicCommand(myDynamicMPCommand, tr("Dynamics"),
+                         "Dynamics.mp", Dynamic::mp);
+    createDynamicCommand(myDynamicMFCommand, tr("Dynamics"),
+                         "Dynamics.mf", Dynamic::mf);
+    createDynamicCommand(myDynamicFCommand, tr("Dynamics"),
+                         "Dynamics.f", Dynamic::f);
+    createDynamicCommand(myDynamicFFCommand, tr("Dynamics"),
+                         "Dynamics.ff", Dynamic::ff);
+    createDynamicCommand(myDynamicFFFCommand, tr("Dynamics"),
+                         "Dynamics.fff", Dynamic::fff);
 #if 0
     volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
                                     QKeySequence(), this);
@@ -2689,6 +2709,18 @@ void PowerTabEditor::createPositionPropertyCommand(
     });
 }
 
+void PowerTabEditor::createDynamicCommand(
+        Command *&command, const QString &menuName, const QString &commandName,
+        Dynamic::VolumeLevel volume)
+{
+  command = new Command(menuName, commandName, QKeySequence(), this);
+  command->setCheckable(true);
+  connect(command, &QAction::triggered, [=]() {
+  //  updateDynamic(volume);
+  });
+  myDynamicGroup->addAction(command);
+}
+
 void PowerTabEditor::createMenus()
 {
     // File Menu.
@@ -2964,7 +2996,24 @@ void PowerTabEditor::createToolBars()
     myDurationModToolBar->addAction(myFermataCommand);
 
     // Dynamic Toolbar.
-    // try to get QAction from volume QToolButton and add to a toolbar
+    myDynamicPPPCommand->setIcon(QIcon(":images/dynamic_ppp.png"));
+    myDynamicPPCommand->setIcon(QIcon(":images/dynamic_pp.png"));
+    myDynamicPCommand->setIcon(QIcon(":images/dynamic_p.png"));
+    myDynamicMPCommand->setIcon(QIcon(":images/dynamic_mp.png"));
+    myDynamicMFCommand->setIcon(QIcon(":images/dynamic_mf.png"));
+    myDynamicFCommand->setIcon(QIcon(":images/dynamic_f.png"));
+    myDynamicFFCommand->setIcon(QIcon(":images/dynamic_ff.png"));
+    myDynamicFFFCommand->setIcon(QIcon(":images/dynamic_fff.png"));
+    myDynamicsToolBar = addToolBar(tr("Dynamics"));
+    addToolBar(Qt::LeftToolBarArea, myDynamicsToolBar);
+    myDynamicsToolBar->addAction(myDynamicPPPCommand);
+    myDynamicsToolBar->addAction(myDynamicPPCommand);
+    myDynamicsToolBar->addAction(myDynamicPCommand);
+    myDynamicsToolBar->addAction(myDynamicMPCommand);
+    myDynamicsToolBar->addAction(myDynamicMFCommand);
+    myDynamicsToolBar->addAction(myDynamicFCommand);
+    myDynamicsToolBar->addAction(myDynamicFFCommand);
+    myDynamicsToolBar->addAction(myDynamicFFFCommand);
 
     // Articulation Toolbar.
     myArticulationToolBar = addToolBar(tr("Articulation"));
