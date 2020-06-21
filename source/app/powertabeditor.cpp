@@ -2994,6 +2994,7 @@ void PowerTabEditor::createToolBars()
     myDurationModToolBar->addAction(myTieCommand);
     myDurationModToolBar->addAction(myLetRingCommand);
     myDurationModToolBar->addAction(myFermataCommand);
+    addToolBarBreak(Qt::LeftToolBarArea);
 
     // Dynamic Toolbar.
     myDynamicPPPCommand->setIcon(QIcon(":images/dynamic_ppp.png"));
@@ -3017,7 +3018,7 @@ void PowerTabEditor::createToolBars()
 
     // Articulation Toolbar.
     myArticulationToolBar = addToolBar(tr("Articulation"));
-    addToolBar(Qt::LeftToolBarArea, myArticulationToolBar);
+    addToolBar(Qt::RightToolBarArea, myArticulationToolBar);
     myArticulationToolBar->addAction(myGhostNoteCommand);
     myArticulationToolBar->addAction(myMutedCommand);
     myArticulationToolBar->addAction(myStaccatoCommand);
@@ -3039,6 +3040,17 @@ void PowerTabEditor::createToolBars()
     addToolBar(Qt::RightToolBarArea, myGroupingToolBar);
     myGroupingToolBar->addAction(myTripletCommand);
     myGroupingToolBar->addAction(myIrregularGroupingCommand);
+
+    //Picking Toolbar.
+    myPickingToolBar = addToolBar(tr("Picking"));
+    addToolBar(Qt::RightToolBarArea, myPickingToolBar);
+    myPickingToolBar->addAction(myArpeggioUpCommand);
+    myPickingToolBar->addAction(myArpeggioDownCommand);
+    myPickingToolBar->addSeparator();
+    
+    myPickingToolBar->addAction(myPickStrokeUpCommand);
+    myPickingToolBar->addAction(myPickStrokeDownCommand);
+    addToolBarBreak(Qt::RightToolBarArea);
 
     // Ornament Toolbar.
     myTrillCommand->setIcon(QIcon(":images/trill.png"));
@@ -3082,16 +3094,6 @@ void PowerTabEditor::createToolBars()
     mySlideToolBar->addAction(mySlideIntoFromBelowCommand);
     mySlideToolBar->addAction(mySlideOutOfDownwardsCommand);
     mySlideToolBar->addAction(mySlideOutOfUpwardsCommand);
-
-    //Picking Toolbar.
-    myPickingToolBar = addToolBar(tr("Picking"));
-    addToolBar(Qt::RightToolBarArea, myPickingToolBar);
-    myPickingToolBar->addAction(myArpeggioUpCommand);
-    myPickingToolBar->addAction(myArpeggioDownCommand);
-    myPickingToolBar->addSeparator();
-    
-    myPickingToolBar->addAction(myPickStrokeUpCommand);
-    myPickingToolBar->addAction(myPickStrokeDownCommand);
 }
 
 void PowerTabEditor::createTabArea()
