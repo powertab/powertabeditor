@@ -23,6 +23,8 @@
 TEST_CASE("Actions/ShiftString")
 {
     Score score;
+    score.insertPlayer(Player());
+    score.insertInstrument(Instrument());
 
     {
         System system;
@@ -51,11 +53,16 @@ TEST_CASE("Actions/ShiftString")
         }
 
         system.insertStaff(staff);
+
+        // Insert a player change so there is a tuning to work with.
+        PlayerChange change(0);
+        change.insertActivePlayer(0, ActivePlayer(0, 0));
+        system.insertPlayerChange(change);
+
         score.insertSystem(system);
     }
 
-    ScoreLocation location(score);
-    location.setPositionIndex(1);
+    ScoreLocation location(score, 0, 0, 1, 0, 2);
 
     ShiftString action(location, true);
 
@@ -65,11 +72,17 @@ TEST_CASE("Actions/ShiftString")
         const Note &note0 = voice.getPositions()[0].getNotes()[0];
         const Note &note1 = voice.getPositions()[1].getNotes()[0];
 
-        REQUIRE(note1.getString() == 1);
-        REQUIRE(note1.getFretNumber() == 4);
+        REQUIRE(note0.getString() == 2);
+        REQUIRE(note0.getFretNumber() == 3);
 
+        REQUIRE(note1.getString() == 1);
+        REQUIRE(note1.getFretNumber() == 5);
+
+        // TODO - enable once supported.
+#if 0
         REQUIRE(!note0.hasProperty(Note::HammerOnOrPullOff));
         REQUIRE(!note1.hasProperty(Note::HammerOnOrPullOff));
+#endif
     }
 
     action.undo();
@@ -78,7 +91,16 @@ TEST_CASE("Actions/ShiftString")
         const Note &note0 = voice.getPositions()[0].getNotes()[0];
         const Note &note1 = voice.getPositions()[1].getNotes()[0];
 
+        REQUIRE(note0.getString() == 2);
+        REQUIRE(note0.getFretNumber() == 3);
+
+        REQUIRE(note1.getString() == 2);
+        REQUIRE(note1.getFretNumber() == 9);
+
+        // TODO - enable once supported.
+#if 0
         REQUIRE(note0.hasProperty(Note::HammerOnOrPullOff));
         REQUIRE(note1.hasProperty(Note::HammerOnOrPullOff));
+#endif
     }
 }

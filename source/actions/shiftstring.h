@@ -34,8 +34,9 @@ public:
 
 private:
     ScoreLocation myLocation;
-    std::vector<Position> myOriginalPositions;
     const bool myShiftUp;
+
+    std::vector<Position> myOriginalPositions;
 };
 
 #endif

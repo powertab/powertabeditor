@@ -70,6 +70,7 @@
 #include <actions/removetempomarker.h>
 #include <actions/removetextitem.h>
 #include <actions/shiftpositions.h>
+#include <actions/shiftstring.h>
 #include <actions/undomanager.h>
 
 #include <app/appinfo.h>
@@ -3626,6 +3627,9 @@ PowerTabEditor::shiftString(bool shift_up)
 {
     // TODO - implement
     // TODO - enable / disable the menu items as appropriate.
+    ScoreLocation location = getLocation();
+    myUndoManager->push(new ShiftString(location, shift_up),
+                        location.getSystemIndex());
 
 #if 0
     const Position::ShiftType shiftType = static_cast<Position::ShiftType>(direction);
