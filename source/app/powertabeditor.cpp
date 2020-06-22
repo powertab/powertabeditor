@@ -3183,6 +3183,9 @@ void PowerTabEditor::updateCommands()
     myLeftHandFingeringCommand->setEnabled(note != nullptr);
     myLeftHandFingeringCommand->setChecked(note && note->hasLeftHandFingering());
 
+    myShiftStringUpCommand->setEnabled(note != nullptr || hasSelection);
+    myShiftStringDownCommand->setEnabled(note != nullptr || hasSelection);
+
     if (note)
     {
         myTieCommand->setText(tr("Tied"));
@@ -3625,30 +3628,10 @@ void PowerTabEditor::adjustLineSpacing(int amount)
 void
 PowerTabEditor::shiftString(bool shift_up)
 {
-    // TODO - implement
-    // TODO - enable / disable the menu items as appropriate.
     ScoreLocation location = getLocation();
     myUndoManager->push(new ShiftString(location, shift_up),
                         location.getSystemIndex());
-
-#if 0
-    const Position::ShiftType shiftType = static_cast<Position::ShiftType>(direction);
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Position* currentPos = caret->getCurrentPosition();
-    Note* currentNote = caret->getCurrentNote();
-    const Tuning& tuning = caret->getCurrentScore()->GetGuitar(caret->getCurrentStaffIndex())->GetTuning();
-
-    if (!currentPos->CanShiftTabNumber(currentNote, shiftType, tuning))
-    {
-        return;
-    }
-
-    undoManager->push(new ShiftTabNumber(caret->getCurrentStaff(), currentPos,
-                                         currentNote, caret->getCurrentVoice(),
-                                         shiftType, tuning),
-                      caret->getCurrentSystemIndex());
-    caret->moveCaretVertical(direction == 1 ? direction : -1);
-#endif
+    getCaret().moveVertical(shift_up ? -1 : 1);
 }
 
 ScoreArea *PowerTabEditor::getScoreArea()
