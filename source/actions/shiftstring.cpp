@@ -36,11 +36,13 @@ struct ShiftItem
     ShiftItem(Voice &voice, const Tuning &tuning, const Position &position, Note &note);
 
     bool shift(bool shift_up, bool selection_start, bool selection_end);
+    int getPosition() const { return myPosition.get().getPosition(); }
 
-    Voice &myVoice;
-    const Tuning &myTuning;
-    const Position &myPosition;
-    Note &myNote;
+    // Using std::reference_wrapper to make the struct movable.
+    std::reference_wrapper<Voice> myVoice;
+    std::reference_wrapper<const Tuning> myTuning;
+    std::reference_wrapper<const Position> myPosition;
+    std::reference_wrapper<Note> myNote;
 };
 
 ShiftItem::ShiftItem(Voice &voice, const Tuning &tuning,
@@ -59,39 +61,42 @@ ShiftItem::shift(bool shift_up, bool selection_start, bool selection_end)
         note.setProperty(Note::LegatoSlide, false);
     };
 
+    Note &note = myNote;
+    const Tuning &tuning = myTuning;
+
     // If this note is in the last position of the selection, remove any
     // properties that connect it to the next note (which isn't being shifted
     // along with it).
     if (selection_end)
-        clearNoteProperties(myNote);
+        clearNoteProperties(note);
 
     // Similarly, at the start of the selection, clear any properties linked
     // from the previous note on the same string.
     if (selection_start)
     {
-        Note *prev_note = VoiceUtils::getPreviousNote(
-            myVoice, myPosition.getPosition(), myNote.getString());
+        Note *prev_note = VoiceUtils::getPreviousNote(myVoice, getPosition(),
+                                                      note.getString());
         if (prev_note)
             clearNoteProperties(*prev_note);
     }
 
     // Determine the new string and fret.
-    const int new_string = myNote.getString() + (shift_up ? -1 : 1);
-    if (new_string < 0 || new_string >= myTuning.getStringCount())
+    const int new_string = note.getString() + (shift_up ? -1 : 1);
+    if (new_string < 0 || new_string >= tuning.getStringCount())
         return false;
 
     // Can't create a conflict with another note.
     if (Utils::findByString(myPosition, new_string))
         return false;
 
-    const int fret_offset = myTuning.getNote(myNote.getString(), false) -
-                            myTuning.getNote(new_string, false);
-    const int new_fret = myNote.getFretNumber() + fret_offset;
+    const int fret_offset = tuning.getNote(note.getString(), false) -
+                            tuning.getNote(new_string, false);
+    const int new_fret = note.getFretNumber() + fret_offset;
     if (new_fret < Note::MIN_FRET_NUMBER || new_fret > Note::MAX_FRET_NUMBER)
         return false;
 
-    myNote.setFretNumber(new_fret);
-    myNote.setString(new_string);
+    note.setFretNumber(new_fret);
+    note.setString(new_string);
 
     return true;
 }
@@ -118,17 +123,22 @@ findActiveTuning(const ScoreLocation &location)
 bool
 shiftItems(std::vector<ShiftItem> &items, bool shift_up)
 {
-    const int first_position = items.front().myPosition.getPosition();
-    const int last_position = items.back().myPosition.getPosition();
+    const int first_position = items.front().getPosition();
+    const int last_position = items.back().getPosition();
+
+    // The notes within a position are ordered by string, so we want to process
+    // in reverse order when shifting down so that notes on adjacent strings
+    // can be shifted down one after the other.
+    if (!shift_up)
+        std::reverse(items.begin(), items.end());
 
     for (ShiftItem &item : items)
     {
-        const bool selection_start =
-            (item.myPosition.getPosition() == first_position);
-        const bool selection_end =
-            (item.myPosition.getPosition() == last_position);
+        const bool selection_start = (item.getPosition() == first_position);
+        const bool selection_end = (item.getPosition() == last_position);
 
-        item.shift(shift_up, selection_start, selection_end);
+        if (!item.shift(shift_up, selection_start, selection_end))
+            return false;
     }
 
     return true;
@@ -152,7 +162,9 @@ ShiftString::redo()
     {
         // Single selected note.
         Position *position = myLocation.getPosition();
+        assert(position != nullptr);
         Note *note = myLocation.getNote();
+        assert(note != nullptr);
         const Tuning *tuning = findActiveTuning(myLocation);
 
         // Record the original state of this position.

@@ -114,6 +114,7 @@ set( headers
 
 set( data_files
     actions/data/test_editstaff.pt2
+    actions/data/test_shiftstring.pt2
 
     formats/powertab_old/data/alternate_endings.ptb
     formats/powertab_old/data/barlines.ptb
