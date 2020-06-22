@@ -38,6 +38,9 @@ const Position *getNextPosition(const Voice &voice, int position);
 /// Returns the previous position in the staff, if it exists.
 const Position *getPreviousPosition(const Voice &voice, int position);
 
+/// Returns the previous position in the staff, if it exists.
+Position *getPreviousPosition(Voice &voice, int position);
+
 /// Finds the next note in the staff on the given string. Optionally, the next
 /// system can be checked.
 const Note *getNextNote(const Voice &voice, int position, int string,
@@ -46,6 +49,9 @@ const Note *getNextNote(const Voice &voice, int position, int string,
 /// Finds the previous note in the staff on the given string.
 const Note *getPreviousNote(const Voice &voice, int position, int string,
                             const Voice *prevVoice = nullptr);
+
+/// Finds the previous note in the staff on the given string.
+Note *getPreviousNote(Voice &voice, int position, int string);
 
 /// Determines whether the specified note can be tied to the previous note.
 /// The previous position must have a note at the same string and fret.

@@ -145,6 +145,7 @@ void Position::removeNotes(Predicate p)
 
 namespace Utils {
     const Note *findByString(const Position &pos, int string);
+    Note *findByString(Position &pos, int string);
     bool hasNoteWithTappedHarmonic(const Position &pos);
     bool hasNoteWithArtificialHarmonic(const Position &pos);
     bool hasNoteWithTrill(const Position &pos);

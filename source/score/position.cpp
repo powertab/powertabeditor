@@ -182,6 +182,13 @@ const Note *Utils::findByString(const Position &pos, int string)
     return nullptr;
 }
 
+Note *
+Utils::findByString(Position &pos, int string)
+{
+    return const_cast<Note *>(
+        Utils::findByString(const_cast<const Position &>(pos), string));
+}
+
 bool Utils::hasNoteWithTappedHarmonic(const Position &pos)
 {
     for (const Note &note : pos.getNotes())

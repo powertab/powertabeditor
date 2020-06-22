@@ -19,6 +19,7 @@
 
 #include <score/score.h>
 #include <score/utils.h>
+#include <score/voiceutils.h>
 
 ShiftString::ShiftString(const ScoreLocation &location, bool shift_up)
     : QUndoCommand(shift_up ? QObject::tr("Shift String Up")
@@ -28,7 +29,74 @@ ShiftString::ShiftString(const ScoreLocation &location, bool shift_up)
 {
 }
 
-static const Tuning *
+namespace
+{
+struct ShiftItem
+{
+    ShiftItem(Voice &voice, const Tuning &tuning, const Position &position, Note &note);
+
+    bool shift(bool shift_up, bool selection_start, bool selection_end);
+
+    Voice &myVoice;
+    const Tuning &myTuning;
+    const Position &myPosition;
+    Note &myNote;
+};
+
+ShiftItem::ShiftItem(Voice &voice, const Tuning &tuning,
+                     const Position &position, Note &note)
+    : myVoice(voice), myTuning(tuning), myPosition(position), myNote(note)
+{
+}
+
+bool
+ShiftItem::shift(bool shift_up, bool selection_start, bool selection_end)
+{
+    auto clearNoteProperties = [](Note &note) {
+        note.setProperty(Note::Tied, false);
+        note.setProperty(Note::HammerOnOrPullOff, false);
+        note.setProperty(Note::ShiftSlide, false);
+        note.setProperty(Note::LegatoSlide, false);
+    };
+
+    // If this note is in the last position of the selection, remove any
+    // properties that connect it to the next note (which isn't being shifted
+    // along with it).
+    if (selection_end)
+        clearNoteProperties(myNote);
+
+    // Similarly, at the start of the selection, clear any properties linked
+    // from the previous note on the same string.
+    if (selection_start)
+    {
+        Note *prev_note = VoiceUtils::getPreviousNote(
+            myVoice, myPosition.getPosition(), myNote.getString());
+        if (prev_note)
+            clearNoteProperties(*prev_note);
+    }
+
+    // Determine the new string and fret.
+    const int new_string = myNote.getString() + (shift_up ? -1 : 1);
+    if (new_string < 0 || new_string >= myTuning.getStringCount())
+        return false;
+
+    // Can't create a conflict with another note.
+    if (Utils::findByString(myPosition, new_string))
+        return false;
+
+    const int fret_offset = myTuning.getNote(myNote.getString(), false) -
+                            myTuning.getNote(new_string, false);
+    const int new_fret = myNote.getFretNumber() + fret_offset;
+    if (new_fret < Note::MIN_FRET_NUMBER || new_fret > Note::MAX_FRET_NUMBER)
+        return false;
+
+    myNote.setFretNumber(new_fret);
+    myNote.setString(new_string);
+
+    return true;
+}
+
+const Tuning *
 findActiveTuning(const ScoreLocation &location)
 {
     const PlayerChange *player_change = ScoreUtils::getCurrentPlayers(
@@ -47,40 +115,51 @@ findActiveTuning(const ScoreLocation &location)
     return &player.getTuning();
 }
 
-static void
-shiftNote(Note &note, const Tuning &tuning, bool shift_up)
+bool
+shiftItems(std::vector<ShiftItem> &items, bool shift_up)
 {
-    // TODO - check bounds.
-    const int new_string = note.getString() + (shift_up ? -1 : 1);
-    const int fret_offset = tuning.getNote(note.getString(), false) -
-                            tuning.getNote(new_string, false);
-    const int new_fret = note.getFretNumber() + fret_offset;
+    const int first_position = items.front().myPosition.getPosition();
+    const int last_position = items.back().myPosition.getPosition();
 
-    note.setFretNumber(new_fret);
-    note.setString(new_string);
+    for (ShiftItem &item : items)
+    {
+        const bool selection_start =
+            (item.myPosition.getPosition() == first_position);
+        const bool selection_end =
+            (item.myPosition.getPosition() == last_position);
 
-    // TODO - clear hammerons etc from adjacent position. However,
-    // we can probably maintain most hammerons when a range of
-    // notes is shifted.
+        item.shift(shift_up, selection_start, selection_end);
+    }
+
+    return true;
 }
+} // namespace
 
 void
 ShiftString::redo()
 {
+    std::vector<ShiftItem> items;
+    Voice &voice = myLocation.getVoice();
+
+    // If there is a preceding position, we need to remove hammerons, etc
+    // connected to the note being shifted.
+    const Position *prev_pos = VoiceUtils::getPreviousPosition(
+        voice, myLocation.getSelectedPositions().front()->getPosition());
+    if (prev_pos)
+        myOriginalPrevPosition = *prev_pos;
+
     if (!myLocation.hasSelection())
     {
         // Single selected note.
         Position *position = myLocation.getPosition();
         Note *note = myLocation.getNote();
+        const Tuning *tuning = findActiveTuning(myLocation);
 
         // Record the original state of this position.
         myOriginalPositions.push_back(*position);
 
-        const Tuning *tuning = findActiveTuning(myLocation);
-        if (!tuning)
-            return;
-
-        shiftNote(*note, *tuning, myShiftUp);
+        if (tuning)
+            items.emplace_back(voice, *tuning, *position, *note);
     }
     else
     {
@@ -92,16 +171,20 @@ ShiftString::redo()
 
             ScoreLocation current_location(myLocation);
             current_location.setPositionIndex(ScoreUtils::findIndexByPosition(
-                myLocation.getVoice().getPositions(), position->getPosition()));
+                voice.getPositions(), position->getPosition()));
 
             const Tuning *tuning = findActiveTuning(current_location);
             if (!tuning)
                 continue;
 
             for (Note &note : position->getNotes())
-                shiftNote(note, *tuning, myShiftUp);
+                items.emplace_back(voice, *tuning, *position, note);
         }
     }
+
+    // If some notes couldn't be shifted, revert.
+    if (!shiftItems(items, myShiftUp))
+        undo();
 }
 
 void
@@ -113,4 +196,16 @@ ShiftString::undo()
     std::vector<Position *> positions = myLocation.getSelectedPositions();
     for (size_t i = 0, n = positions.size(); i < n; ++i)
         *positions[i] = myOriginalPositions[i];
+
+    myOriginalPositions.clear();
+
+    if (myOriginalPrevPosition)
+    {
+        Position *prev_pos = VoiceUtils::getPreviousPosition(
+            myLocation.getVoice(),
+            myLocation.getSelectedPositions().front()->getPosition());
+        assert(prev_pos);
+        *prev_pos = *myOriginalPrevPosition;
+        myOriginalPrevPosition.reset();
+    }
 }

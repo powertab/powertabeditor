@@ -66,6 +66,13 @@ const Position *getPreviousPosition(const Voice &voice, int position)
     return nullptr;
 }
 
+Position *
+getPreviousPosition(Voice &voice, int position)
+{
+    return const_cast<Position *>(
+        getPreviousPosition(const_cast<const Voice &>(voice), position));
+}
+
 const Note *getNextNote(const Voice &voice, int position, int string,
                         const Voice *nextVoice)
 {
@@ -82,6 +89,13 @@ const Note *getPreviousNote(const Voice &voice, int position, int string,
     if (!prevPos && prevVoice)
         prevPos = getPreviousPosition(*prevVoice, std::numeric_limits<int>::max());
     return prevPos ? Utils::findByString(*prevPos, string) : nullptr;
+}
+
+Note *
+getPreviousNote(Voice &voice, int position, int string)
+{
+    return const_cast<Note *>(
+        getPreviousNote(const_cast<const Voice &>(voice), position, string));
 }
 
 bool canTieNote(const Voice &voice, int position, const Note &note)

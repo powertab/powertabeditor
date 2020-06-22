@@ -19,6 +19,7 @@
 #define ACTIONS_SHIFTTABNUMBER_H
 
 #include <QUndoCommand>
+#include <optional>
 #include <score/position.h>
 #include <score/scorelocation.h>
 #include <vector>
@@ -37,6 +38,7 @@ private:
     const bool myShiftUp;
 
     std::vector<Position> myOriginalPositions;
+    std::optional<Position> myOriginalPrevPosition;
 };
 
 #endif

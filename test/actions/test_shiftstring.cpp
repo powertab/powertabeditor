@@ -78,11 +78,8 @@ TEST_CASE("Actions/ShiftString")
         REQUIRE(note1.getString() == 1);
         REQUIRE(note1.getFretNumber() == 5);
 
-        // TODO - enable once supported.
-#if 0
         REQUIRE(!note0.hasProperty(Note::HammerOnOrPullOff));
         REQUIRE(!note1.hasProperty(Note::HammerOnOrPullOff));
-#endif
     }
 
     action.undo();
@@ -97,10 +94,7 @@ TEST_CASE("Actions/ShiftString")
         REQUIRE(note1.getString() == 2);
         REQUIRE(note1.getFretNumber() == 9);
 
-        // TODO - enable once supported.
-#if 0
         REQUIRE(note0.hasProperty(Note::HammerOnOrPullOff));
         REQUIRE(note1.hasProperty(Note::HammerOnOrPullOff));
-#endif
     }
 }
