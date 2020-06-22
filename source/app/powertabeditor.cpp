@@ -1965,17 +1965,16 @@ void PowerTabEditor::createCommands()
     connect(myLastSectionCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToLastSection);
 
-    myShiftForwardCommand = new Command(tr("Shift Forward"),
-                                        "Position.ShiftForward",
-                                        QKeySequence(Qt::Key_Insert), this);
-    connect(myShiftForwardCommand, &QAction::triggered, this,
+    myInsertSpaceCommand =
+        new Command(tr("Insert Space"), "Position.InsertSpace",
+                    QKeySequence(Qt::Key_Insert), this);
+    connect(myInsertSpaceCommand, &QAction::triggered, this,
             &PowerTabEditor::shiftForward);
 
-    myShiftBackwardCommand = new Command(tr("Shift Backward"),
-                                         "Position.ShiftBackward",
-                                         QKeySequence(Qt::SHIFT + Qt::Key_Insert),
-                                         this);
-    connect(myShiftBackwardCommand, &QAction::triggered, this,
+    myRemoveSpaceCommand =
+        new Command(tr("Remove Space"), "Position.RemoveSpace",
+                    QKeySequence(Qt::SHIFT + Qt::Key_Insert), this);
+    connect(myRemoveSpaceCommand, &QAction::triggered, this,
             &PowerTabEditor::shiftBackward);
 
     // Position-related actions.
@@ -2046,18 +2045,7 @@ void PowerTabEditor::createCommands()
                     Qt::SHIFT + Qt::Key_Tab, this);
     connect(myPrevBarCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToPrevBar);
-#if 0
-    // Actions for shifting tab numbers up/down a string
-    shiftTabNumUp = new Command(tr("Shift Tab Number Up"), "Position.ShiftTabNumberUp",
-                                Qt::CTRL + Qt::Key_Up, this);
-    sigfwd::connect(shiftTabNumUp, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_UP));
 
-    shiftTabNumDown = new Command(tr("Shift Tab Number Down"), "Position.ShiftTabNumberDown",
-                                  Qt::CTRL + Qt::Key_Down, this);
-    sigfwd::connect(shiftTabNumDown, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_DOWN));
-#endif
     myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
                                       QKeySequence::Delete, this);
     connect(myRemoveNoteCommand, &QAction::triggered, this, &PowerTabEditor::removeCurrentPosition);
@@ -2219,6 +2207,18 @@ void PowerTabEditor::createCommands()
     myLeftHandFingeringCommand->setCheckable(true);
     connect(myLeftHandFingeringCommand, &QAction::triggered, this,
             &PowerTabEditor::editLeftHandFingering);
+
+    myShiftStringUpCommand =
+        new Command(tr("Shift String Up"), "Notes.ShiftStringUp",
+                    Qt::CTRL + Qt::Key_Up, this);
+    connect(myShiftStringUpCommand, &QAction::triggered, this,
+            [=]() { shiftString(true); });
+
+    myShiftStringDownCommand =
+        new Command(tr("Shift String Down"), "Notes.ShiftStringDown",
+                    Qt::CTRL + Qt::Key_Down, this);
+    connect(myShiftStringDownCommand, &QAction::triggered, this,
+            [=]() { shiftString(false); });
 
     myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
     myTieCommand->setCheckable(true);
@@ -2752,14 +2752,9 @@ void PowerTabEditor::createMenus()
     myPositionStaffMenu->addAction(myNextBarCommand);
     myPositionStaffMenu->addAction(myPrevBarCommand);
 
-#if 0
-    positionMenu->addSeparator();
-    positionMenu->addAction(shiftTabNumUp);
-    positionMenu->addAction(shiftTabNumDown);
-#endif
     myPositionMenu->addSeparator();
-    myPositionMenu->addAction(myShiftForwardCommand);
-    myPositionMenu->addAction(myShiftBackwardCommand);
+    myPositionMenu->addAction(myInsertSpaceCommand);
+    myPositionMenu->addAction(myRemoveSpaceCommand);
     myPositionMenu->addSeparator();
     myPositionMenu->addAction(myRemoveNoteCommand);
     myPositionMenu->addAction(myRemovePositionCommand);
@@ -2807,6 +2802,8 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myRemoveDotCommand);
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(myLeftHandFingeringCommand);
+    myNotesMenu->addAction(myShiftStringUpCommand);
+    myNotesMenu->addAction(myShiftStringDownCommand);
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(myTieCommand);
     myNotesMenu->addAction(myMutedCommand);
@@ -3123,8 +3120,8 @@ void PowerTabEditor::updateCommands()
                                              Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(score.getLineSpacing() >
                                              Score::MIN_LINE_SPACING);
-    myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
-                                       !tempoMarker && !altEnding && !dynamic);
+    myRemoveSpaceCommand->setEnabled(!pos && (position == 0 || !barline) &&
+                                     !tempoMarker && !altEnding && !dynamic);
     myRemoveNoteCommand->setEnabled(pos || barline || hasSelection);
     myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
 
@@ -3624,25 +3621,13 @@ void PowerTabEditor::adjustLineSpacing(int amount)
                         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
-ScoreArea *PowerTabEditor::getScoreArea()
+void
+PowerTabEditor::shiftString(bool shift_up)
 {
-    return dynamic_cast<ScoreArea *>(myTabWidget->currentWidget());
-}
-
-Caret &PowerTabEditor::getCaret()
-{
-    return myDocumentManager->getCurrentDocument().getCaret();
-}
-
-ScoreLocation &PowerTabEditor::getLocation()
-{
-    return getCaret().getLocation();
-}
+    // TODO - implement
+    // TODO - enable / disable the menu items as appropriate.
 
 #if 0
-
-void PowerTabEditor::shiftTabNumber(int direction)
-{
     const Position::ShiftType shiftType = static_cast<Position::ShiftType>(direction);
     Caret* caret = getCurrentScoreArea()->getCaret();
     Position* currentPos = caret->getCurrentPosition();
@@ -3659,7 +3644,25 @@ void PowerTabEditor::shiftTabNumber(int direction)
                                          shiftType, tuning),
                       caret->getCurrentSystemIndex());
     caret->moveCaretVertical(direction == 1 ? direction : -1);
+#endif
 }
+
+ScoreArea *PowerTabEditor::getScoreArea()
+{
+    return dynamic_cast<ScoreArea *>(myTabWidget->currentWidget());
+}
+
+Caret &PowerTabEditor::getCaret()
+{
+    return myDocumentManager->getCurrentDocument().getCaret();
+}
+
+ScoreLocation &PowerTabEditor::getLocation()
+{
+    return getCaret().getLocation();
+}
+
+#if 0
 
 void PowerTabEditor::editVolumeSwell()
 {

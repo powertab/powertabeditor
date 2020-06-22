@@ -62,6 +62,7 @@ set( srcs
     actions/test_removetempomarker.cpp
     actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
+    actions/test_shiftstring.cpp
 
     audio/test_midioutputdevice.cpp
 

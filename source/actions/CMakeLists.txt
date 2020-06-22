@@ -53,6 +53,7 @@ set( srcs
     removetempomarker.cpp
     removetextitem.cpp
     shiftpositions.cpp
+    shiftstring.cpp
     undomanager.cpp
 )
 
@@ -111,6 +112,7 @@ set( headers
     removetempomarker.h
     removetextitem.h
     shiftpositions.h
+    shiftstring.h
     undomanager.h
 )
 
