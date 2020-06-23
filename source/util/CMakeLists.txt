@@ -12,6 +12,7 @@ set( srcs
 )
 
 set( headers
+    date.h
     settingstree.h
     tostring.h
     scopeexit.h

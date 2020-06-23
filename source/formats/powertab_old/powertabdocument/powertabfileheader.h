@@ -13,8 +13,8 @@
 #define POWERTABFILEHEADER_H
 
 #include <cstdint>
-#include <boost/date_time/gregorian/greg_date.hpp>
 #include <string>
+#include <util/date.h>
 
 #include "macros.h"
 
@@ -471,8 +471,8 @@ public:
         return m_songData.bootlegData.title;
     }
 
-    bool SetSongBootlegDate(boost::gregorian::date date);
-    boost::gregorian::date GetSongBootlegDate() const;
+    bool SetSongBootlegDate(Util::Date date);
+    Util::Date GetSongBootlegDate() const;
 
     /// Determines if an author type is valid
     /// @param authorType Author type to validate

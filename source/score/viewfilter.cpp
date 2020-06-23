@@ -18,6 +18,7 @@
 #include "viewfilter.h"
 
 #include <score/score.h>
+#include <ostream>
 
 FilterRule::FilterRule()
     : mySubject(Subject::PLAYER_NAME),

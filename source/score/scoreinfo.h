@@ -18,10 +18,10 @@
 #ifndef SCORE_SCOREINFO_H
 #define SCORE_SCOREINFO_H
 
-#include <boost/date_time/gregorian/greg_date.hpp>
 #include "fileversion.h"
 #include <optional>
 #include <string>
+#include <util/date.h>
 
 class SongData
 {
@@ -91,8 +91,7 @@ public:
     {
     public:
         BootlegInfo();
-        BootlegInfo(const std::string &title,
-                    const boost::gregorian::date &date);
+        BootlegInfo(const std::string &title, const Util::Date &date);
         bool operator==(const BootlegInfo &other) const;
 
         template <class Archive>
@@ -103,11 +102,11 @@ public:
         }
 
         const std::string &getTitle() const;
-        const boost::gregorian::date &getDate() const;
+        const Util::Date &getDate() const;
 
     private:
         std::string myTitle;
-        boost::gregorian::date myDate;
+        Util::Date myDate;
     };
 
     class AuthorInfo
