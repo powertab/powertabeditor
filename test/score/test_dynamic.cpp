@@ -24,7 +24,7 @@ TEST_CASE("Score/Dynamic/Serialization")
 {
     Dynamic dynamic;
     dynamic.setPosition(42);
-    dynamic.setVolume(Dynamic::mp);
+    dynamic.setVolume(VolumeLevel::mp);
 
     Serialization::test("dynamic", dynamic);
 }

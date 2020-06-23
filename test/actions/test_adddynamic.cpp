@@ -28,13 +28,14 @@ TEST_CASE("Actions/AddDynamic")
     system.insertStaff(staff);
     score.insertSystem(system);
 
-    Dynamic dynamic(6, Dynamic::mp);
+    Dynamic dynamic(6, VolumeLevel::mp);
     ScoreLocation location(score, 0, 0, 6);
     AddDynamic action(location, dynamic);
 
     action.redo();
     REQUIRE(location.getStaff().getDynamics().size() == 1);
-    REQUIRE(location.getStaff().getDynamics()[0].getVolume() == Dynamic::mp);
+    REQUIRE(location.getStaff().getDynamics()[0].getVolume() ==
+            VolumeLevel::mp);
 
     action.undo();
     REQUIRE(location.getStaff().getDynamics().size() == 0);

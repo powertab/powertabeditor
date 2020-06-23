@@ -200,7 +200,7 @@ TEST_CASE("Formats/PowerTabOldImport/Staves")
 
     const Dynamic &dynamic = staff2.getDynamics()[0];
     REQUIRE(dynamic.getPosition() == 4);
-    REQUIRE(dynamic.getVolume() == Dynamic::mp);
+    REQUIRE(dynamic.getVolume() == VolumeLevel::mp);
 }
 
 TEST_CASE("Formats/PowerTabOldImport/Positions")

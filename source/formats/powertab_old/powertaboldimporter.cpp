@@ -642,7 +642,7 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Dynamic &oldDynamic,
                                   Dynamic &dynamic)
 {
     dynamic.setPosition(oldDynamic.GetPosition());
-    dynamic.setVolume(static_cast<Dynamic::VolumeLevel>(
+    dynamic.setVolume(static_cast<VolumeLevel>(
                           oldDynamic.GetStaffVolume()));
 }
 
@@ -925,7 +925,7 @@ void PowerTabOldImporter::convertInitialVolumes(
                 {
                     Dynamic dynamic(
                         guitarIn->GetPosition(),
-                        static_cast<Dynamic::VolumeLevel>(
+                        static_cast<VolumeLevel>(
                             oldScore.GetGuitar(j)->GetInitialVolume()));
 
                     system.getStaves()[guitarIn->GetStaff()].insertDynamic(dynamic);

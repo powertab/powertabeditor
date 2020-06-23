@@ -1333,25 +1333,37 @@ QGraphicsItem *SystemRenderer::createTrill(const LayoutInfo& layout)
 
 QGraphicsItem *SystemRenderer::createDynamic(const Dynamic &dynamic)
 {
-    QString text = QStringLiteral("fff");
-    Dynamic::VolumeLevel volume = dynamic.getVolume();
-
-    if (volume == Dynamic::Off)
-        text = QStringLiteral("off");
-    else if (volume <= Dynamic::ppp)
-        text = QStringLiteral("ppp");
-    else if (volume <= Dynamic::pp)
-        text = QStringLiteral("pp");
-    else if (volume <= Dynamic::p)
-        text = QStringLiteral("p");
-    else if (volume <= Dynamic::mp)
-        text = QStringLiteral("mp");
-    else if (volume <= Dynamic::mf)
-        text = QStringLiteral("mf");
-    else if (volume <= Dynamic::f)
-        text = QStringLiteral("f");
-    else if (volume <= Dynamic::ff)
-        text = QStringLiteral("ff");
+    QString text;
+    switch (dynamic.getVolume())
+    {
+        case VolumeLevel::Off:
+            text = QStringLiteral("off");
+            break;
+        case VolumeLevel::ppp:
+            text = QStringLiteral("ppp");
+            break;
+        case VolumeLevel::pp:
+            text = QStringLiteral("pp");
+            break;
+        case VolumeLevel::p:
+            text = QStringLiteral("p");
+            break;
+        case VolumeLevel::mp:
+            text = QStringLiteral("mp");
+            break;
+        case VolumeLevel::mf:
+            text = QStringLiteral("mf");
+            break;
+        case VolumeLevel::f:
+            text = QStringLiteral("f");
+            break;
+        case VolumeLevel::ff:
+            text = QStringLiteral("ff");
+            break;
+        case VolumeLevel::fff:
+            text = QStringLiteral("fff");
+            break;
+    }
 
     auto textItem =
         new SimpleTextItem(text, myMusicNotationFont, TextAlignment::Baseline);

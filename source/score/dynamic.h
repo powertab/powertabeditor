@@ -19,23 +19,24 @@
 #define SCORE_DYNAMIC_H
 
 #include "fileversion.h"
+#include <cstdint>
+
+enum class VolumeLevel : int
+{
+    Off = 0,
+    ppp = 13,
+    pp = 26,
+    p = 39,
+    mp = 52,
+    mf = 65,
+    f = 78,
+    ff = 91,
+    fff = 104
+};
 
 class Dynamic
 {
 public:
-    enum VolumeLevel
-    {
-        Off = 0,
-        ppp = 13,
-        pp = 26,
-        p = 39,
-        mp = 52,
-        mf = 65,
-        f = 78,
-        ff = 91,
-        fff = 104
-    };
-
     Dynamic();
     Dynamic(int position, VolumeLevel level);
 

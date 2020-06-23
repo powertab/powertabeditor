@@ -142,8 +142,8 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     std::vector<MidiEventList> regular_tracks(score.getPlayers().size());
     for (unsigned int i = 0; i < score.getPlayers().size(); ++i)
     {
-        regular_tracks[i].append(
-            MidiEvent::volumeChange(0, getChannel(i), Dynamic::fff));
+        regular_tracks[i].append(MidiEvent::volumeChange(
+            0, getChannel(i), static_cast<uint8_t>(VolumeLevel::fff)));
 
         for (const MidiEvent &event :
              MidiEvent::pitchWheelRange(0, getChannel(i), PITCH_BEND_RANGE))
@@ -621,7 +621,8 @@ int MidiFile::addEventsForBar(
             for (const ActivePlayer &player : active_players)
             {
                 tracks[player.getPlayerNumber()].append(MidiEvent::volumeChange(
-                    current_tick, getChannel(player), dynamic->getVolume()));
+                    current_tick, getChannel(player),
+                    static_cast<uint8_t>(dynamic->getVolume())));
             }
         }
 

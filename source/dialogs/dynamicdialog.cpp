@@ -33,17 +33,28 @@ DynamicDialog::DynamicDialog(QWidget *parent)
     // Add each button to a QButtonGroup (to ensure that only one is ever
     // checked), and associate each with the corresponding value from the
     // Dynamic class.
-    myVolumeLevels->addButton(ui->volumeOffButton, Dynamic::Off);
-    myVolumeLevels->addButton(ui->pppButton, Dynamic::ppp);
-    myVolumeLevels->addButton(ui->ppButton, Dynamic::pp);
-    myVolumeLevels->addButton(ui->pButton, Dynamic::p);
-    myVolumeLevels->addButton(ui->mpButton, Dynamic::mp);
-    myVolumeLevels->addButton(ui->mfButton, Dynamic::mf);
-    myVolumeLevels->addButton(ui->fButton, Dynamic::f);
-    myVolumeLevels->addButton(ui->ffButton, Dynamic::ff);
-    myVolumeLevels->addButton(ui->fffButton, Dynamic::fff);
+    myVolumeLevels->addButton(ui->volumeOffButton,
+                              static_cast<uint8_t>(VolumeLevel::Off));
+    myVolumeLevels->addButton(ui->pppButton,
+                              static_cast<uint8_t>(VolumeLevel::ppp));
+    myVolumeLevels->addButton(ui->ppButton,
+                              static_cast<uint8_t>(VolumeLevel::pp));
+    myVolumeLevels->addButton(ui->pButton,
+                              static_cast<uint8_t>(VolumeLevel::p));
+    myVolumeLevels->addButton(ui->mpButton,
+                              static_cast<uint8_t>(VolumeLevel::mp));
+    myVolumeLevels->addButton(ui->mfButton,
+                              static_cast<uint8_t>(VolumeLevel::mf));
+    myVolumeLevels->addButton(ui->fButton,
+                              static_cast<uint8_t>(VolumeLevel::f));
+    myVolumeLevels->addButton(ui->ffButton,
+                              static_cast<uint8_t>(VolumeLevel::ff));
+    myVolumeLevels->addButton(ui->fffButton,
+                              static_cast<uint8_t>(VolumeLevel::fff));
 
-    myVolumeLevels->button(Dynamic::f)->setChecked(true);
+    auto default_button =
+        myVolumeLevels->button(static_cast<uint8_t>(VolumeLevel::f));
+    default_button->setChecked(true);
 }
 
 DynamicDialog::~DynamicDialog()
@@ -51,7 +62,7 @@ DynamicDialog::~DynamicDialog()
     delete ui;
 }
 
-Dynamic::VolumeLevel DynamicDialog::getVolumeLevel() const
+VolumeLevel DynamicDialog::getVolumeLevel() const
 {
-    return static_cast<Dynamic::VolumeLevel>(myVolumeLevels->checkedId());
+    return static_cast<VolumeLevel>(myVolumeLevels->checkedId());
 }

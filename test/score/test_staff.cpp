@@ -60,9 +60,9 @@ TEST_CASE("Score/Staff/Dynamics")
 
     REQUIRE(staff.getDynamics().size() == 0);
 
-    Dynamic dynamic(3, Dynamic::mf);
+    Dynamic dynamic(3, VolumeLevel::mf);
     staff.insertDynamic(dynamic);
-    staff.insertDynamic(Dynamic(1, Dynamic::pp));
+    staff.insertDynamic(Dynamic(1, VolumeLevel::pp));
     REQUIRE(staff.getDynamics().size() == 2);
     REQUIRE(staff.getDynamics()[1] == dynamic);
 
@@ -75,7 +75,7 @@ TEST_CASE("Score/Staff/Serialization")
     Staff staff;
     staff.setClefType(Staff::BassClef);
     staff.getVoices()[1].insertPosition(Position(42));
-    staff.insertDynamic(Dynamic(11, Dynamic::pp));
+    staff.insertDynamic(Dynamic(11, VolumeLevel::pp));
     staff.setStringCount(7);
 
     Serialization::test("staff", staff);
