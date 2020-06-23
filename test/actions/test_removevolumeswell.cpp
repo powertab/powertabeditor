@@ -21,7 +21,7 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/dynamic.h>
 
-TEST_CASE("Actions/RemoveVolumeSwell", "")
+TEST_CASE("Actions/RemoveVolumeSwell")
 {
     Position pos;
     pos.SetVolumeSwell(Dynamic::mf, Dynamic::ff, 3);

@@ -20,7 +20,7 @@
 #include <actions/removealternateending.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveAlternateEnding", "")
+TEST_CASE("Actions/RemoveAlternateEnding")
 {
     Score score;
     System system;

@@ -22,7 +22,7 @@
 #include <score/voiceutils.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Staff/Clef", "")
+TEST_CASE("Score/Staff/Clef")
 {
     Staff staff;
 
@@ -31,7 +31,7 @@ TEST_CASE("Score/Staff/Clef", "")
     REQUIRE(staff.getClefType() == Staff::BassClef);
 }
 
-TEST_CASE("Score/Staff/Positions", "")
+TEST_CASE("Score/Staff/Positions")
 {
     Staff staff;
     Voice &voice0 = staff.getVoices()[0];
@@ -54,7 +54,7 @@ TEST_CASE("Score/Staff/Positions", "")
     REQUIRE(voice1.getPositions()[1] == pos2);
 }
 
-TEST_CASE("Score/Staff/Dynamics", "")
+TEST_CASE("Score/Staff/Dynamics")
 {
     Staff staff;
 
@@ -70,7 +70,7 @@ TEST_CASE("Score/Staff/Dynamics", "")
     REQUIRE(staff.getDynamics().size() == 1);
 }
 
-TEST_CASE("Score/Staff/Serialization", "")
+TEST_CASE("Score/Staff/Serialization")
 {
     Staff staff;
     staff.setClefType(Staff::BassClef);
@@ -81,7 +81,7 @@ TEST_CASE("Score/Staff/Serialization", "")
     Serialization::test("staff", staff);
 }
 
-TEST_CASE("Score/Staff/GetPositionsInRange", "")
+TEST_CASE("Score/Staff/GetPositionsInRange")
 {
     Staff staff;
     Position pos1(1), pos4(4), pos6(6), pos7(7), pos8(8);
@@ -106,7 +106,7 @@ TEST_CASE("Score/Staff/GetPositionsInRange", "")
             3);
 }
 
-TEST_CASE("Score/Staff/GetNextNote", "")
+TEST_CASE("Score/Staff/GetNextNote")
 {
     Staff staff;
     Position pos1(1), pos4(4), pos6(6), pos7(7), pos8(8);

@@ -20,7 +20,7 @@
 #include <actions/removechordtext.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveChordText", "")
+TEST_CASE("Actions/RemoveChordText")
 {
     Score score;
     System system;

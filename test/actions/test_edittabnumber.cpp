@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber")
 {
     myLocation.getNote()->setFretNumber(5);
     myLocation.getNote()->setTappedHarmonicFret(8);
@@ -37,7 +37,7 @@ TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber", "")
     REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == 8);
 }
 
-TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber/HighTappedHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber/HighTappedHarmonic")
 {
     myLocation.getNote()->setFretNumber(5);
     myLocation.getNote()->setTappedHarmonicFret(29);

@@ -20,7 +20,7 @@
 #include <actions/removetextitem.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveTextItem", "")
+TEST_CASE("Actions/RemoveTextItem")
 {
     Score score;
     System system;

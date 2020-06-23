@@ -21,7 +21,7 @@
 #include <formats/gpx/gpximporter.h>
 #include <score/score.h>
 
-TEST_CASE("Formats/GpxImport/Text", "")
+TEST_CASE("Formats/GpxImport/Text")
 {
     Score score;
     GpxImporter importer;

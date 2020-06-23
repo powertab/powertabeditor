@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveNote", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveNote")
 {
     RemoveNote action(myLocation);
 

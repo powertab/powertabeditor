@@ -21,7 +21,7 @@
 #include <score/position.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/AddPositionProperty", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddPositionProperty")
 {
     myLocation.getPosition()->setProperty(Position::PickStrokeUp);
 

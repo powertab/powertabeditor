@@ -21,7 +21,7 @@
 #include <util/tostring.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/AlternateEnding/Numbers", "")
+TEST_CASE("Score/AlternateEnding/Numbers")
 {
     AlternateEnding ending;
     ending.addNumber(1);
@@ -44,7 +44,7 @@ TEST_CASE("Score/AlternateEnding/Numbers", "")
     REQUIRE_THROWS(ending.addNumber(9));
 }
 
-TEST_CASE("Score/AlternateEnding/SpecialEndings", "")
+TEST_CASE("Score/AlternateEnding/SpecialEndings")
 {
     AlternateEnding ending;
 
@@ -61,7 +61,7 @@ TEST_CASE("Score/AlternateEnding/SpecialEndings", "")
     REQUIRE(ending.hasDalSegnoSegno());
 }
 
-TEST_CASE("Score/AlternateEnding/ToString", "")
+TEST_CASE("Score/AlternateEnding/ToString")
 {
     AlternateEnding ending;
 
@@ -83,7 +83,7 @@ TEST_CASE("Score/AlternateEnding/ToString", "")
     REQUIRE(Util::toString(ending) == "1., 5., D.S.");
 }
 
-TEST_CASE("Score/AlternateEnding/Serialization", "")
+TEST_CASE("Score/AlternateEnding/Serialization")
 {
     AlternateEnding ending;
     ending.setPosition(42);

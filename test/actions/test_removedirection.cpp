@@ -20,7 +20,7 @@
 #include <actions/removedirection.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveDirection", "")
+TEST_CASE("Actions/RemoveDirection")
 {
     Score score;
     System system;

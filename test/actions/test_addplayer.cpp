@@ -20,7 +20,7 @@
 #include <actions/addplayer.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddPlayer", "")
+TEST_CASE("Actions/AddPlayer")
 {
     Score score;
     Player player;

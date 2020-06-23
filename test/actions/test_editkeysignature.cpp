@@ -20,7 +20,7 @@
 #include <actions/editkeysignature.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditKeySignature", "")
+TEST_CASE("Actions/EditKeySignature")
 {
     Score score;
     System system;

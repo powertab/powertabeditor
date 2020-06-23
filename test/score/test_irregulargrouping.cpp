@@ -21,7 +21,7 @@
 #include <util/tostring.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/IrregularGrouping/Serialization", "")
+TEST_CASE("Score/IrregularGrouping/Serialization")
 {
     IrregularGrouping group(42, 5, 3, 2);
     Serialization::test("irregular_grouping", group);

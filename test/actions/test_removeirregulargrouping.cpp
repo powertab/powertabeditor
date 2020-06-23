@@ -20,7 +20,7 @@
 #include <actions/removeirregulargrouping.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveIrregularGrouping", "")
+TEST_CASE("Actions/RemoveIrregularGrouping")
 {
     Score score;
     System system;

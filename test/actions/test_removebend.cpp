@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveBend", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveBend")
 {
 	Bend bend(Bend::BendAndHold, 3, 2, 5, Bend::MidPoint, Bend::HighPoint);
     myLocation.getNote()->setBend(bend);

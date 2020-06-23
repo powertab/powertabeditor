@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/EditNoteDuration", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/EditNoteDuration")
 {
     myLocation.getPosition()->setDurationType(Position::HalfNote);
 

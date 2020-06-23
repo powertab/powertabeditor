@@ -22,7 +22,7 @@
 #include <formats/powertab/powertabimporter.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditStaff", "")
+TEST_CASE("Actions/EditStaff")
 {
     Score score;
 

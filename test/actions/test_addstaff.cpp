@@ -20,7 +20,7 @@
 #include <actions/addstaff.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddStaff", "")
+TEST_CASE("Actions/AddStaff")
 {
     Score score;
     System system;

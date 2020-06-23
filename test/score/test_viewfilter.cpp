@@ -23,7 +23,7 @@
 #include <score/viewfilter.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ViewFilter/FilterRule", "")
+TEST_CASE("Score/ViewFilter/FilterRule")
 {
     Score score;
 
@@ -41,7 +41,7 @@ TEST_CASE("Score/ViewFilter/FilterRule", "")
     REQUIRE(!rule.accept(score.getPlayers()[2]));
 }
 
-TEST_CASE("Score/ViewFilter/ViewFilter", "")
+TEST_CASE("Score/ViewFilter/ViewFilter")
 {
     Score score;
 
@@ -58,7 +58,7 @@ TEST_CASE("Score/ViewFilter/ViewFilter", "")
     REQUIRE(filter.accept(score, 0, 2));
 }
 
-TEST_CASE("Score/ViewFilter/Serialization", "")
+TEST_CASE("Score/ViewFilter/Serialization")
 {
     ViewFilter filter;
     filter.addRule(

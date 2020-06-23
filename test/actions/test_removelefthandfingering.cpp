@@ -19,7 +19,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveLeftHandFingering", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveLeftHandFingering")
 {
     LeftHandFingering fingering(LeftHandFingering::Finger::Middle,
         LeftHandFingering::DisplayPosition::Below);

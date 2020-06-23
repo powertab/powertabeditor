@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/AddArtificialHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddArtificialHarmonic")
 {
     Note note;
     myLocation.getPosition()->insertNote(note);

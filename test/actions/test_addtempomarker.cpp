@@ -20,7 +20,7 @@
 #include <actions/addtempomarker.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddTempoMarker", "")
+TEST_CASE("Actions/AddTempoMarker")
 {
     Score score;
     score.insertSystem(System());

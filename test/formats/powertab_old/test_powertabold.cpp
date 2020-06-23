@@ -29,7 +29,7 @@ static void loadTest(FileFormatImporter &importer, const char *filename,
     importer.load(AppInfo::getAbsolutePath(filename), score);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/SongHeader", "")
+TEST_CASE("Formats/PowerTabOldImport/SongHeader")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -52,7 +52,7 @@ TEST_CASE("Formats/PowerTabOldImport/SongHeader", "")
     REQUIRE(data.getPerformanceNotes() == "Some notes.");
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Guitars", "")
+TEST_CASE("Formats/PowerTabOldImport/Guitars")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -73,7 +73,7 @@ TEST_CASE("Formats/PowerTabOldImport/Guitars", "")
     REQUIRE(score.getInstruments()[0].getDescription() == "Electric Guitar (clean)");
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Barlines", "")
+TEST_CASE("Formats/PowerTabOldImport/Barlines")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -110,7 +110,7 @@ TEST_CASE("Formats/PowerTabOldImport/Barlines", "")
     REQUIRE(time.isVisible());
 }
 
-TEST_CASE("Formats/PowerTabOldImport/TempoMarkers", "")
+TEST_CASE("Formats/PowerTabOldImport/TempoMarkers")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -131,7 +131,7 @@ TEST_CASE("Formats/PowerTabOldImport/TempoMarkers", "")
     REQUIRE(tempo.getDescription() == "Fast Rock");
 }
 
-TEST_CASE("Formats/PowerTabOldImport/AlternateEndings", "")
+TEST_CASE("Formats/PowerTabOldImport/AlternateEndings")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -178,7 +178,7 @@ TEST_CASE("Formats/PowerTabOldImport/Directions", "[!hide]")
     REQUIRE(symbol2.getActiveSymbolType() == DirectionSymbol::ActiveDaCapo);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Staves", "")
+TEST_CASE("Formats/PowerTabOldImport/Staves")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -203,7 +203,7 @@ TEST_CASE("Formats/PowerTabOldImport/Staves", "")
     REQUIRE(dynamic.getVolume() == Dynamic::mp);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Positions", "")
+TEST_CASE("Formats/PowerTabOldImport/Positions")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -234,7 +234,7 @@ TEST_CASE("Formats/PowerTabOldImport/Positions", "")
     REQUIRE(pos3.getMultiBarRestCount() == 3);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Notes", "")
+TEST_CASE("Formats/PowerTabOldImport/Notes")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -262,7 +262,7 @@ TEST_CASE("Formats/PowerTabOldImport/Notes", "")
     REQUIRE(note2.hasProperty(Note::NaturalHarmonic));
 }
 
-TEST_CASE("Formats/PowerTabOldImport/GuitarIns", "")
+TEST_CASE("Formats/PowerTabOldImport/GuitarIns")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -292,7 +292,7 @@ TEST_CASE("Formats/PowerTabOldImport/GuitarIns", "")
     REQUIRE(change4.getActivePlayers(1).size() == 2);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/ChordText", "")
+TEST_CASE("Formats/PowerTabOldImport/ChordText")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -324,7 +324,7 @@ TEST_CASE("Formats/PowerTabOldImport/ChordText", "")
     REQUIRE(chord2.getBassVariation() == ChordName::NoVariation);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/Bends", "")
+TEST_CASE("Formats/PowerTabOldImport/Bends")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -352,7 +352,7 @@ TEST_CASE("Formats/PowerTabOldImport/Bends", "")
     REQUIRE(bend2.getEndPoint() == Bend::MidPoint);
 }
 
-TEST_CASE("Formats/PowerTabOldImport/FloatingText", "")
+TEST_CASE("Formats/PowerTabOldImport/FloatingText")
 {
     Score score;
     PowerTabOldImporter importer;
@@ -367,7 +367,7 @@ TEST_CASE("Formats/PowerTabOldImport/FloatingText", "")
     REQUIRE(system1.getTextItems()[0].getContents() == "foo");
 }
 
-TEST_CASE("Formats/PowerTabOldImport/MergeMultiBarRests", "")
+TEST_CASE("Formats/PowerTabOldImport/MergeMultiBarRests")
 {
     Score score;
     Score expected_score;

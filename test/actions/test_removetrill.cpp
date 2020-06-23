@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTrill", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTrill")
 {
     const int trillFret = 17;
     myLocation.getNote()->setTrilledFret(trillFret);

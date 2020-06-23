@@ -20,7 +20,7 @@
 #include <actions/addmultibarrest.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddMultiBarRest", "")
+TEST_CASE("Actions/AddMultiBarRest")
 {
     Score score;
     System system;

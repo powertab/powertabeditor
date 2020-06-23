@@ -20,7 +20,7 @@
 #include <score/rehearsalsign.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/RehearsalSign/Serialization", "")
+TEST_CASE("Score/RehearsalSign/Serialization")
 {
     RehearsalSign sign;
     sign.setLetters("B");

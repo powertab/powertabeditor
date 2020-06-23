@@ -20,7 +20,7 @@
 #include <score/dynamic.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Dynamic/Serialization", "")
+TEST_CASE("Score/Dynamic/Serialization")
 {
     Dynamic dynamic;
     dynamic.setPosition(42);

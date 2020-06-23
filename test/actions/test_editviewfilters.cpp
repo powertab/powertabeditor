@@ -20,7 +20,7 @@
 #include <actions/editviewfilters.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditViewFilters", "")
+TEST_CASE("Actions/EditViewFilters")
 {
     Score score;
 

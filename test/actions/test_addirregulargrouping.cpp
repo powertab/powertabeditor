@@ -20,7 +20,7 @@
 #include <actions/addirregulargrouping.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddIrregularGrouping", "")
+TEST_CASE("Actions/AddIrregularGrouping")
 {
     Score score;
     System system;

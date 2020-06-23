@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/AddNoteProperty", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddNoteProperty")
 {
     myLocation.getNote()->setProperty(Note::Octave8va);
 

@@ -21,7 +21,7 @@
 #include <score/player.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Player/Serialization", "")
+TEST_CASE("Score/Player/Serialization")
 {
     Tuning tuning;
     std::vector<uint8_t> notes;

@@ -21,7 +21,7 @@
 #include <score/score.h>
 #include <score/system.h>
 
-TEST_CASE("Actions/RemoveBarline", "")
+TEST_CASE("Actions/RemoveBarline")
 {
     Score score;
     System system;

@@ -21,7 +21,7 @@
 #include <app/caret.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveSystem", "")
+TEST_CASE("Actions/RemoveSystem")
 {
     Score score;
     System system;

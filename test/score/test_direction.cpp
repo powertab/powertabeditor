@@ -20,7 +20,7 @@
 #include <score/direction.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Direction/Symbols", "")
+TEST_CASE("Score/Direction/Symbols")
 {
     Direction direction;
     REQUIRE(!direction.getSymbols().size());
@@ -33,7 +33,7 @@ TEST_CASE("Score/Direction/Symbols", "")
     REQUIRE(direction.getSymbols().size() == 0);
 }
 
-TEST_CASE("Score/Direction/Serialization", "")
+TEST_CASE("Score/Direction/Serialization")
 {
     Direction direction;
     direction.setPosition(42);

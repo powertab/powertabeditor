@@ -20,7 +20,7 @@
 #include <score/scoreinfo.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ScoreInfo/ChangeType", "")
+TEST_CASE("Score/ScoreInfo/ChangeType")
 {
     ScoreInfo info;
 
@@ -34,7 +34,7 @@ TEST_CASE("Score/ScoreInfo/ChangeType", "")
     REQUIRE_NOTHROW(info.getLessonData());
 }
 
-TEST_CASE("Score/ScoreInfo/Serialization", "")
+TEST_CASE("Score/ScoreInfo/Serialization")
 {
     ScoreInfo info;
 	SongData data;

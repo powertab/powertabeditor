@@ -20,7 +20,7 @@
 #include <score/position.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Position/SimpleProperties", "")
+TEST_CASE("Score/Position/SimpleProperties")
 {
     Position position;
 
@@ -29,7 +29,7 @@ TEST_CASE("Score/Position/SimpleProperties", "")
     REQUIRE(position.hasProperty(Position::PalmMuting));
 }
 
-TEST_CASE("Score/Position/MultiBarRest", "")
+TEST_CASE("Score/Position/MultiBarRest")
 {
     Position position;
 
@@ -45,7 +45,7 @@ TEST_CASE("Score/Position/MultiBarRest", "")
     REQUIRE_THROWS(position.getMultiBarRestCount());
 }
 
-TEST_CASE("Score/Position/Notes", "")
+TEST_CASE("Score/Position/Notes")
 {
     Position position;
     REQUIRE(position.getNotes().size() == 0);
@@ -64,7 +64,7 @@ TEST_CASE("Score/Position/Notes", "")
     REQUIRE(position.getNotes()[0] == note2);
 }
 
-TEST_CASE("Score/Position/FindByString", "")
+TEST_CASE("Score/Position/FindByString")
 {
     Position position;
     Note note1(2, 12), note2(4, 13);
@@ -76,7 +76,7 @@ TEST_CASE("Score/Position/FindByString", "")
     REQUIRE(*Utils::findByString(position, 4) == note2);
 }
 
-TEST_CASE("Score/Position/HasNoteWithTappedHarmonic", "")
+TEST_CASE("Score/Position/HasNoteWithTappedHarmonic")
 {
     Position position;
     REQUIRE(!Utils::hasNoteWithTappedHarmonic(position));
@@ -87,7 +87,7 @@ TEST_CASE("Score/Position/HasNoteWithTappedHarmonic", "")
     REQUIRE(Utils::hasNoteWithTappedHarmonic(position));
 }
 
-TEST_CASE("Score/Position/HasNoteWithArtificialHarmonic", "")
+TEST_CASE("Score/Position/HasNoteWithArtificialHarmonic")
 {
     Position position;
     REQUIRE(!Utils::hasNoteWithArtificialHarmonic(position));
@@ -99,7 +99,7 @@ TEST_CASE("Score/Position/HasNoteWithArtificialHarmonic", "")
     REQUIRE(Utils::hasNoteWithArtificialHarmonic(position));
 }
 
-TEST_CASE("Score/Position/HasNoteWithTrill", "")
+TEST_CASE("Score/Position/HasNoteWithTrill")
 {
     Position position;
     REQUIRE(!Utils::hasNoteWithTrill(position));
@@ -110,7 +110,7 @@ TEST_CASE("Score/Position/HasNoteWithTrill", "")
     REQUIRE(Utils::hasNoteWithTrill(position));
 }
 
-TEST_CASE("Score/Position/HasNoteWithBend", "")
+TEST_CASE("Score/Position/HasNoteWithBend")
 {
     Position position;
     REQUIRE(!Utils::hasNoteWithBend(position));
@@ -122,7 +122,7 @@ TEST_CASE("Score/Position/HasNoteWithBend", "")
     REQUIRE(Utils::hasNoteWithBend(position));
 }
 
-TEST_CASE("Score/Position/HasNoteWithProperty", "")
+TEST_CASE("Score/Position/HasNoteWithProperty")
 {
     Position position;
 
@@ -139,7 +139,7 @@ TEST_CASE("Score/Position/HasNoteWithProperty", "")
     REQUIRE(Utils::hasNoteWithProperty(position, Note::HammerOnOrPullOff));
 }
 
-TEST_CASE("Score/Position/Serialization", "")
+TEST_CASE("Score/Position/Serialization")
 {
     Position position;
     position.setPosition(42);

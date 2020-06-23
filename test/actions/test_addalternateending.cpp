@@ -20,7 +20,7 @@
 #include <actions/addalternateending.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddAlternateEnding", "")
+TEST_CASE("Actions/AddAlternateEnding")
 {
     Score score;
     score.insertSystem(System());

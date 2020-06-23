@@ -21,7 +21,7 @@
 #include <score/system.h>
 #include <score/utils.h>
 
-TEST_CASE("Score/Utils/FindByPosition", "")
+TEST_CASE("Score/Utils/FindByPosition")
 {
     System system;
 
@@ -33,7 +33,7 @@ TEST_CASE("Score/Utils/FindByPosition", "")
     REQUIRE(*ScoreUtils::findByPosition(system.getBarlines(), 42) == barline);
 }
 
-TEST_CASE("Score/Utils/GetCurrentPlayers", "")
+TEST_CASE("Score/Utils/GetCurrentPlayers")
 {
     Score score;
     System system;

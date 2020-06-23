@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveArtificialHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveArtificialHarmonic")
 {
     ArtificialHarmonic harmonic(ChordName::D, ChordName::Flat,
                                 ArtificialHarmonic::Octave::Octave15ma);

@@ -19,7 +19,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/AddLeftHandFingering", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddLeftHandFingering")
 {
     Note note;
     myLocation.getPosition()->insertNote(note);

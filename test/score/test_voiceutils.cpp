@@ -20,7 +20,7 @@
 #include <score/voiceutils.h>
 #include <score/voice.h>
 
-TEST_CASE("Score/VoiceUtils/GetDurationTime", "")
+TEST_CASE("Score/VoiceUtils/GetDurationTime")
 {
     Voice voice;
     voice.insertPosition(Position(7));

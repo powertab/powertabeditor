@@ -20,7 +20,7 @@
 #include <actions/addtextitem.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddTextItem", "")
+TEST_CASE("Actions/AddTextItem")
 {
     Score score;
     score.insertSystem(System());

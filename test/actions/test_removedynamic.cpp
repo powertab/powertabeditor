@@ -20,7 +20,7 @@
 #include <actions/removedynamic.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveDynamic", "")
+TEST_CASE("Actions/RemoveDynamic")
 {
     Score score;
     System system;

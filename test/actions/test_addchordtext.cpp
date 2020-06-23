@@ -20,7 +20,7 @@
 #include <actions/addchordtext.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddChordText", "")
+TEST_CASE("Actions/AddChordText")
 {
     Score score;
     score.insertSystem(System());

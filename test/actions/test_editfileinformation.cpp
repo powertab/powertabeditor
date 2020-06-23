@@ -20,7 +20,7 @@
 #include <actions/editfileinformation.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditFileInformation", "")
+TEST_CASE("Actions/EditFileInformation")
 {
     Score score;
 

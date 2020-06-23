@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include <util/tostring.h>
 
-TEST_CASE("Score/Note/SimpleProperties", "")
+TEST_CASE("Score/Note/SimpleProperties")
 {
     Note note;
 
@@ -30,7 +30,7 @@ TEST_CASE("Score/Note/SimpleProperties", "")
     REQUIRE(note.hasProperty(Note::HammerOnOrPullOff));
 }
 
-TEST_CASE("Score/Note/Trill", "")
+TEST_CASE("Score/Note/Trill")
 {
     Note note;
 
@@ -46,7 +46,7 @@ TEST_CASE("Score/Note/Trill", "")
     REQUIRE_THROWS(note.getTrilledFret());
 }
 
-TEST_CASE("Score/Note/TappedHarmonic", "")
+TEST_CASE("Score/Note/TappedHarmonic")
 {
     Note note;
 
@@ -62,7 +62,7 @@ TEST_CASE("Score/Note/TappedHarmonic", "")
     REQUIRE_THROWS(note.getTappedHarmonicFret());
 }
 
-TEST_CASE("Score/Note/ArtificialHarmonic", "")
+TEST_CASE("Score/Note/ArtificialHarmonic")
 {
     Note note;
 
@@ -77,7 +77,7 @@ TEST_CASE("Score/Note/ArtificialHarmonic", "")
     REQUIRE(!note.hasArtificialHarmonic());
 }
 
-TEST_CASE("Score/Note/Bend", "")
+TEST_CASE("Score/Note/Bend")
 {
     Note note;
 
@@ -92,7 +92,7 @@ TEST_CASE("Score/Note/Bend", "")
     REQUIRE(!note.hasBend());
 }
 
-TEST_CASE("Score/Note/LeftHandFingering", "")
+TEST_CASE("Score/Note/LeftHandFingering")
 {
     Note note;
 
@@ -109,7 +109,7 @@ TEST_CASE("Score/Note/LeftHandFingering", "")
     REQUIRE(!note.hasLeftHandFingering());
 }
 
-TEST_CASE("Score/Note/Bend/GetPitchText", "")
+TEST_CASE("Score/Note/Bend/GetPitchText")
 {
     REQUIRE(Bend::getPitchText(0) == "Standard");
     REQUIRE(Bend::getPitchText(4) == "Full");
@@ -119,7 +119,7 @@ TEST_CASE("Score/Note/Bend/GetPitchText", "")
     REQUIRE(Bend::getPitchText(8) == "2");
 }
 
-TEST_CASE("Score/Note/ToString", "")
+TEST_CASE("Score/Note/ToString")
 {
     Note note(3, 12);
 
@@ -145,7 +145,7 @@ TEST_CASE("Score/Note/ToString", "")
     REQUIRE(Util::toString(mutedNote) == "x");
 }
 
-TEST_CASE("Score/Note/Harmonics/GetValidFretOffsets", "")
+TEST_CASE("Score/Note/Harmonics/GetValidFretOffsets")
 {
     std::vector<int> frets = Harmonics::getValidFretOffsets();
 
@@ -156,7 +156,7 @@ TEST_CASE("Score/Note/Harmonics/GetValidFretOffsets", "")
     REQUIRE(std::find(frets.begin(), frets.end(), 8) == frets.end());
 }
 
-TEST_CASE("Score/Note/Serialization", "")
+TEST_CASE("Score/Note/Serialization")
 {
     Note note(3, 12);
     note.setProperty(Note::Octave15ma);

@@ -21,7 +21,7 @@
 #include <score/instrument.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Instrument/Serialization", "")
+TEST_CASE("Score/Instrument/Serialization")
 {
     Instrument instrument;
     instrument.setDescription("Clean Guitar");

@@ -20,7 +20,7 @@
 #include <actions/adddirection.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddDirection", "")
+TEST_CASE("Actions/AddDirection")
 {
     Score score;
     score.insertSystem(System());

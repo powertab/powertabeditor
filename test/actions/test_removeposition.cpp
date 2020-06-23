@@ -20,7 +20,7 @@
 #include <actions/removeposition.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemovePosition", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemovePosition")
 {
     RemovePosition action(myLocation);
 
@@ -33,7 +33,7 @@ TEST_CASE_METHOD(ActionFixture, "Actions/RemovePosition", "")
     REQUIRE(myLocation.getNote() != NULL);
 }
 
-TEST_CASE("Actions/RemovePositionAndGroups", "")
+TEST_CASE("Actions/RemovePositionAndGroups")
 {
     Score score;
     System system;

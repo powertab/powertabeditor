@@ -20,7 +20,7 @@
 #include <actions/removetempomarker.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveTempoMarker", "")
+TEST_CASE("Actions/RemoveTempoMarker")
 {
     Score score;
     System system;

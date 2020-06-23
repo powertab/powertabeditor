@@ -19,7 +19,7 @@
 
 #include <app/settingsmanager.h>
 
-TEST_CASE("App/SettingsManager", "")
+TEST_CASE("App/SettingsManager")
 {
     SettingsManager manager;
 

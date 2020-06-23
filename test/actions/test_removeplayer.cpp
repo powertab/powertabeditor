@@ -20,7 +20,7 @@
 #include <actions/removeplayer.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemovePlayer", "")
+TEST_CASE("Actions/RemovePlayer")
 {
     Score score;
     Player player1;

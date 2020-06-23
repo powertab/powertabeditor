@@ -20,7 +20,7 @@
 #include <audio/midioutputdevice.h>
 #include <RtMidi.h>
 
-TEST_CASE("Audio/MidiOutputDevice/Basic", "")
+TEST_CASE("Audio/MidiOutputDevice/Basic")
 {
     MidiOutputDevice device;
 

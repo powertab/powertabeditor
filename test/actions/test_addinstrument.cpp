@@ -20,7 +20,7 @@
 #include <actions/addinstrument.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddInstrument", "")
+TEST_CASE("Actions/AddInstrument")
 {
     Score score;
     Instrument instrument;

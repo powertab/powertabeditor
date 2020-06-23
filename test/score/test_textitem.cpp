@@ -20,7 +20,7 @@
 #include <score/textitem.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/TextItem/Serialization", "")
+TEST_CASE("Score/TextItem/Serialization")
 {
     TextItem text;
     text.setPosition(7);

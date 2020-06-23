@@ -21,7 +21,7 @@
 #include <score/position.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemovePositionProperty", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemovePositionProperty")
 {
     myLocation.getPosition()->setProperty(Position::Tap);
     RemovePositionProperty action(myLocation, Position::Tap, "Tap");

@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/AddTappedHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/AddTappedHarmonic")
 {
     Note note;
     myLocation.getPosition()->insertNote(note);

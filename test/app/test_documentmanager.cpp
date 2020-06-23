@@ -19,7 +19,7 @@
 
 #include <app/documentmanager.h>
 
-TEST_CASE("App/DocumentManager", "")
+TEST_CASE("App/DocumentManager")
 {
     DocumentManager manager;
 
@@ -42,7 +42,7 @@ TEST_CASE("App/DocumentManager", "")
     REQUIRE(!manager.hasOpenDocuments());
 }
 
-TEST_CASE("App/Document", "")
+TEST_CASE("App/Document")
 {
     Document document;
 

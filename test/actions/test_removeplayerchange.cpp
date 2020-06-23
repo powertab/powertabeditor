@@ -21,7 +21,7 @@
 #include <score/score.h>
 #include <score/scorelocation.h>
 
-TEST_CASE("Actions/RemovePlayerChange", "")
+TEST_CASE("Actions/RemovePlayerChange")
 {
     Score score;
     System system;

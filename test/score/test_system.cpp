@@ -19,7 +19,7 @@
 
 #include <score/system.h>
 
-TEST_CASE("Score/System/Staves", "")
+TEST_CASE("Score/System/Staves")
 {
     System system;
 
@@ -33,7 +33,7 @@ TEST_CASE("Score/System/Staves", "")
     REQUIRE(system.getStaves().size() == 0);
 }
 
-TEST_CASE("Score/System/Barlines", "")
+TEST_CASE("Score/System/Barlines")
 {
     System system;
 
@@ -48,7 +48,7 @@ TEST_CASE("Score/System/Barlines", "")
     REQUIRE(system.getBarlines().size() == 2);
 }
 
-TEST_CASE("Score/System/GetPreviousBarline", "")
+TEST_CASE("Score/System/GetPreviousBarline")
 {
     System system;
 
@@ -61,7 +61,7 @@ TEST_CASE("Score/System/GetPreviousBarline", "")
     REQUIRE(*system.getPreviousBarline(11) == barline);
 }
 
-TEST_CASE("Score/System/GetNextBarline", "")
+TEST_CASE("Score/System/GetNextBarline")
 {
     System system;
 
@@ -74,7 +74,7 @@ TEST_CASE("Score/System/GetNextBarline", "")
     REQUIRE(!system.getNextBarline(15));
 }
 
-TEST_CASE("Score/System/TempoMarkers", "")
+TEST_CASE("Score/System/TempoMarkers")
 {
     System system;
 
@@ -96,7 +96,7 @@ TEST_CASE("Score/System/TempoMarkers", "")
     REQUIRE(system.getTempoMarkers()[0] == tempo2);
 }
 
-TEST_CASE("Score/System/AlternateEndings", "")
+TEST_CASE("Score/System/AlternateEndings")
 {
     System system;
 
@@ -118,7 +118,7 @@ TEST_CASE("Score/System/AlternateEndings", "")
     REQUIRE(system.getAlternateEndings()[0] == ending2);
 }
 
-TEST_CASE("Score/System/Directions", "")
+TEST_CASE("Score/System/Directions")
 {
     System system;
 
@@ -140,7 +140,7 @@ TEST_CASE("Score/System/Directions", "")
     REQUIRE(system.getDirections()[0] == direction2);
 }
 
-TEST_CASE("Score/System/PlayerChanges", "")
+TEST_CASE("Score/System/PlayerChanges")
 {
     System system;
 
@@ -162,7 +162,7 @@ TEST_CASE("Score/System/PlayerChanges", "")
     REQUIRE(system.getPlayerChanges()[0] == change2);
 }
 
-TEST_CASE("Score/System/Chords", "")
+TEST_CASE("Score/System/Chords")
 {
     System system;
 
@@ -184,7 +184,7 @@ TEST_CASE("Score/System/Chords", "")
     REQUIRE(system.getChords()[0] == chord2);
 }
 
-TEST_CASE("Score/System/TextItems", "")
+TEST_CASE("Score/System/TextItems")
 {
     System system;
 

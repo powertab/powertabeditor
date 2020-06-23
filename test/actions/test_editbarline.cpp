@@ -20,7 +20,7 @@
 #include <actions/editbarline.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditBarline", "")
+TEST_CASE("Actions/EditBarline")
 {
     Score score;
     System system;

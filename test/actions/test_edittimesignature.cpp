@@ -20,7 +20,7 @@
 #include <actions/edittimesignature.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditTimeSignature", "")
+TEST_CASE("Actions/EditTimeSignature")
 {
     Score score;
     System system;

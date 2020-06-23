@@ -20,7 +20,7 @@
 #include <actions/addrehearsalsign.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddRehearsalSign", "")
+TEST_CASE("Actions/AddRehearsalSign")
 {
     Score score;
     System system;

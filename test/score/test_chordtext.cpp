@@ -20,7 +20,7 @@
 #include <score/chordtext.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ChordText/Serialization", "")
+TEST_CASE("Score/ChordText/Serialization")
 {
     ChordName name;
     name.setNoChord(true);

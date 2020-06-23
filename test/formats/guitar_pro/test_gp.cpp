@@ -27,7 +27,7 @@ static void loadTest(GuitarProImporter &importer, const char *filename,
     importer.load(AppInfo::getAbsolutePath(filename), score);
 }
 
-TEST_CASE("Formats/GuitarPro/Barlines", "")
+TEST_CASE("Formats/GuitarPro/Barlines")
 {
     Score score;
     GuitarProImporter importer;
@@ -46,7 +46,7 @@ TEST_CASE("Formats/GuitarPro/Barlines", "")
     REQUIRE(barlines[5].getRepeatCount() == 4);
 }
 
-TEST_CASE("Formats/GuitarPro/RehearsalSigns", "")
+TEST_CASE("Formats/GuitarPro/RehearsalSigns")
 {
     Score score;
     GuitarProImporter importer;
@@ -66,7 +66,7 @@ TEST_CASE("Formats/GuitarPro/RehearsalSigns", "")
     REQUIRE(barline2.getRehearsalSign().getLetters() == "B");
 }
 
-TEST_CASE("Formats/GuitarPro/KeySignatures", "")
+TEST_CASE("Formats/GuitarPro/KeySignatures")
 {
     Score score;
     GuitarProImporter importer;
@@ -97,7 +97,7 @@ TEST_CASE("Formats/GuitarPro/KeySignatures", "")
     REQUIRE(!barlines[4].getKeySignature().isVisible());
 }
 
-TEST_CASE("Formats/GuitarPro/TimeSignatures", "")
+TEST_CASE("Formats/GuitarPro/TimeSignatures")
 {
     Score score;
     GuitarProImporter importer;
@@ -129,7 +129,7 @@ TEST_CASE("Formats/GuitarPro/TimeSignatures", "")
     REQUIRE(barlines[3].getTimeSignature().isVisible() == false);
 }
 
-TEST_CASE("Formats/GuitarPro/AlternateEndings", "")
+TEST_CASE("Formats/GuitarPro/AlternateEndings")
 {
     Score score;
     GuitarProImporter importer;
@@ -146,7 +146,7 @@ TEST_CASE("Formats/GuitarPro/AlternateEndings", "")
     REQUIRE(endings[1].getNumbers()[0] == 3);
 }
 
-TEST_CASE("Formats/GuitarPro/Text", "")
+TEST_CASE("Formats/GuitarPro/Text")
 {
     Score score;
     GuitarProImporter importer;
@@ -160,7 +160,7 @@ TEST_CASE("Formats/GuitarPro/Text", "")
     REQUIRE(texts[1].getContents() == "bar");
 }
 
-TEST_CASE("Formats/GuitarPro/Positions", "")
+TEST_CASE("Formats/GuitarPro/Positions")
 {
     Score score;
     GuitarProImporter importer;
@@ -203,7 +203,7 @@ TEST_CASE("Formats/GuitarPro/Positions", "")
     REQUIRE(positions[10].hasProperty(Position::TremoloPicking));
 }
 
-TEST_CASE("Formats/GuitarPro/Notes", "")
+TEST_CASE("Formats/GuitarPro/Notes")
 {
     Score score;
     GuitarProImporter importer;
@@ -231,7 +231,7 @@ TEST_CASE("Formats/GuitarPro/Notes", "")
     REQUIRE(positions[12].getNotes()[0].hasProperty(Note::ShiftSlide));
 }
 
-TEST_CASE("Formats/GuitarPro/Tempos", "")
+TEST_CASE("Formats/GuitarPro/Tempos")
 {
     Score score;
     GuitarProImporter importer;
@@ -243,7 +243,7 @@ TEST_CASE("Formats/GuitarPro/Tempos", "")
     REQUIRE(system.getTempoMarkers()[1].getBeatsPerMinute() == 110);
 }
 
-TEST_CASE("Formats/GuitarPro/GraceNotes", "")
+TEST_CASE("Formats/GuitarPro/GraceNotes")
 {
     Score score;
     GuitarProImporter importer;
@@ -269,7 +269,7 @@ TEST_CASE("Formats/GuitarPro/GraceNotes", "")
     REQUIRE(positions[5].getDurationType() == Position::SixteenthNote);
 }
 
-TEST_CASE("Formats/GuitarPro/IrregularGroups", "")
+TEST_CASE("Formats/GuitarPro/IrregularGroups")
 {
     Score score;
     GuitarProImporter importer;

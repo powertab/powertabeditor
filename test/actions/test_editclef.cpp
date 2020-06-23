@@ -20,7 +20,7 @@
 #include <actions/editstaff.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditClef", "")
+TEST_CASE("Actions/EditClef")
 {
     Score score;
     System system;

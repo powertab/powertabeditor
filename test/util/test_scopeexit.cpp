@@ -19,7 +19,7 @@
 
 #include <util/scopeexit.h>
 
-TEST_CASE("Util/ScopeExit/Basic", "")
+TEST_CASE("Util/ScopeExit/Basic")
 {
     int counter = 0;
 

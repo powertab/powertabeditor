@@ -21,7 +21,7 @@
 #include <powertabdocument/position.h>
 #include <powertabdocument/dynamic.h>
 
-TEST_CASE("Actions/AddVolumeSwell", "")
+TEST_CASE("Actions/AddVolumeSwell")
 {
     Position pos;
 

@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTappedHarmonic", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTappedHarmonic")
 {
     const int tappedFret = 17;
     myLocation.getNote()->setTappedHarmonicFret(tappedFret);

@@ -20,7 +20,7 @@
 #include <actions/adddynamic.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddDynamic", "")
+TEST_CASE("Actions/AddDynamic")
 {
     Score score;
     System system;

@@ -21,7 +21,7 @@
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveNoteProperty", "")
+TEST_CASE_METHOD(ActionFixture, "Actions/RemoveNoteProperty")
 {
     myLocation.getNote()->setProperty(Note::Octave8va);
     RemoveNoteProperty action(myLocation, Note::Octave8va, "Octave 8va");
