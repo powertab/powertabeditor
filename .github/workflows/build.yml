@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Dependencies
-      run: brew install boost cmake doctest minizip ninja pugixml qt5 pugixml rapidjson rtmidi
+      run: brew update && brew install boost cmake doctest minizip ninja pugixml qt5 pugixml rapidjson rtmidi
     - name: Generate Project
       run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
     - name: Build
