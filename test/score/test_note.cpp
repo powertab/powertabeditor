@@ -18,6 +18,7 @@
 #include <doctest/doctest.h>
 
 #include "test_serialization.h"
+#include <algorithm>
 #include <score/note.h>
 #include <util/tostring.h>
 
