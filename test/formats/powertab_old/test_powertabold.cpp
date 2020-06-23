@@ -15,7 +15,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/appinfo.h>
 #include <formats/powertab/powertabimporter.h>
@@ -153,7 +153,7 @@ TEST_CASE("Formats/PowerTabOldImport/AlternateEndings")
 }
 
 // TODO - re-enable this test when merging of directions is implemented.
-TEST_CASE("Formats/PowerTabOldImport/Directions", "[!hide]")
+TEST_CASE("Formats/PowerTabOldImport/Directions" * doctest::skip())
 {
     Score score;
     PowerTabOldImporter importer;

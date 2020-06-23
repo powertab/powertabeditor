@@ -15,22 +15,22 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removeposition.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemovePosition")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/RemovePosition")
 {
     RemovePosition action(myLocation);
 
     action.redo();
-    REQUIRE(myLocation.getPosition() == NULL);
+    REQUIRE(myLocation.getPosition() == nullptr);
 
     action.undo();
-    REQUIRE(myLocation.getPosition() != NULL);
+    REQUIRE(myLocation.getPosition() != nullptr);
     REQUIRE(myLocation.getPosition()->getNotes().size() == 2);
-    REQUIRE(myLocation.getNote() != NULL);
+    REQUIRE(myLocation.getNote() != nullptr);
 }
 
 TEST_CASE("Actions/RemovePositionAndGroups")

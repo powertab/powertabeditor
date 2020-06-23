@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/addpositionproperty.h>
 #include <score/position.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/AddPositionProperty")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/AddPositionProperty")
 {
     myLocation.getPosition()->setProperty(Position::PickStrokeUp);
 

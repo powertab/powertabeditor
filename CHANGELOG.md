@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - The `Position -> Shift Forward` and `Position -> Shift Backward` menu items have been renamed to `Insert Space` and `Remove Space`, to hopefully reduce confusion with the new string shifting commands (#20).
+- Unit tests now depend on the [doctest](https://github.com/onqtam/doctest) library instead of `Catch2`. This is more lightweight (while still providing all of the necessary features) and is more widely available on Linux distros.
 
 ### Fixed
 - Improved the size and alignment of the treble and bass clef glyphs.

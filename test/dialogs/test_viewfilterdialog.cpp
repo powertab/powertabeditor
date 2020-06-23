@@ -15,7 +15,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <dialogs/viewfilterpresenter.h>
 #include <score/score.h>
@@ -74,7 +74,7 @@ TEST_CASE("Dialogs/ViewFilter")
     MockViewFilterView view;
     ViewFilterPresenter presenter(view, score);
 
-    SECTION("Init")
+    SUBCASE("Init")
     {
         REQUIRE(view.myPresenter != nullptr);
         REQUIRE(view.myFilterNames.size() == 1);
@@ -83,7 +83,7 @@ TEST_CASE("Dialogs/ViewFilter")
                 std::vector{ guitar.getDescription(), bass.getDescription() });
     }
 
-    SECTION("Add Filter")
+    SUBCASE("Add Filter")
     {
         presenter.addFilter();
         REQUIRE(view.myFilterNames ==
@@ -91,7 +91,7 @@ TEST_CASE("Dialogs/ViewFilter")
         REQUIRE(*view.mySelection == 1);
     }
 
-    SECTION("Remove Filter")
+    SUBCASE("Remove Filter")
     {
         presenter.addFilter();
         presenter.addFilter();
@@ -109,14 +109,14 @@ TEST_CASE("Dialogs/ViewFilter")
         REQUIRE(!view.mySelection);
     }
 
-    SECTION("Select Filter")
+    SUBCASE("Select Filter")
     {
         presenter.addFilter();
         presenter.selectFilter(0);
         REQUIRE(*view.mySelection == 0);
     }
 
-    SECTION("Edit Filter Description")
+    SUBCASE("Edit Filter Description")
     {
         presenter.addFilter();
         presenter.editFilterDescription("New Filter Name");
@@ -124,7 +124,7 @@ TEST_CASE("Dialogs/ViewFilter")
                 std::vector<std::string>({ "Filter 1", "New Filter Name" }));
     }
 
-    SECTION("Add Rule")
+    SUBCASE("Add Rule")
     {
         REQUIRE(view.myRules.empty());
         presenter.addRule();
@@ -133,7 +133,7 @@ TEST_CASE("Dialogs/ViewFilter")
         REQUIRE(view.myMatches.empty());
     }
 
-    SECTION("Remove Rule")
+    SUBCASE("Remove Rule")
     {
         presenter.addRule();
         presenter.addRule();
@@ -142,7 +142,7 @@ TEST_CASE("Dialogs/ViewFilter")
         REQUIRE(view.myRules.size() == 2);
     }
 
-    SECTION("Edit Rule")
+    SUBCASE("Edit Rule")
     {
         presenter.addRule();
 

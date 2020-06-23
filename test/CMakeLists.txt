@@ -173,7 +173,7 @@ pte_executable(
     PCH precompiled.h
     PCH_EXCLUDE test_main.cpp
     DEPENDS
-        Catch2::Catch2
+        doctest::doctest
         pteapp
         rtmidi::rtmidi
 )

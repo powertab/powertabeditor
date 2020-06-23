@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/edittabnumber.h>
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/EditTabNumber")
 {
     myLocation.getNote()->setFretNumber(5);
     myLocation.getNote()->setTappedHarmonicFret(8);
@@ -37,7 +37,7 @@ TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber")
     REQUIRE(myLocation.getNote()->getTappedHarmonicFret() == 8);
 }
 
-TEST_CASE_METHOD(ActionFixture, "Actions/EditTabNumber/HighTappedHarmonic")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/EditTabNumber/HighTappedHarmonic")
 {
     myLocation.getNote()->setFretNumber(5);
     myLocation.getNote()->setTappedHarmonicFret(29);

@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removespecialnoteproperty.h>
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/RemoveTappedHarmonic")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/RemoveTappedHarmonic")
 {
     const int tappedFret = 17;
     myLocation.getNote()->setTappedHarmonicFret(tappedFret);

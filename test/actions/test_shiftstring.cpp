@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/shiftstring.h>
 #include <app/appinfo.h>
@@ -29,7 +29,7 @@ TEST_CASE("Actions/ShiftString")
     PowerTabImporter importer;
     importer.load(AppInfo::getAbsolutePath("data/test_shiftstring.pt2"), score);
 
-    SECTION("Single shift up")
+    SUBCASE("Single shift up")
     {
         ScoreLocation location(score, 0, 0, 1, 0, 2);
 
@@ -67,7 +67,7 @@ TEST_CASE("Actions/ShiftString")
         }
     }
 
-    SECTION("Simple shift down (two notes)")
+    SUBCASE("Simple shift down (two notes)")
     {
         ScoreLocation location(score, 0, 0, 2, 0, 2);
         location.setSelectionStart(1);
@@ -90,7 +90,7 @@ TEST_CASE("Actions/ShiftString")
         }
     }
 
-    SECTION("Shift up (notes on adjacent strings)")
+    SUBCASE("Shift up (notes on adjacent strings)")
     {
         ScoreLocation location(score, 0, 0, 8, 0, 0);
         location.setSelectionStart(7);
@@ -109,7 +109,7 @@ TEST_CASE("Actions/ShiftString")
         }
     }
 
-    SECTION("Shift down (notes on adjacent strings)")
+    SUBCASE("Shift down (notes on adjacent strings)")
     {
         ScoreLocation location(score, 0, 0, 6, 0, 0);
         location.setSelectionStart(5);
@@ -128,7 +128,7 @@ TEST_CASE("Actions/ShiftString")
         }
     }
 
-    SECTION("Invalid shift (string)")
+    SUBCASE("Invalid shift (string)")
     {
         ScoreLocation location(score, 0, 0, 6, 0, 0);
         location.setSelectionStart(5);
@@ -147,7 +147,7 @@ TEST_CASE("Actions/ShiftString")
         }
     }
 
-    SECTION("Invalid shift (fret)")
+    SUBCASE("Invalid shift (fret)")
     {
         ScoreLocation location(score, 0, 0, 0, 0, 2);
 
