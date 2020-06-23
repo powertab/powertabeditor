@@ -18,7 +18,17 @@
 #include "viewfilter.h"
 
 #include <score/score.h>
+#include <regex>
 #include <ostream>
+
+struct FilterRule::RegexImpl
+{
+    RegexImpl(const std::string &s) : myRegex(s)
+    {
+    }
+
+    std::regex myRegex;
+};
 
 FilterRule::FilterRule()
     : mySubject(Subject::PLAYER_NAME),
@@ -32,7 +42,7 @@ FilterRule::FilterRule(Subject subject, std::string value)
       myOperation(Operation::EQUAL),
       myIntValue(0),
       myStrValue(std::move(value)),
-      myRegex(myStrValue)
+      myRegexImpl(std::make_unique<RegexImpl>(myStrValue))
 {
 }
 
@@ -40,6 +50,27 @@ FilterRule::FilterRule(Subject subject, Operation op, int value)
     : mySubject(subject), myOperation(op), myIntValue(value)
 {
 }
+
+FilterRule::~FilterRule() = default;
+
+FilterRule::FilterRule(const FilterRule &other)
+{
+    *this = other;
+}
+
+FilterRule &
+FilterRule::operator=(const FilterRule &other)
+{
+    mySubject = other.mySubject;
+    myOperation = other.myOperation;
+    myIntValue = other.myIntValue;
+    myStrValue = other.myStrValue;
+    myRegexImpl = std::make_unique<RegexImpl>(myStrValue);
+    return *this;
+}
+
+FilterRule::FilterRule(FilterRule &&) = default;
+FilterRule &FilterRule::operator=(FilterRule &&) = default;
 
 bool FilterRule::operator==(const FilterRule &other) const
 {
@@ -52,7 +83,7 @@ bool FilterRule::accept(const Player &player) const
     switch (mySubject)
     {
     case PLAYER_NAME:
-        return std::regex_match(player.getDescription(), myRegex);
+        return std::regex_match(player.getDescription(), myRegexImpl->myRegex);
     case NUM_STRINGS:
     {
         const int value = player.getTuning().getStringCount();

@@ -21,7 +21,7 @@
 #include <boost/range/iterator_range_core.hpp>
 #include <cassert>
 #include "fileversion.h"
-#include <regex>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -50,6 +50,13 @@ public:
     };
 
     FilterRule();
+    ~FilterRule();
+
+    FilterRule(const FilterRule &);
+    FilterRule &operator=(const FilterRule &);
+    FilterRule(FilterRule &&);
+    FilterRule &operator=(FilterRule &&);
+
     /// Note - this constructor may throw std::regex_error.
     FilterRule(Subject subject, std::string value);
     FilterRule(Subject subject, Operation op, int value);
@@ -68,11 +75,14 @@ public:
     bool accept(const Player &player) const;
 
 private:
+    struct RegexImpl;
+
     Subject mySubject;
     Operation myOperation;
     int myIntValue;
     std::string myStrValue;
-    std::regex myRegex;
+    // Shield std::regex from the client code.
+    std::unique_ptr<RegexImpl> myRegexImpl;
 };
 
 /// A filter that specifies which staves are visible.
