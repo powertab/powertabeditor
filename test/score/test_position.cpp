@@ -139,6 +139,22 @@ TEST_CASE("Score/Position/HasNoteWithProperty")
     REQUIRE(Utils::hasNoteWithProperty(position, Note::HammerOnOrPullOff));
 }
 
+TEST_CASE("Score/Position/VolumeSwell")
+{
+    Position pos;
+
+    REQUIRE(!pos.hasVolumeSwell());
+
+    const VolumeSwell swell(VolumeLevel::Off, VolumeLevel::fff, 5);
+    pos.setVolumeSwell(swell);
+    REQUIRE(pos.hasVolumeSwell());
+    REQUIRE(pos.getVolumeSwell().getDuration() == 5);
+    REQUIRE(pos.getVolumeSwell().getEndVolume() == VolumeLevel::fff);
+
+    pos.clearVolumeSwell();
+    REQUIRE(!pos.hasVolumeSwell());
+}
+
 TEST_CASE("Score/Position/Serialization")
 {
     Position position;
@@ -147,6 +163,7 @@ TEST_CASE("Score/Position/Serialization")
     position.setProperty(Position::PalmMuting, true);
     position.setProperty(Position::WideVibrato, true);
     position.setMultiBarRest(7);
+    position.setVolumeSwell(VolumeSwell(VolumeLevel::Off, VolumeLevel::fff));
 
     Serialization::test("position", position);
 }

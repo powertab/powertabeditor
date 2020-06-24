@@ -18,12 +18,46 @@
 #ifndef SCORE_POSITION_H
 #define SCORE_POSITION_H
 
+#include "dynamic.h"
+#include "fileversion.h"
+#include "note.h"
+
 #include <algorithm>
 #include <boost/range/iterator_range_core.hpp>
 #include <bitset>
-#include "fileversion.h"
-#include "note.h"
+#include <optional>
 #include <vector>
+
+class VolumeSwell
+{
+public:
+    VolumeSwell() = default;
+    VolumeSwell(VolumeLevel start, VolumeLevel end, int duration = 0);
+
+    bool operator==(const VolumeSwell &other) const;
+
+    template <class Archive>
+    void serialize(Archive &ar, const FileVersion /*version*/);
+
+    VolumeLevel getStartVolume() const { return myStartVolume; }
+    VolumeLevel getEndVolume() const { return myEndVolume; }
+    int getDuration() const { return myDuration; }
+
+private:
+    VolumeLevel myStartVolume = VolumeLevel::Off;
+    VolumeLevel myEndVolume = VolumeLevel::Off;
+    /// Number of additional notes the swell is played over.
+    int myDuration = 0;
+};
+
+template <class Archive>
+void
+VolumeSwell::serialize(Archive &ar, const FileVersion /*version*/)
+{
+    ar("start_volume", myStartVolume);
+    ar("end_volume", myEndVolume);
+    ar("duration", myDuration);
+}
 
 class Position
 {
@@ -105,6 +139,15 @@ public:
     /// Clears the multi-bar rest for this position.
     void clearMultiBarRest();
 
+    /// Returns whether the position has a volume swell.
+    bool hasVolumeSwell() const;
+    /// Returns the volume swell for this position.
+    const VolumeSwell &getVolumeSwell() const;
+    /// Adds a volume swell to this position.
+    void setVolumeSwell(const VolumeSwell &swell);
+    /// Removes the volume swell for this position.
+    void clearVolumeSwell();
+
     /// Returns the set of notes in the position.
     boost::iterator_range<NoteIterator> getNotes();
     /// Returns the set of notes in the position.
@@ -123,16 +166,21 @@ private:
     DurationType myDurationType;
     std::bitset<NumSimpleProperties> mySimpleProperties;
     int myMultiBarRestCount;
+    std::optional<VolumeSwell> myVolumeSwell;
     std::vector<Note> myNotes;
 };
 
 template <class Archive>
-void Position::serialize(Archive &ar, const FileVersion /*version*/)
+void Position::serialize(Archive &ar, const FileVersion version)
 {
     ar("position", myPosition);
     ar("duration", myDurationType);
     ar("properties", mySimpleProperties);
     ar("multibar_rest", myMultiBarRestCount);
+
+    if (version >= FileVersion::VOLUME_SWELLS)
+        ar("volume_swell", myVolumeSwell);
+
     ar("notes", myNotes);
 }
 
