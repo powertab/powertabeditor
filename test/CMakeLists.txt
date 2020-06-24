@@ -63,6 +63,7 @@ set( srcs
     actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
     actions/test_shiftstring.cpp
+    actions/test_volumeswell.cpp
 
     audio/test_midioutputdevice.cpp
 

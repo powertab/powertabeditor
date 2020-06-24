@@ -55,6 +55,7 @@ set( srcs
     shiftpositions.cpp
     shiftstring.cpp
     undomanager.cpp
+    volumeswell.cpp
 )
 
 set( headers
@@ -114,6 +115,7 @@ set( headers
     shiftpositions.h
     shiftstring.h
     undomanager.h
+    volumeswell.h
 )
 
 set( moc_headers
