@@ -304,29 +304,34 @@ private:
     /// Helper function to create a note duration command.
     void createNoteDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
-                                   Position::DurationType durationType);
+                                   Position::DurationType durationType,
+                                   const QString &iconFileName = QString());
     /// Helper function to create a rest duration command.
     void createRestDurationCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
-                                   Position::DurationType durationType);
+                                   Position::DurationType durationType,
+                                   const QString &iconFileName = QString());
     /// Helper function to create a command for toggling a simple note
     /// property.
     void createNotePropertyCommand(Command *&command, const QString &menuName,
                                    const QString &commandName,
                                    const QKeySequence &shortcut,
-                                   Note::SimpleProperty property);
+                                   Note::SimpleProperty property,
+                                   const QString &iconFileName = QString());
     /// Helper function to create a command for toggling a simple position
     /// property.
     void createPositionPropertyCommand(Command *&command,
                                        const QString &menuName,
                                        const QString &commandName,
                                        const QKeySequence &shortcut,
-                                       Position::SimpleProperty property);
+                                       Position::SimpleProperty property,
+                                       const QString &iconFileName = QString());
     /// Helper function to reate a dynamic command.
     void createDynamicCommand(Command *&command,
                               const QString &menuName,
                               const QString &commandName,
-                              Dynamic::VolumeLevel volume);
+                              Dynamic::VolumeLevel volume,
+                              const QString &iconFileName = QString());
     /// Set up the menus for the application.
     void createMenus();
     /// Set up the tool bars for the application.

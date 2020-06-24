@@ -2171,21 +2171,28 @@ void PowerTabEditor::createCommands()
     // Note-related actions.
     myNoteDurationGroup = new QActionGroup(this);
     createNoteDurationCommand(myWholeNoteCommand, tr("Whole"), "Notes.WholeNote",
-                              Position::WholeNote);
+                              Position::WholeNote,
+                              ":images/whole_note");
     createNoteDurationCommand(myHalfNoteCommand, tr("Half"), "Notes.HalfNote",
-                              Position::HalfNote);
+                              Position::HalfNote,
+                              ":images/half_note");
     createNoteDurationCommand(myQuarterNoteCommand, tr("Quarter"),
-                              "Notes.QuarterNote", Position::QuarterNote);
+                              "Notes.QuarterNote", Position::QuarterNote,
+                              ":images/quarter_note");
     createNoteDurationCommand(myEighthNoteCommand, tr("8th"),
-                              "Notes.EighthNote", Position::EighthNote);
+                              "Notes.EighthNote", Position::EighthNote,
+                              ":images/8th_note");
     createNoteDurationCommand(mySixteenthNoteCommand, tr("16th"),
-                              "Notes.SixteenthNote", Position::SixteenthNote);
+                              "Notes.SixteenthNote", Position::SixteenthNote,
+                              ":images/16th_note");
     createNoteDurationCommand(myThirtySecondNoteCommand, tr("32nd"),
                               "Notes.ThirtySecondNote",
-                              Position::ThirtySecondNote);
+                              Position::ThirtySecondNote,
+                              ":images/32nd_note");
     createNoteDurationCommand(mySixtyFourthNoteCommand, tr("64th"),
                               "Notes.SixtyFourthNote",
-                              Position::SixtyFourthNote);
+                              Position::SixtyFourthNote,
+                              ":images/64th_note");
 
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
                                             "Notes.Duration.Increase",
@@ -2202,11 +2209,13 @@ void PowerTabEditor::createCommands()
     });
 
     createPositionPropertyCommand(myDottedCommand, tr("Dotted"), "Notes.Dotted",
-                                  QKeySequence(), Position::Dotted);
+                                  QKeySequence(), Position::Dotted,
+                                  ":images/dotted_note");
 
     createPositionPropertyCommand(myDoubleDottedCommand, tr("Double Dotted"),
                                   "Notes.DoubleDotted", QKeySequence(),
-                                  Position::DoubleDotted);
+                                  Position::DoubleDotted,
+                                  ":images/doubledotted_note");
 
     myAddDotCommand = new Command(tr("Add Dot"), "Notes.Dot.Add",
                             Qt::SHIFT + Qt::Key_Right, this);
@@ -2223,7 +2232,8 @@ void PowerTabEditor::createCommands()
     connect(myLeftHandFingeringCommand, &QAction::triggered, this,
             &PowerTabEditor::editLeftHandFingering);
 
-    myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
+    myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this,
+                               ":images/tie_note");
     myTieCommand->setCheckable(true);
     connect(myTieCommand, &QAction::triggered, this, &PowerTabEditor::editTiedNote);
 
@@ -2233,7 +2243,8 @@ void PowerTabEditor::createCommands()
                               "Notes.GhostNote", Qt::Key_G, Note::GhostNote);
 
     createPositionPropertyCommand(myFermataCommand, tr("Fermata"),
-                                  "Notes.Fermata", Qt::Key_F, Position::Fermata);
+                                  "Notes.Fermata", Qt::Key_F, Position::Fermata,
+                                  ":images/fermata");
 
     createPositionPropertyCommand(myLetRingCommand, tr("Let Ring"),
                                   "Notes.LetRing", QKeySequence(),
@@ -2265,7 +2276,7 @@ void PowerTabEditor::createCommands()
                               "Notes.Octave.15mb", QKeySequence(),
                               Note::Octave15mb);
 
-    myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this);
+    myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this, ":images/group_note");
     connect(myTripletCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(true);
     });
@@ -2297,7 +2308,7 @@ void PowerTabEditor::createCommands()
                               Position::SixtyFourthNote);
 
     myAddRestCommand = new Command(tr("Add Rest"), "Rests.AddRest", Qt::Key_R,
-                                   this);
+                                   this, ":images/quarter_rest");
     connect(myAddRestCommand, &QAction::triggered, this,
             &PowerTabEditor::addRest);
 
@@ -2373,21 +2384,29 @@ void PowerTabEditor::createCommands()
     myDynamicGroup = new QActionGroup(this);
 
     createDynamicCommand(myDynamicPPPCommand, tr("Dynamics"),
-                         "Dynamics.ppp", Dynamic::ppp);
+                         "Dynamics.ppp", Dynamic::ppp,
+                         ":images/dynamic_ppp.png");
     createDynamicCommand(myDynamicPPCommand, tr("Dynamics"),
-                         "Dynamics.pp", Dynamic::pp);
+                         "Dynamics.pp", Dynamic::pp,
+                         ":images/dynamic_pp.png");
     createDynamicCommand(myDynamicPCommand, tr("Dynamics"),
-                         "Dynamics.p", Dynamic::pp);
+                         "Dynamics.p", Dynamic::pp,
+                         ":images/dynamic_p.png");
     createDynamicCommand(myDynamicMPCommand, tr("Dynamics"),
-                         "Dynamics.mp", Dynamic::mp);
+                         "Dynamics.mp", Dynamic::mp,
+                         ":images/dynamic_mp.png");
     createDynamicCommand(myDynamicMFCommand, tr("Dynamics"),
-                         "Dynamics.mf", Dynamic::mf);
+                         "Dynamics.mf", Dynamic::mf,
+                         ":images/dynamic_mf.png");
     createDynamicCommand(myDynamicFCommand, tr("Dynamics"),
-                         "Dynamics.f", Dynamic::f);
+                         "Dynamics.f", Dynamic::f,
+                         ":images/dynamic_f.png");
     createDynamicCommand(myDynamicFFCommand, tr("Dynamics"),
-                         "Dynamics.ff", Dynamic::ff);
+                         "Dynamics.ff", Dynamic::ff,
+                         ":images/dynamic_ff.png");
     createDynamicCommand(myDynamicFFFCommand, tr("Dynamics"),
-                         "Dynamics.fff", Dynamic::fff);
+                         "Dynamics.fff", Dynamic::fff,
+                         ":images/dynamic_fff.png");
 #if 0
     volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
                                     QKeySequence(), this);
@@ -2397,7 +2416,8 @@ void PowerTabEditor::createCommands()
     
     // Tab Symbol Actions.
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
-                                      "TabSymbols.HammerPull", Qt::Key_H, this);
+                                      "TabSymbols.HammerPull", Qt::Key_H, this,
+                                      ":images/legato");//image name wrong
     myHammerPullCommand->setCheckable(true);
     connect(myHammerPullCommand, &QAction::triggered, this,
             &PowerTabEditor::editHammerPull);
@@ -2431,14 +2451,15 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::editTappedHarmonic);
 
     myBendCommand =
-        new Command(tr("Bend..."), "TabSymbols.Bend", QKeySequence(), this);
+        new Command(tr("Bend..."), "TabSymbols.Bend", QKeySequence(), this,
+                    ":images/bend");
     myBendCommand->setCheckable(true);
     connect(myBendCommand, &QAction::triggered, this,
             &PowerTabEditor::editBend);
 
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
-                                  Position::Vibrato);
+                                  Position::Vibrato, ":images/vibrato.png");
 
     createPositionPropertyCommand(myWideVibratoCommand, tr("Wide Vibrato"),
                                   "TabSymbols.WideVibrato", Qt::Key_W,
@@ -2464,7 +2485,7 @@ void PowerTabEditor::createCommands()
                                   Qt::Key_P, Position::Tap);
 
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
-                                 QKeySequence(), this);
+                                 QKeySequence(), this, ":images/trill.png");
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, &QAction::triggered, this, &PowerTabEditor::editTrill);
 
@@ -2479,27 +2500,29 @@ void PowerTabEditor::createCommands()
     createNotePropertyCommand(mySlideIntoFromAboveCommand,
                               tr("Slide Into From Above"),
                               "TabSymbols.SlideInto.FromAbove", QKeySequence(),
-                              Note::SlideIntoFromAbove);
+                              Note::SlideIntoFromAbove, ":images/slideinabove");
     createNotePropertyCommand(mySlideIntoFromBelowCommand,
                               tr("Slide Into From Below"),
                               "TabSymbols.SlideInto.FromBelow", QKeySequence(),
-                              Note::SlideIntoFromBelow);
+                              Note::SlideIntoFromBelow, ":images/slideinbelow");
 
     createNotePropertyCommand(myShiftSlideCommand, tr("Shift Slide"),
                               "TabSymbols.ShiftSlide", Qt::Key_S,
-                              Note::ShiftSlide);
+                              Note::ShiftSlide, ":images/shiftslide");
     createNotePropertyCommand(myLegatoSlideCommand, tr("Legato Slide"),
                               "TabSymbols.LegatoSlide", Qt::Key_L,
-                              Note::LegatoSlide);
+                              Note::LegatoSlide, ":images/legatoslide");
 
     createNotePropertyCommand(mySlideOutOfDownwardsCommand,
                               tr("Slide Out Of Downwards"),
                               "TabSymbols.SlideOutOf.Downwards", QKeySequence(),
-                              Note::SlideOutOfDownwards);
+                              Note::SlideOutOfDownwards,
+                              ":images/slideoutdown");
     createNotePropertyCommand(mySlideOutOfUpwardsCommand,
                               tr("Slide Out Of Upwards"),
                               "TabSymbols.SlideOutOf.Upwards", QKeySequence(),
-                              Note::SlideOutOfUpwards);
+                              Note::SlideOutOfUpwards,
+                              ":images/slideoutup");
 
     // Player menu.
     myAddPlayerCommand =
@@ -2665,9 +2688,10 @@ Command *PowerTabEditor::createCommandWrapper(
 
 void PowerTabEditor::createNoteDurationCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        Position::DurationType durationType)
+        Position::DurationType durationType, const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, QKeySequence(), this);
+    command = new Command(menuName, commandName, QKeySequence(), this,
+                          iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         updateNoteDuration(durationType);
@@ -2677,9 +2701,10 @@ void PowerTabEditor::createNoteDurationCommand(
 
 void PowerTabEditor::createRestDurationCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        Position::DurationType durationType)
+        Position::DurationType durationType, const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, QKeySequence(), this);
+    command = new Command(menuName, commandName, QKeySequence(), this,
+                          iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         editRest(durationType);
@@ -2689,9 +2714,10 @@ void PowerTabEditor::createRestDurationCommand(
 
 void PowerTabEditor::createNotePropertyCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        const QKeySequence &shortcut, Note::SimpleProperty property)
+        const QKeySequence &shortcut, Note::SimpleProperty property,
+        const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, shortcut, this);
+    command = new Command(menuName, commandName, shortcut, this, iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         editSimpleNoteProperty(command, property);
@@ -2700,9 +2726,10 @@ void PowerTabEditor::createNotePropertyCommand(
 
 void PowerTabEditor::createPositionPropertyCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        const QKeySequence &shortcut, Position::SimpleProperty property)
+        const QKeySequence &shortcut, Position::SimpleProperty property,
+        const QString &iconFileName)
 {
-    command = new Command(menuName, commandName, shortcut, this);
+    command = new Command(menuName, commandName, shortcut, this, iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
         editSimplePositionProperty(command, property);
@@ -2711,14 +2738,15 @@ void PowerTabEditor::createPositionPropertyCommand(
 
 void PowerTabEditor::createDynamicCommand(
         Command *&command, const QString &menuName, const QString &commandName,
-        Dynamic::VolumeLevel volume)
+        Dynamic::VolumeLevel volume, const QString &iconFileName)
 {
-  command = new Command(menuName, commandName, QKeySequence(), this);
-  command->setCheckable(true);
-  connect(command, &QAction::triggered, [=]() {
-  //  updateDynamic(volume);
-  });
-  myDynamicGroup->addAction(command);
+    command = new Command(menuName, commandName, QKeySequence(), this,
+                          iconFileName);
+    command->setCheckable(true);
+    connect(command, &QAction::triggered, [=]() {
+    //  updateDynamic(volume);
+    });
+    myDynamicGroup->addAction(command);
 }
 
 void PowerTabEditor::createMenus()
@@ -2959,13 +2987,6 @@ void PowerTabEditor::createMenus()
 void PowerTabEditor::createToolBars()
 {
     // Notes Toolbar.
-    myWholeNoteCommand->setIcon(QIcon(":images/whole_note"));
-    myHalfNoteCommand->setIcon(QIcon(":images/half_note"));
-    myQuarterNoteCommand->setIcon(QIcon(":images/quarter_note"));
-    myEighthNoteCommand->setIcon(QIcon(":images/8th_note"));
-    mySixteenthNoteCommand->setIcon(QIcon(":images/16th_note"));
-    myThirtySecondNoteCommand->setIcon(QIcon(":images/32nd_note"));
-    mySixtyFourthNoteCommand->setIcon(QIcon(":images/64th_note"));
     myNotesToolBar = addToolBar(tr("Notes"));
     addToolBar(Qt::LeftToolBarArea, myNotesToolBar);
     myNotesToolBar->addAction(myWholeNoteCommand);
@@ -2977,18 +2998,13 @@ void PowerTabEditor::createToolBars()
     myNotesToolBar->addAction(mySixtyFourthNoteCommand);
     myNotesToolBar->addSeparator();
 
-    myAddRestCommand->setIcon(QIcon(":images/quarter_rest"));
     myNotesToolBar->addAction(myAddRestCommand);
     myNotesToolBar->addSeparator();
 
-    myDottedCommand->setIcon(QIcon(":images/dotted_note"));
-    myDoubleDottedCommand->setIcon(QIcon(":images/doubledotted_note"));
     myNotesToolBar->addAction(myDottedCommand);
     myNotesToolBar->addAction(myDoubleDottedCommand);
 
     // Duration Modifiers Toolbar.
-    myTieCommand->setIcon(QIcon(":images/tie_note"));
-    myFermataCommand->setIcon(QIcon(":images/fermata"));
     myDurationModToolBar = addToolBar(tr("Duration modifiers"));
     addToolBar(Qt::LeftToolBarArea, myDurationModToolBar);
     myDurationModToolBar->addAction(myTieCommand);
@@ -2997,14 +3013,6 @@ void PowerTabEditor::createToolBars()
     addToolBarBreak(Qt::LeftToolBarArea);
 
     // Dynamic Toolbar.
-    myDynamicPPPCommand->setIcon(QIcon(":images/dynamic_ppp.png"));
-    myDynamicPPCommand->setIcon(QIcon(":images/dynamic_pp.png"));
-    myDynamicPCommand->setIcon(QIcon(":images/dynamic_p.png"));
-    myDynamicMPCommand->setIcon(QIcon(":images/dynamic_mp.png"));
-    myDynamicMFCommand->setIcon(QIcon(":images/dynamic_mf.png"));
-    myDynamicFCommand->setIcon(QIcon(":images/dynamic_f.png"));
-    myDynamicFFCommand->setIcon(QIcon(":images/dynamic_ff.png"));
-    myDynamicFFFCommand->setIcon(QIcon(":images/dynamic_fff.png"));
     myDynamicsToolBar = addToolBar(tr("Dynamics"));
     addToolBar(Qt::LeftToolBarArea, myDynamicsToolBar);
     myDynamicsToolBar->addAction(myDynamicPPPCommand);
@@ -3035,7 +3043,6 @@ void PowerTabEditor::createToolBars()
     myOctaveToolBar->addAction(myOctave15mbCommand);
 
     // Grouping Toolbar.
-    myTripletCommand->setIcon(QIcon(":images/group_note"));
     myGroupingToolBar = addToolBar(tr("Grouping"));
     addToolBar(Qt::RightToolBarArea, myGroupingToolBar);
     myGroupingToolBar->addAction(myTripletCommand);
@@ -3053,8 +3060,6 @@ void PowerTabEditor::createToolBars()
     addToolBarBreak(Qt::RightToolBarArea);
 
     // Ornament Toolbar.
-    myTrillCommand->setIcon(QIcon(":images/trill.png"));
-    myVibratoCommand->setIcon(QIcon(":images/vibrato.png"));
     myOrnamentToolBar = addToolBar(tr("Ornament"));
     addToolBar(Qt::RightToolBarArea, myOrnamentToolBar);
     myOrnamentToolBar->addAction(myGraceNoteCommand);
@@ -3063,8 +3068,6 @@ void PowerTabEditor::createToolBars()
     myOrnamentToolBar->addAction(myWideVibratoCommand);
 
     // Tab Symbols Toolbar.
-    myBendCommand->setIcon(QIcon(":images/bend"));
-    myHammerPullCommand->setIcon(QIcon(":images/legato"));//image name wrong
     myTabSymbolsToolBar = addToolBar(tr("Tab Symbols"));
     addToolBar(Qt::RightToolBarArea, myTabSymbolsToolBar);
     myTabSymbolsToolBar->addAction(myHammerPullCommand);
@@ -3080,12 +3083,6 @@ void PowerTabEditor::createToolBars()
     myHarmonicToolBar->addAction(myTappedHarmonicCommand);
 
     // Slide Toolbar.
-    myLegatoSlideCommand->setIcon(QIcon(":images/legatoslide"));
-    myShiftSlideCommand->setIcon(QIcon(":images/shiftslide"));
-    mySlideIntoFromAboveCommand->setIcon(QIcon(":images/slideinabove"));
-    mySlideIntoFromBelowCommand->setIcon(QIcon(":images/slideinbelow"));
-    mySlideOutOfDownwardsCommand->setIcon(QIcon(":images/slideoutdown"));
-    mySlideOutOfUpwardsCommand->setIcon(QIcon(":images/slideoutup"));
     mySlideToolBar = addToolBar(tr("Slides"));
     addToolBar(Qt::RightToolBarArea, mySlideToolBar);
     mySlideToolBar->addAction(myLegatoSlideCommand);

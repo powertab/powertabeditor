@@ -30,7 +30,8 @@ class Command : public QAction
 
 public:
     Command(const QString &text, const QString &id,
-            const QKeySequence &defaultShortcut, QObject *parent);
+            const QKeySequence &defaultShortcut, QObject *parent,
+            const QString &iconFileName = QString());
 
     QString id() const;
     QKeySequence defaultShortcut() const;
