@@ -379,3 +379,18 @@ TEST_CASE("Formats/PowerTabOldImport/MergeMultiBarRests")
 
     REQUIRE(score == expected_score);
 }
+
+TEST_CASE("Formats/PowerTabOldImport/VolumeSwells")
+{
+    Score score;
+    PowerTabOldImporter importer;
+    loadTest(importer, "data/volume_swells.ptb", score);
+
+    const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
+    const Position &pos = voice.getPositions()[2];
+    REQUIRE(pos.hasVolumeSwell());
+    const VolumeSwell &swell = pos.getVolumeSwell();
+    REQUIRE(swell.getStartVolume() == VolumeLevel::ppp);
+    REQUIRE(swell.getEndVolume() == VolumeLevel::fff);
+    REQUIRE(swell.getDuration() == 2);
+}

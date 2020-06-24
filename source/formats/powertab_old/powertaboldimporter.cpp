@@ -702,6 +702,16 @@ void PowerTabOldImporter::convert(const PowerTabDocument::Position &oldPosition,
         position.setMultiBarRest(count);
     }
 
+    if (oldPosition.HasVolumeSwell())
+    {
+        uint8_t start_volume, end_volume, duration;
+        oldPosition.GetVolumeSwell(start_volume, end_volume, duration);
+
+        position.setVolumeSwell(
+            VolumeSwell(static_cast<VolumeLevel>(start_volume),
+                        static_cast<VolumeLevel>(end_volume), duration));
+    }
+
     // Import notes.
     for (size_t i = 0; i < oldPosition.GetNoteCount(); ++i)
     {
