@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Added support for volume swells (#17).
 - Added new commands (`Note -> Shift String Up` and `Note -> Shift String Down`) to shift notes up or down by a string (#20).
 - Left hand fingerings now support thumbs. This is also now supported by the Guitar Pro 6/7 importers (#292).
 - The song information can now store a subtitle. This is also now supported by the Guitar Pro 6/7 importers (#297).

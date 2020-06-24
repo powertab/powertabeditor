@@ -574,6 +574,67 @@ static void generateSlides(std::vector<BendEventInfo> &bends, int start_tick,
     }
 }
 
+static int
+getDurationTicks(const Voice &voice, const Position &position,
+                 int ticks_per_beat)
+{
+    return boost::rational_cast<int>(
+        ticks_per_beat * VoiceUtils::getDurationTime(voice, position));
+}
+
+namespace
+{
+struct VolumeSwellEvent
+{
+    VolumeSwellEvent(int tick, uint8_t volume) : myTick(tick), myVolume(volume)
+    {
+    }
+
+    int myTick = 0;
+    uint8_t myVolume = 0;
+};
+} // namespace
+
+static std::vector<VolumeSwellEvent>
+generateVolumeSwell(const int start_tick, int duration,
+                    const int ticks_per_beat, const Voice &voice,
+                    const Position &start_pos)
+{
+    std::vector<VolumeSwellEvent> events;
+
+    const VolumeSwell &swell = start_pos.getVolumeSwell();
+    const int start_idx = ScoreUtils::findIndexByPosition(
+        voice.getPositions(), start_pos.getPosition());
+
+    // Add in the duration for any extra notes the swell is held over.
+    for (int i = 1; i <= swell.getDuration(); ++i)
+    {
+        int idx = start_idx + i;
+        if (idx >= static_cast<int>(voice.getPositions().size()))
+            break;
+
+        duration +=
+            getDurationTicks(voice, voice.getPositions()[idx], ticks_per_beat);
+    }
+
+    const auto start_vol = static_cast<int>(swell.getStartVolume());
+    const auto end_vol = static_cast<int>(swell.getEndVolume());
+    const int num_events = std::abs(start_vol - end_vol);
+    if (!num_events)
+        return {};
+
+    events.reserve(num_events);
+    const int event_duration = duration / num_events;
+    const int increment = (start_vol < end_vol) ? 1 : -1;
+    for (int i = 0; i < num_events; ++i)
+    {
+        const int tick = start_tick + i * event_duration;
+        events.emplace_back(tick, start_vol + i * increment);
+    }
+
+    return events;
+}
+
 int MidiFile::addEventsForBar(
     std::vector<MidiEventList> &tracks, uint8_t &active_bend, int current_tick,
     int current_tempo, const Score &score, const System &system,
@@ -633,8 +694,7 @@ int MidiFile::addEventsForBar(
             continue;
 
         const SystemLocation system_location(system_index, position);
-        int duration = boost::rational_cast<int>(
-            myTicksPerBeat * VoiceUtils::getDurationTime(voice, *pos));
+        int duration = getDurationTicks(voice, *pos, myTicksPerBeat);
 
         if (pos->isRest())
         {
@@ -666,6 +726,23 @@ int MidiFile::addEventsForBar(
         {
             current_tick += duration;
             continue;
+        }
+
+        // Volume swells.
+        if (pos->hasVolumeSwell())
+        {
+            std::vector<VolumeSwellEvent> events = generateVolumeSwell(
+                current_tick, duration, myTicksPerBeat, voice, *pos);
+
+            for (const VolumeSwellEvent &event : events)
+            {
+                for (const ActivePlayer &player : active_players)
+                {
+                    tracks[player.getPlayerNumber()].append(
+                        MidiEvent::volumeChange(
+                            event.myTick, getChannel(player), event.myVolume));
+                }
+            }
         }
 
         // Vibrato events (these apply to all notes in the position).
