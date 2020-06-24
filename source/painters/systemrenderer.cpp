@@ -1116,17 +1116,10 @@ void SystemRenderer::drawSymbolsAboveTabStaff(const Staff &staff,
             renderedSymbol = createConnectedSymbolGroup(
                 QStringLiteral("A.H."), QFont::StyleNormal, width, layout);
             break;
-#if 0
-        case Layout::SymbolVolumeSwell:
-        {
-            // figure out the direction of the volume swell
-            uint8_t startVolume = 0, endVolume = 0, duration = 0;
-            staff->GetPosition(0, symbolGroup.leftPosIndex)->GetVolumeSwell(startVolume, endVolume, duration);
-
-            renderedSymbol = createVolumeSwell(width, staffInfo,
-                                               (startVolume <= endVolume) ? VolumeIncreasing : VolumeDecreasing);
+        case SymbolGroup::VolumeSwell:
+            renderedSymbol = createVolumeSwell(symbolGroup, layout);
             break;
-        }
+#if 0
         case Layout::SymbolTremoloBar:
             renderedSymbol = new TremoloBarPainter(staff->GetPosition(0, symbolGroup.leftPosIndex),
                                                    width);
@@ -1255,31 +1248,33 @@ void SystemRenderer::createDashedLine(QGraphicsItemGroup *group, double left,
     group->addToGroup(lineEnd);
 }
 
-#if 0
-
-/// Creates a volume swell QGraphicsItem of the specified type
-QGraphicsItem* SystemRenderer::createVolumeSwell(uint8_t width, const StaffData& currentStaffInfo,
-                                                 VolumeSwellType type)
+QGraphicsItem *
+SystemRenderer::createVolumeSwell(const SymbolGroup &group,
+                                  const LayoutInfo &layout)
 {
-    double leftX = currentStaffInfo.positionWidth / 2.0;
-    double rightX = width;
+    const Position *pos = ScoreUtils::findByPosition(
+        group.getVoice().getPositions(), group.getLeftPosition());
+    assert(pos && pos->hasVolumeSwell());
+    const VolumeSwell &swell = pos->getVolumeSwell();
 
-    if (type == VolumeDecreasing) // switch directions for decreasing volume swells
-    {
-        std::swap(leftX, rightX);
-    }
+    // The width of the symbol rectangle is the number of positions that the
+    // volume swell spans.
+    static constexpr double padding = 0.1;
+    double start_x = 0.5 * layout.getPositionSpacing();
+    double end_x = group.getWidth() - padding * layout.getPositionSpacing();
 
-    // in this case, the width of the symbol rectangle is the # of positions that the volume swell spans
+    // Flip for decreasing swells.
+    if (swell.getStartVolume() > swell.getEndVolume())
+        std::swap(start_x, end_x);
+
     QPainterPath path;
-    path.moveTo(rightX, 0);
-    path.lineTo(leftX, Staff::TAB_SYMBOL_HEIGHT / 2.0);
-    path.lineTo(rightX, Staff::TAB_SYMBOL_HEIGHT);
+    path.moveTo(end_x, padding * LayoutInfo::TAB_SYMBOL_SPACING);
+    path.lineTo(start_x, LayoutInfo::TAB_SYMBOL_SPACING * 0.5);
+    path.lineTo(end_x, (1.0 - padding) * LayoutInfo::TAB_SYMBOL_SPACING);
 
-    QGraphicsPathItem* swell = new QGraphicsPathItem(path);
-    return swell;
+    return new QGraphicsPathItem(path);
 }
 
-#endif
 QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
                                                          int width)
 {
