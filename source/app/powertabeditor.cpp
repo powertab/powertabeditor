@@ -72,6 +72,7 @@
 #include <actions/shiftpositions.h>
 #include <actions/shiftstring.h>
 #include <actions/undomanager.h>
+#include <actions/volumeswell.h>
 
 #include <app/appinfo.h>
 #include <app/caret.h>
@@ -119,6 +120,7 @@
 #include <dialogs/trilldialog.h>
 #include <dialogs/tuningdictionarydialog.h>
 #include <dialogs/viewfilterdialog.h>
+#include <dialogs/volumeswelldialog.h>
 
 #include <formats/fileformatmanager.h>
 
@@ -1391,6 +1393,32 @@ void PowerTabEditor::editDynamic()
     }
 }
 
+void
+PowerTabEditor::editVolumeSwell()
+{
+    const ScoreLocation &location = getLocation();
+    const Position *position = location.getPosition();
+    assert(position);
+
+    if (position->hasVolumeSwell())
+    {
+        myUndoManager->push(new RemoveVolumeSwell(location),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        VolumeSwellDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(
+                new AddVolumeSwell(location, dialog.getVolumeSwell()),
+                location.getSystemIndex());
+        }
+        else
+            myVolumeSwellCommand->setChecked(false);
+    }
+}
+
 void PowerTabEditor::editHammerPull()
 {
     ScoreLocation &location = getLocation();
@@ -2082,19 +2110,6 @@ void PowerTabEditor::createCommands()
     connect(myTextCommand, &QAction::triggered, this,
             &PowerTabEditor::editTextItem);
 
-#if 0
-    // Section-related actions
-    increasePositionSpacingAct = new Command(tr("Increase Position Spacing"),
-                                             "Section.IncreaseSpacing", Qt::Key_Plus, this);
-    sigfwd::connect(increasePositionSpacingAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::changePositionSpacing, this, 1));
-
-    decreasePositionSpacingAct = new Command(tr("Decrease Position Spacing"),
-                                             "Section.DecreaseSpacing", Qt::Key_Minus, this);
-    sigfwd::connect(decreasePositionSpacingAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::changePositionSpacing, this, -1));
-
-#endif
     myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
                                              "Section.InsertSystemAtEnd",
                                              Qt::Key_N, this);
@@ -2367,13 +2382,14 @@ void PowerTabEditor::createCommands()
         new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
     connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
-#if 0
-    volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
-                                    QKeySequence(), this);
-    volumeSwellAct->setCheckable(true);
-    connect(volumeSwellAct, SIGNAL(triggered()), this, SLOT(editVolumeSwell()));
-#endif
-    
+
+    myVolumeSwellCommand =
+        new Command(tr("Volume Swell..."), "MusicSymbols.VolumeSwell",
+                    QKeySequence(), this);
+    myVolumeSwellCommand->setCheckable(true);
+    connect(myVolumeSwellCommand, &QAction::triggered, this,
+            &PowerTabEditor::editVolumeSwell);
+
     // Tab Symbol Actions.
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
                                       "TabSymbols.HammerPull", Qt::Key_H, this);
@@ -2852,11 +2868,8 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(myDirectionCommand);
     myMusicSymbolsMenu->addAction(myRepeatEndingCommand);
     myMusicSymbolsMenu->addAction(myDynamicCommand);
-#if 0
-    myMusicSymbolsMenu->addAction(volumeSwellAct);
+    myMusicSymbolsMenu->addAction(myVolumeSwellCommand);
 
-#endif
-        
     // Tab Symbols Menu
     myTabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     myHammerOnMenu = myTabSymbolsMenu->addMenu(tr("&Hammer Ons/Pull Offs"));
@@ -3242,6 +3255,9 @@ void PowerTabEditor::updateCommands()
         nullptr);
     myRepeatEndingCommand->setChecked(altEnding != nullptr);
     myDynamicCommand->setChecked(dynamic != nullptr);
+
+    myVolumeSwellCommand->setEnabled(pos);
+    myVolumeSwellCommand->setChecked(pos && pos->hasVolumeSwell());
 
     if (barline) // Current position is bar.
     {
@@ -3648,60 +3664,3 @@ ScoreLocation &PowerTabEditor::getLocation()
 {
     return getCaret().getLocation();
 }
-
-#if 0
-
-void PowerTabEditor::editVolumeSwell()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Position* position = caret->getCurrentPosition();
-
-    if (!position->HasVolumeSwell())
-    {
-        VolumeSwellDialog dialog(this, position);
-        if (dialog.exec() == QDialog::Accepted) // add volume swell
-        {
-            undoManager->push(new AddVolumeSwell(position, dialog.getNewStartVolume(),
-                                                 dialog.getNewEndVolume(),
-                                                 dialog.getNewDuration()),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-    else // remove volume swell
-    {
-        undoManager->push(new RemoveVolumeSwell(position),
-                          caret->getCurrentSystemIndex());
-    }
-}
-
-void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
-    Mixer* mixer = getCurrentMixer();
-
-    // There must always be at least one visible guitar.
-    bool canToggle = false;
-    for (size_t i = 0; i < score->GetGuitarCount(); ++i)
-    {
-        if (score->GetGuitar(i)->IsShown() && i != trackIndex)
-        {
-            canToggle = true;
-        }
-    }
-
-    if (canToggle)
-    {
-        EditTrackShown* action = new EditTrackShown(score, mixer, trackIndex,
-                                                    isVisible);
-        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
-    }
-    else
-    {
-        // Update the state of the checkboxes if we didn't show/hide the guitar.
-        mixer->update();
-    }
-
-}
-
-#endif

@@ -228,6 +228,8 @@ private slots:
     void editRepeatEnding();
     /// Adds or removes a dynamic at the current location.
     void editDynamic();
+    /// Adds or removes a volume swell at the current location.
+    void editVolumeSwell();
 
     /// Adds or removes a hammeron/pulloff for the current note.
     void editHammerPull();
@@ -549,6 +551,7 @@ private:
     Command *myDirectionCommand;
     Command *myRepeatEndingCommand;
     Command *myDynamicCommand;
+    Command *myVolumeSwellCommand;
 
     QMenu *myTabSymbolsMenu;
     QMenu *myHammerOnMenu;
@@ -598,24 +601,6 @@ private:
 
     QMenu *myHelpMenu;
     Command *myReportBugCommand;
-
-#if 0
-
-private:
-    void changePositionSpacing(int offset);
-
-private slots:
-    void editVolumeSwell();
-    void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
-
-private:
-    Toolbox* toolBox;
-    QSplitter* vertSplitter;
-    QSplitter* horSplitter;
-
-    Command* volumeSwellAct;
-
-#endif
 };
 
 #endif

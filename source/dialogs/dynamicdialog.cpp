@@ -32,7 +32,7 @@ DynamicDialog::DynamicDialog(QWidget *parent)
 
     // Add each button to a QButtonGroup (to ensure that only one is ever
     // checked), and associate each with the corresponding value from the
-    // Dynamic class.
+    // VolumeLevel class.
     myVolumeLevels->addButton(ui->volumeOffButton,
                               static_cast<uint8_t>(VolumeLevel::Off));
     myVolumeLevels->addButton(ui->pppButton,
