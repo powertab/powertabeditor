@@ -680,9 +680,13 @@ static int getBendHeight(const Bend &bend)
 }
 
 static int
-getClampedPositionByIndex(const Voice &voice, int index)
+getClampedPositionByIndex(const Voice &voice, int index, int num_positions)
 {
     const int max_index = static_cast<int>(voice.getPositions().size()) - 1;
+    // Return the final position in the staff if there aren't enough positions.
+    if (index > max_index)
+        return num_positions - 1;
+
     index = std::clamp(index, 0, max_index);
     return voice.getPositions()[index].getPosition();
 }
@@ -715,7 +719,8 @@ void LayoutInfo::calculateBendLayout(VerticalLayout &layout)
 
             groupHeight = std::max(groupHeight, getBendHeight(*bend));
             rightPos = std::max(rightPos, getClampedPositionByIndex(
-                                              voice, i + bend->getDuration()));
+                                              voice, i + bend->getDuration(),
+                                              getNumPositions()));
 
             const Bend::BendType type = bend->getType();
             if (type == Bend::NormalBend || type == Bend::BendAndRelease ||
@@ -765,8 +770,8 @@ LayoutInfo::calculateVolumeSwellLayout(VerticalLayout &layout)
             const VolumeSwell &swell = pos.getVolumeSwell();
 
             const int start_pos = pos.getPosition();
-            const int end_pos =
-                getClampedPositionByIndex(voice, i + swell.getDuration() + 1);
+            const int end_pos = getClampedPositionByIndex(
+                voice, i + swell.getDuration() + 1, getNumPositions());
 
             const int y = layout.addBox(start_pos, end_pos, 1);
             const double start_x = getPositionX(start_pos);
