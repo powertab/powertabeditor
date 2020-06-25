@@ -39,6 +39,7 @@
 #include <actions/addtextitem.h>
 #include <actions/adjustlinespacing.h>
 #include <actions/editbarline.h>
+#include <actions/editdynamic.h>
 #include <actions/editfileinformation.h>
 #include <actions/editinstrument.h>
 #include <actions/editkeysignature.h>
@@ -1363,6 +1364,28 @@ void PowerTabEditor::editRepeatEnding()
     {
         myUndoManager->push(new RemoveAlternateEnding(location),
                             location.getSystemIndex());
+    }
+}
+
+void PowerTabEditor::updateDynamic(Dynamic::VolumeLevel volume)
+{
+    ScoreLocation &location = getLocation();
+    const Dynamic *dynamic = ScoreUtils::findByPosition(
+                location.getStaff().getDynamics(), location.getPositionIndex());
+
+    if (dynamic)
+    {
+        myUndoManager->push(new EditDynamic(location, volume, dynamic),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        if (volume == dynamic->getVolume())
+            myUndoManager->push(new RemoveDynamic(location),
+                                location.getSystemIndex());
+        else
+            myUndoManager->push(new AddDynamic(location, dynamic),
+                                location.getSystemIndex());
     }
 }
 
@@ -2744,7 +2767,7 @@ void PowerTabEditor::createDynamicCommand(
                           iconFileName);
     command->setCheckable(true);
     connect(command, &QAction::triggered, [=]() {
-    //  updateDynamic(volume);
+        updateDynamic(volume);
     });
     myDynamicGroup->addAction(command);
 }

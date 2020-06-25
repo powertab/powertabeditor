@@ -22,6 +22,7 @@ set( srcs
     addtextitem.cpp
     adjustlinespacing.cpp
     editbarline.cpp
+    editdynamic.cpp
     editfileinformation.cpp
     editinstrument.cpp
     editkeysignature.cpp
@@ -79,6 +80,7 @@ set( headers
     addtextitem.h
     adjustlinespacing.h
     editbarline.h
+    editdynamic.h
     editfileinformation.h
     editinstrument.h
     editkeysignature.h
