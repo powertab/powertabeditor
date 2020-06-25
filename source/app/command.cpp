@@ -32,7 +32,7 @@ Command::Command(const QString &text, const QString &id,
     setIconVisibleInMenu(false);
 
     if (!iconFileName.isNull())
-      setIcon(QIcon(iconFileName));
+        setIcon(QIcon(iconFileName));
 }
 
 QString Command::id() const
