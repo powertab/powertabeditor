@@ -180,7 +180,8 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
 
         const int start_tick = current_tick;
         current_tempo =
-            addTempoEvent(master_track, start_tick, current_tempo, system,
+            addTempoEvent(master_track, start_tick, current_tempo, score,
+                          location, repeat_controller,
                           current_bar->getPosition(), next_bar->getPosition());
 
         for (unsigned int staff_index = 0; staff_index < system.getStaves().size();
@@ -285,28 +286,146 @@ int MidiFile::generateMetronome(MidiEventList &event_list, int current_tick,
     return current_tick;
 }
 
-int MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
-                            int current_tempo, const System &system,
-                            int bar_start, int bar_end)
+/// Return the expected duration (in ticks) of the bar. This might not be the
+/// actual duration if the bar has too many notes.
+static int
+computeBarDurationTicks(const TimeSignature &time_sig, int ticks_per_beat)
 {
+    return boost::rational_cast<int>(
+        ticks_per_beat * time_sig.getBeatsPerMeasure() *
+        boost::rational<int>(4, time_sig.getBeatValue()));
+}
+
+/// Compute the tempo in microseconds.
+static int
+computeTempo(const TempoMarker &marker)
+{
+    // Convert the values in the TempoMarker::BeatType enum to a factor that
+    // will scale the bpm value to be in terms of quarter notes.
+    boost::rational<int> scale(2, 1 << (marker.getBeatType() / 2));
+    if (marker.getBeatType() % 2 != 0)
+        scale *= boost::rational<int>(3, 2);
+
+    // Compute the number of microseconds per quarter note.
+    return boost::rational_cast<int>(60000000 /
+                                     (scale * marker.getBeatsPerMinute()));
+}
+
+/// Finds the next tempo marker, along with the duration in ticks between the
+/// two bars.
+/// Note that this takes a copy of the repeat controller, since it shouldn't
+/// affect the main loop's state.
+static const TempoMarker *
+findNextTempoMarker(const Score &score, SystemLocation location,
+                    RepeatController repeat_controller,
+                    const int ticks_per_beat, int &duration)
+{
+    const SystemLocation start_location = location;
+
+    // Unused since moveToNextBar() is not configured to record position
+    // changes.
+    MidiEventList event_list;
+    const int current_tick = -1;
+
+    const int num_systems = score.getSystems().size();
+    while (location.getSystem() < num_systems)
+    {
+        const System &system = score.getSystems()[location.getSystem()];
+
+        // TODO - consolidate some of this duplicate code with the main loop of
+        // the load() method.
+        const Barline *current_bar = ScoreUtils::findByPosition(
+            system.getBarlines(), location.getPosition());
+        if (!current_bar)
+            current_bar = system.getPreviousBarline(location.getPosition());
+
+        const Barline *next_bar = system.getNextBarline(location.getPosition());
+        assert(next_bar);
+
+        assert(location.getPosition() < (next_bar->getPosition() - 1));
+
+        // Loop until we find the next tempo marker.
+        auto markers = ScoreUtils::findInRange(system.getTempoMarkers(),
+                                               current_bar->getPosition(),
+                                               next_bar->getPosition() - 1);
+        // Ensure we don't find our original tempo marker we started from.
+        if (!markers.empty() && location != start_location)
+            return &markers.back();
+
+        // Count how much time there is between the two tempo markers.
+        duration += computeBarDurationTicks(current_bar->getTimeSignature(),
+                                            ticks_per_beat);
+
+        location = moveToNextBar(
+            event_list, current_tick, /* record_position_changes */ false,
+            system, location, next_bar->getPosition(), repeat_controller);
+    }
+
+    return nullptr;
+}
+
+int
+MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
+                        int current_tempo, const Score &score,
+                        const SystemLocation &location,
+                        const RepeatController &repeat_controller,
+                        int bar_start, int bar_end)
+{
+    const System &system = score.getSystems()[location.getSystem()];
     auto markers = ScoreUtils::findInRange(system.getTempoMarkers(), bar_start,
                                            bar_end - 1);
+    if (markers.empty())
+        return current_tempo;
+
     // If multiple tempo markers occur in a bar, just choose the last one.
-    if (!markers.empty())
+    const TempoMarker &marker = markers.back();
+
+    if (marker.getMarkerType() != TempoMarker::AlterationOfPace)
     {
-        const TempoMarker &marker = markers.back();
-
-        // Convert the values in the TempoMarker::BeatType enum to a factor that
-        // will scale the bpm value to be in terms of quarter notes.
-        boost::rational<int> scale(2, 1 << (marker.getBeatType() / 2));
-        if (marker.getBeatType() % 2 != 0)
-            scale *= boost::rational<int>(3, 2);
-
-        // Compute the number of microseconds per quarter note.
-        current_tempo = boost::rational_cast<int>(
-            60000000 / (scale * marker.getBeatsPerMinute()));
-
+        // Simple change of tempo.
+        current_tempo = computeTempo(marker);
         event_list.append(MidiEvent::setTempo(current_tick, current_tempo));
+    }
+    else
+    {
+        // Find the next tempo marker, if any.
+        int duration = 0;
+        const TempoMarker *next_marker = findNextTempoMarker(
+            score, location, repeat_controller, myTicksPerBeat, duration);
+
+        // Skip if the next tempo marker is also an alteration of pace!
+        if (next_marker &&
+            next_marker->getMarkerType() == TempoMarker::AlterationOfPace)
+        {
+            return current_tempo;
+        }
+
+        // If there isn't an upcoming tempo marker, go to twice or half the
+        // current tempo by the end of the score.
+        // Note that the tempo is in microseconds, not bpm!
+        // TODO - maybe we should just use chrono's microsecond type here?
+        int delta_tempo = 0;
+        if (next_marker)
+            delta_tempo = computeTempo(*next_marker) - current_tempo;
+        else if (marker.getAlterationOfPace() == TempoMarker::Accelerando)
+            delta_tempo = -current_tempo / 2;
+        else if (marker.getAlterationOfPace() == TempoMarker::Ritardando)
+            delta_tempo = current_tempo;
+
+        // We're working in microseconds, so a tempo change event every
+        // millisecond seems reasonable ...
+        const int num_events = std::abs(delta_tempo) / 1000;
+        if (!num_events)
+            return current_tempo;
+
+        const int event_duration = duration / num_events;
+        delta_tempo /= num_events;
+        for (int i = 0; i < num_events; ++i)
+        {
+            const int tick = current_tick + i * event_duration;
+            const int tempo = current_tempo + i * delta_tempo;
+            event_list.append(MidiEvent::setTempo(tick, tempo));
+        }
     }
 
     return current_tempo;
@@ -314,7 +433,7 @@ int MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
 
 static int getWholeRestDuration(const System &system, const Voice &voice,
                                 const Position &pos, int bar_start, int bar_end,
-                                int original_duration)
+                                int original_duration, int ticks_per_beat)
 {
     // If the whole rest is not the only item in the bar, treat it like a
     // regular rest.
@@ -331,10 +450,7 @@ static int getWholeRestDuration(const System &system, const Voice &voice,
     const Barline *barline =
         ScoreUtils::findByPosition(system.getBarlines(), bar_start);
     const TimeSignature& time_sig = barline->getTimeSignature();
-
-    return boost::rational_cast<int>(
-        time_sig.getBeatsPerMeasure() *
-        boost::rational<int>(4, time_sig.getBeatValue()));
+    return computeBarDurationTicks(time_sig, ticks_per_beat);
 }
 
 static int getActualNotePitch(const Note &note, const Tuning &tuning)
@@ -703,7 +819,7 @@ int MidiFile::addEventsForBar(
             if (pos->getDurationType() == Position::WholeNote)
             {
                 duration = getWholeRestDuration(system, voice, *pos, bar_start,
-                                                bar_end, duration);
+                                                bar_end, duration, myTicksPerBeat);
 
                 // Extend for multi-bar rests.
                 if (pos->hasMultiBarRest())

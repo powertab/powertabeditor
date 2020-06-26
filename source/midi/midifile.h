@@ -24,6 +24,7 @@
 #include <vector>
 
 class Barline;
+class RepeatController;
 class Score;
 class Staff;
 class System;
@@ -71,7 +72,9 @@ private:
                           const LoadOptions &options);
 
     int addTempoEvent(MidiEventList &event_list, int current_tick,
-                      int current_tempo, const System &system, int bar_start,
+                      int current_tempo, const Score &score,
+                      const SystemLocation &location,
+                      const RepeatController &repeat_controller, int bar_start,
                       int bar_end);
 
     int addEventsForBar(std::vector<MidiEventList> &tracks,
