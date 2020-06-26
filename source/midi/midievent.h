@@ -20,8 +20,17 @@
 
 #include <score/systemlocation.h>
 
+#include <chrono>
 #include <cstdint>
 #include <vector>
+
+namespace Midi
+{
+/// Tempos in MIDI files are stored in microseconds.
+using Tempo = std::chrono::microseconds;
+/// Time in microseconds for a beat at 120bpm.
+static inline constexpr Tempo BEAT_DURATION_120_BPM(500000);
+} // namespace Midi
 
 class MidiEvent
 {
@@ -50,14 +59,14 @@ public:
 
     bool isTempoChange() const;
     bool isTrackEnd() const;
-    int getTempo() const;
+    Midi::Tempo getTempo() const;
     bool isProgramChange() const;
     bool isPositionChange() const;
     bool isNoteOnOff() const;
     uint8_t getChannel() const;
 
     static MidiEvent endOfTrack(int ticks);
-    static MidiEvent setTempo(int ticks, int microseconds);
+    static MidiEvent setTempo(int ticks, Midi::Tempo tempo);
     static MidiEvent noteOn(int ticks, uint8_t channel, uint8_t pitch,
                             uint8_t velocity, const SystemLocation &location);
     static MidiEvent noteOff(int ticks, uint8_t channel, uint8_t pitch,

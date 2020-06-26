@@ -20,6 +20,7 @@
 #include "repeatcontroller.h"
 
 #include <boost/rational.hpp>
+#include <chrono>
 
 #include <score/generalmidi.h>
 #include <score/score.h>
@@ -157,7 +158,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     std::vector<uint8_t> active_bends;
     int system_index = -1;
     int current_tick = 0;
-    int current_tempo = Midi::BEAT_DURATION_120_BPM;
+    Midi::Tempo current_tempo = Midi::BEAT_DURATION_120_BPM;
 
     while (location.getSystem() < static_cast<int>(score.getSystems().size()))
     {
@@ -297,7 +298,7 @@ computeBarDurationTicks(const TimeSignature &time_sig, int ticks_per_beat)
 }
 
 /// Compute the tempo in microseconds.
-static int
+static Midi::Tempo
 computeTempo(const TempoMarker &marker)
 {
     // Convert the values in the TempoMarker::BeatType enum to a factor that
@@ -307,8 +308,8 @@ computeTempo(const TempoMarker &marker)
         scale *= boost::rational<int>(3, 2);
 
     // Compute the number of microseconds per quarter note.
-    return boost::rational_cast<int>(60000000 /
-                                     (scale * marker.getBeatsPerMinute()));
+    return Midi::Tempo(boost::rational_cast<int>(
+        60000000 / (scale * marker.getBeatsPerMinute())));
 }
 
 /// Finds the next tempo marker, along with the duration in ticks between the
@@ -364,9 +365,9 @@ findNextTempoMarker(const Score &score, SystemLocation location,
     return nullptr;
 }
 
-int
+Midi::Tempo
 MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
-                        int current_tempo, const Score &score,
+                        Midi::Tempo current_tempo, const Score &score,
                         const SystemLocation &location,
                         const RepeatController &repeat_controller,
                         int bar_start, int bar_end)
@@ -402,9 +403,9 @@ MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
 
         // If there isn't an upcoming tempo marker, go to twice or half the
         // current tempo by the end of the score.
-        // Note that the tempo is in microseconds, not bpm!
-        // TODO - maybe we should just use chrono's microsecond type here?
-        int delta_tempo = 0;
+        // Note that the tempo is in microseconds, so to speed up we reduce the
+        // tempo!
+        Midi::Tempo delta_tempo{ 0 };
         if (next_marker)
             delta_tempo = computeTempo(*next_marker) - current_tempo;
         else if (marker.getAlterationOfPace() == TempoMarker::Accelerando)
@@ -414,7 +415,7 @@ MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
 
         // We're working in microseconds, so a tempo change event every
         // millisecond seems reasonable ...
-        const int num_events = std::abs(delta_tempo) / 1000;
+        const int num_events = std::abs(delta_tempo.count()) / 1000;
         if (!num_events)
             return current_tempo;
 
@@ -423,7 +424,7 @@ MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
         for (int i = 0; i < num_events; ++i)
         {
             const int tick = current_tick + i * event_duration;
-            const int tempo = current_tempo + i * delta_tempo;
+            const Midi::Tempo tempo = current_tempo + i * delta_tempo;
             event_list.append(MidiEvent::setTempo(tick, tempo));
         }
     }
@@ -499,18 +500,18 @@ static Velocity getNoteVelocity(const Position &pos, const Note &note)
 
 /// Compute the number of ticks for a grace note - it should correspond to about
 /// a 32nd note at 120bpm.
-static int getGraceNoteTicks(int ppq, int current_tempo)
+static int getGraceNoteTicks(int ppq, Midi::Tempo current_tempo)
 {
     return boost::rational_cast<int>(
-        boost::rational<int>(Midi::BEAT_DURATION_120_BPM, 8) /
-        boost::rational<int>(current_tempo, ppq));
+        boost::rational<int>(Midi::BEAT_DURATION_120_BPM.count(), 8) /
+        boost::rational<int>(current_tempo.count(), ppq));
 }
 
-static int getArpeggioOffset(int ppq, int current_tempo)
+static int getArpeggioOffset(int ppq, Midi::Tempo current_tempo)
 {
     return boost::rational_cast<int>(
-        boost::rational<int>(Midi::BEAT_DURATION_120_BPM, 16) /
-        boost::rational<int>(current_tempo, ppq));
+        boost::rational<int>(Midi::BEAT_DURATION_120_BPM.count(), 16) /
+        boost::rational<int>(current_tempo.count(), ppq));
 }
 
 /// Holds basic information about a bend - used to simplify the generateBends
@@ -751,11 +752,14 @@ generateVolumeSwell(const int start_tick, int duration,
     return events;
 }
 
-int MidiFile::addEventsForBar(
-    std::vector<MidiEventList> &tracks, uint8_t &active_bend, int current_tick,
-    int current_tempo, const Score &score, const System &system,
-    int system_index, const Staff &staff, int staff_index, const Voice &voice,
-    int voice_index, int bar_start, int bar_end, const LoadOptions &options)
+int
+MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
+                          uint8_t &active_bend, int current_tick,
+                          Midi::Tempo current_tempo, const Score &score,
+                          const System &system, int system_index,
+                          const Staff &staff, int staff_index,
+                          const Voice &voice, int voice_index, int bar_start,
+                          int bar_end, const LoadOptions &options)
 {
     ScoreLocation location(score, system_index, staff_index, voice_index);
     const Voice *prev_voice = VoiceUtils::getAdjacentVoice(location, -1);
