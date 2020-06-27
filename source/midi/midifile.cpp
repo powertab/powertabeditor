@@ -126,6 +126,24 @@ static SystemLocation moveToNextBar(MidiEventList &event_list, int ticks,
     return location;
 }
 
+/// Returns the start and end barline around the given position.
+std::pair<const Barline &, const Barline &>
+getSurroundingBarlines(const System &system, int position)
+{
+    // If we're exactly on top of a barline, use that instead of grabbing the
+    // preceding barline.
+    const Barline *current_bar = ScoreUtils::findByPosition(
+        system.getBarlines(), position);
+    if (!current_bar)
+        current_bar = system.getPreviousBarline(position);
+
+    const Barline *next_bar = system.getNextBarline(position);
+    assert(next_bar);
+
+    return { *current_bar, *next_bar };
+}
+
+
 MidiFile::MidiFile() : myTicksPerBeat(0)
 {
 }
@@ -163,15 +181,8 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
     while (location.getSystem() < static_cast<int>(score.getSystems().size()))
     {
         const System &system = score.getSystems()[location.getSystem()];
-
-        // We might not be exactly on a barline - a musical direction might
-        // shift us into the middle of bar.
-        const Barline *current_bar = ScoreUtils::findByPosition(
-            system.getBarlines(), location.getPosition());
-        if (!current_bar)
-            current_bar = system.getPreviousBarline(location.getPosition());
-
-        const Barline *next_bar = system.getNextBarline(location.getPosition());
+        auto [current_bar, next_bar] =
+            getSurroundingBarlines(system, location.getPosition());
 
         if (location.getSystem() != system_index)
         {
@@ -183,7 +194,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
         current_tempo =
             addTempoEvent(master_track, start_tick, current_tempo, score,
                           location, repeat_controller,
-                          current_bar->getPosition(), next_bar->getPosition());
+                          current_bar.getPosition(), next_bar.getPosition());
 
         for (unsigned int staff_index = 0; staff_index < system.getStaves().size();
              ++staff_index)
@@ -197,7 +208,7 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
                     regular_tracks, active_bends[staff_index], start_tick,
                     current_tempo, score, system, location.getSystem(), staff,
                     staff_index, staff.getVoices()[voice_index], voice_index,
-                    current_bar->getPosition(), next_bar->getPosition(),
+                    current_bar.getPosition(), next_bar.getPosition(),
                     options);
 
                 current_tick = std::max(current_tick, end_tick);
@@ -205,14 +216,14 @@ void MidiFile::load(const Score &score, const LoadOptions &options)
         }
 
         // Generate metronome events.
-        current_tick = std::max(
-            current_tick,
-            generateMetronome(metronome_track, start_tick, system, *current_bar,
-                              *next_bar, location, options));
+        current_tick = std::max(current_tick,
+                                generateMetronome(metronome_track, start_tick,
+                                                  system, current_bar, next_bar,
+                                                  location, options));
 
         location = moveToNextBar(
             metronome_track, current_tick, options.myRecordPositionChanges,
-            system, location, next_bar->getPosition(), repeat_controller);
+            system, location, next_bar.getPosition(), repeat_controller);
     }
 
     myTracks.push_back(master_track);
@@ -332,34 +343,24 @@ findNextTempoMarker(const Score &score, SystemLocation location,
     while (location.getSystem() < num_systems)
     {
         const System &system = score.getSystems()[location.getSystem()];
-
-        // TODO - consolidate some of this duplicate code with the main loop of
-        // the load() method.
-        const Barline *current_bar = ScoreUtils::findByPosition(
-            system.getBarlines(), location.getPosition());
-        if (!current_bar)
-            current_bar = system.getPreviousBarline(location.getPosition());
-
-        const Barline *next_bar = system.getNextBarline(location.getPosition());
-        assert(next_bar);
-
-        assert(location.getPosition() < (next_bar->getPosition() - 1));
+        auto [current_bar, next_bar] =
+            getSurroundingBarlines(system, location.getPosition());
 
         // Loop until we find the next tempo marker.
         auto markers = ScoreUtils::findInRange(system.getTempoMarkers(),
-                                               current_bar->getPosition(),
-                                               next_bar->getPosition() - 1);
+                                               current_bar.getPosition(),
+                                               next_bar.getPosition() - 1);
         // Ensure we don't find our original tempo marker we started from.
         if (!markers.empty() && location != start_location)
             return &markers.back();
 
         // Count how much time there is between the two tempo markers.
-        duration += computeBarDurationTicks(current_bar->getTimeSignature(),
+        duration += computeBarDurationTicks(current_bar.getTimeSignature(),
                                             ticks_per_beat);
 
         location = moveToNextBar(
             event_list, current_tick, /* record_position_changes */ false,
-            system, location, next_bar->getPosition(), repeat_controller);
+            system, location, next_bar.getPosition(), repeat_controller);
     }
 
     return nullptr;
