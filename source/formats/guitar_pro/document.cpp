@@ -204,7 +204,7 @@ void Header::load(InputStream &stream)
     myAlbum = stream.readString();
 
     myLyricist = stream.readString();
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         myComposer = stream.readString();
     else
         myComposer = myLyricist;
@@ -218,10 +218,10 @@ void Header::load(InputStream &stream)
     for (uint32_t i = 0; i < n; ++i)
         myNotices.push_back(stream.readString());
 
-    if (stream.getVersion() <= Version4)
+    if (stream.version() <= Version4)
         myTripletFeel = stream.readBool();
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
     {
         myLyricTrack = stream.read<uint32_t>();
 
@@ -234,11 +234,11 @@ void Header::load(InputStream &stream)
 
     // Ignore page setup information.
     // TODO - figure out if there is any useful information in here.
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
-        if (stream.version == Version5_0)
+        if (stream.version() == Version5_0)
             stream.skip(30);
-        else if (stream.version == Version5_1)
+        else if (stream.version() == Version5_1)
             stream.skip(49);
 
         for (int i = 0; i < 11; ++i)
@@ -311,7 +311,7 @@ void GraceNote::load(InputStream &stream)
     }
 
     // TODO - figure out the meaning of this byte.
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         stream.skip(1);
 }
 
@@ -346,7 +346,7 @@ void Note::load(InputStream &stream)
 
     myHasAccent = flags.test(NoteHeader::Accented);
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         myHasHeavyAccent = flags.test(NoteHeader::HeavyAccent);
 
     myIsGhostNote = flags.test(NoteHeader::GhostNote);
@@ -360,7 +360,7 @@ void Note::load(InputStream &stream)
             myIsMuted = true;
     }
 
-    if (stream.version <= Version4 &&
+    if (stream.version() <= Version4 &&
         flags.test(NoteHeader::TimeIndependentDuration))
     {
         // Ignore - I think this repeats the Beat duration?
@@ -382,7 +382,7 @@ void Note::load(InputStream &stream)
         stream.skip(1);
     }
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         // TODO - figure out what this data is used for in GP5.
         if (flags.test(NoteHeader::TimeIndependentDuration))
@@ -393,9 +393,9 @@ void Note::load(InputStream &stream)
 
     if (flags.test(NoteHeader::HasNoteEffects))
     {
-        if (stream.version >= Version4)
+        if (stream.version() >= Version4)
             loadNoteEffects(stream);
-        else if (stream.version == Version3)
+        else if (stream.version() == Version3)
             loadNoteEffectsGp3(stream);
     }
 }
@@ -492,7 +492,7 @@ void Note::loadSlide(InputStream &stream)
 {
     const int slideValue = stream.read<int8_t>();
 
-    if (stream.version <= Gp::Version4)
+    if (stream.version() <= Gp::Version4)
     {
         /* Slide values are as follows:
             -2 : slide into from above
@@ -620,7 +620,7 @@ void Beat::load(InputStream &stream)
 
     // Handle octave symbols.
     // TODO - figure out what the other bits are used for.
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         std::bitset<16> flags = stream.read<uint16_t>();
         myOctave8va = flags.test(BeatEffects::Octave8va);
@@ -641,7 +641,7 @@ void Beat::loadChordDiagram(InputStream &stream)
         return;
     }
 
-    if (stream.version == Version3)
+    if (stream.version() == Version3)
     {
         stream.skip(25);
         stream.readFixedLengthString(34); // Chord name.
@@ -722,7 +722,7 @@ void Beat::loadBeatEffects(InputStream &stream)
     Flags flags2;
 
     // GP3 effect decoding.
-    if (stream.version == Version3)
+    if (stream.version() == Version3)
     {
         myIsVibrato = flags1.test(BeatEffects::VibratoGp3_1) ||
                       flags1.test(BeatEffects::VibratoGp3_2);
@@ -738,7 +738,7 @@ void Beat::loadBeatEffects(InputStream &stream)
         const uint8_t type = stream.read<uint8_t>();
 
         // In GP3, a value of 0 indicates a tremolo bar.
-        if (type == TapType::TremoloBarGp3 && stream.version == Version3)
+        if (type == TapType::TremoloBarGp3 && stream.version() == Version3)
             loadTremoloBar(stream);
         else
         {
@@ -747,12 +747,12 @@ void Beat::loadBeatEffects(InputStream &stream)
                 myIsTapped = true;
 
             // TODO - figure out the meaning of this data.
-            if (stream.version == Version3)
+            if (stream.version() == Version3)
                 stream.read<uint32_t>();
         }
     }
 
-    if (stream.version >= Version4 &&
+    if (stream.version() >= Version4 &&
         flags2.test(BeatEffects::HasTremoloBarEvent))
     {
         loadTremoloBar(stream);
@@ -766,10 +766,10 @@ void Beat::loadBeatEffects(InputStream &stream)
         myPickstrokeUp = stream.readBool();
     }
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
         myIsTremoloPicked = flags2.test(BeatEffects::HasRasguedo);
 
-    if (stream.version >= Version4 && flags2.test(BeatEffects::Pickstroke))
+    if (stream.version() >= Version4 && flags2.test(BeatEffects::Pickstroke))
     {
         const uint8_t pickstrokeType = stream.read<uint8_t>();
 
@@ -783,12 +783,12 @@ void Beat::loadBeatEffects(InputStream &stream)
 void Beat::loadTremoloBar(InputStream &stream)
 {
     // TODO - implement tremolo bar support.
-    if (stream.version != Version3)
+    if (stream.version() != Version3)
         stream.read<uint8_t>();
 
     stream.read<int32_t>();
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
     {
         const int numPoints = stream.read<int32_t>();
         for (int i = 0; i < numPoints; i++)
@@ -805,7 +805,7 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     // TODO - implement conversions for this.
     stream.read<int8_t>(); // instrument
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         stream.skip(16); // RSE Info???
 
     int8_t volume = stream.read<int8_t>(); // volume
@@ -815,7 +815,7 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     int8_t phaser = stream.read<uint8_t>(); // phaser
     int8_t tremolo = stream.read<uint8_t>(); // tremolo
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         stream.readString(); // TODO - tempo name?
 
     // New tempo.
@@ -845,20 +845,20 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     {
         stream.skip(1); // tempo change duration
 
-        if (stream.version == Version5_1)
+        if (stream.version() == Version5_1)
             stream.skip(1);
     }
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
     {
         // Details of score-wide or track-specific changes.
         stream.read<uint8_t>();
     }
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         stream.skip(1);
-        if (stream.version == Version5_1)
+        if (stream.version() == Version5_1)
         {
             // TODO - determine what these strings represent.
             stream.readString();
@@ -896,7 +896,7 @@ void Staff::load(InputStream &stream)
         myVoices[0].push_back(beat);
     }
 
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         numBeats = stream.read<int32_t>();
         for (int i = 0; i < numBeats; ++i)
@@ -908,7 +908,7 @@ void Staff::load(InputStream &stream)
     }
 
     // TODO - figure out what this byte means.
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         stream.skip(1);
 }
 
@@ -938,13 +938,13 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::RepeatEnd))
         myRepeatEnd = stream.read<int8_t>();
 
-    if (flags.test(MeasureHeader::Marker) && stream.version == Version5_1)
+    if (flags.test(MeasureHeader::Marker) && stream.version() == Version5_1)
         loadMarker(stream);
 
     if (flags.test(MeasureHeader::AltEnding))
         myAlternateEnding = stream.read<int8_t>();
 
-    if (flags.test(MeasureHeader::Marker) && stream.version != Version5_1)
+    if (flags.test(MeasureHeader::Marker) && stream.version() != Version5_1)
         loadMarker(stream);
 
     if (flags.test(MeasureHeader::KeySignatureChange))
@@ -955,7 +955,7 @@ void Measure::load(InputStream &stream)
     }
 
     // TODO - more unknown GP5 data ...
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
     {
         if (flags.test(MeasureHeader::Numerator) ||
             flags.test(MeasureHeader::Denominator))
@@ -1026,9 +1026,9 @@ void Track::load(InputStream &stream)
     stream.skip(4);
 
     // TODO - is this RSE data???
-    if (stream.version == Version5_0)
+    if (stream.version() == Version5_0)
         stream.skip(44);
-    else if (stream.version == Version5_1)
+    else if (stream.version() == Version5_1)
     {
         stream.skip(49);
         stream.readString();
@@ -1046,12 +1046,12 @@ void Document::load(InputStream &stream)
     myStartTempo = stream.read<int32_t>();
 
     // TODO - figure out the meaning of this byte.
-    if (stream.version == Version5_1)
+    if (stream.version() == Version5_1)
         stream.skip(1);
 
     myInitialKey = stream.read<int32_t>();
 
-    if (stream.version >= Version4)
+    if (stream.version() >= Version4)
         myOctave8va = stream.readBool();
 
     for (int i = 0; i < NUM_MIDI_CHANNELS; ++i)
@@ -1062,7 +1062,7 @@ void Document::load(InputStream &stream)
     }
 
     // TODO - is this RSE data?
-    if (stream.version > Version4)
+    if (stream.version() > Version4)
         stream.skip(42);
 
     const int numMeasures = stream.read<int32_t>();
@@ -1071,7 +1071,7 @@ void Document::load(InputStream &stream)
     for (int i = 0; i < numMeasures; ++i)
     {
         // TODO - figure out what this byte is used for.
-        if (stream.version > Version4 && i > 0)
+        if (stream.version() > Version4 && i > 0)
             stream.skip(1);
 
         Measure measure;
@@ -1082,9 +1082,9 @@ void Document::load(InputStream &stream)
     for (int i = 0; i < numTracks; ++i)
     {
         // TODO - figure out what this byte is used for.
-        if (stream.version > Version4)
+        if (stream.version() > Version4)
         {
-            if (i == 0 || stream.version == Version5_0)
+            if (i == 0 || stream.version() == Version5_0)
                 stream.skip(1);
         }
 
@@ -1094,9 +1094,9 @@ void Document::load(InputStream &stream)
     }
 
     // TODO - figure out what these bytes are used for.
-    if (stream.version == Version5_0)
+    if (stream.version() == Version5_0)
         stream.skip(2);
-    else if (stream.version == Version5_1)
+    else if (stream.version() == Version5_1)
         stream.skip(1);
 
     for (int i = 0; i < numMeasures; ++i)

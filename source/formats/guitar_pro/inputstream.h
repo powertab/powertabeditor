@@ -32,6 +32,9 @@ class InputStream
 public:
     InputStream(std::istream &stream);
 
+    /// Returns the file version.
+    Version version() const;
+
     /// Reads simple data (e.g. uint32_t, int16_t) from the input stream.
     template <class T>
     T read();
@@ -55,12 +58,6 @@ public:
 
     void skip(int numBytes);
 
-    Gp::Version version; // TODO - make private.
-    Gp::Version getVersion() const
-    {
-        return version;
-    }
-
 private:
     /// Reads a character string.
     /// The string consists of some number of bytes (encoding the length of the
@@ -71,6 +68,7 @@ private:
     std::string readCharacterString();
 
     std::istream &myStream;
+    Version myVersion;
 };
 
 template <class T>
@@ -104,6 +102,12 @@ inline std::string InputStream::readCharacterString()
         myStream.read(&str[0], length);
 
     return str;
+}
+
+inline Version
+InputStream::version() const
+{
+    return myVersion;
 }
 }
 
