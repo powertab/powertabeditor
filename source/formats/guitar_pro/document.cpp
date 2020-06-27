@@ -464,10 +464,10 @@ void Note::loadNoteEffectsGp3(InputStream &stream)
     if (flags.test(NoteEffects::HasGraceNote))
     {
         // TODO - implement.
-        stream.read<uint8_t>(); // fret number grace note is made from
-        stream.read<uint8_t>(); // grace note dynamic
-        stream.read<uint8_t>(); // transition type
-        stream.read<uint8_t>(); // duration
+        stream.skip(1); // fret number grace note is made from
+        stream.skip(1); // grace note dynamic
+        stream.skip(1); // transition type
+        stream.skip(1); // duration
     }
 }
 
@@ -475,8 +475,8 @@ void Note::loadBend(InputStream &stream)
 {
     // TODO - perform conversion for bends
 
-    stream.read<uint8_t>(); // bend type
-    stream.read<uint32_t>(); // bend height
+    stream.skip(1); // bend type
+    stream.skip(4); // bend height
 
     const uint32_t numPoints = stream.read<uint32_t>(); // number of bend points
 
@@ -547,7 +547,7 @@ void Note::loadHarmonic(InputStream &stream)
     else if (harmonic == HarmonicType::TappedHarmonic)
     {
         // TODO - implement this.
-        stream.read<uint8_t>();
+        stream.skip(1);
     }
     else if (harmonic == HarmonicType::ArtificalHarmonicGp5)
     {
@@ -635,7 +635,8 @@ void Beat::load(InputStream &stream)
 
 void Beat::loadChordDiagram(InputStream &stream)
 {
-    if (stream.read<uint8_t>() == 0)
+    const bool new_format = stream.readBool();
+    if (!new_format)
     {
         loadOldChordDiagram(stream);
         return;
@@ -645,11 +646,11 @@ void Beat::loadChordDiagram(InputStream &stream)
     {
         stream.skip(25);
         stream.readFixedLengthString(34); // Chord name.
-        stream.read<uint32_t>(); // Top fret of chord.
+        stream.skip(4); // Top fret of chord.
 
         // Strings that are used.
         for (int i = 0; i < GP3_NUMBER_OF_STRINGS; ++i)
-            stream.read<uint32_t>();
+            stream.skip(4);
         stream.skip(36);
         return;
     }
@@ -659,38 +660,38 @@ void Beat::loadChordDiagram(InputStream &stream)
     // Blank bytes for backwards compatibility with gp3.
     stream.skip(3);
 
-    stream.read<uint8_t>(); // root of chord
-    stream.read<uint8_t>(); // chord type
-    stream.read<uint8_t>(); // extension (9, 11, 13)
-    stream.read<uint32_t>(); // bass note of chord
-    stream.read<uint32_t>(); // diminished/augmented
-    stream.read<uint8_t>(); // "add" chord
+    stream.skip(1); // root of chord
+    stream.skip(1); // chord type
+    stream.skip(1); // extension (9, 11, 13)
+    stream.skip(4); // bass note of chord
+    stream.skip(4); // diminished/augmented
+    stream.skip(1); // "add" chord
 
     stream.readFixedLengthString(DIAGRAM_DESCRIPTION_LENGTH);
 
     // more blank bytes for backwards compatibility
     stream.skip(2);
 
-    stream.read<uint8_t>(); // tonality of the 5th
-    stream.read<uint8_t>(); // tonality of the 9th
-    stream.read<uint8_t>(); // tonality of the 11th
+    stream.skip(1); // tonality of the 5th
+    stream.skip(1); // tonality of the 9th
+    stream.skip(1); // tonality of the 11th
 
-    stream.read<int32_t>(); // base fret of the chord
+    stream.skip(4); // base fret of the chord
 
     // fret numbers for each string
     for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
-        stream.read<int32_t>();
+        stream.skip(4);
 
-    stream.read<uint8_t>(); // number of barres in the chord
-
-    for (int i = 0; i < NUMBER_OF_BARRES; ++i)
-        stream.read<uint8_t>(); // fret of the barre
+    stream.skip(1); // number of barres in the chord
 
     for (int i = 0; i < NUMBER_OF_BARRES; ++i)
-        stream.read<uint8_t>(); // barre start
+        stream.skip(1); // fret of the barre
 
     for (int i = 0; i < NUMBER_OF_BARRES; ++i)
-        stream.read<uint8_t>(); // barre end
+        stream.skip(1); // barre start
+
+    for (int i = 0; i < NUMBER_OF_BARRES; ++i)
+        stream.skip(1); // barre end
 
     // Omission1, Omission3, Omission5, Omission7, Omission9,
     // Omission11, Omission13, and another blank byte
@@ -698,7 +699,7 @@ void Beat::loadChordDiagram(InputStream &stream)
 
     // fingering of chord
     for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
-        stream.read<int8_t>();
+        stream.skip(1);
 
     stream.skip(1); // show fingering
 }
@@ -712,7 +713,7 @@ void Beat::loadOldChordDiagram(InputStream &stream)
     if (baseFret != 0)
     {
         for (int i = 0; i < GP3_NUMBER_OF_STRINGS; ++i)
-            stream.read<uint32_t>(); // fret number
+            stream.skip(4); // fret number
     }
 }
 
@@ -748,7 +749,7 @@ void Beat::loadBeatEffects(InputStream &stream)
 
             // TODO - figure out the meaning of this data.
             if (stream.version() == Version3)
-                stream.read<uint32_t>();
+                stream.skip(4);
         }
     }
 
@@ -784,9 +785,9 @@ void Beat::loadTremoloBar(InputStream &stream)
 {
     // TODO - implement tremolo bar support.
     if (stream.version() != Version3)
-        stream.read<uint8_t>();
+        stream.skip(1);
 
-    stream.read<int32_t>();
+    stream.skip(4);
 
     if (stream.version() >= Version4)
     {
@@ -803,7 +804,7 @@ void Beat::loadTremoloBar(InputStream &stream)
 void Beat::loadMixTableChangeEvent(InputStream &stream)
 {
     // TODO - implement conversions for this.
-    stream.read<int8_t>(); // instrument
+    stream.skip(1); // instrument
 
     if (stream.version() > Version4)
         stream.skip(16); // RSE Info???
@@ -824,22 +825,22 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
         myTempoChange = tempo;
 
     if (volume >= 0)
-        stream.read<uint8_t>(); // volume change duration
+        stream.skip(1); // volume change duration
 
     if (pan >= 0)
-        stream.read<uint8_t>(); // pan change duration
+        stream.skip(1); // pan change duration
 
     if (chorus >= 0)
-        stream.read<uint8_t>(); // chorus change duration
+        stream.skip(1); // chorus change duration
 
     if (reverb >= 0)
-        stream.read<uint8_t>(); // reverb change duration
+        stream.skip(1); // reverb change duration
 
     if (phaser >= 0)
-        stream.read<uint8_t>(); // phaser change duration
+        stream.skip(1); // phaser change duration
 
     if (tremolo >= 0)
-        stream.read<uint8_t>(); // tremolo change duration
+        stream.skip(1); // tremolo change duration
 
     if (tempo >= 0)
     {
@@ -852,7 +853,7 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     if (stream.version() >= Version4)
     {
         // Details of score-wide or track-specific changes.
-        stream.read<uint8_t>();
+        stream.skip(1);
     }
 
     if (stream.version() > Version4)
