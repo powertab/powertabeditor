@@ -18,6 +18,7 @@
 #include "document.h"
 
 #include <algorithm>
+#include <bitset>
 #include <iostream>
 
 #include <formats/guitar_pro/inputstream.h>
@@ -31,6 +32,8 @@ static constexpr int DIAGRAM_DESCRIPTION_LENGTH = 20;
 static constexpr int NUMBER_OF_STRINGS = 7;
 static constexpr int GP3_NUMBER_OF_STRINGS = 6;
 static constexpr int NUMBER_OF_BARRES = 5;
+
+using Flags = std::bitset<8>;
 
 namespace MeasureHeader
 {
@@ -216,7 +219,7 @@ void Header::load(InputStream &stream)
         myNotices.push_back(stream.readString());
 
     if (stream.getVersion() <= Version4)
-        myTripletFeel = (stream.read<uint8_t>() > 0);
+        myTripletFeel = stream.readBool();
 
     if (stream.version >= Version4)
     {
@@ -651,7 +654,7 @@ void Beat::loadChordDiagram(InputStream &stream)
         return;
     }
 
-    stream.read<bool>(); // Sharps/flats.
+    stream.skip(1); // Sharps/flats.
 
     // Blank bytes for backwards compatibility with gp3.
     stream.skip(3);
@@ -697,7 +700,7 @@ void Beat::loadChordDiagram(InputStream &stream)
     for (int i = 0; i < NUMBER_OF_STRINGS; ++i)
         stream.read<int8_t>();
 
-    stream.read<bool>(); // show fingering
+    stream.skip(1); // show fingering
 }
 
 void Beat::loadOldChordDiagram(InputStream &stream)
@@ -759,10 +762,8 @@ void Beat::loadBeatEffects(InputStream &stream)
     {
         // Upstroke and downstroke duration values - we will just use these for
         // toggling pickstroke up/down.
-        if (stream.read<uint8_t>() > 0)
-            myPickstrokeDown = true;
-        if (stream.read<uint8_t>() > 0)
-            myPickstrokeUp = true;
+        myPickstrokeDown = stream.readBool();
+        myPickstrokeUp = stream.readBool();
     }
 
     if (stream.version >= Version4)
@@ -949,7 +950,7 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::KeySignatureChange))
     {
         const int accidentals = stream.read<int8_t>();
-        const bool isMinor = (stream.read<int8_t>() > 0);
+        const bool isMinor = stream.readBool();
         myKeyChange = std::make_pair(accidentals, isMinor);
     }
 
@@ -1051,7 +1052,7 @@ void Document::load(InputStream &stream)
     myInitialKey = stream.read<int32_t>();
 
     if (stream.version >= Version4)
-        myOctave8va = (stream.read<int8_t>() > 0);
+        myOctave8va = stream.readBool();
 
     for (int i = 0; i < NUM_MIDI_CHANNELS; ++i)
     {

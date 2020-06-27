@@ -18,7 +18,7 @@
 #ifndef FORMATS_GP_STREAM_H
 #define FORMATS_GP_STREAM_H
 
-#include <bitset>
+#include <boost/endian/conversion.hpp>
 #include <cstdint>
 #include <istream>
 #include <vector>
@@ -27,9 +27,6 @@
 
 namespace Gp
 {
-
-typedef std::bitset<8> Flags;
-
 class InputStream
 {
 public:
@@ -38,6 +35,9 @@ public:
     /// Reads simple data (e.g. uint32_t, int16_t) from the input stream.
     template <class T>
     T read();
+
+    /// Reads a bool (stored in the file as uint8_t).
+    bool readBool();
 
     /// Reads a string in the most common format for Guitar Pro - an integer
     /// representing the size of the stored information + 1, followed by the
@@ -79,7 +79,14 @@ inline T InputStream::read()
     static_assert(std::is_arithmetic<T>::value, "T must be an arithmetic type");
     T data;
     myStream.read((char *)&data, sizeof(data));
-    return data;
+    // The values are stored in little-endian format.
+    return boost::endian::little_to_native(data);
+}
+
+inline bool
+InputStream::readBool()
+{
+    return read<uint8_t>() != 0;
 }
 
 template <typename LengthPrefixType>
