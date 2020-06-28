@@ -207,15 +207,14 @@ private:
 
 struct Track
 {
-    Track();
     void load(InputStream &stream);
 
-    bool myIsDrumTrack;
+    bool myIsDrumTrack = false;
     std::string myName;
-    int myNumStrings;
+    int myNumStrings = 0;
     std::vector<uint8_t> myTuning;
-    int myChannelIndex; ///< Index into the list of channels.
-    int myCapo;
+    int myChannelIndex = -1; ///< Index into the list of channels.
+    int myCapo = 0;
 };
 
 struct Document

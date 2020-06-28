@@ -969,11 +969,6 @@ void Measure::loadStaves(InputStream &stream, int numTracks)
     }
 }
 
-Track::Track()
-    : myIsDrumTrack(false), myNumStrings(0), myChannelIndex(0), myCapo(0)
-{
-}
-
 void Track::load(InputStream &stream)
 {
     const Flags flags = stream.read<uint8_t>();
@@ -1007,14 +1002,42 @@ void Track::load(InputStream &stream)
     // Track color.
     stream.skip(4);
 
-    // TODO - is this RSE data???
-    if (stream.version() == Version5_0)
-        stream.skip(44);
-    else if (stream.version() == Version5_1)
+    if (stream.version() > Version4)
     {
-        stream.skip(49);
-        stream.readString();
-        stream.readString();
+        // Track settings.
+        stream.skip(2);
+        // RSE auto-accentuate.
+        stream.skip(1);
+        // Channel bank.
+        stream.skip(1);
+        // RSE humanize.
+        stream.skip(1);
+        // Unknown RSE data.
+        stream.skip(24);
+        // RSE midi instrument.
+        stream.skip(4);
+        // Unknown.
+        stream.skip(4);
+        // RSE sound bank.
+        stream.skip(4);
+        if (stream.version() == Version5_0)
+        {
+            // RSE effect number.
+            stream.skip(2);
+            // Unknown.
+            stream.skip(1);
+        }
+        else if (stream.version() == Version5_1)
+        {
+            // RSE effect number.
+            stream.skip(4);
+            // RSE equalizer.
+            stream.skip(4);
+            // RSE effect name.
+            stream.readString();
+            // RSE effect category.
+            stream.readString();
+        }
     }
 }
 

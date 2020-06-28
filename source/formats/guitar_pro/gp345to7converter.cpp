@@ -40,10 +40,41 @@ convertScoreInfo(const Gp::Header &header)
     return gp7_info;
 }
 
+static std::vector<Gp7::Track>
+convertTracks(const Gp::Document &doc)
+{
+    std::vector<Gp7::Track> gp7_tracks;
+
+    for (const Gp::Track &track : doc.myTracks)
+    {
+        Gp7::Track gp7_track;
+        gp7_track.myName = track.myName;
+        // Not setting mySystemsLayout, since there is no GP5 equivalent.
+
+        Gp7::Staff staff;
+        staff.myCapo = track.myCapo;
+        for (uint8_t note : track.myTuning)
+            staff.myTuning.push_back(note);
+
+        gp7_track.myStaves = { staff };
+
+        const Gp::Channel &channel = doc.myChannels.at(track.myChannelIndex);
+        Gp7::Sound sound;
+        sound.myLabel = track.myName;
+        sound.myMidiPreset = channel.myInstrument;
+        gp7_track.mySounds = { sound };
+
+        gp7_tracks.push_back(gp7_track);
+    }
+
+    return gp7_tracks;
+}
+
 Gp7::Document
 Gp::convertToGp7(const Gp::Document &doc)
 {
     Gp7::Document gp7_doc;
     gp7_doc.myScoreInfo = convertScoreInfo(doc.myHeader);
+    gp7_doc.myTracks = convertTracks(doc);
     return gp7_doc;
 }
