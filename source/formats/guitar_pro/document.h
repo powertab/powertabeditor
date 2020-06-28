@@ -32,7 +32,6 @@ class InputStream;
 
 struct Header
 {
-    Header();
     void load(InputStream &stream);
 
     struct LyricLine
@@ -53,23 +52,24 @@ struct Header
     std::string myTranscriber;
     std::string myInstructions;
     std::vector<std::string> myNotices;
-    bool myTripletFeel;
-    int myLyricTrack;
+    /// TODO -  this should be transferred to the measure header since it's
+    /// per-measure in GP5.
+    bool myTripletFeel = false;
+    int myLyricTrack = 0;
     std::vector<LyricLine> myLyrics;
 };
 
 struct Channel
 {
-    Channel();
     void load(InputStream &stream);
 
-    int myInstrument;
-    int myVolume;
-    int myBalance;
-    int myChorus;
-    int myReverb;
-    int myPhaser;
-    int myTremolo;
+    int myInstrument = 0;
+    int myVolume = 0;
+    int myBalance = 0;
+    int myChorus = 0;
+    int myReverb = 0;
+    int myPhaser = 0;
+    int myTremolo = 0;
 
 private:
     /// For some reason, channel properties (except instrument type) are stored
@@ -220,13 +220,12 @@ struct Track
 
 struct Document
 {
-    Document();
     void load(InputStream &stream);
 
     Header myHeader;
-    int myStartTempo;
-    int myInitialKey;
-    bool myOctave8va;
+    int myStartTempo = 0;
+    int myInitialKey = 0;
+    bool myOctave8va = false;
     std::vector<Channel> myChannels;
     std::vector<Measure> myMeasures;
     std::vector<Track> myTracks;

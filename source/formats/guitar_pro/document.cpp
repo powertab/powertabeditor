@@ -187,10 +187,6 @@ enum HarmonicType
 
 namespace Gp
 {
-Header::Header() : myTripletFeel(false), myLyricTrack(0)
-{
-}
-
 Header::LyricLine::LyricLine(int measure, const std::string &contents)
     : myMeasure(measure), myContents(contents)
 {
@@ -223,41 +219,26 @@ void Header::load(InputStream &stream)
 
     if (stream.version() >= Version4)
     {
-        myLyricTrack = stream.read<uint32_t>();
+        myLyricTrack = stream.read<int32_t>();
 
         for (int i = 0; i < NUM_LYRIC_LINES; ++i)
         {
-            const int32_t n = stream.read<int32_t>();
+            const int n = stream.read<int32_t>();
             myLyrics.emplace_back(n, stream.readIntString());
         }
     }
 
-    // Ignore page setup information.
-    // TODO - figure out if there is any useful information in here.
     if (stream.version() > Version4)
     {
-        if (stream.version() == Version5_0)
-            stream.skip(30);
-        else if (stream.version() == Version5_1)
-            stream.skip(49);
+        // RSE master effect.
+        if (stream.version() == Version5_1)
+            stream.skip(19);
 
-        for (int i = 0; i < 11; ++i)
-        {
-            stream.skip(4);
-            stream.readFixedLengthString(0);
-        }
+        // Page setup information.
+        stream.skip(30);
+        for (int i = 0; i < 10; ++i)
+            stream.readString();
     }
-}
-
-Channel::Channel()
-    : myInstrument(0),
-      myVolume(0),
-      myBalance(0),
-      myChorus(0),
-      myReverb(0),
-      myPhaser(0),
-      myTremolo(0)
-{
 }
 
 void Channel::load(InputStream &stream)
@@ -1037,13 +1018,14 @@ void Track::load(InputStream &stream)
     }
 }
 
-Document::Document() : myStartTempo(0), myInitialKey(0), myOctave8va(false)
-{
-}
-
 void Document::load(InputStream &stream)
 {
     myHeader.load(stream);
+
+    // TODO - tempo name.
+    if (stream.version() > Version4)
+        stream.readString();
+
     myStartTempo = stream.read<int32_t>();
 
     // TODO - figure out the meaning of this byte.
