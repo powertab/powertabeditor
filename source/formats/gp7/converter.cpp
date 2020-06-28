@@ -35,6 +35,7 @@
 #include <score/tempomarker.h>
 #include <score/timesignature.h>
 #include <score/utils.h>
+#include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
 
 #include <iostream>
@@ -1124,4 +1125,6 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
     }
 
     ScoreUtils::adjustRehearsalSigns(score);
+    ScoreUtils::polishScore(score);
+    ScoreUtils::addStandardFilters(score);
 }

@@ -14,6 +14,7 @@ set( srcs
     gpx/util.cpp
 
     guitar_pro/document.cpp
+    guitar_pro/gp345to7converter.cpp
     guitar_pro/guitarproimporter.cpp
     guitar_pro/inputstream.cpp
 
@@ -70,6 +71,7 @@ set( headers
     gpx/util.h
 
     guitar_pro/document.h
+    guitar_pro/gp345to7converter.h
     guitar_pro/guitarproimporter.h
     guitar_pro/inputstream.h
 

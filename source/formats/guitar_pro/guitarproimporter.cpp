@@ -16,12 +16,15 @@
 */
   
 #include "guitarproimporter.h"
+#include "gp345to7converter.h"
 
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #include <formats/guitar_pro/document.h>
 #include <formats/guitar_pro/inputstream.h>
+#include <formats/gp7/parser.h>
+#include <formats/gp7/converter.h>
 #include <score/score.h>
 #include <score/utils.h>
 #include <score/utils/scorepolisher.h>
@@ -46,6 +49,10 @@ void GuitarProImporter::load(const boost::filesystem::path &filename,
     Gp::Document document;
     document.load(stream);
 
+#if 0
+    Gp7::Document gp7_doc = Gp::convertToGp7(document);
+    Gp7::convert(gp7_doc, score);
+#else
     ScoreInfo info;
     convertHeader(document.myHeader, info);
     score.setScoreInfo(info);
@@ -59,6 +66,7 @@ void GuitarProImporter::load(const boost::filesystem::path &filename,
 
     // Format the score.
     ScoreUtils::polishScore(score);
+#endif
 }
 
 void GuitarProImporter::convertHeader(const Gp::Header &header, ScoreInfo &info)
