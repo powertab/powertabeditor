@@ -1022,15 +1022,13 @@ void Document::load(InputStream &stream)
 {
     myHeader.load(stream);
 
-    // TODO - tempo name.
     if (stream.version() > Version4)
-        stream.readString();
+        myStartTempoName = stream.readString();
 
     myStartTempo = stream.read<int32_t>();
 
-    // TODO - figure out the meaning of this byte.
     if (stream.version() == Version5_1)
-        stream.skip(1);
+        myStartTempoVisible = stream.readBool();
 
     myInitialKey = stream.read<int32_t>();
 
@@ -1044,16 +1042,20 @@ void Document::load(InputStream &stream)
         myChannels.push_back(channel);
     }
 
-    // TODO - is this RSE data?
     if (stream.version() > Version4)
-        stream.skip(42);
+    {
+        // TODO - import musical directions.
+        stream.skip(38);
+        // Master reverb.
+        stream.skip(4);
+    }
 
     const int numMeasures = stream.read<int32_t>();
     const int numTracks = stream.read<int32_t>();
 
     for (int i = 0; i < numMeasures; ++i)
     {
-        // TODO - figure out what this byte is used for.
+        // Seems to be a blank byte here in GP5 files.
         if (stream.version() > Version4 && i > 0)
             stream.skip(1);
 
@@ -1064,7 +1066,7 @@ void Document::load(InputStream &stream)
 
     for (int i = 0; i < numTracks; ++i)
     {
-        // TODO - figure out what this byte is used for.
+        // Seems to be a blank byte.
         if (stream.version() > Version4)
         {
             if (i == 0 || stream.version() == Version5_0)
@@ -1076,7 +1078,7 @@ void Document::load(InputStream &stream)
         myTracks.push_back(track);
     }
 
-    // TODO - figure out what these bytes are used for.
+    // Seems to be blank bytes.
     if (stream.version() == Version5_0)
         stream.skip(2);
     else if (stream.version() == Version5_1)

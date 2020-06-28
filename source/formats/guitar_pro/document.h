@@ -224,6 +224,8 @@ struct Document
 
     Header myHeader;
     int myStartTempo = 0;
+    std::string myStartTempoName;
+    bool myStartTempoVisible = true;
     int myInitialKey = 0;
     bool myOctave8va = false;
     std::vector<Channel> myChannels;
