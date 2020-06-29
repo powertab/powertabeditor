@@ -71,7 +71,7 @@ void ScoreArea::renderDocument(const Document &document)
         adjustScroll();
     });
 
-    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo());
+    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo(), activePalette->text().color());
 
     myRenderedSystems.reserve(score.getSystems().size());
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)
@@ -276,5 +276,11 @@ bool ScoreArea::event(QEvent *event)
     if(event->type() == QEvent::PaletteChange)
     {
         this->renderDocument(*myDocument);
+        return true;
     }
+    else
+    {
+        return false;
+    }
+    
 }

@@ -113,10 +113,22 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
             height += layout->getSystemSymbolSpacing();
         }
 
+        // set a custom color for the staff, depending on
+        // the background color and the text/note color
+        
+        int red1, green1, blue1, red2,green2,blue2;
+        double avgWeight = 0.7;
+        myPalette.text().color().getRgb(&red1,&green1,&blue1);
+        myPalette.light().color().getRgb(&red2,&green2,&blue2);
+
+        QColor staffColor(red2*avgWeight+red1*(1-avgWeight),
+         green2*avgWeight+green1*(1-avgWeight), 
+         blue2*avgWeight+blue1*(1-avgWeight));
+
         myParentStaff = new StaffPainter(layout,
                                          ScoreLocation(myScore, systemIndex, i),
                                          myScoreArea->getClickPubSub(),
-                                         myPalette.dark().color());
+                                         staffColor);
         myParentStaff->setPos(0, height);
         myParentStaff->setParentItem(myParentSystem);
         height += layout->getStaffHeight();
@@ -479,6 +491,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         vertLine->setLine(0, TOP_LINE_OFFSET, 0,
                           LayoutInfo::SYSTEM_SYMBOL_SPACING - TOP_LINE_OFFSET);
         vertLine->setPos(location, height);
+        vertLine->setPen(myPalette.text().color());
         vertLine->setParentItem(myParentSystem);
 
         // Draw the text indicating the repeat numbers.
@@ -516,6 +529,7 @@ void SystemRenderer::drawAlternateEndings(const System &system,
         auto horizLine = new QGraphicsLineItem();
         horizLine->setLine(0, TOP_LINE_OFFSET, endX - location, TOP_LINE_OFFSET);
         horizLine->setPos(location, height);
+        horizLine->setPen(myPalette.text().color());
         horizLine->setParentItem(myParentSystem);
     }
 }
@@ -716,6 +730,7 @@ void SystemRenderer::drawTextItems(const System &system,
         auto text_item = new QGraphicsSimpleTextItem();
         text_item->setFont(myPlainTextFont);
         text_item->setText(contents);
+        text_item->setBrush(myPalette.text());
 
         text_item->setX(layout.getPositionX(text.getPosition()));
         centerSymbolVertically(*text_item, height);
@@ -834,6 +849,7 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                     arc->setPos(layout.getPositionX(position) + 2,
                                 layout.getTabLine(string) - 2);
                     arc->setParentItem(myParentStaff);
+                    arc->setPen(myPalette.text().color());
 
                     if (arcs.find(string) != arcs.end())
                         arcs.erase(arcs.find(string));
@@ -1718,11 +1734,13 @@ void SystemRenderer::drawMultiBarRest(const System &system,
     auto vertLineLeft =
         new QGraphicsLineItem(leftX, layout.getStdNotationLine(2), leftX,
                               layout.getStdNotationLine(4));
+    vertLineLeft->setPen(myPalette.text().color());
     vertLineLeft->setParentItem(myParentStaff);
 
     auto vertLineRight =
         new QGraphicsLineItem(rightX, layout.getStdNotationLine(2), rightX,
                               layout.getStdNotationLine(4));
+    vertLineRight->setPen(myPalette.text().color());
     vertLineRight->setParentItem(myParentStaff);
 
     auto horizontalLine = new QGraphicsRectItem(
@@ -1730,7 +1748,7 @@ void SystemRenderer::drawMultiBarRest(const System &system,
                    0.5 * LayoutInfo::STD_NOTATION_LINE_SPACING,
         rightX - leftX, LayoutInfo::STD_NOTATION_LINE_SPACING * 0.9);
 
-    horizontalLine->setBrush(myPalette.text());
+    horizontalLine->setPen(myPalette.text().color());
     horizontalLine->setParentItem(myParentStaff);
 }
 
@@ -1893,7 +1911,9 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
         path.lineTo(right, yEnd);
     }
 
-    group->addToGroup(new AntialiasedPathItem(path));
+    auto bendPath = new AntialiasedPathItem(path);
+    bendPath->setPen(QPen(myPalette.text().color()));
+    group->addToGroup(bendPath);
 
     // Draw arrow head, and choose the correct orientation depending on whether
     // the bend is going up or down.
@@ -1906,6 +1926,7 @@ void SystemRenderer::createBend(QGraphicsItemGroup *group, double left,
 
     auto *arrow = new QGraphicsPolygonItem(arrowShape);
     arrow->setBrush(myPalette.text());
+    arrow->setPen(myPalette.text().color());
     group->addToGroup(arrow);
 
     // Draw text for the bent pitch (e.g. "Full", "3/4", etc). Don't draw the

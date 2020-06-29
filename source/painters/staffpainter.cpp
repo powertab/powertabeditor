@@ -25,7 +25,7 @@
 StaffPainter::StaffPainter(const LayoutConstPtr &layout,
                            const ScoreLocation &location,
                            const std::shared_ptr<ClickPubSub> &pubsub,
-                           const QColor &staffColor)
+                           const QColor staffColor)
     : myLayout(layout),
       myPubSub(pubsub),
       myLocation(location),
