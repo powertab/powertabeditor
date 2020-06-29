@@ -49,7 +49,7 @@ void GuitarProImporter::load(const boost::filesystem::path &filename,
     Gp::Document document;
     document.load(stream);
 
-#if 1
+#if 0
     Gp7::Document gp7_doc = Gp::convertToGp7(document);
     Gp7::convert(gp7_doc, score);
 #else
