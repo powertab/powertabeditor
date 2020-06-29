@@ -204,19 +204,23 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
 
         if (note.myIsShiftSlide)
             gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::Shift));
-        else if (note.myIsLegatoSlide)
+        if (note.myIsLegatoSlide)
             gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::Legato));
-        else if (note.myIsSlideInAbove)
+        if (note.myIsSlideInAbove)
             gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideInAbove));
-        else if (note.myIsSlideInBelow)
+        if (note.myIsSlideInBelow)
             gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideInBelow));
-        else if (note.myIsSlideOutUp)
+        if (note.myIsSlideOutUp)
             gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideOutUp));
-        else if (note.myIsSlideOutDown)
+        if (note.myIsSlideOutDown)
             gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideOutDown));
 
         if (note.myTrilledFret)
-            gp7_note.myTrillNote = *note.myTrilledFret;
+        {
+            // In GP7, the MIDI note value is stored, not the fret number.
+            gp7_note.myTrillNote =
+                *note.myTrilledFret + track.myTuning[note.myString];
+        }
 
         // TODO - implement left hand fingering.
         // TODO - implement bends.  We might also need to set up myTieOrigin
