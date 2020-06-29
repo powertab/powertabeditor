@@ -18,6 +18,7 @@
 #include "gp345to7converter.h"
 
 #include <boost/algorithm/string/join.hpp>
+#include <cmath>
 
 static Gp7::ScoreInfo
 convertScoreInfo(const Gp::Document &doc)
@@ -66,6 +67,8 @@ convertTracks(const Gp::Document &doc)
         staff.myCapo = track.myCapo;
         for (uint8_t note : track.myTuning)
             staff.myTuning.push_back(note);
+        // The string numbers are flipped around in GP7.
+        std::reverse(staff.myTuning.begin(), staff.myTuning.end());
 
         gp7_track.myStaves = { staff };
 
@@ -82,8 +85,108 @@ convertTracks(const Gp::Document &doc)
 }
 
 static void
-convertBeat(const Gp::Beat &beat, Gp7::Document &gp7_doc, Gp7::Beat gp_beat)
+convertBeat(const Gp::Beat &beat, const Gp::Track &track,
+            Gp7::Document &gp7_doc, Gp7::Beat &gp7_beat)
 {
+    // Convert the rhythm.
+    {
+        Gp7::Rhythm rhythm;
+        rhythm.myDuration = beat.myDuration;
+        if (beat.myIsDotted)
+            rhythm.myDots = 1;
+
+        if (beat.myIrregularGrouping)
+        {
+            rhythm.myTupletNum = *beat.myIrregularGrouping;
+            // The denominator of the irregular grouping is the nearest
+            // power of 2 (from below).
+            rhythm.myTupletDenom = std::pow(
+                2, std::floor(std::log(rhythm.myTupletNum) / std::log(2.0)));
+        }
+
+        // TODO - consolidate identical rhythms?
+        const int rhythm_id = gp7_doc.myRhythms.size();
+        gp7_doc.myRhythms[rhythm_id] = std::move(rhythm);
+        gp7_beat.myRhythmId = rhythm_id;
+    }
+
+    if (beat.myOctave8va)
+        gp7_beat.myOttavia = Gp7::Beat::Ottavia::O8va;
+    else if (beat.myOctave8vb)
+        gp7_beat.myOttavia = Gp7::Beat::Ottavia::O8vb;
+    else if (beat.myOctave15ma)
+        gp7_beat.myOttavia = Gp7::Beat::Ottavia::O15ma;
+    else if (beat.myOctave15mb)
+        gp7_beat.myOttavia = Gp7::Beat::Ottavia::O15mb;
+
+    gp7_beat.myTremoloPicking = beat.myIsTremoloPicked;
+    gp7_beat.myBrushUp = beat.myPickstrokeUp;
+    gp7_beat.myBrushDown = beat.myPickstrokeDown;
+    if (beat.myText)
+        gp7_beat.myFreeText = *beat.myText;
+
+    for (const Gp::Note &note : beat.myNotes)
+    {
+        Gp7::Note gp7_note;
+
+        // The string numbers are reversed in GP7.
+        gp7_note.myString = track.myTuning.size() - note.myString - 1;
+        gp7_note.myFret = note.myFret;
+        gp7_note.myPalmMuted = note.myHasPalmMute;
+        gp7_note.myMuted = note.myIsMuted;
+        gp7_note.myTieDest = note.myIsTied;
+        gp7_note.myGhost = note.myIsGhostNote;
+        gp7_note.myTapped = beat.myIsTapped;
+        gp7_note.myHammerOn = note.myIsHammerOnOrPullOff;
+        gp7_note.myVibrato = beat.myIsVibrato || note.myIsVibrato;
+        gp7_note.myLetRing = note.myIsLetRing;
+
+        if (note.myIsStaccato)
+            gp7_note.myAccentTypes.set(int(Gp7::Note::AccentType::Staccato));
+        if (note.myHasAccent)
+            gp7_note.myAccentTypes.set(int(Gp7::Note::AccentType::Accent));
+        if (note.myHasHeavyAccent)
+            gp7_note.myAccentTypes.set(int(Gp7::Note::AccentType::HeavyAccent));
+
+        if (beat.myIsNaturalHarmonic || note.myIsNaturalHarmonic)
+            gp7_note.myHarmonic = Gp7::Note::HarmonicType::Natural;
+        if (beat.myIsArtificialHarmonic)
+        {
+            gp7_note.myHarmonic = Gp7::Note::HarmonicType::Artificial;
+            // FIXME - import the harmonic fret properly from GP3/4/5 files!
+            gp7_note.myHarmonicFret = 24;
+        }
+        // TODO - tapped harmonics are not yet implemented for GP3/4/5
+
+        if (note.myIsShiftSlide)
+            gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::Shift));
+        else if (note.myIsLegatoSlide)
+            gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::Legato));
+        else if (note.myIsSlideInAbove)
+            gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideInAbove));
+        else if (note.myIsSlideInBelow)
+            gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideInBelow));
+        else if (note.myIsSlideOutUp)
+            gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideOutUp));
+        else if (note.myIsSlideOutDown)
+            gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::SlideOutDown));
+
+        if (note.myTrilledFret)
+            gp7_note.myTrillNote = *note.myTrilledFret;
+
+        // TODO - implement left hand fingering.
+        // TODO - implement bends.  We might also need to set up myTieOrigin
+        // for this to import held bends properly.
+
+        if (note.myGraceNote)
+            gp7_beat.myGraceNote = true;
+        if (note.myIsTremoloPicked)
+            gp7_beat.myTremoloPicking = true;
+
+        const int note_id = gp7_doc.myNotes.size();
+        gp7_doc.myNotes[note_id] = std::move(gp7_note);
+        gp7_beat.myNoteIds.push_back(note_id);
+    }
 }
 
 static void
@@ -113,8 +216,12 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
             master_bar.myAlternateEndings.push_back(*measure.myAlternateEnding);
 
         // Import the bars for each track.
-        for (const Gp::Staff &staff : measure.myStaves)
+        for (size_t staff_idx = 0; staff_idx < measure.myStaves.size();
+             ++staff_idx)
         {
+            const Gp::Track &track = doc.myTracks[staff_idx];
+            const Gp::Staff &staff = measure.myStaves[staff_idx];
+
             Gp7::Bar bar;
 
             for (const std::vector<Gp::Beat> &voice : staff.myVoices)
@@ -123,8 +230,11 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
 
                 for (const Gp::Beat &beat : voice)
                 {
+                    if (beat.myIsEmpty)
+                        continue;
+
                     Gp7::Beat gp7_beat;
-                    convertBeat(beat, gp7_doc, gp7_beat);
+                    convertBeat(beat, track, gp7_doc, gp7_beat);
 
                     const int beat_id = gp7_doc.myBeats.size();
                     gp7_doc.myBeats[beat_id] = std::move(gp7_beat);
