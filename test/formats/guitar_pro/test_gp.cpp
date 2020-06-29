@@ -52,18 +52,19 @@ TEST_CASE("Formats/GuitarPro/RehearsalSigns")
     GuitarProImporter importer;
     loadTest(importer, "data/rehearsal_signs.gp5", score);
 
-    const System &system = score.getSystems()[0];
-    auto barlines = system.getBarlines();
+    {
+        const Barline &barline = score.getSystems()[0].getBarlines()[2];
+        REQUIRE(barline.hasRehearsalSign());
+        REQUIRE(barline.getRehearsalSign().getDescription() == "Chorus");
+        REQUIRE(barline.getRehearsalSign().getLetters() == "A");
+    }
 
-    const Barline &barline1 = barlines[2];
-    const Barline &barline2 = barlines[3];
-
-    REQUIRE(barline1.hasRehearsalSign());
-    REQUIRE(barline1.getRehearsalSign().getDescription() == "Chorus");
-    REQUIRE(barline1.getRehearsalSign().getLetters() == "A");
-    REQUIRE(barline2.hasRehearsalSign());
-    REQUIRE(barline2.getRehearsalSign().getDescription() == "Solo");
-    REQUIRE(barline2.getRehearsalSign().getLetters() == "B");
+    {
+        const Barline &barline = score.getSystems()[1].getBarlines()[0];
+        REQUIRE(barline.hasRehearsalSign());
+        REQUIRE(barline.getRehearsalSign().getDescription() == "Solo");
+        REQUIRE(barline.getRehearsalSign().getLetters() == "B");
+    }
 }
 
 TEST_CASE("Formats/GuitarPro/KeySignatures")
