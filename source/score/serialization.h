@@ -19,9 +19,9 @@
 #define SCORE_SERIALIZATION_H
 
 #include <array>
-#include <boost/date_time/gregorian/gregorian.hpp>
 #include <bitset>
 #include "fileversion.h"
+#include <istream>
 #include <map>
 #include <optional>
 #include <rapidjson/document.h>
@@ -30,6 +30,7 @@
 #include <rapidjson/prettywriter.h>
 #include <stack>
 #include <stdexcept>
+#include <util/date.h>
 #include <vector>
 
 namespace ScoreUtils
@@ -92,7 +93,7 @@ private:
     template <typename T>
     void read(std::optional<T> &val);
 
-    inline void read(boost::gregorian::date &date);
+    void read(Util::Date &date);
 
     template <typename T>
     typename std::enable_if<std::is_enum<T>::value>::type read(T &val)
@@ -154,7 +155,7 @@ private:
     template <typename T>
     void write(const std::optional<T> &val);
 
-    inline void write(const boost::gregorian::date &date);
+    void write(const Util::Date &date);
 
     template <typename T>
     typename std::enable_if<std::is_enum<T>::value>::type write(const T &val)
@@ -282,13 +283,6 @@ void InputArchive::read(std::optional<T> &val)
     }
 }
 
-void InputArchive::read(boost::gregorian::date &date)
-{
-    std::string date_str;
-    read(date_str);
-    date = boost::gregorian::from_undelimited_string(date_str);
-}
-
 void OutputArchive::write(int val)
 {
     myStream.Int(val);
@@ -354,11 +348,6 @@ void OutputArchive::write(const std::optional<T> &val)
         write(*val);
     else
         myStream.Null();
-}
-
-void OutputArchive::write(const boost::gregorian::date &date)
-{
-    write(boost::gregorian::to_iso_string(date));
 }
 }
 

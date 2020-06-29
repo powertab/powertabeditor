@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/addspecialnoteproperty.h>
 #include <score/note.h>
 #include "actionfixture.h"
 
-TEST_CASE_METHOD(ActionFixture, "Actions/AddBend", "")
+TEST_CASE_FIXTURE(ActionFixture, "Actions/AddBend")
 {
     Note note;
     myLocation.getPosition()->insertNote(note);

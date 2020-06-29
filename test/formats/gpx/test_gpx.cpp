@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/appinfo.h>
 #include <formats/gpx/gpximporter.h>
 #include <score/score.h>
 
-TEST_CASE("Formats/GpxImport/Text", "")
+TEST_CASE("Formats/GpxImport/Text")
 {
     Score score;
     GpxImporter importer;

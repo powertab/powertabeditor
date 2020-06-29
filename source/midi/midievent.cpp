@@ -69,11 +69,11 @@ bool MidiEvent::isTrackEnd() const
            myData[1] == MetaType::TrackEnd;
 }
 
-int MidiEvent::getTempo() const
+Midi::Tempo MidiEvent::getTempo() const
 {
     assert(isTempoChange());
     assert(myData[2] == 3);
-    return myData[5] + (myData[4] << 8) + (myData[3] << 16);
+    return Midi::Tempo(myData[5] + (myData[4] << 8) + (myData[3] << 16));
 }
 
 bool MidiEvent::isProgramChange() const
@@ -81,9 +81,9 @@ bool MidiEvent::isProgramChange() const
     return (getStatusByte() & theStatusByteMask) == StatusByte::ProgramChange;
 }
 
-MidiEvent MidiEvent::setTempo(int ticks, int microseconds)
+MidiEvent MidiEvent::setTempo(int ticks, Midi::Tempo microseconds)
 {
-    const uint32_t val = microseconds;
+    const auto val = static_cast<uint32_t>(microseconds.count());
     return MidiEvent(ticks, { StatusByte::MetaMessage,
                               static_cast<uint8_t>(MetaType::SetTempo), 3,
                               static_cast<uint8_t>((val >> 16) & 0xff),

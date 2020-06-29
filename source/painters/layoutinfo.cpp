@@ -548,9 +548,6 @@ void LayoutInfo::calculateTabStaffAboveLayout()
 
             if (pos.hasProperty(Position::LetRing))
                 set.insert(SymbolGroup::LetRing);
-
-            // TODO - handle volume swells.
-
             if (pos.hasProperty(Position::Vibrato))
                 set.insert(SymbolGroup::Vibrato);
             if (pos.hasProperty(Position::WideVibrato))
@@ -593,6 +590,12 @@ void LayoutInfo::calculateTabStaffAboveLayout()
     // how nearby bends are grouped together.
     calculateBendLayout(layout);
 
+    // Handle volume swells separately, since they are a bit different (can
+    // stretch over several notes, but adjacent volume swells aren't merged).
+    // The volume swell rendering also relies on having the correct source
+    // Voice recorded, which isn't the case for the simple symbols.
+    calculateVolumeSwellLayout(layout);
+
     for (int symbolIndex = SymbolGroup::LetRing;
          symbolIndex <= SymbolGroup::ArtificialHarmonic; ++symbolIndex)
     {
@@ -614,10 +617,10 @@ void LayoutInfo::calculateTabStaffAboveLayout()
 
             // Finish creating a group if we've reached the end of one, or
             // we're handling a symbol that doesn't get grouped.
-            if ((!hasSymbol && inGroup) || (hasSymbol && (
-                symbol == SymbolGroup::Trill ||
-                symbol == SymbolGroup::TremoloPicking ||
-                symbol == SymbolGroup::Dynamic)))
+            if ((!hasSymbol && inGroup) ||
+                (hasSymbol && (symbol == SymbolGroup::Trill ||
+                               symbol == SymbolGroup::TremoloPicking ||
+                               symbol == SymbolGroup::Dynamic)))
             {
                 int rightPos = i;
 
@@ -632,9 +635,6 @@ void LayoutInfo::calculateTabStaffAboveLayout()
                 const int y = layout.addBox(leftPos, rightPos, 1);
                 const double leftX = getPositionX(leftPos);
                 const double rightX = getPositionX(rightPos);
-
-                // TODO - handle special cases for tremolo bars and volume
-                // swells.
 
                 myTabStaffAboveSymbols.emplace_back(symbol, leftPos, rightPos,
                                                     myStaff.getVoices()[0],
@@ -680,11 +680,15 @@ static int getBendHeight(const Bend &bend)
         return 2;
 }
 
-static int getBendEndPosition(const Voice &voice, const Bend &bend, int index)
+static int
+getClampedPositionByIndex(const Voice &voice, int index, int num_positions)
 {
-    // Move forward by the appropriate number of positions.
-    index = std::clamp(index + bend.getDuration(), 0,
-                       static_cast<int>(voice.getPositions().size()) - 1);
+    const int max_index = static_cast<int>(voice.getPositions().size()) - 1;
+    // Return the final position in the staff if there aren't enough positions.
+    if (index > max_index)
+        return num_positions - 1;
+
+    index = std::clamp(index, 0, max_index);
     return voice.getPositions()[index].getPosition();
 }
 
@@ -715,8 +719,10 @@ void LayoutInfo::calculateBendLayout(VerticalLayout &layout)
                 continue;
 
             groupHeight = std::max(groupHeight, getBendHeight(*bend));
-            rightPos = std::max(rightPos, getBendEndPosition(voice, *bend, i));
-            
+            rightPos = std::max(rightPos, getClampedPositionByIndex(
+                                              voice, i + bend->getDuration(),
+                                              getNumPositions()));
+
             const Bend::BendType type = bend->getType();
             if (type == Bend::NormalBend || type == Bend::BendAndRelease ||
                 type == Bend::PreBend || type == Bend::PreBendAndRelease ||
@@ -747,6 +753,33 @@ void LayoutInfo::calculateBendLayout(VerticalLayout &layout)
             const int y = layout.addBox(leftPos, rightPos, groupHeight);
             myTabStaffAboveSymbols.emplace_back(SymbolGroup::Bend, leftPos,
                                                 rightPos, voice, 0, y);
+        }
+    }
+}
+
+void
+LayoutInfo::calculateVolumeSwellLayout(VerticalLayout &layout)
+{
+    for (const Voice &voice : myStaff.getVoices())
+    {
+        for (unsigned int i = 0; i < voice.getPositions().size(); ++i)
+        {
+            const Position &pos = voice.getPositions()[i];
+            if (!pos.hasVolumeSwell())
+                continue;
+
+            const VolumeSwell &swell = pos.getVolumeSwell();
+
+            const int start_pos = pos.getPosition();
+            const int end_pos = getClampedPositionByIndex(
+                voice, i + swell.getDuration() + 1, getNumPositions());
+
+            const int y = layout.addBox(start_pos, end_pos, 1);
+            const double start_x = getPositionX(start_pos);
+            const double end_x = getPositionX(end_pos);
+            myTabStaffAboveSymbols.emplace_back(SymbolGroup::VolumeSwell,
+                                                start_pos, end_pos, voice,
+                                                end_x - start_x, y);
         }
     }
 }

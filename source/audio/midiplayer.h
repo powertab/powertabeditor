@@ -20,6 +20,7 @@
 
 #include <atomic>
 #include <QThread>
+#include <midi/midievent.h>
 #include <score/scorelocation.h>
 
 class MidiFile;
@@ -52,7 +53,8 @@ private:
     virtual void run() override;
 
     void performCountIn(MidiOutputDevice &device,
-                        const SystemLocation &location, int beat_duration);
+                        const SystemLocation &location,
+                        Midi::Tempo beat_duration);
 
     void setIsPlaying(bool set);
     bool isPlaying() const;

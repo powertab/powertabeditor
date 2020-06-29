@@ -15,18 +15,18 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <formats/fileformat.h>
 
-TEST_CASE("Formats/FileFormat/FileFilterSingle", "Single Extension")
+TEST_CASE("Formats/FileFormat/FileFilterSingle")
 {
     FileFormat format("Test Format", std::vector<std::string>(1, "ptb"));
 
     CHECK(format.fileFilter() == "Test Format (*.ptb)");
 }
 
-TEST_CASE("Formats/FileFormat/FileFilterMulti", "Multiple Extensions")
+TEST_CASE("Formats/FileFormat/FileFilterMulti")
 {
     FileFormat format("Test Format", { "gp3", "gp4", "gp5" });
 

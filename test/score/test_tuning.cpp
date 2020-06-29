@@ -15,14 +15,14 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/generalmidi.h>
 #include <score/tuning.h>
 #include <util/tostring.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Tuning/ToString", "")
+TEST_CASE("Score/Tuning/ToString")
 {
     Tuning tuning;
     REQUIRE("E A D G B E" == Util::toString(tuning));
@@ -34,7 +34,7 @@ TEST_CASE("Score/Tuning/ToString", "")
     REQUIRE("E A D G B Db" == Util::toString(tuning));
 }
 
-TEST_CASE("Score/Tuning/MusicNotationOffset", "")
+TEST_CASE("Score/Tuning/MusicNotationOffset")
 {
     Tuning tuning;
 
@@ -44,7 +44,7 @@ TEST_CASE("Score/Tuning/MusicNotationOffset", "")
     REQUIRE(tuning.getNote(0, true) == Midi::MIDI_NOTE_G4);
 }
 
-TEST_CASE("Score/Tuning/SetTuningNotes", "")
+TEST_CASE("Score/Tuning/SetTuningNotes")
 {
     Tuning tuning1, tuning2;
 
@@ -62,7 +62,7 @@ TEST_CASE("Score/Tuning/SetTuningNotes", "")
     REQUIRE(tuning1 == tuning2);
 }
 
-TEST_CASE("Score/Tuning/Serialization", "")
+TEST_CASE("Score/Tuning/Serialization")
 {
     Tuning tuning;
     std::vector<uint8_t> notes;

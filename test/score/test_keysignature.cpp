@@ -15,13 +15,13 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/keysignature.h>
 #include <util/tostring.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/KeySignature/ToString", "")
+TEST_CASE("Score/KeySignature/ToString")
 {
     KeySignature key(KeySignature::Major, 4, false);
     REQUIRE(Util::toString(key) == "Ab Major - Bb Eb Ab Db");
@@ -35,7 +35,7 @@ TEST_CASE("Score/KeySignature/ToString", "")
     REQUIRE(Util::toString(key) == "B Minor - F# C#");
 }
 
-TEST_CASE("Score/KeySignature/Cancellation", "")
+TEST_CASE("Score/KeySignature/Cancellation")
 {
     KeySignature key(KeySignature::Major, 3, true);
     key.setCancellation(true);
@@ -44,7 +44,7 @@ TEST_CASE("Score/KeySignature/Cancellation", "")
     REQUIRE(key.getNumAccidentals(true) == 3);
 }
 
-TEST_CASE("Score/KeySignature/Serialization", "")
+TEST_CASE("Score/KeySignature/Serialization")
 {
     KeySignature key(KeySignature::Minor, 4, false);
     key.setVisible(false);

@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/playerchange.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/PlayerChange/ActivePlayers", "")
+TEST_CASE("Score/PlayerChange/ActivePlayers")
 {
     PlayerChange change;
     ActivePlayer player(3, 2);
@@ -33,7 +33,7 @@ TEST_CASE("Score/PlayerChange/ActivePlayers", "")
     REQUIRE(change.getActivePlayers(1).empty());
 }
 
-TEST_CASE("Score/PlayerChange/Serialization", "")
+TEST_CASE("Score/PlayerChange/Serialization")
 {
     PlayerChange change;
     change.setPosition(42);

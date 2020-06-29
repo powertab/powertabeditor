@@ -3,16 +3,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Added support for volume swells (#17).
+- Added MIDI playback support for alterations of pace (#18).
+- Added new commands (`Note -> Shift String Up` and `Note -> Shift String Down`) to shift notes up or down by a string (#20).
 - Left hand fingerings now support thumbs. This is also now supported by the Guitar Pro 6/7 importers (#292).
 - The song information can now store a subtitle. This is also now supported by the Guitar Pro 6/7 importers (#297).
+- Several improvements to the view filter dialog. In particular, it now displays a list of the players that will be displayed when the filter is used (#295).
 
 ### Changed
+- The `Position -> Shift Forward` and `Position -> Shift Backward` menu items have been renamed to `Insert Space` and `Remove Space`, to hopefully reduce confusion with the new string shifting commands (#20).
+- Unit tests now depend on the [doctest](https://github.com/onqtam/doctest) library instead of `Catch2`. This is more lightweight (while still providing all of the necessary features) and is more widely available on Linux distros.
 
 ### Fixed
 - Improved the size and alignment of the treble and bass clef glyphs.
 - Improved standard notation layout when a note is staccato and also has an accent.
 - Improved alignment of accents in the standard notation staff.
 - Improved vertical positioning of trills and dynamics symbols.
+- Fixed a bug where editing the zoom text caused it to turn black, making it unreadable with a dark system theme.
+- Fixed a potential crash in the Edit View Filters dialog when a string pattern was invalid (#295).
 
 ## [Alpha 12] - 2020-06-11
 ### Added

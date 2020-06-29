@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/adddirection.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddDirection", "")
+TEST_CASE("Actions/AddDirection")
 {
     Score score;
     score.insertSystem(System());

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/appinfo.h>
 #include <formats/gp7/gp7importer.h>
@@ -29,7 +29,7 @@
 #include <score/timesignature.h>
 #include <util/tostring.h>
 
-TEST_CASE("Formats/Gp7Import/ScoreInfo/Basic", "")
+TEST_CASE("Formats/Gp7Import/ScoreInfo/Basic")
 {
     Score score;
     Gp7Importer importer;
@@ -55,7 +55,7 @@ TEST_CASE("Formats/Gp7Import/ScoreInfo/Basic", "")
 }
 
 // Verify that the "Words & Music" style header is imported properly.
-TEST_CASE("Formats/Gp7Import/ScoreInfo/WordsAndMusic", "")
+TEST_CASE("Formats/Gp7Import/ScoreInfo/WordsAndMusic")
 {
     Score score;
     Gp7Importer importer;
@@ -72,7 +72,7 @@ TEST_CASE("Formats/Gp7Import/ScoreInfo/WordsAndMusic", "")
 
 // Verify that players and instruments are imported correctly.
 // This file has three tracks, but the second track has two staves.
-TEST_CASE("Formats/Gp7Import/Tracks", "")
+TEST_CASE("Formats/Gp7Import/Tracks")
 {
     Score score;
     Gp7Importer importer;
@@ -154,7 +154,7 @@ TEST_CASE("Formats/Gp7Import/Tracks", "")
     REQUIRE(change.getActivePlayers(3) == std::vector{ ActivePlayer(3, 2) });
 }
 
-TEST_CASE("Formats/Gp7Import/Notes", "")
+TEST_CASE("Formats/Gp7Import/Notes")
 {
     Score score;
     Gp7Importer importer;
@@ -376,7 +376,7 @@ TEST_CASE("Formats/Gp7Import/Notes", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/Bars", "")
+TEST_CASE("Formats/Gp7Import/Bars")
 {
     Score score;
     Gp7Importer importer;
@@ -504,7 +504,7 @@ TEST_CASE("Formats/Gp7Import/Bars", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/TempoChanges", "")
+TEST_CASE("Formats/Gp7Import/TempoChanges")
 {
     Score score;
     Gp7Importer importer;
@@ -530,7 +530,7 @@ TEST_CASE("Formats/Gp7Import/TempoChanges", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/Fermatas", "")
+TEST_CASE("Formats/Gp7Import/Fermatas")
 {
     Score score;
     Gp7Importer importer;
@@ -553,7 +553,7 @@ TEST_CASE("Formats/Gp7Import/Fermatas", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/Text", "")
+TEST_CASE("Formats/Gp7Import/Text")
 {
     Score score;
     Gp7Importer importer;
@@ -611,7 +611,7 @@ TEST_CASE("Formats/Gp7Import/Text", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/AlternateEndings", "")
+TEST_CASE("Formats/Gp7Import/AlternateEndings")
 {
     Score score;
     Gp7Importer importer;
@@ -635,7 +635,7 @@ TEST_CASE("Formats/Gp7Import/AlternateEndings", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/Directions", "")
+TEST_CASE("Formats/Gp7Import/Directions")
 {
     Score score;
     Gp7Importer importer;
@@ -697,7 +697,7 @@ TEST_CASE("Formats/Gp7Import/Directions", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/IrregularGroups", "")
+TEST_CASE("Formats/Gp7Import/IrregularGroups")
 {
     Score score;
     Gp7Importer importer;
@@ -743,7 +743,7 @@ TEST_CASE("Formats/Gp7Import/IrregularGroups", "")
     }
 }
 
-TEST_CASE("Formats/Gp7Import/Bends", "")
+TEST_CASE("Formats/Gp7Import/Bends")
 {
     Score score;
     Gp7Importer importer;
@@ -829,7 +829,7 @@ checkHarmonics(const Voice &voice, int start, int end, ChordName::Key key,
     }
 }
 
-TEST_CASE("Formats/Gp7Import/Harmonics", "")
+TEST_CASE("Formats/Gp7Import/Harmonics")
 {
     Score score;
     Gp7Importer importer;

@@ -70,7 +70,9 @@
 #include <actions/removetempomarker.h>
 #include <actions/removetextitem.h>
 #include <actions/shiftpositions.h>
+#include <actions/shiftstring.h>
 #include <actions/undomanager.h>
+#include <actions/volumeswell.h>
 
 #include <app/appinfo.h>
 #include <app/caret.h>
@@ -118,6 +120,7 @@
 #include <dialogs/trilldialog.h>
 #include <dialogs/tuningdictionarydialog.h>
 #include <dialogs/viewfilterdialog.h>
+#include <dialogs/volumeswelldialog.h>
 
 #include <formats/fileformatmanager.h>
 
@@ -1390,6 +1393,32 @@ void PowerTabEditor::editDynamic()
     }
 }
 
+void
+PowerTabEditor::editVolumeSwell()
+{
+    const ScoreLocation &location = getLocation();
+    const Position *position = location.getPosition();
+    assert(position);
+
+    if (position->hasVolumeSwell())
+    {
+        myUndoManager->push(new RemoveVolumeSwell(location),
+                            location.getSystemIndex());
+    }
+    else
+    {
+        VolumeSwellDialog dialog(this);
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            myUndoManager->push(
+                new AddVolumeSwell(location, dialog.getVolumeSwell()),
+                location.getSystemIndex());
+        }
+        else
+            myVolumeSwellCommand->setChecked(false);
+    }
+}
+
 void PowerTabEditor::editHammerPull()
 {
     ScoreLocation &location = getLocation();
@@ -1965,17 +1994,16 @@ void PowerTabEditor::createCommands()
     connect(myLastSectionCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToLastSection);
 
-    myShiftForwardCommand = new Command(tr("Shift Forward"),
-                                        "Position.ShiftForward",
-                                        QKeySequence(Qt::Key_Insert), this);
-    connect(myShiftForwardCommand, &QAction::triggered, this,
+    myInsertSpaceCommand =
+        new Command(tr("Insert Space"), "Position.InsertSpace",
+                    QKeySequence(Qt::Key_Insert), this);
+    connect(myInsertSpaceCommand, &QAction::triggered, this,
             &PowerTabEditor::shiftForward);
 
-    myShiftBackwardCommand = new Command(tr("Shift Backward"),
-                                         "Position.ShiftBackward",
-                                         QKeySequence(Qt::SHIFT + Qt::Key_Insert),
-                                         this);
-    connect(myShiftBackwardCommand, &QAction::triggered, this,
+    myRemoveSpaceCommand =
+        new Command(tr("Remove Space"), "Position.RemoveSpace",
+                    QKeySequence(Qt::SHIFT + Qt::Key_Insert), this);
+    connect(myRemoveSpaceCommand, &QAction::triggered, this,
             &PowerTabEditor::shiftBackward);
 
     // Position-related actions.
@@ -2046,18 +2074,7 @@ void PowerTabEditor::createCommands()
                     Qt::SHIFT + Qt::Key_Tab, this);
     connect(myPrevBarCommand, &QAction::triggered, this,
             &PowerTabEditor::moveCaretToPrevBar);
-#if 0
-    // Actions for shifting tab numbers up/down a string
-    shiftTabNumUp = new Command(tr("Shift Tab Number Up"), "Position.ShiftTabNumberUp",
-                                Qt::CTRL + Qt::Key_Up, this);
-    sigfwd::connect(shiftTabNumUp, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_UP));
 
-    shiftTabNumDown = new Command(tr("Shift Tab Number Down"), "Position.ShiftTabNumberDown",
-                                  Qt::CTRL + Qt::Key_Down, this);
-    sigfwd::connect(shiftTabNumDown, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::shiftTabNumber, this, Position::SHIFT_DOWN));
-#endif
     myRemoveNoteCommand = new Command(tr("Remove Note"), "Position.RemoveNote",
                                       QKeySequence::Delete, this);
     connect(myRemoveNoteCommand, &QAction::triggered, this, &PowerTabEditor::removeCurrentPosition);
@@ -2093,19 +2110,6 @@ void PowerTabEditor::createCommands()
     connect(myTextCommand, &QAction::triggered, this,
             &PowerTabEditor::editTextItem);
 
-#if 0
-    // Section-related actions
-    increasePositionSpacingAct = new Command(tr("Increase Position Spacing"),
-                                             "Section.IncreaseSpacing", Qt::Key_Plus, this);
-    sigfwd::connect(increasePositionSpacingAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::changePositionSpacing, this, 1));
-
-    decreasePositionSpacingAct = new Command(tr("Decrease Position Spacing"),
-                                             "Section.DecreaseSpacing", Qt::Key_Minus, this);
-    sigfwd::connect(decreasePositionSpacingAct, SIGNAL(triggered()),
-                    boost::bind(&PowerTabEditor::changePositionSpacing, this, -1));
-
-#endif
     myInsertSystemAtEndCommand = new Command(tr("Insert System At End"),
                                              "Section.InsertSystemAtEnd",
                                              Qt::Key_N, this);
@@ -2219,6 +2223,18 @@ void PowerTabEditor::createCommands()
     myLeftHandFingeringCommand->setCheckable(true);
     connect(myLeftHandFingeringCommand, &QAction::triggered, this,
             &PowerTabEditor::editLeftHandFingering);
+
+    myShiftStringUpCommand =
+        new Command(tr("Shift String Up"), "Notes.ShiftStringUp",
+                    Qt::CTRL + Qt::Key_Up, this);
+    connect(myShiftStringUpCommand, &QAction::triggered, this,
+            [=]() { shiftString(true); });
+
+    myShiftStringDownCommand =
+        new Command(tr("Shift String Down"), "Notes.ShiftStringDown",
+                    Qt::CTRL + Qt::Key_Down, this);
+    connect(myShiftStringDownCommand, &QAction::triggered, this,
+            [=]() { shiftString(false); });
 
     myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this);
     myTieCommand->setCheckable(true);
@@ -2366,13 +2382,14 @@ void PowerTabEditor::createCommands()
         new Command(tr("Dynamic..."), "MusicSymbols.Dynamic", Qt::Key_D, this);
     myDynamicCommand->setCheckable(true);
     connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
-#if 0
-    volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
-                                    QKeySequence(), this);
-    volumeSwellAct->setCheckable(true);
-    connect(volumeSwellAct, SIGNAL(triggered()), this, SLOT(editVolumeSwell()));
-#endif
-    
+
+    myVolumeSwellCommand =
+        new Command(tr("Volume Swell..."), "MusicSymbols.VolumeSwell",
+                    QKeySequence(), this);
+    myVolumeSwellCommand->setCheckable(true);
+    connect(myVolumeSwellCommand, &QAction::triggered, this,
+            &PowerTabEditor::editVolumeSwell);
+
     // Tab Symbol Actions.
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
                                       "TabSymbols.HammerPull", Qt::Key_H, this);
@@ -2752,14 +2769,9 @@ void PowerTabEditor::createMenus()
     myPositionStaffMenu->addAction(myNextBarCommand);
     myPositionStaffMenu->addAction(myPrevBarCommand);
 
-#if 0
-    positionMenu->addSeparator();
-    positionMenu->addAction(shiftTabNumUp);
-    positionMenu->addAction(shiftTabNumDown);
-#endif
     myPositionMenu->addSeparator();
-    myPositionMenu->addAction(myShiftForwardCommand);
-    myPositionMenu->addAction(myShiftBackwardCommand);
+    myPositionMenu->addAction(myInsertSpaceCommand);
+    myPositionMenu->addAction(myRemoveSpaceCommand);
     myPositionMenu->addSeparator();
     myPositionMenu->addAction(myRemoveNoteCommand);
     myPositionMenu->addAction(myRemovePositionCommand);
@@ -2807,6 +2819,8 @@ void PowerTabEditor::createMenus()
     myNotesMenu->addAction(myRemoveDotCommand);
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(myLeftHandFingeringCommand);
+    myNotesMenu->addAction(myShiftStringUpCommand);
+    myNotesMenu->addAction(myShiftStringDownCommand);
     myNotesMenu->addSeparator();
     myNotesMenu->addAction(myTieCommand);
     myNotesMenu->addAction(myMutedCommand);
@@ -2854,11 +2868,8 @@ void PowerTabEditor::createMenus()
     myMusicSymbolsMenu->addAction(myDirectionCommand);
     myMusicSymbolsMenu->addAction(myRepeatEndingCommand);
     myMusicSymbolsMenu->addAction(myDynamicCommand);
-#if 0
-    myMusicSymbolsMenu->addAction(volumeSwellAct);
+    myMusicSymbolsMenu->addAction(myVolumeSwellCommand);
 
-#endif
-        
     // Tab Symbols Menu
     myTabSymbolsMenu = menuBar()->addMenu(tr("&Tab Symbols"));
     myHammerOnMenu = myTabSymbolsMenu->addMenu(tr("&Hammer Ons/Pull Offs"));
@@ -3123,8 +3134,8 @@ void PowerTabEditor::updateCommands()
                                              Score::MAX_LINE_SPACING);
     myDecreaseLineSpacingCommand->setEnabled(score.getLineSpacing() >
                                              Score::MIN_LINE_SPACING);
-    myShiftBackwardCommand->setEnabled(!pos && (position == 0 || !barline) &&
-                                       !tempoMarker && !altEnding && !dynamic);
+    myRemoveSpaceCommand->setEnabled(!pos && (position == 0 || !barline) &&
+                                     !tempoMarker && !altEnding && !dynamic);
     myRemoveNoteCommand->setEnabled(pos || barline || hasSelection);
     myRemovePositionCommand->setEnabled(pos || barline || hasSelection);
 
@@ -3185,6 +3196,9 @@ void PowerTabEditor::updateCommands()
     myLeftHandFingeringCommand->setEnabled(note != nullptr);
     myLeftHandFingeringCommand->setChecked(note && note->hasLeftHandFingering());
 
+    myShiftStringUpCommand->setEnabled(note != nullptr || hasSelection);
+    myShiftStringDownCommand->setEnabled(note != nullptr || hasSelection);
+
     if (note)
     {
         myTieCommand->setText(tr("Tied"));
@@ -3241,6 +3255,9 @@ void PowerTabEditor::updateCommands()
         nullptr);
     myRepeatEndingCommand->setChecked(altEnding != nullptr);
     myDynamicCommand->setChecked(dynamic != nullptr);
+
+    myVolumeSwellCommand->setEnabled(pos);
+    myVolumeSwellCommand->setChecked(pos && pos->hasVolumeSwell());
 
     if (barline) // Current position is bar.
     {
@@ -3624,6 +3641,15 @@ void PowerTabEditor::adjustLineSpacing(int amount)
                         UndoManager::AFFECTS_ALL_SYSTEMS);
 }
 
+void
+PowerTabEditor::shiftString(bool shift_up)
+{
+    ScoreLocation location = getLocation();
+    myUndoManager->push(new ShiftString(location, shift_up),
+                        location.getSystemIndex());
+    getCaret().moveVertical(shift_up ? -1 : 1);
+}
+
 ScoreArea *PowerTabEditor::getScoreArea()
 {
     return dynamic_cast<ScoreArea *>(myTabWidget->currentWidget());
@@ -3638,80 +3664,3 @@ ScoreLocation &PowerTabEditor::getLocation()
 {
     return getCaret().getLocation();
 }
-
-#if 0
-
-void PowerTabEditor::shiftTabNumber(int direction)
-{
-    const Position::ShiftType shiftType = static_cast<Position::ShiftType>(direction);
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Position* currentPos = caret->getCurrentPosition();
-    Note* currentNote = caret->getCurrentNote();
-    const Tuning& tuning = caret->getCurrentScore()->GetGuitar(caret->getCurrentStaffIndex())->GetTuning();
-
-    if (!currentPos->CanShiftTabNumber(currentNote, shiftType, tuning))
-    {
-        return;
-    }
-
-    undoManager->push(new ShiftTabNumber(caret->getCurrentStaff(), currentPos,
-                                         currentNote, caret->getCurrentVoice(),
-                                         shiftType, tuning),
-                      caret->getCurrentSystemIndex());
-    caret->moveCaretVertical(direction == 1 ? direction : -1);
-}
-
-void PowerTabEditor::editVolumeSwell()
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Position* position = caret->getCurrentPosition();
-
-    if (!position->HasVolumeSwell())
-    {
-        VolumeSwellDialog dialog(this, position);
-        if (dialog.exec() == QDialog::Accepted) // add volume swell
-        {
-            undoManager->push(new AddVolumeSwell(position, dialog.getNewStartVolume(),
-                                                 dialog.getNewEndVolume(),
-                                                 dialog.getNewDuration()),
-                              caret->getCurrentSystemIndex());
-        }
-    }
-    else // remove volume swell
-    {
-        undoManager->push(new RemoveVolumeSwell(position),
-                          caret->getCurrentSystemIndex());
-    }
-}
-
-void PowerTabEditor::toggleGuitarVisible(uint32_t trackIndex, bool isVisible)
-{
-    Caret* caret = getCurrentScoreArea()->getCaret();
-    Score* score = caret->getCurrentScore();
-    Mixer* mixer = getCurrentMixer();
-
-    // There must always be at least one visible guitar.
-    bool canToggle = false;
-    for (size_t i = 0; i < score->GetGuitarCount(); ++i)
-    {
-        if (score->GetGuitar(i)->IsShown() && i != trackIndex)
-        {
-            canToggle = true;
-        }
-    }
-
-    if (canToggle)
-    {
-        EditTrackShown* action = new EditTrackShown(score, mixer, trackIndex,
-                                                    isVisible);
-        undoManager->push(action, UndoManager::AFFECTS_ALL_SYSTEMS);
-    }
-    else
-    {
-        // Update the state of the checkboxes if we didn't show/hide the guitar.
-        mixer->update();
-    }
-
-}
-
-#endif

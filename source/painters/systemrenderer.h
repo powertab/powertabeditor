@@ -149,6 +149,10 @@ private:
     /// Creates a dynamic symbol.
     QGraphicsItem *createDynamic(const Dynamic &dynamic);
 
+    /// Creates a volume swell.
+    QGraphicsItem *createVolumeSwell(const SymbolGroup &group,
+                                     const LayoutInfo &layout);
+
     /// Draws a group of bends.
     QGraphicsItem *createBendGroup(const SymbolGroup &group,
                                    const LayoutInfo &layout);

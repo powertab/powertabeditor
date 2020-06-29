@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/tempomarker.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/TempoMarker/BeatsPerMinute", "")
+TEST_CASE("Score/TempoMarker/BeatsPerMinute")
 {
     TempoMarker tempo;
 
@@ -32,7 +32,7 @@ TEST_CASE("Score/TempoMarker/BeatsPerMinute", "")
     REQUIRE_THROWS(tempo.setBeatsPerMinute(400));
 }
 
-TEST_CASE("Score/TempoMarker/Serialization", "")
+TEST_CASE("Score/TempoMarker/Serialization")
 {
     TempoMarker tempo(42);
     tempo.setMarkerType(TempoMarker::AlterationOfPace);

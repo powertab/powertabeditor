@@ -15,17 +15,17 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/removedynamic.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/RemoveDynamic", "")
+TEST_CASE("Actions/RemoveDynamic")
 {
     Score score;
     System system;
     Staff staff;
-    Dynamic dynamic(6, Dynamic::mp);
+    Dynamic dynamic(6, VolumeLevel::mp);
     staff.insertDynamic(dynamic);
     system.insertStaff(staff);
     score.insertSystem(system);
@@ -38,5 +38,6 @@ TEST_CASE("Actions/RemoveDynamic", "")
 
     action.undo();
     REQUIRE(location.getStaff().getDynamics().size() == 1);
-    REQUIRE(location.getStaff().getDynamics()[0].getVolume() == Dynamic::mp);
+    REQUIRE(location.getStaff().getDynamics()[0].getVolume() ==
+            VolumeLevel::mp);
 }

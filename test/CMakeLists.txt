@@ -62,6 +62,8 @@ set( srcs
     actions/test_removetempomarker.cpp
     actions/test_removetextitem.cpp
     actions/test_removetrill.cpp
+    actions/test_shiftstring.cpp
+    actions/test_volumeswell.cpp
 
     audio/test_midioutputdevice.cpp
 
@@ -113,6 +115,7 @@ set( headers
 
 set( data_files
     actions/data/test_editstaff.pt2
+    actions/data/test_shiftstring.pt2
 
     formats/powertab_old/data/alternate_endings.ptb
     formats/powertab_old/data/barlines.ptb
@@ -129,6 +132,7 @@ set( data_files
     formats/powertab_old/data/song_header.ptb
     formats/powertab_old/data/staves.ptb
     formats/powertab_old/data/tempo_markers.ptb
+    formats/powertab_old/data/volume_swells.ptb
 
     formats/guitar_pro/data/alt_endings.gp5
     formats/guitar_pro/data/barlines.gp5
@@ -171,7 +175,7 @@ pte_executable(
     PCH precompiled.h
     PCH_EXCLUDE test_main.cpp
     DEPENDS
-        Catch2::Catch2
+        doctest::doctest
         pteapp
         rtmidi::rtmidi
 )

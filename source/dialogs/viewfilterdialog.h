@@ -37,7 +37,8 @@ public:
     bool launch() override;
     void update(const std::vector<std::string> &names,
                 const std::optional<int> &selection,
-                const std::vector<FilterRule> &rules) override;
+                const std::vector<FilterRule> &rules,
+                const std::vector<std::string> &matches) override;
 
 private:
     std::unique_ptr<Ui::ViewFilterDialog> ui;

@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/addirregulargrouping.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/AddIrregularGrouping", "")
+TEST_CASE("Actions/AddIrregularGrouping")
 {
     Score score;
     System system;

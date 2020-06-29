@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/timesignature.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/TimeSignature/CutTime", "")
+TEST_CASE("Score/TimeSignature/CutTime")
 {
     TimeSignature time;
     time.setMeterType(TimeSignature::CutTime);
@@ -30,7 +30,7 @@ TEST_CASE("Score/TimeSignature/CutTime", "")
     REQUIRE(time.getBeatValue() == 2);
 }
 
-TEST_CASE("Score/TimeSignature/Pulses", "")
+TEST_CASE("Score/TimeSignature/Pulses")
 {
     TimeSignature time;
 
@@ -47,7 +47,7 @@ TEST_CASE("Score/TimeSignature/Pulses", "")
     REQUIRE(!time.isValidNumPulses(12));
 }
 
-TEST_CASE("Score/TimeSignature/BeatAmount", "")
+TEST_CASE("Score/TimeSignature/BeatAmount")
 {
     TimeSignature time;
 
@@ -59,7 +59,7 @@ TEST_CASE("Score/TimeSignature/BeatAmount", "")
     REQUIRE(time.getBeatValue() == 1);
 }
 
-TEST_CASE("Score/TimeSignature/Serialization", "")
+TEST_CASE("Score/TimeSignature/Serialization")
 {
     TimeSignature time;
     time.setMeterType(TimeSignature::CutTime);

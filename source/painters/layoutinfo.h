@@ -57,6 +57,7 @@ public:
 
         // Above tab staff.
         Bend,
+        VolumeSwell,
         LetRing,
         Vibrato,
         WideVibrato,
@@ -202,6 +203,9 @@ private:
 
     /// Computes the layout for bends in the staff.
     void calculateBendLayout(VerticalLayout &layout);
+
+    /// Computes the layout for volume swells in the staff.
+    void calculateVolumeSwellLayout(VerticalLayout &layout);
 
     /// Returns the largest height of any symbol group.
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);

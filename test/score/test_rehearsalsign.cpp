@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/rehearsalsign.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/RehearsalSign/Serialization", "")
+TEST_CASE("Score/RehearsalSign/Serialization")
 {
     RehearsalSign sign;
     sign.setLetters("B");

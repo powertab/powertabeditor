@@ -1,111 +1,99 @@
 /*
-  * Copyright (C) 2011 Cameron White
-  *
-  * This program is free software: you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * (at your option) any later version.
-  *
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * You should have received a copy of the GNU General Public License
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2011 Cameron White
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "volumeswelldialog.h"
 #include "ui_volumeswelldialog.h"
 
-#include <powertabdocument/position.h>
-#include <powertabdocument/dynamic.h>
+#include <score/position.h>
 
-VolumeSwellDialog::VolumeSwellDialog(QWidget *parent, const Position *position) :
-    QDialog(parent),
-    ui(new Ui::VolumeSwellDialog)
+#include <QButtonGroup>
+
+VolumeSwellDialog::VolumeSwellDialog(QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::VolumeSwellDialog),
+      myStartVolumeLevels(new QButtonGroup(this)),
+      myEndVolumeLevels(new QButtonGroup(this))
 {
     ui->setupUi(this);
 
-    connect(ui->overCurNoteOpt, SIGNAL(toggled(bool)),
-            ui->numNotesSpinBox, SLOT(setDisabled(bool)));
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    connect(ui->overCurNoteOpt, &QRadioButton::toggled, ui->numNotesSpinBox,
+            &QSpinBox::setDisabled);
 
     ui->numNotesSpinBox->setMinimum(1);
-    ui->numNotesSpinBox->setMaximum(Position::MAX_VOLUME_SWELL_DURATION);
+    ui->numNotesSpinBox->setMaximum(128);
 
-    // put the volume buttons in a QButtonGroup so that only one can be
-    // checked at a time
-    startVolumeLevels = new QButtonGroup(this);
-    startVolumeLevels->addButton(ui->volumeOffButtonStart, Dynamic::off);
-    startVolumeLevels->addButton(ui->pppButtonStart, Dynamic::ppp);
-    startVolumeLevels->addButton(ui->ppButtonStart, Dynamic::pp);
-    startVolumeLevels->addButton(ui->pButtonStart, Dynamic::p);
-    startVolumeLevels->addButton(ui->mpButtonStart, Dynamic::mp);
-    startVolumeLevels->addButton(ui->mfButtonStart, Dynamic::mf);
-    startVolumeLevels->addButton(ui->fButtonStart, Dynamic::f);
-    startVolumeLevels->addButton(ui->ffButtonStart, Dynamic::ff);
-    startVolumeLevels->addButton(ui->fffButtonStart, Dynamic::fff);
+    // Add each button to a QButtonGroup (to ensure that only one is ever
+    // checked), and associate each with the corresponding value from the
+    // VolumeLevel class.
+    myStartVolumeLevels->addButton(ui->volumeOffButtonStart,
+                                   static_cast<int>(VolumeLevel::Off));
+    myStartVolumeLevels->addButton(ui->pppButtonStart,
+                                   static_cast<int>(VolumeLevel::ppp));
+    myStartVolumeLevels->addButton(ui->ppButtonStart,
+                                   static_cast<int>(VolumeLevel::pp));
+    myStartVolumeLevels->addButton(ui->pButtonStart,
+                                   static_cast<int>(VolumeLevel::p));
+    myStartVolumeLevels->addButton(ui->mpButtonStart,
+                                   static_cast<int>(VolumeLevel::mp));
+    myStartVolumeLevels->addButton(ui->mfButtonStart,
+                                   static_cast<int>(VolumeLevel::mf));
+    myStartVolumeLevels->addButton(ui->fButtonStart,
+                                   static_cast<int>(VolumeLevel::f));
+    myStartVolumeLevels->addButton(ui->ffButtonStart,
+                                   static_cast<int>(VolumeLevel::ff));
+    myStartVolumeLevels->addButton(ui->fffButtonStart,
+                                   static_cast<int>(VolumeLevel::fff));
 
-    endVolumeLevels = new QButtonGroup(this);
-    endVolumeLevels->addButton(ui->volumeOffButtonEnd, Dynamic::off);
-    endVolumeLevels->addButton(ui->pppButtonEnd, Dynamic::ppp);
-    endVolumeLevels->addButton(ui->ppButtonEnd, Dynamic::pp);
-    endVolumeLevels->addButton(ui->pButtonEnd, Dynamic::p);
-    endVolumeLevels->addButton(ui->mpButtonEnd, Dynamic::mp);
-    endVolumeLevels->addButton(ui->mfButtonEnd, Dynamic::mf);
-    endVolumeLevels->addButton(ui->fButtonEnd, Dynamic::f);
-    endVolumeLevels->addButton(ui->ffButtonEnd, Dynamic::ff);
-    endVolumeLevels->addButton(ui->fffButtonEnd, Dynamic::fff);
+    myEndVolumeLevels->addButton(ui->volumeOffButtonEnd,
+                                 static_cast<int>(VolumeLevel::Off));
+    myEndVolumeLevels->addButton(ui->pppButtonEnd,
+                                 static_cast<int>(VolumeLevel::ppp));
+    myEndVolumeLevels->addButton(ui->ppButtonEnd,
+                                 static_cast<int>(VolumeLevel::pp));
+    myEndVolumeLevels->addButton(ui->pButtonEnd,
+                                 static_cast<int>(VolumeLevel::p));
+    myEndVolumeLevels->addButton(ui->mpButtonEnd,
+                                 static_cast<int>(VolumeLevel::mp));
+    myEndVolumeLevels->addButton(ui->mfButtonEnd,
+                                 static_cast<int>(VolumeLevel::mf));
+    myEndVolumeLevels->addButton(ui->fButtonEnd,
+                                 static_cast<int>(VolumeLevel::f));
+    myEndVolumeLevels->addButton(ui->ffButtonEnd,
+                                 static_cast<int>(VolumeLevel::ff));
+    myEndVolumeLevels->addButton(ui->fffButtonEnd,
+                                 static_cast<int>(VolumeLevel::fff));
 
-    // initialize with existing values
-    if (position->HasVolumeSwell())
-    {
-        uint8_t startVolume = 0, endVolume = 0, duration = 0;
-        position->GetVolumeSwell(startVolume, endVolume, duration);
-
-        startVolumeLevels->button(startVolume)->setChecked(true);
-        endVolumeLevels->button(endVolume)->setChecked(true);
-
-        if (duration == 0)
-            ui->overCurNoteOpt->setChecked(true);
-        else
-            ui->overFollowingNotesOpt->setChecked(true);
-    }
-    else
-    {
-        ui->volumeOffButtonStart->setChecked(true);
-        ui->fffButtonEnd->setChecked(true);
-        ui->overCurNoteOpt->setChecked(true);
-    }
+    // Set default values.
+    ui->volumeOffButtonStart->setChecked(true);
+    ui->fffButtonEnd->setChecked(true);
+    ui->overCurNoteOpt->setChecked(true);
 
     ui->buttonBox->setFocus();
 }
 
-VolumeSwellDialog::~VolumeSwellDialog()
-{
-    delete ui;
-}
+VolumeSwellDialog::~VolumeSwellDialog() = default;
 
-uint8_t VolumeSwellDialog::getNewStartVolume() const
+VolumeSwell
+VolumeSwellDialog::getVolumeSwell() const
 {
-    return newStartVolume;
-}
-
-uint8_t VolumeSwellDialog::getNewEndVolume() const
-{
-    return newEndVolume;
-}
-
-uint8_t VolumeSwellDialog::getNewDuration() const
-{
-    return newDuration;
-}
-
-void VolumeSwellDialog::accept()
-{
-    newDuration = ui->overCurNoteOpt->isChecked() ? 0 : ui->numNotesSpinBox->value();
-    newStartVolume = startVolumeLevels->checkedId();
-    newEndVolume = endVolumeLevels->checkedId();
-
-    done(QDialog::Accepted);
+    return VolumeSwell(
+        static_cast<VolumeLevel>(myStartVolumeLevels->checkedId()),
+        static_cast<VolumeLevel>(myEndVolumeLevels->checkedId()),
+        ui->overCurNoteOpt->isChecked() ? 0 : ui->numNotesSpinBox->value());
 }

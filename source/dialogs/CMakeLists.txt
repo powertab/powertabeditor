@@ -32,6 +32,7 @@ set( srcs
     tuningdictionarydialog.cpp
     viewfilterdialog.cpp
     viewfilterpresenter.cpp
+    volumeswelldialog.cpp
 )
 
 set( headers
@@ -66,6 +67,7 @@ set( headers
     tuningdictionarydialog.h
     viewfilterdialog.h
     viewfilterpresenter.h
+    volumeswelldialog.h
 )
 
 set( moc_headers
@@ -127,6 +129,7 @@ set( forms
     tuningdialog.ui
     tuningdictionarydialog.ui
     viewfilterdialog.ui
+    volumeswelldialog.ui
 )
 
 pte_library(

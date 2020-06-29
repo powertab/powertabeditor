@@ -19,7 +19,7 @@
 
 Dynamic::Dynamic()
     : myPosition(0),
-      myVolume(fff)
+      myVolume(VolumeLevel::fff)
 {
 }
 
@@ -45,7 +45,7 @@ void Dynamic::setPosition(int position)
     myPosition = position;
 }
 
-Dynamic::VolumeLevel Dynamic::getVolume() const
+VolumeLevel Dynamic::getVolume() const
 {
     return myVolume;
 }

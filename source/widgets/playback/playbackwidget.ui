@@ -244,6 +244,16 @@
        <string>200%</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>250%</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>300%</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>

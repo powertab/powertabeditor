@@ -15,7 +15,7 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <app/appinfo.h>
 #include <formats/powertab/powertabimporter.h>
@@ -23,7 +23,7 @@
 #include <score/viewfilter.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/ViewFilter/FilterRule", "")
+TEST_CASE("Score/ViewFilter/FilterRule")
 {
     Score score;
 
@@ -31,17 +31,17 @@ TEST_CASE("Score/ViewFilter/FilterRule", "")
     importer.load(AppInfo::getAbsolutePath("data/test_viewfilter.pt2"), score);
 
     FilterRule rule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 7);
-    REQUIRE(!rule.accept(score, 0, 0));
-    REQUIRE(rule.accept(score, 0, 1));
-    REQUIRE(!rule.accept(score, 0, 2));
+    REQUIRE(!rule.accept(score.getPlayers()[0]));
+    REQUIRE(rule.accept(score.getPlayers()[1]));
+    REQUIRE(!rule.accept(score.getPlayers()[2]));
 
     rule = FilterRule(FilterRule::PLAYER_NAME, "Player [12]");
-    REQUIRE(rule.accept(score, 0, 0));
-    REQUIRE(rule.accept(score, 0, 1));
-    REQUIRE(!rule.accept(score, 0, 2));
+    REQUIRE(rule.accept(score.getPlayers()[0]));
+    REQUIRE(rule.accept(score.getPlayers()[1]));
+    REQUIRE(!rule.accept(score.getPlayers()[2]));
 }
 
-TEST_CASE("Score/ViewFilter/ViewFilter", "")
+TEST_CASE("Score/ViewFilter/ViewFilter")
 {
     Score score;
 
@@ -58,7 +58,7 @@ TEST_CASE("Score/ViewFilter/ViewFilter", "")
     REQUIRE(filter.accept(score, 0, 2));
 }
 
-TEST_CASE("Score/ViewFilter/Serialization", "")
+TEST_CASE("Score/ViewFilter/Serialization")
 {
     ViewFilter filter;
     filter.addRule(

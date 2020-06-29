@@ -15,11 +15,11 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <util/scopeexit.h>
 
-TEST_CASE("Util/ScopeExit/Basic", "")
+TEST_CASE("Util/ScopeExit/Basic")
 {
     int counter = 0;
 

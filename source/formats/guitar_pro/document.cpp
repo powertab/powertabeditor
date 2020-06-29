@@ -18,20 +18,19 @@
 #include "document.h"
 
 #include <algorithm>
-#include <cmath>
 #include <iostream>
 
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/fileformat.h>
 #include <score/generalmidi.h>
 
-static const int NUM_LYRIC_LINES = 5;
-static const int NUM_MIDI_CHANNELS = 64;
-static const int TRACK_DESCRIPTION_LENGTH = 40;
-static const int DIAGRAM_DESCRIPTION_LENGTH = 20;
-static const int NUMBER_OF_STRINGS = 7;
-static const int GP3_NUMBER_OF_STRINGS = 6;
-static const int NUMBER_OF_BARRES = 5;
+static constexpr int NUM_LYRIC_LINES = 5;
+static constexpr int NUM_MIDI_CHANNELS = 64;
+static constexpr int TRACK_DESCRIPTION_LENGTH = 40;
+static constexpr int DIAGRAM_DESCRIPTION_LENGTH = 20;
+static constexpr int NUMBER_OF_STRINGS = 7;
+static constexpr int GP3_NUMBER_OF_STRINGS = 6;
+static constexpr int NUMBER_OF_BARRES = 5;
 
 namespace MeasureHeader
 {
@@ -269,7 +268,7 @@ void Channel::load(InputStream &stream)
     myPhaser = readChannelProperty(stream);
     myTremolo = readChannelProperty(stream);
 
-    // TODO - figure out what these bytes are used for.
+    // Unused bytes, possibly for backwards compatibility with older versions?
     stream.skip(2);
 }
 
@@ -596,7 +595,7 @@ void Beat::load(InputStream &stream)
         // Durations are stored as 0 -> quarter note, -1 -> half note, 1 ->
         // eight note, etc. We need to convert to 1 = whole note, 2 = half note,
         // 4 = quarter note, etc.
-        myDuration = static_cast<int>(std::pow(2.0, duration + 2));
+        myDuration = (1 << (duration + 2));
     }
 
     if (flags.test(BeatHeader::IrregularGrouping))

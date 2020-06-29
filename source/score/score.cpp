@@ -17,6 +17,8 @@
 
 #include "score.h"
 
+#include <stdexcept>
+
 const int Score::MIN_LINE_SPACING = 6;
 const int Score::MAX_LINE_SPACING = 14;
 

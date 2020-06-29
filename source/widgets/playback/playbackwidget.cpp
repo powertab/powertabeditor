@@ -28,6 +28,9 @@
 #include <QAction>
 #include <QButtonGroup>
 
+static constexpr double MIN_ZOOM = 25;
+static constexpr double MAX_ZOOM = 300;
+
 static QString getShortcutHint(const QAction &action)
 {
     if (!action.shortcut().isEmpty())
@@ -57,7 +60,15 @@ public:
     State validate(QString &input, int &pos) const override
     {
         QString number = extractPercent(input, locale());
-        return myNumberValidator.validate(number, pos);
+        auto state = myNumberValidator.validate(number, pos);
+
+        // Record a property on the widget indicating whether it has a valid
+        // value.
+        QLocale locale;
+        double percent = locale.toDouble(number);
+        parent()->setProperty("acceptableInput",
+                              (percent >= MIN_ZOOM && percent <= MAX_ZOOM));
+        return state;
     }
 
 private:
@@ -116,7 +127,7 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
                 .arg(getShortcutHint(metronome_command)));
     });
 
-    ui->zoomComboBox->setValidator(new PercentageValidator(this));
+    ui->zoomComboBox->setValidator(new PercentageValidator(ui->zoomComboBox));
 
     connect(myVoices, qOverload<int>(&QButtonGroup::buttonClicked), this,
             &PlaybackWidget::activeVoiceChanged);
@@ -131,33 +142,25 @@ PlaybackWidget::PlaybackWidget(const QAction &play_pause_command,
 
     connect(ui->zoomComboBox, &QComboBox::currentTextChanged,
             [=](const QString &text) {
+                // Trigger an update for the stylesheet.
+                ui->zoomComboBox->style()->unpolish(ui->zoomComboBox);
+                ui->zoomComboBox->style()->polish(ui->zoomComboBox);
+
                 QLocale locale;
                 double percentage =
-                    locale.toDouble(extractPercent(text, locale));
-                percentage = validateZoom(percentage);
+                    std::clamp(locale.toDouble(extractPercent(text, locale)),
+                               MIN_ZOOM, MAX_ZOOM);
                 emit zoomChanged(percentage);
             });
+    // Display a different style for invalid zoom values.
+    ui->zoomComboBox->setStyleSheet(
+        QStringLiteral("QComboBox[acceptableInput=false] { color: red; }"));
+
 }
 
 PlaybackWidget::~PlaybackWidget()
 {
     delete ui;
-}
-
-double PlaybackWidget::validateZoom(double percent)
-{
-    if (percent < MIN_ZOOM || percent > MAX_ZOOM)
-    {
-        ui->zoomComboBox->setStyleSheet(
-            QStringLiteral("QComboBox { color : red; }"));
-    }
-    else
-    {
-        ui->zoomComboBox->setStyleSheet(
-            QStringLiteral("QComboBox { color : black; }"));
-    }
-
-    return std::clamp(percent, MIN_ZOOM, MAX_ZOOM);
 }
 
 void PlaybackWidget::reset(const Document &doc)

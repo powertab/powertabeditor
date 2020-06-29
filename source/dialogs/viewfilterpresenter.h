@@ -39,7 +39,8 @@ public:
 
     virtual void update(const std::vector<std::string> &names,
                         const std::optional<int> &selection,
-                        const std::vector<FilterRule> &rules) = 0;
+                        const std::vector<FilterRule> &rules,
+                        const std::vector<std::string> &matches) = 0;
 };
 
 class ViewFilterPresenter
@@ -64,6 +65,7 @@ private:
     void updateView();
 
     ViewFilterView &myView;
+    const Score &myScore;
     std::vector<ViewFilter> myFilters;
     std::optional<int> mySelection;
 };

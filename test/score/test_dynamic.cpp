@@ -15,16 +15,16 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <score/dynamic.h>
 #include "test_serialization.h"
 
-TEST_CASE("Score/Dynamic/Serialization", "")
+TEST_CASE("Score/Dynamic/Serialization")
 {
     Dynamic dynamic;
     dynamic.setPosition(42);
-    dynamic.setVolume(Dynamic::mp);
+    dynamic.setVolume(VolumeLevel::mp);
 
     Serialization::test("dynamic", dynamic);
 }

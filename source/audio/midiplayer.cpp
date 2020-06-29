@@ -123,7 +123,7 @@ void MidiPlayer::run()
     }
 
     bool started = false;
-    int beat_duration = Midi::BEAT_DURATION_120_BPM;
+    Midi::Tempo beat_duration = Midi::BEAT_DURATION_120_BPM;
     const SystemLocation start_location(myStartLocation.getSystemIndex(),
                                         myStartLocation.getPositionIndex());
     SystemLocation current_location = start_location;
@@ -165,10 +165,10 @@ void MidiPlayer::run()
 		// Compute the time in microseconds that we should sleep for, and then
         // adjust for accumulated timing errors (since sleep_for() is not
         // perfectly precise).
-        auto sleep_duration = DurationType(
-            static_cast<int>(
-            boost::rational_cast<int>(
-                boost::rational<int>(delta, ticks_per_beat) * beat_duration) *
+        auto sleep_duration = DurationType(static_cast<int64_t>(
+            boost::rational_cast<int64_t>(
+                boost::rational<int64_t>(delta, ticks_per_beat) *
+                beat_duration.count()) *
             (100.0 / myPlaybackSpeed)));
 
         auto error_correction = std::min(sleep_duration, clock_drift);
@@ -218,7 +218,7 @@ void MidiPlayer::run()
 
 void MidiPlayer::performCountIn(MidiOutputDevice &device,
                                 const SystemLocation &location,
-                                int beat_duration)
+                                Midi::Tempo beat_duration)
 {
     // Load preferences.
     uint8_t velocity;
@@ -242,13 +242,13 @@ void MidiPlayer::performCountIn(MidiOutputDevice &device,
 
     const TimeSignature &time_sig = barline->getTimeSignature();
 
-    const auto tick_duration = DurationType(
-        static_cast<int>(boost::rational_cast<int>(
-                             boost::rational<int>(4, time_sig.getBeatValue()) *
-                             boost::rational<int>(time_sig.getBeatsPerMeasure(),
-                                                  time_sig.getNumPulses()) *
-                             beat_duration) *
-                         100.0 / myPlaybackSpeed));
+    const auto tick_duration = DurationType(static_cast<int64_t>(
+        boost::rational_cast<int64_t>(
+            boost::rational<int64_t>(4, time_sig.getBeatValue()) *
+            boost::rational<int64_t>(time_sig.getBeatsPerMeasure(),
+                                     time_sig.getNumPulses()) *
+            beat_duration.count()) *
+        100.0 / myPlaybackSpeed));
 
     // Play the count-in.
     device.setChannelMaxVolume(METRONOME_CHANNEL,

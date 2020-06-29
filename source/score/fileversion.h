@@ -34,7 +34,9 @@ enum class FileVersion : int
     LEFT_HAND_FINGERING_THUMB = 5,
     /// Added a subtitle to the score info.
     SONG_SUBTITLE = 6,
-    LATEST_VERSION = SONG_SUBTITLE
+    /// Added volume swells.
+    VOLUME_SWELLS = 7,
+    LATEST_VERSION = VOLUME_SWELLS
 };
 
 #endif

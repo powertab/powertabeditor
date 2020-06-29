@@ -53,7 +53,9 @@ set( srcs
     removetempomarker.cpp
     removetextitem.cpp
     shiftpositions.cpp
+    shiftstring.cpp
     undomanager.cpp
+    volumeswell.cpp
 )
 
 set( headers
@@ -111,7 +113,9 @@ set( headers
     removetempomarker.h
     removetextitem.h
     shiftpositions.h
+    shiftstring.h
     undomanager.h
+    volumeswell.h
 )
 
 set( moc_headers

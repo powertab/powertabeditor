@@ -15,12 +15,12 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
   
-#include <catch2/catch.hpp>
+#include <doctest/doctest.h>
 
 #include <actions/editplayer.h>
 #include <score/score.h>
 
-TEST_CASE("Actions/EditPlayer", "")
+TEST_CASE("Actions/EditPlayer")
 {
     Score score;
     Player oldPlayer;
@@ -41,7 +41,7 @@ TEST_CASE("Actions/EditPlayer", "")
     REQUIRE(score.getPlayers()[0] == oldPlayer);
 }
 
-TEST_CASE("Actions/EditTuning", "")
+TEST_CASE("Actions/EditTuning")
 {
     Score score;
     Player player1;

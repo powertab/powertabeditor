@@ -103,7 +103,7 @@ FileInformationDialog::FileInformationDialog(
             ui->bootlegTitleValue->setText(
                 QString::fromStdString(bootleg.getTitle()));
 
-            const boost::gregorian::date date = bootleg.getDate();
+            const Util::Date &date = bootleg.getDate();
             ui->bootlegDateValue->setDate(
                 QDate(date.year(), date.month(), date.day()));
         }
@@ -219,8 +219,7 @@ ScoreInfo FileInformationDialog::getScoreInfo() const
                 const QDate date = ui->bootlegDateValue->date();
                 song.setBootlegInfo(SongData::BootlegInfo(
                     ui->bootlegTitleValue->text().toStdString(),
-                    boost::gregorian::date(date.year(), date.month(),
-                                           date.day())));
+                    Util::Date(date.year(), date.month(), date.day())));
                 break;
             }
             case 3:
