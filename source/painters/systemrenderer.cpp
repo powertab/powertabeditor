@@ -115,15 +115,22 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
 
         // set a custom color for the staff, depending on
         // the background color and the text/note color
+        // getting the staff color as an average of both colors
+        // ensures flexibility with different palettes
         
-        int red1, green1, blue1, red2,green2,blue2;
-        double avgWeight = 0.7;
-        myPalette.text().color().getRgb(&red1,&green1,&blue1);
-        myPalette.light().color().getRgb(&red2,&green2,&blue2);
+        //rgb value for text
+        int r1, g1, b1; 
+        //rgb value for background 
+        int r2, g2, b2; //rgb value for background
+        //ratio of the background color in the weighted average
+        double avgWeight = 0.7; 
 
-        QColor staffColor(red2*avgWeight+red1*(1-avgWeight),
-         green2*avgWeight+green1*(1-avgWeight), 
-         blue2*avgWeight+blue1*(1-avgWeight));
+        myPalette.text().color().getRgb(&r1,&g1,&b1);
+        myPalette.light().color().getRgb(&r2,&g2,&b2);
+
+        QColor staffColor(r2*avgWeight+r1*(1-avgWeight),
+                    g2*avgWeight+g1*(1-avgWeight), 
+                    b2*avgWeight+b1*(1-avgWeight));
 
         myParentStaff = new StaffPainter(layout,
                                          ScoreLocation(myScore, systemIndex, i),
