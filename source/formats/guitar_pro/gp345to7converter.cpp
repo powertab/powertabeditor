@@ -84,6 +84,51 @@ convertTracks(const Gp::Document &doc)
     return gp7_tracks;
 }
 
+/// String numbers are reversed in GP7.
+static int
+convertStringNumber(const Gp::Track &track, int string)
+{
+    return track.myTuning.size() - string - 1;
+}
+
+static std::optional<Gp7::Beat>
+convertGraceNotes(const Gp::Beat &beat, const Gp::Track &track,
+                  Gp7::Document &gp7_doc)
+{
+    for (const Gp::Note &note : beat.myNotes)
+    {
+        if (!note.myGraceNote)
+            continue;
+
+        Gp7::Beat gp7_beat;
+        Gp7::Note gp7_note;
+        gp7_beat.myGraceNote = true;
+        gp7_note.myString = convertStringNumber(track, note.myString);
+        gp7_note.myFret = note.myGraceNote->myFret;
+
+        switch (note.myGraceNote->myTransition)
+        {
+            case Gp::GraceNote::HammerTransition:
+                gp7_note.myHammerOn = true;
+                break;
+            case Gp::GraceNote::SlideTransition:
+                gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::Shift));
+                break;
+            default:
+                break;
+        }
+
+        Gp7::Rhythm rhythm;
+        rhythm.myDuration = note.myGraceNote->myDuration;
+
+        gp7_doc.addRhythm(gp7_beat, std::move(rhythm));
+        gp7_doc.addNote(gp7_beat, std::move(gp7_note));
+        return gp7_beat;
+    }
+
+    return {};
+}
+
 static void
 convertBeat(const Gp::Beat &beat, const Gp::Track &track,
             Gp7::Document &gp7_doc, Gp7::Beat &gp7_beat)
@@ -104,10 +149,7 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
                 2, std::floor(std::log(rhythm.myTupletNum) / std::log(2.0)));
         }
 
-        // TODO - consolidate identical rhythms?
-        const int rhythm_id = gp7_doc.myRhythms.size();
-        gp7_doc.myRhythms[rhythm_id] = std::move(rhythm);
-        gp7_beat.myRhythmId = rhythm_id;
+        gp7_doc.addRhythm(gp7_beat, std::move(rhythm));
     }
 
     if (beat.myOctave8va)
@@ -130,14 +172,16 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
         Gp7::Note gp7_note;
 
         // The string numbers are reversed in GP7.
-        gp7_note.myString = track.myTuning.size() - note.myString - 1;
+        gp7_note.myString = convertStringNumber(track, note.myString);
         gp7_note.myFret = note.myFret;
         gp7_note.myPalmMuted = note.myHasPalmMute;
         gp7_note.myMuted = note.myIsMuted;
+        // TODO - tied notes need to inherit their fret from the previous note.
         gp7_note.myTieDest = note.myIsTied;
         gp7_note.myGhost = note.myIsGhostNote;
         gp7_note.myTapped = beat.myIsTapped;
         gp7_note.myHammerOn = note.myIsHammerOnOrPullOff;
+        // TODO - is wide vibrato stored in GP3/4/5?
         gp7_note.myVibrato = beat.myIsVibrato || note.myIsVibrato;
         gp7_note.myLetRing = note.myIsLetRing;
 
@@ -178,14 +222,10 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
         // TODO - implement bends.  We might also need to set up myTieOrigin
         // for this to import held bends properly.
 
-        if (note.myGraceNote)
-            gp7_beat.myGraceNote = true;
         if (note.myIsTremoloPicked)
             gp7_beat.myTremoloPicking = true;
 
-        const int note_id = gp7_doc.myNotes.size();
-        gp7_doc.myNotes[note_id] = std::move(gp7_note);
-        gp7_beat.myNoteIds.push_back(note_id);
+        gp7_doc.addNote(gp7_beat, std::move(gp7_note));
     }
 }
 
@@ -233,29 +273,24 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
                     if (beat.myIsEmpty)
                         continue;
 
+                    auto grace_beat = convertGraceNotes(beat, track, gp7_doc);
+                    if (grace_beat)
+                        gp7_doc.addBeat(gp7_voice, std::move(*grace_beat));
+
                     Gp7::Beat gp7_beat;
                     convertBeat(beat, track, gp7_doc, gp7_beat);
-
-                    const int beat_id = gp7_doc.myBeats.size();
-                    gp7_doc.myBeats[beat_id] = std::move(gp7_beat);
-                    gp7_voice.myBeatIds.push_back(beat_id);
+                    gp7_doc.addBeat(gp7_voice, std::move(gp7_beat));
                 }
 
-                const int voice_id = gp7_doc.myVoices.size();
-                gp7_doc.myVoices[voice_id] = std::move(gp7_voice);
-                bar.myVoiceIds.push_back(voice_id);
+                gp7_doc.addVoice(bar, std::move(gp7_voice));
             }
 
             // GP7 expects there to be 4 voices.
             for (size_t i = bar.myVoiceIds.size(); i < 4; ++i)
                 bar.myVoiceIds.push_back(-1);
 
-            const int bar_id = gp7_doc.myBars.size();
-            gp7_doc.myBars[bar_id] = std::move(bar);
-            master_bar.myBarIds.push_back(bar_id);
+            gp7_doc.addBar(master_bar, std::move(bar));
         }
-
-        // TODO - fill out myBarIds.
 
         gp7_doc.myMasterBars.push_back(master_bar);
     }

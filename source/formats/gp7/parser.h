@@ -359,6 +359,12 @@ struct Note
 /// Container for a Guitar Pro 7 document.
 struct Document
 {
+    void addBar(MasterBar &master_bar, Bar bar);
+    void addVoice(Bar &bar, Voice voice);
+    void addBeat(Voice &voice, Beat beat);
+    void addNote(Beat &beat, Note note);
+    void addRhythm(Beat &beat, Rhythm rhythm);
+
     ScoreInfo myScoreInfo;
     std::vector<Track> myTracks;
     std::vector<MasterBar> myMasterBars;
