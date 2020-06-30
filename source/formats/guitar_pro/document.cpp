@@ -894,7 +894,7 @@ void Staff::load(InputStream &stream)
         }
     }
 
-    // TODO - figure out what this byte means.
+    // Info about line breaks.
     if (stream.version() > Version4)
         stream.skip(1);
 }
@@ -938,18 +938,20 @@ void Measure::load(InputStream &stream)
         myKeyChange = std::make_pair(accidentals, isMinor);
     }
 
-    // TODO - more unknown GP5 data ...
     if (stream.version() > Version4)
     {
+        // Time signature beams.
         if (flags.test(MeasureHeader::Numerator) ||
             flags.test(MeasureHeader::Denominator))
         {
             stream.skip(4);
         }
 
+        // Unknown blank byte.
         if (!flags.test(MeasureHeader::AltEnding))
             stream.skip(1);
 
+        // Triplet feel.
         stream.skip(1);
     }
 }
