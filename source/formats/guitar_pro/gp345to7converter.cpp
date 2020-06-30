@@ -286,7 +286,16 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
         // TODO - import tempo changes.
 
         if (measure.myAlternateEnding)
-            master_bar.myAlternateEndings.push_back(*measure.myAlternateEnding);
+        {
+            // Each bit represents an alternate ending from 1 to 8.
+            static constexpr int num_bits = 8;
+            std::bitset<num_bits> bits(*measure.myAlternateEnding);
+            for (int i = 0; i < num_bits; ++i)
+            {
+                if (bits.test(i))
+                    master_bar.myAlternateEndings.push_back(i + 1);
+            }
+        }
 
         // Import the bars for each track.
         for (size_t staff_idx = 0; staff_idx < measure.myStaves.size();
