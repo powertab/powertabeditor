@@ -48,6 +48,8 @@ convertScoreInfo(const Gp::Document &doc)
     if (remainder != 0)
         layout.push_back(remainder);
 
+    // TODO - convert lyrics.
+
     return gp7_info;
 }
 
