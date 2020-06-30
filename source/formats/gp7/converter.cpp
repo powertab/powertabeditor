@@ -241,9 +241,9 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
     using GpAccentType = Gp7::Note::AccentType;
     if (gp_note.myAccentTypes.test(int(GpAccentType::Staccato)))
         position.setProperty(Position::Staccato);
-    if (gp_note.myAccentTypes.test(int(GpAccentType::Accent)))
-        position.setProperty(Position::Sforzando);
     if (gp_note.myAccentTypes.test(int(GpAccentType::HeavyAccent)))
+        position.setProperty(Position::Sforzando);
+    if (gp_note.myAccentTypes.test(int(GpAccentType::Accent)))
         position.setProperty(Position::Marcato);
 
     using GpSlideType = Gp7::Note::SlideType;

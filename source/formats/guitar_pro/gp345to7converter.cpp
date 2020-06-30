@@ -187,10 +187,11 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
 
         if (note.myIsStaccato)
             gp7_note.myAccentTypes.set(int(Gp7::Note::AccentType::Staccato));
-        if (note.myHasAccent)
-            gp7_note.myAccentTypes.set(int(Gp7::Note::AccentType::Accent));
+
         if (note.myHasHeavyAccent)
             gp7_note.myAccentTypes.set(int(Gp7::Note::AccentType::HeavyAccent));
+        else if (note.myHasAccent)
+            gp7_note.myAccentTypes.set(int(Gp7::Note::AccentType::Accent));
 
         if (beat.myIsNaturalHarmonic || note.myIsNaturalHarmonic)
             gp7_note.myHarmonic = Gp7::Note::HarmonicType::Natural;

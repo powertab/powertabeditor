@@ -292,8 +292,8 @@ struct Note
     {
         Staccato,
         Staccatissimo,
-        Accent,
         HeavyAccent,
+        Accent,
         Tenuto,
         NumTypes
     };

@@ -600,7 +600,6 @@ void Beat::load(InputStream &stream)
     loadNotes(stream);
 
     // Handle octave symbols.
-    // TODO - figure out what the other bits are used for.
     if (stream.version() > Version4)
     {
         std::bitset<16> flags = stream.read<uint16_t>();
@@ -609,6 +608,8 @@ void Beat::load(InputStream &stream)
         myOctave15ma = flags.test(BeatEffects::Octave15ma);
         myOctave15mb = flags.test(BeatEffects::Octave15mb);
 
+        // The other bits are mostly used for beaming.
+        // The 'breakSecondary' flag requires reading an extra byte.
         if (flags.test(11) != 0)
             stream.skip(1);
     }
@@ -920,13 +921,10 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::RepeatEnd))
         myRepeatEnd = stream.read<int8_t>();
 
-    if (flags.test(MeasureHeader::Marker) && stream.version() == Version5_1)
-        loadMarker(stream);
-
     if (flags.test(MeasureHeader::AltEnding))
         myAlternateEnding = stream.read<int8_t>();
 
-    if (flags.test(MeasureHeader::Marker) && stream.version() != Version5_1)
+    if (flags.test(MeasureHeader::Marker))
         loadMarker(stream);
 
     if (flags.test(MeasureHeader::KeySignatureChange))
