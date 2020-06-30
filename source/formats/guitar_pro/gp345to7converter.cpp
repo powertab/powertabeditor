@@ -273,7 +273,15 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
             master_bar.myKeySig.mySharps = doc.myInitialKey >= 0;
         }
 
-        // TODO - import time / key signatures.
+        if (measure.myTimeSignatureChange)
+        {
+            master_bar.myTimeSig.myBeats = measure.myTimeSignatureChange->first;
+            master_bar.myTimeSig.myBeatValue =
+                measure.myTimeSignatureChange->second;
+        }
+        else if (prev_master_bar)
+            master_bar.myTimeSig = prev_master_bar->myTimeSig;
+
         // TODO - import directions.
         // TODO - import tempo changes.
 
