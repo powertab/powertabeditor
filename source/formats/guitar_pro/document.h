@@ -104,6 +104,7 @@ struct Note
 
     int myString;
     int myFret;
+    std::optional<int> myLeftFinger;
     bool myHasAccent;
     bool myHasHeavyAccent;
     bool myIsGhostNote;

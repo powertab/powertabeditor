@@ -291,7 +291,7 @@ void GraceNote::load(InputStream &stream)
         break;
     }
 
-    // TODO - figure out the meaning of this byte.
+    // Extra flags in GP5 - dead / onBeat.
     if (stream.version() > Version4)
         stream.skip(1);
 }
@@ -358,17 +358,19 @@ void Note::load(InputStream &stream)
 
     if (flags.test(NoteHeader::FingeringType))
     {
-        // Left and right hand fingerings - ignore.
-        stream.skip(1);
+        myLeftFinger = stream.read<int8_t>();
+
+        // TODO - support right hand fingering (#291).
         stream.skip(1);
     }
 
     if (stream.version() > Version4)
     {
-        // TODO - figure out what this data is used for in GP5.
+        // This is a double with the duration represented as a percenta.
         if (flags.test(NoteHeader::TimeIndependentDuration))
             stream.skip(8);
 
+        // Extra set of flags ('swap accidentals'?).
         stream.skip(1);
     }
 

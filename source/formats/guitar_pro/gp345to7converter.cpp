@@ -223,6 +223,32 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
                 *note.myTrilledFret + track.myTuning[note.myString];
         }
 
+        if (note.myLeftFinger)
+        {
+            switch (*note.myLeftFinger)
+            {
+                case 1:
+                    gp7_note.myLeftFinger = Gp7::Note::FingerType::I;
+                    break;
+                case 2:
+                    gp7_note.myLeftFinger = Gp7::Note::FingerType::M;
+                    break;
+                case 3:
+                    gp7_note.myLeftFinger = Gp7::Note::FingerType::A;
+                    break;
+                case 4:
+                    gp7_note.myLeftFinger = Gp7::Note::FingerType::C;
+                    break;
+                case 0:
+                    gp7_note.myLeftFinger = Gp7::Note::FingerType::P;
+                    break;
+                case -1:
+                default:
+                    gp7_note.myLeftFinger = Gp7::Note::FingerType::Open;
+                    break;
+            }
+        }
+
         // TODO - implement left hand fingering.
         // TODO - implement bends.  We might also need to set up myTieOrigin
         // for this to import held bends properly.
