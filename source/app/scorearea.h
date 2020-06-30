@@ -61,7 +61,7 @@ public:
 protected:
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
 private:
     /// Adjusts the scroll location whenever the caret moves.
