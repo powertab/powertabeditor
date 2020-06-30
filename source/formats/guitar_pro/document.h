@@ -149,6 +149,7 @@ struct Beat
     std::optional<std::string> myText;
     std::optional<int> myTempoChange;
     bool myIsVibrato;
+    bool myIsWideVibrato;
     bool myIsNaturalHarmonic;
     bool myIsArtificialHarmonic;
     bool myIsTremoloPicked;

@@ -87,9 +87,9 @@ namespace BeatEffects
 {
 enum BeatEffects
 {
-    VibratoGp3_1 = 0,
+    Vibrato = 0,
     HasRasguedo = 0,
-    VibratoGp3_2 = 1,
+    WideVibrato = 1,
     Pickstroke = 1,
     NaturalHarmonicGp3 = 2,
     HasTremoloBarEvent = 2,
@@ -543,6 +543,7 @@ Beat::Beat()
       myIsRest(false),
       myDuration(1),
       myIsVibrato(false),
+      myIsWideVibrato(false),
       myIsNaturalHarmonic(false),
       myIsArtificialHarmonic(false),
       myIsTremoloPicked(false),
@@ -704,11 +705,12 @@ void Beat::loadBeatEffects(InputStream &stream)
     const Flags flags1 = stream.read<uint8_t>();
     Flags flags2;
 
+    myIsVibrato = flags1.test(BeatEffects::Vibrato);
+    myIsWideVibrato = flags1.test(BeatEffects::WideVibrato);
+
     // GP3 effect decoding.
     if (stream.version() == Version3)
     {
-        myIsVibrato = flags1.test(BeatEffects::VibratoGp3_1) ||
-                      flags1.test(BeatEffects::VibratoGp3_2);
         myIsNaturalHarmonic = flags1.test(BeatEffects::NaturalHarmonicGp3);
         myIsArtificialHarmonic =
             flags1.test(BeatEffects::ArtificialHarmonicGp3);

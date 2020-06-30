@@ -181,8 +181,8 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
         gp7_note.myGhost = note.myIsGhostNote;
         gp7_note.myTapped = beat.myIsTapped;
         gp7_note.myHammerOn = note.myIsHammerOnOrPullOff;
-        // TODO - is wide vibrato stored in GP3/4/5?
         gp7_note.myVibrato = beat.myIsVibrato || note.myIsVibrato;
+        gp7_note.myWideVibrato = beat.myIsWideVibrato;
         gp7_note.myLetRing = note.myIsLetRing;
 
         if (note.myIsStaccato)
