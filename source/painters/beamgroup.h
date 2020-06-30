@@ -19,6 +19,7 @@
 #define PAINTERS_BEAMGROUP_H
 
 #include <painters/notestem.h>
+#include <QColor> 
 #include <vector>
 
 struct LayoutInfo;
@@ -30,7 +31,8 @@ class QPainterPath;
 class BeamGroup
 {
 public:
-    BeamGroup(NoteStem::StemType direction, const std::vector<size_t> &stems);
+    BeamGroup(NoteStem::StemType direction, 
+    const std::vector<size_t> &stems, const QColor &color);
 
     /// Draws the stems for each note in the group.
     void drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
@@ -44,23 +46,29 @@ private:
 
     /// Creates and positions a staccato symbol.
     static QGraphicsItem *createStaccato(const NoteStem& stem,
-                                         const QFont &musicFont);
+                                         const QFont &musicFont,
+                                         const QColor &color);
 
     /// Creates and positions a fermata symbol.
     static QGraphicsItem *createFermata(const NoteStem& noteStem,
                                         const QFont &musicFont,
-                                        const LayoutInfo &layout);
+                                        const LayoutInfo &layout,
+                                        const QColor &color);
 
     /// Creates and positions an accent symbol.
     static QGraphicsItem *createAccent(const NoteStem& stem,
                                        const QFont &musicFont,
-                                       const LayoutInfo &layout);
+                                       const LayoutInfo &layout,
+                                       const QColor &color);
 
     static QGraphicsItem *createNoteFlag(const NoteStem& stem,
-                                         const QFont &musicFont);
+                                         const QFont &musicFont,
+                                         const QColor &color);
 
     NoteStem::StemType myStemDirection;
     std::vector<size_t> myStems;
+
+    const QColor &myBeamColor;
 };
 
 #endif

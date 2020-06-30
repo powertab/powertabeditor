@@ -31,9 +31,10 @@
 const double CaretPainter::PEN_WIDTH = 0.75;
 const double CaretPainter::CARET_NOTE_SPACING = 6;
 
-CaretPainter::CaretPainter(const Caret &caret, const ViewOptions &view_options)
+CaretPainter::CaretPainter(const Caret &caret, const ViewOptions &view_options, const QColor &notesColor)
     : myCaret(caret),
       myViewOptions(view_options),
+      myNotesColor(notesColor),
       myCaretConnection(caret.subscribeToChanges([=]() {
           onLocationChanged();
       }))
@@ -168,7 +169,7 @@ void CaretPainter::onLocationChanged()
 
     myLayout.reset(new LayoutInfo(location.getScore(), system,
                                   location.getSystemIndex(), location.getStaff(),
-                                  location.getStaffIndex()));
+                                  location.getStaffIndex(), myNotesColor));
 
     const ViewFilter *filter =
         myViewOptions.getFilter()
@@ -184,7 +185,7 @@ void CaretPainter::onLocationChanged()
         {
             offset += LayoutInfo(location.getScore(), system,
                                  location.getSystemIndex(),
-                                 system.getStaves()[i], i).getStaffHeight();
+                                 system.getStaves()[i], i, myNotesColor).getStaffHeight();
         }
     }
 

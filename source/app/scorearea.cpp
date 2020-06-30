@@ -42,15 +42,17 @@ ScoreArea::ScoreArea(QWidget *parent)
     : QGraphicsView(parent),
       myScoreInfoBlock(nullptr),
       myCaretPainter(nullptr),
+      myScorePalette(&parent->palette()),
       myClickPubSub(std::make_shared<ClickPubSub>())
 {
     setScene(&myScene);
 
-    // Ensure that the score has a white background and is legible under dark
-    // themes. A future improvement would be to enhance the score rendering to
-    // support a dark mode (and ensure that printing the score is unaffected).
-    // See https://github.com/powertab/powertabeditor/issues/284
-    setBackgroundBrush(QBrush(Qt::white, Qt::SolidPattern));
+    // set the palette colors to be used when printing
+    myPrintPalette.setColor(QPalette::Text,Qt::black);
+    myPrintPalette.setColor(QPalette::Light,Qt::white);
+    myPrintPalette.setColor(QPalette::Dark,Qt::lightGray);
+
+    activePalette = myScorePalette;
 }
 
 void ScoreArea::renderDocument(const Document &document)
@@ -64,12 +66,12 @@ void ScoreArea::renderDocument(const Document &document)
     auto start = std::chrono::high_resolution_clock::now();
 
     myCaretPainter =
-        new CaretPainter(document.getCaret(), document.getViewOptions());
+        new CaretPainter(document.getCaret(), document.getViewOptions(), activePalette->text().color());
     myCaretPainter->subscribeToMovement([=]() {
         adjustScroll();
     });
 
-    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo());
+    myScoreInfoBlock = ScoreInfoRenderer::render(score.getScoreInfo(), activePalette->text().color());
 
     myRenderedSystems.reserve(score.getSystems().size());
     for (unsigned int i = 0; i < score.getSystems().size(); ++i)
@@ -169,8 +171,14 @@ void ScoreArea::print(QPrinter &printer)
     QPainter painter;
     painter.begin(&printer);
 
+    // use the printPalette for rendering
+    activePalette = &myPrintPalette;
+
     // Hide the caret when printing.
     myCaretPainter->hide();
+
+    //render the document after the palette has been set to print colors
+    this->renderDocument(*myDocument);
 
     QRectF target_rect(0, 0, painter.device()->width(),
                        painter.device()->height());
@@ -182,7 +190,6 @@ void ScoreArea::print(QPrinter &printer)
     for (int i = 0, n = items.length(); i < n; ++i)
     {
         const QGraphicsItem *item = items[i];
-
         const QRectF source_rect = item->sceneBoundingRect();
         const float ratio =
             std::min(target_rect.width() / source_rect.width(),
@@ -214,6 +221,10 @@ void ScoreArea::print(QPrinter &printer)
 
     myCaretPainter->show();
     painter.end();
+
+    // reuse the original app palette and render the document
+    activePalette = myScorePalette;
+    this->renderDocument(*myDocument);    
 }
 
 std::shared_ptr<ClickPubSub> ScoreArea::getClickPubSub() const
@@ -251,4 +262,25 @@ void ScoreArea::refreshZoom()
     QTransform xform;
     xform.scale(scale_factor, scale_factor);
     setTransform(xform);
+}
+
+const QPalette *ScoreArea::getPalette() const
+{
+    return activePalette;
+}
+
+bool ScoreArea::event(QEvent *event)
+{
+
+    QGraphicsView::event(event);
+    if(event->type() == QEvent::PaletteChange)
+    {
+        this->renderDocument(*myDocument);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
 }

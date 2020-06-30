@@ -18,12 +18,14 @@
 #ifndef PAINTERS_SCOREINFO_H
 #define PAINTERS_SCOREINFO_H
 
+#include <QColor>
+
 class QGraphicsItem;
 class ScoreInfo;
 
 namespace ScoreInfoRenderer
 {
-QGraphicsItem *render(const ScoreInfo &score_info);
+QGraphicsItem *render(const ScoreInfo &score_info, const QColor &color);
 }
 
 #endif

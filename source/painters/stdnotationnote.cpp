@@ -85,7 +85,8 @@ void StdNotationNote::getNotesInStaff(
     const Staff &staff, int staffIndex, const LayoutInfo &layout,
     std::vector<StdNotationNote> &notes,
     std::array<std::vector<NoteStem>, Staff::NUM_VOICES> &stemsByVoice,
-    std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> &groupsByVoice)
+    std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> &groupsByVoice,
+    const QColor &notesColor)
 {
     // If there is no active player, use standard 8-string tuning as a default
     // for calculating the music notation.
@@ -215,7 +216,7 @@ void StdNotationNote::getNotesInStaff(
                     NoteStem(voice, pos, x, noteHeadWidth, noteLocations));
             }
 
-            computeBeaming(bar.getTimeSignature(), stems, firstStem, groups);
+            computeBeaming(bar.getTimeSignature(), stems, firstStem, groups, notesColor);
         }
 
         voiceIndex++;
@@ -310,7 +311,8 @@ std::vector<uint8_t> StdNotationNote::getBeamingPatterns(
 void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
                                      std::vector<NoteStem> &stems,
                                      size_t firstStemIndex,
-                                     std::vector<BeamGroup> &groups)
+                                     std::vector<BeamGroup> &groups,
+                                     const QColor &beamingColor)
 {
     const std::vector<uint8_t> beamingPatterns(getBeamingPatterns(timeSig));
 
@@ -347,7 +349,7 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
         computeBeamingGroups(stems, durations, subgroupLength, firstStemIndex,
                              firstStemIndex + (groupStart - durations.begin()),
                              firstStemIndex + (groupEnd - durations.begin()),
-                             groups);
+                             groups, beamingColor);
 
         // Move on to the next beaming pattern, looping around if necessary.
         ++groupSize;
@@ -361,7 +363,8 @@ void StdNotationNote::computeBeaming(const TimeSignature &timeSig,
 void StdNotationNote::computeBeamingGroups(
     std::vector<NoteStem> &stems, const std::vector<double> &durations,
     const std::optional<double> &subgroupLength, size_t firstStemIndexInBar,
-    size_t firstStemIndex, size_t lastStemIndex, std::vector<BeamGroup> &groups)
+    size_t firstStemIndex, size_t lastStemIndex, std::vector<BeamGroup> &groups,
+    const QColor &beamColor)
 {
     // Rests and notes greater than eighth notes will break apart a beam group,
     // so we need to find all of the subgroups of consecutive positions that
@@ -378,7 +381,7 @@ void StdNotationNote::computeBeamingGroups(
             if (NoteStem::needsStem(stems[i]))
             {
                 groups.push_back(
-                    BeamGroup(NoteStem::formatGroup(stems, { i }), { i }));
+                    BeamGroup(NoteStem::formatGroup(stems, { i }), { i }, beamColor));
             }
 
             ++i;
@@ -393,7 +396,7 @@ void StdNotationNote::computeBeamingGroups(
             if (stems[i].isGraceNote())
             {
                 groups.push_back(
-                    BeamGroup(NoteStem::formatGroup(stems, { i }), { i }));
+                    BeamGroup(NoteStem::formatGroup(stems, { i }), { i }, beamColor));
             }
             else
             {
@@ -425,7 +428,7 @@ void StdNotationNote::computeBeamingGroups(
         if (!group_stems.empty())
         {
             auto direction = NoteStem::formatGroup(stems, group_stems);
-            groups.push_back(BeamGroup(direction, group_stems));
+            groups.push_back(BeamGroup(direction, group_stems, beamColor));
         }
     }
 }
