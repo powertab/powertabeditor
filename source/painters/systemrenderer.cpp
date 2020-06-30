@@ -1312,7 +1312,9 @@ SystemRenderer::createVolumeSwell(const SymbolGroup &group,
     path.lineTo(start_x, LayoutInfo::TAB_SYMBOL_SPACING * 0.5);
     path.lineTo(end_x, (1.0 - padding) * LayoutInfo::TAB_SYMBOL_SPACING);
 
-    return new QGraphicsPathItem(path);
+    auto path_item = new QGraphicsPathItem(path);
+    path_item->setPen(myPalette.text().color());
+    return path_item;
 }
 
 QGraphicsItem *SystemRenderer::drawContinuousFontSymbols(QChar symbol,
