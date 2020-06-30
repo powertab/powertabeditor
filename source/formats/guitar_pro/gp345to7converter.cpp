@@ -262,7 +262,6 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
             }
         }
 
-        // TODO - implement left hand fingering.
         // TODO - implement bends.  We might also need to set up myTieOrigin
         // for this to import held bends properly.
 
