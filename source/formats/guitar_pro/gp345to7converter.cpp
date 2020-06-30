@@ -283,7 +283,16 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
             master_bar.myTimeSig = prev_master_bar->myTimeSig;
 
         // TODO - import directions.
-        // TODO - import tempo changes.
+
+        // Initial tempo. Later tempo changes are stored on the beats.
+        if (gp7_doc.myMasterBars.empty())
+        {
+            Gp7::TempoChange tempo_change;
+            tempo_change.myBeatsPerMinute = doc.myStartTempo;
+            tempo_change.myDescription = doc.myStartTempoName;
+            tempo_change.myIsVisible = doc.myStartTempoVisible;
+            master_bar.myTempoChanges.push_back(tempo_change);
+        }
 
         if (measure.myAlternateEnding)
         {
@@ -322,6 +331,17 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
                     Gp7::Beat gp7_beat;
                     convertBeat(beat, track, gp7_doc, gp7_beat);
                     gp7_doc.addBeat(gp7_voice, std::move(gp7_beat));
+
+                    // Add tempo changes to the measure.
+                    // TODO - set the position fraction for tempo changes that
+                    // occur during the bar. When this is supported by the GP7
+                    // converter, enable the unit tests for this.
+                    if (beat.myTempoChange)
+                    {
+                        Gp7::TempoChange tempo_change;
+                        tempo_change.myBeatsPerMinute = *beat.myTempoChange;
+                        master_bar.myTempoChanges.push_back(tempo_change);
+                    }
                 }
 
                 gp7_doc.addVoice(bar, std::move(gp7_voice));
