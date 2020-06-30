@@ -40,7 +40,7 @@ Gp::InputStream::InputStream(std::istream &stream) : myStream(stream)
 
     auto it = theVersionStrings.find(versionString);
     if (it != theVersionStrings.end())
-        this->version = it->second;
+        myVersion = it->second;
     else
         throw FileFormatException("Unsupported file version: " + versionString);
 }

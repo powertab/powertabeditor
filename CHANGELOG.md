@@ -15,6 +15,11 @@ Thanks to the following contributors who worked on this release:
 - Left hand fingerings now support thumbs. This is also now supported by the Guitar Pro 6/7 importers (#292).
 - The song information can now store a subtitle. This is also now supported by the Guitar Pro 6/7 importers (#297).
 - Several improvements to the view filter dialog. In particular, it now displays a list of the players that will be displayed when the filter is used (#295).
+- Several improvements to the Guitar Pro 3/4/5 importer:
+  - It now shares most of its code for converting to the Power Tab format with the GP6/7 importers, fixing a variety of layout / conversion issues.
+  - Artificial and tapped harmonics are now imported.
+  - The initial tempo marker's name and visibility is now imported.
+  - Wide vibrato, left hand fingerings, and the song's subtitle are now imported.
 
 ### Changed
 - The `Position -> Shift Forward` and `Position -> Shift Backward` menu items have been renamed to `Insert Space` and `Remove Space`, to hopefully reduce confusion with the new string shifting commands (#20).

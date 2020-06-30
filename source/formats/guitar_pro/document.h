@@ -29,10 +29,10 @@ namespace Gp
 {
 
 class InputStream;
+struct Track;
 
 struct Header
 {
-    Header();
     void load(InputStream &stream);
 
     struct LyricLine
@@ -53,23 +53,24 @@ struct Header
     std::string myTranscriber;
     std::string myInstructions;
     std::vector<std::string> myNotices;
-    bool myTripletFeel;
-    int myLyricTrack;
+    /// TODO -  this should be transferred to the measure header since it's
+    /// per-measure in GP5.
+    bool myTripletFeel = false;
+    int myLyricTrack = 0;
     std::vector<LyricLine> myLyrics;
 };
 
 struct Channel
 {
-    Channel();
     void load(InputStream &stream);
 
-    int myInstrument;
-    int myVolume;
-    int myBalance;
-    int myChorus;
-    int myReverb;
-    int myPhaser;
-    int myTremolo;
+    int myInstrument = 0;
+    int myVolume = 0;
+    int myBalance = 0;
+    int myChorus = 0;
+    int myReverb = 0;
+    int myPhaser = 0;
+    int myTremolo = 0;
 
 private:
     /// For some reason, channel properties (except instrument type) are stored
@@ -100,10 +101,11 @@ struct GraceNote
 struct Note
 {
     Note(int string);
-    void load(InputStream &stream);
+    void load(InputStream &stream, const Track &track);
 
     int myString;
     int myFret;
+    std::optional<int> myLeftFinger;
     bool myHasAccent;
     bool myHasHeavyAccent;
     bool myIsGhostNote;
@@ -118,6 +120,9 @@ struct Note
     bool myHasPalmMute;
     bool myIsStaccato;
     bool myIsNaturalHarmonic;
+    bool myIsTappedHarmonic = false;
+    bool myIsArtificialHarmonic = false;
+    double myHarmonicFret = 0;
     bool myIsVibrato;
     bool myIsTremoloPicked;
 
@@ -129,17 +134,17 @@ struct Note
     bool myIsSlideOutDown;
 
 private:
-    void loadNoteEffects(InputStream &stream);
+    void loadNoteEffects(InputStream &stream, const Track &track);
     void loadNoteEffectsGp3(InputStream &stream);
     void loadBend(InputStream &stream);
     void loadSlide(InputStream &stream);
-    void loadHarmonic(InputStream &stream);
+    void loadHarmonic(InputStream &stream, const Track &track);
 };
 
 struct Beat
 {
     Beat();
-    void load(InputStream &stream);
+    void load(InputStream &stream, const Track &track);
 
     bool myIsEmpty;
     bool myIsDotted;
@@ -148,7 +153,9 @@ struct Beat
     std::optional<int> myIrregularGrouping;
     std::optional<std::string> myText;
     std::optional<int> myTempoChange;
+    std::string myTempoChangeName;
     bool myIsVibrato;
+    bool myIsWideVibrato;
     bool myIsNaturalHarmonic;
     bool myIsArtificialHarmonic;
     bool myIsTremoloPicked;
@@ -167,13 +174,13 @@ private:
     void loadBeatEffects(InputStream &stream);
     void loadTremoloBar(InputStream &stream);
     void loadMixTableChangeEvent(InputStream &stream);
-    void loadNotes(InputStream &stream);
+    void loadNotes(InputStream &stream, const Track &track);
 };
 
 struct Staff
 {
     Staff();
-    void load(InputStream &stream);
+    void load(InputStream &stream, const Track &track);
 
     std::array<std::vector<Beat>, 2> myVoices;
 };
@@ -182,7 +189,7 @@ struct Measure
 {
     Measure();
     void load(InputStream &stream);
-    void loadStaves(InputStream &stream, int numTracks);
+    void loadStaves(InputStream &stream, const std::vector<Track> &tracks);
 
     bool myIsDoubleBar;
     bool myIsRepeatBegin;
@@ -207,26 +214,26 @@ private:
 
 struct Track
 {
-    Track();
     void load(InputStream &stream);
 
-    bool myIsDrumTrack;
+    bool myIsDrumTrack = false;
     std::string myName;
-    int myNumStrings;
+    int myNumStrings = 0;
     std::vector<uint8_t> myTuning;
-    int myChannelIndex; ///< Index into the list of channels.
-    int myCapo;
+    int myChannelIndex = -1; ///< Index into the list of channels.
+    int myCapo = 0;
 };
 
 struct Document
 {
-    Document();
     void load(InputStream &stream);
 
     Header myHeader;
-    int myStartTempo;
-    int myInitialKey;
-    bool myOctave8va;
+    int myStartTempo = 0;
+    std::string myStartTempoName;
+    bool myStartTempoVisible = true;
+    int myInitialKey = 0;
+    bool myOctave8va = false;
     std::vector<Channel> myChannels;
     std::vector<Measure> myMeasures;
     std::vector<Track> myTracks;

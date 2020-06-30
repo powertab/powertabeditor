@@ -35,6 +35,7 @@
 #include <score/tempomarker.h>
 #include <score/timesignature.h>
 #include <score/utils.h>
+#include <score/utils/scorepolisher.h>
 #include <score/voiceutils.h>
 
 #include <iostream>
@@ -240,9 +241,9 @@ convertNote(Position &position, const Gp7::Beat &gp_beat,
     using GpAccentType = Gp7::Note::AccentType;
     if (gp_note.myAccentTypes.test(int(GpAccentType::Staccato)))
         position.setProperty(Position::Staccato);
-    if (gp_note.myAccentTypes.test(int(GpAccentType::Accent)))
-        position.setProperty(Position::Sforzando);
     if (gp_note.myAccentTypes.test(int(GpAccentType::HeavyAccent)))
+        position.setProperty(Position::Sforzando);
+    if (gp_note.myAccentTypes.test(int(GpAccentType::Accent)))
         position.setProperty(Position::Marcato);
 
     using GpSlideType = Gp7::Note::SlideType;
@@ -1124,4 +1125,6 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
     }
 
     ScoreUtils::adjustRehearsalSigns(score);
+    ScoreUtils::polishScore(score);
+    ScoreUtils::addStandardFilters(score);
 }

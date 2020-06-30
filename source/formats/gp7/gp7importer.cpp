@@ -29,7 +29,6 @@
 
 #include <formats/fileformat.h>
 #include <score/score.h>
-#include <score/utils/scorepolisher.h>
 #include <util/scopeexit.h>
 
 Gp7Importer::Gp7Importer()
@@ -142,7 +141,4 @@ void Gp7Importer::load(const boost::filesystem::path &filename, Score &score)
 
     Gp7::Document doc = Gp7::parse(xml_doc, Gp7::Version::V7);
     Gp7::convert(doc, score);
-
-    ScoreUtils::polishScore(score);
-    ScoreUtils::addStandardFilters(score);
 }
