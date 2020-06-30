@@ -153,6 +153,7 @@ struct Beat
     std::optional<int> myIrregularGrouping;
     std::optional<std::string> myText;
     std::optional<int> myTempoChange;
+    std::string myTempoChangeName;
     bool myIsVibrato;
     bool myIsWideVibrato;
     bool myIsNaturalHarmonic;

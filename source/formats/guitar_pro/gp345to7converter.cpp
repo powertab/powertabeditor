@@ -379,6 +379,7 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
                     {
                         Gp7::TempoChange tempo_change;
                         tempo_change.myBeatsPerMinute = *beat.myTempoChange;
+                        tempo_change.myDescription = beat.myTempoChangeName;
                         master_bar.myTempoChanges.push_back(tempo_change);
                     }
                 }

@@ -836,7 +836,7 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     int8_t tremolo = stream.read<uint8_t>(); // tremolo
 
     if (stream.version() > Version4)
-        stream.readString(); // TODO - tempo name?
+        myTempoChangeName = stream.readString();
 
     // New tempo.
     int32_t tempo = stream.read<int32_t>();
@@ -880,7 +880,7 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
         stream.skip(1);
         if (stream.version() == Version5_1)
         {
-            // TODO - determine what these strings represent.
+            // RSE instrument effect & category.
             stream.readString();
             stream.readString();
         }
