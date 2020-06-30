@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <bitset>
 #include <iostream>
+#include <unordered_map>
 
 #include <formats/guitar_pro/inputstream.h>
 #include <formats/fileformat.h>
@@ -321,7 +322,7 @@ Note::Note(int string)
 {
 }
 
-void Note::load(InputStream &stream)
+void Note::load(InputStream &stream, const Track &track)
 {
     const Flags flags = stream.read<uint8_t>();
 
@@ -377,13 +378,13 @@ void Note::load(InputStream &stream)
     if (flags.test(NoteHeader::HasNoteEffects))
     {
         if (stream.version() >= Version4)
-            loadNoteEffects(stream);
+            loadNoteEffects(stream, track);
         else if (stream.version() == Version3)
             loadNoteEffectsGp3(stream);
     }
 }
 
-void Note::loadNoteEffects(InputStream &stream)
+void Note::loadNoteEffects(InputStream &stream, const Track &track)
 {
     const Flags header1 = stream.read<uint8_t>();
     const Flags header2 = stream.read<uint8_t>();
@@ -410,7 +411,7 @@ void Note::loadNoteEffects(InputStream &stream)
         loadSlide(stream);
 
     if (header2.test(NoteEffects::HasHarmonic))
-        loadHarmonic(stream);
+        loadHarmonic(stream, track);
 
     if (header2.test(NoteEffects::HasTrill))
     {
@@ -521,7 +522,7 @@ void Note::loadSlide(InputStream &stream)
     }
 }
 
-void Note::loadHarmonic(InputStream &stream)
+void Note::loadHarmonic(InputStream &stream, const Track &track)
 {
     const uint8_t harmonic = stream.read<uint8_t>();
 
@@ -529,13 +530,45 @@ void Note::loadHarmonic(InputStream &stream)
         myIsNaturalHarmonic = true;
     else if (harmonic == HarmonicType::TappedHarmonic)
     {
-        // TODO - implement this.
-        stream.skip(1);
+        myIsTappedHarmonic = true;
+        myHarmonicFret = stream.read<int8_t>();
+    }
+    else if (harmonic == HarmonicType::Artificial5)
+    {
+        myIsArtificialHarmonic = true;
+        myHarmonicFret = 5;
+    }
+    else if (harmonic == HarmonicType::Artificial7)
+    {
+        myIsArtificialHarmonic = true;
+        myHarmonicFret = 7;
+    }
+    else if (harmonic == HarmonicType::Artificial12)
+    {
+        myIsArtificialHarmonic = true;
+        myHarmonicFret = 12;
     }
     else if (harmonic == HarmonicType::ArtificalHarmonicGp5)
     {
-        // TODO - implement this.
-        stream.skip(3);
+        int harmonic_base_pitch = stream.read<int8_t>();
+        const int accidental = stream.read<int8_t>();
+        harmonic_base_pitch += accidental;
+        int octave = stream.read<int8_t>();
+
+        const int base_pitch =
+            Midi::getMidiNotePitch(track.myTuning[myString] + myFret);
+        if (base_pitch > harmonic_base_pitch)
+            ++octave;
+
+        const int pitch_offset = octave * 12 + (harmonic_base_pitch - base_pitch);
+
+        const std::unordered_map<int, double> theHarmonicFrets = {
+            { 12, 12 },  { 19, 7 },   { 24, 5 },  { 28, 4 },
+            { 31, 3.2 }, { 34, 2.7 }, { 36, 2.4 }
+        };
+        auto it = theHarmonicFrets.find(pitch_offset);
+        myHarmonicFret = (it != theHarmonicFrets.end()) ? it->second : 0;
+        myIsArtificialHarmonic = true;
     }
 }
 
@@ -559,7 +592,7 @@ Beat::Beat()
 {
 }
 
-void Beat::load(InputStream &stream)
+void Beat::load(InputStream &stream, const Track &track)
 {
     const Flags flags = stream.read<uint8_t>();
 
@@ -600,7 +633,7 @@ void Beat::load(InputStream &stream)
     if (flags.test(BeatHeader::MixTableChangeEvent))
         loadMixTableChangeEvent(stream);
 
-    loadNotes(stream);
+    loadNotes(stream, track);
 
     // Handle octave symbols.
     if (stream.version() > Version4)
@@ -854,7 +887,7 @@ void Beat::loadMixTableChangeEvent(InputStream &stream)
     }
 }
 
-void Beat::loadNotes(InputStream &stream)
+void Beat::loadNotes(InputStream &stream, const Track &track)
 {
     const Flags stringsPlayed = stream.read<uint8_t>();
 
@@ -863,7 +896,7 @@ void Beat::loadNotes(InputStream &stream)
         if (stringsPlayed.test(i))
         {
             Note note(NUMBER_OF_STRINGS - i - 1);
-            note.load(stream);
+            note.load(stream, track);
             myNotes.push_back(note);
         }
     }
@@ -873,13 +906,13 @@ Staff::Staff()
 {
 }
 
-void Staff::load(InputStream &stream)
+void Staff::load(InputStream &stream, const Track &track)
 {
     int numBeats = stream.read<int32_t>();
     for (int i = 0; i < numBeats; ++i)
     {
         Beat beat;
-        beat.load(stream);
+        beat.load(stream, track);
         myVoices[0].push_back(beat);
     }
 
@@ -889,7 +922,7 @@ void Staff::load(InputStream &stream)
         for (int i = 0; i < numBeats; ++i)
         {
             Beat beat;
-            beat.load(stream);
+            beat.load(stream, track);
             myVoices[1].push_back(beat);
         }
     }
@@ -963,12 +996,12 @@ void Measure::loadMarker(InputStream &stream)
     stream.skip(4);
 }
 
-void Measure::loadStaves(InputStream &stream, int numTracks)
+void Measure::loadStaves(InputStream &stream, const std::vector<Track> &tracks)
 {
-    for (int i = 0; i < numTracks; ++i)
+    for (const Track &track : tracks)
     {
         Staff staff;
-        staff.load(stream);
+        staff.load(stream, track);
         myStaves.push_back(staff);
     }
 }
@@ -1112,7 +1145,7 @@ void Document::load(InputStream &stream)
         stream.skip(1);
 
     for (int i = 0; i < numMeasures; ++i)
-        myMeasures[i].loadStaves(stream, numTracks);
+        myMeasures[i].loadStaves(stream, myTracks);
 }
 
 }

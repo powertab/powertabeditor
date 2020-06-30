@@ -310,3 +310,63 @@ TEST_CASE("Formats/GuitarPro/IrregularGroups")
     REQUIRE(groups[2].getNotesPlayed() == 6);
     REQUIRE(groups[2].getNotesPlayedOver() == 4);
 }
+
+static void
+checkArtificialHarmonic(const Voice &voice, int start, int end,
+                        ChordName::Key key, ChordName::Variation variation,
+                        ArtificialHarmonic::Octave octave)
+{
+    for (int i = start; i <= end; ++i)
+    {
+        const Note &note = voice.getPositions()[i].getNotes()[0];
+        REQUIRE(note.hasArtificialHarmonic());
+
+        const ArtificialHarmonic &harmonic = note.getArtificialHarmonic();
+        REQUIRE(harmonic.getKey() == key);
+        REQUIRE(harmonic.getVariation() == variation);
+        REQUIRE(harmonic.getOctave() == octave);
+    }
+}
+
+TEST_CASE("Formats/GuitarPro/Harmonics")
+{
+    Score score;
+    GuitarProImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/harmonics.gp5"), score);
+
+    using Octave = ArtificialHarmonic::Octave;
+
+    {
+        const Voice &voice =
+            score.getSystems()[0].getStaves()[0].getVoices()[0];
+
+        checkArtificialHarmonic(voice, 1, 1, ChordName::F, ChordName::NoVariation,
+                       Octave::Loco);
+        checkArtificialHarmonic(voice, 2, 3, ChordName::C, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkArtificialHarmonic(voice, 4, 5, ChordName::F, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkArtificialHarmonic(voice, 6, 8, ChordName::A, ChordName::NoVariation,
+                       Octave::Octave8va);
+        checkArtificialHarmonic(voice, 9, 9, ChordName::C, ChordName::NoVariation,
+                       Octave::Octave15ma);
+        checkArtificialHarmonic(voice, 10, 11, ChordName::D, ChordName::Sharp,
+                       Octave::Octave15ma);
+    }
+
+    {
+        const Voice &voice =
+            score.getSystems()[1].getStaves()[0].getVoices()[0];
+
+        checkArtificialHarmonic(voice, 0, 2, ChordName::D, ChordName::Sharp,
+                       Octave::Octave15ma);
+        checkArtificialHarmonic(voice, 3, 5, ChordName::F, ChordName::NoVariation,
+                       Octave::Octave15ma);
+
+        REQUIRE(voice.getPositions()[6].getNotes()[0].hasProperty(
+            Note::NaturalHarmonic));
+        REQUIRE(voice.getPositions()[7].getNotes()[0].hasTappedHarmonic());
+        REQUIRE(voice.getPositions()[7].getNotes()[0].getTappedHarmonicFret() ==
+                9);
+    }
+}

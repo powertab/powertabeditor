@@ -197,13 +197,24 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
 
         if (beat.myIsNaturalHarmonic || note.myIsNaturalHarmonic)
             gp7_note.myHarmonic = Gp7::Note::HarmonicType::Natural;
+
         if (beat.myIsArtificialHarmonic)
         {
+            // GP3 artificial harmonics don't specify a pitch.
             gp7_note.myHarmonic = Gp7::Note::HarmonicType::Artificial;
-            // FIXME - import the harmonic fret properly from GP3/4/5 files!
-            gp7_note.myHarmonicFret = 24;
+            gp7_note.myHarmonicFret = 12;
         }
-        // TODO - tapped harmonics are not yet implemented for GP3/4/5
+        else if (note.myIsArtificialHarmonic)
+        {
+            gp7_note.myHarmonic = Gp7::Note::HarmonicType::Artificial;
+            gp7_note.myHarmonicFret = note.myHarmonicFret;
+        }
+
+        if (note.myIsTappedHarmonic)
+        {
+            gp7_note.myHarmonic = Gp7::Note::HarmonicType::Tap;
+            gp7_note.myHarmonicFret = note.myHarmonicFret;
+        }
 
         if (note.myIsShiftSlide)
             gp7_note.mySlideTypes.set(int(Gp7::Note::SlideType::Shift));

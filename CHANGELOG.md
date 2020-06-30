@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Several improvements to the view filter dialog. In particular, it now displays a list of the players that will be displayed when the filter is used (#295).
 - Several improvements to the Guitar Pro 3/4/5 importer:
   - It now shares most of its code for converting to the Power Tab format with the GP6/7 importers, fixing a variety of layout / conversion issues.
+  - Artificial and tapped harmonics are now imported.
   - The initial tempo marker's name and visibility is now imported.
   - Wide vibrato, left hand fingerings, and the song's subtitle are now imported.
 

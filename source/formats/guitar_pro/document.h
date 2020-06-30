@@ -29,6 +29,7 @@ namespace Gp
 {
 
 class InputStream;
+struct Track;
 
 struct Header
 {
@@ -100,7 +101,7 @@ struct GraceNote
 struct Note
 {
     Note(int string);
-    void load(InputStream &stream);
+    void load(InputStream &stream, const Track &track);
 
     int myString;
     int myFret;
@@ -119,6 +120,9 @@ struct Note
     bool myHasPalmMute;
     bool myIsStaccato;
     bool myIsNaturalHarmonic;
+    bool myIsTappedHarmonic = false;
+    bool myIsArtificialHarmonic = false;
+    double myHarmonicFret = 0;
     bool myIsVibrato;
     bool myIsTremoloPicked;
 
@@ -130,17 +134,17 @@ struct Note
     bool myIsSlideOutDown;
 
 private:
-    void loadNoteEffects(InputStream &stream);
+    void loadNoteEffects(InputStream &stream, const Track &track);
     void loadNoteEffectsGp3(InputStream &stream);
     void loadBend(InputStream &stream);
     void loadSlide(InputStream &stream);
-    void loadHarmonic(InputStream &stream);
+    void loadHarmonic(InputStream &stream, const Track &track);
 };
 
 struct Beat
 {
     Beat();
-    void load(InputStream &stream);
+    void load(InputStream &stream, const Track &track);
 
     bool myIsEmpty;
     bool myIsDotted;
@@ -169,13 +173,13 @@ private:
     void loadBeatEffects(InputStream &stream);
     void loadTremoloBar(InputStream &stream);
     void loadMixTableChangeEvent(InputStream &stream);
-    void loadNotes(InputStream &stream);
+    void loadNotes(InputStream &stream, const Track &track);
 };
 
 struct Staff
 {
     Staff();
-    void load(InputStream &stream);
+    void load(InputStream &stream, const Track &track);
 
     std::array<std::vector<Beat>, 2> myVoices;
 };
@@ -184,7 +188,7 @@ struct Measure
 {
     Measure();
     void load(InputStream &stream);
-    void loadStaves(InputStream &stream, int numTracks);
+    void loadStaves(InputStream &stream, const std::vector<Track> &tracks);
 
     bool myIsDoubleBar;
     bool myIsRepeatBegin;
