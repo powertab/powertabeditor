@@ -76,29 +76,38 @@ TEST_CASE("Formats/GuitarPro/KeySignatures")
     GuitarProImporter importer;
     loadTest(importer, "data/keys.gp5", score);
 
-    const System &system = score.getSystems()[0];
-    auto barlines = system.getBarlines();
+    {
+        const System &system = score.getSystems()[0];
+        auto barlines = system.getBarlines();
 
-    REQUIRE(barlines[0].getKeySignature().getKeyType() == KeySignature::Major);
-    REQUIRE(barlines[0].getKeySignature().getNumAccidentals() == 1);
-    REQUIRE(barlines[0].getKeySignature().isVisible());
-    REQUIRE(barlines[0].getKeySignature().usesSharps());
+        REQUIRE(barlines[0].getKeySignature().getKeyType() ==
+                KeySignature::Major);
+        REQUIRE(barlines[0].getKeySignature().getNumAccidentals() == 1);
+        REQUIRE(barlines[0].getKeySignature().isVisible());
+        REQUIRE(barlines[0].getKeySignature().usesSharps());
 
-    REQUIRE(barlines[1].getKeySignature().getKeyType() == KeySignature::Major);
-    REQUIRE(barlines[1].getKeySignature().getNumAccidentals() == 1);
-    REQUIRE(barlines[1].getKeySignature().isVisible());
-    REQUIRE(barlines[1].getKeySignature().usesSharps() == false);
+        REQUIRE(barlines[1].getKeySignature().getKeyType() ==
+                KeySignature::Major);
+        REQUIRE(barlines[1].getKeySignature().getNumAccidentals() == 1);
+        REQUIRE(barlines[1].getKeySignature().isVisible());
+        REQUIRE(barlines[1].getKeySignature().usesSharps() == false);
 
-    REQUIRE(barlines[1].getKeySignature().getNumAccidentals() ==
-            barlines[2].getKeySignature().getNumAccidentals());
-    REQUIRE(!barlines[2].getKeySignature().isVisible());
+        REQUIRE(barlines[1].getKeySignature().getNumAccidentals() ==
+                barlines[2].getKeySignature().getNumAccidentals());
+        REQUIRE(!barlines[2].getKeySignature().isVisible());
+    }
 
-    REQUIRE(barlines[3].getKeySignature().getKeyType() == KeySignature::Minor);
-    REQUIRE(barlines[3].getKeySignature().getNumAccidentals() == 0);
-    REQUIRE(barlines[3].getKeySignature().isVisible());
-    REQUIRE(barlines[3].getKeySignature().isCancellation());
+    {
+        const System &system = score.getSystems()[1];
+        auto barlines = system.getBarlines();
+        REQUIRE(barlines[0].getKeySignature().getKeyType() ==
+                KeySignature::Minor);
+        REQUIRE(barlines[0].getKeySignature().getNumAccidentals() == 0);
+        REQUIRE(barlines[0].getKeySignature().isVisible());
+        REQUIRE(barlines[0].getKeySignature().isCancellation());
 
-    REQUIRE(!barlines[4].getKeySignature().isVisible());
+        REQUIRE(!barlines[1].getKeySignature().isVisible());
+    }
 }
 
 TEST_CASE("Formats/GuitarPro/TimeSignatures")

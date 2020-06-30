@@ -253,6 +253,26 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
             master_bar.mySection = section;
         }
 
+        // Copy key signature from the previous bar if there isn't a key change.
+        const Gp7::MasterBar *prev_master_bar =
+            !gp7_doc.myMasterBars.empty() ? &gp7_doc.myMasterBars.back()
+                                          : nullptr;
+
+        if (measure.myKeyChange)
+        {
+            int accidentals = measure.myKeyChange->first;
+            master_bar.myKeySig.myAccidentalCount = std::abs(accidentals);
+            master_bar.myKeySig.mySharps = accidentals >= 0;
+            master_bar.myKeySig.myMinor = measure.myKeyChange->second;
+        }
+        else if (prev_master_bar)
+            master_bar.myKeySig = prev_master_bar->myKeySig;
+        else
+        {
+            master_bar.myKeySig.myAccidentalCount = std::abs(doc.myInitialKey);
+            master_bar.myKeySig.mySharps = doc.myInitialKey >= 0;
+        }
+
         // TODO - import time / key signatures.
         // TODO - import directions.
         // TODO - import tempo changes.
