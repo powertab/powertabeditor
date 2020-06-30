@@ -36,14 +36,17 @@ TEST_CASE("Formats/GuitarPro/Barlines")
     const System &system = score.getSystems()[0];
     auto barlines = system.getBarlines();
 
-    REQUIRE(barlines.size() == 6);
+    REQUIRE(barlines.size() == 5);
     REQUIRE(barlines[1].getBarType() == Barline::RepeatStart);
     REQUIRE(barlines[2].getBarType() == Barline::RepeatEnd);
     REQUIRE(barlines[2].getRepeatCount() == 2);
     REQUIRE(barlines[3].getBarType() == Barline::RepeatStart);
     REQUIRE(barlines[4].getBarType() == Barline::DoubleBar);
-    REQUIRE(barlines[5].getBarType() == Barline::RepeatEnd);
-    REQUIRE(barlines[5].getRepeatCount() == 4);
+
+    const System &system2 = score.getSystems()[1];
+    auto barlines2 = system2.getBarlines();
+    REQUIRE(barlines2[1].getBarType() == Barline::RepeatEnd);
+    REQUIRE(barlines2[1].getRepeatCount() == 4);
 }
 
 TEST_CASE("Formats/GuitarPro/RehearsalSigns")
@@ -169,7 +172,7 @@ TEST_CASE("Formats/GuitarPro/Positions")
 
     const System &system = score.getSystems()[0];
     auto positions = system.getStaves()[0].getVoices()[0].getPositions();
-    REQUIRE(positions.size() == 11);
+    REQUIRE(positions.size() == 10);
 
     REQUIRE(positions[0].getDurationType() == Position::QuarterNote);
     REQUIRE(positions[0].hasProperty(Position::LetRing));
@@ -200,8 +203,11 @@ TEST_CASE("Formats/GuitarPro/Positions")
     REQUIRE(positions[8].getDurationType() == Position::EighthNote);
     REQUIRE(positions[8].hasProperty(Position::Sforzando));
 
-    REQUIRE(positions[10].getDurationType() == Position::WholeNote);
-    REQUIRE(positions[10].hasProperty(Position::TremoloPicking));
+    const System &system2 = score.getSystems()[1];
+    auto positions2 = system2.getStaves()[0].getVoices()[0].getPositions();
+
+    REQUIRE(positions2[0].getDurationType() == Position::WholeNote);
+    REQUIRE(positions2[0].hasProperty(Position::TremoloPicking));
 }
 
 TEST_CASE("Formats/GuitarPro/Notes")
