@@ -18,6 +18,7 @@
 #include "gp345to7converter.h"
 
 #include <boost/algorithm/string/join.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <cmath>
 
 static Gp7::ScoreInfo
@@ -131,9 +132,63 @@ convertGraceNotes(const Gp::Beat &beat, const Gp::Track &track,
     return {};
 }
 
+/// Finds the last note in the provided voice that occurs on the specified
+/// string.
+static Gp7::Note *
+findTiedNoteOrigin(Gp7::Document &doc, const Gp7::Voice &voice,
+                   const int string)
+{
+    using namespace boost::adaptors;
+
+    for (int beat_id : reverse(voice.myBeatIds))
+    {
+        const Gp7::Beat &beat = doc.myBeats.at(beat_id);
+        for (int note_id : beat.myNoteIds)
+        {
+            Gp7::Note &note = doc.myNotes.at(note_id);
+            if (note.myString == string)
+                return &note;
+        }
+    }
+
+    return nullptr;
+}
+
+/// Searches through the current and previous measures of this voice for the
+/// origin tied note.
+static Gp7::Note *
+findTiedNoteOrigin(Gp7::Document &doc, const Gp7::Voice &current_voice,
+                   const int voice_idx, const int string)
+{
+    using namespace boost::adaptors;
+
+    // First, check the current measure that is tn the process of being built.
+    Gp7::Note *tie_origin = findTiedNoteOrigin(doc, current_voice, string);
+    if (tie_origin)
+        return tie_origin;
+
+    // Otherwise, search through all the previous measures.
+    for (const Gp7::MasterBar &master_bar : reverse(doc.myMasterBars))
+    {
+        for (int bar_id : reverse(master_bar.myBarIds))
+        {
+            const Gp7::Bar &bar = doc.myBars.at(bar_id);
+            const Gp7::Voice &voice =
+                doc.myVoices.at(bar.myVoiceIds[voice_idx]);
+
+            tie_origin = findTiedNoteOrigin(doc, voice, string);
+            if (tie_origin)
+                return tie_origin;
+        }
+    }
+
+    return nullptr;
+}
+
 static void
 convertBeat(const Gp::Beat &beat, const Gp::Track &track,
-            Gp7::Document &gp7_doc, Gp7::Beat &gp7_beat)
+            Gp7::Document &gp7_doc, const Gp7::Voice &gp7_current_voice,
+            const int voice_idx, Gp7::Beat &gp7_beat)
 {
     // Convert the rhythm.
     {
@@ -176,10 +231,24 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
         // The string numbers are reversed in GP7.
         gp7_note.myString = convertStringNumber(track, note.myString);
         gp7_note.myFret = note.myFret;
+
+        if (note.myIsTied)
+        {
+            // Tied notes inherit their fret from the previous note, and don't
+            // always have a correct fret number stored in the GP3/4/5 file.
+            Gp7::Note *prev_note = findTiedNoteOrigin(
+                gp7_doc, gp7_current_voice, voice_idx, gp7_note.myString);
+            assert(prev_note);
+            if (prev_note)
+            {
+                gp7_note.myFret = prev_note->myFret;
+                gp7_note.myTieDest = true;
+                prev_note->myTieOrigin = true;
+            }
+        }
+
         gp7_note.myPalmMuted = note.myHasPalmMute;
         gp7_note.myMuted = note.myIsMuted;
-        // TODO - tied notes need to inherit their fret from the previous note.
-        gp7_note.myTieDest = note.myIsTied;
         gp7_note.myGhost = note.myIsGhostNote;
         gp7_note.myTapped = beat.myIsTapped;
         gp7_note.myHammerOn = note.myIsHammerOnOrPullOff;
@@ -320,8 +389,6 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
         else if (prev_master_bar)
             master_bar.myTimeSig = prev_master_bar->myTimeSig;
 
-        // TODO - import directions.
-
         // Initial tempo. Later tempo changes are stored on the beats.
         if (gp7_doc.myMasterBars.empty())
         {
@@ -353,8 +420,10 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
 
             Gp7::Bar bar;
 
-            for (const std::vector<Gp::Beat> &voice : staff.myVoices)
+            for (size_t voice_idx = 0; voice_idx < staff.myVoices.size();
+                 ++voice_idx)
             {
+                const std::vector<Gp::Beat> &voice = staff.myVoices[voice_idx];
                 Gp7::Voice gp7_voice;
 
                 for (const Gp::Beat &beat : voice)
@@ -367,7 +436,8 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
                         gp7_doc.addBeat(gp7_voice, std::move(*grace_beat));
 
                     Gp7::Beat gp7_beat;
-                    convertBeat(beat, track, gp7_doc, gp7_beat);
+                    convertBeat(beat, track, gp7_doc, gp7_voice, voice_idx,
+                                gp7_beat);
                     gp7_doc.addBeat(gp7_voice, std::move(gp7_beat));
 
                     // Add tempo changes to the measure.

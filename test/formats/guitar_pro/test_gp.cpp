@@ -230,6 +230,7 @@ TEST_CASE("Formats/GuitarPro/Notes")
     REQUIRE(positions.size() == 16);
 
     REQUIRE(positions[1].getNotes()[0].hasProperty(Note::Tied));
+    REQUIRE(positions[1].getNotes()[0].getFretNumber() == 5);
     REQUIRE(positions[2].getNotes()[0].hasProperty(Note::Muted));
     REQUIRE(positions[3].getNotes()[0].hasProperty(Note::HammerOnOrPullOff));
     REQUIRE(positions[5].getNotes()[0].hasProperty(Note::NaturalHarmonic));

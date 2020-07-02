@@ -21,6 +21,7 @@ Thanks to the following contributors who worked on this release:
   - Musical directions are now imported.
   - The initial tempo marker's name and visibility is now imported.
   - Wide vibrato, left hand fingerings, and the song's subtitle are now imported.
+  - Fixed issues where imported tied notes could incorrectly have a fret number of 0 instead of the previous note's fret.
 
 ### Changed
 - The `Position -> Shift Forward` and `Position -> Shift Backward` menu items have been renamed to `Insert Space` and `Remove Space`, to hopefully reduce confusion with the new string shifting commands (#20).
