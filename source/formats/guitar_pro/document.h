@@ -224,6 +224,31 @@ struct Track
     int myCapo = 0;
 };
 
+/// Index of the bar that each direction occurs at.
+struct DirectionMap
+{
+    int myCoda = -1;
+    int myDoubleCoda = -1;
+    int mySegno = -1;
+    int mySegnoSegno = -1;
+    int myFine = -1;
+
+    int myDaCapo = -1;
+    int myDaCapoAlCoda = -1;
+    int myDaCapoAlDoubleCoda = -1;
+    int myDaCapoAlFine = -1;
+    int myDaSegno = -1;
+    int myDaSegnoAlCoda = -1;
+    int myDaSegnoAlDoubleCoda = -1;
+    int myDaSegnoAlFine = -1;
+    int myDaSegnoSegno = -1;
+    int myDaSegnoSegnoAlCoda = -1;
+    int myDaSegnoSegnoAlDoubleCoda = -1;
+    int myDaSegnoSegnoAlFine = -1;
+    int myDaCoda = -1;
+    int myDaDoubleCoda = -1;
+};
+
 struct Document
 {
     void load(InputStream &stream);
@@ -235,6 +260,7 @@ struct Document
     int myInitialKey = 0;
     bool myOctave8va = false;
     std::vector<Channel> myChannels;
+    DirectionMap myDirections;
     std::vector<Measure> myMeasures;
     std::vector<Track> myTracks;
 };

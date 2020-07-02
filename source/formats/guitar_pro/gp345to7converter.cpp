@@ -397,6 +397,44 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
     }
 }
 
+static void
+convertDirections(const Gp::DirectionMap &dirs, Gp7::Document &gp7_doc)
+{
+    using Target = Gp7::MasterBar::DirectionTarget;
+    auto convertTarget = [&](int index, Target target) {
+        if (index >= 0)
+            gp7_doc.myMasterBars[index].myDirectionTargets.push_back(target);
+    };
+
+    convertTarget(dirs.myCoda, Target::Coda);
+    convertTarget(dirs.myDoubleCoda, Target::DoubleCoda);
+    convertTarget(dirs.mySegno, Target::Segno);
+    convertTarget(dirs.mySegnoSegno, Target::SegnoSegno);
+    convertTarget(dirs.myFine, Target::Fine);
+
+    using Jump = Gp7::MasterBar::DirectionJump;
+    auto convertJump = [&](int index, Jump jump) {
+        if (index >= 0)
+            gp7_doc.myMasterBars[index].myDirectionJumps.push_back(jump);
+    };
+
+    convertJump(dirs.myDaCapo, Jump::DaCapo);
+    convertJump(dirs.myDaCapoAlCoda, Jump::DaCapoAlCoda);
+    convertJump(dirs.myDaCapoAlDoubleCoda, Jump::DaCapoAlDoubleCoda);
+    convertJump(dirs.myDaCapoAlFine, Jump::DaCapoAlFine);
+    convertJump(dirs.myDaSegno, Jump::DaSegno);
+    convertJump(dirs.myDaSegnoAlCoda, Jump::DaSegnoAlCoda);
+    convertJump(dirs.myDaSegnoAlDoubleCoda, Jump::DaSegnoAlDoubleCoda);
+    convertJump(dirs.myDaSegnoAlFine, Jump::DaSegnoAlFine);
+    convertJump(dirs.myDaSegnoSegno, Jump::DaSegnoSegno);
+    convertJump(dirs.myDaSegnoSegnoAlCoda, Jump::DaSegnoSegnoAlCoda);
+    convertJump(dirs.myDaSegnoSegnoAlDoubleCoda,
+                Jump::DaSegnoSegnoAlDoubleCoda);
+    convertJump(dirs.myDaSegnoSegnoAlFine, Jump::DaSegnoSegnoAlFine);
+    convertJump(dirs.myDaCoda, Jump::DaCoda);
+    convertJump(dirs.myDaDoubleCoda, Jump::DaDoubleCoda);
+}
+
 Gp7::Document
 Gp::convertToGp7(const Gp::Document &doc)
 {
@@ -404,5 +442,6 @@ Gp::convertToGp7(const Gp::Document &doc)
     gp7_doc.myScoreInfo = convertScoreInfo(doc);
     gp7_doc.myTracks = convertTracks(doc);
     convertMasterBars(doc, gp7_doc);
+    convertDirections(doc.myDirections, gp7_doc);
     return gp7_doc;
 }

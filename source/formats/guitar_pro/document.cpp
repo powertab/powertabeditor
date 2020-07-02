@@ -1104,8 +1104,32 @@ void Document::load(InputStream &stream)
 
     if (stream.version() > Version4)
     {
-        // TODO - import musical directions.
-        stream.skip(38);
+        // The direction indices aren't zero-based.
+        auto readDirectionIndex = [&stream]() {
+            return stream.read<int16_t>() - 1;
+        };
+
+        myDirections.myCoda = readDirectionIndex();
+        myDirections.myDoubleCoda = readDirectionIndex();
+        myDirections.mySegno = readDirectionIndex();
+        myDirections.mySegnoSegno = readDirectionIndex();
+        myDirections.myFine = readDirectionIndex();
+
+        myDirections.myDaCapo = readDirectionIndex();
+        myDirections.myDaCapoAlCoda = readDirectionIndex();
+        myDirections.myDaCapoAlDoubleCoda = readDirectionIndex();
+        myDirections.myDaCapoAlFine = readDirectionIndex();
+        myDirections.myDaSegno = readDirectionIndex();
+        myDirections.myDaSegnoAlCoda = readDirectionIndex();
+        myDirections.myDaSegnoAlDoubleCoda = readDirectionIndex();
+        myDirections.myDaSegnoAlFine = readDirectionIndex();
+        myDirections.myDaSegnoSegno = readDirectionIndex();
+        myDirections.myDaSegnoSegnoAlCoda = readDirectionIndex();
+        myDirections.myDaSegnoSegnoAlDoubleCoda = readDirectionIndex();
+        myDirections.myDaSegnoSegnoAlFine = readDirectionIndex();
+        myDirections.myDaCoda = readDirectionIndex();
+        myDirections.myDaDoubleCoda = readDirectionIndex();
+
         // Master reverb.
         stream.skip(4);
     }

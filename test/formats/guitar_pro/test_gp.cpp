@@ -370,3 +370,65 @@ TEST_CASE("Formats/GuitarPro/Harmonics")
                 9);
     }
 }
+
+TEST_CASE("Formats/GuitarPro/Directions")
+{
+    Score score;
+    GuitarProImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/directions.gp5"), score);
+
+    {
+        const System &system = score.getSystems()[0];
+        REQUIRE(system.getDirections().size() == 5);
+
+        {
+            const Direction &dir = system.getDirections()[0];
+            REQUIRE(dir.getSymbols().size() == 1);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::SegnoSegno);
+        }
+        {
+            const Direction &dir = system.getDirections()[1];
+            REQUIRE(dir.getSymbols().size() == 2);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::DaCapo);
+            REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                    DirectionSymbol::DalSegnoAlCoda);
+        }
+        {
+            const Direction &dir = system.getDirections()[2];
+            REQUIRE(dir.getSymbols().size() == 1);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::Segno);
+        }
+        {
+            const Direction &dir = system.getDirections()[3];
+            REQUIRE(dir.getSymbols().size() == 3);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::DalSegno);
+            REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                    DirectionSymbol::DalSegnoSegnoAlFine);
+            REQUIRE(dir.getSymbols()[2].getSymbolType() ==
+                    DirectionSymbol::ToCoda);
+        }
+        {
+            const Direction &dir = system.getDirections()[4];
+            REQUIRE(dir.getSymbols().size() == 2);
+            REQUIRE(dir.getSymbols()[0].getSymbolType() ==
+                    DirectionSymbol::Fine);
+            REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                    DirectionSymbol::ToDoubleCoda);
+        }
+    }
+
+    {
+        const System &system = score.getSystems()[1];
+        REQUIRE(system.getDirections().size() == 1);
+
+        const Direction &dir = system.getDirections()[0];
+        REQUIRE(dir.getSymbols().size() == 2);
+        REQUIRE(dir.getSymbols()[0].getSymbolType() == DirectionSymbol::Coda);
+        REQUIRE(dir.getSymbols()[1].getSymbolType() ==
+                DirectionSymbol::DoubleCoda);
+    }
+}
