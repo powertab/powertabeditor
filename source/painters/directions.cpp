@@ -49,27 +49,28 @@ double SystemRenderer::drawDirections(const System &system,
             double y =
                 height + localHeight + 0.5 * LayoutInfo::SYSTEM_SYMBOL_SPACING;
             QGraphicsItem *item = nullptr;
+            const QPen pen = myPalette.text().color();
             switch (symbol.getSymbolType())
             {
                 case DirectionSymbol::Coda:
                     item = new SimpleTextItem(QChar(MusicFont::Coda),
                                               myMusicNotationFont,
-                                              TextAlignment::Baseline);
+                                              TextAlignment::Baseline, pen);
                     break;
                 case DirectionSymbol::DoubleCoda:
                     item = new SimpleTextItem(QString(2, MusicFont::Coda),
                                               myMusicNotationFont,
-                                              TextAlignment::Baseline);
+                                              TextAlignment::Baseline, pen);
                     break;
                 case DirectionSymbol::Segno:
                     item = new SimpleTextItem(QChar(MusicFont::Segno),
                                               myMusicNotationFont,
-                                              TextAlignment::Baseline);
+                                              TextAlignment::Baseline, pen);
                     break;
                 case DirectionSymbol::SegnoSegno:
                     item = new SimpleTextItem(QString(2, MusicFont::Segno),
                                               myMusicNotationFont,
-                                              TextAlignment::Baseline);
+                                              TextAlignment::Baseline, pen);
                     break;
                 default:
                     // Display plain text.
@@ -77,7 +78,7 @@ double SystemRenderer::drawDirections(const System &system,
                     font.setItalic(true);
                     item = new SimpleTextItem(
                         theDirectionText[symbol.getSymbolType()], font,
-                        TextAlignment::Top);
+                        TextAlignment::Top, pen);
 
                     // Vertically center the text.
                     y -= 0.5 * item->boundingRect().height();
