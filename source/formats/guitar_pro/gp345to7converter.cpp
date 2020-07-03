@@ -186,6 +186,57 @@ findTiedNoteOrigin(Gp7::Document &doc, const Gp7::Voice &current_voice,
 }
 
 static void
+convertBend(Gp7::Note &gp7_note, const Gp::Note &note)
+{
+    using Point = Gp::Bend::Point;
+
+    Gp7::Note::Bend gp7_bend;
+    const Gp::Bend &bend = *note.myBend;
+    const std::vector<Point> &points = bend.myPoints;
+    assert(points.size() >= 2);
+
+    // Default output: just use the first and last points as the origin / dest.
+    gp7_bend.myOriginValue = points.front().myValue;
+    gp7_bend.myOriginOffset = points.front().myOffset;
+    gp7_bend.myDestValue = points.back().myValue;
+    gp7_bend.myDestOffset = points.back().myOffset;
+
+    // Try to find a middle region.
+    const int start_value = points.front().myValue;
+    const int end_value = points.back().myValue;
+    auto middle_1 =
+        std::find_if(points.begin(), points.end(), [&](const Point &point) {
+            return point.myValue != start_value;
+        });
+
+    if (middle_1 != points.end())
+    {
+        const int middle_value = middle_1->myValue;
+        auto dest =
+            std::find_if(middle_1, points.end(), [&](const Point &point) {
+                return point.myValue != middle_value;
+            });
+
+        if (dest != points.end())
+        {
+            auto middle_2 = std::prev(dest);
+
+            gp7_bend.myMiddleOffset1 = middle_1->myOffset;
+            gp7_bend.myMiddleOffset2 = middle_2->myOffset;
+            gp7_bend.myMiddleValue = middle_value;
+
+            auto origin = std::prev(middle_1);
+            assert(origin->myValue == start_value);
+            gp7_bend.myOriginOffset = origin->myOffset;
+            assert(dest->myValue == end_value);
+            gp7_bend.myDestOffset = dest->myOffset;
+        }
+    }
+
+    gp7_note.myBend = gp7_bend;
+}
+
+static void
 convertBeat(const Gp::Beat &beat, const Gp::Track &track,
             Gp7::Document &gp7_doc, const Gp7::Voice &gp7_current_voice,
             const int voice_idx, Gp7::Beat &gp7_beat)
@@ -331,8 +382,8 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
             }
         }
 
-        // TODO - implement bends.  We might also need to set up myTieOrigin
-        // for this to import held bends properly.
+        if (note.myBend)
+            convertBend(gp7_note, note);
 
         if (note.myIsTremoloPicked)
             gp7_beat.myTremoloPicking = true;

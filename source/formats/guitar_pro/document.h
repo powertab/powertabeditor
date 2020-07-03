@@ -98,6 +98,21 @@ struct GraceNote
     int myDuration;
 };
 
+struct Bend
+{
+    struct Point
+    {
+        // Percentage of the note's duration where the point is placed.
+        double myOffset = 0;
+        // Percentage of a full step.
+        int myValue = 0;
+    };
+
+    int myBendType = 0;
+    int myBendValue = 0;
+    std::vector<Point> myPoints;
+};
+
 struct Note
 {
     Note(int string);
@@ -115,6 +130,7 @@ struct Note
     std::optional<int> myDynamic;
     std::optional<int> myTrilledFret;
     std::optional<GraceNote> myGraceNote;
+    std::optional<Bend> myBend;
     bool myIsLetRing;
     bool myIsHammerOnOrPullOff;
     bool myHasPalmMute;
@@ -136,7 +152,7 @@ struct Note
 private:
     void loadNoteEffects(InputStream &stream, const Track &track);
     void loadNoteEffectsGp3(InputStream &stream);
-    void loadBend(InputStream &stream);
+    Bend loadBend(InputStream &stream);
     void loadSlide(InputStream &stream);
     void loadHarmonic(InputStream &stream, const Track &track);
 };

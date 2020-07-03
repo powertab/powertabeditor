@@ -433,3 +433,72 @@ TEST_CASE("Formats/GuitarPro/Directions")
                 DirectionSymbol::DoubleCoda);
     }
 }
+
+TEST_CASE("Formats/GuitarPro/Bends")
+{
+    Score score;
+    GuitarProImporter importer;
+    importer.load(AppInfo::getAbsolutePath("data/bends.gp5"), score);
+
+    const Voice &voice = score.getSystems()[0].getStaves()[0].getVoices()[0];
+    {
+        const Note &note = voice.getPositions()[0].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::NormalBend);
+        REQUIRE(note.getBend().getBentPitch() == 2);
+    }
+    {
+        const Note &note = voice.getPositions()[1].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::NormalBend);
+        REQUIRE(note.getBend().getBentPitch() == 2);
+    }
+    {
+        const Note &note = voice.getPositions()[2].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::BendAndHold);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+    }
+    {
+        const Note &note = voice.getPositions()[3].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::GradualRelease);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+        REQUIRE(note.getBend().getReleasePitch() == 2);
+    }
+    {
+        const Note &note = voice.getPositions()[4].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBendAndHold);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+        REQUIRE(note.getBend().getReleasePitch() == 6);
+    }
+    {
+        const Note &note = voice.getPositions()[5].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBendAndHold);
+        REQUIRE(note.getBend().getBentPitch() == 6);
+        REQUIRE(note.getBend().getReleasePitch() == 6);
+    }
+    {
+        const Note &note = voice.getPositions()[6].getNotes()[0];
+        REQUIRE(note.hasBend());
+        // This one doesn't translate perfectly from how GP's bends work.
+        REQUIRE(note.getBend().getType() == Bend::BendAndRelease);
+        REQUIRE(note.getBend().getBentPitch() == 10);
+        REQUIRE(note.getBend().getReleasePitch() == 0);
+    }
+    {
+        const Note &note = voice.getPositions()[7].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBendAndRelease);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+        REQUIRE(note.getBend().getReleasePitch() == 0);
+    }
+    {
+        const Note &note = voice.getPositions()[8].getNotes()[0];
+        REQUIRE(note.hasBend());
+        REQUIRE(note.getBend().getType() == Bend::PreBend);
+        REQUIRE(note.getBend().getBentPitch() == 4);
+    }
+}
