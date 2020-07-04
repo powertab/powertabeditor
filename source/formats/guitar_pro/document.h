@@ -203,6 +203,18 @@ struct Staff
 
 struct Measure
 {
+    struct TimeSignatureChange
+    {
+        int myNumerator = 4;
+        int myDenominator = 4;
+    };
+
+    struct KeySignatureChange
+    {
+        int myAccidentals = 0;
+        bool myIsMinor = false;
+    };
+
     Measure();
     void load(InputStream &stream);
     void loadStaves(InputStream &stream, const std::vector<Track> &tracks);
@@ -210,12 +222,12 @@ struct Measure
     bool myIsDoubleBar;
     bool myIsRepeatBegin;
     /// The numerator and denominator if there is a time signature change,
-    std::optional<std::pair<int, int>> myTimeSignatureChange;
+    std::optional<TimeSignatureChange> myTimeSignatureChange;
     /// If there is a repeat end, this contains the repeat count.
     std::optional<int> myRepeatEnd;
     /// If there is a key change, this contains the key and whether it is
     /// minor.
-    std::optional<std::pair<int8_t, bool>> myKeyChange;
+    std::optional<KeySignatureChange> myKeyChange;
     /// Optional rehearsal sign.
     std::optional<std::string> myMarker;
     /// Optional alternate ending number.

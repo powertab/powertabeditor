@@ -947,12 +947,12 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::Numerator) ||
         flags.test(MeasureHeader::Denominator))
     {
-        auto time = std::make_pair(4, 4);
+        TimeSignatureChange time;
         if (flags.test(MeasureHeader::Numerator))
-            time.first = stream.read<int8_t>();
+            time.myNumerator = stream.read<int8_t>();
 
         if (flags.test(MeasureHeader::Denominator))
-            time.second = stream.read<int8_t>();
+            time.myDenominator = stream.read<int8_t>();
 
         myTimeSignatureChange = time;
     }
@@ -970,9 +970,10 @@ void Measure::load(InputStream &stream)
 
     if (flags.test(MeasureHeader::KeySignatureChange))
     {
-        const int accidentals = stream.read<int8_t>();
-        const bool isMinor = stream.readBool();
-        myKeyChange = std::make_pair(accidentals, isMinor);
+        KeySignatureChange key;
+        key.myAccidentals = stream.read<int8_t>();
+        key.myIsMinor = stream.readBool();
+        myKeyChange = key;
     }
 
     if (stream.version() > Version4)

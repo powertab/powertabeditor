@@ -416,10 +416,10 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
 
         if (measure.myKeyChange)
         {
-            int accidentals = measure.myKeyChange->first;
+            const int accidentals = measure.myKeyChange->myAccidentals;
             master_bar.myKeySig.myAccidentalCount = std::abs(accidentals);
             master_bar.myKeySig.mySharps = accidentals >= 0;
-            master_bar.myKeySig.myMinor = measure.myKeyChange->second;
+            master_bar.myKeySig.myMinor = measure.myKeyChange->myIsMinor;
         }
         else if (prev_master_bar)
             master_bar.myKeySig = prev_master_bar->myKeySig;
@@ -431,9 +431,10 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
 
         if (measure.myTimeSignatureChange)
         {
-            master_bar.myTimeSig.myBeats = measure.myTimeSignatureChange->first;
+            master_bar.myTimeSig.myBeats =
+                measure.myTimeSignatureChange->myNumerator;
             master_bar.myTimeSig.myBeatValue =
-                measure.myTimeSignatureChange->second;
+                measure.myTimeSignatureChange->myDenominator;
         }
         else if (prev_master_bar)
             master_bar.myTimeSig = prev_master_bar->myTimeSig;
