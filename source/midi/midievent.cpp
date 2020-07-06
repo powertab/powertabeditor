@@ -63,6 +63,11 @@ bool MidiEvent::isTempoChange() const
            myData[1] == MetaType::SetTempo;
 }
 
+bool MidiEvent::isVolumeChange() const
+{
+    return myData[1] == Controller::ChannelVolume;
+}
+
 bool MidiEvent::isTrackEnd() const
 {
     return getStatusByte() == StatusByte::MetaMessage &&

@@ -58,6 +58,7 @@ public:
     const SystemLocation &getLocation() const { return myLocation; }
 
     bool isTempoChange() const;
+    bool isVolumeChange() const;
     bool isTrackEnd() const;
     Midi::Tempo getTempo() const;
     bool isProgramChange() const;
