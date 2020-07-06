@@ -1370,23 +1370,22 @@ void PowerTabEditor::editRepeatEnding()
 void PowerTabEditor::updateDynamic(Dynamic::VolumeLevel volume)
 {
     ScoreLocation &location = getLocation();
-    const Dynamic *dynamic = ScoreUtils::findByPosition(
+    const Dynamic *currentDynamic = ScoreUtils::findByPosition(
                 location.getStaff().getDynamics(), location.getPositionIndex());
+    Dynamic newDynamic(location.getPositionIndex(), volume);
 
-    if (dynamic)
+    if (currentDynamic)
     {
-        myUndoManager->push(new EditDynamic(location, volume, dynamic),
-                            location.getSystemIndex());
-    }
-    else
-    {
-        if (volume == dynamic->getVolume())
+        if (newDynamic.getVolume() == currentDynamic->getVolume())
             myUndoManager->push(new RemoveDynamic(location),
                                 location.getSystemIndex());
         else
-            myUndoManager->push(new AddDynamic(location, dynamic),
+            myUndoManager->push(new EditDynamic(location, *currentDynamic, newDynamic),
                                 location.getSystemIndex());
     }
+    else
+        myUndoManager->push(new AddDynamic(location, newDynamic),
+                            location.getSystemIndex());
 }
 
 void PowerTabEditor::editDynamic()

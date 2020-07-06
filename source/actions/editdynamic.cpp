@@ -20,23 +20,23 @@
 #include <score/staff.h>
 
 EditDynamic::EditDynamic(const ScoreLocation &location,
-                         Dynamic::VolumeLevel volume,
-                         const Dynamic &dynamic)
+                         const Dynamic &originalDynamic,
+                         const Dynamic &newDynamic)
     : QUndoCommand(QObject::tr("Edit Dynamic")),
       myLocation(location),
-      myDynamic(dynamic.getPosition(), volume),
-      myOriginalDynamic(dynamic)
+      myOriginalDynamic(originalDynamic),
+      myNewDynamic(newDynamic)
 {
 }
 
 void EditDynamic::redo()
 {
     myLocation.getStaff().removeDynamic(myOriginalDynamic);
-    myLocation.getStaff().insertDynamic(myDynamic);
+    myLocation.getStaff().insertDynamic(myNewDynamic);
 }
 
 void EditDynamic::undo()
 {
-    myLocation.getStaff().removeDynamic(myDynamic);
+    myLocation.getStaff().removeDynamic(myNewDynamic);
     myLocation.getStaff().insertDynamic(myOriginalDynamic);
 }

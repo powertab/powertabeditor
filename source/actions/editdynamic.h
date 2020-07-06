@@ -26,16 +26,16 @@ class EditDynamic : public QUndoCommand
 {
 public:
     EditDynamic(const ScoreLocation &location,
-                Dynamic::VolumeLevel volume,
-                const Dynamic &dynamic);
+                const Dynamic &originalDynamic,
+                const Dynamic &newDynamic);
 
     virtual void redo() override;
     virtual void undo() override;
 
 private:
     ScoreLocation myLocation;
-    const Dynamic myDynamic;
     const Dynamic myOriginalDynamic;
+    const Dynamic myNewDynamic;
 };
 
 #endif
