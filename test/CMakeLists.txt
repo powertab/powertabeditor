@@ -136,6 +136,7 @@ set( data_files
 
     formats/guitar_pro/data/alt_endings.gp5
     formats/guitar_pro/data/barlines.gp5
+    formats/guitar_pro/data/bends.gp5
     formats/guitar_pro/data/directions.gp5
     formats/guitar_pro/data/gracenote.gp5
     formats/guitar_pro/data/harmonics.gp5

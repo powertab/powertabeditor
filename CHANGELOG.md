@@ -18,6 +18,7 @@ Thanks to the following contributors who worked on this release:
 - Several improvements to the Guitar Pro 3/4/5 importer:
   - It now shares most of its code for converting to the Power Tab format with the GP6/7 importers, fixing a variety of layout / conversion issues.
   - Artificial and tapped harmonics are now imported.
+  - Bends are now imported (#30).
   - Musical directions are now imported.
   - The initial tempo marker's name and visibility is now imported.
   - Wide vibrato, left hand fingerings, and the song's subtitle are now imported.

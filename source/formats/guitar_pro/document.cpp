@@ -390,7 +390,7 @@ void Note::loadNoteEffects(InputStream &stream, const Track &track)
     const Flags header2 = stream.read<uint8_t>();
 
     if (header1.test(NoteEffects::HasBend))
-        loadBend(stream);
+        myBend = loadBend(stream);
 
     if (header1.test(NoteEffects::HasGraceNote))
     {
@@ -443,33 +443,37 @@ void Note::loadNoteEffectsGp3(InputStream &stream)
         myIsSlideOutDown = true;
 
     if (flags.test(NoteEffects::HasBend))
-        loadBend(stream);
+        myBend = loadBend(stream);
 
     if (flags.test(NoteEffects::HasGraceNote))
     {
-        // TODO - implement.
-        stream.skip(1); // fret number grace note is made from
-        stream.skip(1); // grace note dynamic
-        stream.skip(1); // transition type
-        stream.skip(1); // duration
+        GraceNote note;
+        note.load(stream);
+        myGraceNote = note;
     }
 }
 
-void Note::loadBend(InputStream &stream)
+Bend
+Note::loadBend(InputStream &stream)
 {
-    // TODO - perform conversion for bends
+    Bend bend;
+    bend.myBendType = stream.read<int8_t>();
+    bend.myBendValue = stream.read<int32_t>();
 
-    stream.skip(1); // bend type
-    stream.skip(4); // bend height
-
-    const uint32_t numPoints = stream.read<uint32_t>(); // number of bend points
-
-    for (uint32_t i = 0; i < numPoints; i++)
+    const int num_points = stream.read<int32_t>();
+    for (int i = 0; i < num_points; ++i)
     {
-        stream.skip(4); // time relative to the previous point
-        stream.skip(4); // bend position
-        stream.skip(1); // bend vibrato
+        Bend::Point point;
+        // Convert from 0-60 to a percentage.
+        point.myOffset = (stream.read<int32_t>() * 100.0) / 60.0;
+        point.myValue = stream.read<int32_t>();
+        bend.myPoints.push_back(point);
+
+        // Bend vibrato - ignore.
+        stream.skip(1);
     }
+
+    return bend;
 }
 
 void Note::loadSlide(InputStream &stream)
@@ -943,12 +947,12 @@ void Measure::load(InputStream &stream)
     if (flags.test(MeasureHeader::Numerator) ||
         flags.test(MeasureHeader::Denominator))
     {
-        auto time = std::make_pair(4, 4);
+        TimeSignatureChange time;
         if (flags.test(MeasureHeader::Numerator))
-            time.first = stream.read<int8_t>();
+            time.myNumerator = stream.read<int8_t>();
 
         if (flags.test(MeasureHeader::Denominator))
-            time.second = stream.read<int8_t>();
+            time.myDenominator = stream.read<int8_t>();
 
         myTimeSignatureChange = time;
     }
@@ -966,9 +970,10 @@ void Measure::load(InputStream &stream)
 
     if (flags.test(MeasureHeader::KeySignatureChange))
     {
-        const int accidentals = stream.read<int8_t>();
-        const bool isMinor = stream.readBool();
-        myKeyChange = std::make_pair(accidentals, isMinor);
+        KeySignatureChange key;
+        key.myAccidentals = stream.read<int8_t>();
+        key.myIsMinor = stream.readBool();
+        myKeyChange = key;
     }
 
     if (stream.version() > Version4)

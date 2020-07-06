@@ -17,9 +17,6 @@
 
 namespace PowerTabDocument {
 
-using std::pair;
-using std::string;
-
 const char*     Tuning::DEFAULT_NAME                    = "";
 const uint8_t   Tuning::DEFAULT_DATA                    = 0;
 const int8_t    Tuning::MIN_MUSIC_NOTATION_OFFSET       = -12;
