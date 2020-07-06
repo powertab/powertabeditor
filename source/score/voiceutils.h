@@ -44,25 +44,29 @@ Position *getPreviousPosition(Voice &voice, int position);
 /// Finds the next note in the staff on the given string. Optionally, the next
 /// system can be checked.
 const Note *getNextNote(const Voice &voice, int position, int string,
-                        const Voice *nextVoice = nullptr);
+                        const Voice *next_voice);
 
 /// Finds the previous note in the staff on the given string.
 const Note *getPreviousNote(const Voice &voice, int position, int string,
-                            const Voice *prevVoice = nullptr);
+                            const Voice *prev_voice);
 
 /// Finds the previous note in the staff on the given string.
-Note *getPreviousNote(Voice &voice, int position, int string);
+Note *getPreviousNote(Voice &voice, int position, int string,
+                      Voice *prev_voice);
 
 /// Determines whether the specified note can be tied to the previous note.
 /// The previous position must have a note at the same string and fret.
-bool canTieNote(const Voice &voice, int position, const Note &note);
+bool canTieNote(const Voice &voice, int position, const Note &note,
+                const Voice *prev_voice);
 
 /// Determines whether the specified note can have a hammeron or pulloff.
 /// The next position must have a note at the same string and a different fret.
-bool canHammerOnOrPullOff(const Voice &voice, int position, const Note &note);
+bool canHammerOnOrPullOff(const Voice &voice, int position, const Note &note,
+                          const Voice *next_voice);
 
 /// Determines whether the position contains a note with a hammeron.
-bool hasNoteWithHammerOn(const Voice &voice, const Position &pos);
+bool hasNoteWithHammerOn(const Voice &voice, const Position &pos,
+                         const Voice *next_voice);
 
 /// Finds all irregular groups that overlap with the given range of positions.
 std::vector<const IrregularGrouping *> getIrregularGroupsInRange(

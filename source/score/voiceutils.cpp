@@ -74,51 +74,64 @@ getPreviousPosition(Voice &voice, int position)
 }
 
 const Note *getNextNote(const Voice &voice, int position, int string,
-                        const Voice *nextVoice)
+                        const Voice *next_voice)
 {
     const Position *nextPos = getNextPosition(voice, position);
-    if (!nextPos && nextVoice)
-        nextPos = getNextPosition(*nextVoice, -1);
+    if (!nextPos && next_voice)
+        nextPos = getNextPosition(*next_voice, -1);
     return nextPos ? Utils::findByString(*nextPos, string) : nullptr;
 }
 
-const Note *getPreviousNote(const Voice &voice, int position, int string,
-                            const Voice *prevVoice)
+const Note *
+getPreviousNote(const Voice &voice, int position, int string,
+                const Voice *prev_voice)
 {
-    const Position *prevPos = getPreviousPosition(voice, position);
-    if (!prevPos && prevVoice)
-        prevPos = getPreviousPosition(*prevVoice, std::numeric_limits<int>::max());
-    return prevPos ? Utils::findByString(*prevPos, string) : nullptr;
+    const Position *prev_pos = getPreviousPosition(voice, position);
+    if (!prev_pos && prev_voice)
+    {
+        prev_pos =
+            getPreviousPosition(*prev_voice, std::numeric_limits<int>::max());
+    }
+    return prev_pos ? Utils::findByString(*prev_pos, string) : nullptr;
 }
 
 Note *
-getPreviousNote(Voice &voice, int position, int string)
+getPreviousNote(Voice &voice, int position, int string, Voice *prev_voice)
 {
-    return const_cast<Note *>(
-        getPreviousNote(const_cast<const Voice &>(voice), position, string));
+    return const_cast<Note *>(getPreviousNote(const_cast<const Voice &>(voice),
+                                              position, string, prev_voice));
 }
 
-bool canTieNote(const Voice &voice, int position, const Note &note)
+bool
+canTieNote(const Voice &voice, int position, const Note &note,
+           const Voice *prev_voice)
 {
-    const Note *prevNote = getPreviousNote(voice, position, note.getString());
+    const Note *prevNote =
+        getPreviousNote(voice, position, note.getString(), prev_voice);
     return prevNote && prevNote->getFretNumber() == note.getFretNumber();
 }
 
-bool canHammerOnOrPullOff(const Voice &voice, int position, const Note &note)
+bool
+canHammerOnOrPullOff(const Voice &voice, int position, const Note &note,
+                     const Voice *next_voice)
 {
-    const Note *nextNote = getNextNote(voice, position, note.getString());
-    return nextNote && nextNote->getFretNumber() != note.getFretNumber();
+    const Note *next_note =
+        getNextNote(voice, position, note.getString(), next_voice);
+    return next_note && next_note->getFretNumber() != note.getFretNumber();
 }
 
-bool hasNoteWithHammerOn(const Voice &voice, const Position &pos)
+bool
+hasNoteWithHammerOn(const Voice &voice, const Position &pos,
+                    const Voice *next_voice)
 {
     for (const Note &note : pos.getNotes())
     {
         if (note.hasProperty(Note::HammerOnOrPullOff))
         {
-            const Note *nextNote =
-                getNextNote(voice, pos.getPosition(), note.getString());
-            return nextNote && nextNote->getFretNumber() > note.getFretNumber();
+            const Note *next_note = getNextNote(voice, pos.getPosition(),
+                                                note.getString(), next_voice);
+            return next_note &&
+                   next_note->getFretNumber() > note.getFretNumber();
         }
     }
 

@@ -104,8 +104,8 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         }
 
         const bool isFirstStaff = (height == 0);
-        LayoutConstPtr layout = std::make_shared<LayoutInfo>(
-            myScore, system, systemIndex, staff, i, myPalette.text().color());
+        const ScoreLocation location(myScore, systemIndex, i);
+        LayoutConstPtr layout = std::make_shared<LayoutInfo>(location);
 
         if (isFirstStaff)
         {
@@ -150,7 +150,6 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
                                   ? layout->getStdNotationLine(4)
                                   : layout->getStdNotationLine(2);
         auto pubsub = myScoreArea->getClickPubSub();
-        const ScoreLocation location(myScore, systemIndex, i);
         auto clef = new SimpleTextItem(staff.getClefType() == Staff::TrebleClef
                                            ? QChar(MusicFont::TrebleClef)
                                            : QChar(MusicFont::BassClef),
@@ -169,7 +168,7 @@ QGraphicsItem *SystemRenderer::operator()(const System &system,
         drawBarlines(system, systemIndex, layout, location.getStaffIndex());
         drawTabNotes(staff, layout);
         drawLegato(staff, *layout);
-        drawSlides(staff, *layout);
+        drawSlides(staff, *layout, location);
 
         drawSymbolsAboveStdNotationStaff(*layout);
         drawSymbolsBelowStdNotationStaff(*layout);
@@ -899,10 +898,15 @@ void SystemRenderer::drawPlayerChanges(const System &system, int staffIndex,
     }
 }
 
-void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
+void
+SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout,
+                           ScoreLocation location)
 {
+    location.setVoiceIndex(0);
     for (const Voice &voice : staff.getVoices())
     {
+        const Voice *next_voice = VoiceUtils::getAdjacentVoice(location, 1);
+
         for (int string = 0; string < staff.getStringCount(); ++string)
         {
             for (const Position &pos : voice.getPositions())
@@ -924,7 +928,7 @@ void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
                         note->hasProperty(Note::LegatoSlide))
                     {
                         const Note *nextNote = VoiceUtils::getNextNote(
-                            voice, pos.getPosition(), string);
+                            voice, pos.getPosition(), string, next_voice);
                         slideUp = nextNote && nextNote->getFretNumber() >
                                 note->getFretNumber();
                     }
@@ -948,6 +952,8 @@ void SystemRenderer::drawSlides(const Staff &staff, const LayoutInfo &layout)
                 }
             }
         }
+
+        location.setVoiceIndex(location.getVoiceIndex() + 1);
     }
 }
 
@@ -1584,7 +1590,10 @@ void SystemRenderer::drawStdNotation(const System &system, const Staff &staff,
         const std::vector<NoteStem> &stems = layout.getNoteStems(v);
 
         for (const BeamGroup &group : beamGroups)
-            group.drawStems(myParentStaff, stems, myMusicNotationFont, layout);
+        {
+            group.drawStems(myParentStaff, stems, myMusicNotationFont,
+                            myPalette.text().color(), layout);
+        }
 
         const Voice &voice = staff.getVoices()[v];
         drawIrregularGroups(voice, stems);

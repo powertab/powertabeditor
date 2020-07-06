@@ -66,7 +66,7 @@ void ScoreArea::renderDocument(const Document &document)
     auto start = std::chrono::high_resolution_clock::now();
 
     myCaretPainter =
-        new CaretPainter(document.getCaret(), document.getViewOptions(), activePalette->text().color());
+        new CaretPainter(document.getCaret(), document.getViewOptions());
     myCaretPainter->subscribeToMovement([=]() {
         adjustScroll();
     });

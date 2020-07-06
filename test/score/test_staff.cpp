@@ -123,10 +123,10 @@ TEST_CASE("Score/Staff/GetNextNote")
     voice.insertPosition(pos7);
     voice.insertPosition(pos8);
 
-    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 5));
-    REQUIRE(VoiceUtils::getNextNote(voice, 6, 4));
-    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 3));
+    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 5, nullptr));
+    REQUIRE(VoiceUtils::getNextNote(voice, 6, 4, nullptr));
+    REQUIRE(!VoiceUtils::getNextNote(voice, 6, 3, nullptr));
 
-    REQUIRE(!VoiceUtils::getPreviousNote(voice, 6, 2));
-    REQUIRE(VoiceUtils::getPreviousNote(voice, 6, 3));
+    REQUIRE(!VoiceUtils::getPreviousNote(voice, 6, 2, nullptr));
+    REQUIRE(VoiceUtils::getPreviousNote(voice, 6, 3, nullptr));
 }

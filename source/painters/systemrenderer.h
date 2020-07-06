@@ -187,7 +187,8 @@ private:
                          const std::map<int, double> &noteHeadWidths);
 
     /// Draws all slides in a staff.
-    void drawSlides(const Staff &staff, const LayoutInfo &layout);
+    void drawSlides(const Staff &staff, const LayoutInfo &layout,
+                    ScoreLocation location);
 
     /// Draws a single slide between the given positions.
     void drawSlide(const LayoutInfo &layout, int string, bool slideUp,

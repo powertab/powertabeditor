@@ -23,6 +23,7 @@
 #include <painters/beamgroup.h>
 #include <painters/stdnotationnote.h>
 #include <score/staff.h>
+#include <score/scorelocation.h>
 #include <vector>
 
 class Barline;
@@ -96,8 +97,7 @@ private:
 
 struct LayoutInfo
 {
-    LayoutInfo(const Score &score, const System& system, int systemIndex,
-               const Staff &staff, int staffIndex, const QColor &notesColor);
+    LayoutInfo(const ScoreLocation &location);
 
     int getStringCount() const;
 
@@ -210,8 +210,8 @@ private:
     /// Returns the largest height of any symbol group.
     static int getMaxHeight(const std::vector<SymbolGroup> &groups);
 
-    const System &mySystem;
-    const Staff &myStaff;
+    /// Stores the system / staff indices.
+    const ScoreLocation myLocation;
     int myLineSpacing;
     double myPositionSpacing;
     int myNumPositions;
@@ -229,8 +229,6 @@ private:
     // Build a separate list of stems and beam groups for each voice.
     std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> myBeamGroups;
     std::array<std::vector<NoteStem>, Staff::NUM_VOICES> myStems;
-
-    const QColor &myNotesColor;
 };
 
 typedef std::shared_ptr<LayoutInfo> LayoutPtr;

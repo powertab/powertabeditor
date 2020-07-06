@@ -74,8 +74,10 @@ ShiftItem::shift(bool shift_up, bool selection_start, bool selection_end)
     // from the previous note on the same string.
     if (selection_start)
     {
-        Note *prev_note = VoiceUtils::getPreviousNote(myVoice, getPosition(),
-                                                      note.getString());
+        // TODO - handle the case where the previous note is in the previous
+        // system.
+        Note *prev_note = VoiceUtils::getPreviousNote(
+            myVoice, getPosition(), note.getString(), nullptr);
         if (prev_note)
             clearNoteProperties(*prev_note);
     }

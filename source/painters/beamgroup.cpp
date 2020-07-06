@@ -38,15 +38,15 @@ static int getNumExtraBeams(const NoteStem &stem)
 }
 
 BeamGroup::BeamGroup(NoteStem::StemType direction,
-                     const std::vector<size_t> &stems,
-                     const QColor &color)
-    : myStemDirection(direction), myStems(stems), myBeamColor(color)
+                     const std::vector<size_t> &stems)
+    : myStemDirection(direction), myStems(stems)
 {
 }
 
 void
 BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
-                     const QFont &musicFont, const LayoutInfo &layout) const
+                     const QFont &musicFont, const QColor &color,
+                     const LayoutInfo &layout) const
 {
     QList<QGraphicsItem *> symbols;
     QPainterPath stemPath;
@@ -69,13 +69,13 @@ BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
         // Draw any symbols that use information about the stem, like staccato,
         // fermata, etc.
         if (stem.isStaccato())
-            symbols << createStaccato(stem, musicFont, myBeamColor);
+            symbols << createStaccato(stem, musicFont, color);
 
         if (stem.hasFermata())
-            symbols << createFermata(stem, musicFont, layout, myBeamColor );
+            symbols << createFermata(stem, musicFont, layout, color);
 
         if (stem.hasSforzando() || stem.hasMarcato())
-            symbols << createAccent(stem, musicFont, layout, myBeamColor);
+            symbols << createAccent(stem, musicFont, layout, color);
 
         for (QGraphicsItem *&symbol : symbols)
             symbol->setParentItem(parent);
@@ -84,7 +84,7 @@ BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
     }
 
     auto stemPathItem = new QGraphicsPathItem(stemPath);
-    stemPathItem->setPen(QPen(myBeamColor, 1.0, Qt::SolidLine));
+    stemPathItem->setPen(QPen(color, 1.0, Qt::SolidLine));
     stemPathItem->setParentItem(parent);
 
     QPainterPath beamPath;
@@ -101,13 +101,13 @@ BeamGroup::drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
     drawExtraBeams(beamPath, begin, end);
 
     auto beams = new QGraphicsPathItem(beamPath);
-    beams->setPen(QPen(myBeamColor, 2.0, Qt::SolidLine, Qt::RoundCap));
+    beams->setPen(QPen(color, 2.0, Qt::SolidLine, Qt::RoundCap));
     beams->setParentItem(parent);
 
     // Draw a note flag for single notes (eighth notes or less) or grace notes.
     if (group_stems.size() == 1 && NoteStem::canHaveFlag(firstStem))
     {
-        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont, myBeamColor);
+        QGraphicsItem *flag = createNoteFlag(firstStem, musicFont, color);
         flag->setParentItem(parent);
     }
 }

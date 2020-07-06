@@ -31,12 +31,12 @@ class QPainterPath;
 class BeamGroup
 {
 public:
-    BeamGroup(NoteStem::StemType direction, 
-    const std::vector<size_t> &stems, const QColor &color);
+    BeamGroup(NoteStem::StemType direction, const std::vector<size_t> &stems);
 
     /// Draws the stems for each note in the group.
     void drawStems(QGraphicsItem *parent, const std::vector<NoteStem> &stems,
-                   const QFont &musicFont, const LayoutInfo &layout) const;
+                   const QFont &musicFont, const QColor &color,
+                   const LayoutInfo &layout) const;
 
 private:
     /// Draws the extra beams required for sixteenth notes, etc.
@@ -67,8 +67,6 @@ private:
 
     NoteStem::StemType myStemDirection;
     std::vector<size_t> myStems;
-
-    const QColor &myBeamColor;
 };
 
 #endif

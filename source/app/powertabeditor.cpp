@@ -1044,6 +1044,7 @@ void PowerTabEditor::editTiedNote()
 {
     ScoreLocation &location = getLocation();
     const Voice &voice = location.getVoice();
+    const Voice *prev_voice = VoiceUtils::getAdjacentVoice(location, -1);
 
     // If at an empty position, try to insert a new note that's tied to the
     // previous note.
@@ -1051,7 +1052,7 @@ void PowerTabEditor::editTiedNote()
     {
         const int string = location.getString();
         const Note *prevNote = VoiceUtils::getPreviousNote(
-            voice, location.getPositionIndex(), string);
+            voice, location.getPositionIndex(), string, prev_voice);
         if (prevNote)
         {
             Note newNote(*prevNote);
@@ -1069,7 +1070,7 @@ void PowerTabEditor::editTiedNote()
         {
             const Note *note = location.getNote();
             if (!VoiceUtils::canTieNote(voice, location.getPositionIndex(),
-                                        *note))
+                                        *note, prev_voice))
             {
                 myTieCommand->setChecked(false);
                 return;
@@ -1084,7 +1085,7 @@ void PowerTabEditor::editTiedNote()
                 for (const Note &note : pos->getNotes())
                 {
                     if (!VoiceUtils::canTieNote(voice, pos->getPosition(),
-                                                note))
+                                                note, prev_voice))
                     {
                         myTieCommand->setChecked(false);
                         return;
@@ -1428,8 +1429,10 @@ void PowerTabEditor::editHammerPull()
     if (!note)
         return;
 
+    const Voice *next_voice = VoiceUtils::getAdjacentVoice(location, 1);
+
     // TODO - support editing groups of notes.
-    if (VoiceUtils::canHammerOnOrPullOff(voice, position, *note))
+    if (VoiceUtils::canHammerOnOrPullOff(voice, position, *note, next_voice))
         editSimpleNoteProperty(myHammerPullCommand, Note::HammerOnOrPullOff);
     else
         myHammerPullCommand->setChecked(false);

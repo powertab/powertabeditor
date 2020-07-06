@@ -1007,7 +1007,8 @@ MidiFile::addEventsForBar(std::vector<MidiEventList> &tracks,
                     generateSlides(bend_events, current_tick, duration,
                                    myTicksPerBeat, note,
                                    VoiceUtils::getNextNote(voice, position,
-                                                           note.getString()));
+                                                           note.getString(),
+                                                           next_voice));
                 }
 
                 if (note.hasBend())

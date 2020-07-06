@@ -55,8 +55,7 @@ public:
         const Staff &staff, int staffIndex, const LayoutInfo &layout,
         std::vector<StdNotationNote> &notes,
         std::array<std::vector<NoteStem>, Staff::NUM_VOICES> &stemsByVoice,
-        std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> &groupsByVoice,
-        const QColor &notesColor);
+        std::array<std::vector<BeamGroup>, Staff::NUM_VOICES> &groupsByVoice);
 
     double getY() const;
     QChar getNoteHeadSymbol() const;
@@ -98,8 +97,7 @@ private:
     static void computeBeaming(const TimeSignature &timeSig,
                                std::vector<NoteStem> &stems,
                                size_t firstStemIndex,
-                               std::vector<BeamGroup> &groups,
-                               const QColor &beamingColor);
+                               std::vector<BeamGroup> &groups);
 
     /// A group may be split into several beam groups if there are rests,
     /// whole notes, etc.
@@ -107,7 +105,7 @@ private:
         std::vector<NoteStem> &stems, const std::vector<double> &durations,
         const std::optional<double> &subgroupLength,
         size_t firstStemIndexInBar, size_t firstStemIndex, size_t lastStemIndex,
-        std::vector<BeamGroup> &groups, const QColor &beamColor);
+        std::vector<BeamGroup> &groups);
 
     double myY;
     QChar myNoteHeadSymbol;
