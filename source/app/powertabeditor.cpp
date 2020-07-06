@@ -2195,27 +2195,27 @@ void PowerTabEditor::createCommands()
     myNoteDurationGroup = new QActionGroup(this);
     createNoteDurationCommand(myWholeNoteCommand, tr("Whole"), "Notes.WholeNote",
                               Position::WholeNote,
-                              ":images/whole_note");
+                              QStringLiteral(u":images/whole_note"));
     createNoteDurationCommand(myHalfNoteCommand, tr("Half"), "Notes.HalfNote",
                               Position::HalfNote,
-                              ":images/half_note");
+                              QStringLiteral(u":images/half_note"));
     createNoteDurationCommand(myQuarterNoteCommand, tr("Quarter"),
                               "Notes.QuarterNote", Position::QuarterNote,
-                              ":images/quarter_note");
+                              QStringLiteral(u":images/quarter_note"));
     createNoteDurationCommand(myEighthNoteCommand, tr("8th"),
                               "Notes.EighthNote", Position::EighthNote,
-                              ":images/8th_note");
+                              QStringLiteral(u":images/8th_note"));
     createNoteDurationCommand(mySixteenthNoteCommand, tr("16th"),
                               "Notes.SixteenthNote", Position::SixteenthNote,
-                              ":images/16th_note");
+                              QStringLiteral(u":images/16th_note"));
     createNoteDurationCommand(myThirtySecondNoteCommand, tr("32nd"),
                               "Notes.ThirtySecondNote",
                               Position::ThirtySecondNote,
-                              ":images/32nd_note");
+                              QStringLiteral(u":images/32nd_note"));
     createNoteDurationCommand(mySixtyFourthNoteCommand, tr("64th"),
                               "Notes.SixtyFourthNote",
                               Position::SixtyFourthNote,
-                              ":images/64th_note");
+                              QStringLiteral(u":images/64th_note"));
 
     myIncreaseDurationCommand = new Command(tr("Increase Duration"),
                                             "Notes.Duration.Increase",
@@ -2233,12 +2233,12 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myDottedCommand, tr("Dotted"), "Notes.Dotted",
                                   QKeySequence(), Position::Dotted,
-                                  ":images/dotted_note");
+                                  QStringLiteral(u":images/dotted_note"));
 
     createPositionPropertyCommand(myDoubleDottedCommand, tr("Double Dotted"),
                                   "Notes.DoubleDotted", QKeySequence(),
                                   Position::DoubleDotted,
-                                  ":images/doubledotted_note");
+                                  QStringLiteral(u":images/doubledotted_note"));
 
     myAddDotCommand = new Command(tr("Add Dot"), "Notes.Dot.Add",
                             Qt::SHIFT + Qt::Key_Right, this);
@@ -2256,7 +2256,7 @@ void PowerTabEditor::createCommands()
             &PowerTabEditor::editLeftHandFingering);
 
     myTieCommand = new Command(tr("Tied"), "Notes.Tied", Qt::Key_Y, this,
-                               ":images/tie_note");
+                               QStringLiteral(u":images/tie_note"));
     myTieCommand->setCheckable(true);
     connect(myTieCommand, &QAction::triggered, this, &PowerTabEditor::editTiedNote);
 
@@ -2267,7 +2267,7 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myFermataCommand, tr("Fermata"),
                                   "Notes.Fermata", Qt::Key_F, Position::Fermata,
-                                  ":images/fermata");
+                                  QStringLiteral(u":images/fermata"));
 
     createPositionPropertyCommand(myLetRingCommand, tr("Let Ring"),
                                   "Notes.LetRing", QKeySequence(),
@@ -2299,7 +2299,8 @@ void PowerTabEditor::createCommands()
                               "Notes.Octave.15mb", QKeySequence(),
                               Note::Octave15mb);
 
-    myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this, ":images/group_note");
+    myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this,
+                                   QStringLiteral(u":images/group_note"));
     connect(myTripletCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(true);
     });
@@ -2331,7 +2332,7 @@ void PowerTabEditor::createCommands()
                               Position::SixtyFourthNote);
 
     myAddRestCommand = new Command(tr("Add Rest"), "Rests.AddRest", Qt::Key_R,
-                                   this, ":images/quarter_rest");
+                                   this, QStringLiteral(u":images/quarter_rest"));
     connect(myAddRestCommand, &QAction::triggered, this,
             &PowerTabEditor::addRest);
 
@@ -2408,28 +2409,28 @@ void PowerTabEditor::createCommands()
 
     createDynamicCommand(myDynamicPPPCommand, tr("Dynamics"),
                          "Dynamics.ppp", Dynamic::ppp,
-                         ":images/dynamic_ppp.png");
+                         QStringLiteral(u":images/dynamic_ppp.png"));
     createDynamicCommand(myDynamicPPCommand, tr("Dynamics"),
                          "Dynamics.pp", Dynamic::pp,
-                         ":images/dynamic_pp.png");
+                         QStringLiteral(u":images/dynamic_pp.png"));
     createDynamicCommand(myDynamicPCommand, tr("Dynamics"),
                          "Dynamics.p", Dynamic::pp,
-                         ":images/dynamic_p.png");
+                         QStringLiteral(u":images/dynamic_p.png"));
     createDynamicCommand(myDynamicMPCommand, tr("Dynamics"),
                          "Dynamics.mp", Dynamic::mp,
-                         ":images/dynamic_mp.png");
+                         QStringLiteral(u":images/dynamic_mp.png"));
     createDynamicCommand(myDynamicMFCommand, tr("Dynamics"),
                          "Dynamics.mf", Dynamic::mf,
-                         ":images/dynamic_mf.png");
+                         QStringLiteral(u":images/dynamic_mf.png"));
     createDynamicCommand(myDynamicFCommand, tr("Dynamics"),
                          "Dynamics.f", Dynamic::f,
-                         ":images/dynamic_f.png");
+                         QStringLiteral(u":images/dynamic_f.png"));
     createDynamicCommand(myDynamicFFCommand, tr("Dynamics"),
                          "Dynamics.ff", Dynamic::ff,
-                         ":images/dynamic_ff.png");
+                         QStringLiteral(u":images/dynamic_ff.png"));
     createDynamicCommand(myDynamicFFFCommand, tr("Dynamics"),
                          "Dynamics.fff", Dynamic::fff,
-                         ":images/dynamic_fff.png");
+                         QStringLiteral(u":images/dynamic_fff.png"));
 #if 0
     volumeSwellAct = new Command(tr("Volume Swell ..."), "MusicSymbols.VolumeSwell",
                                     QKeySequence(), this);
@@ -2440,7 +2441,7 @@ void PowerTabEditor::createCommands()
     // Tab Symbol Actions.
     myHammerPullCommand = new Command(tr("Hammer On/Pull Off"),
                                       "TabSymbols.HammerPull", Qt::Key_H, this,
-                                      ":images/legato");//image name wrong
+                                      QStringLiteral(u":images/legato"));//image name wrong
     myHammerPullCommand->setCheckable(true);
     connect(myHammerPullCommand, &QAction::triggered, this,
             &PowerTabEditor::editHammerPull);
@@ -2475,14 +2476,15 @@ void PowerTabEditor::createCommands()
 
     myBendCommand =
         new Command(tr("Bend..."), "TabSymbols.Bend", QKeySequence(), this,
-                    ":images/bend");
+                    QStringLiteral(u":images/bend"));
     myBendCommand->setCheckable(true);
     connect(myBendCommand, &QAction::triggered, this,
             &PowerTabEditor::editBend);
 
     createPositionPropertyCommand(myVibratoCommand, tr("Vibrato"),
                                   "TabSymbols.Vibrato", Qt::Key_V,
-                                  Position::Vibrato, ":images/vibrato.png");
+                                  Position::Vibrato,
+                                  QStringLiteral(u":images/vibrato.png"));
 
     createPositionPropertyCommand(myWideVibratoCommand, tr("Wide Vibrato"),
                                   "TabSymbols.WideVibrato", Qt::Key_W,
@@ -2508,7 +2510,8 @@ void PowerTabEditor::createCommands()
                                   Qt::Key_P, Position::Tap);
 
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
-                                 QKeySequence(), this, ":images/trill.png");
+                                 QKeySequence(), this,
+                                 QStringLiteral(u":images/trill.png"));
     myTrillCommand->setCheckable(true);
     connect(myTrillCommand, &QAction::triggered, this, &PowerTabEditor::editTrill);
 
@@ -2523,29 +2526,33 @@ void PowerTabEditor::createCommands()
     createNotePropertyCommand(mySlideIntoFromAboveCommand,
                               tr("Slide Into From Above"),
                               "TabSymbols.SlideInto.FromAbove", QKeySequence(),
-                              Note::SlideIntoFromAbove, ":images/slideinabove");
+                              Note::SlideIntoFromAbove,
+                              QStringLiteral(u":images/slideinabove"));
     createNotePropertyCommand(mySlideIntoFromBelowCommand,
                               tr("Slide Into From Below"),
                               "TabSymbols.SlideInto.FromBelow", QKeySequence(),
-                              Note::SlideIntoFromBelow, ":images/slideinbelow");
+                              Note::SlideIntoFromBelow,
+                              QStringLiteral(u":images/slideinbelow"));
 
     createNotePropertyCommand(myShiftSlideCommand, tr("Shift Slide"),
                               "TabSymbols.ShiftSlide", Qt::Key_S,
-                              Note::ShiftSlide, ":images/shiftslide");
+                              Note::ShiftSlide,
+                              QStringLiteral(u":images/shiftslide"));
     createNotePropertyCommand(myLegatoSlideCommand, tr("Legato Slide"),
                               "TabSymbols.LegatoSlide", Qt::Key_L,
-                              Note::LegatoSlide, ":images/legatoslide");
+                              Note::LegatoSlide,
+                              QStringLiteral(u":images/legatoslide"));
 
     createNotePropertyCommand(mySlideOutOfDownwardsCommand,
                               tr("Slide Out Of Downwards"),
                               "TabSymbols.SlideOutOf.Downwards", QKeySequence(),
                               Note::SlideOutOfDownwards,
-                              ":images/slideoutdown");
+                              QStringLiteral(u":images/slideoutdown"));
     createNotePropertyCommand(mySlideOutOfUpwardsCommand,
                               tr("Slide Out Of Upwards"),
                               "TabSymbols.SlideOutOf.Upwards", QKeySequence(),
                               Note::SlideOutOfUpwards,
-                              ":images/slideoutup");
+                              QStringLiteral(u":images/slideoutup"));
 
     // Player menu.
     myAddPlayerCommand =
