@@ -1377,8 +1377,18 @@ void PowerTabEditor::updateDynamic(Dynamic::VolumeLevel volume)
     if (currentDynamic)
     {
         if (newDynamic.getVolume() == currentDynamic->getVolume())
-            myUndoManager->push(new RemoveDynamic(location),
-                                location.getSystemIndex());
+            {
+                myUndoManager->push(new RemoveDynamic(location),
+                                    location.getSystemIndex());
+                for (QAction *action : myDynamicGroup->actions())
+                {
+                    if (action ==  myDynamicGroup->checkedAction())
+                    {
+                        action->setChecked(false);
+                        break;
+                    }
+                }
+            }
         else
             myUndoManager->push(new EditDynamic(location, *currentDynamic, newDynamic),
                                 location.getSystemIndex());
@@ -2405,6 +2415,7 @@ void PowerTabEditor::createCommands()
     connect(myDynamicCommand, &QAction::triggered, this, &PowerTabEditor::editDynamic);
 
     myDynamicGroup = new QActionGroup(this);
+    myDynamicGroup->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 
     createDynamicCommand(myDynamicPPPCommand, tr("Dynamics"),
                          "Dynamics.ppp", Dynamic::ppp,
@@ -2413,7 +2424,7 @@ void PowerTabEditor::createCommands()
                          "Dynamics.pp", Dynamic::pp,
                          QStringLiteral(u":images/dynamic_pp.png"));
     createDynamicCommand(myDynamicPCommand, tr("Dynamics"),
-                         "Dynamics.p", Dynamic::pp,
+                         "Dynamics.p", Dynamic::p,
                          QStringLiteral(u":images/dynamic_p.png"));
     createDynamicCommand(myDynamicMPCommand, tr("Dynamics"),
                          "Dynamics.mp", Dynamic::mp,
@@ -3451,7 +3462,53 @@ void PowerTabEditor::updateCommands()
         ScoreUtils::findByPosition(system.getDirections(), position) !=
         nullptr);
     myRepeatEndingCommand->setChecked(altEnding != nullptr);
+
+    // dynamics
     myDynamicCommand->setChecked(dynamic != nullptr);
+
+    if (dynamic)
+    {
+        switch (dynamic->getVolume())
+        {
+            case Dynamic::Off:
+                break;
+            case Dynamic::ppp:
+                myDynamicPPPCommand->setChecked(true);
+                break;
+            case Dynamic::pp:
+                myDynamicPPCommand->setChecked(true);
+                break;
+            case Dynamic::p:
+                myDynamicPCommand->setChecked(true);
+                break;
+            case Dynamic::mp:
+                myDynamicMPCommand->setChecked(true);
+                break;
+            case Dynamic::mf:
+                myDynamicMFCommand->setChecked(true);
+                break;
+            case Dynamic::f:
+                myDynamicFCommand->setChecked(true);
+                break;
+            case Dynamic::ff:
+                myDynamicFFCommand->setChecked(true);
+                break;
+            case Dynamic::fff:
+                myDynamicFFFCommand->setChecked(true);
+                break;
+        }
+    }
+    else
+    {
+        for (QAction *action : myDynamicGroup->actions())
+        {
+            if (action ==  myDynamicGroup->checkedAction())
+            {
+                action->setChecked(false);
+                break;
+            }
+        }
+    }
 
     if (barline) // Current position is bar.
     {
