@@ -789,6 +789,33 @@ void SystemRenderer::drawRhythmSlashes()
 
 #endif
 
+static QGraphicsItem *
+drawArc(const LayoutInfo &layout, const int string, const int start_pos,
+        const int end_pos, const QColor &color)
+{
+    const double left = layout.getPositionX(start_pos);
+    const double width = layout.getPositionX(end_pos) - left;
+    double height = 7.5;
+    double y = layout.getTabLine(string) - 2;
+
+    if (string >= layout.getStringCount() / 2)
+    {
+        // For notes on the bottom half of the staff, flip the
+        // arc and place it below the notes.
+        y += 2 * layout.getTabLineSpacing() + height / 2.5;
+        height = -height;
+    }
+
+    QPainterPath path;
+    path.moveTo(width, height / 2);
+    path.arcTo(0, 0, width, height, 0, 180);
+
+    auto arc = new AntialiasedPathItem(path);
+    arc->setPos(left + layout.getPositionSpacing() / 2, y);
+    arc->setPen(QPen(color));
+    return arc;
+}
+
 void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
 {
     for (const Voice &voice : staff.getVoices())
@@ -814,29 +841,11 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                 // a hammeron / pulloff, end the arc.
                 else if (arcs.find(string) != arcs.end())
                 {
-                    const int startPos = arcs.find(string)->second;
-
-                    const double left = layout.getPositionX(startPos);
-                    const double width = layout.getPositionX(position) - left;
-                    double height = 7.5;
-                    double y = layout.getTabLine(string) - 2;
-
-                    if (string >= layout.getStringCount() / 2)
-                    {
-                        // For notes on the bottom half of the staff, flip the
-                        // arc and place it below the notes.
-                        y += 2 * layout.getTabLineSpacing() + height / 2.5;
-                        height = -height;
-                    }
-
-                    QPainterPath path;
-                    path.moveTo(width, height / 2);
-                    path.arcTo(0, 0, width, height, 0, 180);
-
-                    auto arc = new AntialiasedPathItem(path);
-                    arc->setPos(left + layout.getPositionSpacing() / 2, y);
+                    const int start_pos = arcs.find(string)->second;
+                    auto arc = drawArc(layout, string, start_pos, position,
+                                       myPalette.text().color());
                     arc->setParentItem(myParentStaff);
-                    arc->setPen(QPen(myPalette.text().color()));
+
                     arcs.erase(arcs.find(string));
                 }
 
@@ -861,6 +870,16 @@ void SystemRenderer::drawLegato(const Staff &staff, const LayoutInfo &layout)
                         arcs.erase(arcs.find(string));
                 }
             }
+        }
+
+        // Finish any remaining arcs, e.g. if a hammeron is to a note in the
+        // next system.
+        for (auto [string, start_pos] : arcs)
+        {
+            const int end_pos = layout.getNumPositions() - 1;
+            auto arc = drawArc(layout, string, start_pos, end_pos,
+                               myPalette.text().color());
+            arc->setParentItem(myParentStaff);
         }
     }
 }
