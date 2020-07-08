@@ -34,19 +34,19 @@ class Score;
 class FilterRule
 {
 public:
-    enum Subject : int
+    enum class Subject : int
     {
-        PLAYER_NAME = 0,
-        NUM_STRINGS = 1,
+        PlayerName = 0,
+        NumStrings = 1,
     };
 
-    enum Operation : int
+    enum class Operation : int
     {
-        LESS_THAN = 0,
-        LESS_THAN_EQUAL = 1,
-        EQUAL = 2,
-        GREATER_THAN_EQUAL = 3,
-        GREATER_THAN = 4
+        LessThan = 0,
+        LessThanEqual = 1,
+        Equal = 2,
+        GreaterThanEqual = 3,
+        GreaterThan = 4
     };
 
     FilterRule();
@@ -132,15 +132,15 @@ void FilterRule::serialize(Archive &ar, const FileVersion /*version*/)
 
     switch (mySubject)
     {
-    case PLAYER_NAME:
-        ar("value", myStrValue);
-        break;
-    case NUM_STRINGS:
-        ar("value", myIntValue);
-        break;
-    default:
-        assert(!"Unexpected subject for filter.");
-        break;
+        case Subject::PlayerName:
+            ar("value", myStrValue);
+            break;
+        case Subject::NumStrings:
+            ar("value", myIntValue);
+            break;
+        default:
+            assert(!"Unexpected subject for filter.");
+            break;
     }
 }
 

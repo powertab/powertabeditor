@@ -31,15 +31,15 @@ struct FilterRule::RegexImpl
 };
 
 FilterRule::FilterRule()
-    : mySubject(Subject::PLAYER_NAME),
-      myOperation(Operation::EQUAL),
+    : mySubject(Subject::PlayerName),
+      myOperation(Operation::Equal),
       myIntValue(0)
 {
 }
 
 FilterRule::FilterRule(Subject subject, std::string value)
     : mySubject(subject),
-      myOperation(Operation::EQUAL),
+      myOperation(Operation::Equal),
       myIntValue(0),
       myStrValue(std::move(value)),
       myRegexImpl(std::make_unique<RegexImpl>(myStrValue))
@@ -82,32 +82,33 @@ bool FilterRule::accept(const Player &player) const
 {
     switch (mySubject)
     {
-    case PLAYER_NAME:
-        return std::regex_match(player.getDescription(), myRegexImpl->myRegex);
-    case NUM_STRINGS:
-    {
-        const int value = player.getTuning().getStringCount();
-
-        switch (myOperation)
+        case Subject::PlayerName:
+            return std::regex_match(player.getDescription(),
+                                    myRegexImpl->myRegex);
+        case Subject::NumStrings:
         {
-        case LESS_THAN:
-            return value < myIntValue;
-        case LESS_THAN_EQUAL:
-            return value <= myIntValue;
-        case EQUAL:
-            return value == myIntValue;
-        case GREATER_THAN:
-            return value > myIntValue;
-        case GREATER_THAN_EQUAL:
-            return value >= myIntValue;
-        }
+            const int value = player.getTuning().getStringCount();
 
-        assert(false);
-        return false;
-    }
-    default:
-        assert(!"Unexpected subject for filter.");
-        return false;
+            switch (myOperation)
+            {
+                case Operation::LessThan:
+                    return value < myIntValue;
+                case Operation::LessThanEqual:
+                    return value <= myIntValue;
+                case Operation::Equal:
+                    return value == myIntValue;
+                case Operation::GreaterThan:
+                    return value > myIntValue;
+                case Operation::GreaterThanEqual:
+                    return value >= myIntValue;
+            }
+
+            assert(false);
+            return false;
+        }
+        default:
+            assert(!"Unexpected subject for filter.");
+            return false;
     }
 }
 

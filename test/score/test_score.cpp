@@ -67,11 +67,11 @@ TEST_CASE("Score/Score/ViewFilters")
     REQUIRE(score.getViewFilters().size() == 0);
 
     ViewFilter filter1;
-    filter1.addRule(FilterRule(FilterRule::PLAYER_NAME, "foo"));
+    filter1.addRule(FilterRule(FilterRule::Subject::PlayerName, "foo"));
     score.insertViewFilter(filter1);
 
     ViewFilter filter2;
-    filter2.addRule(FilterRule(FilterRule::PLAYER_NAME, "bar"));
+    filter2.addRule(FilterRule(FilterRule::Subject::PlayerName, "bar"));
     score.insertViewFilter(filter2);
 
     REQUIRE(score.getViewFilters().size() == 2);

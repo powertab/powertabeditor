@@ -102,8 +102,9 @@ void ViewFilterDialog::update(const std::vector<std::string> &names,
         ui->nameLineEdit->setText(QString::fromStdString(names[*selection]));
 
         // Add new widgets if necessary.
-        for (size_t i = ui->filterRuleLayout->count(), n = rules.size(); i < n;
-             ++i)
+        for (int i = ui->filterRuleLayout->count(),
+                 n = static_cast<int>(rules.size());
+             i < n; ++i)
         {
             auto widget = new FilterRuleWidget(this);
             ui->filterRuleLayout->addWidget(widget);
@@ -118,7 +119,7 @@ void ViewFilterDialog::update(const std::vector<std::string> &names,
         }
 
         // Update widgets.
-        for (size_t i = 0, n = rules.size(); i < n; ++i)
+        for (int i = 0, n = static_cast<int>(rules.size()); i < n; ++i)
         {
             auto widget = dynamic_cast<FilterRuleWidget *>(
                 ui->filterRuleLayout->itemAt(i)->widget());

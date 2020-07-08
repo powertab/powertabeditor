@@ -37,10 +37,11 @@ public:
         // Verify that the filter is valid.
         try
         {
-            FilterRule rule(FilterRule::PLAYER_NAME, input.toStdString());
+            FilterRule rule(FilterRule::Subject::PlayerName,
+                            input.toStdString());
             return State::Acceptable;
         }
-        catch (const std::exception &e)
+        catch (const std::exception &)
         {
             return State::Intermediate;
         }
@@ -93,12 +94,12 @@ FilterRuleWidget::~FilterRuleWidget()
 
 void FilterRuleWidget::update(const FilterRule &rule)
 {
-    ui->subjectComboBox->setCurrentIndex(rule.getSubject());
-    ui->stackedWidget->setCurrentIndex(rule.getSubject());
+    ui->subjectComboBox->setCurrentIndex(int(rule.getSubject()));
+    ui->stackedWidget->setCurrentIndex(int(rule.getSubject()));
 
     ui->regexLineEdit->setText(QString::fromStdString(rule.getStringValue()));
 
-    ui->operationComboBox->setCurrentIndex(rule.getOperation());
+    ui->operationComboBox->setCurrentIndex(int(rule.getOperation()));
     ui->stringsSpinBox->setValue(rule.getIntValue());
 }
 
@@ -108,13 +109,13 @@ void FilterRuleWidget::updateRule()
     {
         if (ui->regexLineEdit->hasAcceptableInput())
         {
-            emit changed(FilterRule(FilterRule::PLAYER_NAME,
+            emit changed(FilterRule(FilterRule::Subject::PlayerName,
                                     ui->regexLineEdit->text().toStdString()));
         }
     }
     else
     {
-        emit changed(FilterRule(FilterRule::NUM_STRINGS,
+        emit changed(FilterRule(FilterRule::Subject::NumStrings,
                                 static_cast<FilterRule::Operation>(
                                     ui->operationComboBox->currentIndex()),
                                 ui->stringsSpinBox->value()));

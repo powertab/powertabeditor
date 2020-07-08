@@ -146,7 +146,8 @@ TEST_CASE("Dialogs/ViewFilter")
     {
         presenter.addRule();
 
-        FilterRule new_rule(FilterRule::NUM_STRINGS, FilterRule::EQUAL, 4);
+        FilterRule new_rule(FilterRule::Subject::NumStrings,
+                            FilterRule::Operation::Equal, 4);
         presenter.editRule(0, new_rule);
         REQUIRE(view.myRules[0] == new_rule);
         REQUIRE(view.myMatches == std::vector{ bass.getDescription() });

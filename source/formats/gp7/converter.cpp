@@ -75,7 +75,7 @@ convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score,
     for (const Gp7::Track &track : tracks)
     {
         assert(!track.mySounds.empty());
-        const int instrument_idx = score.getInstruments().size();
+        const int instrument_idx = static_cast<int>(score.getInstruments().size());
 
         for (const Gp7::Sound &sound : track.mySounds)
         {
@@ -103,7 +103,7 @@ convertPlayers(const std::vector<Gp7::Track> &tracks, Score &score,
             tuning.setCapo(staff.myCapo);
             player.setTuning(tuning);
 
-            const int player_idx = score.getPlayers().size();
+            const int player_idx = static_cast<int>(score.getPlayers().size());
             score.insertPlayer(player);
 
             // Each player will be assigned its own staff, and is initially
@@ -946,7 +946,7 @@ convertSystem(const Gp7::Document &doc, Score &score, int bar_begin,
     int system_bar_idx = 0;
     for (int bar_idx = bar_begin; bar_idx < bar_end; ++bar_idx)
     {
-        const int num_staves = score.getPlayers().size();
+        const int num_staves = static_cast<int>(score.getPlayers().size());
         const Gp7::MasterBar &master_bar = doc.myMasterBars.at(bar_idx);
 
         // If the previous bar was a repeat end, and this master bar is a
@@ -1108,11 +1108,11 @@ Gp7::convert(const Gp7::Document &doc, Score &score)
     // The multi-track layout is sometimes invalid (particularly for .gpx
     // files). So, fall back to the first track's layout if we need to.
     std::vector<int> layout = doc.myScoreInfo.myScoreSystemsLayout;
-    if (!isValidLayout(layout, doc.myMasterBars.size()) &&
+    if (!isValidLayout(layout, static_cast<int>(doc.myMasterBars.size())) &&
         !doc.myTracks.empty())
     {
         layout = doc.myTracks[0].mySystemsLayout;
-        assert(isValidLayout(layout, doc.myMasterBars.size()));
+        assert(isValidLayout(layout, static_cast<int>(doc.myMasterBars.size())));
     }
 
     int bar_idx = 0;

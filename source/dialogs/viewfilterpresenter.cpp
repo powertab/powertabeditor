@@ -59,7 +59,7 @@ void ViewFilterPresenter::removeSelectedFilter()
     if (myFilters.empty())
         mySelection.reset();
     else if (*mySelection == static_cast<int>(myFilters.size()))
-        *mySelection = myFilters.size() - 1;
+        *mySelection = static_cast<int>(myFilters.size()) - 1;
 
     updateView();
 }

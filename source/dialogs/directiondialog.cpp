@@ -97,7 +97,8 @@ void DirectionDialog::onAddDirection()
     ui->directionComboBox->addItem(
                 QString::number(myDirection.getSymbols().size()));
 
-    ui->directionComboBox->setCurrentIndex(myDirection.getSymbols().size() - 1);
+    ui->directionComboBox->setCurrentIndex(
+        static_cast<int>(myDirection.getSymbols().size()) - 1);
 
     if (myDirection.getSymbols().size() == MAX_SYMBOLS)
         ui->addDirectionButton->setDisabled(true);
@@ -116,8 +117,8 @@ void DirectionDialog::onRemoveDirection()
     for (unsigned long i = 0; i < myDirection.getSymbols().size(); ++i)
         ui->directionComboBox->addItem(QString::number(i + 1));
 
-    ui->directionComboBox->setCurrentIndex(
-                std::min<int>(index, myDirection.getSymbols().size() - 1));
+    ui->directionComboBox->setCurrentIndex(std::min<int>(
+        index, static_cast<int>(myDirection.getSymbols().size()) - 1));
 
     // Update the Add/Remove buttons.
     ui->addDirectionButton->setEnabled(true);

@@ -588,9 +588,9 @@ static bool areStavesIncompatible(
 {
     return areStavesIncompatible(dest_loc, guitar_caret, guitar_bar,
                                  end_guitar_bar, 0, num_guitar_staves) ||
-           areStavesIncompatible(dest_loc, bass_caret, bass_bar, end_bass_bar,
-                                 num_guitar_staves,
-                                 dest_loc.getSystem().getStaves().size());
+           areStavesIncompatible(
+               dest_loc, bass_caret, bass_bar, end_bass_bar, num_guitar_staves,
+               static_cast<int>(dest_loc.getSystem().getStaves().size()));
 }
 
 static void insertNewSystem(Score &score)

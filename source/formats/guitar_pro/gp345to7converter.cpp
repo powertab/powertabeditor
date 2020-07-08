@@ -41,8 +41,9 @@ convertScoreInfo(const Gp::Document &doc)
     // Decide how the measures are split into systems.
     // For now just do three measures per system.
     static constexpr int measures_per_system = 3;
-    const int num_systems = doc.myMeasures.size() / measures_per_system;
-    const int remainder =  doc.myMeasures.size() % measures_per_system;
+    const int num_measures = static_cast<int>(doc.myMeasures.size());
+    const int num_systems = num_measures / measures_per_system;
+    const int remainder =  num_measures % measures_per_system;
     std::vector<int> &layout = gp7_info.myScoreSystemsLayout;
 
     layout.insert(layout.begin(), num_systems, measures_per_system);
@@ -91,7 +92,7 @@ convertTracks(const Gp::Document &doc)
 static int
 convertStringNumber(const Gp::Track &track, int string)
 {
-    return track.myTuning.size() - string - 1;
+    return static_cast<int>(track.myTuning.size()) - string - 1;
 }
 
 static std::optional<Gp7::Beat>
@@ -250,8 +251,8 @@ convertBeat(const Gp::Beat &beat, const Gp::Track &track,
             rhythm.myTupletNum = *beat.myIrregularGrouping;
             // The denominator of the irregular grouping is the nearest
             // power of 2 (from below).
-            rhythm.myTupletDenom = std::pow(
-                2, std::floor(std::log(rhythm.myTupletNum) / std::log(2.0)));
+            rhythm.myTupletDenom = static_cast<int>(std::pow(
+                2, std::floor(std::log(rhythm.myTupletNum) / std::log(2.0))));
         }
 
         gp7_doc.addRhythm(gp7_beat, std::move(rhythm));
@@ -486,8 +487,9 @@ convertMasterBars(const Gp::Document &doc, Gp7::Document &gp7_doc)
                         gp7_doc.addBeat(gp7_voice, std::move(*grace_beat));
 
                     Gp7::Beat gp7_beat;
-                    convertBeat(beat, track, gp7_doc, gp7_voice, staff_idx,
-                                voice_idx, gp7_beat);
+                    convertBeat(beat, track, gp7_doc, gp7_voice,
+                                static_cast<int>(staff_idx),
+                                static_cast<int>(voice_idx), gp7_beat);
                     gp7_doc.addBeat(gp7_voice, std::move(gp7_beat));
 
                     // Add tempo changes to the measure.

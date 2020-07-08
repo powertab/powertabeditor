@@ -339,7 +339,7 @@ findNextTempoMarker(const Score &score, SystemLocation location,
     MidiEventList event_list;
     const int current_tick = -1;
 
-    const int num_systems = score.getSystems().size();
+    const int num_systems = static_cast<int>(score.getSystems().size());
     while (location.getSystem() < num_systems)
     {
         const System &system = score.getSystems()[location.getSystem()];
@@ -416,7 +416,7 @@ MidiFile::addTempoEvent(MidiEventList &event_list, int current_tick,
 
         // We're working in microseconds, so a tempo change event every
         // millisecond seems reasonable ...
-        const int num_events = std::abs(delta_tempo.count()) / 1000;
+        const int num_events = static_cast<int>(std::abs(delta_tempo.count()) / 1000);
         if (!num_events)
             return current_tempo;
 

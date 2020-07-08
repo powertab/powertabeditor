@@ -220,13 +220,15 @@ void ScoreUtils::addStandardFilters(Score &score)
 
     ViewFilter filter_guitars;
     filter_guitars.setDescription("Guitars");
-    filter_guitars.addRule(
-        FilterRule(FilterRule::NUM_STRINGS, FilterRule::GREATER_THAN_EQUAL, 6));
+    filter_guitars.addRule(FilterRule(FilterRule::Subject::NumStrings,
+                                      FilterRule::Operation::GreaterThanEqual,
+                                      6));
     score.insertViewFilter(filter_guitars);
 
     ViewFilter filter_basses;
     filter_basses.setDescription("Basses");
-    filter_basses.addRule(
-        FilterRule(FilterRule::NUM_STRINGS, FilterRule::LESS_THAN_EQUAL, 5));
+    filter_basses.addRule(FilterRule(FilterRule::Subject::NumStrings,
+                                     FilterRule::Operation::LessThanEqual,
+                                     5));
     score.insertViewFilter(filter_basses);
 }

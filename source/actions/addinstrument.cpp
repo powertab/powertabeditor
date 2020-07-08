@@ -23,7 +23,7 @@ AddInstrument::AddInstrument(Score &score, const Instrument &instrument)
     : QUndoCommand(QObject::tr("Add Instrument")),
       myScore(score),
       myInstrument(instrument),
-      myIndex(score.getInstruments().size())
+      myIndex(static_cast<int>(score.getInstruments().size()))
 {
 }
 

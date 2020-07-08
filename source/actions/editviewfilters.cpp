@@ -42,7 +42,10 @@ void EditViewFilters::undo()
 void EditViewFilters::setViewFilters(const std::vector<ViewFilter> &filters)
 {
     while (!myScore.getViewFilters().empty())
-        myScore.removeViewFilter(myScore.getViewFilters().size() - 1);
+    {
+        myScore.removeViewFilter(
+            static_cast<int>(myScore.getViewFilters().size()) - 1);
+    }    
 
     for (const ViewFilter &filter : filters)
         myScore.insertViewFilter(filter);

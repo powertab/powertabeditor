@@ -23,7 +23,7 @@ AddPlayer::AddPlayer(Score &score, const Player &player)
     : QUndoCommand(QObject::tr("Add Player")),
       myScore(score),
       myPlayer(player),
-      myPlayerIndex(score.getPlayers().size())
+      myPlayerIndex(static_cast<int>(score.getPlayers().size()))
 {
 }
 
