@@ -231,9 +231,6 @@
       <property name="checkable">
        <bool>true</bool>
       </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
       <property name="autoRaise">
        <bool>true</bool>
       </property>
@@ -250,9 +247,6 @@
       </property>
       <property name="checkable">
        <bool>false</bool>
-      </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
       </property>
       <property name="autoRaise">
        <bool>true</bool>
@@ -297,9 +291,6 @@
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/quarter_note</normaloff>:/images/quarter_note</iconset>
       </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
       <property name="autoRaise">
        <bool>true</bool>
       </property>
@@ -313,9 +304,6 @@
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/64th_note</normaloff>:/images/64th_note</iconset>
-      </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
       </property>
       <property name="autoRaise">
        <bool>true</bool>
@@ -331,9 +319,6 @@
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/16th_note</normaloff>:/images/16th_note</iconset>
       </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
       <property name="autoRaise">
        <bool>true</bool>
       </property>
@@ -347,9 +332,6 @@
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/8th_note</normaloff>:/images/8th_note</iconset>
-      </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
       </property>
       <property name="autoRaise">
        <bool>true</bool>
@@ -368,9 +350,6 @@
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/whole_note</normaloff>:/images/whole_note</iconset>
       </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
       <property name="autoRaise">
        <bool>true</bool>
       </property>
@@ -385,9 +364,6 @@
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/half_note</normaloff>:/images/half_note</iconset>
       </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
       <property name="autoRaise">
        <bool>true</bool>
       </property>
@@ -401,9 +377,6 @@
       <property name="icon">
        <iconset resource="../../build/resources.qrc">
         <normaloff>:/images/32nd_note</normaloff>:/images/32nd_note</iconset>
-      </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
       </property>
       <property name="autoRaise">
        <bool>true</bool>
