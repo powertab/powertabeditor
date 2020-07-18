@@ -33,6 +33,7 @@ class Command;
 class DocumentManager;
 class FileFormatManager;
 class InstrumentPanel;
+class ToolBox;
 class MidiPlayer;
 class Mixer;
 class PlaybackWidget;
@@ -336,6 +337,8 @@ private:
                               const QString &iconFileName = QString());
     /// Set up the menus for the application.
     void createMenus();
+    /// Set up the toolbox for the application.
+    void createToolBox();
     /// Set up the tool bars for the application.
     void createToolBars();
     /// Create the tab widget and score area.
@@ -503,6 +506,8 @@ private:
     Command *myDecreaseLineSpacingCommand;
 
     QMenu *myNotesMenu;
+    QDockWidget *myToolBoxDockWidget;
+    ToolBox *myToolBox;
     QToolBar *myNotesToolBar;
     QToolBar *myDurationModToolBar;
     QToolBar *myArticulationToolBar;
@@ -642,7 +647,6 @@ private slots:
     void toggleGuitarVisible(uint32_t trackIndex, bool isVisible);
 
 private:
-    Toolbox* toolBox;
     QSplitter* vertSplitter;
     QSplitter* horSplitter;
 

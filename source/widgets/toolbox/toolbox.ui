@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ToolBox</class>
+ <widget class="QWidget" name="ToolBox">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>333</width>
+    <height>314</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>333</width>
+    <height>314</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>170</y>
+     <width>333</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="4">
+     <widget class="QToolButton" name="bendButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/bend</normaloff>:/images/bend</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="artificialHarmonicButton">
+      <property name="text">
+       <string>Artificial\nHarmonic</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="tappedHarmonicButton">
+      <property name="text">
+       <string>Tapped\nHarmonic</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QToolButton" name="wideVibratoButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/widevibrato.png</normaloff>:/images/widevibrato.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="naturalHarmonicButton">
+      <property name="text">
+       <string>Natural\nHarmonic</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QToolButton" name="vibratoButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/vibrato.png</normaloff>:/images/vibrato.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="ghostNoteButton">
+      <property name="text">
+       <string>Ghost\nNote</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>280</y>
+     <width>264</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="1">
+     <widget class="QToolButton" name="arpeggioDownButton">
+      <property name="text">
+       <string>Arpeggio\nDown</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="pickStrokeUpButton">
+      <property name="text">
+       <string>Pickstroke\nUp</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="arpeggioUpButton">
+      <property name="text">
+       <string>Arpeggio\nUp</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="pickStrokeDownButton">
+      <property name="text">
+       <string>Pickstroke\nDown</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>60</y>
+     <width>210</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="2">
+     <widget class="QToolButton" name="tieButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/tie_note</normaloff>:/images/tie_note</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QToolButton" name="irregularGroupingButton">
+      <property name="text">
+       <string>Irregular\nGrouping</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="fermataButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/fermata</normaloff>:/images/fermata</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="doubleDottedButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/doubledotted_note</normaloff>:/images/doubledotted_note</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="dottedButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dotted_note</normaloff>:/images/dotted_note</iconset>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QToolButton" name="tripletButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/group_note</normaloff>:/images/group_note</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_4">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>236</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_6">
+    <item row="0" column="2">
+     <widget class="QToolButton" name="quarterNoteButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/quarter_note</normaloff>:/images/quarter_note</iconset>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QToolButton" name="sixtyFourthNoteButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/64th_note</normaloff>:/images/64th_note</iconset>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QToolButton" name="sixteenthNoteButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/16th_note</normaloff>:/images/16th_note</iconset>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="eighthNoteButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/8th_note</normaloff>:/images/8th_note</iconset>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="wholeNoteButton">
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/whole_note</normaloff>:/images/whole_note</iconset>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="halfNoteButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/half_note</normaloff>:/images/half_note</iconset>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QToolButton" name="thirtySecondNoteButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/32nd_note</normaloff>:/images/32nd_note</iconset>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="7">
+     <widget class="QToolButton" name="addRestButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/quarter_rest</normaloff>:/images/quarter_rest</iconset>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_5">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>100</y>
+     <width>236</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_7">
+    <item row="0" column="3">
+     <widget class="QToolButton" name="dynamicMPButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_mp.png</normaloff>:/images/dynamic_mp.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="6">
+     <widget class="QToolButton" name="dynamicFFButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_ff.png</normaloff>:/images/dynamic_ff.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QToolButton" name="dynamicMFButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_mf.png</normaloff>:/images/dynamic_mf.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="dynamicPPPButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_ppp.png</normaloff>:/images/dynamic_ppp.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="dynamicPPButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_pp.png</normaloff>:/images/dynamic_pp.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="dynamicPButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_p.png</normaloff>:/images/dynamic_p.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QToolButton" name="dynamicFButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_f.png</normaloff>:/images/dynamic_f.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="7">
+     <widget class="QToolButton" name="dynamicFFFButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/dynamic_fff.png</normaloff>:/images/dynamic_fff.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_6">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>130</y>
+     <width>301</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_8">
+    <item row="0" column="1">
+     <widget class="QToolButton" name="marcatoButton">
+      <property name="text">
+       <string>Accent</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="staccatoButton">
+      <property name="text">
+       <string>Staccato</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="sforzandoButton">
+      <property name="text">
+       <string>Heavy\nAccent</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="mutedButton">
+      <property name="text">
+       <string>Muted</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QToolButton" name="letRingButton">
+      <property name="text">
+       <string>Let\nRing</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QToolButton" name="palmMuteButton">
+      <property name="text">
+       <string>P.M.</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_7">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>240</y>
+     <width>143</width>
+     <height>33</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_9">
+    <item row="0" column="1">
+     <widget class="QToolButton" name="tapButton">
+      <property name="text">
+       <string>Tap</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="trillButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/trill.png</normaloff>:/images/trill.png</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="graceNoteButton">
+      <property name="text">
+       <string>Grace\nNote</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="hammerPullButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/legato</normaloff>:/images/legato</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_8">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>210</y>
+     <width>176</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_10">
+    <item row="0" column="2">
+     <widget class="QToolButton" name="slideIntoFromAboveButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/slideinabove</normaloff>:/images/slideinabove</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QToolButton" name="slideOutOfDownwardsButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/slideoutdown</normaloff>:/images/slideoutdown</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="shiftSlideButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/shiftslide</normaloff>:/images/shiftslide</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="slideIntoFromBelowButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/slideinbelow</normaloff>:/images/slideinbelow</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QToolButton" name="legatoSlideButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/legatoslide</normaloff>:/images/legatoslide</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="5">
+     <widget class="QToolButton" name="slideOutOfUpwardsButton">
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../build/resources.qrc">
+        <normaloff>:/images/slideoutup</normaloff>:/images/slideoutup</iconset>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_9">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>165</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_11">
+    <item row="0" column="0">
+     <widget class="QToolButton" name="octave8vaButton">
+      <property name="text">
+       <string>8va</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QToolButton" name="octave15maButton">
+      <property name="text">
+       <string>15ma</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QToolButton" name="octave8vbButton">
+      <property name="text">
+       <string>8vb</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QToolButton" name="octave15mbButton">
+      <property name="text">
+       <string>15mb</string>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources>
+  <include location="../../build/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -150,6 +150,7 @@
 #include <widgets/instruments/instrumentpanel.h>
 #include <widgets/mixer/mixer.h>
 #include <widgets/playback/playbackwidget.h>
+#include <widgets/toolbox/toolbox.h>
 
 PowerTabEditor::PowerTabEditor()
     : QMainWindow(nullptr),
@@ -194,6 +195,7 @@ PowerTabEditor::PowerTabEditor()
     createCommands();
     loadKeyboardShortcuts();
     createMenus();
+    createToolBox();
     createToolBars();
 
     // Set up the recent files menu.
@@ -2498,7 +2500,8 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myWideVibratoCommand, tr("Wide Vibrato"),
                                   "TabSymbols.WideVibrato", Qt::Key_W,
-                                  Position::WideVibrato);
+                                  Position::WideVibrato,
+                                  QStringLiteral(u":images/widevibrato.png"));
 
     createPositionPropertyCommand(myPalmMuteCommand, tr("Palm Mute"),
                                   "TabSymbols.PalmMute", Qt::Key_M,
@@ -3024,6 +3027,71 @@ void PowerTabEditor::createMenus()
     myHelpMenu->addAction(myReportBugCommand);
 }
 
+void PowerTabEditor::createToolBox()
+{
+    myToolBoxDockWidget = new QDockWidget(tr("Toolbox"), this);
+    myToolBoxDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+    myToolBoxDockWidget->setObjectName("Toolbox");
+
+    myToolBox = new ToolBox(myOctave8vaCommand,
+                            myOctave15maCommand,
+                            myOctave8vbCommand,
+                            myOctave15mbCommand,
+                            myWholeNoteCommand,
+                            myHalfNoteCommand,
+                            myQuarterNoteCommand,
+                            myEighthNoteCommand,
+                            mySixteenthNoteCommand,
+                            myThirtySecondNoteCommand,
+                            mySixtyFourthNoteCommand,
+                            myAddRestCommand,
+                            myDottedCommand,
+                            myDoubleDottedCommand,
+                            myTieCommand,
+                            myFermataCommand,
+                            myTripletCommand,
+                            myIrregularGroupingCommand,
+                            myDynamicPPPCommand,
+                            myDynamicPPCommand,
+                            myDynamicPCommand,
+                            myDynamicMPCommand,
+                            myDynamicMFCommand,
+                            myDynamicFCommand,
+                            myDynamicFFCommand,
+                            myDynamicFFFCommand,
+                            myMutedCommand,
+                            myMarcatoCommand,
+                            mySforzandoCommand,
+                            myStaccatoCommand,
+                            myLetRingCommand,
+                            myPalmMuteCommand,
+                            myGhostNoteCommand,
+                            myNaturalHarmonicCommand,
+                            myArtificialHarmonicCommand,
+                            myTappedHarmonicCommand,
+                            myBendCommand,
+                            myVibratoCommand,
+                            myWideVibratoCommand,
+                            myLegatoSlideCommand,
+                            myShiftSlideCommand,
+                            mySlideIntoFromAboveCommand,
+                            mySlideIntoFromBelowCommand,
+                            mySlideOutOfDownwardsCommand,
+                            mySlideOutOfUpwardsCommand,
+                            myHammerPullCommand,
+                            myTapCommand,
+                            myGraceNoteCommand,
+                            myTrillCommand,
+                            myArpeggioUpCommand,
+                            myArpeggioDownCommand,
+                            myPickStrokeUpCommand,
+                            myPickStrokeDownCommand,
+                            myToolBoxDockWidget);
+
+    myToolBoxDockWidget->setWidget(myToolBox);
+    addDockWidget(Qt::LeftDockWidgetArea, myToolBoxDockWidget);
+}
+
 void PowerTabEditor::createToolBars()
 {
     // Notes Toolbar.
@@ -3120,7 +3188,6 @@ void PowerTabEditor::createToolBars()
     addToolBar(Qt::RightToolBarArea, myTabSymbolsToolBar);
     myTabSymbolsToolBar->setIconSize(QSize(24, 24));
     myTabSymbolsToolBar->addAction(myHammerPullCommand);
-    myTabSymbolsToolBar->addAction(myPalmMuteCommand);
     myTabSymbolsToolBar->addAction(myTapCommand);
     myTabSymbolsToolBar->addAction(myBendCommand);
 

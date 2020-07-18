@@ -14,28 +14,85 @@
   * You should have received a copy of the GNU General Public License
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-  
+
 #ifndef TOOLBOX_H
 #define TOOLBOX_H
 
-#include <QTabWidget>
+#include <QWidget>
 
-#include <boost/shared_ptr.hpp>
+class Command;
+class QToolButton;
 
-class NotePage;
-class ScorePage;
-class SkinManager;
-class PowerTabEditor;
+namespace Ui {
+class ToolBox;
+}
 
-class Toolbox : public QTabWidget
+class ToolBox : public QWidget
 {
     Q_OBJECT
+
 public:
-    Toolbox(PowerTabEditor* mainWindow, boost::shared_ptr<SkinManager> skinManager);
+    explicit ToolBox(Command *octave8vaCommand,
+                     Command *octave15maCommand,
+                     Command *octave8vbCommand,
+                     Command *octave15mbCommand,
+                     Command *wholeNoteCommand,
+                     Command *halfNoteCommand,
+                     Command *quarterNoteCommand,
+                     Command *eighthNoteCommand,
+                     Command *sixteenthNoteCommand,
+                     Command *thirtySecondNoteCommand,
+                     Command *sixtyFourthNoteCommand,
+                     Command *addRestCommand,
+                     Command *dottedCommand,
+                     Command *doubleDottedCommand,
+                     Command *tieCommand,
+                     Command *fermataCommand,
+                     Command *tripletCommand,
+                     Command *irregularGroupingCommand,
+                     Command *dynamicPPPCommand,
+                     Command *dynamicPPCommand,
+                     Command *dynamicPCommand,
+                     Command *dynamicMPCommand,
+                     Command *dynamicMFCommand,
+                     Command *dynamicFCommand,
+                     Command *dynamicFFCommand,
+                     Command *dynamicFFFCommand,
+                     Command *mutedCommand,
+                     Command *marcatoCommand,
+                     Command *sforzandoCommand,
+                     Command *staccatoCommand,
+                     Command *letRingCommand,
+                     Command *palmMuteCommand,
+                     Command *ghostNoteCommand,
+                     Command *naturalHarmonicCommand,
+                     Command *artificialHarmonicCommand,
+                     Command *tappedHarmonicCommand,
+                     Command *bendCommand,
+                     Command *vibratoCommand,
+                     Command *wideVibratoCommand,
+                     Command *legatoSlideCommand,
+                     Command *shiftSlideCommand,
+                     Command *slideIntoFromAboveCommand,
+                     Command *slideIntoFromBelowCommand,
+                     Command *slideOutOfDownwardsCommand,
+                     Command *slideOutOfUpwardsCommand,
+                     Command *hammerPullCommand,
+                     Command *tapCommand,
+                     Command *graceNoteCommand,
+                     Command *trillCommand,
+                     Command *arpeggioUpCommand,
+                     Command *arpeggioDownCommand,
+                     Command *pickStrokeUpCommand,
+                     Command *pickStrokeDownCommand,
+                     QWidget *parent = nullptr);
+    ~ToolBox();
 
 private:
-    ScorePage *scorePage;
-    NotePage *notePage;
+    void updateButtonStatusFromAction(QToolButton *button, Command *command);
+    void initButton(QToolButton *button, Command *command);
+
+    Ui::ToolBox *ui;
 };
 
 #endif // TOOLBOX_H
