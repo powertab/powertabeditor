@@ -1379,18 +1379,13 @@ void PowerTabEditor::updateDynamic(Dynamic::VolumeLevel volume)
     if (currentDynamic)
     {
         if (newDynamic.getVolume() == currentDynamic->getVolume())
-            {
-                myUndoManager->push(new RemoveDynamic(location),
-                                    location.getSystemIndex());
-                for (QAction *action : myDynamicGroup->actions())
-                {
-                    if (action ==  myDynamicGroup->checkedAction())
-                    {
-                        action->setChecked(false);
-                        break;
-                    }
-                }
-            }
+        {
+            myUndoManager->push(new RemoveDynamic(location),
+                                location.getSystemIndex());
+            QAction *checkedAction = myDynamicGroup->checkedAction();
+            if (checkedAction)
+              checkedAction->setChecked(false);
+        }
         else
             myUndoManager->push(new EditDynamic(location, *currentDynamic, newDynamic),
                                 location.getSystemIndex());
