@@ -167,7 +167,7 @@ PowerTabEditor::PowerTabEditor()
       myInstrumentPanel(nullptr),
       myInstrumentDockWidget(nullptr),
       myToolBox(nullptr),
-      myToolBoxDockWidget(nullptr),
+      myToolBoxDockWidget(new QDockWidget(tr("Toolbox"), this)),
       myPlaybackWidget(nullptr),
       myPlaybackArea(nullptr)
 {
@@ -2634,11 +2634,9 @@ void PowerTabEditor::createCommands()
     myInstrumentDockWidgetCommand =
         createCommandWrapper(myInstrumentDockWidget->toggleViewAction(),
                              "Window.Instruments", QKeySequence(), this);
-    /*
     myToolBoxDockWidgetCommand =
         createCommandWrapper(myToolBoxDockWidget->toggleViewAction(),
                              "Window.Toolbox", QKeySequence(), this);
-    */
 }
 
 void PowerTabEditor::loadKeyboardShortcuts()
@@ -3026,6 +3024,7 @@ void PowerTabEditor::createMenus()
     myWindowMenu->addSeparator();
     myWindowMenu->addAction(myMixerDockWidgetCommand);
     myWindowMenu->addAction(myInstrumentDockWidgetCommand);
+    myWindowMenu->addAction(myToolBoxDockWidgetCommand);
 
     // Help menu.
     myHelpMenu = menuBar()->addMenu(tr("&Help"));
@@ -3034,10 +3033,9 @@ void PowerTabEditor::createMenus()
 
 void PowerTabEditor::createToolBox()
 {
-    myToolBoxDockWidget = new QDockWidget(tr("Toolbox"), this);
     myToolBoxDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     myToolBoxDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
-    //myToolBoxDockWidget->setObjectName("Toolbox");
+    myToolBoxDockWidget->setObjectName("Toolbox");
 
     myToolBox = new ToolBox(myOctave8vaCommand,
                             myOctave15maCommand,
