@@ -137,7 +137,6 @@
 #include <QPrintPreviewDialog>
 #include <QScrollArea>
 #include <QTabBar>
-#include <QToolBar>
 #include <QUrl>
 #include <QVBoxLayout>
 
@@ -167,6 +166,8 @@ PowerTabEditor::PowerTabEditor()
       myMixerDockWidget(nullptr),
       myInstrumentPanel(nullptr),
       myInstrumentDockWidget(nullptr),
+      myToolBox(nullptr),
+      myToolBoxDockWidget(nullptr),
       myPlaybackWidget(nullptr),
       myPlaybackArea(nullptr)
 {
@@ -196,7 +197,6 @@ PowerTabEditor::PowerTabEditor()
     loadKeyboardShortcuts();
     createMenus();
     createToolBox();
-    createToolBars();
 
     // Set up the recent files menu.
     myRecentFiles =
@@ -2634,6 +2634,11 @@ void PowerTabEditor::createCommands()
     myInstrumentDockWidgetCommand =
         createCommandWrapper(myInstrumentDockWidget->toggleViewAction(),
                              "Window.Instruments", QKeySequence(), this);
+    /*
+    myToolBoxDockWidgetCommand =
+        createCommandWrapper(myToolBoxDockWidget->toggleViewAction(),
+                             "Window.Toolbox", QKeySequence(), this);
+    */
 }
 
 void PowerTabEditor::loadKeyboardShortcuts()
@@ -3031,7 +3036,8 @@ void PowerTabEditor::createToolBox()
 {
     myToolBoxDockWidget = new QDockWidget(tr("Toolbox"), this);
     myToolBoxDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
-    myToolBoxDockWidget->setObjectName("Toolbox");
+    myToolBoxDockWidget->setFeatures(QDockWidget::DockWidgetClosable);
+    //myToolBoxDockWidget->setObjectName("Toolbox");
 
     myToolBox = new ToolBox(myOctave8vaCommand,
                             myOctave15maCommand,
@@ -3090,125 +3096,6 @@ void PowerTabEditor::createToolBox()
 
     myToolBoxDockWidget->setWidget(myToolBox);
     addDockWidget(Qt::LeftDockWidgetArea, myToolBoxDockWidget);
-}
-
-void PowerTabEditor::createToolBars()
-{
-    // Notes Toolbar.
-    myNotesToolBar = addToolBar(tr("Notes"));
-    addToolBar(Qt::LeftToolBarArea, myNotesToolBar);
-    myNotesToolBar->setIconSize(QSize(24, 24));
-    myNotesToolBar->addAction(myWholeNoteCommand);
-    myNotesToolBar->addAction(myHalfNoteCommand);
-    myNotesToolBar->addAction(myQuarterNoteCommand);
-    myNotesToolBar->addAction(myEighthNoteCommand);
-    myNotesToolBar->addAction(mySixteenthNoteCommand);
-    myNotesToolBar->addAction(myThirtySecondNoteCommand);
-    myNotesToolBar->addAction(mySixtyFourthNoteCommand);
-    myNotesToolBar->addSeparator();
-
-    myNotesToolBar->addAction(myAddRestCommand);
-    myNotesToolBar->addSeparator();
-
-    myNotesToolBar->addAction(myDottedCommand);
-    myNotesToolBar->addAction(myDoubleDottedCommand);
-
-    // Duration Modifiers Toolbar.
-    myDurationModToolBar = addToolBar(tr("Duration modifiers"));
-    addToolBar(Qt::LeftToolBarArea, myDurationModToolBar);
-    myDurationModToolBar->setIconSize(QSize(24, 24));
-    myDurationModToolBar->addAction(myTieCommand);
-    myDurationModToolBar->addAction(myLetRingCommand);
-    myDurationModToolBar->addAction(myFermataCommand);
-    addToolBarBreak(Qt::LeftToolBarArea);
-
-    // Dynamic Toolbar.
-    myDynamicsToolBar = addToolBar(tr("Dynamics"));
-    addToolBar(Qt::LeftToolBarArea, myDynamicsToolBar);
-    myDynamicsToolBar->setIconSize(QSize(32, 32));
-    myDynamicsToolBar->addAction(myDynamicPPPCommand);
-    myDynamicsToolBar->addAction(myDynamicPPCommand);
-    myDynamicsToolBar->addAction(myDynamicPCommand);
-    myDynamicsToolBar->addAction(myDynamicMPCommand);
-    myDynamicsToolBar->addAction(myDynamicMFCommand);
-    myDynamicsToolBar->addAction(myDynamicFCommand);
-    myDynamicsToolBar->addAction(myDynamicFFCommand);
-    myDynamicsToolBar->addAction(myDynamicFFFCommand);
-
-    // Articulation Toolbar.
-    myArticulationToolBar = addToolBar(tr("Articulation"));
-    addToolBar(Qt::RightToolBarArea, myArticulationToolBar);
-    myArticulationToolBar->setIconSize(QSize(24, 24));
-    myArticulationToolBar->addAction(myGhostNoteCommand);
-    myArticulationToolBar->addAction(myMutedCommand);
-    myArticulationToolBar->addAction(myStaccatoCommand);
-    myArticulationToolBar->addAction(myPalmMuteCommand);
-    myArticulationToolBar->addAction(myMarcatoCommand); //actually accent
-    myArticulationToolBar->addAction(mySforzandoCommand); //actually marcato
-
-    // Octave Toolbar.
-    myOctaveToolBar = addToolBar(tr("Octave"));
-    addToolBar(Qt::RightToolBarArea, myOctaveToolBar);
-    myOctaveToolBar->setIconSize(QSize(24, 24));
-    myOctaveToolBar->addAction(myOctave8vaCommand);
-    myOctaveToolBar->addAction(myOctave15maCommand);
-    myOctaveToolBar->addAction(myOctave8vbCommand);
-    myOctaveToolBar->addAction(myOctave15mbCommand);
-
-    // Grouping Toolbar.
-    myGroupingToolBar = addToolBar(tr("Grouping"));
-    addToolBar(Qt::RightToolBarArea, myGroupingToolBar);
-    myGroupingToolBar->setIconSize(QSize(24, 24));
-    myGroupingToolBar->addAction(myTripletCommand);
-    myGroupingToolBar->addAction(myIrregularGroupingCommand);
-
-    //Picking Toolbar.
-    myPickingToolBar = addToolBar(tr("Picking"));
-    addToolBar(Qt::RightToolBarArea, myPickingToolBar);
-    myPickingToolBar->setIconSize(QSize(24, 24));
-    myPickingToolBar->addAction(myArpeggioUpCommand);
-    myPickingToolBar->addAction(myArpeggioDownCommand);
-    myPickingToolBar->addSeparator();
-    
-    myPickingToolBar->addAction(myPickStrokeUpCommand);
-    myPickingToolBar->addAction(myPickStrokeDownCommand);
-    addToolBarBreak(Qt::RightToolBarArea);
-
-    // Ornament Toolbar.
-    myOrnamentToolBar = addToolBar(tr("Ornament"));
-    addToolBar(Qt::RightToolBarArea, myOrnamentToolBar);
-    myOrnamentToolBar->setIconSize(QSize(24, 24));
-    myOrnamentToolBar->addAction(myGraceNoteCommand);
-    myOrnamentToolBar->addAction(myTrillCommand);
-    myOrnamentToolBar->addAction(myVibratoCommand);
-    myOrnamentToolBar->addAction(myWideVibratoCommand);
-
-    // Tab Symbols Toolbar.
-    myTabSymbolsToolBar = addToolBar(tr("Tab Symbols"));
-    addToolBar(Qt::RightToolBarArea, myTabSymbolsToolBar);
-    myTabSymbolsToolBar->setIconSize(QSize(24, 24));
-    myTabSymbolsToolBar->addAction(myHammerPullCommand);
-    myTabSymbolsToolBar->addAction(myTapCommand);
-    myTabSymbolsToolBar->addAction(myBendCommand);
-
-    // Harmonic Toolbar.
-    myHarmonicToolBar = addToolBar(tr("Harmonics"));
-    addToolBar(Qt::RightToolBarArea, myHarmonicToolBar);
-    myHarmonicToolBar->setIconSize(QSize(24, 24));
-    myHarmonicToolBar->addAction(myNaturalHarmonicCommand);
-    myHarmonicToolBar->addAction(myArtificialHarmonicCommand);
-    myHarmonicToolBar->addAction(myTappedHarmonicCommand);
-
-    // Slide Toolbar.
-    mySlideToolBar = addToolBar(tr("Slides"));
-    addToolBar(Qt::RightToolBarArea, mySlideToolBar);
-    mySlideToolBar->setIconSize(QSize(24, 24));
-    mySlideToolBar->addAction(myLegatoSlideCommand);
-    mySlideToolBar->addAction(myShiftSlideCommand);
-    mySlideToolBar->addAction(mySlideIntoFromAboveCommand);
-    mySlideToolBar->addAction(mySlideIntoFromBelowCommand);
-    mySlideToolBar->addAction(mySlideOutOfDownwardsCommand);
-    mySlideToolBar->addAction(mySlideOutOfUpwardsCommand);
 }
 
 void PowerTabEditor::createTabArea()

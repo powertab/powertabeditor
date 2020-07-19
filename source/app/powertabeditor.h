@@ -339,8 +339,6 @@ private:
     void createMenus();
     /// Set up the toolbox for the application.
     void createToolBox();
-    /// Set up the tool bars for the application.
-    void createToolBars();
     /// Create the tab widget and score area.
     void createTabArea();
     /// Updates the last directory that a file was opened from.
@@ -432,6 +430,8 @@ private:
     QDockWidget *myMixerDockWidget;
     InstrumentPanel *myInstrumentPanel;
     QDockWidget *myInstrumentDockWidget;
+    ToolBox *myToolBox;
+    QDockWidget *myToolBoxDockWidget;
     PlaybackWidget *myPlaybackWidget;
     QWidget *myPlaybackArea;
 
@@ -506,14 +506,6 @@ private:
     Command *myDecreaseLineSpacingCommand;
 
     QMenu *myNotesMenu;
-    QDockWidget *myToolBoxDockWidget;
-    ToolBox *myToolBox;
-    QToolBar *myNotesToolBar;
-    QToolBar *myDurationModToolBar;
-    QToolBar *myArticulationToolBar;
-    QToolBar *myOctaveToolBar;
-    QToolBar *myGroupingToolBar;
-    QToolBar *myOrnamentToolBar;
     /// Used to ensure that only one duration option is checked at a time.
     QActionGroup *myNoteDurationGroup;
     Command *myWholeNoteCommand;
@@ -560,7 +552,6 @@ private:
     Command *myMultibarRestCommand;
 
     QMenu *myMusicSymbolsMenu;
-    QToolBar *myDynamicsToolBar;
     Command *myRehearsalSignCommand;
     Command *myTempoMarkerCommand;
     Command *myAlterationOfPaceCommand;
@@ -584,20 +575,17 @@ private:
 
     QMenu *myTabSymbolsMenu;
     QMenu *myHammerOnMenu;
-    QToolBar *myTabSymbolsToolBar;
     Command *myHammerPullCommand;
     Command *myHammerOnFromNowhereCommand;
     Command *myPullOffToNowhereCommand;
 
-    QToolBar *myHarmonicToolBar;
     Command *myNaturalHarmonicCommand;
     Command *myArtificialHarmonicCommand;
     Command *myTappedHarmonicCommand;
-	Command *myBendCommand;
+    Command *myBendCommand;
     Command *myLeftHandFingeringCommand;
 
     QMenu *mySlideIntoMenu;
-    QToolBar *mySlideToolBar;
     Command *mySlideIntoFromAboveCommand;
     Command *mySlideIntoFromBelowCommand;
 
@@ -608,7 +596,6 @@ private:
     Command *mySlideOutOfDownwardsCommand;
     Command *mySlideOutOfUpwardsCommand;
 
-    QToolBar *myPickingToolBar;
     Command *myVibratoCommand;
     Command *myWideVibratoCommand;
     Command *myPalmMuteCommand;
@@ -632,6 +619,7 @@ private:
     Command *myPrevTabCommand;
     Command *myMixerDockWidgetCommand;
     Command *myInstrumentDockWidgetCommand;
+    Command *myToolBoxDockWidgetCommand;
 
     QMenu *myHelpMenu;
     Command *myReportBugCommand;
