@@ -1,6 +1,12 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  # Build on new commits or pull requests.
+  push:
+  pull_request:
+  schedule:
+    # Run every week just to make sure the CI environment still works. 
+    - cron: '0 0 * * 0'
 
 jobs:
   build-ubuntu:
@@ -43,7 +49,6 @@ jobs:
     - name: Upload Installer
       uses: actions/upload-artifact@v2
       with:
-        name: "installer-osx"
         path: ${{runner.workspace}}/build/powertabeditor-osx.dmg
 
   build-windows:
