@@ -110,13 +110,13 @@
 				<File Source="$(var.BinDir)/harfbuzz.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="icudt" Guid="CDAECCA1-B9B8-4177-B89F-A7E5785AB08A">
-				<File Source="$(var.BinDir)/icudt65.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/icudt67.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="icuin" Guid="2AA98EE6-DCCC-4B5A-82BE-26B15219099B">
-				<File Source="$(var.BinDir)/icuin65.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/icuin67.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="icuuc" Guid="A2615534-FA3D-46AF-9C94-3A26A948B7F3">
-				<File Source="$(var.BinDir)/icuuc65.dll" KeyPath="yes" Checksum="yes" />
+				<File Source="$(var.BinDir)/icuuc67.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 			<Component Id="libpng" Guid="5681F57B-38A1-4766-9CF4-F4F6409B70EF">
 				<File Source="$(var.BinDir)/libpng16.dll" KeyPath="yes" Checksum="yes" />

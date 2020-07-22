@@ -55,6 +55,8 @@ jobs:
   build-windows:
 
     runs-on: windows-latest
+    env:
+      PTE_WIN_INSTALLER_DIR: {{ github.workspace }}/installer/windows
 
     steps:
     - uses: actions/checkout@v1
@@ -69,3 +71,10 @@ jobs:
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests.exe
+    - name: Build Installer
+      run: |
+        # Fetch the VC redistributable.
+        # TODO - cache this (https://github.com/actions/cache).
+        mkdir ${env:PTE_WIN_INSTALLER_DIR}/redist
+        wget https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile ${env:PTE_WIN_INSTALLER_DIR}/redist/vc_redist.x64.exe
+        msbuild ${env:PTE_WIN_INSTALLER_DIR}/pte_windows_build.sln -p:Configuration=Release
