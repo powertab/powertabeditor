@@ -69,6 +69,9 @@ jobs:
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
       run: ${{runner.workspace}}/build/bin/pte_tests.exe
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.0
     # TODO - cache the VC redistributable (https://github.com/actions/cache).
     - name: Build Installer
       run: |
