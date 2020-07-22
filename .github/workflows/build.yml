@@ -64,11 +64,11 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Generate Project
-      run: cmake -A x64 -S ${env:GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: cmake --build ${{runner.workspace}}/build
+      run: cmake --build ./build
     - name: Test
-      run: ${{runner.workspace}}/build/bin/pte_tests.exe
+      run: ./build/bin/pte_tests.exe
 
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.0
