@@ -68,9 +68,7 @@ jobs:
     - name: Build
       run: |
         cmake --build ./build 
-        ls ./build/bin/plugins
-        ls ./build/bin/plugins/platforms
-        ls ./build/bin/plugins/styles
+        ls ./build/bin/platforms
     - name: Test
       run: ./build/bin/pte_tests.exe
 
