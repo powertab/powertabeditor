@@ -2267,9 +2267,11 @@ void PowerTabEditor::createCommands()
     connect(myTieCommand, &QAction::triggered, this, &PowerTabEditor::editTiedNote);
 
     createNotePropertyCommand(myMutedCommand, tr("Muted"), "Notes.Muted",
-                              Qt::Key_X, Note::Muted);
+                              Qt::Key_X, Note::Muted,
+                              QStringLiteral(u":images/muted.png"));
     createNotePropertyCommand(myGhostNoteCommand, tr("Ghost Note"),
-                              "Notes.GhostNote", Qt::Key_G, Note::GhostNote);
+                              "Notes.GhostNote", Qt::Key_G, Note::GhostNote,
+                              QStringLiteral(u":images/ghost.png"));
 
     createPositionPropertyCommand(myFermataCommand, tr("Fermata"),
                                   "Notes.Fermata", Qt::Key_F, Position::Fermata,
@@ -2277,33 +2279,39 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myLetRingCommand, tr("Let Ring"),
                                   "Notes.LetRing", QKeySequence(),
-                                  Position::LetRing);
+                                  Position::LetRing, QStringLiteral(u":images/let_ring.png"));
 
     createPositionPropertyCommand(myGraceNoteCommand, tr("Grace Note"),
                                   "Notes.GraceNote", QKeySequence(),
-                                  Position::Acciaccatura);
+                                  Position::Acciaccatura,
+                                  QStringLiteral(u":images/grace.png"));
 
     createPositionPropertyCommand(myStaccatoCommand, tr("Staccato"),
                                   "Notes.Staccato", Qt::Key_Z,
-                                  Position::Staccato);
+                                  Position::Staccato, QStringLiteral(u":images/staccato.png"));
 
     createPositionPropertyCommand(myMarcatoCommand, tr("Accent"), "Notes.Accent",
-                                  Qt::Key_A, Position::Marcato);
+                                  Qt::Key_A, Position::Marcato,
+                                  QStringLiteral(u":images/accent_normal.png"));
 
     createPositionPropertyCommand(mySforzandoCommand, tr("Heavy Accent"),
                                   "Notes.HeavyAccent", QKeySequence(),
-                                  Position::Sforzando);
+                                  Position::Sforzando,
+                                  QStringLiteral(u":images/accent_heavy.png"));
 
     // Octave actions
     createNotePropertyCommand(myOctave8vaCommand, tr("8va"), "Notes.Octave.8va",
-                              QKeySequence(), Note::Octave8va);
+                              QKeySequence(), Note::Octave8va,
+                              QStringLiteral(u":images/8va.png"));
     createNotePropertyCommand(myOctave15maCommand, tr("15ma"), "Notes.Octave.15ma",
-                              QKeySequence(), Note::Octave15ma);
+                              QKeySequence(), Note::Octave15ma,
+                              QStringLiteral(u":images/15ma.png"));
     createNotePropertyCommand(myOctave8vbCommand, tr("8vb"), "Notes.Octave.8vb",
-                              QKeySequence(), Note::Octave8vb);
+                              QKeySequence(), Note::Octave8vb,
+                              QStringLiteral(u":images/8vb.png"));
     createNotePropertyCommand(myOctave15mbCommand, tr("15mb"),
                               "Notes.Octave.15mb", QKeySequence(),
-                              Note::Octave15mb);
+                              Note::Octave15mb, QStringLiteral(u":images/15mb.png"));
 
     myTripletCommand = new Command(tr("Triplet"), "Notes.Triplet", Qt::Key_E, this,
                                    QStringLiteral(u":images/group_note"));
@@ -2312,7 +2320,8 @@ void PowerTabEditor::createCommands()
     });
 
     myIrregularGroupingCommand = new Command(
-        tr("Irregular Grouping"), "Notes.IrregularGrouping", Qt::Key_I, this);
+                                             tr("Irregular Grouping"), "Notes.IrregularGrouping", Qt::Key_I, this,
+                                             QStringLiteral(u":images/group_note_irregular.png"));
     connect(myIrregularGroupingCommand, &QAction::triggered, [=]() {
         editIrregularGrouping(false);
     });
@@ -2465,18 +2474,20 @@ void PowerTabEditor::createCommands()
 
     createNotePropertyCommand(myNaturalHarmonicCommand, tr("Natural Harmonic"),
                               "TabSymbols.NaturalHarmonic", QKeySequence(),
-                              Note::NaturalHarmonic);
+                              Note::NaturalHarmonic, QStringLiteral(u":images/harmonic_natural.png"));
 
     myArtificialHarmonicCommand =
         new Command(tr("Artificial Harmonic..."),
-                    "TabSymbols.ArtificialHarmonic", QKeySequence(), this);
+                    "TabSymbols.ArtificialHarmonic", QKeySequence(), this,
+                    QStringLiteral(u":images/harmonic_artificial.png"));
     myArtificialHarmonicCommand->setCheckable(true);
     connect(myArtificialHarmonicCommand, &QAction::triggered, this,
             &PowerTabEditor::editArtificialHarmonic);
 
     myTappedHarmonicCommand = new Command(tr("Tapped Harmonic..."),
                                           "TabSymbols.TappedHarmonic",
-                                          QKeySequence(), this);
+                                          QKeySequence(), this,
+                                          QStringLiteral(u":images/harmonic_tapped.png"));
     myTappedHarmonicCommand->setCheckable(true);
     connect(myTappedHarmonicCommand, &QAction::triggered, this,
             &PowerTabEditor::editTappedHarmonic);
@@ -2500,7 +2511,7 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myPalmMuteCommand, tr("Palm Mute"),
                                   "TabSymbols.PalmMute", Qt::Key_M,
-                                  Position::PalmMuting);
+                                  Position::PalmMuting, QStringLiteral(u":images/palm_mute.png"));
 
     createPositionPropertyCommand(myTremoloPickingCommand, tr("Tremolo Picking"),
                                   "TabSymbols.TremoloPicking", QKeySequence(),
@@ -2508,14 +2519,17 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myArpeggioUpCommand, tr("Arpeggio Up"),
                                   "TabSymbols.ArpeggioUp", QKeySequence(),
-                                  Position::ArpeggioUp);
+                                  Position::ArpeggioUp,
+                                  QStringLiteral(u":images/arpeggio_up.png"));
 
     createPositionPropertyCommand(myArpeggioDownCommand, tr("Arpeggio Down"),
                                   "TabSymbols.ArpeggioDown", QKeySequence(),
-                                  Position::ArpeggioDown);
+                                  Position::ArpeggioDown,
+                                  QStringLiteral(u":images/arpeggio_down.png"));
 
     createPositionPropertyCommand(myTapCommand, tr("Tap"), "TabSymbols.Tap",
-                                  Qt::Key_P, Position::Tap);
+                                  Qt::Key_P, Position::Tap,
+                                  QStringLiteral(u":images/tap.png"));
 
     myTrillCommand = new Command(tr("Trill..."), "TabSymbols.Trill",
                                  QKeySequence(), this,
@@ -2525,11 +2539,13 @@ void PowerTabEditor::createCommands()
 
     createPositionPropertyCommand(myPickStrokeUpCommand, tr("Pickstroke Up"),
                                   "TabSymbols.PickStrokeUp", QKeySequence(),
-                                  Position::PickStrokeUp);
+                                  Position::PickStrokeUp,
+                                  QStringLiteral(u":images/pickstroke_up.png"));
 
     createPositionPropertyCommand(myPickStrokeDownCommand, tr("Pickstroke Down"),
                                   "TabSymbols.PickStrokeDown", QKeySequence(),
-                                  Position::PickStrokeDown);
+                                  Position::PickStrokeDown,
+                                  QStringLiteral(u":images/pickstroke_down.png"));
 
     createNotePropertyCommand(mySlideIntoFromAboveCommand,
                               tr("Slide Into From Above"),

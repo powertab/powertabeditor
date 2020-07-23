@@ -5,8 +5,14 @@
         <file alias="LiberationSerif-Regular.ttf">../fonts/LiberationSerif-Regular.ttf</file>
     </qresource>
     <qresource prefix="/images">
+        <file alias="8va.png">../images/8va.png</file>
+        <file alias="15ma.png">../images/15ma.png</file>
+        <file alias="8vb.png">../images/8vb.png</file>
+        <file alias="15mb.png">../images/15mb.png</file>
         <file alias="bend">../images/bend.png</file>
         <file alias="legato">../images/legato.png</file>
+        <file alias="tap.png">../images/tap.png</file>
+        <file alias="grace.png">../images/grace.png</file>
         <file alias="legatoslide">../images/legatoslide.png</file>
         <file alias="shiftslide">../images/shiftslide.png</file>
         <file alias="slideinabove">../images/slideinabove.png</file>
@@ -15,6 +21,9 @@
         <file alias="slideoutup">../images/slideoutup.png</file>
         <file alias="vibrato.png">../images/vibrato.png</file>
         <file alias="widevibrato.png">../images/widevibrato.png</file>
+        <file alias="harmonic_natural.png">../images/harmonic_natural.png</file>
+        <file alias="harmonic_artificial.png">../images/harmonic_artificial.png</file>
+        <file alias="harmonic_tapped.png">../images/harmonic_tapped.png</file>
         <file alias="tremolo.png">../images/tremolo.png</file>
         <file alias="trill.png">../images/trill.png</file>
         <file alias="tab_close_button.png">../images/tab_close_button.png</file>
@@ -44,6 +53,7 @@
         <file alias="doubledotted_note">../images/doubledotted_note.png</file>
         <file alias="fermata">../images/fermata.png</file>
         <file alias="group_note">../images/group_note.png</file>
+        <file alias="group_note_irregular.png">../images/group_note_irregular.png</file>
         <file alias="tie_note">../images/tie_note.png</file>
         <file alias="dynamic_ppp.png">../images/dynamic_ppp.png</file>
         <file alias="dynamic_pp.png">../images/dynamic_pp.png</file>
@@ -53,6 +63,13 @@
         <file alias="dynamic_f.png">../images/dynamic_f.png</file>
         <file alias="dynamic_ff.png">../images/dynamic_ff.png</file>
         <file alias="dynamic_fff.png">../images/dynamic_fff.png</file>
+        <file alias="muted.png">../images/muted.png</file>
+        <file alias="accent_normal.png">../images/accent_normal.png</file>
+        <file alias="accent_heavy.png">../images/accent_heavy.png</file>
+        <file alias="staccato.png">../images/staccato.png</file>
+        <file alias="let_ring.png">../images/let_ring.png</file>
+        <file alias="palm_mute.png">../images/palm_mute.png</file>
+        <file alias="ghost.png">../images/ghost.png</file>
         <file alias="flat.png">../images/flat.png</file>
         <file alias="double_flat.png">../images/double_flat.png</file>
         <file alias="sharp.png">../images/sharp.png</file>
@@ -61,6 +78,10 @@
         <file alias="triplet_feel_eighth_off.png">../images/triplet_feel_eighth_off.png</file>
         <file alias="triplet_feel_sixteenth.png">../images/triplet_feel_sixteenth.png</file>
         <file alias="triplet_feel_sixteenth_off.png">../images/triplet_feel_sixteenth_off.png</file>
+        <file alias="arpeggio_up.png">../images/arpeggio_up.png</file>
+        <file alias="arpeggio_down.png">../images/arpeggio_down.png</file>
+        <file alias="pickstroke_up.png">../images/pickstroke_up.png</file>
+        <file alias="pickstroke_down.png">../images/pickstroke_down.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="app_icon.png">../icons/app_icon.png</file>
