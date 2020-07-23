@@ -92,3 +92,9 @@ jobs:
       run: |
         cd installer/windows
         msbuild pte_windows_build.sln -p:Configuration=Release
+
+    - name: Upload Installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: "powertabeditor-windows.exe"
+        path: installer/windows/bin/x64/Release/powertabeditor.exe
