@@ -96,7 +96,7 @@ jobs:
         ls "${env:QT_PLUGIN_PATH}"
         ls "${env:QT_PLUGIN_PATH}/styles"
         mkdir ./build/bin/styles
-        cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll ./build/bin/styles
+        cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
         cd installer/windows
         msbuild pte_windows_build.sln -p:Configuration=Release
 
