@@ -13,7 +13,9 @@
 		<Feature Id="Complete" Level="1">
 			<ComponentGroupRef Id="Binaries" />
 			<ComponentGroupRef Id="PlatformPlugins" />
+            <!-- This might not be needed depending on Qt's build config.
 			<ComponentGroupRef Id="StylePlugins" />
+            -->
 			<ComponentGroupRef Id="DataFiles" />
 		</Feature>
 
@@ -148,14 +150,17 @@
 		<!-- Qt Plugins. -->
 		<ComponentGroup Id="PlatformPlugins" Directory="PlatformPluginsDir">
 			<Component Guid="8DB2373E-9319-475E-897E-47F2BE4CCA30">
-				<File Source="$(var.BinDir)/plugins/platforms/qwindows.dll" KeyPath="yes" Checksum="yes" />
+                <!-- Note: this might be under the plugins/platforms folder instead, depending on Qt's build configuration -->
+				<File Source="$(var.BinDir)/platforms/qwindows.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 		</ComponentGroup>
+        <!-- Note: this might not exist depending on Qt's build configuration
 		<ComponentGroup Id="StylePlugins" Directory="StylePluginsDir">
 			<Component Guid="8D2DAA6F-C37B-486C-B86E-CE6D0017C796">
 				<File Source="$(var.BinDir)/plugins/styles/qwindowsvistastyle.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
 		</ComponentGroup>
+        -->
 
 		<!-- Data files -->
 		<ComponentGroup Id="DataFiles" Directory="DataDir">

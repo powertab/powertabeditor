@@ -67,7 +67,7 @@ jobs:
       run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       run: |
-        cmake --build ./build 
+        cmake --build ./build --config Release
         ls ./build/bin/platforms
     - name: Test
       run: ./build/bin/pte_tests.exe
