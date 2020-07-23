@@ -64,9 +64,9 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Generate Project
-      run: cmake -A x64 -B ./build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: cmake --build ./build
+      run: cmake --build ./build --config Release
     - name: Test
       run: ./build/bin/pte_tests.exe
 
