@@ -69,12 +69,13 @@ jobs:
       run: |
         cmake --build ./build
         ls ./build
+        ls ./build/bin
+        ls ./build/x64
     - name: Test
       run: ./build/bin/pte_tests.exe
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.0
     # TODO - cache the VC redistributable (https://github.com/actions/cache).
+    - uses: microsoft/setup-msbuild@v1.0.0
     - name: Build Installer
       run: |
         cd installer/windows
