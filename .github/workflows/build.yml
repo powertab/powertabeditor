@@ -89,8 +89,14 @@ jobs:
         mkdir redist
         Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile redist/vc_redist.x64.exe
 
+    # The qwindowsvistastyle plugin also needs to be installed, but isn't installed to the bin dir
+    # when building with the Qt package from install-qt-action ...
     - name: Build Installer
       run: |
+        ls "${env:QT_PLUGIN_PATH}"
+        ls "${env:QT_PLUGIN_PATH}/styles"
+        mkdir ./build/bin/styles
+        cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll ./build/bin/styles
         cd installer/windows
         msbuild pte_windows_build.sln -p:Configuration=Release
 
