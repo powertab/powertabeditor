@@ -39,7 +39,7 @@ jobs:
     - name: Install Dependencies
       run: brew update && brew install boost cmake doctest minizip ninja pugixml qt5 pugixml rapidjson rtmidi
     - name: Generate Project
-      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
+      run: cmake -S ${GITHUB_WORKSPACE} -B ${{runner.workspace}}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake
     - name: Build
       run: cmake --build ${{runner.workspace}}/build
     - name: Test
@@ -64,21 +64,28 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Generate Project
-      run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -A x64 -B ./build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: |
-        cmake --build ./build
-        ls ./build
-        ls ./build/bin
-        ls ./build/x64
+      run: cmake --build ./build
     - name: Test
       run: ./build/bin/pte_tests.exe
 
-    # TODO - cache the VC redistributable (https://github.com/actions/cache).
     - uses: microsoft/setup-msbuild@v1.0.0
+
+    - name: Cache VC redist
+      id: cache-redist
+      uses: actions/cache@v2
+      with:
+        path: redist/vc_redist.x64.exe
+        key: ${{ runner.os }}-redist-v1
+
+    - name: Fetch VC redist
+      if: steps.cache-redist.outputs.cache-hit != 'true'
+      run: |
+        mkdir redist
+        Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile redist/vc_redist.x64.exe
+
     - name: Build Installer
       run: |
         cd installer/windows
-        mkdir redist
-        Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile redist/vc_redist.x64.exe
         msbuild pte_windows_build.sln -p:Configuration=Release

@@ -103,6 +103,7 @@
 			<Component Id="bz2" Guid="2BB253EA-2BEA-42B3-9C39-EAFB05D8FB41">
 				<File Source="$(var.BinDir)/bz2.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			<!-- Not needed (depending on how Qt was built). These are disabled to match the CI build.
 			<Component Id="freetype" Guid="BDE86051-A941-42E4-BBC3-7AEFD1090595">
 				<File Source="$(var.BinDir)/freetype.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
@@ -121,12 +122,15 @@
 			<Component Id="libpng" Guid="5681F57B-38A1-4766-9CF4-F4F6409B70EF">
 				<File Source="$(var.BinDir)/libpng16.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			-->
 			<Component Id="lzma" Guid="BC3EB35D-4C5C-464D-82FF-7C226AC47053">
 				<File Source="$(var.BinDir)/lzma.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			<!-- Not needed (depending on how Qt was built). These are disabled to match the CI build.
 			<Component Id="pcre2" Guid="902A7226-29B5-4F35-B284-3283AEBD6205">
 				<File Source="$(var.BinDir)/pcre2-16.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
+			-->
 			<Component Id="pugixml" Guid="8D2E3DBB-8C66-43F0-A55A-F5E58C48D675">
 				<File Source="$(var.BinDir)/pugixml.dll" KeyPath="yes" Checksum="yes" />
 			</Component>
