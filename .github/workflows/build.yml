@@ -66,7 +66,11 @@ jobs:
     - name: Generate Project
       run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: cmake --build ./build --config Release
+      run: |
+        cmake --build ./build 
+        ls ./build/bin/plugins
+        ls ./build/bin/plugins/platforms
+        ls ./build/bin/plugins/styles
     - name: Test
       run: ./build/bin/pte_tests.exe
 
