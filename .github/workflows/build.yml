@@ -78,12 +78,13 @@ jobs:
       id: cache-redist
       uses: actions/cache@v2
       with:
-        path: redist/vc_redist.x64.exe
+        path: installer/windows/redist/vc_redist.x64.exe
         key: ${{ runner.os }}-redist-v1
 
     - name: Fetch VC redist
       if: steps.cache-redist.outputs.cache-hit != 'true'
       run: |
+        cd installer/windows
         mkdir redist
         Invoke-WebRequest https://aka.ms/vs/16/release/vc_redist.x64.exe -OutFile redist/vc_redist.x64.exe
 
