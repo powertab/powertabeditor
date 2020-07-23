@@ -67,9 +67,7 @@ jobs:
     - name: Generate Project
       run: cmake -A x64 -B ./build -DCMAKE_TOOLCHAIN_FILE="${env:VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake"
     - name: Build
-      run: |
-        cmake --build ./build --config Release
-        ls ./build/bin/platforms
+      run: cmake --build ./build --config Release
     - name: Test
       run: ./build/bin/pte_tests.exe
 
@@ -93,8 +91,6 @@ jobs:
     # when building with the Qt package from install-qt-action ...
     - name: Build Installer
       run: |
-        ls "${env:QT_PLUGIN_PATH}"
-        ls "${env:QT_PLUGIN_PATH}/styles"
         mkdir ./build/bin/styles
         cp "${env:QT_PLUGIN_PATH}/styles/qwindowsvistastyle.dll" ./build/bin/styles
         cd installer/windows
