@@ -183,6 +183,13 @@ pte_executable(
         rtmidi::rtmidi
 )
 
+# Workaround for https://github.com/onqtam/doctest/issues/316
+if ( PLATFORM_OSX )
+    target_compile_definitions( pte_tests PRIVATE
+        DOCTEST_CONFIG_USE_STD_HEADERS
+    )
+endif ()
+
 add_test(
     NAME all_tests
     COMMAND pte_tests exclude:Formats/PowerTabOldImport/Directions
