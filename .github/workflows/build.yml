@@ -1,7 +1,8 @@
 name: Build
 
 on:
-  # Build on new commits or pull requests.
+  # Build on new commits, tags, or pull requests.
+  create:
   push:
   pull_request:
   schedule:
